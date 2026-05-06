@@ -123,51 +123,54 @@
     }
   ],
   "analysis": {
-    "key_findings": [
-      "Master worker count is the dominant factor: 8 master workers consistently outperform 4 or 6",
-      "Binding workers can be safely reduced to 2 — binding subproblem is lightweight",
-      "W6 (3x 8/6/2/6) achieves 77.3% CPU utilization, 2.6x better than W0 baseline (29.8%)",
-      "W7 (2x 12/8/2/8) gives best RSS efficiency (28.55 GiB) with decent CPU (57.7%)",
-      "3 processes with high per-process workers is the sweet spot — fewer than 4 proc reduces IPC overhead",
-      "Private bytes for W6 hit 83 GiB — indicates CP-SAT commits more virtual memory when given more workers"
+    "critical_caveat": "ALL S6 runs have telemetry_exists=false — no candidate throughput data. CPU utilization alone does NOT indicate solver speed. High CPU may indicate redundant worker search, not faster solving. These results identify stable configs and resource envelopes only — NOT performance winners.",
+    "what_we_know": [
+      "Binding workers can safely reduce to 2 — all configs with binding=2 ran successfully",
+      "No config crashed (unlike S5 matrix_1x16 which hit stack overrun)",
+      "RSS stays within 28-40 GiB for all tested configs",
+      "W6 private bytes (83 GiB) indicates heavy page file use — potential I/O bottleneck in longer runs",
+      "W7 (2 proc) has lowest RSS (28.55 GiB) — best memory efficiency"
     ],
-    "master_worker_effect": {
-      "4_workers_avg_cpu": 714.8,
-      "6_workers_avg_cpu": 910.3,
-      "8_workers_avg_cpu": 1224.2,
-      "12_workers_cpu": 1384.2,
-      "note": "Near-linear scaling from 4→8 master workers; diminishing returns at 12"
-    },
-    "binding_worker_insight": {
+    "what_we_dont_know": [
+      "Actual candidate throughput (candidates/hour) — 5-minute runs too short for campaign telemetry",
+      "Whether higher CPU utilization translates to faster candidate evaluation",
+      "Effect of page file pressure on solve speed (W6 committed 83 GiB virtual memory)",
+      "Whether master worker scaling improves or hurts CP-SAT search efficiency on this problem structure"
+    ],
+    "cpu_utilization_note": "CPU utilization is recorded as an auxiliary metric only. Rankings below are NOT performance rankings — they are resource usage observations. Performance must be measured by candidate throughput in S8 medium confirmation runs.",
+    "resource_observations": {
       "binding_2_safe": true,
-      "note": "All configs with binding=2 ran successfully. Binding subproblem is fast and doesn't benefit from more workers."
-    },
-    "process_count_tradeoff": {
-      "4_proc_max_cpu": 1107.5,
-      "3_proc_max_cpu": 1854.5,
-      "2_proc_max_cpu": 1384.2,
-      "note": "3 processes with matching W4-equivalent workers achieves much higher CPU — less context switching overhead"
+      "all_configs_stable": true,
+      "rss_range_gib": "28.55 - 40.21",
+      "private_bytes_concern": "W6 at 83 GiB may cause page file I/O bottleneck in longer runs"
     }
   },
   "recommendations": {
-    "top_candidates_for_medium_confirmation": [
+    "selection_basis": "Resource envelope fitness and stability, NOT performance (throughput unknown)",
+    "candidates_for_medium_confirmation": [
       {
         "profile": "s6_w6_3x_m8l6b2r6",
-        "reason": "Highest CPU utilization (77.3%), moderate RSS (38.4 GiB), but needs monitoring for page file pressure"
+        "reason": "High CPU activity, but private bytes (83 GiB) risk page file I/O bottleneck — needs throughput validation"
       },
       {
         "profile": "s6_w7_2x_m12l8b2r8",
-        "reason": "Best RSS efficiency (28.6 GiB), good CPU (57.7%), lowest memory pressure"
+        "reason": "Lowest RSS (28.6 GiB), least memory pressure — good candidate if throughput holds"
       },
       {
         "profile": "s6_w4_4x_m8l6b2r6",
-        "reason": "Safe 4-process config with good CPU (46.1%), moderate RSS, no page file issues"
+        "reason": "4-process config, stable RSS, moderate resource usage — conservative choice"
+      },
+      {
+        "profile": "s6_w0_4x_4444",
+        "reason": "Baseline control — must be included in medium confirmation for comparison"
       }
     ],
+    "critical_next_step": "S8 medium confirmation with 30min-1h runs measuring ACTUAL candidate throughput. CPU utilization rankings are meaningless without throughput data.",
     "next_steps": [
-      "S8 medium confirmation: 1h runs for W6, W7, W4 to measure actual candidate throughput",
-      "Monitor page file usage during longer W6 runs — 83 GiB private may cause issues at 1h scale",
-      "Consider W6 variant with reduced local_capacity to manage private bytes"
+      "S8: Run top candidates + baseline for 30-60 minutes each, measuring candidates evaluated and frontier reduction",
+      "Compare throughput (candidates/hour) NOT CPU utilization",
+      "Monitor page file I/O during W6 longer runs — 83 GiB private may hurt actual speed",
+      "If W6 throughput is worse than W0 despite higher CPU, that proves CPU util is misleading"
     ]
   },
   "safety": {
