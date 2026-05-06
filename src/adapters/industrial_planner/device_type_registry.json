@@ -1,0 +1,4588 @@
+{
+  "metadata": {
+    "source": "IndustrialPlanner static registry snapshot",
+    "source_root_name": "IndustrialPlanner-2",
+    "generated_at": "2026-03-28T14:35:28.541Z",
+    "device_type_count": 43
+  },
+  "belt_type_ids": [
+    "belt_straight_1x1",
+    "belt_turn_ccw_1x1",
+    "belt_turn_cw_1x1"
+  ],
+  "pipe_type_ids": [
+    "pipe_straight_1x1",
+    "pipe_turn_ccw_1x1",
+    "pipe_turn_cw_1x1"
+  ],
+  "junction_type_ids": [
+    "item_log_admission",
+    "item_log_connector",
+    "item_log_converger",
+    "item_log_splitter"
+  ],
+  "pipe_junction_type_ids": [
+    "item_pipe_admission",
+    "item_pipe_connector",
+    "item_pipe_converger",
+    "item_pipe_splitter"
+  ],
+  "hidden_placeable_type_ids": [
+    "item_port_sp_hub_1"
+  ],
+  "warehouse_bus_type_ids": [
+    "item_port_log_hongs_bus",
+    "item_port_log_hongs_bus_source"
+  ],
+  "device_types": [
+    {
+      "id": "belt_straight_1x1",
+      "runtimeKind": "conveyor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "inputBufferSlots": 1,
+      "outputBufferSlots": 1,
+      "inputBufferSlotCapacities": [
+        1
+      ],
+      "outputBufferSlotCapacities": [
+        1
+      ],
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Belt",
+      "tags": [
+        "BeltFamily"
+      ],
+      "ports0": [
+        {
+          "id": "in_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "belt_turn_ccw_1x1",
+      "runtimeKind": "conveyor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "inputBufferSlots": 1,
+      "outputBufferSlots": 1,
+      "inputBufferSlotCapacities": [
+        1
+      ],
+      "outputBufferSlotCapacities": [
+        1
+      ],
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Turn↰",
+      "tags": [
+        "BeltFamily"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "belt_turn_cw_1x1",
+      "runtimeKind": "conveyor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "inputBufferSlots": 1,
+      "outputBufferSlots": 1,
+      "inputBufferSlotCapacities": [
+        1
+      ],
+      "outputBufferSlotCapacities": [
+        1
+      ],
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Turn↱",
+      "tags": [
+        "BeltFamily"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_liquid_cleaner_1",
+      "runtimeKind": "storage",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "WastewaterTreatment",
+      "tags": [
+        "武陵",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_w_1",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_log_admission",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Admission",
+      "tags": [
+        "BeltFamily"
+      ],
+      "ports0": [
+        {
+          "id": "in_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_log_connector",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Bridge",
+      "tags": [
+        "BeltFamily",
+        "ChevronHidden"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_log_converger",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Merge",
+      "tags": [
+        "BeltFamily"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_log_splitter",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Split",
+      "tags": [
+        "BeltFamily"
+      ],
+      "ports0": [
+        {
+          "id": "in_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_pipe_admission",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "PipeAdmission",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_pipe_connector",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "PipeBridge",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed",
+        "ChevronHidden"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_pipe_converger",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "PipeMerge",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_pipe_splitter",
+      "runtimeKind": "junction",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "PipeSplit",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_s",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "S",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_cmpt_mc_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "Component",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_dismantler_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 6,
+        "height": 4
+      },
+      "shortName": "Dismantler",
+      "tags": [
+        "武陵"
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_5",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 5,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_2",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_filling_pd_mc_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 6,
+        "height": 4
+      },
+      "shortName": "Filling",
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 5,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_5",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_furnance_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 5,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "Furnace",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_grinder_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 5,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "Crusher",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_hydro_planter_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "shortName": "HydroPlanter",
+      "tags": [
+        "武陵"
+      ],
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "liquid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e_2",
+          "localCellX": 4,
+          "localCellY": 2,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_liquid_filling_pd_mc_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 6,
+        "height": 4
+      },
+      "shortName": "LiquidFilling",
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "liquid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 5,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e_2",
+          "localCellX": 5,
+          "localCellY": 2,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_5",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_liquid_furnance_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 5,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "LiquidFurnace",
+      "tags": [
+        "武陵"
+      ],
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "liquid"
+        ]
+      ],
+      "outputBufferSlots": 2,
+      "outputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e_1",
+          "localCellX": 2,
+          "localCellY": 1,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_1",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_liquid_storager_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "LiquidStorage",
+      "tags": [
+        "武陵",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_w_1",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e_1",
+          "localCellX": 2,
+          "localCellY": 1,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_loader_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 3,
+        "height": 1
+      },
+      "shortName": "Loader",
+      "placementConstraints": [
+        {
+          "kind": "edge_contact",
+          "edgeMode": "opposite_of_port",
+          "portId": "p_in_mid",
+          "minAdjacentCells": 1,
+          "targetTagsAny": [
+            "bus"
+          ],
+          "violationMessageKey": "toast.rule.pickupRequiresBus"
+        }
+      ],
+      "ports0": [
+        {
+          "id": "p_in_mid",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": []
+    },
+    {
+      "id": "item_port_log_hongs_bus",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 4,
+        "height": 8
+      },
+      "shortName": "BusSegment",
+      "tags": [
+        "武陵",
+        "bus"
+      ],
+      "ports0": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_log_hongs_bus_source",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 4,
+        "height": 4
+      },
+      "shortName": "BusSource",
+      "maxPlacementCount": 1,
+      "placementLimitToastKey": "toast.rule.busSourceMax1",
+      "tags": [
+        "武陵",
+        "bus"
+      ],
+      "ports0": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_mix_pool_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 50,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "shortName": "MixPool",
+      "inputBufferSlots": 5,
+      "outputBufferSlots": 1,
+      "inputBufferSlotCapacities": [
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid",
+          "liquid"
+        ],
+        [
+          "solid",
+          "liquid"
+        ],
+        [
+          "solid",
+          "liquid"
+        ],
+        [
+          "solid",
+          "liquid"
+        ],
+        [
+          "solid",
+          "liquid"
+        ]
+      ],
+      "outputBufferSlotCapacities": [
+        1
+      ],
+      "tags": [
+        "武陵"
+      ],
+      "ports0": [
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_1",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_3",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e_1",
+          "localCellX": 4,
+          "localCellY": 1,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e_3",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_planter_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "shortName": "Planter",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_power_diffuser_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 2,
+        "height": 2
+      },
+      "shortName": "Pole",
+      "ports0": [],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_power_sta_1",
+      "runtimeKind": "processor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 2,
+        "height": 2
+      },
+      "shortName": "HeatPool",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 1,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_seedcol_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 10,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "shortName": "SeedCol",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_shaper_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 10,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "Shaper",
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_sp_hub_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 9,
+        "height": 9
+      },
+      "shortName": "ProtocolHub",
+      "ports0": [
+        {
+          "id": "in_n_2",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_n_3",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_n_4",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_n_5",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_n_6",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_n_7",
+          "localCellX": 6,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_n_8",
+          "localCellX": 7,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 1,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 2,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 3,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 4,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_6",
+          "localCellX": 5,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_7",
+          "localCellX": 6,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_8",
+          "localCellX": 7,
+          "localCellY": 8,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_2",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_5",
+          "localCellX": 0,
+          "localCellY": 4,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w_8",
+          "localCellX": 0,
+          "localCellY": 7,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e_2",
+          "localCellX": 8,
+          "localCellY": 1,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e_5",
+          "localCellX": 8,
+          "localCellY": 4,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e_8",
+          "localCellX": 8,
+          "localCellY": 7,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_storager_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 5,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "Storage",
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 2,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_thickener_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 50,
+      "size": {
+        "width": 6,
+        "height": 4
+      },
+      "shortName": "Thicken",
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 5,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_5",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_tools_asm_mc_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 20,
+      "size": {
+        "width": 6,
+        "height": 4
+      },
+      "shortName": "Pack",
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 5,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_5",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_udpipe_loader_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 10,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "DarkPipeInlet",
+      "tags": [
+        "武陵",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_w_1",
+          "localCellX": 0,
+          "localCellY": 1,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_udpipe_unloader_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 10,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "DarkPipeOutlet",
+      "tags": [
+        "武陵",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "out_e_1",
+          "localCellX": 2,
+          "localCellY": 1,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_unloader_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 3,
+        "height": 1
+      },
+      "shortName": "Pickup",
+      "placementConstraints": [
+        {
+          "kind": "edge_contact",
+          "edgeMode": "opposite_of_port",
+          "portId": "p_out_mid",
+          "minAdjacentCells": 1,
+          "targetTagsAny": [
+            "bus"
+          ],
+          "violationMessageKey": "toast.rule.pickupRequiresBus"
+        }
+      ],
+      "ports0": [
+        {
+          "id": "p_out_mid",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": []
+    },
+    {
+      "id": "item_port_water_pump_1",
+      "runtimeKind": "storage",
+      "requiresPower": false,
+      "powerDemand": 10,
+      "size": {
+        "width": 3,
+        "height": 3
+      },
+      "shortName": "WaterPump",
+      "tags": [
+        "武陵",
+        "OuterRingAllowed",
+        "InnerRingNotAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "out_e_1",
+          "localCellX": 2,
+          "localCellY": 1,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "any",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_winder_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 10,
+      "size": {
+        "width": 6,
+        "height": 4
+      },
+      "shortName": "Winder",
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "solid"
+        ]
+      ],
+      "ports0": [
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_5",
+          "localCellX": 5,
+          "localCellY": 3,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_5",
+          "localCellX": 5,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        }
+      ],
+      "tags": [],
+      "placementConstraints": []
+    },
+    {
+      "id": "item_port_xiranite_oven_1",
+      "runtimeKind": "processor",
+      "requiresPower": true,
+      "powerDemand": 50,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "shortName": "XiraniteOven",
+      "inputBufferSlots": 2,
+      "inputBufferSlotCapacities": [
+        50,
+        50
+      ],
+      "inputBufferAllowedTypesBySlot": [
+        [
+          "solid"
+        ],
+        [
+          "liquid"
+        ]
+      ],
+      "tags": [
+        "武陵"
+      ],
+      "ports0": [
+        {
+          "id": "out_n_0",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_1",
+          "localCellX": 1,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_2",
+          "localCellX": 2,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_3",
+          "localCellX": 3,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_n_4",
+          "localCellX": 4,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_outputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_0",
+          "localCellX": 0,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_1",
+          "localCellX": 1,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_2",
+          "localCellX": 2,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_3",
+          "localCellX": 3,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_s_4",
+          "localCellX": 4,
+          "localCellY": 4,
+          "edge": "S",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "solid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "in_e_2",
+          "localCellX": 4,
+          "localCellY": 2,
+          "edge": "E",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_inputs",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "pipe_straight_1x1",
+      "runtimeKind": "conveyor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "Pipe",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "pipe_turn_ccw_1x1",
+      "runtimeKind": "conveyor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "PipeTurn↰",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_w",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "W",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    },
+    {
+      "id": "pipe_turn_cw_1x1",
+      "runtimeKind": "conveyor",
+      "requiresPower": false,
+      "powerDemand": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "shortName": "PipeTurn↱",
+      "tags": [
+        "武陵",
+        "PipeFamily",
+        "OuterRingAllowed"
+      ],
+      "ports0": [
+        {
+          "id": "in_n",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "N",
+          "direction": "Input",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        },
+        {
+          "id": "out_e",
+          "localCellX": 0,
+          "localCellY": 0,
+          "edge": "E",
+          "direction": "Output",
+          "allowedItems": {
+            "mode": "recipe_items",
+            "whitelist": []
+          },
+          "allowedTypes": {
+            "mode": "liquid",
+            "whitelist": []
+          }
+        }
+      ],
+      "placementConstraints": []
+    }
+  ]
+}

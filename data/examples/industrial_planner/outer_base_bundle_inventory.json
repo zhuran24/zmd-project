@@ -1,0 +1,25 @@
+{
+  "inventory_version": 1,
+  "entries": [
+    {
+      "bundle_id": "wuling_protocol_core_full_demand_outer_bundle",
+      "base_id": "wuling_protocol_core",
+      "blueprint_path": "data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json",
+      "output_dir": "data/examples/industrial_planner/generated_outer_base_bundle",
+      "notes": [
+        "validator-clean translated larger-base full-demand example for the adapter-side outer deployment path"
+      ]
+    },
+    {
+      "bundle_id": "valley4_protocol_core_identity_outer_bundle",
+      "base_id": "valley4_protocol_core",
+      "blueprint_path": "data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json",
+      "output_dir": "data/examples/industrial_planner/generated_outer_base_bundle_valley4_protocol_core",
+      "notes": [
+        "degenerate zero-moat identity outer-deployment example for the canonical-size 70×70 base"
+      ]
+    }
+  ],
+  "inventory_status": "future_scope",
+  "scope_note": "Outer-deployment bundle examples are preserved for later reactivation but are excluded from the active single-base 70×70 CI gate."
+}

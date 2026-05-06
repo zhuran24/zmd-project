@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>基地极值排布查看器</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #c9d1d9; font-family: "Segoe UI", system-ui, sans-serif; overflow: hidden; }
+#app { display: flex; height: 100vh; }
+#sidebar { width: 340px; background: #161b22; border-right: 1px solid #30363d; padding: 16px; overflow-y: auto; flex-shrink: 0; }
+#sidebar h1 { font-size: 15px; color: #58a6ff; margin-bottom: 10px; }
+#sidebar h2 { font-size: 12px; color: #8b949e; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 1px; }
+#sidebar p.lead { color: #8b949e; font-size: 12px; line-height: 1.5; margin-bottom: 10px; }
+#search { width: 100%; padding: 9px 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #c9d1d9; font-size: 13px; margin-bottom: 8px; }
+#search:focus { outline: none; border-color: #58a6ff; }
+#actions { display: flex; gap: 8px; margin-bottom: 8px; }
+.button { flex: 1; border: 1px solid #30363d; background: #21262d; color: #c9d1d9; padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+.button:hover { border-color: #58a6ff; color: #58a6ff; }
+.layer-toggle { display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer; font-size: 13px; }
+.layer-toggle input { accent-color: #58a6ff; }
+.stat-row { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-size: 12px; border-bottom: 1px solid #21262d; }
+.stat-label { color: #8b949e; }
+.stat-value { color: #58a6ff; font-weight: 600; text-align: right; }
+.panel-note { color: #8b949e; font-size: 11px; line-height: 1.45; }
+#cards, #warnings, #release-cards, #downloads, #legend { display: flex; flex-direction: column; gap: 8px; }
+.card { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 10px 12px; }
+.card .title { color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.card .primary { color: #e6edf3; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.card .secondary { color: #8b949e; font-size: 12px; line-height: 1.4; }
+.warning { border-color: rgba(210, 153, 34, 0.4); background: rgba(210, 153, 34, 0.08); }
+.warning .primary { color: #f2cc60; font-size: 13px; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.legend-swatch { width: 12px; height: 12px; border-radius: 2px; display: inline-block; border: 1px solid rgba(255,255,255,0.12); }
+.download-group { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 10px 12px; }
+.download-group .title { color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.download-group .secondary { color: #8b949e; font-size: 12px; line-height: 1.4; margin-bottom: 6px; }
+.download-entry { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-top: 1px solid #21262d; }
+.download-entry:first-child { border-top: none; padding-top: 0; }
+.download-entry a { color: #58a6ff; text-decoration: none; font-size: 12px; }
+.download-entry a:hover { text-decoration: underline; }
+.download-entry .meta { color: #8b949e; font-size: 11px; text-align: right; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 999px; border: 1px solid #30363d; font-size: 10px; color: #8b949e; margin-left: 6px; }
+#canvas-wrap { flex: 1; position: relative; }
+canvas { display: block; cursor: crosshair; }
+#tooltip { position: absolute; background: #1c2333; border: 1px solid #30363d; border-radius: 8px; padding: 10px 14px; font-size: 12px; pointer-events: none; display: none; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.4); max-width: 320px; }
+#tooltip .tt-title { color: #58a6ff; font-weight: 600; margin-bottom: 5px; }
+#tooltip .tt-row { color: #c9d1d9; margin-top: 2px; }
+#tooltip .tt-muted { color: #8b949e; }
+#status-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: #161b22; border-top: 1px solid #30363d; display: flex; align-items: center; padding: 0 12px; font-size: 11px; color: #8b949e; gap: 16px; }
+#status-bar .accent { color: #58a6ff; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+    <h1>基地极值排布查看器</h1>
+    <p class="lead">优先加载 <code>optimal_blueprint.json</code>，回退到 <code>final_solution.json</code>；并尽量额外读取 <code>viewer_report.json</code> 做结果卡片、警告和默认图层恢复。如果同目录下还有 <code>release_viewer_manifest.json</code>，则会额外显示当前单基地交付版本和可下载 sidecar。</p>
+    <input type="text" id="search" placeholder="搜索实例 ID...">
+    <div id="actions">
+      <button class="button" id="reset-view">重置视角</button>
+      <button class="button" id="clear-search">清空搜索</button>
+    </div>
+
+    <h2>图层控制</h2>
+    <label class="layer-toggle"><input type="checkbox" id="layer-bodies" checked> 刚体占格</label>
+    <label class="layer-toggle"><input type="checkbox" id="layer-power" checked> 供电覆盖</label>
+    <label class="layer-toggle"><input type="checkbox" id="layer-routing-ground" checked> L0 物流层</label>
+    <label class="layer-toggle"><input type="checkbox" id="layer-routing-elevated" checked> L1 高架层</label>
+    <label class="layer-toggle"><input type="checkbox" id="layer-active-ports" checked> Active ports</label>
+    <label class="layer-toggle"><input type="checkbox" id="layer-ghost" checked> 幽灵空地</label>
+    <label class="layer-toggle"><input type="checkbox" id="layer-grid" checked> 网格线</label>
+
+    <h2>统计</h2>
+    <div class="stat-row"><span class="stat-label">总实例</span><span class="stat-value" id="stat-total">-</span></div>
+    <div class="stat-row"><span class="stat-label">占格数</span><span class="stat-value" id="stat-occ">-</span></div>
+    <div class="stat-row"><span class="stat-label">填充率</span><span class="stat-value" id="stat-fill">-</span></div>
+    <div class="stat-row"><span class="stat-label">空地面积</span><span class="stat-value" id="stat-ghost">-</span></div>
+    <div class="stat-row"><span class="stat-label">物流格数</span><span class="stat-value" id="stat-routing">-</span></div>
+    <div class="stat-row"><span class="stat-label">Active ports</span><span class="stat-value" id="stat-ports">-</span></div>
+    <div class="stat-row"><span class="stat-label">数据源</span><span class="stat-value" id="stat-source">-</span></div>
+
+    <h2>结果卡片</h2>
+    <div id="cards"></div>
+
+    <h2>警告</h2>
+    <div id="warnings"></div>
+
+    <div id="release-section" style="display:none;">
+      <h2>交付版本</h2>
+      <div id="release-cards"></div>
+    </div>
+
+    <div id="downloads-section" style="display:none;">
+      <h2>下载</h2>
+      <div id="downloads"></div>
+      <p class="panel-note" id="downloads-note"></p>
+    </div>
+
+    <h2>模板颜色</h2>
+    <div id="legend"></div>
+
+    <h2>提示</h2>
+    <p class="panel-note">滚轮缩放、拖拽平移、搜索实例高亮。图层状态、搜索词和最近视角会写入本地存储，刷新后尝试恢复。</p>
+  </div>
+  <div id="canvas-wrap">
+    <canvas id="grid"></canvas>
+    <div id="tooltip"></div>
+    <div id="status-bar">
+      <span id="sb-pos">X: - Y: -</span>
+      <span id="sb-zoom">缩放: 100%</span>
+      <span id="sb-source">source: -</span>
+      <span class="accent">滚轮缩放 · 拖拽平移 · 搜索高亮</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const GRID_W = 70;
+const GRID_H = 70;
+const VIEWER_STATE_KEY = 'exact_refactor.viewer_state.v2';
+const COLORS = {
+  crusher:'#4A90D9', smelter:'#E74C3C', grinder:'#2ECC71', workshop:'#9B59B6',
+  refinery:'#F39C12', assembler:'#1ABC9C', power_pole:'#F1C40F', protocol:'#E67E22',
+  boundary:'#3498DB', storage:'#E91E63', core:'#FF6B6B', default:'#95A5A6'
+};
+
+let data = null;
+let blueprintPayload = null;
+let viewerReport = null;
+let releaseViewerManifest = null;
+let pools = null;
+let cellMap = {};
+let powerCov = new Set();
+let routingGround = new Map();
+let routingElevated = new Map();
+let activePorts = [];
+let scale = 10;
+let offsetX = 0;
+let offsetY = 0;
+let dragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let highlightId = null;
+let initializedView = false;
+
+const canvas = document.getElementById('grid');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+
+function getColor(template) {
+  const token = String(template || '').toLowerCase();
+  for (const [key, value] of Object.entries(COLORS)) {
+    if (token.includes(key)) return value;
+  }
+  return COLORS.default;
+}
+
+function getFacilityPools() {
+  if (!pools) return {};
+  return pools.facility_pools || pools;
+}
+
+function poseLookupKey(facilityType, anchor, orientation, portMode) {
+  return [
+    String(facilityType),
+    Number(anchor.x || 0),
+    Number(anchor.y || 0),
+    Number(orientation || 0),
+    String(portMode || 'default'),
+  ].join('|');
+}
+
+function buildPoseLookup(poolPayload) {
+  const lookup = new Map();
+  const facilityPools = poolPayload.facility_pools || poolPayload || {};
+  for (const [facilityType, pool] of Object.entries(facilityPools)) {
+    for (let poseIdx = 0; poseIdx < pool.length; poseIdx += 1) {
+      const pose = pool[poseIdx] || {};
+      const params = pose.pose_params || {};
+      const anchor = pose.anchor || {};
+      const key = poseLookupKey(facilityType, anchor, params.orientation || 0, params.port_mode || 'default');
+      const matches = lookup.get(key) || [];
+      matches.push({ poseIdx, pose });
+      lookup.set(key, matches);
+    }
+  }
+  return lookup;
+}
+
+function recoverLegacyDataFromBlueprint(blueprintPayload, poolPayload) {
+  const lookup = buildPoseLookup(poolPayload);
+  const placementSolution = {};
+  for (const facility of (blueprintPayload.facilities || [])) {
+    const key = poseLookupKey(
+      facility.facility_type,
+      facility.anchor || {},
+      facility.orientation || 0,
+      facility.port_mode || 'default'
+    );
+    const matches = lookup.get(key) || [];
+    if (matches.length === 0) {
+      throw new Error(`blueprint pose recovery failed: no match for ${facility.instance_id}`);
+    }
+    if (matches.length > 1) {
+      throw new Error(`blueprint pose recovery failed: ambiguous match for ${facility.instance_id}`);
+    }
+    const match = matches[0];
+    placementSolution[facility.instance_id] = {
+      pose_idx: match.poseIdx,
+      pose_id: String((match.pose || {}).pose_id || ''),
+      anchor: { x: Number(facility.anchor.x || 0), y: Number(facility.anchor.y || 0) },
+      facility_type: String(facility.facility_type || 'unknown'),
+      orientation: Number(facility.orientation || 0),
+      port_mode: String(facility.port_mode || 'default'),
+      _active_ports: Array.isArray(facility.active_ports) ? facility.active_ports : [],
+    };
+  }
+
+  const emptyRect = (((blueprintPayload || {}).objective_achieved || {}).empty_rect || {});
+  return {
+    placement_solution: placementSolution,
+    ghost_rect: {
+      w: Number(emptyRect.w || 0),
+      h: Number(emptyRect.h || 0),
+      area: Number(emptyRect.score || 0),
+      anchor_x: Number(emptyRect.anchor_x ?? -1),
+      anchor_y: Number(emptyRect.anchor_y ?? -1),
+    },
+    _source: 'optimal_blueprint.json',
+  };
+}
+
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  canvas.width = wrap.clientWidth;
+  canvas.height = wrap.clientHeight - 30;
+  if (data && initializedView) {
+    draw();
+  }
+}
+
+function activeLayers() {
+  return {
+    bodies: document.getElementById('layer-bodies').checked,
+    power: document.getElementById('layer-power').checked,
+    routingGround: document.getElementById('layer-routing-ground').checked,
+    routingElevated: document.getElementById('layer-routing-elevated').checked,
+    activePorts: document.getElementById('layer-active-ports').checked,
+    ghost: document.getElementById('layer-ghost').checked,
+    grid: document.getElementById('layer-grid').checked,
+  };
+}
+
+function draw() {
+  if (!data) return;
+  const solution = data.placement_solution || {};
+  const ghost = data.ghost_rect;
+  const layers = activeLayers();
+
+  ctx.save();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.translate(offsetX, canvas.height - offsetY);
+  ctx.scale(scale, -scale);
+  ctx.fillStyle = '#161b22';
+  ctx.fillRect(0, 0, GRID_W, GRID_H);
+
+  if (layers.power) {
+    ctx.fillStyle = 'rgba(241,196,15,0.12)';
+    for (const key of powerCov) {
+      const [x, y] = key.split(',').map(Number);
+      ctx.fillRect(x, y, 1, 1);
+    }
+  }
+
+  if (layers.routingGround) {
+    drawRoutingLayer(routingGround, 'rgba(91, 192, 222, 0.72)', false);
+  }
+  if (layers.routingElevated) {
+    drawRoutingLayer(routingElevated, 'rgba(155, 89, 182, 0.86)', true);
+  }
+
+  if (layers.bodies) {
+    const facilityPools = getFacilityPools();
+    for (const [instanceId, solutionEntry] of Object.entries(solution)) {
+      const template = solutionEntry.facility_type || '';
+      const poseIdx = Number(solutionEntry.pose_idx || 0);
+      const pool = facilityPools[template] || [];
+      if (poseIdx < 0 || poseIdx >= pool.length) continue;
+      const pose = pool[poseIdx];
+      const baseColor = getColor(template);
+      ctx.fillStyle = (highlightId && highlightId !== instanceId) ? 'rgba(110,110,110,0.22)' : baseColor;
+      for (const cell of (pose.occupied_cells || [])) {
+        ctx.fillRect(Number(cell[0]), Number(cell[1]), 1, 1);
+      }
+      if (highlightId === instanceId) {
+        ctx.strokeStyle = '#f2cc60';
+        ctx.lineWidth = 2.2 / scale;
+        for (const cell of (pose.occupied_cells || [])) {
+          ctx.strokeRect(Number(cell[0]), Number(cell[1]), 1, 1);
+        }
+      }
+    }
+  }
+
+  if (layers.activePorts) {
+    drawActivePorts();
+  }
+
+  if (layers.ghost && ghost) {
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2 / scale;
+    ctx.setLineDash([4 / scale, 4 / scale]);
+    ctx.fillStyle = 'rgba(255,255,255,0.16)';
+    const gx = Number.isFinite(ghost.anchor_x) && ghost.anchor_x >= 0 ? ghost.anchor_x : Math.floor((GRID_W - ghost.w) / 2);
+    const gy = Number.isFinite(ghost.anchor_y) && ghost.anchor_y >= 0 ? ghost.anchor_y : Math.floor((GRID_H - ghost.h) / 2);
+    ctx.fillRect(gx, gy, ghost.w, ghost.h);
+    ctx.strokeRect(gx, gy, ghost.w, ghost.h);
+    ctx.setLineDash([]);
+  }
+
+  if (layers.grid) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 0.5 / scale;
+    for (let x = 0; x <= GRID_W; x += 1) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, GRID_H); ctx.stroke(); }
+    for (let y = 0; y <= GRID_H; y += 1) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(GRID_W, y); ctx.stroke(); }
+  }
+
+  ctx.restore();
+}
+
+function drawRoutingLayer(layerMap, color, elevated) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.fillStyle = elevated ? 'rgba(155,89,182,0.16)' : 'rgba(91,192,222,0.10)';
+  ctx.lineWidth = (elevated ? 2.2 : 1.6) / scale;
+  for (const [key, cell] of layerMap.entries()) {
+    const [x, y] = key.split(',').map(Number);
+    ctx.fillRect(x + 0.1, y + 0.1, 0.8, 0.8);
+    const cx = x + 0.5;
+    const cy = y + 0.5;
+    const flowDirections = [...(cell.flow_in || []), ...(cell.flow_out || [])];
+    const used = new Set(flowDirections);
+    for (const direction of used) {
+      const [dx, dy] = directionVector(direction);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + dx * 0.45, cy + dy * 0.45);
+      ctx.stroke();
+    }
+    if (elevated) {
+      ctx.beginPath();
+      ctx.moveTo(x + 0.2, y + 0.2);
+      ctx.lineTo(x + 0.8, y + 0.8);
+      ctx.moveTo(x + 0.8, y + 0.2);
+      ctx.lineTo(x + 0.2, y + 0.8);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawActivePorts() {
+  ctx.save();
+  for (const port of activePorts) {
+    const x = Number(port.x) + 0.5;
+    const y = Number(port.y) + 0.5;
+    const isInput = String(port.type) === 'input';
+    ctx.fillStyle = isInput ? 'rgba(231, 76, 60, 0.95)' : 'rgba(46, 204, 113, 0.95)';
+    ctx.beginPath();
+    ctx.arc(x, y, 0.18, 0, Math.PI * 2);
+    ctx.fill();
+
+    const [dx, dy] = directionVector(port.dir);
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.lineWidth = 1.5 / scale;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + dx * 0.35, y + dy * 0.35);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function directionVector(direction) {
+  switch (String(direction || 'N').toUpperCase()) {
+    case 'N': return [0, 1];
+    case 'S': return [0, -1];
+    case 'E': return [1, 0];
+    case 'W': return [-1, 0];
+    default: return [0, 0];
+  }
+}
+
+function screenToGrid(screenX, screenY) {
+  const x = (screenX - offsetX) / scale;
+  const y = (canvas.height - screenY - offsetY) / scale;
+  return [Math.floor(x), Math.floor(y)];
+}
+
+function buildOverlayMaps() {
+  cellMap = {};
+  powerCov = new Set();
+  routingGround = new Map();
+  routingElevated = new Map();
+  activePorts = [];
+  if (!data || !pools) return;
+
+  const solution = data.placement_solution || {};
+  const facilityPools = getFacilityPools();
+  for (const [instanceId, solutionEntry] of Object.entries(solution)) {
+    const template = solutionEntry.facility_type || '';
+    const poseIdx = Number(solutionEntry.pose_idx || 0);
+    const pool = facilityPools[template] || [];
+    if (poseIdx < 0 || poseIdx >= pool.length) continue;
+    const pose = pool[poseIdx];
+    const activePortCount = Array.isArray(solutionEntry._active_ports) ? solutionEntry._active_ports.length : 0;
+    for (const cell of (pose.occupied_cells || [])) {
+      cellMap[`${cell[0]},${cell[1]}`] = { iid: instanceId, tpl: template, pose_idx: poseIdx, ports: activePortCount };
+    }
+    if (template.toLowerCase().includes('power_pole')) {
+      for (const cell of (pose.power_coverage_cells || [])) {
+        powerCov.add(`${cell[0]},${cell[1]}`);
+      }
+    }
+    for (const port of (solutionEntry._active_ports || [])) {
+      activePorts.push({ ...port, instance_id: instanceId, facility_type: template });
+    }
+  }
+
+  if (blueprintPayload && blueprintPayload.routing_network) {
+    for (const [key, value] of Object.entries((blueprintPayload.routing_network.L0_ground || {}))) {
+      routingGround.set(key, value);
+    }
+    for (const [key, value] of Object.entries((blueprintPayload.routing_network.L1_elevated || {}))) {
+      routingElevated.set(key, value);
+    }
+  }
+}
+
+function updateSidebar() {
+  const solution = (data || {}).placement_solution || {};
+  const occupiedCount = Object.keys(cellMap).length;
+  const ghost = (data || {}).ghost_rect;
+  const routingCount = routingGround.size + routingElevated.size;
+  const portCount = activePorts.length;
+
+  document.getElementById('stat-total').textContent = Object.keys(solution).length;
+  document.getElementById('stat-occ').textContent = `${occupiedCount}/4900`;
+  document.getElementById('stat-fill').textContent = `${(occupiedCount / 4900 * 100).toFixed(1)}%`;
+  document.getElementById('stat-ghost').textContent = ghost ? `${ghost.w}×${ghost.h}=${Math.round(ghost.area || 0)}` : '-';
+  document.getElementById('stat-routing').textContent = `${routingGround.size} + ${routingElevated.size}`;
+  document.getElementById('stat-ports').textContent = String(portCount);
+  document.getElementById('stat-source').textContent = (data && data._source) || 'legacy';
+  const releaseId = (releaseViewerManifest && releaseViewerManifest.current_release && releaseViewerManifest.current_release.release_id) || '';
+  document.getElementById('sb-source').textContent = `source: ${(data && data._source) || '-'}${viewerReport ? ' + viewer_report.json' : ''}${releaseId ? ` · ${releaseId}` : ''}`;
+
+  renderCards();
+  renderWarnings();
+  renderReleaseCards();
+  renderDownloads();
+  renderLegend(solution);
+}
+
+function renderCards() {
+  const container = document.getElementById('cards');
+  container.innerHTML = '';
+  let cards = [];
+  if (viewerReport && Array.isArray(viewerReport.cards)) {
+    cards = viewerReport.cards;
+  } else {
+    cards = [
+      { title: 'Layout', primary: `${Object.keys((data || {}).placement_solution || {}).length} facilities`, secondary: `${Object.keys(cellMap).length}/4900 occupied` },
+      { title: 'Routing', primary: `${routingGround.size + routingElevated.size} routing cells`, secondary: `L0 ${routingGround.size} · L1 ${routingElevated.size}` },
+      { title: 'Ports', primary: `${activePorts.length} active ports`, secondary: (data && data._source) || 'legacy' },
+    ];
+  }
+  for (const card of cards) {
+    const node = document.createElement('div');
+    node.className = 'card';
+    node.innerHTML = `
+      <div class="title">${escapeHtml(card.title || card.id || 'Card')}</div>
+      <div class="primary">${escapeHtml(card.primary || '-')}</div>
+      <div class="secondary">${escapeHtml(card.secondary || '')}</div>
+    `;
+    container.appendChild(node);
+  }
+}
+
+function renderWarnings() {
+  const container = document.getElementById('warnings');
+  container.innerHTML = '';
+  const warnings = (viewerReport && Array.isArray(viewerReport.warnings)) ? viewerReport.warnings : [];
+  if (warnings.length === 0) {
+    const node = document.createElement('div');
+    node.className = 'card';
+    node.innerHTML = '<div class="title">Warnings</div><div class="secondary">未检测到额外 viewer 侧警告。</div>';
+    container.appendChild(node);
+    return;
+  }
+  for (const message of warnings) {
+    const node = document.createElement('div');
+    node.className = 'card warning';
+    node.innerHTML = `<div class="title">Warning</div><div class="primary">${escapeHtml(message)}</div>`;
+    container.appendChild(node);
+  }
+}
+
+function renderReleaseCards() {
+  const section = document.getElementById('release-section');
+  const container = document.getElementById('release-cards');
+  container.innerHTML = '';
+  if (!releaseViewerManifest || !releaseViewerManifest.current_release) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  const current = releaseViewerManifest.current_release || {};
+  const sourceRun = releaseViewerManifest.source_run || {};
+  const exact = releaseViewerManifest.exact_full_scale_certified || {};
+  const cards = [
+    {
+      title: 'Current release',
+      primary: String(current.release_id || '-'),
+      secondary: `${String(current.base_id || '-')} · ${Number(current.lot_size || 0)}×${Number(current.lot_size || 0)}`
+    },
+    {
+      title: 'Delivery status',
+      primary: String(current.delivery_status || '-'),
+      secondary: `validator ${String(sourceRun.validation_status || '-') } · throughput ${String(sourceRun.throughput_status || '-')}`
+    },
+    {
+      title: 'Scope',
+      primary: `${String(current.base_id || '-')} only`,
+      secondary: String(current.scope_note || 'No scope note.')
+    },
+    {
+      title: 'Exact endgame',
+      primary: String(exact.status || '-'),
+      secondary: String(exact.note || 'No exact-status note.')
+    },
+  ];
+  for (const card of cards) {
+    const node = document.createElement('div');
+    node.className = 'card';
+    node.innerHTML = `
+      <div class="title">${escapeHtml(card.title || 'Release')}</div>
+      <div class="primary">${escapeHtml(card.primary || '-')}</div>
+      <div class="secondary">${escapeHtml(card.secondary || '')}</div>
+    `;
+    container.appendChild(node);
+  }
+}
+
+function renderDownloads() {
+  const section = document.getElementById('downloads-section');
+  const container = document.getElementById('downloads');
+  const note = document.getElementById('downloads-note');
+  container.innerHTML = '';
+  note.textContent = '';
+  const groups = (releaseViewerManifest && Array.isArray(releaseViewerManifest.download_groups)) ? releaseViewerManifest.download_groups : [];
+  if (groups.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  for (const group of groups) {
+    const entries = Array.isArray(group.entries) ? group.entries : [];
+    if (entries.length === 0) continue;
+    const node = document.createElement('div');
+    node.className = 'download-group';
+    const rows = entries.map(entry => {
+      const requiredTag = entry.required_for_delivery ? '<span class="tag">required</span>' : '';
+      const stageText = escapeHtml(String(entry.stage || 'artifact'));
+      const kindText = escapeHtml(String(entry.kind || 'file'));
+      return `
+        <div class="download-entry">
+          <div>
+            <a href="${encodeURI(String(entry.href || '#'))}" target="_blank" rel="noreferrer">${escapeHtml(String(entry.label || 'artifact'))}</a>${requiredTag}
+            <div class="secondary">${escapeHtml(String(entry.role || ''))}</div>
+          </div>
+          <div class="meta">${stageText}<br>${kindText}</div>
+        </div>
+      `;
+    }).join('');
+    node.innerHTML = `
+      <div class="title">${escapeHtml(String(group.title || 'Downloads'))}</div>
+      <div class="secondary">${escapeHtml(String(group.description || ''))}</div>
+      ${rows}
+    `;
+    container.appendChild(node);
+  }
+  const current = (releaseViewerManifest && releaseViewerManifest.current_release) || {};
+  note.textContent = String(current.scope_note || '');
+}
+
+function renderLegend(solution) {
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '';
+  const types = new Set(Object.values(solution).map(entry => entry.facility_type));
+  for (const template of Array.from(types).sort()) {
+    const row = document.createElement('div');
+    row.className = 'legend-row';
+    row.innerHTML = `<span class="legend-swatch" style="background:${getColor(template)}"></span><span>${escapeHtml(String(template).substring(0, 32))}</span>`;
+    legend.appendChild(row);
+  }
+}
+
+function fitView() {
+  scale = Math.min(canvas.width / GRID_W, canvas.height / GRID_H) * 0.9;
+  offsetX = (canvas.width - GRID_W * scale) / 2;
+  offsetY = (canvas.height - GRID_H * scale) / 2;
+  initializedView = true;
+  updateZoomText();
+}
+
+function updateZoomText() {
+  document.getElementById('sb-zoom').textContent = `缩放: ${Math.round(scale * 10)}%`;
+}
+
+function loadViewerState() {
+  try {
+    const raw = localStorage.getItem(VIEWER_STATE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (_error) {
+    return {};
+  }
+}
+
+function saveViewerState() {
+  try {
+    const payload = {
+      search: document.getElementById('search').value,
+      layers: activeLayers(),
+      panZoom: { scale, offsetX, offsetY },
+    };
+    localStorage.setItem(VIEWER_STATE_KEY, JSON.stringify(payload));
+  } catch (_error) {
+    // Ignore storage errors.
+  }
+}
+
+function applyViewerDefaults() {
+  const saved = loadViewerState();
+  const defaults = (viewerReport && viewerReport.viewer_defaults && viewerReport.viewer_defaults.layers) || {};
+  const mergedLayers = { ...defaults, ...(saved.layers || {}) };
+  const mapping = {
+    bodies: 'layer-bodies',
+    power: 'layer-power',
+    routingGround: 'layer-routing-ground',
+    routingElevated: 'layer-routing-elevated',
+    activePorts: 'layer-active-ports',
+    ghost: 'layer-ghost',
+    grid: 'layer-grid',
+  };
+  for (const [stateKey, elementId] of Object.entries(mapping)) {
+    if (Object.prototype.hasOwnProperty.call(mergedLayers, stateKey)) {
+      document.getElementById(elementId).checked = Boolean(mergedLayers[stateKey]);
+    }
+  }
+  if (typeof saved.search === 'string') {
+    document.getElementById('search').value = saved.search;
+  }
+}
+
+function applySavedPanZoom() {
+  const saved = loadViewerState();
+  const panZoom = saved.panZoom || {};
+  if (Number.isFinite(panZoom.scale) && Number.isFinite(panZoom.offsetX) && Number.isFinite(panZoom.offsetY)) {
+    scale = Math.max(2, Math.min(45, Number(panZoom.scale)));
+    offsetX = Number(panZoom.offsetX);
+    offsetY = Number(panZoom.offsetY);
+    initializedView = true;
+    updateZoomText();
+    return true;
+  }
+  return false;
+}
+
+function updateHighlightFromSearch() {
+  const query = document.getElementById('search').value.trim().toLowerCase();
+  highlightId = null;
+  if (query && data) {
+    for (const instanceId of Object.keys(data.placement_solution || {})) {
+      if (instanceId.toLowerCase().includes(query)) {
+        highlightId = instanceId;
+        break;
+      }
+    }
+  }
+}
+
+function fetchJson(path) {
+  return fetch(path).then(response => {
+    if (!response.ok) {
+      throw new Error(`${path} -> HTTP ${response.status}`);
+    }
+    return response.json();
+  });
+}
+
+function fetchOptionalJson(path) {
+  return fetch(path).then(response => {
+    if (!response.ok) return null;
+    return response.json();
+  }).catch(() => null);
+}
+
+async function loadData() {
+  try {
+    pools = await fetchJson('candidate_placements.json');
+    viewerReport = await fetchOptionalJson('viewer_report.json');
+    releaseViewerManifest = await fetchOptionalJson('release_viewer_manifest.json');
+    let blueprintError = null;
+    try {
+      blueprintPayload = await fetchJson('optimal_blueprint.json');
+      data = recoverLegacyDataFromBlueprint(blueprintPayload, pools);
+    } catch (error) {
+      blueprintError = error;
+      const legacy = await fetchJson('final_solution.json');
+      data = { ...legacy, _source: 'final_solution.json' };
+      blueprintPayload = null;
+      console.warn('Blueprint load failed, falling back to final_solution.json:', blueprintError);
+    }
+
+    applyViewerDefaults();
+    buildOverlayMaps();
+    updateHighlightFromSearch();
+    updateSidebar();
+    if (!applySavedPanZoom()) {
+      fitView();
+    }
+    draw();
+  } catch (error) {
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '16px system-ui';
+    ctx.fillText(`加载数据失败: ${error.message}`, 20, 40);
+    ctx.fillText('优先读取 optimal_blueprint.json，失败后回退到 final_solution.json；两者都需要 candidate_placements.json 做几何恢复。', 20, 65);
+  }
+}
+
+canvas.addEventListener('wheel', event => {
+  event.preventDefault();
+  const [gridX, gridY] = screenToGrid(event.offsetX, event.offsetY);
+  const factor = event.deltaY < 0 ? 1.15 : 0.87;
+  const newScale = Math.max(2, Math.min(45, scale * factor));
+  offsetX = event.offsetX - gridX * newScale;
+  offsetY = canvas.height - event.offsetY - gridY * newScale;
+  scale = newScale;
+  updateZoomText();
+  draw();
+  saveViewerState();
+});
+
+canvas.addEventListener('mousedown', event => {
+  dragging = true;
+  dragStartX = event.offsetX - offsetX;
+  dragStartY = event.offsetY + offsetY;
+});
+
+canvas.addEventListener('mousemove', event => {
+  if (dragging) {
+    offsetX = event.offsetX - dragStartX;
+    offsetY = -(event.offsetY - dragStartY);
+    draw();
+  }
+  const [gridX, gridY] = screenToGrid(event.offsetX, event.offsetY);
+  document.getElementById('sb-pos').textContent = `X: ${gridX} Y: ${gridY}`;
+
+  const facilityInfo = cellMap[`${gridX},${gridY}`];
+  const routingInfo = routingGround.get(`${gridX},${gridY}`) || routingElevated.get(`${gridX},${gridY}`);
+  if (facilityInfo || routingInfo) {
+    tooltip.style.display = 'block';
+    tooltip.style.left = `${event.offsetX + 15}px`;
+    tooltip.style.top = `${event.offsetY + 15}px`;
+    const rows = [];
+    if (facilityInfo) {
+      rows.push(`<div class="tt-title">${escapeHtml(facilityInfo.iid)}</div>`);
+      rows.push(`<div class="tt-row">模板: ${escapeHtml(facilityInfo.tpl)} | 位姿: #${facilityInfo.pose_idx}</div>`);
+      rows.push(`<div class="tt-row tt-muted">active ports: ${facilityInfo.ports}</div>`);
+    } else {
+      rows.push('<div class="tt-title">Routing Cell</div>');
+    }
+    if (routingInfo) {
+      rows.push(`<div class="tt-row">routing: ${escapeHtml(routingInfo.type || 'belt')} · ${escapeHtml(routingInfo.commodity || '[TBD]')}</div>`);
+      rows.push(`<div class="tt-row tt-muted">in: ${(routingInfo.flow_in || []).join(', ') || '-'} | out: ${(routingInfo.flow_out || []).join(', ') || '-'}</div>`);
+    }
+    tooltip.innerHTML = rows.join('');
+  } else {
+    tooltip.style.display = 'none';
+  }
+});
+
+canvas.addEventListener('mouseup', () => { dragging = false; saveViewerState(); });
+canvas.addEventListener('mouseleave', () => { dragging = false; tooltip.style.display = 'none'; saveViewerState(); });
+window.addEventListener('resize', resize);
+
+for (const id of ['layer-bodies', 'layer-power', 'layer-routing-ground', 'layer-routing-elevated', 'layer-active-ports', 'layer-ghost', 'layer-grid']) {
+  document.getElementById(id).addEventListener('change', () => { draw(); saveViewerState(); });
+}
+
+document.getElementById('search').addEventListener('input', () => {
+  updateHighlightFromSearch();
+  draw();
+  saveViewerState();
+});
+
+document.getElementById('reset-view').addEventListener('click', () => {
+  fitView();
+  draw();
+  saveViewerState();
+});
+
+document.getElementById('clear-search').addEventListener('click', () => {
+  document.getElementById('search').value = '';
+  updateHighlightFromSearch();
+  draw();
+  saveViewerState();
+});
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+resize();
+loadData();
+</script>
+</body>
+</html>

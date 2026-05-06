@@ -1,0 +1,14 @@
+{
+  "source": "JamboChen/endfield-calc TypeScript source",
+  "upstream_repository": "https://github.com/JamboChen/endfield-calc",
+  "source_license": "MIT",
+  "tick_interval_seconds": 1.0,
+  "notes": [
+    "Parsed from upstream TypeScript data files without adding a runtime dependency.",
+    "Accepted input layouts: flat fixture directory, extracted repository root, or zip archive.",
+    "Field naming stays source-shaped until the neutral normalized catalog pass runs."
+  ],
+  "source_layout": "zip_archive_repository",
+  "source_version": "0.5.2",
+  "package_name": "endfield-calcs"
+}

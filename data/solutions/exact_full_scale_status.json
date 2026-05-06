@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "schema_version": 1,
+    "generated_at": "2026-04-17T10:17:39Z",
+    "source": "exact_full_scale_status_resolver_v1"
+  },
+  "status": "open",
+  "note": "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. Current checked-in solver evidence does not yet satisfy the full terminal evidence bundle contract. missing artifact `/mnt/data/workrepo/data/checkpoints/exact_campaign_state.json`; campaign state unavailable; campaign state unavailable; +12 more blocker(s)",
+  "campaign_state_path": "data/checkpoints/exact_campaign_state.json",
+  "campaign_telemetry_path": "data/checkpoints/exact_campaign_telemetry.json",
+  "delivery_manifest_path": "data/solutions/certified_delivery_manifest.json",
+  "final_solution_path": "data/solutions/final_solution.json",
+  "optimal_blueprint_path": "data/blueprints/optimal_blueprint.json",
+  "best_certified_result": null,
+  "last_stop_reason": null,
+  "campaign_final_status": null,
+  "artifact_hashes": {},
+  "current_exact_artifact_hashes": {
+    "mandatory_exact_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
+    "candidate_placements": "d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f",
+    "canonical_rules": "8ac667a1bce67ff9084701d18892f370e19d68cc9b5ace44bd63c68b20d3d6ea",
+    "generic_io_requirements": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e"
+  },
+  "proof_summary_schema_version": null,
+  "resume_compatible_with_current_hashes": false,
+  "blocking_check_ids": [
+    "campaign_state_present",
+    "campaign_solve_mode_certified_exact",
+    "campaign_artifact_hashes_match_current",
+    "campaign_final_status_certified",
+    "campaign_terminal_stop_reason_search_exhausted",
+    "campaign_final_result_present",
+    "campaign_telemetry_present",
+    "campaign_telemetry_solve_mode_certified_exact",
+    "campaign_telemetry_references_campaign_state",
+    "final_solution_present",
+    "final_solution_matches_campaign_final_result",
+    "optimal_blueprint_present",
+    "optimal_blueprint_matches_campaign_final_result",
+    "delivery_manifest_present",
+    "delivery_manifest_matches_campaign_final_result"
+  ],
+  "checks": [
+    {
+      "check_id": "campaign_state_present",
+      "status": "fail",
+      "detail": "missing artifact `/mnt/data/workrepo/data/checkpoints/exact_campaign_state.json`"
+    },
+    {
+      "check_id": "campaign_solve_mode_certified_exact",
+      "status": "skipped",
+      "detail": "campaign state unavailable"
+    },
+    {
+      "check_id": "campaign_artifact_hashes_match_current",
+      "status": "skipped",
+      "detail": "campaign state unavailable"
+    },
+    {
+      "check_id": "campaign_final_status_certified",
+      "status": "skipped",
+      "detail": "campaign state unavailable"
+    },
+    {
+      "check_id": "campaign_terminal_stop_reason_search_exhausted",
+      "status": "skipped",
+      "detail": "campaign state unavailable"
+    },
+    {
+      "check_id": "campaign_final_result_present",
+      "status": "skipped",
+      "detail": "campaign state unavailable"
+    },
+    {
+      "check_id": "campaign_telemetry_present",
+      "status": "fail",
+      "detail": "missing artifact `/mnt/data/workrepo/data/checkpoints/exact_campaign_telemetry.json`"
+    },
+    {
+      "check_id": "campaign_telemetry_solve_mode_certified_exact",
+      "status": "skipped",
+      "detail": "campaign telemetry unavailable"
+    },
+    {
+      "check_id": "campaign_telemetry_references_campaign_state",
+      "status": "skipped",
+      "detail": "campaign telemetry unavailable"
+    },
+    {
+      "check_id": "final_solution_present",
+      "status": "fail",
+      "detail": "missing artifact `/mnt/data/workrepo/data/solutions/final_solution.json`"
+    },
+    {
+      "check_id": "final_solution_matches_campaign_final_result",
+      "status": "skipped",
+      "detail": "final solution unavailable"
+    },
+    {
+      "check_id": "optimal_blueprint_present",
+      "status": "fail",
+      "detail": "missing artifact `/mnt/data/workrepo/data/blueprints/optimal_blueprint.json`"
+    },
+    {
+      "check_id": "optimal_blueprint_matches_campaign_final_result",
+      "status": "skipped",
+      "detail": "optimal blueprint unavailable"
+    },
+    {
+      "check_id": "delivery_manifest_present",
+      "status": "fail",
+      "detail": "missing artifact `/mnt/data/workrepo/data/solutions/certified_delivery_manifest.json`"
+    },
+    {
+      "check_id": "delivery_manifest_matches_campaign_final_result",
+      "status": "skipped",
+      "detail": "delivery manifest unavailable"
+    }
+  ]
+}

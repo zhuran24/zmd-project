@@ -1,0 +1,111 @@
+from __future__ import annotations
+
+import copy
+import json
+from pathlib import Path
+
+import pytest
+
+from src.interchange.preprocess_context import (
+    build_preprocess_context_from_rules_and_plan,
+    load_default_preprocess_context,
+)
+from src.preprocess.demand_solver import (
+    generate_ceil_machine_counts,
+    generate_generic_io_requirements,
+    generate_port_budget,
+    normalize_json_numbers,
+    solve_demands,
+)
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+RULES_JSON_PATH = PROJECT_ROOT / "rules" / "canonical_rules.json"
+PLAN_JSON_PATH = PROJECT_ROOT / "rules" / "preprocess_plan.json"
+DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
+
+
+def _canonicalize(value):
+    value = normalize_json_numbers(value)
+    if isinstance(value, dict):
+        return {
+            str(key): _canonicalize(subvalue)
+            for key, subvalue in sorted(value.items(), key=lambda item: str(item[0]))
+        }
+    if isinstance(value, list):
+        return [_canonicalize(item) for item in value]
+    return value
+
+
+@pytest.fixture(scope="module")
+def raw_rules_dict() -> dict:
+    return json.loads(RULES_JSON_PATH.read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def raw_plan_dict() -> dict:
+    return json.loads(PLAN_JSON_PATH.read_text(encoding="utf-8"))
+
+
+def test_default_preprocess_context_loads_expected_counts() -> None:
+    context = load_default_preprocess_context()
+
+    assert context.metadata["source_rules_version"] == "1.1.0"
+    assert context.metadata["source_plan_version"] == "0.2.0"
+    assert context.metadata["recipe_source"] == "canonical_rules_plus_overlay"
+    assert float(context.tick_interval_seconds) == 2.0
+    assert float(context.belt_capacity_per_tick) == 1.0
+    assert len(context.recipes) == 17
+    assert len(context.targets) == 2
+    assert len(context.cycle_groups) == 2
+    assert len(context.utility_operations) == 4
+    assert context.recipes["packaging_battery"].template == "manufacturing_6x4"
+    assert context.targets["valley_battery"].final_recipe_id == "packaging_battery"
+
+
+def test_preprocess_context_accepts_overlay_only_plan(raw_rules_dict, raw_plan_dict) -> None:
+    minimal_overlay = {
+        "$schema": raw_plan_dict.get("$schema"),
+        "metadata": raw_plan_dict["metadata"],
+        "cycle_groups": raw_plan_dict["cycle_groups"],
+        "utility_operations": raw_plan_dict["utility_operations"],
+    }
+
+    context = build_preprocess_context_from_rules_and_plan(raw_rules_dict, minimal_overlay)
+    assert len(context.recipes) == 17
+    assert len(context.targets) == 2
+    assert context.commodity_roles["source_ore"].source_kind == "external_boundary"
+
+
+def test_preprocess_context_rejects_multiple_non_cycle_producers(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["duplicate_battery"] = {
+        "template": "manufacturing_6x4",
+        "ticks_per_cycle": 5,
+        "inputs": {"dense_source_powder": 1},
+        "outputs": {"valley_battery": 1},
+    }
+
+    with pytest.raises(ValueError, match="multiple producer recipes"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_validates_target_final_recipe(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["production_targets"]["valley_battery"]["final_recipe_id"] = "parts_maker"
+
+    with pytest.raises(ValueError, match="is not produced by its final recipe"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
+    context = load_default_preprocess_context()
+    flows, fractional = solve_demands(context=context)
+    counts = generate_ceil_machine_counts(fractional)
+    budget = generate_port_budget(flows, context=context)
+    generic_io = generate_generic_io_requirements(flows, budget, context=context)
+
+    assert _canonicalize(flows) == _canonicalize(json.loads((DATA_DIR / "commodity_demands.json").read_text(encoding="utf-8")))
+    assert _canonicalize(counts) == _canonicalize(json.loads((DATA_DIR / "machine_counts.json").read_text(encoding="utf-8")))
+    assert _canonicalize(budget) == _canonicalize(json.loads((DATA_DIR / "port_budget.json").read_text(encoding="utf-8")))
+    assert _canonicalize(generic_io) == _canonicalize(json.loads((DATA_DIR / "generic_io_requirements.json").read_text(encoding="utf-8")))

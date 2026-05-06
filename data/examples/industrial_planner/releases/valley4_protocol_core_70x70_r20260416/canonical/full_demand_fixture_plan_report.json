@@ -1,0 +1,96 @@
+{
+  "status": "proven_equivalent",
+  "base_id": "valley4_protocol_core",
+  "selected_base_placeable_size": 70,
+  "canonical_grid_size": 70,
+  "foundation_bus_edges": [
+    "left",
+    "top"
+  ],
+  "required_recipe_facility_count": 219,
+  "required_recipe_area_cells": 3325,
+  "required_boundary_output_slots": 52,
+  "required_boundary_input_slots": 2,
+  "selected_input_slots": [
+    63,
+    66
+  ],
+  "selected_output_slots_by_edge": {
+    "top": [
+      9,
+      12,
+      15,
+      18,
+      21,
+      24,
+      27,
+      30,
+      33,
+      36,
+      39,
+      42,
+      45,
+      48,
+      51,
+      54,
+      57,
+      60
+    ],
+    "left": [
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      31,
+      34,
+      37,
+      40,
+      43,
+      46,
+      49,
+      52,
+      55,
+      58,
+      61,
+      64,
+      67
+    ],
+    "bottom": [
+      31,
+      34,
+      37,
+      40,
+      43,
+      46,
+      49,
+      52,
+      55,
+      58,
+      61,
+      64
+    ],
+    "right": [
+      43,
+      46
+    ]
+  },
+  "selected_output_edge_counts": {
+    "top": 18,
+    "left": 20,
+    "bottom": 12,
+    "right": 2
+  },
+  "validation_probe_count": 78,
+  "throughput_status": "proven_equivalent",
+  "validator_import_compatible": true,
+  "validator_layout_healthy": true,
+  "notes": [
+    "boundary slot selection is derived from the current generic I/O artifact plus exporter+validator feedback",
+    "the deterministic manufacturing row packing is still the checked-in 70x70 full-demand slice"
+  ],
+  "warnings": [],
+  "error_message": null
+}

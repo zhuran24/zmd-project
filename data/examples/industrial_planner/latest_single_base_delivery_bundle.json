@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "generated_at": "2026-04-17T06:48:18Z",
+    "source": "industrial_planner_single_base_latest_bundle_pointer_v1"
+  },
+  "current_bundle": {
+    "release_id": "valley4_protocol_core_70x70_r20260416",
+    "base_id": "valley4_protocol_core",
+    "lot_size": 70,
+    "delivery_status": "ready_for_single_base_delivery",
+    "bundle_zip": "industrial_planner_latest_single_base_delivery_bundle.zip",
+    "pointer_json": "latest_single_base_delivery_bundle.json",
+    "pointer_markdown": "latest_single_base_delivery_bundle.md",
+    "archive_root": "industrial_planner_current_single_base_delivery_bundle",
+    "archive_sha256": "3a1858e9cbae5f82e472bdef883e2c29e6304a00bc2739816b890fcd3813b59d",
+    "archive_size_bytes": 52934,
+    "payload_file_count": 24,
+    "metadata_file_count": 7,
+    "included_entry_count": 31,
+    "source_current_bundle_zip": "current_delivery/downloads/industrial_planner_current_single_base_delivery_bundle.zip",
+    "source_current_bundle_pointer_json": "current_delivery/downloads/current_single_base_delivery_bundle.json",
+    "source_current_bundle_pointer_markdown": "current_delivery/downloads/current_single_base_delivery_bundle.md",
+    "scope_note": "Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder."
+  },
+  "exact_full_scale_certified": {
+    "status": "open",
+    "note": "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in."
+  },
+  "included_roots": {
+    "release": "industrial_planner_current_single_base_delivery_bundle/release",
+    "meta": "industrial_planner_current_single_base_delivery_bundle/meta"
+  },
+  "source_inputs": {
+    "source_landing_manifest_json": "data/examples/industrial_planner/current_delivery/landing_manifest.json",
+    "source_current_bundle_zip": "current_delivery/downloads/industrial_planner_current_single_base_delivery_bundle.zip",
+    "source_current_bundle_pointer_json": "current_delivery/downloads/current_single_base_delivery_bundle.json",
+    "source_current_bundle_pointer_markdown": "current_delivery/downloads/current_single_base_delivery_bundle.md"
+  },
+  "notes": [
+    "Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder.",
+    "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in.",
+    "This repo-front latest alias mirrors the stable current-delivery bundle under a shorter checked-in path, so script consumers can fetch the active single-base payload + metadata ZIP without remembering the current_delivery/downloads/ layout."
+  ]
+}
