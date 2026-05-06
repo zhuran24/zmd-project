@@ -89,6 +89,51 @@ SAFE_PROFILE_COMMANDS: dict[str, list[str]] = {
         "--frontier-probe-mode", "auto",
         "--resume-campaign",
     ],
+    "matrix_3x4_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "3",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "matrix_3x8_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "3",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "matrix_2x12_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "2",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "matrix_1x16_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "1",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "matrix_4x8_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "4",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
 }
 
 LIVE_BASELINE_MAX_CAMPAIGN_HOURS = 1.0
@@ -98,6 +143,11 @@ PROFILE_ENV_OVERRIDES: dict[str, dict[str, str]] = {
     "baseline_1x1_300s": {"EXACT_CP_SAT_WORKERS": "4"},
     "baseline_2x4_300s": {"EXACT_CP_SAT_WORKERS": "4"},
     "baseline_2x8_300s": {"EXACT_CP_SAT_WORKERS": "8"},
+    "matrix_3x4_300s": {"EXACT_CP_SAT_WORKERS": "4"},
+    "matrix_3x8_300s": {"EXACT_CP_SAT_WORKERS": "8"},
+    "matrix_2x12_300s": {"EXACT_CP_SAT_WORKERS": "12"},
+    "matrix_1x16_300s": {"EXACT_CP_SAT_WORKERS": "16"},
+    "matrix_4x8_300s": {"EXACT_CP_SAT_WORKERS": "8"},
 }
 
 DRY_GUARD_TOKENS = {"-dryrun", "--dry-run", "--no-write", "-whatif"}
@@ -382,7 +432,10 @@ def _run_command_with_telemetry(
         deadline = time.time() + max(float(timeout_seconds), 0.1)
         timed_out = False
         while process.poll() is None:
-            append_jsonl(telemetry_path, sampler.sample())
+            try:
+                append_jsonl(telemetry_path, sampler.sample())
+            except OSError:
+                pass
             if time.time() >= deadline:
                 timed_out = True
                 process.terminate()
@@ -393,7 +446,10 @@ def _run_command_with_telemetry(
                     process.wait(timeout=5)
                 break
             time.sleep(max(float(sample_interval_seconds), 0.05))
-        append_jsonl(telemetry_path, sampler.sample())
+        try:
+            append_jsonl(telemetry_path, sampler.sample())
+        except OSError:
+            pass
         return process.returncode, timed_out
 
 

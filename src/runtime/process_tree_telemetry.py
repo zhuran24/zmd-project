@@ -29,7 +29,7 @@ class ProcessTreeSampler:
             root = self._cached_process(self.root_pid)
             processes = [root]
             processes.extend(root.children(recursive=True))
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess, OSError):
             return []
         cached: list[psutil.Process] = []
         seen: set[int] = set()
