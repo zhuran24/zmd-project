@@ -53,6 +53,51 @@ SAFE_PROFILE_COMMANDS: dict[str, list[str]] = {
         "scripts/build_phase3b_operating_profile.py",
         "--no-write",
     ],
+    "baseline_4x4_normal_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "4",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "baseline_1x1_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "1",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "baseline_2x4_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "2",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "baseline_2x8_300s": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.083",
+        "--parallel-processes", "2",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+}
+
+LIVE_BASELINE_MAX_CAMPAIGN_HOURS = 1.0
+
+PROFILE_ENV_OVERRIDES: dict[str, dict[str, str]] = {
+    "baseline_4x4_normal_300s": {"EXACT_CP_SAT_WORKERS": "4"},
+    "baseline_1x1_300s": {"EXACT_CP_SAT_WORKERS": "4"},
+    "baseline_2x4_300s": {"EXACT_CP_SAT_WORKERS": "4"},
+    "baseline_2x8_300s": {"EXACT_CP_SAT_WORKERS": "8"},
 }
 
 DRY_GUARD_TOKENS = {"-dryrun", "--dry-run", "--no-write", "-whatif"}
@@ -169,9 +214,11 @@ def run_local_tuning_profile(
         append_jsonl(telemetry_path, ProcessTreeSampler(os.getpid()).sample())
         status = "skipped_no_execute"
     else:
+        env_overrides = PROFILE_ENV_OVERRIDES.get(profile_id, {})
         return_code, timed_out = _run_command_with_telemetry(
             command=command,
             cwd=project_root,
+            env_overrides=env_overrides,
             raw_log_path=raw_log_path,
             telemetry_path=telemetry_path,
             sample_interval_seconds=sample_interval_seconds,
@@ -192,6 +239,7 @@ def run_local_tuning_profile(
         "finished_at": finished_at,
         "duration_seconds": round(float(duration_seconds), 3),
         "command": command,
+        "env_overrides": env_overrides,
         "safety": safety,
         "telemetry_summary": telemetry_summary,
         "paths": {
@@ -216,12 +264,18 @@ def validate_tuning_command(command: Sequence[str]) -> dict[str, Any]:
     normalized_command = " ".join(lower_tokens).replace("\\", "/")
     reasons: list[str] = []
     has_dry_guard = any(token in DRY_GUARD_TOKENS for token in lower_tokens)
-    if not has_dry_guard:
+    campaign_hours = _extract_campaign_hours(lower_tokens)
+    is_live_baseline = (
+        not has_dry_guard
+        and campaign_hours is not None
+        and campaign_hours < LIVE_BASELINE_MAX_CAMPAIGN_HOURS
+    )
+    if not has_dry_guard and not is_live_baseline:
         reasons.append("missing_dry_run_or_no_write_guard")
     for index, token in enumerate(lower_tokens):
         if token in CHECKPOINT_TOKENS:
             reasons.append(f"forbidden_checkpoint_token:{token}")
-        if token in {"--resume-campaign", "-resumecampaign"} and not has_dry_guard:
+        if token in {"--resume-campaign", "-resumecampaign"} and not has_dry_guard and not is_live_baseline:
             reasons.append(f"resume_campaign_without_dry_guard:{token}")
         if token == "--campaign-hours":
             value = lower_tokens[index + 1] if index + 1 < len(lower_tokens) else ""
@@ -238,6 +292,8 @@ def validate_tuning_command(command: Sequence[str]) -> dict[str, Any]:
         "allowed": not reasons,
         "reasons": reasons,
         "has_dry_run_or_no_write_guard": has_dry_guard,
+        "is_live_baseline": is_live_baseline,
+        "campaign_hours": campaign_hours,
         "non_production_local_tuning": True,
         "profile_is_experimental_local": True,
         "final_168h_started": False,
@@ -250,6 +306,15 @@ def validate_tuning_command(command: Sequence[str]) -> dict[str, Any]:
         "preflight_mutated": False,
         "release_viewer_frontdoor_promoted": False,
     }
+
+
+def _extract_campaign_hours(lower_tokens: list[str]) -> float | None:
+    for index, token in enumerate(lower_tokens):
+        if token == "--campaign-hours" and index + 1 < len(lower_tokens):
+            return _float_or_none(lower_tokens[index + 1])
+        if token.startswith("--campaign-hours="):
+            return _float_or_none(token.split("=", 1)[1])
+    return None
 
 
 def render_run_summary_markdown(summary: Mapping[str, Any]) -> str:
@@ -293,11 +358,17 @@ def _run_command_with_telemetry(
     telemetry_path: Path,
     sample_interval_seconds: float,
     timeout_seconds: float,
+    env_overrides: Mapping[str, str] | None = None,
 ) -> tuple[int | None, bool]:
     raw_log_path.parent.mkdir(parents=True, exist_ok=True)
     telemetry_path.parent.mkdir(parents=True, exist_ok=True)
+    run_env = None
+    if env_overrides:
+        run_env = {**os.environ, **env_overrides}
     with raw_log_path.open("w", encoding="utf-8", errors="replace") as raw_log:
         raw_log.write("$ " + " ".join(str(part) for part in command) + "\n")
+        if env_overrides:
+            raw_log.write("env: " + " ".join(f"{k}={v}" for k, v in env_overrides.items()) + "\n")
         raw_log.flush()
         process = subprocess.Popen(
             list(command),
@@ -305,6 +376,7 @@ def _run_command_with_telemetry(
             stdout=raw_log,
             stderr=subprocess.STDOUT,
             text=True,
+            env=run_env,
         )
         sampler = ProcessTreeSampler(process.pid)
         deadline = time.time() + max(float(timeout_seconds), 0.1)
