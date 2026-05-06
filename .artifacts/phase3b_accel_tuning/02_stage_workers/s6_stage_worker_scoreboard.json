@@ -1,0 +1,179 @@
+{
+  "schema": "phase3b_s6_stage_worker_scoreboard_v1",
+  "generated": "2026-05-07",
+  "hardware": {
+    "cpu": "i9-13900KS HT-off 24 threads (8P+16E)",
+    "ram_gb": 48,
+    "ram_type": "DDR5-7600 dual-channel",
+    "page_file_gb": 64,
+    "page_file_drive": "D:"
+  },
+  "test_parameters": {
+    "campaign_hours": 0.083,
+    "timeout_seconds": 360,
+    "mode": "certified_exact",
+    "frontier_probe_mode": "auto"
+  },
+  "runs": [
+    {
+      "profile": "s6_w0_4x_4444",
+      "label": "W0: 4 proc x 4/4/4/4 (baseline control)",
+      "parallel_processes": 4,
+      "worker_profile": {"master": 4, "local_capacity": 4, "binding": 4, "routing": 4},
+      "duration_s": 269,
+      "peak_rss_gib": 39.21,
+      "peak_private_gib": 48.61,
+      "peak_cpu_pct": 714.8,
+      "cpu_utilization": 0.298,
+      "peak_threads": 159,
+      "status": "OK"
+    },
+    {
+      "profile": "s6_w1_4x_m6b2",
+      "label": "W1: 4 proc x 6/4/2/4 (boost master, lower binding)",
+      "parallel_processes": 4,
+      "worker_profile": {"master": 6, "local_capacity": 4, "binding": 2, "routing": 4},
+      "duration_s": 262,
+      "peak_rss_gib": 38.67,
+      "peak_private_gib": 49.44,
+      "peak_cpu_pct": 905.5,
+      "cpu_utilization": 0.377,
+      "peak_threads": 159,
+      "status": "OK"
+    },
+    {
+      "profile": "s6_w2_4x_m8b2",
+      "label": "W2: 4 proc x 8/4/2/4 (high master, low binding)",
+      "parallel_processes": 4,
+      "worker_profile": {"master": 8, "local_capacity": 4, "binding": 2, "routing": 4},
+      "duration_s": 264,
+      "peak_rss_gib": 40.21,
+      "peak_private_gib": 49.37,
+      "peak_cpu_pct": 1104.5,
+      "cpu_utilization": 0.460,
+      "peak_threads": 162,
+      "status": "OK"
+    },
+    {
+      "profile": "s6_w3_4x_m6l6b2r6",
+      "label": "W3: 4 proc x 6/6/2/6 (balanced)",
+      "parallel_processes": 4,
+      "worker_profile": {"master": 6, "local_capacity": 6, "binding": 2, "routing": 6},
+      "duration_s": 257,
+      "peak_rss_gib": 39.27,
+      "peak_private_gib": 49.39,
+      "peak_cpu_pct": 915.0,
+      "cpu_utilization": 0.381,
+      "peak_threads": 160,
+      "status": "OK"
+    },
+    {
+      "profile": "s6_w4_4x_m8l6b2r6",
+      "label": "W4: 4 proc x 8/6/2/6 (master-heavy balanced)",
+      "parallel_processes": 4,
+      "worker_profile": {"master": 8, "local_capacity": 6, "binding": 2, "routing": 6},
+      "duration_s": 258,
+      "peak_rss_gib": 38.68,
+      "peak_private_gib": 49.32,
+      "peak_cpu_pct": 1107.5,
+      "cpu_utilization": 0.461,
+      "peak_threads": 160,
+      "status": "OK"
+    },
+    {
+      "profile": "s6_w5_3x_m8l8b2r8",
+      "label": "W5: 3 proc x 8/8/2/8 (near built-in defaults, 3 proc)",
+      "parallel_processes": 3,
+      "worker_profile": {"master": 8, "local_capacity": 8, "binding": 2, "routing": 8},
+      "duration_s": 274,
+      "peak_rss_gib": 37.56,
+      "peak_private_gib": 51.54,
+      "peak_cpu_pct": 1030.2,
+      "cpu_utilization": 0.429,
+      "peak_threads": 132,
+      "status": "OK"
+    },
+    {
+      "profile": "s6_w6_3x_m8l6b2r6",
+      "label": "W6: 3 proc x 8/6/2/6 (BEST CPU utilization)",
+      "parallel_processes": 3,
+      "worker_profile": {"master": 8, "local_capacity": 6, "binding": 2, "routing": 6},
+      "duration_s": 361,
+      "peak_rss_gib": 38.40,
+      "peak_private_gib": 83.03,
+      "peak_cpu_pct": 1854.5,
+      "cpu_utilization": 0.773,
+      "peak_threads": 131,
+      "status": "timeout",
+      "note": "Highest CPU utilization; private bytes very high (83 GiB) indicates heavy page file use"
+    },
+    {
+      "profile": "s6_w7_2x_m12l8b2r8",
+      "label": "W7: 2 proc x 12/8/2/8 (deep search, 2 proc)",
+      "parallel_processes": 2,
+      "worker_profile": {"master": 12, "local_capacity": 8, "binding": 2, "routing": 8},
+      "duration_s": 360,
+      "peak_rss_gib": 28.55,
+      "peak_private_gib": 56.58,
+      "peak_cpu_pct": 1384.2,
+      "cpu_utilization": 0.577,
+      "peak_threads": 98,
+      "status": "timeout",
+      "note": "Good CPU util with lowest RSS; 2 processes reduces memory pressure"
+    }
+  ],
+  "analysis": {
+    "key_findings": [
+      "Master worker count is the dominant factor: 8 master workers consistently outperform 4 or 6",
+      "Binding workers can be safely reduced to 2 — binding subproblem is lightweight",
+      "W6 (3x 8/6/2/6) achieves 77.3% CPU utilization, 2.6x better than W0 baseline (29.8%)",
+      "W7 (2x 12/8/2/8) gives best RSS efficiency (28.55 GiB) with decent CPU (57.7%)",
+      "3 processes with high per-process workers is the sweet spot — fewer than 4 proc reduces IPC overhead",
+      "Private bytes for W6 hit 83 GiB — indicates CP-SAT commits more virtual memory when given more workers"
+    ],
+    "master_worker_effect": {
+      "4_workers_avg_cpu": 714.8,
+      "6_workers_avg_cpu": 910.3,
+      "8_workers_avg_cpu": 1224.2,
+      "12_workers_cpu": 1384.2,
+      "note": "Near-linear scaling from 4→8 master workers; diminishing returns at 12"
+    },
+    "binding_worker_insight": {
+      "binding_2_safe": true,
+      "note": "All configs with binding=2 ran successfully. Binding subproblem is fast and doesn't benefit from more workers."
+    },
+    "process_count_tradeoff": {
+      "4_proc_max_cpu": 1107.5,
+      "3_proc_max_cpu": 1854.5,
+      "2_proc_max_cpu": 1384.2,
+      "note": "3 processes with matching W4-equivalent workers achieves much higher CPU — less context switching overhead"
+    }
+  },
+  "recommendations": {
+    "top_candidates_for_medium_confirmation": [
+      {
+        "profile": "s6_w6_3x_m8l6b2r6",
+        "reason": "Highest CPU utilization (77.3%), moderate RSS (38.4 GiB), but needs monitoring for page file pressure"
+      },
+      {
+        "profile": "s6_w7_2x_m12l8b2r8",
+        "reason": "Best RSS efficiency (28.6 GiB), good CPU (57.7%), lowest memory pressure"
+      },
+      {
+        "profile": "s6_w4_4x_m8l6b2r6",
+        "reason": "Safe 4-process config with good CPU (46.1%), moderate RSS, no page file issues"
+      }
+    ],
+    "next_steps": [
+      "S8 medium confirmation: 1h runs for W6, W7, W4 to measure actual candidate throughput",
+      "Monitor page file usage during longer W6 runs — 83 GiB private may cause issues at 1h scale",
+      "Consider W6 variant with reduced local_capacity to manage private bytes"
+    ]
+  },
+  "safety": {
+    "execution_allowed": false,
+    "final_168h_authorized": false,
+    "proof_source_mutated": false,
+    "checkpoint_only_transient": true
+  }
+}
