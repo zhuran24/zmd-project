@@ -1,0 +1,4 @@
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0004/run_summary.json
