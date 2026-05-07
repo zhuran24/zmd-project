@@ -164,6 +164,12 @@ Follow-up source-code audits ("R12-style") on P0 roadmap items — saved hours
 
 **Net session-level ROI for follow-up audits**: ~30 min total agent time + ~20 min processing = ~50 min, savings already 16-42 engineering hours = **20-50× ROI**, monotonically growing.
 
+## "P0 landing" log (2026-05-08)
+
+| # | Item | Status | Evidence |
+|---|------|--------|----------|
+| P0 #2 | 4 vs 8 worker A/B + RSS profile | ✅ **VERIFIED & landed** | telemetry analysis 2026-05-08: 4 worker peak_RSS=23.3 GiB / duration 287s vs 8 worker peak_RSS=40.0 GiB / duration 262s — 4 worker saves 41.8% RSS, only 8.7% slower, R4 gold mine confirmed |
+
 ## Reading these transcripts
 
 Each `.output` file is JSONL (one event per line):
