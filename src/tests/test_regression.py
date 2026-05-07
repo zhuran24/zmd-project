@@ -2108,6 +2108,7 @@ def test_resume_replays_fine_grained_exact_safe_cuts_into_master(
         known_feasible_hint: bool = False,
         ghost_anchor_hint_idx=None,
         hint_inactive_residual_optionals: bool = True,
+        **kwargs,
     ):
         self.build_stats["last_solve"] = {
             "status": "UNKNOWN",
