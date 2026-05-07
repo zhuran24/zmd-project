@@ -18,6 +18,10 @@ from src.interchange.normalized_catalog import build_catalog_from_rules_payload
 
 UPSTREAM_REPOSITORY_FIXTURE_DIR = Path("third_party_snapshots/endfield_calc/upstream_repository_fixture")
 RULES_PATH = Path("rules/canonical_rules.json")
+_UPSTREAM_METADATA = json.loads(
+    (UPSTREAM_REPOSITORY_FIXTURE_DIR / "SOURCE_METADATA.json").read_text(encoding="utf-8")
+)
+_OBSERVED_COUNTS = _UPSTREAM_METADATA["observed_counts"]
 
 
 def test_project_catalog_to_current_repository_semantics_builds_partial_aligned_catalog() -> None:
@@ -26,9 +30,9 @@ def test_project_catalog_to_current_repository_semantics_builds_partial_aligned_
     aligned_catalog = project_catalog_to_current_repository_semantics(raw_catalog)
 
     assert aligned_catalog["metadata"]["source"].endswith(f"semantic alignment: {CURRENT_REPOSITORY_SEMANTIC_TARGET})")
-    assert aligned_catalog["metadata"]["extensions"]["semantic_raw_item_count"] == 130
-    assert aligned_catalog["metadata"]["extensions"]["semantic_raw_recipe_count"] == 172
-    assert aligned_catalog["metadata"]["extensions"]["semantic_raw_facility_count"] == 14
+    assert aligned_catalog["metadata"]["extensions"]["semantic_raw_item_count"] == _OBSERVED_COUNTS["items"]
+    assert aligned_catalog["metadata"]["extensions"]["semantic_raw_recipe_count"] == _OBSERVED_COUNTS["recipes"]
+    assert aligned_catalog["metadata"]["extensions"]["semantic_raw_facility_count"] == _OBSERVED_COUNTS["facilities"]
     assert aligned_catalog["metadata"]["extensions"]["semantic_mapped_item_count"] == 19
     assert aligned_catalog["metadata"]["extensions"]["semantic_mapped_recipe_count"] == 17
     assert aligned_catalog["metadata"]["extensions"]["semantic_mapped_facility_count"] == 3
