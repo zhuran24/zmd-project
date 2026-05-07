@@ -322,6 +322,17 @@ class ExactCampaign:
                         state = dict(loaded_state)
                         state["updated_at"] = now_iso()
                         state["reset_reason"] = None
+                        # Allow extending campaign budget on resume
+                        if campaign_hours > float(state.get("campaign_hours", 0)):
+                            state["campaign_hours"] = float(campaign_hours)
+                        # Clear time-budget-exhausted stop so campaign can continue
+                        stop = state.get("last_stop_reason")
+                        if (
+                            isinstance(stop, Mapping)
+                            and stop.get("reason") == "campaign_time_budget_exhausted"
+                        ):
+                            state["last_stop_reason"] = None
+                            state["final_status"] = None
                         return cls(
                             project_root=project_root,
                             path=path,

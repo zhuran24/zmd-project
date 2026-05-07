@@ -260,6 +260,7 @@ class ExactParallelWorkerPool:
         self._worker_priority_reports: List[Dict[str, Any]] = []
         self._started = False
         self._closed = False
+        self._total_crash_respawns = 0
 
     def _sum_process_tree_rss(self) -> int:
         total_bytes = 0
@@ -274,6 +275,34 @@ class ExactParallelWorkerPool:
             except Exception:
                 continue
         return int(total_bytes)
+
+    def _drain_result_queue(self) -> List[Dict[str, Any]]:
+        messages: List[Dict[str, Any]] = []
+        while True:
+            try:
+                messages.append(self._result_queue.get_nowait())
+            except queue.Empty:
+                break
+        return messages
+
+    def _respawn_all_workers(self) -> None:
+        for process in self._processes:
+            if process.is_alive():
+                try:
+                    self._task_queue.put_nowait(None)
+                except Exception:
+                    pass
+        for process in self._processes:
+            process.join(timeout=3.0)
+            if process.is_alive():
+                process.terminate()
+                process.join(timeout=5.0)
+        self._task_queue = self._ctx.Queue()
+        self._result_queue = self._ctx.Queue()
+        self._processes = []
+        self._started = False
+        self._closed = False
+        self.start()
 
     def start(self) -> None:
         if self._started:
@@ -314,7 +343,12 @@ class ExactParallelWorkerPool:
                 raise RuntimeError(str(message.get("error", "parallel_worker_startup_error")))
         self._started = True
 
-    def run_wave(self, tasks: Sequence[WorkerTask]) -> ParallelWaveExecution:
+    def run_wave(
+        self,
+        tasks: Sequence[WorkerTask],
+        *,
+        max_crash_respawns: int = 2,
+    ) -> ParallelWaveExecution:
         if self._closed:
             raise RuntimeError("parallel worker pool is already closed")
         if not tasks:
@@ -337,20 +371,43 @@ class ExactParallelWorkerPool:
         failure_reason: Optional[str] = None
         peak_rss_total_bytes = 0
         heartbeat_events: List[Dict[str, Any]] = []
+        wave_crash_respawns = 0
 
         while len(results_by_seq) < len(tasks):
             peak_rss_total_bytes = max(peak_rss_total_bytes, self._sum_process_tree_rss())
             try:
                 message = self._result_queue.get(timeout=self.rss_sample_interval_seconds)
             except queue.Empty:
-                for process in self._processes:
-                    if process.exitcode not in (None, 0):
+                any_crashed = any(
+                    p.exitcode not in (None, 0) for p in self._processes
+                )
+                if any_crashed:
+                    for msg in self._drain_result_queue():
+                        msg_type = str(msg.get("message_type", ""))
+                        if msg_type == "HEARTBEAT":
+                            heartbeat_events.append(_normalize_heartbeat_message(msg))
+                        elif msg_type == "RESULT":
+                            r = msg.get("result")
+                            if isinstance(r, WorkerResult):
+                                results_by_seq.setdefault(int(r.dispatch_seq), r)
+                    pending = [t for t in tasks if t.dispatch_seq not in results_by_seq]
+                    if not pending:
+                        break
+                    if wave_crash_respawns >= max_crash_respawns:
                         failure_reason = (
-                            f"worker_process_failed:pid={process.pid}:exitcode={process.exitcode}"
+                            f"worker_crash_respawn_limit:{wave_crash_respawns}:"
+                            + ":".join(
+                                f"pid={p.pid}:exit={p.exitcode}"
+                                for p in self._processes
+                                if p.exitcode not in (None, 0)
+                            )
                         )
                         break
-                if failure_reason is not None:
-                    break
+                    self._respawn_all_workers()
+                    for task in pending:
+                        self._task_queue.put(task)
+                    wave_crash_respawns += 1
+                    self._total_crash_respawns += 1
                 continue
 
             message_type = str(message.get("message_type", ""))
@@ -387,6 +444,8 @@ class ExactParallelWorkerPool:
 
         if failure_reason is not None:
             self.terminate()
+        else:
+            self._respawn_all_workers()
 
         sorted_results = tuple(
             results_by_seq[dispatch_seq] for dispatch_seq in sorted(results_by_seq.keys())

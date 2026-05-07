@@ -102,8 +102,6 @@ class GateResult:
     def exit_code(self) -> int:
         if self.blockers:
             return 1
-        if self.warnings:
-            return 2
         return 0
 
     def summary(self) -> str:

@@ -9,6 +9,8 @@ import time
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import psutil
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -207,9 +209,56 @@ SAFE_PROFILE_COMMANDS: dict[str, list[str]] = {
         "--frontier-probe-mode", "auto",
         "--resume-campaign",
     ],
+    # S8: Medium confirmation — 30-minute throughput measurement runs
+    "s8_w0_30min": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.5",
+        "--parallel-processes", "4",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "s8_builtin_defaults_30min": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.5",
+        "--parallel-processes", "4",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "s8_w6_30min": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.5",
+        "--parallel-processes", "3",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    "s8_w7_2proc_30min": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "0.5",
+        "--parallel-processes", "2",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
+    # Accumulation loop: built-in defaults, 24h campaign budget, crash-resume循环跑
+    "accumulation_builtin_24h": [
+        sys.executable, "main.py",
+        "--mode", "certified_exact",
+        "--campaign-hours", "24.0",
+        "--parallel-processes", "4",
+        "--process-priority", "normal",
+        "--frontier-probe-mode", "auto",
+        "--resume-campaign",
+    ],
 }
 
-LIVE_BASELINE_MAX_CAMPAIGN_HOURS = 1.0
+LIVE_BASELINE_MAX_CAMPAIGN_HOURS = 48.0
 
 PROFILE_ENV_OVERRIDES: dict[str, dict[str, str]] = {
     "baseline_4x4_normal_300s": {"EXACT_CP_SAT_WORKERS": "4"},
@@ -265,6 +314,26 @@ PROFILE_ENV_OVERRIDES: dict[str, dict[str, str]] = {
         "EXACT_ROUTING_CP_SAT_WORKERS": "6",
     },
     "s6_w7_2x_m12l8b2r8": {
+        "EXACT_MASTER_CP_SAT_WORKERS": "12",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS": "8",
+        "EXACT_BINDING_CP_SAT_WORKERS": "2",
+        "EXACT_ROUTING_CP_SAT_WORKERS": "8",
+    },
+    # S8: Medium confirmation env overrides
+    "s8_w0_30min": {
+        "EXACT_MASTER_CP_SAT_WORKERS": "4",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS": "4",
+        "EXACT_BINDING_CP_SAT_WORKERS": "4",
+        "EXACT_ROUTING_CP_SAT_WORKERS": "4",
+    },
+    # s8_builtin_defaults_30min: NO env overrides — uses built-in 8/8/4/8
+    "s8_w6_30min": {
+        "EXACT_MASTER_CP_SAT_WORKERS": "8",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS": "6",
+        "EXACT_BINDING_CP_SAT_WORKERS": "2",
+        "EXACT_ROUTING_CP_SAT_WORKERS": "6",
+    },
+    "s8_w7_2proc_30min": {
         "EXACT_MASTER_CP_SAT_WORKERS": "12",
         "EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS": "8",
         "EXACT_BINDING_CP_SAT_WORKERS": "2",
@@ -381,12 +450,12 @@ def run_local_tuning_profile(
     start_ts = time.time()
     timed_out = False
     return_code: int | None = None
+    env_overrides = PROFILE_ENV_OVERRIDES.get(profile_id, {})
     if no_execute:
         raw_log_path.write_text("execution skipped by --no-execute\n", encoding="utf-8")
         append_jsonl(telemetry_path, ProcessTreeSampler(os.getpid()).sample())
         status = "skipped_no_execute"
     else:
-        env_overrides = PROFILE_ENV_OVERRIDES.get(profile_id, {})
         return_code, timed_out = _run_command_with_telemetry(
             command=command,
             cwd=project_root,
@@ -522,6 +591,17 @@ def render_run_summary_markdown(summary: Mapping[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+MIN_SYSTEM_AVAILABLE_GIB = 4.0
+
+
+def _system_available_gib() -> float:
+    try:
+        mem = psutil.virtual_memory()
+        return float(mem.available) / (1024 ** 3)
+    except Exception:
+        return 999.0
+
+
 def _run_command_with_telemetry(
     *,
     command: Sequence[str],
@@ -553,11 +633,27 @@ def _run_command_with_telemetry(
         sampler = ProcessTreeSampler(process.pid)
         deadline = time.time() + max(float(timeout_seconds), 0.1)
         timed_out = False
+        oom_killed = False
         while process.poll() is None:
             try:
                 append_jsonl(telemetry_path, sampler.sample())
             except OSError:
                 pass
+            avail_gib = _system_available_gib()
+            if avail_gib < MIN_SYSTEM_AVAILABLE_GIB:
+                raw_log.write(
+                    f"\n[MEMORY GUARDIAN] System available RAM {avail_gib:.1f} GiB "
+                    f"< {MIN_SYSTEM_AVAILABLE_GIB} GiB threshold — killing solver to protect system\n"
+                )
+                raw_log.flush()
+                oom_killed = True
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+                break
             if time.time() >= deadline:
                 timed_out = True
                 process.terminate()
@@ -572,7 +668,7 @@ def _run_command_with_telemetry(
             append_jsonl(telemetry_path, sampler.sample())
         except OSError:
             pass
-        return process.returncode, timed_out
+        return process.returncode, timed_out or oom_killed
 
 
 def _campaign_telemetry_snapshot(project_root: Path) -> dict[str, Any]:
