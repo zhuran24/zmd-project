@@ -591,7 +591,28 @@ def render_run_summary_markdown(summary: Mapping[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-MIN_SYSTEM_AVAILABLE_GIB = 4.0
+MIN_SYSTEM_AVAILABLE_GIB = 1.0
+
+
+def _terminate_process_tree(parent_pid: int, *, timeout: float = 5.0) -> None:
+    """Kill parent + all descendant processes (workers won't be left as orphans)."""
+    try:
+        parent = psutil.Process(parent_pid)
+    except psutil.NoSuchProcess:
+        return
+    children = parent.children(recursive=True)
+    for proc in [parent, *children]:
+        try:
+            proc.terminate()
+        except psutil.NoSuchProcess:
+            pass
+    gone, alive = psutil.wait_procs([parent, *children], timeout=timeout)
+    for proc in alive:
+        try:
+            proc.kill()
+        except psutil.NoSuchProcess:
+            pass
+    psutil.wait_procs(alive, timeout=timeout)
 
 
 def _system_available_gib() -> float:
@@ -647,21 +668,19 @@ def _run_command_with_telemetry(
                 )
                 raw_log.flush()
                 oom_killed = True
-                process.terminate()
+                _terminate_process_tree(process.pid)
                 try:
                     process.wait(timeout=5)
                 except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait(timeout=5)
+                    pass
                 break
             if time.time() >= deadline:
                 timed_out = True
-                process.terminate()
+                _terminate_process_tree(process.pid)
                 try:
                     process.wait(timeout=5)
                 except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait(timeout=5)
+                    pass
                 break
             time.sleep(max(float(sample_interval_seconds), 0.05))
         try:
