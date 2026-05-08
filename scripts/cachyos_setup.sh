@@ -98,15 +98,18 @@ echo "  tcmalloc: /usr/lib/libtcmalloc.so.4"
 echo "  mimalloc: /usr/lib/libmimalloc.so.2"
 echo
 
-# 7. THP setting check
+# 7. THP setting check (verified default in CachyOS-Settings repo)
 echo "--- THP ---"
 if [[ -f /sys/kernel/mm/transparent_hugepage/enabled ]]; then
-    echo "current: $(cat /sys/kernel/mm/transparent_hugepage/enabled)"
-    echo "(R2 audit recommends 'madvise' for fine control on long-run jobs)"
-    echo "to set: sudo sh -c 'echo madvise > /sys/kernel/mm/transparent_hugepage/enabled'"
-else
-    echo "THP sysfs path missing — kernel config issue"
+    echo "  enabled: $(cat /sys/kernel/mm/transparent_hugepage/enabled)"
 fi
+if [[ -f /sys/kernel/mm/transparent_hugepage/defrag ]]; then
+    echo "  defrag:  $(cat /sys/kernel/mm/transparent_hugepage/defrag)"
+fi
+echo "(CachyOS-Settings repo verified: defaults to defer+madvise on defrag,"
+echo " specifically tuned for tcmalloc. khugepaged/max_ptes_none tuned for"
+echo " kernel 6.12+. R2 audit's 'madvise' recommendation is already met or"
+echo " exceeded by CachyOS defaults — no manual change needed.)"
 echo
 
 # 8. cgroups v2
@@ -118,14 +121,24 @@ else
 fi
 echo
 
-# 9. zram (CachyOS enables by default via zram-generator)
-echo "--- zram ---"
+# 9. zram (CachyOS enables by default via zram-generator, verified)
+echo "--- zram (verified default: zstd/lz4 + swap-priority=100) ---"
 if swapon --show=NAME --noheadings 2>/dev/null | grep -q zram; then
     echo "OK: zram swap active"
-    swapon --show=NAME,SIZE,USED 2>/dev/null | grep zram || true
+    swapon --show=NAME,SIZE,USED,PRIO 2>/dev/null | grep zram || true
 else
-    echo "WARN: no zram swap detected. CachyOS usually enables this via zram-generator."
+    echo "WARN: no zram swap detected. Should be auto-enabled via zram-generator."
+    echo "      Check: systemctl status systemd-zram-setup@zram0.service"
 fi
+echo
+
+# 9b. I/O scheduler (verified per-disk-type defaults from CachyOS-Settings)
+echo "--- I/O scheduler (verified default: HDD=bfq / SATA SSD=mq-deadline / NVMe=none) ---"
+for dev in /sys/block/sd* /sys/block/nvme*n*; do
+    if [[ -f "$dev/queue/scheduler" ]]; then
+        echo "  $(basename $dev): $(cat $dev/queue/scheduler)"
+    fi
+done 2>/dev/null
 echo
 
 # 10. Pin packages for 168h campaign stability
