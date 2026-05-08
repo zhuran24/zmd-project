@@ -13,6 +13,7 @@ Exact port-binding subproblem（精确端口绑定子问题）.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
@@ -26,6 +27,10 @@ from src.models._cpsat_compat import search_branching_name
 from src.models.port_binding import (
     enumerate_pose_level_port_bindings_with_cache_info,
     supports_exact_pose_level_binding,
+)
+from src.search.commodity_throughput import (
+    classify_commodity_flow,
+    compute_commodity_throughput,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -203,6 +208,94 @@ class PortBindingModel:
         self._add_search_guidance()
         self._conflict_summary["generic_output_slot_count"] = len(self.generic_output_slots)
         self._conflict_summary["generic_input_slot_count"] = len(self.generic_input_slots)
+        # Phase 3C P1 #9 hint 2 stage 2 (env-gated): forbid pairing
+        # high-prod-low-demand and low-prod-high-demand commodities in the
+        # same storage box. Default OFF — requires caller-side fallback
+        # ladder when enabled (handle INFEASIBLE by retrying without nogood).
+        overload_env = os.environ.get(
+            "EXACT_BINDING_USE_OVERLOAD_SEPARATION", ""
+        ).strip().lower()
+        if overload_env in {"1", "true", "yes", "on"}:
+            nogood_count = self._add_storage_box_overload_nogoods()
+            self._conflict_summary["overload_separation_enabled"] = True
+            self._conflict_summary["overload_nogoods_added"] = int(nogood_count)
+        else:
+            self._conflict_summary["overload_separation_enabled"] = False
+            self._conflict_summary["overload_nogoods_added"] = 0
+
+    def _load_overload_classification(self) -> Dict[str, str]:
+        """Lazy-load commodity classification. Reads canonical_rules.json
+        from project_root and computes per-commodity production / consumption
+        rates over self.instances_by_id, then classifies each commodity as
+        high_prod_low_demand / low_prod_high_demand / balanced.
+        """
+        if getattr(self, "_overload_classification_cache", None) is not None:
+            return self._overload_classification_cache
+        rules_path = self.project_root / "rules" / "canonical_rules.json"
+        rules = json.loads(rules_path.read_text(encoding="utf-8"))
+        instances = list(self.instances_by_id.values())
+        throughput = compute_commodity_throughput(rules, instances)
+        self._overload_classification_cache = classify_commodity_flow(
+            throughput, threshold_ratio=0.1
+        )
+        return self._overload_classification_cache
+
+    def _add_storage_box_overload_nogoods(self) -> int:
+        """P1 #9 hint 2 stage 2: forbid high+low commodity pair in same storage box.
+
+        For every protocol_storage_box instance (operation_type=wireless_sink),
+        for every (c_high, c_low) pair where c_high is high_prod_low_demand and
+        c_low is low_prod_high_demand, add CP-SAT clause:
+            NOT (h_lit AND l_lit) ≡ AddBoolOr([h_lit.Not(), l_lit.Not()])
+        for every input-slot literal pair (h_lit, l_lit) on that box.
+
+        This is a HARD nogood — it can cut feasible solutions when the
+        commodity supply structurally forces high+low colocation. Caller
+        MUST implement a fallback ladder: detect INFEASIBLE while
+        overload_separation_enabled and retry with env unset.
+
+        Returns: number of nogood clauses added (for logging / A-B test).
+        """
+        classification = self._load_overload_classification()
+        high_set = {c for c, k in classification.items() if k == "high_prod_low_demand"}
+        low_set = {c for c, k in classification.items() if k == "low_prod_high_demand"}
+        if not high_set or not low_set:
+            return 0
+
+        # Group input slots by storage-box instance.
+        slots_by_instance: Dict[str, List[str]] = {}
+        for slot in self.generic_input_slots:
+            instance_id = str(slot.get("instance_id", ""))
+            if not instance_id:
+                continue
+            slots_by_instance.setdefault(instance_id, []).append(str(slot["slot_id"]))
+
+        nogood_count = 0
+        for instance_id, slot_ids in slots_by_instance.items():
+            inst = self.instances_by_id.get(instance_id)
+            if not inst or str(inst.get("operation_type", "")) != "wireless_sink":
+                continue
+            for c_high in high_set:
+                high_lits = [
+                    self.generic_input_vars[s][c_high]
+                    for s in slot_ids
+                    if c_high in self.generic_input_vars.get(s, {})
+                ]
+                if not high_lits:
+                    continue
+                for c_low in low_set:
+                    low_lits = [
+                        self.generic_input_vars[s][c_low]
+                        for s in slot_ids
+                        if c_low in self.generic_input_vars.get(s, {})
+                    ]
+                    if not low_lits:
+                        continue
+                    for h in high_lits:
+                        for l in low_lits:
+                            self.model.AddBoolOr([h.Not(), l.Not()])
+                            nogood_count += 1
+        return nogood_count
 
     def _resolve_instance(self, instance_id: str) -> Optional[Dict[str, Any]]:
         inst = self.instances_by_id.get(instance_id)
