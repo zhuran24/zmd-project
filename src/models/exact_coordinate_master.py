@@ -2435,7 +2435,10 @@ class CoordinateExactMasterDelegate:
                 bucket_lit = self.model.NewBoolVar(
                     f"{membership_prefix}__{slot.key}__{bucket_id}"
                 )
-                self.model.AddImplication(bucket_lit, slot.active)
+                # P1 #25 micro-improvement: removed `AddImplication(bucket_lit,
+                # slot.active)` — it is implied by the later sum-channel
+                # `sum(bucket_lits) == slot.active`: if any bucket_lit_i = 1
+                # then sum ≥ 1 ⟹ slot.active ≥ 1 ⟹ slot.active = 1 (bool).
                 self.model.Add(slot.signature == int(bucket_int)).OnlyEnforceIf(bucket_lit)
                 membership_store[bucket_id].append(bucket_lit)
                 bucket_lits.append(bucket_lit)
