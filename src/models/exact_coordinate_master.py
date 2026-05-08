@@ -2340,13 +2340,18 @@ class CoordinateExactMasterDelegate:
             self._interval_binding[slot.key] = (int(slot.x_interval.Index()), int(slot.y_interval.Index()))
 
             all_region_lits: List[cp_model.IntVar] = []
+            bucket_lits_for_slot: List[cp_model.IntVar] = []
             for bucket in bucket_defs:
                 bucket_id = str(bucket["bucket_id"])
                 bucket_int = int(bucket_id_to_int[bucket_id])
                 bucket_lit = self.model.NewBoolVar(f"{membership_prefix}__{slot.key}__{bucket_id}")
-                self.model.Add(slot.signature == int(bucket_int)).OnlyEnforceIf(bucket_lit)
-                self.model.Add(slot.signature != int(bucket_int)).OnlyEnforceIf(bucket_lit.Not())
+                # P0 #6 改造 4 (membership channeling): replaced double-reify
+                # `signature == bucket_int <=> bucket_lit` with a single
+                # linear channel + ExactlyOne after the loop.
+                # Mathematically equivalent because signature domain
+                # [0, n-1] equals bucket_int set {0..n-1} (dense, line 2326).
                 membership_store[bucket_id].append(bucket_lit)
+                bucket_lits_for_slot.append(bucket_lit)
 
                 bucket_region_lits: List[cp_model.IntVar] = []
                 for region_index, region in enumerate(bucket_regions.get(bucket_id, [])):
@@ -2363,6 +2368,18 @@ class CoordinateExactMasterDelegate:
                     self.model.Add(sum(bucket_region_lits) == bucket_lit)
                 else:
                     self.model.Add(bucket_lit == 0)
+
+            if bucket_lits_for_slot:
+                # P0 #6 改造 4 closing: signature = Σ idx · lit_idx,
+                # combined with AddExactlyOne(bucket_lits) gives the same
+                # signature ↔ bucket_lit binding as the original double-reify.
+                self.model.Add(
+                    slot.signature == sum(
+                        int(bucket_id_to_int[str(b["bucket_id"])]) * lit
+                        for b, lit in zip(bucket_defs, bucket_lits_for_slot)
+                    )
+                )
+                self.model.AddExactlyOne(bucket_lits_for_slot)
 
             if all_region_lits:
                 self.model.AddExactlyOne(all_region_lits)
