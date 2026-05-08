@@ -138,7 +138,13 @@ def _memory_snapshot(process: psutil.Process) -> dict[str, int | None]:
         }
         try:
             full = process.memory_full_info()
+            # Windows psutil exposes `.private`; Linux psutil exposes `.uss`
+            # (Unique Set Size — pages owned only by this process).
+            # Both are the "process-private memory" concept and are equivalent
+            # for the resource-stop trigger purpose. Pick whichever is present.
             private = getattr(full, "private", None)
+            if private is None:
+                private = getattr(full, "uss", None)
             if private is not None:
                 result["private_bytes"] = int(private)
         except Exception:
