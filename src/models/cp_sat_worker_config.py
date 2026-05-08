@@ -143,3 +143,29 @@ def apply_master_cp_sat_subsolver_filter(solver) -> Tuple[str, ...]:
     for name in MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX:
         solver.parameters.ignore_subsolvers.append(name)
     return MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX
+
+
+# Phase 3C P0 #4 (R3 #8 remaining params, R12-revised conservative).
+# Env-gated because proto says "stronger AND more expensive" — A/B must
+# decide if the propagation gain offsets the per-iteration cost on our
+# no_overlap_2d-heavy master model.
+EXACT_MASTER_STRONG_DISJUNCTIVE_PROPAGATION_ENV = (
+    "EXACT_MASTER_USE_STRONG_DISJUNCTIVE_PROPAGATION"
+)
+
+
+def apply_master_cp_sat_strong_disjunctive_propagation(solver) -> bool:
+    """Optionally enable stronger no_overlap propagation for master CpSolver.
+
+    Reads env EXACT_MASTER_USE_STRONG_DISJUNCTIVE_PROPAGATION; truthy values
+    ("1"/"true"/"yes") flip the parameter on. Default off — proto warns
+    propagation is "more expensive", A/B benchmark required to confirm
+    the trade is positive on our model.
+
+    Returns True if the parameter was enabled, False otherwise.
+    """
+    raw = os.getenv(EXACT_MASTER_STRONG_DISJUNCTIVE_PROPAGATION_ENV, "").strip().lower()
+    if raw not in {"1", "true", "yes", "on"}:
+        return False
+    solver.parameters.use_strong_propagation_in_disjunctive = True
+    return True

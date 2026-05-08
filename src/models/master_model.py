@@ -28,6 +28,7 @@ from ortools.sat.python import cp_model
 from src.models.cp_sat_worker_config import (
     DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
     DEFAULT_MASTER_CP_SAT_WORKERS,
+    apply_master_cp_sat_strong_disjunctive_propagation,
     apply_master_cp_sat_subsolver_filter,
     resolve_cp_sat_worker_count,
 )
@@ -11104,6 +11105,9 @@ class MasterPlacementModel:
         # Phase 3C P0 #3 (R12-revised conservative): exclude unhelpful LNS
         # subsolvers for max_lex objective. See cp_sat_worker_config.py.
         apply_master_cp_sat_subsolver_filter(solver)
+        # Phase 3C P0 #4 #8 (env-gated): stronger no_overlap_2d propagation.
+        # Default off; A/B benchmark via env to validate cost/benefit.
+        apply_master_cp_sat_strong_disjunctive_propagation(solver)
         requested_search_branching = "default"
         if self.exact_mode:
             requested_search_branching = str(
