@@ -80,6 +80,7 @@ exact-mode-safe per PROJECT_LOCK.md.
 | 20 | **py-spy --native profile playbook** | R6 `a03cda5a8b71604d1` | identifies hot paths, prerequisite to compiler tuning ROI | 4 hours | high (diagnostic) |
 | 21 | **Branch-and-Price PoC (root-CG only)** | R10 `a434c6a1198c78a5a` | LP gap -30% if pricing tractable | ~1 week | gated by go/no-go |
 | 22 | **HiGHS 1.14 area oracle** | R7 `a2bbf0cd35f724a3c` | LP relaxation upgrade | ~1 week | ~3× |
+| 27 | **Two-host candidate-level parallel (机 A 主机 + 机 B 远程, WAN)** — 2026-05-08 user gained 2nd machine (home WAN-connected). Eligible modes (WAN-friendly only): independent campaign sessions per machine + periodic incumbent merge / cut-pool exchange (~5-30 min cadence) / async portfolio with different random_seed × worker profiles. NOT eligible: sub-ms clause sharing, inter-worker fine-grained sync. | R8 `a08abe0c37f20c6b8` (re-evaluated, NOT excluded anymore) | 2× wall-clock if both hosts utilized (best case); WAN connection overhead 5-15% | 1-2 weeks for orchestration + sync layer | gated by 机 B 规格 + 连接方式 |
 
 ---
 
@@ -100,7 +101,7 @@ exact-mode-safe per PROJECT_LOCK.md.
 
 | Direction | Reason | Source |
 |-----------|--------|--------|
-| Distributed / multi-machine / Ray cluster / Dask | Single-machine hardware constraint | `project_hardware_constraint_single_machine.md` |
+| ~~Distributed / multi-machine~~ | **2026-05-08 RE-OPENED**: 用户 added 2nd machine (remote, home WAN). Subset still excluded: sub-ms clause sharing (LAN-only), inter-worker fine-grained sync (CP-SAT internal). New eligible mode: candidate-level parallel + periodic incumbent sync (WAN-friendly). See updated `project_hardware_constraint.md`. | revised |
 | GA / BRKGA / Memetic | 5 mismatches with our model | R4 `a0d2d950c3bbd8398` |
 | FPGA / GPU SAT (TurboSAT etc.) | All hardware paths excluded for current phase | R4 `a6e2f3150e1184d9d` |
 | Belief Propagation / Survey Propagation | Emergency fallback only, no use case fits | R7 `ac494304c28cb7af7` |
