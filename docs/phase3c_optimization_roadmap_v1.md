@@ -77,7 +77,7 @@ exact-mode-safe per PROJECT_LOCK.md.
 | 16 | **cpsat-autotune Optuna full sweep** | R5 `a89d19953587dd79f` | +5-25% (not 70%) | ~1 week | ~3× |
 | 17 | **ALNS Python warm-start (incumbent + AddHint)** | R6 `a7322ed66982214c7` | feasible-side LB acceleration | ~4-5 days | ~3× |
 | 18 | **MUS via CPMpy QuickXplain** | R5 `a3bef849bbe8777ab` | conflict-extraction quality up | ~4 days | ~3× |
-| 19 | **Linux migration + THP/cgroups** | R2 `a8a152668dd067210` | +15-35% baseline | ~1 day OS prep + bring-up | gated by user willingness |
+| 19 | **Linux migration + THP/cgroups (Fedora Workstation 41/42)** — selected 2026-05-08 by user preference ("红客 + 新技术 + 稳定" → Fedora 系). Reasons: Python 3.13 default (matches project requirement), glibc 2.40+ (ortools 9.15 manylinux wheel direct install), kernel 6.10+ THP / cgroups v2 / io_uring all available, dnf has mimalloc / jemalloc / tcmalloc out of the box. Recommended ramp: dual-boot first (preserve Windows fallback), benchmark vs current Windows baseline (4-worker run), full-migrate only if ≥15% improvement confirmed. | R2 `a8a152668dd067210` | +15-35% baseline | ~1 day dual-boot install + benchmark | ready to start whenever user willing |
 | 20 | **py-spy --native profile playbook** | R6 `a03cda5a8b71604d1` | identifies hot paths, prerequisite to compiler tuning ROI | 4 hours | high (diagnostic) |
 | 21 | **Branch-and-Price PoC (root-CG only)** | R10 `a434c6a1198c78a5a` | LP gap -30% if pricing tractable | ~1 week | gated by go/no-go |
 | 22 | **HiGHS 1.14 area oracle** | R7 `a2bbf0cd35f724a3c` | LP relaxation upgrade | ~1 week | ~3× |
