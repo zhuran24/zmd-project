@@ -182,6 +182,7 @@ caught this session:
 |---|------------------|-------------------|-----------|
 | 1 | R7 改造 1: AddImplication for routing OnlyEnforceIf | API misuse — `AddImplication` 2nd arg must be BoolVar, not linear constraint | R12 `a91a3c90b172df1ce` |
 | 2 | R7 改造 2: default-value channeling via new BoolVar | Anti-pattern — adds 1 BoolVar + 1 AddBoolOr, increasing model size instead of reducing | R12 `a91a3c90b172df1ce` + manual review of blueprint diff |
+| 3 | R12 蓝图 改造 4: 18 处 membership reify → linear channeling | Count error (actually 4) + missing `AddExactlyOne(bucket_lits)` (math fails without it) + CP-SAT presolve already auto-detects original pattern → low expected ROI | R12 `a8eb034b3b1213a9c` |
 
 **Lesson**: even after a transcript survives "is it a real gold mine"
 audit, the patch blueprint produced from the transcript is a *separate

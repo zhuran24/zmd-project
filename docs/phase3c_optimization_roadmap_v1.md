@@ -57,6 +57,7 @@ exact-mode-safe per PROJECT_LOCK.md.
 | 7e | **— prep: hint cross-wave persistence** | R11 `a823b529b0879c4bb` | `add_hint() + use_optimization_hints + repair_hint=True` | ~30 min | gating |
 | 24 | **Cache-aware user-layer pack: THP + tcmalloc/jemalloc + PGO + L3 isolation + AMO aggregation** | R11 `ae3590b7e2f938057` | +15-30% combined for long-running 168h workloads | THP/malloc swap ~½ day; PGO ~2-3 days; L3 isolation 1 hour | ~10× |
 | 25 | **OnlyEnforceIf 52 rewrites in `exact_coordinate_master.py`** (extends P0 #6 from top-5 → all 52) | R11 `a67cf942cd679915d` | 1.5-2× single wave (binding subproblem hot path) | ~1-2 days incl PROJECT_LOCK review | ~5× |
+| 26 | **改造 4 (membership signature reify → linear channel) — DEMOTED FROM P0 #6** | R12 `a8eb034b3b1213a9c` | uncertain — CP-SAT presolve already detects original pattern; only 4 actual reify pairs (not 18); needs explicit `AddExactlyOne(bucket_lits)` and micro-benchmark cert hash check | ~½ day incl benchmark | gated by benchmark |
 | 8 | **Combinatorial Benders Cuts (MIS, Codato-Fischetti)** | R3 `af150891e26339789` | master LP gap -30%+ | ~1 week | ~5× |
 | 9 | **Endfield player hint/nogood (3 specific)** | R10 `a9d8ba25a087fb653` | early-incumbent +5-10h faster | ~½ day | ~20× |
 | 10 | **SMAC3-as-OptunaHub-sampler A/B** | R10 `a660692b75d21afb7` | racing kills slow configs early | 1 line | ~50× |
