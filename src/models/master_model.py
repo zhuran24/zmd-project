@@ -11108,6 +11108,16 @@ class MasterPlacementModel:
         # Phase 3C P0 #4 #8 (env-gated): stronger no_overlap_2d propagation.
         # Default off; A/B benchmark via env to validate cost/benefit.
         apply_master_cp_sat_strong_disjunctive_propagation(solver)
+        # Phase 3C P1 #11 (PT-style portfolio): allow per-process random_seed
+        # override so multi-process invocation can spawn parallel-tempering
+        # diverse search trajectories. Default falls back to CP-SAT default
+        # (1) when env not set. R10 a2d29f537e2b0ba30 audit recommendation.
+        seed_env = os.environ.get("EXACT_MASTER_RANDOM_SEED")
+        if seed_env:
+            try:
+                solver.parameters.random_seed = int(seed_env)
+            except ValueError:
+                pass
         requested_search_branching = "default"
         if self.exact_mode:
             requested_search_branching = str(
