@@ -639,6 +639,7 @@ class RoutingSubproblem:
         self._add_continuity_constraints()
         self._add_port_adherence()
         self._add_gap_rule()
+        self._add_bridge_count_hint()
         elapsed = time.time() - t0
         print(f"[Routing Model] build {elapsed:.1f}s")
 
@@ -842,6 +843,21 @@ class RoutingSubproblem:
             self.model.AddMaxEquality(l1_any, l1_vars)
             for var in l0_nonstraight:
                 self.model.AddImplication(l1_any, var.Not())
+
+    def _add_bridge_count_hint(self):
+        """P1 #9 hint 1 (Endfield player consensus): prefer routings that
+        use few elevated bridges. Each l1 var (elevated layer cell) gets
+        an `add_hint(var, 0)`; CP-SAT treats this as a soft preference,
+        not a hard constraint, so feasibility is unchanged.
+
+        Rationale: players report bridge_hop ≤ 2 is the throughput sweet
+        spot; this hint biases the search toward those layouts without
+        constraining anything. Per AI Safety Contract: order_only / hint
+        only, no checkpoint writes, no proof-source modification.
+        """
+        for cell_vars in self._l1_vars.values():
+            for var in cell_vars:
+                self.model.AddHint(var, 0)
 
     def _add_continuity_constraints(self):
         for commodity in self.commodities:
