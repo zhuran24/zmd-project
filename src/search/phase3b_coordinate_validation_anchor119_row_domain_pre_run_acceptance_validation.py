@@ -127,6 +127,21 @@ def build_phase3b_coordinate_validation_anchor119_row_domain_pre_run_acceptance_
 
     required_prod_4x4_validity_fields = [
         {
+            "field": "label",
+            "expected": "prod_4x4",
+            "reason": "long-run preflight requires the record label to identify the prod_4x4 profile",
+        },
+        {
+            "field": "process_count",
+            "expected": 4,
+            "reason": "long-run preflight requires the prod_4x4 process_count to equal 4",
+        },
+        {
+            "field": "worker_count_per_process",
+            "expected": 4,
+            "reason": "long-run preflight requires the prod_4x4 worker_count_per_process to equal 4",
+        },
+        {
             "field": "completed",
             "expected": True,
             "reason": "long-run preflight requires the prod_4x4 record to be completed",
