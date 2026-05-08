@@ -195,6 +195,7 @@ caught this session:
 | 4 | R3 #10 "Power Budget: sum(supply) ≥ sum(demand) + overhead" | Data-model mismatch — facility_templates uses `needs_power: bool` (no numeric power values); real precheck would be 80m coverage geometry, not sum check. R12 estimate of 0.5d is unrealistic. | manual codebase grep + rules inspection 2026-05-08 |
 | 5 | R3 #8 蓝图 "set presolve_substitution_level=2" | Proto says "any positive value performs substitution" — 1 (default) vs 2 may be no-op delta; needs cp_model_presolve.cc per-level verification before claiming +N% | manual proto WebFetch 2026-05-08 |
 | 6 | R12 蓝图 #1 DFF u_k formula | Agent pseudocode contains ambiguous "原归一系数 W'" without precise definition; paper (Carlier-Clautiaux-Moukrim 2007 EJOR §3.2) is paywalled; GitHub code search needs auth. Formula correctness cannot be independently verified, so implementation in src/ risks math error breaking certified_exact LB soundness. | manual paper/GitHub access attempt 2026-05-08 |
+| 7 | R12 改造 5 蓝图 (sentinel row for shell guard) | Geometric reasoning correct, sentinel `(max_shell, max_shell)` math right, BUT blueprint missed that inactive path already pins `(d_lo, d_hi) = (0, 0)` via `slot.x/slot.y` inactive enforcement + unconditional dx/dy/min/max chain. Direct sentinel would create infeasibility. Correct patch is ~15 lines across 3 functions, not "2 lines" as blueprint claimed. | R12 `a7676847d82e04abb` |
 
 **Lesson**: even after a transcript survives "is it a real gold mine"
 audit, the patch blueprint produced from the transcript is a *separate
