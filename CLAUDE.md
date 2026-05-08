@@ -90,6 +90,49 @@ python scripts/run_industrial_planner_single_base_e2e.py --run-dir .artifacts/in
 python main.py --vis
 ```
 
+## Maintenance scripts (runbook)
+
+> **重要**：用户可能会问"上游更新了怎么办"——答案是这两条命令，不是手动复制文件。
+
+```powershell
+# Refresh JamboChen/endfield-calc vendored snapshot (recipes + items + facilities)
+python scripts/refresh_endfield_calc_snapshot.py
+# Optional: --dry-run / --commit <SHA>
+
+# Refresh hsyhhssyy/IndustrialPlanner vendored BASES (7 base definitions)
+python scripts/refresh_industrial_planner_bases.py
+# Optional: --dry-run / --branch v2 / --commit <SHA>
+```
+
+Both scripts are mechanical sync only:
+- Update `third_party_snapshots/.../SOURCE_METADATA.json` (version, commit, observed_counts, previous_*)
+- Print a diff report (counts changed, new entities)
+- **Do NOT touch** `canonical_rules.json` — extending the 17-recipe canonical projection is a PROJECT_LOCK gate, separate manual decision
+- **Do NOT auto-edit** `BORROWED_COMPONENTS.md` / `CHANGELOG.md` / `FILE_STATUS.md` / specs — release-note phrasing stays editorial
+
+Tests `src/tests/test_endfield_calc_typescript_snapshot.py` and `src/tests/test_industrial_planner_bases_snapshot.py` read `SOURCE_METADATA.json` for expected counts, so refresh runs do not require test edits.
+
+### Linux migration setup (Fedora target)
+
+```bash
+# Phase 3C P2 #19 bring-up checklist after Fedora install
+bash scripts/fedora_setup.sh             # dry-run, prints commands
+bash scripts/fedora_setup.sh --apply     # actually install/configure
+```
+
+Covers Python 3.13 + venv + requirements + tcmalloc/jemalloc allocators
++ THP madvise check + cgroups v2 + ortools sanity. Default mode is
+dry-run so user can review each step before applying. Usable on a fresh
+Fedora 41/42 clone of the repo.
+
+### Local upstream reference clones (offline, not vendored)
+
+`.upstream_clones/` is **gitignored** and holds full clones for offline browsing/diffing. Currently contains:
+
+- `.upstream_clones/industrial_planner_v2/` — full `hsyhhssyy/IndustrialPlanner` v2 branch (~50 MB shallow clone). Use for reading `src/domain/registry.ts`, `src/sim/engine.ts`, etc. without network. Refresh: `cd .upstream_clones/industrial_planner_v2 && git pull`.
+
+These clones are **NOT** part of the build, are NOT scanned by tests, and do NOT count as vendored data. Vendored slices live under `third_party_snapshots/`.
+
 ## Dependencies
 
 - Python 3.13
