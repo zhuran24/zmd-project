@@ -194,6 +194,7 @@ caught this session:
 | 3 | R12 蓝图 改造 4: 18 处 membership reify → linear channeling | Count error (actually 4) + missing `AddExactlyOne(bucket_lits)` (math fails without it) + CP-SAT presolve already auto-detects original pattern → low expected ROI | R12 `a8eb034b3b1213a9c` |
 | 4 | R3 #10 "Power Budget: sum(supply) ≥ sum(demand) + overhead" | Data-model mismatch — facility_templates uses `needs_power: bool` (no numeric power values); real precheck would be 80m coverage geometry, not sum check. R12 estimate of 0.5d is unrealistic. | manual codebase grep + rules inspection 2026-05-08 |
 | 5 | R3 #8 蓝图 "set presolve_substitution_level=2" | Proto says "any positive value performs substitution" — 1 (default) vs 2 may be no-op delta; needs cp_model_presolve.cc per-level verification before claiming +N% | manual proto WebFetch 2026-05-08 |
+| 6 | R12 蓝图 #1 DFF u_k formula | Agent pseudocode contains ambiguous "原归一系数 W'" without precise definition; paper (Carlier-Clautiaux-Moukrim 2007 EJOR §3.2) is paywalled; GitHub code search needs auth. Formula correctness cannot be independently verified, so implementation in src/ risks math error breaking certified_exact LB soundness. | manual paper/GitHub access attempt 2026-05-08 |
 
 **Lesson**: even after a transcript survives "is it a real gold mine"
 audit, the patch blueprint produced from the transcript is a *separate
