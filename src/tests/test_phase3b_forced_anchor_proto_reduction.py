@@ -433,6 +433,7 @@ def test_proto_profile_reports_cover_choice_modes_by_template() -> None:
         "block_selector_variables": 2,
         "local_selector_variables": 1,
         "block_selected_literal_variables": 0,
+        "local_selected_literal_variables": 0,
         "note": (
             "cover_choice_active/x/y are final selected-pole target channels; "
             "they remain in block_element encoding even when wide selectors "
