@@ -128,10 +128,13 @@ each step before applying.
 
 Why CachyOS not Fedora: Fedora 41-44 all fail to boot on user's ASUS
 Z790 (BIOS memory fragmentation + GRUB 2.06 can't coalesce). CachyOS
-ships systemd-boot option that bypasses the issue, plus cachyos-bore
-kernel default brings BORE/EEVDF scheduler +5-10% on top of base
-Linux migration's +15-35%. Earlier `scripts/fedora_setup.sh` removed
-in same commit (recoverable from git history if needed).
+ships **Limine** as default EFI bootloader (verified via repo config
+`src/modules/bootloader/bootloader.conf` `efiBootLoader: "limine"`)
+which bypasses the GRUB 2.06 issue at root with no user action
+needed during install. Plus cachyos-bore kernel default brings
+BORE/EEVDF scheduler +5-10% on top of base Linux migration's +15-35%.
+Earlier `scripts/fedora_setup.sh` removed (recoverable from git
+history if needed).
 
 ### Local upstream reference clones (offline, not vendored)
 
