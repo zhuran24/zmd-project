@@ -112,18 +112,26 @@ Both scripts are mechanical sync only:
 
 Tests `src/tests/test_endfield_calc_typescript_snapshot.py` and `src/tests/test_industrial_planner_bases_snapshot.py` read `SOURCE_METADATA.json` for expected counts, so refresh runs do not require test edits.
 
-### Linux migration setup (Fedora target)
+### Linux migration setup (CachyOS target — switched from Fedora 2026-05-08)
 
 ```bash
-# Phase 3C P2 #19 bring-up checklist after Fedora install
-bash scripts/fedora_setup.sh             # dry-run, prints commands
-bash scripts/fedora_setup.sh --apply     # actually install/configure
+# Phase 3C P2 #19 bring-up checklist after CachyOS install
+bash scripts/cachyos_setup.sh             # dry-run, prints commands
+bash scripts/cachyos_setup.sh --apply     # actually install/configure
 ```
 
-Covers Python 3.13 + venv + requirements + tcmalloc/jemalloc allocators
-+ THP madvise check + cgroups v2 + ortools sanity. Default mode is
-dry-run so user can review each step before applying. Usable on a fresh
-Fedora 41/42 clone of the repo.
+Covers Python 3.13 + venv + requirements + jemalloc/tcmalloc/mimalloc
+allocators + THP madvise check + cgroups v2 + zram check + ortools
+sanity + cachyos-bore kernel verify + IgnorePkg recommendation for
+168h campaign stability. Default mode is dry-run so user can review
+each step before applying.
+
+Why CachyOS not Fedora: Fedora 41-44 all fail to boot on user's ASUS
+Z790 (BIOS memory fragmentation + GRUB 2.06 can't coalesce). CachyOS
+ships systemd-boot option that bypasses the issue, plus cachyos-bore
+kernel default brings BORE/EEVDF scheduler +5-10% on top of base
+Linux migration's +15-35%. Earlier `scripts/fedora_setup.sh` removed
+in same commit (recoverable from git history if needed).
 
 ### Local upstream reference clones (offline, not vendored)
 
