@@ -169,6 +169,26 @@ Follow-up source-code audits ("R12-style") on P0 roadmap items — saved hours
 | # | Item | Status | Evidence |
 |---|------|--------|----------|
 | P0 #2 | 4 vs 8 worker A/B + RSS profile | ✅ **VERIFIED & landed** | telemetry analysis 2026-05-08: 4 worker peak_RSS=23.3 GiB / duration 287s vs 8 worker peak_RSS=40.0 GiB / duration 262s — 4 worker saves 41.8% RSS, only 8.7% slower, R4 gold mine confirmed |
+| P0 #3 | UNSAT subsolver portfolio (R12-revised conservative) | ✅ **CONSERVATIVE LANDED** | commit 0a448d8: ignore_subsolvers filter applied (6 LNS names excluded for max_lex). Explicit subsolvers list deferred until search_branching=FIXED interaction is verified. |
+| P0 #6 | OnlyEnforceIf Top-5 改造 | ⚠ **PARTIALLY LANDED** | commit 8b5d694: 改造 3 (sum-channel) done. 改造 1 REFUTED (R7 API error), 改造 2 anti-pattern (agent blueprint adds BoolVar/AddBoolOr instead of removing). 改造 4/5 deferred for deeper audit. |
+
+## "Patch blueprint audit" log (2026-05-08)
+
+When promoting transcript-level "Top N" recommendations to a patch, the
+implementation blueprint itself must pass review. Two new failure modes
+caught this session:
+
+| # | Transcript claim | Blueprint failure | Caught by |
+|---|------------------|-------------------|-----------|
+| 1 | R7 改造 1: AddImplication for routing OnlyEnforceIf | API misuse — `AddImplication` 2nd arg must be BoolVar, not linear constraint | R12 `a91a3c90b172df1ce` |
+| 2 | R7 改造 2: default-value channeling via new BoolVar | Anti-pattern — adds 1 BoolVar + 1 AddBoolOr, increasing model size instead of reducing | R12 `a91a3c90b172df1ce` + manual review of blueprint diff |
+
+**Lesson**: even after a transcript survives "is it a real gold mine"
+audit, the patch blueprint produced from the transcript is a *separate
+artifact* that needs its own review — agent might quote API docs
+correctly but still output blueprints that don't compile or that
+contradict the stated optimization goal. Always grep actual codebase
+and count constraints/vars before/after for any "improvement" patch.
 
 ## Reading these transcripts
 
