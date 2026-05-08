@@ -175,6 +175,91 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
     assert len(sink_specs) == 2
 
 
+def test_binding_model_overload_separation_default_off(project_root, facility_pools, monkeypatch):
+    """P1 #9 hint 2 stage 2: with EXACT_BINDING_USE_OVERLOAD_SEPARATION
+    unset (default), nogood method must NOT be invoked and
+    conflict_summary must report overload_separation_enabled=False."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    monkeypatch.delenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", raising=False)
+
+    instances = [
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
+    ]
+    placement_solution = {
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
+    }
+    model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances,
+        required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
+        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
+        project_root=project_root,
+    )
+    model.build()
+    summary = model.extract_conflict_summary()
+    assert summary["overload_separation_enabled"] is False
+    assert summary["overload_nogoods_added"] == 0
+
+
+def test_binding_model_overload_separation_when_enabled_records_summary(
+    project_root, facility_pools, monkeypatch
+):
+    """P1 #9 hint 2 stage 2: with EXACT_BINDING_USE_OVERLOAD_SEPARATION=1,
+    nogood method runs and conflict_summary reports
+    overload_separation_enabled=True (regardless of nogood count, which
+    depends on commodity classification on the project's real data)."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    monkeypatch.setenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", "1")
+
+    instances = [
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
+    ]
+    placement_solution = {
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
+    }
+    model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances,
+        required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
+        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
+        project_root=project_root,
+    )
+    model.build()
+    summary = model.extract_conflict_summary()
+    assert summary["overload_separation_enabled"] is True
+    assert summary["overload_nogoods_added"] >= 0  # depends on classification
+
+
 def test_binding_model_reports_pose_binding_domain_cache_reuse(project_root, facility_pools):
     import sys
 
