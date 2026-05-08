@@ -28,6 +28,7 @@ from ortools.sat.python import cp_model
 from src.models.cp_sat_worker_config import (
     DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
     DEFAULT_MASTER_CP_SAT_WORKERS,
+    apply_master_cp_sat_subsolver_filter,
     resolve_cp_sat_worker_count,
 )
 from src.models._cpsat_compat import cp_model_from_proto, search_branching_name
@@ -11100,6 +11101,9 @@ class MasterPlacementModel:
             env_name="EXACT_MASTER_CP_SAT_WORKERS",
             default=DEFAULT_MASTER_CP_SAT_WORKERS,
         )
+        # Phase 3C P0 #3 (R12-revised conservative): exclude unhelpful LNS
+        # subsolvers for max_lex objective. See cp_sat_worker_config.py.
+        apply_master_cp_sat_subsolver_filter(solver)
         requested_search_branching = "default"
         if self.exact_mode:
             requested_search_branching = str(

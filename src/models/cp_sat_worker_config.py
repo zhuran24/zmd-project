@@ -114,3 +114,32 @@ def format_exact_cp_sat_worker_profile(
         stage_details = details[stage]
         formatted.append(f"{stage}={stage_details['workers']}[{stage_details['source']}]")
     return "resolved_cp_sat_worker_profile: " + ", ".join(formatted)
+
+
+# Phase 3C P0 #3 (UNSAT subsolver portfolio, R12-revised conservative variant).
+# These LNS subsolvers are unhelpful for max_lex(area, min_side) optimization
+# in CP-SAT 9.15 — they target feasibility/MaxSAT scenarios that don't apply
+# to our master placement model. Verified against ortools/sat/cp_model_search.cc.
+# See docs/research/agent_transcripts/a55a893f5ab38c083.output for full audit.
+MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX = (
+    "rins",
+    "rens",
+    "graph_arc_lns",
+    "graph_cst_lns",
+    "feasibility_pump",
+    "violation_ls",
+)
+
+
+def apply_master_cp_sat_subsolver_filter(solver) -> Tuple[str, ...]:
+    """Apply Phase 3C P0 #3 conservative subsolver filter to a master CpSolver.
+
+    Only sets ignore_subsolvers (always-safe LNS exclusion); does NOT set
+    explicit subsolvers list, since CP-SAT search_branching=FIXED interaction
+    with explicit subsolvers is unverified for our portfolio configuration.
+
+    Returns the tuple of ignored subsolver names (for logging).
+    """
+    for name in MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX:
+        solver.parameters.ignore_subsolvers.append(name)
+    return MASTER_IGNORE_SUBSOLVERS_FOR_MAX_LEX
