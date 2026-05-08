@@ -2357,8 +2357,10 @@ class CoordinateExactMasterDelegate:
                     bucket_region_lits.append(region_lit)
                     all_region_lits.append(region_lit)
                 if bucket_region_lits:
-                    self.model.Add(sum(bucket_region_lits) == 1).OnlyEnforceIf(bucket_lit)
-                    self.model.Add(sum(bucket_region_lits) == 0).OnlyEnforceIf(bucket_lit.Not())
+                    # P0 #6 改造 3 (sum-channel): bucket_lit ∈ {0,1} so the
+                    # paired half-reify (==1 if lit, ==0 if not lit) is
+                    # mathematically equivalent to a single channeling.
+                    self.model.Add(sum(bucket_region_lits) == bucket_lit)
                 else:
                     self.model.Add(bucket_lit == 0)
 
@@ -2429,16 +2431,15 @@ class CoordinateExactMasterDelegate:
                     self._add_region_constraints(slot, region, region_lit)
                     bucket_region_lits.append(region_lit)
                 if bucket_region_lits:
-                    self.model.Add(sum(bucket_region_lits) == 1).OnlyEnforceIf(bucket_lit)
-                    self.model.Add(sum(bucket_region_lits) == 0).OnlyEnforceIf(
-                        bucket_lit.Not()
-                    )
+                    # P0 #6 改造 3 (sum-channel): bucket_lit ∈ {0,1} so the
+                    # paired half-reify is equivalent to single channeling.
+                    self.model.Add(sum(bucket_region_lits) == bucket_lit)
                 else:
                     self.model.Add(bucket_lit == 0)
 
             if bucket_lits:
-                self.model.Add(sum(bucket_lits) == 1).OnlyEnforceIf(slot.active)
-                self.model.Add(sum(bucket_lits) == 0).OnlyEnforceIf(slot.active.Not())
+                # P0 #6 改造 3 (sum-channel): slot.active ∈ {0,1}.
+                self.model.Add(sum(bucket_lits) == slot.active)
             else:
                 self.model.Add(slot.active == 0)
 
