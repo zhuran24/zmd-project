@@ -170,7 +170,16 @@ Follow-up source-code audits ("R12-style") on P0 roadmap items — saved hours
 |---|------|--------|----------|
 | P0 #2 | 4 vs 8 worker A/B + RSS profile | ✅ **VERIFIED & landed** | telemetry analysis 2026-05-08: 4 worker peak_RSS=23.3 GiB / duration 287s vs 8 worker peak_RSS=40.0 GiB / duration 262s — 4 worker saves 41.8% RSS, only 8.7% slower, R4 gold mine confirmed |
 | P0 #3 | UNSAT subsolver portfolio (R12-revised conservative) | ✅ **CONSERVATIVE LANDED** | commit 0a448d8: ignore_subsolvers filter applied (6 LNS names excluded for max_lex). Explicit subsolvers list deferred until search_branching=FIXED interaction is verified. |
-| P0 #6 | OnlyEnforceIf Top-5 改造 | ⚠ **PARTIALLY LANDED** | commit 8b5d694: 改造 3 (sum-channel) done. 改造 1 REFUTED (R7 API error), 改造 2 anti-pattern (agent blueprint adds BoolVar/AddBoolOr instead of removing). 改造 4/5 deferred for deeper audit. |
+| P0 #6 | OnlyEnforceIf Top-5 改造 | ⚠ **PARTIALLY LANDED** | commit 8b5d694: 改造 3 (sum-channel) done. 改造 1 REFUTED (R7 API error), 改造 2 anti-pattern (agent blueprint adds BoolVar/AddBoolOr instead of removing). 改造 4 demoted to P1 (R12 audit shows count 4 not 18, missing AddExactlyOne, presolve auto-detects). 改造 5 deferred for sentinel-pair audit. |
+| P0 #4 | Domain-level prechecks | ⚠ **AUDITED, partial overlap** | R12 audit `ab23c3975f6040dc8`: R3 #8 mostly done (probing/symmetry levels); #3 in CP-SAT internal; #7 covered by existing area LB. **4 P0a survive**: #1 DFF area LB, #10 Power Budget, #11 Storage I/O, #8 remaining 2 params. ROI revised +8-16% (down from R3's +11-25%). 8 demoted to P1. |
+
+## Data corrections (2026-05-08)
+
+- **mandatory facility instance count = 266** (not 326). 326 is the total
+  including 60 optional facility instances. Earlier round prompts that
+  said "326 mandatory" conflated the two; specs/05 and PROJECT_LOCK.md
+  are authoritative at 266 mandatory. Going forward: any roadmap or
+  audit using "mandatory" should use 266.
 
 ## "Patch blueprint audit" log (2026-05-08)
 
