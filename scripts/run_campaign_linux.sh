@@ -29,8 +29,12 @@ if [[ ! -x "$PYTHON_BIN" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# (b) jemalloc LD_PRELOAD
+# (b) jemalloc LD_PRELOAD + PYTHONMALLOC=malloc
 # ---------------------------------------------------------------------------
+# LD_PRELOAD 让 C 层分配走 jemalloc；PYTHONMALLOC=malloc 让 Python 解释器
+# 自己的 pymalloc arena 也跨过去走系统 malloc → 一并 hook 到 jemalloc。
+# 没有这一行的话 jemalloc 只 hook 到 ortools C++，Python 自己 ~30% 的分
+# 配走 pymalloc 拿不到收益。
 JEMALLOC_PATH="/usr/lib/libjemalloc.so.2"
 if [[ ! -f "$JEMALLOC_PATH" ]]; then
     echo "WARN: $JEMALLOC_PATH not found — jemalloc LD_PRELOAD skipped." >&2
@@ -41,7 +45,9 @@ else
     elif [[ -z "${LD_PRELOAD:-}" ]]; then
         export LD_PRELOAD="$JEMALLOC_PATH"
     fi
+    export PYTHONMALLOC=malloc
     echo "[run_campaign_linux] LD_PRELOAD=$LD_PRELOAD"
+    echo "[run_campaign_linux] PYTHONMALLOC=$PYTHONMALLOC"
 fi
 
 # ---------------------------------------------------------------------------

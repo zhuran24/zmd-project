@@ -181,10 +181,42 @@ bash scripts/run_campaign_linux.sh --vis
 - jemalloc LD_PRELOAD: +5-10%（缓 ptmalloc 多线程 contention）
 - taskset P-core 自动检测+pin: +2-5%（i9-13900KS cpu0-7 5.6GHz vs E-core 4.5GHz）
 - THP `[always]`：CachyOS 系统级默认，wrapper 仅 sanity check 不动
+- jemalloc + `PYTHONMALLOC=malloc`：让 Python 解释器自己的 pymalloc arena 也走 jemalloc（不然 jemalloc 只 hook C 层）→ 收益从 +5-10% 升到 +7-13%
 - 合计 +15-22%（不是路线图原 claim 15-30% 因 stack-efficiency 折扣）
 
 启动 168h campaign **必须**用这个 wrapper（直接 `python main.py` 会丢两件套
 的收益）；readiness gate 9/9 项检查会自动 flag 漏配置。
+
+### CachyOS 主机生产力调优（host-level，2026-05-10 落地）
+
+针对 i9-13900KS + CP-SAT 长跑工作负载已经做了几件 host-level 调优——这些是
+系统状态，不是项目代码。168h campaign 启动前应该 verify 都生效：
+
+```bash
+# CPU 频率 / 升频
+powerprofilesctl get                                              # 应 = performance
+cat /sys/devices/system/cpu/intel_pstate/hwp_dynamic_boost        # 应 = 1
+systemctl is-enabled hwp-dynamic-boost.service                    # 应 = enabled
+
+# Cmdline (重启后才生效) — 应包含:
+#   mitigations=off isolcpus=0-7 nohz_full=0-7 rcu_nocbs=0-7
+cat /proc/cmdline
+
+# 温度监控 (campaign 启动时后台启)
+nohup bash scripts/temp_logger.sh 60 > data/telemetry/temp_log.csv 2>&1 &
+# 输出 CSV: timestamp_iso,package_c,max_core_c,max_pcore_freq_mhz
+# 监控 max_core_c 持续 ≥ 90°C → 撞 thermal throttle → PPD 切回 balanced
+```
+
+调优明细（修改记录）：
+- **PPD performance** + **HWP dynamic boost systemd unit** (P0+P1, 立即生效, 2026-05-10)
+- **mitigations=off + isolcpus=0-7 + nohz_full=0-7 + rcu_nocbs=0-7**
+  写进 `/boot/loader/entries/linux-cachyos.conf`（systemd-boot, 不是 Limine）。
+  备份 `linux-cachyos.conf.bak.20260510_pre_isolcpus`。
+  P-core (cpu0-7) 完全从 kernel scheduler 隔离；nohz_full 关每秒 1000 timer
+  tick；rcu_nocbs 把 RCU callback 移到 E-core。168h 长跑减少 context switch
+  抖动 +1-3% 吞吐。**重启后生效**——LTS entry 不动留作 fallback。
+- **跳过**：OOM score adj (普通用户写不到 < 0)、systemd-run cgroup 隔离 (复杂度高收益边际)、CPU undervolt (崩溃丢 168h 进度风险高)。
 
 ### P1 #12 cache-trio spike (24h instrumentation, gate 决定要不要做主体)
 
