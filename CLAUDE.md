@@ -136,6 +136,23 @@ BORE/EEVDF scheduler +5-10% on top of base Linux migration's +15-35%.
 Earlier `scripts/fedora_setup.sh` removed (recoverable from git
 history if needed).
 
+### 168h campaign 关键包冻结 (CachyOS 滚动稳定性)
+
+```bash
+# 168h campaign 启动前 freeze 关键包不被 pacman -Syu 升级
+bash scripts/pacman_campaign_freeze.sh --enable
+
+# 当前状态查询
+bash scripts/pacman_campaign_freeze.sh --status
+
+# campaign 结束后解冻让系统跟最新
+bash scripts/pacman_campaign_freeze.sh --disable
+```
+
+锁的包：linux-cachyos*, glibc, python, jemalloc, gperftools。平时（非
+campaign 期间）应保持 unfreeze。脚本通过在 `/etc/pacman.conf` 里加带
+markers 的 `IgnorePkg` 行实现，可可逆 toggle。
+
 ### Local upstream reference clones (offline, not vendored)
 
 `.upstream_clones/` is **gitignored** and holds full clones for offline browsing/diffing. Currently contains:
