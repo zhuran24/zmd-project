@@ -186,6 +186,24 @@ bash scripts/run_campaign_linux.sh --vis
 启动 168h campaign **必须**用这个 wrapper（直接 `python main.py` 会丢两件套
 的收益）；readiness gate 9/9 项检查会自动 flag 漏配置。
 
+### P1 #12 cache-trio spike (24h instrumentation, gate 决定要不要做主体)
+
+```bash
+# 24h campaign 启动时把 spike env 打开（zero-impact when off）
+EXACT_SUBPROBLEM_REPEAT_PROBE=1 bash scripts/run_campaign_linux.sh \
+    --campaign-hours 24.0 --parallel-processes 4
+
+# 跑完后 aggregate 各 worker 的 repeat-rate 数据
+python scripts/analyze_subproblem_repeat_rate.py
+```
+
+输出全局 binding subproblem repeat_rate（lower bound — 跨 pid 不做 hash
+dedup）。判定：rate ≥ 15% → GO 做 cache trio 主体（5-7 天工作）；< 15%
+→ KILL（cache trio 没用）。审计来源：P1 #12 audit `a36d33351616095f1`。
+
+数据落 `data/telemetry/subproblem_repeat_<pid>.jsonl`，每 5 min append
+一次 summary snapshot。worker process 各自一个文件，offline 聚合。
+
 ### Local upstream reference clones (offline, not vendored)
 
 `.upstream_clones/` is **gitignored** and holds full clones for offline browsing/diffing. Currently contains:

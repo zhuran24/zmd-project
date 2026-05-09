@@ -3877,6 +3877,11 @@ class LBBDController:
         solution: Dict[str, Any],
         diagnostic_flow_status: str,
     ) -> Tuple[str, Optional[Dict[str, Any]]]:
+        # P1 #12 spike instrumentation: record placement → binding input for
+        # offline repeat-rate analysis. Env-gated, no-op when probe is off.
+        from src.runtime.subproblem_invocation_counter import record as _spike_record
+        _spike_record("binding", solution)
+
         self._emit_heartbeat(
             stage="binding_build",
             event="start",
