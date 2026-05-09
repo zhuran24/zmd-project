@@ -147,6 +147,24 @@ whenever a round produces at least one actionable gold-mine.
 
 **Round 12 decision**: not yet evaluated. Hypothesis: P0 landing now has higher ROI than further research, but per Round 11 lesson **don't pull "predicted ROI ≤ 1" from thin air** — at minimum, list residual unprobed directions and judge each.
 
+## Round 13 (2026-05-10) — half-year refresh on R1-R11 directions
+
+R1-R11 调研截至 2026-05-08。距今约 2 天，但学术日历上有半年新进展 (CP/SAT/CPAIOR 2025 H2 会议 + 工具版本更新)。规则修订（见 `feedback_research_roi_metric.md` v2）：实施带宽空出 + 信息池可能更新 → 单 round 调研可重启。
+
+| Agent ID | Topic | Outcome |
+|---|---|---|
+| `a4ecd78d0488484e7` | OR-Tools 9.16+ changelog | ⚠ 9.16 NOT released yet (R5/R6 May predict 没兑现); 9.15.6755 (2026-01-14) 仍是当前最新; post-9.15 main 6 个新字段不影响项目; 5 件套配置全部仍合理 |
+| `ab0787721db5ca990` | 2025 H2 CP/SAT/INFORMS 论文 | 🥇 5 watchlist + 1 直接借鉴: IJPR 2025 LBBD 工程加强 paper (cuts + warm-start) 跟项目三层 LBBD 同构; CP'25 LLG/Solnon anytime/2D Cutting/DC-LNS; CP'25 #34 PB-OPT proof; LLM-LNS ICML'25; 无路线图变更, 无 paper 颠覆 ε-Certified/LBBD/cut 持久化方向 |
+| `adee29cf670b5c3dc` | Pumpkin/Glasgow/Huub | 🥇🥇 Pumpkin v0.3.0 PyPI (2026-02-11) Python binding **已成熟**; Glasgow gcspy + VeriPB 3.0 (2026-05-09 仍每日 commit); Huub 仍无 Python; 推荐: Pumpkin P3→P2 PoC 候选 (binding subproblem D''' 独立 audit), Glasgow P3→P2 audit-only |
+| `a8a448561dbacf07c` | OpenEvolve/AlphaEvolve cookbook | 🥇 OpenEvolve v0.2.27 (2026-03-18) late beta + Claude/DeepSeek 已支持; LLM-LNS ICML'25 spotlight 打过 Gurobi; AlphaEvolve arXiv 2506.13131; **R10 1 周 PoC 缩到 2-3 day**; DeepSeek V3 $5/500 iter ensemble Claude Sonnet 4.6 副; P2 #14 升级到"立即可做" |
+| `ab56e030d7ec24cad` | CPMpy/cvc5/Z3 SMT 工具 | 🥇 CPMpy 0.10.0 (2026-01-19) MUS API 稳定 + OR-Tools 9.15 已对齐; cvc5 1.3.4 (2026-05-07); Z3 4.16.0; SMT-COMP 2025 QF_LIA: OpenSMT 1, cvc5 2; **P2 #18 工时 4d→1-2d**, 立即可做; P3 cvc5 维持 |
+| `a3c49824ef52b2cb9` | OR-Tools custom C++ propagator | ❌ Excluded. PropagatorInterface 是 internal C++ class, 官方 Discussion #3303 推荐 reformulate, 无 user-extension API; fork-only 路径 4 周 + PROJECT_LOCK 红线; 路线图加 Excluded 条 |
+| `af55dd10eeeac5fd0` | Mallob/SAT Comp 2025 | ⚠ P3 watchlist. SAT'25 parallel: Mallob 1, Painless 2; cloud track 2025 取消; Mallob v2.0.0 (2025-07-31) 单机 mono mode 但无 24 thread vs Kissat-MAB head-to-head; IPASIR-2 仍 draft; LAN 假设不适合 P2 #27 WAN |
+| `a3356c51d9d10daab` | Anytime CP / ε-Certified 半年 | 🥇 CP'25 #21 Koops VeriPB PB-OPT 工业可用 (RoundingSat/Sat4j 全套 logging 完成); cake_lpr 2026-02 升级; **R11 #6 VeriPB exporter 90min→4-6h** (中间 ε-gap 没标准 schema, 自定义 transcoder 不可避免); **新增 P2 plateau-based 动态阶段切换** (Lübke&Berg AAAI'25 思路, 2h, Stage-2→Stage-3 if dual_growth<threshold for 4h) |
+
+**Round 13 ROI estimate**: research ~25 min wallclock (8 agent 并行 ~10-15 min wall + 我 ~10 min 处理); 兑现 ROI = 4 个 P3→P2 升级 + 2 个 P2 工时缩短 + 1 个 Excluded 修正 + 1 个新 P2 项 + 1 个 R11 #6 工时修正 = 估 **~2-3 工程天 saved + 4 个 PoC 候选实施带宽利用**。
+**关键 takeaway**: 半年内 9.16 没发布但工具链 (Pumpkin/OpenEvolve/CPMpy/VeriPB) 全部成熟一档; 路线图 P3 → P2 升级是主要变化。
+
 ## "Research firefighting" ROI realized log (2026-05-08)
 
 Follow-up source-code audits ("R12-style") on P0 roadmap items — saved hours
