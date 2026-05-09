@@ -20,6 +20,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="repla
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.runtime.campaign_freeze_monitor import start_freeze_monitor
 from src.runtime.process_priority import (
     apply_process_priority_if_configured,
     configure_process_priority_env,
@@ -29,6 +30,13 @@ from src.models.exact_coordinate_master import (
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     EXACT_COORDINATE_MASTER_SEARCH_PROFILES,
 )
+
+# Threshold above which we treat a run as "production-class" and gate it
+# behind the readiness check + start the freeze monitor. 24h = 1 day; the
+# CachyOS rolling-release / pacman-freeze concern is real for any multi-hour
+# run, but day+ runs are the case we genuinely don't want to auto-trash by
+# accidentally skipping the gate.
+CAMPAIGN_GATE_THRESHOLD_HOURS = 24.0
 
 
 
@@ -212,6 +220,15 @@ def main() -> None:
         default=None,
         help="Optional Windows process priority override for this repository process tree.",
     )
+    parser.add_argument(
+        "--skip-readiness-gate",
+        action="store_true",
+        help=(
+            f"Bypass production readiness gate (pacman freeze + venv + preflight + ...) "
+            f"that would otherwise BLOCK runs with --campaign-hours >= "
+            f"{CAMPAIGN_GATE_THRESHOLD_HOURS}. For dry-runs / debug only."
+        ),
+    )
     args = parser.parse_args()
 
     if args.process_priority is not None:
@@ -223,6 +240,34 @@ def main() -> None:
     if args.vis:
         run_visualization()
         return
+
+    # Production-class run: gate-check before starting + start freeze monitor
+    # daemon for the duration. The gate itself is implemented in
+    # scripts/production_readiness_gate.py; we import its in-process API here.
+    is_production_class = (
+        mode == "certified_exact"
+        and float(args.campaign_hours) >= CAMPAIGN_GATE_THRESHOLD_HOURS
+    )
+    if is_production_class and not args.skip_readiness_gate:
+        sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+        from production_readiness_gate import gate_check  # noqa: E402
+        gate = gate_check()
+        print(gate.render())
+        if gate.has_block:
+            print(
+                f"\nBLOCKED: campaign-hours={args.campaign_hours} >= "
+                f"{CAMPAIGN_GATE_THRESHOLD_HOURS} 触发 production readiness gate. "
+                f"修完阻塞项后重跑，或加 --skip-readiness-gate 强制（不推荐）。",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+    if is_production_class:
+        # Even with --skip-readiness-gate we still start the monitor — the
+        # whole point is to alert if freeze is removed mid-run, regardless
+        # of whether the user bypassed the startup gate.
+        freeze_log = PROJECT_ROOT / "data" / "telemetry" / "campaign_freeze_monitor.log"
+        start_freeze_monitor(log_path=freeze_log)
 
     print(format_exact_cp_sat_worker_profile())
 

@@ -7,6 +7,8 @@
 
 通过 = exit 0；任何 BLOCK = exit 1。
 
+也可以从 main.py 直接调用 `gate_check()` 拿 Gate 对象做内置检查。
+
 检查项（按严重度）:
   [B] pacman freeze 已启用 (CachyOS 滚动稳定性)
   [B] venv 存在 + ortools 可导入
@@ -17,29 +19,33 @@
 
 [B] = blocker（不通过则 BLOCK）；[W] = warning（提示但不阻塞）。
 
-Cross-OS：在 non-Linux 上 pacman freeze 检查自动 skip + 标 N/A。
+项目 Linux only — 不做 cross-OS skip，非 Linux 上 pacman check 会直接报错。
 """
 
 from __future__ import annotations
 
-import os
-import platform
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Tuple
+from typing import List, Tuple
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PACMAN_CONF = Path("/etc/pacman.conf")
-FREEZE_MARKER = "# === Phase 3C campaign freeze BEGIN ==="
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.runtime.campaign_freeze_monitor import (  # noqa: E402
+    FREEZE_MARKER,
+    PACMAN_CONF,
+    is_pacman_freeze_enabled,
+)
+
 ARTIFACT_MIN_FREE_GIB = 100
 DISK_PATH_TO_CHECK = PROJECT_ROOT / ".artifacts"
 
 
 class Gate:
     def __init__(self) -> None:
-        self.checks: list[Tuple[str, str, str]] = []  # (level, label, msg)
+        self.checks: List[Tuple[str, str, str]] = []  # (level, label, msg)
         self.has_block = False
 
     def ok(self, label: str, msg: str = "") -> None:
@@ -52,16 +58,13 @@ class Gate:
         self.checks.append(("BLOCK", label, msg))
         self.has_block = True
 
-    def na(self, label: str, msg: str) -> None:
-        self.checks.append(("N/A", label, msg))
-
     def render(self) -> str:
         lines = ["=" * 60, "Production Readiness Gate (168h campaign 启动前检查)", "=" * 60, ""]
         block_count = 0
         warn_count = 0
         ok_count = 0
         for level, label, msg in self.checks:
-            tag = {"OK": "OK   ", "WARN": "WARN ", "BLOCK": "BLOCK", "N/A": "N/A  "}[level]
+            tag = {"OK": "OK   ", "WARN": "WARN ", "BLOCK": "BLOCK"}[level]
             line = f"  [{tag}] {label}"
             if msg:
                 line += f": {msg}"
@@ -86,11 +89,8 @@ class Gate:
 
 
 def check_pacman_freeze(gate: Gate) -> None:
-    if platform.system() != "Linux":
-        gate.na("pacman freeze", f"non-Linux ({platform.system()}) — skip")
-        return
     if not PACMAN_CONF.exists():
-        gate.na("pacman freeze", "/etc/pacman.conf 不存在 — 非 Arch/CachyOS 系统")
+        gate.block("pacman freeze", "/etc/pacman.conf 不存在 — 当前不是 Arch/CachyOS 系统？")
         return
     try:
         content = PACMAN_CONF.read_text(encoding="utf-8")
@@ -106,18 +106,22 @@ def check_pacman_freeze(gate: Gate) -> None:
         )
 
 
+def _venv_python() -> Path:
+    return PROJECT_ROOT / ".venv" / "bin" / "python"
+
+
 def check_venv_and_ortools(gate: Gate) -> None:
-    venv_python = PROJECT_ROOT / ".venv" / "bin" / "python"
+    venv_python = _venv_python()
     if not venv_python.exists():
-        venv_python_win = PROJECT_ROOT / ".venv" / "Scripts" / "python.exe"
-        if venv_python_win.exists():
-            venv_python = venv_python_win
-        else:
-            gate.block("venv", f".venv/bin/python 或 .venv/Scripts/python.exe 不存在 — 跑 cachyos_setup.sh --apply")
-            return
+        gate.block("venv", f"{venv_python} 不存在 — 跑 cachyos_setup.sh --apply")
+        return
     try:
         result = subprocess.run(
-            [str(venv_python), "-c", "from ortools.sat.python import cp_model; print(cp_model.CpSolver().parameters.num_search_workers)"],
+            [
+                str(venv_python),
+                "-c",
+                "from ortools.sat.python import cp_model; print(cp_model.CpSolver().parameters.num_search_workers)",
+            ],
             cwd=str(PROJECT_ROOT),
             capture_output=True,
             text=True,
@@ -127,20 +131,19 @@ def check_venv_and_ortools(gate: Gate) -> None:
         gate.block("ortools import", f"venv python 调用失败: {exc}")
         return
     if result.returncode != 0:
-        gate.block("ortools import", f"venv 里 import ortools 失败 (exit {result.returncode}): {result.stderr.strip()[:200]}")
+        gate.block(
+            "ortools import",
+            f"venv 里 import ortools 失败 (exit {result.returncode}): {result.stderr.strip()[:200]}",
+        )
         return
     gate.ok("ortools import", "venv ortools.sat.python 可导入")
 
 
 def check_preflight_gate(gate: Gate) -> None:
-    venv_python = PROJECT_ROOT / ".venv" / "bin" / "python"
+    venv_python = _venv_python()
     if not venv_python.exists():
-        venv_python_win = PROJECT_ROOT / ".venv" / "Scripts" / "python.exe"
-        if venv_python_win.exists():
-            venv_python = venv_python_win
-        else:
-            gate.warn("preflight gate", "venv 缺失 — preflight gate 已被前面 venv check 阻塞")
-            return
+        gate.warn("preflight gate", "venv 缺失 — preflight gate 已被前面 venv check 阻塞")
+        return
     preflight_path = PROJECT_ROOT / "scripts" / "preflight_gate.py"
     try:
         result = subprocess.run(
@@ -163,9 +166,6 @@ def check_preflight_gate(gate: Gate) -> None:
 
 
 def check_kernel(gate: Gate) -> None:
-    if platform.system() != "Linux":
-        gate.na("kernel", f"non-Linux ({platform.system()})")
-        return
     try:
         kernel = subprocess.check_output(["uname", "-r"], text=True).strip()
     except Exception as exc:
@@ -222,7 +222,12 @@ def check_git_clean(gate: Gate) -> None:
         gate.ok("git status", "working tree clean")
 
 
-def main() -> int:
+def gate_check() -> Gate:
+    """Run all readiness checks and return the populated Gate.
+
+    Importable from main.py for in-process startup gating without
+    spawning a subprocess.
+    """
     gate = Gate()
     check_pacman_freeze(gate)
     check_venv_and_ortools(gate)
@@ -230,6 +235,11 @@ def main() -> int:
     check_kernel(gate)
     check_disk_space(gate)
     check_git_clean(gate)
+    return gate
+
+
+def main() -> int:
+    gate = gate_check()
     print(gate.render())
     return 1 if gate.has_block else 0
 
