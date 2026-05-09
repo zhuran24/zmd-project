@@ -159,10 +159,11 @@ Follow-up source-code audits ("R12-style") on P0 roadmap items — saved hours
 | 3 | P0 #5 AddCircuit (R7 → R12 `ab52ebd0fdc64a308`) | ❌ REFUTED | ~5-10h (would have wasted on infeasible refactor; original "1 day" was off by infinity since AddCircuit can't handle splitters/mergers) |
 | 4 | P0 #23 presolve_extract_integer_enforcement (R11 → R12 `a0b6fa2949affdad1`) | ❌ REFUTED | ~1-2h (param doesn't do what R11 said; was zero-citation Claude inference; MIPLIB regressions warned in proto) |
 | 5 | P1 #7 ε-Certified prep (R3+R7+R10 → R11 `a823b529b0879c4bb`) | ⚠ engineering layer missing | ~5d (reveal that "5-day implementation" was on top of unbuilt schema_v4 + bound_state foundation) |
+| 6 | P1 #8 Combinatorial Benders Cuts (R3 `af150891e26339789` → 2026-05-10 audit `ae376dabbfd7a5096`) | ⚠ PARTIALLY_REFUTED | ~3-5 engineering days saved (path 1: avoided over-investing 1 week for 5× expected when reality is 2-3 days for 1.3-1.8×; path 2: surfaced that current cuts are already fine-grained subset, MIS only useful in INFEASIBLE-fallback path). Demoted P1 → P2. |
 
-**Pattern (updated 2026-05-08 evening)**: parameter-level P0 救火率 **4/4 (100%)** — covers BOTH "benchmark citation" type (R5 shared_tree, R2 UNSAT subsolver, R7 AddCircuit) AND "Claude self-inference" type (R11 presolve_extract_integer_enforcement, where R11 had no citation at all and even misdescribed the mechanism). Lesson now stronger: ANY parameter-level P0/P1 entry whose ROI claim cannot be traced to a primary source-code or proto reading **must be follow-up audited**. See `feedback_verify_solver_param_claims.md` (revised).
+**Pattern (updated 2026-05-10)**: 救火率扩展到 **5/5 (100%)** —— 第 5 个数据点是 algorithm-level claim（不是 solver-param），把规则边界从"solver 内部参数"扩展到"任何可由 primary source 验证的量化金矿"。新覆盖：(a) "benchmark citation" type — R5/R2/R7 — agent 引用真 benchmark 但没核实是否适用我们的 master/objective 类型；(b) "Claude inference" type — R11 — 零 citation；(c) **新增 "paper claim displacement" type — R3 #8** —— agent 引用真论文但路线图作者从定性描述误转出了具体数字；论文红利对我们 master 类型不适用。See `feedback_verify_solver_param_claims.md` (2026-05-10 revised — rule scope broadened).
 
-**Net session-level ROI for follow-up audits**: ~30 min total agent time + ~20 min processing = ~50 min, savings already 16-42 engineering hours = **20-50× ROI**, monotonically growing.
+**Net session-level ROI for follow-up audits**: ~45 min total agent time + ~30 min processing = ~75 min, savings already 19-47 engineering hours = **15-37× ROI**, monotonically growing.
 
 ## "P0 landing" log (2026-05-08)
 
