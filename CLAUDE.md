@@ -204,9 +204,22 @@ cat /proc/cmdline
 
 # 温度监控 (campaign 启动时后台启)
 nohup bash scripts/temp_logger.sh 60 > data/telemetry/temp_log.csv 2>&1 &
-# 输出 CSV: timestamp_iso,package_c,max_core_c,max_pcore_freq_mhz
-# 监控 max_core_c 持续 ≥ 90°C → 撞 thermal throttle → PPD 切回 balanced
+# 输出 CSV: timestamp_iso,pkg_c,ecore_max_c,max_pcore_freq_mhz
+# pkg_c 从 /sys/class/thermal/x86_pkg_temp 直接读 (受 isolcpus 影响小)
+# 注意: 开 isolcpus=0-7 后 lm_sensors 的 coretemp 模块不再报 P-core 温度,
+# 但 x86_pkg_temp thermal zone 一直工作 → 用 pkg_c 作 throttle 主信号
+# 监控 pkg_c 持续 ≥ 90°C → 撞 thermal throttle → PPD 切回 balanced
 ```
+
+### sysctl tuning (永久, /etc/sysctl.d/99-zmd-tuning.conf)
+
+```
+vm.dirty_background_ratio = 3        # 默认 10. page cache 写回更平滑
+fs.inotify.max_user_watches = 1048576 # 默认 8192. 防 telemetry 大量小文件撞 limit
+```
+
+systemd-sysctl.service 启动时自动 apply, 重启不丢。
+
 
 调优明细（修改记录）：
 - **PPD performance** + **HWP dynamic boost systemd unit** (P0+P1, 立即生效, 2026-05-10)
