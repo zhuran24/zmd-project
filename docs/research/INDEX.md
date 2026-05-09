@@ -160,10 +160,25 @@ Follow-up source-code audits ("R12-style") on P0 roadmap items — saved hours
 | 4 | P0 #23 presolve_extract_integer_enforcement (R11 → R12 `a0b6fa2949affdad1`) | ❌ REFUTED | ~1-2h (param doesn't do what R11 said; was zero-citation Claude inference; MIPLIB regressions warned in proto) |
 | 5 | P1 #7 ε-Certified prep (R3+R7+R10 → R11 `a823b529b0879c4bb`) | ⚠ engineering layer missing | ~5d (reveal that "5-day implementation" was on top of unbuilt schema_v4 + bound_state foundation) |
 | 6 | P1 #8 Combinatorial Benders Cuts (R3 `af150891e26339789` → 2026-05-10 audit `ae376dabbfd7a5096`) | ⚠ PARTIALLY_REFUTED | ~3-5 engineering days saved (path 1: avoided over-investing 1 week for 5× expected when reality is 2-3 days for 1.3-1.8×; path 2: surfaced that current cuts are already fine-grained subset, MIS only useful in INFEASIBLE-fallback path). Demoted P1 → P2. |
+| 7 | P1 #25 OnlyEnforceIf 52 rewrites (R11 `a67cf942cd679915d` → 2026-05-10 audit `a4640130e3de3efa2`) | ❌ REFUTED | ~1-2 engineering days saved + 阻止 negative-ROI investment (claim "1.5-2× single wave"; reality 实际 44 处 OnlyEnforceIf, top-5 已 4/5 死/降级, presolve auto-detects 大半收益 → 真实 8-15% 总累计含已 landed 改造 3). Demoted P1 → P3 (剩 ~4 对双向 reify spike, ~½ day micro-benchmark). |
+| 8 | P1 #24 Cache-aware user-layer pack (R11 `ae3590b7e2f938057` → 2026-05-10 audit `a2dfaa35dbefe2a3a`) | ⚠ GO-WITH-CAVEATS | ~½ day saved + 修正了 5 件套配比 (AMO aggregation transcript 无源整项剔除; L3 CAT 13th gen consumer i9 不支持改名 cpuset pinning). 修正后 combined +15-22% (vs claim 15-30%). 前 3 项 (THP madvise + jemalloc LD_PRELOAD + cpuset P-core pinning) 一上午搞定 90% 收益. |
+| 9 | P1 #13 Compiler -march/LTO/PGO (R6 `aa2cd8e2e60b20719` → 2026-05-10 audit `a486d3f9206a2b09a`) | ⚠ PARTIALLY_REFUTED | ~3-5 engineering days saved (PGO 工时低估 2-3 倍; SAT solver SIMD/PGO 红利天花板远低于通用 C++). Wheel 实测确认 baseline x86-64-v1 + 无 LTO/PGO. 修正 stack +5-12% (vs claim 11-22%); march+LTO 1d 实验 → ≥+5% 才上 PGO. |
+| 10 | P1 #12 Cache trio (R3 `ae3c21075cb388b14` → 2026-05-10 audit `a36d33351616095f1`) | ⚠ GO-WITH-CAVEATS | ~3-4 engineering days saved (1.5/3 件已实现 - CutManager dedup + per-candidate restart cache - 不是 0/3). 子问题级 LRU + subsumption trie + cross-candidate cut pool 是真增量 ~8-25% (gated by 24h spike 重复率 ≥15%). 工时 5-7d (不是 3d). |
+| 11 | P1 #9 Endfield player hints (R10 `a9d8ba25a087fb653` → 2026-05-10 audit `a5070327a1e24b779`) | ⚠ PARTIALLY_DONE / 1 NO-OP refuted | ~½ day saved + 路线图状态修正. Hint A (b2a811b bridge_hop_le_2) ✅ + Hint B (94351d5 overload separation) ✅ 已落地; **Hint C compact_aspect 已被 b2a811b commit 自审为 NO-OP** (sort key 已蕴含方形偏好). "+5-10h faster" 数字 R10 transcript 无依据. 状态 = 2/3 done, 3rd refuted. |
+| 12 | P1 #11 PT multi-temperature (R10 `a2d29f537e2b0ba30` → 2026-05-10 audit `a9c445cf4754e075e`) | ⚠ PARTIALLY_REFUTED | ~2-4 engineering days saved + ROI 期望修正 10× → 1.1-1.3×. Stage 1+2 (commit d07e303 + scheduler dispatch) 已落地但只是 per-process RNG reseed (不是真 PT). 真 PT (replica exchange + ordering policy) 3-5 天 (不是 zero cost) 且跟 CP-SAT 内部 LNS portfolio 重叠. Stage 3+ 降级 P2. |
 
-**Pattern (updated 2026-05-10)**: 救火率扩展到 **5/5 (100%)** —— 第 5 个数据点是 algorithm-level claim（不是 solver-param），把规则边界从"solver 内部参数"扩展到"任何可由 primary source 验证的量化金矿"。新覆盖：(a) "benchmark citation" type — R5/R2/R7 — agent 引用真 benchmark 但没核实是否适用我们的 master/objective 类型；(b) "Claude inference" type — R11 — 零 citation；(c) **新增 "paper claim displacement" type — R3 #8** —— agent 引用真论文但路线图作者从定性描述误转出了具体数字；论文红利对我们 master 类型不适用。See `feedback_verify_solver_param_claims.md` (2026-05-10 revised — rule scope broadened).
+**Pattern (updated 2026-05-10 evening, 6 audit batch)**: 救火率扩展到 **11/11 (100%)** —— P0 7 项 + P1 4 项审完，全部 turn up at least PARTIALLY_REFUTED 或 GO-WITH-CAVEATS。新覆盖类型扩展到：
+- (a) "benchmark citation" type — R5/R2/R7
+- (b) "Claude inference" type — R11
+- (c) "paper claim displacement" type — R3 #8
+- (d) **新增 "raw grep -c without classification" type** — R11 #25 (52 处只是 OnlyEnforceIf 总数 grep，无模式分类，外推 1.5-2× 必死)
+- (e) **新增 "stack double-count" type** — R11 #24 / R3 #12 (多件套加和不打 stack-efficiency 折扣，真实是 0.5-0.7×)
+- (f) **新增 "scope-misnaming" type** — R10 #11 (RNG reseed 被命名为 "PT 多温度" → claim 收益错位)
+- (g) **新增 "soft hint roadmap drift" type** — R10 #9 (3rd hint 已被 commit 自审 NO-OP，路线图未更新)
 
-**Net session-level ROI for follow-up audits**: ~45 min total agent time + ~30 min processing = ~75 min, savings already 19-47 engineering hours = **15-37× ROI**, monotonically growing.
+See `feedback_verify_solver_param_claims.md` (2026-05-10 revised — rule scope broadened to all primary-source-verifiable quantitative claims).
+
+**Net session-level ROI for follow-up audits**: ~80 min total agent time + ~50 min processing = ~130 min ≈ 2.2 hours, savings already 30-65 engineering hours = **14-30× ROI**, monotonically growing. **All P0/P1 entries with quantitative claims are now audited.**
 
 ## "P0 landing" log (2026-05-08)
 
