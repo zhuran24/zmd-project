@@ -1861,6 +1861,10 @@ class LBBDController:
         self._heartbeat_callback = heartbeat_callback
         self.loaded_exact_safe_cuts: List[BendersCut] = list(loaded_exact_safe_cuts or [])
         self.generated_exact_safe_cuts: List[BendersCut] = []
+        # P1 #7 main: 当前 wave 的 ε 阶段 (0.05 / 0.01 / 0.0 / None).
+        # 由 outer_search 在每次 wave 启动前调 set_epsilon_stage(value) 传入.
+        # 影响 _add_exact_persisted_nogood 构造 BendersCut 时的 epsilon_stage tag.
+        self.epsilon_stage: Optional[float] = None
         self.last_proof_summary: Dict[str, Any] = {}
         self._master_warm_start_disabled = bool(disable_master_warm_start)
         self._greedy_hint: Dict[str, int] = {}
@@ -1997,6 +2001,17 @@ class LBBDController:
                 self.commodity_demands = json.load(handle)
         else:
             self.commodity_demands = {}
+
+    def set_epsilon_stage(self, value: Optional[float]) -> None:
+        """P1 #7 main: outer_search 每个 wave 调用, 影响新生成 cut 的 ε tag.
+
+        value: 0.05 / 0.01 / 0.0 三阶段, None 表示无 ε 标注 (legacy hard
+        nogood, 任何阶段都安全 reuse).
+        """
+        if value is None:
+            self.epsilon_stage = None
+        else:
+            self.epsilon_stage = float(value)
 
     def _emit_heartbeat(
         self,
@@ -4529,6 +4544,9 @@ class LBBDController:
             routing_exhausted=routing_exhausted,
             proof_summary=dict(proof_summary),
             created_at=now_iso(),
+            # P1 #7 main: tag 当前 wave 的 ε 阶段 (0.05/0.01/0.0/None).
+            # cut_manager.cuts_for_stage(target) 跨 wave 复用时按这个 tag 选.
+            epsilon_stage=self.epsilon_stage,
         )
         if not self.cut_manager.register_structured_cut(cut):
             return False

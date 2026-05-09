@@ -11285,6 +11285,53 @@ class MasterPlacementModel:
         }
         return status
 
+    def extract_bound_state(
+        self,
+        *,
+        epsilon_target: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        """P1 #7 main: 给 ε-Certified 三阶段写回 bound_state 用.
+
+        从 self._solver 提取 best objective bound (lb) + objective value
+        (ub), 算 gap, 返回 bound_state dict (可直接喂给
+        ExactCampaign.update_candidate_bound_state).
+
+        防御性: ObjectiveValue() 在 INFEASIBLE/UNKNOWN 无 incumbent 时
+        会 raise; BestObjectiveBound() 一般可调. 失败则该字段返 None.
+        """
+        out: Dict[str, Any] = {
+            "lb": None,
+            "ub": None,
+            "gap": None,
+            "epsilon_target": (
+                None if epsilon_target is None else float(epsilon_target)
+            ),
+            "prover": "master_cpsat",
+        }
+        if self._solver is None:
+            return out
+        try:
+            best_bound = self._solver.BestObjectiveBound()
+            if best_bound is not None and not (
+                isinstance(best_bound, float) and math.isinf(best_bound)
+            ):
+                out["lb"] = int(best_bound)
+        except Exception:
+            pass
+        if self._status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            try:
+                obj = self._solver.ObjectiveValue()
+                if obj is not None and not (
+                    isinstance(obj, float) and math.isinf(obj)
+                ):
+                    out["ub"] = int(obj)
+            except Exception:
+                pass
+        if out["lb"] is not None and out["ub"] is not None:
+            denom = max(abs(out["ub"]), 1)
+            out["gap"] = float(out["ub"] - out["lb"]) / float(denom)
+        return out
+
     def extract_solution(self) -> Dict[str, Any]:
         if self._solver is None or self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             return {}
