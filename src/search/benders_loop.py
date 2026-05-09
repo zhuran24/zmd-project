@@ -4827,6 +4827,9 @@ def run_benders_for_ghost_rect(
             solve_mode=solve_mode,
             master_search_profile=master_search_profile,
         )
+        # P1 #7 main #1+#2: 配 hint 跨 wave 持久化 context. master.build/solve
+        # 自动钩子 (受 EXACT_MASTER_HINT_PERSISTENCE env 开关控制, default off).
+        master.set_hint_persistence_context(project_root, candidate_key)
         master.build()
 
     cut_replay_started = time.perf_counter()

@@ -2145,6 +2145,11 @@ class MasterPlacementModel:
         self._solver: Optional[cp_model.CpSolver] = None
         self._status: Optional[int] = None
         self._built = False
+        # P1 #7 main: hint 跨 wave 持久化 context. 外部调 set_hint_persistence_context
+        # 传 (project_root, candidate_key) 后, build 末尾自动 load+apply, solve
+        # FEASIBLE/OPTIMAL 末尾自动 extract+write. 受 EXACT_MASTER_HINT_PERSISTENCE
+        # env 开关控制, default off (prep 阶段已 land).
+        self._hint_persistence_context: Optional[Tuple[Path, str]] = None
 
         self.z_vars: Dict[str, Dict[int, cp_model.IntVar]] = {}
         self.optional_pose_vars: Dict[str, Dict[int, cp_model.IntVar]] = {}
@@ -4320,6 +4325,8 @@ class MasterPlacementModel:
             )
             self._power_pole_family_count_vars = self._coordinate_delegate.power_pole_family_count_vars
             self._built = True
+            # P1 #7 main #1: build 末尾自动 load+apply 上一波 hint (env-gated).
+            self._maybe_load_hints_from_persistence()
             return
         self._create_variables()
         self._add_assignment_constraints()
@@ -4334,6 +4341,8 @@ class MasterPlacementModel:
         self._add_global_valid_inequalities()
         self._add_search_guidance()
         self._built = True
+        # P1 #7 main #1: build 末尾自动 load+apply 上一波 hint (env-gated).
+        self._maybe_load_hints_from_persistence()
 
     def _create_variables(self) -> None:
         for group in self._mandatory_groups:
@@ -11283,7 +11292,137 @@ class MasterPlacementModel:
                 hint_application.get("residual_optional_zero_hints", 0)
             ),
         }
+        # P1 #7 main #2: solve 末尾 FEASIBLE/OPTIMAL 时自动 extract+write hint.
+        # No-op if env unset or context not set.
+        self._maybe_save_hints_to_persistence()
         return status
+
+    # ---- P1 #7 main: hint 跨 wave 持久化 helpers ----
+
+    def set_hint_persistence_context(
+        self,
+        project_root: Optional[Path],
+        candidate_key: Optional[str],
+    ) -> None:
+        """配 (project_root, candidate_key); 任一为 None 则 disable.
+
+        configured 后 build/solve 自动 load+apply / extract+write (受
+        EXACT_MASTER_HINT_PERSISTENCE env 开关控制).
+        """
+        if project_root is None or candidate_key is None:
+            self._hint_persistence_context = None
+        else:
+            self._hint_persistence_context = (Path(project_root), str(candidate_key))
+
+    def extract_master_hints(self) -> Dict[str, int]:
+        """Extract decision-variable values for cross-wave hint persistence.
+
+        Only returns values when solver finished FEASIBLE/OPTIMAL. exact_mode
+        fall back to delegate if it implements `extract_master_hints`; else
+        returns {} (delegate 未实现 hint 接口).
+        """
+        if self._solver is None or self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            return {}
+        if self.exact_mode and self._coordinate_delegate is not None:
+            delegate_extract = getattr(
+                self._coordinate_delegate, "extract_master_hints", None,
+            )
+            if callable(delegate_extract):
+                try:
+                    return dict(delegate_extract(self._solver))
+                except Exception:
+                    return {}
+            return {}
+        out: Dict[str, int] = {}
+        for by_pose in self.z_vars.values():
+            for var in by_pose.values():
+                try:
+                    out[var.Name()] = int(self._solver.Value(var))
+                except Exception:
+                    continue
+        for by_pose in getattr(self, "optional_pose_vars", {}).values():
+            for var in by_pose.values():
+                try:
+                    out[var.Name()] = int(self._solver.Value(var))
+                except Exception:
+                    continue
+        return out
+
+    def apply_master_hints(self, hints: Mapping[str, int]) -> int:
+        """Apply previously-saved hints to current model. Returns hit count."""
+        if not self._built or not hints:
+            return 0
+        if self.exact_mode and self._coordinate_delegate is not None:
+            delegate_apply = getattr(
+                self._coordinate_delegate, "apply_master_hints", None,
+            )
+            if callable(delegate_apply):
+                try:
+                    return int(delegate_apply(hints))
+                except Exception:
+                    return 0
+            return 0
+        hits = 0
+        for by_pose in self.z_vars.values():
+            for var in by_pose.values():
+                name = var.Name()
+                if name in hints:
+                    try:
+                        self.model.AddHint(var, int(hints[name]))
+                        hits += 1
+                    except Exception:
+                        continue
+        for by_pose in getattr(self, "optional_pose_vars", {}).values():
+            for var in by_pose.values():
+                name = var.Name()
+                if name in hints:
+                    try:
+                        self.model.AddHint(var, int(hints[name]))
+                        hits += 1
+                    except Exception:
+                        continue
+        return hits
+
+    def _maybe_load_hints_from_persistence(self) -> int:
+        """P1 #7 main #1: build 末尾自动 load+apply hints (env-gated)."""
+        try:
+            from src.search import master_hint_persistence as mhp
+        except Exception:
+            return 0
+        if not mhp.is_enabled():
+            return 0
+        if self._hint_persistence_context is None:
+            return 0
+        project_root, candidate_key = self._hint_persistence_context
+        loaded = mhp.load_master_hints(project_root, candidate_key)
+        if not loaded:
+            return 0
+        try:
+            return int(self.apply_master_hints(loaded))
+        except Exception:
+            return 0
+
+    def _maybe_save_hints_to_persistence(self) -> int:
+        """P1 #7 main #2: solve 末尾 FEASIBLE/OPTIMAL 时自动 extract+write."""
+        try:
+            from src.search import master_hint_persistence as mhp
+        except Exception:
+            return 0
+        if not mhp.is_enabled():
+            return 0
+        if self._hint_persistence_context is None:
+            return 0
+        if self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+            return 0
+        project_root, candidate_key = self._hint_persistence_context
+        hints = self.extract_master_hints()
+        if not hints:
+            return 0
+        try:
+            mhp.write_master_hints(project_root, candidate_key, hints)
+            return len(hints)
+        except Exception:
+            return 0
 
     def extract_bound_state(
         self,
