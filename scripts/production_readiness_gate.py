@@ -16,6 +16,9 @@
   [W] kernel 是 cachyos-bore 变种 (BORE/EEVDF scheduler)
   [W] .artifacts/ 所在分区 ≥ 100 GB free
   [W] git working tree 干净
+  [W] THP enabled (always|madvise) — P1 #24
+  [W] jemalloc 可用于 LD_PRELOAD — P1 #24
+  [W] 进程 cpu_affinity 限定 P-core (cpu0-7) — P1 #24
 
 [B] = blocker（不通过则 BLOCK）；[W] = warning（提示但不阻塞）。
 
@@ -24,6 +27,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -222,6 +226,103 @@ def check_git_clean(gate: Gate) -> None:
         gate.ok("git status", "working tree clean")
 
 
+THP_ENABLED_PATH = Path("/sys/kernel/mm/transparent_hugepage/enabled")
+JEMALLOC_PATH = Path("/usr/lib/libjemalloc.so.2")
+
+
+def check_thp(gate: Gate) -> None:
+    """P1 #24: THP madvise/always reduces TLB miss on large-heap workloads."""
+    if not THP_ENABLED_PATH.exists():
+        gate.warn("THP", "/sys/kernel/mm/transparent_hugepage/enabled 不存在 — 非 Linux？")
+        return
+    try:
+        content = THP_ENABLED_PATH.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        gate.warn("THP", f"读取失败: {exc}")
+        return
+    # Format: "[always] madvise never" — bracketed item is current.
+    if "[always]" in content or "[madvise]" in content:
+        gate.ok("THP", f"enabled = {content}")
+    else:
+        gate.warn(
+            "THP",
+            f"current = {content} — long-run workload 损失 TLB 红利，"
+            f"建议 `echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled`",
+        )
+
+
+def check_jemalloc(gate: Gate) -> None:
+    """P1 #24: jemalloc LD_PRELOAD reduces ptmalloc multi-thread contention."""
+    if not JEMALLOC_PATH.exists():
+        gate.warn(
+            "jemalloc",
+            f"{JEMALLOC_PATH} 不存在 — 跑 `sudo pacman -S jemalloc` 安装",
+        )
+        return
+    ld_preload = os.environ.get("LD_PRELOAD", "")
+    if "jemalloc" in ld_preload or "tcmalloc" in ld_preload:
+        gate.ok("jemalloc", f"LD_PRELOAD 已含 allocator: {ld_preload}")
+    else:
+        gate.warn(
+            "jemalloc",
+            f"{JEMALLOC_PATH} 已装但 LD_PRELOAD 未设 — "
+            f"用 `bash scripts/run_campaign_linux.sh ...` 启动以自动 preload",
+        )
+
+
+def check_pcore_pinning(gate: Gate) -> None:
+    """P1 #24: pinning to high-freq P-cores avoids E-core preemption.
+
+    On i9-13900KS HT-off, P-cores are cpu0-7 (5600 MHz) and E-cores are
+    cpu8-23 (4500 MHz). We detect P-cores by max cpufreq matching and
+    check that the current process affinity is a subset.
+    """
+    try:
+        affinity = os.sched_getaffinity(0)
+    except (AttributeError, OSError):
+        gate.warn("P-core pinning", "os.sched_getaffinity 不可用 — 跳过")
+        return
+    p_cores = set()
+    cpu_root = Path("/sys/devices/system/cpu")
+    if not cpu_root.exists():
+        gate.warn("P-core pinning", "/sys/devices/system/cpu 不存在 — 跳过")
+        return
+    cpu_freq: dict[int, int] = {}
+    for cpu_dir in cpu_root.glob("cpu[0-9]*"):
+        try:
+            cpu_id = int(cpu_dir.name[3:])
+        except ValueError:
+            continue
+        freq_file = cpu_dir / "cpufreq" / "cpuinfo_max_freq"
+        if freq_file.is_file():
+            try:
+                cpu_freq[cpu_id] = int(freq_file.read_text(encoding="utf-8").strip())
+            except (OSError, ValueError):
+                continue
+    if not cpu_freq:
+        gate.warn("P-core pinning", "cpufreq 信息读不到 — 跳过")
+        return
+    max_freq = max(cpu_freq.values())
+    p_cores = {cpu for cpu, freq in cpu_freq.items() if freq == max_freq}
+    if affinity == set(cpu_freq.keys()):
+        gate.warn(
+            "P-core pinning",
+            f"affinity = 全部 {len(affinity)} cores — 用 "
+            f"`bash scripts/run_campaign_linux.sh ...` 启动以 taskset 钉到 P-core ({sorted(p_cores)})",
+        )
+    elif affinity.issubset(p_cores):
+        gate.ok(
+            "P-core pinning",
+            f"affinity = {sorted(affinity)} ⊆ P-cores {sorted(p_cores)} ({max_freq} kHz)",
+        )
+    else:
+        non_p = sorted(affinity - p_cores)
+        gate.warn(
+            "P-core pinning",
+            f"affinity 含 non-P-core: {non_p} — 损失 +2-5% from 5.6→4.5 GHz 抢占",
+        )
+
+
 def gate_check() -> Gate:
     """Run all readiness checks and return the populated Gate.
 
@@ -235,6 +336,9 @@ def gate_check() -> Gate:
     check_kernel(gate)
     check_disk_space(gate)
     check_git_clean(gate)
+    check_thp(gate)
+    check_jemalloc(gate)
+    check_pcore_pinning(gate)
     return gate
 
 

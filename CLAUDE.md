@@ -162,10 +162,29 @@ python scripts/production_readiness_gate.py
 启动 168h 大跑前手动跑这个，缺一项 hard blocker 就 BLOCK。检查项：
 pacman freeze 已启用 (Linux only)、venv + ortools 可导入、preflight 86
 守卫测试通过、kernel 是 cachyos-bore 变种、磁盘 ≥100 GiB free、git
-working tree 干净。Exit code: 0=ready, 1=blocked。
+working tree 干净、THP enabled、jemalloc 装且 LD_PRELOAD 配置、进程
+cpu_affinity 限定 P-core。Exit code: 0=ready, 1=blocked。
 
 跟 `pacman_campaign_freeze.sh --enable` 配套用：先 freeze → 再跑
 readiness gate → 全 OK 才启动 campaign。
+
+### Linux campaign 启动 wrapper (P1 #24 cache-aware pack)
+
+```bash
+# 把 P1 #24 前 3 件套（jemalloc LD_PRELOAD + P-core taskset + 利用系统 THP）
+# 一并打包，对 main.py 的所有参数都透传
+bash scripts/run_campaign_linux.sh --campaign-hours 168.0 --parallel-processes 4
+bash scripts/run_campaign_linux.sh --vis
+```
+
+包了三件套（个体 ROI 经 P1 #24 audit `a2dfaa35dbefe2a3a` 修正）：
+- jemalloc LD_PRELOAD: +5-10%（缓 ptmalloc 多线程 contention）
+- taskset P-core 自动检测+pin: +2-5%（i9-13900KS cpu0-7 5.6GHz vs E-core 4.5GHz）
+- THP `[always]`：CachyOS 系统级默认，wrapper 仅 sanity check 不动
+- 合计 +15-22%（不是路线图原 claim 15-30% 因 stack-efficiency 折扣）
+
+启动 168h campaign **必须**用这个 wrapper（直接 `python main.py` 会丢两件套
+的收益）；readiness gate 9/9 项检查会自动 flag 漏配置。
 
 ### Local upstream reference clones (offline, not vendored)
 
