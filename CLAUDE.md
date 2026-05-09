@@ -153,6 +153,20 @@ bash scripts/pacman_campaign_freeze.sh --disable
 campaign 期间）应保持 unfreeze。脚本通过在 `/etc/pacman.conf` 里加带
 markers 的 `IgnorePkg` 行实现，可可逆 toggle。
 
+### 168h campaign 启动前 readiness gate
+
+```bash
+python scripts/production_readiness_gate.py
+```
+
+启动 168h 大跑前手动跑这个，缺一项 hard blocker 就 BLOCK。检查项：
+pacman freeze 已启用 (Linux only)、venv + ortools 可导入、preflight 86
+守卫测试通过、kernel 是 cachyos-bore 变种、磁盘 ≥100 GiB free、git
+working tree 干净。Exit code: 0=ready, 1=blocked。
+
+跟 `pacman_campaign_freeze.sh --enable` 配套用：先 freeze → 再跑
+readiness gate → 全 OK 才启动 campaign。
+
 ### Local upstream reference clones (offline, not vendored)
 
 `.upstream_clones/` is **gitignored** and holds full clones for offline browsing/diffing. Currently contains:
