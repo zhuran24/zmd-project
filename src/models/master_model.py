@@ -95,6 +95,10 @@ EXACT_MASTER_CP_MODEL_PRESOLVE_ENV = "EXACT_MASTER_CP_MODEL_PRESOLVE"
 EXACT_MASTER_CP_MODEL_PROBING_LEVEL_ENV = "EXACT_MASTER_CP_MODEL_PROBING_LEVEL"
 EXACT_MASTER_SYMMETRY_LEVEL_ENV = "EXACT_MASTER_SYMMETRY_LEVEL"
 EXACT_MASTER_HINT_CONFLICT_LIMIT_ENV = "EXACT_MASTER_HINT_CONFLICT_LIMIT"
+# P1 #7c prep: 让 master CpSolver 在 response 里返回 worker 收紧后的变量域。
+# 这是 CP-SAT 公开的唯一"跨 solve 传 dual 信息"通道，给 ε-Certified 三阶
+# 段下一波用作初始域上界。default=True (启用); env "0/false/no/off" 关闭。
+EXACT_MASTER_FILL_TIGHTENED_DOMAINS_ENV = "EXACT_MASTER_FILL_TIGHTENED_DOMAINS"
 EXACT_GHOST_SIGNATURE_BUCKET_MODEL_SHELL_INSTRUMENTATION_ENV = (
     "EXACT_GHOST_SIGNATURE_BUCKET_MODEL_SHELL_INSTRUMENTATION"
 )
@@ -11155,6 +11159,18 @@ class MasterPlacementModel:
             if probing_level is None:
                 probing_level = max(int(solver.parameters.cp_model_probing_level), 3)
             solver.parameters.cp_model_probing_level = int(probing_level)
+            # P1 #7c prep: enable fill_tightened_domains_in_response (default
+            # True; env "0/false/no/off" disable). Prep only: 这一阶段只是把
+            # 参数打开让 response 包含 tightened domain。下一波 read + 用作
+            # 初始域是 P1 #7 主体阶段的事。
+            if hasattr(solver.parameters, "fill_tightened_domains_in_response"):
+                fill_tightened_env = os.environ.get(
+                    EXACT_MASTER_FILL_TIGHTENED_DOMAINS_ENV, ""
+                ).strip().lower()
+                if fill_tightened_env in {"0", "false", "no", "off"}:
+                    solver.parameters.fill_tightened_domains_in_response = False
+                else:
+                    solver.parameters.fill_tightened_domains_in_response = True
             hint_conflict_limit = _resolve_optional_nonnegative_int_env(
                 EXACT_MASTER_HINT_CONFLICT_LIMIT_ENV
             )

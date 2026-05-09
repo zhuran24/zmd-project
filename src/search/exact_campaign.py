@@ -29,6 +29,10 @@ VALID_CANDIDATE_STATUSES = {
     "INFEASIBLE",
     "UNKNOWN",
     "UNPROVEN",
+    # P1 #7a prep: ε-Certified status. status="EPSILON_CERTIFIED" 表示 candidate
+    # 求到 ε-bound 内但未 ε=0 完整 certified。bound_state.epsilon_target 记录
+    # 是哪个 ε 阶段（0.05/0.01/0.0）。final_status 同样可以是 EPSILON_CERTIFIED。
+    "EPSILON_CERTIFIED",
 }
 REQUIRED_STATE_FIELDS = {
     "schema_version",
@@ -160,6 +164,24 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
                 pass
 
 
+def _bound_state_defaults() -> Dict[str, Any]:
+    """P1 #7a prep: optional bound_state block per candidate.
+
+    All fields default None. Filled in when master writes back lb/ub/gap
+    after a wave (P1 #7 主体阶段集成). schema_version 不 bump — 这个 block
+    是可选扩展, 旧 v3 reader 见到忽略, 新 reader 见缺失给默认。
+    """
+    return {
+        "lb": None,            # int | None  : best dual lower bound
+        "ub": None,            # int | None  : best primal incumbent
+        "gap": None,           # float | None: (ub - lb) / max(|ub|, 1)
+        "epsilon_target": None,  # float | None: 0.05/0.01/0.0 三阶段
+        "prover": None,          # str | None: "master_cpsat" / "binding_lbbd" / etc.
+        "observed_at": None,     # iso str | None
+        "model_hash": None,      # str | None: 跨 wave 一致性校验
+    }
+
+
 def _candidate_defaults(ghost_w: int, ghost_h: int) -> Dict[str, Any]:
     return {
         "ghost_rect": {"w": int(ghost_w), "h": int(ghost_h), "area": int(ghost_w) * int(ghost_h)},
@@ -172,6 +194,8 @@ def _candidate_defaults(ghost_w: int, ghost_h: int) -> Dict[str, Any]:
         "exact_safe_cuts": [],
         "loaded_exact_safe_cut_count": 0,
         "generated_exact_safe_cut_count": 0,
+        # P1 #7a prep: optional. 旧 v3 checkpoint 缺这个字段, reader 给默认。
+        "bound_state": _bound_state_defaults(),
     }
 
 
@@ -384,6 +408,101 @@ class ExactCampaign:
     def get_candidate_cuts(self, ghost_w: int, ghost_h: int) -> list[Dict[str, Any]]:
         record = self.get_candidate_record(ghost_w, ghost_h) or {}
         return list(record.get("exact_safe_cuts", []))
+
+    # P1 #7a prep: bound_state read/write helpers (P1 #7d guard 也用这俩).
+    def get_candidate_bound_state(
+        self, ghost_w: int, ghost_h: int
+    ) -> Dict[str, Any]:
+        """Return current bound_state dict (default-filled if missing)."""
+        record = self.get_candidate_record(ghost_w, ghost_h) or {}
+        bound = record.get("bound_state")
+        if isinstance(bound, Mapping):
+            # Merge with defaults so新增字段也有 default
+            merged = _bound_state_defaults()
+            merged.update(dict(bound))
+            return merged
+        return _bound_state_defaults()
+
+    def update_candidate_bound_state(
+        self,
+        ghost_w: int,
+        ghost_h: int,
+        *,
+        lb: Optional[int] = None,
+        ub: Optional[int] = None,
+        gap: Optional[float] = None,
+        epsilon_target: Optional[float] = None,
+        prover: Optional[str] = None,
+        model_hash: Optional[str] = None,
+        regression_tolerance: int = 0,
+    ) -> Optional[Dict[str, Any]]:
+        """Update bound_state for the given candidate. None args 留旧值不变.
+
+        P1 #7d guard: 如果 new_lb < old_lb - regression_tolerance 触发
+        BOUND_REGRESSION audit event (append 到 state['audit_log']) 但不
+        阻塞 — model_hash 可能合法变化, 需人审。
+
+        Returns: 触发的 audit entry (dict) 或 None.
+        """
+        key = candidate_key(ghost_w, ghost_h)
+        candidates = self.state.setdefault("candidates", {})
+        record = candidates.get(key)
+        if not isinstance(record, dict):
+            record = _candidate_defaults(ghost_w, ghost_h)
+            record["started_at"] = now_iso()
+            record["updated_at"] = now_iso()
+            candidates[key] = record
+        bound = record.get("bound_state")
+        if not isinstance(bound, dict):
+            bound = _bound_state_defaults()
+
+        old_lb = bound.get("lb")
+        old_model_hash = bound.get("model_hash")
+
+        if lb is not None:
+            bound["lb"] = int(lb)
+        if ub is not None:
+            bound["ub"] = int(ub)
+        if gap is not None:
+            bound["gap"] = float(gap)
+        if epsilon_target is not None:
+            bound["epsilon_target"] = float(epsilon_target)
+        if prover is not None:
+            bound["prover"] = str(prover)
+        if model_hash is not None:
+            bound["model_hash"] = str(model_hash)
+        bound["observed_at"] = now_iso()
+        record["bound_state"] = bound
+        record["updated_at"] = now_iso()
+        self.state["updated_at"] = now_iso()
+
+        # P1 #7d bound regression guard: 检测 lb 是否退化。
+        audit_entry: Optional[Dict[str, Any]] = None
+        if (
+            lb is not None
+            and isinstance(old_lb, int)
+            and int(lb) < int(old_lb) - int(regression_tolerance)
+        ):
+            audit_entry = {
+                "ts": now_iso(),
+                "candidate_key": key,
+                "event": "BOUND_REGRESSION",
+                "old_lb": int(old_lb),
+                "new_lb": int(lb),
+                "tolerance": int(regression_tolerance),
+                "model_hash_old": old_model_hash,
+                "model_hash_new": bound.get("model_hash"),
+                "prover": bound.get("prover"),
+            }
+            audit_log = self.state.setdefault("audit_log", [])
+            if isinstance(audit_log, list):
+                audit_log.append(audit_entry)
+        return audit_entry
+
+    def get_audit_log(self) -> list[Dict[str, Any]]:
+        """P1 #7d: read accumulated audit events (BOUND_REGRESSION 等)."""
+        log = self.state.get("audit_log", [])
+        return list(log) if isinstance(log, list) else []
 
     def mark_candidate_started(self, ghost_w: int, ghost_h: int) -> None:
         key = candidate_key(ghost_w, ghost_h)

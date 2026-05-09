@@ -39,6 +39,12 @@ class BendersCut:
     routing_exhausted: Optional[bool] = None
     proof_summary: Dict[str, Any] = field(default_factory=dict)
     created_at: Optional[str] = None
+    # P1 #7b prep: ε-stage tag for ε-Certified 三阶段 cut bucketing.
+    # 取值 0.05/0.01/0.0 表示这条 cut 是哪个 ε 阶段证出的 (None = 未 tag,
+    # legacy / pre-ε-Certified). Reuse rule: 更松 ε 推出的 cut 在更紧 ε 阶
+    # 段仍合法 → cuts_for_stage(target) 返回 stage>=target 的 cuts (None
+    # 视为"任何阶段都安全", 因为 pre-ε 时代的 cut 是无 ε 的 hard nogood).
+    epsilon_stage: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
         payload: Dict[str, Any] = {
@@ -55,6 +61,7 @@ class BendersCut:
             "routing_exhausted": self.routing_exhausted,
             "proof_summary": dict(self.proof_summary),
             "created_at": self.created_at,
+            "epsilon_stage": self.epsilon_stage,
         }
         return payload
 
@@ -83,6 +90,10 @@ class BendersCut:
             proof_summary=dict(payload.get("proof_summary", {})),
             created_at=(
                 None if payload.get("created_at") is None else str(payload.get("created_at"))
+            ),
+            epsilon_stage=(
+                None if payload.get("epsilon_stage") is None
+                else float(payload.get("epsilon_stage"))
             ),
         )
 
@@ -309,6 +320,24 @@ class CutManager:
         """Return all runtime cuts in a stable tuple-list format for the master model."""
 
         return [sorted(list(cut)) for cut in self.active_cuts]
+
+    def cuts_for_stage(self, target_epsilon: float) -> List[BendersCut]:
+        """P1 #7b prep: 返回 ε-阶段 reuse 兼容的 cuts.
+
+        规则: 更松 ε 推出的 cut 在更紧 ε 阶段仍合法 (ε=0.05 cut 在 ε=0.01
+        和 ε=0.0 都可用; 反向不行, ε=0.0 的 cut 不能 reuse 在更松阶段).
+
+        target_epsilon: 当前 wave 的 ε 目标 (0.05 / 0.01 / 0.0).
+        epsilon_stage=None 的 cut 视为"任何阶段都安全" (legacy/pre-ε 的
+        hard nogood, 因为它们不依赖 ε bound 推出).
+
+        集成到 master build 是 P1 #7 主体阶段; 这里只 prep helper.
+        """
+        target = float(target_epsilon)
+        return [
+            cut for cut in self.cuts
+            if cut.epsilon_stage is None or float(cut.epsilon_stage) >= target
+        ]
 
     def clear_all(self) -> None:
         """Dangerous helper used only when all historical cuts must be invalidated."""
