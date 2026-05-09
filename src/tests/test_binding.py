@@ -260,6 +260,147 @@ def test_binding_model_overload_separation_when_enabled_records_summary(
     assert summary["overload_nogoods_added"] >= 0  # depends on classification
 
 
+def _make_lbbd_controller_stub(project_root):
+    """Minimal stub exposing only the attributes
+    `_retry_binding_without_overload_separation` reads. Bound-method invocation
+    via the unbound function on LBBDController so we don't need to construct a
+    real controller (which requires master / cut_manager / ...)."""
+    stub = type("LBBDControllerStub", (), {})()
+    stub.master = type("MasterStub", (), {"facility_pools": {}, "source_instances": []})()
+    stub.project_root = project_root
+    stub.binding_seconds = 1.0
+    stub._heartbeat_callback = None
+    # _emit_heartbeat reads several timing attrs even when callback is None,
+    # but only via dict-build on the early-return; keep them available anyway.
+    stub.max_iterations = 1
+    stub.master_seconds = 1.0
+    stub.routing_seconds = 1.0
+    stub.flow_seconds = 1.0
+    # No-op heartbeat — the real method early-returns when callback is None,
+    # but we'd need to bind it; cleaner to stub directly.
+    stub._emit_heartbeat = lambda **_kwargs: None
+    return stub
+
+
+def test_lbbd_retry_helper_sets_env_off_during_build_and_restores(
+    project_root, monkeypatch
+):
+    """P1 #9 hint 2 stage 3: helper must set env to '' for the rebuild,
+    then restore the prior value after returning."""
+    import os
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.search import benders_loop as bl
+
+    captured_env_at_build: list[str | None] = []
+
+    class RecordingBindingModel:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def build(self):
+            captured_env_at_build.append(
+                os.environ.get("EXACT_BINDING_USE_OVERLOAD_SEPARATION")
+            )
+
+        def solve(self, **_kwargs):
+            return "FEASIBLE"
+
+        def extract_conflict_summary(self):
+            return {
+                "overload_separation_enabled": False,
+                "overload_nogoods_added": 0,
+            }
+
+    monkeypatch.setattr(bl, "PortBindingModel", RecordingBindingModel)
+    monkeypatch.setenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", "1")
+
+    stub = _make_lbbd_controller_stub(project_root)
+    model, status = bl.LBBDController._retry_binding_without_overload_separation(
+        stub, solution={}, iteration=0
+    )
+
+    assert captured_env_at_build == [""]
+    assert os.environ.get("EXACT_BINDING_USE_OVERLOAD_SEPARATION") == "1"
+    assert status == "FEASIBLE"
+    assert isinstance(model, RecordingBindingModel)
+
+
+def test_lbbd_retry_helper_pops_env_when_not_set_originally(
+    project_root, monkeypatch
+):
+    """If env was UNSET going in, helper must remove its temporary '' value
+    and not leave the key set."""
+    import os
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.search import benders_loop as bl
+
+    class FastBindingModel:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def build(self):
+            pass
+
+        def solve(self, **_kwargs):
+            return "INFEASIBLE"
+
+        def extract_conflict_summary(self):
+            return {
+                "overload_separation_enabled": False,
+                "overload_nogoods_added": 0,
+            }
+
+    monkeypatch.setattr(bl, "PortBindingModel", FastBindingModel)
+    monkeypatch.delenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", raising=False)
+
+    stub = _make_lbbd_controller_stub(project_root)
+    _model, status = bl.LBBDController._retry_binding_without_overload_separation(
+        stub, solution={}, iteration=0
+    )
+
+    assert "EXACT_BINDING_USE_OVERLOAD_SEPARATION" not in os.environ
+    assert status == "INFEASIBLE"
+
+
+def test_lbbd_retry_helper_restores_env_even_when_solve_raises(
+    project_root, monkeypatch
+):
+    """The env restore must be in a finally block; verify by raising in solve."""
+    import os
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.search import benders_loop as bl
+
+    class ExplodingBindingModel:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def build(self):
+            pass
+
+        def solve(self, **_kwargs):
+            raise RuntimeError("synthetic solver failure")
+
+        def extract_conflict_summary(self):
+            return {}
+
+    monkeypatch.setattr(bl, "PortBindingModel", ExplodingBindingModel)
+    monkeypatch.setenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", "yes")
+
+    stub = _make_lbbd_controller_stub(project_root)
+    with pytest.raises(RuntimeError, match="synthetic solver failure"):
+        bl.LBBDController._retry_binding_without_overload_separation(
+            stub, solution={}, iteration=0
+        )
+
+    assert os.environ.get("EXACT_BINDING_USE_OVERLOAD_SEPARATION") == "yes"
+
+
 def test_binding_model_reports_pose_binding_domain_cache_reuse(project_root, facility_pools):
     import sys
 

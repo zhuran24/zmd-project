@@ -3992,6 +3992,51 @@ class LBBDController:
             return RUN_STATUS_UNKNOWN, None
 
         if binding_status == "INFEASIBLE":
+            # P1 #9 hint 2 stage 3: caller fallback ladder. If the first-pass
+            # binding model had EXACT_BINDING_USE_OVERLOAD_SEPARATION on AND
+            # actually injected overload nogoods, the INFEASIBLE may be a
+            # spurious one caused by the heuristic high+low colocation
+            # forbidding (player consensus, not a hard SAT invariant). Retry
+            # once with the env forced off:
+            #   FEASIBLE  -> recover, swap models, continue normally
+            #   INFEASIBLE -> genuine infeasibility, fall through
+            #   TIMEOUT    -> env-off status unknown; can't certify INFEASIBLE,
+            #                 surface as TIMEOUT/UNKNOWN to keep the proof sound
+            first_pass_summary = binding_model.extract_conflict_summary()
+            if (
+                first_pass_summary.get("overload_separation_enabled") is True
+                and int(first_pass_summary.get("overload_nogoods_added", 0)) > 0
+            ):
+                retry_model, retry_status = (
+                    self._retry_binding_without_overload_separation(
+                        solution=solution,
+                        iteration=iteration,
+                    )
+                )
+                if retry_status == "FEASIBLE":
+                    binding_model = retry_model
+                    binding_status = retry_status
+                    self._update_binding_cache_from_summary(
+                        binding_model.extract_conflict_summary()
+                    )
+                elif retry_status == "TIMEOUT":
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "TIMEOUT",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": retry_model.extract_conflict_summary(),
+                        "overload_fallback_outcome": "TIMEOUT",
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+
+        if binding_status == "INFEASIBLE":
             proof_summary = {
                 "mode": "certified_exact",
                 "benders_iterations": iteration,
@@ -4351,6 +4396,53 @@ class LBBDController:
         )
         self.last_proof_summary = dict(proof_summary)
         return RUN_STATUS_INFEASIBLE, None
+
+    def _retry_binding_without_overload_separation(
+        self,
+        *,
+        solution: Dict[str, Any],
+        iteration: int,
+    ) -> Tuple[PortBindingModel, str]:
+        """P1 #9 hint 2 stage 3: caller fallback ladder.
+
+        Re-construct the binding model with EXACT_BINDING_USE_OVERLOAD_SEPARATION
+        forced off and re-solve once. Caller invokes this only after the
+        first-pass solve returned INFEASIBLE while overload separation was
+        active and had injected nogoods. Env value is restored before
+        return regardless of outcome.
+
+        Returns (retry_model, retry_status). retry_status is one of
+        "FEASIBLE" | "INFEASIBLE" | "TIMEOUT".
+        """
+        env_key = "EXACT_BINDING_USE_OVERLOAD_SEPARATION"
+        saved = os.environ.get(env_key)
+        self._emit_heartbeat(
+            stage="binding_overload_fallback",
+            event="start",
+            iteration=iteration,
+        )
+        try:
+            os.environ[env_key] = ""
+            retry_model = PortBindingModel(
+                solution,
+                self.master.facility_pools,
+                self.master.source_instances,
+                project_root=self.project_root,
+            )
+            retry_model.build()
+            retry_status = retry_model.solve(time_limit_seconds=self.binding_seconds)
+        finally:
+            if saved is None:
+                os.environ.pop(env_key, None)
+            else:
+                os.environ[env_key] = saved
+        self._emit_heartbeat(
+            stage="binding_overload_fallback",
+            event="end",
+            iteration=iteration,
+            extra={"retry_status": str(retry_status)},
+        )
+        return retry_model, retry_status
 
     def _extract_occupied_owner_by_cell(
         self,
