@@ -1837,6 +1837,15 @@ def run_outer_search(
                             exact_campaign.mark_candidate_started(int(ghost_w), int(ghost_h))
                         exact_campaign.save()
 
+                    # P1 #7 main: parallel 路径 wave-level ε 阶段计算,
+                    # 跟单进程路径 (line ~2080) 对齐. WorkerTask 全部带同一 ε,
+                    # worker 把 ε tag 传给 run_benders_for_ghost_rect → BendersCut.
+                    _parallel_wave_epsilon: Optional[float] = None
+                    if exact_campaign is not None and solve_mode == "certified_exact":
+                        _parallel_wave_epsilon = _determine_epsilon_stage(
+                            exact_campaign.elapsed_seconds()
+                        )
+
                     tasks = build_parallel_worker_tasks(
                         candidates=[
                             tuple(entry["candidate"]) for entry in solve_wave_entries
@@ -1852,6 +1861,7 @@ def run_outer_search(
                         benders_max_iter=benders_max_iter,
                         disable_master_warm_start=bool(disable_master_warm_start),
                         preloaded_cut_map=preloaded_cut_map,
+                        epsilon_stage=_parallel_wave_epsilon,
                     )
                     solve_attempts += len(tasks)
                     wave_execution = run_parallel_exact_campaign_wave(

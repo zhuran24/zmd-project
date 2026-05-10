@@ -372,6 +372,10 @@ def test_worker_tasks_never_carry_campaign_state() -> None:
     assert tasks[0].candidate_key == "2x1"
     assert tasks[0].disable_master_warm_start is False
     assert tasks[0].preloaded_exact_safe_cuts[0]["cut_type"] == "routing_front_blocked_nogood"
+    # Guard: WorkerTask 必须只携带 primitive / 不可变 dispatch 数据,
+    # 不能藏 campaign instance / mutable cut bucket / 求解器 session 等.
+    # epsilon_stage 是 P1 #7 main 加的 wave-level ε tag (Optional[float] 默认 None),
+    # primitive 数字字段, 不属于 campaign 状态对象, 守卫语义保持.
     assert {field.name for field in fields(WorkerTask)} == {
         "dispatch_seq",
         "attempt_index",
@@ -383,6 +387,7 @@ def test_worker_tasks_never_carry_campaign_state() -> None:
         "benders_max_iter",
         "disable_master_warm_start",
         "preloaded_exact_safe_cuts",
+        "epsilon_stage",
     }
 
 

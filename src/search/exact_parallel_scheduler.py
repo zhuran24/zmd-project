@@ -31,6 +31,9 @@ class WorkerTask:
     benders_max_iter: int
     disable_master_warm_start: bool
     preloaded_exact_safe_cuts: Tuple[Dict[str, Any], ...]
+    # P1 #7 main: ε 三阶段调度的 wave-level tag (0.05 / 0.01 / 0.0).
+    # None = 未启用 (短跑或非 certified_exact 模式), 跨 wave cut bucket 退化到 legacy.
+    epsilon_stage: Optional[float] = None
 
     @property
     def candidate_key(self) -> str:
@@ -81,6 +84,7 @@ def build_parallel_worker_tasks(
     benders_max_iter: int,
     preloaded_cut_map: Mapping[str, Sequence[Mapping[str, Any]]],
     disable_master_warm_start: bool = False,
+    epsilon_stage: Optional[float] = None,
 ) -> List[WorkerTask]:
     tasks: List[WorkerTask] = []
     normalized_attempt_indices: Optional[List[int]] = None
@@ -107,6 +111,7 @@ def build_parallel_worker_tasks(
                 benders_max_iter=int(benders_max_iter),
                 disable_master_warm_start=bool(disable_master_warm_start),
                 preloaded_exact_safe_cuts=tuple(dict(raw_cut) for raw_cut in raw_cuts),
+                epsilon_stage=epsilon_stage,
             )
         )
     return tasks
@@ -128,6 +133,20 @@ def _worker_entry(
     task_queue: Any,
     result_queue: Any,
 ) -> None:
+    # Phase 3C P1 #11 (PT-style portfolio): when EXACT_MASTER_RANDOM_SEED_BASE
+    # is set in the parent process, dispatch per-worker random_seed = base +
+    # worker_index. The master CpSolver (master_model.py) will then read
+    # EXACT_MASTER_RANDOM_SEED at solve time and override its default seed,
+    # giving each of the N processes a different CP-SAT search trajectory.
+    # Default (env unset): no override → CP-SAT default seed → today's
+    # behavior unchanged.
+    seed_base_env = os.environ.get("EXACT_MASTER_RANDOM_SEED_BASE")
+    if seed_base_env:
+        try:
+            os.environ["EXACT_MASTER_RANDOM_SEED"] = str(int(seed_base_env) + int(worker_index))
+        except ValueError:
+            pass
+
     process = psutil.Process(os.getpid())
     peak_rss_bytes = _rss_bytes(process)
     priority_info = apply_process_priority_if_configured()
@@ -200,6 +219,7 @@ def _worker_entry(
                 master_search_profile=master_search_profile,
                 disable_master_warm_start=bool(task.disable_master_warm_start),
                 heartbeat_callback=_emit_worker_heartbeat,
+                epsilon_stage=task.epsilon_stage,
             )
             metadata = dict(getattr(run_benders_for_ghost_rect, "last_run_metadata", {}) or {})
             peak_rss_bytes = max(peak_rss_bytes, _rss_bytes(process))

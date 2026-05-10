@@ -81,3 +81,56 @@ def test_elapsed_seconds_helper_exists():
     """ExactCampaign.elapsed_seconds 方法已加 (P1 #7 main 依赖)."""
     from src.search.exact_campaign import ExactCampaign
     assert hasattr(ExactCampaign, "elapsed_seconds")
+
+
+def test_parallel_worker_task_carries_epsilon_stage():
+    """P1 #7 main: WorkerTask 字段 + build_parallel_worker_tasks kwarg 透传 ε.
+
+    Audit C #1 修复守卫: 168h 标配 4 worker parallel 模式下 ε 三阶段
+    不能再断链 (修前 WorkerTask 没字段, build_* 没 kwarg, _worker_entry
+    调 run_benders_for_ghost_rect 不传 epsilon_stage → 4 worker tag 全 None).
+    """
+    import inspect
+    from dataclasses import fields
+    from src.search.exact_parallel_scheduler import (
+        WorkerTask,
+        build_parallel_worker_tasks,
+    )
+
+    # 1. WorkerTask 字段存在 + 默认 None
+    field_names = {f.name for f in fields(WorkerTask)}
+    assert "epsilon_stage" in field_names
+
+    # 2. build_parallel_worker_tasks signature 接受 epsilon_stage kwarg
+    sig = inspect.signature(build_parallel_worker_tasks)
+    assert "epsilon_stage" in sig.parameters
+    assert sig.parameters["epsilon_stage"].default is None
+
+    # 3. 透传: 传 0.05 进去, 每个 task 拿到 0.05
+    tasks = build_parallel_worker_tasks(
+        candidates=[(36, 6, 6), (24, 4, 6)],
+        attempt_start=0,
+        master_seconds=10.0,
+        binding_seconds=10.0,
+        routing_seconds=10.0,
+        flow_seconds=10.0,
+        benders_max_iter=5,
+        preloaded_cut_map={},
+        epsilon_stage=0.05,
+    )
+    assert len(tasks) == 2
+    for task in tasks:
+        assert task.epsilon_stage == 0.05
+
+    # 4. 不传 → 默认 None (短跑/非 certified_exact 兼容)
+    tasks_default = build_parallel_worker_tasks(
+        candidates=[(36, 6, 6)],
+        attempt_start=0,
+        master_seconds=10.0,
+        binding_seconds=10.0,
+        routing_seconds=10.0,
+        flow_seconds=10.0,
+        benders_max_iter=5,
+        preloaded_cut_map={},
+    )
+    assert tasks_default[0].epsilon_stage is None
