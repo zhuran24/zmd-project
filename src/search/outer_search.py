@@ -184,6 +184,45 @@ def _record_probe_candidate_dispatch(
     _persist_frontier_probe_state(exact_campaign, probe_state)
 
 
+def _determine_epsilon_stage(
+    elapsed_seconds: float,
+    *,
+    stage_1_end_hours: float = 25.0,
+    stage_2_end_hours: float = 75.0,
+) -> float:
+    """P1 #7 main: ε-Certified 三阶段 168h split 调度.
+
+    R10 `acb9bd4fdd02868c2` + R11 `a823b529b0879c4bb` 三阶段切分:
+    - elapsed < 25h  → ε=0.05 (probe / exploration stage)
+    - 25-75h         → ε=0.01 (refinement stage)
+    - >= 75h         → ε=0.0  (final certification stage)
+
+    总 168h 预算切 25h + 50h + 85h. 短跑 (campaign_hours < 25h) 全部走
+    stage 1 (ε=0.05); 不影响 cut_manager.cuts_for_stage 的"松到紧 reuse"
+    规则 (松 ε 推出的 cut 在紧 ε 仍合法).
+
+    阈值由 EXACT_EPSILON_STAGE1_END_HOURS / EXACT_EPSILON_STAGE2_END_HOURS
+    env override; 不设则用 25.0 / 75.0 默认.
+    """
+    import os
+    s1 = stage_1_end_hours
+    s2 = stage_2_end_hours
+    try:
+        s1 = float(os.environ.get("EXACT_EPSILON_STAGE1_END_HOURS", s1))
+    except (TypeError, ValueError):
+        pass
+    try:
+        s2 = float(os.environ.get("EXACT_EPSILON_STAGE2_END_HOURS", s2))
+    except (TypeError, ValueError):
+        pass
+    elapsed_hours = float(elapsed_seconds) / 3600.0
+    if elapsed_hours < s1:
+        return 0.05
+    if elapsed_hours < s2:
+        return 0.01
+    return 0.0
+
+
 def _normalize_solve_mode(
     solve_mode: Optional[str] = None,
     certification_mode: Optional[bool] = None,
@@ -2035,6 +2074,13 @@ def run_outer_search(
                     solve_mode=solve_mode,
                     master_search_profile=master_search_profile,
                 )
+                # P1 #7 main: 算当前 wave 的 ε 阶段 (25h/50h/85h 切分),
+                # 让 controller 给新生成的 BendersCut tag epsilon_stage.
+                _wave_epsilon: Optional[float] = None
+                if exact_campaign is not None and solve_mode == "certified_exact":
+                    _wave_epsilon = _determine_epsilon_stage(
+                        exact_campaign.elapsed_seconds()
+                    )
                 status, solution = run_benders_for_ghost_rect(
                     ghost_w=ghost_w,
                     ghost_h=ghost_h,
@@ -2049,6 +2095,7 @@ def run_outer_search(
                     session=exact_session,
                     master_search_profile=master_search_profile,
                     disable_master_warm_start=bool(disable_master_warm_start),
+                    epsilon_stage=_wave_epsilon,
                 )
                 run_metadata = dict(getattr(run_benders_for_ghost_rect, "last_run_metadata", {}) or {})
                 campaign_payload = _campaign_payload_from_run_metadata(

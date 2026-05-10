@@ -4596,6 +4596,7 @@ def run_benders_for_ghost_rect(
     master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     disable_master_warm_start: bool = False,
     heartbeat_callback: Optional[_CampaignHeartbeatCallback] = None,
+    epsilon_stage: Optional[float] = None,
 ) -> Tuple[str, Optional[Dict[str, Any]]]:
     """Run the current Benders loop for one ghost rectangle size."""
 
@@ -5099,6 +5100,10 @@ def run_benders_for_ghost_rect(
         else None,
         disable_master_warm_start=bool(disable_master_warm_start),
     )
+    # P1 #7 main: 把 outer_search 算的 ε 阶段 (25h/50h/85h 切分) tag 给
+    # controller, 影响新生成的 BendersCut.epsilon_stage 字段; 配合 P1
+    # #7b prep 的 cut_manager.cuts_for_stage 实现 ε 阶段跨 wave bucketing.
+    controller.set_epsilon_stage(epsilon_stage)
     if solve_mode == "certified_exact":
         pre_master_proof_summary = dict(pre_master_precheck.get("proof_summary", {}))
         reused_advisory = _copy_anchor119_row_domain_guard_advisory_from_proof_summary(

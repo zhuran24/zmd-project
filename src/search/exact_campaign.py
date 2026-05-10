@@ -398,6 +398,11 @@ class ExactCampaign:
         elapsed = max(0.0, now_ts() - iso_to_ts(created_at))
         return max(0.0, self.campaign_hours * 3600.0 - elapsed)
 
+    def elapsed_seconds(self) -> float:
+        """P1 #7 main: 给 outer_search 三阶段 ε 调度算当前 elapsed 用."""
+        created_at = str(self.state.get("created_at", now_iso()))
+        return max(0.0, now_ts() - iso_to_ts(created_at))
+
     def is_compatible_with_current_hashes(self) -> bool:
         return self.state.get("artifact_hashes") == compute_exact_artifact_hashes(self.project_root)
 
