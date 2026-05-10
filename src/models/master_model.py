@@ -11189,6 +11189,13 @@ class MasterPlacementModel:
                     1000,
                 )
             solver.parameters.hint_conflict_limit = int(hint_conflict_limit)
+            # audit A H3 修复: 启用 repair_hint 让 solver 修补部分过期 hint
+            # 而不是全 reject. 跨 wave hint reuse 场景必需:
+            # warm-start hint 来自上一 wave master, 后续 wave 的 cut/decision
+            # 让部分变量值过期, 默认 False 会全 reject 整组 hint → warm-start
+            # 收益归零. True 让 solver 接受可重复满足的部分 + 修补冲突的部分.
+            if hasattr(solver.parameters, "repair_hint"):
+                solver.parameters.repair_hint = True
         log_callback_enabled = False
         if diagnostic_log_callback is not None:
             if hasattr(solver.parameters, "log_search_progress"):
