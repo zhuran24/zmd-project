@@ -188,9 +188,13 @@ def main() -> None:
     parser.add_argument("--resume-campaign", action="store_true")
     parser.add_argument("--max-attempts", type=int, default=None)
     parser.add_argument("--start-area", type=int, default=None)
-    parser.add_argument("--master-seconds", type=float, default=600.0)
-    parser.add_argument("--binding-seconds", type=float, default=600.0)
-    parser.add_argument("--routing-seconds", type=float, default=600.0)
+    # 168h 长跑 default: master/binding/routing 1800s (30 min) — 之前 600s
+    # 在 70x70 复杂 candidate 上频繁撞 UNKNOWN, candidate UNKNOWN 是 outer_search
+    # terminal stop reason → campaign 短命退出. 1800s 给 master 更多 search 空间
+    # 减少 UNKNOWN 概率, 配合 watchdog 自动重启机制让 168h budget 真用满.
+    parser.add_argument("--master-seconds", type=float, default=1800.0)
+    parser.add_argument("--binding-seconds", type=float, default=1800.0)
+    parser.add_argument("--routing-seconds", type=float, default=1800.0)
     parser.add_argument("--flow-seconds", type=float, default=60.0)
     parser.add_argument("--benders-max-iter", type=int, default=30)
     parser.add_argument("--min-side", type=int, default=6)
