@@ -1,0 +1,17 @@
+% P2 #31 Pumpkin LCG PoC — INFEASIBLE 3 约束 demo
+% 只用 int_lin_eq / int_lin_le (pumpkin-checker 支持的最小 constraint 子集).
+% 期望: solver 报 UNSAT + checker verify 通过.
+%
+% 3 约束 (全部参与冲突):
+%   c0: x = 1 (int_lin_eq)
+%   c1: y = 1 (int_lin_eq)
+%   c2: x + y <= 1 (int_lin_le, 跟 c0+c1 冲突)
+
+var 0..1: x;
+var 0..1: y;
+
+constraint int_lin_eq([1], [x], 1);
+constraint int_lin_eq([1], [y], 1);
+constraint int_lin_le([1, 1], [x, y], 1);
+
+solve satisfy;

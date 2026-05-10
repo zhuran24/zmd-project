@@ -31,6 +31,10 @@ _codex_archive/
 # CLAUDE.md: `.upstream_clones/` is gitignored — vendored slices live under third_party_snapshots/
 .upstream_clones/
 
+# PoC ephemeral artifacts (regenerable by re-running the demo runner)
+scripts/pumpkin_poc/proof.drcp
+scripts/pumpkin_poc/run_log.txt
+
 # Local scratch and package outputs
 *.log
 *.tmp
