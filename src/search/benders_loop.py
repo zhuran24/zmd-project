@@ -5100,7 +5100,7 @@ def run_benders_for_ghost_rect(
         else None,
         disable_master_warm_start=bool(disable_master_warm_start),
     )
-    # P1 #7 main: 把 outer_search 算的 ε 阶段 (25h/50h/85h 切分) tag 给
+    # P1 #7 main: 把 outer_search 算的 ε 阶段 (25h prep / 50h refine / 93h cert) tag 给
     # controller, 影响新生成的 BendersCut.epsilon_stage 字段; 配合 P1
     # #7b prep 的 cut_manager.cuts_for_stage 实现 ε 阶段跨 wave bucketing.
     controller.set_epsilon_stage(epsilon_stage)

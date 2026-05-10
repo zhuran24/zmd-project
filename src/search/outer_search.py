@@ -197,7 +197,8 @@ def _determine_epsilon_stage(
     - 25-75h         → ε=0.01 (refinement stage)
     - >= 75h         → ε=0.0  (final certification stage)
 
-    总 168h 预算切 25h + 50h + 85h. 短跑 (campaign_hours < 25h) 全部走
+    总 168h 预算切 25h prep + 50h refine + 93h cert (duration; 跟 audit C #2 对齐
+    后的准确算法; 端点 25h / 75h / 168h). 短跑 (campaign_hours < 25h) 全部走
     stage 1 (ε=0.05); 不影响 cut_manager.cuts_for_stage 的"松到紧 reuse"
     规则 (松 ε 推出的 cut 在紧 ε 仍合法).
 
@@ -2084,7 +2085,7 @@ def run_outer_search(
                     solve_mode=solve_mode,
                     master_search_profile=master_search_profile,
                 )
-                # P1 #7 main: 算当前 wave 的 ε 阶段 (25h/50h/85h 切分),
+                # P1 #7 main: 算当前 wave 的 ε 阶段 (25h prep / 50h refine / 93h cert),
                 # 让 controller 给新生成的 BendersCut tag epsilon_stage.
                 _wave_epsilon: Optional[float] = None
                 if exact_campaign is not None and solve_mode == "certified_exact":
