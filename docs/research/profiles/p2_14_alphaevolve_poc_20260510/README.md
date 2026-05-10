@@ -26,14 +26,39 @@ User 提议"不能直接调用子代理吗"——绕开 OpenEvolve 工具 + Anth
 | 5 | `hint_facility_template_port_priority` | pose-level binding 域大小启发 | 11/11 |
 | 6 | `hint_balanced_commodity_load_per_box` | box 间 commodity 负载均衡（跟 hint 2 anti-overload 互补）| 11/11 |
 
-## Verdict: **GO**
+## Verdict: **GO（Anthropic + Gemini 双路径均通过）**
 
-子代理一次 spawn 出 5/6 满分 + 1/6 接近满分变体：
-- 全部符合 AI Safety Contract（soft `model.AddHint`，无 `AddBoolOr` 硬 nogood）
-- 全部涉及具体 binding context
-- 5 个 **新颖维度**（output 优先级 / 几何 collocation / capacity-demand 差额 / pose-level binding / load balancing）
+| Proposer | 跑出变体 | 平均分 | 满分变体 | 新颖维度 | Verdict |
+|---|---|---|---|---|---|
+| Opus 4.7 (Agent 子代理) | 6 | **10.92** / 11 | 5/6 | 5 | GO |
+| Gemini 3.1 Pro Preview | 6 | **10.17** / 11 | 1/6 | 2 | GO（质量 -6.9%） |
 
-按 R10 audit go/no-go gate "LLM 提议 cut 在评分上能否显著超过手写 baseline"——6/6 都达到 hint 1/2 baseline 同等或更高 → **GO production**。
+按 R10 audit go/no-go gate "LLM 提议 cut 在评分上能否显著超过手写 baseline"——两个 model 都 ≥ baseline → 双路径 production 可走。
+
+### Opus 6 变体（同 family 直接外推）
+
+子代理 `ada46d235d22806ab` 一次 spawn 出 5/6 满分 + 1/6 接近满分。新颖维度：output 优先级 / 几何 collocation / capacity-demand 差额 / pose-level binding / load balancing。详见 `evaluator_results.json`。
+
+### Gemini 6 变体（独立 PoC, 已验证）
+
+`gemini-3.1-pro-preview` 同 prompt 跑出 6 变体（详见 `evaluator_results_gemini.json`）：
+
+| # | 名字 | 评分 | 跟 Opus 6 个对比 |
+|---|---|---|---|
+| 1 | `adjacent_direct_insertion` | 9/11 | ≈ Opus 变体 3 重叠 |
+| 2 | `single_commodity_output_homogeneity` | 10/11 | ≈ Opus 变体 2 视角差 |
+| 3 | `index_based_port_packing` | 10/11 | ≈ Opus 变体 4 思路重叠 |
+| 4 | `recipe_proportional_input` | 10.5/11 | **新颖**（input 镜像 Opus output） |
+| 5 | `pure_storage_box` clustering | 11/11 ⭐ | **完全新颖**（hint 2 反向） |
+| 6 | `central_port_high_volume` | 10.5/11 | 部分新颖（内部微几何） |
+
+特点：
+- 全 6 个 AI Safety Contract OK，全 6 个 binding context OK
+- 2 / 6 跟 Opus 高度重叠（变体 1 + 3）—— Gemini 命中率较低
+- 2 / 6 完全新颖（变体 4 input 镜像 + 变体 5 storage clustering）—— Opus 没产
+- 变体 1 用了未定义 helper（`get_common_commodities` / `adj_port_pairs`），落地成本略高
+
+Token usage: 775 input + 2371 output + 1963 thinking = 5109 total。
 
 ## 仍 gated 的部分
 

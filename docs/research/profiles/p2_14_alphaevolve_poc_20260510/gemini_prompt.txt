@@ -1,0 +1,63 @@
+你是 P2 #14 AlphaEvolve cut-evolution PoC 的 LLM proposer 角色。任务: 为终末地工业规划器项目的 binding subproblem 提出 **5-8 个 NEW** cut/hint 变体, 用于验证"LLM 能否生成有用 cut"。
+
+## 项目背景
+
+终末地 70×70 工业规划器 exact LBBD 求解器 (CP-SAT). 主路径见 src/search/benders_loop.py + src/models/binding_subproblem.py. binding subproblem 决定 master 给的 placement 解里, 每个 facility 实例怎么 bind 端口 (input/output port slot 选 commodity).
+
+## 已有 cut/hint (不要重复)
+
+- **hint 1 (commit b2a811b)**: routing 子问题 `bridge_hop_le_2` add_hint soft preference — 端口对最大物流桥跳数 ≤ 2 高优先级
+- **hint 2 (commit 1ba7ca2 / 22af98a / 94351d5)**: binding 子问题 storage_box overload separation env-gated nogood — 禁止同一 storage box 同时绑"高产+低需"和"低产+高需"两类 commodity (env: EXACT_BINDING_USE_OVERLOAD_SEPARATION)
+
+## AI Safety Contract (PROJECT_LOCK 红线)
+
+cut/hint 必须:
+- 用 `model.AddHint(var, value)` 软偏好, 不用 `AddBoolOr` 硬 nogood (除非有强理论保证不破坏 cert)
+- 不写 checkpoint / 不删 candidates / 不 declare INFEASIBLE
+- 不改 certified proof source
+- 中文注释
+
+## 任务
+
+提出 **5-8 个 NEW cut/hint 变体**, 针对 binding subproblem 域 (不是 routing / master). 每个变体格式:
+
+```python
+def hint_<name>(model, slot_vars, instances, ...):
+    """中文一行说明: 这个 hint 是什么 + 预期效果."""
+    # 实施代码 (~10-30 行 Python, 用 add_hint / boolvar / etc.)
+    pass
+```
+
+每个变体后加 1-2 行 commentary:
+- 跟 hint 1/2 的区别
+- 预期效果 (binding 求解时间降 X% / cut 质量上升 / etc.)
+- 风险 (会不会破坏 cert / 是否可能 over-constrain)
+
+可探索的方向 (启发, 不限于):
+- port slot 的 commodity 选择 cardinality 启发 (e.g. 同 facility 不同 slot commodity 多样性)
+- 跟 master placement 几何信息相关的 binding hint (e.g. 紧邻 facility 的端口配对)
+- bridge / wire 长度 vs commodity throughput 关系
+- 玩家社区已知的"工厂模式" (e.g. 流水线 vs 块状布局)
+- 不同 facility template 的端口偏好模式
+
+## 输出格式 (~600-800 字, 中文)
+
+```
+## 变体 1: <name>
+[Python code 块]
+- 跟 hint 1/2 区别: ...
+- 预期效果: ...
+- 风险: ...
+
+## 变体 2: <name>
+...
+
+## 5-8 个变体
+...
+
+## 总结
+- 你最看好哪 1-2 个? 为什么?
+- 哪些可能 over-constrain 不安全?
+```
+
+开始 propose. 注意 AI Safety Contract.

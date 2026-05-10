@@ -75,12 +75,15 @@
       ]
     }
   ],
-  "verdict": "GO production",
-  "verdict_rationale": "子代理一次 spawn 出 5/6 满分 + 1/6 接近满分变体, 全部符合 AI Safety Contract, 5 个新颖维度. 按 R10 go/no-go gate 'LLM 提议 cut 评分能否显著超过手写 baseline' 通过.",
+  "verdict": "GO production (Anthropic 直接 / Gemini 已独立验证, 见 evaluator_results_gemini.json)",
+  "verdict_rationale": "子代理一次 spawn 出 5/6 满分 + 1/6 接近满分变体, 全部符合 AI Safety Contract, 5 个新颖维度. 按 R10 go/no-go gate 'LLM 提议 cut 评分能否显著超过手写 baseline' 通过. Anthropic 路径直接外推 (proposer 同 Opus 4.7 family). Gemini 路径用 gemini-3.1-pro-preview 独立 PoC 验证: 平均 10.17/11 (-6.9% vs Opus), 也 GO.",
+  "proposer_model": "Opus 4.7 (claude-opus-4-7, via Agent tool subagent on Max 20x subscription)",
+  "gemini_followup": "evaluator_results_gemini.json — 平均 10.17/11, GO",
   "caveats": [
     "启发式评分只验证'代码合规 + 有项目 context', 不验证 cut 求解时间真降",
     "production 跑 OpenEvolve 真 500 iter 才能知哪个变体真有用",
-    "production 推迟到 168h 真长跑跑出 baseline 后做 (按真 binding solve 时间分布选潜力最大变体)"
+    "production 推迟到 168h 真长跑跑出 baseline 后做 (按真 binding solve 时间分布选潜力最大变体)",
+    "Opus 4.7 PoC 通过 ≠ Gemini 3.1 Pro / 2.5 Pro 通过 (不同 model family, 代码 + 项目 context 把握差距未量化)"
   ],
   "best_picks_by_proposer": ["hint_unused_slot_for_oversupply_box (最安全 + 收益直接)", "hint_collocated_io_pair_same_commodity (跟 hint 1 形成 routing/binding 互补对)"],
   "high_risk_variants": ["hint_facility_template_port_priority (idx=0 无质量语义)", "hint_balanced_commodity_load_per_box (多 commodity hint 冲突)"]
