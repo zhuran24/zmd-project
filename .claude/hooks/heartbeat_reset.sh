@@ -4,20 +4,20 @@
 # 每次 CC session 启动 + 每次 user 主动 prompt submit 时, kill 旧 sleep loop
 # + 启新 loop, 实现 reset 模式心跳.
 #
-# 多 session 隔离: CLAUDE_CODE_SESSION_ID 区分 PID/marker file.
+# Session 隔离: 用 CC root PID (从 PPID 链找父进程里的 claude 命令) 当 ID,
+# 不依赖 CLAUDE_CODE_SESSION_ID env (实测 Claude Code fire hook 时不传该
+# env 给 subprocess, fallback 'default' 会让多 session 互相 kill).
+# 用 CC_PID 当 ID 既保证 multi-session 隔离, 又跟 CC 进程同生死.
 #
-# CC 关闭自动 cleanup: 启动时找父链里的 claude 进程 (CC root PID),
-# loop 每 iter 检查该 PID 还活, 死了立刻 exit (max 延迟 = INTERVAL).
+# CC 关闭自动 cleanup: loop 每 iter `kill -0 $CC_PID` 检查, 死了立刻 exit
+# (max 延迟 = INTERVAL = 180s). 兜底 MAX_ITER=480 (24h cap).
 
 set -e
 
-SESSION_ID="${CLAUDE_CODE_SESSION_ID:-default}"
-PIDFILE="/tmp/zmd_heartbeat_${SESSION_ID}.pid"
-MARKER="/tmp/zmd_heartbeat_${SESSION_ID}.log"
 INTERVAL=180
-MAX_ITER=480  # 24h cap (兜底, CC 真死前 PID 检测先 trigger)
+MAX_ITER=480
 
-# 找父链里的 claude 进程当 CC root PID
+# 找父链里的 claude 进程当 CC root PID + session ID
 CC_PID=""
 _pid="$PPID"
 for _i in 1 2 3 4 5 6; do
@@ -30,6 +30,12 @@ for _i in 1 2 3 4 5 6; do
     _pid="$(ps -o ppid= -p "$_pid" 2>/dev/null | tr -d ' ' || true)"
 done
 
+# CC_PID 找不到 (异常场景) → fallback PPID, 至少有个隔离 ID
+[[ -z "$CC_PID" ]] && CC_PID="$PPID"
+
+PIDFILE="/tmp/zmd_heartbeat_${CC_PID}.pid"
+MARKER="/tmp/zmd_heartbeat_${CC_PID}.log"
+
 # kill 旧 loop (本 session 的)
 if [[ -f "$PIDFILE" ]]; then
     OLD_PID="$(cat "$PIDFILE" 2>/dev/null || true)"
@@ -41,13 +47,12 @@ fi
 # 截断 marker
 : > "$MARKER"
 
-# 启新 loop, 把 CC_PID 传进去当退出条件
+# 启新 loop
 setsid nohup bash -c "
 iter=0
 while [[ \$iter -lt $MAX_ITER ]]; do
     sleep $INTERVAL
-    # CC 死了 loop 自杀 (avoid orphan loop 跑 24h)
-    if [[ -n '$CC_PID' ]] && ! kill -0 '$CC_PID' 2>/dev/null; then
+    if ! kill -0 '$CC_PID' 2>/dev/null; then
         exit 0
     fi
     echo \"--- HEARTBEAT \$(date '+%Y-%m-%dT%H:%M:%S') ---\" >> \"$MARKER\"
