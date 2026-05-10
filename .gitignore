@@ -27,6 +27,10 @@ frontdoor/
 # Codex historical archive (read-only reference)
 _codex_archive/
 
+# Local upstream clones for offline browsing/diffing (50 MB+, not vendored)
+# CLAUDE.md: `.upstream_clones/` is gitignored — vendored slices live under third_party_snapshots/
+.upstream_clones/
+
 # Local scratch and package outputs
 *.log
 *.tmp

@@ -134,8 +134,25 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
 
     # Cooldown between crashes
     if ($iter -lt $MaxIterations) {
-        Write-Host "  Cooling down ${CooldownSeconds}s before restart..." -ForegroundColor DarkGray
-        Start-Sleep -Seconds $CooldownSeconds
+        # Adaptive cooldown: short floor for OS cleanup, then poll until memory is reclaimed
+        $minFloor = 10
+        $maxWait = $CooldownSeconds
+        Write-Host "  Cooling down (min ${minFloor}s, max ${maxWait}s, target free RAM 25 GiB)..." -ForegroundColor DarkGray
+        Start-Sleep -Seconds $minFloor
+        $cdStart = Get-Date
+        while ($true) {
+            $freeGB = [math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB, 1)
+            $waited = ((Get-Date) - $cdStart).TotalSeconds + $minFloor
+            if ($freeGB -ge 25) {
+                Write-Host "    ready: ${freeGB} GiB free after ${waited}s" -ForegroundColor DarkGray
+                break
+            }
+            if ($waited -ge $maxWait) {
+                Write-Host "    timeout: ${freeGB} GiB free after ${waited}s (proceeding anyway)" -ForegroundColor Yellow
+                break
+            }
+            Start-Sleep -Seconds 3
+        }
     }
 
     Write-Host ""
