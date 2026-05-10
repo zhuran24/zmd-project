@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -135,7 +136,7 @@ def get_staged_files() -> list[str]:
 
 
 def check_frozen_artifacts(gate: GateResult) -> None:
-    print("\n[1/5] 冻结制品 hash 校验")
+    print("\n[1/6] 冻结制品 hash 校验")
     for rel_path, expected_hash in FROZEN_ARTIFACTS.items():
         full_path = PROJECT_ROOT / rel_path
         if not full_path.exists():
@@ -153,7 +154,7 @@ def check_frozen_artifacts(gate: GateResult) -> None:
 
 
 def check_forbidden_paths(gate: GateResult) -> None:
-    print("\n[2/5] 禁止路径写入检查")
+    print("\n[2/6] 禁止路径写入检查")
     staged = get_staged_files()
     if not staged:
         gate.ok("无 staged 文件（或不在 git 仓库中）")
@@ -174,7 +175,7 @@ def check_forbidden_paths(gate: GateResult) -> None:
 
 
 def check_ai_safety_contract(gate: GateResult) -> None:
-    print("\n[3/5] AI 安全合同检查")
+    print("\n[3/6] AI 安全合同检查")
     ai_dir = PROJECT_ROOT / AI_MODULE_ROOT
     if not ai_dir.exists():
         gate.ok("ai_accel 目录不存在，跳过")
@@ -204,7 +205,7 @@ def check_ai_safety_contract(gate: GateResult) -> None:
 
 
 def check_exact_exploratory_isolation(gate: GateResult) -> None:
-    print("\n[4/5] 精确/探索边界隔离检查")
+    print("\n[4/6] 精确/探索边界隔离检查")
     staged = get_staged_files()
     if not staged:
         gate.ok("无 staged 文件")
@@ -265,9 +266,78 @@ CORE_TEST_FILES = [
 ]
 
 
+RESEARCH_TRACKED_FILES = {
+    "docs/phase3c_optimization_roadmap_v1.md",
+    "docs/research/INDEX.md",
+}
+
+# 匹配 R-N 调研引用 (e.g. "R13 `a8a448561dbacf07c`"). agent ID 是 16+ hex chars.
+_RESEARCH_REF_PATTERN = re.compile(r"\bR\d+\s+`([0-9a-f]{16,})`")
+# 匹配 audit 引用 (e.g. "audit `a062ff6396a691d74`" / "audit by `xxx`").
+_AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IGNORECASE)
+
+
+def check_research_audit_coverage(gate: GateResult) -> None:
+    """[5/6] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
+
+    R13 教训: 调研 agent 报告即使引用 URL 也常出错 (5/5 历史 audit 翻盘)。
+    路线图 / INDEX 改动如新增 R-N 调研引用，必须配套有 audit (agent ID) 引用。
+    [W] warning 不阻塞 — audit 可能在另一 commit, 但提醒一下避免漏审。
+    """
+    print("\n[5/6] 调研产物 audit 覆盖检查")
+    staged = get_staged_files()
+    touched = [f for f in staged if f.replace("\\", "/") in RESEARCH_TRACKED_FILES]
+    if not touched:
+        gate.ok("本次提交未修改路线图 / INDEX")
+        return
+
+    research_refs: set[str] = set()
+    audit_refs: set[str] = set()
+    for rel in touched:
+        try:
+            diff_result = subprocess.run(
+                ["git", "diff", "--cached", "--", rel],
+                capture_output=True, text=True, cwd=str(PROJECT_ROOT),
+            )
+        except FileNotFoundError:
+            continue
+        added = "\n".join(
+            line[1:] for line in diff_result.stdout.splitlines()
+            if line.startswith("+") and not line.startswith("+++")
+        )
+        research_refs.update(_RESEARCH_REF_PATTERN.findall(added))
+        audit_refs.update(_AUDIT_REF_PATTERN.findall(added))
+
+    if not research_refs:
+        gate.ok(
+            f"路线图 / INDEX 改动 {len(touched)} 个文件，无新增 R-N 调研引用"
+            f"（可能是工时 / verdict 修订）"
+        )
+        return
+
+    missing = research_refs - audit_refs
+    if not missing:
+        gate.ok(
+            f"路线图 / INDEX 新增 {len(research_refs)} 个 R-N 调研引用，"
+            f"全部配套 audit ({len(audit_refs)} 个 audit agent ID)"
+        )
+        return
+
+    sample = ", ".join(sorted(missing)[:3])
+    if len(missing) > 3:
+        sample += "..."
+    gate.warn(
+        f"路线图 / INDEX 新增 {len(research_refs)} 个 R-N 调研引用，"
+        f"{len(missing)} 个未看到配套 audit (agent IDs: {sample})。\n"
+        f"         按 memory feedback_research_roi_metric.md v2: "
+        f"调研产物进路线图前应做 zero-trust source-verify audit。"
+        f"\n         如果 audit 在另一 commit / 已在过去 commit, 忽略本警告。"
+    )
+
+
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = "全量" if full else "核心门禁"
-    print(f"\n[5/5] 测试门禁（{label}）")
+    print(f"\n[6/6] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
     timeout = 600 if full else 120
@@ -316,6 +386,7 @@ def run_gate(*, full: bool = False, hook: bool = False) -> int:
     check_forbidden_paths(gate)
     check_ai_safety_contract(gate)
     check_exact_exploratory_isolation(gate)
+    check_research_audit_coverage(gate)
 
     if full:
         check_tests(gate, full=True)
