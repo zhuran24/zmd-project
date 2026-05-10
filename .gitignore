@@ -35,6 +35,9 @@ _codex_archive/
 scripts/pumpkin_poc/proof.drcp
 scripts/pumpkin_poc/run_log.txt
 
+# Claude Code internal lock files (regenerated on session start)
+.claude/scheduled_tasks.lock
+
 # Local scratch and package outputs
 *.log
 *.tmp

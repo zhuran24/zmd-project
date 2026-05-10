@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/zhuran24/claude-pj/zmd/.claude/hooks/heartbeat_reset.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/zhuran24/claude-pj/zmd/.claude/hooks/heartbeat_reset.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
