@@ -231,6 +231,24 @@ systemd-sysctl.service 启动时自动 apply, 重启不丢。
   抖动 +1-3% 吞吐。**重启后生效**——LTS entry 不动留作 fallback。
 - **跳过**：OOM score adj (普通用户写不到 < 0)、systemd-run cgroup 隔离 (复杂度高收益边际)、CPU undervolt (崩溃丢 168h 进度风险高)。
 
+### P2 #18 MUS via CPMpy QuickXplain PoC
+
+```bash
+# 装 CPMpy (CPMpy 0.10.0 PyPI 包 pyproject 限 ortools<=9.14, 但 API
+# 兼容 9.15; --no-deps 绕过 dep constraint 即可, R13 audit 验证可用)
+.venv/bin/pip install --no-deps "cpmpy>=0.10.0"
+
+# 跑 PoC (微型 INFEASIBLE demo)
+.venv/bin/python scripts/mus_extraction_poc.py
+```
+
+PoC 验证 CPMpy 0.10.0 MUS API 在 OR-Tools 9.15 上工作: deletion-based
+mus + QuickXplain 都从 6 约束的 INFEASIBLE demo 精确提取 3 约束的最小核心
+(50% reduction). Production 集成 (重写项目 binding/routing subproblem
+为 CPMpy DSL 或 OR-Tools→CPMpy 桥接器) 是 ~1 周量级工作, 不在 PoC 范围.
+
+来源: 路线图 P2 #18, R5 `a3bef849bbe8777ab` + R13 audit `ae3860a1dc6cbabb8`.
+
 ### P1 #12 cache-trio spike (24h instrumentation, gate 决定要不要做主体)
 
 ```bash
