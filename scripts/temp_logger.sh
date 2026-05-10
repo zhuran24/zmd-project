@@ -23,6 +23,16 @@ set -euo pipefail
 
 INTERVAL_SEC="${1:-60}"
 
+# audit F LOW 修复: venv python 路径不硬编码, 从 script 位置推导项目根
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+VENV_PYTHON="${PROJECT_ROOT}/.venv/bin/python"
+if [[ ! -x "$VENV_PYTHON" ]]; then
+    echo "ERROR: venv python not found at $VENV_PYTHON" >&2
+    echo "Run scripts/cachyos_setup.sh --apply first" >&2
+    exit 2
+fi
+
 # Locate x86_pkg_temp thermal zone (one-time)
 PKG_TEMP_ZONE=""
 for z in /sys/class/thermal/thermal_zone*; do
@@ -50,7 +60,8 @@ while true; do
     fi
 
     # E-core max temp (Core 32-47) via sensors -j; tolerate parse failure
-    ecore_max_c="$(sensors -j 2>/dev/null | /home/zhuran24/claude-pj/zmd/.venv/bin/python -c "
+    # audit F LOW 修复: venv python 路径用 PROJECT_ROOT 推导, 不再硬编码
+    ecore_max_c="$(sensors -j 2>/dev/null | "${VENV_PYTHON}" -c "
 import sys, json
 try:
     d = json.load(sys.stdin)

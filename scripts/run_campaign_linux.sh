@@ -89,15 +89,34 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# Auto-inject --resume-campaign for campaign runs (audit F MED 修复)
+# 防止崩溃后用户手动重启时忘加 → 从头开始跑丢进度.
+# 只在用户传了 --campaign-hours 时注入 (--vis 等非 campaign 模式不加).
+# ---------------------------------------------------------------------------
+args=("$@")
+has_resume=false
+is_campaign=false
+for a in "${args[@]}"; do
+    case "$a" in
+        --resume-campaign|--resume-campaign=*) has_resume=true ;;
+        --campaign-hours|--campaign-hours=*) is_campaign=true ;;
+    esac
+done
+if $is_campaign && ! $has_resume; then
+    args+=("--resume-campaign")
+    echo "[run_campaign_linux] 自动注入 --resume-campaign (audit F MED: 防崩溃重启忘加丢进度)"
+fi
+
+# ---------------------------------------------------------------------------
 # Launch: prefer taskset (always available, no systemd dependency); fall back
 # to plain exec if no P-cores detected.
 # ---------------------------------------------------------------------------
 cd "$PROJECT_ROOT"
 
 if [[ -n "$P_CORE_LIST" ]] && command -v taskset >/dev/null 2>&1; then
-    echo "[run_campaign_linux] exec taskset -c $P_CORE_LIST $PYTHON_BIN main.py $*"
-    exec taskset -c "$P_CORE_LIST" "$PYTHON_BIN" main.py "$@"
+    echo "[run_campaign_linux] exec taskset -c $P_CORE_LIST $PYTHON_BIN main.py ${args[*]}"
+    exec taskset -c "$P_CORE_LIST" "$PYTHON_BIN" main.py "${args[@]}"
 else
-    echo "[run_campaign_linux] exec $PYTHON_BIN main.py $* (no cpuset pinning)"
-    exec "$PYTHON_BIN" main.py "$@"
+    echo "[run_campaign_linux] exec $PYTHON_BIN main.py ${args[*]} (no cpuset pinning)"
+    exec "$PYTHON_BIN" main.py "${args[@]}"
 fi
