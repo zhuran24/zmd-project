@@ -1,5 +1,6 @@
 ortools
 pytest
+pytest-randomly
 jsonschema
 pydantic>=2
 numpy

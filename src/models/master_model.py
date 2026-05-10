@@ -11190,12 +11190,19 @@ class MasterPlacementModel:
                 )
             solver.parameters.hint_conflict_limit = int(hint_conflict_limit)
             # audit A H3 修复: 启用 repair_hint 让 solver 修补部分过期 hint
-            # 而不是全 reject. 跨 wave hint reuse 场景必需:
-            # warm-start hint 来自上一 wave master, 后续 wave 的 cut/decision
-            # 让部分变量值过期, 默认 False 会全 reject 整组 hint → warm-start
-            # 收益归零. True 让 solver 接受可重复满足的部分 + 修补冲突的部分.
+            # 而不是全 reject. 跨 wave hint reuse 场景必需 (warm-start hint
+            # 来自上一 wave, 后续 wave cut 让部分变量值过期).
+            # **env-gate**: 只在 hint persistence 真启用时设, 因为 OR-Tools 9.15
+            # MinimizeL1DistanceWithHint 在某些 model 状态 (空 hint / 边角)
+            # 上加 repair_hint 会 SIGABRT (实测 86 guard 偶发崩溃). default off
+            # 时不动, 走 OR-Tools 默认路径.
             if hasattr(solver.parameters, "repair_hint"):
-                solver.parameters.repair_hint = True
+                try:
+                    from src.search.master_hint_persistence import is_enabled
+                    if is_enabled():
+                        solver.parameters.repair_hint = True
+                except Exception:
+                    pass
         log_callback_enabled = False
         if diagnostic_log_callback is not None:
             if hasattr(solver.parameters, "log_search_progress"):
