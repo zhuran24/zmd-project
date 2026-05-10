@@ -4801,6 +4801,11 @@ def run_benders_for_ghost_rect(
             master_search_profile=master_search_profile,
             precomputed_boundary_port_feasibility=boundary_port_precheck,
         )
+        # audit A H1 修复: from_exact_core 路径也需要 hint persistence context.
+        # 修前只 else 分支 (4823 line) 调, 168h 4 worker exact_core_reuse 主路径
+        # 漏配 → 即使 EXACT_MASTER_HINT_PERSISTENCE=1 也跑不到 load/save.
+        # 配合 H3 repair_hint=True 让跨 wave hint 修补真正生效.
+        master.set_hint_persistence_context(project_root, candidate_key)
         reuse_stats = dict(master.build_stats.get("exact_core_reuse", {}))
         overlay_build_seconds = float(
             reuse_stats.get("overlay_build_seconds", time.perf_counter() - overlay_started)
