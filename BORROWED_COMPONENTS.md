@@ -27,12 +27,26 @@ external repositories without adding runtime source dependencies.
 ## Notes
 
 - `third_party_snapshots/endfield_calc/` now contains both synthetic fixtures
-  and a vendored raw upstream repository fixture derived from a user-provided
-  `JamboChen/endfield-calc` archive. The observed package version is `0.5.2`;
-  the exact git commit was unavailable from the archive.
+  and a vendored raw upstream repository fixture from `JamboChen/endfield-calc`.
+  Refreshed 2026-05-08 from master commit `49be16e1` (package version `0.6.2`,
+  178 items / 260 recipes / 16 facilities). Previously vendored was version
+  `0.5.2` observed 2026-03-27 (130/172/14, commit unavailable). Refresh via
+  `python scripts/refresh_endfield_calc_snapshot.py` (mechanical sync only;
+  does not touch `canonical_rules.json`).
 - The vendored upstream fixture is build-time only and is not imported as a
   runtime dependency.
-- A partial semantic-alignment registry now records the verified overlapping 17-recipe slice between the vendored `endfield-calc` fixture and `rules/canonical_rules.json`; unmatched upstream entities remain outside the local canonical truth set.
+- A partial semantic-alignment registry still records the verified overlapping
+  17-recipe slice between the vendored `endfield-calc` fixture and
+  `rules/canonical_rules.json`; unmatched upstream entities remain outside the
+  local canonical truth set. The 2026-05-08 refresh expanded the upstream
+  catalog but the 17-recipe canonical projection was intentionally unchanged
+  (PROJECT_LOCK gate).
+- `third_party_snapshots/industrial_planner/bases/` vendors a field-subset of
+  the upstream `BASES` array (id / name / placeableSize / outerRing / tags) so
+  the project can reference all seven base ids statically. Refresh via
+  `python scripts/refresh_industrial_planner_bases.py`. PROJECT_LOCK active
+  scope remains `valley4_protocol_core` (70x70); other bases (including
+  `wuling_protocol_core` 80x80) stay future_scope.
 - The IndustrialPlanner exporter is intentionally one-way and lossy. Its mapping
   rules and dropped semantics are recorded in
   `industrial_planner.compatibility_manifest.json` rather than pushed into the

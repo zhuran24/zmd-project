@@ -3,6 +3,14 @@
 This file is the canonical home for dated engineering history that used to be
 split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
 
+## 2026-05-08
+
+- Refreshed the vendored `JamboChen/endfield-calc` snapshot from package version `0.5.2` (commit unavailable, observed 2026-03-27) to `0.6.2` master commit `49be16e1`. Catalog grew from 130 items / 172 recipes / 14 facilities to 178 / 260 / 16. Newly observed facilities `ITEM_PORT_LIQUID_PURIFIER_1` and `ITEM_PORT_MIX_POOL_2` likely correspond to 1.2 武陵 content; `ITEM_PORT_DISMANTLER_1` re-tiered 4→3. `canonical_rules.json` intentionally still keeps the original 17-recipe semantic-aligned subset; the refresh did not re-project the catalog. [FILE_STATUS]
+- Added `scripts/refresh_endfield_calc_snapshot.py` so future endfield-calc snapshot refreshes are mechanical: fetch latest TypeScript catalog, rewrite `SOURCE_METADATA.json` with version/commit/`observed_counts`/previous tracking, and print a diff report. The script does not touch `canonical_rules.json` or release-note files. [FILE_STATUS]
+- Vendored a field-subset of upstream `hsyhhssyy/IndustrialPlanner` BASES at `third_party_snapshots/industrial_planner/bases/bases.json` (7 bases: 3 武陵 80/50/50, 4 四号谷地 70/40/40/40), extracted from branch `v2` commit `c494c5ae`. Confirmed `wuling_protocol_core` is 80x80; PROJECT_LOCK active scope still `valley4_protocol_core` (70x70). Added `scripts/refresh_industrial_planner_bases.py` so this snapshot can be re-pulled mechanically. [FILE_STATUS]
+- Refactored `src/tests/test_endfield_calc_typescript_snapshot.py` to read `SOURCE_METADATA.json` for expected counts and source_version, eliminating hardcoded numbers so the next upstream refresh does not require test edits. Added a 5% noise floor against silent regressions. [FILE_STATUS]
+- Added `src/tests/test_industrial_planner_bases_snapshot.py` to sanity-check the new vendored bases (schema, required fields, active-scope presence, count-collapse guard); also reads `SOURCE_METADATA.json` so it stays refresh-friendly. [FILE_STATUS]
+
 ## 2026-04-17
 
 - Added `docs/phase3b_exact_endgame_execution_plan.md` and linked it from the root/readme entry surfaces, so the repository now carries one detailed current-to-finish execution book for the remaining Phase 3B exact endgame instead of leaving the solver-side closeout implicit after the single-base delivery/productization line landed. [FILE_STATUS]

@@ -13,9 +13,14 @@ fixture as well.
 Notes:
 
 - no runtime dependency is introduced on the upstream project
-- the vendored upstream fixture records package version `0.5.2`
-- the exact git commit was unavailable from the uploaded archive
-- `scripts/snapshot_endfield_calc.py` can now ingest:
+- the vendored upstream fixture currently records package version `0.6.2`
+  (master commit `49be16e1`, observed 2026-05-08); previous archive was
+  `0.5.2` (commit unavailable, observed 2026-03-27)
+- refresh via `python scripts/refresh_endfield_calc_snapshot.py` — fetches
+  the latest master, rewrites `SOURCE_METADATA.json` with version / commit /
+  observed_counts / previous_* tracking, prints a diff report, and does NOT
+  touch `canonical_rules.json` (PROJECT_LOCK gate)
+- `scripts/snapshot_endfield_calc.py` can ingest:
   - a JSON snapshot directory
   - a flat TypeScript fixture directory
   - an extracted upstream repository root

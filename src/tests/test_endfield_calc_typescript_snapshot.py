@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import zipfile
 
@@ -13,6 +14,12 @@ from src.adapters.endfield_calc.snapshot_ingest import (
 
 FIXTURE_DIR = Path("third_party_snapshots/endfield_calc/typescript_fixture")
 UPSTREAM_REPOSITORY_FIXTURE_DIR = Path("third_party_snapshots/endfield_calc/upstream_repository_fixture")
+UPSTREAM_SOURCE_METADATA_PATH = UPSTREAM_REPOSITORY_FIXTURE_DIR / "SOURCE_METADATA.json"
+
+
+def _load_upstream_metadata() -> dict:
+    """Read SOURCE_METADATA.json so tests stay correct after refresh runs."""
+    return json.loads(UPSTREAM_SOURCE_METADATA_PATH.read_text(encoding="utf-8"))
 
 
 def _build_repository_layout_from_flat_fixture(target_root: Path) -> Path:
@@ -92,13 +99,34 @@ def test_load_snapshot_source_reads_repository_root_layout(tmp_path: Path) -> No
 
 def test_load_snapshot_source_reads_real_upstream_repository_fixture() -> None:
     loaded = load_snapshot_source(UPSTREAM_REPOSITORY_FIXTURE_DIR, source_format="typescript")
+    metadata = _load_upstream_metadata()
+    expected_counts = metadata["observed_counts"]
 
-    assert len(loaded["items"]) == 130
-    assert len(loaded["recipes"]) == 172
-    assert len(loaded["facilities"]) == 14
-    assert loaded["snapshot_metadata"]["source_version"] == "0.5.2"
+    # Counts must match what the refresh script recorded; this catches silent
+    # ingest regressions while staying refresh-friendly.
+    assert len(loaded["items"]) == expected_counts["items"]
+    assert len(loaded["recipes"]) == expected_counts["recipes"]
+    assert len(loaded["facilities"]) == expected_counts["facilities"]
+
+    # Counts must never drop below historical lows by more than 5% (catches
+    # accidental upstream rollbacks; deliberate shrinkage requires a manual
+    # SOURCE_METADATA edit and a test re-baseline).
+    previous_counts = metadata.get("previous_observed_counts") or {}
+    for key, current_value in expected_counts.items():
+        prev_value = previous_counts.get(key)
+        if isinstance(prev_value, int) and prev_value > 0:
+            assert current_value >= int(prev_value * 0.95), (
+                f"{key} count {current_value} dropped > 5% below previous {prev_value}; "
+                "if intentional, update SOURCE_METADATA.json previous_observed_counts."
+            )
+
+    assert loaded["snapshot_metadata"]["source_version"] == metadata["source_version"]
     assert loaded["snapshot_metadata"]["package_name"] == "endfield-calcs"
     assert loaded["snapshot_metadata"]["source_layout"] == "repository_root"
+
+    # Stable anchor IDs: these have shipped since v0.5.2 and should not vanish
+    # in a healthy refresh. If upstream renames them the refresh script's
+    # report makes the change visible before tests run.
     assert any(item["id"] == "item_liquid_water" and item["isLiquid"] for item in loaded["items"])
     assert any(
         recipe["id"] == "component_copper_cmpt_1" and recipe["facilityId"] == "item_port_cmpt_mc_1"
@@ -119,9 +147,10 @@ def test_load_snapshot_source_reads_real_upstream_zip_archive(tmp_path: Path) ->
     )
 
     loaded = load_snapshot_source(archive_path, source_format="typescript")
+    metadata = _load_upstream_metadata()
 
-    assert len(loaded["items"]) == 130
-    assert loaded["snapshot_metadata"]["source_version"] == "0.5.2"
+    assert len(loaded["items"]) == metadata["observed_counts"]["items"]
+    assert loaded["snapshot_metadata"]["source_version"] == metadata["source_version"]
     assert loaded["snapshot_metadata"]["source_layout"] == "zip_archive_repository"
 
 
@@ -140,8 +169,9 @@ def test_ingest_snapshot_source_normalizes_typescript_fixture_into_catalog() -> 
 def test_ingest_snapshot_source_normalizes_real_upstream_fixture_into_catalog() -> None:
     catalog = ingest_snapshot_source(UPSTREAM_REPOSITORY_FIXTURE_DIR, source_format="typescript")
 
+    metadata = _load_upstream_metadata()
     assert catalog["metadata"]["source"] == "JamboChen/endfield-calc TypeScript source"
-    assert catalog["metadata"]["source_version"] == "0.5.2"
+    assert catalog["metadata"]["source_version"] == metadata["source_version"]
     assert catalog["metadata"]["extensions"]["package_name"] == "endfield-calcs"
     assert catalog["metadata"]["extensions"]["source_layout"] == "repository_root"
     assert any(item["id"] == "item_liquid_water" and item["category"] == "liquid" for item in catalog["items"])

@@ -1,14 +1,27 @@
 {
   "source": "JamboChen/endfield-calc",
-  "source_version": "0.5.2",
-  "source_commit": null,
-  "source_commit_note": "Unavailable from the user-provided archive.",
-  "observed_at": "2026-03-27",
+  "source_version": "0.6.2",
+  "source_commit": "49be16e117865c474e26dc695d7188d4e2313553",
+  "source_commit_note": "master HEAD at refresh time via scripts/refresh_endfield_calc_snapshot.py",
+  "observed_at": "2026-05-08",
   "source_license": "MIT",
   "paths": {
     "items": "src/data/items.ts",
     "recipes": "src/data/recipes.ts",
     "facilities": "src/data/facilities.ts",
     "constants": "src/types/constants.ts"
+  },
+  "observed_counts": {
+    "items": 178,
+    "recipes": 260,
+    "facilities": 16
+  },
+  "previous_observed_at": "2026-03-27",
+  "previous_source_version": "0.5.2",
+  "previous_source_commit": null,
+  "previous_observed_counts": {
+    "items": 130,
+    "recipes": 172,
+    "facilities": 14
   }
 }
