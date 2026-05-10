@@ -14,10 +14,17 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from ortools.sat.python import cp_model
+
+# P2 #14 production: env-gated binding state dumper. 默认 off, 主路径不影响.
+# 启用后每次 solve() 入口把 binding 输入 dump 到 jsonl, 给后续 cut evolve
+# evaluator 当 fixture 用. 见 docs/research/profiles/p2_14_alphaevolve_poc_*.
+EXACT_BINDING_DUMP_STATE_ENV = "EXACT_BINDING_DUMP_STATE"
+_BINDING_DUMP_RELATIVE_PATH = "data/telemetry/binding_dumps.jsonl"
 
 from src.models.cp_sat_worker_config import (
     DEFAULT_BINDING_CP_SAT_WORKERS,
@@ -530,7 +537,38 @@ class PortBindingModel:
             "generic_output_literals": int(generic_output_literals),
         }
 
+    def _maybe_dump_state(self, time_limit_seconds: float) -> None:
+        """P2 #14 production: env-gated dump binding inputs as evaluator fixture.
+
+        EXACT_BINDING_DUMP_STATE 启用后, 每次 solve() 入口把 binding 输入
+        (placement_solution / instances / io requirements / time_limit) append
+        到 data/telemetry/binding_dumps.jsonl. 给 P2 #14 cut-evolution evaluator
+        用作 fixture (跑 baseline vs +hint wall-clock).
+
+        失败 silent (try/except pass), 主路径绝不能因 dumper 异常崩.
+        """
+        if not os.environ.get(EXACT_BINDING_DUMP_STATE_ENV):
+            return
+        try:
+            project_root = self.project_root or PROJECT_ROOT
+            dump_path = Path(project_root) / _BINDING_DUMP_RELATIVE_PATH
+            dump_path.parent.mkdir(parents=True, exist_ok=True)
+            record = {
+                "schema_version": 1,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "placement_solution": self.placement_solution,
+                "instances": list(self.instances_by_id.values()),
+                "required_generic_outputs": dict(self.required_generic_outputs),
+                "required_generic_inputs": dict(self.required_generic_inputs),
+                "time_limit_seconds": float(time_limit_seconds),
+            }
+            with dump_path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+        except Exception:
+            pass
+
     def solve(self, time_limit_seconds: float = 30.0) -> str:
+        self._maybe_dump_state(time_limit_seconds)
         solver = cp_model.CpSolver()
         solver.parameters.max_time_in_seconds = float(time_limit_seconds)
         solver.parameters.num_workers = resolve_cp_sat_worker_count(
