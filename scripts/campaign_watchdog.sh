@@ -46,7 +46,9 @@ start_campaign() {
     ts="$(date +%Y%m%d_%H%M%S)"
     local log_file="$LOG_DIR/campaign_run_${ts}_watchdog.log"
     echo "[watchdog $(date -Iseconds)] starting campaign (#$((restart_count+1))) → $log_file"
-    setsid nohup bash "$WRAPPER" \
+    # A+B 双管齐下: A=EXACT_OUTER_SKIP_UNKNOWN=1 让 UNKNOWN candidate 跳过
+    # 继续探, B=master/binding/routing 7200s. P2 #14 evaluator 数据收集模式.
+    EXACT_OUTER_SKIP_UNKNOWN=1 setsid nohup bash "$WRAPPER" \
         --campaign-hours 168.0 --parallel-processes 4 \
         --master-seconds 7200 --binding-seconds 7200 --routing-seconds 7200 \
         > "$log_file" 2>&1 < /dev/null &

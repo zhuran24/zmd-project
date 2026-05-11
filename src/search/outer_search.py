@@ -1371,6 +1371,18 @@ def _append_wave_telemetry_best_effort(
 def _terminal_stop_reason_for_status(status: str) -> Optional[str]:
     normalized_status = str(status)
     if normalized_status == RUN_STATUS_UNKNOWN:
+        # P2 #14 数据收集 A 方案 env-gate: EXACT_OUTER_SKIP_UNKNOWN=1 时
+        # UNKNOWN 不标记 campaign terminal stop, 让 main 退出后 watchdog
+        # 重启 resume 继续探下一个 frontier candidate (UNKNOWN 已被
+        # mark_candidate_result 标记, frontier 跳过). 收 LBBD inner loop
+        # binding subproblem 实例做 evaluator fixture.
+        #
+        # 副作用 (违反 max_lex 严格性): declare 出的"最优"可能漏了 UNKNOWN
+        # candidate (求解器超时未确定是否 FEASIBLE). audit_log 应标记
+        # campaign 含 UNKNOWN gap → declare 为 best_effort 而非 strict.
+        # default off 保留严格证明语义.
+        if os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower() in {"1", "true", "yes", "on"}:
+            return None
         return "candidate_returned_unknown"
     if normalized_status == RUN_STATUS_UNPROVEN:
         return "candidate_returned_unproven"
