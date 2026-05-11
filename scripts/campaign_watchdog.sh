@@ -22,6 +22,15 @@
 
 set -euo pipefail
 
+# Singleton guard: 防同时跑多 daemon 实例 (audit 2026-05-11 发现过 3 个并行 → main 崩时 3 daemon 同时 spawn 新 main → state corruption 风险).
+# flock -n 非阻塞: 已有实例持锁则立即 exit, 不等待.
+WATCHDOG_LOCK_FILE="/tmp/zmd_campaign_watchdog.lock"
+exec 9>"$WATCHDOG_LOCK_FILE"
+if ! flock -n 9; then
+    echo "[watchdog $(date -Iseconds)] already running (lock $WATCHDOG_LOCK_FILE held), exit"
+    exit 0
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WRAPPER="$SCRIPT_DIR/run_campaign_linux.sh"
@@ -33,7 +42,7 @@ CHECK_INTERVAL=60
 # 15-17h 就被强制停 + 烧电 0 产出 5h 因 watchdog 早退), 只保留 QUICK_DEATH 保护
 # 防真死循环 (main 启动期崩 5 次连续就 abort, 不会 infinite restart).
 RESTART_CAP=0               # 0 = 无上限 (依赖 QUICK_DEATH 兜底)
-QUICK_DEATH_THRESHOLD=60    # 启动到死 < N 秒 = quick death
+QUICK_DEATH_THRESHOLD=90    # 启动到死 < N 秒 = quick death (60→90 给 readiness gate + ortools import + 86 守卫 ~30-40s startup buffer, audit 2026-05-11)
 QUICK_DEATH_CONSECUTIVE=5   # 连续 N 次 quick death 触发停机
 restart_count=0
 quick_death_streak=0
