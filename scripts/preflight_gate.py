@@ -24,6 +24,7 @@ import argparse
 import hashlib
 import json
 import re
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -352,10 +353,22 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
     else:
         cmd.append(test_target)
 
+    # 隔离 production runtime env vars 不污染 unit test: 部分 test 验证
+    # default 行为 (e.g. UNKNOWN candidate 会被 retry), 而 EXACT_OUTER_SKIP_UNKNOWN
+    # / EXACT_BINDING_DUMP_STATE 等 env 会改 default → 守卫 fail.
+    pytest_env = os.environ.copy()
+    for runtime_env in (
+        "EXACT_OUTER_SKIP_UNKNOWN",
+        "EXACT_BINDING_DUMP_STATE",
+        "EXACT_MASTER_HINT_PERSISTENCE",
+        "EXACT_BINDING_USE_OVERLOAD_SEPARATION",
+    ):
+        pytest_env.pop(runtime_env, None)
+
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            timeout=timeout,
+            timeout=timeout, env=pytest_env,
         )
         last_lines = [l for l in result.stdout.splitlines() if l.strip()][-3:]
         summary_line = last_lines[-1] if last_lines else ""
