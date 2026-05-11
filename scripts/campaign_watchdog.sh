@@ -48,6 +48,7 @@ start_campaign() {
     echo "[watchdog $(date -Iseconds)] starting campaign (#$((restart_count+1))) → $log_file"
     setsid nohup bash "$WRAPPER" \
         --campaign-hours 168.0 --parallel-processes 4 \
+        --master-seconds 7200 --binding-seconds 7200 --routing-seconds 7200 \
         > "$log_file" 2>&1 < /dev/null &
     disown
     local pid=$!
