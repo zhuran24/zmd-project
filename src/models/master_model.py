@@ -6733,6 +6733,17 @@ class MasterPlacementModel:
             env_name="EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS",
             default=DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
         )
+        # 嵌套 CP-SAT time limit — 没这个 cap 一个 degenerate template 能把
+        # master 构造无限 hang (2026-05-11 py-spy 证实 168h 主跑卡这一行).
+        # 超时 → status=UNKNOWN → raise _CompactRectCpSatFallback → 现有的
+        # rectangle_frontier_dp / bitset 兜底链接管. Env 覆盖给压力调参/调试.
+        _max_seconds_env = os.environ.get("EXACT_LOCAL_CAPACITY_CP_SAT_MAX_SECONDS")
+        try:
+            _max_seconds = float(_max_seconds_env) if _max_seconds_env else 60.0
+        except (TypeError, ValueError):
+            _max_seconds = 60.0
+        if _max_seconds > 0:
+            solver.parameters.max_time_in_seconds = _max_seconds
         status = solver.Solve(local_model)
         if status != cp_model.OPTIMAL:
             raise _CompactRectCpSatFallback(

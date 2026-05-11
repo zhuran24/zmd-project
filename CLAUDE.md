@@ -187,6 +187,24 @@ bash scripts/run_campaign_linux.sh --vis
 启动 168h campaign **必须**用这个 wrapper（直接 `python main.py` 会丢两件套
 的收益）；readiness gate 9/9 项检查会自动 flag 漏配置。
 
+### 停止 168h campaign（清残留）
+
+```bash
+bash scripts/stop_campaign.sh             # graceful: TERM → 5s → KILL 残留
+bash scripts/stop_campaign.sh --force     # 直接 SIGKILL, 不等
+bash scripts/stop_campaign.sh --dry-run   # 只列, 不杀
+```
+
+清的范围：`main.py --campaign-hours` 主进程 + 其 multiprocessing.spawn
+worker 子树 + `campaign_watchdog.sh` + stale
+`/tmp/zmd_campaign_watchdog.lock`。**不动** Claude Code 自己的进程 + 心跳
+watcher（tail -F zmd_heartbeat / iter=0…HEARTBEAT bash loop）。
+
+为啥需要专门脚本：手 `pkill -f python` 会误杀心跳 watcher 的 bash sleep
+loop + Claude Code subprocess pool；递归杀 main 的 subprocess tree 也是因
+为 multiprocessing.spawn 父死子不一定立刻 exit（孤儿被 pid 1 接管, CP-SAT
+仍跑）。脚本递归 pgrep -P 父→子，先 TERM 5 秒后 KILL 残留。
+
 ### CachyOS 主机生产力调优（host-level，2026-05-10 落地）
 
 针对 i9-13900KS + CP-SAT 长跑工作负载已经做了几件 host-level 调优——这些是
