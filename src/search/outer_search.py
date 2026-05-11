@@ -1434,6 +1434,13 @@ def run_outer_search(
             campaign_hours=campaign_hours,
             resume=resume_campaign,
         )
+        # P2 #14 数据收集 audit: A 方案 env on 时 mark campaign declare_mode
+        # = best_effort. declare 出的"最优"可能漏 UNKNOWN candidate, 不再是
+        # 严格 max_lex 证明. follow-up Verdict 脚本应据此字段标 audit warning.
+        if os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower() in {"1", "true", "yes", "on"}:
+            if exact_campaign.state.get("declare_mode") != "best_effort":
+                exact_campaign.state["declare_mode"] = "best_effort"
+                exact_campaign.save()
         probe_state = _load_frontier_probe_state(exact_campaign)
         probe_state["mode"] = frontier_probe_mode
         _persist_frontier_probe_state(exact_campaign, probe_state)

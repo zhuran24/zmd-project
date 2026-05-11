@@ -218,6 +218,13 @@ def _build_initial_state(
         "final_result": None,
         "final_status": None,
         "last_stop_reason": None,
+        # P2 #14 数据收集 audit: A 方案 (EXACT_OUTER_SKIP_UNKNOWN) 让 UNKNOWN
+        # candidate 跳过 frontier → declare 出的 "最优" 可能漏 UNKNOWN 实际为
+        # FEASIBLE, 违反 max_lex 严格证明. 此字段标记 campaign declare 严格度:
+        #   "strict" (default) — declare 是真 max_lex 最优 (严格证明)
+        #   "best_effort"      — campaign 含 UNKNOWN gap, declare 仅"算清范围内最优"
+        # outer_search 启动时若 EXACT_OUTER_SKIP_UNKNOWN env on, 把此字段升 best_effort.
+        "declare_mode": "strict",
         "candidates": {},
     }
 

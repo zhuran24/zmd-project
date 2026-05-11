@@ -12,6 +12,7 @@ Exact port-binding subproblem（精确端口绑定子问题）.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from datetime import datetime, timezone
@@ -553,14 +554,23 @@ class PortBindingModel:
             project_root = self.project_root or PROJECT_ROOT
             dump_path = Path(project_root) / _BINDING_DUMP_RELATIVE_PATH
             dump_path.parent.mkdir(parents=True, exist_ok=True)
+            # schema v2: 加 facility_pools_signature 兜底, evaluator 重建
+            # PortBindingModel 时若 facility_pools 漂移可 detect (虽然 evaluator
+            # 用同 project_root 通常 OK, signature 作为 audit cross-check).
+            # signature 用 canonical JSON dump 的 sha256 前 16 chars.
+            fp_canonical = json.dumps(
+                self.facility_pools, sort_keys=True, ensure_ascii=True, default=str
+            )
+            fp_signature = hashlib.sha256(fp_canonical.encode("utf-8")).hexdigest()[:16]
             record = {
-                "schema_version": 1,
+                "schema_version": 2,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "placement_solution": self.placement_solution,
                 "instances": list(self.instances_by_id.values()),
                 "required_generic_outputs": dict(self.required_generic_outputs),
                 "required_generic_inputs": dict(self.required_generic_inputs),
                 "time_limit_seconds": float(time_limit_seconds),
+                "facility_pools_signature": fp_signature,
             }
             with dump_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
