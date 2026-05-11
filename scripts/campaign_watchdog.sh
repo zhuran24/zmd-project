@@ -29,8 +29,10 @@ PID_FILE="$PROJECT_ROOT/data/telemetry/campaign.pid"
 LOG_DIR="$PROJECT_ROOT/data/telemetry"
 CHECK_INTERVAL=60
 
-# 重启保护参数 (防无限循环)
-RESTART_CAP=100             # 总重启次数上限
+# 重启保护参数: 去掉总次数硬 cap (2026-05-11 教训: cap=100 时 168h 大跑只跑了
+# 15-17h 就被强制停 + 烧电 0 产出 5h 因 watchdog 早退), 只保留 QUICK_DEATH 保护
+# 防真死循环 (main 启动期崩 5 次连续就 abort, 不会 infinite restart).
+RESTART_CAP=0               # 0 = 无上限 (依赖 QUICK_DEATH 兜底)
 QUICK_DEATH_THRESHOLD=60    # 启动到死 < N 秒 = quick death
 QUICK_DEATH_CONSECUTIVE=5   # 连续 N 次 quick death 触发停机
 restart_count=0
@@ -93,8 +95,8 @@ while true; do
     duration=$((now - last_start_ts))
     echo "[watchdog $(date -Iseconds)] pid=$current_pid is dead after ${duration}s"
 
-    # 硬 cap
-    if [[ $restart_count -ge $RESTART_CAP ]]; then
+    # 硬 cap (0 = 无上限, 跳过检查)
+    if [[ $RESTART_CAP -gt 0 && $restart_count -ge $RESTART_CAP ]]; then
         abort_daemon "restart_cap=$RESTART_CAP reached"
     fi
 
