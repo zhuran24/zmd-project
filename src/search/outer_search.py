@@ -485,11 +485,17 @@ def _compute_exact_frontier_state(
 
     potential_domain: List[Tuple[int, int, int]] = []
     derived_pruned_candidates = 0
+    # P2 #14 数据收集 A 方案 env-gate: 让 UNKNOWN candidate 也跳过 frontier,
+    # 配合 _terminal_stop_reason_for_status (line ~1373) 同 env-gate. 让 outer
+    # 真探下一个 candidate 而不是反复 try 同一 UNKNOWN. default off 不影响.
+    _frontier_skip_statuses = {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE}
+    if os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower() in {"1", "true", "yes", "on"}:
+        _frontier_skip_statuses.add(RUN_STATUS_UNKNOWN)
     for candidate in candidates:
         _area, ghost_w, ghost_h = candidate
         record = candidate_records.get(f"{ghost_w}x{ghost_h}")
         status = None if not isinstance(record, dict) else str(record.get("status", ""))
-        if status in {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE}:
+        if status in _frontier_skip_statuses:
             continue
 
         if any(ghost_w <= cert_w and ghost_h <= cert_h for _a, cert_w, cert_h in explicit_certified):
