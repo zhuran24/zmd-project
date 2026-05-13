@@ -116,6 +116,35 @@ def format_exact_cp_sat_worker_profile(
     return "resolved_cp_sat_worker_profile: " + ", ".join(formatted)
 
 
+_SUBPROBLEM_MAX_MEMORY_ENV = "EXACT_SUBPROBLEM_MAX_MEMORY_MB"
+
+
+def apply_subproblem_memory_cap(solver: Any) -> None:
+    """Set CpSolver.parameters.max_memory_in_mb from EXACT_SUBPROBLEM_MAX_MEMORY_MB env.
+
+    P1 #24 follow-up: 48 GB 本机单 worker 实测飙到 28 GB anon-rss 撞 OOM kill.
+    OR-Tools 自己有 max_memory_in_mb 参数 (默认 10 GB 但项目从未显式设),
+    显式设 cap 让 solver 自己 graceful exit (status UNKNOWN) 而不是被 SIGKILL,
+    outer search 把 candidate 标 UNKNOWN 进下一个.
+
+    缺省不动 solver.parameters (尊重 OR-Tools 自家默认 10 GB).
+    env 缺/空/garbage 都跳过, 不抛.
+    """
+    raw = os.getenv(_SUBPROBLEM_MAX_MEMORY_ENV)
+    if not raw or not str(raw).strip():
+        return
+    try:
+        cap_mb = int(str(raw).strip())
+    except ValueError:
+        return
+    if cap_mb <= 0:
+        return
+    try:
+        solver.parameters.max_memory_in_mb = cap_mb
+    except Exception:
+        return
+
+
 # Phase 3C P0 #3 (UNSAT subsolver portfolio, R12-revised conservative variant).
 # These LNS subsolvers are unhelpful for max_lex(area, min_side) optimization
 # in CP-SAT 9.15 — they target feasibility/MaxSAT scenarios that don't apply

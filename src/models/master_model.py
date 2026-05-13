@@ -30,6 +30,7 @@ from src.models.cp_sat_worker_config import (
     DEFAULT_MASTER_CP_SAT_WORKERS,
     apply_master_cp_sat_strong_disjunctive_propagation,
     apply_master_cp_sat_subsolver_filter,
+    apply_subproblem_memory_cap,
     resolve_cp_sat_worker_count,
 )
 from src.models._cpsat_compat import cp_model_from_proto, search_branching_name
@@ -1618,6 +1619,7 @@ def _apply_coordinate_validation_solver_profile(
     solver.parameters.max_time_in_seconds = float(time_limit_seconds)
     worker_count = max(1, int(raw.get("worker_count", raw.get("num_search_workers", 1))))
     solver.parameters.num_search_workers = int(worker_count)
+    apply_subproblem_memory_cap(solver)
     branching = str(raw.get("search_branching", "")).strip().lower()
     if branching:
         if branching == "fixed":
@@ -5511,6 +5513,7 @@ class MasterPlacementModel:
             env_name="EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS",
             default=DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
         )
+        apply_subproblem_memory_cap(solver)
         status = solver.Solve(local_model)
         if status != cp_model.OPTIMAL:
             raise RuntimeError(
@@ -6736,6 +6739,7 @@ class MasterPlacementModel:
             env_name="EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS",
             default=DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
         )
+        apply_subproblem_memory_cap(solver)
         # 嵌套 CP-SAT time limit — 没这个 cap 一个 degenerate template 能把
         # master 构造无限 hang (2026-05-11 py-spy 证实 168h 主跑卡这一行).
         # 超时 → status=UNKNOWN → raise _CompactRectCpSatFallback → 现有的
@@ -6747,6 +6751,7 @@ class MasterPlacementModel:
             _max_seconds = 60.0
         if _max_seconds > 0:
             solver.parameters.max_time_in_seconds = _max_seconds
+        apply_subproblem_memory_cap(solver)
         status = solver.Solve(local_model)
         if status != cp_model.OPTIMAL:
             raise _CompactRectCpSatFallback(
@@ -11117,6 +11122,7 @@ class MasterPlacementModel:
 
         solver = cp_model.CpSolver()
         solver.parameters.max_time_in_seconds = float(time_limit_seconds)
+        apply_subproblem_memory_cap(solver)
         solver.parameters.num_search_workers = resolve_cp_sat_worker_count(
             env_name="EXACT_MASTER_CP_SAT_WORKERS",
             default=DEFAULT_MASTER_CP_SAT_WORKERS,

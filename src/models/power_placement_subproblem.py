@@ -34,6 +34,8 @@ from typing import Any, Dict, FrozenSet, Iterable, List, Mapping, Sequence, Set,
 
 from ortools.sat.python import cp_model
 
+from src.models.cp_sat_worker_config import apply_subproblem_memory_cap
+
 Cell = Tuple[int, int]
 
 
@@ -148,6 +150,7 @@ class PowerPlacementSubproblem:
     def solve(self, time_limit_seconds: float = 10.0) -> PowerPlacementResult:
         solver = cp_model.CpSolver()
         solver.parameters.max_time_in_seconds = float(time_limit_seconds)
+        apply_subproblem_memory_cap(solver)
         status = solver.Solve(self.model)
         stats = {
             "candidate_pole_count": len(self.candidate_pole_indices),

@@ -23,6 +23,7 @@ from ortools.sat.python import cp_model
 
 from src.models.cp_sat_worker_config import (
     DEFAULT_BINDING_CP_SAT_WORKERS,
+    apply_subproblem_memory_cap,
     resolve_cp_sat_worker_count,
 )
 from src.models._cpsat_compat import search_branching_name
@@ -585,6 +586,7 @@ class PortBindingModel:
             env_name="EXACT_BINDING_CP_SAT_WORKERS",
             default=DEFAULT_BINDING_CP_SAT_WORKERS,
         )
+        apply_subproblem_memory_cap(solver)
         solver.parameters.search_branching = cp_model.FIXED_SEARCH
         solver.parameters.symmetry_level = max(int(solver.parameters.symmetry_level), 3)
         solver.parameters.cp_model_probing_level = max(

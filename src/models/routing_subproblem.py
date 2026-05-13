@@ -17,6 +17,7 @@ from ortools.sat.python import cp_model
 
 from src.models.cp_sat_worker_config import (
     DEFAULT_ROUTING_CP_SAT_WORKERS,
+    apply_subproblem_memory_cap,
     resolve_cp_sat_worker_count,
 )
 
@@ -988,6 +989,7 @@ class RoutingSubproblem:
             env_name="EXACT_ROUTING_CP_SAT_WORKERS",
             default=DEFAULT_ROUTING_CP_SAT_WORKERS,
         )
+        apply_subproblem_memory_cap(solver)
 
         status = solver.Solve(self.model)
         self._solver = solver
