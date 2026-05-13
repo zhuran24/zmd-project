@@ -117,32 +117,63 @@ def format_exact_cp_sat_worker_profile(
 
 
 _SUBPROBLEM_MAX_MEMORY_ENV = "EXACT_SUBPROBLEM_MAX_MEMORY_MB"
+_SUBPROBLEM_PARAMS_ENV = "EXACT_SUBPROBLEM_PARAMS"
+
+
+def _parse_param_value(raw: str) -> Any:
+    """key=val 里 val 转成 int/float/bool, 不行就 str."""
+    s = raw.strip()
+    low = s.lower()
+    if low in ("true", "false"):
+        return low == "true"
+    try:
+        if "." in s or "e" in low:
+            return float(s)
+        return int(s)
+    except ValueError:
+        return s
 
 
 def apply_subproblem_memory_cap(solver: Any) -> None:
-    """Set CpSolver.parameters.max_memory_in_mb from EXACT_SUBPROBLEM_MAX_MEMORY_MB env.
+    """Set CP-SAT solver parameters from two env hooks (P1 #24 follow-up).
 
-    P1 #24 follow-up: 48 GB 本机单 worker 实测飙到 28 GB anon-rss 撞 OOM kill.
-    OR-Tools 自己有 max_memory_in_mb 参数 (默认 10 GB 但项目从未显式设),
-    显式设 cap 让 solver 自己 graceful exit (status UNKNOWN) 而不是被 SIGKILL,
-    outer search 把 candidate 标 UNKNOWN 进下一个.
+    EXACT_SUBPROBLEM_MAX_MEMORY_MB (legacy A 实验 hook): max_memory_in_mb 软 cap.
+    实测此参数不限 OS RSS, 留 hook 待 OR-Tools 未来修复或 sub-OOM 场景使用.
 
-    缺省不动 solver.parameters (尊重 OR-Tools 自家默认 10 GB).
-    env 缺/空/garbage 都跳过, 不抛.
+    EXACT_SUBPROBLEM_PARAMS (P1 #24 follow-up B): 通用 key=val,key=val 列表,
+    例如:
+        EXACT_SUBPROBLEM_PARAMS="linearization_level=0,cp_model_probing_level=0,clause_cleanup_period=5000"
+    设 solver.parameters.<key> = <parsed value>. 用于 sweep RSS-减少 参数组合
+    跟 default 比 peak RSS / solve quality.
+
+    缺省不动 solver.parameters. env 缺/garbage 都 no-op, 不抛.
     """
-    raw = os.getenv(_SUBPROBLEM_MAX_MEMORY_ENV)
-    if not raw or not str(raw).strip():
+    raw_mem = os.getenv(_SUBPROBLEM_MAX_MEMORY_ENV)
+    if raw_mem and str(raw_mem).strip():
+        try:
+            cap_mb = int(str(raw_mem).strip())
+            if cap_mb > 0:
+                solver.parameters.max_memory_in_mb = cap_mb
+        except (ValueError, Exception):
+            pass
+
+    raw_params = os.getenv(_SUBPROBLEM_PARAMS_ENV)
+    if not raw_params or not str(raw_params).strip():
         return
-    try:
-        cap_mb = int(str(raw).strip())
-    except ValueError:
-        return
-    if cap_mb <= 0:
-        return
-    try:
-        solver.parameters.max_memory_in_mb = cap_mb
-    except Exception:
-        return
+    for token in str(raw_params).split(","):
+        token = token.strip()
+        if not token or "=" not in token:
+            continue
+        key, _, val = token.partition("=")
+        key = key.strip()
+        val = val.strip()
+        if not key or not val:
+            continue
+        parsed = _parse_param_value(val)
+        try:
+            setattr(solver.parameters, key, parsed)
+        except (AttributeError, TypeError, ValueError):
+            continue
 
 
 # Phase 3C P0 #3 (UNSAT subsolver portfolio, R12-revised conservative variant).
