@@ -140,9 +140,56 @@ exact-mode-safe per PROJECT_LOCK.md.
    delta in `data/exports/` if applicable.
 4. **No new research rounds** without explicit user request.
 
+## Lane view (GPT v3 review 2026-05-13)
+
+GPT v3 全量审查指出现有 P0/P1/P2 单一 ROI 维度门槛太松——11/11 P0/P1 PARTIALLY_REFUTED。建议加一层 lane 分类:
+
+- **Lane A — proof-safety**: 影响 exactness 边界, 出问题就是 false infeasible / false optimum, 即使没"+N%"也必须做
+- **Lane B — deterministic-performance**: 落地能复现的 +N% wall-clock, 数据驱动决策
+- **Lane C — speculative-research**: PoC + gated by 长跑数据, 没真长跑 baseline 之前不下结论
+
+当前 entries 大致 mapping (不动 ROI 视图, 只是加一层 view):
+
+### Lane A — proof-safety
+- P0 #1 ghost-conditioned power cut — **landed 2026-05-13**
+- P0 #2 关 EXACT_POWER_PLACEMENT_SUBPROBLEM 进 certified path — **landed 2026-05-13**
+- P1 #4 add_benders_cut 接口加 condition_lits — **landed 2026-05-13**
+- P1 #3 CORE_TEST_FILES 覆盖 power subproblem / coordinate cut / condition_lits — **landed 2026-05-13**
+- 未来 (gated): power subproblem pole alternatives exhaustion — only relevant if EXACT_POWER_PLACEMENT_SUBPROBLEM 重启
+- P3: VeriPB / cake_lpr formal proof, exact-SCIP + VIPR
+
+### Lane B — deterministic-performance
+- P0 #2 4-worker baseline — landed
+- P1 #7 ε-Certified three-stage 168h split
+- P1 #9 player hint/nogood — 2/3 done
+- P1 #10 SMAC3 OptunaHub sampler
+- P1 #13 march/LTO 实验 (PGO gated)
+- P1 #24 cache-aware pack (THP/jemalloc/pinning) — landed
+- P2 #19 CachyOS migration — landed
+- P2 #20 py-spy native profile — part 1 done
+
+### Lane C — speculative-research
+- P1 #12 cache trio — gated by 24h spike (P1 #12 instrumentation landed)
+- P2 #8 Combinatorial Benders Cuts — PARTIALLY_REFUTED, demoted to P2
+- P2 #14 AlphaEvolve cut-evolution PoC — sub-agent PoC done, production gated by baseline
+- P2 #15 IL from solver traces — gated by expert-signal precheck
+- P2 #16 cpsat-autotune Optuna full sweep
+- P2 #17 ALNS Python warm-start
+- P2 #18 MUS via CPMpy QuickXplain — PoC done, production gated
+- P2 #21 Branch-and-Price PoC
+- P2 #22 HiGHS area oracle
+- P2 #27 two-host candidate-level parallel (WAN)
+- P2 #29 symmetry_level=0 实验 — short-run A/B done, full A/B gated
+- P2 #30 plateau-based 动态阶段切换 — 自创设计, gated by P1 #7
+- P2 #31 Pumpkin solver D''' audit
+- P2 #32 Glasgow + VeriPB 3.0 sidecar audit
+
+**怎么用 lane view**: 启动一轮工作时先确认 lane —— Lane A 优先级永远最高（不能砍）；Lane B 按 ROI 排；Lane C 不投入工时直到长跑出 baseline。
+
 ## Cross-reference
 
 - Agent transcripts: `docs/research/agent_transcripts/`
 - Per-round index + outcomes: `docs/research/INDEX.md`
 - Maintenance scripts: `CLAUDE.md` § Maintenance scripts
 - Hardware envelope: `project_hardware_constraint_single_machine.md` (memory)
+- GPT v3 review (2026-05-13): `~/下载/zmd_v3_review_power_subproblem_audit.md` (4 power-subproblem findings) + activity log final version (5 findings + 元层面 3 条)
