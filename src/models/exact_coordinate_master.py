@@ -2081,6 +2081,16 @@ class CoordinateExactMasterDelegate:
                     (int(x_val), int(y_val), int(mode_id), int(family_id))
                 )
 
+    def _delegate_power_placement_to_subproblem(self) -> bool:
+        # Read fresh from env each call so build vs solve sees the same flag.
+        # Flag default OFF — existing certified path unchanged.
+        return os.environ.get("EXACT_POWER_PLACEMENT_SUBPROBLEM", "").strip() not in {
+            "",
+            "0",
+            "false",
+            "False",
+        }
+
     def _prepare_slot_specs(self) -> None:
         self.mandatory_slots = {}
         for group in self.owner._mandatory_groups:
@@ -2142,6 +2152,17 @@ class CoordinateExactMasterDelegate:
             if tpl not in self.owner.templates:
                 continue
             if int(self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)) > 0:
+                continue
+            if (
+                str(tpl) == "power_pole"
+                and self._delegate_power_placement_to_subproblem()
+            ):
+                self.owner.build_stats["power_placement"] = {
+                    "representation": "delegated_power_subproblem_v1",
+                    "skipped_residual_power_pole_slot_upper_bound": int(
+                        self._residual_optional_slot_upper_bound("power_pole")
+                    ),
+                }
                 continue
             slot_upper_bound = int(self._residual_optional_slot_upper_bound(str(tpl)))
             if slot_upper_bound <= 0:
@@ -2953,8 +2974,16 @@ class CoordinateExactMasterDelegate:
         if self._core_x_intervals:
             self.model.AddNoOverlap2D(self._core_x_intervals, self._core_y_intervals)
         self._add_ghost_constraints()
-        if not self.owner.skip_power_coverage:
+        if (
+            not self.owner.skip_power_coverage
+            and not self._delegate_power_placement_to_subproblem()
+        ):
             self._add_geometric_power_coverage_constraints()
+        elif self._delegate_power_placement_to_subproblem():
+            self.owner.build_stats["power_coverage"] = {
+                "representation": "delegated_power_subproblem_v1",
+                "master_constraints": 0,
+            }
         self._add_global_valid_inequalities()
         self._add_search_guidance()
         self._finalize_build_stats()

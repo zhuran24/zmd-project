@@ -22,6 +22,10 @@ from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Seque
 from ortools.sat.python import cp_model
 
 from src.models.binding_subproblem import PortBindingModel
+from src.models.power_placement_subproblem import (
+    PowerPlacementSubproblem,
+    inject_power_poles_into_solution,
+)
 from src.models.cut_manager import (
     BendersCut,
     CutManager,
@@ -3807,6 +3811,20 @@ class LBBDController:
                 }
                 return RUN_STATUS_UNKNOWN, None
 
+            if os.environ.get(
+                "EXACT_POWER_PLACEMENT_SUBPROBLEM", ""
+            ).strip() not in {"", "0", "false", "False"}:
+                power_status, power_solution_or_cut = self._run_power_placement_subproblem(
+                    solution=solution, iteration=iteration,
+                )
+                if power_status == "FEASIBLE":
+                    solution = power_solution_or_cut
+                elif power_status == "INFEASIBLE_CUT_ADDED":
+                    iteration += 1
+                    continue
+                else:
+                    return RUN_STATUS_UNKNOWN, None
+
             self._emit_heartbeat(
                 stage="flow_diagnostic",
                 event="start",
@@ -3848,6 +3866,87 @@ class LBBDController:
             **self._exact_cut_ladder_summary(),
         }
         return RUN_STATUS_UNPROVEN, None
+
+    def _selected_ghost_cells(self) -> Set[Tuple[int, int]]:
+        u_vars = getattr(self.master, "u_vars", None) or {}
+        ghost_domains = getattr(self.master, "_ghost_domains", None) or []
+        solver = getattr(self.master, "_solver", None)
+        if not u_vars or not ghost_domains or solver is None:
+            return set()
+        for rect_idx, var in u_vars.items():
+            try:
+                if int(solver.Value(var)) == 1:
+                    cells = ghost_domains[int(rect_idx)].get("cells") or []
+                    return {(int(c[0]), int(c[1])) for c in cells}
+            except Exception:
+                continue
+        return set()
+
+    def _run_power_placement_subproblem(
+        self,
+        *,
+        solution: Dict[str, Any],
+        iteration: int,
+    ) -> Tuple[str, Any]:
+        # Returns ("FEASIBLE", updated_solution) | ("INFEASIBLE_CUT_ADDED", None) | ("ABORT", None)
+        time_limit = float(os.environ.get("EXACT_POWER_SUBPROBLEM_SECONDS", "10") or "10")
+        powered_templates = getattr(self.master, "_powered_templates", set()) or set()
+        coverers = (
+            getattr(self.master, "_power_coverers_by_template_pose", {}) or {}
+        )
+        ghost_cells = self._selected_ghost_cells()
+
+        sub = PowerPlacementSubproblem(
+            master_solution=solution,
+            facility_pools=self.master.facility_pools,
+            powered_templates=powered_templates,
+            power_coverers_by_template_pose=coverers,
+            ghost_cells=ghost_cells,
+        )
+        sub.build()
+        result = sub.solve(time_limit_seconds=time_limit)
+
+        self._emit_heartbeat(
+            stage="power_placement_subproblem",
+            event=result.status.lower(),
+            iteration=iteration,
+            extra=dict(result.stats),
+        )
+
+        if result.status == "FEASIBLE":
+            updated = inject_power_poles_into_solution(
+                solution,
+                selected_pose_indices=result.selected_pose_indices,
+                facility_pools=self.master.facility_pools,
+                solve_mode=self.solve_mode,
+            )
+            return "FEASIBLE", updated
+
+        if result.status == "INFEASIBLE":
+            # Conservative exact-safe presence no-good: this combination of
+            # powered facility poses cannot be powered by any pole config in
+            # the remaining (non-occupied, non-ghost) cells.
+            conflict_set: Dict[str, int] = {}
+            for instance_id, entry in solution.items():
+                tpl = str(entry.get("facility_type"))
+                if tpl in powered_templates and tpl != "power_pole":
+                    conflict_set[str(instance_id)] = int(entry["pose_idx"])
+            applied = bool(self.master.add_benders_cut(conflict_set)) if conflict_set else False
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="cut_added" if applied else "cut_skipped",
+                iteration=iteration,
+                extra={
+                    "conflict_size": len(conflict_set),
+                    "uncovered_instances": list(result.uncovered_instance_ids),
+                },
+            )
+            if not applied:
+                return "ABORT", None
+            return "INFEASIBLE_CUT_ADDED", None
+
+        # TIMEOUT — no exact-safe cut available; abort this iteration.
+        return "ABORT", None
 
     def _run_flow_diagnostic(
         self,
