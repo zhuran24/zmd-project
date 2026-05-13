@@ -15,6 +15,7 @@ data/checkpoints/
 data/solutions/final_solution.json
 data/solutions/certified_delivery_manifest.json
 data/blueprints/optimal_blueprint.json
+data/telemetry/
 **/exact_campaign_state.json
 **/exact_campaign_telemetry.json
 **/certified_delivery_manifest.json
