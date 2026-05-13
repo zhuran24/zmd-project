@@ -41,7 +41,6 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.runtime.campaign_freeze_monitor import (  # noqa: E402
     FREEZE_MARKER,
     PACMAN_CONF,
-    is_pacman_freeze_enabled,
 )
 
 ARTIFACT_MIN_FREE_GIB = 100

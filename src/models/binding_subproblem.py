@@ -21,12 +21,6 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from ortools.sat.python import cp_model
 
-# P2 #14 production: env-gated binding state dumper. 默认 off, 主路径不影响.
-# 启用后每次 solve() 入口把 binding 输入 dump 到 jsonl, 给后续 cut evolve
-# evaluator 当 fixture 用. 见 docs/research/profiles/p2_14_alphaevolve_poc_*.
-EXACT_BINDING_DUMP_STATE_ENV = "EXACT_BINDING_DUMP_STATE"
-_BINDING_DUMP_RELATIVE_PATH = "data/telemetry/binding_dumps.jsonl"
-
 from src.models.cp_sat_worker_config import (
     DEFAULT_BINDING_CP_SAT_WORKERS,
     resolve_cp_sat_worker_count,
@@ -40,6 +34,12 @@ from src.search.commodity_throughput import (
     classify_commodity_flow,
     compute_commodity_throughput,
 )
+
+# P2 #14 production: env-gated binding state dumper. 默认 off, 主路径不影响.
+# 启用后每次 solve() 入口把 binding 输入 dump 到 jsonl, 给后续 cut evolve
+# evaluator 当 fixture 用. 见 docs/research/profiles/p2_14_alphaevolve_poc_*.
+EXACT_BINDING_DUMP_STATE_ENV = "EXACT_BINDING_DUMP_STATE"
+_BINDING_DUMP_RELATIVE_PATH = "data/telemetry/binding_dumps.jsonl"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 GENERIC_IO_REQUIREMENTS_PATH = (
@@ -300,8 +300,8 @@ class PortBindingModel:
                     if not low_lits:
                         continue
                     for h in high_lits:
-                        for l in low_lits:
-                            self.model.AddBoolOr([h.Not(), l.Not()])
+                        for low_lit in low_lits:
+                            self.model.AddBoolOr([h.Not(), low_lit.Not()])
                             nogood_count += 1
         return nogood_count
 

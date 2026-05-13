@@ -13,7 +13,7 @@ Status: ACCEPTED_DRAFT
 import json
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional
 
 # ==========================================
 # 0. 常量
@@ -232,7 +232,7 @@ def gen_boundary_ports() -> List[Dict]:
     左基线: x=0, 竖向 1×3, y ∈ [1, 67)。中间格向右出向。
     下基线: y=0, 横向 3×1, x ∈ [1, 67)。中间格向上出向。
     起点从 1 开始，避开左下角 (0, 0) 的拐角重叠。
-    
+
     注意：边界口的端口方向是"对场内供料"，因此算作 output_port_cells。
     """
     placements = []

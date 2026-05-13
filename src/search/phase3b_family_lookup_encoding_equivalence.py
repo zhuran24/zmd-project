@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.exact_coordinate_master import family_shell_guard_shape
 from src.models.master_model import DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE

@@ -22,6 +22,10 @@ RUN_STATUS_UNKNOWN = "UNKNOWN"
 RUN_STATUS_UNPROVEN = "UNPROVEN"
 
 
+def _optional_float(value: Any) -> Optional[float]:
+    return None if value is None else float(value)
+
+
 @dataclass
 class BendersCut:
     """Structured cut record for exact-contract compatibility."""
@@ -90,10 +94,7 @@ class BendersCut:
             created_at=(
                 None if payload.get("created_at") is None else str(payload.get("created_at"))
             ),
-            epsilon_stage=(
-                None if payload.get("epsilon_stage") is None
-                else float(payload.get("epsilon_stage"))
-            ),
+            epsilon_stage=_optional_float(payload.get("epsilon_stage")),
             condition_set={
                 str(k): v for k, v in dict(payload.get("condition_set", {})).items()
             },

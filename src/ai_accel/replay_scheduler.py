@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from src.ai_accel.feature_extract import stable_json_dumps
 

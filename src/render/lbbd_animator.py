@@ -6,10 +6,9 @@ VIS-03: 流网络拓扑简图
 展示 occupied/free 格子和瓶颈区域。
 """
 
-import json
 import numpy as np
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 
 try:
     import matplotlib

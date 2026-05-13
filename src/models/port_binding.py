@@ -11,7 +11,7 @@ fixed.
 from __future__ import annotations
 
 from itertools import combinations, product
-from typing import Any, Dict, Iterable, List, Mapping, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
 from src.preprocess.operation_profiles import get_operation_port_profile
 

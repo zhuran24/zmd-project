@@ -94,7 +94,7 @@ def _build_persisted_conditioned_cut(overlay, *, ghost_x, ghost_y, miner_combo):
 def test_resolver_resolves_ghost_anchor_condition_to_u_var():
     overlay = _build_overlay()
     rect_idx = _ghost_rect_idx_for_anchor(overlay, 1, 0)
-    cs = {f"ghost_anchor::(1,0)": int(rect_idx)}
+    cs = {"ghost_anchor::(1,0)": int(rect_idx)}
     lits, ok = _resolve_condition_lits_from_condition_set(overlay, cs)
     assert ok is True
     assert len(lits) == 1

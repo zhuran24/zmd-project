@@ -38,13 +38,13 @@ def test_bound_state_defaults_all_none():
 
 
 def test_get_candidate_bound_state_returns_defaults_for_missing(camp):
-    
+
     bs = camp.get_candidate_bound_state(70, 70)
     assert bs == _bound_state_defaults()
 
 
 def test_update_then_get_roundtrip(camp):
-    
+
     camp.update_candidate_bound_state(
         70, 70, lb=100, ub=120, gap=0.2, epsilon_target=0.05,
         prover="master_cpsat", model_hash="hash_v1",
@@ -60,7 +60,7 @@ def test_update_then_get_roundtrip(camp):
 
 
 def test_partial_update_preserves_other_fields(camp):
-    
+
     camp.update_candidate_bound_state(70, 70, lb=100, ub=120)
     camp.update_candidate_bound_state(70, 70, ub=110)  # only ub changes
     bs = camp.get_candidate_bound_state(70, 70)
@@ -70,7 +70,7 @@ def test_partial_update_preserves_other_fields(camp):
 
 def test_bound_regression_appends_audit_event(camp):
     """P1 #7d: lb_new < lb_old - tol triggers BOUND_REGRESSION event."""
-    
+
     camp.update_candidate_bound_state(70, 70, lb=100, model_hash="h1")
     audit = camp.update_candidate_bound_state(
         70, 70, lb=80, model_hash="h2", regression_tolerance=0
@@ -87,7 +87,7 @@ def test_bound_regression_appends_audit_event(camp):
 
 
 def test_bound_regression_within_tolerance_no_event(camp):
-    
+
     camp.update_candidate_bound_state(70, 70, lb=100)
     audit = camp.update_candidate_bound_state(
         70, 70, lb=99, regression_tolerance=2
@@ -97,7 +97,7 @@ def test_bound_regression_within_tolerance_no_event(camp):
 
 
 def test_lb_increase_is_not_regression(camp):
-    
+
     camp.update_candidate_bound_state(70, 70, lb=100)
     audit = camp.update_candidate_bound_state(70, 70, lb=110)
     assert audit is None
@@ -106,14 +106,14 @@ def test_lb_increase_is_not_regression(camp):
 
 def test_first_lb_set_is_not_regression(camp):
     """No prior lb → no regression event (nothing to compare)."""
-    
+
     audit = camp.update_candidate_bound_state(70, 70, lb=50)
     assert audit is None
 
 
 def test_candidate_default_includes_bound_state(camp):
     """New candidate started should have bound_state default-filled."""
-    
+
     camp.mark_candidate_started(70, 70)
     record = camp.get_candidate_record(70, 70)
     assert "bound_state" in record

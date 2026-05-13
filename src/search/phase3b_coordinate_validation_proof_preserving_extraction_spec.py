@@ -46,7 +46,7 @@ def build_phase3b_coordinate_validation_proof_preserving_extraction_spec(
     certificate_report, certificate_error = _load_json_mapping(certificate_path)
     precheck_meta = _mapping(precheck_report.get("metadata")) if precheck_report else {}
     certificate_meta = _mapping(certificate_report.get("metadata")) if certificate_report else {}
-    precheck_gate = _mapping(precheck_report.get("gate")) if precheck_report else {}
+    _mapping(precheck_report.get("gate")) if precheck_report else {}
     current_blocker = (
         _mapping(precheck_report.get("joined_xy_current_blocker"))
         if precheck_report

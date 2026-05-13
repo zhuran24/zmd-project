@@ -4,7 +4,7 @@ import os
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterator, Mapping, Optional, Sequence, Tuple
 
 from src.models.master_model import (
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,

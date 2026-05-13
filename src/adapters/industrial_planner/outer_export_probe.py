@@ -10,7 +10,6 @@ from typing import Any, Mapping, Sequence
 from src.adapters.base_planner.outer_deployment_plan import (
     OuterBaseDeploymentPlan,
     PlanningDiagnostics,
-    outer_deployment_plan_from_dict,
 )
 from src.adapters.industrial_planner.deployment_transform import (
     materialize_outer_deployed_blueprint_payload,

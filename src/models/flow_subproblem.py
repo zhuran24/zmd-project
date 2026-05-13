@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from ortools.linear_solver import pywraplp
 
@@ -28,7 +28,7 @@ class FlowNetwork:
 
     nodes: Set[str] = field(default_factory=set)
     edges: Dict[Tuple[str, str], float] = field(default_factory=dict)
-    
+
     # Track the origin (machine instance) of port nodes to trace back Min-Cut
     port_to_instance: Dict[str, str] = field(default_factory=dict)
 
@@ -92,7 +92,7 @@ def build_flow_network(
             port_node = f"port_{commodity}_{port['instance_id']}_{px}_{py}_{port['type']}"
             net.add_node(port_node)
             net.port_to_instance[port_node] = port["instance_id"]
-            
+
             adj_node = cell_id(front[0], front[1])
             if str(port["type"]) == "out":
                 net.add_edge(port_node, adj_node, capacity=1.0)
@@ -142,7 +142,7 @@ class FlowSubproblem:
                 else "Certified-exact diagnostic only; not a pruning oracle"
             ),
         }
-        
+
         self.bottleneck_instances: Set[str] = set()
 
     def build_and_solve(self, time_limit_ms: int = 10000) -> str:

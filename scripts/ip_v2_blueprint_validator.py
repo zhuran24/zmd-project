@@ -25,7 +25,7 @@ import sys
 import tempfile
 from collections import defaultdict, deque
 from pathlib import Path
-from typing import Any, Dict, FrozenSet, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 DEFAULT_SPEC_PATH = str(Path(tempfile.gettempdir()) / "ip_v2_device_specs.json")
 
@@ -347,7 +347,7 @@ def validate(
     for di, dev in enumerate(devices):
         typeId = dev["typeId"]
         ports = ports_by_device.get(di, [])
-        port_ids = {p["port_id"] for p in ports}
+        {p["port_id"] for p in ports}
 
         # unloader must have pickupItemId
         if typeId == "item_port_unloader_1":

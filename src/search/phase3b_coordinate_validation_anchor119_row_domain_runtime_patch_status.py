@@ -59,7 +59,7 @@ def build_phase3b_coordinate_validation_anchor119_row_domain_runtime_patch_statu
     control_surface_meta = (
         _mapping(control_surface_report.get("metadata")) if control_surface_report else {}
     )
-    control_surface_status = (
+    (
         _mapping(control_surface_report.get("status")) if control_surface_report else {}
     )
     runtime_patch_meta = (

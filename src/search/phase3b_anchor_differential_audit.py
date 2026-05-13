@@ -8,7 +8,6 @@ from typing import Any, Dict, Mapping, Optional, Sequence
 from src.search.exact_campaign import now_iso
 from src.search.phase3b_forced_anchor_master import (
     DEFAULT_CAMPAIGN_STATE_PATH,
-    DEFAULT_CANDIDATE,
     _candidate_ghost_rect,
     _check,
     _display_path,

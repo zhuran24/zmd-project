@@ -17,7 +17,7 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 import time
-from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
 

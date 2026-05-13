@@ -13,7 +13,6 @@ import psutil
 from src.runtime.process_priority import apply_process_priority_if_configured
 from src.search.benders_loop import (
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
-    ExactSearchSession,
     create_exact_search_session,
     run_benders_for_ghost_rect,
 )

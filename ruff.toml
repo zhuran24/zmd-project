@@ -1,0 +1,42 @@
+# ruff 分层配置 (GPT v4 follow-up).
+#
+# 设计:
+# - core (src/ + main.py + 关键 scripts) 必须 0 警告, 由 preflight gate 强制
+# - 实验/构建脚本 (scripts/build_phase3b_*, scripts/audit_*, etc.) 宽松, 允许
+#   sys.path.insert 后 import 的 E402 + 探针脚本里常见的 F401/F541
+#
+# 不放 pyproject.toml 是因为项目没有 pyproject.toml, 也不准备引入完整 PEP 621
+# 配置 (避免跟现有 requirements.txt / requirements.lock.txt 双轨冲突).
+
+line-length = 120
+target-version = "py313"
+
+# 默认规则集: 跟 ruff default 走 (E + F + W). 当前噪音主要在 E402 / F401 系列.
+[lint]
+select = ["E", "F", "W"]
+# 全局 ignore: E501 (line-length) — 项目已多处长行, 不在本次 cleanup 范围.
+ignore = ["E501"]
+
+[lint.per-file-ignores]
+# Entry scripts 都做 sys.path.insert 才能 import src.*, 必然触发 E402.
+"main.py" = ["E402"]
+"scripts/build_*.py" = ["E402", "F401"]
+"scripts/audit_*.py" = ["E402"]
+"scripts/probe_*.py" = ["E402"]
+"scripts/run_*.py" = ["E402"]
+"scripts/refresh_ai_dataset_from_campaign.py" = ["E402"]
+"scripts/profile_*.py" = ["E402"]
+"scripts/analyze_*.py" = ["E402"]
+"scripts/benchmark_*.py" = ["E402"]
+"scripts/build_current_*.py" = ["E402"]
+"scripts/ip_v2_*.py" = ["E402"]
+"scripts/p2_14_evaluator/*.py" = ["E402"]
+"scripts/evaluate_*.py" = ["E402"]
+"scripts/export_*.py" = ["E402"]
+"scripts/inspect_*.py" = ["E402"]
+"scripts/mark_*.py" = ["E402"]
+"scripts/summarize_*.py" = ["E402"]
+# F541 (f-string 无占位) 在 build/audit 文案脚本里偶尔留作 placeholder, 允许.
+"scripts/**.py" = ["F541"]
+# 测试文件允许 F401 (导入用于 fixture 注册 / typing)
+"src/tests/**.py" = ["F401"]

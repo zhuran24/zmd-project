@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple
+from typing import Any, Dict, Mapping, Sequence, Tuple
 
 from src.models.master_model import DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE
 from src.search.exact_campaign import atomic_write_json, compute_exact_artifact_hashes, now_iso

@@ -14,7 +14,6 @@ from src.search.phase3b_coordinate_validation_group_delta import (
     _candidate_rect,
     _check,
     _compact_greedy,
-    _compact_group,
     _compact_validation,
     _mapping,
     _normalize_solver_profile,
@@ -505,10 +504,6 @@ def _checks(
             "no model error" if model_error is None else str(model_error),
         ),
     ]
-
-
-def _mapping(value: Any) -> Mapping[str, Any]:
-    return value if isinstance(value, Mapping) else {}
 
 
 def _markdown_cell(value: Any) -> str:

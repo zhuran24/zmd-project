@@ -308,7 +308,7 @@ def test_anchor119_row_domain_acceptance_authorization_cover_note_missing_upstre
 
     assert report["status"]["acceptance_authorization_cover_note_ready"] is False
     assert (
-        report["status"][ 
+        report["status"][
             "future_manual_acceptance_authorization_review_prerequisites_met"
         ]
         is False

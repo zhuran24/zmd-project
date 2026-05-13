@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional
 
 from src.search.exact_campaign import atomic_write_json, now_iso
 
@@ -109,7 +109,7 @@ def build_phase3b_coordinate_validation_anchor119_row_domain_ingest_review_instr
 
     handoff_meta = _mapping(handoff_report.get("metadata")) if handoff_report else {}
     handoff_status = _mapping(handoff_report.get("status")) if handoff_report else {}
-    handoff_paths = _mapping(handoff_report.get("paths")) if handoff_report else {}
+    _mapping(handoff_report.get("paths")) if handoff_report else {}
     handoff_bundle = (
         _mapping(handoff_report.get("ingest_review_operator_handoff_bundle"))
         if handoff_report
@@ -184,7 +184,7 @@ def build_phase3b_coordinate_validation_anchor119_row_domain_ingest_review_instr
     validator_required_review_conclusions = _mapping_list(
         validator.get("required_review_conclusions")
     )
-    validator_blocked_gate_contract = _mapping(validator.get("blocked_gate_contract"))
+    _mapping(validator.get("blocked_gate_contract"))
     validator_rules = _mapping(validator.get("validator_rules"))
     validator_required_fields = _mapping_list(validator_rules.get("required_fields"))
     validator_required_reviewer_statement_ids = _string_list(

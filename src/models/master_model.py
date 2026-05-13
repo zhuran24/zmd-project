@@ -2457,10 +2457,10 @@ class MasterPlacementModel:
         powered_support_coverer_instrumentation_enabled = (
             resolve_ghost_signature_bucket_powered_support_coverer_instrumentation_enabled()
         )
-        compact_item_accumulation_optimization_enabled = (
+        (
             resolve_ghost_signature_bucket_powered_support_compact_item_accumulation_optimization_enabled()
         )
-        compact_item_batched_counter_optimization_enabled = (
+        (
             resolve_ghost_signature_bucket_powered_support_compact_item_batched_counter_optimization_enabled()
         )
         resolve_ghost_signature_bucket_powered_support_compact_item_detail_instrumentation_enabled()
@@ -10224,18 +10224,6 @@ class MasterPlacementModel:
             "top_failed_groups": [],
             "top_failed_group_failures": [],
             "failed_anchor_samples": [],
-        }
-        default_boundary_port_feasibility: Dict[str, Any] = {
-            "supported": False,
-            "required_count": 0,
-            "considered_anchor_count": 0,
-            "screened_infeasible_anchor_count": 0,
-            "screen_pass_anchor_count": 0,
-            "unsupported_anchor_count": 0,
-            "max_packable_min": None,
-            "max_packable_max": None,
-            "first_infeasible_anchor_idx": None,
-            "first_infeasible_anchor_max_packable": None,
         }
 
         warm_start: Dict[str, Any] = {

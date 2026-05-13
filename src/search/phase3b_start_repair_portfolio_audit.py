@@ -4,7 +4,7 @@ import json
 import time
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from src.search.exact_campaign import now_iso
 

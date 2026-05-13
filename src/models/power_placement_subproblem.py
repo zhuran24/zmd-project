@@ -30,7 +30,7 @@ Exact-preservation argument:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, FrozenSet, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, FrozenSet, Iterable, List, Mapping, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -65,7 +65,9 @@ class PowerPlacementSubproblem:
         self.ghost_cells: Set[Cell] = {
             (int(x), int(y)) for x, y in ghost_cells
         }
-        self.model = cp_model.CpModel()
+        # ortools .pyi 对 CpModel 的 PascalCase API (NewBoolVar/Add/...) 声明
+        # 不全, mypy 报 attr-defined. CpModel 是 dynamic, 标 Any 让类型检查放过.
+        self.model: Any = cp_model.CpModel()
         self.pole_vars: Dict[int, cp_model.IntVar] = {}
         self.candidate_pole_indices: List[int] = []
         self.coverers_by_instance: Dict[str, List[int]] = {}

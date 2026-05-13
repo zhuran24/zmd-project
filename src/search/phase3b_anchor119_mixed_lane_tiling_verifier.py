@@ -6,7 +6,7 @@ import json
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Sequence, Tuple
+from typing import Any, Dict, Mapping, Sequence, Tuple
 
 from src.models.master_model import (
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,

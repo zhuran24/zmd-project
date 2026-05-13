@@ -1246,7 +1246,7 @@ def _build_joined_xy_proof_preserving_candidate(
         else {}
     )
     core_minimality = _mapping(core_evidence.get("minimality_10s"))
-    no_ghost_space_minimality = _mapping(no_ghost_space_evidence.get("minimality_10s"))
+    _mapping(no_ghost_space_evidence.get("minimality_10s"))
     anchor_sweep_status_counts = _mapping(
         anchor_sweep_all.get("status_counts")
         or no_ghost_space_evidence.get("anchor_sweep_status_counts")

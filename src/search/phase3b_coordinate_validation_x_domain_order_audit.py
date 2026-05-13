@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -16,7 +16,6 @@ from src.search.phase3b_coordinate_validation_group_delta import (
     _build_delta_context,
     _candidate_rect,
     _check,
-    _compact_greedy,
     _compact_validation,
     _mapping,
     _normalize_solver_profile,

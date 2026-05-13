@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import time
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
@@ -262,7 +261,7 @@ def _evaluate_strategy(
     solver_profile: Mapping[str, Any],
 ) -> Dict[str, Any]:
     model = context["model"]
-    group_id = str(group.get("group_id", ""))
+    str(group.get("group_id", ""))
     ordered_groups = [group]
     blocked_cells = set(context.get("blocked_cells", set()))
     custom_group_orders: Optional[Dict[str, Sequence[int]]] = None

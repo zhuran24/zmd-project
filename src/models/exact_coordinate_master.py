@@ -2365,7 +2365,7 @@ class CoordinateExactMasterDelegate:
             bucket_lits_for_slot: List[cp_model.IntVar] = []
             for bucket in bucket_defs:
                 bucket_id = str(bucket["bucket_id"])
-                bucket_int = int(bucket_id_to_int[bucket_id])
+                int(bucket_id_to_int[bucket_id])
                 bucket_lit = self.model.NewBoolVar(f"{membership_prefix}__{slot.key}__{bucket_id}")
                 # P0 #6 改造 4 (membership channeling): replaced double-reify
                 # `signature == bucket_int <=> bucket_lit` with a single

@@ -31,7 +31,6 @@ from src.search.phase3b_forced_anchor_model_slice import (
     _delete_constraint_indices,
     _family_lookup_linear_constraint_category,
     _first_line,
-    _literal_var_index,
     _remove_power_coverage_element_constraints_payload,
     _remove_power_coverage_linear_constraints_payload,
     _remove_power_family_layer_constraints_payload,

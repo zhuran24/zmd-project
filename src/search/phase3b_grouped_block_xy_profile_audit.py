@@ -4,7 +4,7 @@ import os
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Dict, Iterator, Mapping, Optional
+from typing import Any, Iterator, Mapping, Optional
 
 from src.models.exact_coordinate_master import (
     EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV,
@@ -265,7 +265,7 @@ def _comparison(cases: list[Mapping[str, Any]]) -> dict[str, Any]:
     new = _mapping(by_id.get("selected_block_active_guard_grouped_xy"))
     old_w = _mapping(old.get("witness_stats"))
     new_w = _mapping(new.get("witness_stats"))
-    old_prefix = _mapping(old.get("variable_prefix_counts"))
+    _mapping(old.get("variable_prefix_counts"))
     new_prefix = _mapping(new.get("variable_prefix_counts"))
     block_xy_delta = _int(new_w.get("block_intermediate_target_channel_count")) - _int(
         old_w.get("block_intermediate_target_channel_count")

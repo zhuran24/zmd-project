@@ -50,12 +50,6 @@ from scripts.build_industrial_planner_full_demand_fixture import (  # noqa: E402
 )
 from src.adapters.industrial_planner import (  # noqa: E402
     DEFAULT_BASE_ID,
-    INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME,
-    INDUSTRIAL_PLANNER_MANIFEST_FILENAME,
-    INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_FILENAME,
-    INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_MARKDOWN_FILENAME,
-    INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME,
-    INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME,
     write_industrial_planner_export_bundle,
 )
 from src.search.exact_campaign import atomic_write_json  # noqa: E402

@@ -6,7 +6,7 @@ from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
 
 from src.models.master_model import DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE
 from src.search.exact_campaign import atomic_write_json, compute_exact_artifact_hashes, now_iso
-from src.search.phase3b_forced_anchor_master import _check, _display_path, _mapping
+from src.search.phase3b_forced_anchor_master import _check, _mapping
 from src.search.phase3b_mandatory_core_matrix import _build_mandatory_core_overlay
 
 SIGNATURE_REGION_EQUIVALENCE_AUDIT_SOURCE = (

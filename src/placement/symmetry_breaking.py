@@ -20,7 +20,7 @@ def generate_lexicographic_ordering(
 
     物理原理：N 台相同型号的机器（如 34 台蓝铁粉碎机）在数学上完全等价。
     如果不加约束，求解器会浪费大量时间探索仅仅是"重新编号"的等价解。
-    
+
     字典序约束 pose_id(instance_i) ≤ pose_id(instance_{i+1}) 能将 N! 种标签排列
     压缩为仅 1 种规范形式。
 

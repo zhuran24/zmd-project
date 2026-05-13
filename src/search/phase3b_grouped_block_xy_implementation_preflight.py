@@ -7,7 +7,6 @@ from typing import Any, Mapping, Optional
 
 from src.search.exact_campaign import now_iso
 from src.search.phase3b_forced_anchor_master import _check, _display_path, _mapping
-from src.search.phase3b_grouped_block_xy_candidate import DEFAULT_GROUPED_ORACLE_PATH
 
 GROUPED_BLOCK_XY_IMPLEMENTATION_PREFLIGHT_SOURCE = (
     "phase3b_grouped_block_xy_implementation_preflight_v1"

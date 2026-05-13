@@ -12,7 +12,6 @@ from src.search.phase3b_anchor119_guard_controls import (
     phase3b_anchor119_guard_candidate_matches,
 )
 from src.search.phase3b_anchor119_guarded_precheck_spec import (
-    DEFAULT_SYNTHESIS_PATH,
     _mapping,
 )
 

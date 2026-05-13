@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from collections import Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, Mapping, Optional, Sequence
+from typing import Any, Dict, Mapping, Optional, Sequence
 
 from ortools.sat.python import cp_model
 

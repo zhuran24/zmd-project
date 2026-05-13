@@ -11,7 +11,10 @@ Preflight gate — 提交前自动门禁检查。
     2. 禁止路径写入检查（checkpoint, proof, blueprint）
     3. AI 安全合同检查（ai_accel 不碰 proof 路径）
     4. 精确/探索边界隔离检查
-    5. pytest 测试（仅 --full 模式）
+    5. 调研产物 audit 覆盖检查
+    6. mypy 严格类型 (cut lifecycle 核心两文件)
+    7. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
+    8. pytest 测试（核心门禁 / 全量取决于模式）
 
 退出码：
     0 = 通过
@@ -22,13 +25,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import re
 import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
@@ -137,7 +138,7 @@ def get_staged_files() -> list[str]:
 
 
 def check_frozen_artifacts(gate: GateResult) -> None:
-    print("\n[1/6] 冻结制品 hash 校验")
+    print("\n[1/8] 冻结制品 hash 校验")
     for rel_path, expected_hash in FROZEN_ARTIFACTS.items():
         full_path = PROJECT_ROOT / rel_path
         if not full_path.exists():
@@ -155,7 +156,7 @@ def check_frozen_artifacts(gate: GateResult) -> None:
 
 
 def check_forbidden_paths(gate: GateResult) -> None:
-    print("\n[2/6] 禁止路径写入检查")
+    print("\n[2/8] 禁止路径写入检查")
     staged = get_staged_files()
     if not staged:
         gate.ok("无 staged 文件（或不在 git 仓库中）")
@@ -176,7 +177,7 @@ def check_forbidden_paths(gate: GateResult) -> None:
 
 
 def check_ai_safety_contract(gate: GateResult) -> None:
-    print("\n[3/6] AI 安全合同检查")
+    print("\n[3/8] AI 安全合同检查")
     ai_dir = PROJECT_ROOT / AI_MODULE_ROOT
     if not ai_dir.exists():
         gate.ok("ai_accel 目录不存在，跳过")
@@ -206,7 +207,7 @@ def check_ai_safety_contract(gate: GateResult) -> None:
 
 
 def check_exact_exploratory_isolation(gate: GateResult) -> None:
-    print("\n[4/6] 精确/探索边界隔离检查")
+    print("\n[4/8] 精确/探索边界隔离检查")
     staged = get_staged_files()
     if not staged:
         gate.ok("无 staged 文件")
@@ -285,13 +286,13 @@ _AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IG
 
 
 def check_research_audit_coverage(gate: GateResult) -> None:
-    """[5/6] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
+    """[5/8] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
 
     R13 教训: 调研 agent 报告即使引用 URL 也常出错 (5/5 历史 audit 翻盘)。
     路线图 / INDEX 改动如新增 R-N 调研引用，必须配套有 audit (agent ID) 引用。
     [W] warning 不阻塞 — audit 可能在另一 commit, 但提醒一下避免漏审。
     """
-    print("\n[5/6] 调研产物 audit 覆盖检查")
+    print("\n[5/8] 调研产物 audit 覆盖检查")
     staged = get_staged_files()
     touched = [f for f in staged if f.replace("\\", "/") in RESEARCH_TRACKED_FILES]
     if not touched:
@@ -342,9 +343,105 @@ def check_research_audit_coverage(gate: GateResult) -> None:
     )
 
 
+MYPY_STRICT_TARGETS = [
+    # GPT v4 follow-up G2 scope: 只把 cut lifecycle 直接相关的两个 schema/runtime
+    # 文件锁死 mypy 严格. benders_loop.py 太大, 历史类型错多, 单独修是大工程, 不
+    # 进 gate; 但里面新加的 _resolve_condition_lits_from_condition_set helper 不报
+    # 错 (mypy 整体跑过), 留 follow-up memory 记追加.
+    "src/models/cut_manager.py",
+    "src/models/power_placement_subproblem.py",
+]
+
+
+def check_mypy(gate: GateResult) -> None:
+    """GPT v4 follow-up G2: mypy 严格 gate cut lifecycle 核心.
+
+    锁 BendersCut + CutManager + PowerPlacementSubproblem 不让类型生命周期破洞
+    再次发生 (lifecycle bug 根因是 schema 字段落了但 runtime resolver 没跟上).
+    """
+    print("\n[6/8] mypy 静态类型 (core lifecycle)")
+    existing = [t for t in MYPY_STRICT_TARGETS if (PROJECT_ROOT / t).exists()]
+    if not existing:
+        gate.warn("mypy gate 目标文件不存在 — 跳过")
+        return
+    try:
+        result = subprocess.run(
+            [
+                sys.executable, "-m", "mypy",
+                "--explicit-package-bases",
+                "--ignore-missing-imports",
+                "--follow-imports=silent",
+                *existing,
+            ],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=60,
+            env={**os.environ, "MYPYPATH": str(PROJECT_ROOT)},
+        )
+    except subprocess.TimeoutExpired:
+        gate.warn("mypy 超时 (>60s) — 跳过")
+        return
+    except FileNotFoundError:
+        gate.warn("mypy 未安装 — 跳过")
+        return
+
+    out = (result.stdout or "").strip()
+    if result.returncode == 0:
+        last = out.splitlines()[-1] if out else "no issues found"
+        gate.ok(f"mypy: {last}")
+        return
+    summary = ""
+    for line in out.splitlines()[::-1]:
+        if line.startswith("Found "):
+            summary = line.strip()
+            break
+    gate.block(f"mypy core lifecycle: {summary or 'non-zero exit'}")
+    for line in out.splitlines()[:12]:
+        print(f"         {line}")
+
+
+def check_ruff(gate: GateResult) -> None:
+    """GPT v4 follow-up G1: ruff 分层配置, core + scripts 全仓 0 警告.
+
+    `ruff.toml` 已经把脚本入口的 sys.path-后-import 模式 (E402) 标 ignore,
+    其他规则 (F4xx 系列 dead code / E7xx 命名 / W2xx 空白) 必须真过.
+    跑全仓; 任何 warning 一律 BLOCK — 没有 "scripts 没事核心严格" 的二级容忍,
+    因为 ruff.toml 已经把噪音吸收掉了.
+    """
+    print("\n[7/8] ruff 静态检查")
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "ruff", "check", "."],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        gate.warn("ruff 超时 (>30s) — 跳过")
+        return
+    except FileNotFoundError:
+        gate.warn("ruff 未安装 — 跳过")
+        return
+
+    if result.returncode == 0:
+        last = (result.stdout or "All checks passed!").splitlines()[-1].strip()
+        gate.ok(f"ruff: {last}")
+        return
+
+    # ruff exit !=0 → 有问题. count 简单 grep `Found N error`.
+    out = result.stdout or ""
+    summary = ""
+    for line in out.splitlines()[::-1]:
+        if line.startswith("Found "):
+            summary = line.strip()
+            break
+    if not summary:
+        summary = "ruff 报告非 0 退出 (见 stdout)"
+    gate.block(f"ruff: {summary}")
+    # 输出前几行细节方便定位
+    for line in out.splitlines()[:8]:
+        print(f"         {line}")
+
+
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = "全量" if full else "核心门禁"
-    print(f"\n[6/6] 测试门禁（{label}）")
+    print(f"\n[8/8] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
     timeout = 600 if full else 120
@@ -376,7 +473,7 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
             cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT),
             timeout=timeout, env=pytest_env,
         )
-        last_lines = [l for l in result.stdout.splitlines() if l.strip()][-3:]
+        last_lines = [line for line in result.stdout.splitlines() if line.strip()][-3:]
         summary_line = last_lines[-1] if last_lines else ""
 
         if result.returncode == 0:
@@ -406,6 +503,8 @@ def run_gate(*, full: bool = False, hook: bool = False) -> int:
     check_ai_safety_contract(gate)
     check_exact_exploratory_isolation(gate)
     check_research_audit_coverage(gate)
+    check_mypy(gate)
+    check_ruff(gate)
 
     if full:
         check_tests(gate, full=True)

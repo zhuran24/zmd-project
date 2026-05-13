@@ -17,7 +17,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
-from typing import Any, Iterable, Mapping
+from typing import Any, Mapping
 
 from src.io.serializer import load_json_mapping
 from src.search.exact_campaign import atomic_write_json

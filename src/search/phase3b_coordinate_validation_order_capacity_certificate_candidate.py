@@ -68,7 +68,7 @@ def build_phase3b_coordinate_validation_order_capacity_certificate_candidate(
 
     core_status = _mapping(core_report.get("status")) if core_report else {}
     core_evidence = _mapping(core_report.get("evidence")) if core_report else {}
-    no_ghost_status = _mapping(no_ghost_report.get("status")) if no_ghost_report else {}
+    _mapping(no_ghost_report.get("status")) if no_ghost_report else {}
     no_ghost_evidence = _mapping(no_ghost_report.get("evidence")) if no_ghost_report else {}
     explanation_geometry = _mapping(explanation_report.get("geometry")) if explanation_report else {}
     explanation_interpretation = _mapping(

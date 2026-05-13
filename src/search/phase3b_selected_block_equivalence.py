@@ -303,7 +303,7 @@ def render_phase3b_selected_block_equivalence_markdown(report: Mapping[str, Any]
     status = _mapping(report.get("status"))
     relation = _mapping(report.get("relation_equivalence"))
     real = _mapping(relation.get("real_witness_relation"))
-    active_guard = _mapping(relation.get("active_guard_relation"))
+    _mapping(relation.get("active_guard_relation"))
     lines = [
         "# Phase 3B Selected-Block Equivalence Audit",
         "",

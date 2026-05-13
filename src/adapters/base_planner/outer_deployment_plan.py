@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from src.adapters.industrial_planner.blueprint_validator import load_static_registries
 from src.adapters.industrial_planner.mapping_registry import (
@@ -402,7 +402,7 @@ def build_outer_base_deployment_plan(
     input_counter: Counter[str] = Counter()
 
     for facility in normalized_blueprint.get("facilities", []):
-        facility_type = str(facility.get("facility_type", "")).strip()
+        str(facility.get("facility_type", "")).strip()
         instance_id = str(facility.get("instance_id", "")).strip()
         canonical_anchor = _point_from_anchor(facility.get("anchor"))
         canonical_orientation = int(facility.get("orientation", 0))
