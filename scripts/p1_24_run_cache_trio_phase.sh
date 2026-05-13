@@ -18,8 +18,8 @@ PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 VALIDATION_DIR="$PROJECT_ROOT/.artifacts/p1_24_validation"
-BASELINE_DIR="$VALIDATION_DIR/baseline_run"
-TRIO_DIR="$VALIDATION_DIR/cache_trio_run"
+BASELINE_DIR="$VALIDATION_DIR/baseline_run_p2"
+TRIO_DIR="$VALIDATION_DIR/cache_trio_run_p2"
 
 mkdir -p "$BASELINE_DIR" "$TRIO_DIR"
 
@@ -40,7 +40,7 @@ rm -f data/checkpoints/exact_campaign_state.json data/checkpoints/exact_campaign
 echo "[phase2] launching cache-trio @ $(date -Iseconds)"
 nohup bash scripts/run_campaign_linux.sh \
     --campaign-hours 0.5 \
-    --parallel-processes 4 \
+    --parallel-processes 2 \
     --skip-readiness-gate \
     > "$TRIO_DIR/stdout.log" 2> "$TRIO_DIR/stderr.log" &
 

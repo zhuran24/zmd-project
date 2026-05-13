@@ -320,11 +320,17 @@ def check_power_subproblem_disabled(gate: Gate) -> None:
 def check_oom_headroom(gate: Gate) -> None:
     """Estimate whether parallel workers fit in RAM with safety buffer.
 
-    2026-05-14 baseline 实测: 4 worker × ~8 GB anon-rss avg, peak 16.8 GB
-    单 worker, dmesg 02:41:38 + 02:44:50 global_oom killed 2 个 worker (each
-    total-vm=35GB anon-rss=8GB), campaign 9 min 后 worker_process_failed 退出.
+    2026-05-14 双轮实测:
+    - baseline -p 4 (commit b4bf175 前): 9 min global_oom kill, 单 worker
+      ~8-16.8 GB avg/peak (但跑被打断没到稳态 peak)
+    - baseline -p 2 (commit b4bf175 后 retry): 3 min 单 worker 飙到 28 GB,
+      avail 跌到 1.8 GB, swap 5.5 GB used → swap thrash + 近 OOM,人工 abort.
 
-    Formula (conservative):
+    所以单 worker peak RSS 比初版估 12 GB 大很多 — 30 GB 才是接近实测的
+    保守值. Host overhead 也提到 8 GB (实测 host 满 5.4 GB 已用 + KDE/Claude
+    Code 长跑会涨).
+
+    Formula:
         needed   = parallel × WORKER_PEAK_RSS_GIB + HOST_OVERHEAD_GIB
         available= MemAvailable (excludes page cache 因 reclaimable)
 
@@ -333,11 +339,10 @@ def check_oom_headroom(gate: Gate) -> None:
     OK    otherwise.
 
     parallel 从 EXACT_PARALLEL_PROCESSES env (跟 main.py / wrapper 一致),
-    缺省 4. WORKER_PEAK_RSS_GIB = 12 (8 GB avg + headroom for RSS spike).
-    HOST_OVERHEAD_GIB = 6 (KDE Plasma + Claude Code + 系统服务).
+    缺省 4. 48 GB 本机现状: -p 1 marginal, -p ≥ 2 必 OOM.
     """
-    WORKER_PEAK_RSS_GIB = 12.0
-    HOST_OVERHEAD_GIB = 6.0
+    WORKER_PEAK_RSS_GIB = 30.0
+    HOST_OVERHEAD_GIB = 8.0
     parallel_str = os.environ.get("EXACT_PARALLEL_PROCESSES", "4")
     try:
         parallel = int(parallel_str)

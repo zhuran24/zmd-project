@@ -33,9 +33,9 @@ def _patched_meminfo(available_kib: int) -> mock._patch:
 
 
 def test_oom_headroom_ok_when_plenty_ram(monkeypatch):
-    """48 GB free, 2 worker → needed=30 GB ≤ available, OK."""
+    """128 GB free, 2 worker → needed=2×30+8=68 GB ≤ available, OK."""
     monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "2")
-    with _patched_meminfo(48 * 1024 * 1024):
+    with _patched_meminfo(128 * 1024 * 1024):
         gate = _make_gate()
         prg.check_oom_headroom(gate)
     assert any(level == "OK" and label == "OOM headroom" for level, label, _ in gate.checks)
@@ -43,7 +43,7 @@ def test_oom_headroom_ok_when_plenty_ram(monkeypatch):
 
 
 def test_oom_headroom_block_when_overcommit(monkeypatch):
-    """4 worker × 12 GB + 6 GB host = 54 GB > 41 GB available → BLOCK."""
+    """4 worker × 30 GB + 8 GB host = 128 GB > 41 GB available → BLOCK."""
     monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "4")
     with _patched_meminfo(41 * 1024 * 1024):
         gate = _make_gate()
@@ -55,9 +55,9 @@ def test_oom_headroom_block_when_overcommit(monkeypatch):
 
 
 def test_oom_headroom_warn_when_tight(monkeypatch):
-    """4 worker × 12 GB + 6 GB host = 54 GB, available=58 GB → 90% threshold, WARN."""
-    monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "4")
-    with _patched_meminfo(58 * 1024 * 1024):
+    """2 worker × 30 GB + 8 GB = 68 GB, available=72 GB → 94% threshold, WARN."""
+    monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "2")
+    with _patched_meminfo(72 * 1024 * 1024):
         gate = _make_gate()
         prg.check_oom_headroom(gate)
     warned = [c for c in gate.checks if c[0] == "WARN" and c[1] == "OOM headroom"]
@@ -66,7 +66,7 @@ def test_oom_headroom_warn_when_tight(monkeypatch):
 
 
 def test_oom_headroom_default_parallel_when_env_missing(monkeypatch):
-    """缺 EXACT_PARALLEL_PROCESSES → 缺省 4 → needed=54, available=41 → BLOCK."""
+    """缺 EXACT_PARALLEL_PROCESSES → 缺省 4 → needed=128, available=41 → BLOCK."""
     monkeypatch.delenv("EXACT_PARALLEL_PROCESSES", raising=False)
     with _patched_meminfo(41 * 1024 * 1024):
         gate = _make_gate()
@@ -75,7 +75,7 @@ def test_oom_headroom_default_parallel_when_env_missing(monkeypatch):
 
 
 def test_oom_headroom_invalid_env_falls_back_to_default(monkeypatch):
-    """EXACT_PARALLEL_PROCESSES=garbage → fallback 4 → needed=54 > 41 → BLOCK."""
+    """EXACT_PARALLEL_PROCESSES=garbage → fallback 4 → needed=128 > 41 → BLOCK."""
     monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "notanumber")
     with _patched_meminfo(41 * 1024 * 1024):
         gate = _make_gate()
