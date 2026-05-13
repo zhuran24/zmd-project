@@ -39,12 +39,10 @@ class BendersCut:
     routing_exhausted: Optional[bool] = None
     proof_summary: Dict[str, Any] = field(default_factory=dict)
     created_at: Optional[str] = None
-    # P1 #7b prep: ε-stage tag for ε-Certified 三阶段 cut bucketing.
-    # 取值 0.05/0.01/0.0 表示这条 cut 是哪个 ε 阶段证出的 (None = 未 tag,
-    # legacy / pre-ε-Certified). Reuse rule: 更松 ε 推出的 cut 在更紧 ε 阶
-    # 段仍合法 → cuts_for_stage(target) 返回 stage>=target 的 cuts (None
-    # 视为"任何阶段都安全", 因为 pre-ε 时代的 cut 是无 ε 的 hard nogood).
     epsilon_stage: Optional[float] = None
+    # condition_set: cut 只在这些 literal 全为 1 时生效. {"ghost_anchor": rect_idx}
+    # 用于 ghost-conditioned power cut, replay 时按 key 类型 lookup u_vars.
+    condition_set: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         payload: Dict[str, Any] = {
@@ -62,6 +60,7 @@ class BendersCut:
             "proof_summary": dict(self.proof_summary),
             "created_at": self.created_at,
             "epsilon_stage": self.epsilon_stage,
+            "condition_set": dict(self.condition_set),
         }
         return payload
 
@@ -95,6 +94,9 @@ class BendersCut:
                 None if payload.get("epsilon_stage") is None
                 else float(payload.get("epsilon_stage"))
             ),
+            condition_set={
+                str(k): v for k, v in dict(payload.get("condition_set", {})).items()
+            },
         )
 
 
@@ -170,7 +172,9 @@ class CutManager:
         )
         self.cuts_file = self.checkpoint_dir / "benders_cuts.jsonl"
         self.cuts: List[BendersCut] = []
-        self._cut_signatures: Set[frozenset[Tuple[str, Any]]] = set()
+        # (conflict_signature, condition_signature) — condition 也进 key 让
+        # 同 conflict / 不同 condition 的 cut 不互相 dedup.
+        self._cut_signatures: Set[Tuple[frozenset[Tuple[str, Any]], frozenset[Tuple[str, Any]]]] = set()
         self.active_cuts: Set[frozenset[Tuple[str, str]]] = set()
 
         self._ensure_dir()
@@ -200,8 +204,16 @@ class CutManager:
             )
         )
 
-    def _structured_signature(self, cut: BendersCut) -> frozenset[Tuple[str, Any]]:
-        return frozenset(sorted((str(k), v) for k, v in cut.conflict_set.items()))
+    def _structured_signature(
+        self, cut: BendersCut
+    ) -> Tuple[frozenset[Tuple[str, Any]], frozenset[Tuple[str, Any]]]:
+        conflict = frozenset(sorted((str(k), v) for k, v in cut.conflict_set.items()))
+        # condition 进 dedup key — 否则 "ghost A 下禁 X" 跟 "ghost B 下禁 X"
+        # 被当同一条吞掉, 失去 conditioned 表达力.
+        condition = frozenset(
+            sorted((str(k), v) for k, v in cut.condition_set.items())
+        )
+        return (conflict, condition)
 
     def load_cuts(self) -> None:
         """Load runtime JSONL cuts accumulated by the flow-based loop."""

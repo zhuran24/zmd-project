@@ -3882,6 +3882,23 @@ class LBBDController:
                 continue
         return set()
 
+    def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
+        # 返回 (rect_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition
+        # — 让 cut 只在当前 ghost anchor 下生效, 不过切 ghost B 下合法解.
+        u_vars = getattr(self.master, "u_vars", None) or {}
+        ghost_domains = getattr(self.master, "_ghost_domains", None) or []
+        solver = getattr(self.master, "_solver", None)
+        if not u_vars or not ghost_domains or solver is None:
+            return None
+        for rect_idx, var in u_vars.items():
+            try:
+                if int(solver.Value(var)) == 1:
+                    domain = ghost_domains[int(rect_idx)]
+                    return int(rect_idx), var, dict(domain.get("anchor") or {})
+            except Exception:
+                continue
+        return None
+
     def _run_power_placement_subproblem(
         self,
         *,
@@ -3923,21 +3940,64 @@ class LBBDController:
             return "FEASIBLE", updated
 
         if result.status == "INFEASIBLE":
-            # Conservative exact-safe presence no-good: this combination of
-            # powered facility poses cannot be powered by any pole config in
-            # the remaining (non-occupied, non-ghost) cells.
+            # power infeasibility 跟当前 selected ghost anchor 强相关 — pole 不能
+            # 覆盖到 ghost cells, ghost A 挡住唯一可用 pole 时 infeasible 不代表
+            # ghost B 下同一组 pose 也 infeasible. cut 必须 ghost-conditioned,
+            # 否则 over-prune 跨 ghost alternatives.
             conflict_set: Dict[str, int] = {}
             for instance_id, entry in solution.items():
                 tpl = str(entry.get("facility_type"))
                 if tpl in powered_templates and tpl != "power_pole":
                     conflict_set[str(instance_id)] = int(entry["pose_idx"])
-            applied = bool(self.master.add_benders_cut(conflict_set)) if conflict_set else False
+            if not conflict_set:
+                return "ABORT", None
+
+            ghost_anchor_info = self._selected_ghost_anchor()
+            if ghost_anchor_info is None:
+                # ghost anchor 取不到 → exact-safe fallback 是 abort, 不退化到
+                # 全局 cut (按 GPT v3 P0 #1 建议).
+                self._emit_heartbeat(
+                    stage="power_placement_subproblem",
+                    event="cut_skipped_no_ghost_anchor",
+                    iteration=iteration,
+                    extra={"conflict_size": len(conflict_set)},
+                )
+                return "ABORT", None
+
+            rect_idx, u_var, anchor = ghost_anchor_info
+            anchor_x = int(anchor.get("x", 0))
+            anchor_y = int(anchor.get("y", 0))
+            condition_set = {f"ghost_anchor::({anchor_x},{anchor_y})": int(rect_idx)}
+
+            applied = self._add_exact_persisted_nogood(
+                conflict_set=conflict_set,
+                iteration=iteration,
+                cut_type="power_subproblem_infeasible_nogood",
+                proof_stage="power_placement_subproblem",
+                proof_summary={
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "stage": "power_placement_subproblem",
+                    "status": "INFEASIBLE",
+                    "uncovered_instances": list(result.uncovered_instance_ids),
+                    **self._exact_warm_start_summary(),
+                },
+                metadata={
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": int(rect_idx),
+                    "ghost_anchor": {"x": anchor_x, "y": anchor_y},
+                },
+                condition_set=condition_set,
+                condition_lits=(u_var,),
+            )
             self._emit_heartbeat(
                 stage="power_placement_subproblem",
                 event="cut_added" if applied else "cut_skipped",
                 iteration=iteration,
                 extra={
                     "conflict_size": len(conflict_set),
+                    "condition_size": 1,
+                    "ghost_rect_idx": int(rect_idx),
                     "uncovered_instances": list(result.uncovered_instance_ids),
                 },
             )
@@ -4628,9 +4688,11 @@ class LBBDController:
         metadata: Optional[Mapping[str, Any]] = None,
         binding_exhausted: bool = False,
         routing_exhausted: bool = False,
+        condition_set: Optional[Mapping[str, Any]] = None,
+        condition_lits: Sequence[Any] = (),
     ) -> bool:
         cut = BendersCut(
-            schema_version=2,
+            schema_version=3 if condition_set else 2,
             cut_type=cut_type,
             conflict_set={str(k): int(v) for k, v in conflict_set.items()},
             iteration=iteration,
@@ -4643,14 +4705,13 @@ class LBBDController:
             routing_exhausted=routing_exhausted,
             proof_summary=dict(proof_summary),
             created_at=now_iso(),
-            # P1 #7 main: tag 当前 wave 的 ε 阶段 (0.05/0.01/0.0/None).
-            # cut_manager.cuts_for_stage(target) 跨 wave 复用时按这个 tag 选.
             epsilon_stage=self.epsilon_stage,
+            condition_set={str(k): v for k, v in (condition_set or {}).items()},
         )
         if not self.cut_manager.register_structured_cut(cut):
             return False
         self.generated_exact_safe_cuts.append(cut)
-        self.master.add_benders_cut(conflict_set)
+        self.master.add_benders_cut(conflict_set, condition_lits=tuple(condition_lits))
         return True
 
     def _add_exact_whole_layout_nogood(

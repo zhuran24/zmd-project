@@ -6445,7 +6445,12 @@ class CoordinateExactMasterDelegate:
             entries.append((key[0], pose_idx, slots, pose_tuple))
         return entries
 
-    def add_benders_cut(self, conflict_set: Mapping[str, int]) -> bool:
+    def add_benders_cut(
+        self,
+        conflict_set: Mapping[str, int],
+        *,
+        condition_lits: Sequence[cp_model.IntVar] = (),
+    ) -> bool:
         # Exact-coordinate Benders cut as a presence no-good:
         #   sum(present(pose) for pose in conflict_set) <= N - 1
         # i.e. "these poses cannot all be present at once" — same shape as the
@@ -6470,12 +6475,18 @@ class CoordinateExactMasterDelegate:
         if not present_lits:
             return False
 
-        self.model.Add(sum(present_lits) <= len(present_lits) - 1)
+        cond = [lit for lit in condition_lits if lit is not None]
+        bound = self.model.Add(sum(present_lits) <= len(present_lits) - 1)
+        if cond:
+            bound.OnlyEnforceIf(cond)
         self.owner.build_stats["coordinate_benders_cut_count"] = cut_index + 1
         self.owner.build_stats["coordinate_benders_last_cut"] = {
             "entries": len(entries),
             "presence_literals": len(present_lits),
-            "semantics": "pose_presence_nogood_v1",
+            "semantics": (
+                "pose_presence_nogood_v2_conditioned" if cond else "pose_presence_nogood_v1"
+            ),
+            "condition_count": len(cond),
         }
         self.owner._last_solution = None
         return True

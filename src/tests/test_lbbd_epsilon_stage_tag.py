@@ -42,7 +42,7 @@ def test_persisted_nogood_tags_epsilon_stage():
             return True
 
     class FakeMaster:
-        def add_benders_cut(self, conflict_set):
+        def add_benders_cut(self, conflict_set, *, condition_lits=()):
             pass
 
     obj = type("Stub", (), {})()
@@ -80,7 +80,7 @@ def test_persisted_nogood_no_epsilon_stage_when_unset():
             return True
 
     class FakeMaster:
-        def add_benders_cut(self, conflict_set):
+        def add_benders_cut(self, conflict_set, *, condition_lits=()):
             pass
 
     obj = type("Stub", (), {})()

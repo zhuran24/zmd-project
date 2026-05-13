@@ -11563,9 +11563,16 @@ class MasterPlacementModel:
             return "protocol_storage_box"
         return None
 
-    def add_benders_cut(self, conflict_set: Mapping[str, int]) -> bool:
+    def add_benders_cut(
+        self,
+        conflict_set: Mapping[str, int],
+        *,
+        condition_lits: Sequence[cp_model.IntVar] = (),
+    ) -> bool:
         if self.exact_mode and self._coordinate_delegate is not None:
-            return self._coordinate_delegate.add_benders_cut(conflict_set)
+            return self._coordinate_delegate.add_benders_cut(
+                conflict_set, condition_lits=condition_lits
+            )
         literals: List[cp_model.IntVar] = []
         seen_names: Set[str] = set()
         for solution_id, pose_idx in conflict_set.items():
@@ -11587,8 +11594,13 @@ class MasterPlacementModel:
 
         if not literals:
             return False
-        # The Benders Cut: sum of conflicting z_vars <= N - 1
-        self.model.Add(sum(literals) <= len(literals) - 1)
+        # 无条件 cut: sum(conflict) <= N-1
+        # 条件 cut: 同样的 sum, 但只在 condition_lits 全 1 时生效 — ghost B
+        # 选中 (即 A 的 u_var = 0) 时本 cut 不触发, 不会过切 B 下合法解.
+        cond = [lit for lit in condition_lits if lit is not None]
+        bound = self.model.Add(sum(literals) <= len(literals) - 1)
+        if cond:
+            bound.OnlyEnforceIf(cond)
         self._last_solution = None
         return True
 
