@@ -14,6 +14,7 @@
   [B] venv 存在 + ortools 可导入
   [B] preflight_gate 86 守卫测试通过
   [B] EXACT_POWER_PLACEMENT_SUBPROBLEM 未启用 (exploratory only, cut scope 未补齐)
+  [B] OOM headroom: parallel × peak_worker_RSS + host < MemAvailable
   [W] kernel 是 cachyos-bore 变种 (BORE/EEVDF scheduler)
   [W] .artifacts/ 所在分区 ≥ 100 GB free
   [W] git working tree 干净
@@ -316,6 +317,75 @@ def check_power_subproblem_disabled(gate: Gate) -> None:
         )
 
 
+def check_oom_headroom(gate: Gate) -> None:
+    """Estimate whether parallel workers fit in RAM with safety buffer.
+
+    2026-05-14 baseline 实测: 4 worker × ~8 GB anon-rss avg, peak 16.8 GB
+    单 worker, dmesg 02:41:38 + 02:44:50 global_oom killed 2 个 worker (each
+    total-vm=35GB anon-rss=8GB), campaign 9 min 后 worker_process_failed 退出.
+
+    Formula (conservative):
+        needed   = parallel × WORKER_PEAK_RSS_GIB + HOST_OVERHEAD_GIB
+        available= MemAvailable (excludes page cache 因 reclaimable)
+
+    BLOCK if needed > available  → 168h 撞 global OOM
+    WARN  if needed > available × 0.9  → tight margin
+    OK    otherwise.
+
+    parallel 从 EXACT_PARALLEL_PROCESSES env (跟 main.py / wrapper 一致),
+    缺省 4. WORKER_PEAK_RSS_GIB = 12 (8 GB avg + headroom for RSS spike).
+    HOST_OVERHEAD_GIB = 6 (KDE Plasma + Claude Code + 系统服务).
+    """
+    WORKER_PEAK_RSS_GIB = 12.0
+    HOST_OVERHEAD_GIB = 6.0
+    parallel_str = os.environ.get("EXACT_PARALLEL_PROCESSES", "4")
+    try:
+        parallel = int(parallel_str)
+    except ValueError:
+        parallel = 4
+
+    try:
+        meminfo_text = Path("/proc/meminfo").read_text(encoding="utf-8")
+    except OSError as exc:
+        gate.warn("OOM headroom", f"/proc/meminfo 不可读 ({exc}) — 跳过 OOM 估算")
+        return
+
+    available_kib = 0
+    for line in meminfo_text.splitlines():
+        if line.startswith("MemAvailable:"):
+            parts = line.split()
+            if len(parts) >= 2:
+                try:
+                    available_kib = int(parts[1])
+                except ValueError:
+                    pass
+            break
+    if available_kib == 0:
+        gate.warn("OOM headroom", "MemAvailable 解析失败 — 跳过")
+        return
+
+    available_gib = available_kib / 1024.0 / 1024.0
+    needed_gib = parallel * WORKER_PEAK_RSS_GIB + HOST_OVERHEAD_GIB
+    msg_base = (
+        f"parallel={parallel} × {WORKER_PEAK_RSS_GIB:.0f}GB/worker + "
+        f"{HOST_OVERHEAD_GIB:.0f}GB host = 需 {needed_gib:.1f}GB; "
+        f"available={available_gib:.1f}GB"
+    )
+    if needed_gib > available_gib:
+        gate.block(
+            "OOM headroom",
+            f"{msg_base} — 168h 撞 global OOM 风险 (2026-05-14 baseline 已实测 4×worker 9min OOM). "
+            f"降 parallel 或释 host RAM",
+        )
+    elif needed_gib > available_gib * 0.9:
+        gate.warn(
+            "OOM headroom",
+            f"{msg_base} — tight margin (>90%), RSS spike 可能 OOM",
+        )
+    else:
+        gate.ok("OOM headroom", f"{msg_base}")
+
+
 def check_pcore_pinning(gate: Gate) -> None:
     """P1 #24: pinning to high-freq P-cores avoids E-core preemption.
 
@@ -385,6 +455,7 @@ def gate_check() -> Gate:
     check_git_clean(gate)
     check_thp(gate)
     check_jemalloc(gate)
+    check_oom_headroom(gate)
     check_pcore_pinning(gate)
     return gate
 
