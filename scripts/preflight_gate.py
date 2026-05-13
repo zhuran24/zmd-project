@@ -264,6 +264,9 @@ def check_exact_exploratory_isolation(gate: GateResult) -> None:
 CORE_TEST_FILES = [
     "src/tests/test_exact_contract.py",
     "src/tests/test_parallel_scheduler.py",
+    "src/tests/test_power_placement_subproblem.py",
+    "src/tests/test_coordinate_benders_cut_presence_nogood.py",
+    "src/tests/test_benders_cut_condition_lits.py",
 ]
 
 
