@@ -277,6 +277,18 @@ def test_exact_core_packaging_profile_uses_owner_transfer_snapshot_modes() -> No
 
 
 def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -> None:
+    # 该测试 assert 一组 fresh-state stats 为 0, 但 master_model 有 6 个模块级
+    # mutable cache (跨 model instance 复用作性能优化). 顺序前跑的 test 可能
+    # populate cache → assertion 抓到非零 → flake. 测试前清掉, 让 assertion
+    # 检查的是 build() 本身有没有触发, 而不是历史残留.
+    from src.models import master_model as _mm
+    _mm._LOCAL_POWER_CAPACITY_CACHE.clear()
+    _mm._LOCAL_POWER_CAPACITY_COMPACT_CACHE.clear()
+    _mm._LOCAL_POWER_CAPACITY_NORMALIZED_RECT_CACHE.clear()
+    _mm._LOCAL_POWER_CAPACITY_RECT_DP_CACHE.clear()
+    _mm._LOCAL_POWER_CAPACITY_RECT_DP_COMPILED_CACHE.clear()
+    _mm._LOCAL_POWER_CAPACITY_COMPACT_RECT_CPSAT_DATA_CACHE.clear()
+
     project_root = Path(__file__).resolve().parent.parent.parent
     exact_instances, pools, rules = load_project_data(project_root, solve_mode="certified_exact")
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
