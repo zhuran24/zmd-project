@@ -13,6 +13,7 @@
   [B] pacman freeze 已启用 (CachyOS 滚动稳定性)
   [B] venv 存在 + ortools 可导入
   [B] preflight_gate 86 守卫测试通过
+  [B] EXACT_POWER_PLACEMENT_SUBPROBLEM 未启用 (exploratory only, cut scope 未补齐)
   [W] kernel 是 cachyos-bore 变种 (BORE/EEVDF scheduler)
   [W] .artifacts/ 所在分区 ≥ 100 GB free
   [W] git working tree 干净
@@ -270,6 +271,21 @@ def check_jemalloc(gate: Gate) -> None:
         )
 
 
+def check_power_subproblem_disabled(gate: Gate) -> None:
+    # EXACT_POWER_PLACEMENT_SUBPROBLEM=1 当前是 exploratory: ghost-conditioned
+    # cut 缺 condition_lits + pole alternatives 未穷尽, 进 certified path 会
+    # 误切合法布局. 修完 cut scope 之前不能进 production.
+    val = os.environ.get("EXACT_POWER_PLACEMENT_SUBPROBLEM", "").strip()
+    if val in {"", "0", "false", "False"}:
+        gate.ok("power subproblem", "EXACT_POWER_PLACEMENT_SUBPROBLEM 未启用")
+    else:
+        gate.block(
+            "power subproblem",
+            f"EXACT_POWER_PLACEMENT_SUBPROBLEM={val} — 当前 exploratory only, "
+            f"cut scope 未补齐 (ghost-conditioned + pole alternatives), 不可进 certified path",
+        )
+
+
 def check_pcore_pinning(gate: Gate) -> None:
     """P1 #24: pinning to high-freq P-cores avoids E-core preemption.
 
@@ -333,6 +349,7 @@ def gate_check() -> Gate:
     check_pacman_freeze(gate)
     check_venv_and_ortools(gate)
     check_preflight_gate(gate)
+    check_power_subproblem_disabled(gate)
     check_kernel(gate)
     check_disk_space(gate)
     check_git_clean(gate)

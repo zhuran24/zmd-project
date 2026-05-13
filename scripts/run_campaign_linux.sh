@@ -28,6 +28,18 @@ if [[ ! -x "$PYTHON_BIN" ]]; then
     exit 2
 fi
 
+# EXACT_POWER_PLACEMENT_SUBPROBLEM 当前是 exploratory — cut scope 没补齐 (P0 #1/#2)
+# 进 certified path 会误切合法布局, wrapper 拒启动.
+case "${EXACT_POWER_PLACEMENT_SUBPROBLEM:-}" in
+    ""|0|false|False) ;;
+    *)
+        echo "ERROR: EXACT_POWER_PLACEMENT_SUBPROBLEM=$EXACT_POWER_PLACEMENT_SUBPROBLEM" >&2
+        echo "  当前 exploratory only — ghost-conditioned cut + pole alternatives" >&2
+        echo "  exhaustion 未实现, 进 certified path 风险过切. unset 后重跑." >&2
+        exit 3
+        ;;
+esac
+
 # ---------------------------------------------------------------------------
 # (b) jemalloc LD_PRELOAD + PYTHONMALLOC=malloc
 # ---------------------------------------------------------------------------

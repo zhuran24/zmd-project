@@ -62,6 +62,7 @@ The following remain additive postprocess artifacts and must not redefine intern
 - Changing campaign, artifact, or proof schemas without explicitly updating the lock/spec/test boundary together.
 - Rebinding globally pooled resources into per-line or per-instance hard bindings without a new exact proof basis.
 - Adding any exterior-path requirement for the ghost rectangle.
+- Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only: the current infeasible cut omits the selected ghost anchor literal (over-prune across ghost alternatives), and the feasible-path injects a single arbitrary pole layout without exhausting pole alternatives before cutting the upstream master layout. The production readiness gate and `scripts/run_campaign_linux.sh` both block when the env var is set; do not bypass them.
 
 ## 5. Allowed Changes
 
