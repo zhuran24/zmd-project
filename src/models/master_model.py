@@ -21,7 +21,7 @@ import time
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Collection, DefaultDict, Dict, FrozenSet, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Callable, Collection, DefaultDict, Dict, FrozenSet, Iterable, List, Mapping, Optional, Sequence, Set, Tuple, cast
 
 from ortools.sat.python import cp_model
 
@@ -343,7 +343,7 @@ def evaluate_same_x_strip_fixed_ghost_capacity_conflict(
             tpl = str(group["facility_type"])
             slot_specs = list(getattr(delegate, "mandatory_slots", {}).get(group_id, []))
             solution_ids = [str(item) for item in list(group.get("instance_ids", []))]
-            pose_indices = sorted(grouped_hints.get(group_id, []), key=lambda pose_idx: _pose_sort_key(tpl, int(pose_idx)))
+            pose_indices = sorted(grouped_hints.get(group_id, []), key=lambda pose_idx: _pose_sort_key(str(tpl), int(pose_idx)))
             for slot_index, (slot, pose_idx) in enumerate(zip(slot_specs, pose_indices)):
                 solution_id = (
                     solution_ids[int(slot_index)]
@@ -521,7 +521,7 @@ def evaluate_ghost_y_overlap_forced_label_conflict(
             solution_ids = [str(item) for item in list(group.get("instance_ids", []))]
             pose_indices = sorted(
                 grouped_hints.get(group_id, []),
-                key=lambda pose_idx: _pose_sort_key(tpl, int(pose_idx)),
+                key=lambda pose_idx: _pose_sort_key(str(tpl), int(pose_idx)),
             )
             for slot_index, (slot, pose_idx) in enumerate(zip(slot_specs, pose_indices)):
                 pose_tuple = getattr(delegate, "_template_pose_tuple_by_idx", {}).get(str(tpl), {}).get(int(pose_idx))
@@ -722,7 +722,7 @@ def evaluate_ghost_overlap_forced_domain_conflict(
             solution_ids = [str(item) for item in list(group.get("instance_ids", []))]
             pose_indices = sorted(
                 grouped_hints.get(group_id, []),
-                key=lambda pose_idx: _pose_sort_key(tpl, int(pose_idx)),
+                key=lambda pose_idx: _pose_sort_key(str(tpl), int(pose_idx)),
             )
             for slot_index, (slot, pose_idx) in enumerate(zip(slot_specs, pose_indices)):
                 pose_tuple = getattr(delegate, "_template_pose_tuple_by_idx", {}).get(str(tpl), {}).get(int(pose_idx))
@@ -1055,10 +1055,10 @@ def evaluate_signature_monotonic_forced_label_conflict(
             for slot_index, constraints in enumerate(slot_forced_values):
                 if not constraints:
                     continue
-                pose_idx = slot_pose_indices[int(slot_index)]
+                slot_pose_idx = slot_pose_indices[int(slot_index)]
                 direct_signature_id = (
-                    signature_by_pose_idx.get(int(pose_idx))
-                    if pose_idx is not None
+                    signature_by_pose_idx.get(int(slot_pose_idx))
+                    if slot_pose_idx is not None
                     else None
                 )
                 if (
@@ -2141,7 +2141,9 @@ class MasterPlacementModel:
         self.grid_w = int(grid["width"])
         self.grid_h = int(grid["height"])
 
-        self.model = cp_model.CpModel()
+        # ortools .pyi 对 CpModel 的 PascalCase API (NewBoolVar/Add/AddHint/...)
+        # 声明不全, mypy 报 attr-defined. CpModel dynamic, 标 Any 让类型检查放过.
+        self.model: Any = cp_model.CpModel()
         self._solver: Optional[cp_model.CpSolver] = None
         self._status: Optional[int] = None
         self._built = False
@@ -2507,7 +2509,7 @@ class MasterPlacementModel:
         phase_started = time.perf_counter()
         model = cls(
             core.source_instances,
-            core.facility_pools,
+            cast("Mapping[str, List[Dict[str, Any]]]", core.facility_pools),
             core.rules,
             ghost_rect=ghost_rect,
             skip_power_coverage=core.skip_power_coverage,
@@ -2549,14 +2551,14 @@ class MasterPlacementModel:
             phase_started,
         )
         phase_started = time.perf_counter()
-        model.build_stats = copy.deepcopy(core.build_stats)
+        model.build_stats = copy.deepcopy(dict(core.build_stats))
         _record_outer_subphase(
             outer_exact_core_overlay_subphase_seconds,
             "build_stats_deepcopy",
             phase_started,
         )
         phase_started = time.perf_counter()
-        model._mandatory_groups = copy.deepcopy(core.mandatory_groups)
+        model._mandatory_groups = copy.deepcopy([dict(g) for g in core.mandatory_groups])
         model._group_id_by_instance = dict(core.group_id_by_instance)
         candidate_precheck_artifacts = dict(core.candidate_precheck_artifacts)
         _record_outer_subphase(
@@ -2704,7 +2706,7 @@ class MasterPlacementModel:
             )
         overlay_build_seconds = time.perf_counter() - overlay_started
         ghost_constraint_seconds = time.perf_counter() - ghost_started
-        exact_core_reuse_stats = {
+        exact_core_reuse_stats: Dict[str, Any] = {
             "used": True,
             "core_proto_variables": len(core.proto.variables),
             "core_proto_constraints": len(core.proto.constraints),
@@ -2812,7 +2814,7 @@ class MasterPlacementModel:
                 "instance_ids": [str(item["instance_id"]) for item in members],
             }
             self._mandatory_groups.append(group)
-            for instance_id in group["instance_ids"]:
+            for instance_id in cast(List[str], group["instance_ids"]):
                 self._group_id_by_instance[instance_id] = group_id
 
         self.build_stats["grouped_encoding"] = {
@@ -3208,7 +3210,8 @@ class MasterPlacementModel:
             for pole_idx, (anchor_x, anchor_y) in power_pole_anchors.items():
                 dx = min(int(anchor_x - x_min), int(x_max - anchor_x))
                 dy = min(int(anchor_y - y_min), int(y_max - anchor_y))
-                shell_pair = tuple(sorted((int(dx), int(dy))))
+                _sorted_pair = sorted((int(dx), int(dy)))
+                shell_pair: Tuple[int, int] = (_sorted_pair[0], _sorted_pair[1])
                 self._power_pole_shell_pair_by_pose_idx[int(pole_idx)] = shell_pair
                 self._power_pole_pose_indices_by_shell_pair.setdefault(shell_pair, []).append(int(pole_idx))
             for shell_pair, pose_indices in list(self._power_pole_pose_indices_by_shell_pair.items()):
@@ -4701,7 +4704,7 @@ class MasterPlacementModel:
                 )
             required_optional_signature_counts[tpl] = len(ordered_signature_count_vars)
             required_optional_signature_count_literals += len(ordered_signature_count_vars)
-            ordered_pose_indices: List[int] = []
+            ordered_pose_indices = []
             for bucket in self._required_optional_signature_buckets.get(tpl, []):
                 ordered_pose_indices.extend(int(pose_idx) for pose_idx in bucket["pose_indices"])
             ordered_vars = [
@@ -5489,7 +5492,7 @@ class MasterPlacementModel:
         if cached is not None:
             return cached
 
-        local_model = cp_model.CpModel()
+        local_model: Any = cp_model.CpModel()
         local_vars = [
             local_model.NewBoolVar(f"local_power_cap__{tpl}__{idx}")
             for idx in range(len(signature))
@@ -6718,7 +6721,7 @@ class MasterPlacementModel:
         if not compiled.placements:
             return 0
 
-        local_model = cp_model.CpModel()
+        local_model: Any = cp_model.CpModel()
         local_vars = [
             local_model.NewBoolVar(f"{var_prefix}__{tpl}__{idx}")
             for idx in range(len(compiled.placements))
@@ -6925,7 +6928,7 @@ class MasterPlacementModel:
             except _RectangleFrontierDPFallback:
                 capacity = None
 
-        legacy_signature: Optional[LocalCapacitySignature] = None
+        legacy_signature = None
         if capacity is None:
             if cache_stats is not None:
                 cache_stats["bitset_fallbacks"] = int(
@@ -7878,7 +7881,7 @@ class MasterPlacementModel:
                     "force_equality_labels": [],
                 }
 
-        local_model = cp_model_from_proto(_clone_model_proto(self.model.Proto()))
+        local_model: Any = cp_model_from_proto(_clone_model_proto(self.model.Proto()))
         delegate = self._coordinate_delegate
         use_assumptions = bool(use_assumptions)
         assumption_core_supported = bool(
@@ -7971,7 +7974,7 @@ class MasterPlacementModel:
             solution_id: str,
             slot_key: str,
             slot_index: int,
-        ) -> bool:
+        ) -> int:
             pose_tuple = delegate._template_pose_tuple_by_idx.get(str(tpl), {}).get(
                 int(pose_idx)
             )
@@ -8033,7 +8036,7 @@ class MasterPlacementModel:
             solution_ids = [str(item) for item in list(group.get("instance_ids", []))]
             pose_indices = sorted(
                 grouped_hints.get(group_id, []),
-                key=lambda pose_idx: self._pose_sort_key(tpl, int(pose_idx)),
+                key=lambda pose_idx: self._pose_sort_key(str(tpl), int(pose_idx)),
             )
             if len(pose_indices) < len(slot_specs):
                 missing_hint_count += int(len(slot_specs) - len(pose_indices))
@@ -9552,6 +9555,10 @@ class MasterPlacementModel:
                 )
                 surviving_signature = surviving_support.get("compact_signature")
                 if not bool(surviving_support.get("supported", False)):
+                    unsupported_anchor_count += 1
+                    pass_anchor_indices.add(int(rect_idx))
+                    continue
+                if surviving_signature is None:
                     unsupported_anchor_count += 1
                     pass_anchor_indices.add(int(rect_idx))
                     continue

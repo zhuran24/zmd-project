@@ -344,12 +344,13 @@ def check_research_audit_coverage(gate: GateResult) -> None:
 
 
 MYPY_STRICT_TARGETS = [
-    # GPT v4 follow-up G2 scope: 只把 cut lifecycle 直接相关的两个 schema/runtime
-    # 文件锁死 mypy 严格. benders_loop.py 太大, 历史类型错多, 单独修是大工程, 不
-    # 进 gate; 但里面新加的 _resolve_condition_lits_from_condition_set helper 不报
-    # 错 (mypy 整体跑过), 留 follow-up memory 记追加.
+    # GPT v4 follow-up G2/G3/G4: cut lifecycle + 求解核心两个大文件都进 strict gate.
+    # 历史类型错全清 (master_model 69 错, benders_loop 8 错), 由 _Any annotation
+    # 一招扫掉 ortools .pyi 不全的 attr-defined + 真 type bug 单点修.
     "src/models/cut_manager.py",
     "src/models/power_placement_subproblem.py",
+    "src/models/master_model.py",
+    "src/search/benders_loop.py",
 ]
 
 
