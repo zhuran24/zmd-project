@@ -79,3 +79,42 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
                 if reason is not None:
                     item.add_marker(pytest.mark.skip(reason=reason))
                 break
+
+
+# ---------------------------------------------------------------------------
+# Centralized module-level cache reset (GPT v4 P1 #4 fix)
+#
+# master_model.py 有 6 个 module-level mutable cache 是性能优化（跨 instance
+# 复用 power capacity 计算）, 但破坏测试 hermeticity — 顺序前跑的测试可能
+# populate cache → 假定 "fresh stats == 0" 的回归测试在随机顺序下 flake.
+# b4c2a03 是单点清, 但 GPT v4 指出根治应该是全套自动隔离.
+#
+# 本 autouse fixture 在每个测试 setup 时清掉 6 个 cache, 让任何 build()
+# 拿到的 stats 都是 from-scratch. 性能影响: 每个 test ~ 0.01s init cost.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _reset_master_model_module_caches():
+    """Clear master_model module-level caches before each test to ensure hermeticity.
+
+    只对**已 import 过** master_model 的会话生效 — 不主动 import, 避免对纯
+    adapter / IP / surface 类测试引入 master_model 副作用.
+    """
+    _mm = sys.modules.get("src.models.master_model")
+    if _mm is None:
+        yield
+        return
+    _cache_names = (
+        "_LOCAL_POWER_CAPACITY_CACHE",
+        "_LOCAL_POWER_CAPACITY_COMPACT_CACHE",
+        "_LOCAL_POWER_CAPACITY_NORMALIZED_RECT_CACHE",
+        "_LOCAL_POWER_CAPACITY_RECT_DP_CACHE",
+        "_LOCAL_POWER_CAPACITY_RECT_DP_COMPILED_CACHE",
+        "_LOCAL_POWER_CAPACITY_COMPACT_RECT_CPSAT_DATA_CACHE",
+    )
+    for name in _cache_names:
+        cache = getattr(_mm, name, None)
+        if cache is not None and hasattr(cache, "clear"):
+            cache.clear()
+    yield

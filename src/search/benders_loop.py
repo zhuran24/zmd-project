@@ -896,6 +896,58 @@ def collect_certification_blockers(
     return blockers
 
 
+def _resolve_condition_lits_from_condition_set(
+    master: Any,
+    condition_set: Mapping[str, Any],
+) -> Tuple[List[cp_model.IntVar], bool]:
+    """把 persisted `BendersCut.condition_set` 反解析回 master 上的 CP-SAT literals.
+
+    返回 (resolved_lits, ok). ok=False → caller 必须 skip cut, 不能退化成无条件.
+
+    支持的 key 类型:
+        `ghost_anchor::(x,y)` -> master.u_vars[rect_idx]; 校验 ghost_domains[rect_idx]
+        的 anchor 跟 key 里的 (x,y) 一致 (artifact-hash 已拦 ghost 序乱但二次校验
+        防止 hash 校验外的边缘场景).
+
+    未知 key 或不匹配 → ok=False. 这是 GPT v4 P0 #1 finding 的 fix:
+    persisted cut replay 不能丢 condition; certified mode 下不可解析必 fail-closed.
+    """
+    if not condition_set:
+        return [], True
+    u_vars = getattr(master, "u_vars", None) or {}
+    ghost_domains = getattr(master, "_ghost_domains", None) or []
+    resolved: List[cp_model.IntVar] = []
+    for key, raw_value in condition_set.items():
+        key_str = str(key)
+        if not key_str.startswith("ghost_anchor::"):
+            return [], False
+        try:
+            rect_idx = int(raw_value)
+        except Exception:
+            return [], False
+        try:
+            coord_part = key_str.split("::", 1)[1].strip().lstrip("(").rstrip(")")
+            xy = coord_part.split(",")
+            expected_x = int(xy[0])
+            expected_y = int(xy[1])
+        except Exception:
+            return [], False
+        if rect_idx not in u_vars:
+            return [], False
+        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+            return [], False
+        anchor = ghost_domains[rect_idx].get("anchor") or {}
+        try:
+            actual_x = int(anchor.get("x", -1))
+            actual_y = int(anchor.get("y", -1))
+        except Exception:
+            return [], False
+        if actual_x != expected_x or actual_y != expected_y:
+            return [], False
+        resolved.append(u_vars[rect_idx])
+    return resolved, True
+
+
 @dataclass
 class ExactSearchSession:
     """Reusable exact-search session carrying one static master core per process."""
@@ -4229,7 +4281,7 @@ class LBBDController:
                 **self._subproblem_reuse_summary(),
                 **self._exact_cut_ladder_summary(),
             }
-            self._add_exact_whole_layout_nogood(
+            cut_applied = self._add_exact_whole_layout_nogood(
                 solution=solution,
                 iteration=iteration,
                 cut_type="binding_infeasible_nogood",
@@ -4239,6 +4291,9 @@ class LBBDController:
                 proof_summary=proof_summary,
             )
             self.last_proof_summary = dict(proof_summary)
+            if not cut_applied:
+                # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
+                return RUN_STATUS_UNKNOWN, None
             return RUN_STATUS_INFEASIBLE, None
 
         self._emit_heartbeat(
@@ -4564,7 +4619,7 @@ class LBBDController:
             **self._routing_shrink_summary(),
             **self._exact_cut_ladder_summary(),
         }
-        self._add_exact_whole_layout_nogood(
+        cut_applied = self._add_exact_whole_layout_nogood(
             solution=solution,
             iteration=iteration,
             cut_type="routing_exhausted_nogood",
@@ -4574,6 +4629,9 @@ class LBBDController:
             proof_summary=proof_summary,
         )
         self.last_proof_summary = dict(proof_summary)
+        if not cut_applied:
+            # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
+            return RUN_STATUS_UNKNOWN, None
         return RUN_STATUS_INFEASIBLE, None
 
     def _retry_binding_without_overload_separation(
@@ -4724,7 +4782,34 @@ class LBBDController:
         binding_exhausted: bool,
         routing_exhausted: bool,
         proof_summary: Mapping[str, Any],
-    ) -> None:
+    ) -> bool:
+        # GPT v4 P0 #2 stop-gap: EXACT_POWER_PLACEMENT_SUBPROBLEM=1 时 master 不带
+        # power_pole residual slots, 而 power subproblem feasible 后会把 synthetic
+        # power_pole entry 注入 solution. 这些 entry 进 whole-layout cut 后在
+        # ExactCoordinateMaster._conflict_pose_entries 里找不到 slot → 没 presence
+        # literal → cut 只约束上游 powered layout, 等价于 "layout + 任意 pole
+        # witness" 都禁掉. 这会过切真实存在的 pole alternatives.
+        # 当前修法: flag on 下 fail-closed 跳过 cut, 返回 False 让 caller 升 UNKNOWN.
+        # 彻底修需要 pole alternatives enumeration / witness-complete cut (~3-5d).
+        flag_on = os.environ.get(
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM", ""
+        ).strip() not in {"", "0", "false", "False"}
+        has_synthetic_pole = any(
+            str(iid).startswith("pose_optional::power_pole::")
+            or str(entry.get("facility_type")) == "power_pole"
+            for iid, entry in solution.items()
+        )
+        if flag_on and has_synthetic_pole:
+            self._emit_heartbeat(
+                stage=proof_stage,
+                event="whole_layout_nogood_skipped_power_witness_incomplete",
+                iteration=iteration,
+                extra={
+                    "cut_type": cut_type,
+                    "solution_size": len(solution),
+                },
+            )
+            return False
         conflict_set = self._build_whole_layout_conflict(solution)
         self._add_exact_persisted_nogood(
             conflict_set=conflict_set,
@@ -4736,6 +4821,7 @@ class LBBDController:
             binding_exhausted=binding_exhausted,
             routing_exhausted=routing_exhausted,
         )
+        return True
 
 
 def run_benders_for_ghost_rect(
@@ -5000,6 +5086,7 @@ def run_benders_for_ghost_rect(
 
     cut_replay_started = time.perf_counter()
     raw_candidate_cuts: Sequence[Mapping[str, Any]] = []
+    cut_replay_condition_skipped = 0
     if solve_mode == "certified_exact":
         if preloaded_exact_safe_cuts is not None:
             raw_candidate_cuts = list(preloaded_exact_safe_cuts)
@@ -5018,10 +5105,21 @@ def run_benders_for_ghost_rect(
             )
             if blockers:
                 continue
+            # GPT v4 P0 #1 fix: condition_set 必须 resolve 回 u_var 再传 master,
+            # 否则 conditioned cut replay 成 unconditional → 过切 ghost B 合法解.
+            # 不可解析 (未知 key / anchor 不匹配) → certified mode 下 fail-closed
+            # skip cut, 不退化为无条件.
+            resolved_lits, condition_ok = _resolve_condition_lits_from_condition_set(
+                master, cut.condition_set
+            )
+            if not condition_ok:
+                cut_replay_condition_skipped += 1
+                continue
             if cut_manager.register_structured_cut(cut):
                 loaded_exact_safe_cuts.append(cut)
                 master.add_benders_cut(
-                    {str(k): int(v) for k, v in cut.conflict_set.items()}
+                    {str(k): int(v) for k, v in cut.conflict_set.items()},
+                    condition_lits=tuple(resolved_lits),
                 )
     cut_replay_seconds = time.perf_counter() - cut_replay_started
 
