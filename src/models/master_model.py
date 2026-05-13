@@ -2806,7 +2806,7 @@ class MasterPlacementModel:
         for group_index, ((tpl, operation_type), members) in enumerate(sorted(grouped.items())):
             members = sorted(members, key=lambda item: str(item["instance_id"]))
             group_id = f"group::{tpl}::{operation_type}::{group_index}"
-            group = {
+            group: Dict[str, Any] = {
                 "group_id": group_id,
                 "facility_type": tpl,
                 "operation_type": operation_type,
@@ -2814,7 +2814,7 @@ class MasterPlacementModel:
                 "instance_ids": [str(item["instance_id"]) for item in members],
             }
             self._mandatory_groups.append(group)
-            for instance_id in cast(List[str], group["instance_ids"]):
+            for instance_id in group["instance_ids"]:
                 self._group_id_by_instance[instance_id] = group_id
 
         self.build_stats["grouped_encoding"] = {
