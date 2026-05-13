@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import os
+import re
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -6276,50 +6277,176 @@ class CoordinateExactMasterDelegate:
             "residual_optional_zero_hints": int(residual_optional_zero_hints),
         }
 
-    def add_benders_cut(self, conflict_set: Mapping[str, int]) -> bool:
-        applied = False
-        seen_forbidden: Set[Tuple[str, int, PoseTuple]] = set()
-        for solution_id, pose_idx in conflict_set.items():
-            pose_idx = int(pose_idx)
-            if solution_id in self.owner._group_id_by_instance:
-                group_id = str(self.owner._group_id_by_instance[solution_id])
-                tpl = next(str(group["facility_type"]) for group in self.owner._mandatory_groups if str(group["group_id"]) == group_id)
-                pose_tuple = self._template_pose_tuple_by_idx[tpl].get(int(pose_idx))
+    def _cut_name_token(self, raw: Any) -> str:
+        token = re.sub(r"[^A-Za-z0-9_]+", "_", str(raw))
+        return token[:96] or "cut"
+
+    def _slot_can_take_pose(self, slot: CoordinateSlotSpec, pose_tuple: PoseTuple) -> bool:
+        normalized = tuple(int(v) for v in pose_tuple)
+        if slot.allowed_tuples:
+            return normalized in set(slot.allowed_tuples)
+        return normalized in set(slot.tuple_to_pose_idx)
+
+    def _eq_literal(
+        self, var: cp_model.IntVar, value: int, name: str
+    ) -> cp_model.IntVar:
+        lit = self.model.NewBoolVar(name)
+        self.model.Add(var == int(value)).OnlyEnforceIf(lit)
+        self.model.Add(var != int(value)).OnlyEnforceIf(lit.Not())
+        return lit
+
+    def _slot_pose_match_literal(
+        self,
+        slot: CoordinateSlotSpec,
+        pose_tuple: PoseTuple,
+        *,
+        cut_tag: str,
+    ) -> Optional[cp_model.IntVar]:
+        # lit ⇔ slot realizes pose_tuple. Residual optional slots additionally
+        # require active==1 (so the cut only fires when the optional is on).
+        if slot.x is None or slot.y is None or slot.mode is None:
+            return None
+        if not self._slot_can_take_pose(slot, pose_tuple):
+            return None
+
+        x_val = int(pose_tuple[0])
+        y_val = int(pose_tuple[1])
+        mode_id = int(pose_tuple[2])
+        tag = self._cut_name_token(cut_tag)
+        slot_tag = self._cut_name_token(slot.key)
+        pose_tag = f"{x_val}_{y_val}_{mode_id}"
+
+        conditions: List[cp_model.IntVar] = [
+            self._eq_literal(slot.x, x_val, f"eq_x__{tag}__{slot_tag}__{pose_tag}"),
+            self._eq_literal(slot.y, y_val, f"eq_y__{tag}__{slot_tag}__{pose_tag}"),
+            self._eq_literal(slot.mode, mode_id, f"eq_m__{tag}__{slot_tag}__{pose_tag}"),
+        ]
+        if slot.active is not None:
+            conditions.append(
+                self._eq_literal(
+                    slot.active, 1, f"eq_a__{tag}__{slot_tag}__{pose_tag}"
+                )
+            )
+
+        match = self.model.NewBoolVar(f"match_pose__{tag}__{slot_tag}__{pose_tag}")
+        for cond in conditions:
+            self.model.AddImplication(match, cond)
+        self.model.AddBoolOr([cond.Not() for cond in conditions] + [match])
+        return match
+
+    def _pose_present_literal(
+        self,
+        slots: Sequence[CoordinateSlotSpec],
+        pose_tuple: PoseTuple,
+        *,
+        cut_tag: str,
+    ) -> Optional[cp_model.IntVar]:
+        # lit ⇔ any slot in `slots` realizes pose_tuple.
+        match_lits: List[cp_model.IntVar] = []
+        for slot in slots:
+            lit = self._slot_pose_match_literal(slot, pose_tuple, cut_tag=cut_tag)
+            if lit is not None:
+                match_lits.append(lit)
+        if not match_lits:
+            return None
+
+        tag = self._cut_name_token(cut_tag)
+        pose_tag = (
+            f"{int(pose_tuple[0])}_{int(pose_tuple[1])}_{int(pose_tuple[2])}"
+        )
+        present = self.model.NewBoolVar(
+            f"pose_present__{tag}__{pose_tag}__{len(match_lits)}"
+        )
+        for match in match_lits:
+            self.model.AddImplication(match, present)
+        self.model.AddBoolOr(match_lits).OnlyEnforceIf(present)
+        return present
+
+    def _conflict_pose_entries(
+        self, conflict_set: Mapping[str, int]
+    ) -> List[Tuple[str, int, List[CoordinateSlotSpec], PoseTuple]]:
+        # Normalize each (solution_id, pose_idx) into the slot set + pose tuple
+        # it can land in. Dedup by (scope, pose_idx) so two symmetric mandatory
+        # instances in the same group only contribute one presence literal
+        # (NoOverlap2D already forbids both taking the same pose).
+        entries: List[Tuple[str, int, List[CoordinateSlotSpec], PoseTuple]] = []
+        seen: Set[Tuple[str, int]] = set()
+        for solution_id, raw_pose_idx in conflict_set.items():
+            pose_idx = int(raw_pose_idx)
+            sid = str(solution_id)
+
+            if sid in self.owner._group_id_by_instance:
+                group_id = str(self.owner._group_id_by_instance[sid])
+                tpl = next(
+                    str(group["facility_type"])
+                    for group in self.owner._mandatory_groups
+                    if str(group["group_id"]) == group_id
+                )
+                pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
                 if pose_tuple is None:
                     continue
-                for slot in self.mandatory_slots.get(group_id, []):
-                    key = (slot.key, int(pose_idx), pose_tuple)
-                    if key in seen_forbidden:
-                        continue
-                    self.model.AddForbiddenAssignments([slot.x, slot.y, slot.mode], [list(pose_tuple)])
-                    seen_forbidden.add(key)
-                    applied = True
+                key = (f"mandatory::{group_id}", pose_idx)
+                if key in seen:
+                    continue
+                seen.add(key)
+                entries.append(
+                    (
+                        key[0],
+                        pose_idx,
+                        list(self.mandatory_slots.get(group_id, [])),
+                        pose_tuple,
+                    )
+                )
                 continue
 
-            tpl = self.owner._infer_optional_template_from_solution_id(str(solution_id))
+            tpl = self.owner._infer_optional_template_from_solution_id(sid)
             if tpl is None:
                 continue
-            pose_tuple = self._template_pose_tuple_by_idx[str(tpl)].get(int(pose_idx))
+            tpl = str(tpl)
+            pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
             if pose_tuple is None:
                 continue
-            for slot in self.required_optional_slots.get(str(tpl), []):
-                key = (slot.key, int(pose_idx), pose_tuple)
-                if key in seen_forbidden:
-                    continue
-                self.model.AddForbiddenAssignments([slot.x, slot.y, slot.mode], [list(pose_tuple)])
-                seen_forbidden.add(key)
-                applied = True
-            for slot in self.residual_optional_slots.get(str(tpl), []):
-                key = (slot.key, int(pose_idx), pose_tuple)
-                if key in seen_forbidden:
-                    continue
-                self.model.AddForbiddenAssignments(
-                    [slot.active, slot.x, slot.y, slot.mode],
-                    [[1, int(pose_tuple[0]), int(pose_tuple[1]), int(pose_tuple[2])]],
-                )
-                seen_forbidden.add(key)
-                applied = True
+            key = (f"optional::{tpl}", pose_idx)
+            if key in seen:
+                continue
+            seen.add(key)
+            slots: List[CoordinateSlotSpec] = []
+            slots.extend(self.required_optional_slots.get(tpl, []))
+            slots.extend(self.residual_optional_slots.get(tpl, []))
+            entries.append((key[0], pose_idx, slots, pose_tuple))
+        return entries
 
-        if applied:
-            self.owner._last_solution = None
-        return applied
+    def add_benders_cut(self, conflict_set: Mapping[str, int]) -> bool:
+        # Exact-coordinate Benders cut as a presence no-good:
+        #   sum(present(pose) for pose in conflict_set) <= N - 1
+        # i.e. "these poses cannot all be present at once" — same shape as the
+        # legacy BoolVar cut sum(z_conflict) <= N-1. The earlier implementation
+        # used AddForbiddenAssignments per (slot, pose), which permanently
+        # banned each pose individually and over-cut combinatorial failures.
+        entries = self._conflict_pose_entries(conflict_set)
+        if not entries:
+            return False
+
+        cut_index = int(self.owner.build_stats.get("coordinate_benders_cut_count", 0))
+        cut_tag = f"benders_{cut_index}_{len(entries)}"
+
+        present_lits: List[cp_model.IntVar] = []
+        for _scope_key, pose_idx, slots, pose_tuple in entries:
+            lit = self._pose_present_literal(
+                slots, pose_tuple, cut_tag=f"{cut_tag}_{pose_idx}"
+            )
+            if lit is not None:
+                present_lits.append(lit)
+
+        if not present_lits:
+            return False
+
+        self.model.Add(sum(present_lits) <= len(present_lits) - 1)
+        self.owner.build_stats["coordinate_benders_cut_count"] = cut_index + 1
+        self.owner.build_stats["coordinate_benders_last_cut"] = {
+            "entries": len(entries),
+            "presence_literals": len(present_lits),
+            "semantics": "pose_presence_nogood_v1",
+        }
+        self.owner._last_solution = None
+        return True
