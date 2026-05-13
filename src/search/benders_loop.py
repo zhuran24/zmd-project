@@ -486,7 +486,7 @@ def _publish_last_run_metadata(
     generated_exact_safe_cut_count: int = 0,
 ) -> None:
     normalized_proof_summary = dict(proof_summary)
-    run_benders_for_ghost_rect.last_run_metadata = {
+    run_benders_for_ghost_rect.last_run_metadata = {  # type: ignore[attr-defined]
         "proof_summary": normalized_proof_summary,
         "exact_safe_cuts": [cut.to_dict() for cut in exact_safe_cuts],
         "loaded_exact_safe_cut_count": int(loaded_exact_safe_cut_count),
@@ -1865,7 +1865,7 @@ def evaluate_exact_candidate_pre_master_precheck(
                     ),
                 }
 
-    proof_summary: Dict[str, Any] = {}
+    proof_summary = {}
     _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
         proof_summary,
         project_root=project_root,
@@ -2098,7 +2098,7 @@ class LBBDController:
             return
 
     def _exact_warm_start_summary(self) -> Dict[str, Any]:
-        summary = {
+        summary: Dict[str, Any] = {
             "used_greedy_hint": bool(self._used_greedy_hint),
             "greedy_hint_instances": int(self._greedy_hint_instances),
             "master_hinted_literals": int(self._master_hinted_literals),
@@ -2961,7 +2961,7 @@ class LBBDController:
         exact_precompute_profile = dict(
             self.master.build_stats.get("exact_precompute_profile", {})
         )
-        master_last_solve = {
+        master_last_solve: Dict[str, Any] = {
             "status": str(last_solve.get("status", "")),
             "wall_time": float(last_solve.get("wall_time", 0.0)),
             "user_time": float(last_solve.get("user_time", 0.0)),
@@ -3781,10 +3781,9 @@ class LBBDController:
                 self._ghost_anchor_hint_applied = bool(
                     last_solve.get("ghost_anchor_hint_applied", False)
                 )
-                if last_solve.get("ghost_anchor_hint_idx") is not None:
-                    self._ghost_anchor_hint_idx = int(
-                        last_solve.get("ghost_anchor_hint_idx")
-                    )
+                _ghost_anchor_hint_idx_value = last_solve.get("ghost_anchor_hint_idx")
+                if _ghost_anchor_hint_idx_value is not None:
+                    self._ghost_anchor_hint_idx = int(_ghost_anchor_hint_idx_value)
                 self._residual_optional_zero_hinting_enabled = bool(
                     last_solve.get(
                         "residual_optional_zero_hinting_enabled",
@@ -3959,7 +3958,7 @@ class LBBDController:
     ) -> Tuple[str, Any]:
         # Returns ("FEASIBLE", updated_solution) | ("INFEASIBLE_CUT_ADDED", None) | ("ABORT", None)
         time_limit = float(os.environ.get("EXACT_POWER_SUBPROBLEM_SECONDS", "10") or "10")
-        powered_templates = getattr(self.master, "_powered_templates", set()) or set()
+        powered_templates: Set[str] = getattr(self.master, "_powered_templates", set()) or set()
         coverers = (
             getattr(self.master, "_power_coverers_by_template_pose", {}) or {}
         )
@@ -5412,7 +5411,7 @@ def run_benders_for_ghost_rect(
     return status, solution
 
 
-run_benders_for_ghost_rect.last_run_metadata = {
+run_benders_for_ghost_rect.last_run_metadata = {  # type: ignore[attr-defined]
     "proof_summary": {},
     "exact_safe_cuts": [],
     "loaded_exact_safe_cut_count": 0,

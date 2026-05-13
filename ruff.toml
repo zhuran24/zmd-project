@@ -10,6 +10,9 @@
 
 line-length = 120
 target-version = "py313"
+# Agent worktrees 是 isolation 跑独立 Claude Code 子进程的工作目录, 含 fork-point
+# 的旧代码 + Agent 进行中的改动. 不该被主仓库 ruff 扫.
+exclude = [".claude/worktrees", ".pytest_tmp", "_codex_archive"]
 
 # 默认规则集: 跟 ruff default 走 (E + F + W). 当前噪音主要在 E402 / F401 系列.
 [lint]
