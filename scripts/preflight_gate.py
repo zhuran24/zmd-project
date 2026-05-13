@@ -267,6 +267,9 @@ CORE_TEST_FILES = [
     "src/tests/test_power_placement_subproblem.py",
     "src/tests/test_coordinate_benders_cut_presence_nogood.py",
     "src/tests/test_benders_cut_condition_lits.py",
+    # GPT v4 follow-up: cut 生命周期 + power witness dilution 进核心门禁.
+    "src/tests/test_benders_cut_replay_condition_lifecycle.py",
+    "src/tests/test_power_witness_cut_dilution.py",
 ]
 
 

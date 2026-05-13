@@ -62,7 +62,14 @@ The following remain additive postprocess artifacts and must not redefine intern
 - Changing campaign, artifact, or proof schemas without explicitly updating the lock/spec/test boundary together.
 - Rebinding globally pooled resources into per-line or per-instance hard bindings without a new exact proof basis.
 - Adding any exterior-path requirement for the ghost rectangle.
-- Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only: the current infeasible cut omits the selected ghost anchor literal (over-prune across ghost alternatives), and the feasible-path injects a single arbitrary pole layout without exhausting pole alternatives before cutting the upstream master layout. The production readiness gate and `scripts/run_campaign_linux.sh` both block when the env var is set; do not bypass them.
+- Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only. Status of the three known exactness gaps (as of GPT v4 review follow-up):
+  - **Live ghost-conditioned infeasible cut**: implemented (`condition_lits` 走 master.add_benders_cut, `OnlyEnforceIf`).
+  - **Persisted cut replay**: `BendersCut.condition_set` 在 `run_benders_for_ghost_rect` 现已通过 `_resolve_condition_lits_from_condition_set` 反解析回 master `u_var`, certified mode 下未知 condition fail-closed skip cut (不退化成无条件).
+  - **Feasible-path pole alternatives**: 未实现 witness-complete cut. 现 stop-gap: `_add_exact_whole_layout_nogood` 在 flag on 且 solution 含 synthetic power_pole entry 时 fail-closed skip cut, caller 升 `UNKNOWN`. 真正解锁 feature 需要 enumeration / 多 witness 增量排除.
+  
+  The production readiness gate and `scripts/run_campaign_linux.sh` both still block when the env var is set; do not bypass them until pole alternatives is implemented and re-audited.
+
+- Bypassing **exact-safe proof object lifecycle**. Any persisted artifact carrying solver-side semantics (e.g. `BendersCut.condition_set`, `BendersCut.metadata`) must have all six steps wired before being trusted in certified mode: generate → serialize → deserialize → validate → resolve runtime literals → replay → behavioral regression test. Landing a new schema field without the runtime resolver + regression coverage is treated as a Forbidden Change, regardless of how harmless the "feature gate currently off" feels.
 
 ## 5. Allowed Changes
 
