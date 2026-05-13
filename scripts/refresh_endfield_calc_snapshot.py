@@ -38,8 +38,17 @@ FILES_TO_FETCH = (
 )
 
 
+_ALLOWED_URL_PREFIXES = (
+    "https://raw.githubusercontent.com/JamboChen/endfield-calc/",
+    "https://api.github.com/repos/JamboChen/endfield-calc/",
+)
+
+
 def fetch_text(url: str) -> str:
-    with urllib.request.urlopen(url, timeout=30) as resp:
+    # bandit B310 fix: 限 scheme + host, 防 file:// 或自定义 scheme.
+    if not url.startswith(_ALLOWED_URL_PREFIXES):
+        raise ValueError(f"refusing to fetch URL outside allowlist: {url}")
+    with urllib.request.urlopen(url, timeout=30) as resp:  # noqa: S310 (allowlisted above)
         return resp.read().decode("utf-8")
 
 

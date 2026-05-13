@@ -29,8 +29,17 @@ VENDORED_DIR = PROJECT_ROOT / "third_party_snapshots" / "industrial_planner" / "
 REGISTRY_PATH_IN_REPO = "src/domain/registry.ts"
 
 
+_ALLOWED_URL_PREFIXES = (
+    "https://raw.githubusercontent.com/hsyhhssyy/IndustrialPlanner/",
+    "https://api.github.com/repos/hsyhhssyy/IndustrialPlanner/",
+)
+
+
 def fetch_text(url: str) -> str:
-    with urllib.request.urlopen(url, timeout=30) as resp:
+    # bandit B310 fix: 限 scheme + host, 防 file:// 或自定义 scheme.
+    if not url.startswith(_ALLOWED_URL_PREFIXES):
+        raise ValueError(f"refusing to fetch URL outside allowlist: {url}")
+    with urllib.request.urlopen(url, timeout=30) as resp:  # noqa: S310 (allowlisted above)
         return resp.read().decode("utf-8")
 
 

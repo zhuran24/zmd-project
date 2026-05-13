@@ -218,12 +218,43 @@ def check_git_clean(gate: Gate) -> None:
         gate.warn("git status", f"git status exit {result.returncode}")
         return
     pending = [line for line in result.stdout.splitlines() if line.strip()]
-    if pending:
+    if not pending:
+        gate.ok("git status", "working tree clean")
+        return
+    # GPT v4 Finding 5 fix: untracked files 在 code 区 (src/ scripts/ main.py) 必须
+    # BLOCK. v3 → v4 之间发生过 5 个 scripts/*.py 被打进 release tar 但 git 没跟踪,
+    # preflight 无法看见. 区分 code 区 vs data 区 (data/ .artifacts/ .pytest_tmp/
+    # 等大文件/临时输出 区按 WARN 处理).
+    code_zones = (
+        "src/", "scripts/", "rules/", "docs/", "specs/",
+        "main.py", "PROJECT_LOCK.md", "CLAUDE.md", "FILE_STATUS.md",
+        "BORROWED_COMPONENTS.md", "requirements.txt", "requirements.lock.txt",
+        "pytest.ini",
+    )
+    untracked_code: list[str] = []
+    modified_or_other: list[str] = []
+    for line in pending:
+        # porcelain v1: "XY path". untracked = "?? path"
+        status = line[:2]
+        path = line[3:] if len(line) > 3 else line
+        is_untracked = status.strip() == "??"
+        if is_untracked and any(path.startswith(z) for z in code_zones):
+            untracked_code.append(path)
+        else:
+            modified_or_other.append(line)
+    if untracked_code:
+        gate.block(
+            "git status",
+            f"code 区有 {len(untracked_code)} 个 untracked 文件 (会被打进 release 但 git 看不见): "
+            f"{', '.join(untracked_code[:5])}{'...' if len(untracked_code) > 5 else ''}. "
+            "commit / .gitignore / 删除, 三选一.",
+        )
+    if modified_or_other:
         gate.warn(
             "git status",
-            f"working tree 有 {len(pending)} 个 modified/untracked 文件 — 启动 campaign 前确认是否需要 commit",
+            f"working tree 有 {len(modified_or_other)} 个 modified/untracked 非 code 区文件 — 启动 campaign 前确认是否需要 commit",
         )
-    else:
+    elif not untracked_code:
         gate.ok("git status", "working tree clean")
 
 
