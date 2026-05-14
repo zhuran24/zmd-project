@@ -1,23 +1,30 @@
-"""HiGHS-backed minimal master placement model (Phase 1 重写 PoC).
+"""HiGHS-backed master placement model (Phase 1 PoC → Phase 3 production-grade).
 
 目的: 验证 HiGHS MIP solver 在 Endfield 70x70 packing 问题上的 RAM/wall-time vs
-OR-Tools CP-SAT. 不集成现有 ExactSearchSession / Benders / outer_search, 独立 PoC.
+OR-Tools CP-SAT. 独立 PoC + 渐进加 production-grade 约束.
 
-Phase 1 不带的:
-  - power coverage (mandatory facility 必须被 pole 覆盖)
-  - port clearance / signature buckets / coordinate delegate
-  - 优化 hint / decision strategy
-  - cuts replay / hint persistence
-
-Phase 1 带的:
+Phase 1 minimum 带的:
   - mandatory facility group placement (AddExactlyOne over poses)
   - ghost rectangle anchor (AddExactlyOne over anchors)
   - cell occupancy set-packing (每个 cell ≤ 1 物体占据)
 
+Phase 3 production add (include_power_coverage=True):
+  - power_pole optional z_var 加入 cell occupancy
+  - mandatory facility pose 必须被 pole cover (sum(pole_z) - z[g,p] >= 0)
+  - 无 coverer 的 facility pose 强制 z == 0
+
+Phase 3 还没带的 (后续):
+  - port clearance / signature buckets / coordinate delegate
+  - 优化 hint / decision strategy
+  - cuts replay / hint persistence
+
+性能: 用 `passModel(HighsLp)` 批量 CSR row-wise, 跳过 Python expression 构造
+overhead (实测 70x70 + 266 mandatory build 9.9 秒, RSS 4.8 GB).
+
 API:
-  build_highs_minimum_model(instances, facility_pools, rules, ghost_rect=None)
-    → HighsMinimumModel (持有 Highs 对象 + 变量 index 映射)
-  HighsMinimumModel.solve(time_limit_seconds=None) → status, solution
+  build_highs_minimum_model(instances, facility_pools, rules, ghost_rect=None,
+                            include_power_coverage=False)
+    → HighsMinimumModel
 """
 
 from __future__ import annotations
@@ -28,8 +35,13 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 import highspy
 
+from src.models.highs_power_coverage import (
+    build_pole_cell_index,
+    emit_power_coverage_rows,
+)
 
-HighsVar = Any  # highspy.highs.highs_var (high-level wrapper, supports arithmetic)
+
+HighsCol = int  # column index in HighsLp
 
 
 @dataclass
@@ -37,8 +49,8 @@ class HighsMinimumModel:
     """HiGHS minimum-build model state + index 映射, 用于 PoC 量 RAM."""
 
     highs: highspy.Highs
-    z_var_by_group_pose: Dict[Tuple[str, int], HighsVar] = field(default_factory=dict)
-    u_var_by_anchor_idx: Dict[int, HighsVar] = field(default_factory=dict)
+    z_col_by_group_pose: Dict[Tuple[str, int], HighsCol] = field(default_factory=dict)
+    u_col_by_anchor_idx: Dict[int, HighsCol] = field(default_factory=dict)
     anchor_xy_by_idx: Dict[int, Tuple[int, int]] = field(default_factory=dict)
     ghost_rect: Optional[Tuple[int, int]] = None
     grid_w: int = 0
@@ -50,10 +62,8 @@ class HighsMinimumModel:
         *,
         time_limit_seconds: Optional[float] = None,
     ) -> Tuple[str, Optional[Dict[str, Any]]]:
-        """Solve the built MIP. Returns (status_str, solution_or_None)."""
         if time_limit_seconds is not None:
             self.highs.setOptionValue("time_limit", float(time_limit_seconds))
-        # silence presolve / solver log
         self.highs.setOptionValue("output_flag", False)
         self.highs.run()
         model_status = self.highs.getModelStatus()
@@ -73,15 +83,16 @@ class HighsMinimumModel:
         if status != "OPTIMAL":
             return status, None
 
+        col_value = sol.col_value
         selected_poses: List[Dict[str, Any]] = []
-        for (group_id, pose_idx), var in self.z_var_by_group_pose.items():
-            if sol.col_value[var.index] > 0.5:
+        for (group_id, pose_idx), col in self.z_col_by_group_pose.items():
+            if col_value[col] > 0.5:
                 selected_poses.append(
                     {"group_id": group_id, "pose_idx": int(pose_idx)}
                 )
         ghost_xy: Optional[Tuple[int, int]] = None
-        for anchor_idx, var in self.u_var_by_anchor_idx.items():
-            if sol.col_value[var.index] > 0.5:
+        for anchor_idx, col in self.u_col_by_anchor_idx.items():
+            if col_value[col] > 0.5:
                 ghost_xy = self.anchor_xy_by_idx[anchor_idx]
                 break
         return status, {
@@ -100,31 +111,34 @@ def build_highs_minimum_model(
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
     rules: Mapping[str, Any],
     ghost_rect: Optional[Tuple[int, int]] = None,
+    include_power_coverage: bool = False,
 ) -> HighsMinimumModel:
-    """Build HiGHS MIP from project rules + mandatory instances + ghost rect.
+    """Build HiGHS MIP, 用 passModel 批量 CSR 跳过 Python sum() overhead.
 
-    变量:
-      z[(group_id, pose_idx)] ∈ {0, 1}: 1 = facility group 选这个 pose
-      u[anchor_idx] ∈ {0, 1}: 1 = ghost anchor 在这个 (x, y)
-
+    变量: z[(group_id, pose_idx)] / u[anchor_idx] / (optional) pole_z[idx] all binary.
     约束:
       ∀ group g:  Σ_p z[(g, p)] = 1
-      Σ_a u[a] = 1 (如果 ghost_rect 给定)
-      ∀ cell c:  Σ_{(g,p) cover c} z[(g, p)] + Σ_{a cover c} u[a] ≤ 1
-
-    目标: minimize 0 (feasibility-only, PoC stage).
+      Σ_a u[a] = 1 (if ghost_rect)
+      ∀ cell c with ≥2 covers:  Σ_{occupy c} ≤ 1 (set-packing)
+      (if include_power_coverage):
+        ∀ (g, p):  Σ_{pole cover (g,p)} pole_z - z[g,p] >= 0
+        无 coverer 的 z[g,p] == 0
+    目标: minimize 0 (feasibility-only PoC).
     """
     grid = dict(rules["globals"]["grid"])
     grid_w = int(grid["width"])
     grid_h = int(grid["height"])
 
-    h = highspy.Highs()
-    h.silent()
-
-    z_var_by_group_pose: Dict[Tuple[str, int], HighsVar] = {}
-    u_var_by_anchor_idx: Dict[int, HighsVar] = {}
+    z_col_by_group_pose: Dict[Tuple[str, int], HighsCol] = {}
+    u_col_by_anchor_idx: Dict[int, HighsCol] = {}
     anchor_xy_by_idx: Dict[int, Tuple[int, int]] = {}
-    cell_occupancy: Dict[Tuple[int, int], List[HighsVar]] = defaultdict(list)
+    pole_col_by_pose_idx: Dict[int, HighsCol] = {}
+    # cell -> list of col indices that occupy this cell
+    cell_occupancy: Dict[Tuple[int, int], List[HighsCol]] = defaultdict(list)
+    # group -> list of z cols (for exactly-one constraint)
+    group_z_cols: Dict[str, List[HighsCol]] = defaultdict(list)
+    # ghost anchor u cols
+    anchor_u_cols: List[HighsCol] = []
 
     mandatory_groups: Dict[str, str] = {}
     for inst in instances:
@@ -134,77 +148,168 @@ def build_highs_minimum_model(
         tpl = str(inst["facility_type"])
         mandatory_groups[instance_id] = tpl
 
-    infeasible_marker_added = False
+    next_col = 0
+    missing_pool_groups: List[str] = []
 
     for group_id, tpl in mandatory_groups.items():
         pool = list(facility_pools.get(tpl, []))
         if not pool:
-            # mandatory group 没 pose → 立即 infeasible
-            v = h.addBinary()
-            h.addConstr(v == 1)
-            h.addConstr(v == 0)
-            infeasible_marker_added = True
+            missing_pool_groups.append(group_id)
             continue
-        group_z_vars: List[HighsVar] = []
         for pose_idx, pose in enumerate(pool):
-            v = h.addBinary()
-            z_var_by_group_pose[(group_id, pose_idx)] = v
-            group_z_vars.append(v)
+            col = next_col
+            next_col += 1
+            z_col_by_group_pose[(group_id, pose_idx)] = col
+            group_z_cols[group_id].append(col)
             for cell in _pose_occupied_cells(pose):
                 cx, cy = cell
                 if 0 <= cx < grid_w and 0 <= cy < grid_h:
-                    cell_occupancy[(cx, cy)].append(v)
-        if group_z_vars:
-            h.addConstr(sum(group_z_vars) == 1)
+                    cell_occupancy[(cx, cy)].append(col)
 
+    # Phase 3: add optional power_pole cols (z_var per pole pose) so they
+    # participate in cell occupancy + serve as coverers below.
+    if include_power_coverage:
+        pole_pool = list(facility_pools.get("power_pole", []))
+        for pole_idx, pole_pose in enumerate(pole_pool):
+            col = next_col
+            next_col += 1
+            pole_col_by_pose_idx[pole_idx] = col
+            for cell in _pose_occupied_cells(pole_pose):
+                cx, cy = cell
+                if 0 <= cx < grid_w and 0 <= cy < grid_h:
+                    cell_occupancy[(cx, cy)].append(col)
+
+    ghost_too_large = False
     if ghost_rect is not None:
         ghost_w, ghost_h = (int(ghost_rect[0]), int(ghost_rect[1]))
         if ghost_w > grid_w or ghost_h > grid_h:
-            # ghost 比 grid 大 → 立即 infeasible
-            v = h.addBinary()
-            h.addConstr(v == 1)
-            h.addConstr(v == 0)
-            infeasible_marker_added = True
+            ghost_too_large = True
         else:
-            anchor_u_vars: List[HighsVar] = []
             anchor_idx = 0
             for ax in range(grid_w - ghost_w + 1):
                 for ay in range(grid_h - ghost_h + 1):
-                    v = h.addBinary()
-                    u_var_by_anchor_idx[anchor_idx] = v
+                    col = next_col
+                    next_col += 1
+                    u_col_by_anchor_idx[anchor_idx] = col
                     anchor_xy_by_idx[anchor_idx] = (ax, ay)
-                    anchor_u_vars.append(v)
+                    anchor_u_cols.append(col)
                     for dx in range(ghost_w):
                         for dy in range(ghost_h):
-                            cell_occupancy[(ax + dx, ay + dy)].append(v)
+                            cell_occupancy[(ax + dx, ay + dy)].append(col)
                     anchor_idx += 1
-            if anchor_u_vars:
-                h.addConstr(sum(anchor_u_vars) == 1)
 
-    for cell, vars_ in cell_occupancy.items():
-        if len(vars_) >= 2:
-            h.addConstr(sum(vars_) <= 1)
+    num_col = next_col
 
-    h.changeObjectiveSense(highspy.ObjSense.kMinimize)
+    # CSR row-wise: list rows in order
+    row_starts: List[int] = [0]
+    col_indices: List[int] = []
+    values: List[float] = []
+    row_lower: List[float] = []
+    row_upper: List[float] = []
 
-    model = HighsMinimumModel(
+    INF = highspy.kHighsInf
+    infeasible_marker_added = False
+
+    if ghost_too_large or missing_pool_groups:
+        # 加一个 0=1 row 强制 infeasible (无变量, 但 row_lower=1 row_upper=1)
+        row_starts.append(len(col_indices))
+        row_lower.append(1.0)
+        row_upper.append(1.0)
+        infeasible_marker_added = True
+
+    for group_id, cols in group_z_cols.items():
+        for c in cols:
+            col_indices.append(c)
+            values.append(1.0)
+        row_starts.append(len(col_indices))
+        row_lower.append(1.0)
+        row_upper.append(1.0)
+
+    if anchor_u_cols:
+        for c in anchor_u_cols:
+            col_indices.append(c)
+            values.append(1.0)
+        row_starts.append(len(col_indices))
+        row_lower.append(1.0)
+        row_upper.append(1.0)
+
+    cell_occupancy_constraint_count = 0
+    for cell, cols in cell_occupancy.items():
+        if len(cols) < 2:
+            continue
+        for c in cols:
+            col_indices.append(c)
+            values.append(1.0)
+        row_starts.append(len(col_indices))
+        row_lower.append(-INF)
+        row_upper.append(1.0)
+        cell_occupancy_constraint_count += 1
+
+    # Phase 3: power coverage constraints
+    power_coverage_row_count = 0
+    power_coverage_nonzero = 0
+    if include_power_coverage:
+        pole_pool = list(facility_pools.get("power_pole", []))
+        pole_cell_index = build_pole_cell_index(pole_pool)
+        added_rows, added_nz = emit_power_coverage_rows(
+            facility_pools=facility_pools,
+            z_col_by_group_pose=z_col_by_group_pose,
+            pole_col_by_pose_idx=pole_col_by_pose_idx,
+            mandatory_groups=mandatory_groups,
+            pole_cell_index=pole_cell_index,
+            row_starts=row_starts,
+            col_indices=col_indices,
+            values=values,
+            row_lower=row_lower,
+            row_upper=row_upper,
+            INF=INF,
+        )
+        power_coverage_row_count = added_rows
+        power_coverage_nonzero = added_nz
+
+    num_row = len(row_lower)
+
+    lp = highspy.HighsLp()
+    lp.num_col_ = num_col
+    lp.num_row_ = num_row
+    lp.col_cost_ = [0.0] * num_col
+    lp.col_lower_ = [0.0] * num_col
+    lp.col_upper_ = [1.0] * num_col
+    lp.integrality_ = [highspy.HighsVarType.kInteger] * num_col
+    lp.row_lower_ = row_lower
+    lp.row_upper_ = row_upper
+    lp.a_matrix_.format_ = highspy.MatrixFormat.kRowwise
+    lp.a_matrix_.start_ = row_starts
+    lp.a_matrix_.index_ = col_indices
+    lp.a_matrix_.value_ = values
+    lp.sense_ = highspy.ObjSense.kMinimize
+
+    h = highspy.Highs()
+    h.silent()
+    h.passModel(lp)
+
+    return HighsMinimumModel(
         highs=h,
-        z_var_by_group_pose=z_var_by_group_pose,
-        u_var_by_anchor_idx=u_var_by_anchor_idx,
+        z_col_by_group_pose=z_col_by_group_pose,
+        u_col_by_anchor_idx=u_col_by_anchor_idx,
         anchor_xy_by_idx=anchor_xy_by_idx,
         ghost_rect=ghost_rect,
         grid_w=grid_w,
         grid_h=grid_h,
         build_stats={
             "mandatory_group_count": len(mandatory_groups),
-            "z_var_count": len(z_var_by_group_pose),
-            "u_var_count": len(u_var_by_anchor_idx),
-            "cell_occupancy_constraint_count": sum(
-                1 for cols in cell_occupancy.values() if len(cols) >= 2
-            ),
+            "z_var_count": len(z_col_by_group_pose),
+            "u_var_count": len(u_col_by_anchor_idx),
+            "pole_var_count": len(pole_col_by_pose_idx),
+            "cell_occupancy_constraint_count": cell_occupancy_constraint_count,
+            "power_coverage_row_count": power_coverage_row_count,
+            "power_coverage_nonzero": power_coverage_nonzero,
+            "include_power_coverage": include_power_coverage,
             "ghost_rect": ghost_rect,
             "grid": {"width": grid_w, "height": grid_h},
             "infeasible_marker_added": infeasible_marker_added,
+            "num_col": num_col,
+            "num_row": num_row,
+            "num_nonzero": len(values),
         },
     )
-    return model
