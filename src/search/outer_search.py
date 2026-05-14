@@ -2222,6 +2222,14 @@ def run_outer_search(
                     continue
 
                 if status == RUN_STATUS_UNKNOWN:
+                    # P2 #14 audit follow-up (2026-05-15): env on 时这条 return
+                    # path 之前漏 env check (helper line 1390 已 fix, 这条 hardcoded
+                    # return 没 fix), 导致 168h best-effort 跑撞第一个 UNKNOWN 就
+                    # stop 退出. 这里补齐 — env on 时 skip mark_stopped + continue
+                    # wave loop 探下个 candidate.
+                    _skip_unknown_env = os.environ.get(
+                        "EXACT_OUTER_SKIP_UNKNOWN", ""
+                    ).strip().lower() in {"1", "true", "yes", "on"}
                     if exact_campaign is not None:
                         exact_campaign.mark_candidate_result(
                             ghost_w,
@@ -2234,10 +2242,11 @@ def run_outer_search(
                                 "generated_exact_safe_cut_count"
                             ],
                         )
-                        exact_campaign.mark_campaign_stopped(
-                            "candidate_returned_unknown",
-                            status=RUN_STATUS_UNKNOWN,
-                        )
+                        if not _skip_unknown_env:
+                            exact_campaign.mark_campaign_stopped(
+                                "candidate_returned_unknown",
+                                status=RUN_STATUS_UNKNOWN,
+                            )
                         exact_campaign.save()
                         telemetry_wave_index += 1
                         _append_wave_telemetry_best_effort(
@@ -2251,11 +2260,14 @@ def run_outer_search(
                             reset=reset_campaign_telemetry,
                         )
                         reset_campaign_telemetry = False
-                        _refresh_certified_delivery_outputs(
-                            project_root=project_root,
-                            exact_campaign=exact_campaign,
-                            facility_pools=_pools,
-                        )
+                        if not _skip_unknown_env:
+                            _refresh_certified_delivery_outputs(
+                                project_root=project_root,
+                                exact_campaign=exact_campaign,
+                                facility_pools=_pools,
+                            )
+                    if _skip_unknown_env:
+                        continue
                     return RUN_STATUS_UNKNOWN, None
                 if status == RUN_STATUS_UNPROVEN:
                     if exact_campaign is not None:
