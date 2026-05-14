@@ -3188,8 +3188,13 @@ class CoordinateExactMasterDelegate:
             }
             return
 
+        anchor_filter = getattr(self.owner, "ghost_anchor_filter", None)
+        anchor_filter_skipped = 0
         for anchor_x in range(self.grid_w - ghost_w + 1):
             for anchor_y in range(self.grid_h - ghost_h + 1):
+                if anchor_filter is not None and (int(anchor_x), int(anchor_y)) not in anchor_filter:
+                    anchor_filter_skipped += 1
+                    continue
                 rect_idx = len(self.owner._ghost_domains)
                 cells = [
                     (anchor_x + dx, anchor_y + dy)
@@ -3216,6 +3221,21 @@ class CoordinateExactMasterDelegate:
                 self._ghost_x_intervals.append(x_interval)
                 self._ghost_y_intervals.append(y_interval)
 
+        if not self.owner.u_vars:
+            self.model.Add(0 == 1)
+            self.owner.build_stats["ghost_rect"] = {
+                "enabled": True,
+                "placements": 0,
+                "reason": (
+                    "anchor_filter_empty"
+                    if anchor_filter is not None and not anchor_filter
+                    else "anchor_filter_excludes_all_anchors"
+                ),
+                "size": {"w": ghost_w, "h": ghost_h},
+                "anchor_filter_applied": True,
+                "anchor_filter_skipped": int(anchor_filter_skipped),
+            }
+            return
         self._apply_ghost_anchor_power_capacity_screen()
         self._apply_ghost_anchor_signature_bucket_tightening()
         self._apply_ghost_anchor_residual_signature_bucket_tightening()
@@ -3240,6 +3260,8 @@ class CoordinateExactMasterDelegate:
                     0,
                 )
             ),
+            "anchor_filter_applied": anchor_filter is not None,
+            "anchor_filter_skipped": int(anchor_filter_skipped),
         }
 
     def _apply_ghost_anchor_power_capacity_screen(self) -> None:

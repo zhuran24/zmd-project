@@ -17,7 +17,7 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 import time
-from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -378,6 +378,40 @@ def _master_cp_sat_log_heartbeat_max_chars() -> int:
             f"Unsupported {EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS_ENV}: "
             f"{raw_value!r}; expected a positive integer."
         ) from None
+
+
+EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV = "EXACT_MASTER_GHOST_ANCHOR_FILTER"
+
+
+def _resolve_ghost_anchor_filter_from_env() -> Optional[FrozenSet[Tuple[int, int]]]:
+    """A 方案 PoC: env 注入 ghost anchor 白名单, 减 1131 anchor 同时 build 的 RAM.
+
+    Format: "x1,y1;x2,y2;...". 缺省/空 → 不 filter (保留旧 behavior).
+    Invalid format → ValueError fail-fast, 不进 production path.
+    """
+
+    raw = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, "")
+    if not raw.strip():
+        return None
+    anchors: List[Tuple[int, int]] = []
+    for token in raw.split(";"):
+        token = token.strip()
+        if not token:
+            continue
+        parts = [p.strip() for p in token.split(",")]
+        if len(parts) != 2:
+            raise ValueError(
+                f"Unsupported {EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV}: "
+                f"{raw!r}; expected 'x,y' pairs separated by ';'."
+            )
+        try:
+            anchors.append((int(parts[0]), int(parts[1])))
+        except ValueError:
+            raise ValueError(
+                f"Unsupported {EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV}: "
+                f"{raw!r}; non-integer coordinate in token {token!r}."
+            ) from None
+    return frozenset(anchors)
 
 
 def _coordinate_validation_failure_sample_fields(entry: Mapping[str, Any]) -> Dict[str, Any]:
@@ -5040,11 +5074,13 @@ def run_benders_for_ghost_rect(
             }
         )
         overlay_started = time.perf_counter()
+        ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
         master = MasterPlacementModel.from_exact_core(
             exact_session.core,
             ghost_rect=(int(ghost_w), int(ghost_h)),
             master_search_profile=master_search_profile,
             precomputed_boundary_port_feasibility=boundary_port_precheck,
+            ghost_anchor_filter=ghost_anchor_filter_override,
         )
         # audit A H1 修复: from_exact_core 路径也需要 hint persistence context.
         # 修前只 else 分支 (4823 line) 调, 168h 4 worker exact_core_reuse 主路径

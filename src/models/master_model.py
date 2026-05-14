@@ -14,6 +14,7 @@ Master Placement Model（主摆放模型）.
 from __future__ import annotations
 
 import copy
+import functools
 import json
 import math
 import os
@@ -2080,7 +2081,11 @@ class MasterPlacementModel:
         exact_mode: Optional[bool] = None,
         solve_mode: Optional[str] = None,
         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+        ghost_anchor_filter: Optional[Collection[Tuple[int, int]]] = None,
     ):
+        # ghost_anchor_filter: 限定 ghost rect 只在指定 (x,y) anchor 集合内建 u_var.
+        # None = 不过滤 (原行为); 空集 = 立即 infeasible. 用于 A 方案 anchor slicing
+        # PoC — 单 anchor master 量 RAM. PROJECT_LOCK 兼容 (filter=None 完全保留旧 behavior).
         model_shell_instrumentation_enabled = (
             resolve_ghost_signature_bucket_model_shell_instrumentation_enabled()
         )
@@ -2131,6 +2136,11 @@ class MasterPlacementModel:
             else {}
         )
         self.ghost_rect = ghost_rect
+        self.ghost_anchor_filter: Optional[FrozenSet[Tuple[int, int]]] = (
+            frozenset((int(x), int(y)) for x, y in ghost_anchor_filter)
+            if ghost_anchor_filter is not None
+            else None
+        )
         self.skip_power_coverage = skip_power_coverage
         self.enable_symmetry_breaking = enable_symmetry_breaking
         _record_model_shell_subphase(
@@ -2448,6 +2458,7 @@ class MasterPlacementModel:
         *,
         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
         precomputed_boundary_port_feasibility: Optional[Mapping[str, Any]] = None,
+        ghost_anchor_filter: Optional[Collection[Tuple[int, int]]] = None,
     ) -> "MasterPlacementModel":
         residual_overlay_instrumentation_enabled = (
             resolve_ghost_signature_bucket_residual_overlay_instrumentation_enabled()
@@ -2520,6 +2531,7 @@ class MasterPlacementModel:
             exact_required_pose_optional_counts=core.exact_required_pose_optional_counts,
             solve_mode="certified_exact",
             master_search_profile=normalized_master_search_profile,
+            ghost_anchor_filter=ghost_anchor_filter,
         )
         model_shell_subphase_seconds = (
             dict(getattr(model, "_model_shell_subphase_seconds", {}))
@@ -4454,8 +4466,13 @@ class MasterPlacementModel:
         self._ghost_domains.clear()
         self.u_vars.clear()
 
+        anchor_filter = self.ghost_anchor_filter
+        filtered_skipped = 0
         for anchor_x in range(self.grid_w - ghost_w + 1):
             for anchor_y in range(self.grid_h - ghost_h + 1):
+                if anchor_filter is not None and (int(anchor_x), int(anchor_y)) not in anchor_filter:
+                    filtered_skipped += 1
+                    continue
                 rect_idx = len(self._ghost_domains)
                 cells = [
                     (anchor_x + dx, anchor_y + dy)
@@ -4475,10 +4492,21 @@ class MasterPlacementModel:
 
         if not self.u_vars:
             self.model.Add(0 == 1)
+            reason = (
+                "anchor_filter_empty"
+                if anchor_filter is not None and not anchor_filter
+                else (
+                    "anchor_filter_excludes_all_anchors"
+                    if anchor_filter is not None
+                    else "rectangle larger than grid"
+                )
+            )
             self.build_stats["ghost_rect"] = {
                 "enabled": True,
                 "placements": 0,
-                "reason": "rectangle larger than grid",
+                "reason": reason,
+                "anchor_filter_applied": anchor_filter is not None,
+                "anchor_filter_skipped": int(filtered_skipped),
             }
             return
 
@@ -4491,6 +4519,8 @@ class MasterPlacementModel:
             "enabled": True,
             "placements": len(self._ghost_domains),
             "size": {"w": ghost_w, "h": ghost_h},
+            "anchor_filter_applied": anchor_filter is not None,
+            "anchor_filter_skipped": int(filtered_skipped),
         }
 
     def _add_port_clearance_constraints(self) -> None:
@@ -8784,12 +8814,16 @@ class MasterPlacementModel:
         }
 
     @staticmethod
+    @functools.lru_cache(maxsize=128)
     def _canonical_ghost_anchor_domains_for_rect(
         *,
         grid_w: int,
         grid_h: int,
         ghost_rect: Optional[Tuple[int, int]],
     ) -> Tuple[Dict[str, Any], ...]:
+        # cache 因为 memray finding (2026-05-15): 函数被 ~60 次调用 (每 candidate 重 build),
+        # 70x70 grid 上 42x32 ghost 单次 build ~85 MB tuple-of-dict, cumulative 5 GB.
+        # caller 只读 .get('cells'), 不 mutate, cache result safe.
         if not ghost_rect:
             return ()
         ghost_w, ghost_h = (int(ghost_rect[0]), int(ghost_rect[1]))
