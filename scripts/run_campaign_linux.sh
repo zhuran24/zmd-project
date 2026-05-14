@@ -108,15 +108,29 @@ fi
 args=("$@")
 has_resume=false
 is_campaign=false
+parallel_value=""
+prev_was_parallel=false
 for a in "${args[@]}"; do
+    if $prev_was_parallel; then
+        parallel_value="$a"
+        prev_was_parallel=false
+        continue
+    fi
     case "$a" in
         --resume-campaign|--resume-campaign=*) has_resume=true ;;
         --campaign-hours|--campaign-hours=*) is_campaign=true ;;
+        --parallel-processes) prev_was_parallel=true ;;
+        --parallel-processes=*) parallel_value="${a#--parallel-processes=}" ;;
     esac
 done
 if $is_campaign && ! $has_resume; then
     args+=("--resume-campaign")
     echo "[run_campaign_linux] 自动注入 --resume-campaign (audit F MED: 防崩溃重启忘加丢进度)"
+fi
+# Forward --parallel-processes 到 env 给 readiness gate 读 (gate 内部用 env, 不直接读 argv)
+if [[ -n "$parallel_value" ]]; then
+    export EXACT_PARALLEL_PROCESSES="$parallel_value"
+    echo "[run_campaign_linux] EXACT_PARALLEL_PROCESSES=$parallel_value (forwarded for readiness gate)"
 fi
 
 # ---------------------------------------------------------------------------
