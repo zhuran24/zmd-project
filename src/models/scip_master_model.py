@@ -29,6 +29,9 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 import pyscipopt as scip
 
+from src.models.highs_power_coverage import build_pole_cell_index
+from src.models.scip_power_separator import PowerCoverageSeparator
+
 
 @dataclass
 class ScipMinimumModel:
@@ -97,17 +100,28 @@ def build_scip_minimum_model(
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
     rules: Mapping[str, Any],
     ghost_rect: Optional[Tuple[int, int]] = None,
+    with_power_coverage_separator: bool = False,
 ) -> ScipMinimumModel:
-    """Build SCIP minimum model — 镜像 build_highs_minimum_model."""
+    """Build SCIP minimum model — 镜像 build_highs_minimum_model.
+
+    with_power_coverage_separator=True 时:
+      - 加 power_pole z_var 进 model + 进 cell occupancy
+      - register PowerCoverageSeparator (lazy cut, 不 upfront 加 4M rows)
+      - 关 heuristics (separator-only solve path)
+    """
     grid = dict(rules["globals"]["grid"])
     grid_w = int(grid["width"])
     grid_h = int(grid["height"])
 
     model = scip.Model()
     model.hideOutput()
+    if with_power_coverage_separator:
+        # disable heuristics to force LP-based search; separator runs on each LP node
+        model.setHeuristics(scip.SCIP_PARAMSETTING.OFF)
 
     z_var_by_group_pose: Dict[Tuple[str, int], Any] = {}
     u_var_by_anchor_idx: Dict[int, Any] = {}
+    pole_var_by_pose_idx: Dict[int, Any] = {}
     anchor_xy_by_idx: Dict[int, Tuple[int, int]] = {}
     cell_occupancy: Dict[Tuple[int, int], List[Any]] = defaultdict(list)
     group_z_vars: Dict[str, List[Any]] = defaultdict(list)
@@ -135,6 +149,16 @@ def build_scip_minimum_model(
             z_var_by_group_pose[(group_id, pose_idx)] = v
             group_z_vars[group_id].append(v)
             for cell in _pose_occupied_cells(pose):
+                cx, cy = cell
+                if 0 <= cx < grid_w and 0 <= cy < grid_h:
+                    cell_occupancy[(cx, cy)].append(v)
+
+    if with_power_coverage_separator:
+        pole_pool = list(facility_pools.get("power_pole", []))
+        for pole_idx, pole_pose in enumerate(pole_pool):
+            v = model.addVar(vtype="B", name=f"pole_{pole_idx}")
+            pole_var_by_pose_idx[pole_idx] = v
+            for cell in _pose_occupied_cells(pole_pose):
                 cx, cy = cell
                 if 0 <= cx < grid_w and 0 <= cy < grid_h:
                     cell_occupancy[(cx, cy)].append(v)
@@ -175,6 +199,29 @@ def build_scip_minimum_model(
 
     model.setObjective(0, "minimize")
 
+    separator_attached = False
+    if with_power_coverage_separator and pole_var_by_pose_idx:
+        pole_pool = list(facility_pools.get("power_pole", []))
+        pole_cell_index = build_pole_cell_index(pole_pool)
+        sepa = PowerCoverageSeparator(
+            z_var_by_group_pose=z_var_by_group_pose,
+            pole_var_by_pose_idx=pole_var_by_pose_idx,
+            facility_pools=facility_pools,
+            mandatory_groups=mandatory_groups,
+            pole_cell_index=pole_cell_index,
+        )
+        model.includeSepa(
+            sepa,
+            "power_coverage",
+            "lazy power_coverage cut",
+            priority=10**6,
+            freq=1,
+            maxbounddist=1.0,
+            usessubscip=False,
+            delay=False,
+        )
+        separator_attached = True
+
     return ScipMinimumModel(
         model=model,
         z_var_by_group_pose=z_var_by_group_pose,
@@ -187,7 +234,10 @@ def build_scip_minimum_model(
             "mandatory_group_count": len(mandatory_groups),
             "z_var_count": len(z_var_by_group_pose),
             "u_var_count": len(u_var_by_anchor_idx),
+            "pole_var_count": len(pole_var_by_pose_idx),
             "cell_occupancy_constraint_count": cell_occupancy_constraint_count,
+            "with_power_coverage_separator": with_power_coverage_separator,
+            "separator_attached": separator_attached,
             "ghost_rect": ghost_rect,
             "grid": {"width": grid_w, "height": grid_h},
             "infeasible_marker_added": infeasible_marker_added,
