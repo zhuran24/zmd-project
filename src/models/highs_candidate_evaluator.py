@@ -35,7 +35,7 @@ from src.models.highs_master_model import build_highs_minimum_model
 class HighsCandidateEvaluator:
     """Build + solve HiGHS model for a single ghost-rect candidate."""
 
-    project_root: Path
+    project_root: Optional[Path] = None
     include_power_coverage: bool = False
     instances: Sequence[Mapping[str, Any]] = field(default_factory=tuple)
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]] = field(
@@ -44,9 +44,33 @@ class HighsCandidateEvaluator:
     rules: Mapping[str, Any] = field(default_factory=dict)
     _loaded: bool = False
 
+    @classmethod
+    def from_in_memory(
+        cls,
+        *,
+        instances: Sequence[Mapping[str, Any]],
+        facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+        rules: Mapping[str, Any],
+        include_power_coverage: bool = False,
+    ) -> "HighsCandidateEvaluator":
+        """In-memory data 注入, 跳过 project_root file loading (unit test 用)."""
+        return cls(
+            project_root=None,
+            include_power_coverage=include_power_coverage,
+            instances=tuple(instances),
+            facility_pools=facility_pools,
+            rules=rules,
+            _loaded=True,
+        )
+
     def _load_project_data(self) -> None:
         if self._loaded:
             return
+        if self.project_root is None:
+            raise ValueError(
+                "HighsCandidateEvaluator: 既无 project_root 又未通过 "
+                "from_in_memory 注入 instances/pools/rules"
+            )
         root = Path(self.project_root)
         with open(root / "data/preprocessed/mandatory_exact_instances.json") as f:
             payload = json.load(f)
