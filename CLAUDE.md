@@ -187,6 +187,34 @@ bash scripts/run_campaign_linux.sh --vis
 启动 168h campaign **必须**用这个 wrapper（直接 `python main.py` 会丢两件套
 的收益）；readiness gate 9/9 项检查会自动 flag 漏配置。
 
+### Community blueprint hint 注入 (D step 2, 2026-05-16 落地)
+
+```bash
+# 用用户手调 IP v2 blueprint 生成 master.solve hint JSON
+python scripts/blueprint_to_master_hint.py
+# 默认输入 /home/zhuran24/下载/BP-2026-05-13 08_35_36.blueprint(1).json
+# 默认输出 data/hints/blueprint_2026_05_13_master_hint.json (225 entries)
+
+# Trial 启动时 wrapper 自动注入 EXACT_COMMUNITY_BLUEPRINT_HINT_PATH
+bash scripts/run_campaign_p2_workers1.sh --campaign-hours 24.0
+
+# 跑完用 analyze 脚本对比 baseline vs hint (UNKNOWN→FEASIBLE 等升级信号)
+python scripts/analyze_hint_vs_baseline.py BASELINE_STATE.json HINT_STATE.json
+```
+
+机制：
+- `scripts/blueprint_to_master_hint.py` 读 IP v2 blueprint, 产 `Dict[instance_id, pose_idx]`
+- rotation → (orientation, port_mode) 映射 hand-verified 10 sample 100% match
+- `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` env 让 `benders_loop._run_certified_exact` 在每个 candidate 初始 greedy hint 后 merge 进 community hint (community 覆盖 greedy on overlap, 因为 user-curated > heuristic)
+- 然后正常 `master.solve(solution_hint=...)` → `apply_solution_hint` 调 AddHint per slot
+- production wrappers (run_campaign_p2_workers1.sh / workers2.sh) default 自动注入
+
+适用 candidate 范围：blueprint natural max empty rect = 15×27 = area 405. 项目 certified path 从 large area 往下扫, hint 只对 area ≤ 500 + min_side ≥ 10 范围有意义. 大 area candidate (>1000) hint 几何不可能 match.
+
+测试 / 回归保护：
+- `src/tests/test_blueprint_to_master_hint.py` — 10 hand-verified sample (rotation×facility_type combo)
+- `src/tests/test_community_hint_env_injection.py` — 9 edge case (empty/missing/malformed/非 int)
+
 ### 停止 168h campaign（清残留）
 
 ```bash
