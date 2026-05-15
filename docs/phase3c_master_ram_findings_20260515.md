@@ -76,6 +76,16 @@ spike#6 confirms).
 - workers=1 wall 更慢, 但 RAM 最低.
 - 24h trial 是验证 quality 关键 gate.
 
+## Round 4 candidates (post round 1-3)
+
+Subagent a376920340 调研 round 4, 但 verify 后实际状态:
+
+| Path | Status | Note |
+|---|---|---|
+| Path A: CpSolverSolutionCallback RSS-aware StopSearch | TODO 2-4h | 防 OOM 雪崩, 7-12% wall. workers=2 plateau 17 GB << 30 GB 后 ROI 减小. defer 到 workers=2 production 后 verify 是否还需 |
+| Path B: 静态 outer-frontier infeasibility prune | **已 implemented** (subagent 错判) | `compute_exact_static_area_lower_bound` + `safe_area_upper_bound` 已 cap, 2145 → 1196 candidates (-44%). 真实 lower bound 3553 cells (mandatory 3544 + protocol_storage_box min 9), max ghost area 1347 |
+| Path C-F: pose dominance / mode collapse / preprocess analysis / branch-and-cut | KILL | round 1-3 already covered or no API |
+
 ## 不会再走的 paths (避免下次浪费时间)
 
 1. **CP-SAT 参数 tune (除 num_search_workers)**: 30+ params 试过, 全 0 改善.
