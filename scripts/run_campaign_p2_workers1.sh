@@ -26,6 +26,10 @@ cd "$(dirname "$0")/.."
 # 若 24h trial 实测 RSS 涨 → 调到 16 GB +25% conservative buffer.
 export EXACT_MASTER_CP_SAT_WORKERS="${EXACT_MASTER_CP_SAT_WORKERS:-1}"
 export EXACT_GATE_WORKER_PEAK_RSS_GIB="${EXACT_GATE_WORKER_PEAK_RSS_GIB:-14}"
+# Workers=1 search 弱, master.solve 大量 UNKNOWN (实测 trial 4 candidate 全
+# UNKNOWN 后 main.py 自动 stop). 加 EXACT_OUTER_SKIP_UNKNOWN=1 让 outer
+# 继续 next candidate 不 stop. 24h trial 实测必须.
+export EXACT_OUTER_SKIP_UNKNOWN="${EXACT_OUTER_SKIP_UNKNOWN:-1}"
 
 # default --parallel-processes 2 if user 不显式 set
 PARALLEL_SET=false

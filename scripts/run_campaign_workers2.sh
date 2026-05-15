@@ -20,6 +20,8 @@ cd "$(dirname "$0")/.."
 # (per-worker peak estimate for readiness gate OOM check).
 export EXACT_MASTER_CP_SAT_WORKERS="${EXACT_MASTER_CP_SAT_WORKERS:-2}"
 export EXACT_GATE_WORKER_PEAK_RSS_GIB="${EXACT_GATE_WORKER_PEAK_RSS_GIB:-20.5}"
+# 防 main.py 在 UNKNOWN 后 auto-stop (实测 workers≤2 trial 大量 UNKNOWN)
+export EXACT_OUTER_SKIP_UNKNOWN="${EXACT_OUTER_SKIP_UNKNOWN:-1}"
 
 echo "[run_campaign_workers2] EXACT_MASTER_CP_SAT_WORKERS=$EXACT_MASTER_CP_SAT_WORKERS"
 echo "[run_campaign_workers2] EXACT_GATE_WORKER_PEAK_RSS_GIB=$EXACT_GATE_WORKER_PEAK_RSS_GIB"
