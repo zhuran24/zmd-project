@@ -43,32 +43,49 @@ OR-Tools 9.15 source ([cp_model_solver.cc](https://raw.githubusercontent.com/goo
 理论. spike#5 实测 16.4 GB (subagent 估值偏 optimistic; 实际 workers=2 选
 default_lp + no_lp 都是 LP-heaviest, 比 average worker 重).
 
-## production roll-out plan (实施前需 spike#6 数据)
+## production roll-out plan (spike#6 数据已 verified)
 
-### Step 1: spike#6 (workers=1) verify
+### Step 1: spike#6 (workers=1) VERIFIED 12.78 GB plateau
+
+13:01-13:04 elapsed 11-13 min, RSS 12.77-12.78 GB **rock stable**. 13:21 elapsed
+仍 12.78 GB. workers=1 master.solve 真 plateau 12.78 GB.
+
+**-p 2 + workers=1 数学**: 2 × 12.78 × 1.10 + 8 = **36 GB < 40 GB idle avail**
+(4 GB headroom). 解锁 -p 2 production 任务 #67 实质命中.
+
+### Step 2: 24h trial validate quality (workers=1 + -p 2)
 
 ```bash
-EXACT_MASTER_CP_SAT_WORKERS=1 bash scripts/run_campaign_linux.sh \
-  --campaign-hours 0.5 --parallel-processes 1 --resume-campaign
+bash scripts/run_campaign_p2_workers1.sh --campaign-hours 24 --resume-campaign
 ```
 
-期望 peak ≤ 14 GB.
+wrapper 已 land (commit 9ace1d2), env auto-set:
+- EXACT_MASTER_CP_SAT_WORKERS=1
+- EXACT_GATE_WORKER_PEAK_RSS_GIB=14 (+10% buffer over 12.78 plateau)
+- 默认 --parallel-processes 2
 
-### Step 2: 短跑 24h trial validate quality
-
-```bash
-EXACT_MASTER_CP_SAT_WORKERS=2 EXACT_GATE_WORKER_PEAK_RSS_GIB=20 \
-  bash scripts/run_campaign_linux.sh \
-    --campaign-hours 24 --parallel-processes 1 --resume-campaign
-```
-
-检查: candidates_proven_per_hour, master_avg_wall_s, 是否 INFEASIBLE 假阳性
-(workers=2 search 弱 vs 8).
+检查 (24h 后):
+- RAM peak 真值 (vs spike 12.78 GB)
+- candidates_proven_per_hour (vs baseline 8-worker)
+- master_avg_wall_s
+- workers=1 是否 INFEASIBLE 假阳性 (search diversity 弱)
 
 ### Step 3: 168h production (if Step 2 OK)
 
-切到 -p 1 + workers=2 (稳定收益), 或 -p 2 + workers=1 (throughput 2x if
-spike#6 confirms).
+```bash
+bash scripts/run_campaign_p2_workers1.sh --campaign-hours 168 --resume-campaign
+```
+
+throughput 期望 2x (双 outer parallel), wall per-candidate 可能 slower
+(workers=1 search 弱). net 看 24h trial.
+
+### Fallback path
+
+若 workers=1 quality 不可接受:
+```bash
+bash scripts/run_campaign_workers2.sh --campaign-hours 168 --parallel-processes 1
+```
+workers=2 + -p 1 = 24 GB peak, 稳定 baseline (commit 16d8a1c wrapper).
 
 ### 风险
 
@@ -82,7 +99,7 @@ Subagent a376920340 调研 round 4, 但 verify 后实际状态:
 
 | Path | Status | Note |
 |---|---|---|
-| Path A: CpSolverSolutionCallback RSS-aware StopSearch | TODO 2-4h | 防 OOM 雪崩, 7-12% wall. workers=2 plateau 17 GB << 30 GB 后 ROI 减小. defer 到 workers=2 production 后 verify 是否还需 |
+| Path A: CpSolverSolutionCallback RSS-aware StopSearch | **KILL** | CP-SAT `CpSolverSolutionCallback.OnSolutionCallback` 只在 intermediate feasible solution 触发. master 当前 0 feasible 找到 → callback never fires → RSS gate 永不 trigger. 外部 watcher (SIGTERM on RSS) 是 OS OOM kill 等价, 无新功能 |
 | Path B: 静态 outer-frontier infeasibility prune | **已 implemented** (subagent 错判) | `compute_exact_static_area_lower_bound` + `safe_area_upper_bound` 已 cap, 2145 → 1196 candidates (-44%). 真实 lower bound 3553 cells (mandatory 3544 + protocol_storage_box min 9), max ghost area 1347 |
 | Path C-F: pose dominance / mode collapse / preprocess analysis / branch-and-cut | KILL | round 1-3 already covered or no API |
 
