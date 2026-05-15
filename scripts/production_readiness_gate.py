@@ -341,8 +341,19 @@ def check_oom_headroom(gate: Gate) -> None:
     parallel 从 EXACT_PARALLEL_PROCESSES env (跟 main.py / wrapper 一致),
     缺省 4. 48 GB 本机现状: -p 1 marginal, -p ≥ 2 必 OOM.
     """
-    WORKER_PEAK_RSS_GIB = 30.0
+    # 2026-05-15 spike#5 (workers=2) plateau 16.4 GB (vs baseline 30 GB at workers=8).
+    # 加 env override 让 production 跑 workers≠8 时 set tight peak (worker-aware).
+    # Default 30 GB 保持 baseline 行为不变 (backwards compatible).
+    # 详 [[project_30gb_real_culprit_power_coverage]].
+    WORKER_PEAK_RSS_GIB_DEFAULT = 30.0
     HOST_OVERHEAD_GIB = 8.0
+    peak_override = os.environ.get("EXACT_GATE_WORKER_PEAK_RSS_GIB", "").strip()
+    try:
+        WORKER_PEAK_RSS_GIB = float(peak_override) if peak_override else WORKER_PEAK_RSS_GIB_DEFAULT
+        if WORKER_PEAK_RSS_GIB <= 0:
+            WORKER_PEAK_RSS_GIB = WORKER_PEAK_RSS_GIB_DEFAULT
+    except ValueError:
+        WORKER_PEAK_RSS_GIB = WORKER_PEAK_RSS_GIB_DEFAULT
     parallel_str = os.environ.get("EXACT_PARALLEL_PROCESSES", "4")
     try:
         parallel = int(parallel_str)
