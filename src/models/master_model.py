@@ -30,6 +30,7 @@ from src.models.cp_sat_worker_config import (
     DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS,
     DEFAULT_MASTER_CP_SAT_WORKERS,
     apply_master_cp_sat_strong_disjunctive_propagation,
+    apply_master_cp_sat_lp_subsolver_filter,
     apply_master_cp_sat_subsolver_filter,
     apply_subproblem_memory_cap,
     resolve_cp_sat_worker_count,
@@ -11171,6 +11172,10 @@ class MasterPlacementModel:
         # Phase 3C P0 #4 #8 (env-gated): stronger no_overlap_2d propagation.
         # Default off; A/B benchmark via env to validate cost/benefit.
         apply_master_cp_sat_strong_disjunctive_propagation(solver)
+        # Phase 3C subagent #5 (2026-05-15): env-gated LP-subsolver ignore
+        # ("EXACT_MASTER_IGNORE_LP_SUBSOLVERS=1"). Default off. 实测 spike 验
+        # RAM -20~40% 期望.
+        apply_master_cp_sat_lp_subsolver_filter(solver)
         # Phase 3C P1 #11 (PT-style portfolio): allow per-process random_seed
         # override so multi-process invocation can spawn parallel-tempering
         # diverse search trajectories. Default falls back to CP-SAT default

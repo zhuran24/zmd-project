@@ -229,3 +229,39 @@ def apply_master_cp_sat_strong_disjunctive_propagation(solver) -> bool:
         return False
     solver.parameters.use_strong_propagation_in_disjunctive = True
     return True
+
+
+# Phase 3C subagent finding #5 (2026-05-15 第二轮 web 调研): ignore LP-based
+# subsolvers 减 RAM. LP relaxation tableau 在我们 max_lex(area, min_side) packing
+# 上 weak (前轮 B' sweep 已验), 关掉应能减 RAM. cpsat-primer
+# (07_under_the_hood "quick_restart_no_lp could help reduce memory overhead")
+# 隐含同方向.
+EXACT_MASTER_IGNORE_LP_SUBSOLVERS_ENV = "EXACT_MASTER_IGNORE_LP_SUBSOLVERS"
+
+
+# LP-based subsolver names (ortools 9.15, see cp_model_search.cc).
+# 关掉这些 → 所有 worker 只剩 fixed / no_lp / quick_restart_no_lp 等 LP-free path.
+MASTER_LP_SUBSOLVERS_TO_IGNORE_ON_DEMAND = (
+    "default_lp",
+    "max_lp",
+    "pseudo_costs",
+    "reduced_costs",
+    "core",
+)
+
+
+def apply_master_cp_sat_lp_subsolver_filter(solver) -> bool:
+    """Optionally ignore LP-based subsolvers to reduce LP relaxation RAM.
+
+    env-gated. default off (走标准 portfolio). env on 时把 5 个 LP-based
+    subsolver 加到 ignore_subsolvers, 让 portfolio 只剩 LP-free worker
+    (fixed / no_lp / quick_restart_no_lp 等).
+
+    Returns True if LP subsolvers were ignored, False otherwise.
+    """
+    raw = os.getenv(EXACT_MASTER_IGNORE_LP_SUBSOLVERS_ENV, "").strip().lower()
+    if raw not in {"1", "true", "yes", "on"}:
+        return False
+    for name in MASTER_LP_SUBSOLVERS_TO_IGNORE_ON_DEMAND:
+        solver.parameters.ignore_subsolvers.append(name)
+    return True
