@@ -3562,6 +3562,48 @@ class LBBDController:
         self._greedy_hint = dict(warm_start.get("solution_hint", {}))
         self._greedy_hint_instances = len(self._greedy_hint)
         self._used_greedy_hint = False
+        self._community_hint_path = os.environ.get(
+            "EXACT_COMMUNITY_BLUEPRINT_HINT_PATH", ""
+        ).strip()
+        self._community_hint_overrides = 0
+        self._community_hint_additions = 0
+        if self._community_hint_path:
+            try:
+                community_hint_raw = json.loads(
+                    Path(self._community_hint_path).read_text()
+                )
+            except FileNotFoundError:
+                print(
+                    f"[community-hint] file not found: {self._community_hint_path} — skipping",
+                    flush=True,
+                )
+                community_hint_raw = {}
+            except json.JSONDecodeError as exc:
+                print(
+                    f"[community-hint] JSON parse failed: {self._community_hint_path}: {exc} — skipping",
+                    flush=True,
+                )
+                community_hint_raw = {}
+            for inst_id, pose_idx in dict(community_hint_raw or {}).items():
+                try:
+                    pose_idx_int = int(pose_idx)
+                except (TypeError, ValueError):
+                    continue
+                key = str(inst_id)
+                if key in self._greedy_hint:
+                    if self._greedy_hint[key] != pose_idx_int:
+                        self._community_hint_overrides += 1
+                else:
+                    self._community_hint_additions += 1
+                self._greedy_hint[key] = pose_idx_int
+            self._greedy_hint_instances = len(self._greedy_hint)
+            print(
+                f"[community-hint] loaded {self._community_hint_path}: "
+                f"+{self._community_hint_additions} additions, "
+                f"{self._community_hint_overrides} overrides, "
+                f"total hinted instances now {self._greedy_hint_instances}",
+                flush=True,
+            )
         self._master_hinted_literals = 0
         self._ghost_anchor_hint_applied = False
         raw_ghost_anchor_hint_idx = warm_start.get("ghost_anchor_hint_idx")
