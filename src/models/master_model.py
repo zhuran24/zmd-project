@@ -102,6 +102,20 @@ EXACT_MASTER_LINEARIZATION_LEVEL_ENV = "EXACT_MASTER_LINEARIZATION_LEVEL"
 EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC_ENV = "EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC"
 EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING_ENV = "EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING"
 EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE_ENV = "EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE"
+# 2026-05-15 第二批 subagent (a604f30c) finding: 3 个 master 没设过的 CP-SAT
+# 参数, default OR-Tools 默认, env 显式 set 触发 spike. 详 [[project_rewrite_path_exhausted]].
+EXACT_MASTER_CLAUSE_CLEANUP_PERIOD_ENV = "EXACT_MASTER_CLAUSE_CLEANUP_PERIOD"
+EXACT_MASTER_NO_OVERLAP_2D_BOOLEAN_RELATIONS_LIMIT_ENV = (
+    "EXACT_MASTER_NO_OVERLAP_2D_BOOLEAN_RELATIONS_LIMIT"
+)
+EXACT_MASTER_PRESOLVE_EXTRACT_INTEGER_ENFORCEMENT_ENV = (
+    "EXACT_MASTER_PRESOLVE_EXTRACT_INTEGER_ENFORCEMENT"
+)
+# 2026-05-15 第三批 subagent (a603820f) finding: v9.15 proto 一手 docstring 验过.
+# table_compression_level docstring 直说"less Booleans and faster propagation",
+# 直接抠 propagation table (30 GB 大头). linear_split_size 改 watch list 拓扑.
+EXACT_MASTER_TABLE_COMPRESSION_LEVEL_ENV = "EXACT_MASTER_TABLE_COMPRESSION_LEVEL"
+EXACT_MASTER_LINEAR_SPLIT_SIZE_ENV = "EXACT_MASTER_LINEAR_SPLIT_SIZE"
 # P1 #7c prep: 让 master CpSolver 在 response 里返回 worker 收紧后的变量域。
 # 这是 CP-SAT 公开的唯一"跨 solve 传 dual 信息"通道，给 ε-Certified 三阶
 # 段下一波用作初始域上界。default=True (启用); env "0/false/no/off" 关闭。
@@ -11282,6 +11296,50 @@ class MasterPlacementModel:
                 solver.parameters.use_try_edge_reasoning_in_no_overlap_2d = bool(
                     no_overlap_try_edge
                 )
+            # 2026-05-15 第二批 subagent finding: 3 个 master 没设过参数 env hook.
+            # default 走 OR-Tools 默认 (clause_cleanup_period=10000,
+            # no_overlap_2d_boolean_relations_limit=default, presolve_extract_integer_enforcement=True).
+            # env 显式 set 触发 spike, 详 [[project_rewrite_path_exhausted]] 第三批.
+            clause_cleanup_period = _resolve_optional_nonnegative_int_env(
+                EXACT_MASTER_CLAUSE_CLEANUP_PERIOD_ENV
+            )
+            if clause_cleanup_period is not None and hasattr(
+                solver.parameters, "clause_cleanup_period"
+            ):
+                solver.parameters.clause_cleanup_period = int(clause_cleanup_period)
+            no_overlap_2d_boolean_relations_limit = _resolve_optional_nonnegative_int_env(
+                EXACT_MASTER_NO_OVERLAP_2D_BOOLEAN_RELATIONS_LIMIT_ENV
+            )
+            if no_overlap_2d_boolean_relations_limit is not None and hasattr(
+                solver.parameters, "no_overlap_2d_boolean_relations_limit"
+            ):
+                solver.parameters.no_overlap_2d_boolean_relations_limit = int(
+                    no_overlap_2d_boolean_relations_limit
+                )
+            presolve_extract_integer_enforcement = _resolve_optional_bool_env(
+                EXACT_MASTER_PRESOLVE_EXTRACT_INTEGER_ENFORCEMENT_ENV
+            )
+            if presolve_extract_integer_enforcement is not None and hasattr(
+                solver.parameters, "presolve_extract_integer_enforcement"
+            ):
+                solver.parameters.presolve_extract_integer_enforcement = bool(
+                    presolve_extract_integer_enforcement
+                )
+            # 2026-05-15 第三批 subagent finding: table_compression_level + linear_split_size.
+            table_compression_level = _resolve_optional_nonnegative_int_env(
+                EXACT_MASTER_TABLE_COMPRESSION_LEVEL_ENV
+            )
+            if table_compression_level is not None and hasattr(
+                solver.parameters, "table_compression_level"
+            ):
+                solver.parameters.table_compression_level = int(table_compression_level)
+            linear_split_size = _resolve_optional_nonnegative_int_env(
+                EXACT_MASTER_LINEAR_SPLIT_SIZE_ENV
+            )
+            if linear_split_size is not None and hasattr(
+                solver.parameters, "linear_split_size"
+            ):
+                solver.parameters.linear_split_size = int(linear_split_size)
             # audit A H3 修复: 启用 repair_hint 让 solver 修补部分过期 hint
             # 而不是全 reject. 跨 wave hint reuse 场景必需 (warm-start hint
             # 来自上一 wave, 后续 wave cut 让部分变量值过期).
