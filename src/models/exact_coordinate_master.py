@@ -1935,6 +1935,21 @@ class CoordinateExactMasterDelegate:
             + sum(int(v) for v in self.owner._exact_fixed_required_optional_powered_demands().values())
             + sum(int(v) for v in self.owner._residual_optional_powered_slot_upper_bounds().values())
         )
+        # 2026-05-15 spike hook: env-gated tight upper bound override.
+        # 默认 763 是 worst-case (per powered_slot 1 pole). 实际 radius=5
+        # 一个 pole cover ~12 cells, 估真需 60-100. env 显式 set 触发 spike,
+        # 验 RAM 峰值减幅. 详 [[project_30gb_real_culprit_power_coverage]].
+        # 风险: 若 instance 真需要 > override 个 pole, master INFEASIBLE 假阳性.
+        # default 不动, env 缺/garbage no-op.
+        import os as _os
+        override_env = _os.environ.get("EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE", "").strip()
+        if override_env:
+            try:
+                override_val = int(override_env)
+                if 0 < override_val < self._power_pole_slot_upper_bound:
+                    self._power_pole_slot_upper_bound = override_val
+            except ValueError:
+                pass
         if self.owner.skip_power_coverage:
             return
         powered_template_demands = self.owner._exact_powered_template_demands()
