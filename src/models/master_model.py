@@ -97,6 +97,10 @@ EXACT_MASTER_CP_MODEL_PRESOLVE_ENV = "EXACT_MASTER_CP_MODEL_PRESOLVE"
 EXACT_MASTER_CP_MODEL_PROBING_LEVEL_ENV = "EXACT_MASTER_CP_MODEL_PROBING_LEVEL"
 EXACT_MASTER_SYMMETRY_LEVEL_ENV = "EXACT_MASTER_SYMMETRY_LEVEL"
 EXACT_MASTER_HINT_CONFLICT_LIMIT_ENV = "EXACT_MASTER_HINT_CONFLICT_LIMIT"
+EXACT_MASTER_LINEARIZATION_LEVEL_ENV = "EXACT_MASTER_LINEARIZATION_LEVEL"
+EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC_ENV = "EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC"
+EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING_ENV = "EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING"
+EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE_ENV = "EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE"
 # P1 #7c prep: 让 master CpSolver 在 response 里返回 worker 收紧后的变量域。
 # 这是 CP-SAT 公开的唯一"跨 solve 传 dual 信息"通道，给 ε-Certified 三阶
 # 段下一波用作初始域上界。default=True (启用); env "0/false/no/off" 关闭。
@@ -11235,6 +11239,44 @@ class MasterPlacementModel:
                     1000,
                 )
             solver.parameters.hint_conflict_limit = int(hint_conflict_limit)
+            # Phase 3C subagent 调研 finding #3: 4 个未 tuning 参数 (env-gated,
+            # default 走 OR-Tools 默认值).
+            #   linearization_level (default 1, set 2 期望 wall -10~30%, RAM +5~15%)
+            #   no_overlap_2d 三件套 (default False, set True 期望 wall -10~20% on packing)
+            linearization_level = _resolve_optional_nonnegative_int_env(
+                EXACT_MASTER_LINEARIZATION_LEVEL_ENV
+            )
+            if linearization_level is not None and hasattr(
+                solver.parameters, "linearization_level"
+            ):
+                solver.parameters.linearization_level = int(linearization_level)
+            no_overlap_area_energetic = _resolve_optional_bool_env(
+                EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC_ENV
+            )
+            if no_overlap_area_energetic is not None and hasattr(
+                solver.parameters, "use_area_energetic_reasoning_in_no_overlap_2d"
+            ):
+                solver.parameters.use_area_energetic_reasoning_in_no_overlap_2d = bool(
+                    no_overlap_area_energetic
+                )
+            no_overlap_timetabling = _resolve_optional_bool_env(
+                EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING_ENV
+            )
+            if no_overlap_timetabling is not None and hasattr(
+                solver.parameters, "use_timetabling_in_no_overlap_2d"
+            ):
+                solver.parameters.use_timetabling_in_no_overlap_2d = bool(
+                    no_overlap_timetabling
+                )
+            no_overlap_try_edge = _resolve_optional_bool_env(
+                EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE_ENV
+            )
+            if no_overlap_try_edge is not None and hasattr(
+                solver.parameters, "use_try_edge_reasoning_in_no_overlap_2d"
+            ):
+                solver.parameters.use_try_edge_reasoning_in_no_overlap_2d = bool(
+                    no_overlap_try_edge
+                )
             # audit A H3 修复: 启用 repair_hint 让 solver 修补部分过期 hint
             # 而不是全 reject. 跨 wave hint reuse 场景必需 (warm-start hint
             # 来自上一 wave, 后续 wave cut 让部分变量值过期).
