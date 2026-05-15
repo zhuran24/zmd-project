@@ -23,7 +23,14 @@ export EXACT_GATE_WORKER_PEAK_RSS_GIB="${EXACT_GATE_WORKER_PEAK_RSS_GIB:-20.5}"
 # 防 main.py 在 UNKNOWN 后 auto-stop (实测 workers≤2 trial 大量 UNKNOWN)
 export EXACT_OUTER_SKIP_UNKNOWN="${EXACT_OUTER_SKIP_UNKNOWN:-1}"
 
+# Community blueprint hint (D step 2): 跟 run_campaign_p2_workers1.sh 同一 default
+ZMD_DEFAULT_COMMUNITY_HINT="$(pwd)/data/hints/blueprint_2026_05_13_master_hint.json"
+if [ -z "${EXACT_COMMUNITY_BLUEPRINT_HINT_PATH+x}" ] && [ -f "$ZMD_DEFAULT_COMMUNITY_HINT" ]; then
+    export EXACT_COMMUNITY_BLUEPRINT_HINT_PATH="$ZMD_DEFAULT_COMMUNITY_HINT"
+fi
+
 echo "[run_campaign_workers2] EXACT_MASTER_CP_SAT_WORKERS=$EXACT_MASTER_CP_SAT_WORKERS"
 echo "[run_campaign_workers2] EXACT_GATE_WORKER_PEAK_RSS_GIB=$EXACT_GATE_WORKER_PEAK_RSS_GIB"
+echo "[run_campaign_workers2] EXACT_COMMUNITY_BLUEPRINT_HINT_PATH=${EXACT_COMMUNITY_BLUEPRINT_HINT_PATH:-<unset>}"
 
 exec bash scripts/run_campaign_linux.sh "$@"
