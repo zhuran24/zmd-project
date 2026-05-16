@@ -1,3 +1,22 @@
+"""[Codex-era artifact dependent] 永远 skip (除非 artifact 再生).
+
+这个测试导入 scripts/build_phase3b_*_probe_review (或类似), 后者读取 Codex
+session (2026-04-30) 产生的 tuning artifact:
+  .artifacts/phase3b_local_13900ks_tuning_20260430/126_signature_bucket_powered_support_coverer_probe_review/
+    signature_bucket_powered_support_coverer_probe_review.json
+
+该 artifact 是 GPT-Codex workspace 实验产物, 未迁移到当前 project. src/tests/conftest.py
+的 fixture guard `_missing_phase3b_signature_bucket_powered_support_coverer_artifact`
+检测缺失时自动 skip 整个文件, 不报错.
+
+保留原因 (per memory `feedback_cleanup_preserve_clarify` — 不丢东西原则):
+- 历史 reference: 看 Phase 3B signature bucket 调研当时的 verification 逻辑
+- 万一未来重生 artifact (e.g. 复现 Codex 实验), 这测试可以直接 re-enable
+- 删了会丢历史, 留着零运行成本 (conftest skip 一次)
+
+如果将来要清理, 必须**先**确认 artifact 不会复现 + 没人需要历史参考, 再批量删.
+"""
+
 from __future__ import annotations
 
 import json
