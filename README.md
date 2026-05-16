@@ -1,5 +1,24 @@
 # Endfield exact refactor project
 
+> **项目状态地图 (2026-05-16)**
+>
+> | Phase | 状态 | 说明 |
+> |---|---|---|
+> | **3A** delivery / productization | ✅ 完成 | release `r20260416` 已交付; viewer / landing / frontdoor / entrypoints 全打通 |
+> | **3B** full-scale exact proof | ▶ 进行中 | 70×70 max_lex(area, min_side) 严格证明; 当前 0 FEASIBLE, 主线 lever 已 verify 9 条死路 (见 `docs/lever_verdicts.md`) |
+> | **3C** 加速 / 路线优化 | 📋 规划 + 实测 | 4 lanes (safety / tuning / AI sidecar / runtime); 见 `docs/phase3c_optimization_roadmap_v1.md` |
+>
+> **进入项目的入口**:
+> - 求解器架构 + Phase 状态 + commands: `CLAUDE.md` (操作手册)
+> - 精确性宪法 + 禁条 + accepted invariants: `PROJECT_LOCK.md`
+> - 每个文件运行时角色 + 信任状态: `FILE_STATUS.md`
+> - 已试过的所有 master 加速 lever + 实测 verdict: `docs/lever_verdicts.md`
+> - 所有 `EXACT_*` env 集中索引: `docs/env_variable_index.md`
+> - Phase 3B 详细 endgame plan: `docs/phase3b_exact_endgame_execution_plan.md`
+> - 操作脚本一览 (启 168h, 停, watchdog): `CLAUDE.md` 中 Commands / Maintenance scripts 段
+
+---
+
 This repository currently has one active user-facing IndustrialPlanner line:
 `valley4_protocol_core` on the 70×70 base.
 
