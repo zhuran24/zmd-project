@@ -6,6 +6,40 @@ Benders loop entrypoint（Benders 循环入口）.
 2. exploratory 路径继续沿用 flow-driven 协同求解。
 3. certified_exact 路径改为 flow 仅作诊断，binding/routing 给正式证据。
 4. exact 路径只使用 safe static occupied-area lower bound。
+
+文件目录索引 (≈5550 行, 行号大约值, vintage 2026-05-16):
+- L1-50     模块 docstring + imports
+- L95-510   工具函数 helpers:
+    L95     _normalize_solve_mode (certified_exact / exploratory)
+    L108-300 anchor119 row domain guard advisory 系列 (Phase 3B)
+    L302-385 env resolvers (precheck max anchors, time budgets, log heartbeat lines)
+    L386    _resolve_ghost_anchor_filter_from_env
+    L445-510 instance solve_mode 归一化
+- L803-840  static area lower bound 计算 (safe LB for cuts)
+- L842-985  certification blockers 收集
+- L986      class ExactSearchSession — 单 candidate 的搜索会话
+- L1039     create_exact_search_session (工厂)
+- L1057-1700 precheck / proof summary / boundary port 兼容性
+- L1917     class LBBDController — Benders 主循环驱动 (主类)
+- L3464     LBBDController.run_with_status (公开入口)
+- L3558     _run_certified_exact (certified 路径主体, 含 warm-start + community hint)
+    L3562    self._greedy_hint = warm_start["solution_hint"]
+    L3565    EXACT_COMMUNITY_BLUEPRINT_HINT_PATH env 加载 + 合并 (2026-05-16 land)
+    L3766    solve_hint = self._greedy_hint or None  (iteration 1 hint 注入点)
+    L3844    self.master.solve(..., solution_hint=solve_hint, ...)
+- L5120-5460 run_benders_for_ghost_rect 外部入口
+- L5553      文件尾
+
+主要外部 API:
+- LBBDController(master, binding_solver, routing_solver, flow_solver,
+                 max_iterations=30, master_seconds=600.0, ...)
+    .run_with_status(...) -> (status_str, proof_summary)
+    内部 dispatch certified_exact vs exploratory.
+
+- create_exact_search_session(candidate_id, ghost_rect, ...) -> ExactSearchSession
+- run_benders_for_ghost_rect(...) -> Benders 单 candidate 完整运行
+
+env 变量 (本文件读): 见 docs/env_variable_index.md, 主要 A/B/D/G 组.
 """
 
 from __future__ import annotations

@@ -9,6 +9,37 @@ Master Placement Model（主摆放模型）.
 3. exploratory（探索）路径可以继续对位姿级可选设施施加经验上限。
 4. extract_solution()（提取解）为位姿级可选设施生成可持久化识别的完整实例条目。
 5. 集成 Benders 切平面反馈（Cuts），支持外部的 conflict set 并打回重摆。
+
+文件目录索引 (≈11750 行, 行号大约值, vintage 2026-05-16):
+- L1-200    模块 docstring + imports + 顶层常量
+- L222-1200 几何冲突 evaluators (pre-solver certificates):
+    L222    evaluate_same_x_strip_fixed_ghost_capacity_conflict
+    L472    evaluate_ghost_y_overlap_forced_label_conflict
+    L676    evaluate_ghost_overlap_forced_domain_conflict
+    L954    evaluate_signature_monotonic_forced_label_conflict
+- L1200-1370 几何 helper (intervals/signatures/DP)
+- L1387-1800 env 解析 + resolve_* helpers (各种 _resolve_*_env / _exact_*_seconds / _exact_*_max_anchors)
+- L1833-1900 fallback exception classes + dataclass records
+- L2066      class ExactMasterCore (delegate 给 exact_coordinate_master.py)
+- L2087      class MasterPlacementModel (主入口) 起点:
+    构造 / 加载数据 / 模型 build / Benders cut 应用
+- L5550-6800 局部子求解器: _compute_exact_local_power_capacity (CP-SAT)
+              + rectangular DP fallback chain
+- L7390      _run_mandatory_greedy_pass (greedy hint 起源)
+- L8370-8500 _run_exact_mandatory_greedy_pass + 入口 build_exact_candidate_warm_start
+- L11130     MasterPlacementModel.solve (公开 API, 接 solution_hint, 调 CP-SAT)
+- L11368     solver.Solve 实际调用点 (py-spy 看 trial 永远定位这里)
+- L11500-11754 后处理 / build_stats / extract_solution / 工具方法
+
+主要外部 API:
+- MasterPlacementModel(instances, facility_pools, rules, ...)
+    .solve(time_limit_seconds, solution_hint=, known_feasible_hint=False,
+           ghost_anchor_hint_idx=, hint_inactive_residual_optionals=True,
+           diagnostic_log_callback=None) -> status_str
+    .build_exact_candidate_warm_start() -> warm_start dict
+    .extract_solution() -> blueprint dict
+
+env 变量 (本文件读): 见 docs/env_variable_index.md C 组 (Master CP-SAT 调优).
 """
 
 from __future__ import annotations

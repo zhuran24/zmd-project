@@ -1,3 +1,30 @@
+"""Exact coordinate master backend (delegate for MasterPlacementModel).
+
+负责精确坐标搜索路径的 CP-SAT 模型构造 + Benders 切平面应用 + ghost rect 强制.
+被 master_model.py 的 ExactMasterCore.from_exact_core() 调用, 不是独立入口.
+
+文件目录索引 (≈6530 行, 行号大约值, vintage 2026-05-16):
+- L1-200    imports + 顶层常量 + env name 定义
+- L200-540  env 解析 / search profile / formulation 选择 helpers (大量 resolve_* 函数)
+- L540-670  family shell guard 几何 + 约束 helpers
+- L671-715  数据类: ModeRectDomain / SignatureRegion / CoordinateSlotSpec
+- L716-     class CoordinateExactMasterDelegate (主类) 起点:
+    构造 / build 模型 / 加约束 / Benders cut 应用 / hint 应用
+- L1430-1500 _apply_ghost_anchor_signature_bucket_tightening (build phase 关键步骤)
+- L3196-3280 _add_ghost_constraints (ghost rect enforcement, 入口)
+- L4193-     _apply_ghost_anchor_signature_bucket_tightening + 各种 tightening pass
+- L6268      apply_solution_hint (接 Dict[instance_id, pose_idx], 调 model.AddHint per slot)
+- L6346      _cut_name_token + tail helpers
+
+主要外部 API:
+- CoordinateExactMasterDelegate(owner, ...) — 构造时 owner 是 MasterPlacementModel
+    .build(...) — 把约束/变量 attach 到 owner.model
+    .apply_solution_hint(solution_hint, ghost_anchor_hint_idx, ...) — hint 应用
+    .extract_solution(solver) — 从 solved CP-SAT solver 抽 placement_solution
+
+env 变量 (本文件读): 主要在 docs/env_variable_index.md C/E/I 组 (Master 调优 + Search profile + Power encoding).
+"""
+
 from __future__ import annotations
 
 import copy
