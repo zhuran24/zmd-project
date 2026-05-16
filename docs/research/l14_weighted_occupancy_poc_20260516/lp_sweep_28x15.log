@@ -1,0 +1,5 @@
+=== 28x15 @ (0, 0) ===
+[LP result] elapsed=179.8s, status=solved, iterations=469, lp_objective=1.437500
+=== 28x15 @ (21, 0) ===
+[LP result] elapsed=196.6s, status=solved, iterations=479, lp_objective=1.277778
+=== 28x15 @ (42, 0) ===

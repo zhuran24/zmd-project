@@ -290,6 +290,51 @@ v10 算法本身比 v8 更可能有用 — 如果数据满足前提 (266/266 ali
 
 ---
 
+### L14. Proof-carrying weighted-occupancy blocker oracle (GPT 5/16 加料后方案, PoC 实测)
+
+**假设**: 之前 v3/v8/v10 关注 build / anchor choice / hint, 没对准 upper-bound INFEASIBLE 排除. 直接攻"证 ghost B 下 mandatory 几何不可摆" 用 Farkas-style 整数证书:
+
+```
+lhs(λ, B) = sum_g d_g * m_g^B(λ) > cap_B(λ) = rhs(λ, B)
+```
+
+dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正确, 引用真文献 (Clautiaux generalized energetic reasoning).
+
+**PoC 实测** (worktree `zmd_l14_poc`, 3 个 script: integer verifier + LP separation + antichain scanner, ~70 min Claude pace):
+
+| Candidate | Anchor | Ghost-Boundary 重叠 | LP optimum | Cert |
+|---|---|---|---|---|
+| 6×68 | (0,0) corner | 73 | 2.190 | ✓ |
+| 27×15 | (22,28) interior | 0 | **1.000** exact | ❌ |
+| 27×15 | (0,0) corner | 41 | 1.4375 | ✓ |
+| 28×15 | (0,0) corner | 41 | 1.4375 | ✓ |
+| 28×15 | (21,0) top edge | 28 | 1.2778 | ✓ |
+| 28×15 | (21,27) interior | 0 | **1.000** exact | ❌ |
+
+详细数据归档: `docs/research/l14_weighted_occupancy_poc_20260516/`
+
+**数学 finding** (实测 + 推理):
+- LP optimum > 1 当且仅当 ghost 切棋盘 boundary
+- **Interior anchor LP = 1.000 严格** (boundary_storage_port 唯一 captive group, 其他 18 free group 自由摆对 LP 不贡献)
+- antichain 30 shape 大多 interior anchor 占 90%+
+- candidate-level INFEASIBLE 证明需 100% anchor cert → 数学不可达
+- dominance 救不了 interior anchor (B 也必须 touch boundary, 但 B ⊆ G 的 interior 部分 B 也不 touch boundary → 链断)
+
+**根因**: GPT 自己 caveat 列了 failure mode 1 ("真实不可行性依赖高阶组合结构, 不是 cell-weight capacity cut") **实测正好 hit**.
+
+**跟 v3/v8/v10 错估区分**:
+- v3/v8/v10 都是"GPT 错估关注点或前提"
+- L14 = **GPT 没错估** — 方向 sound, fail-closed 设计正确, 诚实 caveat 列了 3 个 failure mode, PoC 实测 hit caveat #1
+- 死的是 **数学 family 本身能力上限**, 不是 GPT 推理错
+
+**升级路径** (GPT 自己推荐): set-packing branch-and-bound prover, 用 weighted LP 作 dual bound. 估 1-2 个月工作, **paradigm-level investment**. 不是 light-weight lever.
+
+**Verdict**: ❌ **死路 (mathematical capability bound)**. PoC 数据 + 数学推理证 weighted occupancy proof family 在我们项目结构下不可达. 是 12 条 lever 里第一次 "GPT 给的方案 caveat 没错估, 实测如他自己预言 fail".
+
+**链**: [[project_l14_weighted_occupancy_dead]]
+
+---
+
 ## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
 
 这些路线虽然没破 0, 但项目质量真实提升:
@@ -316,19 +361,21 @@ v10 算法本身比 v8 更可能有用 — 如果数据满足前提 (266/266 ali
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** 共 11 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** 共 12 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
 **唯一未试且大概率出 FEASIBLE 的路径**: **L11 (hard constraint)** — 但要牺牲 certified path 全局严格性, 改 problem 本身
 
-**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10 patch 实测):
+**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
 - 不是单一 lever 缺失, 是 model 本身对 CP-SAT 来说**太难**
-- 严格性兼容 + 算法层面的所有 algorithmic lever 全部 verdict 完毕 (L1-L10 + L12 + L13)
+- 严格性兼容 + 算法层面的所有 algorithmic lever 全部 verdict 完毕 (L1-L10 + L12 + L13 + L14)
 - v8 verdict: 算法错估 (anchor choice 不是搜索瓶颈)
 - v10 verdict: 前提错估 (要求 complete witness, 我们 data 不匹配)
-- **GPT 在两个不同方向都未能破局** — 算法侧 (v8) 跟 data 侧 (v10) 都试过, 都失败
+- L14 verdict: GPT 没错估方向, 实测 hit GPT 自己 caveat 列的 failure mode 1 (weighted occupancy 数学能力不够)
+- **GPT 已经在三个不同方向尝试**: 算法 (v8) → 数据 (v10) → 数学 family (L14), 都未能破局
+- 剩下选项: set-packing prover (1-2 月 paradigm 投资) / L11 牺牲严格性 / paradigm shift / 改数据
 - L11 是改 problem 本身, 是当前**唯一**几乎保证出 FEASIBLE 的路径
 
 ---
