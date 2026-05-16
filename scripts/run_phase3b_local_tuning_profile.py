@@ -47,12 +47,12 @@ SAFE_PROFILE_COMMANDS: dict[str, list[str]] = {
     ],
     "prod_4x4_normal_validator_no_write": [
         sys.executable,
-        "scripts/build_phase3b_prod_4x4_normal_dry_run.py",
+        "scripts/phase3b/prod_4x4/build_normal_dry_run.py",
         "--no-write",
     ],
     "operating_profile_no_write": [
         sys.executable,
-        "scripts/build_phase3b_operating_profile.py",
+        "scripts/phase3b/operating_profile/build_operating_profile.py",
         "--no-write",
     ],
     "baseline_4x4_normal_300s": [

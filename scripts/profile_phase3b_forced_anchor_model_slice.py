@@ -10,11 +10,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.search.exact_campaign import atomic_write_json
-from src.search.phase3b_forced_anchor_master import (
+from src.search.phase3b.forced_anchor.master import (
     DEFAULT_CAMPAIGN_STATE_PATH,
     DEFAULT_CANDIDATE,
 )
-from src.search.phase3b_forced_anchor_model_slice import (
+from src.search.phase3b.forced_anchor.model_slice import (
     ALLOWED_SLICE_VARIANTS,
     DEFAULT_SLICE_VARIANTS,
     build_phase3b_forced_anchor_model_slice_diagnostic,

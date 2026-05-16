@@ -60,8 +60,12 @@ _FIXTURE_GUARDS = (
     # B class: industrial_planner e2e fixture
     ("test_industrial_planner_single_base_delivery", _missing_industrial_planner_single_base_e2e),
     # C class: phase3b tuning artifact
+    # After 2026-05-16 phase3b reorganization tests live under
+    # src/tests/phase3b/checkpoint_free/signature_bucket/powered_support_coverer/
+    # so the original substring `test_phase3b_checkpoint_free_signature_bucket_powered_support_coverer`
+    # no longer appears contiguously in path/nodeid. Match the cluster path component instead.
     (
-        "test_phase3b_checkpoint_free_signature_bucket_powered_support_coverer",
+        "signature_bucket/powered_support_coverer",
         _missing_phase3b_signature_bucket_review,
     ),
     # E class: temp_scripts module

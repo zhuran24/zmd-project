@@ -85,12 +85,12 @@ from src.models.routing_subproblem import (
     RoutingSubproblem,
     run_exact_routing_precheck,
 )
-from src.search.phase3b_anchor119_guard_controls import (
+from src.search.phase3b.anchor119.guard_controls import (
     PHASE3B_ANCHOR119_ANCHOR_IDX,
     build_phase3b_anchor119_guard_runtime_state,
     build_phase3b_anchor119_guard_runtime_decision,
 )
-from src.search.phase3b_anchor119_guarded_precheck_runtime import (
+from src.search.phase3b.anchor119.guarded_precheck_runtime import (
     evaluate_phase3b_anchor119_guarded_precheck_advisory,
 )
 from src.search.exact_campaign import ExactCampaign, compute_exact_artifact_hashes, now_iso

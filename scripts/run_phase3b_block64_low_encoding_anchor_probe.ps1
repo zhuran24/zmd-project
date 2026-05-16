@@ -36,7 +36,7 @@ if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
 $projectPath = [System.IO.Path]::GetFullPath($ProjectRoot)
 $campaignPath = [System.IO.Path]::GetFullPath($CampaignState)
 $pythonCommand = "python"
-$scriptPath = Join-Path $repoRoot "scripts\build_phase3b_forced_anchor_proto_reduction.py"
+$scriptPath = Join-Path $repoRoot "scripts\phase3b\forced_anchor\build_proto_reduction.py"
 
 function Resolve-UnderProject {
     param(

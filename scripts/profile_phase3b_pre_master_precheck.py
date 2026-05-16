@@ -9,7 +9,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.search.exact_campaign import atomic_write_json
-from src.search.phase3b_pre_master_profiler import (
+from src.search.phase3b.presolve.pre_master_profiler import (
     DEFAULT_CANDIDATE,
     build_phase3b_pre_master_empty_hint_anchor_scan,
     build_phase3b_pre_master_precheck_profile,

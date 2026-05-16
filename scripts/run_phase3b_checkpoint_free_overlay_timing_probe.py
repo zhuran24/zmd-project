@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from scripts.build_phase3b_checkpoint_free_master_proto_inventory import _model_inventory  # noqa: E402
+from scripts.phase3b.checkpoint_free.master.build_proto_inventory import _model_inventory  # noqa: E402
 from src.models.master_model import MasterPlacementModel  # noqa: E402
 from src.runtime.sensitive_path_audit import (  # noqa: E402
     build_sensitive_path_fingerprint,

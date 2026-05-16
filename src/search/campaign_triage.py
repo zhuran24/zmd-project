@@ -964,16 +964,16 @@ def _linked_test_name_for_blocker(
     blocker_subtype: Optional[str],
 ) -> str:
     if blocker_subtype and str(classification) == "master_unknown":
-        return "src/tests/test_phase3b_campaign_triage.py::test_triage_classifies_master_unknown_subtypes"
+        return "src/tests/phase3b/campaign/test_triage.py::test_triage_classifies_master_unknown_subtypes"
     if blocker_subtype and str(classification) == "orchestration_failure":
-        return "src/tests/test_phase3b_campaign_triage.py::test_triage_records_operator_interruption_heartbeat_subtype"
+        return "src/tests/phase3b/campaign/test_triage.py::test_triage_records_operator_interruption_heartbeat_subtype"
     return {
-        "pre_master_eliminated": "src/tests/test_phase3b_campaign_triage.py::test_triage_classifies_precheck_eliminated_candidate",
-        "unproven": "src/tests/test_phase3b_campaign_triage.py::test_triage_classifies_unproven_candidate",
-        "orchestration_failure": "src/tests/test_phase3b_campaign_triage.py::test_triage_records_worker_failure_from_campaign_and_telemetry",
+        "pre_master_eliminated": "src/tests/phase3b/campaign/test_triage.py::test_triage_classifies_precheck_eliminated_candidate",
+        "unproven": "src/tests/phase3b/campaign/test_triage.py::test_triage_classifies_unproven_candidate",
+        "orchestration_failure": "src/tests/phase3b/campaign/test_triage.py::test_triage_records_worker_failure_from_campaign_and_telemetry",
     }.get(
         str(classification),
-        "src/tests/test_phase3b_campaign_triage.py::test_triage_classifies_unknown_stage_variants",
+        "src/tests/phase3b/campaign/test_triage.py::test_triage_classifies_unknown_stage_variants",
     )
 
 

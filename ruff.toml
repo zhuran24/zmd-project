@@ -24,6 +24,7 @@ ignore = ["E501"]
 # Entry scripts 都做 sys.path.insert 才能 import src.*, 必然触发 E402.
 "main.py" = ["E402"]
 "scripts/build_*.py" = ["E402", "F401"]
+"scripts/phase3b/**/build_*.py" = ["E402", "F401"]
 "scripts/audit_*.py" = ["E402"]
 "scripts/probe_*.py" = ["E402"]
 "scripts/run_*.py" = ["E402"]

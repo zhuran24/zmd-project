@@ -8,7 +8,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.search.phase3b_campaign_repair import (
+from src.search.phase3b.campaign.repair import (
     mark_running_exact_campaign_candidates_interrupted,
 )
 

@@ -9,7 +9,7 @@ from typing import Any, Mapping
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.search.phase3b_anchor119_guarded_precheck_runtime import (
+from src.search.phase3b.anchor119.guarded_precheck_runtime import (
     ANCHOR119_GUARDED_PRECHECK_ENV,
     DEFAULT_GUARDED_PRECHECK_SPEC_PATH,
     evaluate_phase3b_anchor119_guarded_precheck_advisory,
