@@ -1,0 +1,252 @@
+# Lever Verdicts — 提升 master FEASIBLE 率的所有路线及结果
+
+**最后更新**: 2026-05-16
+
+主线问题: 70×70 grid + 266 mandatory facility + ghost rect 几何约束的 `max_lex(area, min_side)` 严格证明.
+
+baseline (workers=8, master_seconds=1800, default profile, 无 hint) 14h 跑 51-78 candidates, **0 FEASIBLE**. 全部 UNKNOWN 或 INFEASIBLE. 此文档记录所有尝试过的"破 0 FEASIBLE" lever 路线及实测 verdict.
+
+---
+
+## 主线 lever (按时间顺序)
+
+### L1. RAM 优化路径
+
+**假设**: master.solve 解不动是因为 30 GB RAM 把 CP-SAT 内部搜索压制, 减 RAM 应该 unlock 搜索深度.
+
+**实验** (2026-05-15 整 session):
+- `EXACT_MASTER_CP_SAT_WORKERS` 从 8 减到 1, 验证 RAM 30 GB → 12.78 GiB (-57%)
+- spike#5/#6/#7 实测 workers=1/2/4/8 对应 RAM peak 12.78 / 16.4 / 20.44 / 30 GiB
+- 解锁 `-p 2 + workers=1` 双 outer 并行 (32 GB fit 47 GB hardware)
+- 14h trial 验证 (workers=1, -p 2)
+
+**结果**: 51 candidate **全 UNKNOWN, 0 FEASIBLE**. 跟 baseline (workers=8, -p 1) 27 candidate 0 FEASIBLE 表现一致.
+
+**Verdict**: ❌ **RAM 不是 lever**. 减 RAM -57% 但 FEASIBLE 数 0 → 0.
+
+**链**: [[project_2026_05_15_ram_session_misdirected]], [[project_30gb_real_culprit_power_coverage]]
+
+---
+
+### L2. HiGHS / LP-MIP 重写
+
+**假设**: CP-SAT 对 dense linear constraint 不高效, 换 HiGHS (LP solver) 应该减 RAM + 加速.
+
+**实验** (2026-05-15):
+- Phase 1: minimum model translator (无 power_coverage)
+- Phase 3: 加 power_coverage 后真实跑
+
+**结果**:
+- Phase 1: RSS 39 → 8 GB (-79%) — 假 win (没 power)
+- Phase 3 (含 power_coverage): 42 GB > OR-Tools 30 GB — 真败
+- LP-MIP 对 dense linear (power coverage 是 dense) 不适合
+
+**Verdict**: ❌ **重写死路**. 单机 48 GB + 准确性必保 + LP-MIP solver 物理不可达 -50% 决定性收益.
+
+**链**: [[project_highs_rewrite_blocker]], [[project_rewrite_path_exhausted]]
+
+---
+
+### L3. Master model 局部优化 (一堆 spike)
+
+**假设**: model size 是 lever, 减 model 应该减 propagation 工作.
+
+**实验**:
+- `ghost_anchor_filter` env-gated (#68-#70 #84): tight pole_slot upper bound 763 → ~100, -80% search space
+- cover_lit aggregate (#77): KILL, wrong source path
+- family_lit lazy materialize (#78)
+- clause_cleanup_period / no_overlap_2d_boolean / presolve_extract_int (#75 第 3 批 spike)
+- 一堆 CP-SAT 参数 env hook (TABLE_COMPRESSION_LEVEL / LINEAR_SPLIT_SIZE / etc)
+- master build inspector dump real cover_literals + slot count (#83)
+- 第 3 批 subagent 并行调研 param/constraint-reduce/CG/heuristic-cost (#76)
+
+**结果**: 减了 build 阶段 RAM 少量 (build phase 3.10 GB), 但 **solve peak 30 GB 真大头是 worker propagation buffer, 不是 model size**. memray 验证 (#71). model size 优化只减 ≤15%.
+
+**Verdict**: ❌ **model size 优化对 propagation buffer 几乎无影响**, marginal gains, 不破 0 FEASIBLE.
+
+---
+
+### L4. EXACT_POWER_PLACEMENT_SUBPROBLEM 重开 (#80)
+
+**假设**: 这个 sub-problem 当前关闭 = certified path; 重开调研看是否能加进 certified 路径.
+
+**实验**: subagent 调研.
+
+**结果**: PROJECT_LOCK 明确禁止 — 这个 flag = exploratory only, production gate hard block.
+
+**Verdict**: ❌ **不允许**, certified path 守卫 hard block.
+
+---
+
+### L5. OR-Tools git HEAD 未发布 fixes + 9.16 ETA (#81)
+
+**假设**: OR-Tools 9.16 可能修了 9.15 的性能 bug.
+
+**实验**: subagent 调研 OR-Tools git log + 9.16 release notes.
+
+**结果**: 9.16 没明显性能改进, ETA 不明.
+
+**Verdict**: ❌ **不值得等**.
+
+---
+
+### L6. AI sidecar 加速 (#82)
+
+**假设**: shadow AI 模型预测可行 candidate 或给 master 智能 hint.
+
+**实验**: subagent 调研, 给完整集成实操路径.
+
+**结果**: 工作量大 (训数据 + 部署 + 边界 enforcement), 收益不确定. PROJECT_LOCK 有 AI safety contract 限制 (only shadow, no proof source, no formal pruning).
+
+**Verdict**: 🟡 **暂搁置 long-term**, 不在当前主线.
+
+---
+
+### L7. Community blueprint hint 注入 (D step 2, #39-#40)
+
+**假设**: 用户手调 IP v2 blueprint 给 master 当 hint, master 跳过早期 search 直接验证用户答案.
+
+**实验** (2026-05-16):
+- `scripts/blueprint_to_master_hint.py` 转换 blueprint 226 facility → 项目 225 instance_id + pose_idx
+- env `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` 注入 benders_loop._run_certified_exact
+- 10 hand-verified sample 写 pytest, 9 edge case 写 pytest
+- telemetry 验证: 266 instance × 3 (x/y/mode) = 798 AddHint 一次不多一次不少
+
+**结果** (5 candidate trial3 + trial4):
+
+| candidate | 备注 | 结果 |
+|---|---|---|
+| 35×14 | | UNKNOWN |
+| 33×15 | | UNKNOWN |
+| 31×16 | | UNKNOWN |
+| **27×15** | **blueprint natural max empty rect 15×27 旋转, 完美匹配** | **UNKNOWN** |
+| 24×17 | | UNKNOWN |
+
+**Verdict**: ❌ **hint 单独不是 lever**. integration 完美工作 (telemetry 验证), 但 master 即使拿到正确答案也来不及在 master_seconds 内验证完.
+
+**链**: [[project_d_step2_hint_landed]], commits 8395a27..6828a88, ef94fea
+
+---
+
+### L8. 换 master search profile (今天 D 路径, trial5)
+
+**假设**: 项目内 3 个 profile (default `guided_branching_v4` / `ghost_first_v1` / `ghost_after_counts_v1`), 换 profile 可能突破 search deadlock.
+
+**实验**: trial5 用 `exact_coordinate_ghost_first_v1` 跑同样 candidate.
+
+**结果**:
+
+| candidate | trial4 (default profile) | trial5 (ghost_first_v1) |
+|---|---|---|
+| 27×15 | UNKNOWN | UNKNOWN |
+| 24×17 | UNKNOWN | UNKNOWN |
+
+**Verdict**: ❌ **profile 切换不影响**, 结果完全一致.
+
+---
+
+### L9. Objective relaxation (C 路径, 假设错了)
+
+**假设**: 把 `max_lex` objective 关掉, 让 master 只找 any FEASIBLE (找任意可行比找最优快).
+
+**实验**: 读 src/models/exact_coordinate_master.py + master_model.py 源码.
+
+**结果**: master 内部**本来就没 objective**. `max_lex(area, min_side)` 是 OUTER 循环驱动 — 外层按面积降序枚举 candidates 一个个问 master "能塞下吗?", master 本来就是纯 feasibility solver.
+
+**Verdict**: ❌ **不适用, 假设错了**. 没东西可 relax.
+
+---
+
+### L10. 加长 master_seconds + 完整 worker 满载 (今天 A 路径, trial7)
+
+**假设**: 给 CP-SAT 更多时间 + 全 8 P-core 满载, 能探完关键支路.
+
+**实验** (2026-05-16):
+- trial6: master_seconds=3600 + workers=1 (错配 — workers=1 是 RAM 优化遗留, A 路径无意义), 已停
+- trial7: master_seconds=3600 + workers=8 + 27×15 (blueprint exact match)
+- 实测: 60 min wall clock, 8 P-core 满载 (758% CPU 持续), CP-SAT 内部 max_time_in_seconds 实际 soft, overshoot 30s+
+
+**结果** (trial7 telemetry):
+
+```
+solve_attempt_count: 1
+hinted_instances_sum: 266 (全 mandatory hinted)
+master_hinted_literals_sum: 798 (= 266 × 3, 整链零损耗)
+status_counts: {UNKNOWN: 1}
+27×15: UNKNOWN
+```
+
+**完整 27×15 数据矩阵 (同一 candidate 4 种配置)**:
+
+| trial | master_seconds | workers | profile | 结果 |
+|---|---|---|---|---|
+| trial4 | 600 (10min) | 1 | default | UNKNOWN |
+| trial5 | 600 (10min) | 1 | ghost_first_v1 | UNKNOWN |
+| trial7 | **3600 (1h+实际)** | **8 满载** | default | UNKNOWN |
+
+**Verdict**: ❌ **加资源不破局**. 3 种 axis (时间 ×6, worker ×8, profile 切换) 全 saturation, master 对 27×15 inherent 难解, 不是参数问题.
+
+---
+
+### L11. Hard constraint (B 路径, **未试**)
+
+**假设**: 把 blueprint 当强制约束钉死 225 个 facility, master 只解剩下 41 个 mandatory + ghost rect. 搜索空间从 266 维断崖式降到 41 维, 大概率 1-2 min 出 FEASIBLE.
+
+**实验**: 未试.
+
+**代价**: 项目原本承诺"全局最优". 用 B 只能证"blueprint 摆法下的最优", 不能证"换种摆法是否能比 blueprint 留更大空矩形". 牺牲 certified path 全局严格性.
+
+**实用价值**: 用户已认可 blueprint, 没人手算出更好的, 实用层面让步基本无影响.
+
+**Verdict**: 🟡 **未试, 后备方案**. 当前唯一**几乎保证出 FEASIBLE** 的路径.
+
+---
+
+## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
+
+这些路线虽然没破 0, 但项目质量真实提升:
+
+| Task | 内容 | 状态 |
+|---|---|---|
+| #38 | readiness gate OOM headroom 数学公式 | ✅ |
+| #41 | coordinate Benders cut 过切 bug 修 | ✅ |
+| #44 | IP v2 blueprint 静态 validator | ✅ |
+| #45 | IP v2 blueprint LP solver 验证用户摆法 | ✅ |
+| #46 | P0 #1 ghost-conditioned power infeasible cut | ✅ |
+| #47 | P0 #2 关 EXACT_POWER_PLACEMENT_SUBPROBLEM 进 certified path | ✅ |
+| #48 | P1 #4 add_benders_cut 加 condition_lits | ✅ |
+| #50 | P2 #5 pytest random-order flake seed sweep | ✅ |
+| #54-#58 | F1-F5 v4 follow-up (replay resolver / power witness gate / dynamic probe / cache reset / untracked-tree block) | ✅ 全 land |
+| #59 | bandit 4 MEDIUM 修 + PROJECT_LOCK 文案 | ✅ |
+| #61-#65 | G1-G5 mypy + ruff hygiene 全过 gate | ✅ |
+| #66 | P1 #24 cache trio (jemalloc + P-core + THP) +15-22% wall clock | ✅ |
+| #67 | -p 2 + workers=1 解锁双并行 | ✅ 但不破 0 |
+| #84 | tight pole_slot upper bound -80% search space | ✅ |
+| **2026-05-16** | **community hint 整链 + 测试 + wrapper default + runbook** | ✅ |
+
+---
+
+## 当前状态
+
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 共 9 条死路
+
+**搁置 / 长期 option**: L6 (AI sidecar)
+
+**唯一未试且大概率出 FEASIBLE 的路径**: **L11 (hard constraint)** — 但要牺牲 certified path 全局严格性, 改 problem 本身
+
+**累积事实** (2 天 session + 14h trial + 多次 1h trial):
+- master.solve **不管喂什么资源都解不动这个 model**
+- 不是单一 lever 缺失, 是 model 本身对 CP-SAT 来说**太难**
+- L11 是改 problem 本身, 是当前**唯一**几乎保证出 FEASIBLE 的路径
+
+---
+
+## Memory 引用
+
+- [[project_endfield_solver]] — 项目总览
+- [[project_2026_05_15_ram_session_misdirected]] — L1 整 session 跑偏教训
+- [[project_30gb_real_culprit_power_coverage]] — L3 真大头 = worker propagation buffer
+- [[project_highs_rewrite_blocker]] / [[project_rewrite_path_exhausted]] — L2 死路
+- [[project_d_step2_hint_landed]] — L7 community hint 落地详细状态
+- [[feedback_optimization_strategy]] — "优化必须 stack 所有方案, 不按 ROI 单选"
+- [[feedback_avoid_micro_optimization_spiral]] — "占比 <5% 就停手换方向"
