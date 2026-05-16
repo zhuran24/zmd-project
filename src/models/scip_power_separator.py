@@ -1,5 +1,14 @@
 """SCIP power_coverage lazy separator — Phase 4 重写关键组件.
 
+[STATUS 2026-05-16: 实验 PoC 配套组件, 跟随 scip_master_model.py 一起 dead]
+- scip_master_model.py 的 lazy separator 实现, separator callback 在 LP fractional
+  solution 上 fire, 加 violated power_coverage cut
+- PoC 验证 3 次 fire OK, 没完整集成
+- 见 [[project_rewrite_path_exhausted]] verdict
+- 不删: lazy separator 设计本身 sound, 未来如果换 solver / 重 encode 可能复用
+
+
+
 设计:
 - 不在 build 阶段加 4M power_coverage rows (HiGHS 那条路撞 42 GB)
 - 在 SCIP separator callback 内, fire on LP fractional solution

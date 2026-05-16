@@ -1,4 +1,32 @@
-"""Tests for the master placement layer（主摆放层测试）."""
+"""Tests for the master placement layer（主摆放层测试）.
+
+文件目录索引 (10440 行, 200 tests + 37 helpers, vintage 2026-05-16):
+
+主要 test cluster 按行号:
+- L40-1989    helper functions: fixture builders + model fixtures (37 个 builder)
+- L1990-2273  exact_candidate_warm_*  (8 tests)  — warm_start 失败 anchor 取样
+- L2367-2476  boundary_storage_port_*  (5 tests) — 边界出货口 precheck
+- L2545-2751  mandatory_manufacturing_rectangle_* (3 tests) — 强制制造矩形 precheck
+- L2617-2895  mandatory_rectangle_precheck_*  (8 tests) — mandatory rect precheck 模式
+- L2979-3030  mandatory_support_diagnostics_*  (3 tests) — mandatory support 诊断
+- L3122-3232  warm_start_failure_*  (4 tests) — warm-start 失败处理
+- L3321-10420 **exact_core_overlay_*  (41 tests)** — 最大 cluster, exact_core overlay 多维测试
+- L3346-3650  exact_master_search_*  (3 tests) — search profile (guided_branching_v4 等)
+- L3992-8629  exact_power_capacity_*  (3 tests) — 本地 power capacity 计算
+- L4149-5542  ghost_conditioned_family_*  (4 tests) — ghost 条件 family bound
+- L4199-4290  ghost_via_pole_*  (3 tests) — ghost via pole 形状 instrumentation
+- L4303-5267  **ghost_signature_bucket_*  (25 tests)** — signature bucket optimization 系列
+- L6331-6889  compact_rect_cpsat_*  (8 tests) — 紧凑矩形 CP-SAT
+- L7432-8288  coordinate_exact_power_*  (15 tests) — coordinate exact power 子求解
+- L7546-8341  coordinate_exact_rejects_*  (5 tests) — coordinate exact 拒绝 case
+
+测试什么: src/models/master_model.py + exact_coordinate_master.py + power_placement_subproblem.py
+  的 CP-SAT model construction / Benders cut / warm-start / precheck / signature bucket
+  / family bound / coordinate exact 各维度.
+
+pre-commit gate: 本文件 **不在** preflight_gate.py CORE_TEST_FILES 列表 (太大跑太慢).
+  --full 模式才跑.
+"""
 
 from __future__ import annotations
 

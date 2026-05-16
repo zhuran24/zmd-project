@@ -3,6 +3,41 @@
 This file is the canonical home for dated engineering history that used to be
 split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
 
+## 2026-05-16
+
+### D step 2: Community blueprint hint 注入 (master.solve hint integration)
+
+- Added `scripts/blueprint_to_master_hint.py` — convert IP v2 blueprint JSON (用户手调验证版 `BP-2026-05-13 08_35_36.blueprint(1).json`) to `Dict[instance_id, pose_idx]` for `master.solve(solution_hint=...)`. 226 facility devices → 225 mapped (1 hub miss due to anchor range geometry). [scripts/]
+- Added regression test `src/tests/test_blueprint_to_master_hint.py` — 10 hand-verified samples (4 facility_type × 4 rotation × orientation 0+1) lock rotation→(orientation, port_mode) mapping. [src/tests/]
+- Added integration in `src/search/benders_loop.py:3565` — `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` env loads JSON + merges with greedy hint (community overrides greedy on overlap, since user-curated > heuristic). [src/search/]
+- Updated `scripts/run_campaign_p2_workers1.sh` + `run_campaign_workers2.sh` — auto-default `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH=data/hints/blueprint_2026_05_13_master_hint.json` when file present. [scripts/]
+- Added edge case tests `src/tests/test_community_hint_env_injection.py` — 9 cases (empty/whitespace/missing-file/malformed-JSON/non-int values). [src/tests/]
+- Added `scripts/hint_coverage_report.py` — audit hint coverage % + pose_idx range validity (225/266 = 84.6% mandatory hinted, 0 out-of-range). [scripts/]
+- Added `scripts/analyze_hint_vs_baseline.py` — compare baseline state vs hint state for UNKNOWN→FEASIBLE / UNKNOWN→INFEASIBLE upgrade signals. [scripts/]
+- Added `CLAUDE.md` runbook section — community hint workflow + integration mechanism. [CLAUDE.md]
+
+**Empirical results** (5 short trials, master_seconds 600s..3600s × workers 1..8 × profile guided_branching_v4/ghost_first_v1):
+- All 5 candidates (35×14 / 33×15 / 31×16 / 27×15 / 24×17) returned UNKNOWN, including 27×15 (blueprint natural empty rect 15×27 exact match)
+- Telemetry verified: 266 mandatory instances × 3 (x/y/mode) = 798 AddHint calls per candidate
+- Conclusion: hint integration end-to-end works zero-loss, but master.solve cannot decide these candidates in 600-3600s even with perfect hint shape match. Master `inherent difficulty`, not hint failure.
+
+### 项目整理 (清晰为主, 不丢东西)
+
+- Added `docs/lever_verdicts.md` — 主线 master 加速 lever 路线总账 (L1-L11) + 实测 verdict (9 ❌ 死路, 1 🟡 未试 hard constraint). [docs/]
+- Added `docs/env_variable_index.md` — 100+ `EXACT_*` / `PHASE3B_*` env 变量集中索引, 11 组分类. [docs/]
+- Added `docs/phase3b_module_index.md` — 670 个 Phase 3B 文件物理分类 (154 src + 264 tests + 252 scripts), 17 cluster + active 主线明确区分. [docs/]
+- Added `docs/specs_index.md` — 23 份 specs/编号 spec 一句话索引 + 9 份 ecosystem_notes 索引. [docs/]
+- Added `src/adapters/README.md` — 4 个 adapter 子目录 (industrial_planner / endfield_calc / dige / base_planner) 职责说明 + 数据流向. [src/adapters/]
+- Added `scripts/README.md` — scripts/ 入口分类: campaign wrapper / gates / IP delivery / vendor refresh / hint 工具 / Phase 3B 生成器. [scripts/]
+- Updated `README.md` — 顶部加项目状态地图 (Phase 3A done / 3B in progress / 3C planning) + 6 个关键文档入口. [README]
+- Updated `src/models/master_model.py` / `src/models/exact_coordinate_master.py` / `src/search/benders_loop.py` — 3 个 5000+ 行单文件顶部加 module docstring 索引 (主要 section 行号 + 公开 API + env 引用). [src/]
+- Updated `src/tests/test_master.py` / `src/tests/test_exact_contract.py` — 10000+/5000+ 行测试文件加目录索引 docstring. [src/tests/]
+- Updated `src/models/highs_master_model.py` / `scip_master_model.py` / `scip_power_separator.py` — 加 STATUS 标注 "实验 PoC, 验证为死路, 留作 reference" (per memory `project_highs_rewrite_blocker`). [src/models/]
+- Updated 5 个 Codex-era 永远 skip 测试文件 (test_phase3b_checkpoint_free_signature_bucket_powered_support_coverer_*.py) 加文件头 docstring 说明缘由 + 保留原因. [src/tests/]
+- Updated `.gitignore` — 加 `.claude/worktrees/` (Claude Code agent worktree, regenerable, not source).
+
+**整理原则**: 重组 / 加文档 / 加索引 OK, 删任何文件 NOT OK. 全部 ~1500 行新文档, 0 文件删, 0 代码逻辑改动. 2207 pytest pass + 0 failed.
+
 ## 2026-05-08
 
 - Refreshed the vendored `JamboChen/endfield-calc` snapshot from package version `0.5.2` (commit unavailable, observed 2026-03-27) to `0.6.2` master commit `49be16e1`. Catalog grew from 130 items / 172 recipes / 14 facilities to 178 / 260 / 16. Newly observed facilities `ITEM_PORT_LIQUID_PURIFIER_1` and `ITEM_PORT_MIX_POOL_2` likely correspond to 1.2 武陵 content; `ITEM_PORT_DISMANTLER_1` re-tiered 4→3. `canonical_rules.json` intentionally still keeps the original 17-recipe semantic-aligned subset; the refresh did not re-project the catalog. [FILE_STATUS]

@@ -1,5 +1,17 @@
 """SCIP-backed master placement model — HiGHS 替代品 (Phase 4 重写 attempt).
 
+[STATUS 2026-05-16: 实验 PoC, 未完成 + 验证为死路, 留作 reference]
+- HiGHS Phase 3 撞 42 GB 之后, 尝试 SCIP 6.2 separator callback 懒加 power_coverage
+- PoC 验证 separator fire 3 次 OK, 但完整 production 集成未做完
+- 同时 [[project_rewrite_path_exhausted]] verdict: 任何 LP-MIP solver 在 dense
+  power_coverage 上都给不出决定性收益, 不只是 HiGHS, SCIP 同样困境
+- 生产路径仍 CP-SAT, SCIP 不再 active 开发
+- 不删: SCIP separator callback 设计可能未来 problem 重 encode 时复用
+- 当前 dead code, 没 env gate enable
+
+历史背景:
+
+
 为啥换 SCIP:
 - HiGHS 1.14 lazy constraint API 只是占位符, C++ 没真 fire (实测确认)
 - SCIP 6.2 完整支持 separator callback + Benders default cuts (PoC 验过 3 次 fire)

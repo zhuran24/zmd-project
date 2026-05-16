@@ -1,4 +1,29 @@
-"""Tests for certified exact contracts（严格精确契约测试）."""
+"""Tests for certified exact contracts（严格精确契约测试）.
+
+文件目录索引 (5666 行, 76 tests + 10 helpers, vintage 2026-05-16):
+
+主要 test cluster 按行号:
+- L34-376     helper functions: project builders / campaign IO / precheck mocks
+- L377-578    certified_exact / collect_certification_blockers_* (9 tests) — 严格精确模式接入
+- L598-660    binding_recognizes_pose_optional_protocol_storage_box (1) — pose 可选 storage box
+- L661-680    timeout_returns_unknown (1) — 超时返回 UNKNOWN
+- L681-810    candidate_level_boundary_* / mandatory_* (2) — candidate-level precheck
+- L811-982    candidate_level_mandatory_support_*  (1) + 其他 — mandatory support 集成
+- L983-1299   pre_master_precheck_*  (3 tests) — pre-master precheck
+- L1102-1173  pre_master_mandatory_rectangle_precheck (1) — pre-master mandatory rect
+- L1174-1882  **pre_master_coordinate_*  (7 tests)** — pre-master coordinate validation
+- L1224-1300  anchor119_row_domain_* (1) — anchor119 行域 (Phase 3B)
+- L2242-2295  campaign_keeps_best_* (2) — campaign state best 保持
+- L2563-2908  exact_mode_uses_* (2) — exact mode artifact usage
+- L2633-5063  exact_path_publishes_* (2) — exact path 输出 publish
+- L4173-4539  serial_precheck_lookahead_*  (4 tests) — serial precheck lookahead
+- L5210-5238  frontier_probe_auto_* (2) — frontier probe auto
+
+测试什么: certified_exact mode 端到端契约 — campaign 持久化 + UNKNOWN 处理 + precheck +
+  publish + frontier probe 等横切面.
+
+pre-commit gate: **本文件 在 CORE_TEST_FILES**, 每次 commit 跑 (核心契约文件).
+"""
 
 from __future__ import annotations
 

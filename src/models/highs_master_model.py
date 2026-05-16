@@ -1,6 +1,16 @@
 """HiGHS-backed master placement model (Phase 1 PoC → Phase 3 production-grade).
 
-目的: 验证 HiGHS MIP solver 在 Endfield 70x70 packing 问题上的 RAM/wall-time vs
+[STATUS 2026-05-16: 实验 PoC, 验证为死路, 留作 reference]
+- Phase 1 (minimum, 无 power): RSS 39 → 8 GB, -79%, 看似赢
+- Phase 3 (加 power_coverage): 42 GB > OR-Tools CP-SAT 30 GB, 真败
+- 结论: LP-MIP solver 对 dense power_coverage linear constraint 不适合
+- 生产路径仍走 CP-SAT (src/models/master_model.py + exact_coordinate_master.py)
+- 详见 docs/lever_verdicts.md L2, memory [[project_highs_rewrite_blocker]]
+- 不删: PROJECT_LOCK 没禁, 这段代码记录了 LP-MIP 真实失败原因; 未来如果换 solver
+  或 problem encoding 变 (比如 dense → sparse 重写), 可能 re-enable
+- 当前 dead code, env `EXACT_USE_HIGHS_MASTER` 默认 0
+
+目的 (历史): 验证 HiGHS MIP solver 在 Endfield 70x70 packing 问题上的 RAM/wall-time vs
 OR-Tools CP-SAT. 独立 PoC + 渐进加 production-grade 约束.
 
 Phase 1 minimum 带的:
