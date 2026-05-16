@@ -359,6 +359,8 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 
 **Verdict**: ❌ **死路 — 攻错层**. paradigm 假设错: 假设 set-packing 核心难, 实测 CP-SAT 几秒搞定. 真瓶颈在 master 多余约束 (跟 [[project_highs_rewrite_blocker]] 同根因 — dense linear constraint), 不在 set-packing 部分. **不要投资 2 周/1-2 月写 prover**.
 
+**Step D 加跑 layer isolation 锁定**: `skip_power_coverage=True` 后 master.solve 65.9s 完整 2 LBBD iter (vs 30 min UNKNOWN). power_coverage 加 +132% vars + 90% constraints, 是真 bottleneck. 真嫌疑精确锁到 `_add_geometric_power_coverage_constraints` (`src/models/exact_coordinate_master.py:5327`) — disjunctive coverage encoding (element_witness / table_pairwise_witness). 算法改进方向: column generation / lazy cut / 几何 pre-prune / lazy power_coverage 进 subproblem, 不是 set-packing prover.
+
 **链**: [[project_l15_setpacking_prover_dead]]
 
 ---

@@ -6,14 +6,22 @@ GPT 在 L14 weighted-occupancy 死路后推荐升级到 **set-packing branch-and
 
 ## TL;DR
 
-**❌ Set-packing prover paradigm 死路 — 攻错了层. 真瓶颈不是 set-packing 核心, 是 master 多余的 port/power/connector/boundary 约束.**
+**❌ Set-packing prover paradigm 死路 — 攻错了层**. PoC + Step D 层逐拆 isolation 实测**精确锁到瓶颈** = **`_add_geometric_power_coverage_constraints` (供电塔覆盖约束块)**.
 
-实测发现:
-1. **Minimum set-packing 核心**(只含 demand + cell exclusivity + ghost-forbidden) CP-SAT 8 worker 几秒就 verdict — corner/boundary 2.3s INFEASIBLE, interior 7s FEASIBLE.
-2. **Full master.solve via LBBD** 同 anchor 5-30 min UNKNOWN. 慢的部分是 master 多出来的 port_binding / power_coverage / boundary_port / exact_safe_cuts.
-3. GPT 提议的 prover (BnB on x_{g,p} + weighted LP dual bound) 攻的是已经 fast 的 minimum 层. 即使写出 perfect prover, paradigm 收益 ≤ CP-SAT 现有性能.
+实测核心数据:
+1. **Minimum set-packing 核心**(只 demand + cell exclusivity + ghost-forbidden) CP-SAT 几秒搞定 — corner 2.3s INFEASIBLE, interior 7s FEASIBLE.
+2. **Master skip_power_coverage=True**: 27×15 anchor (22,28)/(0,0) master.solve **完整 2 个 LBBD iter 55-66s 跑完** (status UNPROVEN — 找到可行解但还没全局验证)
+3. **Master 默认 (带 power_coverage)**: 同 anchor **30 min UNKNOWN** (没 verdict).
 
-**Verdict**: ❌ paradigm 死路. **不要投资 2 周写 prover**.
+Power_coverage 体积:
+- vars: 24,824 → 57,668 (**+132%**)
+- constraints: 69,910 → 132,515 (**+90%**)
+
+加这一块, master.solve 速度从**秒级 → 30+ min UNKNOWN**. 这一块是真 bottleneck.
+
+**GPT prover paradigm**: 攻的是 set-packing core (CP-SAT 几秒搞定的层), **不 cover power_coverage**. 即使写出 perfect prover, paradigm 救不了瓶颈层.
+
+**Verdict**: ❌ 不要投资 2 周写 prover. 下一步算法改进应该针对 **power_coverage encoding 重设计** (跟 [[project_highs_rewrite_blocker]] / [[project_rewrite_path_exhausted]] 同根因 — dense linear constraint hard 不在 solver 选择, 在 encoding 本身).
 
 ---
 
@@ -85,17 +93,52 @@ GPT 的 prover 设计 (BnB on x_{g,p} + LP dual bound) 攻的是 minimum 核心.
 
 ---
 
-## 真瓶颈分析
+## 真瓶颈 layer-by-layer 锁定 (Step D)
 
-Master vs minimum 多出来的约束:
-1. **port_binding** — input/output port direction + type matching
-2. **power_coverage** — power_pole 必须 cover 所有 facility, 4M+ row 大约束
-3. **connector** — connector routing 通过 facility port
-4. **boundary_port_feasibility** — boundary port 必须在 boundary cell
-5. **exact_safe_cuts** — LBBD historic cuts
-6. **mandatory_group_prechecks** — group-level prechecks
+### Exact master coordinate-based 模型的真实 layers
 
-任何一个或几个的组合让 CP-SAT 30 min 也 UNKNOWN. 这是 **MIP/CP-SAT 在 dense linear constraint 上的 fundamental 难度**, 跟 [[project_highs_rewrite_blocker]] 同一根因 — 不是 solver 笨, 是 problem 本身在这套约束下 hard.
+跟 minimum pose-bool 模型不一样, exact master 用 **coordinate-based** (x, y, mode IntVars + AddNoOverlap2D 几何不重叠). build() 顺序 (CoordinateExactMasterDelegate.build at exact_coordinate_master.py:3010):
+
+1. `_create_mandatory_slot_vars` — 266 个 mandatory facility 的 (x, y, mode) IntVars
+2. `_create_required_optional_slot_vars` — required optional slot vars
+3. `_create_residual_optional_slot_vars` — residual optional vars (power_pole 等)
+4. `_create_power_pole_slot_vars` — power_pole 专用 slot vars
+5. `_add_coordinate_symmetry_breaking`
+6. `AddNoOverlap2D(_core_x_intervals, _core_y_intervals)` — 266 矩形不重叠 (geometric)
+7. `_add_ghost_constraints` — ghost rect 排斥
+8. **`_add_geometric_power_coverage_constraints`** ← 真瓶颈 (skip 开关存在)
+9. `_add_global_valid_inequalities`
+10. `_add_search_guidance`
+
+### Step D 实测: skip_power_coverage on/off
+
+| Config | vars | constraints | master.solve 27×15 anchor (22,28) wall | status |
+|---|---|---|---|---|
+| skip_power=True | 24,824 | 69,910 | **65.9s** (2 LBBD iter 全跑完) | UNPROVEN |
+| skip_power=True (anchor 0,0) | 24,824 | 69,910 | **54.3s** | UNPROVEN |
+| skip_power=False (full) | 57,668 | 132,515 | **30 min UNKNOWN** | UNKNOWN |
+
+差异:
+- vars: +32,844 (+132%)
+- constraints: +62,605 (+90%)
+- master.solve wall: **几十秒 → 30 min UNKNOWN, 跨数量级**
+
+### 锁定 verdict
+
+真 bottleneck = **`_add_geometric_power_coverage_constraints`** (exact_coordinate_master.py:5327).
+
+power_coverage encoding 内部: 每个 powered_slot (facility cell) 需要找一个 pole_slot 在 radius 范围内 cover, 用 element_witness_v1 / table_pairwise_witness_v1 encoding. 这是 **disjunctive coverage constraint** (对每 facility, "存在某 pole 在范围内"是 OR-of-many-pairs), CP-SAT 在这种密集 disjunctive linearization 上跟 LP-MIP 一样 stuck.
+
+跟 [[project_highs_rewrite_blocker]] (HiGHS 重写撞 42 GB RAM) / [[project_rewrite_path_exhausted]] (任何 LP-MIP solver 对 dense linear constraint 解不动) **同根因**.
+
+### 算法改进方向 (下一阶段, 这次不做)
+
+1. **重设计 power_coverage encoding** — 不要 disjunctive over-all-pole-pairs, 改 column generation / lazy cut / 几何 separator (类似 SCIP separator callback PoC, 验过 fire OK 但 production 集成未完)
+2. **缩 powered_slot × pole_slot pair 数量** — 现 266 facility × ~100 pole = 26K pair, 加 geometric pre-pruning 可能减一半
+3. **Lazy power_coverage 进 binding subproblem** — master 只保 set-packing 核心, power 进 LBBD subproblem 按需触发. PROJECT_LOCK 禁止 EXACT_POWER_PLACEMENT_SUBPROBLEM 重开 (L4), 但 lazy cut style 不同
+4. **加 dominance + reduce variable count** — power_pole slot 数量上限可能能压, 见 [[project_phase3c_roadmap]] #84 (tight pole_slot upper bound -80%)
+
+未来真要算法改进, 围绕 #1 / #2 / #4. #3 看 PROJECT_LOCK 重审 vs lazy cut 边界.
 
 ---
 
@@ -116,10 +159,13 @@ Master vs minimum 多出来的约束:
 | 文件 | 内容 |
 |---|---|
 | `poc_single_anchor_baseline.py` | Step A driver (run_benders_for_ghost_rect, env anchor filter) |
-| `poc_minimum_setpacking.py` | Step B minimum CP-SAT (bare set-packing) |
+| `poc_minimum_setpacking.py` | Step B minimum CP-SAT (bare set-packing, pose-bool 形式) |
 | `poc_minimum_with_power.py` | Step B direct master.solve (数据无效 — model degenerate, 留档不删) |
+| `poc_layer_isolation.py` | Step D: skip_power_coverage=True/False 对比 |
+| `poc_count_layers.py` | Step D: 数 power_coverage 加多少 vars/constraints |
 | `logs/step_a_trial*.log` | Step A trial 输出 |
 | `logs/step_b_trial*.log` | Step B trial 输出 |
+| `logs/step_d*.log` | Step D layer isolation 输出 |
 
 ---
 
