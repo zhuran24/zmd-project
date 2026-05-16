@@ -1,0 +1,56 @@
+=== minimum + master direct PoC ===
+candidate 27x15 anchor (22,28)
+skip_power=False no_anchor_filter=True
+[load] project data ...
+[load] 0.9s
+[build] master exact core (skip_power=False) ...
+[core] 20.9s
+[overlay] no anchor filter
+[overlay] 58.7s
+[finalize] m.build() 0.0s
+[build_stats] {
+  "solve_mode": "certified_exact",
+  "requested_master_search_profile": "exact_coordinate_guided_branching_v4",
+  "master_representation": "coordinate_exact_v2",
+  "master_domain_encoding": "mode_rect_factorized_v1",
+  "master_domain_table_rows": 0,
+  "master_interval_count": 5902,
+  "master_mode_literals": 974,
+  "master_pose_bool_literals": 0
+}
+[solve] m.solve(time_limit=60.0) ...
+
+=== verdict ===
+status: INFEASIBLE
+elapsed (script): 0.020s
+build_stats.last_solve: {
+  "status": "INFEASIBLE",
+  "wall_time": 0.019316881,
+  "user_time": 0.0193169,
+  "deterministic_time": 0.0,
+  "branches": 0,
+  "conflicts": 0,
+  "binary_propagations": 0,
+  "integer_propagations": 0,
+  "hinted_literals": 0,
+  "known_feasible_hint": false,
+  "search_profile": "exact_coordinate_guided_branching_v4",
+  "search_branching": "SearchBranching.FIXED_SEARCH",
+  "requested_search_branching": "fixed",
+  "solver_parameters": {
+    "max_time_in_seconds": 60.0,
+    "num_search_workers": 8,
+    "symmetry_level": 3,
+    "cp_model_probing_level": 3,
+    "hint_conflict_limit": 1000,
+    "cp_model_presolve": true,
+    "log_search_progress": false,
+    "log_to_stdout": true,
+    "log_callback_enabled": false
+  },
+  "response_stats": "CpSolverResponse summary:\nstatus: INFEASIBLE\nobjective: NA\nbest_bound: NA\nintegers: 0\nbooleans: 0\nconflicts: 0\nbranches: 0\npropagations: 0\ninteger_propagations: 0\nrestarts: 0\nlp_iterations: 0\nwalltime: 0.0193169\nusertime: 0.0193169\ndeterministic_time: 0\ngap_integral: 0\n",
+  "ghost_anchor_hint_applied": false,
+  "ghost_anchor_hint_idx": null,
+  "residual_optional_zero_hinting_enabled": true,
+  "residual_optional_zero_hints": 0
+}

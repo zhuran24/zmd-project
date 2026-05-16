@@ -335,6 +335,34 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 
 ---
 
+### L15. Set-packing branch-and-bound prover (GPT L14 升级建议, 2026-05-17 PoC 实测)
+
+**假设** (GPT 给的): L14 weighted-occupancy LP 太弱 → 升级到 dedicated set-packing prover, BnB 直接在 (x_{g,p}) 整数变量上搜, weighted LP 当 dual bound. 估 1-2 月工作 paradigm-level investment.
+
+**PoC 实测** (docs/research/setpacking_prover_poc_20260517/, ~3 小时 Claude pace):
+
+| Trial | 内容 | 结果 |
+|---|---|---|
+| A2 | 27×15 (22,28) full master.solve via LBBD 5min | UNKNOWN |
+| A3 | 27×15 (0,0) full master.solve 10min | UNKNOWN |
+| A4 | 27×15 (22,28) full master.solve **30min** | UNKNOWN |
+| B1 | 27×15 (0,0) **minimum** set-packing CP-SAT 1w 60s | **INFEASIBLE 2.4s, 0 branch** |
+| B3 | 27×15 (22,28) minimum 8w 5min | **OPTIMAL (feasible) 7.2s** |
+| B4 | 27×15 (0,0) minimum 8w 2min | INFEASIBLE 2.3s |
+| B5 | 27×15 (21,0) edge minimum 8w | INFEASIBLE 2.3s |
+| B6 | 28×15 (0,0) minimum 8w | INFEASIBLE 2.3s |
+| B7 | 28×15 (21,27) interior minimum 8w | OPTIMAL 7.1s |
+
+**关键 finding**: **minimum set-packing 核心 CP-SAT 已经轻松搞定** — corner/boundary 2-3s INFEASIBLE (propagator instant), interior 8w 7s FEASIBLE. paradigm 攻的是已经 fast 的层.
+
+**真瓶颈**: master 多余的 port_binding / power_coverage / boundary_port_feasibility / exact_safe_cuts. 这些约束让 CP-SAT 30 min 也 UNKNOWN. GPT 的 set-packing prover 不 cover 这些.
+
+**Verdict**: ❌ **死路 — 攻错层**. paradigm 假设错: 假设 set-packing 核心难, 实测 CP-SAT 几秒搞定. 真瓶颈在 master 多余约束 (跟 [[project_highs_rewrite_blocker]] 同根因 — dense linear constraint), 不在 set-packing 部分. **不要投资 2 周/1-2 月写 prover**.
+
+**链**: [[project_l15_setpacking_prover_dead]]
+
+---
+
 ## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
 
 这些路线虽然没破 0, 但项目质量真实提升:
@@ -361,21 +389,22 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** 共 12 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** 共 **13** 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
 **唯一未试且大概率出 FEASIBLE 的路径**: **L11 (hard constraint)** — 但要牺牲 certified path 全局严格性, 改 problem 本身
 
-**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14 PoC 实测):
+**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
 - 不是单一 lever 缺失, 是 model 本身对 CP-SAT 来说**太难**
 - 严格性兼容 + 算法层面的所有 algorithmic lever 全部 verdict 完毕 (L1-L10 + L12 + L13 + L14)
 - v8 verdict: 算法错估 (anchor choice 不是搜索瓶颈)
 - v10 verdict: 前提错估 (要求 complete witness, 我们 data 不匹配)
 - L14 verdict: GPT 没错估方向, 实测 hit GPT 自己 caveat 列的 failure mode 1 (weighted occupancy 数学能力不够)
-- **GPT 已经在三个不同方向尝试**: 算法 (v8) → 数据 (v10) → 数学 family (L14), 都未能破局
-- 剩下选项: set-packing prover (1-2 月 paradigm 投资) / L11 牺牲严格性 / paradigm shift / 改数据
+- **L15 verdict** (本次 PoC): paradigm 攻错层 — minimum set-packing CP-SAT 几秒搞定, 真瓶颈是 master 多余约束 (port/power/connector/boundary). prover 即使写出来也是 attack 已经 fast 的部分
+- **GPT 已经在四个不同方向尝试**: 算法 (v8) → 数据 (v10) → 数学 family (L14) → paradigm (L15), 都未能破局
+- 剩下选项: L11 牺牲严格性 / paradigm shift / 改数据 / 接受 verdict
 - L11 是改 problem 本身, 是当前**唯一**几乎保证出 FEASIBLE 的路径
 
 ---

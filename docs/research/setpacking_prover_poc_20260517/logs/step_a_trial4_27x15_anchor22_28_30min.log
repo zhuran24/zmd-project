@@ -1,0 +1,14 @@
+=== Step A baseline ===
+candidate: 27x15 area=405
+anchor_filter: 22,28
+master_seconds: 1800.0
+max_iter: 2
+start: 02:16:34
+
+
+--- [LBBD Exact Loop] Iteration 1/2 ---
+  > Solving Master Problem...
+
+=== verdict ===
+wall: 1822.2s
+status: UNKNOWN
