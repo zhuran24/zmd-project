@@ -236,6 +236,60 @@ status_counts: {UNKNOWN: 1}
 
 ---
 
+### L13. Witness-only mandatory-placement preflight (GPT v10 方案, 2026-05-16 实测)
+
+**假设**: v9 verdict 已确认搜索瓶颈在 mandatory facility placement (385万 pose), 不在 ghost anchor 外层. 因此用 complete mandatory hint **collapse** mandatory placement search tree — clone master, 固定 266 mandatory slot 的 x/y/mode + 1 个 compatible ghost anchor, residual optional 自由, 让 CP-SAT 找 positive witness. fail-closed: clone 不 FEASIBLE 不证 parent INFEASIBLE, 回退 normal master.
+
+**实验** (worktree `zmd_v10_test`, GPT v10 patch clean apply + 全套 pytest 2212 pass):
+
+| 指标 | 结果 |
+|---|---|
+| Patch apply | clean |
+| Pytest 全套 | 2212 passed / 60 skipped / 0 failed |
+| Patch size | 1013 行 (+782/-39), 7 文件改动 |
+| Smoke (`MAX_ANCHORS=32`, 30s budget) | preflight 0 秒 fail-closed |
+| `compatible_anchor_count` | **0/2464** |
+| `mandatory_hint_occupied_cell_count` | 3122 (棋盘 64%) |
+| `anchor_attempt_count` | 0 (没跑一次 forced clone solve) |
+| `reason` | `no_compatible_ghost_anchor` |
+| Fallback normal master | 5 min UNKNOWN, 5.57M branches, 8 亿 propagation |
+
+详细数据归档: `docs/research/v10_witness_preflight_smoke_20260516/`
+
+**根因 (前提错估)**: v10 假设 "complete 266-facility witness 跟 blueprint align". 实际:
+- 用户 community blueprint 只有 225 mandatory, 缺 41 个
+- Greedy heuristic 填充的 41 个跟 blueprint 留空 27×15 区域冲突
+- Merge 后 266 facility 占 3122 格, 任何 27×15 ghost anchor 都跟这 3122 格 overlap
+
+**Candidate-size 依赖**: greedy hint 下 compatible anchor 数随 candidate area 递减:
+
+| Ghost rect | Compatible / Total | 比例 |
+|---|---|---|
+| 8×8 | 611 / 3969 | 15.4% |
+| 10×10 | 469 / 3721 | 12.6% |
+| 15×15 | 149 / 3136 | 4.8% |
+| 20×15 | 0 / 2856 | **0.0%** |
+| 27×15 | 0 / 2464 | **0.0%** |
+
+**v10 preflight 在小 candidate 上能 trigger, 在 area ≥300 的大 candidate (项目真目标) 上永远 0**.
+
+**跟 v8/v3 错估区分**:
+- v3 / v8 = **算法错估** (关注 build / 关注 anchor choice, 但真瓶颈在 solve / facility placement)
+- v10 = **前提错估 + data 不匹配** (算法本身 sound, 但要求 complete witness; 我们没 complete blueprint witness)
+
+v10 算法本身比 v8 更可能有用 — 如果数据满足前提 (266/266 align blueprint), forced clone solve 至少能 trigger. 但当前 data 不满足, **无法验证 forced clone solve 是否能 FEASIBLE**.
+
+**破解路径** (都不在 v10 patch 范围内, 全 data/heuristic 工程):
+1. 用户手动加 41 个 mandatory facility 进 blueprint (几小时人工)
+2. 改 greedy heuristic 尊重 blueprint 空地 (改 heuristic, 工作量大)
+3. v10 加 partial witness mode (回到原 master 搜索难度)
+
+**Verdict**: ❌ **死路 (data-bound, 非 algorithm-bound)**. 工程上 v10 比 v8 更干净 (代码量 1013 vs 1620, 算法逻辑更清晰, 严格性兼容), 但实测在我们 data 下 ROI=0. v10 改动留 worktree + patch 归档, 不进 main src.
+
+**链**: [[project_v10_witness_preflight_dead]]
+
+---
+
 ## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
 
 这些路线虽然没破 0, 但项目质量真实提升:
@@ -262,16 +316,19 @@ status_counts: {UNKNOWN: 1}
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** 共 10 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** 共 11 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
 **唯一未试且大概率出 FEASIBLE 的路径**: **L11 (hard constraint)** — 但要牺牲 certified path 全局严格性, 改 problem 本身
 
-**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8 patch 实测):
+**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10 patch 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
 - 不是单一 lever 缺失, 是 model 本身对 CP-SAT 来说**太难**
-- 严格性兼容 + 算法层面的所有 algorithmic lever 全部 verdict 完毕 (L1-L10 + L12). v8 是穷尽证据, 不是开始
+- 严格性兼容 + 算法层面的所有 algorithmic lever 全部 verdict 完毕 (L1-L10 + L12 + L13)
+- v8 verdict: 算法错估 (anchor choice 不是搜索瓶颈)
+- v10 verdict: 前提错估 (要求 complete witness, 我们 data 不匹配)
+- **GPT 在两个不同方向都未能破局** — 算法侧 (v8) 跟 data 侧 (v10) 都试过, 都失败
 - L11 是改 problem 本身, 是当前**唯一**几乎保证出 FEASIBLE 的路径
 
 ---
