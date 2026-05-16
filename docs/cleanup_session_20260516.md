@@ -118,41 +118,61 @@ README.md 顶部加:
 
 **Commit**: 7b46367
 
-### 动作 8: Phase 3B 670 文件物理重组 (in progress)
+### 动作 8: Phase 3B 670 文件物理重组 ✅
 
-不仅是文档索引 (那是动作 7), 真正 `git mv` 670 文件到子目录 + 改 import 路径 + 改 conftest guard.
+真正 `git mv` 670 文件到 cluster 子目录 + 改 import 路径 + 改 conftest guard.
 
-目标结构:
+实际重组结构 (agent 完成):
 ```
-src/search/phase3b/<cluster>/<short_name>.py
+src/search/phase3b/<cluster>/<short_name>.py       (36 cluster dirs)
 src/tests/phase3b/<cluster>/test_<short_name>.py
-scripts/phase3b/<cluster>/build_<short_name>.py
+scripts/phase3b/<cluster>/build_<short_name>.py    (含 ai_sidecar 子目录, 因 src 没 runtime)
+                  checkpoint_free/signature_bucket/<14 sub-cluster>/
+3 顶层 + 177 cluster/sub-cluster 目录 = 180 个 __init__.py
 ```
 
-委托给 worktree 隔离 agent 跑 (agentId: ac8251f4dfdf08bca). 完成后 merge 进主 tree.
+实测改动量:
+- **866 files changed, 5263 insertions, 5381 deletions**
+- 670 git mv (R/RM) + 大量 import 改 + 跨 cluster runtime path 改
 
-**Status**: 等 agent 完成通知 (估 1-2h).
+agent (ac8251f4dfdf08bca) 遇到 7 个真实 surprise + 全部解决:
+
+1. `sed s@scripts.build_X@...@g` 里 `.` 匹配 `/`, code_context 中的字符串路径被误改 — 加 `fix_mangled_paths.py` 反向矫正
+2. `runtime_patch_status.py` 用 `Path(__file__).parent / "sibling.py"` 跨 cluster, 改成 `parents[2] / cluster / file.py`
+3. 252 个 scripts 的 `PROJECT_ROOT = parents[1]` bootstrap 因新位置深度变, 改为 `parents[N]`
+4. conftest `_FIXTURE_GUARDS` substring 不再连续 (path 加了 `/` 分隔), 改用 path component (`signature_bucket/powered_support_coverer`), 25 个 skip 测试验证仍 work
+5. `ruff.toml` per-file-ignores `scripts/build_*.py` 不再 match, 加 `scripts/phase3b/**/build_*.py`
+6. 5 个 anchor119_row_domain 测试用 Path split string, sed 没覆盖, 手动 multi-line regex 改
+7. 2 个 acceptance_authorization 源文件 hardcode split path string, 手动改
+
+最终 pytest: **2207 passed, 60 skipped** in 245s — 跟 baseline 完全一致 ✓.
+
+**Commit**: e4bad28 (1 大 commit, 而非分阶段 — 因 mv + import 耦合, 回滚单 revert 更简单)
+
+agent 总跑 1h, 未超时.
 
 ---
 
 ## 全 session 数据
 
-- **commits**: 8 (1-7 完成) + 1 待 (8 完成后)
-- **文档增加**: ~1500 行 (8 个新 docs)
-- **代码改动**: 0 行逻辑代码 (只 docstring + import 路径在动作 8)
+- **commits**: 11 (c5c57af → e4bad28)
+- **文档增加**: ~1500 行 (8 个新 docs + 6 个 file-header docstring 索引)
+- **代码改动 (动作 1-7)**: 0 行逻辑代码
+- **代码改动 (动作 8)**: 866 files, 5263 ins / 5381 del — 全部 import 路径 + module rename + conftest guard + ruff config, 零业务逻辑
 - **删除文件**: 0
-- **pytest**: 2207 passed + 60 skipped (1-7 后验证)
+- **pytest**: 2207 passed + 60 skipped (1-8 后最终验证) — 跟 baseline 完全一致
 
 ---
 
-## 后续 (动作 8 完成后)
+## 后续 (动作 8 完成后) ✅
 
-1. Agent 报告 + 验收 (pytest 2207 pass, diff stat 合理)
-2. Worktree commits merge 进主 tree (fast-forward 或 cherry-pick)
-3. 跑一次完整 preflight + pytest 最终验证
-4. 此 doc 更新动作 8 commit hash + 实测 stats
-5. task #93 close
-6. /goal "懂了 1-8 全做完" 自动 clear
+全部完成:
+1. ✅ Agent 报告 + 验收 (pytest 2207 pass, diff 866 files)
+2. ✅ Agent 实际直接在主 tree commit (worktree 共享 .git, e4bad28 直接进 master)
+3. ✅ pytest 最终验证 (2207 passed + 60 skipped, 一致 baseline)
+4. ✅ 此 doc 更新动作 8 commit hash + 实测 stats
+5. ✅ task #93 close
+6. ✅ /goal 自动 clear
 
 ---
 
