@@ -39,6 +39,9 @@ scripts/pumpkin_poc/run_log.txt
 # Claude Code internal lock files (regenerated on session start)
 .claude/scheduled_tasks.lock
 
+# Claude Code agent worktrees (per-agent isolated repo copies, regenerable, not source)
+.claude/worktrees/
+
 # Local scratch and package outputs
 *.log
 *.tmp
