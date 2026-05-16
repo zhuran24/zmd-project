@@ -202,6 +202,40 @@ status_counts: {UNKNOWN: 1}
 
 ---
 
+### L12. Ghost-anchor slicing (GPT-5.5 Pro v8 方案, 2026-05-16 实测)
+
+**假设**: master 一次性展开所有 ghost anchor (2464 个 for 27×15) 导致搜索树先在 anchor-choice 这层撑开. 改成每次只锁单个 anchor (用 `EXACT_MASTER_GHOST_ANCHOR_FILTER=x,y`) 走原 LBBD 流程, 等价于 `feasible ⟺ ∃a: slice(a) feasible`. PROJECT_LOCK 兼容 + fail-closed.
+
+**实验** (worktree `zmd_v8_test`, GPT v8 patch clean apply + 全套 pytest 2211 pass):
+
+| 指标 | 结果 |
+|---|---|
+| Patch apply | clean (无 hunk fuzz) |
+| Pytest 全套 | 2211 passed / 60 skipped / 0 failed |
+| Build wall (full → slice) | 53.7s → 4.5s (**-92%**) |
+| Proto vars 减幅 | -13% |
+| Proto cons 减幅 | -32% |
+| Build RAM 减幅 | -23% |
+| 单 anchor solve (5 min cap) | UNKNOWN, 5.5M branches, 8 亿 propagation, 0 FEASIBLE |
+| `mandatory_pose_literal_count` (post-slice) | 3,853,132 (跟 full overlay 一致) |
+
+详细数据归档: `docs/research/v8_anchor_slicing_smoke_20260516/`
+
+**根因**: 锁 ghost anchor 后 master 仍有 385 万 mandatory pose literal. **搜索难度的主体来自 266 个 facility 几何摆放, 不是 ghost anchor choice**. 锁 anchor 只剪掉搜索树最外层一层, 底下 facility placement 层没动.
+
+**Path 计算**:
+- "早命中" 策略: 单 anchor 5 分钟没结论, 后续 2463 个 anchor 没机会跑 ❌
+- "完整 partition" 策略: 单 anchor 5 min × 2464 = **205 小时**, 物理不可行 ❌
+- "锁 anchor 加速单 slice" 策略: 单 slice 5 min UNKNOWN 跟原 master 1h UNKNOWN 同 quality ❌
+
+**跟 GPT v3 错估对比**: 同源 — 都是 build 加速漂亮 (v3 沙盒看 build 慢, v8 看 anchor choice 撑开), 但 solve 没改善. GPT 没量 solve 阶段. **build 改善 ≠ solve 改善** 的错估重演.
+
+**Verdict**: ❌ **死路**. Build wall -92% 真实, 但不破 0 FEASIBLE. 工程上比 v3 干净 (fail-closed + PROJECT_LOCK 兼容), ROI 仍为负. v8 改动留在 worktree + patch 归档, 不进 main src.
+
+**链**: [[project_v8_anchor_slicing_dead]]
+
+---
+
 ## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
 
 这些路线虽然没破 0, 但项目质量真实提升:
@@ -228,15 +262,16 @@ status_counts: {UNKNOWN: 1}
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 共 9 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** 共 10 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
 **唯一未试且大概率出 FEASIBLE 的路径**: **L11 (hard constraint)** — 但要牺牲 certified path 全局严格性, 改 problem 本身
 
-**累积事实** (2 天 session + 14h trial + 多次 1h trial):
+**累积事实** (3 天 session + 14h trial + 多次 1h trial + v8 patch 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
 - 不是单一 lever 缺失, 是 model 本身对 CP-SAT 来说**太难**
+- 严格性兼容 + 算法层面的所有 algorithmic lever 全部 verdict 完毕 (L1-L10 + L12). v8 是穷尽证据, 不是开始
 - L11 是改 problem 本身, 是当前**唯一**几乎保证出 FEASIBLE 的路径
 
 ---

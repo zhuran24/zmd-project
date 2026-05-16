@@ -1,0 +1,1620 @@
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/CHANGELOG.md code_src/CHANGELOG.md
+--- code_orig/CHANGELOG.md	2026-05-16 01:40:07.000000000 +0000
++++ code_src/CHANGELOG.md	2026-05-16 05:57:02.295108995 +0000
+@@ -1,186 +1,196 @@
+-# CHANGELOG.md
+-
+-This file is the canonical home for dated engineering history that used to be
+-split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
+-
+-## 2026-05-16
+-
+-### D step 2: Community blueprint hint 注入 (master.solve hint integration)
+-
+-- Added `scripts/blueprint_to_master_hint.py` — convert IP v2 blueprint JSON (用户手调验证版 `BP-2026-05-13 08_35_36.blueprint(1).json`) to `Dict[instance_id, pose_idx]` for `master.solve(solution_hint=...)`. 226 facility devices → 225 mapped (1 hub miss due to anchor range geometry). [scripts/]
+-- Added regression test `src/tests/test_blueprint_to_master_hint.py` — 10 hand-verified samples (4 facility_type × 4 rotation × orientation 0+1) lock rotation→(orientation, port_mode) mapping. [src/tests/]
+-- Added integration in `src/search/benders_loop.py:3565` — `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` env loads JSON + merges with greedy hint (community overrides greedy on overlap, since user-curated > heuristic). [src/search/]
+-- Updated `scripts/run_campaign_p2_workers1.sh` + `run_campaign_workers2.sh` — auto-default `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH=data/hints/blueprint_2026_05_13_master_hint.json` when file present. [scripts/]
+-- Added edge case tests `src/tests/test_community_hint_env_injection.py` — 9 cases (empty/whitespace/missing-file/malformed-JSON/non-int values). [src/tests/]
+-- Added `scripts/hint_coverage_report.py` — audit hint coverage % + pose_idx range validity (225/266 = 84.6% mandatory hinted, 0 out-of-range). [scripts/]
+-- Added `scripts/analyze_hint_vs_baseline.py` — compare baseline state vs hint state for UNKNOWN→FEASIBLE / UNKNOWN→INFEASIBLE upgrade signals. [scripts/]
+-- Added `CLAUDE.md` runbook section — community hint workflow + integration mechanism. [CLAUDE.md]
+-
+-**Empirical results** (5 short trials, master_seconds 600s..3600s × workers 1..8 × profile guided_branching_v4/ghost_first_v1):
+-- All 5 candidates (35×14 / 33×15 / 31×16 / 27×15 / 24×17) returned UNKNOWN, including 27×15 (blueprint natural empty rect 15×27 exact match)
+-- Telemetry verified: 266 mandatory instances × 3 (x/y/mode) = 798 AddHint calls per candidate
+-- Conclusion: hint integration end-to-end works zero-loss, but master.solve cannot decide these candidates in 600-3600s even with perfect hint shape match. Master `inherent difficulty`, not hint failure.
+-
+-### 项目整理 (清晰为主, 不丢东西)
+-
+-- Added `docs/lever_verdicts.md` — 主线 master 加速 lever 路线总账 (L1-L11) + 实测 verdict (9 ❌ 死路, 1 🟡 未试 hard constraint). [docs/]
+-- Added `docs/env_variable_index.md` — 100+ `EXACT_*` / `PHASE3B_*` env 变量集中索引, 11 组分类. [docs/]
+-- Added `docs/phase3b_module_index.md` — 670 个 Phase 3B 文件物理分类 (154 src + 264 tests + 252 scripts), 17 cluster + active 主线明确区分. [docs/]
+-- Added `docs/specs_index.md` — 23 份 specs/编号 spec 一句话索引 + 9 份 ecosystem_notes 索引. [docs/]
+-- Added `src/adapters/README.md` — 4 个 adapter 子目录 (industrial_planner / endfield_calc / dige / base_planner) 职责说明 + 数据流向. [src/adapters/]
+-- Added `scripts/README.md` — scripts/ 入口分类: campaign wrapper / gates / IP delivery / vendor refresh / hint 工具 / Phase 3B 生成器. [scripts/]
+-- Updated `README.md` — 顶部加项目状态地图 (Phase 3A done / 3B in progress / 3C planning) + 6 个关键文档入口. [README]
+-- Updated `src/models/master_model.py` / `src/models/exact_coordinate_master.py` / `src/search/benders_loop.py` — 3 个 5000+ 行单文件顶部加 module docstring 索引 (主要 section 行号 + 公开 API + env 引用). [src/]
+-- Updated `src/tests/test_master.py` / `src/tests/test_exact_contract.py` — 10000+/5000+ 行测试文件加目录索引 docstring. [src/tests/]
+-- Updated `src/models/highs_master_model.py` / `scip_master_model.py` / `scip_power_separator.py` — 加 STATUS 标注 "实验 PoC, 验证为死路, 留作 reference" (per memory `project_highs_rewrite_blocker`). [src/models/]
+-- Updated 5 个 Codex-era 永远 skip 测试文件 (test_phase3b_checkpoint_free_signature_bucket_powered_support_coverer_*.py) 加文件头 docstring 说明缘由 + 保留原因. [src/tests/]
+-- Updated `.gitignore` — 加 `.claude/worktrees/` (Claude Code agent worktree, regenerable, not source).
+-
+-**整理原则**: 重组 / 加文档 / 加索引 OK, 删任何文件 NOT OK. 全部 ~1500 行新文档, 0 文件删, 0 代码逻辑改动. 2207 pytest pass + 0 failed.
+-
+-## 2026-05-08
+-
+-- Refreshed the vendored `JamboChen/endfield-calc` snapshot from package version `0.5.2` (commit unavailable, observed 2026-03-27) to `0.6.2` master commit `49be16e1`. Catalog grew from 130 items / 172 recipes / 14 facilities to 178 / 260 / 16. Newly observed facilities `ITEM_PORT_LIQUID_PURIFIER_1` and `ITEM_PORT_MIX_POOL_2` likely correspond to 1.2 武陵 content; `ITEM_PORT_DISMANTLER_1` re-tiered 4→3. `canonical_rules.json` intentionally still keeps the original 17-recipe semantic-aligned subset; the refresh did not re-project the catalog. [FILE_STATUS]
+-- Added `scripts/refresh_endfield_calc_snapshot.py` so future endfield-calc snapshot refreshes are mechanical: fetch latest TypeScript catalog, rewrite `SOURCE_METADATA.json` with version/commit/`observed_counts`/previous tracking, and print a diff report. The script does not touch `canonical_rules.json` or release-note files. [FILE_STATUS]
+-- Vendored a field-subset of upstream `hsyhhssyy/IndustrialPlanner` BASES at `third_party_snapshots/industrial_planner/bases/bases.json` (7 bases: 3 武陵 80/50/50, 4 四号谷地 70/40/40/40), extracted from branch `v2` commit `c494c5ae`. Confirmed `wuling_protocol_core` is 80x80; PROJECT_LOCK active scope still `valley4_protocol_core` (70x70). Added `scripts/refresh_industrial_planner_bases.py` so this snapshot can be re-pulled mechanically. [FILE_STATUS]
+-- Refactored `src/tests/test_endfield_calc_typescript_snapshot.py` to read `SOURCE_METADATA.json` for expected counts and source_version, eliminating hardcoded numbers so the next upstream refresh does not require test edits. Added a 5% noise floor against silent regressions. [FILE_STATUS]
+-- Added `src/tests/test_industrial_planner_bases_snapshot.py` to sanity-check the new vendored bases (schema, required fields, active-scope presence, count-collapse guard); also reads `SOURCE_METADATA.json` so it stays refresh-friendly. [FILE_STATUS]
+-
+-## 2026-04-17
+-
+-- Added `docs/phase3b_exact_endgame_execution_plan.md` and linked it from the root/readme entry surfaces, so the repository now carries one detailed current-to-finish execution book for the remaining Phase 3B exact endgame instead of leaving the solver-side closeout implicit after the single-base delivery/productization line landed. [FILE_STATUS]
+-- Closed the remaining single-base consumer-surface productization tail by surfacing `current_surface_health.{json,md,txt}` directly in the repo-front frontdoor helper links/manifest/status card and the aggregate `active_single_base_delivery_entrypoints.{json,md}` manifest, then tightening the no-drift audit plus release-promotion convergence loop so those surfaced health refs/counts must agree with the checked-in health snapshot before the final surface is left behind. [FILE_STATUS]
+-- Added a compact checked-in `current_surface_health.{json,md,txt}` trio plus a dedicated builder/guide, so CI/reviewer tooling/scripts can read the active single-base consumer-surface clean/drift verdict and top-line counts without parsing the full no-drift audit payload first; the release builder now emits that health snapshot automatically after the converged surface-alignment audit finishes clean. [FILE_STATUS]
+-- Tightened the single-base consumer-surface no-drift audit so it now fail-closes on the surfaced `surface_alignment_summary.{json,md,txt}` refs themselves across the repo-front frontdoor HTML/manifest and the aggregate entrypoints manifest, instead of only checking the older frontdoor/entrypoints linkage. [FILE_STATUS]
+-- Refreshed the promotion chain so it now converges that surfaced audit metadata in three passes — initial audit, surfaced rebuild, closing audit — and only leaves the checked-in frontdoor/entrypoints pair behind after the final audit summary, counts, and refs agree. [FILE_STATUS]
+-- Surfaced the checked-in `surface_alignment_summary.{json,md,txt}` trio directly in the repo-front single-base homepage and `frontdoor_manifest.json`, so reviewers can see whether the current consumer surface is clean without manually drilling into `.artifacts/`. [FILE_STATUS]
+-- Extended `active_single_base_delivery_entrypoints.{json,md}` so it now carries the latest consumer-surface audit summary alongside the current release/viewer/landing/latest-bundle entrypoints, giving script consumers one aligned file that also reports clean/drift status. [FILE_STATUS]
+-- Tightened `build_industrial_planner_single_base_delivery_release.py` so it now refreshes the surface-alignment audit, re-renders the aggregate entrypoints/frontdoor with that audit summary wired in, and then re-runs the audit on the final checked-in surface before declaring the promotion clean. [FILE_STATUS]
+-
+-## 2026-04-16
+-
+-- Added a lightweight repo-front / aggregate-entrypoints no-drift audit (`scripts/audit_industrial_planner_single_base_delivery_surface_alignment.py`) plus a dedicated GitHub workflow, so the checked-in single-base consumer surface now fail-closes when helper links, frontdoor metadata, or aggregate script-entry paths drift apart even without repromoting a release. [FILE_STATUS]
+-- Tightened the repo-front single-base homepage so its hero helper links now point directly at `active_single_base_delivery_entrypoints.{json,md}`, added explicit script-entry metadata to `frontdoor_manifest.json`, and refreshed the release builder so future promotions rebuild the frontdoor after the aggregate manifest exists instead of leaving humans and automation on slightly different current-entry surfaces. [FILE_STATUS]
+-- Added `active_single_base_delivery_entrypoints.{json,md}` plus a dedicated builder/guide, so script consumers now get one checked-in manifest that fail-closes on drift while summarizing the active release pointer, current viewer, stable landing bundle, and top-level latest bundle alias in one place. [FILE_STATUS]
+-- Extended the single-base delivery release builder to refresh that aggregate current-entrypoints manifest by default, and tightened rollback so repo-front latest-alias outputs are restored too if a later post-promotion step fails. [FILE_STATUS]
+-- Added a shorter repo-front latest-bundle alias trio — `industrial_planner_latest_single_base_delivery_bundle.zip` plus `latest_single_base_delivery_bundle.{json,md}` — and repointed the download-first primary action to that top-level alias so script consumers no longer need to remember the `current_delivery/downloads/` subdirectory. [FILE_STATUS]
+-- Added a stable one-file current bundle ZIP alias under `data/examples/industrial_planner/current_delivery/downloads/`, plus JSON/Markdown pointer sidecars, and repointed the repo-front download-first primary action at that alias so users can pull the active single-base delivery surface without manually assembling sidecars. [FILE_STATUS]
+-- Tightened the checked-in IndustrialPlanner repo front door into an explicit browse-first/download-first homepage, added machine-readable `entry_modes` metadata to `frontdoor_manifest.json`, and fail-closed the frontdoor build when the stable landing no longer exposes the required viewer/download actions. [FILE_STATUS]
+-- Added a higher-level checked-in repo front door for the active IndustrialPlanner single-base line: `data/examples/industrial_planner/index.html` plus `frontdoor_manifest.json`, a dedicated frontdoor builder/guide, and a root `README.md` that now points straight at the active current-delivery path instead of making users hunt through pointer files first. [FILE_STATUS]
+-- Hooked the single-base delivery release builder into that repo-front refresh and tightened rollback so a frontdoor failure now restores the stable current-landing directory instead of leaving a half-updated checked-in consumer surface behind. [FILE_STATUS]
+-- Made the stable `current_delivery/landing_manifest.json` emit repo-relative source/output paths for repo-local builds, so the checked-in landing metadata no longer captures build-machine absolute paths. [FILE_STATUS]
+-- Added a stable `current_delivery/` landing/download layer on top of the checked-in current-viewer pointer, plus `scripts/build_industrial_planner_single_base_delivery_landing.py` and `src/render/industrial_planner_single_base_delivery_landing.py`, so the active `valley4_protocol_core` 70×70 line now has one fixed consumer entry path with a copied viewer bundle under `viewer/` and grouped quick downloads without widening `future_scope`. [FILE_STATUS]
+-- Hooked the single-base delivery release builder directly into that current-landing refresh, so each promoted active-contract release can now fail-closed while refreshing the versioned viewer bundle/current-viewer pointer **and** the stable current landing/download directory. [FILE_STATUS]
+-- Hooked the single-base delivery release builder directly into the viewer promotion path, so each promoted `valley4_protocol_core` 70×70 release can now fail-closed while refreshing a versioned checked-in viewer bundle, `active_single_base_delivery_viewer.{json,md}`, and `viewers/viewer_index.{json,md}` alongside the existing release pointer/index. [FILE_STATUS]
+-- Added an active-current-release viewer-bundle workflow for the IndustrialPlanner single-base line: a builder that resolves `active_single_base_delivery_release.json`, materializes a compact static viewer bundle, prunes `candidate_placements.json` down to the release-selected poses only, regenerates `viewer_report.json`, and publishes grouped delivery/support/gate/meta download links via `release_viewer_manifest.json`. [FILE_STATUS]
+-- Extended the static web viewer so it can optionally surface single-base delivery release cards and grouped artifact downloads when `release_viewer_manifest.json` is present, while still hiding those sections and falling back to the older blueprint-first behavior when the manifest is absent. [FILE_STATUS]
+-
+-## 2026-04-15
+-
+-- Added an operator-facing `scripts/run_industrial_planner_single_base_e2e.py` workflow plus a dedicated single-base runbook doc, so the active `valley4_protocol_core` 70×70 line now has one standard end-to-end path from regenerated source truth through export bundle, validator/throughput sidecars, fresh support reports, checked-in inventory/gate rechecks, and a failure-classified handoff summary without widening scope. [FILE_STATUS]
+-- Added `scripts/build_industrial_planner_single_base_delivery_release.py`, a dedicated release guide, and checked-in pointer/index artifacts for versioned active-contract delivery bundles, so a delivery-ready `valley4_protocol_core` 70×70 run can now be promoted into a fixed release id with bundled evidence, checksums, and an honest exact-status note without reactivating any `future_scope` base. [FILE_STATUS]
+-
+-## 2026-04-14
+-
+-- Narrowed the active IndustrialPlanner support contract to the single 70×70 `valley4_protocol_core` base, rewrote the checked-in full-demand base/deployment/overview reports around that single active scope, and collapsed the three dormant 40×40 valley4 sub-bases into grouped `future_scope` metadata instead of keeping them in the active matrix surface. [PROJECT_LOCK]
+-- Simplified the checked-in support-suite inventory and repo-level checked-artifact family inventory to one active report family/report set, while preserving the old protocol-core transition slice and outer-bundle family as explicit `future_scope` metadata rather than deleting them. [FILE_STATUS]
+-- Froze the outer-deployment bundle path out of the active IndustrialPlanner CI gate, refreshed the focused regression workflow to cover only the active single-base support surface, and updated governance/docs to describe the new scope boundary clearly. [FILE_STATUS]
+-
+-## 2026-04-07
+-
+-- Added a second checked-in IndustrialPlanner support report-set for the focused `valley4_protocol_core` + `wuling_protocol_core` protocol-core transition slice, expanded the support-suite inventory summary to track unique audited-base coverage plus repeated-base overlap, and refreshed the repo-level checked-artifact gate so the support leg now exercises both the full-universe report set and an overlapping focused subset without double-counting decision-surface state. [FILE_STATUS]
+-- Added a second checked-in IndustrialPlanner outer-deployment bundle for the degenerate 70×70 `valley4_protocol_core` identity path and refreshed the outer-bundle suite summary so it now distinguishes translated vs identity outer bundles; the inventory-driven gate therefore exercises both the real larger-base `wuling_protocol_core` path and the zero-moat canonical-size path through checked-in artifacts instead of only one translated example. [FILE_STATUS]
+-- Added a checked-in `checked_artifact_family_inventory.json` and refactored `audit_industrial_planner_checked_artifact_suite.py` to dispatch through that inventory-of-inventories, so the repo-level IndustrialPlanner gate now reads family-specific inventories/builders from one checked-in registry instead of hard-coding separate support/outer wiring; the existing support-suite and outer-bundle legs remain clean under the new family-driven path. [FILE_STATUS]
+-- Added a checked-in `full_demand_support_suite_inventory.json` plus an inventory-driven `audit_industrial_planner_full_demand_support_suite_inventory.py` wrapper, so the strict/additive decision-surface leg now scales the same way as the translated outer-bundle leg and the repo-level checked-artifact gate can consume inventories on both sides instead of hard-coding one support-report directory. [FILE_STATUS]
+-- Added an inventory-driven IndustrialPlanner outer-base bundle suite plus a checked-in `outer_base_bundle_inventory.json`, so the repo-level checked-artifact gate now scales beyond a single hard-coded `wuling_protocol_core` example and can fail closed on every listed translated larger-base bundle through one checked-in inventory. [FILE_STATUS]
+-- Added a checked-in GitHub Actions workflow for the repo-level IndustrialPlanner checked-artifact gate and taught `audit_industrial_planner_checked_artifact_suite.py` to emit a plain-text summary copy alongside its JSON/Markdown sidecars, so relevant PRs can run focused regressions, fail closed on decision-surface or outer-bundle drift, and upload reviewable artifacts without changing canonical truth or certified evidence. [FILE_STATUS]
+-
+-## 2026-04-06
+-
+-- Added a deterministic no-drift audit for the checked-in IndustrialPlanner outer-base bundle plus a repo-level checked-artifact gate, so CI can now fail closed on either stale strict/additive support reports or stale translated `wuling_protocol_core` example artifacts; the IndustrialPlanner compatibility manifest now reuses the canonical blueprint `export_timestamp` for `generated_at` to keep those bundle checks reproducible. [FILE_STATUS]
+-- Added a no-drift `--check` mode to the IndustrialPlanner full-demand support-suite workflow plus drift-detection regression coverage, so CI can now fail closed when any checked-in canonical/deployment/overview report is missing or stale instead of silently letting the repo-level decision surface lag behind current code. [FILE_STATUS]
+-- Added a one-shot IndustrialPlanner full-demand support-suite workflow plus a checked-in `full_demand_support_overview` summary, so the strict canonical matrix, additive deployment-path matrix, and cross-view status deltas now regenerate together; `wuling_protocol_core` is surfaced as the sole current checked-in transition (`unsupported_by_canonical_contract -> proven_equivalent`). [FILE_STATUS]
+-- Added a checked-in IndustrialPlanner full-demand deployment-path matrix plus a dedicated audit CLI/tests, so the repo now preserves the strict canonical 70×70 support view while also surfacing the best available outer-deployment result; `wuling_protocol_core` now shows up as validator-clean translated `proven_equivalent` on the additive path instead of disappearing behind the old contract-ceiling summary alone. [FILE_STATUS]
+-- Taught the larger-base outer-plan path to stage pure-input boundary loaders inboard when a true edge lacks foundation bus, synthesize grouped input-side `item_port_log_hongs_bus` witnesses, and refresh the checked-in outer-base bundle so `wuling_protocol_core` now validates cleanly and reaches translated `proven_equivalent` without widening canonical truth. [FILE_STATUS]
+-- Added a real adapter-side IndustrialPlanner outer deployment representation: `OuterBaseDeploymentPlan`, deterministic larger-base inner-island placement, explicit true-edge boundary assignments, moat-only connector reservations, witness reservations, and export mappings that keep the canonical 70×70 schema unchanged. [FILE_STATUS]
+-- Added a validator-grounded outer export probe for larger IndustrialPlanner bases plus dedicated CLIs/tests, so `wuling_protocol_core` can now be pushed past the old contract-ceiling placeholder and surfaced as a real geometry blocker (`true_edge_witness_geometry_shortfall`) instead of stopping at “70×70 cannot express 80×80”. [FILE_STATUS]
+-- Integrated `OuterBaseDeploymentPlan` into the production IndustrialPlanner exporter and static throughput audit via a postprocess-only manifest export-mapping section, so translated larger-base exports can now retain canonical-instance pairing evidence without widening the canonical schema or the certified proof boundary. [FILE_STATUS]
+-
+-## 2026-03-30
+-
+-- Added an IndustrialPlanner adapter-side static recipe/capacity conformance layer: exact canonical->target recipe matching, conservative facility-intent recovery, per-recipe full-speed lower-bound rollups, and conservative boundary I/O audit sidecars without changing certified-exact semantics or the canonical blueprint schema. [FILE_STATUS]
+-- Extended IndustrialPlanner bundle/export plumbing, delivery-manifest compatibility exports, and the public exporter surface so throughput audit JSON/Markdown sidecars are written and discoverable next to the existing blueprint, compatibility, and validator artifacts. [FILE_STATUS]
+-- Added standalone throughput-audit CLI coverage, targeted regression tests for exact-match / mismatch / fallback / status-cap behavior, and synced example/docs/status files for the new post-Spec-22 production-conformance layer. [FILE_STATUS]
+-- Added a deterministic full-demand IndustrialPlanner recipe-capacity fixture plus a regeneration script, so the repo now carries a clean validator-compatible example that proves all 17 recipe-capacity rollups while honestly surfacing the remaining partial boundary-proof ceiling on the default base. [FILE_STATUS]
+-- Extended pure-input `boundary_storage_port` export with adjacent `item_log_admission` witnesses, taught the throughput audit to count those bindings as explicit proof, and refreshed the checked-in full-demand fixture so both final-product sink commodities now land at `proven_equivalent` while `source_ore` remains the only honest boundary partial on the default base. [FILE_STATUS]
+-- Refined throughput-audit overall-status reduction so boundary rollups that are explicitly `partially_proven` remain partial at the report top level instead of being collapsed into `unproven_or_insufficient`, matching the intended tri-state sidecar semantics. [FILE_STATUS]
+-- Added grouped export-side `item_port_log_hongs_bus` witnesses for interior-facing pure-output boundary unloaders, refreshed the checked-in full-demand fixture to use the new bottom/right `source_ore` slots, and pushed the default-base full-demand audit from `partially_proven` to `proven_equivalent` while keeping the validator clean. [FILE_STATUS]
+-- Generalized IndustrialPlanner boundary-bus witness synthesis from the old default-base bottom/right special case into a base-aware all-edge search: the exporter now greedily packs clean `item_port_log_hongs_bus` witnesses for any in-lot top/left/bottom/right pure-output requirement, adds multi-base regression coverage, and emits explicit warnings when a chosen base would require outside-lot bus coverage that cannot be synthesized. [FILE_STATUS]
+-- Reworked `scripts/build_industrial_planner_full_demand_fixture.py` into a base-aware fixture planner: it now derives the default full-demand boundary-slot layout from current `generic_io_requirements` plus exporter/validator feedback, emits optional planning-report JSON/Markdown sidecars, and fails closed on bases that are too small or that exceed the fixed canonical 70×70 anchor contract. [FILE_STATUS]
+-- Added a checked-in IndustrialPlanner full-demand base-support matrix plus a dedicated audit CLI, so the repo now summarizes every known base under the current 70×70 oracle: one base is fully supported, four are blocked by manufacturing-area shortfall, and `wuling_protocol_core` is isolated as the lone contract-ceiling candidate if a future outer planning representation is introduced. [FILE_STATUS]
+-
+-## 2026-03-29
+-
+-- Closed the remaining IndustrialPlanner translation-miss accounting gap so placeholder/empty commodities now increment structured miss counts for both `boundary_storage_port` bindings and precise facility-recipe fallback paths, while keeping geometry export intact. [FILE_STATUS]
+-- Refreshed the checked-in 70×70 validator benchmark evidence on the current Python 3.13 reference environment. [FILE_STATUS]
+-
+-## 2026-03-28
+-
+-- Hardened IndustrialPlanner commodity translation so invalid upstream-like `item_*` ids fail closed, are dropped from exported config bindings, and increment structured translation-miss accounting instead of being silently passed through. [FILE_STATUS]
+-- Added deterministic 70×70 IndustrialPlanner validator benchmark assets: a checked-in benchmark fixture, a reusable benchmark harness, raw benchmark JSON output, and a benchmark markdown report documenting AC-B12 evidence. [FILE_STATUS]
+-- Synced IndustrialPlanner governance/docs with the implemented state by adding the final Spec 22 markdown, expanding the compatibility matrix note, refreshing example-fixture guidance, and recording the new benchmark/documentation files in `FILE_STATUS.md`. [FILE_STATUS]
+-
+-## 2026-03-27
+-
+-- Extended `endfield-calc` TypeScript ingest so the existing adapter can consume a flat fixture directory, an extracted upstream repository root, or a `.zip` archive without manual file copying. [PROJECT_LOCK]
+-- Vendored a raw upstream `endfield-calc` repository fixture (`0.5.2`, commit unavailable from uploaded archive), enriched snapshot provenance with package-version/layout metadata, and added real-fixture regression coverage. [FILE_STATUS]
+-- Added an explicit `endfield-calc` semantic-alignment registry for the verified 17-recipe overlap with `rules/canonical_rules.json`, plus semantic diff reporting and exact-match regression coverage. [FILE_STATUS]
+-
+-## 2026-03-26
+-
+-- Added OR-Tools cross-version CP-SAT compatibility shims for `search_branching` enum naming and `CpModel(model_proto=...)` fallback, plus targeted regression tests for the old-surface path. [PROJECT_LOCK]
+-- Added optional exact-safe frontier probe scheduling, pending-probe resume handling, and probe-aware campaign telemetry without changing the certified objective or proof contract. [PROJECT_LOCK]
+-- Added probe operator guidance and a new scheduling spec for manual probe workflows, `--frontier-probe-mode`, and probe telemetry fields. [FILE_STATUS]
+-- Restored exact-contract regression compatibility after the probe-mode signature expansion by updating frontier-state test doubles to accept the new optional `frontier_probe_mode` keyword and revalidating the core search-contract suites. [FILE_STATUS]
+-
+-## 2026-03-25
+-
+-- Consolidated preprocess recipe / production-target / commodity metadata truth into `rules/canonical_rules.json`, slimmed `preprocess_plan.json` to an overlay contract, and updated schema/model/validator coverage without changing certified runtime inputs. [PROJECT_LOCK]
+-- Added frozen-compatible preprocess regeneration: `rules/preprocess_plan.json`, `PreprocessContext`, context-driven demand/template/profile derivation, and parity-report tooling without changing certified runtime inputs. [PROJECT_LOCK]
+-- Regenerated preprocess artifacts with clean numeric serialization, added parallel-configuration guidance, and checked in a minimal IndustrialPlanner example export bundle plus new preprocess contract tests. [FILE_STATUS]
+-- Added Phase-1 ecosystem upgrade scaffolding: `src/interchange/*`, `src/adapters/*`, synthetic third-party snapshot fixtures, and provenance notes without changing certified exact solver semantics. [PROJECT_LOCK]
+-- Added normalized catalog, compatibility manifest, export registry, build-time `endfield-calc` snapshot ingest, and viewer-side report shaping/tests. [FILE_STATUS]
+-- Upgraded the static web viewer with routing/power/active-port overlays, local persistence, and generated `viewer_report.json` sidecar support. [FILE_STATUS]
+-- Landed Phase-2 compatibility adapters: one-way `IndustrialPlanner` bundle export, compatibility-export manifest integration, and `endfield-calc` TypeScript-source ingest with diff reporting. [PROJECT_LOCK]
+-- Added explicit compatibility specs/matrix and adapter regressions for `industrial_planner` export, target bundle discovery, TypeScript snapshot parsing, and catalog diff reports. [FILE_STATUS]
+-
+-## 2026-03-16
+-
+-- Built out the current exact-safe local-capacity path, frontier guidance, and routing-core shrink work that made the certified path viable at scale. [PROJECT_LOCK]
+-- Tightened the separation between certified artifacts and exploratory carry-over material. [FILE_STATUS]
+-
+-## 2026-03-17
+-
+-- Landed static exact-core reuse, coordinate-encoded master stabilization, and exact-safe search guidance refinements. [PROJECT_LOCK]
+-- Continued collapsing legacy branching and cut assumptions into the current certified-only chain. [FILE_STATUS]
+-
+-## 2026-03-18
+-
+-- Hardened campaign persistence, resume behavior, and geometric power-coverage handling. [PROJECT_LOCK]
+-- Reduced precompute ambiguity between preprocess artifacts and runtime consumers. [FILE_STATUS]
+-
+-## 2026-03-19
+-
+-- Progressed the local-capacity oracle line that culminated in the compact exact rectangle path now used by current mainline. [PROJECT_LOCK]
+-- Reinforced that exploratory caps and exploratory artifacts are not exact-mode truth. [FILE_STATUS]
+-
+-## 2026-03-22
+-
+-- Added the production-grade parallel exact scheduler with coordinator-owned persistence and disjoint candidate execution. [PROJECT_LOCK]
+-- Added process-priority override support and launcher-script consolidation for stable runtime entrypoints. [FILE_STATUS]
+-
+-## 2026-03-23
+-
+-- Formalized canonical output delivery with schema-backed blueprint export, blueprint-first render consumers, and a certified delivery manifest. [PROJECT_LOCK]
+-- Locked campaign best-certified monotonicity, aligned the exact objective to `max_lex(area, min_side)`, and clarified that `50/10` is exploratory-only. [PROJECT_LOCK]
+-- Added spec metadata, preprocess golden regeneration coverage, numeric artifact normalization, and runtime worker-profile discoverability. [FILE_STATUS]
++# CHANGELOG.md
++
++This file is the canonical home for dated engineering history that used to be
++split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
++
++## 2026-05-16
++
++### Phase 3C: Ghost anchor slicing exact partition
++
++- Added certified exact ghost-anchor partition slicing in `src/search/benders_loop.py`: one candidate can be evaluated as fixed-anchor slices while preserving exact proof semantics.
++- Added resumable per-candidate slicing manifest under `data/checkpoints/anchor_slice_manifests/` with signature invalidation, atomic writes, and cap/time truncation safety.
++- Added filtered overlay original/local anchor metadata in `src/models/master_model.py` and `src/models/exact_coordinate_master.py` so persisted ghost-conditioned cuts replay safely across full and sliced overlays.
++- Added hint-persistence suffixing per anchor slice to avoid cross-anchor warm-start contamination.
++- Added tests for manifest resume and original-anchor cut replay.
++- No new hardware, commercial software, paid cloud, or paid dependency is required.
++
++
++### D step 2: Community blueprint hint 注入 (master.solve hint integration)
++
++- Added `scripts/blueprint_to_master_hint.py` — convert IP v2 blueprint JSON (用户手调验证版 `BP-2026-05-13 08_35_36.blueprint(1).json`) to `Dict[instance_id, pose_idx]` for `master.solve(solution_hint=...)`. 226 facility devices → 225 mapped (1 hub miss due to anchor range geometry). [scripts/]
++- Added regression test `src/tests/test_blueprint_to_master_hint.py` — 10 hand-verified samples (4 facility_type × 4 rotation × orientation 0+1) lock rotation→(orientation, port_mode) mapping. [src/tests/]
++- Added integration in `src/search/benders_loop.py:3565` — `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` env loads JSON + merges with greedy hint (community overrides greedy on overlap, since user-curated > heuristic). [src/search/]
++- Updated `scripts/run_campaign_p2_workers1.sh` + `run_campaign_workers2.sh` — auto-default `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH=data/hints/blueprint_2026_05_13_master_hint.json` when file present. [scripts/]
++- Added edge case tests `src/tests/test_community_hint_env_injection.py` — 9 cases (empty/whitespace/missing-file/malformed-JSON/non-int values). [src/tests/]
++- Added `scripts/hint_coverage_report.py` — audit hint coverage % + pose_idx range validity (225/266 = 84.6% mandatory hinted, 0 out-of-range). [scripts/]
++- Added `scripts/analyze_hint_vs_baseline.py` — compare baseline state vs hint state for UNKNOWN→FEASIBLE / UNKNOWN→INFEASIBLE upgrade signals. [scripts/]
++- Added `CLAUDE.md` runbook section — community hint workflow + integration mechanism. [CLAUDE.md]
++
++**Empirical results** (5 short trials, master_seconds 600s..3600s × workers 1..8 × profile guided_branching_v4/ghost_first_v1):
++- All 5 candidates (35×14 / 33×15 / 31×16 / 27×15 / 24×17) returned UNKNOWN, including 27×15 (blueprint natural empty rect 15×27 exact match)
++- Telemetry verified: 266 mandatory instances × 3 (x/y/mode) = 798 AddHint calls per candidate
++- Conclusion: hint integration end-to-end works zero-loss, but master.solve cannot decide these candidates in 600-3600s even with perfect hint shape match. Master `inherent difficulty`, not hint failure.
++
++### 项目整理 (清晰为主, 不丢东西)
++
++- Added `docs/lever_verdicts.md` — 主线 master 加速 lever 路线总账 (L1-L11) + 实测 verdict (9 ❌ 死路, 1 🟡 未试 hard constraint). [docs/]
++- Added `docs/env_variable_index.md` — 100+ `EXACT_*` / `PHASE3B_*` env 变量集中索引, 11 组分类. [docs/]
++- Added `docs/phase3b_module_index.md` — 670 个 Phase 3B 文件物理分类 (154 src + 264 tests + 252 scripts), 17 cluster + active 主线明确区分. [docs/]
++- Added `docs/specs_index.md` — 23 份 specs/编号 spec 一句话索引 + 9 份 ecosystem_notes 索引. [docs/]
++- Added `src/adapters/README.md` — 4 个 adapter 子目录 (industrial_planner / endfield_calc / dige / base_planner) 职责说明 + 数据流向. [src/adapters/]
++- Added `scripts/README.md` — scripts/ 入口分类: campaign wrapper / gates / IP delivery / vendor refresh / hint 工具 / Phase 3B 生成器. [scripts/]
++- Updated `README.md` — 顶部加项目状态地图 (Phase 3A done / 3B in progress / 3C planning) + 6 个关键文档入口. [README]
++- Updated `src/models/master_model.py` / `src/models/exact_coordinate_master.py` / `src/search/benders_loop.py` — 3 个 5000+ 行单文件顶部加 module docstring 索引 (主要 section 行号 + 公开 API + env 引用). [src/]
++- Updated `src/tests/test_master.py` / `src/tests/test_exact_contract.py` — 10000+/5000+ 行测试文件加目录索引 docstring. [src/tests/]
++- Updated `src/models/highs_master_model.py` / `scip_master_model.py` / `scip_power_separator.py` — 加 STATUS 标注 "实验 PoC, 验证为死路, 留作 reference" (per memory `project_highs_rewrite_blocker`). [src/models/]
++- Updated 5 个 Codex-era 永远 skip 测试文件 (test_phase3b_checkpoint_free_signature_bucket_powered_support_coverer_*.py) 加文件头 docstring 说明缘由 + 保留原因. [src/tests/]
++- Updated `.gitignore` — 加 `.claude/worktrees/` (Claude Code agent worktree, regenerable, not source).
++
++**整理原则**: 重组 / 加文档 / 加索引 OK, 删任何文件 NOT OK. 全部 ~1500 行新文档, 0 文件删, 0 代码逻辑改动. 2207 pytest pass + 0 failed.
++
++## 2026-05-08
++
++- Refreshed the vendored `JamboChen/endfield-calc` snapshot from package version `0.5.2` (commit unavailable, observed 2026-03-27) to `0.6.2` master commit `49be16e1`. Catalog grew from 130 items / 172 recipes / 14 facilities to 178 / 260 / 16. Newly observed facilities `ITEM_PORT_LIQUID_PURIFIER_1` and `ITEM_PORT_MIX_POOL_2` likely correspond to 1.2 武陵 content; `ITEM_PORT_DISMANTLER_1` re-tiered 4→3. `canonical_rules.json` intentionally still keeps the original 17-recipe semantic-aligned subset; the refresh did not re-project the catalog. [FILE_STATUS]
++- Added `scripts/refresh_endfield_calc_snapshot.py` so future endfield-calc snapshot refreshes are mechanical: fetch latest TypeScript catalog, rewrite `SOURCE_METADATA.json` with version/commit/`observed_counts`/previous tracking, and print a diff report. The script does not touch `canonical_rules.json` or release-note files. [FILE_STATUS]
++- Vendored a field-subset of upstream `hsyhhssyy/IndustrialPlanner` BASES at `third_party_snapshots/industrial_planner/bases/bases.json` (7 bases: 3 武陵 80/50/50, 4 四号谷地 70/40/40/40), extracted from branch `v2` commit `c494c5ae`. Confirmed `wuling_protocol_core` is 80x80; PROJECT_LOCK active scope still `valley4_protocol_core` (70x70). Added `scripts/refresh_industrial_planner_bases.py` so this snapshot can be re-pulled mechanically. [FILE_STATUS]
++- Refactored `src/tests/test_endfield_calc_typescript_snapshot.py` to read `SOURCE_METADATA.json` for expected counts and source_version, eliminating hardcoded numbers so the next upstream refresh does not require test edits. Added a 5% noise floor against silent regressions. [FILE_STATUS]
++- Added `src/tests/test_industrial_planner_bases_snapshot.py` to sanity-check the new vendored bases (schema, required fields, active-scope presence, count-collapse guard); also reads `SOURCE_METADATA.json` so it stays refresh-friendly. [FILE_STATUS]
++
++## 2026-04-17
++
++- Added `docs/phase3b_exact_endgame_execution_plan.md` and linked it from the root/readme entry surfaces, so the repository now carries one detailed current-to-finish execution book for the remaining Phase 3B exact endgame instead of leaving the solver-side closeout implicit after the single-base delivery/productization line landed. [FILE_STATUS]
++- Closed the remaining single-base consumer-surface productization tail by surfacing `current_surface_health.{json,md,txt}` directly in the repo-front frontdoor helper links/manifest/status card and the aggregate `active_single_base_delivery_entrypoints.{json,md}` manifest, then tightening the no-drift audit plus release-promotion convergence loop so those surfaced health refs/counts must agree with the checked-in health snapshot before the final surface is left behind. [FILE_STATUS]
++- Added a compact checked-in `current_surface_health.{json,md,txt}` trio plus a dedicated builder/guide, so CI/reviewer tooling/scripts can read the active single-base consumer-surface clean/drift verdict and top-line counts without parsing the full no-drift audit payload first; the release builder now emits that health snapshot automatically after the converged surface-alignment audit finishes clean. [FILE_STATUS]
++- Tightened the single-base consumer-surface no-drift audit so it now fail-closes on the surfaced `surface_alignment_summary.{json,md,txt}` refs themselves across the repo-front frontdoor HTML/manifest and the aggregate entrypoints manifest, instead of only checking the older frontdoor/entrypoints linkage. [FILE_STATUS]
++- Refreshed the promotion chain so it now converges that surfaced audit metadata in three passes — initial audit, surfaced rebuild, closing audit — and only leaves the checked-in frontdoor/entrypoints pair behind after the final audit summary, counts, and refs agree. [FILE_STATUS]
++- Surfaced the checked-in `surface_alignment_summary.{json,md,txt}` trio directly in the repo-front single-base homepage and `frontdoor_manifest.json`, so reviewers can see whether the current consumer surface is clean without manually drilling into `.artifacts/`. [FILE_STATUS]
++- Extended `active_single_base_delivery_entrypoints.{json,md}` so it now carries the latest consumer-surface audit summary alongside the current release/viewer/landing/latest-bundle entrypoints, giving script consumers one aligned file that also reports clean/drift status. [FILE_STATUS]
++- Tightened `build_industrial_planner_single_base_delivery_release.py` so it now refreshes the surface-alignment audit, re-renders the aggregate entrypoints/frontdoor with that audit summary wired in, and then re-runs the audit on the final checked-in surface before declaring the promotion clean. [FILE_STATUS]
++
++## 2026-04-16
++
++- Added a lightweight repo-front / aggregate-entrypoints no-drift audit (`scripts/audit_industrial_planner_single_base_delivery_surface_alignment.py`) plus a dedicated GitHub workflow, so the checked-in single-base consumer surface now fail-closes when helper links, frontdoor metadata, or aggregate script-entry paths drift apart even without repromoting a release. [FILE_STATUS]
++- Tightened the repo-front single-base homepage so its hero helper links now point directly at `active_single_base_delivery_entrypoints.{json,md}`, added explicit script-entry metadata to `frontdoor_manifest.json`, and refreshed the release builder so future promotions rebuild the frontdoor after the aggregate manifest exists instead of leaving humans and automation on slightly different current-entry surfaces. [FILE_STATUS]
++- Added `active_single_base_delivery_entrypoints.{json,md}` plus a dedicated builder/guide, so script consumers now get one checked-in manifest that fail-closes on drift while summarizing the active release pointer, current viewer, stable landing bundle, and top-level latest bundle alias in one place. [FILE_STATUS]
++- Extended the single-base delivery release builder to refresh that aggregate current-entrypoints manifest by default, and tightened rollback so repo-front latest-alias outputs are restored too if a later post-promotion step fails. [FILE_STATUS]
++- Added a shorter repo-front latest-bundle alias trio — `industrial_planner_latest_single_base_delivery_bundle.zip` plus `latest_single_base_delivery_bundle.{json,md}` — and repointed the download-first primary action to that top-level alias so script consumers no longer need to remember the `current_delivery/downloads/` subdirectory. [FILE_STATUS]
++- Added a stable one-file current bundle ZIP alias under `data/examples/industrial_planner/current_delivery/downloads/`, plus JSON/Markdown pointer sidecars, and repointed the repo-front download-first primary action at that alias so users can pull the active single-base delivery surface without manually assembling sidecars. [FILE_STATUS]
++- Tightened the checked-in IndustrialPlanner repo front door into an explicit browse-first/download-first homepage, added machine-readable `entry_modes` metadata to `frontdoor_manifest.json`, and fail-closed the frontdoor build when the stable landing no longer exposes the required viewer/download actions. [FILE_STATUS]
++- Added a higher-level checked-in repo front door for the active IndustrialPlanner single-base line: `data/examples/industrial_planner/index.html` plus `frontdoor_manifest.json`, a dedicated frontdoor builder/guide, and a root `README.md` that now points straight at the active current-delivery path instead of making users hunt through pointer files first. [FILE_STATUS]
++- Hooked the single-base delivery release builder into that repo-front refresh and tightened rollback so a frontdoor failure now restores the stable current-landing directory instead of leaving a half-updated checked-in consumer surface behind. [FILE_STATUS]
++- Made the stable `current_delivery/landing_manifest.json` emit repo-relative source/output paths for repo-local builds, so the checked-in landing metadata no longer captures build-machine absolute paths. [FILE_STATUS]
++- Added a stable `current_delivery/` landing/download layer on top of the checked-in current-viewer pointer, plus `scripts/build_industrial_planner_single_base_delivery_landing.py` and `src/render/industrial_planner_single_base_delivery_landing.py`, so the active `valley4_protocol_core` 70×70 line now has one fixed consumer entry path with a copied viewer bundle under `viewer/` and grouped quick downloads without widening `future_scope`. [FILE_STATUS]
++- Hooked the single-base delivery release builder directly into that current-landing refresh, so each promoted active-contract release can now fail-closed while refreshing the versioned viewer bundle/current-viewer pointer **and** the stable current landing/download directory. [FILE_STATUS]
++- Hooked the single-base delivery release builder directly into the viewer promotion path, so each promoted `valley4_protocol_core` 70×70 release can now fail-closed while refreshing a versioned checked-in viewer bundle, `active_single_base_delivery_viewer.{json,md}`, and `viewers/viewer_index.{json,md}` alongside the existing release pointer/index. [FILE_STATUS]
++- Added an active-current-release viewer-bundle workflow for the IndustrialPlanner single-base line: a builder that resolves `active_single_base_delivery_release.json`, materializes a compact static viewer bundle, prunes `candidate_placements.json` down to the release-selected poses only, regenerates `viewer_report.json`, and publishes grouped delivery/support/gate/meta download links via `release_viewer_manifest.json`. [FILE_STATUS]
++- Extended the static web viewer so it can optionally surface single-base delivery release cards and grouped artifact downloads when `release_viewer_manifest.json` is present, while still hiding those sections and falling back to the older blueprint-first behavior when the manifest is absent. [FILE_STATUS]
++
++## 2026-04-15
++
++- Added an operator-facing `scripts/run_industrial_planner_single_base_e2e.py` workflow plus a dedicated single-base runbook doc, so the active `valley4_protocol_core` 70×70 line now has one standard end-to-end path from regenerated source truth through export bundle, validator/throughput sidecars, fresh support reports, checked-in inventory/gate rechecks, and a failure-classified handoff summary without widening scope. [FILE_STATUS]
++- Added `scripts/build_industrial_planner_single_base_delivery_release.py`, a dedicated release guide, and checked-in pointer/index artifacts for versioned active-contract delivery bundles, so a delivery-ready `valley4_protocol_core` 70×70 run can now be promoted into a fixed release id with bundled evidence, checksums, and an honest exact-status note without reactivating any `future_scope` base. [FILE_STATUS]
++
++## 2026-04-14
++
++- Narrowed the active IndustrialPlanner support contract to the single 70×70 `valley4_protocol_core` base, rewrote the checked-in full-demand base/deployment/overview reports around that single active scope, and collapsed the three dormant 40×40 valley4 sub-bases into grouped `future_scope` metadata instead of keeping them in the active matrix surface. [PROJECT_LOCK]
++- Simplified the checked-in support-suite inventory and repo-level checked-artifact family inventory to one active report family/report set, while preserving the old protocol-core transition slice and outer-bundle family as explicit `future_scope` metadata rather than deleting them. [FILE_STATUS]
++- Froze the outer-deployment bundle path out of the active IndustrialPlanner CI gate, refreshed the focused regression workflow to cover only the active single-base support surface, and updated governance/docs to describe the new scope boundary clearly. [FILE_STATUS]
++
++## 2026-04-07
++
++- Added a second checked-in IndustrialPlanner support report-set for the focused `valley4_protocol_core` + `wuling_protocol_core` protocol-core transition slice, expanded the support-suite inventory summary to track unique audited-base coverage plus repeated-base overlap, and refreshed the repo-level checked-artifact gate so the support leg now exercises both the full-universe report set and an overlapping focused subset without double-counting decision-surface state. [FILE_STATUS]
++- Added a second checked-in IndustrialPlanner outer-deployment bundle for the degenerate 70×70 `valley4_protocol_core` identity path and refreshed the outer-bundle suite summary so it now distinguishes translated vs identity outer bundles; the inventory-driven gate therefore exercises both the real larger-base `wuling_protocol_core` path and the zero-moat canonical-size path through checked-in artifacts instead of only one translated example. [FILE_STATUS]
++- Added a checked-in `checked_artifact_family_inventory.json` and refactored `audit_industrial_planner_checked_artifact_suite.py` to dispatch through that inventory-of-inventories, so the repo-level IndustrialPlanner gate now reads family-specific inventories/builders from one checked-in registry instead of hard-coding separate support/outer wiring; the existing support-suite and outer-bundle legs remain clean under the new family-driven path. [FILE_STATUS]
++- Added a checked-in `full_demand_support_suite_inventory.json` plus an inventory-driven `audit_industrial_planner_full_demand_support_suite_inventory.py` wrapper, so the strict/additive decision-surface leg now scales the same way as the translated outer-bundle leg and the repo-level checked-artifact gate can consume inventories on both sides instead of hard-coding one support-report directory. [FILE_STATUS]
++- Added an inventory-driven IndustrialPlanner outer-base bundle suite plus a checked-in `outer_base_bundle_inventory.json`, so the repo-level checked-artifact gate now scales beyond a single hard-coded `wuling_protocol_core` example and can fail closed on every listed translated larger-base bundle through one checked-in inventory. [FILE_STATUS]
++- Added a checked-in GitHub Actions workflow for the repo-level IndustrialPlanner checked-artifact gate and taught `audit_industrial_planner_checked_artifact_suite.py` to emit a plain-text summary copy alongside its JSON/Markdown sidecars, so relevant PRs can run focused regressions, fail closed on decision-surface or outer-bundle drift, and upload reviewable artifacts without changing canonical truth or certified evidence. [FILE_STATUS]
++
++## 2026-04-06
++
++- Added a deterministic no-drift audit for the checked-in IndustrialPlanner outer-base bundle plus a repo-level checked-artifact gate, so CI can now fail closed on either stale strict/additive support reports or stale translated `wuling_protocol_core` example artifacts; the IndustrialPlanner compatibility manifest now reuses the canonical blueprint `export_timestamp` for `generated_at` to keep those bundle checks reproducible. [FILE_STATUS]
++- Added a no-drift `--check` mode to the IndustrialPlanner full-demand support-suite workflow plus drift-detection regression coverage, so CI can now fail closed when any checked-in canonical/deployment/overview report is missing or stale instead of silently letting the repo-level decision surface lag behind current code. [FILE_STATUS]
++- Added a one-shot IndustrialPlanner full-demand support-suite workflow plus a checked-in `full_demand_support_overview` summary, so the strict canonical matrix, additive deployment-path matrix, and cross-view status deltas now regenerate together; `wuling_protocol_core` is surfaced as the sole current checked-in transition (`unsupported_by_canonical_contract -> proven_equivalent`). [FILE_STATUS]
++- Added a checked-in IndustrialPlanner full-demand deployment-path matrix plus a dedicated audit CLI/tests, so the repo now preserves the strict canonical 70×70 support view while also surfacing the best available outer-deployment result; `wuling_protocol_core` now shows up as validator-clean translated `proven_equivalent` on the additive path instead of disappearing behind the old contract-ceiling summary alone. [FILE_STATUS]
++- Taught the larger-base outer-plan path to stage pure-input boundary loaders inboard when a true edge lacks foundation bus, synthesize grouped input-side `item_port_log_hongs_bus` witnesses, and refresh the checked-in outer-base bundle so `wuling_protocol_core` now validates cleanly and reaches translated `proven_equivalent` without widening canonical truth. [FILE_STATUS]
++- Added a real adapter-side IndustrialPlanner outer deployment representation: `OuterBaseDeploymentPlan`, deterministic larger-base inner-island placement, explicit true-edge boundary assignments, moat-only connector reservations, witness reservations, and export mappings that keep the canonical 70×70 schema unchanged. [FILE_STATUS]
++- Added a validator-grounded outer export probe for larger IndustrialPlanner bases plus dedicated CLIs/tests, so `wuling_protocol_core` can now be pushed past the old contract-ceiling placeholder and surfaced as a real geometry blocker (`true_edge_witness_geometry_shortfall`) instead of stopping at “70×70 cannot express 80×80”. [FILE_STATUS]
++- Integrated `OuterBaseDeploymentPlan` into the production IndustrialPlanner exporter and static throughput audit via a postprocess-only manifest export-mapping section, so translated larger-base exports can now retain canonical-instance pairing evidence without widening the canonical schema or the certified proof boundary. [FILE_STATUS]
++
++## 2026-03-30
++
++- Added an IndustrialPlanner adapter-side static recipe/capacity conformance layer: exact canonical->target recipe matching, conservative facility-intent recovery, per-recipe full-speed lower-bound rollups, and conservative boundary I/O audit sidecars without changing certified-exact semantics or the canonical blueprint schema. [FILE_STATUS]
++- Extended IndustrialPlanner bundle/export plumbing, delivery-manifest compatibility exports, and the public exporter surface so throughput audit JSON/Markdown sidecars are written and discoverable next to the existing blueprint, compatibility, and validator artifacts. [FILE_STATUS]
++- Added standalone throughput-audit CLI coverage, targeted regression tests for exact-match / mismatch / fallback / status-cap behavior, and synced example/docs/status files for the new post-Spec-22 production-conformance layer. [FILE_STATUS]
++- Added a deterministic full-demand IndustrialPlanner recipe-capacity fixture plus a regeneration script, so the repo now carries a clean validator-compatible example that proves all 17 recipe-capacity rollups while honestly surfacing the remaining partial boundary-proof ceiling on the default base. [FILE_STATUS]
++- Extended pure-input `boundary_storage_port` export with adjacent `item_log_admission` witnesses, taught the throughput audit to count those bindings as explicit proof, and refreshed the checked-in full-demand fixture so both final-product sink commodities now land at `proven_equivalent` while `source_ore` remains the only honest boundary partial on the default base. [FILE_STATUS]
++- Refined throughput-audit overall-status reduction so boundary rollups that are explicitly `partially_proven` remain partial at the report top level instead of being collapsed into `unproven_or_insufficient`, matching the intended tri-state sidecar semantics. [FILE_STATUS]
++- Added grouped export-side `item_port_log_hongs_bus` witnesses for interior-facing pure-output boundary unloaders, refreshed the checked-in full-demand fixture to use the new bottom/right `source_ore` slots, and pushed the default-base full-demand audit from `partially_proven` to `proven_equivalent` while keeping the validator clean. [FILE_STATUS]
++- Generalized IndustrialPlanner boundary-bus witness synthesis from the old default-base bottom/right special case into a base-aware all-edge search: the exporter now greedily packs clean `item_port_log_hongs_bus` witnesses for any in-lot top/left/bottom/right pure-output requirement, adds multi-base regression coverage, and emits explicit warnings when a chosen base would require outside-lot bus coverage that cannot be synthesized. [FILE_STATUS]
++- Reworked `scripts/build_industrial_planner_full_demand_fixture.py` into a base-aware fixture planner: it now derives the default full-demand boundary-slot layout from current `generic_io_requirements` plus exporter/validator feedback, emits optional planning-report JSON/Markdown sidecars, and fails closed on bases that are too small or that exceed the fixed canonical 70×70 anchor contract. [FILE_STATUS]
++- Added a checked-in IndustrialPlanner full-demand base-support matrix plus a dedicated audit CLI, so the repo now summarizes every known base under the current 70×70 oracle: one base is fully supported, four are blocked by manufacturing-area shortfall, and `wuling_protocol_core` is isolated as the lone contract-ceiling candidate if a future outer planning representation is introduced. [FILE_STATUS]
++
++## 2026-03-29
++
++- Closed the remaining IndustrialPlanner translation-miss accounting gap so placeholder/empty commodities now increment structured miss counts for both `boundary_storage_port` bindings and precise facility-recipe fallback paths, while keeping geometry export intact. [FILE_STATUS]
++- Refreshed the checked-in 70×70 validator benchmark evidence on the current Python 3.13 reference environment. [FILE_STATUS]
++
++## 2026-03-28
++
++- Hardened IndustrialPlanner commodity translation so invalid upstream-like `item_*` ids fail closed, are dropped from exported config bindings, and increment structured translation-miss accounting instead of being silently passed through. [FILE_STATUS]
++- Added deterministic 70×70 IndustrialPlanner validator benchmark assets: a checked-in benchmark fixture, a reusable benchmark harness, raw benchmark JSON output, and a benchmark markdown report documenting AC-B12 evidence. [FILE_STATUS]
++- Synced IndustrialPlanner governance/docs with the implemented state by adding the final Spec 22 markdown, expanding the compatibility matrix note, refreshing example-fixture guidance, and recording the new benchmark/documentation files in `FILE_STATUS.md`. [FILE_STATUS]
++
++## 2026-03-27
++
++- Extended `endfield-calc` TypeScript ingest so the existing adapter can consume a flat fixture directory, an extracted upstream repository root, or a `.zip` archive without manual file copying. [PROJECT_LOCK]
++- Vendored a raw upstream `endfield-calc` repository fixture (`0.5.2`, commit unavailable from uploaded archive), enriched snapshot provenance with package-version/layout metadata, and added real-fixture regression coverage. [FILE_STATUS]
++- Added an explicit `endfield-calc` semantic-alignment registry for the verified 17-recipe overlap with `rules/canonical_rules.json`, plus semantic diff reporting and exact-match regression coverage. [FILE_STATUS]
++
++## 2026-03-26
++
++- Added OR-Tools cross-version CP-SAT compatibility shims for `search_branching` enum naming and `CpModel(model_proto=...)` fallback, plus targeted regression tests for the old-surface path. [PROJECT_LOCK]
++- Added optional exact-safe frontier probe scheduling, pending-probe resume handling, and probe-aware campaign telemetry without changing the certified objective or proof contract. [PROJECT_LOCK]
++- Added probe operator guidance and a new scheduling spec for manual probe workflows, `--frontier-probe-mode`, and probe telemetry fields. [FILE_STATUS]
++- Restored exact-contract regression compatibility after the probe-mode signature expansion by updating frontier-state test doubles to accept the new optional `frontier_probe_mode` keyword and revalidating the core search-contract suites. [FILE_STATUS]
++
++## 2026-03-25
++
++- Consolidated preprocess recipe / production-target / commodity metadata truth into `rules/canonical_rules.json`, slimmed `preprocess_plan.json` to an overlay contract, and updated schema/model/validator coverage without changing certified runtime inputs. [PROJECT_LOCK]
++- Added frozen-compatible preprocess regeneration: `rules/preprocess_plan.json`, `PreprocessContext`, context-driven demand/template/profile derivation, and parity-report tooling without changing certified runtime inputs. [PROJECT_LOCK]
++- Regenerated preprocess artifacts with clean numeric serialization, added parallel-configuration guidance, and checked in a minimal IndustrialPlanner example export bundle plus new preprocess contract tests. [FILE_STATUS]
++- Added Phase-1 ecosystem upgrade scaffolding: `src/interchange/*`, `src/adapters/*`, synthetic third-party snapshot fixtures, and provenance notes without changing certified exact solver semantics. [PROJECT_LOCK]
++- Added normalized catalog, compatibility manifest, export registry, build-time `endfield-calc` snapshot ingest, and viewer-side report shaping/tests. [FILE_STATUS]
++- Upgraded the static web viewer with routing/power/active-port overlays, local persistence, and generated `viewer_report.json` sidecar support. [FILE_STATUS]
++- Landed Phase-2 compatibility adapters: one-way `IndustrialPlanner` bundle export, compatibility-export manifest integration, and `endfield-calc` TypeScript-source ingest with diff reporting. [PROJECT_LOCK]
++- Added explicit compatibility specs/matrix and adapter regressions for `industrial_planner` export, target bundle discovery, TypeScript snapshot parsing, and catalog diff reports. [FILE_STATUS]
++
++## 2026-03-16
++
++- Built out the current exact-safe local-capacity path, frontier guidance, and routing-core shrink work that made the certified path viable at scale. [PROJECT_LOCK]
++- Tightened the separation between certified artifacts and exploratory carry-over material. [FILE_STATUS]
++
++## 2026-03-17
++
++- Landed static exact-core reuse, coordinate-encoded master stabilization, and exact-safe search guidance refinements. [PROJECT_LOCK]
++- Continued collapsing legacy branching and cut assumptions into the current certified-only chain. [FILE_STATUS]
++
++## 2026-03-18
++
++- Hardened campaign persistence, resume behavior, and geometric power-coverage handling. [PROJECT_LOCK]
++- Reduced precompute ambiguity between preprocess artifacts and runtime consumers. [FILE_STATUS]
++
++## 2026-03-19
++
++- Progressed the local-capacity oracle line that culminated in the compact exact rectangle path now used by current mainline. [PROJECT_LOCK]
++- Reinforced that exploratory caps and exploratory artifacts are not exact-mode truth. [FILE_STATUS]
++
++## 2026-03-22
++
++- Added the production-grade parallel exact scheduler with coordinator-owned persistence and disjoint candidate execution. [PROJECT_LOCK]
++- Added process-priority override support and launcher-script consolidation for stable runtime entrypoints. [FILE_STATUS]
++
++## 2026-03-23
++
++- Formalized canonical output delivery with schema-backed blueprint export, blueprint-first render consumers, and a certified delivery manifest. [PROJECT_LOCK]
++- Locked campaign best-certified monotonicity, aligned the exact objective to `max_lex(area, min_side)`, and clarified that `50/10` is exploratory-only. [PROJECT_LOCK]
++- Added spec metadata, preprocess golden regeneration coverage, numeric artifact normalization, and runtime worker-profile discoverability. [FILE_STATUS]
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/docs/env_variable_index.md code_src/docs/env_variable_index.md
+--- code_orig/docs/env_variable_index.md	2026-05-16 01:17:46.000000000 +0000
++++ code_src/docs/env_variable_index.md	2026-05-16 05:57:02.294155430 +0000
+@@ -180,15 +180,40 @@
+ 
+ ---
+ 
++## L. Phase 3C ghost anchor slicing
++
++| Name | Type | Default | Reader | 作用 |
++|---|---|---|---|---|
++| `EXACT_MASTER_GHOST_ANCHOR_FILTER` | str `x,y;x,y` | empty | benders_loop.py / master_model.py | 单 master ghost anchor 白名单 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE` | bool | 0 | benders_loop.py | 启用逐 anchor exact partition slicing |
++| `EXACT_GHOST_ANCHOR_SLICING` | bool | 0 | benders_loop.py | slicing 短别名 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS` | int | 0 | benders_loop.py | 单次最多新评估 anchor 数；0 表示不限 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS` | float | `master_seconds` | benders_loop.py | 单 candidate slicing 总墙钟预算 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH` | path | `data/checkpoints/anchor_slice_manifests/<candidate>.json` | benders_loop.py | slicing resume manifest 路径 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME` | bool | 1 | benders_loop.py | 是否读取/续写 slicing manifest |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL` | bool | internal | benders_loop.py | 内部递归保护，禁止二次 slicing |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX` | str | internal | benders_loop.py | 每个 anchor slice 的 hint persistence suffix |
++
++---
++
+ ## 注意事项
+ 
+ ### Pre-commit gate 自动 strip 的 runtime env
+ 
+-`scripts/preflight_gate.py` 在跑 pytest 前会自动剥离这 4 个 env (防污染单元测试):
++`scripts/preflight_gate.py` 在跑 pytest 前会自动剥离 runtime env (防污染单元测试)，包括:
+ - `EXACT_OUTER_SKIP_UNKNOWN`
+ - `EXACT_BINDING_DUMP_STATE`
+ - `EXACT_MASTER_HINT_PERSISTENCE`
+ - `EXACT_BINDING_USE_OVERLOAD_SEPARATION`
++- `EXACT_MASTER_GHOST_ANCHOR_FILTER`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE`
++- `EXACT_GHOST_ANCHOR_SLICING`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL`
++- `EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX`
+ 
+ **新加 runtime-only env 应该同步加进这个 strip list**, 否则 pre-commit 跑测可能被开发环境污染.
+ 
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/docs/phase3c_ghost_anchor_slicing_breakthrough_20260516.md code_src/docs/phase3c_ghost_anchor_slicing_breakthrough_20260516.md
+--- code_orig/docs/phase3c_ghost_anchor_slicing_breakthrough_20260516.md	1970-01-01 00:00:00.000000000 +0000
++++ code_src/docs/phase3c_ghost_anchor_slicing_breakthrough_20260516.md	2026-05-16 05:57:01.244787426 +0000
+@@ -0,0 +1,64 @@
++# Phase 3C: ghost anchor slicing breakthrough — 2026-05-16
++
++## 背景
++
++当前 certified exact 路径的瓶颈不是单个 CP-SAT 参数，也不是 hint 质量，而是 master 一开始同时展开大量 ghost rectangle anchor alternatives。一个 candidate 的搜索树会先被 `exists anchor` 这层析取撑开，再进入 layout / binding / routing 的精确证明。时间、精确性、问题难度形成三角瓶颈时，最安全的突破口是降低这层搜索树难度，而不是扩时间或放松证明。
++
++## 核心变换
++
++把一个 candidate 的 ghost anchor 析取拆成逐 anchor 的精确 partition:
++
++```text
++candidate feasible  <=>  exists anchor a: fixed-anchor slice(a) feasible
++candidate infeasible <=>  all anchors a: fixed-anchor slice(a) infeasible
++```
++
++每个 slice 通过 `EXACT_MASTER_GHOST_ANCHOR_FILTER=x,y` 只构建一个 ghost anchor，master 不再在同一次 solve 里为所有 anchor 分支。slice 内仍走原 `certified_exact` LBBD 流程，因此精确性不降低。
++
++## 安全边界
++
++- 任意 slice 返回 CERTIFIED 且带 solution，父 candidate 立即 CERTIFIED。
++- 只有 manifest 覆盖完整 anchor partition，并且每个 terminal slice 都是 INFEASIBLE，父 candidate 才 INFEASIBLE。
++- cap、时间到、UNKNOWN、UNPROVEN、manifest 不完整都不会升级为 INFEASIBLE。
++- persisted ghost-conditioned cuts 使用 full-overlay `original_anchor_idx`，filtered overlay 下通过 `original_anchor_idx` / `local_anchor_idx` 双路径 fail-closed 解析。
++- 每个 anchor slice 使用独立 hint suffix，避免不同 anchor 的 warm-start hint 互相污染。
++
++## 环境变量
++
++| Name | Default | 作用 |
++|---|---:|---|
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE` | 0 | 启用逐 anchor partition slicing |
++| `EXACT_GHOST_ANCHOR_SLICING` | 0 | 短别名 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS` | `master_seconds` | 单 candidate slicing 总墙钟预算 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS` | 0 | 单次最多新评估 anchor 数；0 表示不限 |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME` | 1 | 是否读取/续写 manifest |
++| `EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH` | `data/checkpoints/anchor_slice_manifests/<candidate>.json` | manifest 文件或目录 |
++| `EXACT_MASTER_GHOST_ANCHOR_FILTER` | empty | 单 master ghost anchor 白名单，格式 `x,y;x,y` |
++
++## 建议运行方式
++
++短跑 smoke:
++
++```bash
++EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE=1 \
++EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS=5 \
++python -m src.search.outer_search ...
++```
++
++正式 campaign:
++
++```bash
++EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE=1 \
++EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME=1 \
++python -m src.search.outer_search ...
++```
++
++如果需要显式限制单 candidate 的 slicing 总预算:
++
++```bash
++EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS=600
++```
++
++## 不做的事
++
++本补丁不要求新增硬件、不购买商业软件、不租赁云服务器，也不引入新的付费依赖。它只改变搜索分解方式与恢复机制。
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/scripts/preflight_gate.py code_src/scripts/preflight_gate.py
+--- code_orig/scripts/preflight_gate.py	2026-05-13 18:05:38.000000000 +0000
++++ code_src/scripts/preflight_gate.py	2026-05-16 05:55:49.775800751 +0000
+@@ -466,6 +466,15 @@
+         "EXACT_BINDING_DUMP_STATE",
+         "EXACT_MASTER_HINT_PERSISTENCE",
+         "EXACT_BINDING_USE_OVERLOAD_SEPARATION",
++        "EXACT_MASTER_GHOST_ANCHOR_FILTER",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE",
++        "EXACT_GHOST_ANCHOR_SLICING",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL",
++        "EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX",
+     ):
+         pytest_env.pop(runtime_env, None)
+ 
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/src/models/exact_coordinate_master.py code_src/src/models/exact_coordinate_master.py
+--- code_orig/src/models/exact_coordinate_master.py	2026-05-16 01:19:25.000000000 +0000
++++ code_src/src/models/exact_coordinate_master.py	2026-05-16 05:55:49.775402392 +0000
+@@ -3227,17 +3227,24 @@
+                 "enabled": True,
+                 "placements": 0,
+                 "reason": "rectangle larger than grid",
++                "total_unfiltered_placements": 0,
++                "filtered_original_anchor_indices": tuple(),
+             }
+             return
+ 
+         anchor_filter = getattr(self.owner, "ghost_anchor_filter", None)
+         anchor_filter_skipped = 0
++        total_unfiltered_placements = 0
++        filtered_original_anchor_indices: List[int] = []
+         for anchor_x in range(self.grid_w - ghost_w + 1):
+             for anchor_y in range(self.grid_h - ghost_h + 1):
++                original_anchor_idx = int(total_unfiltered_placements)
++                total_unfiltered_placements += 1
+                 if anchor_filter is not None and (int(anchor_x), int(anchor_y)) not in anchor_filter:
+                     anchor_filter_skipped += 1
+                     continue
+                 rect_idx = len(self.owner._ghost_domains)
++                filtered_original_anchor_indices.append(int(original_anchor_idx))
+                 cells = [
+                     (anchor_x + dx, anchor_y + dy)
+                     for dx in range(ghost_w)
+@@ -3245,7 +3252,14 @@
+                 ]
+                 var = self.model.NewBoolVar(f"ghost__{anchor_x}_{anchor_y}_{ghost_w}_{ghost_h}")
+                 self.owner.u_vars[rect_idx] = var
+-                self.owner._ghost_domains.append({"anchor": {"x": anchor_x, "y": anchor_y}, "cells": cells})
++                self.owner._ghost_domains.append(
++                    {
++                        "anchor": {"x": anchor_x, "y": anchor_y},
++                        "cells": cells,
++                        "original_anchor_idx": int(original_anchor_idx),
++                        "local_anchor_idx": int(rect_idx),
++                    }
++                )
+                 x_interval = self.model.NewOptionalIntervalVar(
+                     anchor_x,
+                     ghost_w,
+@@ -3274,8 +3288,10 @@
+                     else "anchor_filter_excludes_all_anchors"
+                 ),
+                 "size": {"w": ghost_w, "h": ghost_h},
+-                "anchor_filter_applied": True,
++                "anchor_filter_applied": anchor_filter is not None,
+                 "anchor_filter_skipped": int(anchor_filter_skipped),
++                "total_unfiltered_placements": int(total_unfiltered_placements),
++                "filtered_original_anchor_indices": tuple(filtered_original_anchor_indices),
+             }
+             return
+         self._apply_ghost_anchor_power_capacity_screen()
+@@ -3304,6 +3320,8 @@
+             ),
+             "anchor_filter_applied": anchor_filter is not None,
+             "anchor_filter_skipped": int(anchor_filter_skipped),
++            "total_unfiltered_placements": int(total_unfiltered_placements),
++            "filtered_original_anchor_indices": tuple(filtered_original_anchor_indices),
+         }
+ 
+     def _apply_ghost_anchor_power_capacity_screen(self) -> None:
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/src/models/master_model.py code_src/src/models/master_model.py
+--- code_orig/src/models/master_model.py	2026-05-16 01:18:47.000000000 +0000
++++ code_src/src/models/master_model.py	2026-05-16 05:55:49.773724851 +0000
+@@ -4518,12 +4518,17 @@
+ 
+         anchor_filter = self.ghost_anchor_filter
+         filtered_skipped = 0
++        total_unfiltered_placements = 0
++        filtered_original_anchor_indices: List[int] = []
+         for anchor_x in range(self.grid_w - ghost_w + 1):
+             for anchor_y in range(self.grid_h - ghost_h + 1):
++                original_anchor_idx = int(total_unfiltered_placements)
++                total_unfiltered_placements += 1
+                 if anchor_filter is not None and (int(anchor_x), int(anchor_y)) not in anchor_filter:
+                     filtered_skipped += 1
+                     continue
+                 rect_idx = len(self._ghost_domains)
++                filtered_original_anchor_indices.append(int(original_anchor_idx))
+                 cells = [
+                     (anchor_x + dx, anchor_y + dy)
+                     for dx in range(ghost_w)
+@@ -4535,6 +4540,8 @@
+                     {
+                         "anchor": {"x": anchor_x, "y": anchor_y},
+                         "cells": cells,
++                        "original_anchor_idx": int(original_anchor_idx),
++                        "local_anchor_idx": int(rect_idx),
+                     }
+                 )
+                 for cell in cells:
+@@ -4557,6 +4564,8 @@
+                 "reason": reason,
+                 "anchor_filter_applied": anchor_filter is not None,
+                 "anchor_filter_skipped": int(filtered_skipped),
++                "total_unfiltered_placements": int(total_unfiltered_placements),
++                "filtered_original_anchor_indices": tuple(filtered_original_anchor_indices),
+             }
+             return
+ 
+@@ -4571,6 +4580,8 @@
+             "size": {"w": ghost_w, "h": ghost_h},
+             "anchor_filter_applied": anchor_filter is not None,
+             "anchor_filter_skipped": int(filtered_skipped),
++            "total_unfiltered_placements": int(total_unfiltered_placements),
++            "filtered_original_anchor_indices": tuple(filtered_original_anchor_indices),
+         }
+ 
+     def _add_port_clearance_constraints(self) -> None:
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/src/search/benders_loop.py code_src/src/search/benders_loop.py
+--- code_orig/src/search/benders_loop.py	2026-05-16 01:49:28.000000000 +0000
++++ code_src/src/search/benders_loop.py	2026-05-16 05:55:49.765774326 +0000
+@@ -415,6 +415,26 @@
+ 
+ 
+ EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV = "EXACT_MASTER_GHOST_ANCHOR_FILTER"
++EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE_ENV = "EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE"
++EXACT_MASTER_GHOST_ANCHOR_SLICE_ALIAS_ENV = "EXACT_GHOST_ANCHOR_SLICING"
++EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS_ENV = (
++    "EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS"
++)
++EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS_ENV = (
++    "EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS"
++)
++EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH_ENV = (
++    "EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH"
++)
++EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME_ENV = (
++    "EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME"
++)
++_EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL_ENV = (
++    "EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL"
++)
++_EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX_ENV = (
++    "EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX"
++)
+ 
+ 
+ def _resolve_ghost_anchor_filter_from_env() -> Optional[FrozenSet[Tuple[int, int]]]:
+@@ -448,6 +468,285 @@
+     return frozenset(anchors)
+ 
+ 
++def _truthy_env_value(raw_value: Optional[str]) -> bool:
++    if raw_value is None:
++        return False
++    return str(raw_value).strip() not in {"", "0", "false", "False", "no", "No"}
++
++
++def _anchor_slicing_requested() -> bool:
++    return _truthy_env_value(os.environ.get(EXACT_MASTER_GHOST_ANCHOR_SLICE_MODE_ENV)) or (
++        _truthy_env_value(os.environ.get(EXACT_MASTER_GHOST_ANCHOR_SLICE_ALIAS_ENV))
++    )
++
++
++def _anchor_slice_internal_active() -> bool:
++    return _truthy_env_value(os.environ.get(_EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL_ENV))
++
++
++def _anchor_slice_resume_enabled() -> bool:
++    raw_value = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_SLICE_RESUME_ENV)
++    if raw_value is None:
++        return True
++    return _truthy_env_value(raw_value)
++
++
++def _anchor_slice_max_anchors() -> int:
++    raw_value = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS_ENV)
++    if raw_value is None or str(raw_value).strip() == "":
++        return 0
++    try:
++        return max(0, int(str(raw_value).strip()))
++    except ValueError:
++        raise ValueError(
++            f"Unsupported {EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS_ENV}: "
++            f"{raw_value!r}; expected a non-negative integer."
++        ) from None
++
++
++def _anchor_slice_candidate_seconds(default_seconds: float) -> float:
++    raw_value = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS_ENV)
++    if raw_value is None or str(raw_value).strip() == "":
++        return max(0.0, float(default_seconds))
++    try:
++        return max(0.0, float(str(raw_value).strip()))
++    except ValueError:
++        raise ValueError(
++            f"Unsupported {EXACT_MASTER_GHOST_ANCHOR_SLICE_CANDIDATE_SECONDS_ENV}: "
++            f"{raw_value!r}; expected a non-negative number."
++        ) from None
++
++
++def _anchor_slice_manifest_path(project_root: Path, candidate_key: str) -> Path:
++    raw_value = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH_ENV)
++    if raw_value is not None and str(raw_value).strip():
++        configured = Path(str(raw_value).strip()).expanduser()
++        if configured.suffix.lower() == ".json":
++            return configured
++        return configured / f"{candidate_key}.json"
++    return (
++        project_root
++        / "data"
++        / "checkpoints"
++        / "anchor_slice_manifests"
++        / f"{candidate_key}.json"
++    )
++
++
++def _canonical_anchor_slice_entries(
++    *,
++    grid_w: int,
++    grid_h: int,
++    ghost_w: int,
++    ghost_h: int,
++) -> List[Dict[str, Any]]:
++    entries: List[Dict[str, Any]] = []
++    original_anchor_idx = 0
++    for anchor_x in range(max(0, int(grid_w) - int(ghost_w) + 1)):
++        for anchor_y in range(max(0, int(grid_h) - int(ghost_h) + 1)):
++            entries.append(
++                {
++                    "original_anchor_idx": int(original_anchor_idx),
++                    "anchor": {"x": int(anchor_x), "y": int(anchor_y)},
++                }
++            )
++            original_anchor_idx += 1
++    return entries
++
++
++def _anchor_slice_manifest_signature(
++    *,
++    candidate_key: str,
++    ghost_w: int,
++    ghost_h: int,
++    grid_w: int,
++    grid_h: int,
++    artifact_hashes: Mapping[str, Any],
++    master_search_profile: str,
++    total_anchor_count: int,
++) -> Dict[str, Any]:
++    return {
++        "schema_version": 1,
++        "candidate_key": str(candidate_key),
++        "ghost_rect": {"w": int(ghost_w), "h": int(ghost_h)},
++        "grid": {"width": int(grid_w), "height": int(grid_h)},
++        "artifact_hashes": {str(k): str(v) for k, v in sorted(artifact_hashes.items())},
++        "master_search_profile": str(master_search_profile),
++        "total_anchor_count": int(total_anchor_count),
++    }
++
++
++def _new_anchor_slice_manifest(signature: Mapping[str, Any]) -> Dict[str, Any]:
++    return {
++        "schema_version": 1,
++        "kind": "ghost_anchor_slice_manifest",
++        "signature": dict(signature),
++        "created_at": now_iso(),
++        "updated_at": now_iso(),
++        "anchors": {},
++    }
++
++
++def _anchor_slice_status_is_terminal(status: str) -> bool:
++    return str(status) in {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE}
++
++
++def _anchor_slice_status_closes_infeasible_partition(status: str) -> bool:
++    return str(status) == RUN_STATUS_INFEASIBLE
++
++
++def _anchor_slice_entry_is_valid_for_domain(
++    entry: Mapping[str, Any],
++    *,
++    anchors_by_idx: Mapping[int, Mapping[str, Any]],
++) -> bool:
++    try:
++        original_anchor_idx = int(entry.get("original_anchor_idx"))
++    except (TypeError, ValueError):
++        return False
++    domain = anchors_by_idx.get(original_anchor_idx)
++    if domain is None:
++        return False
++    expected_anchor = dict(domain.get("anchor", {}))
++    actual_anchor = dict(entry.get("anchor", {}))
++    try:
++        if int(actual_anchor.get("x")) != int(expected_anchor.get("x")):
++            return False
++        if int(actual_anchor.get("y")) != int(expected_anchor.get("y")):
++            return False
++    except (TypeError, ValueError):
++        return False
++    status = str(entry.get("status", ""))
++    terminal = bool(entry.get("terminal", False))
++    if terminal != _anchor_slice_status_is_terminal(status):
++        return False
++    if status == RUN_STATUS_CERTIFIED and not isinstance(entry.get("solution"), Mapping):
++        return False
++    return True
++
++
++def _load_anchor_slice_manifest(
++    manifest_path: Path,
++    *,
++    signature: Mapping[str, Any],
++    anchors_by_idx: Mapping[int, Mapping[str, Any]],
++) -> Dict[str, Any]:
++    if not _anchor_slice_resume_enabled() or not manifest_path.exists():
++        return _new_anchor_slice_manifest(signature)
++    try:
++        raw_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
++    except (OSError, json.JSONDecodeError):
++        return _new_anchor_slice_manifest(signature)
++    if not isinstance(raw_manifest, Mapping):
++        return _new_anchor_slice_manifest(signature)
++    if dict(raw_manifest.get("signature", {})) != dict(signature):
++        return _new_anchor_slice_manifest(signature)
++    entries_obj = raw_manifest.get("anchors", {})
++    raw_entries = dict(entries_obj) if isinstance(entries_obj, Mapping) else {}
++    filtered_entries: Dict[str, Dict[str, Any]] = {}
++    for key, raw_entry in raw_entries.items():
++        if not isinstance(raw_entry, Mapping):
++            continue
++        entry = dict(raw_entry)
++        if _anchor_slice_entry_is_valid_for_domain(entry, anchors_by_idx=anchors_by_idx):
++            filtered_entries[str(key)] = entry
++    manifest = dict(raw_manifest)
++    manifest["signature"] = dict(signature)
++    manifest["anchors"] = filtered_entries
++    manifest.setdefault("schema_version", 1)
++    manifest.setdefault("kind", "ghost_anchor_slice_manifest")
++    manifest.setdefault("created_at", now_iso())
++    manifest["updated_at"] = now_iso()
++    return manifest
++
++
++def _save_anchor_slice_manifest(manifest_path: Path, manifest: Mapping[str, Any]) -> None:
++    manifest_path.parent.mkdir(parents=True, exist_ok=True)
++    payload = dict(manifest)
++    payload["updated_at"] = now_iso()
++    tmp_path = manifest_path.with_suffix(f"{manifest_path.suffix}.tmp.{os.getpid()}")
++    tmp_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
++    os.replace(tmp_path, manifest_path)
++
++
++def _anchor_slice_cuts_from_entries(entries: Mapping[str, Mapping[str, Any]]) -> List[BendersCut]:
++    cuts: List[BendersCut] = []
++    for entry in entries.values():
++        raw_cuts = entry.get("exact_safe_cuts", [])
++        if not isinstance(raw_cuts, list):
++            continue
++        for raw_cut in raw_cuts:
++            if not isinstance(raw_cut, Mapping):
++                continue
++            try:
++                cuts.append(BendersCut.from_dict(dict(raw_cut)))
++            except Exception:
++                continue
++    return cuts
++
++
++def _anchor_sliced_parent_proof_summary(
++    *,
++    status: str,
++    candidate_key: str,
++    ghost_w: int,
++    ghost_h: int,
++    total_anchor_count: int,
++    entries: Mapping[str, Mapping[str, Any]],
++    evaluated_this_run: int,
++    truncated_by_env_cap: bool,
++    truncated_by_time_budget: bool,
++    manifest_path: Path,
++    master_search_profile: str,
++    selected_entry: Optional[Mapping[str, Any]] = None,
++) -> Dict[str, Any]:
++    terminal_entries = [entry for entry in entries.values() if bool(entry.get("terminal", False))]
++    infeasible_entries = [
++        entry
++        for entry in terminal_entries
++        if _anchor_slice_status_closes_infeasible_partition(str(entry.get("status", "")))
++    ]
++    certified_entries = [
++        entry for entry in terminal_entries if str(entry.get("status", "")) == RUN_STATUS_CERTIFIED
++    ]
++    nonterminal_count = max(0, int(total_anchor_count) - len(terminal_entries))
++    anchor_slicing = {
++        "enabled": True,
++        "candidate_key": str(candidate_key),
++        "ghost_rect": {"w": int(ghost_w), "h": int(ghost_h)},
++        "total_anchor_count": int(total_anchor_count),
++        "terminal_anchor_count": int(len(terminal_entries)),
++        "infeasible_anchor_count": int(len(infeasible_entries)),
++        "certified_anchor_count": int(len(certified_entries)),
++        "nonterminal_anchor_count": int(nonterminal_count),
++        "complete_partition": int(len(terminal_entries)) == int(total_anchor_count),
++        "evaluated_this_run": int(evaluated_this_run),
++        "truncated_by_env_cap": bool(truncated_by_env_cap),
++        "truncated_by_time_budget": bool(truncated_by_time_budget),
++        "manifest_path": str(manifest_path),
++        "master_search_profile": str(master_search_profile),
++    }
++    if selected_entry is not None:
++        anchor_slicing["selected_anchor_idx"] = int(selected_entry.get("original_anchor_idx", -1))
++        anchor_slicing["selected_anchor"] = dict(selected_entry.get("anchor", {}))
++
++    inherited: Dict[str, Any] = {}
++    if selected_entry is not None and isinstance(selected_entry.get("proof_summary"), Mapping):
++        inherited = dict(selected_entry.get("proof_summary", {}))
++    summary: Dict[str, Any] = {
++        **inherited,
++        "mode": "certified_exact",
++        "benders_iterations": int(inherited.get("benders_iterations", 0)),
++        "master_status": str(inherited.get("master_status", status)),
++        "diagnostic_flow_status": str(inherited.get("diagnostic_flow_status", "NOT_RUN")),
++        "enumerated_bindings": int(inherited.get("enumerated_bindings", 0)),
++        "routing_attempts": int(inherited.get("routing_attempts", 0)),
++        "master_search_profile": str(master_search_profile),
++        "anchor_slicing": anchor_slicing,
++    }
++    return summary
++
++
+ def _coordinate_validation_failure_sample_fields(entry: Mapping[str, Any]) -> Dict[str, Any]:
+     fields: Dict[str, Any] = {}
+     for key in (
+@@ -973,12 +1272,11 @@
+     返回 (resolved_lits, ok). ok=False → caller 必须 skip cut, 不能退化成无条件.
+ 
+     支持的 key 类型:
+-        `ghost_anchor::(x,y)` -> master.u_vars[rect_idx]; 校验 ghost_domains[rect_idx]
+-        的 anchor 跟 key 里的 (x,y) 一致 (artifact-hash 已拦 ghost 序乱但二次校验
+-        防止 hash 校验外的边缘场景).
++        `ghost_anchor::(x,y)` -> master.u_vars[rect_idx]. full-overlay cut 直接按
++        rect_idx 命中; anchor-sliced overlay 则允许用 domain.original_anchor_idx 或
++        legacy local_anchor_idx 回查同一 (x,y) 的唯一 u_var.
+ 
+-    未知 key 或不匹配 → ok=False. 这是 GPT v4 P0 #1 finding 的 fix:
+-    persisted cut replay 不能丢 condition; certified mode 下不可解析必 fail-closed.
++    未知 key 或不匹配 → ok=False. certified mode 下不可解析必须 fail-closed.
+     """
+     if not condition_set:
+         return [], True
+@@ -990,29 +1288,63 @@
+         if not key_str.startswith("ghost_anchor::"):
+             return [], False
+         try:
+-            rect_idx = int(raw_value)
+-        except Exception:
++            stored_anchor_idx = int(raw_value)
++        except (TypeError, ValueError):
+             return [], False
+         try:
+             coord_part = key_str.split("::", 1)[1].strip().lstrip("(").rstrip(")")
+             xy = coord_part.split(",")
+             expected_x = int(xy[0])
+             expected_y = int(xy[1])
+-        except Exception:
+-            return [], False
+-        if rect_idx not in u_vars:
++        except (IndexError, ValueError):
+             return [], False
+-        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+-            return [], False
+-        anchor = ghost_domains[rect_idx].get("anchor") or {}
+-        try:
+-            actual_x = int(anchor.get("x", -1))
+-            actual_y = int(anchor.get("y", -1))
+-        except Exception:
+-            return [], False
+-        if actual_x != expected_x or actual_y != expected_y:
++
++        resolved_var: Optional[cp_model.IntVar] = None
++        candidate_indices: List[int] = []
++        if stored_anchor_idx in u_vars:
++            candidate_indices.append(int(stored_anchor_idx))
++        for local_idx, domain in enumerate(ghost_domains):
++            if int(local_idx) in candidate_indices:
++                continue
++            anchor = dict(domain.get("anchor") or {}) if isinstance(domain, Mapping) else {}
++            try:
++                actual_x = int(anchor.get("x", -1))
++                actual_y = int(anchor.get("y", -1))
++            except (TypeError, ValueError):
++                continue
++            if actual_x != expected_x or actual_y != expected_y:
++                continue
++            original_idx = domain.get("original_anchor_idx") if isinstance(domain, Mapping) else None
++            local_anchor_idx = domain.get("local_anchor_idx") if isinstance(domain, Mapping) else None
++            try:
++                original_idx_int = None if original_idx is None else int(original_idx)
++                local_anchor_idx_int = None if local_anchor_idx is None else int(local_anchor_idx)
++            except (TypeError, ValueError):
++                original_idx_int = None
++                local_anchor_idx_int = None
++            if original_idx_int == stored_anchor_idx or local_anchor_idx_int == stored_anchor_idx:
++                candidate_indices.append(int(local_idx))
++
++        for rect_idx in candidate_indices:
++            if rect_idx not in u_vars:
++                continue
++            if rect_idx < 0 or rect_idx >= len(ghost_domains):
++                continue
++            domain = ghost_domains[rect_idx]
++            anchor = dict(domain.get("anchor") or {}) if isinstance(domain, Mapping) else {}
++            try:
++                actual_x = int(anchor.get("x", -1))
++                actual_y = int(anchor.get("y", -1))
++            except (TypeError, ValueError):
++                continue
++            if actual_x != expected_x or actual_y != expected_y:
++                continue
++            resolved_var = u_vars[rect_idx]
++            break
++
++        if resolved_var is None:
+             return [], False
+-        resolved.append(u_vars[rect_idx])
++        resolved.append(resolved_var)
+     return resolved, True
+ 
+ 
+@@ -4044,8 +4376,9 @@
+         return set()
+ 
+     def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
+-        # 返回 (rect_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition
+-        # — 让 cut 只在当前 ghost anchor 下生效, 不过切 ghost B 下合法解.
++        # 返回 (original_anchor_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition.
++        # anchor-sliced 模型里 u_var 的 local index 通常是 0, 但持久化 cut 必须使用
++        # full-overlay 的 original_anchor_idx, 才能跨 slice / full replay 安全解析.
+         u_vars = getattr(self.master, "u_vars", None) or {}
+         ghost_domains = getattr(self.master, "_ghost_domains", None) or []
+         solver = getattr(self.master, "_solver", None)
+@@ -4054,9 +4387,16 @@
+         for rect_idx, var in u_vars.items():
+             try:
+                 if int(solver.Value(var)) == 1:
+-                    domain = ghost_domains[int(rect_idx)]
+-                    return int(rect_idx), var, dict(domain.get("anchor") or {})
+-            except Exception:
++                    local_anchor_idx = int(rect_idx)
++                    domain = ghost_domains[local_anchor_idx]
++                    original_anchor_idx = int(
++                        domain.get("original_anchor_idx", local_anchor_idx)
++                    )
++                    anchor = dict(domain.get("anchor") or {})
++                    anchor["original_anchor_idx"] = int(original_anchor_idx)
++                    anchor["local_anchor_idx"] = int(local_anchor_idx)
++                    return int(original_anchor_idx), var, anchor
++            except (AttributeError, IndexError, KeyError, TypeError, ValueError):
+                 continue
+         return None
+ 
+@@ -4125,10 +4465,13 @@
+                 )
+                 return "ABORT", None
+ 
+-            rect_idx, u_var, anchor = ghost_anchor_info
++            original_anchor_idx, u_var, anchor = ghost_anchor_info
+             anchor_x = int(anchor.get("x", 0))
+             anchor_y = int(anchor.get("y", 0))
+-            condition_set = {f"ghost_anchor::({anchor_x},{anchor_y})": int(rect_idx)}
++            local_anchor_idx = int(anchor.get("local_anchor_idx", original_anchor_idx))
++            condition_set = {
++                f"ghost_anchor::({anchor_x},{anchor_y})": int(original_anchor_idx)
++            }
+ 
+             applied = self._add_exact_persisted_nogood(
+                 conflict_set=conflict_set,
+@@ -4145,7 +4488,9 @@
+                 },
+                 metadata={
+                     "kind": "power_subproblem_ghost_conditioned_nogood",
+-                    "ghost_rect_idx": int(rect_idx),
++                    "ghost_rect_idx": int(original_anchor_idx),
++                    "ghost_original_anchor_idx": int(original_anchor_idx),
++                    "ghost_local_anchor_idx": int(local_anchor_idx),
+                     "ghost_anchor": {"x": anchor_x, "y": anchor_y},
+                 },
+                 condition_set=condition_set,
+@@ -4158,7 +4503,9 @@
+                 extra={
+                     "conflict_size": len(conflict_set),
+                     "condition_size": 1,
+-                    "ghost_rect_idx": int(rect_idx),
++                    "ghost_rect_idx": int(original_anchor_idx),
++                    "ghost_original_anchor_idx": int(original_anchor_idx),
++                    "ghost_local_anchor_idx": int(local_anchor_idx),
+                     "uncovered_instances": list(result.uncovered_instance_ids),
+                 },
+             )
+@@ -4933,6 +5280,303 @@
+         return True
+ 
+ 
++def _run_anchor_sliced_benders_for_ghost_rect(
++    *,
++    ghost_w: int,
++    ghost_h: int,
++    candidate_key: str,
++    max_iterations: int,
++    project_root: Path,
++    solve_mode: str,
++    master_seconds: float,
++    binding_seconds: float,
++    routing_seconds: float,
++    flow_seconds: float,
++    campaign: Optional[Any],
++    session: Optional[ExactSearchSession],
++    preloaded_exact_safe_cuts: Optional[Sequence[Mapping[str, Any]]],
++    master_search_profile: str,
++    disable_master_warm_start: bool,
++    heartbeat_callback: Optional[_CampaignHeartbeatCallback],
++    epsilon_stage: Optional[float],
++) -> Tuple[str, Optional[Dict[str, Any]]]:
++    if solve_mode != "certified_exact":
++        raise ValueError("anchor slicing is only valid for certified_exact mode")
++
++    exact_session = session
++    if exact_session is None:
++        exact_session = create_exact_search_session(
++            project_root,
++            solve_mode=solve_mode,
++            master_search_profile=master_search_profile,
++        )
++    elif (
++        exact_session.project_root != project_root
++        or exact_session.solve_mode != solve_mode
++        or str(exact_session.master_search_profile) != str(master_search_profile)
++    ):
++        raise ValueError(
++            "ExactSearchSession does not match the requested "
++            "project_root/solve_mode/master_search_profile"
++        )
++
++    rules = dict(exact_session.rules)
++    grid = dict(rules["globals"]["grid"])
++    grid_w = int(grid["width"])
++    grid_h = int(grid["height"])
++    anchors = _canonical_anchor_slice_entries(
++        grid_w=grid_w,
++        grid_h=grid_h,
++        ghost_w=int(ghost_w),
++        ghost_h=int(ghost_h),
++    )
++    anchors_by_idx: Dict[int, Mapping[str, Any]] = {
++        int(entry["original_anchor_idx"]): entry for entry in anchors
++    }
++    signature = _anchor_slice_manifest_signature(
++        candidate_key=candidate_key,
++        ghost_w=int(ghost_w),
++        ghost_h=int(ghost_h),
++        grid_w=grid_w,
++        grid_h=grid_h,
++        artifact_hashes=exact_session.artifact_hashes,
++        master_search_profile=master_search_profile,
++        total_anchor_count=len(anchors),
++    )
++    manifest_path = _anchor_slice_manifest_path(project_root, candidate_key)
++    manifest = _load_anchor_slice_manifest(
++        manifest_path,
++        signature=signature,
++        anchors_by_idx=anchors_by_idx,
++    )
++    entries_obj = manifest.get("anchors", {})
++    entries: Dict[str, Dict[str, Any]] = (
++        dict(entries_obj) if isinstance(entries_obj, Mapping) else {}
++    )
++    manifest["anchors"] = entries
++
++    max_anchor_evaluations = _anchor_slice_max_anchors()
++    candidate_deadline: Optional[float] = None
++    candidate_seconds = _anchor_slice_candidate_seconds(float(master_seconds))
++    if candidate_seconds > 0.0:
++        candidate_deadline = time.perf_counter() + float(candidate_seconds)
++
++    def _terminal_certified_entry() -> Optional[Mapping[str, Any]]:
++        for entry in entries.values():
++            if str(entry.get("status", "")) == RUN_STATUS_CERTIFIED and bool(
++                entry.get("terminal", False)
++            ):
++                return entry
++        return None
++
++    certified_entry = _terminal_certified_entry()
++    if certified_entry is not None:
++        cuts = _anchor_slice_cuts_from_entries(entries)
++        proof_summary = _anchor_sliced_parent_proof_summary(
++            status=RUN_STATUS_CERTIFIED,
++            candidate_key=candidate_key,
++            ghost_w=int(ghost_w),
++            ghost_h=int(ghost_h),
++            total_anchor_count=len(anchors),
++            entries=entries,
++            evaluated_this_run=0,
++            truncated_by_env_cap=False,
++            truncated_by_time_budget=False,
++            manifest_path=manifest_path,
++            master_search_profile=master_search_profile,
++            selected_entry=certified_entry,
++        )
++        _publish_last_run_metadata(
++            proof_summary,
++            cuts,
++            loaded_exact_safe_cut_count=sum(
++                int(entry.get("loaded_exact_safe_cut_count", 0)) for entry in entries.values()
++            ),
++            generated_exact_safe_cut_count=sum(
++                int(entry.get("generated_exact_safe_cut_count", 0)) for entry in entries.values()
++            ),
++        )
++        return RUN_STATUS_CERTIFIED, dict(certified_entry.get("solution", {}))
++
++    evaluated_this_run = 0
++    truncated_by_env_cap = False
++    truncated_by_time_budget = False
++
++    for anchor_entry in anchors:
++        original_anchor_idx = int(anchor_entry["original_anchor_idx"])
++        entry_key = str(original_anchor_idx)
++        existing_entry = entries.get(entry_key)
++        if isinstance(existing_entry, Mapping) and bool(existing_entry.get("terminal", False)):
++            continue
++        if max_anchor_evaluations > 0 and evaluated_this_run >= max_anchor_evaluations:
++            truncated_by_env_cap = True
++            break
++        if candidate_deadline is not None and time.perf_counter() >= candidate_deadline:
++            truncated_by_time_budget = True
++            break
++        if isinstance(campaign, ExactCampaign) and campaign.remaining_seconds() <= 0:
++            truncated_by_time_budget = True
++            break
++
++        anchor = dict(anchor_entry.get("anchor", {}))
++        anchor_x = int(anchor.get("x", 0))
++        anchor_y = int(anchor.get("y", 0))
++        env_keys = {
++            EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
++            _EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL_ENV,
++            _EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX_ENV,
++        }
++        previous_env = {key: os.environ.get(key) for key in env_keys}
++        os.environ[_EXACT_MASTER_GHOST_ANCHOR_SLICE_INTERNAL_ENV] = "1"
++        os.environ[EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV] = f"{anchor_x},{anchor_y}"
++        os.environ[_EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX_ENV] = (
++            f"__anchor_{original_anchor_idx}"
++        )
++        slice_started = time.perf_counter()
++        try:
++            remaining_seconds = None
++            if candidate_deadline is not None:
++                remaining_seconds = max(0.001, candidate_deadline - time.perf_counter())
++            slice_master_seconds = float(master_seconds)
++            slice_binding_seconds = float(binding_seconds)
++            slice_routing_seconds = float(routing_seconds)
++            slice_flow_seconds = float(flow_seconds)
++            if remaining_seconds is not None:
++                slice_master_seconds = min(slice_master_seconds, remaining_seconds)
++                slice_binding_seconds = min(slice_binding_seconds, remaining_seconds)
++                slice_routing_seconds = min(slice_routing_seconds, remaining_seconds)
++                slice_flow_seconds = min(slice_flow_seconds, remaining_seconds)
++            status, solution = run_benders_for_ghost_rect(
++                ghost_w=int(ghost_w),
++                ghost_h=int(ghost_h),
++                max_iterations=max_iterations,
++                project_root=project_root,
++                solve_mode=solve_mode,
++                master_seconds=slice_master_seconds,
++                binding_seconds=slice_binding_seconds,
++                routing_seconds=slice_routing_seconds,
++                flow_seconds=slice_flow_seconds,
++                campaign=campaign,
++                session=exact_session,
++                preloaded_exact_safe_cuts=preloaded_exact_safe_cuts,
++                master_search_profile=master_search_profile,
++                disable_master_warm_start=disable_master_warm_start,
++                heartbeat_callback=heartbeat_callback,
++                epsilon_stage=epsilon_stage,
++            )
++        finally:
++            for key, value in previous_env.items():
++                if value is None:
++                    os.environ.pop(key, None)
++                else:
++                    os.environ[key] = value
++
++        evaluated_this_run += 1
++        run_metadata = dict(getattr(run_benders_for_ghost_rect, "last_run_metadata", {}) or {})
++        proof_summary = dict(run_metadata.get("proof_summary", {}))
++        entry: Dict[str, Any] = {
++            "original_anchor_idx": int(original_anchor_idx),
++            "anchor": {"x": int(anchor_x), "y": int(anchor_y)},
++            "status": str(status),
++            "terminal": _anchor_slice_status_is_terminal(str(status)),
++            "elapsed_seconds": max(0.0, time.perf_counter() - slice_started),
++            "updated_at": now_iso(),
++            "proof_summary": proof_summary,
++            "exact_safe_cuts": list(run_metadata.get("exact_safe_cuts", [])),
++            "loaded_exact_safe_cut_count": int(
++                run_metadata.get("loaded_exact_safe_cut_count", 0)
++            ),
++            "generated_exact_safe_cut_count": int(
++                run_metadata.get("generated_exact_safe_cut_count", 0)
++            ),
++        }
++        if status == RUN_STATUS_CERTIFIED and solution is not None:
++            entry["solution"] = dict(solution)
++        entries[entry_key] = entry
++        manifest["last_status"] = str(status)
++        manifest["last_anchor_idx"] = int(original_anchor_idx)
++        _save_anchor_slice_manifest(manifest_path, manifest)
++
++        if status == RUN_STATUS_CERTIFIED and solution is not None:
++            cuts = _anchor_slice_cuts_from_entries(entries)
++            proof_summary = _anchor_sliced_parent_proof_summary(
++                status=RUN_STATUS_CERTIFIED,
++                candidate_key=candidate_key,
++                ghost_w=int(ghost_w),
++                ghost_h=int(ghost_h),
++                total_anchor_count=len(anchors),
++                entries=entries,
++                evaluated_this_run=evaluated_this_run,
++                truncated_by_env_cap=False,
++                truncated_by_time_budget=False,
++                manifest_path=manifest_path,
++                master_search_profile=master_search_profile,
++                selected_entry=entry,
++            )
++            _publish_last_run_metadata(
++                proof_summary,
++                cuts,
++                loaded_exact_safe_cut_count=sum(
++                    int(item.get("loaded_exact_safe_cut_count", 0))
++                    for item in entries.values()
++                ),
++                generated_exact_safe_cut_count=sum(
++                    int(item.get("generated_exact_safe_cut_count", 0))
++                    for item in entries.values()
++                ),
++            )
++            return RUN_STATUS_CERTIFIED, dict(solution)
++
++    terminal_entries = [entry for entry in entries.values() if bool(entry.get("terminal", False))]
++    complete_partition = len(terminal_entries) == len(anchors)
++    all_terminal_infeasible = complete_partition and all(
++        _anchor_slice_status_closes_infeasible_partition(str(entry.get("status", "")))
++        for entry in terminal_entries
++    )
++    cuts = _anchor_slice_cuts_from_entries(entries)
++    if all_terminal_infeasible and not truncated_by_env_cap and not truncated_by_time_budget:
++        parent_status = RUN_STATUS_INFEASIBLE
++    else:
++        nonterminal_statuses = {
++            str(entry.get("status", ""))
++            for entry in entries.values()
++            if not bool(entry.get("terminal", False))
++        }
++        if truncated_by_env_cap or truncated_by_time_budget or RUN_STATUS_UNKNOWN in nonterminal_statuses:
++            parent_status = RUN_STATUS_UNKNOWN
++        elif RUN_STATUS_UNPROVEN in nonterminal_statuses:
++            parent_status = RUN_STATUS_UNPROVEN
++        else:
++            parent_status = RUN_STATUS_UNKNOWN
++    proof_summary = _anchor_sliced_parent_proof_summary(
++        status=parent_status,
++        candidate_key=candidate_key,
++        ghost_w=int(ghost_w),
++        ghost_h=int(ghost_h),
++        total_anchor_count=len(anchors),
++        entries=entries,
++        evaluated_this_run=evaluated_this_run,
++        truncated_by_env_cap=truncated_by_env_cap,
++        truncated_by_time_budget=truncated_by_time_budget,
++        manifest_path=manifest_path,
++        master_search_profile=master_search_profile,
++    )
++    manifest["parent_status"] = str(parent_status)
++    manifest["parent_proof_summary"] = proof_summary
++    _save_anchor_slice_manifest(manifest_path, manifest)
++    _publish_last_run_metadata(
++        proof_summary,
++        cuts,
++        loaded_exact_safe_cut_count=sum(
++            int(entry.get("loaded_exact_safe_cut_count", 0)) for entry in entries.values()
++        ),
++        generated_exact_safe_cut_count=sum(
++            int(entry.get("generated_exact_safe_cut_count", 0)) for entry in entries.values()
++        ),
++    )
++    return parent_status, None
++
++
+ def run_benders_for_ghost_rect(
+     *,
+     ghost_w: int,
+@@ -4987,6 +5631,36 @@
+         )
+         campaign.save()
+ 
++    if (
++        solve_mode == "certified_exact"
++        and _anchor_slicing_requested()
++        and not _anchor_slice_internal_active()
++        and _resolve_ghost_anchor_filter_from_env() is None
++    ):
++        return _run_anchor_sliced_benders_for_ghost_rect(
++            ghost_w=int(ghost_w),
++            ghost_h=int(ghost_h),
++            candidate_key=candidate_key,
++            max_iterations=max_iterations,
++            project_root=project_root,
++            solve_mode=solve_mode,
++            master_seconds=master_seconds,
++            binding_seconds=binding_seconds,
++            routing_seconds=routing_seconds,
++            flow_seconds=flow_seconds,
++            campaign=campaign,
++            session=session,
++            preloaded_exact_safe_cuts=preloaded_exact_safe_cuts,
++            master_search_profile=master_search_profile,
++            disable_master_warm_start=disable_master_warm_start,
++            heartbeat_callback=heartbeat_callback,
++            epsilon_stage=epsilon_stage,
++        )
++
++    hint_candidate_key = (
++        f"{candidate_key}{os.environ.get(_EXACT_MASTER_GHOST_ANCHOR_SLICE_HINT_SUFFIX_ENV, '')}"
++    )
++
+     instances: List[Dict[str, Any]]
+     facility_pools: Dict[str, List[Dict[str, Any]]]
+     rules: Dict[str, Any]
+@@ -5162,7 +5836,7 @@
+         # 修前只 else 分支 (4823 line) 调, 168h 4 worker exact_core_reuse 主路径
+         # 漏配 → 即使 EXACT_MASTER_HINT_PERSISTENCE=1 也跑不到 load/save.
+         # 配合 H3 repair_hint=True 让跨 wave hint 修补真正生效.
+-        master.set_hint_persistence_context(project_root, candidate_key)
++        master.set_hint_persistence_context(project_root, hint_candidate_key)
+         reuse_stats = dict(master.build_stats.get("exact_core_reuse", {}))
+         overlay_build_seconds = float(
+             reuse_stats.get("overlay_build_seconds", time.perf_counter() - overlay_started)
+@@ -5192,7 +5866,7 @@
+         )
+         # P1 #7 main #1+#2: 配 hint 跨 wave 持久化 context. master.build/solve
+         # 自动钩子 (受 EXACT_MASTER_HINT_PERSISTENCE env 开关控制, default off).
+-        master.set_hint_persistence_context(project_root, candidate_key)
++        master.set_hint_persistence_context(project_root, hint_candidate_key)
+         master.build()
+ 
+     cut_replay_started = time.perf_counter()
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/src/tests/test_anchor_slice_resume_manifest.py code_src/src/tests/test_anchor_slice_resume_manifest.py
+--- code_orig/src/tests/test_anchor_slice_resume_manifest.py	1970-01-01 00:00:00.000000000 +0000
++++ code_src/src/tests/test_anchor_slice_resume_manifest.py	2026-05-16 05:56:33.034539630 +0000
+@@ -0,0 +1,97 @@
++from __future__ import annotations
++
++from types import SimpleNamespace
++
++from src.models.cut_manager import RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN
++import src.search.benders_loop as bl
++
++
++def test_anchor_sliced_manifest_cap_returns_unknown_then_resumes(
++    monkeypatch,
++    tmp_path,
++) -> None:
++    project_root = tmp_path
++    session = SimpleNamespace(
++        project_root=project_root,
++        solve_mode="certified_exact",
++        master_search_profile="exact_coordinate_guided_branching_v4",
++        rules={"globals": {"grid": {"width": 3, "height": 1}}},
++        artifact_hashes={},
++    )
++    calls: list[str] = []
++
++    def fake_run_benders_for_ghost_rect(**kwargs):  # type: ignore[no-untyped-def]
++        calls.append(bl.os.environ.get(bl.EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, ""))
++        fake_run_benders_for_ghost_rect.last_run_metadata = {
++            "proof_summary": {
++                "mode": "certified_exact",
++                "master_status": "INFEASIBLE",
++            },
++            "exact_safe_cuts": [],
++            "loaded_exact_safe_cut_count": 0,
++            "generated_exact_safe_cut_count": 0,
++        }
++        return RUN_STATUS_INFEASIBLE, None
++
++    fake_run_benders_for_ghost_rect.last_run_metadata = {}
++    monkeypatch.setattr(bl, "run_benders_for_ghost_rect", fake_run_benders_for_ghost_rect)
++    monkeypatch.setenv(bl.EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS_ENV, "2")
++    monkeypatch.setenv(
++        bl.EXACT_MASTER_GHOST_ANCHOR_SLICE_MANIFEST_PATH_ENV,
++        str(tmp_path / "manifests"),
++    )
++
++    status, solution = bl._run_anchor_sliced_benders_for_ghost_rect(
++        ghost_w=1,
++        ghost_h=1,
++        candidate_key="1x1",
++        max_iterations=1,
++        project_root=project_root,
++        solve_mode="certified_exact",
++        master_seconds=10.0,
++        binding_seconds=10.0,
++        routing_seconds=10.0,
++        flow_seconds=10.0,
++        campaign=None,
++        session=session,
++        preloaded_exact_safe_cuts=None,
++        master_search_profile="exact_coordinate_guided_branching_v4",
++        disable_master_warm_start=False,
++        heartbeat_callback=None,
++        epsilon_stage=None,
++    )
++
++    assert status == RUN_STATUS_UNKNOWN
++    assert solution is None
++    assert calls == ["0,0", "1,0"]
++    assert bl.EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV not in bl.os.environ
++
++    calls.clear()
++    monkeypatch.delenv(bl.EXACT_MASTER_GHOST_ANCHOR_SLICE_MAX_ANCHORS_ENV, raising=False)
++    status, solution = bl._run_anchor_sliced_benders_for_ghost_rect(
++        ghost_w=1,
++        ghost_h=1,
++        candidate_key="1x1",
++        max_iterations=1,
++        project_root=project_root,
++        solve_mode="certified_exact",
++        master_seconds=10.0,
++        binding_seconds=10.0,
++        routing_seconds=10.0,
++        flow_seconds=10.0,
++        campaign=None,
++        session=session,
++        preloaded_exact_safe_cuts=None,
++        master_search_profile="exact_coordinate_guided_branching_v4",
++        disable_master_warm_start=False,
++        heartbeat_callback=None,
++        epsilon_stage=None,
++    )
++
++    assert status == RUN_STATUS_INFEASIBLE
++    assert solution is None
++    assert calls == ["2,0"]
++    metadata = dict(fake_run_benders_for_ghost_rect.last_run_metadata)
++    slicing_summary = dict(metadata["proof_summary"]["anchor_slicing"])
++    assert slicing_summary["complete_partition"] is True
++    assert slicing_summary["infeasible_anchor_count"] == 3
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' '--exclude=.pytest_tmp' '--exclude=.ruff_cache' code_orig/src/tests/test_ghost_anchor_filter.py code_src/src/tests/test_ghost_anchor_filter.py
+--- code_orig/src/tests/test_ghost_anchor_filter.py	2026-05-14 18:14:41.000000000 +0000
++++ code_src/src/tests/test_ghost_anchor_filter.py	2026-05-16 05:56:33.041372350 +0000
+@@ -158,3 +158,43 @@
+     monkeypatch.setenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, "abc,def")
+     with pytest.raises(ValueError, match="non-integer coordinate"):
+         _resolve_ghost_anchor_filter_from_env()
++
++
++def test_ghost_anchor_filter_preserves_original_anchor_indices() -> None:
++    requested = {(1, 0), (3, 0)}
++    model = _build_minimal_ghost_model(grid_width=5, ghost_anchor_filter=requested)
++    model.build()
++
++    assert list(model.u_vars) == [0, 1]
++    assert [int(domain["original_anchor_idx"]) for domain in model._ghost_domains] == [1, 3]
++    assert [int(domain["local_anchor_idx"]) for domain in model._ghost_domains] == [0, 1]
++    assert tuple(model.build_stats["ghost_rect"]["filtered_original_anchor_indices"]) == (1, 3)
++    assert model.build_stats["ghost_rect"]["total_unfiltered_placements"] == 5
++
++
++def test_condition_lit_resolver_accepts_original_index_in_sliced_overlay() -> None:
++    from src.search.benders_loop import _resolve_condition_lits_from_condition_set
++
++    model = _build_minimal_ghost_model(grid_width=5, ghost_anchor_filter={(3, 0)})
++    model.build()
++
++    resolved, ok = _resolve_condition_lits_from_condition_set(
++        model,
++        {"ghost_anchor::(3,0)": 3},
++    )
++    assert ok is True
++    assert resolved == [model.u_vars[0]]
++
++
++def test_condition_lit_resolver_rejects_wrong_original_index() -> None:
++    from src.search.benders_loop import _resolve_condition_lits_from_condition_set
++
++    model = _build_minimal_ghost_model(grid_width=5, ghost_anchor_filter={(3, 0)})
++    model.build()
++
++    resolved, ok = _resolve_condition_lits_from_condition_set(
++        model,
++        {"ghost_anchor::(3,0)": 2},
++    )
++    assert ok is False
++    assert resolved == []
