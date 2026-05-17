@@ -1,0 +1,111 @@
+# B1 Phase 0 verdict — pose-bool master + power_coverage
+
+**Date**: 2026-05-17  
+**Lever**: B1 (唯一未试的 paradigm lever, 在 L1-L16 14 条全死 + L11 用户拒绝后)  
+**Decision**: 用户授权走 B1, ROI 自决
+
+## TL;DR
+
+**✅ GO**. pose-bool form 让 power_coverage 直接可解, 5 个 anchor 全 fast verdict (49-53s OPTIMAL 或 fast INFEASIBLE), 跟 coordinate-based 30 min UNKNOWN 比快 **~34 倍**, 跟 L16 lazy completion (master 81s OPTIMAL + 10 iter cut 不收敛 = 15 min 总 wall) 比直接一次解出.
+
+跟 Step B (minimum form 跳 power) 7.2s 比, 加 power_coverage 只多了 ~45s — 仍远在 60s gate 内.
+
+## 5 anchor 实测数据
+
+| candidate | anchor | area | status | solve(s) | branches | conflicts | poles | log |
+|---|---|---|---|---|---|---|---|---|
+| 27×15 | (0,0) corner | 405 | INFEASIBLE | 20.6 | 0 | 0 | - | trial3_corner_0_0.log |
+| 27×15 | (22,28) interior | 405 | OPTIMAL | 52.8 | 588,150 | 487 | 171 | trial2_with_power_300s.log |
+| 30×15 | (20,28) interior | 450 | OPTIMAL | 53.2 | 1,633,701 | 863 | 160 | trial4_30x15_interior.log |
+| 35×15 | (18,28) interior | 525 | OPTIMAL | 52.9 | 1,143,577 | 1,049 | 124 | trial5_35x15.log |
+| 36×16 | (18,28) interior | 576 | OPTIMAL | 49.4 | 296,266 | 116 | 136 | trial6_36x16.log |
+
+**Sanity** (`--skip-power`, 等价 Step B): 6.7s OPTIMAL — prototype harness 自身无 regression.
+
+## 关键 invariant
+
+solve time 几乎不随 area 变化 (~50s consistent across 405-576). 推测: 大 candidate ghost 占走更多 cell 减少 facility 自由度, propagation 抵消 search space 增加.
+
+## 跟 L16 (lazy completion) 对比
+
+| lever | master 形式 | first master.solve | LBBD 是否需要回灌 | 总 wall (典型 anchor) |
+|---|---|---|---|---|
+| L16 (coordinate + skip coverage + completion subproblem) | coordinate-based | 81s OPTIMAL | 是 (loose cut 10 iter / tight cut 6 iter 都不收敛) | 15 min 不收敛 |
+| **B1 (pose-bool + power_coverage)** | **pose-bool** | **53s OPTIMAL** | **否** (master 一次给出 power-feasible solution) | **53s** |
+| 现 coordinate (含 coverage) | coordinate-based | 30 min UNKNOWN | - | 30 min UNKNOWN |
+
+**核心区别**: L16 把 coverage 推给 subproblem, 但 cut 端 instance-level Benders 在 problem geometry 下不收敛. B1 把 coverage 装回 master, 但 form 改成 pose-bool, AddAtMostOne cell exclusivity 让 CP-SAT propagator 直接 fire — 不需要 AddNoOverlap2D (在 dense packing 弱).
+
+## prototype 数据规模
+
+每 anchor 一次 build + solve:
+- bool vars: ~284K-296K (x_mandatory + y_pole)
+- cell exclusivity 约束: ~4500
+- power coverage 约束: ~270K (每 powered pose 一条 `x_{g,p} ≤ Σ y_pole_coverer`)
+- master core (preprocess) build 56-61s — coordinate-based legacy 预处理, Phase 1 生产路径会去掉
+- pose-bool model build 21-25s — 可优化但已不在关键路径
+
+## prototype 范围 (Phase 0 scope)
+
+**包括**:
+- mandatory 19 groups (266 demand) pose-bool 表达
+- required_optional protocol_storage_box pose-bool
+- residual_optional power_pole pose-bool (无 demand 约束, 按需选)
+- demand + cell exclusivity + ghost forbidden + power_coverage
+
+**不包括** (在 Benders subproblem, 不在 master):
+- port_binding (`src/models/binding_subproblem.py`)
+- boundary_port_feasibility (precheck/screen spec, 不进 master CP-SAT)
+- routing
+- flow
+
+## 跟前面 lever 比
+
+| lever | 类型 | verdict |
+|---|---|---|
+| L1-L10 | 工程优化 / paradigm 早期 | ❌ |
+| L11 | 牺牲严格性 | 🟡 用户拒绝 |
+| L12 v8 anchor slicing | GPT 算法错估 | ❌ |
+| L13 v10 witness preflight | GPT 前提错估 | ❌ |
+| L14 weighted occupancy | GPT 数学能力上限 | ❌ |
+| L15 set-packing prover | GPT paradigm 攻错层 | ❌ |
+| L16 lazy power completion | master ✓ cut ❌ | ❌ |
+| **B1 pose-bool master rewrite** | **paradigm: 改 representation** | **✅ Phase 0 GO** |
+
+## ROI 分析 + next step
+
+Phase 0 verdict 给出 hard evidence: pose-bool form 自身够快.
+
+下一步 ROI 排序 (按"该不该现在做"):
+1. **Phase 1: 写生产 pose-bool master 集成进 Benders 流程** (2-3 day) — 替换 coordinate-based master 在 LBBD 主循环, 跟 binding_subproblem / routing_subproblem 对接
+2. **Phase 2-3: 适配各 layer** (2-4 day) — boundary_port_feasibility precheck / extract_solution / Benders cut replay
+3. **Phase 4: 测试 + regression** (1-2 day)
+4. **Phase 5: 完整 LBBD 跑 27×15 anchor 验 production wall** (0.5 day)
+
+如果 Phase 5 verdict 仍 < 60s/anchor, B1 完整生产路径成立, 项目脱离 30 min UNKNOWN 死锁.
+
+## Risk
+
+1. **Build time 56-61s 是 coordinate legacy 预处理**: 生产路径要让 pose-bool master 不依赖这个. 选项 (a) 重用 `_power_coverers_by_template_pose` 缓存表 + `_template_pose_tuple_by_idx`, 跳过 coordinate slot var 创建 (b) 重写 build phase. Phase 1 决定.
+
+2. **Benders subproblem 与 pose-bool extract_solution 适配**: 现 binding/routing subproblem 拿的是 coordinate-based solution (instance_id → (x, y, mode)). pose-bool 形式下需要 `(group_id, pose_idx) → (instance_id, anchor_x, anchor_y, mode)` 转换. 这是 mechanical adaptation.
+
+3. **Cut replay**: 现 Benders cut 表达成 coordinate literals. pose-bool 形式下要重写成 pose-bool literals. 但 cut 数量小, work 可控.
+
+## 操作文件
+
+- `poc_pose_bool_with_power.py` — prototype script (~190 LOC)
+- `trial1_skip_power_sanity.log` — 6.7s OPTIMAL sanity
+- `trial2_with_power_300s.log` — 27×15 interior 52.8s OPTIMAL
+- `trial3_corner_0_0.log` — 27×15 corner 20.6s INFEASIBLE
+- `trial4_30x15_interior.log` — 30×15 interior 53.2s OPTIMAL
+- `trial5_35x15.log` — 35×15 525area 52.9s OPTIMAL
+- `trial6_36x16.log` — 36×16 576area 49.4s OPTIMAL
+
+## 链
+
+- [[project_b1_pose_bool_master_rewrite_plan]] — B1 完整 plan
+- [[project_l16_lazy_power_completion_phase0]] — L16 ❌, master 端 OK cut 端死
+- [[project_l15_setpacking_prover_dead]] — L15 paradigm 攻错层, Step B 来源
+- `docs/research/setpacking_prover_poc_20260517/poc_minimum_setpacking.py` — Step B baseline (7.2s minimum)
+- `docs/lever_verdicts.md` — 待加 B1 Phase 0 ✓ verdict

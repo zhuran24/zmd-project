@@ -1,6 +1,6 @@
 # Lever Verdicts — 提升 master FEASIBLE 率的所有路线及结果
 
-**最后更新**: 2026-05-16
+**最后更新**: 2026-05-17 (B1 Phase 0 verdict ✅)
 
 主线问题: 70×70 grid + 266 mandatory facility + ghost rect 几何约束的 `max_lex(area, min_side)` 严格证明.
 
@@ -406,6 +406,41 @@ Plan B 选项:
 
 ---
 
+### B1. pose-bool master rewrite — Phase 0 prototype (2026-05-17 standalone PoC 实测)
+
+**假设**: 把 master 从 coordinate-based (x, y, mode IntVar + AddNoOverlap2D) 改成 pose-bool form (x_{group,pose} BoolVar + AddAtMostOne per cell), 让 CP-SAT cell-exclusivity propagator 直接 fire, 跳过 AddNoOverlap2D 在 dense packing 下的弱点. L16 已证 master skip coverage 快 (81s OPTIMAL); B1 测的是加回 coverage 后 pose-bool form 是否仍快.
+
+**正信号** (上游证据):
+- Step B 同 form minimum (跳 power) 27×15 interior **7.2s FEASIBLE** 8w
+- L16 master 跳 coverage 81s OPTIMAL (证 coverage 是真瓶颈)
+
+**Phase 0 prototype** (`docs/research/b1_pose_bool_phase0_20260517/poc_pose_bool_with_power.py`):
+- 加 mandatory 19 groups + required_optional protocol_storage_box + residual_optional pole 全 pose-bool 表达
+- 加 power_coverage constraint: 对每 powered pose `x_{g,p} ≤ Σ y_{coverer_pole_pose}` (pose-bool form)
+- 跳 port_binding / boundary_port (在 Benders subproblem, 不在 master)
+
+**实测 5 anchor**:
+
+| candidate | anchor | area | status | solve(s) | poles |
+|---|---|---|---|---|---|
+| 27×15 | (0,0) corner | 405 | INFEASIBLE | 20.6 | - |
+| 27×15 | (22,28) interior | 405 | **OPTIMAL** | **52.8** | 171 |
+| 30×15 | (20,28) interior | 450 | **OPTIMAL** | **53.2** | 160 |
+| 35×15 | (18,28) interior | 525 | **OPTIMAL** | **52.9** | 124 |
+| 36×16 | (18,28) interior | 576 | **OPTIMAL** | **49.4** | 136 |
+
+跟 coordinate-based 30 min UNKNOWN 比 **快 ~34x**. 跟 L16 lazy completion (master 81s + cut 不收敛) 比 master 一次给出 power-feasible solution 不需要 Benders cut 回灌.
+
+solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate ghost 占走更多 cell 减少 facility 自由度抵消 search space 增加.
+
+**Verdict**: ✅ **Phase 0 GO**. pose-bool form + power_coverage 一次性 master solve 在 < 60s 收敛.
+
+**Next**: Phase 1-5 生产实现 (替换 coordinate-based master / 适配 binding/routing subproblem / extract_solution / cut replay / regression test). 估时 1-2 周.
+
+**链**: [[project_b1_pose_bool_master_rewrite_plan]]
+
+---
+
 ## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
 
 这些路线虽然没破 0, 但项目质量真实提升:
@@ -436,7 +471,7 @@ Plan B 选项:
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
-**唯一未试且大概率出 FEASIBLE 的路径**: **L11 (hard constraint)** — 但要牺牲 certified path 全局严格性, 改 problem 本身
+**Phase 0 GO 待生产实现**: **B1 (pose-bool master rewrite)** — Phase 0 prototype 5 anchor 全 fast verdict, 49-53s OPTIMAL. 生产路径 1-2 周.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
