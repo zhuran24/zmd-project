@@ -212,7 +212,13 @@ def test_flag_off_baseline_master_still_carries_power_pole_slots() -> None:
 def test_flag_on_master_drops_power_pole_residual_slots() -> None:
     """With flag on, master should not carry power_pole residual slots."""
     instances, pools, rules = _build_one_powered_machine_one_pole_fixture()
-    with mock.patch.dict(os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": "1"}):
+    with mock.patch.dict(
+        os.environ,
+        {
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM": "1",
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST": "1",
+        },
+    ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
         )
@@ -225,7 +231,13 @@ def test_flag_on_master_drops_power_pole_residual_slots() -> None:
 def test_flag_on_end_to_end_master_solve_plus_power_subproblem_feasible() -> None:
     """Flag on: master solves powered_widget placement, subproblem picks pole."""
     instances, pools, rules = _build_one_powered_machine_one_pole_fixture()
-    with mock.patch.dict(os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": "1"}):
+    with mock.patch.dict(
+        os.environ,
+        {
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM": "1",
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST": "1",
+        },
+    ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
         )

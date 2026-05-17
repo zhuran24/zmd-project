@@ -89,7 +89,13 @@ def test_whole_layout_cut_dilution_repro_synthetic_pole_loses_literal():
     )
 
     instances, pools, rules = _fixture_one_powered_one_pole()
-    with mock.patch.dict(os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": "1"}):
+    with mock.patch.dict(
+        os.environ,
+        {
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM": "1",
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST": "1",
+        },
+    ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
         )
@@ -134,7 +140,13 @@ def test_whole_layout_nogood_fails_closed_when_flag_on_with_synthetic_pole():
     返回 False (fail-closed, cut 没产生).
     """
     instances, pools, rules = _fixture_one_powered_one_pole()
-    with mock.patch.dict(os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": "1"}):
+    with mock.patch.dict(
+        os.environ,
+        {
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM": "1",
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST": "1",
+        },
+    ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
         )

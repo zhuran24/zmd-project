@@ -2133,6 +2133,19 @@ class CoordinateExactMasterDelegate:
             "False",
         }
 
+    def _lazy_power_completion_enabled(self) -> bool:
+        # 新边界 (PROJECT_LOCK L4b): master 保留 power_pole residual slots, 只跳过
+        # _add_geometric_power_coverage_constraints. completion 由 subproblem 提供
+        # proof-carrying witness. 跟旧 EXACT_POWER_PLACEMENT_SUBPROBLEM (L4a 禁开)
+        # 的关键区别是 pole slot 仍 materialized — downstream cut 可 resolve
+        # runtime literal.
+        return os.environ.get("EXACT_LAZY_POWER_COMPLETION", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+
     def _prepare_slot_specs(self) -> None:
         self.mandatory_slots = {}
         for group in self.owner._mandatory_groups:
@@ -3008,6 +3021,23 @@ class CoordinateExactMasterDelegate:
             self.power_pole_family_count_vars[family_name] = count_var
 
     def build(self) -> None:
+        # PROJECT_LOCK L4a: 旧 EXACT_POWER_PLACEMENT_SUBPROBLEM 在 certified mode
+        # 必须 fail-closed. 它会从 master 拿走 power_pole slot, 让 downstream cut
+        # 无法 resolve runtime literal. 新路径用 EXACT_LAZY_POWER_COMPLETION (L4b).
+        # forensic test (test_power_placement_subproblem.py / test_power_witness_cut_dilution.py)
+        # 文档 PoC 时代的 bug, 用 EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST
+        # 显式 opt-in 绕开 L4a, production runbook 禁用此 bypass.
+        if (
+            self._delegate_power_placement_to_subproblem()
+            and str(getattr(self.owner, "solve_mode", "")) == "certified_exact"
+            and os.environ.get(
+                "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST", ""
+            ).strip().lower() not in {"1", "true", "yes", "on"}
+        ):
+            raise RuntimeError(
+                "PROJECT_LOCK L4a: EXACT_POWER_PLACEMENT_SUBPROBLEM is forbidden "
+                "in certified_exact mode. Use EXACT_LAZY_POWER_COMPLETION instead."
+            )
         self._create_mandatory_slot_vars()
         self._create_required_optional_slot_vars()
         self._create_residual_optional_slot_vars()
@@ -3016,11 +3046,23 @@ class CoordinateExactMasterDelegate:
         if self._core_x_intervals:
             self.model.AddNoOverlap2D(self._core_x_intervals, self._core_y_intervals)
         self._add_ghost_constraints()
+        lazy_completion = self._lazy_power_completion_enabled()
         if (
             not self.owner.skip_power_coverage
             and not self._delegate_power_placement_to_subproblem()
+            and not lazy_completion
         ):
             self._add_geometric_power_coverage_constraints()
+        elif lazy_completion:
+            # L4b: 留 pole slot, 跳 coverage witness. completion 由 subproblem 接管.
+            self.owner.build_stats["power_coverage"] = {
+                "representation": "lazy_power_completion_v1",
+                "master_constraints": 0,
+                "master_witness_vars": 0,
+                "power_pole_slots_materialized": bool(
+                    self.residual_optional_slots.get("power_pole")
+                ),
+            }
         elif self._delegate_power_placement_to_subproblem():
             self.owner.build_stats["power_coverage"] = {
                 "representation": "delegated_power_subproblem_v1",
