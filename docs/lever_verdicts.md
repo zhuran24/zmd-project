@@ -365,6 +365,46 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 
 ---
 
+### L16. Lazy Power Completion Phase 0 (GPT v11 详细计划书, 2026-05-17 mini-PoC 实测)
+
+**假设**: GPT v11 推荐 — master 跳 `_add_geometric_power_coverage_constraints` 但保留 `power_pole` residual slots, completion subproblem 解电杆, Benders cut 回灌 master. 跟旧 L4 (`EXACT_POWER_PLACEMENT_SUBPROBLEM` 完全删 pole slot) 关键区别: pole slot 仍 materialized, downstream cut 可 resolve runtime literal. GPT v11 提议新 PROJECT_LOCK L4a/L4b 边界切开.
+
+**Phase 0 mini-PoC 实施** (1 Claude day, commit `5d37321`):
+- 加 `EXACT_LAZY_POWER_COMPLETION` env flag, 改 `exact_coordinate_master.build()`
+- 写 `scripts/phase0_lazy_power_completion_probe.py` driver
+- L4a runtime guard: 旧 flag certified mode raise (forensic test 加 bypass env)
+
+**Phase 0 数据点** (27×15 anchor (22,28)):
+
+| Gate | 实测 | 阈值 | 结果 |
+|---|---|---|---|
+| Master first solve seconds | **81.8** | ≤ 90 | ✓ PASS |
+| Master status | **OPTIMAL** | OPTIMAL/FEASIBLE | ✓ |
+| Completion (first layout) | **INFEASIBLE 134/220 uncovered** | FEASIBLE | ✗ NO-GO |
+| Cut loop 10 iter 收敛 | 134→133 (-1) 然后 stuck 7 iter | 收敛 | ✗ NO-GO |
+
+跟 GPT v11 计划书 **Plan B trigger 条件完全 match**:
+- "If status is INFEASIBLE on the first layout: Phase 0 no-go"
+- "UNKNOWN_POWER_CUT_STALL: > 6 条 cut 无进展"
+
+**关键 finding**:
+1. **Master 端方向对** — skip coverage 81s OPTIMAL vs production 30 min UNKNOWN, 跨数量级. 证实 coverage encoding 是真瓶颈, master 跳掉就快
+2. **Cut 端死** — loose nogood cut (禁全 220 powered pose) 太松, master 只需 swap 1 pose 绕开. 同 5 个 `crusher_blue_iron` 反复 uncovered, geometry blocking 持续 reappear
+
+**Verdict**: 🟡 **待定 (master 端 PASS, cut 端 NO-GO under loose cut)**.
+
+跟 L12-L15 的 ❌ 不同: 前面是"GPT 方向错估", L16 master 端是 hard evidence positive — 真要 ❌ verdict 必须先验 GPT v11 提的 Phase 3 deletion-based core minimization (tight cut). Plan B 选项:
+
+| Option | 工作量 | Risk |
+|---|---|---|
+| A. Phase 3 deletion-based core (tight cut) | +2-3 Claude day | tight cut 也可能 combinatorial 爆炸 |
+| B. pose-bool master rewrite (Plan B1) | 1-2 周 | 完整 master + port_binding 后可能又 stuck |
+| C. 接受 verdict, paradigm 死 | 0 | 项目目标妥协 (release area=405 best-known 非 certified) |
+
+**链**: [[project_l16_lazy_power_completion_phase0]]
+
+---
+
 ## 旁线工程改进 (verified land, 但不破 0 FEASIBLE)
 
 这些路线虽然没破 0, 但项目质量真实提升:
@@ -391,7 +431,7 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** 共 **13** 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** 共 **13** 条死路 + **L16 🟡 待定** (Lazy Power Completion, master 端 PASS, cut 端待 Phase 3 deletion core 验)
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
