@@ -51,7 +51,7 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 import time
-from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple, cast
 
 from ortools.sat.python import cp_model
 
@@ -4403,6 +4403,10 @@ class LBBDController:
             if not cut_applied:
                 # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
                 return RUN_STATUS_UNKNOWN, None
+            # B1 Phase 3: pose-bool master 可以从 nogood cut 学习, 让 LBBD 重选 layout.
+            # Coordinate path 直接 return INFEASIBLE (这个分支保留 default).
+            if os.environ.get("EXACT_USE_POSE_BOOL_MASTER", "").strip().lower() in {"1", "true", "yes", "on"}:
+                return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
             return RUN_STATUS_INFEASIBLE, None
 
         self._emit_heartbeat(
@@ -5151,25 +5155,52 @@ def run_benders_for_ghost_rect(
         )
         overlay_started = time.perf_counter()
         ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
-        master = MasterPlacementModel.from_exact_core(
-            exact_session.core,
-            ghost_rect=(int(ghost_w), int(ghost_h)),
-            master_search_profile=master_search_profile,
-            precomputed_boundary_port_feasibility=boundary_port_precheck,
-            ghost_anchor_filter=ghost_anchor_filter_override,
-        )
-        # audit A H1 修复: from_exact_core 路径也需要 hint persistence context.
-        # 修前只 else 分支 (4823 line) 调, 168h 4 worker exact_core_reuse 主路径
-        # 漏配 → 即使 EXACT_MASTER_HINT_PERSISTENCE=1 也跑不到 load/save.
-        # 配合 H3 repair_hint=True 让跨 wave hint 修补真正生效.
-        master.set_hint_persistence_context(project_root, candidate_key)
-        reuse_stats = dict(master.build_stats.get("exact_core_reuse", {}))
-        overlay_build_seconds = float(
-            reuse_stats.get("overlay_build_seconds", time.perf_counter() - overlay_started)
-        )
-        ghost_constraint_seconds = float(
-            reuse_stats.get("ghost_constraint_seconds", 0.0)
-        )
+        # B1 Phase 3: env on 时跳过 from_exact_core 的 proto-sharing (那是 coordinate-
+        # specific), 走 direct instantiation. PoseBool delegate build 23s, 不需要
+        # 跨 candidate 共享 proto.
+        _use_pose_bool = os.environ.get(
+            "EXACT_USE_POSE_BOOL_MASTER", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        if _use_pose_bool:
+            master = MasterPlacementModel(
+                list(exact_session.core.source_instances),
+                cast("Mapping[str, List[Dict[str, Any]]]", exact_session.core.facility_pools),
+                exact_session.core.rules,
+                ghost_rect=(int(ghost_w), int(ghost_h)),
+                skip_power_coverage=bool(exact_session.core.skip_power_coverage),
+                enable_symmetry_breaking=bool(exact_session.core.enable_symmetry_breaking),
+                generic_io_requirements=exact_session.core.generic_io_requirements,
+                exact_required_pose_optional_counts=dict(
+                    exact_session.core.exact_required_pose_optional_counts
+                ),
+                solve_mode="certified_exact",
+                master_search_profile=master_search_profile,
+                ghost_anchor_filter=ghost_anchor_filter_override,
+            )
+            master.set_hint_persistence_context(project_root, candidate_key)
+            master.build()
+            overlay_build_seconds = time.perf_counter() - overlay_started
+            ghost_constraint_seconds = 0.0
+        else:
+            master = MasterPlacementModel.from_exact_core(
+                exact_session.core,
+                ghost_rect=(int(ghost_w), int(ghost_h)),
+                master_search_profile=master_search_profile,
+                precomputed_boundary_port_feasibility=boundary_port_precheck,
+                ghost_anchor_filter=ghost_anchor_filter_override,
+            )
+            # audit A H1 修复: from_exact_core 路径也需要 hint persistence context.
+            # 修前只 else 分支 (4823 line) 调, 168h 4 worker exact_core_reuse 主路径
+            # 漏配 → 即使 EXACT_MASTER_HINT_PERSISTENCE=1 也跑不到 load/save.
+            # 配合 H3 repair_hint=True 让跨 wave hint 修补真正生效.
+            master.set_hint_persistence_context(project_root, candidate_key)
+            reuse_stats = dict(master.build_stats.get("exact_core_reuse", {}))
+            overlay_build_seconds = float(
+                reuse_stats.get("overlay_build_seconds", time.perf_counter() - overlay_started)
+            )
+            ghost_constraint_seconds = float(
+                reuse_stats.get("ghost_constraint_seconds", 0.0)
+            )
         used_exact_core_reuse = True
         _emit_campaign_heartbeat(
             {
@@ -5365,6 +5396,10 @@ def run_benders_for_ghost_rect(
                 ),
             }
         )
+        # B1 Phase 3: env on 时 skip mandatory_rectangle_precheck trigger. 那个
+        # precheck 是 coordinate-only screen (假设 master 用 (x,y,mode) IntVar 形式
+        # 验 packing-within-rect feasibility). pose-bool master 自己的 cell
+        # exclusivity + power coverage 已经覆盖, 这里 precheck 误判 INFEASIBLE.
         triggered_mandatory_group = next(
             (
                 dict(entry)
@@ -5378,7 +5413,7 @@ def run_benders_for_ghost_rect(
             ),
             None,
         )
-        if triggered_mandatory_group is not None:
+        if triggered_mandatory_group is not None and not _use_pose_bool:
             proof_summary = _merge_reuse_metadata(
                 {
                     "mode": "certified_exact",

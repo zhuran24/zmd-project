@@ -87,10 +87,15 @@ class PoseBoolExactMasterDelegate:
         return feas
 
     def build(self) -> None:
+        # ghost_rect=None 出现在 build_exact_core 的 "build core proto" 阶段,
+        # pose-bool delegate 不参与 proto-sharing (走 direct instantiation),
+        # 所以这种 case graceful no-op, 等真 build 在 ghost_rect 设上后再来.
         if self.owner.ghost_rect is None:
-            raise RuntimeError(
-                "PoseBoolExactMasterDelegate requires ghost_rect; got None"
-            )
+            self.owner.build_stats["master_representation"] = self.master_representation
+            self.owner.build_stats["pose_bool_master"] = {
+                "no_op_reason": "ghost_rect_none_at_build_exact_core_stage",
+            }
+            return
         forbidden = self._forbidden_cells()
 
         cell_poses: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
@@ -361,3 +366,8 @@ class PoseBoolExactMasterDelegate:
 
     def apply_master_hints(self, hints: Mapping[str, int]) -> int:
         return 0
+
+    def export_core_binding(self) -> Dict[str, Any]:
+        # PoseBool delegate 不参与 proto sharing (build_exact_core / from_exact_core),
+        # 返回空 binding 让 build_exact_core 不 crash.
+        return {}
