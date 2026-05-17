@@ -102,10 +102,31 @@ Phase 0 verdict 给出 hard evidence: pose-bool form 自身够快.
 - `trial5_35x15.log` — 35×15 525area 52.9s OPTIMAL
 - `trial6_36x16.log` — 36×16 576area 49.4s OPTIMAL
 
+## End-to-end trial (Phase 1 incremental, trial 7/8)
+
+`poc_pose_bool_end_to_end.py` 扩展 prototype 加 binding + routing 调用. 跑 27×15 anchor (22,28):
+
+| stage | status | time |
+|---|---|---|
+| master (pose-bool + power_coverage) | **OPTIMAL** | 52.9s |
+| binding (PortBindingModel first solution) | **FEASIBLE** | 0.0s |
+| routing precheck | **front_blocked** | < 1s |
+
+**意义**:
+- ✅ master 端 pose-bool + power_coverage 在 53s 解出 layout (438 instances: 266 mandatory + 1 ro + 171 pole)
+- ✅ binding 0 秒 FEASIBLE — 438 instances 的 port match 自然成立, 没 empty domain
+- 🟡 routing precheck 第一次 reject — binding 解出的 port choice 几何上不可路由 (某些 port 的 front cell 被设施挡住)
+
+这是 LBBD 标准 inner-loop 信号: 第一个 binding solution 经常被 routing reject, 需要加 binding nogood cut 让 binding 选别的 port match, 直到 routing feasible 或 binding 穷尽. standalone prototype 没实现这个 inner loop (那是 Benders LBBD 主循环代码).
+
+**不是 B1 paradigm 失败**: master + binding 一次过通过强力证明 pose-bool form 解 master 是真破局. routing precheck 是 binding 阶段的 quality 问题, 跟 master form (pose-bool vs coordinate) 无关 — coordinate master 解出 layout 也会撞同样的 routing precheck.
+
+Phase 2+ 工作: 把 pose-bool master 接入 LBBD 主循环, 让现有 binding nogood loop + routing 自然 handle.
+
 ## 链
 
 - [[project_b1_pose_bool_master_rewrite_plan]] — B1 完整 plan
 - [[project_l16_lazy_power_completion_phase0]] — L16 ❌, master 端 OK cut 端死
 - [[project_l15_setpacking_prover_dead]] — L15 paradigm 攻错层, Step B 来源
 - `docs/research/setpacking_prover_poc_20260517/poc_minimum_setpacking.py` — Step B baseline (7.2s minimum)
-- `docs/lever_verdicts.md` — 待加 B1 Phase 0 ✓ verdict
+- `docs/lever_verdicts.md` — B1 Phase 0 ✅ verdict 已加入
