@@ -102,6 +102,39 @@ Phase 0 verdict 给出 hard evidence: pose-bool form 自身够快.
 - `trial5_35x15.log` — 35×15 525area 52.9s OPTIMAL
 - `trial6_36x16.log` — 36×16 576area 49.4s OPTIMAL
 
+## Phase 2 code audit (代码 audit for production integration)
+
+`src/models/master_model.py` **现有 pose-bool path 已 implemented 完整**:
+
+| 方法 | 行号 | 状态 |
+|---|---|---|
+| `_create_variables` | 4414 | `z_vars[gid][pose_idx]` BoolVar — pose-bool form |
+| `_add_assignment_constraints` | 4458 | `sum z_vars == demand` |
+| `_add_set_packing_constraints` | 4502 | cell exclusivity |
+| `_add_ghost_rect_constraints` | 4509 | ghost forbidden |
+| `_add_power_coverage_constraints` | 4621 | **跟 prototype 数学等价** (`sum(pole_vars[idx] for idx in coverers) >= z_var`) |
+| `_add_symmetry_breaking_constraints` | 4658 | 分组 encoding |
+| `_add_global_valid_inequalities` | 4860 | valid inequalities |
+| `_add_search_guidance` | 4696 | exact_mode-only |
+
+**`exact_mode=True` 强制跳过 pose-bool path**, 走 coordinate_delegate (line 4385-4397).
+
+外部代码 (`benders_loop.py` / `outer_search.py` / `exact_campaign.py`) **不直接调** `_coordinate_delegate` — 全走 `self.master.<method>`. 只有 test files 引用 `_coordinate_delegate`.
+
+Phase 2 改动点 (5 处):
+
+| 行号 | 方法 | bypass 难度 |
+|---|---|---|
+| 4385 | `build()` | low — 加 env flag if-else |
+| 11522 | `extract_master_hints()` | medium — return {} fallback |
+| 11551 | `apply_master_hints()` | medium — return 0 fallback |
+| 11675 | `extract_solution()` | low — fall-through 到通用 path (line 11679+ 已存在) |
+| 11743 | `add_benders_cut()` | low — fall-through 到通用 path (line 11747+ 已存在) |
+
+加上 `build_exact_candidate_warm_start()` (line 9779) — 内部已有 `if self._coordinate_delegate is not None:` 保护, env flag on 时 coordinate_delegate=None 自然 fallback.
+
+**Phase 2 总工作量重估**: ~30-50 LOC + 跑 2086 pytest 验回归. 比之前估的 2-3 day 缩到 1-2 Claude hour. 但仍需新 session 做 (master_model.py 改动面 + 全 test 验证).
+
 ## End-to-end trial (Phase 1 incremental, trial 7/8)
 
 `poc_pose_bool_end_to_end.py` 扩展 prototype 加 binding + routing 调用. 跑 27×15 anchor (22,28):
