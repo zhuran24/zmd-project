@@ -135,6 +135,18 @@ Phase 2 改动点 (5 处):
 
 **Phase 2 总工作量重估**: ~30-50 LOC + 跑 2086 pytest 验回归. 比之前估的 2-3 day 缩到 1-2 Claude hour. 但仍需新 session 做 (master_model.py 改动面 + 全 test 验证).
 
+## Phase 2 caveat: 现有 build path 性能未验证
+
+`probe_existing_pose_bool_path.py` 实测 — master_model.py 现有 exploratory mode + ghost_rect 配置 master.build() **> 4 min 没出**. 推测瓶颈在 `_populate_cell_occupancy_terms` (line 4363) 之类 — 对所有 group × cell × pose 算 covering, 70x70 grid × 19 group × 17K pose 量级.
+
+意义:
+- 不影响 B1 paradigm — Phase 0 prototype 22s build + 53s solve 是真的
+- Phase 2 真生产路径 = 写 `PoseBoolExactMasterDelegate` 跟 `CoordinateExactMasterDelegate` 平行, 模仿 Phase 0 prototype build 模式
+- 不要直接复用 master_model.py 现有 build path (那是为 exploratory 设计未优化)
+
+Phase 2 修正路径估时: 1-2 Claude day (写新 delegate + 集成 + 全 test).
+
+
 ## End-to-end trial (Phase 1 incremental, trial 7/8)
 
 `poc_pose_bool_end_to_end.py` 扩展 prototype 加 binding + routing 调用. 跑 27×15 anchor (22,28):
