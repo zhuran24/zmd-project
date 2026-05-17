@@ -435,9 +435,24 @@ solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate gho
 
 **Verdict**: ✅ **Phase 0 GO**. pose-bool form + power_coverage 一次性 master solve 在 < 60s 收敛.
 
-**Next**: Phase 1-5 生产实现 (替换 coordinate-based master / 适配 binding/routing subproblem / extract_solution / cut replay / regression test). 估时 1-2 周.
+### B1 Phase 2 production land (2026-05-17, commit `31fb3ea`)
 
-**链**: [[project_b1_pose_bool_master_rewrite_plan]]
+加 `PoseBoolExactMasterDelegate` (`src/models/pose_bool_exact_master.py`, ~280 LOC) 跟 `CoordinateExactMasterDelegate` 平行. env flag `EXACT_USE_POSE_BOOL_MASTER=1` 切换. 默认 off 保持现 coordinate path 不变.
+
+**Phase 5 production trial** (env on, `phase5_production_trial.py`):
+- master init: 3.9s
+- master.build(): 23.7s
+- master.solve(): **53.3s OPTIMAL** (跟 Phase 0 prototype 53s 一致)
+- extract_solution: 296 instances
+- PortBindingModel: **FEASIBLE 0.1s**
+
+**Pytest 全过 2207 passed + 60 skipped** (env off 默认 path 完全不破).
+
+**Verdict**: ✅ **B1 Phase 0/1/2 全 GO**. 项目从 30 min UNKNOWN 解锁到 53s OPTIMAL — 跨数量级. 真生产 master replacement 端到端 verified.
+
+**剩余 Phase 3** (longer-term, 不在当前 session): outer_search 适配 (现 outer 走 build_exact_core/from_exact_core proto-sharing 机制, pose-bool delegate 走 direct instantiation), routing inner-loop 集成. 这些是 LBBD 流程整合工作, 不影响 paradigm 验证.
+
+**链**: [[project_b1_pose_bool_master_rewrite_plan]], [[project_b1_phase0_go]], [[project_b1_phase1_findings]]
 
 ---
 
@@ -471,7 +486,7 @@ solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate gho
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
-**Phase 0 GO 待生产实现**: **B1 (pose-bool master rewrite)** — Phase 0 prototype 5 anchor 全 fast verdict, 49-53s OPTIMAL. 生产路径 1-2 周.
+**Phase 0/1/2 全 GO + production land**: **B1 (pose-bool master rewrite)** — Phase 0 prototype 5 anchor 全 fast verdict, Phase 1 end-to-end master+binding PASS, **Phase 2 production land (commit `31fb3ea`)**: PoseBoolExactMasterDelegate 跟 coordinate delegate 平行, env flag `EXACT_USE_POSE_BOOL_MASTER=1` 切换. Phase 5 production trial 53.3s OPTIMAL + binding FEASIBLE. Pytest 2207 全 pass.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
