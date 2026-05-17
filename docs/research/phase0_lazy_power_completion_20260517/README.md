@@ -62,6 +62,46 @@ GPT v11 计划书 Phase 3 "deletion-based core minimization" 设计的初衷正�
 
 实测 10 iter 0 进展, 完全 match **UNKNOWN_POWER_CUT_STALL** abort 条件.
 
+## Phase 3 加跑: deletion-based core minimizer (tight cut)
+
+GPT v11 Plan B Option A 实施 (`scripts/phase3_core_minimizer.py`, ~130 LOC).
+
+### Minimizer 算法
+- Linear deletion: 删 instance, oracle 验 trial INFEASIBLE → 接受删
+- Deletion order v2: powered-first (实测 v1 boundary_port 先删浪费 oracle call, 因为 non-powered 删后 layout 仍 INFEASIBLE - 不影响 power coverage)
+- Budget: 300 oracle calls × ≤10s each, 总 ≤60s
+
+### Trial 4 数据 (powered-first, 6 iter)
+
+| iter | master (s) | completion | uncovered | conflict_set_size |
+|---|---|---|---|---|
+| 1 | 80.4 | INFEASIBLE | 134 | - (no cut) |
+| 2 | 83.0 | INFEASIBLE | 133 | **6** (minimized) |
+| 3 | 86.6 | INFEASIBLE | 125 | 6 |
+| 4 | 81.5 | INFEASIBLE | 133 | 6 |
+| 5 | 88.4 | INFEASIBLE | 133 | 6 |
+| 6 | 86.5 | INFEASIBLE | 123 | 6 |
+
+Minimizer 收效: cut size 220 → **6** (-97%), wall 5.3s 267 oracle calls. **但 master 加 6-instance cut 仍选 categorically uncoverable layout, 6 iter uncovered 134→123, 振荡不收敛**.
+
+### 根因 — instance-level cut 解决不了
+
+master 不带 coverage 时选 powered facility pose 完全自由, 6-instance cut 只能禁特定 (instance_id, pose_idx) 6-tuple. master 换其他 instance 或换 pose_idx 都可绕开. Tight cut 一次 prune 6 自由度, 但 master 自由度上百万级, 远不够.
+
+数学上, 真正需要禁的是 **几何位置上不可 cover 的 facility 摆位**, 跟 instance 身份无关. 现 Benders cut 在 instance × pose 维度做, 不在 几何位置 维度.
+
+GPT v11 计划书 explicit reject 了 "lazy 加 coverage row 到 master" 方向, 而 instance-level Benders cut 在 problem geometry 下 doesn't propagate enough information.
+
+### Verdict 触发 GPT v11 abort 条件
+
+> 阈值: 同一 candidate anchor 下: > 6 条 full-layout power infeasible cut: 立刻启用 bounded deletion core; > 6 条且没进展: abort lazy route for this candidate, status UNKNOWN_POWER_CUT_STALL
+
+实测命中: tight cut 6 iter 0 收敛 → **UNKNOWN_POWER_CUT_STALL → abort**.
+
+**L16 verdict: ❌ 死路**.
+
+---
+
 ## Verdict 选项
 
 按 GPT v11 Plan B 决策树:

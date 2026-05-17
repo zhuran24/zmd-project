@@ -391,13 +391,14 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 1. **Master 端方向对** — skip coverage 81s OPTIMAL vs production 30 min UNKNOWN, 跨数量级. 证实 coverage encoding 是真瓶颈, master 跳掉就快
 2. **Cut 端死** — loose nogood cut (禁全 220 powered pose) 太松, master 只需 swap 1 pose 绕开. 同 5 个 `crusher_blue_iron` 反复 uncovered, geometry blocking 持续 reappear
 
-**Verdict**: 🟡 **待定 (master 端 PASS, cut 端 NO-GO under loose cut)**.
+**Phase 3 加跑** (2026-05-17 同日, commit 待补): deletion-based core minimizer 实施 + tight cut trial. Cut size 220 → 6 (minimizer 5.3s 267 oracle calls), 但 6 iter uncovered 134→125→133→133→133→123, **振荡不收敛**. Master 不带 coverage 选 categorically uncoverable layout, 6-instance cut 自由度上百万级远不够. 命中 GPT v11 `UNKNOWN_POWER_CUT_STALL` abort 条件.
 
-跟 L12-L15 的 ❌ 不同: 前面是"GPT 方向错估", L16 master 端是 hard evidence positive — 真要 ❌ verdict 必须先验 GPT v11 提的 Phase 3 deletion-based core minimization (tight cut). Plan B 选项:
+**Verdict**: ❌ **死路 (master 端 PASS, cut 端 instance-level Benders cut 不 propagate 足够信息)**.
 
+Plan B 选项:
 | Option | 工作量 | Risk |
 |---|---|---|
-| A. Phase 3 deletion-based core (tight cut) | +2-3 Claude day | tight cut 也可能 combinatorial 爆炸 |
+| ~~A. Phase 3 deletion-based core (tight cut)~~ | ~~+2-3 day~~ | ~~实测 6 iter 仍不收敛 ❌~~ |
 | B. pose-bool master rewrite (Plan B1) | 1-2 周 | 完整 master + port_binding 后可能又 stuck |
 | C. 接受 verdict, paradigm 死 | 0 | 项目目标妥协 (release area=405 best-known 非 certified) |
 
@@ -431,7 +432,7 @@ dominance: B ⊆ G ⇒ G infeasible. PROJECT_LOCK 兼容, fail-closed 设计正�
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** 共 **13** 条死路 + **L16 🟡 待定** (Lazy Power Completion, master 端 PASS, cut 端待 Phase 3 deletion core 验)
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** / **L16** 共 **14** 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 

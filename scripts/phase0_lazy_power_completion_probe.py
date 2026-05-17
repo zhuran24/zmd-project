@@ -48,6 +48,9 @@ from src.models.master_model import (  # noqa: E402
 from src.models.power_placement_subproblem import (  # noqa: E402
     PowerPlacementSubproblem,
 )
+from scripts.phase3_core_minimizer import (  # noqa: E402
+    minimize_power_infeasible_core_linear_deletion,
+)
 from src.search.benders_loop import (  # noqa: E402
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
 )
@@ -142,6 +145,10 @@ def main() -> int:
     parser.add_argument("--completion-seconds", type=float, default=10.0)
     parser.add_argument("--max-cut-iterations", type=int, default=1,
                         help="如果 completion INFEASIBLE, 加 nogood cut 重 solve master, 最多 N iter")
+    parser.add_argument("--use-core-minimizer", action="store_true",
+                        help="Phase 3: cut iteration 用 deletion-based core minimizer 缩 core 而不是 loose 220-pose cut")
+    parser.add_argument("--minimizer-max-oracle-calls", type=int, default=32)
+    parser.add_argument("--minimizer-max-seconds", type=float, default=120.0)
     parser.add_argument("--output-json", default=None)
     args = parser.parse_args()
 
@@ -341,13 +348,44 @@ def main() -> int:
         and iteration < args.max_cut_iterations
         and status_int in (cp_model.OPTIMAL, cp_model.FEASIBLE)
     ):
-        # 构造 conflict_set: 全 powered facility 的 (instance_id, pose_idx)
-        conflict_set: Dict[str, int] = {}
-        for iid, entry in non_power_solution.items():
-            tpl = str(entry.get("facility_type"))
-            powered_set = set(getattr(m, "_powered_templates", set()) or set())
-            if tpl in powered_set and tpl != "power_pole":
-                conflict_set[str(iid)] = int(entry["pose_idx"])
+        powered_set = set(getattr(m, "_powered_templates", set()) or set())
+
+        if args.use_core_minimizer:
+            # Phase 3: deletion-based core minimizer 缩 core
+            print(f"\n[cut iter {iteration+1}] core minimizer ...", flush=True)
+            t_min = time.perf_counter()
+            core = minimize_power_infeasible_core_linear_deletion(
+                full_solution=non_power_solution,
+                facility_pools=pools,
+                powered_templates=powered_set,
+                power_coverers_by_template_pose=(
+                    getattr(m, "_power_coverers_by_template_pose", {}) or {}
+                ),
+                ghost_cells=ghost_cells,
+                max_oracle_calls=args.minimizer_max_oracle_calls,
+                max_seconds=args.minimizer_max_seconds,
+                oracle_time_limit_s=args.completion_seconds,
+                verbose=True,
+            )
+            min_seconds = time.perf_counter() - t_min
+            print(
+                f"[cut iter {iteration+1}] minimizer done {min_seconds:.1f}s, "
+                f"core size {core.full_layout_size}→{len(core.instance_ids)}, "
+                f"oracle_calls={core.oracle_calls}, abort={core.abort_reason}"
+            )
+            # core 包含 powered + non-powered, conflict_set 只取 instance_id → pose_idx
+            conflict_set: Dict[str, int] = {
+                iid: int(non_power_solution[iid]["pose_idx"])
+                for iid in core.instance_ids
+                if iid in non_power_solution
+            }
+        else:
+            # Loose cut: 禁全 powered facility (Phase 0 baseline behavior)
+            conflict_set = {}
+            for iid, entry in non_power_solution.items():
+                tpl = str(entry.get("facility_type"))
+                if tpl in powered_set and tpl != "power_pole":
+                    conflict_set[str(iid)] = int(entry["pose_idx"])
 
         print(f"\n[cut iter {iteration+1}] add nogood, |conflict_set|={len(conflict_set)} ...", flush=True)
         t_cut = time.perf_counter()
