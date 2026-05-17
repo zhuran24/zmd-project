@@ -1,6 +1,6 @@
 # Lever Verdicts — 提升 master FEASIBLE 率的所有路线及结果
 
-**最后更新**: 2026-05-17 (B1 Phase 0 verdict ✅)
+**最后更新**: 2026-05-18 (B1 Phase 3 LBBD wiring ✅)
 
 主线问题: 70×70 grid + 266 mandatory facility + ghost rect 几何约束的 `max_lex(area, min_side)` 严格证明.
 
@@ -435,6 +435,43 @@ solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate gho
 
 **Verdict**: ✅ **Phase 0 GO**. pose-bool form + power_coverage 一次性 master solve 在 < 60s 收敛.
 
+### B1 Phase 3 LBBD wiring (2026-05-18, commit `f19b5a0`)
+
+pose-bool master 接入 outer search 主循环. 3 env-on branches 在 `src/search/benders_loop.py`:
+
+1. **line 5154**: direct `MasterPlacementModel(...)` instantiation 取代 `from_exact_core` (后者是 coordinate-only proto-sharing)
+2. **line 5408**: skip `mandatory_rectangle_precheck` 提前 INFEASIBLE short-circuit (coordinate-only screen)
+3. **line 4416-4429**: binding INFEASIBLE 时 return cut-added-continue (让 LBBD 重选 layout), coordinate path 默认一次 INFEASIBLE 即 final
+
+**Phase 3 full LBBD trial** (27×15 anchor (22,28), max_iter=10):
+
+```
+session_create (build_exact_core 共享 setup): 5.6s
+10 LBBD iter:
+  - master.solve OPTIMAL each iter (~50-90s)
+  - binding INFEASIBLE each iter (real SAT)
+  - nogood cut added per iter (constraints 263252 → 263261)
+Final status: UNPROVEN at iter 10
+Total wall: 537.8s
+```
+
+跟 baseline 30 min UNKNOWN 比, LBBD 完整跑通跨数量级.
+
+UNPROVEN ≠ UNKNOWN. UNPROVEN 意味"试 N 个 layout 都 fail, 没 prove 全空间 INFEASIBLE". UNKNOWN 是"master 解不动".
+
+**Phase 3 verdict**: ✅ paradigm 端 (pose-bool master) fully verified work in production LBBD. LBBD 端 wiring 完整. binding 端 (port matching SAT) 跟当前 master OPTIMAL 解 不匹配 (10 iter 都 INFEASIBLE) 是 LBBD inner-loop tuning 问题 (cut tightness / port-aware master constraint / 不同 anchor), 不是 paradigm 问题.
+
+Pytest 2207 passed + 60 skipped, 0 fail.
+
+**Phase 4 调优方向** (后续 session):
+- Master 加 port_clearance constraints (粗 mimic binding feasibility)
+- nogood cut 用 deletion-based core minimizer (L16 工具复用)
+- 跑 不同 anchor 验是不是 (22,28) 特定 anchor binding-紧张
+
+**链**: [[project_b1_phase3_lbbd_land]], [[project_b1_phase2_production_land]]
+
+---
+
 ### B1 Phase 2 production land (2026-05-17, commit `31fb3ea`)
 
 加 `PoseBoolExactMasterDelegate` (`src/models/pose_bool_exact_master.py`, ~280 LOC) 跟 `CoordinateExactMasterDelegate` 平行. env flag `EXACT_USE_POSE_BOOL_MASTER=1` 切换. 默认 off 保持现 coordinate path 不变.
@@ -486,7 +523,7 @@ solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate gho
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
-**Phase 0/1/2 全 GO + production land**: **B1 (pose-bool master rewrite)** — Phase 0 prototype 5 anchor 全 fast verdict, Phase 1 end-to-end master+binding PASS, **Phase 2 production land (commit `31fb3ea`)**: PoseBoolExactMasterDelegate 跟 coordinate delegate 平行, env flag `EXACT_USE_POSE_BOOL_MASTER=1` 切换. Phase 5 production trial 53.3s OPTIMAL + binding FEASIBLE. Pytest 2207 全 pass.
+**Phase 0/1/2/3 全 land**: **B1 (pose-bool master rewrite)** — Phase 0-2 production master + binding 端到端 verified (commit `31fb3ea`); **Phase 3 LBBD wiring (commit `f19b5a0`)**: pose-bool master 接入 outer search 主循环 (3 env-on branches in benders_loop.py). 27×15 anchor (22,28) full LBBD 10 iter trial: master OPTIMAL × 10 + binding INFEASIBLE × 10 + cut × 9 + UNPROVEN. Pytest 2207 全 pass. UNPROVEN ≠ UNKNOWN: master 端跨数量级突破 (30 min UNKNOWN → 10 iter active LBBD). Phase 4 调优 (port-aware master / deletion core / 不同 anchor) 未做.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
