@@ -45,12 +45,14 @@ def main() -> int:
     print(f"[load] {time.perf_counter()-t_load:.1f}s")
 
     t0 = time.perf_counter()
-    print("[init] MasterPlacementModel exploratory ...", flush=True)
+    print("[init] MasterPlacementModel exploratory + single anchor filter ...", flush=True)
+    anchor_filter = {(22, 28)}  # 同 Phase 0 prototype 27×15 interior anchor
     m = MasterPlacementModel(
         instances, pools, rules,
         solve_mode="exploratory",
         ghost_rect=(args.ghost_w, args.ghost_h),
         generic_io_requirements=generic,
+        ghost_anchor_filter=anchor_filter,
     )
     print(f"[init] {time.perf_counter()-t0:.1f}s")
     print(f"  exact_mode={m.exact_mode}, coordinate_delegate={'set' if m._coordinate_delegate else 'None'}")

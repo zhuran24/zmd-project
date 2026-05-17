@@ -73,6 +73,7 @@ from src.models.exact_coordinate_master import (
     normalize_exact_coordinate_master_search_profile,
     resolve_ghost_signature_bucket_residual_overlay_instrumentation_enabled,
 )
+from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
 from src.preprocess.operation_profiles import get_operation_port_profile
 
 ModeToken = Tuple[str, str]
@@ -2399,9 +2400,18 @@ class MasterPlacementModel:
             model_shell_phase_started,
         )
         model_shell_phase_started = time.perf_counter()
-        self._coordinate_delegate: Optional[CoordinateExactMasterDelegate] = (
-            CoordinateExactMasterDelegate(self) if self.exact_mode else None
-        )
+        # B1: env-gated pose-bool exact delegate. 默认 off 保持现 coordinate path.
+        # `EXACT_USE_POSE_BOOL_MASTER=1` 时 exact_mode 走 pose-bool delegate.
+        # Phase 0 prototype 27×15 anchor 53s OPTIMAL vs coordinate 30 min UNKNOWN.
+        _use_pose_bool = os.environ.get(
+            "EXACT_USE_POSE_BOOL_MASTER", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        self._coordinate_delegate: Optional[Any] = None
+        if self.exact_mode:
+            if _use_pose_bool:
+                self._coordinate_delegate = PoseBoolExactMasterDelegate(self)
+            else:
+                self._coordinate_delegate = CoordinateExactMasterDelegate(self)
         _record_model_shell_subphase(
             "constructor_finalize",
             model_shell_phase_started,
