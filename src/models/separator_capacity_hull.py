@@ -239,18 +239,16 @@ def add_separator_capacity_hull_constraints(
                     bucket["sink_R"].append(meta.var)
 
     def or_aux(lits, name) -> Any | None:
-        """Build aux BoolVar = OR(lits). Returns aux or None when no lits (constant 0)."""
+        """Build aux BoolVar = OR(lits). Use AddMaxEquality (CP-SAT internal
+        efficient encoding) instead of N AddImplication + 1 large AddBoolOr.
+        Returns aux or None when no lits (constant 0)."""
         if not lits:
             return None
         if len(lits) > max_dense_side_lits:
             stats["skipped_dense_side_expr"] += 1
             return None
         aux = model.NewBoolVar(name)
-        # forward: any lit → aux
-        for lit in lits:
-            model.AddImplication(lit, aux)
-        # backward: aux → OR(lits)
-        model.AddBoolOr(lits + [aux.Not()])
+        model.AddMaxEquality(aux, lits)
         stats["side_bool_vars"] += 1
         return aux
 
