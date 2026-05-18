@@ -168,6 +168,21 @@ Phase 2 修正路径估时: 1-2 Claude day (写新 delegate + 集成 + 全 test)
 
 Phase 2+ 工作: 把 pose-bool master 接入 LBBD 主循环, 让现有 binding nogood loop + routing 自然 handle.
 
+## Phase 6.1.5 PoC: skip storage box port a priori clearance ❌
+
+`phase6_poc_skip_storage_box.py` 验证假设 "wireless_sink (protocol_storage_box) port 是 Phase 5b a priori clearance over-restriction 唯一来源". 添加 env flag `EXACT_B1_PORT_CLEARANCE_SKIP_STORAGE_BOX=1` 让 protocol_storage_box port 不进 a priori clearance, 跑两个 case:
+
+| candidate | anchor | verdict | time |
+|---|---|---|---|
+| 27×15 | (22,28) | INFEASIBLE | 51.5s |
+| 15×10 | (28,30) | INFEASIBLE | 56.5s |
+
+跟 Phase 5b 47-56s 几乎一样 — **假设否定**.
+
+**真因** (`src/models/port_binding.py:143-178`): `_enumerate_side_binding_patterns` 在 `total_slots < ordered_cell_count` 时用 `combinations(remaining_indices, count)` 选子集 active. 任何 facility (fixed op / boundary_io / protocol_core / wireless_sink) 的 pose 都可能有 inactive port_cells. 所以 a priori clearance 对所有 op_type over-restrictive, 不止 storage box.
+
+PoC env flag revert. Phase 6 scope 没缩 — port_active BoolVar 给所有 facility port (~200K vars, ~500-800 LOC). 见 [[b1-phase6-audit-finding]].
+
 ## 链
 
 - [[project_b1_pose_bool_master_rewrite_plan]] — B1 完整 plan
