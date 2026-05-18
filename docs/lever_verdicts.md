@@ -1,6 +1,6 @@
 # Lever Verdicts — 提升 master FEASIBLE 率的所有路线及结果
 
-**最后更新**: 2026-05-18 (B1 Phase 3 LBBD wiring ✅)
+**最后更新**: 2026-05-18 (B1 Phase 6 path-1 实测 ❌ — master 持有 port-selection 架构层不可解)
 
 主线问题: 70×70 grid + 266 mandatory facility + ghost rect 几何约束的 `max_lex(area, min_side)` 严格证明.
 
@@ -564,11 +564,19 @@ Pytest 2207 passed + 60 skipped, 0 fail.
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** / **L16** 共 **14** 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** / **L16** / **B1 Phase 6 path-1** 共 **15** 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
-**Phase 0/1/2/3/4/5 land**: **B1 (pose-bool master rewrite)** — Phase 0-3 paradigm + wiring verified, Phase 4 修 inferred counts (binding 通), **Phase 5 (commit `47b6230`)** 试 3 种 cut 形式 (cell-level reactive / a priori mutual / a priori channeled-OR implication) 均 over-restrictive. Root cause 锁定: a priori port_clearance 在 master 端 over-approximation, master 不知 binding 选哪些 port active. **Phase 6 path-1 (用户选): 改 master/binding 责任边界, port-selection 决策提到 master**. 估 1 周 (~500 LOC). 端到端 certified verdict 没拿到. Pytest 2207 全 pass. 12 commit 累计.
+**Phase 0/1/2/3/4/5 land + Phase 6 path-1 verdict 死**: **B1 (pose-bool master rewrite)** — Phase 0-3 paradigm + wiring verified, Phase 4 修 inferred counts (binding 通), Phase 5 (commit `47b6230`) 试 3 种 cut 形式 (cell-level reactive / a priori mutual / a priori channeled-OR implication) 均 over-restrictive. Root cause 锁定: a priori port_clearance 在 master 端 over-approximation, master 不知 binding 选哪些 port active.
+
+**Phase 6 path-1 (用户 /goal "走1"): 改 master/binding 责任边界, port-selection 决策提到 master — 实测 ❌ dead**:
+- v1 per-pose port_active 2.3M vars UNPROVEN 134s
+- v2 grid-fc + anchor offset bug INFEASIBLE 52.5s
+- v3 修 anchor sound 最小 form 8w 300s UNKNOWN 346s
+- v3 1w 600s UNKNOWN 645s
+
+数学 sound 但 master.solve **架构层不可解**, solver knob (workers/time) 不救. 加 333K vars / 867K constraints 让 search space 不收敛. **B1 paradigm 全 verdict, certified FEASIBLE/INFEASIBLE 未拿到**. Pytest 2207 全 pass. 15 条 lever 全 verdict.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**

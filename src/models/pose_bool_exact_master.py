@@ -23,6 +23,8 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
 
+from src.preprocess.operation_profiles import get_operation_port_profile
+
 
 _DIR_DELTA: Dict[str, Tuple[int, int]] = {
     "N": (0, 1),
@@ -68,6 +70,12 @@ class PoseBoolExactMasterDelegate:
             Tuple[int, int, str], List[cp_model.IntVar]
         ] = {}
         self._port_lookup_built = False
+        # Phase 6.2 v2: grid-level front_clear BoolVars 替代 per-port port_active.
+        # 数量 ~19K (70x70x4 dir) vs ~2.3M per-port → 100x 小.
+        # 语义: front_clear[(cell, dir)] = 1 iff (cell + dir_delta) 是 grid 内
+        # 且没 facility 占. 不强制 = 1, 让 pose-level constraint enforce 至少
+        # demand 个 cleared.
+        self._front_clear: Dict[Tuple[int, int, str], cp_model.IntVar] = {}
 
     def _forbidden_cells(self) -> Set[Tuple[int, int]]:
         if not self.owner.ghost_rect:
@@ -235,6 +243,153 @@ class PoseBoolExactMasterDelegate:
                 else:
                     self.model.Add(v == 0)
 
+        # B1 Phase 6.2 v2: grid-level front_clear + pose-level cleared-count
+        # 约束替代 Phase 5b "所有 port front 必空" over-approximation.
+        # 形式: front_clear[(c, d)] = 1 iff cell at (c + dir_delta) 在 grid 且
+        # 没 facility 占; pose 选则 pose 的 port_cells 至少 demand 个 front 是
+        # clear (binding 在 cleared 子集选 active port — sound).
+        # env-gated EXACT_USE_PORT_ACTIVE (legacy 名称, semantic 已变).
+        port_active_enabled = os.environ.get(
+            "EXACT_USE_PORT_ACTIVE", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        front_clear_count = 0
+        pose_clearance_count = 0
+        if port_active_enabled:
+            # NB: pose data 中 occupied_cells / input_port_cells / output_port_cells
+            # 全是 **global grid 坐标** (anchor=occ_min, 不是 local origin).
+            # 所以下面 lookup 不再加 anchor offset (避开 _build_port_lookup_cache
+            # 历史 phantom-shift bug; 那 cache 路径 Phase 5b 走但 self-consistent
+            # 不暴露).
+
+            # Step 1: 先 collect 所有 (port_cell, dir) 跟 occupied cells.
+            # poses_by_cell_global: cell → list of pose_var that occupies cell
+            poses_by_cell_global: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
+            poses_by_port_cell_dir_global: Dict[
+                Tuple[int, int, str], List[cp_model.IntVar]
+            ] = {}
+            all_vars = list(self.x_vars.items()) + list(self.ro_vars.items()) + [
+                (("pole", pi), v) for pi, v in self.pole_vars.items()
+            ]
+            for (key_, pose_idx), var in all_vars:
+                if isinstance(key_, str) and key_ == "pole":
+                    tpl_lookup = "power_pole"
+                elif key_ in self._mandatory_template_by_group:
+                    tpl_lookup = self._mandatory_template_by_group[key_]
+                else:
+                    tpl_lookup = str(key_)
+                pool = self.owner.facility_pools.get(tpl_lookup, [])
+                if int(pose_idx) >= len(pool):
+                    continue
+                pose = pool[int(pose_idx)]
+                for cell in pose.get("occupied_cells", []) or []:
+                    cell_xy = (int(cell[0]), int(cell[1]))
+                    poses_by_cell_global.setdefault(cell_xy, []).append(var)
+                for port_list_key in ("input_port_cells", "output_port_cells"):
+                    for port in pose.get(port_list_key, []) or []:
+                        key_tup = (
+                            int(port.get("x", 0)),
+                            int(port.get("y", 0)),
+                            str(port.get("dir", "")),
+                        )
+                        poses_by_port_cell_dir_global.setdefault(key_tup, []).append(var)
+
+            # Step 2: build front_clear vars per (port_cell, dir).
+            for (px, py, direction) in poses_by_port_cell_dir_global.keys():
+                dx, dy = _DIR_DELTA.get(str(direction), (0, 0))
+                fc_key = (int(px), int(py), str(direction))
+                if fc_key in self._front_clear:
+                    continue
+                fx, fy = int(px) + dx, int(py) + dy
+                if not (0 <= fx < self.grid_w and 0 <= fy < self.grid_h):
+                    # front out of grid: 不可 clear, 直接 set var=0 (ban this port)
+                    fc = self.model.NewBoolVar(f"fc__{px}_{py}_{direction}")
+                    self.model.Add(fc == 0)
+                    self._front_clear[fc_key] = fc
+                    front_clear_count += 1
+                    continue
+                front_poses = poses_by_cell_global.get((fx, fy), [])
+                fc = self.model.NewBoolVar(f"fc__{px}_{py}_{direction}")
+                self._front_clear[fc_key] = fc
+                front_clear_count += 1
+                # 联动: front_clear + sum(poses 占 front) <= 1
+                # (cell exclusivity 保 sum<=1; front_clear=1 → sum=0 → 无 facility)
+                if front_poses:
+                    self.model.Add(fc + sum(front_poses) <= 1)
+
+            # Step 3: pose-level cleared-count 约束
+            # mandatory: sum(front_clear at port_cells) >= demand × x_var
+            for (gid_key, pose_idx), x_var in self.x_vars.items():
+                op = self._mandatory_operation_by_group.get(gid_key, "")
+                tpl_m = self._mandatory_template_by_group.get(gid_key, "")
+                try:
+                    profile = get_operation_port_profile(op)
+                except KeyError:
+                    continue
+                in_demand = sum(profile.input_slots.values()) + int(profile.generic_input_slots)
+                out_demand = sum(profile.output_slots.values()) + int(profile.generic_output_slots)
+                pose = self.owner.facility_pools[tpl_m][int(pose_idx)]
+                if in_demand > 0:
+                    input_cells = pose.get("input_port_cells", []) or []
+                    fc_terms_in: List[cp_model.IntVar] = []
+                    for port in input_cells:
+                        key_tup = (int(port.get("x", 0)),
+                                   int(port.get("y", 0)),
+                                   str(port.get("dir", "")))
+                        fc = self._front_clear.get(key_tup)
+                        if fc is not None:
+                            fc_terms_in.append(fc)
+                    if fc_terms_in:
+                        self.model.Add(sum(fc_terms_in) >= in_demand * x_var)
+                        pose_clearance_count += 1
+                if out_demand > 0:
+                    output_cells = pose.get("output_port_cells", []) or []
+                    fc_terms_out: List[cp_model.IntVar] = []
+                    for port in output_cells:
+                        key_tup = (int(port.get("x", 0)),
+                                   int(port.get("y", 0)),
+                                   str(port.get("dir", "")))
+                        fc = self._front_clear.get(key_tup)
+                        if fc is not None:
+                            fc_terms_out.append(fc)
+                    if fc_terms_out:
+                        self.model.Add(sum(fc_terms_out) >= out_demand * x_var)
+                        pose_clearance_count += 1
+
+            # Step 4: ro storage box (wireless_sink) cross-pose total cleared >= demand.
+            gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
+            req_in = dict(gen_io.get("required_generic_inputs", {}) or {})
+            storage_total_in = sum(int(v) for v in req_in.values())
+            if storage_total_in > 0:
+                effective_box_terms: List[cp_model.IntVar] = []
+                for (tpl_key, pose_idx), ro_var in self.ro_vars.items():
+                    if str(tpl_key) != "protocol_storage_box":
+                        continue
+                    pose = self.owner.facility_pools[str(tpl_key)][int(pose_idx)]
+                    input_cells = pose.get("input_port_cells", []) or []
+                    fc_terms_box: List[cp_model.IntVar] = []
+                    for port in input_cells:
+                        key_tup = (int(port.get("x", 0)),
+                                   int(port.get("y", 0)),
+                                   str(port.get("dir", "")))
+                        fc = self._front_clear.get(key_tup)
+                        if fc is not None:
+                            fc_terms_box.append(fc)
+                    if not fc_terms_box:
+                        continue
+                    max_count = len(fc_terms_box)
+                    cleared_box = self.model.NewIntVar(
+                        0, max_count, f"cb__{tpl_key}__{int(pose_idx)}"
+                    )
+                    self.model.Add(cleared_box == sum(fc_terms_box))
+                    effective = self.model.NewIntVar(
+                        0, max_count, f"eb__{tpl_key}__{int(pose_idx)}"
+                    )
+                    self.model.Add(effective <= cleared_box)
+                    self.model.Add(effective <= ro_var * max_count)
+                    effective_box_terms.append(effective)
+                if effective_box_terms:
+                    self.model.Add(sum(effective_box_terms) >= storage_total_in)
+
         # B1 Phase 5b: add cell-level port_clearance hard constraint.
         # 跟 routing precheck 等价 (sound, 不是 over-approximation): port 是
         # facility I/O 接口, belt 从 port_cell + dir 出. 如果 front_cell 被任何
@@ -288,6 +443,9 @@ class PoseBoolExactMasterDelegate:
             "powered_mandatory_groups": len(powered_group_keys),
             "powered_ro_templates": len(powered_ro_templates),
             "port_clearance_constraints": port_clearance_added,
+            "front_clear_vars": front_clear_count,
+            "pose_clearance_constraints": pose_clearance_count,
+            "port_active_enabled": port_active_enabled,
         }
 
     def extract_solution(self) -> Dict[str, Any]:

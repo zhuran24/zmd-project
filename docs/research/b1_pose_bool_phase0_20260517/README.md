@@ -168,6 +168,23 @@ Phase 2 修正路径估时: 1-2 Claude day (写新 delegate + 集成 + 全 test)
 
 Phase 2+ 工作: 把 pose-bool master 接入 LBBD 主循环, 让现有 binding nogood loop + routing 自然 handle.
 
+## Phase 6.2: master 持有 port-selection (path-1) ❌ dead
+
+用户 /goal "开始路线1, 改责任边界". 实测 4 个 form, 全 verdict 死.
+
+| 配置 | vars | constraints | time | verdict |
+|---|---|---|---|---|
+| v1 per-pose port_active 2.3M vars | 2,588K | 3,106K | 134s | UNPROVEN |
+| v2 grid-fc + anchor offset bug | (phantom 超 grid) | | 52.5s | INFEASIBLE |
+| v3 修 anchor sound 最小 form 8w 300s | 333K | 867K | 346s | UNKNOWN |
+| v3 1w 600s | 333K | 867K | 645s | UNKNOWN |
+
+**结论**: master 持有 port-selection 数学 sound 但 master.solve **架构层不可解** (在合理时间). 不论 1 worker 600s 或 8 worker 300s, 均 UNKNOWN. 不是 form 细节或 solver knob 问题, 是 model 量级 (333K vars × constraints 联动让 search space 不收敛).
+
+**副 finding**: `_build_port_lookup_cache` 加 anchor offset 是 bug — pose 数据 occupied_cells / port_cells 是 global 坐标, 加 offset 让 phantom 超 grid. Phase 5 a priori clearance 用 cache self-consistent 不暴露. Phase 6.2 v3 自己 reimplement 不用 cache (直接 global 坐标).
+
+详细数据在 `phase6_2_form_compare.md`. Scripts: `phase6_2_count_vars.py` / `phase6_2_smoke_port_active.py` / `phase6_2_smoke_workers1.py`. 见 [[b1-phase6-path1-dead]].
+
 ## Phase 6.1.5 PoC: skip storage box port a priori clearance ❌
 
 `phase6_poc_skip_storage_box.py` 验证假设 "wireless_sink (protocol_storage_box) port 是 Phase 5b a priori clearance over-restriction 唯一来源". 添加 env flag `EXACT_B1_PORT_CLEARANCE_SKIP_STORAGE_BOX=1` 让 protocol_storage_box port 不进 a priori clearance, 跑两个 case:
