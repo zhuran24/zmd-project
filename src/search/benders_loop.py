@@ -3994,6 +3994,52 @@ class LBBDController:
             flow_status, _bottlenecks = self._run_flow_diagnostic(solution)
             diagnostic_flow_status = flow_status
 
+            # SAC-Hull Phase 2: dynamic separator separation. master 给 layout 后,
+            # oracle 找 violation, 加 layout-specific separator cut, continue iter.
+            # 不进 binding/routing — cut 切到 master 端.
+            if os.environ.get("EXACT_B1_SEPARATOR_HULL_DYNAMIC", "").strip().lower() in {"1", "true", "yes", "on"}:
+                from src.search.separator_capacity_separator import analyze_layout_for_separator_violations
+                try:
+                    max_per_iter = int(os.environ.get("EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER", "4"))
+                except ValueError:
+                    max_per_iter = 4
+                # 推 ghost anchor
+                ghost_anchor = None
+                ghost_size = None
+                if hasattr(self.master, "ghost_rect") and self.master.ghost_rect is not None:
+                    ghost_size = (int(self.master.ghost_rect[0]), int(self.master.ghost_rect[1]))
+                    forbid = getattr(self.master, "_forbidden_cells_cached", None)
+                    if forbid is None:
+                        # fallback: 推 from solution gap
+                        pass
+                violations = analyze_layout_for_separator_violations(
+                    placement_solution=solution,
+                    facility_pools=self.master.facility_pools,
+                    instances_by_id={str(i["instance_id"]): dict(i) for i in self.master.source_instances},
+                    grid_w=int(self.master.grid_w),
+                    grid_h=int(self.master.grid_h),
+                    ghost_anchor=ghost_anchor,
+                    ghost_size=ghost_size,
+                    include_axis=True,
+                    include_ghost_moat=False,
+                )
+                delegate = getattr(self.master, "_coordinate_delegate", None)
+                if violations and delegate is not None and hasattr(delegate, "add_separator_capacity_cut"):
+                    cuts_added = 0
+                    for v in violations[:max_per_iter]:
+                        if delegate.add_separator_capacity_cut(v):
+                            cuts_added += 1
+                    print(
+                        f"[sac-dynamic] iter {iteration}: {len(violations)} violations, "
+                        f"top slack={violations[0].slack}, cuts_added={cuts_added}",
+                        flush=True,
+                    )
+                    if cuts_added > 0:
+                        self._fine_grained_exact_safe_cut_count += cuts_added
+                        continue
+                else:
+                    print(f"[sac-dynamic] iter {iteration}: 0 violations", flush=True)
+
             self._emit_heartbeat(
                 stage="binding_build",
                 event="start",

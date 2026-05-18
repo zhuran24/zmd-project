@@ -408,13 +408,27 @@ class PoseBoolExactMasterDelegate:
                 self.model.Add(any_port + sum(front_poses) <= 1)
                 port_clearance_added += 1
 
+        # SAC-Hull: cache pose metadata + cell_poses for both static (Phase 1)
+        # and dynamic (Phase 2) separator hull constraint generation.
+        # Always built (cheap), only used when env on.
+        from src.models.separator_capacity_hull import PoseVarMetadata
+        self._sac_pose_metadata: List[Any] = []
+        for (gid, pose_idx), var in self.x_vars.items():
+            op = self._mandatory_operation_by_group.get(gid, "")
+            tpl = self._mandatory_template_by_group.get(gid, "")
+            pool = self.owner.facility_pools.get(tpl, [])
+            if 0 <= pose_idx < len(pool):
+                self._sac_pose_metadata.append(PoseVarMetadata(var=var, operation_type=op, pose=pool[pose_idx]))
+        self._sac_cell_poses: Dict[Tuple[int, int], List[Any]] = {
+            k: list(v) for k, v in cell_poses.items()
+        }
+
         # SAC-Hull Phase 1: env-gated static separator capacity hull constraints
         sac_hull_stats: Dict[str, Any] = {"enabled": False}
         if os.environ.get("EXACT_B1_SEPARATOR_HULL", "").strip().lower() in {"1", "true", "yes", "on"}:
             from src.models.separator_capacity_hull import (
                 build_static_separator_library,
                 add_separator_capacity_hull_constraints,
-                PoseVarMetadata,
             )
             try:
                 limit = int(os.environ.get("EXACT_B1_SEPARATOR_HULL_STATIC_LIMIT", "64"))
@@ -436,28 +450,15 @@ class PoseBoolExactMasterDelegate:
                 include_axis=include_axis, include_ghost_moat=include_moat,
                 limit=limit,
             )
-            # collect pose metadata: var + operation_type + pose
-            pose_metadata = []
-            for (gid, pose_idx), var in self.x_vars.items():
-                op = self._mandatory_operation_by_group.get(gid, "")
-                tpl = self._mandatory_template_by_group.get(gid, "")
-                pool = self.owner.facility_pools.get(tpl, [])
-                if 0 <= pose_idx < len(pool):
-                    pose_metadata.append(PoseVarMetadata(var=var, operation_type=op, pose=pool[pose_idx]))
-            for (tpl, pose_idx), var in self.ro_vars.items():
-                # ro_vars 是 protocol_storage_box etc. operation_type='wireless_sink' 估 — 但 ro
-                # 端口当 generic IO 由 binding 处理. SAC-Hull 只看 input/output_port_cells 几何 →
-                # operation_type unused for fixed input/output commodity 列表. Skip.
-                pass  # ro 端 generic IO, 不计入 fixed forced-side
             sac_hull_stats = add_separator_capacity_hull_constraints(
                 model=self.model,
                 separators=seps,
-                pose_var_metadata=pose_metadata,
-                cell_poses=cell_poses,
+                pose_var_metadata=self._sac_pose_metadata,
+                cell_poses=self._sac_cell_poses,
                 grid_w=self.grid_w, grid_h=self.grid_h,
             )
             sac_hull_stats["enabled"] = True
-            sac_hull_stats["pose_metadata_count"] = len(pose_metadata)
+            sac_hull_stats["pose_metadata_count"] = len(self._sac_pose_metadata)
 
         self.owner.build_stats["master_representation"] = self.master_representation
         self.owner.build_stats["pose_bool_master"] = {
@@ -473,6 +474,25 @@ class PoseBoolExactMasterDelegate:
             "port_active_enabled": port_active_enabled,
             "sac_hull": sac_hull_stats,
         }
+
+    def add_separator_capacity_cut(self, violation: Any) -> bool:
+        """SAC-Hull Phase 2: dynamic separator capacity cut. Add a single
+        separator's capacity hull constraint based on a violation found by
+        analyze_layout_for_separator_violations()."""
+        from src.models.separator_capacity_hull import add_separator_capacity_hull_constraints
+        if not hasattr(self, "_sac_pose_metadata") or not hasattr(self, "_sac_cell_poses"):
+            return False
+        sep = getattr(violation, "separator", None)
+        if sep is None:
+            return False
+        stats = add_separator_capacity_hull_constraints(
+            model=self.model,
+            separators=[sep],
+            pose_var_metadata=self._sac_pose_metadata,
+            cell_poses=self._sac_cell_poses,
+            grid_w=self.grid_w, grid_h=self.grid_h,
+        )
+        return bool(stats.get("capacity_constraints", 0) > 0)
 
     def extract_solution(self) -> Dict[str, Any]:
         solver = self.owner._solver
