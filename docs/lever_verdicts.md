@@ -435,6 +435,35 @@ solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate gho
 
 **Verdict**: ✅ **Phase 0 GO**. pose-bool form + power_coverage 一次性 master solve 在 < 60s 收敛.
 
+### B1 Phase 4 LBBD inner-loop tuning (2026-05-18, commit `c64d15f`)
+
+修 root cause: `run_benders_for_ghost_rect` env on branch 没传 inferred `exact_required_pose_optional_counts` → master 不出 protocol_storage_box → binding 必 INFEASIBLE (某 commodity 没 sink). 修后 binding 通 (ro_vars=15980).
+
+但 **routing precheck `front_blocked` 系统性** ~500-610 ports each iter:
+- 多 anchor (6 interior × 3 iter) 全 front_blocked
+- 小 candidate (10×10 / 15×10 / 20×10 / 15×15) 全 front_blocked
+- 启用 warm_start hint: 同 pattern
+- max_iter=15 长 trial: cuts 累积 (placement_local_nogood), blocked_ports 519-611 浮动不收敛
+- bypass routing precheck (env `EXACT_B1_BYPASS_ROUTING_PRECHECK`): binding enumerate >42 min stuck
+
+**Root cause**: pose-bool master 不知 port direction. 它优化 cell exclusivity + power coverage, 但 port 在 pose 内的 cell-front 方向 master 不约束. 任何 OPTIMAL layout 都 ~500-600 ports front_blocked. LBBD `placement_local_nogood` 只 ban specific (instance, pose) tuple, 多 iter 累积仍找 alternative tuples 落同样 front_blocked geometry pattern.
+
+**PROJECT_LOCK 明禁 port_clearance hard constraint** (`exact_coordinate_master.py` line 4583, `master_model.py` line 4583, 显式 `if exact_mode: return`).
+
+**端到端 certified FEASIBLE 没拿到** — paradigm + wiring 完整 ✅, 但 cut convergence 是 Phase 5 工作.
+
+**Phase 5 候选** (后续 session):
+1. port-direction-aware cut family (cut "port direction × fwd cell occupancy pattern" 整类)
+2. deletion-based core minimizer for routing (复用 [[project_l16_lazy_power_completion_phase0]] 工具)
+3. routing-aware master hint (greedy 加 port direction consideration)
+4. 跑超长 trial (60+ iter)
+
+Pytest 2207 全 pass. 8 commit 累计 (12f5e64 → c64d15f).
+
+**链**: [[project_b1_phase4_routing_convergence]]
+
+---
+
 ### B1 Phase 3 LBBD wiring (2026-05-18, commit `f19b5a0`)
 
 pose-bool master 接入 outer search 主循环. 3 env-on branches 在 `src/search/benders_loop.py`:
@@ -523,7 +552,7 @@ Pytest 2207 passed + 60 skipped, 0 fail.
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
-**Phase 0/1/2/3 全 land**: **B1 (pose-bool master rewrite)** — Phase 0-2 production master + binding 端到端 verified (commit `31fb3ea`); **Phase 3 LBBD wiring (commit `f19b5a0`)**: pose-bool master 接入 outer search 主循环 (3 env-on branches in benders_loop.py). 27×15 anchor (22,28) full LBBD 10 iter trial: master OPTIMAL × 10 + binding INFEASIBLE × 10 + cut × 9 + UNPROVEN. Pytest 2207 全 pass. UNPROVEN ≠ UNKNOWN: master 端跨数量级突破 (30 min UNKNOWN → 10 iter active LBBD). Phase 4 调优 (port-aware master / deletion core / 不同 anchor) 未做.
+**Phase 0/1/2/3/4 land**: **B1 (pose-bool master rewrite)** — Phase 0-3 paradigm + wiring 完整 verified, **Phase 4 (commit `c64d15f`)** 修 inferred counts → binding 通; 但 routing precheck `front_blocked` 系统性 ~500-610 ports each iter, 15 iter cuts 累积不收敛. PROJECT_LOCK 禁 port_clearance hard constraint, Phase 5 (port-direction-aware cut / deletion-core / routing-aware hint) 未做. **端到端 certified FEASIBLE 没拿到**. Pytest 2207 全 pass. 8 commit 累计.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
