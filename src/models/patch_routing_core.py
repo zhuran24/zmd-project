@@ -66,7 +66,7 @@ class PatchSpec:
         for (x, y) in cell_set:
             for d, (dx, dy) in DIR_DELTA.items():
                 nx, ny = x + dx, y + dy
-                if (nx, ny) not in cell_set and 0 <= nx < GRID_W and 0 <= ny < GRID_H:
+                if (nx, ny) not in cell_set:
                     boundary.add((x, y))
                     break
         return PatchSpec(
@@ -507,10 +507,19 @@ class PatchRoutingCore:
             assumption_lits = assumption_by_instance.get(ps.instance_id, [])
 
             if (fx, fy) not in self._patch_active_cells_by_commodity.get(ps.commodity, set()):
+                # Front cell not in patch-local active set. Two cases:
+                # (a) front is outside the patch but inside full-grid active → boundary
+                #     relaxation absorbs the requirement (over-approx: route assumed to
+                #     leave the patch and complete outside).
+                # (b) front is truly blocked (occupied or out-of-bounds) → INFEASIBLE
+                #     for this owner.
+                front_in_full = (fx, fy) in self.full_grid_active_cells.get(ps.commodity, set())
+                if self.boundary_relaxation and front_in_full:
+                    unconditional_links += 1  # accept trivially via boundary
+                    continue
                 if assumption_lits:
-                    # owner's assumption ⇒ infeasible (front cell not active)
                     for v in assumption_lits:
-                        self.model.AddBoolOr([v.Not()])  # not(v) i.e. forbid this owner
+                        self.model.AddBoolOr([v.Not()])  # forbid this owner
                 else:
                     self.model.Add(0 == 1)
                 blocked_ports += 1
@@ -646,3 +655,266 @@ def solve_patch_routing_core(
     core.build()
     core.solve(time_limit=time_limit)
     return core.build_result()
+
+
+# ============================================================
+# Phase 2 — replay validation + QuickXplain core minimization
+# ============================================================
+
+
+@dataclass
+class PatchCoreValidationResult:
+    """Outcome of replay-validating a candidate core.
+
+    invalid=True when the replay did NOT reproduce INFEASIBLE under the candidate core
+    alone, or any candidate name does not correspond to an actual assumption literal.
+    Any 'accepted' downstream cut MUST come from invalid=False results — fail-closed.
+    """
+    status: Literal["INFEASIBLE", "FEASIBLE", "UNKNOWN"]
+    candidate_core: List[PoseAssumption]
+    replay_wall_s: float
+    invalid: bool
+    invalid_reason: str = ""
+    stats: Dict[str, Any] = field(default_factory=dict)
+
+
+def _add_assumption_subset(model: cp_model.CpModel, assumption_vars: Mapping[str, Any], subset: Iterable[str]) -> None:
+    """Reset model.Proto().assumptions and re-add only the named literal indices.
+
+    OR-Tools CP-SAT doesn't expose a public Clear API; the proto's `assumptions`
+    repeated field is the source of truth, so we mutate it directly.
+    """
+    proto = model.Proto()
+    proto.assumptions.clear()
+    for name in subset:
+        v = assumption_vars.get(name)
+        if v is None:
+            continue
+        model.AddAssumption(v)
+
+
+def _solve_with_subset(
+    core: "PatchRoutingCore",
+    subset_names: Iterable[str],
+    *,
+    time_limit: float,
+    presolve: bool,
+    workers: int,
+) -> Tuple[str, float, int]:
+    """Re-solve the same model with a fresh assumption subset. Used by validate + QuickXplain.
+
+    Returns (status_str, wall_s, status_code).
+    """
+    _add_assumption_subset(core.model, core._assumption_vars, subset_names)
+    solver = cp_model.CpSolver()
+    solver.parameters.max_time_in_seconds = time_limit
+    if not presolve:
+        solver.parameters.cp_model_presolve = False
+    if workers > 0:
+        solver.parameters.num_workers = workers
+    else:
+        solver.parameters.num_workers = resolve_cp_sat_worker_count(
+            env_name="EXACT_PATCH_ROUTING_CP_SAT_WORKERS",
+            default=DEFAULT_ROUTING_CP_SAT_WORKERS,
+        )
+    apply_subproblem_memory_cap(solver)
+    t0 = time.perf_counter()
+    status = solver.Solve(core.model)
+    elapsed = time.perf_counter() - t0
+    if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        return "FEASIBLE", elapsed, status
+    if status == cp_model.INFEASIBLE:
+        return "INFEASIBLE", elapsed, status
+    return "UNKNOWN", elapsed, status
+
+
+def validate_patch_core(
+    core: PatchRoutingCore,
+    candidate_core: Sequence[PoseAssumption],
+    *,
+    time_limit: float = 5.0,
+    presolve: bool = False,
+    workers: int = 1,
+) -> PatchCoreValidationResult:
+    """Replay: with ONLY candidate_core's assumption literals enabled, is the patch model
+    still INFEASIBLE? Defaults: presolve=false, workers=1 for determinism.
+
+    fail-closed: any non-assumption literal in candidate → invalid; FEASIBLE/UNKNOWN → invalid.
+    """
+    valid_names = {pa.assumption_name for pa in core.pose_assumptions}
+    candidate_names = {pa.assumption_name for pa in candidate_core}
+    invalid_names = candidate_names - valid_names
+    if invalid_names:
+        return PatchCoreValidationResult(
+            status="UNKNOWN",
+            candidate_core=list(candidate_core),
+            replay_wall_s=0.0,
+            invalid=True,
+            invalid_reason=f"non_assumption_literals: {sorted(invalid_names)}",
+        )
+
+    status_str, wall_s, _status_code = _solve_with_subset(
+        core,
+        candidate_names,
+        time_limit=time_limit,
+        presolve=presolve,
+        workers=workers,
+    )
+    is_valid = status_str == "INFEASIBLE"
+    return PatchCoreValidationResult(
+        status=status_str,  # type: ignore[arg-type]
+        candidate_core=list(candidate_core),
+        replay_wall_s=round(wall_s, 3),
+        invalid=not is_valid,
+        invalid_reason="replay_not_infeasible" if not is_valid else "",
+        stats={
+            "presolve": presolve,
+            "workers": workers,
+            "core_size": len(candidate_core),
+        },
+    )
+
+
+@dataclass
+class QuickXplainResult:
+    minimal_core: List[PoseAssumption]
+    raw_core: List[PoseAssumption]
+    oracle_calls: int
+    capped: bool
+    wall_s: float
+
+
+def minimize_patch_core_quickxplain(
+    core: PatchRoutingCore,
+    raw_core: Sequence[PoseAssumption],
+    *,
+    time_limit_per_call: float = 5.0,
+    oracle_call_cap: int = 32,
+    presolve: bool = False,
+    workers: int = 1,
+) -> QuickXplainResult:
+    """Junker's QuickXplain to find a minimal subset of raw_core whose assumption is
+    still sufficient for INFEASIBLE.
+
+    Oracle is `solve_with_subset(...) == 'INFEASIBLE'`. When the cap fires, we return
+    the conservative remaining candidate set (super-set of the true minimal) — caller
+    must then re-validate before use.
+    """
+    name_to_pa: Dict[str, PoseAssumption] = {pa.assumption_name: pa for pa in raw_core}
+    sorted_names = sorted(name_to_pa.keys())
+
+    call_count = [0]
+    capped = [False]
+    t_start = time.perf_counter()
+
+    def oracle(assumed: Set[str]) -> bool:
+        if call_count[0] >= oracle_call_cap:
+            capped[0] = True
+            return True
+        call_count[0] += 1
+        status, _, _ = _solve_with_subset(
+            core, assumed, time_limit=time_limit_per_call, presolve=presolve, workers=workers,
+        )
+        return status == "INFEASIBLE"
+
+    def quickxplain(background: Set[str], candidates: List[str]) -> Set[str]:
+        if capped[0]:
+            return set(candidates)
+        if not candidates:
+            return set()
+        if oracle(background):
+            return set()
+        if len(candidates) == 1:
+            return {candidates[0]}
+        k = len(candidates) // 2
+        c1 = candidates[:k]
+        c2 = candidates[k:]
+        x2 = quickxplain(background | set(c1), c2)
+        x1 = quickxplain(background | x2, c1)
+        return x1 | x2
+
+    minimal_names = quickxplain(set(), sorted_names)
+    minimal_core = [name_to_pa[n] for n in sorted(minimal_names) if n in name_to_pa]
+    return QuickXplainResult(
+        minimal_core=minimal_core,
+        raw_core=list(raw_core),
+        oracle_calls=call_count[0],
+        capped=capped[0],
+        wall_s=round(time.perf_counter() - t_start, 3),
+    )
+
+
+def extract_and_validate_patch_core(
+    core: PatchRoutingCore,
+    *,
+    minimize: bool = True,
+    time_limit_per_call: float = 5.0,
+    oracle_call_cap: int = 32,
+) -> Dict[str, Any]:
+    """Composite: extract solver core → validate raw → optionally minimize via QuickXplain
+    → validate minimized. Returns full lifecycle metadata.
+
+    Any cut accepted downstream MUST be the `minimized_validation`'s candidate_core
+    when `accepted=True`. accepted=False ⇒ fail-closed, no cut.
+    """
+    raw_core = core.extract_core()
+    if not raw_core:
+        return {
+            "accepted": False,
+            "reason": "no_raw_core_from_solver",
+            "raw_core_size": 0,
+            "minimized_core_size": 0,
+            "raw_validation": None,
+            "minimized_validation": None,
+            "quickxplain": None,
+        }
+
+    raw_validation = validate_patch_core(core, raw_core, time_limit=time_limit_per_call)
+    if raw_validation.invalid:
+        return {
+            "accepted": False,
+            "reason": f"raw_replay_invalid: {raw_validation.invalid_reason}",
+            "raw_core_size": len(raw_core),
+            "minimized_core_size": 0,
+            "raw_validation": raw_validation,
+            "minimized_validation": None,
+            "quickxplain": None,
+        }
+
+    if not minimize:
+        return {
+            "accepted": True,
+            "reason": "raw_validated",
+            "raw_core_size": len(raw_core),
+            "minimized_core_size": len(raw_core),
+            "raw_validation": raw_validation,
+            "minimized_validation": raw_validation,
+            "quickxplain": None,
+        }
+
+    qx = minimize_patch_core_quickxplain(
+        core, raw_core,
+        time_limit_per_call=time_limit_per_call,
+        oracle_call_cap=oracle_call_cap,
+    )
+    minimized_validation = validate_patch_core(core, qx.minimal_core, time_limit=time_limit_per_call)
+    if minimized_validation.invalid:
+        # fall back to raw_validation (which we already proved valid above)
+        return {
+            "accepted": True,
+            "reason": "minimization_failed_replay_fallback_raw",
+            "raw_core_size": len(raw_core),
+            "minimized_core_size": len(raw_core),
+            "raw_validation": raw_validation,
+            "minimized_validation": raw_validation,
+            "quickxplain": qx,
+        }
+    return {
+        "accepted": True,
+        "reason": "minimized_validated",
+        "raw_core_size": len(raw_core),
+        "minimized_core_size": len(qx.minimal_core),
+        "raw_validation": raw_validation,
+        "minimized_validation": minimized_validation,
+        "quickxplain": qx,
+    }
