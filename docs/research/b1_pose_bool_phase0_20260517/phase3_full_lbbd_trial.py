@@ -34,7 +34,9 @@ def main() -> int:
     # B1 env flag — must set before importing
     os.environ["EXACT_USE_POSE_BOOL_MASTER"] = "1"
     os.environ["EXACT_MASTER_GHOST_ANCHOR_FILTER"] = f"{args.anchor_x},{args.anchor_y}"
-    os.environ["EXACT_B1_BYPASS_ROUTING_PRECHECK"] = "1"  # skip front_blocked early reject
+    # Phase 5: 用 cell-level pattern cut (PoseBool delegate.add_routing_port_blocking_cell_cut)
+    # 不需要 bypass routing precheck
+    os.environ["EXACT_B1_PORT_CLEARANCE_HARD"] = "1"  # Phase 5b: a priori cell-level port_clearance
 
     print(f"=== B1 Phase 3 full LBBD trial ===")
     print(f"candidate {args.ghost_w}x{args.ghost_h} anchor ({args.anchor_x},{args.anchor_y})")

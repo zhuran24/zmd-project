@@ -4507,7 +4507,31 @@ class LBBDController:
             if precheck_status == "front_blocked":
                 self._routing_precheck_rejections += 1
                 cut_added = False
+                # B1 Phase 5: env on 时用 cell-level pattern cut (PoseBool delegate)
+                # 替代 instance-level placement_local_nogood.
+                _b1_use_cell_cut = os.environ.get(
+                    "EXACT_USE_POSE_BOOL_MASTER", ""
+                ).strip().lower() in {"1", "true", "yes", "on"} and hasattr(
+                    self.master._coordinate_delegate, "add_routing_port_blocking_cell_cut"
+                )
                 for blocked_port in routing_precheck_summary.get("blocked_ports", []):
+                    delegate = self.master._coordinate_delegate
+                    if _b1_use_cell_cut and delegate is not None:
+                        port_cell_raw = blocked_port.get("port_cell")
+                        front_cell_raw = blocked_port.get("front_cell")
+                        direction = blocked_port.get("dir")
+                        if not (port_cell_raw and front_cell_raw and direction):
+                            continue
+                        was_added = delegate.add_routing_port_blocking_cell_cut(
+                            port_cell=(int(port_cell_raw[0]), int(port_cell_raw[1])),
+                            direction=str(direction),
+                            front_cell=(int(front_cell_raw[0]), int(front_cell_raw[1])),
+                        )
+                        if was_added:
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                            cut_added = True
+                        continue
                     conflict_set = self._build_conflict_from_instance_ids(
                         solution,
                         list(blocked_port.get("placement_level_conflict_set", [])),

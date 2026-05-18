@@ -18,9 +18,18 @@ delegate.
 
 from __future__ import annotations
 
+import os
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
+
+
+_DIR_DELTA: Dict[str, Tuple[int, int]] = {
+    "N": (0, 1),
+    "S": (0, -1),
+    "E": (1, 0),
+    "W": (-1, 0),
+}
 
 
 class PoseBoolExactMasterDelegate:
@@ -51,6 +60,14 @@ class PoseBoolExactMasterDelegate:
         self._chosen_assignment: Dict[str, int] = {}
         self._chosen_pole_indices: List[int] = []
         self._chosen_ro_pose: Dict[str, List[int]] = {}
+        # B1 Phase 5: cache for routing front_blocked cell-level cut.
+        # Built lazily on first cut request (avoid build() overhead for
+        # users that never need routing cuts).
+        self._poses_by_cell: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
+        self._poses_by_port_at_cell_dir: Dict[
+            Tuple[int, int, str], List[cp_model.IntVar]
+        ] = {}
+        self._port_lookup_built = False
 
     def _forbidden_cells(self) -> Set[Tuple[int, int]]:
         if not self.owner.ghost_rect:
@@ -218,6 +235,50 @@ class PoseBoolExactMasterDelegate:
                 else:
                     self.model.Add(v == 0)
 
+        # B1 Phase 5b: add cell-level port_clearance hard constraint.
+        # 跟 routing precheck 等价 (sound, 不是 over-approximation): port 是
+        # facility I/O 接口, belt 从 port_cell + dir 出. 如果 front_cell 被任何
+        # facility 占, belt 出口被堵, port 不能 routing — 这是物理限制.
+        # PROJECT_LOCK 禁的 coordinate path `_add_port_clearance_constraints` 是
+        # over-approximation 设计; pose-bool delegate 的 cell-level 形式跟
+        # routing precheck 语义等价.
+        # env-gated via `EXACT_B1_PORT_CLEARANCE_HARD`.
+        port_clearance_enabled = os.environ.get(
+            "EXACT_B1_PORT_CLEARANCE_HARD", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        port_clearance_added = 0
+        if port_clearance_enabled:
+            self._build_port_lookup_cache()
+            # 对每 (port_cell, dir) 已知有 pose 配置, 加 "如果某 pose 在 cell 有
+            # port 朝 dir 被选 → front_cell 必空".
+            for (px, py, direction), port_poses in self._poses_by_port_at_cell_dir.items():
+                if not port_poses:
+                    continue
+                dx, dy = _DIR_DELTA.get(str(direction), (0, 0))
+                front = (int(px) + dx, int(py) + dy)
+                if not (0 <= front[0] < self.grid_w and 0 <= front[1] < self.grid_h):
+                    # front 出 grid: port 永远不通, ban pose
+                    for v in port_poses:
+                        self.model.Add(v == 0)
+                    port_clearance_added += 1
+                    continue
+                front_poses = self._poses_by_cell.get(front, [])
+                if not front_poses:
+                    continue
+                # Implication 形式: 用 channeled OR + 1 main constraint, 避免
+                # K1 × (N front) propagator 爆炸.
+                # any_port = OR(port_poses). port_poses 任一 true → any_port=1.
+                # any_port + sum(front_poses) <= 1 → 主约束.
+                any_port = self.model.NewBoolVar(f"any_port_{px}_{py}_{direction}")
+                # any_port >= p_i (channel)
+                for v_p in port_poses:
+                    self.model.Add(any_port >= v_p)
+                # any_port <= sum(port_poses) (channel upper)
+                self.model.Add(any_port <= sum(port_poses))
+                # 主约束
+                self.model.Add(any_port + sum(front_poses) <= 1)
+                port_clearance_added += 1
+
         self.owner.build_stats["master_representation"] = self.master_representation
         self.owner.build_stats["pose_bool_master"] = {
             "x_vars": len(self.x_vars),
@@ -226,6 +287,7 @@ class PoseBoolExactMasterDelegate:
             "cell_exclusivity_cells": sum(1 for v in cell_poses.values() if len(v) > 1),
             "powered_mandatory_groups": len(powered_group_keys),
             "powered_ro_templates": len(powered_ro_templates),
+            "port_clearance_constraints": port_clearance_added,
         }
 
     def extract_solution(self) -> Dict[str, Any]:
@@ -371,3 +433,100 @@ class PoseBoolExactMasterDelegate:
         # PoseBool delegate 不参与 proto sharing (build_exact_core / from_exact_core),
         # 返回空 binding 让 build_exact_core 不 crash.
         return {}
+
+    def _build_port_lookup_cache(self) -> None:
+        """First-call build: pose 全索引按 (cell) 和 (port_cell, dir).
+        O(N × cells_per_pose) one-time, 后续 cut add O(1)."""
+        if self._port_lookup_built:
+            return
+        # mandatory + ro
+        for (key, pose_idx), var in list(self.x_vars.items()) + list(self.ro_vars.items()):
+            if key in self._mandatory_template_by_group:
+                tpl = self._mandatory_template_by_group[key]
+            else:
+                tpl = key  # ro key 是 template name
+            pool = self.owner.facility_pools.get(tpl, [])
+            if int(pose_idx) >= len(pool):
+                continue
+            pose = pool[int(pose_idx)]
+            anchor = pose.get("anchor", {})
+            ax, ay = int(anchor.get("x", 0)), int(anchor.get("y", 0))
+            for cell in pose.get("occupied_cells", []):
+                cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
+                self._poses_by_cell.setdefault(cell_xy, []).append(var)
+            for port_list_key in ("input_port_cells", "output_port_cells"):
+                for port in pose.get(port_list_key, []) or []:
+                    key_tup = (
+                        int(port.get("x", 0)) + ax,
+                        int(port.get("y", 0)) + ay,
+                        str(port.get("dir", "")),
+                    )
+                    self._poses_by_port_at_cell_dir.setdefault(key_tup, []).append(var)
+        # pole
+        for pose_idx, var in self.pole_vars.items():
+            pool = self.owner.facility_pools.get("power_pole", [])
+            if int(pose_idx) >= len(pool):
+                continue
+            pose = pool[int(pose_idx)]
+            anchor = pose.get("anchor", {})
+            ax, ay = int(anchor.get("x", 0)), int(anchor.get("y", 0))
+            for cell in pose.get("occupied_cells", []):
+                cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
+                self._poses_by_cell.setdefault(cell_xy, []).append(var)
+        self._port_lookup_built = True
+
+    def _enumerate_poses_with_port_at(
+        self, grid_cell: Tuple[int, int], direction: str
+    ) -> List[cp_model.IntVar]:
+        self._build_port_lookup_cache()
+        return list(self._poses_by_port_at_cell_dir.get(
+            (int(grid_cell[0]), int(grid_cell[1]), str(direction)), []
+        ))
+
+    def _enumerate_poses_occupying(
+        self, grid_cell: Tuple[int, int]
+    ) -> List[cp_model.IntVar]:
+        self._build_port_lookup_cache()
+        return list(self._poses_by_cell.get(
+            (int(grid_cell[0]), int(grid_cell[1])), []
+        ))
+
+    def add_routing_port_blocking_cell_cut(
+        self,
+        *,
+        port_cell: Tuple[int, int],
+        direction: str,
+        front_cell: Tuple[int, int],
+        condition_lits: Sequence[cp_model.IntVar] = (),
+    ) -> bool:
+        """B1 Phase 5: cell-level generalized cut for routing front_blocked.
+
+        Pattern: 任何 pose 占 port_cell 上有 port 朝 direction + 任何 pose 占 front_cell.
+        Cut: sum(port_candidates) + sum(blocker_candidates) <= 1.
+
+        比 instance-level placement_local_nogood 切得更狠 (整类 pattern), 但仍是
+        from-Benders-derived (reactive, 不是 a priori), 符合 PROJECT_LOCK 边界.
+        """
+        port_candidates = self._enumerate_poses_with_port_at(port_cell, direction)
+        blocker_candidates = self._enumerate_poses_occupying(front_cell)
+
+        if not port_candidates or not blocker_candidates:
+            return False
+
+        all_lits = list(port_candidates) + list(blocker_candidates)
+        bound = self.model.Add(sum(all_lits) <= 1)
+        cond = [lit for lit in condition_lits if lit is not None]
+        if cond:
+            bound.OnlyEnforceIf(cond)
+
+        cut_index = int(self.owner.build_stats.get("pose_bool_cell_pattern_cut_count", 0))
+        self.owner.build_stats["pose_bool_cell_pattern_cut_count"] = cut_index + 1
+        self.owner.build_stats["pose_bool_last_cell_pattern_cut"] = {
+            "port_cell": list(port_cell),
+            "direction": direction,
+            "front_cell": list(front_cell),
+            "port_candidates": len(port_candidates),
+            "blocker_candidates": len(blocker_candidates),
+        }
+        self.owner._last_solution = None
+        return True

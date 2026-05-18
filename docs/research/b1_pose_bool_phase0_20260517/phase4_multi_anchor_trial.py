@@ -46,6 +46,7 @@ def run_one_anchor(anchor_x: int, anchor_y: int, *, master_seconds: float = 120.
 
 def main() -> int:
     os.environ["EXACT_USE_POSE_BOOL_MASTER"] = "1"
+    os.environ["EXACT_B1_PORT_CLEARANCE_HARD"] = "1"  # Phase 5b
 
     # Candidate anchors: Phase 0 prototype verified OPTIMAL @ (22,28), (20,28), (18,28).
     # Plus a few more interior positions.

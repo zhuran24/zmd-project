@@ -316,6 +316,7 @@ def analyze_exact_routing_domain(
                     "instance_id": instance_id,
                     "commodity": commodity,
                     "dir": direction,
+                    "port_cell": [px, py],  # B1 Phase 5: cell-pattern cut 需要 port cell
                     "front_cell": [fx, fy],
                     "blocking_instance_ids": (
                         []

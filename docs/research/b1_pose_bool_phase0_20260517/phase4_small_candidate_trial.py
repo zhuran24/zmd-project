@@ -40,6 +40,7 @@ def run_one(ghost_w: int, ghost_h: int, anchor_x: int, anchor_y: int, max_iter: 
 
 def main() -> int:
     os.environ["EXACT_USE_POSE_BOOL_MASTER"] = "1"
+    os.environ["EXACT_B1_PORT_CLEARANCE_HARD"] = "1"  # Phase 5d
     print("=== B1 small candidate end-to-end ===")
 
     # 候选: 小 candidate, geometry 宽松, port 容易绕路
