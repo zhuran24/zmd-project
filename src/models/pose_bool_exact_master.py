@@ -76,6 +76,15 @@ class PoseBoolExactMasterDelegate:
         # 且没 facility 占. 不强制 = 1, 让 pose-level constraint enforce 至少
         # demand 个 cleared.
         self._front_clear: Dict[Tuple[int, int, str], cp_model.IntVar] = {}
+        # Phase 6 路线 2: lazy demand cut 用 global-coord cache (pose data
+        # occupied_cells / port_cells 是 GLOBAL 坐标 — 不加 anchor offset, 区别
+        # 于 _build_port_lookup_cache 历史 phantom-offset bug).
+        # 一次 build, 路径 1 (prebuild fc) 跟路径 2 (lazy cut) 共用.
+        self._poses_by_cell_global: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
+        self._poses_by_port_cell_dir_global: Dict[
+            Tuple[int, int, str], List[cp_model.IntVar]
+        ] = {}
+        self._global_cache_built = False
 
     def _forbidden_cells(self) -> Set[Tuple[int, int]]:
         if not self.owner.ghost_rect:
@@ -255,46 +264,11 @@ class PoseBoolExactMasterDelegate:
         front_clear_count = 0
         pose_clearance_count = 0
         if port_active_enabled:
-            # NB: pose data 中 occupied_cells / input_port_cells / output_port_cells
-            # 全是 **global grid 坐标** (anchor=occ_min, 不是 local origin).
-            # 所以下面 lookup 不再加 anchor offset (避开 _build_port_lookup_cache
-            # 历史 phantom-shift bug; 那 cache 路径 Phase 5b 走但 self-consistent
-            # 不暴露).
-
-            # Step 1: 先 collect 所有 (port_cell, dir) 跟 occupied cells.
-            # poses_by_cell_global: cell → list of pose_var that occupies cell
-            poses_by_cell_global: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
-            poses_by_port_cell_dir_global: Dict[
-                Tuple[int, int, str], List[cp_model.IntVar]
-            ] = {}
-            all_vars = list(self.x_vars.items()) + list(self.ro_vars.items()) + [
-                (("pole", pi), v) for pi, v in self.pole_vars.items()
-            ]
-            for (key_, pose_idx), var in all_vars:
-                if isinstance(key_, str) and key_ == "pole":
-                    tpl_lookup = "power_pole"
-                elif key_ in self._mandatory_template_by_group:
-                    tpl_lookup = self._mandatory_template_by_group[key_]
-                else:
-                    tpl_lookup = str(key_)
-                pool = self.owner.facility_pools.get(tpl_lookup, [])
-                if int(pose_idx) >= len(pool):
-                    continue
-                pose = pool[int(pose_idx)]
-                for cell in pose.get("occupied_cells", []) or []:
-                    cell_xy = (int(cell[0]), int(cell[1]))
-                    poses_by_cell_global.setdefault(cell_xy, []).append(var)
-                for port_list_key in ("input_port_cells", "output_port_cells"):
-                    for port in pose.get(port_list_key, []) or []:
-                        key_tup = (
-                            int(port.get("x", 0)),
-                            int(port.get("y", 0)),
-                            str(port.get("dir", "")),
-                        )
-                        poses_by_port_cell_dir_global.setdefault(key_tup, []).append(var)
+            # Step 1: build global cache (路径 1 + 路径 2 共用).
+            self._build_global_pose_cache()
 
             # Step 2: build front_clear vars per (port_cell, dir).
-            for (px, py, direction) in poses_by_port_cell_dir_global.keys():
+            for (px, py, direction) in self._poses_by_port_cell_dir_global.keys():
                 dx, dy = _DIR_DELTA.get(str(direction), (0, 0))
                 fc_key = (int(px), int(py), str(direction))
                 if fc_key in self._front_clear:
@@ -307,7 +281,7 @@ class PoseBoolExactMasterDelegate:
                     self._front_clear[fc_key] = fc
                     front_clear_count += 1
                     continue
-                front_poses = poses_by_cell_global.get((fx, fy), [])
+                front_poses = self._poses_by_cell_global.get((fx, fy), [])
                 fc = self.model.NewBoolVar(f"fc__{px}_{py}_{direction}")
                 self._front_clear[fc_key] = fc
                 front_clear_count += 1
@@ -632,6 +606,119 @@ class PoseBoolExactMasterDelegate:
                 cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
         self._port_lookup_built = True
+
+    def _build_global_pose_cache(self) -> None:
+        """One-time build of GLOBAL-coord cache (pose data 是 global 坐标,
+        不加 anchor offset — 区别于 _build_port_lookup_cache phantom-offset).
+
+        Used by 路径 1 (prebuild fc) and 路径 2 (lazy demand cut)."""
+        if self._global_cache_built:
+            return
+        all_vars: List[Tuple[Any, cp_model.IntVar]] = []
+        for (gid, pose_idx), v in self.x_vars.items():
+            all_vars.append(((gid, int(pose_idx), "x"), v))
+        for (tpl_, pose_idx), v in self.ro_vars.items():
+            all_vars.append(((str(tpl_), int(pose_idx), "ro"), v))
+        for pose_idx, v in self.pole_vars.items():
+            all_vars.append((("power_pole", int(pose_idx), "pole"), v))
+
+        for key_, var in all_vars:
+            carrier, pose_idx, kind = key_
+            if kind == "x":
+                tpl_lookup = self._mandatory_template_by_group.get(str(carrier), "")
+            elif kind == "ro":
+                tpl_lookup = str(carrier)
+            else:
+                tpl_lookup = "power_pole"
+            pool = self.owner.facility_pools.get(tpl_lookup, [])
+            if int(pose_idx) >= len(pool):
+                continue
+            pose = pool[int(pose_idx)]
+            for cell in pose.get("occupied_cells", []) or []:
+                cell_xy = (int(cell[0]), int(cell[1]))
+                self._poses_by_cell_global.setdefault(cell_xy, []).append(var)
+            for port_list_key in ("input_port_cells", "output_port_cells"):
+                for port in pose.get(port_list_key, []) or []:
+                    key_tup = (
+                        int(port.get("x", 0)),
+                        int(port.get("y", 0)),
+                        str(port.get("dir", "")),
+                    )
+                    self._poses_by_port_cell_dir_global.setdefault(key_tup, []).append(var)
+        self._global_cache_built = True
+
+    def add_routing_port_lazy_demand_cut(
+        self,
+        *,
+        pose_var: cp_model.IntVar,
+        op_type: str,
+        tpl: str,
+        pose_idx: int,
+    ) -> bool:
+        """B1 Phase 6 路线 2: per-pose lazy demand cut for routing front_blocked.
+
+        Form (per side with slack): `sum(blocker_count_k) <= K - demand`.OnlyEnforceIf(pose_var)
+        - K = pose's port count on that side (input or output)
+        - demand = profile.required slots on that side
+        - blocker_count_k = sum(poses 占 front_cell_k) (cell exclusivity 保 <=1)
+
+        语义: pose 选了, 则该 pose 的 K 个 port 中至多 K-demand 个 front 被占
+        (即至少 demand 个 cleared, 跟 binding 端 active port 数量匹配 — sound).
+
+        加 input + output 两边 cut (各自 K vs demand 看 slack). 无 slack 一边
+        跳过. 至少一边 add 才 return True.
+        """
+        try:
+            profile = get_operation_port_profile(op_type)
+        except KeyError:
+            return False
+        pool = self.owner.facility_pools.get(tpl, [])
+        if int(pose_idx) >= len(pool):
+            return False
+        pose = pool[int(pose_idx)]
+
+        self._build_global_pose_cache()
+        cut_added = False
+        for side_cells_key, side_demand in (
+            (
+                "input_port_cells",
+                sum(profile.input_slots.values()) + int(profile.generic_input_slots),
+            ),
+            (
+                "output_port_cells",
+                sum(profile.output_slots.values()) + int(profile.generic_output_slots),
+            ),
+        ):
+            port_cells = pose.get(side_cells_key, []) or []
+            K = len(port_cells)
+            if K == 0 or side_demand <= 0 or K <= side_demand:
+                continue
+            blocker_terms: List[cp_model.IntVar] = []
+            const_blocked = 0
+            for port in port_cells:
+                dx, dy = _DIR_DELTA.get(str(port.get("dir", "")), (0, 0))
+                fx = int(port.get("x", 0)) + dx
+                fy = int(port.get("y", 0)) + dy
+                if not (0 <= fx < self.grid_w and 0 <= fy < self.grid_h):
+                    const_blocked += 1
+                    continue
+                blockers = self._poses_by_cell_global.get((fx, fy), [])
+                for b in blockers:
+                    if b is not pose_var:
+                        blocker_terms.append(b)
+            slack = K - side_demand - const_blocked
+            if slack < 0:
+                self.model.Add(pose_var == 0)
+                cut_added = True
+                continue
+            if blocker_terms:
+                self.model.Add(sum(blocker_terms) <= slack).OnlyEnforceIf(pose_var)
+                cut_added = True
+        if cut_added:
+            cut_index = int(self.owner.build_stats.get("pose_bool_lazy_demand_cut_count", 0))
+            self.owner.build_stats["pose_bool_lazy_demand_cut_count"] = cut_index + 1
+            self.owner._last_solution = None
+        return cut_added
 
     def _enumerate_poses_with_port_at(
         self, grid_cell: Tuple[int, int], direction: str

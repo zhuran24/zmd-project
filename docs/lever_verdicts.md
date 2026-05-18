@@ -1,6 +1,6 @@
 # Lever Verdicts — 提升 master FEASIBLE 率的所有路线及结果
 
-**最后更新**: 2026-05-18 (B1 Phase 6 path-1 实测 ❌ — master 持有 port-selection 架构层不可解)
+**最后更新**: 2026-05-18 (B1 Phase 6 path-2 实测 ❌ — lazy demand cut UNPROVEN 10 iter 不收敛, B1 paradigm 全死)
 
 主线问题: 70×70 grid + 266 mandatory facility + ghost rect 几何约束的 `max_lex(area, min_side)` 严格证明.
 
@@ -564,7 +564,7 @@ Pytest 2207 passed + 60 skipped, 0 fail.
 
 ## 当前状态
 
-**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** / **L16** / **B1 Phase 6 path-1** 共 **15** 条死路
+**已 verify 排除的 lever**: L1 / L2 / L3 / L4 / L5 / L7 / L8 / L9 / L10 / **L12** / **L13** / **L14** / **L15** / **L16** / **B1 Phase 6 path-1** / **B1 Phase 6 path-2** 共 **16** 条死路
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
@@ -576,7 +576,15 @@ Pytest 2207 passed + 60 skipped, 0 fail.
 - v3 修 anchor sound 最小 form 8w 300s UNKNOWN 346s
 - v3 1w 600s UNKNOWN 645s
 
-数学 sound 但 master.solve **架构层不可解**, solver knob (workers/time) 不救. 加 333K vars / 867K constraints 让 search space 不收敛. **B1 paradigm 全 verdict, certified FEASIBLE/INFEASIBLE 未拿到**. Pytest 2207 全 pass. 15 条 lever 全 verdict.
+数学 sound 但 master.solve **架构层不可解**, solver knob (workers/time) 不救.
+
+**Phase 6 path-2 (用户 /goal "试一下路线二把"): master 不持 port-selection, routing 反馈 lazy demand cut — 实测 ❌ dead**:
+- v1 (type-field bug): UNKNOWN 86s iter 1 bail
+- v2 修 bug 后: **UNPROVEN 778s 10 iter 不收敛**
+
+cut form `sum(blockers) <= K - demand`.OnlyEnforceIf(pose_var) weak — master/binding port-selection 不匹配 fundamental. master 每 iter OPTIMAL (avg 77.8s) 但 cut 加 ~10×N 条不收敛. 跟 Phase 5 cell_cut 同 framework.
+
+**B1 paradigm 全 verdict 死 (路线 1 + 路线 2 + Phase 5)**, certified FEASIBLE/INFEASIBLE 未拿到. 16 条 lever 全 verdict 死. Pytest 2207 全 pass.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**

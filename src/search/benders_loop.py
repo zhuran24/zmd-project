@@ -4514,8 +4514,27 @@ class LBBDController:
                 ).strip().lower() in {"1", "true", "yes", "on"} and hasattr(
                     self.master._coordinate_delegate, "add_routing_port_blocking_cell_cut"
                 )
+                # B1 Phase 6 路线 2: env on 时用 lazy per-pose demand cut 替代
+                # cell-level pattern cut. 形式更强 (per-pose sum >= demand) 数
+                # 量更少 (反馈 500 blocked_ports → ~50 unique pose). 期望收敛.
+                _b1_use_lazy_demand = os.environ.get(
+                    "EXACT_B1_LAZY_DEMAND_CUT", ""
+                ).strip().lower() in {"1", "true", "yes", "on"} and _b1_use_cell_cut and hasattr(
+                    self.master._coordinate_delegate, "add_routing_port_lazy_demand_cut"
+                )
+                # lazy demand: dedup blocked_ports 到 instance_id (pose-level, side-agnostic)
+                _lazy_demand_targets: Set[str] = set()
                 for blocked_port in routing_precheck_summary.get("blocked_ports", []):
                     delegate = self.master._coordinate_delegate
+                    if _b1_use_lazy_demand and delegate is not None:
+                        # identify pose owner — instance_id is direct field in routing output
+                        primary_iid = blocked_port.get("instance_id")
+                        if primary_iid:
+                            _lazy_demand_targets.add(str(primary_iid))
+                        # 也 add conflict_set 里的 (e.g. front-blocker instance)
+                        for iid in blocked_port.get("placement_level_conflict_set", []):
+                            _lazy_demand_targets.add(str(iid))
+                        continue
                     if _b1_use_cell_cut and delegate is not None:
                         port_cell_raw = blocked_port.get("port_cell")
                         front_cell_raw = blocked_port.get("front_cell")
@@ -4532,6 +4551,8 @@ class LBBDController:
                             self._routing_front_blocked_cut_count += 1
                             cut_added = True
                         continue
+                    # Fallback: instance-level placement_local_nogood (跟 cell_cut /
+                    # lazy_demand 同 for-loop body, 当 neither env applies 时走).
                     conflict_set = self._build_conflict_from_instance_ids(
                         solution,
                         list(blocked_port.get("placement_level_conflict_set", [])),
@@ -4570,6 +4591,40 @@ class LBBDController:
                         self._fine_grained_exact_safe_cut_count += 1
                         self._routing_front_blocked_cut_count += 1
                         cut_added = True
+
+                # lazy demand 端: for-loop 跑完后一次性处理所有 dedup target.
+                _lazy_delegate = self.master._coordinate_delegate if _b1_use_lazy_demand else None
+                if _lazy_delegate is not None and _lazy_demand_targets:
+                    for iid in _lazy_demand_targets:
+                        sol_entry = solution.get(iid) if isinstance(solution, dict) else None
+                        if not sol_entry:
+                            continue
+                        op_type = str(sol_entry.get("operation_type", ""))
+                        tpl_str = str(sol_entry.get("facility_type", ""))
+                        pose_idx_val = int(sol_entry.get("pose_idx", -1))
+                        if pose_idx_val < 0 or not op_type or not tpl_str:
+                            continue
+                        # lookup pose_var
+                        pose_var = None
+                        gid = _lazy_delegate._group_id_by_instance.get(str(iid))
+                        if gid is not None:
+                            pose_var = _lazy_delegate.x_vars.get((gid, pose_idx_val))
+                        elif tpl_str == "protocol_storage_box":
+                            pose_var = _lazy_delegate.ro_vars.get((tpl_str, pose_idx_val))
+                        elif str(iid).startswith("pose_optional::power_pole::"):
+                            pose_var = _lazy_delegate.pole_vars.get(pose_idx_val)
+                        if pose_var is None:
+                            continue
+                        was_added = _lazy_delegate.add_routing_port_lazy_demand_cut(
+                            pose_var=pose_var,
+                            op_type=op_type,
+                            tpl=tpl_str,
+                            pose_idx=pose_idx_val,
+                        )
+                        if was_added:
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                            cut_added = True
 
                 self.last_proof_summary = {
                     "mode": "certified_exact",
