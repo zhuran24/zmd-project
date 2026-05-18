@@ -476,9 +476,12 @@ class PoseBoolExactMasterDelegate:
         }
 
     def add_separator_capacity_cut(self, violation: Any) -> bool:
-        """SAC-Hull Phase 2: dynamic separator capacity cut. Add a single
-        separator's capacity hull constraint based on a violation found by
-        analyze_layout_for_separator_violations()."""
+        """SAC-Hull Phase 2a: dynamic separator capacity cut, full hull form.
+
+        加单 separator 的 full capacity hull constraint. 用 source/sink OR aux +
+        cross channeling. paradigm sound + strong (Phase 2 实测 violations 22→17→10).
+        master 加 cut 后 CP-SAT 慢, max_per_iter 控制规模.
+        """
         from src.models.separator_capacity_hull import add_separator_capacity_hull_constraints
         if not hasattr(self, "_sac_pose_metadata") or not hasattr(self, "_sac_cell_poses"):
             return False

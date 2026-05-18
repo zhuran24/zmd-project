@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 def main() -> int:
     os.environ["EXACT_USE_POSE_BOOL_MASTER"] = "1"
     os.environ["EXACT_B1_SEPARATOR_HULL_DYNAMIC"] = "1"
-    os.environ["EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER"] = "1"  # 每 iter 1 cut, 减重
+    os.environ["EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER"] = "2"  # Phase 2a full hull, 2 cut/iter
     os.environ["EXACT_MASTER_GHOST_ANCHOR_FILTER"] = "22,28"
     # Phase 1 static 不开
     for k in (
@@ -46,7 +46,7 @@ def main() -> int:
         max_iterations=5,
         project_root=Path("."),
         solve_mode="certified_exact",
-        master_seconds=80.0,
+        master_seconds=180.0,
         binding_seconds=30.0,
         routing_seconds=60.0,
         flow_seconds=10.0,
