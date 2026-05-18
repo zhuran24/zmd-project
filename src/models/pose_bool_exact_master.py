@@ -408,6 +408,57 @@ class PoseBoolExactMasterDelegate:
                 self.model.Add(any_port + sum(front_poses) <= 1)
                 port_clearance_added += 1
 
+        # SAC-Hull Phase 1: env-gated static separator capacity hull constraints
+        sac_hull_stats: Dict[str, Any] = {"enabled": False}
+        if os.environ.get("EXACT_B1_SEPARATOR_HULL", "").strip().lower() in {"1", "true", "yes", "on"}:
+            from src.models.separator_capacity_hull import (
+                build_static_separator_library,
+                add_separator_capacity_hull_constraints,
+                PoseVarMetadata,
+            )
+            try:
+                limit = int(os.environ.get("EXACT_B1_SEPARATOR_HULL_STATIC_LIMIT", "64"))
+            except ValueError:
+                limit = 64
+            include_axis = os.environ.get("EXACT_B1_SEPARATOR_HULL_INCLUDE_AXIS", "1").strip().lower() in {"1", "true", "yes", "on"}
+            include_moat = os.environ.get("EXACT_B1_SEPARATOR_HULL_INCLUDE_GHOST_MOAT", "1").strip().lower() in {"1", "true", "yes", "on"}
+            # ghost_rect format: tuple (w, h); ghost_anchor 从 forbidden cells 推回 (min x, min y)
+            ghost_anchor: Optional[Tuple[int, int]] = None
+            ghost_size: Optional[Tuple[int, int]] = None
+            if self.owner.ghost_rect is not None and forbidden:
+                ghost_size = (int(self.owner.ghost_rect[0]), int(self.owner.ghost_rect[1]))
+                xs = [c[0] for c in forbidden]
+                ys = [c[1] for c in forbidden]
+                ghost_anchor = (min(xs), min(ys))
+            seps = build_static_separator_library(
+                grid_w=self.grid_w, grid_h=self.grid_h,
+                ghost_anchor=ghost_anchor, ghost_size=ghost_size,
+                include_axis=include_axis, include_ghost_moat=include_moat,
+                limit=limit,
+            )
+            # collect pose metadata: var + operation_type + pose
+            pose_metadata = []
+            for (gid, pose_idx), var in self.x_vars.items():
+                op = self._mandatory_operation_by_group.get(gid, "")
+                tpl = self._mandatory_template_by_group.get(gid, "")
+                pool = self.owner.facility_pools.get(tpl, [])
+                if 0 <= pose_idx < len(pool):
+                    pose_metadata.append(PoseVarMetadata(var=var, operation_type=op, pose=pool[pose_idx]))
+            for (tpl, pose_idx), var in self.ro_vars.items():
+                # ro_vars 是 protocol_storage_box etc. operation_type='wireless_sink' 估 — 但 ro
+                # 端口当 generic IO 由 binding 处理. SAC-Hull 只看 input/output_port_cells 几何 →
+                # operation_type unused for fixed input/output commodity 列表. Skip.
+                pass  # ro 端 generic IO, 不计入 fixed forced-side
+            sac_hull_stats = add_separator_capacity_hull_constraints(
+                model=self.model,
+                separators=seps,
+                pose_var_metadata=pose_metadata,
+                cell_poses=cell_poses,
+                grid_w=self.grid_w, grid_h=self.grid_h,
+            )
+            sac_hull_stats["enabled"] = True
+            sac_hull_stats["pose_metadata_count"] = len(pose_metadata)
+
         self.owner.build_stats["master_representation"] = self.master_representation
         self.owner.build_stats["pose_bool_master"] = {
             "x_vars": len(self.x_vars),
@@ -420,6 +471,7 @@ class PoseBoolExactMasterDelegate:
             "front_clear_vars": front_clear_count,
             "pose_clearance_constraints": pose_clearance_count,
             "port_active_enabled": port_active_enabled,
+            "sac_hull": sac_hull_stats,
         }
 
     def extract_solution(self) -> Dict[str, Any]:
