@@ -313,6 +313,42 @@ dedup）。判定：rate ≥ 15% → GO 做 cache trio 主体（5-7 天工作）
 数据落 `data/telemetry/subproblem_repeat_<pid>.jsonl`，每 5 min append
 一次 summary snapshot。worker process 各自一个文件，offline 聚合。
 
+### PCR-CUT (Patch-Certified Routing Conflict Core, 2026-05-19 Phase 4 hook)
+
+Env-gated paradigm. master OPTIMAL → routing precheck front_blocked branch 里
+**优先**走 PCR-CUT (替 deletion-core / lazy_demand / cell_cut). 它跑真 patch
+belt CP-SAT 找最小 conflict core, signature lifting 后加 master nogood:
+
+```bash
+# 单 anchor trial (Phase 4 hook)
+EXACT_USE_POSE_BOOL_MASTER=1 \
+EXACT_B1_PATCH_ROUTING_CORE=1 \
+EXACT_MASTER_GHOST_ANCHOR_FILTER=22,28 \
+.venv/bin/python docs/research/pcr_cut_patch_routing_conflict_20260519/phase4_lbbd_hook_trial.py
+```
+
+env 全表:
+- `EXACT_B1_PATCH_ROUTING_CORE=1` — 开关
+- `EXACT_B1_PATCH_ROUTING_CORE_TOP_K=3` — 每 iter 评 top-K patches
+- `EXACT_B1_PATCH_ROUTING_CORE_SECONDS=10` — separator 总预算
+- `EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS=5` — 每 patch solve 上限
+- `EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS=900` — patch 资源 cap
+- `EXACT_B1_PATCH_ROUTING_CORE_QX_CAP=32` — QuickXplain oracle 调用 cap
+
+paradigm 流程 (Phase 0/1 GO, Phase 2-4 land 2026-05-19):
+- Phase 0: top patch (≤770 cells) cover 98% SAC pressure ✅
+- Phase 1: 8 anchor patch belt CP-SAT 21/21 INFEASIBLE, p95 2.5s ≤ 5 / 34K vars ≤ 160K ✅
+- Phase 2: replay validate (presolve=false workers=1) + QuickXplain minimize
+- Phase 3: signature lifting (within-instance only — PROJECT_LOCK 禁跨 instance)
+  → `sum_i sum_p x_var[i,p] <= K-1` master nogood
+- Phase 4: benders_loop front_blocked branch env-gated hook
+- Phase 5 (TBD): multi-anchor campaign + ablation
+- Phase 6 (TBD): proof lifecycle + regression hardening
+
+fail-closed: 任一 cut replay 不成 INFEASIBLE 不加. cut 全 reject 后自然回落
+到既有 deletion-core / lazy-demand / cell-cut path. 修改 src 不破坏 env-off
+行为 — 之前 13 lever + Path 12/13 全 verdict 不变.
+
 ### Local upstream reference clones (offline, not vendored)
 
 `.upstream_clones/` is **gitignored** and holds full clones for offline browsing/diffing. Currently contains:

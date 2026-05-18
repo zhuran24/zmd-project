@@ -4670,6 +4670,91 @@ class LBBDController:
                 ).strip().lower() in {"1", "true", "yes", "on"} and hasattr(
                     self.master._coordinate_delegate, "add_routing_port_blocking_cell_cut"
                 )
+                # PCR-CUT Phase 4: env-gated patch routing conflict separator.
+                # 优先于 deletion-core / lazy_demand / cell_cut — paradigm 是真 belt
+                # CP-SAT INFEASIBLE + signature-lifted master nogood, sound. fail-closed
+                # 自然回落到既有 cut paths. 不修改 cut_added 之外的现有 path.
+                _b1_use_patch_core = (
+                    os.environ.get("EXACT_B1_PATCH_ROUTING_CORE", "").strip().lower()
+                    in {"1", "true", "yes", "on"}
+                    and _b1_use_cell_cut
+                    and hasattr(
+                        self.master._coordinate_delegate, "add_patch_routing_core_cut"
+                    )
+                )
+                _b1_pcr_skip_other_cuts = False
+                if _b1_use_patch_core and isinstance(solution, dict) and solution:
+                    try:
+                        from src.search.patch_conflict_separator import (
+                            run_patch_conflict_separation,
+                        )
+
+                        anchor_str = os.environ.get(
+                            "EXACT_MASTER_GHOST_ANCHOR_FILTER", ""
+                        )
+                        if "," in anchor_str:
+                            parts = anchor_str.split(",")
+                            anchor = (int(parts[0]), int(parts[1]))
+                        else:
+                            anchor = (22, 28)
+                        ghost_cells = self._selected_ghost_cells()
+                        if ghost_cells:
+                            xs_ = [c[0] for c in ghost_cells]
+                            ys_ = [c[1] for c in ghost_cells]
+                            ghost_size = (max(xs_) - min(xs_) + 1, max(ys_) - min(ys_) + 1)
+                        else:
+                            ghost_size = (27, 15)
+
+                        sep_result = run_patch_conflict_separation(
+                            master_delegate=self.master._coordinate_delegate,
+                            placement_solution=solution,
+                            facility_pools=self.master.facility_pools,
+                            instances_by_id={
+                                str(i["instance_id"]): dict(i)
+                                for i in self.master.source_instances
+                            },
+                            port_specs=port_specs,
+                            ghost_anchor=anchor,
+                            ghost_size=ghost_size,
+                            top_k=int(
+                                os.environ.get("EXACT_B1_PATCH_ROUTING_CORE_TOP_K", "3")
+                            ),
+                            seconds_budget=float(
+                                os.environ.get("EXACT_B1_PATCH_ROUTING_CORE_SECONDS", "10")
+                            ),
+                            per_patch_solve_seconds=float(
+                                os.environ.get(
+                                    "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS", "5"
+                                )
+                            ),
+                            quickxplain_call_cap=int(
+                                os.environ.get(
+                                    "EXACT_B1_PATCH_ROUTING_CORE_QX_CAP", "32"
+                                )
+                            ),
+                            max_patch_cells=int(
+                                os.environ.get(
+                                    "EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS", "900"
+                                )
+                            ),
+                        )
+                        print(
+                            f"[pcr-cut] iter {iteration}: cut_added={sep_result.cut_added} "
+                            f"attempted={sep_result.cuts_attempted} accepted={sep_result.cuts_accepted} "
+                            f"rejected={sep_result.cuts_rejected} candidates={sep_result.candidates_evaluated} "
+                            f"reason={sep_result.reason} wall={sep_result.wall_s}s",
+                            flush=True,
+                        )
+                        if sep_result.cut_added:
+                            cut_added = True
+                            _b1_pcr_skip_other_cuts = True
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                    except Exception as exc:
+                        print(
+                            f"[pcr-cut] iter {iteration}: error {type(exc).__name__}: {exc}",
+                            flush=True,
+                        )
                 # B1 Phase 6 路线 2: env on 时用 lazy per-pose demand cut 替代
                 # cell-level pattern cut. 形式更强 (per-pose sum >= demand) 数
                 # 量更少 (反馈 500 blocked_ports → ~50 unique pose). 期望收敛.
@@ -4687,6 +4772,8 @@ class LBBDController:
                 # deletion-core 路径: 优先于 lazy_demand / cell_cut. 收 routing
                 # blocked_ports 的 conflict_set, run minimizer, 加 placement_local_nogood
                 # for minimal core.
+                if _b1_pcr_skip_other_cuts:
+                    _b1_use_deletion_core = False
                 if _b1_use_deletion_core:
                     from src.search.routing_deletion_core_minimizer import (
                         minimize_routing_front_blocked_core,
@@ -4721,7 +4808,7 @@ class LBBDController:
                         print(f"[deletion-core] full={core_result.full_layout_size} → core={len(core_result.instance_ids)} oracle_calls={core_result.oracle_calls} abort={core_result.abort_reason}", flush=True)
                 # lazy demand: dedup blocked_ports 到 instance_id (pose-level, side-agnostic)
                 _lazy_demand_targets: Set[str] = set()
-                _skip_per_port_loop = _b1_use_deletion_core
+                _skip_per_port_loop = _b1_use_deletion_core or _b1_pcr_skip_other_cuts
                 for blocked_port in routing_precheck_summary.get("blocked_ports", []):
                     if _skip_per_port_loop:
                         break
