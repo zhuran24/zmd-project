@@ -4493,6 +4493,17 @@ class LBBDController:
             precheck_status = str(routing_precheck_summary.get("status", "feasible"))
             self._routing_precheck_statuses.append(precheck_status)
 
+            # B1 Phase 4: env on 时 skip front_blocked early reject — precheck 是
+            # heuristic, routing CP-SAT 实际能绕路. pose-bool master 不知 port
+            # direction, 每个 layout precheck 都 front_blocked ~500-600 ports,
+            # cut accumulation 实测 15 iter 不收敛. 让 routing CP-SAT 完整跑.
+            if precheck_status == "front_blocked" and os.environ.get(
+                "EXACT_USE_POSE_BOOL_MASTER", ""
+            ).strip().lower() in {"1", "true", "yes", "on"} and os.environ.get(
+                "EXACT_B1_BYPASS_ROUTING_PRECHECK", ""
+            ).strip().lower() in {"1", "true", "yes", "on"}:
+                precheck_status = "feasible"  # 让 routing.solve 实际跑
+
             if precheck_status == "front_blocked":
                 self._routing_precheck_rejections += 1
                 cut_added = False
@@ -5162,6 +5173,14 @@ def run_benders_for_ghost_rect(
             "EXACT_USE_POSE_BOOL_MASTER", ""
         ).strip().lower() in {"1", "true", "yes", "on"}
         if _use_pose_bool:
+            # B1 Phase 3 fix: build_exact_core 不传 exact_required_pose_optional_counts,
+            # 所以 session.core 那个 = empty dict. 走 PoseBool delegate 需要 inferred
+            # counts 才能正确 build protocol_storage_box ro_vars. 不修这条 binding 会
+            # 系统性 INFEASIBLE (master 不出 storage box).
+            from src.models.master_model import infer_exact_required_pose_optional_counts
+            _inferred_counts = infer_exact_required_pose_optional_counts(
+                exact_session.core.rules, exact_session.core.generic_io_requirements
+            )
             master = MasterPlacementModel(
                 list(exact_session.core.source_instances),
                 cast("Mapping[str, List[Dict[str, Any]]]", exact_session.core.facility_pools),
@@ -5170,9 +5189,7 @@ def run_benders_for_ghost_rect(
                 skip_power_coverage=bool(exact_session.core.skip_power_coverage),
                 enable_symmetry_breaking=bool(exact_session.core.enable_symmetry_breaking),
                 generic_io_requirements=exact_session.core.generic_io_requirements,
-                exact_required_pose_optional_counts=dict(
-                    exact_session.core.exact_required_pose_optional_counts
-                ),
+                exact_required_pose_optional_counts=_inferred_counts,
                 solve_mode="certified_exact",
                 master_search_profile=master_search_profile,
                 ghost_anchor_filter=ghost_anchor_filter_override,

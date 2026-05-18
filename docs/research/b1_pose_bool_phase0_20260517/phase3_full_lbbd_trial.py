@@ -34,6 +34,7 @@ def main() -> int:
     # B1 env flag — must set before importing
     os.environ["EXACT_USE_POSE_BOOL_MASTER"] = "1"
     os.environ["EXACT_MASTER_GHOST_ANCHOR_FILTER"] = f"{args.anchor_x},{args.anchor_y}"
+    os.environ["EXACT_B1_BYPASS_ROUTING_PRECHECK"] = "1"  # skip front_blocked early reject
 
     print(f"=== B1 Phase 3 full LBBD trial ===")
     print(f"candidate {args.ghost_w}x{args.ghost_h} anchor ({args.anchor_x},{args.anchor_y})")
@@ -65,7 +66,7 @@ def main() -> int:
         flow_seconds=60.0,
         campaign=None,
         session=exact_session,
-        disable_master_warm_start=True,  # pose-bool warm_start 没 implement, 跳过
+        disable_master_warm_start=False,  # Phase 4: enable greedy hint (考虑 port_front), 让 master 出 port-friendly layout
     )
     elapsed = time.perf_counter() - t1
 
