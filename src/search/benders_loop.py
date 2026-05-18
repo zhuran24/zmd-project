@@ -4003,6 +4003,13 @@ class LBBDController:
                     max_per_iter = int(os.environ.get("EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER", "4"))
                 except ValueError:
                     max_per_iter = 4
+                # 加 threshold: violations ≤ K 时 fall through 进 binding/routing 真 verifier
+                try:
+                    fall_through_threshold = int(os.environ.get(
+                        "EXACT_B1_SEPARATOR_HULL_DYNAMIC_FALL_THROUGH", "-1"
+                    ))
+                except ValueError:
+                    fall_through_threshold = -1
                 # 推 ghost anchor
                 ghost_anchor = None
                 ghost_size = None
@@ -4025,18 +4032,26 @@ class LBBDController:
                 )
                 delegate = getattr(self.master, "_coordinate_delegate", None)
                 if violations and delegate is not None and hasattr(delegate, "add_separator_capacity_cut"):
-                    cuts_added = 0
-                    for v in violations[:max_per_iter]:
-                        if delegate.add_separator_capacity_cut(v):
-                            cuts_added += 1
-                    print(
-                        f"[sac-dynamic] iter {iteration}: {len(violations)} violations, "
-                        f"top slack={violations[0].slack}, cuts_added={cuts_added}",
-                        flush=True,
-                    )
-                    if cuts_added > 0:
-                        self._fine_grained_exact_safe_cut_count += cuts_added
-                        continue
+                    # fall through 进 binding/routing 当 violations ≤ threshold
+                    if 0 <= fall_through_threshold and len(violations) <= fall_through_threshold:
+                        print(
+                            f"[sac-dynamic] iter {iteration}: {len(violations)} violations ≤ "
+                            f"threshold {fall_through_threshold}, fall through to binding/routing",
+                            flush=True,
+                        )
+                    else:
+                        cuts_added = 0
+                        for v in violations[:max_per_iter]:
+                            if delegate.add_separator_capacity_cut(v):
+                                cuts_added += 1
+                        print(
+                            f"[sac-dynamic] iter {iteration}: {len(violations)} violations, "
+                            f"top slack={violations[0].slack}, cuts_added={cuts_added}",
+                            flush=True,
+                        )
+                        if cuts_added > 0:
+                            self._fine_grained_exact_safe_cut_count += cuts_added
+                            continue
                 else:
                     print(f"[sac-dynamic] iter {iteration}: 0 violations", flush=True)
 
