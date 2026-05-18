@@ -435,6 +435,22 @@ solve time 几乎不随 area 变化 (49-53s consistent), 推测大 candidate gho
 
 **Verdict**: ✅ **Phase 0 GO**. pose-bool form + power_coverage 一次性 master solve 在 < 60s 收敛.
 
+### B1 Phase 5 cell-level cut + a priori port_clearance (2026-05-18, commit `47b6230`)
+
+3 种 cut 形式实测均 over-restrictive:
+
+1. **Cell-level reactive (mutual exclusion)**: 5 iter 加 1587 cuts, blocked_ports 仍 519-611 不收敛
+2. **A priori hard mutual** (env `EXACT_B1_PORT_CLEARANCE_HARD`): 47666 constraints, 6 anchor + 4 small candidate 全 INFEASIBLE in 47-56s
+3. **A priori hard channeled-OR implication**: 同 INFEASIBLE 47s
+
+**Root cause**: a priori port_clearance "所有 port front 必空" 是 over-approximation — master 不知 binding 选哪些 port active. 每 facility 5-7 个 port, binding 只选一部分接 commodity, 没接的 port 前面被堵没事.
+
+Path 1 (用户选): Phase 6 改 master/binding 责任边界, port-selection 决策从 binding 提到 master.
+
+**链**: [[project_b1_phase5_cell_cut_findings]], [[project_b1_phase6_plan_port_active]]
+
+---
+
 ### B1 Phase 4 LBBD inner-loop tuning (2026-05-18, commit `c64d15f`)
 
 修 root cause: `run_benders_for_ghost_rect` env on branch 没传 inferred `exact_required_pose_optional_counts` → master 不出 protocol_storage_box → binding 必 INFEASIBLE (某 commodity 没 sink). 修后 binding 通 (ro_vars=15980).
@@ -552,7 +568,7 @@ Pytest 2207 passed + 60 skipped, 0 fail.
 
 **搁置 / 长期 option**: L6 (AI sidecar)
 
-**Phase 0/1/2/3/4 land**: **B1 (pose-bool master rewrite)** — Phase 0-3 paradigm + wiring 完整 verified, **Phase 4 (commit `c64d15f`)** 修 inferred counts → binding 通; 但 routing precheck `front_blocked` 系统性 ~500-610 ports each iter, 15 iter cuts 累积不收敛. PROJECT_LOCK 禁 port_clearance hard constraint, Phase 5 (port-direction-aware cut / deletion-core / routing-aware hint) 未做. **端到端 certified FEASIBLE 没拿到**. Pytest 2207 全 pass. 8 commit 累计.
+**Phase 0/1/2/3/4/5 land**: **B1 (pose-bool master rewrite)** — Phase 0-3 paradigm + wiring verified, Phase 4 修 inferred counts (binding 通), **Phase 5 (commit `47b6230`)** 试 3 种 cut 形式 (cell-level reactive / a priori mutual / a priori channeled-OR implication) 均 over-restrictive. Root cause 锁定: a priori port_clearance 在 master 端 over-approximation, master 不知 binding 选哪些 port active. **Phase 6 path-1 (用户选): 改 master/binding 责任边界, port-selection 决策提到 master**. 估 1 周 (~500 LOC). 端到端 certified verdict 没拿到. Pytest 2207 全 pass. 12 commit 累计.
 
 **累积事实** (3 天 session + 14h trial + 多次 1h trial + v8/v10/L14/L15 PoC 实测):
 - master.solve **不管喂什么资源都解不动这个 model**
