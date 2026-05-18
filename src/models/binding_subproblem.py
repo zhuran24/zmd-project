@@ -17,7 +17,7 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set
 
 from ortools.sat.python import cp_model
 
@@ -185,6 +185,9 @@ class PortBindingModel:
             "generic_input_slots_pre_filter": 0,
             "generic_input_slots_post_filter": 0,
         }
+        # RAB-SEP Phase 3: per-owner blocker info for cert generation
+        # key: instance_id -> set of blocker instance_ids
+        self.routing_aware_blockers_by_owner: Dict[str, Set[str]] = {}
 
         self._materialize_pose_optional_instances()
 
@@ -337,20 +340,62 @@ class PortBindingModel:
 
         Returns NEW list (raw cache not polluted). Pattern is kept iff every
         active port (input + output) has front cell in-grid and free.
+
+        Phase 3 side effect: collect blocker instance_ids for cert generation
+        — every blocker that occupies an active port front cell across any
+        raw pattern is recorded. Used by extract_routing_aware_certificates().
         """
         if self.routing_context is None:
             return list(raw_patterns)
-        from src.models.routing_binding_context import is_port_front_usable
+        from src.models.routing_binding_context import port_front_status
         kept: List[Dict[str, List[Dict[str, Any]]]] = []
+        blockers: Set[str] = set()
         for pattern in raw_patterns:
             ok = True
             for port in pattern.get("input_ports", []) + pattern.get("output_ports", []):
-                if not is_port_front_usable(port, self.routing_context, owner_instance_id):
+                status = port_front_status(port, self.routing_context, owner_instance_id)
+                if not (status.in_grid and status.is_free):
                     ok = False
-                    break
+                    if status.blocker_instance_id is not None:
+                        blockers.add(status.blocker_instance_id)
+                    # 不 break — 继续 collect 该 pattern 中所有 blocker
             if ok:
                 kept.append(pattern)
+        if blockers:
+            self.routing_aware_blockers_by_owner[owner_instance_id] = blockers
         return kept
+
+    def extract_routing_aware_certificates(self) -> List[Dict[str, Any]]:
+        """RAB-SEP Phase 3: generate clear-deficit certificates for empty filtered owners.
+
+        Each cert = owner_pose + minimal blocker_poses (instance_id, pose_idx) —
+        禁止该 owner_pose 跟该 blocker_poses 同时出现.
+
+        Returns list of certs sorted by core size (smallest first), to feed
+        master add_benders_cut().
+        """
+        certs: List[Dict[str, Any]] = []
+        for owner_id in self.routing_aware_filter_stats.get("empty_filtered_owners", []):
+            owner_sol = self.placement_solution.get(str(owner_id), {})
+            owner_pose_idx = int(owner_sol.get("pose_idx", -1))
+            if owner_pose_idx < 0:
+                continue
+            blockers = self.routing_aware_blockers_by_owner.get(str(owner_id), set())
+            conflict_set: Dict[str, int] = {str(owner_id): owner_pose_idx}
+            for blocker_id in blockers:
+                b_sol = self.placement_solution.get(blocker_id, {})
+                b_pose_idx = int(b_sol.get("pose_idx", -1))
+                if b_pose_idx >= 0:
+                    conflict_set[blocker_id] = b_pose_idx
+            certs.append({
+                "owner_instance_id": str(owner_id),
+                "owner_pose_idx": owner_pose_idx,
+                "blocker_instance_ids": sorted(blockers),
+                "conflict_set": conflict_set,
+                "core_size": len(conflict_set),
+            })
+        certs.sort(key=lambda c: c["core_size"])
+        return certs
 
     def _resolve_pose(self, facility_type: str, pose_idx: int) -> Dict[str, Any]:
         pool = self.facility_pools.get(facility_type, [])

@@ -4260,11 +4260,40 @@ class LBBDController:
         )
         if empty_binding_domain_instances:
             cut_added = False
+            # RAB-SEP Phase 3: env on 时用 cert (owner_pose + blocker_poses)
+            # 替 thin instance-only nogood. cert core 含 blocker info, master 端
+            # 学到完整 conflict. 选 smallest cert (按 GPT plan: 不全加, 选最小).
+            _rab_sep_certs: List[Dict[str, Any]] = []
+            if _rab_sep_routing_context is not None and hasattr(
+                binding_model, "extract_routing_aware_certificates"
+            ):
+                _rab_sep_certs = binding_model.extract_routing_aware_certificates()
+                if _rab_sep_certs:
+                    core_sizes = [c["core_size"] for c in _rab_sep_certs]
+                    print(
+                        f"[rab-sep] {len(_rab_sep_certs)} certs, core size: "
+                        f"min={min(core_sizes)} median={sorted(core_sizes)[len(core_sizes)//2]} "
+                        f"p90={sorted(core_sizes)[int(len(core_sizes)*0.9)]} max={max(core_sizes)}",
+                        flush=True,
+                    )
             for empty_domain in empty_binding_domain_instances:
-                conflict_set = self._build_conflict_from_instance_ids(
-                    solution,
-                    [str(empty_domain["instance_id"])],
-                )
+                # RAB-SEP Phase 3: prefer cert with blocker info
+                conflict_set: Dict[str, int] = {}
+                cut_type = "binding_pose_domain_empty_nogood"
+                if _rab_sep_certs:
+                    matching = next(
+                        (c for c in _rab_sep_certs
+                         if c["owner_instance_id"] == str(empty_domain["instance_id"])),
+                        None,
+                    )
+                    if matching and matching["core_size"] > 1:
+                        conflict_set = dict(matching["conflict_set"])
+                        cut_type = "rab_sep_clear_deficit_certificate"
+                if not conflict_set:
+                    conflict_set = self._build_conflict_from_instance_ids(
+                        solution,
+                        [str(empty_domain["instance_id"])],
+                    )
                 if not conflict_set:
                     continue
                 cut_summary = {
@@ -4287,7 +4316,7 @@ class LBBDController:
                 was_added = self._add_exact_persisted_nogood(
                     conflict_set=conflict_set,
                     iteration=iteration,
-                    cut_type="binding_pose_domain_empty_nogood",
+                    cut_type=cut_type,
                     proof_stage="binding",
                     proof_summary=cut_summary,
                     metadata={"kind": "placement_local_nogood"},
