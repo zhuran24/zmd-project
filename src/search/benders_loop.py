@@ -4223,11 +4223,22 @@ class LBBDController:
             iteration=iteration,
             extra={"diagnostic_flow_status": str(diagnostic_flow_status)},
         )
+        # RAB-SEP Phase 1: env-gated routing-aware binding domain filter
+        _rab_sep_routing_context = None
+        if os.environ.get("EXACT_B1_ROUTING_AWARE_BINDING", "").strip().lower() in {"1", "true", "yes", "on"}:
+            from src.models.routing_binding_context import build_routing_binding_context
+            _rab_sep_routing_context = build_routing_binding_context(
+                solution,
+                self.master.facility_pools,
+                grid_w=int(self.master.grid_w),
+                grid_h=int(self.master.grid_h),
+            )
         binding_model = PortBindingModel(
             solution,
             self.master.facility_pools,
             self.master.source_instances,
             project_root=self.project_root,
+            routing_context=_rab_sep_routing_context,
         )
         binding_model.build()
         self._used_routing_core_reuse = False

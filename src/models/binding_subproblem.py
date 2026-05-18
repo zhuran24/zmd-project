@@ -102,6 +102,7 @@ class PortBindingModel:
         required_generic_inputs: Optional[Mapping[str, int]] = None,
         project_root: Optional[Path] = None,
         io_requirements_path: Optional[Path] = None,
+        routing_context: Optional[Any] = None,  # RAB-SEP Phase 1: routing-aware filter
     ):
         self.project_root = project_root or PROJECT_ROOT
         self.io_requirements_path = io_requirements_path
@@ -170,6 +171,20 @@ class PortBindingModel:
         self.binding_domain_cache_hits = 0
         self.binding_domain_cache_misses = 0
         self.binding_domain_reused_instances: List[str] = []
+
+        # RAB-SEP Phase 1: routing-aware filter context (None when disabled)
+        self.routing_context = routing_context
+        self.routing_aware_filter_stats: Dict[str, Any] = {
+            "enabled": routing_context is not None,
+            "raw_patterns_total": 0,
+            "filtered_patterns_total": 0,
+            "front_blocked_patterns_pruned": 0,
+            "empty_filtered_owners": [],
+            "generic_output_slots_pre_filter": 0,
+            "generic_output_slots_post_filter": 0,
+            "generic_input_slots_pre_filter": 0,
+            "generic_input_slots_post_filter": 0,
+        }
 
         self._materialize_pose_optional_instances()
 
@@ -313,6 +328,30 @@ class PortBindingModel:
         self._conflict_summary.setdefault("missing_instance_ids", []).append(instance_id)
         return None
 
+    def _filter_pose_binding_domain(
+        self,
+        raw_patterns: List[Dict[str, List[Dict[str, Any]]]],
+        owner_instance_id: str,
+    ) -> List[Dict[str, List[Dict[str, Any]]]]:
+        """RAB-SEP Phase 1: layout-local front-free filter on raw binding patterns.
+
+        Returns NEW list (raw cache not polluted). Pattern is kept iff every
+        active port (input + output) has front cell in-grid and free.
+        """
+        if self.routing_context is None:
+            return list(raw_patterns)
+        from src.models.routing_binding_context import is_port_front_usable
+        kept: List[Dict[str, List[Dict[str, Any]]]] = []
+        for pattern in raw_patterns:
+            ok = True
+            for port in pattern.get("input_ports", []) + pattern.get("output_ports", []):
+                if not is_port_front_usable(port, self.routing_context, owner_instance_id):
+                    ok = False
+                    break
+            if ok:
+                kept.append(pattern)
+        return kept
+
     def _resolve_pose(self, facility_type: str, pose_idx: int) -> Dict[str, Any]:
         pool = self.facility_pools.get(facility_type, [])
         if pose_idx < 0 or pose_idx >= len(pool):
@@ -342,6 +381,15 @@ class PortBindingModel:
                 self.binding_domain_reused_instances.append(instance_id)
             else:
                 self.binding_domain_cache_misses += 1
+
+            # RAB-SEP Phase 1: filter raw patterns to front-free ones (layout-local, not cached)
+            if self.routing_context is not None and domains:
+                raw_count = len(domains)
+                domains = self._filter_pose_binding_domain(domains, instance_id)
+                self.routing_aware_filter_stats["raw_patterns_total"] += raw_count
+                self.routing_aware_filter_stats["filtered_patterns_total"] += len(domains)
+                self.routing_aware_filter_stats["front_blocked_patterns_pruned"] += (raw_count - len(domains))
+
             if not domains:
                 empty_domain = {
                     "instance_id": instance_id,
@@ -352,6 +400,8 @@ class PortBindingModel:
                 }
                 self.empty_binding_domain_instances.append(empty_domain)
                 self._conflict_summary["binding_domains"][instance_id] = 0
+                if self.routing_context is not None:
+                    self.routing_aware_filter_stats["empty_filtered_owners"].append(instance_id)
                 continue
 
             self.binding_domains[instance_id] = domains
@@ -388,6 +438,13 @@ class PortBindingModel:
             tpl = str(sol["facility_type"])
             pose = self._resolve_pose(tpl, int(sol["pose_idx"]))
             for local_idx, port in enumerate(pose.get("output_port_cells", [])):
+                self.routing_aware_filter_stats["generic_output_slots_pre_filter"] += 1
+                # RAB-SEP Phase 1: skip front-blocked generic output slot
+                if self.routing_context is not None:
+                    from src.models.routing_binding_context import is_port_front_usable
+                    if not is_port_front_usable(port, self.routing_context, instance_id):
+                        continue
+                self.routing_aware_filter_stats["generic_output_slots_post_filter"] += 1
                 slot_id = f"{instance_id}:out:{local_idx}"
                 slot = {
                     "slot_id": slot_id,
@@ -422,6 +479,14 @@ class PortBindingModel:
             tpl = str(sol["facility_type"])
             pose = self._resolve_pose(tpl, int(sol["pose_idx"]))
             for local_idx, port in enumerate(pose.get("input_port_cells", [])):
+                self.routing_aware_filter_stats["generic_input_slots_pre_filter"] += 1
+                # RAB-SEP Phase 1: skip front-blocked generic input slot
+                # (__unused__ sentinel is moot — slot 不存在 == slot 永远 unused)
+                if self.routing_context is not None:
+                    from src.models.routing_binding_context import is_port_front_usable
+                    if not is_port_front_usable(port, self.routing_context, instance_id):
+                        continue
+                self.routing_aware_filter_stats["generic_input_slots_post_filter"] += 1
                 slot_id = f"{instance_id}:in:{local_idx}"
                 slot = {
                     "slot_id": slot_id,
