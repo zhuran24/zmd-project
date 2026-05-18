@@ -4522,9 +4522,53 @@ class LBBDController:
                 ).strip().lower() in {"1", "true", "yes", "on"} and _b1_use_cell_cut and hasattr(
                     self.master._coordinate_delegate, "add_routing_port_lazy_demand_cut"
                 )
+                # B1 Phase 6 第 2 条: deletion-core minimizer 缩 layout 到 minimal
+                # core, 加 instance-level placement_local_nogood. Tight cut 一次切大
+                # 空间, 比 Phase 5 cell_cut + lazy demand 都更 strict.
+                _b1_use_deletion_core = os.environ.get(
+                    "EXACT_B1_DELETION_CORE_CUT", ""
+                ).strip().lower() in {"1", "true", "yes", "on"} and _b1_use_cell_cut
+                # deletion-core 路径: 优先于 lazy_demand / cell_cut. 收 routing
+                # blocked_ports 的 conflict_set, run minimizer, 加 placement_local_nogood
+                # for minimal core.
+                if _b1_use_deletion_core:
+                    from src.search.routing_deletion_core_minimizer import (
+                        minimize_routing_front_blocked_core,
+                    )
+                    blocker_ids: Set[str] = set()
+                    for bp in routing_precheck_summary.get("blocked_ports", []):
+                        for iid in bp.get("placement_level_conflict_set", []):
+                            blocker_ids.add(str(iid))
+                        primary = bp.get("instance_id")
+                        if primary:
+                            blocker_ids.add(str(primary))
+                    if isinstance(solution, dict) and solution:
+                        core_result = minimize_routing_front_blocked_core(
+                            full_solution=solution,
+                            facility_pools=self.session.facility_pools if hasattr(self, "session") else self.master.facility_pools,
+                            grid_w=int(self.master.grid_w),
+                            grid_h=int(self.master.grid_h),
+                            blocker_instance_ids=blocker_ids,
+                            max_oracle_calls=128,
+                            max_seconds=30.0,
+                        )
+                        # build conflict_set: instance_id → pose_idx
+                        conflict_set_dict: Dict[str, int] = dict(core_result.pose_idx_by_id)
+                        if conflict_set_dict:
+                            delegate = self.master._coordinate_delegate
+                            if delegate is not None:
+                                was_added = delegate.add_benders_cut(conflict_set_dict)
+                                if was_added:
+                                    self._fine_grained_exact_safe_cut_count += 1
+                                    self._routing_front_blocked_cut_count += 1
+                                    cut_added = True
+                        print(f"[deletion-core] full={core_result.full_layout_size} → core={len(core_result.instance_ids)} oracle_calls={core_result.oracle_calls} abort={core_result.abort_reason}", flush=True)
                 # lazy demand: dedup blocked_ports 到 instance_id (pose-level, side-agnostic)
                 _lazy_demand_targets: Set[str] = set()
+                _skip_per_port_loop = _b1_use_deletion_core
                 for blocked_port in routing_precheck_summary.get("blocked_ports", []):
+                    if _skip_per_port_loop:
+                        break
                     delegate = self.master._coordinate_delegate
                     if _b1_use_lazy_demand and delegate is not None:
                         # identify pose owner — instance_id is direct field in routing output
@@ -4772,7 +4816,19 @@ class LBBDController:
                 }
                 return RUN_STATUS_UNKNOWN, None
 
-            if self._binding_has_alternatives(binding_model):
+            # B1 Phase 6 第 3 条: env on 时 cap binding alt loop iterations,
+            # 防 Phase 4 那种 42 min 卡死. enumerated_bindings >= cap → break
+            # 让 master whole-layout cut + iter continue.
+            _b1_binding_alt_cap_str = os.environ.get(
+                "EXACT_B1_BINDING_ALT_CAP", ""
+            ).strip()
+            _b1_binding_alt_cap = 0
+            try:
+                _b1_binding_alt_cap = int(_b1_binding_alt_cap_str) if _b1_binding_alt_cap_str else 0
+            except ValueError:
+                _b1_binding_alt_cap = 0
+            _exceeded_cap = _b1_binding_alt_cap > 0 and enumerated_bindings >= _b1_binding_alt_cap
+            if not _exceeded_cap and self._binding_has_alternatives(binding_model):
                 binding_model.add_nogood_cut(selection)
                 self._emit_heartbeat(
                     stage="binding_resolve",
@@ -4835,6 +4891,14 @@ class LBBDController:
         if not cut_applied:
             # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
             return RUN_STATUS_UNKNOWN, None
+        # B1 Phase 6 第 3 条架构改: env on 时 routing INFEASIBLE 不直接 declare
+        # candidate INFEASIBLE, 而是返 MASTER_CUT_ADDED_CONTINUE 让 outer for-iter
+        # continue (master 加 cut 后下次解次优 layout, 真 enumerate verdict).
+        _b1_iter_on_routing_inf = os.environ.get(
+            "EXACT_B1_ITER_ON_ROUTING_INFEASIBLE", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        if _b1_iter_on_routing_inf:
+            return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
         return RUN_STATUS_INFEASIBLE, None
 
     def _retry_binding_without_overload_separation(
