@@ -19,7 +19,7 @@ delegate.
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -473,6 +473,151 @@ class PoseBoolExactMasterDelegate:
             "pose_clearance_constraints": pose_clearance_count,
             "port_active_enabled": port_active_enabled,
             "sac_hull": sac_hull_stats,
+        }
+
+    def resolve_pose_var_for_instance(
+        self,
+        instance_id: str,
+        pose_idx: int,
+    ) -> Optional[cp_model.IntVar]:
+        """Unified instance_id → master pose var lookup.
+
+        Handles all three pose-bool var sources: mandatory x_vars (per group),
+        protocol_storage_box ro_vars (per template), power_pole pole_vars. Returns
+        None if the instance is unknown or its (gid, pose_idx) pair is not in any var
+        dict — caller MUST fail-closed on None.
+        """
+        pose_idx_int = int(pose_idx)
+        key = str(instance_id)
+        if key in self._group_id_by_instance:
+            gid = self._group_id_by_instance[key]
+            return self.x_vars.get((gid, pose_idx_int))
+        if key.startswith("pose_optional::power_pole::"):
+            return self.pole_vars.get(pose_idx_int)
+        if key.startswith("pose_optional::"):
+            _, tpl, *_rest = key.split("::")
+            return self.ro_vars.get((tpl, pose_idx_int))
+        return None
+
+    def _resolve_pose_pool_for_instance(
+        self,
+        instance_id: str,
+    ) -> Optional[Tuple[str, str, str, List[Mapping[str, Any]]]]:
+        """Return (kind, gid_or_template, operation_type, pose_pool) or None.
+
+        kind is one of {'mandatory', 'ro', 'pole'} so callers can index the right
+        var dict afterwards.
+        """
+        key = str(instance_id)
+        if key in self._group_id_by_instance:
+            gid = self._group_id_by_instance[key]
+            tpl = self._mandatory_template_by_group[gid]
+            op = self._mandatory_operation_by_group.get(gid, "")
+            return ("mandatory", gid, op, self.owner.facility_pools.get(tpl, []))
+        if key.startswith("pose_optional::power_pole::"):
+            return ("pole", "power_pole", "", self.owner.facility_pools.get("power_pole", []))
+        if key.startswith("pose_optional::"):
+            _, tpl, *_rest = key.split("::")
+            op = "wireless_sink" if tpl == "protocol_storage_box" else ""
+            return ("ro", tpl, op, self.owner.facility_pools.get(tpl, []))
+        return None
+
+    def enumerate_pose_vars_with_patch_signature(
+        self,
+        instance_id: str,
+        target_signature: Any,  # PoseLocalSignature
+        patch_cells: FrozenSet[Tuple[int, int]],
+    ) -> List[cp_model.IntVar]:
+        """Return all master pose vars whose patch-local signature equals target.
+
+        Used for signature lifting: a single core PoseAssumption nogood expands to
+        a `sum(equivalent_vars)` term covering every interchangeable pose of the
+        same owner. Within-instance lifting only (NEVER cross-owner — that would
+        require independent symmetry proof).
+        """
+        from src.models.patch_routing_core import build_local_pose_signature
+        resolved = self._resolve_pose_pool_for_instance(instance_id)
+        if resolved is None:
+            return []
+        kind, gid_or_tpl, op, pool = resolved
+        tpl: str
+        if kind == "mandatory":
+            tpl = self._mandatory_template_by_group[gid_or_tpl]
+        else:
+            tpl = gid_or_tpl
+        results: List[cp_model.IntVar] = []
+        for idx, pose in enumerate(pool):
+            sig = build_local_pose_signature(
+                facility_type=tpl, operation_type=op, pose=pose, patch_cells=patch_cells,
+            )
+            if sig != target_signature:
+                continue
+            var: Optional[cp_model.IntVar]
+            if kind == "mandatory":
+                var = self.x_vars.get((gid_or_tpl, idx))
+            elif kind == "pole":
+                var = self.pole_vars.get(idx)
+            else:
+                var = self.ro_vars.get((tpl, idx))
+            if var is not None:
+                results.append(var)
+        return results
+
+    def add_patch_routing_core_cut(
+        self,
+        core_terms: Sequence[Tuple[str, int]],
+        patch_cells: FrozenSet[Tuple[int, int]],
+        *,
+        certificate_metadata: Optional[Mapping[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Add `sum_i sig_expr_i <= |core| - 1` where sig_expr_i = sum of all
+        master pose vars equivalent to core_term i under patch-local signature.
+
+        Returns metadata describing what was added. fail-closed: if ANY core_term
+        cannot resolve to a non-empty equivalent var list, NO cut is added (caller
+        sees added=False with reason).
+        """
+        from src.models.patch_routing_core import build_local_pose_signature
+        accumulated_terms: List[List[cp_model.IntVar]] = []
+        signature_lift_counts: List[int] = []
+        for (inst_id, pose_idx) in core_terms:
+            resolved = self._resolve_pose_pool_for_instance(inst_id)
+            if resolved is None:
+                return {"added": False, "reason": "unknown_instance_kind", "instance_id": str(inst_id)}
+            kind, gid_or_tpl, op, pool = resolved
+            pi = int(pose_idx)
+            if pi < 0 or pi >= len(pool):
+                return {"added": False, "reason": "pose_idx_out_of_range", "instance_id": str(inst_id), "pose_idx": pi}
+            tpl: str
+            if kind == "mandatory":
+                tpl = self._mandatory_template_by_group[gid_or_tpl]
+            else:
+                tpl = gid_or_tpl
+            target_sig = build_local_pose_signature(
+                facility_type=tpl, operation_type=op, pose=pool[pi], patch_cells=patch_cells,
+            )
+            equivalent_vars = self.enumerate_pose_vars_with_patch_signature(inst_id, target_sig, patch_cells)
+            if not equivalent_vars:
+                return {"added": False, "reason": "no_equivalent_vars", "instance_id": str(inst_id), "pose_idx": pi}
+            accumulated_terms.append(equivalent_vars)
+            signature_lift_counts.append(len(equivalent_vars))
+        if not accumulated_terms:
+            return {"added": False, "reason": "empty_terms"}
+
+        sig_exprs = [sum(vars_) for vars_ in accumulated_terms]
+        K = len(accumulated_terms)
+        self.model.Add(sum(sig_exprs) <= K - 1)
+        cut_index = int(self.owner.build_stats.get("patch_routing_core_cut_count", 0))
+        self.owner.build_stats["patch_routing_core_cut_count"] = cut_index + 1
+        self.owner._last_solution = None
+        return {
+            "added": True,
+            "reason": "ok",
+            "core_size": K,
+            "signature_lift_counts": signature_lift_counts,
+            "total_pose_terms": int(sum(signature_lift_counts)),
+            "new_bool_vars": 0,
+            "certificate_metadata": dict(certificate_metadata or {}),
         }
 
     def add_separator_capacity_cut(self, violation: Any) -> bool:

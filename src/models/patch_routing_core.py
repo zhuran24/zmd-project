@@ -93,6 +93,69 @@ class PoseAssumption:
     assumption_name: str
 
 
+@dataclass(frozen=True)
+class PoseLocalSignature:
+    """Phase 3 — pose signature local to a patch.
+
+    Two poses share the same signature iff they are interchangeable from the patch
+    router's perspective: identical footprint cells inside patch, identical port-front
+    cells inside patch with identical (direction, commodity, type) tuples, and
+    identical operation/facility metadata. This is the equivalence relation that
+    signature lifting exploits: a core nogood on one pose covers all signature-equivalent
+    poses of the same owner.
+
+    `key` is a stable hashable representation suitable for use as a dict key.
+    """
+    facility_type: str
+    operation_type: str
+    footprint_in_patch: FrozenSet[Tuple[int, int]]
+    ports_in_patch: Tuple[Tuple[int, int, str, str, str], ...]  # (x, y, dir, commodity, type)
+
+    @property
+    def key(self) -> Tuple[str, str, FrozenSet[Tuple[int, int]], Tuple[Tuple[int, int, str, str, str], ...]]:
+        return (self.facility_type, self.operation_type, self.footprint_in_patch, self.ports_in_patch)
+
+
+def build_local_pose_signature(
+    *,
+    facility_type: str,
+    operation_type: str,
+    pose: Mapping[str, Any],
+    patch_cells: FrozenSet[Tuple[int, int]],
+) -> PoseLocalSignature:
+    """Compute the patch-local signature of a pose.
+
+    Only patch-overlapping geometry contributes; ports whose port_cell is outside the
+    patch are dropped because they are not constrained by the patch router. The
+    resulting signature is the equivalence class under "same patch routing
+    requirements", which is exactly the relation that justifies a single core cut
+    covering multiple poses.
+    """
+    occupied = pose.get("occupied_cells") or []
+    footprint = frozenset(
+        (int(c[0]), int(c[1]))
+        for c in occupied
+        if (int(c[0]), int(c[1])) in patch_cells
+    )
+    port_entries: List[Tuple[int, int, str, str, str]] = []
+    for side_key, side_type in (("input_port_cells", "in"), ("output_port_cells", "out")):
+        for port in pose.get(side_key, []) or []:
+            x = int(port["x"])
+            y = int(port["y"])
+            if (x, y) not in patch_cells:
+                continue
+            d = str(port.get("dir", ""))
+            commodity = str(port.get("commodity", ""))
+            port_entries.append((x, y, d, commodity, side_type))
+    port_entries.sort()
+    return PoseLocalSignature(
+        facility_type=str(facility_type),
+        operation_type=str(operation_type),
+        footprint_in_patch=footprint,
+        ports_in_patch=tuple(port_entries),
+    )
+
+
 @dataclass
 class PatchRoutingCoreResult:
     status: Literal["FEASIBLE", "INFEASIBLE", "UNKNOWN", "MODEL_INVALID"]

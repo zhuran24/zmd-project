@@ -227,6 +227,44 @@ def test_quickxplain_minimizes_core():
     assert minimal_names <= raw_names
 
 
+def test_build_local_pose_signature_only_intersecting_geometry():
+    """Pose cells/ports outside patch must be dropped from signature."""
+    from src.models.patch_routing_core import build_local_pose_signature
+    patch_cells = frozenset((x, y) for x in range(0, 5) for y in range(0, 5))
+    pose = {
+        "occupied_cells": [(0, 0), (1, 0), (10, 10)],  # (10,10) is outside patch
+        "input_port_cells": [{"x": 0, "y": 0, "dir": "N", "commodity": "iron"}],  # in patch
+        "output_port_cells": [{"x": 8, "y": 8, "dir": "S", "commodity": "iron"}],  # outside
+    }
+    sig = build_local_pose_signature(facility_type="X", operation_type="op", pose=pose, patch_cells=patch_cells)
+    assert sig.footprint_in_patch == frozenset({(0, 0), (1, 0)})
+    assert sig.ports_in_patch == ((0, 0, "N", "iron", "in"),)
+
+
+def test_pose_local_signature_equivalence():
+    """Two distinct pose dicts producing identical patch-local geometry have equal signatures."""
+    from src.models.patch_routing_core import build_local_pose_signature
+    patch_cells = frozenset((x, y) for x in range(0, 5) for y in range(0, 5))
+    pose_a = {
+        "occupied_cells": [(0, 0), (1, 0)],
+        "input_port_cells": [{"x": 0, "y": 0, "dir": "N", "commodity": "iron"}],
+        "output_port_cells": [],
+    }
+    # Different `pose_id` and extra cells outside patch — patch signature should still match
+    pose_b = {
+        "occupied_cells": [(0, 0), (1, 0), (99, 99)],
+        "input_port_cells": [{"x": 0, "y": 0, "dir": "N", "commodity": "iron"}],
+        "output_port_cells": [{"x": 50, "y": 50, "dir": "E", "commodity": "iron"}],
+    }
+    sig_a = build_local_pose_signature(facility_type="X", operation_type="op", pose=pose_a, patch_cells=patch_cells)
+    sig_b = build_local_pose_signature(facility_type="X", operation_type="op", pose=pose_b, patch_cells=patch_cells)
+    assert sig_a == sig_b
+
+    # Different operation_type → different signature
+    sig_c = build_local_pose_signature(facility_type="X", operation_type="op_other", pose=pose_a, patch_cells=patch_cells)
+    assert sig_a != sig_c
+
+
 def test_extract_and_validate_full_lifecycle():
     """The composite helper should produce accepted=True on a real INFEASIBLE patch."""
     from src.models.patch_routing_core import (
