@@ -4682,6 +4682,48 @@ class LBBDController:
                         self.master._coordinate_delegate, "add_patch_routing_core_cut"
                     )
                 )
+                # Path 17 D2 Phase 1: env-gated commodity cell-flow separator.
+                # 优先于 PCR-CUT / deletion-core — Phase 0b 实测 7/7 anchor INFEASIBLE
+                # in 0.05-0.15s, paradigm 第一次 Phase 0 GO. fail-closed 回落既有 cut paths.
+                _b1_use_d2_flow = (
+                    os.environ.get("EXACT_B1_D2_COMMODITY_FLOW", "").strip().lower()
+                    in {"1", "true", "yes", "on"}
+                    and _b1_use_cell_cut
+                    and hasattr(
+                        self.master._coordinate_delegate, "add_benders_cut"
+                    )
+                )
+                _b1_d2_skip_other_cuts = False
+                if _b1_use_d2_flow and isinstance(solution, dict) and solution:
+                    try:
+                        from src.search.d2_separator import run_d2_separation
+
+                        d2_result = run_d2_separation(
+                            master_delegate=self.master._coordinate_delegate,
+                            placement_solution=solution,
+                            facility_pools=self.master.facility_pools,
+                            port_specs=port_specs,
+                            time_limit=float(
+                                os.environ.get("EXACT_B1_D2_FLOW_SECONDS", "30")
+                            ),
+                        )
+                        print(
+                            f"[d2-flow] iter {iteration}: cut_added={d2_result.cut_added} "
+                            f"status={d2_result.d2_status} wall={d2_result.d2_wall_s}s "
+                            f"core={d2_result.raw_core_size} vars={d2_result.d2_total_vars} "
+                            f"reason={d2_result.reason}",
+                            flush=True,
+                        )
+                        if d2_result.cut_added:
+                            cut_added = True
+                            _b1_d2_skip_other_cuts = True
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                    except Exception as exc:
+                        print(
+                            f"[d2-flow] iter {iteration}: error {type(exc).__name__}: {exc}",
+                            flush=True,
+                        )
                 _b1_pcr_skip_other_cuts = False
                 if _b1_use_patch_core and isinstance(solution, dict) and solution:
                     try:
@@ -4772,7 +4814,7 @@ class LBBDController:
                 # deletion-core 路径: 优先于 lazy_demand / cell_cut. 收 routing
                 # blocked_ports 的 conflict_set, run minimizer, 加 placement_local_nogood
                 # for minimal core.
-                if _b1_pcr_skip_other_cuts:
+                if _b1_pcr_skip_other_cuts or _b1_d2_skip_other_cuts:
                     _b1_use_deletion_core = False
                 if _b1_use_deletion_core:
                     from src.search.routing_deletion_core_minimizer import (
@@ -4808,7 +4850,7 @@ class LBBDController:
                         print(f"[deletion-core] full={core_result.full_layout_size} → core={len(core_result.instance_ids)} oracle_calls={core_result.oracle_calls} abort={core_result.abort_reason}", flush=True)
                 # lazy demand: dedup blocked_ports 到 instance_id (pose-level, side-agnostic)
                 _lazy_demand_targets: Set[str] = set()
-                _skip_per_port_loop = _b1_use_deletion_core or _b1_pcr_skip_other_cuts
+                _skip_per_port_loop = _b1_use_deletion_core or _b1_pcr_skip_other_cuts or _b1_d2_skip_other_cuts
                 for blocked_port in routing_precheck_summary.get("blocked_ports", []):
                     if _skip_per_port_loop:
                         break
