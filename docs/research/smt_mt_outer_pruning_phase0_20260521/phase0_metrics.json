@@ -1,0 +1,53 @@
+{
+  "go": true,
+  "infeasible_trials_requested": 1000,
+  "m1_total_candidates": 2347345,
+  "m2_direct_certified": 536,
+  "m2_direct_infeasible": 464,
+  "m2_prune_ratio_after_trials": 0.7667091969863825,
+  "m2_pruned_via_monotone": 1799267,
+  "m2_total_labeled": 1800267,
+  "m3_containment_query_count": 464,
+  "m3_containment_query_p50_ms": 196.2364650098607,
+  "m3_containment_query_p95_ms": 292.55743500834797,
+  "m3_containment_query_p99_ms": 329.04259700444527,
+  "m4_rtree_build_seconds": 38.619023000006564,
+  "m5_rtree_rss_gb_absolute": 0.6521644592285156,
+  "m5_rtree_rss_gb_delta": 0.43280792236328125,
+  "m6_prune_by_area_bucket": {
+    "1000-1999": {
+      "pruned": 465137,
+      "pruned_ratio": 0.9999849508969265,
+      "total": 465144
+    },
+    "200-499": {
+      "pruned": 538292,
+      "pruned_ratio": 0.7332599563007078,
+      "total": 734108
+    },
+    "500-999": {
+      "pruned": 644122,
+      "pruned_ratio": 0.9999115152775859,
+      "total": 644179
+    },
+    "<200": {
+      "pruned": 15506,
+      "pruned_ratio": 0.04216978874311947,
+      "total": 367704
+    },
+    ">=2000": {
+      "pruned": 136210,
+      "pruned_ratio": 1.0,
+      "total": 136210
+    }
+  },
+  "no_go": false,
+  "paradigm": "smt_mt_outer_pruning",
+  "phase": "phase0",
+  "schema_version": 1,
+  "seed": 42,
+  "total_wall_seconds": 129.4812989839993,
+  "trial_loop_seconds": 90.2465878840012,
+  "trials_executed": 1000,
+  "verdict": "GO"
+}

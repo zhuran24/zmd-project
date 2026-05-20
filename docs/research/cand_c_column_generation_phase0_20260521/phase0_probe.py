@@ -599,14 +599,15 @@ def solve_pricing(
     model.Add(total <= max_facilities)
     model.Add(total >= 2)
 
-    # Objective:  cost (sum z, each *SCALE)  -  dual rewards.
+    # Set partitioning min cardinality: column cost = 1 per column (constant).
+    # reduced_cost = 1 - Σ_i π_i * a_ki - Σ_c d_c * o_kc
+    # CP-SAT min objective = -Σ z_var * (π + cell_penalty); constant 1 加在 obj 外.
     obj_terms = []
     for (iid, pose_idx), v in z_vars.items():
         pose = pose_lookup[(iid, pose_idx)]
         pi = float(facility_duals.get(iid, 0.0))
         cell_penalty = sum(float(cell_duals.get(c, 0.0)) for c in pose.cells)
-        # Per-z contribution:  cost(=1) - pi - cell_penalty.
-        coeff = (1.0 - pi - cell_penalty)
+        coeff = -(pi + cell_penalty)
         obj_terms.append(int(round(coeff * SCALE)) * v)
 
     if obj_terms:
@@ -633,7 +634,8 @@ def solve_pricing(
             status_str=status_str,
         )
 
-    reduced_cost = float(solver.ObjectiveValue()) / SCALE
+    # column cost = 1 (set partitioning); CP-SAT obj = -Σ dual rewards; +1 复原 cost.
+    reduced_cost = 1.0 + float(solver.ObjectiveValue()) / SCALE
     chosen: List[Tuple[str, str, int]] = []
     occupied: Set[Tuple[int, int]] = set()
     port_cells_union: Set[Tuple[int, int]] = set()
@@ -657,7 +659,11 @@ def solve_pricing(
     pattern = Pattern(
         occupied_cells=frozenset(occupied),
         facility_assignments=tuple(chosen),
-        cost=len(chosen),
+        # cost = 1 per column (set partitioning min cardinality), not facility count.
+        # 原 cost=len(chosen) 让 single/multi-facility column 在 LP tie at optimum →
+        # pricing iter 0 立即 stop. 改 cost=1 给 multi-facility column 严格 incentive
+        # (1 个 k-facility column 替 k single column 节省 k-1 cost).
+        cost=1,
         region=region,
         port_cells=frozenset(port_cells_union),
     )
