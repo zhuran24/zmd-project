@@ -22,7 +22,7 @@ Phase 0 测的是这个 paradigm 最 fundamental 的两个前提：
 
 如果任一前提不成立，cand C 本质上 = current master，无收益。
 
-## 8 个 metric
+## 9 个 metric
 
 | metric | 含义 | 5-inst GO | 20-inst GO |
 |---|---|---|---|
@@ -34,6 +34,8 @@ Phase 0 测的是这个 paradigm 最 fundamental 的两个前提：
 | m6_single_facility_column_pct | column 覆盖 = 1 facility 比例 | ≤ 50% | ≤ 50% |
 | m7_pricing_vars_vs_direct_ratio | pricing model vars / direct mini master vars | < 50% | < 50% |
 | m8_mini_exactness_match | LP/integer 跟 direct master 一致 (差 ≤1) | match | match |
+| m9_proxy_dual_active_pct | perimeter I/O proxy 非零 dual % | ≤ 30% | ≤ 30% |
+| m9_proxy_dual_sparsity | proxy dual ≥0.1 magnitude 的 window % | ≤ 20% | ≤ 20% |
 
 baseline `5,272` = 5 instance × ~1k pose/instance (粗估直接 pose-bool
 mini master vars). `21,086` = 20 instance × ~1k pose/instance。粗估
@@ -53,7 +55,77 @@ mini master vars). `21,086` = 20 instance × ~1k pose/instance。粗估
   近 baseline。CG 没省东西。
 - `m2` pricing 太慢：CP-SAT 在 region 内都不收敛，scale 上去必爆。
 - `m8` mismatch：实现错（sound 性 sanity check）。
+- `m9_proxy_dual_active_pct > 50%`: 太多 window 的 perimeter capacity 已经
+  binding → Phase 4 加 routing 后这些 window 的 boundary dual 会爆，定价
+  被迫穷举 2^144 boundary bit → 指数爆。
+- `m9_proxy_dual_sparsity > 40%`: 显著非零 (≥0.1) 的 dual 占比过高，同
+  上语义但更严：本来 sparse-dual 的 LP 才适合 column generation。
 - 任何 phase crash。
+
+## m9 perimeter I/O capacity proxy (Gemini round 2 finding)
+
+### Source
+
+External reviewer (Gemini 3.1 pro) round 2 sanity check 提出: **当前 8 个
+metric 只测几何 packing (cell exclusivity + facility coverage)，没测
+routing-induced boundary 压力**。Phase 4 加 routing 后，每个 12×12 window
+的 144 个 boundary bit 都会被 routing 约束赋上 dual → pricing subproblem
+被迫枚举 2^144 boundary 配置 → 指数爆，即使 Phase 0 几何 GO 整 paradigm
+依然死。
+
+要在 Phase 0 cheap gate **预先 forecast** Phase 4 boundary dual 是不是
+会 dense，加 lightweight LP proxy 模拟 boundary capacity 压力。
+
+### 数学
+
+每个 12×12 window `w` 加 LP 约束 (在 RMP 端，不是 pricing 端):
+
+```
+Σ_k (port_cells_in_w of column_k) · λ_k  ≤  capacity_w
+```
+
+- `port_cells_in_w of column_k` = column k 里所有 facility pose 的 input
+  + output port cell 落在 window w 内的数量。Port count 由 pose schema
+  fixed (从 `candidate_placements.json` 的 `input_port_cells` +
+  `output_port_cells` 字段抽)。
+- `capacity_w` = window 周长 × 4 方向 - 4 corner direction-slot. 12×12
+  full window = 2*(12+12)-4 = 44 perimeter cells, ×4 = 176, -16 corner
+  = **160 slots**. (probe 实测确认: 70×70 grid 上 36 个 window 满 capacity
+  160 一致.)
+
+### 为什么放在 RMP 不是 pricing
+
+1. **m9 要 LP dual** — pricing 是 CP-SAT 没有 LP dual; RMP 是 GLOP 直接
+   `Constraint.dual_value()` 拿。
+2. **Boundary capacity 是跨 column 的资源争用** — 多 column 共占 window
+   的 perimeter，是 RMP 层的 set-packing-style 约束，不是单 column 内
+   pricing 决策。
+3. **Pricing 端加约束只会限制单个 column 的 port 总数**，跟 "Phase 4
+   多 column 共享 boundary 时谁先抢到 slot" 不是一回事。Gemini finding
+   讲的是后者。
+
+### 物理灵感
+
+Rent's Rule (Landman & Russo 1971): 一个 sub-circuit 的 external
+connection 数 ≈ `K · T^p` 其中 T 是 gate count, p ∈ (0,1). 直接应用 = 
+"任何 region 的 I/O 不能超过周长"。Global routing 文献 (Cho BoxRouter
+DAC 2006) 用同样原理在 placement 阶段就提前估 routing congestion 避免
+detailed routing 时撞 capacity 死锁。
+
+### Metric 怎么算
+
+每个 RMP solve 完抽 proxy dual 向量 (用 ortools GLOP
+`Constraint.dual_value()`, sign-flip 让 ≥0 表示 binding 压力):
+
+- 取 CG loop 最后 5 个 iter 的 dual snapshot avg (smooth 早期 bootstrap
+  噪声)
+- `m9_proxy_dual_active_pct` = `mean(非零 dual window 数) / 总 window 数`
+  阈值: `|dual| > 1e-7`
+- `m9_proxy_dual_sparsity` = `mean(≥0.1 magnitude dual window 数) / 总
+  window 数` (更严)
+
+active_pct ≤ 30% + sparsity ≤ 20% 即 GO. 表示大部分 window 的 perimeter
+还宽松, Phase 4 加 routing 时 boundary 不太可能 dense-dual.
 
 ## 架构
 

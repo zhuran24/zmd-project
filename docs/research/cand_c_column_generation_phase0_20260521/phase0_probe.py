@@ -70,6 +70,9 @@ GO_THRESHOLDS_5 = {
     "m5_multi_facility_column_pct_min": 30.0,
     "m6_single_facility_column_pct_max": 50.0,
     "m7_pricing_vars_vs_direct_ratio_max": 0.50,
+    # m9 perimeter I/O capacity proxy — Gemini round 2 sanity finding.
+    "m9_proxy_dual_active_pct_max": 30.0,
+    "m9_proxy_dual_sparsity_max": 20.0,
 }
 GO_THRESHOLDS_20 = {
     "m1_generated_columns_max": 5272,           # <= 25% of 21086 baseline.
@@ -79,7 +82,19 @@ GO_THRESHOLDS_20 = {
     "m5_multi_facility_column_pct_min": 30.0,
     "m6_single_facility_column_pct_max": 50.0,
     "m7_pricing_vars_vs_direct_ratio_max": 0.50,
+    "m9_proxy_dual_active_pct_max": 30.0,
+    "m9_proxy_dual_sparsity_max": 20.0,
 }
+
+# m9 perimeter I/O capacity proxy parameters.
+# Each 12×12 pricing window has 4 boundary edges × 12 cells × 4 directions ~=
+# 176 boundary slot.  Σ (ports_in_window) ≤ 176 is the Rent's Rule style
+# perimeter capacity bound (Landman & Russo 1971; Cho BoxRouter DAC 2006).
+PROXY_WINDOW_BOUNDARY_CAPACITY = 4 * 12 * 4   # = 192 boundary direction-slots.
+# Subtract a small safety margin to account for corners shared by two edges.
+PROXY_WINDOW_BOUNDARY_CAPACITY -= 4 * 4         # = 176.
+PROXY_DUAL_NONZERO_EPS = 1e-7
+PROXY_DUAL_SIGNIFICANT_EPS = 0.1
 
 # -----------------------------------------------------------------------------
 # Helpers
@@ -115,6 +130,11 @@ class PoseRecord:
     pose_idx: int
     cells: FrozenSet[Tuple[int, int]]
     anchor: Tuple[int, int]
+    # m9 proxy: input + output port cells (each carries a direction).  We
+    # count one slot per port-cell (the port can use one direction).  The
+    # number of ports is fixed by the facility schema → static per pose.
+    port_cells: FrozenSet[Tuple[int, int]] = frozenset()
+    port_count: int = 0
 
 
 def load_pose_pools() -> Dict[str, List[PoseRecord]]:
@@ -128,7 +148,21 @@ def load_pose_pools() -> Dict[str, List[PoseRecord]]:
                 (int(c[0]), int(c[1])) for c in pose.get("occupied_cells", [])
             )
             anchor = (int(pose["anchor"]["x"]), int(pose["anchor"]["y"]))
-            recs.append(PoseRecord(tpl=tpl, pose_idx=idx, cells=cells, anchor=anchor))
+            in_ports = pose.get("input_port_cells") or []
+            out_ports = pose.get("output_port_cells") or []
+            port_cells_set = frozenset(
+                (int(p["x"]), int(p["y"])) for p in (in_ports + out_ports)
+            )
+            recs.append(
+                PoseRecord(
+                    tpl=tpl,
+                    pose_idx=idx,
+                    cells=cells,
+                    anchor=anchor,
+                    port_cells=port_cells_set,
+                    port_count=len(in_ports) + len(out_ports),
+                )
+            )
         out[tpl] = recs
     return out
 
@@ -188,12 +222,15 @@ class Pattern:
     facility_assignments: ordered list of (instance_id, tpl, pose_idx).
     cost: Phase 0 = facility count.  (Phase 1+ may switch to lex/area.)
     region: (x_lo, y_lo, x_hi, y_hi) bounding box (inclusive).
+    port_cells: union of all input+output port cells across the column's
+        facility poses (Phase 0 m9 proxy input).
     """
 
     occupied_cells: FrozenSet[Tuple[int, int]]
     facility_assignments: Tuple[Tuple[str, str, int], ...]
     cost: int
     region: Tuple[int, int, int, int]
+    port_cells: FrozenSet[Tuple[int, int]] = frozenset()
 
     @property
     def covered_instance_ids(self) -> FrozenSet[str]:
@@ -202,6 +239,58 @@ class Pattern:
     @property
     def facility_count(self) -> int:
         return len(self.facility_assignments)
+
+
+# -----------------------------------------------------------------------------
+# m9 perimeter I/O capacity proxy — window tiling
+# -----------------------------------------------------------------------------
+
+
+def build_proxy_windows(
+    grid_w: int = 70, grid_h: int = 70, window_size: int = 12
+) -> List[Tuple[int, int, int, int]]:
+    """Tile the grid with non-overlapping 12×12 windows for the proxy.
+
+    We use a non-overlapping tiling (stride = window_size) so each port
+    cell falls in exactly one window — keeps the Σ port_count ≤ capacity
+    accounting clean.  Edge windows at the right/bottom may be truncated;
+    they still receive a constraint with their actual perimeter.
+    """
+    windows: List[Tuple[int, int, int, int]] = []
+    for x_lo in range(0, grid_w, window_size):
+        for y_lo in range(0, grid_h, window_size):
+            x_hi = min(x_lo + window_size - 1, grid_w - 1)
+            y_hi = min(y_lo + window_size - 1, grid_h - 1)
+            windows.append((x_lo, y_lo, x_hi, y_hi))
+    return windows
+
+
+def proxy_window_capacity(window: Tuple[int, int, int, int]) -> int:
+    """Available boundary slot count for one window.
+
+    4 directions × perimeter cells.  For a w×h rectangle the perimeter is
+    2*(w+h) - 4 cells (corners counted once).  Each cell can carry one
+    port-direction → multiply by 4.  We further subtract 4*4 = 16 corner
+    direction-slots that are practically unusable (two edges share a
+    cell).  This mirrors the 12×12 derivation of 176 slots above.
+    """
+    x_lo, y_lo, x_hi, y_hi = window
+    w = x_hi - x_lo + 1
+    h = y_hi - y_lo + 1
+    perimeter_cells = max(0, 2 * (w + h) - 4)
+    raw = perimeter_cells * 4
+    corner_penalty = 4 * 4 if w >= 2 and h >= 2 else 0
+    return max(0, raw - corner_penalty)
+
+
+def pattern_port_count_in_window(
+    pattern: Pattern, window: Tuple[int, int, int, int]
+) -> int:
+    x_lo, y_lo, x_hi, y_hi = window
+    return sum(
+        1 for (cx, cy) in pattern.port_cells
+        if x_lo <= cx <= x_hi and y_lo <= cy <= y_hi
+    )
 
 
 def _pose_within_region(
@@ -267,6 +356,7 @@ def degenerate_singleton_columns(
                 facility_assignments=((iid, tpl, chosen.pose_idx),),
                 cost=1,
                 region=region,
+                port_cells=chosen.port_cells,
             )
         )
         committed.update(chosen.cells)
@@ -289,12 +379,18 @@ class RMPSolveResult:
     facility_duals: Dict[str, float]
     cell_duals: Dict[Tuple[int, int], float]
     status_str: str
+    # m9 perimeter I/O capacity proxy.  Each entry: window-tuple -> dual.
+    # Constraint form: Σ_k (ports_in_w of column k) · λ_k ≤ capacity_w
+    # (a ≤ constraint).  GLOP dual ≤ 0 for binding ≤ constraints; we
+    # sign-flip to non-negative for reporting convenience.
+    proxy_duals: Dict[Tuple[int, int, int, int], float] = field(default_factory=dict)
 
 
 def solve_rmp(
     columns: List[Pattern],
     instance_ids: List[str],
     all_cells_in_play: FrozenSet[Tuple[int, int]],
+    proxy_windows: Optional[Sequence[Tuple[int, int, int, int]]] = None,
 ) -> RMPSolveResult:
     """Solve the LP relaxation of the set-partitioning RMP.
 
@@ -338,6 +434,29 @@ def solve_rmp(
             if cell in cell_ctrs:
                 cell_ctrs[cell].SetCoefficient(lambda_vars[k], 1.0)
 
+    # m9 perimeter I/O capacity proxy constraints (≤ capacity per window).
+    # Σ_k (ports_in_w of column k) · λ_k ≤ capacity_w
+    # Encodes Rent's Rule style boundary I/O bound: a window cannot expose
+    # more port-direction-slots through its perimeter than the perimeter
+    # physically supports.  Adding this BEFORE Phase 4 routing forecasts
+    # whether boundary dual will be dense once routing is in (Gemini round
+    # 2 finding).
+    proxy_ctrs: Dict[Tuple[int, int, int, int], Any] = {}
+    if proxy_windows:
+        for w in proxy_windows:
+            cap = proxy_window_capacity(w)
+            ctr = solver.Constraint(
+                -infty, float(cap), f"proxy_{w[0]}_{w[1]}_{w[2]}_{w[3]}"
+            )
+            proxy_ctrs[w] = ctr
+        for k, pat in enumerate(columns):
+            if not pat.port_cells:
+                continue
+            for w, ctr in proxy_ctrs.items():
+                ports_in_w = pattern_port_count_in_window(pat, w)
+                if ports_in_w:
+                    ctr.SetCoefficient(lambda_vars[k], float(ports_in_w))
+
     # Objective.
     obj = solver.Objective()
     obj.SetMinimization()
@@ -365,6 +484,7 @@ def solve_rmp(
             facility_duals={iid: 0.0 for iid in instance_ids},
             cell_duals={cell: 0.0 for cell in all_cells_in_play},
             status_str=status_str,
+            proxy_duals={w: 0.0 for w in proxy_ctrs},
         )
 
     facility_duals = {iid: cov_ctrs[iid].dual_value() for iid in instance_ids}
@@ -373,6 +493,11 @@ def solve_rmp(
     cell_duals = {
         cell: -cell_ctrs[cell].dual_value() for cell in all_cells_in_play
     }
+    # Proxy duals: ≤ constraint → dual ≤ 0 in standard form; flip sign so
+    # nonzero magnitude == binding-pressure on that window's boundary.
+    proxy_duals = {
+        w: -proxy_ctrs[w].dual_value() for w in proxy_ctrs
+    }
     return RMPSolveResult(
         objective=obj.Value(),
         lp_seconds=lp_seconds,
@@ -380,6 +505,7 @@ def solve_rmp(
         facility_duals=facility_duals,
         cell_duals=cell_duals,
         status_str=status_str,
+        proxy_duals=proxy_duals,
     )
 
 
@@ -510,12 +636,14 @@ def solve_pricing(
     reduced_cost = float(solver.ObjectiveValue()) / SCALE
     chosen: List[Tuple[str, str, int]] = []
     occupied: Set[Tuple[int, int]] = set()
+    port_cells_union: Set[Tuple[int, int]] = set()
     for (iid, pose_idx), v in z_vars.items():
         if solver.Value(v) == 1:
             pose = pose_lookup[(iid, pose_idx)]
             inst = next(i for i in instances if i["instance_id"] == iid)
             chosen.append((iid, inst["facility_type"], pose_idx))
             occupied.update(pose.cells)
+            port_cells_union.update(pose.port_cells)
 
     if not chosen:
         return PricingResult(
@@ -531,6 +659,7 @@ def solve_pricing(
         facility_assignments=tuple(chosen),
         cost=len(chosen),
         region=region,
+        port_cells=frozenset(port_cells_union),
     )
     return PricingResult(
         reduced_cost=reduced_cost,
@@ -668,6 +797,11 @@ class CGRunStats:
     direct_master_wall: float = 0.0
     peak_rss_gb: float = 0.0
     exit_reason: str = "unknown"
+    # m9 perimeter I/O capacity proxy — per-iter snapshot of proxy dual
+    # vector (one float per window), flattened into a long list (we don't
+    # need per-window time series, just aggregate).
+    proxy_dual_samples: List[List[float]] = field(default_factory=list)
+    proxy_window_count: int = 0
 
 
 def run_column_generation(
@@ -697,6 +831,10 @@ def run_column_generation(
     regions = iter_regions(grid_w, grid_h, region_size, stride, rng)
     _log(f"[{label}] {len(regions)} candidate regions of size {region_size}")
 
+    # m9 proxy windows: non-overlapping 12×12 tiling of the full grid.
+    proxy_windows = build_proxy_windows(grid_w, grid_h, window_size=region_size)
+    _log(f"[{label}] {len(proxy_windows)} perimeter-I/O proxy windows")
+
     stats = CGRunStats(
         label=label,
         n_instances=len(instances),
@@ -705,18 +843,28 @@ def run_column_generation(
         columns_single=0,
         multi_pct=0.0,
         single_pct=0.0,
+        proxy_window_count=len(proxy_windows),
     )
 
     region_cursor = 0
     consecutive_failures = 0
     EPSILON = -1e-6  # negative reduced cost threshold.
     for it in range(max_iterations):
-        rmp_res = solve_rmp(columns, instance_ids, frozenset(all_cells))
+        rmp_res = solve_rmp(
+            columns, instance_ids, frozenset(all_cells),
+            proxy_windows=proxy_windows,
+        )
         stats.rmp_walls.append(rmp_res.lp_seconds)
         if rmp_res.status_str not in ("OPTIMAL", "FEASIBLE"):
             stats.exit_reason = f"rmp_{rmp_res.status_str}_at_iter_{it}"
             _log(f"[{label}] RMP not optimal: {rmp_res.status_str}, abort")
             break
+
+        # m9 proxy dual snapshot.
+        if rmp_res.proxy_duals:
+            stats.proxy_dual_samples.append(
+                [rmp_res.proxy_duals[w] for w in proxy_windows]
+            )
 
         if it % 5 == 0 or it < 3:
             _log(
@@ -770,8 +918,15 @@ def run_column_generation(
             f"region={new_pat.region}"
         )
 
-    final_res = solve_rmp(columns, instance_ids, frozenset(all_cells))
+    final_res = solve_rmp(
+        columns, instance_ids, frozenset(all_cells),
+        proxy_windows=proxy_windows,
+    )
     stats.final_rmp_objective = final_res.objective
+    if final_res.proxy_duals:
+        stats.proxy_dual_samples.append(
+            [final_res.proxy_duals[w] for w in proxy_windows]
+        )
     stats.columns_total = len(columns)
     stats.columns_multi = sum(1 for c in columns if c.facility_count >= 2)
     stats.columns_single = sum(1 for c in columns if c.facility_count == 1)
@@ -814,6 +969,35 @@ def compute_metrics(stats: CGRunStats, thresholds: Mapping[str, float]) -> Dict[
         and abs(stats.final_rmp_objective - stats.direct_master_objective) <= 1.0
     )
 
+    # m9 perimeter I/O capacity proxy.
+    # Aggregate the last few iters of proxy dual snapshots (most predictive
+    # of late-stage / converged RMP state).  active_pct = % of windows with
+    # any nonzero dual; sparsity = % of windows whose dual exceeds the
+    # "significant" threshold (≥ 0.1 magnitude after sign-flip).
+    if stats.proxy_dual_samples:
+        # Use the final 5 snapshots (or fewer) to smooth out early-iter
+        # noise where most windows have empty dual due to bootstrap state.
+        tail = stats.proxy_dual_samples[-5:]
+        n_windows = max(1, stats.proxy_window_count or len(tail[0]))
+        active_counts = [
+            sum(1 for d in snap if abs(d) > PROXY_DUAL_NONZERO_EPS)
+            for snap in tail
+        ]
+        sig_counts = [
+            sum(1 for d in snap if abs(d) >= PROXY_DUAL_SIGNIFICANT_EPS)
+            for snap in tail
+        ]
+        m9_active_pct = 100.0 * (sum(active_counts) / len(active_counts)) / n_windows
+        m9_sparsity_pct = 100.0 * (sum(sig_counts) / len(sig_counts)) / n_windows
+        m9_max_dual = max(
+            (abs(d) for snap in tail for d in snap),
+            default=0.0,
+        )
+    else:
+        m9_active_pct = 0.0
+        m9_sparsity_pct = 0.0
+        m9_max_dual = 0.0
+
     metrics = {
         "m1_generated_columns": stats.columns_total,
         "m2_pricing_p95_seconds": pricing_p95,
@@ -823,6 +1007,11 @@ def compute_metrics(stats: CGRunStats, thresholds: Mapping[str, float]) -> Dict[
         "m6_single_facility_column_pct": stats.single_pct,
         "m7_pricing_vars_vs_direct_ratio": m7_ratio,
         "m8_mini_exactness_match": bool(m8_match),
+        "m9_proxy_dual_active_pct": m9_active_pct,
+        "m9_proxy_dual_sparsity": m9_sparsity_pct,
+        "m9_proxy_dual_max": m9_max_dual,
+        "m9_proxy_window_count": stats.proxy_window_count,
+        "m9_proxy_snapshots": len(stats.proxy_dual_samples),
         "iterations": stats.iterations,
         "final_rmp_objective": stats.final_rmp_objective,
         "direct_master_objective": stats.direct_master_objective,
@@ -846,6 +1035,20 @@ def compute_metrics(stats: CGRunStats, thresholds: Mapping[str, float]) -> Dict[
         verdict_failures.append("m7_pricing_not_smaller_than_master")
     if not metrics["m8_mini_exactness_match"]:
         verdict_failures.append("m8_sound_check_failed")
+    # m9 — perimeter I/O capacity proxy gate (Gemini round 2 forecast for
+    # Phase 4 boundary dual density).
+    if (
+        "m9_proxy_dual_active_pct_max" in thresholds
+        and metrics["m9_proxy_dual_active_pct"]
+        > thresholds["m9_proxy_dual_active_pct_max"]
+    ):
+        verdict_failures.append("m9_proxy_dual_too_active")
+    if (
+        "m9_proxy_dual_sparsity_max" in thresholds
+        and metrics["m9_proxy_dual_sparsity"]
+        > thresholds["m9_proxy_dual_sparsity_max"]
+    ):
+        verdict_failures.append("m9_proxy_dual_too_dense")
 
     metrics["verdict"] = "GO" if not verdict_failures else "NO-GO"
     metrics["verdict_failures"] = verdict_failures
@@ -869,11 +1072,20 @@ def run_dry_run() -> int:
     rng = random.Random(42)
     subset5 = select_subset(mandatory, 5, rng)
     _log("subset5 facility_types: " + ", ".join(m["facility_type"] for m in subset5))
-    # Toy RMP smoke (2 cols only).
+    # Toy RMP smoke (2 cols only) + m9 proxy windows.
     cols = degenerate_singleton_columns(subset5, pools, max_poses_per_instance=1)
     cells = frozenset({c for p in cols for c in p.occupied_cells})
-    res = solve_rmp(cols, [m["instance_id"] for m in subset5], cells)
+    proxy_windows = build_proxy_windows(70, 70, window_size=12)
+    res = solve_rmp(
+        cols, [m["instance_id"] for m in subset5], cells,
+        proxy_windows=proxy_windows,
+    )
     _log(f"toy RMP status={res.status_str} obj={res.objective:.3f} lp_wall={res.lp_seconds:.3f}s")
+    _log(
+        f"toy m9 proxy: {len(proxy_windows)} windows, "
+        f"window_capacity={proxy_window_capacity(proxy_windows[0])}, "
+        f"nonzero_duals={sum(1 for d in res.proxy_duals.values() if abs(d) > PROXY_DUAL_NONZERO_EPS)}"
+    )
     # Toy pricing smoke (one tiny region).
     pricing = solve_pricing(
         subset5, pools, (0, 0, 11, 11),
