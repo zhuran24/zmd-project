@@ -1,12 +1,8 @@
 {
-  "dry_run": true,
-  "started_iso": "2026-05-20T12:12:57",
+  "dry_run": false,
+  "started_iso": "2026-05-20T12:24:53",
   "pynauty_available": true,
   "pynauty_version": "2.8.8.1",
-  "data_files_present": true,
-  "pose_schema_ok": true,
-  "mandatory_schema_ok": true,
-  "mandatory_count": 266,
   "pose_pool_counts": {
     "manufacturing_3x3": 17952,
     "manufacturing_5x5": 16896,
@@ -16,5 +12,165 @@
     "power_pole": 4761,
     "boundary_storage_port": 134
   },
-  "dry_run_pass": true
+  "mandatory_count": 266,
+  "m1_graph_build_seconds": 1.0947576739999931,
+  "graph_node_count": 106295,
+  "graph_edge_count": 2485100,
+  "rss_after_build_gb": 0.6423988342285156,
+  "node_color_summary": {
+    "cell": 4900,
+    "dir": 19600,
+    "pose": 81795
+  },
+  "m2_automorphism_seconds": 194.45775629299987,
+  "generator_count": 978,
+  "group_size_approx": Infinity,
+  "orbit_count_total": 105317,
+  "m4_nontrivial_orbit_count": 8,
+  "max_orbit_size": 204,
+  "top_orbit_sizes": [
+    204,
+    204,
+    137,
+    137,
+    76,
+    76,
+    76,
+    76
+  ],
+  "m3_graph_rss_gb": 6.275627136230469,
+  "lift_results": [
+    {
+      "core": {
+        "tpl": "manufacturing_3x3",
+        "pose_idx": 8976
+      },
+      "orbit_pose_count": 1,
+      "sample_members": [
+        [
+          "manufacturing_3x3",
+          8976
+        ]
+      ]
+    },
+    {
+      "core": {
+        "tpl": "manufacturing_5x5",
+        "pose_idx": 8485
+      },
+      "orbit_pose_count": 1,
+      "sample_members": [
+        [
+          "manufacturing_5x5",
+          8485
+        ]
+      ]
+    },
+    {
+      "core": {
+        "tpl": "manufacturing_6x4",
+        "pose_idx": 8524
+      },
+      "orbit_pose_count": 1,
+      "sample_members": [
+        [
+          "manufacturing_6x4",
+          8524
+        ]
+      ]
+    },
+    {
+      "core": {
+        "tpl": "protocol_core",
+        "pose_idx": 3711
+      },
+      "orbit_pose_count": 1,
+      "sample_members": [
+        [
+          "protocol_core",
+          3711
+        ]
+      ]
+    },
+    {
+      "core": {
+        "tpl": "protocol_storage_box",
+        "pose_idx": 9124
+      },
+      "orbit_pose_count": 1,
+      "sample_members": [
+        [
+          "protocol_storage_box",
+          9124
+        ]
+      ]
+    }
+  ],
+  "m5_effective_multiplier": 1.0,
+  "m5_min_multiplier": 1,
+  "replay_results": [
+    {
+      "core": {
+        "tpl": "manufacturing_3x3",
+        "pose_idx": 8976
+      },
+      "replay": {
+        "soundness": true,
+        "members": 1,
+        "reason": "trivial"
+      }
+    },
+    {
+      "core": {
+        "tpl": "manufacturing_5x5",
+        "pose_idx": 8485
+      },
+      "replay": {
+        "soundness": true,
+        "members": 1,
+        "reason": "trivial"
+      }
+    },
+    {
+      "core": {
+        "tpl": "manufacturing_6x4",
+        "pose_idx": 8524
+      },
+      "replay": {
+        "soundness": true,
+        "members": 1,
+        "reason": "trivial"
+      }
+    },
+    {
+      "core": {
+        "tpl": "protocol_core",
+        "pose_idx": 3711
+      },
+      "replay": {
+        "soundness": true,
+        "members": 1,
+        "reason": "trivial"
+      }
+    },
+    {
+      "core": {
+        "tpl": "protocol_storage_box",
+        "pose_idx": 9124
+      },
+      "replay": {
+        "soundness": true,
+        "members": 1,
+        "reason": "trivial"
+      }
+    }
+  ],
+  "m6_orbit_image_replay_soundness": 1.0,
+  "verdict": "NO-GO",
+  "verdict_reasons": [
+    "m1+m2=195.6s > 60s",
+    "m4 nontrivial orbits 8 < 10",
+    "m5 min multiplier 1 < 2"
+  ],
+  "finished_iso": "2026-05-20T12:28:10"
 }

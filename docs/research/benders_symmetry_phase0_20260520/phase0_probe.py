@@ -376,10 +376,21 @@ def run_automorphism(G: TypedSymmetryGraph) -> Dict[str, Any]:
         orbit_buckets[rep].append(v)
     orbit_sizes = [len(b) for b in orbit_buckets.values()]
     nontrivial = [s for s in orbit_sizes if s > 1]
+    # group_size = grpsize1 * 10^grpsize2; for huge groups (grpsize2 ≥ 308) the
+    # float product overflows. Store log10 + mantissa/exponent metadata instead.
+    import math
+    gs_log10 = (math.log10(float(grpsize1)) + float(grpsize2)) if grpsize1 > 0 else None
+    try:
+        gs_product = float(grpsize1) * (10.0 ** int(grpsize2))
+    except OverflowError:
+        gs_product = float("inf")
     return {
         "automorphism_seconds": elapsed,
         "generator_count": len(generators),
-        "group_size": float(grpsize1) * (10.0 ** int(grpsize2)),
+        "group_size": gs_product,
+        "group_size_log10": gs_log10,
+        "group_size_mantissa": float(grpsize1),
+        "group_size_exponent": int(grpsize2),
         "orbit_count": len(orbit_buckets),
         "nontrivial_orbit_count": len(nontrivial),
         "max_orbit_size": max(orbit_sizes) if orbit_sizes else 0,
@@ -605,15 +616,16 @@ def run_probe(*, dry_run: bool) -> Dict[str, Any]:
     cores = synthesize_cores(G, pose_registry, n_cores=5)
     lift_results = []
     multipliers = []
+    # Build vertex→orbit-rep map once (orbit_lookup keys are reps; we invert).
+    rep_of_v_global: Dict[int, int] = {}
+    for rep, vs in auto_info["orbit_lookup"].items():
+        for v in vs:
+            rep_of_v_global[v] = rep
+    v_to_pose_global = {vv: kk for kk, vv in G.pose_to_v.items()}
+
     for core in cores:
-        members = lift_core_to_orbit(
-            core, G, auto_info["orbit_lookup"], list(range(G.n)) if False else None
-        )
-        # We need actual orbits list for lift function; rebuild quickly:
-        # (orbit_lookup keys are reps; pynauty's orbits list is one entry per
-        # vertex giving its orbit rep). We didn't keep it directly; recompute
-        # rep_of via lookup inversion:
-        rep_of_v: Dict[int, int] = {}
+        rep_of_v: Dict[int, int] = rep_of_v_global  # alias for backward compat
+        _placeholder_rebuild: Dict[int, int] = {}
         for rep, vs in auto_info["orbit_lookup"].items():
             for v in vs:
                 rep_of_v[v] = rep
