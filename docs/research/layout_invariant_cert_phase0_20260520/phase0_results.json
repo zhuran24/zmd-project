@@ -1,0 +1,14 @@
+{
+  "m1_pose_equivalence_class_size": null,
+  "m1_method": "",
+  "m2_clone_solve_time_seconds": null,
+  "m3_clone_status": "",
+  "m4_oracle_consistency_rate": "",
+  "m4_rejected": 0,
+  "m4_tested": 0,
+  "verdict": "DRY-RUN-OK",
+  "notes": [
+    "env EXACT_USE_POSE_BOOL_MASTER=1 EXACT_MASTER_GHOST_ANCHOR_FILTER=22,28",
+    "dry-run: master imports resolved, skipping solve"
+  ]
+}

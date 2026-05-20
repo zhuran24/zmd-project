@@ -1,0 +1,20 @@
+{
+  "dry_run": true,
+  "started_iso": "2026-05-20T12:12:57",
+  "pynauty_available": true,
+  "pynauty_version": "2.8.8.1",
+  "data_files_present": true,
+  "pose_schema_ok": true,
+  "mandatory_schema_ok": true,
+  "mandatory_count": 266,
+  "pose_pool_counts": {
+    "manufacturing_3x3": 17952,
+    "manufacturing_5x5": 16896,
+    "manufacturing_6x4": 16900,
+    "protocol_core": 7200,
+    "protocol_storage_box": 17952,
+    "power_pole": 4761,
+    "boundary_storage_port": 134
+  },
+  "dry_run_pass": true
+}
