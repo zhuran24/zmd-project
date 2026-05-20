@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "generated_at": "2026-04-17T06:48:18Z",
+    "source": "industrial_planner_single_base_delivery_surface_health_v1"
+  },
+  "surface_health": {
+    "status": "clean",
+    "is_clean": true,
+    "checked_check_count": 229,
+    "clean_check_count": 229,
+    "drift_check_count": 0,
+    "helper_link_count": 21,
+    "helper_link_clean_count": 21,
+    "summary_text": "clean · 229 checks · 0 drift",
+    "badge": {
+      "label": "current surface",
+      "text": "clean · 229 checks · 0 drift",
+      "tone": "healthy"
+    }
+  },
+  "active_contract": {
+    "release_id": "valley4_protocol_core_70x70_r20260416",
+    "base_id": "valley4_protocol_core",
+    "lot_size": 70,
+    "delivery_status": "ready_for_single_base_delivery"
+  },
+  "exact_full_scale_certified": {
+    "status": "open"
+  },
+  "source_summaries": {
+    "surface_alignment_json": ".artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.json",
+    "surface_alignment_markdown": ".artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.md",
+    "surface_alignment_console": ".artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.txt"
+  },
+  "checked_consumer_surfaces": {
+    "frontdoor_manifest_json": "data/examples/industrial_planner/frontdoor_manifest.json",
+    "frontdoor_index_html": "data/examples/industrial_planner/index.html",
+    "entrypoints_json": "data/examples/industrial_planner/active_single_base_delivery_entrypoints.json",
+    "entrypoints_markdown": "data/examples/industrial_planner/active_single_base_delivery_entrypoints.md"
+  },
+  "pointer_paths": {
+    "json": "data/examples/industrial_planner/current_surface_health.json",
+    "markdown": "data/examples/industrial_planner/current_surface_health.md",
+    "console": "data/examples/industrial_planner/current_surface_health.txt"
+  },
+  "notes": [
+    "This is the smallest checked-in health snapshot for the current single-base consumer surface.",
+    "Read this file when you only need the current clean/drift verdict and top-line counts; fall back to the linked surface-alignment summary when you need full per-check detail."
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "solve_time_seconds": 12.5,
+    "benders_iterations": 4,
+    "export_timestamp": "2026-03-25T00:00:00Z"
+  },
+  "objective_achieved": {
+    "empty_rect": {
+      "w": 6,
+      "h": 5,
+      "anchor_x": 12,
+      "anchor_y": 9,
+      "score": 30.0
+    }
+  },
+  "facilities": [
+    {
+      "instance_id": "core_001",
+      "facility_type": "protocol_core",
+      "anchor": {
+        "x": 8,
+        "y": 8
+      },
+      "orientation": 0,
+      "port_mode": "default",
+      "active_ports": []
+    },
+    {
+      "instance_id": "mfg_001",
+      "facility_type": "manufacturing_3x3",
+      "anchor": {
+        "x": 10,
+        "y": 4
+      },
+      "orientation": 2,
+      "port_mode": "left_right",
+      "active_ports": []
+    },
+    {
+      "instance_id": "pole_001",
+      "facility_type": "power_pole",
+      "anchor": {
+        "x": 6,
+        "y": 3
+      },
+      "orientation": 0,
+      "port_mode": "default",
+      "active_ports": []
+    },
+    {
+      "instance_id": "port_001",
+      "facility_type": "boundary_storage_port",
+      "anchor": {
+        "x": 0,
+        "y": 0
+      },
+      "orientation": 0,
+      "port_mode": "default",
+      "active_ports": [
+        {
+          "type": "output",
+          "x": 0,
+          "y": 0,
+          "dir": "N",
+          "commodity": "item_iron_ore"
+        }
+      ]
+    },
+    {
+      "instance_id": "storage_001",
+      "facility_type": "protocol_storage_box",
+      "anchor": {
+        "x": 2,
+        "y": 3
+      },
+      "orientation": 1,
+      "port_mode": "default",
+      "active_ports": []
+    }
+  ],
+  "routing_network": {
+    "L0_ground": {
+      "1,0": {
+        "type": "belt",
+        "commodity": "iron_plate",
+        "flow_in": [
+          "W"
+        ],
+        "flow_out": [
+          "E"
+        ]
+      },
+      "2,0": {
+        "type": "belt",
+        "commodity": "iron_plate",
+        "flow_in": [
+          "W"
+        ],
+        "flow_out": [
+          "S"
+        ]
+      },
+      "3,0": {
+        "type": "splitter",
+        "commodity": "iron_plate",
+        "flow_in": [
+          "W"
+        ],
+        "flow_out": [
+          "E",
+          "S"
+        ]
+      },
+      "4,0": {
+        "type": "belt",
+        "commodity": "item_liquid_water",
+        "flow_in": [
+          "W"
+        ],
+        "flow_out": [
+          "E"
+        ]
+      }
+    },
+    "L1_elevated": {
+      "5,0": {
+        "type": "bridge",
+        "commodity": "iron_plate",
+        "flow_in": [
+          "W"
+        ],
+        "flow_out": [
+          "E"
+        ]
+      }
+    }
+  }
+}

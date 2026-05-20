@@ -1,0 +1,58 @@
+# Generated artifacts and runtime logs
+.artifacts/
+.codex_test_logs/
+.codex_child_sessions/
+.pytest_cache/
+.pytest_tmp/
+.pytest_tmp_*/
+.pytest_debug*/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Checkpoint/proof/final delivery boundaries
+data/checkpoints/
+data/solutions/final_solution.json
+data/solutions/certified_delivery_manifest.json
+data/blueprints/optimal_blueprint.json
+data/telemetry/
+**/exact_campaign_state.json
+**/exact_campaign_telemetry.json
+**/certified_delivery_manifest.json
+**/final_solution.json
+**/optimal_blueprint.json
+release/
+viewer/
+frontdoor/
+
+# Codex historical archive (read-only reference)
+_codex_archive/
+
+# Local upstream clones for offline browsing/diffing (50 MB+, not vendored)
+# CLAUDE.md: `.upstream_clones/` is gitignored — vendored slices live under third_party_snapshots/
+.upstream_clones/
+
+# PoC ephemeral artifacts (regenerable by re-running the demo runner)
+scripts/pumpkin_poc/proof.drcp
+scripts/pumpkin_poc/run_log.txt
+
+# Claude Code internal lock files (regenerated on session start)
+.claude/scheduled_tasks.lock
+
+# Claude Code agent worktrees (per-agent isolated repo copies, regenerable, not source)
+.claude/worktrees/
+
+# Local scratch and package outputs
+*.log
+*.tmp
+*.bak
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.tar.xz
+*.txz
+*.xz
+*.zst
+*.rar

@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "updated_at": "2026-04-17T03:57:17Z",
+    "source": "industrial_planner_single_base_delivery_pointer_v1"
+  },
+  "current_release": {
+    "release_id": "valley4_protocol_core_70x70_r20260416",
+    "base_id": "valley4_protocol_core",
+    "lot_size": 70,
+    "delivery_status": "ready_for_single_base_delivery",
+    "release_dir": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416",
+    "blueprint": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/bundle/industrial_planner.blueprint.json",
+    "compatibility_manifest": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/bundle/industrial_planner.compatibility_manifest.json",
+    "validation_report": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/bundle/validation_report.json",
+    "throughput_report": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/bundle/throughput_report.json",
+    "run_summary": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/run_summary.json",
+    "release_manifest_json": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/release_manifest.json",
+    "release_manifest_markdown": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/release_manifest.md",
+    "sha256sums": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/SHA256SUMS.txt",
+    "exact_full_scale_certified": {
+      "status": "open",
+      "note": "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in."
+    },
+    "scope_note": "Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder."
+  },
+  "pointer_paths": {
+    "json": "data/examples/industrial_planner/active_single_base_delivery_release.json",
+    "markdown": "data/examples/industrial_planner/active_single_base_delivery_release.md"
+  }
+}

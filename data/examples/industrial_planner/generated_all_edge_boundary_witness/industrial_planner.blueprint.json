@@ -1,0 +1,119 @@
+{
+  "schema": "industrial-planner-blueprint",
+  "id": "ExactExport-2a5e672329a0",
+  "version": "1.0",
+  "name": "Exact Export 2026-03-30T00:00:00Z",
+  "createdAt": "2026-03-30T00:00:00Z",
+  "baseId": "wuling_tianwangping_aid",
+  "devices": [
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 15
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 10
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 19,
+        "y": 1
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 19,
+        "y": 41
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 20,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 20,
+        "y": 49
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 45,
+        "y": 10
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 90,
+      "origin": {
+        "x": 49,
+        "y": 15
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    }
+  ],
+  "blueprintVersion": "1"
+}

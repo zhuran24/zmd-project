@@ -1,0 +1,2909 @@
+{
+  "schema": "industrial-planner-blueprint",
+  "id": "ExactExport-4c3bc6df05c3",
+  "version": "1.0",
+  "name": "Exact Export 2026-03-30T12:00:00Z",
+  "createdAt": "2026-03-30T12:00:00Z",
+  "baseId": "wuling_protocol_core",
+  "devices": [
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 15
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 18
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 21
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 24
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 27
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 30
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 33
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 36
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 39
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 42
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 45
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 48
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 51
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 54
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 57
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 60
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 63
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 66
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 69
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 270,
+      "origin": {
+        "x": 0,
+        "y": 72
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 17
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 29
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 41
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 53
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_filling_pd_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 70
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 9,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 9,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 9,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 9,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 11,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 11,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 11,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 11,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_filling_pd_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 12,
+        "y": 70
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 14,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 14,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 14,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 15,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 15,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 15,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 15,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 16,
+        "y": 1
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 16,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 16,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 16,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 16,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 17,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 17,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 17,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_filling_pd_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_tools_asm_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 18,
+        "y": 70
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 20,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 20,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 20,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 21,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 23,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 23,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 23,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_shaper_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_tools_asm_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 24,
+        "y": 70
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 26,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 27,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_shaper_1",
+      "rotation": 0,
+      "origin": {
+        "x": 27,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 27,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 27,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 28,
+        "y": 1
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 29,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 29,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 29,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_shaper_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_tools_asm_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 30,
+        "y": 70
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 31,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 31,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 31,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 31,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 32,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 32,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 32,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 33,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_shaper_1",
+      "rotation": 0,
+      "origin": {
+        "x": 33,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 33,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 33,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 35,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 35,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 35,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_shaper_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 36,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 36,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 38,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 38,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 38,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 38,
+        "y": 75
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 39,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_shaper_1",
+      "rotation": 0,
+      "origin": {
+        "x": 39,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 39,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 39,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 39,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 40,
+        "y": 1
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 41,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_cmpt_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 42,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 42,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 44,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 44,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 44,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 45,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_cmpt_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 45,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 45,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 45,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 45,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 46,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 46,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 46,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 46,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 47,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 47,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 47,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_cmpt_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 48,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 48,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 50,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 50,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 50,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 50,
+        "y": 75
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_cmpt_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 51,
+        "y": 49
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 51,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 52,
+        "y": 1
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 53,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 53,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 53,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_cmpt_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 54,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 54,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 56,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 56,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 56,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 56,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 56,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 56,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 57,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_cmpt_mc_1",
+      "rotation": 0,
+      "origin": {
+        "x": 57,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 57,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 57,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 57,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 59,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 59,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 59,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 60,
+        "y": 1
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 60,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 60,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 61,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 61,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 61,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 62,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 62,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 62,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 62,
+        "y": 75
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 63,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 63,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 63,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 63,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 63,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 0,
+      "origin": {
+        "x": 65,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 65,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 65,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 31
+      }
+    },
+    {
+      "typeId": "item_port_planter_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 37
+      }
+    },
+    {
+      "typeId": "item_port_seedcol_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 43
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 55
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 60
+      }
+    },
+    {
+      "typeId": "item_port_thickener_1",
+      "rotation": 0,
+      "origin": {
+        "x": 66,
+        "y": 65
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 66,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 90,
+      "origin": {
+        "x": 68,
+        "y": 0
+      }
+    },
+    {
+      "typeId": "item_port_loader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 68,
+        "y": 4
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 68,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 68,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_log_admission",
+      "rotation": 270,
+      "origin": {
+        "x": 69,
+        "y": 5
+      },
+      "config": {
+        "admissionItemId": "item_bottled_rec_hp_3"
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 69,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 69,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 69,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 69,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 69,
+        "y": 79
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_loader_1",
+      "rotation": 180,
+      "origin": {
+        "x": 71,
+        "y": 4
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 71,
+        "y": 7
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 71,
+        "y": 11
+      }
+    },
+    {
+      "typeId": "item_log_admission",
+      "rotation": 270,
+      "origin": {
+        "x": 72,
+        "y": 5
+      },
+      "config": {
+        "admissionItemId": "item_proc_battery_3"
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 0,
+      "origin": {
+        "x": 72,
+        "y": 15
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 72,
+        "y": 19
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 72,
+        "y": 23
+      }
+    },
+    {
+      "typeId": "item_port_furnance_1",
+      "rotation": 0,
+      "origin": {
+        "x": 72,
+        "y": 27
+      }
+    },
+    {
+      "typeId": "item_port_log_hongs_bus",
+      "rotation": 0,
+      "origin": {
+        "x": 75,
+        "y": 46
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 90,
+      "origin": {
+        "x": 79,
+        "y": 48
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 90,
+      "origin": {
+        "x": 79,
+        "y": 51
+      },
+      "config": {
+        "pickupItemId": "item_originium_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_originium_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    }
+  ],
+  "blueprintVersion": "1"
+}

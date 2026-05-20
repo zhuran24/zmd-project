@@ -1,0 +1,275 @@
+{
+  "requested_base_id": "valley4_protocol_core",
+  "active_contract_base_id": "valley4_protocol_core",
+  "requested_base_is_active_contract": true,
+  "run_dir": ".artifacts/industrial_planner_single_base_e2e",
+  "scope_statement": "Current active IndustrialPlanner contract: `valley4_protocol_core` (70×70) only. Other known bases and the larger-base outer-deployment path remain preserved as `future_scope` and do not re-enter the active checked-in CI surface through this workflow.",
+  "overall_status": "success",
+  "failure_stage": null,
+  "failure_classification": null,
+  "deliverable_status": "ready_for_single_base_delivery",
+  "exact_full_scale_certified": {
+    "status": "open",
+    "note": "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in."
+  },
+  "planning": {
+    "status": "proven_equivalent",
+    "fixture_written": true,
+    "fixture_path": ".artifacts/industrial_planner_single_base_e2e/canonical/full_demand_recipe_capacity_canonical_blueprint.json",
+    "report_json_path": ".artifacts/industrial_planner_single_base_e2e/canonical/full_demand_fixture_plan_report.json",
+    "report_markdown_path": ".artifacts/industrial_planner_single_base_e2e/canonical/full_demand_fixture_plan_report.md",
+    "selected_base_placeable_size": 70,
+    "required_recipe_facility_count": 219,
+    "required_recipe_area_cells": 3325,
+    "required_boundary_output_slots": 52,
+    "required_boundary_input_slots": 2,
+    "selected_input_slots": [
+      63,
+      66
+    ],
+    "selected_output_edge_counts": {
+      "top": 18,
+      "left": 20,
+      "bottom": 12,
+      "right": 2
+    },
+    "validation_probe_count": 78,
+    "throughput_status": "proven_equivalent",
+    "validator_import_compatible": true,
+    "validator_layout_healthy": true,
+    "error_message": null,
+    "warning_count": 0
+  },
+  "export_bundle": {
+    "status": "written",
+    "output_dir": ".artifacts/industrial_planner_single_base_e2e/bundle",
+    "blueprint_path": ".artifacts/industrial_planner_single_base_e2e/bundle/industrial_planner.blueprint.json",
+    "compatibility_manifest_path": ".artifacts/industrial_planner_single_base_e2e/bundle/industrial_planner.compatibility_manifest.json",
+    "validation_report_path": ".artifacts/industrial_planner_single_base_e2e/bundle/validation_report.json",
+    "validation_report_markdown_path": ".artifacts/industrial_planner_single_base_e2e/bundle/validation_report.md",
+    "throughput_report_path": ".artifacts/industrial_planner_single_base_e2e/bundle/throughput_report.json",
+    "throughput_report_markdown_path": ".artifacts/industrial_planner_single_base_e2e/bundle/throughput_report.md",
+    "warning_count": 0
+  },
+  "validation": {
+    "delivery_validation_status": "validator_acceptable_with_warnings",
+    "is_import_compatible": true,
+    "is_layout_healthy": true,
+    "is_clean": false,
+    "port_warning_count": 52,
+    "schema_error_count": 0,
+    "registry_error_count": 0,
+    "lot_boundary_error_count": 0,
+    "placement_constraint_error_count": 0,
+    "unsupported_rule_error_count": 0,
+    "overlap_error_count": 0,
+    "port_mismatch_error_count": 0
+  },
+  "throughput": {
+    "status": "proven_equivalent",
+    "required_recipe_count": 17,
+    "proven_recipe_count": 17,
+    "partial_recipe_count": 0,
+    "insufficient_recipe_count": 0,
+    "required_boundary_commodity_count": 4,
+    "proven_boundary_commodity_count": 4,
+    "partial_boundary_commodity_count": 0,
+    "insufficient_boundary_commodity_count": 0,
+    "warning_count": 1
+  },
+  "fresh_support_suite": {
+    "status": "written",
+    "scope_kind": "default_contract_scope",
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "future_scope_base_count": 5,
+    "checked_file_count": 6,
+    "drift_entry_count": 0,
+    "output_dir": ".artifacts/industrial_planner_single_base_e2e/support_suite",
+    "overview_json_path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_support_overview.json",
+    "overview_markdown_path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_support_overview.md"
+  },
+  "checked_in_support_suite_inventory": {
+    "status": "clean",
+    "inventory_path": "data/examples/industrial_planner/full_demand_support_suite_inventory.json",
+    "checked_report_set_count": 1,
+    "clean_report_set_count": 1,
+    "drift_entry_count": 0,
+    "checked_file_count": 6,
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "summary_json_path": ".artifacts/industrial_planner_single_base_e2e/checks/support_suite_inventory_summary.json",
+    "summary_markdown_path": ".artifacts/industrial_planner_single_base_e2e/checks/support_suite_inventory_summary.md",
+    "summary_console_path": ".artifacts/industrial_planner_single_base_e2e/checks/support_suite_inventory_summary.txt"
+  },
+  "checked_artifact_suite": {
+    "status": "clean",
+    "family_inventory_path": "data/examples/industrial_planner/checked_artifact_family_inventory.json",
+    "checked_family_count": 1,
+    "clean_family_count": 1,
+    "drift_entry_count": 0,
+    "checked_file_count": 6,
+    "summary_json_path": ".artifacts/industrial_planner_single_base_e2e/checks/checked_artifact_suite_summary.json",
+    "summary_markdown_path": ".artifacts/industrial_planner_single_base_e2e/checks/checked_artifact_suite_summary.md",
+    "summary_console_path": ".artifacts/industrial_planner_single_base_e2e/checks/checked_artifact_suite_summary.txt"
+  },
+  "artifact_roles": [
+    {
+      "artifact_id": "canonical_fixture",
+      "path": ".artifacts/industrial_planner_single_base_e2e/canonical/full_demand_recipe_capacity_canonical_blueprint.json",
+      "role": "Regenerated canonical single-base source blueprint for this run.",
+      "stage": "planning",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fixture_plan_report_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/canonical/full_demand_fixture_plan_report.json",
+      "role": "Machine-readable planning/generation report with slot choices and blocking classification.",
+      "stage": "planning",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fixture_plan_report_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/canonical/full_demand_fixture_plan_report.md",
+      "role": "Operator-facing planning/generation report for the canonical fixture step.",
+      "stage": "planning",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "industrial_planner_blueprint",
+      "path": ".artifacts/industrial_planner_single_base_e2e/bundle/industrial_planner.blueprint.json",
+      "role": "Actual IndustrialPlanner delivery blueprint for import.",
+      "stage": "export",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "industrial_planner_compatibility_manifest",
+      "path": ".artifacts/industrial_planner_single_base_e2e/bundle/industrial_planner.compatibility_manifest.json",
+      "role": "Translation / fallback / validation sidecar explaining the export boundary.",
+      "stage": "export",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "validation_report_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/bundle/validation_report.json",
+      "role": "Machine-readable offline import/layout validation report.",
+      "stage": "validator",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "validation_report_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/bundle/validation_report.md",
+      "role": "Human-readable offline import/layout validation report.",
+      "stage": "validator",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "throughput_report_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/bundle/throughput_report.json",
+      "role": "Machine-readable static recipe/capacity audit report.",
+      "stage": "throughput",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "throughput_report_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/bundle/throughput_report.md",
+      "role": "Human-readable static recipe/capacity audit report.",
+      "stage": "throughput",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fresh_support_canonical_matrix_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_base_support_matrix.json",
+      "role": "Freshly regenerated canonical single-base support matrix for this run.",
+      "stage": "support_reports",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fresh_support_canonical_matrix_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_base_support_matrix.md",
+      "role": "Operator-facing canonical single-base support matrix for this run.",
+      "stage": "support_reports",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fresh_support_deployment_matrix_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_deployment_path_matrix.json",
+      "role": "Freshly regenerated companion deployment-path support matrix for this run.",
+      "stage": "support_reports",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fresh_support_deployment_matrix_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_deployment_path_matrix.md",
+      "role": "Operator-facing companion deployment-path support matrix for this run.",
+      "stage": "support_reports",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fresh_support_overview_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_support_overview.json",
+      "role": "Freshly regenerated umbrella support summary for this run.",
+      "stage": "support_reports",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "fresh_support_overview_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/support_suite/full_demand_support_overview.md",
+      "role": "Operator-facing umbrella support summary for this run.",
+      "stage": "support_reports",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "support_suite_inventory_summary_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/checks/support_suite_inventory_summary.json",
+      "role": "Machine-readable verdict for the checked-in support-suite inventory.",
+      "stage": "checked_in_support_suite",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "support_suite_inventory_summary_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/checks/support_suite_inventory_summary.md",
+      "role": "Human-readable verdict for the checked-in support-suite inventory.",
+      "stage": "checked_in_support_suite",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "support_suite_inventory_summary_console",
+      "path": ".artifacts/industrial_planner_single_base_e2e/checks/support_suite_inventory_summary.txt",
+      "role": "Plain-text console verdict for the checked-in support-suite inventory.",
+      "stage": "checked_in_support_suite",
+      "required_for_delivery": false
+    },
+    {
+      "artifact_id": "checked_artifact_suite_summary_json",
+      "path": ".artifacts/industrial_planner_single_base_e2e/checks/checked_artifact_suite_summary.json",
+      "role": "Machine-readable repo-level checked-artifact gate verdict.",
+      "stage": "checked_artifact_gate",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "checked_artifact_suite_summary_markdown",
+      "path": ".artifacts/industrial_planner_single_base_e2e/checks/checked_artifact_suite_summary.md",
+      "role": "Human-readable repo-level checked-artifact gate verdict.",
+      "stage": "checked_artifact_gate",
+      "required_for_delivery": true
+    },
+    {
+      "artifact_id": "checked_artifact_suite_summary_console",
+      "path": ".artifacts/industrial_planner_single_base_e2e/checks/checked_artifact_suite_summary.txt",
+      "role": "Plain-text console verdict for the repo-level checked-artifact gate.",
+      "stage": "checked_artifact_gate",
+      "required_for_delivery": false
+    }
+  ],
+  "notes": []
+}

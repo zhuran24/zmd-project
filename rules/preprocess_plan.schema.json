@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Arknights: Endfield Preprocess Plan Overlay Schema",
+  "description": "Build-time additive preprocess overlay for cycle groups, utility operations, and optional rule overrides after canonical rules consolidation.",
+  "type": "object",
+  "required": [
+    "metadata",
+    "cycle_groups",
+    "utility_operations"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "version",
+        "description"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "production_targets": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "object",
+          "required": [
+            "mode",
+            "value",
+            "final_recipe_id"
+          ],
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "equivalent_full_speed_lines",
+                "rate_per_tick"
+              ]
+            },
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "final_recipe_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "recipes": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "object",
+          "required": [
+            "template",
+            "ticks_per_cycle",
+            "inputs",
+            "outputs"
+          ],
+          "properties": {
+            "template": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ticks_per_cycle": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "inputs": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-zA-Z0-9_]+$": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "outputs": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-zA-Z0-9_]+$": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "commodity_roles": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "object",
+          "required": [
+            "source_kind",
+            "sink_kind",
+            "cycle_group"
+          ],
+          "properties": {
+            "source_kind": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "external_boundary",
+                "cycle_internal",
+                "internal_only",
+                null
+              ]
+            },
+            "sink_kind": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "generic_input",
+                "none",
+                null
+              ]
+            },
+            "cycle_group": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "cycle_groups": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "object",
+          "required": [
+            "recipes",
+            "internal_commodities",
+            "net_export_commodities"
+          ],
+          "properties": {
+            "recipes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "internal_commodities": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "net_export_commodities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "utility_operations": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "object",
+          "required": [
+            "facility_type",
+            "generic_input_slots",
+            "generic_output_slots"
+          ],
+          "properties": {
+            "facility_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "generic_input_slots": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "generic_output_slots": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

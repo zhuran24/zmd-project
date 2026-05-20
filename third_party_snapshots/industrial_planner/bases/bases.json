@@ -1,0 +1,107 @@
+{
+  "schema": "industrial-planner-bases-vendored/v0",
+  "extracted_at": "2026-05-07",
+  "extracted_from_commit": "c494c5ae3563eb6d9529918afcd776660e140d98",
+  "extracted_from_path": "src/domain/registry.ts",
+  "extraction_note": "Best-effort regex extraction of the BASES array. foundationBuildings are intentionally omitted because upstream uses code expressions (Array.from) that cannot be statically projected without a TS parser. Refresh via scripts/refresh_industrial_planner_bases.py.",
+  "bases": [
+    {
+      "id": "wuling_protocol_core",
+      "name": "协议核心区",
+      "placeableSize": 80,
+      "outerRing": {
+        "top": 4,
+        "right": 4,
+        "bottom": 4,
+        "left": 4
+      },
+      "tags": [
+        "武陵"
+      ]
+    },
+    {
+      "id": "wuling_tianwangping_aid",
+      "name": "天王坪援建点",
+      "placeableSize": 50,
+      "outerRing": {
+        "top": 4,
+        "right": 4,
+        "bottom": 4,
+        "left": 4
+      },
+      "tags": [
+        "武陵"
+      ]
+    },
+    {
+      "id": "wuling_heart_repair_station",
+      "name": "心脏修缮站",
+      "placeableSize": 50,
+      "outerRing": {
+        "top": 4,
+        "right": 4,
+        "bottom": 4,
+        "left": 4
+      },
+      "tags": [
+        "武陵"
+      ]
+    },
+    {
+      "id": "valley4_protocol_core",
+      "name": "协议核心区",
+      "placeableSize": 70,
+      "outerRing": {
+        "top": 4,
+        "right": 2,
+        "bottom": 2,
+        "left": 4
+      },
+      "tags": [
+        "四号谷地"
+      ]
+    },
+    {
+      "id": "valley4_refugee_shelter",
+      "name": "难民暂居处",
+      "placeableSize": 40,
+      "outerRing": {
+        "top": 4,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "tags": [
+        "四号谷地"
+      ]
+    },
+    {
+      "id": "valley4_infra_outpost",
+      "name": "基建前站",
+      "placeableSize": 40,
+      "outerRing": {
+        "top": 4,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "tags": [
+        "四号谷地"
+      ]
+    },
+    {
+      "id": "valley4_rebuilt_command",
+      "name": "重建指挥部",
+      "placeableSize": 40,
+      "outerRing": {
+        "top": 4,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "tags": [
+        "四号谷地"
+      ]
+    }
+  ]
+}

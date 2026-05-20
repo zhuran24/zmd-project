@@ -1,0 +1,13 @@
+IndustrialPlanner current surface health ready.
+- release id: valley4_protocol_core_70x70_r20260416
+- base id: valley4_protocol_core
+- delivery status: ready_for_single_base_delivery
+- exact full-scale CERTIFIED status: open
+- status: clean
+- checks: 229
+- drift checks: 0
+- helper-link checks: 21
+- badge: clean · 229 checks · 0 drift
+- json: data/examples/industrial_planner/current_surface_health.json
+- markdown: data/examples/industrial_planner/current_surface_health.md
+- console: data/examples/industrial_planner/current_surface_health.txt

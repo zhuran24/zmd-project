@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "updated_at": "2026-04-17T03:57:17Z",
+    "source": "industrial_planner_single_base_delivery_release_index_v1"
+  },
+  "release_root": "data/examples/industrial_planner/releases",
+  "current_release_id": "valley4_protocol_core_70x70_r20260416",
+  "release_count": 2,
+  "index_paths": {
+    "json": "data/examples/industrial_planner/releases/release_index.json",
+    "markdown": "data/examples/industrial_planner/releases/release_index.md"
+  },
+  "releases": [
+    {
+      "release_id": "valley4_protocol_core_70x70_r20260416",
+      "base_id": "valley4_protocol_core",
+      "lot_size": 70,
+      "delivery_status": "ready_for_single_base_delivery",
+      "release_dir": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416",
+      "blueprint": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260416/bundle/industrial_planner.blueprint.json",
+      "generated_at": "2026-04-17T03:57:17Z",
+      "exact_full_scale_certified_status": "open"
+    },
+    {
+      "release_id": "valley4_protocol_core_70x70_r20260415",
+      "base_id": "valley4_protocol_core",
+      "lot_size": 70,
+      "delivery_status": "ready_for_single_base_delivery",
+      "release_dir": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260415",
+      "blueprint": "data/examples/industrial_planner/releases/valley4_protocol_core_70x70_r20260415/bundle/industrial_planner.blueprint.json",
+      "generated_at": "2026-04-15T23:41:26Z",
+      "exact_full_scale_certified_status": "open"
+    }
+  ]
+}

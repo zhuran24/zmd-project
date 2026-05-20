@@ -1,0 +1,34 @@
+{
+  "label": "interior_22_28",
+  "anchor": [
+    22,
+    28
+  ],
+  "ghost_size": [
+    27,
+    15
+  ],
+  "session_wall_s": 4.5,
+  "base_build_wall_s": 27.8,
+  "augment_wall_s": 8.6,
+  "augment_stats": {
+    "u_vars": 4900,
+    "e_vars": 17616,
+    "channeling_implications": 35232,
+    "u_block_constraints": 4493,
+    "u_force_constraints": 2358534,
+    "flow_conservation_constraints": 4495,
+    "pose_data_count": 280444,
+    "forced_port_count": 2358534,
+    "blocked_port_count": 70800,
+    "ghost_cells_count": 405
+  },
+  "base_vars": 284757,
+  "base_cstr": 279233,
+  "total_vars": 307273,
+  "total_cstr": 2682392,
+  "solve_status": "UNKNOWN",
+  "solve_wall_s": 603.9,
+  "rss_pre_mb": 4906.3,
+  "rss_post_mb": 32258.1
+}

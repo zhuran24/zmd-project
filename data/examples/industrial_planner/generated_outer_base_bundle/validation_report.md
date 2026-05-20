@@ -1,0 +1,78 @@
+# IndustrialPlanner Validation Report
+
+- Import compatible: yes
+- Layout healthy: yes
+- Clean export: no
+- User devices: 290
+- Foundation devices: 1
+- Occupied cells: 4050
+- Lot utilization: 63.281%
+
+## Schema / registry normalization
+- none
+
+## Lot boundary
+- none
+
+## Placement constraints
+- none
+
+## Overlap
+- none
+
+## Port audit
+- none
+
+## Port warnings
+- loader-like device user_0000_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0001_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0002_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0003_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0004_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0005_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0006_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0007_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0008_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0009_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0010_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0011_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0012_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0013_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0014_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0015_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0016_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0017_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0018_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0019_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0053_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0065_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0076_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0087_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0098_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0110_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0125_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0132_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0146_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0147_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0155_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0157_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0171_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0172_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0179_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0184_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0194_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0195_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0207_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0209_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0219_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0220_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0230_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0231_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0242_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0246_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0254_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0255_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0268_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0278_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0288_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link
+- loader-like device user_0289_item_port_unloader_1 (item_port_unloader_1) is isolated from any legal logistics link

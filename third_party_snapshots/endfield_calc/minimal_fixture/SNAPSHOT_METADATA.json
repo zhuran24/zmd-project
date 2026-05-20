@@ -1,0 +1,13 @@
+{
+  "source": "synthetic endfield-calc fixture",
+  "source_version": "phase1-fixture",
+  "source_commit": "synthetic",
+  "source_license": "fixture-authored-in-repo",
+  "generated_at": "2026-03-25T00:00:00Z",
+  "tick_interval_seconds": 2.0,
+  "upstream_repository": "https://github.com/JamboChen/endfield-calc",
+  "notes": [
+    "Synthetic fixture for adapter tests only.",
+    "No upstream data was copied into this repository in Phase 1."
+  ]
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IndustrialPlanner Active Single-Base Front Door</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #0d1117; color: #e6edf3; font-family: "Segoe UI", system-ui, sans-serif; }
+a { color: #58a6ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.page { max-width: 1220px; margin: 0 auto; padding: 28px 20px 48px; }
+.hero { background: linear-gradient(180deg, rgba(88,166,255,0.14), rgba(13,17,23,0.92)); border: 1px solid #30363d; border-radius: 22px; padding: 24px; margin-bottom: 18px; }
+.eyebrow { color: #8b949e; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+h1 { margin: 0 0 10px; font-size: 30px; }
+.lead { color: #c9d1d9; line-height: 1.65; max-width: 960px; }
+.helper-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.button { display: inline-flex; align-items: center; justify-content: center; border: 1px solid #30363d; border-radius: 999px; padding: 10px 14px; background: #161b22; font-size: 14px; }
+.button.primary { background: #1f6feb; border-color: #1f6feb; color: #ffffff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 18px 0; }
+.mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; margin-top: 18px; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 16px; }
+.mode-card { background: rgba(22,27,34,0.96); border: 1px solid #30363d; border-radius: 18px; padding: 18px; }
+.mode-card.download { border-color: #1f6feb; box-shadow: inset 0 0 0 1px rgba(31,111,235,0.22); }
+.mode-eyebrow { color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.mode-title { font-size: 22px; font-weight: 700; margin: 0 0 8px; }
+.mode-headline { font-size: 16px; font-weight: 600; margin: 0 0 10px; color: #c9d1d9; }
+.mode-description { color: #8b949e; line-height: 1.6; margin-bottom: 14px; }
+.mode-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.mode-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.highlight { border: 1px solid #21262d; border-radius: 12px; padding: 10px 12px; background: rgba(13,17,23,0.55); }
+.highlight .label { color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.highlight .value { font-size: 14px; font-weight: 600; line-height: 1.5; }
+.kicker { color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.value { font-size: 24px; font-weight: 700; color: #58a6ff; }
+.muted { color: #8b949e; line-height: 1.55; }
+.panel { background: #0d1117; border: 1px solid #30363d; border-radius: 16px; padding: 18px; margin-top: 16px; }
+.panel h2 { margin: 0 0 12px; font-size: 18px; }
+.badge { display: inline-block; border: 1px solid #30363d; border-radius: 999px; padding: 3px 8px; font-size: 12px; color: #8b949e; margin-right: 8px; }
+.quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.quick-card { background: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 14px; }
+.quick-card .title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.quick-card .meta { color: #8b949e; font-size: 12px; line-height: 1.5; margin-bottom: 8px; }
+.group { border-top: 1px solid #21262d; padding-top: 14px; margin-top: 14px; }
+.group:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+.group-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.group-desc { color: #8b949e; font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
+.entry-list { display: grid; gap: 10px; }
+.entry { display: flex; justify-content: space-between; gap: 16px; border: 1px solid #21262d; border-radius: 12px; padding: 10px 12px; background: #161b22; }
+.entry .meta { color: #8b949e; font-size: 12px; text-align: right; line-height: 1.45; }
+ul { margin: 0; padding-left: 18px; }
+footer { margin-top: 22px; color: #8b949e; font-size: 12px; line-height: 1.5; }
+code { background: rgba(110,118,129,0.2); padding: 1px 5px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="hero">
+    <div class="eyebrow">IndustrialPlanner · repo front door</div>
+    <h1>valley4_protocol_core · 70×70</h1>
+    <p class="lead">This checked-in homepage is now split into two explicit entry paths. Use <strong>Browse first</strong> when you want to inspect the active single-base layout in the viewer, or use <strong>Download first</strong> when you already know you want one stable ZIP for the current blueprint, verification sidecars, and release metadata. Both paths still stay inside the active <code>valley4_protocol_core</code> 70×70 contract and forward into the stable <code>current_delivery/</code> bundle.</p>
+    <div class="helper-links"><a class="button" href="active_single_base_delivery_entrypoints.json">Active entrypoints JSON</a>
+<a class="button" href="active_single_base_delivery_entrypoints.md">Active entrypoints Markdown</a>
+<a class="button" href="current_surface_health.json">Current surface health JSON</a>
+<a class="button" href="current_surface_health.md">Current surface health Markdown</a>
+<a class="button" href="current_surface_health.txt">Current surface health console</a>
+<a class="button" href="../../../.artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.json">Surface alignment JSON</a>
+<a class="button" href="../../../.artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.md">Surface alignment Markdown</a>
+<a class="button" href="../../../.artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.txt">Surface alignment console</a>
+<a class="button" href="frontdoor_manifest.json">Frontdoor manifest JSON</a>
+<a class="button" href="latest_single_base_delivery_bundle.json">Latest bundle pointer JSON</a>
+<a class="button" href="current_delivery/landing_manifest.json">Current delivery manifest</a>
+<a class="button" href="current_delivery/viewer/release_viewer_manifest.json">Viewer manifest JSON</a></div>
+    <p class="muted" style="margin-top:14px;">Automation tip: prefer <code>active_single_base_delivery_entrypoints.json</code> when you want one machine-readable file that already aligns the current release, viewer, landing, and latest-bundle surfaces.</p>
+
+    <div class="mode-grid">
+      <article class="mode-card"><div class="mode-eyebrow">Browse first</div><div class="mode-title">Inspect the active layout before downloading artifacts</div><div class="mode-description">Open the interactive viewer or the stable current-delivery page if you want to inspect the active single-base release before pulling sidecars.</div><div class="mode-actions"><a class="button primary" href="current_delivery/viewer/index.html">Open interactive viewer</a><a class="button" href="current_delivery/index.html">Open current delivery page</a>
+<a class="button" href="current_delivery/viewer/release_viewer_manifest.json">Viewer manifest JSON</a>
+<a class="button" href="current_delivery/landing_manifest.json">Current delivery manifest</a></div><div class="mode-highlights"><div class="highlight"><div class="label">Viewer geometry</div><div class="value">4 facility types / 273 poses</div></div>
+<div class="highlight"><div class="label">Stable entry</div><div class="value">current_delivery/index.html</div></div>
+<div class="highlight"><div class="label">Exact status</div><div class="value">open</div></div></div></article>
+      <article class="mode-card download"><div class="mode-eyebrow">Download first</div><div class="mode-title">Grab the current delivery artifacts without hunting through directories</div><div class="mode-description">Use the repo-front page as a download-oriented entry when you already know you want the blueprint, verification sidecars, and release metadata. The primary action now points at a shorter checked-in latest ZIP alias instead of making script consumers remember current_delivery/downloads/.</div><div class="mode-actions"><a class="button primary" href="industrial_planner_latest_single_base_delivery_bundle.zip">Download latest bundle ZIP</a><a class="button" href="latest_single_base_delivery_bundle.json">Latest bundle pointer JSON</a>
+<a class="button" href="current_delivery/viewer/downloads/release/bundle/validation_report.json">Validation report JSON</a>
+<a class="button" href="current_delivery/viewer/downloads/release/bundle/throughput_report.json">Throughput report JSON</a>
+<a class="button" href="current_delivery/viewer/downloads/release/bundle/industrial_planner.blueprint.json">Blueprint JSON</a>
+<a class="button" href="current_delivery/viewer/downloads/meta/release_manifest.json">Release manifest JSON</a>
+<a class="button" href="current_delivery/viewer/downloads/meta/SHA256SUMS.txt">SHA256SUMS</a>
+<a class="button" href="current_delivery/viewer/downloads/release/run_summary.json">Run summary JSON</a></div><div class="mode-highlights"><div class="highlight"><div class="label">Latest alias</div><div class="value">industrial_planner_latest_single_base_delivery_bundle.zip</div></div>
+<div class="highlight"><div class="label">Bundle ZIP</div><div class="value">51.7 KB</div></div>
+<div class="highlight"><div class="label">Included files</div><div class="value">24 payload / 7 metadata</div></div>
+<div class="highlight"><div class="label">Surface</div><div class="value">24 payload · 7 metadata · 5 quick / 5 grouped</div></div></div></article>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="kicker">Release id</div><div class="value">valley4_protocol_core_70x70_r20260416</div></div>
+    <div class="card"><div class="kicker">Delivery status</div><div class="value">ready_for_single_base_delivery</div></div>
+    <div class="card"><div class="kicker">Viewer geometry</div><div class="value">4 / 273</div><div class="muted">facility types / selected poses</div></div>
+    <div class="card"><div class="kicker">Download surface</div><div class="value">5 / 5</div><div class="muted">quick downloads / grouped sections</div></div>
+    <div class="card"><div class="kicker">Surface health</div><div class="value">clean</div><div class="muted">clean · 229 checks · 0 drift</div></div>
+    <div class="card"><div class="kicker">Surface audit</div><div class="value">clean</div><div class="muted">229 checks / 0 drift</div></div>
+  </section>
+
+  <section class="panel" id="browse-first">
+    <h2>Browse-first path</h2>
+    <p class="muted"><span class="badge">entry</span>stable current delivery page: <code>current_delivery/index.html</code></p>
+    <p class="muted" style="margin-top:10px;"><span class="badge">scope</span>Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder.</p>
+    <p class="muted" style="margin-top:10px;"><span class="badge">exact</span>full-scale 70×70 exact <code>CERTIFIED</code> status: <strong>open</strong>. The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in.</p>
+  </section>
+
+  <section class="panel" id="download-first">
+    <h2>Download-first essentials (individual files after the ZIP alias)</h2>
+    <div class="quick-grid"><div class="quick-card"><div class="title"><a href="current_delivery/viewer/downloads/release/bundle/industrial_planner.blueprint.json">Blueprint</a></div><div class="meta">json · export<br>required for delivery</div><div class="meta">Actual IndustrialPlanner delivery blueprint for import.</div></div>
+<div class="quick-card"><div class="title"><a href="current_delivery/viewer/downloads/release/bundle/industrial_planner.compatibility_manifest.json">Compatibility manifest</a></div><div class="meta">json · export<br>required for delivery</div><div class="meta">Export-side compatibility manifest that explains target translation details and warnings.</div></div>
+<div class="quick-card"><div class="title"><a href="current_delivery/viewer/downloads/release/bundle/validation_report.json">Validation report</a></div><div class="meta">json · validator<br>required for delivery</div><div class="meta">Machine-readable offline import/layout validation report for the released blueprint.</div></div>
+<div class="quick-card"><div class="title"><a href="current_delivery/viewer/downloads/release/bundle/throughput_report.json">Throughput report</a></div><div class="meta">json · throughput<br>required for delivery</div><div class="meta">Machine-readable static recipe/capacity audit sidecar for the released blueprint.</div></div>
+<div class="quick-card"><div class="title"><a href="current_delivery/viewer/downloads/release/run_summary.json">Run summary</a></div><div class="meta">json · run_summary<br>required for delivery</div><div class="meta">Machine-readable top-level summary for the source single-base end-to-end run.</div></div></div>
+  </section>
+
+  <section class="panel" id="download-groups">
+    <h2>Grouped downloads</h2>
+    <div class="group"><div class="group-title">Delivery entrypoints</div><div class="group-desc">Primary delivery artifacts reviewers usually need first.</div><div class="entry-list"><div class="entry"><div><a href="current_delivery/viewer/downloads/release/bundle/industrial_planner.blueprint.json">industrial_planner_blueprint</a></div><div class="meta">json · export · required<br>Actual IndustrialPlanner delivery blueprint for import.<br>sha256: ecf5b2c9c5dd…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/bundle/industrial_planner.compatibility_manifest.json">industrial_planner_compatibility_manifest</a></div><div class="meta">json · export · required<br>Export-side compatibility manifest that explains target translation details and warnings.<br>sha256: fd54feba3348…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/run_summary.txt">run_summary_console</a></div><div class="meta">text · run_summary<br>Plain-text console summary for the source single-base end-to-end run.<br>sha256: 525d5531d2fc…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/run_summary.json">run_summary_json</a></div><div class="meta">json · run_summary · required<br>Machine-readable top-level summary for the source single-base end-to-end run.<br>sha256: 1ce24466384e…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/run_summary.md">run_summary_markdown</a></div><div class="meta">markdown · run_summary · required<br>Human-readable top-level summary for the source single-base end-to-end run.<br>sha256: 32f9c2c132c0…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/bundle/throughput_report.json">throughput_report_json</a></div><div class="meta">json · throughput · required<br>Machine-readable static recipe/capacity audit sidecar for the released blueprint.<br>sha256: 5fc38fa1e758…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/bundle/throughput_report.md">throughput_report_markdown</a></div><div class="meta">markdown · throughput · required<br>Human-readable static recipe/capacity audit sidecar for the released blueprint.<br>sha256: 4430a7abf19d…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/bundle/validation_report.json">validation_report_json</a></div><div class="meta">json · validator · required<br>Machine-readable offline import/layout validation report for the released blueprint.<br>sha256: 9a57bb6f3ee3…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/bundle/validation_report.md">validation_report_markdown</a></div><div class="meta">markdown · validator · required<br>Human-readable offline import/layout validation report for the released blueprint.<br>sha256: f3415ff97dcf…</div></div></div></div>
+<div class="group"><div class="group-title">Support reports</div><div class="group-desc">Fresh single-base support surfaces that remain in-scope for the active contract.</div><div class="entry-list"><div class="entry"><div><a href="current_delivery/viewer/downloads/release/support_suite/full_demand_base_support_matrix.json">fresh_support_canonical_matrix_json</a></div><div class="meta">json · support_reports · required<br>Machine-readable active single-base canonical support matrix regenerated during the release run.<br>sha256: 29901a590a67…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/support_suite/full_demand_base_support_matrix.md">fresh_support_canonical_matrix_markdown</a></div><div class="meta">markdown · support_reports · required<br>Human-readable active single-base canonical support matrix regenerated during the release run.<br>sha256: 50e63b04e17e…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/support_suite/full_demand_deployment_path_matrix.json">fresh_support_deployment_matrix_json</a></div><div class="meta">json · support_reports · required<br>Machine-readable companion deployment-path matrix that preserves dormant outer-path metadata as `future_scope`.<br>sha256: cdc6d3bb5ef0…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/support_suite/full_demand_deployment_path_matrix.md">fresh_support_deployment_matrix_markdown</a></div><div class="meta">markdown · support_reports · required<br>Human-readable companion deployment-path matrix that preserves dormant outer-path metadata as `future_scope`.<br>sha256: 8224f4eba3b3…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/support_suite/full_demand_support_overview.json">fresh_support_overview_json</a></div><div class="meta">json · support_reports · required<br>Machine-readable umbrella summary of the fresh single-base support surface for this release.<br>sha256: c9dc0fc8d716…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/support_suite/full_demand_support_overview.md">fresh_support_overview_markdown</a></div><div class="meta">markdown · support_reports · required<br>Human-readable umbrella summary of the fresh single-base support surface for this release.<br>sha256: 9eb0c4f3fe66…</div></div></div></div>
+<div class="group"><div class="group-title">Gate summaries</div><div class="group-desc">Checked-in inventory/gate verdicts proving the active support surface is still clean.</div><div class="entry-list"><div class="entry"><div><a href="current_delivery/viewer/downloads/release/checks/checked_artifact_suite_summary.txt">checked_artifact_suite_summary_console</a></div><div class="meta">text · checked_artifact_gate<br>Plain-text console summary for the repo-level checked-artifact gate verdict.<br>sha256: b40aa580baa9…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/checks/checked_artifact_suite_summary.json">checked_artifact_suite_summary_json</a></div><div class="meta">json · checked_artifact_gate · required<br>Machine-readable repo-level checked-artifact gate verdict.<br>sha256: 12a5bdec67be…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/checks/checked_artifact_suite_summary.md">checked_artifact_suite_summary_markdown</a></div><div class="meta">markdown · checked_artifact_gate · required<br>Human-readable repo-level checked-artifact gate verdict.<br>sha256: 5c5ed1ca7da8…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/checks/support_suite_inventory_summary.txt">support_suite_inventory_summary_console</a></div><div class="meta">text · checked_in_support_suite<br>Plain-text console summary for the checked-in support-suite inventory verdict.<br>sha256: e8254720783c…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/checks/support_suite_inventory_summary.json">support_suite_inventory_summary_json</a></div><div class="meta">json · checked_in_support_suite · required<br>Machine-readable verdict proving the checked-in support-suite inventory is still clean.<br>sha256: 2125ed933f4c…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/checks/support_suite_inventory_summary.md">support_suite_inventory_summary_markdown</a></div><div class="meta">markdown · checked_in_support_suite · required<br>Human-readable verdict proving the checked-in support-suite inventory is still clean.<br>sha256: 7906739d9def…</div></div></div></div>
+<div class="group"><div class="group-title">Canonical provenance</div><div class="group-desc">Canonical regeneration inputs and planning reports preserved for reproducibility.</div><div class="entry-list"><div class="entry"><div><a href="current_delivery/viewer/downloads/release/canonical/full_demand_recipe_capacity_canonical_blueprint.json">canonical_fixture</a></div><div class="meta">json · planning · required<br>Regenerated canonical single-base source blueprint used to produce the released export.<br>sha256: 71bcd38f28f8…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/canonical/full_demand_fixture_plan_report.json">fixture_plan_report_json</a></div><div class="meta">json · planning · required<br>Machine-readable planning report describing how the canonical fixture was regenerated.<br>sha256: 1ef82a48be8f…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/release/canonical/full_demand_fixture_plan_report.md">fixture_plan_report_markdown</a></div><div class="meta">markdown · planning · required<br>Operator-facing planning report for the canonical fixture regeneration step.<br>sha256: 85b64215ed83…</div></div></div></div>
+<div class="group"><div class="group-title">Metadata</div><div class="group-desc">Pointer/manifest/checksum files plus viewer-side metadata for this current release bundle.</div><div class="entry-list"><div class="entry"><div><a href="current_delivery/viewer/downloads/meta/active_single_base_delivery_release.json">current_release_pointer_json</a></div><div class="meta">json · metadata<br>None<br>sha256: None…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/meta/active_single_base_delivery_release.md">current_release_pointer_markdown</a></div><div class="meta">markdown · metadata<br>None<br>sha256: None…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/meta/release_index.json">release_index_json</a></div><div class="meta">json · metadata<br>None<br>sha256: None…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/meta/release_index.md">release_index_markdown</a></div><div class="meta">markdown · metadata<br>None<br>sha256: None…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/meta/release_manifest.json">release_manifest_json</a></div><div class="meta">json · metadata<br>None<br>sha256: None…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/meta/release_manifest.md">release_manifest_markdown</a></div><div class="meta">markdown · metadata<br>None<br>sha256: None…</div></div>
+<div class="entry"><div><a href="current_delivery/viewer/downloads/meta/SHA256SUMS.txt">sha256sums</a></div><div class="meta">text · metadata<br>None<br>sha256: None…</div></div></div></div>
+  </section>
+
+  <section class="panel" id="surface-health">
+    <h2>Current surface health snapshot</h2>
+    <p class="muted"><span class="badge">status</span><strong>clean</strong></p>
+    <p class="muted" style="margin-top:10px;"><span class="badge">summary</span>clean · 229 checks · 0 drift</p>
+    <p class="muted" style="margin-top:10px;">Use the compact JSON/Markdown/TXT snapshot when you only need the current clean/drift verdict and top-line counts without opening the full no-drift audit report.</p>
+  </section>
+
+  <section class="panel" id="surface-alignment">
+    <h2>Current consumer-surface audit</h2>
+    <p class="muted"><span class="badge">status</span><strong>clean</strong></p>
+    <p class="muted" style="margin-top:10px;"><span class="badge">summary</span>229 checks / 0 drift</p>
+    <p class="muted" style="margin-top:10px;">Use the linked JSON for automation and the Markdown/TXT summaries for quick reviewer-facing checks when you want to confirm that the repo-front helper links and the aggregate entrypoints manifest are still aligned.</p>
+  </section>
+
+  <section class="panel">
+    <h2>What this front door adds</h2>
+    <ul>
+      <li><code>index.html</code> — this higher-level repo entry page with explicit browse-first and download-first paths</li>
+      <li><code>frontdoor_manifest.json</code> — machine-readable frontdoor summary, including dual entry-mode metadata</li>
+      <li><code>active_single_base_delivery_entrypoints.json</code> — aggregate current-entrypoints manifest for script consumers that want one aligned file</li>
+      <li><code>current_surface_health.json</code> — compact current-surface snapshot for reviewers and CI consumers that only need the clean/drift verdict plus top-line counts</li>
+      <li><code>../../../.artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.json</code> — no-drift audit summary for the checked-in consumer surface, so reviewers can immediately see whether the current entry layer is clean</li>
+      <li><code>industrial_planner_latest_single_base_delivery_bundle.zip</code> — shorter top-level latest ZIP alias for the active single-base delivery bundle</li>
+      <li><code>latest_single_base_delivery_bundle.json</code> — machine-readable latest-bundle pointer for script consumers</li>
+      <li><code>current_delivery/</code> — stable current-delivery bundle with its own landing page, copied viewer assets, and the source ZIP alias under <code>downloads/</code></li>
+      <li>Source landing manifest used for this page: <code>data/examples/industrial_planner/current_delivery/landing_manifest.json</code></li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>Current notes</h2>
+    <ul><li>Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder.</li>
+<li>The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in.</li>
+<li>This repo-front entry now mirrors the stable current-delivery ZIP under a shorter top-level latest alias. It still points forward to the same checked-in current_delivery bundle, does not duplicate the viewer assets, and does not widen the single-base contract.</li>
+<li>Current consumer-surface alignment audit status: clean (229 checks / 0 drift).</li>
+<li>Current surface-health snapshot: clean · 229 checks · 0 drift.</li></ul>
+  </section>
+
+  <footer>
+    Generated from the checked-in current delivery landing bundle for the active <code>valley4_protocol_core</code> 70×70 line. This front door is intentionally narrower than a future multi-base portal, keeps other bases as <code>future_scope</code>, and does not claim the full exact solver end-state has already been certified.
+  </footer>
+</div>
+</body>
+</html>

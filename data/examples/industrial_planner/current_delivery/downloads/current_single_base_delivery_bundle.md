@@ -1,0 +1,20 @@
+# Current Single-Base Delivery Bundle ZIP
+
+- Release id: `valley4_protocol_core_70x70_r20260416`
+- Base id: `valley4_protocol_core`
+- Lot size: `70`
+- Delivery status: `ready_for_single_base_delivery`
+- Bundle ZIP: `downloads/industrial_planner_current_single_base_delivery_bundle.zip`
+- Pointer JSON: `downloads/current_single_base_delivery_bundle.json`
+- Archive root: `industrial_planner_current_single_base_delivery_bundle`
+- Archive SHA256: `3a1858e9cbae5f82e472bdef883e2c29e6304a00bc2739816b890fcd3813b59d`
+- Archive size: `51.7 KB`
+- Included files: `24` payload + `7` metadata
+- Exact full-scale CERTIFIED status: `open`
+- Exact note: The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in.
+
+## Notes
+
+- Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder.
+- The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in.
+- This ZIP is a stable download-first alias for the active single-base release. It packages the current release payload tree and the current release metadata tree without widening the contract beyond valley4_protocol_core 70×70.

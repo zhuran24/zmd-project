@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "solve_time_seconds": 0.0,
+    "benders_iterations": 0,
+    "export_timestamp": "2026-03-30T00:00:00Z"
+  },
+  "objective_achieved": {
+    "empty_rect": {
+      "w": 1,
+      "h": 1,
+      "anchor_x": 0,
+      "anchor_y": 0,
+      "score": 1.0
+    }
+  },
+  "facilities": [
+    {
+      "instance_id": "boundary_top_inside_bus",
+      "facility_type": "boundary_storage_port",
+      "anchor": {"x": 20, "y": 0},
+      "orientation": 3,
+      "port_mode": "default",
+      "active_ports": [
+        {"type": "output", "x": 20, "y": 0, "dir": "N", "commodity": "blue_iron_ore"}
+      ]
+    },
+    {
+      "instance_id": "boundary_left_inside_bus",
+      "facility_type": "boundary_storage_port",
+      "anchor": {"x": 0, "y": 15},
+      "orientation": 2,
+      "port_mode": "default",
+      "active_ports": [
+        {"type": "output", "x": 0, "y": 15, "dir": "N", "commodity": "blue_iron_ore"}
+      ]
+    },
+    {
+      "instance_id": "boundary_bottom_inside_bus",
+      "facility_type": "boundary_storage_port",
+      "anchor": {"x": 20, "y": 49},
+      "orientation": 1,
+      "port_mode": "default",
+      "active_ports": [
+        {"type": "output", "x": 20, "y": 49, "dir": "N", "commodity": "blue_iron_ore"}
+      ]
+    },
+    {
+      "instance_id": "boundary_right_inside_bus",
+      "facility_type": "boundary_storage_port",
+      "anchor": {"x": 49, "y": 15},
+      "orientation": 0,
+      "port_mode": "default",
+      "active_ports": [
+        {"type": "output", "x": 49, "y": 15, "dir": "N", "commodity": "blue_iron_ore"}
+      ]
+    }
+  ],
+  "routing_network": {
+    "L0_ground": {},
+    "L1_elevated": {}
+  }
+}

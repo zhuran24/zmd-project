@@ -1,0 +1,149 @@
+{
+  "summary": {
+    "total_base_count": 2,
+    "audited_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "canonical_path_proven_equivalent_base_count": 1,
+    "canonical_path_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "best_available_proven_equivalent_base_count": 2,
+    "best_available_proven_equivalent_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "additional_bases_unlocked_by_outer_path_base_count": 1,
+    "additional_bases_unlocked_by_outer_path_base_ids": [
+      "wuling_protocol_core"
+    ],
+    "status_transition_base_count": 1,
+    "status_transition_base_ids": [
+      "wuling_protocol_core"
+    ],
+    "canonical_contract_ceiling_base_count": 1,
+    "best_available_canonical_contract_ceiling_base_count": 0,
+    "manufacturing_area_shortfall_base_count": 0,
+    "status_transition_counts": {
+      "unsupported_by_canonical_contract -> proven_equivalent": 1
+    },
+    "best_available_path_counts": {
+      "canonical_contract": 1,
+      "outer_deployment": 1
+    },
+    "unlocked_base_ids": [
+      "wuling_protocol_core"
+    ]
+  },
+  "decision_signals": [
+    "The strict canonical matrix still records 1 `proven_equivalent` base, while the best available checked-in path records 2.",
+    "Current checked-in status transitions: `wuling_protocol_core` (unsupported_by_canonical_contract -> proven_equivalent via `outer_deployment`).",
+    "The additive outer path currently unlocks 1 additional base without changing the upstream manufacturing-area shortfall on 0 bases.",
+    "This umbrella workflow stays postprocess-only: it writes companion reports for the strict canonical and additive deployment views together, but it does not widen canonical truth, campaign schema, or certified evidence."
+  ],
+  "component_report_filenames": {
+    "canonical_matrix_json": "full_demand_base_support_matrix.json",
+    "canonical_matrix_markdown": "full_demand_base_support_matrix.md",
+    "deployment_path_matrix_json": "full_demand_deployment_path_matrix.json",
+    "deployment_path_matrix_markdown": "full_demand_deployment_path_matrix.md"
+  },
+  "canonical_matrix_summary": {
+    "total_base_count": 2,
+    "audited_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "proven_equivalent_base_count": 1,
+    "proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "infeasible_base_count": 0,
+    "infeasible_base_ids": [],
+    "unsupported_by_canonical_contract_base_count": 1,
+    "unsupported_by_canonical_contract_base_ids": [
+      "wuling_protocol_core"
+    ],
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 1,
+    "blocking_classification_counts": {
+      "canonical_contract_ceiling": 1
+    }
+  },
+  "deployment_path_matrix_summary": {
+    "total_base_count": 2,
+    "audited_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "canonical_path_proven_equivalent_base_count": 1,
+    "canonical_path_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "best_available_proven_equivalent_base_count": 2,
+    "best_available_proven_equivalent_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "additional_bases_unlocked_by_outer_path_base_count": 1,
+    "additional_bases_unlocked_by_outer_path_base_ids": [
+      "wuling_protocol_core"
+    ],
+    "best_available_canonical_contract_ceiling_base_count": 0,
+    "best_available_canonical_contract_ceiling_base_ids": [],
+    "outer_path_attempted_base_count": 2,
+    "outer_path_not_applicable_base_count": 0,
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 1,
+    "manufacturing_area_shortfall_base_count": 0,
+    "best_available_path_counts": {
+      "canonical_contract": 1,
+      "outer_deployment": 1
+    },
+    "best_available_blocking_classification_counts": {}
+  },
+  "entries": [
+    {
+      "base_id": "valley4_protocol_core",
+      "selected_base_placeable_size": 70,
+      "size_relation_to_canonical": "equal_to_canonical_contract",
+      "canonical_status": "proven_equivalent",
+      "canonical_blocking_classification": null,
+      "outer_path_applicable": true,
+      "outer_path_status": "proven_equivalent",
+      "best_available_path_id": "canonical_contract",
+      "best_available_status": "proven_equivalent",
+      "best_available_blocking_classification": null,
+      "unlocked_by_outer_path": false,
+      "status_transition": "unchanged",
+      "canonical_validator_import_compatible": true,
+      "canonical_validator_layout_healthy": true,
+      "best_available_validator_import_compatible": true,
+      "best_available_validator_layout_healthy": true,
+      "canonical_throughput_status": "proven_equivalent",
+      "best_available_throughput_status": "proven_equivalent"
+    },
+    {
+      "base_id": "wuling_protocol_core",
+      "selected_base_placeable_size": 80,
+      "size_relation_to_canonical": "larger_than_canonical_contract",
+      "canonical_status": "unsupported_by_canonical_contract",
+      "canonical_blocking_classification": "canonical_contract_ceiling",
+      "outer_path_applicable": true,
+      "outer_path_status": "proven_equivalent",
+      "best_available_path_id": "outer_deployment",
+      "best_available_status": "proven_equivalent",
+      "best_available_blocking_classification": null,
+      "unlocked_by_outer_path": true,
+      "status_transition": "unsupported_by_canonical_contract -> proven_equivalent",
+      "canonical_validator_import_compatible": null,
+      "canonical_validator_layout_healthy": null,
+      "best_available_validator_import_compatible": true,
+      "best_available_validator_layout_healthy": true,
+      "canonical_throughput_status": null,
+      "best_available_throughput_status": "proven_equivalent"
+    }
+  ]
+}

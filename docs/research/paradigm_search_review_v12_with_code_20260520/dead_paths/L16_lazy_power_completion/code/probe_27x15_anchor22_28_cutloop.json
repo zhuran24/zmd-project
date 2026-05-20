@@ -1,0 +1,173 @@
+{
+  "candidate": "27x15",
+  "anchor": [
+    22,
+    28
+  ],
+  "phase": "phase0_lazy_power_completion_probe",
+  "env": {
+    "EXACT_LAZY_POWER_COMPLETION": "1",
+    "EXACT_MASTER_GHOST_ANCHOR_FILTER": "22,28"
+  },
+  "master": {
+    "build_seconds": 13.602887899000052,
+    "vars": 54616,
+    "constraints": 126411,
+    "power_coverage_representation": "lazy_power_completion_v1",
+    "power_pole_slots_materialized": true,
+    "first_solve_seconds": 81.83784692699919,
+    "first_solve_status": "OPTIMAL",
+    "last_solve_stats": {
+      "status": "OPTIMAL",
+      "wall_time": 81.822741457,
+      "branches": 25897,
+      "conflicts": 2134,
+      "binary_propagations": 102397409,
+      "integer_propagations": 14325210
+    }
+  },
+  "lbbd_iterations": [
+    {
+      "iter": 1,
+      "master_solve_seconds": 81.83784692699919,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0006000989997119177,
+      "uncovered_count": 134,
+      "validator_ok": false,
+      "cut_added": false
+    },
+    {
+      "iter": 2,
+      "master_solve_seconds": 91.47138441900097,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0006476279995695222,
+      "uncovered_count": 134,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 3,
+      "master_solve_seconds": 87.01501185700181,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0007488470000680536,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 4,
+      "master_solve_seconds": 88.50765605700144,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0007298210002772976,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 5,
+      "master_solve_seconds": 90.78390418399795,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0008485199978167657,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 6,
+      "master_solve_seconds": 88.73236471199925,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0008000679990800563,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 7,
+      "master_solve_seconds": 92.01762292199783,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0008305870032927487,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 8,
+      "master_solve_seconds": 91.56680400099867,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0007766700000502169,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 9,
+      "master_solve_seconds": 94.49302571600128,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0009099989983951673,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    },
+    {
+      "iter": 10,
+      "master_solve_seconds": 94.22575228099959,
+      "master_status": "OPTIMAL",
+      "completion_status": "INFEASIBLE",
+      "completion_solve_seconds": 0.0007996479980647564,
+      "uncovered_count": 133,
+      "cut_added": true,
+      "conflict_set_size": 220,
+      "selected_pole_count": null
+    }
+  ],
+  "extract": {
+    "total_entries": 282,
+    "non_power_entries": 267,
+    "master_selected_power_pole_dropped": 15
+  },
+  "completion": {
+    "build_seconds": 0.012723031999485102,
+    "solve_seconds": 0.0006000989997119177,
+    "status": "INFEASIBLE",
+    "candidate_pole_count": 1204,
+    "powered_instance_count": 220,
+    "selected_pole_count": null,
+    "uncovered_instance_count": 134,
+    "uncovered_instance_ids": [
+      "crusher_blue_iron_001",
+      "crusher_blue_iron_002",
+      "crusher_blue_iron_003",
+      "crusher_blue_iron_004",
+      "crusher_blue_iron_005"
+    ]
+  },
+  "validator": {
+    "ok": false,
+    "reason": "completion_INFEASIBLE"
+  },
+  "final_iteration": 10,
+  "final_completion_status": "INFEASIBLE",
+  "gate": {
+    "master_pass": true,
+    "master_reason": null,
+    "completion_pass": false,
+    "completion_reason": "status_INFEASIBLE_or_validator_fail_or_timeout"
+  }
+}

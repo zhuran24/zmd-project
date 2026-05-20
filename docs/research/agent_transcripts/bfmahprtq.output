@@ -1,0 +1,1008 @@
+============================================
+  Phase 3B Accumulation Loop
+  Profile: accumulation_builtin_24h
+  Max iterations: 200
+  Cooldown: 90s
+  Started: 2026-05-07 19:51:40
+  Press Ctrl+C to stop gracefully
+============================================
+
+--- Iteration 1 / 200 ---
+  Run ID: accum_iter_0001
+  Wall time elapsed: 00:00:00
+  Total candidates so far: 0
+  Total crashes: 0 | OOM kills: 0
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0001/run_summary.json
+  Status: timeout | Duration: 244.1s | Peak RSS: 38.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 2 / 200 ---
+  Run ID: accum_iter_0002
+  Wall time elapsed: 00:05:34
+  Total candidates so far: 12
+  Total crashes: 1 | OOM kills: 1
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0002/run_summary.json
+  Status: timeout | Duration: 243.9s | Peak RSS: 37.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 3 / 200 ---
+  Run ID: accum_iter_0003
+  Wall time elapsed: 00:11:09
+  Total candidates so far: 13
+  Total crashes: 2 | OOM kills: 2
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0003/run_summary.json
+  Status: timeout | Duration: 244.2s | Peak RSS: 37.5 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 4 / 200 ---
+  Run ID: accum_iter_0004
+  Wall time elapsed: 00:16:43
+  Total candidates so far: 14
+  Total crashes: 3 | OOM kills: 3
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0004/run_summary.json
+  Status: timeout | Duration: 236.1s | Peak RSS: 37.5 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 5 / 200 ---
+  Run ID: accum_iter_0005
+  Wall time elapsed: 00:22:10
+  Total candidates so far: 15
+  Total crashes: 4 | OOM kills: 4
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0005/run_summary.json
+  Status: timeout | Duration: 240.6s | Peak RSS: 37.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 6 / 200 ---
+  Run ID: accum_iter_0006
+  Wall time elapsed: 00:27:41
+  Total candidates so far: 15
+  Total crashes: 5 | OOM kills: 5
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0006/run_summary.json
+  Status: timeout | Duration: 235.8s | Peak RSS: 38 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 7 / 200 ---
+  Run ID: accum_iter_0007
+  Wall time elapsed: 00:33:08
+  Total candidates so far: 15
+  Total crashes: 6 | OOM kills: 6
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0007/run_summary.json
+  Status: timeout | Duration: 235.5s | Peak RSS: 37 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 8 / 200 ---
+  Run ID: accum_iter_0008
+  Wall time elapsed: 00:38:34
+  Total candidates so far: 15
+  Total crashes: 7 | OOM kills: 7
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=failed
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0008/run_summary.json
+  Status: failed | Duration: 52.8s | Peak RSS: 10.3 GiB
+  Cooling down 90s before restart...
+
+--- Iteration 9 / 200 ---
+  Run ID: accum_iter_0009
+  Wall time elapsed: 00:40:57
+  Total candidates so far: 15
+  Total crashes: 8 | OOM kills: 7
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0009/run_summary.json
+  Status: timeout | Duration: 234.6s | Peak RSS: 36.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 10 / 200 ---
+  Run ID: accum_iter_0010
+  Wall time elapsed: 00:46:22
+  Total candidates so far: 15
+  Total crashes: 9 | OOM kills: 8
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0010/run_summary.json
+  Status: timeout | Duration: 234.3s | Peak RSS: 36.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 11 / 200 ---
+  Run ID: accum_iter_0011
+  Wall time elapsed: 00:51:46
+  Total candidates so far: 15
+  Total crashes: 10 | OOM kills: 9
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0011/run_summary.json
+  Status: timeout | Duration: 255.3s | Peak RSS: 35.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 12 / 200 ---
+  Run ID: accum_iter_0012
+  Wall time elapsed: 00:57:32
+  Total candidates so far: 15
+  Total crashes: 11 | OOM kills: 10
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0012/run_summary.json
+  Status: timeout | Duration: 256.5s | Peak RSS: 36.1 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 13 / 200 ---
+  Run ID: accum_iter_0013
+  Wall time elapsed: 01:03:19
+  Total candidates so far: 15
+  Total crashes: 12 | OOM kills: 11
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0013/run_summary.json
+  Status: timeout | Duration: 163.8s | Peak RSS: 28.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 14 / 200 ---
+  Run ID: accum_iter_0014
+  Wall time elapsed: 01:07:34
+  Total candidates so far: 15
+  Total crashes: 13 | OOM kills: 12
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0014/run_summary.json
+  Status: timeout | Duration: 159.8s | Peak RSS: 25.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 15 / 200 ---
+  Run ID: accum_iter_0015
+  Wall time elapsed: 01:11:44
+  Total candidates so far: 15
+  Total crashes: 14 | OOM kills: 13
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0015/run_summary.json
+  Status: timeout | Duration: 216.7s | Peak RSS: 32.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 16 / 200 ---
+  Run ID: accum_iter_0016
+  Wall time elapsed: 01:16:51
+  Total candidates so far: 15
+  Total crashes: 15 | OOM kills: 14
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0016/run_summary.json
+  Status: timeout | Duration: 188.4s | Peak RSS: 31.9 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 17 / 200 ---
+  Run ID: accum_iter_0017
+  Wall time elapsed: 01:21:30
+  Total candidates so far: 15
+  Total crashes: 16 | OOM kills: 15
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0017/run_summary.json
+  Status: timeout | Duration: 195.4s | Peak RSS: 32.1 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 18 / 200 ---
+  Run ID: accum_iter_0018
+  Wall time elapsed: 01:26:16
+  Total candidates so far: 15
+  Total crashes: 17 | OOM kills: 16
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0018/run_summary.json
+  Status: timeout | Duration: 178.5s | Peak RSS: 30.4 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 19 / 200 ---
+  Run ID: accum_iter_0019
+  Wall time elapsed: 01:30:45
+  Total candidates so far: 15
+  Total crashes: 18 | OOM kills: 17
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0019/run_summary.json
+  Status: timeout | Duration: 202.2s | Peak RSS: 30.4 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 20 / 200 ---
+  Run ID: accum_iter_0020
+  Wall time elapsed: 01:35:38
+  Total candidates so far: 15
+  Total crashes: 19 | OOM kills: 18
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0020/run_summary.json
+  Status: timeout | Duration: 167.8s | Peak RSS: 27.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 21 / 200 ---
+  Run ID: accum_iter_0021
+  Wall time elapsed: 01:39:57
+  Total candidates so far: 15
+  Total crashes: 20 | OOM kills: 19
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0021/run_summary.json
+  Status: timeout | Duration: 262.9s | Peak RSS: 34.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 22 / 200 ---
+  Run ID: accum_iter_0022
+  Wall time elapsed: 01:45:50
+  Total candidates so far: 15
+  Total crashes: 21 | OOM kills: 20
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0022/run_summary.json
+  Status: timeout | Duration: 234.4s | Peak RSS: 33.5 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 23 / 200 ---
+  Run ID: accum_iter_0023
+  Wall time elapsed: 01:51:15
+  Total candidates so far: 15
+  Total crashes: 22 | OOM kills: 21
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0023/run_summary.json
+  Status: timeout | Duration: 263.5s | Peak RSS: 35.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 24 / 200 ---
+  Run ID: accum_iter_0024
+  Wall time elapsed: 01:57:09
+  Total candidates so far: 15
+  Total crashes: 23 | OOM kills: 22
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0024/run_summary.json
+  Status: timeout | Duration: 212.5s | Peak RSS: 32.1 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 25 / 200 ---
+  Run ID: accum_iter_0025
+  Wall time elapsed: 02:02:12
+  Total candidates so far: 15
+  Total crashes: 24 | OOM kills: 23
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0025/run_summary.json
+  Status: timeout | Duration: 188.2s | Peak RSS: 31.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 26 / 200 ---
+  Run ID: accum_iter_0026
+  Wall time elapsed: 02:06:51
+  Total candidates so far: 15
+  Total crashes: 25 | OOM kills: 24
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0026/run_summary.json
+  Status: timeout | Duration: 228.1s | Peak RSS: 32.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 27 / 200 ---
+  Run ID: accum_iter_0027
+  Wall time elapsed: 02:12:10
+  Total candidates so far: 15
+  Total crashes: 26 | OOM kills: 25
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0027/run_summary.json
+  Status: timeout | Duration: 212.0s | Peak RSS: 31.5 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 28 / 200 ---
+  Run ID: accum_iter_0028
+  Wall time elapsed: 02:17:12
+  Total candidates so far: 15
+  Total crashes: 27 | OOM kills: 26
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0028/run_summary.json
+  Status: timeout | Duration: 235.4s | Peak RSS: 33 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 29 / 200 ---
+  Run ID: accum_iter_0029
+  Wall time elapsed: 02:22:38
+  Total candidates so far: 15
+  Total crashes: 28 | OOM kills: 27
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0029/run_summary.json
+  Status: timeout | Duration: 196.1s | Peak RSS: 27.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 30 / 200 ---
+  Run ID: accum_iter_0030
+  Wall time elapsed: 02:27:25
+  Total candidates so far: 15
+  Total crashes: 29 | OOM kills: 28
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0030/run_summary.json
+  Status: timeout | Duration: 217.7s | Peak RSS: 31.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 31 / 200 ---
+  Run ID: accum_iter_0031
+  Wall time elapsed: 02:32:33
+  Total candidates so far: 15
+  Total crashes: 30 | OOM kills: 29
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0031/run_summary.json
+  Status: timeout | Duration: 211.6s | Peak RSS: 31.9 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 32 / 200 ---
+  Run ID: accum_iter_0032
+  Wall time elapsed: 02:37:36
+  Total candidates so far: 15
+  Total crashes: 31 | OOM kills: 30
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0032/run_summary.json
+  Status: timeout | Duration: 204.6s | Peak RSS: 32 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 33 / 200 ---
+  Run ID: accum_iter_0033
+  Wall time elapsed: 02:42:31
+  Total candidates so far: 15
+  Total crashes: 32 | OOM kills: 31
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0033/run_summary.json
+  Status: timeout | Duration: 210.8s | Peak RSS: 31 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 34 / 200 ---
+  Run ID: accum_iter_0034
+  Wall time elapsed: 02:47:33
+  Total candidates so far: 15
+  Total crashes: 33 | OOM kills: 32
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0034/run_summary.json
+  Status: timeout | Duration: 236.7s | Peak RSS: 31.9 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 35 / 200 ---
+  Run ID: accum_iter_0035
+  Wall time elapsed: 02:53:00
+  Total candidates so far: 15
+  Total crashes: 34 | OOM kills: 33
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0035/run_summary.json
+  Status: timeout | Duration: 196.3s | Peak RSS: 29.9 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 36 / 200 ---
+  Run ID: accum_iter_0036
+  Wall time elapsed: 02:57:47
+  Total candidates so far: 15
+  Total crashes: 35 | OOM kills: 34
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0036/run_summary.json
+  Status: timeout | Duration: 191.4s | Peak RSS: 31 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 37 / 200 ---
+  Run ID: accum_iter_0037
+  Wall time elapsed: 03:02:29
+  Total candidates so far: 15
+  Total crashes: 36 | OOM kills: 35
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0037/run_summary.json
+  Status: timeout | Duration: 198.0s | Peak RSS: 30.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 38 / 200 ---
+  Run ID: accum_iter_0038
+  Wall time elapsed: 03:07:18
+  Total candidates so far: 15
+  Total crashes: 37 | OOM kills: 36
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0038/run_summary.json
+  Status: timeout | Duration: 230.5s | Peak RSS: 32 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 39 / 200 ---
+  Run ID: accum_iter_0039
+  Wall time elapsed: 03:12:39
+  Total candidates so far: 15
+  Total crashes: 38 | OOM kills: 37
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0039/run_summary.json
+  Status: timeout | Duration: 225.0s | Peak RSS: 31.9 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 40 / 200 ---
+  Run ID: accum_iter_0040
+  Wall time elapsed: 03:17:55
+  Total candidates so far: 15
+  Total crashes: 39 | OOM kills: 38
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0040/run_summary.json
+  Status: timeout | Duration: 216.8s | Peak RSS: 30.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 41 / 200 ---
+  Run ID: accum_iter_0041
+  Wall time elapsed: 03:23:02
+  Total candidates so far: 15
+  Total crashes: 40 | OOM kills: 39
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0041/run_summary.json
+  Status: timeout | Duration: 232.2s | Peak RSS: 32 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 42 / 200 ---
+  Run ID: accum_iter_0042
+  Wall time elapsed: 03:28:25
+  Total candidates so far: 15
+  Total crashes: 41 | OOM kills: 40
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0042/run_summary.json
+  Status: timeout | Duration: 282.3s | Peak RSS: 33.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 43 / 200 ---
+  Run ID: accum_iter_0043
+  Wall time elapsed: 03:34:38
+  Total candidates so far: 15
+  Total crashes: 42 | OOM kills: 41
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0043/run_summary.json
+  Status: timeout | Duration: 206.2s | Peak RSS: 31.3 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 44 / 200 ---
+  Run ID: accum_iter_0044
+  Wall time elapsed: 03:39:35
+  Total candidates so far: 15
+  Total crashes: 43 | OOM kills: 42
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0044/run_summary.json
+  Status: timeout | Duration: 205.1s | Peak RSS: 27.3 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 45 / 200 ---
+  Run ID: accum_iter_0045
+  Wall time elapsed: 03:44:31
+  Total candidates so far: 15
+  Total crashes: 44 | OOM kills: 43
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0045/run_summary.json
+  Status: timeout | Duration: 200.8s | Peak RSS: 28.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 46 / 200 ---
+  Run ID: accum_iter_0046
+  Wall time elapsed: 03:49:23
+  Total candidates so far: 15
+  Total crashes: 45 | OOM kills: 44
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0046/run_summary.json
+  Status: timeout | Duration: 211.3s | Peak RSS: 30.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 47 / 200 ---
+  Run ID: accum_iter_0047
+  Wall time elapsed: 03:54:25
+  Total candidates so far: 15
+  Total crashes: 46 | OOM kills: 45
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0047/run_summary.json
+  Status: timeout | Duration: 206.0s | Peak RSS: 29.4 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 48 / 200 ---
+  Run ID: accum_iter_0048
+  Wall time elapsed: 03:59:22
+  Total candidates so far: 15
+  Total crashes: 47 | OOM kills: 46
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0048/run_summary.json
+  Status: timeout | Duration: 134.3s | Peak RSS: 23.3 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 49 / 200 ---
+  Run ID: accum_iter_0049
+  Wall time elapsed: 04:03:07
+  Total candidates so far: 15
+  Total crashes: 48 | OOM kills: 47
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0049/run_summary.json
+  Status: timeout | Duration: 195.1s | Peak RSS: 29.4 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 50 / 200 ---
+  Run ID: accum_iter_0050
+  Wall time elapsed: 04:07:53
+  Total candidates so far: 15
+  Total crashes: 49 | OOM kills: 48
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0050/run_summary.json
+  Status: timeout | Duration: 213.3s | Peak RSS: 30.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 51 / 200 ---
+  Run ID: accum_iter_0051
+  Wall time elapsed: 04:12:57
+  Total candidates so far: 15
+  Total crashes: 50 | OOM kills: 49
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0051/run_summary.json
+  Status: timeout | Duration: 157.2s | Peak RSS: 25.5 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 52 / 200 ---
+  Run ID: accum_iter_0052
+  Wall time elapsed: 04:17:04
+  Total candidates so far: 15
+  Total crashes: 51 | OOM kills: 50
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0052/run_summary.json
+  Status: timeout | Duration: 143.7s | Peak RSS: 25.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 53 / 200 ---
+  Run ID: accum_iter_0053
+  Wall time elapsed: 04:20:58
+  Total candidates so far: 15
+  Total crashes: 52 | OOM kills: 51
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0053/run_summary.json
+  Status: timeout | Duration: 279.1s | Peak RSS: 33.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 54 / 200 ---
+  Run ID: accum_iter_0054
+  Wall time elapsed: 04:27:08
+  Total candidates so far: 15
+  Total crashes: 53 | OOM kills: 52
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0054/run_summary.json
+  Status: timeout | Duration: 261.8s | Peak RSS: 33.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 55 / 200 ---
+  Run ID: accum_iter_0055
+  Wall time elapsed: 04:33:01
+  Total candidates so far: 15
+  Total crashes: 54 | OOM kills: 53
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0055/run_summary.json
+  Status: timeout | Duration: 212.7s | Peak RSS: 29 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 56 / 200 ---
+  Run ID: accum_iter_0056
+  Wall time elapsed: 04:38:04
+  Total candidates so far: 15
+  Total crashes: 55 | OOM kills: 54
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0056/run_summary.json
+  Status: timeout | Duration: 200.6s | Peak RSS: 29 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 57 / 200 ---
+  Run ID: accum_iter_0057
+  Wall time elapsed: 04:42:55
+  Total candidates so far: 15
+  Total crashes: 56 | OOM kills: 55
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0057/run_summary.json
+  Status: timeout | Duration: 219.7s | Peak RSS: 30.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 58 / 200 ---
+  Run ID: accum_iter_0058
+  Wall time elapsed: 04:48:06
+  Total candidates so far: 15
+  Total crashes: 57 | OOM kills: 56
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0058/run_summary.json
+  Status: timeout | Duration: 250.1s | Peak RSS: 35 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 59 / 200 ---
+  Run ID: accum_iter_0059
+  Wall time elapsed: 04:53:47
+  Total candidates so far: 15
+  Total crashes: 58 | OOM kills: 57
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0059/run_summary.json
+  Status: timeout | Duration: 239.1s | Peak RSS: 35.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 60 / 200 ---
+  Run ID: accum_iter_0060
+  Wall time elapsed: 04:59:17
+  Total candidates so far: 15
+  Total crashes: 59 | OOM kills: 58
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0060/run_summary.json
+  Status: timeout | Duration: 236.6s | Peak RSS: 36.9 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 61 / 200 ---
+  Run ID: accum_iter_0061
+  Wall time elapsed: 05:04:44
+  Total candidates so far: 15
+  Total crashes: 60 | OOM kills: 59
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0061/run_summary.json
+  Status: timeout | Duration: 234.9s | Peak RSS: 38.1 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 62 / 200 ---
+  Run ID: accum_iter_0062
+  Wall time elapsed: 05:10:09
+  Total candidates so far: 15
+  Total crashes: 61 | OOM kills: 60
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0062/run_summary.json
+  Status: timeout | Duration: 233.0s | Peak RSS: 37.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 63 / 200 ---
+  Run ID: accum_iter_0063
+  Wall time elapsed: 05:15:33
+  Total candidates so far: 15
+  Total crashes: 62 | OOM kills: 61
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0063/run_summary.json
+  Status: timeout | Duration: 235.0s | Peak RSS: 36.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 64 / 200 ---
+  Run ID: accum_iter_0064
+  Wall time elapsed: 05:20:58
+  Total candidates so far: 15
+  Total crashes: 63 | OOM kills: 62
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0064/run_summary.json
+  Status: timeout | Duration: 234.4s | Peak RSS: 39.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 65 / 200 ---
+  Run ID: accum_iter_0065
+  Wall time elapsed: 05:26:23
+  Total candidates so far: 15
+  Total crashes: 64 | OOM kills: 63
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0065/run_summary.json
+  Status: timeout | Duration: 234.2s | Peak RSS: 38.7 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 66 / 200 ---
+  Run ID: accum_iter_0066
+  Wall time elapsed: 05:31:48
+  Total candidates so far: 15
+  Total crashes: 65 | OOM kills: 64
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0066/run_summary.json
+  Status: timeout | Duration: 232.9s | Peak RSS: 38.3 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 67 / 200 ---
+  Run ID: accum_iter_0067
+  Wall time elapsed: 05:37:12
+  Total candidates so far: 15
+  Total crashes: 66 | OOM kills: 65
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0067/run_summary.json
+  Status: timeout | Duration: 236.5s | Peak RSS: 39.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 68 / 200 ---
+  Run ID: accum_iter_0068
+  Wall time elapsed: 05:42:39
+  Total candidates so far: 15
+  Total crashes: 67 | OOM kills: 66
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0068/run_summary.json
+  Status: timeout | Duration: 235.8s | Peak RSS: 36.5 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 69 / 200 ---
+  Run ID: accum_iter_0069
+  Wall time elapsed: 05:48:05
+  Total candidates so far: 15
+  Total crashes: 68 | OOM kills: 67
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0069/run_summary.json
+  Status: timeout | Duration: 234.4s | Peak RSS: 37.2 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 70 / 200 ---
+  Run ID: accum_iter_0070
+  Wall time elapsed: 05:53:30
+  Total candidates so far: 15
+  Total crashes: 69 | OOM kills: 68
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0070/run_summary.json
+  Status: timeout | Duration: 238.5s | Peak RSS: 34.8 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 71 / 200 ---
+  Run ID: accum_iter_0071
+  Wall time elapsed: 05:58:59
+  Total candidates so far: 15
+  Total crashes: 70 | OOM kills: 69
+
+phase3b local tuning profile
+profile_id=accumulation_builtin_24h
+status=timeout
+run_summary_json=.artifacts/phase3b_local_13900ks_tuning_20260430/accum_iter_0071/run_summary.json
+  Status: timeout | Duration: 234.5s | Peak RSS: 37.6 GiB
+  [MEMORY GUARDIAN triggered]
+  Cooling down 90s before restart...
+
+--- Iteration 72 / 200 ---
+  Run ID: accum_iter_0072
+  Wall time elapsed: 06:04:24
+  Total candidates so far: 15
+  Total crashes: 71 | OOM kills: 70
+

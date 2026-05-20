@@ -1,0 +1,31 @@
+{
+  "inventory_version": 1,
+  "scope_note": "The active checked-artifact gate is intentionally narrowed to the single support-suite family for the valley4_protocol_core 70×70 contract. Outer-deployment families remain preserved as future_scope metadata only.",
+  "entries": [
+    {
+      "family_id": "full_demand_support_suite",
+      "family_label": "IndustrialPlanner full-demand support report sets",
+      "inventory_path": "data/examples/industrial_planner/full_demand_support_suite_inventory.json",
+      "result_builder": "scripts.audit_industrial_planner_full_demand_support_suite_inventory:build_full_demand_support_suite_inventory_result",
+      "scope_label_singular": "report set",
+      "checked_scope_count_attr": "checked_report_set_count",
+      "clean_scope_count_attr": "clean_report_set_count",
+      "notes": [
+        "active single-base strict/deployment decision-surface reports"
+      ]
+    }
+  ],
+  "deactivated_entries": [
+    {
+      "family_id": "outer_base_bundle_suite",
+      "family_label": "IndustrialPlanner outer-deployment bundles",
+      "inventory_path": "data/examples/industrial_planner/outer_base_bundle_inventory.json",
+      "result_builder": "scripts.audit_industrial_planner_outer_base_bundle_suite:build_outer_base_bundle_suite_result",
+      "scope_label_singular": "bundle",
+      "checked_scope_count_attr": "checked_bundle_count",
+      "clean_scope_count_attr": "clean_bundle_count",
+      "status": "future_scope",
+      "reason": "Outer-deployment bundle checks are preserved for the frozen wuling-side subsystem but excluded from the active CI gate."
+    }
+  ]
+}

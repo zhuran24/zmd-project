@@ -1,0 +1,315 @@
+{
+  "phase": "PGW Phase 0 cheap gate (P0.1 + P0.3 PoC)",
+  "anchors_run": 8,
+  "p01_master_c1_feasible_count": 7,
+  "p01_corner_negative_infeasible_count": 1,
+  "p01_partial_go": true,
+  "p01_caveat": "Phase 0 only checks UB_C1 exists, NOT that UB closes to OPT(F). True closure requires Phase 1+ witness.",
+  "p03_locality_signal_pass": 0,
+  "p03_eligible_anchors": 7,
+  "p03_go": false,
+  "results": [
+    {
+      "label": "interior_22_28",
+      "anchor": [
+        22,
+        28
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "target_score": [
+        405,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 87.8,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 276,
+      "blocked_ports_count": 547,
+      "top5_blocker_owners": [
+        "packaging_battery_001",
+        "packaging_battery_002",
+        "packaging_battery_003",
+        "crusher_sandleaf_001",
+        "crusher_sandleaf_002"
+      ],
+      "top5_blocker_count": 26,
+      "total_blocker_count": 547,
+      "top5_blocker_coverage": 0.048,
+      "sac_violation_count": 22,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "interior_10_10",
+      "anchor": [
+        10,
+        10
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "target_score": [
+        405,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 90.8,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 311,
+      "blocked_ports_count": 605,
+      "top5_blocker_owners": [
+        "packaging_battery_002",
+        "packaging_battery_003",
+        "protocol_core_001",
+        "filling_capsule_002",
+        "filling_capsule_003"
+      ],
+      "top5_blocker_count": 28,
+      "total_blocker_count": 605,
+      "top5_blocker_coverage": 0.046,
+      "sac_violation_count": 71,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "interior_44_30",
+      "anchor": [
+        44,
+        30
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "target_score": [
+        405,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 90.0,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 312,
+      "blocked_ports_count": 610,
+      "top5_blocker_owners": [
+        "packaging_battery_001",
+        "packaging_battery_002",
+        "packaging_battery_003",
+        "filling_capsule_001",
+        "filling_capsule_002"
+      ],
+      "top5_blocker_count": 28,
+      "total_blocker_count": 610,
+      "top5_blocker_coverage": 0.046,
+      "sac_violation_count": 80,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "interior_15_40",
+      "anchor": [
+        15,
+        40
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "target_score": [
+        405,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 90.6,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 286,
+      "blocked_ports_count": 508,
+      "top5_blocker_owners": [
+        "packaging_battery_002",
+        "protocol_core_001",
+        "filling_capsule_001",
+        "filling_capsule_002",
+        "packaging_battery_003"
+      ],
+      "top5_blocker_count": 27,
+      "total_blocker_count": 508,
+      "top5_blocker_coverage": 0.053,
+      "sac_violation_count": 12,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "corner_0_0_NEGATIVE",
+      "anchor": [
+        0,
+        0
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "target_score": [
+        405,
+        15
+      ],
+      "outer_status": "INFEASIBLE",
+      "elapsed_s": 56.1,
+      "captured": false,
+      "p01_master_c1_feasible": false,
+      "p01_master_c1_infeasible": true,
+      "note": "binding never produced port_specs — capture incomplete",
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "small_10x10",
+      "anchor": [
+        25,
+        25
+      ],
+      "ghost_size": [
+        10,
+        10
+      ],
+      "target_score": [
+        100,
+        10
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 98.9,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 324,
+      "blocked_ports_count": 609,
+      "top5_blocker_owners": [
+        "packaging_battery_003",
+        "protocol_core_001",
+        "filling_capsule_001",
+        "filling_capsule_003",
+        "packaging_battery_001"
+      ],
+      "top5_blocker_count": 27,
+      "total_blocker_count": 609,
+      "top5_blocker_coverage": 0.044,
+      "sac_violation_count": 73,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "small_15x10",
+      "anchor": [
+        22,
+        28
+      ],
+      "ghost_size": [
+        15,
+        10
+      ],
+      "target_score": [
+        150,
+        10
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 95.6,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 327,
+      "blocked_ports_count": 611,
+      "top5_blocker_owners": [
+        "packaging_battery_001",
+        "packaging_battery_002",
+        "protocol_core_001",
+        "filling_capsule_001",
+        "filling_capsule_002"
+      ],
+      "top5_blocker_count": 28,
+      "total_blocker_count": 611,
+      "top5_blocker_coverage": 0.046,
+      "sac_violation_count": 78,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    },
+    {
+      "label": "small_15x15",
+      "anchor": [
+        22,
+        28
+      ],
+      "ghost_size": [
+        15,
+        15
+      ],
+      "target_score": [
+        225,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 92.6,
+      "captured": true,
+      "p01_master_c1_feasible": true,
+      "p01_master_c1_infeasible": false,
+      "binding_status": "FEASIBLE",
+      "precheck_status": "front_blocked",
+      "blocked_owner_count": 327,
+      "blocked_ports_count": 610,
+      "top5_blocker_owners": [
+        "packaging_battery_001",
+        "packaging_battery_002",
+        "protocol_core_001",
+        "filling_capsule_001",
+        "filling_capsule_002"
+      ],
+      "top5_blocker_count": 28,
+      "total_blocker_count": 610,
+      "top5_blocker_coverage": 0.046,
+      "sac_violation_count": 77,
+      "port_spec_count": 628,
+      "p03_blocked_owner_ok": false,
+      "p03_top5_cluster_ok": false,
+      "p03_sac_violation_ok": false,
+      "p03_any_locality_signal": false
+    }
+  ]
+}
