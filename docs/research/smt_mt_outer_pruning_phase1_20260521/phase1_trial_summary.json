@@ -1,0 +1,11 @@
+{
+  "candidate_pool_size": 10,
+  "dry_run": true,
+  "engine_built": true,
+  "env": {
+    "EXACT_OUTER_SKIP_UNKNOWN": "",
+    "EXACT_SMT_MT_OUTER_PRUNING": "",
+    "EXACT_USE_POSE_BOOL_MASTER": ""
+  },
+  "note": "Skipped real inner solve. Use without --dry-run for full trial."
+}

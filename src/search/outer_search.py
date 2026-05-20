@@ -49,6 +49,12 @@ from src.search.exact_parallel_scheduler import (
     build_parallel_worker_tasks,
     run_parallel_exact_campaign_wave,
 )
+from src.search.smt_mt_outer_pruning import (
+    OuterPruningEngine,
+    maybe_build_engine,
+    maybe_notify_infeasible,
+    maybe_write_telemetry,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 FRONTIER_SELECTION_POLICY = "certification_prune_per_anchor_v1"
@@ -1493,6 +1499,31 @@ def run_outer_search(
     exact_session: Optional[ExactSearchSession] = None
     parallel_worker_pool: Optional[ExactParallelWorkerPool] = None
 
+    # SMT-MT outer pruning Phase 1 (env-gated, default off):
+    # build R-tree-backed monotone containment engine over (w, h) candidates.
+    # The engine is shadow-friendly — it records every INFEASIBLE verdict
+    # via O(log N) R-tree query and surfaces telemetry alongside the
+    # existing frontier-state size-level superset check. env off => None.
+    smt_mt_engine: Optional[OuterPruningEngine] = maybe_build_engine(candidates)
+    smt_mt_telemetry_wave_counter: List[int] = [0]
+
+    def _smt_mt_record_infeasible(w: int, h: int) -> None:
+        if smt_mt_engine is None:
+            return
+        try:
+            maybe_notify_infeasible(smt_mt_engine, int(w), int(h))
+            smt_mt_telemetry_wave_counter[0] += 1
+            maybe_write_telemetry(
+                smt_mt_engine,
+                project_root,
+                wave_index=smt_mt_telemetry_wave_counter[0],
+            )
+        except Exception as exc:
+            # Telemetry-only path: never raise into the main loop.
+            run_outer_search.last_smt_mt_telemetry_error = (
+                f"{type(exc).__name__}: {exc}"
+            )
+
     try:
         if solve_mode == "certified_exact":
             while True:
@@ -1652,6 +1683,9 @@ def run_outer_search(
                                     exact_campaign=exact_campaign,
                                 )
                             )
+                            # SMT-MT shadow telemetry: precheck-eliminated
+                            # candidate is INFEASIBLE per proof, propagate.
+                            _smt_mt_record_infeasible(int(candidate[1]), int(candidate[2]))
                         if not precheck_round_results:
                             break
                         if exact_campaign is not None:
@@ -1804,6 +1838,8 @@ def run_outer_search(
                                     exact_campaign=exact_campaign,
                                 )
                             )
+                            # SMT-MT shadow telemetry: precheck-eliminated INFEASIBLE.
+                            _smt_mt_record_infeasible(int(candidate[1]), int(candidate[2]))
                             continue
                         solve_wave_entries.append(
                             {
@@ -1977,6 +2013,8 @@ def run_outer_search(
                                         "generated_exact_safe_cut_count"
                                     ],
                                 )
+                                if worker_result.status == RUN_STATUS_INFEASIBLE:
+                                    _smt_mt_record_infeasible(ghost_w, ghost_h)
                                 if terminal_status is None:
                                     stop_reason = _terminal_stop_reason_for_status(
                                         worker_result.status
@@ -2219,6 +2257,7 @@ def run_outer_search(
                             reset=reset_campaign_telemetry,
                         )
                         reset_campaign_telemetry = False
+                    _smt_mt_record_infeasible(ghost_w, ghost_h)
                     continue
 
                 if status == RUN_STATUS_UNKNOWN:
@@ -2353,6 +2392,7 @@ def run_outer_search(
 
 run_outer_search.last_run_telemetry = None
 run_outer_search.last_run_telemetry_error = None
+run_outer_search.last_smt_mt_telemetry_error = None
 
 
 if __name__ == "__main__":
