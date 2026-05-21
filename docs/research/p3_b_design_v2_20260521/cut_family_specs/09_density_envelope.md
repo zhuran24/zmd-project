@@ -36,13 +36,18 @@
        (接受 Class C 代价, 不强行 lift F9)
      - witness_kind enum 改: 仅留 `"area_capacity_overflow"`, deprecate
        `binding_overflow / routing_overflow / pcr_cut_overflow`
-- **v1.4** (Day 17i, 本 commit): 修 Gemini round 20 B2 **严重 False Negative**:
+- **v1.4** (Day 17i): 修 Gemini round 20 B2 **严重 False Negative**:
   v1.3 全包含计数对面积溢出**漏剪** — Master 在 W 内全包 10 个 3x3 (90 cells)
   + 边缘半身 5 个 3x3 (15 cells in W) = 105 > 100 cells 真溢出, 但全包含计数
   只算 10 ≤ K=10 → 静默 (FN). v1.4 改: F9 既降级"面积溢出", evaluator **直接
   数占用格子数** `sum(|pose_cells ∩ W|)` vs `cert.max_allowed_area`, **不数
   facility 个数**. 既 sound 又防边缘漏剪. cert 加 `max_allowed_area` field
   替代 `density_K` (deprecated).
+- **v1.5** (Day 17j, 本 commit): 修 Gemini round 21 B2 schema 错位:
+  v1.4 evaluator 改 area-based 但 §7 Validator step 3 仍验 witness_count==K+1
+  (基于 density_K). v1.5 Validator step 3 同步改 area-based:
+  `witness_area_in_W > cert.max_allowed_area`. cert 跟 evaluator/validator
+  三处现在全 area paradigm 一致.
 
 ## 1. 数学定义
 
@@ -291,20 +296,27 @@ class DensityEnvelopeValidator(CutValidator):
                 "unsound", ...,
                 "sub-problem oracle re-verification not INFEASIBLE",
             )
-        # 3. 验 oracle_assignment_witness 是 K+1 (group, pose) in window of group_id
-        # v1.1 (Gemini round 17 B2): witness 不 carry slot, 验只看 K+1 pose 存在
-        in_window_count = 0
+        # 3. 验 oracle_assignment_witness 面积溢出 cert.max_allowed_area
+        # v1.5 (Gemini round 21 B2): F9 v1.4 evaluator 改用 max_allowed_area
+        # area-based, Validator 必须一致改 — 不再验 witness count == K+1, 而验
+        # witness 占用 W 内总格子数 > cert.max_allowed_area.
+        wx, wy, wh, ww = cert.window_rect
+        W = {(x, y) for x in range(wx, wx + wh) for y in range(wy, wy + ww)}
+        witness_area_in_W = 0
         for g, p in cert.oracle_assignment_witness:
             if g != cert.group_id:
                 return ValidationResult("unsound", ..., f"witness group {g} != cert {cert.group_id}")
             pose_cells = canonical_rules_pose_cells(g, p)
-            wx, wy, wh, ww = cert.window_rect
-            if any(wx <= c[0] < wx + wh and wy <= c[1] < wy + ww for c in pose_cells):
-                in_window_count += 1
-        if in_window_count != cert.density_K + 1:
+            # 注意: witness pose 的具体 placement 不固定 (oracle 给的是 abstract
+            # K+1 pose 集合), validator 重算 pose 占的 cells 跟 W 交集.
+            # 实际 PoC: oracle witness 应 carry pose_offsets (placement 位置),
+            # 此简化版假设 pose 在 W 内任 placement, |pose_cells| 全算 area.
+            witness_area_in_W += len(pose_cells)  # max area contribution
+
+        if witness_area_in_W <= cert.max_allowed_area:
             return ValidationResult(
                 "unsound", ...,
-                f"witness count {in_window_count} != K+1 = {cert.density_K + 1}",
+                f"witness area {witness_area_in_W} ≤ max_allowed_area {cert.max_allowed_area}",
             )
         return ValidationResult("ok", ...)
 

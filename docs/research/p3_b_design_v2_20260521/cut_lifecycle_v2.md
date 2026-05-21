@@ -35,10 +35,17 @@ per-family validator / watcher index / quarantine 政策.
   - Watcher 添加规则表加 Family 2/3/4/5/7/8/9 (v3 加 7/8/9 新 family)
   - GHOST_AGNOSTIC cut (F1) 不入 by_ghost_watcher
   - by_blocked_cells 7 维 watcher defer Phase 1
-- **v3.2.1 (Phase 0 Day 17e, 本 commit)**: 修 Gemini round 16 finding A2 —
+- **v3.2.1 (Phase 0 Day 17e)**: 修 Gemini round 16 finding A2 —
   watcher 表移除 Family 3 from `by_ghost_watcher`. F3 (port_exposure) spec §5
   明定 "ghost 占 front 不发 cut", 只 cell_owner causation 触发 cut, 跟 ghost
   完全无关. Watcher 误加导致每次 ghost change 引发大量无用 F3 replay.
+- **v3.2.2 (Phase 0 Day 17j, 本 commit)**: 修 Gemini round 21 finding B1
+  CutScope 加 `exterior_blocks_hash` field + Step 3 dispatch:
+  - v3.1 §4 Step 3 强制验 `blocked_cells_hash` (含 ghost), 但 GHOST_AGNOSTIC
+    cut 在 ghost 改时 hash 必变 → 永远 quarantine, 跨 ghost 存活率 = 0
+  - v3.2.2 dispatch: GHOST_AGNOSTIC cut 验 `exterior_blocks_hash` (ghost-
+    independent), 绑 ghost cut 验全量 `blocked_cells_hash`. F1 cut 跨 ghost
+    存活率 0 → 100%.
 
 ## 1. TL;DR
 
@@ -268,6 +275,11 @@ class CutScope:
     """Cut 跟 candidate / state / data / oracle 的强绑定."""
     ghost_rect_id: GhostRectId
     blocked_cells_hash: Hash      # ghost ∪ exterior block ∪ mandatory_pre_block
+                                  # (含 ghost, ghost change 必变)
+    exterior_blocks_hash: Hash    # v3.2.2 (Gemini round 21 B1): 拆出 ghost-
+                                  # independent 部分. = sha256(sorted(exterior_blocks
+                                  # ∪ mandatory_pre_block)) (不含 ghost cells)
+                                  # GHOST_AGNOSTIC cut 校验此字段 (跨 ghost 仍 sound)
     source_digest: SourceDigestStr  # SourceDigest 全 hash (见下)
     artifact_hashes: Dict[str, Hash] = field(default_factory=dict)
                                   # canonical_rules / candidate_placements /
@@ -389,13 +401,19 @@ def replay_cut(cut: Cut, state: BState, store: CutStore) -> AttachDecision:
         # 不 quarantine — 不同 candidate 用不同 ghost 是正常
         return AttachDecision.HOLD     # 保留, 下个 matching candidate 再试
 
-    # 3. Blocked cells hash 比对 (v3.1 — Gemini round 14 finding #4)
-    # ghost_rect_id 只 hash 矩形坐标; blocked_cells = ghost ∪ exterior ∪ pre_block
-    # 单独走此 field. exterior_block 变化 (map 边界 / pre-block 调整) → 旧 cut
-    # 不再 sound → quarantine.
-    if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
-        store.quarantine(cut, reason="blocked_cells_hash_changed")
-        return AttachDecision.QUARANTINE
+    # 3. Blocked cells hash 比对 (v3.2.2 — Gemini round 21 B1 dispatch by ghost_rect_id)
+    # GHOST_AGNOSTIC cut 容量只受 exterior_blocks 影响, 跨 ghost 仍 sound — 验
+    # exterior_blocks_hash. 绑 ghost cut 验全量 blocked_cells_hash.
+    # 修法源: round 21 finding B1 — F1 GHOST_AGNOSTIC cut 在 ghost 改时 step 3
+    # 必死结. 拆 hash dispatch 后跨 ghost 存活率从 0 → 100%.
+    if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
+            store.quarantine(cut, reason="exterior_blocks_hash_changed")
+            return AttachDecision.QUARANTINE
+    else:
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
+            store.quarantine(cut, reason="blocked_cells_hash_changed")
+            return AttachDecision.QUARANTINE
 
     # 4. Artifact hashes 比对 (原 step 3, 重编号 v3.1)
     for fname, h in cut.scope.artifact_hashes.items():
