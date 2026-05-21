@@ -19,12 +19,23 @@
   slot 改 → validator 死板验 slot 让合法 witness 失败 quarantine. v1.1 改
   `(GroupId, PoseId)` (state-independent), validator 只看 "K+1 pose 同时存在"
   即可验 INFEASIBLE.
-- **v1.2** (Day 17g, 本 commit): 修 Gemini round 18 finding B2 **几何过拟合**:
-  §6 v1.0 evaluate_geometric 只要 cell_owner cell 落在 window 内就计数 +1 →
-  facility 边缘蹭 1 cell 进 window 主体在外, 实际 density 没真贡献但算 1 →
-  False Positive 误剪. v1.2 改 **Reference Cell 计数** — 只 facility 的
-  reference cell (left-top origin) 落在 window 内才计数. Cert 加
-  reference_cells_in_window 字段记 K+1 witness 的 reference cells.
+- **v1.2** (Day 17g): 修 Gemini round 18 partial intersection — 改 Reference
+  Cell 计数. **但 v1.2 修错** (Gemini round 19 verdict): facility origin 贴
+  window 边内但身躯外仍算 → False Positive 误剪. **deprecated**.
+- **v1.3** (Day 17h, 本 commit): 修 Gemini round 19 **2 致命 bug**:
+  1. **计数严苛化**: §6 改 `all(c in W for c in pose_cells)` 全包含计数 —
+     只有 facility 所有 cells 都在 window 内才 +1. Certified exact 宁可 False
+     Negative 漏剪, **绝不可** False Positive 误剪.
+  2. **Paradigm 降级** (Gemini round 19 B critical): F9 v1.0-v1.2 把
+     Oracle Routing/Binding 拓扑死锁泛化"几何密度" 数学 **Unsound** —
+     Oracle INFEASIBLE 来自特定端口朝向 / 相对位置 routing 死锁不是密度.
+     Master 回溯后整齐排列 routing 可行, F9 单按数量秒杀误剪. v1.3:
+     - F9 只能用于 Oracle 抛 `AreaCapacityOverflow` 凭证场景 (面积容量
+       绝对溢出: K+1 facility 需 90 cells + belt 30 = 120 > W=100)
+     - binding/routing/pcr INFEASIBLE 必 **Fallback Family 5 pattern_nogood**
+       (接受 Class C 代价, 不强行 lift F9)
+     - witness_kind enum 改: 仅留 `"area_capacity_overflow"`, deprecate
+       `binding_overflow / routing_overflow / pcr_cut_overflow`
 
 ## 1. 数学定义
 
@@ -94,9 +105,13 @@ class DensityEnvelopeCert:
     group_id: GroupId                          # 受 density bound 限制的 group
     density_K: int                              # Window 内 group 数 ≤ K
     oracle_witness_kind: Literal[
-        "binding_overflow",                    # binding 端 K+1 facility 不可绑 ports
-        "routing_overflow",                     # routing 端 K+1 facility 不可走 belt
-        "pcr_cut_overflow",                     # PCR-CUT 端 K+1 patch min-cut 不够
+        # v1.3 (Gemini round 19): 仅留 area_capacity_overflow, 其他 deprecate
+        "area_capacity_overflow",              # K+1 facility cells + belt cells > W cells
+        #
+        # DEPRECATED v1.0-v1.2 (paradigm Unsound — 拓扑死锁泛化几何密度 unsound):
+        # "binding_overflow",                  # → Fallback Family 5 pattern_nogood
+        # "routing_overflow",                  # → Fallback Family 5 pattern_nogood
+        # "pcr_cut_overflow",                  # → Fallback Family 5 pattern_nogood
     ]
     oracle_cert_hash: Hash                     # sub-problem oracle 的 INFEASIBLE 证书 hash
 
@@ -137,17 +152,27 @@ K+1 facility 在某 window 不可绑/不可路由/不可 cut). 把这个 K+1 ass
 
 ```python
 class DensityEnvelopeOracle:
-    name = "density_envelope_v1"
+    name = "density_envelope_v1.3"  # v1.3 (Gemini round 19): paradigm 降级
 
     def generate(self, state, master_solution, sub_problem_result) -> List[Cut]:
-        """sub_problem_result 是 binding/routing/PCR-CUT 的 INFEASIBLE 返,
-        含 K+1 facility witness assignment.
+        """v1.3 (Gemini round 19 critical paradigm): **仅 area_capacity_overflow
+        触发**, 不再 lift binding/routing/PCR-CUT INFEASIBLE.
+
+        why: 拓扑死锁 (端口对冲 / 相对位置 routing 死锁) 泛化"几何密度" 数学
+        Unsound — master 整齐排列后 routing 可行但 F9 仍秒杀.
+
+        binding/routing/PCR-CUT INFEASIBLE → Family 5 pattern_nogood Fallback
+        (接受 Class C 代价, 不强行 lift F9).
         """
         cuts = []
-        # 提 K+1 witness assignment 的 placed cells
-        witness_assignment = sub_problem_result.infeasibility_witness  # K+1 (group, slot, pose_id)
+        # v1.3: 仅当 sub_problem_result 是面积容量绝对溢出才 trigger
+        if sub_problem_result.kind != "area_capacity_overflow":
+            return cuts  # → Fallback Family 5
+
+        # area_capacity_overflow witness: K+1 facility cells + belt cells > W cells
+        witness_assignment = sub_problem_result.infeasibility_witness  # K+1 (group, pose_id)
         if not witness_assignment:
-            return cuts  # Oracle 没给 density witness, 走 Family 5 fallback
+            return cuts
 
         # Group by group_id (density 是 per-group)
         by_group = {}
@@ -203,32 +228,32 @@ v1.0 直接用 oracle witness 的 K+1 - 1 = K. v1.1 binary search 紧化.
 def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
     """Window W 内 group g 的 placed instance 数 > K → violate.
 
-    v1.2 (Gemini round 18 B2): **Reference Cell 计数**, 不是 partial intersection.
-    只 facility 的 reference cell (canonical_rules pose 的 left-top origin) 落在
-    window 内才算 1, 防 facility 边缘蹭 1 cell 进 window 主体在外被算作完整密度.
+    v1.3 (Gemini round 19): **全包含计数** — only facility 所有 cells 都
+    完全在 window 内才 +1. Certified exact 宁可 False Negative 漏剪, 绝不可
+    False Positive 误剪. v1.2 Reference Cell 计数 unsound (facility origin
+    在 W 内但身躯在外仍算).
     """
     cert = decode_density_envelope_cert(cut.geometric_payload)
     wx, wy, wh, ww = cert.window_rect
+    W = {(x, y) for x in range(wx, wx + wh) for y in range(wy, wy + ww)}
 
-    # 数 state.groups[cert.group_id].selected_poses 在 window 的 instance 数 (Ref Cell)
+    # 数 state.groups[cert.group_id].selected_poses 全 cells 都在 W 内的 instance 数
     counted = 0
     for slot_idx, (group_id, pose_id) in enumerate(state.groups[cert.group_id].selected_poses):
-        ref_cell = canonical_rules_pose_reference_cell(cert.group_id, pose_id)
-        # facility placed where? 从 cell_owner 反查 slot 占的 cells, 取 min(x,y) 作 placed ref
-        placed_ref = min(
-            (c for c, (g, s) in state.cell_owner.items() if g == cert.group_id and s == slot_idx),
-            default=None,
-        )
-        if placed_ref is None:
+        # 从 cell_owner 反查 slot 占的全 cells
+        placed_cells = {c for c, (g, s) in state.cell_owner.items()
+                        if g == cert.group_id and s == slot_idx}
+        if not placed_cells:
             continue  # 未 placed
-        if wx <= placed_ref[0] < wx + wh and wy <= placed_ref[1] < wy + ww:
+        # v1.3 严苛: 全 cells 都在 W 才 +1
+        if all(c in W for c in placed_cells):
             counted += 1
 
     return counted > cert.density_K
 ```
 
-Hot path 重算, 跟 Family 4/8 同 pattern. **v1.2 关键**: 只算 reference cell
-落 window 内, 防 partial intersection 误算.
+Hot path 重算, 跟 Family 4/8 同 pattern. **v1.3 关键**: 全包含计数, 防 partial
+intersection 误算 (v1.0 over-count, v1.2 under-rigour, v1.3 严苛 sound).
 
 ## 7. Validator
 

@@ -32,6 +32,7 @@ DOC_PATHS = [
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_15_followup.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_16_day17.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_17_followup.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_18_phase0_go.md",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -104,7 +105,43 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 18)
+## 本次 cross-check 目的 (round 19)
+
+这是 round 19. round 18 给了 GO verdict + 2 致命 bug (B1 F1 GHOST_AGNOSTIC vs
+cap_R 含 ghost / B2 F9 partial intersection). 我按 round 18 verdict 修了
+commit fb2dcb4 (Day 17g):
+
+- F1 v1.2: 加 condition — cap_R 含 ghost contribution 时 scope.ghost_rect_id
+  必非 AGNOSTIC, 只 ghost_cells ∩ R == ∅ 允许 GHOST_AGNOSTIC
+- F9 v1.2: evaluate_geometric 改 Reference Cell 计数, 只 facility reference
+  cell 落 window 内才 +1, 防 partial intersection 误算
+
+round 19 任务:
+
+### 任务 A: 验 round 18 2 修对
+- F1 v1.2 condition check: `ghost_cells ∩ R == ∅` 决定 AGNOSTIC vs 绑 ghost_rect_id
+  sound 吗? F1 fixture 仍 AGNOSTIC 安全吗 (反例用 exterior_blocks 不是 ghost)?
+- F9 v1.2 Reference Cell 计数: 用 left-top origin / cell_owner 反查 placed_ref
+  对吗? edge case (slot 占 cell 不连续 / pose origin 在 ghost / 多 cell pose
+  origin 顺序定义)?
+
+### 任务 B: 找新 finding (sound / schema / watcher / dispatch)
+
+### 任务 C: Phase 0 收尾 final verdict
+round 14-18 已 7 finding + 2 round 18 致命 = 9 finding 修. 现在状态可不可以
+进 Phase 1 编码? 还是有结构性漏洞?
+
+### 任务 D: F11+ 反例
+
+## 回答格式
+4 段 A/B/C/D. 找不到 bug 写"没找到 bug, 已 cross-check 完毕".
+
+## Reply 语言
+中文优先.
+"""
+
+## OLD round 18 prompt:
+_old_round_18 = """## 本次 cross-check 目的 (round 18)
 
 这是 round 18. round 17 给了 2 新 bug (B1 F8 watcher / B2 F9 slot ID) + A4
 sweep 推荐. 我按 round 17 verdict 修了 commit ab921b1 (Day 17f):
@@ -343,7 +380,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_18.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_19.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -354,7 +391,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_18.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_19.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)
