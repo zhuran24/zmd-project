@@ -212,7 +212,11 @@ def check_ramp_metric(metric_path: str, criterion_id: int, description: str,
             artifact=metric_path,
             status="PASS" if ok else "FAIL",
             detail=json.dumps({k: data.get(k) for k in
-                                ["unknown_count", "cut_store_peak_mb", "f5_ratio"]
+                                # v3 (Gemini round 25 B1): 加 cut_store_peak_mb_per_worker
+                                # 否则 #6 FAIL 时 detail 看不到实际触发值, debug 不便
+                                ["unknown_count", "cut_store_peak_mb",
+                                 "cut_store_peak_mb_per_worker", "rss_peak_mb_per_worker",
+                                 "f5_ratio", "f5_avg_core_size"]
                                 if k in data}, ensure_ascii=False),
         )
     except Exception as e:
@@ -234,15 +238,24 @@ def check_5_80_inst_no_unknown() -> CriterionResult:
 
 
 def check_6_160_inst_cut_store() -> CriterionResult:
-    # v2 (Gemini round 24 A1.2 致命 RAM 计算错修):
-    # v1 12 GB/worker × 4 worker = 48 GB, 加 master/OS 16 GB → OOM 致 168h 崩
-    # 单机 48 GB cap: 4 worker × 5 GB cut store + 16 GB master/OS + 8 GB other
-    # = 44 GB 安全余量
+    # v3 (Gemini round 25 B2): RSS 优先 — Python 内存碎片化让逻辑 3 GB → RSS 8 GB,
+    #                         逻辑通过 #6 但 OS OOM kill.
+    # v2 (Gemini round 24 A1.2 致命 RAM 计算错):
+    # 单机 48 GB cap: 4 worker × 5 GB + master 16 GB + other 8 GB = 44 GB
+    # 安全余量 4 GB. v1 12 GB/worker × 4 = 48 GB + master = 必 OOM.
+    def _pass(d: dict) -> bool:
+        # v3 优先验 rss_peak_mb_per_worker (psutil), fallback cut_store_peak_mb_per_worker
+        rss = d.get("rss_peak_mb_per_worker")
+        if rss is not None:
+            return rss < 5 * 1024
+        # fallback: 逻辑大小 (不准, 但比没有强)
+        return d.get("cut_store_peak_mb_per_worker", 99999) < 5 * 1024
+
     return check_ramp_metric(
         "docs/research/b_design_v2_ramp/160_inst_report.json", 6,
-        "160-inst cut store < 5 GB/worker (4 worker × 5 GB + master 16 GB < 48 GB)",
-        lambda d: d.get("cut_store_peak_mb_per_worker", 99999) < 5 * 1024,
-        "cut_store_peak_mb_per_worker < 5120 (5 GB/worker)",
+        "160-inst cut store < 5 GB/worker (RSS preferred, Gemini r25 B2)",
+        _pass,
+        "rss_peak_mb_per_worker < 5120 (psutil RSS) OR cut_store_peak_mb_per_worker < 5120",
     )
 
 

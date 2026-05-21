@@ -180,6 +180,18 @@ PROJECT_LOCK §4 豁免范围, 不属 Step 10 expiry).
 - v1 12 GB/worker × 4 = 48 GB 加 master = 必 OOM
 - exit criterion #6 改 < 5 GB/worker (script v2 已修)
 
+**RAM 测量必走 psutil RSS** (Gemini round 25 B2 — 防虚假 PASS OOM):
+- Phase 1 ramp report `cut_store_peak_mb_per_worker` 必用
+  `psutil.Process(worker_pid).memory_info().rss / (1024*1024)` 读 OS 级真物理
+  内存, **禁** 用 `sys.getsizeof()` / JSON string len 累加 / dict count × est
+  这种逻辑大小计算.
+- Why: Python 对象头 (28 bytes per dict, 56 bytes per CutLiteral dataclass)
+  + 大量小对象 (Counter, frozenset) 内存碎片化, 逻辑 3 GB → RSS 8 GB. 逻辑
+  通过 #6 但 OS 看到 8 GB → 168h 触发 OOM kill.
+- ramp report 必 emit 2 field: `cut_store_peak_mb_per_worker` (逻辑) +
+  `rss_peak_mb_per_worker` (RSS), 后者优先验.
+- PROJECT_LOCK §3A 已 lock 此条 invariant (不可退化逻辑大小计算).
+
 ### R6. F9 QuickXplain 耗时爆炸 (Gemini round 24 C2 新加)
 
 F9 v1.5 spec §5b 提到 minimize window 走 QuickXplain on window expansion,

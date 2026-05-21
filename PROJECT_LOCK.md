@@ -107,6 +107,15 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   / v1.3 all-in-W 全 unsound — v1.0 FP, v1.2 FP, v1.3 FN). v1.4+ 全
   area paradigm 是唯一 sound 路径, 任何 refactor 退回 instance-counting 算
   Forbidden Change.
+- **RAM 测量必走 psutil RSS** (Gemini round 25 B2 — Phase 1 OOM 防虚假 PASS):
+  168h campaign cut store RAM 监测 (`exit_criteria` #6 + ramp report
+  `cut_store_peak_mb_per_worker`) **必须** 用
+  `psutil.Process(pid).memory_info().rss` 读 OS 级真物理内存. **禁** 用
+  逻辑大小计算 (`sys.getsizeof(cut)` / JSON string len 累加 / `dict` len ×
+  estimate). Why: Python 对象头 + dict/tuple/dataclass 小对象内存碎片化导致
+  逻辑 3 GB → RSS 8 GB. 若 #6 PASS based on 逻辑大小但 RSS 已超 5 GB, 168h
+  campaign 仍触发 OS OOM kill. Phase 1 ramp report 必 emit
+  `rss_peak_mb_per_worker` field, exit_criteria 优先验该字段.
 - **代数 vs 几何分工**: 全局代数约束 (e.g. power supply cap, total worker
   count) 必走 Master CP-SAT 线性约束, 不进 cut framework (Gemini round 22
   F16 verdict — "代数归 Master, 几何归 Cut").
