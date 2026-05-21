@@ -5,8 +5,66 @@ Paradigm: cand C (column generation / branch-and-price)
 Predecessor: `cand_c_column_generation_phase1_20260521/` — 4/4 ramp GO
 (5/20/40/80 inst, m10 integer reconstruction True, m11 nodes 11/33/53).
 
-Status: probe + helpers written, dry-run rc=0 — measurement queued for
-background background scheduling (≈ 10-15 hr full sweep).
+## v2 status (2026-05-21 update)
+
+Phase 2 v1 (commit 73ea69a) sweep finished NO-GO with three classes of
+critical failure:
+
+1. **Bug 1 P0 (FIXED in v2)** — 160/266-inst bootstrap RMP infeasible at
+   iter 0.  Root cause: Phase 1 `degenerate_singleton_columns` greedy
+   cannot find a disjoint singleton cover for every instance once the
+   pose pool is squeezed by ghost-rect filtering plus
+   boundary_storage_port's tiny pool (134 poses).  Fix: new
+   `feasibility_bootstrap.py` with 3-layer fallback:
+
+   - Layer 1: try `solve_direct_mini_master` on the whole free grid
+     (60s time limit) and harvest its assignment as singleton columns.
+     OPTIMAL/FEASIBLE → return immediately.
+   - Layer 2: if Layer 1 fails (or as supplementary diversity), run a
+     region-by-region multi-facility CP-SAT generator that maximises
+     facility count per region (≤ 5s per region, cap 60 regions).
+   - Layer 3: Phase 1 singleton greedy as the safety net — merged with
+     Layer 2 output to top up.
+
+   The merged pool guarantees `Aλ = 1` LP feasibility on every instance
+   that admits at least one ghost-rect-compatible pose.  Phase 1 ramps
+   fall through to Layer 1 (succeeds quickly) so no behavioural drift.
+
+2. **Bug 2 P1 (FIXED in v2)** — `RF branching: nodes=N leaves=0` at
+   80-inst and 80inst_routing_aware ramps.  Root cause analysis from
+   the v1 results JSON: 20/40 ramps hit `leaves=2` and `leaves=1` at
+   depth-cap 5, but 80-inst's residual fractional pair set is larger
+   so depth 5 wasn't enough to make the LP integer feasible.  Fix:
+
+   - Rewrote `ryan_foster.py` with per-node telemetry
+     (`BranchNodeTrace`) so we can diagnose leaves=0 post-hoc — every
+     node now records `(decisions, lp_status, lp_obj, fractional
+     pairs, integer feasibility, pool_kept/total/killed_by_last)`.
+   - Default max_depth bumped from 5 → 10.  Caller still passes its
+     own value.
+   - At-depth-cap behaviour: instead of silently abandoning the node,
+     attempt `_attempt_rounded_leaf` — greedy round of fractional λ_k
+     in descending order, accept iff no cell conflict and every
+     instance covered exactly once.  Records `leaf_kind="rounded_at_cap"`.
+   - Added `branch_and_price_with_fallback` — if RF B&P returns
+     `leaves_found == 0`, automatically falls back to Phase 1's
+     `branch_and_price_depth_first` (most-fractional λ branching) so
+     m10 integer reconstruction still has a chance to pass and m14
+     records `"RF failed, std fallback used"`.
+
+3. **Bugs 3-5 P2 (DEFERRED to Phase 3)** — boundary equality RMP
+   infeasible + routing-aware m10 inconsistency.  These overlap with
+   GPT v13's cut-language thesis (region capacity cut, port exposure
+   cut, proof object lifecycle).  The two variant ramps
+   (`80inst_routing_aware`, `80inst_boundary_eq`) are **excluded** from
+   Phase 2 v2's default ramp sweep — see `default_ramps()` for the
+   commented-out lines.  `--only-ramp 80inst_routing_aware` still
+   works as an experimental knob; their thresholds remain in
+   `GO_THRESHOLDS_BY_RAMP`.
+
+Status: v2 probe written, dry-run rc=0, measurement queued for
+background scheduling.  Expected wall: 6 baseline ramps without the 2
+variants ≈ 8-10 hr (v1 was 12 hr including the 2 deferred variants).
 
 ## What changes from Phase 1
 

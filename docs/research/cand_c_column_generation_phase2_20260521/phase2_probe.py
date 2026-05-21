@@ -86,11 +86,18 @@ from cand_c_column_generation_phase2_20260521.pricing_cache import (  # noqa: E4
 from cand_c_column_generation_phase2_20260521.ryan_foster import (  # noqa: E402
     BranchDecision,
     BranchNode,
+    BranchNodeTrace,
     RyanFosterStats,
     apply_ryan_foster_to_pricing,
+    branch_and_price_ryan_foster_v2,
+    branch_and_price_with_fallback,
     column_compatible_with_decisions,
     column_pool_mask,
     select_ryan_foster_pair,
+)
+from cand_c_column_generation_phase2_20260521.feasibility_bootstrap import (  # noqa: E402
+    BootstrapResult,
+    feasibility_preserving_bootstrap,
 )
 from cand_c_column_generation_phase2_20260521.routing_aware_pricing import (  # noqa: E402
     RentsRuleConfig,
@@ -485,6 +492,9 @@ class Phase2CGStats:
     boundary_eq_summary: Optional[Dict[str, Any]] = None
     routing_aware: bool = False
     boundary_eq_on: bool = False
+    # Phase 2 v2: P0 fix telemetry.
+    bootstrap_summary: Optional[Dict[str, Any]] = None
+    rf_fallback_used: bool = False
 
 
 def branch_and_price_ryan_foster(
@@ -498,55 +508,25 @@ def branch_and_price_ryan_foster(
     proxy_windows: Optional[Sequence[RegionBBox]] = None,
     enable_boundary_eq: bool = False,
 ) -> RyanFosterStats:
-    """DFS B&P using Ryan-Foster pair branching (no re-pricing inside)."""
-    stats = RyanFosterStats()
-    t0 = time.perf_counter()
-    stack: List[BranchNode] = [BranchNode(decisions=(), depth=0)]
-    while stack:
-        if time.perf_counter() - t0 > wall_budget_s:
-            stats.timed_out = True
-            break
-        if stats.nodes_explored >= max_nodes:
-            break
-        node = stack.pop()
-        if not node.is_consistent():
-            continue
-        stats.nodes_explored += 1
-        stats.max_depth_reached = max(stats.max_depth_reached, node.depth)
+    """Phase 2 v2 adapter — delegates to branch_and_price_ryan_foster_v2.
 
-        rmp_res = solve_rmp_phase2(
-            columns, instance_ids,
+    Retained as a thin wrapper for the dry-run smoke; the main CG loop
+    now uses branch_and_price_with_fallback directly (RF + std safety
+    net).  v1 behaviour (no telemetry, no rounded-at-cap salvage) is
+    no longer reachable.
+    """
+    def _rmp(cols, ids, *, decisions):
+        return solve_rmp_phase2(
+            cols, ids,
             proxy_windows=proxy_windows,
-            decisions=node.decisions,
+            decisions=decisions,
             enable_boundary_eq=enable_boundary_eq,
         )
-        if rmp_res.status_str not in ("OPTIMAL", "FEASIBLE"):
-            continue
-        if rmp_res.objective >= stats.best_objective - 1e-9:
-            continue
-
-        pair = select_ryan_foster_pair(
-            columns, rmp_res.lambda_values,
-            integer_tol=integer_tol, decisions=node.decisions,
-        )
-        if pair is None:
-            # Integer feasible (no fractional pair).
-            stats.integer_leaves_found += 1
-            if rmp_res.objective < stats.best_objective:
-                stats.best_objective = rmp_res.objective
-                stats.best_lambda = list(rmp_res.lambda_values)
-            continue
-
-        if node.depth >= max_depth:
-            continue
-        # Branch: same first (LIFO push order — diff first explored).
-        same_dec = BranchDecision.make(pair[0], pair[1], "same")
-        diff_dec = BranchDecision.make(pair[0], pair[1], "diff")
-        stats.same_decisions += 1
-        stats.diff_decisions += 1
-        stack.append(node.with_decision(same_dec))
-        stack.append(node.with_decision(diff_dec))
-    return stats
+    return branch_and_price_ryan_foster_v2(
+        columns, instance_ids, _rmp,
+        max_depth=max_depth, max_nodes=max_nodes,
+        wall_budget_s=wall_budget_s, integer_tol=integer_tol,
+    )
 
 
 # === Direct mini-master (Phase 1 reused) ===
@@ -590,8 +570,30 @@ def run_column_generation_phase2(
     rng = random.Random(rng_seed)
     instance_ids = [m["instance_id"] for m in instances]
 
-    columns: List[Pattern] = p1.degenerate_singleton_columns(instances, pools)
-    _log(f"[{label}] bootstrapped {len(columns)} singleton columns")
+    # Phase 2 v2 P0 fix: 3-layer LP-feasibility-preserving bootstrap.
+    # Phase 1 used singleton greedy directly; that fails at 160/266 inst
+    # because the disjoint greedy can't cover every instance with the
+    # remaining pose pool after ghost-rect filtering.  See
+    # feasibility_bootstrap.py docstring for details.
+    boot = feasibility_preserving_bootstrap(
+        instances, pools,
+        grid_w=grid_w, grid_h=grid_h,
+        region_size=region_size, stride=stride,
+        layer1_time_limit_s=60.0,
+        layer2_time_limit_per_region_s=5.0,
+        layer2_max_facilities_per_region=15,
+        layer2_region_count_cap=60,
+        log=lambda m: _log(f"[{label}] {m}"),
+    )
+    columns: List[Pattern] = list(boot.columns)
+    _log(
+        f"[{label}] bootstrap done: {len(columns)} cols layer={boot.layer_used} "
+        f"cover={boot.n_covered_instances}/{boot.n_instances} "
+        f"L1_status={boot.layer1_status} "
+        f"L1_wall={boot.layer1_wall_s:.1f}s L2_n={boot.layer2_n_region_columns} "
+        f"L2_wall={boot.layer2_wall_s:.1f}s "
+        f"L3_n={boot.layer3_n_singleton_columns}"
+    )
 
     regions = p1.iter_regions(grid_w, grid_h, region_size, stride, rng)
     proxy_windows = p1.build_proxy_windows(grid_w, grid_h, region_size)
@@ -602,6 +604,18 @@ def run_column_generation_phase2(
         proxy_window_count=len(proxy_windows),
         routing_aware=routing_aware,
         boundary_eq_on=enable_boundary_eq,
+        bootstrap_summary={
+            "layer_used": boot.layer_used,
+            "n_columns": len(boot.columns),
+            "layer1_status": boot.layer1_status,
+            "layer1_wall_s": boot.layer1_wall_s,
+            "layer2_n_region_columns": boot.layer2_n_region_columns,
+            "layer2_wall_s": boot.layer2_wall_s,
+            "layer3_n_singleton_columns": boot.layer3_n_singleton_columns,
+            "n_covered_instances": boot.n_covered_instances,
+            "n_instances": boot.n_instances,
+            "rmp_feasible_estimate": boot.rmp_feasible_estimate,
+        },
     )
 
     rents_config: Optional[RentsRuleConfig] = None
@@ -727,22 +741,52 @@ def run_column_generation_phase2(
     stats.direct_master_objective = dm.integer_objective
     stats.direct_master_wall = dm.wall_seconds
 
-    # Ryan-Foster branching.
+    # Ryan-Foster branching (v2 — telemetry + std fallback).
     if not skip_branching and columns:
-        _log(f"[{label}] Ryan-Foster B&P (depth≤{rf_max_depth}, nodes≤{rf_max_nodes})")
-        rf_stats = branch_and_price_ryan_foster(
+        _log(
+            f"[{label}] Ryan-Foster B&P v2 (depth≤{rf_max_depth}, "
+            f"nodes≤{rf_max_nodes}) + std fallback if leaves==0"
+        )
+
+        def _rmp_rf(cols, ids, *, decisions):
+            return solve_rmp_phase2(
+                cols, ids,
+                proxy_windows=proxy_windows,
+                decisions=decisions,
+                enable_boundary_eq=enable_boundary_eq,
+            )
+
+        def _rmp_std(cols, ids, *, branching_fixed):
+            # Phase 1 std path used a different signature — kept for
+            # forward compat (the wrapper calls phase1_probe directly).
+            return solve_rmp_phase2(
+                cols, ids,
+                proxy_windows=proxy_windows,
+                branching_fixed=branching_fixed,
+                enable_boundary_eq=enable_boundary_eq,
+            )
+
+        rf_stats = branch_and_price_with_fallback(
             columns, instance_ids,
-            max_depth=rf_max_depth, max_nodes=rf_max_nodes,
-            wall_budget_s=branching_wall_budget_s,
-            proxy_windows=proxy_windows,
-            enable_boundary_eq=enable_boundary_eq,
+            rmp_solver_rf=_rmp_rf,
+            rmp_solver_std=_rmp_std,
+            rf_max_depth=rf_max_depth,
+            rf_max_nodes=rf_max_nodes,
+            rf_wall_budget_s=branching_wall_budget_s,
+            std_max_depth=rf_max_depth,
+            std_max_nodes=rf_max_nodes,
+            std_wall_budget_s=branching_wall_budget_s,
+            log=lambda m: _log(f"[{label}] {m}"),
         )
         stats.rf_branching = rf_stats
+        stats.rf_fallback_used = rf_stats.fallback_used
         _log(
             f"[{label}] RF branching: nodes={rf_stats.nodes_explored} "
             f"leaves={rf_stats.integer_leaves_found} "
             f"best_obj={rf_stats.best_objective:.3f} "
-            f"depth_max={rf_stats.max_depth_reached}"
+            f"depth_max={rf_stats.max_depth_reached} "
+            f"kind={dict(rf_stats.leaves_kind_counts)} "
+            f"fallback_used={rf_stats.fallback_used}"
         )
         if rf_stats.best_lambda is not None:
             report = validate_integer_reconstruction(
@@ -869,6 +913,12 @@ def compute_phase2_metrics(
         "boundary_eq_on": stats.boundary_eq_on,
         "cache_telemetry": stats.cache_telemetry,
         "boundary_eq_summary": stats.boundary_eq_summary,
+        "bootstrap_summary": stats.bootstrap_summary,
+        "rf_fallback_used": stats.rf_fallback_used,
+        "rf_leaves_kind": (
+            dict(stats.rf_branching.leaves_kind_counts)
+            if stats.rf_branching else {}
+        ),
     }
     if stats.validation is not None:
         metrics["validation_error"] = stats.validation.error_message
@@ -936,6 +986,30 @@ class RampConfig:
 
 
 def default_ramps() -> List[RampConfig]:
+    """Phase 2 v2 ramp list.
+
+    The two variants `80inst_routing_aware` and `80inst_boundary_eq` are
+    DEFERRED to Phase 3 (see GPT v13 cut-language thesis: region capacity
+    cut / port exposure cut / proof object lifecycle).  Phase 2 v1 (commit
+    73ea69a) verdicts on those two variants were dominated by failure
+    modes that are addressed by the v13 cut-language redesign, not by
+    fixing them in place:
+
+      - `80inst_routing_aware`: Rent's-Rule cap (K=3) interacts with
+        Ryan-Foster `same/diff` decisions in a way that produces
+        leaves=0 even with v2 telemetry + rounded-at-cap salvage.  GPT
+        v13's "port exposure cut" is the correct fix.
+
+      - `80inst_boundary_eq`: per-(cell,dir) net-flow equality is
+        over-tight on a tiny column pool — `rmp_INFEASIBLE_at_iter_23`
+        is the recorded failure.  GPT v13's "region capacity cut"
+        proposes the right granularity (per-region perimeter slot,
+        not per-cell).
+
+    Keeping the labels in GO_THRESHOLDS_BY_RAMP so --only-ramp can still
+    target them for experimental measurement, but they are excluded
+    from the default ramp sweep.
+    """
     return [
         RampConfig("5inst",   5,   5.0,   60,  run_std_baseline=False, skip_branching=True),
         RampConfig("20inst",  20,  10.0,  120, run_std_baseline=True),
@@ -943,10 +1017,11 @@ def default_ramps() -> List[RampConfig]:
         RampConfig("80inst",  80,  20.0,  240, run_std_baseline=True),
         RampConfig("160inst", 160, 30.0,  300, run_std_baseline=False),
         RampConfig("266inst", 266, 45.0,  400, run_std_baseline=False),
-        RampConfig("80inst_routing_aware", 80, 20.0, 200,
-                   run_std_baseline=False, routing_aware=True),
-        RampConfig("80inst_boundary_eq",   80, 20.0, 200,
-                   run_std_baseline=False, enable_boundary_eq=True),
+        # DEFERRED to Phase 3 (GPT v13 cut-language thesis):
+        # RampConfig("80inst_routing_aware", 80, 20.0, 200,
+        #            run_std_baseline=False, routing_aware=True),
+        # RampConfig("80inst_boundary_eq",   80, 20.0, 200,
+        #            run_std_baseline=False, enable_boundary_eq=True),
     ]
 
 
@@ -1026,7 +1101,58 @@ def run_dry_run() -> int:
         )
         _log(f"toy RF branching: nodes={rf.nodes_explored} "
              f"leaves={rf.integer_leaves_found} "
-             f"best_obj={rf.best_objective:.3f}")
+             f"best_obj={rf.best_objective:.3f} "
+             f"kind={dict(rf.leaves_kind_counts)}")
+
+    # Phase 2 v2 P0 smoke: 3-layer bootstrap toy (5-inst).
+    boot5 = feasibility_preserving_bootstrap(
+        subset5, pools,
+        layer1_time_limit_s=5.0,
+        layer2_time_limit_per_region_s=1.0,
+        layer2_region_count_cap=10,
+        log=lambda m: _log(f"smoke {m}"),
+    )
+    _log(
+        f"toy bootstrap layer={boot5.layer_used} "
+        f"n_cols={len(boot5.columns)} L1_status={boot5.layer1_status} "
+        f"L1_wall={boot5.layer1_wall_s:.2f}s "
+        f"L2_n={boot5.layer2_n_region_columns} "
+        f"L3_n={boot5.layer3_n_singleton_columns} "
+        f"cover={boot5.n_covered_instances}/{boot5.n_instances}"
+    )
+
+    # Phase 2 v2 P1 smoke: RF with std fallback on toy 5-inst, depth=3
+    # — must produce leaves >= 1 either via RF natural / rounded_at_cap
+    # OR via std fallback.
+    def _rmp_for_smoke(cs, ids, *, decisions):
+        return solve_rmp_phase2(
+            cs, ids, proxy_windows=proxy_windows,
+            decisions=decisions, enable_boundary_eq=False,
+        )
+
+    def _rmp_for_smoke_std(cs, ids, *, branching_fixed):
+        return solve_rmp_phase2(
+            cs, ids, proxy_windows=proxy_windows,
+            branching_fixed=branching_fixed, enable_boundary_eq=False,
+        )
+
+    rf2 = branch_and_price_with_fallback(
+        boot5.columns, [m["instance_id"] for m in subset5],
+        rmp_solver_rf=_rmp_for_smoke,
+        rmp_solver_std=_rmp_for_smoke_std,
+        rf_max_depth=4, rf_max_nodes=30, rf_wall_budget_s=10.0,
+        std_max_depth=3, std_max_nodes=30, std_wall_budget_s=5.0,
+        log=lambda m: _log(f"smoke {m}"),
+    )
+    _log(
+        f"toy RF+fallback: nodes={rf2.nodes_explored} "
+        f"leaves={rf2.integer_leaves_found} "
+        f"kind={dict(rf2.leaves_kind_counts)} "
+        f"fallback={rf2.fallback_used} "
+        f"best_obj={rf2.best_objective}"
+    )
+    if rf2.integer_leaves_found < 1:
+        _log("SMOKE WARN: RF+fallback found 0 leaves on toy — investigate")
 
     _log("dry-run complete (no measurement written)")
     return 0
