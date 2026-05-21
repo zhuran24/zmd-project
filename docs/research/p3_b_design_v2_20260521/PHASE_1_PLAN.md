@@ -82,7 +82,7 @@ src/integration/
 | P1.1 | `src/cuts/lifecycle.py` (从 PoC 迁 + 完整 9 步 函数) | ~600 | PoC |
 | P1.2 | `src/cuts/store.py` (CutStore + 6 维 watcher + dispatch) | ~700 | lifecycle |
 | P1.3 | `src/cuts/replay.py` (6 步 verify + GHOST_AGNOSTIC/blocked_cells_hash dispatch) | ~400 | store |
-| P1.4 | `src/cuts/assumptions/verifiers.py` + helpers (AABB/partition/power_network) | ~500 | - |
+| P1.4 | `src/cuts/assumptions/verifiers.py` + `helpers/ghost_geometry.py` (Liang-Barsky AABB intersection, Gemini r24 C1 加 explicit) + `helpers/baseline_partition.py` + `helpers/power_network.py` | ~500 | - |
 
 测试: ~1500 LOC (跟 PoC 14 test 同 pattern 扩到 framework).
 
@@ -111,24 +111,29 @@ src/integration/
 | P1.15 | Family 9 density_envelope (paradigm 降级版, area_capacity_overflow only) | ~300 | F5 |
 | P1.16-18 | F1-F8 协调 dedup + monitor + integration | ~600 | - |
 
-### Phase 1.3 — benders_loop integration (Day P1.19-P1.21, ~3 day)
+### Phase 1.3 — benders_loop integration (Day P1.19-P1.22, ~4 day, v2 解耦 Gemini r24 C3)
+
+v2 (Gemini round 24 C3): 解耦算法 bug vs IO bug — smoke test 提前到 P1.20
+(纯内存) 跑通 9 family 数学逻辑, 再 P1.22 上 disk persist + rotation. 排查时
+能分清 "数学错" vs "文件读写错".
 
 | Day | 内容 |
 |---|---|
 | P1.19 | `b_design_v2_hook.py` hook 进 outer_search.py / benders_loop.py |
-| P1.20 | env flag `EXACT_B_DESIGN_V2=1` 切新 vs 老 cut, A/B 测试基础 |
-| P1.21 | 跨 candidate cut store 持久化 (`data/cuts/*.json` + quarantine) |
+| P1.20 | **smoke test 5 inst (纯内存版, 提前 — v2 Gemini r24 C3)** — 验 9 family 数学不爆, 无 disk persist |
+| P1.21 | env flag `EXACT_B_DESIGN_V2=1` 切新 vs 老 cut, A/B 测试基础 |
+| P1.22 | 跨 candidate cut store 持久化 (`data/cuts/active/*.json` + `data/cuts/quarantine/*.json` 分目录, Gemini r24 D1) + capacity-based eviction (LRU, PROJECT_LOCK §4 豁免范围, 不属 Step 10) |
 
-### Phase 1.4 — Ramp 测试 (Day P1.22-P1.27, ~5 day Claude pace + 3-5 day wall clock)
+### Phase 1.4 — Ramp 测试 (Day P1.23-P1.28, ~6 day Claude pace + 3-5 day wall clock)
 
 | Day | 内容 |
 |---|---|
-| P1.22 | 5 inst smoke test (验全 framework 不爆) |
-| P1.23 | 20 inst ramp (验 invariant 跨 multi-candidate) |
-| P1.24 | 40 inst ramp |
-| P1.25 | 80 inst ramp + Class C monitor report (exit criterion #5 + #7) |
-| P1.26 | 160 inst ramp + cut store size report (exit criterion #6) |
-| P1.27 | 266 inst (full mandatory) — 真正 verdict B Design v2 解 96% utilization 几何死结 |
+| P1.23 | 5 inst smoke (含 disk persist 版, P1.20 内存 only 通过后 disk 跑) |
+| P1.24 | 20 inst ramp (验 invariant 跨 multi-candidate) |
+| P1.25 | 40 inst ramp |
+| P1.26 | 80 inst ramp + Class C monitor report (exit criterion #5 + #7) |
+| P1.27 | 160 inst ramp + cut store size report (exit criterion #6 — **< 5 GB/worker**, Gemini r24 A1.2 修 — v1 12 GB/worker × 4 worker = 48 GB OOM 致 168h 崩) |
+| P1.28 | 266 inst (full mandatory) — 真正 verdict B Design v2 解 96% utilization 几何死结 |
 
 **wall clock 死时间**: 80/160/266 inst 每 inst 跑 inner LBBD 可能 5-30 min, 总
 wall clock ~3-5 day (跟 cand C ramp 同量级).
@@ -165,8 +170,25 @@ test, ramp 出 INFEASIBLE 时验 Family 5 真接住.
 
 ### R5. 266 inst RAM 撞 48 GB cap
 
-cand C Phase 2 v3 死路核心. **缓解**: P1.26 先 160 inst 看 cut store 增长率,
-线性外推 266 是否 fit. 若 >40 GB Phase 1.5 加 cut store rotation.
+cand C Phase 2 v3 死路核心. **缓解**: P1.27 先 160 inst 看 cut store 增长率,
+线性外推 266 是否 fit. 若 >40 GB 加 cut store rotation (capacity-based eviction,
+PROJECT_LOCK §4 豁免范围, 不属 Step 10 expiry).
+
+**RAM budget 重算** (Gemini round 24 A1.2 critical fix):
+- 单机 48 GB cap = master process (~16 GB OS+CP-SAT) + 4 worker × 5 GB cut
+  store + 8 GB other = **44 GB** 安全余量 4 GB
+- v1 12 GB/worker × 4 = 48 GB 加 master = 必 OOM
+- exit criterion #6 改 < 5 GB/worker (script v2 已修)
+
+### R6. F9 QuickXplain 耗时爆炸 (Gemini round 24 C2 新加)
+
+F9 v1.5 spec §5b 提到 minimize window 走 QuickXplain on window expansion,
+反复调 sub-problem oracle (binding/routing/PCR-CUT). 若 oracle 是 routing,
+每次调用秒级到分级, QuickXplain N 次 → 总耗时分到小时级 single anchor.
+
+**缓解** (稳健方向): Phase 1 v1.5 实施时**直接用 Bounding Rect 作 Window**,
+不强制 minimize (Phase 0 spec §5b 已标 v1.0 不 minimize, v1.1 加). Phase 2
+加 QuickXplain 才上.
 
 ## 6. Decision points (Phase 1 中可能要重新走 Gemini)
 

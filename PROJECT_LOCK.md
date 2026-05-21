@@ -101,6 +101,12 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   `area_capacity_overflow` 凭证. binding/routing/PCR-CUT INFEASIBLE 必 fallback
   Family 5 pattern_nogood (Gemini round 19 verdict). 不允许 silent generalize
   topological deadlock → density cut.
+- **F9 area-based counting lock** (Gemini round 24 B2 — round 20 finding 焊死):
+  F9 evaluator + validator 必走 area-based `sum(|pose_cells ∩ W|)` 计数,
+  **不可退化** instance-based counting (v1.0 over-count / v1.2 origin-in-W
+  / v1.3 all-in-W 全 unsound — v1.0 FP, v1.2 FP, v1.3 FN). v1.4+ 全
+  area paradigm 是唯一 sound 路径, 任何 refactor 退回 instance-counting 算
+  Forbidden Change.
 - **代数 vs 几何分工**: 全局代数约束 (e.g. power supply cap, total worker
   count) 必走 Master CP-SAT 线性约束, 不进 cut framework (Gemini round 22
   F16 verdict — "代数归 Master, 几何归 Cut").
@@ -128,6 +134,15 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   跳过任一步骤 (例如 Phase 1 implementation 没写 scope-aware replay 直接进
   168h campaign) 算 Forbidden Change. PoC `docs/research/p3_b_design_v2_20260521/
   poc/b_core_lifecycle_poc.py` 14/14 PASS 必跨 src/ boundary 真验.
+
+  **Capacity-based Eviction 豁免** (Gemini round 24 B1 — A2 §4 vs A3 R2 冲突解):
+  Step 10 dominance/expiry/demotion 严禁的是**语义级 expiry** (基于 cut
+  hit-count / age / subsumption 主动 demote/expire). **不禁** capacity-based
+  eviction — 当 cut store 达 RAM/disk 上限 (e.g. 5 GB/worker per criterion #6)
+  时, 走 LRU/FIFO 驱逐**最近最不命中的 cut** (cut 仍 sound 只是工程上不存)
+  防 OOM. 这是工程兜底, 不属于 Step 10. Phase 1 实施时驱逐 cut 必走
+  `data/cuts/quarantine/evicted/` 子目录留 audit trail (不删, 168h close 后
+  归档), 跟 Step 10 semantic expiry 不混.
 - **(2026-05-22) Silent recovery 禁止**: B Design v2 9 family cut + replay
   全 fail-closed. cut.scope.source_digest 跟当前 source-of-truth hash 不一致
   → quarantine, **不可 auto-migrate**. 即使重算 cert 在新 source 下 sound,

@@ -161,6 +161,22 @@ def check_3_power_no_cover() -> CriterionResult:
     )
 
 
+# v2 (Gemini round 24 A1.1): 加 F8/F9 测试门禁 — 最复杂几何算法 (Liang-Barsky
+# AABB intersection / area-based counting) 必硬验
+def check_2b_power_grid_reach() -> CriterionResult:
+    return check_synthetic_test_exists(
+        "test_family_8_power_grid_reach.py", 28,  # criterion id 2b → 28
+        "F8 power_grid_reach Liang-Barsky AABB intersection 测试 (Gemini r24 加)"
+    )
+
+
+def check_3b_density_envelope() -> CriterionResult:
+    return check_synthetic_test_exists(
+        "test_family_9_density_envelope.py", 38,  # criterion id 3b → 38
+        "F9 density_envelope area-based counting 测试 (Gemini r24 加)"
+    )
+
+
 def check_4_replay_suite() -> CriterionResult:
     return check_synthetic_test_exists(
         "test_replay_suite.py", 4,
@@ -218,11 +234,24 @@ def check_5_80_inst_no_unknown() -> CriterionResult:
 
 
 def check_6_160_inst_cut_store() -> CriterionResult:
+    # v2 (Gemini round 24 A1.2 致命 RAM 计算错修):
+    # v1 12 GB/worker × 4 worker = 48 GB, 加 master/OS 16 GB → OOM 致 168h 崩
+    # 单机 48 GB cap: 4 worker × 5 GB cut store + 16 GB master/OS + 8 GB other
+    # = 44 GB 安全余量
     return check_ramp_metric(
         "docs/research/b_design_v2_ramp/160_inst_report.json", 6,
-        "160-inst cut store < 12GB/worker",
-        lambda d: d.get("cut_store_peak_mb", 99999) < 12 * 1024,
-        "cut_store_peak_mb < 12288 (12 GB)",
+        "160-inst cut store < 5 GB/worker (4 worker × 5 GB + master 16 GB < 48 GB)",
+        lambda d: d.get("cut_store_peak_mb_per_worker", 99999) < 5 * 1024,
+        "cut_store_peak_mb_per_worker < 5120 (5 GB/worker)",
+    )
+
+
+# v2 (Gemini round 24 A1.3): 加 cut store rotation/GC 机制测试
+def check_9_cut_store_rotation() -> CriterionResult:
+    return check_synthetic_test_exists(
+        "test_cut_store_rotation.py", 9,
+        "cut store rotation/GC 机制 (capacity-based eviction sound, 不删 active cut, "
+        "PROJECT_LOCK §4 Step 10 豁免范围) (Gemini r24 加)"
     )
 
 
@@ -245,19 +274,37 @@ def check_7_pattern_no_good_ratio() -> CriterionResult:
 # ============================================================================
 
 def check_8_persisted_cuts_replay() -> CriterionResult:
-    """所有 persisted cuts deserialize+validate+attach-scope 通过."""
+    """所有 persisted cuts deserialize+validate+attach-scope 通过.
+
+    v2 (Gemini round 24 D1): A3 plan P1.21 用 active/quarantine 分子目录,
+    script glob 必须 cover 两 dir. 只 glob data/cuts/*.json 漏 active/quarantine
+    内 cut → #8 永远 PENDING.
+
+    NOTE (v2 D2 fail-closed 语义): Phase 1 实施 6 步 verify 测试时, 必须验
+    "未知 assumption → HOLD, cut 不错误转入 quarantine 目录". 此 script 目前
+    占位 jsonschema 检查, 6 步 verify 测试在 Phase 1 P1.20 加.
+    """
     cuts_dir = REPO / "data" / "cuts"
     if not cuts_dir.exists():
         return CriterionResult(
             id=8, description="所有 persisted cuts deserialize+validate+attach-scope 通过",
             check_kind="ramp_data",
-            pass_condition="data/cuts/*.json 全 PASS replay 6 步 verify",
-            artifact="data/cuts/",
+            pass_condition="data/cuts/{active,quarantine}/*.json 全 PASS replay 6 步 verify",
+            artifact="data/cuts/{active,quarantine}/",
             status="PENDING_PHASE_1",
             detail="data/cuts/ 不存在 (Phase 1 cut store 启用后生成)",
         )
 
-    cut_files = list(cuts_dir.glob("*.json"))
+    # v2: glob 两个子目录 (active + quarantine)
+    active_dir = cuts_dir / "active"
+    quarantine_dir = cuts_dir / "quarantine"
+    cut_files = []
+    if active_dir.exists():
+        cut_files.extend(active_dir.glob("*.json"))
+    if quarantine_dir.exists():
+        cut_files.extend(quarantine_dir.glob("*.json"))
+    # Backward compat: 也 cover flat layout
+    cut_files.extend(cuts_dir.glob("*.json"))
     if not cut_files:
         return CriterionResult(
             id=8, description="所有 persisted cuts deserialize+validate+attach-scope 通过",
@@ -305,16 +352,20 @@ def check_8_persisted_cuts_replay() -> CriterionResult:
 # Main
 # ============================================================================
 
-CRITERIA = [
-    check_boundary_source_of_truth,
-    check_2_q_front_overload,
-    check_3_power_no_cover,
-    check_4_replay_suite,
-    check_5_80_inst_no_unknown,
-    check_6_160_inst_cut_store,
-    check_7_pattern_no_good_ratio,
-    check_8_persisted_cuts_replay,
-]
+# v2 (Gemini round 24): CRITERIA dict keyed by ID, 加 #28/38/9 新 finding
+CRITERIA = {
+    1: check_boundary_source_of_truth,
+    2: check_2_q_front_overload,
+    28: check_2b_power_grid_reach,   # F8 — Gemini r24 加 (geometric Liang-Barsky)
+    3: check_3_power_no_cover,
+    38: check_3b_density_envelope,   # F9 — Gemini r24 加 (area-based counting)
+    4: check_4_replay_suite,
+    5: check_5_80_inst_no_unknown,
+    6: check_6_160_inst_cut_store,
+    7: check_7_pattern_no_good_ratio,
+    8: check_8_persisted_cuts_replay,
+    9: check_9_cut_store_rotation,   # cut store rotation/GC — Gemini r24 加
+}
 
 
 def main() -> int:
@@ -323,16 +374,16 @@ def main() -> int:
                         help="任 criterion FAIL/PENDING 整 script return 1")
     parser.add_argument("--json", action="store_true", help="JSON 输出")
     parser.add_argument("--criterion", type=int, nargs="+",
-                        help="只跑指定 criterion ID (1-8)")
+                        help="只跑指定 criterion ID (1, 2, 28=2b, 3, 38=3b, 4-9)")
     args = parser.parse_args()
 
-    selected = args.criterion or list(range(1, 9))
+    selected = args.criterion or sorted(CRITERIA.keys())
     results: List[CriterionResult] = []
     for cid in selected:
-        if not (1 <= cid <= 8):
-            print(f"skip invalid criterion {cid}", file=sys.stderr)
+        if cid not in CRITERIA:
+            print(f"skip invalid criterion {cid} (valid: {sorted(CRITERIA.keys())})", file=sys.stderr)
             continue
-        results.append(CRITERIA[cid - 1]())
+        results.append(CRITERIA[cid]())
 
     if args.json:
         print(json.dumps([asdict(r) for r in results], ensure_ascii=False, indent=2))
