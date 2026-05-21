@@ -58,8 +58,15 @@ else
         export LD_PRELOAD="$JEMALLOC_PATH"
     fi
     export PYTHONMALLOC=malloc
+    # 2026-05-21 latency tuning: jemalloc 极致 tunables (Gemini round 11)
+    # narenas:1            single-process workload 单 arena 减碎片 + TLB 压力
+    # metadata_thp:always  jemalloc 内部 metadata 走 THP 减 TLB miss
+    # dirty_decay_ms:-1    禁 madvise(MADV_DONTNEED) 内存永驻进程 (减 minor page fault + 内核态切换)
+    # muzzy_decay_ms:-1    同 dirty_decay 处理 muzzy state, 内存只增不减 (CP-SAT 单机专用 OK)
+    export JEMALLOC_CONF="narenas:1,metadata_thp:always,dirty_decay_ms:-1,muzzy_decay_ms:-1"
     echo "[run_campaign_linux] LD_PRELOAD=$LD_PRELOAD"
     echo "[run_campaign_linux] PYTHONMALLOC=$PYTHONMALLOC"
+    echo "[run_campaign_linux] JEMALLOC_CONF=$JEMALLOC_CONF"
 fi
 
 # ---------------------------------------------------------------------------
