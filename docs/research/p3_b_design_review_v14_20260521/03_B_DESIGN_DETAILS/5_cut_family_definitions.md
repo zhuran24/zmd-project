@@ -45,17 +45,25 @@ flow equality.
 
 ```python
 def resolve_region_capacity(cut, state):
+    # used 只算 already-placed (i ∈ placed), 不包含正在过滤的 unplaced i
     used = sum(|cells(state.placement[i]) ∩ cut.region| for i in placed)
     if used > cut.cap_R:
         return ResolveOutcome("infeasible")
-    # filter pose_domain: 剩余 pose 选 cause used + new pose's R-cells > cap_R 的 → remove
+    # 只 filter unplaced instance 的 pose; placed instance 不动 (它们的贡献已在 used 里)
     removed = {}
     for i, poses in state.pose_domain.items():
+        if i in placed:  # <- 关键修复: 防 double-count placed pose
+            continue
         for p in poses:
             if used + |cells(p) ∩ cut.region| > cut.cap_R:
                 removed.setdefault(i, set()).add(p)
     return ResolveOutcome("domain_change", removed)
 ```
+
+**注: 2026-05-21 修 double-count bug (Gemini round 12 catch).** 原版对 placed
+instance i 重复算 cells(placement[i]) ∩ R: 一次在 `used` 里, 一次在内层 loop
+`used + |cells(p) ∩ R|` 里 (p 包括 placement[i] 本身). 结果把 placed pose 从
+domain 删 → state invariant 破坏.
 
 ## Family 2: Cutset cut
 

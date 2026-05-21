@@ -87,7 +87,7 @@ False. 80 inst 是 sound 临界点 — 上不去也下不来. (这是 Sound 性�
 - 132 个 `manufacturing_3x3` 占 132 × 9 = 1188 cell
 - 49 个 `manufacturing_5x5` 占 49 × 25 = 1225 cell
 - 38 个 `manufacturing_6x4` 占 38 × 24 = 912 cell
-- 46 个 `boundary_storage_port` 占 46 × 3 = 138 cell (必须 perimeter)
+- 46 个 `boundary_storage_port` 占 46 × 3 = 138 cell (必须 left+bottom baseline)
 - 1 个 `protocol_core`
 - ≈ **3479 cell** facility footprint
 - 加 power_pole + belt + connector ≈ 4300+ cell 实际占用
@@ -118,7 +118,7 @@ indicator(k uses cell c) ≤ 1 per cell. 两约束族在 96% utilization 下无
   algorithmic engineering 问题 — 加新 column 没用, 因为 LP relax 本身
   在 96% utilization 下不可行.
 - **现 cut language** = set partitioning / set covering + cell-exclusivity
-  + ghost-rect filter. 表达不了 "perimeter constraint × component
+  + ghost-rect filter. 表达不了 "left+bottom baseline constraint × component
   connectivity" 这类 cut.
 - → 推 Design B (重写 master + 自研 cut engine, 不在 cand C 的 set
   partition LP 范畴内)

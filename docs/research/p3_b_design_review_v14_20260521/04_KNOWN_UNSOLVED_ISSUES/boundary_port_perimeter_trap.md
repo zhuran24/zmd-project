@@ -1,14 +1,14 @@
-# Known unsolved issue: boundary_storage_port × perimeter trap
+# Known unsolved issue: boundary_storage_port × left+bottom baseline saturation trap
 
 ## 现象描述
 
 `boundary_storage_port` × 46 个 facility, 每个 1×3 footprint, **必须沿
 grid 边界放置** (外侧朝外, 内侧朝内, 中间夹 1 cell). 46 × 3 = 138 cells 锁
-死在 perimeter 上.
+死在 left+bottom 2 条 baseline 上 (实际不是四边 perimeter, 是 `placement_rule: left_or_bottom_boundary`).
 
-Grid perimeter = 70 × 4 - 4 (角去重) = 276 cells.
+Grid perimeter = **138 cells** (left baseline 67 + bottom baseline 67, 角 (0,0) 留空避重叠).  实际 source-of-truth: rules/canonical_rules.json `placement_rule: left_or_bottom_boundary`.
 
-→ **138 / 276 = 50% perimeter cell 锁定**.
+→ **138 / 138 = 100% perimeter cell 锁定**.
 
 ## 为什么是 trap
 
@@ -33,7 +33,7 @@ ghost 占某一边:
 ### Trap 3: boundary port × ghost rect corner
 
 ghost rect corner 是 (anchor_x, anchor_y), 若 anchor 贴边 (e.g.
-anchor_x = 0), corner cell 是 perimeter cell, 同时是 ghost 的 cell.
+anchor_x = 0), corner cell (left baseline) 是 baseline cell (left/bottom), 同时是 ghost 的 cell.
 boundary port 不能占这个 cell (因为 ghost forbid), 但 boundary port 候
 选 pose 池可能 list 这个 cell — pose pool filter 必须 ghost-aware.
 
@@ -58,14 +58,14 @@ facility 8-12 pose).
   contradiction.
 - **B1 Phase 4 routing convergence**: front_blocked ~500-610 ports, 其
   中 boundary port 占 ~150 (46 × 3-4 / pose × routing). boundary port
-  跟 perimeter 强耦合时 routing graph cut 强.
+  跟 left+bottom baseline 强耦合时 routing graph cut 强.
 - **Path 15 PGW-UB Phase 0**: top5_cov 0.046 vs target 0.55, blocked_owners
-  276-327 vs ≤120. blocked_owners 跟 boundary port 强相关.
+  276-327 vs ≤120. blocked_owners 跟 boundary port (left+bottom baseline) 强相关.
 
 ## 跟 B 设计的关系
 
 B 设计的 **port_exposure cut family** 直接编码 boundary port direction
-× perimeter cell exposure:
+× left+bottom baseline exposure:
 
 ```
 对 facility i 是 boundary_storage_port, 外侧 port at (x, 0) facing N,
@@ -73,11 +73,11 @@ front cell (x, -1) 必须 grid boundary (即外界, 不是 facility 占用),
 内侧 port at (x, 1) facing S, front cell (x, 2) 必须 free.
 ```
 
-LP partition framework (cand C) **不能 natural 表达** "perimeter 是 grid
-边界" 这层 (因为 LP variable 是 cell-level λ, perimeter 不是 LP var, 是
+LP partition framework (cand C) **不能 natural 表达** "left+bottom baseline 是 grid
+边界" 这层 (因为 LP variable 是 cell-level λ, baseline 不是 LP var, 是
 geometry).
 
-B 的 state machine + bitset 能直接编码: perimeter cell mask 是 fixed
+B 的 state machine + bitset 能直接编码: baseline cell mask 是 fixed (left+bottom 138 cells)
 bitset, port_exposure cut family resolve 时 mask & operation.
 
 ## 还没解的部分
@@ -100,7 +100,7 @@ north=20, south=14, east=6, west=6. north edge 实际占用 27 (ghost) + 60
 (20 port × 3) = 87 > 70 edge length → infeasible. 但 5 cut family 哪类
 能识别?
 
-- region capacity (R = north edge perimeter): cap_R = 70, used = 87, cut
+- region capacity (R = north edge): N/A — north 不允许 boundary_port; 改 R = left baseline: cap_R = 67, demand = 23, must-fit
   triggered ✅
 - port_exposure: 每 port 单独 check, 不识别 aggregate over-capacity
 - cutset: 不直接 cover

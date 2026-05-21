@@ -1,4 +1,4 @@
-# 96% 利用率几何死结 + boundary_storage_port × perimeter trap
+# 96% 利用率几何死结 + boundary_storage_port × left+bottom baseline saturation
 
 ## 实测数字
 
@@ -14,14 +14,14 @@
 
 → 这是项目从 paradigm investigation 实测拿到的最 fundamental 几何 stress.
 
-## Boundary port × perimeter trap
+## Boundary port × left+bottom baseline 100% saturation
 
 `boundary_storage_port` 是 46 个 facility, 每个 1×3 = 3 cell footprint,
 **必须贴 grid 边界**:
 
-- Perimeter cells: 70 × 4 - 4 (角去重) = **276 cells**
-- 46 × 3 = **138 cells** 必须占在 276 perimeter cell 内
-- → boundary occupancy = **138 / 276 = 50.0%** (一半 perimeter 锁定)
+- Perimeter cells: **138 cells** (left + bottom 2 边 baseline, 角 (0,0) 留空)
+- 46 × 3 = **138 cells** 必须占在 138 个 left+bottom baseline cell 内 (`placement_rule: left_or_bottom_boundary`)
+- → boundary occupancy = **138 / 138 = 100.0%** (left+bottom baseline 100% saturate, 无余地)
 
 Side breakdown (每边 ≈ 68 cells 去掉 2 个角):
 - 4 边各 ≈ 68 cells
@@ -93,7 +93,7 @@ column cover all 266 instance individually 仍不可行 (任意 partition 都
 + boundary_storage_port × perimeter trap.
 
 → Design B 想破这层, 不是靠加 cut, 是靠 master state machine + 5 cut
-family 直接编码 "perimeter constraint × component connectivity"
+family 直接编码 "left+bottom baseline constraint × component connectivity"
 的 sound prune.
 
 ## 96% 不是 hyperbole — 实测推算

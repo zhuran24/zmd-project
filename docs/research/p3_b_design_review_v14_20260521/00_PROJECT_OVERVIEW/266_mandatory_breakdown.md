@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | `manufacturing_3x3` | 132 | 3×3 = 9 cells | 1188 cells (24.2%) | 最多, crusher/refinery/assembler/separator/centrifuge/heater 等 |
 | `manufacturing_5x5` | 49 | 5×5 = 25 cells | 1225 cells (25.0%) | 大型 manufacturing (含液罐 / 反应炉) |
-| `boundary_storage_port` | 46 | 1×3 = 3 cells | 138 cells (2.8%) | **必须贴 grid 边界 (perimeter)** |
+| `boundary_storage_port` | 46 | 1×3 = 3 cells | 138 cells (2.8%) | **必须贴 grid left 或 bottom baseline (source-of-truth: `placement_rule: left_or_bottom_boundary`)** |
 | `manufacturing_6x4` | 38 | 6×4 = 24 cells | 912 cells (18.6%) | 中型 manufacturing |
 | `protocol_core` | 1 | varies | ~16-25 cells | 1 个, 中央 hub |
 | **Total** | **266** | — | **~3479 cells (71%)** | mandatory footprint 总占用 |
@@ -18,9 +18,9 @@
 - **Grid total**: 70×70 = **4900 cells**
 - **Mandatory footprint**: **~3479 cells** = **~71%**
 - **Belt / power_pole / connector / ghost rectangle cell 共享剩 ~1421 cells**
-- **Boundary perimeter cells**: 70×4 - 4 = **276 cells** (4 边)
-- **46 boundary_storage_port × 3 cells = 138 cells** 必须占在 perimeter 上
-  → boundary occupancy = **138 / 276 = 50.0%** (一半 perimeter 被 boundary
+- **Boundary perimeter cells**: 70 + 70 - 0 = **138 cells** (left + bottom 2 边 baseline, 角 (0,0) 留空避重叠)
+- **46 boundary_storage_port × 3 cells = 138 cells** 必须占在 left+bottom 2 条 baseline 上 (source-of-truth: rules/canonical_rules.json `placement_rule: left_or_bottom_boundary`)
+  → boundary occupancy = **138 / 138 = 100.0%** (left+bottom 2 条 baseline 完全 saturate, 不留余地
   storage port 锁定)
 
 ## 利用率 stress
@@ -44,7 +44,7 @@ pole 等约 4300 cell 都要塞进这 4495 个 free cell, 利用率 = 4300 / 449
 
 - `manufacturing_3x3` (132 个 × ~10 pose) = ~1320 pose
 - `manufacturing_5x5` (49 × ~8 pose) = ~392 pose
-- `boundary_storage_port` (46 × ~3-4 pose, 因为受限 perimeter side) = ~150 pose
+- `boundary_storage_port` (46 × ~3-4 pose, 因为受限 left/bottom baseline (134 实际 pose: left 67 + bottom 67)) = ~150 pose
 - `manufacturing_6x4` (38 × ~10 pose) = ~380 pose
 - `protocol_core` (1 × varies) = ~5-10 pose
 - **每 mandatory group 总 pose** ≈ 2200-2300
@@ -58,7 +58,7 @@ storage box etc.) → master 总 pose vars ≈ **285K** (实测 27×15 anchor).
 |---|---|---|---|
 | `manufacturing_3x3` | 1-2 个 | 1-2 个 | 4 side 任一 |
 | `manufacturing_5x5` | 2-3 个 | 1-2 个 | 4 side 任一 |
-| `boundary_storage_port` | 1 个 (外界入) | 1 个 (内界出) 或反 | **外侧必须贴 perimeter, 内侧朝内** |
+| `boundary_storage_port` | 1 个 (外界入) | 1 个 (内界出) 或反 | **外侧必须贴 left 或 bottom baseline, 内侧朝内 (port: `inward_facing`)** |
 | `manufacturing_6x4` | 2 个 | 1-2 个 | 4 side 任一 |
 | `protocol_core` | varies | varies | 中央 hub |
 
@@ -73,7 +73,7 @@ INFEASIBLE 的几何根因.
 |---|---|
 | `manufacturing_3x3` × 132 同质 | 强 symmetry-lifted cut 机会 (同 footprint + 同 IO spec → cluster-wise no-good) |
 | `manufacturing_5x5` × 49 + `manufacturing_6x4` × 38 | region capacity cut + pattern no-good |
-| `boundary_storage_port` × 46 | perimeter port exposure cut (强制贴边的 capacity constraint) |
+| `boundary_storage_port` × 46 | left+bottom baseline saturation cut (138 cells 必须 100% 被 23 left port + 23 bottom port 完美 partition) |
 | `protocol_core` × 1 | 没 symmetry, 当 pattern fixed seed |
 | ghost rect candidate 区域 | cutset cut + component reachability cut |
 

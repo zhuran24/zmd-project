@@ -2,6 +2,20 @@
 
 ## 包目的
 
+---
+
+## ⚠️ Source-of-truth correction (2026-05-21 cross-review)
+
+v14 原版含一个 source-of-truth 错估: `boundary_storage_port` 描述成"必须贴 grid 4 边 perimeter, 占 276 cells 中 50%". 实际 ground truth (经源码 verify):
+
+- `rules/canonical_rules.json`: `placement_rule: "left_or_bottom_boundary"`
+- `src/placement/placement_generator.py` `gen_boundary_ports`: 左基线 x=0 (67 poses) + 下基线 y=0 (67 poses) = **134 poses 总数**
+- 46 boundary_port × 3 cells = **138 cells 必须 100% 铺满 left+bottom 138 allowed cells**, 不是"占 perimeter 50%"
+- 每条 baseline 23 port, 唯一无重叠铺法是 start=1,4,7,...,67. ghost rect / 其他 facility / blocked port cell 碰 left/bottom baseline → 该 candidate 直接 infeasible
+
+本包内所有 "perimeter 276" / "四边" 引用已批量修正为 "left+bottom 2 边 baseline 138 cells 100% saturation". 完整 cross-review verdict 见 memory `project_v14_review_findings.md`.
+
+
 项目 (Arknights: Endfield 70×70 工业规划器 certified exact solver) 经过 27 个
 lever paradigm investigation 全 verdict 死后, 决定走 **P3 Design B** — 自研一
 个 feature-level cut engine, 不是继续在通用 CP-SAT solver 加 cut.
@@ -23,12 +37,12 @@ v14_p3_b_design_review/
 ├── README.md                                ← 你正在读
 ├── 00_PROJECT_OVERVIEW/
 │   ├── two_layer_architecture.md            ← outer (candidate enumeration) + inner (LBBD) 架构
-│   ├── 266_mandatory_breakdown.md           ← facility type 分布 + perimeter constraint
+│   ├── 266_mandatory_breakdown.md           ← facility type 分布 + left+bottom baseline constraint
 │   └── PROJECT_LOCK_constraints.md          ← certified_exact + 48 GB + 168h 硬约束
 ├── 01_PARADIGM_HISTORY/
 │   ├── 27_lever_deaths_summary.md           ← 死法 5 大类 + 共同 root cause
 │   ├── cand_c_phase_0_1_2_v3_verdicts.md    ← cand C 实测数据 (5/20/40/80/160/266 ramp)
-│   └── geometric_deadlock_data.md           ← 96% 利用率几何死结 + boundary_storage_port × perimeter trap
+│   └── geometric_deadlock_data.md           ← 96% 利用率几何死结 + boundary_storage_port × left+bottom baseline saturation
 ├── 02_DESIGN_CANDIDATES/
 │   ├── design_a_cand_c_plus_cuts.md         ← 设计 A: cand C + cut language
 │   ├── design_b_feature_level_engine.md     ← 设计 B: 自研 master state machine + cut store + 5 cut family + proof lifecycle
@@ -40,7 +54,7 @@ v14_p3_b_design_review/
 │   ├── bitset_kernel_options.md             ← Rust pyo3 vs C++ pybind11 vs numpy
 │   └── reuse_from_cand_c.md                 ← Phase 2 v3 + B1/PCR-CUT/D2/SMT-MT 复用清单
 ├── 04_KNOWN_UNSOLVED_ISSUES/
-│   ├── boundary_port_perimeter_trap.md      ← 46 boundary_port × 3 cells / 276 perimeter cells
+│   ├── boundary_port_perimeter_trap.md      ← 46 boundary_port × 3 cells / 138 left+bottom baseline cells (100% saturation)
 │   ├── manufacturing_cluster_trap.md        ← 132 个 manufacturing_3x3 最大类潜在 trap
 │   ├── m10_sound_cross_scale.md             ← A3 set covering 在 80 inst sound 性临界
 │   └── 96_pct_utilization_death.md          ← 几何根因
