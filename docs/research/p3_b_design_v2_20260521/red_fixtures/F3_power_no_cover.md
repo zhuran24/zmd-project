@@ -14,6 +14,13 @@
 - ✅ Family 8 power_grid_reach 配合: F7 = local CoverSet 空, F8 = global disconnect (07 spec §9 协议)
 - ✅ ghost-bound watcher 6 维 by_ghost (v3.2)
 
+### Day 17f sweep — F8/F9 静默说明 (Gemini round 17 A4)
+
+F3 反例 (ghost 覆盖 facility 周围 R 全 pole 候选 → 空 CoverSet):
+- **F8 power_grid_reach**: 静默. F3 是 CoverSet 空 (local), F8 跟 F7 互斥 — F7 trigger 时 F8 不发 (07 spec §9 协议).
+- **F9 density_envelope**: 静默. F3 单 facility 反例, 不是 cluster overflow.
+- F3 唯一 owner Family 7 power_hitting_set v1.1 (causation split).
+
 ## 1. 反例几何
 
 ### Setup

@@ -16,6 +16,13 @@
 
 PoC test (test_b_core_lifecycle.py) F1 反例 14/14 PASS, 9 步 lifecycle 全 runtime work.
 
+### Day 17f sweep — F8/F9 静默说明 (Gemini round 17 A4)
+
+F1 反例 (crusher 占 left baseline → boundary 缺 1 demand):
+- **F8 power_grid_reach**: 静默. F1 反例不涉 power network 跨 ghost connectivity (假设 power 已满足).
+- **F9 density_envelope**: 静默. F1 反例只 1 个 crusher 占 baseline 几格, 远未触发 K bound (e.g. 15×15 window 内 K+1 facility).
+- 全 9 family 只 F1 owner Family 1 region_capacity (或 Family 3 port_exposure 同 owner).
+
 ## 1. 反例几何
 
 `boundary_storage_port` 在 source-of-truth 下:

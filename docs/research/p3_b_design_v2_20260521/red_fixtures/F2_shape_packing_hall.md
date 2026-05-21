@@ -15,6 +15,13 @@
 - ✅ ghost-bound watcher 6 维 by_ghost (v3.2 §7)
 - ✅ Gemini round 14 finding #2 修: partition 改 static (只看 ghost+exterior, 不看 cell_owner), cross-layer replay sound
 
+### Day 17f sweep — F8/F9 静默说明 (Gemini round 17 A4)
+
+F2 反例 (Hall interval scheduling INFEASIBLE):
+- **F8 power_grid_reach**: 静默. F2 不涉 power network, 是 boundary interval packing 问题.
+- **F9 density_envelope**: 静默. F2 demand 23 boundary port, 不是 window 内 cluster overflow.
+- F2 唯一 owner Family 6 shape_packing_hall.
+
 ## 1. 反例几何 (Gemini 反例 B)
 
 ### Setup

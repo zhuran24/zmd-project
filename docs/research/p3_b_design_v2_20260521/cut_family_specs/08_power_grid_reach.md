@@ -9,10 +9,14 @@
 ## 0. Changelog
 
 - **v1.0** (Day 17b, commit 1c757ff): F5 全局电力孤岛反例 owner.
-- **v1.1** (Day 17e, 本 commit): 修 Gemini round 16 finding B1 critical sound bug
-  — §5a `ghost_blocks_line` 算法简化版 "ghost 中心点 ∩ line(p1, p2)" 绝对
-  unsound (线段可切 ghost 边角不过中心点 → False Negative 漏判 power 断流).
-  v1.1 改严格 line-segment to AABB intersection (Liang-Barsky 裁剪).
+- **v1.1** (Day 17e/f): 修 2 round bug:
+  - 17e (Gemini round 16 B1): §5a `ghost_blocks_line` 算法简化版 "ghost 中心
+    点 ∩ line(p1, p2)" 绝对 unsound (线段可切 ghost 边角不过中心点 → False
+    Negative). 改严格 line-segment to AABB intersection (Liang-Barsky 裁剪).
+  - 17f (Gemini round 17 B1): §8 watcher v1.0 by_cell 只 carry candidate_pole_cells
+    (生成时 CoverSet). cell_owner 占的 cell 释放后变新 pole 候选时 watcher
+    不 trigger → False Positive 误剪. v1.1 改监听 `PoolPole ∩
+    BoundingBox(facility, R_conn)` 内所有合法 grid cell.
 
 ## 1. 数学定义
 
@@ -341,13 +345,37 @@ class PowerGridReachValidator(CutValidator):
         return evaluate_geometric_power_grid_reach(cut, state)
 ```
 
-## 8. Replay + watcher
+## 8. Replay + watcher (v1.1 修 Gemini round 17 B1)
 
 按 v3.1 §4 6 步 verify. watcher:
-- by_cell_watcher (facility_cells + ghost_blocking_cells + candidate_pole_cells)
+- by_cell_watcher: **v1.1 改** — 不止 `candidate_pole_cells` (生成时 CoverSet),
+  必须监听 `PoolPole ∩ BoundingBox(facility_pose, R_conn)` 内**所有**合法 grid
+  cell. 原因 (Gemini round 17 B1): cell_owner 占的 cell 当前不在
+  candidate_pole_cells, master 移走后那 cell 释放成新 pole 候选 →
+  power network reconnect. v1.0 watcher 不监听此 cell → False Positive 误剪.
 - by_pose_watcher (facility_pose)
 - by_ghost_watcher (Day 17d 加, ghost 变直接 invalidate)
 - 不需 by_group_watcher (F8 单 facility, 不跨 group)
+
+```python
+def add_watchers_power_grid_reach(store: CutStore, cut: Cut) -> None:
+    cert = decode_power_grid_reach_cert(cut.geometric_payload)
+
+    # facility cells
+    for cell in cert.facility_cells:
+        store.by_cell_watcher[cell].add(cut.cut_id)
+
+    # v1.1: 监听 BoundingBox(facility, R_conn) ∩ PoolPole 全合法 grid cell
+    # (不止 candidate_pole_cells, 防 cell_owner 释放后 reconnect 误剪)
+    bb = compute_bounding_box(cert.facility_cells, cert.pole_radius)
+    for cell in iter_cells_in_box(bb):
+        if is_legal_pole_candidate_cell(cell):  # PoolPole 内
+            store.by_cell_watcher[cell].add(cut.cut_id)
+
+    # 其他维 (pose, ghost) 不变
+    store.by_pose_watcher[cert.facility_pose].add(cut.cut_id)
+    store.by_ghost_watcher[cut.scope.ghost_rect_id].add(cut.cut_id)
+```
 
 ## 9. 跟 Family 7 power_hitting_set 协调 (cut store dedup)
 

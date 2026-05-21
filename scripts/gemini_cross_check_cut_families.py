@@ -27,9 +27,10 @@ SHARE = Path("/home/zhuran24/linwin_share")
 DOC_PATHS = [
     # 27 lever 死路 timeline
     "docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md",
-    # round 14/15 答复 (历史 context)
+    # round 14/15/16 答复 (历史 context)
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_14_cut_families.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_15_followup.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_16_day17.md",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -102,7 +103,65 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 16)
+## 本次 cross-check 目的 (round 17)
+
+这是 round 17. round 16 (已 paste) 给了 4 finding (A1 F4 ID 校验 / A2 F3
+watcher / B1 F8 ghost_blocks_line / E1 F5 表 F9). 我按 round 16 verdict
+修了, commit 1ece80a (Day 17e), 4 文件改:
+- cut_family_specs/04_component_reach.md v1.1: 删 step 4 blocking_facilities
+  ID 校验, geometric 哲学只认空间
+- cut_lifecycle_v2.md v3.2.1: 表移除 F3 from by_ghost_watcher
+- cut_family_specs/08_power_grid_reach.md v1.1: 改 ghost_blocks_line 严格
+  Liang-Barsky AABB intersection
+- red_fixtures/F5_power_grid_disconnect.md: 静默表加 Family 9
+
+round 17 任务:
+
+### 任务 A: 验 round 16 4 finding 修对
+每条修法 sound 吗? 引入新 bug 吗?
+- F4 v1.1 删 ID 校验后, separator_cell not in free_cells 单一校验充分吗?
+- F3 v3.2.1 移除 by_ghost_watcher 后, ghost change 时 F3 不再 invalidate, 但
+  ghost change 可能改 state.free_cells, F3 cert.front_cell 是否还在 free 没
+  watcher 触发 evaluate? 漏不漏?
+- F8 v1.1 Liang-Barsky algorithm — 算 ghost 是 axis-aligned rectangle 严格.
+  ghost 是离散 cell grid 上 (60, 60)..(74, 74) 不是连续 float, 边界 inclusive
+  / exclusive 怎么处理? 我现 line_segment_intersects_aabb 用 (x_min, y_min) =
+  (rect[0], rect[1]), (x_max, y_max) = (rect[0]+h, rect[1]+w) — pole pose 在
+  ghost cell (60, 60) 应被 block 吗? Edge case 问题
+- F5 fixture E1 静默表加 F9 OK, 但其他 fixture (F1-F4) 静默表也应该 sweep
+  加 F9 / F8 列么?
+
+### 任务 B: 找新 Bug
+基于 round 14/15/16 修后的 v3.2.1 + v1.1 spec 看现在状态:
+- 还有什么 sound / soundness 漏洞?
+- Schema 字段还有什么遗漏 (类比 round 14 finding #5 cells_per_pose)?
+- watcher 还有 family 误入 / 漏入吗?
+- evaluate_cut / evaluate_geometric / Validator dispatch 有没有 race / staleness?
+
+### 任务 C: 验 F10 反例 (round 16 task F) 处理方向
+round 16 给 F10 Kinematic Belt Knot 反例 (U-turn 空间不够), 推荐 Family 4 升级
+Kinematic Reachability (Stateful BFS + port_directions field). 我 defer Phase 1.
+问:
+- defer Phase 1 合理吗? 还是 Phase 0 必加?
+- 升级 Family 4 vs 加 Family 10 哪个好? round 16 你给 Family 4 升级建议, 现
+  reconsider 仍是吗?
+- belt routing 还有 类似 kinematic 反例吗? (e.g. 高速带速度限制 / 多带共享
+  belt cell 限制 / 带方向锁死 case)
+
+### 任务 D: 找 F11+ 反例
+9 family + 修后 v3.2.1 watcher + Liang-Barsky 算法严格后, 还有什么 INFEASIBLE
+master assignment 现 9 family 全静默?
+
+## 回答格式
+分 4 段 A/B/C/D. 每条具体 (file path + § + 行号). 找不到 bug 写"没找到 bug,
+已 cross-check 完毕".
+
+## Reply 语言
+中文优先, 数学符号 ASCII / latex 都行. 输出长度不限 — 是 Phase 0 关键 gate.
+"""
+
+## OLD round 16 prompt (no longer used):
+_old_round_16 = """## 本次 cross-check 目的 (round 16)
 
 这是 round 16. round 14/15 历史 (已 paste cross_check/round_14 + round_15) —
 3 致命 sound bug + 2 schema 漏 + F5 全局电力孤岛反例 + Class B/C 风险预警 +
@@ -247,7 +306,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_16.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_17.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -258,7 +317,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_16.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_17.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)

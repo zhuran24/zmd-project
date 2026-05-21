@@ -13,6 +13,13 @@
 - ✅ Regression sweep scope-aware → cut_lifecycle §4 6 步 verify 含 ghost_rect_id + blocked_cells_hash 双校验
 - ✅ Replay 反例完整 walk-through → cut_lifecycle §4 §5 反例数学 + PoC test_attach_scope_ghost_agnostic 验证
 
+### Day 17f sweep — F8/F9 静默说明 (Gemini round 17 A4)
+
+F4 反例 (ghost-scoped replay false positive — G1 学的 cut 在 G2 误剪):
+- **F8 power_grid_reach**: 静默. F4 是 scope-aware replay 机制问题, 不是 power 几何反例.
+- **F9 density_envelope**: 静默. F4 不涉 density / cluster.
+- F4 owner: Family 5 pattern_nogood + cut_lifecycle scope-aware HOLD path (任 family 都受 v3.1 6 步 verify 保护).
+
 ## 1. 反例几何 (cut_lifecycle_v2 §4 walk-through)
 
 **两个 candidate 切换 ghost 暴露 v14 pose-id-only replay bug.**

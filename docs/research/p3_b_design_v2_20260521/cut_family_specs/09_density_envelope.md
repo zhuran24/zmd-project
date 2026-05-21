@@ -9,10 +9,16 @@
 
 ## 0. Changelog
 
-- **v1.0** (Day 17c, 本 commit): Gemini round 15 推荐. Class C (cut family
-  abstraction 不够 / full no-good 退化) mitigation. 把 oracle 反馈的局部
-  routing INFEASIBLE 翻译成**几何 density** cut, 不绑具体 pose ID, 跨几何
-  扰动命中.
+- **v1.0** (Day 17c, commit 98daa07): Gemini round 15 推荐. Class C (cut
+  family abstraction 不够 / full no-good 退化) mitigation. 把 oracle 反馈的
+  局部 routing INFEASIBLE 翻译成**几何 density** cut, 不绑具体 pose ID, 跨
+  几何扰动命中.
+- **v1.1** (Day 17f): 修 Gemini round 17 B2 schema state-dependency:
+  `oracle_assignment_witness` v1.0 含 `(GroupId, int slot, PoseId)`, slot 是
+  master 内部 enumeration order (state-dependent). 跨 candidate replay 时
+  slot 改 → validator 死板验 slot 让合法 witness 失败 quarantine. v1.1 改
+  `(GroupId, PoseId)` (state-independent), validator 只看 "K+1 pose 同时存在"
+  即可验 INFEASIBLE.
 
 ## 1. 数学定义
 
@@ -87,9 +93,12 @@ class DensityEnvelopeCert:
         "pcr_cut_overflow",                     # PCR-CUT 端 K+1 patch min-cut 不够
     ]
     oracle_cert_hash: Hash                     # sub-problem oracle 的 INFEASIBLE 证书 hash
-    oracle_assignment_witness: Tuple[Tuple[GroupId, int, PoseId], ...]
-                                                # K+1 具体 assignment 触发的 oracle INFEASIBLE
-                                                # (debug, replay 时 oracle 重跑 K+1 验)
+
+    # v1.1 (Gemini round 17 B2): 去 slot ID (state-dependent), 改 (group, pose) 只
+    oracle_assignment_witness: Tuple[Tuple[GroupId, PoseId], ...]
+                                                # K+1 具体 (group, pose) 对触发 oracle INFEASIBLE
+                                                # slot 不在 cert (state-dependent),
+                                                # validator 只验 "K+1 pose 同时存在" sound
     ghost_rect_repr: Tuple[int, int, int, int]
 ```
 
@@ -226,9 +235,10 @@ class DensityEnvelopeValidator(CutValidator):
                 "unsound", ...,
                 "sub-problem oracle re-verification not INFEASIBLE",
             )
-        # 3. 验 oracle_assignment_witness 是 K+1 facility in window of group_id
+        # 3. 验 oracle_assignment_witness 是 K+1 (group, pose) in window of group_id
+        # v1.1 (Gemini round 17 B2): witness 不 carry slot, 验只看 K+1 pose 存在
         in_window_count = 0
-        for g, s, p in cert.oracle_assignment_witness:
+        for g, p in cert.oracle_assignment_witness:
             if g != cert.group_id:
                 return ValidationResult("unsound", ..., f"witness group {g} != cert {cert.group_id}")
             pose_cells = canonical_rules_pose_cells(g, p)
