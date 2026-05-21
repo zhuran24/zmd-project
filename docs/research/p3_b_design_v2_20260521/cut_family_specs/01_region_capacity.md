@@ -455,6 +455,13 @@ def add_watchers_region_capacity(store: CutStore, cut: Cut) -> None:
     # by_group_watcher: 每个 contributing_group
     for gid, _ in cert.contributing_groups:
         store.by_group_watcher[gid].add(cut.cut_id)
+
+    # v1.2 (Gemini round 22 final finding): 依赖 ghost 的 F1 Cut 必加 by_ghost,
+    # 否则 ghost 改时 on_ghost_rect_changed 找不到此 cut → 不 invalidate →
+    # 在新 ghost 下 evaluate 无条件 True 仍剪 → False Positive.
+    # GHOST_AGNOSTIC cut 不加 (跨 ghost 仍 sound, exterior_blocks_hash 守).
+    if cut.scope.ghost_rect_id != GHOST_AGNOSTIC:
+        store.by_ghost_watcher[cut.scope.ghost_rect_id].add(cut.cut_id)
 ```
 
 State 变化触发 re-evaluate 路径:

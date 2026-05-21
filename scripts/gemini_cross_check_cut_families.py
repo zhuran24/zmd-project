@@ -34,6 +34,8 @@ DOC_PATHS = [
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_17_followup.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_18_phase0_go.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_19_f9_critical.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_20_all_clear.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_21_quarantine_fix.md",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -106,7 +108,76 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 20)
+## 本次 cross-check 目的 (round 22)
+
+Round 22. round 21 给了 2 False Quarantine bug (B1 cut_lifecycle GHOST_AGNOSTIC
+vs blocked_cells_hash / B2 F9 Validator schema 错位). 我按 round 21 修了
+commit 7f38842 (Day 17j):
+
+- cut_lifecycle v3.2.2 CutScope 加 `exterior_blocks_hash` field + §4 Step 3
+  dispatch (GHOST_AGNOSTIC 验 exterior, 绑 ghost 验全 blocked)
+- F9 v1.5 Validator step 3 改 area-based `witness_area_in_W > max_allowed_area`
+  跟 v1.4 evaluator 一致
+
+round 22 是 Phase 0 close 前的 final final check. 任务:
+
+### 任务 A: 验 round 21 2 修对
+- v3.2.2 hash 拆分 + dispatch sound 吗? GHOST_AGNOSTIC cut 在 ghost 改时跨
+  candidate attach 真 work?
+- F9 v1.5 Validator area-based check `witness_area_in_W > max_allowed_area`
+  跟 v1.4 evaluator 完全契合吗? round-trip (gen → serialize → deserialize →
+  validate) 仍 sound?
+
+### 任务 B: 找新 finding — 这次目标是**找不到**
+
+Phase 0 已 21 round (14-21) cross-check 修了 11 个 finding. 现在状态是
+否真的 sound + complete? 还能找到任何 sound bug / schema 漏 / watcher
+issue / dispatch race 吗? **找不到就明说**, Phase 0 close.
+
+### 任务 C: Phase 0 absolute final verdict
+
+### 任务 D: F11+ 反例 — 最后一次
+
+## 4 段 A/B/C/D. **找不到 bug 写 "Phase 0 已无懈可击, 进 Phase 1"**.
+## 中文优先.
+"""
+
+## OLD round 21 prompt:
+_old_round_21 = """## 本次 cross-check 目的 (round 21)
+
+Round 21. round 20 给了 F9 v1.3 严重 FN (全包含计数对面积溢出漏剪). 我按
+round 20 B2 修了 commit 4be39d0 (Day 17i):
+
+- F9 v1.4 evaluator 改 `sum(|pose_cells ∩ W|)` 直接数占用格子, 不数 facility
+  个数. 跟 F9 降级面积 paradigm 自然吻合.
+- cert 加 `max_allowed_area` field 替代 `density_K` (deprecated).
+
+F9 evaluator 完整演进 trace (你 review 完整):
+- v1.0 over-count (any cell in W) → FP (round 18 B2 修)
+- v1.2 origin-in-W → FP (round 19 B1 修, 修错)
+- v1.3 all-in-W → FN (round 20 B2 修)
+- v1.4 sum cells in W → sound (FP=0, FN=0) ✅
+
+round 21 任务:
+
+### 任务 A: 验 F9 v1.4 终于 sound 吗?
+- `occupied_in_window = sum(...)` 计数对 FP/FN 严密吗?
+- max_allowed_area cert field 是 oracle 给出, 验跟 Oracle area_capacity_overflow
+  凭证 schema 一致吗?
+- 还有 F9 边角 case (e.g. cell_owner 没 carry, ghost 占 W cells, etc) 没覆盖吗?
+
+### 任务 B: 找新 finding (任何 family, 任何 schema, 任何 watcher)
+
+### 任务 C: Phase 0 关停 verdict — 是否还有任何 sound 漏洞
+
+### 任务 D: F11+ 反例
+
+## 4 段 A/B/C/D. 找不到 bug 写"没找到 bug, Phase 0 已无懈可击 close".
+## 中文优先.
+"""
+
+## OLD round 20 prompt:
+_old_round_20 = """## 本次 cross-check 目的 (round 20)
 
 这是 round 20. round 19 给了 F9 v1.2 修错 (Reference Cell unsound 引入新 False
 Positive) + F9 paradigm 级 Unsound (拓扑死锁泛化几何密度 unsound). 我按
@@ -412,7 +483,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_20.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_22.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -423,7 +494,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_20.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_22.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)
