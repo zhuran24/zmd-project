@@ -37,8 +37,15 @@ DOC_PATHS = [
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_20_all_clear.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_21_quarantine_fix.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_22_phase0_close.md",
-    # Day 17k 新加 — PHASE_0_CLOSE summary doc
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_23_absolute_final.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_24_a_layer.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_25_phase1_ready.md",
+    # Phase 0 final close doc
     "docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md",
+    # Day 18 A集成层
+    "PROJECT_LOCK.md",
+    "docs/research/p3_b_design_v2_20260521/PHASE_1_PLAN.md",
+    "scripts/b_design_v2_exit_criteria.py",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -111,7 +118,152 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 23)
+## 本次 cross-check 目的 (round 26) — round 25 fix 验
+
+Round 26. round 25 给 GO verdict + 2 Phase 1 实施隐患 (B1 script #6 detail 漏
++ B2 RSS 测量碎片化陷阱). 我按 round 25 修了 commit fe807ed (Day 18c):
+
+- script #6 detail keys 加 cut_store_peak_mb_per_worker / rss_peak_mb_per_worker
+- PROJECT_LOCK §3A 加 RSS 测量 invariant (Phase 1 ramp report 必 emit
+  rss_peak_mb_per_worker field, 禁用 sys.getsizeof / JSON string len)
+- PHASE_1_PLAN R5 加 RSS mandate (psutil.Process.memory_info().rss)
+- script #6 prefer rss_peak_mb_per_worker, fallback 逻辑大小
+
+round 26 任务:
+
+### 任务 A: 验 round 25 2 修对
+- script #6 detail keys 加全了?
+- PROJECT_LOCK §3A RSS invariant 措辞够严 — 防 Phase 1 实施静默退回 sys.getsizeof?
+- script #6 dual-field check (rss preferred + fallback) 逻辑对吗?
+
+### 任务 B: 找新 finding (最后一扫)
+Phase 0 + A 集成层 + 25 round cross-check 后还有任何 sound bug / Phase 1
+实施盲区吗?
+
+### 任务 C: 进 Phase 1 ready final verdict
+
+## 3 段 A/B/C. 找不到 bug 写"Phase 1 编码 GO, 不再 cross-check 此层".
+## 中文优先.
+"""
+
+## OLD round 25 prompt:
+_old_round_25 = """## 本次 cross-check 目的 (round 25) — A集成层 round 24 修验
+
+Round 25. round 24 给 7 finding (1 致命 RAM + Lock 矛盾 + 目录脱节 + 漏测/
+漏 risk). 我按 round 24 verdict 修了 commit 3e0a20b (Day 18b):
+
+A1 fixes:
+- A1.1 加 #28 F8 Liang-Barsky test + #38 F9 area-based test (CRITERIA dict ID-keyed)
+- A1.2 致命 RAM: 12 GB/worker → 5 GB/worker (RAM budget 16+20+8=44 < 48 GB)
+- A1.3 加 #9 cut store rotation/GC test
+- A1 D1 修 cut file glob: data/cuts/{active,quarantine}/*.json 分子目录
+
+A2 fixes:
+- B1 §4 加 Capacity-based Eviction 豁免 (解 Lock vs Plan 冲突, 工程兜底不属 Step 10)
+- B2 §3A 加 F9 area-based counting lock (焊死 round 20 finding 防退化)
+
+A3 fixes:
+- C1 P1.4 明确加 ghost_geometry.py
+- C2 加 R6 F9 QuickXplain 耗时风险 + 缓解 (稳健: Phase 1 不 minimize)
+- C3 smoke test 提前 P1.20 内存 only (解耦算法 bug vs IO bug)
+
+state: 1 PASS / 10 PENDING_PHASE_1 / 0 FAIL.
+
+round 25 任务:
+
+### 任务 A: 验 round 24 7 finding 修对
+- A1.2 RAM 计算修对吗 (16 master + 4×5 worker + 8 other = 44 GB)? 漏 OS/buffer?
+- A1.1 #28 #38 criterion 设计合理吗?
+- A1 D1 cut glob 兼容 flat + active/quarantine 分目录, edge case 漏没?
+- B1 capacity-based eviction 豁免措辞够严吗 — 防 Phase 1 实施时 silent 滑回
+  semantic expiry?
+- B2 F9 area-based lock 措辞防退化够?
+- C3 smoke test 解耦真的能区分算法 bug vs IO bug?
+
+### 任务 B: 找新 finding (Phase 0 + A 集成层全图最后扫一次)
+
+### 任务 C: Phase 0 + A 集成层 → Phase 1 ready verdict
+
+## 3 段 A/B/C. 找不到 bug 写 "可启动 Phase 1 编码".
+## 中文优先.
+"""
+
+## OLD round 24 prompt:
+_old_round_24 = """## 本次 cross-check 目的 (round 24) — A集成层验证
+
+Round 24. Phase 0 已 close (round 23 verdict). 现在跑 A 集成层 (Day 18-21
+governance) 后 Gemini 验. 用户加严 rule v3: "决策按稳健方向选, 任何决策性
+输出必 Gemini 审查" — 不只算法/数学层, governance/plan/lock 也走.
+
+Day 18 A集成层 commit 33c18b4 land 3 件:
+
+### A1 — scripts/b_design_v2_exit_criteria.py (168h 启动 8 硬条件 actionable
+checklist):
+- #1 boundary 语义冻结 (automated, Phase 0 done ✓ PASS)
+- #2-#7 pending Phase 1 (test_family / ramp 数据)
+- #8 persisted cuts replay 100% pass (pending data/cuts/)
+CLI --strict/--json/--criterion. 现状 1 PASS / 7 PENDING_PHASE_1 / 0 FAIL.
+
+### A2 — PROJECT_LOCK.md update (cut object 一等公民边界):
+- §2B 新 source-of-truth: cut_lifecycle/family_specs/state_machine_v2 +
+  data/cuts/*.json (Phase 1 启用后)
+- §3A 6 新 invariant: Exactness FP=0 / group-orbit symmetry / family↔mode
+  一致性 / Scope-aware HOLD vs Quarantine / F9 paradigm 降级 lock / 代数 vs
+  几何分工
+- §4 加 2 条 Forbidden: B Design v2 9 步 lifecycle 不可绕过 / silent recovery
+  禁止 (validator fail-closed)
+
+### A3 — PHASE_1_PLAN.md (Phase 1 实施计划):
+- src/cuts/ 路径表 (lifecycle/store/replay/helpers/families/oracles/assumptions/
+  monitor)
+- 4 phase 实施顺序 (1.0 framework / 1.1 F1-4 / 1.2 F5-9 / 1.3 integration /
+  1.4 ramp 5-266 inst)
+- 工时 Claude pace ~22-28 day + wall clock 3-5 day = ~30-40 day
+- 5 风险 + 缓解 + decision points
+
+round 24 任务:
+
+### 任务 A: 验 A1 8 exit criteria 设计 sound
+- 8 条 criterion 真的覆盖 168h 启动前所有 sound 风险吗?
+- pass_condition 量化是否合理 (e.g. #7 f5_ratio < 50% + core_size < 20 阈值
+  是否准)?
+- check_kind (automated / ramp_data / telemetry / code_inspection) 分类清楚?
+- 漏什么 criterion? 例如 cut store disk rotation / GC / multi-thread race
+  这些 Phase 1 工程 risk 是否该进 exit criteria?
+- script CLI 设计 (--strict, --json, --criterion) 足够吗?
+
+### 任务 B: 验 A2 PROJECT_LOCK update 完备性
+- §2B Cut Object Boundary 列的 source-of-truth + postprocess boundary 完整吗?
+- §3A 6 个新 invariant 真的 cover 23 round Gemini cross-check 共识吗? 漏哪条?
+- §4 加的 2 条 Forbidden Change 措辞够严吗?
+- 跟现有 §1-§5 兼容吗 (例如老 §4 已禁 6 步 lifecycle bypass, 新 §4 加 9 步,
+  不会矛盾)?
+
+### 任务 C: 验 A3 Phase 1 plan 工程可行性
+- src/cuts/ 路径表合理吗? 哪个 sub-module 应合并 / 拆分?
+- 4 phase 顺序 (1.0 framework → 1.1 F1-4 → 1.2 F5-9 → 1.3 integration → 1.4
+  ramp) 依赖图正确吗? Family 7 依赖 Family 5/8 是否反映在顺序?
+- 工时估稳健吗? Claude pace ~22-28 day 多了少了?
+- 5 风险 + 缓解充分吗? 漏什么风险?
+- decision points (Phase 1 中必 Gemini check) 清单合理吗?
+
+### 任务 D: 跨 A1+A2+A3 一致性 + 找 sound bug
+A1 8 criterion / A2 lock invariant / A3 plan 三者交叉对齐吗? 比如:
+- A1 #7 f5_ratio < 50% 跟 A2 §3A "F9 paradigm 降级" + plan 1.2 P1.11 F5 monitor
+  对齐吗?
+- A1 #8 persisted cuts replay 跟 A2 §4 "9 步 lifecycle 不可绕过" + plan 1.0
+  P1.3 replay.py 对齐吗?
+- A3 plan §3 P1.21 cut store persist 跟 A2 §2B "data/cuts/*.json" source-of-
+  truth 对齐吗?
+
+## 回答格式
+4 段 A/B/C/D. 找不到 bug 写"A 集成层无懈可击, 可启动 Phase 1".
+
+## Reply 中文优先.
+"""
+
+## OLD round 23 prompt:
+_old_round_23 = """## 本次 cross-check 目的 (round 23)
 
 Round 23. round 22 给了 verdict "Phase 0 无懈可击, 进 Phase 1" + 1 行
 watcher 漏注册 finding (F1 §8 漏加 by_ghost). 我按 round 22 finding 修了
@@ -521,7 +673,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_23.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_26.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -532,7 +684,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_23.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_26.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)
