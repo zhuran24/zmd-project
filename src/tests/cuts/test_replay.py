@@ -51,6 +51,7 @@ def _make_state(extra_block: bool = False) -> BState:
         exterior_blocks=frozenset({(15, 0), (16, 0)}) | extra,
         artifact_hashes={"canonical_rules.json": "h1"},
         available_oracle_versions=frozenset({"region_capacity_v1"}),
+        canonical_rules=CANONICAL_RULES,
     )
 
 
@@ -163,6 +164,7 @@ def test_replay_hold_when_oracle_version_unavailable():
         exterior_blocks=state.exterior_blocks,
         artifact_hashes=state.artifact_hashes,
         available_oracle_versions=frozenset(),
+        canonical_rules=state.canonical_rules,
     )
     decision = replay_cut(cut, state_no_oracle, store, canonical_rules=CANONICAL_RULES)
 

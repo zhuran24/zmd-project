@@ -87,6 +87,7 @@ def make_state_with_crusher_on_left_baseline() -> BState:
             "mandatory_exact_instances.json": "hash_v3",
         },
         available_oracle_versions=frozenset({"region_capacity_v1"}),
+        canonical_rules=CANONICAL_RULES,  # P1.4: verifier 真读
     )
 
 
@@ -101,6 +102,7 @@ def make_clean_state() -> BState:
         exterior_blocks=frozenset(),
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
     )
 
 
@@ -166,6 +168,7 @@ def test_exterior_blocks_hash_distinct_from_blocked_cells():
         exterior_blocks=s.exterior_blocks,
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
     )
     assert compute_exterior_blocks_hash(s_with_ghost) != compute_blocked_cells_hash(s_with_ghost)
 
@@ -283,6 +286,7 @@ def test_attach_scope_ghost_agnostic_passes_when_exterior_unchanged():
         exterior_blocks=gen_state.exterior_blocks,  # 不变
         artifact_hashes=gen_state.artifact_hashes,
         available_oracle_versions=gen_state.available_oracle_versions,
+        canonical_rules=gen_state.canonical_rules,
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "ATTACH", \
@@ -306,6 +310,7 @@ def test_attach_scope_ghost_agnostic_quarantine_when_exterior_changed():
         exterior_blocks=new_exterior,
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "QUARANTINE"
@@ -343,6 +348,7 @@ def test_attach_scope_ghost_bound_hold_when_ghost_changed():
         exterior_blocks=s.exterior_blocks,
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
     )
     decision = step_6_attach_scope_check(ghost_bound_cut, replay_state_diff_ghost)
     assert decision == "HOLD"
@@ -361,6 +367,7 @@ def test_attach_scope_oracle_version_unavailable():
         exterior_blocks=s.exterior_blocks,
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=frozenset(),
+        canonical_rules=s.canonical_rules,
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "HOLD"

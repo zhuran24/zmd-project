@@ -196,6 +196,10 @@ class BState:
     """Phase 1.0 framework 简化版 — F1 region_capacity 所需 field.
 
     Phase 1.1+ 各 family 扩 field (e.g., F8 power_network adj list).
+
+    ``canonical_rules`` 新加 (Gemini round 27 B1 finding): parsed canonical_rules
+    readonly 引用, 让 ASSUMPTION_VERIFIERS 能真实施 source-of-truth 比对.
+    None 表示未 inject; verifier fail-closed 返 False.
     """
     groups: Dict[GroupId, GroupState]
     cell_owner: Dict[Cell, Tuple[GroupId, int]] = field(default_factory=dict)
@@ -204,6 +208,7 @@ class BState:
     exterior_blocks: FrozenSet[Cell] = frozenset()
     artifact_hashes: Dict[str, Hash] = field(default_factory=dict)
     available_oracle_versions: FrozenSet[str] = frozenset()
+    canonical_rules: Optional[Dict] = None  # parsed rules/canonical_rules.json
 
 
 # ============================================================================
@@ -570,27 +575,20 @@ def step_5_validate_region_capacity(
         return ValidationResult("schema_err", time.monotonic() - t0, str(e))
 
 
-# Assumption verifier dispatch (cut_lifecycle_v2 v3.2.2 §4 Gap 5)
-def _verify_boundary_saturation(state: BState, value: str) -> bool:
-    """canonical_rules saturation invariant — P1.4 加完整 verifier (读 source)."""
-    return True  # framework stub
-
-
-def _verify_placement_rule(state: BState, value: str) -> bool:
-    """group=rule format — P1.4 加完整 verifier."""
-    return True  # framework stub
-
-
-ASSUMPTION_VERIFIERS: Dict[str, Callable[[BState, str], bool]] = {
-    "left_or_bottom_boundary_saturation": _verify_boundary_saturation,
-    "placement_rule": _verify_placement_rule,
-}
-
-
+# Assumption verifier dispatch (cut_lifecycle_v2 v3.2.2 §4 Gap 5).
+# Production verifier 实施在 src/cuts/assumptions/verifiers.py (P1.4 落地).
+# 此函数 delegate 到 assumptions module 的 lookup_verifier — 解耦 dispatch
+# table from lifecycle 框架, 让 P1.4+ 加 verifier 不动 lifecycle.py.
 def assumption_holds(state: BState, assumption: Assumption) -> bool:
-    verifier = ASSUMPTION_VERIFIERS.get(assumption.key)
+    """Dispatch via assumptions/verifiers.lookup_verifier.
+
+    Lazy import 避 lifecycle ↔ assumptions 循环 import.
+    Fail-closed: 未注册的 key → False (PROJECT_LOCK §4 silent recovery 禁).
+    """
+    from src.cuts.assumptions.verifiers import lookup_verifier
+    verifier = lookup_verifier(assumption.key)
     if verifier is None:
-        return False  # fail-closed (PROJECT_LOCK §4)
+        return False
     return verifier(state, assumption.value)
 
 
