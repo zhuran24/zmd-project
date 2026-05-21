@@ -1,16 +1,18 @@
 # Cut Family 8 — power_grid_reach (完整 spec, v3 新 family, F5 反例 owner)
 
-> **Status**: Day 17b v1.0 (2026-05-21)
-> **Cross-refs**: `../cut_lifecycle_v2.md` v3.1 + `../red_fixtures/F5_power_grid_disconnect.md` (Day 17d 写) + `../cross_check/gemini_round_14` (F5 反例提出) + `../cross_check/gemini_round_15` (Family 8 独立选择 verdict)
+> **Status**: Day 17e v1.1 (2026-05-21) — Gemini round 16 finding B1 修
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3.2 + `../red_fixtures/F5_power_grid_disconnect.md` + `../cross_check/gemini_round_14` (F5 反例提出) + `../cross_check/gemini_round_15` (独立 family verdict) + `../cross_check/gemini_round_16` (B1 算法 unsound finding)
 > **Mode**: geometric (_FAMILY_MODE_MAP)
-> **Family_version**: v1.0
+> **Family_version**: v1.1 (ghost_blocks_line 改严格 line-segment AABB intersection)
 > **来源**: Gemini round 14 F5 反例 + round 15 Family 8 独立 family 推荐
 
 ## 0. Changelog
 
-- **v1.0** (Day 17b, 本 commit): F5 全局电力孤岛反例 owner. 现有 7 family 全
-  静默但实际 INFEASIBLE (Right 区 pole `R_conn=10 < ghost width 15` 跨 ghost
-  连不回 Left 的 protocol_core).
+- **v1.0** (Day 17b, commit 1c757ff): F5 全局电力孤岛反例 owner.
+- **v1.1** (Day 17e, 本 commit): 修 Gemini round 16 finding B1 critical sound bug
+  — §5a `ghost_blocks_line` 算法简化版 "ghost 中心点 ∩ line(p1, p2)" 绝对
+  unsound (线段可切 ghost 边角不过中心点 → False Negative 漏判 power 断流).
+  v1.1 改严格 line-segment to AABB intersection (Liang-Barsky 裁剪).
 
 ## 1. 数学定义
 
@@ -153,8 +155,12 @@ cut = Cut(
 def build_power_network(state: BState, pole_radius: float) -> "PowerGraph":
     """V_pole = candidate pole poses 在 state.free_cells 上 + protocol_core.
        E_jump = pole 对 distance ≤ pole_radius, 且 jump 路径不被 ghost block.
+
+    v1.1 (Gemini round 16 finding B1 critical sound bug 修):
+    ghost_blocks_line 必须用严格 line-segment to AABB intersection (Liang-Barsky
+    裁剪), 不能用 v1.0 简化版 "ghost 中心点 ∩ line(p1, p2)" — 后者漏判线段
+    切 ghost 边角不过中心点的 case (False Negative 漏发 cut).
     """
-    # PoC: 简化 — 只看 pole pose Euclidean distance, ghost cells 直接 block jump
     candidate_poles = enumerate_candidate_poles(state.free_cells)
     pc_cell = state.protocol_core_cell  # state field 或 canonical_rules constant
     V = candidate_poles | {pc_cell}
@@ -162,10 +168,55 @@ def build_power_network(state: BState, pole_radius: float) -> "PowerGraph":
     for p1 in V:
         for p2 in V:
             if p1 != p2 and euclidean_distance(p1, p2) <= pole_radius:
-                # 验 jump 路径不穿 ghost (简化: ghost 中心点 ∩ line(p1, p2))
-                if not ghost_blocks_line(p1, p2, state.ghost_cells):
+                # v1.1 严格 AABB intersection: line-segment (p1, p2) 跟
+                # ghost rectangle 任意 intersection 都阻断 jump
+                if not line_segment_intersects_aabb(p1, p2, state.ghost_rect):
                     E.add((p1, p2))
     return PowerGraph(V, E)
+
+
+def line_segment_intersects_aabb(
+    p1: Tuple[float, float],
+    p2: Tuple[float, float],
+    rect: Tuple[int, int, int, int],  # (x, y, h, w)
+) -> bool:
+    """Liang-Barsky line clipping. 返 True iff line segment p1→p2 intersects
+    AABB rectangle (含边).
+
+    经典计算几何, sound: 任何切 ghost 边角的线段都被识别.
+    """
+    x_min, y_min = rect[0], rect[1]
+    x_max, y_max = rect[0] + rect[2], rect[1] + rect[3]
+
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    t0, t1 = 0.0, 1.0
+
+    # 4 边 inside-test via parametric form
+    for p, q in [(-dx, p1[0] - x_min),
+                  ( dx, x_max - p1[0]),
+                  (-dy, p1[1] - y_min),
+                  ( dy, y_max - p1[1])]:
+        if p == 0:
+            if q < 0:
+                return False  # 平行边外
+        else:
+            r = q / p
+            if p < 0:
+                if r > t1:
+                    return False
+                if r > t0:
+                    t0 = r
+            else:
+                if r < t0:
+                    return False
+                if r < t1:
+                    t1 = r
+    return t0 <= t1  # 有交点 → block jump
+
+
+# (PoC scope: ghost_cells 离散版若仍需要, 可走 cell-by-cell DDA line raster
+# 化, 但严格 AABB intersection 已 sound 不需要 cell 版.)
 ```
 
 ### 5b. Disconnect detection

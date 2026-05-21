@@ -1,9 +1,18 @@
 # Cut Family 4 — component_reach (完整 spec, 复用 D2 separator)
 
-> **Status**: Day 17a v1.0 (2026-05-21)
+> **Status**: Day 17e v1.1 (2026-05-21) — Gemini round 16 finding A1 修
 > **Mode**: geometric (_FAMILY_MODE_MAP)
-> **Family_version**: v1.0
+> **Family_version**: v1.1 (geometric mode 不校验 blocking_facility 具体 pose ID)
 > **复用**: `src/search/d2_separator.py` (D2 commodity flow BFS/Tarjan helper, Path 17 死路 留下)
+
+## Changelog
+
+- **v1.0** (Day 17a, commit 83d3242): 初版 spec
+- **v1.1** (Day 17e): 修 Gemini round 16 finding A1 — Validator §7 step 4 删
+  对 `blocking_facilities` 具体 pose ID 的校验. Geometric 哲学 "只认空间, 不
+  认 ID", 强行校验 ID 破坏跨排列 (permutation) soundness 误杀合法 cut. Causation
+  split 是 literal-based cut (F3/F7) 专利, geometric cut 不需要. cert 仍 carry
+  `blocking_facilities` 字段作 debug/audit 用, validator 不依赖它判 sound.
 
 ## 1. 数学定义
 
@@ -134,13 +143,15 @@ class ComponentReachValidator(CutValidator):
         if recomputed_src != cert.src_component_bitset_b64:
             return ValidationResult("unsound", ..., "src_component bitset mismatch")
         # 验 separator_cells 全在 (cell_owner ∪ ghost) (不是 free)
+        # v1.1 (Gemini round 16 finding A1): geometric mode 只验空间, 不验 ID.
+        # 谁占了 separator_cell 不重要, 只要它不在 free_cells 就够 sound.
         for sep_cell in cert.separator_cells:
             if sep_cell in state.free_cells:
                 return ValidationResult("unsound", ..., f"separator cell {sep_cell} is free")
-        # 验 blocking_facilities 都在 state.cell_owner 且 pose match
-        for bg, bs, bp in cert.blocking_facilities:
-            if state.groups[bg].selected_poses[bs][1] != bp:
-                return ValidationResult("unsound", ..., f"blocking facility {bg}[{bs}] pose mismatch")
+        # v1.0 step 4 删除: validator 不再校验 cert.blocking_facilities 具体
+        # pose ID — geometric cut 哲学是"只认空间不认 ID", 强行校验 ID 破坏跨
+        # permutation soundness. cert.blocking_facilities 仍 carry 但只作
+        # debug/audit, validator 不依赖.
         return ValidationResult("ok", ...)
 
     def evaluate_geometric(self, cut, state):

@@ -23,26 +23,36 @@ REPO = Path("/home/zhuran24/claude-pj/zmd")
 SHARE = Path("/home/zhuran24/linwin_share")
 
 # Relevant docs (按 logical 顺序 paste)
-# v2 (round 15): 补 timeline + cross_check round 14 答复 + src 实现
+# v3 (round 16): Day 17 全部 4 commit — 6 新 family spec + F5 fixture + watcher v3.2
 DOC_PATHS = [
-    # 27 lever 死路 timeline (round 15 新加)
+    # 27 lever 死路 timeline
     "docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md",
-    # round 14 答复 (你的)
+    # round 14/15 答复 (历史 context)
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_14_cut_families.md",
-    # B Design v2 framework (v1.1 修过)
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_15_followup.md",
+    # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
     "docs/research/p3_b_design_v2_20260521/schema_update_v3.md",
-    # Red fixtures (4 反例)
+    # Red fixtures (5 反例, F1-F4 sweep + F5 新)
     "docs/research/p3_b_design_v2_20260521/red_fixtures/README.md",
     "docs/research/p3_b_design_v2_20260521/red_fixtures/F1_boundary_saturation.md",
     "docs/research/p3_b_design_v2_20260521/red_fixtures/F2_shape_packing_hall.md",
     "docs/research/p3_b_design_v2_20260521/red_fixtures/F3_power_no_cover.md",
     "docs/research/p3_b_design_v2_20260521/red_fixtures/F4_ghost_scoped_replay.md",
-    # 3 个 family spec (round 15 review target — v1.1 修后)
+    "docs/research/p3_b_design_v2_20260521/red_fixtures/F5_power_grid_disconnect.md",
+    # 9 family spec (round 16 review target — 6 新 + 3 round 14/15 修过)
     "docs/research/p3_b_design_v2_20260521/cut_family_specs/01_region_capacity.md",
+    "docs/research/p3_b_design_v2_20260521/cut_family_specs/02_cutset.md",
+    "docs/research/p3_b_design_v2_20260521/cut_family_specs/03_port_exposure.md",
+    "docs/research/p3_b_design_v2_20260521/cut_family_specs/04_component_reach.md",
+    "docs/research/p3_b_design_v2_20260521/cut_family_specs/05_pattern_nogood.md",
     "docs/research/p3_b_design_v2_20260521/cut_family_specs/06_shape_packing_hall.md",
     "docs/research/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md",
+    "docs/research/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md",
+    "docs/research/p3_b_design_v2_20260521/cut_family_specs/09_density_envelope.md",
+    # PoC (runtime 验证 reference)
+    "docs/research/p3_b_design_v2_20260521/poc/README.md",
 ]
 
 
@@ -92,56 +102,85 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 15)
+## 本次 cross-check 目的 (round 16)
 
-这是 round 15. round 14 (你之前给的) 已发现 3 致命 bug + 2 schema 漏 + F5
-全局电力孤岛反例. 我们按你的 round 14 verdict 修了 5 个 finding (commit
-75e5f18), 然后补了 27 lever 死路 consolidated timeline (commit 1f1e051,
-paradigm_death_timeline.md), 现在 round 15 跟你 follow-up:
+这是 round 16. round 14/15 历史 (已 paste cross_check/round_14 + round_15) —
+3 致命 sound bug + 2 schema 漏 + F5 全局电力孤岛反例 + Class B/C 风险预警 +
+Family 9 density_envelope 推荐你给的. 现在 round 16 验 Day 17 全部 4 commit:
 
-### 任务 A: 验 round 14 5 finding 修对了
-v1.1 改 (具体看 cut_family_specs 顶部 changelog):
-- F7 v1.1: causation split (ghost-empty 单 literal / cell_owner-empty 多 literal
-  含 blocking_facility_literals); cert 加 witness_kind enum + blocking field
-- F6 v1.1: partition 改 static (只看 ghost+exterior, 不看 cell_owner); demand
-  用 group.demand 不用 remaining_count
-- F1 v1.1: cap_R 改 static (ghost+exterior only); cert 加 cells_per_pose
-- cut_lifecycle v3.1: replay 加 step 3 blocked_cells_hash 校验 → 6 步
-- F1 cert cells_per_pose field 已加
+- 17a (83d3242): Family 2 cutset (PCR-CUT 复用) + Family 3 port_exposure
+  (boundary_constraints 复用) + Family 4 component_reach (D2 复用) + Family 5
+  pattern_nogood (L16 deletion minimizer 复用)
+- 17b (1c757ff): Family 8 power_grid_reach (F5 反例 owner, 独立 family per
+  你 round 15 verdict)
+- 17c (98daa07): Family 9 density_envelope (你 round 15 推 Class C mitigation)
+- 17d (b1ff909): F1-F4 fixture sweep v3.1 + F5 fixture + cut_lifecycle §7 加
+  6 维 by_ghost_watcher v3.2
 
-**验**: 修法 sound 吗? 有没有引入新 bug / 矛盾? F7 causation split 的多 literal
-cut 跟 Family 5 pattern_nogood 重复吗? F6 demand 用 group.demand 跨层 sound 吗?
+### 任务 A: 6 新 family spec sound check (Family 2/3/4/5/8/9)
 
-### 任务 B: 验 F5 反例评估 (paradigm_death_timeline.md §4)
-我评估 F5 不撞 Path 14 PCR-CUT / Path 13 SAC-Hull / Lever 23 D2 (3 个最近似的
-死路). 推荐 Day 17 加 Family 8 power_grid_reach 独立 family (不 generalize
-Family 4 防 schema 字段冲突).
+每 family 完整 spec 在 cut_family_specs/ 下. 验:
+- 数学定义完整 (Family 2 Menger / Family 4 BFS / Family 8 pole jump graph /
+  Family 9 oracle witness lift)
+- Soundness proof 严密 (无 monotone 假设漏洞)
+- Cert payload schema 跟 cut_lifecycle_v2 v3.2 一致, 没漏 cells_per_pose 类
+  field
+- Generator 复用 src/ helper 是 sound 包装 (e.g. Family 2 patch_routing_core
+  复用 / Family 4 d2_separator 复用 / Family 5 L16 deletion_minimize)
+- Validator 独立重算 — **不**走外部 state (跟 Family 1 v1.0 finding #5 同
+  pattern 防 source rotated 时全 quarantine)
+- evaluate_geometric vs evaluate_cut_literal_based dispatch 正确
 
-**验**: 这个评估对吗? F5 真不撞已死? Family 8 vs Family 4 generalize 哪个更
-好? 你 round 14 推荐的 "Family 4 语义泛化跑 power-跃迁 BFS" 跟我的"加 Family 8"
-有冲突, 请重新选定方向并给 reason.
+### 任务 B: Family 8 power_grid_reach 验
 
-### 任务 C: 看完 27 lever timeline 想第 2 轮反例
-现在你能看到 27 lever 死路 + 4 共同 root cause + B 5 unsolved issue 完整 context
-(paradigm_death_timeline.md). 重新想:
-- Class B (cut accumulation 不够) — B Design v2 cut framework 有没有这个风险?
-- Class C (cut family abstraction 不够, full no-good 退化) — Family 5
-  pattern_nogood 在 132 个 manufacturing_3x3 cluster 时会不会退化 full no-good?
-  permutation 撞 132! 墙?
-- F6/F7/F8 跟之前 paradigm 撞同墙的 sub-pattern 有没有? (e.g. m1 cut lift 不
-  跨数量级 / m5 trivial orbit)
+我按你 round 15 verdict 写独立 family. 验:
+- ghost_blocks_line 算法 (08 spec §5a 简化版): "ghost 中心点 ∩ line(p1, p2)" —
+  sound 吗? 应该用 line-segment 真 intersect ghost rectangle, simplified 版有
+  没漏 case?
+- F7/F8 互斥 trigger 协议 (07/08 spec §9): CoverSet 空 → F7; 非空 disconnect →
+  F8. dedup 政策对吗?
+- v1.0 单 cause = ghost. cell_owner 挤压 power network (相邻 pole 被 facility
+  占) 也可 disconnect — 现 v1.0 不拦. 多严重?
 
-### 任务 D: B 5 unsolved issue 现 spec 充分性评估
-paradigm_death_timeline.md §3 列了 5 件 unsolved issue 当前 spec 状态. issue 3
-(manufacturing cluster trap) 我标 ⚠️ "现 spec 不足". 你看 Family 5 pattern_nogood
-在 132 个最大类 cluster 时:
-- 拦 132! permutation 几何 trap 够吗?
-- 走 full no-good 退化 (v14 review Pattern >50% stop-ship signal) 风险有多大?
-- Day 18-21 怎么加 dedicated orbit-aware lift?
+### 任务 C: Family 9 density_envelope 验
+
+我按你 round 15 推荐写. 验:
+- K bound 推导: "oracle 在 W 内放 m facility INFEASIBLE → K = m - 1 sound" —
+  K binary search 紧化是必要的吗 (v1.0 直接用 m-1)?
+- Window 选择: bounding rect of K+1 witness — sound 但可能太大. Phase 1
+  shrink window 算法应该长啥样?
+- 跟 Family 5 fallback dispatch: oracle generate 优先 lift F9, 失败回退 F5.
+  fallback 决策什么时候应该走 F9 什么时候 F5?
+- multi-group window: 现 v1.0 单 group. multi-group 是 NP-hard generalize 还
+  是 trivial extension?
+
+### 任务 D: cut_lifecycle v3.2 by_ghost_watcher 验
+
+§7 加 6 维 by_ghost_watcher + on_ghost_rect_changed 工作流:
+- v3.2 watcher 表 (Family 2/4/5/6/7/8/9 都加 by_ghost): 漏什么 family 吗?
+- Performance: 168h 内 ghost change rate 估几次? worker 每次 sweep
+  by_ghost_watcher 漏多大?
+- by_blocked_cells 7 维 watcher 我 defer Phase 1 — 应该提前到 Phase 0 加吗?
+- GHOST_AGNOSTIC cut 不入 by_ghost_watcher 但仍受 blocked_cells_hash 校验 —
+  on_blocked_cells_changed event 缺没缺?
+
+### 任务 E: F5 fixture + Family 8 spec 配合验
+
+F5 fixture 反例: ghost width=15 > R_conn=10 power 不可跨. Family 8 应拦.
+验:
+- F5 反例 7 family 全静默原因表完整吗 (现 8 family 写 4/6 etc 静默, 9 没列)?
+- Family 9 在 F5 是否静默 / trigger? F5 单 facility 不是 cluster — 应该静默
+- Family 8 hardcode cut object (F5 fixture §4) 跟 spec §3 Cert schema 一致吗?
+
+### 任务 F: 新轮反例 (基于全 9 family + 6 fixture 全 context)
+
+你看完全 9 family + 5 fixture, 想新一轮反例: 哪个 INFEASIBLE master assignment
+9 family 全静默? 写清反例几何 + 哪些 family 静默 why + 推荐第 10 family 还是
+现有 family generalize.
 
 ## 回答格式
-分 4 段, A 验修法 / B 验 F5 评估 / C 新反例 / D unsolved issue. 每条具体 (file
-+ § + 行号). 找不到 bug 写"没找到 bug, 已 cross-check 完毕".
+分 6 段 A/B/C/D/E/F. 每条具体 (file path + § + 行号). 找不到 bug 写"没找到 bug,
+已 cross-check 完毕".
 
 ## Reply 语言
 中文优先, 数学符号 ASCII / latex 都行. 输出长度不限 — 是 Phase 0 关键 gate.
@@ -208,7 +247,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_15.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_16.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -219,7 +258,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_15.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_16.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)

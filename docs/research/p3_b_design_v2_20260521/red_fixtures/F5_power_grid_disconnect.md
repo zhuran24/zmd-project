@@ -27,7 +27,7 @@
 - → crusher_A 永远无法通过 pole 链连回 protocol_core
 - → **任 master OPTIMAL 选 crusher_A=pose_X 都 INFEASIBLE**
 
-## 2. 现有 7 family 全静默
+## 2. 现有 8 family 全静默 (Gemini round 16 E1 补 Family 9)
 
 | Family | 静默原因 |
 |---|---|
@@ -38,8 +38,9 @@
 | 5 pattern_nogood | sub-problem oracle 在 belt 端 FEASIBLE. **不 trigger** |
 | 6 shape_packing_hall | Baseline 没被 ghost 切碎到 Hall infeasible. **Pass** |
 | 7 power_hitting_set | crusher_A 周围 Right 区有 pole 候选 (CoverSet 非空). **Pass** ← key |
+| 9 density_envelope | 只 2 facility 在 Right 区, 密度极低不触发 oracle K bound. **Pass** |
 
-→ 真 INFEASIBLE 但 7 family 全静默 = **Family 8 power_grid_reach 唯一 owner**.
+→ 真 INFEASIBLE 但 8 family 全静默 = **Family 8 power_grid_reach 唯一 owner**.
 
 ## 3. MasterStateV2 表达
 

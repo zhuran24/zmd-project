@@ -28,13 +28,17 @@ per-family validator / watcher index / quarantine 政策.
     新 step 3.bis 在 source_digest + ghost_rect_id 通过后, artifact_hashes 之前
     验 `cut.scope.blocked_cells_hash == compute_blocked_cells_hash(state)`,
     不 match → quarantine.
-- **v3.2 (Phase 0 Day 17d, 本 commit)**: §7 加 6 维 by_ghost_watcher:
+- **v3.2 (Phase 0 Day 17d)**: §7 加 6 维 by_ghost_watcher:
   - Family 6/7/8/9 全 ghost-bound, ghost_rect change 是 critical state
     transition. by_ghost_watcher 让 ghost change 直接 invalidate affected
     cut set (从 active 移 held), 不需扫全 store
   - Watcher 添加规则表加 Family 2/3/4/5/7/8/9 (v3 加 7/8/9 新 family)
   - GHOST_AGNOSTIC cut (F1) 不入 by_ghost_watcher
   - by_blocked_cells 7 维 watcher defer Phase 1
+- **v3.2.1 (Phase 0 Day 17e, 本 commit)**: 修 Gemini round 16 finding A2 —
+  watcher 表移除 Family 3 from `by_ghost_watcher`. F3 (port_exposure) spec §5
+  明定 "ghost 占 front 不发 cut", 只 cell_owner causation 触发 cut, 跟 ghost
+  完全无关. Watcher 误加导致每次 ghost change 引发大量无用 F3 replay.
 
 ## 1. TL;DR
 
@@ -771,7 +775,7 @@ class CutStore:
 |---|---|
 | 1 region_capacity | `by_cell_watcher` (每 cell ∈ region) + `by_region_watcher[region_id]` |
 | 2 cutset | `by_cell_watcher` (cut_edges 端点) + `by_commodity_watcher` + `by_ghost_watcher` |
-| 3 port_exposure | `by_cell_watcher[port_cell, front_cell]` + `by_group_watcher` + `by_pose_watcher` |
+| 3 port_exposure | `by_cell_watcher[port_cell, front_cell]` + `by_group_watcher` + `by_pose_watcher` (v3.2.1 Gemini round 16 A2: 不入 by_ghost — F3 spec §5 明定 ghost-blocked front 不发 cut, 跟 ghost 无关) |
 | 4 component_reach | `by_cell_watcher` (separator_cells) + `by_commodity_watcher` + `by_ghost_watcher` |
 | 5 pattern_nogood | `by_group_watcher` (每 group 涉及) + `by_pose_watcher[(group, pose)]` + `by_ghost_watcher` (oracle 跟 ghost 绑) |
 | 6 shape_packing_hall (v3) | `by_cell_watcher` (region cells) + `by_region_watcher` + `by_group_watcher` + **`by_ghost_watcher`** |
