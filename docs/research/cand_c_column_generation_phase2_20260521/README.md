@@ -5,6 +5,107 @@ Paradigm: cand C (column generation / branch-and-price)
 Predecessor: `cand_c_column_generation_phase1_20260521/` — 4/4 ramp GO
 (5/20/40/80 inst, m10 integer reconstruction True, m11 nodes 11/33/53).
 
+## v3 status (2026-05-21 update — A3 + A1 land)
+
+Phase 2 v2 (commit 3844aea) verdict NO-GO on 160 / 266 inst — both ramps
+exit at `rmp_INFEASIBLE_at_iter_0` even though the 3-layer bootstrap
+assembled 218 / 324 columns covering all instances individually.  Root
+cause: 70×70 grid + 266 facility instances ≈ 96% cell utilisation
+forces the column pool into an internal cell-exclusivity vs.
+exactly-1 partition contradiction — no λ vector simultaneously
+satisfies all `Aλ = 1` and all cell `Σλ ≤ 1` constraints with the
+generated bootstrap pool.
+
+v3 implements the **A3 set-covering + A1 alternative-blueprint
+combination** (decided 2026-05-21 by user after triage):
+
+- **A3 (default ON)**: instance coverage constraint relaxed from
+  `Σ_k λ_k [iid∈k] = 1` to `≥ 1`.  This restores LP feasibility on
+  every ramp that has at least one valid pose per instance.
+  Soundness: the LP relaxation is an over-approximation (any
+  partition solution is a valid covering solution).  The **integer
+  reconstruction phase** still enforces partition exactly-1 — see A3
+  branching changes below.
+
+- **Integer leaf strict check** (in `ryan_foster.py`): natural
+  integer leaf is *only* accepted if `Σ_k λ_k [iid∈k] = 1` (exactly)
+  for every instance.  LP integer solutions with over-cover are
+  branched: the smallest fractional λ_k contributing to the
+  most-over-covered instance is forced to 0 via a synthesised
+  Ryan-Foster `diff(i, j)` decision between the two iids in that
+  column.  See `_is_partition_exactly_one`,
+  `_select_over_cover_branch_column`.
+
+- **m10 validator** (`integer_validator.py`) was already strict on
+  partition exactly-1 via `check_set_partitioning` — it raises
+  `ValidationError` on any over-cover.  Phase 2 v3 keeps this
+  unchanged; the branching change above ensures the
+  validator gets a partition-feasible candidate, not an over-cover
+  one that would fail-close.
+
+- **A1 (default OFF)**: alternative blueprint generator
+  (`alternative_blueprint_generator.py`).  When env-enabled, after
+  any CG iteration where the LP returns OPTIMAL but over-covered
+  instances exist, the loop detects high-congestion cells (load ≥
+  0.85 by default) and generates 2-12 facility multi-facility
+  columns that hard-avoid those cells.  Re-solves RMP after each
+  round.  Caps at 3 rounds per CG iter, 10 alternatives per round.
+
+  A1 is intended as the fallback when A3 alone leaves the integer
+  phase capped out (≥ 30% of ramps UNPROVEN).  Sounds expensive but
+  per-round wall is bounded: 60 regions × ≤ 3 s + dedup +
+  set-covering RMP solve (typically < 5 s on the augmented pool).
+
+### env flags
+
+| Env | Default | Effect |
+|---|---|---|
+| `EXACT_CANDC_LP_SET_COVERING` | `1` | A3 set-covering LP; `0` reverts to v1/v2 set-partitioning. |
+| `EXACT_CANDC_A1_ALTERNATIVE_BP` | `0` | A1 alternative-blueprint hook; `1` enables. |
+| `EXACT_CANDC_A1_CONGESTION_THRESH` | `0.85` | Cell load ≥ threshold flagged congested. |
+| `EXACT_CANDC_A1_MAX_PER_ROUND` | `10` | Alternative count cap per round. |
+| `EXACT_CANDC_A1_MAX_ROUNDS` | `3` | Rounds per CG iter (each round = detect + generate + re-solve RMP). |
+
+### v3 dry-run + measurement command
+
+```bash
+# Dry-run (no measurement written, ≤ 1 min).
+cd /home/zhuran24/claude-pj/zmd
+.venv/bin/python -u docs/research/cand_c_column_generation_phase2_20260521/phase2_probe.py --dry-run
+
+# Full measurement (6 ramps, expect 8-10 hr wall).  A1 stays OFF unless
+# A3 measurement returns ≥30% UNPROVEN.
+.venv/bin/python -u docs/research/cand_c_column_generation_phase2_20260521/phase2_probe.py --measure
+
+# Optional: A3 + A1 combined experiment.
+EXACT_CANDC_A1_ALTERNATIVE_BP=1 \
+    .venv/bin/python -u docs/research/cand_c_column_generation_phase2_20260521/phase2_probe.py --measure
+```
+
+### v3 metric additions (telemetry only — no GO threshold change)
+
+| Field | Description |
+|---|---|
+| `set_covering_on` | A3 was active on this ramp (default True) |
+| `a1_enabled` | A1 hook was env-enabled (default False) |
+| `a1_rounds_total` | total A1 rounds executed across all iters |
+| `a1_alternatives_total` | total alternative columns added by A1 |
+| `over_cover_iter_counts[]` | per-iter count of LP over-covered iids |
+| `over_cover_iters_nonzero` | how many CG iters had over-cover signal |
+| `rf_leaves_kind.over_cover_branched` | RF branched on over-cover |
+| `rf_leaves_kind.over_cover_rejected` | RF abandoned at over-cover (no fix) |
+
+### Soundness summary
+
+LP relaxation (A3) is **less constrained** than the underlying
+set-partition problem — any partition feasible solution is LP
+feasible.  The LP optimum is a lower bound on the partition optimum.
+Integer reconstruction (branch-and-price natural leaf + m10 validator)
+still enforces partition exactly-1; over-cover integer LP solutions
+are not valid integer leaves and are explicitly branched.  m10
+remains the sound-check gate — any reported integer leaf passes
+`check_set_partitioning` strict (which already raises on over-cover).
+
 ## v2 status (2026-05-21 update)
 
 Phase 2 v1 (commit 73ea69a) sweep finished NO-GO with three classes of

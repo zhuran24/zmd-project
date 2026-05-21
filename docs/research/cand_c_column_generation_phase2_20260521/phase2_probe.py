@@ -110,6 +110,21 @@ from cand_c_column_generation_phase2_20260521.boundary_constraints import (  # n
     add_boundary_equality_constraints,
     collect_boundary_duals,
 )
+from cand_c_column_generation_phase2_20260521.alternative_blueprint_generator import (  # noqa: E402
+    A1RoundLog,
+    a1_enabled,
+    congestion_threshold,
+    detect_high_congestion_cells,
+    detect_raw_conflict_cells,
+    generate_alternative_columns,
+    max_alternatives_per_round,
+    max_rounds_per_iter,
+)
+from cand_c_column_generation_phase2_20260521.farkas_certificate import (  # noqa: E402
+    A2RoundLog,
+    a2_enabled,
+    run_a2_rounds,
+)
 
 
 # === Phase 2 thresholds ===
@@ -337,6 +352,30 @@ class Phase2RMPResult:
     status_str: str
     proxy_duals: Dict[RegionBBox, float] = field(default_factory=dict)
     boundary_result: Optional[BoundaryEqualityResult] = None
+    # Phase 2 v3 A3 telemetry.
+    set_covering_on: bool = False
+    instance_cover_sum: Dict[str, float] = field(default_factory=dict)
+    over_covered_instances: List[Tuple[str, float]] = field(default_factory=list)
+
+
+def _lp_set_covering_enabled(explicit: Optional[bool] = None) -> bool:
+    """Resolve A3 set-covering LP toggle.
+
+    Priority:
+        1. Explicit kwarg ``lp_set_covering`` (used by dry-run smoke).
+        2. Environment variable ``EXACT_CANDC_LP_SET_COVERING`` —
+           "1" / "true" / "yes" → on; "0" / "false" / "no" → off.
+        3. Default: ON (Phase 2 v3 default — A3 restores LP feasibility
+           at 160/266 inst where v2 set-partitioning bootstraps RMP
+           INFEASIBLE at iter 0).
+
+    Phase 1 / Phase 2 v1-v2 behaviour (set-partitioning equality) is
+    recoverable via ``EXACT_CANDC_LP_SET_COVERING=0``.
+    """
+    if explicit is not None:
+        return bool(explicit)
+    raw = os.environ.get("EXACT_CANDC_LP_SET_COVERING", "1")
+    return raw.strip().lower() in ("1", "true", "yes", "on")
 
 
 def solve_rmp_phase2(
@@ -347,8 +386,23 @@ def solve_rmp_phase2(
     *,
     enable_boundary_eq: bool = False,
     decisions: Sequence[BranchDecision] = (),
+    lp_set_covering: Optional[bool] = None,
 ) -> Phase2RMPResult:
+    """RMP LP relaxation.
+
+    Phase 2 v3 — A3 set-covering toggle (default ON).  See
+    `_lp_set_covering_enabled` for resolution order.  When ON, the
+    instance coverage constraint becomes ``Σ_k λ_k [iid∈k] ≥ 1`` (set
+    covering) instead of ``== 1`` (set partitioning).  This restores
+    LP feasibility at 160/266 inst where the v2 column pool bootstrap
+    could not assemble a partition cover.  Integer phase still enforces
+    set-partition exactly-1 (Σ == 1 per instance) via
+    ``branch_and_price_ryan_foster_v2`` + ``integer_validator`` —
+    see Phase 2 v3 README for the soundness argument.
+    """
     from ortools.linear_solver import pywraplp
+
+    set_covering = _lp_set_covering_enabled(lp_set_covering)
 
     solver = pywraplp.Solver.CreateSolver("GLOP")
     if solver is None:
@@ -369,9 +423,13 @@ def solve_rmp_phase2(
             lo = hi = float(branching_fixed[k])
         lambda_vars.append(solver.NumVar(lo, hi, f"l_{k}"))
 
+    # A3: instance coverage = (1, +inf) when set covering ON, (1, 1) otherwise.
     cov_ctrs: Dict[str, Any] = {}
     for iid in instance_ids:
-        ctr = solver.Constraint(1.0, 1.0, f"cov_{iid}")
+        if set_covering:
+            ctr = solver.Constraint(1.0, infty, f"cov_{iid}")
+        else:
+            ctr = solver.Constraint(1.0, 1.0, f"cov_{iid}")
         cov_ctrs[iid] = ctr
     for k, pat in enumerate(columns):
         for iid in pat.covered_instance_ids:
@@ -439,6 +497,9 @@ def solve_rmp_phase2(
             status_str=status_str,
             proxy_duals={w: 0.0 for w in proxy_ctrs},
             boundary_result=None,
+            set_covering_on=set_covering,
+            instance_cover_sum={},
+            over_covered_instances=[],
         )
 
     facility_duals = {iid: cov_ctrs[iid].dual_value() for iid in instance_ids}
@@ -447,15 +508,32 @@ def solve_rmp_phase2(
     boundary_result = None
     if enable_boundary_eq and boundary_ctrs:
         boundary_result = collect_boundary_duals(boundary_ctrs)
+    # A3 telemetry: compute per-instance LP cover sum and list over-cover.
+    lambda_vals = [v.solution_value() for v in lambda_vars]
+    cover_sum: Dict[str, float] = {iid: 0.0 for iid in instance_ids}
+    for k, pat in enumerate(columns):
+        if lambda_vals[k] <= 1e-9:
+            continue
+        for iid in pat.covered_instance_ids:
+            if iid in cover_sum:
+                cover_sum[iid] += lambda_vals[k]
+    OVER_COVER_EPS = 1.0 + 1e-6
+    over_covered = sorted(
+        ((iid, s) for iid, s in cover_sum.items() if s > OVER_COVER_EPS),
+        key=lambda kv: -kv[1],
+    )
     return Phase2RMPResult(
         objective=obj.Value(),
         lp_seconds=lp_seconds,
-        lambda_values=[v.solution_value() for v in lambda_vars],
+        lambda_values=lambda_vals,
         facility_duals=facility_duals,
         cell_duals=cell_duals,
         status_str=status_str,
         proxy_duals=proxy_duals,
         boundary_result=boundary_result,
+        set_covering_on=set_covering,
+        instance_cover_sum=cover_sum,
+        over_covered_instances=over_covered,
     )
 
 
@@ -495,6 +573,24 @@ class Phase2CGStats:
     # Phase 2 v2: P0 fix telemetry.
     bootstrap_summary: Optional[Dict[str, Any]] = None
     rf_fallback_used: bool = False
+    # Phase 2 v3: A3 + A1 telemetry.
+    set_covering_on: bool = False
+    a1_enabled: bool = False
+    a1_rounds_total: int = 0
+    a1_alternatives_total: int = 0
+    a1_wall_seconds_total: float = 0.0
+    over_cover_iter_counts: List[int] = field(default_factory=list)
+    a1_round_summaries: List[Dict[str, Any]] = field(default_factory=list)
+    # Phase 2 v3 A2 telemetry (backup-of-backup; default disabled).
+    a2_enabled: bool = False
+    a2_events_total: int = 0
+    a2_alternatives_total: int = 0
+    a2_wall_seconds_total: float = 0.0
+    a2_rounds_total: int = 0
+    a2_farkas_successes: int = 0
+    a2_farkas_attempts: int = 0
+    a2_exit_reasons: List[str] = field(default_factory=list)
+    a2_round_summaries: List[Dict[str, Any]] = field(default_factory=list)
 
 
 def branch_and_price_ryan_foster(
@@ -616,6 +712,9 @@ def run_column_generation_phase2(
             "n_instances": boot.n_instances,
             "rmp_feasible_estimate": boot.rmp_feasible_estimate,
         },
+        set_covering_on=_lp_set_covering_enabled(),
+        a1_enabled=a1_enabled(),
+        a2_enabled=a2_enabled(),
     )
 
     rents_config: Optional[RentsRuleConfig] = None
@@ -635,10 +734,186 @@ def run_column_generation_phase2(
             enable_boundary_eq=enable_boundary_eq,
         )
         stats.rmp_walls.append(rmp_res.lp_seconds)
+        lp_restored_by_a1 = False
         if rmp_res.status_str not in ("OPTIMAL", "FEASIBLE"):
-            stats.exit_reason = f"rmp_{rmp_res.status_str}_at_iter_{it}"
-            _log(f"[{label}] RMP not optimal: {rmp_res.status_str}, abort")
-            break
+            # Phase 2 v3 A1-on-INFEASIBLE fallback.  When the RMP is
+            # INFEASIBLE (typically only at iter 0 after bootstrap),
+            # there is no λ vector — `detect_high_congestion_cells`
+            # cannot run.  Use the LP-free `detect_raw_conflict_cells`
+            # instead: cells touched by ≥2 bootstrap columns are the
+            # geometric infeasibility hotspots.  A1 then generates
+            # alternative blueprints that hard-avoid those cells.  We
+            # try this BEFORE the A2 Farkas path because A1 is purely
+            # structural and works even when set covering alone could
+            # not restore LP feasibility on the boundary_port cluster.
+            a1_infeasible_tried = False
+            if (
+                stats.a1_enabled
+                and rmp_res.status_str == "INFEASIBLE"
+            ):
+                a1_infeasible_tried = True
+                n_max_rounds = max_rounds_per_iter()
+                n_per_round = max_alternatives_per_round()
+                cumulative_excludes: Set[CellCoord] = set()
+                for r in range(n_max_rounds):
+                    conflicts = detect_raw_conflict_cells(
+                        columns, min_conflict_count=2,
+                    )
+                    if not conflicts:
+                        _log(
+                            f"[{label}] A1-INFEASIBLE iter={it} round={r}: "
+                            f"no conflict cells (≥2 cols), abort A1"
+                        )
+                        break
+                    exclude = {c for c, _n in conflicts} | cumulative_excludes
+                    cumulative_excludes |= exclude
+                    _log(
+                        f"[{label}] A1-INFEASIBLE iter={it} round={r}: "
+                        f"{len(conflicts)} conflict cells "
+                        f"(top conflict count {conflicts[0][1]}); "
+                        f"generating ≤{n_per_round} alternatives"
+                    )
+                    gen_res = generate_alternative_columns(
+                        instances, pools, exclude,
+                        grid_w=grid_w, grid_h=grid_h,
+                        region_size=region_size, stride=stride,
+                        max_alternatives=n_per_round,
+                        rng_seed=0xA12026 + 10000 * it + r,
+                    )
+                    existing_ids = {c.column_id for c in columns}
+                    fresh = [
+                        c for c in gen_res.columns
+                        if c.column_id not in existing_ids
+                    ]
+                    if not fresh:
+                        _log(
+                            f"[{label}] A1-INFEASIBLE iter={it} round={r}: "
+                            f"no fresh alternatives (regions tried="
+                            f"{gen_res.n_regions_attempted}), abort A1"
+                        )
+                        break
+                    before = len(columns)
+                    columns.extend(fresh)
+                    stats.a1_rounds_total += 1
+                    stats.a1_alternatives_total += len(fresh)
+                    stats.a1_wall_seconds_total += gen_res.wall_seconds
+                    stats.a1_round_summaries.append({
+                        "iter": it, "round": r, "trigger": "infeasible",
+                        "n_conflicts": len(conflicts), "n_added": len(fresh),
+                        "pool_size_after": len(columns),
+                        "wall_s": gen_res.wall_seconds,
+                    })
+                    _log(
+                        f"[{label}] A1-INFEASIBLE iter={it} round={r}: "
+                        f"+{len(fresh)} alternatives ({before}→{len(columns)} "
+                        f"cols, wall={gen_res.wall_seconds:.2f}s)"
+                    )
+                    rmp_res = solve_rmp_phase2(
+                        columns, instance_ids,
+                        proxy_windows=proxy_windows,
+                        enable_boundary_eq=enable_boundary_eq,
+                    )
+                    stats.rmp_walls.append(rmp_res.lp_seconds)
+                    if rmp_res.status_str in ("OPTIMAL", "FEASIBLE"):
+                        _log(
+                            f"[{label}] A1-INFEASIBLE restored LP at iter={it} "
+                            f"round={r}: status={rmp_res.status_str}"
+                        )
+                        lp_restored_by_a1 = True
+                        break
+                # After A1 retries, if still INFEASIBLE → fall through
+                # to A2 hook (if enabled) or abort.
+
+            # A2 hook: Farkas-certificate-guided retry on INFEASIBLE.
+            # Only engages if env-enabled and the LP is INFEASIBLE
+            # (not UNBOUNDED/ABNORMAL/NOT_SOLVED, where Farkas doesn't
+            # apply).  See farkas_certificate.py docstring for the
+            # full strategy.  A2 mutates `columns` in place (appends
+            # alternatives) and re-solves RMP each round; we just
+            # check the final status and continue the main CG loop
+            # if RMP is now feasible.
+            if (
+                not lp_restored_by_a1
+                and stats.a2_enabled
+                and rmp_res.status_str == "INFEASIBLE"
+            ):
+                _log(
+                    f"[{label}] RMP INFEASIBLE at iter {it}; "
+                    f"engaging A2 Farkas-guided retry"
+                )
+
+                def _rmp_for_a2(
+                    cols: Sequence[Pattern],
+                    ids: Sequence[str],
+                ) -> Phase2RMPResult:
+                    return solve_rmp_phase2(
+                        cols, ids,
+                        proxy_windows=proxy_windows,
+                        enable_boundary_eq=enable_boundary_eq,
+                    )
+
+                a2_log = run_a2_rounds(
+                    columns, instance_ids, instances, pools,
+                    _rmp_for_a2,
+                    grid_w=grid_w, grid_h=grid_h,
+                    region_size=region_size, stride=stride,
+                    set_covering=stats.set_covering_on,
+                    log=lambda m: _log(f"[{label}] {m}"),
+                )
+                stats.a2_events_total += 1
+                stats.a2_alternatives_total += a2_log.alternatives_total
+                stats.a2_wall_seconds_total += a2_log.wall_seconds_total
+                stats.a2_rounds_total += a2_log.rounds_run
+                stats.a2_farkas_successes += a2_log.farkas_successes
+                stats.a2_farkas_attempts += a2_log.farkas_attempts
+                stats.a2_exit_reasons.append(a2_log.exit_reason)
+                stats.a2_round_summaries.extend(a2_log.rounds)
+                _log(
+                    f"[{label}] A2 exit_reason={a2_log.exit_reason} "
+                    f"rounds={a2_log.rounds_run} "
+                    f"alts={a2_log.alternatives_total} "
+                    f"final_lp={a2_log.final_lp_status} "
+                    f"wall={a2_log.wall_seconds_total:.2f}s"
+                )
+                if a2_log.exit_reason == "restored":
+                    # A2 fixed LP — resolve once more to get clean
+                    # duals (a2_log.rounds[-1] already has the values
+                    # but we re-run to keep the loop's rmp_res in sync).
+                    rmp_res = solve_rmp_phase2(
+                        columns, instance_ids,
+                        proxy_windows=proxy_windows,
+                        enable_boundary_eq=enable_boundary_eq,
+                    )
+                    stats.rmp_walls.append(rmp_res.lp_seconds)
+                    if rmp_res.status_str not in ("OPTIMAL", "FEASIBLE"):
+                        # Numerical instability between A2 round and
+                        # confirmation solve — treat as failed.
+                        stats.exit_reason = (
+                            f"rmp_{rmp_res.status_str}_post_a2_at_iter_{it}"
+                        )
+                        _log(
+                            f"[{label}] post-A2 RMP unexpectedly "
+                            f"{rmp_res.status_str}, abort"
+                        )
+                        break
+                    # Fall through to A1 + pricing as normal.
+                else:
+                    stats.exit_reason = (
+                        f"rmp_{rmp_res.status_str}_a2_{a2_log.exit_reason}_"
+                        f"at_iter_{it}"
+                    )
+                    _log(
+                        f"[{label}] A2 could not restore LP "
+                        f"({a2_log.exit_reason}); abort"
+                    )
+                    break
+            elif lp_restored_by_a1:
+                # A1 restored LP — fall through to pricing / over-cover hook.
+                pass
+            else:
+                stats.exit_reason = f"rmp_{rmp_res.status_str}_at_iter_{it}"
+                _log(f"[{label}] RMP not optimal: {rmp_res.status_str}, abort")
+                break
         if rmp_res.proxy_duals:
             stats.proxy_dual_samples.append(
                 [rmp_res.proxy_duals[w] for w in proxy_windows]
@@ -650,12 +925,84 @@ def run_column_generation_phase2(
                 "dual_sparsity_pct": rmp_res.boundary_result.dual_sparsity_pct,
                 "max_abs_dual": rmp_res.boundary_result.max_abs_dual,
             }
+        # Phase 2 v3 A3 telemetry: track over-cover count this iter.
+        stats.over_cover_iter_counts.append(len(rmp_res.over_covered_instances))
         if it % 5 == 0 or it < 3:
             _log(
                 f"[{label}] iter {it}  cols={len(columns)}  "
                 f"rmp_obj={rmp_res.objective:.3f}  "
-                f"rmp_wall={rmp_res.lp_seconds:.3f}s"
+                f"rmp_wall={rmp_res.lp_seconds:.3f}s  "
+                f"sc={rmp_res.set_covering_on}  "
+                f"over_cover={len(rmp_res.over_covered_instances)}"
             )
+
+        # Phase 2 v3 A1 hook: env-gated alternative blueprint generation.
+        # Runs only when (a) A1 enabled by env, (b) RMP under set covering
+        # produced over-cover (which is what A1 is designed to break), and
+        # (c) we have iter budget for the resolves.  Implementation is a
+        # per-iter ≤ N-round loop: each round detects congestion on the
+        # CURRENT LP solution, generates alternatives, appends to the
+        # column pool, re-solves RMP, and exits early when over-cover
+        # disappears or no new alternatives feasible.
+        if stats.a1_enabled and rmp_res.over_covered_instances:
+            n_max_rounds = max_rounds_per_iter()
+            n_per_round = max_alternatives_per_round()
+            a1_thr = congestion_threshold()
+            cumulative_excludes: Set[CellCoord] = set()
+            for r in range(n_max_rounds):
+                congested = detect_high_congestion_cells(
+                    columns, rmp_res.lambda_values, threshold=a1_thr,
+                )
+                if not congested:
+                    break
+                exclude = {c for c, _v in congested} | cumulative_excludes
+                cumulative_excludes |= exclude
+                gen_res = generate_alternative_columns(
+                    instances, pools, exclude,
+                    grid_w=grid_w, grid_h=grid_h,
+                    region_size=region_size, stride=stride,
+                    max_alternatives=n_per_round,
+                    rng_seed=0xA12026 + 1000 * it + r,
+                )
+                if not gen_res.columns:
+                    _log(
+                        f"[{label}] A1 iter={it} round={r}: no feasible "
+                        f"alternatives (regions tried={gen_res.n_regions_attempted})"
+                    )
+                    break
+                # Dedupe by column_id then extend.
+                existing_ids = {c.column_id for c in columns}
+                fresh = [c for c in gen_res.columns if c.column_id not in existing_ids]
+                if not fresh:
+                    break
+                before = len(columns)
+                columns.extend(fresh)
+                stats.a1_rounds_total += 1
+                stats.a1_alternatives_total += len(fresh)
+                stats.a1_wall_seconds_total += gen_res.wall_seconds
+                stats.a1_round_summaries.append({
+                    "iter": it,
+                    "round": r,
+                    "n_congested": len(congested),
+                    "n_added": len(fresh),
+                    "pool_size_after": len(columns),
+                    "wall_s": gen_res.wall_seconds,
+                })
+                _log(
+                    f"[{label}] A1 iter={it} round={r}: +{len(fresh)} "
+                    f"alternatives ({before}→{len(columns)} cols, "
+                    f"wall={gen_res.wall_seconds:.2f}s)"
+                )
+                rmp_res = solve_rmp_phase2(
+                    columns, instance_ids,
+                    proxy_windows=proxy_windows,
+                    enable_boundary_eq=enable_boundary_eq,
+                )
+                stats.rmp_walls.append(rmp_res.lp_seconds)
+                if rmp_res.status_str not in ("OPTIMAL", "FEASIBLE"):
+                    break
+                if not rmp_res.over_covered_instances:
+                    break
 
         TRIES_PER_ITER = 4
         tried = 0
@@ -919,6 +1266,17 @@ def compute_phase2_metrics(
             dict(stats.rf_branching.leaves_kind_counts)
             if stats.rf_branching else {}
         ),
+        # Phase 2 v3 A3/A1 telemetry.
+        "set_covering_on": stats.set_covering_on,
+        "a1_enabled": stats.a1_enabled,
+        "a1_rounds_total": stats.a1_rounds_total,
+        "a1_alternatives_total": stats.a1_alternatives_total,
+        "a1_wall_seconds_total": stats.a1_wall_seconds_total,
+        "a1_round_summaries": stats.a1_round_summaries,
+        "over_cover_iter_counts": stats.over_cover_iter_counts,
+        "over_cover_iters_nonzero": sum(
+            1 for c in stats.over_cover_iter_counts if c > 0
+        ),
     }
     if stats.validation is not None:
         metrics["validation_error"] = stats.validation.error_message
@@ -1153,6 +1511,47 @@ def run_dry_run() -> int:
     )
     if rf2.integer_leaves_found < 1:
         _log("SMOKE WARN: RF+fallback found 0 leaves on toy — investigate")
+
+    # Phase 2 v3 A2 smoke: synthetic infeasible RMP -> Farkas extraction.
+    # End-to-end check on a 2-instance 1-shared-cell pool (forces
+    # set-partitioning INFEASIBLE).  Verifies Farkas extraction +
+    # hotspot identification both work on a Phase 2-shape Pattern.
+    from cand_c_column_generation_phase2_20260521.farkas_certificate import (
+        extract_farkas_certificate, extract_hotspot_cells,
+    )
+    if subset5:
+        # Hand-construct two columns claiming the same cell.
+        from cand_c_column_generation_phase1_20260521.column_grammar import (
+            Pattern as _Pat,
+        )
+        iid_a = subset5[0]["instance_id"]
+        iid_b = subset5[1]["instance_id"] if len(subset5) > 1 else iid_a + "_dup"
+        pat_a = _Pat(
+            column_id="A2_smoke_A",
+            occupied_cells=frozenset([(0, 0)]),
+            facility_assignments=((iid_a, subset5[0]["facility_type"], 0),),
+            port_cells=frozenset(), typed_ports=tuple(),
+            boundary_signature=tuple(), region=(0, 0, 10, 10), cost=1,
+        )
+        pat_b = _Pat(
+            column_id="A2_smoke_B",
+            occupied_cells=frozenset([(0, 0)]),
+            facility_assignments=((iid_b, subset5[0]["facility_type"], 0),),
+            port_cells=frozenset(), typed_ports=tuple(),
+            boundary_signature=tuple(), region=(0, 0, 10, 10), cost=1,
+        )
+        cert = extract_farkas_certificate(
+            [pat_a, pat_b], [iid_a, iid_b], set_covering=False,
+        )
+        hotspots = extract_hotspot_cells(cert)
+        _log(
+            f"toy A2: success={cert.success} backend={cert.backend} "
+            f"ray_norm_inf={cert.ray_norm_inf:.3e} "
+            f"b_dot_y={cert.farkas_b_dot_y:.3e} "
+            f"hotspots={hotspots}"
+        )
+        if not cert.success or not hotspots:
+            _log("SMOKE WARN: A2 Farkas extraction degenerate on toy")
 
     _log("dry-run complete (no measurement written)")
     return 0

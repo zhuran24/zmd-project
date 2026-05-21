@@ -248,7 +248,16 @@ class BranchNodeTrace:
     pool_kept: int
     pool_total: int
     pool_killed_by_last_decision: int
-    leaf_kind: str  # "natural" | "rounded_at_cap" | "abandoned_at_cap" | "pruned" | "infeasible" | "interior"
+    leaf_kind: str
+    # leaf_kind possible values:
+    #   "natural" (set partitioning exactly-1 verified)
+    #   "rounded_at_cap" / "abandoned_at_cap"
+    #   "pruned" / "infeasible" / "interior"
+    #   Phase 2 v3 A3 additions:
+    #   "over_cover_rejected" — leaf had partition violations,
+    #       branched to fix instead of accepting.
+    #   "over_cover_branched" — interior node split on over-cover var
+    #       (no Ryan-Foster pair available).
 
 
 @dataclass
@@ -335,6 +344,96 @@ def _attempt_rounded_leaf(
     return rounded
 
 
+# === Phase 2 v3 A3 — partition strict check + over-cover branching ===
+
+
+def _instance_cover_sums(
+    columns: Sequence[Any],
+    lambda_values: Sequence[float],
+    instance_ids: Sequence[str],
+) -> Dict[str, float]:
+    """Compute per-instance Σ_k λ_k [iid∈k] from the LP solution.
+
+    Used by both partition-strict natural-leaf check and over-cover
+    branching candidate selection.
+    """
+    sums: Dict[str, float] = {iid: 0.0 for iid in instance_ids}
+    for k, lam in enumerate(lambda_values):
+        if lam <= 1e-9:
+            continue
+        for iid in columns[k].covered_instance_ids:
+            if iid in sums:
+                sums[iid] += lam
+    return sums
+
+
+def _is_partition_exactly_one(
+    cover_sums: Mapping[str, float],
+    *,
+    tol: float = 1e-6,
+) -> bool:
+    """True iff every instance has LP cover sum in [1-tol, 1+tol].
+
+    Phase 2 v3 A3: a natural integer leaf is *only* accepted as a
+    set-partitioning leaf if Σ_k λ_k [iid∈k] is integer 1 for every
+    instance.  Set-covering relaxation may produce LPs where the LP
+    optimum has some instance over-covered (sum > 1) while every λ_k
+    is integer; those are not valid integer leaves of the underlying
+    set-partition problem and must be rejected.
+    """
+    for iid, s in cover_sums.items():
+        if not (1.0 - tol <= s <= 1.0 + tol):
+            return False
+    return True
+
+
+def _select_over_cover_branch_column(
+    columns: Sequence[Any],
+    lambda_values: Sequence[float],
+    cover_sums: Mapping[str, float],
+    decisions: Sequence[Any],
+    *,
+    over_cover_tol: float = 1e-6,
+    integer_tol: float = 1e-6,
+) -> Optional[int]:
+    """Pick the smallest-λ column k contributing to the most-over-covered iid.
+
+    Strategy (A3 branching rule):
+        1. Sort over-covered instances by sum descending — focus on the
+           worst violator first.
+        2. Among columns covering that iid with fractional λ_k > 0,
+           return the column with the smallest positive λ_k.  Branching
+           it to 0 most cheaply restores partition feasibility because
+           it removes the least objective contribution.
+        3. If the worst violator only has integer (λ_k == 1) covers,
+           fall back to next over-covered iid.  Last-resort returns None
+           and the caller should give up on this node (treat as
+           "abandoned_at_cap").
+    """
+    # Build descending list of over-covered iids.
+    violators = sorted(
+        ((iid, s) for iid, s in cover_sums.items() if s > 1.0 + over_cover_tol),
+        key=lambda kv: -kv[1],
+    )
+    for iid, _s in violators:
+        cands: List[Tuple[float, int]] = []
+        for k in range(len(columns)):
+            lam = lambda_values[k]
+            if lam <= integer_tol:
+                continue
+            if iid not in columns[k].covered_instance_ids:
+                continue
+            # Skip columns already fixed (λ at bound 1.0 — should rarely
+            # happen at this branch since we're checking integer ≥1.0-tol
+            # paths separately).
+            if lam < 1.0 - integer_tol:
+                cands.append((lam, k))
+        if cands:
+            cands.sort()  # smallest λ first.
+            return cands[0][1]
+    return None
+
+
 # === Main RF B&P (with telemetry + rounded-at-cap) ===
 
 
@@ -348,6 +447,7 @@ def branch_and_price_ryan_foster_v2(
     wall_budget_s: float = 60.0,
     integer_tol: float = 1e-6,
     capture_traces: bool = True,
+    enforce_partition_at_leaf: bool = True,
     log: Optional[Any] = None,
 ) -> RyanFosterStats:
     """DFS B&P with v2 telemetry + rounded-at-cap salvage.
@@ -356,6 +456,21 @@ def branch_and_price_ryan_foster_v2(
     a `decisions=` kwarg.  Phase 2 probe wraps `solve_rmp_phase2` for
     this.  Each call must return an object with attributes
     `.status_str`, `.objective`, and `.lambda_values`.
+
+    Phase 2 v3 A3:
+        ``enforce_partition_at_leaf=True`` (default) — natural integer
+        leaves are only accepted if Σ_k λ_k [iid∈k] is integer 1 for
+        every instance (set-partitioning exactly-1).  If some instance
+        is over-covered (sum ≥ 2), the leaf is rejected and the branch
+        attempts to fix it by branching the smallest fractional column
+        contributing to the worst violator down to 0.  Because the LP
+        is set covering (≥ 1), an LP solution with every λ_k integer
+        but with over-cover is allowed by the LP — but it is NOT a
+        valid set-partition integer solution.  Without the partition
+        leaf check, the B&P could return such a "leaf" and the m10
+        sound-check would then catch it as ValidationError at the
+        report assembly step.  The leaf-time check enables the search
+        to KEEP looking instead of bailing out.
     """
     import time
 
@@ -453,12 +568,93 @@ def branch_and_price_ryan_foster_v2(
             integer_tol=integer_tol, decisions=node.decisions,
         )
         if pair is None:
-            # Natural integer leaf — no fractional pair remains.
-            stats.integer_leaves_found += 1
-            stats.leaves_kind_counts["natural"] += 1
-            if rmp_res.objective < stats.best_objective:
-                stats.best_objective = rmp_res.objective
-                stats.best_lambda = list(rmp_res.lambda_values)
+            # Candidate natural leaf — no fractional pair remains.
+            # Phase 2 v3 A3 partition strict check: under set-covering
+            # LP, an "integer" LP solution may still violate the
+            # underlying set-partition exactly-1 invariant if any
+            # instance is covered by ≥2 columns simultaneously.
+            cover_sums = _instance_cover_sums(
+                columns, rmp_res.lambda_values, instance_ids,
+            )
+            partition_ok = (
+                not enforce_partition_at_leaf
+                or _is_partition_exactly_one(cover_sums, tol=integer_tol)
+            )
+            if partition_ok:
+                stats.integer_leaves_found += 1
+                stats.leaves_kind_counts["natural"] += 1
+                if rmp_res.objective < stats.best_objective:
+                    stats.best_objective = rmp_res.objective
+                    stats.best_lambda = list(rmp_res.lambda_values)
+                if capture_traces:
+                    stats.node_traces.append(BranchNodeTrace(
+                        node_idx=node_idx, depth=node.depth,
+                        n_decisions=len(node.decisions),
+                        last_decision=last_dec,
+                        lp_status=rmp_res.status_str,
+                        lp_objective=float(rmp_res.objective),
+                        n_fractional_pairs=0,
+                        pair_picked=None,
+                        is_integer_feasible=True,
+                        pool_kept=pool_kept, pool_total=pool_total,
+                        pool_killed_by_last_decision=pool_killed_by_last,
+                        leaf_kind="natural",
+                    ))
+                node_idx += 1
+                continue
+            # Over-cover detected — branch the smallest fractional col
+            # contributing to the worst violator down to 0.  If no such
+            # column exists (all over-cover contributions are integer
+            # 1.0), this LP integer solution is partition-INFEASIBLE and
+            # the node is genuinely abandoned.
+            over_branch_k = _select_over_cover_branch_column(
+                columns, rmp_res.lambda_values, cover_sums, node.decisions,
+                integer_tol=integer_tol,
+            )
+            if over_branch_k is None:
+                stats.leaves_kind_counts["over_cover_rejected"] += 1
+                if capture_traces:
+                    stats.node_traces.append(BranchNodeTrace(
+                        node_idx=node_idx, depth=node.depth,
+                        n_decisions=len(node.decisions),
+                        last_decision=last_dec,
+                        lp_status=rmp_res.status_str,
+                        lp_objective=float(rmp_res.objective),
+                        n_fractional_pairs=0,
+                        pair_picked=None,
+                        is_integer_feasible=False,
+                        pool_kept=pool_kept, pool_total=pool_total,
+                        pool_killed_by_last_decision=pool_killed_by_last,
+                        leaf_kind="over_cover_rejected",
+                    ))
+                node_idx += 1
+                continue
+            # Synthesise a Ryan-Foster "diff" decision between the two
+            # most-violating instances both covered by column k.  This
+            # is a heuristic — it forces them apart, which the column
+            # mask will translate into λ_k → 0 (since col k has both).
+            cov_of_k = sorted(columns[over_branch_k].covered_instance_ids)
+            # Pick the pair (i, j) inside cov_of_k whose pair-sum in
+            # over_cover is the largest, i.e. the actual conflict.
+            best_pair: Optional[Tuple[str, str]] = None
+            best_score = -1.0
+            for a in range(len(cov_of_k)):
+                for b in range(a + 1, len(cov_of_k)):
+                    score = (
+                        cover_sums.get(cov_of_k[a], 0.0)
+                        + cover_sums.get(cov_of_k[b], 0.0)
+                    )
+                    if score > best_score:
+                        best_score = score
+                        best_pair = (cov_of_k[a], cov_of_k[b])
+            if best_pair is None:
+                stats.leaves_kind_counts["over_cover_rejected"] += 1
+                node_idx += 1
+                continue
+            diff_dec = BranchDecision.make(best_pair[0], best_pair[1], "diff")
+            stats.diff_decisions += 1
+            stack.append(node.with_decision(diff_dec))
+            stats.leaves_kind_counts["over_cover_branched"] += 1
             if capture_traces:
                 stats.node_traces.append(BranchNodeTrace(
                     node_idx=node_idx, depth=node.depth,
@@ -467,11 +663,11 @@ def branch_and_price_ryan_foster_v2(
                     lp_status=rmp_res.status_str,
                     lp_objective=float(rmp_res.objective),
                     n_fractional_pairs=0,
-                    pair_picked=None,
-                    is_integer_feasible=True,
+                    pair_picked=best_pair,
+                    is_integer_feasible=False,
                     pool_kept=pool_kept, pool_total=pool_total,
                     pool_killed_by_last_decision=pool_killed_by_last,
-                    leaf_kind="natural",
+                    leaf_kind="over_cover_branched",
                 ))
             node_idx += 1
             continue
@@ -625,4 +821,8 @@ __all__ = [
     "apply_ryan_foster_to_pricing",
     "branch_and_price_ryan_foster_v2",
     "branch_and_price_with_fallback",
+    # Phase 2 v3 A3 helpers.
+    "_instance_cover_sums",
+    "_is_partition_exactly_one",
+    "_select_over_cover_branch_column",
 ]
