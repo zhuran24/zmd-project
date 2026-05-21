@@ -1,8 +1,18 @@
 # F3 — Power No-Cover Ghost-Conditioned (Red Fixture)
 
-> **Status**: Day 12 skeleton (2026-05-21) — `[NEEDS_NEW_FAMILY]` Day 13-17
-> **Cross-refs**: `../cut_lifecycle_v2.md` §3 §6 + `../state_machine_v2.md` §6 ghost-conditioned power_cover + `src/search/benders_loop.py:4219-4268` (L16 ref impl)
-> **Cut family owner**: **新 family** "power_hitting_set" (Day 13-17 schema) — GPT power cut
+> **Status**: Day 17d sweep v3.1 (2026-05-21)
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3.2 §3 §6 + `../state_machine_v2.md` §6 + `../cut_family_specs/07_power_hitting_set.md` v1.1 (causation split) + `src/search/benders_loop.py:4219-4268` (L16 ref)
+> **Cut family owner**: Family 7 power_hitting_set (Day 16b 加, v1.1 causation split — Gemini round 14 finding #1)
+
+## Day 17d sweep changelog
+
+原 §6 [SCHEMA_GAP] / [NEEDS_NEW_FAMILY] 全解:
+- ✅ CutFamily enum 加 `power_hitting_set`
+- ✅ cert_kind "power_cover_emptyset_ghost" / "power_cover_emptyset_cell_owner" (v1.1 causation split)
+- ✅ Validator §6 加 Family 7 (07 spec §7), 含 causation 一致性检查
+- ✅ Gemini round 14 finding #1 修: cell_owner 挤空 case 走多 literal cut 含 blocking_facility_literals 防 master 移走误剪
+- ✅ Family 8 power_grid_reach 配合: F7 = local CoverSet 空, F8 = global disconnect (07 spec §9 协议)
+- ✅ ghost-bound watcher 6 维 by_ghost (v3.2)
 
 ## 1. 反例几何
 

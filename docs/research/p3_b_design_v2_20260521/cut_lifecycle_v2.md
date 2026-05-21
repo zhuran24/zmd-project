@@ -28,6 +28,13 @@ per-family validator / watcher index / quarantine 政策.
     新 step 3.bis 在 source_digest + ghost_rect_id 通过后, artifact_hashes 之前
     验 `cut.scope.blocked_cells_hash == compute_blocked_cells_hash(state)`,
     不 match → quarantine.
+- **v3.2 (Phase 0 Day 17d, 本 commit)**: §7 加 6 维 by_ghost_watcher:
+  - Family 6/7/8/9 全 ghost-bound, ghost_rect change 是 critical state
+    transition. by_ghost_watcher 让 ghost change 直接 invalidate affected
+    cut set (从 active 移 held), 不需扫全 store
+  - Watcher 添加规则表加 Family 2/3/4/5/7/8/9 (v3 加 7/8/9 新 family)
+  - GHOST_AGNOSTIC cut (F1) 不入 by_ghost_watcher
+  - by_blocked_cells 7 维 watcher defer Phase 1
 
 ## 1. TL;DR
 
@@ -738,12 +745,16 @@ cut store 是中央数据结构, 5 维 watcher index 避免每轮扫全表.
 class CutStore:
     cuts: Dict[CutId, Cut] = field(default_factory=dict)
 
-    # 5 维 watcher (Step 8)
+    # 6 维 watcher (v3.2 Day 17d 加 by_ghost — Family 6/7/8/9 ghost-bound 必需)
     by_cell_watcher: Dict[Cell, Set[CutId]] = field(default_factory=lambda: defaultdict(set))
     by_group_watcher: Dict[GroupId, Set[CutId]] = field(default_factory=lambda: defaultdict(set))
     by_pose_watcher: Dict[Tuple[GroupId, PoseId], Set[CutId]] = field(default_factory=lambda: defaultdict(set))
     by_commodity_watcher: Dict[CommodityId, Set[CutId]] = field(default_factory=lambda: defaultdict(set))
     by_region_watcher: Dict[RegionId, Set[CutId]] = field(default_factory=lambda: defaultdict(set))
+    by_ghost_watcher: Dict[GhostRectId, Set[CutId]] = field(default_factory=lambda: defaultdict(set))
+                                                # v3.2 — ghost_rect 变直接 invalidate
+                                                # by ghost_rect_id; ghost_rect_id =
+                                                # GHOST_AGNOSTIC 的 cut 不入此 watcher
 
     # Quarantine (Step 9)
     quarantined: Dict[CutId, "QuarantineReason"] = field(default_factory=dict)
@@ -754,19 +765,53 @@ class CutStore:
 
 ### Watcher 添加规则 (Step 8)
 
-每 family attach 时按规则添:
+每 family attach 时按规则添 (v3.2 Day 17d 加 7/8/9 + 6 维 by_ghost):
 
 | Family | watcher domain |
 |---|---|
-| region_capacity | `by_cell_watcher` (每 cell ∈ region) + `by_region_watcher[region_id]` |
-| cutset | `by_cell_watcher` (boundary cells) + `by_commodity_watcher` |
-| port_exposure | `by_cell_watcher[port_cell, front_cell]` + `by_group_watcher` |
-| component_reach | `by_cell_watcher` (witness path 上每 cell) + `by_commodity_watcher` |
-| pattern_nogood | `by_group_watcher` (每 group 涉及) + `by_pose_watcher[(group, pose)]` |
+| 1 region_capacity | `by_cell_watcher` (每 cell ∈ region) + `by_region_watcher[region_id]` |
+| 2 cutset | `by_cell_watcher` (cut_edges 端点) + `by_commodity_watcher` + `by_ghost_watcher` |
+| 3 port_exposure | `by_cell_watcher[port_cell, front_cell]` + `by_group_watcher` + `by_pose_watcher` |
+| 4 component_reach | `by_cell_watcher` (separator_cells) + `by_commodity_watcher` + `by_ghost_watcher` |
+| 5 pattern_nogood | `by_group_watcher` (每 group 涉及) + `by_pose_watcher[(group, pose)]` + `by_ghost_watcher` (oracle 跟 ghost 绑) |
+| 6 shape_packing_hall (v3) | `by_cell_watcher` (region cells) + `by_region_watcher` + `by_group_watcher` + **`by_ghost_watcher`** |
+| 7 power_hitting_set (v3) | `by_cell_watcher` (facility + ghost_blocked) + `by_group_watcher` + `by_pose_watcher` + **`by_ghost_watcher`** |
+| 8 power_grid_reach (v3) | `by_cell_watcher` (facility + candidate poles) + `by_pose_watcher` + **`by_ghost_watcher`** |
+| 9 density_envelope (v3) | `by_cell_watcher` (window 内 cell) + `by_group_watcher` + **`by_ghost_watcher`** |
 | symmetry_lift | underlying family 同 + 全 orbit groups |
 
 state change → 只看对应 watcher 内 cut 重 evaluate. Big-O 从 O(全 cut)
 降到 O(影响 cut).
+
+### v3.2 by_ghost_watcher 工作流
+
+ghost_rect change 是 critical state transition — 几乎所有 geometric/literal
+ghost-bound cut 都需要重 attach-scope check. by_ghost_watcher 加速:
+
+```python
+def on_ghost_rect_changed(state: BState, new_ghost_id: GhostRectId, store: CutStore) -> None:
+    """ghost change 触发 affected cut 重 replay."""
+    # 旧 ghost_id 关联的 cut 全 hold (不 attach, 不 quarantine — 等下次 match)
+    old_ghost_id = state.previous_ghost_rect_id
+    affected = store.by_ghost_watcher.get(old_ghost_id, set())
+    for cut_id in affected:
+        cut = store.cuts[cut_id]
+        # 已 attach 的 cut: hold (从 active 移到 held set)
+        store.held.add(cut_id)
+        # 不删 cut, 不 quarantine (下次 ghost 回 old_id 时 re-attach OK)
+
+    # 新 ghost_id 关联的 cut 重跑 replay (5/6 步 verify)
+    candidates = store.by_ghost_watcher.get(new_ghost_id, set())
+    for cut_id in candidates:
+        cut = store.cuts[cut_id]
+        decision = replay_cut(cut, state, store)  # v3.1 6 步 verify
+        if decision == "ATTACH":
+            store.held.discard(cut_id)  # 从 held 移回 active
+```
+
+GHOST_AGNOSTIC cut (e.g. F1 boundary saturation) 不入 by_ghost_watcher,
+ghost 变不影响其 attach. blocked_cells_hash 校验 (v3.1 step 3) 仍可能让
+GHOST_AGNOSTIC cut quarantine — by_blocked_cells watcher Phase 1 加 (7 维).
 
 ## 8. Quarantine + source digest 政策
 

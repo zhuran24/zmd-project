@@ -1,8 +1,19 @@
 # F2 — Shape Packing Hall (Red Fixture)
 
-> **Status**: Day 12 skeleton (2026-05-21) — `[NEEDS_NEW_FAMILY]` Day 13-17
-> **Cross-refs**: `../cut_lifecycle_v2.md` §3 §6 + v14 review Gemini 反例 B
-> **Cut family owner**: **新 family** "shape_packing_hall" (Day 13-17 schema) — v14 5 family 不覆盖
+> **Status**: Day 17d sweep v3.1 (2026-05-21)
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3.2 §3 §6 + v14 review Gemini 反例 B + `../cut_family_specs/06_shape_packing_hall.md` v1.1
+> **Cut family owner**: Family 6 shape_packing_hall (Day 16a 加, v1.1 partition 改 static — Gemini round 14 finding #2)
+
+## Day 17d sweep changelog
+
+原 §6 [SCHEMA_GAP] / [NEEDS_NEW_FAMILY] 全解:
+- ✅ CutFamily enum 加 `shape_packing_hall` (v3 Day 14)
+- ✅ cert_kind "hall_interval_witness" (06 spec §3)
+- ✅ literals 非空约束 → v3 split
+- ✅ Validator §6 加 Family 6 完整 (06 spec §7)
+- ✅ evaluate_cut family-dispatch literals vs geometric (v3 §5)
+- ✅ ghost-bound watcher 6 维 by_ghost (v3.2 §7)
+- ✅ Gemini round 14 finding #2 修: partition 改 static (只看 ghost+exterior, 不看 cell_owner), cross-layer replay sound
 
 ## 1. 反例几何 (Gemini 反例 B)
 

@@ -1,8 +1,20 @@
 # F1 — Boundary Saturation (Red Fixture)
 
-> **Status**: Day 10 deliverable (2026-05-21)
-> **Cross-refs**: `../state_machine_v2.md` §2 / `../cut_lifecycle_v2.md` §3 §5 §6
+> **Status**: Day 17d sweep v3.1 (2026-05-21)
+> **Cross-refs**: `../state_machine_v2.md` §2 / `../cut_lifecycle_v2.md` v3.2 §3 §5 §6 / `../cut_family_specs/01_region_capacity.md` v1.1 / `../poc/b_core_lifecycle_poc.py` (runtime 验证)
 > **Cut family owner**: Family 1 region_capacity + Family 3 port_exposure (无需新 family)
+
+## Day 17d sweep changelog
+
+原 §7-§8 列的 [SCHEMA_GAP] / [NEEDS_NEW_FAMILY] 已在 Day 13-17 全解:
+- ✅ literals 非空约束 → v3 schema split (literals Optional + geometric_payload 互斥, _FAMILY_MODE_MAP)
+- ✅ Family 5 cert_kind "binding_infeasibility_core" 在 §6 — 但本 fixture 现走 Family 1 (region_capacity_combinatorial), 不依赖 Family 5
+- ✅ region cut literals 空 → v3 schema 解 (literals=None, geometric_payload=cert_payload)
+- ✅ assumption_holds 实现 → v3.1 ASSUMPTION_VERIFIERS dispatch + PoC `_verify_boundary_saturation`
+- ✅ ghost_rect_id GHOST_AGNOSTIC sentinel → v3 加 + v3.1 step 3 blocked_cells_hash 校验防 F1 误 attach
+- ✅ F1 ghost_agnostic + blocked_cells_hash 双校验: PoC test #10 验证 ghost 变后 blocked_cells_hash 改 → quarantine (sound)
+
+PoC test (test_b_core_lifecycle.py) F1 反例 14/14 PASS, 9 步 lifecycle 全 runtime work.
 
 ## 1. 反例几何
 

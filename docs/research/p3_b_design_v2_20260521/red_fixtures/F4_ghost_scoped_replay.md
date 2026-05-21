@@ -1,8 +1,17 @@
 # F4 — Ghost-Scoped Replay False Positive (Red Fixture)
 
-> **Status**: Day 11 skeleton (2026-05-21) — full detail Day 11 fill-in
-> **Cross-refs**: `../cut_lifecycle_v2.md` §4 (replay 反例 walk-through) + §5 multiset
+> **Status**: Day 17d sweep v3.1 (2026-05-21)
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3.2 §4 (6 步 verify 加 blocked_cells_hash) + §5 multiset + `../cut_family_specs/05_pattern_nogood.md` v1.0
 > **Cut family owner**: Family 5 pattern_nogood + scope-aware replay HOLD path
+
+## Day 17d sweep changelog
+
+原 §6 [SCHEMA_GAP] 全解:
+- ✅ ghost_rect_id canonical hash 算法 → v3 `compute_ghost_rect_id` (cut_lifecycle §4) sha256(f"{x},{y},{h},{w}")[:16]
+- ✅ HOLD cut disk 占用 → Phase 1 quota 政策 (cut_lifecycle §8 quarantine 政策)
+- ✅ HOLD ↔ candidate enumeration → v3.2 by_ghost_watcher (Day 17d §7) ghost change 触发 hold/active 切换
+- ✅ Regression sweep scope-aware → cut_lifecycle §4 6 步 verify 含 ghost_rect_id + blocked_cells_hash 双校验
+- ✅ Replay 反例完整 walk-through → cut_lifecycle §4 §5 反例数学 + PoC test_attach_scope_ghost_agnostic 验证
 
 ## 1. 反例几何 (cut_lifecycle_v2 §4 walk-through)
 
