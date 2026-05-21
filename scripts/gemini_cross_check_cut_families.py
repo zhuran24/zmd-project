@@ -36,6 +36,9 @@ DOC_PATHS = [
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_19_f9_critical.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_20_all_clear.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_21_quarantine_fix.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_22_phase0_close.md",
+    # Day 17k 新加 — PHASE_0_CLOSE summary doc
+    "docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -108,7 +111,42 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 22)
+## 本次 cross-check 目的 (round 23)
+
+Round 23. round 22 给了 verdict "Phase 0 无懈可击, 进 Phase 1" + 1 行
+watcher 漏注册 finding (F1 §8 漏加 by_ghost). 我按 round 22 finding 修了
+commit 8ea6d00 (Day 17k FINAL CLOSE):
+
+- F1 §8 add_watchers_region_capacity 加 `if ghost_rect_id != GHOST_AGNOSTIC:
+  store.by_ghost_watcher[...].add(cut_id)` (1 行修复)
+- 新 PHASE_0_CLOSE.md doc (总结 28 commit + 9 family + 22 round trace + 5
+  invariant + Phase 1 起步 defer 清单)
+- F16 反例 verdict (代数归 Master 不进 Cut framework, 1 行 master CP-SAT 约束)
+
+round 23 是 Day 17k commit 本身的 cross-check (用户加严 rule "先 check 再
+继续" — Day 17k 也得过).
+
+### 任务 A: 验 Day 17k 改对
+
+1. F1 §8 by_ghost watcher 1 行修法 sound 吗? 跟 v3.2 watcher 表 (F1 不显
+   含 by_ghost 因为是 GHOST_AGNOSTIC default) 一致吗?
+2. PHASE_0_CLOSE.md doc 内容 self-consistent 吗 (28 commit / 9 family / 22
+   round / invariant)? 有没有错引/漏列/矛盾?
+3. F16 反例 verdict ("代数归 Master 不进 Cut") 真的对吗? Master CP-SAT 加
+   1 行线性约束 sound + complete 吗?
+
+### 任务 B: Phase 0 真 ABSOLUTE final verdict
+你 round 22 已给 GO verdict, round 23 是最后一次显微镜. **找不到新 bug 写
+"Phase 0 已无懈可击, 进 Phase 1 编码"**.
+
+### 任务 C: F11+ 反例 — 最后一次寻找
+
+## 3 段 A/B/C. **找不到 bug 写 "Phase 0 已无懈可击, 进 Phase 1 编码"**.
+## 中文优先.
+"""
+
+## OLD round 22 prompt:
+_old_round_22 = """## 本次 cross-check 目的 (round 22)
 
 Round 22. round 21 给了 2 False Quarantine bug (B1 cut_lifecycle GHOST_AGNOSTIC
 vs blocked_cells_hash / B2 F9 Validator schema 错位). 我按 round 21 修了
@@ -483,7 +521,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_22.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_23.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -494,7 +532,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_22.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_23.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)
