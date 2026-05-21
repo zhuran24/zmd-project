@@ -8,6 +8,21 @@ per-family validator / watcher index / quarantine 政策.
 
 不动 `src/`. Phase 1 (实施) 单开 task.
 
+## Changelog
+
+- **v2 (Phase 0 Day 3-9, commit 64c5317)**: 初版 10 步 lifecycle + cut object
+  schema + group-state contract
+- **v3 (Phase 0 Day 14, 本 commit)**: 接 `schema_update_v3.md` 5 gap 解:
+  - §3 Cut schema: `literals` 改 Optional + 加 `geometric_payload` field
+    (互斥契约), `CutFamily` enum 加 `shape_packing_hall` + `power_hitting_set`,
+    `_FAMILY_MODE_MAP` 一致性检查, `GHOST_AGNOSTIC` sentinel
+  - §4 replay step 2: `GHOST_AGNOSTIC` 跳过 ghost 比对; 加 `compute_ghost_rect_id`
+    canonical hash + `ASSUMPTION_VERIFIERS` dispatch
+  - §5 `evaluate_cut_as_multiset` 改名 `evaluate_cut_literal_based` + 加
+    `evaluate_cut` family-dispatch entry
+  - §6 `CutValidator` Protocol 加 `evaluate_geometric` method; Family 1/2/4/6
+    标 geometric, Family 3/5/7 标 literal; 加 Family 7 power_hitting_set spec
+
 ## 1. TL;DR
 
 v14 原 lifecycle 缺 canonicalize / attach-scope check / quarantine + 反例
@@ -196,8 +211,14 @@ CutFamily = Literal[
     "port_exposure",
     "component_reach",
     "pattern_nogood",
-    "symmetry_lift",  # 不是新 family, 是 1-5 的 lift; 此 field 标 "已 lifted"
+    "shape_packing_hall",   # v3 新 (F2 反例 owner)
+    "power_hitting_set",     # v3 新 (F3 反例 owner)
+    "symmetry_lift",         # 不是新 family, 是 1-7 的 lift; 此 field 标 "已 lifted"
 ]
+
+# Sentinel for ghost-agnostic cuts (F1 boundary saturation 这种不依赖 ghost 的 cut).
+# Replay step 2 见到此值跳过 ghost_rect_id 比对, 直接进 step 3.
+GHOST_AGNOSTIC: GhostRectId = "__ghost_agnostic__"
 
 # === Anonymous slot ref (§5) ===
 
@@ -257,21 +278,33 @@ class OracleCert:
 
 @dataclass(frozen=True)
 class Cut:
-    """First-class cut object. 跨 session 持久化."""
+    """First-class cut object. 跨 session 持久化.
+
+    v3 (Day 14): cut 主体二分 — `literals` (literal-based families: port_exposure,
+    pattern_nogood, power_hitting_set) 与 `geometric_payload` (geometric families:
+    region_capacity, cutset, component_reach, shape_packing_hall) 互斥.
+    """
     cut_id: CutId
     family: CutFamily
-    literals: Tuple[CutLiteral, ...]    # not (literal_1 ∧ ... ∧ literal_n)
-    scope: CutScope
-    cert: OracleCert
+
+    # === Cut 主体: literal-based OR geometric, 必有且只有一个非空 (v3) ===
+    # literal-based: families 3 / 5 / 7 — cut 反例可表达成 "(group,slot)=pose" 组合
+    literals: Optional[Tuple[CutLiteral, ...]] = None
+    # geometric/algebraic: families 1 / 2 / 4 / 6 — cut 通过 cert 的 region /
+    # graph / bitset / interval 信息约束, 不指向具体 (group,slot,pose)
+    geometric_payload: Optional[bytes] = None
+
+    scope: CutScope = None  # type: ignore[assignment]
+    cert: OracleCert = None  # type: ignore[assignment]
 
     # versions (replay 时 strict match)
-    family_version: str           # cut family 数学定义版本 (e.g. "v1.0")
-    validator_version: str        # validator 实现版本
-    payload_schema_version: int   # JSON envelope schema 版本
+    family_version: str = ""      # cut family 数学定义版本 (e.g. "v1.0")
+    validator_version: str = ""   # validator 实现版本
+    payload_schema_version: int = 1  # JSON envelope schema 版本
 
     # provenance
-    oracle_name: str              # e.g. "PCR-CUT", "D2-separator", "SAC-Hull"
-    oracle_cert_hash: Hash        # = cert.cert_hash, 顶层冗余便于 lookup
+    oracle_name: str = ""         # e.g. "PCR-CUT", "D2-separator", "SAC-Hull"
+    oracle_cert_hash: Hash = ""   # = cert.cert_hash, 顶层冗余便于 lookup
     minimization_audit: Dict[str, int] = field(default_factory=dict)
                                   # size_before/after, qx_calls, etc.
     created_at: str = ""          # ISO 8601 datetime
@@ -280,11 +313,41 @@ class Cut:
     # quarantine / demotion (Step 10 defer, 现 frozen 占位)
     is_quarantined: bool = False
     quarantine_reason: str = ""
+
+    def __post_init__(self) -> None:
+        # v3 互斥契约: literals 非空 XOR geometric_payload 非空
+        has_lit = self.literals is not None and len(self.literals) > 0
+        has_geo = self.geometric_payload is not None
+        if has_lit == has_geo:
+            raise ValueError(
+                f"Cut {self.cut_id}: literals 和 geometric_payload 必有且只有一个非空 "
+                f"(literals={'set' if has_lit else 'empty/None'}, "
+                f"geometric_payload={'set' if has_geo else 'None'})"
+            )
+        # family ↔ mode 一致性 (防 region_capacity 走 literal-based 之类的错误组合)
+        _family_mode = _FAMILY_MODE_MAP.get(self.family)
+        if _family_mode == "literal" and not has_lit:
+            raise ValueError(f"Cut {self.cut_id}: family={self.family} 要求 literal-based, 但 literals 空")
+        if _family_mode == "geometric" and not has_geo:
+            raise ValueError(f"Cut {self.cut_id}: family={self.family} 要求 geometric, 但 geometric_payload 空")
+
+
+# Family ↔ cut-body mode 映射 (post_init 一致性检查用)
+_FAMILY_MODE_MAP: Dict[CutFamily, Literal["literal", "geometric"]] = {
+    "region_capacity":      "geometric",
+    "cutset":                "geometric",
+    "port_exposure":         "literal",
+    "component_reach":       "geometric",
+    "pattern_nogood":        "literal",
+    "shape_packing_hall":    "geometric",
+    "power_hitting_set":     "literal",
+    "symmetry_lift":         "literal",   # 跟 underlying lifted family 一致, 默 literal
+}
 ```
 
-**Field 总数** (Cut object + 嵌套 dataclass 不重计): 12 顶层 + AnonymousSlotRef
-2 + CutLiteral 2 + Assumption 2 + CutScope 6 + SourceDigest 4 + OracleCert 3
-**= 31 fields**.
+**Field 总数** (Cut object + 嵌套 dataclass 不重计): 14 顶层 (v3: +`geometric_payload` +
+postinit 验) + AnonymousSlotRef 2 + CutLiteral 2 + Assumption 2 + CutScope 6 +
+SourceDigest 4 + OracleCert 3 **= 33 fields**.
 
 ## 4. Scope-aware replay 算法
 
@@ -301,8 +364,9 @@ def replay_cut(cut: Cut, state: BState, store: CutStore) -> AttachDecision:
         store.quarantine(cut, reason="source_digest_mismatch")
         return AttachDecision.QUARANTINE
 
-    # 2. Ghost scope match 当前 candidate
-    if cut.scope.ghost_rect_id != state.candidate.ghost_rect_id:
+    # 2. Ghost scope match 当前 candidate (v3: GHOST_AGNOSTIC sentinel 跳过比对)
+    if cut.scope.ghost_rect_id != GHOST_AGNOSTIC and \
+       cut.scope.ghost_rect_id != state.candidate.ghost_rect_id:
         # 不 quarantine — 不同 candidate 用不同 ghost 是正常
         return AttachDecision.HOLD     # 保留, 下个 matching candidate 再试
 
@@ -316,9 +380,9 @@ def replay_cut(cut: Cut, state: BState, store: CutStore) -> AttachDecision:
     if cut.scope.oracle_abstraction_version not in state.available_oracle_versions:
         return AttachDecision.HOLD     # 不 quarantine, oracle 升级后可能 OK
 
-    # 5. Active assumptions 在当前 state 仍 hold
+    # 5. Active assumptions 在当前 state 仍 hold (v3: 走 ASSUMPTION_VERIFIERS dispatch)
     for assumption in cut.scope.active_assumptions:
-        if not state.assumption_holds(assumption):
+        if not assumption_holds(state, assumption):
             return AttachDecision.HOLD
 
     # === 通过 5 步 → 跑 validate (Step 5) 再次 sound check ===
@@ -348,6 +412,65 @@ def replay_cut(cut: Cut, state: BState, store: CutStore) -> AttachDecision:
 - v2 replay step 2: `cut.scope.ghost_rect_id = G1_id`, 当前 candidate
   `ghost_rect_id = G2_id`, 不 match → `HOLD` (不 attach, 保留)
 - 当 candidate 再次 ghost = G1 时, 5 步全 pass + validate 仍 sound → attach
+
+### v3 — Ghost-rect id canonical hash (Gap 4)
+
+```python
+def compute_ghost_rect_id(rect: Optional[Rect]) -> GhostRectId:
+    """Canonical 16-char hash. 跨 session 稳定, 跨 exterior_block / candidate
+    enumeration order 同 ghost rectangle 返同 id.
+
+    不含 blocked_cells_hash: blocked_cells = ghost ∪ exterior ∪ pre_block 是
+    derived, 单独走 CutScope.blocked_cells_hash field 在 replay step 3 比对.
+    """
+    if rect is None:
+        return GHOST_AGNOSTIC
+    blob = f"{rect.x},{rect.y},{rect.h},{rect.w}".encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()[:16]
+```
+
+### v3 — Active assumption dispatch (Gap 5)
+
+```python
+ASSUMPTION_KEYS = Literal[
+    # F1 source-of-truth assumption
+    "left_or_bottom_boundary_saturation",
+    # F2 source-of-truth + state-conditioned
+    "boundary_pose_shape",
+    "boundary_region",
+    # F3 source-of-truth assumption
+    "power_pole_radius",
+    "power_pole_shape",
+    # F4 state-conditioned assumption
+    "g1_blocks_AB_path",
+    # Day 15-17 各 cut family 自加 (per cut_family_spec.md)
+]
+
+# Verifier 函数签名: (BState, value_str) -> bool
+ASSUMPTION_VERIFIERS: Dict[str, Callable[[BState, str], bool]] = {
+    "left_or_bottom_boundary_saturation": _verify_boundary_saturation,
+    "boundary_pose_shape":                _verify_pose_shape_constraint,
+    "boundary_region":                    _verify_region_membership,
+    "power_pole_radius":                  _verify_power_pole_radius,
+    "power_pole_shape":                   _verify_power_pole_shape,
+    "g1_blocks_AB_path":                  _verify_ghost_blocks_path,
+    # Day 15-17 扩展
+}
+
+def assumption_holds(state: BState, assumption: Assumption) -> bool:
+    """Replay step 5 dispatch. 未知 key → fail-closed (HOLD), 不 quarantine.
+
+    两类 assumption (Day 15-17 每 key 标 source-of-truth / state-conditioned):
+    - source-of-truth: 验 `canonical_rules.json` 等 file hash, 全 source rotated
+      时变, 否则 always hold
+    - state-conditioned: 在特定 ghost / state 下成立, 重跑 oracle
+    """
+    verifier = ASSUMPTION_VERIFIERS.get(assumption.key)
+    if verifier is None:
+        # PROJECT_LOCK fail-closed: 未知 assumption 不 attach (silent recovery 禁)
+        return False
+    return verifier(state, assumption.value)
+```
 
 ## 5. Group state ↔ Port-binding cut 接口 contract
 
@@ -414,9 +537,15 @@ anonymous slot 是 group 内 interchangeable 的, 任何 permutation
 存在某种 slot assignment 使 literals 全 match. 这等价 multiset 包含关系:
 
 ```python
-def evaluate_cut_as_multiset(cut: Cut, state: BState) -> bool:
+def evaluate_cut_literal_based(cut: Cut, state: BState) -> bool:
+    """Multiset 包含语义跟 slot enumeration order 无关 → 跨 candidate replay sound.
+
+    仅适用 literal-based cut (Cut.literals 非空, family ∈ {port_exposure,
+    pattern_nogood, power_hitting_set, symmetry_lift}).
+    """
+    assert cut.literals is not None, "literal-based evaluate 要求 cut.literals 非 None"
     # 按 group_id group cut 的 literals
-    cut_demand_by_group: Dict[GroupId, List[PoseId]] = group_by(
+    cut_demand_by_group: Dict[GroupId, List[CutLiteral]] = group_by(
         cut.literals, key=lambda l: l.slot_ref.group_id
     )
     # 当前 state 内 group 的 multiset
@@ -436,6 +565,35 @@ multiset 包含语义跟 slot enumeration order 无关 → 跨 candidate replay 
 > 注: slot_index 只为 **debug / serialization stability** 保留 (cut object
 > JSON repr 顺序固定). Resolve / validate 不用它做 soundness 判定.
 
+### v3 — Family-dispatch evaluate (Gap 3)
+
+cut object 上加 family-dispatch 入口, 走 literal-based 或 geometric 两个 path:
+
+```python
+def evaluate_cut(cut: Cut, state: BState) -> bool:
+    """Cut 是否在当前 state 上 violate. v3 family-dispatch entry.
+
+    根据 Cut.literals / Cut.geometric_payload 互斥 contract (§3 _FAMILY_MODE_MAP)
+    走 literal-based multiset evaluate 或 geometric validator.evaluate_geometric.
+    """
+    if cut.literals is not None:
+        # Literal-based path (Family 3 port_exposure / 5 pattern_nogood / 7 power_hitting_set / lift)
+        return evaluate_cut_literal_based(cut, state)
+    elif cut.geometric_payload is not None:
+        # Geometric path (Family 1 region_capacity / 2 cutset / 4 component_reach / 6 shape_hall)
+        validator = state.get_validator(cut.family)
+        return validator.evaluate_geometric(cut, state)
+    else:
+        # __post_init__ 已保证不会到此, 保 defensive
+        raise ValueError(f"Cut {cut.cut_id}: both literals and geometric_payload are None")
+```
+
+`evaluate_cut` 是 propagation hot path (每次 state change 经 watcher hit 后调用).
+跟 §6 `validate` 区分:
+- `evaluate_cut(cut, state) -> bool` — 快速 violate 检查, 不重算 cert
+- `validate(cut, state) -> ValidationResult` — sound 性 second line of defense,
+  独立重算 cert, 走 timeout-bounded budget
+
 ## 6. Validator contract per cut family
 
 每 family 自己 validator + version. cut object 内带 `validator_version`,
@@ -447,55 +605,101 @@ class CutValidator(Protocol):
     validator_version: str
 
     def validate(self, cut: Cut, state: BState) -> ValidationResult:
-        """Independent checker — 不信 oracle cert, 重算."""
+        """Sound 性 second line of defense — 不信 oracle cert, 独立重算.
+
+        timeout-bounded (default 1s, Quarantine 政策见 §8). 走 replay step 5.
+        """
+
+    def evaluate_geometric(self, cut: Cut, state: BState) -> bool:
+        """v3 propagation hot path — 几何/代数 cut 是否在当前 state 上 violate.
+
+        仅 geometric family 必实 (region_capacity / cutset / component_reach /
+        shape_packing_hall); literal-based family 实现可 raise NotImplementedError.
+
+        不重算 cert; 只解 cut.geometric_payload 跟当前 state 的 free_cells /
+        cell_owner / groups / ghost 检查 violate 条件.
+        """
 ```
 
-### Family 1: region_capacity
+> v3: 每 family 下面 "Validator" 段是 `validate` 实现要点; v3 加 family
+> evaluate_geometric 草拟在每 family 下补一行 (Day 15-17 完整数学定义).
+
+### Family 1: region_capacity (geometric)
 
 - Validator: 取 `cut.cert.cert_payload` 含 `(region_bitset, cap_R, LP_dual)`.
   独立重算: region 内 free_cells 数 |R|; 验 cap_R ≤ |R| (sound 下界).
   若 cert 带 Farkas dual (LP relaxation lower bound), 跑 algebraic check
   `yᵀ A ≤ 0 ∧ yᵀ b > 0`.
+- v3 evaluate_geometric: 解 `geometric_payload` 含 `(region_cells_bitset,
+  cap_R, demand_R)`; 算当前 state 内 region 已占 demand
+  (`placed_demand_in_region(state, region)`); 若 `placed_demand > cap_R` → True.
 - 复用: cand C `farkas_certificate.py` HiGHS dual ray extract logic (见 §9).
 
-### Family 2: cutset
+### Family 2: cutset (geometric)
 
 - Validator: cert 含 `(side_a_bitset, side_b_bitset, k_AB, Menger_witness)`.
   独立跑 max-flow min-cut on `state.belt_routing_graph` 取 partition (A, B)
   上的 belt-usable edge count, 验 ≥ k_AB.
+- v3 evaluate_geometric: 解 `geometric_payload` 含 `(side_a, side_b, k_AB)`;
+  算当前 state.free_cells 上 boundary cut size; 若 < k_AB → True.
 - 复用: PCR-CUT `patch_routing_core.py` min-cut helper.
 
-### Family 3: port_exposure
+### Family 3: port_exposure (literal)
 
 - Validator: cert 含 `(facility_instance_or_slot, port_cell, direction,
   active_witness)`. 重算 front_cell, 验 `state.cell_owner[front_cell]` 非
   conflicting facility; 验 active_witness (binding 端给的 port active cert)
   在 state 当前 binding selection 下仍 hold.
+- v3 evaluate_geometric: 不实现 (literal-based, 走 §5 multiset evaluate).
 - 复用: cand C `boundary_constraints.py` per-(cell, dir) net flow equality
   逻辑 (作为 active port set 一致性 sanity).
 
-### Family 4: component_reach
+### Family 4: component_reach (geometric)
 
 - Validator: cert 含 `(src_cell, sink_cell, free_cells_at_gen, witness_path)`.
   独立 BFS on `state.free_cells` 验 src→sink 连通; 若 cert 携 witness_path,
   逐边验所有 edge 在当前 free_cells 上 belt-usable.
+- v3 evaluate_geometric: 解 `geometric_payload` 含 `(src, sink, witness_path)`;
+  跑 BFS 在 `state.free_cells` 上验 src→sink **不可达** → True.
 - 复用: D2 `d2_separator.py` BFS / Tarjan helper.
 
-### Family 5: pattern_nogood
+### Family 5: pattern_nogood (literal)
 
 - Validator: cert 含 `(forbidden_pose_pattern, sub_problem_oracle_name,
   oracle_cert_hash)`. 重算: 对 cut.literals 跑 §5 multiset 检查; 若 state
   现状满足 literals 全 match → 验 sub-problem oracle 在 forbidden_pose_pattern
   上重跑给 INFEASIBLE.
+- v3 evaluate_geometric: 不实现 (literal-based, 走 §5 multiset evaluate).
 - 复用: L16 deletion-based core minimizer + PCR-CUT QuickXplain (sub-problem
   oracle 复用).
 
-### Family 6 (variant): symmetry_lift
+### Family 6: shape_packing_hall (geometric, v3 新)
 
-- 不是新 family, 是 1-5 的 lifted version. Validator 跟 underlying family
+- Validator: cert 含 `(region, partition_lens, pose_length, max_packable,
+  demand, witness)`. 独立重算: 取当前 state.free_cells 在 region 上, 按 ghost
+  切 maximal-free-interval; 算 `sum(⌊len(I_k) / pose_length⌋)`; 验 < demand
+  (Hall infeasibility witness).
+- v3 evaluate_geometric: 同 validator 路径, 不重 oracle cert (oracle 端 cert
+  已在 attach 时验过), 只算当前 partition. F2 反例 owner.
+- 复用: 暂无, Day 15-17 写新 helper `compute_baseline_partition_lens`.
+
+### Family 7: power_hitting_set (literal, v3 新)
+
+- Validator: cert 含 `(facility_pose, facility_cells, pole_radius,
+  candidate_pole_poses_before_ghost, candidate_pole_poses_after_ghost,
+  ghost_blocked_pole_cells, witness)`. 独立重算: 在当前 ghost 下重算 candidate
+  pole 候选; 验空 set (hitting-set INFEASIBLE).
+- v3 evaluate_geometric: 不实现 (literal-based, 走 §5 multiset evaluate).
+- 复用: `src/search/benders_loop.py:4219-4268` L16 lazy power completion logic.
+
+### Family 8 (variant): symmetry_lift
+
+- 不是新 family, 是 1-7 的 lifted version. Validator 跟 underlying family
   一致, 额外验 `cut.cert.cert_payload` 里的 orbit + permutation 跟当前
   `state.symmetry_groups` 一致 (orbit detection 来源
   `mandatory_exact_instances.json`).
+- v3 evaluate_geometric: dispatch 到 underlying family 的 evaluate_geometric
+  (若 underlying 是 geometric); literal 同 §5 multiset.
 
 ### ValidationResult
 
