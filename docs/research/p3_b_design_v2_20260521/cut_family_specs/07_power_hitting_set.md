@@ -1,11 +1,19 @@
 # Cut Family 7 — power_hitting_set (完整 spec, v3 新 family)
 
-> **Status**: Day 16b Family 7 完整 spec (2026-05-21)
-> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 + `../state_machine_v2.md` §6 ghost-conditioned power_cover_domain + `../red_fixtures/F3_power_no_cover.md` + `src/search/benders_loop.py:4219-4268` (L16 lazy power completion)
+> **Status**: Day 16c v1.1 (2026-05-21) — Gemini round 14 cross-check 修
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 + `../state_machine_v2.md` §6 ghost-conditioned power_cover_domain + `../red_fixtures/F3_power_no_cover.md` + `src/search/benders_loop.py:4219-4268` (L16 lazy power completion) + `../cross_check/gemini_round_14_cut_families.md`
 > **Mode**: literal (_FAMILY_MODE_MAP)
-> **Family_version**: v1.0
+> **Family_version**: v1.1 (cell_owner causation fix)
 > **来源**: GPT v14 review power cut + L16 lazy power completion landed
 > **复用**: L16 lazy power infrastructure (`benders_loop.py:4219-4268`)
+
+## Changelog
+
+- **v1.0** (Day 16b, commit 824c9b6): 初版 12 段 spec
+- **v1.1** (Day 16c, 本 commit): 修 Gemini round 14 finding #1 **致命 sound bug** —
+  generator 必须区分 CoverSet 被 ghost/exterior 彻底清空 (v1.0 单 literal 安全)
+  vs 被 cell_owner 挤空 (必须多 literal 含占用 facility, 退化 pattern_nogood 形式),
+  否则 master 回溯移走 cell_owner facility 后误剪合法 pose
 
 ## 1. 数学定义
 
@@ -98,8 +106,9 @@ Family 7 cut scope 绑 ghost_rect_id 跟此一致.
 class PowerHittingSetCert:
     """Cert for Family 7 power_hitting_set cut.
 
-    cert.cert_kind = "power_cover_emptyset" (v1.0 — 空 CoverSet)
-                  | "power_hitting_set_min_size" (v1.1 — hitting set min size 不够, defer)
+    cert.cert_kind = "power_cover_emptyset_ghost"      (v1.1 — ghost/exterior 彻底清空, 单 literal cut)
+                  | "power_cover_emptyset_cell_owner"  (v1.1 — cell_owner 挤空, 多 literal cut)
+                  | "power_hitting_set_min_size"       (v1.2 — hitting set min size 不够, defer)
     """
     facility_pose: Tuple[GroupId, PoseId]
                                             # ("crusher_blue_iron", 17)
@@ -114,7 +123,7 @@ class PowerHittingSetCert:
                                             # before ghost masks; v1.0 verify
                                             # this set is the "full" potential set
     candidate_pole_poses_after_ghost: Tuple[int, ...]
-                                            # = () for v1.0 (empty set witness)
+                                            # = () for v1.0/v1.1 (empty set witness)
     ghost_blocked_pole_cells: Tuple[Tuple[int, int], ...]
                                             # cells blocked by ghost that intersect
                                             # candidate poles (debug + replay verify)
@@ -122,8 +131,17 @@ class PowerHittingSetCert:
                                             # (x, y, h, w) — replay sanity check
                                             # 跟 scope.ghost_rect_id 一致
 
-    witness_kind: Literal["empty_coverset", "min_hitting_set_infeasible"]
-                                            # v1.0 only "empty_coverset"
+    # v1.1 改 (Gemini round 14 finding #1 causation split)
+    witness_kind: Literal[
+        "empty_coverset_ghost",             # v1.1 — ghost 单 cause
+        "empty_coverset_cell_owner",        # v1.1 — cell_owner 单 cause (含混合 ghost+cell_owner)
+        "min_hitting_set_infeasible",       # v1.2 defer
+    ]
+    blocking_facility_literals: Tuple[Tuple[GroupId, int, int], ...] = ()
+                                            # v1.1 新: (group, slot, pose_id) 三元组
+                                            # witness_kind=="empty_coverset_ghost" → ()
+                                            # witness_kind=="empty_coverset_cell_owner" → 非空
+                                            # cut.literals = facility_A literal + 这些 facility 阻塞 literal
 ```
 
 cert_payload bytes = `canonical_bytes(PowerHittingSetCert.asdict())`.
@@ -200,45 +218,123 @@ def _try_complete_power_coverage(state, master_solution):
     return None
 ```
 
-### 5b. Family 7 generator wrap L16
+### 5b. Family 7 generator — causation split (v1.1 修)
+
+> **Gemini round 14 finding #1 critical sound bug**: 单 literal cut 仅在
+> CoverSet 被 `ghost ∪ exterior` 彻底清空时 sound. 若 CoverSet 被 `cell_owner`
+> (其他 facility) 挤空, 单 literal cut 永久封杀 pose_A 但 master 回溯移走那
+> 个 facility 后 pose_A 本来 OK → False Positive 误剪.
+
+v1.1 generator 必须做 **causation split**: CoverSet 被 ghost-cleared 还是
+cell_owner-cleared? 二者构造**不同形式的 cut**:
 
 ```python
 class PowerCoverOracle:
-    name = "power_cover_v1"
+    name = "power_cover_v1.1"
 
     def generate(self, state: BState, master_solution: MasterSolution) -> List[Cut]:
-        """For each requires-power facility pose in master_solution, check
-        if CoverSet is empty under current ghost. If empty, emit Family 7 cut.
-        """
         cuts = []
         for placed in master_solution.placed_facility_poses:
             if not requires_power(placed.facility_group):
                 continue
 
-            # 复用 L16 helper: cover_set = compute_cover_set(...)
-            cover_set_before_ghost = compute_cover_set_ignoring_ghost(placed)
-            cover_set_after_ghost = compute_cover_set(placed, state.ghost_rect, state.free_cells)
+            # 三个 CoverSet 用于 causation split:
+            # 1. ignore_all = 忽略 ghost + cell_owner (pure 几何 + canonical 内 pole)
+            cover_set_pure = compute_cover_set_ignoring_blocks(placed)
+            # 2. ghost_only = 应用 ghost + exterior_blocks, 不应用 cell_owner
+            cover_set_after_ghost = compute_cover_set_ghost_only(placed, state.ghost_rect)
+            # 3. full = 应用 ghost + exterior + cell_owner (现 free_cells)
+            cover_set_after_all = compute_cover_set(placed, state.ghost_rect, state.free_cells)
 
+            if cover_set_after_all:
+                continue  # power 可覆盖, 不需要 cut
+
+            # CoverSet 被清空, 分两 case:
             if not cover_set_after_ghost:
-                # CoverSet empty → Family 7 cut
+                # CASE A: ghost/exterior 彻底清空 (cell_owner 无关)
+                # → 单 literal cut sound, 整个 ghost scope 内永久封杀此 pose
                 ghost_blocked = compute_ghost_blocked_pole_cells(
-                    placed, state.ghost_rect, cover_set_before_ghost,
+                    placed, state.ghost_rect, cover_set_pure,
                 )
                 witness = PowerHittingSetCert(
                     facility_pose=(placed.facility_group, placed.pose_id),
                     facility_cells=tuple(placed.cells),
                     pole_radius=canonical_rules["power_pole"]["radius"],
                     pole_shape_canonical=f"{canonical_rules['power_pole']['shape']}_rigid",
-                    candidate_pole_poses_before_ghost=tuple(cover_set_before_ghost),
+                    candidate_pole_poses_before_ghost=tuple(cover_set_pure),
                     candidate_pole_poses_after_ghost=(),
                     ghost_blocked_pole_cells=tuple(ghost_blocked),
                     ghost_rect_repr=(state.ghost_rect.x, state.ghost_rect.y,
                                      state.ghost_rect.h, state.ghost_rect.w),
-                    witness_kind="empty_coverset",
+                    witness_kind="empty_coverset_ghost",   # v1.1 新 — 标 ghost causation
+                    blocking_facility_literals=(),            # 空 = pure ghost cause
                 )
-                cuts.append(construct_power_hitting_set_cut(state, witness))
+                cuts.append(construct_power_hitting_set_cut_single_literal(state, witness))
+            else:
+                # CASE B: cell_owner 挤空 (ghost 不足以清, cell_owner 才挤空)
+                # → 必须把占用 cover_set_after_ghost \ cover_set_after_all 的
+                # cell_owner facility 加进 cut literals, 退化 pattern_nogood 形式
+                blocking_pole_poses = set(cover_set_after_ghost) - set(cover_set_after_all)
+                blocking_facility_slots = []
+                for pole_pose_id in blocking_pole_poses:
+                    pole_cells = canonical_rules_pose_cells("power_pole", pole_pose_id)
+                    for pole_cell in pole_cells:
+                        if pole_cell in state.cell_owner:
+                            blocking_group, blocking_slot = state.cell_owner[pole_cell]
+                            # 取 master 当前 selected pose at slot
+                            blocking_pose_id = state.groups[blocking_group].selected_poses[blocking_slot][1]
+                            blocking_facility_slots.append(
+                                (blocking_group, blocking_slot, blocking_pose_id)
+                            )
+
+                witness = PowerHittingSetCert(
+                    facility_pose=(placed.facility_group, placed.pose_id),
+                    facility_cells=tuple(placed.cells),
+                    pole_radius=canonical_rules["power_pole"]["radius"],
+                    pole_shape_canonical=f"{canonical_rules['power_pole']['shape']}_rigid",
+                    candidate_pole_poses_before_ghost=tuple(cover_set_pure),
+                    candidate_pole_poses_after_ghost=(),
+                    ghost_blocked_pole_cells=tuple(...),
+                    ghost_rect_repr=(...),
+                    witness_kind="empty_coverset_cell_owner",  # v1.1 — 标 cell_owner causation
+                    blocking_facility_literals=tuple(blocking_facility_slots),  # 非空
+                )
+                cuts.append(construct_power_hitting_set_cut_multi_literal(state, witness))
         return cuts
+
+
+def construct_power_hitting_set_cut_multi_literal(state: BState, witness: PowerHittingSetCert) -> Cut:
+    """Cell_owner 挤空 case: cut.literals 含 facility_A pose + blocking_facility_literals."""
+    facility_group, facility_pose_id = witness.facility_pose
+    literals = [
+        # facility A pose
+        CutLiteral(
+            slot_ref=AnonymousSlotRef(facility_group, 0),
+            pose_id=facility_pose_id,
+        ),
+        # blocking facility poses (v1.1)
+        *[
+            CutLiteral(
+                slot_ref=AnonymousSlotRef(blocking_group, blocking_slot),
+                pose_id=blocking_pose_id,
+            )
+            for blocking_group, blocking_slot, blocking_pose_id in witness.blocking_facility_literals
+        ],
+    ]
+    return Cut(
+        ...,
+        literals=tuple(literals),
+        ...,
+    )
 ```
+
+### 5b.bis Cert payload schema 改 (v1.1)
+
+`PowerHittingSetCert` 加两 field:
+- `witness_kind: Literal["empty_coverset_ghost", "empty_coverset_cell_owner"]`
+  (v1.0 `"empty_coverset"` deprecated)
+- `blocking_facility_literals: Tuple[Tuple[GroupId, SlotIdx, PoseId], ...] = ()`
+  (空 → ghost causation; 非空 → cell_owner causation)
 
 ### 5c. Minimize (Step 2)
 
@@ -314,11 +410,70 @@ class PowerHittingSetValidator(CutValidator):
                 free_cells=state.free_cells,
             )
 
-            # 4. 验 CoverSet empty (v1.0 witness_kind=="empty_coverset")
+            # 4. 验 CoverSet empty
             if recomputed_cover_set:
                 return ValidationResult(
                     kind="unsound", elapsed_seconds=time.monotonic() - start,
                     detail=f"witness fail: CoverSet not empty, size={len(recomputed_cover_set)}",
+                )
+
+            # 4.bis (v1.1 — Gemini round 14 finding #1 causation split):
+            # 验 witness_kind 跟 cell_owner causation 一致.
+            # ghost-only CoverSet (忽略 cell_owner) 验:
+            recomputed_cover_set_ghost_only = compute_cover_set_ghost_only(
+                facility_pose=(facility_group, facility_pose_id),
+                facility_cells=facility_cells,
+                pole_radius=pole_radius,
+                ghost_rect=state.ghost_rect,
+            )
+            witness_kind = cert_dict.get("witness_kind", "")
+            blocking_literals = cert_dict.get("blocking_facility_literals", ())
+
+            if witness_kind == "empty_coverset_ghost":
+                # 单 cause = ghost: ghost-only CoverSet 也必须空 (sound 严格 invariant)
+                if recomputed_cover_set_ghost_only:
+                    return ValidationResult(
+                        kind="unsound", elapsed_seconds=time.monotonic() - start,
+                        detail=f"witness_kind=ghost but ghost-only CoverSet 非空 "
+                               f"(size={len(recomputed_cover_set_ghost_only)}) → cell_owner 才是 cause",
+                    )
+                # blocking_literals 必空
+                if blocking_literals:
+                    return ValidationResult(
+                        kind="unsound", elapsed_seconds=time.monotonic() - start,
+                        detail=f"witness_kind=ghost 但 blocking_literals 非空 (len={len(blocking_literals)})",
+                    )
+            elif witness_kind == "empty_coverset_cell_owner":
+                # cell_owner cause: ghost-only CoverSet 必非空 (否则就是 ghost cause)
+                if not recomputed_cover_set_ghost_only:
+                    return ValidationResult(
+                        kind="unsound", elapsed_seconds=time.monotonic() - start,
+                        detail=f"witness_kind=cell_owner 但 ghost-only 已空, 应标 ghost cause",
+                    )
+                # blocking_literals 必非空 + 每条 (group, slot, pose) 必占 ghost-only CoverSet 内 pole cell
+                if not blocking_literals:
+                    return ValidationResult(
+                        kind="unsound", elapsed_seconds=time.monotonic() - start,
+                        detail=f"witness_kind=cell_owner 但 blocking_literals 空 (单 literal cut unsound)",
+                    )
+                # 验每 blocking literal 在 state 上确实占 ghost-only CoverSet 内 pole cell
+                for blocking_group, blocking_slot, blocking_pose_id in blocking_literals:
+                    blocking_cells = canonical_rules_pose_cells(blocking_group, blocking_pose_id)
+                    occupies_pole_candidate = any(
+                        any(c in pole_cells for c in blocking_cells)
+                        for pole_pose_id in recomputed_cover_set_ghost_only
+                        for pole_cells in [canonical_rules_pose_cells("power_pole", pole_pose_id)]
+                    )
+                    if not occupies_pole_candidate:
+                        return ValidationResult(
+                            kind="unsound", elapsed_seconds=time.monotonic() - start,
+                            detail=f"blocking_literal ({blocking_group}[{blocking_slot}]={blocking_pose_id}) "
+                                   f"不占 ghost-only CoverSet 内 pole cell → cut over-strict",
+                        )
+            else:
+                return ValidationResult(
+                    kind="schema_err", elapsed_seconds=time.monotonic() - start,
+                    detail=f"unknown witness_kind={witness_kind}",
                 )
 
             # 5. 验 ghost_blocked_pole_cells 是 candidate_pole_poses_before_ghost 的 ghost mask

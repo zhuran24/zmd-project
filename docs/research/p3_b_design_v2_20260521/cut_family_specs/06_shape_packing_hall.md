@@ -1,10 +1,20 @@
 # Cut Family 6 — shape_packing_hall (完整 spec, v3 新 family)
 
-> **Status**: Day 16a Family 6 完整 spec (2026-05-21)
-> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 + `../red_fixtures/F2_shape_packing_hall.md`
+> **Status**: Day 16c v1.1 (2026-05-21) — Gemini round 14 cross-check 修
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 + `../red_fixtures/F2_shape_packing_hall.md` + `../cross_check/gemini_round_14_cut_families.md`
 > **Mode**: geometric (_FAMILY_MODE_MAP)
-> **Family_version**: v1.0
+> **Family_version**: v1.1 (geometric partition 只依赖 ghost + exterior, 不依赖 cell_owner)
 > **来源**: Gemini round 12 v14 review 反例 B
+
+## Changelog
+
+- **v1.0** (Day 16a, commit 30b0a2d): 初版 12 段 spec
+- **v1.1** (Day 16c, 本 commit): 修 Gemini round 14 finding #2 **致命 replay bug** —
+  `compute_baseline_partition_lens` v1.0 包 `cell_owner.keys()` 使 partition
+  state-dependent, 深层学的 cut 回浅层 cell_owner 空 → recompute lens 跟 cert
+  不一致 → Validator 永久 Quarantine, Family 6 cut 跨层活不下来. v1.1 partition
+  **只**依赖 ghost + exterior_blocks (static), cell_owner 不入 partition. 若需
+  cell_owner 碎片化路径走 Family 5 pattern_nogood (literal-based) 而非 geometric.
 
 ## 1. 数学定义
 
@@ -190,8 +200,12 @@ def compute_baseline_partition_lens(
     region_kind: Literal["left_baseline", "bottom_baseline"],
     state: BState,
 ) -> Tuple[List[int], List[int]]:
-    """从 state.ghost_rect + cell_owner 算 region 内 ghost-induced
-    maximal-free-interval 长度. 跨 ghost_rect 改变 invalidate.
+    """v1.1 改 — 只依赖 ghost + exterior_blocks (static), **不**依赖 cell_owner.
+
+    Why: Gemini round 14 finding #2 — v1.0 包 cell_owner 后 partition 是 state-
+    dependent, 深层学的 cut 回浅层因 cell_owner 不同 recompute lens 全变 → Validator
+    永久 Quarantine. v1.1 partition 只 carry static structural 信息, cell_owner
+    碎片化场景走 Family 5 pattern_nogood (literal-based).
 
     Returns (partition_lens, partition_offsets):
         e.g. left baseline length 70, ghost 占 (0, 30) 单格 →
@@ -202,8 +216,10 @@ def compute_baseline_partition_lens(
     # ghost cells
     if state.ghost_rect is not None:
         blocked.update(state.ghost_cells)
-    # already-placed cells (cell_owner)
-    blocked.update(state.cell_owner.keys())
+    # exterior_blocks (static map blocks 来自 canonical_rules / mandatory_exact_instances)
+    blocked.update(state.exterior_blocks)
+    # !!! 不再 update cell_owner.keys() —— v1.1 critical fix !!!
+    # cell_owner 碎片化的场景走 Family 5 pattern_nogood 不走 Family 6
 
     # Scan baseline, split on blocked cells
     partition_lens, partition_offsets = [], []
@@ -223,6 +239,21 @@ def compute_baseline_partition_lens(
         partition_lens.append(current_len)
         partition_offsets.append(current_offset)
     return partition_lens, partition_offsets
+```
+
+### 5a.bis Demand 计算 — v1.1 改
+
+partition 改 static 后, `demand = state.groups[contributing_group].remaining_count`
+也变成 state-dependent → cut 跨层 validator 重算 `state.groups[gid].remaining_count`
+跟 cert 不一致仍 quarantine.
+
+v1.1 改: demand 用 **group.demand** (initial 总 demand) 而不是 remaining_count, +
+cert.contributing_groups 标 `(group_id, total_demand_at_gen)`. Validator 比 cert
+跟 canonical_rules group demand. group demand 是 source-of-truth, 不会 state-dep.
+
+```python
+# v1.1: demand 用 group.demand (source-of-truth) 不是 remaining_count (state-dep)
+demand = state.groups[contributing_group].demand   # ← 改
 ```
 
 ### 5b. Hall infeasibility detect
@@ -356,13 +387,17 @@ class ShapeHallValidator(CutValidator):
                     detail=f"witness fail: total_packable={recomputed_total} ≥ demand={cert_demand}",
                 )
 
-            # 4. 验 demand 跟 contributing_group 的 remaining_count match
+            # 4. v1.1 改 — demand 用 group.demand (source-of-truth) 比对, 不用 remaining_count
+            #
+            # Why: v1.0 用 remaining_count → state-dep, 跨层 quarantine. v1.1 用
+            # group.demand (canonical_rules source-of-truth), state-independent
+            # → 跨层 cut 仍 sound.
             gid = cert_dict["contributing_group"]
-            if state.groups[gid].remaining_count != cert_demand:
-                # group demand 已变, cert 不再 sound
+            if state.groups[gid].demand != cert_demand:
+                # group demand 改 → source-of-truth rotated → quarantine
                 return ValidationResult(
                     kind="unsound", elapsed_seconds=time.monotonic() - start,
-                    detail=f"demand mismatch: cert={cert_demand}, group.remaining={state.groups[gid].remaining_count}",
+                    detail=f"demand mismatch: cert={cert_demand}, group.demand={state.groups[gid].demand} (source-of-truth rotated)",
                 )
 
             return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - start)

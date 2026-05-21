@@ -1,9 +1,20 @@
 # Cut Family 1 — region_capacity (完整 spec)
 
-> **Status**: Day 15 Family 1 完整 spec (2026-05-21)
-> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 §7 + `../state_machine_v2.md` §2 §3 + `../red_fixtures/F1_boundary_saturation.md`
+> **Status**: Day 16c v1.1 (2026-05-21) — Gemini round 14 cross-check 修
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 §7 + `../state_machine_v2.md` §2 §3 + `../red_fixtures/F1_boundary_saturation.md` + `../cross_check/gemini_round_14_cut_families.md`
 > **Mode**: geometric (_FAMILY_MODE_MAP)
-> **Status family_version**: v1.0
+> **Family_version**: v1.1 (cap_R 改 ghost-only static, cert 加 cells_per_pose)
+
+## Changelog
+
+- **v1.0** (Day 15, commit 925157e): 初版 12 段 spec
+- **v1.1** (Day 16c, 本 commit): 修 Gemini round 14:
+  - **Finding #3 致命 soundness 矛盾**: `cap_R` 定义改 **static** (只看 ghost +
+    region geometry, 不看 cell_owner), `evaluate_geometric` 无条件 True 才 sound.
+    cell_owner 影响走 Family 5 pattern_nogood / Family 7 power_hitting_set.
+  - **Finding #5 schema 漏 cells_per_pose**: `RegionCapacityCert` 加
+    `cells_per_pose: Dict[GroupId, int]` field, validator 用 cert 内的
+    cells_per_pose 重算 demand_R (而不是走 self._cells_per_pose 外部 state).
 
 ## 1. 数学定义
 
@@ -46,13 +57,26 @@ infeasibility witness (cand C `farkas_certificate.py` 复用).
 
 ## 2. Soundness proof
 
-### 2a. Capacity bound (1)
+### 2a. Capacity bound (1) — v1.1 改 (Gemini round 14 finding #3)
 
 引理: `∑_{i ∈ R} placed_cells_i ≤ |R|` 因为 each cell 至多被 1 facility 占
 (state_machine_v2 §3 I3: `free_cells == all_cells \ ghost_cells \ {c : c ∈ cell_owner}`).
 
-实际 `cap_R ≤ |R|` (cap 严格上界 = R 内 grid cells 减 already-placed-and-fixed
-overlap). 对 `left_baseline`: `cap_R = 70 - len(boundary_ghost_cells_in_R)`.
+**v1.1 critical**: `cap_R` 定义为 **static** — **只**减 ghost ∩ region + exterior
+block ∩ region, **不**减 cell_owner ∩ region. Why: cell_owner-dependent cap 跟
+`evaluate_geometric` 的 "无条件 True 简化" 矛盾, 深层学的 cut 回浅层会误剪. 见
+v1.1 §6 + changelog.
+
+```
+cap_R = |R| − |ghost_cells ∩ R| − |exterior_blocks ∩ R|   (static, 跨 state 不变)
+```
+
+对 `left_baseline`: `cap_R = 70 - len(boundary_ghost_cells_in_R) - len(exterior_in_R)`.
+对 `ghost_complement`: `cap_R = 0` (全部 ghost-blocked, scope 内永 0).
+
+**cell_owner 该走哪**: 若 region cap_R - placed_demand_R 不够走 region_capacity
+cut, 走 Family 5 pattern_nogood (multi-literal 含 placed facility) 或 Family 7
+power_hitting_set (cell_owner causation split).
 
 ### 2b. Demand bound (2)
 
@@ -101,11 +125,18 @@ class RegionCapacityCert:
     region_kind: Literal["left_baseline", "bottom_baseline",
                          "interior_rect", "ghost_complement"]
     region_cells_bitset_b64: str          # base64 encoded numpy uint8 bitset, len 4900/8
-    cap_R: int                             # capacity upper bound
+    cap_R: int                             # static capacity upper bound (v1.1: ghost+exterior only)
     demand_R: int                          # demand lower bound
     gap: int                               # demand_R - cap_R (must > 0)
     contributing_groups: Tuple[Tuple[GroupId, int], ...]
                                            # (group_id, demand_in_R) tuples
+    cells_per_pose: Dict[GroupId, int]     # v1.1 新 (Gemini round 14 finding #5):
+                                           # group → cells-per-pose, source-of-truth
+                                           # snapshot at cut gen 时. Validator 用
+                                           # cert 内的值重算 demand_R 而不是走
+                                           # self._cells_per_pose 外部 state (防
+                                           # canonical_rules pose shape 微调时全
+                                           # cut quarantine).
     # cert_kind == "region_capacity_lp_dual" 专属:
     lp_dual_ray_b64: Optional[str] = None  # Farkas dual ray, base64 numpy float64
     lp_dual_objective: Optional[float] = None  # yᵀ b > 0 (Farkas)
@@ -260,14 +291,17 @@ def evaluate_geometric_region_capacity(cut: Cut, state: BState) -> bool:
 deterministically violate), 配合 watcher 在 ghost_rect change 时 invalidate.
 
 ```python
-def evaluate_geometric_region_capacity_v3(cut: Cut, state: BState) -> bool:
-    """简化版: region cut 一旦 attached, 在 cur ghost 下永 violate.
+def evaluate_geometric_region_capacity_v1_1(cut: Cut, state: BState) -> bool:
+    """v1.1 简化版 — sound iff cap_R 是 static (ghost-only) 不含 cell_owner.
 
-    Re-attach 路径: ghost_rect change → watcher invalidate → replay step 2
-    可能 HOLD (新 ghost_rect_id 不 match) → 等下次 ghost match candidate
-    重 attach.
+    v1.0 finding #3 矛盾已修: cap_R 改 static (§2a v1.1), evaluate 无条件 True
+    sound. Re-attach 路径: ghost_rect change → watcher invalidate → replay step
+    2 HOLD (新 ghost_rect_id 不 match) → 等下次 ghost match candidate 重 attach.
+
+    若 generator 暗中 carry 了 cell_owner-dependent cap (v1.0 bug), 这条无条件
+    True 不 sound → 修法走 §2a v1.1 改: cap_R 必 static.
     """
-    return True  # cert.demand_R > cert.cap_R, scope 内永 violate
+    return True  # cert.demand_R > cert.cap_R, scope 内永 violate (cap_R static)
 ```
 
 ## 7. Validator (Step 5) — 独立重算
@@ -294,6 +328,10 @@ class RegionCapacityValidator(CutValidator):
                 )
 
             # 独立重算 demand_R from contributing_groups + canonical_rules
+            # v1.1 改 (Gemini round 14 finding #5): 用 cert.cells_per_pose 重算
+            # 不走 self._cells_per_pose 外部 state. 防 canonical_rules pose shape
+            # 微调时全 cut quarantine.
+            cert_cells_per_pose = cert_dict.get("cells_per_pose", {})
             recomputed_demand_R = 0
             for gid, _ in cert_dict["contributing_groups"]:
                 pr = self._canonical_rules[gid]["placement_rule"]
@@ -303,7 +341,22 @@ class RegionCapacityValidator(CutValidator):
                         kind="unsound", elapsed_seconds=time.monotonic() - start,
                         detail=f"group {gid} placement_rule {pr} 不映射 {region_kind}",
                     )
-                recomputed_demand_R += state.groups[gid].demand * self._cells_per_pose(gid)
+                # v1.1: 验 cert 内 cells_per_pose 跟当前 source-of-truth 一致
+                # 不一致 = source rotated → quarantine (不 silent shrink demand)
+                current_cells_per_pose = self._cells_per_pose(gid)
+                if gid not in cert_cells_per_pose:
+                    return ValidationResult(
+                        kind="schema_err", elapsed_seconds=time.monotonic() - start,
+                        detail=f"cert.cells_per_pose missing group {gid}",
+                    )
+                if cert_cells_per_pose[gid] != current_cells_per_pose:
+                    return ValidationResult(
+                        kind="unsound", elapsed_seconds=time.monotonic() - start,
+                        detail=f"cells_per_pose mismatch for {gid}: "
+                               f"cert={cert_cells_per_pose[gid]}, current={current_cells_per_pose} "
+                               f"(canonical_rules pose shape rotated)",
+                    )
+                recomputed_demand_R += state.groups[gid].demand * cert_cells_per_pose[gid]
             if recomputed_demand_R != cert_dict["demand_R"]:
                 return ValidationResult(
                     kind="unsound", elapsed_seconds=time.monotonic() - start,

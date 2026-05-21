@@ -22,6 +22,12 @@ per-family validator / watcher index / quarantine 政策.
     `evaluate_cut` family-dispatch entry
   - §6 `CutValidator` Protocol 加 `evaluate_geometric` method; Family 1/2/4/6
     标 geometric, Family 3/5/7 标 literal; 加 Family 7 power_hitting_set spec
+- **v3.1 (Phase 0 Day 16c)**: 修 Gemini round 14 finding #4 schema 漏:
+  - §4 replay step 加 `blocked_cells_hash` 校验 (v3 schema 有此 field 但 v3
+    algorithm 未读 → cross-session exterior block 变化导致旧 cut 错误 attach).
+    新 step 3.bis 在 source_digest + ghost_rect_id 通过后, artifact_hashes 之前
+    验 `cut.scope.blocked_cells_hash == compute_blocked_cells_hash(state)`,
+    不 match → quarantine.
 
 ## 1. TL;DR
 
@@ -354,9 +360,11 @@ SourceDigest 4 + OracleCert 3 **= 33 fields**.
 Critical bug fix on v14 (pose-id-only replay false positive 反例已 cover 在
 §5 prompt 内).
 
+v3.1 (Gemini round 14 finding #4): step 加 blocked_cells_hash 校验 → 6 步.
+
 ```python
 def replay_cut(cut: Cut, state: BState, store: CutStore) -> AttachDecision:
-    # === 5 步 verify ===
+    # === 6 步 verify (v3.1) ===
 
     # 1. Source digest 比对
     current_digest = compute_source_digest(state)
@@ -370,22 +378,30 @@ def replay_cut(cut: Cut, state: BState, store: CutStore) -> AttachDecision:
         # 不 quarantine — 不同 candidate 用不同 ghost 是正常
         return AttachDecision.HOLD     # 保留, 下个 matching candidate 再试
 
-    # 3. Artifact hashes 比对
+    # 3. Blocked cells hash 比对 (v3.1 — Gemini round 14 finding #4)
+    # ghost_rect_id 只 hash 矩形坐标; blocked_cells = ghost ∪ exterior ∪ pre_block
+    # 单独走此 field. exterior_block 变化 (map 边界 / pre-block 调整) → 旧 cut
+    # 不再 sound → quarantine.
+    if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
+        store.quarantine(cut, reason="blocked_cells_hash_changed")
+        return AttachDecision.QUARANTINE
+
+    # 4. Artifact hashes 比对 (原 step 3, 重编号 v3.1)
     for fname, h in cut.scope.artifact_hashes.items():
         if state.artifact_hashes.get(fname) != h:
             store.quarantine(cut, reason=f"artifact_{fname}_changed")
             return AttachDecision.QUARANTINE
 
-    # 4. Oracle abstraction version 当前可用
+    # 5. Oracle abstraction version 当前可用 (原 step 4, 重编号 v3.1)
     if cut.scope.oracle_abstraction_version not in state.available_oracle_versions:
         return AttachDecision.HOLD     # 不 quarantine, oracle 升级后可能 OK
 
-    # 5. Active assumptions 在当前 state 仍 hold (v3: 走 ASSUMPTION_VERIFIERS dispatch)
+    # 6. Active assumptions 在当前 state 仍 hold (v3: 走 ASSUMPTION_VERIFIERS dispatch, v3.1 重编号)
     for assumption in cut.scope.active_assumptions:
         if not assumption_holds(state, assumption):
             return AttachDecision.HOLD
 
-    # === 通过 5 步 → 跑 validate (Step 5) 再次 sound check ===
+    # === 通过 6 步 → 跑 validate (Step 5 of lifecycle, 跟 6 步 verify 不混淆) 再次 sound check ===
     vr = state.get_validator(cut.family).validate(cut, state)
     if vr.kind == "unsound":
         store.quarantine(cut, reason="post_attach_validation_unsound")
