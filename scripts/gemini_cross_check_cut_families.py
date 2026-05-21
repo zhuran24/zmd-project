@@ -33,6 +33,7 @@ DOC_PATHS = [
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_16_day17.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_17_followup.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_18_phase0_go.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_19_f9_critical.md",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -105,7 +106,38 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 19)
+## 本次 cross-check 目的 (round 20)
+
+这是 round 20. round 19 给了 F9 v1.2 修错 (Reference Cell unsound 引入新 False
+Positive) + F9 paradigm 级 Unsound (拓扑死锁泛化几何密度 unsound). 我按
+round 19 verdict 修了 commit 260f860 (Day 17h):
+
+- F9 v1.3 计数严苛化: evaluate_geometric 改 `all(c in W for c in pose_cells)`
+  全包含计数 (v1.0 over-count → v1.2 under-rigour → v1.3 严苛)
+- F9 v1.3 paradigm 降级: 仅 area_capacity_overflow 触发, binding/routing/pcr
+  INFEASIBLE 走 Family 5 fallback. witness_kind enum 仅留 area_capacity_overflow.
+
+round 20 任务:
+
+### 任务 A: 验 round 19 F9 v1.3 修对
+- 全包含计数 `all(c in W for c in pose_cells)` sound 吗? 跟 v1.0 over-count /
+  v1.2 under-rigour 比为什么这次严苛 sound 而不偏 False Negative 过多?
+- paradigm 降级 (仅 area_capacity_overflow) 接受 Class C fallback Family 5
+  代价 — 这个降级方向数学上合理吗? Class C 退化具体多严重 / Phase 1 telemetry
+  能监控吗?
+
+### 任务 B: 找新 finding
+
+### 任务 C: Phase 0 final final verdict (final 决定进 Phase 1)
+
+### 任务 D: F11+ 反例
+
+## 回答格式 4 段 A/B/C/D.
+## Reply 中文优先.
+"""
+
+## OLD round 19 prompt:
+_old_round_19 = """## 本次 cross-check 目的 (round 19)
 
 这是 round 19. round 18 给了 GO verdict + 2 致命 bug (B1 F1 GHOST_AGNOSTIC vs
 cap_R 含 ghost / B2 F9 partial intersection). 我按 round 18 verdict 修了
@@ -380,7 +412,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_19.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_20.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -391,7 +423,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_19.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_20.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)

@@ -22,7 +22,7 @@
 - **v1.2** (Day 17g): 修 Gemini round 18 partial intersection — 改 Reference
   Cell 计数. **但 v1.2 修错** (Gemini round 19 verdict): facility origin 贴
   window 边内但身躯外仍算 → False Positive 误剪. **deprecated**.
-- **v1.3** (Day 17h, 本 commit): 修 Gemini round 19 **2 致命 bug**:
+- **v1.3** (Day 17h): 修 Gemini round 19 **2 致命 bug**:
   1. **计数严苛化**: §6 改 `all(c in W for c in pose_cells)` 全包含计数 —
      只有 facility 所有 cells 都在 window 内才 +1. Certified exact 宁可 False
      Negative 漏剪, **绝不可** False Positive 误剪.
@@ -36,6 +36,13 @@
        (接受 Class C 代价, 不强行 lift F9)
      - witness_kind enum 改: 仅留 `"area_capacity_overflow"`, deprecate
        `binding_overflow / routing_overflow / pcr_cut_overflow`
+- **v1.4** (Day 17i, 本 commit): 修 Gemini round 20 B2 **严重 False Negative**:
+  v1.3 全包含计数对面积溢出**漏剪** — Master 在 W 内全包 10 个 3x3 (90 cells)
+  + 边缘半身 5 个 3x3 (15 cells in W) = 105 > 100 cells 真溢出, 但全包含计数
+  只算 10 ≤ K=10 → 静默 (FN). v1.4 改: F9 既降级"面积溢出", evaluator **直接
+  数占用格子数** `sum(|pose_cells ∩ W|)` vs `cert.max_allowed_area`, **不数
+  facility 个数**. 既 sound 又防边缘漏剪. cert 加 `max_allowed_area` field
+  替代 `density_K` (deprecated).
 
 ## 1. 数学定义
 
@@ -103,7 +110,12 @@ class DensityEnvelopeCert:
     """cert_kind = "oracle_density_witness"."""
     window_rect: Tuple[int, int, int, int]    # (x, y, h, w) — window 矩形
     group_id: GroupId                          # 受 density bound 限制的 group
-    density_K: int                              # Window 内 group 数 ≤ K
+    # v1.4 (Gemini round 20 B2): F9 降级面积 cut 后, max_allowed_area 替代 density_K
+    max_allowed_area: int                      # W 内 group 可占最大 cells 数
+                                               # = |W| - belt_cells_needed - other_facility_cells
+                                               # 由 Oracle area_capacity_overflow 凭证给出
+    density_K: int                              # **deprecated v1.4** — kept for back-compat,
+                                               # but evaluator 不再用; 旧 K=floor(max_allowed_area/cells_per_pose)
     oracle_witness_kind: Literal[
         # v1.3 (Gemini round 19): 仅留 area_capacity_overflow, 其他 deprecate
         "area_capacity_overflow",              # K+1 facility cells + belt cells > W cells
@@ -228,32 +240,32 @@ v1.0 直接用 oracle witness 的 K+1 - 1 = K. v1.1 binary search 紧化.
 def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
     """Window W 内 group g 的 placed instance 数 > K → violate.
 
-    v1.3 (Gemini round 19): **全包含计数** — only facility 所有 cells 都
-    完全在 window 内才 +1. Certified exact 宁可 False Negative 漏剪, 绝不可
-    False Positive 误剪. v1.2 Reference Cell 计数 unsound (facility origin
-    在 W 内但身躯在外仍算).
+    v1.4 (Gemini round 20 B2): F9 降级面积溢出 paradigm 后, **直接数占用
+    格子数** `sum(|pose_cells ∩ W|)` vs `cert.max_allowed_area`, **不数
+    facility 个数**. 既 sound 又防 v1.3 边缘 facility 半身 in W 漏剪 (FN).
     """
     cert = decode_density_envelope_cert(cut.geometric_payload)
     wx, wy, wh, ww = cert.window_rect
     W = {(x, y) for x in range(wx, wx + wh) for y in range(wy, wy + ww)}
 
-    # 数 state.groups[cert.group_id].selected_poses 全 cells 都在 W 内的 instance 数
-    counted = 0
-    for slot_idx, (group_id, pose_id) in enumerate(state.groups[cert.group_id].selected_poses):
-        # 从 cell_owner 反查 slot 占的全 cells
-        placed_cells = {c for c, (g, s) in state.cell_owner.items()
-                        if g == cert.group_id and s == slot_idx}
-        if not placed_cells:
-            continue  # 未 placed
-        # v1.3 严苛: 全 cells 都在 W 才 +1
-        if all(c in W for c in placed_cells):
-            counted += 1
+    # v1.4: 数 W 内被 cert.group_id facility 占的总格子数 (不数 facility 个数)
+    occupied_in_window = 0
+    for cell, (owner_group, _) in state.cell_owner.items():
+        if owner_group == cert.group_id and cell in W:
+            occupied_in_window += 1
 
-    return counted > cert.density_K
+    return occupied_in_window > cert.max_allowed_area
 ```
 
-Hot path 重算, 跟 Family 4/8 同 pattern. **v1.3 关键**: 全包含计数, 防 partial
-intersection 误算 (v1.0 over-count, v1.2 under-rigour, v1.3 严苛 sound).
+Hot path 重算, 跟 Family 4/8 同 pattern. **v1.4 关键**: F9 降级面积 cut 后,
+evaluator 数 cells 不数 facilities. 边缘 facility 半身 in W 仍贡献其 in-W
+cells, 防 v1.3 FN.
+
+> 历史:
+> v1.0 over-count (任 cell 沾 W 算整 facility) → FP
+> v1.2 origin-in-W 才算 → FP (Gemini round 19)
+> v1.3 all-in-W 才算 → FN (Gemini round 20 — 边缘溢出漏)
+> v1.4 数占用 cells 直接 → 唯一 sound (无 FP 无 FN)
 
 ## 7. Validator
 
