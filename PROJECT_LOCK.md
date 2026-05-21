@@ -1,8 +1,8 @@
 # PROJECT_LOCK.md
 
-**Status**: CURRENT_LOCK  
-**Updated**: 2026-04-14  
-**Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.  
+**Status**: CURRENT_LOCK
+**Updated**: 2026-05-22 (B Design v2 Phase 0 close)
+**Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
 ## 1. Exactness Constitution
@@ -37,6 +37,27 @@ The following remain additive postprocess artifacts and must not redefine intern
 - build-time / export-time adapters under `src/adapters/*`
 - build-time preprocess overlays such as `rules/preprocess_plan.json` and `src/interchange/preprocess_context.py` (currently cycle groups / utility operations / optional future overrides only)
 
+## 2B. B Design v2 Cut Object Boundary (2026-05-22)
+
+Phase 0 close (`docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md`) 后,
+**cut object 升级为持久化一等公民**. New source-of-truth additions:
+
+- `docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md` v3.2.2 — cut
+  object schema + 10 步 lifecycle + 6 步 replay verify + 6 维 watcher
+- `docs/research/p3_b_design_v2_20260521/cut_family_specs/{01-09}` — 9 cut
+  family 完整 spec (region_capacity / cutset / port_exposure / component_reach /
+  pattern_nogood / shape_packing_hall / power_hitting_set / power_grid_reach /
+  density_envelope) 全 final version
+- `docs/research/p3_b_design_v2_20260521/state_machine_v2.md` — group-orbit
+  state + AnonymousSlotRef (替代 v14 per-instance state, 消 10^134 label
+  symmetry)
+- Phase 1 起 `data/cuts/*.json` (persisted active cuts) + `data/cuts/
+  quarantine/*.json` (quarantined cuts) 加进 certified path source-of-truth
+  (currently 空, 等 Phase 1 cut store 落地后启用)
+
+**postprocess/adapter boundary** unchanged: cut object 仅在 certified core 内
+循环, 不进 `src/adapters/*` / `data/exports/*`.
+
 ## 2A. IndustrialPlanner Active Scope
 
 - The current certified IndustrialPlanner support contract targets `valley4_protocol_core` (70×70) exclusively.
@@ -55,6 +76,35 @@ The following remain additive postprocess artifacts and must not redefine intern
 - Global pooling semantics for shared boundary/core resources must remain commodity-aggregated.
 - A fully enclosed legal empty rectangle remains allowed; exterior connectivity is not part of the exact contract.
 
+### 3A. B Design v2 invariant additions (2026-05-22)
+
+Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
+不可破**:
+
+- **Exactness FP = 0**: 任何 cut 都不能误剪合法解 (False Positive = 0).
+  False Negative (cut 漏发, 性能退化) 可接受, FP 致命. Gemini round 19 原则
+  "宁可 FN 不可 FP" 写进 lock.
+- **Group/orbit-count symmetry**: state 必走 group-orbit 而非 per-instance,
+  消 10^134 label symmetry. AnonymousSlotRef multiset 包含语义跨 candidate
+  enumeration order 必 sound (slot_index 仅 debug/serialization 用, 不参与
+  soundness 推理).
+- **Cut family ↔ mode 一致性**: `_FAMILY_MODE_MAP` (cut_lifecycle_v2 v3 §3)
+  契约 — literal-based family (3/5/7) 走 multiset evaluate, geometric family
+  (1/2/4/6/8/9) 走 evaluate_geometric. `__post_init__` enforce literals
+  XOR geometric_payload 互斥.
+- **Scope-aware HOLD vs Quarantine**: 6 步 verify (cut_lifecycle v3.2.2 §4)
+  失败的处理必须严格区分 — HOLD 不删 cut 等下次 candidate matching;
+  QUARANTINE 不删 cut 留 audit trail 不进 active resolve; 两者不能混. ghost-
+  agnostic cut (`GHOST_AGNOSTIC` sentinel) 跳 ghost_rect_id 校验**但**仍走
+  exterior_blocks_hash 校验 (v3.2.2 dispatch).
+- **F9 paradigm 降级 lock**: density_envelope 只 trigger
+  `area_capacity_overflow` 凭证. binding/routing/PCR-CUT INFEASIBLE 必 fallback
+  Family 5 pattern_nogood (Gemini round 19 verdict). 不允许 silent generalize
+  topological deadlock → density cut.
+- **代数 vs 几何分工**: 全局代数约束 (e.g. power supply cap, total worker
+  count) 必走 Master CP-SAT 线性约束, 不进 cut framework (Gemini round 22
+  F16 verdict — "代数归 Master, 几何归 Cut").
+
 ## 4. Forbidden Changes
 
 - Reintroducing exploratory caps as exact-mode bounds.
@@ -70,6 +120,20 @@ The following remain additive postprocess artifacts and must not redefine intern
   The production readiness gate and `scripts/run_campaign_linux.sh` both still block when the env var is set; do not bypass them until pole alternatives is implemented and re-audited.
 
 - Bypassing **exact-safe proof object lifecycle**. Any persisted artifact carrying solver-side semantics (e.g. `BendersCut.condition_set`, `BendersCut.metadata`) must have all six steps wired before being trusted in certified mode: generate → serialize → deserialize → validate → resolve runtime literals → replay → behavioral regression test. Landing a new schema field without the runtime resolver + regression coverage is treated as a Forbidden Change, regardless of how harmless the "feature gate currently off" feels.
+- **(2026-05-22) Bypassing B Design v2 9 步 cut lifecycle**: new B Design v2
+  cut object (Phase 1 起在 `src/cuts/` 落地) 必须 wire 9 步:
+  canonicalize → generate → minimize/normalize → serialize → deserialize →
+  validate → attach-scope check → resolve → activation index → replay/regression.
+  (Step 10 dominance/expiry/demotion defer to Phase 2 per Gemini round 13.)
+  跳过任一步骤 (例如 Phase 1 implementation 没写 scope-aware replay 直接进
+  168h campaign) 算 Forbidden Change. PoC `docs/research/p3_b_design_v2_20260521/
+  poc/b_core_lifecycle_poc.py` 14/14 PASS 必跨 src/ boundary 真验.
+- **(2026-05-22) Silent recovery 禁止**: B Design v2 9 family cut + replay
+  全 fail-closed. cut.scope.source_digest 跟当前 source-of-truth hash 不一致
+  → quarantine, **不可 auto-migrate**. 即使重算 cert 在新 source 下 sound,
+  仍要手动 audit override (PROJECT_LOCK 一致 — certified exact 不允许 silent
+  fix). Validator `ASSUMPTION_VERIFIERS` 未知 key → fail-closed return False
+  (HOLD), 不可 silent return True. (Gemini round 14-22 共识 invariant.)
 
 ## 5. Allowed Changes
 
