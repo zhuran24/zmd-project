@@ -16,6 +16,17 @@
 
 PoC test (test_b_core_lifecycle.py) F1 反例 14/14 PASS, 9 步 lifecycle 全 runtime work.
 
+### Day 17g v1.2 fix — F1 fixture 仍 GHOST_AGNOSTIC 安全的 condition
+
+Gemini round 18 finding B1 修后, F1 fixture 标 `ghost_rect_id=GHOST_AGNOSTIC`
+仍 sound — 因为 F1 反例**不依赖 ghost**: ghost_rect=None, ghost_cells=∅,
+exterior_blocks={(15, 0), (16, 0)} 触发 cap_R = 70 - 2 = 68. ghost_cells ∩ R = ∅
+满足 v1.2 GHOST_AGNOSTIC 允许 condition. ✅
+
+若 fixture 改 ghost 压 baseline 触发 cap_R 减 (而不是用 exterior_blocks),
+则 scope 必绑 ghost_rect_id 不能 AGNOSTIC. F1 v1.2 spec §4 generator 已加
+此 condition check.
+
 ### Day 17f sweep — F8/F9 静默说明 (Gemini round 17 A4)
 
 F1 反例 (crusher 占 left baseline → boundary 缺 1 demand):

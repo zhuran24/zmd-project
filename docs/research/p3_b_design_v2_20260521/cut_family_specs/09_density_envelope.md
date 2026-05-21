@@ -19,6 +19,12 @@
   slot 改 → validator 死板验 slot 让合法 witness 失败 quarantine. v1.1 改
   `(GroupId, PoseId)` (state-independent), validator 只看 "K+1 pose 同时存在"
   即可验 INFEASIBLE.
+- **v1.2** (Day 17g, 本 commit): 修 Gemini round 18 finding B2 **几何过拟合**:
+  §6 v1.0 evaluate_geometric 只要 cell_owner cell 落在 window 内就计数 +1 →
+  facility 边缘蹭 1 cell 进 window 主体在外, 实际 density 没真贡献但算 1 →
+  False Positive 误剪. v1.2 改 **Reference Cell 计数** — 只 facility 的
+  reference cell (left-top origin) 落在 window 内才计数. Cert 加
+  reference_cells_in_window 字段记 K+1 witness 的 reference cells.
 
 ## 1. 数学定义
 
@@ -195,21 +201,34 @@ v1.0 直接用 oracle witness 的 K+1 - 1 = K. v1.1 binary search 紧化.
 
 ```python
 def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
-    """Window W 内 group g 的 placed instance 数 > K → violate."""
+    """Window W 内 group g 的 placed instance 数 > K → violate.
+
+    v1.2 (Gemini round 18 B2): **Reference Cell 计数**, 不是 partial intersection.
+    只 facility 的 reference cell (canonical_rules pose 的 left-top origin) 落在
+    window 内才算 1, 防 facility 边缘蹭 1 cell 进 window 主体在外被算作完整密度.
+    """
     cert = decode_density_envelope_cert(cut.geometric_payload)
     wx, wy, wh, ww = cert.window_rect
 
-    # 数 state.cell_owner 内 group_id 在 window 的 instance 数
-    counted_slots = set()
-    for cell, (owner_group, owner_slot) in state.cell_owner.items():
-        if owner_group == cert.group_id:
-            if wx <= cell[0] < wx + wh and wy <= cell[1] < wy + ww:
-                counted_slots.add(owner_slot)
+    # 数 state.groups[cert.group_id].selected_poses 在 window 的 instance 数 (Ref Cell)
+    counted = 0
+    for slot_idx, (group_id, pose_id) in enumerate(state.groups[cert.group_id].selected_poses):
+        ref_cell = canonical_rules_pose_reference_cell(cert.group_id, pose_id)
+        # facility placed where? 从 cell_owner 反查 slot 占的 cells, 取 min(x,y) 作 placed ref
+        placed_ref = min(
+            (c for c, (g, s) in state.cell_owner.items() if g == cert.group_id and s == slot_idx),
+            default=None,
+        )
+        if placed_ref is None:
+            continue  # 未 placed
+        if wx <= placed_ref[0] < wx + wh and wy <= placed_ref[1] < wy + ww:
+            counted += 1
 
-    return len(counted_slots) > cert.density_K
+    return counted > cert.density_K
 ```
 
-Hot path 重算, 跟 Family 4/8 同 pattern.
+Hot path 重算, 跟 Family 4/8 同 pattern. **v1.2 关键**: 只算 reference cell
+落 window 内, 防 partial intersection 误算.
 
 ## 7. Validator
 

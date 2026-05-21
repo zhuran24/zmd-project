@@ -8,13 +8,19 @@
 ## Changelog
 
 - **v1.0** (Day 15, commit 925157e): 初版 12 段 spec
-- **v1.1** (Day 16c, 本 commit): 修 Gemini round 14:
-  - **Finding #3 致命 soundness 矛盾**: `cap_R` 定义改 **static** (只看 ghost +
-    region geometry, 不看 cell_owner), `evaluate_geometric` 无条件 True 才 sound.
-    cell_owner 影响走 Family 5 pattern_nogood / Family 7 power_hitting_set.
-  - **Finding #5 schema 漏 cells_per_pose**: `RegionCapacityCert` 加
-    `cells_per_pose: Dict[GroupId, int]` field, validator 用 cert 内的
-    cells_per_pose 重算 demand_R (而不是走 self._cells_per_pose 外部 state).
+- **v1.1** (Day 16c): 修 Gemini round 14:
+  - Finding #3: cap_R 改 static (ghost+exterior only)
+  - Finding #5: cert 加 cells_per_pose
+- **v1.2** (Day 17g, 本 commit): 修 Gemini round 18 **致命 GHOST_AGNOSTIC vs
+  cap_R 依赖 ghost 矛盾**:
+  - §2a `cap_R` 含 ghost contribution → §9 F1 fixture 标 GHOST_AGNOSTIC 是
+    **unsound**! Candidate A ghost 压 baseline cap=68 → cut; Candidate B ghost
+    不碰 baseline cap 应 70 ≥ demand → 但 AGNOSTIC 强 attach + evaluate 无条件
+    True → 误剪.
+  - v1.2 规则: **cap_R 含 ghost 时 cut scope.ghost_rect_id 必非 AGNOSTIC**.
+    只有 ghost_cells ∩ R == ∅ 时才允许 GHOST_AGNOSTIC.
+  - Generator §5 必须 check ghost_cells ∩ R, 决定 scope 用 GHOST_AGNOSTIC 还
+    是 compute_ghost_rect_id.
 
 ## 1. 数学定义
 
@@ -68,11 +74,19 @@ block ∩ region, **不**减 cell_owner ∩ region. Why: cell_owner-dependent ca
 v1.1 §6 + changelog.
 
 ```
-cap_R = |R| − |ghost_cells ∩ R| − |exterior_blocks ∩ R|   (static, 跨 state 不变)
+cap_R = |R| − |ghost_cells ∩ R| − |exterior_blocks ∩ R|   (相对 ghost-state 不变)
 ```
 
 对 `left_baseline`: `cap_R = 70 - len(boundary_ghost_cells_in_R) - len(exterior_in_R)`.
 对 `ghost_complement`: `cap_R = 0` (全部 ghost-blocked, scope 内永 0).
+
+**v1.2 critical (Gemini round 18 finding B1)**: cap_R 虽相对 ghost-state 不变,
+**但跨 candidate 不同 ghost 时 cap_R 会变**. 因此 cut.scope.ghost_rect_id
+不能用 GHOST_AGNOSTIC sentinel, **必须**绑当前 ghost_rect_id, 否则跨 candidate
+attach 时 evaluate_geometric 无条件 True 会误剪 ghost 不同的合法 state.
+
+唯一例外: `ghost_cells ∩ R == ∅` (ghost 完全不碰 region) 时 cap_R 跟当前 ghost
+独立, **此时**才能 GHOST_AGNOSTIC. Generator §5 必 check 此条件.
 
 **cell_owner 该走哪**: 若 region cap_R - placed_demand_R 不够走 region_capacity
 cut, 走 Family 5 pattern_nogood (multi-literal 含 placed facility) 或 Family 7
@@ -156,7 +170,11 @@ cut = Cut(
     literals=None,                            # geometric mode
     geometric_payload=canonical_bytes(RegionCapacityCert.asdict()),
     scope=CutScope(
-        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        # v1.2 (Gemini round 18 B1): 只有 ghost_cells ∩ R == ∅ 才 GHOST_AGNOSTIC.
+        # 否则 cap_R 含 ghost contribution, scope 必绑当前 ghost_rect_id.
+        ghost_rect_id=(GHOST_AGNOSTIC
+                       if not (state.ghost_cells & region_cells_set)
+                       else compute_ghost_rect_id(state.ghost_rect)),
         blocked_cells_hash=compute_blocked_cells_hash(state),
         source_digest=compute_source_digest(state).canonical_hash(),
         artifact_hashes={

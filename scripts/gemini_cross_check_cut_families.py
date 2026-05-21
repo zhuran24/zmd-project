@@ -27,10 +27,11 @@ SHARE = Path("/home/zhuran24/linwin_share")
 DOC_PATHS = [
     # 27 lever 死路 timeline
     "docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md",
-    # round 14/15/16 答复 (历史 context)
+    # round 14-17 答复 (历史 context)
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_14_cut_families.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_15_followup.md",
     "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_16_day17.md",
+    "docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_17_followup.md",
     # B Design v2 framework (含 v3.2 by_ghost_watcher)
     "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
     "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
@@ -103,7 +104,43 @@ Phase 0 Day 1-16b 已 land:
 剩 Day 17-21: Family 2/3/4/5 (复用现有 L16/PCR-CUT/D2/boundary_constraints 实现) +
 F1-F4 fixture sweep update + 集成 + 168h campaign 8 exit criteria.
 
-## 本次 cross-check 目的 (round 17)
+## 本次 cross-check 目的 (round 18)
+
+这是 round 18. round 17 给了 2 新 bug (B1 F8 watcher / B2 F9 slot ID) + A4
+sweep 推荐. 我按 round 17 verdict 修了 commit ab921b1 (Day 17f):
+
+- F8 v1.1 watcher 改监听 PoolPole ∩ BoundingBox(facility, R_conn) 内全合法
+  grid cell, 不只 candidate_pole_cells
+- F9 v1.1 oracle_assignment_witness 去 slot ID 改 (group, pose) tuple
+- F1-F4 fixture 顶部 changelog 段加 F8/F9 静默说明
+
+round 18 任务:
+
+### 任务 A: 验 round 17 2 新 bug 修对
+- F8 v1.1 watcher BoundingBox 算法 sound 吗? `iter_cells_in_box` + `is_legal_pole_candidate_cell` 接口对吗?
+- F9 v1.1 去 slot 后 validator 验只看 "K+1 pose 同时存在" 在 multi-slot pose
+  case (same pose 出现多次 different slot) 怎么处理? Counter 比较 vs Set 比较?
+
+### 任务 B: 新 finding (sound / schema / watcher / dispatch)
+
+### 任务 C: 整体 Phase 0 收尾 verdict
+我们 round 14-17 4 轮 cross-check 修了 7 个 finding (3 致命 sound bug + 2
+schema 漏 + 2 新 watcher/state-dep bug + 1 watcher 误入 + 1 算法 unsound).
+现在 9 family + cut_lifecycle v3.2.1 + watcher v3.2.1 状态如何? 还能不能在
+Phase 0 找到 sound bug? 还是可以进 Phase 1 编码实施?
+
+### 任务 D: F11+ 反例
+9 family 修后, 还有什么 INFEASIBLE master assignment 现 9 family 全静默?
+
+## 回答格式
+分 4 段 A/B/C/D. 找不到 bug 写"没找到 bug, 已 cross-check 完毕".
+
+## Reply 语言
+中文优先. 输出长度不限.
+"""
+
+## OLD round 17 prompt:
+_old_round_17 = """## 本次 cross-check 目的 (round 17)
 
 这是 round 17. round 16 (已 paste) 给了 4 finding (A1 F4 ID 校验 / A2 F3
 watcher / B1 F8 ghost_blocks_line / E1 F5 表 F9). 我按 round 16 verdict
@@ -306,7 +343,7 @@ def main() -> int:
     print(f"[gemini] prompt {len(prompt) / 1024:.1f} KB / {len(prompt) / 4:.0f} ~ tokens", file=sys.stderr)
 
     SHARE.mkdir(parents=True, exist_ok=True)
-    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_17.md"
+    prompt_path = SHARE / "gemini_cut_family_review_prompt_round_18.md"
     prompt_path.write_text(prompt, encoding="utf-8")
     print(f"[gemini] prompt saved to {prompt_path}", file=sys.stderr)
 
@@ -317,7 +354,7 @@ def main() -> int:
         return 1
 
     text = extract_text(result)
-    output_path = SHARE / "gemini_cut_family_review_response_round_17.md"
+    output_path = SHARE / "gemini_cut_family_review_response_round_18.md"
     output_path.write_text(text, encoding="utf-8")
     print(f"[gemini] response saved to {output_path}", file=sys.stderr)
     print(f"[gemini] response size: {len(text)} chars", file=sys.stderr)
