@@ -95,11 +95,20 @@ def lookup_verifier(key: str) -> Optional[Verifier]:
     return _VERIFIERS.get(key)
 
 
-def register_verifier(key: str, fn: Verifier) -> None:
+def register_verifier(key: str, fn: Verifier, *, overwrite: bool = False) -> None:
     """Register a production verifier. Phase 1.1+ family validator 加 key 时调.
 
-    Overwrite 既有 entry (允许 mock 测试). 不允许 None — 注册必非空.
+    fn 不允许 None — 注册必非空.
+
+    Gemini round 28 finding #2: 拒 silent overwrite — 防 P1.5+ 不同 family
+    碰巧注册同名 key (e.g. F2 + F4 都用 boundary_shape) 静默替换. 显式
+    ``overwrite=True`` 走覆盖路径 (mock 测试 / spec 迭代时用).
     """
     if fn is None:
         raise ValueError(f"verifier for key={key!r} 不能为 None")
+    if key in _VERIFIERS and not overwrite:
+        raise ValueError(
+            f"verifier for key={key!r} 已 registered; "
+            f"pass overwrite=True 显式 (Gemini round 28 finding #2 fail-closed)"
+        )
     _VERIFIERS[key] = fn

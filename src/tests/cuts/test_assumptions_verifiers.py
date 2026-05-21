@@ -113,18 +113,27 @@ def test_lookup_verifier_unknown_returns_none():
     assert lookup_verifier("never_registered_key_xyz") is None
 
 
-def test_register_verifier_overwrite():
+def test_register_verifier_overwrite_explicit_ok():
+    """显式 overwrite=True 允许覆盖."""
     def stub_verifier(state, value):
         return value == "expected"
 
     original = _VERIFIERS.get("placement_rule")
     try:
-        register_verifier("placement_rule", stub_verifier)
+        register_verifier("placement_rule", stub_verifier, overwrite=True)
         assert lookup_verifier("placement_rule") is stub_verifier
     finally:
-        # restore
         if original is not None:
-            register_verifier("placement_rule", original)
+            register_verifier("placement_rule", original, overwrite=True)
+
+
+def test_register_verifier_silent_overwrite_rejected():
+    """Gemini round 28 finding #2: 默认 overwrite=False 拒 silent 覆盖."""
+    def stub_verifier(state, value):
+        return True
+
+    with pytest.raises(ValueError, match="已 registered"):
+        register_verifier("placement_rule", stub_verifier)  # 已存在
 
 
 def test_register_verifier_none_raises():

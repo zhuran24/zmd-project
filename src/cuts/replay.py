@@ -26,6 +26,7 @@ Refs:
 """
 from __future__ import annotations
 
+import os
 from typing import Callable, Dict, Optional
 
 from src.cuts.lifecycle import (
@@ -106,7 +107,14 @@ def replay_cut(
 
     validator = FAMILY_VALIDATORS.get(cut.family)
     if validator is None:
-        # family validator 还没实施 (Phase 1.0 框架阶段 只 F1) — 跟上面一致, 跳过.
+        # Gemini round 28 finding #1 修: 防 P1.5+ 漏注册 silent skip.
+        # EXACT_FAMILY_VALIDATOR_STRICT=1 (Phase 1.4 ramp 启动) 让 fail-closed;
+        # 默认 (Phase 1.0/1.1 partial 实施期) silent skip 让 P1.5-P1.15 增量推进.
+        if os.environ.get("EXACT_FAMILY_VALIDATOR_STRICT", "0") == "1":
+            raise NotImplementedError(
+                f"family={cut.family} validator 未注册 (FAMILY_VALIDATORS). "
+                f"P1.5+ 实施时必须 register; 或调用方传 canonical_rules=None 跳过 Step 7."
+            )
         store.reactivate_cut(cut.cut_id)
         return "ATTACH"
 
