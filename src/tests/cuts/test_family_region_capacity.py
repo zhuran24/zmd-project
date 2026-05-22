@@ -394,6 +394,25 @@ def test_oracle_skips_group_when_some_pose_outside_R():
     )
 
 
+def test_evaluate_recomputes_cap_R_after_exterior_blocks_removed():
+    """Gemini round 33 P0 fix: evaluate_geometric 必须真重算 cap_R, 不准无条件
+    返 True. 反例: oracle 发 cut 时 cap_R=137 < demand=138 → cut violate. master
+    回溯移除 2 exterior_blocks → cap_R 恢复 139 ≥ demand=138 → cut 不再 violate.
+    evaluate 必须返 False (propagator skip, 不剪合法 state).
+    """
+    # 步骤 1: 初始 exterior_blocks=2, oracle 产 violating cut
+    state_init = _make_state(boundary_exterior_blocks=2)
+    cuts = generate_region_capacity_cuts(state_init, CANONICAL_RULES)
+    assert len(cuts) == 1
+    cut = cuts[0]
+    assert evaluate_geometric_region_capacity(cut, state_init) is True
+
+    # 步骤 2: state 变 — master 移除 exterior_blocks (回溯), cap_R 增 → cut 不再 violate
+    state_recovered = _make_state(boundary_exterior_blocks=0)
+    assert evaluate_geometric_region_capacity(cut, state_recovered) is False, \
+        "exterior_blocks 移除后 cap_R 增 demand 不变, evaluate 必须 False (Sound)"
+
+
 def test_validator_unsound_when_cert_carries_group_with_pose_outside_R():
     """Validator 端: attacker 手造 cert 含 boundary_io 当 contributing 但 真
     pose_domain 有 pose 在 R 外. validator 必查 P(g)⊆R 严格 — 不满足则 unsound.

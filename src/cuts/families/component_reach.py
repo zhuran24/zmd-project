@@ -151,7 +151,23 @@ def validate_component_reach(
                 detail="witness fail: src/sink now reachable (free_cells changed reconnect)",
             )
 
-        # 7. commodity_id (若 cert 含): 验 production data — 当前 spec v1.1
+        # 7. separator_cells 全在 cell_owner ∪ ghost (不是 free) — spec 04 line 148
+        # (Gemini round 33 High fix). 若 attacker 谎报 separator cell 在 free,
+        # validator 必拒. v1.1 minimum-viable geometric only (不验 ID).
+        separator_cells = cert_dict.get("separator_cells", [])
+        for sep_cell_raw in separator_cells:
+            sep_cell = tuple(sep_cell_raw)
+            if sep_cell in free_cells:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"separator cell {sep_cell} is in free_cells (should be in "
+                        f"cell_owner ∪ ghost per spec 04_component_reach.md line 148)"
+                    ),
+                )
+
+        # 8. commodity_id (若 cert 含): 验 production data — 当前 spec v1.1
         # minimum-viable 不要求 commodity_id (geometric path). 若未来 cert 加
         # commodity_id field, validator 必查 state.canonical_rules / commodities
         # 真存在. Phase 1.5+ scope.

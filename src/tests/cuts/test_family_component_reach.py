@@ -290,6 +290,65 @@ def test_validator_unsound_sink_component_mismatch_missing():
     assert "sink_component cert mismatch" in vr.detail
 
 
+def test_validator_unsound_separator_cell_in_free():
+    """Gemini round 33 High fix: cert.separator_cells 必全在 cell_owner ∪ ghost
+    (spec 04_component_reach.md line 148). attacker 放 free cell 进 separator
+    → unsound.
+    """
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    src_cell = (0, 0)
+    sink_cell = (69, 0)
+    # 构 sound cut + 加 attacker 假 separator_cells (含 free cell (1, 1))
+    cut_base = _make_component_reach_cut(
+        src_cell=src_cell, sink_cell=sink_cell, state=state,
+    )
+    # 重写 cert 加 fake separator
+    cert_dict = json.loads(cut_base.geometric_payload)
+    cert_dict["separator_cells"] = [[1, 1]]  # (1,1) is FREE (not ghost not owned)
+    payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    cut = Cut(
+        cut_id="F4-sep-test",
+        family="component_reach",
+        literals=None,
+        geometric_payload=payload,
+        scope=cut_base.scope,
+        cert=OracleCert(cert_kind="x", cert_payload=payload, cert_hash="ch"),
+        family_version="v1.1",
+        validator_version="v1.1",
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "separator cell" in vr.detail
+    assert "free_cells" in vr.detail
+
+
+def test_validator_ok_separator_in_ghost_or_owner():
+    """Sound case: separator_cells 全在 ghost 内 → validator OK."""
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    src_cell = (0, 0)
+    sink_cell = (69, 0)
+    cut_base = _make_component_reach_cut(
+        src_cell=src_cell, sink_cell=sink_cell, state=state,
+    )
+    cert_dict = json.loads(cut_base.geometric_payload)
+    cert_dict["separator_cells"] = [[35, 0], [35, 5]]  # 都在 ghost row
+    payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    cut = Cut(
+        cut_id="F4-sep-ok",
+        family="component_reach",
+        literals=None,
+        geometric_payload=payload,
+        scope=cut_base.scope,
+        cert=OracleCert(cert_kind="x", cert_payload=payload, cert_hash="ch"),
+        family_version="v1.1",
+        validator_version="v1.1",
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+
+
 def test_validator_schema_err_commodity_id_not_yet_supported():
     """GPT pro round 2 P0-4: cert.commodity_id 在 Phase 1.5+ commodity registry
     verifier 落地前不准 carry (fail-closed, 防 attacker 塞 fake commodity).

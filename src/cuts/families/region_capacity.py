@@ -322,17 +322,27 @@ def validate_region_capacity(
 
 
 def evaluate_geometric_region_capacity(cut: Cut, state: BState) -> bool:
-    """Propagation hot path. Per spec §6 v1.1 简化版:
+    """Propagation hot path — recompute cap_R + verify still violating.
 
-    cap_R static (ghost+exterior only) + cert.demand_R > cert.cap_R 已 generator
-    时 oracle verify → scope 内永 violate. Re-attach 路径走 watcher invalidate
-    + replay step 2 HOLD on ghost change (cut_lifecycle_v2 v3.2.2 dispatch).
+    Gemini round 33 P0 fix: 原 v1.1 简化版无条件返 True 不 sound — exterior_blocks
+    在 cut attach 后被 master 修改 (移除 block) → cap_R 增 → cut 不再 violate. 但
+    propagator 仍调此函数返 True → cut emit constraint → 假剪合法 state.
 
-    Sound iff: cap_R is static (Phase 1.0/1.1 v1.1 lock). 若回到 v1.0
-    cell-owner-dependent cap (PROJECT_LOCK 禁) 此函数会变 FN/FP.
+    修法: 重算 current cap_R (cert.region 内 ghost ∪ exterior count), 比 cert.cap_R.
+    若 current_cap >= cert.demand_R → cut 不再 violate → return False (propagator
+    skip cut). 若 current_cap < cert.demand_R → 仍 violate → True (emit constraint).
+
+    Sound: per spec §2a v1.1 cap_R = |R| - |(ghost ∪ exterior) ∩ R|. 任何 ghost/
+    exterior change 都触发 evaluate recompute. cert.demand_R 是 oracle 时锁定 — 真
+    生产 demand 不变.
     """
-    # Defensive guard — hot path called outside validator, schema 缺失则 fail-safe
-    # (不报 violate 给 master, 防 propagator 误 cut).
     if cut.geometric_payload is None:
         return False
-    return True
+    try:
+        cert_dict = json.loads(cut.geometric_payload)
+        region_cells = _decode_region_bitset(cert_dict["region_cells_bitset_b64"])
+        current_cap = compute_static_capacity(region_cells, state)
+        return cert_dict["demand_R"] > current_cap
+    except Exception:
+        # Fail-safe: cert 解析错就不报 violate, 等 replay quarantine
+        return False
