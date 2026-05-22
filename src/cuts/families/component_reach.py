@@ -57,9 +57,16 @@ def validate_component_reach(
     Phase 1.1 P1.8 minimum-viable per v1.1 (Gemini r16 A1 fix): geometric mode
     only verifies **spatial** invariants, NOT blocking_facilities 具体 pose ID
     (causation split is literal-based, not geometric — F3/F7's territory).
+
+    GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
     """
-    assert cut.geometric_payload is not None
     t0 = time.monotonic()
+    if cut.geometric_payload is None:
+        return ValidationResult(
+            kind="schema_err",
+            elapsed_seconds=time.monotonic() - t0,
+            detail="cut.geometric_payload is None (F4 schema invariant violated)",
+        )
     try:
         cert_dict = json.loads(cut.geometric_payload)
         src_cell = tuple(cert_dict["src_cell"])
@@ -127,7 +134,8 @@ def evaluate_geometric_component_reach(cut: Cut, state: BState) -> bool:
 
     Returns True iff src/sink still disconnected (cut still violating).
     """
-    assert cut.geometric_payload is not None
+    if cut.geometric_payload is None:
+        return False  # fail-safe: schema 缺失不报 violate
     cert_dict = json.loads(cut.geometric_payload)
     src_cell = tuple(cert_dict["src_cell"])
     sink_cell = tuple(cert_dict["sink_cell"])

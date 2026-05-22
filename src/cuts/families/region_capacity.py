@@ -180,9 +180,16 @@ def validate_region_capacity(
     3. cert.cells_per_pose matches current canonical_rules (防 source rotated).
     4. demand_R = Σ group.demand × cells_per_pose matches cert.
     5. Witness: demand_R > cap_R.
+
+    GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
     """
-    assert cut.geometric_payload is not None
     t0 = time.monotonic()
+    if cut.geometric_payload is None:
+        return ValidationResult(
+            kind="schema_err",
+            elapsed_seconds=time.monotonic() - t0,
+            detail="cut.geometric_payload is None (F1 schema invariant violated)",
+        )
     try:
         cert_dict = json.loads(cut.geometric_payload)
         region_kind: RegionKind = cert_dict["region_kind"]
@@ -294,4 +301,8 @@ def evaluate_geometric_region_capacity(cut: Cut, state: BState) -> bool:
     Sound iff: cap_R is static (Phase 1.0/1.1 v1.1 lock). 若回到 v1.0
     cell-owner-dependent cap (PROJECT_LOCK 禁) 此函数会变 FN/FP.
     """
+    # Defensive guard — hot path called outside validator, schema 缺失则 fail-safe
+    # (不报 violate 给 master, 防 propagator 误 cut).
+    if cut.geometric_payload is None:
+        return False
     return True

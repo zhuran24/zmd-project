@@ -81,9 +81,16 @@ def validate_cutset(
     2. cur_cut_size = |cross_partition_edges(A, B, current_free_cells)| matches
        cert.cut_size (signal that cell_owner change invalidates this cut).
     3. commodity_demand > cut_size (witness Menger violation).
+
+    GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
     """
-    assert cut.geometric_payload is not None
     t0 = time.monotonic()
+    if cut.geometric_payload is None:
+        return ValidationResult(
+            kind="schema_err",
+            elapsed_seconds=time.monotonic() - t0,
+            detail="cut.geometric_payload is None (F2 schema invariant violated)",
+        )
     try:
         cert_dict = json.loads(cut.geometric_payload)
         side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
@@ -135,7 +142,8 @@ def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
 
     Returns True iff demand > current_cut_size (cut still violating).
     """
-    assert cut.geometric_payload is not None
+    if cut.geometric_payload is None:
+        return False  # fail-safe: schema 缺失不报 violate
     cert_dict = json.loads(cut.geometric_payload)
     side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
     side_b = _decode_bitset(cert_dict["side_b_bitset_b64"])

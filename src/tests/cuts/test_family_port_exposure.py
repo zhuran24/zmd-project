@@ -326,6 +326,39 @@ def test_validate_port_exposure_schema_err_unknown_direction():
     assert vr.kind == "schema_err"
 
 
+def test_validate_port_exposure_one_literal_schema_err_python_O_safe():
+    """GPT pro round 2 P0-2 反例: F3 spec §4 要求 ≥ 2 literal (facility + blocking).
+    Validator 必须 explicit fail-closed 不靠 assert — `python -O` 下 assert 失效后
+    一元 cut 也要走 schema_err (不是 ok). 这条 regression 在 -O 下也必跑.
+    """
+    cert_payload = _make_port_exposure_cert(
+        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+    )
+    # Build cut with ONLY 1 literal (post_init 允许 ≥ 1, validator 必拒 < 2)
+    cut = Cut(
+        cut_id="F3-one-literal",
+        family="port_exposure",
+        literals=(CutLiteral(slot_ref=AnonymousSlotRef("crusher", 0), pose_id="p7"),),
+        geometric_payload=None,
+        scope=CutScope(
+            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            exterior_blocks_hash="h", source_digest="poc_source_digest",
+            artifact_hashes={"canonical_rules.json": "h1"},
+            oracle_abstraction_version="port_exposure_v1",
+        ),
+        cert=OracleCert(
+            cert_kind="port_exposure_blocked",
+            cert_payload=cert_payload,
+            cert_hash="ch",
+        ),
+        family_version="v1.0", validator_version="v1.0",
+    )
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)})
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+    assert vr.kind == "schema_err", f"-O 模式 1-literal 漏走 schema_err (got {vr.kind})"
+    assert "cut.literals 必 ≥ 2" in (vr.detail or "")
+
+
 # ============================================================================
 # F3 evaluate
 # ============================================================================

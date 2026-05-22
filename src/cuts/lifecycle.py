@@ -539,9 +539,16 @@ def step_4_deserialize(blob: bytes) -> Cut:
 def step_5_validate_region_capacity(
     cut: Cut, state: BState, canonical_rules: Dict
 ) -> ValidationResult:
-    """Step 5 — independent recompute of F1 cert (v1.2 §7)."""
-    assert cut.geometric_payload is not None  # F1 geometric, __post_init__ 保证
+    """Step 5 — independent recompute of F1 cert (v1.2 §7).
+
+    GPT pro round 2 fix: validator 入口 schema 走 explicit if (`python -O` 防线).
+    """
     t0 = time.monotonic()
+    if cut.geometric_payload is None:
+        return ValidationResult(
+            "schema_err", time.monotonic() - t0,
+            "cut.geometric_payload is None (F1 schema invariant violated)",
+        )
     try:
         cert_dict = json.loads(cut.geometric_payload)
         region_kind = cert_dict["region_kind"]

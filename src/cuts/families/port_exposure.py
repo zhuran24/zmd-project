@@ -51,9 +51,28 @@ def validate_port_exposure(
     candidate_placements pose 层), 不查 canonical_rules.ports_by_pose
     (该字段不存在). 必须 state.candidate_placements inject, 否则 schema_err
     (fail-closed).
+
+    GPT pro round 2: schema check 走 explicit if (不 assert) — `python -O`
+    模式 assert 全删, 一元 literal 走过假证.
     """
-    assert cut.cert is not None
     t0 = time.monotonic()
+    # Explicit guards (post_init 保证 invariant, 但 python -O 下 assert 失效,
+    # validator 入口必须独立验)
+    if cut.cert is None:
+        return ValidationResult(
+            kind="schema_err",
+            elapsed_seconds=time.monotonic() - t0,
+            detail="cut.cert is None (schema invariant violated)",
+        )
+    if cut.literals is None or len(cut.literals) < 2:
+        return ValidationResult(
+            kind="schema_err",
+            elapsed_seconds=time.monotonic() - t0,
+            detail=(
+                f"F3 spec §4: cut.literals 必 ≥ 2 (facility pose + blocking pose); "
+                f"actual={0 if cut.literals is None else len(cut.literals)}"
+            ),
+        )
     try:
         cert_dict = json.loads(cut.cert.cert_payload)
 
@@ -123,8 +142,7 @@ def validate_port_exposure(
                 ),
             )
 
-        # 5. cut.literals schema (post_init enforce ≥ 1, F3 spec ≥ 2)
-        assert cut.literals is not None and len(cut.literals) >= 2
+        # 5. cut.literals schema 已在入口 guard (python -O 安全)
 
         return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)
 
