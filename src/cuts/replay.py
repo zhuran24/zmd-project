@@ -30,6 +30,7 @@ import os
 from typing import Callable, Dict, Optional
 
 from src.cuts.families.cutset import validate_cutset
+from src.cuts.families.port_exposure import validate_port_exposure
 from src.cuts.families.region_capacity import validate_region_capacity
 from src.cuts.lifecycle import (
     AttachDecision,
@@ -52,6 +53,7 @@ FamilyValidator = Callable[[Cut, BState, Dict], ValidationResult]
 FAMILY_VALIDATORS: Dict[str, FamilyValidator] = {
     "region_capacity": validate_region_capacity,
     "cutset": validate_cutset,
+    "port_exposure": validate_port_exposure,
 }
 
 

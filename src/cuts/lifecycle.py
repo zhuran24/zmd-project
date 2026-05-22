@@ -637,22 +637,74 @@ def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
     return "ATTACH"
 
 
+def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
+    """Generic literal-based cut evaluator (state_machine_v2 §5 multiset 语义).
+
+    Used by all literal-based families (F3 port_exposure / F5 pattern_nogood /
+    F7 power_hitting_set). Per state_machine_v2 §5 + Gemini round 27 finding B3:
+    slot indices inside a group are **anonymous** (any permutation of named
+    instances within a group yields the same group-anonymous state). So a cut
+    that lists ``(group=crusher, slot=2, pose=p1)`` is equivalent to
+    ``(group=crusher, slot=5, pose=p1)`` after slot relabeling — must enumerate
+    **multiset subset match**, not slot-index 1-to-1.
+
+    Returns True iff for every (group_id, pose_id) demand count in
+    ``cut.literals``, ``state.groups[group_id].selected_poses`` contains at
+    least that many copies (Counter ≥ Counter).
+
+    Pre-check: each referenced group has enough total selected_poses
+    (avoid unnecessary Counter walk). False on missing group.
+    """
+    from collections import Counter
+
+    if cut.literals is None or len(cut.literals) == 0:
+        return False  # literal-based cut without literals is no-op
+
+    # Aggregate cut demand per (group_id, pose_id)
+    cut_demand: Counter[Tuple[GroupId, PoseId]] = Counter()
+    for lit in cut.literals:
+        cut_demand[(lit.slot_ref.group_id, lit.pose_id)] += 1
+
+    # Pre-check: each group has at least required_slot_count
+    referenced_groups: Dict[GroupId, int] = {}
+    for (gid, _), c in cut_demand.items():
+        referenced_groups[gid] = referenced_groups.get(gid, 0) + c
+    for gid, required in referenced_groups.items():
+        if gid not in state.groups:
+            return False
+        if len(state.groups[gid].selected_poses) < required:
+            return False
+
+    # Multiset subset match
+    state_counts: Counter[Tuple[GroupId, PoseId]] = Counter()
+    for gid in referenced_groups:
+        for tup_gid, pose_id in state.groups[gid].selected_poses:
+            state_counts[(tup_gid, pose_id)] += 1
+
+    for k, demand_count in cut_demand.items():
+        if state_counts[k] < demand_count:
+            return False
+    return True
+
+
 def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
     """Step 7 — family-dispatched evaluate.
 
     Phase 1.0 P1.1 framework: only F1 region_capacity wired. P1.5-P1.15 fills
     other 8 families via ``src/cuts/families/<name>.py``.
+
+    Phase 1.1 P1.7: literal-based path wired via ``evaluate_literal_multiset``
+    (state_machine_v2 §5 multiset semantics).
     """
     if cut.geometric_payload is not None:
         if cut.family == "region_capacity":
             return True  # v1.2 §6 简化 — cert in scope deterministically violates
         raise NotImplementedError(
             f"Phase 1.0 P1.1 framework: only F1 evaluate wired; "
-            f"family={cut.family} 在 Phase 1.1+ 实施."
+            f"family={cut.family} 在 Phase 1.1+ 实施 src/cuts/families/."
         )
-    raise NotImplementedError(
-        "Phase 1.0 P1.1 framework: literal-based evaluate 在 P1.7 (F3) / P1.11 (F5) / P1.13 (F7) 实施."
-    )
+    # literal-based — generic multiset eval (F3/F5/F7 all use this)
+    return evaluate_literal_multiset(cut, state)
 
 
 def step_8_apply_to_master(cut: Cut, master_model) -> None:
