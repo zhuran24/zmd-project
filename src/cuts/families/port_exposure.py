@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import json
 import time
+from collections import Counter
 from typing import Dict
 
 from src.cuts.helpers.candidate_placements import (
@@ -114,7 +115,31 @@ def validate_port_exposure(
                 ),
             )
 
-        # 4. port 真存在 facility pose (Gap 9 fix)
+        # 4. cert ↔ cut.literals multiset 绑定 (GPT pro round 2 P0-2 fix).
+        #
+        # Adversarial 反例: cert blocker pose=p013 但 cut.literals 写 p014 (同
+        # group 不同 pose) → 拿 p013 证错剪 p014. multiset 必须精确等. slot
+        # 是 anonymous (state_machine_v2 §5), 不参与 binding — 只验 (group_id,
+        # pose_id) multiset.
+        expected_pairs: Counter = Counter([
+            (facility_group, facility_pose_id),
+            (blocking_group, blocking_pose_id),
+        ])
+        # Step A 入口已 guard literals not None & len >= 2 → mypy narrow 之后 deref 安全
+        actual_pairs: Counter = Counter(
+            (lit.slot_ref.group_id, lit.pose_id) for lit in cut.literals
+        )
+        if expected_pairs != actual_pairs:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"cert ↔ literals multiset mismatch: "
+                    f"cert={dict(expected_pairs)}, literals={dict(actual_pairs)}"
+                ),
+            )
+
+        # 5. port 真存在 facility pose (Gap 9 fix)
         ports = pose_ports(state, facility_group, facility_pose_id)
         if ports is None:
             return ValidationResult(

@@ -326,6 +326,78 @@ def test_validate_port_exposure_schema_err_unknown_direction():
     assert vr.kind == "schema_err"
 
 
+def test_validate_port_exposure_cert_literal_multiset_mismatch():
+    """GPT pro round 2 P0-2 反例: cert blocker pose=p013 但 cut.literals 写
+    p014 (同 group 不同 pose). validator 必须 unsound — 不准拿 p013 证剪 p014.
+    """
+    # cert references blocker pose "p3"
+    cert_payload = _make_port_exposure_cert(
+        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+        blocking_group="refinery", blocking_slot=0, blocking_pose_id="p3",
+    )
+    # but cut.literals 错放 "p99" (同 group 不同 pose)
+    cut = Cut(
+        cut_id="F3-mismatch",
+        family="port_exposure",
+        literals=(
+            CutLiteral(slot_ref=AnonymousSlotRef("crusher", 0), pose_id="p7"),
+            CutLiteral(slot_ref=AnonymousSlotRef("refinery", 0), pose_id="p99"),  # ✗
+        ),
+        geometric_payload=None,
+        scope=CutScope(
+            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            exterior_blocks_hash="h", source_digest="poc_source_digest",
+            artifact_hashes={"canonical_rules.json": "h1"},
+            oracle_abstraction_version="port_exposure_v1",
+        ),
+        cert=OracleCert(
+            cert_kind="port_exposure_blocked",
+            cert_payload=cert_payload,
+            cert_hash="ch",
+        ),
+        family_version="v1.0", validator_version="v1.0",
+    )
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)})
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "literals multiset mismatch" in (vr.detail or "")
+
+
+def test_validate_port_exposure_slot_anonymity_in_binding():
+    """slot_index 不参与 binding — (refinery, slot=0, p3) 跟 (refinery, slot=5, p3)
+    在 multiset 比较里等价 (state_machine_v2 §5 slot anonymity).
+    """
+    cert_payload = _make_port_exposure_cert(
+        port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
+        blocking_group="refinery", blocking_slot=0, blocking_pose_id="p3",
+    )
+    # cut.literal blocking slot 写 5, cert blocking slot 写 0 — 仍应 ok
+    cut = Cut(
+        cut_id="F3-slot-anon",
+        family="port_exposure",
+        literals=(
+            CutLiteral(slot_ref=AnonymousSlotRef("crusher", 2), pose_id="p7"),
+            CutLiteral(slot_ref=AnonymousSlotRef("refinery", 5), pose_id="p3"),
+        ),
+        geometric_payload=None,
+        scope=CutScope(
+            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            exterior_blocks_hash="h", source_digest="poc_source_digest",
+            artifact_hashes={"canonical_rules.json": "h1"},
+            oracle_abstraction_version="port_exposure_v1",
+        ),
+        cert=OracleCert(
+            cert_kind="port_exposure_blocked",
+            cert_payload=cert_payload,
+            cert_hash="ch",
+        ),
+        family_version="v1.0", validator_version="v1.0",
+    )
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)})
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+
+
 def test_validate_port_exposure_one_literal_schema_err_python_O_safe():
     """GPT pro round 2 P0-2 反例: F3 spec §4 要求 ≥ 2 literal (facility + blocking).
     Validator 必须 explicit fail-closed 不靠 assert — `python -O` 下 assert 失效后
