@@ -22,7 +22,7 @@ from __future__ import annotations
 import base64
 import json
 import time
-from typing import Dict, FrozenSet, Tuple
+from typing import Dict, FrozenSet, List, Tuple
 
 from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
 
@@ -69,6 +69,33 @@ def _cross_partition_edges(
     return frozenset(edges)
 
 
+def _has_patch_escape(
+    patch: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+) -> bool:
+    """patch 内 cell 相邻 patch 外 free cell → 流可绕过 patch, partition 不 enclose.
+
+    Returns True iff ∃ p ∈ patch, q ∈ free_cells \\ patch, q is 4-neighbor of p.
+    Used by validator to fail-closed on non-enclosed partition (GPT pro round 2
+    P0-3): F2 spec §1a partition (A, B) of V — V 必 = patch universe, patch 外
+    的 free cell 不在 partition 但流可走 → cut_size 假证.
+    """
+    outside_free = free_cells - patch
+    if not outside_free:
+        return False
+    for cell in patch:
+        x, y = cell
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            if (x + dx, y + dy) in outside_free:
+                return True
+    return False
+
+
+def _canonical_edges(edges: FrozenSet[PartitionEdge]) -> List:
+    """Canonical sorted edge list for cert byte-equal compare."""
+    return sorted([list(e) for e in edges])
+
+
 def validate_cutset(
     cut: Cut,
     state: BState,
@@ -76,11 +103,16 @@ def validate_cutset(
 ) -> ValidationResult:
     """Production F2 validator.
 
-    Checks:
+    Checks (GPT pro round 2 P0-3 加强):
     1. cert.side_a ∩ side_b == ∅ (partition disjoint)
-    2. cur_cut_size = |cross_partition_edges(A, B, current_free_cells)| matches
-       cert.cut_size (signal that cell_owner change invalidates this cut).
-    3. commodity_demand > cut_size (witness Menger violation).
+    2. (A ∪ B) ⊆ current free_cells — partition cells 必 free (attacker 不能塞
+       ghost/cell_owner cell 进 partition 制造小 cut_size).
+    3. patch enclosure: A ∪ B 没相邻 patch 外 free cell — 否则流可走 patch
+       外 (cut 不 sound, spec §1a partition (A,B) of V 必含全 graph node).
+    4. cur_cut_size = |cross_partition_edges| matches cert.cut_size.
+    5. cert.cut_edges (canonical sorted edge list) ⇔ recomputed edges set
+       byte-equal (cert 完整性: 不准只 size 对而 edges 不对).
+    6. commodity_demand > cut_size (witness Menger violation).
 
     GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
     """
@@ -104,8 +136,34 @@ def validate_cutset(
                 detail=f"partition not disjoint (|A ∩ B|={len(side_a & side_b)})",
             )
 
-        # 2. Cross-partition edge count matches cert
         free_cells = _free_cells(state)
+        patch = side_a | side_b
+
+        # 2. Partition cells 必 ⊆ free_cells (GPT pro round 2 P0-3)
+        non_free = patch - free_cells
+        if non_free:
+            sample = sorted(non_free)[:3]
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"partition contains {len(non_free)} non-free cell(s) "
+                    f"(ghost/cell_owner): sample={sample}"
+                ),
+            )
+
+        # 3. Patch enclosure — A∪B 没相邻 patch 外 free cell (GPT pro round 2 P0-3)
+        if _has_patch_escape(patch, free_cells):
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    "partition not enclosed: ∃ patch cell 相邻 patch 外 free cell — "
+                    "流可绕过 partition, spec §1a partition (A,B) of V 不成立"
+                ),
+            )
+
+        # 4. Cross-partition edge count matches cert
         recomputed_edges = _cross_partition_edges(side_a, side_b, free_cells)
         recomputed_cut_size = len(recomputed_edges)
         cert_cut_size = cert_dict["cut_size"]
@@ -116,7 +174,32 @@ def validate_cutset(
                 detail=f"cut_size mismatch: cert={cert_cut_size}, recomputed={recomputed_cut_size}",
             )
 
-        # 3. Witness: demand > cut_size
+        # 5. cert.cut_edges canonical set 等 recomputed (cert 完整性, GPT pro
+        # round 2: 不允 attacker 改 cut_size 跟 edges set 不一致). Spec §3 cert
+        # schema 含 cut_edges field, 必填.
+        if "cut_edges" not in cert_dict:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail="cert missing cut_edges field (F2 spec §3 schema 必填)",
+            )
+        cert_canonical = sorted(
+            [sorted([list(e[0]), list(e[1])]) for e in cert_dict["cut_edges"]]
+        )
+        recomputed_canonical = sorted(
+            [sorted([list(e[0]), list(e[1])]) for e in recomputed_edges]
+        )
+        if cert_canonical != recomputed_canonical:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"cut_edges set mismatch: cert={len(cert_canonical)} edges, "
+                    f"recomputed={len(recomputed_canonical)} edges (or different set)"
+                ),
+            )
+
+        # 6. Witness: demand > cut_size
         commodity_demand = cert_dict["commodity_demand"]
         if commodity_demand <= cert_cut_size:
             return ValidationResult(
