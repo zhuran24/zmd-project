@@ -240,10 +240,29 @@ def validate_region_capacity(
         contributing_groups: List[Tuple[GroupId, int]] = [
             (g, d) for g, d in cert_dict["contributing_groups"]
         ]
+
+        # 2_pre. 去重: spec §2b demand_R = ∑_{g : P(g) ⊆ R} group.demand × cpp 是
+        # group 集合上的求和, **不是 multiset**. attacker 把同 group 写两次让
+        # demand_R 翻倍 → fake over-demand cut 误剪合法 state (GPT pro v3 P0).
+        # 真数据反例: actual demand=70, cap=139 (合法), cert duplicate group →
+        # demand=140 > cap=139 → 假证.
+        seen_gids: set = set()
+        for gid, _ in contributing_groups:
+            if gid in seen_gids:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"duplicate contributing group {gid!r} — spec §2b demand_R 是 "
+                        f"group 集合求和, 不允许 multiset (GPT pro v3 P0 反例)"
+                    ),
+                )
+            seen_gids.add(gid)
+
         # Gap 8 (Gemini round 30) 修: cells_per_pose lookup 经 helper, 不直接
         # 查 canonical_rules[gid] (gid 是 operation_type 不是顶层 key).
         from src.cuts.helpers.canonical_rules import cells_per_pose_for_group
-        for gid, _ in contributing_groups:
+        for gid, demand_in_cert in contributing_groups:
             # 2a. placement_rule → region mapping (skip if group is "free") — 必要 NOT 充分
             if not _group_falls_in_region(gid, region_kind, state):
                 return ValidationResult(
@@ -291,6 +310,20 @@ def validate_region_capacity(
                         f"(canonical_rules pose shape rotated)"
                     ),
                 )
+            # 3b. demand_in_cert tuple entry 真等 group.demand × current_cpp
+            # (GPT pro v3 P0: 防 cert tuple 内 fake demand_in_cert 跟其它 field 配
+            # 合伪造 over-demand)
+            expected_demand_in_cert = state.groups[gid].demand * current_cpp
+            if demand_in_cert != expected_demand_in_cert:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"contributing_groups tuple demand mismatch for {gid!r}: "
+                        f"cert={demand_in_cert}, expected={expected_demand_in_cert} "
+                        f"(= group.demand × cells_per_pose)"
+                    ),
+                )
 
         # 4. demand_R independent recompute
         try:
@@ -318,6 +351,29 @@ def validate_region_capacity(
                 kind="unsound",
                 elapsed_seconds=time.monotonic() - t0,
                 detail=f"witness fail: demand_R={recomputed_demand_R} ≤ cap_R={recomputed_cap_R}",
+            )
+
+        # 6. gap consistency (GPT pro v3 推荐顺手补): cert.gap 必 == demand - cap
+        # + 必 > 0. 防 cert tuple 内部 field 互相 inconsistent 走过.
+        cert_gap = cert_dict.get("gap")
+        if cert_gap is None:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail="cert missing gap field",
+            )
+        expected_gap = recomputed_demand_R - recomputed_cap_R
+        if cert_gap != expected_gap:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=f"gap mismatch: cert={cert_gap}, expected={expected_gap}",
+            )
+        if cert_gap <= 0:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=f"non-positive gap: {cert_gap} (cut 须 strict demand > cap)",
             )
 
         # LP dual / Farkas algebraic check defer Phase 1.5+ (spec §7b open question #1).

@@ -377,6 +377,79 @@ def _mock_boundary_io_poses_partial_outside_union(n_in: int, n_out: int):
     return poses
 
 
+def test_validator_unsound_duplicate_contributing_groups():
+    """GPT pro v3 P0 反例: cert.contributing_groups 把同一 group 重复列, 让 demand_R
+    被重复累加 → fake over-demand cut 误剪合法 state.
+
+    反例: actual demand=46 (boundary_io), cap_R=139 - 2 exterior = 137 (合法).
+    cert duplicate ("boundary_io", 138) 两次 → demand=276 > cap=137 → 假证.
+    validator 必拒 duplicate group entry.
+    """
+    state = _make_state(boundary_exterior_blocks=2)
+    # 先用 oracle 产 sound cut 然后改 cert duplicate
+    sound_cut = generate_region_capacity_cuts(state, CANONICAL_RULES)[0]
+    cert_dict = json.loads(sound_cut.geometric_payload)
+    # 复制 boundary_io entry → contributing_groups 含 2 个相同 gid
+    cert_dict["contributing_groups"] = [
+        ["boundary_io", 138],
+        ["boundary_io", 138],
+    ]
+    cert_dict["demand_R"] = 276
+    cert_dict["gap"] = 276 - cert_dict["cap_R"]
+    bad_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    bad_cut = Cut(
+        cut_id=sound_cut.cut_id, family=sound_cut.family, literals=None,
+        geometric_payload=bad_payload,
+        scope=sound_cut.scope, cert=sound_cut.cert,
+        family_version=sound_cut.family_version,
+        validator_version=sound_cut.validator_version,
+    )
+    vr = validate_region_capacity(bad_cut, state, CANONICAL_RULES)
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "duplicate contributing group" in (vr.detail or "")
+
+
+def test_validator_unsound_contributing_groups_tuple_demand_fake():
+    """GPT pro v3 顺手补: cert tuple demand_in_cert 必 == group.demand × cpp.
+    防 attacker 在 tuple 内 inflate demand 跟其他 field 配合伪造.
+    """
+    state = _make_state(boundary_exterior_blocks=2)
+    sound_cut = generate_region_capacity_cuts(state, CANONICAL_RULES)[0]
+    cert_dict = json.loads(sound_cut.geometric_payload)
+    # tuple demand 写错 (真实 46*3=138, 改 999)
+    cert_dict["contributing_groups"] = [["boundary_io", 999]]
+    bad_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    bad_cut = Cut(
+        cut_id=sound_cut.cut_id, family=sound_cut.family, literals=None,
+        geometric_payload=bad_payload,
+        scope=sound_cut.scope, cert=sound_cut.cert,
+        family_version=sound_cut.family_version,
+        validator_version=sound_cut.validator_version,
+    )
+    vr = validate_region_capacity(bad_cut, state, CANONICAL_RULES)
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "tuple demand mismatch" in (vr.detail or "")
+
+
+def test_validator_unsound_gap_inconsistent():
+    """gap consistency: cert.gap 必 == demand_R - cap_R."""
+    state = _make_state(boundary_exterior_blocks=2)
+    sound_cut = generate_region_capacity_cuts(state, CANONICAL_RULES)[0]
+    cert_dict = json.loads(sound_cut.geometric_payload)
+    cert_dict["gap"] = 99  # tampered (真 = 138 - 137 = 1)
+    bad_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    bad_cut = Cut(
+        cut_id=sound_cut.cut_id, family=sound_cut.family, literals=None,
+        geometric_payload=bad_payload,
+        scope=sound_cut.scope, cert=sound_cut.cert,
+        family_version=sound_cut.family_version,
+        validator_version=sound_cut.validator_version,
+    )
+    vr = validate_region_capacity(bad_cut, state, CANONICAL_RULES)
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "gap mismatch" in (vr.detail or "")
+
+
 def test_oracle_skips_group_when_some_pose_outside_R():
     """GPT pro round 2 P0-1 反例: boundary_io 46 pose 中 14 个占 (31,69) 等 cell
     不在 left ∪ bottom union → 整 group 不 P(g)⊆R (spec §2b 严格) → oracle 不当
