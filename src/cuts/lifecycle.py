@@ -234,6 +234,14 @@ class BState:
     # Structure: {"facility_pools": {ft: [pose, pose, ...]}}
     # 每 pose 含 pose_id (str) + anchor + occupied_cells + input/output_port_cells.
     candidate_placements: Optional[Dict] = None
+    # GPT pro v4 P0 fix: F2 cutset / F4 component_reach 必须能 verify cert 的
+    # commodity_demand / commodity_id 跟真实 commodity registry 一致. Phase 1.5+
+    # production inject 这两个 field; Phase 1.1 默认 None → F2/F4 validator
+    # fail-closed (不允外部 cut 伪造 commodity).
+    # commodity_demands schema: {commodity_id: int} (cross-partition demand sum).
+    commodity_demands: Optional[Dict[str, int]] = None
+    # commodity_routes schema: {commodity_id: {"src": (x,y), "sink": (x,y)}}
+    commodity_routes: Optional[Dict[str, Dict]] = None
 
 
 # ============================================================================

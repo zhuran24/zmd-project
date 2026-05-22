@@ -108,10 +108,16 @@ def replay_cut(
 
     # decision == "ATTACH" — 跑 Step 7 post-attach validation
     if canonical_rules is None:
-        # Phase 1.0 framework: BState 还没持 parsed rules (P1.4 加).
-        # 暂时跳过 post-attach validation — P1.5+ unlock.
-        store.reactivate_cut(cut.cut_id)
-        return "ATTACH"
+        # GPT pro v4 P0 fix: 原 silent ATTACH 绕过 validator 是 production
+        # critical bypass — Step L 修的 F1 duplicate / F2/F3/F4 binding 全
+        # 跳过. fail-closed: state.canonical_rules fallback, 没 inject 走
+        # HOLD (不 active), 等下次 caller 传 rules 时 replay 再 verify.
+        if state.canonical_rules is not None:
+            canonical_rules = state.canonical_rules
+        else:
+            if cut.cut_id not in store.quarantined:
+                store.hold_cut(cut.cut_id)
+            return "HOLD"
 
     validator = FAMILY_VALIDATORS.get(cut.family)
     if validator is None:

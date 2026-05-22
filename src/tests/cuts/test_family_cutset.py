@@ -19,11 +19,9 @@ from __future__ import annotations
 import base64
 import json
 
-import pytest
 
 from src.cuts.families.cutset import (
     _cross_partition_edges,
-    _decode_bitset,
     _free_cells,
     _has_patch_escape,
     evaluate_geometric_cutset,
@@ -48,9 +46,15 @@ def _encode_bitset(cells: set, grid_size: int = 70) -> str:
     return base64.b64encode(bytes(arr)).decode("ascii")
 
 
-def _make_enclosed_state(patch: set, grid_size: int = 70) -> BState:
+def _make_enclosed_state(
+    patch: set, grid_size: int = 70, commodity_demand: int = 2,
+) -> BState:
     """让 free_cells == patch — ghost 覆盖 patch 外的全部 cell. Test 用 enclosed
     partition (spec §1a 严格要求, GPT pro round 2 P0-3 fix).
+
+    GPT pro v4 P0 fix: commodity_demands registry 必 inject 让 F2 validator
+    pass-through. Phase 1.5+ production 真 inject; test mock c1 commodity 跟
+    cert.commodity_demand 一致.
     """
     all_cells = {(x, y) for x in range(grid_size) for y in range(grid_size)}
     ghost = all_cells - patch
@@ -59,6 +63,7 @@ def _make_enclosed_state(patch: set, grid_size: int = 70) -> BState:
         ghost_cells=frozenset(ghost),
         artifact_hashes={"canonical_rules.json": "h1"},
         available_oracle_versions=frozenset({"cutset_v1"}),
+        commodity_demands={"c1": commodity_demand},
     )
 
 
@@ -209,7 +214,7 @@ def test_validate_cutset_unsound_witness_fail():
     """demand ≤ cut_size → 没 Menger violation."""
     side_a = {(0, 0)}
     side_b = {(0, 1)}
-    state = _make_enclosed_state(patch={(0, 0), (0, 1)})
+    state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=1)
     cut = _make_cutset_cut(side_a, side_b, cut_size=1, commodity_demand=1)
     vr = validate_cutset(cut, state, canonical_rules={})
     assert vr.kind == "unsound"
@@ -339,6 +344,69 @@ def test_evaluate_geometric_no_violation_false():
 # ============================================================================
 # Oracle stub
 # ============================================================================
+
+def test_validate_cutset_schema_err_when_commodity_registry_missing():
+    """GPT pro v4 P0 fix: F2 validator 必 require state.commodity_demands.
+    None → schema_err (fail-closed Phase 1.1; Phase 1.5+ Oracle inject 后 unlock).
+    """
+    state = BState(
+        groups={"g": GroupState("g", demand=1, pose_domain=frozenset())},
+        ghost_cells=frozenset((x, y) for x in range(70) for y in range(70) if (x, y) not in {(0, 0), (0, 1)}),
+        commodity_demands=None,  # 关键: 无 registry
+    )
+    side_a, side_b = {(0, 0)}, {(0, 1)}
+    cut = _make_cutset_cut(side_a, side_b, cut_size=1, commodity_demand=2)
+    vr = validate_cutset(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "commodity_demands registry" in vr.detail
+
+
+def test_validate_cutset_unsound_fake_commodity_demand():
+    """GPT pro v4 P0 反例: attacker cert.commodity_demand=999, registry sum 远小.
+    validator 必拒 (防 fake over-demand cut).
+    """
+    state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=2)
+    side_a, side_b = {(0, 0)}, {(0, 1)}
+    # cert 写 999 但 registry "c1": 2
+    cut = _make_cutset_cut(side_a, side_b, cut_size=1, commodity_demand=999)
+    vr = validate_cutset(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "commodity_demand mismatch" in vr.detail
+
+
+def test_validate_cutset_unsound_fake_commodity_id():
+    """attacker cert.contributing_commodities=['FAKE'] 不在 registry → reject."""
+    state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=2)
+    side_a, side_b = {(0, 0)}, {(0, 1)}
+    cert_dict = {
+        "side_a_bitset_b64": _encode_bitset(side_a),
+        "side_b_bitset_b64": _encode_bitset(side_b),
+        "cut_edges": [[list((0, 0)), list((0, 1))]],
+        "cut_size": 1,
+        "commodity_demand": 2,
+        "gap": 1,
+        "contributing_commodities": ["FAKE_NOT_IN_REGISTRY"],
+        "menger_witness_kind": "max_flow_LP",
+        "witness_blob_b64": None,
+    }
+    payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    cut = Cut(
+        cut_id="F2-fake-c", family="cutset", literals=None,
+        geometric_payload=payload,
+        scope=CutScope(
+            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            exterior_blocks_hash="h", source_digest="poc_source_digest",
+            artifact_hashes={"canonical_rules.json": "h1"},
+            oracle_abstraction_version="cutset_v1",
+        ),
+        cert=OracleCert(cert_kind="menger_min_cut", cert_payload=payload, cert_hash="ch"),
+        family_version="v1.0", validator_version="v1.0",
+    )
+    vr = validate_cutset(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    # 走 6b 还是 6c — 看顺序, registry sum=0 != cert 2 先 fire (6b)
+    assert "commodity_demand mismatch" in vr.detail or "not in registry" in vr.detail
+
 
 def test_generate_cutset_cuts_stub_returns_empty():
     state = _make_enclosed_state(patch=set())

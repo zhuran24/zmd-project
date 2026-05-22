@@ -199,8 +199,51 @@ def validate_cutset(
                 ),
             )
 
-        # 6. Witness: demand > cut_size
+        # 6. commodity_demand 必有 source-of-truth registry (GPT pro v4 P0 fix).
+        # 反例: external cert 写 commodity_demand=999, validator 没 registry 重算
+        # → 假 over-demand cut ATTACH. fail-closed: state.commodity_demands 没
+        # inject → schema_err.
+        if state.commodity_demands is None:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    "F2 cutset validator 需 state.commodity_demands registry "
+                    "(GPT pro v4 P0 — Phase 1.1 default None fail-closed, "
+                    "Phase 1.5+ production 真 inject 后 unlock)"
+                ),
+            )
+        # 6a. cert.contributing_commodities 必跟 state.commodity_demands 一致
+        contributing = cert_dict.get("contributing_commodities", [])
+        if not contributing:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail="F2 cert missing contributing_commodities",
+            )
+        # 6b. demand sum from registry == cert.commodity_demand
+        registry_demand = sum(
+            state.commodity_demands.get(c, 0) for c in contributing
+        )
         commodity_demand = cert_dict["commodity_demand"]
+        if registry_demand != commodity_demand:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"commodity_demand mismatch: cert={commodity_demand}, "
+                    f"registry sum={registry_demand} (commodities={contributing})"
+                ),
+            )
+        # 6c. 任一 commodity 必真在 registry (防 fake commodity_id)
+        for c in contributing:
+            if c not in state.commodity_demands:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=f"contributing commodity {c!r} not in registry",
+                )
+        # 7. Witness: demand > cut_size
         if commodity_demand <= cert_cut_size:
             return ValidationResult(
                 kind="unsound",

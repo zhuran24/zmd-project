@@ -18,12 +18,7 @@ import pytest
 from src.cuts.lifecycle import (
     BState,
     Cut,
-    CutScope,
-    GHOST_AGNOSTIC,
     GroupState,
-    OracleCert,
-    compute_blocked_cells_hash,
-    compute_exterior_blocks_hash,
 )
 from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
 from src.cuts.replay import regression_sweep, replay_cut
@@ -83,6 +78,44 @@ def _make_state(extra_block: bool = False) -> BState:
             "facility_pools": {"boundary_storage_port": poses},
         },
     )
+
+
+def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
+    """GPT pro v4 P0 fix: replay_cut(canonical_rules=None) 原 silent ATTACH 绕过
+    validator (任何 Step A-L 修都 bypass). 修后:
+    - state.canonical_rules 已 inject → fallback 用它跑 validator
+    - state.canonical_rules 也 None → HOLD (不 active, 等下次 caller 传 rules)
+    """
+    s = _make_state()  # 有 canonical_rules + facility_templates
+    cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
+    assert cuts
+    cut = cuts[0]
+    from src.cuts.store import CutStore
+    store = CutStore()
+    store.add_cut(cut)
+    store.held.add(cut.cut_id)  # 模拟 held → 进入 replay ATTACH branch
+    # Case A: caller 传 None, state.canonical_rules 非 None → fallback validator OK
+    decision = replay_cut(cut, s, store, canonical_rules=None)
+    assert decision == "ATTACH", f"state fallback 期望 ATTACH 得 {decision}"
+
+    # Case B: caller 传 None + state.canonical_rules=None → HOLD (fail-closed)
+    s_no_rules = BState(
+        groups=s.groups, cell_owner=s.cell_owner, ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells, exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=None,  # 关键: 无 source
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+        candidate_placements=s.candidate_placements,
+    )
+    store2 = CutStore()
+    store2.add_cut(cut)
+    store2.held.add(cut.cut_id)
+    decision = replay_cut(cut, s_no_rules, store2, canonical_rules=None)
+    assert decision == "HOLD", f"无 source 期望 HOLD (fail-closed) 得 {decision}"
+    assert cut.cut_id in store2.held
+    assert cut.cut_id not in store2.quarantined
 
 
 def _make_f1_cut(state: BState) -> Cut:

@@ -181,21 +181,54 @@ def validate_component_reach(
                     ),
                 )
 
-        # 8. commodity_id (spec 04 §3 line 50 必填字段, allowed but verifier defer).
-        #
-        # Gemini round 34 High 升级 fix: 原 Step D fail-closed (schema_err on
-        # carry) 跟 spec 必填字段冲突 — Phase 1.5+ Oracle 按 spec 输出后 100%
-        # F4 cut Quarantine 瘫痪. 改 spec-aligned 允许 carry.
-        #
-        # Soundness 不依赖 commodity_id: 当前 v1.1 minimum-viable 是 geometric-only
-        # (BFS connectivity 不看 commodity name). attacker 塞 fake commodity_id
-        # 不影响 src/sink_component bitset 重算严等 + separator_cells 验. cert
-        # 几何 soundness 由 step 4-7 保证.
-        #
-        # commodity_id 作 metadata (causation tracing / debug audit) 通过. Phase
-        # 1.5+ commodity_route assumption verifier 落地后再 enforce 真验存在.
-        # 防 attacker 借此 metadata field spread misinfo — 当前 acceptable risk
-        # (metadata 不入 cut application 真证明路径).
+        # 8. commodity_id 真存在 + src/sink 对应 registry 真 route (GPT pro v4 P0).
+        # 原 spec-aligned pass-through 让 attacker 塞 fake commodity_id, BFS sound
+        # 但 cut 业务证明 (这两 cell 必须连通 因为 commodity X 要 route) 没绑.
+        # apply-to-master 拿 cut 剪状态时假 commodity 误剪合法. fail-closed:
+        # state.commodity_routes 没 inject → schema_err.
+        commodity_id = cert_dict.get("commodity_id")
+        if commodity_id is None:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail="F4 cert missing commodity_id (spec 04 §3 必填)",
+            )
+        if state.commodity_routes is None:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    "F4 component_reach validator 需 state.commodity_routes registry "
+                    "(GPT pro v4 P0 — Phase 1.1 default None fail-closed, "
+                    "Phase 1.5+ production 真 inject 后 unlock)"
+                ),
+            )
+        route = state.commodity_routes.get(commodity_id)
+        if route is None:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=f"commodity_id {commodity_id!r} not in commodity_routes registry",
+            )
+        # 8a. cert.src_cell 必跟 registry route.src 一致
+        registry_src = tuple(route.get("src", ()))
+        registry_sink = tuple(route.get("sink", ()))
+        if registry_src != tuple(src_cell):
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"src_cell mismatch: cert={src_cell}, registry route src={registry_src}"
+                ),
+            )
+        if registry_sink != tuple(sink_cell):
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"sink_cell mismatch: cert={sink_cell}, registry route sink={registry_sink}"
+                ),
+            )
 
         return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)
 

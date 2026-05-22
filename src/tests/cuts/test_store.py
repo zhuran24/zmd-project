@@ -13,7 +13,6 @@ from __future__ import annotations
 import pytest
 
 from src.cuts.lifecycle import (
-    Assumption,
     AnonymousSlotRef,
     AttachDecision,
     BState,
@@ -23,9 +22,6 @@ from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
     GroupState,
     OracleCert,
-    compute_blocked_cells_hash,
-    compute_exterior_blocks_hash,
-    compute_ghost_rect_id,
 )
 from src.cuts.store import CutStore, QuarantineReason
 

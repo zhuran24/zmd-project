@@ -41,13 +41,29 @@ def _make_state(
     *,
     ghost_cells: set = None,
     cell_owner: dict = None,
+    commodity_routes: dict = None,
 ) -> BState:
+    """GPT pro v4 P0 fix: commodity_routes registry 必 inject 让 F4 validator
+    pass-through. 默认 mock c1 commodity src=(0,0) sink=(69,0) (跟 _make_component_reach_cut
+    default src/sink 对齐). test 调时传特定 routes 让 cert.commodity_id 跟 registry
+    src/sink 一致.
+    """
+    if commodity_routes is None:
+        # default cover _make_component_reach_cut 两组常用 src/sink (跟下面
+        # default args 一致): (0,0)→(0,69) + (0,0)→(69,0) + (0,0)→(0,1).
+        commodity_routes = {
+            "c1": {"src": (0, 0), "sink": (0, 69)},
+            "c1_horizontal": {"src": (0, 0), "sink": (69, 0)},
+            "c1_short": {"src": (0, 0), "sink": (0, 1)},
+            "c2": {"src": (5, 5), "sink": (50, 50)},
+        }
     return BState(
         groups={"g": GroupState("g", demand=1, pose_domain=frozenset())},
         ghost_cells=frozenset(ghost_cells or set()),
         cell_owner=cell_owner or {},
         artifact_hashes={"canonical_rules.json": "h1"},
         available_oracle_versions=frozenset({"component_reach_v1"}),
+        commodity_routes=commodity_routes,
     )
 
 
@@ -57,7 +73,7 @@ def _make_component_reach_cut(
     sink_cell: tuple = (0, 69),
     src_comp: set = None,
     sink_comp: set = None,
-    commodity_id: str = None,
+    commodity_id: str = "c1",
     state: BState = None,
 ) -> Cut:
     """commodity_id 默认 None (Phase 1.1 v1.1 minimum-viable spatial-only).
@@ -154,17 +170,19 @@ def test_validator_ok_when_disconnected():
     """src + sink in disjoint components on disconnected free_cells.
 
     Step D 后: cert.src/sink_component 必 == BFS 重算 — 用 state.recompute 自动算.
+    Step M 后: cert.commodity_id 必 ∈ state.commodity_routes (src=(0,0) sink=(69,0)
+    → c1_horizontal mock).
     """
-    # ghost 占 row x=35 (除 (0,35) (1,35)) → 70x70 grid split into top half (0-34) + bottom half (36-69)
+    # ghost 占 row x=35 → 70x70 grid split into top (0-34) + bottom (36-69)
     ghost = {(35, y) for y in range(70)}
     state = _make_state(ghost_cells=ghost)
 
     src_cell = (0, 0)
     sink_cell = (69, 0)
     cut = _make_component_reach_cut(
-        src_cell=src_cell,
-        sink_cell=sink_cell,
-        state=state,  # auto-recompute BFS components for cert
+        src_cell=src_cell, sink_cell=sink_cell,
+        commodity_id="c1_horizontal",  # 跟 default registry route 一致
+        state=state,
     )
     vr = validate_component_reach(cut, state, canonical_rules={})
     assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
@@ -361,7 +379,8 @@ def test_validator_ok_separator_in_ghost_or_owner():
     src_cell = (0, 0)
     sink_cell = (69, 0)
     cut_base = _make_component_reach_cut(
-        src_cell=src_cell, sink_cell=sink_cell, state=state,
+        src_cell=src_cell, sink_cell=sink_cell,
+        commodity_id="c1_horizontal", state=state,
     )
     cert_dict = json.loads(cut_base.geometric_payload)
     cert_dict["separator_cells"] = [[35, 0], [35, 5]]  # 都在 ghost row
@@ -380,21 +399,65 @@ def test_validator_ok_separator_in_ghost_or_owner():
     assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
 
 
-def test_validator_ok_commodity_id_passes_through_spec_aligned():
-    """Gemini round 34 High 升级 fix: spec 04 §3 line 50 commodity_id 必填.
-    原 Step D fail-closed 跟 spec 冲突 → Phase 1.5+ Oracle 上线 100% Quarantine.
-    改 spec-aligned 允许 carry, soundness 不依赖 (BFS connectivity 不看
-    commodity name); commodity_route verifier defer Phase 1.5+.
+def test_validator_schema_err_when_commodity_routes_missing():
+    """GPT pro v4 P0 fix: F4 validator 必 require state.commodity_routes.
+    None → schema_err (fail-closed Phase 1.1).
+    """
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost, commodity_routes=None)  # 关键: 无 registry
+    cut = _make_component_reach_cut(
+        src_cell=(0, 0), sink_cell=(69, 0), commodity_id="c1_horizontal", state=state,
+    )
+    # state 也要 commodity_routes None 让 cert build OK (cert.commodity_id 仍有)
+    state_no_routes = BState(
+        groups=state.groups, ghost_cells=state.ghost_cells,
+        cell_owner=state.cell_owner, artifact_hashes=state.artifact_hashes,
+        available_oracle_versions=state.available_oracle_versions,
+        commodity_routes=None,
+    )
+    vr = validate_component_reach(cut, state_no_routes, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "commodity_routes registry" in vr.detail
+
+
+def test_validator_unsound_src_sink_mismatch_registry():
+    """attacker cert.src_cell=(0,0) cert.sink_cell=(69,0), 但 commodity_id 是
+    c1 (registry src=(0,0) sink=(0,69)). cert sink 跟 registry sink 不一致 →
+    unsound (GPT pro v4 P0: 防 attacker 借 metadata field 错绑 commodity).
+    """
+    # ghost row x=35 让 src=(0,0) sink=(69,0) disconnected (horizontal split)
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    cut = _make_component_reach_cut(
+        src_cell=(0, 0), sink_cell=(69, 0),  # horizontal
+        commodity_id="c1",  # 但 registry c1 是 vertical route (sink=(0,69))
+        state=state,
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "sink_cell mismatch" in vr.detail or "src_cell mismatch" in vr.detail
+
+
+def test_validator_unsound_commodity_id_not_in_registry():
+    """GPT pro v4 P0 fix: F4 必 verify commodity_id 真存在 state.commodity_routes
+    registry. attacker 塞 fake commodity_id 即使几何 BFS sound 也假证 (因为没绑
+    业务: 这两 cell 必连通 因为 commodity X 要 route).
+
+    注意: 这 test 替原 Step G "spec-aligned pass-through" 测 — Gemini r34 当时
+    担心 Phase 1.5+ Oracle 100% quarantine, 但 GPT pro v4 实测显示 真生产 必须
+    registry verify; Phase 1.5+ Oracle inject 真 registry 时跟 cert.commodity_id
+    一致 → pass; 现 Phase 1.1 default registry mock 一致 → pass; 假 commodity → reject.
     """
     ghost = {(35, y) for y in range(70)}
     state = _make_state(ghost_cells=ghost)
     cut = _make_component_reach_cut(
         src_cell=(0, 0), sink_cell=(69, 0),
-        commodity_id="any_commodity_id",  # spec 必填字段, allowed
+        commodity_id="fake_not_in_registry",  # 不在 default mock registry
         state=state,
     )
     vr = validate_component_reach(cut, state, canonical_rules={})
-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "not in commodity_routes registry" in (vr.detail or "")
 
 
 # ============================================================================

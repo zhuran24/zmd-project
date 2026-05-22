@@ -27,7 +27,6 @@ from src.cuts.lifecycle import (
     CutScope,
     GHOST_AGNOSTIC,
     GroupState,
-    OracleCert,
     assumption_holds,
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
