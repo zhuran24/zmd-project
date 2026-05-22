@@ -36,6 +36,7 @@ from typing import Dict
 from src.cuts.helpers.candidate_placements import (
     DIRECTION_OFFSETS,
     direction_offset,
+    find_pose,
     pose_ports,
 )
 from src.cuts.lifecycle import BState, Cut, ValidationResult, evaluate_literal_multiset
@@ -112,6 +113,59 @@ def validate_port_exposure(
                     f"blocking facility not at front_cell: "
                     f"cert={blocking_group}#{blocking_slot}, "
                     f"actual={cell_owner_entry}"
+                ),
+            )
+
+        # 3b. blocking_slot → selected_poses[slot] 真等 blocking_pose_id (GPT pro
+        # v2 P0-2 fix). 反例: attacker cert blocking_slot=0 cell_owner check 通
+        # (slot 0 真有占), 但 cert.blocking_pose_id="p_fake" 跟 selected_poses[0]
+        # 实际 p_actual 不同. 缺这步 binding → 同 group 不同 pose 替换攻击成立.
+        blocking_state = state.groups.get(blocking_group)
+        if blocking_state is None:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=f"blocking group {blocking_group!r} not in state.groups",
+            )
+        if blocking_slot < 0 or blocking_slot >= len(blocking_state.selected_poses):
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"blocking_slot {blocking_slot} out of range "
+                    f"(group {blocking_group!r} has {len(blocking_state.selected_poses)} selected_poses)"
+                ),
+            )
+        actual_blocking_pose_id = blocking_state.selected_poses[blocking_slot]
+        if actual_blocking_pose_id != blocking_pose_id:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"blocking_pose_id mismatch: cert={blocking_pose_id!r}, "
+                    f"state.selected_poses[{blocking_slot}]={actual_blocking_pose_id!r}"
+                ),
+            )
+        # 3c. front_cell ∈ occupied_cells(blocking_pose_id) — 防 attacker 让 cell_owner
+        # mock 假占, 但 真实 blocking pose 不实际包含 front_cell.
+        blocking_pose = find_pose(state, blocking_group, blocking_pose_id)
+        if blocking_pose is None:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"cannot locate blocking pose {blocking_group}::{blocking_pose_id} — "
+                    f"candidate_placements / instance_to_facility_type 未 inject"
+                ),
+            )
+        occupied = {tuple(c) for c in blocking_pose.get("occupied_cells", [])}
+        if tuple(front_cell) not in occupied:
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"front_cell {front_cell} not in blocking_pose "
+                    f"{blocking_pose_id!r} occupied_cells (实际不阻挡 port)"
                 ),
             )
 

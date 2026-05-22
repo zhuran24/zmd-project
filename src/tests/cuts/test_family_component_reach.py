@@ -320,7 +320,38 @@ def test_validator_unsound_separator_cell_in_free():
     vr = validate_component_reach(cut, state, canonical_rules={})
     assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
     assert "separator cell" in vr.detail
-    assert "free_cells" in vr.detail
+    # GPT v2 round 2 High fix: detail 改 "not in cell_owner ∪ ghost_cells" (explicit
+    # positive check), 不只 "in free_cells" (negative).
+    assert "cell_owner" in vr.detail or "ghost" in vr.detail or "free_cells" in vr.detail
+
+
+def test_validator_unsound_separator_out_of_grid():
+    """GPT pro v2 round 2 High 反例: attacker 放 (999, 999) 等 out-of-grid cell
+    进 separator_cells. 既不在 free 也不在 cell_owner ∪ ghost — 原 Gemini r33 修
+    只验 not-in-free 漏过此 case. validator 必拒 in-grid violation.
+    """
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    src_cell, sink_cell = (0, 0), (69, 0)
+    cut_base = _make_component_reach_cut(
+        src_cell=src_cell, sink_cell=sink_cell, state=state,
+    )
+    cert_dict = json.loads(cut_base.geometric_payload)
+    cert_dict["separator_cells"] = [[999, 999]]  # out-of-grid
+    payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    cut = Cut(
+        cut_id="F4-sep-oog",
+        family="component_reach",
+        literals=None,
+        geometric_payload=payload,
+        scope=cut_base.scope,
+        cert=OracleCert(cert_kind="x", cert_payload=payload, cert_hash="ch"),
+        family_version="v1.1",
+        validator_version="v1.1",
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "not in grid" in vr.detail
 
 
 def test_validator_ok_separator_in_ghost_or_owner():

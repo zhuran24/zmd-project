@@ -723,18 +723,31 @@ def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
 def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
     """Step 7 — family-dispatched evaluate.
 
-    Phase 1.0 P1.1 framework: only F1 region_capacity wired. P1.5-P1.15 fills
-    other 8 families via ``src/cuts/families/<name>.py``.
+    GPT pro v2 round 1+2 P0-1 fix: 原硬编码 `region_capacity → return True` 是
+    Step F 修复未接入 production framework 的死路 — family 函数 evaluate_geometric_*
+    已真重算 sound, 但 framework 入口仍 bypass. 必须 dispatch 到 family evaluator.
 
-    Phase 1.1 P1.7: literal-based path wired via ``evaluate_literal_multiset``
-    (state_machine_v2 §5 multiset semantics).
+    Geometric: F1 region_capacity / F2 cutset / F4 component_reach 各有
+    families/<name>.evaluate_geometric_*. 其它 geometric family (F6/F8/F9
+    Phase 1.2/1.5+) 落地后注册到此 dispatch.
+
+    Literal: F3 port_exposure / F5 pattern_nogood / F7 power_hitting_set 走
+    generic evaluate_literal_multiset (state_machine_v2 §5 multiset semantics).
     """
     if cut.geometric_payload is not None:
+        # Lazy import 避循环 (families import lifecycle for BState/Cut types).
+        from src.cuts.families.component_reach import evaluate_geometric_component_reach
+        from src.cuts.families.cutset import evaluate_geometric_cutset
+        from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
         if cut.family == "region_capacity":
-            return True  # v1.2 §6 简化 — cert in scope deterministically violates
+            return evaluate_geometric_region_capacity(cut, state)
+        if cut.family == "cutset":
+            return evaluate_geometric_cutset(cut, state)
+        if cut.family == "component_reach":
+            return evaluate_geometric_component_reach(cut, state)
         raise NotImplementedError(
-            f"Phase 1.0 P1.1 framework: only F1 evaluate wired; "
-            f"family={cut.family} 在 Phase 1.1+ 实施 src/cuts/families/."
+            f"family={cut.family} geometric evaluator 未注册 — "
+            f"Phase 1.2/1.5+ F6/F8/F9 实施时加入此 dispatch."
         )
     # literal-based — generic multiset eval (F3/F5/F7 all use this)
     return evaluate_literal_multiset(cut, state)

@@ -288,7 +288,7 @@ def test_validate_port_exposure_ok():
         port_cell=(10, 10), port_direction="W", front_cell=(9, 10),
     )
     cut = _make_port_exposure_cut(cert_payload)
-    state = _make_state(cell_owner={(9, 10): ("refinery", 0)})
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)}, refinery_poses=["p3"])
     vr = validate_port_exposure(cut, state, CANONICAL_RULES)
     assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
 
@@ -357,7 +357,10 @@ def test_validate_port_exposure_cert_literal_multiset_mismatch():
         ),
         family_version="v1.0", validator_version="v1.0",
     )
-    state = _make_state(cell_owner={(9, 10): ("refinery", 0)})
+    state = _make_state(
+        cell_owner={(9, 10): ("refinery", 0)},
+        refinery_poses=["p3"],  # binding step 3b 需 selected_poses[0]==p3
+    )
     vr = validate_port_exposure(cut, state, CANONICAL_RULES)
     assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
     assert "literals multiset mismatch" in (vr.detail or "")
@@ -393,7 +396,7 @@ def test_validate_port_exposure_slot_anonymity_in_binding():
         ),
         family_version="v1.0", validator_version="v1.0",
     )
-    state = _make_state(cell_owner={(9, 10): ("refinery", 0)})
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)}, refinery_poses=["p3"])
     vr = validate_port_exposure(cut, state, CANONICAL_RULES)
     assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
 

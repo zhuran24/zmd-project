@@ -152,18 +152,32 @@ def validate_component_reach(
             )
 
         # 7. separator_cells 全在 cell_owner ∪ ghost (不是 free) — spec 04 line 148
-        # (Gemini round 33 High fix). 若 attacker 谎报 separator cell 在 free,
-        # validator 必拒. v1.1 minimum-viable geometric only (不验 ID).
+        # GPT pro v2 round 2 High fix: 原 Gemini r33 修法只验 not-in-free, 漏验
+        # in-grid + explicit ∈ cell_owner ∪ ghost. attacker 放 (999,999) 等
+        # out-of-grid cell, 既不在 free 也不在任何集合 → silent pass. 防御策略:
+        # 显式 ⊆ (cell_owner ∪ ghost) ∩ in-grid.
         separator_cells = cert_dict.get("separator_cells", [])
         for sep_cell_raw in separator_cells:
             sep_cell = tuple(sep_cell_raw)
-            if sep_cell in free_cells:
+            # 7a. in-grid (70x70 hardcoded per project grid 约定)
+            if not (
+                len(sep_cell) == 2
+                and isinstance(sep_cell[0], int) and isinstance(sep_cell[1], int)
+                and 0 <= sep_cell[0] < 70 and 0 <= sep_cell[1] < 70
+            ):
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=f"separator cell {sep_cell} not in grid (0-69 x 0-69)",
+                )
+            # 7b. ∈ cell_owner ∪ ghost (explicit positive check, 不只 not-in-free)
+            if sep_cell not in state.cell_owner and sep_cell not in state.ghost_cells:
                 return ValidationResult(
                     kind="unsound",
                     elapsed_seconds=time.monotonic() - t0,
                     detail=(
-                        f"separator cell {sep_cell} is in free_cells (should be in "
-                        f"cell_owner ∪ ghost per spec 04_component_reach.md line 148)"
+                        f"separator cell {sep_cell} not in cell_owner ∪ ghost_cells "
+                        f"(spec 04_component_reach.md line 148)"
                     ),
                 )
 

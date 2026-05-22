@@ -223,7 +223,12 @@ def validate_cutset(
 def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
     """Hot path: re-check Menger violation on current free_cells.
 
-    Returns True iff demand > current_cut_size (cut still violating).
+    GPT pro v2 round 2 fix: 原版只重算 cut_edges, 漏验 partition enclosure. 反例:
+    initial state patch 被 ghost 围住, validator OK; 后续 state 旁边 free cell 打
+    开, 流可绕路 → validator 报 unsound, 但 evaluator 仍返 True. hot path 必须
+    同步验 (A∪B) ⊆ free + enclosure (跟 validator step 2/3 一致).
+
+    Returns True iff cut 仍 violating (partition 闭合 + demand > current_cut_size).
     """
     if cut.geometric_payload is None:
         return False  # fail-safe: schema 缺失不报 violate
@@ -231,5 +236,12 @@ def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
     side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
     side_b = _decode_bitset(cert_dict["side_b_bitset_b64"])
     free_cells = _free_cells(state)
+    patch = side_a | side_b
+    # partition cells must remain free (cell_owner / ghost 变化后 partition 失效)
+    if patch - free_cells:
+        return False
+    # patch enclosure: state 变化引入 patch 外 free cell 让流绕路 → 不再 violating
+    if _has_patch_escape(patch, free_cells):
+        return False
     current_edges = _cross_partition_edges(side_a, side_b, free_cells)
     return cert_dict["commodity_demand"] > len(current_edges)

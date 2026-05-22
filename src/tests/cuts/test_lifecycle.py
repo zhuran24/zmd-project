@@ -418,6 +418,48 @@ def test_evaluate_geometric_region_capacity_returns_true():
     assert step_7_evaluate_cut(cut, s) is True
 
 
+def test_step_7_dispatches_to_family_evaluator_for_stale_f1():
+    """GPT pro v2 P0-1 regression: step_7_evaluate_cut 必 dispatch family evaluator,
+    不准 region_capacity 硬编码 return True. 反例: F1 cut 在 oracle 时 demand > cap
+    (True), state 变化让 cap >= demand 后 step_7 必返 False (跟 family evaluator 一致).
+    """
+    from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
+    s_init = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        s_init, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+    # 初始 state: demand > cap, evaluator + step_7 都 True
+    assert evaluate_geometric_region_capacity(cut, s_init) is True
+    assert step_7_evaluate_cut(cut, s_init) is True
+
+    # 改 state 让 cap 增 (移除 exterior_blocks + ghost_cells) → demand <= cap → cut 失效
+    from src.cuts.lifecycle import BState, GroupState
+    s_recovered = BState(
+        groups={
+            gid: GroupState(
+                group_id=gid, demand=g.demand, pose_domain=g.pose_domain,
+                selected_poses=list(g.selected_poses),
+            )
+            for gid, g in s_init.groups.items()
+        },
+        cell_owner=dict(s_init.cell_owner),
+        ghost_rect=None,
+        ghost_cells=frozenset(),          # 清 ghost
+        exterior_blocks=frozenset(),       # 清 exterior
+        artifact_hashes=dict(s_init.artifact_hashes),
+        available_oracle_versions=s_init.available_oracle_versions,
+        canonical_rules=s_init.canonical_rules,
+        facility_templates=s_init.facility_templates,
+        instance_to_facility_type=s_init.instance_to_facility_type,
+        candidate_placements=s_init.candidate_placements,
+    )
+    # family evaluator 真重算 sound:
+    assert evaluate_geometric_region_capacity(cut, s_recovered) is False
+    # step_7 必跟 family 一致 (P0-1 fix: 接 dispatch)
+    assert step_7_evaluate_cut(cut, s_recovered) is False
+
+
 def test_assumption_unknown_key_fails_closed():
     s = make_state_with_crusher_on_left_baseline()
     unknown_assumption = Assumption(key="unknown_key", value="v")
