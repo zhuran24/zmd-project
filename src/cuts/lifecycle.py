@@ -185,10 +185,16 @@ class ValidationResult:
 
 @dataclass
 class GroupState:
+    """state_machine_v2.md §2 contract.
+
+    Gap 12 修 (round 31): selected_poses **必须** List[PoseId] (just pose_id,
+    group_id 已在 GroupState.group_id field). 旧版 PoC 写 List[Tuple[GroupId,
+    PoseId]] 跟 spec 撕裂. multiset eval 同步修.
+    """
     group_id: GroupId
     demand: int
-    pose_domain: FrozenSet[Tuple[GroupId, PoseId]]  # Gap 10 (round 30): PoseId=str
-    selected_poses: List[Tuple[GroupId, PoseId]] = field(default_factory=list)
+    pose_domain: FrozenSet[PoseId]
+    selected_poses: List[PoseId] = field(default_factory=list)
 
     @property
     def remaining_count(self) -> int:
@@ -694,11 +700,12 @@ def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
         if len(state.groups[gid].selected_poses) < required:
             return False
 
-    # Multiset subset match
+    # Multiset subset match — Gap 12 修 (round 31): selected_poses is List[PoseId]
+    # per spec, **不**是 List[Tuple]. group_id comes from outer loop.
     state_counts: Counter[Tuple[GroupId, PoseId]] = Counter()
     for gid in referenced_groups:
-        for tup_gid, pose_id in state.groups[gid].selected_poses:
-            state_counts[(tup_gid, pose_id)] += 1
+        for pose_id in state.groups[gid].selected_poses:
+            state_counts[(gid, pose_id)] += 1
 
     for k, demand_count in cut_demand.items():
         if state_counts[k] < demand_count:

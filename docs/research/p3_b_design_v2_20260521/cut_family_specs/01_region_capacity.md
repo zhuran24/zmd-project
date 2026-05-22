@@ -474,29 +474,39 @@ State 变化触发 re-evaluate 路径:
 F1 boundary saturation fixture 反例: crusher pose 占 left baseline (1,0)(2,0) →
 boundary 缺 1 demand. Family 1 region_capacity 这个反例的 cut 形式:
 
+**Gap 13 修 (round 31)**: fixture 已 update 跟 src union region 实施一致.
+原版 per-side fixture (region_kind="left_baseline", cap=68, demand=69) 在
+v1.2 Gap 6 修后 generator 不再发. 实际真数据 boundary_io 46 instance:
+demand_R = 46 × 3 = 138, union cap = 70+70-1 (overlap (0,0)) - ghost = 139 -
+ghost block. 单 ghost cell on union → cap=138 = demand → feasible (刚好);
+≥ 2 cells → INFEASIBLE.
+
 ```python
 F1_region_cut = Cut(
     cut_id="F1-region-capacity-001",
     family="region_capacity",
     literals=None,                                    # geometric mode (v3)
     geometric_payload=canonical_bytes({
-        "region_kind": "left_baseline",
-        "region_cells_bitset_b64": "<base64 70-bit mask: (x,0) for x in 0..69>",
-        "cap_R": 70 - 2,                              # left baseline 70 cells - 2 ghost-blocked
-        "demand_R": 23 * 3,                           # 23 boundary port pose × 3 cells = 69
-        "gap": 69 - 68,                                # demand 69 > cap 68 = gap 1
-        "contributing_groups": (("boundary_storage_port", 69),),
-        "lp_dual_ray_b64": None,                      # combinatorial path
+        "region_kind": "left_or_bottom_union",         # Gap 6 union (vs per-side)
+        "region_cells_bitset_b64": "<base64 139-bit mask: left ∪ bottom>",
+        "cap_R": 139 - 2,                              # union 139 cells - 2 ghost-blocked = 137
+        "demand_R": 46 * 3,                            # 真 boundary_io 46 instance × 3 cells = 138
+        "gap": 138 - 137,                              # demand 138 > cap 137 = gap 1
+        "contributing_groups": (("boundary_io", 3),),  # (gid 真 operation_type, cells_per_pose)
+        "cells_per_pose": {"boundary_io": 3},          # (Gemini r14 #5 source-of-truth)
+        "lp_dual_ray_b64": None,                       # combinatorial path
     }),
     scope=CutScope(
-        ghost_rect_id=GHOST_AGNOSTIC,                 # F1 不依赖 ghost
-        blocked_cells_hash="<crusher pose 占 cells hash>",
+        # Gap 6 v1.2: GHOST_AGNOSTIC iff ghost ∩ union == ∅; else bind ghost_rect_id
+        ghost_rect_id=GHOST_AGNOSTIC,
+        blocked_cells_hash="<state blocked cells hash>",
+        exterior_blocks_hash="<state exterior hash>",
         ...
         active_assumptions=(
             Assumption("left_or_bottom_boundary_saturation",
                        "left_baseline=23,bottom_baseline=23,demand=46,cells=138"),
             Assumption("placement_rule",
-                       "boundary_storage_port=left_or_bottom_boundary"),
+                       "boundary_io=left_or_bottom_boundary"),  # gid 是真 operation_type
         ),
     ),
     cert=OracleCert(
@@ -504,8 +514,8 @@ F1_region_cut = Cut(
         cert_payload=canonical_bytes({...}),
         cert_hash=...,
     ),
-    family_version="v1.0",
-    validator_version="v1.0",
+    family_version="v1.2",
+    validator_version="v1.2",
     ...
 )
 ```

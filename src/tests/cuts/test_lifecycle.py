@@ -94,7 +94,7 @@ def make_state_with_crusher_on_left_baseline() -> BState:
                 group_id="crusher_blue_iron",
                 demand=34,
                 pose_domain=frozenset(),
-                selected_poses=[("crusher_blue_iron", 42)],
+                selected_poses=["p42"],  # Gap 12: List[PoseId] str
             ),
         },
         cell_owner={

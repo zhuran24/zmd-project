@@ -26,11 +26,17 @@ Structure (data/preprocessed/candidate_placements.json):
 }
 ```
 
-Direction encoding: N/S/E/W (cardinal). Grid coords (x=row, y=col):
-- N (north): x decrease (dx=-1, dy=0)
-- S (south): x increase (dx=+1, dy=0)
-- E (east):  y increase (dx=0, dy=+1)
-- W (west):  y decrease (dx=0, dy=-1)
+Direction encoding: N/S/E/W (cardinal). **Gap 11 修 (round 31)**: 真数据
+geometry 实测 (manufacturing_3x3 pose anchor x=1 y=10 occupied x∈[1,3] y∈[10,12],
+output port (x=2, y=10, dir="N") — front must be outside facility):
+- 若 N=(-1,0): front=(1,10) — **in** occupied (facility 内). ✗
+- 若 N=(0,-1): front=(2,9) — out of occupied. ✓
+
+所以 grid coord (x=column, y=row) — y is row 上下方向, x is col 左右方向:
+- N (north): y decrease (dx=0, dy=-1)
+- S (south): y increase (dx=0, dy=+1)
+- E (east):  x increase (dx=+1, dy=0)
+- W (west):  x decrease (dx=-1, dy=0)
 
 Refs:
 - docs/research/p3_b_design_v2_20260521/cross_check/gemini_round_30_gap6_audit_NOT_GO.md
@@ -45,12 +51,16 @@ from src.cuts.lifecycle import BState, GroupId, PoseId
 
 
 # Direction encoding (N/S/E/W) → (dx, dy) cell offset.
+# Gap 11 修 (round 31): 真数据实测 — y is row, x is col.
 DIRECTION_OFFSETS = {
-    "N": (-1, 0),
-    "S": (1, 0),
-    "E": (0, 1),
-    "W": (0, -1),
+    "N": (0, -1),
+    "S": (0, 1),
+    "E": (1, 0),
+    "W": (-1, 0),
 }
+
+
+_POSE_CACHE_KEY = "__pose_id_cache__"
 
 
 def find_pose(
@@ -60,13 +70,13 @@ def find_pose(
 ) -> Optional[dict]:
     """Locate pose dict from candidate_placements.
 
-    Maps group_id → facility_type via instance_to_facility_type, then linear-scans
-    facility_pools[ft] for pose_id match.
+    Gap 14 修 (round 31): O(1) cache (dict[pose_id, pose]) 替 linear scan.
+    Cache 存 candidate_placements 内部 (under "__pose_id_cache__" key),
+    lazy-built first lookup. 266 instance × 4 facility_type, pool size up to
+    132 — linear scan was O(N) per validate.
 
-    Returns None if any lookup step fails (candidate_placements not injected /
-    facility_type unmapped / pose_id not found).
-
-    Phase 1.5+ optimize: pre-build pose_id → pose dict cache on state.
+    Maps group_id → facility_type via instance_to_facility_type, then O(1)
+    dict lookup. Returns None if any step fails.
     """
     cp = state.candidate_placements
     if cp is None:
@@ -74,12 +84,17 @@ def find_pose(
     ft = facility_type_for_group(state, gid)
     if ft is None:
         return None
-    pools = cp.get("facility_pools", {})
-    pool = pools.get(ft, [])
-    for pose in pool:
-        if pose.get("pose_id") == pose_id:
-            return pose
-    return None
+    # Lazy build cache (first call cost O(N), subsequent O(1))
+    cache = cp.get(_POSE_CACHE_KEY)
+    if cache is None:
+        cache = {}
+        for pool_ft, pool in cp.get("facility_pools", {}).items():
+            for pose in pool:
+                pid = pose.get("pose_id")
+                if pid:
+                    cache[(pool_ft, pid)] = pose
+        cp[_POSE_CACHE_KEY] = cache
+    return cache.get((ft, pose_id))
 
 
 def pose_ports(
