@@ -38,7 +38,24 @@ CANONICAL_RULES = {
 }
 
 
+_FACILITY_TEMPLATES = {
+    "boundary_storage_port": {
+        "placement_rule": "left_or_bottom_boundary",
+        "dimensions": {"w": 1, "h": 3},
+    },
+    "manufacturing_3x3": {
+        "dimensions": {"w": 3, "h": 3},
+    },
+}
+_INSTANCE_TO_FT = {
+    "boundary_storage_port": "boundary_storage_port",
+    "crusher_blue_iron": "manufacturing_3x3",
+}
+
+
 def _make_state(with_rules: bool = True) -> BState:
+    """Gap 8 修后, 'with_rules=False' 意味着 facility_templates +
+    instance_to_facility_type 都 None — helper 返 unknown, verifier fail-closed."""
     return BState(
         groups={
             "boundary_storage_port": GroupState(
@@ -46,6 +63,8 @@ def _make_state(with_rules: bool = True) -> BState:
             ),
         },
         canonical_rules=CANONICAL_RULES if with_rules else None,
+        facility_templates=_FACILITY_TEMPLATES if with_rules else None,
+        instance_to_facility_type=_INSTANCE_TO_FT if with_rules else None,
         available_oracle_versions=frozenset(),
     )
 

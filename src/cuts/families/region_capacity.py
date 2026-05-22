@@ -38,6 +38,9 @@ from src.cuts.lifecycle import BState, Cell, Cut, GroupId, ValidationResult
 RegionKind = Literal[
     "left_baseline",
     "bottom_baseline",
+    "left_or_bottom_union",  # Gap 6 (Gemini round 30): 新 region kind, F1 boundary
+                              # 真实数学 — left ∪ bottom = 139 cells (含 (0,0) 重叠).
+                              # 跟 spec §2b "P(g) ⊆ R" 严格 sound. 替 per-side cut.
     "interior_rect",
     "ghost_complement",
 ]
@@ -46,12 +49,13 @@ RegionKind = Literal[
 # Placement rule → applicable region kinds (per spec §1b).
 # Used by validator to verify group ∈ contributing_groups maps into the cert's
 # region_kind correctly.
+# Gap 6 (Gemini round 30): "left_or_bottom_boundary" → ONLY "left_or_bottom_union",
+# **不**映射 single side (per-side cut 数学 b) FN — bottom ghost block 时 left
+# demand 应升但 single-side cert demand_R static 不知道).
 _PLACEMENT_RULE_REGIONS: Dict[str, FrozenSet[str]] = {
-    "left_or_bottom_boundary": frozenset({"left_baseline", "bottom_baseline"}),
-    "left_baseline": frozenset({"left_baseline"}),
-    "bottom_baseline": frozenset({"bottom_baseline"}),
-    # "free" placement rule maps to no region (group can be anywhere — not a
-    # specific region's demand contributor).
+    "left_or_bottom_boundary": frozenset({"left_or_bottom_union"}),
+    # Phase 1.5+ 可能加 single-side rules (实际项目 canonical_rules.json
+    # **只** "left_or_bottom_boundary" 一种 placement_rule, 其他 free)
     "free": frozenset(),
 }
 
@@ -70,6 +74,11 @@ def compute_region_cells(
         return frozenset((x, 0) for x in range(grid_size))
     if region_kind == "bottom_baseline":
         return frozenset((0, y) for y in range(grid_size))
+    if region_kind == "left_or_bottom_union":
+        # Gap 6 (round 30): left ∪ bottom = 139 cells, (0,0) 共同 cell 去重.
+        left = {(x, 0) for x in range(grid_size)}
+        bottom = {(0, y) for y in range(grid_size)}
+        return frozenset(left | bottom)
     if region_kind == "ghost_complement":
         if state.ghost_rect is None:
             return frozenset()
@@ -119,19 +128,23 @@ def compute_demand(
 def _group_falls_in_region(
     gid: GroupId,
     region_kind: RegionKind,
-    canonical_rules: Dict,
+    state: BState,
 ) -> bool:
     """Verify group's placement_rule maps to region_kind (active_assumption 对齐).
+
+    Gap 8 (Gemini round 30) 修: placement_rule lookup 经
+    ``helpers.canonical_rules.placement_rule_for_group(state, gid)``,
+    **不**直接查 canonical_rules.get(gid) (gid 是 operation_type,
+    canonical_rules 顶层 keys 是 ['metadata', 'globals', 'facility_templates',
+    ...] — 不含 group_id).
 
     For "free" placement rule (e.g. crusher), the group can be placed anywhere
     — not a region-specific contributor. Spec §2b: only groups requiring
     P(g) ⊆ R count toward demand_R.
     """
-    group_entry = canonical_rules.get(gid)
-    if not isinstance(group_entry, dict):
-        return False
-    rule = group_entry.get("placement_rule")
-    if rule is None:
+    from src.cuts.helpers.canonical_rules import placement_rule_for_group
+    rule = placement_rule_for_group(state, gid)
+    if rule in ("unknown", "free"):
         return False
     valid_regions = _PLACEMENT_RULE_REGIONS.get(rule, frozenset())
     return region_kind in valid_regions
@@ -192,22 +205,34 @@ def validate_region_capacity(
         contributing_groups: List[Tuple[GroupId, int]] = [
             (g, d) for g, d in cert_dict["contributing_groups"]
         ]
+        # Gap 8 (Gemini round 30) 修: cells_per_pose lookup 经 helper, 不直接
+        # 查 canonical_rules[gid] (gid 是 operation_type 不是顶层 key).
+        from src.cuts.helpers.canonical_rules import cells_per_pose_for_group
         for gid, _ in contributing_groups:
             # 2. placement_rule → region mapping (skip if group is "free")
-            if not _group_falls_in_region(gid, region_kind, canonical_rules):
+            if not _group_falls_in_region(gid, region_kind, state):
                 return ValidationResult(
                     kind="unsound",
                     elapsed_seconds=time.monotonic() - t0,
                     detail=f"group {gid!r} placement_rule 不映射 {region_kind!r}",
                 )
-            # 3. cells_per_pose source-of-truth check
+            # 3. cells_per_pose source-of-truth check (via helper)
             if gid not in cert_cells_per_pose:
                 return ValidationResult(
                     kind="schema_err",
                     elapsed_seconds=time.monotonic() - t0,
                     detail=f"cert.cells_per_pose missing group {gid!r}",
                 )
-            current_cpp = canonical_rules[gid].get("cells_per_pose")
+            current_cpp = cells_per_pose_for_group(state, gid)
+            if current_cpp is None:
+                return ValidationResult(
+                    kind="schema_err",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"cannot resolve cells_per_pose for {gid!r} — "
+                        f"facility_templates / instance_to_facility_type 未 inject"
+                    ),
+                )
             if cert_cells_per_pose[gid] != current_cpp:
                 return ValidationResult(
                     kind="unsound",

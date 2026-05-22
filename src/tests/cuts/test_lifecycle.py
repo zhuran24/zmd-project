@@ -46,6 +46,10 @@ from src.cuts.lifecycle import (
 # F1 反例 fixture (red_fixtures/F1_boundary_saturation.md)
 # ============================================================================
 
+# Legacy PoC fixture (for step_1_generate_region_capacity_combinatorial which
+# is the P1.0 framework reference — passes group→cells_per_pose dict directly).
+# Production callers use state.facility_templates + state.instance_to_facility_type
+# instead (Gap 8 修 path).
 CANONICAL_RULES = {
     "boundary_storage_port": {
         "placement_rule": "left_or_bottom_boundary",
@@ -55,6 +59,24 @@ CANONICAL_RULES = {
         "placement_rule": "free",
         "cells_per_pose": 9,
     },
+}
+
+# NEW schema (Gap 8 修 path): facility_templates 对应 真 canonical_rules.json,
+# instance_to_facility_type 对应 mandatory_exact_instances aggregate.
+# PoC test 用 "boundary_storage_port" / "crusher_blue_iron" 作 group_id (legacy
+# 沿用 PoC fixture 命名), 但 instance_to_facility_type 映射对了 schema.
+FACILITY_TEMPLATES = {
+    "boundary_storage_port": {
+        "placement_rule": "left_or_bottom_boundary",
+        "dimensions": {"w": 1, "h": 3},
+    },
+    "manufacturing_3x3": {
+        "dimensions": {"w": 3, "h": 3},
+    },
+}
+INSTANCE_TO_FACILITY_TYPE = {
+    "boundary_storage_port": "boundary_storage_port",  # PoC legacy: gid = ft 名 重叠
+    "crusher_blue_iron": "manufacturing_3x3",
 }
 
 
@@ -87,7 +109,9 @@ def make_state_with_crusher_on_left_baseline() -> BState:
             "mandatory_exact_instances.json": "hash_v3",
         },
         available_oracle_versions=frozenset({"region_capacity_v1"}),
-        canonical_rules=CANONICAL_RULES,  # P1.4: verifier 真读
+        canonical_rules=CANONICAL_RULES,  # PoC framework reference 用
+        facility_templates=FACILITY_TEMPLATES,  # Gap 8: production helper 用
+        instance_to_facility_type=INSTANCE_TO_FACILITY_TYPE,
     )
 
 
@@ -103,6 +127,8 @@ def make_clean_state() -> BState:
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
         canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
     )
 
 
@@ -169,6 +195,8 @@ def test_exterior_blocks_hash_distinct_from_blocked_cells():
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
         canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
     )
     assert compute_exterior_blocks_hash(s_with_ghost) != compute_blocked_cells_hash(s_with_ghost)
 
@@ -287,6 +315,8 @@ def test_attach_scope_ghost_agnostic_passes_when_exterior_unchanged():
         artifact_hashes=gen_state.artifact_hashes,
         available_oracle_versions=gen_state.available_oracle_versions,
         canonical_rules=gen_state.canonical_rules,
+        facility_templates=gen_state.facility_templates,
+        instance_to_facility_type=gen_state.instance_to_facility_type,
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "ATTACH", \
@@ -311,6 +341,8 @@ def test_attach_scope_ghost_agnostic_quarantine_when_exterior_changed():
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
         canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "QUARANTINE"
@@ -349,6 +381,8 @@ def test_attach_scope_ghost_bound_hold_when_ghost_changed():
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=s.available_oracle_versions,
         canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
     )
     decision = step_6_attach_scope_check(ghost_bound_cut, replay_state_diff_ghost)
     assert decision == "HOLD"
@@ -368,6 +402,8 @@ def test_attach_scope_oracle_version_unavailable():
         artifact_hashes=s.artifact_hashes,
         available_oracle_versions=frozenset(),
         canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "HOLD"

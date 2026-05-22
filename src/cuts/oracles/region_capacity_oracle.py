@@ -65,32 +65,45 @@ def _baseline_cells(region_kind: RegionKind, grid_size: int) -> FrozenSet[Cell]:
         return frozenset((x, 0) for x in range(grid_size))
     if region_kind == "bottom_baseline":
         return frozenset((0, y) for y in range(grid_size))
+    if region_kind == "left_or_bottom_union":
+        # Gap 6 union region: left ∪ bottom = 139 cells, (0,0) 共同 cell 去重
+        left = {(x, 0) for x in range(grid_size)}
+        bottom = {(0, y) for y in range(grid_size)}
+        return frozenset(left | bottom)
     raise ValueError(f"_baseline_cells unsupported region_kind={region_kind!r}")
 
 
 def _enumerate_contributing_groups(
     region_kind: RegionKind,
-    canonical_rules: Dict,
+    state: BState,
 ) -> List[Tuple[GroupId, int]]:
-    """Return list of (gid, demand_in_R) for groups whose placement_rule maps
+    """Return list of (gid, cells_per_pose) for groups whose placement_rule maps
     to region_kind.
 
-    demand_in_R is the group's full demand × cells_per_pose (assumes group is
-    entirely allocated to this region, per placement_rule). For
-    "left_or_bottom_boundary" groups, demand is split across left + bottom; the
-    cut form treats each baseline independently and the cert's demand_R reflects
-    the union when needed (spec §1c open question #4 — Phase 1.5+ multi-region).
+    Gap 7 (Gemini round 30) 修: 旧版遍历 canonical_rules.items() 把 'metadata' /
+    'globals' / 'facility_templates' 当 group 处理 — 0 cut FN. 新版遍历
+    state.groups (operation_type / true group_id from instances) + 经
+    helpers.canonical_rules.placement_rule_for_group 查 facility_template 层.
+
+    Gap 8 (round 30) 修: cells_per_pose 不直接查 canonical_rules[gid], 经
+    helpers.canonical_rules.cells_per_pose_for_group (从 facility_template.
+    dimensions w×h 算).
     """
+    from src.cuts.helpers.canonical_rules import (
+        cells_per_pose_for_group,
+        placement_rule_for_group,
+    )
     result: List[Tuple[GroupId, int]] = []
-    for gid, entry in canonical_rules.items():
-        if not isinstance(entry, dict):
+    for gid in state.groups:
+        rule = placement_rule_for_group(state, gid)
+        if rule in ("unknown", "free"):
             continue
-        rule = entry.get("placement_rule")
-        if rule is None:
+        if region_kind not in _PLACEMENT_RULE_REGIONS.get(rule, frozenset()):
             continue
-        if region_kind in _PLACEMENT_RULE_REGIONS.get(rule, frozenset()):
-            cells_per_pose = entry.get("cells_per_pose", 0)
-            result.append((gid, cells_per_pose))
+        cpp = cells_per_pose_for_group(state, gid)
+        if cpp is None:
+            continue  # fail-closed: 信息不全 不发 cut
+        result.append((gid, cpp))
     return result
 
 
@@ -101,13 +114,19 @@ def _build_cut(
     demand_R: int,
     gap: int,
     contributing_groups: List[Tuple[GroupId, int]],
-    canonical_rules: Dict,
     state: BState,
     *,
     iter_index: int,
 ) -> Cut:
+    """Gap 8 (round 30) 修: cells_per_pose / placement_rule lookup 经 helper,
+    不直接查 canonical_rules[gid].
+    """
+    from src.cuts.helpers.canonical_rules import (
+        cells_per_pose_for_group,
+        placement_rule_for_group,
+    )
     cells_per_pose_map = {
-        gid: canonical_rules[gid]["cells_per_pose"]
+        gid: cells_per_pose_for_group(state, gid) or 0
         for gid, _ in contributing_groups
     }
     cert_dict = {
@@ -126,7 +145,7 @@ def _build_cut(
 
     # Build active_assumptions (per spec §4)
     assumptions: List[Assumption] = []
-    if region_kind in {"left_baseline", "bottom_baseline"}:
+    if region_kind in {"left_baseline", "bottom_baseline", "left_or_bottom_union"}:
         assumptions.append(
             Assumption(
                 key="left_or_bottom_boundary_saturation",
@@ -137,7 +156,7 @@ def _build_cut(
         assumptions.append(
             Assumption(
                 key="placement_rule",
-                value=f"{gid}={canonical_rules[gid]['placement_rule']}",
+                value=f"{gid}={placement_rule_for_group(state, gid)}",
             )
         )
 
@@ -183,25 +202,29 @@ def _build_cut(
 
 def generate_region_capacity_cuts(
     state: BState,
-    canonical_rules: Dict,
+    canonical_rules: Dict,  # 保留参数兼容 (oracle sig stable); 内部不用, helper 走 state
     *,
     iter_index: int = -1,
     grid_size: int = 70,
 ) -> List[Cut]:
-    """Enumerate 4 region kinds (combinatorial path); emit cut for each
-    INFEASIBLE region (demand_R > cap_R).
+    """Enumerate region kinds (combinatorial path); emit cut for each INFEASIBLE
+    region (demand_R > cap_R).
 
-    Phase 1.1 P1.5: emits left_baseline + bottom_baseline cuts only.
-    interior_rect + ghost_complement enumeration deferred to Phase 1.5+
-    (LP dual / heuristic).
+    Gap 6 (Gemini round 30) 修: 真 region 是 ``left_or_bottom_union`` (139 cells),
+    **不**是 per-side single baseline. 旧版 per-side enumeration 因
+    demand_R 不能 fully static carry 单边 split 数 (state-dependent on
+    other-side cap) → FN. union 是 spec §2b 严格 sound 形式.
+
+    Phase 1.1 P1.5: emits left_or_bottom_union cuts only. interior_rect +
+    ghost_complement enumeration deferred to Phase 1.5+ (LP dual / heuristic).
     """
     cuts: List[Cut] = []
 
-    for region_kind in ("left_baseline", "bottom_baseline"):
+    for region_kind in ("left_or_bottom_union",):
         region_cells = _baseline_cells(region_kind, grid_size)  # type: ignore[arg-type]
         cap_R = compute_static_capacity(region_cells, state)
         contributing = _enumerate_contributing_groups(
-            region_kind, canonical_rules,  # type: ignore[arg-type]
+            region_kind, state,  # type: ignore[arg-type]
         )
         if not contributing:
             continue
@@ -220,7 +243,6 @@ def generate_region_capacity_cuts(
                 demand_R,
                 gap,
                 contributing,
-                canonical_rules,
                 state,
                 iter_index=iter_index,
             )

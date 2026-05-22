@@ -48,21 +48,24 @@ def _parse_kv_pair(value: str) -> Optional[tuple[str, str]]:
 def verify_placement_rule(state: "BState", value: str) -> bool:
     """Assumption "placement_rule": value = "{group}={rule}".
 
-    Validates state.canonical_rules[group]["placement_rule"] == rule.
-    Returns False if state.canonical_rules is None (fail-closed) or malformed
-    value or rules mismatch.
+    Gap 8 (Gemini round 30) 修: placement_rule lookup 经
+    ``helpers.canonical_rules.placement_rule_for_group(state, group)``,
+    **不**直接 query state.canonical_rules.get(group). gid 是 operation_type
+    (e.g. "boundary_io"), 不是 canonical_rules 顶层 key.
+
+    Fail-closed: state.facility_templates / instance_to_facility_type None
+    → helper 返 "unknown" → verifier False. canonical_rules None 同理.
     """
-    rules = getattr(state, "canonical_rules", None)
-    if rules is None:
-        return False
     kv = _parse_kv_pair(value)
     if kv is None:
         return False
     group, expected_rule = kv
-    group_entry = rules.get(group)
-    if not isinstance(group_entry, dict):
+
+    # Lazy import 避 circular (assumptions ← lifecycle ← helpers ← assumptions)
+    from src.cuts.helpers.canonical_rules import placement_rule_for_group
+    actual_rule = placement_rule_for_group(state, group)
+    if actual_rule == "unknown":
         return False
-    actual_rule = group_entry.get("placement_rule")
     return actual_rule == expected_rule
 
 

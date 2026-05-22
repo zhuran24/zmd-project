@@ -24,8 +24,8 @@ from src.cuts.lifecycle import (
     OracleCert,
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
-    step_1_generate_region_capacity_combinatorial,
 )
+from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
 from src.cuts.replay import regression_sweep, replay_cut
 from src.cuts.store import CutStore, QuarantineReason
 
@@ -36,14 +36,23 @@ CANONICAL_RULES = {
         "cells_per_pose": 3,
     },
 }
+_FACILITY_TEMPLATES = {
+    "boundary_storage_port": {
+        "placement_rule": "left_or_bottom_boundary",
+        "dimensions": {"w": 1, "h": 3},
+    },
+}
+_INSTANCE_TO_FT = {"boundary_storage_port": "boundary_storage_port"}
 
 
 def _make_state(extra_block: bool = False) -> BState:
     extra = {(17, 0)} if extra_block else set()
     return BState(
         groups={
+            # 真 demand 46 (mandatory_exact_instances boundary_io count, Gap 7 fix);
+            # PoC fixture 旧 23 是 half mock 已淘汰
             "boundary_storage_port": GroupState(
-                "boundary_storage_port", demand=23, pose_domain=frozenset()
+                "boundary_storage_port", demand=46, pose_domain=frozenset()
             ),
         },
         ghost_rect=None,
@@ -52,15 +61,16 @@ def _make_state(extra_block: bool = False) -> BState:
         artifact_hashes={"canonical_rules.json": "h1"},
         available_oracle_versions=frozenset({"region_capacity_v1"}),
         canonical_rules=CANONICAL_RULES,
+        facility_templates=_FACILITY_TEMPLATES,
+        instance_to_facility_type=_INSTANCE_TO_FT,
     )
 
 
 def _make_f1_cut(state: BState) -> Cut:
-    cut = step_1_generate_region_capacity_combinatorial(
-        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
-    )
-    assert cut is not None
-    return cut
+    """Use production oracle (Gap 6+7+8 fixed). Returns first cut emitted."""
+    cuts = generate_region_capacity_cuts(state, CANONICAL_RULES)
+    assert cuts, "expected ≥ 1 cut from F1 oracle on this state"
+    return cuts[0]
 
 
 # ============================================================================
@@ -165,6 +175,8 @@ def test_replay_hold_when_oracle_version_unavailable():
         artifact_hashes=state.artifact_hashes,
         available_oracle_versions=frozenset(),
         canonical_rules=state.canonical_rules,
+        facility_templates=state.facility_templates,
+        instance_to_facility_type=state.instance_to_facility_type,
     )
     decision = replay_cut(cut, state_no_oracle, store, canonical_rules=CANONICAL_RULES)
 

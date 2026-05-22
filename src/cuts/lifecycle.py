@@ -41,7 +41,11 @@ from typing import Callable, Dict, FrozenSet, List, Literal, Optional, Tuple
 
 CutId = str
 GroupId = str
-PoseId = int
+# Gap 10 (Gemini round 30): PoseId = str (vs PoC int). Source: candidate_placements
+# pose_id e.g. "viewer::boundary_required_output_blue_iron_ore_019". CutLiteral.pose_id
+# 直接 carry named pose string — anonymization 是 slot 级 (AnonymousSlotRef.slot_index
+# 仍 int + anonymous, group 内 slot 可置换). pose 级是几何身份, 不 anonymize.
+PoseId = str
 Cell = Tuple[int, int]
 GhostRectId = str
 Hash = str
@@ -183,8 +187,8 @@ class ValidationResult:
 class GroupState:
     group_id: GroupId
     demand: int
-    pose_domain: FrozenSet[Tuple[GroupId, int]]
-    selected_poses: List[Tuple[GroupId, int]] = field(default_factory=list)
+    pose_domain: FrozenSet[Tuple[GroupId, PoseId]]  # Gap 10 (round 30): PoseId=str
+    selected_poses: List[Tuple[GroupId, PoseId]] = field(default_factory=list)
 
     @property
     def remaining_count(self) -> int:
@@ -209,6 +213,15 @@ class BState:
     artifact_hashes: Dict[str, Hash] = field(default_factory=dict)
     available_oracle_versions: FrozenSet[str] = frozenset()
     canonical_rules: Optional[Dict] = None  # parsed rules/canonical_rules.json
+    # Gap 8 (Gemini round 30): operation_type (group_id) → facility_type 映射.
+    # Source: mandatory_exact_instances.json. canonical_rules 本身只 facility_template
+    # 层有 placement_rule / port_rule 等 — 必须先经此映射才能 lookup. e.g.
+    # instance_to_facility_type["boundary_io"] = "boundary_storage_port".
+    instance_to_facility_type: Optional[Dict[GroupId, str]] = None
+    # facility_templates 直接 ref canonical_rules.facility_templates (alias for
+    # fast lookup). e.g. facility_templates["boundary_storage_port"]["dimensions"]
+    # = {"w": 1, "h": 3}. helpers/canonical_rules.py 用此字段算 cells_per_pose 等.
+    facility_templates: Optional[Dict[str, Dict]] = None
 
 
 # ============================================================================
