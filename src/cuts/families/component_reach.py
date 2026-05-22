@@ -167,23 +167,21 @@ def validate_component_reach(
                     ),
                 )
 
-        # 8. commodity_id (若 cert 含): 验 production data — 当前 spec v1.1
-        # minimum-viable 不要求 commodity_id (geometric path). 若未来 cert 加
-        # commodity_id field, validator 必查 state.canonical_rules / commodities
-        # 真存在. Phase 1.5+ scope.
-        commodity_id = cert_dict.get("commodity_id")
-        if commodity_id is not None:
-            # cert 含 commodity_id → 必 production-grade verify (defer Phase 1.5+
-            # 接 belt routing commodity registry). 当前 fail-closed: 不准 carry
-            # 不验证的 commodity_id field, 防 attacker 借此字段 spread misinfo.
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"commodity_id field 在 F4 cert (={commodity_id!r}) 暂未支持 — "
-                    f"Phase 1.5+ 接 commodity registry 后开放"
-                ),
-            )
+        # 8. commodity_id (spec 04 §3 line 50 必填字段, allowed but verifier defer).
+        #
+        # Gemini round 34 High 升级 fix: 原 Step D fail-closed (schema_err on
+        # carry) 跟 spec 必填字段冲突 — Phase 1.5+ Oracle 按 spec 输出后 100%
+        # F4 cut Quarantine 瘫痪. 改 spec-aligned 允许 carry.
+        #
+        # Soundness 不依赖 commodity_id: 当前 v1.1 minimum-viable 是 geometric-only
+        # (BFS connectivity 不看 commodity name). attacker 塞 fake commodity_id
+        # 不影响 src/sink_component bitset 重算严等 + separator_cells 验. cert
+        # 几何 soundness 由 step 4-7 保证.
+        #
+        # commodity_id 作 metadata (causation tracing / debug audit) 通过. Phase
+        # 1.5+ commodity_route assumption verifier 落地后再 enforce 真验存在.
+        # 防 attacker 借此 metadata field spread misinfo — 当前 acceptable risk
+        # (metadata 不入 cut application 真证明路径).
 
         return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)
 

@@ -30,6 +30,7 @@ from __future__ import annotations
 import base64
 import json
 import time
+from functools import lru_cache
 from typing import Dict, FrozenSet, List, Literal, Tuple
 
 from src.cuts.lifecycle import BState, Cell, Cut, GroupId, ValidationResult
@@ -166,10 +167,20 @@ def _all_poses_in_region_strict(
     return result is True
 
 
+@lru_cache(maxsize=256)
 def _decode_region_bitset(
     b64: str, grid_size: int = 70
 ) -> FrozenSet[Cell]:
-    """Decode base64 bitset to cell set. Mirror lifecycle._decode_region_bitset."""
+    """Decode base64 bitset to cell set. Mirror lifecycle._decode_region_bitset.
+
+    Gemini round 34 P0 性能 fix: hot path (evaluate_geometric_region_capacity)
+    每 propagator call 调一次, 70x70=4900 iter Python 循环 + base64 decode.
+    propagator 每秒可 10K 调用 → 4900 × 10K = 49M iter/sec → solver 退化数量级.
+
+    lru_cache(256) 让相同 cert.region_cells_bitset_b64 (cert content-addressed)
+    第一次 4900 iter 后续 O(1) lookup. 256 cap 足够 active cut count
+    (Phase 1.1 ramp 实测 < 100 active cut/iter).
+    """
     arr = base64.b64decode(b64)
     cells = set()
     for x in range(grid_size):

@@ -349,20 +349,21 @@ def test_validator_ok_separator_in_ghost_or_owner():
     assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
 
 
-def test_validator_schema_err_commodity_id_not_yet_supported():
-    """GPT pro round 2 P0-4: cert.commodity_id 在 Phase 1.5+ commodity registry
-    verifier 落地前不准 carry (fail-closed, 防 attacker 塞 fake commodity).
+def test_validator_ok_commodity_id_passes_through_spec_aligned():
+    """Gemini round 34 High 升级 fix: spec 04 §3 line 50 commodity_id 必填.
+    原 Step D fail-closed 跟 spec 冲突 → Phase 1.5+ Oracle 上线 100% Quarantine.
+    改 spec-aligned 允许 carry, soundness 不依赖 (BFS connectivity 不看
+    commodity name); commodity_route verifier defer Phase 1.5+.
     """
     ghost = {(35, y) for y in range(70)}
     state = _make_state(ghost_cells=ghost)
     cut = _make_component_reach_cut(
         src_cell=(0, 0), sink_cell=(69, 0),
-        commodity_id="fake_commodity_xyz",  # attacker 塞
+        commodity_id="any_commodity_id",  # spec 必填字段, allowed
         state=state,
     )
     vr = validate_component_reach(cut, state, canonical_rules={})
-    assert vr.kind == "schema_err", f"got {vr.kind}: {vr.detail}"
-    assert "commodity_id" in vr.detail
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
 
 
 # ============================================================================
