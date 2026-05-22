@@ -46,17 +46,55 @@ CANONICAL_RULES = {
     },
 }
 
+# Gap 8/9 schema: production state inject 这些
+_FACILITY_TEMPLATES = {
+    "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}},
+}
+_INSTANCE_TO_FT = {"crusher": "manufacturing_3x3", "refinery": "manufacturing_3x3"}
+# Gap 9: candidate_placements pose 层 ports. crusher pose 7 在 (10,9)..(12,11) 范围,
+# output port (10, 10, "E") — east 方向, front_cell = (10, 11).
+_CANDIDATE_PLACEMENTS = {
+    "facility_pools": {
+        "manufacturing_3x3": [
+            {
+                "pose_id": "p7",  # F3 cert.facility_pose_id 用此 str
+                "anchor": {"x": 10, "y": 9},
+                "occupied_cells": [
+                    [10, 9], [10, 10], [10, 11],
+                    [11, 9], [11, 10], [11, 11],
+                    [12, 9], [12, 10], [12, 11],
+                ],
+                "input_port_cells": [],
+                "output_port_cells": [
+                    {"x": 10, "y": 10, "dir": "E", "commodity": "test"},
+                ],
+            },
+            {
+                "pose_id": "p3",  # refinery pose
+                "anchor": {"x": 10, "y": 11},
+                "occupied_cells": [
+                    [10, 11], [10, 12], [10, 13],
+                    [11, 11], [11, 12], [11, 13],
+                    [12, 11], [12, 12], [12, 13],
+                ],
+                "input_port_cells": [],
+                "output_port_cells": [],
+            },
+        ],
+    },
+}
+
 
 def _make_port_exposure_cert(
     *,
     facility_group: str = "crusher",
-    facility_pose_id: int = 7,
+    facility_pose_id: str = "p7",  # Gap 10: PoseId=str
     port_cell: tuple = (10, 10),
-    port_direction: str = "right",
+    port_direction: str = "E",  # Gap 9: N/S/E/W cardinal direction (真数据 encoding)
     front_cell: tuple = (10, 11),
     blocking_group: str = "refinery",
     blocking_slot: int = 0,
-    blocking_pose_id: int = 3,
+    blocking_pose_id: str = "p3",
 ) -> bytes:
     cert_dict = {
         "facility_group": facility_group,
@@ -74,10 +112,10 @@ def _make_port_exposure_cut(
     cert_payload: bytes,
     *,
     facility_group: str = "crusher",
-    facility_pose_id: int = 7,
+    facility_pose_id: str = "p7",
     blocking_group: str = "refinery",
     blocking_slot: int = 0,
-    blocking_pose_id: int = 3,
+    blocking_pose_id: str = "p3",
 ) -> Cut:
     literals = (
         CutLiteral(slot_ref=AnonymousSlotRef(facility_group, 0), pose_id=facility_pose_id),
@@ -136,6 +174,9 @@ def _make_state(
         artifact_hashes={"canonical_rules.json": "h1"},
         available_oracle_versions=frozenset({"port_exposure_v1"}),
         canonical_rules=CANONICAL_RULES,
+        facility_templates=_FACILITY_TEMPLATES,
+        instance_to_facility_type=_INSTANCE_TO_FT,
+        candidate_placements=_CANDIDATE_PLACEMENTS,
     )
 
 
@@ -147,8 +188,8 @@ def test_multiset_eval_single_literal_match():
     cut = _make_port_exposure_cut(_make_port_exposure_cert())
     # state has both poses selected
     state = _make_state(
-        crusher_poses=[("crusher", 7)],
-        refinery_poses=[("refinery", 3)],
+        crusher_poses=[("crusher", "p7")],
+        refinery_poses=[("refinery", "p3")],
     )
     assert evaluate_literal_multiset(cut, state) is True
 
@@ -157,8 +198,8 @@ def test_multiset_eval_missing_one_pose():
     """1 literal not in state.selected_poses → False (cut not violated)."""
     cut = _make_port_exposure_cut(_make_port_exposure_cert())
     state = _make_state(
-        crusher_poses=[("crusher", 7)],  # has crusher pose 7
-        refinery_poses=[("refinery", 99)],  # but refinery pose 99 not 3
+        crusher_poses=[("crusher", "p7")],  # has crusher pose 7
+        refinery_poses=[("refinery", "p99")],  # but refinery pose 99 not 3
     )
     assert evaluate_literal_multiset(cut, state) is False
 
@@ -168,8 +209,8 @@ def test_multiset_eval_slot_anonymity():
     # Cut literal slot=0; state's pose 7 appears at "slot" 1 (different index)
     cut = _make_port_exposure_cut(_make_port_exposure_cert())
     state = _make_state(
-        crusher_poses=[("crusher", 1), ("crusher", 7)],  # pose 7 at second slot
-        refinery_poses=[("refinery", 5), ("refinery", 3)],  # pose 3 at second slot
+        crusher_poses=[("crusher", "p1"), ("crusher", "p7")],  # pose 7 at second slot
+        refinery_poses=[("refinery", "p5"), ("refinery", "p3")],  # pose 3 at second slot
     )
     assert evaluate_literal_multiset(cut, state) is True
 
@@ -180,8 +221,8 @@ def test_multiset_eval_2_same_pose_required():
         cut_id="multi-same",
         family="port_exposure",
         literals=(
-            CutLiteral(AnonymousSlotRef("crusher", 0), 7),
-            CutLiteral(AnonymousSlotRef("crusher", 1), 7),  # same pose, different slot
+            CutLiteral(AnonymousSlotRef("crusher", 0), "p7"),
+            CutLiteral(AnonymousSlotRef("crusher", 1), "p7"),  # same pose, different slot
         ),
         geometric_payload=None,
         scope=CutScope(
@@ -193,10 +234,10 @@ def test_multiset_eval_2_same_pose_required():
         family_version="v1.0", validator_version="v1.0",
     )
     # state has only 1 pose=7
-    state_short = _make_state(crusher_poses=[("crusher", 7), ("crusher", 8)])
+    state_short = _make_state(crusher_poses=[("crusher", "p7"), ("crusher", "p8")])
     assert evaluate_literal_multiset(cut, state_short) is False
     # state has 2 pose=7
-    state_ok = _make_state(crusher_poses=[("crusher", 7), ("crusher", 7)])
+    state_ok = _make_state(crusher_poses=[("crusher", "p7"), ("crusher", "p7")])
     assert evaluate_literal_multiset(cut, state_ok) is True
 
 
@@ -204,7 +245,7 @@ def test_multiset_eval_empty_literals_false():
     cut = Cut(
         cut_id="empty-lit",
         family="port_exposure",
-        literals=(CutLiteral(AnonymousSlotRef("crusher", 0), 1),),  # need ≥ 1 per __post_init__
+        literals=(CutLiteral(AnonymousSlotRef("crusher", 0), "p1"),),  # need ≥ 1 per __post_init__
         geometric_payload=None,
         scope=CutScope(
             ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
@@ -222,7 +263,7 @@ def test_multiset_eval_unknown_group_false():
     cut = Cut(
         cut_id="unknown-grp",
         family="port_exposure",
-        literals=(CutLiteral(AnonymousSlotRef("never_exists", 0), 1),),
+        literals=(CutLiteral(AnonymousSlotRef("never_exists", 0), "p1"),),
         geometric_payload=None,
         scope=CutScope(
             ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
@@ -242,7 +283,7 @@ def test_multiset_eval_unknown_group_false():
 
 def test_validate_port_exposure_ok():
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="right", front_cell=(10, 11),
+        port_cell=(10, 10), port_direction="E", front_cell=(10, 11),
     )
     cut = _make_port_exposure_cut(cert_payload)
     state = _make_state(cell_owner={(10, 11): ("refinery", 0)})
@@ -253,7 +294,7 @@ def test_validate_port_exposure_ok():
 def test_validate_port_exposure_unsound_front_cell_math():
     """cert.front_cell ≠ port_cell + direction offset."""
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="right", front_cell=(99, 99),  # 错
+        port_cell=(10, 10), port_direction="E", front_cell=(99, 99),  # 错
     )
     cut = _make_port_exposure_cut(cert_payload)
     state = _make_state(cell_owner={(99, 99): ("refinery", 0)})
@@ -265,7 +306,7 @@ def test_validate_port_exposure_unsound_front_cell_math():
 def test_validate_port_exposure_unsound_blocking_facility_absent():
     """cell_owner[front_cell] 不是 cert blocking_facility."""
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="right", front_cell=(10, 11),
+        port_cell=(10, 10), port_direction="E", front_cell=(10, 11),
         blocking_group="refinery", blocking_slot=0,
     )
     cut = _make_port_exposure_cut(cert_payload)
@@ -277,7 +318,7 @@ def test_validate_port_exposure_unsound_blocking_facility_absent():
 
 
 def test_validate_port_exposure_schema_err_unknown_direction():
-    cert_payload = _make_port_exposure_cert(port_direction="diagonal")
+    cert_payload = _make_port_exposure_cert(port_direction="invalid")
     cut = _make_port_exposure_cut(cert_payload)
     state = _make_state(cell_owner={(10, 11): ("refinery", 0)})
     vr = validate_port_exposure(cut, state, CANONICAL_RULES)
@@ -292,12 +333,12 @@ def test_evaluate_literal_port_exposure_delegates_to_multiset():
     cert_payload = _make_port_exposure_cert()
     cut = _make_port_exposure_cut(cert_payload)
     state_with = _make_state(
-        crusher_poses=[("crusher", 7)],
-        refinery_poses=[("refinery", 3)],
+        crusher_poses=[("crusher", "p7")],
+        refinery_poses=[("refinery", "p3")],
     )
     state_without = _make_state(
-        crusher_poses=[("crusher", 7)],
-        refinery_poses=[("refinery", 9)],
+        crusher_poses=[("crusher", "p7")],
+        refinery_poses=[("refinery", "p9")],
     )
     assert evaluate_literal_port_exposure(cut, state_with) is True
     assert evaluate_literal_port_exposure(cut, state_without) is False

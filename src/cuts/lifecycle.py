@@ -222,6 +222,12 @@ class BState:
     # fast lookup). e.g. facility_templates["boundary_storage_port"]["dimensions"]
     # = {"w": 1, "h": 3}. helpers/canonical_rules.py 用此字段算 cells_per_pose 等.
     facility_templates: Optional[Dict[str, Dict]] = None
+    # Gap 9 (Gemini round 30): parsed candidate_placements.json. Pose-level
+    # 端口数据 (input_port_cells / output_port_cells) 不在 canonical_rules
+    # (template) 层, 在 candidate_placements (pose) 层. F3 / F8 validator 必读此.
+    # Structure: {"facility_pools": {ft: [pose, pose, ...]}}
+    # 每 pose 含 pose_id (str) + anchor + occupied_cells + input/output_port_cells.
+    candidate_placements: Optional[Dict] = None
 
 
 # ============================================================================
