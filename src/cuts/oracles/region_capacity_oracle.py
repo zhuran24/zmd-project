@@ -93,6 +93,9 @@ def _enumerate_contributing_groups(
         cells_per_pose_for_group,
         placement_rule_for_group,
     )
+    # HR2 修 (round 32): result 第二项必 demand_in_R (= group.demand × cpp),
+    # **不**是 cpp. spec §3 contributing_groups schema: (group_id, demand_in_R).
+    # Validator 重算 demand 时跟 cert 一致才 sound.
     result: List[Tuple[GroupId, int]] = []
     for gid in state.groups:
         rule = placement_rule_for_group(state, gid)
@@ -103,7 +106,8 @@ def _enumerate_contributing_groups(
         cpp = cells_per_pose_for_group(state, gid)
         if cpp is None:
             continue  # fail-closed: 信息不全 不发 cut
-        result.append((gid, cpp))
+        demand_in_R = state.groups[gid].demand * cpp
+        result.append((gid, demand_in_R))
     return result
 
 
@@ -228,9 +232,8 @@ def generate_region_capacity_cuts(
         )
         if not contributing:
             continue
-        demand_R = sum(
-            state.groups[gid].demand * cpp for gid, cpp in contributing
-        )
+        # HR2 修: contributing 第二项现是 demand_in_R 已含 cpp factor, 直接 sum
+        demand_R = sum(d for _, d in contributing)
         gap = demand_R - cap_R
         if gap <= 0:
             continue
