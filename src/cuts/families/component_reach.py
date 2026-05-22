@@ -196,6 +196,16 @@ def validate_component_reach(
 def evaluate_geometric_component_reach(cut: Cut, state: BState) -> bool:
     """Hot path: recompute BFS reachability on current free_cells.
 
+    **Phase 1.1 scope**: 此函数在 lifecycle.step_7_evaluate_cut 调用一次/cut
+    (post-attach), 不在 CP-SAT propagator 真 hot path. 4900-cell BFS 单调
+    ms 级内, ≤ 1/cut/iter 不构成 bottleneck.
+
+    **Phase 1.3 P1.21 必修 (defer)** — Gemini round 35 perf hypothesis:
+    若 Phase 1.3 接 CP-SAT propagator 真 hot path (10K calls/sec), 必须改
+    incremental connectivity check (e.g. union-find with rollback, 或 cache
+    last-known component bitset 比 dirty-flag check). 当前 O(|Grid|) BFS 当
+    Phase 1.3 集成时数量级退化.
+
     Returns True iff src/sink still disconnected (cut still violating).
     """
     if cut.geometric_payload is None:

@@ -335,17 +335,32 @@ def validate_region_capacity(
 def evaluate_geometric_region_capacity(cut: Cut, state: BState) -> bool:
     """Propagation hot path — recompute cap_R + verify still violating.
 
-    Gemini round 33 P0 fix: 原 v1.1 简化版无条件返 True 不 sound — exterior_blocks
-    在 cut attach 后被 master 修改 (移除 block) → cap_R 增 → cut 不再 violate. 但
-    propagator 仍调此函数返 True → cut emit constraint → 假剪合法 state.
+    **Phase 1.1 scope**: 此函数在 lifecycle.step_7_evaluate_cut 调用一次/cut
+    (post-attach), **不**在 CP-SAT propagator 真 hot path (Phase 1.3 P1.21
+    step_8_apply_to_master 才接 propagator). 当前调用频率 ≤ 1/cut/iter, json.loads
+    + decode 单调 ms 内不构成 perf bottleneck.
 
-    修法: 重算 current cap_R (cert.region 内 ghost ∪ exterior count), 比 cert.cap_R.
-    若 current_cap >= cert.demand_R → cut 不再 violate → return False (propagator
-    skip cut). 若 current_cap < cert.demand_R → 仍 violate → True (emit constraint).
+    **Phase 1.3 P1.21 必修 (defer)** — Gemini round 35 perf hypotheses:
+    1. `json.loads(cut.geometric_payload)` per call → cache parsed cert_dict
+       on Cut object (now-frozen, 加 mutable side cache attr or attach store
+       cache).
+    2. `_decode_region_bitset` lru_cache(256) 已 land — Phase 1.3 跨 cut
+       hot path 反复调时 cache miss risk → 改 attach-time eager decode + 持有
+       FrozenSet 于 Cut.scope.
+    3. by_exterior_watcher 加 + master 改 exterior_blocks 时 trigger replay
+       (sound 不需要 — evaluate 重算保 cut 一致 — 但 efficiency 必须避免
+       million-call/sec evaluator over wide search tree).
 
-    Sound: per spec §2a v1.1 cap_R = |R| - |(ghost ∪ exterior) ∩ R|. 任何 ghost/
-    exterior change 都触发 evaluate recompute. cert.demand_R 是 oracle 时锁定 — 真
-    生产 demand 不变.
+    Gemini round 33 P0 fix (此函数原 v1.1 简化版无条件返 True): exterior_blocks
+    在 cut attach 后被 master 修改 (移除 block) → cap_R 增 → cut 不再 violate.
+    但 propagator 仍调此函数返 True → cut emit constraint → 假剪合法 state.
+
+    Step F 修法: 重算 current cap_R = compute_static_capacity(region_cells, state),
+    比 cert.demand_R > current_cap. 不 violate → False (propagator skip cut).
+
+    Sound: per spec §2a v1.1 cap_R = |R| - |(ghost ∪ exterior) ∩ R|. 任何
+    ghost/exterior change 都触发 evaluate recompute. cert.demand_R 是 oracle
+    时锁定 — 真生产 demand 不变.
     """
     if cut.geometric_payload is None:
         return False

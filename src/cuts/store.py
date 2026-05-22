@@ -96,6 +96,13 @@ class CutStore:
     by_ghost_watcher: Dict[GhostRectId, Set[CutId]] = field(
         default_factory=lambda: defaultdict(set)
     )
+    # **Phase 1.3 P1.21 defer**: by_exterior_watcher (Gemini round 33/34/35 P0):
+    # F1 GHOST_AGNOSTIC cut depend on exterior_blocks via static cap_R. master
+    # 改 exterior_blocks 时应 trigger affected cut re-replay. Phase 1.1 framework
+    # 当前 evaluate 重算 sound (families/region_capacity.evaluate_geometric_*
+    # 每调用 recompute cap_R), 不需要 watcher 主动 invalidate; Phase 1.3 接
+    # propagator 真 hot path 时 watcher 是 efficiency 必须. 参考 Gemini round 35
+    # verdict — 当前 deferred 不是漏修, 是 Phase 1.3 scope.
 
     # Quarantine + Hold sets (state machine cut_lifecycle_v2 §8).
     quarantined: Dict[CutId, QuarantineReason] = field(default_factory=dict)
