@@ -121,3 +121,44 @@ def direction_offset(direction: str) -> Tuple[int, int]:
     if direction not in DIRECTION_OFFSETS:
         raise ValueError(f"unknown port direction={direction!r}, expect N/S/E/W")
     return DIRECTION_OFFSETS[direction]
+
+
+def all_poses_in_region(
+    state: BState,
+    gid: GroupId,
+    region_cells: frozenset,
+) -> Optional[bool]:
+    """Verify P(g) ⊆ R — group's全 pose 的 occupied_cells 都 ⊆ R (GPT pro round 2 P0-1).
+
+    Spec §2b 严格条件: group g 只 contributing 当所有 pose 的占格集 ⊆ R.
+    若有任一 pose 占格 in cells outside R, group 不 contributing (demand 不
+    必落 R 内, cut 假证).
+
+    真数据 (boundary_io 46 instance):
+    - placement_rule="left_or_bottom_boundary" + R=left∪bottom union
+    - 54 pose 中 14 个占格 (31,69)/(32,69)/(33,69) 等不在 union
+    - 整 group 不 P(g)⊆R → 不 contributing (Phase 1.1 v1.1 fail-closed)
+    - Phase 1.5+ 可能拆 group 为 "P(g)⊆R subset" + "其余"
+
+    Returns:
+    - True iff 所有 pose 的占格 ⊆ region_cells
+    - False iff ∃ pose 占格 包含 region_cells 外的 cell
+    - None iff data 不全 (state.candidate_placements / pose_domain 缺失) —
+      fail-closed: 调用方应 skip group (not contributing) / 拒 cut
+    """
+    if gid not in state.groups:
+        return None
+    pose_domain = state.groups[gid].pose_domain
+    if not pose_domain:
+        return None  # 无 pose info, fail-closed
+    for pose_id in pose_domain:
+        pose = find_pose(state, gid, pose_id)
+        if pose is None:
+            return None  # data 不全
+        occupied = pose.get("occupied_cells", [])
+        for cell in occupied:
+            if tuple(cell) not in region_cells:
+                return False  # 反例: pose 占 R 外 cell
+    return True
+
+

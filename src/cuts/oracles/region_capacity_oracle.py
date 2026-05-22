@@ -75,27 +75,26 @@ def _baseline_cells(region_kind: RegionKind, grid_size: int) -> FrozenSet[Cell]:
 
 def _enumerate_contributing_groups(
     region_kind: RegionKind,
+    region_cells: "FrozenSet[Cell]",
     state: BState,
 ) -> List[Tuple[GroupId, int]]:
-    """Return list of (gid, cells_per_pose) for groups whose placement_rule maps
-    to region_kind.
+    """Return list of (gid, demand_in_R) for groups whose placement_rule maps
+    to region_kind AND P(g) ⊆ R strict.
 
-    Gap 7 (Gemini round 30) 修: 旧版遍历 canonical_rules.items() 把 'metadata' /
-    'globals' / 'facility_templates' 当 group 处理 — 0 cut FN. 新版遍历
-    state.groups (operation_type / true group_id from instances) + 经
-    helpers.canonical_rules.placement_rule_for_group 查 facility_template 层.
+    Gap 7/8 (round 30) 修: 遍历 state.groups + helper lookup (不查 canonical_rules
+    顶层).
 
-    Gap 8 (round 30) 修: cells_per_pose 不直接查 canonical_rules[gid], 经
-    helpers.canonical_rules.cells_per_pose_for_group (从 facility_template.
-    dimensions w×h 算).
+    HR2 修 (round 32): result 第二项必 demand_in_R (= group.demand × cpp).
+
+    GPT pro round 2 P0-1 修: 加 strict P(g) ⊆ R check 经 all_poses_in_region.
+    placement_rule 是必要 NOT 充分条件 — boundary_io 14/54 pose 真数据落 union
+    外, 整 group fail-closed 不当 contributing (spec §2b 严格).
     """
+    from src.cuts.helpers.candidate_placements import all_poses_in_region
     from src.cuts.helpers.canonical_rules import (
         cells_per_pose_for_group,
         placement_rule_for_group,
     )
-    # HR2 修 (round 32): result 第二项必 demand_in_R (= group.demand × cpp),
-    # **不**是 cpp. spec §3 contributing_groups schema: (group_id, demand_in_R).
-    # Validator 重算 demand 时跟 cert 一致才 sound.
     result: List[Tuple[GroupId, int]] = []
     for gid in state.groups:
         rule = placement_rule_for_group(state, gid)
@@ -103,9 +102,13 @@ def _enumerate_contributing_groups(
             continue
         if region_kind not in _PLACEMENT_RULE_REGIONS.get(rule, frozenset()):
             continue
+        # GPT pro round 2 P0-1: strict P(g) ⊆ R verification
+        pgr = all_poses_in_region(state, gid, region_cells)
+        if pgr is not True:
+            continue  # fail-closed: P(g) 含 R 外 cell 或 data 不全 → not contributing
         cpp = cells_per_pose_for_group(state, gid)
         if cpp is None:
-            continue  # fail-closed: 信息不全 不发 cut
+            continue
         demand_in_R = state.groups[gid].demand * cpp
         result.append((gid, demand_in_R))
     return result
@@ -228,7 +231,7 @@ def generate_region_capacity_cuts(
         region_cells = _baseline_cells(region_kind, grid_size)  # type: ignore[arg-type]
         cap_R = compute_static_capacity(region_cells, state)
         contributing = _enumerate_contributing_groups(
-            region_kind, state,  # type: ignore[arg-type]
+            region_kind, region_cells, state,  # type: ignore[arg-type]
         )
         if not contributing:
             continue

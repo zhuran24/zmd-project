@@ -132,15 +132,12 @@ def _group_falls_in_region(
 ) -> bool:
     """Verify group's placement_rule maps to region_kind (active_assumption 对齐).
 
-    Gap 8 (Gemini round 30) 修: placement_rule lookup 经
-    ``helpers.canonical_rules.placement_rule_for_group(state, gid)``,
-    **不**直接查 canonical_rules.get(gid) (gid 是 operation_type,
-    canonical_rules 顶层 keys 是 ['metadata', 'globals', 'facility_templates',
-    ...] — 不含 group_id).
+    Phase 1.1 P1.5+ (Gap 8) 修: 经 helper, 不直接查 canonical_rules[gid].
+    For "free" placement rule (e.g. crusher), group not region-specific
+    contributor. Spec §2b: only groups requiring P(g) ⊆ R count toward demand_R.
 
-    For "free" placement rule (e.g. crusher), the group can be placed anywhere
-    — not a region-specific contributor. Spec §2b: only groups requiring
-    P(g) ⊆ R count toward demand_R.
+    **此函数仅 placement_rule 必要条件 check, 不是充分条件**. 真 P(g)⊆R 验证
+    经 _all_poses_in_region_strict() (GPT pro round 2 P0-1 fix).
     """
     from src.cuts.helpers.canonical_rules import placement_rule_for_group
     rule = placement_rule_for_group(state, gid)
@@ -148,6 +145,25 @@ def _group_falls_in_region(
         return False
     valid_regions = _PLACEMENT_RULE_REGIONS.get(rule, frozenset())
     return region_kind in valid_regions
+
+
+def _all_poses_in_region_strict(
+    gid: GroupId,
+    region_cells: FrozenSet[Cell],
+    state: BState,
+) -> bool:
+    """Strict P(g) ⊆ R verification (GPT pro round 2 P0-1).
+
+    Returns True iff ALL pose 在 group.pose_domain 的 occupied_cells ⊆ R.
+    Fail-closed (返 False) 若 candidate_placements 没 inject 或任一 pose
+    lookup fail.
+
+    真数据 (boundary_io): 54 pose 中 14 个占 (31,69)/(32,69)/(33,69) 等不在
+    left ∪ bottom union → 整 group not P(g)⊆R → 不 contributing.
+    """
+    from src.cuts.helpers.candidate_placements import all_poses_in_region
+    result = all_poses_in_region(state, gid, region_cells)
+    return result is True
 
 
 def _decode_region_bitset(
@@ -207,7 +223,8 @@ def validate_region_capacity(
                 detail=f"cap_R mismatch: cert={cert_cap_R}, recomputed={recomputed_cap_R}",
             )
 
-        # 2-4. demand_R: placement_rule mapping + cells_per_pose source-of-truth + recompute
+        # 2-4. demand_R: placement_rule mapping + P(g)⊆R strict + cells_per_pose
+        # source-of-truth + recompute
         cert_cells_per_pose = cert_dict.get("cells_per_pose", {})
         contributing_groups: List[Tuple[GroupId, int]] = [
             (g, d) for g, d in cert_dict["contributing_groups"]
@@ -216,12 +233,25 @@ def validate_region_capacity(
         # 查 canonical_rules[gid] (gid 是 operation_type 不是顶层 key).
         from src.cuts.helpers.canonical_rules import cells_per_pose_for_group
         for gid, _ in contributing_groups:
-            # 2. placement_rule → region mapping (skip if group is "free")
+            # 2a. placement_rule → region mapping (skip if group is "free") — 必要 NOT 充分
             if not _group_falls_in_region(gid, region_kind, state):
                 return ValidationResult(
                     kind="unsound",
                     elapsed_seconds=time.monotonic() - t0,
                     detail=f"group {gid!r} placement_rule 不映射 {region_kind!r}",
+                )
+            # 2b. strict P(g) ⊆ R (GPT pro round 2 P0-1) — 充分条件
+            if not _all_poses_in_region_strict(gid, region_cells, state):
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"group {gid!r} 不满足 P(g) ⊆ R: ∃ pose 占格 在 region 外 "
+                        f"(spec §2b 严格充分条件 / GPT pro round 2 P0-1). "
+                        f"真数据示例: boundary_io 14/54 pose 在 left∪bottom union 外 "
+                        f"(e.g. viewer::boundary_required_output_source_ore_005 占 "
+                        f"(31,69)/(32,69)/(33,69))"
+                    ),
                 )
             # 3. cells_per_pose source-of-truth check (via helper)
             if gid not in cert_cells_per_pose:

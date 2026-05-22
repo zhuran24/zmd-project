@@ -51,18 +51,56 @@ FACILITY_TEMPLATES = {
 CANONICAL_RULES = {"facility_templates": FACILITY_TEMPLATES}
 
 
+def _mock_boundary_io_poses_in_union(n: int = 46):
+    """生成 n 个 mock boundary_io pose, 占格全在 left ∪ bottom union 内 (sound).
+
+    Phase 1.1 P1.5 + GPT pro round 2 P0-1 fix: all_poses_in_region strict check
+    要 pose_domain 非空 + 每 pose occupied_cells ⊆ R. Mock 让 46 pose 都占 union
+    内 cells, 让 oracle 把 group 当 contributing (P(g)⊆R 满足).
+
+    真生产 boundary_io 14/54 pose 占 union 外 (e.g. (31,69)) — 真 P(g)⊄R, oracle
+    严守不发 cut. 此 mock 故意构造 sound case 测 oracle path. 反例 case 见
+    test_oracle_skips_when_group_not_P_in_R (新加).
+    """
+    poses = []
+    for i in range(n):
+        # 让每个 pose 占 (0, i)(0, i+1)(0, i+2) — bottom baseline 内, 3 cells
+        poses.append({
+            "pose_id": f"mock_p_{i}",
+            "anchor": {"x": 0, "y": i},
+            "occupied_cells": [[0, i % 68], [0, (i + 1) % 68], [0, (i + 2) % 68]],
+            "input_port_cells": [],
+            "output_port_cells": [],
+        })
+    return poses
+
+
 def _make_state(
     *,
     boundary_exterior_blocks: int = 0,  # 在 left baseline 上 block 几个 cell
     ghost_rect: tuple = None,
     ghost_cells: set = None,
+    boundary_io_poses: list = None,
 ) -> BState:
-    """Default: demand=46 boundary_io, no blocks → cap=139 ≥ demand=138 → no cut."""
+    """Default: demand=46 boundary_io, no blocks → cap=139 ≥ demand=138 → no cut.
+
+    boundary_io_poses 默认 mock 46 pose 全在 union 内 (P(g)⊆R sound).
+    若传 list 则用 — 测试 attacker 反例 (pose 在 R 外).
+    """
     extra = {(15 + i, 0) for i in range(boundary_exterior_blocks)}
+    if boundary_io_poses is None:
+        boundary_io_poses = _mock_boundary_io_poses_in_union(n=46)
+    pose_domain = frozenset(p["pose_id"] for p in boundary_io_poses)
+    candidate_placements = {
+        "facility_pools": {
+            "boundary_storage_port": boundary_io_poses,
+            "manufacturing_3x3": [],
+        }
+    }
     return BState(
         groups={
             "boundary_io": GroupState(
-                "boundary_io", demand=46, pose_domain=frozenset()
+                "boundary_io", demand=46, pose_domain=pose_domain,
             ),
             "crusher_blue_iron": GroupState(
                 "crusher_blue_iron", demand=34, pose_domain=frozenset(),
@@ -76,6 +114,7 @@ def _make_state(
         canonical_rules=CANONICAL_RULES,
         facility_templates=FACILITY_TEMPLATES,
         instance_to_facility_type=INSTANCE_TO_FT,
+        candidate_placements=candidate_placements,
     )
 
 
@@ -219,6 +258,7 @@ def test_validator_unsound_cells_per_pose_source_rotated():
         canonical_rules=state.canonical_rules,
         facility_templates=rotated_templates,
         instance_to_facility_type=state.instance_to_facility_type,
+        candidate_placements=state.candidate_placements,  # Step E: 保留, 让 P(g)⊆R 先 pass
     )
     vr = validate_region_capacity(cut, rotated_state, CANONICAL_RULES)
     assert vr.kind == "unsound"
@@ -307,3 +347,91 @@ def test_oracle_skips_free_placement_rule_groups():
     gids = {c[0] for c in contributing}
     assert "boundary_io" in gids
     assert "crusher_blue_iron" not in gids
+
+
+# ============================================================================
+# GPT pro round 2 P0-1 — F1 demand 真 P(g) ⊆ R
+# ============================================================================
+
+def _mock_boundary_io_poses_partial_outside_union(n_in: int, n_out: int):
+    """生成 mock pose: n_in 个在 union, n_out 个占 union 外 cell (反 GPT 反例)."""
+    poses = []
+    for i in range(n_in):
+        poses.append({
+            "pose_id": f"in_p_{i}",
+            "anchor": {"x": 0, "y": i},
+            "occupied_cells": [[0, i % 68], [0, (i + 1) % 68], [0, (i + 2) % 68]],
+            "input_port_cells": [],
+            "output_port_cells": [],
+        })
+    for i in range(n_out):
+        # 占 (31, 69)/(32, 69)/(33, 69) — 不在 left baseline (x=0..69 y=0) 也
+        # 不在 bottom baseline (x=0 y=0..69) — 真 GPT pro 反例 cell
+        poses.append({
+            "pose_id": f"out_p_{i}",
+            "anchor": {"x": 31 + i, "y": 69},
+            "occupied_cells": [[31, 69], [32, 69], [33, 69]],
+            "input_port_cells": [],
+            "output_port_cells": [],
+        })
+    return poses
+
+
+def test_oracle_skips_group_when_some_pose_outside_R():
+    """GPT pro round 2 P0-1 反例: boundary_io 46 pose 中 14 个占 (31,69) 等 cell
+    不在 left ∪ bottom union → 整 group 不 P(g)⊆R (spec §2b 严格) → oracle 不当
+    contributing → 不发 cut.
+
+    真生产 boundary_io 14/54 pose 落 union 外 (e.g. viewer::boundary_required_
+    output_source_ore_005 占 (31,69)/(32,69)/(33,69)). Phase 1.1 v1.1 fail-closed.
+    """
+    # 46 pose: 32 in + 14 out — GPT 反例真数据 mirror
+    poses = _mock_boundary_io_poses_partial_outside_union(n_in=32, n_out=14)
+    state = _make_state(boundary_exterior_blocks=2, boundary_io_poses=poses)
+    cuts = generate_region_capacity_cuts(state, CANONICAL_RULES)
+    assert cuts == [], (
+        f"expect 0 cut (group not P(g)⊆R, fail-closed). got {len(cuts)} cuts"
+    )
+
+
+def test_validator_unsound_when_cert_carries_group_with_pose_outside_R():
+    """Validator 端: attacker 手造 cert 含 boundary_io 当 contributing 但 真
+    pose_domain 有 pose 在 R 外. validator 必查 P(g)⊆R 严格 — 不满足则 unsound.
+    """
+    # 先构 sound state + sound cut
+    sound_state = _make_state(boundary_exterior_blocks=2)
+    cuts = generate_region_capacity_cuts(sound_state, CANONICAL_RULES)
+    assert len(cuts) == 1
+    cut = cuts[0]
+    # 改 state pose_domain 让 boundary_io 14 pose 落 union 外 — cert 仍 claim
+    # boundary_io 是 contributing
+    poses_bad = _mock_boundary_io_poses_partial_outside_union(n_in=32, n_out=14)
+    bad_pose_domain = frozenset(p["pose_id"] for p in poses_bad)
+    bad_candidate_placements = {
+        "facility_pools": {
+            "boundary_storage_port": poses_bad,
+            "manufacturing_3x3": [],
+        }
+    }
+    bad_state = BState(
+        groups={
+            "boundary_io": GroupState(
+                "boundary_io", demand=46, pose_domain=bad_pose_domain,
+            ),
+            "crusher_blue_iron": GroupState(
+                "crusher_blue_iron", demand=34, pose_domain=frozenset(),
+            ),
+        },
+        ghost_rect=sound_state.ghost_rect,
+        ghost_cells=sound_state.ghost_cells,
+        exterior_blocks=sound_state.exterior_blocks,
+        artifact_hashes=sound_state.artifact_hashes,
+        available_oracle_versions=sound_state.available_oracle_versions,
+        canonical_rules=sound_state.canonical_rules,
+        facility_templates=sound_state.facility_templates,
+        instance_to_facility_type=sound_state.instance_to_facility_type,
+        candidate_placements=bad_candidate_placements,
+    )
+    vr = validate_region_capacity(cut, bad_state, CANONICAL_RULES)
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "P(g) ⊆ R" in (vr.detail or "")

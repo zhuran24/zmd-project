@@ -45,14 +45,30 @@ _FACILITY_TEMPLATES = {
 _INSTANCE_TO_FT = {"boundary_storage_port": "boundary_storage_port"}
 
 
+def _mock_poses_in_union(n: int = 46):
+    """生成 n mock pose, occupied 全在 union (left ∪ bottom). Step E P(g)⊆R 要."""
+    poses = []
+    for i in range(n):
+        poses.append({
+            "pose_id": f"mock_p_{i}",
+            "anchor": {"x": 0, "y": i},
+            "occupied_cells": [[0, i % 68], [0, (i + 1) % 68], [0, (i + 2) % 68]],
+            "input_port_cells": [],
+            "output_port_cells": [],
+        })
+    return poses
+
+
 def _make_state(extra_block: bool = False) -> BState:
     extra = {(17, 0)} if extra_block else set()
+    poses = _mock_poses_in_union(n=46)
+    pose_domain = frozenset(p["pose_id"] for p in poses)
     return BState(
         groups={
             # 真 demand 46 (mandatory_exact_instances boundary_io count, Gap 7 fix);
             # PoC fixture 旧 23 是 half mock 已淘汰
             "boundary_storage_port": GroupState(
-                "boundary_storage_port", demand=46, pose_domain=frozenset()
+                "boundary_storage_port", demand=46, pose_domain=pose_domain,
             ),
         },
         ghost_rect=None,
@@ -63,6 +79,9 @@ def _make_state(extra_block: bool = False) -> BState:
         canonical_rules=CANONICAL_RULES,
         facility_templates=_FACILITY_TEMPLATES,
         instance_to_facility_type=_INSTANCE_TO_FT,
+        candidate_placements={
+            "facility_pools": {"boundary_storage_port": poses},
+        },
     )
 
 
