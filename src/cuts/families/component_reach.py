@@ -111,12 +111,62 @@ def validate_component_reach(
                 detail=f"sink_cell {sink_cell} no longer in free_cells",
             )
 
-        current_src_comp = _bfs_component(src_cell, free_cells)
+        # 4. cert.src_component == recomputed BFS(src_cell) (GPT pro round 2 cert
+        # 完整性: attacker 不准谎报 src_component 含 sink_cell 邻接 cell — validator
+        # 必精确等). Spec 04_component_reach.md §6 cert bitset 必须可独立重算.
+        current_src_comp = frozenset(_bfs_component(src_cell, free_cells))
+        if current_src_comp != src_comp:
+            extra = src_comp - current_src_comp
+            missing = current_src_comp - src_comp
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"src_component cert mismatch: |cert|={len(src_comp)}, "
+                    f"|recomputed|={len(current_src_comp)}, extra_in_cert={len(extra)}, "
+                    f"missing_in_cert={len(missing)}"
+                ),
+            )
+
+        # 5. cert.sink_component == recomputed BFS(sink_cell) (同上)
+        current_sink_comp = frozenset(_bfs_component(sink_cell, free_cells))
+        if current_sink_comp != sink_comp:
+            extra = sink_comp - current_sink_comp
+            missing = current_sink_comp - sink_comp
+            return ValidationResult(
+                kind="unsound",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"sink_component cert mismatch: |cert|={len(sink_comp)}, "
+                    f"|recomputed|={len(current_sink_comp)}, extra_in_cert={len(extra)}, "
+                    f"missing_in_cert={len(missing)}"
+                ),
+            )
+
+        # 6. Witness: sink not in src component (Menger min-cut > 0 已经隐含)
         if sink_cell in current_src_comp:
             return ValidationResult(
                 kind="unsound",
                 elapsed_seconds=time.monotonic() - t0,
                 detail="witness fail: src/sink now reachable (free_cells changed reconnect)",
+            )
+
+        # 7. commodity_id (若 cert 含): 验 production data — 当前 spec v1.1
+        # minimum-viable 不要求 commodity_id (geometric path). 若未来 cert 加
+        # commodity_id field, validator 必查 state.canonical_rules / commodities
+        # 真存在. Phase 1.5+ scope.
+        commodity_id = cert_dict.get("commodity_id")
+        if commodity_id is not None:
+            # cert 含 commodity_id → 必 production-grade verify (defer Phase 1.5+
+            # 接 belt routing commodity registry). 当前 fail-closed: 不准 carry
+            # 不验证的 commodity_id field, 防 attacker 借此字段 spread misinfo.
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    f"commodity_id field 在 F4 cert (={commodity_id!r}) 暂未支持 — "
+                    f"Phase 1.5+ 接 commodity registry 后开放"
+                ),
             )
 
         return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)

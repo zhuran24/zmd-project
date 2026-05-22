@@ -17,6 +17,7 @@ from src.cuts.families.component_reach import (
     evaluate_geometric_component_reach,
     validate_component_reach,
 )
+from src.cuts.families.cutset import _free_cells
 from src.cuts.lifecycle import (
     BState,
     Cut,
@@ -56,21 +57,40 @@ def _make_component_reach_cut(
     sink_cell: tuple = (0, 69),
     src_comp: set = None,
     sink_comp: set = None,
+    commodity_id: str = None,
+    state: BState = None,
 ) -> Cut:
+    """commodity_id 默认 None (Phase 1.1 v1.1 minimum-viable spatial-only).
+    GPT pro round 2 P0-4: cert 不准 carry 未验证的 commodity_id field —
+    Phase 1.5+ 加 commodity registry verifier 后才允许.
+
+    cert.src_component / sink_component bitset 默认从 state recomputed BFS 算
+    (GPT pro round 2 cert 完整性 — cert 必 == BFS, validator 验严等).
+    若 src_comp/sink_comp 显式传, 用传入值 (negative test 用).
+    """
     if src_comp is None:
-        src_comp = {src_cell}
+        if state is not None:
+            free = _free_cells(state)
+            src_comp = _bfs_component(src_cell, free) if src_cell in free else {src_cell}
+        else:
+            src_comp = {src_cell}
     if sink_comp is None:
-        sink_comp = {sink_cell}
+        if state is not None:
+            free = _free_cells(state)
+            sink_comp = _bfs_component(sink_cell, free) if sink_cell in free else {sink_cell}
+        else:
+            sink_comp = {sink_cell}
     cert_dict = {
         "src_cell": list(src_cell),
         "sink_cell": list(sink_cell),
-        "commodity_id": "c1",
         "src_component_bitset_b64": _encode_bitset(src_comp),
         "sink_component_bitset_b64": _encode_bitset(sink_comp),
         "separator_cells": [],
         "blocking_facilities": [],
         "witness_path_attempt": None,
     }
+    if commodity_id is not None:
+        cert_dict["commodity_id"] = commodity_id
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     scope = CutScope(
         ghost_rect_id=GHOST_AGNOSTIC,
@@ -131,23 +151,23 @@ def test_bfs_component_start_not_free():
 # ============================================================================
 
 def test_validator_ok_when_disconnected():
-    """src + sink in disjoint components on disconnected free_cells."""
+    """src + sink in disjoint components on disconnected free_cells.
+
+    Step D 后: cert.src/sink_component 必 == BFS 重算 — 用 state.recompute 自动算.
+    """
     # ghost 占 row x=35 (除 (0,35) (1,35)) → 70x70 grid split into top half (0-34) + bottom half (36-69)
-    # 实际更简单: ghost 占完整 row x=35 → 完全 split
     ghost = {(35, y) for y in range(70)}
     state = _make_state(ghost_cells=ghost)
 
     src_cell = (0, 0)
     sink_cell = (69, 0)
-    # Cert bitset 应 carry top/bottom 半 components — 简单测 just 2 endpoints
     cut = _make_component_reach_cut(
         src_cell=src_cell,
         sink_cell=sink_cell,
-        src_comp={src_cell},  # 简化 — validator only needs membership
-        sink_comp={sink_cell},
+        state=state,  # auto-recompute BFS components for cert
     )
     vr = validate_component_reach(cut, state, canonical_rules={})
-    assert vr.kind == "ok"
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
 
 
 def test_validator_unsound_components_overlap():
@@ -177,12 +197,17 @@ def test_validator_unsound_src_not_in_component():
 
 
 def test_validator_unsound_when_reconnected():
-    """Cert claims disconnect, but current free_cells reconnect → unsound."""
+    """Cert claims disconnect (src_comp={src_cell}, sink_comp={sink_cell})
+    但 current free_cells 全连通 → cert mismatch (under-claim src_comp) fire 先
+    (step 4 cert完整性 catch). Sound violation 仍 detected, detail 不同 wording.
+    """
     cut = _make_component_reach_cut(src_cell=(0, 0), sink_cell=(0, 1))
     state = _make_state()  # no blocks → all connected
     vr = validate_component_reach(cut, state, canonical_rules={})
-    assert vr.kind == "unsound"
-    assert "reconnect" in vr.detail or "reachable" in vr.detail
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    # Either old "reconnect" detail OR new "cert mismatch" detail OK — 都是 sound violation
+    assert "reconnect" in vr.detail or "reachable" in vr.detail \
+        or "cert mismatch" in vr.detail, f"unexpected detail: {vr.detail}"
 
 
 def test_validator_unsound_src_no_longer_free():
@@ -216,6 +241,69 @@ def test_evaluate_endpoint_blocked_false():
     state = _make_state(ghost_cells={(0, 0)})
     cut = _make_component_reach_cut(src_cell=(0, 0), sink_cell=(0, 1))
     assert evaluate_geometric_component_reach(cut, state) is False
+
+
+# ============================================================================
+# GPT pro round 2 P0-4 — cert 完整性 (src_component == recomputed BFS)
+# ============================================================================
+
+def test_validator_unsound_src_component_mismatch_extra():
+    """attacker cert.src_component over-claim (含 ghost cell 不在真 BFS).
+    validator 必拒.
+
+    fake_src_comp = top half BFS + (35, 5) (ghost cell, not in BFS). 不跟
+    sink_comp (bottom half) 重叠 — 不会先 fire disjoint check.
+    """
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    src_cell = (0, 0)
+    sink_cell = (69, 0)
+    # cert over-claim: 真 BFS = top half (35*70=2450 cells), fake 加 (35, 5)
+    # 这 cell 是 ghost row, BFS 不含 — 也不在 sink_comp (bottom half) 内
+    fake_src_comp = {(x, y) for x in range(35) for y in range(70)} | {(35, 5)}
+    cut = _make_component_reach_cut(
+        src_cell=src_cell,
+        sink_cell=sink_cell,
+        src_comp=fake_src_comp,
+        state=state,  # sink_comp 用 state recompute
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "src_component cert mismatch" in vr.detail
+
+
+def test_validator_unsound_sink_component_mismatch_missing():
+    """cert.sink_component under-claim (漏 cell) → unsound."""
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    src_cell = (0, 0)
+    sink_cell = (69, 0)
+    # bottom half BFS 应 carry 35*70=2450 cells, cert 只 carry 1
+    cut = _make_component_reach_cut(
+        src_cell=src_cell,
+        sink_cell=sink_cell,
+        sink_comp={sink_cell},  # under-claim
+        state=state,  # src_comp 用 state recompute
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "sink_component cert mismatch" in vr.detail
+
+
+def test_validator_schema_err_commodity_id_not_yet_supported():
+    """GPT pro round 2 P0-4: cert.commodity_id 在 Phase 1.5+ commodity registry
+    verifier 落地前不准 carry (fail-closed, 防 attacker 塞 fake commodity).
+    """
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(ghost_cells=ghost)
+    cut = _make_component_reach_cut(
+        src_cell=(0, 0), sink_cell=(69, 0),
+        commodity_id="fake_commodity_xyz",  # attacker 塞
+        state=state,
+    )
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err", f"got {vr.kind}: {vr.detail}"
+    assert "commodity_id" in vr.detail
 
 
 # ============================================================================
