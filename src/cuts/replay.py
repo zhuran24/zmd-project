@@ -29,6 +29,7 @@ from __future__ import annotations
 import os
 from typing import Callable, Dict, Optional
 
+from src.cuts.families.cutset import validate_cutset
 from src.cuts.families.region_capacity import validate_region_capacity
 from src.cuts.lifecycle import (
     AttachDecision,
@@ -44,11 +45,13 @@ FamilyValidator = Callable[[Cut, BState, Dict], ValidationResult]
 
 
 # Family → post-attach validator dispatch.
-# Phase 1.1 P1.5: F1 region_capacity production validator wired (4 region kind
-# support + LP dual algebra defer Phase 1.5+).
-# P1.6-P1.15 各 family src/cuts/families/*.py 实施后 register 进此表.
+# Phase 1.1 P1.5/P1.6: F1 region_capacity + F2 cutset production validators
+# wired. F2 oracle is stub (Phase 1.5+ wraps patch_routing_core); validator
+# 满足 cert structure + free_cells re-recompute.
+# P1.7-P1.15 各 family src/cuts/families/*.py 实施后 register 进此表.
 FAMILY_VALIDATORS: Dict[str, FamilyValidator] = {
     "region_capacity": validate_region_capacity,
+    "cutset": validate_cutset,
 }
 
 
