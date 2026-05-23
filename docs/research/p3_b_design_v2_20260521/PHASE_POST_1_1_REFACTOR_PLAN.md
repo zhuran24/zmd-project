@@ -10,6 +10,38 @@ evaluator / lifecycle / replay / store 全部 sound 闭环, 通过 11 轮 GPT pr
 
 ---
 
+## 0. 受众 / 怎么读这份 plan
+
+这份文件 1800+ line, 不要求一口气读完. 不同身份 focus 不同段:
+
+**implementer (下个 session 接手的 Claude / 人)**
+- 入口: §6 现状细则 → §10 Phase 1.2 入门 7 项 → §11 P1.11-P1.15 5 family
+- 实施前必读: §2 invariants + §3 数学原理 (那 family 那段) + §18 PROJECT_LOCK §3A
+- 每段做完前 verify: §8 GO 标准 + §21 测试 strategy + §22 审查 trigger
+- 出错回头: §14 风险 mitigation + §14.3 rollout policy
+
+**reviewer (GPT pro batch audit / Gemini per-commit cross-check)**
+- 主战场: §2.4 adversarial soundness + §3 各 family 数学原理
+- context: §4 paradigm 决策 + §5 历史回顾 (为啥不选 27 lever 死路 / 为啥 cut framework)
+- 我们对你的 audit 怎么定义 GO/NOT GO: §8 GO 标准 + §22.3 audit verdict criteria
+- 不必读: §10/§11 commit-level 实施细则 (那是 implementer 的事)
+
+**未来 maintainer (Phase 1.2/1.3/1.5 接手, 数周-数月后)**
+- context 恢复: §1 战略 + §4 paradigm + §5 历史
+- 改某 family 牵动哪些: §9 依赖图 + §19 环境变量 (各 family 是否独立 toggle)
+- 边界: §18 PROJECT_LOCK §3A (不能跨)
+- 术语 anchor: Appendix A Glossary
+
+**用户 (审 progress, 不实施)**
+- 现在到哪了: §6 现状细则 + §20 telemetry (Phase 1.3 接进后看 metric)
+- 各 phase 还多久: §16 排期估算
+- 待定决策点: §17 Open questions
+- 出错怎么 revert: §14.3 rollout / migration policy
+
+不同 audience 通用 skip 段: 数学 deep dive (§3.1-§3.13) 仅 reviewer + 实施那 family 时读; commit-level 细则 (§10/§11) 仅 implementer 读.
+
+---
+
 ## 1. 战略 / 上下文 — 为什么需要 cut framework
 
 终末地 (Arknights: Endfield) IndustrialPlanner 70×70 grid certified exact
@@ -1288,14 +1320,41 @@ defer / 已知 risk + 失败回滚策略.
 - **propagator hot path perf**: mitigation parsed cert cache + incremental
   BFS + watcher 三件套 (Step H TODO)
 
-### 14.3 全 phase 通用回滚策略
+### 14.3 rollout / migration policy
 
+cut framework 从 Phase 1.1 (4 family 单测) → 1.2 (5 family 加) → 1.3 (真接 benders_loop 主流程) → 1.5+ (production 168h campaign 含 cut store) 是渐进, 每阶段切换政策:
+
+**Phase 1.1 → 1.2 切换 (strict gate default ON, Phase 1.2 first commit)**
+- 切换点: §10.1 `EXACT_FAMILY_VALIDATOR_STRICT` 默认 `"0"→"1"` 是 Phase 1.2 **first commit**, 不是 5 family 都加完才开
+- 理由: Phase 1.2 加 F5-F9 时, 新 family 在 strict gate 下若 dispatch 表漏注册会立刻 fail-closed → 不会沉默漏 cut. 5 family 全加完才开 = 漏注册的 family 沉默通过 4-5 commit, 等回头加 strict 测时已经堆 5 commit debug 难.
+- revert criterion: 若 strict ON 后真生产 trial 30 min 内 ≥ 1% cut 被 schema_err reject 且非 spec drift → 临时 OFF + 排查 schema 跟 src 的 drift, 不是 framework bug
+- revert 方法: 单 commit revert `EXACT_FAMILY_VALIDATOR_STRICT` default (env 一行改), 不影响其他
+
+**Phase 1.2 → 1.3 切换 (cut framework 接进 benders_loop)**
+- 切换点: §13 P1.21 step_8 apply_to_master 真集成 master.AddLinear 时, env-gated 默认 OFF
+- 渐进 ramp:
+  - Phase 1.3 first commit: env-gated 默认 OFF, unit test 在 mock master 上验
+  - 1 candidate trial OFF baseline + ON enable 各 1 次, 对比 outcome
+  - 24h shadow trial (env ON 但 cut 不真 attach, telemetry-only) → 看 §20 metric (cut count / valid rate / replay reject rate)
+  - 24h half-trial (env ON + cut 真 attach + telemetry full) → metric 健康 + outcome 不退化 → GO 168h
+- revert criterion: 真生产 168h trial 出现 (a) 168h-campaign-time wall-clock ≥ baseline + 20% / (b) outcome FEASIBLE → INFEASIBLE 反向 / (c) telemetry replay reject rate ≥ 5% → 立刻 env OFF + 单 commit revert master integration line
+- revert 方法: env OFF 即可瞬时 disable; 不需要 git revert (framework 仍在 src/, 只是 master 不调用)
+
+**Phase 1.3 → 1.5+ 切换 (production integration, commodity registry 真接 data pipeline)**
+- 切换点: §13.1 commodity_demands / commodity_routes 从 mock fixture 切真生产 data pipeline 注入
+- 不开关 toggle, 直接切 — 但 fallback: registry 若 None → §6 现状的 fail-closed HOLD (per Step M)
+- revert criterion: 真 data pipeline 注入后 F2/F4 cut quarantine count ≥ Phase 1.3 baseline × 2 → registry schema 跟 src 不 align, 回到 §13.2 决策 (commodity_id vs route_id) 重审
+
+**全 phase 通用 (任何 Step / Phase 通不过 GO)**
 - 任 phase 通不过 GO 标准 → 不推下一 phase, 单独 debug commit
 - 每 Step (A-O 跟未来 P+) commit 独立, git revert 单 step 不影响其他
-- Audit verdict NOT GO 不 archive 假数据, reproduce verify 真才 commit
-  ([[audit-verify-before-archive]])
-- 大节点 (Phase 1.2 入门 / Phase 1.2 5 family / Phase 1.3) audit 不通过 →
-  打包 next round, 不强推
+- Audit verdict NOT GO 不 archive 假数据, reproduce verify 真才 commit ([[audit-verify-before-archive]])
+- 大节点 audit 不通过 → 打包 next round, 不强推
+
+**hot-roll (env toggle) vs phase-roll (src 改) 区分**
+- env toggle (`EXACT_FAMILY_VALIDATOR_STRICT` / `EXACT_USE_POSE_BOOL_MASTER` 等): 瞬时切, 不需 git revert, 反复 toggle 不留 audit trail
+- src 改 (新 family / 新 step / 新 watcher): git commit, revert 走 `git revert <SHA>`, 留完整 trail
+- 政策: 任何 paradigm 决策 (B Design v2 invariant) 改动必 phase-roll (src 改 + PROJECT_LOCK 同步), 不准 env toggle 绕
 
 ---
 
@@ -1360,3 +1419,460 @@ campaign 时间), 不在 Claude implementation 时间.
 - adversarial soundness — validator trust boundary, oracle 不可信
 
 任何 §3A 边界改动必先 PROJECT_LOCK 更新 + 跨 spec / src / test 同步.
+
+---
+
+## 19. 环境变量 / 配置清单
+
+cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其他 EXACT_* env 一致, 避免新 config schema). 本节列当前 cut framework 自己 + 跟主流程 cut 相关 env 的 interaction.
+
+### 19.1 cut framework 自身 env (现状)
+
+| Env | 当前默认 | Phase 1.2 默认 | Phase 1.3 默认 | 用途 |
+|---|---|---|---|---|
+| `EXACT_FAMILY_VALIDATOR_STRICT` | `"0"` | `"1"` (§10.1) | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed (replay HOLD). `"0"` 时 unknown family 走 schema_err 但不 hard-fail (Phase 1.1 调试模式). |
+
+### 19.2 Phase 1.3 propagator 集成预留 env (实施时定名)
+
+下面 env 在 §12 / §13 实施时加, 当前未实施. 命名前缀按项目惯例 `EXACT_CUT_STORE_*`:
+
+| Env (拟) | 默认 | 用途 |
+|---|---|---|
+| `EXACT_CUT_STORE_ENABLE` | `"0"` | 总开关. OFF 时 master.solve 不接 cut, 框架仅 unit test 跑 (Phase 1.3 first commit) |
+| `EXACT_CUT_STORE_SHADOW_ONLY` | `"0"` | shadow 模式: framework run 但 cut 不真 attach master, 仅 telemetry (24h shadow trial 用, §14.3) |
+| `EXACT_CUT_STORE_TELEMETRY_PATH` | (unset) | telemetry jsonl 落盘路径. unset 时不落盘 |
+| `EXACT_CUT_STORE_MAX_HELD_CUTS` | `"10000"` | held queue 上限. 超 → 拒新 cut 入 held (LRU evict 暂不做, 简单 cap) |
+| `EXACT_CUT_STORE_REPLAY_REJECT_KILL_PCT` | `"5.0"` | replay reject rate 超此 % → 整 candidate trial abort (§14.3 revert criterion) |
+
+最终名以 §13 实施时 commit 为准, 此表是 placeholder; 加 env 时同步更新本节.
+
+### 19.3 跟主流程 cut/master 相关 env (cut framework 不直接读, 但 interaction matters)
+
+| Env | 默认 | 跟 cut framework 关系 |
+|---|---|---|
+| `EXACT_USE_POSE_BOOL_MASTER` | OFF | B1 pose-bool master paradigm. cut framework 不绑 master 形态, OFF/ON 均工作 (Phase 1.3 接进时验) |
+| `EXACT_B1_PATCH_ROUTING_CORE` | OFF | PCR-CUT (Path 14). 当前是独立 cut 生成路径 (env-gated front_blocked branch), 跟 B Design v2 cut store 不直接共享. Phase 1.5+ 可能 merge (TBD) |
+| `EXACT_B1_PATCH_ROUTING_CORE_TOP_K` | `"3"` | PCR-CUT 同上 |
+| `EXACT_B1_PATCH_ROUTING_CORE_SECONDS` | `"10"` | PCR-CUT 同上 |
+| `EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS` | `"5"` | PCR-CUT 同上 |
+| `EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS` | `"900"` | PCR-CUT 同上 |
+| `EXACT_B1_PATCH_ROUTING_CORE_QX_CAP` | `"32"` | PCR-CUT 同上 |
+| `EXACT_B1_ABSTRACT_ROUTING_LAYER` | OFF | L2 abstract routing (SAC-Hull). cut framework 独立 |
+| `EXACT_B1_SEPARATOR_HULL` | OFF | SAC-Hull L1 static separator. cut framework 独立 |
+| `EXACT_B1_SEPARATOR_HULL_DYNAMIC` | OFF | SAC-Hull L2 dynamic separator. cut framework 独立 |
+| `EXACT_B1_D2_COMMODITY_FLOW` | OFF | D2 Path 17 (paradigm 死). cut framework 独立 |
+| `EXACT_B1_ROUTING_AWARE_BINDING` | OFF | routing-aware binding. 跟 F2/F4 commodity registry 可能交互 (Phase 1.5+ §13.1 决) |
+| `EXACT_MASTER_GHOST_ANCHOR_FILTER` | (unset) | ghost anchor 限缩. 跟 cut.scope GHOST_AGNOSTIC 不冲突 (前者限 master, 后者限 cut applicability) |
+| `EXACT_OUTER_SKIP_UNKNOWN` | OFF | outer search skip UNKNOWN candidate. 跟 cut framework 不直接交互 |
+
+### 19.4 toggle 政策
+
+- 任意 cut framework env 改 default 必走 §14.3 phase-roll (src commit, 不准 hot env override 绕)
+- Phase 1.2/1.3 之前不准把 `EXACT_FAMILY_VALIDATOR_STRICT="0"` permanently 配进生产 wrapper (`scripts/run_campaign_*.sh`) — strict OFF 仅本地调试 / 测试时临时 export, 不入生产
+- env 冲突检测: implementer 加新 env 时必在 spec / plan 19.1 表加一行 (避免散落)
+
+---
+
+## 20. Observability / telemetry plan
+
+cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只有单测 (`pytest src/tests/cuts/`) 验 sound, Phase 1.3 真接进 benders_loop 后必须有 runtime metric, 不能等 168h trial 结束才看. 本节定 metric / 落盘 / trigger.
+
+### 20.1 现状 telemetry (已实施)
+
+`src/cuts/store.py::CutStore.stats()` 返 snapshot:
+```
+{
+  "total_cuts": int,       # 总 cut 数 (含 active + held + quarantined)
+  "active": int,           # 当前 attach master 的 cut 数
+  "held": int,             # held queue 待 replay 的 cut 数
+  "quarantined": int,      # validator reject 进隔离的 cut 数
+  "by_cell_keys": int,     # 6 dim watcher 各自 key 集合大小
+  "by_group_keys": int,
+  "by_pose_keys": int,
+  "by_commodity_keys": int,
+  "by_region_keys": int,
+  "by_ghost_keys": int,
+}
+```
+单测里被 exit_criteria ramp report 用. Phase 1.3 接 benders_loop 后要在每 outer iter / benders 内 iter 后 snapshot.
+
+### 20.2 Phase 1.3 加的 metric (P1.21 实施时)
+
+按 §22 review 实践拆 4 类 (cardinality / quality / latency / safety):
+
+**cardinality (cut 数量/分布)**
+- `cut_count_by_family`: dict[F1-F9 → int], 当前 store 中各 family 数
+- `cut_count_by_state`: dict[active/held/quarantined → int] (现 stats 已有)
+- `cut_generation_rate`: cut 加入速度 / outer iter (诊断 oracle 产 cut 是否健康)
+- `cut_per_candidate_dist`: 各 candidate 累积 cut 数分布 (诊断 cut share 是否跨 candidate)
+
+**quality (cut 是否真有用)**
+- `cut_active_to_total_ratio`: active / total, 太低 (< 50%) 暗示 quarantine 多 / replay 不通过
+- `replay_reject_rate`: replay_cut 返 QUARANTINE / HOLD 占总 replay 比例 (§14.3 revert criterion ≥ 5% → abort)
+- `cut_pruning_contribution`: 每 cut attach 后 master.solve UNKNOWN→INFEASIBLE 比例 (Phase 1.5+ 数据)
+- `cut_redundancy_rate`: 同 scope/cert 的重复 cut 占比 (high → minimize step 失效)
+
+**latency (hot path)**
+- `step_7_evaluate_latency_p50/p95/p99`: evaluate dispatch 延迟 (§12.2 perf target: p95 < 50 ms)
+- `replay_latency_p50/p95/p99`: on_ghost_rect_changed 内 replay 延迟
+- `validator_latency_by_family`: 各 F1-F4 validator 入口延迟 (诊断哪个 family 拖)
+- `watcher_query_latency`: 6 dim watcher lookup 延迟 (诊断 by_cell 是否散到 4900 key)
+
+**safety (adversarial soundness 指标)**
+- `schema_err_count_by_field`: validator schema_err 按字段分布 (high → spec drift)
+- `cert_literal_mismatch_count`: F3 cert↔literal multiset 不绑事件 (Step B / Step J 验, 应 0)
+- `ghost_agnostic_reject_count`: F2/F4 GHOST_AGNOSTIC reject (Step O 验, 应 0 if no oracle bug)
+- `canonical_rules_none_hold_count`: replay 因 canonical_rules None 走 HOLD 的事件 (Step M, 应 0 in production)
+
+### 20.3 落盘 schema (Phase 1.3 落地)
+
+类比 `data/telemetry/subproblem_repeat_<pid>.jsonl` (§P1 #12 cache-trio spike) 的 worker-per-file jsonl:
+
+`data/telemetry/cut_store_<pid>.jsonl` — append 每 5 min snapshot
+```jsonl
+{"ts":"2026-MM-DDTHH:MM:SS","pid":12345,"outer_iter":47,"benders_iter":3,
+ "cardinality":{"total":120,"active":85,"held":30,"quarantined":5,
+   "by_family":{"region_capacity":40,"cutset":25,...}},
+ "quality":{"active_ratio":0.71,"replay_reject_rate":0.012,...},
+ "latency":{"step_7_p95_ms":34,"replay_p95_ms":12,...},
+ "safety":{"schema_err":0,"cert_literal_mismatch":0,...}}
+```
+
+aggregate 工具 (类比 `scripts/analyze_subproblem_repeat_rate.py`):
+- `scripts/analyze_cut_store_telemetry.py` (Phase 1.3 加) — 跨 worker pid 合并 + 各 metric 分布报告
+
+### 20.4 trigger / alerting
+
+168h campaign 内不做 push alerting (Phase 3B 项目政策无 telemetry receiver), 但 implementer / 用户主动看的 trigger:
+
+- **24h shadow trial 完**: 必看 cardinality + quality, 若 `replay_reject_rate ≥ 5%` → 不进真 attach trial (§14.3 revert criterion)
+- **168h 启动后每 6h 心跳检查**: 看 `cut_count_by_family` 是否各 family 都产, 不是只 F1 / F2 占 99% (oracle 偏 / spec drift 暗号)
+- **168h 结束**: 跑 aggregate 脚本, 进 `docs/research/.../telemetry_aggregate/` archive 跟 outcome 关联
+
+### 20.5 设计原则 (避免 metric bloat)
+
+- 加 metric 必能回答 "出问题 我怎么定位" — 不加只 "好看不动" 的 metric
+- 每 metric 写入 § 20.2 表时必标 unit + 触发看的 condition + 期望 range
+- telemetry 落盘 overhead 必量 (Phase 1.3 perf opt §12.2): 写盘 < 0.1% wall, 否则 batch-flush
+- worker-per-file jsonl 不 SQL / 不集中 db — 跨 worker 合并是 offline analyze 脚本的事
+
+---
+
+## 21. 测试 strategy + fixture 清单
+
+172 cuts test 不是平铺, 按目标分 4 层. 本节定层 + 各层覆盖哪些 family + fixture 清单 + Phase 1.2 加 F5-F9 时怎么扩展.
+
+### 21.1 测试 4 层
+
+| 层 | 目标 | 文件 | 数量 |
+|---|---|---|---|
+| **Unit** | 单 function/class 行为 (helpers / store / lifecycle 各 step 各分支) | `test_store.py` / `test_lifecycle.py` / `test_helpers_*.py` / `test_assumptions_verifiers.py` | ~80 test |
+| **Family** | 单 family validator + evaluator + oracle 端到端 (per family schema + 真数据反例) | `test_family_{region_capacity,cutset,port_exposure,component_reach}.py` | ~70 test |
+| **Integration** | replay flow / on_ghost_rect_changed / add_cut 多 family 串 (跨 family interaction) | `test_replay.py` + 部分 `test_lifecycle.py` | ~15 test |
+| **Adversarial** | 假 cert / cert↔literal 不绑 / GHOST_AGNOSTIC 非法 / canonical_rules=None bypass 等 (Step A-O 全部) | 散在各 `test_family_*.py` (e.g. test_*_p_g_outside_R / test_*_ghost_agnostic_rejected) | ~7 test |
+
+具体 count 以 `pytest --collect-only -q src/tests/cuts/` 为准.
+
+### 21.2 helper / fixture 当前组织
+
+- **无 conftest.py / 无独立 fixture file** — 各 test 文件内 inline `_make_state` / `_make_<family>_cut` helper, 按 family 独立
+- 主要 helper:
+  - `test_family_component_reach.py::_make_state` + `_make_component_reach_cut`
+  - `test_family_cutset.py::_make_enclosed_state` + `_make_cutset_cut`
+  - `test_family_port_exposure.py::_make_state` + `_make_port_exposure_cert` + `_make_port_exposure_cut`
+  - `test_family_region_capacity.py::_make_state`
+  - `test_replay.py::_make_state` + `_make_f1_cut`
+  - `test_store.py::_make_state` + `_make_cut`
+  - `test_lifecycle.py::make_state_with_crusher_on_left_baseline` + `make_clean_state`
+- 政策: Phase 1.2 加 F5-F9 时新 family test 沿用 inline helper 模式, **不**抽 conftest.py (避免跨 family 共享状态意外耦合, adversarial 测试主战场要的就是各 family 独立反例)
+
+### 21.3 red fixture 清单 (docs/research/.../red_fixtures/)
+
+`docs/research/p3_b_design_v2_20260521/red_fixtures/` 5 个 known-infeasibility 反例 (schema-level, 跑 evaluate_cut_as_multiset 验拦截):
+
+| ID | 文件 | 反例几何 | 应拦 family | 来源 |
+|---|---|---|---|---|
+| **F1** | `F1_boundary_saturation.md` | 138 left+bottom cells 必 100% 铺满, 缺格 → INFEASIBLE | F1 region_capacity + F3 port_exposure | v14 review boundary correction (commit 976bc10) |
+| **F2** | `F2_shape_packing_hall.md` | 长度 10 boundary 被 ghost 切 [1-4]+[6-10], 9 cell ≥ demand 9 pass capacity 但 length-3 `⌊4/3⌋+⌊5/3⌋=2<3` infeasible | F1 + F6 shape_packing_hall (Phase 1.2 P1.12) | Gemini 反例 B |
+| **F3** | `F3_power_no_cover.md` | pose p 在 G1 ghost 下无 power_pole 候选覆盖 → INFEASIBLE | F1 region_capacity + F7 power_hitting_set (Phase 1.2 P1.13) | GPT 反例 power_cover + L16 lazy power |
+| **F4** | `F4_ghost_scoped_replay.md` | G1 学 cut `not(A=pA ∧ B=pB)`; G2 移挡后 A=pA∧B=pB 合法 → 旧 pose-id-only replay 误剪 | F5 pattern_nogood (Phase 1.2 P1.11) + scope-aware replay HOLD | cut_lifecycle_v2 §4 walk-through |
+| **F5** | `F5_power_grid_disconnect.md` | power network 断连, source → sink 4-conn 不连通 → INFEASIBLE | F8 power_grid_reach (Phase 1.2 P1.14) | GPT power cover ext |
+
+每 fixture .md 文件结构: 反例几何 + MasterStateV2 表达 + 期待结果 + Hardcode cut object + evaluate 期望.
+
+Phase 1.2 加 F5-F9 时按 §11 各 family 步骤每加 1 family 至少 1 red fixture (含反例几何 + cert + literal binding).
+
+### 21.4 测试 strategy by phase
+
+**Phase 1.2 入门 (§10, 7 项 factual fix)**
+- 不加新 family, 强 strict gate / spec align / source_digest 真 hash
+- test 要求: §10.1 strict gate 加 regression (未注册 family OFF→fail-closed)
+- §10.4 ghost_rect tuple 改 object 加非方形 fixture e.g. `(10, 20, 3, 7)`
+
+**Phase 1.2 P1.11-P1.15 (§11, 5 family)**
+- 每 family 至少: 1 unit (helper) + 3 family (validator schema + cert binding + evaluator 真重算) + 1 adversarial (假 cert) + 1 red fixture 拦
+- F5 deletion + QuickXplain test 单独 (复杂, 加 minimize step)
+- F6 Hall theorem 加 4-5 反例 (interval graph 各类)
+- F7 set cover 加 LP relax 边界 + ln(n) approximation 上限
+- F8 Liang-Barsky AABB 加非方形 + 正交 + 退化 (零长度) 反例
+- F9 density envelope 加 baseline `cap/area=1.0` 边界
+
+**Phase 1.3 (§12, propagator 真集成)**
+- 加 integration test: master.AddLinear mock + cut store apply_to_master + cp_sat propagator round-trip
+- 加 perf test: step_7 / replay latency p95 < §20.2 阈值
+- 加 telemetry test: jsonl schema validate (§20.3)
+
+**Phase 1.5+ (§13, production integration)**
+- 接 real benders_loop, 加端到端 24h shadow trial (test 不跑, 是 trial)
+- regression: 历史 168h baseline outcome (UNPROVEN candidate 列表) 不退化
+
+### 21.5 viewer sample vs production 全集
+
+cut framework 测试用 **viewer sample** (~273 pose, BSP=54), production 168h 用 **全集** (~81795 pose, BSP=134). Sample 是单测 + 反例 reproduce 用 (上传 review pkg 时也是 sample, 大小 < 1 MB), 全集仅生产 trial 用 (53 MB).
+
+差异:
+- sample F1 14 outside-pose 反例数字 (GPT v3 cite) 来自 viewer sample, **production 全集 outside count 不同**
+- adversarial 反例若 cite 具体 pose_id, 测试 fixture 必显式声明 sample-only, 不假定全集 reproduce
+
+review pkg 默认 ship 全集 (53 MB), README 提醒 reviewer 反例数字 vs sample 关系 (build_v8 script 已加).
+
+### 21.6 静态 gate (lint / type / dead code / security / complexity)
+
+随测试一起 enforce, 不只 `pytest` pass:
+
+| 工具 | 当前 strict | Phase 1.2 入门 (§10.5/10.6) | 用途 |
+|---|---|---|---|
+| `ruff check` | clean (default + `--config "lint.per-file-ignores={}"` 都 clean) | 维持 | F401 / import order |
+| `mypy --strict` | 37 errors | → 0 (§10.5) | 类型 hygiene |
+| `vulture` | 1 unused (`evaluate_literal_port_exposure`) | 决定 (§10.7) | dead code |
+| `bandit` | 5 Low B101 assert (内部, validator 入口已 explicit guard) | 维持 | security |
+| `radon cc` | D(27/24/23) 3 处 | 拆 helper (§10.6) | complexity |
+
+每 commit 必跑 `pytest src/tests/cuts/ -q` + `ruff check src/cuts/`; 大 commit (新 family / 改 step) 必跑全套 5 工具.
+
+---
+
+## 22. 审查策略 (Gemini per-commit + GPT pro 大节点)
+
+Phase 1.1 经验: Gemini 11 round Day 15/16a/16b 堆到 round 14 才 cross-check, 找出 3 致命 bug + 2 schema 漏 — 单 spec single-step cross-check 防 cascade ([[gemini-review-algorithm-math]]). GPT pro 11 round v1-v6 audit catch 4 critical blocker (F1 demand P(g)⊆R / F2 partition / F3 cert↔literal / F4 commodity) Gemini 全 miss — 那是 adversarial soundness 层 ([[adversarial-soundness-audit]]). 两层分工互补, Phase 1.2 不可少.
+
+### 22.1 Gemini per-commit cross-check (fast, narrow, schema layer)
+
+**触发条件 (每 commit 必经)**
+- 任何 src/cuts/ 改动 commit 后立刻调 ([[gemini-review-algorithm-math]] 用户原话: "先 check, 以后都是先 check 再继续", 不堆)
+- 纯 implementation 不算 (refactor / rename / IO / docstring 改); 数学/算法/spec/schema 层必跑
+- helper 拆 / radon D 级降 (§10.6) 算 refactor 但若动 validator 路径仍跑
+
+**模式 (per [[gemini-prompt-audit-mode]])**
+- audit 模式, 不是 GO 章 ritual: 验 spec ↔ src ↔ data gap, push find problem
+- prompt 含 real data path (`data/preprocessed/candidate_placements.json` 等), 不只 sample
+- armor: 强制 3 死法 + 反 vague hyperbole + 不重写 prompt 别调
+- "GO" 不是 verdict 目标; "specific finding + reproducer" 才是
+
+**频率 / 工时**
+- 单 commit ~5-10 min round-trip (free-tier API key, [[gemini-math-consultant]])
+- Gemini round number 在 archive 文件名连号 (当前 r35, 下个 r36...)
+- archive 立即 cp 进 `docs/research/.../cross_check/gemini_round_NN_*.md` ([[archive-research-transcripts]])
+
+**Phase 1.2 加严 (R34 round 加严)**
+- 每 commit 立刻 cross-check, **不堆**. 不准 "5 commit 后一起跑" — Day 15 累积 cascade 教训
+- finding 必先 reproduce (script / grep) 才 archive 进 cross_check/, 不准 archive 假 finding ([[audit-verify-before-archive]])
+
+### 22.2 GPT pro 大节点 batch audit (deep, broad, adversarial layer)
+
+**触发条件 (大节点 boundary)**
+- Phase 1.1 闭环 ✓ (v1-v6 已经跑过 11 round)
+- Phase 1.2 入门 7 项 (§10) close — next trigger
+- Phase 1.2 5 family 全 land (P1.11-P1.15) — next next trigger
+- Phase 1.3 propagator land + 24h shadow trial — next³
+- Phase 1.5+ production integration — final pre-168h
+
+**模式 (per [[big-milestone-gpt-pro-review]] + [[review-pkg-no-prompt-inside]])**
+- 打包 7z + zip 壳 + ship 7za binary (per `[[review-pkg-7z-strategy]]`, ~5-7 MB 全项目)
+- prompt 不放包里, 通过 chat message 单独给 ([[review-pkg-no-prompt-inside]])
+- armor 三段式 ([[gpt-review-prompt-armor]]): 真瓶颈 + 死路黑名单/白名单 + 不可达必须形式化证明 (不准 "I believe / intuition")
+- 包 standalone — 不引用历史 GPT verdict ("跟 v3/v4 不一样" 这类不写, 详 [[review-package-for-new-window]])
+
+**adversarial soundness check 清单 (主战场, GPT pro 主要 catch 这层)**
+
+按 [[adversarial-soundness-audit]] 5 验:
+1. **cert 内 sound**: cert 本身字段一致 (region cells ⊆ free / partition A∪B==free / commodity_id ∈ registry / src/sink_component bitset 真 BFS)
+2. **cert ↔ literals 绑定**: F3 cert blocking_pose_id == literal multiset; F5 cert ↔ literal pattern 严等
+3. **cert ↔ 真数据**: cert region 跟 canonical_rules.json 的 placement_rule_for_group 同源; cert commodity 跟 generic_io_requirements.json 真存在
+4. **cert ↔ state**: cert 跟 BState `pose_domain` / `cell_owner` / `commodity_demands` 一致, 不是 oracle 凭空造
+5. **cert ↔ 不变量**: cert 跟 PROJECT_LOCK §3A invariant 一致 (GHOST_AGNOSTIC sentinel / family-mode XOR / source_digest)
+
+GPT pro 主要 catch (3+4+5) — Gemini 倾向 catch (1+2) schema 层. 实施 family validator 必主动想: "假 cert 能不能 pass?" Step A-O 教训.
+
+**频率 / 工时**
+- 1 大节点 ~ 1-2 round (打包 + 等 GPT pro verdict + close P0). Phase 1.1 用了 11 round 是因为反复 NOT GO + 我修 + 再打包. 正常 1-3 round
+- 单 round 工时: 打包 5 min + 等 GPT 几 min + close finding ~30 min - 数小时 / P0
+- archive: `docs/research/.../external_review/gpt_pro_phase{N}_v{V}_audit_*.md`
+
+### 22.3 audit verdict criteria — GO / NOT GO
+
+我们对 reviewer 的 verdict 怎么定义:
+
+**GO 准则 (大节点过 audit)**
+- 0 P0 (critical, soundness 破坏 / 生产 crash)
+- ≤ 3 P1 (high, soundness 减弱 / 非生产路径 bug), 各有 mitigation 计划
+- P2/P3 (medium/low, cosmetic / cleanliness / nice-to-have) 不卡 GO, 进 followup queue (#239)
+
+**NOT GO 准则 (不推下一 phase)**
+- ≥ 1 P0 → 必 close (Step A-O 模式) 才下一 round
+- > 3 P1 → 排序 close top-3, 余进 followup
+- 同 round 重复 catch 同 finding → spec drift, 必同步 spec/src/test 三层
+
+**P 分级判定 (跟 GPT pro / Gemini 沟通时怎么定)**
+- P0: validator 可被假 cert 骗过 (Step A-O 全部 P0 都属此); 生产 crash; data corruption; soundness 数学根据被否定
+- P1: validator 不验某 sub-invariant 但当前数据不触 (Phase 1.2 加 fixture 触发); 静态工具 strict 不通过 (mypy/radon 严警); spec 跟 src drift 不致 soundness 破
+- P2: dead code / 注释错 / docstring 旧; lint 非 fail
+- P3: cosmetic / 风格
+
+### 22.4 review 输入 / 输出 (各 reviewer 各自要看的)
+
+**Gemini per-commit 输入**
+- diff (commit SHA) + 改动 file 全文 + 相关 spec section (e.g. cut_family_specs/F1.md)
+- 真数据 path (e.g. data/preprocessed/candidate_placements.json) — 让 Gemini 跑 reproduce
+- 不放: full project, 历史 GPT verdict, 多 commit 累积 diff
+
+**GPT pro batch 输入**
+- 全项目 zip (v8 模式, 7z 壳 + ship 7za)
+- 真数据 production 全集 (53 MB)
+- audit archive 累积 (cross_check/ + external_review/) — 给 reviewer context 知道之前怎么修
+- spec 完整 (cut_lifecycle_v2 / state_machine_v2 / cut_family_specs/)
+- 不放: plan doc (主动性引导, per [[review-pkg-no-prompt-inside]]); prompt; verdict claim / Close 列表
+
+**输出 archive 政策 ([[archive-research-transcripts]] + [[audit-verify-before-archive]])**
+- Gemini response 立即 cp 进 `cross_check/gemini_round_NN_<topic>.md`
+- GPT pro response 立即 cp 进 `external_review/gpt_pro_phase{N}_v{V}_audit_round{R}_{VERDICT}.md`
+- 每 finding 必 reproduce verify (~5-15 min, cheap) 才算数; reproduce fail 标记 "unverified" 不计入 verdict P 列表
+- archive 进 git, 不准只本地 — review pkg 给下个 reviewer 时也带上 archive
+
+### 22.5 Gemini vs GPT pro 分工 summary
+
+| 层 | Gemini | GPT pro |
+|---|---|---|
+| 频率 | per-commit (高频, 1-2/day) | 大节点 (低频, 1-2 round/phase) |
+| 输入 size | diff + 单 spec section + 真数据 path | 全项目 zip |
+| 主战场 | schema ↔ src ↔ data gap | adversarial soundness (假 cert 能 pass 吗) |
+| 强项 | 自然口吻写作 + 快速 schema check ([[gemini-better-at-natural-tone]]) | deep cross-file consistency + paradigm check |
+| 弱项 | 不会 push adversarial 反例构造 ([[gemini-prompt-audit-mode]] armor 补) | 慢, 不能 per-commit |
+| 工时 | ~5-10 min/round | ~打包 5 min + GPT 等 + close 30 min-小时 |
+| Phase 1.2 政策 | 加严: 每 commit 立刻, 不堆 | 大节点 trigger, 5 family land / Phase 完 |
+
+---
+
+## Appendix A. 术语表 / Glossary
+
+按字母 / 类别归. 术语首次在 plan 出现时不展开, 来此 anchor.
+
+### A.1 项目顶层
+
+- **终末地 (Arknights: Endfield)** — 鹰角网络游戏, 项目目标为其工业规划解题
+- **IndustrialPlanner** — 终末地游戏内工业规划玩法, 70×70 grid + 266 facility instance
+- **70×70 grid certified exact solver** — 本项目, 求 `max_lex(area, min_side)` 最大空矩形 + 全 facility placement 可行性证明
+- **valley4_protocol_core** — 当前 active scope 单 base; 其他 base (`valley4_infra_outpost` 等) future_scope
+- **certified_exact mode** — 项目主路径, 跟 `exploratory` 路径严格分离; 本 plan 全 scope 在 certified_exact
+
+### A.2 Cut Framework (B Design v2)
+
+- **B Design v2** — cut framework spec 第二版, 含 9 family + 9-step lifecycle + state machine v2. (v1 早期 spec 死, 详 §4.7)
+- **F1-F9** — 9 个 cut family (frozen, PROJECT_LOCK §3A):
+  - F1 `region_capacity` (geometric) — 区域容量 pigeonhole / set covering
+  - F2 `cutset` (geometric) — Menger min-cut max-flow
+  - F3 `port_exposure` (literal) — 命题逻辑 + slot anonymity
+  - F4 `component_reach` (geometric) — 4-conn graph BFS connectivity
+  - F5 `pattern_nogood` (literal) — minimal unsat core + QuickXplain
+  - F6 `shape_packing_hall` (geometric) — Hall's marriage theorem
+  - F7 `power_hitting_set` (literal) — set cover NP-hard / LP relaxation
+  - F8 `power_grid_reach` (geometric) — Liang-Barsky AABB intersection
+  - F9 `density_envelope` (geometric) — 上界几何 (≥ area baseline=1.0 trivial)
+- **family mode (literal vs geometric)** — F1/F2/F4/F6/F8/F9=geometric (sound deduction from geometry), F3/F5/F7=literal (proposition over pose assignments). PROJECT_LOCK §3A XOR
+- **9-step lifecycle** — canonicalize → generate → minimize → serialize → deserialize → validate → attach-scope check → evaluate → apply-to-master
+  - 当前 Phase 1.1: step 1/3-7 sound 闭环; step 2 (minimize) defer Phase 1.2 P1.11 (F5 deletion+QuickXplain); step 8 (apply-to-master) defer Phase 1.3 P1.21
+- **cert (certificate)** — cut 的 mathematical 证明对象, 含 region/partition/component/commodity 等 family-specific 字段. validator 重算 cert 验 sound
+- **literal** — cut 中排除的具体 pose assignment (`x[instance_id, pose_id]` boolean). literal-mode cut 用; geometric-mode cut 不直接持 literal
+- **blocker** — F3 cert 中 blocking 一个 port slot 的另一 pose; F5 cert 中 "如果这些 literal 都 true 则 INFEASIBLE" 的支撑集
+- **multiset eval** — slot anonymity 的形式化: slot 集合上 S_n permutation 群作用不变. evaluate 不绑具体 slot id, 看 multiset 计数 (state_machine v2 §5)
+- **watcher** — `CutStore` 6 维 index (by_cell / by_group / by_pose / by_commodity / by_region / by_ghost), state 变化时 O(查询命中) 而非 O(总 cut) 找 affected cut
+- **replay** — ghost rectangle 变 / state 变 / canonical_rules 变 → 触发 `on_ghost_rect_changed`, 已 active/held cut re-validate. fail-closed: canonical_rules=None → HOLD (Step M)
+- **state machine (held / active / quarantined)** — cut 入 store 默认 held (per Step N); replay 通过 validator → active; validator reject → quarantined (隔离, 不再 try)
+- **GHOST_AGNOSTIC** — sentinel scope value, 标记 cut 对 ghost rectangle 不敏感. F1 必验 ghost ∩ region == ∅ (Step O); F2/F4 直接 reject GHOST_AGNOSTIC scope
+- **scope versioning** — `cut.scope` 含 `ghost_rect` + `source_digest`; ghost/data 变 → scope 失效 → cut 进 replay path
+- **source_digest** — `canonical_rules.json` + preprocessed data 的 content hash. 当前 Phase 1.1 placeholder `"poc_source_digest"`, Phase 1.2 入门 §10.3 改真 hash
+- **adversarial soundness** — validator 必须扛 "假 cert 攻击" — oracle 不可信 (Byzantine), validator 是 trust boundary. Step A-O 主要 close 的层
+- **strict gate** — `EXACT_FAMILY_VALIDATOR_STRICT="1"` 时未注册 family / dispatch 漏 → fail-closed. Phase 1.2 default ON
+
+### A.3 Solver / Master 拓扑
+
+- **CP-SAT** — Google OR-Tools Constraint Programming SAT solver (`ortools.sat.python.cp_model`). 项目 master / binding / routing 都用 CP-SAT
+- **LBBD** — Logic-Based Benders Decomposition. master 出主决策 → sub-problem 验 (binding/routing/flow) → INFEASIBLE 出 nogood 回 master → master 加 cut. 项目核心 paradigm
+- **master / binding / routing / flow** — 项目 4 层 solve 拓扑:
+  - master — placement (各 instance 选 pose) + ghost rectangle
+  - binding — port binding (每 port 出/入 connect 哪条带)
+  - routing — grid routing (belts 怎么连)
+  - flow — multi-commodity flow diagnostic (诊断 routing INFEASIBLE 时为啥)
+- **outer search** — 枚举 (area, min_side) candidate 矩形, frontier-based, Phase 3A delivery
+- **candidate** — outer search 一次 try 的 (area, min_side, anchor) 三元组. ~1000-10000 candidate / 168h
+- **benders_loop** — `src/search/benders_loop.py` 的 LBBD 主循环. cut framework Phase 1.3 接进的 attach point
+- **ghost rectangle** — 70×70 grid 中 candidate 选中的目标 max empty rect, master 必保留其内部空
+- **pose** — 一个 facility instance 在 grid 上的具体 (位置, 方向, port mode). 项目 production data 81795 pose / 266 instance
+- **anchor** — ghost rectangle 的锚定 cell (左下角 / 旋转中心 等, 视 family 定)
+- **BSP** — `boundary_storage_port` (边界存储口 facility). production 134 BSP, sample 54 BSP
+- **mfg_3x3 / mfg_5x5 / mfg_6x4** — manufacturing facility 尺寸变体 (3x3 / 5x5 / 6x4 grid cell)
+- **power_pole** — 50 个 (exploratory cap 旧值, certified_exact 无 hard cap) 电力柱 facility
+- **power_coverage** — power network 用 power_pole 覆盖各 facility 的几何 + topology constraint
+- **commodity** — multi-commodity flow 中一个 (source, sink, demand) 三元组. F2/F4 cert 含 commodity_id, Phase 1.5 真接 data pipeline (§13.1)
+
+### A.4 Paradigm 死路 (历史)
+
+详 `paradigm_death_timeline_27_lever.md` (memory)
+
+- **B1 (pose-bool master)** — L11 paradigm, 27×15 interior pose-bool 7.2s FEASIBLE 但 master.solve INFEASIBLE 不收敛. **L11-L16 ❌**
+- **PCR-CUT (Patch-Certified Routing Conflict Core)** — Path 14, env-gated. Phase 0-4 GO, Phase 5 multi-anchor marginal. 详 §4.2
+- **SAC-Hull** — Path 13, separator capacity. L2 工作但 binding/routing reject 不收敛. **❌** §4.3
+- **RAB-SEP** — Path 12, routing abstraction binding-separator. cert tight 8/8 UNPROVEN. **❌**
+- **D2 commodity flow / arc** — Path 17, Phase 2 multi-anchor. **❌** §4.4
+- **cand C column generation** — Phase 1 4-ramp GO 但 master basis 真换后 reservation **superseded** by paradigm shift. §4.5
+- **L01-L26 + L27 IHS / L26 Benders symm / L25 layout-invariant** — paradigm_death_timeline cite, **全 ❌**
+
+### A.5 审查 / 工具
+
+- **Gemini per-commit cross-check** — 每 commit 调 Gemini 3.1 pro 验 schema/spec/data gap. 详 §22.1
+- **GPT pro batch audit** — 大节点打包 GPT pro 验 adversarial soundness. 详 §22.2
+- **v1-v8 review package** — Phase 1.1 audit 累积包. v1-v7 cut-only 0.3 MB; v8 全项目 7z 6 MB
+- **7z + zip 壳 + 7za binary** — 大 review pkg 压缩 strategy. 详 [[review-pkg-7z-strategy]]
+- **audit armor** — GPT review prompt 三段式: 真瓶颈 + 死路黑名单/白名单 + 不可达必须形式化证明. 详 [[gpt-review-prompt-armor]]
+- **adversarial soundness audit** — Step A-O 主战场. 5 验: cert 内 sound + cert↔literals + cert↔真数据 + cert↔state + cert↔不变量. 详 [[adversarial-soundness-audit]]
+- **red fixture** — known-infeasibility 反例 .md, 在 `docs/research/.../red_fixtures/`. 5 个 F1-F5. 详 §21.3
+
+### A.6 Data sources (`data/preprocessed/`)
+
+- **canonical_rules.json** — 项目 SoT, 含 17 recipe + facility templates + targets + commodity types. 详 `rules/canonical_rules.json`
+- **candidate_placements.json** — 全 pose 枚举 (instance, pose_idx, occupied_cells, ports, orientation, port_mode). Production 53 MB / 81795 pose; viewer sample ~273 pose
+- **mandatory_exact_instances.json** — 266 必装 facility instance
+- **generic_io_requirements.json** — commodity flow demand (per recipe / target)
+- **all_facility_instances.json** — 全 facility instance 详 (含可选 deployment)
+
+### A.7 项目 invariants / locks
+
+- **PROJECT_LOCK §3A** — 数学 / 工程 invariant lock; cut framework 边界 (family mode XOR / 9 family frozen / cert+literals XOR geometric_payload / GHOST_AGNOSTIC sentinel / multiset eval slot anonymity / adversarial soundness). 改任一必先 PROJECT_LOCK 更新 + 跨 spec/src/test 同步. 详 §18
+- **`certified_exact` vs `exploratory`** — 严格分离, 不混路径. exploratory artifacts 不算 certified proof; exploratory 的 `50 power pole + 10 storage box` cap 不进 certified_exact
+- **postprocess-only** — `src/adapters/` / `src/render/` / `data/exports/` / `data/examples/` 不重定义 solve schema; 仅消费 certified proof
+- **`max_lex(area, min_side)`** — 项目 objective; `min_side >= 6` 是 admissibility 不是 tie-break
+
+### A.8 Phase 命名
+
+- **Phase 3A** — productization, release `r20260416`, complete
+- **Phase 3B** — full-scale exact proof, in progress (repair5 master 30→47 GB fits)
+- **Phase 3C** — Linux migration + CachyOS 调优 + observability + 路线图 22 P0/P1/P2 项
+- **Phase 0/1.0/1.1/1.2/1.3/1.5+** — B Design v2 phase 命名 (cut framework 内):
+  - Phase 0 — B Design v2 spec + invariants frozen
+  - Phase 1.0 — framework migration (Day 13-17)
+  - Phase 1.1 — F1-F4 production validator + oracle + lifecycle + replay + Step A-O (**当前闭环**)
+  - Phase 1.2 — F5-F9 5 family 加 + 入门 7 项 factual fix
+  - Phase 1.3 — propagator 真接 master.AddLinear / step_8 apply_to_master / by_exterior_watcher / perf opt
+  - Phase 1.5+ — production integration, commodity registry 真接 data pipeline
+
+
