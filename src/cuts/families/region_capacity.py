@@ -345,6 +345,26 @@ def validate_region_capacity(
                 detail=f"demand_R mismatch: cert={cert_demand_R}, recomputed={recomputed_demand_R}",
             )
 
+        # 4b. GPT pro v6 P0 fix: scope.ghost_rect_id == GHOST_AGNOSTIC 合法性 check.
+        # 反例: attacker 把 ghost-dependent cut 错标 GHOST_AGNOSTIC, replay 后
+        # store 不挂 by_ghost_watcher → ghost 变化不 invalidate → 失效 cut 残留
+        # active. F1 spec §3 (01_region_capacity.md:83-89) GHOST_AGNOSTIC 仅当
+        # ghost_cells ∩ region_cells == ∅ 允许. oracle 已按此判 (oracle.py:170-177),
+        # 但 validator 不再 trust generator, 必独立 verify.
+        from src.cuts.lifecycle import GHOST_AGNOSTIC
+        if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+            ghost_in_region = state.ghost_cells & region_cells
+            if ghost_in_region:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"scope.ghost_rect_id=GHOST_AGNOSTIC 但 ghost_cells 跟 region "
+                        f"有交集 ({len(ghost_in_region)} cells, sample={sorted(ghost_in_region)[:3]}) — "
+                        f"spec §3 仅当 ghost ∩ R == ∅ 允许 GHOST_AGNOSTIC"
+                    ),
+                )
+
         # 5. Witness: demand > cap
         if recomputed_demand_R <= recomputed_cap_R:
             return ValidationResult(

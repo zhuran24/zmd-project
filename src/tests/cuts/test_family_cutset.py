@@ -98,7 +98,7 @@ def _make_cutset_cut(
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     scope = CutScope(
-        ghost_rect_id=GHOST_AGNOSTIC,
+        ghost_rect_id="ghost_v1",
         blocked_cells_hash="h",
         exterior_blocks_hash="h",
         source_digest="poc_source_digest",
@@ -282,7 +282,7 @@ def test_validate_cutset_schema_err_missing_cut_edges():
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     scope = CutScope(
-        ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+        ghost_rect_id="ghost_v1", blocked_cells_hash="h",
         exterior_blocks_hash="h", source_digest="poc_source_digest",
         artifact_hashes={}, oracle_abstraction_version="cutset_v1",
     )
@@ -300,7 +300,7 @@ def test_validate_cutset_schema_err_missing_cut_edges():
 def test_validate_cutset_schema_err_on_malformed():
     """Malformed cert → schema_err."""
     scope = CutScope(
-        ghost_rect_id=GHOST_AGNOSTIC,
+        ghost_rect_id="ghost_v1",
         blocked_cells_hash="h",
         exterior_blocks_hash="h",
         source_digest="poc_source_digest",
@@ -396,7 +396,7 @@ def test_validate_cutset_unsound_fake_commodity_id():
         cut_id="F2-fake-c", family="cutset", literals=None,
         geometric_payload=payload,
         scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            ghost_rect_id="ghost_v1", blocked_cells_hash="h",
             exterior_blocks_hash="h", source_digest="poc_source_digest",
             artifact_hashes={"canonical_rules.json": "h1"},
             oracle_abstraction_version="cutset_v1",
@@ -412,6 +412,41 @@ def test_validate_cutset_unsound_fake_commodity_id():
         or "not in commodity_routes registry" in vr.detail
         or "commodity_demand mismatch" in vr.detail
     )
+
+
+def test_validate_cutset_unsound_ghost_agnostic_scope():
+    """GPT pro v6 P0 反例: F2 scope.ghost_rect_id=GHOST_AGNOSTIC 错标. attacker
+    构造 ghost-dependent cut 错标 GHOST_AGNOSTIC → store 不挂 by_ghost_watcher →
+    ghost 变化不 invalidate → 失效 cut 残留 active. Phase 1.1 fail-closed reject.
+    """
+    state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=2)
+    side_a, side_b = {(0, 0)}, {(0, 1)}
+    cert_dict = {
+        "side_a_bitset_b64": _encode_bitset(side_a),
+        "side_b_bitset_b64": _encode_bitset(side_b),
+        "cut_edges": [[list((0, 0)), list((0, 1))]],
+        "cut_size": 1, "commodity_demand": 2, "gap": 1,
+        "contributing_commodities": ["c1"],
+        "menger_witness_kind": "max_flow_LP",
+        "witness_blob_b64": None,
+    }
+    payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    cut = Cut(
+        cut_id="F2-mis-agnostic", family="cutset", literals=None,
+        geometric_payload=payload,
+        scope=CutScope(
+            ghost_rect_id=GHOST_AGNOSTIC,  # 错标!
+            blocked_cells_hash="h", exterior_blocks_hash="h",
+            source_digest="poc_source_digest",
+            artifact_hashes={"canonical_rules.json": "h1"},
+            oracle_abstraction_version="cutset_v1",
+        ),
+        cert=OracleCert(cert_kind="menger_min_cut", cert_payload=payload, cert_hash="ch"),
+        family_version="v1.0", validator_version="v1.0",
+    )
+    vr = validate_cutset(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "GHOST_AGNOSTIC" in vr.detail
 
 
 def test_validate_cutset_unsound_route_same_side_not_crossing():
@@ -451,7 +486,7 @@ def test_validate_cutset_unsound_duplicate_contributing_commodity():
         cut_id="F2-dup-c", family="cutset", literals=None,
         geometric_payload=payload,
         scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            ghost_rect_id="ghost_v1", blocked_cells_hash="h",
             exterior_blocks_hash="h", source_digest="poc_source_digest",
             artifact_hashes={"canonical_rules.json": "h1"},
             oracle_abstraction_version="cutset_v1",

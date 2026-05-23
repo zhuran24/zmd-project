@@ -109,7 +109,7 @@ def _make_component_reach_cut(
         cert_dict["commodity_id"] = commodity_id
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     scope = CutScope(
-        ghost_rect_id=GHOST_AGNOSTIC,
+        ghost_rect_id="ghost_v1",
         blocked_cells_hash="h",
         exterior_blocks_hash="h",
         source_digest="poc_source_digest",

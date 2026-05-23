@@ -80,6 +80,26 @@ def _make_state(extra_block: bool = False) -> BState:
     )
 
 
+def test_add_cut_illegal_initial_state_no_partial_mutation():
+    """GPT pro v6 P0 反例: add_cut(initial_state='pending') 原 verify mutation 后
+    raise ValueError, cut 已写 self.cuts + watcher → is_active=True silent attach.
+    修后 verify mutation 前抛错, cut 不残留.
+    """
+    s = _make_state()
+    cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
+    assert cuts
+    cut = cuts[0]
+    from src.cuts.store import CutStore
+    store = CutStore()
+    try:
+        store.add_cut(cut, initial_state="pending")
+        raise AssertionError("expected ValueError")
+    except ValueError as e:
+        assert "initial_state" in str(e)
+    assert cut.cut_id not in store.cuts, "raise 后 cut 残留 self.cuts (silent attach)"
+    assert not store.is_active(cut.cut_id)
+
+
 def test_add_cut_default_held_no_silent_attach():
     """GPT pro v5 P0-2 反例: 原 add_cut 直接 active 注册让 unsound cut 在 replay
     前能 is_active=True (silent attach window). Step N 修后 default held —

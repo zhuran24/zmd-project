@@ -67,6 +67,21 @@ def validate_component_reach(
             elapsed_seconds=time.monotonic() - t0,
             detail="cut.geometric_payload is None (F4 schema invariant violated)",
         )
+    # GPT pro v6 P0 fix: F4 spec scope 必绑当前 ghost (04_component_reach.md:39-40,
+    # 70-72). attacker 错标 GHOST_AGNOSTIC → store 不挂 by_ghost_watcher → ghost
+    # 变化不 invalidate. Phase 1.1 fail-closed reject; Phase 1.5+ 真 commodity-routed
+    # cell_owner-only separator 时再 unlock.
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return ValidationResult(
+            kind="unsound",
+            elapsed_seconds=time.monotonic() - t0,
+            detail=(
+                "F4 component_reach 不允 GHOST_AGNOSTIC scope (spec §3 必绑当前 "
+                "ghost — separator 跟 BFS free_cells 都受 ghost 影响, Phase 1.1 "
+                "fail-closed)"
+            ),
+        )
     try:
         cert_dict = json.loads(cut.geometric_payload)
         src_cell = tuple(cert_dict["src_cell"])

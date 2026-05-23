@@ -123,6 +123,22 @@ def validate_cutset(
             elapsed_seconds=time.monotonic() - t0,
             detail="cut.geometric_payload is None (F2 schema invariant violated)",
         )
+    # GPT pro v6 P0 fix: F2 spec §3 cut.scope.ghost_rect_id 必绑当前 ghost
+    # (02_cutset.md:87-89). attacker 错标 GHOST_AGNOSTIC → store 不挂
+    # by_ghost_watcher → ghost 变化不 invalidate → 失效 cut 残留 active.
+    # Phase 1.1 fail-closed reject GHOST_AGNOSTIC; Phase 1.5+ 如果有 cut 真不
+    # 依赖 ghost (理论可能 — 全 patch 内 cell_owner 占, partition 不含 free)
+    # 时再 unlock.
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return ValidationResult(
+            kind="unsound",
+            elapsed_seconds=time.monotonic() - t0,
+            detail=(
+                "F2 cutset 不允 GHOST_AGNOSTIC scope (spec §3 必绑当前 ghost — "
+                "Phase 1.1 fail-closed)"
+            ),
+        )
     try:
         cert_dict = json.loads(cut.geometric_payload)
         side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])

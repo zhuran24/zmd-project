@@ -36,11 +36,10 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Iterable, Set, Tuple
+from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple
 
 from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
-    AttachDecision,
     BState,
     Cell,
     Cut,
@@ -143,6 +142,13 @@ class CutStore:
             raise ValueError(
                 f"cut_id={cut.cut_id} scope is None — schema invariant violated"
             )
+        # GPT pro v6 P0 fix: initial_state 验在 mutation 前 (原 verify 在 mutation
+        # 后 ValueError raise 完 cut 残留 store + is_active=True silent attach).
+        if initial_state not in ("held", "active"):
+            raise ValueError(
+                f"add_cut initial_state must be 'held' or 'active', got {initial_state!r}"
+            )
+
         self.cuts[cut.cut_id] = cut
 
         for c in cell_keys:
@@ -161,16 +167,10 @@ class CutStore:
             self.by_ghost_watcher[ghost_id].add(cut.cut_id)
 
         # GPT pro v5 P0-2: 默认 held (pending validation). caller 必经 replay/
-        # validator gate 后调 reactivate_cut(cut_id) 才 active. test fixture 可
-        # 传 initial_state="active" bypass (legacy).
+        # validator gate 后调 reactivate_cut(cut_id) 才 active.
         if initial_state == "held":
             self.held.add(cut.cut_id)
-        elif initial_state == "active":
-            pass  # legacy: 直接 active (test fixture)
-        else:
-            raise ValueError(
-                f"add_cut initial_state must be 'held' or 'active', got {initial_state!r}"
-            )
+        # initial_state == "active": 直接 active (legacy test fixture path).
 
     def quarantine_cut(self, cut_id: CutId, reason: QuarantineReason) -> None:
         """Move cut to quarantine. cut 仍保留在 self.cuts (audit trail);
@@ -228,24 +228,27 @@ class CutStore:
         old_ghost_id: GhostRectId,
         new_ghost_id: GhostRectId,
         state: BState,
-        replay_fn: Callable[[Cut, BState], AttachDecision],
+        replay_fn: Optional[Callable] = None,
     ) -> None:
         """Triggered when ghost_rect changes (candidate transition).
 
+        GPT pro v6 P0 fix: 原 replay_fn 签名 `(Cut, BState) → AttachDecision` 跟
+        replay.py:replay_cut(cut, state, store, canonical_rules, ...) 不一致, caller
+        容易传 step_6_attach_scope_check (只验 scope 不验 family validator) → 绕
+        post-attach validator silent ATTACH. 修法:
+        - replay_fn 改 Optional, 默认 lazy import replay.replay_cut 走 full
+          replay+validator gate
+        - 传 replay_fn 路径 (legacy) 仍支持但只接 full replay 签名
+
         1. 旧 ghost_id 关联 cuts → hold (不 quarantine — 下次 ghost 回 old_id
            时 re-attach; v3.2.2 dispatch 让 cuts 跨 candidate 复用).
-        2. 新 ghost_id 关联 cuts → 调 replay_fn 6-step verify:
-           - ATTACH → discard from held (回 active)
-           - HOLD → stay held
-           - QUARANTINE → move to quarantine (内部用 quarantine_cut)
+        2. 新 ghost_id 关联 cuts → 走 full replay_cut: 包括 step_6_attach_scope_check
+           + family validator. validator ok → ATTACH; unsound/schema_err →
+           QUARANTINE; HOLD 保留.
 
-        ``replay_fn`` 是 dependency injection — Phase 1.0 P1.2 还没 replay.py,
-        P1.3 实施后由 caller 注入 ``replay.replay_cut``.
-
-        GHOST_AGNOSTIC cuts (F1) 不入 by_ghost_watcher, 不受此函数影响; 由
-        blocked_cells_hash / exterior_blocks_hash on 普通 state-change 路径
-        invalidate (Phase 1 by_blocked_cells watcher defer 7 维 — 当前阶段
-        GHOST_AGNOSTIC cuts 在 ghost change 时不动, 等下次 add_cut/replay).
+        GHOST_AGNOSTIC cuts (F1 仅当 ghost ∩ R == ∅) 不入 by_ghost_watcher, 由
+        family validator 在 replay 时拒错标 (GPT v6 P0 fix: validator step 4b
+        check scope.ghost_rect_id == GHOST_AGNOSTIC 合法性).
         """
         if old_ghost_id != GHOST_AGNOSTIC:
             affected = self.by_ghost_watcher.get(old_ghost_id, set()).copy()
@@ -260,19 +263,30 @@ class CutStore:
                 if cut_id in self.quarantined:
                     continue
                 cut = self.cuts[cut_id]
-                decision = replay_fn(cut, state)
+                # GPT pro v6 P0: 默认走 full replay_cut (跑 family validator),
+                # 不接受 scope-only replay_fn.
+                if replay_fn is None:
+                    from src.cuts.replay import replay_cut
+                    decision = replay_cut(
+                        cut, state, self,
+                        canonical_rules=state.canonical_rules,
+                    )
+                else:
+                    decision = replay_fn(cut, state)
                 if decision == "ATTACH":
                     self.held.discard(cut_id)
                 elif decision == "HOLD":
                     self.held.add(cut_id)
                 elif decision == "QUARANTINE":
-                    self.quarantine_cut(
-                        cut_id,
-                        QuarantineReason(
-                            reason_code="ghost_transition_replay",
-                            detail=f"old_ghost={old_ghost_id} new_ghost={new_ghost_id}",
-                        ),
-                    )
+                    # replay_cut 已 quarantine; legacy replay_fn path 在此手动
+                    if cut_id not in self.quarantined:
+                        self.quarantine_cut(
+                            cut_id,
+                            QuarantineReason(
+                                reason_code="ghost_transition_replay",
+                                detail=f"old_ghost={old_ghost_id} new_ghost={new_ghost_id}",
+                            ),
+                        )
 
     # ---- Internal: watcher unregister -------------------------------------
 
