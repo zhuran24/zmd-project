@@ -170,12 +170,439 @@ M/N/O 5 轮 audit 反复加 validator binding 都是 adversarial soundness 拉�
 
 ---
 
-## 3. paradigm 决策 + 死路分析
+## 3. 核心数学原理
+
+cut framework 不是堆 ad-hoc INFEASIBLE detector. 每 family 背后有具体数学定理 /
+算法 / 形式系统支撑. 这段写清整体 soundness 形式化, 各 family 数学根据, 跟
+cert 字段对应. 给后续 reviewer 跟实施者一份 "为啥这样 sound" 的形式手册.
+
+### 3.1 cut framework 整体: sound deduction system
+
+cut framework 跟 SAT / MIP / CP 的关系:
+
+| 概念 | SAT / CDCL | MIP cutting plane | cut framework |
+|---|---|---|---|
+| 累积外部知识 | learned clause | lazy cut | cut object (cert + scope + literals/geometric_payload) |
+| 表达 | propositional clause | linear inequality | family-specific cert (9 family) |
+| 证明 | resolution | LP dual / Farkas | family-specific witness (BFS / Menger / Hall / Liang-Barsky / etc) |
+| 复用 | 同 problem 内 | 跨 LP node | 跨 candidate (GHOST_AGNOSTIC) + cross-session (source_digest) |
+
+**定义** (cut sound): cut `c` 是 sound 当且仅当对任意 master state `s` 满足
+`c.scope` 版本约束, `c.cert` claim 蕴含 `s` INFEASIBLE.
+
+**定义** (framework sound): cut framework 是 sound 当且仅当 ∀ active cut `c`,
+`c` is sound.
+
+**定义** (oracle Byzantine model): oracle 可任意行为 — 返 unsound cert / 漏
+emit / 错 emit / Byzantine fail. framework sound 不依赖 oracle 行为正确性.
+这是 `[[adversarial-soundness-audit]]` 关键 — validator 是 trust boundary,
+oracle 不可信.
+
+**定理 1** (framework soundness under Byzantine oracle):
+若 `validate(c, s) → ok` 蕴含 `c` sound under `s`, 则 framework sound (任意
+oracle quality).
+
+证明 sketch: 反证. 设 framework 不 sound, ∃ active cut `c` 不 sound. `c`
+进 active 必经 replay → step 5 validate. validate(c, s_attach) → ok. 假设
+⊢ c sound under s_attach. cut attach 后 state 不变 (lazy attach 不修改 state),
+c 仍 sound. 矛盾. □
+
+**完整性 (completeness) 假设**: cut framework 不要求 complete. 即使 oracle
+漏 emit 全部 INFEASIBLE 情况, master 仍可 OPTIMAL — 只是 search tree 收敛
+慢. 这是 cut framework vs CDCL clause learning 的关键区别:
+- CDCL: 必须每 INFEASIBLE 学 1 clause (理论 quadratic on UNSAT instance)
+- cut framework: partial coverage 即可 (单 cut sound 就够, framework 跟随
+  oracle 完成度自适应)
+
+跟 MIP cutting plane 区别: MIP cutting plane 是 LP relax 上加 valid inequality
+(continuous relaxation 强化), cut framework 是 CP-SAT 上加 lazy clause (discrete
+unsat region 排除). 数学结构不同 — MIP cut 缩可行域, cut framework cut 排除
+特定组合.
+
+### 3.2 scope 复用形式化
+
+cert hash + scope versioning 让 cut 跨 candidate / cross-session 复用. 数学
+等价性:
+
+**定义** (scope equivalence): 两 state `s1, s2` 在 scope 等价当且仅当:
+- `ghost_rect_id(s1) == ghost_rect_id(s2)`
+- `blocked_cells_hash(s1) == blocked_cells_hash(s2)` (ghost ∪ exterior)
+- `exterior_blocks_hash(s1) == exterior_blocks_hash(s2)` (round 21 v3.2.2 加)
+- `source_digest(s1) == source_digest(s2)`
+- ∀ artifact a: `artifact_hashes[a](s1) == artifact_hashes[a](s2)`
+- `oracle_abstraction_version(s1) == oracle_abstraction_version(s2)`
+- ∀ assumption `(k, v)`: `assumption_holds(s1, k, v) == assumption_holds(s2, k, v)`
+
+**定理 2** (scope 复用 sound): 若 cut `c` attach 到 `s1` sound, `s2` 在 scope
+等价 `s1`, 则 `c` attach 到 `s2` sound.
+
+证明 sketch: cert 内字段 + scope 锁定数学对象 (region_cells / partition /
+BFS components / ghost geometry / source content). scope 等价 → 数学对象等价
+→ cert claim 等价 sound. □
+
+**GHOST_AGNOSTIC sentinel** 数学条件: 当 cut 真不依赖 ghost (cert 的数学对象
+跟 `state.ghost_cells` 无关) 时, `ghost_rect_id` 可设 `GHOST_AGNOSTIC`, 不绑
+具体 ghost. 例如 F1 当 `ghost_cells ∩ region_cells == ∅`, region capacity 不
+受 ghost 影响 → 可 GHOST_AGNOSTIC.
+
+oracle 按此判 (`oracle.py:170-177`), 但 framework sound 不靠 oracle: validator
+独立 verify (Step O 加 `ghost ∩ region == ∅` check, F2/F4 直接 reject
+GHOST_AGNOSTIC).
+
+**cert hash 内容寻址唯一性**:
+- `cert_hash = sha256(canonical_bytes(cert_payload))`
+- canonical_bytes 用 `json.dumps(payload, sort_keys=True, ensure_ascii=False)`
+  保证同 payload 字节一致
+- collision 假设: SHA-256 collision-resistant, 2^128 work to find collision —
+  实际生产假设无 collision
+
+**source_digest 内容寻址** (Phase 1.2 §10.3 必修):
+- `source_digest = sha256(canonical_rules + candidate_placements +
+  mandatory_exact_instances + generic_io_requirements)` 内容 (非 mtime)
+- 跨 session deserialize 后 source_digest 一致 ⇔ source data 字节一致
+- data 轮换自动让 cert 跨 session 不复用 (source_digest 变 → scope 不 equivalent)
+
+### 3.3 multiset eval 群论形式化
+
+state_machine §5 的 slot anonymity 数学结构:
+
+**定义** (group action on slot set): 对 group `g` 的 `n` 个 slot
+(`selected_poses[0..n-1]`), 对称群 `S_n` 作用在 slot 集合上. group state
+在 `S_n` 作用下 invariant — slot 顺序 reorder 后是同一 logical state.
+
+**定义** (literal multiset): cut.literals 提取 `(group_id, pose_id)` 对的
+multiset (`Counter[Tuple[GroupId, PoseId]]`). slot 不进 multiset key.
+
+**定理 3** (multiset eval permutation invariance): 对任意 cut `c` 跟两个
+state `s1, s2` 在所有 group 上 slot-permutation 等价 (即 ∀ group g, 存在
+permutation σ ∈ S_n 让 `s1.groups[g].selected_poses ≡ σ(s2.groups[g].selected_poses)`),
+则 `evaluate_literal_multiset(c, s1) == evaluate_literal_multiset(c, s2)`.
+
+证明 sketch: multiset eval 用 `Counter`. `Counter([(g, p) for slot in selected_poses])`
+不看 slot index, 只 count `(group_id, pose_id)` 出现次数. permutation σ 重排
+slot 不改 Counter (Counter 是 multiset). 故两 state Counter 相同 → eval 相同. □
+
+**实施**: `src/cuts/lifecycle.py:evaluate_literal_multiset`:
+```
+cut_demand = Counter((lit.slot_ref.group_id, lit.pose_id) for lit in cut.literals)
+state_counts = Counter((g, p) for g in groups for p in selected_poses[g])
+return cut_demand ⊆ state_counts  (Counter subset, multiset 偏序)
+```
+
+**slot anonymity 跟 validator binding 的边界** (Step J fix):
+- multiset eval 层 (final cut representation): slot 不进 cut.literals, 用
+  Counter — 这是 group action invariance
+- validator binding 层 (cert validation 内部): cert.blocking_slot 必 resolve
+  到具体 pose `state.groups[blocking_group].selected_poses[blocking_slot] ==
+  blocking_pose_id`, 这是 cert binding 真等
+
+两层 trust boundary 不同. slot anonymity 在 final cut 层 (cut literal), 不
+在 cert validation 内部 (cert claim 必绑具体 slot).
+
+### 3.4 adversarial soundness 形式化
+
+**定义** (validator trust boundary): validator `V(c, s, R)` 是 deterministic
+function. framework 信任 validator 输出, 不信任 oracle 输出.
+
+**定义** (Byzantine oracle): oracle 可返任意 cert (含 unsound / 错 hash /
+错 scope / 全空). framework sound 必跨任意 oracle.
+
+**定理 4** (validator 充分性): 若 validator V 满足 `V(c, s, R) → ok` ⇒
+`c.cert` claim sound under `s` with assumption set R, 则任意 oracle 下 framework
+sound.
+
+证明 sketch: framework 接收 cert (任意 oracle), 经 step 5 validate. validator
+→ ok 蕴含 sound (假设). 不 ok → quarantine, 不 active. 故 active cut 全 sound. □
+
+**反例驱动设计** (GPT v1-v6 audit catch 累积):
+
+Step A-O 反复加 validator 内部 check 都是反例驱动. 11 round audit catch 的
+adversarial cert 列:
+
+- python -O 删 assert 后 1-literal F3 cut 通过 schema_err → 改 explicit if
+- 同 group p013/p014 替换 cert blocker pose → multiset binding
+- F2 partition cells 含 ghost cell → partition ⊆ free check
+- F2 partition 旁有 free cell 不在 partition → patch enclosure check
+- F2 cert.cut_edges set 跟 recomputed 不等 → canonical sorted byte equal
+- F4 cert.src_component bitset 跟 BFS recomputed 不等 → frozenset 严等
+- F1 group P(g) 含 R 外 pose → strict subset check
+- F1 cert.contributing_groups 重复 group → seen_gids dedup
+- F1 cert.gap 跟 recomputed (demand - cap) 不一致 → gap consistency
+- F2 cert.commodity_demand 无 registry → registry require
+- F2 cert.contributing_commodities=["c","c"] → set dedup
+- F2 route src/sink 都在 side_a → cross-partition check
+- F4 cert.commodity_id="fake" → commodity_routes registry require
+- F4 separator (999, 999) out-of-grid → in-grid + ∈ owner∪ghost check
+- F1/F2/F4 cert.scope.ghost_rect_id 错标 GHOST_AGNOSTIC → validator 验
+  ghost ∩ region 关系
+- replay(canonical_rules=None) 绕 validator → fail-closed HOLD
+- add_cut(initial_state="pending") 残留 active → validate 前置
+- on_ghost_rect_changed scope-only replay_fn 绕 family validator → lazy
+  import replay_cut full gate
+
+每条对应一个 adversarial cert pattern. validator 都加 check 拒.
+
+### 3.5 F1 region capacity (pigeonhole / set covering)
+
+**数学陈述**: 给定 region `R` (cell 集合), facility group 集合 `G`. 若
+`∑_{g ∈ G, P(g) ⊆ R} demand(g) × cells_per_pose(g) > |R| - |(ghost ∪ exterior) ∩ R|`,
+则不存在 placement 满足所有 group 的 demand placed 在 R 内 free cell.
+
+**根据** (pigeonhole / set covering):
+- R 内可用 cell = `cap_R = |R| - |blocked ∩ R|` (ghost / exterior 占的)
+- group `g` 满足 `P(g) ⊆ R` 时, 每 pose 占 `cells_per_pose(g)` cells, demand
+  数 pose 必占 R 内 `demand(g) × cells_per_pose(g)` cells
+- 全 contributing group cells 总和必 ≤ cap_R
+- 反之 `demand_R = ∑ demand × cpp > cap_R` → INFEASIBLE (鸽巢: 鸽多笼少)
+
+**严格 P(g) ⊆ R 条件** (Step E fix): group `g` 算 contributing 当且仅当 ∀ pose
+p ∈ `pose_domain(g)`: `p.occupied_cells ⊆ R`. 不是 placement_rule 必要条件 (placement_rule
+是必要 NOT 充分).
+
+真数据反例: `boundary_io` placement_rule = "left_or_bottom_boundary", 应在
+left ∪ bottom union. 但实测 54 pose 中 14 个占 `(31, 69)` 等 union 外 cell.
+strict 严守让 boundary_io 不当 contributing → F1 不发 cut (sound but zero useful).
+
+**Cert schema**:
+- `region_kind` ∈ {`left_baseline / bottom_baseline / left_or_bottom_union /
+  interior_rect / ghost_complement`}
+- `region_cells_bitset_b64` (70x70 bitset)
+- `cap_R` = recompute(state)
+- `demand_R` = recompute(contributing_groups)
+- `gap` = `demand_R - cap_R` > 0
+- `contributing_groups` = `[(gid, demand_in_R), ...]` (set 语义, no duplicate)
+- `cells_per_pose` = `{gid: int}` (cert 自带, validator 跟 canonical_rules 比)
+
+### 3.6 F2 cutset (Menger min-cut max-flow theorem)
+
+**Menger 定理** (graph-theoretic): 在 graph `G = (V, E)`, 对任意 `(A, B)` partition
+of V, 跨 A/B 的 edge-disjoint paths 最大数 = min cut size between A and B.
+
+**应用** (multi-commodity flow): 给 commodity `c` 跟 `(src_c, sink_c)`, demand
+`d_c`. 跨 partition `(A, B)` 的总 demand `∑_{c: src∈A, sink∈B or 反} d_c` ≤ cut(A, B).
+若 demand > cut size → INFEASIBLE (无足 edge-disjoint paths).
+
+**cut framework F2 cert**:
+- `side_a_bitset_b64` / `side_b_bitset_b64` (partition of V_patch)
+- `cut_edges` = cross-partition edges (canonical sorted)
+- `cut_size` = `|cut_edges|`
+- `commodity_demand` = `∑ contributing demand`
+- `contributing_commodities` = 集合 (set 语义, 不 multiset, Step N fix)
+- `menger_witness_kind` ∈ {`max_flow_LP / node_disjoint_paths`}
+- `witness_blob_b64` (Phase 1.5+ verify max-flow LP dual)
+
+**Sound 条件**:
+1. partition disjoint `A ∩ B = ∅`
+2. partition cells ⊆ free_cells (cell_owner / ghost 不进 partition)
+3. patch enclosure: A∪B 没相邻 patch 外 free cell (流不绕过 partition)
+4. cut_edges canonical 跟 recomputed 严等
+5. contributing_commodities 真在 commodity_demands registry
+6. 每 commodity route 真跨 partition (Step N fix: `src ∈ A xor sink ∈ A`)
+7. `∑ commodity_demands[c] > cut_size` (Menger violation)
+
+**Phase 1.5+ max-flow LP witness**: validator 接 LP solver 真验 max-flow dual.
+当前 Phase 1.1 defer, oracle stub 不 emit, validator 仍接受 (Phase 1.5+ 真接
+patch_routing_core 时 enforce).
+
+### 3.7 F3 port exposure (命题逻辑 + slot anonymity)
+
+**数学陈述**: facility `A` (group `g_A`, pose `p_A`) 有 port at `port_cell`,
+direction `d`. front cell `front_cell = port_cell + offset(d)`. 若 facility
+`B` (group `g_B`, pose `p_B`) 占 `front_cell`, 则 `A ∧ B` 不可同时 selected.
+
+**命题逻辑** (literal form):
+- cut.literals = multiset `{(g_A, p_A), (g_B, p_B)}` (cardinality 2, Step A fix)
+- evaluator: `evaluate_literal_multiset(cut, state)` — 当 state 同时选 `(g_A, p_A)`
+  跟 `(g_B, p_B)` 时返 True
+
+**slot anonymity** (state_machine §5): cut literal 不含 slot index, 只 (group,
+pose). state action `s_g \cdot σ` (permute slot inside group g) → evaluator
+output invariant (定理 3).
+
+**Cert schema** (Step B/D/J/K 累积):
+- `facility_group` / `facility_pose_id` (A)
+- `port_cell` / `port_direction` (N/S/E/W per real data)
+- `front_cell` = `port_cell + offset` (math sound recompute)
+- `blocking_facility` = `(blocking_group, blocking_slot, blocking_pose_id)` (B)
+- `active_port_witness_b64` (Phase 1.5+)
+
+**Sound 验证链** (Step B/J 加):
+1. direction encoding N/S/E/W (跟真数据 align)
+2. front_cell 数学等 port_cell + offset
+3. `state.cell_owner[front_cell] == (blocking_group, blocking_slot)`
+4. `selected_poses[blocking_slot] == blocking_pose_id` (slot resolve pose, Step J)
+5. `front_cell ∈ pose_occupied_cells(blocking_pose_id)` (Step J)
+6. cert.literals multiset 严等 `Counter([(g_A, p_A), (g_B, p_B)])` (Step B)
+7. port `(port_cell, direction)` 真存在 `facility_pose(g_A, p_A).ports`
+
+### 3.8 F4 component reach (4-conn graph BFS connectivity)
+
+**数学陈述**: 在 grid graph `G = (V, E)` 上 (V = free_cells, E = 4-conn 邻接),
+若 BFS from `src` 不达 `sink`, 则 src/sink disconnected, 跨 src/sink 的
+commodity demand 不可路由.
+
+**根据**: graph connectivity. 4-conn BFS deterministic (确定性算法), src
+component = closure of src under 4-conn. sink ∉ src_component → disconnected.
+
+**Cert schema** (Step D/F/K/M 累积):
+- `src_cell` / `sink_cell`
+- `src_component_bitset_b64` / `sink_component_bitset_b64` (BFS exact result)
+- `separator_cells` = blocking cells (∈ cell_owner ∪ ghost, Step K)
+- `commodity_id` (Phase 1.5+ commodity_routes registry require, Step M)
+
+**Sound 验证链** (Step D/F/K/M 累积):
+1. src/sink components disjoint
+2. src_cell ∈ src_component, sink_cell ∈ sink_component
+3. src/sink ∈ free_cells (current state)
+4. `src_component == BFS(src_cell, free_cells)` (frozenset 严等, Step D)
+5. `sink_component == BFS(sink_cell, free_cells)` (同上)
+6. `sink_cell ∉ src_component` (witness: 不可达)
+7. separator_cells in-grid + ∈ cell_owner ∪ ghost (Step K)
+8. cert.commodity_id 真在 `state.commodity_routes` registry (Step M)
+9. cert.src/sink_cell 等 registry route src/sink (Step M)
+10. scope.ghost_rect_id != GHOST_AGNOSTIC (separator + BFS 受 ghost 影响, Step O)
+
+### 3.9 F5 pattern_nogood (minimal unsat core + QuickXplain)
+
+**数学陈述**: 给定 INFEASIBLE assignment (literal 集合) `A`, 找最小 subset
+`A' ⊆ A` 仍 INFEASIBLE. `A'` 是 minimal unsat core (MUS).
+
+**算法 1** (deletion-based MUS): 顺序删 literal, 验剩余仍 INFEASIBLE → keep
+删; 否则 restore. 复杂度 `O(|A| × T)` where T = INFEASIBLE check cost.
+
+**算法 2** (QuickXplain): 二分查找 MUS, 适用 `T` 大. 复杂度 `O(|A'| × log(|A|/|A'|) × T)`.
+
+**NP-hardness**: minimum MUS (最小 size) NP-hard (set cover reduction).
+deletion / QuickXplain 是 minimal (locally minimal, 删任一 literal 变 SAT),
+不是 minimum.
+
+**cut framework F5 cert**:
+- cut.literals = MUS 内 `(group_id, pose_id)` 对
+- evaluator: `evaluate_literal_multiset` (复用 F3 path)
+- oracle: 从 master infeasible witness 拿 INFEASIBLE assignment → minimize
+  via deletion / QuickXplain
+
+**Phase 1.2 §10.1 限 ≤ N literal**: NP-hard 边界. literal count > N (e.g. 100)
+不 minimize 直接 emit 原 cut. tradeoff: cut not minimal (剪掉 more state 比
+必要) vs 跑时不爆.
+
+### 3.10 F6 shape packing (Hall's marriage theorem)
+
+**Hall 定理** (经典组合数学): bipartite graph `G = (X, Y, E)`, 完美匹配 `X →
+Y` 存在 ⇔ ∀ `S ⊆ X`: `|N(S)| ≥ |S|` (`N(S)` = Y 内 S 的邻居集).
+
+**应用** (pose → cell 匹配): 给 facility group `g`, demand `d_g`. group 内每
+instance 必选一 pose, pose 占 `cells_per_pose(g)` cells. 二部图:
+- X = group instances (`d_g` 个)
+- Y = candidate cell tuples (覆盖 R 内 cell, 每 tuple `cells_per_pose` cells)
+- E: instance i 连 tuple t 当 t ⊆ R 跟 t 的 cells 全 free
+
+完美匹配存在 ⇔ Hall 条件. 违反 → INFEASIBLE.
+
+**Hall violation 反例**:
+- `|X| > |Y|` (basic): demand > 可用 tuple 数
+- 局部 violation: subset S ⊆ X with `|N(S)| < |S|`
+
+**Cert schema** (Phase 1.2 §11.2 实施):
+- `region_cells_bitset_b64` (跟 F1 同)
+- `required_count` = `d_g × cells_per_pose(g)` (≥ Hall 下界)
+- `available_slots` = greedy bipartite match 算出来的 tuple 数
+- `gap` = `required_count - available_slots` > 0
+
+**算法**: greedy match (近似) → LP relax (精确 Hall) → exact bipartite match
+(NP for general, polynomial for regular tuple shape).
+
+### 3.11 F7 power hitting set (set cover NP-hard, LP relaxation)
+
+**数学陈述**: 给定 power consumer 集合 `C`, power producer set `P`. 每 producer
+覆盖一 consumer subset. 找最小 producer subset 覆盖所有 consumer = set cover.
+
+**Set cover NP-hard** (Karp 21 NP-complete 之一).
+
+**LP relaxation 近似** (Lovász 1975): fractional LP 解 + randomized rounding,
+近似率 `ln(n) + 1`. greedy 也 `ln(n)` 近似 (元素覆盖率最大的 set 依次选).
+
+**应用** (power hitting set): cut 表达 "必有 ≥ k 个 power pole 在某区域".
+fractional LP 给下界, validator 验整数解满足.
+
+**Cert schema** (Phase 1.2 §11.3 实施):
+- cut.literals = 必选 power pole `(group, pose)` 对的 multiset
+- `hitting_set_witness` (LP dual 或 fractional 解)
+- evaluator: `evaluate_literal_multiset` (复用 F3 path)
+
+**NP-hard mitigation**: LP relax + greedy 近似, validator 验近似 set 真覆盖
+(每 consumer 被 cover ≥ 1 producer).
+
+### 3.12 F8 power grid reach (Liang-Barsky AABB intersection)
+
+**Liang-Barsky 算法** (computer graphics 1984): 高效计算线段 vs AABB 矩形 的
+clip / intersection. 参数 `t-clip`:
+```
+P(t) = P0 + t × (P1 - P0), t ∈ [0, 1]
+对每条 AABB 边 (4 个): 求 t_min, t_max
+四 t 取交集: t_in = max(t_min), t_out = min(t_max)
+t_in > t_out → 不相交
+t_in ≤ t_out → 相交 in [t_in, t_out]
+```
+
+**应用** (power grid reach): power pole 跟 consumer 之间画 line. 若 line 跟
+ghost AABB (障碍) 相交, power 不可达; 否则可达.
+
+**边界 case**:
+- degenerate segment (P0 == P1): 退化点, 测 P0 是否 in AABB
+- corner touch (line 过 AABB 角): inclusive (>, <) 跟 exclusive (≥, ≤) 边界
+  决策影响. 实施用 strict `>` / `<` 让 corner-touch 算相交
+- axis-aligned line (沿 x 或 y 轴): parallel strip 跟 AABB 边平行 — 分支判断
+- endpoint inside AABB: t_in / t_out 截断 [0, 1]
+
+**cut framework F8 cert**:
+- power pole `(group, pose)` 集合 (literal-based, but cert geometry 含 BFS
+  reach component)
+- ghost AABB 集合 (从 ghost_rect 算)
+- reachable_cells_bitset (BFS over free + Liang-Barsky line-clear)
+
+**Sound 验证**: cert.reachable_cells 跟 recomputed BFS + Liang-Barsky 严等.
+
+**前置** (Phase 1.2 §10.4 必先): `ghost_rect` tuple 语义 lock — 当前 `(x, y, h, w)`
+跟 cell_aabb_from_rect 的 `(x+h, y+w)` 跟常规 `(x+w, y+h)` 反, F8 实施前 必 lock
+spec + 非方形 fixture 验.
+
+### 3.13 F9 density envelope (geometric upper bound)
+
+**数学陈述**: 给定 region `R`, max density `ρ_max(R)` = `R` 内最大 pose count.
+若 cert.demand `d > ρ_max(R)`, INFEASIBLE.
+
+**`ρ_max(R)` 算法**:
+- simple upper bound: `|R| / min(cells_per_pose(g))` (跟 F1 类似)
+- tighter (Hall-based): F6 二部图完美匹配数
+- 精确 (NP): integer packing problem on R
+
+**应用**: complement Hall (F6) — F6 验局部 packing, F9 验全局 density.
+
+**F6 vs F9 区别**:
+- F6 Hall: 二部图完美匹配 (X 全匹配到 Y)
+- F9 density: 全局上界, |R| / cells_per_pose 等. 弱 case (Hall pass 但 density
+  超界), 强 case (density pass 但 Hall fail)
+
+实际 F9 是 F6 的近似上界 + 更便宜 verify.
+
+**Cert schema** (Phase 1.2 §11.5 实施):
+- `region_cells_bitset_b64`
+- `max_density` = pre-computed upper bound
+- `cert_density` = cert claim demand / |R|
+- `gap` = `cert_density - max_density` > 0
+
+**Sound 验证**: max_density recompute (跟 generator 时算法一致) + cert claim
+比较. 边界 case: density 临界 (== max_density 不该 cut, > 才 cut).
+
+---
+
+## 4. paradigm 决策 + 死路分析
 
 为什么选 B Design v2 cut framework 不选别的. 27 lever 死路在 `paradigm_death_timeline_27_lever.md`
 有完整 timeline, 这里只讲 cut framework 跟它们的边界关系.
 
-### 3.1 vs B1 pose-bool master (L11)
+### 4.1 vs B1 pose-bool master (L11)
 
 B1 试图把 cut 表达成 master CP-SAT 内部 pose-bool var. master.solve 解不动
 inherent — 加 cut 当 hard constraint 让 master 更大更慢. **Phase 6 path-1
@@ -184,7 +611,7 @@ master/binding port-selection 死, path-2 lazy demand cut 死**.
 cut framework 走相反方向: cut 不进 master schema, 在 master 外 lazy attach.
 master 看到的还是原 30 GB model, cut 经 propagator 在 search 过程动态 push.
 
-### 3.2 vs PCR-CUT (Path 14)
+### 4.2 vs PCR-CUT (Path 14)
 
 PCR-CUT patch-belt routing 复用 SAC slack. Phase 0 GO + Phase 1 GO 单 anchor
 21/21 INFEASIBLE, 但 **Phase 5 multi-anchor 8 anchor 0/8 CERTIFIED**. paradigm
@@ -194,7 +621,7 @@ cut framework F2 cutset 复用 PCR-CUT 的 patch belt min-cut 做单 cert 生成
 anchor sound 部分), 但不依赖 multi-anchor 跨 anchor 复用 — F2 cut 各自独立
 进 store, 每 cut 自己 sound, 不要求一组 cut 跨 anchor 收敛.
 
-### 3.3 vs SAC-Hull (Path 13)
+### 4.3 vs SAC-Hull (Path 13)
 
 SAC-Hull abstract routing layer + separator capacity. Phase 1 master static
 hull 验过, Phase 2 dynamic separator 跑通, 但 **L2 工作 binding/routing reject —
@@ -205,7 +632,7 @@ hull 充分性 — F4 separator 只作几何证明 (separator ⊆ owner ∪ ghos
 sufficient INFEASIBLE 信号. 充分性靠 BFS exact recompute (cert.src/sink_component
 == BFS, Step D land).
 
-### 3.4 vs D2 commodity flow + arc (Path 17)
+### 4.4 vs D2 commodity flow + arc (Path 17)
 
 D2 把 commodity flow 当 master 内部 var. Phase 0 candidate D2 probe GO,
 Phase 1 LBBD GO 单 anchor, **Phase 2 multi-anchor verdict NOT GO**.
@@ -214,7 +641,7 @@ cut framework 也用 commodity (F2/F4 都需 commodity registry), 但 commodity
 是 BState.commodity_demands/routes registry, validator 时验 cert.commodity_id
 存在 + src/sink 等 registry. 不当 master var, 不解 commodity flow LP.
 
-### 3.5 vs cand C column generation
+### 4.5 vs cand C column generation
 
 cand C Phase 0 GO (8/8) + Phase 1 GO (4-ramp 5/20/40/80 instance), 是真换
 master basis 的 paradigm. 但单一 paradigm — 一个 column generation master 跑
@@ -223,7 +650,7 @@ master basis 的 paradigm. 但单一 paradigm — 一个 column generation maste
 cut framework + cand C 可叠加用: cand C 是 master 内部 column basis, cut
 framework 是 master 外的 sound prune 层. Phase 1.5+ 真集成时考虑.
 
-### 3.6 vs cdcl warmstart / IHS / Benders symmetry / etc
+### 4.6 vs cdcl warmstart / IHS / Benders symmetry / etc
 
 L01-L26 散布的 lever (25-27 等). 各有 verdict 死法. 详 `paradigm_death_timeline_27_lever.md`.
 
@@ -231,7 +658,7 @@ cut framework 跟它们的区别: cut framework 不是 paradigm shift (不替代
 不换 master schema), 是 **paradigm extension** — 在 CP-SAT solve 过程中累积外部
 sound 证据, paradigm-internal 跑不动的部分用 paradigm-external 知识补.
 
-### 3.7 B Design v2 vs v1
+### 4.7 B Design v2 vs v1
 
 B v1 在 Phase 0 早期 GHOST_AGNOSTIC dispatch 不严, exterior_blocks 不进 scope
 hash. Gemini r21 catch — v1 cut 跨 ghost 复用时 exterior 变了但 cut 不
@@ -240,7 +667,7 @@ fix), 跨 candidate 复用 sound.
 
 `cut_lifecycle_v2.md v3.2.2` 是当前 spec 版本. 不再回退到 v1.
 
-### 3.8 跟 Phase 3B 的衔接
+### 4.8 跟 Phase 3B 的衔接
 
 Phase 3B repair5 (commit 落地 7eb6e7f 那波) 是 master oracle 改 30 GB → 47 GB,
 让 master 真 fit i9-13900KS + 47 GB. 这是 cut framework 跑得起来的前提 —
@@ -252,13 +679,13 @@ outer_search 跟 Phase 3B 的 master/binding/routing/flow 现有架构.
 
 ---
 
-## 4. 历史回顾 — 怎么走到 Step O
+## 5. 历史回顾 — 怎么走到 Step O
 
 不是天降一份 4 family validator. 是 22+ commit + 11 GPT pro audit + 22
 Gemini round 一轮轮调过来的. 看完这段知道为啥某些 invariant 这样设计, 为啥
 某些 fix 反复在同一函数加.
 
-### 4.1 Phase 0 (B Design v2 spec + invariants)
+### 5.1 Phase 0 (B Design v2 spec + invariants)
 
 22 commit + 26 round Gemini cross-check. 锁定:
 - 9 family final list (无 symmetry_lift — round 18 decide)
@@ -269,13 +696,13 @@ Gemini round 一轮轮调过来的. 看完这段知道为啥某些 invariant 这
 
 Gemini r26 GO, 不再 Phase 0 layer cross-check. Step 跨 Phase 0 → 1.0.
 
-### 4.2 Phase 1.0 (framework migration)
+### 5.2 Phase 1.0 (framework migration)
 
 P1.1 carry PoC b_core_lifecycle_poc.py 14/14 PASS 到 production
 `src/cuts/lifecycle.py`. 9 step + Cut/CutScope/BState schema + 6-dim watcher
 + replay store. F1 region_capacity 作 framework reference (其他 F2-F9 stub).
 
-### 4.3 Phase 1.1 P1.5-P1.8 (F1-F4 production validator + oracle)
+### 5.3 Phase 1.1 P1.5-P1.8 (F1-F4 production validator + oracle)
 
 每 family 实施: validator + evaluator + oracle (F2-F4 oracle stub). F1 P(g)⊆R
 strict / F2 partition / F3 cert↔literal / F4 BFS component 各自 spec land
@@ -284,7 +711,7 @@ strict / F2 partition / F3 cert↔literal / F4 BFS component 各自 spec land
 Gemini r27-29 三轮 cross-check, r29 GO. 但 GO 后立刻 r30 catch 5 critical
 gap — 全因 prompt mode 只验 spec↔src 没 push spec↔data (`[[gemini-prompt-audit-mode]]`).
 
-### 4.4 Phase 1.1 Gap fixing (r30-r32)
+### 5.4 Phase 1.1 Gap fixing (r30-r32)
 
 Gemini audit mode 改 prompt: 真数据 inline + armor + 反 GO 章. r30-r32 三轮
 catch 15 gap:
@@ -298,7 +725,7 @@ catch 15 gap:
 - Gap 14 find_pose O(N) → O(1) cache
 - (5 个 high-risk follow-up 进 #239)
 
-### 4.5 GPT pro round 1+2 (Phase 1.1 v1 audit)
+### 5.5 GPT pro round 1+2 (Phase 1.1 v1 audit)
 
 大节点打包给 GPT pro. r1+r2 一致 NOT GO + 4 P0 + 7 必修. 引出 Step A-H 8
 commit (3d35a62 → e5c41b9):
@@ -313,20 +740,20 @@ commit (3d35a62 → e5c41b9):
 
 期间 Gemini r33-r35 catch 4 升级 P0/High 全在 Step F/G 修.
 
-### 4.6 GPT pro v2 audit + Step I/J/K (bdaa303)
+### 5.6 GPT pro v2 audit + Step I/J/K (bdaa303)
 
 v2 r1+r2 catch 3 新 P0:
 - I `step_7_evaluate_cut` 接 family dispatch (Step F family 函数永远 bypass)
 - J F3 blocking_slot → selected_poses[slot] → blocking_pose_id 真绑定
 - K F4 separator_cells in-grid + ∈ owner∪ghost 显式验
 
-### 4.7 GPT pro v3 audit + Step L (a38620c)
+### 5.7 GPT pro v3 audit + Step L (a38620c)
 
 v3 catch F1 duplicate `contributing_groups` P0: cert 同 group 重复列让
 demand_R 双算. Step L 加 seen_gids 去重 + tuple demand 真等 + gap consistency.
 顺手清 ruff F401 12 个 (但因 ruff.toml ignore 没真清, Step M 才真清).
 
-### 4.8 GPT pro v4 audit + Step M (273fbff)
+### 5.8 GPT pro v4 audit + Step M (273fbff)
 
 v4 r1+r2 catch 3 新 critical:
 - M.1 `replay_cut(canonical_rules=None)` silent ATTACH 绕 validator → fail-closed
@@ -337,7 +764,7 @@ v4 r1+r2 catch 3 新 critical:
   validator require registry route src/sink == cert
 - ruff F401 force-fix 真清
 
-### 4.9 GPT pro v5 audit + Step N (afef8f1)
+### 5.9 GPT pro v5 audit + Step N (afef8f1)
 
 v5 r1+r2 catch 2 新 P0:
 - N.1 F2 commodity registry 仍不 sound — duplicate contributing + same-side
@@ -346,7 +773,7 @@ v5 r1+r2 catch 2 新 P0:
 - N.2 `CutStore.add_cut` 直接 active 注册 silent attach window → default
   `initial_state="held"`, caller (replay 成功) 必显式 reactivate
 
-### 4.10 GPT pro v6 audit + Step O (c8fb7ef)
+### 5.10 GPT pro v6 audit + Step O (c8fb7ef)
 
 v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 - O.1 (round 2) validator 不验 `scope.ghost_rect_id == GHOST_AGNOSTIC` 合法性
@@ -357,7 +784,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 - O.3 (round 1) add_cut 非法 `initial_state` raise 后 cut 残留 store →
   validate 移到所有 mutation 前
 
-### 4.11 累积现状 (Step O 结束)
+### 5.11 累积现状 (Step O 结束)
 
 - 14 commit src/ 改动 (Step A-O)
 - 5 commit infra (build script v2-v7)
@@ -368,7 +795,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 
 ---
 
-## 5. 现状细则 (commit `c8fb7ef` 起算)
+## 6. 现状细则 (commit `c8fb7ef` 起算)
 
 ### 已闭环
 - F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach
@@ -403,7 +830,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 
 ---
 
-## 6. 默认 skip 的方向 (历史死路 baseline)
+## 7. 默认 skip 的方向 (历史死路 baseline)
 
 后续重构不再 propose 这些. 详 `paradigm_death_timeline_27_lever.md`.
 
@@ -418,11 +845,11 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 
 ---
 
-## 7. GO 标准 / 验收准则
+## 8. GO 标准 / 验收准则
 
 每段 done 怎么定义. 不只 "代码改完 commit pass test", 而是要过 reviewer audit.
 
-### 7.1 Phase 1.2 P1.11 入门 GO
+### 8.1 Phase 1.2 P1.11 入门 GO
 
 7 项 factual fix 全 land:
 1. strict gate default ON
@@ -440,7 +867,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 - GPT pro v8 audit 收 GO 或最多 P1 finding (不再 P0)
 - Gemini cross-check round 36+ 通过
 
-### 7.2 Phase 1.2 P1.11-P1.15 (F5-F9 实施) GO
+### 8.2 Phase 1.2 P1.11-P1.15 (F5-F9 实施) GO
 
 5 family 各自完整:
 - validator + evaluator + oracle (oracle 可 stub)
@@ -457,7 +884,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
   fail-closed)
 - 跟 PROJECT_LOCK §3A 不冲突 (family list 仍 9 个, mode 不变)
 
-### 7.3 Phase 1.3 P1.21 (CP-SAT propagator 集成) GO
+### 8.3 Phase 1.3 P1.21 (CP-SAT propagator 集成) GO
 
 - step_8_apply_to_master 真接 master CP-SAT (env flag `EXACT_B_DESIGN_V2=1`)
 - lazy → hard constraint 转化 sound (cut attach 后 master state 跟 cut violate
@@ -476,7 +903,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 - 真 168h campaign 跑通至少 1 个 candidate full search (不只 timeout)
 - GPT pro audit Phase 1.3 整 phase 通过
 
-### 7.4 Phase 1.5+ (production integration) GO
+### 8.4 Phase 1.5+ (production integration) GO
 
 - commodity registry production inject 路径 unique builder (一函数从真 data
   build BState)
@@ -494,11 +921,11 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 
 ---
 
-## 8. 依赖图 — family / step / phase 之间怎么 chain
+## 9. 依赖图 — family / step / phase 之间怎么 chain
 
 各段不是平行做的. 错顺序就走死路.
 
-### 8.1 Family 内部 dependency
+### 9.1 Family 内部 dependency
 
 ```
 F1 region_capacity
@@ -532,13 +959,13 @@ F7 power_hitting_set
 F8 power_grid_reach
    └─ F4 BFS helper 复用 (component reach)
    └─ Liang-Barsky helper (现 src/cuts/helpers/ghost_geometry.py)
-   └─ ghost_rect tuple 语义 lock (§7.1 Phase 1.2 入门必先)
+   └─ ghost_rect tuple 语义 lock (§8.1 Phase 1.2 入门必先)
 
 F9 density_envelope
    └─ F6 跟 F9 都 region-density 约束, F6 land 后 F9 复用 region helper
 ```
 
-### 8.2 Phase 间 dependency
+### 9.2 Phase 间 dependency
 
 ```
 Phase 1.2 P1.11 入门 (7 factual fix)
@@ -554,9 +981,9 @@ Phase 1.5+ (production integration)
    依赖: BState production builder (Phase 1.2 入门 +/或 Phase 1.5 起做)
 ```
 
-### 8.3 关键 ordering decision
+### 9.3 关键 ordering decision
 
-- **source_digest 真 hash 必先** (Phase 1.2 §7.1 §3) — 不然 Phase 1.3 production
+- **source_digest 真 hash 必先** (Phase 1.2 §8.1 §3) — 不然 Phase 1.3 production
   data 轮换识别不出, cross-session cert replay 不可信
 - **ghost_rect tuple 语义 lock 必先 F8** — F8 实施前不 lock 会让 Liang-Barsky
   跟 ghost_rect 横竖反
@@ -565,7 +992,7 @@ Phase 1.5+ (production integration)
 - **BState production builder 必先 Phase 1.5+** — 真生产 inject 各 family
   validator 需要的字段, 不统一 builder 会让一处漏 inject 拖崩全 framework
 
-### 8.4 跨 phase invariant
+### 9.4 跨 phase invariant
 
 Phase 1.2 / 1.3 / 1.5+ 全 share 这些 invariant (PROJECT_LOCK §3A):
 - 9 family list 不变 (不加 / 不删 / 不改 mode)
@@ -577,12 +1004,12 @@ Phase 1.2 / 1.3 / 1.5+ 全 share 这些 invariant (PROJECT_LOCK §3A):
 
 ---
 
-## 9. Phase 1.2 P1.11 入门 (低风险 factual 收尾)
+## 10. Phase 1.2 P1.11 入门 (低风险 factual 收尾)
 
 进 F5-F9 实施前必清这几项. 全是 schema / spec / static hygiene, 不动 paradigm.
-GO 标准见 §7.1.
+GO 标准见 §8.1.
 
-### 9.1 strict registration gate default ON
+### 10.1 strict registration gate default ON
 - 文件: `src/cuts/replay.py:122`
 - 改: `EXACT_FAMILY_VALIDATOR_STRICT` default `"0"` → `"1"`
 - 影响: 未注册 family 进 replay → `NotImplementedError` 不 silent attach
@@ -592,7 +1019,7 @@ GO 标准见 §7.1.
   mitigation: grep 现 codebase 看 strict env 使用; 切换前 dev env 显式
   `EXACT_FAMILY_VALIDATOR_STRICT=0` override
 
-### 9.2 spec docs align (必修 #7)
+### 10.2 spec docs align (必修 #7)
 - `state_machine_v2.md:42-45`: PoseId 改 `str` (src `lifecycle.py:42-49` 已是 str)
 - `cut_lifecycle_v2.md:225-241 / 365-374 / 740-747`: 删 `symmetry_lift`, 加
   `power_grid_reach` / `density_envelope`
@@ -606,7 +1033,7 @@ GO 标准见 §7.1.
 - **风险**: spec 改完未跟 src 跨同步则下次 audit 反复触发 spec drift finding.
   mitigation: 每 spec 改加单元 test grep spec line vs src 值
 
-### 9.3 source_digest 真 hash
+### 10.3 source_digest 真 hash
 - 当前 `lifecycle.py:635-637` + `oracles/region_capacity_oracle.py:179-186`
   写死 `"poc_source_digest"`
 - 改: hash `canonical_rules.json + candidate_placements.json + mandatory_exact_instances.json
@@ -616,7 +1043,7 @@ GO 标准见 §7.1.
 - **风险**: hash 函数选错 (e.g. mtime instead of content) 导致 cert 跨 session
   失效. mitigation: 内容 sha256, 不用 mtime
 
-### 9.4 ghost_rect tuple 语义 lock
+### 10.4 ghost_rect tuple 语义 lock
 - 当前 `lifecycle.py:216` 注释 `(x, y, h, w)`, `helpers/ghost_geometry.py:108-116`
   返回 `(x, y, x+h, y+w)` — h/w 跟常规 (x+w, y+h) 反
 - F8 power_grid_reach 实施前必锁:
@@ -626,14 +1053,14 @@ GO 标准见 §7.1.
 - **风险**: 改 object schema 影响多处 helper + 测试; 改名 `x_span/y_span`
   减名 confusion 但仍是 tuple. mitigation: 倾向 object schema, 一次性改清
 
-### 9.5 mypy strict 收尾
+### 10.5 mypy strict 收尾
 - 37 errors / 10 files, 主要泛型缺参 + Any return + unused ignore
 - 重点收: `lifecycle.py` (`BState`) + `replay.py` + 4 family validator
 - 让 schema 类型契约真在 type system 内 enforce
 - **风险**: 收 strict 时改 type signature 影响 callers. mitigation: 小步 commit
   每次改 1 file mypy clean
 
-### 9.6 拆 validator helper (radon D 级降)
+### 10.6 拆 validator helper (radon D 级降)
 - `validate_cutset D(27)` 拆: parse_cert / partition_disjoint / partition_subset_free /
   enclosure / cut_edges / commodity_registry / cross_partition / witness
 - `validate_component_reach D(24)` 拆: components_disjoint / membership /
@@ -647,7 +1074,7 @@ GO 标准见 §7.1.
 - **风险**: 拆后破坏现有 regression test. mitigation: 每拆一个 validator 跑
   完整 cuts test 不变
 
-### 9.7 evaluate_literal_port_exposure 决定
+### 10.7 evaluate_literal_port_exposure 决定
 - vulture 标 unused (走 generic `evaluate_literal_multiset`)
 - 选项 a: 删 (统一 generic path)
 - 选项 b: 接进 `step_7_evaluate_cut` literal dispatch 作 F3 specific evaluator
@@ -655,12 +1082,12 @@ GO 标准见 §7.1.
 
 ---
 
-## 10. Phase 1.2 P1.11-P1.15 实施 (5 new family)
+## 11. Phase 1.2 P1.11-P1.15 实施 (5 new family)
 
 入门完后进 5 family 实施. 每 family 单独 commit (≥ 5 commit), 跟 Phase 1.1
-同样 cross-check rhythm. GO 标准见 §7.2.
+同样 cross-check rhythm. GO 标准见 §8.2.
 
-### 10.1 P1.11 F5 pattern_nogood
+### 11.1 P1.11 F5 pattern_nogood
 - 用途: literal-based cut, 拒已知 unsat 状态. lifecycle step 2 minimize 入口
 - 实施: `src/cuts/families/pattern_nogood.py` (validator + evaluator) +
   `src/cuts/oracles/pattern_nogood_oracle.py` (从 master infeasible witness 提)
@@ -669,7 +1096,7 @@ GO 标准见 §7.1.
 - **风险**: deletion+QuickXplain perf 是 NP-hard. mitigation: 限 ≤ N literal,
   超 N 不 minimize 直接 emit 原 cut
 
-### 10.2 P1.12 F6 shape_packing_hall
+### 11.2 P1.12 F6 shape_packing_hall
 - 用途: geometric cut, Hall's marriage theorem 推 region 内 pose 数下界
 - 实施: validator (cert.required_count vs region.available_slots) + oracle
   (greedy bipartite match)
@@ -677,7 +1104,7 @@ GO 标准见 §7.1.
 - spec: `cut_family_specs/06_shape_packing_hall.md`
 - **风险**: Hall theorem 实施复杂. mitigation: 先 greedy 后 LP
 
-### 10.3 P1.13 F7 power_hitting_set
+### 11.3 P1.13 F7 power_hitting_set
 - 用途: literal-based cut, 必选 power pole set
 - 实施: hitting-set greedy minimize + multiset evaluate (复用 F3 path)
 - 复用: F3 generic literal evaluator
@@ -685,16 +1112,16 @@ GO 标准见 §7.1.
 - **风险**: hitting-set NP-hard. mitigation: LP relax 找近似 hitting set,
   validator 验 set 真覆盖
 
-### 10.4 P1.14 F8 power_grid_reach
+### 11.4 P1.14 F8 power_grid_reach
 - 用途: geometric cut, Liang-Barsky AABB + BFS 电网可达
 - 实施: `helpers/ghost_geometry.py` 已有 Liang-Barsky helper, 复用
-- 前置: ghost_rect tuple 语义必先 lock (§9.4)
+- 前置: ghost_rect tuple 语义必先 lock (§10.4)
 - 复用: F4 BFS helper
 - spec: `cut_family_specs/08_power_grid_reach.md`
-- **风险**: ghost_rect tuple 横竖反 bug. mitigation: §9.4 lock spec + 非方形
+- **风险**: ghost_rect tuple 横竖反 bug. mitigation: §10.4 lock spec + 非方形
   fixture 必先
 
-### 10.5 P1.15 F9 density_envelope
+### 11.5 P1.15 F9 density_envelope
 - 用途: geometric cut, region density 上界 (单位 cell pose count)
 - 实施: validator (cert.density vs region.area × max_density) + oracle
 - 复用: F6 region density helper
@@ -702,7 +1129,7 @@ GO 标准见 §7.1.
 - **风险**: 数学 sound 边界 (max_density 怎么算). mitigation: 加 negative test
   覆盖 density 临界
 
-### 10.6 P1.15+ test fixture 补全
+### 11.6 P1.15+ test fixture 补全
 - F3 direction E / W synthetic fixture (真数据只 N=273 S=257, E=W=0)
 - F8 直接复用 E / W fixture
 - ghost_rect 非方形 fixture
@@ -711,12 +1138,12 @@ GO 标准见 §7.1.
 
 ---
 
-## 11. Phase 1.3 P1.21 (CP-SAT propagator 真集成)
+## 12. Phase 1.3 P1.21 (CP-SAT propagator 真集成)
 
 F5-F9 落地后, evaluator 才进真 hot path (10K calls/sec). 这阶段 perf opt
-必要. GO 标准见 §7.3.
+必要. GO 标准见 §8.3.
 
-### 11.1 step_8_apply_to_master 实施
+### 12.1 step_8_apply_to_master 实施
 - 当前 `lifecycle.py:743-751` NotImplementedError
 - 接 `benders_loop` hook (env flag `EXACT_B_DESIGN_V2=1` 切新框架)
 - Lazy → hard constraint 转化, 跟 master CP-SAT model 真集成
@@ -724,7 +1151,7 @@ F5-F9 落地后, evaluator 才进真 hot path (10K calls/sec). 这阶段 perf op
   push 太多导致 propagator overhead). mitigation: 阶梯式启用, 先 F1 single
   family 跑通后逐步 F2-F9 wire
 
-### 11.2 evaluate hot path perf opt
+### 12.2 evaluate hot path perf opt
 GPT v3 Gemini r35 已识别, Step H 加 TODO docstring 留好:
 
 - **cache parsed cert_dict on Cut**: 避 hot path `json.loads` 每次 ~2µs,
@@ -738,7 +1165,7 @@ GPT v3 Gemini r35 已识别, Step H 加 TODO docstring 留好:
 - **风险**: cache invalidation bug. mitigation: 每 cache key 必 content-addressed
   (cert hash / source_digest), 不依赖 mtime / mutable state
 
-### 11.3 by_exterior_watcher 实施
+### 12.3 by_exterior_watcher 实施
 - GPT v3 Gemini r35 P0, Step H 暂 defer (sound 不需要, evaluate 重算保 — Step F)
 - Phase 1.3 lazy → hard constraint 后, evaluator 不再被自动调, watcher 必必
 - 实施: `CutStore` 加 `by_exterior_watcher: Dict[Cell, Set[CutId]]`, 跟
@@ -747,7 +1174,7 @@ GPT v3 Gemini r35 已识别, Step H 加 TODO docstring 留好:
 - **风险**: watcher 跟 ghost_watcher 重复 invalidate 浪费. mitigation: cut 只
   入一个 watcher (GHOST_AGNOSTIC → exterior_watcher, else → ghost_watcher)
 
-### 11.4 propagator thread-safe 评估
+### 12.4 propagator thread-safe 评估
 - 当前 `lru_cache(256)` multiprocess.spawn 各 worker 一份, 不共享
 - Phase 1.3 propagator 如果 master CP-SAT 内部多线程 callback, lru_cache 是
   thread-safe (GIL + functools 实施) 但 cache pollution 跨决策回溯仍要 verify
@@ -757,11 +1184,11 @@ GPT v3 Gemini r35 已识别, Step H 加 TODO docstring 留好:
 
 ---
 
-## 12. Phase 1.5+ (production integration)
+## 13. Phase 1.5+ (production integration)
 
-Phase 1.3 framework 跑通后接真生产 data + 真 oracle. GO 标准见 §7.4.
+Phase 1.3 framework 跑通后接真生产 data + 真 oracle. GO 标准见 §8.4.
 
-### 12.1 commodity registry production inject
+### 13.1 commodity registry production inject
 - 当前 `BState.commodity_demands` / `commodity_routes` Phase 1.1 mock 注入
 - Phase 1.5+ 真 inject 路径: 从 `data/preprocessed/commodity_demands.json` +
   routing planner output + master_solution.commodities 真 build
@@ -772,7 +1199,7 @@ Phase 1.3 framework 跑通后接真生产 data + 真 oracle. GO 标准见 §7.4.
   - commodity demand / routes (从 production data)
   - source_digest 真 hash
 
-### 12.2 registry schema 评估 (route_id vs commodity_id)
+### 13.2 registry schema 评估 (route_id vs commodity_id)
 GPT v5 / v6 提出: 当前 `{commodity_id: {"src", "sink", "demand"}}` 只支撑
 "一 commodity 一 route". 真生产同 commodity 可能多 src/sink pair (e.g.
 `blue_iron_ore` 多 mining tile → 多 refinery).
@@ -794,7 +1221,7 @@ cert 改用 `contributing_route_ids` 不是 `contributing_commodities`.
 **决策点**: Phase 1.5+ 真生产 commodity registry data 设计时定. 不提前 refactor
 — 当前 Phase 1.1 / 1.2 / 1.3 不需要多 route 语义, 提前改 schema 风险 over-engineer.
 
-### 12.3 各 family oracle 真实施
+### 13.3 各 family oracle 真实施
 当前 F2 / F3 / F4 oracle 是 stub `return []`. Phase 1.5+ 接真 generator:
 
 - **F2 cutset**: 复用 PCR-CUT `patch_routing_core.run()` (Phase 0-1 GO 但 Phase
@@ -807,61 +1234,61 @@ cert 改用 `contributing_route_ids` 不是 `contributing_commodities`.
 - **F5 pattern_nogood**: deletion / QuickXplain 复用 L16 `core_minimizer.py`
 - **F6 / F8 / F9**: 各自 spec §5 generator pseudocode
 
-### 12.4 F3 active_port_witness verify
+### 13.4 F3 active_port_witness verify
 - spec `03_port_exposure.md:144-147` 要求 verify `active_port_witness_b64`
 - 当前 validator 没查 (Phase 1.1 v1.0 假设 "all listed ports active")
 - Phase 1.5+ 真 production data 时可能有 port 被 boundary_constraints LP
   disable, 必加 witness 验
 
-### 12.5 F2 max_flow_LP algebraic witness
+### 13.5 F2 max_flow_LP algebraic witness
 - spec `02_cutset.md:156-159` 要求 verify max-flow LP dual
 - 当前 defer Phase 1.5+
 - 接真 commodity routes + LP solver 后实施
 
 ---
 
-## 13. 风险评估 + mitigation
+## 14. 风险评估 + mitigation
 
 defer / 已知 risk + 失败回滚策略.
 
-### 13.1 GPT pro v5 verdict 排序 (最先爆 → 后)
+### 14.1 GPT pro v5 verdict 排序 (最先爆 → 后)
 
-1. **source_digest placeholder** — Phase 1.2 §9.3 必修
+1. **source_digest placeholder** — Phase 1.2 §10.3 必修
    - mitigation: hash 真 file content + replay 时验证 + cross-session test
    - rollback: 退到 placeholder, production 不 ship
 
-2. **strict default 0** — Phase 1.2 §9.1 必修
+2. **strict default 0** — Phase 1.2 §10.1 必修
    - mitigation: F5-F9 实施每加 1 family 加 register + missing-validator test
    - rollback: env override 显式 strict=0 (dev only)
 
 3. **F2 commodity_demand registry** — Step M+N 已 partial close
-   - mitigation: registry schema 评估 (Phase 1.5+ §12.2)
+   - mitigation: registry schema 评估 (Phase 1.5+ §13.2)
    - rollback: 暂时 F2 oracle stub 不 emit
 
-4. **HR5 GHOST_AGNOSTIC exterior_blocks invalidate watcher** — Phase 1.3 §11.3
+4. **HR5 GHOST_AGNOSTIC exterior_blocks invalidate watcher** — Phase 1.3 §12.3
    - mitigation: Step F evaluate 重算保 sound, watcher 是 efficiency
    - rollback: Phase 1.3 没 propagator 集成时不需要
 
-5. **HR1 thread-safe** — Phase 1.3+ §11.4 评估
+5. **HR1 thread-safe** — Phase 1.3+ §12.4 评估
    - mitigation: 现 CP-SAT propagator 单线程
    - rollback: multi-thread 时 cache invalidate 跨 worker
 
 6. **HR3 free-placement / HR4 non-rect ghost** — Phase 1.5+ 真生产 data
    pattern 出现时再决策
 
-### 13.2 Phase 1.2/1.3 实施风险
+### 14.2 Phase 1.2/1.3 实施风险
 
 - **F5 deletion+QuickXplain perf**: NP-hard. mitigation 限 ≤ N literal
 - **F6 Hall theorem 实施复杂**: mitigation 先 greedy 后 LP
 - **F7 power hitting-set NP-hard**: mitigation LP relax 近似
-- **F8 ghost_rect tuple 反惯例 bug**: mitigation Phase 1.2 §9.4 lock 必先
+- **F8 ghost_rect tuple 反惯例 bug**: mitigation Phase 1.2 §10.4 lock 必先
 - **F9 density sound 边界**: mitigation 加 negative test
 - **Phase 1.3 lazy → hard constraint master 性能**: mitigation 阶梯启用 (F1
   单 family 跑通后 F2-F9)
 - **propagator hot path perf**: mitigation parsed cert cache + incremental
   BFS + watcher 三件套 (Step H TODO)
 
-### 13.3 全 phase 通用回滚策略
+### 14.3 全 phase 通用回滚策略
 
 - 任 phase 通不过 GO 标准 → 不推下一 phase, 单独 debug commit
 - 每 Step (A-O 跟未来 P+) commit 独立, git revert 单 step 不影响其他
@@ -872,7 +1299,7 @@ defer / 已知 risk + 失败回滚策略.
 
 ---
 
-## 14. 实施 rhythm (Phase 1.1 经验)
+## 15. 实施 rhythm (Phase 1.1 经验)
 
 每 commit 后立刻 Gemini cross-check ([[gemini-review-algorithm-math]]).
 大节点 (Phase 1.2 入门收尾 / Phase 1.2 5 family 全 land / Phase 1.3 集成 land)
@@ -888,16 +1315,16 @@ defer / 已知 risk + 失败回滚策略.
 
 ---
 
-## 15. 排期估算 (Claude pace, 不按人类工程师)
+## 16. 排期估算 (Claude pace, 不按人类工程师)
 
 per `[[work-time-estimates]]` Claude 节奏估:
 
-- Phase 1.2 §9 入门 7 项 — 单步 30-60 min Claude, 累计 ~5-7 commit, ~3-4 小时
-- Phase 1.2 §10 5 family 实施 — 每 family ~1-2 commit + Gemini cross-check,
+- Phase 1.2 §10 入门 7 项 — 单步 30-60 min Claude, 累计 ~5-7 commit, ~3-4 小时
+- Phase 1.2 §11 5 family 实施 — 每 family ~1-2 commit + Gemini cross-check,
   累计 ~10-15 commit, ~6-10 小时 Claude work
-- Phase 1.3 §11 propagator 集成 + perf opt — paradigm work, ~10-20 小时 Claude
+- Phase 1.3 §12 propagator 集成 + perf opt — paradigm work, ~10-20 小时 Claude
   + master CP-SAT 真集成 wall-clock 死时间 (build / 测时间不可压)
-- Phase 1.5+ §12 production integration — 跟真生产 data schema 设计耦合, 估
+- Phase 1.5+ §13 production integration — 跟真生产 data schema 设计耦合, 估
   随 Phase 1.5 data pipeline 进度
 
 实际 wall-clock 主要消耗在 168h campaign 长跑 (cut framework 修改不直接影响
@@ -905,22 +1332,22 @@ campaign 时间), 不在 Claude implementation 时间.
 
 ---
 
-## 16. Open questions (待定)
+## 17. Open questions (待定)
 
 1. Phase 1.5+ commodity registry schema (commodity_id vs route_id 级别) 何时
    决策? — Phase 1.5 真生产 data pipeline 设计时
 2. F2 patch_routing_core 复用是否真 sound (paradigm 死在 multi-anchor 收敛,
    单 cut 生成仍 OK)? — Phase 1.5+ F2 oracle 实施时复 verify
-3. evaluate_literal_port_exposure 删 vs 接进 dispatch — Phase 1.2 §9.7 一行决定
-4. ghost_rect tuple 改 object schema vs 保留 tuple + 明确文档 — Phase 1.2 §9.4
+3. evaluate_literal_port_exposure 删 vs 接进 dispatch — Phase 1.2 §10.7 一行决定
+4. ghost_rect tuple 改 object schema vs 保留 tuple + 明确文档 — Phase 1.2 §10.4
    F8 实施前
 5. Phase 1.3 propagator integration 跟 Phase 3B repair5 master 兼容性 — Phase 1.3
-   §11.1 实施时验
-6. F5 minimize NP-hard 超时阈值 — Phase 1.2 §10.1 实施时定
+   §12.1 实施时验
+6. F5 minimize NP-hard 超时阈值 — Phase 1.2 §11.1 实施时定
 
 ---
 
-## 17. PROJECT_LOCK §3A 边界
+## 18. PROJECT_LOCK §3A 边界
 
 后续重构不能跨这些边界 (per `PROJECT_LOCK.md` §3A):
 - family ↔ mode XOR (literal vs geometric) 不可改
