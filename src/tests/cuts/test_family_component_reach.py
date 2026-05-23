@@ -22,7 +22,6 @@ from src.cuts.lifecycle import (
     BState,
     Cut,
     CutScope,
-    GHOST_AGNOSTIC,
     GroupState,
     OracleCert,
 )
