@@ -82,13 +82,42 @@ review pkg 默认 ship 全集 (53 MB), README 提醒 reviewer 反例数字 vs sa
 
 | 工具 | 当前 strict | Phase 1.2 入门 (§10.5/10.6) | 用途 |
 |---|---|---|---|
-| `ruff check` | clean (default + `--config "lint.per-file-ignores={}"` 都 clean) | 维持 | F401 / import order |
-| `mypy --strict` | 37 errors | → 0 (§10.5) | 类型 hygiene |
-| `vulture` | 1 unused (`evaluate_literal_port_exposure`) | 决定 (§10.7) | dead code |
-| `bandit` | 5 Low B101 assert (内部, validator 入口已 explicit guard) | 维持 | security |
-| `radon cc` | D(27/24/23) 3 处 | 拆 helper (§10.6) | complexity |
+| `ruff check` | clean (default + no-ignores) | 维持 | F401 / import order |
+| `mypy --strict` | ✅ pass (0 errors, exit hardening 清零) | 维持 | 类型 hygiene |
+| `vulture` | ✅ pass (whitelist `scripts/vulture_cuts_whitelist.py`) | 维持 | dead code |
+| `bandit` | ✅ 0 issues | 维持 | security |
+| `radon cc` | ✅ average A, no D (max C(15), exit hardening 拆 helper) | 维持 | complexity |
 
 每 commit 必跑 `pytest src/tests/cuts/ -q` + `ruff check src/cuts/`; 大 commit (新 family / 改 step) 必跑全套 5 工具.
+
+---
+
+### 21.7 Phase 1.2 P0 red fixture matrix (Gemini math review meta-audit, 2026-05-23)
+
+11 个 critical fixture, 覆盖 Phase 1.2 P0 acceptance checklist 各项 (cite `external_review/gemini_math_review_bundle_20260523/checklists/RED_FIXTURE_MATRIX.md`):
+
+| Fixture | Purpose | Owner family |
+|---|---|---|
+| `F5-timeout-last-verified-core` | QX/deletion minimizer timeout 必 sound (返回 last verified, 不是 unverified partial) | F5 |
+| `F5-132-group-anonymous` | Slot/index permutation 必触同一 cut (multiset 不绑 instance label) | F5 multiset |
+| `F5-cardinality-unsound-routing` | Routing failure 不能 auto-lift 成 cardinality cut (necessary ≠ sufficient) | F5/F9 boundary |
+| `F9-reject-routing-overflow` | F9 generator 拒 `routing_overflow` witness, 必走 F5 fallback | F9 |
+| `F9-any-overlap-overcount` | 历史 FP: any overlap 算 whole facility, 必拦 | F9 |
+| `F9-origin-in-window` | 历史 FP: origin in W 算 whole facility, 必拦 | F9 |
+| `F9-all-in-window-FN` | 历史 FN: edge partial 被忽略, 必抓 | F9 |
+| `F2-narrow-corridor-capacity` | BFS connected 但 capacity < demand (F2 主战场, F4 拦不住) | F2 |
+| `F4-disconnected-zero-capacity` | 完全无 path, F4 在 F2 前触发 (容量 0 特例) | F4 |
+| `CP-SAT-no-lazy` | Step 8 用普通 constraint, 不依赖 `AddLazyConstraint` (CP-SAT 9.15 无此 API) | integration |
+| `DarkMatter-empty-families` | INFEASIBLE + 所有 family 返空 → 必写 jsonl (telemetry §17.4) | telemetry |
+
+每 fixture 必 land **新 red_fixture .md 文件** + **新 test_family_*.py 测试**. 跟现有 5 red fixture (`docs/research/p3_b_design_v2_20260521/red_fixtures/F1-F5*.md`) 加成 16 fixture.
+
+实施顺序跟 P1.2B family 顺序对齐:
+- P1.2B-F5 实施时 land 3 个 F5 fixture
+- P1.2B-F9 实施时 land 4 个 F9 fixture (+1 boundary fixture)
+- P1.2B-F2 / F4 实施时 land 2 个 F2/F4 fixture
+- P1.3A spike 时 land CP-SAT-no-lazy fixture
+- P1.3B 集成时 land DarkMatter fixture
 
 ---
 

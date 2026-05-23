@@ -324,16 +324,29 @@
 
 **defer trigger**: Phase 1.3 P1.21 实施时设计
 
-#### Q10 — cp_sat propagator vs master.AddLinear **P0**
+#### Q10 — cp_sat propagator vs master.AddLinear ✅ **VERDICT (2026-05-23)**
 
-**问题**: cut 用 CP-SAT propagator (custom propagation) 还是 master.AddLinear (constraint 加入 model)?
+**问题**: cut 用 CP-SAT propagator (custom propagation) 还是 master.AddLinear?
 
-**当前 understanding**:
-- propagator: custom Python callback, 控制 propagation; 但 thread-safety 风险, ortools 不保证多 worker 安全
-- AddLinear: 简单, 但 build time 增, 重 build cost 高
-- 项目 168h campaign 多 worker, propagator thread-safety 是 critical
+**Verdict** (Gemini math review meta-audit 2026-05-23):
+- ❌ `model.AddLazyConstraint(...)` **不可用** — OR-Tools 9.15 Python `cp_model.CpModel()` 没此 API
+- ❌ Python callback heavy separation — wrong place for independent mathematical proof reconstruction
+- ✅ **走 LBBD 外循环** (跟现 benders_loop 一致): `master solve → independent subproblem verification → generate cut object → validate/replay/scope-check → translate active cuts into normal CP-SAT constraints → solve again`
+- ✅ 用普通 `Add` / `AddLinearConstraint` / `AddBoolOr` / `OnlyEnforceIf` / `AddAssumption`
+- ✅ Ghost-bound cut: `constraint.OnlyEnforceIf(ghost_lit)` 或 per-ghost rebuild model
 
-**defer trigger**: Phase 1.3 P1.21 §12.4 propagator thread-safe 评估
+**Family translation** (CP-SAT integration notes):
+| Family | CP-SAT shape |
+|---|---|
+| F3/F5/F7 literal | `sum(present_lits) <= len(present_lits)-1` |
+| F9 area envelope | `sum(overlap_area[p,W] * x[g,p]) <= max_allowed_area` |
+| F6 shape packing | `sum(x[g,p] for p in pose_set) <= packing_upper_bound` |
+| F2 capacity | `sum(crossing_demand_lits) <= cut_capacity`, 不行 fallback F5 |
+| F4 reachability | 优先转 F2 / F5; 纯 BFS cut 无线性 separator cert 则 fallback |
+
+**剩余 sub-question (P1.3A spike)**: solve-rebuild vs C++ propagator hook vs hard-constraint rebuild 哪条 wall-clock 最优? Phase 1.3 P1.3A spike 验.
+
+cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
 
 ### 5.5 schema / data 层 open questions
 

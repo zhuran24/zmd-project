@@ -89,13 +89,17 @@ M/N/O 5 轮 audit 反复加 validator binding 都是 adversarial soundness 拉�
 
 后续重构不能跨这些边界 (per `PROJECT_LOCK.md` §3A):
 - family ↔ mode XOR (literal vs geometric) 不可改
+- **F8 mode 锁 geometric** (cert 可引用 power pole group/pose 上下文, lifecycle body 不走 literal multiset path — 改 mode 必先改 PROJECT_LOCK)
 - cut.scope + cert + literals XOR geometric_payload 必填
 - GHOST_AGNOSTIC sentinel 不能跟普通 ghost_id 混用 (Step O 加 validator 验)
 - 9 family list frozen (无 symmetry_lift, 含 F1-F9)
 - ASSUMPTION_VERIFIERS dispatch 必经 verifiers module, 不准 inline
 - multiset eval slot anonymity (state_machine §5)
-- source_digest 锁 data version (Phase 1.2 真 hash)
+- source_digest 锁 data version (✅ Phase 1.1 exit hardening 真 sha256 落地)
 - adversarial soundness — validator trust boundary, oracle 不可信
+- **F9 area-only invariant** (Gemini math review meta-audit 2026-05-23): F9 generator 只接受 `area_capacity_overflow` witness, 拒绝 `routing_overflow` / `binding_overflow` / `pcr_cut_overflow`. F9 evaluator 必 area-based `sum(|pose_cells ∩ W|)`, 不是 instance count / origin-in-window / all-in-window
+- **F6/F7 proof obligation 加严**: F6 Hall cut greedy 失败不能当不可行证明, validator 必重算 Hall violation witness; F7 hitting-set cut LP relax / greedy 只能 oracle hint, validator 必验安全下界或 dual cert
+- **F9 strict inequality**: 等号不 cut, 只有 `cert_density > max_density` 才 cut
 
 任何 §3A 边界改动必先 PROJECT_LOCK 更新 + 跨 spec / src / test 同步.
 

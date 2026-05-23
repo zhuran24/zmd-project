@@ -453,28 +453,68 @@ v1.1 关键 (Gemini round 14 finding): `ghost_blocks_line` 改严格 line-segmen
 - Liang-Barsky 退化 case (零长度 / 共线 / 正交) 数学边界?
 - power network 拓扑跟 belt routing 是否独立? (当前假定独立)
 
-### 3.9 F9 density_envelope — geometric upper bound
+### 3.9 F9 density_envelope — geometric upper bound (**area-only**)
 
-**数学根据**: geometric upper bound — 给定 region `R` 跟 facility group, region 内 facility 数密度 `cap_R / |R|` 必 ≤ 1.0 (trivial baseline). 若 oracle 找到更紧的 envelope (e.g. cell_owner 已占, 实际剩余 cap < trivial bound), 可作为 cut.
+**数学根据**: geometric upper bound — 给定 region (window) `W` 跟 facility group, 该 group 在 W 内**占用面积**之和必有上界. 形式化:
 
-**Cut 形式** [cite spec 09 §1]: F9 是 F1 region_capacity 的弱化 / scope 扩展版 — 用 geometric density bound 代替 exact cap. cert 记 region + envelope cap (上界) + actual_cells_in_R (重算).
+```
+∑_{i ∈ g, π(i) placed} |occupied_cells(π(i)) ∩ W| ≤ max_allowed_area(W, g)
+```
 
-**触发条件**: Gemini round 15 Class C mitigation 推荐, 当 F1 cap_R 不紧 (e.g. cell_owner 占多但 F1 不能扣) 时 F9 提供更弱 bound.
+其中 `max_allowed_area(W, g)` 必是**安全上界** (e.g. `|W| - |ghost ∩ W| - |exterior ∩ W| - |cell_owner_other ∩ W|`), 由 oracle 用 area_capacity_overflow witness 提供. **等号不 cut, 严格 `>` 才 cut**.
 
-**Ghost dependency**: 同 F1 (cap 含 ghost contribution).
+**关键 invariant (PROJECT_LOCK §3A + Gemini math review meta-audit 2026-05-23)**:
 
-**v1.1 关键 (L14 weighted occupancy 死路 verdict 教训)**: F9 density 不能用 `cap/area=1.0` interior LP relax (永不可 cert), 必须用真重算的 envelope. L14 死法详 §4.3.
+F9 generator **只接受** `area_capacity_overflow` witness, **拒绝**:
+- `routing_overflow` (走 F2 cutset 或 F5 fallback)
+- `binding_overflow` (走 F5 fallback)
+- `pcr_cut_overflow` (走 F2 + F5 fallback)
+
+理由: routing/binding 死锁依赖端口朝向、相对位置、障碍细节; 泛化成 "窗口里设施太密" 会**误剪**合法解 (PROJECT_LOCK 锁死).
+
+**Cut 形式** [cite spec 09 §1]: cert 含 `window_rect (x,y,h,w)` + `group_id` + `max_allowed_area` + `oracle_witness_kind="area_capacity_overflow"` + `oracle_assignment_witness` + `ghost_rect_repr`.
+
+**Evaluator (area-based)**: 
+```python
+occupied_in_window = sum(
+    1
+    for cell, (owner_group, _) in state.cell_owner.items()
+    if owner_group == cert.group_id and cell in W
+)
+return occupied_in_window > cert.max_allowed_area
+```
+
+不是 instance count (any-overlap → whole facility 算法历史 unsound FP), 不是 origin-in-window (anchor 在 W 内算 whole), 不是 all-in-window (整 facility 在 W 内才算, 漏算 edge partial). **必须** `sum(|pose_cells ∩ W|)`.
+
+**Step 8 注入**: master `sum(area_overlap[p, W] * x[g, p]) <= max_allowed_area`, 把 area overlap 当线性系数, 不在 Python callback 动态算.
+
+**Morphology safe/unsafe (Gemini math review meta-audit notes)**:
+
+morphological erosion 是 strong helper, **不是** density theorem.
+
+- ✅ **Safe use**:
+  - 算 region 内 "facility 全装进 W" 的合法 anchor 域
+  - 证明 10×1 走廊装不下 3×3 facility
+  - F6 shape packing / Hall-style upper bound 候选域收缩
+  - 给 area_capacity_overflow oracle 找 tighter witness window
+- ❌ **Unsafe leap**: `capacity(W, 3x3) = number_of_eroded_anchors(W)` — anchor 数只是上界, 忽略 facility 之间 overlap. anchor outside W 仍可贡献 area inside W (F9 area-based 不是 anchor-based).
+
+如 morphology 产 cut, cert 必声明语义 (all-in-window placement / overlap-window area / anchor-domain empty / shape packing matching), validator 必独立重算同 semantic.
+
+cite: `external_review/gemini_math_review_bundle_20260523/notes/F9_MORPHOLOGY_CAUTION.md`
+
+**Ghost dependency**: max_allowed_area 含 `|ghost ∩ W|` → 跨 ghost 不 invariant, 必绑 ghost_rect_id.
 
 **跟其他 family 边界**:
-- 适用: F1 cap_R 不紧但 region 仍 over-demanded (geometric envelope catch)
-- 不适用: cap_R 紧 → F1 直接 cert
-- F9 是 F1 的 scope 扩展 (允许更弱 bound), 不是 stronger cut
+- 适用: window 内总占用 area 超 safe upper bound (F1 capacity 跟 demand 不紧时 F9 catch)
+- 不适用: routing / binding / power 死锁 → 走 F2 / F4 / F7 / F5
+- F9 跟 F1 数学关系: F9 area-based (sum pose ∩ W), F1 cap_R cell-based (整 region 容量). 不是 F1 的 scope 扩展, 是**互补 family** (area vs count semantics)
 
-**Phase status**: **defer Phase 1.2 P1.15** — envelope 重算 + baseline 紧度 catch.
+**Phase status**: **defer Phase 1.2 P1.2B-F9** — area-based evaluator + area_capacity_overflow witness only + morphology helper. 历史 L14 weighted occupancy 死路 (interior LP=1.0 永不可 cert) 教训已 freeze 到 area-only invariant.
 
 **Open Q (defer §5.3)**:
-- F9 envelope baseline=1.0 是否 trivial (永不 cert) 还是 stronger bound (L14 教训)?
-- F9 跟 F1 数学上是否真独立 (F9 cap 严格 ≥ F1 cap)?
+- F9 area-based vs F1 cell-based 哪些 INFEASIBLE 二者都拦? 哪些只有一个能拦?
+- morphology erosion 给 area_capacity_overflow oracle 找 tighter window 的算法?
 
 ### 3.10 跨 family 数学关系 summary
 

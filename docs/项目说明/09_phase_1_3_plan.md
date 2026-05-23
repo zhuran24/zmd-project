@@ -1,7 +1,36 @@
-# 09 — Phase 1.3 plan (P1.21 CP-SAT propagator 集成)
+# 09 — Phase 1.3 plan (P1.3A attach spike + P1.3B master integration)
 
 F5-F9 落地后, evaluator 才进真 hot path (10K calls/sec). 这阶段 perf opt
 必要. GO 标准见 §8.3.
+
+## P1.3A — CP-SAT attach spike (NEW, 必先验)
+
+**为啥加 spike**: 外部 reviewer (Gemini math review meta-audit, 2026-05-23)
+catch — 当前 OR-Tools 9.15 CP-SAT Python 模型 **不支持** `model.AddLazyConstraint`.
+旧 plan 把 lazy constraint 写得像确定可行, 实际项目当前依赖路径必须改 LBBD 外循环.
+
+**P1.3A 唯一问题**: 当前 Python OR-Tools CP-SAT 路径到底能不能在预期时机把 cut 变成有效 master 约束?
+
+**Spike 3 个方向 PoC, ≤ 3 day 答完**:
+
+1. **Solve-rebuild 路径** (推荐, 跟现 benders_loop 一致): 每轮 master.solve 前
+   把 active cut 转 `Add` / `OnlyEnforceIf` / `AddBoolOr` / `AddLinearConstraint`
+   注入新 model, 然后 solve. 每轮 rebuild model 不是 incremental.
+2. **C++ propagator hook** (实施成本高): OR-Tools C++ 层有 `SearchObserver` /
+   custom propagator API. Python 绑定不完整, 投资 ≥ 1 周.
+3. **Hard-constraint rebuild** (蛮力): cut 全 hard, 每加新 cut rebuild model.
+   兼容性最好但 build cost 大.
+
+**Spike GO 标准**: 至少一条路径在 prod-scale (266 instance + ~10K cut) 跑通端到端
+master cycle, wall-clock 退化 < 50%. **GO 后才进 P1.3B**.
+
+**Spike NOT GO 路径**:
+- 如果 1+3 都不工作 → paradigm 走回头 (e.g. solver 替换, 但 [03 paradigm death](03_paradigm_death_baseline.md) 已 verdict 死)
+- 这种情况是项目层风险, 不只 Phase 1.3
+
+cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
+
+## P1.3B — master integration (原 P1.21, spike GO 后进)
 
 ### 12.1 step_8_apply_to_master 实施
 - 当前 `lifecycle.py:743-751` NotImplementedError

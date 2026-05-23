@@ -112,5 +112,48 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 - 172 cuts test (从 v1 包的 139 累计 +33 regression)
 - 8 高位 invariant 全 close (没 unsolved P0)
 
+### 5.12 Phase 1.1 exit hardening (2026-05-23, 外部 reviewer delivery)
+
+继 Step A-O 之后, 外部 reviewer (GPT pro batch audit + v8 全项目 7z 包) 给完整 exit hardening delivery (内含 audit report + plan v2 + 26 file patch + 8 gate output).
+
+修了 8 项 (其中 7 项是 plan §10 入门 7 项, 1 项新发现):
+- 1. strict gate 默认 `"0"` → `"1"`
+- 2. source_digest 占位 → 真 sha256 (含 7 类 source data, 排除 `__*` cache key)
+- 3. validator 拆 helper, radon D → 最高 C(15)
+- 4. F3 删 `evaluate_literal_port_exposure` (vulture catch unused)
+- 5. ghost_rect tuple 锁定 `(x, y, x_span, y_span)` + 非方形 fixture
+- 6. **新发现**: `on_ghost_rect_changed` 改 `unsafe_test_replay_fn` + `allow_unsafe_test_replay_fn` 双 flag (防生产误用 stub 绕 family validator)
+- 7. mypy strict 37 errors → 0
+- 8. spec drift 全清 (state_machine v2 `PoseId=str`; cut_lifecycle v2 family list 删 `symmetry_lift` 加 F8/F9; 03 direction N/S/E/W; 02/04 commodity registry semantic)
+
+测试 / gate 验收 (exit hardening delivery 含):
+- pytest cuts: 172 → 178 pass (+6 regression cover ghost_rect / source_digest / unsafe stub)
+- python -O cuts: 178 pass
+- ruff default + no-ignores: pass
+- mypy --strict --explicit-package-bases src/cuts/: pass
+- bandit: 0 issues
+- radon: average A, no D
+- vulture (w/ whitelist): pass
+
+**Verdict**: Phase 1.1 GO. 进 Phase 1.2 必先做 P1.2A entry (已大部分完成) → P1.2B-F5/F6/F7/F8/F9 (按 v2 plan 顺序).
+
+### 5.13 Gemini math review meta-audit (2026-05-23)
+
+同时另一份 deliverable: 外部 reviewer 评估 Gemini 数学 review 建议的 meta-review (action plan + 11 red fixture matrix + acceptance checklist + CP-SAT integration notes + F9 morphology caution).
+
+3 个 "降温" 修正 (Gemini 大方向对, 但表述过满 / 方法不可用):
+- **F5 不能扛 132 集群** (orbit-aware lift Gemini 说太满) — F5 是 fallback 不是主力, F9 才是主解, F5 ratio > 50% = stop-ship
+- **F9 不能 routing/binding overflow → density** (PROJECT_LOCK 锁: F9 only `area_capacity_overflow`)
+- **CP-SAT 当前不支持 `AddLazyConstraint`** (OR-Tools 9.15 没此 API) — 必须 LBBD 外循环 `solve → verify → generate cut → rebuild/resolve`
+
+5 P0 (per acceptance checklist):
+- P0-A: F5 fallback bounded core minimizer + last-verified-core
+- P0-B: F9 area-only (拒 routing/binding overflow witness)
+- P0-C: Step 8 apply-to-master 不能再悬空
+- P0-D: F2/F4 generator 不能长期 stub (BFS 容量 0 是 F4 特例, 容量不足是 F2 min-cut)
+- P0-E: unknown infeasible / dark matter telemetry (jsonl)
+
+详 [Phase 1.2 P0 acceptance checklist](12_go_criteria.md) + [11 red fixture matrix](15_workflow_testing.md).
+
 ---
 
