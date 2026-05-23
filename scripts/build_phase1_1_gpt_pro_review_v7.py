@@ -80,8 +80,6 @@ FILES = [
     "docs/research/p3_b_design_v2_20260521/external_review/gpt_pro_phase1_1_v5_audit_round2_NOT_GO.md",
     "docs/research/p3_b_design_v2_20260521/external_review/gpt_pro_phase1_1_v6_audit_round1_NOT_GO.md",
     "docs/research/p3_b_design_v2_20260521/external_review/gpt_pro_phase1_1_v6_audit_round2_NOT_GO.md",
-    # 重构计划 (factual roadmap)
-    "docs/research/p3_b_design_v2_20260521/PHASE_POST_1_1_REFACTOR_PLAN.md",
     # config
     "requirements.txt",
 ]
