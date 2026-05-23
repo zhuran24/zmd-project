@@ -31,6 +31,7 @@ from src.cuts.lifecycle import (
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
+    compute_source_digest,
     run_lifecycle,
     step_1_generate_region_capacity_combinatorial,
     step_3_serialize,
@@ -463,3 +464,62 @@ def test_assumption_unknown_key_fails_closed():
     s = make_state_with_crusher_on_left_baseline()
     unknown_assumption = Assumption(key="unknown_key", value="v")
     assert assumption_holds(s, unknown_assumption) is False
+
+
+def test_source_digest_is_content_hash_and_ignores_runtime_pose_cache():
+    s = make_state_with_crusher_on_left_baseline()
+    digest_1 = compute_source_digest(s)
+
+    # Runtime caches under "__*" must not change the cross-session source identity.
+    cp = {"facility_pools": {}, "__pose_id_cache__": {("g", "p"): {"pose_id": "p"}}}
+    s_with_cache = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+        candidate_placements=cp,
+    )
+    s_no_cache = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+        candidate_placements={"facility_pools": {}},
+    )
+    assert compute_source_digest(s_with_cache) == compute_source_digest(s_no_cache)
+
+    changed = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules={"boundary_storage_port": {"cells_per_pose": 99}},
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+    )
+    assert compute_source_digest(changed) != digest_1
+
+
+def test_group_state_remaining_count_property():
+    group = GroupState(
+        group_id="g",
+        demand=3,
+        pose_domain=frozenset({"p1", "p2", "p3"}),
+        selected_poses=["p1"],
+    )
+    assert group.remaining_count == 2

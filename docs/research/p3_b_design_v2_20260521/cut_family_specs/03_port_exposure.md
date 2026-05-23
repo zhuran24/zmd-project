@@ -39,8 +39,8 @@ class PortExposureCert:
     facility_group: GroupId
     facility_pose_id: PoseId
     port_cell: Tuple[int, int]
-    port_direction: Literal["up", "down", "left", "right"]
-    front_cell: Tuple[int, int]              # = port_cell + dir
+    port_direction: Literal["N", "S", "E", "W"]
+    front_cell: Tuple[int, int]              # = port_cell + N/S/E/W offset
     blocking_facility: Tuple[GroupId, int, PoseId]  # (group, slot, pose_id)
                                               # 占 front_cell 的 facility
     active_port_witness_b64: str             # binding port active cert blob
@@ -132,7 +132,7 @@ class PortExposureValidator(CutValidator):
         actual_ports = canonical_rules_facility_ports(cert.facility_group, cert.facility_pose_id)
         if (cert.port_cell, cert.port_direction) not in actual_ports:
             return ValidationResult("unsound", ..., "port not in facility ports")
-        # 2. 验 front_cell = port_cell + dir
+        # 2. 验 front_cell = port_cell + N/S/E/W offset
         expected_front = (cert.port_cell[0] + dir_offset(cert.port_direction)[0],
                            cert.port_cell[1] + dir_offset(cert.port_direction)[1])
         if cert.front_cell != expected_front:

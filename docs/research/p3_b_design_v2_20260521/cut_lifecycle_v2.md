@@ -224,7 +224,7 @@ import uuid
 
 CutId = str                       # UUID4 hex
 GroupId = str                     # e.g. "crusher_blue_iron"
-PoseId = int                      # global pose data idx (从 pose registry)
+PoseId = str                      # pose_id string from candidate_placements.json
 GhostRectId = str                 # candidate.ghost_rect canonical hash
 Hash = str                        # sha256 hex digest
 SourceDigestStr = str             # canonical bytes digest (见 below)
@@ -236,8 +236,9 @@ CutFamily = Literal[
     "component_reach",
     "pattern_nogood",
     "shape_packing_hall",   # v3 新 (F2 反例 owner)
-    "power_hitting_set",     # v3 新 (F3 反例 owner)
-    "symmetry_lift",         # 不是新 family, 是 1-7 的 lift; 此 field 标 "已 lifted"
+    "power_hitting_set",     # F7
+    "power_grid_reach",      # F8
+    "density_envelope",      # F9
 ]
 
 # Sentinel for ghost-agnostic cuts (F1 boundary saturation 这种不依赖 ghost 的 cut).
@@ -370,7 +371,8 @@ _FAMILY_MODE_MAP: Dict[CutFamily, Literal["literal", "geometric"]] = {
     "pattern_nogood":        "literal",
     "shape_packing_hall":    "geometric",
     "power_hitting_set":     "literal",
-    "symmetry_lift":         "literal",   # 跟 underlying lifted family 一致, 默 literal
+    "power_grid_reach":      "geometric",
+    "density_envelope":      "geometric",
 }
 ```
 
@@ -586,7 +588,7 @@ def evaluate_cut_literal_based(cut: Cut, state: BState) -> bool:
     """Multiset 包含语义跟 slot enumeration order 无关 → 跨 candidate replay sound.
 
     仅适用 literal-based cut (Cut.literals 非空, family ∈ {port_exposure,
-    pattern_nogood, power_hitting_set, symmetry_lift}).
+    pattern_nogood, power_hitting_set}).
     """
     assert cut.literals is not None, "literal-based evaluate 要求 cut.literals 非 None"
     # 按 group_id group cut 的 literals
@@ -737,14 +739,18 @@ class CutValidator(Protocol):
 - v3 evaluate_geometric: 不实现 (literal-based, 走 §5 multiset evaluate).
 - 复用: `src/search/benders_loop.py:4219-4268` L16 lazy power completion logic.
 
-### Family 8 (variant): symmetry_lift
+### Family 8: power_grid_reach
 
-- 不是新 family, 是 1-7 的 lifted version. Validator 跟 underlying family
-  一致, 额外验 `cut.cert.cert_payload` 里的 orbit + permutation 跟当前
-  `state.symmetry_groups` 一致 (orbit detection 来源
-  `mandatory_exact_instances.json`).
-- v3 evaluate_geometric: dispatch 到 underlying family 的 evaluate_geometric
-  (若 underlying 是 geometric); literal 同 §5 multiset.
+- Mode: geometric. Cert may reference power pole group/pose context, but the lifecycle body stays geometric; it must not use the literal multiset path.
+- Validator: recompute ghost AABB, Liang-Barsky segment blocking, and reachable power component. Cert reachable set must equal recomputed reachable set.
+- v3 evaluate_geometric: recompute reachability for the current state; stale reach cert returns False/HOLD rather than attaching.
+- Precondition: ghost_rect tuple is locked as `(x, y, x_span, y_span)` and covered by non-square fixture.
+
+### Family 9: density_envelope
+
+- Mode: geometric. Cert claims a safe density upper bound for a region.
+- Validator: recompute the conservative upper bound from source data; `cert_density > max_density` is the only cutting condition. Equality must not cut.
+- The bound must be safe, not heuristic. Any heuristic density estimator may generate candidates, but validator must independently recompute a safe upper bound.
 
 ### ValidationResult
 
@@ -800,7 +806,6 @@ class CutStore:
 | 7 power_hitting_set (v3) | `by_cell_watcher` (facility + ghost_blocked) + `by_group_watcher` + `by_pose_watcher` + **`by_ghost_watcher`** |
 | 8 power_grid_reach (v3) | `by_cell_watcher` (facility + candidate poles) + `by_pose_watcher` + **`by_ghost_watcher`** |
 | 9 density_envelope (v3) | `by_cell_watcher` (window 内 cell) + `by_group_watcher` + **`by_ghost_watcher`** |
-| symmetry_lift | underlying family 同 + 全 orbit groups |
 
 state change → 只看对应 watcher 内 cut 重 evaluate. Big-O 从 O(全 cut)
 降到 O(影响 cut).

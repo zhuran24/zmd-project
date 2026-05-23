@@ -41,7 +41,7 @@ from typing import Dict, FrozenSet, List, Literal, Optional, Set, Tuple, Counter
 
 # Type aliases (consistent with cand C Phase 1 + src/models/)
 GroupId   = str                                  # e.g. "crusher_blue_iron"
-PoseId    = Tuple[str, int]                      # (facility_type, pose_idx) — cand C convention
+PoseId    = str                                  # pose_id string from candidate_placements.json
 Cell      = Tuple[int, int]                      # (x, y), 0 <= x,y < 70
 Resource  = Tuple[Cell, str]                     # (cell, layer)  layer ∈ {"port", "power", "belt", ...}
 SlotIdx   = int                                  # 0-based anonymous slot inside group
@@ -275,7 +275,7 @@ A cut's literal pattern uses `AnonymousSlotRef = (GroupId, SlotIdx)`:
 @dataclass(frozen=True)
 class CutLiteral:
     slot_ref: AnonymousSlotRef           # ("crusher_blue_iron", 2)
-    pose: PoseId                         # ("crusher_blue_iron", 17)
+    pose: PoseId                         # e.g. "viewer::boundary_required_output_blue_iron_ore_019"
     polarity: bool                       # True = literal positive ("== pose"), False = negative
 
 @dataclass(frozen=True)

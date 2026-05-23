@@ -201,7 +201,7 @@ def test_on_ghost_rect_changed_holds_old_ghost_cuts():
         return "ATTACH"
 
     state = _make_state()
-    store.on_ghost_rect_changed("ghost_A", "ghost_B", state, stub_replay)
+    store.on_ghost_rect_changed("ghost_A", "ghost_B", state, unsafe_test_replay_fn=stub_replay, allow_unsafe_test_replay_fn=True)
 
     assert "c_old" in store.held
     assert store.is_active("c_new")
@@ -217,7 +217,7 @@ def test_on_ghost_rect_changed_new_ghost_quarantine_branch():
         return "QUARANTINE"
 
     state = _make_state()
-    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, stub_replay_quarantine)
+    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, unsafe_test_replay_fn=stub_replay_quarantine, allow_unsafe_test_replay_fn=True)
 
     assert "c_new" in store.quarantined
     assert "c_new" not in store.held
@@ -233,7 +233,7 @@ def test_on_ghost_rect_changed_new_ghost_hold_branch():
         return "HOLD"
 
     state = _make_state()
-    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, stub_replay_hold)
+    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, unsafe_test_replay_fn=stub_replay_hold, allow_unsafe_test_replay_fn=True)
 
     assert "c_new" in store.held
     assert "c_new" not in store.quarantined
@@ -250,7 +250,7 @@ def test_on_ghost_rect_changed_attach_branch_reactivates():
         return "ATTACH"
 
     state = _make_state()
-    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, stub_replay)
+    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, unsafe_test_replay_fn=stub_replay, allow_unsafe_test_replay_fn=True)
 
     assert store.is_active("c1")
     assert "c1" not in store.held
@@ -270,7 +270,7 @@ def test_on_ghost_rect_changed_skips_already_quarantined():
         return "ATTACH"
 
     state = _make_state()
-    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, tracking_replay)
+    store.on_ghost_rect_changed(GHOST_AGNOSTIC, "ghost_B", state, unsafe_test_replay_fn=tracking_replay, allow_unsafe_test_replay_fn=True)
 
     assert "c1" not in called, "quarantined cut 不该被 replay"
 

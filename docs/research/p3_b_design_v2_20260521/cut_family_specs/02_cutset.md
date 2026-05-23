@@ -185,3 +185,11 @@ class CutsetValidator(CutValidator):
 - ✅ Cert schema + cut 构造 + generator (PCR-CUT 复用) + evaluate + validator + replay
 - ⚠️ 复用 PCR-CUT patch enumerate (Phase 1 验 ROI)
 - ⏸ 实施 Phase 1, 直接 import patch_routing_core
+
+
+## Phase 1.1 exit hardening notes
+
+- `contributing_commodities` has set semantics. Duplicate commodity ids are rejected by the validator.
+- Every contributing commodity must exist in both `state.commodity_demands` and `state.commodity_routes`.
+- Every contributing route must cross the partition: src and sink must be on opposite sides. Same-side routes cannot contribute to the cut demand.
+- `commodity_demand` is recomputed from the registry and must match the cert exactly.

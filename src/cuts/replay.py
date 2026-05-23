@@ -37,13 +37,15 @@ from src.cuts.lifecycle import (
     AttachDecision,
     BState,
     Cut,
+    JsonDict,
     ValidationResult,
+    compute_source_digest,
     step_6_attach_scope_check,
 )
 from src.cuts.store import CutStore, QuarantineReason
 
 
-FamilyValidator = Callable[[Cut, BState, Dict], ValidationResult]
+FamilyValidator = Callable[[Cut, BState, JsonDict], ValidationResult]
 
 
 # Family → post-attach validator dispatch.
@@ -64,7 +66,7 @@ def replay_cut(
     state: BState,
     store: CutStore,
     *,
-    canonical_rules: Optional[Dict] = None,
+    canonical_rules: Optional[JsonDict] = None,
     iter_index: int = -1,
 ) -> AttachDecision:
     """6-step verify + post-attach validation. Mutates store per decision.
@@ -124,7 +126,7 @@ def replay_cut(
         # Gemini round 28 finding #1 修: 防 P1.5+ 漏注册 silent skip.
         # EXACT_FAMILY_VALIDATOR_STRICT=1 (Phase 1.4 ramp 启动) 让 fail-closed;
         # 默认 (Phase 1.0/1.1 partial 实施期) silent skip 让 P1.5-P1.15 增量推进.
-        if os.environ.get("EXACT_FAMILY_VALIDATOR_STRICT", "0") == "1":
+        if os.environ.get("EXACT_FAMILY_VALIDATOR_STRICT", "1") == "1":
             raise NotImplementedError(
                 f"family={cut.family} validator 未注册 (FAMILY_VALIDATORS). "
                 f"P1.5+ 实施时必须 register; 或调用方传 canonical_rules=None 跳过 Step 7."
@@ -158,7 +160,7 @@ def regression_sweep(
     store: CutStore,
     state: BState,
     *,
-    canonical_rules: Optional[Dict] = None,
+    canonical_rules: Optional[JsonDict] = None,
     iter_index: int = -1,
 ) -> Dict[str, int]:
     """Re-validate all non-quarantined cuts (cut_lifecycle_v2 §9).
@@ -194,7 +196,8 @@ def regression_sweep(
 
 def _diagnose_quarantine(cut: Cut, state: BState) -> str:
     """生成 quarantine reason detail. 试推 6-step 哪步 fail (best-effort)."""
-    assert cut.scope is not None
+    if cut.scope is None:
+        return "missing cut scope"
     from src.cuts.lifecycle import (
         GHOST_AGNOSTIC,
         compute_blocked_cells_hash,
@@ -203,8 +206,9 @@ def _diagnose_quarantine(cut: Cut, state: BState) -> str:
     )
 
     # Step 1
-    if cut.scope.source_digest != "poc_source_digest":
-        return f"source_digest mismatch (cut={cut.scope.source_digest!r})"
+    current_digest = compute_source_digest(state)
+    if cut.scope.source_digest != current_digest:
+        return f"source_digest mismatch (cut={cut.scope.source_digest!r}, current={current_digest!r})"
     # Step 3 dispatch
     current_ghost_id = compute_ghost_rect_id(state.ghost_rect)
     is_ghost_agnostic = cut.scope.ghost_rect_id == GHOST_AGNOSTIC

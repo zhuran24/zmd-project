@@ -3,7 +3,7 @@
 Coverage:
 - validate_port_exposure: ok / unsound (front_cell math wrong / blocking facility
   not at front_cell / port not in facility ports) / schema_err
-- evaluate_literal_port_exposure: multiset subset match (state has 2 literals →
+- evaluate_literal_multiset: multiset subset match (state has 2 literals →
   True; missing 1 → False; slot permutation invariant)
 - ``evaluate_literal_multiset`` (lifecycle generic):
   - 1 literal in 1 group: subset match
@@ -18,10 +18,8 @@ from __future__ import annotations
 
 import json
 
-from src.cuts.families.port_exposure import (
-    evaluate_literal_port_exposure,
-    validate_port_exposure,
-)
+from src.cuts.families.port_exposure import validate_port_exposure
+from src.cuts.oracles.port_exposure_oracle import generate_port_exposure_cuts
 from src.cuts.lifecycle import (
     AnonymousSlotRef,
     BState,
@@ -438,7 +436,7 @@ def test_validate_port_exposure_one_literal_schema_err_python_O_safe():
 # F3 evaluate
 # ============================================================================
 
-def test_evaluate_literal_port_exposure_delegates_to_multiset():
+def test_evaluate_literal_multiset_delegates_to_multiset():
     cert_payload = _make_port_exposure_cert()
     cut = _make_port_exposure_cut(cert_payload)
     state_with = _make_state(
@@ -449,5 +447,9 @@ def test_evaluate_literal_port_exposure_delegates_to_multiset():
         crusher_poses=["p7"],
         refinery_poses=["p9"],
     )
-    assert evaluate_literal_port_exposure(cut, state_with) is True
-    assert evaluate_literal_port_exposure(cut, state_without) is False
+    assert evaluate_literal_multiset(cut, state_with) is True
+    assert evaluate_literal_multiset(cut, state_without) is False
+
+
+def test_port_exposure_oracle_stub_is_fail_closed():
+    assert generate_port_exposure_cuts(_make_state(), master_solution={"unused": True}) == []

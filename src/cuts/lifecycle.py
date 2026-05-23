@@ -32,7 +32,7 @@ import json
 import time
 from collections import Counter  # noqa: F401  (state_machine_v2 后续用)
 from dataclasses import dataclass, field
-from typing import Callable, Dict, FrozenSet, List, Literal, Optional, Tuple
+from typing import Any, Callable, Dict, FrozenSet, List, Literal, Optional, Protocol, Tuple
 
 
 # ============================================================================
@@ -50,6 +50,7 @@ Cell = Tuple[int, int]
 GhostRectId = str
 Hash = str
 SourceDigestStr = str
+JsonDict = Dict[str, Any]
 
 GHOST_AGNOSTIC: GhostRectId = "__ghost_agnostic__"
 
@@ -213,12 +214,12 @@ class BState:
     """
     groups: Dict[GroupId, GroupState]
     cell_owner: Dict[Cell, Tuple[GroupId, int]] = field(default_factory=dict)
-    ghost_rect: Optional[Tuple[int, int, int, int]] = None  # (x, y, h, w)
+    ghost_rect: Optional[Tuple[int, int, int, int]] = None  # (x, y, x_span, y_span)
     ghost_cells: FrozenSet[Cell] = frozenset()
     exterior_blocks: FrozenSet[Cell] = frozenset()
     artifact_hashes: Dict[str, Hash] = field(default_factory=dict)
     available_oracle_versions: FrozenSet[str] = frozenset()
-    canonical_rules: Optional[Dict] = None  # parsed rules/canonical_rules.json
+    canonical_rules: Optional[JsonDict] = None  # parsed rules/canonical_rules.json
     # Gap 8 (Gemini round 30): operation_type (group_id) → facility_type 映射.
     # Source: mandatory_exact_instances.json. canonical_rules 本身只 facility_template
     # 层有 placement_rule / port_rule 等 — 必须先经此映射才能 lookup. e.g.
@@ -227,13 +228,13 @@ class BState:
     # facility_templates 直接 ref canonical_rules.facility_templates (alias for
     # fast lookup). e.g. facility_templates["boundary_storage_port"]["dimensions"]
     # = {"w": 1, "h": 3}. helpers/canonical_rules.py 用此字段算 cells_per_pose 等.
-    facility_templates: Optional[Dict[str, Dict]] = None
+    facility_templates: Optional[Dict[str, JsonDict]] = None
     # Gap 9 (Gemini round 30): parsed candidate_placements.json. Pose-level
     # 端口数据 (input_port_cells / output_port_cells) 不在 canonical_rules
     # (template) 层, 在 candidate_placements (pose) 层. F3 / F8 validator 必读此.
     # Structure: {"facility_pools": {ft: [pose, pose, ...]}}
     # 每 pose 含 pose_id (str) + anchor + occupied_cells + input/output_port_cells.
-    candidate_placements: Optional[Dict] = None
+    candidate_placements: Optional[JsonDict] = None
     # GPT pro v4 P0 fix: F2 cutset / F4 component_reach 必须能 verify cert 的
     # commodity_demand / commodity_id 跟真实 commodity registry 一致. Phase 1.5+
     # production inject 这两个 field; Phase 1.1 默认 None → F2/F4 validator
@@ -241,7 +242,8 @@ class BState:
     # commodity_demands schema: {commodity_id: int} (cross-partition demand sum).
     commodity_demands: Optional[Dict[str, int]] = None
     # commodity_routes schema: {commodity_id: {"src": (x,y), "sink": (x,y)}}
-    commodity_routes: Optional[Dict[str, Dict]] = None
+    commodity_routes: Optional[Dict[str, JsonDict]] = None
+    source_digest: Optional[SourceDigestStr] = None
 
 
 # ============================================================================
@@ -269,7 +271,47 @@ def compute_exterior_blocks_hash(state: BState) -> Hash:
     return hashlib.sha256(blob).hexdigest()[:16]
 
 
-def canonical_bytes_for_cert(payload: Dict) -> bytes:
+def _source_jsonable(value: Any) -> Any:
+    """Normalize source payloads before hashing; ignore runtime caches."""
+    if isinstance(value, dict):
+        normalized: Dict[str, Any] = {}
+        for key, item in value.items():
+            if isinstance(key, str) and key.startswith("__"):
+                continue
+            normalized[str(key)] = _source_jsonable(item)
+        return normalized
+    if isinstance(value, (list, tuple)):
+        return [_source_jsonable(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return sorted((_source_jsonable(item) for item in value), key=repr)
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return repr(value)
+
+
+def compute_source_digest(state: BState) -> SourceDigestStr:
+    """Return stable content digest for cross-session cut replay scope."""
+    if state.source_digest is not None:
+        return state.source_digest
+    parts: JsonDict = {
+        "schema_version": 1,
+        "canonical_rules": state.canonical_rules or {},
+        "candidate_placements": state.candidate_placements or {},
+        "mandatory_exact_instances": state.instance_to_facility_type or {},
+        "facility_templates": state.facility_templates or {},
+        "generic_io_requirements": state.commodity_demands or {},
+        "commodity_routes": state.commodity_routes or {},
+    }
+    blob = json.dumps(
+        _source_jsonable(parts),
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()
+
+
+def canonical_bytes_for_cert(payload: JsonDict) -> bytes:
     return json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
 
 
@@ -330,7 +372,7 @@ def _decode_region_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
 #   8. apply-to-master   — push cut to CP-SAT master (Phase 1.3 P1.21)
 #   9. replay regression — re-validate on new replay state (Step 5 re-entry)
 
-def step_0_canonicalize(raw_cert_dict: Dict) -> bytes:
+def step_0_canonicalize(raw_cert_dict: JsonDict) -> bytes:
     """Step 0 — raw oracle cert dict → canonical bytes (sort keys, fixed enc)."""
     return canonical_bytes_for_cert(raw_cert_dict)
 
@@ -339,7 +381,7 @@ def step_1_generate_region_capacity_combinatorial(
     state: BState,
     region_kind: str,
     contributing_group: GroupId,
-    canonical_rules: Dict,
+    canonical_rules: JsonDict,
 ) -> Optional[Cut]:
     """Step 1 (framework reference) — F1 region_capacity combinatorial generator.
 
@@ -408,7 +450,7 @@ def step_1_generate_region_capacity_combinatorial(
             ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
             blocked_cells_hash=compute_blocked_cells_hash(state),
             exterior_blocks_hash=compute_exterior_blocks_hash(state),  # v3.2.2
-            source_digest="poc_source_digest",  # P1.5 替 canonical_rules.json sha
+            source_digest=compute_source_digest(state),
             artifact_hashes=state.artifact_hashes,
             oracle_abstraction_version="region_capacity_v1",
             active_assumptions=tuple(active_assumptions),
@@ -428,20 +470,22 @@ def step_1_generate_region_capacity_combinatorial(
     )
 
 
-def step_2_minimize(cut: Cut, state: BState, oracle: Callable) -> Cut:
+def step_2_minimize(cut: Cut, state: BState, oracle: Callable[..., object]) -> Cut:
     """Step 2 — literal-based deletion + QuickXplain minimize.
 
-    Phase 1.0 P1.1: stubbed. Implemented in Phase 1.1 P1.11 (F5 pattern_nogood
+    Phase 1.0 P1.1: stubbed. Implemented in Phase 1.2B-F5 (F5 pattern_nogood
     用 L16 deletion minimizer wrap).
     """
+    del oracle
     raise NotImplementedError(
-        "Step 2 minimize 在 Phase 1.1 P1.11 (F5 pattern_nogood) 实施."
+        "Step 2 minimize 在 Phase 1.2B-F5 (F5 pattern_nogood) 实施."
     )
 
 
 def step_3_serialize(cut: Cut) -> bytes:
     """Step 3 — Cut → JSON bytes."""
-    assert cut.scope is not None and cut.cert is not None  # __post_init__ 保证
+    if cut.scope is None or cut.cert is None:
+        raise ValueError(f"Cut {cut.cut_id}: scope/cert missing before serialize")
     cut_dict = {
         "cut_id": cut.cut_id,
         "family": cut.family,
@@ -545,7 +589,7 @@ def step_4_deserialize(blob: bytes) -> Cut:
 
 
 def step_5_validate_region_capacity(
-    cut: Cut, state: BState, canonical_rules: Dict
+    cut: Cut, state: BState, canonical_rules: JsonDict
 ) -> ValidationResult:
     """Step 5 — independent recompute of F1 cert (v1.2 §7).
 
@@ -639,9 +683,10 @@ def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
     - GHOST_AGNOSTIC cut: verify ``exterior_blocks_hash`` only (cut可跨 ghost 复用)
     - ghost-bound cut: verify full ``blocked_cells_hash``
     """
-    assert cut.scope is not None  # __post_init__ 保证
+    if cut.scope is None:
+        return "QUARANTINE"
     # Step 1: source_digest
-    if cut.scope.source_digest != "poc_source_digest":
+    if cut.scope.source_digest != compute_source_digest(state):
         return "QUARANTINE"
 
     # Step 2: ghost match
@@ -761,12 +806,13 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
     return evaluate_literal_multiset(cut, state)
 
 
-def step_8_apply_to_master(cut: Cut, master_model) -> None:
-    """Step 8 — push cut as constraint to CP-SAT master.
+class MasterModelLike(Protocol):
+    """Structural placeholder for the future CP-SAT master integration."""
 
-    Phase 1.0 P1.1: stubbed. Phase 1.3 P1.21 接 benders_loop hook 时实施 (env
-    flag ``EXACT_B_DESIGN_V2=1`` 切新框架).
-    """
+
+def step_8_apply_to_master(cut: Cut, master_model: MasterModelLike) -> None:
+    """Step 8 — push cut as constraint to CP-SAT master."""
+    del master_model
     raise NotImplementedError(
         "Step 8 apply-to-master 在 Phase 1.3 P1.21 (benders_loop integration) 实施."
     )
@@ -792,7 +838,7 @@ def run_lifecycle(
     state_at_replay: BState,
     region_kind: str,
     contributing_group: GroupId,
-    canonical_rules: Dict,
+    canonical_rules: JsonDict,
 ) -> List[LifecycleReport]:
     """End-to-end framework reference: 9-step lifecycle on F1 region_capacity.
 
@@ -807,7 +853,9 @@ def run_lifecycle(
     if cut is None:
         reports.append(LifecycleReport("step_1_generate", False, "no infeasibility, no cut"))
         return reports
-    assert cut.geometric_payload is not None and cut.cert is not None  # __post_init__
+    if cut.geometric_payload is None or cut.cert is None:
+        reports.append(LifecycleReport("step_1_generate", False, "generated cut missing payload/cert"))
+        return reports
     cert = json.loads(cut.geometric_payload)
     reports.append(LifecycleReport(
         "step_1_generate", True,
@@ -818,7 +866,9 @@ def run_lifecycle(
     reports.append(LifecycleReport("step_3_serialize", True, f"{len(blob)} bytes"))
 
     cut_d = step_4_deserialize(blob)
-    assert cut_d.cert is not None
+    if cut_d.cert is None or cut.cert is None:
+        reports.append(LifecycleReport("step_4_deserialize", False, "missing cert after deserialize"))
+        return reports
     if cut_d.cut_id != cut.cut_id or cut_d.cert.cert_hash != cut.cert.cert_hash:
         reports.append(LifecycleReport("step_4_deserialize", False, "round-trip mismatch"))
         return reports

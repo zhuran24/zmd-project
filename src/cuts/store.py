@@ -41,6 +41,7 @@ from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple
 from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
     BState,
+    AttachDecision,
     Cell,
     Cut,
     CutId,
@@ -52,6 +53,7 @@ from src.cuts.lifecycle import (
 # Watcher key types (cut_lifecycle_v2 §7).
 CommodityId = str
 RegionId = str
+ReplayCallback = Callable[[Cut, BState], AttachDecision]
 
 
 @dataclass(frozen=True)
@@ -228,17 +230,15 @@ class CutStore:
         old_ghost_id: GhostRectId,
         new_ghost_id: GhostRectId,
         state: BState,
-        replay_fn: Optional[Callable] = None,
+        unsafe_test_replay_fn: Optional[ReplayCallback] = None,
+        *,
+        allow_unsafe_test_replay_fn: bool = False,
     ) -> None:
         """Triggered when ghost_rect changes (candidate transition).
 
-        GPT pro v6 P0 fix: 原 replay_fn 签名 `(Cut, BState) → AttachDecision` 跟
-        replay.py:replay_cut(cut, state, store, canonical_rules, ...) 不一致, caller
-        容易传 step_6_attach_scope_check (只验 scope 不验 family validator) → 绕
-        post-attach validator silent ATTACH. 修法:
-        - replay_fn 改 Optional, 默认 lazy import replay.replay_cut 走 full
-          replay+validator gate
-        - 传 replay_fn 路径 (legacy) 仍支持但只接 full replay 签名
+        Default path lazy-imports replay_cut and always runs the full family
+        validator. Test stubs must pass allow_unsafe_test_replay_fn=True so a
+        scope-only replay function cannot be supplied accidentally in production.
 
         1. 旧 ghost_id 关联 cuts → hold (不 quarantine — 下次 ghost 回 old_id
            时 re-attach; v3.2.2 dispatch 让 cuts 跨 candidate 复用).
@@ -250,6 +250,9 @@ class CutStore:
         family validator 在 replay 时拒错标 (GPT v6 P0 fix: validator step 4b
         check scope.ghost_rect_id == GHOST_AGNOSTIC 合法性).
         """
+        if unsafe_test_replay_fn is not None and not allow_unsafe_test_replay_fn:
+            raise ValueError("unsafe_test_replay_fn requires allow_unsafe_test_replay_fn=True")
+
         if old_ghost_id != GHOST_AGNOSTIC:
             affected = self.by_ghost_watcher.get(old_ghost_id, set()).copy()
             for cut_id in affected:
@@ -265,14 +268,14 @@ class CutStore:
                 cut = self.cuts[cut_id]
                 # GPT pro v6 P0: 默认走 full replay_cut (跑 family validator),
                 # 不接受 scope-only replay_fn.
-                if replay_fn is None:
+                if unsafe_test_replay_fn is None:
                     from src.cuts.replay import replay_cut
                     decision = replay_cut(
                         cut, state, self,
                         canonical_rules=state.canonical_rules,
                     )
                 else:
-                    decision = replay_fn(cut, state)
+                    decision = unsafe_test_replay_fn(cut, state)
                 if decision == "ATTACH":
                     self.held.discard(cut_id)
                 elif decision == "HOLD":

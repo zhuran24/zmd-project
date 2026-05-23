@@ -20,7 +20,7 @@ from __future__ import annotations
 import math
 from collections import deque
 from dataclasses import dataclass, field
-from typing import Iterable, Optional, Set, Tuple
+from typing import FrozenSet, Iterable, Optional, Set, Tuple
 
 from src.cuts.helpers.ghost_geometry import (
     cell_aabb_from_rect,
@@ -41,8 +41,8 @@ class PowerGraph:
     ``edges`` is an undirected set; ``(p1, p2)`` and ``(p2, p1)`` stored as
     canonicalized tuple (smaller first) to dedupe.
     """
-    vertices: frozenset = field(default_factory=frozenset)
-    edges: frozenset = field(default_factory=frozenset)
+    vertices: FrozenSet[Pole] = field(default_factory=frozenset)
+    edges: FrozenSet[Edge] = field(default_factory=frozenset)
 
 
 def _canonical_edge(p1: Pole, p2: Pole) -> Edge:

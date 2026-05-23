@@ -180,3 +180,11 @@ watcher:
 - ✅ Cert + cut + generator (D2 separator 复用) + evaluate_geometric (hot path
   重算, 跟 Family 1 简化版区别) + validator + replay
 - ⏸ Phase 1 实施 src/cuts/families/component_reach.py
+
+
+## Phase 1.1 exit hardening notes
+
+- `commodity_id` is not a free-form cert field. It must exist in `state.commodity_routes`.
+- The registry route's src/sink cells must match the cert's `src_cell` and `sink_cell`.
+- `separator_cells` must be in-grid and must be occupied by a facility or ghost cell (`cell_owner ∪ ghost_cells`).
+- F4 rejects `GHOST_AGNOSTIC` scope because the BFS free-cell graph is ghost-sensitive.

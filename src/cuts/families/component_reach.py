@@ -25,7 +25,7 @@ from __future__ import annotations
 import json
 import time
 from collections import deque
-from typing import Dict, FrozenSet, Set
+from typing import Any, Dict, FrozenSet, Literal, Set
 
 from src.cuts.families.cutset import _decode_bitset, _free_cells
 from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
@@ -47,213 +47,145 @@ def _bfs_component(start: Cell, free_cells: FrozenSet[Cell]) -> Set[Cell]:
     return visited
 
 
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _validate_component_scope(cut: Cut, t0: float) -> ValidationResult | None:
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr("unsound", t0, "F4 component_reach 不允 GHOST_AGNOSTIC scope")
+    return None
+
+
+def _validate_component_membership(
+    src_cell: Cell,
+    sink_cell: Cell,
+    src_comp: FrozenSet[Cell],
+    sink_comp: FrozenSet[Cell],
+    t0: float,
+) -> ValidationResult | None:
+    if src_comp & sink_comp:
+        return _vr("unsound", t0, f"src/sink components 重叠 |∩|={len(src_comp & sink_comp)}")
+    if src_cell not in src_comp:
+        return _vr("unsound", t0, f"src_cell {src_cell} not in src_component")
+    if sink_cell not in sink_comp:
+        return _vr("unsound", t0, f"sink_cell {sink_cell} not in sink_component")
+    return None
+
+
+def _validate_recomputed_components(
+    src_cell: Cell,
+    sink_cell: Cell,
+    src_comp: FrozenSet[Cell],
+    sink_comp: FrozenSet[Cell],
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    free_cells = _free_cells(state)
+    if src_cell not in free_cells:
+        return _vr("unsound", t0, f"src_cell {src_cell} no longer in free_cells")
+    if sink_cell not in free_cells:
+        return _vr("unsound", t0, f"sink_cell {sink_cell} no longer in free_cells")
+    current_src_comp = frozenset(_bfs_component(src_cell, free_cells))
+    if current_src_comp != src_comp:
+        return _vr(
+            "unsound",
+            t0,
+            f"src_component cert mismatch: |cert|={len(src_comp)}, |recomputed|={len(current_src_comp)}",
+        )
+    current_sink_comp = frozenset(_bfs_component(sink_cell, free_cells))
+    if current_sink_comp != sink_comp:
+        return _vr(
+            "unsound",
+            t0,
+            f"sink_component cert mismatch: |cert|={len(sink_comp)}, |recomputed|={len(current_sink_comp)}",
+        )
+    if sink_cell in current_src_comp:
+        return _vr("unsound", t0, "witness fail: src/sink now reachable")
+    return None
+
+
+def _validate_separator_cells(
+    separator_cells: object,
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if not isinstance(separator_cells, list):
+        return _vr("schema_err", t0, "separator_cells must be a list")
+    for sep_cell_raw in separator_cells:
+        sep_cell_tuple = tuple(sep_cell_raw)
+        if not (
+            len(sep_cell_tuple) == 2
+            and isinstance(sep_cell_tuple[0], int)
+            and isinstance(sep_cell_tuple[1], int)
+            and 0 <= sep_cell_tuple[0] < 70
+            and 0 <= sep_cell_tuple[1] < 70
+        ):
+            return _vr("unsound", t0, f"separator cell {sep_cell_tuple} not in grid (0-69 x 0-69)")
+        sep_cell = (sep_cell_tuple[0], sep_cell_tuple[1])
+        if sep_cell not in state.cell_owner and sep_cell not in state.ghost_cells:
+            return _vr("unsound", t0, f"separator cell {sep_cell} not in cell_owner ∪ ghost_cells")
+    return None
+
+
+def _validate_component_commodity(
+    commodity_id: object,
+    src_cell: Cell,
+    sink_cell: Cell,
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if commodity_id is None:
+        return _vr("schema_err", t0, "F4 cert missing commodity_id (spec 04 §3 必填)")
+    if state.commodity_routes is None:
+        return _vr("schema_err", t0, "F4 component_reach validator 需 state.commodity_routes registry")
+    route = state.commodity_routes.get(str(commodity_id))
+    if route is None:
+        return _vr("unsound", t0, f"commodity_id {commodity_id!r} not in commodity_routes registry")
+    registry_src = tuple(route.get("src", ()))
+    registry_sink = tuple(route.get("sink", ()))
+    if registry_src != src_cell:
+        return _vr("unsound", t0, f"src_cell mismatch: cert={src_cell}, registry route src={registry_src}")
+    if registry_sink != sink_cell:
+        return _vr("unsound", t0, f"sink_cell mismatch: cert={sink_cell}, registry route sink={registry_sink}")
+    return None
+
+
 def validate_component_reach(
     cut: Cut,
     state: BState,
-    canonical_rules: Dict,
+    canonical_rules: Dict[str, Any],
 ) -> ValidationResult:
-    """F4 component_reach validator.
-
-    Phase 1.1 P1.8 minimum-viable per v1.1 (Gemini r16 A1 fix): geometric mode
-    only verifies **spatial** invariants, NOT blocking_facilities 具体 pose ID
-    (causation split is literal-based, not geometric — F3/F7's territory).
-
-    GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
-    """
+    """F4 component_reach validator."""
     t0 = time.monotonic()
+    del canonical_rules
     if cut.geometric_payload is None:
-        return ValidationResult(
-            kind="schema_err",
-            elapsed_seconds=time.monotonic() - t0,
-            detail="cut.geometric_payload is None (F4 schema invariant violated)",
-        )
-    # GPT pro v6 P0 fix: F4 spec scope 必绑当前 ghost (04_component_reach.md:39-40,
-    # 70-72). attacker 错标 GHOST_AGNOSTIC → store 不挂 by_ghost_watcher → ghost
-    # 变化不 invalidate. Phase 1.1 fail-closed reject; Phase 1.5+ 真 commodity-routed
-    # cell_owner-only separator 时再 unlock.
-    from src.cuts.lifecycle import GHOST_AGNOSTIC
-    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
-        return ValidationResult(
-            kind="unsound",
-            elapsed_seconds=time.monotonic() - t0,
-            detail=(
-                "F4 component_reach 不允 GHOST_AGNOSTIC scope (spec §3 必绑当前 "
-                "ghost — separator 跟 BFS free_cells 都受 ghost 影响, Phase 1.1 "
-                "fail-closed)"
-            ),
-        )
+        return _vr("schema_err", t0, "cut.geometric_payload is None (F4 schema invariant violated)")
+    scope_error = _validate_component_scope(cut, t0)
+    if scope_error is not None:
+        return scope_error
     try:
-        cert_dict = json.loads(cut.geometric_payload)
-        src_cell = tuple(cert_dict["src_cell"])
-        sink_cell = tuple(cert_dict["sink_cell"])
+        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
+        src_cell = (int(cert_dict["src_cell"][0]), int(cert_dict["src_cell"][1]))
+        sink_cell = (int(cert_dict["sink_cell"][0]), int(cert_dict["sink_cell"][1]))
         src_comp = _decode_bitset(cert_dict["src_component_bitset_b64"])
         sink_comp = _decode_bitset(cert_dict["sink_component_bitset_b64"])
-
-        # 1. Partition disjoint (src and sink not in same component per cert)
-        if src_comp & sink_comp:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"src/sink components 重叠 |∩|={len(src_comp & sink_comp)}",
-            )
-
-        # 2. Membership: src_cell ∈ src_comp, sink_cell ∈ sink_comp
-        if src_cell not in src_comp:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"src_cell {src_cell} not in src_component",
-            )
-        if sink_cell not in sink_comp:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"sink_cell {sink_cell} not in sink_component",
-            )
-
-        # 3. Recompute BFS components on current free_cells; verify still disconnect
-        free_cells = _free_cells(state)
-        if src_cell not in free_cells:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"src_cell {src_cell} no longer in free_cells (cell_owner/ghost changed)",
-            )
-        if sink_cell not in free_cells:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"sink_cell {sink_cell} no longer in free_cells",
-            )
-
-        # 4. cert.src_component == recomputed BFS(src_cell) (GPT pro round 2 cert
-        # 完整性: attacker 不准谎报 src_component 含 sink_cell 邻接 cell — validator
-        # 必精确等). Spec 04_component_reach.md §6 cert bitset 必须可独立重算.
-        current_src_comp = frozenset(_bfs_component(src_cell, free_cells))
-        if current_src_comp != src_comp:
-            extra = src_comp - current_src_comp
-            missing = current_src_comp - src_comp
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"src_component cert mismatch: |cert|={len(src_comp)}, "
-                    f"|recomputed|={len(current_src_comp)}, extra_in_cert={len(extra)}, "
-                    f"missing_in_cert={len(missing)}"
-                ),
-            )
-
-        # 5. cert.sink_component == recomputed BFS(sink_cell) (同上)
-        current_sink_comp = frozenset(_bfs_component(sink_cell, free_cells))
-        if current_sink_comp != sink_comp:
-            extra = sink_comp - current_sink_comp
-            missing = current_sink_comp - sink_comp
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"sink_component cert mismatch: |cert|={len(sink_comp)}, "
-                    f"|recomputed|={len(current_sink_comp)}, extra_in_cert={len(extra)}, "
-                    f"missing_in_cert={len(missing)}"
-                ),
-            )
-
-        # 6. Witness: sink not in src component (Menger min-cut > 0 已经隐含)
-        if sink_cell in current_src_comp:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail="witness fail: src/sink now reachable (free_cells changed reconnect)",
-            )
-
-        # 7. separator_cells 全在 cell_owner ∪ ghost (不是 free) — spec 04 line 148
-        # GPT pro v2 round 2 High fix: 原 Gemini r33 修法只验 not-in-free, 漏验
-        # in-grid + explicit ∈ cell_owner ∪ ghost. attacker 放 (999,999) 等
-        # out-of-grid cell, 既不在 free 也不在任何集合 → silent pass. 防御策略:
-        # 显式 ⊆ (cell_owner ∪ ghost) ∩ in-grid.
-        separator_cells = cert_dict.get("separator_cells", [])
-        for sep_cell_raw in separator_cells:
-            sep_cell = tuple(sep_cell_raw)
-            # 7a. in-grid (70x70 hardcoded per project grid 约定)
-            if not (
-                len(sep_cell) == 2
-                and isinstance(sep_cell[0], int) and isinstance(sep_cell[1], int)
-                and 0 <= sep_cell[0] < 70 and 0 <= sep_cell[1] < 70
-            ):
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"separator cell {sep_cell} not in grid (0-69 x 0-69)",
-                )
-            # 7b. ∈ cell_owner ∪ ghost (explicit positive check, 不只 not-in-free)
-            if sep_cell not in state.cell_owner and sep_cell not in state.ghost_cells:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"separator cell {sep_cell} not in cell_owner ∪ ghost_cells "
-                        f"(spec 04_component_reach.md line 148)"
-                    ),
-                )
-
-        # 8. commodity_id 真存在 + src/sink 对应 registry 真 route (GPT pro v4 P0).
-        # 原 spec-aligned pass-through 让 attacker 塞 fake commodity_id, BFS sound
-        # 但 cut 业务证明 (这两 cell 必须连通 因为 commodity X 要 route) 没绑.
-        # apply-to-master 拿 cut 剪状态时假 commodity 误剪合法. fail-closed:
-        # state.commodity_routes 没 inject → schema_err.
-        commodity_id = cert_dict.get("commodity_id")
-        if commodity_id is None:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail="F4 cert missing commodity_id (spec 04 §3 必填)",
-            )
-        if state.commodity_routes is None:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    "F4 component_reach validator 需 state.commodity_routes registry "
-                    "(GPT pro v4 P0 — Phase 1.1 default None fail-closed, "
-                    "Phase 1.5+ production 真 inject 后 unlock)"
-                ),
-            )
-        route = state.commodity_routes.get(commodity_id)
-        if route is None:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"commodity_id {commodity_id!r} not in commodity_routes registry",
-            )
-        # 8a. cert.src_cell 必跟 registry route.src 一致
-        registry_src = tuple(route.get("src", ()))
-        registry_sink = tuple(route.get("sink", ()))
-        if registry_src != tuple(src_cell):
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"src_cell mismatch: cert={src_cell}, registry route src={registry_src}"
-                ),
-            )
-        if registry_sink != tuple(sink_cell):
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"sink_cell mismatch: cert={sink_cell}, registry route sink={registry_sink}"
-                ),
-            )
-
-        return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)
-
+        for error in (
+            _validate_component_membership(src_cell, sink_cell, src_comp, sink_comp, t0),
+            _validate_recomputed_components(src_cell, sink_cell, src_comp, sink_comp, state, t0),
+            _validate_separator_cells(cert_dict.get("separator_cells", []), state, t0),
+            _validate_component_commodity(cert_dict.get("commodity_id"), src_cell, sink_cell, state, t0),
+        ):
+            if error is not None:
+                return error
+        return _vr("ok", t0)
     except Exception as e:
-        return ValidationResult(
-            kind="schema_err",
-            elapsed_seconds=time.monotonic() - t0,
-            detail=f"{type(e).__name__}: {e}",
-        )
-
+        return _vr("schema_err", t0, f"{type(e).__name__}: {e}")
 
 def evaluate_geometric_component_reach(cut: Cut, state: BState) -> bool:
     """Hot path: recompute BFS reachability on current free_cells.

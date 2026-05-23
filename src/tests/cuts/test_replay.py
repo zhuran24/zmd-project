@@ -151,6 +151,7 @@ def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
         facility_templates=s.facility_templates,
         instance_to_facility_type=s.instance_to_facility_type,
         candidate_placements=s.candidate_placements,
+        source_digest=cut.scope.source_digest,
     )
     store2 = CutStore()
     store2.add_cut(cut)
@@ -272,6 +273,8 @@ def test_replay_hold_when_oracle_version_unavailable():
         canonical_rules=state.canonical_rules,
         facility_templates=state.facility_templates,
         instance_to_facility_type=state.instance_to_facility_type,
+        candidate_placements=state.candidate_placements,
+        source_digest=cut.scope.source_digest,
     )
     decision = replay_cut(cut, state_no_oracle, store, canonical_rules=CANONICAL_RULES)
 

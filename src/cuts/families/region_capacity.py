@@ -31,7 +31,7 @@ import base64
 import json
 import time
 from functools import lru_cache
-from typing import Dict, FrozenSet, List, Literal, Tuple
+from typing import Any, Dict, FrozenSet, List, Literal, Tuple
 
 from src.cuts.lifecycle import BState, Cell, Cut, GroupId, ValidationResult
 
@@ -191,222 +191,153 @@ def _decode_region_bitset(
     return frozenset(cells)
 
 
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+def _validation_result(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _validate_unique_contributing_groups(
+    contributing_groups: List[Tuple[GroupId, int]],
+    t0: float,
+) -> ValidationResult | None:
+    seen_gids: set[GroupId] = set()
+    for gid, _ in contributing_groups:
+        if gid in seen_gids:
+            return _validation_result(
+                "unsound",
+                t0,
+                f"duplicate contributing group {gid!r} — spec §2b demand_R 是 group 集合求和, 不允许 multiset",
+            )
+        seen_gids.add(gid)
+    return None
+
+
+def _validate_region_capacity_contributors(
+    region_kind: RegionKind,
+    region_cells: FrozenSet[Cell],
+    contributing_groups: List[Tuple[GroupId, int]],
+    cert_cells_per_pose: Dict[GroupId, int],
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    from src.cuts.helpers.canonical_rules import cells_per_pose_for_group
+
+    for gid, demand_in_cert in contributing_groups:
+        if not _group_falls_in_region(gid, region_kind, state):
+            return _validation_result("unsound", t0, f"group {gid!r} placement_rule 不映射 {region_kind!r}")
+        if not _all_poses_in_region_strict(gid, region_cells, state):
+            return _validation_result(
+                "unsound",
+                t0,
+                f"group {gid!r} 不满足 P(g) ⊆ R: ∃ pose 占格 在 region 外",
+            )
+        if gid not in cert_cells_per_pose:
+            return _validation_result("schema_err", t0, f"cert.cells_per_pose missing group {gid!r}")
+        current_cpp = cells_per_pose_for_group(state, gid)
+        if current_cpp is None:
+            return _validation_result(
+                "schema_err",
+                t0,
+                f"cannot resolve cells_per_pose for {gid!r} — facility_templates / instance_to_facility_type 未 inject",
+            )
+        if cert_cells_per_pose[gid] != current_cpp:
+            return _validation_result(
+                "unsound",
+                t0,
+                f"cells_per_pose mismatch for {gid!r}: cert={cert_cells_per_pose[gid]}, current={current_cpp}",
+            )
+        expected_demand_in_cert = state.groups[gid].demand * current_cpp
+        if demand_in_cert != expected_demand_in_cert:
+            return _validation_result(
+                "unsound",
+                t0,
+                f"contributing_groups tuple demand mismatch for {gid!r}: cert={demand_in_cert}, expected={expected_demand_in_cert}",
+            )
+    return None
+
+
+def _validate_region_capacity_ghost_scope(
+    cut: Cut,
+    region_cells: FrozenSet[Cell],
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        ghost_in_region = state.ghost_cells & region_cells
+        if ghost_in_region:
+            return _validation_result(
+                "unsound",
+                t0,
+                f"scope.ghost_rect_id=GHOST_AGNOSTIC but ghost intersects region ({len(ghost_in_region)} cells)",
+            )
+    return None
+
+
+def _validate_region_capacity_gap(
+    cert_dict: Dict[str, Any],
+    recomputed_demand_R: int,
+    recomputed_cap_R: int,
+    t0: float,
+) -> ValidationResult | None:
+    if recomputed_demand_R <= recomputed_cap_R:
+        return _validation_result(
+            "unsound",
+            t0,
+            f"witness fail: demand_R={recomputed_demand_R} ≤ cap_R={recomputed_cap_R}",
+        )
+    cert_gap = cert_dict.get("gap")
+    if cert_gap is None:
+        return _validation_result("schema_err", t0, "cert missing gap field")
+    expected_gap = recomputed_demand_R - recomputed_cap_R
+    if cert_gap != expected_gap:
+        return _validation_result("unsound", t0, f"gap mismatch: cert={cert_gap}, expected={expected_gap}")
+    if cert_gap <= 0:
+        return _validation_result("unsound", t0, f"non-positive gap: {cert_gap} (cut 须 strict demand > cap)")
+    return None
+
+
 def validate_region_capacity(
     cut: Cut,
     state: BState,
-    canonical_rules: Dict,
+    canonical_rules: Dict[str, Any],
 ) -> ValidationResult:
-    """Production F1 validator. 4 region kind, independent recompute, witness check.
-
-    Replaces lifecycle.step_5_validate_region_capacity (P1.1 PoC reference) when
-    registered into FAMILY_VALIDATORS.
-
-    Validates (per spec §7):
-    1. cap_R = |R| - |blocked ∩ R| matches cert.
-    2. Each contributing_group's placement_rule maps to cert.region_kind.
-    3. cert.cells_per_pose matches current canonical_rules (防 source rotated).
-    4. demand_R = Σ group.demand × cells_per_pose matches cert.
-    5. Witness: demand_R > cap_R.
-
-    GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
-    """
+    """Production F1 validator. Independent recompute + witness check."""
     t0 = time.monotonic()
+    del canonical_rules
     if cut.geometric_payload is None:
-        return ValidationResult(
-            kind="schema_err",
-            elapsed_seconds=time.monotonic() - t0,
-            detail="cut.geometric_payload is None (F1 schema invariant violated)",
-        )
+        return _validation_result("schema_err", t0, "cut.geometric_payload is None (F1 schema invariant violated)")
     try:
-        cert_dict = json.loads(cut.geometric_payload)
+        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
         region_kind: RegionKind = cert_dict["region_kind"]
-
-        # Decode region cells from cert bitset (canonical — independent of state).
         region_cells = _decode_region_bitset(cert_dict["region_cells_bitset_b64"])
-
-        # 1. cap_R independent recompute
         recomputed_cap_R = compute_static_capacity(region_cells, state)
-        cert_cap_R = cert_dict["cap_R"]
-        if recomputed_cap_R != cert_cap_R:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"cap_R mismatch: cert={cert_cap_R}, recomputed={recomputed_cap_R}",
-            )
-
-        # 2-4. demand_R: placement_rule mapping + P(g)⊆R strict + cells_per_pose
-        # source-of-truth + recompute
-        cert_cells_per_pose = cert_dict.get("cells_per_pose", {})
-        contributing_groups: List[Tuple[GroupId, int]] = [
-            (g, d) for g, d in cert_dict["contributing_groups"]
-        ]
-
-        # 2_pre. 去重: spec §2b demand_R = ∑_{g : P(g) ⊆ R} group.demand × cpp 是
-        # group 集合上的求和, **不是 multiset**. attacker 把同 group 写两次让
-        # demand_R 翻倍 → fake over-demand cut 误剪合法 state (GPT pro v3 P0).
-        # 真数据反例: actual demand=70, cap=139 (合法), cert duplicate group →
-        # demand=140 > cap=139 → 假证.
-        seen_gids: set = set()
-        for gid, _ in contributing_groups:
-            if gid in seen_gids:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"duplicate contributing group {gid!r} — spec §2b demand_R 是 "
-                        f"group 集合求和, 不允许 multiset (GPT pro v3 P0 反例)"
-                    ),
-                )
-            seen_gids.add(gid)
-
-        # Gap 8 (Gemini round 30) 修: cells_per_pose lookup 经 helper, 不直接
-        # 查 canonical_rules[gid] (gid 是 operation_type 不是顶层 key).
-        from src.cuts.helpers.canonical_rules import cells_per_pose_for_group
-        for gid, demand_in_cert in contributing_groups:
-            # 2a. placement_rule → region mapping (skip if group is "free") — 必要 NOT 充分
-            if not _group_falls_in_region(gid, region_kind, state):
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"group {gid!r} placement_rule 不映射 {region_kind!r}",
-                )
-            # 2b. strict P(g) ⊆ R (GPT pro round 2 P0-1) — 充分条件
-            if not _all_poses_in_region_strict(gid, region_cells, state):
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"group {gid!r} 不满足 P(g) ⊆ R: ∃ pose 占格 在 region 外 "
-                        f"(spec §2b 严格充分条件 / GPT pro round 2 P0-1). "
-                        f"真数据示例: boundary_io 14/54 pose 在 left∪bottom union 外 "
-                        f"(e.g. viewer::boundary_required_output_source_ore_005 占 "
-                        f"(31,69)/(32,69)/(33,69))"
-                    ),
-                )
-            # 3. cells_per_pose source-of-truth check (via helper)
-            if gid not in cert_cells_per_pose:
-                return ValidationResult(
-                    kind="schema_err",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"cert.cells_per_pose missing group {gid!r}",
-                )
-            current_cpp = cells_per_pose_for_group(state, gid)
-            if current_cpp is None:
-                return ValidationResult(
-                    kind="schema_err",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"cannot resolve cells_per_pose for {gid!r} — "
-                        f"facility_templates / instance_to_facility_type 未 inject"
-                    ),
-                )
-            if cert_cells_per_pose[gid] != current_cpp:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"cells_per_pose mismatch for {gid!r}: "
-                        f"cert={cert_cells_per_pose[gid]}, current={current_cpp} "
-                        f"(canonical_rules pose shape rotated)"
-                    ),
-                )
-            # 3b. demand_in_cert tuple entry 真等 group.demand × current_cpp
-            # (GPT pro v3 P0: 防 cert tuple 内 fake demand_in_cert 跟其它 field 配
-            # 合伪造 over-demand)
-            expected_demand_in_cert = state.groups[gid].demand * current_cpp
-            if demand_in_cert != expected_demand_in_cert:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"contributing_groups tuple demand mismatch for {gid!r}: "
-                        f"cert={demand_in_cert}, expected={expected_demand_in_cert} "
-                        f"(= group.demand × cells_per_pose)"
-                    ),
-                )
-
-        # 4. demand_R independent recompute
+        if recomputed_cap_R != cert_dict["cap_R"]:
+            return _validation_result("unsound", t0, f"cap_R mismatch: cert={cert_dict['cap_R']}, recomputed={recomputed_cap_R}")
+        cert_cells_per_pose: Dict[GroupId, int] = {str(g): int(v) for g, v in cert_dict.get("cells_per_pose", {}).items()}
+        contributing_groups: List[Tuple[GroupId, int]] = [(str(g), int(d)) for g, d in cert_dict["contributing_groups"]]
+        for error in (
+            _validate_unique_contributing_groups(contributing_groups, t0),
+            _validate_region_capacity_contributors(region_kind, region_cells, contributing_groups, cert_cells_per_pose, state, t0),
+            _validate_region_capacity_ghost_scope(cut, region_cells, state, t0),
+        ):
+            if error is not None:
+                return error
         try:
-            recomputed_demand_R = compute_demand(
-                region_kind, contributing_groups, cert_cells_per_pose, state,
-            )
+            recomputed_demand_R = compute_demand(region_kind, contributing_groups, cert_cells_per_pose, state)
         except KeyError as e:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=str(e),
-            )
-
-        cert_demand_R = cert_dict["demand_R"]
-        if recomputed_demand_R != cert_demand_R:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"demand_R mismatch: cert={cert_demand_R}, recomputed={recomputed_demand_R}",
-            )
-
-        # 4b. GPT pro v6 P0 fix: scope.ghost_rect_id == GHOST_AGNOSTIC 合法性 check.
-        # 反例: attacker 把 ghost-dependent cut 错标 GHOST_AGNOSTIC, replay 后
-        # store 不挂 by_ghost_watcher → ghost 变化不 invalidate → 失效 cut 残留
-        # active. F1 spec §3 (01_region_capacity.md:83-89) GHOST_AGNOSTIC 仅当
-        # ghost_cells ∩ region_cells == ∅ 允许. oracle 已按此判 (oracle.py:170-177),
-        # 但 validator 不再 trust generator, 必独立 verify.
-        from src.cuts.lifecycle import GHOST_AGNOSTIC
-        if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
-            ghost_in_region = state.ghost_cells & region_cells
-            if ghost_in_region:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"scope.ghost_rect_id=GHOST_AGNOSTIC 但 ghost_cells 跟 region "
-                        f"有交集 ({len(ghost_in_region)} cells, sample={sorted(ghost_in_region)[:3]}) — "
-                        f"spec §3 仅当 ghost ∩ R == ∅ 允许 GHOST_AGNOSTIC"
-                    ),
-                )
-
-        # 5. Witness: demand > cap
-        if recomputed_demand_R <= recomputed_cap_R:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"witness fail: demand_R={recomputed_demand_R} ≤ cap_R={recomputed_cap_R}",
-            )
-
-        # 6. gap consistency (GPT pro v3 推荐顺手补): cert.gap 必 == demand - cap
-        # + 必 > 0. 防 cert tuple 内部 field 互相 inconsistent 走过.
-        cert_gap = cert_dict.get("gap")
-        if cert_gap is None:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail="cert missing gap field",
-            )
-        expected_gap = recomputed_demand_R - recomputed_cap_R
-        if cert_gap != expected_gap:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"gap mismatch: cert={cert_gap}, expected={expected_gap}",
-            )
-        if cert_gap <= 0:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"non-positive gap: {cert_gap} (cut 须 strict demand > cap)",
-            )
-
-        # LP dual / Farkas algebraic check defer Phase 1.5+ (spec §7b open question #1).
-
-        return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)
-
+            return _validation_result("schema_err", t0, str(e))
+        if recomputed_demand_R != cert_dict["demand_R"]:
+            return _validation_result("unsound", t0, f"demand_R mismatch: cert={cert_dict['demand_R']}, recomputed={recomputed_demand_R}")
+        gap_error = _validate_region_capacity_gap(cert_dict, recomputed_demand_R, recomputed_cap_R, t0)
+        if gap_error is not None:
+            return gap_error
+        return _validation_result("ok", t0)
     except Exception as e:
-        return ValidationResult(
-            kind="schema_err",
-            elapsed_seconds=time.monotonic() - t0,
-            detail=f"{type(e).__name__}: {e}",
-        )
-
+        return _validation_result("schema_err", t0, f"{type(e).__name__}: {e}")
 
 def evaluate_geometric_region_capacity(cut: Cut, state: BState) -> bool:
     """Propagation hot path — recompute cap_R + verify still violating.
@@ -444,7 +375,7 @@ def evaluate_geometric_region_capacity(cut: Cut, state: BState) -> bool:
         cert_dict = json.loads(cut.geometric_payload)
         region_cells = _decode_region_bitset(cert_dict["region_cells_bitset_b64"])
         current_cap = compute_static_capacity(region_cells, state)
-        return cert_dict["demand_R"] > current_cap
+        return bool(cert_dict["demand_R"] > current_cap)
     except Exception:
         # Fail-safe: cert 解析错就不报 violate, 等 replay quarantine
         return False

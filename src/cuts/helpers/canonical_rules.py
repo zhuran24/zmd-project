@@ -17,7 +17,7 @@ Refs:
 """
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Dict, Optional, cast
 
 from src.cuts.lifecycle import BState, GroupId
 
@@ -33,7 +33,7 @@ def facility_type_for_group(state: BState, gid: GroupId) -> Optional[str]:
     return state.instance_to_facility_type.get(gid)
 
 
-def facility_template_for_group(state: BState, gid: GroupId) -> Optional[dict]:
+def facility_template_for_group(state: BState, gid: GroupId) -> Optional[Dict[str, Any]]:
     """group_id → canonical_rules.facility_templates[facility_type] (full template entry)."""
     ft = facility_type_for_group(state, gid)
     if ft is None or state.facility_templates is None:
@@ -74,7 +74,7 @@ def placement_rule_for_group(state: BState, gid: GroupId) -> str:
     template = facility_template_for_group(state, gid)
     if template is None:
         return "unknown"
-    return template.get("placement_rule", "free")
+    return cast(str, template.get("placement_rule", "free"))
 
 
 def port_rule_for_group(state: BState, gid: GroupId) -> str:
@@ -88,4 +88,4 @@ def port_rule_for_group(state: BState, gid: GroupId) -> str:
     template = facility_template_for_group(state, gid)
     if template is None:
         return "unknown"
-    return template.get("port_rule", "none")
+    return cast(str, template.get("port_rule", "none"))

@@ -22,7 +22,7 @@ from __future__ import annotations
 import base64
 import json
 import time
-from typing import Dict, FrozenSet, List, Tuple
+from typing import Any, Dict, FrozenSet, Literal, Tuple
 
 from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
 
@@ -58,7 +58,7 @@ def _cross_partition_edges(
 ) -> FrozenSet[PartitionEdge]:
     """Return undirected edges (a, b) where a ∈ A, b ∈ B, both ∈ free_cells, and
     a/b Manhattan-adjacent. Canonicalize order (smaller first) to dedupe."""
-    edges = set()
+    edges: set[PartitionEdge] = set()
     for cell in side_a & free_cells:
         x, y = cell
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -91,238 +91,182 @@ def _has_patch_escape(
     return False
 
 
-def _canonical_edges(edges: FrozenSet[PartitionEdge]) -> List:
-    """Canonical sorted edge list for cert byte-equal compare."""
-    return sorted([list(e) for e in edges])
+def _canonical_edges_from_cert(raw_edges: object) -> FrozenSet[PartitionEdge]:
+    parsed: set[PartitionEdge] = set()
+    if not isinstance(raw_edges, list):
+        raise ValueError("cut_edges must be a list")
+    for raw in raw_edges:
+        if not isinstance(raw, list) or len(raw) != 2:
+            raise ValueError(f"bad cut edge entry: {raw!r}")
+        c1_raw, c2_raw = raw
+        c1 = (int(c1_raw[0]), int(c1_raw[1]))
+        c2 = (int(c2_raw[0]), int(c2_raw[1]))
+        edge = (c1, c2) if c1 <= c2 else (c2, c1)
+        parsed.add(edge)
+    return frozenset(parsed)
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _validate_cutset_scope(cut: Cut, t0: float) -> ValidationResult | None:
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr("unsound", t0, "F2 cutset 不允 GHOST_AGNOSTIC scope")
+    return None
+
+
+def _validate_partition_geometry(
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+    t0: float,
+) -> ValidationResult | None:
+    if side_a & side_b:
+        return _vr("unsound", t0, f"partition not disjoint (|A ∩ B|={len(side_a & side_b)})")
+    patch = side_a | side_b
+    non_free = patch - free_cells
+    if non_free:
+        return _vr("unsound", t0, f"partition contains {len(non_free)} non-free cell(s): sample={sorted(non_free)[:3]}")
+    if _has_patch_escape(patch, free_cells):
+        return _vr("unsound", t0, "partition not enclosed: patch has adjacent outside free cell")
+    return None
+
+
+def _validate_cut_edges(
+    cert_dict: Dict[str, Any],
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+    t0: float,
+) -> tuple[ValidationResult | None, int]:
+    current_cut_edges = _cross_partition_edges(side_a, side_b, free_cells)
+    if "cut_edges" not in cert_dict:
+        return _vr("schema_err", t0, "cert missing cut_edges field"), 0
+    cert_cut_size = int(cert_dict["cut_size"])
+    if len(current_cut_edges) != cert_cut_size:
+        return _vr("unsound", t0, f"cut_size mismatch: cert={cert_cut_size}, recomputed={len(current_cut_edges)}"), cert_cut_size
+    cert_edges = _canonical_edges_from_cert(cert_dict.get("cut_edges", []))
+    if cert_edges != current_cut_edges:
+        return _vr("unsound", t0, "cut_edges set mismatch against recomputed cross-partition edges"), cert_cut_size
+    return None, cert_cut_size
+
+
+def _validate_cutset_registries(state: BState, t0: float) -> ValidationResult | None:
+    if state.commodity_demands is None:
+        return _vr("schema_err", t0, "F2 cutset validator 需 state.commodity_demands registry")
+    if state.commodity_routes is None:
+        return _vr("schema_err", t0, "F2 cutset validator 需 state.commodity_routes registry")
+    return None
+
+
+def _validate_contributing_commodities(
+    contributing: object,
+    state: BState,
+    t0: float,
+) -> tuple[ValidationResult | None, set[str]]:
+    if not isinstance(contributing, list) or not contributing:
+        return _vr("schema_err", t0, "F2 cert missing contributing_commodities"), set()
+    if state.commodity_demands is None or state.commodity_routes is None:
+        return _vr("schema_err", t0, "F2 commodity registries missing after registry gate"), set()
+    commodity_demands = state.commodity_demands
+    commodity_routes = state.commodity_routes
+    seen: set[str] = set()
+    for raw_c in contributing:
+        c = str(raw_c)
+        if c in seen:
+            return _vr("unsound", t0, f"duplicate contributing commodity {c!r} (spec §2 集合语义)"), seen
+        seen.add(c)
+        if c not in commodity_demands:
+            return _vr("unsound", t0, f"contributing commodity {c!r} not in commodity_demands registry"), seen
+        if c not in commodity_routes:
+            return _vr("unsound", t0, f"contributing commodity {c!r} not in commodity_routes registry"), seen
+    return None, seen
+
+
+def _validate_cross_partition_routes(
+    commodities: set[str],
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if state.commodity_routes is None:
+        return _vr("schema_err", t0, "F2 commodity_routes missing after registry gate")
+    commodity_routes = state.commodity_routes
+    for c in commodities:
+        route = commodity_routes[c]
+        r_src = tuple(route.get("src", ()))
+        r_sink = tuple(route.get("sink", ()))
+        crosses = (r_src in side_a and r_sink in side_b) or (r_src in side_b and r_sink in side_a)
+        if not crosses:
+            return _vr("unsound", t0, f"commodity {c!r} route 不跨 partition: src={r_src} sink={r_sink}")
+    return None
+
+
+def _validate_commodity_demand(
+    cert_dict: Dict[str, Any],
+    commodities: set[str],
+    cert_cut_size: int,
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if state.commodity_demands is None:
+        return _vr("schema_err", t0, "F2 commodity_demands missing after registry gate")
+    commodity_demands = state.commodity_demands
+    registry_demand = sum(commodity_demands[c] for c in commodities)
+    commodity_demand = int(cert_dict["commodity_demand"])
+    if registry_demand != commodity_demand:
+        return _vr("unsound", t0, f"commodity_demand mismatch: cert={commodity_demand}, registry sum={registry_demand}")
+    if commodity_demand <= cert_cut_size:
+        return _vr("unsound", t0, f"witness fail: demand={commodity_demand} ≤ cut_size={cert_cut_size}")
+    return None
 
 
 def validate_cutset(
     cut: Cut,
     state: BState,
-    canonical_rules: Dict,
+    canonical_rules: Dict[str, Any],
 ) -> ValidationResult:
-    """Production F2 validator.
-
-    Checks (GPT pro round 2 P0-3 加强):
-    1. cert.side_a ∩ side_b == ∅ (partition disjoint)
-    2. (A ∪ B) ⊆ current free_cells — partition cells 必 free (attacker 不能塞
-       ghost/cell_owner cell 进 partition 制造小 cut_size).
-    3. patch enclosure: A ∪ B 没相邻 patch 外 free cell — 否则流可走 patch
-       外 (cut 不 sound, spec §1a partition (A,B) of V 必含全 graph node).
-    4. cur_cut_size = |cross_partition_edges| matches cert.cut_size.
-    5. cert.cut_edges (canonical sorted edge list) ⇔ recomputed edges set
-       byte-equal (cert 完整性: 不准只 size 对而 edges 不对).
-    6. commodity_demand > cut_size (witness Menger violation).
-
-    GPT pro round 2 fix: schema check 走 explicit if (`python -O` 防线).
-    """
+    """Production F2 validator."""
     t0 = time.monotonic()
+    del canonical_rules
     if cut.geometric_payload is None:
-        return ValidationResult(
-            kind="schema_err",
-            elapsed_seconds=time.monotonic() - t0,
-            detail="cut.geometric_payload is None (F2 schema invariant violated)",
-        )
-    # GPT pro v6 P0 fix: F2 spec §3 cut.scope.ghost_rect_id 必绑当前 ghost
-    # (02_cutset.md:87-89). attacker 错标 GHOST_AGNOSTIC → store 不挂
-    # by_ghost_watcher → ghost 变化不 invalidate → 失效 cut 残留 active.
-    # Phase 1.1 fail-closed reject GHOST_AGNOSTIC; Phase 1.5+ 如果有 cut 真不
-    # 依赖 ghost (理论可能 — 全 patch 内 cell_owner 占, partition 不含 free)
-    # 时再 unlock.
-    from src.cuts.lifecycle import GHOST_AGNOSTIC
-    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
-        return ValidationResult(
-            kind="unsound",
-            elapsed_seconds=time.monotonic() - t0,
-            detail=(
-                "F2 cutset 不允 GHOST_AGNOSTIC scope (spec §3 必绑当前 ghost — "
-                "Phase 1.1 fail-closed)"
-            ),
-        )
+        return _vr("schema_err", t0, "cut.geometric_payload is None (F2 schema invariant violated)")
+    scope_error = _validate_cutset_scope(cut, t0)
+    if scope_error is not None:
+        return scope_error
     try:
-        cert_dict = json.loads(cut.geometric_payload)
+        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
         side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
         side_b = _decode_bitset(cert_dict["side_b_bitset_b64"])
-
-        # 1. Partition disjoint
-        if side_a & side_b:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"partition not disjoint (|A ∩ B|={len(side_a & side_b)})",
-            )
-
         free_cells = _free_cells(state)
-        patch = side_a | side_b
-
-        # 2. Partition cells 必 ⊆ free_cells (GPT pro round 2 P0-3)
-        non_free = patch - free_cells
-        if non_free:
-            sample = sorted(non_free)[:3]
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"partition contains {len(non_free)} non-free cell(s) "
-                    f"(ghost/cell_owner): sample={sample}"
-                ),
-            )
-
-        # 3. Patch enclosure — A∪B 没相邻 patch 外 free cell (GPT pro round 2 P0-3)
-        if _has_patch_escape(patch, free_cells):
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    "partition not enclosed: ∃ patch cell 相邻 patch 外 free cell — "
-                    "流可绕过 partition, spec §1a partition (A,B) of V 不成立"
-                ),
-            )
-
-        # 4. Cross-partition edge count matches cert
-        recomputed_edges = _cross_partition_edges(side_a, side_b, free_cells)
-        recomputed_cut_size = len(recomputed_edges)
-        cert_cut_size = cert_dict["cut_size"]
-        if recomputed_cut_size != cert_cut_size:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"cut_size mismatch: cert={cert_cut_size}, recomputed={recomputed_cut_size}",
-            )
-
-        # 5. cert.cut_edges canonical set 等 recomputed (cert 完整性, GPT pro
-        # round 2: 不允 attacker 改 cut_size 跟 edges set 不一致). Spec §3 cert
-        # schema 含 cut_edges field, 必填.
-        if "cut_edges" not in cert_dict:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail="cert missing cut_edges field (F2 spec §3 schema 必填)",
-            )
-        cert_canonical = sorted(
-            [sorted([list(e[0]), list(e[1])]) for e in cert_dict["cut_edges"]]
-        )
-        recomputed_canonical = sorted(
-            [sorted([list(e[0]), list(e[1])]) for e in recomputed_edges]
-        )
-        if cert_canonical != recomputed_canonical:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"cut_edges set mismatch: cert={len(cert_canonical)} edges, "
-                    f"recomputed={len(recomputed_canonical)} edges (or different set)"
-                ),
-            )
-
-        # 6. commodity_demand 必有 source-of-truth registry (GPT pro v4 P0 fix).
-        # 反例: external cert 写 commodity_demand=999, validator 没 registry 重算
-        # → 假 over-demand cut ATTACH. fail-closed: state.commodity_demands 没
-        # inject → schema_err.
-        if state.commodity_demands is None:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    "F2 cutset validator 需 state.commodity_demands registry "
-                    "(GPT pro v4 P0 — Phase 1.1 default None fail-closed)"
-                ),
-            )
-        # GPT pro v5 P0-1 fix: 还需 state.commodity_routes 验 cross-partition.
-        if state.commodity_routes is None:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    "F2 cutset validator 需 state.commodity_routes registry "
-                    "(GPT pro v5 P0-1 — 验 route 真跨 partition)"
-                ),
-            )
-        # 6a. cert.contributing_commodities 必跟 state.commodity_demands 一致
-        contributing = cert_dict.get("contributing_commodities", [])
-        if not contributing:
-            return ValidationResult(
-                kind="schema_err",
-                elapsed_seconds=time.monotonic() - t0,
-                detail="F2 cert missing contributing_commodities",
-            )
-        # 6b. GPT pro v5 P0-1 fix: contributing 不允 duplicate. spec §2 commodity
-        # 集合语义不是 multiset, 同 id 重复算 demand 是数学 unsound.
-        # 反例: contributing=["c","c"], demand_R 被翻倍.
-        seen_commodities: set = set()
-        for c in contributing:
-            if c in seen_commodities:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"duplicate contributing commodity {c!r} (spec §2 集合语义)",
-                )
-            seen_commodities.add(c)
-        # 6c. 任一 commodity 必真在 registry (防 fake commodity_id)
-        for c in contributing:
-            if c not in state.commodity_demands:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"contributing commodity {c!r} not in commodity_demands registry",
-                )
-            if c not in state.commodity_routes:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"contributing commodity {c!r} not in commodity_routes registry",
-                )
-        # 6d. GPT pro v5 P0-1 fix: 每个 contributing commodity 的 route 必跨 partition
-        # (src 在 A sink 在 B 或反). 反例: route src=sink=(0,0) (都在 A), validator
-        # 之前接受 ok → 实际 cross-partition demand=0, cert demand=2 假证. spec §1
-        # demand 是跨 cut 路径需求, 同 side route 不该贡献.
-        for c in contributing:
-            route = state.commodity_routes[c]
-            r_src = tuple(route.get("src", ()))
-            r_sink = tuple(route.get("sink", ()))
-            in_a_src, in_b_src = r_src in side_a, r_src in side_b
-            in_a_sink, in_b_sink = r_sink in side_a, r_sink in side_b
-            crosses = (in_a_src and in_b_sink) or (in_b_src and in_a_sink)
-            if not crosses:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=(
-                        f"commodity {c!r} route 不跨 partition: "
-                        f"src={r_src} sink={r_sink}, 不满足 spec §1 cross-cut 需求"
-                    ),
-                )
-        # 6e. demand sum from registry == cert.commodity_demand (去重后)
-        registry_demand = sum(state.commodity_demands[c] for c in seen_commodities)
-        commodity_demand = cert_dict["commodity_demand"]
-        if registry_demand != commodity_demand:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=(
-                    f"commodity_demand mismatch: cert={commodity_demand}, "
-                    f"registry sum={registry_demand} (commodities={sorted(seen_commodities)})"
-                ),
-            )
-        # 7. Witness: demand > cut_size
-        if commodity_demand <= cert_cut_size:
-            return ValidationResult(
-                kind="unsound",
-                elapsed_seconds=time.monotonic() - t0,
-                detail=f"witness fail: demand={commodity_demand} ≤ cut_size={cert_cut_size}",
-            )
-
-        # max_flow_LP algebraic check defer Phase 1.5+ (spec §7 verify_max_flow_witness)
-
-        return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - t0)
-
+        for error in (
+            _validate_partition_geometry(side_a, side_b, free_cells, t0),
+            _validate_cutset_registries(state, t0),
+        ):
+            if error is not None:
+                return error
+        edge_error, cert_cut_size = _validate_cut_edges(cert_dict, side_a, side_b, free_cells, t0)
+        if edge_error is not None:
+            return edge_error
+        contributing_error, commodities = _validate_contributing_commodities(cert_dict.get("contributing_commodities"), state, t0)
+        if contributing_error is not None:
+            return contributing_error
+        route_error = _validate_cross_partition_routes(commodities, side_a, side_b, state, t0)
+        if route_error is not None:
+            return route_error
+        demand_error = _validate_commodity_demand(cert_dict, commodities, cert_cut_size, state, t0)
+        if demand_error is not None:
+            return demand_error
+        return _vr("ok", t0)
     except Exception as e:
-        return ValidationResult(
-            kind="schema_err",
-            elapsed_seconds=time.monotonic() - t0,
-            detail=f"{type(e).__name__}: {e}",
-        )
-
+        return _vr("schema_err", t0, f"{type(e).__name__}: {e}")
 
 def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
     """Hot path: re-check Menger violation on current free_cells.
@@ -348,4 +292,4 @@ def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
     if _has_patch_escape(patch, free_cells):
         return False
     current_edges = _cross_partition_edges(side_a, side_b, free_cells)
-    return cert_dict["commodity_demand"] > len(current_edges)
+    return bool(cert_dict["commodity_demand"] > len(current_edges))

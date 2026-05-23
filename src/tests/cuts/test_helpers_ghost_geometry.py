@@ -142,3 +142,9 @@ def test_cell_aabb_from_rect_conversion():
     rect = (10, 20, 5, 8)
     aabb = cell_aabb_from_rect(rect)
     assert aabb == (10.0, 20.0, 15.0, 28.0)
+
+
+def test_cell_aabb_from_rect_locks_non_square_span_order():
+    """Lock ghost_rect tuple as (x, y, x_span, y_span); F8 must not swap spans."""
+    rect = (10, 20, 3, 7)
+    assert cell_aabb_from_rect(rect) == (10.0, 20.0, 13.0, 27.0)

@@ -23,7 +23,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import time
-from typing import Dict, FrozenSet, List, Tuple
+from typing import Any, Dict, FrozenSet, List, Tuple
 
 from src.cuts.families.region_capacity import (
     _PLACEMENT_RULE_REGIONS,
@@ -43,6 +43,7 @@ from src.cuts.lifecycle import (
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
+    compute_source_digest,
 )
 
 
@@ -180,7 +181,7 @@ def _build_cut(
         ghost_rect_id=ghost_rect_id,
         blocked_cells_hash=compute_blocked_cells_hash(state),
         exterior_blocks_hash=compute_exterior_blocks_hash(state),
-        source_digest="poc_source_digest",  # P1.21 加真 source_digest
+        source_digest=compute_source_digest(state),
         artifact_hashes=state.artifact_hashes,
         oracle_abstraction_version=_ORACLE_NAME,
         active_assumptions=tuple(assumptions),
@@ -209,7 +210,7 @@ def _build_cut(
 
 def generate_region_capacity_cuts(
     state: BState,
-    canonical_rules: Dict,  # 保留参数兼容 (oracle sig stable); 内部不用, helper 走 state
+    canonical_rules: Dict[str, Any],  # 保留参数兼容 (oracle sig stable); 内部不用, helper 走 state
     *,
     iter_index: int = -1,
     grid_size: int = 70,
@@ -225,13 +226,14 @@ def generate_region_capacity_cuts(
     Phase 1.1 P1.5: emits left_or_bottom_union cuts only. interior_rect +
     ghost_complement enumeration deferred to Phase 1.5+ (LP dual / heuristic).
     """
+    del canonical_rules
     cuts: List[Cut] = []
 
     for region_kind in ("left_or_bottom_union",):
-        region_cells = _baseline_cells(region_kind, grid_size)  # type: ignore[arg-type]
+        region_cells = _baseline_cells(region_kind, grid_size)
         cap_R = compute_static_capacity(region_cells, state)
         contributing = _enumerate_contributing_groups(
-            region_kind, region_cells, state,  # type: ignore[arg-type]
+            region_kind, region_cells, state,
         )
         if not contributing:
             continue
@@ -243,7 +245,7 @@ def generate_region_capacity_cuts(
 
         cuts.append(
             _build_cut(
-                region_kind,  # type: ignore[arg-type]
+                region_kind,
                 region_cells,
                 cap_R,
                 demand_R,

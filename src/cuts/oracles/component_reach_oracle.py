@@ -41,4 +41,5 @@ def generate_component_reach_cuts(
 
     Returns empty list; real implementation Phase 1.5+ wraps d2_separator.
     """
+    del state, master_solution, iter_index
     return []

@@ -44,7 +44,7 @@ Refs:
 """
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
+from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
 
 from src.cuts.helpers.canonical_rules import facility_type_for_group
 from src.cuts.lifecycle import BState, GroupId, PoseId
@@ -67,7 +67,7 @@ def find_pose(
     state: BState,
     gid: GroupId,
     pose_id: PoseId,
-) -> Optional[dict]:
+) -> Optional[Dict[str, Any]]:
     """Locate pose dict from candidate_placements.
 
     Gap 14 修 (round 31): O(1) cache (dict[pose_id, pose]) 替 linear scan.
@@ -85,13 +85,23 @@ def find_pose(
     if ft is None:
         return None
     # Lazy build cache (first call cost O(N), subsequent O(1))
-    cache = cp.get(_POSE_CACHE_KEY)
-    if cache is None:
+    raw_cache = cp.get(_POSE_CACHE_KEY)
+    if isinstance(raw_cache, dict):
+        cache = cast(Dict[Tuple[str, str], Dict[str, Any]], raw_cache)
+    else:
         cache = {}
-        for pool_ft, pool in cp.get("facility_pools", {}).items():
-            for pose in pool:
+        pools = cp.get("facility_pools", {})
+        if not isinstance(pools, dict):
+            return None
+        for pool_ft, pool in pools.items():
+            if not isinstance(pool_ft, str) or not isinstance(pool, list):
+                continue
+            for pose_raw in pool:
+                if not isinstance(pose_raw, dict):
+                    continue
+                pose = cast(Dict[str, Any], pose_raw)
                 pid = pose.get("pose_id")
-                if pid:
+                if isinstance(pid, str):
                     cache[(pool_ft, pid)] = pose
         cp[_POSE_CACHE_KEY] = cache
     return cache.get((ft, pose_id))
@@ -101,7 +111,7 @@ def pose_ports(
     state: BState,
     gid: GroupId,
     pose_id: PoseId,
-) -> Optional[List[dict]]:
+) -> Optional[List[Dict[str, Any]]]:
     """Returns concat list of input_port_cells + output_port_cells for pose.
 
     Each entry: {"x": int, "y": int, "dir": str, "commodity": str}.
@@ -113,7 +123,9 @@ def pose_ports(
         return None
     inputs = pose.get("input_port_cells", [])
     outputs = pose.get("output_port_cells", [])
-    return list(inputs) + list(outputs)
+    if not isinstance(inputs, list) or not isinstance(outputs, list):
+        return []
+    return [cast(Dict[str, Any], p) for p in inputs + outputs if isinstance(p, dict)]
 
 
 def direction_offset(direction: str) -> Tuple[int, int]:
@@ -126,7 +138,7 @@ def direction_offset(direction: str) -> Tuple[int, int]:
 def all_poses_in_region(
     state: BState,
     gid: GroupId,
-    region_cells: frozenset,
+    region_cells: FrozenSet[Tuple[int, int]],
 ) -> Optional[bool]:
     """Verify P(g) ⊆ R — group's全 pose 的 occupied_cells 都 ⊆ R (GPT pro round 2 P0-1).
 
@@ -155,8 +167,10 @@ def all_poses_in_region(
         pose = find_pose(state, gid, pose_id)
         if pose is None:
             return None  # data 不全
-        occupied = pose.get("occupied_cells", [])
-        for cell in occupied:
+        occupied_cells = pose.get("occupied_cells", [])
+        if not isinstance(occupied_cells, list):
+            return None
+        for cell in occupied_cells:
             if tuple(cell) not in region_cells:
                 return False  # 反例: pose 占 R 外 cell
     return True
