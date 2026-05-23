@@ -209,8 +209,17 @@ def validate_cutset(
                 elapsed_seconds=time.monotonic() - t0,
                 detail=(
                     "F2 cutset validator 需 state.commodity_demands registry "
-                    "(GPT pro v4 P0 — Phase 1.1 default None fail-closed, "
-                    "Phase 1.5+ production 真 inject 后 unlock)"
+                    "(GPT pro v4 P0 — Phase 1.1 default None fail-closed)"
+                ),
+            )
+        # GPT pro v5 P0-1 fix: 还需 state.commodity_routes 验 cross-partition.
+        if state.commodity_routes is None:
+            return ValidationResult(
+                kind="schema_err",
+                elapsed_seconds=time.monotonic() - t0,
+                detail=(
+                    "F2 cutset validator 需 state.commodity_routes registry "
+                    "(GPT pro v5 P0-1 — 验 route 真跨 partition)"
                 ),
             )
         # 6a. cert.contributing_commodities 必跟 state.commodity_demands 一致
@@ -221,10 +230,54 @@ def validate_cutset(
                 elapsed_seconds=time.monotonic() - t0,
                 detail="F2 cert missing contributing_commodities",
             )
-        # 6b. demand sum from registry == cert.commodity_demand
-        registry_demand = sum(
-            state.commodity_demands.get(c, 0) for c in contributing
-        )
+        # 6b. GPT pro v5 P0-1 fix: contributing 不允 duplicate. spec §2 commodity
+        # 集合语义不是 multiset, 同 id 重复算 demand 是数学 unsound.
+        # 反例: contributing=["c","c"], demand_R 被翻倍.
+        seen_commodities: set = set()
+        for c in contributing:
+            if c in seen_commodities:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=f"duplicate contributing commodity {c!r} (spec §2 集合语义)",
+                )
+            seen_commodities.add(c)
+        # 6c. 任一 commodity 必真在 registry (防 fake commodity_id)
+        for c in contributing:
+            if c not in state.commodity_demands:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=f"contributing commodity {c!r} not in commodity_demands registry",
+                )
+            if c not in state.commodity_routes:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=f"contributing commodity {c!r} not in commodity_routes registry",
+                )
+        # 6d. GPT pro v5 P0-1 fix: 每个 contributing commodity 的 route 必跨 partition
+        # (src 在 A sink 在 B 或反). 反例: route src=sink=(0,0) (都在 A), validator
+        # 之前接受 ok → 实际 cross-partition demand=0, cert demand=2 假证. spec §1
+        # demand 是跨 cut 路径需求, 同 side route 不该贡献.
+        for c in contributing:
+            route = state.commodity_routes[c]
+            r_src = tuple(route.get("src", ()))
+            r_sink = tuple(route.get("sink", ()))
+            in_a_src, in_b_src = r_src in side_a, r_src in side_b
+            in_a_sink, in_b_sink = r_sink in side_a, r_sink in side_b
+            crosses = (in_a_src and in_b_sink) or (in_b_src and in_a_sink)
+            if not crosses:
+                return ValidationResult(
+                    kind="unsound",
+                    elapsed_seconds=time.monotonic() - t0,
+                    detail=(
+                        f"commodity {c!r} route 不跨 partition: "
+                        f"src={r_src} sink={r_sink}, 不满足 spec §1 cross-cut 需求"
+                    ),
+                )
+        # 6e. demand sum from registry == cert.commodity_demand (去重后)
+        registry_demand = sum(state.commodity_demands[c] for c in seen_commodities)
         commodity_demand = cert_dict["commodity_demand"]
         if registry_demand != commodity_demand:
             return ValidationResult(
@@ -232,17 +285,9 @@ def validate_cutset(
                 elapsed_seconds=time.monotonic() - t0,
                 detail=(
                     f"commodity_demand mismatch: cert={commodity_demand}, "
-                    f"registry sum={registry_demand} (commodities={contributing})"
+                    f"registry sum={registry_demand} (commodities={sorted(seen_commodities)})"
                 ),
             )
-        # 6c. 任一 commodity 必真在 registry (防 fake commodity_id)
-        for c in contributing:
-            if c not in state.commodity_demands:
-                return ValidationResult(
-                    kind="unsound",
-                    elapsed_seconds=time.monotonic() - t0,
-                    detail=f"contributing commodity {c!r} not in registry",
-                )
         # 7. Witness: demand > cut_size
         if commodity_demand <= cert_cut_size:
             return ValidationResult(

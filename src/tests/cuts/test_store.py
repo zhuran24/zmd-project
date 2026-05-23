@@ -82,7 +82,7 @@ def test_add_cut_registers_all_watcher_dims():
     store = CutStore()
     cut = _make_cut("c1", family="region_capacity", ghost_id="ghost_v1")
 
-    store.add_cut(
+    store.add_cut(initial_state="active", cut=
         cut,
         cell_keys=[(0, 0), (0, 1)],
         group_keys=["g1"],
@@ -105,7 +105,7 @@ def test_add_cut_ghost_agnostic_skips_by_ghost_watcher():
     """v3.2.2 §7: GHOST_AGNOSTIC cut (F1) 不入 by_ghost_watcher."""
     store = CutStore()
     cut = _make_cut("c1", family="region_capacity", ghost_id=GHOST_AGNOSTIC)
-    store.add_cut(cut, cell_keys=[(0, 0)])
+    store.add_cut(initial_state="active", cut=cut, cell_keys=[(0, 0)])
     assert (0, 0) in store.by_cell_watcher
     assert GHOST_AGNOSTIC not in store.by_ghost_watcher
     assert not store.cuts_affected_by_ghost(GHOST_AGNOSTIC)
@@ -114,9 +114,9 @@ def test_add_cut_ghost_agnostic_skips_by_ghost_watcher():
 def test_add_cut_duplicate_id_raises():
     store = CutStore()
     cut = _make_cut("dup")
-    store.add_cut(cut)
+    store.add_cut(initial_state="active", cut=cut)
     with pytest.raises(ValueError, match="已注册"):
-        store.add_cut(cut)
+        store.add_cut(initial_state="active", cut=cut)
 
 
 # ============================================================================
@@ -126,7 +126,7 @@ def test_add_cut_duplicate_id_raises():
 def test_quarantine_removes_from_watchers():
     store = CutStore()
     cut = _make_cut("c1", ghost_id="ghost_v1")
-    store.add_cut(cut, cell_keys=[(0, 0)], group_keys=["g1"])
+    store.add_cut(initial_state="active", cut=cut, cell_keys=[(0, 0)], group_keys=["g1"])
 
     assert store.is_active("c1")
 
@@ -147,7 +147,7 @@ def test_hold_keeps_watchers():
     """hold 不从 watcher 移除 — 等 ghost change 再次 trigger replay."""
     store = CutStore()
     cut = _make_cut("c1", ghost_id="ghost_v1")
-    store.add_cut(cut, cell_keys=[(0, 0)])
+    store.add_cut(initial_state="active", cut=cut, cell_keys=[(0, 0)])
 
     store.hold_cut("c1")
     assert "c1" in store.held
@@ -159,7 +159,7 @@ def test_hold_keeps_watchers():
 def test_hold_then_reactivate():
     store = CutStore()
     cut = _make_cut("c1")
-    store.add_cut(cut)
+    store.add_cut(initial_state="active", cut=cut)
     store.hold_cut("c1")
     assert not store.is_active("c1")
     store.reactivate_cut("c1")
@@ -170,7 +170,7 @@ def test_quarantine_then_hold_raises():
     """quarantine 是 terminal state — 不能再 hold."""
     store = CutStore()
     cut = _make_cut("c1")
-    store.add_cut(cut)
+    store.add_cut(initial_state="active", cut=cut)
     store.quarantine_cut("c1", QuarantineReason(reason_code="x"))
     with pytest.raises(ValueError, match="quarantined"):
         store.hold_cut("c1")
@@ -179,7 +179,7 @@ def test_quarantine_then_hold_raises():
 def test_quarantine_clears_held():
     store = CutStore()
     cut = _make_cut("c1")
-    store.add_cut(cut)
+    store.add_cut(initial_state="active", cut=cut)
     store.hold_cut("c1")
     store.quarantine_cut("c1", QuarantineReason(reason_code="x"))
     assert "c1" not in store.held
@@ -194,8 +194,8 @@ def test_on_ghost_rect_changed_holds_old_ghost_cuts():
     store = CutStore()
     cut_old = _make_cut("c_old", ghost_id="ghost_A")
     cut_new = _make_cut("c_new", ghost_id="ghost_B")
-    store.add_cut(cut_old)
-    store.add_cut(cut_new)
+    store.add_cut(initial_state="active", cut=cut_old)
+    store.add_cut(initial_state="active", cut=cut_new)
 
     def stub_replay(cut: Cut, state: BState) -> AttachDecision:
         return "ATTACH"
@@ -211,7 +211,7 @@ def test_on_ghost_rect_changed_new_ghost_quarantine_branch():
     """新 ghost cut replay 返 QUARANTINE → quarantine."""
     store = CutStore()
     cut_new = _make_cut("c_new", ghost_id="ghost_B")
-    store.add_cut(cut_new)
+    store.add_cut(initial_state="active", cut=cut_new)
 
     def stub_replay_quarantine(cut: Cut, state: BState) -> AttachDecision:
         return "QUARANTINE"
@@ -227,7 +227,7 @@ def test_on_ghost_rect_changed_new_ghost_hold_branch():
     """新 ghost cut replay 返 HOLD → 保 hold."""
     store = CutStore()
     cut_new = _make_cut("c_new", ghost_id="ghost_B")
-    store.add_cut(cut_new)
+    store.add_cut(initial_state="active", cut=cut_new)
 
     def stub_replay_hold(cut: Cut, state: BState) -> AttachDecision:
         return "HOLD"
@@ -243,7 +243,7 @@ def test_on_ghost_rect_changed_attach_branch_reactivates():
     """已 held 的 cut + new ghost replay ATTACH → 回 active."""
     store = CutStore()
     cut = _make_cut("c1", ghost_id="ghost_B")
-    store.add_cut(cut)
+    store.add_cut(initial_state="active", cut=cut)
     store.hold_cut("c1")
 
     def stub_replay(cut: Cut, state: BState) -> AttachDecision:
@@ -260,7 +260,7 @@ def test_on_ghost_rect_changed_skips_already_quarantined():
     """已 quarantined cut 不重 replay (terminal state)."""
     store = CutStore()
     cut = _make_cut("c1", ghost_id="ghost_B")
-    store.add_cut(cut)
+    store.add_cut(initial_state="active", cut=cut)
     store.quarantine_cut("c1", QuarantineReason(reason_code="prior"))
 
     called = []
@@ -284,8 +284,8 @@ def test_stats_snapshot():
     cut_a = _make_cut("ca", family="region_capacity", ghost_id=GHOST_AGNOSTIC)
     cut_b = _make_cut("cb", family="port_exposure", ghost_id="ghost_v1",
                       use_literals=True)
-    store.add_cut(cut_a, cell_keys=[(0, 0)], region_keys=["r1"])
-    store.add_cut(
+    store.add_cut(initial_state="active", cut=cut_a, cell_keys=[(0, 0)], region_keys=["r1"])
+    store.add_cut(initial_state="active", cut=
         cut_b, cell_keys=[(1, 1)], group_keys=["g1"], pose_keys=[("g1", 42)]
     )
     store.hold_cut("ca")

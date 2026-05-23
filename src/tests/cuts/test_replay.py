@@ -80,6 +80,29 @@ def _make_state(extra_block: bool = False) -> BState:
     )
 
 
+def test_add_cut_default_held_no_silent_attach():
+    """GPT pro v5 P0-2 反例: 原 add_cut 直接 active 注册让 unsound cut 在 replay
+    前能 is_active=True (silent attach window). Step N 修后 default held —
+    add_cut 后必经 replay/reactivate gate 才 active.
+    """
+    s = _make_state()
+    cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
+    assert cuts
+    cut = cuts[0]
+    from src.cuts.store import CutStore
+    store = CutStore()
+    store.add_cut(cut)
+    # 关键 assertion: add_cut 后 default held, 不 active
+    assert not store.is_active(cut.cut_id), (
+        "add_cut default 必 held — Step N P0-2 fix 防 silent attach"
+    )
+    assert cut.cut_id in store.held
+    # legacy bypass: initial_state="active" 仍允 (test fixture)
+    store2 = CutStore()
+    store2.add_cut(cut, initial_state="active")
+    assert store2.is_active(cut.cut_id)
+
+
 def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
     """GPT pro v4 P0 fix: replay_cut(canonical_rules=None) 原 silent ATTACH 绕过
     validator (任何 Step A-L 修都 bypass). 修后:

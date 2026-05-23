@@ -48,13 +48,14 @@ def _encode_bitset(cells: set, grid_size: int = 70) -> str:
 
 def _make_enclosed_state(
     patch: set, grid_size: int = 70, commodity_demand: int = 2,
+    route_src: tuple = (0, 0), route_sink: tuple = (0, 1),
 ) -> BState:
     """让 free_cells == patch — ghost 覆盖 patch 外的全部 cell. Test 用 enclosed
     partition (spec §1a 严格要求, GPT pro round 2 P0-3 fix).
 
-    GPT pro v4 P0 fix: commodity_demands registry 必 inject 让 F2 validator
-    pass-through. Phase 1.5+ production 真 inject; test mock c1 commodity 跟
-    cert.commodity_demand 一致.
+    GPT pro v4 P0 fix: commodity_demands registry 必 inject.
+    GPT pro v5 P0-1 fix: commodity_routes registry 必 inject + route 必跨 partition
+    (default src=(0,0)∈side_a, sink=(0,1)∈side_b).
     """
     all_cells = {(x, y) for x in range(grid_size) for y in range(grid_size)}
     ghost = all_cells - patch
@@ -64,6 +65,7 @@ def _make_enclosed_state(
         artifact_hashes={"canonical_rules.json": "h1"},
         available_oracle_versions=frozenset({"cutset_v1"}),
         commodity_demands={"c1": commodity_demand},
+        commodity_routes={"c1": {"src": route_src, "sink": route_sink}},
     )
 
 
@@ -404,8 +406,62 @@ def test_validate_cutset_unsound_fake_commodity_id():
     )
     vr = validate_cutset(cut, state, canonical_rules={})
     assert vr.kind == "unsound"
-    # 走 6b 还是 6c — 看顺序, registry sum=0 != cert 2 先 fire (6b)
-    assert "commodity_demand mismatch" in vr.detail or "not in registry" in vr.detail
+    # 走 6c (not in registry) 或 6e (demand mismatch) — Step N 现 6c 优先 fire
+    assert (
+        "not in commodity_demands registry" in vr.detail
+        or "not in commodity_routes registry" in vr.detail
+        or "commodity_demand mismatch" in vr.detail
+    )
+
+
+def test_validate_cutset_unsound_route_same_side_not_crossing():
+    """GPT pro v5 P0-1 反例: cert.contributing_commodities=["c"], 但 commodity
+    "c" 的 route src/sink 都在 side_a (不跨 A/B partition). 真 cross-partition
+    demand=0, cert demand=2 是假证. validator 必拒.
+    """
+    state = _make_enclosed_state(
+        patch={(0, 0), (0, 1)}, commodity_demand=2,
+        route_src=(0, 0), route_sink=(0, 0),  # 都在 side_a
+    )
+    side_a, side_b = {(0, 0)}, {(0, 1)}
+    cut = _make_cutset_cut(side_a, side_b, cut_size=1, commodity_demand=2)
+    vr = validate_cutset(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "route 不跨 partition" in vr.detail
+
+
+def test_validate_cutset_unsound_duplicate_contributing_commodity():
+    """GPT pro v5 P0-1 反例: cert.contributing_commodities=["c","c"] 把同 commodity
+    重复列让 demand 被双算. spec §2 commodity 集合语义不是 multiset.
+    """
+    state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=1)
+    side_a, side_b = {(0, 0)}, {(0, 1)}
+    # cert 写 ["c1","c1"] + demand=2, registry "c1"=1 — double-count 假证
+    cert_dict = {
+        "side_a_bitset_b64": _encode_bitset(side_a),
+        "side_b_bitset_b64": _encode_bitset(side_b),
+        "cut_edges": [[list((0, 0)), list((0, 1))]],
+        "cut_size": 1, "commodity_demand": 2, "gap": 1,
+        "contributing_commodities": ["c1", "c1"],
+        "menger_witness_kind": "max_flow_LP",
+        "witness_blob_b64": None,
+    }
+    payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    cut = Cut(
+        cut_id="F2-dup-c", family="cutset", literals=None,
+        geometric_payload=payload,
+        scope=CutScope(
+            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
+            exterior_blocks_hash="h", source_digest="poc_source_digest",
+            artifact_hashes={"canonical_rules.json": "h1"},
+            oracle_abstraction_version="cutset_v1",
+        ),
+        cert=OracleCert(cert_kind="menger_min_cut", cert_payload=payload, cert_hash="ch"),
+        family_version="v1.0", validator_version="v1.0",
+    )
+    vr = validate_cutset(cut, state, canonical_rules={})
+    assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
+    assert "duplicate contributing commodity" in vr.detail
 
 
 def test_generate_cutset_cuts_stub_returns_empty():

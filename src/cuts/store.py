@@ -119,16 +119,30 @@ class CutStore:
         pose_keys: Iterable[Tuple[GroupId, PoseId]] = (),
         commodity_keys: Iterable[CommodityId] = (),
         region_keys: Iterable[RegionId] = (),
+        initial_state: str = "held",
     ) -> None:
-        """Register cut + watchers.
+        """Register cut + watchers, default initial_state='held' (pending validation).
+
+        GPT pro v5 P0-2 fix: 原 add_cut 直接 active 注册让 "validator unsound cut"
+        在 replay 前能被 is_active() 看到 → silent attach window. 改默认 held —
+        caller (oracle / replay 成功 path) 必须显式 reactivate_cut(cut_id) 后才
+        active. 防 add 跟 validate 之间的 race window.
 
         ``*_keys`` are family-specific (caller computes per cut_lifecycle_v2 §7
         table). ``by_ghost_watcher`` is auto-derived from cut.scope.ghost_rect_id
         (GHOST_AGNOSTIC cuts 不入此 watcher per §7 footnote).
+
+        Args:
+            initial_state: "held" (default, pending replay/validator) | "active"
+                (legacy, 仅 test fixture 用; production 必须经 replay → reactivate
+                gate).
         """
         if cut.cut_id in self.cuts:
             raise ValueError(f"cut_id={cut.cut_id} 已注册")
-        assert cut.scope is not None  # __post_init__ 保证
+        if cut.scope is None:
+            raise ValueError(
+                f"cut_id={cut.cut_id} scope is None — schema invariant violated"
+            )
         self.cuts[cut.cut_id] = cut
 
         for c in cell_keys:
@@ -145,6 +159,18 @@ class CutStore:
         ghost_id = cut.scope.ghost_rect_id
         if ghost_id != GHOST_AGNOSTIC:
             self.by_ghost_watcher[ghost_id].add(cut.cut_id)
+
+        # GPT pro v5 P0-2: 默认 held (pending validation). caller 必经 replay/
+        # validator gate 后调 reactivate_cut(cut_id) 才 active. test fixture 可
+        # 传 initial_state="active" bypass (legacy).
+        if initial_state == "held":
+            self.held.add(cut.cut_id)
+        elif initial_state == "active":
+            pass  # legacy: 直接 active (test fixture)
+        else:
+            raise ValueError(
+                f"add_cut initial_state must be 'held' or 'active', got {initial_state!r}"
+            )
 
     def quarantine_cut(self, cut_id: CutId, reason: QuarantineReason) -> None:
         """Move cut to quarantine. cut 仍保留在 self.cuts (audit trail);
