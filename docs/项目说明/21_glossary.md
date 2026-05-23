@@ -35,9 +35,9 @@
 - **state machine (held / active / quarantined)** — cut 入 store 默认 held (per Step N); replay 通过 validator → active; validator reject → quarantined (隔离, 不再 try)
 - **GHOST_AGNOSTIC** — sentinel scope value, 标记 cut 对 ghost rectangle 不敏感. F1 必验 ghost ∩ region == ∅ (Step O); F2/F4 直接 reject GHOST_AGNOSTIC scope
 - **scope versioning** — `cut.scope` 含 `ghost_rect` + `source_digest`; ghost/data 变 → scope 失效 → cut 进 replay path
-- **source_digest** — `canonical_rules.json` + preprocessed data 的 content hash. 当前 Phase 1.1 placeholder `"poc_source_digest"`, Phase 1.2 入门 §10.3 改真 hash
+- **source_digest** — `canonical_rules.json` + preprocessed data 的 sha256 content hash；replay 时按当前 `BState` 注入 source 重新计算，不信任外部手写缓存
 - **adversarial soundness** — validator 必须扛 "假 cert 攻击" — oracle 不可信 (Byzantine), validator 是 trust boundary. Step A-O 主要 close 的层
-- **strict gate** — `EXACT_FAMILY_VALIDATOR_STRICT="1"` 时未注册 family / dispatch 漏 → fail-closed. Phase 1.2 default ON
+- **strict gate** — `EXACT_FAMILY_VALIDATOR_STRICT="1"` 时未注册 family / dispatch 漏 → fail-closed；当前默认已 ON
 
 ### A.3 Solver / Master 拓扑
 

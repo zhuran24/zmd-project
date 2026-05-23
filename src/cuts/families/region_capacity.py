@@ -181,13 +181,19 @@ def _decode_region_bitset(
     第一次 4900 iter 后续 O(1) lookup. 256 cap 足够 active cut count
     (Phase 1.1 ramp 实测 < 100 active cut/iter).
     """
-    arr = base64.b64decode(b64)
+    arr = base64.b64decode(b64, validate=True)
+    expected_len = grid_size * grid_size // 8 + 1
+    if len(arr) != expected_len:
+        raise ValueError(f"bitset length mismatch: got {len(arr)}, expected {expected_len}")
     cells = set()
     for x in range(grid_size):
         for y in range(grid_size):
             idx = x * grid_size + y
             if arr[idx // 8] & (1 << (idx % 8)):
                 cells.add((x, y))
+    extra_bits = len(arr) * 8 - grid_size * grid_size
+    if extra_bits > 0 and arr[-1] >> (8 - extra_bits):
+        raise ValueError("bitset has cells outside grid set")
     return frozenset(cells)
 
 

@@ -15,7 +15,7 @@
 7. ✅ F3 `evaluate_literal_port_exposure` 删
 8. ✅ `on_ghost_rect_changed` test stub 收紧 (`unsafe_test_replay_fn` + double flag)
 
-测试: 178 cuts pass (172 + 6 regression).
+测试: 178 cuts pass (172 + 9 regression).
 
 ## P1.2B-F5 — pattern_nogood (优先级最高)
 

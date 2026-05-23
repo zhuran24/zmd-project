@@ -41,6 +41,7 @@ from src.cuts.lifecycle import (
     ValidationResult,
     compute_source_digest,
     step_6_attach_scope_check,
+    validate_cut_integrity,
 )
 from src.cuts.store import CutStore, QuarantineReason
 
@@ -88,6 +89,18 @@ def replay_cut(
             f"replay_cut: cut_id={cut.cut_id} 不在 store; "
             f"brand-new cut 应用 step_6_attach_scope_check (pure)."
         )
+
+    integrity_error = validate_cut_integrity(cut)
+    if integrity_error is not None:
+        store.quarantine_cut(
+            cut.cut_id,
+            QuarantineReason(
+                reason_code="cut_integrity_failed",
+                detail=integrity_error,
+                iter_index=iter_index,
+            ),
+        )
+        return "QUARANTINE"
 
     # 1-6 步 dispatch — lifecycle.py step_6_attach_scope_check 跟 v3.2.2 §4 一致.
     decision = step_6_attach_scope_check(cut, state)

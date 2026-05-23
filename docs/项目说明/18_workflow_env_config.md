@@ -6,7 +6,7 @@ cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其
 
 | Env | 当前默认 | Phase 1.2 默认 | Phase 1.3 默认 | 用途 |
 |---|---|---|---|---|
-| `EXACT_FAMILY_VALIDATOR_STRICT` | `"0"` | `"1"` (§10.1) | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed (replay HOLD). `"0"` 时 unknown family 走 schema_err 但不 hard-fail (Phase 1.1 调试模式). |
+| `EXACT_FAMILY_VALIDATOR_STRICT` | `"1"` | `"1"` | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed。`"0"` 仅允许本地临时调试，不进生产 wrapper。 |
 
 ### 19.2 Phase 1.3 propagator 集成预留 env (实施时定名)
 

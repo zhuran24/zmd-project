@@ -194,6 +194,10 @@ class CutStore:
 
     def reactivate_cut(self, cut_id: CutId) -> None:
         """Move cut from HOLD back to ACTIVE (replay returned ATTACH)."""
+        if cut_id not in self.cuts:
+            raise KeyError(f"cut_id={cut_id} 不在 store")
+        if cut_id in self.quarantined:
+            raise ValueError(f"cut_id={cut_id} 已 quarantined, 不能 reactivate")
         self.held.discard(cut_id)
 
     def is_active(self, cut_id: CutId) -> bool:
@@ -206,22 +210,22 @@ class CutStore:
     # ---- Watcher lookups (propagation hot path) ---------------------------
 
     def cuts_affected_by_cell(self, cell: Cell) -> Set[CutId]:
-        return self.by_cell_watcher.get(cell, set())
+        return set(self.by_cell_watcher.get(cell, set()))
 
     def cuts_affected_by_group(self, gid: GroupId) -> Set[CutId]:
-        return self.by_group_watcher.get(gid, set())
+        return set(self.by_group_watcher.get(gid, set()))
 
     def cuts_affected_by_pose(self, gid: GroupId, pose_id: PoseId) -> Set[CutId]:
-        return self.by_pose_watcher.get((gid, pose_id), set())
+        return set(self.by_pose_watcher.get((gid, pose_id), set()))
 
     def cuts_affected_by_commodity(self, commodity_id: CommodityId) -> Set[CutId]:
-        return self.by_commodity_watcher.get(commodity_id, set())
+        return set(self.by_commodity_watcher.get(commodity_id, set()))
 
     def cuts_affected_by_region(self, region_id: RegionId) -> Set[CutId]:
-        return self.by_region_watcher.get(region_id, set())
+        return set(self.by_region_watcher.get(region_id, set()))
 
     def cuts_affected_by_ghost(self, ghost_id: GhostRectId) -> Set[CutId]:
-        return self.by_ghost_watcher.get(ghost_id, set())
+        return set(self.by_ghost_watcher.get(ghost_id, set()))
 
     # ---- Ghost transition (cut_lifecycle_v2 §7 on_ghost_rect_changed) ----
 

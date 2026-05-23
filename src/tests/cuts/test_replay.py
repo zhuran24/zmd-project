@@ -11,6 +11,7 @@ Coverage:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 
 import pytest
@@ -19,6 +20,7 @@ from src.cuts.lifecycle import (
     BState,
     Cut,
     GroupState,
+    OracleCert,
 )
 from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
 from src.cuts.replay import regression_sweep, replay_cut
@@ -123,11 +125,10 @@ def test_add_cut_default_held_no_silent_attach():
     assert store2.is_active(cut.cut_id)
 
 
-def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
-    """GPT pro v4 P0 fix: replay_cut(canonical_rules=None) 原 silent ATTACH 绕过
-    validator (任何 Step A-L 修都 bypass). 修后:
-    - state.canonical_rules 已 inject → fallback 用它跑 validator
-    - state.canonical_rules 也 None → HOLD (不 active, 等下次 caller 传 rules)
+def test_replay_canonical_rules_none_falls_back_to_state_then_quarantine_on_source_loss():
+    """canonical_rules=None 时先用 state.canonical_rules 跑 validator；若 state
+    自己也丢了 source，source_digest 会先失配并 QUARANTINE，避免 stale digest
+    手写值把 source 丢失伪装成可延后 HOLD。
     """
     s = _make_state()  # 有 canonical_rules + facility_templates
     cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
@@ -141,7 +142,8 @@ def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
     decision = replay_cut(cut, s, store, canonical_rules=None)
     assert decision == "ATTACH", f"state fallback 期望 ATTACH 得 {decision}"
 
-    # Case B: caller 传 None + state.canonical_rules=None → HOLD (fail-closed)
+    # Case B: caller 传 None + state.canonical_rules=None → source_digest 失配，
+    # 必须 QUARANTINE；不能靠手写 source_digest 遮住 source 丢失。
     s_no_rules = BState(
         groups=s.groups, cell_owner=s.cell_owner, ghost_rect=s.ghost_rect,
         ghost_cells=s.ghost_cells, exterior_blocks=s.exterior_blocks,
@@ -157,9 +159,10 @@ def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
     store2.add_cut(cut)
     store2.held.add(cut.cut_id)
     decision = replay_cut(cut, s_no_rules, store2, canonical_rules=None)
-    assert decision == "HOLD", f"无 source 期望 HOLD (fail-closed) 得 {decision}"
-    assert cut.cut_id in store2.held
-    assert cut.cut_id not in store2.quarantined
+    assert decision == "QUARANTINE", f"source 丢失期望 QUARANTINE 得 {decision}"
+    assert cut.cut_id not in store2.held
+    assert cut.cut_id in store2.quarantined
+    assert "source_digest mismatch" in store2.quarantined[cut.cut_id].detail
 
 
 def _make_f1_cut(state: BState) -> Cut:
@@ -187,8 +190,8 @@ def test_replay_attach_path_with_validator_ok():
     assert store.is_active(cut.cut_id)
 
 
-def test_replay_attach_path_without_validator_phase1_0_framework():
-    """Phase 1.0: canonical_rules=None → 跳过 post-attach validation, ATTACH."""
+def test_replay_attach_path_without_explicit_validator_rules_uses_state_fallback():
+    """canonical_rules=None 但 state 带 rules → 用 state fallback 验证后 ATTACH。"""
     state = _make_state()
     cut = _make_f1_cut(state)
     store = CutStore()
@@ -231,15 +234,22 @@ def test_replay_quarantine_when_post_attach_validation_unsound():
     cert_dict["cap_R"] = 999
     tampered_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     assert cut.scope is not None and cut.cert is not None
+    tampered_hash = hashlib.sha256(tampered_payload).hexdigest()
+    tampered_cert = OracleCert(
+        cert_kind=cut.cert.cert_kind,
+        cert_payload=tampered_payload,
+        cert_hash=tampered_hash,
+    )
     tampered_cut = Cut(
         cut_id=cut.cut_id,
         family=cut.family,
         literals=None,
         geometric_payload=tampered_payload,
         scope=cut.scope,
-        cert=cut.cert,
+        cert=tampered_cert,
         family_version=cut.family_version,
         validator_version=cut.validator_version,
+        oracle_cert_hash=tampered_hash,
     )
     store = CutStore()
     store.add_cut(tampered_cut)

@@ -31,24 +31,53 @@ from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
 PartitionEdge = Tuple[Cell, Cell]
 
 
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _parse_cell(raw: object, field_name: str, grid_size: int = 70) -> Cell:
+    if not isinstance(raw, (list, tuple)) or len(raw) != 2:
+        raise ValueError(f"{field_name} must be a length-2 cell")
+    x_raw, y_raw = raw
+    if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
+        raise ValueError(f"{field_name} must contain strict ints, got {raw!r}")
+    x = int(x_raw)
+    y = int(y_raw)
+    if not (0 <= x < grid_size and 0 <= y < grid_size):
+        raise ValueError(f"{field_name} out of grid: {(x, y)!r}")
+    return (x, y)
+
+
 def _decode_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
-    arr = base64.b64decode(b64)
+    arr = base64.b64decode(b64, validate=True)
+    expected_len = grid_size * grid_size // 8 + 1
+    if len(arr) != expected_len:
+        raise ValueError(f"bitset length mismatch: got {len(arr)}, expected {expected_len}")
     cells = set()
     for x in range(grid_size):
         for y in range(grid_size):
             idx = x * grid_size + y
             if arr[idx // 8] & (1 << (idx % 8)):
                 cells.add((x, y))
+    extra_bits = len(arr) * 8 - grid_size * grid_size
+    if extra_bits > 0 and arr[-1] >> (8 - extra_bits):
+        raise ValueError("bitset has cells outside grid set")
     return frozenset(cells)
 
 
 def _free_cells(state: BState, grid_size: int = 70) -> FrozenSet[Cell]:
-    """state_machine_v2 §3 I3: free_cells = all_cells \\ ghost_cells \\ cell_owner.keys().
+    """Belt-usable cells: all grid cells minus ghost/exterior/occupied cells.
 
-    P1.6 minimum viable — Phase 1.5+ 可改 state 持 free_cells field.
+    F2/F4 reason over routes. ``exterior_blocks`` are forbidden just like ghost
+    cells; ignoring them would let replay validate a path through static blocks.
     """
     all_cells = {(x, y) for x in range(grid_size) for y in range(grid_size)}
-    return frozenset(all_cells - set(state.ghost_cells) - set(state.cell_owner.keys()))
+    return frozenset(
+        all_cells
+        - set(state.ghost_cells)
+        - set(state.exterior_blocks)
+        - set(state.cell_owner.keys())
+    )
 
 
 def _cross_partition_edges(
@@ -99,8 +128,8 @@ def _canonical_edges_from_cert(raw_edges: object) -> FrozenSet[PartitionEdge]:
         if not isinstance(raw, list) or len(raw) != 2:
             raise ValueError(f"bad cut edge entry: {raw!r}")
         c1_raw, c2_raw = raw
-        c1 = (int(c1_raw[0]), int(c1_raw[1]))
-        c2 = (int(c2_raw[0]), int(c2_raw[1]))
+        c1 = _parse_cell(c1_raw, "cut_edges.cell_a")
+        c2 = _parse_cell(c2_raw, "cut_edges.cell_b")
         edge = (c1, c2) if c1 <= c2 else (c2, c1)
         parsed.add(edge)
     return frozenset(parsed)
@@ -201,8 +230,8 @@ def _validate_cross_partition_routes(
     commodity_routes = state.commodity_routes
     for c in commodities:
         route = commodity_routes[c]
-        r_src = tuple(route.get("src", ()))
-        r_sink = tuple(route.get("sink", ()))
+        r_src = _parse_cell(route.get("src"), f"commodity_routes[{c!r}].src")
+        r_sink = _parse_cell(route.get("sink"), f"commodity_routes[{c!r}].sink")
         crosses = (r_src in side_a and r_sink in side_b) or (r_src in side_b and r_sink in side_a)
         if not crosses:
             return _vr("unsound", t0, f"commodity {c!r} route 不跨 partition: src={r_src} sink={r_sink}")

@@ -149,7 +149,7 @@ def check_synthetic_test_exists(test_name: str, criterion_id: int, description: 
 
 def check_2_q_front_overload() -> CriterionResult:
     return check_synthetic_test_exists(
-        "test_family_3_port_exposure.py", 2,
+        "test_family_port_exposure.py", 2,
         "q-front overload synthetic test 被 port-resource cut 剪 (不靠 full no-good)"
     )
 
@@ -179,7 +179,7 @@ def check_3b_density_envelope() -> CriterionResult:
 
 def check_4_replay_suite() -> CriterionResult:
     return check_synthetic_test_exists(
-        "test_replay_suite.py", 4,
+        "test_replay.py", 4,
         "replay suite 27+ ghost anchors 无 false positive"
     )
 

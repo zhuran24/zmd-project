@@ -50,7 +50,7 @@ def _make_cut(
         kw = {"geometric_payload": b'{"k":1}', "literals": None}
     else:
         kw = {
-            "literals": (CutLiteral(AnonymousSlotRef("g1", 0), 42),),
+            "literals": (CutLiteral(AnonymousSlotRef("g1", 0), "p42"),),
             "geometric_payload": None,
         }
     scope = CutScope(
@@ -86,7 +86,7 @@ def test_add_cut_registers_all_watcher_dims():
         cut,
         cell_keys=[(0, 0), (0, 1)],
         group_keys=["g1"],
-        pose_keys=[("g1", 42)],
+        pose_keys=[("g1", "p42")],
         commodity_keys=["power"],
         region_keys=["region_left_baseline"],
     )
@@ -95,7 +95,7 @@ def test_add_cut_registers_all_watcher_dims():
     assert "c1" in store.cuts_affected_by_cell((0, 0))
     assert "c1" in store.cuts_affected_by_cell((0, 1))
     assert "c1" in store.cuts_affected_by_group("g1")
-    assert "c1" in store.cuts_affected_by_pose("g1", 42)
+    assert "c1" in store.cuts_affected_by_pose("g1", "p42")
     assert "c1" in store.cuts_affected_by_commodity("power")
     assert "c1" in store.cuts_affected_by_region("region_left_baseline")
     assert "c1" in store.cuts_affected_by_ghost("ghost_v1")
@@ -164,6 +164,29 @@ def test_hold_then_reactivate():
     assert not store.is_active("c1")
     store.reactivate_cut("c1")
     assert store.is_active("c1")
+
+
+def test_reactivate_missing_or_quarantined_raises():
+    store = CutStore()
+    with pytest.raises(KeyError, match="不在 store"):
+        store.reactivate_cut("missing")
+
+    cut = _make_cut("c1")
+    store.add_cut(initial_state="active", cut=cut)
+    store.quarantine_cut("c1", QuarantineReason(reason_code="x"))
+    with pytest.raises(ValueError, match="quarantined"):
+        store.reactivate_cut("c1")
+
+
+def test_watcher_lookup_returns_copy_not_internal_set():
+    store = CutStore()
+    cut = _make_cut("c1")
+    store.add_cut(initial_state="active", cut=cut, cell_keys=[(0, 0)])
+
+    affected = store.cuts_affected_by_cell((0, 0))
+    affected.clear()
+
+    assert "c1" in store.cuts_affected_by_cell((0, 0))
 
 
 def test_quarantine_then_hold_raises():
@@ -286,7 +309,7 @@ def test_stats_snapshot():
                       use_literals=True)
     store.add_cut(initial_state="active", cut=cut_a, cell_keys=[(0, 0)], region_keys=["r1"])
     store.add_cut(initial_state="active", cut=
-        cut_b, cell_keys=[(1, 1)], group_keys=["g1"], pose_keys=[("g1", 42)]
+        cut_b, cell_keys=[(1, 1)], group_keys=["g1"], pose_keys=[("g1", "p42")]
     )
     store.hold_cut("ca")
     store.quarantine_cut("cb", QuarantineReason(reason_code="x"))

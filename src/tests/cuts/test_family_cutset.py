@@ -142,14 +142,16 @@ def test_cross_partition_edges_skip_non_free():
     assert len(edges) == 0
 
 
-def test_free_cells_excludes_ghost_and_cell_owner():
+def test_free_cells_excludes_ghost_exterior_and_cell_owner():
     state = BState(
         groups={"g": GroupState("g", demand=1, pose_domain=frozenset())},
         ghost_cells=frozenset({(5, 5)}),
+        exterior_blocks=frozenset({(2, 2)}),
         cell_owner={(0, 0): ("g", 0)},
     )
     free = _free_cells(state, grid_size=10)
     assert (5, 5) not in free
+    assert (2, 2) not in free
     assert (0, 0) not in free
     assert (1, 1) in free
 

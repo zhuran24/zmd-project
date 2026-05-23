@@ -81,6 +81,19 @@ _FAMILY_MODE_MAP: Dict[str, Literal["literal", "geometric"]] = {
 }
 
 
+def _is_strict_int(value: object) -> bool:
+    """Runtime schema guard: bool/float/string must not pass as an int."""
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_non_empty_str(value: object) -> bool:
+    return isinstance(value, str) and value != ""
+
+
+def _sha256_hex(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
 # ============================================================================
 # Cut object schema (cut_lifecycle_v2 v3.2.2 §3)
 # ============================================================================
@@ -168,6 +181,32 @@ class Cut:
             raise ValueError(f"Cut {self.cut_id}: scope 必填 (cut_lifecycle_v2 §3)")
         if self.cert is None:
             raise ValueError(f"Cut {self.cut_id}: cert 必填 (cut_lifecycle_v2 §3)")
+
+        if not _is_non_empty_str(self.cut_id):
+            raise ValueError("cut_id 必须是非空 str")
+        if self.literals is not None and not isinstance(self.literals, tuple):
+            raise ValueError(f"Cut {self.cut_id}: literals 必须是 tuple 或 None")
+        if self.geometric_payload is not None and not isinstance(self.geometric_payload, bytes):
+            raise ValueError(f"Cut {self.cut_id}: geometric_payload 必须是 bytes")
+        if not isinstance(self.cert.cert_payload, bytes):
+            raise ValueError(f"Cut {self.cut_id}: cert_payload 必须是 bytes")
+        if not _is_non_empty_str(self.cert.cert_hash):
+            raise ValueError(f"Cut {self.cut_id}: cert_hash 必须是非空 str")
+        if self.oracle_cert_hash and not isinstance(self.oracle_cert_hash, str):
+            raise ValueError(f"Cut {self.cut_id}: oracle_cert_hash 必须是 str")
+        for lit in self.literals or ():
+            if not isinstance(lit, CutLiteral) or not isinstance(lit.slot_ref, AnonymousSlotRef):
+                raise ValueError(f"Cut {self.cut_id}: literal 必须是 CutLiteral")
+            if not _is_non_empty_str(lit.slot_ref.group_id):
+                raise ValueError(f"Cut {self.cut_id}: literal group_id 必须是非空 str")
+            if not _is_strict_int(lit.slot_ref.slot_index) or lit.slot_ref.slot_index < 0:
+                raise ValueError(f"Cut {self.cut_id}: literal slot_index 必须是非负 int")
+            if not _is_non_empty_str(lit.pose_id):
+                raise ValueError(f"Cut {self.cut_id}: literal pose_id 必须是非空 str")
+        if not isinstance(self.minimization_audit, dict) or not all(
+            isinstance(k, str) and _is_strict_int(v) for k, v in self.minimization_audit.items()
+        ):
+            raise ValueError(f"Cut {self.cut_id}: minimization_audit 必须是 dict[str, int]")
 
 
 AttachDecision = Literal["ATTACH", "HOLD", "QUARANTINE"]
@@ -290,9 +329,12 @@ def _source_jsonable(value: Any) -> Any:
 
 
 def compute_source_digest(state: BState) -> SourceDigestStr:
-    """Return stable content digest for cross-session cut replay scope."""
-    if state.source_digest is not None:
-        return state.source_digest
+    """Return stable content digest for cross-session cut replay scope.
+
+    ``BState.source_digest`` is treated as an optional caller-side note/cache,
+    not as authority. Step 6 must be tied to the actual source payloads injected
+    into BState; otherwise a stale or hand-written digest can mask data changes.
+    """
     parts: JsonDict = {
         "schema_version": 1,
         "canonical_rules": state.canonical_rules or {},
@@ -313,6 +355,28 @@ def compute_source_digest(state: BState) -> SourceDigestStr:
 
 def canonical_bytes_for_cert(payload: JsonDict) -> bytes:
     return json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
+
+
+def validate_cut_integrity(cut: Cut) -> Optional[str]:
+    """Return None when cut payload/hash bookkeeping is internally consistent.
+
+    Family validators prove mathematical soundness. This guard catches a lower
+    level failure mode first: cert payload edited without updating hash, or a
+    geometric cut whose body and cert payload drift apart.
+    """
+    if cut.cert is None:
+        return "cut.cert is None"
+    expected_hash = _sha256_hex(cut.cert.cert_payload)
+    if cut.cert.cert_hash != expected_hash:
+        return f"cert_hash mismatch: cert={cut.cert.cert_hash!r}, expected={expected_hash!r}"
+    if cut.oracle_cert_hash and cut.oracle_cert_hash != cut.cert.cert_hash:
+        return (
+            f"oracle_cert_hash mismatch: oracle={cut.oracle_cert_hash!r}, "
+            f"cert={cut.cert.cert_hash!r}"
+        )
+    if cut.geometric_payload is not None and cut.geometric_payload != cut.cert.cert_payload:
+        return "geometric_payload differs from cert.cert_payload"
+    return None
 
 
 # ============================================================================
@@ -568,7 +632,7 @@ def step_4_deserialize(blob: bytes) -> Cut:
         cert_payload=base64.b64decode(d["cert"]["cert_payload_b64"]),
         cert_hash=d["cert"]["cert_hash"],
     )
-    return Cut(
+    cut = Cut(
         cut_id=d["cut_id"],
         family=d["family"],
         literals=literals,
@@ -586,6 +650,10 @@ def step_4_deserialize(blob: bytes) -> Cut:
         is_quarantined=d.get("is_quarantined", False),
         quarantine_reason=d.get("quarantine_reason", ""),
     )
+    integrity_error = validate_cut_integrity(cut)
+    if integrity_error is not None:
+        raise ValueError(f"Cut {cut.cut_id}: {integrity_error}")
+    return cut
 
 
 def step_5_validate_region_capacity(

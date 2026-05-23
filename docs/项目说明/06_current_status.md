@@ -34,7 +34,7 @@
   §3A, [Gemini math review verdict 2026-05-23](../research/p3_b_design_v2_20260521/external_review/gemini_math_review_action_plan_20260523.md))
 
 ### 测试 / 静态 gate 状态 (exit hardening 后)
-- pytest: **178 cuts test pass** (普通模式 + `python -O` 防线 regression, 比 v6 audit 后 172 加 6 新 regression)
+- pytest: **181 cuts test pass** (普通模式 + `python -O` 防线 regression, 比 v6 audit 后 172 加 9 新 regression)
 - ruff: clean (default config + `--config "lint.per-file-ignores={}"` 都 clean)
 - **mypy --strict: pass** (exit hardening 清零 37 typing debt, 现 0 errors)
 - vulture: pass (whitelist `scripts/vulture_cuts_whitelist.py` 收紧, exit hardening 2.4 删 `evaluate_literal_port_exposure`)

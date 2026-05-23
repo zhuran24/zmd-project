@@ -87,7 +87,7 @@ Scope = (
 **Replay semantic** (Phase 1.1 Step M 加严):
 ```
 replay_cut(cut, state, store) =
-    if cut.scope.source_digest ≠ state.source_digest:
+    if cut.scope.source_digest ≠ compute_source_digest(state):
         return QUARANTINE  # data 版本变, cut 失效
     if cut.scope.ghost_rect_id ≠ GHOST_AGNOSTIC ∧ ≠ state.ghost_rect_id:
         return HOLD        # ghost 不匹配, 暂不 attach
@@ -108,8 +108,8 @@ replay_cut(cut, state, store) =
 - 数学根据: cert 重算时若 cert 公式不含 ghost_cells 变量, 则 cut 跨 ghost reuse sound; 否则必绑特定 ghost_rect_id
 
 **source_digest content addressing**:
-- 当前 Phase 1.1 placeholder `"poc_source_digest"`
-- Phase 1.2 §10.3 改真 hash: `sha256(canonical_rules.json) + sha256(candidate_placements.json) + sha256(mandatory_exact_instances.json) + sha256(generic_io_requirements.json)`
+- 当前 Phase 1.1 已落地 sha256 content hash；`BState.source_digest` 只当外部备注/缓存，replay 以当前注入 source 重新计算为准
+- 当前算法: sha256 over normalized source payloads (`canonical_rules`, `candidate_placements`, `mandatory_exact_instances`, `facility_templates`, `generic_io_requirements`, `commodity_routes`)；`__*` runtime cache key 不入 hash
 - 数学不变量: data 不变 → digest 不变 → cut sound 跨 session reuse; data 变 → digest 变 → 旧 cut 全 quarantine
 
 ### 2.5 Multiset eval — slot anonymity 群论形式化
@@ -228,7 +228,7 @@ demand_R = ∑_{g : P(g) ⊆ R} g.demand × cells_per_pose(g)  (region 内 manda
 - 不适用: cap ≥ demand 但 routing/power/binding 不可行 → 走 F2/F4/F7
 - 跟 F6 关系: F6 是 F1 的 stronger refinement (Hall theorem 检 interval cover, F1 只检 count)
 
-**Phase status**: Phase 1.1 production validator + oracle + evaluator 闭环 (Step E/F/G/L/O 全 close); Phase 1.2 入门加 GHOST_AGNOSTIC 跟 source_digest hard binding (§10.3).
+**Phase status**: Phase 1.1 production validator + oracle + evaluator 闭环 (Step E/F/G/L/O 全 close); GHOST_AGNOSTIC 与 source_digest hard binding 已在 1.1 exit hardening 落地，可进入 Phase 1.2。
 
 **Open Q (defer §5.3)**:
 - F1 oracle 如何 enumerate 有用的 interior_rect region (NP-hard exhaustive)?

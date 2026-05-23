@@ -6,7 +6,20 @@ files. Production evaluator (project_root path) 由 Phase 3 PoC script 验.
 
 from __future__ import annotations
 
-from src.models.highs_candidate_evaluator import HighsCandidateEvaluator
+import importlib.util
+
+import pytest
+
+_HAS_HIGHS = importlib.util.find_spec("highspy") is not None
+pytestmark = pytest.mark.skipif(not _HAS_HIGHS, reason="optional HiGHS solver dependency")
+
+if _HAS_HIGHS:
+    from src.models.highs_candidate_evaluator import HighsCandidateEvaluator
+else:
+    class HighsCandidateEvaluator:  # pragma: no cover - skipped without highspy
+        @classmethod
+        def from_in_memory(cls, *args: object, **kwargs: object) -> object:
+            raise RuntimeError("highspy is not installed")
 
 
 def _minimal_5x5() -> dict:

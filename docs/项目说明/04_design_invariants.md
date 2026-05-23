@@ -68,7 +68,7 @@ assumption 6 个 sub-check 各有 fail-closed 语义. 任一漏验 = lifecycle �
 6. **multiset eval 不看 slot index** — state_machine §5 anonymity, slot 是
    group 内 anonymous reorderable; 但 validator 内部 binding 阶段 slot
    必 resolve 到具体 pose (GPT v2 P0-2 修)
-7. **source_digest 锁 data version** — 当前 placeholder `"poc_source_digest"`,
+7. **source_digest 锁 data version** — 当前为 sha256 content hash，
    Phase 1.2 切真 hash; 锁定后 cross-session cert 才可信
 
 ### 2.4 adversarial soundness 假设

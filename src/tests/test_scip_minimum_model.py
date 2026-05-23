@@ -2,7 +2,19 @@
 
 from __future__ import annotations
 
-from src.models.scip_master_model import build_scip_minimum_model
+import importlib.util
+from typing import Any
+
+import pytest
+
+_HAS_SCIP = importlib.util.find_spec("pyscipopt") is not None
+pytestmark = pytest.mark.skipif(not _HAS_SCIP, reason="optional SCIP solver dependency")
+
+if _HAS_SCIP:
+    from src.models.scip_master_model import build_scip_minimum_model
+else:
+    def build_scip_minimum_model(*args: Any, **kwargs: Any) -> object:  # pragma: no cover
+        raise RuntimeError("pyscipopt is not installed")
 
 
 def _minimal_5x5_rules() -> dict:

@@ -374,16 +374,15 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATI
 
 **defer trigger**: Phase 1.2 §10.4 实施时决 (加非方形 fixture 触发)
 
-#### Q13 — source_digest hash 算法 **P1**
+#### Q13 — source_digest hash 算法 **CLOSED in Phase 1.1 exit hardening**
 
-**问题**: source_digest 真 hash 用什么算法? sha256 还是 blake3? 覆盖范围 (canonical_rules + 哪些 preprocessed file)?
+**结论**: 使用 sha256；replay 时按当前 `BState` 注入 source 重新计算，不信任外部手写 `source_digest`。
 
 **当前 understanding**:
-- sha256 标准, blake3 快但 nonstandard
-- 覆盖范围: 必含 canonical_rules.json (data SoT); preprocessed file 含 candidate_placements / mandatory_exact_instances / generic_io_requirements
-- 不含: telemetry / cache / 临时文件
+- 覆盖范围: `canonical_rules`, `candidate_placements`, `mandatory_exact_instances`, `facility_templates`, `generic_io_requirements`, `commodity_routes`
+- 不含: telemetry / cache / 临时文件；`__*` runtime cache key 会被排除
 
-**defer trigger**: Phase 1.2 §10.3 实施时决 (sha256 默认, blake3 fallback)
+**status**: done; Phase 1.2 只需要沿用该约束。
 
 ### 5.6 paradigm-level open questions
 
@@ -517,7 +516,7 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATI
 | Q10 | propagator vs AddLinear | P0 | Phase 1.3 §12.4 | 工程 |
 | Q11 | commodity_id vs route_id | P0 | Phase 1.5+ §13.1 | 数学+工程 |
 | Q12 | ghost_rect tuple vs object | P1 | Phase 1.2 §10.4 | 工程 |
-| Q13 | source_digest hash 算法 | P1 | Phase 1.2 §10.3 | 工程 |
+| Q13 | source_digest hash 算法 | CLOSED | Phase 1.1 exit hardening | 工程 |
 | Q14 | 形式 proof completeness | P3 | Phase 2+ | 数学 |
 | Q15 | 跨 base transfer | P3 | future_scope | 数学+工程 |
 | Q16 | 多 base 联合 opt | P3 | future_scope | 数学 |

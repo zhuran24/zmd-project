@@ -8,12 +8,24 @@
 
 from __future__ import annotations
 
+import importlib.util
+from typing import Any
+
 import pytest
 
-from src.models.highs_master_model import (
-    HighsMinimumModel,
-    build_highs_minimum_model,
-)
+_HAS_HIGHS = importlib.util.find_spec("highspy") is not None
+pytestmark = pytest.mark.skipif(not _HAS_HIGHS, reason="optional HiGHS solver dependency")
+
+if _HAS_HIGHS:
+    from src.models.highs_master_model import (
+        HighsMinimumModel,
+        build_highs_minimum_model,
+    )
+else:
+    HighsMinimumModel = object
+
+    def build_highs_minimum_model(*args: Any, **kwargs: Any) -> object:  # pragma: no cover
+        raise RuntimeError("highspy is not installed")
 
 
 def _minimal_5x5_rules() -> dict:

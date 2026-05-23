@@ -2,7 +2,7 @@
 """Build phase1_2_entry_review_v9.zip — Phase 1.1 GO blessed + Phase 1.2 entry ready.
 
 v8 → v9 关键差异 (反映 Phase 1.1 exit hardening 落地 + Gemini math review meta-audit):
-- 178 cuts pytest pass (v8 时 172)
+- 181 cuts pytest pass (v8 时 172)
 - mypy strict 全清 (v8 时 37 errors)
 - radon A 无 D (v8 时 D(27/24/23))
 - docs/项目说明/ 整 dir 21 sub-doc 新加 (项目顶层重组, 从原 plan + math doc 拆)
@@ -85,7 +85,7 @@ content (src + docs + rules + data + scripts + main.py + spec + audit archive).
 **Phase 1.1: GO blessed** (commit `9e01a6e` Phase 1.1 exit hardening +
 `ecc96c7` docs/项目说明/ v1.1)
 
-- 178 cuts pytest pass (`python` 普通 + `python -O`)
+- 181 cuts pytest pass (`python` 普通 + `python -O`)
 - mypy --strict --explicit-package-bases src/cuts/: 0 errors
 - ruff: clean (default + no per-file-ignores)
 - bandit: 0 issues
@@ -116,7 +116,7 @@ python3.10+ -m venv .venv && source .venv/bin/activate
 unzip -q ../zmd_deps_v3.zip -d /tmp/deps
 pip install --find-links /tmp/deps -r requirements.txt
 
-# Cut framework 单元测试 (应 178 pass)
+# Cut framework 单元测试 (应 181 pass)
 .venv/bin/python -m pytest src/tests/cuts/ -q
 .venv/bin/python -O -m pytest src/tests/cuts/ -q
 
@@ -140,7 +140,7 @@ pip install --find-links /tmp/deps -r requirements.txt
 - `03_paradigm_death_baseline.md` — 27 lever 死路按数学根据分类
 - `04_design_invariants.md` — PROJECT_LOCK §3A 镜像 (F8 mode / F9 area-only)
 - `05_open_questions.md` — 33 + 6 Q (Q10 CP-SAT AddLazyConstraint verdict)
-- `06_current_status.md` — Phase 1.1 GO blessed, 178 pytest, exit hardening 8 项 fix
+- `06_current_status.md` — Phase 1.1 GO blessed, 181 pytest, exit hardening 8 项 fix
 - `07_historical_review.md` — 含 §5.12 exit hardening + §5.13 Gemini math review
 - `08_phase_1_2_plan.md` — P1.2A done + P1.2B-F5/F6/F7/F8/F9 详
 - `09_phase_1_3_plan.md` — P1.3A CP-SAT attach spike (3 sub-route PoC)
@@ -183,7 +183,7 @@ src/cuts/                            # B Design v2 cut framework (本次 audit �
 ├── families/{region_capacity,cutset,port_exposure,component_reach}.py (F1-F4 ready)
 ├── oracles/ / helpers/ / assumptions/
 src/search/ (outer search + benders loop) / src/models/ (master + binding + routing + flow)
-src/tests/cuts/ (178 cuts test)
+src/tests/cuts/ (181 cuts test)
 ```
 
 ### Data 真集 (data/preprocessed/)
@@ -208,13 +208,13 @@ outside count 不同.
 ## v8 → v9 diff summary
 
 - v8 commit `744305d`: Phase 1.1 v6 audit 后 + plan/math doc 状态 (172 pytest)
-- v9 commit `ecc96c7`: Phase 1.1 GO blessed + docs/项目说明/ v1.1 (178 pytest)
+- v9 commit `ecc96c7`: Phase 1.1 GO blessed + docs/项目说明/ v1.1 (181 pytest)
 
 Commit chain (v8 → v9):
 - `af83885` plan doc 高中 7 项 + math doc 新增
 - `290bd32` plan §3/§4 收缩 cite math (SoT 政策)
 - `b72bc22` 拆 21 sub-doc → docs/项目说明/
-- `9e01a6e` Phase 1.1 exit hardening patch (178 pytest)
+- `9e01a6e` Phase 1.1 exit hardening patch (181 pytest)
 - `ecc96c7` docs/项目说明/ v1.1 (merge exit hardening v2 + Gemini math review)
 """
 

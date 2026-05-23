@@ -127,8 +127,8 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 - 8. spec drift 全清 (state_machine v2 `PoseId=str`; cut_lifecycle v2 family list 删 `symmetry_lift` 加 F8/F9; 03 direction N/S/E/W; 02/04 commodity registry semantic)
 
 测试 / gate 验收 (exit hardening delivery 含):
-- pytest cuts: 172 → 178 pass (+6 regression cover ghost_rect / source_digest / unsafe stub)
-- python -O cuts: 178 pass
+- pytest cuts: 172 → 181 pass (+6 regression cover ghost_rect / source_digest / unsafe stub)
+- python -O cuts: 181 pass
 - ruff default + no-ignores: pass
 - mypy --strict --explicit-package-bases src/cuts/: pass
 - bandit: 0 issues

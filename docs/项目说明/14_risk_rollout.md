@@ -4,7 +4,7 @@ defer / 已知 risk + 失败回滚策略.
 
 ### 14.1 GPT pro v5 verdict 排序 (最先爆 → 后)
 
-1. **source_digest placeholder** — Phase 1.2 §10.3 必修
+1. **source_digest stale-cache 防线** — 已修：replay 不信任 `BState.source_digest` 手写值，按注入 source 重新计算
    - mitigation: hash 真 file content + replay 时验证 + cross-session test
    - rollback: 退到 placeholder, production 不 ship
 
@@ -43,8 +43,8 @@ defer / 已知 risk + 失败回滚策略.
 
 cut framework 从 Phase 1.1 (4 family 单测) → 1.2 (5 family 加) → 1.3 (真接 benders_loop 主流程) → 1.5+ (production 168h campaign 含 cut store) 是渐进, 每阶段切换政策:
 
-**Phase 1.1 → 1.2 切换 (strict gate default ON, Phase 1.2 first commit)**
-- 切换点: §10.1 `EXACT_FAMILY_VALIDATOR_STRICT` 默认 `"0"→"1"` 是 Phase 1.2 **first commit**, 不是 5 family 都加完才开
+**Phase 1.1 → 1.2 切换 (strict gate default 已 ON)**
+- 切换点: §10.1 `EXACT_FAMILY_VALIDATOR_STRICT` 默认已是 `"1"`，Phase 1.2 继续保持 fail-closed，不再作为 first commit 待办
 - 理由: Phase 1.2 加 F5-F9 时, 新 family 在 strict gate 下若 dispatch 表漏注册会立刻 fail-closed → 不会沉默漏 cut. 5 family 全加完才开 = 漏注册的 family 沉默通过 4-5 commit, 等回头加 strict 测时已经堆 5 commit debug 难.
 - revert criterion: 若 strict ON 后真生产 trial 30 min 内 ≥ 1% cut 被 schema_err reject 且非 spec drift → 临时 OFF + 排查 schema 跟 src 的 drift, 不是 framework bug
 - revert 方法: 单 commit revert `EXACT_FAMILY_VALIDATOR_STRICT` default (env 一行改), 不影响其他

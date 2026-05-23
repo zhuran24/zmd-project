@@ -15,8 +15,8 @@
 8. ✅ **新发现**: `on_ghost_rect_changed` test stub 注入收紧 (`unsafe_test_replay_fn` + `allow_unsafe_test_replay_fn` 双 flag)
 
 实际验收 (exit hardening delivery 跑过):
-- ✅ pytest cuts: 178 pass (172 → +6 regression for ghost_rect / source_digest / unsafe stub)
-- ✅ python -O pytest cuts: 178 pass
+- ✅ pytest cuts: 181 pass (172 → +6 regression for ghost_rect / source_digest / unsafe stub)
+- ✅ python -O pytest cuts: 181 pass
 - ✅ ruff default + no-ignores: pass
 - ✅ mypy --strict --explicit-package-bases src/cuts/: pass
 - ✅ bandit: 0 issues
@@ -71,8 +71,8 @@
 - [ ] capacity eviction 留 audit trail
 
 **F. Regression gate**
-- [ ] 现有 `src/tests/cuts/` 178 全 green
-- [ ] `python -O -m pytest src/tests/cuts/ -q` 178 green
+- [ ] 现有 `src/tests/cuts/` 181 全 green
+- [ ] `python -O -m pytest src/tests/cuts/ -q` 181 green
 - [ ] 新 red fixture 全 green (详 [15_workflow_testing.md](15_workflow_testing.md))
 - [ ] ruff green
 - [ ] mypy strict green 或显式标 typing debt (跟 soundness 分开 commit)

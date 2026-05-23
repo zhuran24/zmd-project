@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from src.cuts.lifecycle import (
     Assumption,
     AnonymousSlotRef,
@@ -513,6 +515,35 @@ def test_source_digest_is_content_hash_and_ignores_runtime_pose_cache():
         instance_to_facility_type=s.instance_to_facility_type,
     )
     assert compute_source_digest(changed) != digest_1
+
+    # Caller-supplied stale digest must not mask a changed source payload.
+    changed_with_stale_note = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules={"boundary_storage_port": {"cells_per_pose": 99}},
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+        source_digest=digest_1,
+    )
+    assert compute_source_digest(changed_with_stale_note) != digest_1
+
+
+def test_deserialize_rejects_cert_hash_mismatch():
+    s = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+    blob = json.loads(step_3_serialize(cut).decode("utf-8"))
+    blob["cert"]["cert_hash"] = "0" * 64
+
+    with pytest.raises(ValueError, match="cert_hash mismatch"):
+        step_4_deserialize(json.dumps(blob, sort_keys=True).encode("utf-8"))
 
 
 def test_group_state_remaining_count_property():
