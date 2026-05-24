@@ -50,6 +50,22 @@
 - `scripts/b_design_v2_exit_criteria.py`: 1/2/4 PASS；其余 8 项是 Phase 1.2/168h ramp 数据或后续 family 测试尚未生成，因此为 PENDING_PHASE_1，**0 FAIL**。这不是 Phase 1.1 阻塞项。
 - full `src/tests` 里的 optional solver 依赖 (highspy / pyscipopt) 不在 cut framework gate；Phase 1.5+ 决定 zmd_deps_v3 是否补 wheel 或继续 skip。
 
+### Sound ≠ converge 警句 (2026-05-24 GPT pro P1.2 in-progress review)
+
+外部 reviewer (GPT pro, P1.2 in-progress audit) 提醒: Phase 1.1 闭环证明的是
+**cut framework sound**, 不是 **168h 必收敛**. sound 意思是 "剪掉的东西确实
+不可能是解". 收敛还需另外两件事:
+- cut 提取得**够多够快够便宜**: F5 core 不能太大, F9 envelope 不能 trivial,
+  F2/F4 generator 要产 enough useful cut, cut 加多后 CP-SAT propagation 不能
+  显著变慢, 168h 内 cut 复用率得够.
+- shadow telemetry 验证: 每个 family attach 前先 shadow, 记录"如果 attach 会
+  剪掉什么 / 剪掉的解是不是合法 / cut 复用率多高", shadow 数据过关再 true attach.
+
+所以现 plan / cut spec / lock 文档**任何"唯一可走 paradigm" / "最终数学工具"
+类措辞应降温**为: "**目前证据下最值得继续推进的主线**; 收敛性仍需 Phase 1.2 /
+1.3 / ramp 数据确认". 见 [[gpt-pro-p1-2-in-progress-review]] memory 9 条
+verdict.
+
 ### Audit archive
 - `docs/research/p3_b_design_v2_20260521/external_review/`:
   - `gpt_pro_phase1_1_v{1,2,3,4,5,6}_audit_*.md` (11 GPT pro audit, v1-v6 全 NOT GO)
