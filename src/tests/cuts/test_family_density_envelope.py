@@ -688,6 +688,25 @@ def test_generate_equality_no_cut():
 # ---- watcher_keys ---------------------------------------------------------
 
 
+def test_validate_unsound_max_allowed_area_zero_rejected():
+    """Gemini F9 round 3 BLOCKER #1: cert_max=0 makes the cut tautologically fire.
+
+    With max_allowed_area=0, evaluator fires on ANY group g placement in W
+    (occupied >= 1 > 0), pruning legitimate solutions. Validator must reject
+    cert_max == 0 as oracle bug (sanity guard; tight-K NP-hard verification
+    deferred to Phase 1.5+).
+    """
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=0,
+        assignment_witness=[["g1", "p_3x3_a"]],  # witness sum=9 > 0 (strict overflow)
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "tautologically" in (vr.detail or "")
+
+
 def test_safe_ub_static_immune_to_cell_owner_other_TOCTOU():
     """Gemini F9 round 2 BLOCKER regression: safe_ub static, ignores cell_owner_other.
 
