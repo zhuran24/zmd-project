@@ -318,29 +318,59 @@ def _validate_facility_template_match(
 ) -> Optional[ValidationResult]:
     """Cross-check pose_length × pose_shape against canonical_rules facility template.
 
-    Adversary plants pose_length=8 but canonical_rules dimensions show 1×3 →
-    caught here. Without instance_to_facility_type / facility_templates the
-    check is best-effort (skip when unwired during Phase 1.2 fixture tests).
+    Adversary plants pose_length=35 but canonical_rules dimensions show 1×3 →
+    caught here. **Fail-closed** (Gemini F6 round 1 BLOCKER #1): if the
+    facility_templates source-of-truth is missing, return ``unsound`` rather
+    than silently passing. The previous fail-open shortcut (defer when
+    fixtures lacked wiring) let an attacker bypass the dimensions check by
+    omitting templates from state — tests must supply real templates.
     """
     gid = cast(str, cert_dict["contributing_group"])
     pose_length = cast(int, cert_dict["pose_length"])
-    facility_type: Optional[str] = None
-    if state.instance_to_facility_type is not None:
-        facility_type = state.instance_to_facility_type.get(gid)
-    if facility_type is None or state.facility_templates is None:
-        # Phase 1.2 fixture-only state may lack wiring; defer cross-check
-        # rather than over-reject. Adversary cannot bypass other phases.
-        return None
+    if state.instance_to_facility_type is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.instance_to_facility_type missing — F6 cannot verify "
+            "pose_length without source-of-truth (fail-closed)",
+        )
+    facility_type = state.instance_to_facility_type.get(gid)
+    if facility_type is None:
+        return _vr(
+            "unsound",
+            t0,
+            f"contributing_group {gid!r} has no facility_type in "
+            f"instance_to_facility_type (registry rotated or fake gid)",
+        )
+    if state.facility_templates is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.facility_templates missing — F6 cannot verify pose_length "
+            "without source-of-truth (fail-closed)",
+        )
     tpl = state.facility_templates.get(facility_type)
     if not isinstance(tpl, dict):
-        return None
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_templates[{facility_type!r}] missing or not a dict",
+        )
     dims = tpl.get("dimensions")
     if not isinstance(dims, dict):
-        return None
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_templates[{facility_type!r}].dimensions missing or not a dict",
+        )
     w_raw = dims.get("w")
     h_raw = dims.get("h")
     if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
-        return None
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_templates[{facility_type!r}].dimensions w/h must be strict int",
+        )
     w_dim = cast(int, w_raw)
     h_dim = cast(int, h_raw)
     if min(w_dim, h_dim) != 1:
@@ -530,8 +560,20 @@ def evaluate_geometric_shape_packing_hall(cut: Cut, state: BState) -> bool:
 
     Strict ``<``: equality does NOT cut (PROJECT_LOCK invariant).
 
-    Fail-safe: malformed payload / state.ghost_rect missing → False (no cut).
+    Performance optimization (Gemini F6 round 1 HIGH #2): under v1.1 the
+    partition only depends on ``ghost_cells ∪ exterior_blocks``, and both
+    are bound into the cut scope (``ghost_rect_id`` + ``exterior_blocks_hash``).
+    An ``active`` cut has already cleared ``step_6_attach_scope_check`` —
+    so the recomputed partition is guaranteed byte-equal to ``cert``.
+    Re-scanning the baseline in the hot path is wasted O(N) work.
+
+    The evaluator therefore trusts ``cert.total_packable`` /
+    ``cert.region_demand`` directly. Schema sanity is preserved so a
+    malformed payload still returns False.
+
+    Fail-safe: malformed payload returns False (no cut).
     """
+    del state
     if cut.geometric_payload is None:
         return False
     try:
@@ -540,20 +582,13 @@ def evaluate_geometric_shape_packing_hall(cut: Cut, state: BState) -> bool:
             return False
         if cert_dict.get("cert_kind") != "hall_interval_witness":
             return False
-        region_kind_raw = cert_dict.get("region_kind")
-        if region_kind_raw not in _VALID_REGION_KINDS:
-            return False
-        pose_length = cert_dict.get("pose_length")
+        total_packable = cert_dict.get("total_packable")
         region_demand = cert_dict.get("region_demand")
-        if not _is_strict_int(pose_length) or not _is_strict_int(region_demand):
+        if not _is_strict_int(total_packable) or not _is_strict_int(region_demand):
             return False
-        if cast(int, pose_length) < 2 or cast(int, region_demand) < 1:
+        if cast(int, region_demand) < 1:
             return False
-        recomputed_lens, _ = compute_baseline_partition_lens(
-            cast(RegionKind, region_kind_raw), state
-        )
-        recomputed_total = sum(L // cast(int, pose_length) for L in recomputed_lens)
-        return recomputed_total < cast(int, region_demand)
+        return cast(int, total_packable) < cast(int, region_demand)
     except Exception:  # noqa: BLE001 — fail-safe
         return False
 
@@ -578,7 +613,11 @@ def watcher_keys_shape_packing_hall(cut: Cut) -> Dict[str, List[Any]]:
         region_kind = cert_dict.get("region_kind")
         if not _is_non_empty_str(gid) or region_kind not in _VALID_REGION_KINDS:
             return {"group_keys": [], "region_keys": []}
-        region_id = f"shape_packing_hall:{region_kind}"
+        # region_id format per spec 06_shape_packing_hall.md §8 + Gemini F6
+        # round 1 MEDIUM #3: region-first prefix lets a future region-wide
+        # invalidator (e.g. on_baseline_change) wake all shape_hall cuts
+        # without scanning by family. Format: f"{region_kind}:shape_hall"
+        region_id = f"{region_kind}:shape_hall"
         return {
             "group_keys": [cast(str, gid)],
             "region_keys": [region_id],

@@ -4,17 +4,18 @@ Generator scans each baseline region (left + bottom) × each boundary group,
 recomputes ghost+exterior-induced partition_lens, and emits an INFEASIBLE
 witness when ``sum(⌊len(I_j) / L⌋) < region_demand``.
 
-Phase 1.2 region_demand contract (Phase 1.5+ wiring decision deferred):
-- Phase 1.2 default: ``region_demand = min(group.demand,
-  region_total_length // pose_length)`` — the per-region physical upper
-  bound. F6 cut triggers when ghost+exterior partition cannot fit even
-  this maximum count of poses. This matches mandatory_rect_precheck
-  semantics: if the region cannot host the worst-case demand a master
-  might allocate, candidate is INFEASIBLE regardless of master plan.
-- Phase 1.5+ wiring: ``region_demand`` will come from
-  ``master_solution`` (per-region boundary_storage_port count). Generator
-  signature accepts an optional ``region_demand_override`` for the
-  Phase 1.5+ injection.
+Phase 1.2 region_demand contract (Gemini F6 round 1 Gap B + Finding 4):
+- The naive default ``region_demand = min(group.demand, region_total_length
+  // pose_length)`` over-triggers: master might place fewer poses in this
+  region than the upper bound (group total can split across left + bottom).
+  It also ignores the ``(0, 0)`` corner overlap between left_baseline and
+  bottom_baseline (spec §10 #5 multi-region union — Phase 1.5+).
+- Phase 1.2 conservative default: ``region_demand = 1``. F6 emits only when
+  the region is so blocked by ghost+exterior that not a single rigid pose
+  fits — a trivially sound dead state. Real per-region demand comes from
+  ``master_solution`` in Phase 1.5+ via ``region_demand_overrides``.
+- Fixtures and Phase 1.5+ callers supply ``region_demand_overrides`` with
+  the actual per-region count to exercise the full Hall mechanism.
 
 Fail-closed contract:
 - state.ghost_rect is None → [] (F6 ghost-bound)
@@ -130,8 +131,16 @@ def generate_shape_packing_hall_cuts(
             if region_demand_overrides is not None and override_key in region_demand_overrides:
                 region_demand = region_demand_overrides[override_key]
             else:
-                region_demand = min(group_demand, region_cap)
+                # Gemini F6 round 1 Gap B fix: default to conservative
+                # region_demand=1 (cut only when region fully blocked).
+                # Phase 1.5+ callers override via region_demand_overrides
+                # to inject the real per-region master.solution count.
+                region_demand = 1
             if region_demand < 1:
+                continue
+            if region_demand > min(group_demand, region_cap):
+                # Override exceeded sane bound — skip rather than emit a
+                # cert that validator phase 7 would reject as unsound.
                 continue
             cut = _try_build_cut(
                 state=state,

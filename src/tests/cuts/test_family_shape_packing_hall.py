@@ -46,14 +46,17 @@ from src.cuts.oracles.shape_packing_hall_oracle import (
 # ---- fixtures --------------------------------------------------------------
 
 
+_UNSET: Any = object()
+
+
 def _make_state(
     *,
     groups: Dict[str, GroupState] | None = None,
     ghost_rect: Tuple[int, int, int, int] | None = (0, 4, 1, 1),
     ghost_cells: frozenset[Tuple[int, int]] | None = None,
     exterior_blocks: frozenset[Tuple[int, int]] | None = None,
-    instance_to_facility_type: Dict[str, str] | None = None,
-    facility_templates: Dict[str, Any] | None = None,
+    instance_to_facility_type: Any = _UNSET,
+    facility_templates: Any = _UNSET,
 ) -> BState:
     if groups is None:
         groups = {
@@ -78,9 +81,9 @@ def _make_state(
         # Exterior covers cells 10..69 on left_baseline so partition is
         # restricted to first 10 cells (= F2 fixture: length 10 total).
         exterior_blocks = frozenset({(x, 0) for x in range(10, 70)})
-    if instance_to_facility_type is None:
+    if instance_to_facility_type is _UNSET:
         instance_to_facility_type = {"boundary_storage_port": "boundary_storage_port"}
-    if facility_templates is None:
+    if facility_templates is _UNSET:
         facility_templates = {
             "boundary_storage_port": {
                 "dimensions": {"w": 1, "h": 3},
@@ -239,6 +242,52 @@ def test_generator_feasible_returns_empty() -> None:
         boundary_groups=["boundary_storage_port"],
         region_kinds=("left_baseline",),
         region_demand_overrides={("boundary_storage_port", "left_baseline"): 3},
+    )
+    assert cuts == []
+
+
+def test_generator_conservative_default_region_demand_one() -> None:
+    """Gemini F6 round 1 Gap B fix: default region_demand = 1 (only emit when
+    region is fully blocked). 4+5 partition can fit 2 poses → 2 >= 1 → no cut."""
+    state = _make_state()  # left baseline split into [4, 5]
+    cuts = generate_shape_packing_hall_cuts(
+        state,
+        boundary_groups=["boundary_storage_port"],
+        region_kinds=("left_baseline",),
+        # no overrides → default region_demand = 1
+    )
+    assert cuts == []
+
+
+def test_generator_conservative_default_emits_on_fully_blocked() -> None:
+    """Default region_demand=1 still emits when baseline is fully blocked."""
+    # Fully block left baseline (all 70 cells in exterior)
+    state = _make_state(
+        ghost_cells=frozenset(),
+        exterior_blocks=frozenset({(x, 0) for x in range(70)}),
+    )
+    cuts = generate_shape_packing_hall_cuts(
+        state,
+        boundary_groups=["boundary_storage_port"],
+        region_kinds=("left_baseline",),
+    )
+    assert len(cuts) == 1
+    cert_dict = json.loads(cuts[0].cert.cert_payload)
+    assert cert_dict["partition_lens"] == []
+    assert cert_dict["total_packable"] == 0
+    assert cert_dict["region_demand"] == 1
+
+
+def test_generator_rejects_override_exceeding_capacity() -> None:
+    """region_demand override beyond min(group_demand, region_cap) is skipped
+    (would emit a cert validator phase 7 rejects)."""
+    state = _make_state()
+    cuts = generate_shape_packing_hall_cuts(
+        state,
+        boundary_groups=["boundary_storage_port"],
+        region_kinds=("left_baseline",),
+        # region_cap = 70//3 = 23. group_demand = 46. min = 23. 24 exceeds.
+        region_demand_overrides={("boundary_storage_port", "left_baseline"): 24},
     )
     assert cuts == []
 
@@ -444,6 +493,41 @@ def test_validator_unsound_partition_drift_recompute() -> None:
     assert "partition_lens drift" in (result.detail or "")
 
 
+def test_validator_unsound_when_facility_templates_missing() -> None:
+    """Gemini F6 round 1 BLOCKER #1: fail-closed when source-of-truth missing.
+
+    Adversary plants fake cert (pose_length=35) without state.facility_templates
+    — validator must return unsound, not silently pass.
+    """
+    state = _make_state(facility_templates=None)
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    result = validate_shape_packing_hall(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "source-of-truth" in (result.detail or "") or "facility_templates" in (result.detail or "")
+
+
+def test_validator_unsound_when_instance_to_facility_type_missing() -> None:
+    """Fail-closed: state.instance_to_facility_type=None → unsound."""
+    state = _make_state(instance_to_facility_type=None)
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    result = validate_shape_packing_hall(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "instance_to_facility_type" in (result.detail or "")
+
+
+def test_validator_unsound_when_facility_type_not_in_templates() -> None:
+    """Adversary names a gid whose facility_type isn't in facility_templates."""
+    state = _make_state(
+        instance_to_facility_type={"boundary_storage_port": "missing_type"},
+    )
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    result = validate_shape_packing_hall(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+
+
 def test_validator_unsound_facility_template_dimensions_mismatch() -> None:
     state = _make_state(
         facility_templates={
@@ -513,7 +597,8 @@ def test_watcher_keys_returns_group_and_region() -> None:
     cut = _make_cut(cert_payload, state)
     keys = watcher_keys_shape_packing_hall(cut)
     assert keys["group_keys"] == ["boundary_storage_port"]
-    assert keys["region_keys"] == ["shape_packing_hall:left_baseline"]
+    # Region-first prefix per spec §8 (Gemini F6 round 1 MEDIUM #3 fix).
+    assert keys["region_keys"] == ["left_baseline:shape_hall"]
     # No cell_keys — F6 is cell_owner-independent per v1.1
     assert "cell_keys" not in keys
 
