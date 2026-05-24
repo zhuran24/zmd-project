@@ -149,15 +149,22 @@ def generate_pattern_nogood_cuts(
         for lit in full_assignment_literals
     )
 
-    # Capture witness blob from the last INFEASIBLE verdict for cert payload.
-    witness_holder: Dict[str, bytes] = {"blob": b""}
+    # Wall-clock tracking for the whole generate call: each adapter.query
+    # gets the *remaining* deadline (per Gemini F5 review #4 deadline leak fix),
+    # not the full budget. Otherwise multiple oracle calls compound wall time.
+    import time as _time
+
+    gen_t0 = _time.monotonic()
 
     def oracle_cb(core: Tuple[LiteralAssignment, ...]) -> OracleVerdict:
-        verdict, blob = sub_problem_oracle.query(
-            core, state, deadline_seconds=budget.max_seconds
+        remaining = max(0.1, budget.max_seconds - (_time.monotonic() - gen_t0))
+        verdict, _blob = sub_problem_oracle.query(
+            core, state, deadline_seconds=remaining
         )
-        if verdict == "INFEASIBLE":
-            witness_holder["blob"] = blob
+        # witness_blob no longer used: per Gemini F5 review #1, the sub-problem
+        # witness hash is non-deterministic across workers and was breaking the
+        # cert_hash invariant. Validator re-queries the oracle for INFEASIBLE
+        # confirmation; that is the soundness guarantee, not the witness bytes.
         return verdict
 
     try:
@@ -167,19 +174,11 @@ def generate_pattern_nogood_cuts(
     except Exception:  # noqa: BLE001 — fail-closed against any adapter bug
         return []
 
-    witness_blob = witness_holder["blob"]
-    if not witness_blob:
-        # Invariant from deletion_minimize_core: initial verify is INFEASIBLE
-        # and must have populated the witness. Defensive guard against an
-        # adapter that returns an empty blob for INFEASIBLE.
-        return []
-
     try:
         cut = _build_pattern_nogood_cut(
             state=state,
             sub_problem_oracle=sub_problem_oracle,
             result=result,
-            witness_blob=witness_blob,
             iter_index=iter_index,
         )
     except Exception:  # noqa: BLE001 — fail-closed
@@ -192,38 +191,38 @@ def _build_pattern_nogood_cut(
     state: BState,
     sub_problem_oracle: SubProblemOracleAdapter,
     result: CoreMinimizeResult,
-    witness_blob: bytes,
     iter_index: int,
 ) -> Cut:
-    """Construct F5 Cut from minimize result + sub-problem witness.
+    """Construct F5 Cut from minimize result.
 
-    Cert payload structure (canonical JSON, sorted keys):
+    Cert payload structure (canonical JSON, sorted keys, only
+    deterministic-across-worker fields — per Gemini F5 review #1, sub-problem
+    witness bytes are NOT deterministic so are excluded from cert_payload):
+
         cert_kind: "bounded_deletion_core"
         sub_problem_oracle_name: str (∈ registry)
         sub_problem_oracle_version: str (strict-equals registry value)
-        sub_problem_witness_hash: hex sha256(witness_blob)
         forbidden_pose_pattern: list of [group_id, slot_index, pose_id]
         core_minimization: {size_before, size_after, calls, stopped_reason,
                             is_verified_infeasible}
 
     Cut top-level fields satisfy R3 ``validate_cut_integrity``:
     - ``cut.cert.cert_hash`` = sha256(cert_payload_bytes)
-    - ``cut.oracle_cert_hash`` = cert.cert_hash (R3 invariant; sub-problem
-      witness hash lives inside cert_payload, not at top level).
+    - ``cut.oracle_cert_hash`` = cert.cert_hash (R3 invariant).
+
+    Soundness is preserved by the validator's re-query of the oracle on
+    ``forbidden_pose_pattern`` — the sub-problem solver must independently
+    return INFEASIBLE on the cert literals, regardless of what witness bytes
+    it emits.
     """
     canonical_core = canonical_sort_assignment(result.core)
-    # Dedup triple (defensive — input shouldn't have dups; validator rejects).
-    deduped_core: Tuple[LiteralAssignment, ...] = tuple(
-        dict.fromkeys(canonical_core)
-    )
-
-    sub_problem_witness_hash = hashlib.sha256(witness_blob).hexdigest()
+    # canonical_sort_assignment now dedups; this remains explicit for clarity.
+    deduped_core: Tuple[LiteralAssignment, ...] = canonical_core
 
     cert_payload_dict: Dict[str, Any] = {
         "cert_kind": CERT_KIND,
         "sub_problem_oracle_name": sub_problem_oracle.name,
         "sub_problem_oracle_version": sub_problem_oracle.version,
-        "sub_problem_witness_hash": sub_problem_witness_hash,
         "forbidden_pose_pattern": [[g, s, p] for (g, s, p) in deduped_core],
         "core_minimization": {
             "size_before": int(result.size_before),

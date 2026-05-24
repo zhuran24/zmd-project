@@ -224,23 +224,6 @@ def test_generate_full_assignment_feasible_returns_empty():
     assert cuts == []  # ValueError from minimizer → fail-closed
 
 
-def test_generate_oracle_witness_empty_returns_empty():
-    full = _make_full_assignment([("g1", 0, "pA")])
-    triples = canonical_sort_assignment(
-        tuple((lit.slot_ref.group_id, lit.slot_ref.slot_index, lit.pose_id) for lit in full)
-    )
-    adapter = FakeAdapter(
-        name="binding_v1",
-        version="v1.0",
-        verdict_map={triples: ("INFEASIBLE", b"")},  # empty witness blob
-    )
-    register_sub_problem_oracle(adapter)
-    cuts = generate_pattern_nogood_cuts(
-        _make_state(), sub_problem_oracle=adapter, full_assignment_literals=full
-    )
-    assert cuts == []  # generator defensive: empty witness → fail-closed
-
-
 def test_generate_happy_path_produces_cut():
     cut, _ = _build_happy_cut(_make_state())
     assert cut.family == "pattern_nogood"
@@ -308,28 +291,6 @@ def test_validate_unsound_oracle_version_mismatch():
     vr = validate_pattern_nogood(tampered, state, canonical_rules={})
     assert vr.kind == "unsound"
     assert "version mismatch" in (vr.detail or "")
-
-
-def test_validate_schema_err_witness_hash_wrong_length():
-    state = _make_state()
-    cut, _ = _build_happy_cut(state)
-    tampered = _tamper_cert(
-        cut, lambda d: d.__setitem__("sub_problem_witness_hash", "abc")
-    )
-    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
-    assert vr.kind == "schema_err"
-    assert "witness_hash" in (vr.detail or "")
-
-
-def test_validate_schema_err_witness_hash_not_hex():
-    state = _make_state()
-    cut, _ = _build_happy_cut(state)
-    tampered = _tamper_cert(
-        cut, lambda d: d.__setitem__("sub_problem_witness_hash", "z" * 64)
-    )
-    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
-    assert vr.kind == "schema_err"
-    assert "witness_hash" in (vr.detail or "")
 
 
 def test_validate_schema_err_size_before_bool():
@@ -502,7 +463,6 @@ def test_F5_timeout_last_verified_core():
         state=state,
         sub_problem_oracle=adapter,
         result=result,
-        witness_blob=b"witness-bytes",
         iter_index=0,
     )
     # cert.core_minimization.stopped_reason="TIMEOUT" + is_verified_infeasible=True
@@ -577,7 +537,6 @@ def test_F5_cardinality_unsound_routing():
     # cut.literals stays in sync to bypass the literal-match check.
     def _swap_pose(d):
         d["forbidden_pose_pattern"][0][2] = "pB"  # was "pA"
-        d["sub_problem_witness_hash"] = hashlib.sha256(b"other-witness").hexdigest()
 
     tampered = _tamper_cert(cut, _swap_pose)
     # Also rebuild literals to match (canonical sort assumed)

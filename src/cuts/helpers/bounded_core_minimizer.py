@@ -115,12 +115,14 @@ class CoreMinimizeResult:
 def canonical_sort_assignment(
     assignment: Tuple[LiteralAssignment, ...],
 ) -> Tuple[LiteralAssignment, ...]:
-    """Sort by (group_id, slot_index, pose_id) lex.
+    """Sort by (group_id, slot_index, pose_id) lex + dedup.
 
-    Determinism: same INFEASIBLE input across worker / machine / Python version
-    yields the same minimized core → cert_hash stable cross-session.
+    Dedup is defense-in-depth: caller may pass duplicates by accident; without
+    dedup the minimizer's deletion loop would waste oracle calls re-evaluating
+    the same trial_core after a FEASIBLE response (per Gemini F5 review #5).
     """
-    return tuple(sorted(assignment, key=lambda lit: (lit[0], lit[1], lit[2])))
+    sorted_tuple = tuple(sorted(assignment, key=lambda lit: (lit[0], lit[1], lit[2])))
+    return tuple(dict.fromkeys(sorted_tuple))
 
 
 def deletion_minimize_core(

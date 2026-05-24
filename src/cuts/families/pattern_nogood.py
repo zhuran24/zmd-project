@@ -10,13 +10,18 @@ Cert payload contract (canonical JSON, per
     cert_kind: "bounded_deletion_core"
     sub_problem_oracle_name: str (∈ _REGISTERED_SUB_PROBLEM_ORACLES)
     sub_problem_oracle_version: str (strict-equals registry value)
-    sub_problem_witness_hash: hex sha256, 64 chars [0-9a-f]
     forbidden_pose_pattern: list of [group_id, slot_index, pose_id], dedup
     core_minimization:
         size_before, size_after, calls: strict int >= 0
         stopped_reason: ∈ {INFEASIBLE_VERIFIED, TIMEOUT, MAX_CALLS,
                           EXCEPTION_FAIL_CLOSED}
         is_verified_infeasible: True (rejected otherwise)
+
+Note: Sub-problem witness bytes are NOT included in cert_payload (per Gemini
+F5 review #1 BLOCKER fix). Witness bytes can be non-deterministic across
+workers, which would break cert_hash cross-worker reproducibility. Validator
+re-queries the oracle on forbidden_pose_pattern as its soundness check —
+identity of the witness bytes is irrelevant, only the INFEASIBLE verdict matters.
 
 Re-verify budget is conservative — Phase 1.2 default 5s wall. TIMEOUT → ValidationResult("timeout") so CutStore can quarantine without classifying as unsound.
 
@@ -30,9 +35,7 @@ Refs:
 """
 from __future__ import annotations
 
-import hashlib
 import json
-import string
 import time
 from typing import Any, Dict, List, Literal, Optional, Tuple, cast
 
@@ -49,11 +52,11 @@ from src.cuts.oracles.pattern_nogood_oracle import (
 ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
 
 
-# Reasonable conservative validator re-verify budget; Phase 1.5+ may tune.
-_VALIDATOR_REVERIFY_DEADLINE_SECONDS: float = 5.0
-
-_HEX_DIGITS: frozenset[str] = frozenset(string.hexdigits)
-
+# Validator re-verify deadline. Per Gemini F5 review #3, must be >= the
+# generator's MinimizerBudget.max_seconds (default 10.0s) so a cut whose final
+# oracle call fits the generator budget does not get quarantined by the
+# validator running with a tighter timeout. Phase 1.5+ may tune.
+_VALIDATOR_REVERIFY_DEADLINE_SECONDS: float = 10.0
 
 def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
     return ValidationResult(
@@ -67,14 +70,6 @@ def _is_strict_int(value: object) -> bool:
 
 def _is_non_empty_str(value: object) -> bool:
     return isinstance(value, str) and value != ""
-
-
-def _is_hex_sha256(value: object) -> bool:
-    return (
-        isinstance(value, str)
-        and len(value) == 64
-        and all(c in _HEX_DIGITS for c in value)
-    )
 
 
 def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
@@ -142,15 +137,9 @@ def _validate_sub_problem_oracle(
     return None, adapter
 
 
-def _validate_witness_hash(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
-    h = cert_dict.get("sub_problem_witness_hash")
-    if not _is_hex_sha256(h):
-        return _vr(
-            "schema_err",
-            t0,
-            f"sub_problem_witness_hash must be 64-char lowercase hex, got {h!r}",
-        )
-    return None
+# Witness hash validation removed (Gemini F5 review #1 fix): witness bytes
+# are not deterministic across workers; soundness comes from oracle re-query,
+# not byte-equal witness identity.
 
 
 def _validate_core_minimization(
@@ -294,13 +283,17 @@ def _validate_cert_literals_match(
 def _reverify_sub_problem_oracle(
     adapter: SubProblemOracleAdapter,
     cert_triples: Tuple[Tuple[str, int, str], ...],
-    cert_witness_hash: str,
     state: BState,
     t0: float,
 ) -> Optional[ValidationResult]:
-    """Re-query the sub-problem oracle on the forbidden core. Must return INFEASIBLE."""
+    """Re-query the sub-problem oracle on the forbidden core. Must return INFEASIBLE.
+
+    Per Gemini F5 review #1 BLOCKER fix: witness bytes are non-deterministic
+    across workers; we no longer compare witness hash against cert. The
+    soundness contract is the INFEASIBLE verdict alone.
+    """
     try:
-        verdict, witness_blob = adapter.query(
+        verdict, _witness_blob = adapter.query(
             cert_triples,
             state,
             deadline_seconds=_VALIDATOR_REVERIFY_DEADLINE_SECONDS,
@@ -323,11 +316,6 @@ def _reverify_sub_problem_oracle(
             t0,
             f"sub-problem oracle re-verify returned {verdict!r}, expected INFEASIBLE",
         )
-    # Re-verify witness hash matches cert (oracle determinism check).
-    # Accept mismatch as a soft signal — not all sub-problem solvers are
-    # byte-deterministic across re-runs. Validator hard requirement is the
-    # INFEASIBLE verdict. Optional: log mismatch via telemetry (defer P1.5+).
-    del witness_blob, cert_witness_hash
     return None
 
 
@@ -366,7 +354,6 @@ def validate_pattern_nogood(
 
     for error in (
         _validate_cert_kind(cert_dict, t0),
-        _validate_witness_hash(cert_dict, t0),
         _validate_core_minimization(cert_dict, t0),
     ):
         if error is not None:
@@ -391,7 +378,6 @@ def validate_pattern_nogood(
     reverify_err = _reverify_sub_problem_oracle(
         adapter,
         cert_triples,
-        cast(str, cert_dict["sub_problem_witness_hash"]),
         state,
         t0,
     )
@@ -414,6 +400,3 @@ def watcher_keys_pattern_nogood(cut: Cut) -> Dict[str, List[Any]]:
     return {"group_keys": group_keys, "pose_keys": pose_keys}
 
 
-# Verify the helper hash function with a self-test at import time would be
-# overkill; the regression suite covers this via test_family_pattern_nogood.py.
-_ = hashlib.sha256  # noqa: F841 — re-export marker (validator-internal use)
