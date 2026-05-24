@@ -221,24 +221,66 @@ def _bfs_level(graph: _DinicGraph) -> List[int]:
 
 def _dfs_blocking_flow(
     graph: _DinicGraph,
-    u: int,
-    pushed: int,
+    source: int,
+    initial_pushed: int,
     level: List[int],
     iter_ptr: List[int],
 ) -> int:
-    """Recursive DFS to push blocking flow. Returns flow pushed."""
-    if u == graph.super_sink:
-        return pushed
-    while iter_ptr[u] < len(graph.adj[u]):
-        edge = graph.adj[u][iter_ptr[u]]
-        v, cap, rev = edge
-        if cap > 0 and level[v] == level[u] + 1:
-            d = _dfs_blocking_flow(graph, v, min(pushed, cap), level, iter_ptr)
-            if d > 0:
+    """Iterative DFS to find one augmenting path on the level graph and push flow.
+
+    Returns flow pushed (0 if source is blocked at the current level).
+
+    Iterative for soundness reasons (Gemini F2/F4 round 1 BLOCKER #1): on a
+    70x70 grid, level-graph depth on a serpentine corridor can exceed Python's
+    default ``sys.getrecursionlimit()`` (1000), causing ``RecursionError`` to
+    be swallowed by the oracle's broad ``except Exception`` and silently drop
+    cuts (false negatives). Reproduced 2026-05-24 with a 2485-cell serpentine
+    setup; the recursive version raised, this version finds the path cleanly.
+
+    Emulates the recursive call stack:
+    - ``stack[i]`` is the current node at DFS depth i (source first)
+    - ``pushed[i]`` is the bottleneck capacity into ``stack[i]``
+    - ``path_edges[i]`` is ``(parent, edge_index_in_parent_adj)`` for the edge
+      from ``stack[i]`` to ``stack[i+1]``
+    Dead-end at the top of the stack advances the parent's ``iter_ptr`` to skip
+    the dead branch — same behavior as the recursive version's fall-through.
+    """
+    if source == graph.super_sink:
+        return 0
+    inf_budget = 10**18
+    stack: List[int] = [source]
+    pushed: List[int] = [min(initial_pushed, inf_budget)]
+    path_edges: List[Tuple[int, int]] = []
+
+    while stack:
+        u = stack[-1]
+        if u == graph.super_sink:
+            d = pushed[-1]
+            for (parent_u, edge_idx) in path_edges:
+                edge = graph.adj[parent_u][edge_idx]
+                rev_idx = edge[2]
                 edge[1] -= d
-                graph.adj[v][rev][1] += d
-                return d
-        iter_ptr[u] += 1
+                graph.adj[edge[0]][rev_idx][1] += d
+            return d
+        advanced = False
+        while iter_ptr[u] < len(graph.adj[u]):
+            edge = graph.adj[u][iter_ptr[u]]
+            v, cap, _rev = edge
+            if cap > 0 and level[v] == level[u] + 1:
+                stack.append(v)
+                pushed.append(min(pushed[-1], cap))
+                path_edges.append((u, iter_ptr[u]))
+                advanced = True
+                break
+            iter_ptr[u] += 1
+        if not advanced:
+            stack.pop()
+            pushed.pop()
+            if path_edges:
+                parent_u, _ = path_edges.pop()
+                iter_ptr[parent_u] += 1
+            else:
+                return 0
     return 0
 
 

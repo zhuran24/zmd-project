@@ -62,7 +62,11 @@ def _parse_cell(raw: object, field_name: str, grid_size: int = 70) -> Cell:
 
 def _decode_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
     arr = base64.b64decode(b64, validate=True)
-    expected_len = grid_size * grid_size // 8 + 1
+    # Per Gemini F2/F4 round 1 LOW #3: align with the encoder's padding formula
+    # (cutset_oracle._encode_bitset / component_reach_oracle._encode_bitset use
+    # ``(grid_size**2 + 7) // 8``). At grid_size=70 (4900 bits) both formulas
+    # yield 613; the bug is latent for grid sizes that are exact multiples of 8.
+    expected_len = (grid_size * grid_size + 7) // 8
     if len(arr) != expected_len:
         raise ValueError(f"bitset length mismatch: got {len(arr)}, expected {expected_len}")
     cells = set()
