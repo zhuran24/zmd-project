@@ -6,11 +6,10 @@ of the pole's cells within ``pole_radius`` of at least one facility cell.
 
 Two variants:
 - ``compute_cover_set(...)``: pole anchors against the FULL free-cell mask
-  (ghost ∪ exterior ∪ cell_owner blocked). Empty → facility has no power.
-- ``compute_cover_set_ghost_only(...)``: pole anchors against the GHOST/EXTERIOR
-  mask only (ignoring cell_owner). Used by F7 validator phase 7 to ensure the
-  ghost is the true cause; if this set is non-empty but the full one is, the
-  failure is a cell_owner causation case (defer Phase 1.5+ multi-literal).
+  (ghost ∪ exterior ∪ cell_owner ∪ facility_cells blocked). Empty → facility
+  has no power. Callers build the mask explicitly so the
+  ``facility_cells`` exclusion (Gemini F7 round 1 BLOCKER #1 fix) is visible
+  at each call site (validator phase 6/7 + oracle generator).
 
 Per ``canonical_rules.facility_templates.power_pole``: dimensions w=2, h=2.
 ``power_coverage_radius`` carries the Euclidean radius (cell units; no
@@ -105,35 +104,8 @@ def compute_cover_set(
     return frozenset(out)
 
 
-def compute_cover_set_ghost_only(
-    facility_cells: Iterable[Cell],
-    ghost_cells: FrozenSet[Cell],
-    exterior_blocks: FrozenSet[Cell],
-    pole_radius: float,
-    *,
-    grid_size: int = _DEFAULT_GRID_SIZE,
-    pole_size: int = _POLE_SIZE,
-) -> FrozenSet[Cell]:
-    """Variant of ``compute_cover_set`` that masks only ghost+exterior.
-
-    Returns the CoverSet assuming ``cell_owner`` is empty — used by F7
-    validator phase 7 to verify the failure cause is ghost-only (single
-    literal cut is sound). If this set is non-empty but
-    ``compute_cover_set(... full free_cells)`` is empty, then cell_owner
-    is the true cause and the cert violates Phase 1.2's ``empty_coverset_ghost``
-    invariant.
-    """
-    blocked = ghost_cells | exterior_blocks
-    free = frozenset(
-        (x, y)
-        for x in range(grid_size)
-        for y in range(grid_size)
-        if (x, y) not in blocked
-    )
-    return compute_cover_set(
-        facility_cells,
-        free,
-        pole_radius,
-        grid_size=grid_size,
-        pole_size=pole_size,
-    )
+# NOTE: ``compute_cover_set_ghost_only`` was retired Round 2 (Gemini F7
+# round 2 LOW #3). Callers now inline the ghost-only mask construction
+# (validator phase 7 + oracle generator) to make the "facility_cells must
+# also be excluded" R1 fix explicit at the call site. The helper had no
+# remaining callers and was removed to keep the module surface tight.
