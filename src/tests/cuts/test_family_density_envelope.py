@@ -291,11 +291,24 @@ def test_validate_schema_err_max_allowed_area_exceeds_window():
 
 
 def test_validate_unsound_max_allowed_area_exceeds_safe_ub():
-    """cert claims max_allowed_area > safe upper bound recomputed by validator."""
-    state = _make_state(
-        cell_owner={(5, 5): ("g_other", 0)},  # 1 cell occupied by other group
+    """cert claims max_allowed_area > safe upper bound recomputed by validator.
+
+    Per Gemini F9 round 2 BLOCKER fix, safe_ub is now STATIC (only ghost +
+    exterior); cell_owner_other no longer reduces the bound. So we exercise
+    the safe_ub-exceeded path using ghost_cells (static obstacles).
+    """
+    base = _make_state()
+    # Add 1 ghost cell in window (0,0,10,10) so safe_ub = 100 - 1 = 99
+    state = BState(
+        groups=base.groups,
+        ghost_rect=base.ghost_rect,
+        ghost_cells=frozenset({(5, 5)}),
+        exterior_blocks=base.exterior_blocks,
+        cell_owner=base.cell_owner,
+        candidate_placements=base.candidate_placements,
+        instance_to_facility_type=base.instance_to_facility_type,
+        source_digest=base.source_digest,
     )
-    # safe_ub = 100 - 1 (other_group cell) = 99; cert claims 100 → unsound
     cert_payload = _make_density_envelope_cert(max_allowed_area=100)
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
@@ -673,6 +686,88 @@ def test_generate_equality_no_cut():
 
 
 # ---- watcher_keys ---------------------------------------------------------
+
+
+def test_safe_ub_static_immune_to_cell_owner_other_TOCTOU():
+    """Gemini F9 round 2 BLOCKER regression: safe_ub static, ignores cell_owner_other.
+
+    If safe_ub were dynamic (= |W| - |ghost| - |exterior| - |cell_owner_other ∩ W|),
+    an oracle would freeze that transient value into cert.max_allowed_area.
+    Once cell_owner_other vacated, real capacity would grow, but the cert's
+    cap stayed frozen → cut prunes legal solutions.
+
+    Verify: cell_owner_other in window does NOT affect safe_ub recompute.
+    """
+    state_with_other = _make_state(
+        cell_owner={(0, 0): ("g_other", 0), (0, 1): ("g_other", 1)},
+    )
+
+    # Without ghost/exterior, the state has safe_ub = |W| = 100
+    # (any cell_owner_other in W must NOT reduce the cap).
+    # Use a cut with max_allowed_area=100 (cap is exactly |W|=100; max=100 allowed):
+    # If safe_ub dynamic, state_with_other.safe_ub = 98 → 100 > 98 → unsound.
+    # If safe_ub static (correct fix), state_with_other.safe_ub = 100 → ok at this check.
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=100,  # equal to |W|, sanity test (not strict, but max_allowed_area check)
+        assignment_witness=[["g1", "p_3x3_a"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    # max=100 == |W|; this triggers the schema "max <= |W|" path (passes),
+    # but witness area is small so overflow fails. The point: cell_owner_other
+    # must NOT cause max_allowed_area > safe_ub error.
+    vr = validate_density_envelope(cut, state_with_other, canonical_rules={})
+    # Should fail on strict overflow (not on safe_ub) — so the failure mode is
+    # 'witness area <= max_allowed_area', NOT 'cert > safe_ub'.
+    assert vr.kind == "unsound"
+    assert "safe upper bound" not in (vr.detail or ""), (
+        f"safe_ub recompute used cell_owner_other (TOCTOU vuln); vr.detail={vr.detail!r}"
+    )
+
+
+def test_validator_union_excludes_ghost_cells():
+    """Gemini F9 round 2 HIGH regression: validator union must exclude ghost.
+
+    candidate_placements isn't ghost-pre-filtered; an oracle could pick a
+    ghost-crossing pose as witness, inflating validator's union count by
+    cells that are physically unreachable (master's ghost_anchor_filter
+    blocks them in real placement). Evaluator iterates cell_owner (never
+    contains ghost cells), so the divergence allows unsound cuts.
+    """
+    # Pose at (4, 4): cells (4,4),(4,5),(4,6),(5,4),(5,5),(5,6),(6,4),(6,5),(6,6)
+    # Make 4 of these cells ghost: (5,5),(5,6),(6,5),(6,6)
+    # Within window (0,0,10,10): all 9 cells are inside; with ghost excluded, 5 cells.
+    pose_ghost = _make_pose("p_ghost_crossing", (4, 4), 3, 3)
+    cp = {"facility_pools": {"manufacturing_3x3": [pose_ghost]}}
+    ghost_cells = frozenset({(5, 5), (5, 6), (6, 5), (6, 6)})
+    state = BState(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=4,
+                pose_domain=frozenset({"p_ghost_crossing"}),
+                selected_poses=[],
+            ),
+        },
+        ghost_rect=(0, 0, 10, 10),
+        ghost_cells=ghost_cells,
+        exterior_blocks=frozenset(),
+        candidate_placements=cp,
+        instance_to_facility_type={"g1": "manufacturing_3x3"},
+        source_digest="test-source-digest",
+    )
+    # Without ghost-exclusion: union = 9. With exclusion: union = 5.
+    # max_allowed_area = 7: ghost-included would say 9 > 7 → ok (unsoundly);
+    # ghost-excluded says 5 ≤ 7 → unsound.
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=7,
+        assignment_witness=[["g1", "p_ghost_crossing"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "strict overflow" in (vr.detail or ""), (
+        f"Validator counted ghost cells in union (HIGH bug); vr.detail={vr.detail!r}"
+    )
 
 
 def test_validator_overlap_witness_union_not_sum():

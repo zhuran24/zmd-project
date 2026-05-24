@@ -282,22 +282,32 @@ def _compute_safe_max_allowed_area(
     cert_group_id: GroupId,
     state: BState,
 ) -> int:
-    """Recompute the safe upper bound for F9 max_allowed_area.
+    """Recompute the safe upper bound for F9 max_allowed_area (STATIC formula).
 
-    Mathematical basis: |W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|.
-    cell_owner_other = cells owned by other groups (cert.group_id excluded
-    because those cells are part of the witness assignment under consideration).
+    Per Gemini F9 round 2 BLOCKER fix: ``cell_owner_other`` (other groups'
+    occupancy) is **excluded** from the bound. It is transient master state;
+    folding it into a static cert.max_allowed_area caused a TOCTOU bug —
+    when those cells later vacated, real capacity grew but cert's cap
+    stayed frozen, and the cut pruned legal (possibly optimal) solutions.
+
+    Mathematical basis: ``|W| - |(ghost ∪ exterior) ∩ W|``.
+
+    This bound is **looser** than a dynamic version (ignores other-group
+    occupancy). Soundness preserved: a looser bound only weakens the cut
+    (potential FN, never FP). When a stronger bound is needed the oracle
+    should emit a new F9 cut after the dynamic landscape changes (do not
+    encode dynamics into a single static cert).
+
+    ``cert_group_id`` kept in the signature for API stability + future
+    use; under the static formula it is unused.
 
     See module-level note: this helper is intentionally NOT shared with F1's
-    compute_static_capacity. F1 cap_R is static (no cell_owner); F9 safe_ub
-    is dynamic (cell_owner-aware). Sharing would silently break F1's
-    cross-ghost-replay invariant.
+    compute_static_capacity (different semantics + cross-ghost-replay
+    invariants differ — sharing would silently break F1).
     """
-    blocked_other: set[Cell] = set(state.ghost_cells) | set(state.exterior_blocks)
-    for cell, (owner_g, _slot) in state.cell_owner.items():
-        if owner_g != cert_group_id:
-            blocked_other.add(cell)
-    return len(window_cells) - len(blocked_other & window_cells)
+    del cert_group_id  # unused under static formula; signature preserved
+    static_blocked: set[Cell] = set(state.ghost_cells) | set(state.exterior_blocks)
+    return len(window_cells) - len(static_blocked & window_cells)
 
 
 def _validate_max_allowed_area(
@@ -361,6 +371,15 @@ def _recompute_assignment_area_overlap(
     """
     from src.cuts.helpers.candidate_placements import find_pose
 
+    # Per Gemini F9 round 2 HIGH fix: also exclude ghost/exterior cells from
+    # the union. ``candidate_placements`` is the un-filtered pose pool (master
+    # filters at use-time via ghost_anchor_filter), so a pose can claim
+    # ``occupied_cells`` crossing ghost. The evaluator iterates
+    # ``state.cell_owner`` which never contains ghost/exterior entries —
+    # validator must match that semantic.
+    blocked_static: frozenset[Cell] = (
+        frozenset(state.ghost_cells) | frozenset(state.exterior_blocks)
+    )
     occupied_cells: set[Cell] = set()
     for (g, p) in witness_pairs:
         pose = find_pose(state, g, p)
@@ -370,7 +389,7 @@ def _recompute_assignment_area_overlap(
             if not isinstance(raw_cell, (list, tuple)) or len(raw_cell) != 2:
                 continue
             cell = (int(raw_cell[0]), int(raw_cell[1]))
-            if cell in window_cells:
+            if cell in window_cells and cell not in blocked_static:
                 occupied_cells.add(cell)
     return len(occupied_cells)
 
