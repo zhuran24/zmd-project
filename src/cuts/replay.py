@@ -34,6 +34,7 @@ from src.cuts.families.cutset import validate_cutset
 from src.cuts.families.density_envelope import validate_density_envelope
 from src.cuts.families.pattern_nogood import validate_pattern_nogood
 from src.cuts.families.port_exposure import validate_port_exposure
+from src.cuts.families.power_grid_reach import validate_power_grid_reach
 from src.cuts.families.power_hitting_set import validate_power_hitting_set
 from src.cuts.families.region_capacity import validate_region_capacity
 from src.cuts.families.shape_packing_hall import validate_shape_packing_hall
@@ -67,6 +68,7 @@ FAMILY_VALIDATORS: Dict[str, FamilyValidator] = {
     "density_envelope": validate_density_envelope,
     "shape_packing_hall": validate_shape_packing_hall,
     "power_hitting_set": validate_power_hitting_set,
+    "power_grid_reach": validate_power_grid_reach,
 }
 
 
