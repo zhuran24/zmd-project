@@ -154,6 +154,13 @@ def _build_component_reach_cut(
         "src_component_bitset_b64": _encode_bitset(src_component),
         "sink_component_bitset_b64": _encode_bitset(sink_component),
         "separator_cells": [[c[0], c[1]] for c in separator],
+        # Spec 04_component_reach.md §3 lists blocking_facilities as a required
+        # tuple. v1.1 validator (Gemini round 16 A1) deliberately does not check
+        # specific pose IDs for geometric soundness, but the cert still carries
+        # the field per schema contract. Phase 1.5+ causation split will
+        # populate real (group_id, slot_index, pose_id) triples for the
+        # facilities occupying each separator cell; Phase 1.2 leaves it empty.
+        "blocking_facilities": [],
     }
     cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
     cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
