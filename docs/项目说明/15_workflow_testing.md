@@ -84,9 +84,9 @@ review pkg 默认 ship 全集 (53 MB), README 提醒 reviewer 反例数字 vs sa
 |---|---|---|---|
 | `ruff check` | clean (default + no-ignores) | 维持 | F401 / import order |
 | `mypy --strict` | ✅ pass (0 errors, exit hardening 清零) | 维持 | 类型 hygiene |
-| `vulture` | ✅ pass (whitelist `scripts/vulture_cuts_whitelist.py`) | 维持 | dead code |
+| `vulture` | ✅ pass (`src/cuts/ src/tests/cuts/ scripts/vulture_cuts_whitelist.py`) | 维持 | dead code |
 | `bandit` | ✅ 0 issues | 维持 | security |
-| `radon cc` | ✅ average A, no D (max C(15), exit hardening 拆 helper) | 维持 | complexity |
+| `radon cc` | ✅ average A, no D (max C(15), 2026-05-24 复查后仍满足) | 维持 | complexity |
 
 每 commit 必跑 `pytest src/tests/cuts/ -q` + `ruff check src/cuts/`; 大 commit (新 family / 改 step) 必跑全套 5 工具.
 

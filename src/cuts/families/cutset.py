@@ -22,7 +22,7 @@ from __future__ import annotations
 import base64
 import json
 import time
-from typing import Any, Dict, FrozenSet, Literal, Tuple
+from typing import Any, Dict, FrozenSet, Literal, Tuple, cast
 
 from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
 
@@ -33,6 +33,18 @@ PartitionEdge = Tuple[Cell, Cell]
 
 def _is_strict_int(value: object) -> bool:
     return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _parse_strict_int(value: object, field_name: str) -> int:
+    if not _is_strict_int(value):
+        raise ValueError(f"{field_name} must be int (bool/str rejected)")
+    return cast(int, value)
+
+
+def _parse_non_empty_str(value: object, field_name: str) -> str:
+    if not isinstance(value, str) or value == "":
+        raise ValueError(f"{field_name} must be non-empty str")
+    return value
 
 
 def _parse_cell(raw: object, field_name: str, grid_size: int = 70) -> Cell:
@@ -177,7 +189,7 @@ def _validate_cut_edges(
     current_cut_edges = _cross_partition_edges(side_a, side_b, free_cells)
     if "cut_edges" not in cert_dict:
         return _vr("schema_err", t0, "cert missing cut_edges field"), 0
-    cert_cut_size = int(cert_dict["cut_size"])
+    cert_cut_size = _parse_strict_int(cert_dict.get("cut_size"), "cut_size")
     if len(current_cut_edges) != cert_cut_size:
         return _vr("unsound", t0, f"cut_size mismatch: cert={cert_cut_size}, recomputed={len(current_cut_edges)}"), cert_cut_size
     cert_edges = _canonical_edges_from_cert(cert_dict.get("cut_edges", []))
@@ -207,7 +219,7 @@ def _validate_contributing_commodities(
     commodity_routes = state.commodity_routes
     seen: set[str] = set()
     for raw_c in contributing:
-        c = str(raw_c)
+        c = _parse_non_empty_str(raw_c, "contributing_commodities[]")
         if c in seen:
             return _vr("unsound", t0, f"duplicate contributing commodity {c!r} (spec §2 集合语义)"), seen
         seen.add(c)
@@ -248,8 +260,8 @@ def _validate_commodity_demand(
     if state.commodity_demands is None:
         return _vr("schema_err", t0, "F2 commodity_demands missing after registry gate")
     commodity_demands = state.commodity_demands
-    registry_demand = sum(commodity_demands[c] for c in commodities)
-    commodity_demand = int(cert_dict["commodity_demand"])
+    registry_demand = sum(_parse_strict_int(commodity_demands[c], f"commodity_demands[{c!r}]") for c in commodities)
+    commodity_demand = _parse_strict_int(cert_dict.get("commodity_demand"), "commodity_demand")
     if registry_demand != commodity_demand:
         return _vr("unsound", t0, f"commodity_demand mismatch: cert={commodity_demand}, registry sum={registry_demand}")
     if commodity_demand <= cert_cut_size:
@@ -309,9 +321,13 @@ def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
     """
     if cut.geometric_payload is None:
         return False  # fail-safe: schema 缺失不报 violate
-    cert_dict = json.loads(cut.geometric_payload)
-    side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
-    side_b = _decode_bitset(cert_dict["side_b_bitset_b64"])
+    try:
+        cert_dict = cast(Dict[str, Any], json.loads(cut.geometric_payload))
+        side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
+        side_b = _decode_bitset(cert_dict["side_b_bitset_b64"])
+        commodity_demand = _parse_strict_int(cert_dict.get("commodity_demand"), "commodity_demand")
+    except Exception:
+        return False
     free_cells = _free_cells(state)
     patch = side_a | side_b
     # partition cells must remain free (cell_owner / ghost 变化后 partition 失效)
@@ -321,4 +337,4 @@ def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
     if _has_patch_escape(patch, free_cells):
         return False
     current_edges = _cross_partition_edges(side_a, side_b, free_cells)
-    return bool(cert_dict["commodity_demand"] > len(current_edges))
+    return bool(commodity_demand > len(current_edges))

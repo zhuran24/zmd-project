@@ -453,3 +453,15 @@ def test_evaluate_literal_multiset_delegates_to_multiset():
 
 def test_port_exposure_oracle_stub_is_fail_closed():
     assert generate_port_exposure_cuts(_make_state(), master_solution={"unused": True}) == []
+
+
+def test_validate_port_exposure_schema_err_bool_blocking_slot():
+    cert_payload = _make_port_exposure_cert(
+        port_cell=(10, 10), port_direction="W", front_cell=(9, 10), blocking_slot=True
+    )
+    cut = _make_port_exposure_cut(cert_payload)
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)}, refinery_poses=["p3"])
+
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+    assert vr.kind == "schema_err"
+    assert "blocking_facility[1]" in vr.detail

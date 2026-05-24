@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 import time
 from collections import Counter
-from typing import Any, Dict, Literal, Tuple
+from typing import Any, Dict, Literal, Tuple, cast
 
 from src.cuts.helpers.candidate_placements import (
     DIRECTION_OFFSETS,
@@ -24,10 +24,39 @@ def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
     return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
 
 
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _parse_non_empty_str(value: object, field_name: str) -> str:
+    if not isinstance(value, str) or value == "":
+        raise ValueError(f"{field_name} must be non-empty str")
+    return value
+
+
+def _parse_strict_int(value: object, field_name: str) -> int:
+    if not _is_strict_int(value):
+        raise ValueError(f"{field_name} must be int (bool/str rejected)")
+    return cast(int, value)
+
+
 def _cell(raw: object) -> Cell:
     if not isinstance(raw, (list, tuple)) or len(raw) != 2:
         raise ValueError(f"expected cell as a length-2 list/tuple, got {raw!r}")
-    return (int(raw[0]), int(raw[1]))
+    return (
+        _parse_strict_int(raw[0], "cell.x"),
+        _parse_strict_int(raw[1], "cell.y"),
+    )
+
+
+def _parse_blocking_facility(value: object) -> Tuple[str, int, str]:
+    if not isinstance(value, (list, tuple)) or len(value) != 3:
+        raise ValueError("blocking_facility must be [group, slot, pose_id]")
+    return (
+        _parse_non_empty_str(value[0], "blocking_facility[0]"),
+        _parse_strict_int(value[1], "blocking_facility[1]"),
+        _parse_non_empty_str(value[2], "blocking_facility[2]"),
+    )
 
 
 def _validate_front_cell_math(
@@ -75,7 +104,7 @@ def _validate_blocking_binding(
     blocking_pose = find_pose(state, blocking_group, blocking_pose_id)
     if blocking_pose is None:
         return _vr("schema_err", t0, f"cannot locate blocking pose {blocking_group}::{blocking_pose_id}")
-    occupied = {tuple(c) for c in blocking_pose.get("occupied_cells", [])}
+    occupied = {_cell(c) for c in blocking_pose.get("occupied_cells", [])}
     if front_cell not in occupied:
         return _vr("unsound", t0, f"front_cell {front_cell} not in blocking_pose {blocking_pose_id!r} occupied_cells")
     return None
@@ -141,16 +170,15 @@ def validate_port_exposure(
         actual = 0 if cut.literals is None else len(cut.literals)
         return _vr("schema_err", t0, f"F3 spec §4: cut.literals 必 ≥ 2; actual={actual}")
     try:
-        cert_dict: Dict[str, Any] = json.loads(cut.cert.cert_payload)
-        port_cell = _cell(cert_dict["port_cell"])
-        port_direction = str(cert_dict["port_direction"])
-        front_cell = _cell(cert_dict["front_cell"])
-        blocking_group_raw, blocking_slot_raw, blocking_pose_raw = cert_dict["blocking_facility"]
-        blocking_group = str(blocking_group_raw)
-        blocking_slot = int(blocking_slot_raw)
-        blocking_pose_id = str(blocking_pose_raw)
-        facility_group = str(cert_dict["facility_group"])
-        facility_pose_id = str(cert_dict["facility_pose_id"])
+        cert_dict = cast(Dict[str, Any], json.loads(cut.cert.cert_payload))
+        port_cell = _cell(cert_dict.get("port_cell"))
+        port_direction = _parse_non_empty_str(cert_dict.get("port_direction"), "port_direction")
+        front_cell = _cell(cert_dict.get("front_cell"))
+        blocking_group, blocking_slot, blocking_pose_id = _parse_blocking_facility(
+            cert_dict.get("blocking_facility")
+        )
+        facility_group = _parse_non_empty_str(cert_dict.get("facility_group"), "facility_group")
+        facility_pose_id = _parse_non_empty_str(cert_dict.get("facility_pose_id"), "facility_pose_id")
 
         for error in (
             _validate_front_cell_math(port_cell, port_direction, front_cell, t0),

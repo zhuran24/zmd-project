@@ -527,3 +527,25 @@ def test_validator_unsound_when_cert_carries_group_with_pose_outside_R():
     vr = validate_region_capacity(cut, bad_state, CANONICAL_RULES)
     assert vr.kind == "unsound", f"got {vr.kind}: {vr.detail}"
     assert "P(g) ⊆ R" in (vr.detail or "")
+
+
+def test_validator_schema_err_bool_numeric_fields_are_not_ints():
+    state = _make_state(boundary_exterior_blocks=2)
+    cut = generate_region_capacity_cuts(state, CANONICAL_RULES)[0]
+    cert_dict = json.loads(cut.geometric_payload)
+    cert_dict["cap_R"] = True
+    tampered_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+    tampered = Cut(
+        cut_id=cut.cut_id,
+        family=cut.family,
+        literals=None,
+        geometric_payload=tampered_payload,
+        scope=cut.scope,
+        cert=cut.cert,
+        family_version=cut.family_version,
+        validator_version=cut.validator_version,
+    )
+
+    vr = validate_region_capacity(tampered, state, CANONICAL_RULES)
+    assert vr.kind == "schema_err"
+    assert "cap_R" in vr.detail

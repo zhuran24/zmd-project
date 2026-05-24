@@ -31,7 +31,7 @@ import base64
 import json
 import time
 from functools import lru_cache
-from typing import Any, Dict, FrozenSet, List, Literal, Tuple
+from typing import Any, Dict, FrozenSet, List, Literal, Tuple, cast
 
 from src.cuts.lifecycle import BState, Cell, Cut, GroupId, ValidationResult
 
@@ -59,6 +59,58 @@ _PLACEMENT_RULE_REGIONS: Dict[str, FrozenSet[str]] = {
     # **只** "left_or_bottom_boundary" 一种 placement_rule, 其他 free)
     "free": frozenset(),
 }
+
+
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _parse_strict_int(value: object, field_name: str) -> int:
+    if not _is_strict_int(value):
+        raise ValueError(f"{field_name} must be int (bool/str rejected)")
+    return cast(int, value)
+
+
+def _parse_non_empty_str(value: object, field_name: str) -> str:
+    if not isinstance(value, str) or value == "":
+        raise ValueError(f"{field_name} must be non-empty str")
+    return value
+
+
+def _parse_region_kind(value: object) -> RegionKind:
+    region_kind = _parse_non_empty_str(value, "region_kind")
+    if region_kind not in {
+        "left_baseline",
+        "bottom_baseline",
+        "left_or_bottom_union",
+        "interior_rect",
+        "ghost_complement",
+    }:
+        raise ValueError(f"unsupported region_kind={region_kind!r}")
+    return cast(RegionKind, region_kind)
+
+
+def _parse_contributing_groups(value: object) -> List[Tuple[GroupId, int]]:
+    if not isinstance(value, list):
+        raise ValueError("contributing_groups must be list")
+    parsed: List[Tuple[GroupId, int]] = []
+    for idx, item in enumerate(value):
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            raise ValueError(f"contributing_groups[{idx}] must be [group_id, demand]")
+        gid = _parse_non_empty_str(item[0], f"contributing_groups[{idx}][0]")
+        demand = _parse_strict_int(item[1], f"contributing_groups[{idx}][1]")
+        parsed.append((gid, demand))
+    return parsed
+
+
+def _parse_cells_per_pose(value: object) -> Dict[GroupId, int]:
+    if not isinstance(value, dict):
+        raise ValueError("cells_per_pose must be dict[str, int]")
+    parsed: Dict[GroupId, int] = {}
+    for raw_gid, raw_cpp in value.items():
+        gid = _parse_non_empty_str(raw_gid, "cells_per_pose key")
+        parsed[gid] = _parse_strict_int(raw_cpp, f"cells_per_pose[{gid!r}]")
+    return parsed
 
 
 def compute_region_cells(
@@ -295,9 +347,12 @@ def _validate_region_capacity_gap(
             t0,
             f"witness fail: demand_R={recomputed_demand_R} ≤ cap_R={recomputed_cap_R}",
         )
-    cert_gap = cert_dict.get("gap")
-    if cert_gap is None:
+    if "gap" not in cert_dict:
         return _validation_result("schema_err", t0, "cert missing gap field")
+    try:
+        cert_gap = _parse_strict_int(cert_dict["gap"], "gap")
+    except ValueError as e:
+        return _validation_result("schema_err", t0, str(e))
     expected_gap = recomputed_demand_R - recomputed_cap_R
     if cert_gap != expected_gap:
         return _validation_result("unsound", t0, f"gap mismatch: cert={cert_gap}, expected={expected_gap}")
@@ -318,13 +373,16 @@ def validate_region_capacity(
         return _validation_result("schema_err", t0, "cut.geometric_payload is None (F1 schema invariant violated)")
     try:
         cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
-        region_kind: RegionKind = cert_dict["region_kind"]
-        region_cells = _decode_region_bitset(cert_dict["region_cells_bitset_b64"])
+        region_kind = _parse_region_kind(cert_dict.get("region_kind"))
+        region_cells_b64 = _parse_non_empty_str(cert_dict.get("region_cells_bitset_b64"), "region_cells_bitset_b64")
+        region_cells = _decode_region_bitset(region_cells_b64)
+        cert_cap_R = _parse_strict_int(cert_dict.get("cap_R"), "cap_R")
+        cert_demand_R = _parse_strict_int(cert_dict.get("demand_R"), "demand_R")
         recomputed_cap_R = compute_static_capacity(region_cells, state)
-        if recomputed_cap_R != cert_dict["cap_R"]:
-            return _validation_result("unsound", t0, f"cap_R mismatch: cert={cert_dict['cap_R']}, recomputed={recomputed_cap_R}")
-        cert_cells_per_pose: Dict[GroupId, int] = {str(g): int(v) for g, v in cert_dict.get("cells_per_pose", {}).items()}
-        contributing_groups: List[Tuple[GroupId, int]] = [(str(g), int(d)) for g, d in cert_dict["contributing_groups"]]
+        if recomputed_cap_R != cert_cap_R:
+            return _validation_result("unsound", t0, f"cap_R mismatch: cert={cert_cap_R}, recomputed={recomputed_cap_R}")
+        cert_cells_per_pose = _parse_cells_per_pose(cert_dict.get("cells_per_pose", {}))
+        contributing_groups = _parse_contributing_groups(cert_dict.get("contributing_groups"))
         for error in (
             _validate_unique_contributing_groups(contributing_groups, t0),
             _validate_region_capacity_contributors(region_kind, region_cells, contributing_groups, cert_cells_per_pose, state, t0),
@@ -336,8 +394,8 @@ def validate_region_capacity(
             recomputed_demand_R = compute_demand(region_kind, contributing_groups, cert_cells_per_pose, state)
         except KeyError as e:
             return _validation_result("schema_err", t0, str(e))
-        if recomputed_demand_R != cert_dict["demand_R"]:
-            return _validation_result("unsound", t0, f"demand_R mismatch: cert={cert_dict['demand_R']}, recomputed={recomputed_demand_R}")
+        if recomputed_demand_R != cert_demand_R:
+            return _validation_result("unsound", t0, f"demand_R mismatch: cert={cert_demand_R}, recomputed={recomputed_demand_R}")
         gap_error = _validate_region_capacity_gap(cert_dict, recomputed_demand_R, recomputed_cap_R, t0)
         if gap_error is not None:
             return gap_error

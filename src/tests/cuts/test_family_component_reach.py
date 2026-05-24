@@ -467,3 +467,18 @@ def test_generate_component_reach_cuts_stub_returns_empty():
     state = _make_state()
     cuts = generate_component_reach_cuts(state, master_solution=None)
     assert cuts == []
+
+
+def test_validator_schema_err_bool_cells_in_commodity_registry():
+    ghost = {(35, y) for y in range(70)}
+    state = _make_state(
+        ghost_cells=ghost,
+        commodity_routes={"c1_horizontal": {"src": (True, 0), "sink": (69, 0)}},
+    )
+    cut = _make_component_reach_cut(
+        src_cell=(0, 0), sink_cell=(69, 0), commodity_id="c1_horizontal", state=state
+    )
+
+    vr = validate_component_reach(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "commodity_routes" in vr.detail

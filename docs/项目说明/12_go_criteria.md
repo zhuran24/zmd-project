@@ -2,7 +2,7 @@
 
 每段 done 怎么定义. 不只 "代码改完 commit pass test", 而是要过 reviewer audit.
 
-### 8.1 Phase 1.2 P1.2A 入门 GO (✅ 2026-05-23 exit hardening delivery 落地)
+### 8.1 Phase 1.2 P1.2A 入门 GO (✅ 2026-05-24 复查补强后仍 GO)
 
 7 项 factual fix + 1 项新发现 全 land (per [Phase 1.1 exit hardening](07_historical_review.md#512-phase-11-exit-hardening-2026-05-23-外部-reviewer-delivery)):
 1. ✅ strict gate default ON (`EXACT_FAMILY_VALIDATOR_STRICT="1"`)
@@ -14,14 +14,15 @@
 7. ✅ `evaluate_literal_port_exposure` 删除, F3 统一走 `evaluate_literal_multiset`
 8. ✅ **新发现**: `on_ghost_rect_changed` test stub 注入收紧 (`unsafe_test_replay_fn` + `allow_unsafe_test_replay_fn` 双 flag)
 
-实际验收 (exit hardening delivery 跑过):
-- ✅ pytest cuts: 181 pass (172 → +6 regression for ghost_rect / source_digest / unsafe stub)
-- ✅ python -O pytest cuts: 181 pass
+实际验收 (2026-05-24 复查补强后):
+- ✅ pytest cuts: 188 pass (v10 181 → +7 regression: base64/bitset/Cut schema/F1-F4 bool numeric schema)
+- ✅ python -O pytest cuts: 188 pass
 - ✅ ruff default + no-ignores: pass
 - ✅ mypy --strict --explicit-package-bases src/cuts/: pass
 - ✅ bandit: 0 issues
-- ✅ radon: average A, no D
-- ✅ vulture (whitelist): pass
+- ✅ radon: average A, no D (最高 C(15))
+- ✅ vulture (`src/cuts/ src/tests/cuts/ scripts/vulture_cuts_whitelist.py`): pass
+- ✅ exit_criteria: 1/2/4 PASS, 8 PENDING_PHASE_1, 0 FAIL；PENDING 均为 Phase 1.2/168h ramp 或后续 family artifact 未生成
 
 ### 8.1.x Phase 1.2 P1.2B P0 acceptance checklist (from Gemini math review meta-audit)
 

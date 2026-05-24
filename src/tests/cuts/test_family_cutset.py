@@ -505,3 +505,27 @@ def test_generate_cutset_cuts_stub_returns_empty():
     state = _make_enclosed_state(patch=set())
     cuts = generate_cutset_cuts(state, master_solution=None)
     assert cuts == []
+
+
+def test_validate_cutset_schema_err_bool_commodity_demand():
+    side_a = {(0, 0)}
+    side_b = {(0, 1)}
+    state = _make_enclosed_state(patch={(0, 0), (0, 1)})
+    cut = _make_cutset_cut(side_a, side_b, cut_size=1, commodity_demand=2)
+    cert = json.loads(cut.geometric_payload)
+    cert["commodity_demand"] = True
+    payload = json.dumps(cert, sort_keys=True).encode("utf-8")
+    tampered = Cut(
+        cut_id=cut.cut_id,
+        family=cut.family,
+        literals=None,
+        geometric_payload=payload,
+        scope=cut.scope,
+        cert=cut.cert,
+        family_version=cut.family_version,
+        validator_version=cut.validator_version,
+    )
+
+    vr = validate_cutset(tampered, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "commodity_demand" in vr.detail

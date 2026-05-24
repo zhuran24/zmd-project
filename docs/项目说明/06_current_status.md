@@ -1,6 +1,6 @@
-# 06 — 现状细则 (Phase 1.1 GO, 2026-05-23 exit hardening 落地)
+# 06 — 现状细则 (Phase 1.1 GO, 2026-05-24 复查补强后)
 
-**当前状态**: Phase 1.1 cut framework 闭环 + 外部 reviewer (Phase 1.1 exit hardening delivery) 修完 7 项入门 + 1 项新发现 = Phase 1.1 GO blessed. 可进 Phase 1.2.
+**当前状态**: Phase 1.1 cut framework 闭环 + 外部 reviewer exit hardening 已落地；2026-05-24 又补了一层 fail-closed 复查修复。结论仍是 Phase 1.1 GO blessed，可进 Phase 1.2。
 
 ### 已闭环 (Phase 1.1 GO)
 - F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach
@@ -32,22 +32,28 @@
 - **F9 area-only** invariant: generator 只接受 `area_capacity_overflow` witness,
   不接受 `routing_overflow` / `binding_overflow` / `pcr_cut_overflow` (PROJECT_LOCK
   §3A, [Gemini math review verdict 2026-05-23](../research/p3_b_design_v2_20260521/external_review/gemini_math_review_action_plan_20260523.md))
+- **2026-05-24 fail-closed 复查补强**:
+  - lifecycle: base64 改为 strict decode (`validate=True`), region bitset 拒绝长度不对 / grid 外高位置 1, `Cut.scope` / `Cut.cert` 必须是真对象
+  - F1/F2/F3/F4 validator: `bool` 不再被当成 `int`, 字符串数字不再被偷转成数字, 非空 ID / cell / registry schema 更严格
+  - F2/F4 evaluator: 遇到 malformed cert 直接 `False`, 不让脏 payload 走成误判
 
-### 测试 / 静态 gate 状态 (exit hardening 后)
-- pytest: **181 cuts test pass** (普通模式 + `python -O` 防线 regression, 比 v6 audit 后 172 加 9 新 regression)
+### 测试 / 静态 gate 状态 (2026-05-24 复查后)
+- pytest: **188 cuts test pass** (普通模式 + `python -O`; v10 为 181, 本次新增 7 个边界 regression)
 - ruff: clean (default config + `--config "lint.per-file-ignores={}"` 都 clean)
 - **mypy --strict: pass** (exit hardening 清零 37 typing debt, 现 0 errors)
-- vulture: pass (whitelist `scripts/vulture_cuts_whitelist.py` 收紧, exit hardening 2.4 删 `evaluate_literal_port_exposure`)
+- vulture: pass (`src/cuts/ src/tests/cuts/ scripts/vulture_cuts_whitelist.py`; exit hardening 2.4 已删 `evaluate_literal_port_exposure`)
 - bandit: 0 issues (exit hardening clean)
-- **radon: average A, no D** (exit hardening 2.3 拆 helper, 现最高 C(15))
+- **radon: average A, no D** (2026-05-24 再拆 lifecycle helper 后仍最高 C(15))
 
-### 非阻塞项 (full src/tests collect)
-- 4 个 optional solver import error (highspy / pyscipopt 缺失) — 不在 cut framework gate, Phase 1.5+ 决定 zmd_deps_v3 是否补 wheel 或加 skip mark
+### 非阻塞项
+- `scripts/b_design_v2_exit_criteria.py`: 1/2/4 PASS；其余 8 项是 Phase 1.2/168h ramp 数据或后续 family 测试尚未生成，因此为 PENDING_PHASE_1，**0 FAIL**。这不是 Phase 1.1 阻塞项。
+- full `src/tests` 里的 optional solver 依赖 (highspy / pyscipopt) 不在 cut framework gate；Phase 1.5+ 决定 zmd_deps_v3 是否补 wheel 或继续 skip。
 
 ### Audit archive
 - `docs/research/p3_b_design_v2_20260521/external_review/`:
   - `gpt_pro_phase1_1_v{1,2,3,4,5,6}_audit_*.md` (11 GPT pro audit, v1-v6 全 NOT GO)
   - `phase1_1_exit_hardening_audit_report_20260523.md` (本次 exit hardening verdict GO)
+  - `phase1_1_recheck_20260524/phase1_1_final_recheck_report.md` (2026-05-24 复查补强报告 + 188 pass 验收)
   - `phase1_1_exit_hardening_plan_v2_20260523.md` (原 deliverable plan v2, 内容已 merge 本 dir)
   - `gemini_math_review_action_plan_20260523.md` (Gemini 数学 review meta-review)
   - `gemini_math_review_bundle_20260523/` (checklist + red fixture matrix + CP-SAT notes + F9 morphology caution)

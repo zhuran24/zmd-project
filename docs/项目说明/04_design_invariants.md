@@ -79,7 +79,8 @@ spec ↔ src ↔ data 接合 (Gemini r27-32 覆盖). Layer 2 adversarial — 假
 
 cut framework 默认 oracle **不可信** (oracle 可以是 stub / 外部 import / disk
 load / 旧 schema). validator 是 trust boundary, 必须能 reject 任何不 sound 的
-cert. 这导致 validator 比 oracle 重 (radon D 级), 这是 by design — Step J/L/
+cert. validator 因此会比 oracle 重；历史上曾到 radon D 级，但现已拆 helper
+维持 average A / no D，同时不能为了降 complexity 删除 soundness binding。Step J/L/
 M/N/O 5 轮 audit 反复加 validator binding 都是 adversarial soundness 拉紧.
 
 ---

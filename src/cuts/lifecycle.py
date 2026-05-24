@@ -94,6 +94,22 @@ def _sha256_hex(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def _strict_b64decode(value: object, field_name: str) -> bytes:
+    """Decode a required base64 field, rejecting junk characters.
+
+    ``base64.b64decode`` is permissive unless ``validate=True`` is set: it can
+    silently ignore non-base64 bytes. Cut JSON is an audit artifact, so accepting
+    non-canonical payload text makes tampering harder to spot even when the
+    decoded bytes happen to stay unchanged.
+    """
+    if not isinstance(value, str) or value == "":
+        raise ValueError(f"{field_name} must be a non-empty base64 string")
+    try:
+        return base64.b64decode(value, validate=True)
+    except Exception as e:
+        raise ValueError(f"{field_name} invalid base64: {e}") from e
+
+
 # ============================================================================
 # Cut object schema (cut_lifecycle_v2 v3.2.2 §3)
 # ============================================================================
@@ -161,52 +177,143 @@ class Cut:
     quarantine_reason: str = ""
 
     def __post_init__(self) -> None:
-        has_lit = self.literals is not None and len(self.literals) > 0
+        has_lit = _has_literal_payload(self.literals)
         has_geo = self.geometric_payload is not None
-        if has_lit == has_geo:
-            raise ValueError(
-                f"Cut {self.cut_id}: literals XOR geometric_payload 必须互斥; "
-                f"literals={'set' if has_lit else 'empty/None'}, "
-                f"geometric_payload={'set' if has_geo else 'None'}"
-            )
-        mode = _FAMILY_MODE_MAP.get(self.family)
-        if mode is None:
-            raise ValueError(f"Cut {self.cut_id}: family={self.family} 不在 9-family 表")
-        if mode == "literal" and not has_lit:
-            raise ValueError(f"family={self.family} 要求 literal-based")
-        if mode == "geometric" and not has_geo:
-            raise ValueError(f"family={self.family} 要求 geometric")
-        # schema-first: cut 必带 scope + cert (cut_lifecycle_v2 §3)
-        if self.scope is None:
-            raise ValueError(f"Cut {self.cut_id}: scope 必填 (cut_lifecycle_v2 §3)")
-        if self.cert is None:
-            raise ValueError(f"Cut {self.cut_id}: cert 必填 (cut_lifecycle_v2 §3)")
+        _validate_cut_mode(self.cut_id, self.family, has_lit, has_geo)
+        scope = _require_scope(self.scope, self.cut_id)
+        cert = _require_cert(self.cert, self.cut_id)
+        _validate_cut_scalar_schema(self, cert)
+        _validate_scope_schema(self.cut_id, scope)
+        _validate_literal_schema(self.cut_id, self.literals)
 
-        if not _is_non_empty_str(self.cut_id):
-            raise ValueError("cut_id 必须是非空 str")
-        if self.literals is not None and not isinstance(self.literals, tuple):
-            raise ValueError(f"Cut {self.cut_id}: literals 必须是 tuple 或 None")
-        if self.geometric_payload is not None and not isinstance(self.geometric_payload, bytes):
-            raise ValueError(f"Cut {self.cut_id}: geometric_payload 必须是 bytes")
-        if not isinstance(self.cert.cert_payload, bytes):
-            raise ValueError(f"Cut {self.cut_id}: cert_payload 必须是 bytes")
-        if not _is_non_empty_str(self.cert.cert_hash):
-            raise ValueError(f"Cut {self.cut_id}: cert_hash 必须是非空 str")
-        if self.oracle_cert_hash and not isinstance(self.oracle_cert_hash, str):
-            raise ValueError(f"Cut {self.cut_id}: oracle_cert_hash 必须是 str")
-        for lit in self.literals or ():
-            if not isinstance(lit, CutLiteral) or not isinstance(lit.slot_ref, AnonymousSlotRef):
-                raise ValueError(f"Cut {self.cut_id}: literal 必须是 CutLiteral")
-            if not _is_non_empty_str(lit.slot_ref.group_id):
-                raise ValueError(f"Cut {self.cut_id}: literal group_id 必须是非空 str")
-            if not _is_strict_int(lit.slot_ref.slot_index) or lit.slot_ref.slot_index < 0:
-                raise ValueError(f"Cut {self.cut_id}: literal slot_index 必须是非负 int")
-            if not _is_non_empty_str(lit.pose_id):
-                raise ValueError(f"Cut {self.cut_id}: literal pose_id 必须是非空 str")
-        if not isinstance(self.minimization_audit, dict) or not all(
-            isinstance(k, str) and _is_strict_int(v) for k, v in self.minimization_audit.items()
-        ):
-            raise ValueError(f"Cut {self.cut_id}: minimization_audit 必须是 dict[str, int]")
+
+def _has_literal_payload(literals: object) -> bool:
+    if literals is None:
+        return False
+    if not isinstance(literals, tuple):
+        # Treat malformed non-None literals as present so the XOR branch remains
+        # deterministic; the concrete type error is raised by schema validation.
+        return True
+    return len(literals) > 0
+
+
+def _validate_cut_mode(cut_id: object, family: object, has_lit: bool, has_geo: bool) -> None:
+    if has_lit == has_geo:
+        raise ValueError(
+            f"Cut {cut_id}: literals XOR geometric_payload 必须互斥; "
+            f"literals={'set' if has_lit else 'empty/None'}, "
+            f"geometric_payload={'set' if has_geo else 'None'}"
+        )
+    if not isinstance(family, str):
+        raise ValueError(f"Cut {cut_id}: family 必须是 str")
+    mode = _FAMILY_MODE_MAP.get(family)
+    if mode is None:
+        raise ValueError(f"Cut {cut_id}: family={family} 不在 9-family 表")
+    if mode == "literal" and not has_lit:
+        raise ValueError(f"family={family} 要求 literal-based")
+    if mode == "geometric" and not has_geo:
+        raise ValueError(f"family={family} 要求 geometric")
+
+
+def _require_scope(scope: object, cut_id: object) -> CutScope:
+    if not isinstance(scope, CutScope):
+        raise ValueError(f"Cut {cut_id}: scope 必填且必须是 CutScope (cut_lifecycle_v2 §3)")
+    return scope
+
+
+def _require_cert(cert: object, cut_id: object) -> OracleCert:
+    if not isinstance(cert, OracleCert):
+        raise ValueError(f"Cut {cut_id}: cert 必填且必须是 OracleCert (cut_lifecycle_v2 §3)")
+    return cert
+
+
+def _validate_cut_scalar_schema(cut: Cut, cert: OracleCert) -> None:
+    _validate_cut_identity_and_payload(cut)
+    _validate_cert_schema(cut.cut_id, cert)
+    _validate_cut_metadata_schema(cut)
+    _validate_cut_status_schema(cut)
+
+
+def _validate_cut_identity_and_payload(cut: Cut) -> None:
+    if not _is_non_empty_str(cut.cut_id):
+        raise ValueError("cut_id 必须是非空 str")
+    if cut.literals is not None and not isinstance(cut.literals, tuple):
+        raise ValueError(f"Cut {cut.cut_id}: literals 必须是 tuple 或 None")
+    if cut.geometric_payload is not None and not isinstance(cut.geometric_payload, bytes):
+        raise ValueError(f"Cut {cut.cut_id}: geometric_payload 必须是 bytes")
+
+
+def _validate_cert_schema(cut_id: CutId, cert: OracleCert) -> None:
+    if not _is_non_empty_str(cert.cert_kind):
+        raise ValueError(f"Cut {cut_id}: cert_kind 必须是非空 str")
+    if not isinstance(cert.cert_payload, bytes):
+        raise ValueError(f"Cut {cut_id}: cert_payload 必须是 bytes")
+    if not _is_non_empty_str(cert.cert_hash):
+        raise ValueError(f"Cut {cut_id}: cert_hash 必须是非空 str")
+
+
+def _validate_cut_metadata_schema(cut: Cut) -> None:
+    string_fields = (
+        ("family_version", cut.family_version),
+        ("validator_version", cut.validator_version),
+        ("oracle_name", cut.oracle_name),
+        ("oracle_cert_hash", cut.oracle_cert_hash),
+        ("created_at", cut.created_at),
+    )
+    for field_name, value in string_fields:
+        if not isinstance(value, str):
+            raise ValueError(f"Cut {cut.cut_id}: {field_name} 必须是 str")
+    if not _is_strict_int(cut.payload_schema_version) or cut.payload_schema_version < 1:
+        raise ValueError(f"Cut {cut.cut_id}: payload_schema_version 必须是正 int")
+    if not _is_strict_int(cut.iter_index):
+        raise ValueError(f"Cut {cut.cut_id}: iter_index 必须是 int")
+
+
+def _validate_cut_status_schema(cut: Cut) -> None:
+    if not isinstance(cut.is_quarantined, bool):
+        raise ValueError(f"Cut {cut.cut_id}: is_quarantined 必须是 bool")
+    if not isinstance(cut.quarantine_reason, str):
+        raise ValueError(f"Cut {cut.cut_id}: quarantine_reason 必须是 str")
+    if not isinstance(cut.minimization_audit, dict) or not all(
+        isinstance(k, str) and _is_strict_int(v) for k, v in cut.minimization_audit.items()
+    ):
+        raise ValueError(f"Cut {cut.cut_id}: minimization_audit 必须是 dict[str, int]")
+
+
+def _validate_scope_schema(cut_id: CutId, scope: CutScope) -> None:
+    for field_name, value in (
+        ("ghost_rect_id", scope.ghost_rect_id),
+        ("blocked_cells_hash", scope.blocked_cells_hash),
+        ("exterior_blocks_hash", scope.exterior_blocks_hash),
+        ("source_digest", scope.source_digest),
+    ):
+        if not _is_non_empty_str(value):
+            raise ValueError(f"Cut {cut_id}: scope.{field_name} 必须是非空 str")
+    if not isinstance(scope.artifact_hashes, dict) or not all(
+        isinstance(k, str) and isinstance(v, str) for k, v in scope.artifact_hashes.items()
+    ):
+        raise ValueError(f"Cut {cut_id}: scope.artifact_hashes 必须是 dict[str, str]")
+    if not isinstance(scope.oracle_abstraction_version, str):
+        raise ValueError(f"Cut {cut_id}: scope.oracle_abstraction_version 必须是 str")
+    if not isinstance(scope.active_assumptions, tuple):
+        raise ValueError(f"Cut {cut_id}: scope.active_assumptions 必须是 tuple[Assumption, ...]")
+    for assumption in scope.active_assumptions:
+        if not isinstance(assumption, Assumption):
+            raise ValueError(f"Cut {cut_id}: active_assumptions 必须只含 Assumption")
+        if not _is_non_empty_str(assumption.key) or not isinstance(assumption.value, str):
+            raise ValueError(f"Cut {cut_id}: assumption key/value schema invalid")
+
+
+def _validate_literal_schema(cut_id: CutId, literals: Optional[Tuple[CutLiteral, ...]]) -> None:
+    for lit in literals or ():
+        if not isinstance(lit, CutLiteral) or not isinstance(lit.slot_ref, AnonymousSlotRef):
+            raise ValueError(f"Cut {cut_id}: literal 必须是 CutLiteral")
+        if not _is_non_empty_str(lit.slot_ref.group_id):
+            raise ValueError(f"Cut {cut_id}: literal group_id 必须是非空 str")
+        if not _is_strict_int(lit.slot_ref.slot_index) or lit.slot_ref.slot_index < 0:
+            raise ValueError(f"Cut {cut_id}: literal slot_index 必须是非负 int")
+        if not _is_non_empty_str(lit.pose_id):
+            raise ValueError(f"Cut {cut_id}: literal pose_id 必须是非空 str")
 
 
 AttachDecision = Literal["ATTACH", "HOLD", "QUARANTINE"]
@@ -410,7 +517,16 @@ def _encode_region_bitset(cells: List[Cell], grid_size: int = 70) -> str:
 
 
 def _decode_region_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
-    arr = base64.b64decode(b64)
+    arr = _strict_b64decode(b64, "region_bitset_b64")
+    expected_len = (grid_size * grid_size + 7) // 8
+    if len(arr) != expected_len:
+        raise ValueError(
+            f"region_bitset length mismatch: got {len(arr)}, expected {expected_len}"
+        )
+    extra_bits = expected_len * 8 - grid_size * grid_size
+    if extra_bits and arr[-1] >> (8 - extra_bits):
+        raise ValueError("region_bitset has bits set outside the grid")
+
     cells = set()
     for x in range(grid_size):
         for y in range(grid_size):
@@ -614,7 +730,7 @@ def step_4_deserialize(blob: bytes) -> Cut:
         )
     geometric_payload = None
     if d.get("geometric_payload"):
-        geometric_payload = base64.b64decode(d["geometric_payload"])
+        geometric_payload = _strict_b64decode(d["geometric_payload"], "geometric_payload")
 
     scope = CutScope(
         ghost_rect_id=d["scope"]["ghost_rect_id"],
@@ -629,7 +745,7 @@ def step_4_deserialize(blob: bytes) -> Cut:
     )
     cert = OracleCert(
         cert_kind=d["cert"]["cert_kind"],
-        cert_payload=base64.b64decode(d["cert"]["cert_payload_b64"]),
+        cert_payload=_strict_b64decode(d["cert"]["cert_payload_b64"], "cert.cert_payload_b64"),
         cert_hash=d["cert"]["cert_hash"],
     )
     cut = Cut(

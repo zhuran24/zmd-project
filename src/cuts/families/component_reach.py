@@ -27,7 +27,7 @@ import time
 from collections import deque
 from typing import Any, Dict, FrozenSet, Literal, Set
 
-from src.cuts.families.cutset import _decode_bitset, _free_cells
+from src.cuts.families.cutset import _decode_bitset, _free_cells, _parse_cell
 from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
 
 
@@ -117,17 +117,13 @@ def _validate_separator_cells(
 ) -> ValidationResult | None:
     if not isinstance(separator_cells, list):
         return _vr("schema_err", t0, "separator_cells must be a list")
-    for sep_cell_raw in separator_cells:
-        sep_cell_tuple = tuple(sep_cell_raw)
-        if not (
-            len(sep_cell_tuple) == 2
-            and isinstance(sep_cell_tuple[0], int)
-            and isinstance(sep_cell_tuple[1], int)
-            and 0 <= sep_cell_tuple[0] < 70
-            and 0 <= sep_cell_tuple[1] < 70
-        ):
-            return _vr("unsound", t0, f"separator cell {sep_cell_tuple} not in grid (0-69 x 0-69)")
-        sep_cell = (sep_cell_tuple[0], sep_cell_tuple[1])
+    for idx, sep_cell_raw in enumerate(separator_cells):
+        try:
+            sep_cell = _parse_cell(sep_cell_raw, f"separator_cells[{idx}]")
+        except ValueError as e:
+            if "out of grid" in str(e):
+                return _vr("unsound", t0, f"separator cell {sep_cell_raw!r} not in grid (0-69 x 0-69)")
+            return _vr("schema_err", t0, str(e))
         if sep_cell not in state.cell_owner and sep_cell not in state.ghost_cells:
             return _vr("unsound", t0, f"separator cell {sep_cell} not in cell_owner ∪ ghost_cells")
     return None
@@ -140,15 +136,18 @@ def _validate_component_commodity(
     state: BState,
     t0: float,
 ) -> ValidationResult | None:
-    if commodity_id is None:
-        return _vr("schema_err", t0, "F4 cert missing commodity_id (spec 04 §3 必填)")
+    if not isinstance(commodity_id, str) or commodity_id == "":
+        return _vr("schema_err", t0, "F4 cert missing/non-string commodity_id (spec 04 §3 必填)")
     if state.commodity_routes is None:
         return _vr("schema_err", t0, "F4 component_reach validator 需 state.commodity_routes registry")
-    route = state.commodity_routes.get(str(commodity_id))
+    route = state.commodity_routes.get(commodity_id)
     if route is None:
         return _vr("unsound", t0, f"commodity_id {commodity_id!r} not in commodity_routes registry")
-    registry_src = tuple(route.get("src", ()))
-    registry_sink = tuple(route.get("sink", ()))
+    try:
+        registry_src = _parse_cell(route.get("src"), f"commodity_routes[{commodity_id!r}].src")
+        registry_sink = _parse_cell(route.get("sink"), f"commodity_routes[{commodity_id!r}].sink")
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
     if registry_src != src_cell:
         return _vr("unsound", t0, f"src_cell mismatch: cert={src_cell}, registry route src={registry_src}")
     if registry_sink != sink_cell:
@@ -171,8 +170,8 @@ def validate_component_reach(
         return scope_error
     try:
         cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
-        src_cell = (int(cert_dict["src_cell"][0]), int(cert_dict["src_cell"][1]))
-        sink_cell = (int(cert_dict["sink_cell"][0]), int(cert_dict["sink_cell"][1]))
+        src_cell = _parse_cell(cert_dict.get("src_cell"), "src_cell")
+        sink_cell = _parse_cell(cert_dict.get("sink_cell"), "sink_cell")
         src_comp = _decode_bitset(cert_dict["src_component_bitset_b64"])
         sink_comp = _decode_bitset(cert_dict["sink_component_bitset_b64"])
         for error in (
@@ -204,9 +203,12 @@ def evaluate_geometric_component_reach(cut: Cut, state: BState) -> bool:
     """
     if cut.geometric_payload is None:
         return False  # fail-safe: schema 缺失不报 violate
-    cert_dict = json.loads(cut.geometric_payload)
-    src_cell = tuple(cert_dict["src_cell"])
-    sink_cell = tuple(cert_dict["sink_cell"])
+    try:
+        cert_dict = json.loads(cut.geometric_payload)
+        src_cell = _parse_cell(cert_dict.get("src_cell"), "src_cell")
+        sink_cell = _parse_cell(cert_dict.get("sink_cell"), "sink_cell")
+    except Exception:
+        return False
     free_cells = _free_cells(state)
     if src_cell not in free_cells or sink_cell not in free_cells:
         # Either endpoint no longer free — cut soundness violated; eval False

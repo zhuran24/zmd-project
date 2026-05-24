@@ -16,6 +16,7 @@ Run:
 """
 from __future__ import annotations
 
+import base64
 import json
 
 import pytest
@@ -29,6 +30,7 @@ from src.cuts.lifecycle import (
     CutScope,
     GHOST_AGNOSTIC,
     GroupState,
+    OracleCert,
     assumption_holds,
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
@@ -41,6 +43,7 @@ from src.cuts.lifecycle import (
     step_5_validate_region_capacity,
     step_6_attach_scope_check,
     step_7_evaluate_cut,
+    _decode_region_bitset,
 )
 
 
@@ -554,3 +557,36 @@ def test_group_state_remaining_count_property():
         selected_poses=["p1"],
     )
     assert group.remaining_count == 2
+
+
+def test_deserialize_rejects_invalid_base64_payload_text():
+    state = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    blob = json.loads(step_3_serialize(cut))
+    blob["geometric_payload"] = "!!!!"
+
+    with pytest.raises(ValueError, match="invalid base64"):
+        step_4_deserialize(json.dumps(blob).encode("utf-8"))
+
+
+def test_lifecycle_region_bitset_rejects_high_bits_outside_grid():
+    arr = bytearray((70 * 70 + 7) // 8)
+    arr[-1] = 0b10000000
+    b64 = base64.b64encode(bytes(arr)).decode("ascii")
+
+    with pytest.raises(ValueError, match="outside the grid"):
+        _decode_region_bitset(b64)
+
+
+def test_cut_post_init_rejects_non_cut_scope_object():
+    with pytest.raises(ValueError, match="CutScope"):
+        Cut(
+            cut_id="bad-scope",
+            family="region_capacity",
+            literals=None,
+            geometric_payload=b"{}",
+            scope={"ghost_rect_id": "not-a-cut-scope"},
+            cert=OracleCert(cert_kind="k", cert_payload=b"{}", cert_hash="h"),
+        )
