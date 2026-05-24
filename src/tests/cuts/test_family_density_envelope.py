@@ -688,13 +688,19 @@ def test_generate_equality_no_cut():
 # ---- watcher_keys ---------------------------------------------------------
 
 
-def test_validate_unsound_max_allowed_area_zero_rejected():
-    """Gemini F9 round 3 BLOCKER #1: cert_max=0 makes the cut tautologically fire.
+def test_validate_ok_cert_max_zero_exclusion_zone():
+    """Gemini F9 round 4: cert_max=0 is a legitimate exclusion-zone cut.
 
-    With max_allowed_area=0, evaluator fires on ANY group g placement in W
-    (occupied >= 1 > 0), pruning legitimate solutions. Validator must reject
-    cert_max == 0 as oracle bug (sanity guard; tight-K NP-hard verification
-    deferred to Phase 1.5+).
+    Original Gemini round 3 BLOCKER #1 framing ("tautologically fires") was
+    incorrect — evaluator only counts cells INSIDE W, so cert_max=0 fires
+    only when master places g inside W (sound prune iff oracle's K=0 is
+    correct). When W is fully covered by static obstacles, safe_ub=0
+    forces cert_max=0 as the only valid value. The R3 patch outlawed both
+    cases; round 4 reverts it.
+
+    Tight-K verification (whether oracle's K=0 is mathematically correct)
+    requires NP-hard sub-problem replay — Phase 1.5+ defer, same trade-off
+    as F5 v1.0 trusting oracle's INFEASIBLE response.
     """
     state = _make_state()
     cert_payload = _make_density_envelope_cert(
@@ -703,8 +709,22 @@ def test_validate_unsound_max_allowed_area_zero_rejected():
     )
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
-    assert vr.kind == "unsound"
-    assert "tautologically" in (vr.detail or "")
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+
+
+def test_evaluator_cert_max_zero_only_fires_when_g_inside_window():
+    """cert_max=0 sound semantics: only fires when group g actually places in W."""
+    state_outside = _make_state(cell_owner={(50, 50): ("g1", 0)})  # outside W (0,0,10,10)
+    state_inside = _make_state(cell_owner={(5, 5): ("g1", 0)})  # inside W
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=0,
+        assignment_witness=[["g1", "p_3x3_a"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    # g placed outside W: 0 > 0 is False → no spurious fire
+    assert evaluate_geometric_density_envelope(cut, state_outside) is False
+    # g placed inside W: 1 > 0 is True → cut correctly prunes
+    assert evaluate_geometric_density_envelope(cut, state_inside) is True
 
 
 def test_safe_ub_static_immune_to_cell_owner_other_TOCTOU():

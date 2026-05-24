@@ -328,23 +328,14 @@ def _validate_max_allowed_area(
     cert_max = cast(int, raw)
     if cert_max < 0:
         return _vr("schema_err", t0, f"max_allowed_area must be >= 0, got {cert_max}"), -1, -1
-    # Per Gemini F9 round 3 review #1 BLOCKER fix: cert_max == 0 means the
-    # cut fires on any group g placement (since occupied >= 1 > 0), pruning
-    # legitimate solutions. The lower bound check is a sanity guard — full
-    # tight-K verification requires NP-hard sub-problem replay (deferred to
-    # Phase 1.5+; F9 v1.0 trusts oracle's K computation, same trade-off as
-    # F5 v1.0 trusting oracle's INFEASIBLE response).
-    if cert_max == 0:
-        return (
-            _vr(
-                "unsound",
-                t0,
-                "max_allowed_area = 0 makes the cut tautologically fire on any "
-                "placement (occupied >= 1 > 0); rejected as oracle bug",
-            ),
-            -1,
-            -1,
-        )
+    # Note: cert_max == 0 is allowed (exclusion-zone cut: "group g forbidden in W").
+    # Evaluator only counts cells inside W, so cert_max=0 fires only when master
+    # places g inside W (sound prune if oracle's K=0 is correct). When W is
+    # fully covered by static obstacles, safe_ub=0 forces cert_max=0 as the
+    # only valid value. Per Gemini F9 round 4 review: revert R3 BLOCKER #1
+    # patch — the original "tautologically fires" framing was incorrect.
+    # Tight-K verification requires NP-hard sub-problem replay (Phase 1.5+
+    # defer, same trade-off as F5 v1.0 trusting oracle INFEASIBLE).
     if cert_max > len(window_cells):
         return (
             _vr(
