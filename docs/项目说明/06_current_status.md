@@ -1,6 +1,6 @@
-# 06 — 现状细则 (Phase 1.1 GO, 2026-05-24 复查补强后)
+# 06 — 现状细则 (Phase 1.1 GO, 2026-05-24 final polish 后)
 
-**当前状态**: Phase 1.1 cut framework 闭环 + 外部 reviewer exit hardening 已落地；2026-05-24 又补了一层 fail-closed 复查修复。结论仍是 Phase 1.1 GO blessed，可进 Phase 1.2。
+**当前状态**: Phase 1.1 cut framework 闭环 + 外部 reviewer exit hardening 已落地；2026-05-24 又补了 fail-closed 复查修复与 final polish。结论仍是 Phase 1.1 GO blessed，可进 Phase 1.2。
 
 ### 已闭环 (Phase 1.1 GO)
 - F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach
@@ -36,9 +36,10 @@
   - lifecycle: base64 改为 strict decode (`validate=True`), region bitset 拒绝长度不对 / grid 外高位置 1, `Cut.scope` / `Cut.cert` 必须是真对象
   - F1/F2/F3/F4 validator: `bool` 不再被当成 `int`, 字符串数字不再被偷转成数字, 非空 ID / cell / registry schema 更严格
   - F2/F4 evaluator: 遇到 malformed cert 直接 `False`, 不让脏 payload 走成误判
+  - F3 `port_exposure`: cert cell 统一强制在 70×70 board 内，out-of-grid 直接 `schema_err`
 
 ### 测试 / 静态 gate 状态 (2026-05-24 复查后)
-- pytest: **188 cuts test pass** (普通模式 + `python -O`; v10 为 181, 本次新增 7 个边界 regression)
+- pytest: **189 cuts test pass** (普通模式 + `python -O`; v11 为 188，本次新增 F3 out-of-grid cell regression)
 - ruff: clean (default config + `--config "lint.per-file-ignores={}"` 都 clean)
 - **mypy --strict: pass** (exit hardening 清零 37 typing debt, 现 0 errors)
 - vulture: pass (`src/cuts/ src/tests/cuts/ scripts/vulture_cuts_whitelist.py`; exit hardening 2.4 已删 `evaluate_literal_port_exposure`)
@@ -54,6 +55,7 @@
   - `gpt_pro_phase1_1_v{1,2,3,4,5,6}_audit_*.md` (11 GPT pro audit, v1-v6 全 NOT GO)
   - `phase1_1_exit_hardening_audit_report_20260523.md` (本次 exit hardening verdict GO)
   - `phase1_1_recheck_20260524/phase1_1_final_recheck_report.md` (2026-05-24 复查补强报告 + 188 pass 验收)
+  - `phase1_1_final_polish_20260524/phase1_1_final_polish_report.md` (v12 final polish + 189 pass 验收)
   - `phase1_1_exit_hardening_plan_v2_20260523.md` (原 deliverable plan v2, 内容已 merge 本 dir)
   - `gemini_math_review_action_plan_20260523.md` (Gemini 数学 review meta-review)
   - `gemini_math_review_bundle_20260523/` (checklist + red fixture matrix + CP-SAT notes + F9 morphology caution)

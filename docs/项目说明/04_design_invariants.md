@@ -35,7 +35,7 @@ Phase 1.2 实施 F5-F9, 不改这 9 个 list.
 ```
 0. canonicalize     raw dict → canonical bytes (cert hash 确定性)
 1. generate         oracle 产 cert + scope
-2. minimize         literal-based deletion / QuickXplain (Step 2 defer Phase 1.1 P1.11)
+2. minimize         literal-based deletion / QuickXplain (Step 2 defer Phase 1.2 P1.2B-F5)
 3. serialize        Cut → JSON bytes
 4. deserialize      JSON bytes → Cut (schema invariant 重检)
 5. validate         独立重算 cert (oracle 不可信, validator 是 trust boundary)

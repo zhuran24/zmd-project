@@ -2,7 +2,7 @@
 
 > **2026-05-23 v2 命名更新**: 原 plan 把 `P1.11` 同时用作 "入门 7 项" 跟 "F5 pattern_nogood", 误导. v2 拆: **P1.2A** 入门 (entry hardening, 已落地) + **P1.2B-F{5,6,7,8,9}** 各 family.
 
-## P1.2A — entry hardening ✅ DONE (2026-05-23 exit hardening delivery)
+## P1.2A — entry hardening ✅ DONE (2026-05-23 exit hardening + 2026-05-24 final polish)
 
 8 项 (7 原 plan + 1 新发现) 落地, 详 [06_current_status.md](06_current_status.md) + [07_historical_review.md §5.12](07_historical_review.md):
 
@@ -15,7 +15,7 @@
 7. ✅ F3 `evaluate_literal_port_exposure` 删
 8. ✅ `on_ghost_rect_changed` test stub 收紧 (`unsafe_test_replay_fn` + double flag)
 
-测试: 178 cuts pass (172 + 9 regression).
+测试: **189 cuts pass**（普通模式 + `python -O`；178/181/188 都是历史中间口径，现以 189 为 Phase 1.1/P1.2A gate）。
 
 ## P1.2B-F5 — pattern_nogood (优先级最高)
 

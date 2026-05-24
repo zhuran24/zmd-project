@@ -292,15 +292,27 @@ def test_validate_port_exposure_ok():
 
 
 def test_validate_port_exposure_unsound_front_cell_math():
-    """cert.front_cell ≠ port_cell + direction offset."""
+    """cert.front_cell ≠ port_cell + direction offset, but still inside board."""
     cert_payload = _make_port_exposure_cert(
-        port_cell=(10, 10), port_direction="W", front_cell=(99, 99),  # 错
+        port_cell=(10, 10), port_direction="W", front_cell=(8, 10),  # 错，但在 70x70 内
     )
     cut = _make_port_exposure_cut(cert_payload)
-    state = _make_state(cell_owner={(99, 99): ("refinery", 0)})
+    state = _make_state(cell_owner={(8, 10): ("refinery", 0)}, refinery_poses=["p3"])
     vr = validate_port_exposure(cut, state, CANONICAL_RULES)
     assert vr.kind == "unsound"
     assert "front_cell mismatch" in vr.detail
+
+
+def test_validate_port_exposure_schema_err_out_of_grid_cell():
+    """F3 cert cell 必须 fail-closed 到 70x70 board 内。"""
+    cert_payload = _make_port_exposure_cert(
+        port_cell=(70, 10), port_direction="W", front_cell=(69, 10),
+    )
+    cut = _make_port_exposure_cut(cert_payload)
+    state = _make_state(cell_owner={(69, 10): ("refinery", 0)}, refinery_poses=["p3"])
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+    assert vr.kind == "schema_err"
+    assert "out of grid" in (vr.detail or "")
 
 
 def test_validate_port_exposure_unsound_blocking_facility_absent():

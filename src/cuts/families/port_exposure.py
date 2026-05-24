@@ -40,13 +40,16 @@ def _parse_strict_int(value: object, field_name: str) -> int:
     return cast(int, value)
 
 
-def _cell(raw: object) -> Cell:
+def _cell(raw: object, *, grid_size: int = 70) -> Cell:
     if not isinstance(raw, (list, tuple)) or len(raw) != 2:
         raise ValueError(f"expected cell as a length-2 list/tuple, got {raw!r}")
-    return (
+    cell = (
         _parse_strict_int(raw[0], "cell.x"),
         _parse_strict_int(raw[1], "cell.y"),
     )
+    if not (0 <= cell[0] < grid_size and 0 <= cell[1] < grid_size):
+        raise ValueError(f"cell out of grid: {cell!r}")
+    return cell
 
 
 def _parse_blocking_facility(value: object) -> Tuple[str, int, str]:

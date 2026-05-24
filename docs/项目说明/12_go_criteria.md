@@ -2,7 +2,7 @@
 
 每段 done 怎么定义. 不只 "代码改完 commit pass test", 而是要过 reviewer audit.
 
-### 8.1 Phase 1.2 P1.2A 入门 GO (✅ 2026-05-24 复查补强后仍 GO)
+### 8.1 Phase 1.2 P1.2A 入门 GO (✅ 2026-05-24 final polish 后仍 GO)
 
 7 项 factual fix + 1 项新发现 全 land (per [Phase 1.1 exit hardening](07_historical_review.md#512-phase-11-exit-hardening-2026-05-23-外部-reviewer-delivery)):
 1. ✅ strict gate default ON (`EXACT_FAMILY_VALIDATOR_STRICT="1"`)
@@ -14,9 +14,9 @@
 7. ✅ `evaluate_literal_port_exposure` 删除, F3 统一走 `evaluate_literal_multiset`
 8. ✅ **新发现**: `on_ghost_rect_changed` test stub 注入收紧 (`unsafe_test_replay_fn` + `allow_unsafe_test_replay_fn` 双 flag)
 
-实际验收 (2026-05-24 复查补强后):
-- ✅ pytest cuts: 188 pass (v10 181 → +7 regression: base64/bitset/Cut schema/F1-F4 bool numeric schema)
-- ✅ python -O pytest cuts: 188 pass
+实际验收 (2026-05-24 final polish 后):
+- ✅ pytest cuts: **189 pass** (v11 188 → +1 regression: F3 out-of-grid cell fail-closed)
+- ✅ python -O pytest cuts: **189 pass**
 - ✅ ruff default + no-ignores: pass
 - ✅ mypy --strict --explicit-package-bases src/cuts/: pass
 - ✅ bandit: 0 issues
@@ -72,8 +72,8 @@
 - [ ] capacity eviction 留 audit trail
 
 **F. Regression gate**
-- [ ] 现有 `src/tests/cuts/` 181 全 green
-- [ ] `python -O -m pytest src/tests/cuts/ -q` 181 green
+- [ ] 现有 `src/tests/cuts/` **189 全 green**
+- [ ] `python -O -m pytest src/tests/cuts/ -q` **189 green**
 - [ ] 新 red fixture 全 green (详 [15_workflow_testing.md](15_workflow_testing.md))
 - [ ] ruff green
 - [ ] mypy strict green 或显式标 typing debt (跟 soundness 分开 commit)
@@ -85,7 +85,7 @@
 - unexplained infeasible 连续出现 → 人工复盘提炼 F10
 - cut_store RSS 逼近 5GB/worker → capacity eviction
 
-### 8.2 Phase 1.2 P1.11-P1.15 (F5-F9 实施) GO
+### 8.2 Phase 1.2 P1.2B-F5/F6/F7/F8/F9 (F5-F9 实施) GO
 
 5 family 各自完整:
 - validator + evaluator + oracle (oracle 可 stub)
@@ -96,7 +96,7 @@
 - F5-F9 全 register FAMILY_VALIDATORS, strict gate ON
 
 验收:
-- 总 cuts test ~250+ (172 baseline + 5 family × 10-15 each)
+- 总 cuts test ~240-265+（当前 189 gate + 5 family × 10-15 each；具体以 collect-only 为准）
 - 大节点 GPT pro batch audit 通过 (整 Phase 1.2 vs 单 family)
 - production smoke 真数据 F5-F9 oracle 跑通 (各 oracle 真 emit cut 或合理
   fail-closed)

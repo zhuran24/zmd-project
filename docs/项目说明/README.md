@@ -13,7 +13,7 @@
 | [05_open_questions.md](05_open_questions.md) | 待定 mathematical questions (33 + 6 Q) | 544 | math §5 + plan §17 |
 | [06_current_status.md](06_current_status.md) | 现状细则 (commit `c8fb7ef` 起算) | 35 | plan §6 |
 | [07_historical_review.md](07_historical_review.md) | 历史回顾 (Phase 0 → Step O) | 116 | plan §5 |
-| [08_phase_1_2_plan.md](08_phase_1_2_plan.md) | Phase 1.2 plan (P1.11 入门 + 5 family) | 134 | plan §10 + §11 |
+| [08_phase_1_2_plan.md](08_phase_1_2_plan.md) | Phase 1.2 plan (P1.2A 入门 + P1.2B-F5/F6/F7/F8/F9) | 134 | plan §10 + §11 |
 | [09_phase_1_3_plan.md](09_phase_1_3_plan.md) | Phase 1.3 plan (CP-SAT propagator 集成) | 46 | plan §12 |
 | [10_phase_1_5_plan.md](10_phase_1_5_plan.md) | Phase 1.5+ plan (production integration) | 63 | plan §13 |
 | [11_dependency_graph.md](11_dependency_graph.md) | 依赖图 (family / step / phase) | 83 | plan §9 |
@@ -98,6 +98,7 @@
 | 2026-05-23 | v1.0 | 初版 21 sub-doc, 从 `docs/research/p3_b_design_v2_20260521/PHASE_POST_1_1_REFACTOR_PLAN.md` (1449 line) + `MATHEMATICAL_FOUNDATIONS.md` (1580 line) 拆分重组到项目顶层 `docs/项目说明/` |
 | 2026-05-23 | v1.1 | Phase 1.1 exit hardening delivery 落地 — 178 cuts pass / mypy strict pass / radon A 无 D, P1.2A 入门 ✅ done. 同时 merge Gemini math review meta-audit 修正 (F9 area-only / F8 mode 锁 geometric / CP-SAT no AddLazyConstraint / dark matter telemetry / 11 red fixture matrix / Phase 1.2 P0 acceptance checklist). 6 sub-doc update: 06 status / 07 history / 02 math (F9 area-only + morphology safe/unsafe) / 04 invariants / 05 open Q (Q10 verdict) / 08 phase 1.2 (P1.2A/B 命名 + 5 family 详) / 09 phase 1.3 (P1.3A spike) / 12 GO (P0 acceptance) / 15 testing (11 red fixture) / 17 telemetry (µs vs ms 单位 + dark matter) |
 | 2026-05-24 | v1.2 | Phase 1.1 复查补强 — strict base64/bitset/Cut schema/F1-F4 bool numeric schema fail-closed，新增 7 个 regression，cuts pytest 188 pass (`python` + `python -O`)，ruff/mypy/vulture/bandit/radon 全 PASS，exit_criteria 0 FAIL。更新 06/12/15 与顶层 README，使 1.1 gate 口径对齐。 |
+| 2026-05-24 | v1.3 | Final polish — F3 `port_exposure` cell 加 70×70 bound fail-closed，新增 1 个 out-of-grid regression，cuts pytest 189 pass (`python` + `python -O`)；计划书/GO/依赖安装说明统一到 v12 交付口径。 |
 
 ## cite 约定
 
