@@ -174,8 +174,10 @@ def deletion_minimize_core(
                 size_before=size_before,
             )
         if lit not in current_core:
-            # Defensive: literal already removed in a prior iter (only possible
-            # if the input has dup triples — canonical sort doesn't dedupe).
+            # Defensive: literal already removed in a prior iter. canonical_sort_assignment
+            # now dedups input (Gemini F5 round 1 fix #5), so this branch is
+            # effectively dead under normal calls; kept as a belt-and-suspenders
+            # guard against future callers that bypass canonical_sort.
             continue
         trial_core = tuple(x for x in current_core if x != lit)
         if not trial_core:

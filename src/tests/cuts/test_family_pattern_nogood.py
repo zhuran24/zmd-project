@@ -378,16 +378,39 @@ def test_validate_unsound_unknown_group_id():
 
 
 def test_validate_unsound_cert_literals_length_mismatch():
+    """cut.literals length differs from cert.forbidden_pose_pattern length.
+
+    To exercise the cert↔literals binding layer (not the schema-level
+    size_after cross-check added in Gemini round 2 fix #A.2), the test must
+    drop a pattern entry AND update size_after to match, so the schema check
+    passes and validation falls through to the literal-match layer.
+    """
     state = _make_state()
     cut, _ = _build_happy_cut(state)
 
     def _drop_one(d):
         d["forbidden_pose_pattern"] = d["forbidden_pose_pattern"][:1]
+        d["core_minimization"]["size_after"] = 1
 
     tampered = _tamper_cert(cut, _drop_one)
     vr = validate_pattern_nogood(tampered, state, canonical_rules={})
     assert vr.kind == "unsound"
     assert "length" in (vr.detail or "")
+
+
+def test_validate_schema_err_size_after_mismatches_pattern_length():
+    """Gemini F5 round 2 review #A.2: pattern length must equal size_after."""
+    state = _make_state()
+    cut, _ = _build_happy_cut(state)
+
+    def _drop_one_pattern_only(d):
+        # Drop one pattern entry but leave size_after unchanged → schema_err.
+        d["forbidden_pose_pattern"] = d["forbidden_pose_pattern"][:1]
+
+    tampered = _tamper_cert(cut, _drop_one_pattern_only)
+    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "size_after" in (vr.detail or "")
 
 
 def test_validate_unsound_oracle_reverify_feasible():

@@ -76,8 +76,13 @@ class SubProblemOracleAdapter(Protocol):
         state: BState,
         *,
         deadline_seconds: float,
-    ) -> Tuple[OracleVerdict, bytes]:
-        """Return (verdict, witness_blob). witness_blob non-empty only on INFEASIBLE."""
+    ) -> Tuple[OracleVerdict, Optional[bytes]]:
+        """Return (verdict, witness_blob).
+
+        witness_blob may be ``None`` or empty bytes — validator does not bind
+        on witness identity (per Gemini F5 round 1 fix #1), only the verdict
+        matters. Phase 1.5+ adapters are not required to extract IIS/Core bytes.
+        """
         ...
 
 
@@ -157,14 +162,20 @@ def generate_pattern_nogood_cuts(
     gen_t0 = _time.monotonic()
 
     def oracle_cb(core: Tuple[LiteralAssignment, ...]) -> OracleVerdict:
-        remaining = max(0.1, budget.max_seconds - (_time.monotonic() - gen_t0))
+        remaining = budget.max_seconds - (_time.monotonic() - gen_t0)
+        if remaining <= 0.0:
+            # Budget already exhausted — do not call oracle with a 0.1s floor
+            # (per Gemini F5 round 2 review #A: floor causes a "0.1s deadline
+            # storm" of guaranteed-TIMEOUT queries near the end of the budget).
+            # Returning TIMEOUT lets the minimizer's wall-clock check exit
+            # cleanly on the next iteration with stopped_reason=TIMEOUT.
+            return "TIMEOUT"
         verdict, _blob = sub_problem_oracle.query(
             core, state, deadline_seconds=remaining
         )
-        # witness_blob no longer used: per Gemini F5 review #1, the sub-problem
-        # witness hash is non-deterministic across workers and was breaking the
-        # cert_hash invariant. Validator re-queries the oracle for INFEASIBLE
-        # confirmation; that is the soundness guarantee, not the witness bytes.
+        # witness_blob unused: per Gemini F5 round 1 review #1, sub-problem
+        # witness bytes are non-deterministic; validator re-queries oracle for
+        # INFEASIBLE confirmation, witness identity is not bound.
         return verdict
 
     try:

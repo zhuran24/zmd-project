@@ -52,11 +52,13 @@ from src.cuts.oracles.pattern_nogood_oracle import (
 ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
 
 
-# Validator re-verify deadline. Per Gemini F5 review #3, must be >= the
-# generator's MinimizerBudget.max_seconds (default 10.0s) so a cut whose final
-# oracle call fits the generator budget does not get quarantined by the
-# validator running with a tighter timeout. Phase 1.5+ may tune.
-_VALIDATOR_REVERIFY_DEADLINE_SECONDS: float = 10.0
+# Validator re-verify deadline. Per Gemini F5 round 1 #3 it must be >= the
+# generator's MinimizerBudget.max_seconds (default 10.0s). Per Gemini F5
+# round 2 #B it must also absorb machine-load noise — a generator finishing
+# in 9.9s should not be quarantined by a validator hitting 10.1s on a busy
+# host. 1.5× generator default provides a usable buffer. Phase 1.5+ may tune
+# this against real binding/routing/pcr_cut adapter latency telemetry.
+_VALIDATOR_REVERIFY_DEADLINE_SECONDS: float = 15.0
 
 def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
     return ValidationResult(
@@ -260,6 +262,15 @@ def _validate_cert_literals_match(
     cert_triples: Tuple[Tuple[str, int, str], ...],
     t0: float,
 ) -> Optional[ValidationResult]:
+    """cert.forbidden_pose_pattern ↔ cut.literals binding (multiset, not ordered).
+
+    Per Gemini F5 round 2 review #C: comparing ordered tuples violates
+    state_machine_v2 §5 multiset anonymity — if serialization or any
+    legitimate transformation reorders cut.literals, an ordered check would
+    falsely return unsound. Both cert and literals are dedup'd (generator
+    invariant + validator forbidden_pose_pattern dedup check), so frozenset
+    equality is equivalent to multiset equality and respects anonymity.
+    """
     if cut.literals is None or len(cut.literals) != len(cert_triples):
         cut_len = 0 if cut.literals is None else len(cut.literals)
         return _vr(
@@ -267,15 +278,16 @@ def _validate_cert_literals_match(
             t0,
             f"cut.literals length {cut_len} != forbidden_pose_pattern length {len(cert_triples)}",
         )
-    literal_triples = tuple(
+    literal_triples_set = frozenset(
         (lit.slot_ref.group_id, lit.slot_ref.slot_index, lit.pose_id)
         for lit in cut.literals
     )
-    if literal_triples != cert_triples:
+    cert_triples_set = frozenset(cert_triples)
+    if literal_triples_set != cert_triples_set:
         return _vr(
             "unsound",
             t0,
-            "cut.literals triples do not match cert.forbidden_pose_pattern (must be 1:1 in canonical order)",
+            "cut.literals do not match cert.forbidden_pose_pattern (set equality required, order-independent)",
         )
     return None
 
@@ -370,6 +382,18 @@ def validate_pattern_nogood(
         return pattern_err
     if cert_triples is None:
         return _vr("schema_err", t0, "forbidden_pose_pattern parse returned None")
+
+    # Per Gemini F5 round 2 review #A.2: forbidden_pose_pattern length must
+    # match core_minimization.size_after. Without this cross-check, an attacker
+    # could pad the pattern (e.g. claim size_after=1 but ship 100 literals)
+    # and the audit trail would silently disagree with the actual cut.
+    cert_size_after = int(cert_dict["core_minimization"]["size_after"])
+    if len(cert_triples) != cert_size_after:
+        return _vr(
+            "schema_err",
+            t0,
+            f"forbidden_pose_pattern length {len(cert_triples)} != core_minimization.size_after {cert_size_after}",
+        )
 
     literal_err = _validate_cert_literals_match(cut, cert_triples, t0)
     if literal_err is not None:
