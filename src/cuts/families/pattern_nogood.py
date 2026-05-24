@@ -311,10 +311,15 @@ def _reverify_sub_problem_oracle(
             deadline_seconds=_VALIDATOR_REVERIFY_DEADLINE_SECONDS,
         )
     except Exception as e:  # noqa: BLE001 — oracle is untrusted
+        # Per Gemini F5 round 3 review #2: an adapter exception (network blip,
+        # OOM, transient state) is "temporarily unable to verify", not "the
+        # cert is mathematically false". Returning "unsound" would permanently
+        # discard the cut. Use "timeout" semantics — CutStore quarantines and
+        # the cut may be revived on a future state.
         return _vr(
-            "unsound",
+            "timeout",
             t0,
-            f"sub-problem oracle re-verify raised {type(e).__name__}: {e}",
+            f"sub-problem oracle re-verify raised {type(e).__name__}: {e} (treated as transient, quarantine)",
         )
     if verdict == "TIMEOUT":
         return _vr(

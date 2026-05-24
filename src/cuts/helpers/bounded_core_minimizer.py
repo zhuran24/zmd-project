@@ -185,6 +185,16 @@ def deletion_minimize_core(
             continue
         try:
             verdict = oracle(trial_core)
+            if verdict not in VALID_ORACLE_VERDICTS:
+                # Per Gemini F5 round 3 review #1: a buggy adapter returning
+                # an out-of-closed-set verdict (e.g. "BOGUS") would otherwise
+                # silently fall through — neither shrinking core nor flagging
+                # had_inconclusive — and break the is_minimal contract. Treat
+                # as adapter exception → fail-closed via EXCEPTION_FAIL_CLOSED.
+                raise ValueError(
+                    f"oracle returned invalid verdict {verdict!r}; "
+                    f"expected one of {sorted(VALID_ORACLE_VERDICTS)}"
+                )
         except Exception:  # noqa: BLE001 — fail-closed: oracle is untrusted
             return _build_result(
                 current_core,

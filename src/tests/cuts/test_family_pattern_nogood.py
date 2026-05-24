@@ -443,13 +443,48 @@ def test_validate_timeout_on_oracle_reverify_timeout():
     assert vr.kind == "timeout"
 
 
-def test_validate_unsound_oracle_reverify_raises():
+def test_validate_timeout_on_oracle_reverify_raises():
+    """Per Gemini F5 round 3 review #2: adapter exception → timeout (quarantine), not unsound.
+
+    Rationale: 'unsound' means cert is mathematically false (permanent discard);
+    an adapter exception is transient (network/OOM/state blip) and should
+    quarantine the cut for later re-verification, not destroy it.
+    """
     state = _make_state()
     cut, adapter = _build_happy_cut(state)
     adapter.raise_on_query = True
     vr = validate_pattern_nogood(cut, state, canonical_rules={})
-    assert vr.kind == "unsound"
+    assert vr.kind == "timeout"
     assert "raised" in (vr.detail or "")
+
+
+def test_minimizer_bogus_oracle_verdict_fails_closed():
+    """Per Gemini F5 round 3 review #1: out-of-closed-set verdict → EXCEPTION_FAIL_CLOSED.
+
+    Without the explicit VALID_ORACLE_VERDICTS check in the minimizer, a
+    buggy adapter returning 'BOGUS' would silently fall through (neither
+    shrink core nor flag had_inconclusive), breaking the is_minimal contract.
+    """
+    from src.cuts.helpers.bounded_core_minimizer import (
+        CoreStoppedReason,
+        MinimizerBudget,
+        deletion_minimize_core,
+    )
+
+    a = ("g1", 0, "pA")
+    b = ("g2", 0, "pB")
+    call_count = {"n": 0}
+
+    def bogus_oracle(core):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return "INFEASIBLE"  # initial verify
+        return "BOGUS_VERDICT"  # type: ignore[return-value]
+
+    result = deletion_minimize_core((a, b), bogus_oracle, MinimizerBudget(max_calls=10, max_seconds=2.0))
+    assert result.stopped_reason == CoreStoppedReason.EXCEPTION_FAIL_CLOSED
+    assert result.is_minimal is False
+    assert result.is_verified_infeasible is True
 
 
 # ---- red fixtures (P0 per docs/项目说明/15_workflow_testing.md §21.7) ---
