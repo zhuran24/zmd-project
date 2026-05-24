@@ -31,6 +31,7 @@ from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
 from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
 from src.cuts.helpers.power_network import build_power_network, bfs_component
 from src.cuts.lifecycle import (
+    Assumption,
     BState,
     Cell,
     Cut,
@@ -283,6 +284,14 @@ def _build_cut(
 
     source_digest = state.source_digest or compute_source_digest(state)
 
+    # Gemini F8 round 3 Finding #3 (HIGH): spec §4 requires active_assumptions
+    # to bind pole_jump_radius and protocol_core_cell to source-of-truth. The
+    # assumption_holds dispatch (lifecycle §step6) cross-checks each assumption
+    # via verifiers.py at attach-scope, so a malicious cert with forged radius
+    # (e.g., R=0.001 to fake disconnect) or off-master protocol_core fails the
+    # gate and never attaches.
+    pole_radius_value = f"R={float(pole_jump_radius):g}"
+    pc_position_value = f"({protocol_core_anchor[0]},{protocol_core_anchor[1]})"
     scope = CutScope(
         ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
         blocked_cells_hash=compute_blocked_cells_hash(state),
@@ -290,6 +299,10 @@ def _build_cut(
         source_digest=source_digest,
         oracle_abstraction_version=ORACLE_NAME,
         artifact_hashes=dict(state.artifact_hashes),
+        active_assumptions=(
+            Assumption(key="power_pole_jump_radius", value=pole_radius_value),
+            Assumption(key="protocol_core_position", value=pc_position_value),
+        ),
     )
 
     return Cut(

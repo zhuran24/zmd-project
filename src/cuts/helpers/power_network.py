@@ -66,51 +66,47 @@ def _footprint_cells(anchor: Pole, size: int) -> Tuple[Pole, ...]:
     )
 
 
-def _closest_cell_pair(
-    cells1: Tuple[Pole, ...], cells2: Tuple[Pole, ...]
-) -> Optional[Tuple[Pole, Pole, float]]:
-    best: Optional[Tuple[Pole, Pole, int]] = None
-    for c1 in cells1:
-        for c2 in cells2:
-            d2 = (c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2
-            if best is None or d2 < best[2]:
-                best = (c1, c2, d2)
-    if best is None:
-        return None
-    return best[0], best[1], math.sqrt(best[2])
-
-
 def _can_jump_via_cells(
     cells1: Tuple[Pole, ...],
     cells2: Tuple[Pole, ...],
     pole_radius: float,
     ghost_aabb: Optional[Tuple[float, float, float, float]],
 ) -> bool:
-    """Jump iff min cell-to-cell distance ≤ ``pole_radius`` AND the segment
-    between the closest cell pair does not intersect the ghost AABB.
+    """Jump iff ANY cell pair (c1 ∈ cells1, c2 ∈ cells2) satisfies BOTH
+    (a) euclidean distance ≤ ``pole_radius`` AND (b) the segment between
+    cell centers does not intersect the ghost AABB.
 
-    Gemini F8 round 2 Finding #1: anchor-to-anchor distance is wrong — the
-    canonical distance metric is footprint cell-to-cell min (consistent with
-    ``compute_cover_set`` which uses ``_min_cell_distance``). Anchor-to-anchor
-    overestimates by up to √8 and drops legitimate edges.
+    Gemini F8 round 2 Finding #1: distance must be cell-to-cell min (not
+    anchor-to-anchor) to stay consistent with ``compute_cover_set``.
+    Gemini F8 round 2 Finding #2: segment endpoints must be cell centers
+    (anchor + 0.5), not raw anchor coords.
 
-    Gemini F8 round 2 Finding #2: the ghost-block segment endpoints must be
-    cell *centers* (anchor + 0.5), not raw anchor (top-left corner) coords,
-    so the line geometrically represents the physical power-jump trajectory.
+    Gemini F8 round 3 Finding #1 (CRITICAL): scanning ONLY the closest
+    pair drops legitimate edges when the closest pair's segment crosses
+    the ghost but another in-range pair has unblocked line-of-sight.
+    Power can physically jump along *any* viable cell-pair path, so this
+    function must scan all in-range pairs and accept the first unblocked
+    one. This is still bounded — 2×2 vs 1×1 footprints yield at most 16
+    pairs per call, and the outer ``_pole_*_edges`` early-reject filters
+    far pairs before reaching this function.
     """
-    closest = _closest_cell_pair(cells1, cells2)
-    if closest is None:
-        return False
-    c1, c2, dist = closest
-    if dist > pole_radius:
-        return False
-    if ghost_aabb is None:
-        return True
-    return not segment_intersects_aabb(
-        (float(c1[0]) + 0.5, float(c1[1]) + 0.5),
-        (float(c2[0]) + 0.5, float(c2[1]) + 0.5),
-        ghost_aabb,
-    )
+    r_sq = pole_radius * pole_radius
+    for c1 in cells1:
+        for c2 in cells2:
+            dx = c1[0] - c2[0]
+            dy = c1[1] - c2[1]
+            d_sq = dx * dx + dy * dy
+            if d_sq > r_sq:
+                continue
+            if ghost_aabb is None:
+                return True
+            if not segment_intersects_aabb(
+                (float(c1[0]) + 0.5, float(c1[1]) + 0.5),
+                (float(c2[0]) + 0.5, float(c2[1]) + 0.5),
+                ghost_aabb,
+            ):
+                return True
+    return False
 
 
 def _pole_pole_edges(

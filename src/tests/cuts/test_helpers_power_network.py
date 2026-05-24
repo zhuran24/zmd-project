@@ -119,22 +119,47 @@ def test_can_jump_pole_to_pc_uses_cell_distance():
     assert ((3, 3), (5, 5)) in graph.edges or ((5, 5), (3, 3)) in graph.edges
 
 
+def test_jump_accepts_any_unblocked_cell_pair():
+    """Gemini F8 round 3 Finding #1 (CRITICAL): edge must fire if ANY in-range
+    cell pair has an unblocked segment — not just the closest pair.
+
+    Setup: pole anchors (0,0) and (4,0); ghost is a small AABB blocking the
+    nearest cell-pair segment but not the second-nearest. With closest-pair
+    only, the edge is dropped (FP disconnect). With any-pair scan, the edge
+    fires.
+
+    Pole 1 cells: {(0,0), (1,0), (0,1), (1,1)}
+    Pole 2 cells: {(4,0), (5,0), (4,1), (5,1)}
+    Closest cell pair: (1,0) ↔ (4,0), distance 3. Segment centers (1.5, 0.5)
+    to (4.5, 0.5) — y=0.5 horizontal line at x in [1.5, 4.5].
+    Place a ghost AABB blocking exactly that line but NOT the y=1.5 alt:
+    ghost_rect=(2, 0, 1, 1) → AABB at x∈[2,3], y∈[0,1].
+    The (1,0)↔(4,0) segment passes through y=0.5, x=2.0..3.0 → blocked.
+    The (1,1)↔(4,1) segment passes through y=1.5, x=2.0..3.0 → unblocked
+    (ghost stops at y=1 inclusive). distance still 3 ≤ R=3.5.
+    """
+    poles = [(0, 0), (4, 0)]
+    graph = build_power_network(
+        poles, pole_radius=3.5, ghost_rect=(2, 0, 1, 1)
+    )
+    assert ((0, 0), (4, 0)) in graph.edges, (
+        "any-pair scan should find the (1,1)↔(4,1) segment unblocked and "
+        "keep the edge; closest-pair only would drop it"
+    )
+
+
 def test_ghost_segment_uses_cell_centers_not_anchors():
     """Gemini F8 round 2 Finding #2 (CRITICAL): the ghost-blocking segment
-    must connect cell *centers* (anchor + 0.5), not raw anchor coords.
-
-    This is a low-impact bug for axis-aligned wide ghosts (centers and
-    anchors give the same result), so the test just confirms that with a
-    ghost AABB strictly between two poles, the edge is blocked regardless
-    of which endpoint convention is used (sanity, not a discriminative
-    regression). The exhaustive endpoint-convention check is delegated to
-    the segment_intersects_aabb unit tests."""
+    must connect cell *centers* (anchor + 0.5), not raw anchor coords. Use
+    a 2×2-cell tall ghost so all in-range cell-pair segments are caught
+    (Gemini F8 round 3 Finding #1 fix changed semantics to any-pair scan).
+    """
     poles = [(0, 0), (8, 0)]
-    # ghost AABB straddles the centers' y-line (y=0.5) at x=3..5
+    # ghost AABB (3, 0)–(5, 2) — wider than both pole footprints' y-extent
     graph = build_power_network(
-        poles, pole_radius=10.0, ghost_rect=(3, 0, 2, 1)
+        poles, pole_radius=10.0, ghost_rect=(3, 0, 2, 2)
     )
-    # both center-based and anchor-based block this segment
+    # both center-based and anchor-based block every cell-pair segment
     assert len(graph.edges) == 0
 
 
@@ -151,14 +176,17 @@ def test_build_protocol_core_dedup_overlap_with_pole():
 
 
 def test_build_ghost_blocks_jump():
-    """ghost rect (3,0)-(5,0) blocks jump (0,0) → (10,0) — but distance 10 > 5
-    so not in range anyway. Use closer poles + ghost in middle."""
+    """Ghost blocks the jump only if it blocks ALL in-range cell-pair segments
+    (Gemini F8 round 3 Finding #1). A thin 1-row ghost wouldn't block segments
+    at y=1.5 between (1,1)↔(8,1) cells, so we use a 2×2-cell tall ghost to
+    catch every in-range cell-pair segment in the y∈[0,2] band.
+    """
     poles = [(0, 0), (8, 0)]
-    # ghost AABB (3,0)-(5,1) — at y=0 covers from x=3 to x=5
+    # ghost AABB covers x∈[3,5], y∈[0,2] — wider than pole 2×2 footprint y-span
     graph = build_power_network(
-        poles, pole_radius=10.0, ghost_rect=(3, 0, 2, 1)
+        poles, pole_radius=10.0, ghost_rect=(3, 0, 2, 2)
     )
-    # segment (0,0)→(8,0) intersects ghost AABB → no edge
+    # every cell-pair segment (y ∈ {0.5, 1.5}) crosses ghost AABB → no edge
     assert len(graph.edges) == 0
 
 
