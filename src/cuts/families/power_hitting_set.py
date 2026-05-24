@@ -50,10 +50,7 @@ import re
 import time
 from typing import Any, Dict, List, Literal, Optional, Tuple, cast
 
-from src.cuts.helpers.power_cover import (
-    compute_cover_set,
-    compute_cover_set_ghost_only,
-)
+from src.cuts.helpers.power_cover import compute_cover_set
 from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
     BState,
@@ -294,16 +291,25 @@ def _validate_coverset_empty(
     t0: float,
 ) -> Optional[ValidationResult]:
     pole_radius = float(cast(float, cert_dict["pole_radius"]))
+    # Per Gemini F7 round 1 BLOCKER #1: facility cells must be excluded from
+    # the free-cell mask. During replay the facility may not yet be in
+    # state.cell_owner, but its 3×3 (or larger) footprint still cannot host a
+    # 2×2 pole — a pole anchor inside the facility's own cells is geometrically
+    # impossible (two facilities can't co-locate). Without this exclusion the
+    # validator finds a "pole" inside the facility footprint with distance 0 ≤ R
+    # and rejects every legitimate F7 cut.
+    facility_set = frozenset(facility_cells)
+    cell_owner_keys = frozenset(state.cell_owner.keys())
     grid_cells = frozenset(
         (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE)
     )
-    cell_owner_keys = frozenset(state.cell_owner.keys())
     free_cells = frozenset(
         c
         for c in grid_cells
         if c not in state.ghost_cells
         and c not in state.exterior_blocks
         and c not in cell_owner_keys
+        and c not in facility_set
     )
     cover_full = compute_cover_set(facility_cells, free_cells, pole_radius)
     if cover_full:
@@ -322,12 +328,18 @@ def _validate_coverset_ghost_only_empty(
     t0: float,
 ) -> Optional[ValidationResult]:
     pole_radius = float(cast(float, cert_dict["pole_radius"]))
-    cover_ghost = compute_cover_set_ghost_only(
-        facility_cells,
-        frozenset(state.ghost_cells),
-        frozenset(state.exterior_blocks),
-        pole_radius,
+    # Same R1 BLOCKER fix: exclude facility_cells from the ghost-only mask too.
+    facility_set = frozenset(facility_cells)
+    blocked = (
+        frozenset(state.ghost_cells) | frozenset(state.exterior_blocks) | facility_set
     )
+    free = frozenset(
+        (x, y)
+        for x in range(_GRID_SIZE)
+        for y in range(_GRID_SIZE)
+        if (x, y) not in blocked
+    )
+    cover_ghost = compute_cover_set(facility_cells, free, pole_radius)
     if cover_ghost:
         return _vr(
             "unsound",

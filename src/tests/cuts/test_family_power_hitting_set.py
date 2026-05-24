@@ -415,27 +415,30 @@ def test_validator_unsound_when_cover_set_recompute_non_empty() -> None:
 def test_validator_unsound_when_cell_owner_only_clearance(monkeypatch: pytest.MonkeyPatch) -> None:
     """Ghost-only CoverSet non-empty → single-literal cert is bogus (cell_owner真因).
 
-    Phase 7 catches: cert claims "power_cover_emptyset_ghost" but
-    compute_cover_set_ghost_only returns non-empty, meaning ghost+exterior
-    alone don't clear the CoverSet and cell_owner is the true cause.
-    Phase 1.5+ multi-literal cut handles this; Phase 1.2 must reject.
+    Phase 7 catches: cert claims "power_cover_emptyset_ghost" but the
+    ghost+exterior recompute (excluding cell_owner) finds candidates, meaning
+    cell_owner is the true cause and the single-literal cut is unsound.
+    Phase 1.5+ multi-literal handles this; Phase 1.2 must reject.
 
-    Constructing a real state where compute_cover_set is empty but
-    compute_cover_set_ghost_only is non-empty requires very specific cell_owner
-    coverage. We exercise the validator branch via monkey-patch — the helper
-    contract is unit-tested separately in test_helpers_power_cover.py.
+    Constructing a real state where the full-mask CoverSet is empty but the
+    ghost-only mask is non-empty needs very specific cell_owner coverage.
+    We exercise the validator branch via monkey-patch — phase 6 returns ∅
+    (full free-cells cover_set), phase 7 returns non-∅ (ghost-only cover_set).
     """
     state = _make_state()  # default: ghost 25,25,16,16 → both CoverSets empty
     cert_payload = _make_cert(state)
     cut = _make_cut(cert_payload, state)
-    # Patch the ghost-only helper as imported into the family module to
-    # simulate the cell_owner-only-clearance scenario.
     from src.cuts.families import power_hitting_set as f7_mod
-    monkeypatch.setattr(
-        f7_mod,
-        "compute_cover_set_ghost_only",
-        lambda *args, **kwargs: frozenset({(0, 0)}),
-    )
+
+    call_state = {"count": 0}
+
+    def _mock_cover(*args: Any, **kwargs: Any) -> frozenset[Tuple[int, int]]:
+        call_state["count"] += 1
+        if call_state["count"] == 1:
+            return frozenset()  # phase 6 (full free-cells): empty
+        return frozenset({(0, 0)})  # phase 7 (ghost-only): non-empty
+
+    monkeypatch.setattr(f7_mod, "compute_cover_set", _mock_cover)
     result = validate_power_hitting_set(cut, state, canonical_rules={})
     assert result.kind == "unsound"
     assert "cell_owner" in (result.detail or "") or "true cause" in (result.detail or "")

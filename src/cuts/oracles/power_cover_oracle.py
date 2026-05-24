@@ -29,10 +29,7 @@ import hashlib
 import os
 from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
 
-from src.cuts.helpers.power_cover import (
-    compute_cover_set,
-    compute_cover_set_ghost_only,
-)
+from src.cuts.helpers.power_cover import compute_cover_set
 from src.cuts.lifecycle import (
     AnonymousSlotRef,
     BState,
@@ -129,18 +126,40 @@ def _pose_cells_from_canonical(
     return None
 
 
-def _full_free_cells(state: BState) -> FrozenSet[Cell]:
-    grid_cells = frozenset(
-        (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE)
+_GRID_CELLS: FrozenSet[Cell] = frozenset(
+    (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE)
+)
+
+
+def _full_free_cells_minus_facility(
+    state: BState, facility_cells: Tuple[Cell, ...]
+) -> FrozenSet[Cell]:
+    """Build free-cell mask: grid - ghost - exterior - cell_owner - facility_cells.
+
+    Per Gemini F7 round 1 BLOCKER #1: facility's own cells must be excluded.
+    During generator the facility may already appear in cell_owner (master
+    selected it), but excluding facility_cells explicitly is robust against
+    pre-master probes or fixture states.
+    """
+    blocked = (
+        frozenset(state.ghost_cells)
+        | frozenset(state.exterior_blocks)
+        | frozenset(state.cell_owner.keys())
+        | frozenset(facility_cells)
     )
-    cell_owner_keys = frozenset(state.cell_owner.keys())
-    return frozenset(
-        c
-        for c in grid_cells
-        if c not in state.ghost_cells
-        and c not in state.exterior_blocks
-        and c not in cell_owner_keys
+    return frozenset(c for c in _GRID_CELLS if c not in blocked)
+
+
+def _ghost_only_free_cells_minus_facility(
+    state: BState, facility_cells: Tuple[Cell, ...]
+) -> FrozenSet[Cell]:
+    """Ghost+exterior mask + facility_cells exclude (cell_owner ignored)."""
+    blocked = (
+        frozenset(state.ghost_cells)
+        | frozenset(state.exterior_blocks)
+        | frozenset(facility_cells)
     )
+    return frozenset(c for c in _GRID_CELLS if c not in blocked)
 
 
 def generate_power_hitting_set_cuts(
@@ -178,10 +197,6 @@ def generate_power_hitting_set_cuts(
             return []
 
     cuts: List[Cut] = []
-    full_free = _full_free_cells(state)
-    ghost_cells_fs = frozenset(state.ghost_cells)
-    exterior_fs = frozenset(state.exterior_blocks)
-
     for group_id, pose_id in target_poses:
         if group_id not in state.groups:
             continue
@@ -193,11 +208,13 @@ def generate_power_hitting_set_cuts(
         facility_cells = _pose_cells_from_canonical(state, group_id, pose_id)
         if facility_cells is None:
             continue
+        full_free = _full_free_cells_minus_facility(state, facility_cells)
         cover_full = compute_cover_set(facility_cells, full_free, pole_radius)
         if cover_full:
             continue  # power coverage OK
-        cover_ghost_only = compute_cover_set_ghost_only(
-            facility_cells, ghost_cells_fs, exterior_fs, pole_radius
+        ghost_only_free = _ghost_only_free_cells_minus_facility(state, facility_cells)
+        cover_ghost_only = compute_cover_set(
+            facility_cells, ghost_only_free, pole_radius
         )
         if cover_ghost_only:
             # cell_owner is the true cause — Phase 1.5+ multi-literal cut
