@@ -35,6 +35,7 @@ from src.cuts.families.density_envelope import validate_density_envelope
 from src.cuts.families.pattern_nogood import validate_pattern_nogood
 from src.cuts.families.port_exposure import validate_port_exposure
 from src.cuts.families.region_capacity import validate_region_capacity
+from src.cuts.families.shape_packing_hall import validate_shape_packing_hall
 from src.cuts.lifecycle import (
     AttachDecision,
     BState,
@@ -63,6 +64,7 @@ FAMILY_VALIDATORS: Dict[str, FamilyValidator] = {
     "component_reach": validate_component_reach,
     "pattern_nogood": validate_pattern_nogood,
     "density_envelope": validate_density_envelope,
+    "shape_packing_hall": validate_shape_packing_hall,
 }
 
 
