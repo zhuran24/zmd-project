@@ -219,9 +219,22 @@ def _validate_assignment_witness(
                 None,
             )
         pairs.append((cast(GroupId, g), cast(PoseId, p)))
-    # Multiset count per pose ≤ group.demand
-    counts = Counter(pairs)
     group_demand = state.groups[cert_group_id].demand
+    # Per Gemini F9 round 1 review #2 HIGH: total instance count must also
+    # be ≤ group.demand. Per-pose multiset cap alone allowed an attacker to
+    # claim demand+1 *different* poses, inflating witness area beyond what
+    # the master can physically place.
+    if len(pairs) > group_demand:
+        return (
+            _vr(
+                "unsound",
+                t0,
+                f"oracle_assignment_witness total instances {len(pairs)} > group demand {group_demand}",
+            ),
+            None,
+        )
+    # Per-pose multiset count ≤ group.demand
+    counts = Counter(pairs)
     for (g_p, count) in counts.items():
         if count > group_demand:
             return (
@@ -335,26 +348,31 @@ def _recompute_assignment_area_overlap(
     window_cells: FrozenSet[Cell],
     state: BState,
 ) -> int:
-    """Sum |occupied_cells(pose) ∩ W| for each (group, pose) in witness.
+    """Return |Union(occupied_cells(p) for p in witness) ∩ W|.
 
-    Uses state.candidate_placements when available (real source-of-truth).
+    Per Gemini F9 round 1 BLOCKER fix: validator must use UNION semantics
+    matching the evaluator (which iterates ``state.cell_owner`` keyed by
+    cell, naturally deduplicated). Summation across poses double-counts any
+    cell shared by two pose footprints, allowing the validator to accept a
+    cut on inflated area while the evaluator never sees overflow on the
+    same witness — LBBD would loop on identical solutions.
+
     Returns -1 if any pose lookup fails (validator treats as unsound).
     """
     from src.cuts.helpers.candidate_placements import find_pose
 
-    total = 0
+    occupied_cells: set[Cell] = set()
     for (g, p) in witness_pairs:
         pose = find_pose(state, g, p)
         if pose is None:
             return -1
-        occupied = pose.get("occupied_cells", [])
-        for raw_cell in occupied:
+        for raw_cell in pose.get("occupied_cells", []):
             if not isinstance(raw_cell, (list, tuple)) or len(raw_cell) != 2:
                 continue
             cell = (int(raw_cell[0]), int(raw_cell[1]))
             if cell in window_cells:
-                total += 1
-    return total
+                occupied_cells.add(cell)
+    return len(occupied_cells)
 
 
 def _validate_witness_overflow(

@@ -145,13 +145,19 @@ def _build_density_envelope_cut(
 
     ghost_rect_repr = list(state.ghost_rect)
 
+    # Per Gemini F9 round 1 review #3 HIGH: sort the witness list so
+    # permuted-but-equivalent witnesses produce identical cert_hash and the
+    # CutStore can dedup them (matches F5 round 1's multiset-canonicalization
+    # lesson — same trap re-emerging in F9).
+    sorted_witness = sorted([[g, p] for (g, p) in assignment_witness])
+
     cert_payload_dict: Dict[str, Any] = {
         "cert_kind": CERT_KIND,
         "witness_kind": "area_capacity_overflow",
         "window_rect": list(window_rect),
         "group_id": group_id,
         "max_allowed_area": int(max_allowed_area),
-        "oracle_assignment_witness": [[g, p] for (g, p) in assignment_witness],
+        "oracle_assignment_witness": sorted_witness,
         "ghost_rect_repr": ghost_rect_repr,
     }
     cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)

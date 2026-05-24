@@ -675,6 +675,115 @@ def test_generate_equality_no_cut():
 # ---- watcher_keys ---------------------------------------------------------
 
 
+def test_validator_overlap_witness_union_not_sum():
+    """Gemini F9 round 1 BLOCKER regression: validator must use UNION semantics.
+
+    If two witness poses overlap, the SUM-based validator would double-count
+    the shared cells and accept a cut whose evaluator never fires (because
+    cell_owner dedups by cell). That loops LBBD on identical solutions.
+
+    Setup: two poses sharing 3 cells. SUM = 9+9 = 18; UNION = 9+9-3 = 15.
+    With max_allowed_area = 16: SUM (18) > 16 would accept; UNION (15) ≤ 16
+    rejects as no strict overflow (expected).
+    """
+    # Pose A at (0, 0): cells (0,0)..(2,2) = 9 cells
+    # Pose B at (1, 1): cells (1,1)..(3,3) = 9 cells
+    # Overlap: (1,1),(1,2),(2,1),(2,2) = 4 cells
+    # UNION = 9 + 9 - 4 = 14
+    pose_a = _make_pose("p_overlap_a", (0, 0), 3, 3)
+    pose_b = _make_pose("p_overlap_b", (1, 1), 3, 3)
+    cp = {"facility_pools": {"manufacturing_3x3": [pose_a, pose_b]}}
+    state = _make_state(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=4,
+                pose_domain=frozenset({"p_overlap_a", "p_overlap_b"}),
+                selected_poses=[],
+            ),
+        },
+        candidate_placements=cp,
+    )
+    # max_allowed_area = 14: union (14) == 14 not strict, rejects;
+    #                       sum (18) > 14 would erroneously accept
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=14,
+        assignment_witness=[["g1", "p_overlap_a"], ["g1", "p_overlap_b"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "strict overflow" in (vr.detail or ""), (
+        f"Validator used SUM not UNION: union=14 should not be strict overflow "
+        f"over max_allowed_area=14; got vr.detail={vr.detail!r}"
+    )
+
+
+def test_validator_total_instances_exceed_demand_rejected():
+    """Gemini F9 round 1 review #2 HIGH: total instance count must be ≤ demand.
+
+    Per-pose multiset cap alone lets attacker inflate witness with demand+1
+    different poses, exceeding the group's physical placement capacity.
+    """
+    state = _make_state(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=2,  # Only 2 instances allowed
+                pose_domain=frozenset({"p_3x3_a", "p_3x3_b", "p_3x3_c"}),
+                selected_poses=[],
+            ),
+        },
+    )
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=5,
+        # 3 distinct poses, each count=1 ≤ demand=2 (per-pose OK), but total
+        # 3 > demand 2 (must reject)
+        assignment_witness=[
+            ["g1", "p_3x3_a"],
+            ["g1", "p_3x3_b"],
+            ["g1", "p_3x3_c"],
+        ],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "total instances" in (vr.detail or "")
+    assert "demand" in (vr.detail or "")
+
+
+def test_generator_witness_canonical_order_independent_cert_hash():
+    """Gemini F9 round 1 review #3 HIGH: cert_hash must be permutation-invariant.
+
+    Two equivalent witnesses with permuted pair order must produce identical
+    cert_payload bytes → identical cert_hash → identical cut_id (so CutStore
+    can dedup). Without sort, F5 round 1's anonymity trap re-emerges.
+    """
+    state = _make_state()
+    args = dict(
+        witness_kind="area_capacity_overflow",
+        group_id="g1",
+        window_rect=(0, 0, 10, 10),
+        max_allowed_area=10,
+    )
+    cuts_forward = generate_density_envelope_cuts(
+        state,
+        assignment_witness=(("g1", "p_3x3_a"), ("g1", "p_3x3_b")),
+        **args,
+    )
+    cuts_reversed = generate_density_envelope_cuts(
+        state,
+        assignment_witness=(("g1", "p_3x3_b"), ("g1", "p_3x3_a")),
+        **args,
+    )
+    assert len(cuts_forward) == 1 and len(cuts_reversed) == 1
+    assert cuts_forward[0].cert.cert_hash == cuts_reversed[0].cert.cert_hash, (
+        "Permuted witness produced different cert_hash — generator does not "
+        "canonicalize witness order; CutStore dedup is broken."
+    )
+    assert cuts_forward[0].cert.cert_payload == cuts_reversed[0].cert.cert_payload
+
+
 def test_watcher_keys_pattern():
     cert_payload = _make_density_envelope_cert(window_rect=[2, 3, 4, 5])
     cut = _make_density_envelope_cut(cert_payload)
