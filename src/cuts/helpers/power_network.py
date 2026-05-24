@@ -1,10 +1,12 @@
 """Family 8 power_grid_reach helpers — power network construction + BFS component.
 
 Per cut_family_specs/08_power_grid_reach.md v1.1 §5a:
-- ``build_power_network(poles, pc_cell, pole_radius, ghost_rect)`` →
+- ``build_power_network(poles, pole_radius, *, pc_cells, ghost_rect)`` →
   ``PowerGraph(V, E)`` where E_jump connects poles within radius and not
   blocked by ghost AABB (Liang-Barsky strict intersection — v1.0 中心点
-  shortcut critical FN bug 已修).
+  shortcut critical FN bug 已修). ``pc_cells`` is the protocol_core multi-cell
+  footprint (Gemini F8 round 1 Finding #2: 9×9 facility, not a single point).
+  Internal pc_cell pairs are auto-connected (one building).
 - ``bfs_component(graph, start)`` → set of pole cells reachable from start.
 
 Phase 1.0 P1.4 scope:
@@ -53,43 +55,105 @@ def _euclidean(p1: Pole, p2: Pole) -> float:
     return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
 
+def _can_jump(
+    p1: Pole,
+    p2: Pole,
+    pole_radius: float,
+    ghost_aabb: Optional[Tuple[float, float, float, float]],
+) -> bool:
+    if _euclidean(p1, p2) > pole_radius:
+        return False
+    if ghost_aabb is None:
+        return True
+    return not segment_intersects_aabb(
+        (float(p1[0]), float(p1[1])),
+        (float(p2[0]), float(p2[1])),
+        ghost_aabb,
+    )
+
+
+def _pole_pole_edges(
+    pole_list: list[Pole],
+    pole_radius: float,
+    ghost_aabb: Optional[Tuple[float, float, float, float]],
+) -> Iterable[Edge]:
+    n = len(pole_list)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if _can_jump(pole_list[i], pole_list[j], pole_radius, ghost_aabb):
+                yield _canonical_edge(pole_list[i], pole_list[j])
+
+
+def _pc_internal_edges(pc_list: list[Pole]) -> Iterable[Edge]:
+    """protocol_core internal: all pc cells form a single supernode.
+
+    Always mutually connected — ghost cannot pass through the core's
+    footprint since master_solution disallows ghost overlap with placed
+    facilities.
+    """
+    m = len(pc_list)
+    for i in range(m):
+        for j in range(i + 1, m):
+            yield _canonical_edge(pc_list[i], pc_list[j])
+
+
+def _pole_pc_edges(
+    pole_list: list[Pole],
+    pc_list: list[Pole],
+    pole_radius: float,
+    ghost_aabb: Optional[Tuple[float, float, float, float]],
+) -> Iterable[Edge]:
+    """Pole↔pc edges: one canonical edge per (pole, pc_cell) pair where the
+    pole is within radius AND the segment to that pc cell does not cross
+    the ghost AABB. BFS from any pc cell sees the pole via this edge.
+    """
+    for p in pole_list:
+        for c in pc_list:
+            if _can_jump(p, c, pole_radius, ghost_aabb):
+                yield _canonical_edge(p, c)
+
+
 def build_power_network(
     poles: Iterable[Pole],
     pole_radius: float,
     *,
-    pc_cell: Optional[Pole] = None,
+    pc_cells: Optional[Iterable[Pole]] = None,
     ghost_rect: Optional[Tuple[int, int, int, int]] = None,
 ) -> PowerGraph:
-    """Build undirected jump graph among poles + protocol_core.
+    """Build undirected jump graph among poles + protocol_core footprint.
 
-    Edge (p1, p2) iff:
+    ``poles`` are the candidate pole anchor cells on the current free mask
+    (Gemini F8 round 1 Finding #1: callers must enumerate the full free-mask
+    anchor set — passing only ``CoverSet`` produces 100% false positives
+    because the graph then lacks the intermediate poles that span the grid).
+
+    ``pc_cells`` is the protocol_core's full footprint (Gemini F8 round 1
+    Finding #2: protocol_core is a 9×9 facility, not a single point — using
+    only the lex anchor makes pole-to-core distance overshoot the radius for
+    poles near the far side of the core). The footprint cells are added as
+    graph vertices, pairwise zero-distance auto-connected (core is one
+    building), and the pole↔core edge fires when *any* pole-to-pc_cell pair
+    satisfies (distance ≤ ``pole_radius``) AND (segment does not intersect
+    ghost AABB).
+
+    Edge (p1, p2) for two poles:
     - euclidean_distance(p1, p2) ≤ pole_radius (jump range), AND
     - line segment p1→p2 not intersecting ghost_rect AABB (Liang-Barsky)
       — ghost None means no obstacle, all in-range pairs connected.
     """
     pole_set = set(poles)
-    if pc_cell is not None:
-        pole_set.add(pc_cell)
-    vertices = frozenset(pole_set)
+    pc_set: Set[Pole] = set(pc_cells) if pc_cells is not None else set()
+    pc_set -= pole_set  # pc cells take priority — drop any overlapping pole copy
+    vertices = frozenset(pole_set | pc_set)
     pole_list = sorted(pole_set)
+    pc_list = sorted(pc_set)
 
     ghost_aabb = cell_aabb_from_rect(ghost_rect) if ghost_rect is not None else None
 
     edges: Set[Edge] = set()
-    n = len(pole_list)
-    for i in range(n):
-        for j in range(i + 1, n):
-            p1, p2 = pole_list[i], pole_list[j]
-            if _euclidean(p1, p2) > pole_radius:
-                continue
-            if ghost_aabb is not None and segment_intersects_aabb(
-                (float(p1[0]), float(p1[1])),
-                (float(p2[0]), float(p2[1])),
-                ghost_aabb,
-            ):
-                continue
-            edges.add(_canonical_edge(p1, p2))
-
+    edges.update(_pole_pole_edges(pole_list, pole_radius, ghost_aabb))
+    edges.update(_pc_internal_edges(pc_list))
+    edges.update(_pole_pc_edges(pole_list, pc_list, pole_radius, ghost_aabb))
     return PowerGraph(vertices=vertices, edges=frozenset(edges))
 
 

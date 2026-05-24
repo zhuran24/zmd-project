@@ -79,6 +79,20 @@ def _enumerate_valid_pole_anchors(
                 yield (px, py)
 
 
+def enumerate_valid_pole_anchors(
+    free_cells: FrozenSet[Cell],
+    *,
+    grid_size: int = _DEFAULT_GRID_SIZE,
+    pole_size: int = _POLE_SIZE,
+) -> FrozenSet[Cell]:
+    """Public: all pole anchors whose 2×2 footprint lies in ``free_cells``.
+
+    F8 needs this to build the *full* power network (not just the CoverSet
+    near a single facility) — Gemini F8 round 1 Finding #1.
+    """
+    return frozenset(_enumerate_valid_pole_anchors(free_cells, grid_size, pole_size))
+
+
 def compute_cover_set(
     facility_cells: Iterable[Cell],
     free_cells: FrozenSet[Cell],

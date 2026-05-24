@@ -59,6 +59,7 @@ def _f5_fixture_state(
     instance_to_facility_type: Any = _UNSET,
     facility_templates: Any = _UNSET,
     cell_owner: Dict[Tuple[int, int], Any] | None = None,
+    selected_poses: list[str] | None = None,
 ) -> BState:
     """F5 reference fixture: ghost wide vertical strip (30..39, 0..69) splits the
     grid into Left and Right. protocol_core at (10,10), facility at (60,60).
@@ -106,7 +107,7 @@ def _f5_fixture_state(
             group_id="crusher_blue_iron",
             demand=1,
             pose_domain=frozenset({"p_3x3_a"}),
-            selected_poses=[],
+            selected_poses=list(selected_poses) if selected_poses else [],
         ),
     }
     return BState(
@@ -283,6 +284,38 @@ def test_generator_no_cut_when_connected(monkeypatch: pytest.MonkeyPatch) -> Non
     assert cuts == []
 
 
+def test_generator_no_cut_via_spanning_intermediate_poles(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Gemini F8 round 1 Finding #1 regression: with a small corner ghost and
+    facility distant from pc, the FULL pole-anchor enumeration sees the chain
+    of intermediate poles that span the grid (radius 8 is well within
+    walking distance across the 70×70 board), so BFS reaches the facility's
+    CoverSet via intermediate hops — NO disconnect, NO cut.
+
+    The pre-fix code passed only ``list(cover_set)`` (poles near facility) to
+    ``build_power_network``, so the graph had no intermediates, BFS reported
+    a fake disconnect, and this test would have emitted a bogus cut. With
+    the full-anchor fix, the cut MUST NOT be emitted.
+    """
+    monkeypatch.setenv("EXACT_F8_GENERATOR_ENABLED", "1")
+    # Tiny ghost in a corner (doesn't separate any region)
+    state = _f5_fixture_state(
+        ghost_rect=(65, 65, 3, 3),
+        facility_anchor=(60, 60),
+        pc_anchor=(10, 10),
+    )
+    cuts = generate_power_grid_reach_cuts(
+        state,
+        target_poses=[("crusher_blue_iron", "p_3x3_a")],
+        protocol_core_anchor=(10, 10),
+        pole_jump_radius=8.0,  # enough to chain across grid via intermediates
+    )
+    assert cuts == [], (
+        "FULL pole-anchor enumeration should connect facility to pc via "
+        "spanning intermediates (small corner ghost cannot disconnect the "
+        "70×70 board with R_jump=8)"
+    )
+
+
 # ---- validator: happy path --------------------------------------------------
 
 
@@ -400,18 +433,41 @@ def test_validator_unsound_ghost_drift() -> None:
 
 
 def test_evaluator_returns_true_under_matching_scope() -> None:
-    state = _f5_fixture_state()
+    # Gemini F8 round 1 Finding #3: facility must be in selected_poses.
+    state = _f5_fixture_state(selected_poses=["p_3x3_a"])
     cert_payload = _make_cert(state)
     cut = _make_cut(cert_payload, state)
     assert evaluate_geometric_power_grid_reach(cut, state) is True
 
 
 def test_evaluator_returns_false_on_ghost_drift() -> None:
-    state = _f5_fixture_state()
+    state = _f5_fixture_state(selected_poses=["p_3x3_a"])
     cert_payload = _make_cert(state)
     cut = _make_cut(cert_payload, state)
-    new_state = _f5_fixture_state(ghost_rect=(35, 0, 5, 70))
+    new_state = _f5_fixture_state(
+        ghost_rect=(35, 0, 5, 70), selected_poses=["p_3x3_a"]
+    )
     assert evaluate_geometric_power_grid_reach(cut, new_state) is False
+
+
+def test_evaluator_returns_false_when_facility_not_selected() -> None:
+    """Gemini F8 round 1 Finding #3 (CRITICAL): even if ghost is unchanged,
+    once the master removes the facility from selected_poses the cut must
+    stop firing — otherwise ``literals=None`` would poison the whole ghost.
+    """
+    state_with = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    cert_payload = _make_cert(state_with)
+    cut = _make_cut(cert_payload, state_with)
+    state_without = _f5_fixture_state(selected_poses=[])
+    assert evaluate_geometric_power_grid_reach(cut, state_without) is False
+
+
+def test_evaluator_returns_false_when_facility_group_missing() -> None:
+    """Cert references a group that no longer exists in state.groups."""
+    state = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    cert_payload = _make_cert(state, facility_group="ghost_group")
+    cut = _make_cut(cert_payload, state)
+    assert evaluate_geometric_power_grid_reach(cut, state) is False
 
 
 def test_evaluator_failsafe_malformed_payload() -> None:

@@ -28,7 +28,7 @@ import hashlib
 import os
 from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
 
-from src.cuts.helpers.power_cover import compute_cover_set
+from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
 from src.cuts.helpers.power_network import build_power_network, bfs_component
 from src.cuts.lifecycle import (
     BState,
@@ -205,10 +205,15 @@ def generate_power_grid_reach_cuts(
         if not cover_set:
             continue  # F7 territory (empty CoverSet)
 
+        # Gemini F8 round 1 Finding #1 + #2: enumerate the FULL pole-anchor
+        # set on the current free mask (not just CoverSet) and pass the
+        # protocol_core 9×9 footprint as ``pc_cells`` (not a single anchor).
+        all_poles = enumerate_valid_pole_anchors(full_free)
+        pc_cells = _protocol_core_cells(protocol_core_anchor)
         graph = build_power_network(
-            list(cover_set),
+            list(all_poles),
             pole_radius=pole_jump_radius,
-            pc_cell=protocol_core_anchor,
+            pc_cells=pc_cells,
             ghost_rect=state.ghost_rect,
         )
         pc_component = bfs_component(graph, protocol_core_anchor)
@@ -225,10 +230,11 @@ def generate_power_grid_reach_cuts(
         )
         if not cover_ghost:
             continue  # F7 territory ghost-only
+        all_poles_ghost = enumerate_valid_pole_anchors(ghost_only_free)
         graph_ghost = build_power_network(
-            list(cover_ghost),
+            list(all_poles_ghost),
             pole_radius=pole_jump_radius,
-            pc_cell=protocol_core_anchor,
+            pc_cells=pc_cells,
             ghost_rect=state.ghost_rect,
         )
         if cover_ghost & bfs_component(graph_ghost, protocol_core_anchor):

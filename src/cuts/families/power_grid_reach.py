@@ -53,7 +53,7 @@ import re
 import time
 from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
 
-from src.cuts.helpers.power_cover import compute_cover_set
+from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
 from src.cuts.helpers.power_network import build_power_network, bfs_component
 from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
@@ -358,10 +358,17 @@ def _validate_disconnect_witness(
 ) -> Optional[ValidationResult]:
     """Phase 6/7: independently rebuild power graph and verify disconnect.
 
+    Gemini F8 round 1 Finding #1 + #2:
+    - poles fed to ``build_power_network`` MUST be the full free-mask anchor
+      set, not just CoverSet — otherwise the graph lacks the spanning
+      intermediate poles and BFS reports a false disconnect.
+    - protocol_core is 9×9; pass the full footprint as ``pc_cells`` so that
+      pole↔core edges fire when any core cell is within radius.
+
     1. Full free mask excludes ghost ∪ exterior ∪ cell_owner ∪ facility ∪ pc footprint
     2. CoverSet (facility) must be non-empty (else this is F7 territory)
-    3. Build power graph over {CoverSet poles ∪ pc_anchor}
-    4. BFS from pc_anchor must NOT reach any CoverSet pole
+    3. Build power graph over the full pole-anchor set ∪ pc footprint
+    4. BFS from any pc cell must NOT reach any CoverSet pole
     """
     pole_radius = float(cast(float, cert_dict["pole_jump_radius"]))
     free_cells = _build_full_free_mask(state, facility_cells, pc_anchor)
@@ -372,10 +379,13 @@ def _validate_disconnect_witness(
             t0,
             "F8 cert claims disconnect but CoverSet is empty — should be F7 case",
         )
-    # power graph vertices = cover_set ∪ {pc_anchor}
-    poles: List[Cell] = list(cover_set)
+    all_poles = enumerate_valid_pole_anchors(free_cells)
+    pc_cells = _protocol_core_cells(pc_anchor)
     graph = build_power_network(
-        poles, pole_radius=pole_radius, pc_cell=pc_anchor, ghost_rect=state.ghost_rect
+        list(all_poles),
+        pole_radius=pole_radius,
+        pc_cells=pc_cells,
+        ghost_rect=state.ghost_rect,
     )
     pc_component = bfs_component(graph, pc_anchor)
     overlap = cover_set & pc_component
@@ -426,10 +436,12 @@ def _validate_ghost_only_disconnect(
             "F8 cert claims ghost cause but ghost+exterior alone leave CoverSet empty "
             "— belongs to F7 (empty-CoverSet) family",
         )
+    # Gemini F8 round 1 Finding #1 + #2: pass FULL anchor set + multi-cell pc
+    all_poles_ghost = enumerate_valid_pole_anchors(ghost_only_free)
     graph = build_power_network(
-        list(cover_ghost),
+        list(all_poles_ghost),
         pole_radius=pole_radius,
-        pc_cell=pc_anchor,
+        pc_cells=pc_cells,
         ghost_rect=state.ghost_rect,
     )
     pc_component = bfs_component(graph, pc_anchor)
@@ -514,6 +526,15 @@ def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
     (cell_owner only adds blockers). O(1) scope-drift guard suffices —
     re-running the heavy BFS recompute on every evaluation is wasted work.
 
+    Gemini F8 round 1 Finding #3 (CRITICAL): spec §6 requires checking that
+    the cert's (facility_group, facility_pose_id) is still in
+    ``state.groups[gid].selected_poses``. Without this, ``literals=None``
+    means the cut fires forever once active — even if the master moves the
+    facility off the offending pose, the ghost-only scope is unchanged so
+    the cut would poison the entire ghost AABB. Adding the placement check
+    here keeps the evaluator O(1) (dict lookup + list-in) and preserves
+    soundness while restoring correctness.
+
     Fail-safe: malformed payload / scope drift returns False.
     """
     if cut.geometric_payload is None or cut.scope is None:
@@ -527,6 +548,19 @@ def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
         if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
             return False
         if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
+            return False
+        # Placement check (Gemini F8 round 1 Finding #3): facility must still
+        # be in selected_poses; otherwise the disconnect no longer applies.
+        gid_raw = cert_dict.get("facility_group")
+        pose_raw = cert_dict.get("facility_pose_id")
+        if not isinstance(gid_raw, str) or not gid_raw:
+            return False
+        if not isinstance(pose_raw, str) or not pose_raw:
+            return False
+        group_state = state.groups.get(gid_raw)
+        if group_state is None:
+            return False
+        if pose_raw not in group_state.selected_poses:
             return False
         return True
     except Exception:  # noqa: BLE001 — fail-safe
