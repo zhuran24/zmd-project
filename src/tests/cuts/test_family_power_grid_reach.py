@@ -110,6 +110,15 @@ def _f5_fixture_state(
             selected_poses=list(selected_poses) if selected_poses else [],
         ),
     }
+    # Source-of-truth canonical_rules (R4 Finding #2 fix): F8 validator now
+    # cross-checks cert.pole_jump_radius against canonical
+    # facility_templates.power_pole.power_coverage_radius. Mirror the
+    # facility_templates dict here so the cross-check finds R=5.
+    canonical_rules: dict[str, Any] | None = (
+        {"facility_templates": facility_templates}
+        if isinstance(facility_templates, dict)
+        else None
+    )
     return BState(
         groups=groups,
         ghost_rect=ghost_rect,
@@ -119,6 +128,7 @@ def _f5_fixture_state(
         candidate_placements=candidate_placements,
         instance_to_facility_type=instance_to_facility_type,
         facility_templates=facility_templates,
+        canonical_rules=canonical_rules,
         source_digest="test-source-digest",
     )
 
@@ -468,6 +478,73 @@ def test_evaluator_returns_false_when_facility_group_missing() -> None:
     cert_payload = _make_cert(state, facility_group="ghost_group")
     cut = _make_cut(cert_payload, state)
     assert evaluate_geometric_power_grid_reach(cut, state) is False
+
+
+def test_evaluator_returns_false_when_protocol_core_moved() -> None:
+    """Gemini F8 round 4 Finding #1 (CRITICAL): evaluator must reject the cut
+    if master moved the protocol_core away from the cert's anchor. Without
+    this check, the F8 ``literals=None`` cut would poison the ghost AABB
+    even after master legitimately reconnected the power network via the
+    new pc placement.
+
+    Setup: state has cell_owner populated with protocol_core at (10, 10).
+    Cert encodes that. Then build a second state where protocol_core is
+    moved to (40, 40). The evaluator must return False against the second
+    state (the cert's anchor is no longer protocol_core's footprint).
+    """
+    state_at_orig = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    # Mutate cell_owner to place protocol_core at (10, 10)
+    state_at_orig.cell_owner = {
+        (10 + dx, 10 + dy): ("protocol_core_singleton", 0)
+        for dx in range(9)
+        for dy in range(9)
+    }
+    state_at_orig.instance_to_facility_type = {
+        **(state_at_orig.instance_to_facility_type or {}),
+        "protocol_core_singleton": "protocol_core",
+    }
+    cert_payload = _make_cert(state_at_orig)
+    cut = _make_cut(cert_payload, state_at_orig)
+    assert evaluate_geometric_power_grid_reach(cut, state_at_orig) is True
+
+    state_at_moved = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    state_at_moved.cell_owner = {
+        (40 + dx, 40 + dy): ("protocol_core_singleton", 0)
+        for dx in range(9)
+        for dy in range(9)
+    }
+    state_at_moved.instance_to_facility_type = {
+        **(state_at_moved.instance_to_facility_type or {}),
+        "protocol_core_singleton": "protocol_core",
+    }
+    assert evaluate_geometric_power_grid_reach(cut, state_at_moved) is False
+
+
+def test_validator_rejects_malicious_pole_jump_radius() -> None:
+    """Gemini F8 round 4 Finding #2 (CRITICAL): validator must catch a cert
+    that forges ``pole_jump_radius=0.001`` to fake a BFS disconnect. The
+    new ``_validate_source_of_truth_scalars`` phase cross-checks against
+    state.canonical_rules.power_pole.power_coverage_radius.
+    """
+    state = _f5_fixture_state()
+    cert_payload = _make_cert(state, pole_jump_radius=0.001)
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_grid_reach(cut, state, canonical_rules={})
+    assert result.kind == "schema_err" or result.kind == "unsound", (
+        f"expected unsound/schema_err for forged radius, got {result.kind}: {result.detail}"
+    )
+
+
+def test_validator_rejects_negative_protocol_core_cell() -> None:
+    """Gemini F8 round 4 Finding #4 (HIGH): _parse_protocol_core_cell now
+    explicitly rejects negative coords (prior check let -1 through because
+    -1 + 9 = 8 ∈ [0, 70]).
+    """
+    state = _f5_fixture_state()
+    cert_payload = _make_cert(state, protocol_core_cell=[-1, -1])
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_grid_reach(cut, state, canonical_rules={})
+    assert result.kind == "schema_err"
 
 
 def test_evaluator_failsafe_malformed_payload() -> None:

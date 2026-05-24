@@ -140,11 +140,16 @@ def _parse_protocol_core_cell(value: object) -> Tuple[int, int]:
         raise ValueError(f"protocol_core_cell must contain strict ints, got {value!r}")
     x = cast(int, x_raw)
     y = cast(int, y_raw)
-    if not (0 <= x + _PROTOCOL_CORE_SIZE <= _GRID_SIZE):
+    # Gemini F8 round 4 Finding #4 (HIGH): explicit lower-bound check —
+    # the prior `0 <= x + size <= GRID_SIZE` form silently accepted x=-1
+    # (size 9 → 8, in [0, 70]).
+    if x < 0 or y < 0:
+        raise ValueError(f"protocol_core_cell must be non-negative, got {(x, y)!r}")
+    if x + _PROTOCOL_CORE_SIZE > _GRID_SIZE:
         raise ValueError(
             f"protocol_core_cell x={x} + size {_PROTOCOL_CORE_SIZE} exceeds grid {_GRID_SIZE}"
         )
-    if not (0 <= y + _PROTOCOL_CORE_SIZE <= _GRID_SIZE):
+    if y + _PROTOCOL_CORE_SIZE > _GRID_SIZE:
         raise ValueError(
             f"protocol_core_cell y={y} + size {_PROTOCOL_CORE_SIZE} exceeds grid {_GRID_SIZE}"
         )
@@ -456,24 +461,133 @@ def _validate_ghost_only_disconnect(
     return None
 
 
+def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
+    """Read source-of-truth pole radius from state.canonical_rules.
+
+    Returns None on any missing layer / non-numeric value — caller maps
+    None to a schema_err / unsound ValidationResult.
+    """
+    rules = state.canonical_rules
+    if not isinstance(rules, dict):
+        return None
+    templates = rules.get("facility_templates")
+    if not isinstance(templates, dict):
+        return None
+    pole_tpl = templates.get("power_pole")
+    if not isinstance(pole_tpl, dict):
+        return None
+    canonical_radius = pole_tpl.get("power_coverage_radius")
+    if isinstance(canonical_radius, bool):
+        return None
+    if not isinstance(canonical_radius, (int, float)):
+        return None
+    return float(canonical_radius)
+
+
+def _validate_pole_radius_sot(
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Cross-check cert.pole_jump_radius against canonical power_pole radius."""
+    cert_radius_raw = cert_dict.get("pole_jump_radius")
+    if not _is_strict_float(cert_radius_raw):
+        return _vr("schema_err", t0, "pole_jump_radius missing or not numeric")
+    cert_radius = float(cast(float, cert_radius_raw))
+    canonical_radius = _lookup_canonical_pole_radius(state)
+    if canonical_radius is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.canonical_rules.facility_templates.power_pole.power_coverage_radius "
+            "missing — cannot verify pole_jump_radius against source-of-truth (fail-closed)",
+        )
+    if canonical_radius != cert_radius:
+        return _vr(
+            "unsound",
+            t0,
+            f"cert.pole_jump_radius={cert_radius} != canonical "
+            f"power_coverage_radius={canonical_radius} — possibly forged",
+        )
+    return None
+
+
+def _validate_pc_anchor_sot(
+    pc_anchor: Tuple[int, int],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Cross-check protocol_core anchor footprint vs state.cell_owner.
+
+    Phase 1.2: when state.cell_owner is empty (fixture / early phase),
+    accept bounds-only (already validated upstream by _parse_protocol_core_cell).
+    """
+    if state.instance_to_facility_type is None or not state.cell_owner:
+        return None
+    ax, ay = pc_anchor
+    for dx in range(_PROTOCOL_CORE_SIZE):
+        for dy in range(_PROTOCOL_CORE_SIZE):
+            owner = state.cell_owner.get((ax + dx, ay + dy))
+            if owner is None:
+                return _vr(
+                    "unsound",
+                    t0,
+                    f"protocol_core_cell {pc_anchor}: footprint cell "
+                    f"({ax + dx}, {ay + dy}) has no cell_owner — not a master placement",
+                )
+            gid = owner[0] if isinstance(owner, tuple) else owner
+            if state.instance_to_facility_type.get(gid) != "protocol_core":
+                return _vr(
+                    "unsound",
+                    t0,
+                    f"protocol_core_cell {pc_anchor}: footprint cell "
+                    f"({ax + dx}, {ay + dy}) owned by group {gid!r} "
+                    f"which is not facility_type=protocol_core",
+                )
+    return None
+
+
+def _validate_source_of_truth_scalars(
+    pc_anchor: Tuple[int, int],
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Gemini F8 round 4 Finding #2 (CRITICAL): validator must independently
+    cross-check the cert's ``pole_jump_radius`` and ``protocol_core_cell``
+    against source-of-truth (canonical_rules + state.cell_owner). Without
+    this check, an attacker can supply ``cert.pole_jump_radius = 0.001`` to
+    fake a BFS disconnect, even when the matching active_assumption is set
+    correctly to ``R=5`` (attach-scope passes, validator's recompute uses
+    the malicious 0.001).
+    """
+    err = _validate_pole_radius_sot(cert_dict, state, t0)
+    if err is not None:
+        return err
+    return _validate_pc_anchor_sot(pc_anchor, state, t0)
+
+
 def validate_power_grid_reach(
     cut: Cut,
     state: BState,
     canonical_rules: Dict[str, Any],
 ) -> ValidationResult:
-    """8-phase F8 validator (Phase 1.2 single-case scope).
+    """9-phase F8 validator (Phase 1.2 single-case scope).
 
     Phases (fail-closed, first error returns):
     1. cert + payload non-None + JSON parse
     2. cert_kind == "power_pole_bfs_disconnect_ghost"
-    3. literals must be non-None (single-literal mode) + scalar schema
-       (group / pose / pole_jump_radius / shape_canonical / facility_cells /
-       protocol_core_cell)
+    3. scalar schema (group / pose / pole_jump_radius / shape_canonical /
+       facility_cells / protocol_core_cell) — geometric mode, literals=None
     4. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr + exterior digest)
     5. Group source-of-truth (group ∈ state.groups, pose ∈ pose_domain,
-       facility_template lookup + needs_power == True, literal matches cert)
-    6. Full disconnect recompute (CoverSet non-empty + BFS disjoint from pc)
-    7. Ghost-only cause check (cell_owner is NOT the true cause)
+       facility_template lookup + needs_power == True)
+    6. Cert↔source-of-truth scalar cross-check (Gemini F8 round 4 Finding #2):
+       cert.pole_jump_radius == canonical_rules.power_pole.power_coverage_radius;
+       cert.protocol_core_cell footprint owned by protocol_core in state
+       (when cell_owner populated)
+    7. Full disconnect recompute (CoverSet non-empty + BFS disjoint from pc)
+    8. Ghost-only cause check (cell_owner is NOT the true cause)
     """
     t0 = time.monotonic()
     del canonical_rules
@@ -509,6 +623,7 @@ def validate_power_grid_reach(
     for error in (
         _validate_ghost_scope_binding(cut, cert_dict, state, t0),
         _validate_group_and_template(cert_dict, state, t0),
+        _validate_source_of_truth_scalars(pc_anchor, cert_dict, state, t0),
         _validate_disconnect_witness(facility_cells, pc_anchor, cert_dict, state, t0),
         _validate_ghost_only_disconnect(facility_cells, pc_anchor, cert_dict, state, t0),
     ):
@@ -516,6 +631,64 @@ def validate_power_grid_reach(
             return error
 
     return _vr("ok", t0)
+
+
+def _eval_check_facility_placed(cert_dict: Dict[str, Any], state: BState) -> bool:
+    """Gemini F8 round 1 Finding #3: facility must still be in selected_poses."""
+    gid_raw = cert_dict.get("facility_group")
+    pose_raw = cert_dict.get("facility_pose_id")
+    if not isinstance(gid_raw, str) or not gid_raw:
+        return False
+    if not isinstance(pose_raw, str) or not pose_raw:
+        return False
+    group_state = state.groups.get(gid_raw)
+    if group_state is None:
+        return False
+    return pose_raw in group_state.selected_poses
+
+
+def _parse_pc_anchor_int_pair(pc_raw: object) -> Optional[Tuple[int, int]]:
+    """Strict [int, int] parse; None on any malformed value."""
+    if not isinstance(pc_raw, list) or len(pc_raw) != 2:
+        return None
+    x_raw, y_raw = pc_raw
+    if isinstance(x_raw, bool) or isinstance(y_raw, bool):
+        return None
+    if not isinstance(x_raw, int) or not isinstance(y_raw, int):
+        return None
+    return (x_raw, y_raw)
+
+
+def _footprint_owned_by_protocol_core(
+    anchor: Tuple[int, int], state: BState
+) -> bool:
+    """All 9×9 cells at ``anchor`` owned by facility_type=protocol_core."""
+    if state.instance_to_facility_type is None:
+        return True
+    for dx in range(_PROTOCOL_CORE_SIZE):
+        for dy in range(_PROTOCOL_CORE_SIZE):
+            owner = state.cell_owner.get((anchor[0] + dx, anchor[1] + dy))
+            if owner is None:
+                return False
+            gid = owner[0] if isinstance(owner, tuple) else owner
+            if state.instance_to_facility_type.get(gid) != "protocol_core":
+                return False
+    return True
+
+
+def _eval_check_protocol_core_position(
+    cert_dict: Dict[str, Any], state: BState
+) -> bool:
+    """Gemini F8 round 4 Finding #1: if master moves protocol_core away from
+    the cert anchor, the disconnect may no longer hold. Hot-path O(81)
+    check. Phase 1.2: bounds-only when state.cell_owner is empty.
+    """
+    anchor = _parse_pc_anchor_int_pair(cert_dict.get("protocol_core_cell"))
+    if anchor is None:
+        return False
+    if not state.cell_owner:
+        return True  # Phase 1.2 fixture/early-phase: bounds-only via validator scalars
+    return _footprint_owned_by_protocol_core(anchor, state)
 
 
 def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
@@ -549,18 +722,9 @@ def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
             return False
         if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
             return False
-        # Placement check (Gemini F8 round 1 Finding #3): facility must still
-        # be in selected_poses; otherwise the disconnect no longer applies.
-        gid_raw = cert_dict.get("facility_group")
-        pose_raw = cert_dict.get("facility_pose_id")
-        if not isinstance(gid_raw, str) or not gid_raw:
+        if not _eval_check_facility_placed(cert_dict, state):
             return False
-        if not isinstance(pose_raw, str) or not pose_raw:
-            return False
-        group_state = state.groups.get(gid_raw)
-        if group_state is None:
-            return False
-        if pose_raw not in group_state.selected_poses:
+        if not _eval_check_protocol_core_position(cert_dict, state):
             return False
         return True
     except Exception:  # noqa: BLE001 — fail-safe
