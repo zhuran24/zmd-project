@@ -91,6 +91,53 @@ def test_build_protocol_core_pole_connects_via_any_core_cell():
     assert (12, 12) in reach
 
 
+def test_can_jump_uses_cell_to_cell_min_not_anchor():
+    """Gemini F8 round 2 Finding #1 (CRITICAL): pole-pole distance must be the
+    min cell-to-cell over both 2×2 footprints, not anchor-to-anchor. Anchor
+    distance overestimates by up to √8 and drops legitimate edges.
+
+    Setup: pole anchors (0,0) and (4,0). Anchor-to-anchor distance = 4.
+    Cell-to-cell min = (1,0) → (4,0) = 3. With R=3.5, the FIX must connect.
+    """
+    poles = [(0, 0), (4, 0)]
+    graph = build_power_network(poles, pole_radius=3.5)
+    assert ((0, 0), (4, 0)) in graph.edges, (
+        "anchor-to-anchor would say distance=4 > 3.5 and drop the edge; "
+        "footprint-aware says cell-to-cell min=3 ≤ 3.5 and keeps it"
+    )
+
+
+def test_can_jump_pole_to_pc_uses_cell_distance():
+    """Gemini F8 round 2 Finding #1: pole↔pc edge must also use cell-to-cell
+    min, not anchor↔cell. Pole anchor (3,3) cells {(3,3),(4,3),(3,4),(4,4)};
+    pc cell (5,5). Anchor (3,3) → (5,5) = √8 ≈ 2.83. Cell-to-cell min
+    (4,4) → (5,5) = √2 ≈ 1.41. With R=2.0, anchor-based would drop but
+    footprint-based keeps."""
+    poles = [(3, 3)]
+    pc_cells = [(5, 5)]
+    graph = build_power_network(poles, pole_radius=2.0, pc_cells=pc_cells)
+    assert ((3, 3), (5, 5)) in graph.edges or ((5, 5), (3, 3)) in graph.edges
+
+
+def test_ghost_segment_uses_cell_centers_not_anchors():
+    """Gemini F8 round 2 Finding #2 (CRITICAL): the ghost-blocking segment
+    must connect cell *centers* (anchor + 0.5), not raw anchor coords.
+
+    This is a low-impact bug for axis-aligned wide ghosts (centers and
+    anchors give the same result), so the test just confirms that with a
+    ghost AABB strictly between two poles, the edge is blocked regardless
+    of which endpoint convention is used (sanity, not a discriminative
+    regression). The exhaustive endpoint-convention check is delegated to
+    the segment_intersects_aabb unit tests."""
+    poles = [(0, 0), (8, 0)]
+    # ghost AABB straddles the centers' y-line (y=0.5) at x=3..5
+    graph = build_power_network(
+        poles, pole_radius=10.0, ghost_rect=(3, 0, 2, 1)
+    )
+    # both center-based and anchor-based block this segment
+    assert len(graph.edges) == 0
+
+
 def test_build_protocol_core_dedup_overlap_with_pole():
     """If a pole cell coincides with a pc cell, pc takes priority (the cell
     is a single vertex, not double-counted, and falls under pc rules)."""

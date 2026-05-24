@@ -55,19 +55,60 @@ def _euclidean(p1: Pole, p2: Pole) -> float:
     return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
 
-def _can_jump(
-    p1: Pole,
-    p2: Pole,
+# canonical_rules.facility_templates.power_pole.dimensions.{w,h} = 2.
+_POLE_SIZE: int = 2
+
+
+def _footprint_cells(anchor: Pole, size: int) -> Tuple[Pole, ...]:
+    """Cells occupied by a square footprint anchored at ``anchor``."""
+    return tuple(
+        (anchor[0] + dx, anchor[1] + dy) for dx in range(size) for dy in range(size)
+    )
+
+
+def _closest_cell_pair(
+    cells1: Tuple[Pole, ...], cells2: Tuple[Pole, ...]
+) -> Optional[Tuple[Pole, Pole, float]]:
+    best: Optional[Tuple[Pole, Pole, int]] = None
+    for c1 in cells1:
+        for c2 in cells2:
+            d2 = (c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2
+            if best is None or d2 < best[2]:
+                best = (c1, c2, d2)
+    if best is None:
+        return None
+    return best[0], best[1], math.sqrt(best[2])
+
+
+def _can_jump_via_cells(
+    cells1: Tuple[Pole, ...],
+    cells2: Tuple[Pole, ...],
     pole_radius: float,
     ghost_aabb: Optional[Tuple[float, float, float, float]],
 ) -> bool:
-    if _euclidean(p1, p2) > pole_radius:
+    """Jump iff min cell-to-cell distance ≤ ``pole_radius`` AND the segment
+    between the closest cell pair does not intersect the ghost AABB.
+
+    Gemini F8 round 2 Finding #1: anchor-to-anchor distance is wrong — the
+    canonical distance metric is footprint cell-to-cell min (consistent with
+    ``compute_cover_set`` which uses ``_min_cell_distance``). Anchor-to-anchor
+    overestimates by up to √8 and drops legitimate edges.
+
+    Gemini F8 round 2 Finding #2: the ghost-block segment endpoints must be
+    cell *centers* (anchor + 0.5), not raw anchor (top-left corner) coords,
+    so the line geometrically represents the physical power-jump trajectory.
+    """
+    closest = _closest_cell_pair(cells1, cells2)
+    if closest is None:
+        return False
+    c1, c2, dist = closest
+    if dist > pole_radius:
         return False
     if ghost_aabb is None:
         return True
     return not segment_intersects_aabb(
-        (float(p1[0]), float(p1[1])),
-        (float(p2[0]), float(p2[1])),
+        (float(c1[0]) + 0.5, float(c1[1]) + 0.5),
+        (float(c2[0]) + 0.5, float(c2[1]) + 0.5),
         ghost_aabb,
     )
 
@@ -77,10 +118,29 @@ def _pole_pole_edges(
     pole_radius: float,
     ghost_aabb: Optional[Tuple[float, float, float, float]],
 ) -> Iterable[Edge]:
+    """Pole-pole edges with anchor-distance early reject for hot-path speed.
+
+    Bound: min cell-to-cell ≥ anchor_dist - 2·√2 (each anchor at most √2
+    from any cell of its 2×2 footprint), so anchor_dist > pole_radius +
+    2·√2 ⇒ no cell pair can be within pole_radius. This rejects ~99% of
+    far pairs on a 70×70 grid with R=5 (cutoff ≈ 7.83), dropping
+    ``build_power_network`` from minutes to seconds (R2-Gap E).
+    """
     n = len(pole_list)
+    if n == 0:
+        return
+    footprints = [_footprint_cells(p, _POLE_SIZE) for p in pole_list]
+    cutoff_sq = (pole_radius + 2.0 * math.sqrt(2.0)) ** 2
     for i in range(n):
+        ax, ay = pole_list[i]
         for j in range(i + 1, n):
-            if _can_jump(pole_list[i], pole_list[j], pole_radius, ghost_aabb):
+            bx, by = pole_list[j]
+            dsq = (ax - bx) ** 2 + (ay - by) ** 2
+            if dsq > cutoff_sq:
+                continue
+            if _can_jump_via_cells(
+                footprints[i], footprints[j], pole_radius, ghost_aabb
+            ):
                 yield _canonical_edge(pole_list[i], pole_list[j])
 
 
@@ -103,13 +163,24 @@ def _pole_pc_edges(
     pole_radius: float,
     ghost_aabb: Optional[Tuple[float, float, float, float]],
 ) -> Iterable[Edge]:
-    """Pole↔pc edges: one canonical edge per (pole, pc_cell) pair where the
-    pole is within radius AND the segment to that pc cell does not cross
-    the ghost AABB. BFS from any pc cell sees the pole via this edge.
+    """Pole↔pc edges with anchor-distance early reject.
+
+    Bound: min cell-to-cell ≥ anchor_dist - √2 (pole footprint at most √2
+    away from its anchor; pc cell is 1×1). Cutoff: anchor_dist ≤ R + √2.
+    Same R2-Gap E optimization rationale as ``_pole_pole_edges``.
     """
-    for p in pole_list:
+    if not pole_list or not pc_list:
+        return
+    pole_footprints = [_footprint_cells(p, _POLE_SIZE) for p in pole_list]
+    cutoff_sq = (pole_radius + math.sqrt(2.0)) ** 2
+    for p, cells_p in zip(pole_list, pole_footprints):
+        px, py = p
         for c in pc_list:
-            if _can_jump(p, c, pole_radius, ghost_aabb):
+            cx, cy = c
+            dsq = (px - cx) ** 2 + (py - cy) ** 2
+            if dsq > cutoff_sq:
+                continue
+            if _can_jump_via_cells(cells_p, (c,), pole_radius, ghost_aabb):
                 yield _canonical_edge(p, c)
 
 
@@ -143,7 +214,13 @@ def build_power_network(
     """
     pole_set = set(poles)
     pc_set: Set[Pole] = set(pc_cells) if pc_cells is not None else set()
-    pc_set -= pole_set  # pc cells take priority — drop any overlapping pole copy
+    # Gemini F8 round 2 Finding #3: comment said "pc cells take priority,
+    # drop overlapping pole copy" but the prior ``pc_set -= pole_set`` did
+    # the opposite. The pc footprint is a placed facility, so the pole-as-
+    # placeable interpretation is the spurious one — drop overlaps from
+    # ``pole_set``. In practice ``free_cells`` excludes pc cells so overlap
+    # never occurs, but the API contract now matches the comment.
+    pole_set -= pc_set
     vertices = frozenset(pole_set | pc_set)
     pole_list = sorted(pole_set)
     pc_list = sorted(pc_set)
