@@ -4,18 +4,22 @@ Generator scans each baseline region (left + bottom) × each boundary group,
 recomputes ghost+exterior-induced partition_lens, and emits an INFEASIBLE
 witness when ``sum(⌊len(I_j) / L⌋) < region_demand``.
 
-Phase 1.2 region_demand contract (Gemini F6 round 1 Gap B + Finding 4):
-- The naive default ``region_demand = min(group.demand, region_total_length
-  // pose_length)`` over-triggers: master might place fewer poses in this
-  region than the upper bound (group total can split across left + bottom).
-  It also ignores the ``(0, 0)`` corner overlap between left_baseline and
-  bottom_baseline (spec §10 #5 multi-region union — Phase 1.5+).
-- Phase 1.2 conservative default: ``region_demand = 1``. F6 emits only when
-  the region is so blocked by ghost+exterior that not a single rigid pose
-  fits — a trivially sound dead state. Real per-region demand comes from
-  ``master_solution`` in Phase 1.5+ via ``region_demand_overrides``.
-- Fixtures and Phase 1.5+ callers supply ``region_demand_overrides`` with
-  the actual per-region count to exercise the full Hall mechanism.
+Phase 1.2 region_demand contract (Gemini F6 round 2 HIGH #2/#3 fixes):
+- The naive ``min(group.demand, region_cap)`` default was unsound: facility
+  placement_rule ``left_or_bottom_boundary`` lets the group satisfy its
+  total demand entirely on the OTHER baseline, so a single-region cut is
+  not justified just because this region is blocked.
+- The conservative ``region_demand = 1`` fallback in round 1 had the same
+  defect — it pruned states where the master legally places 0 poses here
+  and the group's demand is met entirely on the other baseline.
+- Phase 1.2 contract: the generator emits cuts ONLY when the caller passes
+  explicit ``region_demand_overrides``. Missing overrides → no cut.
+  Phase 1.5+ wiring will pull the real per-region count from
+  ``master_solution``. Multi-region union (spec §10 #5) covers the
+  ``left_or_bottom_boundary`` decoupling.
+- Missing key in ``region_demand_overrides`` means the master placed 0
+  poses in that region: skip rather than emit (master cannot violate
+  Hall on a region it isn't using).
 
 Fail-closed contract:
 - state.ghost_rect is None → [] (F6 ghost-bound)
@@ -126,16 +130,22 @@ def generate_shape_packing_hall_cuts(
         if group_demand < 1:
             continue
         region_cap = _GRID_SIZE // pose_length
+        if region_demand_overrides is None:
+            # Gemini F6 round 2 HIGH #2 fix: Phase 1.2 default disabled.
+            # Conservative defaults (group total / region_cap / 1) are all
+            # unsound for placement_rule="left_or_bottom_boundary" because
+            # the group's demand can legally be met entirely on the other
+            # baseline. Generator only emits cuts when Phase 1.5+ wiring
+            # supplies explicit per-region demand from master_solution.
+            continue
         for region_kind in region_kinds:
             override_key = (group_id, region_kind)
-            if region_demand_overrides is not None and override_key in region_demand_overrides:
-                region_demand = region_demand_overrides[override_key]
-            else:
-                # Gemini F6 round 1 Gap B fix: default to conservative
-                # region_demand=1 (cut only when region fully blocked).
-                # Phase 1.5+ callers override via region_demand_overrides
-                # to inject the real per-region master.solution count.
-                region_demand = 1
+            if override_key not in region_demand_overrides:
+                # Gemini F6 round 2 HIGH #3 fix: missing key = master plans
+                # 0 poses in this region. Cannot trigger Hall infeasibility
+                # on an unused region.
+                continue
+            region_demand = region_demand_overrides[override_key]
             if region_demand < 1:
                 continue
             if region_demand > min(group_demand, region_cap):

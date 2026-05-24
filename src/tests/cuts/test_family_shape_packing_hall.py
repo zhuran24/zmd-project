@@ -246,22 +246,14 @@ def test_generator_feasible_returns_empty() -> None:
     assert cuts == []
 
 
-def test_generator_conservative_default_region_demand_one() -> None:
-    """Gemini F6 round 1 Gap B fix: default region_demand = 1 (only emit when
-    region is fully blocked). 4+5 partition can fit 2 poses → 2 >= 1 → no cut."""
-    state = _make_state()  # left baseline split into [4, 5]
-    cuts = generate_shape_packing_hall_cuts(
-        state,
-        boundary_groups=["boundary_storage_port"],
-        region_kinds=("left_baseline",),
-        # no overrides → default region_demand = 1
-    )
-    assert cuts == []
+def test_generator_phase_1_2_default_disabled() -> None:
+    """Gemini F6 round 2 HIGH #2: Phase 1.2 default disabled — no overrides → no cuts.
 
-
-def test_generator_conservative_default_emits_on_fully_blocked() -> None:
-    """Default region_demand=1 still emits when baseline is fully blocked."""
-    # Fully block left baseline (all 70 cells in exterior)
+    Single-region defaults are unsound for left_or_bottom_boundary groups:
+    the demand can legally be met entirely on the other baseline.
+    """
+    # Fully block left baseline — even this trivial case must not emit
+    # without explicit Phase 1.5+ override.
     state = _make_state(
         ghost_cells=frozenset(),
         exterior_blocks=frozenset({(x, 0) for x in range(70)}),
@@ -271,11 +263,23 @@ def test_generator_conservative_default_emits_on_fully_blocked() -> None:
         boundary_groups=["boundary_storage_port"],
         region_kinds=("left_baseline",),
     )
+    assert cuts == []
+
+
+def test_generator_skips_region_with_missing_override_key() -> None:
+    """Gemini F6 round 2 HIGH #3: missing key = master plans 0 poses in region."""
+    state = _make_state()
+    # Override for left only — bottom is missing → bottom should be skipped.
+    cuts = generate_shape_packing_hall_cuts(
+        state,
+        boundary_groups=["boundary_storage_port"],
+        region_kinds=("left_baseline", "bottom_baseline"),
+        region_demand_overrides={("boundary_storage_port", "left_baseline"): 3},
+    )
+    # left emits (partition [4,5] total=2 < 3). bottom skipped (no override).
     assert len(cuts) == 1
-    cert_dict = json.loads(cuts[0].cert.cert_payload)
-    assert cert_dict["partition_lens"] == []
-    assert cert_dict["total_packable"] == 0
-    assert cert_dict["region_demand"] == 1
+    cert = json.loads(cuts[0].cert.cert_payload)
+    assert cert["region_kind"] == "left_baseline"
 
 
 def test_generator_rejects_override_exceeding_capacity() -> None:
@@ -570,6 +574,31 @@ def test_evaluator_returns_false_at_equality() -> None:
     )
     cut = _make_cut(cert_payload, state)
     assert evaluate_geometric_shape_packing_hall(cut, state) is False
+
+
+def test_evaluator_returns_false_on_ghost_drift() -> None:
+    """Gemini F6 round 2 CRITICAL #1: evaluator must scope-check before trusting payload.
+
+    Cut was generated for ghost (0, 4, 1, 1). After ghost moves, evaluator
+    is called with new state — payload would still say "violating" but the
+    scope is invalid, so evaluator must return False.
+    """
+    state = _make_state()
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    new_state = _make_state(ghost_rect=(5, 5, 1, 1), ghost_cells=frozenset({(5, 5)}))
+    assert evaluate_geometric_shape_packing_hall(cut, new_state) is False
+
+
+def test_evaluator_returns_false_on_exterior_drift() -> None:
+    """Exterior change invalidates cut even though ghost matches."""
+    state = _make_state()
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    new_state = _make_state(
+        exterior_blocks=frozenset({(x, 0) for x in range(12, 70)}),
+    )
+    assert evaluate_geometric_shape_packing_hall(cut, new_state) is False
 
 
 def test_evaluator_failsafe_malformed_payload() -> None:
