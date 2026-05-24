@@ -975,6 +975,7 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
         # Lazy import 避循环 (families import lifecycle for BState/Cut types).
         from src.cuts.families.component_reach import evaluate_geometric_component_reach
         from src.cuts.families.cutset import evaluate_geometric_cutset
+        from src.cuts.families.density_envelope import evaluate_geometric_density_envelope
         from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
         if cut.family == "region_capacity":
             return evaluate_geometric_region_capacity(cut, state)
@@ -982,9 +983,11 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
             return evaluate_geometric_cutset(cut, state)
         if cut.family == "component_reach":
             return evaluate_geometric_component_reach(cut, state)
+        if cut.family == "density_envelope":
+            return evaluate_geometric_density_envelope(cut, state)
         raise NotImplementedError(
             f"family={cut.family} geometric evaluator 未注册 — "
-            f"Phase 1.2/1.5+ F6/F8/F9 实施时加入此 dispatch."
+            f"Phase 1.2/1.5+ F6/F8 实施时加入此 dispatch."
         )
     # literal-based — generic multiset eval (F3/F5/F7 all use this)
     return evaluate_literal_multiset(cut, state)
