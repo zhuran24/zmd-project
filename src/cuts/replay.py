@@ -31,6 +31,7 @@ from typing import Callable, Dict, Optional
 
 from src.cuts.families.component_reach import validate_component_reach
 from src.cuts.families.cutset import validate_cutset
+from src.cuts.families.pattern_nogood import validate_pattern_nogood
 from src.cuts.families.port_exposure import validate_port_exposure
 from src.cuts.families.region_capacity import validate_region_capacity
 from src.cuts.lifecycle import (
@@ -59,6 +60,7 @@ FAMILY_VALIDATORS: Dict[str, FamilyValidator] = {
     "cutset": validate_cutset,
     "port_exposure": validate_port_exposure,
     "component_reach": validate_component_reach,
+    "pattern_nogood": validate_pattern_nogood,
 }
 
 
