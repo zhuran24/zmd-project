@@ -1,0 +1,32 @@
+[
+  {
+    "label": "interior_22_28",
+    "status": "UNPROVEN",
+    "wall_s": 113.88,
+    "sac_stats": {
+      "separator_count": 4,
+      "commodity_pressure_pairs": 76,
+      "side_bool_vars": 272,
+      "cross_bool_vars": 180,
+      "capacity_constraints": 4,
+      "skipped_dense_side_expr": 0,
+      "enabled": true,
+      "pose_metadata_count": 264464
+    }
+  },
+  {
+    "label": "corner_0_0_NEGATIVE",
+    "status": "INFEASIBLE",
+    "wall_s": 60.95,
+    "sac_stats": {
+      "separator_count": 2,
+      "commodity_pressure_pairs": 38,
+      "side_bool_vars": 136,
+      "cross_bool_vars": 90,
+      "capacity_constraints": 2,
+      "skipped_dense_side_expr": 0,
+      "enabled": true,
+      "pose_metadata_count": 276154
+    }
+  }
+]

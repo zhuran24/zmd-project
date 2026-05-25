@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "rc": 0,
-  "mode": "dry-run",
-  "elapsed_s": 1.0597872770013055,
-  "peak_rss_gb": 0.8564567565917969
+  "rc": 2,
+  "mode": "measure",
+  "elapsed_s": 86.42741908300377,
+  "peak_rss_gb": 1.3748779296875
 }
