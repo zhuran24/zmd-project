@@ -432,7 +432,7 @@ def test_validator_unsound_when_cell_owner_only_clearance(monkeypatch: pytest.Mo
 
     call_state = {"count": 0}
 
-    def _mock_cover(*args: Any, **kwargs: Any) -> frozenset[Tuple[int, int]]:
+    def _mock_cover(*args: Any, **_kwargs: Any) -> frozenset[Tuple[int, int]]:
         call_state["count"] += 1
         if call_state["count"] == 1:
             return frozenset()  # phase 6 (full free-cells): empty
