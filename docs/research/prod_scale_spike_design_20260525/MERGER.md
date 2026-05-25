@@ -131,7 +131,7 @@ gate. 此 merger 合并 8 路 parallel design 出 final spike spec.
 - 7-day wall clock 硬上限 (per rollback §2.1)
 - State sandbox: `EXACT_SPIKE_OUTPUT_DIR=data/cuts/spike/`, 8 项 off-limits (PROJECT_LOCK / canonical_rules / data/preprocessed / 9 family validator entry / docs/项目说明 spec / CLAUDE.md / src/cuts/lifecycle.py 主 step 函数 / replay.py) PR rebase 时 zero diff enforce
 
-### 5.2 Scope (要测的) — 2026-05-26 shrink per scope creep audit
+### 5.2 Scope (要测的) — 2026-05-26 shrink per scope creep audit + round 3 fix
 
 **重要 — Spike scope 严守 GPT pro Finding 5 close gate 5 项需求**:
 1. 真 prod registry build master var (Finding 5 #1)
@@ -141,6 +141,13 @@ gate. 此 merger 合并 8 路 parallel design 出 final spike spec.
 5. feasible realistic case 避 INFEASIBLE 早停 (Finding 5 #5)
 
 P1.3A 主体 (真 master integration / LBBD multi-iter / 9 family translator 真接 master / 6-dim watcher / adversarial inject / sub-route PoC) 全 defer P1.3A 正式 design 阶段, 不在 spike scope. 此 shrink 后 spike 答 "Finding 5 close 了吗" 不答 "P1.3A 是不是 close" (per simplicity slant §1).
+
+**Semantic gap 文档化 (Gemini round 3 Q8)**: shrink 后 spike GO **不等于** Finding 5 close 数学等价, 是**必要不充分**条件:
+- spike GO close *Sizing* (build/RSS/proto cost 在 prod 81K BoolVar 数量级可行) ✅
+- spike GO **不** close *Convergence* (toy master 缺真 ExactlyOne/port-linking 约束, solve cost 跟真 PoseBoolExactMaster 行为差, 真 convergence 是 P1.3A 主体的事) ❌
+- spike GO **不** close *Adversarial robustness* (F1/F2/F3 patch 在 scale 下 hold 是 P1.3B regression 范围) ❌
+
+接受此降级 — 强求等价会让 scope 膨胀回 P1.3A. spike 输出 verdict.md 必显式声明 "Sizing close, Convergence/Adversarial 未 verify, 入 P1.3A risk register".
 
 **Spike 必测**:
 - **Master scale**: 81,795 BoolVar **toy master** (真 prod pose registry from `data/preprocessed/candidate_placements.json`), simple Add() / AddLinearConstraint() 跑 build/solve cost measurement. **不接 PoseBoolExactMaster** (P1.3A 主体的事, 这里只测 BoolVar build 跟 constraint add cost).
@@ -184,10 +191,12 @@ shrink per scope creep audit: 删 G10/G12/G13/G14/G15/G15b/G16/G16b (P1.3A/P1.3B
 - G4: 81K + 50K cut build wall ≤ 300s
 - G4b: 81K + 100K cut build wall ≤ 600s (Gemini round 1 F2 — 168h 等价上限)
 
-**Solve cost (single solve, no LBBD loop)** (Finding 5 #3 + #5):
+**Solve cost (single solve, no LBBD loop)** (Finding 5 #3 + #5, round 3 G6 fix):
 - G5: 0 cut feasibility wall ≤ 30s
-- G6: 10K cut feasibility wall ≤ 180s, status OPTIMAL or FEASIBLE (**不能 INFEASIBLE 早停**, per adversarial R3 + Gemini round 2 Finding 3: 同时 `master.ResponseProto().best_objective_bound` 有效不空, status 不是 UNKNOWN)
-- G7: 100K cut feasibility 不 hard cap (因 100K 加 cut 后 solve 可能 INFEASIBLE 是预期, 只 measure wall + status 不 verdict)
+- G6 (round 3 BLOCKER fix): cut 注入分 2 路:
+  - **G6a (feasible-only)**: 从 IP v2 blueprint hint feasible smoke 提取 known-feasible cuts (per Gemini round 3 — random cut 从 45 真 cert sample 注入 toy master 必 Presolve 0.1s INFEASIBLE, 因 toy master 缺真 ExactlyOne / port-linking 互斥约束). 10K known-feasible cut 注入后 feasibility wall ≤ 180s, status OPTIMAL or FEASIBLE, `best_objective_bound` 有效不空, status 不 UNKNOWN.
+  - **G6b (random cut tolerate-INFEASIBLE)**: 10K random cut 注入后 solve 即便 INFEASIBLE 也允许, 但 wall **必须 > 1s** (否则是 Presolve 瞬间崩 = cut 跟现有约束直接冲突, 测的不是 solve cost). 若 wall ≤ 1s + INFEASIBLE → N2 trigger (cut sound 错 / sampling 设计错).
+- G7: 100K cut feasibility 不 hard cap (100K solve 可能 INFEASIBLE 是预期, 只 measure wall + status 不 verdict, 同 G6b 区分)
 
 **Resource** (Finding 5 #3):
 - G8: RSS peak ≤ 20 GB single worker, 100K 挡位必 measure (Gemini round 1 F2); 100K 挡位 RSS 超线性 (50K→100K 涨 >2x) trigger N3
@@ -196,8 +205,12 @@ shrink per scope creep audit: 删 G10/G12/G13/G14/G15/G15b/G16/G16b (P1.3A/P1.3B
 **Real cert sound** (Finding 5 #2):
 - G10 (renumbered): ≥45 cert 真 oracle 调出, validator 全 sound (cert body 分布 sample 出 jsonl, vs mini Step 8 spike 1-3-5 literal 简单分布)
 
-**Active filter sizing** (Finding 5 #4):
-- G11 (renumbered): Hybrid filter (activity - 0.1 × age) 在 100K cut 挡位 filter wall ≤ 100ms/iter, eviction trigger RSS>4.5GB OR cut count>50K **能正常触发不报错** (不验 filter 是否 sound, sound 是 P1.3A 主体)
+**Active filter sizing** (Finding 5 #4, round 3 G11 fix):
+- G11 (renumbered): Hybrid filter (activity - 0.1 × age) sizing 用**纯 Python mock loop** 验 (per Gemini round 3 HIGH — 单 build/solve 架构下 age 永 0, Hybrid score 退化纯 activity 排序, age_decay 物理失效. 必须模拟 multi-iter age 累积才能验 age_decay 逻辑):
+  - mock loop 跑 10 iter, 每 iter 模拟 cut activity 递增 / age 递增
+  - filter wall ≤ 100ms/iter (10 iter total ≤ 1s)
+  - eviction trigger 在第 N iter (mock cut count > 50K OR mock RSS > 4.5GB) 能正常 fire, 不 crash
+  - **不挂 CP-SAT solve, 不违反 NOT-scope (multi-iter LBBD 仍 defer P1.3A 主体)**, 只是 filter 自身 unit-level multi-iter mock
 
 **Failfast probe** (Gemini round 1 F3):
 - G17: 50 inst subset probe wall ≤ **15s**. 超时 abort spike (probe 自身慢 = harness bug)
@@ -207,7 +220,7 @@ shrink per scope creep audit: 删 G10/G12/G13/G14/G15/G15b/G16/G16b (P1.3A/P1.3B
 shrink per scope creep audit: 删 N5/N7/N8/N8b (对应已删 GO criteria).
 
 - N1: G1-G4b 任一 build wall 超阈值 ×2 (e.g. 0 cut build > 20s, 100K cut build > 1200s)
-- N2: G6 INFEASIBLE 早停 (即便 blueprint hint, feasible case 设计错或 oracle cert sound 错)
+- N2: G6a feasible-only INFEASIBLE 早停 OR G6b random cut wall ≤ 1s + INFEASIBLE (Presolve 瞬间崩 cut 跟约束冲突, 测的不是 solve cost) — feasible case 设计错或 oracle cert sound 错
 - N3: G8 RSS > 30 GB (撞 L24 augmented master 死法 reference); 100K 挡位 RSS 超线性 (50K→100K 涨 >2x) trigger Gemini round 1 F2 警告; **同时监控 SWIG proxy leak** (Gemini round 2 Q8.1 — `cp_model.Add()` 100K 次同 model 实例可能 SWIG wrapper C++ released but Python proxy 未回收)
 - N4: G9 proto > 2 GB (撞 spawn proto copy 风险)
 - N6: G10 oracle real-emit cert unsound (oracle 自身 bug, spike abort 报 bug)
