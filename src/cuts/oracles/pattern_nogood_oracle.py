@@ -256,7 +256,7 @@ def _build_pattern_nogood_cut(
         for (g, s, p) in deduped_core
     )
 
-    source_digest = state.source_digest or compute_source_digest(state)
+    source_digest = compute_source_digest(state)
 
     scope = CutScope(
         ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),

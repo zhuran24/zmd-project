@@ -201,7 +201,7 @@ def _build_cutset_cut(
     cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
     cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
 
-    source_digest = state.source_digest or compute_source_digest(state)
+    source_digest = compute_source_digest(state)
 
     scope = CutScope(
         ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),

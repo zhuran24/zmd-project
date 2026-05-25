@@ -282,7 +282,7 @@ def _build_cut(
     cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
     cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
 
-    source_digest = state.source_digest or compute_source_digest(state)
+    source_digest = compute_source_digest(state)
 
     # Gemini F8 round 3 Finding #3 (HIGH): spec §4 requires active_assumptions
     # to bind pole_jump_radius and protocol_core_cell to source-of-truth. The
