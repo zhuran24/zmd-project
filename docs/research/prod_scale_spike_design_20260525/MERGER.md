@@ -131,123 +131,114 @@ gate. 此 merger 合并 8 路 parallel design 出 final spike spec.
 - 7-day wall clock 硬上限 (per rollback §2.1)
 - State sandbox: `EXACT_SPIKE_OUTPUT_DIR=data/cuts/spike/`, 8 项 off-limits (PROJECT_LOCK / canonical_rules / data/preprocessed / 9 family validator entry / docs/项目说明 spec / CLAUDE.md / src/cuts/lifecycle.py 主 step 函数 / replay.py) PR rebase 时 zero diff enforce
 
-### 5.2 Scope (要测的)
+### 5.2 Scope (要测的) — 2026-05-26 shrink per scope creep audit
 
-- **Master scale**: 81,795 BoolVar (真 prod pose registry from `data/preprocessed/candidate_placements.json`), env `EXACT_USE_POSE_BOOL_MASTER=1` 用 PoseBoolExactMaster (B1, per `[[b1-phase2-production-land]]`)
-- **Failfast probe**: 50 inst subset fixture, spike 启动前 5-10 min run (per D1)
-- **Lifecycle**: 9 step 全真 invoke (step 1 oracle real emit / step 3 serialize / step 4 deserialize / step 5 validate dispatch / step 6 attach scope check / step 7 evaluate / **step 8 apply_to_master = 主交付** / step 9 regression sweep)
-- **Real oracle real emit**: 9 family × ≥5 cert = ≥45 cert 真 step 5 validate (per integration §1, correctness §1.2)
-- **Cut count ramp**: 1K / 10K / 50K (per D5)
-- **Feasible smoke**: IP v2 blueprint hint case (per adversarial R3) — branches≥1K / conflicts≥100 / wall≥1s / status≠INFEASIBLE
-- **Cut count ramp**: 1K / 10K / 50K / **100K** (Gemini round 1 F2 fix — 168h / 60s/iter × 10 cut/iter ≈ 100K accumulated, 必测 50K→100K L3 cache boundary 防超线性 RSS)
-- **Multi-iter LBBD**: **≥15 iter** single candidate × 3 candidate (Gemini round 1 F6 fix — L16/B1 path-2 死在 iter 10 UNPROVEN, iter 7+ 才进 marginal cut presolver 失效区, 5 iter 触不到 phase transition), benders_loop 接 **batch targeted no-good sub-problem stub** (Gemini round 1 F1 + round 2 Finding 2 fix — stub 读 master `SolutionInfo()` 当前 selected_pose set, **每 iter 返 batch**: 1 条 global no-good `sum(x[g,p] for selected) ≤ len-1` + 50-100 条从 selected_pose 随机采样的 subset no-good. 单 cut/iter 退化成空转 15 iter 形同虚设, 必 batch 模拟真 binding/routing subproblem 单 iter 百条 cut 密度)
-- **6-dim watcher**: 全 dimension (by_cell / by_group / by_pose / by_commodity / by_region / by_ghost) 各 ≥1 注册 (per integration G3)
-- **3 ghost transition**: 测 held/active/quarantined 状态机 + **跨 candidate source_digest invalidation** (Gemini round 1 C6.3 missing risk — outer search 切 candidate 时 ghost_id 变, store cache by_ghost watcher 必清, source_digest 必重新 emit 即便 byte-equal)
-- **Adversarial inject**: 50 bad cert + 9950 good cert 混 (per adversarial R8) + 3 forged-cert case (per Finding 1/2/3 each)
-- **Sub-route**: 主测 sub-route 1 (solve-rebuild), sub-route 3 1-iter trial 验接口, sub-route 2 defer (per D4)
-- **Active filter**: 跑推荐的 Hybrid (score = activity_count - 0.1 × age_decay), ablation defer P1.3A (per D2)
+**重要 — Spike scope 严守 GPT pro Finding 5 close gate 5 项需求**:
+1. 真 prod registry build master var (Finding 5 #1)
+2. 真 cut body size 分布 (Finding 5 #2)
+3. 测 build wall / proto bytesize / RSS / solve wall (Finding 5 #3)
+4. active cut filter / rotation 阈值 10K/50K/100K (Finding 5 #4)
+5. feasible realistic case 避 INFEASIBLE 早停 (Finding 5 #5)
 
-### 5.3 NOT-scope (不测的, 严守边界)
+P1.3A 主体 (真 master integration / LBBD multi-iter / 9 family translator 真接 master / 6-dim watcher / adversarial inject / sub-route PoC) 全 defer P1.3A 正式 design 阶段, 不在 spike scope. 此 shrink 后 spike 答 "Finding 5 close 了吗" 不答 "P1.3A 是不是 close" (per simplicity slant §1).
 
-- ❌ 真跑 binding subproblem (batch targeted no-good stub instead)
+**Spike 必测**:
+- **Master scale**: 81,795 BoolVar **toy master** (真 prod pose registry from `data/preprocessed/candidate_placements.json`), simple Add() / AddLinearConstraint() 跑 build/solve cost measurement. **不接 PoseBoolExactMaster** (P1.3A 主体的事, 这里只测 BoolVar build 跟 constraint add cost).
+- **Failfast probe**: 50 inst subset fixture, 启动前 ≤15s timeout (per Gemini round 1 F3)
+- **Real oracle real emit**: 9 family × ≥5 cert = ≥45 cert 真 oracle 调跑出 (验 Finding 5 #2 真 cut body size 分布). 真 cert 经 toy translator 转 CP-SAT constraint 验 build cost.
+- **Cut count ramp**: 1K / 10K / 50K / **100K** (Gemini round 1 F2 — 168h / 60s/iter × 10 cut/iter ≈ 100K accumulated, 必测 50K→100K L3 cache boundary)
+- **Feasible smoke**: IP v2 blueprint hint case (per adversarial R3) — `master.ResponseProto().best_objective_bound` 有效 + `status` OPTIMAL/FEASIBLE + branches≥1K / conflicts≥100 / wall≥1s (Gemini round 2 Finding 3 — wall-time 单独不够, 含 objective bound)
+- **Active filter sizing**: 跑推荐 Hybrid (score = activity_count - 0.1 × age_decay) 在 100K cut 挡位下 filter wall ≤ 100ms/iter, eviction trigger RSS>4.5GB OR cut count>50K. **只 sizing 不 ablation, 不接 master**.
+- **基本 telemetry**: RSS sample (psutil 1Hz background) + proto bytesize milestone sample + dark_matter_emit (INFEASIBLE 时强制 emit witness blob). 不 hook lifecycle 12 类全 event.
+
+### 5.3 NOT-scope (不测的, 严守边界 — 2026-05-26 扩大 per scope creep audit)
+
+**P1.3A 主体 work (全 defer 到正式 P1.3A 阶段 N=8 parallel design 重新决策)**:
+- ❌ **真接 PoseBoolExactMaster (B1)** — toy master 就够测 Finding 5 5 项. 真 master wire 是 P1.3A 主体.
+- ❌ **`step_8_apply_to_master` 9 family translator 真实施** — spike 只验 toy translator build cost. 9 family 真 translator 接真 master 是 **P1.3B 主体**.
+- ❌ **Multi-iter LBBD loop (15 iter × candidate / batch no-good stub / objective bound 收敛)** — spike 只 single build/solve measurement. LBBD multi-iter 是 P1.3A 主体.
+- ❌ **6-dim watcher 全注册 + 3 ghost transition + 状态机** — spike 不 wire cut store 状态机, 只 sizing measurement. cut store integration 是 P1.3A 主体.
+- ❌ **跨 candidate source_digest invalidation (G16/G16b)** — outer search candidate 切换是 P1.3A 主体, spike single candidate sizing.
+- ❌ **Adversarial inject 50 bad / forged-cert** — F1/F2/F3 patch 验在 scale 下 still hold 是 P1.3B regression 测试, defer.
+- ❌ **3 sub-route PoC (solve-rebuild / C++ propagator / hard-constraint)** — sub-route 决策是 P1.3A 主体, spike 只用 simple Add() 验 build cost.
+- ❌ **9 step lifecycle 全 invoke** (step 1/3/4/5/6/7/9) — spike 只 invoke step 1 oracle emit (真 cert body 来源). 真 lifecycle 全 invoke 是 P1.3A 主体.
+
+**其它**:
+- ❌ 真跑 binding subproblem
 - ❌ 真跑 routing subproblem
-- ❌ Multi-process / multi-worker (spike single worker, CP-SAT threading non-determinism risk 文档化 per Gemini round 1 C6.1)
-- ❌ 168h ramp (spike ≤ 2 hour run; 100K cut 是 168h 等价累积上限 — spike scale 不 ramp 但 cut count 必 cover)
-- ❌ Sub-route 2 (C++ propagator) — defer P1.3B
-- ❌ Active filter ablation 全跑 — 只测推荐 Hybrid
-- ❌ Observability 全 12 event class — 只 4 必
-- ❌ Cut purge 物理删机制 — Gemini round 1 C6.2 derived risk, defer P1.3A 主体 (spike 只测 logical filter)
-- ❌ **`cp_model.SolutionCallback` 注入 cut** (Gemini round 2 Q8.2 fix — Python callback 持 GIL block 底层 C++ search workers, multi-thread portfolio 失效 wall 暴涨. spike 严守 Outer-loop LBBD 模式: master 解完 → stub 读 SolutionInfo() → 主进程 add no-good → rebuild master → 再 solve)
+- ❌ Multi-process / multi-worker (spike single worker)
+- ❌ 168h ramp (spike ≤ 2h run; 100K cut 是 168h 等价累积上限 — spike cut count cover 但 wall 不 ramp)
+- ❌ Active filter ablation 全跑 — 只 Hybrid sizing
+- ❌ Observability 全 12 event class — 只 RSS / proto / dark_matter
+- ❌ Cut purge 物理删机制 — defer P1.3A 主体
+- ❌ **`cp_model.SolutionCallback` 注入 cut** (Gemini round 2 Q8.2 — 防 spike 实施时手滑用 callback) — spike 实施严守 Outer-loop pattern
 
-### 5.4 量化 GO criteria (17 项, 全 hold 才 GO)
+### 5.4 量化 GO criteria (10 项 — 严守 Finding 5 close gate)
 
-Round 1 Gemini fix landed: G3 60s→30s (F4), G15 改 wall-time 收敛 metric (F1),
-加 G16 跨 candidate invalidation (C6.3), 加 G17 failfast probe timeout (F3).
+shrink per scope creep audit: 删 G10/G12/G13/G14/G15/G15b/G16/G16b (P1.3A/P1.3B 主体 criteria). 保留 sizing / measurement / 直接对应 Finding 5 5 项的 criteria.
 
-**Build cost** (Gemini F4 收紧 G3):
+**Build cost** (Finding 5 #3):
 - G1: 81K BoolVar + 0 cut build wall ≤ 10s
 - G2: 81K + 1K cut build wall ≤ 20s
-- G3: 81K + 10K cut build wall ≤ **30s** (折中: Gemini 6s 没考虑 9 family translator dispatch overhead, 收紧到 30s 卡 SWIG vectorized 反模式)
+- G3: 81K + 10K cut build wall ≤ **30s**
 - G4: 81K + 50K cut build wall ≤ 300s
-- **G4b**: 81K + 100K cut build wall ≤ 600s (Gemini F2 加)
+- G4b: 81K + 100K cut build wall ≤ 600s (Gemini round 1 F2 — 168h 等价上限)
 
-**Solve cost (feasibility only)**:
+**Solve cost (single solve, no LBBD loop)** (Finding 5 #3 + #5):
 - G5: 0 cut feasibility wall ≤ 30s
-- G6: 1K cut feasibility wall ≤ 60s
-- G7: 10K cut feasibility wall ≤ 180s, status OPTIMAL or FEASIBLE (**不能 INFEASIBLE 早停**, per adversarial R3 metric)
+- G6: 10K cut feasibility wall ≤ 180s, status OPTIMAL or FEASIBLE (**不能 INFEASIBLE 早停**, per adversarial R3 + Gemini round 2 Finding 3: 同时 `master.ResponseProto().best_objective_bound` 有效不空, status 不是 UNKNOWN)
+- G7: 100K cut feasibility 不 hard cap (因 100K 加 cut 后 solve 可能 INFEASIBLE 是预期, 只 measure wall + status 不 verdict)
 
-**Resource**:
-- G8: RSS peak ≤ 20 GB single worker (per adversarial R4, correctness §3.3); 100K cut 挡位 RSS 必 measure (Gemini F2)
-- G9: proto.ByteSize() ≤ 500 MB @ 50K, ≤ 1 GB @ 100K (Gemini F2)
+**Resource** (Finding 5 #3):
+- G8: RSS peak ≤ 20 GB single worker, 100K 挡位必 measure (Gemini round 1 F2); 100K 挡位 RSS 超线性 (50K→100K 涨 >2x) trigger N3
+- G9: proto.ByteSize() ≤ 500 MB @ 50K, ≤ 1 GB @ 100K
 
-**Lifecycle correctness**:
-- G10: 9 step 全 invoke, 0 NotImplementedError, 0 fail-closed assert violation (per integration G1)
-- G11: ≥45 cert 真 step 5 validate, 全 sound (oracle real-emit cert 应 sound; 若有 unsound = oracle bug, spike abort 报 bug, per integration G2)
-- G12: 6-dim watcher 全注册, `store.stats()` 6 dim 各 ≥1 (per integration G3)
+**Real cert sound** (Finding 5 #2):
+- G10 (renumbered): ≥45 cert 真 oracle 调出, validator 全 sound (cert body 分布 sample 出 jsonl, vs mini Step 8 spike 1-3-5 literal 简单分布)
 
-**Adversarial**:
-- G13: 50 bad cert 100% quarantine, store active count = 9950 (per adversarial R8)
-- G14: 3 forged-cert case (F1/F2/F3 each 1) 必 quarantine, 0 漏 (per integration G10)
+**Active filter sizing** (Finding 5 #4):
+- G11 (renumbered): Hybrid filter (activity - 0.1 × age) 在 100K cut 挡位 filter wall ≤ 100ms/iter, eviction trigger RSS>4.5GB OR cut count>50K **能正常触发不报错** (不验 filter 是否 sound, sound 是 P1.3A 主体)
 
-**Multi-iter convergence** (Gemini round 1 F1 + F6 + round 2 Finding 2/3 fix):
-- G15: **≥15 iter LBBD single candidate**, 同时满足 3 条 (Gemini round 2 Finding 3 — wall-time 单独不够, 防 "cut 触发 Infeasible 假收敛"):
-  1. wall-time 收敛: iter N+1 wall ≤ iter N wall × 1.5 (允许 noise) AND 最后 5 iter avg wall ≤ first 5 iter avg wall × 0.7
-  2. **`master.ResponseProto().best_objective_bound` 单调不减** (Gemini round 2 Finding 3 — root node 瞬间 Infeasible 让 wall 骤降到 0.1s 是模型崩不是收敛, objective bound 不动可 catch)
-  3. 所有 15 iter status ∈ {OPTIMAL, FEASIBLE} (不能任一 iter UNKNOWN/INFEASIBLE)
-  **不用 search tree node count** (Gemini round 1 论证 CP-SAT presolve 重排让 node count 不单调甚至激增)
-- G15b: stub 必返 **batch targeted no-good** (读 master `SolutionInfo()` 当前 selected_pose set), 每 iter 返 1 条 global no-good `sum(x[g,p] for selected) ≤ len-1` + 50-100 条 sampled subset no-good (Gemini round 2 Finding 2 — 单 cut/iter 退化空转, batch 才模拟真 binding/routing subproblem 密度)
-
-**跨 candidate state isolation** (Gemini round 1 C6.3 + round 2 Finding 4 fix):
-- G16: 3 candidate 切换时, store.snapshot() after candidate N vs N+1 必 verify (逻辑层):
-  - by_ghost watcher entries cleared
-  - source_digest 重新 emit (hash 应 equal 但 emit timestamp 必 update)
-  - cross-candidate cache 无 leak
-- G16b (Gemini round 2 Finding 4 — 物理级 leak 校验): candidate 切换后强制 `gc.collect()`, 断言:
-  - `sys.getrefcount()` 大对象 (Ghost / cp_model.Constraint) 属 candidate N 的实例数 = 0 OR
-  - RSS 波动 ≤ 5% (single candidate baseline 对比)
-  (单 `store.snapshot()` 逻辑 dict diff 看不见 Python 闭包 / SWIG C++ 底层 dangling references)
-
-**Failfast probe** (Gemini F3 HIGH fix):
-- G17: 50 inst subset probe wall ≤ **15s**. 超时 abort spike (probe 自己慢 = harness bug, 不进 81K 主测).
+**Failfast probe** (Gemini round 1 F3):
+- G17: 50 inst subset probe wall ≤ **15s**. 超时 abort spike (probe 自身慢 = harness bug)
 
 ### 5.5 量化 NOT GO criteria (任一触发 → abort + reflect)
 
+shrink per scope creep audit: 删 N5/N7/N8/N8b (对应已删 GO criteria).
+
 - N1: G1-G4b 任一 build wall 超阈值 ×2 (e.g. 0 cut build > 20s, 100K cut build > 1200s)
-- N2: G7 INFEASIBLE 早停, 即便加 blueprint hint (feasible case 设计错或 cut sound 错)
-- N3: G8 RSS > 30 GB (撞 L24 augmented master 死法 reference); 100K 挡位 RSS 超线性 (e.g. 50K→100K 涨 >2x) trigger Gemini round 1 F2 警告; **同时监控 SWIG proxy leak** (Gemini round 2 Q8.1 — `cp_model.Add()` 100K 次在同一 Python model 实例上可能触发 OR-Tools 9.15 SWIG wrapper C++ object 已释放但 Python proxy 未回收, RSS 跟 cut count 不匹配的隐式 leak)
+- N2: G6 INFEASIBLE 早停 (即便 blueprint hint, feasible case 设计错或 oracle cert sound 错)
+- N3: G8 RSS > 30 GB (撞 L24 augmented master 死法 reference); 100K 挡位 RSS 超线性 (50K→100K 涨 >2x) trigger Gemini round 1 F2 警告; **同时监控 SWIG proxy leak** (Gemini round 2 Q8.1 — `cp_model.Add()` 100K 次同 model 实例可能 SWIG wrapper C++ released but Python proxy 未回收)
 - N4: G9 proto > 2 GB (撞 spawn proto copy 风险)
-- N5: G10 9 step 任一 raise / assert violation
-- N6: G11 oracle real-emit cert unsound (oracle 自身 bug, 不是 spike fail 但 spike abort 报 bug)
-- N7: G13/G14 adversarial inject 漏 ≥1 (F1/F2/F3 patch 在 scale 下失效)
-- N8: G15 wall-time 不收敛 (iter 15 wall > iter 1 wall × 0.7) OR objective_bound 单调减 OR 任一 iter status ∉ {OPTIMAL, FEASIBLE} OR stub 没产 batch targeted no-good (撞 L16/B1 path-2 死法)
-- N8b: G16 跨 candidate 切换 store cache leak (by_ghost watcher 残留 OR source_digest 没重新 emit) OR G16b 物理级 leak (gc.collect() 后大对象实例数 ≠ 0 OR RSS 波动 > 5%)
-- N9: Reproducibility variance > 30% (per rollback §8.4, 同 seed 3 次跑差太大)
-- N10: 7-day wall clock 用完仍未 cover 主路径 (per rollback §2.1)
-- N11: spike 跑后 jsonl 4 必 event 任一 = 0 (per observability §9.1 精简版)
-- N12: Off-limits file 8 项任一 diff non-zero (per rollback §5.3)
+- N6: G10 oracle real-emit cert unsound (oracle 自身 bug, spike abort 报 bug)
+- N9: Reproducibility variance > 30% (同 seed 3 次跑差太大)
+- N10: 7-day wall clock 用完仍未 cover 主路径
+- N11: spike 跑后 jsonl RSS/proto/dark_matter 3 必 event 任一 = 0
+- N12: Off-limits file 8 项任一 diff non-zero
 - N13: G17 probe wall > 15s (harness 自身 bug, 不进主测)
 
-### 5.6 工时 estimate
+### 5.6 工时 estimate (shrink 后)
 
 | 段 | Claude 工时 | Wall-clock 死时间 |
 |---|---|---|
 | Branch setup + state sandbox + off-limits enforce | 0.5-1h | 0 |
-| Failfast probe (50 inst subset) | 1h | 5-10 min run |
-| Real oracle real emit fixture (≥45 cert) | 2-3h | 10-20 min oracle calls |
-| Spike harness 9-step glue (wrapper 不 reimplement src) | 2-3h | 0 |
-| Step 8 apply_to_master 实施 (9 family translator 真接 PoseBoolExactMaster) | 4-6h | 0 |
-| Multi-iter LBBD loop (≥15 iter × 3 candidate, targeted no-good sub-problem stub) | 3-4h (Gemini F6 +1h, F1 stub redesign +1h) | 2-4h CP-SAT real run (Gemini F6 wall ×3) |
-| Scale ramp (1K / 10K / 50K / 100K cut) | 1-2h | 2-3h CP-SAT real run (Gemini F2 100K +1-2h) |
-| Adversarial inject (50 bad cert + F1/F2/F3 forged) | 2h | 0 |
-| 跨 candidate source_digest invalidation verify (G16) | 1h | 0 |
-| Failfast probe + 15s timeout enforce (G17) | 0.5h | <0.5h probe run |
-| 4 必 telemetry event hook + post-mortem | 1.5-2h | 0 |
-| Run + verify + write spike verdict.md | 1-2h | 2-4h spike full run (Gemini multi-iter + 100K wall 加 1-2h) |
-| **TOTAL** | **20-29h Claude** | **5-9h wall** |
+| Failfast probe (50 inst subset, G17 15s timeout) | 1h | <0.5h probe run |
+| Real oracle real emit fixture (≥45 cert, 9 family) | 2-3h | 10-20 min oracle calls |
+| Toy translator (验 build cost, simple Add()/AddLinearConstraint, 不接 PoseBoolExactMaster) | 1-2h | 0 |
+| Scale ramp (1K / 10K / 50K / 100K cut, single build/solve no LBBD loop) | 1-2h | 2-3h CP-SAT real run |
+| Feasible smoke (IP v2 blueprint hint, 验 G6 不 INFEASIBLE 早停) | 1h | <5 min wall |
+| Active filter Hybrid sizing (filter wall + eviction trigger 验) | 0.5-1h | 0 |
+| 3 必 telemetry hook (RSS / proto / dark_matter) + post-mortem | 1-2h | 0 |
+| Run + verify + write spike verdict.md | 1-2h | 1-2h spike full run |
+| **TOTAL** | **8-12h Claude** | **4-7h wall** |
 
-Round 1 Gemini fix 后工时 +3-4h Claude / +2-3h wall (vs round 0 17-25h / 3-6h).
-Per `[[work-time-estimates]]` Claude pace 折扣, ~2-3 working session 日历仍可
-hold. 落入 P1.3A ≤ 3 day budget 略紧, 用 7-day cap 兜底.
+vs round 0 / 1 / 2 (17-29h Claude / 3-9h wall): shrink 后 **~60% 时间**. 严守
+Finding 5 close gate scope, P1.3A 主体 work (step 8 真实施 / LBBD multi-iter /
+真 master / 6-dim watcher / adversarial inject / 跨 candidate / sub-route) 全
+defer P1.3A 正式 design 阶段重新走 N=8 parallel.
+
+Per `[[work-time-estimates]]` Claude pace 折扣, ~1-2 working session 日历, 7-
+day cap 极宽裕. P1.3A ≤ 3 day budget 不被 spike 占用 (spike 自己 ≤ 1 day).
 
 ---
 
@@ -262,23 +253,34 @@ hold. 落入 P1.3A ≤ 3 day budget 略紧, 用 7-day cap 兜底.
 
 **Round 1 Gemini cross-check 后新自评**:
 6. **D5 cut count ramp 折取错** — Gemini F2 catch 100K cut blind spot, 用 168h/60s × 10 cut/iter ≈ 100K 累积 + L24 30 GB 死法引证. 我原取 correctness "50K 已极限" 立场, throughput 原立场被 Gemini 量化加固. 已恢复 100K 挡位 (G4b).
-7. **D3 LBBD iter 数我估错** — Gemini F6 catch 5 iter 不触 phase transition (iter 7+ 才进 marginal cut 区), L16/B1 path-2 死在 10 iter UNPROVEN. 已 5→15 iter.
-8. **跨 candidate state isolation 完全漏了** — Gemini C6.3 missing risk 全 8 路 0 cover. 已加 G16. 这是 review 加严最值钱的一条 — outer search 切 candidate 时 store cache 不 invalidate 会让 spike 跑到 candidate 2 时用 candidate 1 的 ghost cache, 产 false-positive cut. Layer 2 hidden assumption.
+7. **D3 LBBD iter 数我估错** — Gemini F6 catch 5 iter 不触 phase transition (iter 7+ 才进 marginal cut 区), L16/B1 path-2 死在 10 iter UNPROVEN. 已 5→15 iter. **2026-05-26 user scope creep audit 后删除** — multi-iter LBBD 整段 leak P1.3A 主体, defer 到 P1.3A 正式 design 重新 走 N=8 parallel.
+
+**2026-05-26 user scope creep audit 后第三批自评 (最严重 bias)**:
+9. **D3 + 取整 correctness/integration slant 把 spike scope leak 进 P1.3A 主体** — 用户 catch: spike 应严守 Finding 5 close gate (sizing / measurement), 但我 MERGER §5.2 写了 step 8 真实施 + LBBD multi-iter + 真 master integration + 6-dim watcher + adversarial inject + 3 sub-route — 全是 P1.3A 主体的事. simplicity slant §1 当时明示 "spike 答'可以开始做 P1.3A 主体了吗' 不答'P1.3A 是不是 close'", 我 merger 取交集时 override 了 simplicity. 这是 main merger 同种 RLHF bias 的典型表现 (correctness/integration slant "做全 = 安全" inclination). [[adversarial-soundness-audit]] Layer 2 attack 是数据层, 此处是 phase boundary 层 — 不同 attack vector, 同种 inclination.
+10. **Audit 体系本身没 catch 9** — 8 路 sibling 含 simplicity (raise 了) 但 main override; round 1 + round 2 Gemini cross-check 都 focus 数学/CP-SAT 内部 (round 1 NOT GO 数学层 6 finding / round 2 NOT GO 数学层 4 finding) **0 catch phase boundary leak**. Gemini 是数学/paradigm 强 audit 但 phase boundary / project 流程 audit 它没 strong opinion. user 是唯一能 catch 这层 audit 的人.
+11. **Shrink 后再 Gemini cross-check round 3** — 但目的不再是数学层 verify (round 1/2 已 cover), 而是验 shrink 后 scope 还能不能 close Finding 5 5 项需求 (sizing / measurement / feasible smoke / active filter / RSS). 若 round 3 GO, 才真启动 spike.
 
 ---
 
 ## 7. 下一步 (spike 实施前)
 
-1. ~~**Gemini cross-check 本 MERGER doc**~~ ✅ Round 1 完 (verdict NOT_GO,
-   archive `cross_check/gemini_merger_round1_20260526/`). Round 1 fix landed.
-2. ~~**Gemini cross-check round 2**~~ ✅ 完 (verdict NOT_GO 但显式 "无需 round 3",
-   archive `cross_check/gemini_merger_round2_20260526/`). 4 finding fix landed
-   本 merger §5.1 §5.2 §5.3 §5.4 §5.5.
-3. **GPT pro 选择**: 不立刻送 GPT pro (spike 还未跑). 等 spike 跑完出 verdict.md 才打包送 v14 (含 patch verify + spike verdict).
-4. **实施 spike**: 按 §5 final spec spawn opus closed-loop agent (per
-   `[[subagent-for-closed-loop-tasks]]`), branch `spike/prod_scale_master_integration_20260526`,
-   7-day wall cap, 20-29h Claude / 5-9h wall budget.
-5. **失败回退**: 7-day wall cap 触发 → `git branch -D` + 主对话写 reflect doc + 重设计 N=8 parallel.
+1. ~~**Gemini cross-check 本 MERGER doc round 1**~~ ✅ (verdict NOT_GO, archive
+   `cross_check/gemini_merger_round1_20260526/`). 6 finding fix landed.
+2. ~~**Gemini cross-check round 2**~~ ✅ (verdict NOT_GO 但显式 "无需 round 3",
+   archive `cross_check/gemini_merger_round2_20260526/`). 4 finding fix landed.
+3. ~~**User scope creep audit (2026-05-26)**~~ ✅ catch §5 scope leak P1.3A 主体.
+   shrink §5 scope 严守 Finding 5 close gate (8-12h Claude / 4-7h wall). P1.3A
+   主体 work 全 defer 到 P1.3A 正式 design 阶段重新走 N=8 parallel.
+4. **Gemini cross-check round 3** — 验 shrink 后 scope 仍能 close Finding 5
+   5 项需求 (sizing / measurement / feasible smoke / active filter / RSS).
+   若 round 3 GO_WITH_MINOR 或 GO 才进 spike 实施.
+5. **GPT pro 选择**: 不立刻送 GPT pro (spike 还未跑). 等 spike 跑完 verdict.md 后打
+   v14 包 (含 patch verify + Finding 5 close spike verdict).
+6. **实施 spike**: round 3 GO 后, 按 §5 shrink spec spawn opus closed-loop
+   agent (per `[[subagent-for-closed-loop-tasks]]`), branch
+   `spike/prod_scale_master_integration_20260526`, 7-day wall cap, **8-12h
+   Claude / 4-7h wall** budget.
+7. **失败回退**: 7-day wall cap 触发 → `git branch -D` + 主对话写 reflect doc.
 
 ### Round 1 catch summary
 - 1 BLOCKER (G15 metric + stub) / 3 HIGH (F2 100K / F3 probe / F6 15 iter) /
