@@ -1,0 +1,406 @@
+# Gemini 3 Pro Math Cross-Check — Phase 1.2 P1.2B-F9 density_envelope — ROUND 2
+
+## 任务定位
+
+Round 1 你出过 verdict: NOT_GO (3 findings: 1 BLOCKER + 2 HIGH). 全部 land.
+
+Round 2 你的任务:
+1. **Verify round 1 fix 是否正确** (重点 — 我担心 union/sort/total-check 有 corner 没顾到)
+2. **Round 1 漏的 finding** — 你 round 1 可能集中在 Sum-vs-Union 没扫别的 attack surface
+3. **Round 1 fix 是否引入 regression** (新检查是否 reject 了 sound case)
+
+明确指令:
+- 不接受 GO ritual. 只剩 nice-to-have minor 才 GO_WITH_MINOR. 否则给 CONCERN / NOT_GO.
+- 已经做 3 round 5 GO 的 F5 (上个 family) — F9 round 2 不可能完全无 finding.
+- 强 push find problem. 假装你是 adversary trying to construct unsound cut / break canonical form / smuggle through validator.
+- 如果你确认全 clean, 解释你具体怎么 attack 这 3 个修复试 attack 失败.
+
+## 背景 — F9 数学不变量 (PROJECT_LOCK §3A 锁)
+
+F9 density_envelope 是 area-based capacity-overflow cut, 限制 group `g` 在 window `W` (axis-aligned rect, 70×70 grid 子集) 内 area 不超 `max_allowed_area`:
+
+```
+sum_{cell ∈ W} 1[cell_owner[cell].group == g] <= max_allowed_area
+```
+
+cut 触发条件 (evaluator): **strict** inequality `占用_area > max_allowed_area`.
+
+锁的几条:
+- **area-only**: generator 只接 `area_capacity_overflow` witness; routing/binding/pcr_cut overflow reject (closed-set whitelist)
+- **strict**: 等号不 cut
+- **ghost-bound**: scope.ghost_rect_id == GHOST_AGNOSTIC reject; cert.ghost_rect_repr byte-equal state.ghost_rect
+- **safe_ub**: validator 独立 recompute `|W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|`, cert.max_allowed_area 必 ≤ safe_ub (oracle 不可宣称更松的 bound)
+- **canonical witness**: oracle_assignment_witness 必排序使 permutation-equivalent witness 产生相同 cert_hash (CutStore dedup)
+
+跟 evaluator 对齐核心: validator recompute 必须用 **UNION** 语义 (set of cells), 不能 sum-with-overlap, 因 evaluator 是按 cell_owner 迭代 cell 自然去重.
+
+## Round 1 (commit f2d8f31) 3 个 findings + 我的修复
+
+### Round 1 BLOCKER — Validator sum vs Evaluator union divergence
+
+你 round 1 catch: `_recompute_assignment_area_overlap` 用 `total += 1` 求和 |pose_cells ∩ W|, double-counts cell 跨两个 pose footprint. evaluator iter `state.cell_owner` per cell 自然去重 → 不一致 → 无限循环.
+
+我的 fix (`src/cuts/families/density_envelope.py:346-375` 当前):
+
+```python
+def _recompute_assignment_area_overlap(
+    witness_pairs: Tuple[Tuple[GroupId, PoseId], ...],
+    window_cells: FrozenSet[Cell],
+    state: BState,
+) -> int:
+    """Return |Union(occupied_cells(p) for p in witness) ∩ W|.
+
+    Per Gemini F9 round 1 BLOCKER fix: validator must use UNION semantics
+    matching the evaluator (which iterates ``state.cell_owner`` keyed by
+    cell, naturally deduplicated). Summation across poses double-counts any
+    cell shared by two pose footprints, allowing the validator to accept a
+    cut on inflated area while the evaluator never sees overflow on the
+    same witness — LBBD would loop on identical solutions.
+
+    Returns -1 if any pose lookup fails (validator treats as unsound).
+    """
+    from src.cuts.helpers.candidate_placements import find_pose
+
+    occupied_cells: set[Cell] = set()
+    for (g, p) in witness_pairs:
+        pose = find_pose(state, g, p)
+        if pose is None:
+            return -1
+        for raw_cell in pose.get("occupied_cells", []):
+            if not isinstance(raw_cell, (list, tuple)) or len(raw_cell) != 2:
+                continue
+            cell = (int(raw_cell[0]), int(raw_cell[1]))
+            if cell in window_cells:
+                occupied_cells.add(cell)
+    return len(occupied_cells)
+```
+
+Regression test (`test_validator_overlap_witness_union_not_sum`): 两 pose 共享 4 cells, SUM=18, UNION=14; max_allowed_area=14 → UNION 14 ≤ 14 不 strict, 必须 reject. SUM 会算 18>14 误 accept.
+
+**Round 2 你要 verify**:
+1. Union vs evaluator 真 align 吗?
+2. evaluator (下方) 按 `cell_owner` iter, 不查 `candidate_placements` — 但 union 验证查 `candidate_placements`. **两个 source 可能 drift 吗?** (cell_owner 可能含 ghost rect 内但 candidate_placements 没 expose 的 pose ID? master selection 后 cell_owner 是怎么填的?)
+3. `raw_cell` 处理: `int(True) == 1` (Python) — `occupied_cells` 是 trusted (从 state.candidate_placements 读), 但若 candidate_placements 被 contaminate (bool 混 int) `cell` 会 `(1, 1)` 而非 `(True, True)` → 进入 window_cells 比较仍 work (因 window_cells 也是 tuple of int). 但是有更深 attack surface 我没看到吗?
+4. `find_pose(state, g, p)` 在 `_validate_assignment_witness` 通过后调, 那里已检 `p ∈ group.pose_domain`. 但 pose_domain 跟 candidate_placements 是不同 source — pose_domain 是集合, candidate_placements 是 facility pool. **pose_domain 含 p 不保证 candidate_placements 含 p**. 修复后若 find_pose 返 None, 返 -1, 进入 `_validate_witness_overflow` 看 `recomputed_sum < 0` 报 unsound — 但 message 说 "pose not findable" — 是 unsound 还是 schema_err? 这里语义对不对?
+5. Generator 也用 _recompute_assignment_area_overlap (oracle-side double-defense). 一致吗?
+
+### Round 1 HIGH #2 — total instance count > group demand
+
+你 round 1 catch: per-pose multiset count ≤ demand 不阻挡 attacker 用 demand+1 distinct poses inflate witness 面积.
+
+我的 fix (`src/cuts/families/density_envelope.py:222-235` 当前):
+
+```python
+group_demand = state.groups[cert_group_id].demand
+# Per Gemini F9 round 1 review #2 HIGH: total instance count must also
+# be ≤ group.demand. Per-pose multiset cap alone allowed an attacker to
+# claim demand+1 *different* poses, inflating witness area beyond what
+# the master can physically place.
+if len(pairs) > group_demand:
+    return (
+        _vr(
+            "unsound",
+            t0,
+            f"oracle_assignment_witness total instances {len(pairs)} > group demand {group_demand}",
+        ),
+        None,
+    )
+# Per-pose multiset count ≤ group.demand
+counts = Counter(pairs)
+for (g_p, count) in counts.items():
+    if count > group_demand:
+        return (
+            _vr("unsound", t0, f"... pose {g_p[1]!r} count {count} > group demand ..."),
+            None,
+        )
+return None, tuple(pairs)
+```
+
+Regression test (`test_validator_total_instances_exceed_demand_rejected`): demand=2, witness=3 distinct pose, 每个 count=1 ≤ 2, 但 total=3 > 2 必须 reject.
+
+**Round 2 你要 verify**:
+1. `len(pairs) > group_demand` 用 raw `pairs` list (in order). 修复正确吗?
+2. 加 total check 是否 reject 了 sound case? 例: demand=1, witness 1 pose count=1 → len=1 ≤ 1 pass ✓; demand=5 witness 3 distinct count=1 → len=3 ≤ 5 pass ✓. 没漏吗?
+3. 当 per-pose multiset 跟 total 同时 violate, 错误信息有用吗? (order: 先 total 后 per-pose, total 先 catch)
+4. **deeper 数学问题**: total <= demand 是必要条件, 但充分吗? 还有什么 master 物理约束 witness 必须满足? 比如 "witness 任两个 pose 必无重叠" — 因 master 的同一个 group 内 instance 占用 cell 必互斥 (instance 1 跟 instance 2 不能共享 cell)? 若 witness 含两 overlapping pose 模拟 instance 1 和 instance 2 的 placement, master 实际不会同时选 → 不 sound? **这是 round 2 漏 finding 候选**.
+5. Per-pose count ≤ demand 在 total ≤ demand 下其实是 redundant — 因每个 individual count ≤ total count ≤ demand. 移除 per-pose check 不影响 soundness 但可以简化. (这是 minor, 不必动)
+6. demand=0 corner: `group_demand=0` 且 `len(pairs) >= 1` (因为 raw is non-empty list 上面 guard 过) → reject. OK.
+
+### Round 1 HIGH #3 — sort canonical for cert_hash stability
+
+你 round 1 catch: `[[g, p] for (g, p) in witness]` 保留 input 顺序, permuted-equivalent witness → 不同 cert_payload bytes → 不同 cert_hash → CutStore dedup 失效.
+
+我的 fix (`src/cuts/oracles/density_envelope_oracle.py:152` 当前):
+
+```python
+# Per Gemini F9 round 1 review #3 HIGH: sort the witness list so
+# permuted-but-equivalent witnesses produce identical cert_hash and the
+# CutStore can dedup them (matches F5 round 1's multiset-canonicalization
+# lesson — same trap re-emerging in F9).
+sorted_witness = sorted([[g, p] for (g, p) in assignment_witness])
+
+cert_payload_dict: Dict[str, Any] = {
+    ...
+    "oracle_assignment_witness": sorted_witness,
+    ...
+}
+cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+```
+
+`canonical_bytes_for_cert` 实现:
+```python
+def canonical_bytes_for_cert(payload: JsonDict) -> bytes:
+    return json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
+```
+
+Regression test (`test_generator_witness_canonical_order_independent_cert_hash`): forward 顺序 (("g1","p_3x3_a"),("g1","p_3x3_b")) vs reversed → 两个 cert.cert_hash 必须 ==.
+
+**Round 2 你要 verify**:
+1. Python 内置 `sorted([[g, p] ...])` 对 list of 2-element list 做 lexicographic 排序: 先按 g[0]<g'[0] 比较 (str compare), 同 g 再按 p[0]<p'[0] 比较. 假设 g, p 都是 str → string compare, deterministic, locale-independent (Python 默认 codepoint sort). 对吗?
+2. `sorted` 默认 stable, 但 list of list with 2 distinct str element 完全 lexicographic, **重复元素如何处理**? e.g. witness `(("g1", "pA"), ("g1", "pA"))` (demand=2 同 pose 两 instance, multiset 合法) — `sorted([["g1","pA"],["g1","pA"]])` → 两个相同 list, 保留 (stable sort). cert_payload bytes 同 ✓.
+3. Witness 含 unicode pose_id? 项目内 pose_id 是 ASCII (e.g., "p_3x3_a") — 但 schema 没强制. Unicode sort 按 codepoint, 跨 locale 一致. OK.
+4. **deeper question**: cert_payload 还有 `window_rect` (list[int]), `group_id` (str), `max_allowed_area` (int), `ghost_rect_repr` (list[int]) — 这些都是 unique key, JSON sort_keys=True 让 dict 顺序 deterministic. **list 内部不另 sort** (window_rect 是 [x,y,h,w] 必须保 order). 只有 `oracle_assignment_witness` 是 multiset 需要排序. 修复只动这一个对吗?
+5. **regression case**: witness 中含两个 g1 不同 pose `[["g1","pB"],["g1","pA"]]` → sorted → `[["g1","pA"],["g1","pB"]]`. cert_hash 永远基于 sorted 版本 计算 — 不再 input-dependent ✓.
+6. Validator 端 (`_validate_assignment_witness`) **不重排**, 按 cert payload 解出的 raw 顺序读. 这个对吗? validator 拿 cert payload 已经是 sorted 过的 bytes, raw 顺序 == sorted 顺序. 但如果 someone 手构造 cert payload 故意把 witness 乱序 (bypass generator), cert_payload bytes 跟其他 sorted-version 不同 — `cert_hash` 还在. validator 不需要重排因为它就是 verify cert payload 内容. **是这样吗?** (我担心 validator 应该 reject "未排序" cert 以强制 canonical form. 还是不需要?)
+
+## F9 当前完整 src (round 1 fix 已 land)
+
+### src/cuts/families/density_envelope.py — 关键函数
+
+```python
+def _validate_assignment_witness(
+    cert_dict: Dict[str, Any],
+    state: BState,
+    cert_group_id: GroupId,
+    t0: float,
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[Tuple[GroupId, PoseId], ...]]]:
+    raw = cert_dict.get("oracle_assignment_witness")
+    if not isinstance(raw, list) or not raw:
+        return _vr("schema_err", t0, "oracle_assignment_witness must be non-empty list"), None
+    pairs: List[Tuple[GroupId, PoseId]] = []
+    for idx, entry in enumerate(raw):
+        if not isinstance(entry, list) or len(entry) != 2:
+            return _vr("schema_err", t0, f"oracle_assignment_witness[{idx}] must be 2-element list"), None
+        g, p = entry
+        if not _is_non_empty_str(g):
+            return _vr("schema_err", t0, f"... group_id must be non-empty str"), None
+        if not _is_non_empty_str(p):
+            return _vr("schema_err", t0, f"... pose_id must be non-empty str"), None
+        if g != cert_group_id:
+            return _vr("unsound", t0, f"... group {g!r} != cert.group_id {cert_group_id!r} (F9 single-group invariant)"), None
+        group_state = state.groups[cert_group_id]
+        if p not in group_state.pose_domain:
+            return _vr("unsound", t0, f"... pose {p!r} not in group {cert_group_id!r} pose_domain"), None
+        pairs.append((cast(GroupId, g), cast(PoseId, p)))
+    group_demand = state.groups[cert_group_id].demand
+    if len(pairs) > group_demand:
+        return _vr("unsound", t0, f"oracle_assignment_witness total instances {len(pairs)} > group demand {group_demand}"), None
+    counts = Counter(pairs)
+    for (g_p, count) in counts.items():
+        if count > group_demand:
+            return _vr("unsound", t0, f"... pose {g_p[1]!r} count {count} > group demand {group_demand}"), None
+    return None, tuple(pairs)
+
+
+def _compute_safe_max_allowed_area(
+    window_cells: FrozenSet[Cell],
+    cert_group_id: GroupId,
+    state: BState,
+) -> int:
+    """|W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|."""
+    blocked_other: set[Cell] = set(state.ghost_cells) | set(state.exterior_blocks)
+    for cell, (owner_g, _slot) in state.cell_owner.items():
+        if owner_g != cert_group_id:
+            blocked_other.add(cell)
+    return len(window_cells) - len(blocked_other & window_cells)
+
+
+def _recompute_assignment_area_overlap(
+    witness_pairs: Tuple[Tuple[GroupId, PoseId], ...],
+    window_cells: FrozenSet[Cell],
+    state: BState,
+) -> int:
+    """|Union(occupied_cells(p) for p in witness) ∩ W|."""
+    from src.cuts.helpers.candidate_placements import find_pose
+
+    occupied_cells: set[Cell] = set()
+    for (g, p) in witness_pairs:
+        pose = find_pose(state, g, p)
+        if pose is None:
+            return -1
+        for raw_cell in pose.get("occupied_cells", []):
+            if not isinstance(raw_cell, (list, tuple)) or len(raw_cell) != 2:
+                continue
+            cell = (int(raw_cell[0]), int(raw_cell[1]))
+            if cell in window_cells:
+                occupied_cells.add(cell)
+    return len(occupied_cells)
+
+
+def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
+    """sum(|cells_of_cert_group ∈ cell_owner ∩ W|) > max_allowed_area (strict)."""
+    if cut.geometric_payload is None:
+        return False
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        if cert_dict.get("cert_kind") != "density_envelope_v1":
+            return False
+        window_rect = _parse_window_rect(cert_dict.get("window_rect"))
+        group_id = cert_dict.get("group_id")
+        max_allowed = cert_dict.get("max_allowed_area")
+        if not _is_non_empty_str(group_id) or not _is_strict_int(max_allowed):
+            return False
+        wx, wy, wh, ww = window_rect
+        occupied = 0
+        for cell, (owner_g, _slot) in state.cell_owner.items():
+            if owner_g != group_id:
+                continue
+            cx, cy = cell
+            if wx <= cx < wx + wh and wy <= cy < wy + ww:
+                occupied += 1
+        return occupied > cast(int, max_allowed)
+    except Exception:  # noqa: BLE001 — fail-safe
+        return False
+
+
+def watcher_keys_density_envelope(cut: Cut) -> Dict[str, List[Any]]:
+    """F9 watches: cells inside window + cert.group_id + window region id."""
+    if cut.geometric_payload is None:
+        return {"cell_keys": [], "group_keys": [], "region_keys": []}
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        rect = _parse_window_rect(cert_dict.get("window_rect"))
+        group_id = cert_dict.get("group_id")
+        if not _is_non_empty_str(group_id):
+            return {"cell_keys": [], "group_keys": [], "region_keys": []}
+        x, y, h, w = rect
+        cells = [(x + i, y + j) for i in range(h) for j in range(w)]
+        region_id = f"density_envelope:{x},{y},{h},{w}"
+        return {"cell_keys": cells, "group_keys": [cast(str, group_id)], "region_keys": [region_id]}
+    except Exception:
+        return {"cell_keys": [], "group_keys": [], "region_keys": []}
+```
+
+### src/cuts/oracles/density_envelope_oracle.py — 关键函数
+
+```python
+def generate_density_envelope_cuts(
+    state: BState, *, witness_kind: str, group_id: GroupId,
+    window_rect: Tuple[int, int, int, int], max_allowed_area: int,
+    assignment_witness: Tuple[Tuple[GroupId, PoseId], ...], iter_index: int = -1,
+) -> List[Cut]:
+    if witness_kind not in ACCEPTED_WITNESS_KIND: return []
+    if group_id not in state.groups: return []
+    if state.ghost_rect is None: return []
+    if not assignment_witness: return []
+    if (not isinstance(window_rect, tuple) or len(window_rect) != 4
+        or not all(isinstance(v, int) and not isinstance(v, bool) for v in window_rect)):
+        return []
+    x, y, h, w = window_rect
+    if h < 1 or w < 1 or x < 0 or y < 0 or x + h > 70 or y + w > 70: return []
+    if not isinstance(max_allowed_area, int) or isinstance(max_allowed_area, bool): return []
+    if max_allowed_area < 0: return []
+    window_cells = _window_cells(window_rect)
+    if max_allowed_area > len(window_cells): return []
+    for (g, _p) in assignment_witness:
+        if g != group_id: return []
+    try:
+        safe_ub = _compute_safe_max_allowed_area(window_cells, group_id, state)
+        if max_allowed_area > safe_ub: return []
+        recomputed_sum = _recompute_assignment_area_overlap(assignment_witness, window_cells, state)
+        if recomputed_sum < 0: return []
+        if recomputed_sum <= max_allowed_area: return []
+    except Exception:
+        return []
+    try:
+        cut = _build_density_envelope_cut(state=state, group_id=group_id,
+            window_rect=window_rect, max_allowed_area=max_allowed_area,
+            assignment_witness=assignment_witness, iter_index=iter_index)
+    except Exception:
+        return []
+    return [cut]
+
+
+def _build_density_envelope_cut(*, state, group_id, window_rect,
+    max_allowed_area, assignment_witness, iter_index) -> Cut:
+    if state.ghost_rect is None: raise ValueError("...")
+    ghost_rect_repr = list(state.ghost_rect)
+    # Sort for canonical cert_hash
+    sorted_witness = sorted([[g, p] for (g, p) in assignment_witness])
+    cert_payload_dict: Dict[str, Any] = {
+        "cert_kind": CERT_KIND,
+        "witness_kind": "area_capacity_overflow",
+        "window_rect": list(window_rect),
+        "group_id": group_id,
+        "max_allowed_area": int(max_allowed_area),
+        "oracle_assignment_witness": sorted_witness,
+        "ghost_rect_repr": ghost_rect_repr,
+    }
+    cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+    cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+    # ... (assemble Cut with CutScope, OracleCert)
+    return cut
+```
+
+注意几个 helper 来源:
+- `canonical_bytes_for_cert(payload) = json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")`
+- `find_pose(state, gid, pose_id)`: O(1) cache (build lazy on first call), maps group_id → facility_type via `state.instance_to_facility_type`, then look in `state.candidate_placements["facility_pools"][ft]` for pose with matching pose_id. **Crucially: pose_domain ⊂ candidate_placements pool** is NOT enforced — 项目里通常 pose_domain 应该是 candidate_placements pool 的过滤子集, 但若不一致 find_pose 返 None.
+
+## Round 2 specific 攻击向量提示
+
+请考虑这些 adversary scenarios:
+
+### A. **Pose footprint vs cell_owner divergence**
+master 求解后 fill cell_owner: 是不是按 selected pose 的 occupied_cells 复制? 我担心若 master 不按 pose footprint 而是按 instance-cell binding 直接 fill cell_owner, validator union-based recompute (查 candidate_placements pose 的 occupied_cells) 跟 evaluator (查 cell_owner) 仍可能 drift. **请 push 这个 issue**.
+
+### B. **`occupied_cells` 内含 ghost / exterior cell?**
+若某 pose 的 occupied_cells 跨 ghost 边界 (master 必 reject 这种 placement), validator union 会 count 这些 cell ∈ W. 但 evaluator iter cell_owner 时, ghost 内 cell 永远 不在 cell_owner. → validator 算多, evaluator 算少 → divergence. 是否 corner-case?
+
+### C. **Multi-pose total demand redundancy**
+total instance check 加在 per-pose check 之前: 若 `pairs = [pA, pA, pB]`, demand=2 → total=3 > 2 reject. 但 `pairs = [pA, pA]` demand=1 → total=2 > 1 reject; per-pose pA count=2 > 1 也 reject. 两 check 一致. 移除 per-pose 安全吗? (minor — 不必修, 但 sanity check)
+
+### D. **Sort 在 list of mixed-type 不稳**
+witness entry 是 list-of-list-of-str (`[[g, p], ...]`). 全 str → lexicographic sort, OK. 但若 cert 含混合 entry (1 个 list 1 个 tuple?) — schema 严格 list, generator 端 sorted([[g, p] ...]) 显式 list comprehension 必生 list. 安全.
+
+### E. **`find_pose` 在 pose_domain 通过但 pool 不含**
+若 `pose_domain` 含 p 但 `candidate_placements["facility_pools"][ft]` 没 p → find_pose 返 None → recompute 返 -1 → unsound. 但 cert 已通过 `_validate_assignment_witness` (那只 check pose_domain, 不查 candidate_placements). 那 generator end: oracle 自己也调 _recompute, 若 find_pose 返 None 直接 [] — sound. validator 后端: unsound 报错 message "pose not findable in state.candidate_placements" — semantically 是 state inconsistency, 不是 cert 假, **报 unsound 对吗?** 还是应该 schema_err / 或 state_drift?
+
+### F. **F9 是 ghost-bound, 但 watcher 不监 instance_to_facility_type / candidate_placements drift**
+若 candidate_placements 在 cut emit 后 change (e.g. add pose), 已 dedup 的 cut 会 stale 吗? F9 cut scope 含 source_digest + artifact_hashes — 这些应监 candidate_placements 变. 我不查 lifecycle 不知道. **如果有 candidate_placements drift attack surface 请 flag**.
+
+### G. **Validator ↔ Evaluator semantic alignment**
+Validator union 基于 `find_pose(state, g, p).occupied_cells`. Evaluator 基于 `cell_owner[cell].group == g`. 二者 align 前提: **master 选 pose p for group g 后, cell_owner 必精确 fill = {(cell, (g, slot)) for cell ∈ pose.occupied_cells}**. 若 master 用别的 binding scheme (e.g. instance-cell partial assignment), 不 align. 这是 spec 假设 — round 2 你判断 spec contract 是否够强?
+
+## 期望输出格式
+
+```
+## Round 2 Verdict
+GO | GO_WITH_MINOR (N minor follow-ups, defer to Phase X) | CONCERN | NOT_GO
+
+## Round 1 Fix Verification
+- BLOCKER (union semantics): CORRECT / PARTIAL / WRONG / NEW_GAP
+  - 推理: ...
+- HIGH #2 (total instances): CORRECT / PARTIAL / WRONG / NEW_GAP
+  - 推理: ...
+- HIGH #3 (canonical sort): CORRECT / PARTIAL / WRONG / NEW_GAP
+  - 推理: ...
+
+## New Findings (round 2)
+1. [BLOCKER|HIGH|MEDIUM|MINOR] file:line — 问题描述
+   - Reproduce: ...
+   - Suggested fix: ...
+
+(若无新 finding, 明确写 "无新 finding. 我 attack 这 3 fix 的尝试: ..." 并描述至少 3 个 attack scenario 你试过失败.)
+
+## Regression risk (round 1 fix 引入新 bug?)
+- ...
+
+## Sanity arguments
+- ...
+
+## Gemini self-summary (round 2)
+本轮 round 2 cross-check 重点 X / Y / Z, 我 confirm/质疑 ...
+```
+
+不要列礼貌性回应. 不要重复 round 1 已 close 的 finding. **强 push find problem 假装你是 adversary**.
