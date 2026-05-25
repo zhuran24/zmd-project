@@ -1,0 +1,229 @@
+你是数学/CP-SAT/OR-Tools 9.15 资深 reviewer. 不要催眠语, 不要 "我相信" /
+"直觉" / "经验告诉我" 这种 vague claim. 任何 push back 必带数据/文献/复杂
+度论证. finding 按 severity 标 BLOCKER / HIGH / MEDIUM / LOW. 末尾 overall
+verdict (GO / GO_WITH_MINOR / NOT_GO) + 一句话理由.
+
+---
+
+# Round 3 目的 (重要 — 跟 round 1/2 不同)
+
+Round 1 + Round 2 已经 NOT_GO + 10 finding 全 mechanical fix landed (commit
+`b44d0c6`). 数学/CP-SAT internals 层 verify 已完成 (round 2 Gemini 自己说
+"无需 round 3 漫长拉扯, 直接 spike").
+
+但 2026-05-26 user 手动 audit 发现 MERGER §5 scope leak 进 P1.3A 主体
+(step 8 真实施 / 真 master integration / multi-iter LBBD / 6-dim watcher
+/ adversarial inject / 3 sub-route — 全是 P1.3A 主体的事). simplicity slant
+§1 当时明示 "spike 答'可以开始做 P1.3A 主体了吗' 不答'P1.3A 是不是 close'",
+但 main merger 取交集时 override 了 simplicity. 详 §6 blind spot #9.
+
+Shrink 决策:
+- §5.2 Scope 删 P1.3A 主体 work, 严守 GPT pro Finding 5 close gate 5 项
+  (sizing / measurement)
+- §5.3 NOT-scope 扩大 (PoseBoolExactMaster / step 8 真实施 / LBBD multi-
+  iter / 6-dim watcher / 跨 candidate invalidation / adversarial inject /
+  3 sub-route / 9 step lifecycle 全 invoke 全 defer P1.3A)
+- §5.4 GO criteria 17 → 10 (删 G10/G12/G13/G14/G15/G15b/G16/G16b)
+- §5.5 NOT GO criteria 13 → 9 (删 N5/N7/N8/N8b)
+- §5.6 工时 20-29h Claude → **8-12h Claude / 4-7h wall**
+
+**Round 3 核心问题**: shrink 后 scope 还能不能 close GPT pro Finding 5 5 项
+需求? 不再 verify 数学/CP-SAT 内部 (round 1/2 已 cover), 而是 verify shrink
+后 spike 跟 Finding 5 的 close gate 对应关系.
+
+---
+
+# GPT pro Finding 5 5 项需求 (引用源 `AUDIT_REPORT.md` §Finding 5 line 300-308)
+
+GPT pro 原文建议 fix:
+1. 用真实或等价规模的 group/pose registry 建 master var
+2. 用每个 family 的真实 cut body size 分布生成约束, 不只 1/3/5/6 literal toy cuts
+3. 测 build wall / `model.Proto().ByteSize()` / psutil RSS / solve/presolve wall
+4. 加 active cut filter / rotation 阈值, 至少测 10K/50K/100K active cuts
+5. 另外测一组 feasible realistic case, 避免 INFEASIBLE 早停掩盖 solve 成本
+
+Severity HIGH. "不要 defer 到 1.5+, 应作为 Phase 1.3A 的进入/close gate".
+
+---
+
+# Round 1/2 fix landed (已 commit, round 3 不再 verify)
+
+Round 1 NOT_GO 6 finding fix:
+- F1 (G15 metric 数学不成立) — 改 dual bound + wall-time 收敛
+- F2 (100K cut 盲区) — 恢复 100K 挡位 (G4b)
+- F3 (50 inst probe 5-10 min cap 过松) — 改 15s timeout (G17/N13)
+- F4 (G3 60s 过松) — 30s
+- F5 (2 PR fidelity hash) — 改 semantic invariant (vars/constraints count
+  + objective_value + status)
+- F6 (5 iter LBBD 不足) — 升 15 iter [shrink 后整段已删]
+
+Round 2 NOT_GO 4 finding fix:
+- Finding 1 (F5 protobuf hash 数学不成立) — 改 semantic invariant
+- Finding 2 (stub 单 cut/iter 退化) — batch cuts [shrink 后整段已删]
+- Finding 3 (wall-time 假收敛盲区) — 加 objective_bound + status 校验
+- Finding 4 (G16 物理级 leak) — 加 gc.collect() + RSS 波动 [shrink 后整段已删]
+- Q8.1 (SWIG memory leak) — N3 监控
+- Q8.2 (GIL block) — NOT-scope 禁 SolutionCallback
+
+---
+
+# Shrink 后 §5.2 Scope (要测的)
+
+**Spike 必测**:
+- **Master scale**: 81,795 BoolVar **toy master** (真 prod pose registry from
+  `data/preprocessed/candidate_placements.json`), simple Add() /
+  AddLinearConstraint() 跑 build/solve cost measurement. **不接
+  PoseBoolExactMaster** (P1.3A 主体的事, 这里只测 BoolVar build 跟 constraint
+  add cost).
+- **Failfast probe**: 50 inst subset fixture, 启动前 ≤15s timeout
+- **Real oracle real emit**: 9 family × ≥5 cert = ≥45 cert 真 oracle 调跑出
+  (验 Finding 5 #2 真 cut body size 分布). 真 cert 经 toy translator 转
+  CP-SAT constraint 验 build cost.
+- **Cut count ramp**: 1K / 10K / 50K / **100K** (单 build/solve no LBBD loop)
+- **Feasible smoke**: IP v2 blueprint hint case — `master.ResponseProto().
+  best_objective_bound` 有效 + `status` OPTIMAL/FEASIBLE +
+  branches≥1K / conflicts≥100 / wall≥1s
+- **Active filter sizing**: 推荐 Hybrid (score = activity_count - 0.1 ×
+  age_decay) 在 100K cut 挡位 filter wall ≤ 100ms/iter, eviction trigger
+  RSS>4.5GB OR cut count>50K. **只 sizing 不 ablation, 不接 master**.
+- **基本 telemetry**: RSS sample (psutil 1Hz background) + proto bytesize
+  milestone sample + dark_matter_emit (INFEASIBLE 时强制 emit witness blob)
+
+# Shrink 后 §5.3 NOT-scope (新增 7 项 defer)
+
+- ❌ 真接 PoseBoolExactMaster (B1) — P1.3A 主体
+- ❌ step_8_apply_to_master 9 family translator 真实施 — P1.3B 主体
+- ❌ Multi-iter LBBD loop (15 iter × candidate / batch no-good / objective
+  bound 收敛) — P1.3A 主体
+- ❌ 6-dim watcher 全注册 + 3 ghost transition + 状态机 — P1.3A 主体
+- ❌ 跨 candidate source_digest invalidation (G16/G16b) — P1.3A 主体
+- ❌ Adversarial inject 50 bad / forged-cert — P1.3B regression
+- ❌ 3 sub-route PoC (solve-rebuild / C++ propagator / hard-constraint) —
+  P1.3A 主体
+- ❌ 9 step lifecycle 全 invoke (step 1/3/4/5/6/7/9) — spike 只 invoke
+  step 1 oracle emit
+- ❌ cp_model.SolutionCallback 注入 cut — 严守 Outer-loop pattern
+- 其它: 真跑 binding/routing subproblem / multi-process / 168h ramp /
+  filter ablation 全跑 / 12 event class / cut purge 物理删
+
+# Shrink 后 §5.4 GO criteria (10 项)
+
+**Build cost** (Finding 5 #3):
+- G1: 81K BoolVar + 0 cut build wall ≤ 10s
+- G2: 81K + 1K cut build wall ≤ 20s
+- G3: 81K + 10K cut build wall ≤ 30s
+- G4: 81K + 50K cut build wall ≤ 300s
+- G4b: 81K + 100K cut build wall ≤ 600s
+
+**Solve cost** (Finding 5 #3 + #5):
+- G5: 0 cut feasibility wall ≤ 30s
+- G6: 10K cut feasibility wall ≤ 180s, status OPTIMAL/FEASIBLE (不能
+  INFEASIBLE 早停), 同时 best_objective_bound 有效不空, status 不是 UNKNOWN
+- G7: 100K cut feasibility 不 hard cap (100K 可能 INFEASIBLE 是预期, 只
+  measure wall + status 不 verdict)
+
+**Resource** (Finding 5 #3):
+- G8: RSS peak ≤ 20 GB single worker, 100K 挡位必 measure; 100K 超线性
+  (50K→100K 涨 >2x) trigger N3
+- G9: proto.ByteSize() ≤ 500 MB @ 50K, ≤ 1 GB @ 100K
+
+**Real cert sound** (Finding 5 #2):
+- G10 (renumbered): ≥45 cert 真 oracle 调出, validator 全 sound (cert body
+  分布 sample 出 jsonl, vs mini Step 8 spike 1-3-5 literal 简单分布)
+
+**Active filter sizing** (Finding 5 #4):
+- G11 (renumbered): Hybrid filter 在 100K 挡位 filter wall ≤ 100ms/iter,
+  eviction trigger RSS>4.5GB OR cut count>50K 能正常触发不报错 (不验
+  filter 是否 sound, sound 是 P1.3A 主体)
+
+**Failfast probe**:
+- G17: 50 inst probe wall ≤ 15s
+
+# §5.6 工时
+
+| 段 | Claude 工时 | Wall-clock 死时间 |
+|---|---|---|
+| Branch + sandbox + off-limits | 0.5-1h | 0 |
+| Failfast probe | 1h | <0.5h |
+| Real oracle real emit (≥45 cert) | 2-3h | 10-20 min |
+| Toy translator (simple Add) | 1-2h | 0 |
+| Scale ramp (1K/10K/50K/100K) | 1-2h | 2-3h CP-SAT |
+| Feasible smoke | 1h | <5 min |
+| Active filter sizing | 0.5-1h | 0 |
+| 3 必 telemetry hook | 1-2h | 0 |
+| Run + verify + verdict | 1-2h | 1-2h spike full run |
+| **TOTAL** | **8-12h Claude** | **4-7h wall** |
+
+---
+
+# Round 3 验证问题列
+
+## Q1 (核心 — 必答)
+
+Shrink 后 §5.2 + §5.4 现 scope 是否真能 close GPT pro Finding 5 5 项? 每一
+项 #1-#5 verify 对应到 spike 哪个 step / 哪个 GO criteria? 有没有遗漏?
+请给出 5×N 对应 table.
+
+## Q2
+
+Toy master + simple `Add()` / `AddLinearConstraint()` 不接 PoseBoolExactMaster,
+能否反映 Finding 5 #1 "真规模 group/pose registry 建 master var" 的真
+build/solve 行为? 还是 toy master 跟 PoseBoolExactMaster 行为差异 (e.g.
+PoseBoolExactMaster 自身 constraint structure / port linking / ghost-anchor
+等) 会让 spike 结论 prod 不复用?
+
+## Q3
+
+不跑 multi-iter LBBD loop 改 single build/solve measurement, 是否 cover 了
+Finding 5 #4 "active cut filter / rotation 阈值"? Filter 验证不需要 multi-iter
+context (filter 本身就是迭代间淘汰机制)?
+
+## Q4
+
+删 adversarial inject (50 bad cert / forged-cert), 是否影响 Finding 5 cover?
+我判断 adversarial 跟 Finding 5 5 项 sizing/measurement 不直接对应, 应是
+P1.3B regression 测试 — Gemini agree 还是 disagree?
+
+## Q5
+
+§5.4 G6 含 round 2 Finding 3 fix (`best_objective_bound` 有效 + status 不是
+UNKNOWN), shrink 后 (不再 multi-iter) 此 fix 是否仍生效? 单 solve 还需要这个
+check 吗?
+
+## Q6
+
+§5.4 G11 (renumbered) active filter Hybrid sizing 在 100K cut 挡位 filter
+wall ≤ 100ms/iter, eviction trigger RSS>4.5GB OR cut count>50K, 阈值合理?
+100ms/iter 在 100K cut 下是否过紧/过松? eviction 双 trigger (RSS OR count)
+设计是否合理?
+
+## Q7
+
+Shrink 后 8-12h Claude / 4-7h wall 工时 estimate 合理? Round 1/2 fix landed
+之后 (含 100K + objective bound + SWIG monitor + GIL 防 SolutionCallback)
+是否仍 hold?
+
+## Q8 (关键)
+
+**Shrink 后 spike GO 是否真等价 "GPT pro Finding 5 close"**? 还是 shrink
+太狠让 spike GO 不能等价 close — e.g. toy master vs 真 master 差距让 sizing
+数据 prod 不复用, 或 single build/solve vs multi-iter LBBD 差距让 filter /
+rotation verification 不到位? 若不等价, 缺啥才能真等价?
+
+## Q9
+
+还有 round 1/2/user 没 catch 但 round 3 该 catch 的 finding 吗? (e.g.
+shrink 后某项 GO criteria 内部互锁问题, 或 shrink 删除项里其实有 Finding 5
+依赖的 hidden 部分)
+
+---
+
+# 期待 output
+
+1. Q1 5×N 对应 table (Finding 5 #1-#5 × spike step/GO criteria)
+2. Q2-Q9 各 1-3 段答复
+3. Finding list (按 BLOCKER / HIGH / MEDIUM / LOW)
+4. Overall verdict (GO / GO_WITH_MINOR / NOT_GO) + 一句话理由
+5. 若 NOT_GO: 列必修项 (mechanical fix 即可还是需要 paradigm 重设)
+
+Round 1/2 fix 的 verify 不在 round 3 scope, 不重 verify.
