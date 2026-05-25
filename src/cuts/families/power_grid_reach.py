@@ -331,6 +331,74 @@ def _validate_group_and_template(
     return None
 
 
+
+def _validate_facility_cells_match_pose_registry(
+    facility_cells: Tuple[Tuple[int, int], ...],
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    # Fail closed unless cert facility_cells exactly match the named pose.
+    gid = cast(str, cert_dict["facility_group"])
+    pose_id = cast(str, cert_dict["facility_pose_id"])
+
+    if state.instance_to_facility_type is None:
+        return _vr("unsound", t0, "state.instance_to_facility_type missing")
+    facility_type = state.instance_to_facility_type.get(gid)
+    if facility_type is None:
+        return _vr("unsound", t0, f"facility_group {gid!r} has no facility_type mapping")
+
+    placements = state.candidate_placements
+    if not isinstance(placements, dict):
+        return _vr("unsound", t0, "state.candidate_placements missing or malformed")
+    pools = placements.get("facility_pools")
+    if not isinstance(pools, dict):
+        return _vr("unsound", t0, "candidate_placements.facility_pools missing or malformed")
+    pool = pools.get(facility_type)
+    if not isinstance(pool, list):
+        return _vr(
+            "unsound",
+            t0,
+            f"candidate_placements.facility_pools[{facility_type!r}] missing or malformed",
+        )
+
+    for entry in pool:
+        if not isinstance(entry, dict) or entry.get("pose_id") != pose_id:
+            continue
+        occupied = entry.get("occupied_cells")
+        if not isinstance(occupied, list) or not occupied:
+            return _vr("unsound", t0, f"pose {pose_id!r} occupied_cells missing or malformed")
+        actual_cells: List[Tuple[int, int]] = []
+        seen: set[Tuple[int, int]] = set()
+        for idx, raw in enumerate(occupied):
+            if not isinstance(raw, (list, tuple)) or len(raw) != 2:
+                return _vr("unsound", t0, f"occupied_cells[{idx}] malformed for pose {pose_id!r}")
+            x_raw, y_raw = raw
+            if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
+                return _vr("unsound", t0, f"occupied_cells[{idx}] has non-int coords")
+            cell = (cast(int, x_raw), cast(int, y_raw))
+            if not (0 <= cell[0] < _GRID_SIZE and 0 <= cell[1] < _GRID_SIZE):
+                return _vr("unsound", t0, f"occupied_cells[{idx}] out of grid: {cell!r}")
+            if cell in seen:
+                return _vr("unsound", t0, f"occupied_cells duplicate cell {cell!r}")
+            seen.add(cell)
+            actual_cells.append(cell)
+        actual = tuple(sorted(actual_cells))
+        if facility_cells != actual:
+            return _vr(
+                "unsound",
+                t0,
+                f"facility_cells do not match candidate_placements for {(gid, pose_id)!r}",
+            )
+        return None
+
+    return _vr(
+        "unsound",
+        t0,
+        f"facility_pose_id {pose_id!r} not found in candidate_placements for {facility_type!r}",
+    )
+
+
 def _build_full_free_mask(
     state: BState, facility_cells: Tuple[Tuple[int, int], ...], pc_anchor: Tuple[int, int]
 ) -> FrozenSet[Cell]:
@@ -623,6 +691,7 @@ def validate_power_grid_reach(
     for error in (
         _validate_ghost_scope_binding(cut, cert_dict, state, t0),
         _validate_group_and_template(cert_dict, state, t0),
+        _validate_facility_cells_match_pose_registry(facility_cells, cert_dict, state, t0),
         _validate_source_of_truth_scalars(pc_anchor, cert_dict, state, t0),
         _validate_disconnect_witness(facility_cells, pc_anchor, cert_dict, state, t0),
         _validate_ghost_only_disconnect(facility_cells, pc_anchor, cert_dict, state, t0),

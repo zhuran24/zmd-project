@@ -422,6 +422,20 @@ def test_validator_unsound_when_needs_power_false() -> None:
     assert "needs_power" in (result.detail or "")
 
 
+def test_validator_unsound_when_facility_cells_do_not_match_pose_registry() -> None:
+    state = _f5_fixture_state(
+        ghost_rect=(30, 0, 10, 70),
+        facility_anchor=(0, 0),
+        pc_anchor=(10, 10),
+        selected_poses=["p_3x3_a"],
+    )
+    cert_payload = _make_cert(state, facility_anchor=(60, 60), protocol_core_cell=[10, 10])
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_grid_reach(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "facility_cells" in (result.detail or "")
+
+
 def test_validator_unsound_facility_group_not_in_state() -> None:
     state = _f5_fixture_state()
     cert_payload = _make_cert(state, facility_group="fake_group")

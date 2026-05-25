@@ -384,6 +384,16 @@ def test_validator_unsound_when_literals_disagree_with_cert() -> None:
     assert result.kind == "unsound"
 
 
+def test_validator_unsound_when_facility_cells_do_not_match_pose_registry() -> None:
+    state = _make_state(pose_anchor=(0, 0))
+    state.groups["crusher_blue_iron"].selected_poses = ["p_3x3_a"]
+    cert_payload = _make_cert(state)  # cert cells default to the old (30,30) footprint
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_hitting_set(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "facility_cells" in (result.detail or "")
+
+
 def test_validator_unsound_ghost_agnostic_scope() -> None:
     state = _make_state()
     cert_payload = _make_cert(state)
