@@ -48,6 +48,9 @@ EXCLUDE_PATTERNS = [
     "**/*.tar.xz",
     "**/.DS_Store",
     "**/Thumbs.db",
+    # v13 是 patch verify 包. spike design 还在 in-flight (8 路 parallel,
+    # main merger 未做), 不入包避免 raw partial design 让 reviewer anchor.
+    "docs/research/prod_scale_spike_design_20260525/**",
 ]
 
 EXCLUDE_FILES: set[str] = set()
