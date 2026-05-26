@@ -1,3 +1,10 @@
+from pathlib import Path
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from src.tests.cuts.test_family_power_grid_reach import _f5_fixture_state, _make_cert, _make_cut
 from src.cuts.families.power_grid_reach import validate_power_grid_reach, evaluate_geometric_power_grid_reach, _build_full_free_mask, _protocol_core_cells
 from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors

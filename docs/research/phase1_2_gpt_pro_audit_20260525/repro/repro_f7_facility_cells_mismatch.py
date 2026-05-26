@@ -1,3 +1,10 @@
+from pathlib import Path
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from src.tests.cuts.test_family_power_hitting_set import _make_state, _make_cert, _make_cut
 from src.cuts.families.power_hitting_set import validate_power_hitting_set
 from src.cuts.lifecycle import evaluate_literal_multiset

@@ -1,3 +1,10 @@
+from pathlib import Path
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 import os
 from src.tests.cuts.test_family_power_hitting_set import _make_state
 from src.cuts.oracles.power_cover_oracle import generate_power_hitting_set_cuts
