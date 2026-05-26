@@ -161,6 +161,33 @@ def emit_proto_sample(
 # ============================================================================
 
 
+def emit_rss_after_solve(
+    buf: TelemetryBuffer,
+    tier: str,
+    rss_bytes: int,
+    vms_bytes: int = 0,
+) -> None:
+    """Emit explicit RSS sample at solve completion (GPT pro v15 三审 finding 4).
+
+    Per finding 4: raw telemetry max 0.866 GB came from background 1Hz
+    ``rss_sample`` only, while ``phase_b_results.json`` carried the higher
+    after-solve peak (e.g., 100K = 1.03 GB). Reviewer asked for an explicit
+    raw event at solve completion so the after-solve peak shows up directly
+    in the telemetry jsonl rather than only in the aggregated report.
+
+    Field structure mirrors ``rss_sample``: ``rss_bytes`` / ``rss_gb`` /
+    ``vms_bytes`` plus a ``tier`` tag identifying which ramp tier closed.
+    The 1Hz background sampler keeps running — this is an additional event
+    class, not a replacement.
+    """
+    buf.emit("rss_sample_after_solve", {
+        "tier": tier,
+        "rss_bytes": int(rss_bytes),
+        "vms_bytes": int(vms_bytes),
+        "rss_gb": round(rss_bytes / (1024 ** 3), 4),
+    })
+
+
 def emit_dark_matter(
     buf: TelemetryBuffer,
     context: str,

@@ -38,6 +38,7 @@ from scripts.spike_prod_scale_lib.telemetry import (  # noqa: E402
     TelemetryBuffer,
     emit_dark_matter,
     emit_proto_sample,
+    emit_rss_after_solve,
 )
 from scripts.spike_prod_scale_lib.toy_translator import (  # noqa: E402
     PoseRegistry,
@@ -237,7 +238,19 @@ def run_one_tier(
     t2 = time.monotonic()
     status = solver.Solve(model)
     solve_wall = time.monotonic() - t2
-    rss_after_solve = _rss_gb_now()
+    # GPT pro v15 三审 finding 4: emit explicit RSS at solve completion so the
+    # after-solve peak appears in raw telemetry (not only in
+    # ``phase_b_results.json`` aggregated snapshot).
+    import psutil as _psutil
+    _proc = _psutil.Process(os.getpid())
+    _mem = _proc.memory_info()
+    rss_after_solve = _mem.rss / (1024 ** 3)
+    emit_rss_after_solve(
+        buf,
+        tier=tier_label,
+        rss_bytes=int(_mem.rss),
+        vms_bytes=int(_mem.vms),
+    )
 
     status_label = {
         cp_model.OPTIMAL:    "OPTIMAL",
