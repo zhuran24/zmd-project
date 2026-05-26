@@ -32,6 +32,7 @@ Refs:
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -52,6 +53,9 @@ from src.cuts.lifecycle import (
     compute_ghost_rect_id,
     compute_source_digest,
 )
+
+
+_logger = logging.getLogger(__name__)
 
 
 ORACLE_NAME: str = "port_exposure_v1"
@@ -125,8 +129,10 @@ def generate_port_exposure_cuts(
     if not _env_enabled():
         return []
     if state.candidate_placements is None:
+        _logger.debug("F3 generator skip: state.candidate_placements is None")
         return []
     if state.instance_to_facility_type is None:
+        _logger.debug("F3 generator skip: state.instance_to_facility_type is None")
         return []
 
     targets: List[Tuple[GroupId, int, PoseId]]
@@ -135,6 +141,11 @@ def generate_port_exposure_cuts(
     else:
         targets = _derive_targets_from_cell_owner(state)
     if not targets:
+        _logger.debug(
+            "F3 generator skip: empty targets (target_poses=%s, cell_owner_size=%d)",
+            "explicit" if target_poses is not None else "derived",
+            len(state.cell_owner),
+        )
         return []
 
     cuts: List[Cut] = []
@@ -143,6 +154,10 @@ def generate_port_exposure_cuts(
         del facility_slot  # Phase 1.2 slot anonymity (state_machine_v2 §5)
         ports = pose_ports(state, facility_group, facility_pose_id)
         if ports is None:
+            _logger.debug(
+                "F3 generator skip facility: pose_ports lookup miss group=%s pose=%s",
+                facility_group, facility_pose_id,
+            )
             continue
         for port_entry in ports:
             cut = _try_emit_one(
@@ -172,18 +187,22 @@ def _try_emit_one(
     port_y = port_entry.get("y")
     port_dir = port_entry.get("dir")
     if not isinstance(port_x, int) or isinstance(port_x, bool):
+        _logger.debug("F3 skip port: malformed x=%r in port_entry=%r", port_x, port_entry)
         return None
     if not isinstance(port_y, int) or isinstance(port_y, bool):
+        _logger.debug("F3 skip port: malformed y=%r in port_entry=%r", port_y, port_entry)
         return None
     if not isinstance(port_dir, str) or port_dir == "":
+        _logger.debug("F3 skip port: malformed dir=%r in port_entry=%r", port_dir, port_entry)
         return None
     port_cell: Cell = (port_x, port_y)
     try:
         dx, dy = direction_offset(port_dir)
     except ValueError:
+        _logger.debug("F3 skip port: bad direction=%r port_cell=%r", port_dir, port_cell)
         return None
     front_cell: Cell = (port_cell[0] + dx, port_cell[1] + dy)
-    # Spec §6 + §9 OQ#2: ghost-occluded / out-of-grid front skip.
+    # Spec §6 + §9 OQ#2: ghost-occluded / out-of-grid front skip (not bugs — spec explicit).
     if not _in_grid(front_cell):
         return None
     if front_cell in state.ghost_cells:
@@ -193,12 +212,20 @@ def _try_emit_one(
     # cell_owner causation: front must be occupied by ANOTHER facility (not self).
     blocking_entry = state.cell_owner.get(front_cell)
     if blocking_entry is None:
-        return None  # front is free — no cut needed
+        return None  # front is free — no cut needed (not a bug)
     blocking_group, blocking_slot = blocking_entry
     blocking_gstate = state.groups.get(blocking_group)
     if blocking_gstate is None:
+        _logger.debug(
+            "F3 skip port: blocking_gstate None for group=%s slot=%d (state.groups/cell_owner inconsistency)",
+            blocking_group, blocking_slot,
+        )
         return None
     if blocking_slot < 0 or blocking_slot >= len(blocking_gstate.selected_poses):
+        _logger.debug(
+            "F3 skip port: blocking_slot=%d out of range for group=%s (len selected_poses=%d)",
+            blocking_slot, blocking_group, len(blocking_gstate.selected_poses),
+        )
         return None
     blocking_pose_id = blocking_gstate.selected_poses[blocking_slot]
     # Dedup signature includes port_dir to keep distinct port directions sharing
