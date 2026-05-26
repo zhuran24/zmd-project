@@ -182,17 +182,18 @@ GPT pro audit at cb8e347 → 3 commit landed on master:
 - `a3414ee` fix(cuts): drop stale state.source_digest fallback in 7 oracles
 - `035bd21` docs: archive Phase 1.2 GPT pro audit + fix lifecycle line ref
 
-原 5 finding 中 4 finding (1 BLOCKER + 1 BLOCKER + 1 HIGH + 1 LOW) 已修.
-Finding 4 (F8 performance — `_pole_pole_edges` O(n^2) + 28s connected
-large-radius test) 仍 open. Finding 5 (Mini Step 8 spike 不足以作 prod
-integration close gate) 通过 spike 验证 (详下 "Spike close gate" 段).
+cb8e347 时 6 finding 状态 + 3 commit 改动范围在
+`docs/research/phase1_2_gpt_pro_audit_20260525/AUDIT_REPORT.md`. Finding 4
+(F8 performance — `_pole_pole_edges` O(n^2) + 28s connected large-radius
+test) 在 v15 master 状态: 见 git log 查 `_pole_pole_edges` 范围. Finding 5
+(Mini Step 8 spike) 对应 spike 数据见下 "Spike close gate" 段.
 
 详 `docs/research/phase1_2_gpt_pro_audit_20260525/`:
 
 - `AUDIT_REPORT.md` — 6 finding 全文
 - `patches/0001-bind-power-family-pose-cells-and-digest.py` — 210 行 patch
-  script (前 2 commit 已 land)
-- `repro/` — 4 反例脚本 (v15 入口 fix 后可按 README 命令直接跑)
+  script
+- `repro/` — 4 反例脚本 (跑法见 § "怎么跑")
 
 ## Spike close gate 段 (Finding 5)
 
