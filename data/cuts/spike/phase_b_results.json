@@ -1,6 +1,6 @@
 {
   "B3_feasible_smoke": {
-    "wall_s": 188.119,
+    "wall_s": 187.781,
     "g_pass": {
       "G6a_feasible_wall": false,
       "G6a_feasible_status": true,
@@ -15,13 +15,13 @@
       "n_vars": 81795,
       "n_constraints": 10266,
       "proto_mb": 17.643482208251953,
-      "build_wall_s": 2.040233063999949,
-      "cut_apply_wall_s": 0.023487804000069445,
-      "solve_wall_s": 180.00462441799982,
+      "build_wall_s": 1.9240424839990737,
+      "cut_apply_wall_s": 0.026273560000845464,
+      "solve_wall_s": 180.0052660500005,
       "status_label": "FEASIBLE",
       "best_objective_bound": 76884.0,
       "objective_value": 76795.0,
-      "rss_peak_gb": 0.7946014404296875,
+      "rss_peak_gb": 0.7955207824707031,
       "notes": [
         "hint vars set to 1: 225",
         "objective: Maximize(sum all 81795 vars)"
@@ -30,22 +30,22 @@
     "random_tier": {
       "label": "random",
       "cut_count_target": 10000,
-      "cut_count_applied": 10000,
+      "cut_count_applied": 8848,
       "n_vars": 81795,
-      "n_constraints": 10266,
-      "proto_mb": 16.636842727661133,
-      "build_wall_s": 2.436920158000248,
-      "cut_apply_wall_s": 0.19287195099968812,
-      "solve_wall_s": 0.8154488010000023,
+      "n_constraints": 9114,
+      "proto_mb": 16.598061561584473,
+      "build_wall_s": 1.9684162349985854,
+      "cut_apply_wall_s": 0.12926366600004258,
+      "solve_wall_s": 0.7563681090032333,
       "status_label": "OPTIMAL",
       "best_objective_bound": 0.0,
       "objective_value": 0.0,
-      "rss_peak_gb": 0.8464126586914062,
+      "rss_peak_gb": 0.8466262817382812,
       "notes": []
     }
   },
   "B2_scale_ramp": {
-    "wall_s": 17.262,
+    "wall_s": 17.318,
     "g_pass": {
       "G1_build_0cut": true,
       "G2_build_1K": true,
@@ -67,96 +67,105 @@
         "cut_count_applied": 0,
         "n_vars": 81795,
         "n_constraints_total": 266,
-        "build_wall_s": 2.015077044999998,
-        "translation_wall_s": 8.949999937613029e-06,
+        "build_wall_s": 1.9505324190031388,
+        "translation_wall_s": 1.1555002856766805e-05,
         "proto_bytesize": 17092968,
-        "rss_peak_gb_during_build": 0.8401145935058594,
-        "solve_wall_s": 0.7092931219999628,
+        "rss_peak_gb_during_build": 0.837432861328125,
+        "solve_wall_s": 0.7042671109993535,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8406791687011719,
+        "rss_peak_gb_after_solve": 0.8382072448730469,
         "notes": []
       },
       {
         "tier_label": "1K",
         "cut_count_target": 1000,
-        "cut_count_applied": 1000,
+        "cut_count_applied": 859,
         "n_vars": 81795,
-        "n_constraints_total": 1266,
-        "build_wall_s": 2.0235653449999518,
-        "translation_wall_s": 0.013976132999687252,
-        "proto_bytesize": 17128159,
-        "rss_peak_gb_during_build": 0.8407363891601562,
-        "solve_wall_s": 0.7269847620000291,
+        "n_constraints_total": 1125,
+        "build_wall_s": 2.000931152000703,
+        "translation_wall_s": 0.014379752999957418,
+        "proto_bytesize": 17123249,
+        "rss_peak_gb_during_build": 0.8383865356445312,
+        "solve_wall_s": 0.7389537449998898,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8407363891601562,
-        "notes": []
+        "rss_peak_gb_after_solve": 0.8383865356445312,
+        "notes": [
+          "translator skipped 141 certs"
+        ]
       },
       {
         "tier_label": "10K",
         "cut_count_target": 10000,
-        "cut_count_applied": 10000,
+        "cut_count_applied": 8770,
         "n_vars": 81795,
-        "n_constraints_total": 10266,
-        "build_wall_s": 2.030548804999853,
-        "translation_wall_s": 0.13514162699993904,
-        "proto_bytesize": 17444878,
-        "rss_peak_gb_during_build": 0.8340377807617188,
-        "solve_wall_s": 0.7441606180000235,
+        "n_constraints_total": 9036,
+        "build_wall_s": 1.996892115999799,
+        "translation_wall_s": 0.12861002899808227,
+        "proto_bytesize": 17401817,
+        "rss_peak_gb_during_build": 0.8323402404785156,
+        "solve_wall_s": 0.7480922760005342,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8340377807617188,
-        "notes": []
+        "rss_peak_gb_after_solve": 0.8323402404785156,
+        "notes": [
+          "translator skipped 1230 certs"
+        ]
       },
       {
         "tier_label": "50K",
         "cut_count_target": 50000,
-        "cut_count_applied": 50000,
+        "cut_count_applied": 44032,
         "n_vars": 81795,
-        "n_constraints_total": 50266,
-        "build_wall_s": 2.045180920999883,
-        "translation_wall_s": 0.6683768590000909,
-        "proto_bytesize": 18853199,
-        "rss_peak_gb_during_build": 0.8340415954589844,
-        "solve_wall_s": 0.8058277499999349,
+        "n_constraints_total": 44298,
+        "build_wall_s": 2.0104098500014516,
+        "translation_wall_s": 0.6503474359997199,
+        "proto_bytesize": 18643123,
+        "rss_peak_gb_during_build": 0.8323402404785156,
+        "solve_wall_s": 0.8117013110022526,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8655586242675781,
-        "notes": []
+        "rss_peak_gb_after_solve": 0.8612251281738281,
+        "notes": [
+          "translator skipped 5968 certs"
+        ]
       },
       {
         "tier_label": "100K",
         "cut_count_target": 100000,
-        "cut_count_applied": 100000,
+        "cut_count_applied": 88039,
         "n_vars": 81795,
-        "n_constraints_total": 100266,
-        "build_wall_s": 2.0435040130000743,
-        "translation_wall_s": 1.3404486250001355,
-        "proto_bytesize": 20614127,
-        "rss_peak_gb_during_build": 0.8655967712402344,
-        "solve_wall_s": 0.8839873740002986,
+        "n_constraints_total": 88305,
+        "build_wall_s": 2.019470512001135,
+        "translation_wall_s": 1.2954499190018396,
+        "proto_bytesize": 20192018,
+        "rss_peak_gb_during_build": 0.8612556457519531,
+        "solve_wall_s": 0.9050031709994073,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 1.0288124084472656,
-        "notes": []
+        "rss_peak_gb_after_solve": 0.9829559326171875,
+        "notes": [
+          "translator skipped 11961 certs"
+        ]
       }
     ],
     "out_jsonl": "/home/zhuran24/claude-pj/zmd/data/cuts/spike/scale_ramp_results.jsonl"
   },
   "B4_filter_mock": {
-    "wall_s": 0.079,
+    "wall_s": 0.077,
     "g11_pass": true,
     "n_iter": 10,
-    "total_wall_s": 0.07310711799982528,
-    "max_iter_wall_s": 0.00950704599972596,
+    "total_wall_s": 0.07099093700162484,
+    "max_iter_wall_s": 0.009260591999918688,
     "eviction_count": 1,
     "eviction_triggered_in_iter": [
       6
     ],
     "final_cut_count": 48000
   },
-  "phase_b_wall_s": 205.461,
+  "phase_b_wall_s": 205.177,
   "B5_telemetry_audit": {
-    "jsonl_path": "/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_21050.jsonl",
+    "jsonl_path": "/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_77754.jsonl",
     "counts": {
       "rss_sample": 204,
       "proto_sample": 14,
+      "rss_sample_after_solve": 5,
       "dark_matter_emit": 1
     },
     "n11_pass": true

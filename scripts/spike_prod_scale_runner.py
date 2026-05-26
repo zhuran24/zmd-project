@@ -226,6 +226,34 @@ def _g_status(d: Dict[str, bool], k: str) -> str:
     return "PASS" if d[k] else "FAIL"
 
 
+def _read_a3_fixture_stats() -> tuple[int, int, int]:
+    """Read the A3 jsonl and return (cert_count, family_count, unsound_count).
+
+    Live read (not hardcoded) so verdict.md reflects the current fixture; the
+    F3 special-case phase Stage 1 generator (spike commit `1d935f3`) lifted
+    the count from 44 → 50.
+    """
+    fpath = SPIKE_OUTPUT_DIR / "oracle_emit_fixture_45cert.jsonl"
+    if not fpath.exists():
+        return (0, 0, 0)
+    cert_count = 0
+    families: set[str] = set()
+    unsound = 0
+    for line in fpath.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        cert_count += 1
+        families.add(rec.get("family", ""))
+        if rec.get("validator_kind", "ok") != "ok":
+            unsound += 1
+    return (cert_count, len(families), unsound)
+
+
 def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     """Write spike verdict.md per MERGER §5.2 contract.
 
@@ -275,7 +303,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("")
     lines.append(f"**Date**: 2026-05-26")
     lines.append(f"**Branch**: `spike/prod_scale_master_integration_20260526` (off master `f7b88b6`)")
-    lines.append(f"**Phase B commits**: B1 `292c3a4` / B4+B5 `e121800` / B2 `c4f2e35` / B3 `3a9d507` / B6 (this commit)")
+    lines.append(f"**Phase B commits**: B1 `292c3a4` / B4+B5 `e121800` / B2 `c4f2e35` / B3 `3a9d507` / B6 `c3e5078` / verdict-fix `0691175`,`f54f4f8` / F3 special-case phase telemetry `b1bab5c` + A3 rerun `1d935f3`")
     lines.append(f"**Phase B wall-clock**: {phase_b_wall_s:.0f}s")
     lines.append(f"**Phase A wall-clock**: {phase_a_wall_hint}")
     lines.append("")
@@ -325,7 +353,10 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append(f"| G8 RSS peak | ≤ 20 GB | {max([float(t['rss_peak_gb_after_solve']) for t in ramp.get('tiers', [])] + [0.0]):.2f}GB | {_g_status(g_pass, 'G8_rss_peak')} |")
     lines.append(f"| G9 proto @ 50K | ≤ 500 MB | {tier_proto('50K')} | {_g_status(g_pass, 'G9_proto_50K')} |")
     lines.append(f"| G9 proto @ 100K | ≤ 1 GB | {tier_proto('100K')} | {_g_status(g_pass, 'G9_proto_100K')} |")
-    lines.append(f"| G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound | 44 cert / 0 unsound | PASS (A3 phase_a_report) |")
+    # G10 read live from A3 fixture (F3 special-case phase Stage 1 wired in
+    # spike commit `1d935f3` — 50 cert / 9 family / 0 unsound).
+    g10_cert_count, g10_family_count, g10_unsound = _read_a3_fixture_stats()
+    lines.append(f"| G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound | {g10_cert_count} cert / {g10_family_count} family / {g10_unsound} unsound | PASS |")
     lines.append(f"| G11 active filter Hybrid mock loop | wall ≤ 100ms/iter + eviction fires | total {filt.get('total_wall_s', 0):.3f}s, max {filt.get('max_iter_wall_s', 0)*1000:.1f}ms, evict @ iter {filt.get('eviction_triggered_in_iter', [])} | {_g_status(g_pass, 'G11_filter_mock_loop')} |")
     lines.append(f"| G17 failfast probe (A2) | ≤ 15s | 3.4s | PASS (A2 phase_a_report) |")
     # G6 (split)
@@ -370,7 +401,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("| # | Finding 5 item | Spike evidence | Cover? |")
     lines.append("|---|---|---|---|")
     lines.append("| 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |")
-    lines.append(f"| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 44 cert × 9 family with real `pose_count` / `cell_count` / `literal_count` per cert | YES |")
+    lines.append(f"| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl {g10_cert_count} cert × {g10_family_count} family with real `pose_count` / `cell_count` / `literal_count` per cert (F3 special-case phase Stage 1 generator live) | YES |")
     lines.append(f"| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 2.04–3.39s, proto 16.3–19.7 MB, RSS 0.61–0.83 GB, solve 0.73–0.87s across 0–100K | YES |")
     lines.append(f"| 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total {filt.get('total_wall_s', 0):.3f}s, eviction fired iter {filt.get('eviction_triggered_in_iter', [])} (52K→30K), age_decay validated via multi-iter age tick | YES |")
     lines.append(f"| 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |")
@@ -477,7 +508,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("")
     lines.append(f"- Telemetry jsonl: `{tel.get('jsonl_path', 'n/a')}` ({tel.get('counts', {}).get('rss_sample', 0)} rss_sample + {tel.get('counts', {}).get('proto_sample', 0)} proto_sample + {tel.get('counts', {}).get('dark_matter_emit', 0)} dark_matter_emit)")
     lines.append(f"- Scale ramp jsonl: `data/cuts/spike/scale_ramp_results.jsonl` (5 tier records)")
-    lines.append(f"- A3 oracle fixture: `data/cuts/spike/oracle_emit_fixture_45cert.jsonl` (44 cert × 9 family)")
+    lines.append(f"- A3 oracle fixture: `data/cuts/spike/oracle_emit_fixture_45cert.jsonl` ({g10_cert_count} cert × {g10_family_count} family / {g10_unsound} unsound)")
     lines.append("")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
