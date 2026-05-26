@@ -1,7 +1,18 @@
 from pathlib import Path
 import sys
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]
+
+def _find_project_root(start: Path) -> Path:
+    for candidate in (start, *start.parents):
+        if (candidate / "PROJECT_LOCK.md").is_file() and (candidate / "src" / "cuts").is_dir():
+            return candidate
+    raise RuntimeError(
+        "Could not locate project root: expected PROJECT_LOCK.md and src/cuts above "
+        f"{start}"
+    )
+
+
+_PROJECT_ROOT = _find_project_root(Path(__file__).resolve().parent)
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
