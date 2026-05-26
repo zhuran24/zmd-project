@@ -28,7 +28,7 @@ verified by this spike — they are deferred to P1.3A 主体 design phase and P1
 | G4b build 100K cut | ≤ 600s | 3.38s | PASS |
 | G5 0 cut feasibility solve | ≤ 30s | 0.71s (OPTIMAL) | PASS |
 | G7 100K solve wall (measure, no hard cap) | — | 0.88s (OPTIMAL) | n/a (measure) |
-| G8 RSS peak | ≤ 20 GB | 1.03GB | PASS |
+| G8 RSS peak | ≤ 20 GB | 1.03GB in phase_b_results after-solve snapshot; telemetry rss_sample max is 0.866GB | PASS, evidence split |
 | G9 proto @ 50K | ≤ 500 MB | 18.0MB | PASS |
 | G9 proto @ 100K | ≤ 1 GB | 19.7MB | PASS |
 | G10 oracle real-emit cert fixture (A3) | ≥45 + 9 families + 0 unsound | 44 cert / 8 families / 0 unsound | SOFT-FAIL (missing F3 `port_exposure`) |
@@ -70,7 +70,7 @@ Per MERGER §5.2: spike must close Finding 5 sizing/measurement gate, NOT close 
 |---|---|---|---|
 | 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |
 | 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl has 44 cert across 8 families; F3 `port_exposure` is absent, so no 2-literal blocked-port body sample | PARTIAL |
-| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 2.04–3.39s, proto 16.3–19.7 MB, RSS 0.84–1.03 GB, solve 0.73–0.87s across 0–100K | YES |
+| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 2.04–3.39s, proto 16.3–19.7 MB, build RSS 0.834–0.866 GB; phase_b_results after-solve RSS peak 1.029 GB; solve 0.73–0.87s across 0–100K | YES, but 1.029GB peak needs raw telemetry event |
 | 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total 0.073s, eviction fired iter [6] (52K→30K), age_decay validated via multi-iter age tick | YES |
 | 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |
 
@@ -134,7 +134,10 @@ Phase B wall was MUCH smaller than estimate (3-5h) because:
 
 3. **RSS peak stays below 1.03 GB across all tiers** — Build phase already loads OR-Tools +
    81K BoolVar (≈0.6 GB). Additional cuts add proportionally small protobuf footprint. No L24
-   augmented-master-style RSS explosion at this scale on toy master.
+   augmented-master-style RSS explosion at this scale on toy master. Evidence caveat:
+   `telemetry_21050.jsonl` sampled RSS max is 0.866GB; the 1.03GB number comes from
+   `phase_b_results.json` 100K after-solve snapshot and should be emitted as a raw telemetry
+   event in the next spike rerun.
 
 4. **G6a feasible solver bound gap 0.12% at 180s** — Bound 76884 vs obj 76795 over 81K var
    max-sum. Pure structural: 10K AddBoolOr each forbids ~3 vars conjunction. Solver finds a
