@@ -141,7 +141,7 @@ Phase B wall was MUCH smaller than estimate (3-5h) because:
 
 ## Recommended next step (main conversation)
 
-**GO_WITH_MINOR** to v14 package — soft fails: ['G6a_feasible_wall']. All HARD G criteria PASS, zero hard N trigger. Soft fails documented as known sizing limitations (G6a wall is toy artifact, will be reassessed under real master in P1.3A). Recommend v14 package build with explicit soft-fail flagging in cover doc.
+**GO_WITH_MINOR** to v17 package — soft fails: ['G6a_feasible_wall']. All HARD G criteria PASS (G10 closed by F3 special-case phase rerun: 50 cert / 9 family / 0 unsound), zero hard N trigger. Soft fails documented as known sizing limitations (G6a wall is toy artifact, will be reassessed under real master in P1.3A). Recommend v17 package build with explicit soft-fail flagging in cover doc.
 
 Off-limits enforce: PASS (B1-B6 added only spike-lib files + this verdict.md;
 `scripts/spike_prod_scale_lib/off_limits_check.py` would report 0 violation against master).
