@@ -460,3 +460,35 @@ def test_generator_output_passes_validator(monkeypatch: pytest.MonkeyPatch) -> N
     assert len(cuts) == 1
     vr = validate_port_exposure(cuts[0], state, CANONICAL_RULES)
     assert vr.kind == "ok", f"validator got {vr.kind}: {vr.detail}"
+
+
+# ---- self-blocker defensive guard -----------------------------------------
+
+
+def test_self_blocker_does_not_emit(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Self-blocker (blocker == target same group+pose) should not emit cut.
+
+    NIT defensive guard per GPT v17 四审 Reviewer B F3 finding.
+
+    Construct an inconsistent BState where ``cell_owner`` claims crusher slot 0
+    occupies its OWN port front cell (9,10). Normal BState would never allow
+    this (the pose geometry forbids it), but the generator should fail-closed
+    and skip rather than emit a self-referential cut.
+    """
+    monkeypatch.setenv("EXACT_F3_GENERATOR_ENABLED", "1")
+    # Crusher p7's footprint cells + its own port front cell (9,10) all claimed
+    # by the same (crusher, slot 0) — geometrically impossible, but we test
+    # the guard.
+    cell_owner: Dict[Cell, Tuple[str, int]] = {}
+    for c in [(10, 10), (11, 10), (12, 10), (10, 11), (11, 11), (12, 11),
+              (10, 12), (11, 12), (12, 12),
+              (9, 10)]:  # port front cell, also "owned" by self
+        cell_owner[c] = ("crusher", 0)
+    state = _make_state(
+        crusher_poses=["p7"],
+        cell_owner=cell_owner,
+    )
+    cuts = generate_port_exposure_cuts(state)
+    assert cuts == [], (
+        f"self-blocker guard failed: expected 0 cuts, got {len(cuts)}"
+    )

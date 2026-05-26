@@ -228,6 +228,19 @@ def _try_emit_one(
         )
         return None
     blocking_pose_id = blocking_gstate.selected_poses[blocking_slot]
+    # Self-blocker guard (per GPT v17 四审 Reviewer B F3 NIT): defensively skip if
+    # the blocking facility is the SAME (group, pose) as the target facility. Normal
+    # BState would never put a facility's footprint on its own port front (the pose
+    # geometry forbids it), but if upstream produces such an inconsistent state we
+    # would emit a weird/self-referential cut rather than a sound conflict. Fail-
+    # closed style: skip instead of emit.
+    if blocking_group == facility_group and blocking_pose_id == facility_pose_id:
+        _logger.debug(
+            "F3 skip port: self-blocker detected (target == blocker, group=%s pose=%s) — "
+            "indicates upstream BState inconsistency, fail-closed skip",
+            facility_group, facility_pose_id,
+        )
+        return None
     # Dedup signature includes port_dir to keep distinct port directions sharing
     # the same front_cell separate (rare but possible per F3 spec multi-port).
     sig = (
