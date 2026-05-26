@@ -252,3 +252,88 @@ def bfs_component(graph: PowerGraph, start: Pole) -> Set[Pole]:
                 visited.add(v)
                 q.append(v)
     return visited
+
+
+def _candidate_anchors_in_cutoff(
+    anchor: Pole,
+    pole_set: Set[Pole],
+    cutoff: float,
+) -> Iterable[Pole]:
+    """Yield pole anchors in a square superset of a Euclidean cutoff ball.
+
+    The exact edge predicate is still checked by callers. This helper only
+    avoids scanning the entire 70x70 anchor set for every BFS expansion.
+    """
+    ax, ay = anchor
+    delta = int(math.ceil(cutoff))
+    for x in range(ax - delta, ax + delta + 1):
+        for y in range(ay - delta, ay + delta + 1):
+            p = (x, y)
+            if p in pole_set:
+                yield p
+
+
+def any_target_reachable_from_pc(
+    poles: Iterable[Pole],
+    targets: Iterable[Pole],
+    pole_radius: float,
+    *,
+    pc_cells: Iterable[Pole],
+    ghost_rect: Optional[Tuple[int, int, int, int]] = None,
+) -> bool:
+    """Return True iff any target pole is reachable from the protocol core.
+
+    This is the streaming reachability twin of ``build_power_network`` +
+    ``bfs_component`` for F8 validator/oracle use. It applies the same exact
+    edge predicate (cell-to-cell distance plus ghost AABB line-of-sight), but
+    it does not materialize the full graph. That matters for audit fixtures
+    with very large ``pole_radius``: the complete graph can contain millions
+    of edges even though the validator only needs one yes/no reachability
+    answer.
+    """
+    if pole_radius <= 0.0:
+        return False
+
+    pole_set: Set[Pole] = set(poles)
+    target_set: Set[Pole] = set(targets) & pole_set
+    if not pole_set or not target_set:
+        return False
+
+    pc_list = list(pc_cells)
+    if not pc_list:
+        return False
+
+    ghost_aabb = cell_aabb_from_rect(ghost_rect) if ghost_rect is not None else None
+    pole_footprints = {p: _footprint_cells(p, _POLE_SIZE) for p in pole_set}
+
+    visited: Set[Pole] = set()
+    q: deque[Pole] = deque()
+
+    pole_pc_cutoff = pole_radius + math.sqrt(2.0)
+    for pc in pc_list:
+        for p in _candidate_anchors_in_cutoff(pc, pole_set, pole_pc_cutoff):
+            if p in visited:
+                continue
+            if not _can_jump_via_cells(pole_footprints[p], (pc,), pole_radius, ghost_aabb):
+                continue
+            if p in target_set:
+                return True
+            visited.add(p)
+            q.append(p)
+
+    pole_pole_cutoff = pole_radius + 2.0 * math.sqrt(2.0)
+    while q:
+        p = q.popleft()
+        for nxt in _candidate_anchors_in_cutoff(p, pole_set, pole_pole_cutoff):
+            if nxt == p or nxt in visited:
+                continue
+            if not _can_jump_via_cells(
+                pole_footprints[p], pole_footprints[nxt], pole_radius, ghost_aabb
+            ):
+                continue
+            if nxt in target_set:
+                return True
+            visited.add(nxt)
+            q.append(nxt)
+
+    return False
