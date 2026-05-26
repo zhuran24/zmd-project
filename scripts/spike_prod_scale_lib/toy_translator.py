@@ -260,7 +260,7 @@ def translate_certs_to_constraints(
     - F7 power_hitting_set: AddBoolOr(NOT lit_i).
     - F8 power_grid_reach: AddBoolOr(NOT lit_i).
     - F9 density_envelope: AddLinearConstraint(sum(lits) <= K).
-    - F3 port_exposure: stub (no real cert emitted in fixture), skip if seen.
+    - F3 port_exposure: AddBoolOr(NOT facility, NOT blocker) two-literal no-good.
 
     Skipped: cert with 0 resolvable literal (after fallback).
     """
@@ -277,6 +277,7 @@ def translate_certs_to_constraints(
         "pattern_nogood",
         "power_hitting_set",
         "power_grid_reach",
+        "port_exposure",
     }
     linear_families = {
         "region_capacity",
@@ -317,7 +318,7 @@ def translate_certs_to_constraints(
             model.Add(sum(lits) <= k)
             n_constraints += 1
         else:
-            # Unknown family (e.g. F3 stub) — skip; report.
+            # Unknown family — skip; report.
             n_skipped += 1
             per_family_skip[fam] += 1
             continue

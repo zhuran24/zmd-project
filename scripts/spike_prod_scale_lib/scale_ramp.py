@@ -13,8 +13,8 @@ Per MERGER §5.4 G1-G9:
 - G9: proto ≤ 500 MB @ 50K, ≤ 1 GB @ 100K
 - N3: G8 RSS > 30 GB
 
-Cut source: A3 fixture jsonl (44 cert). For ramps > 44, oversample with
-replacement using deterministic seed.
+Cut source: A3 fixture jsonl (50 cert after F3 special-case rerun). For ramps
+> 50, oversample with replacement using deterministic seed.
 
 This file is spike-only. Off-limits paths untouched.
 """

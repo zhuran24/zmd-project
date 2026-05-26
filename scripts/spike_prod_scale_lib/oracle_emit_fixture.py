@@ -17,8 +17,10 @@ Per MERGER §5.2 + §5.4 G10:
 **Real status of the 9 oracles (verified by reading source):**
 - F1 region_capacity: real (combinatorial enum)
 - F2 cutset: real (Dinic min-cut)
-- F3 port_exposure: **stub** — physically returns ``[]`` per
-  ``src/cuts/oracles/port_exposure_oracle.py:34-55`` (Phase 1.5+ defer).
+- F3 port_exposure: real for the v17/v18 special-case phase when
+  ``EXACT_F3_GENERATOR_ENABLED=1``. ``_emit_f3`` drives
+  ``generate_port_exposure_cuts`` with explicit target poses and validates the
+  emitted certs.
 - F4 component_reach: real (BFS disconnection)
 - F5 pattern_nogood: real (bounded deletion + QuickXplain via FakeAdapter
   returning known-INFEASIBLE; deletion logic itself is real oracle code)
@@ -27,10 +29,10 @@ Per MERGER §5.2 + §5.4 G10:
 - F8 power_grid_reach: real (env-gated EXACT_F8_GENERATOR_ENABLED, BFS)
 - F9 density_envelope: real (area_capacity_overflow witness)
 
-F3 stub → physically cannot emit cert without hand-craft (which spec
-forbids). Report this as a discovered finding; redistribute the 5-cert quota
-from F3 across the remaining 8 families (each emits 6 certs ⇒ 48 ≥ 45
-total). This is *information* the spike surfaces, not a harness bug.
+After the F3 special-case rerun the fixture contains 50 certs across all 9
+families, including 6 F3 ``port_exposure`` certs. Historical 44-cert /
+8-family results remain documented in ``phase_a_report.md`` and are marked
+superseded there.
 """
 from __future__ import annotations
 
