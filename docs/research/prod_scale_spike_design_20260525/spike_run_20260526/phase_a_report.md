@@ -54,10 +54,9 @@
 
 **G17 PASS** = harness 自身够快, 进 A3 / Phase B.
 
-## A3 — Real oracle real emit fixture (commit `7922676`) — G10 PASS ✅
+## A3 — Real oracle real emit fixture (commit `7922676`) — G10 SOFT-FAIL ⚠️
 
-9 family × ≥4 cert = **44 cert** (target ≥45, 差 1 在 F6/F7 — cert 类型枚举
-有限不重复, accept).
+Observed fixture = **44 cert across 8 families**. Original target was ≥45 cert across 9 families; F3 `port_exposure` is missing because `generate_port_exposure_cuts()` is still a Phase 1.1 stub returning `[]`. This is not a soundness failure in the 44 certs, but it is **not a full G10 pass** for Finding 5 #2.
 
 Family count:
 | Family | Cert 数 |
@@ -65,6 +64,7 @@ Family count:
 | F1 region_capacity | 6 |
 | F2 cutset | 6 |
 | F4 component_reach | 6 |
+| F3 port_exposure | 0 |
 | F5 pattern_nogood | 6 |
 | F6 shape_packing_hall | 4 |
 | F7 power_hitting_set | 4 |
@@ -72,9 +72,7 @@ Family count:
 | F9 density_envelope | 6 |
 | **Total** | **44** |
 
-Validator verdict on all 44 cert: 全 `kind="ok"` (0 unsound / 0 schema_err
-/ 0 timeout). **G10 PASS** (per N6 0 unsound = oracle bug aborted spike,
-44/44 ok = spike continue).
+Validator verdict on all 44 observed cert: 全 `kind="ok"` (0 unsound / 0 schema_err / 0 timeout). **N6 remains PASS** (no unsound cert), but **G10 is SOFT-FAIL / evidence incomplete** because the fixture misses F3 and does not meet the ≥45 target.
 
 每 cert jsonl 记录 (`data/cuts/spike/oracle_emit_fixture_45cert.jsonl`,
 67 KB / 44 line):
@@ -85,9 +83,7 @@ Validator verdict on all 44 cert: 全 `kind="ok"` (0 unsound / 0 schema_err
 - pose 数 / cell 数 / literal 数
 - validator_kind
 
-真 cut body size 分布数据已收集供 Phase B toy translator + active filter
-Hybrid sizing 用 (Finding 5 #2 "真 cut body 分布" = Full cover per Gemini
-round 3).
+真 cut body size 分布数据已收集供 Phase B toy translator + active filter Hybrid sizing 用, but coverage is **partial**: F3 `port_exposure` contributes no cert body sample. Treat Finding 5 #2 as PARTIAL until an F3 validated fixture is added or the gate is explicitly re-scoped to 8 active families.
 
 ### Ruff lint fix (A3 commit 含)
 
@@ -122,8 +118,7 @@ worktree (主对话清理后接手 A3 commit + 写 report).
 
 ## 偏离 MERGER spec
 
-1. **44 cert vs ≥45 target**: F6/F7 cert 类型枚举有限, 实际 4 个 cert 已
-   exhaust meaningful 变体. Accept 偏离 (1 cert 不影响 Finding 5 #2 cover).
+1. **44 cert vs ≥45 target + missing F3**: fixture has 44 cert across 8 families, not 9. This is a gate-accounting soft fail, not merely a one-cert rounding issue. Fix by adding ≥1 validated F3 `port_exposure` cert sample, preferably 4-5 to match the family distribution, or by formally changing G10 to "8 active families".
 2. **709K BoolVar in probe**: probe 给每 inst 全 pool 不是 anonymized 81K,
    是 probe sanity (harness 自身够快) 不是 sizing 数据. Phase B 用真 81K.
 3. **重启一次 + worktree cleanup**: 主对话接手 cleanup 2 stale worktree
