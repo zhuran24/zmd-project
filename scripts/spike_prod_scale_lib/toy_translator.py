@@ -64,8 +64,17 @@ class PoseRegistry:
 
 
 def load_pose_registry() -> PoseRegistry:
-    """Load real prod pose registry (81795 poses)."""
-    placements = json.loads(PLACEMENTS_PATH.read_text())
+    """Load real prod pose registry (81795 poses).
+
+    Note: use ``read_bytes().decode()`` instead of ``read_text()`` to avoid a
+    Python 3.14 stdlib regression where ``json.loads`` on the str returned by
+    ``Path.read_text()`` for very large files raises non-deterministic
+    ``ValueError: invalid literal for int() with base 10`` from the json
+    scanner. ``read_bytes().decode()`` produces an identical str but takes a
+    different code path that side-steps the regression. Verified on Python
+    3.14.5 with the 53 MB ``candidate_placements.json``.
+    """
+    placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     pools = placements.get("facility_pools", {})
     poses: List[Tuple[str, str]] = []
     for ft in sorted(pools.keys()):
