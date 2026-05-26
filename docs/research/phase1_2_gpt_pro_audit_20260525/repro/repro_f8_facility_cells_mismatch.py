@@ -1,3 +1,21 @@
+from pathlib import Path
+import sys
+
+
+def _find_project_root(start: Path) -> Path:
+    for candidate in (start, *start.parents):
+        if (candidate / "PROJECT_LOCK.md").is_file() and (candidate / "src" / "cuts").is_dir():
+            return candidate
+    raise RuntimeError(
+        "Could not locate project root: expected PROJECT_LOCK.md and src/cuts above "
+        f"{start}"
+    )
+
+
+_PROJECT_ROOT = _find_project_root(Path(__file__).resolve().parent)
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from src.tests.cuts.test_family_power_grid_reach import _f5_fixture_state, _make_cert, _make_cut
 from src.cuts.families.power_grid_reach import validate_power_grid_reach, evaluate_geometric_power_grid_reach, _build_full_free_mask, _protocol_core_cells
 from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors

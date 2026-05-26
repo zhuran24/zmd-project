@@ -54,7 +54,7 @@ import time
 from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
 
 from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
-from src.cuts.helpers.power_network import build_power_network, bfs_component
+from src.cuts.helpers.power_network import any_target_reachable_from_pc
 from src.cuts.lifecycle import (
     GHOST_AGNOSTIC,
     BState,
@@ -454,20 +454,18 @@ def _validate_disconnect_witness(
         )
     all_poles = enumerate_valid_pole_anchors(free_cells)
     pc_cells = _protocol_core_cells(pc_anchor)
-    graph = build_power_network(
-        list(all_poles),
+    if any_target_reachable_from_pc(
+        all_poles,
+        cover_set,
         pole_radius=pole_radius,
         pc_cells=pc_cells,
         ghost_rect=state.ghost_rect,
-    )
-    pc_component = bfs_component(graph, pc_anchor)
-    overlap = cover_set & pc_component
-    if overlap:
+    ):
         return _vr(
             "unsound",
             t0,
-            f"F8 cert claims disconnect but BFS recompute connects "
-            f"{len(overlap)}/{len(cover_set)} CoverSet poles to protocol_core",
+            "F8 cert claims disconnect but BFS recompute connects "
+            "at least one CoverSet pole to protocol_core",
         )
     return None
 
@@ -511,14 +509,13 @@ def _validate_ghost_only_disconnect(
         )
     # Gemini F8 round 1 Finding #1 + #2: pass FULL anchor set + multi-cell pc
     all_poles_ghost = enumerate_valid_pole_anchors(ghost_only_free)
-    graph = build_power_network(
-        list(all_poles_ghost),
+    if any_target_reachable_from_pc(
+        all_poles_ghost,
+        cover_ghost,
         pole_radius=pole_radius,
         pc_cells=pc_cells,
         ghost_rect=state.ghost_rect,
-    )
-    pc_component = bfs_component(graph, pc_anchor)
-    if cover_ghost & pc_component:
+    ):
         return _vr(
             "unsound",
             t0,

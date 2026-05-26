@@ -1,3 +1,21 @@
+from pathlib import Path
+import sys
+
+
+def _find_project_root(start: Path) -> Path:
+    for candidate in (start, *start.parents):
+        if (candidate / "PROJECT_LOCK.md").is_file() and (candidate / "src" / "cuts").is_dir():
+            return candidate
+    raise RuntimeError(
+        "Could not locate project root: expected PROJECT_LOCK.md and src/cuts above "
+        f"{start}"
+    )
+
+
+_PROJECT_ROOT = _find_project_root(Path(__file__).resolve().parent)
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 import os
 from src.tests.cuts.test_family_power_hitting_set import _make_state
 from src.cuts.oracles.power_cover_oracle import generate_power_hitting_set_cuts
