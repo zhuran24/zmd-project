@@ -48,11 +48,35 @@ cert 改用 `contributing_route_ids` 不是 `contributing_commodities`.
 - **F5 pattern_nogood**: deletion / QuickXplain 复用 L16 `core_minimizer.py`
 - **F6 / F8 / F9**: 各自 spec §5 generator pseudocode
 
-### 13.4 F3 active_port_witness verify
+### 13.4 F3 active_port_witness verify (production-前置 risk)
+
+**严重度**: production-前置 risk for F3 default-enable (per GPT pro v17 四审
+Reviewer A M1 + Reviewer B A3).
+
 - spec `03_port_exposure.md:144-147` 要求 verify `active_port_witness_b64`
-- 当前 validator 没查 (Phase 1.1 v1.0 假设 "all listed ports active")
-- Phase 1.5+ 真 production data 时可能有 port 被 boundary_constraints LP
-  disable, 必加 witness 验
+- 当前 Phase 1.2 F3 generator stage 1 写 `active_port_witness_b64=None`
+  (src/cuts/oracles/port_exposure_oracle.py:283)
+- 当前 validator 没查此字段 (src/cuts/families/port_exposure.py)
+- Phase 1.1 v1.0 假设 "all listed ports active"
+- Phase 1.5+ 真 production data 时可能有 port 被 binding boundary_constraints
+  LP disable; F3 的 cut `(facility A pose pA) ∧ (B pose pB) ⇒ ⊥` 假设 port 必
+  active. 若 binding 选 optional port subset, 没接的 port front 被堵不构成
+  infeasibility (历史 dead path `B1_phase5_cell_cut/README.md:40-41` +
+  `lever_verdicts.md:446,571` 已证过强 cut 会误剪).
+
+**GPT v17 reviewer 共识**: F3 special-case phase fixture / env-gated stage 1
+可 GO_WITH_MINOR (`EXACT_F3_GENERATOR_ENABLED=1` default-off), 但**生产默认开启
+前必须**二选一:
+  - 选 1: validator 真验 `active_port_witness_b64` (cand C
+    boundary_constraints LP solution wrap, 见 §13.5 F2 类似路径)
+  - 选 2: P1.3A / P1.5 把 port-active 决策上收到 master, 让 literal 本身带
+    active port 条件
+
+不做此 fix 前, F3 不应被描述为 "完整生产 cut family 已关闭". Phase 1.5+ 启动
+production F3 前 hard gate.
+
+Reviewer 报告 archive: `docs/research/p1_2b_f3_gemini_round{1,2}_20260526/`
++ GPT v17 zip review 在 main 对话 archive.
 
 ### 13.5 F2 max_flow_LP algebraic witness
 - spec `02_cutset.md:156-159` 要求 verify max-flow LP dual
