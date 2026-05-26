@@ -418,24 +418,134 @@ def _emit_f2(target: int, sink: List[CertRecord]) -> float:
 
 
 # ----------------------------------------------------------------------------
-# F3 port_exposure — stub: physically returns []. Report skip.
+# F3 port_exposure — Stage 1 generator (master `c768806`). env-gated.
+# Builds 1 crusher facility + 1 refinery blocker per case; varies anchor +
+# port direction so each case emits a distinct (facility, port, blocker) cert.
 # ----------------------------------------------------------------------------
 
 
-def _emit_f3(target: int, sink: List[CertRecord]) -> Tuple[float, str]:
+_F3_CANONICAL_RULES = {
+    "crusher": {"placement_rule": "free", "cells_per_pose": 9},
+    "refinery": {"placement_rule": "free", "cells_per_pose": 9},
+}
+_F3_FACILITY_TEMPLATES = {
+    "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}},
+}
+_F3_INSTANCE_TO_FT = {
+    "crusher": "manufacturing_3x3",
+    "refinery": "manufacturing_3x3",
+}
+
+
+def _f3_state(case_idx: int) -> Tuple[BState, List[Tuple[str, int, str]]]:
+    """Build F3 state with crusher_<i> at anchor + refinery_<i> blocking 1 port.
+
+    Vary case_idx to relocate the crusher anchor (so each cert is distinct on
+    facility_pose_id + port_cell + front_cell + blocking_facility).
+
+    Returns (state, target_poses) — explicit target list passed to generator.
+    """
+    # Place crusher at anchor (5 + 5*i, 10) to avoid overlap between cases.
+    # Adjacent refinery placed at (5 + 5*i - 3, 10) blocks the W port front.
+    base_x = 5 + 5 * case_idx
+    crusher_anchor = (base_x, 10)
+    refinery_anchor = (base_x - 3, 10)
+    crusher_pose_id = f"f3_crusher_p{case_idx}"
+    refinery_pose_id = f"f3_refinery_p{case_idx}"
+    crusher_cells = [
+        [crusher_anchor[0] + dx, crusher_anchor[1] + dy]
+        for dx in range(3) for dy in range(3)
+    ]
+    refinery_cells = [
+        [refinery_anchor[0] + dx, refinery_anchor[1] + dy]
+        for dx in range(3) for dy in range(3)
+    ]
+    candidate_placements = {
+        "facility_pools": {
+            "manufacturing_3x3": [
+                {
+                    "pose_id": crusher_pose_id,
+                    "anchor": {"x": crusher_anchor[0], "y": crusher_anchor[1]},
+                    "occupied_cells": crusher_cells,
+                    "input_port_cells": [],
+                    "output_port_cells": [
+                        {"x": crusher_anchor[0], "y": crusher_anchor[1],
+                         "dir": "W", "commodity": "test"},
+                    ],
+                },
+                {
+                    "pose_id": refinery_pose_id,
+                    "anchor": {"x": refinery_anchor[0], "y": refinery_anchor[1]},
+                    "occupied_cells": refinery_cells,
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                },
+            ],
+        },
+    }
+    cell_owner: Dict[Tuple[int, int], Tuple[str, int]] = {}
+    for cell in crusher_cells:
+        cell_owner[(cell[0], cell[1])] = ("crusher", 0)
+    for cell in refinery_cells:
+        cell_owner[(cell[0], cell[1])] = ("refinery", 0)
+    state = BState(
+        groups={
+            "crusher": GroupState(
+                "crusher", demand=4, pose_domain=frozenset({crusher_pose_id}),
+                selected_poses=[crusher_pose_id],
+            ),
+            "refinery": GroupState(
+                "refinery", demand=4, pose_domain=frozenset({refinery_pose_id}),
+                selected_poses=[refinery_pose_id],
+            ),
+        },
+        cell_owner=cell_owner,
+        ghost_rect=(60, 60, 5, 5),
+        ghost_cells=frozenset(),
+        exterior_blocks=frozenset(),
+        artifact_hashes={"canonical_rules.json": "h1"},
+        available_oracle_versions=frozenset({"port_exposure_v1"}),
+        canonical_rules=_F3_CANONICAL_RULES,
+        facility_templates=_F3_FACILITY_TEMPLATES,
+        instance_to_facility_type=_F3_INSTANCE_TO_FT,
+        candidate_placements=candidate_placements,
+    )
+    target_poses: List[Tuple[str, int, str]] = [("crusher", 0, crusher_pose_id)]
+    return state, target_poses
+
+
+def _emit_f3(target: int, sink: List[CertRecord]) -> float:
     from src.cuts.oracles.port_exposure_oracle import generate_port_exposure_cuts
 
-    # Try a few states; the oracle is hardcoded stub returning [].
-    state = BState(groups={})
-    t0 = time.monotonic()
-    cuts = generate_port_exposure_cuts(state, master_solution=None)
-    wall = time.monotonic() - t0
-    assert cuts == [], "F3 unexpectedly emitted; spec says Phase 1.5+ stub"
-    return wall, (
-        f"F3 port_exposure is a Phase 1.5+ stub "
-        f"(src/cuts/oracles/port_exposure_oracle.py:34-55); "
-        f"target={target} certs deferred — redistribute quota to other 8 families."
-    )
+    prev_env = os.environ.get("EXACT_F3_GENERATOR_ENABLED")
+    os.environ["EXACT_F3_GENERATOR_ENABLED"] = "1"
+    try:
+        total_wall = 0.0
+        count = 0
+        for case_idx in range(target * 3):
+            if count >= target:
+                break
+            state, target_poses = _f3_state(case_idx)
+            t0 = time.monotonic()
+            cuts = generate_port_exposure_cuts(
+                state,
+                master_solution=None,
+                target_poses=target_poses,
+                iter_index=case_idx,
+            )
+            wall = time.monotonic() - t0
+            total_wall += wall
+            for cut in cuts:
+                sink.append(_record_from_cut(cut, state, wall, _F3_CANONICAL_RULES))
+                count += 1
+                if count >= target:
+                    break
+        return total_wall
+    finally:
+        if prev_env is None:
+            os.environ.pop("EXACT_F3_GENERATOR_ENABLED", None)
+        else:
+            os.environ["EXACT_F3_GENERATOR_ENABLED"] = prev_env
 
 
 # ----------------------------------------------------------------------------
@@ -924,6 +1034,7 @@ def _emit_f9(target: int, sink: List[CertRecord]) -> float:
 _DRIVERS: Dict[str, Callable[[int, List[CertRecord]], float]] = {
     "region_capacity":     _emit_f1,
     "cutset":              _emit_f2,
+    "port_exposure":       _emit_f3,
     "component_reach":     _emit_f4,
     "pattern_nogood":      _emit_f5,
     "shape_packing_hall":  _emit_f6,
@@ -935,26 +1046,18 @@ _DRIVERS: Dict[str, Callable[[int, List[CertRecord]], float]] = {
 
 def run_emit(*, target_per_family: int = 5, out_path: Path,
              redistributed_per_family: Optional[int] = None) -> EmitReport:
-    """Emit ≥45 certs across 9 family. F3 stub → skip + redistribute.
+    """Emit ≥45 certs across 9 family. F3 Stage 1 generator now live (master `c768806`).
 
-    Net target = max(45, target_per_family × 9). With F3 stub, we redistribute
-    to (target_per_family * 9 - target_per_family) / 8 ≈ target_per_family + ⌈t/8⌉
-    per remaining family.
+    Net target = max(45, target_per_family × 9). All 9 family drivers active.
     """
     records: List[CertRecord] = []
     report = EmitReport(target_per_family=target_per_family, out_path=out_path)
 
     target_total = max(45, target_per_family * 9)
-    # F3 is a stub. Note + skip + redistribute its quota.
-    f3_wall, f3_note = _emit_f3(target_per_family, records)
-    report.skipped_families.append("port_exposure")
-    report.notes.append(f3_note)
-    report.per_family_oracle_wall_s["port_exposure"] = f3_wall
-    report.per_family_count["port_exposure"] = 0
-
     if redistributed_per_family is None:
-        # 8 working families share (target_total - 0) certs; ceil-distribute.
-        redistributed_per_family = (target_total + 7) // 8
+        # F6 emits ≤ 4 cert at current state design (split_x ≥ 10 hits exterior
+        # region) — ask 6 per family so other 8 families cover the F6 shortfall.
+        redistributed_per_family = max(6, (target_total + 8) // 9)
 
     for fam, driver in _DRIVERS.items():
         wall = driver(redistributed_per_family, records)
