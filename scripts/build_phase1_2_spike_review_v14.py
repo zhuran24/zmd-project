@@ -52,7 +52,11 @@ SPIKE_OVERLAY_FILES = [
     "docs/research/prod_scale_spike_design_20260525/spike_run_20260526/phase_a_report.md",
     "data/cuts/spike/oracle_emit_fixture_45cert.jsonl",
     "data/cuts/spike/scale_ramp_results.jsonl",
-    "data/cuts/spike/scale_ramp_test_smoke.jsonl",
+    # phase_b_results.json contains B3 feasible_smoke + B2 scale ramp aggregate
+    # (task spec mentioned scale_ramp_test_smoke.jsonl which does not exist on
+    # spike branch — phase_b_results.json is the actual artifact carrying B3
+    # smoke data, more complete than a hypothetical jsonl smoke file)
+    "data/cuts/spike/phase_b_results.json",
 ]
 
 # Spike-only implementation code paths — these must NOT appear in the project tree.
@@ -181,7 +185,8 @@ Spike 实施在 branch `spike/prod_scale_master_integration_20260526` (off maste
   `literal_count` per cert)
 - `data/cuts/spike/scale_ramp_results.jsonl` — B2 5-tier ramp 0/1K/10K/50K/100K
   实测 (build / xlate / solve / proto / rss)
-- `data/cuts/spike/scale_ramp_test_smoke.jsonl` — B3 smoke run data
+- `data/cuts/spike/phase_b_results.json` — Phase B aggregate (B3 feasible_smoke
+  10K cut + B2 ramp + B4 filter_mock 10 iter + G/N criteria pass map)
 
 (per MERGER §5.4 G/N criteria, MERGER §5.2 Layer 1 sizing close vs Layer 2
 convergence/adversarial defer P1.3A)
@@ -321,6 +326,7 @@ cat docs/research/prod_scale_spike_design_20260525/spike_run_20260526/verdict.md
 cat docs/research/prod_scale_spike_design_20260525/spike_run_20260526/phase_a_report.md
 head data/cuts/spike/oracle_emit_fixture_45cert.jsonl
 cat data/cuts/spike/scale_ramp_results.jsonl
+cat data/cuts/spike/phase_b_results.json
 ```
 
 ## 文件地图
@@ -359,7 +365,7 @@ cat data/cuts/spike/scale_ramp_results.jsonl
 - `oracle_emit_fixture_45cert.jsonl` — 44 cert × 9 family A3 fixture (real oracle
   emit, 65KB)
 - `scale_ramp_results.jsonl` — B2 5-tier ramp 0/1K/10K/50K/100K
-- `scale_ramp_test_smoke.jsonl` — B3 smoke run data
+- `phase_b_results.json` — Phase B aggregate (B3 + B2 + B4 + G/N pass map)
 
 (注: spike-only implementation code `scripts/spike_prod_scale_runner.py` +
 `scripts/spike_prod_scale_lib/*.py` **不入此包** — 详 `SPIKE_COMMIT_LOG.md`)
@@ -530,7 +536,7 @@ Verdict data 5 file overlay 入包 (覆盖到 project 相同路径):
 - `docs/research/prod_scale_spike_design_20260525/spike_run_20260526/phase_a_report.md`
 - `data/cuts/spike/oracle_emit_fixture_45cert.jsonl`
 - `data/cuts/spike/scale_ramp_results.jsonl`
-- `data/cuts/spike/scale_ramp_test_smoke.jsonl`
+- `data/cuts/spike/phase_b_results.json`
 
 下面是 spike branch 完整 commit log + per-commit stat:
 
