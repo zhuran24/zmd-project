@@ -28,7 +28,7 @@ verified by this spike — they are deferred to P1.3A 主体 design phase and P1
 | G4b build 100K cut | ≤ 600s | 3.31s | PASS |
 | G5 0 cut feasibility solve | ≤ 30s | 0.70s (OPTIMAL) | PASS |
 | G7 100K solve wall (measure, no hard cap) | — | 0.91s (OPTIMAL) | n/a (measure) |
-| G8 RSS peak | ≤ 20 GB | 0.98GB | PASS |
+| G8 RSS peak | ≤ 20 GB | phase_b_results after-solve max 0.983GB; raw telemetry rss_sample max 1.008GB; raw rss_sample_after_solve max 0.983GB @ 100K | PASS |
 | G9 proto @ 50K | ≤ 500 MB | 17.8MB | PASS |
 | G9 proto @ 100K | ≤ 1 GB | 19.3MB | PASS |
 | G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound | 50 cert / 9 family / 0 unsound | PASS |
@@ -70,7 +70,7 @@ Per MERGER §5.2: spike must close Finding 5 sizing/measurement gate, NOT close 
 |---|---|---|---|
 | 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |
 | 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family with real `pose_count` / `cell_count` / `literal_count` per cert (F3 special-case phase Stage 1 generator live) | YES |
-| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 2.04–3.39s, proto 16.3–19.7 MB, RSS 0.61–0.83 GB, solve 0.73–0.87s across 0–100K | YES |
+| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 1.95–2.02s + translation 0.00–1.30s, proto 16.3–19.3 MB, build RSS 0.832–0.861 GB, raw after-solve RSS 0.832–0.983 GB, raw background max 1.008 GB, solve 0.70–0.91s across 0–100K | YES |
 | 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total 0.071s, eviction fired iter [6] (52K→30K), age_decay validated via multi-iter age tick | YES |
 | 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |
 
@@ -130,8 +130,9 @@ Phase B wall was MUCH smaller than estimate (3-5h) because:
    stores BoolVar as varint-packed indices not name strings, so 100K AddBoolOr × ~3 lit avg =
    ~300K lit refs ≈ few MB on top of base 16 MB.
 
-3. **RSS peak stays at 0.83 GB across all tiers** — Build phase already loads OR-Tools +
-   81K BoolVar (≈0.6 GB). Additional cuts add proportionally small protobuf footprint. No L24
+3. **RSS stays below 1.01 GB raw peak across all tiers** — Build phase already loads OR-Tools +
+   81K BoolVar. Additional cuts add proportionally small protobuf footprint. v17 raw telemetry:
+   background `rss_sample` max 1.008 GB; `rss_sample_after_solve` max 0.983 GB @ 100K. No L24
    augmented-master-style RSS explosion at this scale on toy master.
 
 4. **G6a feasible solver bound gap 0.12% at 180s** — Bound 76884 vs obj 76795 over 81K var
@@ -150,6 +151,6 @@ Off-limits enforce: PASS (B1-B6 added only spike-lib files + this verdict.md;
 
 ## Raw artifacts
 
-- Telemetry jsonl: `/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_77754.jsonl` (204 rss_sample + 14 proto_sample + 1 dark_matter_emit)
+- Telemetry jsonl: `/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_77754.jsonl` (204 rss_sample + 14 proto_sample + 5 rss_sample_after_solve + 1 dark_matter_emit)
 - Scale ramp jsonl: `data/cuts/spike/scale_ramp_results.jsonl` (5 tier records)
 - A3 oracle fixture: `data/cuts/spike/oracle_emit_fixture_45cert.jsonl` (50 cert × 9 family / 0 unsound)

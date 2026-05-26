@@ -7,6 +7,12 @@
 **Phase A Claude 工时**: ~3-4h (estimate)
 **Status**: ✅ Phase A done, Phase B ready
 
+> **v17 addendum**: This file is a **historical pre-F3 Phase A report**. The A3 section
+> below records the original 44-cert / 8-family run. Current v17 G10 status is
+> **superseded** by spike commit `1d935f3` and
+> `data/cuts/spike/oracle_emit_fixture_45cert.jsonl`: 50 cert / 9 family / 0 unsound,
+> including 6 F3 `port_exposure` certs.
+
 ## Commit chain
 
 | Commit | Subject | A-step |
