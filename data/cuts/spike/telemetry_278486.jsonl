@@ -1,0 +1,5 @@
+{"ts": 1779873216.7063735, "event": "rss_sample", "data": {"rss_bytes": 103657472, "vms_bytes": 1423298560, "rss_gb": 0.097}}
+{"ts": 1779873217.7116833, "event": "rss_sample", "data": {"rss_bytes": 558706688, "vms_bytes": 1884848128, "rss_gb": 0.52}}
+{"ts": 1779873218.726294, "event": "rss_sample", "data": {"rss_bytes": 611467264, "vms_bytes": 1937555456, "rss_gb": 0.569}}
+{"ts": 1779873219.5912757, "event": "proto_sample", "data": {"label": "smoke_feasible_post_build", "proto_bytesize": 17092968, "proto_mb": 16.3, "n_vars": 81795, "n_constraints": 266}}
+{"ts": 1779873219.8836558, "event": "rss_sample", "data": {"rss_bytes": 705875968, "vms_bytes": 2031390720, "rss_gb": 0.657}}

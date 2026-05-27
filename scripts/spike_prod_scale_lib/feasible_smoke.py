@@ -90,7 +90,9 @@ def build_known_feasible_cuts(
     """
     hint = load_blueprint_hint()
     instances = json.loads(MANDATORY_PATH.read_text())
-    placements = json.loads(PLACEMENTS_PATH.read_text())
+    # Python 3.14 json stdlib regression on large files via read_text — use
+    # read_bytes().decode() (see load_pose_registry note).
+    placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     pools = placements.get("facility_pools", {})
 
     # Per-instance pose index list in registry, with hint pose carved out.
@@ -165,7 +167,9 @@ def apply_hint_to_master(
     """
     hint = load_blueprint_hint()
     instances = json.loads(MANDATORY_PATH.read_text())
-    placements = json.loads(PLACEMENTS_PATH.read_text())
+    # Python 3.14 json stdlib regression on large files via read_text — use
+    # read_bytes().decode() (see load_pose_registry note).
+    placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     pools = placements.get("facility_pools", {})
 
     n_one = 0

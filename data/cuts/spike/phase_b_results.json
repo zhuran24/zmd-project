@@ -1,6 +1,6 @@
 {
   "B3_feasible_smoke": {
-    "wall_s": 189.217,
+    "wall_s": 188.416,
     "g_pass": {
       "G6a_feasible_wall": false,
       "G6a_feasible_status": true,
@@ -15,13 +15,13 @@
       "n_vars": 81795,
       "n_constraints": 10266,
       "proto_mb": 17.643482208251953,
-      "build_wall_s": 2.220207380996726,
-      "cut_apply_wall_s": 0.033000638999510556,
-      "solve_wall_s": 180.00675094000326,
+      "build_wall_s": 2.1540982670121593,
+      "cut_apply_wall_s": 0.02841004400397651,
+      "solve_wall_s": 180.00560805998975,
       "status_label": "FEASIBLE",
       "best_objective_bound": 76884.0,
       "objective_value": 76795.0,
-      "rss_peak_gb": 0.7934379577636719,
+      "rss_peak_gb": 0.794158935546875,
       "notes": [
         "hint vars set to 1: 225",
         "objective: Maximize(sum all 81795 vars)"
@@ -33,19 +33,19 @@
       "cut_count_applied": 10000,
       "n_vars": 81795,
       "n_constraints": 10266,
-      "proto_mb": 16.63764476776123,
-      "build_wall_s": 2.334731968003325,
-      "cut_apply_wall_s": 0.16624251499888487,
-      "solve_wall_s": 0.8323131770011969,
+      "proto_mb": 16.62662982940674,
+      "build_wall_s": 2.057986707004602,
+      "cut_apply_wall_s": 0.12993375600490253,
+      "solve_wall_s": 0.829366215999471,
       "status_label": "OPTIMAL",
       "best_objective_bound": 0.0,
       "objective_value": 0.0,
-      "rss_peak_gb": 0.8450584411621094,
+      "rss_peak_gb": 0.8488311767578125,
       "notes": []
     }
   },
   "B2_scale_ramp": {
-    "wall_s": 20.764,
+    "wall_s": 17.856,
     "g_pass": {
       "G1_build_0cut": true,
       "G2_build_1K": true,
@@ -67,13 +67,13 @@
         "cut_count_applied": 0,
         "n_vars": 81795,
         "n_constraints_total": 266,
-        "build_wall_s": 2.2222753840032965,
-        "translation_wall_s": 1.2800999684259295e-05,
+        "build_wall_s": 1.9438509809988318,
+        "translation_wall_s": 1.5564000932499766e-05,
         "proto_bytesize": 17092968,
-        "rss_peak_gb_during_build": 0.8398628234863281,
-        "solve_wall_s": 0.8185941179981455,
+        "rss_peak_gb_during_build": 0.84161376953125,
+        "solve_wall_s": 0.7163928259979002,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8402023315429688,
+        "rss_peak_gb_after_solve": 0.8420333862304688,
         "notes": []
       },
       {
@@ -82,13 +82,13 @@
         "cut_count_applied": 1000,
         "n_vars": 81795,
         "n_constraints_total": 1266,
-        "build_wall_s": 2.4034815989944036,
-        "translation_wall_s": 0.01641204900079174,
-        "proto_bytesize": 17128290,
-        "rss_peak_gb_during_build": 0.8402519226074219,
-        "solve_wall_s": 0.84330465200037,
+        "build_wall_s": 1.9867675129935378,
+        "translation_wall_s": 0.014941039989935234,
+        "proto_bytesize": 17126893,
+        "rss_peak_gb_during_build": 0.8420791625976562,
+        "solve_wall_s": 0.8455982420127839,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8402519226074219,
+        "rss_peak_gb_after_solve": 0.8420791625976562,
         "notes": []
       },
       {
@@ -97,13 +97,13 @@
         "cut_count_applied": 10000,
         "n_vars": 81795,
         "n_constraints_total": 10266,
-        "build_wall_s": 2.360736549999274,
-        "translation_wall_s": 0.1649246899978607,
-        "proto_bytesize": 17446089,
-        "rss_peak_gb_during_build": 0.8337974548339844,
-        "solve_wall_s": 0.8719861839999794,
+        "build_wall_s": 2.074092398994253,
+        "translation_wall_s": 0.14164542499929667,
+        "proto_bytesize": 17433807,
+        "rss_peak_gb_during_build": 0.8361015319824219,
+        "solve_wall_s": 0.8939905040024314,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8337974548339844,
+        "rss_peak_gb_after_solve": 0.8361015319824219,
         "notes": []
       },
       {
@@ -112,13 +112,13 @@
         "cut_count_applied": 50000,
         "n_vars": 81795,
         "n_constraints_total": 50266,
-        "build_wall_s": 2.4468556939973496,
-        "translation_wall_s": 0.8381427499989513,
-        "proto_bytesize": 18858170,
-        "rss_peak_gb_during_build": 0.8338088989257812,
-        "solve_wall_s": 0.9984201340048457,
+        "build_wall_s": 2.0040049649978755,
+        "translation_wall_s": 0.6117088019964285,
+        "proto_bytesize": 18798331,
+        "rss_peak_gb_during_build": 0.8361129760742188,
+        "solve_wall_s": 0.9287813970004208,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 0.8649253845214844,
+        "rss_peak_gb_after_solve": 0.8975334167480469,
         "notes": []
       },
       {
@@ -127,35 +127,35 @@
         "cut_count_applied": 100000,
         "n_vars": 81795,
         "n_constraints_total": 100266,
-        "build_wall_s": 2.4433333999986644,
-        "translation_wall_s": 1.6570511129975785,
-        "proto_bytesize": 20622900,
-        "rss_peak_gb_during_build": 0.8653831481933594,
-        "solve_wall_s": 1.132208636001451,
+        "build_wall_s": 2.085971034000977,
+        "translation_wall_s": 1.274431348007056,
+        "proto_bytesize": 20503160,
+        "rss_peak_gb_during_build": 0.8975372314453125,
+        "solve_wall_s": 0.9703076240111841,
         "solve_status_label": "OPTIMAL",
-        "rss_peak_gb_after_solve": 1.0273971557617188,
+        "rss_peak_gb_after_solve": 1.0315513610839844,
         "notes": []
       }
     ],
     "out_jsonl": "/home/zhuran24/claude-pj/zmd/data/cuts/spike/scale_ramp_results.jsonl"
   },
   "B4_filter_mock": {
-    "wall_s": 0.091,
+    "wall_s": 0.08,
     "g11_pass": true,
     "n_iter": 10,
-    "total_wall_s": 0.0834602309987531,
-    "max_iter_wall_s": 0.01099730099667795,
+    "total_wall_s": 0.0732454769895412,
+    "max_iter_wall_s": 0.009490783995715901,
     "eviction_count": 1,
     "eviction_triggered_in_iter": [
       6
     ],
     "final_cut_count": 48000
   },
-  "phase_b_wall_s": 210.074,
+  "phase_b_wall_s": 206.353,
   "B5_telemetry_audit": {
-    "jsonl_path": "/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_128896.jsonl",
+    "jsonl_path": "/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_278858.jsonl",
     "counts": {
-      "rss_sample": 208,
+      "rss_sample": 205,
       "proto_sample": 14,
       "rss_sample_after_solve": 5,
       "dark_matter_emit": 1
