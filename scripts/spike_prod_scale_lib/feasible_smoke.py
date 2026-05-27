@@ -340,7 +340,7 @@ def run_feasible_tier(
 
     notes = [
         f"hint vars set to 1: {hint_stats['hinted_one']}",
-        f"objective: Maximize(sum all 81795 vars)",
+        "objective: Maximize(sum all 81795 vars)",
     ]
 
     return SmokeTierReport(

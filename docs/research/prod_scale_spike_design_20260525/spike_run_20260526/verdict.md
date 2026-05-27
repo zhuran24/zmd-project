@@ -22,13 +22,13 @@ verified by this spike — they are deferred to P1.3A 主体 design phase and P1
 | Criterion | Threshold | Actual | Status |
 |---|---|---|---|
 | G1 build 0 cut | ≤ 10s | 1.94s | PASS |
-| G2 build 1K cut | ≤ 20s | 2.00s | PASS |
-| G3 build 10K cut | ≤ 30s | 2.22s | PASS |
-| G4 build 50K cut | ≤ 300s | 2.62s | PASS |
-| G4b build 100K cut | ≤ 600s | 3.36s | PASS |
+| G2 build+translate 1K cut | ≤ 20s | 2.00s | PASS |
+| G3 build+translate 10K cut | ≤ 30s | 2.22s | PASS |
+| G4 build+translate 50K cut | ≤ 300s | 2.62s | PASS |
+| G4b build+translate 100K cut | ≤ 600s | 3.36s | PASS |
 | G5 0 cut feasibility solve | ≤ 30s | 0.72s (OPTIMAL) | PASS |
 | G7 100K solve wall (measure, no hard cap) | — | 0.97s (OPTIMAL) | n/a (measure) |
-| G8 RSS peak | ≤ 20 GB | 1.03GB | PASS |
+| G8 RSS peak | ≤ 20 GB | after-solve max 1.0316GB | PASS |
 | G9 proto @ 50K | ≤ 500 MB | 17.9MB | PASS |
 | G9 proto @ 100K | ≤ 1 GB | 19.6MB | PASS |
 | G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound | 50 cert / 9 family / 0 unsound | PASS |
@@ -151,6 +151,6 @@ Off-limits enforce: PASS (B1-B6 added only spike-lib files + this verdict.md;
 
 ## Raw artifacts
 
-- Telemetry jsonl: `/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_278858.jsonl` (205 rss_sample + 14 proto_sample + 1 dark_matter_emit)
+- Telemetry jsonl: `/home/zhuran24/claude-pj/zmd/data/cuts/spike/telemetry_278858.jsonl` (205 rss_sample + 14 proto_sample + 5 rss_sample_after_solve + 1 dark_matter_emit)
 - Scale ramp jsonl: `data/cuts/spike/scale_ramp_results.jsonl` (5 tier records)
 - A3 oracle fixture: `data/cuts/spike/oracle_emit_fixture_45cert.jsonl` (50 cert × 9 family / 0 unsound)

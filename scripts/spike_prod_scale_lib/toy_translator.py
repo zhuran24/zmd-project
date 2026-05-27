@@ -231,10 +231,15 @@ def _cert_literal_pairs(cert_record: dict, fallback_pool: List[Tuple[str, str]])
                 and isinstance(blocking[0], str)
                 and isinstance(blocking[2], str)
             ):
-                pairs.extend([
+                return [
                     (facility_group, facility_pose_id),
                     (blocking[0], blocking[2]),
-                ])
+                ]
+            # F3 is literal-mode with a fixed cert schema. Do not synthesize a
+            # three-literal fallback here: that would hide schema drift and
+            # reintroduce the v19 semantics-overclaim class. Malformed F3 certs
+            # should be skipped by translate_certs_to_constraints().
+            return []
 
         # Strategy 1: oracle_assignment_witness = [[group_id, pose_id], ...]
         witness = payload.get("oracle_assignment_witness")
@@ -399,7 +404,7 @@ if __name__ == "__main__":
                 cert_records.append(rec)
                 if len(cert_records) >= 5:
                     break
-        print(f"\nTranslating 5 sample certs ...")
+        print("\nTranslating 5 sample certs ...")
         tr = translate_certs_to_constraints(model, reg, cert_records)
         print(f"  n_certs_in         = {tr.n_certs_in}")
         print(f"  n_certs_applied    = {tr.n_certs_applied}")
