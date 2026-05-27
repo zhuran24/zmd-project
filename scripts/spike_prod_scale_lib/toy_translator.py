@@ -215,9 +215,30 @@ def _cert_literal_pairs(cert_record: dict, fallback_pool: List[Tuple[str, str]])
     payload = _decode_cert_b64(cert_record.get("cert_payload_b64", ""))
     pairs: List[Tuple[str, str]] = []
     if payload is not None:
+        # Strategy 0: F3 port_exposure literal-mode certs carry exactly the
+        # facility pose and the blocking facility pose. Keep this before the
+        # generic oracle_assignment_witness parser so F3 measures the real
+        # two-literal no-good shape instead of the synthetic fallback.
+        if cert_record.get("family") == "port_exposure":
+            facility_group = payload.get("facility_group")
+            facility_pose_id = payload.get("facility_pose_id")
+            blocking = payload.get("blocking_facility")
+            if (
+                isinstance(facility_group, str)
+                and isinstance(facility_pose_id, str)
+                and isinstance(blocking, (list, tuple))
+                and len(blocking) >= 3
+                and isinstance(blocking[0], str)
+                and isinstance(blocking[2], str)
+            ):
+                pairs.extend([
+                    (facility_group, facility_pose_id),
+                    (blocking[0], blocking[2]),
+                ])
+
         # Strategy 1: oracle_assignment_witness = [[group_id, pose_id], ...]
         witness = payload.get("oracle_assignment_witness")
-        if isinstance(witness, list):
+        if not pairs and isinstance(witness, list):
             for entry in witness:
                 if isinstance(entry, (list, tuple)) and len(entry) >= 2:
                     g, p = str(entry[0]), str(entry[1])

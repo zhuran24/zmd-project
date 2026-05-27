@@ -70,7 +70,7 @@ Per MERGER §5.2: spike must close Finding 5 sizing/measurement gate, NOT close 
 |---|---|---|---|
 | 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |
 | 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family with real `pose_count` / `cell_count` / `literal_count` per cert (F3 special-case phase Stage 1 generator live) | YES |
-| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 2.04–3.39s, proto 16.3–19.7 MB, RSS 0.61–0.83 GB, solve 0.73–0.87s across 0–100K | YES |
+| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp (v19 rerun): build 2.22–2.45s + translation 0.00–1.66s, proto 16.3–19.7 MB, build RSS 0.834–0.865 GB, after-solve RSS max 1.03 GB, solve 0.82–1.13s across 0–100K; 5/5 tier cut_count_applied == target | YES |
 | 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total 0.083s, eviction fired iter [6] (52K→30K), age_decay validated via multi-iter age tick | YES |
 | 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |
 
@@ -81,7 +81,7 @@ enter P1.3A risk register:
 
 1. **Convergence (Gemini round 3 Q8 semantic gap)** — Toy master has 81,795 BoolVar + loose
    `sum(group_vars) >= 1` demand. Real PoseBoolExactMaster will have ExactlyOne per instance
-   + port-linking + anti-overlap. Whose solve cost the spike's `solve_wall_s 0.7–0.9s` does
+   + port-linking + anti-overlap. Whose solve cost the spike's v19 `solve_wall_s 0.82–1.13s` does
    NOT predict. P1.3A LBBD outer-loop convergence must be empirically validated separately.
 
 2. **G6a wall SOFT FAIL is honest finding** — Solver hit 180s cap at FEASIBLE with bound gap
@@ -116,7 +116,7 @@ Per MERGER §5.6 (shrunk estimate): 8-12h Claude / 4-7h wall total.
 | **Phase B total** | **6-9h Claude + 3-5h wall** | **~2-3h Claude** | **210s (3.5min)** |
 
 Phase B wall was MUCH smaller than estimate (3-5h) because:
-- Build cost is essentially linear and well below thresholds (3.4s for 100K not 600s)
+- Build + translation cost is essentially linear and well below thresholds (4.10s for 100K not 600s)
 - Toy master + loose constraints → no INFEASIBLE early-stop loop
 - Single-worker + single-solve per tier (no multi-iter LBBD per MERGER §5.3)
 
@@ -130,9 +130,10 @@ Phase B wall was MUCH smaller than estimate (3-5h) because:
    stores BoolVar as varint-packed indices not name strings, so 100K AddBoolOr × ~3 lit avg =
    ~300K lit refs ≈ few MB on top of base 16 MB.
 
-3. **RSS peak stays at 0.83 GB across all tiers** — Build phase already loads OR-Tools +
-   81K BoolVar (≈0.6 GB). Additional cuts add proportionally small protobuf footprint. No L24
-   augmented-master-style RSS explosion at this scale on toy master.
+3. **RSS peak stays near 0.83–1.03 GB across all tiers** — Build phase already loads OR-Tools +
+   81K BoolVar. Additional cuts add proportionally small protobuf footprint; v19 raw telemetry
+   records the 100K after-solve peak explicitly at 1.0274 GB. No L24 augmented-master-style
+   RSS explosion at this scale on toy master.
 
 4. **G6a feasible solver bound gap 0.12% at 180s** — Bound 76884 vs obj 76795 over 81K var
    max-sum. Pure structural: 10K AddBoolOr each forbids ~3 vars conjunction. Solver finds a

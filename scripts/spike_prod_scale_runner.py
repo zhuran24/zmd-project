@@ -402,7 +402,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("|---|---|---|---|")
     lines.append("| 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |")
     lines.append(f"| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl {g10_cert_count} cert × {g10_family_count} family with real `pose_count` / `cell_count` / `literal_count` per cert (F3 special-case phase Stage 1 generator live) | YES |")
-    lines.append(f"| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp: build 2.04–3.39s, proto 16.3–19.7 MB, RSS 0.61–0.83 GB, solve 0.73–0.87s across 0–100K | YES |")
+    lines.append("| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp (v19 rerun): build 2.22–2.45s + translation 0.00–1.66s, proto 16.3–19.7 MB, build RSS 0.834–0.865 GB, after-solve RSS max 1.03 GB, solve 0.82–1.13s across 0–100K; 5/5 tier cut_count_applied == target | YES |")
     lines.append(f"| 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total {filt.get('total_wall_s', 0):.3f}s, eviction fired iter {filt.get('eviction_triggered_in_iter', [])} (52K→30K), age_decay validated via multi-iter age tick | YES |")
     lines.append(f"| 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |")
     lines.append("")
@@ -415,7 +415,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("")
     lines.append("1. **Convergence (Gemini round 3 Q8 semantic gap)** — Toy master has 81,795 BoolVar + loose")
     lines.append("   `sum(group_vars) >= 1` demand. Real PoseBoolExactMaster will have ExactlyOne per instance")
-    lines.append("   + port-linking + anti-overlap. Whose solve cost the spike's `solve_wall_s 0.7–0.9s` does")
+    lines.append("   + port-linking + anti-overlap. Whose solve cost the spike's v19 `solve_wall_s 0.82–1.13s` does")
     lines.append("   NOT predict. P1.3A LBBD outer-loop convergence must be empirically validated separately.")
     lines.append("")
     lines.append("2. **G6a wall SOFT FAIL is honest finding** — Solver hit 180s cap at FEASIBLE with bound gap")
@@ -452,7 +452,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append(f"| **Phase B total** | **6-9h Claude + 3-5h wall** | **~2-3h Claude** | **{phase_b_wall_s:.0f}s ({phase_b_wall_s / 60:.1f}min)** |")
     lines.append("")
     lines.append("Phase B wall was MUCH smaller than estimate (3-5h) because:")
-    lines.append("- Build cost is essentially linear and well below thresholds (3.4s for 100K not 600s)")
+    lines.append("- Build + translation cost is essentially linear and well below thresholds (4.10s for 100K not 600s)")
     lines.append("- Toy master + loose constraints → no INFEASIBLE early-stop loop")
     lines.append("- Single-worker + single-solve per tier (no multi-iter LBBD per MERGER §5.3)")
     lines.append("")
@@ -468,9 +468,10 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("   stores BoolVar as varint-packed indices not name strings, so 100K AddBoolOr × ~3 lit avg =")
     lines.append("   ~300K lit refs ≈ few MB on top of base 16 MB.")
     lines.append("")
-    lines.append("3. **RSS peak stays at 0.83 GB across all tiers** — Build phase already loads OR-Tools +")
-    lines.append("   81K BoolVar (≈0.6 GB). Additional cuts add proportionally small protobuf footprint. No L24")
-    lines.append("   augmented-master-style RSS explosion at this scale on toy master.")
+    lines.append("3. **RSS peak stays near 0.83–1.03 GB across all tiers** — Build phase already loads OR-Tools +")
+    lines.append("   81K BoolVar. Additional cuts add proportionally small protobuf footprint; v19 raw telemetry")
+    lines.append("   records the 100K after-solve peak explicitly at 1.0274 GB. No L24 augmented-master-style")
+    lines.append("   RSS explosion at this scale on toy master.")
     lines.append("")
     lines.append("4. **G6a feasible solver bound gap 0.12% at 180s** — Bound 76884 vs obj 76795 over 81K var")
     lines.append("   max-sum. Pure structural: 10K AddBoolOr each forbids ~3 vars conjunction. Solver finds a")
@@ -482,20 +483,20 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("## Recommended next step (main conversation)")
     lines.append("")
     if overall == "GO":
-        rec = ("**GO** to v14 review package build. Per MERGER §6.5: \"等 spike 跑完 verdict.md 后打 v14 包 "
+        rec = ("**GO** to v20 review package build. Per MERGER §6.5: \"等 spike 跑完 verdict.md 后打 review 包 "
                "(含 patch verify + Finding 5 close spike verdict)\". Spike close 5/5 Finding 5 项 with all G PASS "
-               "and zero N trigger. v14 package should include: spike verdict.md + B1-B6 commits + A3 fixture + "
-               "MERGER round 0-3 cross-check archive + GPT pro audit. After v14 GPT pro review GO, proceed to "
+               "and zero N trigger. v20 package should include: spike verdict.md + B1-B6 commits + A3 fixture + "
+               "MERGER round 0-3 cross-check archive + GPT pro audit. After v20 GPT pro review GO, proceed to "
                "P1.3A 主体 design (real PoseBoolExactMaster integration + LBBD multi-iter + 9 family translator "
                "+ 6-dim watcher + cut store) via N=8 parallel design protocol.")
     elif overall == "GO_WITH_MINOR":
-        rec = (f"**GO_WITH_MINOR** to v14 package — soft fails: {g_fails}. All HARD G criteria PASS, zero "
+        rec = (f"**GO_WITH_MINOR** to v20 package — soft fails: {g_fails}. All HARD G criteria PASS, zero "
                f"hard N trigger. Soft fails documented as known sizing limitations (G6a wall is toy artifact, "
-               f"will be reassessed under real master in P1.3A). Recommend v14 package build with explicit "
+               f"will be reassessed under real master in P1.3A). Recommend v20 package build with explicit "
                f"soft-fail flagging in cover doc.")
     else:
         rec = (f"**NOT_GO** — hard fails: {hard_g_fails}, hard N triggers: {[k for k, v in n_trigger.items() if v]}. "
-               f"Do NOT proceed to v14 package. Reflect on each fail: harness bug? scope drift? real prod-shape "
+               f"Do NOT proceed to v20 package. Reflect on each fail: harness bug? scope drift? real prod-shape "
                f"limit? Likely respins: B2 re-tune, B3 reconstruct, possibly re-spawn paralle design.")
     lines.append(rec)
     lines.append("")
