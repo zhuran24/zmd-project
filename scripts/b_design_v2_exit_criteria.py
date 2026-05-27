@@ -13,10 +13,10 @@ death timeline Phase 0 Day 21 exit criteria).
 - artifact: 在哪查 (file path / metric)
 
 Usage:
-    .venv/bin/python scripts/b_design_v2_exit_criteria.py             # 跑全 check
-    .venv/bin/python scripts/b_design_v2_exit_criteria.py --strict    # FAIL fail script
-    .venv/bin/python scripts/b_design_v2_exit_criteria.py --json      # 出 JSON 报告
-    .venv/bin/python scripts/b_design_v2_exit_criteria.py --criterion 1 4 8  # 只跑 #1/4/8
+    python scripts/b_design_v2_exit_criteria.py             # 跑全 check
+    python scripts/b_design_v2_exit_criteria.py --strict    # FAIL/PENDING fail script
+    python scripts/b_design_v2_exit_criteria.py --json      # 出 JSON 报告
+    python scripts/b_design_v2_exit_criteria.py --criterion 1 4 8  # 只跑 #1/4/8
 
 PROJECT_LOCK §2 update 后, 168h campaign 启动前必须本 script 全 PASS.
 """
@@ -126,7 +126,7 @@ def check_synthetic_test_exists(test_name: str, criterion_id: int, description: 
     # 跑 pytest
     try:
         result = subprocess.run(
-            [".venv/bin/python", "-m", "pytest", str(test_path), "-q"],
+            [sys.executable, "-m", "pytest", str(test_path), "-q"],
             cwd=REPO, capture_output=True, timeout=60, text=True,
         )
         status = "PASS" if result.returncode == 0 else "FAIL"
@@ -136,7 +136,7 @@ def check_synthetic_test_exists(test_name: str, criterion_id: int, description: 
             pass_condition=f"pytest {test_name} 全 PASS",
             artifact=str(test_path.relative_to(REPO)),
             status=status,
-            detail=result.stdout.strip()[-500:],
+            detail=(result.stdout + result.stderr).strip()[-500:],
         )
     except Exception as e:
         return CriterionResult(
@@ -156,7 +156,7 @@ def check_2_q_front_overload() -> CriterionResult:
 
 def check_3_power_no_cover() -> CriterionResult:
     return check_synthetic_test_exists(
-        "test_family_7_power_hitting_set.py", 3,
+        "test_family_power_hitting_set.py", 3,
         "power no-cover test ghost-conditioned typed cert"
     )
 
@@ -165,14 +165,14 @@ def check_3_power_no_cover() -> CriterionResult:
 # AABB intersection / area-based counting) 必硬验
 def check_2b_power_grid_reach() -> CriterionResult:
     return check_synthetic_test_exists(
-        "test_family_8_power_grid_reach.py", 28,  # criterion id 2b → 28
+        "test_family_power_grid_reach.py", 28,  # criterion id 2b → 28
         "F8 power_grid_reach Liang-Barsky AABB intersection 测试 (Gemini r24 加)"
     )
 
 
 def check_3b_density_envelope() -> CriterionResult:
     return check_synthetic_test_exists(
-        "test_family_9_density_envelope.py", 38,  # criterion id 3b → 38
+        "test_family_density_envelope.py", 38,  # criterion id 3b → 38
         "F9 density_envelope area-based counting 测试 (Gemini r24 加)"
     )
 
