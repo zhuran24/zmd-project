@@ -66,13 +66,15 @@ class PoseRegistry:
 def load_pose_registry() -> PoseRegistry:
     """Load real prod pose registry (81795 poses).
 
-    Note: use ``read_bytes().decode()`` instead of ``read_text()`` to avoid a
-    Python 3.14 stdlib regression where ``json.loads`` on the str returned by
-    ``Path.read_text()`` for very large files raises non-deterministic
-    ``ValueError: invalid literal for int() with base 10`` from the json
-    scanner. ``read_bytes().decode()`` produces an identical str but takes a
-    different code path that side-steps the regression. Verified on Python
-    3.14.5 with the 53 MB ``candidate_placements.json``.
+    Note: observed in spike runner on Python 3.14.x — calling
+    ``json.loads(Path.read_text())`` on very large files raises
+    non-deterministic ``ValueError: invalid literal for int() with base 10``
+    from the json scanner. Using ``read_bytes().decode('utf-8')`` produces an
+    identical str but takes a different code path that avoids the failure in
+    our local environment. This is a spike-local portability workaround; no
+    upstream CPython stdlib regression is asserted as proven and no master
+    src impact is claimed. Observed locally on Python 3.14.5 with the 53 MB
+    ``candidate_placements.json``.
     """
     placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     pools = placements.get("facility_pools", {})
@@ -199,9 +201,13 @@ def _decode_cert_b64(b64: str) -> Optional[dict]:
         return None
     try:
         raw = base64.b64decode(b64)
-        return json.loads(raw)
+        payload = json.loads(raw)
     except Exception:
         return None
+    # GPT 八审 V21-8F1 fix: 非 dict root (None / list / string) 返回 None,
+    # 不让 caller .get() raise AttributeError. Fail-closed contract: 任何
+    # 不规范 payload → F3 family return [], fallback families skip.
+    return payload if isinstance(payload, dict) else None
 
 
 def _cert_literal_pairs(cert_record: dict, fallback_pool: List[Tuple[str, str]]) -> List[Tuple[str, str]]:
@@ -214,33 +220,37 @@ def _cert_literal_pairs(cert_record: dict, fallback_pool: List[Tuple[str, str]])
     """
     payload = _decode_cert_b64(cert_record.get("cert_payload_b64", ""))
     pairs: List[Tuple[str, str]] = []
-    if payload is not None:
-        # Strategy 0: F3 port_exposure literal-mode certs carry exactly the
-        # facility pose and the blocking facility pose. Keep this before the
-        # generic oracle_assignment_witness parser so F3 measures the real
-        # two-literal no-good shape instead of the synthetic fallback.
-        if cert_record.get("family") == "port_exposure":
-            facility_group = payload.get("facility_group")
-            facility_pose_id = payload.get("facility_pose_id")
-            blocking = payload.get("blocking_facility")
-            if (
-                isinstance(facility_group, str)
-                and isinstance(facility_pose_id, str)
-                and isinstance(blocking, (list, tuple))
-                and len(blocking) >= 3
-                and isinstance(blocking[0], str)
-                and isinstance(blocking[2], str)
-            ):
-                return [
-                    (facility_group, facility_pose_id),
-                    (blocking[0], blocking[2]),
-                ]
-            # F3 is literal-mode with a fixed cert schema. Do not synthesize a
-            # three-literal fallback here: that would hide schema drift and
-            # reintroduce the v19 semantics-overclaim class. Malformed F3 certs
-            # should be skipped by translate_certs_to_constraints().
-            return []
 
+    # GPT 八审 V21-8F1 fix: F3 port_exposure family fail-closed 检查必须移到
+    # ``if payload is not None:`` 块**之外** —— 当 payload decode 失败 (bad
+    # base64 / 非 dict root) 时, 旧代码会落到下游 fallback 合成 3-literal
+    # synthetic, 等于 silently hide schema drift. 现在 F3 family 一律走
+    # explicit fail-closed: payload=None → 直接 return [].
+    if cert_record.get("family") == "port_exposure":
+        if payload is None:
+            return []
+        facility_group = payload.get("facility_group")
+        facility_pose_id = payload.get("facility_pose_id")
+        blocking = payload.get("blocking_facility")
+        if (
+            isinstance(facility_group, str)
+            and isinstance(facility_pose_id, str)
+            and isinstance(blocking, (list, tuple))
+            and len(blocking) >= 3
+            and isinstance(blocking[0], str)
+            and isinstance(blocking[2], str)
+        ):
+            return [
+                (facility_group, facility_pose_id),
+                (blocking[0], blocking[2]),
+            ]
+        # F3 is literal-mode with a fixed cert schema. Do not synthesize a
+        # three-literal fallback here: that would hide schema drift and
+        # reintroduce the v19 semantics-overclaim class. Malformed F3 certs
+        # should be skipped by translate_certs_to_constraints().
+        return []
+
+    if payload is not None:
         # Strategy 1: oracle_assignment_witness = [[group_id, pose_id], ...]
         witness = payload.get("oracle_assignment_witness")
         if not pairs and isinstance(witness, list):

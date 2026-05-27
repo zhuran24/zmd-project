@@ -135,8 +135,10 @@ def run_probe(instance_count: int = 50, timeout_s: float = 15.0) -> ProbeReport:
     notes: List[str] = []
 
     instances = json.loads(MANDATORY_PATH.read_text())
-    # Python 3.14 json stdlib regression on large files via read_text — use
-    # read_bytes().decode() (see toy_translator.load_pose_registry note).
+    # Observed in spike runner on Python 3.14.x: read_text() on this 53 MB
+    # placements file feeds json.loads non-deterministic ValueError. Using
+    # read_bytes().decode('utf-8') is a spike-local portability workaround;
+    # no master src impact claimed (see toy_translator.load_pose_registry).
     placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     facility_pools = placements.get("facility_pools", {})
 

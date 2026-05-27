@@ -90,8 +90,10 @@ def build_known_feasible_cuts(
     """
     hint = load_blueprint_hint()
     instances = json.loads(MANDATORY_PATH.read_text())
-    # Python 3.14 json stdlib regression on large files via read_text — use
-    # read_bytes().decode() (see load_pose_registry note).
+    # Observed in spike runner on Python 3.14.x: read_text() on this 53 MB
+    # placements file feeds json.loads non-deterministic ValueError. Using
+    # read_bytes().decode('utf-8') is a spike-local portability workaround;
+    # no master src impact claimed (see toy_translator.load_pose_registry).
     placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     pools = placements.get("facility_pools", {})
 
@@ -167,8 +169,10 @@ def apply_hint_to_master(
     """
     hint = load_blueprint_hint()
     instances = json.loads(MANDATORY_PATH.read_text())
-    # Python 3.14 json stdlib regression on large files via read_text — use
-    # read_bytes().decode() (see load_pose_registry note).
+    # Observed in spike runner on Python 3.14.x: read_text() on this 53 MB
+    # placements file feeds json.loads non-deterministic ValueError. Using
+    # read_bytes().decode('utf-8') is a spike-local portability workaround;
+    # no master src impact claimed (see toy_translator.load_pose_registry).
     placements = json.loads(PLACEMENTS_PATH.read_bytes().decode("utf-8"))
     pools = placements.get("facility_pools", {})
 
