@@ -22,7 +22,7 @@ Refs:
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, FrozenSet, List, Tuple
 
 from src.cuts.families.density_envelope import (
     ACCEPTED_WITNESS_KIND,
@@ -51,6 +51,53 @@ VALIDATOR_VERSION: str = "v1.0"
 CERT_KIND: str = "density_envelope_v1"
 
 
+def _normalize_window_rect(value: object) -> Tuple[int, int, int, int] | None:
+    """Return a validated 70x70 window rect, or ``None`` on schema error."""
+    if not isinstance(value, tuple) or len(value) != 4:
+        return None
+    if not all(isinstance(v, int) and not isinstance(v, bool) for v in value):
+        return None
+    x, y, h, w = value
+    if h < 1 or w < 1 or x < 0 or y < 0 or x + h > 70 or y + w > 70:
+        return None
+    return x, y, h, w
+
+
+def _is_valid_max_allowed_area(value: object, window_cell_count: int) -> bool:
+    """F9 only accepts a non-negative integer capacity no larger than the window."""
+    return (
+        isinstance(value, int)
+        and not isinstance(value, bool)
+        and 0 <= value <= window_cell_count
+    )
+
+
+def _witness_belongs_to_group(
+    assignment_witness: Tuple[Tuple[GroupId, PoseId], ...],
+    group_id: GroupId,
+) -> bool:
+    """All witness entries must be ``(cert.group_id, pose)`` pairs."""
+    return all(g == group_id for (g, _p) in assignment_witness)
+
+
+def _has_strict_area_overflow(
+    *,
+    state: BState,
+    group_id: GroupId,
+    window_cells: FrozenSet[Tuple[int, int]],
+    max_allowed_area: int,
+    assignment_witness: Tuple[Tuple[GroupId, PoseId], ...],
+) -> bool:
+    """Oracle-side sanity check; the validator re-verifies independently."""
+    safe_ub = _compute_safe_max_allowed_area(window_cells, group_id, state)
+    if max_allowed_area > safe_ub:
+        return False
+    recomputed_sum = _recompute_assignment_area_overlap(
+        assignment_witness, window_cells, state
+    )
+    return recomputed_sum >= 0 and recomputed_sum > max_allowed_area
+
+
 def generate_density_envelope_cuts(
     state: BState,
     *,
@@ -65,62 +112,36 @@ def generate_density_envelope_cuts(
 
     All fail-closed paths return ``[]``.
     """
-    if witness_kind not in ACCEPTED_WITNESS_KIND:
-        return []
-    if group_id not in state.groups:
-        return []
-    if state.ghost_rect is None:
-        return []
-    if not assignment_witness:
-        return []
-
-    # Schema sanity on window_rect
+    normalized_window = _normalize_window_rect(window_rect)
     if (
-        not isinstance(window_rect, tuple)
-        or len(window_rect) != 4
-        or not all(isinstance(v, int) and not isinstance(v, bool) for v in window_rect)
+        witness_kind not in ACCEPTED_WITNESS_KIND
+        or group_id not in state.groups
+        or state.ghost_rect is None
+        or not assignment_witness
+        or normalized_window is None
     ):
         return []
-    x, y, h, w = window_rect
-    if h < 1 or w < 1 or x < 0 or y < 0 or x + h > 70 or y + w > 70:
-        return []
 
-    if not isinstance(max_allowed_area, int) or isinstance(max_allowed_area, bool):
-        return []
-    if max_allowed_area < 0:
-        return []
-
-    window_cells = _window_cells(window_rect)
-    if max_allowed_area > len(window_cells):
-        return []
-
-    # All witness entries must be (cert.group_id, pose) pairs
-    for (g, _p) in assignment_witness:
-        if g != group_id:
-            return []
-
-    # Oracle-side sanity: recompute safe upper bound and witness overflow.
-    # Validator will independently re-verify; this oracle-side check just
-    # avoids emitting a guaranteed-unsound cut.
-    try:
-        safe_ub = _compute_safe_max_allowed_area(window_cells, group_id, state)
-        if max_allowed_area > safe_ub:
-            return []
-        recomputed_sum = _recompute_assignment_area_overlap(
-            assignment_witness, window_cells, state
-        )
-        if recomputed_sum < 0:
-            return []
-        if recomputed_sum <= max_allowed_area:
-            return []
-    except Exception:  # noqa: BLE001 — fail-closed
+    window_cells = _window_cells(normalized_window)
+    if (
+        not _is_valid_max_allowed_area(max_allowed_area, len(window_cells))
+        or not _witness_belongs_to_group(assignment_witness, group_id)
+    ):
         return []
 
     try:
+        if not _has_strict_area_overflow(
+            state=state,
+            group_id=group_id,
+            window_cells=window_cells,
+            max_allowed_area=max_allowed_area,
+            assignment_witness=assignment_witness,
+        ):
+            return []
         cut = _build_density_envelope_cut(
             state=state,
             group_id=group_id,
-            window_rect=window_rect,
+            window_rect=normalized_window,
             max_allowed_area=max_allowed_area,
             assignment_witness=assignment_witness,
             iter_index=iter_index,
