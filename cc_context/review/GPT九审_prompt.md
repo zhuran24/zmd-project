@@ -1,9 +1,5 @@
 # 终末地 exact solver — Phase 1.2 spike close gate 审查
 
-> 用法：把同目录的 `phase1_2_spike_review_v22.zip` 连同下面这段文字一起发给 GPT pro（新窗口）。这段是 prompt，**不在 zip 里**。
-
----
-
 我有一个项目想请你独立审一个具体的 gate。先把背景和我真正想知道的讲清楚，你别被我带偏，也别因为客气就给我盖章。
 
 ## 项目是什么

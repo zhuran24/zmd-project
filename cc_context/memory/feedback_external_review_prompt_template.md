@@ -148,6 +148,7 @@ mathematical-soundness 风险, 不应该锁.
 - 规定 reviewer 输出 schema / verdict label / 字数 (见上段; §6 不可达
   论证 armor 是唯一例外, 其余 schema 锁都不写)
 - prompt 放进 zip — per [[review-pkg-no-prompt-inside]] 职责分清
+- **prompt 文件里放使用说明 / meta header** (如 `> 用法: 把 X 发给 GPT pro` / `这段是 prompt, 不在 zip 里`) — 废话(用户自己知道) + 逼用户先删才能粘。**prompt 文件必须纯净: 全选复制即可直接粘给 reviewer**, 只含给 reviewer 看的内容(标题 + 正文); 操作说明(发哪个包 / 不进 zip / 怎么用)放 chat message 里跟用户讲, **不进 prompt 文件本身**。(2026-06-01 用户明确)
 
 ## Refs
 

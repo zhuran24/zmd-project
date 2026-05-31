@@ -26,4 +26,10 @@ metadata:
 
 **打包/外审操作规范**: 整套走 [[index-packaging-cluster]] hub。
 
+**依赖包** (GPT 在 linux cp313 装项目复现用): `cc_context/review/deps/` 含 34 个 wheel + `deps_linux_py313.zip` 均分 3 块 (`.001/.002/.003` 各 27.86MB, 因 GPT 单次上传体积限制) + `README_deps.txt`(cat 合并 + 离线 `pip install --no-index --find-links` 命令)。**闭包验证完整**: pip resolver 离线 resolve 整个 lock(34 全 pinned) 退出码 0、无缺 transitive; 3 块重组 sha256 = 原 zip byte-exact。regenerable, gitignored 不入库。
+
+**送审清单** (每个 GPT pro 窗口): ① review 包(`cc_context/review/` 的 faithful `phase1_2_spike_review_v22.zip` 或 clean `_clean.zip`) ② 3 个 deps 块 ③ 粘 `cc_context/review/GPT九审_prompt.md`(纯净, 直接全选粘)。两版**独立**送, 结论交叉比对。
+
+**基础设施** (本 session 2026-06-01 落地): GitHub 实时备份已 live(私有库 zhuran24/endfield-exact-solver, post-commit 自动 push, pre-commit 自动同步 memory, SessionEnd 兜底 WIP) + 项目结构整理(CC/审查工件归 cc_context/{memory,tools,review}, root 清爽)。详 [[github-backup]]。
+
 **下一步**: 用户送两版 zip + prompt 给 GPT pro → 若正式九审 CLEAN GO → P1.3A 主体 (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛, verdict 里 5 项 Layer-2 risk register) 走 **N=8 parallel design** (不 cherry-pick spike code)。Step 0 cheap gate 已 8/8 PASS (详 [[p1-3a-design-phase]]), production step_8 (F1-only) 仍等正式九审 CLEAN GO 才落代码。见 [[phase-1-2-progress]] + [[design-phase-n-parallel-agents]] + [[main-merger-scope-creep-bias]] (P1.3A phase boundary 用户是唯一可信 auditor)。
