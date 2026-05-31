@@ -1,10 +1,25 @@
-# 06 — 现状细则 (Phase 1.1 GO, 2026-05-24 final polish 后)
+# 06 — 现状细则 (Phase 1.2 close GO_WITH_MINOR + F3 done, 当前 P1.3A 主体设计)
 
-**当前状态**: Phase 1.1 cut framework 闭环 + 外部 reviewer exit hardening 已落地；2026-05-24 又补了 fail-closed 复查修复与 final polish。结论仍是 Phase 1.1 GO blessed，可进 Phase 1.2。
+> **现状 cross-ref**: 项目权威「当前 phase/状态」见 memory `[[phase-1-2-progress]]` 2026-05-27 终态段。本文以下 Phase 1.1 段落是**已完成的历史里程碑**, 不是当前状态。
+
+**当前状态 (2026-05-27 起)**: Phase 1.2 **7/7 cut family close** (F5/F9/F2-F4/F6/F7/F8 全 Gemini GO) + **F3 special-case phase 已完成** (F3 port_exposure generator commit `c768806` 实现, oracle 277→344 行)。spike close gate = **GO_WITH_MINOR** (GPT pro v14→v22 八轮外审收口, G6a SOFT 进 P1.3A risk register)。下一步进 **P1.3A** 主体 (real `PoseBoolExactMaster` 接 LBBD + 多轮收敛, 走 N=8 parallel design)。详见 [[phase-1-2-progress]] 2026-05-27 终态段。
+
+---
+
+## (历史里程碑) Phase 1.1 GO, 2026-05-24 final polish 后
+
+> 以下为 Phase 1.1 闭环时的现状细则, 保留作历史记录。当前状态见上方。
+
+**(历史) Phase 1.1 结论**: Phase 1.1 cut framework 闭环 + 外部 reviewer exit hardening 已落地；2026-05-24 又补了 fail-closed 复查修复与 final polish。结论是 Phase 1.1 GO blessed，可进 Phase 1.2。
 
 ### 已闭环 (Phase 1.1 GO)
-- F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach
-  validator + oracle + evaluator
+- F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach:
+  Phase 1.1 闭环的是 **validator + evaluator** (F1 oracle/generator 同期)。
+  **注意 oracle/generator 不是 Phase 1.1 同期全闭环**: F2/F4 generator 在 Phase 1.2
+  才落地; F3 port_exposure oracle 在 Phase 1.1 是 `return []` stub (GPT pro v15 三审
+  catch 的 G10 fixture coverage 真 gap), 直到 Phase 1.2 之后的 F3 special-case phase
+  (commit `c768806`, oracle 277→344 行) 才实现, 现 `EXACT_F3_GENERATOR_ENABLED` gated
+  default-disabled。见 [[phase-1-2-progress]]。
 - Lifecycle 9 step (generate → minimize → serialize → deserialize → validate →
   attach-scope → evaluate → apply-to-master → replay/regression);
   `canonicalize` 是所有步骤共用的哈希/序列化基础工具, 不单独算业务生命周期步

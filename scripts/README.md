@@ -47,7 +47,7 @@
 |---|---|
 | `ip_v2_blueprint_validator.py` | IP v2 蓝图静态校验 (传送带类型 + 端口连通性) |
 | `ip_v2_blueprint_steady_state_lp.py` | IP v2 蓝图稳态产量 LP solver (验证物料平衡) |
-| `annotate_blueprint_issues.py` | 把 validator 发现的 issue 标在 FINAL.jpg 上 (可视化) |
+| `annotate_blueprint_issues.py` | (⚠️ 未进 git — 仅早期 Linux host 工作树有, 当前 clone 缺此脚本, 需用时重写) 把 validator 发现的 issue 标在 FINAL.jpg 上 (可视化) |
 
 ---
 

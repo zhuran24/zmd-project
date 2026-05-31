@@ -368,3 +368,5 @@ These clones are **NOT** part of the build, are NOT scanned by tests, and do NOT
 - Postprocess/adapter changes don't need lock updates but must not widen proof semantics
 - Test with `python -m pytest src/tests/ -q` before any commit
 - `_codex_archive/` contains historical Codex (GPT) workspace artifacts — read-only reference, not active code
+- **子代理模型默认 opus**: 派遣 sub-agent (Agent 工具 / Workflow 内 `agent()`) 默认用 **opus** — 通常靠继承主会话模型即可, 不必显式传 `model`。仅特定情况 (如纯机械/批量活想省额度) 才显式降到 sonnet/haiku。设计探索 (N=8 parallel) / 闭环执行 / 审查类活一律 opus。
+- **现状类 memory 守 `[[memory-currency-protocol]]`**: 身份 vs 现状分离 (身份根 memory 只放稳定身份 + 指向 living 现状源的指针) + 单一 living 现状源 (恰好一条权威「当前 phase」, 其余带日期标 snapshot/历史) + phase 转换更新仪式 (close/milestone 时更新 living 源 + 给旧状态加 superseded/历史标) + memory 引用仓库文件用相对路径不用绝对 `D:\...`。
