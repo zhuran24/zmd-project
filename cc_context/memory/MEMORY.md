@@ -136,3 +136,4 @@
 - [CP-SAT 不支持 AddLazyConstraint](reference_cp_sat_no_add_lazy_constraint.md) — OR-Tools 9.15 Python 无此 API. 必走 LBBD 外循环 (solve → verify → cut → rebuild/resolve).
 - [F9 area-only invariant (PROJECT_LOCK 锁)](reference_f9_area_only_not_density.md) — F9 generator 只接受 area_capacity_overflow, 拒 routing/binding/pcr. Evaluator 必 area-based. 严格 > 才 cut.
 - [IP v2 蓝图 LP 建模规则](reference_ip_v2_blueprint_lp_modeling.md) — 外部源只有矿石 (硬白名单), unloader/storager 是内部 routing 不是源; 采种机 1→2 倍增. (annotate 脚本未进 git)
+- [GitHub 实时备份](reference_github_backup.md) — 项目+CC 上下文推私有库 zhuran24/endfield-exact-solver; 每 commit auto-push (post-commit hook, gh 全路径 credential, PATH 无关); memory 改后 sync cc_context; gh re-setup (setup-git / workflow scope / refresh --hostname)。
