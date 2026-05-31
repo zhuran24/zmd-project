@@ -25,6 +25,9 @@ live memory 在 `~/.claude/projects/D-----zmd/memory` (**仓库外**)。仓库�
 ## 不入库 (gitignore 已挡)
 `.venv` / `.artifacts` / `.upstream_clones` / `_codex_archive` / 缓存 / `*.zip` `*.7z` (review 包 regenerable) / `data/checkpoints|solutions|telemetry`。`data/preprocessed/candidate_placements.json` 53MB 入库 (>50MB GitHub 警告但 <100MB 硬限, 推得上)。
 
-## 待定增强 (用户可选, 还没开)
-- **pre-commit memory-sync hook**: 每 commit 自动 sync live memory → cc_context, 免手动。
-- **CC Stop hook auto-commit+push WIP**: 防 session 间机器死丢未提交的活, 代价 = WIP commit 进历史。
+## 已启用自动化 hook (2026-06-01)
+- **pre-commit memory-sync** (`.git/hooks/pre-commit`, 机器专属不入库): 每 commit 前把 live memory (`~/.claude/.../memory`) 镜像进 `cc_context/memory` + git add (temp-swap 安全式, cp 失败不动旧备份)。免手动 sync, 每个 commit 自动带最新记忆。
+- **SessionEnd WIP 兜底** (`.claude/settings.json` SessionEnd → `scripts/cc_wip_backup.ps1`, 入库随备份走): session 优雅退出若有未提交改动, 自动 `git add -A` + commit `SessionEnd WIP auto-checkpoint` (→ pre/post-commit 链同步 memory + push)。堵 session 间丢 WIP 的窗口。**机器崩溃(进程被杀)不 fire**, 崩溃靠 post-commit auto-push + 勤 commit 兜。
+
+### ⚠️ 维护义务 (用户明确要记: "以后才会知道要及时去整理")
+SessionEnd 会产生 `SessionEnd WIP auto-checkpoint` commit, 在历史里**会堆积**。**周期性 squash 整理** —— 建议 phase boundary / GPT review 打包前, 把连续的 WIP auto-checkpoint commit squash 成一个有意义的 commit, 否则历史越来越乱、git log/bisect 难用。这是已知 trade-off (用户接受 "WIP 可事后 squash" 换不丢活)。跟 [[memory-currency-protocol]] 同精神 (周期维护别让东西堆死)。

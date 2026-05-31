@@ -1,3 +1,14 @@
 {
-  "hooks": {}
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cc_wip_backup.ps1"
+          }
+        ]
+      }
+    ]
+  }
 }
