@@ -47,9 +47,9 @@ finding 逐步修。关键里程碑:
 
 **v22 包 sha `72a045450d0c3dc2f0ff22d9d8d8053edaf641ce4ca1c7564e1f858369adae38`。**
 **(更新 2026-05-31)**: v22 包已从 Linux 迁至 Windows, 并按 [[review-pkg-no-prompt-inside]]
-重建为**两版** (faithful: `D:\追光\zmd\phase1_2_spike_review_v22.zip`; clean/去 priming:
+重建为**两版** (faithful: `cc_context/review/phase1_2_spike_review_v22.zip`; clean/去 priming:
 `phase1_2_spike_review_v22_clean.zip`; build 脚本 `build_v22_win.py` + `build_v22_clean_win.py`
-均在 `D:\追光\zmd`)。本 session 主代理已做**独立九审复审 = CLEAN GO** (本地复审, 非 GPT 输出:
+均在 `cc_context/review/`)。本 session 主代理已做**独立九审复审 = CLEAN GO** (本地复审, 非 GPT 输出:
 真 soundness 守卫 3/3 + 414 cuts pass + v22 fail-closed 9/9 + verdict 诚实)。**当前 = 等
 GPT pro 对 faithful + clean 两版独立送审 (正式九审)。** 历史包仍在外盘
 `/mnt/wd_external/zmd_review_archive/`。当前交接状态见单一 living 源

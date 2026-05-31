@@ -56,3 +56,6 @@ scripts/pumpkin_poc/run_log.txt
 *.xz
 *.zst
 *.rar
+
+# 依赖包 (GPT 上传用, 从 requirements.lock regenerable, 巨大不入库; .whl 默认不被 *.zip 挡)
+cc_context/review/deps/
