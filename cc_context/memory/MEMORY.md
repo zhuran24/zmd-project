@@ -28,6 +28,7 @@
 
 ## 工作流 / 协作偏好
 
+- [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类别只信 main 自审; 派独立 workflow/子代理, **backstop 主体必须是被验对象本身(非 proxy, 如别拿 git log/记忆树代替 session 内容)**; 子代理报告 main 自己核. 本 session 自证 (主体误成记忆树→假完整, 用户 2 次纠正).
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 遇 LP/CP-SAT/复杂度/proof system 数学问题调 Gemini free-tier 当轻量子代理, 不替代 GPT review.
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — Claude 默认 register 偏端着/工程化; 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.
 - [算法/数学层必经 Gemini cross-check (v2 加严)](feedback_gemini_review_algorithm_math.md) — "先 check 再继续". 每 commit 后立刻 cross-check 不堆 (堆到 round 14 找出 3 致命 bug). 纯 refactor/rename/IO 不算数学层.

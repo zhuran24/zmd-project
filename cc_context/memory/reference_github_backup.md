@@ -7,7 +7,7 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
-2026-06-01 起: 仓库 + CC 上下文实时备份到**私有 GitHub `github.com/zhuran24/endfield-exact-solver`**。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。
+2026-06-01 起: 仓库 + CC 上下文实时备份到**私有 GitHub `github.com/zhuran24/endfield-exact-solver`**。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。**库必须保持 private** —— cc_context 备份含 memory (内有 Gemini API key 等 secret, 见 [[gemini-math-consultant]]), 转公开即泄密 (这是"库设私有"的决策依据)。
 
 ## 机制
 - **每次 commit 自动 push**: `.git/hooks/post-commit` 跑 `git push origin HEAD`, 失败记 `.git/auto-push.log` 但不阻断 commit (下次成功 push 补齐)。正常 commit 即实时上 GitHub。
