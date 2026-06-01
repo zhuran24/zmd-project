@@ -38,7 +38,7 @@
 - [Gemini prompt audit 模式 — 不要 GO 章 ritual](feedback_gemini_prompt_audit_mode.md) — "Gemini 用来找问题不要被夸傻". 真数据进 paths + armor 强制 3 死法 + 反 vague hyperbole + 不重写 prompt 别调.
 - [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段 main 启 N=8 路 opus 子代理各带不同 slant, 自当 merger; 事前补 main RLHF bias. 紧时 N=2-3, 假设稳了才 fire.
 - [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活 (≥3 step) 直接 spawn opus background, 不问 user. (explore N 路 vs execute 单线)
-- [Main merger scope creep bias (phase boundary)](feedback_main_merger_scope_creep_bias.md) — N=8 merger 时 main 偏 "做全=安全" override simplicity 划界. **User 是唯一可信 phase boundary auditor**.
+- [Phase boundary 替 user 做主的两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 往大扩 ("做全=安全" override simplicity) + 往小缩 (deferral flinch: 选彻底又递推后退路, 拿夸大依赖当 cover; tell=stated lean 后紧跟 escape hatch). **User 是唯一可信 phase boundary auditor**.
 - [Sub-problem vs augmented master 默认偏见](feedback_subproblem_vs_augmented_master_default.md) — 我默认走 LBBD sub-problem 不动 master; user 用语线索区分. 实施前必明确 4 件事 (vars 进 master? loop? cut form? 同质死法?).
 - [paradigm Phase 0 cheap gate workflow](feedback_paradigm_phase0_cheap_gate.md) — 新 paradigm 实施前必走 Phase 0 (≤1h cheap gate) 验前提, GO 后再投 Phase 1. 反例 Path 08 直接 Phase 1 浪费 4 form.
 - [plan doc 不是 TODO list, 必含战略层](feedback_plan_doc_strategic_layers.md) — plan doc 必含战略/数学原理/paradigm/历史/GO 标准/依赖图/风险/mitigation/回滚, 不只 commit-level TODO.
