@@ -12,17 +12,22 @@ metadata:
 ## 规则
 
 1. **长上下文下 LLM 注意力会漏看**。**验证 / 确认 / 核对 / "是否完整 / 是否全做了 / 有没有遗漏" 类任务, 不能只信 main 自己的回忆或自审** —— 必须派 workflow / 独立子代理作补充托底。(U37)
-2. **backstop 的主体 (被检查对象) 必须是「要验证的东西本身」, 不能换成 proxy。** 例: 验"本 session 内容是否全落盘 memory" → 主体 = **session 对话本身**(抽用户消息), **不是** 记忆树内部一致性 / git log / repo。proxy 只看得见文件改动, 漏掉**只存在于对话里**的偏好/决策/口头反馈。(U39/U40)
+2. **backstop 的主体 (被检查对象) 必须是「要验证的东西本身」, 不能换成 proxy。** 例: 验"本 session 内容是否全落盘 memory" → 主体 = **整段对话本身 (用户消息 + 助手消息)**, **不是** 记忆树内部一致性 / git log / repo, **也不是只抽用户消息**。proxy 只看得见文件改动, 漏掉**只存在于对话里**的偏好/决策/口头反馈; 而只抽用户消息会漏掉**助手侧产**的 finding / 踩坑修法 / 决策 / 结论 —— 这些同样 memory-worthy。(U39/U40 + 2026-06-01 二次纠正)
 3. 子代理跑完报告的**根因 / 数字, main 要自己核实**, 不能直接转述未验证的 (U17 同源)。
 
 ## Why
 
 本 session 自证: main 第一次派 backstop 就把主体弄错成"记忆树"(proxy), 报"落盘完整"实为假 —— 恰恰漏了**本条 working-preference 自己**; 用户两次纠正(U39 完整重发为 U40)才扳回"主体 = 当前 session 内容"。换对主体后独立 agent 立刻确认这条缺失。**这正是本规则要防的失误, 当时却没进 memory, 不记下次必复发。** 口头反馈无文件副产物, 任何 git/repo/记忆树-proxy 检查都抓不到 —— 只有以"对话本身"为主体的独立检查能抓。
 
+**主体二次切窄 (同 session 2026-06-01 再踩)**: 我把主体从 proxy 改对成"对话"后, 又只抽了**用户消息**当主体; 用户即时纠正"你的消息也全都要"。memory-worthy 内容助手侧也大量产 (踩坑修法/判断/结论), 只抽 user 仍漏。**proxy → user-only 是同一个病的两次发作: 图省事把主体切窄。规则收紧为「主体 = 完整被验对象, 不切片」。**
+
+**proxy 第三变种 (核 shipped 包内容)**: 验证 workflow/子代理核对包内容时, 读到的常是 build 脚本里的**源 README 模板**(proxy), 不是 **shipped 成品**顶层文件 → 假阳性。本 session 实例: 打包 workflow 报 v22 README "解包步骤还写 7za" 是误报, 实地核 shipped 顶层 README + project/README.md 才确认 7za/project.7z/tools token 全 0、已是单层 unzip。**包合规类 finding 必回 shipped 文件本身复核。**
+
 ## How to apply
 
 - 遇 "确认 / 核实 / 查全 / 是否遗漏 / 是否都做了" 类任务 → **先问"主体是什么"**, 把**那个东西本身**喂给独立 agent, 别用代理信号代替。
-- 验 "session 内容全落盘 memory" → 抽 transcript 用户消息 (`cc_context/tools/extract_user_turns.py` 抽 role=user 文本) 当主体, 独立 agent 逐条查 memory 覆盖。
+- 验 "session 内容全落盘 memory" → 抽 transcript **整段对话** (`cc_context/tools/extract_session_turns.py` 抽 role=user **+ role=assistant** 文本) 当主体, 独立 agent 逐条查 memory 覆盖。**别只抽 user** —— 值得记的事助手侧也大量产 (finding/修法/决策/结论)。
 - 别因"内容在我 context 里 / 我刚做的我知道"就自审了事 —— 长 context 下我会漏。
-- 子代理报告的 verdict/数字, 落 memory/commit 前 main 自己 grep/跑一遍核。
+- 子代理报告的 verdict/数字, 落 memory/commit 前 main 自己 grep/跑一遍核 —— **派生数字 (count/算术) 独立重算不照抄: 即使底层工作对了, 抄错一个数也误导** (本 session 实例: 子代理报 "119→121(+3)" 实为 122 的算术笔误, 工作没错; 拿 backup 对账 = 旧全在 + 列新增 = delta 抓出)。
+- **grep/过滤验证时 pattern 易过宽误中同名文件** → 先窄化精确目标集再重跑 (本 session 核 v22 README 合规时 grep "README" 命中几十个, 必须收窄到包顶层 + project/README.md)。
 - 关联: [[external-review-reproducibility]] (外部模型单次有 variance; 本条是 "Claude 自己" 在长 context 不可信, 互补) / [[subagent-for-closed-loop-tasks]] / [[audit-verify-before-archive]] / [[memory-currency-protocol]]。

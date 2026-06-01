@@ -73,7 +73,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models?key=$KEY"
 
 ## 安全 caveat
 
-- key **已暴露** (出现过在 5-10 P2 #14 AlphaEvolve PoC memory + 这次 5-21 用户重复确认 free tier), 不要 commit 进 git / docs/ / share package
+- key **已暴露** (出现过在 5-10 P2 #14 AlphaEvolve PoC memory + 这次 5-21 用户重复确认 free tier)。**⚠️ supersede (2026-06-01)**: 原"不要 commit 进 git"已被 [[github-backup]] 的"库设私有 + key 留私库历史"决策取代 —— 用户拍板接受 key 在私有库历史里, **不 scrub / 不吊销**。约束改为: 库**绝不翻 public** (翻了即泄密) + key **仍不能进送外部审查的 share/review package**
 - 这条 memory 在 CC 私有 memory 目录 (现 slug `D-----zmd`, 即 `~/.claude/projects/D-----zmd/memory/`; 旧 Linux slug `-home-zhuran24-claude-pj-zmd` 已废), 不进项目 git
 - free tier 配额受 Google policy 限制 (历史: 大陆 block + 训练数据污染 + 单方面砍 quota), 不能依赖
 

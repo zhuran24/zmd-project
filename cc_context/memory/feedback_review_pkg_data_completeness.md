@@ -95,6 +95,10 @@ preempt 删 evidence. Reviewer 实际是经验丰富专家, 不需要 main 替�
 不该自问 "reviewer 会不会 anchor 在这上面?" — 那是 reviewer 的判断不是
 你的.
 
+## plan docs carve-out (2026-06-01, v22 起)
+
+`docs/项目说明/` (21 篇, 含 phase plan) 之前被 [[review-pkg-7z-strategy]] 列为 EXCLUDE (主动性内容), v22 起**翻转为默认入包**: 它们是 reviewer 背景 context, 讲 spike 之后的工作 (= 非被审对象), priming 风险低。这是化解「排除 plan doc」(见 [[plan-doc-strategic-layers]]) vs 本条「数据完整性 default」张力的**有意 carve-out** —— 判别仍按 factual-vs-priming, 不是无脑全入。
+
 ## Refs
 
 - [[review-pkg-no-prompt-inside]] — 禁 prompt + 禁主动性 priming, 互补

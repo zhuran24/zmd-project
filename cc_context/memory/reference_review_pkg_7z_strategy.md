@@ -53,6 +53,7 @@ EXCLUDE_PATTERNS:
 
 EXCLUDE_FILES (主动性内容, per [[review-pkg-no-prompt-inside]]):
 - docs/项目说明/*.md (项目说明 21 sub-doc, 2026-05-23 从 plan + math doc 拆出) — review pkg 不含主动性内容
+  - **⚠️ 翻转 (2026-06-01, v22 起)**: 此排除**已撤销**, plan docs 改为**保留入包**当 reviewer 背景 context (讲 spike 之后的工作 = 非被审对象, priming 风险低)。v22 build 脚本 `EXCLUDE_FILES=set()`。判别仍按 factual-vs-priming (见 [[review-pkg-data-completeness]])。本行是 v8 历史记录, 别再照它排除 plan docs。
 
 EXCLUDE prefixes:
 - scripts/build_phase1_1_gpt_pro_review_v (递归打包 build script 自己)

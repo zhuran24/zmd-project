@@ -7,7 +7,7 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
-2026-06-01 起: 仓库 + CC 上下文实时备份到**私有 GitHub `github.com/zhuran24/endfield-exact-solver`**。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。**库必须保持 private** —— cc_context 备份含 memory (内有 Gemini API key 等 secret, 见 [[gemini-math-consultant]]), 转公开即泄密 (这是"库设私有"的决策依据)。
+2026-06-01 起: 仓库 + CC 上下文实时备份到**私有 GitHub `github.com/zhuran24/endfield-exact-solver`**。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。**库必须保持 private** —— cc_context 备份含 memory (内有 Gemini API key 等 secret, 见 [[gemini-math-consultant]]), 转公开即泄密 (这是"库设私有"的决策依据)。**硬约束**: ① **绝不翻 public** (一翻即泄 key); ② **禁 rebase / 重写历史** (filter-branch 清 key 会重写 SHA, 而 memory/docs 到处引 commit SHA, 全失效); ③ 免费私库**无 secret-scanning push protection**, 带 key 推不会被拦 (= 责任全在"别翻 public")。key 留私库历史是用户拍板可接受风险, 不 scrub / 不吊销 (见 [[gemini-math-consultant]])。
 
 ## 机制
 - **每次 commit 自动 push**: `.git/hooks/post-commit` 跑 `git push origin HEAD`, 失败记 `.git/auto-push.log` 但不阻断 commit (下次成功 push 补齐)。正常 commit 即实时上 GitHub。
@@ -21,6 +21,8 @@ live memory 在 `~/.claude/projects/D-----zmd/memory` (**仓库外**)。仓库�
 1. gh 装 winget 用户级: `C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Links\gh.exe` (新 shell 才进 PATH, 老 shell 用全路径)。
 2. `gh auth login` 在 `!` 非交互下会**跳过"用 gh 认证 git"** → 登录后**必跑** `gh auth setup-git --hostname github.com`, 否则 git 走 GCM 无凭据, 私库 push 报 `Repository not found` (404 不是真没库)。
 3. 仓库有 `.github/workflows/*.yml` → token 必须有 `workflow` scope, 否则 push 被 GitHub 拒。补: `gh auth refresh -s workflow --hostname github.com` (**非交互必带 `--hostname`**, 否则报 "--hostname required when not running interactively")。
+4. **git commit 身份 ≠ gh 认证邮箱** —— git 不会自动用 GitHub 登录邮箱署名, 是两回事。换机/重装首 commit 会卡 `Author identity unknown`, 必须单独 `git config user.name/user.email` (name 可 `gh api user` 拉 = zhuran24, email 用 `3240314610@qq.com`)。
+5. `gh auth login` 交互序列: GitHub.com → HTTPS → "用 gh 凭据认证 git" 选 **Yes** → web 设备码。注意 **login 默认不需 `--hostname`, 唯独 `refresh` 在非交互 TTY 必须显式带**。
 
 ## 不入库 (gitignore 已挡)
 `.venv` / `.artifacts` / `.upstream_clones` / `_codex_archive` / 缓存 / `*.zip` `*.7z` (review 包 regenerable) / `data/checkpoints|solutions|telemetry`。`data/preprocessed/candidate_placements.json` 53MB 入库 (>50MB GitHub 警告但 <100MB 硬限, 推得上)。

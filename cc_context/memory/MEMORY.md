@@ -28,7 +28,10 @@
 
 ## 工作流 / 协作偏好
 
-- [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类别只信 main 自审; 派独立 workflow/子代理, **backstop 主体必须是被验对象本身(非 proxy, 如别拿 git log/记忆树代替 session 内容)**; 子代理报告 main 自己核. 本 session 自证 (主体误成记忆树→假完整, 用户 2 次纠正).
+- [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类别只信 main 自审; 派独立 workflow/子代理, **backstop 主体必须是被验对象本身(非 proxy, 如别拿 git log/记忆树代替 session 内容; 也别只抽 user 漏助手侧)**; 子代理报告/派生数字 main 自己核. 本 session 自证 (主体误成记忆树/只抽 user→假完整, 用户多次纠正).
+- [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 任务形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume 后台 Agent 无); dispatch 三选一 (线性已知→自己 / 散落→wf / 机械→子代理); Ultracode=穷尽不计 token.
+- [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改 (新增/删条目/重组/slim MEMORY.md) 先给用户确认.
+- [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 (加索引前先 slim) + harness 重写 frontmatter 保 name. 区别于现状过时轴 [[memory-currency-protocol]].
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 遇 LP/CP-SAT/复杂度/proof system 数学问题调 Gemini free-tier 当轻量子代理, 不替代 GPT review.
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — Claude 默认 register 偏端着/工程化; 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.
 - [算法/数学层必经 Gemini cross-check (v2 加严)](feedback_gemini_review_algorithm_math.md) — "先 check 再继续". 每 commit 后立刻 cross-check 不堆 (堆到 round 14 找出 3 致命 bug). 纯 refactor/rename/IO 不算数学层.
@@ -82,52 +85,54 @@
 
 ## paradigm 死路 verdict (历史)
 
-- [Paradigm death timeline (27 lever consolidated)](project_paradigm_death_timeline_27_lever.md) — 27 lever consolidate. 5 类死法 + 4 共同 root cause + B 5 unsolved. Gemini cross-check 前必带 context.
-- [项目是 latency-bound 不是 bandwidth-bound](project_workload_latency_bound_not_bandwidth.md) — CP-SAT BCP 指针追逐 + 280K pose registry L3 spill = 绝对 latency-bound. **不要再说带宽/多通道/dual rank**.
-- [硬件状态 (已扩展)](project_hardware_constraint_single_machine.md) — 2026-05-08 起: 主机+1远程 (家中WAN), 分布式方向解锁但仅 WAN-适配模式.
-- [P2 #14 dumper 路径 — 已解锁](project_p2_14_dumper_path_blocked.md) — 真因不是 IPC, 是 master 嵌套 CP-SAT 无 timeout 无限 hang. commit 2915d6f 修复; legacy cpsat/L1.5/stdout buffering 留 defer.
-- [P1 #24 4-parallel 撞 OOM](project_p1_24_oom_blocked.md) — 9 min OOM 退; readiness gate OOM headroom 已 land; 软优化全死; 硬件方向被排除.
-- [30GB 真大头是 worker propagation buffer](project_30gb_real_culprit_power_coverage.md) — solve peak 30 GB 来自 8 worker × propagation state. workers=1 plateau 12.78 GB (-57%). -p2+workers1=36 GB fits.
-- [HiGHS 重写硬性瓶颈](project_highs_rewrite_blocker.md) — minimum model -79% RAM 假 win, 加 power_coverage 后 42 GB > OR-Tools 30 GB 真败. LP-MIP 对 dense linear 不适合.
-- [重写路径全穷尽](project_rewrite_path_exhausted.md) — 单机 48 GB + 准确性必保 + 现 solver, 决定性收益 (-50% RAM/wall) 物理不可达. propagation buffer 是大头.
-- [整 session RAM 优化跑偏 (历史)](project_2026_05_15_ram_session_misdirected.md) — 减 worker 8→1 让 master peak 30→12 GB, 但 14h trial 51 candidate 全 UNKNOWN. 真瓶颈非 RAM 是 master.solve 解不动.
-- [2026-05-16 session 终态 (历史)](project_2026_05_16_session_final_state.md) — GPT 三连 verdict 死 (v8/v10/L14) + 12 lever 全 verdict. v9 包 SHA 79b5d1d7.
-- [5-17 session 终态 (历史)](project_2026_05_17_session_terminal_state.md) — L15+L16 ❌ + 用户走 B1. 14 lever verdict. (paradigm-death-timeline 涵盖)
-- [v4 follow-up 全 land + 主线下一步](project_v4_followup_landed_next_main_line.md) — 8 commit 落地 v4 + ruff/mypy hygiene; 下次接 P1 #24 cache trio / #12 spike / #7 ε-Certified.
-- [v7 review 包 + 整 session final state](project_v7_review_package_landed.md) — 12 cleanup commit + v7 包 9.4 MB 送 GPT Pro. **superseded by [[v8-anchor-slicing-dead]]** (Path 8 ❌).
-- [v8 anchor slicing 实测死路](project_v8_anchor_slicing_dead.md) — patch clean apply + build wall -92% 真实, 但单 anchor 5 min UNKNOWN 同 quality. 错估同 v3. **L12 ❌**.
-- [v10 witness preflight ❌ (历史)](project_v10_witness_preflight_dead.md) — 算法 sound 但前提错估 (community blueprint 缺 41 mandatory). **L13 ❌**.
-- [L14 weighted occupancy ❌ (历史)](project_l14_weighted_occupancy_dead.md) — interior LP=1.000 永不可 cert. **L14 ❌**.
-- [L15 set-packing prover 实测死路](project_l15_setpacking_prover_dead.md) — minimum set-packing 核心 CP-SAT 几秒搞定, 真瓶颈是 master 多余约束. paradigm 攻错层. **L15 ❌**. GPT 4 次出招全死.
-- [L16 Lazy Power 死路 (历史)](project_l16_lazy_power_completion_phase0.md) — master PASS (81.8s) 但 cut 端不收敛. **L16 ❌**.
-- [B1 pose-bool master rewrite 计划 (历史)](project_b1_pose_bool_master_rewrite_plan.md) — 27×15 interior pose-bool 7.2s FEASIBLE vs coord 30 min UNKNOWN. (详 linked file)
-- [B1 Phase 0 GO ✅ (历史)](project_b1_phase0_go.md) — 5 anchor 49-53s OPTIMAL vs coord 30 min UNKNOWN. (详 linked file)
-- [B1 Phase 1 finding (历史)](project_b1_phase1_findings.md) — master 52.9s OPTIMAL + binding 0.0s 端到端 PASS. (详 linked file)
-- [B1 Phase 2 production land ✅ (历史)](project_b1_phase2_production_land.md) — PoseBoolExactMasterDelegate + env EXACT_USE_POSE_BOOL_MASTER. (详 linked file)
-- [B1 Phase 3 LBBD wiring ✅ (历史)](project_b1_phase3_lbbd_land.md) — pose-bool master 接 outer search + LBBD 完整跑通. (详 linked file)
-- [B1 Phase 4 routing convergence 🟡 (历史)](project_b1_phase4_routing_convergence.md) — routing precheck front_blocked ~500-610 ports 系统性. (详 linked file)
-- [B1 Phase 5 cell cut (历史)](project_b1_phase5_cell_cut_findings.md) — 3 种 cell-cut 形式全 over-restrictive. (paradigm-death-timeline 涵盖)
-- [B1 Phase 6 plan (历史)](project_b1_phase6_plan_port_active.md) — Phase 6 path-1 master/binding port-selection 决策提升. (详 linked file)
-- [B1 Phase 6 audit (历史)](project_b1_phase6_audit_finding.md) — 否定 storage box 是唯一 over-restriction. (paradigm-death-timeline 涵盖)
-- [B1 Phase 6 path-1 实测死路](project_b1_phase6_path1_dead.md) — master 持有 port-selection 4 form 全死 (UNPROVEN/INFEASIBLE/UNKNOWN). solver knob 不救. 架构层不可解.
-- [B1 Phase 6 path-2 实测死路](project_b1_phase6_path2_dead.md) — lazy demand cut UNPROVEN 778s 10 iter 不收敛, cut weak. B1 paradigm 全死 (路线 1+2). 累积 16 lever.
-- [2026-05-18→19 paradigm session 终态](project_paradigm_session_2026_05_18_19.md) — 整 session 19 lever 死 + PCR-CUT Phase 0 ✅ GO. Path 12 RAB-SEP + Path 13 SAC-Hull + Path 14 PCR-CUT. (详 linked file)
-- [PCR-CUT Phase 1 pickup](project_pcr_cut_phase1_pickup.md) — Phase 0 commit 24ed7d8 起跑点. superseded by [[pcr-cut-phase5-verdict]].
-- [PCR-CUT Phase 5 🟡 (历史)](project_pcr_cut_phase5_verdict.md) — Phase 0-4 GO, Phase 5 multi-anchor 0/8 CERTIFIED. (详 linked file)
-- [PGW-UB Phase 0 ❌ (历史)](project_pgw_phase0_verdict.md) — positive witness + UB closure paradigm, locality 不足. (详 linked file)
-- [GOC-C2 Phase 0 ❌ (历史)](project_goc_phase0_verdict.md) — 全图 owner-optional paradigm, RSS 25 GB > 12 GB cap. (详 linked file)
-- [D2 Path 17 完整 verdict (历史)](project_d2_path17_verdict.md) — commodity cell-flow + arc paradigm, Phase 2 multi 死. (详 linked file)
-- [Augmented master Candidate D pickup ⏭️ (superseded)](project_augmented_master_candidate_d_pickup.md) — pre-execution pickup. superseded by [[lever24-augmented-master-dead]]. (详 linked file)
-- [Lever 24 augmented master ❌ (历史)](project_lever24_augmented_master_dead.md) — 603.9s UNKNOWN + RSS 32 GB. pose-bool master scale 死. (详 linked file)
-- [Path 18 layout-invariant cert 死路 ❌](project_path18_layout_invariant_cert_dead.md) — Phase 0 m1=2 远低于 ≥100 target, cut lift 不跨数量级. **第 25 lever 死**. 1 day cheap gate 杀完是 design 成功.
-- [Lever 26 Benders symm ❌ (历史)](project_lever26_benders_symmetry_dead.md) — m5=1.0 全 trivial orbit, symmetry 被 ghost/boundary 杀. (详 linked file)
-- [Lever 25 IHS ❌ (历史)](project_lever25_ihs_dead.md) — IHS Phase 0 core size=1 全退化. **第 27 lever 死**.
-- [GPT v13 cut language thesis (历史)](project_gpt_v13_cut_language_thesis.md) — 换 cut 语言不是换 solver. 5 类强 cut. 已超 — 见 [[phase0-b-prep-progress]]. (详 linked file)
-- [GPT anchor slicing 方案](project_gpt_anchor_slicing_proposal.md) — GPT v5: ghost-anchor disjunctive decomposition 拆 N anchor; 数学 sound 但 RAM 减多少未验证. v3 待压缩.
-- [D 第 1 步交 GPT-5.5 Pro](project_d_step1_gpt_handoff.md) — Linux wine input-sim 全 fail, OCR 85% 不够, 打包 69 MB zip 交 GPT-5.5 Pro 多模态识别.
-- [D step 2 blueprint converter 状态 (superseded)](project_d_step2_blueprint_converter_state.md) — 用户手调验证版 blueprint. (详 paradigm-death-timeline / linked file)
-- [D step 2 hint integration (历史)](project_d_step2_hint_landed.md) — blueprint hint A 路径死, master inherent 难解非 hint failure.
-- [benders_loop.py mypy 8 个历史错](project_benders_loop_mypy_followup.md) — 已 G4 全清并进 gate (fe83c41), 留 historical record.
+> 详情各 linked file; 整合见 [[paradigm-death-timeline-27-lever]]。
+
+- [Paradigm death timeline (27 lever)](project_paradigm_death_timeline_27_lever.md) — 27 lever 合并: 5 类死法 + 4 共同 root cause + B 5 unsolved. Gemini cross-check 前必带.
+- [latency-bound 非 bandwidth-bound](project_workload_latency_bound_not_bandwidth.md) — BCP 指针追逐 + 280K pose L3 spill. **别再提带宽/多通道/dual rank**.
+- [硬件状态 (已扩展)](project_hardware_constraint_single_machine.md) — 2026-05-08 起主机+1远程 (WAN), 分布式仅 WAN-适配模式.
+- [P2 #14 dumper 路径 已解锁](project_p2_14_dumper_path_blocked.md) — 真因是 master 嵌套 CP-SAT 无 timeout 无限 hang, 2915d6f 修.
+- [P1 #24 4-parallel 撞 OOM](project_p1_24_oom_blocked.md) — 9 min OOM 退; 软优化全死; 硬件方向排除.
+- [30GB 大头是 propagation buffer](project_30gb_real_culprit_power_coverage.md) — 8 worker × propagation; workers=1 plateau 12.78 GB.
+- [HiGHS 重写硬瓶颈](project_highs_rewrite_blocker.md) — 加 power_coverage 后 42 GB > OR-Tools 30 GB; LP-MIP 不适 dense linear.
+- [重写路径全穷尽](project_rewrite_path_exhausted.md) — 单机 48GB + 准确性必保, 决定性收益物理不可达.
+- [RAM 优化跑偏 (历史)](project_2026_05_15_ram_session_misdirected.md) — worker 8→1 让 master 30→12 GB 但 51 cand 全 UNKNOWN; 真瓶颈 master 解不动.
+- [5-16 session 终态](project_2026_05_16_session_final_state.md) — GPT 三连死 (v8/v10/L14) + 12 lever. v9 SHA 79b5d1d7.
+- [5-17 session 终态](project_2026_05_17_session_terminal_state.md) — L15+L16 ❌ + 用户走 B1. 14 lever.
+- [v4 follow-up land](project_v4_followup_landed_next_main_line.md) — 8 commit + ruff/mypy; 接 P1#24/#12/#7.
+- [v7 review 包 + final state](project_v7_review_package_landed.md) — 12 cleanup + v7 9.4MB. **superseded [[v8-anchor-slicing-dead]]**.
+- [v8 anchor slicing 死路](project_v8_anchor_slicing_dead.md) — build -92% 真但单 anchor 5min UNKNOWN 同 quality. **L12 ❌**.
+- [v10 witness preflight ❌](project_v10_witness_preflight_dead.md) — sound 但前提错 (blueprint 缺 41 mandatory). **L13 ❌**.
+- [L14 weighted occupancy ❌](project_l14_weighted_occupancy_dead.md) — interior LP=1.000 永不可 cert. **L14 ❌**.
+- [L15 set-packing prover 死路](project_l15_setpacking_prover_dead.md) — 核心 CP-SAT 几秒搞定, 真瓶颈 master 多余约束. **L15 ❌**.
+- [L16 Lazy Power 死路](project_l16_lazy_power_completion_phase0.md) — master PASS 81.8s 但 cut 端不收敛. **L16 ❌**.
+- [B1 pose-bool master 计划](project_b1_pose_bool_master_rewrite_plan.md) — 27×15 interior 7.2s FEASIBLE vs coord 30min UNKNOWN.
+- [B1 Phase 0 GO](project_b1_phase0_go.md) — 5 anchor 49-53s OPTIMAL.
+- [B1 Phase 1](project_b1_phase1_findings.md) — master 52.9s OPTIMAL + binding 0.0s 端到端 PASS.
+- [B1 Phase 2 land](project_b1_phase2_production_land.md) — PoseBoolExactMasterDelegate + env EXACT_USE_POSE_BOOL_MASTER.
+- [B1 Phase 3 LBBD wiring](project_b1_phase3_lbbd_land.md) — pose-bool master 接 outer search + LBBD 跑通.
+- [B1 Phase 4 routing 🟡](project_b1_phase4_routing_convergence.md) — routing precheck front_blocked ~500-610 ports.
+- [B1 Phase 5 cell cut](project_b1_phase5_cell_cut_findings.md) — 3 种 cell-cut 全 over-restrictive.
+- [B1 Phase 6 plan](project_b1_phase6_plan_port_active.md) — path-1 master/binding port-selection 决策提升.
+- [B1 Phase 6 audit](project_b1_phase6_audit_finding.md) — 否定 storage box 唯一 over-restriction.
+- [B1 Phase 6 path-1 死路](project_b1_phase6_path1_dead.md) — master 持 port-selection 4 form 全死. 架构层不可解.
+- [B1 Phase 6 path-2 死路](project_b1_phase6_path2_dead.md) — lazy demand cut UNPROVEN 778s 不收敛. B1 全死. 16 lever.
+- [5-18→19 paradigm 终态](project_paradigm_session_2026_05_18_19.md) — 19 lever 死 + PCR-CUT Phase 0 GO. Path 12/13/14.
+- [PCR-CUT Phase 1 pickup](project_pcr_cut_phase1_pickup.md) — Phase 0 commit 24ed7d8. superseded [[pcr-cut-phase5-verdict]].
+- [PCR-CUT Phase 5 🟡](project_pcr_cut_phase5_verdict.md) — Phase 0-4 GO, Phase 5 multi-anchor 0/8 CERTIFIED.
+- [PGW-UB Phase 0 ❌](project_pgw_phase0_verdict.md) — positive witness + UB closure, locality 不足.
+- [GOC-C2 Phase 0 ❌](project_goc_phase0_verdict.md) — 全图 owner-optional, RSS 25 GB > 12 GB cap.
+- [D2 Path 17 verdict](project_d2_path17_verdict.md) — commodity cell-flow + arc, Phase 2 multi 死.
+- [Augmented master D pickup (superseded)](project_augmented_master_candidate_d_pickup.md) — superseded [[lever24-augmented-master-dead]].
+- [Lever 24 augmented master ❌](project_lever24_augmented_master_dead.md) — 603.9s UNKNOWN + RSS 32 GB. pose-bool scale 死.
+- [Path 18 layout-invariant cert ❌](project_path18_layout_invariant_cert_dead.md) — m1=2 ≪ ≥100 target, cut lift 不跨数量级. **25 lever**.
+- [Lever 26 Benders symm ❌](project_lever26_benders_symmetry_dead.md) — m5=1.0 全 trivial orbit, symmetry 被 ghost/boundary 杀.
+- [Lever 25 IHS ❌](project_lever25_ihs_dead.md) — IHS Phase 0 core size=1 全退化. **27 lever**.
+- [GPT v13 cut language thesis](project_gpt_v13_cut_language_thesis.md) — 换 cut 语言不是换 solver. 已超 — 见 [[phase0-b-prep-progress]].
+- [GPT anchor slicing 方案](project_gpt_anchor_slicing_proposal.md) — ghost-anchor disjunctive 拆 N anchor; sound 但 RAM 未验.
+- [D 第 1 步交 GPT-5.5 Pro](project_d_step1_gpt_handoff.md) — wine input-sim fail, OCR 85% 不够, 69MB zip 交多模态.
+- [D step 2 blueprint converter (superseded)](project_d_step2_blueprint_converter_state.md) — 用户手调验证版 blueprint.
+- [D step 2 hint integration](project_d_step2_hint_landed.md) — blueprint hint A 路径死, master inherent 难解非 hint failure.
+- [benders_loop.py mypy 8 错](project_benders_loop_mypy_followup.md) — G4 全清进 gate (fe83c41).
 
 ## reference (硬件 / config / spec)
 
@@ -137,4 +142,5 @@
 - [CP-SAT 不支持 AddLazyConstraint](reference_cp_sat_no_add_lazy_constraint.md) — OR-Tools 9.15 Python 无此 API. 必走 LBBD 外循环 (solve → verify → cut → rebuild/resolve).
 - [F9 area-only invariant (PROJECT_LOCK 锁)](reference_f9_area_only_not_density.md) — F9 generator 只接受 area_capacity_overflow, 拒 routing/binding/pcr. Evaluator 必 area-based. 严格 > 才 cut.
 - [IP v2 蓝图 LP 建模规则](reference_ip_v2_blueprint_lp_modeling.md) — 外部源只有矿石 (硬白名单), unloader/storager 是内部 routing 不是源; 采种机 1→2 倍增. (annotate 脚本未进 git)
-- [GitHub 实时备份](reference_github_backup.md) — 项目+CC 上下文推私有库 zhuran24/endfield-exact-solver; 每 commit auto-push (post-commit hook, gh 全路径 credential, PATH 无关); memory 改后 sync cc_context; gh re-setup (setup-git / workflow scope / refresh --hostname)。
+- [GitHub 实时备份](reference_github_backup.md) — 项目+CC 上下文推私有库 zhuran24/endfield-exact-solver; 每 commit auto-push (post-commit hook, gh 全路径 credential, PATH 无关); memory 改后 sync cc_context; **绝不翻 public / 禁 rebase 重写历史**; gh re-setup (setup-git / workflow scope / refresh --hostname / git 身份单配)。
+- [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 不稳要 Workflow resume.

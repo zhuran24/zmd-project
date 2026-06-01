@@ -9,6 +9,8 @@ metadata:
 
 打包一个外部审查包 (GPT pro / 别窗口) 要用到的规范全在这。按打包流程顺序串:
 
+> **要全套穷尽清单**: 见仓库 `cc_context/review/打包原则_汇总.md` —— 2026-05-31 三源 (memory + build 脚本版本注释 + docs) 去重合成 **10 类** (内容选择 / no-priming / 数据完整性 / 配套 prompt / 打包机制与体积 / 复现性 / 触发时机 / 审查后验证归档 / 门禁 GO 判据 / 沟通新窗口零历史)。本 hub 是 memory 入口, 那份是落地全文。
+
 - **何时打包**: 大节点结束 → [[big-milestone-gpt-pro-review]] (Phase 1.0/1.1/.../ramp / paradigm shift)。
 
 - **prompt 怎么写**: 7-section 结构 [[external-review-prompt-template]] + armor 三件套 ——

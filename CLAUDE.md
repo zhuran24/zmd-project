@@ -51,13 +51,12 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 - Other bases (`valley4_infra_outpost`, `wuling_protocol_core`, etc.) are `future_scope`
 - Outer-deployment subsystem is adapter-side `future_scope`
 
-## Current Phase: 3B Optimization / Acceleration
+## Current Phase: 1.3A (cut-family LBBD master 集成)
 
-- Phase 3A (delivery/productization): Complete, release `r20260416`
-- Phase 3B (full-scale exact proof): In progress
-- Acceleration plan: `docs/phase3b_repair5_acceleration_tuning_ai_plan.md`
-- 4 lanes: A=safety/observability, B=deterministic tuning, C=AI sidecar, D=runtime diagnostics
-- AI is shadow-only sidecar: no proof source, no formal pruning, no checkpoint writes
+- 范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计** (9 个 F1–F9 cut family 当 Benders cut 收紧 master)。
+- 当前: Phase 1.2 spike close (v22, GO_WITH_MINOR) 等 GPT pro 正式九审 → 过了进 **P1.3A 主体** (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛)。**单一 living 现状源 = CC memory `windows-ninth-review-pending`**。
+- **命名错位注意**: `docs/项目说明/06` 的 doc-P1.3A = attach spike (已 done)、doc-P1.3B = 真 master 集成 (= memory 口径的「P1.3A 主体」); `src/cuts/lifecycle.py` `step_8_apply_to_master` 仍 NotImplementedError。
+- 历史 Phase 3B (tuning paradigm, release `r20260416` 后) 已被取代; 下方 AI sidecar 契约仍有效。
 
 ## AI Safety Contract
 
@@ -368,6 +367,6 @@ These clones are **NOT** part of the build, are NOT scanned by tests, and do NOT
 - Postprocess/adapter changes don't need lock updates but must not widen proof semantics
 - Test with `python -m pytest src/tests/ -q` before any commit
 - `_codex_archive/` contains historical Codex (GPT) workspace artifacts — read-only reference, not active code
-- **子代理模型默认 opus**: 派遣 sub-agent (Agent 工具 / Workflow 内 `agent()`) 默认用 **opus** — 通常靠继承主会话模型即可, 不必显式传 `model`。仅特定情况 (如纯机械/批量活想省额度) 才显式降到 sonnet/haiku。设计探索 (N=8 parallel) / 闭环执行 / 审查类活一律 opus。
+- **子代理模型默认 opus**: 派遣 sub-agent (Agent 工具 / Workflow 内 `agent()`) 默认用 **opus** — 通常靠继承主会话模型即可, 不必显式传 `model`。仅特定情况 (如纯机械/批量活想省额度) 才显式降到 sonnet/haiku。设计探索 (N=8 parallel) / 闭环执行 / 审查类活一律 opus。**Agent 工具无独立 effort/thinking-budget 旋钮** —— 控制力度唯一硬杠杆是 `model` 参数, 软杠杆是 prompt 措辞; harness 底层 reasoning-effort 没暴露在 Agent 参数里。
 - **现状类 memory 守 `[[memory-currency-protocol]]`**: 身份 vs 现状分离 (身份根 memory 只放稳定身份 + 指向 living 现状源的指针) + 单一 living 现状源 (恰好一条权威「当前 phase」, 其余带日期标 snapshot/历史) + phase 转换更新仪式 (close/milestone 时更新 living 源 + 给旧状态加 superseded/历史标) + memory 引用仓库文件用相对路径不用绝对 `D:\...`。
-- **项目结构卫生**: root 只放项目源 (main.py / src/ / docs/ / rules/ / specs/ / scripts/ 等); CC / handoff / 外部审查工件统一归 `cc_context/` —— `memory/` 记忆备份 + `tools/` 记忆维护脚本 + `review/` 审查打包工件 (build 脚本 / GPT prompt / 打包原则 / review zip / deps)。**别在 root 散落** review 包 / prompt / build 脚本。新建这类工件直接放 `cc_context/review/`。
+- **项目结构卫生**: root 只放项目源 (main.py / src/ / docs/ / rules/ / specs/ / scripts/ 等); CC / handoff / 外部审查工件统一归 `cc_context/` —— `memory/` 记忆备份 + `tools/` 记忆维护脚本 + `review/` 审查打包工件 (build 脚本 / GPT prompt / 打包原则 / review zip / deps)。**别在 root 散落** review 包 / prompt / build 脚本。新建这类工件直接放 `cc_context/review/`。**为何收口 cc_context 而非另起顶层**: pre-commit hook 依赖 `cc_context/memory` 路径做 memory-sync, 另起顶层会破坏它。移动 tracked 文件用 `git mv` 留 rename 历史; 移动后回填 memory 里的旧路径引用防新 staleness。
