@@ -1,14 +1,15 @@
 """F3 malformed cert fail-closed micro-probe — GPT 八审 V21-8F1 lock.
 
-Verify ``_cert_literal_pairs`` 在 6 类 malformed F3 cert payload 下都
-fail-closed return [] (而不是 fallback 合成 3-literal synthetic, 也不
-raise AttributeError). 同时验证 3 类 non-F3 family 不受 fix 影响, fallback
-合成行为保持.
+Verify ``_cert_literal_pairs`` 在 9 类 malformed F3 cert payload 下都
+fail-closed return [] (6 类: 缺字段 / 坏 padding / 空 / list / str root;
++ GPT 第九审加的 3 类: 合法 b64 混入垃圾字符 prefix/suffix/middle), 而不是
+fallback 合成 3-literal synthetic, 也不 raise AttributeError. 同时验证 3 类
+non-F3 family 不受 fix 影响, fallback 合成行为保持.
 
 Run:
     .venv/bin/python scripts/spike_prod_scale_lib/test_toy_translator_f3_malformed.py
 
-Exit 0 = 9/9 case PASS; exit 1 = 任一 case FAIL (FATAL, do not commit).
+Exit 0 = 12/12 case PASS; exit 1 = 任一 case FAIL (FATAL, do not commit).
 
 Per [[review-pkg-data-completeness]]: fail-closed coverage 必须有 test 锁
 住跟着 review-pkg 入包让 reviewer 源码级看到. 这文件 spike-only, off-limits
@@ -131,6 +132,22 @@ def main() -> int:
         "empty",
     ))
 
+    # 7-9) F3 + 合法 b64 中混入非 alphabet 垃圾字符 (prefix/suffix/middle)。
+    #      GPT 第九审 finding: 不带 validate=True 的 b64decode 会静默丢弃这些字符,
+    #      于是 "看起来坏但仍能解码" 的 payload 不 fail-closed。修后 validate=True
+    #      → 任何垃圾字符 raise → None → F3 return []。
+    _valid_b64 = _b64(valid_payload)
+    for _name, _bad in [
+        ("f3_garbage_prefix", "!!!!" + _valid_b64),
+        ("f3_garbage_suffix", _valid_b64 + "!!!!"),
+        ("f3_garbage_middle", _valid_b64[:8] + "!!!!" + _valid_b64[8:]),
+    ]:
+        results.append(_run_case(
+            _name,
+            {"family": "port_exposure", "cert_payload_b64": _bad, "cut_id": "cut-test"},
+            "empty",
+        ))
+
     # ----- Non-F3 family: 3 case (verify fix 不破 fallback) -----
     print("\n[Non-F3 families — fallback path must keep working]")
 
@@ -169,7 +186,7 @@ def main() -> int:
     print("\n" + "=" * 70)
     print(f"Summary: {n_pass}/{n_total} PASS")
     if n_pass == n_total:
-        print("Verdict: 9/9 PASS — F3 fail-closed contract intact, fallback unaffected.")
+        print(f"Verdict: {n_pass}/{n_total} PASS — F3 fail-closed contract intact, fallback unaffected.")
         return 0
     print("Verdict: FAIL — F3 fail-closed contract broken, DO NOT COMMIT.")
     return 1

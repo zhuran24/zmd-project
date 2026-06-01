@@ -19,6 +19,7 @@ This file is spike-only. Off-limits paths untouched.
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import random
 import tempfile
@@ -196,11 +197,21 @@ def build_toy_master(
 # ============================================================================
 
 
+def _stable_hash(s: str) -> int:
+    """Process-stable 32-bit hash. 内置 ``hash()`` 对 str 默认带 PYTHONHASHSEED
+    随机盐, 跨进程不可复现 (GPT 第九审 finding: fallback / remap 因此每次跑不一样)。
+    用 blake2b 取代, 同一输入永远同一输出。"""
+    return int.from_bytes(hashlib.blake2b(s.encode("utf-8"), digest_size=4).digest(), "big")
+
+
 def _decode_cert_b64(b64: str) -> Optional[dict]:
     if not b64:
         return None
     try:
-        raw = base64.b64decode(b64)
+        # GPT 第九审 finding: 不带 validate 的 b64decode 会静默丢弃非 base64 字符,
+        # 于是 "合法 b64 里混入垃圾字符" 不 fail-closed。validate=True 让任何非
+        # alphabet 字符 raise → 走 except → None → F3 family return []。
+        raw = base64.b64decode(b64, validate=True)
         payload = json.loads(raw)
     except Exception:
         return None
@@ -263,7 +274,7 @@ def _cert_literal_pairs(cert_record: dict, fallback_pool: List[Tuple[str, str]])
     if not pairs:
         # Fallback: synthesize literal pairs from fallback_pool deterministically
         # by hashing the cert payload to a stable seed. Each cert gets ~3 poses.
-        seed = hash(cert_record.get("cut_id", "")) & 0xFFFFFFFF
+        seed = _stable_hash(cert_record.get("cut_id", "")) & 0xFFFFFFFF
         rng = random.Random(seed)
         k = min(3, len(fallback_pool))
         sample_idxs = rng.sample(range(len(fallback_pool)), k)
@@ -285,6 +296,12 @@ class TranslationReport:
     per_family_applied: Dict[str, int] = field(default_factory=dict)
     per_family_skipped: Dict[str, int] = field(default_factory=dict)
     translation_wall_s: float = 0.0
+    # GPT 第九审 finding: unknown (facility_type, pose_id) 被静默 hash-remap 到任意
+    # 真 var 还照计 applied → "100K applied=100%" 误导。这里把 remap 暴露成 telemetry,
+    # 让 applied 计数不再静默掩盖 "literal 没绑到真 registry"。
+    n_pairs_total: int = 0
+    n_pairs_remapped: int = 0
+    per_family_remapped: Dict[str, int] = field(default_factory=dict)
 
 
 def translate_certs_to_constraints(
@@ -313,8 +330,11 @@ def translate_certs_to_constraints(
     n_applied = 0
     n_skipped = 0
     n_constraints = 0
+    n_pairs_total = 0
+    n_pairs_remapped = 0
     per_family_app: Dict[str, int] = defaultdict(int)
     per_family_skip: Dict[str, int] = defaultdict(int)
+    per_family_remap: Dict[str, int] = defaultdict(int)
 
     nogood_families = {
         "cutset",
@@ -340,10 +360,15 @@ def translate_certs_to_constraints(
         # honest in sizing.
         lits: List[cp_model.IntVar] = []
         for fp in pairs:
+            n_pairs_total += 1
             idx = registry.idx_by_facility_pose.get(fp)
             if idx is None:
-                # Map to a deterministic substitute from full pool by hashing.
-                h = hash((rec.get("cut_id", ""), fp[0], fp[1])) & 0xFFFFFFFF
+                # Unknown (facility_type, pose_id): 不在真 registry。保留 deterministic
+                # substitute 让 100K sizing 仍能跑, 但记成 remap, 让 telemetry 暴露多少
+                # literal 没绑到真 registry (GPT 第九审: 静默 remap 让 applied 计数误导)。
+                n_pairs_remapped += 1
+                per_family_remap[fam] += 1
+                h = _stable_hash(f"{rec.get('cut_id', '')}\x00{fp[0]}\x00{fp[1]}") & 0xFFFFFFFF
                 idx = h % registry.n_vars
             lits.append(registry.var_by_idx[idx])
 
@@ -379,6 +404,9 @@ def translate_certs_to_constraints(
         per_family_applied=dict(per_family_app),
         per_family_skipped=dict(per_family_skip),
         translation_wall_s=time.monotonic() - t0,
+        n_pairs_total=n_pairs_total,
+        n_pairs_remapped=n_pairs_remapped,
+        per_family_remapped=dict(per_family_remap),
     )
 
 
