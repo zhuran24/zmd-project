@@ -1,6 +1,6 @@
 ---
 name: windows-ninth-review-pending
-description: "单一 living 当前交接/现状源. 2026-05-31 项目交接到 Windows. 独立九审复审 CLEAN GO, v22 spike 包已 Windows 重建两版, 等用户送 GPT pro 正式九审 → P1.3A 主体 N=8 design. 环境细节见 windows-handoff-env, 设计细节见 p1-3a-design-phase."
+description: "单一 living 当前交接/现状源. 2026-05-31 交接 Windows. **2026-06-02 更新: GPT pro 正式九审 (v22 faithful+clean 双版) 双双回 B (非 clean GO), 复核全实, 4 soundness 修 + sizing gate 已落 (spike a29fb44 + master af9054a), v23 待重建; 下一关 = P1.3A 的 F1/F9 lowering 决策.** (slug 还叫 ninth-review-pending 但九审已完, 未改名因 inbound link 多). 环境见 windows-handoff-env, 设计见 p1-3a-design-phase."
 metadata: 
   node_type: memory
   type: project
@@ -8,6 +8,19 @@ metadata:
 ---
 
 > **这是项目单一 living「当前 phase/交接状态」权威源** (per [[memory-currency-protocol]])。环境落点细节见 [[windows-handoff-env]] (稳定 reference), P1.3A 设计/Step0 gate 细节见 [[p1-3a-design-phase]] (设计记录)。本条是这三者里唯一的「现状真相」入口, 另两条只补细节不重述现状。
+
+## 最新状态 (2026-06-02) — 九审已回 B, 修复已落, v23 待重建
+
+GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送审, 两份报告都贴回主代理)。**双双判 B (未 clean close)**, 不是之前本地预审的 CLEAN GO —— 以正式九审为准 (per [[memory-currency-protocol]] §5: judgment 级结论由做判断的主体定, 正式九审 > 本地预审)。两份报告 finding 主代理**逐条对真代码+真数据复核, 全属实** (base64 不 validate / 36-unknown 静默 remap / salted hash / schema_err 不进门禁 / Finding 5 #2 sizing overclaim)。两份质量对比: 完整版那次更深 (36-unknown 那条), 干净版更广 (独占 3 条), 但**单跑各一次无法把"包差异"和"GPT run-to-run 噪声"分离** (只有 README 不同, 取并集才对, 见 [[external-review-reproducibility]])。
+
+**已落修复 (2026-06-02):**
+- spike `a29fb44` (`[SPIKE-V23-PATCH]`): toy_translator 4 修 (validate=True + blake2b stable hash + remap telemetry + schema_err 门禁), micro-probe 9→12 case 全 PASS; verdict.md Finding 5 #2 `YES→PARTIAL` + 第九审修正章 + Layer-2 risk #6。
+- master `af9054a`: sizing cheap gate 归档 `docs/research/p1_2_spike_sizing_gate_20260601/` (RESULTS.md + sizing_gate.py)。
+- **核心 sizing 结论**: cut body master 约束大小是 **~1000x lowering 设计变量**, 100K sizing 有界便宜 (~1–40 MB), **唯一** blow-up = F1 region_capacity / F9 density_envelope 的**大池子** (manufacturing ~17952 pose) 容量 cut 按展开式 lower (每条 ~2–3K term → ~1.9 GB)。其余 7 族任意 lower 都安全。
+
+**v22 包已 stale** (verdict + spike code 已改); 下次送审或 P1.3A 前需 **v23 重建** (build 脚本复用 `cc_context/review/build_v22_*win.py`, 换 spike HEAD = a29fb44)。
+
+---
 
 2026-05-31 zhuran24 → 接手者 (Windows 11) 交接完成。
 
@@ -32,6 +45,8 @@ metadata:
 
 **基础设施** (本 session 2026-06-01 落地): GitHub 实时备份已 live(私有库 zhuran24/endfield-exact-solver, post-commit 自动 push, pre-commit 自动同步 memory, SessionEnd 兜底 WIP) + 项目结构整理(CC/审查工件归 cc_context/{memory,tools,review}, root 清爽)。详 [[github-backup]]。
 
-**下一步**: 用户送两版 zip + prompt 给 GPT pro → 若正式九审 CLEAN GO → P1.3A 主体 (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛, verdict 里 5 项 Layer-2 risk register) 走 **N=8 parallel design** (不 cherry-pick spike code)。Step 0 cheap gate 已 8/8 PASS (详 [[p1-3a-design-phase]]), production step_8 (F1-only) 仍等正式九审 CLEAN GO 才落代码。见 [[phase-1-2-progress]] + [[design-phase-n-parallel-agents]] + [[main-merger-scope-creep-bias]] (P1.3A phase boundary 用户是唯一可信 auditor)。
+**下一步** (2026-06-02 修订, 九审已回 B 后): 正式九审已跑完 (B, 修复已落, 见顶部「最新状态」), 不再是「等送审」。真正的下一关 = **P1.3A 的 F1/F9 lowering 决策** —— sizing gate 把它量成带数字硬约束 (F1/F9 大池子展开 ~2–3K term/cut → ~1.9 GB@100K), P1.3A lowering 必须二选一: (a) witness 紧凑 no-good, 或 (b) 大池子展开容量 cut 设上界。这个决策走 **N=8 parallel design** (不 cherry-pick spike code), 由用户当 phase boundary auditor 拍板 (per [[main-merger-scope-creep-bias]])。production step_8 (F1-only) 落代码前先定这个 lowering。Step 0 cheap gate 已 8/8 PASS (详 [[p1-3a-design-phase]])。如还要再送一轮 GPT pro 外审, 先 **v23 重建** (v22 已 stale)。见 [[phase-1-2-progress]] + [[design-phase-n-parallel-agents]]。
+
+**送审 (历史口径, 若再送)**: 见下方「送审清单」, 但包要先 v23 重建。
 
 **(2026-06-01) 命名错位 (接手第一手陷阱, 易误判 phase)**: `docs/项目说明/06` 的 **doc-P1.3A = attach spike (已 done)**、**doc-P1.3B = 真 master 集成** (= 本 memory 口径里叫的「P1.3A 主体」); CLAUDE.md 旧 "Phase 3B" 已改正为 1.3A。`step_8_apply_to_master` 仍 `NotImplementedError`。
