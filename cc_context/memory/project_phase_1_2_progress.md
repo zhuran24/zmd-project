@@ -1,6 +1,6 @@
 ---
 name: phase-1-2-progress
-description: 2026-05-27 Phase 1.2 spike close 收尾 + F3 special-case phase **已完成**. F3 port_exposure generator 已实现 (c768806 + b5860bc), Gemini 3-round cross-check 全 PASS (含 self-blocker guard c639063), A3 rerun 50 cert/9 family/0 unsound. GPT pro 外部审查 v14(一审)→v22(八审) 共 8 轮逐 finding 修到 CLEAN GO, v22 (sha 72a04545) 已 Windows 重建两版 (faithful+clean), 本地独立九审复审 CLEAN GO, 等 GPT pro 正式九审 (详见 handoff-windows-ninth-review-pending). spike close gate = GO_WITH_MINOR (G6a SOFT 进 P1.3A risk register). **下一步 P1.3A 主体, 从 master 起 (F3 generator 已在 master); spike 分支是 throw-away spike harness+review 数据, P1.3A 走 N=8 design 不 cherry-pick spike code**. (旧状态: 早期本文记的 "F3 仍 stub / 等四审" 已过时, 见下方 2026-05-27 终态段。)
+description: 2026-05-27 Phase 1.2 spike close 收尾 + F3 special-case phase **已完成**. F3 port_exposure generator 已实现 (c768806 + b5860bc), Gemini 3-round cross-check 全 PASS (含 self-blocker guard c639063), A3 rerun 50 cert/9 family/0 unsound. GPT pro 外部审查 v14(一审)→v22(八审) 共 8 轮逐 finding 修, **八审 verdict = GO_WITH_MINOR/PATCH_REQUIRED (修复项已 land), 非 GPT 给 CLEAN GO**; v22 (sha 72a04545) 已 Windows 重建两版 (faithful+clean); **本地独立九审复审 = CLEAN GO (本 session 主代理本地复审, 非 GPT 输出)**, 仍等 GPT pro 正式九审 (详见 handoff-windows-ninth-review-pending). spike close gate = GO_WITH_MINOR (G6a SOFT 进 P1.3A risk register). **下一步 P1.3A 主体, 从 master 起 (F3 generator 已在 master); spike 分支是 throw-away spike harness+review 数据, P1.3A 走 N=8 design 不 cherry-pick spike code**. (旧状态: 早期本文记的 "F3 仍 stub / 等四审" 已过时, 见下方 2026-05-27 终态段。)
 metadata: 
   node_type: memory
   type: project

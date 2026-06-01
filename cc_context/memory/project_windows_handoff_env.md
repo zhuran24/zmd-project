@@ -13,12 +13,12 @@ metadata:
 2026-05-30 zhuran24 → 朋友接手, 落到 Windows 11 机器(原项目是 Linux/CachyOS 重度调优的)。
 
 **环境落点**:
-- 仓库: `D:\追光\zmd`(从 `repo.bundle` clone, master HEAD `959b6de`, 工作树干净)
+- 仓库: `D:\追光\zmd`(2026-05-30 从 `repo.bundle` clone, bundle 已删; 接手快照 HEAD `959b6de`, **现状 HEAD 见 git log** —— 本 session 后续有 GitHub备份/结构整理等多个 commit, 别拿 959b6de 当现状)
 - venv: `D:\追光\zmd\.venv\Scripts\python.exe`(Windows 布局, **不是** Unix `.venv/bin/`)
 - Python 3.13.13(winget user-scope, `C:\Users\Lenovo\AppData\Local\Programs\Python\Python313\`)。项目要 3.13, **别用 3.14**(json stdlib 坑)
 - 依赖: `requirements.lock.txt` 精确版(ortools==9.15.6755)在 Windows cp313 直接装通, import 全 OK
 - 健康基线: `.venv\Scripts\python.exe -m pytest src/tests/cuts/ -q` = **414 passed**(3.93s)
-- CC memory slug = `D-----zmd`(项目路径 `D:\追光\zmd` 每个非字母数字字符→`-`, 不折叠); 117 条 handoff memory 已接到 `~/.claude/projects/D-----zmd/memory/`
+- CC memory slug = `D-----zmd`(项目路径 `D:\追光\zmd` 每个非字母数字字符→`-`, 不折叠); memory 在 `~/.claude/projects/D-----zmd/memory/` (接手时 117 条, 2026-06-01 重构后 123 条; 精确数易过时, 以实际 ls 为准)
 
 **这台机器能做 / 不能做**:
 - 能: P1.3A 设计、cut 测试、小规模/单 anchor/toy validation、Phase 0 cheap gate、全部 soundness 单测

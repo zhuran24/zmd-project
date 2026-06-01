@@ -74,7 +74,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models?key=$KEY"
 ## 安全 caveat
 
 - key **已暴露** (出现过在 5-10 P2 #14 AlphaEvolve PoC memory + 这次 5-21 用户重复确认 free tier), 不要 commit 进 git / docs/ / share package
-- 这条 memory 在 `~/.claude/projects/-home-zhuran24-claude-pj-zmd/memory/` 私有目录, 不进项目 git
+- 这条 memory 在 CC 私有 memory 目录 (现 slug `D-----zmd`, 即 `~/.claude/projects/D-----zmd/memory/`; 旧 Linux slug `-home-zhuran24-claude-pj-zmd` 已废), 不进项目 git
 - free tier 配额受 Google policy 限制 (历史: 大陆 block + 训练数据污染 + 单方面砍 quota), 不能依赖
 
 ## 历史使用记录

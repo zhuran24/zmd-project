@@ -60,3 +60,8 @@ spike close 之后下一步是 P1.3A 主体。我卡在：能不能拿这个 GO_
 - 原始 telemetry：`project/data/cuts/spike/*.jsonl`
 - 每个 cut family 的 per-commit 数学 cross-check 存档：`project/docs/research/` 下各 `*_gemini_round*` / `cross_check/`
 - 跑测试：`cd project && python -m pytest src/tests/cuts/ -q`（实测数见包内 README）；spike 自测跑法见 `project/code_context/README.md`
+
+## 包 sha256（核对上传完整）
+你收到的 zip 按对应版本核：
+- `phase1_2_spike_review_v22.zip`：`a29f017a379d0774f9fc72d321f0d3cd95ee783ae3be1484b7fd2ceda8a4a29a`
+- `phase1_2_spike_review_v22_clean.zip`：`29a594f27875fa6b77af42e4fb542653811af3431bc9bc9e63b09ec7adc8e591`
