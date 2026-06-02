@@ -1,6 +1,6 @@
 ---
 name: windows-powershell-harness-pitfalls
-description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳。配 [[windows-handoff-env]] 环境落点看。"
+description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳 / SendUserFile 手机端 >~30MB 或重名文件无下载按钮 (拆件+干净短名+核 UUID)。配 [[windows-handoff-env]] 环境落点看。"
 metadata: 
   node_type: memory
   type: reference
@@ -29,4 +29,13 @@ metadata:
 
 连挂两次后默认判定"本环境后台代理不可靠", 务实 fallback = **自己用上下文写薄壳脚本 import 原脚本复用大段逻辑, 只改路径/换机制不重抄** (本 session v22 portable builder `build_v22_win.py` 就这么来的)。
 
-**How to apply**: 在这台机器操作时默认带上这几条防御; 删目录别用 `Remove-Item -Recurse`; 核中文别信控制台; 长后台活优先 Workflow (有 resume) 而非裸 Agent。关联 [[windows-handoff-env]] [[agent-vs-workflow-dispatch]] [[long-op-background-mode]]。
+## SendUserFile 手机端交付坑 (2026-06-02 实测)
+
+用户用**手机 app** 连这个 thread 时, SendUserFile 会回 "N files delivered" 成功, 但文件卡片在手机上**没有下载按钮** (下不了), 两种触发已实测:
+
+1. **文件太大 (>~30MB)**: 14MB (review zip) / 29MB (deps 块) 都正常出按钮; 把 4 件打成 **103MB 一体 bundle 后无按钮** (超 app 单文件下载上限)。→ **别为"一次下完"打大 bundle; 拆成 ≤~29MB 的多件单发**, 每件都能下。(注意 GPT 那端上传也有体积限, deps 本就切 ~29MB 三块, 正好同一区间。)
+2. **同 thread 内重复文件名/内容**: 同名 `deps_linux_py313.zip.002` 发两次, 两次都无按钮 (首发还没拿到 UUID); 换**全新短名** `deps_part2.zip` 重发立刻拿到 UUID + 出按钮。→ 交付一律用**干净、互不相同的短 ASCII 名** (`deps_part1/2/3.zip`), 别用 `.001/.002/.003` 这种数字后缀或重名。
+
+判据: SendUserFile 回执里**每个文件都列出 file_uuid** 才算真投递; 只报 "N delivered" 但某文件没在列表出现 = 那件没成 (跟手机端无按钮对应)。多件单发后逐一核 UUID, 缺的换名重发。
+
+**How to apply**: 在这台机器操作时默认带上这几条防御; 删目录别用 `Remove-Item -Recurse`; 核中文别信控制台; 长后台活优先 Workflow (有 resume) 而非裸 Agent; 给手机端交付文件 **≤~29MB + 干净短名 + 核每个 UUID**, 大东西拆件别打大 bundle。关联 [[windows-handoff-env]] [[agent-vs-workflow-dispatch]] [[long-op-background-mode]]。

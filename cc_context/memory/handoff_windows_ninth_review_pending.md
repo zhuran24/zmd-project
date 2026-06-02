@@ -26,6 +26,8 @@ metadata:
 
 **v23 状态**: gate 仍 B, 不是 clean-A。是否走 v24 全补丁轮 (修 7 finding + 重建 + 再外审) **还是** 拿纠正后 (更温和) 的理解直接进 P1.3A —— phase-boundary 决策待用户拍 (per [[main-merger-scope-creep-bias]])。
 
+**v24 已建+验+交付 (2026-06-02, 用户选了路线 1 全补丁轮)**: 7 finding 全修 (master `a7eff5d` sizing_gate LSB; spike `12f64dc` runner F6/ramp F5/remap_audit/verdict 纠正/F7; build `6e88c4c`+prompt `cf41637`)。v24 对抗验证 workflow (4 镜头+critic) 逮到**第 8 个** = G10 表 staleness (verdict/README G 表缺 schema_err, 与 F6 runner emit 不一致, 复发 v23 同 pattern) → spike `0ebfaff` + build transform 修 + 内联验 (两表含 schema_err, secret=0, 包内实跑 sizing_gate 产 264 不产 2026)。v24 终包 sha `991c5b79431578797ffd81848a79489cf636d52af467ad6c9d705e3eb17bf3bf`, master HEAD `0cbc355`。prompt = `cc_context/review/GPT_v24复审_prompt.md` (诚实披露 bitset bug)。**已 SendUserFile 交付手机**: 103MB 一体 bundle 超 app 下载上限 (无按钮), 改拆 4 件单发 (v24 zip 14MB + deps_part1/2/3.zip 各 29MB, 干净短名避 .002 掉号), prompt 贴正文。**送审踩坑教训见 [[windows-powershell-harness-pitfalls]]** (SendUserFile: >~30MB/重复文件名 无下载按钮)。等用户送 GPT 第三轮外审结果。
+
 ---
 
 ## (历史快照, 已被上方纠正) v23 已建+多镜头验证 PASS
