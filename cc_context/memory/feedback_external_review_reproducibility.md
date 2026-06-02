@@ -22,6 +22,7 @@ v3 review (2026-05-13) 实例:
 - 同一份审查包**可以跑 2-3 次**抓不同 sampling 的 finding (尤其是元层面问题), 然后合并
 - 如果两次报告冲突, 信**保守的那条** (cut 过切风险 / exactness 风险 / data loss 风险方向)
 - v4+ 跟之后的审查包都应该带这条提示, 不只 v3 这次
+- **两份并行 review 深浅不一时 → 取并集, substantive 那份 (真跑过/有具体 finding) 主导, 浅份 (没跑/零 finding/"测过就 GO") 不抵消深份**。但**别因果解释"为什么这份更深"** (本 session v22 两份差异我一度归因到 README, 实为 N=1 抽样噪声, per [[no-causal-claim-from-n1]])。
 - 跟 [[verify-solver-param-claims]] 同源: 不要信单一信源, 必须 verify
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)

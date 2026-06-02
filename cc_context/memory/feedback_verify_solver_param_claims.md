@@ -70,3 +70,6 @@ R5 调研报告："we currently have 0 shared_tree workers; explicit set = +10-3
 - "X 件套" 类 combined claim 自动触发 audit
 - commit "skipped/refuted/NO-OP" message 必须配套 roadmap PR
 - ROI claim 用第三方 benchmark 数字时，benchmark 工作负载与目标的 hot-path-similarity 必须显式 argue
+
+## 链 (补连 2026-06-02 全覆盖审计 w5u712m2y)
+- [[verification-independent-backstop]] — 别信单一信源/自报数, 必独立 verify (anti-self-trust 三元组)

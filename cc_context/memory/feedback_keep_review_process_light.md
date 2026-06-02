@@ -6,7 +6,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 终末地项目不要给每个小 patch 都套"strategy → external review → readiness → review tooling → execute → reviewer reply"这种 6 步循环，**preflight gate + Claude 自主语义审查已经覆盖大部分场景**，只有真正改证明等价性、动 frozen artifacts、新增对求解器架构的根本改动时才需要重型流程。
 
-**Why:** Codex 时代每个 S 步骤（哪怕只改 1-2 行）都要走完整的外部审查流程：打包 review zip → 上传 ChatGPT 终末地 → DOM 验证 source 行 → 等 reviewer reply → 提取 → 本地 readiness → 再打包 review tooling → 又一次上传 ChatGPT → 等审查 → 最后才能改 1 行代码。这种流程是因为**当时没有可信的本地 gate**——只有人类外部 reviewer 能背书"代码改动安全"。Claude Code 已经有 `scripts/preflight_gate.py` 自动跑 5 项检查（frozen hash、禁止路径、AI 安全合同、边界隔离、核心测试），加上 Claude 自己能做语义审查，外部审查的频率应该大幅下降。Codex 那段流程开销 50% 时间花在 ChatGPT UI 自动化（DOM 点击、坐标校准如 `1905,780` vs `1905,850`）上，得不偿失。
+**Why:** Codex 时代每个 S 步骤（哪怕只改 1-2 行）都要走完整的外部审查流程：打包 review zip → 上传 ChatGPT 终末地 → DOM 验证 source 行 → 等 reviewer reply → 提取 → 本地 readiness → 再打包 review tooling → 又一次上传 ChatGPT → 等审查 → 最后才能改 1 行代码。这种流程是因为**当时没有可信的本地 gate**——只有人类外部 reviewer 能背书"代码改动安全"。Claude Code 已经有 `scripts/preflight_gate.py` 自动跑多项检查（frozen hash、禁止路径、AI 安全合同、边界隔离、R-N audit 覆盖、research_audit、mypy、ruff、核心测试 —— 实核现 ~8 项, 数随加守卫漂移以实跑为准），加上 Claude 自己能做语义审查，外部审查的频率应该大幅下降。Codex 那段流程开销 50% 时间花在 ChatGPT UI 自动化（DOM 点击、坐标校准如 `1905,780` vs `1905,850`）上，得不偿失。
 
 **How to apply:**
 - 默认走：写 patch → 跑 pytest 核心门禁 → preflight gate → commit

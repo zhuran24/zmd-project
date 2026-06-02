@@ -52,3 +52,5 @@ metadata:
 
 ## 链 (补连 2026-06-01)
 - [[lever25-ihs-dead]] — Lever 25 详情
+- [[lever24-augmented-master-dead]] — Lever 24 详情 (body 已点名为死法实例, hub 该出链)
+- [[lever26-benders-symmetry-dead]] — Lever 26 详情 (同上)

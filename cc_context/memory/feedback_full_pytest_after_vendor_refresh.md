@@ -7,7 +7,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 每次跑 `scripts/refresh_endfield_calc_snapshot.py` 或 `scripts/refresh_industrial_planner_bases.py` 这类 vendor sync 脚本后，**手动跑一次 `python -m pytest src/tests/ -q`**（约 6 分钟），不能光信 commit 时的 pre-commit hook。
 
-**Why:** 用户 2026-05-08 在 session 后期问"审查呢，数学确定性的审查怎么感觉没存在感了"。我跑完整 pytest 才发现 `test_endfield_calc_semantic_mapping.py` 还 hardcode 着 v0.5.2 的 130/172/14，但我之前的 vendor refresh（v0.5.2→v0.6.2）只改了 `test_endfield_calc_typescript_snapshot.py`。这个 bug 潜伏了几天，commit 时的 pre-commit hook 没抓到，因为它只跑核心 86 测试（preflight gate 守卫 certified path），不跑全 2086 个测试。
+**Why:** 用户 2026-05-08 在 session 后期问"审查呢，数学确定性的审查怎么感觉没存在感了"。我跑完整 pytest 才发现 `test_endfield_calc_semantic_mapping.py` 还 hardcode 着 v0.5.2 的 130/172/14，但我之前的 vendor refresh（v0.5.2→v0.6.2）只改了 `test_endfield_calc_typescript_snapshot.py`。这个 bug 潜伏了几天，commit 时的 pre-commit hook 没抓到，因为它只跑核心守卫子集（preflight gate `CORE_TEST_FILES`，守卫 certified path），不跑全套。**(注: "86" 已漂移 —— 实核现 collect ~108 个, v4 follow-up 加了守卫文件; 数会随加守卫变, 以实跑为准, 别记死。)**
 
 **How to apply:**
 - 跑完任意 `scripts/refresh_*.py` 后立刻跑 `python -m pytest src/tests/ -q`

@@ -5,7 +5,7 @@ type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 
-> ⚠️ **2026-05-27 起部分废弃**: settings.json 硬编码心跳 hook 已于 commit `959b6de` 移除, 当前 `.claude/settings.json` = `{"hooks":{}}` 无自动心跳 fire。本工作流 (尤其「设 1min cron 心跳」一步) 仅在用户明确再次下「设置 1min 心跳」指令时适用, **不再作 autopilot 默认**。其余 (大表 inline / 每 stage 独立 commit / 阻塞转下一项 / 做完自删 cron) 仍有效。见 [[phase-1-2-progress]]。
+> ⚠️ **2026-05-27 起部分废弃**: 硬编码 **1min 心跳 hook** 已于 commit `959b6de` 移除, **无自动心跳/cron fire**。(注: `.claude/settings.json` 现非空 —— 后来 [[github-backup]] 又加了 `SessionEnd` WIP-backup hook 跑 `cc_wip_backup.ps1`; 那是退出兜底备份, 不是心跳, 不每分钟 fire。早先此处写的 `{"hooks":{}}` 字面已过时。) 本工作流 (尤其「设 1min cron 心跳」一步) 仅在用户明确再次下「设置 1min 心跳」指令时适用, **不再作 autopilot 默认**。其余 (大表 inline / 每 stage 独立 commit / 阻塞转下一项 / 做完自删 cron) 仍有效。见 [[phase-1-2-progress]]。
 
 用户 2026-05-08 在去睡前下了一个明确的工作流指令：
 > "你设置一个一分钟心跳然后把现在能做的工作全做了，等下你先列个大表，做完之后你自己把心跳删了，整个流程你记一下"
@@ -34,7 +34,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 - **git hook +x bit 被 7z extract 丢了**：跨 fs (NTFS→ext4) file mode 不通用，手动 `chmod +x .git/hooks/pre-commit`
 - **hook 里 `python` 走 PATH = system Python**（不是 venv），需要改 hook 用 `.venv/bin/python` 才能 import ortools
 - **escalation 不要怕**：stage 3 fallback ladder 跨模块 + 漏一处破 certified_exact = 真高风险，"escalate 等用户决策"比硬上更稳；但 escalation 必须给**具体论证**（不是"风险大"经验判断），按 `feedback_autopilot_with_review_gate` 已记
-- **Linux 实测比 Windows 快**：本 session 数据点 = pytest 全套 Windows 6:00 vs Linux 4:00 (-33%)；preflight 86 测 Windows 2.4s vs Linux 0.7s (-71%)。CachyOS BORE + zram + jemalloc 默认确实有效
+- **Linux 实测比 Windows 快**：本 session 数据点 = pytest 全套 Windows 6:00 vs Linux 4:00 (-33%)；preflight 核心测 Windows 2.4s vs Linux 0.7s (-71%)。⚠️ "CachyOS BORE + zram + jemalloc 默认致快" 是 **best-guess 非证实** —— 跨机硬件/OS/FS 多变量混杂、未单变量隔离 (per [[no-causal-claim-from-n1]]), 原始数字诚实当"数据点"看即可, 别把因果说死
 
 **Anti-pattern（不要做的）:**
 

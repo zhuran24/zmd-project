@@ -168,3 +168,6 @@ env knobs:
 - GPT v7 plan Candidate D 段 (`b1_phase6_review_package_v7.zip` inline)
 - BOTTLENECK_STRUCTURE.md (v6+ 包) — 3 性质 framing
 - MASTER_FORM_BASELINE.md (v7 包) — pose-bool master 表达力 limits + user hypothesis
+
+## 链 (补连 2026-06-02 全覆盖审计 w5u712m2y)
+- [[lever24-augmented-master-dead]] — superseded→superseding 前向边 (MEMORY.md 已记 superseded)

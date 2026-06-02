@@ -23,7 +23,7 @@ explicit 选项 force evaluate). 7-section 是 audit/decision/falsification
 篇幅, 但**全部 7 段必须出现**. 漏 section 是 reviewer 角度漏的 leading
 indicator.
 
-## 8-Section 结构
+## 7-Section 结构
 
 ### 1. 顶部 1-2 句标题段
 项目名 + 当前 phase + audit 类型 (一审 / 二审 / 三审 / N审).

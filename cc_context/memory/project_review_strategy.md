@@ -8,7 +8,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 ### 第1层：Preflight Gate（每次 commit 自动触发）
 - 脚本：`scripts/preflight_gate.py`，通过 `.git/hooks/pre-commit` 挂载
-- 6项检查：冻结hash、禁止路径、AI安全合同、精确/探索隔离、R-N audit 覆盖、86核心测试
+- 检查项（实核 ~8 项: 冻结hash/禁止路径/AI安全合同/精确·探索隔离/R-N audit 覆盖/research_audit 覆盖/mypy/ruff + 核心测试 ~108 个）。**项数/测试数随加守卫漂移, 以 `scripts/preflight_gate.py` 实跑为准, 别记死数字**
 - 耗时 ~2.5s，全自动，零人工
 
 ### 第1.5层：动态短跑 smoke（src/search 主路径或 env-gate 改动后）⚡ 新增
@@ -31,7 +31,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ### 第3层：/ultrareview（用户每天早上手动触发）
 - 用于重大变更的全面外部审查
 - 用户每天起床后跑一次，覆盖前一天的所有改动
-- 前提：需要 main 分支存在 + GitHub repo（2026-05-10 已推到 https://github.com/zhuran24/zmd）
+- 前提：需要 main 分支存在 + GitHub repo（私有库 `https://github.com/zhuran24/endfield-exact-solver`, 权威见 [[github-backup]]; 早先记的 `zhuran24/zmd` 是错 URL, 仓库名一直是 endfield-exact-solver）
 
 ## 风险分级决策规则
 

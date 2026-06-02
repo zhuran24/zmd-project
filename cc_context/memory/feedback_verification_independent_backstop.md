@@ -20,7 +20,11 @@ metadata:
 
 本 session 自证: main 第一次派 backstop 就把主体弄错成"记忆树"(proxy), 报"落盘完整"实为假 —— 恰恰漏了**本条 working-preference 自己**; 用户两次纠正(U39 完整重发为 U40)才扳回"主体 = 当前 session 内容"。换对主体后独立 agent 立刻确认这条缺失。**这正是本规则要防的失误, 当时却没进 memory, 不记下次必复发。** 口头反馈无文件副产物, 任何 git/repo/记忆树-proxy 检查都抓不到 —— 只有以"对话本身"为主体的独立检查能抓。
 
-**主体二次切窄 (同 session 2026-06-01 再踩)**: 我把主体从 proxy 改对成"对话"后, 又只抽了**用户消息**当主体; 用户即时纠正"你的消息也全都要"。memory-worthy 内容助手侧也大量产 (踩坑修法/判断/结论), 只抽 user 仍漏。**proxy → user-only 是同一个病的两次发作: 图省事把主体切窄。规则收紧为「主体 = 完整被验对象, 不切片」。**
+**主体切窄是反复发作的同一个病 (图省事缩小被验对象), 已三种变体**:
+- **变体① proxy** (2026-06-01): 拿"记忆树/git/repo"代替"对话本身"。
+- **变体② user-only** (2026-06-01): 改对成"对话"后又只抽**用户消息**, 漏助手侧产的 finding/修法/决策。用户即时纠正"你的消息也全都要"。
+- **变体③ range/boundary 切窄** (2026-06-02): 验"压缩前内容是否全落盘"时, 我按**猜测的行号区间 / "某两次 compact 之间"**抽 transcript (1762-4052), **漏了边界外、尤其最近一次 compact 前那几条消息** (连通审计 follow-up 全 defer 在那)。用户两次催"特别是这一次压缩前那几条没记全 / 完整的那种不要只检查某个范围或边界"才扳回。
+**规则收紧为「主体 = 完整被验对象 —— 不换 proxy、不切片(role)、不限范围(行号/compact 边界)」**。要"完整核查"就喂**整段** (从头到当前 live 尾, 含最近一次 compact 前的尾部), 别拿任何范围假设缩小它。
 
 **proxy 第三变种 (核 shipped 包内容)**: 验证 workflow/子代理核对包内容时, 读到的常是 build 脚本里的**源 README 模板**(proxy), 不是 **shipped 成品**顶层文件 → 假阳性。本 session 实例: 打包 workflow 报 v22 README "解包步骤还写 7za" 是误报, 实地核 shipped 顶层 README + project/README.md 才确认 7za/project.7z/tools token 全 0、已是单层 unzip。**包合规类 finding 必回 shipped 文件本身复核。**
 
@@ -34,4 +38,5 @@ metadata:
 - **自己脚本算出的关键数字 (尤其支撑 verdict 的) 也要 verify-the-method, 不只 re-run**: 重跑同一个有 bug 的方法只复现错值。不是只核别人报的数, 自产数也要核**产它的算法对不对**。本 session 实例: 我写的 `sizing_gate.py` bitset 解码 MSB/LSB 反了 → 整条 "F1/F9 大池子 100K → 1.9GB blow-up" 数字链是假的, 还写进了 RESULTS/verdict/README/memory 4 处, 直到外审独立按 LSB 重算才逮到 (见 [[no-causal-claim-from-n1]] / [[windows-ninth-review-pending]])。
 - **跨文档重复内容 (同一张表/同一个数字出现在 README + verdict + RESULTS) 编辑时必一起改; 跨文档一致性是独立 backstop 的高频捕获项**: 本 session v23/v24/v25 三轮验证 workflow **各逮一次**我手工漏的镜像漂移 (改了 verdict 没改 README 的同张 Finding 表 / 改了 runner 没重生成 verdict 的 G10 行 / 改了 RESULTS 没改 verdict 的 F9 数字), 每次内联自查都没发现、都是独立 workflow 抓的。改前 grep 全部副本一起改 —— 这是 [[memory-tree-structural-health]] "改一条 memory 前 grep 全树找全实例" 的**项目文档版** (同一个 "改一处漏多处" 根因, 跨 memory 和 docs 两域)。
 - **修复后必 re-audit 那个修过的产物 (闭环, 别短路)**: 每次 fix+rebuild 产生**新工件**, 独立 backstop 要在**新工件**上重跑, 循环到零 finding 才算 ship-ready。本 session 实例: v25 验证 workflow 报 3 瑕疵 → 我修+重建成新 sha f245bc9 → **只内联自查就交付, 没在重建包上再跑 workflow** (用户 catch: "修了一遍之后就默认好了, 没再审到没问题为止")。
-- 关联: [[external-review-reproducibility]] (外部模型单次有 variance; 本条是 "Claude 自己" 在长 context 不可信, 互补) / [[subagent-for-closed-loop-tasks]] / [[audit-verify-before-archive]] / [[no-causal-claim-from-n1]] / [[memory-currency-protocol]]。
+- **"defer 到 output 文件" ≠ 已记录 (闭环短路的又一变体)**: backstop/审计跑出的补救清单 (缺链/漏记/finding) 若只活在 workflow 的 `.output` 临时文件里, **等于没落盘** —— 临时文件随会话压缩/退出会丢 (同 [[archive-research-transcripts]] 精神)。哪怕 context 紧, 也必须**当轮真应用到记忆树 / 持久化进 git-tracked 文件**, 别拿"留作 follow-up"短路。本 session 实例: 连通审计 30 条补链我 99% context 时只落 1 条 HIGH、其余 defer 在 `.output`, 用户 catch"压缩前那几条没记全"。跟规则#4"别审一遍就默认好"同根 (都是闭环短路)。
+- 关联: [[external-review-reproducibility]] (外部模型单次有 variance; 本条是 "Claude 自己" 在长 context 不可信, 互补) / [[subagent-for-closed-loop-tasks]] / [[audit-verify-before-archive]] / [[no-causal-claim-from-n1]] / [[memory-currency-protocol]] / [[gemini-review-algorithm-math]] / [[archive-research-transcripts]]。

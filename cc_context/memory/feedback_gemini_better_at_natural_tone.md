@@ -13,6 +13,8 @@ metadata:
 
 Gemini 默认更口语化 / 自然分段. 用 "比方说" / "咱们" / "最要命的是" / "盘子" / "白干的覆辙" 这种口语词. 段落自然分, 不强加 markdown 结构.
 
+⚠️ **把握度**: "Claude 默认端着/工程化" 有**多次**用户反馈支持 (systematic pattern, 稳)。但 "Gemini 更靠谱 → default route" 这个**比较结论只有 v14 单次对照** (N=1), 还掺了 Gemini 6109-thoughts effort 差异未隔离 —— 按 [[no-causal-claim-from-n1]] 算 **best-guess 非证实**。所以"Claude 端着"放心用, "Gemini 必更好"留个 hedge, 真要紧的长文可两边都试比一比。
+
 **实测验证** (2026-05-21):
 - Claude 写 v14 prompt 两版都被用户标 "端着 / 工程化". 我尝试 "重点 4 件事: 一是... 二是..." structure 仍 unsatisfactory.
 - Gemini fat-context 写一版用户 OK: "虽然还是有点 AI 味, 但是确实反而感觉好多了"

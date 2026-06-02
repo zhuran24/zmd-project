@@ -52,7 +52,7 @@ Spike GO 标准: 至少一条路径在 prod-scale (266 instance + ~10K cut) wall
 
 ## proto sizing: bytes/term 按约束类型分 (P1.3A lowering 预算硬数字)
 
-2026-06-02 实测 OR-Tools **9.15.6755** 的 `CpModel.Proto()` 序列化增量 (同 k-term constraint × 100 条测边际):
+2026-06-02 实测 OR-Tools **9.15.6755** 的 proto 序列化字节增量 (同 k-term constraint × 100 条测边际)。⚠️ **测法**: `model.Proto()` 返回的 pybind `CpModelProto` **没有** `SerializeToString`/`ByteSize` —— 量字节要么用 `model.ExportToFile("x.pb")` 后读文件大小, 要么把它 copy 进 `ortools.sat.cp_model_pb2.CpModelProto()` 再 `.ByteSize()`/`.SerializeToString()` (那个才是真 protobuf)。照 `model.Proto().SerializeToString()` 字面跑会 AttributeError。
 
 | 约束形态 | 实测 bytes/term |
 |---|---|

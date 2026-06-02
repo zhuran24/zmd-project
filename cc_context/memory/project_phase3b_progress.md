@@ -1,10 +1,12 @@
 ---
 name: phase3b-progress
-description: S0-S18阶段执行进度追踪，用于上下文压缩后恢复状态
+description: "(SUPERSEDED 历史快照) Phase 3B tuning 范式 S0-S18 执行追踪. ⚠️ 该范式早被取代 (→B1→cut-family LBBD→当前 P1.3A), 非项目现状; 现状权威源见 [[windows-ninth-review-pending]]. 保留作历史, 别当 live 恢复源"
 type: project
 originSessionId: 732c4476-d6e3-489a-9d77-f2a9ed5b0e92
 ---
-## 当前阶段：Accumulation Loop（S8→S9 过渡）
+> ⚠️ **SUPERSEDED 历史快照 (2026-06-02 标注)**: 本文件是 **2026-05-06 起 Phase 3B tuning 范式**的执行追踪, 那套范式**早已被取代** (27-lever 全死 → B1 pose-bool → cut-family LBBD → **当前 P1.3A**)。下面"## 当前阶段：Accumulation Loop"是**当时**的状态, **不是项目现状** —— 别据此误判项目仍在 Phase 3B。**项目现状权威源 = [[windows-ninth-review-pending]]** (per [[memory-currency-protocol]] §2/§3: 现状只信单一 living 源)。本文件保留作历史。
+
+## 当前阶段：Accumulation Loop（S8→S9 过渡）  *(← 历史, 见上方 superseded banner)*
 
 **计划文档：** `docs/phase3b_repair5_acceleration_tuning_ai_plan.md`
 
