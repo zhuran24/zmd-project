@@ -7,7 +7,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 用户在 Endfield 项目（终末地求解器）已经明确升级 autopilot 授权：**可以直接动 src 代码 + commit，不需要等用户回来批准**。**前提是每次都走审查闭环**——不是给"砍审查"的授权。
 
-**Why:** 用户 2026-05-08 直接说："等下你没必要等我回来再开干，毕竟有审查，你可以直接放开手脚"。背景：之前 session 早期我把"用户睡觉"当作"不能动 src 代码 + 不能 commit"，导致每次都要等 explicit 批准、loop 浪费在文档级小动作上。用户纠正：项目有完整的审查机制（pre-commit hook 跑 preflight gate + 86 守卫核心测试 + 我可以手动跑全 pytest），所以不需要把用户当 commit 守门员。
+**Why:** 用户 2026-05-08 直接说："等下你没必要等我回来再开干，毕竟有审查，你可以直接放开手脚"。背景：之前 session 早期我把"用户睡觉"当作"不能动 src 代码 + 不能 commit"，导致每次都要等 explicit 批准、loop 浪费在文档级小动作上。用户纠正：项目有完整的审查机制（pre-commit hook 跑 preflight gate + 核心守卫测试子集 + 我可以手动跑全 pytest），所以不需要把用户当 commit 守门员。
 
 **How to apply:**
 

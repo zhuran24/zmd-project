@@ -24,7 +24,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 - 估单步任务时长 > 1 min → 自动 background
 - foreground 工具调用必须能在 < 1 min 完成
-- 写完 commit / 写完文件 / 验证 pytest 86 守卫这种快速验证可前台
+- 写完 commit / 写完文件 / 验证 pytest 核心守卫子集这种快速验证可前台
 - 长 audit agent（5-15 min spawn）必须 background
 - pytest 全套（7 min）必须 background
 

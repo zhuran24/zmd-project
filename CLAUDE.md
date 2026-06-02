@@ -159,7 +159,7 @@ python scripts/production_readiness_gate.py
 ```
 
 启动 168h 大跑前手动跑这个，缺一项 hard blocker 就 BLOCK。检查项：
-pacman freeze 已启用 (Linux only)、venv + ortools 可导入、preflight 86
+pacman freeze 已启用 (Linux only)、venv + ortools 可导入、preflight 核心
 守卫测试通过、kernel 是 cachyos-bore 变种、磁盘 ≥100 GiB free、git
 working tree 干净、THP enabled、jemalloc 装且 LD_PRELOAD 配置、进程
 cpu_affinity 限定 P-core。Exit code: 0=ready, 1=blocked。

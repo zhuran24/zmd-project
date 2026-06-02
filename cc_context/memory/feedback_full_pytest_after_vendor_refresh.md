@@ -1,6 +1,6 @@
 ---
 name: full-pytest-after-vendor-refresh
-description: 每次 vendor sync / 大版本升级后，跑一次完整 pytest 套件，不能只信 pre-commit hook 的核心 86 守卫
+description: 每次 vendor sync / 大版本升级后，跑一次完整 pytest 套件，不能只信 pre-commit hook 的核心守卫子集 (~108, 随加守卫漂移, 以实跑为准)
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---

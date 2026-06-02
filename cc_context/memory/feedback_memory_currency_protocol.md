@@ -1,6 +1,6 @@
 ---
 name: memory-currency-protocol
-description: 现状类 memory 防过时的治本协议 — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径. 治 3 个 HIGH 过时问题 (记忆更新滞后于 phase 转换) 的 root cause.
+description: 现状类 memory 防过时的治本协议 — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径 + **现状变更当下主动传播到所有嵌旧值的 memory (非等 sweep 反应式; 触发器=变更事件本身)**. 治 3 个 HIGH 过时问题 (记忆更新滞后于 phase 转换) 的 root cause.
 metadata: 
   node_type: memory
   type: feedback
@@ -25,7 +25,12 @@ metadata:
 
 6. **memory 用仓库相对路径**: 引用仓库文件用相对路径 (如 `docs/...`), 不用绝对 `D:\...`。项目搬家 (Codex → `D:\claude pj` → `D:\追光\zmd\zmd` → `D:\追光\zmd`) 即让绝对路径失效 —— 本次迁移 + roadmap drift 都是教训。
 
-relate [[endfield-solver]] [[windows-ninth-review-pending]] [[review-pkg-data-completeness]] [[main-merger-scope-creep-bias]]。
+7. **现状变更当下主动传播 (proactive, 不是等 sweep 反应式捞 — 2026-06-02 用户 catch)**: 触发器 = **现状变更事件本身** (做了改变某事实的工作 / 拍了改变状态的决定 / 配置变了), **不是**事后审计。变更当下**别停在"更新了单一 living 源 / 改了手头这条"就当完事** —— 立刻 grep 全树 (+ `CLAUDE.md`) 找**旧值** (计数 / URL / phase 名 / settings 字面 / 版本号 / 触发条件), 把每一处嵌了旧值的 memory 一起改。
+   - **为什么反复犯**: 我把"更新了 living 源的 body"当 done, 但别的 memory (甚至同一条) 的 **frontmatter / header / 触发条件 / description** 里**嵌着旧值**, 静默 drift。**本 session 的过时全是这个失败**: handoff frontmatter/header 停 v23 而 body 已 v25 / phase3b·phase3a 锚死范式 Phase 3B / settings.json 字面 `{hooks:{}}` / gpt-error "3 种" vs body "4 种" / review_strategy URL `zmd` —— **没一个是变更当下主动更的, 全靠周期 sweep 反应式捞回** (rule 5)。reactive 总有 drift 窗口期 (期间下个 session 会被误导), proactive 才根治。
+   - **结构预防**: 优先"指向 living 源"而非"嵌值" (rule 1/2); **每个嵌入的状态值都是 drift 负债** —— 一旦嵌了, 它就进"变更当下 sweep"的清单。能指针就别 copy 值。
+   - 这是 [[memory-tree-structural-health]] 第三轴 (改不全, **编辑**触发: 改 memory X 时 grep 同话题) 的**现状轴孪生** (**现状变更**触发: 事实变时 grep 旧值)。两个触发点都要有反射。
+
+relate [[endfield-solver]] [[windows-ninth-review-pending]] [[review-pkg-data-completeness]] [[main-merger-scope-creep-bias]] [[memory-tree-structural-health]]。
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)
 - [[memory-tree-structural-health]] — 记忆树两失效轴: 内容过时 vs 结构
