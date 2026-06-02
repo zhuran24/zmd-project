@@ -9,11 +9,12 @@ metadata:
 
 > **这是项目单一 living「当前 phase/交接状态」权威源** (per [[memory-currency-protocol]])。环境落点细节见 [[windows-handoff-env]] (稳定 reference), P1.3A 设计/Step0 gate 细节见 [[p1-3a-design-phase]] (设计记录)。本条是这三者里唯一的「现状真相」入口, 另两条只补细节不重述现状。
 
-<!-- AUTO-STATUS:BEGIN — 由 pre-commit stamp_living_status.py 自动重生成, 别手改这块 -->
-**自动现状标记** (机器每 commit 刷新, 可推导字段不可能 stale; 人写的判断散文见下方各 `##` 块):
-- 最新 review 包: v26 (sha `fb69415272d8…`)
-- spike 分支 HEAD: `dc3516a`
-- CLAUDE.md Current Phase: 1.3A (cut-family LBBD master 集成)
+<!-- AUTO-STATUS:BEGIN — 下面 `INSTANCE:` 槽**内**由 pre-commit stamp_living_status.py 自动 transclude (实例/分身模型, 见 [[github-backup]] / [[memory-currency-protocol]] rule#7); 别手改槽内值 -->
+**自动现状标记** (可推导现状每 commit 自动刷, 结构上不可能 stale; 人写的判断散文见下方各 `##` 块):
+- 最新 review 包: <!-- INSTANCE:latest_review_package -->v26 (sha `fb69415272d8…`)<!-- /INSTANCE:latest_review_package -->
+- spike 分支 HEAD: `<!-- INSTANCE:spike_head -->dc3516a<!-- /INSTANCE:spike_head -->`
+- CLAUDE.md Current Phase: <!-- INSTANCE:current_phase -->1.3A (cut-family LBBD master 集成)<!-- /INSTANCE:current_phase -->
+- GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/endfield-exact-solver<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
 
 ## 最新状态 (2026-06-02) — v25 已建+验+交付 (sha f245bc9), 等 GPT 第四轮; 经 v23 二次 B→v24→v25 三轮修; sizing_gate bitset bug 已确认+修

@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
-r"""自动给「单一 living 现状源」(handoff) 刷新可推导的现状字段 + 对人写的判断散文做 staleness warn。
+r"""实例/分身 transclusion 引擎 (CC 记忆树单一真相源).
 
-由 pre-commit 钩子调用 (也可手跑)。**fail-soft: 任何错都只打 warn、exit 0, 绝不阻断 commit。**
-只改 handoff 里 `<!-- AUTO-STATUS:BEGIN/END -->` 之间的块 (机器生成), **绝不碰人写的散文**。
+架构 (用户 2026-06-02 提出): 把记忆树做成「单一真相源 + transclusion」——
+- **实例 (instance)** = 某个**可推导事实**的唯一权威值, context-independent (一处真值,
+  不被任意情景重新指定)。在下面 INSTANCES 注册表里, 每个实例 = 一个 resolver()->渲染字符串。
+- **分身 (projection)** = 任意 memory 节点里的 `<!-- INSTANCE:id -->…<!-- /INSTANCE:id -->`
+  槽, 它**引用**实例而非 copy。
+- 本 pass (pre-commit 每 commit 调) 把每个实例当前值 render 进它所有分身槽 → **重复的可推导值
+  结构上不可能 drift** (改实例 = 改 resolver/源, 一刷全分身同步)。
 
-为什么存在: 「现状记忆一直被忘记更新」的根因 = 它是项目里唯一没有强制函数、不挂在任何产物
-完成定义上的关键动作 (commit/push/memory-sync/链接/测试 都有钩子或会大声报错, 唯独 handoff
-现状散文没有)。光记规则 (被动文本) 治不住一个「没上锁」的动作。所以:
-  - **可推导字段** (最新 review 包版本/sha、spike HEAD、CLAUDE.md Current Phase) → 每 commit
-    自动 stamp, 根本不可能 stale (强制函数的极致 = 把手动步骤删掉)。
-  - **不可推导的判断散文** (下一步/在等什么) → 没法自动生成, 但若它没提到最新包版本就**大声 warn**
-    (把「静默漂移」变成「响亮漂移」, 这就是缺的那个强制信号)。
-覆盖局限 (诚实交代): 判断散文里纯叙述/判断的漂移 (例如「等第四轮」其实已回来) 不是文件事实,
-无法自动推导, 只能靠 warn 提示 + 人改; 但实践中状态变更几乎总伴随一次 build/commit, 故绑包版本
-的 warn 能抓住绝大多数真实漏更。
+为什么 (根因, 见 memory-currency-protocol rule#7 + github-backup): 现状/重复值漏更反复复发, 不是
+知识缺口, 是这些值散在多节点、没有强制函数。记规则 (被动文本) 治不住没上锁的动作。本引擎 = 强制函数。
+
+**只治「可推导值」** (sha / git HEAD / phase / repo url ...)。**规则/判断类不在此 transclude** ——
+逐字副本满树 = clutter; 规则靠 wikilink 链接 + 连通纪律 (见 memory-tree-structural-health)。
+
+**护栏** (blast radius 大, 严): fail-soft (任何错只 warn + exit 0, 绝不阻断 commit);
+只改 `INSTANCE:id` 槽**内**文本, 绝不碰其它; 幂等; resolver 失败 (返回空) 时**保留槽内旧值不 blank**;
+逐文件 try/except (一个坏文件不影响其它)。
+
+**扩展**: 新增实例 → 往 INSTANCES 加一个 resolver; 新增分身 → 在任意 memory .md 插
+`<!-- INSTANCE:id -->占位<!-- /INSTANCE:id -->`。(文件名沿用 stamp_living_status 仅为 hook/引用稳定;
+职责已泛化为全树 transclude。)
 """
 from __future__ import annotations
 
@@ -23,99 +31,112 @@ import subprocess
 import sys
 from pathlib import Path
 
-# 单一 living 现状源 (per memory-currency-protocol)。若改名, 改这里。
-LIVING_SOURCE = Path.home() / ".claude" / "projects" / "D-----zmd" / "memory" / "handoff_windows_ninth_review_pending.md"
+MEM = Path.home() / ".claude" / "projects" / "D-----zmd" / "memory"
 REPO = Path(__file__).resolve().parents[2]
-LATEST_PACKAGE = REPO / "cc_context" / "review" / "LATEST_PACKAGE.json"
+LIVING_SOURCE = MEM / "handoff_windows_ninth_review_pending.md"  # 单一 living 现状源
 SPIKE_BRANCH = "spike/prod_scale_master_integration_20260526"
+LATEST_PACKAGE = REPO / "cc_context" / "review" / "LATEST_PACKAGE.json"
 
-BEGIN = "<!-- AUTO-STATUS:BEGIN — 由 pre-commit stamp_living_status.py 自动重生成, 别手改这块 -->"
-END = "<!-- AUTO-STATUS:END -->"
+SLOT = re.compile(r"<!-- INSTANCE:([a-z0-9_]+) -->.*?<!-- /INSTANCE:\1 -->", re.DOTALL)
 
 
-def _git_short(ref: str) -> str:
+def _git(*args: str) -> str:
     try:
-        out = subprocess.run(
-            ["git", "-C", str(REPO), "rev-parse", "--short", ref],
-            capture_output=True, text=True, encoding="utf-8", timeout=10,
-        )
-        return out.stdout.strip() if out.returncode == 0 else "?"
+        r = subprocess.run(["git", "-C", str(REPO), *args],
+                           capture_output=True, text=True, encoding="utf-8", timeout=10)
+        return r.stdout.strip() if r.returncode == 0 else ""
     except Exception:
-        return "?"
+        return ""
 
 
-def _claude_md_phase() -> str:
-    try:
-        for line in (REPO / "CLAUDE.md").read_text(encoding="utf-8").splitlines():
-            if line.startswith("## Current Phase:"):
-                return line[len("## Current Phase:"):].strip()
-    except Exception:
-        pass
-    return "?"
+def _r_latest_review_package() -> str:
+    d = json.loads(LATEST_PACKAGE.read_text(encoding="utf-8"))
+    v, s = str(d.get("version", "")).strip(), str(d.get("sha256", ""))[:12]
+    return f"{v} (sha `{s}…`)" if v else ""
 
 
-def _latest_package() -> dict:
-    try:
-        return json.loads(LATEST_PACKAGE.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+def _r_spike_head() -> str:
+    return _git("rev-parse", "--short", SPIKE_BRANCH)
 
 
-def build_block() -> tuple[str, str]:
-    """Return (block_text, latest_pkg_version_or_empty)."""
-    pkg = _latest_package()
-    ver = str(pkg.get("version", "")).strip()
-    sha = str(pkg.get("sha256", ""))[:12]
-    pkg_line = f"{ver} (sha `{sha}…`)" if ver else "(无 LATEST_PACKAGE.json 记录)"
-    spike = _git_short(SPIKE_BRANCH)
-    phase = _claude_md_phase()
-    body = (
-        f"{BEGIN}\n"
-        f"**自动现状标记** (机器每 commit 刷新, 可推导字段不可能 stale; 人写的判断散文见下方各 `##` 块):\n"
-        f"- 最新 review 包: {pkg_line}\n"
-        f"- spike 分支 HEAD: `{spike}`\n"
-        f"- CLAUDE.md Current Phase: {phase}\n"
-        f"{END}"
-    )
-    return body, ver
+def _r_current_phase() -> str:
+    for ln in (REPO / "CLAUDE.md").read_text(encoding="utf-8").splitlines():
+        if ln.startswith("## Current Phase:"):
+            return ln[len("## Current Phase:"):].strip()
+    return ""
+
+
+def _r_repo_url() -> str:
+    u = _git("remote", "get-url", "origin")
+    m = re.search(r"github\.com[/:]([^/]+/[^/.]+)", u)
+    return m.group(1) if m else u
+
+
+# 实例注册表: id -> resolver()->渲染串。只放可推导值。
+INSTANCES = {
+    "latest_review_package": _r_latest_review_package,
+    "spike_head": _r_spike_head,
+    "current_phase": _r_current_phase,
+    "repo_url": _r_repo_url,
+}
 
 
 def main() -> int:
     try:
-        if not LIVING_SOURCE.exists():
-            return 0  # 换机/源不在 → 跳过, 不阻断
-        text = LIVING_SOURCE.read_text(encoding="utf-8")
-        block, ver = build_block()
+        # 1. resolve 每个实例一次 (resolver 自身失败 → 空串, 后面遇到就保留旧槽值)
+        values: dict[str, str] = {}
+        for iid, fn in INSTANCES.items():
+            try:
+                values[iid] = (fn() or "").strip()
+            except Exception:
+                values[iid] = ""
 
-        if BEGIN in text and END in text:
-            new_text = re.sub(
-                re.escape(BEGIN) + r".*?" + re.escape(END),
-                lambda _m: block,
-                text,
-                count=1,
-                flags=re.DOTALL,
-            )
-        else:
-            # 首次: 插在 frontmatter 后第一个 `## ` 标题之前。
-            m = re.search(r"(?m)^## ", text)
-            if m:
-                new_text = text[:m.start()] + block + "\n\n" + text[m.start():]
-            else:
-                new_text = text.rstrip() + "\n\n" + block + "\n"
+        # 2. 扫全树, 填所有分身槽
+        changed = slots = 0
+        unknown: set[str] = set()
 
-        if new_text != text:
-            LIVING_SOURCE.write_text(new_text, encoding="utf-8")
+        def render(m: "re.Match[str]") -> str:
+            nonlocal slots
+            iid = m.group(1)
+            if iid not in INSTANCES:
+                unknown.add(iid)
+                return m.group(0)
+            val = values.get(iid, "")
+            if not val:
+                return m.group(0)  # resolver 失败 → 保留旧值, 不 blank
+            slots += 1
+            return f"<!-- INSTANCE:{iid} -->{val}<!-- /INSTANCE:{iid} -->"
 
-        # staleness warn: 判断散文 (去掉 auto-block 后的正文) 是否提到了最新包版本。
-        if ver:
-            prose = re.sub(re.escape(BEGIN) + r".*?" + re.escape(END), "", new_text, flags=re.DOTALL)
+        for f in sorted(MEM.glob("*.md")):
+            try:
+                text = f.read_text(encoding="utf-8")
+            except Exception:
+                continue
+            if "<!-- INSTANCE:" not in text:
+                continue
+            new = SLOT.sub(render, text)
+            if new != text:
+                try:
+                    f.write_text(new, encoding="utf-8")
+                    changed += 1
+                except Exception:
+                    pass
+
+        # 3. living 现状源「判断散文」lag warn (判断类推不出来, 只能 warn 提示人改)
+        ver = str(values.get("latest_review_package", "")).split(" ", 1)[0]
+        if ver and LIVING_SOURCE.exists():
+            prose = SLOT.sub("", LIVING_SOURCE.read_text(encoding="utf-8"))
             if ver not in prose:
                 sys.stderr.write(
-                    f"\n⚠️  [living-status] 最新 review 包是 {ver}, 但 handoff 的判断散文没提到它 —— "
-                    f"现状叙述可能 stale, 请手动更新 handoff 的 `## 最新状态` 块 (可推导字段已自动 stamp)。\n\n"
+                    f"\n⚠️  [instances] 最新 review 包 {ver}, 但 {LIVING_SOURCE.name} 的判断散文没提到它 —— "
+                    f"现状叙述可能 stale, 请手动更新 `## 最新状态` 块 (可推导槽已自动 transclude)。\n\n"
                 )
+        if unknown:
+            sys.stderr.write(f"⚠️  [instances] 未知实例 id (无 resolver, 槽未填): {sorted(unknown)}\n")
+        if "--verbose" in sys.argv:
+            sys.stderr.write(f"[instances] 填了 {slots} 个分身槽, 改了 {changed} 个文件; 实例值: {values}\n")
     except Exception as exc:  # fail-soft: 绝不阻断 commit
-        sys.stderr.write(f"[living-status] stamp 跳过 (非致命): {type(exc).__name__}: {exc}\n")
+        sys.stderr.write(f"[instances] transclude 跳过 (非致命): {type(exc).__name__}: {exc}\n")
     return 0
 
 

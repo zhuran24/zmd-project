@@ -1,6 +1,6 @@
 ---
 name: memory-tree-structural-health
-description: "记忆树结构健康 (区别于 [[memory-currency-protocol]] 的内容现状轴): wikilink 命名须统一口径否则断链 + MEMORY.md ~24576B 自动加载上限超了尾部静默截断 + harness 重写 frontmatter 但保 name 字段→rename 耐久 + 维护脚本语义 + **第三轴: 同话题散多条 memory 没跨链 → 改不全(改一漏多)+召不全(该用的没 surface), 治法=改前 grep 全树找全实例一起改 + 同话题簇互相 wikilink + description 带共同话题词**。**第四轴(第三轴上游): 记忆时泛化不足, 把通用规则锁死在首次触发的具体语境(如'反复审查'锁在Gemini)→别处不surface; 治法=记前问'只适用眼前还是更通用'(占位符测试), 通用就记通用层别锁语境**。"
+description: "记忆树结构健康 (区别于 [[memory-currency-protocol]] 的内容现状轴): wikilink 命名须统一口径否则断链 + MEMORY.md ~24576B 自动加载上限超了尾部静默截断 + harness 重写 frontmatter 但保 name 字段→rename 耐久 + 维护脚本语义 + **第三轴: 同话题散多条 memory 没跨链 → 改不全(改一漏多)+召不全(该用的没 surface), 治法=改前 grep 全树找全实例一起改 + 同话题簇互相 wikilink + description 带共同话题词**。**第四轴(第三轴上游): 记忆时泛化不足, 把通用规则锁死在首次触发的具体语境(如'反复审查'锁在Gemini)→别处不surface; 治法=记前问'只适用眼前还是更通用'(占位符测试), 通用就记通用层别锁语境**。**实例/分身模型(单一真相源+transclusion, 三轴统一根治): 可推导值(sha/HEAD/phase/url)升「实例」+ 节点里 `INSTANCE:id` 分身槽, pre-commit 引擎(stamp_living_status.py)扫全树自动 transclude→不可能 drift; 规则类靠 wikilink 不抄副本**。"
 metadata: 
   node_type: memory
   type: feedback
@@ -42,4 +42,17 @@ metadata:
 
 **协议**: 记 lesson 前停一秒问 —— **"这条只适用眼前这个具体场景, 还是其实更通用?"** 判别法: 把规则里的具体名词 (Gemini / GPT / 这个文件 / 这个 family) 换成占位符, 规则还成立吗? 成立 = 该泛化。通用的就**记成通用规则 (放通用 memory / 起通用标题), 把当前事件当 example 挂规则下**, 别让标题/归档语境把规则窄化。触发实例要留 (它是证据), 但不能当成规则的边界。(这跟 [[no-causal-claim-from-n1]] 是镜像的两种 over/under-fit: 那条是从 N=1 过度泛化出因果, 这条是该泛化时泛化不足。)
 
-**How to apply**: 周期性 (phase boundary / 大 review 前) 跑 `report_link_graph.py` 查连通 + 看 MEMORY.md 字节数 + 按第三轴协议查同话题簇缺链。加索引条前先 slim。改/记 memory 前 grep 全树找同话题所有实例一起改。**记新 lesson 时先判它通不通用 (占位符测试), 通用就记到通用层别锁触发语境**。关联 [[memory-currency-protocol]] (内容轴, 互补) [[verification-independent-backstop]] (完整性 → 改全 + 记对抽象层) [[no-causal-claim-from-n1]] (over-fit 镜像) [[gemini-review-algorithm-math]] (under-fit 实例) [[github-backup]] [[memory-edit-confirmation]]。
+## 实例/分身模型 (单一真相源 + transclusion — 2026-06-02 用户提出, 三个失效轴的结构性根治)
+
+前四轴是**逐个症状**, 这是**统一架构**: 三个失效轴 (现状值漂移 / 同话题 silo / 泛化不足) 本质是**同一个病** —— 树里存的是 **copy** 而非 single-sourced 引用。根治 = 把树做成「**实例 + 分身**」:
+- **实例 (instance)** = 某事实/概念的唯一权威值, context-independent (一处真值)。
+- **分身 (projection)** = 任意节点对实例的**引用**, 不 copy 值。
+- 更新走实例 → 所有分身自动同步; 树里**放不下重复值** → 不漂移、不 silo。
+
+**两类, 机制不同 (别搞混)**:
+1. **可推导值** (sha / git HEAD / phase / repo url / 计数...): 用 **transclusion 引擎** —— `cc_context/tools/stamp_living_status.py` 的 `INSTANCES` 注册表 (id→resolver) + 节点里 `<!-- INSTANCE:id -->…<!-- /INSTANCE:id -->` 槽; pre-commit 每 commit 扫全树填槽, 结构上不可能 drift。**加实例**=往 INSTANCES 加 resolver; **加分身**=节点插槽。见 [[github-backup]]。这是把"现状漂移"那类**上锁**的强制函数 (规则治不住没上锁的动作)。
+2. **规则/判断** (如"修完再审 clean"、"下一步 P1.3A"): **不 transclude 逐字副本** (满树重复=clutter)。靠 **wikilink 链接** (`[[name]]` 本就是"概念"的分身指针, 指权威节点不重述) + 第三轴连通纪律 + 第四轴泛化纪律。漂移恰发生在**抄了值/重述了规则**而非"指"的地方。
+
+**判别**: 一个事实**既出现在 ≥2 节点、又随时间变** (drift-prone) → 升成实例。只一处的、永不变的 → 留着别过度范式化。**诚实边界**: transclusion 只填**标记过的槽**, 改不了自由散文里隐式提到实例的地方 (那残留靠 currency-protocol rule#7 的 warn 兜)。
+
+**How to apply**: 周期性 (phase boundary / 大 review 前) 跑 `report_link_graph.py` 查连通 + 看 MEMORY.md 字节数 + 按第三轴协议查同话题簇缺链。加索引条前先 slim。改/记 memory 前 grep 全树找同话题所有实例一起改。**记新 lesson 时先判它通不通用 (占位符测试), 通用就记到通用层别锁触发语境**。**重复的可推导值 → 升实例 + 分身槽 (别手抄); 重复的规则 → wikilink 别重述**。关联 [[memory-currency-protocol]] (内容轴, 互补) [[verification-independent-backstop]] (完整性 → 改全 + 记对抽象层) [[no-causal-claim-from-n1]] (over-fit 镜像) [[gemini-review-algorithm-math]] (under-fit 实例) [[github-backup]] [[memory-edit-confirmation]]。
