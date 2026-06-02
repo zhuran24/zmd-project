@@ -141,6 +141,14 @@ def build_readme() -> str:
         V22_TO_V23_SECTION + "## v21 → v22 状态变化",
         "insert-v22-to-v23-section",
     )
+    # 3b) README 自己那张「Finding 5 cover evidence」表第 2 行也要 YES->PARTIAL,
+    #     否则与 v22->v23 节 + zip 内 verdict.md (已 PARTIAL) 自相矛盾 (第九审 README lens blocker)。
+    text = _replace_once(
+        text,
+        "| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family (F3 special-case phase Stage 1 generator live) with real `pose_count` / `cell_count` / `literal_count` per cert | YES |",
+        "| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束, 非真 registry-bound body sizing (第九审 finding) | **PARTIAL** — 见「v22 → v23 状态变化」: sizing 是 ~1000x lowering 设计变量, F1/F9 大池子展开是唯一 blow-up 路径, 已收窄口径 + 移交 P1.3A |",
+        "finding5-row2-yes-to-partial",
+    )
     # 4) 解包块: 双层 7za -> 单层 + v23 命名
     old_extract = (
         "```bash\n"

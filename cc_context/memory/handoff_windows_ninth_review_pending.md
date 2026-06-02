@@ -9,7 +9,7 @@ metadata:
 
 > **这是项目单一 living「当前 phase/交接状态」权威源** (per [[memory-currency-protocol]])。环境落点细节见 [[windows-handoff-env]] (稳定 reference), P1.3A 设计/Step0 gate 细节见 [[p1-3a-design-phase]] (设计记录)。本条是这三者里唯一的「现状真相」入口, 另两条只补细节不重述现状。
 
-## 最新状态 (2026-06-02) — 九审已回 B, 修复已落, v23 待重建
+## 最新状态 (2026-06-02) — 九审已回 B, 修复已落, v23 已建+多镜头验证 PASS
 
 GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送审, 两份报告都贴回主代理)。**双双判 B (未 clean close)**, 不是之前本地预审的 CLEAN GO —— 以正式九审为准 (per [[memory-currency-protocol]] §5: judgment 级结论由做判断的主体定, 正式九审 > 本地预审)。两份报告 finding 主代理**逐条对真代码+真数据复核, 全属实** (base64 不 validate / 36-unknown 静默 remap / salted hash / schema_err 不进门禁 / Finding 5 #2 sizing overclaim)。两份质量对比: 完整版那次更深 (36-unknown 那条), 干净版更广 (独占 3 条), 但**单跑各一次无法把"包差异"和"GPT run-to-run 噪声"分离** (只有 README 不同, 取并集才对, 见 [[external-review-reproducibility]])。
 
@@ -18,7 +18,9 @@ GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送�
 - master `af9054a`: sizing cheap gate 归档 `docs/research/p1_2_spike_sizing_gate_20260601/` (RESULTS.md + sizing_gate.py)。
 - **核心 sizing 结论**: cut body master 约束大小是 **~1000x lowering 设计变量**, 100K sizing 有界便宜 (~1–40 MB), **唯一** blow-up = F1 region_capacity / F9 density_envelope 的**大池子** (manufacturing ~17952 pose) 容量 cut 按展开式 lower (每条 ~2–3K term → ~1.9 GB)。其余 7 族任意 lower 都安全。
 
-**v22 包已 stale** (verdict + spike code 已改); 下次送审或 P1.3A 前需 **v23 重建** (build 脚本复用 `cc_context/review/build_v22_*win.py`, 换 spike HEAD = a29fb44)。
+**v23 包已建 + 验 (2026-06-02)**: `cc_context/review/phase1_2_spike_review_v23.zip` (faithful, **只打完整包**, sha256 `131609a399f6afa00b2b58eb94afb1503efa3d500372cb930a84ca702d782b73`, 14.37 MB, 2189 files)。build 脚本 `cc_context/review/build_v23_win.py` (基于 build_v22_win, 修了 REPO 旧 dual-slug 路径 `zmd\zmd`→`zmd` + OUT_DIR 放 REPO 外防自包含 + README v22→v23 节)。spike overlay 用 `git show {分支}:` 自动取 a29fb44 修复版。多镜头对抗验证 (5 镜头 + critic, workflow): verdict/spike-code 与分支字节一致、secret=0、cc_context/gemini-key/.git/.venv/nested-zip/prompt/build-脚本 全 0 泄漏、candidate_placements 字节完整、4 source-of-truth 在 (3 个 CRLF vs LF 宇宙噪声, JSON parse 一致)。**逮到并修了 1 个 blocker**: README 自己那张 Finding 5 cover 表 #2 行漏改 YES→PARTIAL (verdict.md 改了 README 镜像表没改), 已在 build 脚本加 transform 修 + 重验 PASS。下次送审直接送这个 + deps 3 块 + prompt。
+
+**⚠️ 安全: v22 包 (已发 GPT) 泄漏 live Gemini key** — `scripts/gemini_cross_check_*.py` (10 文件) 内嵌真 key `AIzaSyC8D0a_...`, v22 build 没排除 → 已随 v22 review 包发给 GPT pro (OpenAI 现持有)。这跟 [[gemini-math-consultant]] 记的"key 留私库历史靠仓库私有保安全"不是一回事 (那防 GitHub 公开; 外发 LLM 厂商是另一暴露轴, 用户没拍过板)。v23 已排除 (secret=0)。**key 轮换 = 待用户决策** (倾向轮换: 成本低 + 外厂留存不可控; 用户之前接受私库留存风险但非外发语境)。轮换则改 Gemini key + 更新本地 10 个 gemini_cross_check 脚本即可。
 
 ---
 
@@ -32,7 +34,7 @@ GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送�
 - v22 spike harness `toy_translator` F3 malformed fail-closed: 读逻辑核过 (`_decode_cert_b64` isinstance(dict) guard + F3 family 移出 payload-not-None 块) + 9-case 自测脚本实跑 9/9 PASS
 - verdict.md 诚实 (Sizing-only, 5 项 Layer-2 风险明确 defer, 无 overclaim)
 
-**已交付物** (在 `cc_context/review/`, 2026-06-01 结构整理移入已 tracked; faithful + clean 两版 per [[review-pkg-no-prompt-inside]]):
+**已交付物** (在 `cc_context/review/`; ⚠️ `*.zip` 被 `.gitignore:49` 全局忽略 → review 包**不入库 / 不上 GitHub**, regenerable: build 脚本 + spike 分支 a29fb44 可重建; build 脚本本身 tracked; faithful + clean 两版 per [[review-pkg-no-prompt-inside]]):
 - `phase1_2_spike_review_v22.zip` (faithful, sha256 `a29f017a379d0774f9fc72d321f0d3cd95ee783ae3be1484b7fd2ceda8a4a29a`) + `phase1_2_spike_review_v22_clean.zip` (clean, 删 reviewer-priming) — v22 包 Windows 重建版, 单层 zip (原 7z-in-zip 双层换掉, 本机无 7z)。独立验过: build 脚本 0 泄漏 / 无 .git .venv / 无 prompt 混入 / code_context spike 11 文件 / candidate_placements 53.6MB 字节完整 / 无 priming。
 - build 脚本 `build_v22_win.py` (faithful) + `build_v22_clean_win.py` (clean) 在 `cc_context/review/`, **可复用** portable builder: import 原 `scripts/build_phase1_2_spike_review_v22.py` 复用全部 README/文件清单/helper, 只换打包机制。修了 2 个 Windows 移植 bug: ① git show text-mode 强制 `encoding=utf-8` (GBK 呛中文 commit msg) ② `should_skip` 喂 `PurePosixPath` (Windows `\` 导致初版漏 21 个进包)。
 - `GPT九审_prompt.md` — chat 单独给的审查 prompt (7-section + 不可达 armor, **不进 zip**)。
