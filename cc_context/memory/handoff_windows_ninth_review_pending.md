@@ -1,6 +1,6 @@
 ---
 name: windows-ninth-review-pending
-description: "单一 living 当前交接/现状源. 2026-05-31 交接 Windows. **2026-06-02 最新: 九审 (v22) 双回 B → v23 二次 B → v24/v25 全补丁轮; v25 已建+验+交付 (sha f245bc9, critic overall_ship=True), 等用户送 GPT 第四轮; 下一关 = P1.3A 的 F1/F9 lowering 决策 (sizing bitset bug 已确认+修, 纠正后 fixture 尺度不爆).** (slug 还叫 ninth-review-pending 但九审早完, 未改名因 inbound link 多). 环境见 windows-handoff-env, 设计见 p1-3a-design-phase."
+description: "单一 living 当前交接/现状源. 2026-05-31 交接 Windows. **2026-06-02 最新: 九审(v22)双B→v23 二次B→v24→v25→第四轮外审(两份独立都 B/PATCH, 无 soundness 洞)并集 6 finding 全修→v26 已建+验+交付 (sha fb694152, w0f48suxi + whtrpfv0j 两轮 workflow critical 全过). 关键修正: cut sizing 的 type-pool 数(81795) ≠ 真 master concrete literal 数(group×pose 展开 ~325747), P1.3A cap 输入用 concrete 不用 type-pool. 下一关 = 送 GPT 第五轮 (包+prompt 已备) 或直接进 P1.3A F1/F9 lowering.** (slug 还叫 ninth-review-pending 但九审早完, 未改名因 inbound link 多). 环境见 windows-handoff-env, 设计见 p1-3a-design-phase."
 metadata: 
   node_type: memory
   type: project
@@ -17,9 +17,11 @@ metadata:
 - GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/endfield-exact-solver<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
 
-## 最新状态 (2026-06-02) — v25 已建+验+交付 (sha f245bc9), 等 GPT 第四轮; 经 v23 二次 B→v24→v25 三轮修; sizing_gate bitset bug 已确认+修
+## 最新状态 (2026-06-02) — v26 已建+验+交付 (sha fb694152), 第四轮外审两份 B 并集 6 finding 全修; 等送 GPT 第五轮 或 进 P1.3A
 
-> **当前真相 (摘要)**: spike close gate 走完 v22 九审(双 B)→v23 二次 B(7 finding)→v24(修 7)→v25(再修 7, 全证据精度/工件/锁门, 非 soundness)。**v25 终包 sha `f245bc9`, 验证 workflow critic overall_ship=True, 独立 re-audit 确认 clean**, 已 SendUserFile 交付手机端 4 件 (v25 zip + deps×3), 等用户送 GPT 第四轮。真正下一关 = P1.3A 的 F1/F9 lowering 决策 (sizing 纠正后 fixture 尺度不爆, 见下方 v25 块 + [[cp-sat-no-add-lazy-constraint]] proto 预算)。下面 v23 块是中间历史。
+> **当前真相 (摘要, v26)**: spike close gate 走完 v22 九审(双 B)→v23 二次 B→v24→v25→**第四轮外审 (v25 送审, 两份独立都 substantive、都 B/PATCH, 无 soundness 洞)**。并集 **6 finding 全修 (v26)**: **A-F1 (最重) — sizing gate 数的是 facility type-pool overlap (总 81795), 但真 pose-bool master 按 `(facility_type, operation_type)` group×pose 建 var, concrete ≈4× (325747); group 展开后 F9 784→11644, F4 5429→20157。所以 type-pool UB (F9 3341/F4 5429/16-18K) 是 cheap proxy 不是真-master literal 上界; P1.3A expanded cap 输入 = 真 translator group/template/optional 展开后的 concrete literal vector 长度**; A-F2 F9 window `[x,y,h,w]` 读序; A-F3 runner mirror import shim; B-F1 sizing_gate family summary density 行不再 fallback 4.0; B-F2 OR-Tools 实测改 `ExportToFile` (B 的补丁用了 9.15 不存在的 `.ByteSize()` 会崩, 我实跑 catch 换掉 —— verify-before-apply 实例); B-F3 F7/F8 `_validate_facility_cells_match_pose_registry` 加 duplicate pose_id 唯一性守卫 (fail-closed, cuts 414→416)。落: master `0a7f37f` (sizing_gate v5 + F7/F8 守卫 + RESULTS v5 + p1_3a concrete-literal cap); spike `dc3516a` (verdict v25 段 + runner shim); build `build_v26_win.py` + prompt `GPT_v26复审_prompt.md`。**v26 终包 sha `fb69415272d8a7759c76d8283b0fab6da8dc4fce1f63a956ea81c7d0a296e00f`, 14.39MB/2190 files**。验: w0f48suxi (5 镜头+critic) overall_ship=True; whtrpfv0j (全覆盖+引擎对抗) 3 critical 全过 (包 clean 无 .pytest_cache/secret, 包内 sizing_gate 实跑 325747)。**SendUserFile 交付手机 4 件 (v26 zip + deps_part1/2/3), prompt 贴正文**。真正下一关 = 送 GPT 第五轮 **或** 直接进 P1.3A F1/F9 lowering 决策 (带 concrete-literal cap 硬数字进, 见 [[p1-3a-design-phase]] + [[cp-sat-no-add-lazy-constraint]])。下面 v25/v23 块是中间历史。
+
+> **(历史, v25)** **当前真相 (摘要)**: spike close gate 走完 v22 九审(双 B)→v23 二次 B(7 finding)→v24(修 7)→v25(再修 7, 全证据精度/工件/锁门, 非 soundness)。**v25 终包 sha `f245bc9`, 验证 workflow critic overall_ship=True, 独立 re-audit 确认 clean**, 已 SendUserFile 交付手机端 4 件。(v25 的 sizing 数 784/3341/5429 是 **type-pool**, 已被 v26 A-F1 的 concrete-literal 口径 supersede —— 见上方 v26 块。) 下面 v23 块是中间历史。
 
 > **当前真相 (最新)**: v23 送外审 (GPT pro 双份), 深的那份判 **B** 并 catch 一条**我自己犯的真错**: `sizing_gate.py` bitset 用 MSB-first 解码, 真源 `region_capacity_oracle._encode_region_bitset` 是 **LSB-first** (`arr[idx//8] |= 1<<(idx%8)`)。我对真源码核 + LSB 重算确认 reviewer 一字不差对: region_capacity 大池子 manufacturing 是 **264** term 不是我写的 2026; F9 10×10 window ~360–524。**"F1/F9 大池子 2000–3200 term → 1.9GB blow-up" 是 bug 假数字, 真实 fixture 尺度 ~264 term → ~100MB, 不爆。** 下面旧块 (line 19 "核心 sizing 结论" 等) 的数字/结论**已废, 待 v24 改**。新 sizing 结论见本块末。
 

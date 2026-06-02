@@ -61,7 +61,7 @@ Spike GO 标准: 至少一条路径在 prod-scale (266 instance + ~10K cut) wall
 
 **关键 lever**: 同一条 no-good 编码成 `AddBoolOr` (clause) 比编码成线性 `sum<=k-1` **贵 ~3×**。所以 100K cut 的 proto 预算**必须按约束类型分开估**, 不能全局套一个 bytes/term —— 用 4–6 B/term 套 BoolOr 会低估 2–3 倍。large-overlap / expanded lowering 优先走**线性编码**省 proto。
 
-这是从 v25 spike 现状块 (会随 phase boundary 重写) 提到稳定 reference 的可复用硬数字: P1.3A 的 per-cut term cap + cumulative proto budget 设计会反复用到。背景 (sizing gate / 各族 term 量级) 见 [[windows-ninth-review-pending]] 的 v25 块。
+这是从 spike 现状块 (会随 phase boundary 重写) 提到稳定 reference 的可复用硬数字: P1.3A 的 per-cut term cap + cumulative proto budget 设计会反复用到。背景 (sizing gate / 各族 term 量级) 见 [[windows-ninth-review-pending]] 的 v26 块。**⚠️ v26 关键修正 (A-F1)**: term 量级要按真 master **group×pose 展开后的 concrete literal 数** (type-pool ~4× 偏小, 是 proxy 不是上界); cap 输入用 concrete 不用 type-pool。**且 `model.Proto()` 量字节要用 `ExportToFile`** —— 9.15 `CpModelProto` pybind 无 `ByteSize`/`SerializeToString` (见上文测法说明)。
 
 ## Ghost-bound constraints
 

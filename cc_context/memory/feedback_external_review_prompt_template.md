@@ -152,6 +152,7 @@ finding 一个补丁"** (用户 2026-06-02 明确: 关系非 1:1, 只要让他"�
 **护栏 (必守)**: reviewer 给的补丁是**起点不是终点 —— 仍 verify-before-apply, 不能盲打**。
 reviewer 可能提个错的/肤浅的补丁 (跟 finding 本身可能错同理); main 必须像核 finding 一样
 先对真代码/数据核实补丁正确再应用 (per [[no-causal-claim-from-n1]] [[audit-verify-before-archive]])。
+**实例 (2026-06-02 v25 外审, 护栏真打中)**: 一份 reviewer 的补丁 `try_measure_ortools` 用了 `model.Proto().ByteSize()` —— 但 OR-Tools 9.15 的 `CpModelProto` pybind **没有** `ByteSize`/`SerializeToString` (它只测了 no-ortools fallback 路径, 没在真 venv 跑过, 所以它自报的实测值不可能来自该代码)。main 实跑 catch 到, 换成 `model.ExportToFile(.pb)` 量字节。**盲打就会让 gate 在真 venv 崩**。finding 本身真 (该加可复现实测), 补丁实现错 —— 正是"补丁是起点不是终点"。
 这跟 "要补丁" 不矛盾: 要补丁是为了 actionable, verify 是为了别盲信。
 
 **与独立性的小张力 (接受)**: 让 reviewer 提补丁, 理论上下一轮可能 review 到自己提的修法,
