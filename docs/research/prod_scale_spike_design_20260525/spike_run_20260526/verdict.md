@@ -75,7 +75,7 @@ expanded lowering 设 **per-cut term cap + cumulative proto budget** (F2/F4 expa
 | G8 RSS peak | ≤ 20 GB | after-solve max 1.0316GB | PASS |
 | G9 proto @ 50K | ≤ 500 MB | 17.9MB | PASS |
 | G9 proto @ 100K | ≤ 1 GB | 19.6MB | PASS |
-| G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound | 50 cert / 9 family / 0 unsound | PASS |
+| G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound + 0 schema_err | 50 cert / 9 family / 0 unsound / 0 schema_err | PASS |
 | G11 active filter Hybrid mock loop | wall ≤ 100ms/iter + eviction fires | total 0.073s, max 9.5ms, evict @ iter [6] | PASS |
 | G17 failfast probe (A2) | ≤ 15s | 3.4s | PASS (A2 phase_a_report) |
 | G6a feasible smoke wall | < 180s cap | 180.01s | FAIL *(SOFT — see notes)* |
