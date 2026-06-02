@@ -29,6 +29,7 @@
 ## 工作流 / 协作偏好
 
 - [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类别只信 main 自审; 派独立 workflow/子代理, **backstop 主体必须是被验对象本身(非 proxy, 如别拿 git log/记忆树代替 session 内容; 也别只抽 user 漏助手侧)**; 子代理报告/派生数字 main 自己核. 本 session 自证 (主体误成记忆树/只抽 user→假完整, 用户多次纠正).
+- [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察就编干净因果当事实=我反复犯的病; "改 X 就好了"≠"X 致因" (修复裹着重试, 可能只清掉随机故障); 要定因须对照重复. 实例: review 质量差异归 README / SendUserFile 无按钮归大小, 均被用户戳穿. 同根 [[external-review-reproducibility]].
 - [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 任务形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume 后台 Agent 无); dispatch 三选一 (线性已知→自己 / 散落→wf / 机械→子代理); Ultracode=穷尽不计 token.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改 (新增/删条目/重组/slim MEMORY.md) 先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 (加索引前先 slim) + harness 重写 frontmatter 保 name. 区别于现状过时轴 [[memory-currency-protocol]].

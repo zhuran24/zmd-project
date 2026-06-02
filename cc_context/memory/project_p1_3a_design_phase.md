@@ -1,6 +1,6 @@
 ---
 name: p1-3a-design-phase
-description: "2026-05-30 接手后首个 design phase — P1.3A 主体 (真 PoseBoolExactMaster + cut framework step_8 集成) 走 N=8 并行 opus 设计 + main merger. 关键: LBBD loop/桥/nogood 通道/replay 已落地在跑, P1.3A 只缺 src/cuts/lifecycle.py:1005 step_8 桥; 收敛是几何/paradigm 性质只能 Linux multi-anchor falsify; P1.3A 在 Windows 只 close soundness/termination/不-stall + 安全机制; 范围收窄 F1-only, 别 fold 9-family 收敛. 设计在 docs/research/p1_3a_master_integration_design_20260530/ (DESIGN_BRIEF + 8 slant + P1_3A_MERGED_DESIGN)."
+description: "2026-05-30 接手后首个 design phase — P1.3A 主体 (真 PoseBoolExactMaster + cut framework step_8 集成) 走 N=8 并行 opus 设计 + main merger. 关键: LBBD loop/桥/nogood 通道/replay 已落地在跑, P1.3A 只缺 src/cuts/lifecycle.py:1005 step_8 桥; 收敛是几何/paradigm 性质只能 Linux multi-anchor falsify; P1.3A 在 Windows 只 close soundness/termination/不-stall + 安全机制; 范围收窄 F1-only, 别 fold 9-family 收敛. 设计产物 docs/research/p1_3a_master_integration_design_20260530/ (DESIGN_BRIEF + 8 slant + P1_3A_MERGED_DESIGN + step0) **untracked, Windows 仓库已丢, 结论仅存本 memory 文本** (见正文顶部警告)."
 metadata: 
   node_type: memory
   type: project
@@ -8,6 +8,8 @@ metadata:
 ---
 
 > **本条 = P1.3A 设计阶段的记录** (N=8 设计产物 + GPT Pro verdict + Step 0 gate 结果)。项目「当前 phase/交接状态」的单一 living 源是 [[windows-ninth-review-pending]] (per [[memory-currency-protocol]]); 本条只补设计细节, 不作现状真相来源。
+
+> **⚠️ 文件丢失警告 (2026-06-02 审计)**: 本条引用的 `docs/research/p1_3a_master_integration_design_20260530/` 整个目录 —— `DESIGN_BRIEF.md` / 8 份 slant / `P1_3A_MERGED_DESIGN.md` / `gpt_pro_verdict_20260530.md` / `GPT_PRO_AUDIT_P1_3A.md` / `step0_cheap_gate/`(`step0_prototype.py` / `test_step0_gates.py` / `STEP0_RESULTS.md`)—— **全部 untracked, 没进 repo.bundle, Windows 仓库里不存在** (git ls-files/status/ls 均空; 仅可能留在原 Linux 机)。**设计结论本身保存在下方本 memory 文本里**(8 路结论 / GPT 细化 / Step0 机制都在), 但**别去仓库里读那些文件 —— 不在**。要原始文件得回 Linux 原机取或重跑。下文凡 "读 X.md §N" "X.py 621 行" 类指引, 都指这些**已丢文件**, 当历史记录看, 别当可读路径。
 
 2026-05-30 接手后第一个 design phase。用户选了 N=8 并行设计(per [[design-phase-n-parallel-agents]])。main 当 merger。
 
@@ -32,7 +34,7 @@ metadata:
 **待用户 phase-boundary 决策(§10)**: (1) 接受 F1-only 收窄? (2) 接受强 cut 分 family 方案? (3) 现在进 Step 0 cheap gate 落代码 vs 先等 v22 GPT 九审 GO? (4) F8 defer 可接受? **当前停在等用户这 4 个决定, 未动任何代码。**
 
 **Why**: 接手后首个实质设计推进, 8 路并行 + merger 结论 + 头号架构决策, 非显然且决定 P1.3A 走向。
-**How to apply**: 实施读 `P1_3A_MERGED_DESIGN.md` §9 实施顺序(Step0 Windows cheap gate → F1 step_8 → benders hook → Windows verify → [GATE] Linux 收敛); 收敛验证 defer Linux; 别 fold 9-family 收敛。relate [[windows-handoff-env]] [[main-merger-scope-creep-bias]] [[paradigm-phase0-cheap-gate]] [[subproblem-vs-augmented-master-default]]。
+**How to apply**: 实施顺序(原在已丢的 `P1_3A_MERGED_DESIGN.md` §9, 现仅凭本 memory 复述): Step0 Windows cheap gate → F1 step_8 → benders hook → Windows verify → [GATE] Linux 收敛; 收敛验证 defer Linux; 别 fold 9-family 收敛。(原始 merged design 文件不在仓库, 见顶部丢失警告; 真要细节回 Linux 原机取或按本 memory 各 § 重建。)relate [[windows-handoff-env]] [[main-merger-scope-creep-bias]] [[paradigm-phase0-cheap-gate]] [[subproblem-vs-augmented-master-default]]。
 
 ## GPT Pro 设计审 verdict (2026-05-30) — GO(收窄)+ 硬细化
 

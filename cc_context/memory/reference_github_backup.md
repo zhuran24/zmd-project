@@ -15,7 +15,7 @@ metadata:
 - git 身份 (repo-local): `zhuran24 <3240314610@qq.com>`。
 
 ## CC memory 备份要点 (关键, 最易漏)
-live memory 在 `~/.claude/projects/D-----zmd/memory` (**仓库外**)。仓库里 `cc_context/memory/` 是它的**快照副本**——靠它才推得上 GitHub。**改了 memory 后, commit 前要 sync**: 把 live memory 覆盖到 `cc_context/memory` 再 git add + commit (auto-push 带走)。否则 GitHub 上的 memory 是旧的。`cc_context/` 结构 (2026-06-01 整理): `cc_context/memory/` 记忆快照 + `global_CLAUDE.md` + `README_CC_HANDOFF.md` + `HANDOFF.md`; **维护脚本在 `cc_context/tools/`** (normalize_memory_links / report_link_graph / deorphan_links); **审查打包工件在 `cc_context/review/`** (build_v22*.py / GPT九审_prompt.md / 打包原则_汇总.md / 2 个 zip)。root 只放项目源。
+live memory 在 `~/.claude/projects/D-----zmd/memory` (**仓库外**)。仓库里 `cc_context/memory/` 是它的**快照副本**——靠它才推得上 GitHub。**改了 memory 后, commit 前要 sync**: 把 live memory 覆盖到 `cc_context/memory` 再 git add + commit (auto-push 带走)。否则 GitHub 上的 memory 是旧的。`cc_context/` 结构 (2026-06-01 整理): `cc_context/memory/` 记忆快照 + `global_CLAUDE.md` + `README_CC_HANDOFF.md` + `HANDOFF.md`; **维护脚本在 `cc_context/tools/`** (normalize_memory_links / report_link_graph / deorphan_links / extract_session_turns / list_unresolved_links 等, 以实际 ls 为准); **审查打包工件在 `cc_context/review/`** (build_v22/v23/v24*.py / GPT_v24复审_prompt.md 等 / 打包原则_汇总.md / deps / zip, 随版本增长, 以实际 ls 为准)。root 只放项目源。
 
 ## gh 认证 re-setup 踩坑 (换机 / 重装时按这个走, 省得再踩)
 1. gh 装 winget 用户级: `C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Links\gh.exe` (新 shell 才进 PATH, 老 shell 用全路径)。

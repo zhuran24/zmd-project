@@ -41,7 +41,7 @@ metadata:
 - 用户偏好 (max_lex / 单机 48GB / 168h)
 - 任何 prior verdict (e.g. "boundary signature 已经 ghost/port_dir 打碎 symmetry")
 
-**反例**: 2026-05-21 cand C 数学 sanity check 第一次 prompt 没讲 outer/inner 两层结构, Gemini 错估 "max_lex 不能 decompose → cand C 数学死胡同". 实际项目 outer 已拆 candidate, 内层 CG 跑 pure feasibility 是 column-additive. 这是 prompt context 缺失导致的 false NO-GO 判断.
+**反例**: 2026-05-21 cand C 数学 sanity check 第一次 prompt 没讲 outer/inner 两层结构, Gemini 错估 "max_lex 不能 decompose → cand C 数学死胡同". 实际项目 outer 已拆 candidate, 内层 CG 跑 pure feasibility 是 column-additive. 倾向归因 prompt context 缺失 (补两层结构后翻盘), 但没复跑隔离, 也可能掺 Gemini run-to-run variance —— 当 best-guess 因果别说死 (per [[no-causal-claim-from-n1]]).
 
 **最低字数**: ~1500 字 prompt (含项目结构 + 数据点 + 问题 + 答案格式要求). 小于这个量级容易让 Gemini 错估前提.
 
