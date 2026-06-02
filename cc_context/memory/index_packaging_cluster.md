@@ -30,5 +30,7 @@ metadata:
 
 - **GPT 错估分类** (收到 verdict 后判属哪类): [[gpt-error-types-taxonomy]] (算法错估 push / 前提错估 push / 数学能力上限 承认 paradigm 限制)。
 
+- **交付给谁、附什么** (用户 2026-06-02 定): 送 GPT 复审**只发主包 zip + 贴 prompt 正文, 不再附 deps 块** (`deps_part1/2/3.zip` / `deps_linux_py313.zip`)。v22–v26 一直随包发 3 块离线 wheel (各 ~28MB) 供 reviewer 离线 `pip install` 复现, 但用户判定**以后不用给** (reviewer 自己装/不需跑全环境)。→ 未来 prompt 可删 "deps 分块 cat 合并 + 离线装" 那段 + "包里怎么复现" 的 deps 说明; 交付动作只 SendUserFile 主包 (省 ~84MB 上传 + 手机端少 3 件)。deps 制品仍留 `cc_context/review/deps/` (regenerable, 不删, 只是不再随交付发)。
+
 ## 链 (补连 2026-06-01)
 - [[review-strategy]] — 项目 3 层审查策略
