@@ -8,6 +8,12 @@
 
 ## Overall verdict: **GO_WITH_MINOR**
 
+> **⚠️ writer 边界 (v24 外审 F6)**: 本 verdict.md 里的「第九审修正」「v23/v24 外审」等 post-run 段是
+> **手写 addenda**, `spike_prod_scale_runner.write_verdict_md` **不生成**它们 (writer 只生成原始 spike-run
+> 的 G 表 / N 表 / Finding 5 表 / Layer-2 risk 1–6 / wall 表)。**重跑 writer 会覆盖本文件 → 需手动重贴这些
+> addenda**。"GO_WITH_MINOR" 是底层 spike-run 的历史结论; **当前外审状态 (两轮 B / PATCH) 见下方修正段**,
+> 不是 writer 自动反映的。
+
 Per MERGER §5.2 round-3 semantic gap documentation:
 
 > Spike GO close *Sizing*, 不 close *Convergence* / *Adversarial robustness*, 后两者入 P1.3A risk register.
@@ -37,6 +43,9 @@ verified by this spike — they are deferred to P1.3A 主体 design phase and P1
 第九审指出 B2 的 100K proto/RSS 是 **合成/remap 吞吐量**, 不是 **真 cut body 绑真 registry**。
 remap 审计 `data/cuts/spike/remap_audit.json` (F5): 50 cert 150 pair 中 **36 个 unknown 被静默 remap**
 (density_envelope 24 + port_exposure 12) → B2 cut_count_applied=100% 是 synthetic/remap 吞吐, 非真 body sizing。
+**(v24 外审 F5 精确化)**: remap 计数字段 (`n_pairs_remapped` / `true_registry_bound`) 已加进 `scale_ramp.py`
+**代码**, 但**历史 B2 ramp artifact (`scale_ramp_results.jsonl` / `phase_b_results.json`) 没重跑, 不带这些字段**;
+透明度由独立 artifact `remap_audit.json` 承载 (= v24 的实际 remap 证据), 不是靠 ramp jsonl。
 
 **v23 外审二次修正 (2026-06-02) — sizing gate 自己有 bitset bug**: 上面 (2026-06-01) 的 sizing gate v1
 用 **MSB-first** 解 bitset, 但真源 `region_capacity_oracle._encode_region_bitset` 是 **LSB-first**

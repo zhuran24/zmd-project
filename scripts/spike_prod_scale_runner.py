@@ -250,11 +250,19 @@ def _read_a3_fixture_stats() -> tuple[int, int, int, int]:
         try:
             rec = json.loads(line)
         except json.JSONDecodeError:
+            # v24 外审 F4: 坏 JSON 行不再静默 continue — 计 cert + schema_err, 让 G10 fail-closed。
+            cert_count += 1
+            schema_err += 1
             continue
         cert_count += 1
-        families.add(rec.get("family", ""))
-        kind = rec.get("validator_kind", "ok")
-        if kind == "schema_err":
+        fam = rec.get("family")
+        families.add(fam or "")
+        kind = rec.get("validator_kind")
+        # v24 外审 F4: 缺关键字段 (validator_kind / family / cert_payload_b64) 一律 schema_err;
+        # 只有精确 "ok" 才算 ok (旧码 .get(...,"ok") 把缺字段默认放行=fail-open), 其余非 schema_err 归 unsound。
+        if kind is None or fam is None or rec.get("cert_payload_b64") is None:
+            schema_err += 1
+        elif kind == "schema_err":
             schema_err += 1
         elif kind != "ok":
             unsound += 1
@@ -449,6 +457,15 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("5. **F1/F2/F3 patch hold at scale unverified** — Adversarial validator inject not in spike.")
     lines.append("   GPT pro Layer-2 catch may still surface issues here (per `[[gpt-pro-p11-audit-not-go]]`")
     lines.append("   pattern). Deferred to P1.3B.")
+    lines.append("")
+    # v24 外审 F6: writer 之前只 emit 1-5, 但 Finding5#2 模板引 'risk #6' → dangling。这里把 #6 纳入 writer,
+    # 让重跑也自洽 (注: 手写的「第九审/v23/v24 修正」narrative 段是 post-run addenda, writer 不生成, 见 verdict 顶部 banner)。
+    lines.append("6. **expanded-lowering sizing (LSB-corrected, v23/v24 外审)** — cut body master 约束大小 = (region/")
+    lines.append("   window × pool-density) × (per-term 字节, 按约束类型: linear ~4 B / BoolOr no-good ~11 B)。fixture")
+    lines.append("   scoped max 784 term/cut (linear ~0.3 GB / BoolOr ~0.86 GB@100K); routing/all-type UB (F4 5429 /")
+    lines.append("   F9 3341) 走 BoolOr ~3.7-6 GB。P1.3A lowering 设计须**按约束类型**设 per-cut term cap + cumulative")
+    lines.append("   proto budget (cap 按 max/p99 非 avg), 跨**所有**族非只 F1/F9; compact lowering 全族安全。详 sizing")
+    lines.append("   gate `docs/research/p1_2_spike_sizing_gate_20260601/`。")
     lines.append("")
 
     # Wall vs estimate

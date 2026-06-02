@@ -1084,14 +1084,16 @@ def run_emit(*, target_per_family: int = 5, out_path: Path,
         elif r.validator_kind == "schema_err":
             report.schema_err_count += 1
 
-    # G10 PASS criterion: total >= 45, 0 unsound, 0 schema_err.
-    # GPT 第九审 finding: 旧门禁只查 total + unsound, 放行 schema_err。schema_err
-    # 意味着某 cert 没按 schema 接好, 是 sizing/lifecycle 隐患, 不该 pass。现在
-    # 一并 gate (当前 50-cert fixture validator_kind 全 ok, 不触发, 但门禁变严)。
+    # G10 PASS criterion: total >= 45, 0 unsound, 0 schema_err, family coverage >= 9.
+    # GPT 第九审: 加 schema_err==0 (旧码放行 schema_err)。
+    # v24 外审 F5: 加 family>=9 —— 旧 emitter pass 不查 family 覆盖, runner G10 查了但源头(本
+    # emitter standalone path) 没查, 理论上 8 family + 总数被补到 >=45 仍可能 PASS。源头一致化。
+    families_covered = len({r.family for r in records if r.family})
     report.passed = (
         report.total_certs >= 45
         and report.unsound_count == 0
         and report.schema_err_count == 0
+        and families_covered >= 9
     )
     return report
 
