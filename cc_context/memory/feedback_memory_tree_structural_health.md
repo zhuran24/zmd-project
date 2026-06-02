@@ -50,8 +50,8 @@ metadata:
 - 更新走实例 → 所有分身自动同步; 树里**放不下重复值** → 不漂移、不 silo。
 
 **两类, 机制不同 (别搞混)**:
-1. **可推导值** (sha / git HEAD / phase / repo url / 计数...): 用 **transclusion 引擎** —— `cc_context/tools/stamp_living_status.py` 的 `INSTANCES` 注册表 (id→resolver) + 节点里 `<!-- INSTANCE:id -->…<!-- /INSTANCE:id -->` 槽; pre-commit 每 commit 扫全树填槽, 结构上不可能 drift。**加实例**=往 INSTANCES 加 resolver; **加分身**=节点插槽。见 [[github-backup]]。这是把"现状漂移"那类**上锁**的强制函数 (规则治不住没上锁的动作)。
-2. **规则/判断** (如"修完再审 clean"、"下一步 P1.3A"): **不 transclude 逐字副本** (满树重复=clutter)。靠 **wikilink 链接** (`[[name]]` 本就是"概念"的分身指针, 指权威节点不重述) + 第三轴连通纪律 + 第四轴泛化纪律。漂移恰发生在**抄了值/重述了规则**而非"指"的地方。
+1. **可推导值** (sha / git HEAD / phase / repo url / 计数...): 用 **transclusion 引擎** —— `cc_context/tools/stamp_living_status.py` 的 `INSTANCES` 注册表 (id→resolver) + 节点里 `<!-- INSTANCE:<id> -->…<!-- /INSTANCE:<id> -->` 槽 (示例用 `<id>` 占位免被引擎当真槽匹配; 真槽 id 用注册表里的真名如 latest_review_package); pre-commit 每 commit 扫全树填槽, 结构上不可能 drift。**加实例**=往 INSTANCES 加 resolver; **加分身**=节点插槽。见 [[github-backup]]。这是把"现状漂移"那类**上锁**的强制函数 (规则治不住没上锁的动作)。
+2. **规则/判断** (如"修完再审 clean"、"下一步 P1.3A"): **不 transclude 逐字副本** (满树重复=clutter)。靠 **wikilink 链接** (双方括号包对方 slug 本就是"概念"的分身指针, 指权威节点不重述) + 第三轴连通纪律 + 第四轴泛化纪律。漂移恰发生在**抄了值/重述了规则**而非"指"的地方。
 
 **判别**: 一个事实**既出现在 ≥2 节点、又随时间变** (drift-prone) → 升成实例。只一处的、永不变的 → 留着别过度范式化。**诚实边界**: transclusion 只填**标记过的槽**, 改不了自由散文里隐式提到实例的地方 (那残留靠 currency-protocol rule#7 的 warn 兜)。
 
