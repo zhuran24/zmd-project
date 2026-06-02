@@ -43,7 +43,7 @@ GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送�
 
 **依赖包** (GPT 在 linux cp313 装项目复现用): `cc_context/review/deps/` 含 34 个 wheel + `deps_linux_py313.zip` 均分 3 块 (`.001/.002/.003` 各 27.86MB, 因 GPT 单次上传体积限制) + `README_deps.txt`(cat 合并 + 离线 `pip install --no-index --find-links` 命令)。**闭包验证完整**: pip resolver 离线 resolve 整个 lock(34 全 pinned) 退出码 0、无缺 transitive; 3 块重组 sha256 = 原 zip byte-exact。regenerable, gitignored 不入库。**重建命令** (下次重送审): 从 Windows 拉 Linux cp313 wheel 用 `pip download --platform manylinux*... --python-version 313 --abi cp313 --only-binary=:all:`; 闭包验证用 `pip download --no-index --find-links <wheels>` 退出码 0 = 全 transitive 齐 (不需实际安装)。
 
-**送审清单** (每个 GPT pro 窗口): ① review 包(`cc_context/review/` 的 faithful `phase1_2_spike_review_v22.zip` 或 clean `_clean.zip`) ② 3 个 deps 块 ③ 粘 `cc_context/review/GPT九审_prompt.md`(纯净, 直接全选粘)。两版**独立**送, 结论交叉比对。
+**送审清单 (v23 现行, 2026-06-02)**: ① `cc_context/review/phase1_2_spike_review_v23.zip` (faithful, 只打完整包; sha 131609a3) ② 3 个 deps 块 (`.001/.002/.003`) ③ 粘 `cc_context/review/GPT_v23复审_prompt.md` (v23 版, 直接全选粘; **不是** v22 的 `GPT九审_prompt.md` —— 那个 v22 口径已废)。2026-06-02 这 5 件已 SendUserFile 推给手机端待用户上传。(v22 的"两版独立送"对 v23 不适用, 只有 faithful。)
 
 **基础设施** (本 session 2026-06-01 落地): GitHub 实时备份已 live(私有库 zhuran24/endfield-exact-solver, post-commit 自动 push, pre-commit 自动同步 memory, SessionEnd 兜底 WIP) + 项目结构整理(CC/审查工件归 cc_context/{memory,tools,review}, root 清爽)。详 [[github-backup]]。
 
