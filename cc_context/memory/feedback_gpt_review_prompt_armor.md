@@ -68,3 +68,7 @@ L14 加料后 GPT:
 - [[external-review-reproducibility]] — GPT 全量审查 reproducibility 问题
 - [[l14-weighted-occupancy-dead]] — 加料 prompt 起作用的实测
 - [[v8-anchor-slicing-dead]], [[v10-witness-preflight-dead]] — 加料前的 baseline 错估
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[external-review-prompt-template]] — armor = prompt 模板的 §armor 段
+- [[gpt-error-types-taxonomy]] — armor push 的 3 死法对应 GPT 错估 taxonomy

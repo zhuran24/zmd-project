@@ -190,3 +190,6 @@ reviewer 可能提个错的/肤浅的补丁 (跟 finding 本身可能错同理);
 - [[gpt-error-types-taxonomy]] — 3 类 GPT 错估 (算法 / 前提 / 能力上限)
 - [[gemini-math-consultant]] — Gemini 1500 字最低 prompt 同理
 - [[gemini-better-at-natural-tone]] — 长 narrative 默认 Gemini 写更自然
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[index-packaging-cluster]] — 打包簇 hub

@@ -23,3 +23,8 @@ v3 review (2026-05-13) 实例:
 - 如果两次报告冲突, 信**保守的那条** (cut 过切风险 / exactness 风险 / data loss 风险方向)
 - v4+ 跟之后的审查包都应该带这条提示, 不只 v3 这次
 - 跟 [[verify-solver-param-claims]] 同源: 不要信单一信源, 必须 verify
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[gpt-review-prompt-armor]] — 单跑有 variance → armor 强制多死法/多份交叉
+- [[index-packaging-cluster]] — 外审打包簇 hub
+- [[no-causal-claim-from-n1]] — 同 prompt 两跑不同 = 别从 N=1 归因(同根)

@@ -26,3 +26,8 @@ metadata:
 6. **memory 用仓库相对路径**: 引用仓库文件用相对路径 (如 `docs/...`), 不用绝对 `D:\...`。项目搬家 (Codex → `D:\claude pj` → `D:\追光\zmd\zmd` → `D:\追光\zmd`) 即让绝对路径失效 —— 本次迁移 + roadmap drift 都是教训。
 
 relate [[endfield-solver]] [[windows-ninth-review-pending]] [[review-pkg-data-completeness]] [[main-merger-scope-creep-bias]]。
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[memory-tree-structural-health]] — 记忆树两失效轴: 内容过时 vs 结构
+- [[memory-edit-confirmation]] — 改 memory 仪式共触发
+- [[github-backup]] — memory sync/备份义务 + 周期维护同精神

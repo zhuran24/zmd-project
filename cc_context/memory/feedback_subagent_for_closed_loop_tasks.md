@@ -59,3 +59,6 @@ spawn agent 不心疼算力. 主对话省的是用户 attention + context 不是
   抉择), 跟此条互补: 那是 explore N 路, 这是 execute 单线闭环
 - [[lazy-mode]] — 替用户想, sub-agent 同样减负
 - [[long-op-background-mode]] — 长操作 background 模式, sub-agent 内置该模式
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[agent-vs-workflow-dispatch]] — 回指 dispatch 选型框架

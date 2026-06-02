@@ -44,3 +44,7 @@ metadata:
 **Related**:
 - [[gpt-review-prompt-armor]] — 三段式 armor 框架
 - [[external-review-reproducibility]] — 多次 review 交叉验信
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[external-review-prompt-template]] — 新窗口零历史 = prompt 模板约束
+- [[no-role-priming-for-reasoning-models]] — 同为 'GPT prompt 别放 X' 姊妹规则

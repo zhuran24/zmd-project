@@ -109,3 +109,6 @@ Phase 0 Day 15-16 已 land 3 family spec (1/6/7), 全是数学+算法:
 - [[gemini-prompt-audit-mode]] — **prompt 模式细节 + 反例 (Phase 1 r27/r28/r29 GO 章 ritual)**, v4 加严段引用此 memory
 - [[gpt-review-prompt-armor]] — armor strict mode 通用 (3 死法 + 反 vague + cite file:line)
 - [[v14-review-findings]] — Phase 0 v14 review pattern 实例 (Gemini round 12/13 抓到 critical bug)
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[review-strategy]] — per-commit cross-check = 项目审查层的算法层实例

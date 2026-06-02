@@ -43,3 +43,6 @@ metadata:
 **Related**:
 - [[gpt-review-prompt-armor]] — armor 是任务侧约束, 不是身份侧催眠
 - [[gpt-review-no-history]] — 历史引用问题
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[external-review-prompt-template]] — no-priming 是 prompt 模板硬规则

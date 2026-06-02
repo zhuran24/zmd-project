@@ -70,3 +70,8 @@ Phase 1.1 P1.5 完后我说 "P1.7 留下次 session" 列了 3 理由 (literal pa
   规则只改 surface, 解释改 internal stance
 - 现版 CLAUDE.md "任务推进方式" 段彻底重写: 痛点 + 原理 + 场景 + 内化
   姿态, 不再用 "禁止 / 必须" 语气
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[no-reply-means-agree]] — lazy 根 → 不回=默认同意
+- [[no-giveup-options]] — lazy 根 → 不列放弃选项
+- [[directly-state-core-finding]] — 同减用户心智成本根

@@ -28,3 +28,6 @@ metadata:
 2. **N=1 时别说死**: 老实讲"**不知道为啥**; 这有个 workaround **不管真因是哪种都管用**; 要定因得做对照实验"。把"workaround 有效"当成"我的因果对"是偷换 (workaround 里含重试)。
 3. **想真定因 → 设计对照重复**, 别拿单次"改 X 就好了"充数。
 4. 这条跟 [[external-review-reproducibility]] (同 prompt 多跑结果飘) 同根, 跟 [[verification-independent-backstop]] (验证别只信自审) 互补。落 memory 时, **机制类断言**尤其要标清楚是"观察到的共现"还是"已验证的因果"。
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[gemini-math-consultant]] — gemini cand-C NO-GO 归因是 N=1 实例(已互引)

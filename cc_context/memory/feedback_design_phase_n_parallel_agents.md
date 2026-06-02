@@ -104,3 +104,6 @@ merger anti-pattern 实战教训 (避):
 - [[gpt-error-types-taxonomy]] — 3 类错估 (算法 / 前提 / 数学能力上限)
 - [[lazy-mode]] — 替 user 想, 不无谓盖章
 - [[paradigm-phase0-cheap-gate]] — 每 paradigm 实施前 Phase 0 cheap gate (跟此 protocol 不冲突, cheap gate 验前提, N 路并行验设计方案)
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[long-op-background-mode]] — N=8 spawn = 长跑用 background

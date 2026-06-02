@@ -19,3 +19,6 @@ metadata:
 - carry-forward 句式 (e.g. "v3/v4 是这样, 现在那样") 只在**同一个 GPT thread 续上** 才有意义; 新窗口必须 standalone
 
 跟 [[external-review-reproducibility]] 互补: 那条讲 review reply 要交叉验, 这条讲 review prompt 要 self-contained.
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[review-pkg-no-prompt-inside]] — 新窗口包不放 prompt/主动性内容

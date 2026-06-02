@@ -92,3 +92,6 @@ Linux sandbox 直接跑. Windows reviewer 用 7-Zip official / WinRAR.
 - `~/linwin_share/phase1_1_gpt_pro_review_v8.zip` 实际包
 - [[review-pkg-no-prompt-inside]] — 包内不放 prompt + 不放主动性内容
 - [[big-milestone-gpt-pro-review]] — 大节点打包 trigger
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[review-package-for-new-window]] — 都管 reviewer 面对的 README

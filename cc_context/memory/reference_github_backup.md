@@ -43,3 +43,6 @@ live memory 在 `~/.claude/projects/D-----zmd/memory` (**仓库外**)。仓库�
 
 ### ⚠️ 维护义务 (用户明确要记: "以后才会知道要及时去整理")
 SessionEnd 会产生 `SessionEnd WIP auto-checkpoint` commit, 在历史里**会堆积**。**周期性 squash 整理** —— 建议 phase boundary / GPT review 打包前, 把连续的 WIP auto-checkpoint commit squash 成一个有意义的 commit, 否则历史越来越乱、git log/bisect 难用。这是已知 trade-off (用户接受 "WIP 可事后 squash" 换不丢活)。跟 [[memory-currency-protocol]] 同精神 (周期维护别让东西堆死)。
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[memory-tree-structural-health]] — cc_context 维护工具 = 同棵树

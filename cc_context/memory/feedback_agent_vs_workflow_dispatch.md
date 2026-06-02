@@ -29,3 +29,6 @@ metadata:
 
 **Why**: 选错 dispatch 方式要么浪费 (该自己干的派出去丢细节), 要么漏看 (该派独立托底的自己回忆)。
 **How to apply**: 先判任务形状再选工具; Ultracode 开着时默认编排 + 穷尽。关联 [[subagent-for-closed-loop-tasks]] [[design-phase-n-parallel-agents]] [[verification-independent-backstop]] [[long-op-background-mode]]。
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[main-merger-scope-creep-bias]] — N 并行 merge 步的 scope bias

@@ -35,3 +35,6 @@ GPT v4 dynamic probe (固化在 `test_benders_cut_replay_condition_lifecycle.py`
 **Why this is harder than it looks (Anthropic "Teaching Claude Why" 的 generation 内在倾向问题)**:
 
 我自己写 schema 时 default 假设是 "schema landed → 后续都自然用上". 这个默认假设在 stateful pipeline 里是错的 — pipeline 有多条 reentry 路径 (live infeasible / replay / preloaded inject), 每条都要单独 wire. 写完 generate path 后必须主动问 "这个 object 会不会被 read 回来? 谁 read? read 时谁 resolve 字段?". 不问 = lazy 路径 = bug 潜伏.
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[verification-independent-backstop]] — 6 步闭环=独立行为验证, schema landed≠runtime correct 同 anti-self-trust

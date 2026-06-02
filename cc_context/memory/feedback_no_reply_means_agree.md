@@ -28,3 +28,6 @@ session 中后期 F2/F4 close 后, 我列了 A/B/C 立刻 land + 提问 mini Ste
 ## Refs
 - [[lazy-mode]] — 替用户想, 不无谓盖章
 - [[no-rest-suggestions]] / [[no-giveup-options]] — 也是反 ritual feedback
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[directly-state-core-finding]] — 同 state-a-lean 反 ritual 根

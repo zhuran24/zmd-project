@@ -31,3 +31,6 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 **Memory 重要等级**: 跟 `feedback_research_roi_metric.md` 同级。两条规则配套：前者管"调研产物 audit 必要性"，本条管"长任务执行模式".
 
 **2026-05-10 触发记录**: User 提"工作时穿插心跳"+"程序跑也要 background"。verify by audit `a98d6642e43ea08c8`：sliding TTL refresh 在 inference completion 时，主 silent 等待真会失效；当前 3 min Monitor heartbeat 在我 silent 等待期间也救不了（event 排队）。
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[subagent-for-closed-loop-tasks]] — 子代理内置 background 模式

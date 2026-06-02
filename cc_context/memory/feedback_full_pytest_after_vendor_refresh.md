@@ -19,3 +19,6 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 ## 链 (补连 2026-06-01)
 - [[autopilot-with-review-gate]] — 审查闸跑全测
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[audit-verify-before-archive]] — 别信 cheap gate 独立跑全 — 同 don't-trust-cheap-signal 家族

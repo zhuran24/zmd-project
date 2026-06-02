@@ -46,3 +46,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 - [[index-packaging-cluster]] — 审查打包规范全套入口
 - [[big-milestone-gpt-pro-review]] — 大节点外审
 - [[gemini-review-algorithm-math]] — 算法层 cross-check
+
+## 链 (补连 2026-06-02 连通审计 whcb890zi)
+- [[verification-independent-backstop]] — 查全/完整性类自审不够, 需独立 backstop
+- [[audit-verify-before-archive]] — reviewer finding 先 reproduce + 修完 re-audit 到 clean
