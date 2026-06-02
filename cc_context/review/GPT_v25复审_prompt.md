@@ -71,9 +71,12 @@ spike close 之后下一步是 P1.3A 主体。我卡在：能不能拿现在 v25
 
 我不预设你选哪个。
 
-## 唯一的硬性输出约束：不可达断言要形式化
+## 硬性输出约束（两条）
 
-任何 "X 不可达 / 必然失败 / 这道 gate 该 NOT_GO 因为 P1.3A 根本走不通" 的断言，请**形式化**：给 complexity reduction、proof-system lower bound、resource inequality，或 cite 文献。不接受 "我觉得 / 直觉 / 大概率"。除此之外 finding 怎么报、报几条、格式你自便。
+1. **不可达断言要形式化**：任何 "X 不可达 / 必然失败 / 这道 gate 该 NOT_GO 因为 P1.3A 根本走不通" 的断言，请**形式化**：给 complexity reduction、proof-system lower bound、resource inequality，或 cite 文献。不接受 "我觉得 / 直觉 / 大概率"。
+2. **每条 finding 都附对应补丁**：指出问题之后，请给出能直接落地的**具体补丁**——哪个文件、改成什么，最好是可直接 apply 的 diff 或替换用的代码/文案片段，而不只是描述问题。允许标注补丁的把握度（确定 / 待验证）。
+
+除此之外 finding 怎么报、报几条、格式你自便。
 
 ## 包里怎么核 / 怎么复现
 

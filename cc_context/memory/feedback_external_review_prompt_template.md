@@ -1,6 +1,6 @@
 ---
 name: external-review-prompt-template
-description: GPT pro / Gemini / 别窗口 external review chat prompt 撰写 7-section 模板 (input-side). 真瓶颈 / 死路 inventory 邀请挑战 / 审查重点 axis 化 / 关键决策点 explicit 列选项 / 优先方向 (不限于此) / 不可达论证 prompt armor / deliverable 压缩包. **除§6 不可达论证 armor 外不规定 reviewer 回答 schema / 字数 / verdict label**.
+description: GPT pro / Gemini / 别窗口 external review chat prompt 撰写 7-section 模板 (input-side). 真瓶颈 / 死路 inventory 邀请挑战 / 审查重点 axis 化 / 关键决策点 explicit 列选项 / 优先方向 (不限于此) / 不可达论证 prompt armor / deliverable 压缩包. **两个允许的输出规定例外: §6 不可达论证 armor + 每条 finding 附补丁 (2026-06-02 新增, reviewer 补丁仍 verify-before-apply 不盲打); 其余 (schema/字数/verdict label) 不规定**.
 metadata: 
   node_type: memory
   type: feedback
@@ -119,10 +119,10 @@ prompt 末尾就一句话标题 + 1 行 sha. **不展开 rationale** (不写"散
 
 ## 不规定 reviewer 回答方式 (除 §6 armor 外)
 
-§6 不可达论证 armor 是**唯一允许**的 "规定回答形式" 例外, 其余一律不
+§6 不可达论证 armor + 「每条 finding 附补丁」(2026-06-02 新增) 是**两个允许**的 "规定回答形式" 例外, 其余一律不
 规定 reviewer 怎么答 / 怎么 verdict / 输出 schema / 字数长度. 不写:
 
-- "按 severity / file:line / 问题陈述 / reproduce / fix / defer 字段输出"
+- "按 severity / file:line / 问题陈述 / reproduce / defer 字段输出 —— 但 **fix/补丁 现在反而要要** (2026-06-02, 见下方「每条 finding 附补丁」专节, 修正早先 "不要 fix 字段")"
 - "末尾必给 GO / GO_WITH_MINOR / NOT_GO verdict"
 - "回答控制在 X 字以内"
 - "每个 finding 不超过 3 段"
@@ -134,6 +134,27 @@ Why: reviewer 是独立审查者不是模板填表机, 自然有自己的论证�
 细节去 fit 模板. §6 是例外因为 vague claim 在数学层会埋 paradigm 错估,
 代价高于 schema 锁副作用; 输出格式 / 字数 / verdict label 没有同等
 mathematical-soundness 风险, 不应该锁.
+
+## 每条 finding 附补丁 (2026-06-02 用户决定, §6 之外第二个输出例外)
+
+prompt 的输出约束段要求 reviewer **指出每条问题后, 附一个能直接落地的具体补丁** ——
+哪个文件、改成什么, 最好是可直接 apply 的 diff 或替换用代码/文案片段, 而不只是描述
+问题; 允许 reviewer 标补丁把握度 (确定 / 待验证)。措辞例 (放在原 §6 armor 同一个
+"硬性输出约束" 段, header 改成「硬性输出约束（两条）」, 不再叫"唯一"):
+
+> 2. **每条 finding 都附对应补丁**: 指出问题之后, 请给出能直接落地的具体补丁——哪个
+>    文件、改成什么 (最好可直接 apply 的 diff 或替换片段), 不只是描述问题。允许标把握度。
+
+**Why**: 省 main 从 finding 反推 fix; reviewer 往往比 main 更懂自己 finding 的精确修法。
+
+**护栏 (必守)**: reviewer 给的补丁是**起点不是终点 —— 仍 verify-before-apply, 不能盲打**。
+reviewer 可能提个错的/肤浅的补丁 (跟 finding 本身可能错同理); main 必须像核 finding 一样
+先对真代码/数据核实补丁正确再应用 (per [[no-causal-claim-from-n1]] [[audit-verify-before-archive]])。
+这跟 "要补丁" 不矛盾: 要补丁是为了 actionable, verify 是为了别盲信。
+
+**与独立性的小张力 (接受)**: 让 reviewer 提补丁, 理论上下一轮可能 review 到自己提的修法,
+独立性略降; 但每轮是新窗口零历史 (per [[gpt-review-no-history]]), 看不到自己上轮的补丁,
+所以张力很小, 用户已权衡接受。
 
 ## Anti-patterns (避免)
 
