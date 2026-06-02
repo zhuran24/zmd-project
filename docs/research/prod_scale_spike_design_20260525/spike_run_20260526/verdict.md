@@ -54,10 +54,12 @@ sizing gate 已修 LSB (`p1_2_spike_sizing_gate_20260601/`, v2)。纠正后结�
 
 > cut body 的 master 约束大小取决于 lowering 方式。fixture 尺度下 (a) **所有 9 族** realistic compact
 > (witness/no-good) lowering → 100K 都便宜 (~1–3 MB); (b) **expanded (full pose-overlap)** lowering 随
-> **region-size × pool-density** 变化, fixture 尺度 region (139 cells) / window (10×10) 给 ~百级 term/cut
-> (region 大池子 ~264, cutset ~173, F9-window ~360–524, power 小池子 16) → 100K ~0.1–0.3 GB, **可控, 不爆**;
-> 只有**大** region/window (趋近全 pool, ~16–18K term/cut) 才到数 GB。**v1 的 "F1/F9 大池子 2000–3200 term
-> → 1.9 GB blow-up" 是 MSB 解码 bug 的假数字** (真实 264, 不是 2026)。
+> **region-size × pool-density** 变化, **且 proto 预算还乘 per-term 字节 (按约束类型: linear ~4 B /
+> BoolOr no-good ~11 B, v24 外审实测)**。fixture region(139)/window 给 ~百级 term/cut (region 大池子 ~264,
+> cutset ~173, **F9-window scoped max 784** — 全 6 条非前 2 条, all-type UB 3341): F1/F9 scoped 784 走 linear
+> ~0.3 GB / 走 **BoolOr ~0.86 GB**; routing/all-type UB (F4 5429 / F9 3341) 走 BoolOr **~3.7–6 GB**; 大
+> region/window 趋近全 pool (~16–18K term) 任何类型都数 GB。**v1 的 "F1/F9 大池子 2000–3200 term → 1.9 GB"
+> 是 MSB 解码 bug 的假数字** (真实 264, 不是 2026)。
 
 **因此 P1.3A lowering 设计硬约束 (scope 已纠正, 不止 F1/F9)**: 对**任何**族的 geometric / large-overlap
 expanded lowering 设 **per-cut term cap + cumulative proto budget** (F2/F4 expanded 同样可达 hundreds/thousands);
@@ -154,13 +156,14 @@ enter P1.3A risk register:
    GPT pro Layer-2 catch may still surface issues here (per `[[gpt-pro-p11-audit-not-go]]`
    pattern). Deferred to P1.3B.
 
-6. **expanded lowering sizing (2026-06-02 LSB-corrected; v23 外审 F2/F3/F4)** — 带数字硬约束 (跨**所有**族,
-   不止 F1/F9): cut body 的 master 约束 term 数随 **region-size × pool-density** 变。fixture 尺度 region
-   (139 cells) / window (10×10) 走 expanded lowering 给 ~百级 term/cut (region 大池子 ~264 不是 v1 的 2026 —
-   v1 bitset MSB bug; cutset ~173; F9-window ~360–524; F2/F4 expanded 也可达 hundreds/thousands) → 100K
-   ~0.1–0.3 GB, **可控**; 只有大 region/window 趋近全 pool (~16–18K term) 才到数 GB。P1.3A lowering 设计**必须**:
-   compact (witness/no-good) lowering → 全 9 族安全; 任何族若用 geometric/expanded lowering → 设 per-cut term
-   cap + cumulative proto budget。证据: `docs/research/p1_2_spike_sizing_gate_20260601/` (v2 LSB)。附带: 100K
+6. **expanded lowering sizing (2026-06-02 LSB + bytes/term-by-kind; v23+v24 外审)** — 带数字硬约束 (跨**所有**
+   族, 不止 F1/F9): 100K proto 预算 = **(per-cut term, 随 region/window × pool-density 变) × (per-term 字节,
+   按约束类型: linear ~4 B / BoolOr no-good ~11 B, v24 外审实测)**。fixture: region 大池子 ~264 (不是 v1 MSB bug
+   的 2026); cutset ~173; **F9-window scoped max 784** (全 6 条非前 2 条, all-type UB 3341)。F1/F9 scoped 784
+   走 linear ~0.3 GB / 走 BoolOr ~0.86 GB; routing/all-type UB (F4 5429 / F9 3341) 走 BoolOr ~3.7–6 GB; 大
+   region/window 趋近全 pool (~16–18K term) 任何类型数 GB。P1.3A lowering 设计**必须**: compact (witness/no-good)
+   → 全 9 族安全; 任何族 geometric/expanded → **按约束类型**设 per-cut term cap + cumulative proto budget
+   (cap 按 max/p99 非 family-avg)。证据: `docs/research/p1_2_spike_sizing_gate_20260601/` (v3)。附带: 100K
    cert 证书存储 + replay 校验成本 (~60 MB store + 逐条 revalidate) 归 P1.3A proof lifecycle sizing。
 
 ## Actual wall / Claude time vs estimate
