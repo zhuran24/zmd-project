@@ -593,3 +593,32 @@ def test_watcher_keys_returns_group_pose_cell() -> None:
     assert keys["pose_keys"] == [("crusher_blue_iron", "p_3x3_a")]
     assert len(keys["cell_keys"]) == 9  # 3×3 facility
     assert (60, 60) in keys["cell_keys"]
+
+
+def test_validator_unsound_when_pose_registry_has_duplicate_pose_id() -> None:
+    state = _f5_fixture_state()
+    state.candidate_placements = {
+        "facility_pools": {
+            "manufacturing_3x3": [
+                {
+                    "pose_id": "p_3x3_a",
+                    "anchor": [60, 60],
+                    "occupied_cells": _3x3_pose_cells((60, 60)),
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                },
+                {
+                    "pose_id": "p_3x3_a",
+                    "anchor": [0, 0],
+                    "occupied_cells": _3x3_pose_cells((0, 0)),
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                },
+            ],
+        },
+    }
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_grid_reach(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "not unique" in (result.detail or "")

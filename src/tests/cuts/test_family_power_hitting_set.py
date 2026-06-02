@@ -558,3 +558,32 @@ def test_watcher_keys_failsafe_on_malformed() -> None:
     )
     keys = watcher_keys_power_hitting_set(garbled)
     assert keys == {"group_keys": [], "pose_keys": [], "cell_keys": []}
+
+
+def test_validator_unsound_when_pose_registry_has_duplicate_pose_id() -> None:
+    candidate_placements = {
+        "facility_pools": {
+            "manufacturing_3x3": [
+                {
+                    "pose_id": "p_3x3_a",
+                    "anchor": [30, 30],
+                    "occupied_cells": _3x3_pose_cells((30, 30)),
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                },
+                {
+                    "pose_id": "p_3x3_a",
+                    "anchor": [0, 0],
+                    "occupied_cells": _3x3_pose_cells((0, 0)),
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                },
+            ],
+        },
+    }
+    state = _make_state(candidate_placements=candidate_placements)
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_hitting_set(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "not unique" in (result.detail or "")

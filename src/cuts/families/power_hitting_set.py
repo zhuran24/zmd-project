@@ -315,41 +315,52 @@ def _validate_facility_cells_match_pose_registry(
             f"candidate_placements.facility_pools[{facility_type!r}] missing or malformed",
         )
 
-    for entry in pool:
-        if not isinstance(entry, dict) or entry.get("pose_id") != pose_id:
-            continue
-        occupied = entry.get("occupied_cells")
-        if not isinstance(occupied, list) or not occupied:
-            return _vr("unsound", t0, f"pose {pose_id!r} occupied_cells missing or malformed")
-        actual_cells: List[Tuple[int, int]] = []
-        seen: set[Tuple[int, int]] = set()
-        for idx, raw in enumerate(occupied):
-            if not isinstance(raw, (list, tuple)) or len(raw) != 2:
-                return _vr("unsound", t0, f"occupied_cells[{idx}] malformed for pose {pose_id!r}")
-            x_raw, y_raw = raw
-            if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
-                return _vr("unsound", t0, f"occupied_cells[{idx}] has non-int coords")
-            cell = (cast(int, x_raw), cast(int, y_raw))
-            if not (0 <= cell[0] < _GRID_SIZE and 0 <= cell[1] < _GRID_SIZE):
-                return _vr("unsound", t0, f"occupied_cells[{idx}] out of grid: {cell!r}")
-            if cell in seen:
-                return _vr("unsound", t0, f"occupied_cells duplicate cell {cell!r}")
-            seen.add(cell)
-            actual_cells.append(cell)
-        actual = tuple(sorted(actual_cells))
-        if facility_cells != actual:
-            return _vr(
-                "unsound",
-                t0,
-                f"facility_cells do not match candidate_placements for {(gid, pose_id)!r}",
-            )
-        return None
+    matches = [
+        entry
+        for entry in pool
+        if isinstance(entry, dict) and entry.get("pose_id") == pose_id
+    ]
+    if not matches:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_pose_id {pose_id!r} not found in candidate_placements for {facility_type!r}",
+        )
+    if len(matches) != 1:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_pose_id {pose_id!r} is not unique in candidate_placements for {facility_type!r}; "
+            "registry binding ambiguous",
+        )
 
-    return _vr(
-        "unsound",
-        t0,
-        f"facility_pose_id {pose_id!r} not found in candidate_placements for {facility_type!r}",
-    )
+    entry = matches[0]
+    occupied = entry.get("occupied_cells")
+    if not isinstance(occupied, list) or not occupied:
+        return _vr("unsound", t0, f"pose {pose_id!r} occupied_cells missing or malformed")
+    actual_cells: List[Tuple[int, int]] = []
+    seen: set[Tuple[int, int]] = set()
+    for idx, raw in enumerate(occupied):
+        if not isinstance(raw, (list, tuple)) or len(raw) != 2:
+            return _vr("unsound", t0, f"occupied_cells[{idx}] malformed for pose {pose_id!r}")
+        x_raw, y_raw = raw
+        if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
+            return _vr("unsound", t0, f"occupied_cells[{idx}] has non-int coords")
+        cell = (cast(int, x_raw), cast(int, y_raw))
+        if not (0 <= cell[0] < _GRID_SIZE and 0 <= cell[1] < _GRID_SIZE):
+            return _vr("unsound", t0, f"occupied_cells[{idx}] out of grid: {cell!r}")
+        if cell in seen:
+            return _vr("unsound", t0, f"occupied_cells duplicate cell {cell!r}")
+        seen.add(cell)
+        actual_cells.append(cell)
+    actual = tuple(sorted(actual_cells))
+    if facility_cells != actual:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_cells do not match candidate_placements for {(gid, pose_id)!r}",
+        )
+    return None
 
 
 def _validate_coverset_empty(

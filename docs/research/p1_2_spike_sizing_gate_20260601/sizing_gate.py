@@ -1,39 +1,58 @@
 # -*- coding: utf-8 -*-
-"""P1.2 spike — 真 cut body sizing cheap gate (2026-06-02 v2, LSB-corrected)
+"""P1.2 spike sizing gate v5 — LSB-correct + constraint-kind bytes + concrete-literal proxy.
 
-回答 spike close gate 第九审 Finding 5 #2: cut body 的 master 约束 sizing 到底站不站得住。
+Run from project root:
 
-**v2 修正 (v23 外审 Finding 2)**: v1 的 bitset 解码用了 MSB-first, 而项目真源
-`src/cuts/oracles/region_capacity_oracle._encode_region_bitset` 是 **LSB-first**
-(`arr[idx//8] |= 1 << (idx % 8)`, idx = x*70 + y)。v1 因此把 region cells 解错,
-term 数偏高约 10x (region_capacity 大池子 v1 报 2026, 实际 264)。v2 改 LSB, 数字与
-真 oracle 一致。同时 (Finding 1) 改为读**包内** fixture + registry, 不再读外部 v22 zip;
-(Finding 4) 补 F9 density_envelope window->pose overlap 真实计数; (Finding 3) 全族
-compact vs expanded 都报, scope 不再写成 "只 F1/F9"。
-
-方法 (对真 fixture + 真 registry 直算, 不信 spike telemetry):
-  - compact (no-good / witness lowering): 每 cut 锁 witness 那几个 pose, term = literal/witness 数。
-  - expanded (full pose-overlap lowering): 每 cut 的几何 cell-set 覆盖的全部 master pose。
-    scoped = 限定到 cut 所属 group 的 facility type (真实展开); all = 全类型并集 (宽松上界)。
-
-运行 (**在解包后的 review 包 project/ 根下跑**):
     python docs/research/p1_2_spike_sizing_gate_20260601/sizing_gate.py
-依赖 (均为包内文件):
-    data/cuts/spike/oracle_emit_fixture_45cert.jsonl
-    data/preprocessed/candidate_placements.json
+
+This is a cheap sizing gate, not a full translator. It deliberately reports both:
+
+1. type-pool counts:
+   overlap over candidate_placements facility type pools. This is the v25 metric.
+
+2. concrete/group-expanded proxy counts:
+   type-pool overlaps multiplied by the number of concrete master operation groups
+   from data/preprocessed/mandatory_exact_instances.json, with non-mandatory pools
+   counted once as optional/pose-level proxies.
+
+P1.3A must cap/budget the final literal vector emitted by the real translator, after
+group/template/optional expansion. Type-pool counts are only a lower/proxy signal.
+
+History:
+  - v2 (v23 review): MSB-first -> LSB-first bitset decode, matching
+    src/cuts/oracles/region_capacity_oracle._encode_region_bitset.
+  - v3 (v24 review): bytes/term split by constraint kind; F9 runs all rows.
+  - v4/v5 (v25 review union):
+    * A-F1: type-pool vs concrete/group-expanded literal counts (group multipliers
+      from mandatory_exact_instances.json). The headline all-type UB numbers
+      (F9 3341, F4 5429, ~16-18K) are type-pool proxies, NOT real-master literal bounds.
+    * A-F2: density_envelope window_rect is [x, y, h, w], not [x, y, w, h].
+    * B-F1: the family summary density_envelope row no longer falls back to the
+      compact witness (4); it carries the real window->pose overlap.
+    * B-F2: optional OR-Tools incremental-proto measurement (uses ExportToFile, since
+      the 9.15 CpModelProto pybind has no ByteSize/SerializeToString); fail-soft.
 """
+
+from __future__ import annotations
+
 import base64
 import collections
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
+from typing import DefaultDict, Dict, Iterable, List, Mapping, Sequence, Set, Tuple
 
-# project 根 = .../project/ (本文件在 project/docs/research/p1_2_spike_sizing_gate_20260601/)
+Cell = Tuple[int, int]
+FacilityType = str
+
 REPO = Path(__file__).resolve().parents[3]
 FIXTURE = REPO / "data" / "cuts" / "spike" / "oracle_emit_fixture_45cert.jsonl"
 PLACEMENTS = REPO / "data" / "preprocessed" / "candidate_placements.json"
+MANDATORY = REPO / "data" / "preprocessed" / "mandatory_exact_instances.json"
 
-# region_capacity 'boundary_io' -> 真 registry facility type (真实展开按此限定)
+# Region/group families whose cert payload identifies a real facility type in master.
 GROUP_FACILITY_TYPE = {
     "region_capacity": "boundary_storage_port",
     "power_hitting_set": "power_pole",
@@ -41,163 +60,342 @@ GROUP_FACILITY_TYPE = {
 }
 
 
-def load_fixture():
+def load_fixture() -> List[dict]:
     if not FIXTURE.exists():
         sys.exit(
             f"fixture not found: {FIXTURE}\n"
-            "本脚本是 review 包内的可复现工件, 须在解包后的 project/ 根下跑 "
-            "(master 工作树不含 spike fixture, 它只在 spike 分支 / 包内)。"
+            "Run from the unpacked review package's project/ root."
         )
-    return [json.loads(l) for l in FIXTURE.read_text(encoding="utf-8").splitlines() if l.strip()]
+    return [json.loads(line) for line in FIXTURE.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def build_index():
-    """cell(x,y) -> {facility_type -> set(pose_idx)}; 另返回全类型并集 + pool sizes。"""
-    pools = json.loads(PLACEMENTS.read_bytes().decode("utf-8"))["facility_pools"]
-    by_type = collections.defaultdict(lambda: collections.defaultdict(set))
-    allset = collections.defaultdict(set)
-    g = 0
+def load_pools() -> Mapping[str, Sequence[dict]]:
+    if not PLACEMENTS.exists():
+        sys.exit(f"candidate placements not found: {PLACEMENTS}")
+    obj = json.loads(PLACEMENTS.read_text(encoding="utf-8"))
+    return obj["facility_pools"]
+
+
+def load_group_multipliers(pools: Mapping[str, Sequence[dict]]) -> Dict[str, int]:
+    """Return concrete master group multiplier by facility type.
+
+    The pose-bool master groups mandatory exact instances by
+    (facility_type, operation_type), so one type-level pose may correspond to
+    several concrete group literals. Facility types absent from the mandatory
+    file are retained with multiplier 1 as optional/pose-level proxies.
+    """
+    multipliers = {ft: 1 for ft in pools}
+    if not MANDATORY.exists():
+        print(f"WARNING: {MANDATORY} missing; using multiplier=1 for every pool", file=sys.stderr)
+        return multipliers
+
+    instances = json.loads(MANDATORY.read_text(encoding="utf-8"))
+    ops_by_type: DefaultDict[str, Set[str]] = collections.defaultdict(set)
+    for inst in instances:
+        ft = inst.get("facility_type")
+        op = inst.get("operation_type")
+        if isinstance(ft, str) and isinstance(op, str):
+            ops_by_type[ft].add(op)
+
+    for ft, ops in ops_by_type.items():
+        if ft in multipliers:
+            multipliers[ft] = max(1, len(ops))
+    return multipliers
+
+
+def build_index(pools: Mapping[str, Sequence[dict]]):
+    """Build cell -> facility_type -> local pose indices.
+
+    Counts are local to each facility type. This avoids global-id aliasing when
+    multiplying type-level overlaps by concrete master group count.
+    """
+    by_type: DefaultDict[Cell, DefaultDict[str, Set[int]]] = collections.defaultdict(
+        lambda: collections.defaultdict(set)
+    )
     for ft in sorted(pools):
-        for pose in pools[ft]:
+        for pose_idx, pose in enumerate(pools[ft]):
             for c in pose.get("occupied_cells", []):
-                by_type[(c[0], c[1])][ft].add(g)
-                allset[(c[0], c[1])].add(g)
-            g += 1
-    return by_type, allset, {k: len(v) for k, v in pools.items()}
+                by_type[(int(c[0]), int(c[1]))][ft].add(pose_idx)
+    return by_type, {ft: len(list(v)) for ft, v in pools.items()}
 
 
-def decode_bitset_cells(b64):
-    """LSB-first decode, matching region_capacity_oracle._encode_region_bitset:
-    encoder does arr[idx//8] |= 1 << (idx % 8), idx = x*70 + y -> cell (x, y)."""
+def decode_bitset_cells(b64: str) -> List[Cell]:
+    """LSB-first decode matching region_capacity_oracle._encode_region_bitset.
+
+    Encoder: arr[idx//8] |= 1 << (idx % 8), idx = x*70 + y.
+    """
     raw = base64.b64decode(b64)
-    out = []
-    for bytei, byte in enumerate(raw):
-        for biti in range(8):
-            if byte & (1 << biti):  # LSB-first
-                i = bytei * 8 + biti
-                if i < 4900:
-                    out.append((i // 70, i % 70))  # idx = x*70 + y
+    out: List[Cell] = []
+    for byte_i, byte in enumerate(raw):
+        for bit_i in range(8):
+            if byte & (1 << bit_i):
+                idx = byte_i * 8 + bit_i
+                if idx < 4900:
+                    out.append((idx // 70, idx % 70))
     return out
 
 
-def overlap_type(by_type, cells, ft):
-    u = set()
+def union_pose_ids(by_type, cells: Iterable[Cell], ft: str) -> Set[int]:
+    out: Set[int] = set()
     for c in cells:
-        u |= by_type[c].get(ft, set())
-    return len(u)
+        out |= by_type[c].get(ft, set())
+    return out
 
 
-def overlap_all(allset, cells):
-    u = set()
+def type_count(by_type, cells: Iterable[Cell], ft: str) -> int:
+    return len(union_pose_ids(by_type, cells, ft))
+
+
+def type_all_count(by_type, cells: Iterable[Cell]) -> int:
+    return sum(len(union_pose_ids(by_type, cells, ft)) for ft in all_types_at_cells(by_type, cells))
+
+
+def concrete_count(
+    by_type,
+    cells: Iterable[Cell],
+    multipliers: Mapping[str, int],
+    fts: Iterable[str] | None = None,
+) -> int:
+    if fts is None:
+        fts = all_types_at_cells(by_type, cells)
+    return sum(len(union_pose_ids(by_type, cells, ft)) * int(multipliers.get(ft, 1)) for ft in fts)
+
+
+def all_types_at_cells(by_type, cells: Iterable[Cell]) -> Set[str]:
+    out: Set[str] = set()
     for c in cells:
-        u |= allset[c]
-    return len(u)
+        out |= set(by_type[c].keys())
+    return out
 
 
-def cut_cells(rec, p):
-    fam = rec["family"]
-    if fam == "region_capacity" and p.get("region_cells_bitset_b64"):
-        return decode_bitset_cells(p["region_cells_bitset_b64"])
-    if fam == "cutset":
-        cc = []
-        for k in ("side_a_bitset_b64", "side_b_bitset_b64"):
-            if p.get(k):
-                cc += decode_bitset_cells(p[k])
-        return cc
-    if fam == "component_reach":
-        return [tuple(c) for c in p.get("separator_cells", [])]
-    if fam in ("power_hitting_set", "power_grid_reach"):
-        return [tuple(c) for c in p.get("facility_cells", [])]
-    if fam == "port_exposure":
-        return [tuple(p["port_cell"]), tuple(p["front_cell"])]
-    return []
-
-
-def compact_terms(rec, p):
+def compact_terms(rec: Mapping, payload: Mapping) -> int:
     fam = rec["family"]
     if fam == "port_exposure":
         return 2
     if fam == "pattern_nogood":
-        return len(p.get("forbidden_pose_pattern", []))
+        return len(payload.get("forbidden_pose_pattern", []))
     if fam == "density_envelope":
-        return len(p.get("oracle_assignment_witness", []))
-    return max(1, rec.get("literal_count") or 0)
+        return len(payload.get("oracle_assignment_witness", []))
+    return max(1, int(rec.get("literal_count") or 0))
 
 
-def main():
+def cut_cells(rec: Mapping, payload: Mapping) -> List[Cell]:
+    fam = rec["family"]
+    if fam == "region_capacity" and payload.get("region_cells_bitset_b64"):
+        return decode_bitset_cells(payload["region_cells_bitset_b64"])
+    if fam == "cutset":
+        cells: List[Cell] = []
+        for key in ("side_a_bitset_b64", "side_b_bitset_b64"):
+            if payload.get(key):
+                cells += decode_bitset_cells(payload[key])
+        return cells
+    if fam == "component_reach":
+        return [tuple(c) for c in payload.get("separator_cells", [])]
+    if fam in ("power_hitting_set", "power_grid_reach"):
+        return [tuple(c) for c in payload.get("facility_cells", [])]
+    if fam == "port_exposure":
+        return [tuple(payload["port_cell"]), tuple(payload["front_cell"])]
+    # B-F1: density_envelope must report its window overlap in the family summary,
+    # not fall back to the compact witness (4). Uses the LSB/[x,y,h,w]-correct window_cells.
+    if fam == "density_envelope":
+        wr = payload.get("window_rect")
+        if isinstance(wr, list) and len(wr) >= 4:
+            return window_cells(wr)
+    return []
+
+
+def window_cells(window_rect: Sequence[int]) -> List[Cell]:
+    """density_envelope schema is [x, y, h, w], not [x, y, w, h]."""
+    x0, y0, h, w = [int(v) for v in window_rect[:4]]
+    return [
+        (x, y)
+        for x in range(x0, x0 + h)
+        for y in range(y0, y0 + w)
+        if 0 <= x < 70 and 0 <= y < 70
+    ]
+
+
+def mean(xs: Sequence[int]) -> float:
+    return sum(xs) / len(xs) if xs else 0.0
+
+
+def project_gb(terms_per_cut: float, bytes_per_term: float, cuts: int = 100_000) -> float:
+    return terms_per_cut * cuts * bytes_per_term / 1e9
+
+
+def print_projection(label: str, terms: float) -> None:
+    print(f"  {label}:")
+    print(f"    linear  ~4 B/term : {terms:.0f} x 100K x 4  = {project_gb(terms, 4.0):.2f} GB")
+    print(f"    BoolOr ~11 B/term : {terms:.0f} x 100K x 11 = {project_gb(terms, 11.0):.2f} GB")
+
+
+def _proto_bytes(model) -> int:
+    """Serialized proto size via ExportToFile.
+
+    The OR-Tools 9.15.6755 CpModelProto pybind wrapper returned by model.Proto()
+    has NO ByteSize / SerializeToString / SerializeAsString, so a measurement that
+    calls model.Proto().ByteSize() raises AttributeError. ExportToFile(.pb) writes
+    the binary proto and we measure the file size instead.
+    """
+    fd, path = tempfile.mkstemp(suffix=".pb")
+    os.close(fd)
+    try:
+        model.ExportToFile(path)
+        return os.path.getsize(path)
+    finally:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+
+def try_measure_ortools(total_vars: int = 81_795, term_counts: Sequence[int] = (784, 5429)):
+    """Optional incremental-proto bytes/term measurement; fail-soft (returns None on any error).
+
+    Measures high-index tail terms (the conservative varint case) so the linear ~4 /
+    BoolOr-no-good ~10-11 B/term constants are reproducible rather than only asserted.
+    """
+    try:
+        from ortools.sat.python import cp_model  # type: ignore
+
+        rows = []
+        for k in term_counts:
+            model = cp_model.CpModel()
+            v = [model.NewBoolVar(f"x{i}") for i in range(total_vars)]
+            tail = v[-k:]
+            before = _proto_bytes(model)
+            model.Add(sum(tail) <= k - 1)
+            linear_bpt = (_proto_bytes(model) - before) / k
+
+            model2 = cp_model.CpModel()
+            v2 = [model2.NewBoolVar(f"x{i}") for i in range(total_vars)]
+            tail2 = v2[-k:]
+            before2 = _proto_bytes(model2)
+            model2.AddBoolOr([x.Not() for x in tail2])
+            boolor_bpt = (_proto_bytes(model2) - before2) / k
+
+            rows.append((k, "tail", linear_bpt, boolor_bpt))
+        return rows
+    except Exception as exc:  # fail-soft: never crash the gate on the optional measurement
+        print(f"  (OR-Tools measurement unavailable: {type(exc).__name__}: {exc})", file=sys.stderr)
+        return None
+
+
+def main() -> None:
     recs = load_fixture()
-    by_type, allset, pools = build_index()
-    print("registry pools:", pools, " total poses:", sum(pools.values()))
+    pools = load_pools()
+    by_type, pool_sizes = build_index(pools)
+    multipliers = load_group_multipliers(pools)
+
+    print("registry type-pool sizes:", dict(sorted(pool_sizes.items())))
+    print("type-pool total poses:", sum(pool_sizes.values()))
+    print("concrete/group multipliers:", dict(sorted(multipliers.items())))
+    print("concrete master var upper proxy:", sum(pool_sizes[ft] * multipliers.get(ft, 1) for ft in pool_sizes))
     print()
 
-    by = collections.defaultdict(lambda: {"n": 0, "compact": [], "scoped": [], "allt": []})
-    for r in recs:
-        fam = r["family"]
-        p = json.loads(base64.b64decode(r["cert_payload_b64"]))
-        cells = cut_cells(r, p)
-        ft = GROUP_FACILITY_TYPE.get(fam)
-        scoped = overlap_type(by_type, cells, ft) if (cells and ft) else (
-            overlap_all(allset, cells) if cells else compact_terms(r, p))
-        allt = overlap_all(allset, cells) if cells else compact_terms(r, p)
-        by[fam]["n"] += 1
-        by[fam]["compact"].append(compact_terms(r, p))
-        by[fam]["scoped"].append(scoped)
-        by[fam]["allt"].append(allt)
+    by = collections.defaultdict(lambda: {"n": 0, "compact": [], "scoped": [], "type_all": [], "group_all": []})
 
-    avg = lambda xs: sum(xs) / len(xs) if xs else 0
-    print("逐族 term/cut (LSB-correct): compact=witness/no-good; expanded scoped=限定类型; all=全类型宽松上界")
-    print("%-20s %3s %9s %14s %14s" % ("family", "n", "compact", "exp_scoped", "exp_all(ub)"))
+    for rec in recs:
+        fam = rec["family"]
+        payload = json.loads(base64.b64decode(rec["cert_payload_b64"]))
+        cells = cut_cells(rec, payload)
+        ft = GROUP_FACILITY_TYPE.get(fam)
+
+        if cells:
+            scoped = type_count(by_type, cells, ft) if ft else type_all_count(by_type, cells)
+            type_all = type_all_count(by_type, cells)
+            group_all = concrete_count(by_type, cells, multipliers)
+        else:
+            scoped = type_all = group_all = compact_terms(rec, payload)
+
+        by[fam]["n"] += 1
+        by[fam]["compact"].append(compact_terms(rec, payload))
+        by[fam]["scoped"].append(scoped)
+        by[fam]["type_all"].append(type_all)
+        by[fam]["group_all"].append(group_all)
+
+    print(
+        "family term/cut: compact=witness/no-good; exp_scoped=type-pool scoped; "
+        "exp_type_all=type-pool UB; exp_group_all=concrete/group-expanded proxy"
+    )
+    print("  (density_envelope expanded now carried in summary, not compact-4 fallback — B-F1)")
+    print("%-20s %3s %9s %14s %16s %18s" % ("family", "n", "compact", "exp_scoped", "exp_type_all", "exp_group_all"))
     for fam in sorted(by):
         d = by[fam]
-        print("%-20s %3d %9.1f %14.1f %14.1f" % (fam, d["n"], avg(d["compact"]), avg(d["scoped"]), avg(d["allt"])))
+        print(
+            "%-20s %3d %9.1f %14.1f %16.1f %18.1f"
+            % (fam, d["n"], mean(d["compact"]), mean(d["scoped"]), mean(d["type_all"]), mean(d["group_all"]))
+        )
     print()
 
-    # F9 density_envelope: window_rect -> pose overlap. v23 外审 F4 补测; v24 外审再指出只跑了前 2 条,
-    # 这里跑**全部** density_envelope cert, 报 per-window scoped(各 manufacturing type) + all-type 上界 + max。
-    mfg_types = [ft for ft in pools if ft.startswith("manufacturing")]
-    print("F9 density_envelope window_rect -> pose overlap (全 fixture, scoped mfg + all-type UB):")
-    print("  %-16s %6s %8s %10s" % ("window", "mfg-max", "all-type", "cells"))
-    f9_scoped_vals, f9_all_vals = [], []
-    for r in [x for x in recs if x["family"] == "density_envelope"]:
-        p = json.loads(base64.b64decode(r["cert_payload_b64"]))
-        wr = p.get("window_rect")
-        if not (wr and len(wr) >= 4):
+    mfg_types = [ft for ft in sorted(pools) if ft.startswith("manufacturing")]
+    print("F9 density_envelope window_rect -> pose overlap (all fixture rows):")
+    print("  %-16s %8s %10s %12s %12s %8s" % ("window", "mfg-max", "type-all", "mfg-group", "group-all", "cells"))
+    f9_single: List[int] = []
+    f9_type_all: List[int] = []
+    f9_mfg_group: List[int] = []
+    f9_group_all: List[int] = []
+
+    for rec in [r for r in recs if r["family"] == "density_envelope"]:
+        payload = json.loads(base64.b64decode(rec["cert_payload_b64"]))
+        wr = payload.get("window_rect")
+        if not (isinstance(wr, list) and len(wr) >= 4):
             continue
-        x0, y0, w, h = wr[:4]
-        cells = [(x, y) for x in range(x0, x0 + w) for y in range(y0, y0 + h) if 0 <= x < 70 and 0 <= y < 70]
-        mfg_max = max((overlap_type(by_type, cells, ft) for ft in mfg_types), default=0)
-        allt = overlap_all(allset, cells)
-        f9_scoped_vals.append(mfg_max)
-        f9_all_vals.append(allt)
-        print("  %-16s %6d %8d %10d" % (str(wr), mfg_max, allt, len(cells)))
-    if f9_scoped_vals:
-        print("  F9 scoped(mfg) avg=%.0f max=%d ; all-type UB avg=%.0f max=%d (compact witness 仅 4, 非 window-expanded)"
-              % (sum(f9_scoped_vals) / len(f9_scoped_vals), max(f9_scoped_vals),
-                 sum(f9_all_vals) / len(f9_all_vals), max(f9_all_vals)))
+        cells = window_cells(wr)
+        single = max((type_count(by_type, cells, ft) for ft in mfg_types), default=0)
+        type_all = type_all_count(by_type, cells)
+        mfg_group = concrete_count(by_type, cells, multipliers, fts=mfg_types)
+        group_all = concrete_count(by_type, cells, multipliers)
+
+        f9_single.append(single)
+        f9_type_all.append(type_all)
+        f9_mfg_group.append(mfg_group)
+        f9_group_all.append(group_all)
+
+        print("  %-16s %8d %10d %12d %12d %8d" % (str(wr), single, type_all, mfg_group, group_all, len(cells)))
+
+    print(
+        "  F9 single-group scoped avg=%.0f max=%d ; type-all avg=%.0f max=%d ; "
+        "mfg-group UB avg=%.0f max=%d ; group-all avg=%.0f max=%d"
+        % (
+            mean(f9_single), max(f9_single),
+            mean(f9_type_all), max(f9_type_all),
+            mean(f9_mfg_group), max(f9_mfg_group),
+            mean(f9_group_all), max(f9_group_all),
+        )
+    )
     print()
 
-    # v24 外审 Finding 1: proto bytes/term 必须按约束类型分 —— 实测 OR-Tools 9.15:
-    #   linear (AddLinearConstraint) ~3-4 B/term; BoolOr no-good (AddBoolOr) ~10-11 B/term。
-    # 旧版用 4-6 B/term 全局, 对 BoolOr expanded 低估约 2-3x。
-    LINEAR_BPT, BOOLOR_BPT = 4.0, 11.0
-    def proj(terms_per_cut, bpt):
-        gb = terms_per_cut * 100_000 * bpt / 1e9
-        return "%.0f term/cut x 100K x %.0f B = %.2f GB" % (terms_per_cut, bpt, gb)
-    print("100K proto 投影 (按约束类型分 bytes/term; linear~4, BoolOr~11):")
-    print("  compact (全族 1-4 term/cut): 100K -> ~1-4 MB [随便扛, 任何形态]")
-    print("  expanded F1/F9 scoped (264-784 term/cut):")
-    print("    linear: %s" % proj(784, LINEAR_BPT))
-    print("    BoolOr: %s" % proj(784, BOOLOR_BPT))
-    print("  expanded all-type UB / routing (F4 5429, F9-alltype 3341 term/cut):")
-    print("    BoolOr: %s  /  %s" % (proj(5429, BOOLOR_BPT), proj(3341, BOOLOR_BPT)))
+    measurement = try_measure_ortools()
+    if measurement is None:
+        print("OR-Tools bytes/term check skipped (ortools not importable or measurement failed);")
+        print("using documented conservative constants linear=4, BoolOr=11.")
+    else:
+        print("OR-Tools incremental proto bytes/term (ExportToFile; 81,795 vars, high-index tail terms):")
+        print("  %-8s %-8s %-14s %-18s" % ("terms", "slice", "linear<=B/t", "BoolOr-no-goodB/t"))
+        for k, label, linear_bpt, boolor_bpt in measurement:
+            print("  %-8d %-8s %-14.2f %-18.2f" % (k, label, linear_bpt, boolor_bpt))
     print()
-    print("结论 (LSB-correct, bytes/term-by-kind):")
-    print("- compact (witness/no-good) lowering 全 9 族便宜 (~1-4 MB@100K), 任何约束形态。")
-    print("- expanded lowering 的 proto 预算**取决于约束类型**: linear ~4 B/term, BoolOr no-good ~11 B/term。")
-    print("  fixture F1/F9 scoped max 784 term/cut: linear ~0.3 GB / BoolOr ~0.86 GB; F4 5429 BoolOr ~6 GB。")
-    print("- blow-up 是 (region/window x pool-density) x (per-term 字节, 看约束类型) 的函数, 跨**所有**族。")
-    print("- P1.3A 硬约束 = 按约束类型分别设 per-cut term cap + cumulative proto budget (linear/BoolOr 不同),")
-    print("  且 cap 按 max/p99 不按 family-avg。v1 的 '1.9GB / 只 F1/F9' 是 MSB 解码 bug 的假数字。")
+
+    full_mfg_group = sum(pool_sizes[ft] * multipliers.get(ft, 1) for ft in mfg_types)
+    full_concrete_proxy = sum(pool_sizes[ft] * multipliers.get(ft, 1) for ft in pool_sizes)
+    print("100K proto projections, by constraint kind:")
+    print("  compact all families 1-4 terms/cut: about 1-4 MB at 100K")
+    print_projection("F9 single-group max", max(f9_single))
+    print_projection("F9 mfg group-expanded UB", max(f9_mfg_group))
+    print_projection("F4 component_reach group-expanded max", max(by["component_reach"]["group_all"]))
+    print_projection("full manufacturing group-expanded pool", full_mfg_group)
+    print_projection("full concrete proxy all pools", full_concrete_proxy)
+    print()
+
+    print("Conclusion:")
+    print("- LSB bitset sizing remains corrected; the old MSB-first 2026-style F1 count is not used.")
+    print("- Compact witness/no-good lowering is still cheap across all families.")
+    print("- Expanded/geometric lowering must be capped on the final CONCRETE literal vector")
+    print("  (after group/template/optional expansion), NOT just the type-pool count.")
+    print("- type-pool UBs (F9 3341, F4 5429, ~16-18K) are cheap proxies, not real-master literal bounds.")
+    print("- Budgets must remain constraint-kind-specific: linear about 4 B/term, BoolOr/no-good about 11 B/term.")
+    print("- P1.3A guard: per-cut max/p99 cap + cumulative proto budget after group/template/optional resolution.")
 
 
 if __name__ == "__main__":

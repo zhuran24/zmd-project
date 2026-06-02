@@ -117,3 +117,14 @@ python docs/research/p1_2_spike_sizing_gate_20260601/sizing_gate.py
   只用于界定"若误用 expanded lowering 会多大"。
 - 本 gate 只覆盖 master 约束 sizing。**cert 证书存储 + replay 校验** 在 100K 规模 (~613 B bitset/cert →
   ~60 MB store + 逐条 revalidate) 是另一条未测轴, 归 P1.3A proof lifecycle sizing。
+
+## v3 → v5 修正 (v25 外审两份独立并集, 主代理逐条对真代码核实)
+
+v25 送 GPT pro 第四轮 (两份独立都 substantive, 都 B/PATCH, **无 soundness 洞**)。并集 4 条 sizing finding 已修进本 gate (脚本升 v5):
+
+1. **[A-F1, 最重] type-pool 数 ≠ 真 master concrete literal 数**。本 gate 之前按 facility **type** 数 pose pool overlap (type-pool total **81,795**)。但真 pose-bool master (`src/models/exact_coordinate_master.py`) 按 mandatory `(facility_type, operation_type)` **group × pose** 建变量, group 乘数 (from `data/preprocessed/mandatory_exact_instances.json`, 266 instances → 19 groups): mfg_3x3=**8** / mfg_5x5=**4** / mfg_6x4=**5** / protocol_core=1 / boundary_storage_port=1。→ concrete master var upper proxy = **325,747** (≈4× type-pool)。group 展开后: F9 [5,15] single 784 → **mfg-group 11,644**; F4 5429 → **20,157**; 满 mfg 池 → **295,700**。**所以 type-pool UB (F9 3341 / F4 5429 / ~16–18K) 是 cheap proxy, 不是真-master literal 上界。** 单 group 的 F9 **784** 仍是单 group lowering 的真实尺度。脚本现多打 `exp_group_all` 列 + group-expanded 投影。
+2. **[B-F1] family summary 表 F9 行不再 fallback 到 compact 4.0**。之前 `cut_cells()` 对 density_envelope 返回空 → summary 退回 witness 4, 与详细 F9 表 (784/3341) 自相矛盾。v5 给 `cut_cells` 加 density_envelope 分支 (用正确 `[x,y,h,w]` window_cells), summary 现承载真实 expanded overlap。
+3. **[B-F2] OR-Tools bytes/term 现脚本内可复现实测** (不再只 hardcode)。脚本 OR-Tools 可 import 时实测 81,795 var 高 index tail: **linear 4.03 / BoolOr no-good 10.01 B/term** (与 hardcode 的 4/11 保守一致)。⚠️ 实现用 `model.ExportToFile(.pb)` 量字节 —— 9.15.6755 的 `CpModelProto` pybind **没有** `ByteSize`/`SerializeToString` (一份审查的补丁误用 `.ByteSize()` 会崩, 本 gate 避开); 无 OR-Tools 时 fail-soft 跳过。
+4. **[A-F2] F9 `window_rect` 是 `[x,y,h,w]` 不是 `[x,y,w,h]`**。现 fixture 全 10×10 方形故数字不变, 但脚本读序已修正 (非方形 window 会错)。
+
+**对 P1.3A 的硬约束 (v5 收紧)**: per-cut term cap + cumulative proto budget 的 **cap 输入必须是真 translator 在 group/template/optional 展开后发出的 concrete literal vector 长度** (不是 type-pool 数), 按约束类型分字节 (linear ~4 / BoolOr ~11), cap 按 max/p99 跨所有族。**别把 3341/5429/16–18K 当真-master 上界写进设计** —— 它们是 type-pool proxy。详 [[p1-3a-design-phase]] sizing 基线。
