@@ -78,3 +78,5 @@ archive / write memory / commit / propose fix 之前. 不管 verdict 是 GO 还
 - [[adversarial-soundness-audit]] — Layer 1 vs Layer 2 audit
 - [[external-review-reproducibility]] — GPT 两次跑 finding 不一定一致
 - [[gpt-pro-p11-audit-not-go]] — 实际 reproduce 案例
+- [[verification-independent-backstop]] — **本 memory 管"reproduce finding 再 archive"(单点); 那条规则#4 接着管"修完要 re-audit 那个修过的(重建)产物、独立审到一轮零 finding 才停"**。别只 reproduce 一次就当 close。(2026-06-02 补回边: 之前单向, 致 GPT-review loop 复发)
+- [[gemini-review-algorithm-math]] — §循环规则 "修完再审直到没问题" = iterate-to-clean 规则原始 home (它通用, 别只在 Gemini 语境想起)
