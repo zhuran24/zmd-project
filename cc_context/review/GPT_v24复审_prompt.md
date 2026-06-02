@@ -78,6 +78,6 @@ spike close 之后下一步是 P1.3A 主体。我卡在：能不能拿现在 v24
 
 ## 包 sha256（核对上传完整）
 
-- `phase1_2_spike_review_v24.zip`：`b66e3318705e8f8a29bcf697a21bccaa3008dc0c15c61ed33412997e9febb9a0`
+- `phase1_2_spike_review_v24.zip`：`991c5b79431578797ffd81848a79489cf636d52af467ad6c9d705e3eb17bf3bf`
 
 （依赖 wheel 分 3 块 `deps_linux_py313.zip.001/.002/.003` 与本包一起打在外层 zip 里；解包后 `cat` 三块合并成 `deps_linux_py313.zip` 再离线 `pip install --no-index --find-links` 装，详见包内 README "怎么跑"节。）

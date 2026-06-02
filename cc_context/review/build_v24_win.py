@@ -4,10 +4,10 @@
 基于 build_v23_win.py。v24 = v23 外审第二次 B 后的 7-finding 全修版。改动 vs v23:
 - v24 命名 (zip/root/extraction)
 - SPIKE_OVERLAY_FILES += data/cuts/spike/remap_audit.json (F5 新 artifact)
-- README v22→v24 changelog 段 (含 LSB 纠正数字 + 7 finding) + 标题 v24 + Build line spike HEAD 12f64dc
+- README v22→v24 changelog 段 (含 LSB 纠正数字 + 7 finding) + 标题 v24 + Build line spike HEAD 0ebfaff
   + Finding5#2 表行 YES→PARTIAL (与 verdict 一致)
 - 排除 cc_context + scripts/gemini_cross_check* (同 v23)
-spike overlay 用 `git show {SPIKE_BRANCH}:`, 分支 HEAD 现 = 12f64dc, verdict/spike 代码/remap_audit 自动取修复版。
+spike overlay 用 `git show {SPIKE_BRANCH}:`, 分支 HEAD 现 = 0ebfaff, verdict/spike 代码/remap_audit 自动取修复版。
 """
 from __future__ import annotations
 
@@ -101,7 +101,7 @@ lowering 随 region × pool 变, fixture 尺度 region (139 cells) / window (10�
 对任何 geometric/expanded lowering 设 per-cut term cap + cumulative proto budget (跨所有族, 不止 F1/F9)。
 详 `project/docs/research/p1_2_spike_sizing_gate_20260601/` (v2 LSB) + verdict.md「第九审修正」。
 
-build: spike 分支 HEAD `12f64dc` (overlay 经 git show 自动取); master sizing gate fix `a7eff5d`。
+build: spike 分支 HEAD `0ebfaff` (overlay 经 git show 自动取); master sizing gate fix `a7eff5d`。
 
 """
 
@@ -111,7 +111,7 @@ def build_readme() -> str:
     text = _replace_once(text, "# 终末地工业规划器 — 项目快照 (v22)",
                          "# 终末地工业规划器 — 项目快照 (v24)", "title")
     text = _replace_once(text, "`66cf16e`; data-producing",
-                         "`12f64dc` (v24: 两轮外审 B 全修, 详下方 v22→v24 节); data-producing",
+                         "`0ebfaff` (v24: 两轮外审 B 全修, 详下方 v22→v24 节); data-producing",
                          "build-line-spike-head")
     text = _replace_once(text, "## v21 → v22 状态变化",
                          V22_TO_V24_SECTION + "## v21 → v22 状态变化", "insert-v22-to-v24")
@@ -121,6 +121,14 @@ def build_readme() -> str:
         "| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family (F3 special-case phase Stage 1 generator live) with real `pose_count` / `cell_count` / `literal_count` per cert | YES |",
         "| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束 (remap_audit 36/50 unknown), 非真 registry-bound body sizing | **PARTIAL** — 见 v22→v24 节 + verdict.md: compact lowering 全族安全, expanded lowering 跨所有族需 term cap, 已移交 P1.3A |",
         "finding5-row2-yes-to-partial",
+    )
+    # v24 验证 lens 逮到的 G10 表 staleness: README G-criteria 表 G10 行缺 schema_err,
+    # 与 F6-patched runner emit (4 段含 schema_err) + README F6 描述不一致。同步到 4 段。
+    text = _replace_once(
+        text,
+        "| G10 oracle real-emit cert fixture (A3) | ≥45 + 9 families + 0 unsound | 50 cert / 9 families / 0 unsound | PASS |",
+        "| G10 oracle real-emit cert fixture (A3) | ≥45 + 0 unsound + 0 schema_err | 50 cert / 9 families / 0 unsound / 0 schema_err | PASS |",
+        "g10-row-add-schema-err",
     )
     old_extract = (
         "```bash\n"
@@ -173,7 +181,7 @@ def build_tree() -> tuple[int, int]:
         total_bytes += src.stat().st_size
 
     print(f"Project copy: {file_count} files / {total_bytes/(1024*1024):.1f} MB unzipped, skipped {skipped}")
-    print("Overlaying spike data (HEAD 12f64dc)...")
+    print("Overlaying spike data (HEAD 0ebfaff)...")
     file_count += mod.overlay_spike_files()
     print("Overlaying spike code snapshot...")
     file_count += mod.overlay_spike_code_snapshot()
