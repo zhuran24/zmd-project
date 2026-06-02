@@ -79,7 +79,7 @@ v1 退回 compact witness (4); v2 补测 window 但只跑前 2 条 (v24 外审�
 | [4,12,10,10] | 756 | 3251 | 100 |
 | [5,15,10,10] | **784** | **3341** | 100 |
 
-→ F9 fixture scoped(manufacturing) **avg ~590 / max 784** term/cut (不是 v2 写的 360–524); all-type UB max
+→ F9 fixture scoped(manufacturing) **avg ~628 / max 784** term/cut (不是 v2 写的 360–524); all-type UB max
 **3341**。proto: scoped 784 走 linear ~0.3 GB / 走 BoolOr ~0.86 GB; all-type 3341 走 BoolOr ~3.7 GB。
 大 window (趋近 70×70) 吃满整池 ~16–18K term。风险是 window-size × pool × 约束类型的函数。
 

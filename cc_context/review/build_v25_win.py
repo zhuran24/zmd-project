@@ -196,6 +196,13 @@ def build_tree() -> tuple[int, int]:
     print("Overlaying spike code snapshot...")
     file_count += mod.overlay_spike_code_snapshot()
 
+    # v25 外审瑕疵 (b): manifest 用 LF 行尾 (Windows write_text 默认 CRLF), 否则 reviewer 跑
+    # `sha256sum -c SHA256SUMS.spike_code.txt` 时 CR 进 path → spurious FAILED。
+    _manifest = PROJECT_DIR / "code_context" / "SHA256SUMS.spike_code.txt"
+    if _manifest.exists():
+        _manifest.write_bytes(_manifest.read_text(encoding="utf-8").replace("\r\n", "\n").encode("utf-8"))
+        print("  manifest CRLF→LF normalized (sha256sum -c 友好)")
+
     spike_commit_log = mod.fetch_spike_commit_log()
     (PROJECT_DIR / "SPIKE_COMMIT_LOG.md").write_text(spike_commit_log, encoding="utf-8")
     (PROJECT_DIR / "README.md").write_text(README_V24, encoding="utf-8")
