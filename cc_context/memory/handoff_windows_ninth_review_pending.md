@@ -9,7 +9,26 @@ metadata:
 
 > **这是项目单一 living「当前 phase/交接状态」权威源** (per [[memory-currency-protocol]])。环境落点细节见 [[windows-handoff-env]] (稳定 reference), P1.3A 设计/Step0 gate 细节见 [[p1-3a-design-phase]] (设计记录)。本条是这三者里唯一的「现状真相」入口, 另两条只补细节不重述现状。
 
-## 最新状态 (2026-06-02) — 九审已回 B, 修复已落, v23 已建+多镜头验证 PASS
+## 最新状态 (2026-06-02) — v23 外审第二次回 B; 我自己的 sizing_gate bitset bug 已确认 (数字 ~10x 偏高)
+
+> **当前真相 (最新)**: v23 送外审 (GPT pro 双份), 深的那份判 **B** 并 catch 一条**我自己犯的真错**: `sizing_gate.py` bitset 用 MSB-first 解码, 真源 `region_capacity_oracle._encode_region_bitset` 是 **LSB-first** (`arr[idx//8] |= 1<<(idx%8)`)。我对真源码核 + LSB 重算确认 reviewer 一字不差对: region_capacity 大池子 manufacturing 是 **264** term 不是我写的 2026; F9 10×10 window ~360–524。**"F1/F9 大池子 2000–3200 term → 1.9GB blow-up" 是 bug 假数字, 真实 fixture 尺度 ~264 term → ~100MB, 不爆。** 下面旧块 (line 19 "核心 sizing 结论" 等) 的数字/结论**已废, 待 v24 改**。新 sizing 结论见本块末。
+
+**v23 外审 (2026-06-02, 第二次 B)**: 深份 7 finding, 浅份低信号 (没真跑/无 finding/"测过就 GO"——信息量基本在深份, 取并集深份主导)。7 finding 状态:
+- **F2 (我的 bitset bug, 最重)**: 已确认属实, 见上。连带 RESULTS.md / verdict Layer-2 #6 / README v22→v23 / 本 memory 旧块的数字全错, 待 v24 全改。
+- **F1 sizing_gate 不可复现**: 脚本硬编码读 `cc_context/review/phase1_2_spike_review_v22.zip` 取 fixture, 但 cc_context 不入包 → 包内审者跑不了。应改读包内 `data/cuts/spike/oracle_emit_fixture_45cert.jsonl` + `data/preprocessed/candidate_placements.json`。属实。
+- **F3 scope 过窄**: "只 F1/F9 blow-up, 其余 7 族任意 lower 都安全" 不成立 —— expanded lowering 下 F4 separator ~5429 (loose)、cutset 173、port 500 也不小。应改成 "realistic compact lowering 全族安全; 任何 family 的 expanded/large-overlap lowering 都需 per-cut term cap + cumulative proto cap"。属实。
+- **F4 F9 没真测**: sizing_gate 对 density_envelope 退回 compact witness(4), 没测 window→pose overlap。已补测: 10×10 window → manufacturing 360–524。属实。
+- **F5 remap telemetry 没进 artifact**: TranslationReport 有字段, 但 `scale_ramp.py` RampTierReport 序列化 + `scale_ramp_results.jsonl`/`phase_b_results.json` 没写 → "100K applied=100%" 只对手调 translator 不静默, 对实际 artifact 仍静默。属实。
+- **F6 verdict writer 没锁**: `spike_prod_scale_runner.py` 仍硬编码 `G10=True` + #2 模板仍写 YES (只手改的 verdict.md 是 PARTIAL) → 重跑 phase-B 会回归。属实。
+- **F7 malformed scope**: 文案不能说 toy_translator 全局 fail-closed (只 F3; 非 F3 仍 fallback synthetic)。属实。
+
+**纠正后 sizing 结论 (LSB, 2026-06-02)**: fixture 尺度下 (a) **所有 9 族 realistic compact (witness/no-good) lowering → 100K 都便宜 (~1MB)**; (b) **expanded (全 pose-overlap) lowering** 随 region×池密度变化, fixture 尺度 region/window 给 ~百级 term/cut (region 264 / cutset 173 / F9-window 360–524 / power 16 scoped / F4-separator 5429 是 all-types 宽松上界且 F4 本质 no-good 不会真这么 lower), 100K → ~0.1–0.3GB 量级, **不是 1.9GB**。blow-up 是 region-size×pool 的函数、跨所有族, 不是 F1/F9 专属。P1.3A lowering 硬约束 = 对**任何** geometric/expanded lowering 设 per-cut term cap + cumulative proto cap (不只 F1/F9)。方向 (cut-family LBBD → P1.3A) 两 reviewer 都认 sound (B not C)。
+
+**v23 状态**: gate 仍 B, 不是 clean-A。是否走 v24 全补丁轮 (修 7 finding + 重建 + 再外审) **还是** 拿纠正后 (更温和) 的理解直接进 P1.3A —— phase-boundary 决策待用户拍 (per [[main-merger-scope-creep-bias]])。
+
+---
+
+## (历史快照, 已被上方纠正) v23 已建+多镜头验证 PASS
 
 GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送审, 两份报告都贴回主代理)。**双双判 B (未 clean close)**, 不是之前本地预审的 CLEAN GO —— 以正式九审为准 (per [[memory-currency-protocol]] §5: judgment 级结论由做判断的主体定, 正式九审 > 本地预审)。两份报告 finding 主代理**逐条对真代码+真数据复核, 全属实** (base64 不 validate / 36-unknown 静默 remap / salted hash / schema_err 不进门禁 / Finding 5 #2 sizing overclaim)。两份质量对比: 完整版那次更深 (36-unknown 那条), 干净版更广 (独占 3 条), 但**单跑各一次无法把"包差异"和"GPT run-to-run 噪声"分离** (只有 README 不同, 取并集才对, 见 [[external-review-reproducibility]])。
 
