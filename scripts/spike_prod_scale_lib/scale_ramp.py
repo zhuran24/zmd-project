@@ -127,6 +127,12 @@ class RampTierReport:
     solve_status_label: str
     rss_peak_gb_after_solve: float
     notes: List[str] = field(default_factory=list)
+    # v24 (v23 外审 F5): 暴露 translator 的 unknown-pose remap, 让 cut_count_applied 不再
+    # 静默掩盖 "literal 没绑真 registry"。n_pairs_remapped > 0 => applied 是 synthetic/remap
+    # 吞吐量, 不是真 registry-bound cut-body sizing。
+    n_pairs_total: int = 0
+    n_pairs_remapped: int = 0
+    per_family_remapped: Dict[str, int] = field(default_factory=dict)
 
     @property
     def proto_mb(self) -> float:
@@ -221,6 +227,11 @@ def run_one_tier(
 
     if tr_rpt.n_certs_skipped:
         notes.append(f"translator skipped {tr_rpt.n_certs_skipped} certs")
+    if tr_rpt.n_pairs_remapped:
+        notes.append(
+            f"{tr_rpt.n_pairs_remapped}/{tr_rpt.n_pairs_total} pairs unknown-remapped "
+            "(synthetic/remap throughput, NOT true registry-bound cut-body sizing)"
+        )
 
     # Stage 3: proto size measurement (after all cuts applied — milestone).
     proto_size = measure_proto_bytesize(model)
@@ -291,6 +302,9 @@ def run_one_tier(
         solve_status_label=status_label,
         rss_peak_gb_after_solve=rss_peak_solve,
         notes=notes,
+        n_pairs_total=tr_rpt.n_pairs_total,
+        n_pairs_remapped=tr_rpt.n_pairs_remapped,
+        per_family_remapped=dict(tr_rpt.per_family_remapped),
     )
 
 
@@ -355,6 +369,10 @@ def run_scale_ramp(
                     "rss_peak_gb_during_build": round(tr.rss_peak_gb_during_build, 3),
                     "solve_wall_s": round(tr.solve_wall_s, 4),
                     "solve_status_label": tr.solve_status_label,
+                    "n_pairs_total": tr.n_pairs_total,
+                    "n_pairs_remapped": tr.n_pairs_remapped,
+                    "per_family_remapped": tr.per_family_remapped,
+                    "true_registry_bound": (tr.n_pairs_remapped == 0),
                     "notes": tr.notes,
                 }) + "\n")
 

@@ -35,19 +35,31 @@ verified by this spike — they are deferred to P1.3A 主体 design phase and P1
 
 **Finding 5 #2 "真 cut body 分布 sizing" 口径收窄 (核心):**
 第九审指出 B2 的 100K proto/RSS 是 **合成/remap 吞吐量**, 不是 **真 cut body 绑真 registry**。
-2026-06-01 sizing cheap gate (`docs/research/p1_2_spike_sizing_gate_20260601/`, 对真 fixture+真
-registry 直算) 给出精确结论:
+remap 审计 `data/cuts/spike/remap_audit.json` (F5): 50 cert 150 pair 中 **36 个 unknown 被静默 remap**
+(density_envelope 24 + port_exposure 12) → B2 cut_count_applied=100% 是 synthetic/remap 吞吐, 非真 body sizing。
 
-> cut body 的 master 约束大小不是固定可测的事实, 而是个 **~1000x 设计变量**, 取决于 lowering 方式。
-> 100K cut master sizing 有界且便宜 (~1–40 MB), **唯一** blow-up 路径是把 **F1 region_capacity /
-> F9 density_envelope 的大池子 (manufacturing/storage ~17952 pose) 容量 cut 按展开式 lower**
-> (每条 ~2000–3200 term → 100K ~1.9 GB)。其余 7 族 (路由/no-good/小池子) 任意 lower 都是几项到
-> 几十项, 随便扛。spike 的 19.55 MB 是 "紧凑 no-good / 小池子" 的合理代理, 但对大池子展开低估 50–100x。
+**v23 外审二次修正 (2026-06-02) — sizing gate 自己有 bitset bug**: 上面 (2026-06-01) 的 sizing gate v1
+用 **MSB-first** 解 bitset, 但真源 `region_capacity_oracle._encode_region_bitset` 是 **LSB-first**
+(`arr[idx//8] |= 1<<(idx%8)`)。v1 因此 region cells 解错, term 数偏高 ~10x。v23 外审 catch + 对真源核实属实,
+sizing gate 已修 LSB (`p1_2_spike_sizing_gate_20260601/`, v2)。纠正后结论:
 
-**因此 P1.3A lowering 设计必须对 F1/F9 二选一**: (a) 按 witness 紧凑 no-good lower, 或 (b) 给大池子
-展开容量 cut 的条数/规模设上界。这是带数字的硬约束, 已移交 P1.3A risk register (Layer-2 #6)。
+> cut body 的 master 约束大小取决于 lowering 方式。fixture 尺度下 (a) **所有 9 族** realistic compact
+> (witness/no-good) lowering → 100K 都便宜 (~1–3 MB); (b) **expanded (full pose-overlap)** lowering 随
+> **region-size × pool-density** 变化, fixture 尺度 region (139 cells) / window (10×10) 给 ~百级 term/cut
+> (region 大池子 ~264, cutset ~173, F9-window ~360–524, power 小池子 16) → 100K ~0.1–0.3 GB, **可控, 不爆**;
+> 只有**大** region/window (趋近全 pool, ~16–18K term/cut) 才到数 GB。**v1 的 "F1/F9 大池子 2000–3200 term
+> → 1.9 GB blow-up" 是 MSB 解码 bug 的假数字** (真实 264, 不是 2026)。
+
+**因此 P1.3A lowering 设计硬约束 (scope 已纠正, 不止 F1/F9)**: 对**任何**族的 geometric / large-overlap
+expanded lowering 设 **per-cut term cap + cumulative proto budget** (F2/F4 expanded 同样可达 hundreds/thousands);
+其余维持 compact lowering 则全 9 族安全。已移交 P1.3A risk register (Layer-2 #6)。
+
+**F7 (malformed scope hygiene)**: toy_translator **只有 F3 `port_exposure` malformed fail-closed**;
+其余 family 的 cert decode 失败仍走 deterministic synthetic fallback (3 literal)。所以 fail-closed 结论
+**不能泛化成全局**; 非 F3 的 synthetic lowering 只能算 synthetic/remap sizing, 不是真 registry-bound evidence。
+
 另一条未测轴: cert 证书存储 + replay 校验在 100K 规模 (~613 字节 bitset/cert → ~60 MB store +
-逐条 revalidate) 也归 P1.3A proof lifecycle sizing。
+逐条 revalidate) 归 P1.3A proof lifecycle sizing。
 
 ## G criteria (sizing — Finding 5 #1/#3/#4)
 
@@ -101,7 +113,7 @@ Per MERGER §5.2: spike must close Finding 5 sizing/measurement gate, NOT close 
 | # | Finding 5 item | Spike evidence | Cover? |
 |---|---|---|---|
 | 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |
-| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束, 非真 registry-bound body sizing | **PARTIAL** — 见「第九审修正」: sizing 是 ~1000x lowering 设计变量, F1/F9 大池子展开是唯一 blow-up 路径, 已收窄口径 + 移交 P1.3A |
+| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束 (remap_audit: 36/50 unknown), 非真 registry-bound body sizing | **PARTIAL** — 见「第九审修正」: compact lowering 全族安全; expanded lowering 随 region×pool 变 (跨所有族非 F1/F9 专属), 需 term cap; 已移交 P1.3A Layer-2 #6 |
 | 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp (v20 rerun, F3 real 2-literal): build 1.94–2.09s + translation 0.00–1.27s, proto 16.3–19.6 MB, build RSS 0.84–0.90 GB, after-solve RSS max 1.0316 GB, solve 0.72–0.97s across 0–100K; 5/5 tier cut_count_applied == target | YES |
 | 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total 0.073s, eviction fired iter [6] (52K→30K), age_decay validated via multi-iter age tick | YES |
 | 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |
@@ -133,12 +145,14 @@ enter P1.3A risk register:
    GPT pro Layer-2 catch may still surface issues here (per `[[gpt-pro-p11-audit-not-go]]`
    pattern). Deferred to P1.3B.
 
-6. **F1/F9 大池子容量 cut lowering sizing (2026-06-01 第九审 sizing gate)** — 带数字硬约束:
-   region_capacity (F1) / density_envelope (F9) 容量/面积 cut 若按展开式 lower 且打大制造池子
-   (~17952 pose), 每条 ~2000–3200 term → 100K ~1.9 GB proto, 会爆。P1.3A lowering 设计**必须**
-   二选一: (a) witness 紧凑 no-good, 或 (b) 给大池子展开容量 cut 条数/规模设上界。其余 7 族任意
-   lower 都安全。证据: `docs/research/p1_2_spike_sizing_gate_20260601/`。附带: 100K cert 证书
-   存储 + replay 校验成本 (~60 MB store + 逐条 revalidate) 归 P1.3A proof lifecycle sizing。
+6. **expanded lowering sizing (2026-06-02 LSB-corrected; v23 外审 F2/F3/F4)** — 带数字硬约束 (跨**所有**族,
+   不止 F1/F9): cut body 的 master 约束 term 数随 **region-size × pool-density** 变。fixture 尺度 region
+   (139 cells) / window (10×10) 走 expanded lowering 给 ~百级 term/cut (region 大池子 ~264 不是 v1 的 2026 —
+   v1 bitset MSB bug; cutset ~173; F9-window ~360–524; F2/F4 expanded 也可达 hundreds/thousands) → 100K
+   ~0.1–0.3 GB, **可控**; 只有大 region/window 趋近全 pool (~16–18K term) 才到数 GB。P1.3A lowering 设计**必须**:
+   compact (witness/no-good) lowering → 全 9 族安全; 任何族若用 geometric/expanded lowering → 设 per-cut term
+   cap + cumulative proto budget。证据: `docs/research/p1_2_spike_sizing_gate_20260601/` (v2 LSB)。附带: 100K
+   cert 证书存储 + replay 校验成本 (~60 MB store + 逐条 revalidate) 归 P1.3A proof lifecycle sizing。
 
 ## Actual wall / Claude time vs estimate
 

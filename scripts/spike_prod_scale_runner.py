@@ -226,19 +226,23 @@ def _g_status(d: Dict[str, bool], k: str) -> str:
     return "PASS" if d[k] else "FAIL"
 
 
-def _read_a3_fixture_stats() -> tuple[int, int, int]:
-    """Read the A3 jsonl and return (cert_count, family_count, unsound_count).
+def _read_a3_fixture_stats() -> tuple[int, int, int, int]:
+    """Read the A3 jsonl and return (cert_count, family_count, unsound, schema_err).
 
     Live read (not hardcoded) so verdict.md reflects the current fixture; the
     F3 special-case phase Stage 1 generator (spike commit `1d935f3`) lifted
     the count from 44 → 50.
+
+    v24 (v23 外审 F6): unsound 与 schema_err 分开计 (旧码把两者都算进 unsound),
+    让 G10 pass 条件能像 A3 emitter 一样独立 gate schema_err == 0。
     """
     fpath = SPIKE_OUTPUT_DIR / "oracle_emit_fixture_45cert.jsonl"
     if not fpath.exists():
-        return (0, 0, 0)
+        return (0, 0, 0, 0)
     cert_count = 0
     families: set[str] = set()
     unsound = 0
+    schema_err = 0
     for line in fpath.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -249,9 +253,12 @@ def _read_a3_fixture_stats() -> tuple[int, int, int]:
             continue
         cert_count += 1
         families.add(rec.get("family", ""))
-        if rec.get("validator_kind", "ok") != "ok":
+        kind = rec.get("validator_kind", "ok")
+        if kind == "schema_err":
+            schema_err += 1
+        elif kind != "ok":
             unsound += 1
-    return (cert_count, len(families), unsound)
+    return (cert_count, len(families), unsound, schema_err)
 
 
 def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
@@ -270,7 +277,15 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     g_pass: Dict[str, bool] = {}
     g_pass.update(ramp.get("g_pass", {}))
     g_pass.update(smoke.get("g_pass", {}))
-    g_pass["G10_oracle_real_emit_45cert"] = True  # A3 verdict
+    # v24 (v23 外审 F6): G10 不再硬编码 True; 从 A3 fixture 真算, 与 A3 emitter 同口径
+    # (total >= 45 且 0 unsound 且 0 schema_err 且 family >= 9)。
+    g10_cert_count, g10_family_count, g10_unsound, g10_schema_err = _read_a3_fixture_stats()
+    g_pass["G10_oracle_real_emit_45cert"] = (
+        g10_cert_count >= 45
+        and g10_unsound == 0
+        and g10_schema_err == 0
+        and g10_family_count >= 9
+    )
     g_pass["G11_filter_mock_loop"] = bool(filt.get("g11_pass", False))
     g_pass["G17_failfast_probe"] = True  # A2 verdict
 
@@ -354,10 +369,9 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append(f"| G8 RSS peak | ≤ 20 GB | after-solve max {after_solve_rss_max:.4f}GB | {_g_status(g_pass, 'G8_rss_peak')} |")
     lines.append(f"| G9 proto @ 50K | ≤ 500 MB | {tier_proto('50K')} | {_g_status(g_pass, 'G9_proto_50K')} |")
     lines.append(f"| G9 proto @ 100K | ≤ 1 GB | {tier_proto('100K')} | {_g_status(g_pass, 'G9_proto_100K')} |")
-    # G10 read live from A3 fixture (F3 special-case phase Stage 1 wired in
-    # spike commit `1d935f3` — 50 cert / 9 family / 0 unsound).
-    g10_cert_count, g10_family_count, g10_unsound = _read_a3_fixture_stats()
-    lines.append(f"| G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound | {g10_cert_count} cert / {g10_family_count} family / {g10_unsound} unsound | PASS |")
+    # G10 read live from A3 fixture (stats 已在上方 g_pass 计算时读出, 含 schema_err)。
+    # v24 (F6): status 列不再硬编码 PASS, 走 _g_status(真算)。
+    lines.append(f"| G10 oracle real-emit 45 cert (A3) | ≥45 + 0 unsound + 0 schema_err | {g10_cert_count} cert / {g10_family_count} family / {g10_unsound} unsound / {g10_schema_err} schema_err | {_g_status(g_pass, 'G10_oracle_real_emit_45cert')} |")
     lines.append(f"| G11 active filter Hybrid mock loop | wall ≤ 100ms/iter + eviction fires | total {filt.get('total_wall_s', 0):.3f}s, max {filt.get('max_iter_wall_s', 0)*1000:.1f}ms, evict @ iter {filt.get('eviction_triggered_in_iter', [])} | {_g_status(g_pass, 'G11_filter_mock_loop')} |")
     lines.append("| G17 failfast probe (A2) | ≤ 15s | 3.4s | PASS (A2 phase_a_report) |")
     # G6 (split)
@@ -402,7 +416,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("| # | Finding 5 item | Spike evidence | Cover? |")
     lines.append("|---|---|---|---|")
     lines.append("| 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |")
-    lines.append(f"| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl {g10_cert_count} cert × {g10_family_count} family with real `pose_count` / `cell_count` / `literal_count` per cert (F3 special-case phase Stage 1 generator live) | YES |")
+    lines.append(f"| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl {g10_cert_count} cert × {g10_family_count} family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束, 非真 registry-bound body sizing (v23 外审 finding) | **PARTIAL** — sizing 是 lowering 设计变量; 见 sizing gate `docs/research/p1_2_spike_sizing_gate_20260601/` + Layer-2 risk #6 |")
     lines.append("| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp (v20 rerun, F3 real 2-literal): build 1.94–2.09s + translation 0.00–1.27s, proto 16.3–19.6 MB, build RSS 0.84–0.90 GB, after-solve RSS max 1.0316 GB, solve 0.72–0.97s across 0–100K; 5/5 tier cut_count_applied == target | YES |")
     lines.append(f"| 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total {filt.get('total_wall_s', 0):.3f}s, eviction fired iter {filt.get('eviction_triggered_in_iter', [])} (52K→30K), age_decay validated via multi-iter age tick | YES |")
     lines.append("| 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |")

@@ -1,0 +1,13 @@
+{
+  "_doc": "v24 (v23 外审 F5): A3 fixture 经 toy_translator 的 unknown-pose remap 审计。 n_pairs_remapped>0 => B2 的 cut_count_applied 是 synthetic/remap 吞吐量, 不是真 registry-bound cut-body sizing。",
+  "n_certs_in": 50,
+  "n_certs_applied": 50,
+  "n_pairs_total": 150,
+  "n_pairs_remapped": 36,
+  "per_family_remapped": {
+    "port_exposure": 12,
+    "density_envelope": 24
+  },
+  "true_registry_bound": false,
+  "interpretation": "36/150 pairs 在真 registry 里 unknown, 被 deterministic remap 到任意真 var。B2 100K cut_count_applied=100% 因此是 synthetic/remap 吞吐, 非真 body sizing。"
+}
