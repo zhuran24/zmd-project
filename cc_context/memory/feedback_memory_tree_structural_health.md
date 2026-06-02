@@ -1,6 +1,6 @@
 ---
 name: memory-tree-structural-health
-description: "记忆树结构健康 (区别于 [[memory-currency-protocol]] 的内容现状轴): wikilink 命名须统一口径否则断链 + MEMORY.md ~24576B 自动加载上限超了尾部静默截断 + harness 重写 frontmatter 但保 name 字段→rename 耐久 + 维护脚本语义 + **第三轴: 同话题散多条 memory 没跨链 → 改不全(改一漏多)+召不全(该用的没 surface), 治法=改前 grep 全树找全实例一起改 + 同话题簇互相 wikilink + description 带共同话题词**。"
+description: "记忆树结构健康 (区别于 [[memory-currency-protocol]] 的内容现状轴): wikilink 命名须统一口径否则断链 + MEMORY.md ~24576B 自动加载上限超了尾部静默截断 + harness 重写 frontmatter 但保 name 字段→rename 耐久 + 维护脚本语义 + **第三轴: 同话题散多条 memory 没跨链 → 改不全(改一漏多)+召不全(该用的没 surface), 治法=改前 grep 全树找全实例一起改 + 同话题簇互相 wikilink + description 带共同话题词**。**第四轴(第三轴上游): 记忆时泛化不足, 把通用规则锁死在首次触发的具体语境(如'反复审查'锁在Gemini)→别处不surface; 治法=记前问'只适用眼前还是更通用'(占位符测试), 通用就记通用层别锁语境**。"
 metadata: 
   node_type: memory
   type: feedback
@@ -34,4 +34,12 @@ metadata:
 3. **clustered memory 的 description 带共同话题词**, 让同簇在 recall 时倾向 co-surface (description 是 recall 匹配面)。
 4. 周期性 (大 review / phase boundary) 跑**簇连通审计** (可派 workflow, 主体=记忆树): 找"同话题但互不 link"的 memory 对, 补链。这跟 `report_link_graph.py` 查的"断链/孤点"是不同轴 —— 那查 link 解不解析, 这查**该有的 link 缺没缺**。
 
-**How to apply**: 周期性 (phase boundary / 大 review 前) 跑 `report_link_graph.py` 查连通 + 看 MEMORY.md 字节数 + 按上面协议查同话题簇缺链。加索引条前先 slim。改/记 memory 前 grep 全树找同话题所有实例一起改。关联 [[memory-currency-protocol]] (内容轴, 互补) [[verification-independent-backstop]] (完整性 → 改全) [[github-backup]] [[memory-edit-confirmation]]。
+## 第四个失效轴: 记忆时泛化不足, 把通用规则锁死在首次触发的具体语境 (2026-06-02 用户 catch, 第三轴的上游)
+
+记一条 lesson 时, 它若**本质通用** (适用多个触发语境), 却被记成 / 框成只属于**首次触发的那个具体语境/标题**, 它就在别的语境**不 surface** = silo。**这是第三轴 (连接性) 的上游**: 一开始就记对抽象层 → 根本不形成 silo, 不用事后补链。
+
+实例 (用户原话点名): **"review 修完要再审直到 clean" 本是通用 review/verify 规则**, 但 2026-05-24 被我记成了 [[gemini-review-algorithm-math]] 的「循环规则」—— **锁在 "Gemini 审查" 这个语境框里**。跑 GPT-pro-review workflow loop 时它没 surface → 同问题复发 (用户两次 catch)。根因不只"没跨链", 更上游是**记的当下没想到它通用, 按触发语境 (Gemini) 归了档**, 即"泛化不够 / 没对当时具体情况想透它的适用边界"。
+
+**协议**: 记 lesson 前停一秒问 —— **"这条只适用眼前这个具体场景, 还是其实更通用?"** 判别法: 把规则里的具体名词 (Gemini / GPT / 这个文件 / 这个 family) 换成占位符, 规则还成立吗? 成立 = 该泛化。通用的就**记成通用规则 (放通用 memory / 起通用标题), 把当前事件当 example 挂规则下**, 别让标题/归档语境把规则窄化。触发实例要留 (它是证据), 但不能当成规则的边界。(这跟 [[no-causal-claim-from-n1]] 是镜像的两种 over/under-fit: 那条是从 N=1 过度泛化出因果, 这条是该泛化时泛化不足。)
+
+**How to apply**: 周期性 (phase boundary / 大 review 前) 跑 `report_link_graph.py` 查连通 + 看 MEMORY.md 字节数 + 按第三轴协议查同话题簇缺链。加索引条前先 slim。改/记 memory 前 grep 全树找同话题所有实例一起改。**记新 lesson 时先判它通不通用 (占位符测试), 通用就记到通用层别锁触发语境**。关联 [[memory-currency-protocol]] (内容轴, 互补) [[verification-independent-backstop]] (完整性 → 改全 + 记对抽象层) [[no-causal-claim-from-n1]] (over-fit 镜像) [[gemini-review-algorithm-math]] (under-fit 实例) [[github-backup]] [[memory-edit-confirmation]]。
