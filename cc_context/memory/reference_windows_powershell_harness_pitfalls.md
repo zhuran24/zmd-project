@@ -1,6 +1,6 @@
 ---
 name: windows-powershell-harness-pitfalls
-description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳 / SendUserFile 手机端有时无下载按钮 (硬信号=回执缺 file_uuid; 真因未验证, workaround=拆≤29MB+干净短名+核 UUID)。配 [[windows-handoff-env]] 环境落点看。"
+description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳 / SendUserFile 手机端有时无下载按钮 (硬信号=回执缺 file_uuid; 真因未验证, 真阈值未测—别把 29MB 当安全线, workaround=拆小+干净短名+逐件核能不能下、不能再拆)。配 [[windows-handoff-env]] 环境落点看。"
 metadata: 
   node_type: memory
   type: reference
@@ -37,6 +37,7 @@ metadata:
 
 **⚠️ 因果未确定 (别像我一样说死)**: 当时我把"无按钮"归因成 (a) 文件太大 (>~30MB) 和 (b) 重复文件名, 但**这两个都是 N=1 观察, 我没做对照实验, 没排除随机瞬时故障**。我用的"修复"(拆小 / 改名) **每个都裹着一次重试**, 所以根本分不开"是那个变量致因"还是"重试碰巧清掉了瞬时故障"。要真定因得: 同一大文件重发 2-3 次看是否稳定失败 + 二分体积找阈值 + 同名重发 N 次 —— 我都没做。用户 2026-06-02 戳穿了这点 (见 [[no-causal-claim-from-n1]])。
 
-**workaround (不管真因是哪种都管用, 所以照用)**: 给手机端交付 **拆成 ≤~29MB 的多件 (别打大 bundle) + 用干净互不相同的短 ASCII 名 (`deps_part1/2/3.zip`, 别用 `.001/.002` 数字后缀或重名) + 逐一核 UUID, 缺的重发**。这是防御性操作, **不是**因为已知因果。(附带事实: GPT 那端上传本就有体积限, deps 切 ~29MB 三块同区间。)
+**workaround (不管真因是哪种都管用, 所以照用)**: 给手机端交付 **拆成保守小块 (别打大 bundle) + 用干净互不相同的短 ASCII 名 (`deps_part1/2/3.zip`, 别用 `.001/.002` 数字后缀或重名) + 逐一核 UUID / 让用户确认每件有下载按钮, 没成的再拆更小重发**。这是防御性操作, **不是**因为已知因果。
+**⚠️ 别把 "≤29MB" 当已验证安全线**: 下载上限**从没测过** —— 只知 14MB / 29MB 文件 N=1 能下、103MB 一体包 N=1 不能下, **真阈值没二分过, 29MB 只是 deps 碰巧的大小**。所以别说 "≤29MB 可下" 这种话 (那就是 [[no-causal-claim-from-n1]] 又借 workaround 的皮漏出来); 只能说 "小块 + 逐件核能不能下、不能就再拆"。要真定阈值得给用户发 50/70MB 测试件二分 (代价高, 通常不值, 那就别声称阈值)。(附带事实: GPT 那端上传本就有体积限, deps 切 ~29MB 三块同区间。)
 
 **How to apply**: 在这台机器默认带上这几条防御; 删目录别用 `Remove-Item -Recurse`; 核中文别信控制台; 长后台活优先 Workflow (有 resume) 而非裸 Agent; 手机端交付走上面的 workaround **但别把它当已验证的因果模型**。关联 [[windows-handoff-env]] [[agent-vs-workflow-dispatch]] [[long-op-background-mode]] [[no-causal-claim-from-n1]]。

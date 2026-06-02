@@ -14,6 +14,7 @@ metadata:
 1. **长上下文下 LLM 注意力会漏看**。**验证 / 确认 / 核对 / "是否完整 / 是否全做了 / 有没有遗漏" 类任务, 不能只信 main 自己的回忆或自审** —— 必须派 workflow / 独立子代理作补充托底。(U37)
 2. **backstop 的主体 (被检查对象) 必须是「要验证的东西本身」, 不能换成 proxy。** 例: 验"本 session 内容是否全落盘 memory" → 主体 = **整段对话本身 (用户消息 + 助手消息)**, **不是** 记忆树内部一致性 / git log / repo, **也不是只抽用户消息**。proxy 只看得见文件改动, 漏掉**只存在于对话里**的偏好/决策/口头反馈; 而只抽用户消息会漏掉**助手侧产**的 finding / 踩坑修法 / 决策 / 结论 —— 这些同样 memory-worthy。(U39/U40 + 2026-06-01 二次纠正)
 3. 子代理跑完报告的**根因 / 数字, main 要自己核实**, 不能直接转述未验证的 (U17 同源)。
+4. **审计→修→re-audit 修过的产物, 循环到一轮零 finding 才停 —— 别"审一遍修一遍就默认好"。** backstop 报 finding、main 修、重建 → 重建出来的是个**新的、还没被独立审过的产物** (sha 都变了); 必须把**这个新产物**再喂回独立 backstop 跑 (不是只 main 内联自查) 直到某轮审计**零 finding**。修完只做内联自查就交付 = 又退回"只信 main 自审"(违反规则 1), 而且 fix 本身可能不全/引新问题。(2026-06-02 用户 catch)
 
 ## Why
 
@@ -30,4 +31,5 @@ metadata:
 - 别因"内容在我 context 里 / 我刚做的我知道"就自审了事 —— 长 context 下我会漏。
 - 子代理报告的 verdict/数字, 落 memory/commit 前 main 自己 grep/跑一遍核 —— **派生数字 (count/算术) 独立重算不照抄: 即使底层工作对了, 抄错一个数也误导** (本 session 实例: 子代理报 "119→121(+3)" 实为 122 的算术笔误, 工作没错; 拿 backup 对账 = 旧全在 + 列新增 = delta 抓出)。
 - **grep/过滤验证时 pattern 易过宽误中同名文件** → 先窄化精确目标集再重跑 (本 session 核 v22 README 合规时 grep "README" 命中几十个, 必须收窄到包顶层 + project/README.md)。
-- 关联: [[external-review-reproducibility]] (外部模型单次有 variance; 本条是 "Claude 自己" 在长 context 不可信, 互补) / [[subagent-for-closed-loop-tasks]] / [[audit-verify-before-archive]] / [[memory-currency-protocol]]。
+- **修复后必 re-audit 那个修过的产物 (闭环, 别短路)**: 每次 fix+rebuild 产生**新工件**, 独立 backstop 要在**新工件**上重跑, 循环到零 finding 才算 ship-ready。本 session 实例: v25 验证 workflow 报 3 瑕疵 → 我修+重建成新 sha f245bc9 → **只内联自查就交付, 没在重建包上再跑 workflow** (用户 catch: "修了一遍之后就默认好了, 没再审到没问题为止")。
+- 关联: [[external-review-reproducibility]] (外部模型单次有 variance; 本条是 "Claude 自己" 在长 context 不可信, 互补) / [[subagent-for-closed-loop-tasks]] / [[audit-verify-before-archive]] / [[no-causal-claim-from-n1]] / [[memory-currency-protocol]]。
