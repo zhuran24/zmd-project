@@ -1,6 +1,6 @@
 ---
 name: verification-independent-backstop
-description: "长上下文下 LLM 注意力会漏看 → 验证/确认/核对类任务不能只信 main 自己回忆或自审, 必须派独立 backstop (workflow/子代理); 且 backstop 主体必须是「被验证对象本身」不能换 proxy; 子代理报告的根因/数字 main 要自己核实。"
+description: "长上下文下 LLM 注意力会漏看 → 验证/确认/核对类任务不能只信 main 自己回忆或自审, 必须派独立 backstop (workflow/子代理); 且 backstop 主体必须是「被验证对象本身」不能换 proxy/不切片/不限范围; 子代理报告的根因/数字 main 要自己核实; re-audit 闭环必须跟原审计同 scope/rigor (别降级换个更窄的检查给自己背书)。"
 metadata: 
   node_type: memory
   type: feedback
@@ -15,6 +15,7 @@ metadata:
 2. **backstop 的主体 (被检查对象) 必须是「要验证的东西本身」, 不能换成 proxy。** 例: 验"本 session 内容是否全落盘 memory" → 主体 = **整段对话本身 (用户消息 + 助手消息)**, **不是** 记忆树内部一致性 / git log / repo, **也不是只抽用户消息**。proxy 只看得见文件改动, 漏掉**只存在于对话里**的偏好/决策/口头反馈; 而只抽用户消息会漏掉**助手侧产**的 finding / 踩坑修法 / 决策 / 结论 —— 这些同样 memory-worthy。(U39/U40 + 2026-06-01 二次纠正)
 3. 子代理跑完报告的**根因 / 数字, main 要自己核实**, 不能直接转述未验证的 (U17 同源)。
 4. **审计→修→re-audit 修过的产物, 循环到一轮零 finding 才停 —— 别"审一遍修一遍就默认好"。** backstop 报 finding、main 修、重建 → 重建出来的是个**新的、还没被独立审过的产物** (sha 都变了); 必须把**这个新产物**再喂回独立 backstop 跑 (不是只 main 内联自查) 直到某轮审计**零 finding**。修完只做内联自查就交付 = 又退回"只信 main 自审"(违反规则 1), 而且 fix 本身可能不全/引新问题。(2026-06-02 用户 catch) **注: 这条 2026-05-24 就以「Gemini 循环规则」形式记过 ([[gemini-review-algorithm-math]] §循环规则: "修完应再审直到没问题"), 但 siloed 在 Gemini 语境、没跨到 GPT 外审/workflow review, 跑 GPT-review loop 时没 surface 才复发 —— 同话题散在多条 memory 不跨链 → 召不全的典型, 见 [[memory-tree-structural-health]] 的跨链协议。**
+   - **4b — re-audit 必须跟原审计同 scope / 同 rigor / 同 process, 不能换个更窄更弱的检查 (2026-06-02 用户二次 catch)**: "re-audit 那个产物"指**在修过的产物上重跑原来那套审计**, 不是挑个轻松子集自我背书。一个**更窄的检查"零 finding" ≠ 原审计会"零 finding"** —— 窄检查抓不到原审计能抓的那一类 (覆盖/连通/跨文件回归)。实例: 我用「13-agent 全 session + 全 128 文件 coverage/correctness/connectivity/critic」审计找出问题, 修完却只派**1 个 agent 核我改过的 15 个文件**就宣布闭环 —— 那是个不同的、更弱的检查, 闭的是假环。这本身又是主体/范围切窄病 (见下方切窄段**变体④**: 把闭环检查本身切窄)。**判据: 闭环用的检查 ≥ 找出问题那次的 scope/rigor; 改了 N 个文件不代表只需审 N 个 (fix 可能在别处引回归, 原审计的广度正是为抓这个)。**
 
 ## Why
 
@@ -24,7 +25,8 @@ metadata:
 - **变体① proxy** (2026-06-01): 拿"记忆树/git/repo"代替"对话本身"。
 - **变体② user-only** (2026-06-01): 改对成"对话"后又只抽**用户消息**, 漏助手侧产的 finding/修法/决策。用户即时纠正"你的消息也全都要"。
 - **变体③ range/boundary 切窄** (2026-06-02): 验"压缩前内容是否全落盘"时, 我按**猜测的行号区间 / "某两次 compact 之间"**抽 transcript (1762-4052), **漏了边界外、尤其最近一次 compact 前那几条消息** (连通审计 follow-up 全 defer 在那)。用户两次催"特别是这一次压缩前那几条没记全 / 完整的那种不要只检查某个范围或边界"才扳回。
-**规则收紧为「主体 = 完整被验对象 —— 不换 proxy、不切片(role)、不限范围(行号/compact 边界)」**。要"完整核查"就喂**整段** (从头到当前 live 尾, 含最近一次 compact 前的尾部), 别拿任何范围假设缩小它。
+- **变体④ 闭环检查切窄** (2026-06-02): re-audit 修过的产物时 (rule#4), 我把检查从「13-agent 全 session+全 128 文件 coverage/correctness/connectivity/critic」缩成「1-agent 只核改过的 15 文件」。**这同时切窄了主体 (15≪128) 和 method/rigor (1 agent、丢了 coverage/connectivity/critic)** → 闭的是假环 (见 rule#4b)。"我只改了 N 个文件所以只审 N 个" 是这个变体的典型借口 —— fix 可能在别处引回归, 原审计的广度正是为抓它。
+**规则收紧为「被验对象 = 完整, 检查 = 不降级」 —— 不换 proxy、不切片(role)、不限范围(行号/compact 边界)、闭环 re-audit 不降 scope/rigor (≥ 找出问题那次)」**。要"完整核查"就喂**整段** (从头到当前 live 尾, 含最近一次 compact 前的尾部); 要闭环就**重跑原来那套审计**, 别拿任何范围/强度假设缩小它。
 
 **proxy 第三变种 (核 shipped 包内容)**: 验证 workflow/子代理核对包内容时, 读到的常是 build 脚本里的**源 README 模板**(proxy), 不是 **shipped 成品**顶层文件 → 假阳性。本 session 实例: 打包 workflow 报 v22 README "解包步骤还写 7za" 是误报, 实地核 shipped 顶层 README + project/README.md 才确认 7za/project.7z/tools token 全 0、已是单层 unzip。**包合规类 finding 必回 shipped 文件本身复核。**
 
