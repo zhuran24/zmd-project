@@ -29,6 +29,8 @@ metadata:
    - **为什么反复犯**: 我把"更新了 living 源的 body"当 done, 但别的 memory (甚至同一条) 的 **frontmatter / header / 触发条件 / description** 里**嵌着旧值**, 静默 drift。**本 session 的过时全是这个失败**: handoff frontmatter/header 停 v23 而 body 已 v25 / phase3b·phase3a 锚死范式 Phase 3B / settings.json 字面 `{hooks:{}}` / gpt-error "3 种" vs body "4 种" / review_strategy URL `zmd` —— **没一个是变更当下主动更的, 全靠周期 sweep 反应式捞回** (rule 5)。reactive 总有 drift 窗口期 (期间下个 session 会被误导), proactive 才根治。
    - **结构预防**: 优先"指向 living 源"而非"嵌值" (rule 1/2); **每个嵌入的状态值都是 drift 负债** —— 一旦嵌了, 它就进"变更当下 sweep"的清单。能指针就别 copy 值。
    - 这是 [[memory-tree-structural-health]] 第三轴 (改不全, **编辑**触发: 改 memory X 时 grep 同话题) 的**现状轴孪生** (**现状变更**触发: 事实变时 grep 旧值)。两个触发点都要有反射。
+   - **⚠️ 根因比"少了条规则"更深 (2026-06-02 用户三连追问后定)**: 这个现状漏更**反复复发, 连记完 rule#7 没几步又犯** —— 因为它**不是知识缺口** (我知道、甚至明说"回来再更"), 而是 handoff 更新是项目里**唯一没有强制函数、不挂任何产物完成定义**的关键动作 (commit/push/memory-sync/链接/测试 都有钩子或会大声报错, 唯独它没有)。**用记规则 (被动文本) 治一个"没上锁"的动作 = 治不住** (这就是为什么记完又犯)。
+   - **治本 = 给它强制函数 (2026-06-02 落地, 见 [[github-backup]])**: `pre-commit` 调 `cc_context/tools/stamp_living_status.py`, 每 commit **自动 stamp** handoff 可推导字段 (最新包 sha 读自 `cc_context/review/LATEST_PACKAGE.json` / spike HEAD / phase) → 可推导现状不可能 stale; 判断散文没提到最新包版本就 **stderr 大声 warn** (静默漂移→响亮)。**别再靠"记更强的规则"防它 —— 强制函数才是解, 规则只是 fallback 文档。**
 
 relate [[endfield-solver]] [[windows-ninth-review-pending]] [[review-pkg-data-completeness]] [[main-merger-scope-creep-bias]] [[memory-tree-structural-health]]。
 

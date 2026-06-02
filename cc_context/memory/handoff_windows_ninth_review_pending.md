@@ -9,6 +9,13 @@ metadata:
 
 > **这是项目单一 living「当前 phase/交接状态」权威源** (per [[memory-currency-protocol]])。环境落点细节见 [[windows-handoff-env]] (稳定 reference), P1.3A 设计/Step0 gate 细节见 [[p1-3a-design-phase]] (设计记录)。本条是这三者里唯一的「现状真相」入口, 另两条只补细节不重述现状。
 
+<!-- AUTO-STATUS:BEGIN — 由 pre-commit stamp_living_status.py 自动重生成, 别手改这块 -->
+**自动现状标记** (机器每 commit 刷新, 可推导字段不可能 stale; 人写的判断散文见下方各 `##` 块):
+- 最新 review 包: v26 (sha `fb69415272d8…`)
+- spike 分支 HEAD: `dc3516a`
+- CLAUDE.md Current Phase: 1.3A (cut-family LBBD master 集成)
+<!-- AUTO-STATUS:END -->
+
 ## 最新状态 (2026-06-02) — v25 已建+验+交付 (sha f245bc9), 等 GPT 第四轮; 经 v23 二次 B→v24→v25 三轮修; sizing_gate bitset bug 已确认+修
 
 > **当前真相 (摘要)**: spike close gate 走完 v22 九审(双 B)→v23 二次 B(7 finding)→v24(修 7)→v25(再修 7, 全证据精度/工件/锁门, 非 soundness)。**v25 终包 sha `f245bc9`, 验证 workflow critic overall_ship=True, 独立 re-audit 确认 clean**, 已 SendUserFile 交付手机端 4 件 (v25 zip + deps×3), 等用户送 GPT 第四轮。真正下一关 = P1.3A 的 F1/F9 lowering 决策 (sizing 纠正后 fixture 尺度不爆, 见下方 v25 块 + [[cp-sat-no-add-lazy-constraint]] proto 预算)。下面 v23 块是中间历史。

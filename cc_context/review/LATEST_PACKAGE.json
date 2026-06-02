@@ -1,0 +1,7 @@
+{
+  "version": "v26",
+  "sha256": "fb69415272d8a7759c76d8283b0fab6da8dc4fce1f63a956ea81c7d0a296e00f",
+  "spike_head": "dc3516a",
+  "built_at_master_commit": "0a7f37f",
+  "note": "Phase 1.2 spike close-gate review package. Machine-readable anchor for the single living status source — written by cc_context/review/build_v*_win.py at build time, read by cc_context/tools/stamp_living_status.py (pre-commit) to auto-stamp the handoff's derivable status fields. Update via a build, not by hand."
+}
