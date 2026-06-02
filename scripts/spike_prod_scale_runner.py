@@ -32,6 +32,25 @@ from typing import Any, Dict
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
+# Review-package mirror executability (A-F3, v25 review): production layout resolves
+# `scripts.spike_prod_scale_lib` via REPO_ROOT (which contains scripts/). The shipped
+# review mirror (project/code_context/spike/) has spike_prod_scale_lib as a sibling of
+# this file instead. Production import is tried first; only on ModuleNotFoundError do we
+# register a `scripts` namespace rooted here, so every `from scripts.spike_prod_scale_lib
+# import ...` site (module-level and in-function) resolves in both layouts.
+try:
+    import scripts.spike_prod_scale_lib  # noqa: F401
+except ModuleNotFoundError:
+    import types as _types
+
+    _here = Path(__file__).resolve().parent
+    if (_here / "spike_prod_scale_lib").is_dir():
+        _scripts = _types.ModuleType("scripts")
+        _scripts.__path__ = [str(_here)]  # type: ignore[attr-defined]
+        sys.modules["scripts"] = _scripts
+    else:
+        raise
+
 from scripts.spike_prod_scale_lib import off_limits_check  # noqa: E402
 
 

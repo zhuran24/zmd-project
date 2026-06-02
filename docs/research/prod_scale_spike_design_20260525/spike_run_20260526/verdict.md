@@ -72,6 +72,28 @@ expanded lowering 设 **per-cut term cap + cumulative proto budget** (F2/F4 expa
 另一条未测轴: cert 证书存储 + replay 校验在 100K 规模 (~613 字节 bitset/cert → ~60 MB store +
 逐条 revalidate) 归 P1.3A proof lifecycle sizing。
 
+## v25 外审修正 (2026-06-02, 第四轮两份独立外审并集) — concrete-literal sizing scope (post-run hand addendum)
+
+第四轮 (v25) 两份独立外审都判 **B/PATCH, 无 soundness 洞**, 核心 framing (LSB / compact 全族便宜 / bytes/term
+按约束类型分 / cap 按 max/p99 跨所有族) 都 sound。并集修正 4 条 sizing 证据精度 finding (主代理逐条对真代码核实,
+已落 master `docs/research/p1_2_spike_sizing_gate_20260601/` sizing_gate v5 + RESULTS):
+
+- **[A-F1, 最重] type-pool 数 ≠ 真 master concrete literal 数**: 上方 sizing 用的是按 facility **type** 的 pose
+  pool overlap (type-pool total 81,795)。但真 pose-bool master 按 `(facility_type, operation_type)` **group×pose**
+  建变量 (266 instance → 19 group; mfg_3x3=8 / mfg_5x5=4 / mfg_6x4=5), concrete 数 ≈4× type-pool (**325,747**)。
+  group 展开后 F9 784→**11,644**, F4 5429→**20,157**。→ **上方 all-type UB 数 (F9 3341 / F4 5429 / ~16–18K) 是
+  type-pool cheap proxy, 不是真-master literal 上界**。单 group 的 F9 **784** + region LSB **~264** 仍是真实的
+  单 group / region 尺度信号。**P1.3A expanded-lowering cap 的输入必须是真 translator 在 group/template/optional
+  展开后发出的 concrete literal vector 长度** (`expanded_terms = len(final_concrete_literals)`), 按约束类型分
+  (linear ~4 / BoolOr ~11) 设 per-cut max/p99 cap + cumulative proto budget; 超 cap → compact fallback / reject / defer。
+- **[B-F1]** sizing_gate family summary 的 density_envelope 行不再 fallback 到 compact 4.0 (现承载真实 window→pose overlap)。
+- **[B-F2]** bytes/term 现脚本内可复现实测 (ExportToFile; linear 4.03 / BoolOr 10.01), 不再只 hardcode。
+- **[A-F2]** F9 `window_rect` 读序修正为 `[x,y,h,w]` (现 fixture 全 10×10 故数字不变)。
+
+另: 主线 F7/F8 registry validator 已加 **duplicate pose_id 唯一性守卫** (B-F3, fail-closed 硬化, len(matches)==1
+else unsound; 当前 registry 无 dup 故非现漏洞) + 2 回归测试 (cuts 414→416)。**这些都是证据精度/scoping/hardening,
+不改 spike 的 Sizing-only GO_WITH_MINOR 方向**; 两份外审都明说合补丁后可 close → 进 P1.3A。
+
 ## G criteria (sizing — Finding 5 #1/#3/#4)
 
 | Criterion | Threshold | Actual | Status |
