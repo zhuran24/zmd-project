@@ -25,19 +25,28 @@ v1 因此把 region cells 解到错误位置, term 数偏高约 **10x**。v23 �
 **v1 的 "F1/F9 大池子 2000–3200 term/cut → 100K ~1.9 GB blow-up" 是 MSB bug 的假数字。**
 LSB-correct 后, region 大池子展开是 ~264 term/cut → 100K ~100 MB, **不爆**。
 
-## 核心结论 (v2, LSB-correct)
+## v2 → v3 修正 (v24 外审): bytes/term 按约束类型分 + F9 全 fixture
 
-cut body 的 master 约束大小取决于 lowering 方式:
+v24 外审 (两份独立, 主代理自核确认) 指出 v2 两处把量说小了:
+1. **proto bytes/term 不能全局用 4–6** —— 实测 OR-Tools 9.15: `AddLinearConstraint` ~**3–4 B/term**, 但
+   `AddBoolOr` no-good ~**10–11 B/term** (差 ~2.5–3x)。expanded no-good 的 100K 预算原被低估。
+2. **F9 补测原只跑前 2 条 window** —— 全 6 条后 scoped(manufacturing) max = **784** (不是 360–524),
+   all-type 上界 max = **3341**。
 
-| lowering | term/cut (fixture 尺度) | 100K proto (~4–6 B/term) | 判定 |
+## 核心结论 (v3, LSB-correct + bytes/term-by-kind)
+
+cut body 的 master 约束大小取决于 lowering 方式 **和约束类型**:
+
+| lowering | term/cut (fixture max) | 100K proto (linear ~4 B / BoolOr ~11 B) | 判定 |
 |---|---|---|---|
-| compact no-good (锁 witness pose), 全 9 族 | 1–4 | ~1–3 MB | 随便扛 |
-| expanded, fixture 尺度 region/window | ~百级 (见下表) | ~0.1–0.3 GB | 可控, 非 blow-up |
-| expanded, 大 region/window 或全 pool | thousands–16K | 数 GB | 会爆 (需大 region) |
+| compact (锁 witness), 全 9 族 | 1–4 | ~1–4 MB (任何类型) | 随便扛 |
+| expanded scoped F1/F9 | 264–**784** | linear ~0.3 GB / **BoolOr ~0.86 GB** | linear 可控; BoolOr 偏大 |
+| expanded all-type / routing UB | F4 5429 / F9 3341 | **BoolOr ~6 GB / ~3.7 GB** | 会爆, 必须 cap |
 
-**关键转变 vs v1**: blow-up **不是** F1/F9 大池子在 fixture 尺度就发生; 它是 **region-size × pool-density**
-的函数, 跨**所有**族, 只在 region/window 很大 + 走 expanded lowering 时才到 GB 级。fixture 尺度
-(region 139 cells / window 10×10) 即使 expanded 也才百级 term。
+**关键转变 vs v1**: blow-up 不是 F1/F9 专属、也不是 fixture 尺度就发生; 它是 **(region/window × pool-density)
+× (per-term 字节, 看约束类型)** 的函数, 跨**所有**族。fixture 尺度 region(139 cells)/window(10×10) 走
+**linear** expanded 仍可控 (~0.3 GB@784 term), 但走 **BoolOr** expanded 同样 784 term 就 ~0.86 GB; routing/
+all-type UB(数千 term)走 BoolOr 直接数 GB。**cap 必须按约束类型 + max/p99 设, 不是按 family-avg 粗估。**
 
 ## 逐族 term/cut (50-cert fixture, 真 registry, LSB-correct)
 
@@ -57,32 +66,39 @@ cut body 的 master 约束大小取决于 lowering 方式:
 group→type 映射, 且本质是 routing/exposure no-good — 真实 lowering 是紧凑 1–2 term)。F4 的 5429
 是 70 个 separator cell 跨全类型并集, 不是真实 lowering 形态。
 
-## F9 density_envelope window→pose overlap (v23 外审 Finding 4 补测)
+## F9 density_envelope window→pose overlap (全 6 fixture, v3 修正)
 
-v1 对 F9 退回了 compact witness 计数 (4), 没真测 window 展开。v2 补测 (window_rect → cells → overlap):
+v1 退回 compact witness (4); v2 补测 window 但只跑前 2 条 (v24 外审指出); v3 跑**全 6 条** window:
 
-| window | cells | manufacturing 各池 | protocol_core | power_pole |
-|---|---|---|---|---|
-| 10×10 @ (0,0) | 100 | 360 | 162 | 100 |
-| 10×10 @ (1,3) | 100 | 504–524 | 240 | 121 |
+| window | mfg-max (scoped) | all-type UB | cells |
+|---|---|---|---|
+| [0,0,10,10] | 360 | 1720 | 100 |
+| [1,3,10,10] | 524 | 2417 | 100 |
+| [2,6,10,10] | 644 | 2841 | 100 |
+| [3,9,10,10] | 700 | 3103 | 100 |
+| [4,12,10,10] | 756 | 3251 | 100 |
+| [5,15,10,10] | **784** | **3341** | 100 |
 
-→ F9 fixture 尺度 window (10×10) expanded ~360–524 term/cut → 100K ~150–300 MB。大 window (70×70)
-会吃满整池 ~16–18K term → 数 GB。同 region_capacity: 风险是 window-size 的函数。
+→ F9 fixture scoped(manufacturing) **avg ~590 / max 784** term/cut (不是 v2 写的 360–524); all-type UB max
+**3341**。proto: scoped 784 走 linear ~0.3 GB / 走 BoolOr ~0.86 GB; all-type 3341 走 BoolOr ~3.7 GB。
+大 window (趋近 70×70) 吃满整池 ~16–18K term。风险是 window-size × pool × 约束类型的函数。
 
-## 对 verdict / P1.3A 的影响 (v2)
+## 对 verdict / P1.3A 的影响 (v3)
 
 spike 的 sizing "doesn't blow up" 在以下精确口径下成立:
 
-> fixture 尺度下, **所有 9 族**的 realistic compact (witness/no-good) lowering → 100K 都便宜 (~1–3 MB)。
-> expanded (full pose-overlap) lowering 随 **region-size × pool-density** 变化: fixture 尺度的
-> region (139 cells) / window (10×10) 给 ~百级 term/cut → 100K ~0.1–0.3 GB, 仍可控; 只有**大** region/
-> window (趋近全 pool) 才到 thousands–16K term/cut → 数 GB blow-up。
-> → P1.3A lowering 设计硬约束 = 对**任何**族的 geometric / large-overlap expanded lowering 设
-> **per-cut term cap + cumulative proto budget** (不是只 F1/F9; F2/F4 expanded 同样可大)。其余维持
-> compact lowering 则全族安全。
+> fixture 尺度下, **所有 9 族**的 realistic compact (witness/no-good) lowering → 100K 都便宜 (~1–4 MB,
+> 任何约束类型)。expanded (full pose-overlap) lowering 的 100K 预算 = **(per-cut term, 随 region/window ×
+> pool-density 变) × (per-term 字节, 随约束类型变: linear ~4 B / BoolOr no-good ~11 B)**:
+> - fixture F1/F9 scoped max **784** term/cut: 走 linear ~0.3 GB (可控), 走 **BoolOr ~0.86 GB** (偏大);
+> - routing / all-type UB (F4 5429 / F9-alltype 3341 term/cut): 走 BoolOr **~3.7–6 GB** (会爆);
+> - 大 region/window 趋近全 pool (~16–18K term/cut): 任何类型都数 GB。
+> → P1.3A lowering 设计硬约束 = 对**任何**族的 geometric/expanded lowering, **按约束类型分别**设 per-cut
+> term cap + cumulative proto budget (linear/BoolOr 预算不同), 且 cap 按 **max/p99** 不按 family-avg;
+> 超 cap 就 compact fallback / reject / defer。其余维持 compact lowering 则全 9 族安全。
 
-这比 v1 "只 F1/F9 大池子 = 1.9GB" 既更准也更温和: 实质 blow-up 风险只在"大 region + expanded lowering"
-的组合下, 而非 fixture 已展示的任何情形。
+这比 v1 "只 F1/F9 大池子 = 1.9GB" 既更准也覆盖更全: 实质 blow-up 风险在 "expanded lowering × (大 region
+或 BoolOr 形态 或 routing all-type)" 的组合下, 跨所有族; compact lowering 任何形态都安全。
 
 ## 复现 (v23 外审 Finding 1: 须包内可复现)
 

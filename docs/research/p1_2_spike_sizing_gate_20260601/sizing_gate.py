@@ -152,28 +152,52 @@ def main():
         print("%-20s %3d %9.1f %14.1f %14.1f" % (fam, d["n"], avg(d["compact"]), avg(d["scoped"]), avg(d["allt"])))
     print()
 
-    # F9 density_envelope: window_rect -> pose overlap (v1 漏测, 退回 compact witness)
-    print("F9 density_envelope window_rect -> pose overlap (Finding 4 补测):")
-    for r in [x for x in recs if x["family"] == "density_envelope"][:2]:
+    # F9 density_envelope: window_rect -> pose overlap. v23 外审 F4 补测; v24 外审再指出只跑了前 2 条,
+    # 这里跑**全部** density_envelope cert, 报 per-window scoped(各 manufacturing type) + all-type 上界 + max。
+    mfg_types = [ft for ft in pools if ft.startswith("manufacturing")]
+    print("F9 density_envelope window_rect -> pose overlap (全 fixture, scoped mfg + all-type UB):")
+    print("  %-16s %6s %8s %10s" % ("window", "mfg-max", "all-type", "cells"))
+    f9_scoped_vals, f9_all_vals = [], []
+    for r in [x for x in recs if x["family"] == "density_envelope"]:
         p = json.loads(base64.b64decode(r["cert_payload_b64"]))
         wr = p.get("window_rect")
-        if wr and len(wr) >= 4:
-            x0, y0, w, h = wr[:4]
-            cells = [(x, y) for x in range(x0, x0 + w) for y in range(y0, y0 + h) if 0 <= x < 70 and 0 <= y < 70]
-            ov = {ft: overlap_type(by_type, cells, ft) for ft in sorted(pools)}
-            print("  window=%r cells=%d  per-type overlap=%r" % (wr, len(cells), ov))
+        if not (wr and len(wr) >= 4):
+            continue
+        x0, y0, w, h = wr[:4]
+        cells = [(x, y) for x in range(x0, x0 + w) for y in range(y0, y0 + h) if 0 <= x < 70 and 0 <= y < 70]
+        mfg_max = max((overlap_type(by_type, cells, ft) for ft in mfg_types), default=0)
+        allt = overlap_all(allset, cells)
+        f9_scoped_vals.append(mfg_max)
+        f9_all_vals.append(allt)
+        print("  %-16s %6d %8d %10d" % (str(wr), mfg_max, allt, len(cells)))
+    if f9_scoped_vals:
+        print("  F9 scoped(mfg) avg=%.0f max=%d ; all-type UB avg=%.0f max=%d (compact witness 仅 4, 非 window-expanded)"
+              % (sum(f9_scoped_vals) / len(f9_scoped_vals), max(f9_scoped_vals),
+                 sum(f9_all_vals) / len(f9_all_vals), max(f9_all_vals)))
     print()
 
-    print("100K 投影 (proto ~ terms x 4-6 bytes/term; OR-Tools 9.15 实测边际 ~3.8):")
-    print("  compact lowering (全族 ~1-4 term/cut): 100K -> ~0.1-0.4M term -> ~1-3 MB  [随便扛]")
-    print("  expanded, fixture 尺度 region/window (~百级 term/cut, e.g. region 264 / cutset 173 / F9-win 360-524):")
-    print("    100K -> ~25-52M term -> ~0.1-0.3 GB  [可控, 非 blow-up]")
-    print("  expanded, 大 region/window 或全 pool (~thousands-16K term/cut): 100K -> 数 GB  [会爆]")
+    # v24 外审 Finding 1: proto bytes/term 必须按约束类型分 —— 实测 OR-Tools 9.15:
+    #   linear (AddLinearConstraint) ~3-4 B/term; BoolOr no-good (AddBoolOr) ~10-11 B/term。
+    # 旧版用 4-6 B/term 全局, 对 BoolOr expanded 低估约 2-3x。
+    LINEAR_BPT, BOOLOR_BPT = 4.0, 11.0
+    def proj(terms_per_cut, bpt):
+        gb = terms_per_cut * 100_000 * bpt / 1e9
+        return "%.0f term/cut x 100K x %.0f B = %.2f GB" % (terms_per_cut, bpt, gb)
+    print("100K proto 投影 (按约束类型分 bytes/term; linear~4, BoolOr~11):")
+    print("  compact (全族 1-4 term/cut): 100K -> ~1-4 MB [随便扛, 任何形态]")
+    print("  expanded F1/F9 scoped (264-784 term/cut):")
+    print("    linear: %s" % proj(784, LINEAR_BPT))
+    print("    BoolOr: %s" % proj(784, BOOLOR_BPT))
+    print("  expanded all-type UB / routing (F4 5429, F9-alltype 3341 term/cut):")
+    print("    BoolOr: %s  /  %s" % (proj(5429, BOOLOR_BPT), proj(3341, BOOLOR_BPT)))
     print()
-    print("结论 (LSB-correct): fixture 尺度下 (a) 所有 9 族 compact lowering 都便宜; (b) expanded lowering")
-    print("随 region-size x pool-density 变化, fixture region/window 给百级 term -> 不爆。blow-up 是 region x pool")
-    print("的函数、跨所有族 (不是 F1/F9 专属)。P1.3A 硬约束 = 对任何 geometric/expanded lowering 设")
-    print("per-cut term cap + cumulative proto cap (不止 F1/F9)。v1 的 '1.9GB' 是 MSB 解码 bug 的假数字。")
+    print("结论 (LSB-correct, bytes/term-by-kind):")
+    print("- compact (witness/no-good) lowering 全 9 族便宜 (~1-4 MB@100K), 任何约束形态。")
+    print("- expanded lowering 的 proto 预算**取决于约束类型**: linear ~4 B/term, BoolOr no-good ~11 B/term。")
+    print("  fixture F1/F9 scoped max 784 term/cut: linear ~0.3 GB / BoolOr ~0.86 GB; F4 5429 BoolOr ~6 GB。")
+    print("- blow-up 是 (region/window x pool-density) x (per-term 字节, 看约束类型) 的函数, 跨**所有**族。")
+    print("- P1.3A 硬约束 = 按约束类型分别设 per-cut term cap + cumulative proto budget (linear/BoolOr 不同),")
+    print("  且 cap 按 max/p99 不按 family-avg。v1 的 '1.9GB / 只 F1/F9' 是 MSB 解码 bug 的假数字。")
 
 
 if __name__ == "__main__":
