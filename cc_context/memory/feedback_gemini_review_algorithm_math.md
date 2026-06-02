@@ -66,6 +66,8 @@ metadata:
 
 类比外部 R 轮 reviewer (R1-R5 5 轮迭代直到 "1.1 gate 正式通过"). Gemini per-commit cross-check 同理 — round 1 一轮不够.
 
+**⚠️ 这条不止 Gemini (2026-06-02 复发后加)**: "修完再审直到 clean" 是**通用 review/verify 规则**, 不是 Gemini 专属 —— GPT pro 外审 / 内部 backstop workflow / Claude 自审, 任何一种, 修完 finding 都要 **re-audit 那个修过的产物 (重建出来是新工件, 没审过)** 直到一轮零 finding / 只剩 minor。**别因为这条当初记在「Gemini」标题下, 就在别的 review 语境里漏掉它** —— 本 session 实例: v25 GPT-review workflow 报 3 瑕疵, 我修+重建成新 sha 后没再审就交付, 用户 catch ("修了一遍之后就默认好了, 没审到没问题为止"); 根因正是这条 siloed 在 Gemini、跑 GPT loop 时没 surface。同一规则也在 [[verification-independent-backstop]] 规则#4 + [[audit-verify-before-archive]]。
+
 **Why**: round 1 fix 可能引入新 bug (e.g. R5 catch R4 加 strict int 但漏了 grid bound — R4 fix 的副作用), 或 round 1 Gemini 偶尔漏 finding (LLM 输出有 variance, per [[external-review-reproducibility]]).
 
 成本: 每轮 ~30-60s Gemini API call + ~5-15 min 修. 多轮迭代 ROI 正向 (catch 隐性 bug, 避免后期 R 轮外部 reviewer 第 N 轮 catch 同样问题).
