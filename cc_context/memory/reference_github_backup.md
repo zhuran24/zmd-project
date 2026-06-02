@@ -9,6 +9,16 @@ metadata:
 
 2026-06-01 起: 仓库 + CC 上下文实时备份到**私有 GitHub `github.com/zhuran24/endfield-exact-solver`**。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。**库必须保持 private** —— cc_context 备份含 memory (内有 Gemini API key 等 secret, 见 [[gemini-math-consultant]]), 转公开即泄密 (这是"库设私有"的决策依据)。**硬约束**: ① **绝不翻 public** (一翻即泄 key); ② **禁 rebase / 重写历史** (filter-branch 清 key 会重写 SHA, 而 memory/docs 到处引 commit SHA, 全失效); ③ 免费私库**无 secret-scanning push protection**, 带 key 推不会被拦 (= 责任全在"别翻 public")。key 留私库历史是用户拍板可接受风险, 不 scrub / 不吊销 (见 [[gemini-math-consultant]])。
 
+## ⚠️ 第三条暴露轴: review 包外发给 LLM 厂商 (跟 GitHub-public 不同, 2026-06-02 实证)
+
+key 留私库历史防的是 GitHub 公开; 但**把仓库文件打成 review 包发给外部 LLM (GPT pro / Gemini) 是另一条暴露轴**, 上面的"私有"决策没覆盖它。**v22 spike review 包漏过 key 并已发给 GPT pro** —— `scripts/gemini_cross_check_*.py` (~10 文件) 内嵌 live key `AIzaSyC8D0a_...`, v22 build 没排除 → OpenAI 现持有。用户 2026-06-02 说"key 先放一放、算解决"(**不轮换、不吊销**), 但**防再漏的 build 规则必须固化**:
+
+- **review 包 build 必排除**: ① `cc_context/` 整目录 (含**整棵 memory 树** + key + GPT prompt + 旧包自身) ② `scripts/gemini_cross_check*.py` (内嵌 live key) ③ `.git/.venv/.claude`。
+- **secret 扫描 = 0 当 build 硬闸**: build 后扫整包 `AIzaSy` 等 secret pattern, 命中 ≠ 0 不准交付 (这道闸我自己跑、不委托)。注意扫描 pattern 别写太宽——`docs/research/.../gemini_cross_check_*` 的**归档 prompt/response** 是 reviewer 要的 Gemini archive 且无 key, 别误杀 (v23 build 时撞过这个 false-positive)。
+- 历史坑: `build_v22_win.py` 的 `REPO` 是旧 dual-slug `zmd\zmd` (仓库上移后失效) + 仓库整理后 `cc_context/` 进了仓库才暴露这条 —— v23+ build 脚本已修 REPO 路径 + 加 cc_context/gemini 排除。
+
+详见 [[gemini-math-consultant]] (key 来源) + [[windows-ninth-review-pending]] (v22 漏 + 轮换待定的当时状态) + 打包簇 [[index-packaging-cluster]]。
+
 ## 机制
 - **每次 commit 自动 push**: `.git/hooks/post-commit` 跑 `git push origin HEAD`, 失败记 `.git/auto-push.log` 但不阻断 commit (下次成功 push 补齐)。正常 commit 即实时上 GitHub。
 - **credential helper = gh 全路径** (`gh auth setup-git` 配的 `!'C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Links\gh.exe' auth git-credential`), **PATH 无关**, 任何 shell / hook 里 git push 都能认证。

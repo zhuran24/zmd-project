@@ -1,6 +1,6 @@
 ---
 name: windows-powershell-harness-pitfalls
-description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳 / SendUserFile 手机端有时无下载按钮 (硬信号=回执缺 file_uuid; 真因未验证, 真阈值未测—别把 29MB 当安全线, workaround=拆小+干净短名+逐件核能不能下、不能再拆)。配 [[windows-handoff-env]] 环境落点看。"
+description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳 / 临时产物反复落 repo 根 (被 SessionEnd hook 误提交 / 被 build 打进交付包) / SendUserFile 手机端有时无下载按钮 (硬信号=回执缺 file_uuid; 真因未验证, 真阈值未测—别把 29MB 当安全线, workaround=拆小+干净短名+逐件核能不能下、不能再拆)。配 [[windows-handoff-env]] 环境落点看。"
 metadata: 
   node_type: memory
   type: reference
@@ -28,6 +28,16 @@ metadata:
 - **父进程退出 / 线程重启 → 后台 Agent 进程内状态丢失** —— 残留 repo 干净没被动。**Workflow 可 `resumeFromRunId` 断点续 (已完成 agent 走缓存秒回), 后台 Agent 无 resume 得整个重派**。
 
 连挂两次后默认判定"本环境后台代理不可靠", 务实 fallback = **自己用上下文写薄壳脚本 import 原脚本复用大段逻辑, 只改路径/换机制不重抄** (本 session v22 portable builder `build_v22_win.py` 就这么来的)。
+
+## 临时产物反复落 repo 根 (本 session 复发 3 次, 一次真进交付包)
+
+benchmark/gate 中间文件、workflow agent 解包目录、export 写歪的路径, **很容易落到 repo 根**, 然后两条都咬人:
+- **被 SessionEnd WIP hook 误提交** (`scripts/cc_wip_backup.ps1` `git add -A` 兜底, 见 [[github-backup]]) —— 杂散件混进历史。
+- **被 build 的 `rglob` 打进交付包** —— 本 session 实例: 一个 junk 文件在 v25 build 时还在 repo 根, 真被打进了 review zip (验证 workflow 才逮到, 是卫生事故差点外发给 GPT)。
+
+本 session 三连犯: `D:tmpgate_out.txt` (export 写歪路径) + junk 进 v25 包 + `.reaudit_v25_extract/` (workflow agent 解包目录落根)。
+
+**防御**: 写临时文件用**绝对 temp 路径** (`$env:TEMP\...`), 别用 repo-相对路径; 跑会解包/导出的 workflow/脚本前, 要么把目标目录先 `.gitignore`, 要么事后扫 repo 根有无杂散 untracked 件再 commit/build; **build 交付包前必扫一遍 repo 根的 untracked**, 别让 rglob 顺手打包。
 
 ## SendUserFile 手机端交付: 观察到的症状 + workaround (2026-06-02; ⚠️ 因果未验证)
 

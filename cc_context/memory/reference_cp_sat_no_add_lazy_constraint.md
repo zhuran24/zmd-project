@@ -50,6 +50,19 @@ Spike GO 标准: 至少一条路径在 prod-scale (266 instance + ~10K cut) wall
 | F2 capacity | `sum(crossing_demand_lits) <= cut_capacity`, 不行 fallback F5 |
 | F4 reachability | 优先转 F2 / F5; 纯 BFS cut 无线性 separator cert 则 fallback |
 
+## proto sizing: bytes/term 按约束类型分 (P1.3A lowering 预算硬数字)
+
+2026-06-02 实测 OR-Tools **9.15.6755** 的 `CpModel.Proto()` 序列化增量 (同 k-term constraint × 100 条测边际):
+
+| 约束形态 | 实测 bytes/term |
+|---|---|
+| 线性 `Add(sum(vars) <= k-1)` | **~3–4** (3.09–3.90, 随 k 略降) |
+| no-good `AddBoolOr([v.Not() ...])` | **~10–11** (~10.0) |
+
+**关键 lever**: 同一条 no-good 编码成 `AddBoolOr` (clause) 比编码成线性 `sum<=k-1` **贵 ~3×**。所以 100K cut 的 proto 预算**必须按约束类型分开估**, 不能全局套一个 bytes/term —— 用 4–6 B/term 套 BoolOr 会低估 2–3 倍。large-overlap / expanded lowering 优先走**线性编码**省 proto。
+
+这是从 v25 spike 现状块 (会随 phase boundary 重写) 提到稳定 reference 的可复用硬数字: P1.3A 的 per-cut term cap + cumulative proto budget 设计会反复用到。背景 (sizing gate / 各族 term 量级) 见 [[windows-ninth-review-pending]] 的 v25 块。
+
 ## Ghost-bound constraints
 
 cut 只对某 ghost candidate valid → 不能无条件 attach:
