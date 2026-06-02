@@ -22,6 +22,8 @@ metadata:
 
 **头号架构决策(cut 强形式 vs nogood 弱形式)**: merger 裁决走**强形式分 family** —— F1/F6/F9 = 对 master pose 变量的 **domain-wise 线性 capacity 约束**(需扩 `MasterModelLike` 加只读 `enumerate_poses_in_region`, 不改 var basis, 守 root cause 1); F2/F4 借已验证的 PCR-CUT belt oracle `add_patch_routing_core_cut`; F8 **defer**(structural-disconnect 判据缺、最弱环, 降 conditional 会引非单调=L16 振荡); pose-presence nogood 作 sound fallback(F3/F5/F7 本就此态)。依据: pose-presence nogood 正是 core≈1 切≪1% 害死前 6 paradigm 的弱形式(historical), correctness 的「evaluator 语义⟹约束 domain-wise」lemma + GATE2 保证强形式 sound 落地。
 
+**v25 实测 sizing 基线(lowering 预算硬约束, 2026-06-02 spike 产出, 别随 handoff transient 过期丢)**: compact (witness/no-good) lowering **全 9 族 100K 都便宜** (~1-3 MB)。expanded (全 pose-overlap) lowering 必**按约束类型分字节预算** —— 实测 OR-Tools 9.15: 线性 `sum<=k-1` ~**3-4 B/term**, `AddBoolOr` no-good ~**10-11 B/term** (贵 ~3×, 见 [[cp-sat-no-add-lazy-constraint]])。term 量级(fixture 尺度, LSB-correct): region 大池子 ~264 / cutset ~173 / **F9 window scoped max 784 / all-type UB 3341** / F4-separator 5429。cap 按 **max/p99 跨所有族**(不止 F1/F9)。**对本设计的含义**: 强形式 F1/F6/F9 = domain-wise **线性** capacity 约束(~3-4 B/term, 便宜端, 是好消息); pose-presence nogood fallback 若编码成 BoolOr 贵 3×, 优先 `sum<=k-1` 线性编码。纠正前"F1/F9 大池子 → 1.9GB blow-up"是 MSB bitset bug 假数字(已废), 真实 fixture 尺度不爆。详 [[windows-ninth-review-pending]] v25 块。
+
 **关键安全机制(8 路共识)**:
 1. step_8 **两阶段 commit**(propose 纯函数验→commit 才碰 model)+ **apply-epoch rebuild barrier** —— 解决 adversarial 发现的 soundness 洞: quarantine 只动 CutStore, 但 `add_benders_cut` 已把约束 Add 进 **append-only model**, 收不回 stale/坏 cut。
 2. **GATE2 translation-soundness gate**(replay 之外第二道 fail-closed); 新 soundness 工作 100% 在第五验(invariant↔master)。

@@ -39,6 +39,8 @@ benchmark/gate 中间文件、workflow agent 解包目录、export 写歪的路�
 
 **防御**: 写临时文件用**绝对 temp 路径** (`$env:TEMP\...`), 别用 repo-相对路径; 跑会解包/导出的 workflow/脚本前, 要么把目标目录先 `.gitignore`, 要么事后扫 repo 根有无杂散 untracked 件再 commit/build; **build 交付包前必扫一遍 repo 根的 untracked**, 别让 rglob 顺手打包。
 
+**交付包 manifest 必强制 LF 行尾**: build review 包时 `SHA256SUMS`/manifest 若是 Windows CRLF, reviewer 端 `sha256sum -c` 会因 CR 混进 path **误报 FAILED** (文件没坏)。build 脚本写 manifest 后做 CRLF→LF 后处理 (本 session v25 workflow 逮到过, 已在 build 脚本加 LF 后处理)。同属"交付包卫生"。
+
 ## SendUserFile 手机端交付: 观察到的症状 + workaround (2026-06-02; ⚠️ 因果未验证)
 
 用户用**手机 app** 连 thread 时, SendUserFile 会回 "N files delivered", 但文件在手机上**没有下载按钮** (下不了)。

@@ -66,3 +66,6 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 ## 链 (补连 2026-06-01)
 - [[archive-research-transcripts]] — 调研归档触发
+
+## 链 (补连 2026-06-02 全覆盖审计 wnyzl1iwk)
+- [[verify-solver-param-claims]] — 正文自称配套, 补真链

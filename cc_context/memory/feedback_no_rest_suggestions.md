@@ -18,3 +18,7 @@ originSessionId: 0f0d34ec-a4e4-4255-b47a-8f5c13395540
 - 凌晨 / 深夜也不主动建议休息 — 时间是用户自己看的
 
 伙伴关系下: **决定自己的时间是用户的事, 不是我的事**.
+
+## 链 (补连 2026-06-02 全覆盖审计 wnyzl1iwk)
+- [[no-giveup-options]] — 同反 paternalism 簇
+- [[lazy-mode]] — 替用户想 root

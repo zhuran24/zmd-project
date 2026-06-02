@@ -73,3 +73,6 @@ R5 调研报告："we currently have 0 shared_tree workers; explicit set = +10-3
 
 ## 链 (补连 2026-06-02 全覆盖审计 w5u712m2y)
 - [[verification-independent-backstop]] — 别信单一信源/自报数, 必独立 verify (anti-self-trust 三元组)
+
+## 链 (补连 2026-06-02 全覆盖审计 wnyzl1iwk)
+- [[research-roi-metric]] — 调研 ROI 配套

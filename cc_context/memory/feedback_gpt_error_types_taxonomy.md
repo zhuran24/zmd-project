@@ -1,6 +1,6 @@
 ---
 name: gpt-error-types-taxonomy
-description: "评估 GPT 外部 review 的 3 种错估 type: (1) 算法错估 = 关注点不对 (v3 看 build, v8 看 anchor choice) (2) 前提错估 = 假设我们 data 满足某 precondition 而我们没 (v10 要求 complete witness) (3) 数学能力错估 = 方法本身能力上限 (L14 weighted occupancy 数学不够). 区分这 3 类影响下一步策略: 算法/前提错估 = GPT 推理弱要 push; 数学能力错估 = GPT 推理对要承认 paradigm 限制."
+description: "评估 GPT 外部 review 的 4 种错估 type (body 详): (1) 算法错估 = 关注点不对 (v3 看 build, v8 看 anchor choice) (2) 前提错估 = 假设我们 data 满足某 precondition 而我们没 (v10 要求 complete witness) (3) 数学能力错估 = 方法本身能力上限 (L14 weighted occupancy 数学不够) (4) L15 新增 paradigm 层错估. 区分这几类影响下一步策略: 算法/前提错估 = GPT 推理弱要 push; 数学能力错估 = GPT 推理对要承认 paradigm 限制."
 metadata: 
   node_type: memory
   type: feedback

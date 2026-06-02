@@ -23,6 +23,7 @@ v3 review (2026-05-13) 实例:
 - 如果两次报告冲突, 信**保守的那条** (cut 过切风险 / exactness 风险 / data loss 风险方向)
 - v4+ 跟之后的审查包都应该带这条提示, 不只 v3 这次
 - **两份并行 review 深浅不一时 → 取并集, substantive 那份 (真跑过/有具体 finding) 主导, 浅份 (没跑/零 finding/"测过就 GO") 不抵消深份**。但**别因果解释"为什么这份更深"** (本 session v22 两份差异我一度归因到 README, 实为 N=1 抽样噪声, per [[no-causal-claim-from-n1]])。
+- **变异也适用于「我自己跑的 workflow 审计」, 不只 GPT**: 同一套 13-agent 全树审计在(几乎)同一棵树上跑两次, finding 集合**大半不同** (本 session 实证: run1 抓 {URL/settings/phase3b banner/cp-sat API...}, run2 抓 {handoff frontmatter/phase3a/gpt-error 3→4...}, 都真、几乎不重叠 —— 不是 run1 的 fix 引入的回归, 是 128 文件长尾被不同 sample 抽中)。**对 [[verification-independent-backstop]] rule#4 的含义**: "循环到零 finding 才停"在**大 corpus 上是渐近的, 几乎到不了字面零** (每轮总有不同的长尾 minor 被抽中)。**实用停条件 = 无 must_fix/HIGH + 本轮真 finding 已修 + 收益递减**, 不是死等"零 finding 轮" (那是 [[avoid-micro-optimization-spiral]])。
 - 跟 [[verify-solver-param-claims]] 同源: 不要信单一信源, 必须 verify
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)

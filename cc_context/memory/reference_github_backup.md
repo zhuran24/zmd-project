@@ -39,6 +39,8 @@ live memory 在 `~/.claude/projects/D-----zmd/memory` (**仓库外**)。仓库�
 
 ## 已启用自动化 hook (2026-06-01)
 - **pre-commit memory-sync** (`.git/hooks/pre-commit`, 机器专属不入库): 每 commit 前把 live memory (`~/.claude/.../memory`) 镜像进 `cc_context/memory` + git add (temp-swap 安全式, cp 失败不动旧备份)。免手动 sync, 每个 commit 自动带最新记忆。
+  - ⚠️ **预期行为非失败 (改 memory 时反复遇到)**: 只改了 live memory 时, **首次 `git commit` 常报 "nothing to commit"** —— 因为 hook 在这次 commit 的快照算完后才 git-add 同步的 memory, 留在 index 里。**再 `git commit` 一次**即成功 (两步时序)。post-commit 已抢先 push 时, 后续手动 push 报 **"Everything up-to-date"** 也是正常 (已上去了)。
+  - **跨分支 (spike) 改动用 git worktree**: 守 PROJECT_LOCK 的 spike/master 隔离, 改 spike 代码走 `git worktree add <wt> <spike-branch>` + `git -C <wt> commit` (共用同一 `.git`, 不动 master working tree)。**验 push 已落必须 `git ls-remote origin <branch>`** —— worktree commit 的 post-commit push log 写进 worktree 自己的 git dir, **不进主 `.git/auto-push.log`**, 翻主 log 看不到 (本 session 一度误判 spike 没 push)。
 - **SessionEnd WIP 兜底** (`.claude/settings.json` SessionEnd → `scripts/cc_wip_backup.ps1`, 入库随备份走): session 优雅退出若有未提交改动, 自动 `git add -A` + commit `SessionEnd WIP auto-checkpoint` (→ pre/post-commit 链同步 memory + push)。堵 session 间丢 WIP 的窗口。**机器崩溃(进程被杀)不 fire**, 崩溃靠 post-commit auto-push + 勤 commit 兜。
 
 ### ⚠️ 维护义务 (用户明确要记: "以后才会知道要及时去整理")

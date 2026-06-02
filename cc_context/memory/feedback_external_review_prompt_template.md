@@ -122,7 +122,7 @@ prompt 末尾就一句话标题 + 1 行 sha. **不展开 rationale** (不写"散
 §6 不可达论证 armor + 「给补丁+打包(非1:1)」(2026-06-02 新增) 是**两个允许**的 "规定回答形式" 例外, 其余一律不
 规定 reviewer 怎么答 / 怎么 verdict / 输出 schema / 字数长度. 不写:
 
-- "按 severity / file:line / 问题陈述 / reproduce / defer 字段输出 —— 但 **fix/补丁 现在反而要要** (2026-06-02, 见下方「给补丁+打包(非1:1)」专节, 修正早先 "不要 fix 字段")"
+- "按 severity / file:line / 问题陈述 / reproduce / defer 字段输出" (注: fix/补丁是例外, 现在**要** —— 见上方 §「给补丁+打包(非1:1)」, 已修正早先 "不要 fix 字段")
 - "末尾必给 GO / GO_WITH_MINOR / NOT_GO verdict"
 - "回答控制在 X 字以内"
 - "每个 finding 不超过 3 段"

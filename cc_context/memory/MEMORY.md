@@ -20,7 +20,7 @@
 - [新窗口 review 包不带历史](feedback_review_package_for_new_window.md) — 新 GPT 窗口 review 包 README 不写 carry-forward (跟 v3/v4 不一样); standalone 极简点指引, 详细数据让 GPT 自查 zip.
 - [Audit finding 必先 reproduce 才 archive](feedback_audit_verify_before_archive.md) — 反 GO 章 ritual 反向: NOT GO + finding 也必 specific reproduce (script/grep) 全 pass 才 archive. ~5-15 min/finding cheap.
 - [外部审查报告 reproducibility 不足](feedback_external_review_reproducibility.md) — GPT 同 prompt 跑两次 finding 列表可能不同; sandbox 链接会过期立刻 cp 副本; 多次报告交叉信.
-- [GPT 错估 3 种 taxonomy](feedback_gpt_error_types_taxonomy.md) — 算法错估 (攻错点) / 前提错估 (data 不满足 hidden assumption) / 数学能力上限. 前 2 类 push GPT, 第 3 类承认 paradigm 限制.
+- [GPT 错估 4 种 taxonomy](feedback_gpt_error_types_taxonomy.md) — 算法错估 (攻错点) / 前提错估 (data 不满足 hidden assumption) / 数学能力上限 / L15 paradigm 层. 前 2 类 push GPT, 数学能力类承认 paradigm 限制.
 - [Adversarial soundness audit (Gemini 漏, GPT pro catch)](feedback_adversarial_soundness_audit.md) — audit 分 2 层: Layer 1 spec↔src↔data (Gemini OK), Layer 2 adversarial "假 cert 能 pass?" (GPT pro 强).
 - [GPT pro Phase 1.1 audit history (现 verdict GO)](project_gpt_pro_p11_audit_not_go.md) — 11 round audit 全 NOT GO → 15 commit close → 5 轮 deliverable 落地 Phase 1.1 GO. R5 reviewer 首次 "1.1 gate 正式通过".
 - [GPT pro P1.2 in-progress review (9 verdict)](project_gpt_pro_p1_2_in_progress_review.md) — 2026-05-24 快照: 主线 ✅ 不换; 立刻 land sound≠converge 警句 + dark matter telemetry 硬闸 + cut store 评分淘汰.

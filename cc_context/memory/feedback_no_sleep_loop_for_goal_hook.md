@@ -27,3 +27,7 @@ Reasons it's bad:
 - 长 background task 让它自己跑 (run_in_background:true), turn 正常 end,
   notify 来再处理
 - 实在 idle 没事做就说"等通知" 一句话, 不要装忙
+
+## 链 (补连 2026-06-02 全覆盖审计 wnyzl1iwk)
+- [[autonomous-loop-workflow]] — 同 autopilot/心跳话题
+- [[no-causal-claim-from-n1]] — 同 autopilot 簇根

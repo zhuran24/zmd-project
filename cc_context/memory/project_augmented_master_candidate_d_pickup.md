@@ -9,6 +9,8 @@ metadata:
 
 # Augmented master Candidate D pickup (Next session)
 
+> ⚠️ **SUPERSEDED (2026-06-02 标注)**: 下面"## Status 待做 / Next session pickup"是**当时的 live 计划**, 但这个 paradigm **已执行并死** —— 见 [[lever24-augmented-master-dead]] (603.9s UNKNOWN + RSS 32 GB, pose-bool scale 死)。**别把本文当待办 pickup**; 当历史读。现状权威源 [[windows-ninth-review-pending]]。
+
 ## Status
 
 23 lever 全 verdict 后, user 2026-05-20 在 review Path 17 D2 Phase 2 结果时 sharp

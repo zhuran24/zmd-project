@@ -1,6 +1,6 @@
 ---
 name: windows-ninth-review-pending
-description: "单一 living 当前交接/现状源. 2026-05-31 交接 Windows. **2026-06-02 更新: GPT pro 正式九审 (v22 faithful+clean 双版) 双双回 B (非 clean GO), 复核全实, 4 soundness 修 + sizing gate 已落 (spike a29fb44 + master af9054a), v23 待重建; 下一关 = P1.3A 的 F1/F9 lowering 决策.** (slug 还叫 ninth-review-pending 但九审已完, 未改名因 inbound link 多). 环境见 windows-handoff-env, 设计见 p1-3a-design-phase."
+description: "单一 living 当前交接/现状源. 2026-05-31 交接 Windows. **2026-06-02 最新: 九审 (v22) 双回 B → v23 二次 B → v24/v25 全补丁轮; v25 已建+验+交付 (sha f245bc9, critic overall_ship=True), 等用户送 GPT 第四轮; 下一关 = P1.3A 的 F1/F9 lowering 决策 (sizing bitset bug 已确认+修, 纠正后 fixture 尺度不爆).** (slug 还叫 ninth-review-pending 但九审早完, 未改名因 inbound link 多). 环境见 windows-handoff-env, 设计见 p1-3a-design-phase."
 metadata: 
   node_type: memory
   type: project
@@ -9,7 +9,9 @@ metadata:
 
 > **这是项目单一 living「当前 phase/交接状态」权威源** (per [[memory-currency-protocol]])。环境落点细节见 [[windows-handoff-env]] (稳定 reference), P1.3A 设计/Step0 gate 细节见 [[p1-3a-design-phase]] (设计记录)。本条是这三者里唯一的「现状真相」入口, 另两条只补细节不重述现状。
 
-## 最新状态 (2026-06-02) — v23 外审第二次回 B; 我自己的 sizing_gate bitset bug 已确认 (数字 ~10x 偏高)
+## 最新状态 (2026-06-02) — v25 已建+验+交付 (sha f245bc9), 等 GPT 第四轮; 经 v23 二次 B→v24→v25 三轮修; sizing_gate bitset bug 已确认+修
+
+> **当前真相 (摘要)**: spike close gate 走完 v22 九审(双 B)→v23 二次 B(7 finding)→v24(修 7)→v25(再修 7, 全证据精度/工件/锁门, 非 soundness)。**v25 终包 sha `f245bc9`, 验证 workflow critic overall_ship=True, 独立 re-audit 确认 clean**, 已 SendUserFile 交付手机端 4 件 (v25 zip + deps×3), 等用户送 GPT 第四轮。真正下一关 = P1.3A 的 F1/F9 lowering 决策 (sizing 纠正后 fixture 尺度不爆, 见下方 v25 块 + [[cp-sat-no-add-lazy-constraint]] proto 预算)。下面 v23 块是中间历史。
 
 > **当前真相 (最新)**: v23 送外审 (GPT pro 双份), 深的那份判 **B** 并 catch 一条**我自己犯的真错**: `sizing_gate.py` bitset 用 MSB-first 解码, 真源 `region_capacity_oracle._encode_region_bitset` 是 **LSB-first** (`arr[idx//8] |= 1<<(idx%8)`)。我对真源码核 + LSB 重算确认 reviewer 一字不差对: region_capacity 大池子 manufacturing 是 **264** term 不是我写的 2026; F9 10×10 window ~360–524。**"F1/F9 大池子 2000–3200 term → 1.9GB blow-up" 是 bug 假数字, 真实 fixture 尺度 ~264 term → ~100MB, 不爆。** 下面旧块 (line 19 "核心 sizing 结论" 等) 的数字/结论**已废, 待 v24 改**。新 sizing 结论见本块末。
 

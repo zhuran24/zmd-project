@@ -42,3 +42,6 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 - ❌ 卡在 escalation 永久挂等用户（如果是"能 ROI 0 但实施清晰"的 stage，自己做完 + commit 标 deferred 比卡着等好）
 - ❌ Cron 死循环不删（"自己删 cron"是 user 明确指令的一部分，做完必删，不然下次 session 进来还在 fire）
 - ❌ 一次 commit 吃多 stage（每 stage 独立 commit + preflight 兜底，bug 出来 git bisect 才好用）
+
+## 链 (补连 2026-06-02 全覆盖审计 wnyzl1iwk)
+- [[no-sleep-loop-for-goal-hook]] — /goal hook 别 sleep loop
