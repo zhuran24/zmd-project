@@ -430,6 +430,64 @@ def _validate_coverset_ghost_only_empty(
     return None
 
 
+def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
+    """Read source-of-truth pole radius from state.canonical_rules.
+
+    Returns None on any missing layer / non-numeric value — caller maps None to an
+    unsound ValidationResult (fail-closed).
+    """
+    rules = state.canonical_rules
+    if not isinstance(rules, dict):
+        return None
+    templates = rules.get("facility_templates")
+    if not isinstance(templates, dict):
+        return None
+    pole_tpl = templates.get("power_pole")
+    if not isinstance(pole_tpl, dict):
+        return None
+    canonical_radius = pole_tpl.get("power_coverage_radius")
+    if isinstance(canonical_radius, bool):
+        return None
+    if not isinstance(canonical_radius, (int, float)):
+        return None
+    return float(canonical_radius)
+
+
+def _validate_pole_radius_sot(
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Cross-check cert.pole_radius against canonical power_pole radius (fail-closed).
+
+    Phases 6/7 recompute the CoverSet trusting cert.pole_radius verbatim; without this
+    gate a forged tiny-but-positive radius empties the CoverSet and certifies a
+    false-positive cut (a pose genuinely powerable at canonical R gets pruned). This
+    mirrors F8 power_grid_reach._validate_pole_radius_sot — F7 was the lone power
+    sibling missing it (the schema guard only enforces > 0, not == canonical).
+    """
+    cert_radius_raw = cert_dict.get("pole_radius")
+    if not _is_strict_float(cert_radius_raw):
+        return _vr("schema_err", t0, "pole_radius missing or not numeric")
+    cert_radius = float(cast(float, cert_radius_raw))
+    canonical_radius = _lookup_canonical_pole_radius(state)
+    if canonical_radius is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.canonical_rules.facility_templates.power_pole.power_coverage_radius "
+            "missing — cannot verify pole_radius against source-of-truth (fail-closed)",
+        )
+    if canonical_radius != cert_radius:
+        return _vr(
+            "unsound",
+            t0,
+            f"cert.pole_radius={cert_radius} != canonical "
+            f"power_coverage_radius={canonical_radius} — possibly forged",
+        )
+    return None
+
+
 def validate_power_hitting_set(
     cut: Cut,
     state: BState,
@@ -502,6 +560,9 @@ def validate_power_hitting_set(
     for error in (
         _validate_ghost_scope_binding(cut, cert_dict, state, t0),
         _validate_group_and_template(cert_dict, state, t0),
+        # Forged-radius source-of-truth gate (mirror F8): phases 6/7 recompute the
+        # CoverSet trusting cert.pole_radius; verify it equals canonical R first.
+        _validate_pole_radius_sot(cert_dict, state, t0),
         _validate_facility_cells_match_pose_registry(facility_cells, cert_dict, state, t0),
         _validate_coverset_empty(facility_cells, cert_dict, state, t0),
         _validate_coverset_ghost_only_empty(facility_cells, cert_dict, state, t0),

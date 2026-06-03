@@ -115,6 +115,16 @@ def _make_state(
             selected_poses=[],
         ),
     }
+    # Source-of-truth canonical_rules (F7 forged-radius SoT fix, mirror F8): the
+    # validator cross-checks cert.pole_radius against canonical
+    # facility_templates.power_pole.power_coverage_radius. Mirror facility_templates
+    # here so the cross-check finds R=5 (None when facility_templates is not a dict,
+    # which the fail-closed test relies on).
+    canonical_rules = (
+        {"facility_templates": facility_templates}
+        if isinstance(facility_templates, dict)
+        else None
+    )
     return BState(
         groups=groups,
         ghost_rect=ghost_rect,
@@ -124,6 +134,7 @@ def _make_state(
         candidate_placements=candidate_placements,
         instance_to_facility_type=instance_to_facility_type,
         facility_templates=facility_templates,
+        canonical_rules=canonical_rules,
         source_digest="test-source-digest",
     )
 
@@ -340,6 +351,37 @@ def test_validator_rejects_nonpositive_pole_radius() -> None:
     cut = _make_cut(cert_payload, state)
     result = validate_power_hitting_set(cut, state, canonical_rules={})
     assert result.kind == "schema_err"
+
+
+def test_validator_rejects_forged_positive_pole_radius() -> None:
+    # F7 forged-radius source-of-truth regression (mirror F8
+    # test_validator_rejects_malicious_pole_jump_radius). A positive-but-non-canonical
+    # radius passes the schema (> 0) but the CoverSet recompute would trust it: a tiny
+    # radius empties the CoverSet and certifies a false-positive cut for a pose that is
+    # genuinely powerable at canonical R=5. The SoT cross-check must reject it as unsound
+    # before the recompute. (Without the fix this returns "ok" — the soundness hole.)
+    state = _make_state()
+    cert_payload = _make_cert(state, pole_radius=0.0001)
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_hitting_set(cut, state, canonical_rules={})
+    assert result.kind == "unsound", f"detail={result.detail!r}"
+    assert "pole_radius" in (result.detail or "")
+
+
+def test_validator_rejects_missing_canonical_pole_radius() -> None:
+    # Fail-closed: if state.canonical_rules lacks power_pole.power_coverage_radius the
+    # SoT cross-check cannot verify the radius and must return unsound, not silently
+    # accept. facility_templates omits power_pole so canonical lookup returns None.
+    state = _make_state(
+        facility_templates={
+            "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}, "needs_power": True},
+        }
+    )
+    cert_payload = _make_cert(state, pole_radius=5.0)
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_hitting_set(cut, state, canonical_rules={})
+    assert result.kind == "unsound", f"detail={result.detail!r}"
+    assert "source-of-truth" in (result.detail or "")
 
 
 def test_validator_rejects_facility_cells_unsorted() -> None:

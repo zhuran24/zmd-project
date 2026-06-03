@@ -11,8 +11,8 @@ metadata:
 
 <!-- AUTO-STATUS:BEGIN — 下面 `INSTANCE:` 槽**内**由 pre-commit stamp_living_status.py 自动 transclude (实例/分身模型, 见 [[github-backup]] / [[memory-currency-protocol]] rule#7); 别手改槽内值 -->
 **自动现状标记** (可推导现状每 commit 自动刷, 结构上不可能 stale; 人写的判断散文见下方各 `##` 块):
-- 最新 review 包: <!-- INSTANCE:latest_review_package -->v27 (sha `d2550e396591…`)<!-- /INSTANCE:latest_review_package -->
-- spike 分支 HEAD: `<!-- INSTANCE:spike_head -->a0b333a<!-- /INSTANCE:spike_head -->`
+- 最新 review 包: <!-- INSTANCE:latest_review_package -->v28 (sha `82e35df65ca5…`)<!-- /INSTANCE:latest_review_package -->
+- spike 分支 HEAD: `<!-- INSTANCE:spike_head -->143537c<!-- /INSTANCE:spike_head -->`
 - CLAUDE.md Current Phase: <!-- INSTANCE:current_phase -->1.3A (cut-family LBBD master 集成)<!-- /INSTANCE:current_phase -->
 - GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/endfield-exact-solver<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
