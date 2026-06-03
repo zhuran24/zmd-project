@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""P1.2 spike sizing gate v5 — LSB-correct + constraint-kind bytes + concrete-literal proxy.
+"""P1.2 spike sizing gate v6 — LSB-correct + constraint-kind bytes + concrete-literal proxy.
 
 Run from project root:
 
@@ -13,7 +13,9 @@ This is a cheap sizing gate, not a full translator. It deliberately reports both
 2. concrete/group-expanded proxy counts:
    type-pool overlaps multiplied by the number of concrete master operation groups
    from data/preprocessed/mandatory_exact_instances.json, with non-mandatory pools
-   counted once as optional/pose-level proxies.
+   counted once as optional/pose-level proxies. For current group-bound families,
+   the all-group columns are conservative cross-group proxies, not automatically
+   the literal vector that the real translator should emit.
 
 P1.3A must cap/budget the final literal vector emitted by the real translator, after
 group/template/optional expansion. Type-pool counts are only a lower/proxy signal.
@@ -31,6 +33,9 @@ History:
       compact witness (4); it carries the real window->pose overlap.
     * B-F2: optional OR-Tools incremental-proto measurement (uses ExportToFile, since
       the 9.15 CpModelProto pybind has no ByteSize/SerializeToString); fail-soft.
+  - v6 (post-v26 review): clarify that F9 certs are single-group today. The
+    11,644 value is an all-manufacturing cross-group proxy/stress bound, not the
+    current per-cut concrete literal vector for F9.
 """
 
 from __future__ import annotations
@@ -316,7 +321,11 @@ def main() -> None:
 
     print(
         "family term/cut: compact=witness/no-good; exp_scoped=type-pool scoped; "
-        "exp_type_all=type-pool UB; exp_group_all=concrete/group-expanded proxy"
+        "exp_type_all=type-pool UB; exp_group_all=all-group concrete proxy"
+    )
+    print(
+        "  (for group-bound certs, exp_group_all is a conservative cross-group stress proxy; "
+        "P1.3A must cap len(final_concrete_literals))"
     )
     print("  (density_envelope expanded now carried in summary, not compact-4 fallback — B-F1)")
     print("%-20s %3s %9s %14s %16s %18s" % ("family", "n", "compact", "exp_scoped", "exp_type_all", "exp_group_all"))
@@ -330,9 +339,13 @@ def main() -> None:
 
     mfg_types = [ft for ft in sorted(pools) if ft.startswith("manufacturing")]
     print("F9 density_envelope window_rect -> pose overlap (all fixture rows):")
-    print("  %-16s %8s %10s %12s %12s %8s" % ("window", "mfg-max", "type-all", "mfg-group", "group-all", "cells"))
+    print(
+        "  %-16s %8s %10s %12s %12s %12s %8s"
+        % ("window", "cert-grp", "type-all", "same-tpl", "all-mfg", "group-all", "cells")
+    )
     f9_single: List[int] = []
     f9_type_all: List[int] = []
+    f9_same_template: List[int] = []
     f9_mfg_group: List[int] = []
     f9_group_all: List[int] = []
 
@@ -342,24 +355,41 @@ def main() -> None:
         if not (isinstance(wr, list) and len(wr) >= 4):
             continue
         cells = window_cells(wr)
+        # Current F9 certificates are single-group: density_envelope carries group_id and
+        # the family validator rejects witness poses from another group. So the current
+        # concrete vector is bounded by the cert group pool, represented here by the
+        # largest single manufacturing type-pool overlap in the window.
         single = max((type_count(by_type, cells, ft) for ft in mfg_types), default=0)
         type_all = type_all_count(by_type, cells)
+        same_template = max(
+            (type_count(by_type, cells, ft) * int(multipliers.get(ft, 1)) for ft in mfg_types),
+            default=0,
+        )
+        # Cross-group stress proxy only: sums all manufacturing types and ops. Not the
+        # current F9 per-cut vector unless a future lowering explicitly emits all those
+        # groups for one cut.
         mfg_group = concrete_count(by_type, cells, multipliers, fts=mfg_types)
         group_all = concrete_count(by_type, cells, multipliers)
 
         f9_single.append(single)
         f9_type_all.append(type_all)
+        f9_same_template.append(same_template)
         f9_mfg_group.append(mfg_group)
         f9_group_all.append(group_all)
 
-        print("  %-16s %8d %10d %12d %12d %8d" % (str(wr), single, type_all, mfg_group, group_all, len(cells)))
+        print(
+            "  %-16s %8d %10d %12d %12d %12d %8d"
+            % (str(wr), single, type_all, same_template, mfg_group, group_all, len(cells))
+        )
 
     print(
-        "  F9 single-group scoped avg=%.0f max=%d ; type-all avg=%.0f max=%d ; "
-        "mfg-group UB avg=%.0f max=%d ; group-all avg=%.0f max=%d"
+        "  F9 current cert-group avg=%.0f max=%d ; type-all avg=%.0f max=%d ; "
+        "same-template proxy avg=%.0f max=%d ; all-mfg proxy avg=%.0f max=%d ; "
+        "group-all proxy avg=%.0f max=%d"
         % (
             mean(f9_single), max(f9_single),
             mean(f9_type_all), max(f9_type_all),
+            mean(f9_same_template), max(f9_same_template),
             mean(f9_mfg_group), max(f9_mfg_group),
             mean(f9_group_all), max(f9_group_all),
         )
@@ -381,8 +411,9 @@ def main() -> None:
     full_concrete_proxy = sum(pool_sizes[ft] * multipliers.get(ft, 1) for ft in pool_sizes)
     print("100K proto projections, by constraint kind:")
     print("  compact all families 1-4 terms/cut: about 1-4 MB at 100K")
-    print_projection("F9 single-group max", max(f9_single))
-    print_projection("F9 mfg group-expanded UB", max(f9_mfg_group))
+    print_projection("F9 current cert-group max", max(f9_single))
+    print_projection("F9 same-template proxy max", max(f9_same_template))
+    print_projection("F9 all-manufacturing cross-group proxy", max(f9_mfg_group))
     print_projection("F4 component_reach group-expanded max", max(by["component_reach"]["group_all"]))
     print_projection("full manufacturing group-expanded pool", full_mfg_group)
     print_projection("full concrete proxy all pools", full_concrete_proxy)
@@ -393,6 +424,8 @@ def main() -> None:
     print("- Compact witness/no-good lowering is still cheap across all families.")
     print("- Expanded/geometric lowering must be capped on the final CONCRETE literal vector")
     print("  (after group/template/optional expansion), NOT just the type-pool count.")
+    print("- Current F9 certs are single-group; all-mfg/group-all numbers are stress proxies,")
+    print("  not the present F9 per-cut concrete literal vector.")
     print("- type-pool UBs (F9 3341, F4 5429, ~16-18K) are cheap proxies, not real-master literal bounds.")
     print("- Budgets must remain constraint-kind-specific: linear about 4 B/term, BoolOr/no-good about 11 B/term.")
     print("- P1.3A guard: per-cut max/p99 cap + cumulative proto budget after group/template/optional resolution.")
