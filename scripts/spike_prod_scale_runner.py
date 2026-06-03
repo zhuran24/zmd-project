@@ -493,12 +493,16 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("")
     # v24 外审 F6: writer 之前只 emit 1-5, 但 Finding5#2 模板引 'risk #6' → dangling。这里把 #6 纳入 writer,
     # 让重跑也自洽 (注: 手写的「第九审/v23/v24 修正」narrative 段是 post-run addenda, writer 不生成, 见 verdict 顶部 banner)。
-    lines.append("6. **expanded-lowering sizing (LSB-corrected, v23/v24 外审)** — cut body master 约束大小 = (region/")
-    lines.append("   window × pool-density) × (per-term 字节, 按约束类型: linear ~4 B / BoolOr no-good ~11 B)。fixture")
-    lines.append("   scoped max 784 term/cut (linear ~0.3 GB / BoolOr ~0.86 GB@100K); routing/all-type UB (F4 5429 /")
-    lines.append("   F9 3341) 走 BoolOr ~3.7-6 GB。P1.3A lowering 设计须**按约束类型**设 per-cut term cap + cumulative")
-    lines.append("   proto budget (cap 按 max/p99 非 avg), 跨**所有**族非只 F1/F9; compact lowering 全族安全。详 sizing")
-    lines.append("   gate `docs/research/p1_2_spike_sizing_gate_20260601/`。")
+    lines.append("6. **expanded-lowering sizing (LSB + concrete-literal corrected, v27)** — cut body master")
+    lines.append("   约束大小 = len(final_concrete_literals after group/template/optional expansion) × per-term 字节")
+    lines.append("   (按约束类型: linear ~4 B / BoolOr no-good ~10-11 B)。type-pool total 81,795 只是 cheap")
+    lines.append("   proxy; concrete/group-expanded proxy 为 325,747。当前 F9 cert 是 single-group, per-cut")
+    lines.append("   single-group upper-bound max 784；same-template 4,608 / all-mfg 11,644 / group-all 12,845")
+    lines.append("   均为 stress proxy, 不是当前 F9 per-cut vector。F4 group-expanded proxy max 20,157。")
+    lines.append("   P1.3A lowering 设计须按最终 concrete literal vector 设 per-cut max/p99 cap + cumulative")
+    lines.append("   proto budget, 且按 constraint kind 分预算；type-pool 数 (F9 3,341 / F4 5,429 / ~16-18K)")
+    lines.append("   不得当真-master literal 上界。compact lowering 全族安全。详 sizing gate")
+    lines.append("   `docs/research/p1_2_spike_sizing_gate_20260601/`。")
     lines.append("")
 
     # Wall vs estimate
