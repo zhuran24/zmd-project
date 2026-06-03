@@ -180,15 +180,16 @@ enter P1.3A risk register:
    GPT pro Layer-2 catch may still surface issues here (per `[[gpt-pro-p11-audit-not-go]]`
    pattern). Deferred to P1.3B.
 
-6. **expanded lowering sizing (2026-06-02 LSB + bytes/term-by-kind; v23+v24 外审)** — 带数字硬约束 (跨**所有**
-   族, 不止 F1/F9): 100K proto 预算 = **(per-cut term, 随 region/window × pool-density 变) × (per-term 字节,
-   按约束类型: linear ~4 B / BoolOr no-good ~11 B, v24 外审实测)**。fixture: region 大池子 ~264 (不是 v1 MSB bug
-   的 2026); cutset ~173; **F9-window scoped max 784** (全 6 条非前 2 条, all-type UB 3341)。F1/F9 scoped 784
-   走 linear ~0.3 GB / 走 BoolOr ~0.86 GB; routing/all-type UB (F4 5429 / F9 3341) 走 BoolOr ~3.7–6 GB; 大
-   region/window 趋近全 pool (~16–18K term) 任何类型数 GB。P1.3A lowering 设计**必须**: compact (witness/no-good)
-   → 全 9 族安全; 任何族 geometric/expanded → **按约束类型**设 per-cut term cap + cumulative proto budget
-   (cap 按 max/p99 非 family-avg)。证据: `docs/research/p1_2_spike_sizing_gate_20260601/` (v3)。附带: 100K
-   cert 证书存储 + replay 校验成本 (~60 MB store + 逐条 revalidate) 归 P1.3A proof lifecycle sizing。
+6. **expanded-lowering sizing (LSB + concrete-literal corrected, v27)** — cut body master
+   约束大小 = len(final_concrete_literals after group/template/optional expansion) × per-term 字节
+   (按约束类型: linear ~4 B / BoolOr no-good ~10-11 B)。type-pool total 81,795 只是 cheap
+   proxy; concrete/group-expanded proxy 为 325,747。当前 F9 cert 是 single-group, per-cut
+   single-group upper-bound max 784；same-template 4,608 / all-mfg 11,644 / group-all 12,845
+   均为 stress proxy, 不是当前 F9 per-cut vector。F4 group-expanded proxy max 20,157。
+   P1.3A lowering 设计须按最终 concrete literal vector 设 per-cut max/p99 cap + cumulative
+   proto budget, 且按 constraint kind 分预算；type-pool 数 (F9 3,341 / F4 5,429 / ~16-18K)
+   不得当真-master literal 上界。compact lowering 全族安全。详 sizing gate
+   `docs/research/p1_2_spike_sizing_gate_20260601/`。
 
 ## Actual wall / Claude time vs estimate
 
