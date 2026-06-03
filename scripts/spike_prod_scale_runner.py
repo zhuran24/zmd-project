@@ -456,7 +456,7 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("")
     lines.append("| # | Finding 5 item | Spike evidence | Cover? |")
     lines.append("|---|---|---|---|")
-    lines.append("| 1 | 真 prod registry build master var | A3 oracle emit + B1 load_pose_registry: 81,795 BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pool | YES |")
+    lines.append("| 1 | prod type-pool registry build / master-var proxy | A3 oracle emit + B1 load_pose_registry build 81,795 type-pool BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pools; concrete pose-bool upper proxy is 325,747 by mandatory group expansion, cheap-counted in sizing_gate, not built/solved by B2 | PARTIAL — sizing-only evidence; P1.3A must measure/cap `len(final_concrete_literals)` |")
     lines.append(f"| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl {g10_cert_count} cert × {g10_family_count} family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束, 非真 registry-bound body sizing (v23 外审 finding) | **PARTIAL** — sizing 是 lowering 设计变量; 见 sizing gate `docs/research/p1_2_spike_sizing_gate_20260601/` + Layer-2 risk #6 |")
     lines.append("| 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp (v20 rerun, F3 real 2-literal): build 1.94–2.09s + translation 0.00–1.27s, proto 16.3–19.6 MB, build RSS 0.84–0.90 GB, after-solve RSS max 1.0316 GB, solve 0.72–0.97s across 0–100K; 5/5 tier cut_count_applied == target | YES |")
     lines.append(f"| 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total {filt.get('total_wall_s', 0):.3f}s, eviction fired iter {filt.get('eviction_triggered_in_iter', [])} (52K→30K), age_decay validated via multi-iter age tick | YES |")
