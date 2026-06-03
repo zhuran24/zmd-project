@@ -1,7 +1,7 @@
 {
-  "version": "v27",
-  "sha256": "d2550e3965911ab4d5f204e12128b7520379dee593996c525014fad5f2a02c5a",
-  "spike_head": "a45b8b2",
-  "built_at_master_commit": "3f21956",
+  "version": "v28",
+  "sha256": "6c90a1998ce8b9705d880f480f3da59f508c986d46a3be7bb889007cbebe54ff",
+  "spike_head": "830c5fd",
+  "built_at_master_commit": "39c80c6",
   "note": "Phase 1.2 spike review package anchor; written at build time, read by cc_context/tools/stamp_living_status.py."
 }

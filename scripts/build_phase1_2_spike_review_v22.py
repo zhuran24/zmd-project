@@ -277,12 +277,11 @@ Spike-only Phase B implementation code (11 files in v22):
 - `spike_prod_scale_lib/toy_translator.py` — B1 toy translator
   (loose constraints, NOT real PoseBoolExactMaster)
 - `spike_prod_scale_lib/test_toy_translator_f3_malformed.py` — **v22 new**.
-  F3 malformed cert micro-probe self-test (9 case: 6 F3 malformed +
-  3 non-F3 fallback). Locks GPT V21-8F1 fail-closed contract:
-  payload decode fail / non-dict root → F3 family return [] (不
-  fallback synthesize 3-literal). Run:
-  `python scripts/spike_prod_scale_lib/test_toy_translator_f3_malformed.py`
-  expect exit 0 + "9/9 PASS".
+  F3 malformed cert micro-probe self-test (12 case). Locks GPT V21-8F1
+  fail-closed contract: payload decode fail / non-dict root → F3 family
+  return [] (不 fallback synthesize 3-literal). Run (from project/ root):
+  `python code_context/spike/spike_prod_scale_lib/test_toy_translator_f3_malformed.py`
+  expect exit 0 + "12/12 PASS".
 - `spike_prod_scale_lib/__init__.py` — package marker
 
 ## SHA256SUMS.spike_code.txt
@@ -323,7 +322,7 @@ CP-SAT, LBBD 分解 (master → binding → routing → flow). 详
 + v18 起 `code_context/spike/` review-only source snapshot
 (v22 含 v21 F9 generator refactor + toy_translator F3 fail-closed
 complete-for-malformed + Python 3.14 wording 降级 + spike-lib F3 micro-probe
-test 9 case + master gate script sys.executable fix).
+test 12 case + master gate script sys.executable fix).
 
 Build: master commit `5d214f4` (详 `COMMIT_LOG.md`) + spike overlay (7 data
 file + 1 SPIKE_COMMIT_LOG, 详 `SPIKE_COMMIT_LOG.md`, spike branch HEAD
@@ -357,21 +356,11 @@ PATCH_REQUIRED — catch 3 finding (1 MED F3 malformed fail-closed incomplete +
     None:` 块到 fallback 之前. F3 family + payload None / invalid type
     → return [] (不 fallback synthesize).
   - 加 spike-lib `test_toy_translator_f3_malformed.py` micro-probe self-test
-    锁 9 case (6 F3 malformed + 3 non-F3 fallback). 实测 9/9 PASS.
-
-  micro-probe case matrix (`spike_prod_scale_lib/test_toy_translator_f3_malformed.py`):
-
-  | Case | Input | Expected | v22 Actual |
-  |---|---|---|---|
-  | valid_f3 | 完整 F3 payload | `[(facA, poseA), (facB, poseB)]` | PASS |
-  | invalid_f3_missing | F3 + payload field 缺 | `[]` | PASS |
-  | invalid_f3_bad_b64 | F3 + b64 decode fail | `[]` (not synthetic) | PASS |
-  | root_null | F3 + payload b64="" | `[]` | PASS |
-  | root_list | F3 + payload 是 list | `[]` (not raise) | PASS |
-  | root_string | F3 + payload 是 str | `[]` (not raise) | PASS |
-  | non_f3_witness | pattern_nogood + valid witness | Strategy 1 parse | PASS |
-  | non_f3_bad_b64 | pattern_nogood + bad b64 | fallback synthesize 3-literal | PASS |
-  | non_f3_list | pattern_nogood + list root | fallback synthesize 3-literal | PASS |
+    锁 **12 case** (6 F3 malformed payload [缺字段/坏 b64/空/list root/str root 等] + 3 F3
+    garbage-char [prefix/suffix/middle, GPT 第九审/v23 加] + 3 non-F3 fallback): F3 + 任何
+    坏 payload/非 dict root/garbage 字符 → 一律 fail-closed 返回 `[]` 不 synthesize; non-F3
+    仍走 synthetic fallback。实测 **12/12 PASS** (逐 case 详见
+    `spike_prod_scale_lib/test_toy_translator_f3_malformed.py` 自身 matrix)。
 
   B2 数据**不重跑**: per GPT 八审 reviewer 明确, F3 fail-closed fix 只影响
   malformed path. 真实 6 条 F3 fixture 全 valid, 2-literal parse 不变,
@@ -438,7 +427,7 @@ CLEAN GO. 两 reviewer finding overlap 不完全, v21 取 union 全 fix:
   v21 master `d342784` 拆 4 helper 保 fail-closed behavior:
   `_normalize_window_rect / _is_valid_max_allowed_area / _witness_belongs_to_group
   / _has_strict_area_overflow`. Refactor 后: `generate_density_envelope_cuts` → B(10),
-  全 src/cuts/ avg B(5.16), max C(20), no D. pytest 414 maintain. 数学语义不变.
+  全 src/cuts/ avg B(5.16), max C(20), no D. pytest 维持通过 (v21 时 414, 当前 418). 数学语义不变.
 
 - **Reviewer B README radon stale — CLOSED**:
   v20 README "average B (5.21), max C(17), no D" 是 pre-F9-refactor 数字.
@@ -541,8 +530,8 @@ v17 (post-F3 special-case phase + telemetry rss_after_solve) 之后 GPT pro v17
   (398→413 pytest + radon B 5.14→5.21 max C 15→17 + raw max 0.866→1.008 GB
   + spike branch HEAD 写法).
 - **MINOR #2 (LOW/MEDIUM review-pkg quality) spike code snapshot**: 加
-  `code_context/spike/` 目录 (10 文件 + README + SHA256 manifest). 详见
-  下面 "v18 新增" 段.
+  `code_context/spike/` 目录 (11 文件 + README + SHA256 manifest; v22 加第 11 个 = F3
+  malformed micro-probe test). 详见下面 "v18 新增" 段.
 - **MINOR #3 (LOW evidence packaging) Gemini archive**: master `8cc6780` land
   `docs/research/p1_2b_f3_gemini_round{1,2}_20260526/` (prompt + response
   rounds 1, 2), 同其他 family (F5/F6/F7/F8/F9) archive pattern.
@@ -575,7 +564,8 @@ code_context/
         ├── oracle_emit_fixture.py                 # _emit_f3 driver + _DRIVERS registry
         ├── scale_ramp.py                          # run_one_tier + emit_rss_after_solve callsite
         ├── telemetry.py                           # emit_rss_after_solve 实施
-        └── toy_translator.py                      # B1 toy translator
+        ├── toy_translator.py                      # B1 toy translator
+        └── test_toy_translator_f3_malformed.py    # v22: F3 malformed fail-closed micro-probe (12 case)
 ```
 
 - 路径 `code_context/spike/` 不是 `scripts/spike_prod_scale_lib/` (防 reviewer
@@ -684,13 +674,13 @@ best_objective_bound 76884 (gap 0.12%) — 这是 toy master 在 wall 内未证 
 ### Q8 semantic gap (Gemini round 3 文档化)
 
 Spike close **Sizing only**. 不 close **Convergence** / **Adversarial robustness**.
-后两者入 P1.3A 主体 risk register (verdict.md §"Layer 2 risk acknowledgment" 5 项 #1-#5).
+后两者入 P1.3A 主体 risk register (verdict.md §"Layer 2 risk acknowledgment" 6 项 #1-#6).
 
 ## 本次 build 实测数据
 
-pytest src/tests/cuts/: 413 pass (master before MINOR #5) → 414 pass (master
-v18 含 MINOR #5 self-blocker guard + 1 new test)
-python -O -m pytest src/tests/cuts/: 414 pass (1 warning)
+pytest src/tests/cuts/: **418 pass** (历史增量: 413 v17 → 414 v18 self-blocker → 416 v26
+F7/F8 dup-pose 守卫 → 418 v28 F7 pole_radius SoT 守卫; 当前权威值 418)
+python -O -m pytest src/tests/cuts/: 418 pass
 mypy --strict --explicit-package-bases src/cuts/: 35 source 0 errors
 ruff check src/cuts/ src/tests/cuts/ scripts/vulture_cuts_whitelist.py: 0 issue
 vulture --min-confidence 100: 0 issue
@@ -742,9 +732,18 @@ pip install --find-links /tmp/deps -r requirements.txt
 .venv/bin/python docs/research/phase1_2_gpt_pro_audit_20260525/repro/repro_source_digest_quarantine.py
 bash docs/research/phase1_2_gpt_pro_audit_20260525/repro/repro_f8_slow_generator.sh
 
-# Spike data 不可在 zip 内重跑 (canonical scripts/ 不含 spike code; v18 加 review-only
-# snapshot 在 code_context/spike/ 仅供 source-check, 不可直接 import / 跑).
-# 数据查看:
+# spike *data 全量重生* 不在 zip scope (需完整 campaign)。**但 v27+ 起 review-mirror runner 本身可跑**
+# (repo-root 两布局解析 _resolve_repo_root): 在 project/ 根下实跑 Phase B 可越过 v26 的 FileNotFound 点
+# (B3 feasible smoke 成功 load 真 registry), 独立验证 F1 修复 —— 目标平台 Linux。**注: 此命令只验 F1
+# 路径可跑, 不复现 close-gate verdict**: 0.1s smoke cap 下 G6a_feasible_status 到不了 FEASIBLE (UNKNOWN),
+# 重生成的 verdict.md 会显示 **NOT_GO** —— 这是 cap artifact, 与 shipped 生产-cap (180s) GO_WITH_MINOR
+# 不矛盾。且跑它会就地覆盖 verdict.md + 写 telemetry, **想保持包 pristine 就在副本里跑**:
+python code_context/spike/spike_prod_scale_runner.py --phase b \
+    --scale-ramp-solve-cap-s 0.1 --feasible-solve-cap-s 0.1 \
+    --random-solve-cap-s 0.1 --feasible-smoke-n-cuts 10
+# (裸 `import scripts.spike_prod_scale_lib` 仍需经 runner 的 namespace shim, 不能直接 import; 只有
+#  通过 runner 入口跑才两布局可用。)
+# spike 数据查看 (历史 artifact, 不重跑):
 cat docs/research/prod_scale_spike_design_20260525/spike_run_20260526/verdict.md
 cat docs/research/prod_scale_spike_design_20260525/spike_run_20260526/phase_a_report.md
 head data/cuts/spike/oracle_emit_fixture_45cert.jsonl
@@ -814,7 +813,7 @@ ls code_context/spike/spike_prod_scale_lib/
 
 ### code_context/spike/ (v18 加 — MINOR #2 spike-only review snapshot)
 
-详 `code_context/README.md`. Source snapshot 10 文件 + SHA256 manifest.
+详 `code_context/README.md`. Source snapshot 11 文件 + SHA256 manifest.
 review-only, NOT master merge target.
 
 ### docs/research/p3_b_design_v2_20260521/ (framework spec + family spec + audit archive)
@@ -852,7 +851,7 @@ src/cuts/
 └── assumptions/
 src/search/                         # outer search + benders loop
 src/models/                         # master + binding + routing + flow
-src/tests/cuts/                     # 414 cuts test (v18: 413 + 1 self-blocker test)
+src/tests/cuts/                     # 418 cuts test (413 v17 → 418 v28; 详 v22→v28 节)
 ```
 
 ### data/
@@ -944,6 +943,8 @@ commit 列在 `SPIKE_COMMIT_LOG.md`.
 | e032f9e | review-pkg v21 build script — v20 七审 union fix |
 | 5d214f4 | fix(gate-script): exit_criteria use sys.executable + F7/F8/F9 real test names |
 | (v22 build) | review-pkg v22 build script — GPT 八审 V21-8F1 MED + 2 NIT fix |
+| (v23–v28) | 后续五轮外审 B 全修 (build 脚本 v23–v28 + spike 分支): bitset LSB / bytes-by-kind / concrete-literal / F9 single-group→single-grp / writer risk#6 / doc currency。详 SPIKE_COMMIT_LOG.md + git log |
+| 39c80c6 | fix(F7 soundness): power_hitting_set 验 pole_radius vs canonical SoT (内部严格审第3轮 HIGH, 镜像 F8, cuts 418) |
 """
 
 
@@ -968,7 +969,10 @@ v18 五审) + v20 F3 real 2-literal parse + B2 rerun + verdict-update (per GPT
 v19 六审) + v21 F3 fail-closed-for-malformed + verdict G rows label/raw artifacts
 + lint cleanup (per GPT v20 七审 Reviewer A + B union fix) + v22 F3 malformed
 fail-closed completion + Python 3.14 wording 降级 + verdict v20 stale ref +
-spike-lib F3 micro-probe self-test 9 case (per GPT v21 八审 V21-8F1 MED + 2 NIT).
+spike-lib F3 micro-probe self-test 12 case (per GPT v21 八审 V21-8F1 MED + 2 NIT). 此后 v23–v28
+续修 (本 header 是 v22-时代 preamble, 权威清单见下方 commit body): bitset LSB 纠正 + bytes/term-by-kind
++ concrete-literal / F9 single-group sizing 收窄 + verdict writer risk#6 → concrete + repo-root 两布局
+(A-F3/F1) + F7 power_hitting_set pole_radius SoT soundness fix + doc currency。
 
 Per MERGER §5.1 rollback-safety, canonical `scripts/` 不含 spike code (PR #1
 verdict-only style). v18 加 `code_context/spike/` review-only source snapshot
@@ -997,10 +1001,10 @@ micro-probe self-test 11 files):
 - `scripts/spike_prod_scale_lib/failfast_probe.py` (v20: Python 3.14
   portability tweak; v22: 1 处 Python 3.14 wording 降级)
 - `scripts/spike_prod_scale_lib/test_toy_translator_f3_malformed.py` **(v22 new)**
-  F3 malformed cert fail-closed micro-probe self-test. 9 case (6 F3 malformed
-  + 3 non-F3 fallback). Locks GPT V21-8F1 fail-closed contract. Run:
-  `python scripts/spike_prod_scale_lib/test_toy_translator_f3_malformed.py`;
-  exit 0 + "9/9 PASS" expected.
+  F3 malformed cert fail-closed micro-probe self-test. 12 case (6 F3 malformed +
+  3 F3 garbage-char + 3 non-F3 fallback; v23 起 12). Locks GPT V21-8F1 fail-closed
+  contract. Run: `python scripts/spike_prod_scale_lib/test_toy_translator_f3_malformed.py`;
+  exit 0 + "12/12 PASS" expected.
 
 注: Python 3.14 portability tweak 是 spike runner 本地 observation 上的
 workaround (read_bytes().decode("utf-8") 替 read_text)，spike-only，无 master
