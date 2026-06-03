@@ -20,7 +20,7 @@ metadata:
 ## harness 交互 + 维护工具
 
 - **CC harness 写 memory 时会重写 frontmatter** (加 `originSessionId`, 偶尔搞坏某文件需手修), 但**归一后的 `name:` 字段被保留 → rename 耐久**, 不会被 harness 冲掉。
-- 维护脚本在 `cc_context/tools/` (相对路径, 别用绝对): `normalize_memory_links.py` (命名归一)、`report_link_graph.py` (健康报告: 文件数/link 数/resolved/孤点)、`deorphan_links.py` (补连, 校验目标存在 + 去重 + fail-closed)、`extract_session_turns.py` (抽对话当 backstop 主体)。
+- 维护脚本在 `cc_context/tools/` (相对路径, 别用绝对): `normalize_memory_links.py` (命名归一)、`report_link_graph.py` (健康报告: 文件数/link 数/resolved/孤点)、`deorphan_links.py` (**批量补链**: 喂 `(from,to,reason)` 边表, fail-closed=校验目标 slug 存在 + 去重已连的 + 只读校验后才写; 连通审计出缺链清单后用它批量补 [比手工逐处 edit 稳], 但**逐条先 vet why 非盲信** per [[verification-independent-backstop]] 规则#3)、`extract_session_turns.py` (抽对话当 backstop 主体)、`stamp_living_status.py` (实例/分身 transclude 引擎, pre-commit 调)。
 
 ## 第三个失效轴: 同话题散在多条 memory 没跨链 (2026-06-02 用户 catch)
 
