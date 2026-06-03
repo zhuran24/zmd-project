@@ -37,7 +37,14 @@ LIVING_SOURCE = MEM / "handoff_windows_ninth_review_pending.md"  # 单一 living
 SPIKE_BRANCH = "spike/prod_scale_master_integration_20260526"
 LATEST_PACKAGE = REPO / "cc_context" / "review" / "LATEST_PACKAGE.json"
 
-SLOT = re.compile(r"<!-- INSTANCE:([a-z0-9_]+) -->.*?<!-- /INSTANCE:\1 -->", re.DOTALL)
+# SLOT: 槽 interior 用负向先行 `(?!<!-- /?INSTANCE:)` 限定**不能跨任何 INSTANCE open/close marker** ——
+# 这样不平衡/错配的 marker (悬空 open + 后面孤立 close / 错 id close) 不会让 `.*?` 跨行吞掉中间文本
+# (engine-adversarial 镜头实测的唯一损坏向量: 旧的裸 `.*?` 会 swallow KEEP_ME)。不平衡 → 不匹配 → 留原样。
+SLOT = re.compile(
+    r"<!-- INSTANCE:([a-z0-9_]+) -->(?:(?!<!-- /?INSTANCE:).)*?<!-- /INSTANCE:\1 -->",
+    re.DOTALL,
+)
+OPEN = re.compile(r"<!-- INSTANCE:[a-z0-9_]+ -->")  # 用于 orphan/unbalanced 检测
 
 
 def _git(*args: str) -> str:
@@ -114,6 +121,12 @@ def main() -> int:
                 continue
             if "<!-- INSTANCE:" not in text:
                 continue
+            n_open, n_slot = len(OPEN.findall(text)), len(SLOT.findall(text))
+            if n_open != n_slot:
+                sys.stderr.write(
+                    f"⚠️  [instances] {f.name}: INSTANCE open marker 数({n_open}) ≠ 完整槽数({n_slot}) "
+                    f"—— 疑有不平衡/孤立 marker。已 fail-safe (不吞文本, 该槽不填), 但请检查 authoring。\n"
+                )
             new = SLOT.sub(render, text)
             if new != text:
                 try:
