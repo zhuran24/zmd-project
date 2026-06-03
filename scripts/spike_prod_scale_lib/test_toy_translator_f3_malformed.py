@@ -5,6 +5,7 @@ fail-closed return [] (6 类: 缺字段 / 坏 padding / 空 / list / str root;
 + GPT 第九审加的 3 类: 合法 b64 混入垃圾字符 prefix/suffix/middle), 而不是
 fallback 合成 3-literal synthetic, 也不 raise AttributeError. 同时验证 3 类
 non-F3 family 不受 fix 影响, fallback 合成行为保持.
+合计 = 9 类 malformed F3 + 3 类 non-F3 = **12 case** (见下方 Exit 0 = 12/12)。
 
 Run:
     .venv/bin/python scripts/spike_prod_scale_lib/test_toy_translator_f3_malformed.py

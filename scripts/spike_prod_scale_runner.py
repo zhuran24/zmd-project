@@ -9,7 +9,8 @@ Phases:
 - A3: real oracle real emit fixture (≥45 cert, 9 family)
 - B5 (telemetry session): wraps B2/B3/B4 so RSS / proto / dark_matter
      events are collected
-- B1: toy translator self-test (build only)
+- B1: toy translator self-test (build only; 经 toy_translator.py __main__ 跑, run_phase_b
+     不单独打印 B1 header — Phase B 实跑输出首个 header 是 B3)
 - B3: feasible smoke (G6a / G6b)
 - B2: scale ramp 0/1K/10K/50K/100K
 - B4: active filter Hybrid mock loop (G11)

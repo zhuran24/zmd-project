@@ -11,7 +11,7 @@
 > **⚠️ writer 边界 (v24 外审 F6)**: 本 verdict.md 里的「第九审/v26 sizing 修正」「v23/v24 外审」等 post-run 段是
 > **手写 addenda**, `spike_prod_scale_runner.write_verdict_md` **不生成**它们 (writer 只生成原始 spike-run
 > 的 G 表 / N 表 / Finding 5 表 / Layer-2 risk 1–6 / wall 表)。**重跑 writer 会覆盖本文件 → 需手动重贴这些
-> addenda**。"GO_WITH_MINOR" 是底层 spike-run 的历史结论; **当前外审状态 (两轮 B / PATCH) 见下方修正段**,
+> addenda**。"GO_WITH_MINOR" 是底层 spike-run 的历史结论; **当前外审状态 (多轮 B/PATCH → v27 B-minor; 详 README v22→v28 节 + SPIKE_COMMIT_LOG) 见下方修正段**,
 > 不是 writer 自动反映的。
 
 Per MERGER §5.2 round-3 semantic gap documentation:
@@ -93,7 +93,7 @@ expanded lowering 设 **per-cut term cap + cumulative proto budget** (F2/F4 expa
 - **[A-F2]** F9 `window_rect` 读序修正为 `[x,y,h,w]` (现 fixture 全 10×10 故数字不变)。
 
 另: 主线 F7/F8 registry validator 已加 **duplicate pose_id 唯一性守卫** (B-F3, fail-closed 硬化, len(matches)==1
-else unsound; 当前 registry 无 dup 故非现漏洞) + 2 回归测试 (cuts 414→416)。**这些都是证据精度/scoping/hardening,
+else unsound; 当前 registry 无 dup 故非现漏洞) + 2 回归测试 (cuts 414→416; 注: v28 F7 pole_radius SoT 守卫再 +2 → 418)。**这些都是证据精度/scoping/hardening,
 不改 spike 的 Sizing-only GO_WITH_MINOR 方向**; 两份外审都明说合补丁后可 close → 进 P1.3A。
 
 ## G criteria (sizing — Finding 5 #1/#3/#4)
@@ -148,7 +148,7 @@ Per MERGER §5.2: spike must close Finding 5 sizing/measurement gate, NOT close 
 | # | Finding 5 item | Spike evidence | Cover? |
 |---|---|---|---|
 | 1 | prod type-pool registry build / master-var proxy | A3 oracle emit + B1 load_pose_registry build 81,795 type-pool BoolVar from real `data/preprocessed/candidate_placements.json` 7 facility pools; concrete pose-bool upper proxy is 325,747 by mandatory group expansion, cheap-counted in sizing_gate, not built/solved by B2 | PARTIAL — sizing-only evidence; P1.3A must measure/cap `len(final_concrete_literals)` |
-| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束 (remap_audit: 36/50 unknown), 非真 registry-bound body sizing | **PARTIAL** — 见「第九审/v26 sizing 修正」: compact lowering 全族安全; expanded lowering 随 region×pool 变 (跨所有族非 F1/F9 专属), 需 term cap; concrete cap 以 `len(final_concrete_literals)` 为准; 已移交 P1.3A Layer-2 #6 |
+| 2 | 真 cut body 分布 (replacing toy 1-3-5 literal) | A3 jsonl 50 cert × 9 family 真 oracle emit ✅; **但** B2 translator 把 body lower 成合成/remap 小约束 (remap_audit: 150 pair 中 36 unknown ≈24%), 非真 registry-bound body sizing | **PARTIAL** — 见「第九审/v26 sizing 修正」: compact lowering 全族安全; expanded lowering 随 region×pool 变 (跨所有族非 F1/F9 专属), 需 term cap; concrete cap 以 `len(final_concrete_literals)` 为准; 已移交 P1.3A Layer-2 #6 |
 | 3 | build wall / proto / RSS / solve wall 实测 | B2 ramp (v20 rerun, F3 real 2-literal): build 1.94–2.09s + translation 0.00–1.27s, proto 16.3–19.6 MB, build RSS 0.84–0.90 GB, after-solve RSS max 1.0316 GB, solve 0.72–0.97s across 0–100K; 5/5 tier cut_count_applied == target | YES |
 | 4 | active filter @ 10K/50K/100K, Hybrid score | B4 mock loop 10 iter: total 0.073s, eviction fired iter [6] (52K→30K), age_decay validated via multi-iter age tick | YES |
 | 5 | feasible realistic case 避 INFEAS-早停 | B3 feasible smoke: 10K known-feasible cut (blueprint hint) + Maximize obj → FEASIBLE obj=76795 bound=76884 (gap 0.12%) NOT Presolve-crash | YES (with G6a wall SOFT FAIL) |
