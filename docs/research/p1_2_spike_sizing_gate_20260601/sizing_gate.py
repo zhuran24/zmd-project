@@ -341,7 +341,7 @@ def main() -> None:
     print("F9 density_envelope window_rect -> pose overlap (all fixture rows):")
     print(
         "  %-16s %8s %10s %12s %12s %12s %8s"
-        % ("window", "cert-grp", "type-all", "same-tpl", "all-mfg", "group-all", "cells")
+        % ("window", "single-grp", "type-all", "same-tpl", "all-mfg", "group-all", "cells")
     )
     f9_single: List[int] = []
     f9_type_all: List[int] = []
@@ -357,8 +357,9 @@ def main() -> None:
         cells = window_cells(wr)
         # Current F9 certificates are single-group: density_envelope carries group_id and
         # the family validator rejects witness poses from another group. So the current
-        # concrete vector is bounded by the cert group pool, represented here by the
-        # largest single manufacturing type-pool overlap in the window.
+        # concrete vector is bounded by one cert group pool. The sizing table reports a
+        # conservative single-group upper bound: the largest single manufacturing
+        # type-pool overlap in the window (not a cross-group vector).
         single = max((type_count(by_type, cells, ft) for ft in mfg_types), default=0)
         type_all = type_all_count(by_type, cells)
         same_template = max(
@@ -383,7 +384,7 @@ def main() -> None:
         )
 
     print(
-        "  F9 current cert-group avg=%.0f max=%d ; type-all avg=%.0f max=%d ; "
+        "  F9 current single-group upper-bound avg=%.0f max=%d ; type-all avg=%.0f max=%d ; "
         "same-template proxy avg=%.0f max=%d ; all-mfg proxy avg=%.0f max=%d ; "
         "group-all proxy avg=%.0f max=%d"
         % (
@@ -411,7 +412,7 @@ def main() -> None:
     full_concrete_proxy = sum(pool_sizes[ft] * multipliers.get(ft, 1) for ft in pool_sizes)
     print("100K proto projections, by constraint kind:")
     print("  compact all families 1-4 terms/cut: about 1-4 MB at 100K")
-    print_projection("F9 current cert-group max", max(f9_single))
+    print_projection("F9 current single-group max", max(f9_single))
     print_projection("F9 same-template proxy max", max(f9_same_template))
     print_projection("F9 all-manufacturing cross-group proxy", max(f9_mfg_group))
     print_projection("F4 component_reach group-expanded max", max(by["component_reach"]["group_all"]))

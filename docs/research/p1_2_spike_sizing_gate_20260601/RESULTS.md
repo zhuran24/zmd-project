@@ -1,4 +1,40 @@
-# P1.2 spike — 真 cut body sizing cheap gate 结果 (2026-06-01; v2 LSB-corrected 2026-06-02)
+# P1.2 spike — 真 cut body sizing cheap gate 结果 (active v6 / v27)
+
+## 当前有效结论 (v6 / v27; concrete-literal corrected)
+
+本文件保留下面 v1-v5 的历史叙述用于审计。gate close / P1.3A cap 设计的当前有效口径是本节，
+不是后面较早的 type-pool-only 表。
+
+active sizing rule:
+
+> expanded/geometric cut body budget = `len(final_concrete_literals)` after group/template/optional expansion
+> × bytes/term by constraint kind.
+
+也就是说，cap 输入必须是真 translator 产出的最终 concrete literal vector，而不是 cheap facility-type pose-pool overlap。
+
+| quantity | active v6 value / interpretation |
+|---|---:|
+| type-pool pose total | 81,795 (toy/type-pool proxy; not concrete master build count) |
+| concrete/group-expanded proxy | 325,747 |
+| OR-Tools linear bytes/term | ~4 B/term |
+| OR-Tools BoolOr/no-good bytes/term | ~10-11 B/term |
+| F9 current single-group upper bound | 784 |
+| F9 same-template stress proxy | 4,608 |
+| F9 all-manufacturing cross-group stress proxy | 11,644 |
+| F9 group-all stress proxy | 12,845 |
+| F4 component_reach group-expanded proxy | 20,157 |
+
+Implications:
+
+- compact witness/no-good lowering remains cheap across all nine families (~1-4 MB at 100K cuts).
+- F9 is currently single-group: `density_envelope` certs carry `group_id`, and the family validator rejects
+  witness group != cert group. Therefore 11,644 is not the current F9 per-cut concrete vector; it is a
+  cross-group stress proxy.
+- Type-pool numbers such as F9 3,341, F4 5,429, and ~16-18K are cheap proxies only. They must not be
+  used as P1.3A concrete literal caps.
+- P1.3A must enforce per-cut max/p99 caps plus a cumulative proto budget on concrete vectors, separately
+  for linear vs BoolOr/no-good encodings.
+
 
 ## ⚠️ v1 → v2 修正 (v23 外审 Finding 2): bitset 解码字节序错了
 
@@ -33,7 +69,7 @@ v24 外审 (两份独立, 主代理自核确认) 指出 v2 两处把量说小了
 2. **F9 补测原只跑前 2 条 window** —— 全 6 条后 scoped(manufacturing) max = **784** (不是 360–524),
    all-type 上界 max = **3341**。
 
-## 核心结论 (v3, LSB-correct + bytes/term-by-kind)
+## 历史核心结论 (v3, LSB-correct + bytes/term-by-kind; type-pool-only — concrete caps 见顶部 v6)
 
 cut body 的 master 约束大小取决于 lowering 方式 **和约束类型**:
 
@@ -50,7 +86,7 @@ all-type UB(数千 term)走 BoolOr 直接数 GB。**cap 必须按约束类型 + 
 
 ## 逐族 term/cut (50-cert fixture, 真 registry, LSB-correct)
 
-| family | n | compact | expanded scoped | expanded all-types (宽松上界) |
+| family | n | compact | expanded scoped | expanded all-types (历史 type-pool 宽松上界) |
 |---|---|---|---|---|
 | region_capacity (F1) | 6 | 1 | 134 (boundary 小池) | 1315 |
 | density_envelope (F9) | 6 | 4 (witness) | — (见 F9 window 补测) | — |
@@ -66,7 +102,7 @@ all-type UB(数千 term)走 BoolOr 直接数 GB。**cap 必须按约束类型 + 
 group→type 映射, 且本质是 routing/exposure no-good — 真实 lowering 是紧凑 1–2 term)。F4 的 5429
 是 70 个 separator cell 跨全类型并集, 不是真实 lowering 形态。
 
-## F9 density_envelope window→pose overlap (全 6 fixture, v3 修正)
+## 历史 F9 density_envelope window→pose overlap (全 6 fixture, v3 type-pool 口径)
 
 v1 退回 compact witness (4); v2 补测 window 但只跑前 2 条 (v24 外审指出); v3 跑**全 6 条** window:
 
@@ -83,7 +119,7 @@ v1 退回 compact witness (4); v2 补测 window 但只跑前 2 条 (v24 外审�
 **3341**。proto: scoped 784 走 linear ~0.3 GB / 走 BoolOr ~0.86 GB; all-type 3341 走 BoolOr ~3.7 GB。
 大 window (趋近 70×70) 吃满整池 ~16–18K term。风险是 window-size × pool × 约束类型的函数。
 
-## 对 verdict / P1.3A 的影响 (v3)
+## 历史对 verdict / P1.3A 的影响 (v3; superseded for concrete caps by active v6 summary)
 
 spike 的 sizing "doesn't blow up" 在以下精确口径下成立:
 
