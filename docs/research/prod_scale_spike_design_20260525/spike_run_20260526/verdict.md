@@ -35,7 +35,7 @@ verified by this spike — they are deferred to P1.3A 主体 design phase and P1
 2. salted `hash()` → `_stable_hash` (blake2b): fallback / remap 跨进程可复现 (旧码 PYTHONHASHSEED
    随机, 每跑不同)。
 3. unknown pose 静默 hash-remap → 新增 telemetry (`n_pairs_remapped` / `per_family_remapped`):
-   applied 计数不再静默掩盖 "literal 没绑真 registry" (第九审实测 50 cert 中 36 个 pair unknown:
+   applied 计数不再静默掩盖 "literal 没绑真 registry" (第九审实测 50 cert 的 150 pair 中 36 个 unknown ≈24%:
    density_envelope 24 + port_exposure 12, 全被静默 remap)。
 4. A3 G10 pass 判定加 `schema_err_count == 0` (旧码放行 schema_err)。
 
