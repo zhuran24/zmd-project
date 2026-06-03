@@ -28,8 +28,22 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict
 
-# Allow running from repo root without install
-REPO_ROOT = Path(__file__).resolve().parent.parent
+def _resolve_repo_root() -> Path:
+    """Return the project root in both production and review-mirror layouts.
+
+    Production: project/scripts/spike_prod_scale_runner.py -> parents[1].
+    Review mirror: project/code_context/spike/spike_prod_scale_runner.py -> parents[2].
+    """
+    here = Path(__file__).resolve()
+    candidates = (here.parent.parent, here.parent.parent.parent)
+    for root in candidates:
+        if (root / "data" / "preprocessed" / "candidate_placements.json").exists() and (root / "src").is_dir():
+            return root
+    return candidates[0]
+
+
+# Allow running from repo root without install, and from the review mirror.
+REPO_ROOT = _resolve_repo_root()
 sys.path.insert(0, str(REPO_ROOT))
 
 # Review-package mirror executability (A-F3, v25 review): production layout resolves

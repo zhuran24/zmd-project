@@ -32,7 +32,21 @@ from typing import Dict, List, Tuple
 from ortools.sat.python import cp_model
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+def _resolve_repo_root() -> Path:
+    """Return the project root in production and review-mirror layouts.
+
+    Production modules live under project/scripts/spike_prod_scale_lib/.
+    Review-package mirrors live under project/code_context/spike/spike_prod_scale_lib/.
+    """
+    here = Path(__file__).resolve()
+    candidates = (here.parent.parent.parent, here.parent.parent.parent.parent)
+    for root in candidates:
+        if (root / "data" / "preprocessed" / "candidate_placements.json").exists() and (root / "src").is_dir():
+            return root
+    return candidates[0]
+
+
+REPO_ROOT = _resolve_repo_root()
 MANDATORY_PATH = REPO_ROOT / "data" / "preprocessed" / "mandatory_exact_instances.json"
 PLACEMENTS_PATH = REPO_ROOT / "data" / "preprocessed" / "candidate_placements.json"
 
