@@ -148,7 +148,7 @@ def run_probe(instance_count: int = 50, timeout_s: float = 15.0) -> ProbeReport:
     t_overall = time.monotonic()
     notes: List[str] = []
 
-    instances = json.loads(MANDATORY_PATH.read_text())
+    instances = json.loads(MANDATORY_PATH.read_text(encoding="utf-8"))
     # Observed in spike runner on Python 3.14.x: read_text() on this 53 MB
     # placements file feeds json.loads non-deterministic ValueError. Using
     # read_bytes().decode('utf-8') is a spike-local portability workaround;

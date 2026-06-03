@@ -281,7 +281,7 @@ def audit_n11(jsonl_path: Path) -> N11AuditReport:
             dark_matter_present=False,
             n11_pass=False,
         )
-    with jsonl_path.open() as f:
+    with jsonl_path.open(encoding="utf-8") as f:
         for line in f:
             try:
                 rec = json.loads(line)

@@ -96,7 +96,7 @@ def load_fixture_certs(path: Path = FIXTURE_PATH) -> List[dict]:
     if not path.exists():
         raise FileNotFoundError(f"A3 fixture not found: {path}")
     out: List[dict] = []
-    with path.open() as f:
+    with path.open(encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:

@@ -87,7 +87,7 @@ PLACEMENTS_PATH = REPO_ROOT / "data" / "preprocessed" / "candidate_placements.js
 
 def load_blueprint_hint() -> Dict[str, int]:
     """Load {instance_id: pose_idx} hint dict (225 entries in prod)."""
-    return json.loads(HINT_PATH.read_text())
+    return json.loads(HINT_PATH.read_text(encoding="utf-8"))
 
 
 def build_known_feasible_cuts(
@@ -103,7 +103,7 @@ def build_known_feasible_cuts(
     indices in registry that EXCLUDE the hint pose for that instance.
     """
     hint = load_blueprint_hint()
-    instances = json.loads(MANDATORY_PATH.read_text())
+    instances = json.loads(MANDATORY_PATH.read_text(encoding="utf-8"))
     # Observed in spike runner on Python 3.14.x: read_text() on this 53 MB
     # placements file feeds json.loads non-deterministic ValueError. Using
     # read_bytes().decode('utf-8') is a spike-local portability workaround;
@@ -182,7 +182,7 @@ def apply_hint_to_master(
     Returns count of vars hinted.
     """
     hint = load_blueprint_hint()
-    instances = json.loads(MANDATORY_PATH.read_text())
+    instances = json.loads(MANDATORY_PATH.read_text(encoding="utf-8"))
     # Observed in spike runner on Python 3.14.x: read_text() on this 53 MB
     # placements file feeds json.loads non-deterministic ValueError. Using
     # read_bytes().decode('utf-8') is a spike-local portability workaround;

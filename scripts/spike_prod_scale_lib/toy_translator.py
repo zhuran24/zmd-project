@@ -178,7 +178,7 @@ def build_toy_master(
         # Step 3: per-instance "demand" — for spike sizing it's just one sum
         # per instance with bound = 1 (the per-instance link is structural, not
         # ExactlyOne; we keep it loose so spike measures pure build cost).
-        instances = json.loads(MANDATORY_PATH.read_text())
+        instances = json.loads(MANDATORY_PATH.read_text(encoding="utf-8"))
         by_ft_inst_count: Dict[str, int] = defaultdict(int)
         for inst in instances:
             by_ft_inst_count[inst["facility_type"]] += 1
@@ -450,7 +450,7 @@ if __name__ == "__main__":
     fixture = REPO_ROOT / "data" / "cuts" / "spike" / "oracle_emit_fixture_45cert.jsonl"
     if fixture.exists():
         cert_records = []
-        with fixture.open() as f:
+        with fixture.open(encoding="utf-8") as f:
             for line in f:
                 rec = json.loads(line)
                 cert_records.append(rec)
