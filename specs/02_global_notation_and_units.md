@@ -126,9 +126,3 @@ $$ \text{Cov}(p) = \{ (x', y') \in \mathcal{C} \mid x - 5 \le x' \le x + 6, \ y 
 * **传送带极限容量 (Belt Capacity)** $\equiv$ $1.0$ 物品 / Tick。
 * **机器极速吞吐率 (Max Port Throughput)** $\equiv$ $1.0$ 物品 / Tick。
 * **拓扑度数约束 (Port Degree)**：实例 $i$ 的输入/输出插管根数 $D_{\text{in}}(i)$ 与 $D_{\text{out}}(i)$ 为绝对整数常量（由 04 章 4.8 节矩阵给定）。稳态方程中，路由算法必须且只能为其接入**精确等于度数限额**的连线。
----
-status: ACCEPTED_DRAFT
-source_of_truth: terminology and units must stay aligned with downstream code consumers; geometry semantics are referenced by placement/routing/master specs
-last_verified_against: 2026-03-23
-owner: docs-modeling
----

@@ -86,9 +86,3 @@ $$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conf
 
 > [!NOTE]
 > **[竣工图]** CP-SAT 不支持真正的惰性约束回调 (Lazy Constraint Callback)。代码中使用「累积切面 + 重新求解」的模式替代：每轮将新切面注入模型后重新调用 `model.Solve()`，通过 `model.AddHint()` 提供上一轮解作为热启动。效果等价但每轮有模型重建开销。
----
-status: ACCEPTED_DRAFT
-source_of_truth: src/cuts/families/ (F1–F9 当前 cut-family 范式) + src/cuts/lifecycle.py + src/models/cut_manager.py (早期 no-good 范式) + src/search/benders_loop.py + exact-contract regressions
-last_verified_against: 2026-03-23
-owner: cut-manager
----

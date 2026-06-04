@@ -106,9 +106,3 @@ $$ \sum_{j \in \mathcal{I}_{\text{poles}}} x_j \ge 24 $$
 如果子问题发现布线死锁，将返回 **Benders 冲突切平面 (No-good Cut)**：
 $$ \sum_{i \in C} z_{i, p_i^*} \le |C| - 1 $$
 主模型将收纳此切平面作为新增约束，并跳转去寻找下一个数学可行解。
----
-status: ACCEPTED_DRAFT
-source_of_truth: src/models/master_model.py and src/models/exact_coordinate_master.py
-last_verified_against: 2026-03-23
-owner: master-placement
----

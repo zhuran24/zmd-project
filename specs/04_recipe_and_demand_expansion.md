@@ -224,9 +224,3 @@ owner: preprocess-demand
 *   **采种机** (共 17 台)：输入 **1 根** 作物带；输出 **2 根** 种子带。(产率>1，单机双带散出)
 
 > **路由约束定语**：在后续的逐格路由子问题中，求解器**必须且只能**为对应机器寻找上述确切数量的传送带连接。多余的机器端口严格保持空置。
----
-status: ACCEPTED_DRAFT
-source_of_truth: rules/canonical_rules.json, rules/preprocess_plan.json, src/interchange/preprocess_context.py, src/preprocess/demand_solver.py, and src/preprocess/operation_profiles.py
-last_verified_against: 2026-03-23
-owner: preprocess-demand
----

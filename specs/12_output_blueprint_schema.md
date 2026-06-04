@@ -113,9 +113,3 @@ owner: output-layer
 1. **左下角越界断言**：所有 `anchor` 的 `x` 与 `y` $\ge 0$。包围盒最远端 $\le 69$。
 2. **绝对防撞断言**：`facilities` 中所有实体占据格集合与 `empty_rect` 占据格集合，两两交集为空。
 3. **路由悬空断言**：`L1_elevated` 中任意坐标在 `L0_ground` 中必须为空或为直线传送带。
----
-status: CURRENT_CODE_ALIGNED
-source_of_truth: src/io/output_schema.py, src/io/serializer.py, and src/render/blueprint_exporter.py
-last_verified_against: 2026-03-23
-owner: output-layer
----

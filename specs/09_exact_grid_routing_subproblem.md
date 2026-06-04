@@ -93,9 +93,3 @@ $$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| -
 如果本模型返回 **SATISFIABLE (YES)**，系统将提取全量 0-1 决策变量，输出包含以下信息的**终极蓝图**：
 1.  **全体刚体的绝对位姿与朝向**（266 必选 + 被激活的可选实例；源自 07 章主问题。注：早先写的"326"是 exploratory 参考全集，certified-exact 可选数为变量 / demand 驱动、无硬 50/10/60 cap，见 07 章 §7.4.1 后 [PROJECT_LOCK 对齐] 注）。
 2.  **$70 \times 70 \times 2$ 空间内每一个物流组件的类型、坐标、朝向、承载物料**（源自本章微观解）。
----
-status: CURRENT_CODE_ALIGNED
-source_of_truth: src/models/routing_subproblem.py and routing-focused regression tests; splitter/merger support is current-code aligned
-last_verified_against: 2026-03-23
-owner: exact-routing
----

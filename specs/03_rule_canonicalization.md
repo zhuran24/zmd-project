@@ -605,9 +605,3 @@ owner: rules
 8. 非整数机器需求必须向上取整。
 
 因此，本章之后的“未决事项”不得再次就上述问题提出相反解释，除非显式更新本章版本。
----
-status: CURRENT_CODE_ALIGNED
-source_of_truth: rules/canonical_rules.json, rules/canonical_rules.schema.json, src/rules/models.py, and src/rules/semantic_validator.py
-last_verified_against: 2026-03-23
-owner: rules
----

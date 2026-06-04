@@ -117,9 +117,3 @@ owner: placement-preprocess
     ]
   }
 }
----
-status: CURRENT_CODE_ALIGNED
-source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and frozen candidate_placements.json
-last_verified_against: 2026-03-23
-owner: placement-preprocess
----
