@@ -144,4 +144,4 @@
 
 ---
 
-*Last updated*: 2026-05-23 (initial version, synced with plan doc 高中 gap fill)
+*Last updated*: 2026-06-04 (initial 2026-05-23; 后续随 Phase 1.2 close / F3·F8 mode 锁 / strict gate 默认 ON / F9 quarantine 等口径更新)

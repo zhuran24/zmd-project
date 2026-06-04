@@ -17,7 +17,7 @@ Phase 1.1 经验: Gemini 11 round Day 15/16a/16b 堆到 round 14 才 cross-check
 
 **频率 / 工时**
 - 单 commit ~5-10 min round-trip (free-tier API key, [[gemini-math-consultant]])
-- Gemini round number 在 archive 文件名连号 (当前 r35, 下个 r36...)
+- Gemini round number 在 archive 文件名连号 (Phase 1.1 时止于 r35; Phase 1.2 后另有 `p1_2b_f*_gemini_round*` 等命名, 以 `docs/research/` 实际归档为准, 不再单一连号)
 - archive 立即 cp 进 `docs/research/.../cross_check/gemini_round_NN_*.md` ([[archive-research-transcripts]])
 
 **Phase 1.2 加严 (R34 round 加严)**
@@ -63,6 +63,7 @@ GPT pro 主要 catch (3+4+5) — Gemini 倾向 catch (1+2) schema 层. 实施 fa
 - 0 P0 (critical, soundness 破坏 / 生产 crash)
 - ≤ 3 P1 (high, soundness 减弱 / 非生产路径 bug), 各有 mitigation 计划
 - P2/P3 (medium/low, cosmetic / cleanliness / nice-to-have) 不卡 GO, 进 followup queue (#239)
+- **⚠️ (2026-06-04) 大节点正式 close（如 spike close）门禁已提高 = 连续 ≥3 次独立审查零问题**——不是单次 batch 0-P0 即过；任一轮再现 finding 则连续计数**重置**。上面的单-round GO 准则用于判"是否推进下一步"，**正式 close** 用 ≥3 连续清零。见 memory big-milestone-gpt-pro-review。
 
 **NOT GO 准则 (不推下一 phase)**
 - ≥ 1 P0 → 必 close (Step A-O 模式) 才下一 round

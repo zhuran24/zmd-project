@@ -7,10 +7,12 @@ cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其
 | Env | 当前默认 | Phase 1.2 默认 | Phase 1.3 默认 | 用途 |
 |---|---|---|---|---|
 | `EXACT_FAMILY_VALIDATOR_STRICT` | `"1"` | `"1"` | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed。`"0"` 仅允许本地临时调试，不进生产 wrapper。 |
+| `EXACT_F3_GENERATOR_ENABLED` | `"0"` | `"0"` (gated) | — | F3 port_exposure generator 开关（commit `c768806` 落地，default-disabled）。**(2026-06-04 补：早先此现状表漏列)** |
+| `EXACT_F7_GENERATOR_ENABLED` / `EXACT_F8_GENERATOR_ENABLED` | `"0"` | `"0"` (gated) | — | F7/F8 generator 开关（cut-family 时代落地，default-disabled）。完整 `EXACT_*` 全集见 `docs/env_variable_index.md` banner + 源码 grep。 |
 
 ### 19.2 Phase 1.3 propagator 集成预留 env (实施时定名)
 
-下面 env 在 §12 / §13 实施时加, 当前未实施. 命名前缀按项目惯例 `EXACT_CUT_STORE_*`:
+下面 env 在 §12 / §13 实施时加, 当前未实施. 命名前缀按项目惯例 `EXACT_CUT_STORE_*`（**⚠️ 2026-06-04: P1.3B 集成总开关命名未最终统一** —— `09_phase_1_3_plan` / `12_go_criteria` 处写作 `EXACT_B_DESIGN_V2`，此处拟 `EXACT_CUT_STORE_ENABLE`，待 P1.3B 实施时定名收口）:
 
 | Env (拟) | 默认 | 用途 |
 |---|---|---|

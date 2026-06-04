@@ -1,6 +1,6 @@
 # 15 — 测试 strategy + fixture 清单
 
-当前 189 cuts test 不是平铺, 按目标分 4 层. 本节定层 + 各层覆盖哪些 family + fixture 清单 + Phase 1.2 加 F5-F9 时怎么扩展.
+当前 cuts test（计数权威见核心节点 `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json` 的 `cuts_tests_total`，2026-06-04 为 **442**；189 是 Phase 1.1 旧值）不是平铺, 按目标分 4 层. 本节定层 + 各层覆盖哪些 family + fixture 清单 + Phase 1.2 加 F5-F9 时怎么扩展.
 
 ### 21.1 测试 4 层
 

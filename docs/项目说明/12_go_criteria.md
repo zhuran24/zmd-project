@@ -72,8 +72,8 @@
 - [ ] capacity eviction 留 audit trail
 
 **F. Regression gate**
-- [ ] 现有 `src/tests/cuts/` **189 全 green**
-- [ ] `python -O -m pytest src/tests/cuts/ -q` **189 green**
+- [ ] 现有 `src/tests/cuts/` **全 green**（计数以 collect-only / 核心节点 `authoritative_numbers.json` 为准，当前 442；189 是 Phase 1.1 旧值）
+- [ ] `python -O -m pytest src/tests/cuts/ -q` **全 green**
 - [ ] 新 red fixture 全 green (详 [15_workflow_testing.md](15_workflow_testing.md))
 - [ ] ruff green
 - [ ] mypy strict green 或显式标 typing debt (跟 soundness 分开 commit)
@@ -96,8 +96,8 @@
 - F5-F9 全 register FAMILY_VALIDATORS, strict gate ON
 
 验收:
-- 总 cuts test ~240-265+（当前 189 gate + 5 family × 10-15 each；具体以 collect-only 为准）
-- 大节点 GPT pro batch audit 通过 (整 Phase 1.2 vs 单 family)
+- 总 cuts test 以 `collect-only` / 核心节点 `authoritative_numbers.json` 为准（**2026-06-04 = 442**，F5-F9 落地后远超早先 ~240-265 估；189 是 Phase 1.1 旧值）
+- 大节点审查通过——**现 close 门禁 = 大节点 ≥3 次连续独立审查零问题**（非单次 batch；见 §下文 + 16_workflow_review §22 + memory big-milestone-gpt-pro-review）
 - production smoke 真数据 F5-F9 oracle 跑通 (各 oracle 真 emit cut 或合理
   fail-closed)
 - 跟 PROJECT_LOCK §3A 不冲突 (family list 仍 9 个, mode 不变)

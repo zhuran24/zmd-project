@@ -98,7 +98,7 @@ literal 在 280K pose registry 上做随机指针追逐, working set 跨 L3 spil
 HiGHS 实测 42 GB > 30 GB (Phase 3B repair5), 换 LP relax B1 pose-bool master
 也死 — master.solve 解不动是 paradigm 层 inherent.
 
-### 24+ 个 paradigm 死路告诉我们 master 自身不能 fix
+### 27 个 paradigm 死路告诉我们 master 自身不能 fix
 
 `paradigm_death_timeline_27_lever.md` 记录全部死法:
 - B1 pose-bool master (L11)
