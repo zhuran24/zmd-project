@@ -67,7 +67,7 @@ $$ \sum_{k \in \mathcal{K}} \sum_{d_{\text{in}} \neq d_{\text{out}}} r_{c, L, d_
 ## 9.4 端口度数履行与公共资源池寻路 (Port Adherence & Pooling)
 
 ### 9.4.1 端口度数强制履行 (Degree Adherence)
-04 章 4.8 节下达的机器度数矩阵必须被绝对执行：
+机器端口度数 / 拓扑必须被绝对执行（**当前权威源** = `rules/canonical_rules.json` 的 `operation_type` + `port_topology`，见 04 章 §4.7；04 章 §4.8 的变体度数字典已 **[DEPRECATED]**，仅作历史参考、勿引为真源）：
 若 07 章规定实例 $i$ 的某条输出边分配了 $N$ 个出口，则该边上的物理边缘节点向外发射的路由变量总和必须**精确等于** $N$。
 
 ### 9.4.2 全局资源软连接 (Global Pooling Soft-Matching)

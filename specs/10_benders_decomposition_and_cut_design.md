@@ -1,6 +1,6 @@
 ---
 status: ACCEPTED_DRAFT
-source_of_truth: src/models/cut_manager.py, src/search/benders_loop.py, and exact-contract regressions
+source_of_truth: src/cuts/families/ (F1–F9 当前 cut-family 范式) + src/cuts/lifecycle.py + src/models/cut_manager.py (早期 no-good 范式) + src/search/benders_loop.py + exact-contract regressions
 last_verified_against: 2026-03-23
 owner: cut-manager
 ---
@@ -8,6 +8,8 @@ owner: cut-manager
 > **ACCEPTED_DRAFT — 本文件已与 `src/models/cut_manager.py` 对齐。`[竣工图]` 标注反映代码实际状态。**
 
 # 10 逻辑型 Benders 分解与切平面通信协议 (Logic-based Benders Decomposition & Cut Design)
+
+> ⚠️ **范式更新 (2026-06-04)**：本章的 Type-I / Type-II **组合 no-good cut** 设计 + `src/models/cut_manager.py` 是**早期** cut 范式。项目当前主线已转 **cut-family LBBD 重设计**：9 个 cut family **F1–F9**（`src/cuts/families/`：region_capacity / cutset / port_exposure / component_reach / pattern_nogood / shape_packing_hall / power_hitting_set / power_grid_reach / density_envelope）当 Benders cut 收紧 master，每个 family = generator + validator（validator 是 **FP=0 信任边界**），proof lifecycle 在 `src/cuts/lifecycle.py`（`step_8_apply_to_master` 真 master 集成属 P1.3B 待接）。权威见 `PROJECT_LOCK.md` §2B + `CLAUDE.md`。**下方 §10.2 的 LBBD 主从循环结构仍成立**（master→flow→routing→cut→resolve），但 cut 的生成 / 校验已由 F1–F9 family 体系承担，不再是 §10.3 / §10.4 的两类裸 no-good cut；§10.3–10.5 作 cut-design 概念基础与历史读。
 
 ## 10.1 文档目的与架构定位
 
@@ -77,8 +79,8 @@ $$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conf
 
 ## 10.6 代码落地：惰性回调与热启动 (Lazy Callbacks & Hot-Start)
 
-本工程强制采用 **惰性约束注入架构 (Lazy Constraint Callback / Hot-Start)**：
-1. 主模型收到切平面。
+本工程采用 **「累积切面 + 重新求解」+ 热启动 (Hot-Start)** 模式（CP-SAT **不支持**真正的惰性约束回调 Lazy Constraint Callback，故非真 lazy；见下方 [竣工图]）：
+1. 主模型收到切平面（累积注入后重新 `Solve()`）。
 2. 将上一次合法摆放解中（未惹事的机器位置）作为 **Solution Hint** 喂给主模型。
 3. 求解器瞬间意识到只需微调惹事机器，每次 Benders 迭代重新求解时间从数十秒坍缩至几百毫秒。
 
@@ -86,7 +88,7 @@ $$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conf
 > **[竣工图]** CP-SAT 不支持真正的惰性约束回调 (Lazy Constraint Callback)。代码中使用「累积切面 + 重新求解」的模式替代：每轮将新切面注入模型后重新调用 `model.Solve()`，通过 `model.AddHint()` 提供上一轮解作为热启动。效果等价但每轮有模型重建开销。
 ---
 status: ACCEPTED_DRAFT
-source_of_truth: src/models/cut_manager.py, src/search/benders_loop.py, and exact-contract regressions
+source_of_truth: src/cuts/families/ (F1–F9 当前 cut-family 范式) + src/cuts/lifecycle.py + src/models/cut_manager.py (早期 no-good 范式) + src/search/benders_loop.py + exact-contract regressions
 last_verified_against: 2026-03-23
 owner: cut-manager
 ---

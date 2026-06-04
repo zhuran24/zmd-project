@@ -42,7 +42,7 @@ owner: flow-diagnostic
 本层使用极其快速的纯线性规划 (Pure LP) 引擎进行流体力学仿真，彻底放弃 0-1 离散变量。
 定义连续变量 $f_{u,v}^k \ge 0$ 表示物料 $k \in \mathcal{K}$ 在有向边 $(u,v) \in \mathcal{E}$ 上的稳态流量。
 ### 8.3.1 供需满足约束 (Demand Fulfillment)
-依据 04 章 4.8 节给定的实例化拓扑度数矩阵，物料 $k$ 的全局总流率需求为 $D_k$（例如全局共需 34 个蓝铁矿/Tick）。
+依据全局物料池化下各物料的总流率需求，物料 $k$ 的全局总流率需求为 $D_k$（例如全局共需 34 个蓝铁矿/Tick）。（度数 / 拓扑的**当前权威源** = `rules/canonical_rules.json` 的 `operation_type` + `port_topology`，见 04 章 §4.7；04 章 §4.8 变体字典已 **[DEPRECATED]**，勿引为真源。）
 系统强制要求该网络必须能够跑满这个宏观吞吐量：
 $$ \sum_{v \in \text{Outputs}(k)} f_{S_k, v}^k = D_k \quad \forall k \in \mathcal{K} $$
 $$ \sum_{u \in \text{Inputs}(k)} f_{u, T_k}^k = D_k \quad \forall k \in \mathcal{K} $$
