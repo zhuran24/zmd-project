@@ -21,7 +21,7 @@ owner: master-placement
 本模型直接继承 02、05 和 06 章的静态编译数据：
 *   $\mathcal{C}$：全场 4900 个可用二维网格坐标点集 $(c \in \mathcal{C})$。
 *   $\mathcal{I}_{\text{man}}$：强制必选实例集合（$N=266$，包含 219台机器、1座核心、46个边界口）。
-*   $\mathcal{I}_{\text{opt}}$：可选实例集合（$N=60$，包含 50个供电桩、10个协议箱）。
+*   $\mathcal{I}_{\text{opt}}$：可选实例集合（**非固定枚举**，见 §7.4.1 后 [PROJECT_LOCK 对齐] 注）：协议箱 (protocol_storage_box) 为 **required-optional**（数量按 06 章预处理下达的 demand 固定）；供电桩 (power_pole) 为 **residual-optional**（激活数量为决策变量，下界由 §7.6 供电覆盖给出、上界为 06 章候选位姿池规模）。
 *   $\mathcal{I} = \mathcal{I}_{\text{man}} \cup \mathcal{I}_{\text{opt}}$：全体实体实例集合。
 *   $\mathcal{P}_i$：实例 $i \in \mathcal{I}$ 的合法离散候选位姿字典（由 06 章几何引擎生成）。
 *   $\mathcal{R}_{w,h}$：外层 Python 传入的，尺寸为 $w \times h$ 的幽灵空地在全图的所有合法候选位置集合（由 06 章动态生成接口提供）。
@@ -47,8 +47,11 @@ owner: master-placement
 对于强制必选的 266 个实体，它们**必须且只能**在字典里挑一个坑位：
 $$ \sum_{p \in \mathcal{P}_i} z_{i,p} = 1 \quad \forall i \in \mathcal{I}_{\text{man}} $$
 
-对于可选的 60 个供电桩和协议箱，只有当它被激活时，才能挑唯一一个坑位；若未被激活，则所有坑位变量均锁死为 0：
+对于可选实例（供电桩 / 协议箱，集合见 §7.2，**数量非固定 60**），只有当它被激活时，才能挑唯一一个坑位；若未被激活，则所有坑位变量均锁死为 0：
 $$ \sum_{p \in \mathcal{P}_i} z_{i,p} = x_i \quad \forall i \in \mathcal{I}_{\text{opt}} $$
+
+> [!WARNING]
+> **[PROJECT_LOCK 对齐]** certified_exact 路径**没有**硬 `50 供电桩 + 10 协议箱`(合计 60) / 总集 326 cap —— 按 PROJECT_LOCK §1 该数字仅为 exploratory-only guidance，Forbidden Change 禁止将其作为 exact-mode 上界重新引入。真实 master(`pose_bool_exact_master` / `exact_coordinate_master`)对供电桩走 residual-optional(激活数为决策变量、下界 ≥ §7.6 的 24、上界为候选位姿池规模)、对协议箱走 required-optional(预处理 demand 驱动)。早期此模型写的固定 60 / 总集 326 是 exploratory 坐标模型遗留，仅作 illustrative 参考、非 exact 硬约束。
 
 幽灵空地矩形（作为绝对不可侵犯的巨型障碍物禁区）必须且只能在地图上选定一个位置：
 $$ \sum_{r \in \mathcal{R}_{w,h}} u_r = 1 $$

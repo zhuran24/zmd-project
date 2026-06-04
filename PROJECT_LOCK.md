@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-05-22 (B Design v2 Phase 0 close)
+**Updated**: 2026-06-04 (v28 外审 cut-family validator SoT gate + F9 tight-K quarantine + specs 02/06/07 exact-cap 对齐)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
@@ -13,6 +13,7 @@
 - `Phi(w, h)` is not the exact source of truth.
 - `(area, width, height)` is not the exact source-of-truth comparator.
 - Exact mode has no hard `50 power poles + 10 protocol storage boxes` cap. If that number appears anywhere, it is exploratory-only guidance.
+  - (2026-06-04) specs 02 §2.6.1 / 06 §6.1 / 07 §7.2·§7.4.1 早先把 `I_opt=60 (50桩+10箱)` / 总集 326 当 exact 固定枚举, 已对齐为: 供电桩 residual-optional (激活数为决策变量、coverage 下界、候选池上界)、协议箱 required-optional (demand 驱动); 60/326 仅标 exploratory illustrative 参考。真实 master (`pose_bool_exact_master` / `exact_coordinate_master`) 实证无此 cap (源码 residual/required-optional 建模, 非固定 60)。
 
 ## 2. Certified Source of Truth
 
@@ -61,7 +62,7 @@ Phase 0 close (`docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md`) 后,
 ## 2A. IndustrialPlanner Active Scope
 
 - The current certified IndustrialPlanner support contract targets `valley4_protocol_core` (70×70) exclusively.
-- The other known IndustrialPlanner bases (`valley4_infra_outpost`, `valley4_rebuilt_command`, `valley4_refugee_shelter`, `wuling_tianwangping_aid`, and `wuling_protocol_core`) are preserved as `future_scope` and are not part of the active checked-in audit / CI contract.
+- The other known IndustrialPlanner bases (`valley4_infra_outpost`, `valley4_rebuilt_command`, `valley4_refugee_shelter`, `wuling_tianwangping_aid`, `wuling_heart_repair_station`, and `wuling_protocol_core`) are preserved as `future_scope` and are not part of the active checked-in audit / CI contract.
 - The checked-in full-demand base matrix, deployment-path matrix, umbrella overview, support-suite inventory, and checked-artifact gate must default to that single active 70×70 base.
 - The outer-deployment subsystem for larger-base translation remains adapter-side `future_scope`: it may stay in the repository, but it must not be treated as active certified evidence or as part of the default CI-critical path until explicitly reactivated.
 
@@ -134,12 +135,11 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   family-local canonical-dims SoT 核对 (pose_length vs template dims, 经 state.facility_templates
   alias, sound fail-closed) 未走 canonical_sot、未进登记表 —— 它**非 fail-open 洞** (v28 合并只
   针对 fail-open), 是预存未 consolidate 项; meta-test 的 dimensions 私有扫描刻意不覆盖它。
-  **(2026-06-04 fresh-pass 补)**: `assumptions/verifiers.py` 的 `verify_power_pole_jump_radius`
+  **(2026-06-04 fresh-pass 补)**: `src/cuts/assumptions/verifiers.py` 的 `verify_power_pole_jump_radius`
   曾藏 canonical pole-radius lookup 的**第 4 个逐字副本** (在 certified attach-scope 路径, 前 3
   轮 + v28 外审全漏), 已委托 canonical_sot; meta-test 的私有-radius 扫描已扩到 validator-side
   (families + assumptions)。**待办 (本轮未做)**: `verifiers.py` `verify_protocol_core_position`
-  是 F8 `_validate_pc_anchor_sot` 的**近似**副本 (非逐字), 未 consolidate; `oracles/
-  power_cover_oracle.py` 是 generator 侧读 canonical (产 cert 非验, 不在 scan 范围)。
+  是 F8 `_validate_pc_anchor_sot` 的**近似**副本 (非逐字), 未 consolidate; `src/cuts/oracles/power_cover_oracle.py` 是 generator 侧读 canonical (产 cert 非验, 不在 scan 范围)。
   **澄清: F1 region_capacity 的 `cells_per_pose` 不是未守 SoT** —— 是 Gemini round-14 #5 **刻意
   信任 cert** (防 canonical pose-shape 微调时全 cut quarantine), 同 F9 tight-K 的 deferral 性质,
   **勿 consolidate** (改了会反转刻意决定)。

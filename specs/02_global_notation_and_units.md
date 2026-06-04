@@ -101,10 +101,12 @@ $$ \text{Cov}(p) = \{ (x', y') \in \mathcal{C} \mid x - 5 \le x' \le x + 6, \ y 
 | :--- | :--- | :--- |
 | $\mathcal{C}$ | 主基地所有可用二维网格坐标集合 | 4900 |
 | $\mathcal{I}_{\text{man}}$ | 强制必选刚体实例集合 (机器219+核心1+边界口46) | 266 |
-| $\mathcal{I}_{\text{opt}}$ | 可选备用刚体实例集合 (供电桩50+协议箱10) | 60 |
-| $\mathcal{I}$ | 全局实体总集 ($\mathcal{I} = \mathcal{I}_{\text{man}} \cup \mathcal{I}_{\text{opt}}$) | 326 |
+| $\mathcal{I}_{\text{opt}}$ | 可选刚体实例集合：协议箱 (required-optional，数量按 demand) + 供电桩 (residual-optional，激活数为决策变量) | 非固定 † |
+| $\mathcal{I}$ | 全局实体总集 ($\mathcal{I} = \mathcal{I}_{\text{man}} \cup \mathcal{I}_{\text{opt}}$) | 266 + 可变 † |
 | $\mathcal{K}$ | 商品(物料)类型集合，如矿石、中间品等 | 见 04 章 |
 | $\mathcal{P}_i$ | 实例 $i$ 所有合法的(不越界、无自相矛盾的) 离散候选摆位集合 | 将由 06 章生成 |
+
+> †  **[PROJECT_LOCK 对齐]** certified_exact **无**硬 `50 供电桩 + 10 协议箱`(合计 60)/ 总集 326 cap —— 该数字按 PROJECT_LOCK §1 仅为 exploratory-only guidance，禁止作为 exact-mode 上界重新引入 (Forbidden Change)。真实 master 对供电桩用 residual-optional(激活数为决策变量，下界由 07 章 §7.6 供电覆盖给出、上界为候选位姿池规模)、对协议箱用 required-optional(预处理下达 demand)。旧 “60 / 326” 是 exploratory 坐标模型遗留，仅作 illustrative 参考。
 
 ### 2.6.2 系统决策变量 (Decision Variables)
 | 符号 | 变量域 | 定义说明 |

@@ -1,0 +1,12 @@
+{
+  "summary": "压缩前对话↔记忆树覆盖核查: 抽取对话中值得入记忆的条目, 对记忆树去重, 只报真缺口",
+  "agentCount": 9,
+  "logs": [
+    "抽取阶段完成: 8 段共 172 个候选条目"
+  ],
+  "result": {
+    "candidate_count": 172,
+    "gaps": [],
+    "coverage_note": "总体评估: 记忆树对本对话的 durable 内容覆盖得**异常完整**, 我未发现任何 high/medium-confidence 的真缺口。本会话本身就是在用户高强度记忆纪律 (反复强制 backstop 验证 + currency 主动传播 + 结构健康整理) 下进行的, 几乎每条 durable 内容都在发生当下就密集落盘, 所以候选并集里的 8 段抽取基本是已覆盖项与 transient 项的重复。\\n\\n逐簇确认已覆盖:\\n\\n1. **主线 v22→v28 审查全程 + 各轮 finding + verdict**: handoff_windows_ninth_review_pending.md 是单一 living 源, 完整记录 v22(九审双B)→v23→v24→v25→v26→v27→v28(四 soundness 洞+F9 quarantine)+内部 7 轮严格审 (R3 抓 F7 pole_radius); project_phase_1_2_progress.md 也已把\"CLEAN GO = 本地复审非 GPT 输出\"解耦 (即候选里那条 MED overclaim 已修)。\\n\\n2. **接手/环境/迁移/dual-slug**: project_windows_handoff_env.md 覆盖 D:\\\\追光\\\\zmd 上移、dual-slug 解结、Windows venv 布局、repo.bundle、能力边界。\\n\\n3. **验证方法论 (proxy/scope/closed-loop/rule#3b/#4/#4b/#4c)**: feedback_verification_independent_backstop.md 极详, 含 4 个切窄变体、镜头原始输出要读、re-audit fresh-full、共享工作树 mutant 污染等。\\n\\n4. **N=1 因果病**: feedback_no_causal_claim_from_n1.md 含两个实例 (README/无下载按钮)。\\n\\n5. **记忆现状协议 + 强制函数 + 实例/分身 transclusion 引擎**: feedback_memory_currency_protocol.md (rule#7 主动传播 + stamp_living_status 强制函数) + feedback_memory_tree_structural_health.md (四失效轴 + 实例/分身模型) 全覆盖。\\n\\n6. **GitHub 备份 + worktree + --no-verify + gemini key 外发暴露轴**: reference_github_backup.md 完整。\\n\\n7. **打包/外审规范 (no-priming/唯一例外 v17 反转/给补丁打包/prompt 纯净/不附 deps/close 门禁≥3 连续清零)**: index_packaging_cluster + external_review_prompt_template + review_pkg_no_prompt_inside + big_milestone_gpt_pro_review 全覆盖。\\n\\n8. **派遣选型 + Ultracode + resume + deferral flinch + main-merger 偏见**: agent_vs_workflow_dispatch + main_merger_scope_creep_bias。\\n\\n9. **Windows/PowerShell 踩坑 (Remove-Item 护栏/中文乱码/here-string/SendUserFile 无下载按钮因果未验/LF manifest/junk-in-root/UTF-8)**: windows_powershell_harness_pitfalls。\\n\\n10. **CP-SAT 事实 (ByteSize API 不存在→ExportToFile + bytes/term 分约束类型 4 vs 10-11)**: cp_sat_no_add_lazy_constraint。\\n\\n11. **Layer-2 adversarial + validator 重算判定线 + F9 quarantine 量词倒置 + Gemini r4 deferral 反转**: adversarial_soundness_audit (含 v28 三振 + 判定线) + f9_area_only_not_density (含 quarantine 现状头块)。\\n\\n12. **数字单一来源 Design A/B + 第4个 radius 副本 fresh-pass**: authoritative_numbers_single_source。\\n\\n无系统性遗漏。少数未单独成条的细节 (如 v23/v24/v25 各包精确 sha、deps 块字节细节、单次 build sha 演进) 均为 transient 制品状态, 已在 handoff 历史段或 review hub 记录, 不值得新建 durable 条目 (符合 keep-review-process-light + 避免过度记录)。"
+  }
+}
