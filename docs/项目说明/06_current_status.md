@@ -1,8 +1,8 @@
-# 06 — 现状细则 (Phase 1.2 close GO_WITH_MINOR + F3 done, 当前 P1.3A 主体设计)
+# 06 — 现状细则 (Phase 1.2 spike close 闭关中)
 
-> **现状 cross-ref**: 项目权威「当前 phase/状态」见 memory `[[phase-1-2-progress]]` 2026-05-27 终态段。本文以下 Phase 1.1 段落是**已完成的历史里程碑**, 不是当前状态。
+> **现状权威源**: 项目「当前 phase/状态」的 living 权威源 = `CLAUDE.md`（Current Phase 段）+ CC memory handoff（仓库外）。本文以下 Phase 1.1 段落是**已完成的历史里程碑**, 不是当前状态。
 
-**当前状态 (2026-05-27 起)**: Phase 1.2 **7/7 cut family close** (F5/F9/F2-F4/F6/F7/F8 全 Gemini GO) + **F3 special-case phase 已完成** (F3 port_exposure generator commit `c768806` 实现, oracle 277→344 行)。spike close gate = **GO_WITH_MINOR** (GPT pro v14→v22 八轮外审收口, G6a SOFT 进 P1.3A risk register)。下一步进 **P1.3A** 主体 (real `PoseBoolExactMaster` 接 LBBD + 多轮收敛, 走 N=8 parallel design)。详见 [[phase-1-2-progress]] 2026-05-27 终态段。
+**当前状态 (2026-06-04)**: **Phase 1.2 spike close 闭关中**（cut-family validator soundness 审查）。7/7 cut family + **F3 special-case phase 已完成**（F3 port_exposure generator commit `c768806`, oracle 277→344 行, `EXACT_F3_GENERATOR_ENABLED` gated default-disabled）。**外审持续到 v28**（非早期"八轮 / v22 收口"——那是中间快照）：v28 GPT pro 外审 catch **4 个真 soundness 洞**（F5 slot-collision / F9 量词倒置 / F6 region_demand / F7F8 footprint），均已修在 master，其中 **F9 = tight-K quarantine（实质停用，见下方 F9 条 + PROJECT_LOCK §3A）**。**close 门禁 = 大节点 ≥3 次连续独立审查零问题**；v28 找到洞后 consecutive-clean 计数器**重置、尚未达标**。下一关 = 重建 v29 + 续外审连续清零轮，过后进 **P1.3B**（real `PoseBoolExactMaster` 接 LBBD 真 master 集成；**P1.3A = attach spike，已先验**；⚠️ doc-P1.3A/B 命名 ≠ memory 口径的"P1.3A 主体"，见 `CLAUDE.md` 命名错位提示）。详细现状以 `CLAUDE.md` + handoff 为准。
 
 ---
 
@@ -47,6 +47,11 @@
 - **F9 area-only** invariant: generator 只接受 `area_capacity_overflow` witness,
   不接受 `routing_overflow` / `binding_overflow` / `pcr_cut_overflow` (PROJECT_LOCK
   §3A, [Gemini math review verdict 2026-05-23](../research/p3_b_design_v2_20260521/external_review/gemini_math_review_action_plan_20260523.md))
+  - **⚠️ (2026-06-04) F9 tight-K quarantine（实质停用）**: v28 外审后 validator 对
+    `max_allowed_area = K < safe_ub` fail-closed 拒（cert 不携带 replayable tight-bound
+    proof）→ F9 只剩 `K == safe_ub` 的平凡 cut, **整族实质停用**（reverses Gemini
+    round-4 oracle-trust deferral；解封须 P1.5+ 给 cert 加 area-capacity proof-carrying
+    字段）。**故本文/计划文档里把 F9 当"主力几何 lift / 主解"的措辞已不成立**。见 PROJECT_LOCK §3A。
 - **2026-05-24 fail-closed 复查补强**:
   - lifecycle: base64 改为 strict decode (`validate=True`), region bitset 拒绝长度不对 / grid 外高位置 1, `Cut.scope` / `Cut.cert` 必须是真对象
   - F1/F2/F3/F4 validator: `bool` 不再被当成 `int`, 字符串数字不再被偷转成数字, 非空 ID / cell / registry schema 更严格

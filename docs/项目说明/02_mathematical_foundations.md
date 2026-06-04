@@ -179,15 +179,17 @@ cut 从产到 attach master 经 9 step [cite lifecycle §2]:
 |---|---|---|---|
 | 1 | canonicalize | 跟产 cert 物理 (normalize bitset / sort literals) → 同 cert 哈希等 | Phase 1.1 闭环 |
 | 2 | generate | oracle 产 cert (允许 Byzantine, 不信任) | Phase 1.1 4 family ready |
-| 3 | minimize | 产最小 cut (deletion-based / QuickXplain, F5 用) | **defer Phase 1.2 P1.11** |
+| 3 | minimize | 产最小 cut (deletion-based / QuickXplain, F5 用) | Phase 1.2 **P1.2B-F5**（原误名 P1.11）|
 | 4 | serialize | cert + body → JSON | Phase 1.1 闭环 |
 | 5 | deserialize | JSON → cut object (validate schema) | Phase 1.1 闭环 |
 | 6 | validate | validator 重算 cert, 决定 sound/unsound | Phase 1.1 闭环, 4 family |
 | 7 | attach-scope check + evaluate | scope.matches(state) + body 重算 sound | Phase 1.1 dispatch + 4 family evaluator |
-| 8 | apply-to-master | cut.body → master.AddLinear / cp_sat lazy | **defer Phase 1.3 P1.21** |
+| 8 | apply-to-master | cut.body → master.AddLinear（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| **defer Phase 1.3 P1.3B**（原名 P1.21；`step_8_apply_to_master` 仍 NotImplementedError）|
 | 9 | replay (on ghost/state change) | re-validate active/held cut, decide ATTACH/HOLD/QUARANTINE | Phase 1.1 闭环 (Step M fail-closed) |
 
 **Step 8 missing 当前是为啥 cut framework 跑 unit test 但**没真接进 master** — Phase 1.3 实施.
+
+> **(2026-06-04 现状提示)** 上表的 "Phase 1.1 闭环 / defer Phase 1.2" 是 Phase 1.1 时代口径。此后 **Phase 1.2 已闭关 F5–F9** cut family（generator+validator，含 F3 special-case；F9 后被 tight-K **quarantine** 实质停用）。Step 8 真 master 集成仍属 **P1.3B**（待接）。当前现状以 `06_current_status.md` + `CLAUDE.md` + PROJECT_LOCK 为准。
 
 **Step 3 missing 影响**: F5 deletion 当前不能产 minimal unsat core, F5 实施 (Phase 1.2 P1.11) 时同步落 step 3.
 
@@ -521,7 +523,7 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/F9_MORPHOLOGY_CA
 | Family 对 | 关系 |
 |---|---|
 | F1 ↔ F6 | F6 是 F1 stronger refinement (interval cover vs count) |
-| F1 ↔ F9 | F9 是 F1 scope 扩展 (允许更弱 envelope bound) |
+| F1 ↔ F9 | **互补 family**（F9 area-based vs F1 cell-based；**非** F1 scope 扩展，见 §3.9）|
 | F2 ↔ F4 | F2 是 partition-level, F4 是 pointwise; F4 ⊆ F2 |
 | F3 ↔ F5 | F3 是 2-literal pattern, F5 是 multi-literal generalization; F3 ⊆ F5 |
 | F4 ↔ F8 | F4 是 cell 4-conn (belts), F8 是 line-of-sight (power); 独立 |

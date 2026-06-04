@@ -157,3 +157,15 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 
 ---
 
+## 5.14 Phase 1.2 历史 (摘要, 2026-06-04 补)
+
+本「历史回顾」此前止于 2026-05-23 Phase 1.1 exit hardening，缺整个 Phase 1.2。摘要补齐（详细 living 记录在 CC memory `phase-1-2-progress` / handoff + `docs/research/` 归档，仓库外为权威）：
+
+- **cut-family close (F5–F9)**：F5 pattern_nogood / F6 shape_packing_hall / F2·F4 / F7 power_hitting_set / F8 power_grid_reach / F9 density_envelope 各经多轮 Gemini per-commit cross-check（F8 最严 5 轮 12 finding）。
+- **F3 special-case phase**：F3 port_exposure generator 落地（commit `c768806`，oracle 277→344 行，`EXACT_F3_GENERATOR_ENABLED` gated）。
+- **外审 v14→v28**（非早期"八轮收口"）：GPT pro 多轮外审 + 内部多镜头对抗审查。**v28 catch 4 个真 soundness 洞**（F5 slot-collision / F9 量词倒置 / F6 region_demand / F7F8 footprint），全修；**F9 = tight-K quarantine 实质停用**（见 PROJECT_LOCK §3A）。
+- **数字单一来源 (Design A) + 共享 canonical SoT (Design B)** 工装落地（核心节点 `authoritative_numbers.json` + drift-test + `canonical_sot` helper + meta-test）。
+- **close 门禁**：大节点 **≥3 次连续独立审查零问题**；v28 找洞后计数器重置、**尚未达标**（spike close 闭关进行中）。
+
+---
+
