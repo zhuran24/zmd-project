@@ -2,9 +2,11 @@
 
 **最后更新**: 2026-05-16
 
-Phase 3B 优化期间 sprint / spike / audit / validator 产生了 **154 src + 264 tests + 252 scripts = 670 个**带 `phase3b_` 前缀的文件. 这份索引按主题 cluster 分类, 方便定位"哪些文件干嘛".
+> ⚠️ **HISTORICAL / 路径已失效 (2026-06-04)**：① 整个 Phase 3B tuning paradigm 已被 **cut-family LBBD** 取代（见 `CLAUDE.md`），下方"active 主线 / 每天可能用 / B5a 当前 sprint"等措辞**非当前现状**（当前 = Phase 1.2 spike close + F1–F9）。② 本索引下方仍按旧 flat 布局（`src/search/phase3b_*.py`）写，但 **2026-05-16 cleanup（commit e4bad28）已物理重组**：670 个文件 `git mv` 到 `src/search/phase3b/<cluster>/<short_name>.py`（`phase3b_` 前缀已剥离），故下方代表文件名与 `find src/search -name 'phase3b_*'` 查找指引**已失效**。要定位现路径用 `ls src/search/phase3b/<cluster>/`。
 
-**重要**: 这些文件**没有物理重组**到子目录, 因为 import 路径变动 risk 太大. 索引只是逻辑分类. 真要找文件还是 `grep` / `ls scripts/build_phase3b_*` / `find src/search -name 'phase3b_*'`.
+Phase 3B 优化期间 sprint / spike / audit / validator 产生了 **154 src + 264 tests + 252 scripts = 670 个**（彼时带 `phase3b_` 前缀的）文件. 这份索引按主题 cluster 分类, 方便定位"哪些文件干嘛".
+
+**（历史原文，已被上方 banner 修正）** 这些文件当时**没有物理重组**到子目录, 因为 import 路径变动 risk 太大. 索引只是逻辑分类. （注：2026-05-16 e4bad28 后已重组到 `src/search/phase3b/<cluster>/`，前缀剥离。）
 
 ---
 

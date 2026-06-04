@@ -7,6 +7,8 @@ owner: phase3b-exact-endgame
 
 # Exact Campaign Operations
 
+> ⚠️ **(2026-06-04)** frontmatter 的 `CURRENT_CODE_ALIGNED` / `last_verified_against: 2026-04-17` 是 Phase 3B 时代标注，自那以后未再复核（CP-SAT 长跑运营面在 cut-family LBBD / B1 pose-bool / Design A-B 演进后可能已漂）。当前现状权威源 = `CLAUDE.md` + `PROJECT_LOCK.md`；本文件的 campaign recovery/resume/reset/telemetry 操作面按其标注日期读、用前对照 `CLAUDE.md` runbook。
+
 这份文档覆盖 Phase 3B 的 B1 操作面：recovery、resume、reset、telemetry
 和 stop-reason 判读。它不改变 exact proof 语义，也不推进 B2/B5/B7。
 

@@ -1,13 +1,13 @@
 # Phase 3C Optimization Roadmap v1
 
 **Date**: 2026-05-08
-**Status**: Active — supersedes prior research-mode planning
+**Status**: HISTORICAL (2026-06-04) — 项目已转入 **cut-family LBBD / Phase 1.2 spike close**（见 `CLAUDE.md`）；本 Phase 3C 优化 roadmap 非当前主线，下方 P0/P1 条目作历史研究记录读。
 **Source**: 10 rounds of agent research (78 transcripts archived under
 `docs/research/agent_transcripts/`, indexed at `docs/research/INDEX.md`)
-**Status**: research is iterating, not closed. Each P0/P1 entry of "solver
-parameter +N%" type must be verified by a follow-up source-code audit before
-landing — see P0 #1 (REFUTED 2026-05-08 by R12 `af3d797751cb8bbb2`) for the
-precedent. Lesson recorded in `feedback_verify_solver_param_claims.md`.
+**Note**: 即便在当时 roadmap 语境下，research 也是迭代未闭合 —— 每条 "solver
+parameter +N%" 型 P0/P1 必须经 follow-up 源码 audit 才能 land，见 P0 #1
+（REFUTED 2026-05-08 by R12 `af3d797751cb8bbb2`）先例。教训记于
+`feedback_verify_solver_param_claims.md`。
 
 ## ROI scoring legend
 

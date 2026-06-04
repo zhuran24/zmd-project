@@ -1,6 +1,8 @@
 # Phase 3B Operating Profile
 
-This document records the current Phase 3B operating profile lock. It is an
+> ⚠️ **HISTORICAL (2026-06-04)**：整个 Phase 3B tuning paradigm 已被 cut-family LBBD 取代（见 `CLAUDE.md`）。生产启动现走 `scripts/run_campaign_p2_workers1.sh`（workers=1, RSS gib≈14），**非**下方 `prod_4x4_normal`（workers=4）profile。本文件按历史运营契约读。
+
+This document records the (historical) Phase 3B operating profile lock. It is an
 operations contract only: it does not claim full-scale exact close, and it does
 not change release, viewer, frontdoor, or surface-health exact status.
 
