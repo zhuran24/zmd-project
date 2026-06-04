@@ -173,11 +173,11 @@ markers 的 `IgnorePkg` 行实现，可可逆 toggle。
 python scripts/production_readiness_gate.py
 ```
 
-启动 168h 大跑前手动跑这个，缺一项 hard blocker 就 BLOCK。检查项：
+启动 168h 大跑前手动跑这个，缺一项 hard blocker 就 BLOCK。检查项（**11 项 = 5 blocker + 6 warning，以 `production_readiness_gate.py` docstring + `gate_check()` 为准**）：
 pacman freeze 已启用 (Linux only)、venv + ortools 可导入、preflight 核心
 守卫测试通过、kernel 是 cachyos-bore 变种、磁盘 ≥100 GiB free、git
 working tree 干净、THP enabled、jemalloc 装且 LD_PRELOAD 配置、进程
-cpu_affinity 限定 P-core。Exit code: 0=ready, 1=blocked。
+cpu_affinity 限定 P-core、**`EXACT_POWER_PLACEMENT_SUBPROBLEM` 未启用 (exploratory blocker)**、**OOM headroom (parallel × peak_worker_RSS + host < MemAvailable, blocker)**。Exit code: 0=ready, 1=blocked。
 
 跟 `pacman_campaign_freeze.sh --enable` 配套用：先 freeze → 再跑
 readiness gate → 全 OK 才启动 campaign。
@@ -199,7 +199,7 @@ bash scripts/run_campaign_linux.sh --vis
 - 合计 +15-22%（不是路线图原 claim 15-30% 因 stack-efficiency 折扣）
 
 启动 168h campaign **必须**用这个 wrapper（直接 `python main.py` 会丢两件套
-的收益）；readiness gate 9/9 项检查会自动 flag 漏配置。
+的收益）；readiness gate 全部检查项 (11 项, 见上) 会自动 flag 漏配置。
 
 ### Community blueprint hint 注入 (D step 2, 2026-05-16 落地)
 
