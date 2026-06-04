@@ -49,7 +49,7 @@ exact-mode-safe per PROJECT_LOCK.md.
 
 | # | Item | Source | Save | Cost | ROI |
 |---|------|--------|------|------|-----|
-| 7 | **ε-Certified three-stage 168h split (25h/50h/85h)** | R3+R7+R10+R11 (`a6480e76a7177e6fd`, `a0ac44e2d03f4edb2`, `acb9bd4fdd02868c2`, `a823b529b0879c4bb`) | avoids 168h run-out (catastrophic save) + 1000× tiered acceleration | **~5h prep + ~5 days** (R11 revealed engineering-layer prerequisites) | very high |
+| 7 | **ε-Certified three-stage 168h split (端点 25h/75h/168h，段长 25/50/93；早先写的 "25/50/85" 加和=160≠168 有误，权威算法 `outer_search.py`)** | R3+R7+R10+R11 (`a6480e76a7177e6fd`, `a0ac44e2d03f4edb2`, `acb9bd4fdd02868c2`, `a823b529b0879c4bb`) | avoids 168h run-out (catastrophic save) + 1000× tiered acceleration | **~5h prep + ~5 days** (R11 revealed engineering-layer prerequisites) | very high |
 | 7a | **— prep: schema_v4 with `bound_state` block** | R11 `a823b529b0879c4bb` | required by #7; current checkpoint has no `lb`/`ub`/`gap`/`epsilon` fields | ~30 min + lock/spec/test sync | gating |
 | 7b | **— prep: cut pool ε-stage bucketing** | R11 `a823b529b0879c4bb` | reuse 5%-stage cuts in 1%/0% stages (looser ε ⟹ tighter ε is sound) | ~45 min | gating |
 | 7c | **— prep: `fill_tightened_domains_in_response=true`** | R11 `a823b529b0879c4bb` | only public CP-SAT cross-solve dual-info channel | ~30 min | gating |

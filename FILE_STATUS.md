@@ -73,8 +73,8 @@
 |---|---|---|---|
 | `src/models/flow_subproblem.py` | HISTORICAL_OR_EXPLORATORY | diagnostic/exploratory | not a certified proof source |
 | `data/solutions/cuts_*.json` | HISTORICAL_OR_EXPLORATORY | legacy artifacts | not implicitly exact-safe |
-| `temp_scripts/` | HISTORICAL_OR_EXPLORATORY | benchmark/dev utilities | not production source of truth |
-| `logs/` / `temp_*.log` / `diag_log.txt` | HISTORICAL_OR_EXPLORATORY | archive/debug output | retained for diagnosis only |
+| `temp_scripts/` (运行时/临时, 当前 repo 不含) | HISTORICAL_OR_EXPLORATORY | benchmark/dev utilities | runtime/ad-hoc 生成, not production source of truth |
+| `logs/` / `temp_*.log` / `diag_log.txt` (运行时生成, 当前 repo 不含) | HISTORICAL_OR_EXPLORATORY | archive/debug output | runtime-generated, 运行时才出现 (`*.log` 受 .gitignore 挡) |
 
 ## Postprocess and Delivery
 

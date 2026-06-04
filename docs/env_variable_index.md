@@ -48,7 +48,7 @@
 | `EXACT_POWER_SUBPROBLEM_SECONDS` | float | (内部 default) | benders_loop.py | power placement subproblem 超时 |
 | `EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS` | float | (内部 default) | phase3b_coordinate_validation_*.py | coordinate validation 单次预算 |
 | `EXACT_GHOST_AWARE_POSE_ORDER_VALIDATION_SECONDS` | float | (内部 default) | phase3b_pose_order_validation_probe.py | pose order validation 单次预算 |
-| `EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS` | float | 2.0 | benders_loop.py | mandatory rect precheck CP-SAT 32-anchor 超时 |
+| `EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS` | float | 2.0 | `master_model.py` | mandatory rect precheck CP-SAT 32-anchor 超时 |
 
 ---
 
@@ -84,7 +84,7 @@
 
 | Name | Type | Default | Reader | 作用 |
 |---|---|---|---|---|
-| `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` | path | (empty) | benders_loop.py:3565 | **2026-05-16 land**. JSON 路径, 内容 `Dict[instance_id, pose_idx]`. 整链 merge greedy hint, master.solve 用. wrapper 自动 default 指 `data/hints/blueprint_2026_05_13_master_hint.json` |
+| `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` | path | (empty) | `benders_loop.py` (搜符号, 行号会漂) | **2026-05-16 land**. JSON 路径, 内容 `Dict[instance_id, pose_idx]`. 整链 merge greedy hint, master.solve 用. wrapper 自动 default 指 `data/hints/blueprint_2026_05_13_master_hint.json` |
 | `EXACT_MASTER_HINT_CONFLICT_LIMIT` | int | (内部 default) | master_model.py | hint conflict 时的尝试限制 |
 | `EXACT_MASTER_HINT_PERSISTENCE` | bool | False | master_model.py | hint 跨 Benders iter 持久化 |
 | `EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT` | int | (内部 default) | master_model.py | failed warm-start anchor sample 上限 |
@@ -100,7 +100,7 @@
 | `EXACT_EPSILON_STAGE1_END_HOURS` | float | 25 | outer_search.py | ε-certified stage 1 边界 (起到 25h) |
 | `EXACT_EPSILON_STAGE2_END_HOURS` | float | 75 | outer_search.py | ε-certified stage 2 边界 (25h 到 75h) |
 | `EXACT_FRONTIER_PROBE_MAX_ANCHORS` | int | 64 | outer_search.py | 前沿探针最大 anchor 数 |
-| `EXACT_USE_HIGHS_MASTER` | bool | 0 | master_model.py | 切到 HiGHS master 后端 (实验, 已 verify 死路, 见 lever_verdicts.md L2) |
+| `EXACT_USE_HIGHS_MASTER` | bool | 0 | `highs_candidate_evaluator.py` (+ highs_master_model.py dead) | 切到 HiGHS master 后端 (实验, 已 verify 死路, 见 lever_verdicts.md L2) |
 | `EXACT_MASTER_GHOST_ANCHOR_FILTER` | str | (空) | `benders_loop.py` (`_parse`, ~L417/427) | A 方案 ghost_anchor_filter：`'x,y'` anchor pair（`;` 分隔，如 `22,28`），env-gated, -80% search space |
 | `EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE` | int | (内部) | exact_coordinate_master.py | tight pole_slot upper bound override (#84) |
 | `EXACT_COORDINATE_MASTER_SEARCH_PROFILE` | str | "exact_coordinate_guided_branching_v4" | exact_coordinate_master.py | 3 选 1: `guided_branching_v4` / `ghost_first_v1` / `ghost_after_counts_v1` |
