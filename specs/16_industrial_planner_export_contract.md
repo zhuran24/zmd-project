@@ -26,6 +26,8 @@ data/exports/industrial_planner/
   industrial_planner.compatibility_manifest.json
 ```
 
+> **(2026-06-04 补)** 交付 bundle 现还含 `validation_report.json` + `validation_report.md`（spec 22 Part B `blueprint_validator` 产出）；上方是早期最小布局，实际 bundle 文件集以 exporter 真实输出 + spec 22 为准。
+
 ## Root contract
 
 The emitted target blueprint follows the observed IndustrialPlanner public

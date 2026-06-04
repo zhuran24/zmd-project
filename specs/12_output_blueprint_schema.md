@@ -56,7 +56,7 @@ owner: output-layer
       "h": 10,
       "anchor_x": 35,
       "anchor_y": 40,
-      "score": 161.0
+      "score": 160.0
     }
   }
 }

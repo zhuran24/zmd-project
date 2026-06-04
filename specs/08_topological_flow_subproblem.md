@@ -81,7 +81,7 @@ $$ \sum_{k \in \mathcal{K}} (f_{u,v}^k + f_{v,u}^k) \le C_{u,v} \quad \forall \t
    **【切平面数学语义】**： 主模型你听好了：在接下来的所有搜索中，**绝对不允许**同时把这几台机器按当前的位姿摆放！你们把通道堵死了！必须至少移走其中一台机器，或者把它们旋转腾出空间！
 
 > [!NOTE]
-> **[竣工图]** Farkas 对偶不可行射线提取在代码中尚未实现（`extract_bottleneck_cells()` 返回空集）。当前的退化方案是将整个失败解作为 no-good 切面（见 `cut_manager.py:extract_nogood_from_solution`）。这比 Farkas 精细提取弱很多，但保证正确性。[TBD] 待路由层完成后补充实现。
+> **[竣工图]** Farkas 对偶不可行射线精细提取未实现，退化为整失败解 no-good 切面（保证正确性、比 Farkas 弱）。**⚠️ 注 (2026-06-04)**: 本 NOTE 引的 `extract_bottleneck_cells()` / `cut_manager.py:extract_nogood_from_solution` 符号名在当前 `cut_manager.py` 已**不存在**（该文件暴露 `BendersCut` / `add_cut` / `register_structured_cut` 等，且是**早期** cut 范式）；当前主线 cut 体系已转 F1–F9 cut-family（`src/cuts/`，见 spec 10 范式更新）。本 NOTE 作早期范式历史读。
 
 ---
 

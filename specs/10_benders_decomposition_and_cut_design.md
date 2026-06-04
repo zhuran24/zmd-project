@@ -5,7 +5,7 @@ last_verified_against: 2026-03-23
 owner: cut-manager
 ---
 > [!NOTE]
-> **ACCEPTED_DRAFT — 本文件已与 `src/models/cut_manager.py` 对齐。`[竣工图]` 标注反映代码实际状态。**
+> **ACCEPTED_DRAFT — 本章 Type-I/II no-good cut 设计与 `src/models/cut_manager.py`（**早期** cut 范式，见下方 2026-06-04 范式更新）对齐；当前主线 cut 体系已转 F1–F9 cut-family。`[竣工图]` 标注反映代码实际状态。**
 
 # 10 逻辑型 Benders 分解与切平面通信协议 (Logic-based Benders Decomposition & Cut Design)
 

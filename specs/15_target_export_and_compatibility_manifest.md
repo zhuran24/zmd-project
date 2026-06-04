@@ -30,3 +30,5 @@ and carries a target capability descriptor.
 
 Phase 1 lands the contract and tests only. Real target exporters remain deferred
 until compatibility-first work begins.
+
+> **(2026-06-04 currency)** 这条"exporters 仍 deferred"已部分过时：**IndustrialPlanner 单向 exporter 已交付**（见 spec 16 export contract / spec 22 Part A precision export，对应 `export_blueprint.py` / `export_industrial_planner_bundle.py` 已落地）。本节针对的"compatibility-first 多 target exporter"通用框架仍 deferred，但具体 IndustrialPlanner target 这条已 delivered。
