@@ -553,21 +553,22 @@ def write_verdict_md(results: Dict[str, Any], out_path: Path) -> None:
     lines.append("## Recommended next step (main conversation)")
     lines.append("")
     if overall == "GO":
-        rec = ("**GO** to v20 review package build. Per MERGER §6.5: \"等 spike 跑完 verdict.md 后打 review 包 "
-               "(含 patch verify + Finding 5 close spike verdict)\". Spike close 5/5 Finding 5 项 with all G PASS "
-               "and zero N trigger. v20 package should include: spike verdict.md + B1-B6 commits + A3 fixture + "
-               "MERGER round 0-3 cross-check archive + GPT pro audit. After v20 GPT pro review GO, proceed to "
-               "P1.3A 主体 design (real PoseBoolExactMaster integration + LBBD multi-iter + 9 family translator "
-               "+ 6-dim watcher + cut store) via N=8 parallel design protocol.")
+        rec = ("**GO** for this historical spike run. Package-build labels (version, cover doc) are supplied "
+               "by the current review wrapper, not by this data-producing runner. Spike close 5/5 Finding 5 项 "
+               "with all G PASS and zero N trigger. Proceed only after the package-level README/verdict/RESULTS "
+               "review confirms current soundness and sizing gates; then enter P1.3A 主体 design (real "
+               "PoseBoolExactMaster integration + LBBD multi-iter + 9 family translator + 6-dim watcher + "
+               "cut store) via N=8 parallel design protocol.")
     elif overall == "GO_WITH_MINOR":
-        rec = (f"**GO_WITH_MINOR** to v20 package — soft fails: {g_fails}. All HARD G criteria PASS, zero "
-               f"hard N trigger. Soft fails documented as known sizing limitations (G6a wall is toy artifact, "
-               f"will be reassessed under real master in P1.3A). Recommend v20 package build with explicit "
-               f"soft-fail flagging in cover doc.")
+        rec = (f"**GO_WITH_MINOR** for this historical spike run — soft fails: {g_fails}. All HARD G criteria "
+               f"PASS, zero hard N trigger. Soft fails documented as known sizing limitations (G6a wall is toy "
+               f"artifact, will be reassessed under real master in P1.3A). The current review wrapper decides "
+               f"the package/version label and carries explicit soft-fail flagging in the cover doc.")
     else:
         rec = (f"**NOT_GO** — hard fails: {hard_g_fails}, hard N triggers: {[k for k, v in n_trigger.items() if v]}. "
-               f"Do NOT proceed to v20 package. Reflect on each fail: harness bug? scope drift? real prod-shape "
-               f"limit? Likely respins: B2 re-tune, B3 reconstruct, possibly re-spawn paralle design.")
+               f"Do NOT promote this spike result into the current review package. Reflect on each fail: harness "
+               f"bug? scope drift? real prod-shape limit? Likely respins: B2 re-tune, B3 reconstruct, possibly "
+               f"re-spawn parallel design.")
     lines.append(rec)
     lines.append("")
     lines.append("Off-limits enforce: PASS (B1-B6 added only spike-lib files + this verdict.md;")
