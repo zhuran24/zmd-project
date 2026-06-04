@@ -52,6 +52,7 @@ import re
 import time
 from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
 
+from src.cuts.helpers import canonical_sot
 from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
 from src.cuts.helpers.power_network import any_target_reachable_from_pc
 from src.cuts.lifecycle import (
@@ -537,47 +538,13 @@ def _validate_ghost_only_disconnect(
 
 
 def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
-    """Read source-of-truth pole radius from state.canonical_rules.
-
-    Returns None on any missing layer / non-numeric value — caller maps
-    None to a schema_err / unsound ValidationResult.
-    """
-    rules = state.canonical_rules
-    if not isinstance(rules, dict):
-        return None
-    templates = rules.get("facility_templates")
-    if not isinstance(templates, dict):
-        return None
-    pole_tpl = templates.get("power_pole")
-    if not isinstance(pole_tpl, dict):
-        return None
-    canonical_radius = pole_tpl.get("power_coverage_radius")
-    if isinstance(canonical_radius, bool):
-        return None
-    if not isinstance(canonical_radius, (int, float)):
-        return None
-    return float(canonical_radius)
-
+    """Delegates to the shared SoT helper (single implementation, fail-closed)."""
+    return canonical_sot.lookup_canonical_pole_radius(state)
 
 
 def _lookup_canonical_template_dims(state: BState, template_id: str) -> Optional[Tuple[int, int]]:
-    rules = state.canonical_rules
-    if not isinstance(rules, dict):
-        return None
-    templates = rules.get("facility_templates")
-    if not isinstance(templates, dict):
-        return None
-    tpl = templates.get(template_id)
-    if not isinstance(tpl, dict):
-        return None
-    dims = tpl.get("dimensions")
-    if not isinstance(dims, dict):
-        return None
-    w_raw = dims.get("w")
-    h_raw = dims.get("h")
-    if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
-        return None
-    return (cast(int, w_raw), cast(int, h_raw))
+    """Delegates to the shared SoT helper (single implementation, fail-closed)."""
+    return canonical_sot.lookup_canonical_template_dims(state, template_id)
 
 
 def _validate_power_pole_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:

@@ -8,55 +8,80 @@
   },
   "numbers": {
     "cuts_tests_total": {
-      "value": 425,
+      "value": 437,
       "kind": "int",
       "recompute": "ast_count_def_test_in_src_tests_cuts",
-      "stale": [413, 414, 416, 418],
+      "stale": [
+        413,
+        414,
+        416,
+        418
+      ],
       "provenance": "computed: src/tests/cuts/*.py 里 `def test_` 计数 (无 parametrize 展开, 1 函数=1 test)。v28 4 洞修复 +7 对抗测试 -> 425。"
     },
     "f3_micro_probe_cases": {
       "value": 12,
       "kind": "int",
-      "stale": [9],
+      "stale": [
+        9
+      ],
       "provenance": "manual: spike test_toy_translator_f3_malformed.py (6 malformed + 3 garbage-char + 3 non-F3)。"
     },
     "type_pool_total_poses": {
-      "value": 81795, "kind": "int", "stale": [],
+      "value": 81795,
+      "kind": "int",
+      "stale": [],
       "provenance": "computed: sizing_gate sum(pool_sizes) (frozen spike)。"
     },
     "concrete_master_var_upper_proxy": {
-      "value": 325747, "kind": "int", "stale": [],
+      "value": 325747,
+      "kind": "int",
+      "stale": [],
       "provenance": "computed: sizing_gate sum(pool_sizes*multipliers)。"
     },
     "f9_single_group_max": {
-      "value": 784, "kind": "int", "stale": [],
+      "value": 784,
+      "kind": "int",
+      "stale": [],
       "provenance": "computed: sizing_gate max(f9_single)。当前 F9 per-cut single-group 上界。"
     },
     "f9_same_template_proxy_max": {
-      "value": 4608, "kind": "int", "stale": [],
+      "value": 4608,
+      "kind": "int",
+      "stale": [],
       "provenance": "computed: sizing_gate (same-template proxy)。"
     },
     "f9_all_manufacturing_proxy_max": {
-      "value": 11644, "kind": "int", "stale": [],
+      "value": 11644,
+      "kind": "int",
+      "stale": [],
       "provenance": "computed: sizing_gate (cross-group stress proxy, 非 per-cut 向量)。"
     },
     "f4_component_reach_group_expanded_max": {
-      "value": 20157, "kind": "int", "stale": [],
+      "value": 20157,
+      "kind": "int",
+      "stale": [],
       "provenance": "computed: sizing_gate max(component_reach group_all)。"
     },
     "ortools_linear_bytes_per_term": {
-      "value": 4.03, "kind": "float_approx", "stale": [],
+      "value": 4.03,
+      "kind": "float_approx",
+      "stale": [],
       "provenance": "measured: sizing_gate try_measure_ortools (env-dependent ~4.0, 非严格校验)。"
     },
     "ortools_boolor_bytes_per_term": {
-      "value": 10.01, "kind": "float_approx", "stale": [],
+      "value": 10.01,
+      "kind": "float_approx",
+      "stale": [],
       "provenance": "measured: ~10.0 (非严格校验)。"
     }
   },
   "phrases": {
     "remap_audit": {
       "current": "36/150",
-      "stale": ["36/50"],
+      "stale": [
+        "36/50"
+      ],
       "provenance": "manual: data/cuts/spike/remap_audit.json n_pairs_remapped=36 / n_pairs_total=150 = 24% (spike-only)。早期误作 36/50。"
     }
   },

@@ -126,6 +126,11 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
     必须对 `canonical_rules.facility_templates.{power_pole,protocol_core}.dimensions`
     fail-closed 核对 (与既有 `pole_radius` gate 同款)。当前 canonical 下无 live FP,
     防 footprint drift 退化成 F7 radius 同类洞。
+  共享实现集中在 `src/cuts/helpers/canonical_sot.py` (canonical lookup + fail-closed
+  dims 校验), F7/F8 委托它 (不再各持私有副本); `src/tests/cuts/test_canonical_sot_coverage.py`
+  meta-test 强制 (登记契约 + 私有 lookup 不复活)。**新增信任 canonical 标量的 family 必须
+  走 canonical_sot + 进登记表 + 加 behavioral red-test** (meta-test 抓回归, 但发现"全新未守
+  标量"仍靠人/审查 —— 诚实边界)。
 - **(2026-06-04 v28) F9 tight-K quarantine (supersedes Gemini round-4 oracle-trust
   deferral)**: density_envelope validator 对 `max_allowed_area = K < safe_ub` fail-
   closed 拒 (Phase 1.2 cert 不携带 replayable tight-bound proof)。净效果: F9 只剩
