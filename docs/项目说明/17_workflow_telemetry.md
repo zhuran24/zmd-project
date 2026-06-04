@@ -66,7 +66,7 @@ cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只�
 ```
 
 报警阈值 (per acceptance checklist E):
-- F5 cut ratio > 50% → stop-ship, 必须补强几何 lift
+- F5 cut ratio > 50% → stop-ship, 必须补强几何 lift（⚠️ 2026-06-04: F9 几何 lift 已 tight-K quarantine 实质停用，此 remedy 暂不可用、相关 stop-ship 逻辑待 F9 解封，见 PROJECT_LOCK §3A）
 - F5 median core size > 40 → 需 minimizer 加强 / 更强 family
 - F9/F5 ratio 长期 < 0.2 → density lift 没接上
 - unexplained infeasible 连续出现 → 人工复盘提炼 F10

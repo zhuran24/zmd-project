@@ -2,6 +2,8 @@
 
 > **2026-05-23 v2 命名更新**: 原 plan 把 `P1.11` 同时用作 "入门 7 项" 跟 "F5 pattern_nogood", 误导. v2 拆: **P1.2A** 入门 (entry hardening, 已落地) + **P1.2B-F{5,6,7,8,9}** 各 family.
 
+> ⚠️ **(2026-06-04 现状)** 本 plan 的 P1.2B-F5..F9 **已落地**（Phase 1.2 spike close 闭关中，各 family generator+validator + 多轮 Gemini/外审；见 [06](06_current_status.md) + [07 §5.14](07_historical_review.md)）。下方 forward-looking 措辞（"待实施 / 为啥重要 / 实施顺序"）多为**历史 plan / 参考**。**且 F9 已 tight-K quarantine 实质停用**（PROJECT_LOCK §3A）—— 故下文"F9 主力几何 lift / 防 F5 ratio 超 50%"的论证**当前不成立**（F9 这条 remedy 暂不可用，相关 stop-ship 逻辑待 F9 解封）。测试计数以核心节点 `authoritative_numbers.json` 为准（当前 **442**，非 189）。
+
 ## P1.2A — entry hardening ✅ DONE (2026-05-23 exit hardening + 2026-05-24 final polish)
 
 8 项 (7 原 plan + 1 新发现) 落地, 详 [06_current_status.md](06_current_status.md) + [07_historical_review.md §5.12](07_historical_review.md):
@@ -15,13 +17,13 @@
 7. ✅ F3 `evaluate_literal_port_exposure` 删
 8. ✅ `on_ghost_rect_changed` test stub 收紧 (`unsafe_test_replay_fn` + double flag)
 
-测试: **189 cuts pass**（普通模式 + `python -O`；178/181/188 都是历史中间口径，现以 189 为 Phase 1.1/P1.2A gate）。
+测试: **189 cuts pass**（Phase 1.1/P1.2A 时口径；178/181/188 是更早中间值）。**现 cuts 计数以核心节点 `authoritative_numbers.json` 为准 = 442（F5-F9 落地后）**，189 是旧值。
 
 ## P1.2B-F5 — pattern_nogood (优先级最高)
 
 **为啥优先 F5**: F5 是 lifecycle step 2 minimize 的最小闭环 + literal path 兜底. 没 F5, LBBD 重复踩同一坑; F5 不 time-box, MUS/QuickXplain 拖死; F5 不 multiset, 132 集群拖爆.
 
-**但**: F5 是**fallback 不是主力**. F5 ratio > 50% = stop-ship (per Gemini math review meta-audit). F9 才是主力几何 lift.
+**但**: F5 是**fallback 不是主力**. F5 ratio > 50% = stop-ship (per Gemini math review meta-audit). F9 才是主力几何 lift. **⚠️ (2026-06-04) F9 已 tight-K quarantine 实质停用（PROJECT_LOCK §3A）→ 此"F9 主解"论证当前不成立，stop-ship/补强逻辑待 F9 解封。**
 
 实施要求 (per Phase 1.2 P0 acceptance checklist A, [12_go_criteria.md §8.1.x](12_go_criteria.md)):
 - 新模块: `src/cuts/families/pattern_nogood.py` + `oracles/pattern_nogood_oracle.py` + `helpers/bounded_core_minimizer.py`
@@ -118,7 +120,7 @@ morphology safe/unsafe 详 [02_mathematical_foundations §3.9](02_mathematical_f
 ## Phase 1.2 实施顺序推荐
 
 1. **P1.2B-F5** (优先, 是 LBBD fallback 兜底, 没它整 pipeline 不安全)
-2. **P1.2B-F9** (主力几何 lift, 防 F5 ratio 超 50%)
+2. **P1.2B-F9** (原定主力几何 lift, 防 F5 ratio 超 50%; **⚠️ F9 现 tight-K quarantine 实质停用, 见顶 banner + PROJECT_LOCK §3A**)
 3. **P1.2B-F2/F4 generator** (填容量盲区)
 4. **P1.2B-F6** (Hall theorem refinement)
 5. **P1.2B-F7** (power hitting set)

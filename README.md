@@ -4,7 +4,7 @@
 
 > **当前主线（范式 = cut-family LBBD）**
 >
-> 项目范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计**：9 个 cut family **F1–F9** 当 Benders cut 收紧 master。当前阶段 = **Phase 1.2 spike close**（cut-family validator soundness 闭关）→ P1.3A（真 `PoseBoolExactMaster` 接 LBBD + 多轮收敛）。
+> 项目范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计**：9 个 cut family **F1–F9** 当 Benders cut 收紧 master。当前阶段 = **Phase 1.2 spike close**（cut-family validator soundness 闭关）→ **P1.3B**（真 `PoseBoolExactMaster` 接 LBBD 真 master 集成 + 多轮收敛；P1.3A attach spike 已先验）。⚠️ 此处用 doc-tree 命名（P1.3B = 真 master 集成）≠ CC memory 口径的"P1.3A 主体"，见 `CLAUDE.md` 命名错位提示。
 >
 > **现状 / phase 的权威源不在本 README**——见：
 >
