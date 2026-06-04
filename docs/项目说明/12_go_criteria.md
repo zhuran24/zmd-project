@@ -102,7 +102,7 @@
   fail-closed)
 - 跟 PROJECT_LOCK §3A 不冲突 (family list 仍 9 个, mode 不变)
 
-### 8.3 Phase 1.3 P1.21 (CP-SAT propagator 集成) GO
+### 8.3 Phase 1.3 P1.3B (CP-SAT propagator 集成) GO
 
 - step_8_apply_to_master 真接 master CP-SAT (env flag `EXACT_B_DESIGN_V2=1`)
 - lazy → hard constraint 转化 sound (cut attach 后 master state 跟 cut violate

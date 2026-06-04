@@ -165,7 +165,7 @@ cut framework 不解上面 4 root cause, 但**explicit 处理**衍生的 5 issue
 | 4. Routing 反馈翻译成强 cut | Class A insight | F2 cutset + F4 component_reach, **不**翻译成 pose-level no-good |
 | 5. m10 sound 性跨 scale 维持 | cand C ramp insight | Validator 每 family 独立重算 cert (adversarial soundness, §2.6) |
 
-Issue 3 (manufacturing cluster trap) 是当前 cut framework 最弱点 — F5 pattern_nogood 退化成 full no-good 风险, 132! permutation 撞墙. Phase 1.2 P1.11 实施 + Day 18-21 dedicated solution (orbit-aware pattern lift) 是 open Q (§5.3).
+Issue 3 (manufacturing cluster trap) 是当前 cut framework 最弱点 — F5 pattern_nogood 退化成 full no-good 风险, 132! permutation 撞墙. Phase 1.2 P1.2B-F5 实施 + Day 18-21 dedicated solution (orbit-aware pattern lift) 是 open Q (§5.3).
 
 ---
 
@@ -204,7 +204,7 @@ Issue 3 (manufacturing cluster trap) 是当前 cut framework 最弱点 — F5 pa
 
 Phase 3B repair5 (commit 7eb6e7f) master oracle 30 GB → 47 GB 是 cut framework 跑前提 — master 跑不起来 cut 没意义.
 
-Phase 1.3 P1.21 真集成时 cut framework wire 到 benders_loop 内 (`src/search/benders_loop.py`), env flag (§19) 切新框架. 不动 Phase 3A outer_search 跟 Phase 3B master/binding/routing/flow 架构.
+Phase 1.3 P1.3B 真集成时 cut framework wire 到 benders_loop 内 (`src/search/benders_loop.py`), env flag (§19) 切新框架. 不动 Phase 3A outer_search 跟 Phase 3B master/binding/routing/flow 架构.
 
 ---
 

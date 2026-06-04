@@ -50,7 +50,7 @@ cut framework 从 Phase 1.1 (4 family 单测) → 1.2 (5 family 加) → 1.3 (�
 - revert 方法: 单 commit revert `EXACT_FAMILY_VALIDATOR_STRICT` default (env 一行改), 不影响其他
 
 **Phase 1.2 → 1.3 切换 (cut framework 接进 benders_loop)**
-- 切换点: §13 P1.21 step_8 apply_to_master 真集成 master.AddLinear 时, env-gated 默认 OFF
+- 切换点: §13 P1.3B step_8 apply_to_master 真集成 master.AddLinear 时, env-gated 默认 OFF
 - 渐进 ramp:
   - Phase 1.3 first commit: env-gated 默认 OFF, unit test 在 mock master 上验
   - 1 candidate trial OFF baseline + ON enable 各 1 次, 对比 outcome

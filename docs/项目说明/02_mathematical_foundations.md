@@ -366,7 +366,7 @@ QuickXplain minimize: 找最小 `π_partial' ⊆ π_partial` 仍被 reject.
 - 不适用: 已知数学结构 → 走 F1/F2/F3/F4/F6/F7/F8/F9 (更紧)
 - F5 是 "兜底" family, 数学上是 LBBD nogood 的直接抽象
 
-**Phase status**: **defer Phase 1.2 P1.11** — minimize step (step 3) 实施 + QuickXplain 集成 + cert↔literal binding (复 F3 helper).
+**Phase status**: **defer Phase 1.2 P1.2B-F5** — minimize step (step 3) 实施 + QuickXplain 集成 + cert↔literal binding (复 F3 helper).
 
 **Open Q (defer §5.3, critical)**:
 - QuickXplain 超时阈值 (NP-complete, 实际 instance 上多大 budget?)
@@ -392,7 +392,7 @@ QuickXplain minimize: 找最小 `π_partial' ⊆ π_partial` 仍被 reject.
 - 不适用: length = 1 (单 cell facility) → 走 F1 (F6 退化成 F1 count)
 - F6 是 F1 的 stronger refinement: F1 检 total cell count, F6 检 interval-level cover
 
-**Phase status**: **defer Phase 1.2 P1.12** — Hall theorem check + interval graph cover algorithm.
+**Phase status**: **defer Phase 1.2 P1.2B-F6** — Hall theorem check + interval graph cover algorithm.
 
 **Open Q (defer §5.3)**:
 - F6 是否扩展到 2D (interior facility group 占多 row/col)?
@@ -424,7 +424,7 @@ cert:
 - 不适用: power_pole 不连通 → 走 F8 (power_grid_reach)
 - F7 是 set-level cover existence, F8 是 graph-level grid connectivity
 
-**Phase status**: **defer Phase 1.2 P1.13** — set cover schema + cell_owner causation split + literal binding.
+**Phase status**: **defer Phase 1.2 P1.2B-F7** — set cover schema + cell_owner causation split + literal binding.
 
 **Open Q (defer §5.3, critical)**:
 - LP relax ln(n) approximation 实际 instance 上是否紧?
@@ -449,7 +449,7 @@ v1.1 关键 (Gemini round 14 finding): `ghost_blocks_line` 改严格 line-segmen
 - 不适用: power_pole 找不到 cover facility → 走 F7
 - F8 跟 F4 同是 connectivity, 但 F4 是 cell-level 4-conn (belts), F8 是 line-of-sight (power network)
 
-**Phase status**: **defer Phase 1.2 P1.14** — Liang-Barsky 实施 + 退化 case (零长度 / 共线 / 正交).
+**Phase status**: **defer Phase 1.2 P1.2B-F8** — Liang-Barsky 实施 + 退化 case (零长度 / 共线 / 正交).
 
 **Open Q (defer §5.3)**:
 - Liang-Barsky 退化 case (零长度 / 共线 / 正交) 数学边界?

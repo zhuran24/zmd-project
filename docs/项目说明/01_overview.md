@@ -100,7 +100,7 @@ HiGHS 实测 42 GB > 30 GB (Phase 3B repair5), 换 LP relax B1 pose-bool master
 
 ### 27 个 paradigm 死路告诉我们 master 自身不能 fix
 
-`paradigm_death_timeline_27_lever.md` 记录全部死法:
+`docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md`（27 lever；live 权威在 CC memory `paradigm-death-timeline-27-lever`）记录全部死法:
 - B1 pose-bool master (L11)
 - PCR-CUT patch routing (Phase 5 multi-anchor verdict NOT GO)
 - SAC-Hull separator capacity (necessary ≠ sufficient)
@@ -139,7 +139,7 @@ main.py campaign
               ├─ binding subproblem
               ├─ routing subproblem
               ├─ flow diagnostic
-              └─ [Phase 1.3 P1.21 land] cut store accumulate
+              └─ [Phase 1.3 P1.3B land] cut store accumulate
                   ├─ F1-F9 oracle on INFEASIBLE
                   ├─ cut lifecycle 9 step
                   └─ master 加 lazy constraint

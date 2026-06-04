@@ -45,12 +45,12 @@ F9 density_envelope
 ### 9.2 Phase 间 dependency
 
 ```
-Phase 1.2 P1.11 入门 (7 factual fix)
+Phase 1.2 P1.2A 入门 (7 factual fix)
    ↓
-Phase 1.2 P1.11-P1.15 (F5-F9 实施)
+Phase 1.2 P1.2B-F5..F9 (F5-F9 实施)
    依赖: 入门 strict gate default ON / spec drift 清 / source_digest 真 hash
    ↓
-Phase 1.3 P1.21 (CP-SAT propagator 集成)
+Phase 1.3 P1.3B (CP-SAT propagator 集成)
    依赖: F5-F9 全 register (lifecycle step 8 接 9 family dispatch)
    ↓
 Phase 1.5+ (production integration)

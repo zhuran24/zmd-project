@@ -30,7 +30,7 @@
   - F9 `density_envelope` (geometric) — 上界几何 (≥ area baseline=1.0 trivial)
 - **family mode (literal vs geometric)** — F1/F2/F4/F6/F8/F9=geometric (sound deduction from geometry), F3/F5/F7=literal (proposition over pose assignments). PROJECT_LOCK §3A XOR
 - **9-step lifecycle** — canonicalize → generate → minimize → serialize → deserialize → validate → attach-scope check → evaluate → apply-to-master
-  - 当前 Phase 1.1: step 1/3-7 sound 闭环; step 2 (minimize) defer Phase 1.2 P1.11 (F5 deletion+QuickXplain); step 8 (apply-to-master) defer Phase 1.3 P1.21
+  - 当前 Phase 1.1: step 1/3-7 sound 闭环; step 2 (minimize) defer Phase 1.2 P1.2B-F5 (F5 deletion+QuickXplain); step 8 (apply-to-master) defer Phase 1.3 P1.3B
 - **cert (certificate)** — cut 的 mathematical 证明对象, 含 region/partition/component/commodity 等 family-specific 字段. validator 重算 cert 验 sound
 - **literal** — cut 中排除的具体 pose assignment (`x[instance_id, pose_id]` boolean). literal-mode cut 用; geometric-mode cut 不直接持 literal
 - **blocker** — F3 cert 中 blocking 一个 port slot 的另一 pose; F5 cert 中 "如果这些 literal 都 true 则 INFEASIBLE" 的支撑集
@@ -67,7 +67,7 @@
 
 ### A.4 Paradigm 死路 (历史)
 
-详 `paradigm_death_timeline_27_lever.md` (memory)
+详 CC memory `paradigm-death-timeline-27-lever` + `docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md`
 
 - **B1 (pose-bool master)** — L11 paradigm, 27×15 interior pose-bool 7.2s FEASIBLE 但 master.solve INFEASIBLE 不收敛. **L11-L16 ❌**
 - **PCR-CUT (Patch-Certified Routing Conflict Core)** — Path 14, env-gated. Phase 0-4 GO, Phase 5 multi-anchor marginal. 详 §4.2

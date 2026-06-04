@@ -154,7 +154,7 @@
 - F5 pattern_nogood 是 multi-literal generalization, F3 是 2-literal 特例
 - 实施 F3 (Phase 1.1 闭环) 加 multi-pose 是 F3 内扩展还是直接走 F5? 待 F5 实施后决
 
-**defer trigger**: Phase 1.2 P1.11 (F5) 实施后决 F3 是否扩展
+**defer trigger**: Phase 1.2 P1.2B-F5 (F5) 实施后决 F3 是否扩展
 
 #### F3 — 跟 F5 subsume 关系 **P1**
 
@@ -165,7 +165,7 @@
 - 但 family 合并不动 LOCK invariant, 是 spec 层简化
 - 合并好处: 减 dispatch 复杂; 不合并好处: F3 端口语义清晰, validator 重算更紧
 
-**defer trigger**: Phase 1.2 P1.11 (F5) 实施后, 看 F5 validator 是否真覆盖 F3 cert↔literals binding 严格性
+**defer trigger**: Phase 1.2 P1.2B-F5 (F5) 实施后, 看 F5 validator 是否真覆盖 F3 cert↔literals binding 严格性
 
 #### F4 — cell-flow capacity (cell 同时被多 commodity 用)? **P1**
 
@@ -186,9 +186,9 @@
 - L16 deletion-based 已 land helper (paradigm 死但 minimize 算法可复用)
 - PCR-CUT QuickXplain helper 已 land (Phase 0-4 GO)
 - 项目 instance 上 unsat core 大小未知 (mini PoC 50% reduction, production scale 未测)
-- Open question §17.6 (plan doc) cite, defer Phase 1.2 P1.11 实施时定
+- Open question §17.6 (plan doc) cite, defer Phase 1.2 P1.2B-F5 实施时定
 
-**verification trigger**: Phase 1.2 P1.11 实施时跑 prod data, p95 core size + minimize 时间分布, 定 super-timeout fallback (deletion-only / 不 minimize)
+**verification trigger**: Phase 1.2 P1.2B-F5 实施时跑 prod data, p95 core size + minimize 时间分布, 定 super-timeout fallback (deletion-only / 不 minimize)
 
 #### F5 — Manufacturing cluster trap (132 instance) 退化 **P0**
 
@@ -199,7 +199,7 @@
 - 已被识别为**当前 cut framework 最弱点**
 - 可能 solution: orbit-aware pattern lift (multiset eval §2.5 自然扩展); 或 F5 + F6/F3 复合 cut; 或 instance-level instance partition
 
-**defer trigger**: Phase 1.2 P1.11 (F5 实施) 必同步实施 orbit-aware pattern lift, 否则 P1.11 incomplete
+**defer trigger**: Phase 1.2 P1.2B-F5 (F5 实施) 必同步实施 orbit-aware pattern lift, 否则 P1.2B-F5 incomplete
 
 #### F6 — Hall theorem interval graph 反例边界 **P1**
 
@@ -210,7 +210,7 @@
 - 其他 length-k 反例: length=2 / 4 / 5 各类 ghost 切, 反例分布未列
 - production 几何上常见的 length-k facility: 2x1 / 3x1 / 3x3 / 5x5 / 6x4
 
-**defer trigger**: Phase 1.2 P1.12 (F6 实施) 时枚举 length-k × ghost-cut 组合, 给反例 fixture 集
+**defer trigger**: Phase 1.2 P1.2B-F6 (F6 实施) 时枚举 length-k × ghost-cut 组合, 给反例 fixture 集
 
 #### F6 — 2D interval cover (interior facility) **P2**
 
@@ -232,7 +232,7 @@
 - 但 Phase 1.5+ refine (power_cover_domain 非空但 hitting set unsat) 需解 set cover, 走 LP relax 还是 exact?
 - 项目 instance n ~ 数百 (power_pole 候选数), ln(n) ~ 5-6 倍 — exact 时间 vs LP 速度 tradeoff
 
-**defer trigger**: Phase 1.2 P1.13 (F7 实施) 决 LP 还是 exact, 用 Phase 1.5+ telemetry 验
+**defer trigger**: Phase 1.2 P1.2B-F7 (F7 实施) 决 LP 还是 exact, 用 Phase 1.5+ telemetry 验
 
 #### F7 — 跟 master.solve power_coverage constraint 冲突 **P1**
 
@@ -243,7 +243,7 @@
 - 数学上 F7 sound = master 在该 cut 后必 INFEASIBLE
 - 但实施上: F7 cut 加进 master 后是 redundant (master 已经会拒) 还是 amplify (master propagation 提前 cut)?
 
-**defer trigger**: Phase 1.3 P1.21 propagator 集成时验
+**defer trigger**: Phase 1.3 P1.3B propagator 集成时验
 
 #### F8 — Liang-Barsky 退化 case **P1**
 
@@ -254,7 +254,7 @@
 - spec 08 v1.1 Gemini round 14 finding 改严格 line-segment AABB intersection (不是 cell-level 离散 block)
 - 实施时若退化 case 处理不对, F8 cut 可能 unsound 或 over-prune
 
-**verification trigger**: Phase 1.2 P1.14 实施时加退化 fixture (零长度 + 共线 + 正交)
+**verification trigger**: Phase 1.2 P1.2B-F8 实施时加退化 fixture (零长度 + 共线 + 正交)
 
 #### F8 — power network 跟 belt routing 独立性 **P2**
 
@@ -276,7 +276,7 @@
 - F9 必须用真重算的 envelope (不是 LP relax 1.000), 即 oracle 真计算 region 内 facility 数 + cell_owner 已占
 - spec 09 v1.0 表态: envelope ≠ trivial baseline, 必 stronger bound
 
-**verification trigger**: Phase 1.2 P1.15 实施时, fixture 必含 envelope < trivial 的反例 (否则 F9 退化 F1)
+**verification trigger**: Phase 1.2 P1.2B-F9 实施时, fixture 必含 envelope < trivial 的反例 (否则 F9 退化 F1)
 
 #### F9 — 跟 F1 数学独立性 **P1**
 
@@ -287,7 +287,7 @@
 - 但若 F9 envelope < F1 cap (e.g. cell_owner 已占), F9 反而更紧
 - 数学边界: F9.cap = F1.cap - cell_owner_in_R × cells_per_pose? 还是其他公式?
 
-**defer trigger**: Phase 1.2 P1.15 spec 写时数学 formula 明确
+**defer trigger**: Phase 1.2 P1.2B-F9 spec 写时数学 formula 明确
 
 ### 5.4 LBBD 集成的 open questions
 
@@ -300,7 +300,7 @@
 - cut framework 是 nogood 的累积层, 每 sub-problem 触发 attach 点不同 (binding INFEASIBLE 触发 F3/F5/F7; routing INFEASIBLE 触发 F2/F4; power INFEASIBLE 触发 F7/F8)
 - 每 attach 点必 sound 确认 (cert ↔ sub-problem reject 数据)
 
-**defer trigger**: Phase 1.3 P1.21 propagator 集成时设计 (cite plan §12.1)
+**defer trigger**: Phase 1.3 P1.3B propagator 集成时设计 (cite plan §12.1)
 
 #### Q8 — lazy attach vs eager attach **P1**
 
@@ -311,7 +311,7 @@
 - eager attach: cut 立即影响 propagation, master 立即缩 search; lazy attach: cut 仅在 master solve 时触发, 不影响 propagation
 - 项目 cut 数预期 ~thousands per candidate, eager 可能撞 propagation cost; lazy 可能 cut 不触发 (master 没 hit cut.scope)
 
-**defer trigger**: Phase 1.3 P1.21 实施时 ab test eager vs lazy
+**defer trigger**: Phase 1.3 P1.3B 实施时 ab test eager vs lazy
 
 #### Q9 — master OPTIMAL vs INFEASIBLE 触发路径 **P1**
 
@@ -322,7 +322,7 @@
 - master UNPROVEN time-out: 没 best 答案, 不能产 sound cut (因为没确认 INFEASIBLE)
 - master INFEASIBLE: 已经 ⊥, cut 没必要 (但 cut framework 累积 cut 可减后续 master.solve 时间)
 
-**defer trigger**: Phase 1.3 P1.21 实施时设计
+**defer trigger**: Phase 1.3 P1.3B 实施时设计
 
 #### Q10 — cp_sat propagator vs master.AddLinear ✅ **VERDICT (2026-05-23)**
 
@@ -429,7 +429,7 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATI
 - 工程上 propagation cost ~ cut 数 × literal 数, 项目 thousands cut 可能 master.solve wall +20%
 - Phase 1.3 telemetry §20.2 看 cut_redundancy_rate + step_7_latency 决
 
-**defer trigger**: Phase 1.3 P1.21 实施 + 24h shadow trial 后定 cut 上限策略 (LRU evict / cut score threshold)
+**defer trigger**: Phase 1.3 P1.3B 实施 + 24h shadow trial 后定 cut 上限策略 (LRU evict / cut score threshold)
 
 #### Q18 — cut quality metric 形式定义 **P2**
 
@@ -475,7 +475,7 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATI
 - 减 permutation 撞墙到 13! × 10 group (~10⁹ vs 132!)
 - **难度**: 低 — 不动 cut framework, 加 instance partition layer; 但 partition 启发式需设计
 
-**当前推荐**: A (orbit-aware pattern lift) 是数学上 cleanest. 实施 trigger: Phase 1.2 P1.11 (F5 实施) 必同步 land A, 否则 P1.11 incomplete.
+**当前推荐**: A (orbit-aware pattern lift) 是数学上 cleanest. 实施 trigger: Phase 1.2 P1.2B-F5 (F5 实施) 必同步 land A, 否则 P1.2B-F5 incomplete.
 
 **verification**: Phase 1.5+ trial 看 132 instance manufacturing_3x3 group F5 cut 数量是否撞墙 (>10⁵ cut → 撞; <10³ cut → A 工作).
 
@@ -500,19 +500,19 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATI
 | F3-multi | multi-pose chain | P2 | F5 实施后决 | 数学 |
 | F3-F5 | 跟 F5 subsume | P1 | F5 实施后决 | 工程 |
 | F4-cap | cell-flow capacity | P1 | Phase 1.5+ trial | 数学 |
-| F5-QX | QuickXplain 时间预算 | P0 | Phase 1.2 P1.11 | 工程 |
-| F5-mfg | 132! permutation 撞墙 | **P0 critical** | **Phase 1.2 P1.11 必同步** | 数学 |
-| F6-len | Hall length-k 反例覆盖 | P1 | Phase 1.2 P1.12 | 数学 |
+| F5-QX | QuickXplain 时间预算 | P0 | Phase 1.2 P1.2B-F5 | 工程 |
+| F5-mfg | 132! permutation 撞墙 | **P0 critical** | **Phase 1.2 P1.2B-F5 必同步** | 数学 |
+| F6-len | Hall length-k 反例覆盖 | P1 | Phase 1.2 P1.2B-F6 | 数学 |
 | F6-2D | 2D Hall (interior) | P2 | Phase 1.5+ trial 看必要 | 数学 |
-| F7-LP | LP relax ln(n) factor | P1 | Phase 1.2 P1.13 | 工程 |
+| F7-LP | LP relax ln(n) factor | P1 | Phase 1.2 P1.2B-F7 | 工程 |
 | F7-master | 跟 master.power_coverage | P1 | Phase 1.3 propagator | 工程 |
-| F8-deg | Liang-Barsky 退化 case | P1 | Phase 1.2 P1.14 | 数学 |
+| F8-deg | Liang-Barsky 退化 case | P1 | Phase 1.2 P1.2B-F8 | 数学 |
 | F8-ind | power/belt 独立性 | P2 | Phase 1.5+ telemetry | 数学 |
-| F9-base | envelope baseline 紧度 | P0 | Phase 1.2 P1.15 | 数学 |
-| F9-F1 | 跟 F1 数学独立性 | P1 | Phase 1.2 P1.15 spec | 数学 |
-| Q7 | attach point 选择 | P0 | Phase 1.3 P1.21 | 工程 |
-| Q8 | lazy vs eager attach | P1 | Phase 1.3 P1.21 ab test | 工程 |
-| Q9 | OPTIMAL vs INFEASIBLE 路径 | P1 | Phase 1.3 P1.21 | 工程 |
+| F9-base | envelope baseline 紧度 | P0 | Phase 1.2 P1.2B-F9 | 数学 |
+| F9-F1 | 跟 F1 数学独立性 | P1 | Phase 1.2 P1.2B-F9 spec | 数学 |
+| Q7 | attach point 选择 | P0 | Phase 1.3 P1.3B | 工程 |
+| Q8 | lazy vs eager attach | P1 | Phase 1.3 P1.3B ab test | 工程 |
+| Q9 | OPTIMAL vs INFEASIBLE 路径 | P1 | Phase 1.3 P1.3B | 工程 |
 | Q10 | propagator vs AddLinear | P0 | Phase 1.3 §12.4 | 工程 |
 | Q11 | commodity_id vs route_id | P0 | Phase 1.5+ §13.1 | 数学+工程 |
 | Q12 | ghost_rect tuple vs object | P1 | Phase 1.2 §10.4 | 工程 |
@@ -527,14 +527,14 @@ cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATI
 **当前 P0 critical (不解阻 Phase 推进)**:
 - Q1 (9 family completeness — 用 telemetry 反推)
 - Q3 (sound vs over-prune 边界 — per-family verify)
-- F5-mfg (132! permutation — Phase 1.2 P1.11 必同步 orbit-aware lift)
-- F5-QX (QuickXplain budget — Phase 1.2 P1.11)
-- F9-base (envelope baseline 紧度 — Phase 1.2 P1.15)
-- Q7 (attach point — Phase 1.3 P1.21)
+- F5-mfg (132! permutation — Phase 1.2 P1.2B-F5 必同步 orbit-aware lift)
+- F5-QX (QuickXplain budget — Phase 1.2 P1.2B-F5)
+- F9-base (envelope baseline 紧度 — Phase 1.2 P1.2B-F9)
+- Q7 (attach point — Phase 1.3 P1.3B)
 - Q10 (propagator vs AddLinear — Phase 1.3 §12.4)
 - Q11 (commodity_id vs route_id — Phase 1.5+ §13.1)
 
-8 个 P0, 主要集中 Phase 1.2 P1.11 (F5 实施) 跟 Phase 1.3 P1.21 (propagator 集成) 两个 milestone.
+8 个 P0, 主要集中 Phase 1.2 P1.2B-F5 (F5 实施) 跟 Phase 1.3 P1.3B (propagator 集成) 两个 milestone.
 
 ---
 

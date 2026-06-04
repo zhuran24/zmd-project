@@ -176,7 +176,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 - Changing campaign, artifact, or proof schemas without explicitly updating the lock/spec/test boundary together.
 - Rebinding globally pooled resources into per-line or per-instance hard bindings without a new exact proof basis.
 - Adding any exterior-path requirement for the ghost rectangle.
-- Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only. Status of the three known exactness gaps (as of GPT v4 review follow-up):
+- Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only. Status of the three known exactness gaps (originally characterized in the GPT v4 review follow-up; 三项 status 至 v28 外审未变, gate 仍强制):
   - **Live ghost-conditioned infeasible cut**: implemented (`condition_lits` 走 master.add_benders_cut, `OnlyEnforceIf`).
   - **Persisted cut replay**: `BendersCut.condition_set` 在 `run_benders_for_ghost_rect` 现已通过 `_resolve_condition_lits_from_condition_set` 反解析回 master `u_var`, certified mode 下未知 condition fail-closed skip cut (不退化成无条件).
   - **Feasible-path pole alternatives**: 未实现 witness-complete cut. 现 stop-gap: `_add_exact_whole_layout_nogood` 在 flag on 且 solution 含 synthetic power_pole entry 时 fail-closed skip cut, caller 升 `UNKNOWN`. 真正解锁 feature 需要 enumeration / 多 witness 增量排除.

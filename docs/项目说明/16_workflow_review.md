@@ -29,7 +29,7 @@ Phase 1.1 经验: Gemini 11 round Day 15/16a/16b 堆到 round 14 才 cross-check
 **触发条件 (大节点 boundary)**
 - Phase 1.1 闭环 ✓ (v1-v6 已经跑过 11 round)
 - Phase 1.2 入门 7 项 (§10) close — next trigger
-- Phase 1.2 5 family 全 land (P1.11-P1.15) — next next trigger
+- Phase 1.2 5 family 全 land (P1.2B-F5..F9) — next next trigger
 - Phase 1.3 propagator land + 24h shadow trial — next³
 - Phase 1.5+ production integration — final pre-168h
 

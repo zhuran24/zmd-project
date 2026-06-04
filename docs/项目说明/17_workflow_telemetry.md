@@ -21,7 +21,7 @@ cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只�
 ```
 单测里被 exit_criteria ramp report 用. Phase 1.3 接 benders_loop 后要在每 outer iter / benders 内 iter 后 snapshot.
 
-### 20.2 Phase 1.3 加的 metric (P1.21 实施时)
+### 20.2 Phase 1.3 加的 metric (P1.3B 实施时)
 
 按 §22 review 实践拆 4 类 (cardinality / quality / latency / safety):
 
