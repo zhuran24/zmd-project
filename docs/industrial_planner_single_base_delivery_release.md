@@ -44,7 +44,7 @@ python scripts/build_industrial_planner_single_base_delivery_release.py \
   --entrypoints-markdown data/examples/industrial_planner/active_single_base_delivery_entrypoints.md
 ```
 
-That command does nine things in order:
+That command does ten things in order:
 
 1. reruns the active single-base e2e workflow into one clean source run dir
 2. fail-closes unless that run lands at `ready_for_single_base_delivery`

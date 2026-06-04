@@ -504,7 +504,7 @@ morphological erosion 是 strong helper, **不是** density theorem.
 
 如 morphology 产 cut, cert 必声明语义 (all-in-window placement / overlap-window area / anchor-domain empty / shape packing matching), validator 必独立重算同 semantic.
 
-cite: `external_review/gemini_math_review_bundle_20260523/notes/F9_MORPHOLOGY_CAUTION.md`
+cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/F9_MORPHOLOGY_CAUTION.md`
 
 **Ghost dependency**: max_allowed_area 含 `|ghost ∩ W|` → 跨 ghost 不 invariant, 必绑 ghost_rect_id.
 

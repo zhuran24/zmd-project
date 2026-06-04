@@ -28,7 +28,7 @@ master cycle, wall-clock 退化 < 50%. **GO 后才进 P1.3B**.
 - 如果 1+3 都不工作 → paradigm 走回头 (e.g. solver 替换, 但 [03 paradigm death](03_paradigm_death_baseline.md) 已 verdict 死)
 - 这种情况是项目层风险, 不只 Phase 1.3
 
-cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
+cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
 
 ## P1.3B — master integration (原 P1.21, spike GO 后进)
 

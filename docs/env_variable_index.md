@@ -45,7 +45,7 @@
 | Name | Type | Default | Reader | 作用 |
 |---|---|---|---|---|
 | `EXACT_LOCAL_CAPACITY_CP_SAT_MAX_SECONDS` | float | (内部 default) | master_model.py | local power capacity 单次 solve 超时 |
-| `EXACT_POWER_SUBPROBLEM_SECONDS` | float | (内部 default) | benders_loop.py | power placement subproblem 超时 |
+| `EXACT_POWER_SUBPROBLEM_SECONDS` | float | 10 | benders_loop.py | power placement subproblem 超时 |
 | `EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS` | float | (内部 default) | phase3b_coordinate_validation_*.py | coordinate validation 单次预算 |
 | `EXACT_GHOST_AWARE_POSE_ORDER_VALIDATION_SECONDS` | float | (内部 default) | phase3b_pose_order_validation_probe.py | pose order validation 单次预算 |
 | `EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS` | float | 2.0 | `master_model.py` | mandatory rect precheck CP-SAT 32-anchor 超时 |

@@ -17,7 +17,7 @@ owner: placement-preprocess
 
 ## 6.2 模板级候选池映射 (Template-based Pooling)
 
-为极大地压缩内存占用与预处理文件体积，本系统**绝对禁止**为 326 个具体实例（如 51 台等价的精炼炉实例）分别独立生成位置字典。
+为极大地压缩内存占用与预处理文件体积，本系统**绝对禁止**为 326 个具体实例（如 51 台等价的精炼炉实例；注：此 326 = 266 必选 + exploratory 参考的 60，见 §6.1 [PROJECT_LOCK 对齐] 注，非 exact 硬数）分别独立生成位置字典。
 
 由于同种模板的设施在物理轮廓与端口几何上完全同构，几何枚举引擎必须且只能按**设施模板 (Facility Template)** 进行扫描。
 定义 $\mathcal{T}$ 为全场存在的设施模板集合（例如 `manufacturing_square_3`, `boundary_storage_port`）。

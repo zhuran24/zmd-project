@@ -346,7 +346,7 @@
 
 **剩余 sub-question (P1.3A spike)**: solve-rebuild vs C++ propagator hook vs hard-constraint rebuild 哪条 wall-clock 最优? Phase 1.3 P1.3A spike 验.
 
-cite: `external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
+cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
 
 ### 5.5 schema / data 层 open questions
 

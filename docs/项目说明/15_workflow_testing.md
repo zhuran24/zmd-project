@@ -94,7 +94,7 @@ review pkg 默认 ship 全集 (53 MB), README 提醒 reviewer 反例数字 vs sa
 
 ### 21.7 Phase 1.2 P0 red fixture matrix (Gemini math review meta-audit, 2026-05-23)
 
-11 个 critical fixture, 覆盖 Phase 1.2 P0 acceptance checklist 各项 (cite `external_review/gemini_math_review_bundle_20260523/checklists/RED_FIXTURE_MATRIX.md`):
+11 个 critical fixture, 覆盖 Phase 1.2 P0 acceptance checklist 各项 (cite `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/checklists/RED_FIXTURE_MATRIX.md`):
 
 | Fixture | Purpose | Owner family |
 |---|---|---|

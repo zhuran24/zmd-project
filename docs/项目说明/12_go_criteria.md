@@ -26,7 +26,7 @@
 
 ### 8.1.x Phase 1.2 P1.2B P0 acceptance checklist (from Gemini math review meta-audit)
 
-5 P0 + F (regression gate) — 详 `external_review/gemini_math_review_bundle_20260523/checklists/ACCEPTANCE_CHECKLIST.md`:
+5 P0 + F (regression gate) — 详 `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/checklists/ACCEPTANCE_CHECKLIST.md`:
 
 **A. F5 bounded fallback**
 - [ ] `src/cuts/families/pattern_nogood.py` exists

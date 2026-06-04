@@ -8,7 +8,7 @@
 
 **lever**:
 - **L11-L16 B1 pose-bool master** — 27×15 interior pose-bool 7.2s FEASIBLE (vs coord 30 min UNKNOWN). Phase 4 routing convergence 🟡 ~500-610 ports 系统性, pose-bool master 不知 port direction. Phase 5 cell cut 3 form 全 over-restrictive. Phase 6 path-1 4 form 全 verdict 死. [[project-b1-phase6-path1-dead]]
-- **Lever 24 augmented master** — 280K pose × 8 ports = 2.36M OnlyEnforceIf, 603.9s UNKNOWN + RSS 32 GB. [[project-lever24-augmented-master-dead]]
+- **Lever 24 augmented master** — 280K pose × 8 ports = 2.24M OnlyEnforceIf, 603.9s UNKNOWN + RSS 32 GB. [[project-lever24-augmented-master-dead]]
 - **GOC-C2** — 全图 owner-optional, RSS 25 GB > 12 GB cap. [[project-goc-phase0-verdict]]
 - **PGW-UB** — positive witness + UB closure, locality 全 fail. [[project-pgw-phase0-verdict]]
 - **L23 rewrite_path_exhausted** — 所有 viable 重写路径实测后 hard verdict. [[project-rewrite-path-exhausted]]
@@ -63,7 +63,7 @@
 - **cand C Phase 2 v3 — 160/266 INFEASIBLE** — A1/A2/A3 3 fallback paradigm 全 land 但 160/266 实测仍 INFEASIBLE. [[v14-review-findings]] cand_c_phase2_v3
 
 **数学根据失败的层**:
-- **Root cause 2** (Class E): 96% utilization 几何死结. valley4_protocol_core 70×70 + 266 mandatory = 4800/4900 cells = 96%. boundary_storage_port × perimeter trap: 46 pose × 3 cells = 138 cells 必 100% saturation. cand C column gen 数学 sound 但底层几何不变.
+- **Root cause 2** (Class E): 96% utilization 几何死结. valley4_protocol_core 70×70 + 266 mandatory = 4800/4900 cells ≈ 98% (4800/4900). boundary_storage_port × perimeter trap: 46 pose × 3 cells = 138 cells 必 100% saturation. cand C column gen 数学 sound 但底层几何不变.
 
 **教训**: paradigm 数学 sound 不等于 instance 可行. 项目 instance 几何是 fundamental constraint, 任何 paradigm 在 instance 真 INFEASIBLE 时都 INFEASIBLE. column gen 是 master basis 改而不是 instance 改, 不能改 instance 几何.
 
@@ -116,14 +116,14 @@
 paradigm_death_timeline §2 已整理. 重列以方便 reference:
 
 **Root cause 1 — Pose-bool master 表达力 limits**
-- B1 pose-bool master 280K pose vars × 8 ports/pose = 2.36M OnlyEnforceIf
+- B1 pose-bool master 280K pose vars × 8 ports/pose = 2.24M OnlyEnforceIf
 - master 不知 port direction / pole selection / belt routing
 - 任何 master OPTIMAL 都让 sub-problem oracle 拒绝
 - master 端 cut 学习不到 binding port_active / routing path / power coverage 关联
 - **6 paradigm 撞同墙**: Path 12/13/14/17/B1-path1/B1-path2
 
 **Root cause 2 — 96% utilization 几何死结**
-- valley4_protocol_core 70×70 grid + 266 mandatory facility ≈ 4800 cells / 4900 total → 96% utilization
+- valley4_protocol_core 70×70 grid + 266 mandatory facility ≈ 4800 cells / 4900 total → ≈98% utilization (4800/4900)
 - boundary_storage_port × perimeter trap: 46 pose × 3 cells = 138 cells 必 100% 铺满 left+bottom 138 cells
 - 任何 ghost 切 left/bottom 都触发 Hall infeasibility
 - cand C 160/266 全 INFEASIBLE 是这一层的下界

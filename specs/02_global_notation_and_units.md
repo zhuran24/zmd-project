@@ -5,7 +5,7 @@ last_verified_against: 2026-03-23
 owner: docs-modeling
 ---
 > [!WARNING]
-> **DRAFT — 本文件为草案，来源于 Gemini deep think-1.md Turn 14。尚未经过正式审查与冻结。**
+> **DRAFT — 几何/符号体系源自 Gemini deep think Turn 14。§2.6.1 实例口径 (I_man=266 / I_opt 脚注 †) 已于 2026-06-04 经 PROJECT_LOCK §1 对齐审查；其余符号定义待终审冻结。**
 
 # 02 全局数学符号、坐标系与度量衡规范 (Global Notation, Coordinates and Units)
 
