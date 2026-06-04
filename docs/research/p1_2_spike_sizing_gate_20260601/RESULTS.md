@@ -21,7 +21,7 @@ active sizing rule:
 | F9 current single-group upper bound | 784 |
 | F9 same-template stress proxy | 4,608 |
 | F9 all-manufacturing cross-group stress proxy | 11,644 |
-| F9 group-all stress proxy | 12,845 |
+| F9 group-all stress proxy (补充, 非核心节点 canonical; 见上 all-mfg 11,644) | 12,845 |
 | F4 component_reach group-expanded proxy | 20,157 |
 
 Implications:

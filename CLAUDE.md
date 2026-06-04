@@ -124,7 +124,7 @@ python scripts/gen_authoritative_numbers.py --check   # exit 1 = 核心节点 st
 - **强制函数 (真 gate)** = `src/tests/test_authoritative_numbers_currency.py` (任何 pytest run 变红): 断言核心节点 == 实时计算。**master 上只焊 `cuts_tests_total`** (最易漂); sizing/F3/remap 见核心节点 `_meta.enforcement_tiers`。**不扫散文也不扫 projection_targets** —— 文档会 meta-讨论数字 (changelog 引旧值当历史 / "别把 36/50 读成 72%"), 裸扫到处误报。
 - **`--check` 未接 CI/pre-commit 硬 gate** (本机 pre-commit 仅 warn-loud, 不阻断); 真 gate 是上面那个 pytest 测试。
 - **sizing 6 个数字** 由 `sizing_gate.compute_sizing_numbers()` 算, 输入 fixture 在 `data/cuts/spike/` (build 时从 spike 分支 overlay, master 无) → master 不现算, 是冻结 spike 值; 仅包内/spike 上下文可复现。
-- **build 投影 (未接线契约)**: 包 build 脚本的 README 当前 claim 数字**应** `from gen_authoritative_numbers import current_claims` 注入 (changelog 历史字面量不动) —— 但**目前没接** (current_claims 无消费者, build_v28 仍硬编码 418 vs 核心节点 441)。接了之后包 README 才是真投影; 在那之前它会漂、不自动报红。
+- **build 投影 (未接线契约)**: 包 build 脚本的 README 当前 claim 数字**应** `from gen_authoritative_numbers import current_claims` 注入 (changelog 历史字面量不动) —— 但**目前没接** (current_claims 无消费者, build_v28 仍硬编码 418 vs 核心节点当前 442)。接了之后包 README 才是真投影; 在那之前它会漂、不自动报红。
 
 ### Linux migration setup (CachyOS target — switched from Fedora 2026-05-08)
 
@@ -221,7 +221,7 @@ python scripts/analyze_hint_vs_baseline.py BASELINE_STATE.json HINT_STATE.json
 - rotation → (orientation, port_mode) 映射 hand-verified 10 sample 100% match
 - `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` env 让 `benders_loop._run_certified_exact` 在每个 candidate 初始 greedy hint 后 merge 进 community hint (community 覆盖 greedy on overlap, 因为 user-curated > heuristic)
 - 然后正常 `master.solve(solution_hint=...)` → `apply_solution_hint` 调 AddHint per slot
-- production wrappers (run_campaign_p2_workers1.sh / workers2.sh) default 自动注入
+- production wrappers (run_campaign_p2_workers1.sh / run_campaign_workers2.sh) default 自动注入
 
 适用 candidate 范围：blueprint natural max empty rect = 15×27 = area 405. 项目 certified path 从 large area 往下扫, hint 只对 area ≤ 500 + min_side ≥ 10 范围有意义. 大 area candidate (>1000) hint 几何不可能 match.
 
