@@ -29,7 +29,9 @@ Phase 1 is borrowing-first and intentionally internal:
 
 ## Phase 2 deferments
 
-- IndustrialPlanner one-way exporter
-- compatibility sidecar bundles per target
-- preprocess regeneration from `NormalizedCatalog`
-- any target-specific schema mapping beyond placeholder registration
+> **(2026-06-04 currency)** 前两项已不再 deferred —— IndustrialPlanner 单向 exporter 与 compatibility sidecar 均已交付 (见 spec 16 export contract / spec 22 precision export + validator / spec 23 outer-base planning; 对应 `export_blueprint.py` / `export_industrial_planner_bundle.py` / `blueprint_validator.py` 等已落地)。下列保留作历史 deferment 记录。
+
+- ~~IndustrialPlanner one-way exporter~~ — **已交付** (spec 16 / 22)
+- ~~compatibility sidecar bundles per target~~ — **已交付** (spec 22 Part B validator + compatibility manifest)
+- preprocess regeneration from `NormalizedCatalog` (仍 deferred；另见 spec 19)
+- any target-specific schema mapping beyond placeholder registration (仍 deferred)

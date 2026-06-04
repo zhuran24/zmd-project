@@ -145,7 +145,7 @@ reads a checked-in `checked_artifact_family_inventory.json` registry and runs
 every listed family-specific no-drift leg together, so CI can fail closed when
 either the strict / additive decision reports or any checked-in translated
 outer example drifts away from current code without hard-coding separate
-family wiring in the top-level gate. That CLI can now emit JSON, Markdown, and
+family wiring in the top-level gate. （注：截至 2026-06-04，`checked_artifact_family_inventory.json` 已把 `outer_base_bundle_suite` 族移入 `deactivated_entries` / `status: future_scope`，故上文“any checked-in translated outer example”这一腿当前**不在** active gate 中跑；待该族重新激活后恢复。）That CLI can now emit JSON, Markdown, and
 plain-text summaries in one run, and the checked-in GitHub Actions workflow
 `.github/workflows/industrial_planner_checked_artifacts.yml` uses those
 sidecars after running focused IndustrialPlanner regressions on relevant
