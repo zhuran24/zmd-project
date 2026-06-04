@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "role": "核心节点 (主体): Phase 1.2 spike review 权威数字的单一来源 (single source of truth).",
+    "architecture": "core-node + projection + forcing-function. 镜像 cc_context/tools/stamp_living_status.py 对 handoff 的做法 (核心节点=LATEST_PACKAGE.json, 投影=handoff 字段自动 stamp). 见 PROJECT_LOCK §3 / memory authoritative-numbers-single-source.",
+    "rule": "别为了修某篇文档手改这里的值。值变了 -> 改这里 (spike 数据在场时跑 scripts/gen_authoritative_numbers.py 重算) -> 所有投影 (RESULTS.md / 包 README) 跟着走。src/tests/test_authoritative_numbers_currency.py 是强制函数: cuts_tests_total 从 src/tests/cuts 现数重算并断言, 任何登记文档出现 stale 值就 red。",
+    "data_location_note": "sizing 6 个数字由 sizing_gate.compute_sizing_numbers() 算, 但其输入 fixture 在 data/cuts/spike/ (build 时从 spike 分支 overlay, master 无), 故 master 侧不现算 — 它们是冻结的 spike 结果, 仅在包内/spike 上下文可复现 (GPT 外审即如此复现)。cuts_tests_total 可在 master 现算 (测试树就在 master)。",
+    "frozen_history_excluded": "老 build 脚本 (v8-v21) / gemini 归档 / phase3b 计划 / research transcript 是冻结快照, NOT 投影目标, 不回头改 (同 spike v20 telemetry provenance 原则)。"
+  },
+  "numbers": {
+    "cuts_tests_total": {
+      "value": 425,
+      "kind": "int",
+      "recompute": "ast_count_def_test_in_src_tests_cuts",
+      "stale": [413, 414, 416, 418],
+      "provenance": "computed: src/tests/cuts/*.py 里 `def test_` 计数 (无 parametrize 展开, 1 函数=1 test)。v28 4 洞修复 +7 对抗测试 -> 425。"
+    },
+    "f3_micro_probe_cases": {
+      "value": 12,
+      "kind": "int",
+      "stale": [9],
+      "provenance": "manual: spike test_toy_translator_f3_malformed.py (6 malformed + 3 garbage-char + 3 non-F3)。"
+    },
+    "type_pool_total_poses": {
+      "value": 81795, "kind": "int", "stale": [],
+      "provenance": "computed: sizing_gate sum(pool_sizes) (frozen spike)。"
+    },
+    "concrete_master_var_upper_proxy": {
+      "value": 325747, "kind": "int", "stale": [],
+      "provenance": "computed: sizing_gate sum(pool_sizes*multipliers)。"
+    },
+    "f9_single_group_max": {
+      "value": 784, "kind": "int", "stale": [],
+      "provenance": "computed: sizing_gate max(f9_single)。当前 F9 per-cut single-group 上界。"
+    },
+    "f9_same_template_proxy_max": {
+      "value": 4608, "kind": "int", "stale": [],
+      "provenance": "computed: sizing_gate (same-template proxy)。"
+    },
+    "f9_all_manufacturing_proxy_max": {
+      "value": 11644, "kind": "int", "stale": [],
+      "provenance": "computed: sizing_gate (cross-group stress proxy, 非 per-cut 向量)。"
+    },
+    "f4_component_reach_group_expanded_max": {
+      "value": 20157, "kind": "int", "stale": [],
+      "provenance": "computed: sizing_gate max(component_reach group_all)。"
+    },
+    "ortools_linear_bytes_per_term": {
+      "value": 4.03, "kind": "float_approx", "stale": [],
+      "provenance": "measured: sizing_gate try_measure_ortools (env-dependent ~4.0, 非严格校验)。"
+    },
+    "ortools_boolor_bytes_per_term": {
+      "value": 10.01, "kind": "float_approx", "stale": [],
+      "provenance": "measured: ~10.0 (非严格校验)。"
+    }
+  },
+  "phrases": {
+    "remap_audit": {
+      "current": "36/150",
+      "stale": ["36/50"],
+      "provenance": "manual: data/cuts/spike/remap_audit.json n_pairs_remapped=36 / n_pairs_total=150 = 24% (spike-only)。早期误作 36/50。"
+    }
+  },
+  "projection_targets": [
+    "docs/research/p1_2_spike_sizing_gate_20260601/RESULTS.md",
+    "scripts/build_phase1_2_spike_review_v22.py",
+    "cc_context/review/build_v28_win.py"
+  ]
+}

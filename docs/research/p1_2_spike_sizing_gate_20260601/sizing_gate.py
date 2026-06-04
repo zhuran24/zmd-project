@@ -286,6 +286,52 @@ def try_measure_ortools(total_vars: int = 81_795, term_counts: Sequence[int] = (
         return None
 
 
+def compute_sizing_numbers() -> Dict[str, int]:
+    """Headline sizing integers as a single source of truth.
+
+    Reuses the same loaders/counters as main()'s printed report, so the
+    ``authoritative_numbers.json`` core node (and every doc that projects from
+    it) cannot drift from the real computation. Consumed by
+    scripts/gen_authoritative_numbers.py and the
+    test_authoritative_numbers_currency.py forcing-function test.
+    """
+    recs = load_fixture()
+    pools = load_pools()
+    by_type, pool_sizes = build_index(pools)
+    multipliers = load_group_multipliers(pools)
+
+    mfg_types = [ft for ft in sorted(pools) if ft.startswith("manufacturing")]
+    f9_single: List[int] = []
+    f9_same_template: List[int] = []
+    f9_mfg_group: List[int] = []
+    for rec in [r for r in recs if r["family"] == "density_envelope"]:
+        payload = json.loads(base64.b64decode(rec["cert_payload_b64"]))
+        wr = payload.get("window_rect")
+        if not (isinstance(wr, list) and len(wr) >= 4):
+            continue
+        cells = window_cells(wr)
+        f9_single.append(max((type_count(by_type, cells, ft) for ft in mfg_types), default=0))
+        f9_same_template.append(
+            max((type_count(by_type, cells, ft) * int(multipliers.get(ft, 1)) for ft in mfg_types), default=0)
+        )
+        f9_mfg_group.append(concrete_count(by_type, cells, multipliers, fts=mfg_types))
+
+    f4_group_all: List[int] = []
+    for rec in [r for r in recs if r["family"] == "component_reach"]:
+        payload = json.loads(base64.b64decode(rec["cert_payload_b64"]))
+        cells = cut_cells(rec, payload)
+        f4_group_all.append(concrete_count(by_type, cells, multipliers) if cells else compact_terms(rec, payload))
+
+    return {
+        "type_pool_total_poses": sum(pool_sizes.values()),
+        "concrete_master_var_upper_proxy": sum(pool_sizes[ft] * multipliers.get(ft, 1) for ft in pool_sizes),
+        "f9_single_group_max": max(f9_single, default=0),
+        "f9_same_template_proxy_max": max(f9_same_template, default=0),
+        "f9_all_manufacturing_proxy_max": max(f9_mfg_group, default=0),
+        "f4_component_reach_group_expanded_max": max(f4_group_all, default=0),
+    }
+
+
 def main() -> None:
     recs = load_fixture()
     pools = load_pools()

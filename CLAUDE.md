@@ -111,6 +111,20 @@ Both scripts are mechanical sync only:
 
 Tests `src/tests/test_endfield_calc_typescript_snapshot.py` and `src/tests/test_industrial_planner_bases_snapshot.py` read `SOURCE_METADATA.json` for expected counts, so refresh runs do not require test edits.
 
+### 数字单一来源 (authoritative_numbers core node)
+
+> 评审包/文档里反复出现的权威数字 (cuts 计数 / sizing 投影 / F3 / remap) 不要散在各处手抄。**核心节点 = `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`**, 其余是它的投影。架构 = core-node + projection + forcing-function (同 [[memory-currency-protocol]] 给 handoff 的 stamp 做法)。
+
+```powershell
+# 重算/刷新核心节点 (cuts 计数从 src/tests/cuts 实时 collect; sizing 仅在 spike fixture 在场时, 见下)
+python scripts/gen_authoritative_numbers.py
+python scripts/gen_authoritative_numbers.py --check   # exit 1 = 核心节点 stale (CI/pre-commit 用)
+```
+
+- **强制函数** = `src/tests/test_authoritative_numbers_currency.py`: 断言核心节点 == 实时计算 (cuts 计数最易漂, 焊死)。**不扫散文找旧数字** —— 文档会 meta-讨论数字 (changelog 引旧值当历史 / "别把 36/50 读成 72%"), 裸扫到处误报。
+- **sizing 6 个数字** 由 `sizing_gate.compute_sizing_numbers()` 算, 但输入 fixture 在 `data/cuts/spike/` (build 时从 spike 分支 overlay, master 无) → master 侧不现算, 是冻结 spike 值; 仅在包内/spike 上下文可复现+刷新。
+- **build 投影契约**: 包 build 脚本的 README 当前 claim 数字应 `from gen_authoritative_numbers import current_claims` 注入, 不再硬编码 (changelog 历史字面量不动)。这样包 README 是核心节点的真投影, 不会漂。
+
 ### Linux migration setup (CachyOS target — switched from Fedora 2026-05-08)
 
 ```bash
