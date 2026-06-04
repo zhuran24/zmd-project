@@ -130,7 +130,10 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   dims 校验), F7/F8 委托它 (不再各持私有副本); `src/tests/cuts/test_canonical_sot_coverage.py`
   meta-test 强制 (登记契约 + 私有 lookup 不复活)。**新增信任 canonical 标量的 family 必须
   走 canonical_sot + 进登记表 + 加 behavioral red-test** (meta-test 抓回归, 但发现"全新未守
-  标量"仍靠人/审查 —— 诚实边界)。
+  标量"仍靠人/审查 —— 诚实边界)。**已知 grandfathered**: F6 (shape_packing_hall) 有一份
+  family-local canonical-dims SoT 核对 (pose_length vs template dims, 经 state.facility_templates
+  alias, sound fail-closed) 未走 canonical_sot、未进登记表 —— 它**非 fail-open 洞** (v28 合并只
+  针对 fail-open), 是预存未 consolidate 项; meta-test 的 dimensions 私有扫描刻意不覆盖它。
 - **(2026-06-04 v28) F9 tight-K quarantine (supersedes Gemini round-4 oracle-trust
   deferral)**: density_envelope validator 对 `max_allowed_area = K < safe_ub` fail-
   closed 拒 (Phase 1.2 cert 不携带 replayable tight-bound proof)。净效果: F9 只剩

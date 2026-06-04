@@ -113,17 +113,18 @@ Tests `src/tests/test_endfield_calc_typescript_snapshot.py` and `src/tests/test_
 
 ### 数字单一来源 (authoritative_numbers core node)
 
-> 评审包/文档里反复出现的权威数字 (cuts 计数 / sizing 投影 / F3 / remap) 不要散在各处手抄。**核心节点 = `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`**, 其余是它的投影。架构 = core-node + projection + forcing-function (同 [[memory-currency-protocol]] 给 handoff 的 stamp 做法)。
+> 评审包/文档里反复出现的权威数字 (cuts 计数 / sizing 投影 / F3 / remap) 不要散在各处手抄。**核心节点 = `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`**。架构**意图** = core-node + projection + forcing-function (同 [[memory-currency-protocol]] 给 handoff 的 stamp)。**诚实现状 (v28 外审 catch)**: forcing 半边落地, **projection 半边仍是未接线契约** (current_claims() 无消费者, 包 README 仍硬编码会漂)。
 
 ```powershell
 # 重算/刷新核心节点 (cuts 计数从 src/tests/cuts 实时 collect; sizing 仅在 spike fixture 在场时, 见下)
 python scripts/gen_authoritative_numbers.py
-python scripts/gen_authoritative_numbers.py --check   # exit 1 = 核心节点 stale (CI/pre-commit 用)
+python scripts/gen_authoritative_numbers.py --check   # exit 1 = 核心节点 stale
 ```
 
-- **强制函数** = `src/tests/test_authoritative_numbers_currency.py`: 断言核心节点 == 实时计算 (cuts 计数最易漂, 焊死)。**不扫散文找旧数字** —— 文档会 meta-讨论数字 (changelog 引旧值当历史 / "别把 36/50 读成 72%"), 裸扫到处误报。
-- **sizing 6 个数字** 由 `sizing_gate.compute_sizing_numbers()` 算, 但输入 fixture 在 `data/cuts/spike/` (build 时从 spike 分支 overlay, master 无) → master 侧不现算, 是冻结 spike 值; 仅在包内/spike 上下文可复现+刷新。
-- **build 投影契约**: 包 build 脚本的 README 当前 claim 数字应 `from gen_authoritative_numbers import current_claims` 注入, 不再硬编码 (changelog 历史字面量不动)。这样包 README 是核心节点的真投影, 不会漂。
+- **强制函数 (真 gate)** = `src/tests/test_authoritative_numbers_currency.py` (任何 pytest run 变红): 断言核心节点 == 实时计算。**master 上只焊 `cuts_tests_total`** (最易漂); sizing/F3/remap 见核心节点 `_meta.enforcement_tiers`。**不扫散文也不扫 projection_targets** —— 文档会 meta-讨论数字 (changelog 引旧值当历史 / "别把 36/50 读成 72%"), 裸扫到处误报。
+- **`--check` 未接 CI/pre-commit 硬 gate** (本机 pre-commit 仅 warn-loud, 不阻断); 真 gate 是上面那个 pytest 测试。
+- **sizing 6 个数字** 由 `sizing_gate.compute_sizing_numbers()` 算, 输入 fixture 在 `data/cuts/spike/` (build 时从 spike 分支 overlay, master 无) → master 不现算, 是冻结 spike 值; 仅包内/spike 上下文可复现。
+- **build 投影 (未接线契约)**: 包 build 脚本的 README 当前 claim 数字**应** `from gen_authoritative_numbers import current_claims` 注入 (changelog 历史字面量不动) —— 但**目前没接** (current_claims 无消费者, build_v28 仍硬编码 418 vs 核心节点 441)。接了之后包 README 才是真投影; 在那之前它会漂、不自动报红。
 
 ### Linux migration setup (CachyOS target — switched from Fedora 2026-05-08)
 

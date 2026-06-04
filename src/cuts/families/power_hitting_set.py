@@ -436,28 +436,9 @@ def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
     return canonical_sot.lookup_canonical_pole_radius(state)
 
 
-def _lookup_canonical_template_dims(state: BState, template_id: str) -> Optional[Tuple[int, int]]:
-    """Delegates to the shared SoT helper (single implementation, fail-closed)."""
-    return canonical_sot.lookup_canonical_template_dims(state, template_id)
-
-
 def _validate_power_pole_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
-    """Cross-check hard-coded 2x2 pole footprint against canonical_rules."""
-    dims = _lookup_canonical_template_dims(state, "power_pole")
-    if dims is None:
-        return _vr(
-            "unsound",
-            t0,
-            "state.canonical_rules.facility_templates.power_pole.dimensions missing "
-            "— cannot verify pole_shape_canonical against source-of-truth (fail-closed)",
-        )
-    if dims != (2, 2):
-        return _vr(
-            "unsound",
-            t0,
-            f"canonical power_pole dimensions {dims[0]}x{dims[1]} != cert/helper locked 2x2",
-        )
-    return None
+    """Cross-check hard-coded 2x2 pole footprint against canonical_rules (shared SoT validator)."""
+    return canonical_sot.validate_template_dims_sot(state, "power_pole", (2, 2), t0)
 
 
 def _validate_pole_radius_sot(

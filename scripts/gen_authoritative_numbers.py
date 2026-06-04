@@ -46,6 +46,15 @@ def count_cuts_tests() -> int:
         capture_output=True,
         text=True,
     )
+    if out.returncode != 0:
+        # collect-only returns 0 on success; non-zero == collection error (import/syntax)
+        # or no tests collected. Do NOT silently undercount — fail loud, else a broken
+        # collection would fossilize a wrong cuts_tests_total into the core node.
+        raise RuntimeError(
+            f"cut test collection failed (rc={out.returncode}); fix the collection error "
+            f"before regenerating the core node.\n--- stdout tail ---\n{out.stdout[-1500:]}\n"
+            f"--- stderr tail ---\n{out.stderr[-1500:]}"
+        )
     return sum(1 for line in out.stdout.splitlines() if "::" in line)
 
 
