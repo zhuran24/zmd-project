@@ -1,9 +1,11 @@
 # FILE_STATUS.md
 
 **Status**: CURRENT_INVENTORY  
-**Updated**: 2026-04-17  
+**Updated**: 2026-06-04  
 **Purpose**: Inventory of runtime roles and trust status for the current repository.  
 **History**: Engineering history moved to [CHANGELOG.md](CHANGELOG.md).
+
+> **(2026-06-04 范式提示)** 项目当前范式 = **cut-family LBBD**（9 个 F1–F9 cut family + pose-bool master，Phase 1.2 spike close）。本台账早期主体（标注 2026-04-17）只覆盖到坐标-master 时代、**未含整个 `src/cuts/` 树**；下方「Cut-family LBBD Path」段补齐当前范式组件。**现状 / phase 的权威源 = `CLAUDE.md` + `PROJECT_LOCK.md`**（本台账偏 file inventory，非 living 现状源）。早期条目里的 `*_CODE_ALIGNED` 标注按其标注日期读 —— 不代表今天逐一复核过（`CURRENT_CODE_ALIGNED` 是会漂的硬声明）。
 
 ## Status Legend
 
@@ -13,6 +15,21 @@
 - `POSTPROCESS_ONLY`: additive output or visualization layer, not part of core proof semantics
 - `FUTURE_SCOPE`: preserved for later reactivation, but intentionally excluded from the active checked-in audit / CI surface
 - `MIXED`: wildcard path containing files with different trust levels; inspect per-file metadata
+
+## Cut-family LBBD Path (当前范式, 2026-06-04 补)
+
+> 9 个 cut family F1–F9 当 Benders cut 收紧 master（见 `PROJECT_LOCK.md` §2B + `specs/10_benders_decomposition_and_cut_design.md` + `CLAUDE.md`）。validator soundness（FP=0 信任边界）由 `src/tests/cuts/` 守，测试计数权威 = 核心节点 `authoritative_numbers.json` 的 `cuts_tests_total`（当前 442）。
+
+| Path | Status | Runtime Role | Source-of-Truth Note |
+|---|---|---|---|
+| `src/cuts/lifecycle.py` | CURRENT_CODE_ALIGNED | cut proof lifecycle (generate→serialize→validate→resolve→replay) | `step_8_apply_to_master` 仍 `NotImplementedError`（P1.3B 真 master 集成待接） |
+| `src/cuts/families/` (F1–F9) | CURRENT_CODE_ALIGNED | 9 cut-family generator + validator | region_capacity / cutset / port_exposure / component_reach / pattern_nogood / shape_packing_hall / power_hitting_set / power_grid_reach / density_envelope；validator 是 FP=0 信任边界 |
+| `src/cuts/helpers/canonical_sot.py` | CURRENT_CODE_ALIGNED | 共享 canonical SoT 校验 helper | F7/F8 委托它（消私有副本）；fail-closed dims / radius 核对 |
+| `src/cuts/oracles/` | CURRENT_CODE_ALIGNED | generator 侧 oracle（读 canonical 产 cert） | 产证非验证，不在 validator private-lookup scan 范围 |
+| `src/cuts/assumptions/verifiers.py` | CURRENT_CODE_ALIGNED | attach-scope assumption verifiers | canonical pole-radius 等委托 `canonical_sot`（v28 fresh-pass 消第 4 个副本） |
+| `src/models/pose_bool_exact_master.py` | CURRENT_CODE_ALIGNED | pose-bool exact master (B1) | `EXACT_USE_POSE_BOOL_MASTER` env 切换；residual/required-optional 建模（无 50/10 hard cap） |
+| `src/tests/cuts/` | CURRENT_CODE_ALIGNED | cut-family validator 回归 + soundness 测试 | 计数权威见核心节点（当前 442）；含 forged-cert adversarial 回归 |
+| `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json` | CURRENT_CODE_ALIGNED | 评审/文档权威数字单一来源（核心节点） | drift-test `src/tests/test_authoritative_numbers_currency.py` 焊 `cuts_tests_total` |
 
 ## Certified Exact Active Path
 

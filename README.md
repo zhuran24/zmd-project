@@ -1,80 +1,57 @@
-# Endfield exact refactor project
+# Endfield IndustrialPlanner — 70×70 certified-exact 求解器
 
-> **项目状态地图 (2026-05-16)**
+《明日方舟：终末地》基地排布的**精确最大空矩形求解器**：在 70×70 网格、266 个强制设施实例约束下，求 `max_lex(area, min_side)`（先最大化面积、再最大化短边）的**可证明最优**空地矩形。OR-Tools CP-SAT + Benders/LBBD 分解（master → binding → routing → flow）。
+
+> **当前主线（范式 = cut-family LBBD）**
 >
-> | Phase | 状态 | 说明 |
-> |---|---|---|
-> | **3A** delivery / productization | ✅ 完成 | release `r20260416` 已交付; viewer / landing / frontdoor / entrypoints 全打通 |
-> | **3B** full-scale exact proof | ▶ 进行中 | 70×70 max_lex(area, min_side) 严格证明; 当前 0 FEASIBLE, 主线 lever 已 verify 9 条死路 (见 `docs/lever_verdicts.md`) |
-> | **3C** 加速 / 路线优化 | 📋 规划 + 实测 | 4 lanes (safety / tuning / AI sidecar / runtime); 见 `docs/phase3c_optimization_roadmap_v1.md` |
+> 项目范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计**：9 个 cut family **F1–F9** 当 Benders cut 收紧 master。当前阶段 = **Phase 1.2 spike close**（cut-family validator soundness 闭关）→ P1.3A（真 `PoseBoolExactMaster` 接 LBBD + 多轮收敛）。
 >
-> **进入项目的入口**:
-> - 求解器架构 + Phase 状态 + commands: `CLAUDE.md` (操作手册)
-> - 精确性宪法 + 禁条 + accepted invariants: `PROJECT_LOCK.md`
-> - 每个文件运行时角色 + 信任状态: `FILE_STATUS.md`
-> - 已试过的所有 master 加速 lever + 实测 verdict: `docs/lever_verdicts.md`
-> - 所有 `EXACT_*` env 集中索引: `docs/env_variable_index.md`
-> - Phase 3B 详细 endgame plan: `docs/phase3b_exact_endgame_execution_plan.md`
-> - 操作脚本一览 (启 168h, 停, watchdog): `CLAUDE.md` 中 Commands / Maintenance scripts 段
+> **现状 / phase 的权威源不在本 README**——见：
+>
+> - **`CLAUDE.md`** — 求解器架构 + 当前 Phase + commands + runbook（单一操作手册）
+> - **`PROJECT_LOCK.md`** — 精确性宪法 + 禁条 + accepted invariants（exact 边界冻结）
+> - **`docs/项目说明/06_current_status.md`** — 现状细则；`docs/项目说明/`（21 篇）= overview / 数学基础 / 死路 baseline / 设计不变量 / 各 phase plan / glossary
+> - **`specs/`（01–23）** — certified 路径的形式规格
+> - **`docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`** — 评审/文档权威数字的单一来源（cuts 测试计数等；别在散文里另抄会漂的数）
 
----
+## 跑求解器
 
-This repository currently has one active user-facing IndustrialPlanner line:
-`valley4_protocol_core` on the 70×70 base.
-
-The quickest checked-in entry points are:
-
-- `data/examples/industrial_planner/index.html` — repo-front current entry page with explicit browse-first/download-first paths and helper links that now point straight at the aggregate script-entry manifest
-- `data/examples/industrial_planner/active_single_base_delivery_entrypoints.json` — one aggregate machine-readable manifest for the current release/viewer/landing/latest-bundle entry surface plus the surfaced current health snapshot
-- `data/examples/industrial_planner/current_surface_health.json` — minimal zero-parse health snapshot for the active single-base consumer surface
-- `.artifacts/industrial_planner_single_base_delivery_surface_alignment/surface_alignment_summary.json` — the latest no-drift audit summary for the checked-in repo-front + aggregate-entrypoints surface
-- `data/examples/industrial_planner/industrial_planner_latest_single_base_delivery_bundle.zip` — shorter top-level latest ZIP alias for download-first consumers
-- `data/examples/industrial_planner/current_delivery/index.html` — stable
-  current landing/download page
-- `data/examples/industrial_planner/current_delivery/downloads/industrial_planner_current_single_base_delivery_bundle.zip` — source current-delivery ZIP alias mirrored by the top-level latest bundle
-- `data/examples/industrial_planner/README.md` — checked-in artifact map,
-  release pointers, and regeneration commands
-
-Current boundary:
-
-- other bases remain preserved as `future_scope`
-- outer-deployment remains preserved but out of the default active gate
-- full-scale 70×70 exact `CERTIFIED` is still honestly marked as `open`
-
-For the active single-base execution flow, start with:
-
-```bash
-python scripts/run_industrial_planner_single_base_e2e.py \
-  --run-dir .artifacts/industrial_planner_single_base_e2e
+```powershell
+# certified_exact 模式（默认）
+python main.py --campaign-hours 168.0 --parallel-processes 4
+# 测试
+python -m pytest src/tests/ -q
+# 可视化
+python main.py --vis
 ```
 
-For the promotion flow that refreshes the checked-in release, viewer, current
-landing, current bundle ZIP alias, repo-front entry page, and the top-level
-latest bundle alias plus the aggregate active-entrypoints manifest — and now
-runs a lightweight no-drift audit, writes a compact `current_surface_health.{json,md,txt}` snapshot for zero-parse consumers, then re-surfaces that clean/drift summary
-back into the repo front door and aggregate manifest so reviewers/automation can
-see the current entry-surface health directly, while also re-auditing the
-surfaced `surface_alignment_summary.{json,md,txt}` refs themselves before the
-final checked-in frontdoor/entrypoints pair is left behind — see:
+（Linux 生产启动须用 wrapper，单跑 `python main.py` 会丢调优；见 `CLAUDE.md` 的 Commands / Maintenance scripts 段。）
+
+## 精确性边界（摘要，权威见 `PROJECT_LOCK.md`）
+
+- `certified_exact` 与 `exploratory` 是**严格分离**的两条路径，绝不混用。
+- exact 目标 = `max_lex(area, min_side)`；`min_side >= 6` 是候选 admissibility，不是 tie-break。
+- exact 模式**无**硬 `50 供电桩 + 10 协议箱` cap —— 该数字仅 exploratory-only guidance（供电桩 residual-optional / 协议箱 demand 驱动）。
+- 全 70×70 exact `CERTIFIED` 仍诚实标 `open`（spike close 阶段）。
+
+## IndustrialPlanner 交付面（postprocess / adapter 线，release `r20260416` 冻结）
+
+> **注**：本节是 **postprocess-only** 的产品化 / 交付线（把求解产物导出成 IndustrialPlanner 蓝图 + 消费面），**不是当前活动主线**，也**不重定义任何 solve schema**（见 `PROJECT_LOCK.md` 的 Source of Truth）。当前主线是上面的 cut-family LBBD。
+
+当前唯一 active 的 IndustrialPlanner 线 = `valley4_protocol_core`（70×70）；其余 base 与 outer-deployment 均保留为 `future_scope`、不在默认 active gate。checked-in 入口与详细 artifact map / release pointers / 再生成命令见：
+
+- `data/examples/industrial_planner/README.md` — 交付面 artifact map + release pointers + regeneration commands（交付面的权威索引）
+- `data/examples/industrial_planner/index.html` — 交付面入口页（browse-first / download-first）
+- `data/examples/industrial_planner/active_single_base_delivery_entrypoints.json` — 聚合 machine-readable entrypoints manifest（含 surface health 快照）
+
+单基地端到端 / 交付面 promotion / no-drift audit / health snapshot 等脚本：
 
 ```bash
+# 单基地 e2e
+python scripts/run_industrial_planner_single_base_e2e.py \
+  --run-dir .artifacts/industrial_planner_single_base_e2e
+# 交付面 release promotion（刷新 release/viewer/landing/bundle/frontdoor + no-drift audit）
 python scripts/build_industrial_planner_single_base_delivery_release.py --help
 ```
 
-For the standalone no-drift audit of the already-checked-in consumer surface —
-including the surfaced audit-summary refs and metadata that now appear in both
-the repo front door and the aggregate entrypoints manifest — run:
-
-```bash
-python scripts/audit_industrial_planner_single_base_delivery_surface_alignment.py
-```
-
-For the standalone compact health snapshot derived from the checked-in audit and re-surfaced into the frontdoor/aggregate manifests — run:
-
-```bash
-python scripts/build_industrial_planner_single_base_delivery_surface_health.py
-```
-
-For the remaining solver-side closeout after the single-base delivery/productization line, see:
-
-- `docs/phase3b_exact_endgame_execution_plan.md` — detailed current-to-finish plan for Phase 3B, including startline freeze, exact-safe lower-bound / UNKNOWN triage loops, long-run campaign execution, terminal exact evidence freeze, and the final propagation of exact-close status back into the checked-in single-base release/frontdoor surface
+其余交付面脚本（standalone no-drift audit / health snapshot 等）见 `data/examples/industrial_planner/README.md` 与 `CLAUDE.md`。
