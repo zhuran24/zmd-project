@@ -9,6 +9,11 @@
 - **70×70 grid certified exact solver** — 本项目, 求 `max_lex(area, min_side)` 最大空矩形 + 全 facility placement 可行性证明
 - **valley4_protocol_core** — 当前 active scope 单 base; 其他 base (`valley4_infra_outpost` 等) future_scope
 - **certified_exact mode** — 项目主路径, 跟 `exploratory` 路径严格分离; 本 plan 全 scope 在 certified_exact
+- **Phase 命名 crosswalk (旧→新)** — 文档里若见旧命名按此对照（2026-05-23 v2 起规范化，见 08/09 preamble）：
+  - `P1.11` → **P1.2A**（entry hardening，已 done）或 **P1.2B-F5**（pattern_nogood）——旧 `P1.11` 曾混用二者，v2 拆开
+  - `P1.12`→**P1.2B-F6**(shape_packing_hall) / `P1.13`→**P1.2B-F7**(power_hitting_set) / `P1.14`→**P1.2B-F8**(power_grid_reach) / `P1.15`→**P1.2B-F9**(density_envelope)
+  - `P1.21` → **P1.3B**（真 master integration，`step_8_apply_to_master`，待接）
+  - **P1.3A** = CP-SAT attach spike（已先验）。⚠️ doc-P1.3A/B ≠ CC memory 口径的"P1.3A 主体"（memory 的"P1.3A 主体" = doc-P1.3B），见 `CLAUDE.md` 命名错位提示
 
 ### A.2 Cut Framework (B Design v2)
 

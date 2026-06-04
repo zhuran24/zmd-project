@@ -42,7 +42,7 @@ on:
       - 'src/tests/test_industrial_planner_full_demand_support_suite_inventory.py'
   push:
     branches:
-      - main
+      - master
     paths:
       - '.github/workflows/industrial_planner_checked_artifacts.yml'
       - 'CHANGELOG.md'

@@ -4,31 +4,33 @@
 
 ## 文档地图
 
-| Sub-doc | 主题 | line | 来源 |
-|---|---|---|---|
-| [01_overview.md](01_overview.md) | 项目概览 (战略 + 数学问题陈述 + paradigm 选择) | 158 | math §1 + plan §1 |
-| [02_mathematical_foundations.md](02_mathematical_foundations.md) | 核心数学原理 (9 family + sound deduction + scope/replay/multiset/adversarial) | 495 | math §2 + §3 |
-| [03_paradigm_death_baseline.md](03_paradigm_death_baseline.md) | 已 verify 不通的 paradigm (27 lever 死路按数学根据分类) | 210 | math §4 + plan §4 |
-| [04_design_invariants.md](04_design_invariants.md) | 设计哲学 + 核心 invariants (PROJECT_LOCK §3A) | 103 | plan §2 + §18 |
-| [05_open_questions.md](05_open_questions.md) | 待定 mathematical questions (33 + 6 Q) | 544 | math §5 + plan §17 |
-| [06_current_status.md](06_current_status.md) | 现状细则 (commit `c8fb7ef` 起算) | 35 | plan §6 |
-| [07_historical_review.md](07_historical_review.md) | 历史回顾 (Phase 0 → Step O) | 116 | plan §5 |
-| [08_phase_1_2_plan.md](08_phase_1_2_plan.md) | Phase 1.2 plan (P1.2A 入门 + P1.2B-F5/F6/F7/F8/F9) | 134 | plan §10 + §11 |
-| [09_phase_1_3_plan.md](09_phase_1_3_plan.md) | Phase 1.3 plan (CP-SAT propagator 集成) | 46 | plan §12 |
-| [10_phase_1_5_plan.md](10_phase_1_5_plan.md) | Phase 1.5+ plan (production integration) | 63 | plan §13 |
-| [11_dependency_graph.md](11_dependency_graph.md) | 依赖图 (family / step / phase) | 83 | plan §9 |
-| [12_go_criteria.md](12_go_criteria.md) | GO 标准 / 验收准则 | 76 | plan §8 |
-| [13_schedule_estimate.md](13_schedule_estimate.md) | 排期估算 (Claude pace) | 17 | plan §16 |
-| [14_risk_rollout.md](14_risk_rollout.md) | 风险评估 + mitigation + rollout policy | 79 | plan §14 |
-| [15_workflow_testing.md](15_workflow_testing.md) | 测试 strategy + fixture 清单 | 94 | plan §21 |
-| [16_workflow_review.md](16_workflow_review.md) | 审查策略 (Gemini + GPT pro + 数学验证 workflow) | 199 | plan §22 + math §6 |
-| [17_workflow_telemetry.md](17_workflow_telemetry.md) | Observability / telemetry plan | 85 | plan §20 |
-| [18_workflow_env_config.md](18_workflow_env_config.md) | 环境变量 / 配置清单 | 51 | plan §19 |
-| [19_implementation_rhythm.md](19_implementation_rhythm.md) | 实施 rhythm (Phase 1.1 经验) | 16 | plan §15 |
-| [20_skip_directions.md](20_skip_directions.md) | 默认 skip 的方向 (历史死路 baseline) | 15 | plan §7 |
-| [21_glossary.md](21_glossary.md) | Glossary 术语表 + refs | 147 | plan Appendix A + math A |
+| Sub-doc | 主题 | 来源 |
+|---|---|---|
+| [01_overview.md](01_overview.md) | 项目概览 (战略 + 数学问题陈述 + paradigm 选择) | math §1 + plan §1 |
+| [02_mathematical_foundations.md](02_mathematical_foundations.md) | 核心数学原理 (9 family + sound deduction + scope/replay/multiset/adversarial) | math §2 + §3 |
+| [03_paradigm_death_baseline.md](03_paradigm_death_baseline.md) | 已 verify 不通的 paradigm (27 lever 死路按数学根据分类) | math §4 + plan §4 |
+| [04_design_invariants.md](04_design_invariants.md) | 设计哲学 + 核心 invariants (PROJECT_LOCK §3A) | plan §2 + §18 |
+| [05_open_questions.md](05_open_questions.md) | 待定 mathematical questions | math §5 + plan §17 |
+| [06_current_status.md](06_current_status.md) | 现状细则 (Phase 1.2 spike close 闭关中; 权威以 CLAUDE.md / handoff 为准) | plan §6 |
+| [07_historical_review.md](07_historical_review.md) | 历史回顾 (Phase 0 → Step O → Phase 1.2) | plan §5 |
+| [08_phase_1_2_plan.md](08_phase_1_2_plan.md) | Phase 1.2 plan (P1.2A 入门 + P1.2B-F5/F6/F7/F8/F9) | plan §10 + §11 |
+| [09_phase_1_3_plan.md](09_phase_1_3_plan.md) | Phase 1.3 plan (P1.3A attach spike + P1.3B master integration) | plan §12 |
+| [10_phase_1_5_plan.md](10_phase_1_5_plan.md) | Phase 1.5+ plan (production integration) | plan §13 |
+| [11_dependency_graph.md](11_dependency_graph.md) | 依赖图 (family / step / phase) | plan §9 |
+| [12_go_criteria.md](12_go_criteria.md) | GO 标准 / 验收准则 | plan §8 |
+| [13_schedule_estimate.md](13_schedule_estimate.md) | 排期估算 (Claude pace) | plan §16 |
+| [14_risk_rollout.md](14_risk_rollout.md) | 风险评估 + mitigation + rollout policy | plan §14 |
+| [15_workflow_testing.md](15_workflow_testing.md) | 测试 strategy + fixture 清单 | plan §21 |
+| [16_workflow_review.md](16_workflow_review.md) | 审查策略 (Gemini + GPT pro + 数学验证 workflow) | plan §22 + math §6 |
+| [17_workflow_telemetry.md](17_workflow_telemetry.md) | Observability / telemetry plan | plan §20 |
+| [18_workflow_env_config.md](18_workflow_env_config.md) | 环境变量 / 配置清单 | plan §19 |
+| [19_implementation_rhythm.md](19_implementation_rhythm.md) | 实施 rhythm (Phase 1.1 经验) | plan §15 |
+| [20_skip_directions.md](20_skip_directions.md) | 默认 skip 的方向 (历史死路 baseline) | plan §7 |
+| [21_glossary.md](21_glossary.md) | Glossary 术语表 + refs | plan Appendix A + math A |
 
-合计 ~2766 line (~21 个 standalone doc), 跟原单 plan 1449 line + 单 math 1580 line 大致对应 (受众段 + spec 关系 + 文档维护合进本 README).
+21 个 standalone sub-doc + 本 README (受众段 + spec 关系 + 文档维护合进本 README)。
+
+> **注 (2026-06-04)**：本表去掉了早先的 `line` 行数列与"合计 ~2766 line"——行数随每次编辑漂移、维护价值低（doc-currency 长尾，见 `docs/research/doc_tree_full_audit_20260604/`）。
 
 ## 受众分流
 
@@ -99,6 +101,7 @@
 | 2026-05-23 | v1.1 | Phase 1.1 exit hardening delivery 落地 — 178 cuts pass / mypy strict pass / radon A 无 D, P1.2A 入门 ✅ done. 同时 merge Gemini math review meta-audit 修正 (F9 area-only / F8 mode 锁 geometric / CP-SAT no AddLazyConstraint / dark matter telemetry / 11 red fixture matrix / Phase 1.2 P0 acceptance checklist). 6 sub-doc update: 06 status / 07 history / 02 math (F9 area-only + morphology safe/unsafe) / 04 invariants / 05 open Q (Q10 verdict) / 08 phase 1.2 (P1.2A/B 命名 + 5 family 详) / 09 phase 1.3 (P1.3A spike) / 12 GO (P0 acceptance) / 15 testing (11 red fixture) / 17 telemetry (µs vs ms 单位 + dark matter) |
 | 2026-05-24 | v1.2 | Phase 1.1 复查补强 — strict base64/bitset/Cut schema/F1-F4 bool numeric schema fail-closed，新增 7 个 regression，cuts pytest 188 pass (`python` + `python -O`)，ruff/mypy/vulture/bandit/radon 全 PASS，exit_criteria 0 FAIL。更新 06/12/15 与顶层 README，使 1.1 gate 口径对齐。 |
 | 2026-05-24 | v1.3 | Final polish — F3 `port_exposure` cell 加 70×70 bound fail-closed，新增 1 个 out-of-grid regression，cuts pytest 189 pass (`python` + `python -O`)；计划书/GO/依赖安装说明统一到 v12 交付口径。 |
+| 2026-06-04 | v1.4 | 文档树全量审查后现状对齐（60 confirmed finding，归档 `docs/research/doc_tree_full_audit_20260604/`）：06 现状（F9 tight-K quarantine + 外审 v14→v28 非"八轮收口" + P1.3A/B 命名）/ 07 补 §5.14 Phase 1.2 历史 / 02 lifecycle 表（互补 F9-F1 + P1.11→P1.2B-F5 / P1.21→P1.3B + Phase 1.2 闭 F5-F9）/ 04 source_digest 已落地 / 01 死路 24+→27 / 12·15 的 189→442 de-hardcode / 12·16 close 门禁=≥3 连续清零 / 18 补 landed generator env / 本表去 line 列。同期改根级 README·FILE_STATUS·PROJECT_LOCK·specs(02/04/06/07/08/09/10/13/17/23)·env_index·lever_verdicts·phase3b/3c。 |
 
 ## cite 约定
 

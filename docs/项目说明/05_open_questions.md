@@ -283,7 +283,7 @@
 **问题**: F9 cap 严格 ≥ F1 cap? 即 F9 是 F1 弱化 (允许更弱 envelope) 还是 F1 强化 (envelope 更紧)?
 
 **当前 understanding**:
-- spec 09 表态: F9 是 F1 scope **扩展** (允许更弱 envelope bound), 不是 stronger cut
+- 02 §3.9 权威定调: F9 与 F1 是**互补 family**（F9 area-based vs F1 cell-based），**非** F1 的 scope 扩展（早先"scope 扩展"措辞已纠，见 02 §3.9 / §3.10）
 - 但若 F9 envelope < F1 cap (e.g. cell_owner 已占), F9 反而更紧
 - 数学边界: F9.cap = F1.cap - cell_owner_in_R × cells_per_pose? 还是其他公式?
 

@@ -55,14 +55,14 @@ Reviewer A M1 + Reviewer B A3).
 
 - spec `03_port_exposure.md:144-147` 要求 verify `active_port_witness_b64`
 - 当前 Phase 1.2 F3 generator stage 1 写 `active_port_witness_b64=None`
-  (src/cuts/oracles/port_exposure_oracle.py:283)
+  (`src/cuts/oracles/port_exposure_oracle.py`，搜符号 `active_port_witness_b64`；硬编码行号随文件增长漂，不写死)
 - 当前 validator 没查此字段 (src/cuts/families/port_exposure.py)
 - Phase 1.1 v1.0 假设 "all listed ports active"
 - Phase 1.5+ 真 production data 时可能有 port 被 binding boundary_constraints
   LP disable; F3 的 cut `(facility A pose pA) ∧ (B pose pB) ⇒ ⊥` 假设 port 必
   active. 若 binding 选 optional port subset, 没接的 port front 被堵不构成
-  infeasibility (历史 dead path `B1_phase5_cell_cut/README.md:40-41` +
-  `lever_verdicts.md:446,571` 已证过强 cut 会误剪).
+  infeasibility (历史 dead path: B1 Phase 5 cell-cut 死路记录在 `docs/research/` 的
+  `paradigm_search_review_v12*` 归档 + `docs/lever_verdicts.md` 已证过强 cut 会误剪).
 
 **GPT v17 reviewer 共识**: F3 special-case phase fixture / env-gated stage 1
 可 GO_WITH_MINOR (`EXACT_F3_GENERATOR_ENABLED=1` default-off), 但**生产默认开启
