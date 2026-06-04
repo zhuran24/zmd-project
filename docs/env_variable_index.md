@@ -1,8 +1,16 @@
 # Environment Variable Index
 
-**项目所有 `EXACT_*` / `PHASE3B_*` env 变量的集中索引**. 改任何 env 之前查这里, 不用 grep.
+**项目 `EXACT_*` / `PHASE3B_*` env 变量索引**（坐标-master / Phase 3B 时代为主）。
 
-**最后更新**: 2026-05-16
+**最后更新**: 2026-05-16（坐标-master 时代）
+
+> ⚠️ **(2026-06-04) 本索引不完整，勿当 "不用 grep" 的权威全集**：它早于 **cut-family LBBD / B1 pose-bool / Design A-B** 时代，**未收录**这些时代的 env。要全集请 grep 源码（`os.environ` / `getenv` 抓 `EXACT_`）+ 看 `CLAUDE.md` runbook 的 env 表（PCR-CUT / community-hint / cache-trio spike 等段）。已知**未收录**的主要 env 组（权威 Type / Reader / Default 以源码为准，此处只列名提示存在）：
+> - **B1 pose-bool master**：`EXACT_USE_POSE_BOOL_MASTER`（核心切换）
+> - **PCR-CUT / B1 routing**：`EXACT_B1_PATCH_ROUTING_CORE`(+`_TOP_K`/`_SECONDS`/`_PER_PATCH_SECONDS`/`_MAX_CELLS`/`_QX_CAP`)、`EXACT_B1_LAZY_DEMAND_CUT`、`EXACT_B1_PORT_CLEARANCE_HARD`、`EXACT_B1_SEPARATOR_HULL*`、`EXACT_B1_ROUTING_AWARE_BINDING`、`EXACT_B1_D2_COMMODITY_FLOW`、`EXACT_B1_BYPASS_ROUTING_PRECHECK`、`EXACT_B1_DELETION_CORE_CUT`、`EXACT_B1_ITER_ON_ROUTING_INFEASIBLE`、`EXACT_B1_BINDING_ALT_CAP`、`EXACT_B1_ABSTRACT_ROUTING_*`
+> - **cut-family**：`EXACT_FAMILY_VALIDATOR_STRICT`、`EXACT_F3_GENERATOR_ENABLED`、`EXACT_F7_GENERATOR_ENABLED`、`EXACT_F8_GENERATOR_ENABLED`、`EXACT_GHOST_CONDITIONED_FAMILY_BOUNDS_ENABLED`
+> - **其它**：`EXACT_COMMUNITY_BLUEPRINT_HINT_PATH`、`EXACT_SUBPROBLEM_REPEAT_PROBE`、`EXACT_LAZY_POWER_COMPLETION`、`EXACT_SMT_MT_OUTER_PRUNING`、`EXACT_USE_PORT_ACTIVE`、`EXACT_D2_CP_SAT_WORKERS`、`EXACT_PATCH_ROUTING_CP_SAT_WORKERS`
+>
+> **另**：下方 Reader 列里的 `phase3b_*` 文件路径在 2026-05-16 cleanup（commit `e4bad28`）后已重组到 `src/search/phase3b/<cluster>/<short>.py`（前缀剥离），旧 `src/search/phase3b_*.py` 路径**已失效**。
 
 ---
 
@@ -93,7 +101,7 @@
 | `EXACT_EPSILON_STAGE2_END_HOURS` | float | 75 | outer_search.py | ε-certified stage 2 边界 (25h 到 75h) |
 | `EXACT_FRONTIER_PROBE_MAX_ANCHORS` | int | 64 | outer_search.py | 前沿探针最大 anchor 数 |
 | `EXACT_USE_HIGHS_MASTER` | bool | 0 | master_model.py | 切到 HiGHS master 后端 (实验, 已 verify 死路, 见 lever_verdicts.md L2) |
-| `EXACT_MASTER_GHOST_ANCHOR_FILTER` | bool/int | 0 | exact_coordinate_master.py | A 方案 ghost_anchor_filter, env-gated, -80% search space |
+| `EXACT_MASTER_GHOST_ANCHOR_FILTER` | str | (空) | `benders_loop.py` (`_parse`, ~L417/427) | A 方案 ghost_anchor_filter：`'x,y'` anchor pair（`;` 分隔，如 `22,28`），env-gated, -80% search space |
 | `EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE` | int | (内部) | exact_coordinate_master.py | tight pole_slot upper bound override (#84) |
 | `EXACT_COORDINATE_MASTER_SEARCH_PROFILE` | str | "exact_coordinate_guided_branching_v4" | exact_coordinate_master.py | 3 选 1: `guided_branching_v4` / `ghost_first_v1` / `ghost_after_counts_v1` |
 | `EXACT_COORDINATE_MASTER_SEARCH_PROFILES` | json | (内部) | exact_coordinate_master.py | profile 切换允许列表 |
