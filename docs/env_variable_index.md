@@ -96,7 +96,7 @@
 | Name | Type | Default | Reader | 作用 |
 |---|---|---|---|---|
 | `EXACT_POWER_PLACEMENT_SUBPROBLEM` | bool | **0** | benders_loop.py | **exploratory-only 守卫**. =1 时 production gate hard block, certified path 拒绝启动. 见 PROJECT_LOCK |
-| `EXACT_OUTER_SKIP_UNKNOWN` | bool | 0 | outer_search.py:492 | UNKNOWN candidate 不停 campaign, 跳下一个. P2 #14 数据收集 A 方案 |
+| `EXACT_OUTER_SKIP_UNKNOWN` | bool | 0 | outer_search.py (搜符号, 行号漂) | UNKNOWN candidate 不停 campaign, 跳下一个. P2 #14 数据收集 A 方案 |
 | `EXACT_EPSILON_STAGE1_END_HOURS` | float | 25 | outer_search.py | ε-certified stage 1 边界 (起到 25h) |
 | `EXACT_EPSILON_STAGE2_END_HOURS` | float | 75 | outer_search.py | ε-certified stage 2 边界 (25h 到 75h) |
 | `EXACT_FRONTIER_PROBE_MAX_ANCHORS` | int | 64 | outer_search.py | 前沿探针最大 anchor 数 |

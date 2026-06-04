@@ -1,8 +1,10 @@
 # Phase 3C Optimization Research — Agent Transcript Index
 
-This is the master index for the multi-round optimization research kicked off
-2026-05-07 / 2026-05-08. Full agent transcripts (prompt + reasoning + tool uses +
-final report) are archived under `agent_transcripts/`.
+This index covers **only** the 2026-05-07 / 2026-05-08 Phase 3C optimization-research
+agent transcripts (multi-round) under `agent_transcripts/`. **它不是整个 `docs/research/` 的
+master index** —— `docs/research/` 下另有 ~46 个 dated 子目录（含 **LIVE 核心节点**
+`p1_2_spike_sizing_gate_20260601/`、各 paradigm/phase 研究、外审归档等），各自独立、见各子目录。
+Full agent transcripts (prompt + reasoning + tool uses + final report) are archived under `agent_transcripts/`.
 
 **Hard-rule for the research loop**: keep launching new rounds until **5
 consecutive rounds yield no high-quality findings**. Round counter resets
