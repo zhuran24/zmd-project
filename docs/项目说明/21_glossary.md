@@ -30,7 +30,7 @@
   - F9 `density_envelope` (geometric) — 上界几何 (≥ area baseline=1.0 trivial)
 - **family mode (literal vs geometric)** — F1/F2/F4/F6/F8/F9=geometric (sound deduction from geometry), F3/F5/F7=literal (proposition over pose assignments). PROJECT_LOCK §3A XOR
 - **9-step lifecycle** — canonicalize → generate → minimize → serialize → deserialize → validate → attach-scope check → evaluate → apply-to-master
-  - 当前 Phase 1.1: step 1/3-7 sound 闭环; step 2 (minimize) defer Phase 1.2 P1.2B-F5 (F5 deletion+QuickXplain); step 8 (apply-to-master) defer Phase 1.3 P1.3B
+  - 截至 Phase 1.1 闭环时: step 1/3-7 sound 闭环; step 2 (minimize) 的 minimizer (`bounded_core_minimizer.py`) 已落地 Phase 1.2 但 lifecycle `step_2` driver 仍 NotImplementedError 待接; step 8 (apply-to-master) defer Phase 1.3 P1.3B (现状 = Phase 1.2 spike close)
 - **cert (certificate)** — cut 的 mathematical 证明对象, 含 region/partition/component/commodity 等 family-specific 字段. validator 重算 cert 验 sound
 - **literal** — cut 中排除的具体 pose assignment (`x[instance_id, pose_id]` boolean). literal-mode cut 用; geometric-mode cut 不直接持 literal
 - **blocker** — F3 cert 中 blocking 一个 port slot 的另一 pose; F5 cert 中 "如果这些 literal 都 true 则 INFEASIBLE" 的支撑集
@@ -104,15 +104,17 @@
 
 ### A.8 Phase 命名
 
-- **Phase 3A** — productization, release `r20260416`, complete
-- **Phase 3B** — full-scale exact proof, in progress (repair5 master 30→47 GB fits)
-- **Phase 3C** — Linux migration + CachyOS 调优 + observability + 路线图 22 P0/P1/P2 项
-- **Phase 0/1.0/1.1/1.2/1.3/1.5+** — B Design v2 phase 命名 (cut framework 内):
+> **当前 phase = Phase 1.2 spike close 闭关中**（cut-family LBBD；权威见 `CLAUDE.md` Current Phase + 06_current_status）。下列 Phase 3A/3B/3C 是**早期范式、已被 cut-family LBBD 取代**（保留作历史命名）。
+
+- **Phase 3A** — productization, release `r20260416`, complete (postprocess 交付线)
+- **Phase 3B** — full-scale exact proof (tuning paradigm) — **historical, 已被 cut-family LBBD 取代**（见 `CLAUDE.md`）
+- **Phase 3C** — Linux migration + CachyOS 调优 + observability + 路线图 — **historical**（同上）
+- **Phase 0/1.0/1.1/1.2/1.3/1.5+** — B Design v2 phase 命名 (cut framework 内, **当前主线**):
   - Phase 0 — B Design v2 spec + invariants frozen
   - Phase 1.0 — framework migration (Day 13-17)
-  - Phase 1.1 — F1-F4 production validator + oracle + lifecycle + replay + Step A-O (**当前闭环**)
-  - Phase 1.2 — F5-F9 5 family 加 + 入门 7 项 factual fix
-  - Phase 1.3 — propagator 真接 master.AddLinear / step_8 apply_to_master / by_exterior_watcher / perf opt
+  - Phase 1.1 — F1-F4 validator + evaluator + lifecycle + replay + Step A-O 闭环 ✅ 已完成（F2/F4 oracle/generator + F3 generator 在 Phase 1.2 落地）
+  - Phase 1.2 — F5-F9 5 family + 入门 7 项 factual fix（**当前 spike close 闭关中；F5-F9 已落地，F9 后 tight-K quarantine**）
+  - Phase 1.3 — P1.3A attach spike (已先验) + P1.3B propagator 真接 master.AddLinear / step_8 apply_to_master / perf opt
   - Phase 1.5+ — production integration, commodity registry 真接 data pipeline
 
 
