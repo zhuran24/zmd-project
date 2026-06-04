@@ -2,6 +2,8 @@
 
 per `[[work-time-estimates]]` Claude 节奏估:
 
+> **(2026-06-04 现状)** 下方 Phase 1.2 §11 的 5 family (F5-F9) 估时已成历史——F5-F9 **已落地**（Phase 1.2 spike close 闭关中，见 [06](06_current_status.md)）。本表作早期排期参考读，非当前待办。
+
 - Phase 1.2 §10 入门 7 项 — 单步 30-60 min Claude, 累计 ~5-7 commit, ~3-4 小时
 - Phase 1.2 §11 5 family 实施 — 每 family ~1-2 commit + Gemini cross-check,
   累计 ~10-15 commit, ~6-10 小时 Claude work

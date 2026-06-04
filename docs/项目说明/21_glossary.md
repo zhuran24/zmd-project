@@ -75,13 +75,13 @@
 - **RAB-SEP** — Path 12, routing abstraction binding-separator. cert tight 8/8 UNPROVEN. **❌**
 - **D2 commodity flow / arc** — Path 17, Phase 2 multi-anchor. **❌** §4.4
 - **cand C column generation** — Phase 1 4-ramp GO 但 master basis 真换后 reservation **superseded** by paradigm shift. §4.5
-- **L01-L26 + L27 IHS / L26 Benders symm / L25 layout-invariant** — paradigm_death_timeline cite, **全 ❌**
+- **27 lever 死路 (L01–L27)** — 全 ❌；含 **L25 IHS / L26 Benders symmetry** + augmented master / layout-invariant cert (Path 18) 等。完整 chronological + 死因分类以 CC memory `paradigm-death-timeline-27-lever`（live 权威）为准
 
 ### A.5 审查 / 工具
 
 - **Gemini per-commit cross-check** — 每 commit 调 Gemini 3.1 pro 验 schema/spec/data gap. 详 §22.1
 - **GPT pro batch audit** — 大节点打包 GPT pro 验 adversarial soundness. 详 §22.2
-- **v1-v8 review package** — Phase 1.1 audit 累积包. v1-v7 cut-only 0.3 MB; v8 全项目 7z 6 MB
+- **review package (v1–v28)** — v1-v8 = Phase 1.1 audit 累积包 (v1-v7 cut-only 0.3 MB; v8 全项目 7z 6 MB); Phase 1.2 spike close 续到 **v22-v28**（~14 MB；详 handoff + CLAUDE.md 数字单一来源段）
 - **7z + zip 壳 + 7za binary** — 大 review pkg 压缩 strategy. 详 [[review-pkg-7z-strategy]]
 - **audit armor** — GPT review prompt 三段式: 真瓶颈 + 死路黑名单/白名单 + 不可达必须形式化证明. 详 [[gpt-review-prompt-armor]]
 - **adversarial soundness audit** — Step A-O 主战场. 5 验: cert 内 sound + cert↔literals + cert↔真数据 + cert↔state + cert↔不变量. 详 [[adversarial-soundness-audit]]

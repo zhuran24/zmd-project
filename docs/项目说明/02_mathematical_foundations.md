@@ -191,7 +191,7 @@ cut 从产到 attach master 经 9 step [cite lifecycle §2]:
 
 > **(2026-06-04 现状提示)** 上表的 "Phase 1.1 闭环 / defer Phase 1.2" 是 Phase 1.1 时代口径。此后 **Phase 1.2 已闭关 F5–F9** cut family（generator+validator，含 F3 special-case；F9 后被 tight-K **quarantine** 实质停用）。Step 8 真 master 集成仍属 **P1.3B**（待接）。当前现状以 `06_current_status.md` + `CLAUDE.md` + PROJECT_LOCK 为准。
 
-**Step 3 missing 影响**: F5 deletion 当前不能产 minimal unsat core, F5 实施 (Phase 1.2 P1.11) 时同步落 step 3.
+**Step 3 missing 影响**: F5 deletion 当前不能产 minimal unsat core, F5 实施 (Phase 1.2 **P1.2B-F5**, 原误名 P1.11) 时同步落 step 3.
 
 ---
 

@@ -145,8 +145,8 @@ main.py campaign
                   └─ master 加 lazy constraint
 ```
 
-cut framework 在 benders_loop 内 (Phase 1.3 真集成), 当前 Phase 1.1 跑独立
-unit test (4900 cell grid + mock state), 不跟 master 真 wire.
+cut framework 在 benders_loop 内 (Phase 1.3 真集成 = P1.3B 待接), **当前 Phase 1.2 spike close 闭关中**（Phase 1.1 已完成）; cut framework 仍跑独立
+unit test (4900 cell grid + mock state), 真 master wire 属 P1.3B.
 
 ### 期望收益
 

@@ -1,6 +1,6 @@
 # 20 — 默认 skip 的方向 (历史死路 baseline)
 
-后续重构不再 propose 这些. 详 `paradigm_death_timeline_27_lever.md`.
+后续重构不再 propose 这些. 详 `docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md`（27 lever；live 权威 timeline 在 CC memory `paradigm-death-timeline-27-lever`）.
 
 - **HiGHS / Gurobi 替 OR-Tools**: PoC 42 GB > 30 GB OR-Tools (Phase 3B repair5)
 - **多机分布式**: 硬件 1 主机 + 1 远程, WAN 延迟 ≥ 100 ms

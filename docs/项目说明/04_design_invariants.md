@@ -30,7 +30,7 @@ Phase 1.2 实施 F5-F9, 不改这 9 个 list.
 
 ### 2.2 为什么 lifecycle 是 9 step
 
-不是 7 step 也不是 11 step. 9 step 是不同 trust boundary 的最小拆分:
+不是 7 step 也不是 11 step. 9 step 是不同 trust boundary 的最小拆分（**注: 下表 `0. canonicalize` 是所有步共用的哈希/序列化基础、不计入"9 步"业务链；故 0-9 编号 = Step 0 + 9 业务步 (generate…regression)，与 PROJECT_LOCK §4 / 06 / cut_lifecycle_v2 口径一致**）:
 
 ```
 0. canonicalize     raw dict → canonical bytes (cert hash 确定性)
@@ -41,7 +41,7 @@ Phase 1.2 实施 F5-F9, 不改这 9 个 list.
 5. validate         独立重算 cert (oracle 不可信, validator 是 trust boundary)
 6. attach-scope     6-step scope verify (source_digest / ghost / blocked / artifact / oracle / assumption)
 7. evaluate         family-dispatch 验当前 state 是否仍 violate
-8. apply-to-master  push 进 CP-SAT (Phase 1.3 P1.21 实施)
+8. apply-to-master  push 进 CP-SAT (Phase 1.3 P1.3B 实施; 原名 P1.21)
 9. regression       re-validate on new replay state (Step 5 re-entry)
 ```
 
@@ -99,6 +99,8 @@ M/N/O 5 轮 audit 反复加 validator binding 都是 adversarial soundness 拉�
 - source_digest 锁 data version (✅ Phase 1.1 exit hardening 真 sha256 落地)
 - adversarial soundness — validator trust boundary, oracle 不可信
 - **F9 area-only invariant** (Gemini math review meta-audit 2026-05-23): F9 generator 只接受 `area_capacity_overflow` witness, 拒绝 `routing_overflow` / `binding_overflow` / `pcr_cut_overflow`. F9 evaluator 必 area-based `sum(|pose_cells ∩ W|)`, 不是 instance count / origin-in-window / all-in-window
+- **(2026-06-04 v28) Cut-family validator 数值/字面量 SoT gate** (PROJECT_LOCK §3A): validator 无法便宜重算的 scalar/literal 必须对 canonical_rules fail-closed 交叉核对 (F5 slot 完整性 / F6 region_demand 下界 / F7·F8 footprint+pole_radius / 共享 `src/cuts/helpers/canonical_sot.py` + meta-test)
+- **(2026-06-04 v28) F9 tight-K quarantine** (PROJECT_LOCK §3A): density_envelope validator 对 `max_allowed_area = K < safe_ub` fail-closed 拒 → F9 只剩 K==safe_ub 平凡 cut, **实质停用** (reverses Gemini round-4 oracle-trust deferral; 解封须 P1.5+ 给 cert 加 area-capacity proof-carrying 字段)
 - **F6/F7 proof obligation 加严**: F6 Hall cut greedy 失败不能当不可行证明, validator 必重算 Hall violation witness; F7 hitting-set cut LP relax / greedy 只能 oracle hint, validator 必验安全下界或 dual cert
 - **F9 strict inequality**: 等号不 cut, 只有 `cert_density > max_density` 才 cut
 

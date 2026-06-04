@@ -184,8 +184,10 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   The production readiness gate and `scripts/run_campaign_linux.sh` both still block when the env var is set; do not bypass them until pole alternatives is implemented and re-audited.
 
 - Bypassing **exact-safe proof object lifecycle**. Any persisted artifact carrying solver-side semantics (e.g. `BendersCut.condition_set`, `BendersCut.metadata`) must have all six steps wired before being trusted in certified mode: generate → serialize → deserialize → validate → resolve runtime literals → replay → behavioral regression test. Landing a new schema field without the runtime resolver + regression coverage is treated as a Forbidden Change, regardless of how harmless the "feature gate currently off" feels.
-- **(2026-05-22) Bypassing B Design v2 9 步 cut lifecycle**: new B Design v2
-  cut object (Phase 1 起在 `src/cuts/` 落地) 必须 wire 9 步:
+- **(2026-05-22) Bypassing B Design v2 cut lifecycle**: new B Design v2
+  cut object (Phase 1 起在 `src/cuts/` 落地) 必须 wire 全部 lifecycle 步骤
+  （**canonicalize = Step 0 共用哈希/序列化基础、非业务步；业务链 9 步**，
+  与 docs/项目说明/04 §2.2 / 06 / cut_lifecycle_v2 口径一致）:
   canonicalize → generate → minimize/normalize → serialize → deserialize →
   validate → attach-scope check → resolve → activation index → replay/regression.
   (Step 10 dominance/expiry/demotion defer to Phase 2 per Gemini round 13.)
