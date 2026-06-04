@@ -27,7 +27,14 @@ metadata:
 ## 通用原则 (这套架构的灵魂, 同 [[memory-currency-protocol]])
 **"强制函数才是解, 规则只是 fallback"** —— 别靠"记得手动同步所有镜像"。核心节点持唯一真值, **被强制函数守的那部分** drift → 响亮红 (本架构里 = master 的 cuts_tests_total)。但**没接强制函数 / 未接线的投影那部分仍会静默漂** (诚实: 本架构目前 force 半边真、project 半边未接 —— 别把灵魂口号当成"全都守住了")。能指针/注入就别 copy 值。
 
+## 三轮对抗审查后续 (2026-06-04, 全 doc/工装/完整性, 零 soundness)
+Design A+B 落地后跑了三轮: architecture-review→fix / fix-reverify / **fresh full re-review** (后者按 [[verification-independent-backstop]] rule#4c 当第一次审、不锚定先前 findings)。
+- **certified 路径第 4 个 radius 副本 (fresh-pass HIGH 实证)**: Review #3 在 `src/cuts/assumptions/verifiers.py:104` 逮到 canonical pole-radius lookup 的**第 4 个逐字私有副本** (certified attach-scope 的 `verify_power_pole_jump_radius` 用; 前 3 轮内审 + 6 轮 GPT 外审全漏 —— meta-test 只扫 `families/` 结构上看不到)。已委托 canonical_sot (commit `d4ae058`)。meta-test 私有-radius 扫描已扩到 validator-side (families + assumptions)。这是 rule#4c "fresh full re-review 比 fix-verification 更能挖漏" 的硬实证。
+- **meta-test 加 gut-body AST 检查**: 原只验 behavioral red-test "名字在", R3 catch 唯一 touches_soundness 缝 = 同时 gut validator(`return None`)+ gut 红测试体(留名) → meta-test+全套全绿却 fail-open (非 live, 需蓄意双改)。修: behavioral-test-exists 改 per-file + 加 AST 检查 (测试体必有 `assert`)。
+- **诚实诊断 (多轮对抗审的 pattern)**: **soundness 一直稳** (无 live FP, 唯一碰 soundness 的非 live 且已关); 真正递减回报的是**完整性长尾** —— 架构 branding 比实现 scope 宽。**建议 100% consolidation 当一次性有界聚焦任务做, 别靠反复跑 full 多代理审挤**。**待办**: (a) `verify_protocol_core_position` 是 F8 `_validate_pc_anchor_sot` 的近似副本未 consolidate; (b) `type_pool_total_poses` / `concrete_master_var_upper_proxy` 其实 master-recomputable (从 candidate_placements + mandatory, 非 spike fixture), 当前误归 frozen-spike 未强制, 待补 master-recompute path 才能 force; (c) RESULTS.md 还有 3341/5429/295700/multipliers 8·4·5 等不在核心节点的数字 (单一来源比 branding 窄)。cuts 计数链 → 现 **442**。
+
 ## 链
 - [[memory-currency-protocol]] —— 同架构给 handoff 现状 (核心节点=LATEST_PACKAGE.json, 投影=stamp_living_status)
+- [[verification-independent-backstop]] —— 三轮审查方法论 (rule#4c fresh full re-review)
 - [[review-pkg-data-completeness]] —— 包数字完整性
 - runbook 入口见 `CLAUDE.md` "数字单一来源 (authoritative_numbers core node)" 段

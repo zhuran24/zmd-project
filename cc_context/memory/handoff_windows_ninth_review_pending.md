@@ -17,7 +17,27 @@ metadata:
 - GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/endfield-exact-solver<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
 
-## 最新状态 (2026-06-04) — v28 (sha 6c90a199) + 内部严格审 7 轮: R3 逮 HIGH F7 soundness 洞, R4-R7 doc-currency; 实质 clean 但未达 3 连续 clean
+## 最新状态 (2026-06-04 晚) — v28 GPT 外审 = 4 个真 soundness 洞 (全修, F9 quarantine); 然后 Design A/B 工装 + 三轮对抗审查 (零 soundness); 后补验记忆覆盖
+
+> **当前真相 (主线 + 工装两条线)**:
+> **① 主线 (Phase 1.2 spike-close)**: v28 包 (sha `c00a957c`, 从 39c80c6 确定性重建) 送 GPT pro 外审 → **两 bundle 交叉, 4 个 confirmed_real soundness 洞** (内部严格审 7 轮 + 6 轮 GPT 全漏, 这次外审 + 我派对抗 verifier 对**真 master** 逐条构造伪 cert 才坐实):
+>   - **A1/F5 pattern_nogood slot-collision (CRITICAL)**: evaluator 丢 slot 身份按 (group,pose) multiset 算, 伪核 `[(g,0,pA),(g,0,pB)]` 被 oracle 正确判 INFEASIBLE, 但 lift 成 multiset cut 比 oracle 证明的更强 → 误剪合法布局 slot0→pA/slot1→pB。
+>   - **A2/F9 density_envelope max_allowed_area 量词倒置 (CRITICAL)**: validator 只验 K≤safe_ub + ∃witness area>K, 而 cut 需 ∀legal area≤K (`∃A area>K` ⊅ `∀L area≤K`); 伪 K=0 cert 过 validator → 误剪合法 9 格放置 = FP。
+>   - **A3/F6 shape_packing_hall region_demand (HIGH)**: 没对 source-of-truth 下界 `max(0, D−对侧容量)` 校验, 伪 region_demand 误剪合法 split。
+>   - **A4/F7F8 footprint (MED 加固)**: pole 2×2 / core 9×9 硬编码没钉 canonical (当前数据无 live FP, 防 drift)。+ D1 doc-currency。
+>   修 (commit `e8c4643`, **red→green 实证**: 7 个对抗测试在未打补丁 master 全 FAIL): F5 slot-completeness guard / F6 `region_demand ≤ max(0,D−C_other)` + 限 left_or_bottom_boundary (用更准的 B2 版非过严 B1 版) / F7F8 footprint SoT。**F9 = quarantine** (validator fail-closed 拒 K<safe_ub, NP-hard tight-K 无便宜中间地带 → F9 整族实质停用; **反转 Gemini round-4 刻意 oracle-trust deferral**; replay 实证 validator 是信任边界且不重跑 oracle → 信任无法重算的 K 是真 replay-FP 暴露; 动了 PROJECT_LOCK + 5 cut-family spec; 解封须 P1.5+ 给 cert 加 area-capacity proof-carrying 字段)。**cuts 418→425**。
+>   **可复用判定线**: validator 该不该独立重算某 cert 标量 = **能否便宜重算** —— canonical 常量 (radius/footprint / F6 的 max(0,D−C_other) 算术) O(1) 可查 = 不查纯属疏忽 must-fix; oracle 解的 NP-hard 子问题 (F9 tight-K / F5 INFEASIBLE) = 信任是刻意 P1.5+ deferral。**A2/F9 是 GPT 不知情重提了 Gemini r3 提出、r4 主动撤销的刻意 deferral** (新窗口零历史→撞已裁决决定, [[gpt-error-types-taxonomy]] 的"前提错估"; 盲打会反转刻意设计 + 删记录理由的测试 → verify-before-apply 实例)。
+>   **主线现状**: 外审找到真洞已全修在 master; consecutive-clean 计数器**重置**; v28 包 (c00a957c) 被修复后的 master supersede; **下一关 = 重建 v29 + 续外审连续清零轮 (未做 —— 用户转去做 Design A/B 工装 + 本次补验)**。
+>
+> **② 工装 (用户指定 doc-currency + SoT 治本, 非主线)**: 把"核心节点(主体)+投影+强制函数"架构套到项目数字 + cut-family SoT, 见 [[authoritative-numbers-single-source]]:
+>   - **Design A 数字单一来源**: `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json` 核心节点 + `gen_authoritative_numbers.py` + drift-test 强制函数 (master 只焊 cuts_tests_total)。
+>   - **Design B 共享 SoT**: `src/cuts/helpers/canonical_sot.py` (F7/F8 委托消私有副本) + meta-test。
+>   - **三轮对抗审查** (architecture-review→fix / fix-reverify / **fresh full re-review**): **全是 doc-currency/工装健壮/诚实度/完整性, 零 soundness**。Review #3 fresh-pass 在 **certified attach-scope 路径** `assumptions/verifiers.py:104` 逮到 canonical pole-radius lookup 的**第 4 个逐字副本** (verify_power_pole_jump_radius 用; 前 3 轮内审 + 6 轮外审全漏, meta-test 只扫 families/ 结构看不到), 已委托 canonical_sot (commit `d4ae058`)。诚实评估: **多轮对抗审下 soundness 一直稳, 真正递减回报的是完整性长尾** (架构 branding 比实现 scope 宽); 建议 100% consolidation 当一次性有界聚焦任务做 (**待办**: `verify_protocol_core_position` 近似副本 + 2 个 master-recomputable sizing 数 (type_pool/concrete) 真 master-recompute), 别靠反复 full 多代理审挤。
+>   cuts 计数链: **418 (v28 four-hole fix e8c4643) → 425 → 437 (Design B meta-test) → 441 → 442 (R3 加固)**。
+>
+> 下面 v28-内部7轮 / v27 / v26 块是中间历史。
+
+## (中间历史) 最新状态 (2026-06-04) — v28 (sha 6c90a199) + 内部严格审 7 轮: R3 逮 HIGH F7 soundness 洞, R4-R7 doc-currency; 实质 clean 但未达 3 连续 clean
 
 > **当前真相 (摘要, v28 + 内部严格审)**: v27 (第六轮外审 B-minor 纯文档) 全修后, 用户把 close 标准提高为「**大节点 ≥3 次连续独立审查零问题**」。跑内部多镜头对抗审查 workflow (6 镜头 soundness/sizing-math/scoping/reproducibility/cross-doc/packaging-hygiene + 对抗 refute + completeness critic; 脚本 `cc_context/...省略.../workflows/scripts/v28-strict-internal-review-wf_84b207cd-4a8.js`, 每轮重建 v28 后跑) 共 7 轮:
 > - **R3 = 最大收获: HIGH F7 soundness 洞 (已修)**。`src/cuts/families/power_hitting_set.py` validate 不校验 `cert.pole_radius` 对不对得上 `canonical_rules.facility_templates.power_pole.power_coverage_radius` (phase 6/7 的 CoverSet recompute 直接信 cert radius)。伪造 tiny-but-positive radius (0.0001, 过 schema `>0`) → CoverSet 空 → 验 'sound' → false-positive cut → 误剪可行布局 → certified_exact **丢精确性**。`replay.py` FAMILY_VALIDATORS 可达 (非死代码)。F8 (`power_grid_reach`) 早有 `_validate_pole_radius_sot` 防同样攻击 (R4 Finding#2), **F7 是唯一漏的 power 兄弟** (F1/F6/F8/F9 都 recompute 各自 cert 数值字段); 且 spec `07_power_hitting_set.md` 本就把 canonical pole_radius 列为 SoT 输入 → spec↔src 背离。**6 轮外部 GPT (v22-v27) + 我早先独立 backstop 全没抓到** —— 严格内审的价值实证。修: 加 `_lookup_canonical_pole_radius` + `_validate_pole_radius_sot` (镜像 F8, fail-closed) 插在 CoverSet recompute 前 + test `_make_state` 注入 canonical_rules + 2 回归测试 (forged 0.0001→unsound, canonical 缺→unsound)。**cuts 416→418**; full pytest 63 fail 全 pre-existing (rtree 未装 + .artifacts bundle 缺, 与本改无关; cuts subset 418 全过)。提交 master `39c80c6`。

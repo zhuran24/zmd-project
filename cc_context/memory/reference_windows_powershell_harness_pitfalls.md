@@ -37,7 +37,7 @@ benchmark/gate 中间文件、workflow agent 解包目录、export 写歪的路�
 
 本 session 三连犯: `D:tmpgate_out.txt` (export 写歪路径) + junk 进 v25 包 + `.reaudit_v25_extract/` (workflow agent 解包目录落根)。
 
-**防御**: 写临时文件用**绝对 temp 路径** (`$env:TEMP\...`), 别用 repo-相对路径; 跑会解包/导出的 workflow/脚本前, 要么把目标目录先 `.gitignore`, 要么事后扫 repo 根有无杂散 untracked 件再 commit/build; **build 交付包前必扫一遍 repo 根的 untracked**, 别让 rglob 顺手打包。
+**防御**: 写临时文件用**绝对 temp 路径** (`$env:TEMP\...`), 别用 repo-相对路径; 跑会解包/导出的 workflow/脚本前, 要么把目标目录先 `.gitignore`, 要么事后扫 repo 根有无杂散 untracked 件再 commit/build; **build 交付包前必扫一遍 repo 根的 untracked**, 别让 rglob 顺手打包。**新失败模式 (2026-06-04)**: 跑**全套 pytest** 会在 repo 根留 `.pytest_tmp/` 深路径树 (anchor119 等测试产), 不在 build 的 EXCLUDE 里 → build 的 `rglob`/`shutil.copy2` 撞 `FileNotFoundError` (深路径/已清) **直接 build 崩** (不止静默打包污染)。已给 build 加 `.pytest_tmp` exclude; full pytest 后 build 前留意清它。
 
 **交付包 manifest 必强制 LF 行尾**: build review 包时 `SHA256SUMS`/manifest 若是 Windows CRLF, reviewer 端 `sha256sum -c` 会因 CR 混进 path **误报 FAILED** (文件没坏)。build 脚本写 manifest 后做 CRLF→LF 后处理 (本 session v25 workflow 逮到过, 已在 build 脚本加 LF 后处理)。同属"交付包卫生"。
 

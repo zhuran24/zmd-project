@@ -22,6 +22,10 @@ metadata:
 **大节点 ≠ per commit / 单 family / 单 module**. Gemini round 已 cover 细节层
 (per-commit fast feedback, 算法/schema 一致性).
 
+## 大节点 close 门禁 (2026-06-04 用户立, 硬标准)
+
+**大节点 close = 至少连续 ≥3 次独立审查零问题才行**; 任一轮 (外审或内部 backstop) 出 finding 就修 + **重置计数器**。用户原话: "大节点的审查要严格, 至少连续三次独立审查没有问题才行"。适用于**所有未来大节点**, 直接 override 主代理"reviewer 已 pre-bless / 纯 doc-only 就跳第 N 轮"的省事倾向 (Phase 1.2 spike-close: 我倾向跳第七轮, 用户立此标准要求继续连续清零)。配套 [[verification-independent-backstop]] rule#4 (闭环到零 finding) + rule#4c (每轮是 fresh full re-review 非 verify-fixes)。
+
 ## 行动
 
 整 phase deliverable 打包送 GPT pro window 审查 (zip 含):

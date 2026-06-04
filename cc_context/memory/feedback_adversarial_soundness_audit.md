@@ -116,6 +116,21 @@ verdict GO 才能正式 close. Gemini-only close 是 "工程 close", GPT pro 后
 - adversarial test: 故意构造 cert/literal/state 不一致 case, validator 必
   schema_err 或 unsound
 
+## 2026-06-04 v28 三振强化 (内部严格多镜头审仍漏 Layer-2, 外审 catch)
+
+v28 spike 包跑了**内部严格 7 轮多镜头对抗审查** (含 R3 自己逮到 HIGH F7 pole_radius fail-open 的那套 workflow), 仍 **0 catch** 4 个 Layer-2 soundness 洞 —— 送 GPT pro 外审 (两 bundle 交叉) + 我派对抗 verifier 对真 master 逐条**构造伪 cert** 才 confirmed_real:
+- **F5 pattern_nogood slot-collision**: 伪核 `[(g,0,pA),(g,0,pB)]` (单 slot 两 pose, oracle 判 INFEASIBLE) lift 成 multiset cut 比 oracle 证明的更强 → 误剪 slot0→pA/slot1→pB (lift-soundness, 非 schema/SoT 类)。
+- **F9 density_envelope 量词倒置**: validator 验 `∃witness area>K` 但 cut 需 `∀legal area≤K` → 伪 K=0 过 validator → FP (已 quarantine, 见 [[f9-area-only-not-density]])。
+- **F6 region_demand**: 没对 SoT 下界 `max(0, D−对侧容量)` 校验。 **F7F8 footprint** 硬编码没钉 canonical (加固)。
+**教训**: 内部多镜头对抗审 (即使 rigorous、即使逮到过 F7) 仍漏 **Layer-2 packing/lift/quantifier 类洞** (数学论证结构错, 比"假 facility_cells"字段不绑更隐蔽); **GPT 外审 + 对真 master 逐条构造伪 cert 的对抗 verifier** 是当前唯一可靠 Layer-2 catch。
+
+## 判定线: validator 该不该独立重算某 cert 标量 = 能否便宜重算 (2026-06-04)
+
+修法 1-5 的"cert↔SoT 绑定"还缺一条判定线: **能否便宜重算** ——
+- **canonical 常量 (radius / footprint / F6 的 max(0,D−C_other) 算术)**: O(1) 可从 canonical_rules 查 → validator 不独立重算纯属疏忽 = **must-fix** (F7/A4/F6 都是)。
+- **oracle 解的 NP-hard 子问题 (F9 tight-K / F5 INFEASIBLE)**: 重算 NP-hard, 信任 oracle 结果是**刻意 P1.5+ deferral** (解锁须给 cert 加 replayable proof 字段)。
+前提: **validator 是真实信任边界** —— `replay.py` 对反序列化 cert 重跑 validator 但**不**重跑 oracle, 故 replay 的 cert 是真 FP 暴露面, 信任无法重算的标量 = 真洞 (见 [[proof-object-lifecycle]])。
+
 ## Apply when
 
 任何 cut family validator + audit. 不论 Gemini 还是 GPT pro 还是 self-audit.

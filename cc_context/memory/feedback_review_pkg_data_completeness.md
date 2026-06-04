@@ -84,6 +84,10 @@ verify" 是 priming ✗.
 preempt 删 evidence. Reviewer 实际是经验丰富专家, 不需要 main 替他选看
 什么.
 
+## 别声称包里不存在的证据工件 (2026-06-04 R7, verify-before-claim)
+
+factual 完整 ≠ 可声称不存在的 factual。v28 R7: README 称 F1 "两布局单测 PASS / 双证实", 但那个两布局单测是一次性 temp 脚本 (已删、从未入包) → 包里**根本没有该具名 test**。这跟 doc-currency 数值漂移、authoritative-numbers 的"别 over-read 数字"不同: 那些是数值不准, 这条是**声称了一个不存在的证据工件** (假 factual)。修法: 降级措辞为"runner 实跑可复现 + 一次性脚本验过、未入包"。**规则: README/verdict 引用的证据 (test/脚本/数字) 必须真在包内可复现, 别把已删 temp 脚本写成具名单测。**
+
 ## 跟 review pkg packaging 决策的 shorthand
 
 每次 build review pkg, 决定某 file 入不入包时, 自问:
