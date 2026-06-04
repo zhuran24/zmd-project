@@ -665,3 +665,8 @@ Day 16b close. Day 17 Family 2 cutset + Family 3 port_exposure + Family 4
 component_reach + Family 5 pattern_nogood (复用 PCR-CUT / D2 /
 boundary_constraints / L16 minimizer) + F1-F4 fixture sweep update + by_ghost
 watcher schema 加 cut_lifecycle §7.
+
+
+## Soundness amendment — 2026-06-04 (v28 GPT pro 外审)
+
+Validator 加 footprint SoT gate: power_pole footprint 2×2 对 `canonical_rules.facility_templates.power_pole.dimensions` fail-closed 核对 (与既有 `pole_radius` gate 同款)。当前 canonical 下无 live FP, 防 footprint drift 退化成 F7 radius 同类洞。见 PROJECT_LOCK §3。

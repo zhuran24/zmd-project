@@ -556,3 +556,8 @@ F1-F4 cross-family 不冲突 ✅.
 
 Day 16a close. 下一步 Day 16b Family 7 power_hitting_set (literal mode,
 L16 lazy power 复用).
+
+
+## Soundness amendment — 2026-06-04 (v28 GPT pro 外审)
+
+Validator + generator 加 `region_demand` source-of-truth 下界: `region_demand ≤ max(0, group_demand − 对侧 baseline 容量)`, 且仅接受 `left_or_bottom_boundary` 模板。Why: 单边 Hall cut 只对被 pigeonhole 强制到该侧的数量 sound; 容量上界 ≠ 强制下界, 伪 `region_demand` 会错剪合法 split (全放另一侧 baseline)。见 PROJECT_LOCK §3。

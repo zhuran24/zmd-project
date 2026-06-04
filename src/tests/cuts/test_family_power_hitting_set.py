@@ -629,3 +629,24 @@ def test_validator_unsound_when_pose_registry_has_duplicate_pose_id() -> None:
     result = validate_power_hitting_set(cut, state, canonical_rules={})
     assert result.kind == "unsound"
     assert "not unique" in (result.detail or "")
+
+# ---- adversarial source-of-truth template hardening -----------------------
+
+
+def test_validator_rejects_power_pole_dimension_drift() -> None:
+    """F7: helper/cert 2x2 pole footprint must match canonical_rules."""
+    state = _make_state(
+        facility_templates={
+            "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}, "needs_power": True},
+            "power_pole": {
+                "dimensions": {"w": 1, "h": 1},
+                "needs_power": False,
+                "power_coverage_radius": 5,
+            },
+        },
+    )
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_hitting_set(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "power_pole dimensions" in (result.detail or "") or "2x2" in (result.detail or "")

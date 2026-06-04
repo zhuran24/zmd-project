@@ -659,3 +659,33 @@ def test_register_bad_version_raises():
 
 def test_lookup_unregistered_returns_none():
     assert lookup_sub_problem_oracle("nonexistent_v9") is None
+
+
+def test_validate_unsound_forbidden_pose_pattern_slot_index_out_of_group_demand():
+    """slot_index must be a real anonymous slot: 0 <= slot < group.demand."""
+    state = _make_state()
+    cut, _ = _build_happy_cut(state)
+
+    def _alter(d):
+        d["forbidden_pose_pattern"][0][1] = state.groups["g1"].demand
+
+    tampered = _tamper_cert(cut, _alter)
+    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "slot_index" in (vr.detail or "")
+    assert "demand" in (vr.detail or "")
+
+
+def test_validate_unsound_forbidden_pose_pattern_reuses_same_slot_for_different_poses():
+    """Reject oracle-trivial core (same slot forced to two poses) before evaluator lifts it."""
+    state = _make_state()
+    cut, _ = _build_happy_cut(state)
+
+    def _alter(d):
+        d["forbidden_pose_pattern"] = [["g1", 0, "pA"], ["g1", 0, "pB"]]
+        d["core_minimization"]["size_after"] = 2
+
+    tampered = _tamper_cert(cut, _alter)
+    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "reuses slot" in (vr.detail or "")

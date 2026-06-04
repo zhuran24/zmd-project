@@ -107,6 +107,38 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   / v1.3 all-in-W 全 unsound — v1.0 FP, v1.2 FP, v1.3 FN). v1.4+ 全
   area paradigm 是唯一 sound 路径, 任何 refactor 退回 instance-counting 算
   Forbidden Change.
+- **(2026-06-04 v28 GPT pro 外审) Cut-family validator 数值/字面量 source-of-truth
+  gate**: 任何 accepted cut 里 validator **无法独立便宜重算**的 scalar/literal
+  payload, 必须对 canonical_rules / source-of-truth fail-closed 交叉核对 (镜像 v28
+  F7 `pole_radius` 修复)。逐 family 焊死:
+  - **F5 pattern_nogood slot 完整性**: `forbidden_pose_pattern` 每个 literal 必须绑
+    一个真实、唯一、在界内的匿名 slot — `slot_index < group.demand` + `(group, slot)`
+    唯一 + per-group literal 数 ≤ demand。Why: generic evaluator
+    (`evaluate_literal_multiset`) 刻意丢 slot 身份按 `(group, pose)` multiset 评估,
+    一个 slot-collision 核 `[(g,0,pA),(g,0,pB)]` 虽被 oracle 正确判 INFEASIBLE (单
+    slot 不能两 pose), lift 成 multiset cut 后却比 oracle 实际证明的更强 → 错剪合法
+    布局 slot0→pA/slot1→pB (FP)。
+  - **F6 shape_packing_hall region_demand 下界**: `region_demand ≤ max(0, group_demand
+    − 对侧 baseline 容量)`, 且仅接受 `left_or_bottom_boundary` 模板。Why: 单边 Hall
+    cut 只对 "被 pigeonhole 强制到该侧" 的数量 sound; 容量上界 ≠ 强制下界, 伪
+    `region_demand` 会错剪合法 split (全放另一边)。
+  - **F7/F8 footprint SoT**: power_pole footprint 2×2、protocol_core footprint 9×9
+    必须对 `canonical_rules.facility_templates.{power_pole,protocol_core}.dimensions`
+    fail-closed 核对 (与既有 `pole_radius` gate 同款)。当前 canonical 下无 live FP,
+    防 footprint drift 退化成 F7 radius 同类洞。
+- **(2026-06-04 v28) F9 tight-K quarantine (supersedes Gemini round-4 oracle-trust
+  deferral)**: density_envelope validator 对 `max_allowed_area = K < safe_ub` fail-
+  closed 拒 (Phase 1.2 cert 不携带 replayable tight-bound proof)。净效果: F9 只剩
+  K==safe_ub 的平凡 cut (`_validate_witness_overflow` 的 strict `>` 在 K==safe_ub
+  不可满足 → F9 实质停用)。**这反转 Gemini round 4 "信任 oracle K、tight-K 重验
+  defer P1.5+" 的判断**: replay 实证 validator 是信任边界且不重跑 oracle
+  (`replay.py` 对 deserialized cert re-validate), 信任无法重算的 cert 标量 = replay
+  时真 FP 暴露; 与上方 validator SoT gate 原则一致。恢复 tight F9 须在 Phase 1.5+
+  给 cert 加 area-capacity proof-carrying 字段 + replay 校验 (与 F5 v1.0 信任
+  INFEASIBLE 同类升级)。**解封时同步恢复**
+  `test_generator_witness_canonical_order_independent_cert_hash` 的 cert_hash 不变量
+  覆盖 (quarantine 期间该测试改为 assert 空)。与 "F9 area-based counting lock" 正交
+  (不改计数 paradigm, 只加 K fail-closed gate)。
 - **RAM 测量必走 psutil RSS** (Gemini round 25 B2 — Phase 1 OOM 防虚假 PASS):
   168h campaign cut store RAM 监测 (`exit_criteria` #6 + ramp report
   `cut_store_peak_mb_per_worker`) **必须** 用

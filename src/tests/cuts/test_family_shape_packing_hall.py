@@ -645,3 +645,56 @@ def test_watcher_keys_failsafe_on_malformed() -> None:
     )
     keys = watcher_keys_shape_packing_hall(garbled)
     assert keys == {"group_keys": [], "region_keys": []}
+
+# ---- adversarial source-of-truth lower-bound hardening --------------------
+
+
+def test_generator_rejects_override_exceeding_source_of_truth_lower_bound() -> None:
+    """F6: region_demand override must not exceed the split lower bound.
+
+    With D=30 and 1x3 boundary poses, the opposite baseline can host 23,
+    so at most 7 poses are source-of-truth-forced onto left_baseline.
+    A forged override of 23 used to pass the generator prechecks.
+    """
+    groups = {
+        "boundary_storage_port": GroupState(
+            group_id="boundary_storage_port",
+            demand=30,
+            pose_domain=frozenset({"p0"}),
+            selected_poses=[],
+        ),
+    }
+    state = _make_state(groups=groups)
+    cuts = generate_shape_packing_hall_cuts(
+        state,
+        boundary_groups=["boundary_storage_port"],
+        region_kinds=("left_baseline",),
+        region_demand_overrides={("boundary_storage_port", "left_baseline"): 23},
+    )
+    assert cuts == []
+
+
+def test_validator_unsound_region_demand_exceeds_source_of_truth_lower_bound() -> None:
+    """F6: forged per-side demand above max(0, D-C_other) is not reusable."""
+    groups = {
+        "boundary_storage_port": GroupState(
+            group_id="boundary_storage_port",
+            demand=30,
+            pose_domain=frozenset({"p0"}),
+            selected_poses=[],
+        ),
+    }
+    state = _make_state(groups=groups)
+    cert_payload = _make_cert(
+        state,
+        partition_lens=[10],
+        partition_offsets=[0],
+        max_packable=[3],
+        total_packable=3,
+        group_demand=30,
+        region_demand=23,
+    )
+    cut = _make_cut(cert_payload, state)
+    result = validate_shape_packing_hall(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "lower bound" in (result.detail or "")

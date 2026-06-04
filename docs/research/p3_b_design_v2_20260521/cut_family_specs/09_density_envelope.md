@@ -386,3 +386,8 @@ exit criteria 第 7).
 - ✅ Family 1/5 协调政策
 - ⚠️ 5 open question (window 缩 / K binary search / multi-group / translation lift / D2 hook)
 - ⏸ Phase 1 实施 + 168h ratio monitor
+
+
+## Soundness amendment — 2026-06-04 (v28 GPT pro 外审)
+
+F9 tight-K **quarantine**: validator 对 `max_allowed_area = K < safe_ub` fail-closed 拒 (Phase 1.2 cert 不携带 replayable tight-bound proof)。净效果: F9 只剩 K==safe_ub 的平凡 cut → 实质停用。**反转 Gemini round 4 "信任 oracle K" deferral**: replay 实证 validator 是信任边界且不重跑 oracle, 信任无法重算的 K = replay 时真 FP 暴露 (伪 K=0 通过旧 validator → 错剪合法 9 格放置)。恢复 tight F9 须 Phase 1.5+ 给 cert 加 area-capacity proof-carrying 字段 + replay 校验。本注记取代 §13 "oracle re-verify" 里隐含的信任 tight-K 行为。见 PROJECT_LOCK §3。

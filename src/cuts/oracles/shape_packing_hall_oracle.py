@@ -91,6 +91,27 @@ def _facility_template_length(state: BState, group_id: GroupId) -> Optional[int]
     return max(w_raw, h_raw)
 
 
+def _opposite_region_kind(region_kind: RegionKind) -> RegionKind:
+    if region_kind == "left_baseline":
+        return "bottom_baseline"
+    if region_kind == "bottom_baseline":
+        return "left_baseline"
+    raise ValueError(f"unsupported region_kind={region_kind!r}")
+
+
+def _baseline_packable_capacity(region_kind: RegionKind, state: BState, pose_length: int) -> int:
+    lens, _offsets = compute_baseline_partition_lens(region_kind, state)
+    return sum(L // pose_length for L in lens)
+
+
+def _proven_region_demand_lower_bound(
+    state: BState, region_kind: RegionKind, group_demand: int, pose_length: int
+) -> int:
+    other_region = _opposite_region_kind(region_kind)
+    other_capacity = _baseline_packable_capacity(other_region, state, pose_length)
+    return max(0, group_demand - other_capacity)
+
+
 def generate_shape_packing_hall_cuts(
     state: BState,
     *,
@@ -109,8 +130,10 @@ def generate_shape_packing_hall_cuts(
             "left_or_bottom_boundary"``. Phase 1.2 fixture tests pass
             explicit lists; Phase 1.5+ wiring auto-detects.
         region_kinds: regions to scan. Default (left, bottom).
-        region_demand_overrides: Phase 1.5+ master_solution per-region count.
-            Phase 1.2 default uses ``min(group.demand, region capacity)``.
+        region_demand_overrides: Optional proof-carrying per-region lower bound.
+            Phase 1.2 default is disabled; an override may be emitted only
+            when it is no larger than the source-of-truth lower bound
+            ``max(0, group_demand - capacity(other_baseline))``.
         iter_index: outer-loop iteration for cut_id provenance.
     """
     if state.ghost_rect is None:
@@ -151,6 +174,14 @@ def generate_shape_packing_hall_cuts(
             if region_demand > min(group_demand, region_cap):
                 # Override exceeded sane bound — skip rather than emit a
                 # cert that validator phase 7 would reject as unsound.
+                continue
+            if region_demand > _proven_region_demand_lower_bound(
+                state, region_kind, group_demand, pose_length
+            ):
+                # A larger side count may hold for a particular incumbent, but
+                # Phase 1.2 certs do not carry an incumbent-side proof; emitting
+                # it would create a reusable geometric cut stronger than the
+                # source-of-truth lower bound.
                 continue
             cut = _try_build_cut(
                 state=state,

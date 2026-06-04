@@ -208,13 +208,15 @@ def _tamper_cert(cut: Cut, mutate) -> Cut:
 # ---- validator happy + schema --------------------------------------------
 
 
-def test_validate_ok_full_overflow():
+def test_validate_rejects_unproved_tight_max_allowed_area():
     state = _make_state()
-    # 4 poses × 9 cells = 36 cells, max_allowed_area = 10 → strict overflow
+    # 4 poses × 9 cells = 36 cells, but max_allowed_area=10 is tighter than
+    # the static safe_ub=100. Phase 1.2 has no replayable proof for that K.
     cert_payload = _make_density_envelope_cert(max_allowed_area=10)
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+    assert vr.kind == "unsound"
+    assert "no replayable proof" in (vr.detail or "")
 
 
 def test_validate_schema_err_cert_kind_wrong():
@@ -410,16 +412,17 @@ def test_validate_unsound_witness_area_le_max_allowed():
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
     assert vr.kind == "unsound"
-    assert "strict overflow" in (vr.detail or "")
+    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or ""))
 
 
 def test_validate_strict_inequality_just_above():
-    """Just below total overflow (sum=36 > max=35) → ok."""
+    """Just below total overflow is still rejected without replayable K proof."""
     state = _make_state()
     cert_payload = _make_density_envelope_cert(max_allowed_area=35)
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
-    assert vr.kind == "ok"
+    assert vr.kind == "unsound"
+    assert "no replayable proof" in (vr.detail or "")
 
 
 # ---- 3 remaining red fixtures (evaluator-side) ----------------------------
@@ -471,7 +474,7 @@ def test_F9_any_overlap_overcount_FP_rejected():
     vr = validate_density_envelope(cut, state, canonical_rules={})
     # Validator correctly does area-based recompute and finds no overflow
     assert vr.kind == "unsound"
-    assert "strict overflow" in (vr.detail or "")
+    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or ""))
 
 
 def test_F9_origin_in_window_FP_rejected():
@@ -550,8 +553,10 @@ def test_F9_all_in_window_FN_caught():
     )
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
-    # FN check: 12 > 10 strict, validator must accept
-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+    # The partial-overlap arithmetic is no longer reachable for an unproved
+    # tight K in Phase 1.2; fail-closed before accepting the cut.
+    assert vr.kind == "unsound"
+    assert "no replayable proof" in (vr.detail or "")
 
 
 # ---- evaluator -------------------------------------------------------------
@@ -620,7 +625,7 @@ def test_generate_routing_overflow_witness_rejected():
     assert cuts == []
 
 
-def test_generate_happy_path_emits_cut():
+def test_generate_unproved_tight_k_returns_empty():
     state = _make_state()
     cuts = generate_density_envelope_cuts(
         state,
@@ -635,9 +640,7 @@ def test_generate_happy_path_emits_cut():
             ("g1", "p_3x3_d"),
         ),
     )
-    assert len(cuts) == 1
-    assert cuts[0].family == "density_envelope"
-    assert cuts[0].oracle_cert_hash == cuts[0].cert.cert_hash  # R3 invariant
+    assert cuts == []
 
 
 def test_generate_unknown_group_returns_empty():
@@ -688,28 +691,17 @@ def test_generate_equality_no_cut():
 # ---- watcher_keys ---------------------------------------------------------
 
 
-def test_validate_ok_cert_max_zero_exclusion_zone():
-    """Gemini F9 round 4: cert_max=0 is a legitimate exclusion-zone cut.
-
-    Original Gemini round 3 BLOCKER #1 framing ("tautologically fires") was
-    incorrect — evaluator only counts cells INSIDE W, so cert_max=0 fires
-    only when master places g inside W (sound prune iff oracle's K=0 is
-    correct). When W is fully covered by static obstacles, safe_ub=0
-    forces cert_max=0 as the only valid value. The R3 patch outlawed both
-    cases; round 4 reverts it.
-
-    Tight-K verification (whether oracle's K=0 is mathematically correct)
-    requires NP-hard sub-problem replay — Phase 1.5+ defer, same trade-off
-    as F5 v1.0 trusting oracle's INFEASIBLE response.
-    """
+def test_validate_rejects_cert_max_zero_without_replayable_proof():
+    """cert_max=0 is a tight K and must carry proof; Phase 1.2 quarantines it."""
     state = _make_state()
     cert_payload = _make_density_envelope_cert(
         max_allowed_area=0,
-        assignment_witness=[["g1", "p_3x3_a"]],  # witness sum=9 > 0 (strict overflow)
+        assignment_witness=[["g1", "p_3x3_a"]],
     )
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+    assert vr.kind == "unsound"
+    assert "no replayable proof" in (vr.detail or "")
 
 
 def test_evaluator_cert_max_zero_only_fires_when_g_inside_window():
@@ -804,8 +796,8 @@ def test_validator_union_excludes_ghost_cells():
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
     assert vr.kind == "unsound"
-    assert "strict overflow" in (vr.detail or ""), (
-        f"Validator counted ghost cells in union (HIGH bug); vr.detail={vr.detail!r}"
+    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or "")), (
+        f"Validator counted ghost cells in union or accepted an unproved K; vr.detail={vr.detail!r}"
     )
 
 
@@ -847,9 +839,8 @@ def test_validator_overlap_witness_union_not_sum():
     cut = _make_density_envelope_cut(cert_payload)
     vr = validate_density_envelope(cut, state, canonical_rules={})
     assert vr.kind == "unsound"
-    assert "strict overflow" in (vr.detail or ""), (
-        f"Validator used SUM not UNION: union=14 should not be strict overflow "
-        f"over max_allowed_area=14; got vr.detail={vr.detail!r}"
+    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or "")), (
+        f"Validator used SUM not UNION or accepted an unproved K; vr.detail={vr.detail!r}"
     )
 
 
@@ -910,12 +901,11 @@ def test_generator_witness_canonical_order_independent_cert_hash():
         assignment_witness=(("g1", "p_3x3_b"), ("g1", "p_3x3_a")),
         **args,
     )
-    assert len(cuts_forward) == 1 and len(cuts_reversed) == 1
-    assert cuts_forward[0].cert.cert_hash == cuts_reversed[0].cert.cert_hash, (
-        "Permuted witness produced different cert_hash — generator does not "
-        "canonicalize witness order; CutStore dedup is broken."
-    )
-    assert cuts_forward[0].cert.cert_payload == cuts_reversed[0].cert.cert_payload
+    # Phase 1.2 now quarantines all non-trivial F9 K values that lack a
+    # replayable area-capacity proof, so no cert is emitted to hash.  The
+    # important invariant here is order-independent fail-closed behavior.
+    assert cuts_forward == []
+    assert cuts_reversed == []
 
 
 def test_watcher_keys_pattern():

@@ -48,6 +48,7 @@
 - [懒狗模式 — 替用户想](feedback_lazy_mode.md) — 不是禁词清单, 是认同"无谓盖章=浪费用户"; 想替他省事自然不问; 改 generation 内在倾向比改 surface 深.
 - [直接讲核心 finding](feedback_directly_state_core_finding.md) — 第一句给结论+真问题定位. 不准先列 A/B/C 选项让用户选, 不准堆数据回避结论. 不确定就说"倾向 Z".
 - [清晰 > 简短 (沟通)](feedback_clarity_over_brevity.md) — 用人话 = 展开术语+场景+why+代价, 不是缩短. 不准只给代号 A/B/C. "清晰在我们这个项目里最重要".
+- [别把我的项目全局视野投射到用户](feedback_dont_project_project_visibility.md) — 讲理由前先从零搭共同词汇; 用户只见重型项目极小一片, 我常默认共享术语省地基→理由成黑话. 区别 [[clarity-over-brevity]] (HOW): 本条讲 WHY 我会漏 (没察觉在假设共享背景).
 - [不准列放弃选项](feedback_no_giveup_options.md) — 除非 formal proof 证明不行; "接受 verdict/改方向/停在这里" 不准当 option 列.
 - [不要给暂停/休息建议](feedback_no_rest_suggestions.md) — 列方案时不准把"暂停/休息/睡"当选项. 用户自己知道何时该休息.
 - [代码注释别切到工程化语气](feedback_code_comments_plain.md) — 写注释不切"严谨技术文档"模式; 大段年代戳/学术段碍眼; 只在 why 非显然处留一句人话.

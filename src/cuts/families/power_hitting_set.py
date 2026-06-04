@@ -453,6 +453,46 @@ def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
     return float(canonical_radius)
 
 
+
+def _lookup_canonical_template_dims(state: BState, template_id: str) -> Optional[Tuple[int, int]]:
+    rules = state.canonical_rules
+    if not isinstance(rules, dict):
+        return None
+    templates = rules.get("facility_templates")
+    if not isinstance(templates, dict):
+        return None
+    tpl = templates.get(template_id)
+    if not isinstance(tpl, dict):
+        return None
+    dims = tpl.get("dimensions")
+    if not isinstance(dims, dict):
+        return None
+    w_raw = dims.get("w")
+    h_raw = dims.get("h")
+    if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
+        return None
+    return (cast(int, w_raw), cast(int, h_raw))
+
+
+def _validate_power_pole_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
+    """Cross-check hard-coded 2x2 pole footprint against canonical_rules."""
+    dims = _lookup_canonical_template_dims(state, "power_pole")
+    if dims is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.canonical_rules.facility_templates.power_pole.dimensions missing "
+            "— cannot verify pole_shape_canonical against source-of-truth (fail-closed)",
+        )
+    if dims != (2, 2):
+        return _vr(
+            "unsound",
+            t0,
+            f"canonical power_pole dimensions {dims[0]}x{dims[1]} != cert/helper locked 2x2",
+        )
+    return None
+
+
 def _validate_pole_radius_sot(
     cert_dict: Dict[str, Any],
     state: BState,
@@ -504,7 +544,8 @@ def validate_power_hitting_set(
     5. Group source-of-truth (group ∈ state.groups, pose ∈ pose_domain,
        facility_template lookup + needs_power == True)
     6. Full CoverSet recompute (must be ∅)
-    7. Ghost-only CoverSet recompute (must be ∅ — cell_owner not the true cause)
+    7. Power-pole dimensions/radius source-of-truth checks
+    8. Ghost-only CoverSet recompute (must be ∅ — cell_owner not the true cause)
     """
     t0 = time.monotonic()
     del canonical_rules
@@ -563,6 +604,7 @@ def validate_power_hitting_set(
         # Forged-radius source-of-truth gate (mirror F8): phases 6/7 recompute the
         # CoverSet trusting cert.pole_radius; verify it equals canonical R first.
         _validate_pole_radius_sot(cert_dict, state, t0),
+        _validate_power_pole_template_sot(state, t0),
         _validate_facility_cells_match_pose_registry(facility_cells, cert_dict, state, t0),
         _validate_coverset_empty(facility_cells, cert_dict, state, t0),
         _validate_coverset_ghost_only_empty(facility_cells, cert_dict, state, t0),

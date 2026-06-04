@@ -11,12 +11,11 @@ PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
   pole-jump BFS from protocol_core does not reach any candidate. Oracle
   pipeline runs F7 first; F8 only when F7 returns nothing.
 - **Real canonical data**: pole shape is **2×2 rigid** (canonical_rules
-  ``power_pole.dimensions``); pole-to-pole jump radius is supplied by the
-  caller because canonical_rules schema currently exposes only
-  ``power_coverage_radius`` (pole→facility, semantically distinct from
-  pole→pole jump). Phase 1.5+ will land a dedicated canonical field; for
-  now the generator + validator both treat the radius as authoritative
-  via cert and the active_assumptions audit trail.
+  ``power_pole.dimensions``), protocol_core footprint is **9×9**
+  (canonical_rules ``protocol_core.dimensions``), and ``pole_jump_radius``
+  must equal ``canonical_rules.facility_templates.power_pole.power_coverage_radius``
+  in Phase 1.2. Dedicated pole→pole jump-radius schema can supersede this
+  only with an explicit lock/spec/test update.
 - **needs_power gate**: validator rejects facilities whose
   ``facility_templates[ft].needs_power`` is not True (mirror F7).
 - **Cert holds NO graph snapshot**: validator independently rebuilds the
@@ -560,6 +559,64 @@ def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
     return float(canonical_radius)
 
 
+
+def _lookup_canonical_template_dims(state: BState, template_id: str) -> Optional[Tuple[int, int]]:
+    rules = state.canonical_rules
+    if not isinstance(rules, dict):
+        return None
+    templates = rules.get("facility_templates")
+    if not isinstance(templates, dict):
+        return None
+    tpl = templates.get(template_id)
+    if not isinstance(tpl, dict):
+        return None
+    dims = tpl.get("dimensions")
+    if not isinstance(dims, dict):
+        return None
+    w_raw = dims.get("w")
+    h_raw = dims.get("h")
+    if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
+        return None
+    return (cast(int, w_raw), cast(int, h_raw))
+
+
+def _validate_power_pole_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
+    dims = _lookup_canonical_template_dims(state, "power_pole")
+    if dims is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.canonical_rules.facility_templates.power_pole.dimensions missing "
+            "— cannot verify pole_shape_canonical against source-of-truth (fail-closed)",
+        )
+    if dims != (2, 2):
+        return _vr(
+            "unsound",
+            t0,
+            f"canonical power_pole dimensions {dims[0]}x{dims[1]} != cert/helper locked 2x2",
+        )
+    return None
+
+
+def _validate_protocol_core_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
+    dims = _lookup_canonical_template_dims(state, "protocol_core")
+    if dims is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.canonical_rules.facility_templates.protocol_core.dimensions missing "
+            "— cannot verify protocol_core_cell footprint against source-of-truth (fail-closed)",
+        )
+    if dims != (_PROTOCOL_CORE_SIZE, _PROTOCOL_CORE_SIZE):
+        return _vr(
+            "unsound",
+            t0,
+            f"canonical protocol_core dimensions {dims[0]}x{dims[1]} != "
+            f"validator locked {_PROTOCOL_CORE_SIZE}x{_PROTOCOL_CORE_SIZE}",
+        )
+    return None
+
+
 def _validate_pole_radius_sot(
     cert_dict: Dict[str, Any],
     state: BState,
@@ -640,6 +697,12 @@ def _validate_source_of_truth_scalars(
     err = _validate_pole_radius_sot(cert_dict, state, t0)
     if err is not None:
         return err
+    err = _validate_power_pole_template_sot(state, t0)
+    if err is not None:
+        return err
+    err = _validate_protocol_core_template_sot(state, t0)
+    if err is not None:
+        return err
     return _validate_pc_anchor_sot(pc_anchor, state, t0)
 
 
@@ -660,6 +723,7 @@ def validate_power_grid_reach(
        facility_template lookup + needs_power == True)
     6. Cert↔source-of-truth scalar cross-check (Gemini F8 round 4 Finding #2):
        cert.pole_jump_radius == canonical_rules.power_pole.power_coverage_radius;
+       power_pole/protocol_core dimensions match canonical_rules;
        cert.protocol_core_cell footprint owned by protocol_core in state
        (when cell_owner populated)
     7. Full disconnect recompute (CoverSet non-empty + BFS disjoint from pc)

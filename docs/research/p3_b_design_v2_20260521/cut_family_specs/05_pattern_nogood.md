@@ -179,3 +179,8 @@ watcher:
 - ✅ Cert + cut 构造 + generator (L16 复用) + evaluate + validator
 - ⚠️ Class C 退化风险 acknowledged, Family 9 是真正解, Family 5 作 fallback
 - ⏸ Phase 1 实施 src/cuts/families/pattern_nogood.py + monitor + L16 import
+
+
+## Soundness amendment — 2026-06-04 (v28 GPT pro 外审)
+
+Validator 加 slot-completeness fail-closed gate: `forbidden_pose_pattern` 每个 literal 必须绑真实、唯一、在界内的匿名 slot (`slot_index < group.demand` + `(group, slot)` 唯一 + per-group literal 数 ≤ demand)。Why: generic `evaluate_literal_multiset` 刻意丢 slot 身份按 `(group, pose)` multiset 评估; slot-collision 核 `[(g,0,pA),(g,0,pB)]` 被 oracle 正确判 INFEASIBLE, 但 lift 成 multiset cut 后比 oracle 实际证明更强 → 错剪合法布局 slot0→pA/slot1→pB (FP)。见 PROJECT_LOCK §3 cut-family validator SoT gate。

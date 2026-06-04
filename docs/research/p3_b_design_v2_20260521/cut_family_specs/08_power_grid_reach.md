@@ -433,3 +433,8 @@ cut store dedup: 同 (facility_group, facility_pose_id, ghost_rect_id) 不应同
 - ⚠️ 5 open question (ghost-line algorithm / v1.1 cell_owner causation /
   multi-facility merge / multi-protocol_core / belt-power 分发)
 - ⏸ Phase 1 实施 + F5 fixture round-trip 测试
+
+
+## Soundness amendment — 2026-06-04 (v28 GPT pro 外审)
+
+Validator 加 footprint SoT gate: power_pole 2×2 + protocol_core 9×9 对 `canonical_rules.facility_templates.{power_pole,protocol_core}.dimensions` fail-closed 核对。当前 canonical 下无 live FP, 防 footprint drift。见 PROJECT_LOCK §3。

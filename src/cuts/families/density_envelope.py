@@ -328,14 +328,13 @@ def _validate_max_allowed_area(
     cert_max = cast(int, raw)
     if cert_max < 0:
         return _vr("schema_err", t0, f"max_allowed_area must be >= 0, got {cert_max}"), -1, -1
-    # Note: cert_max == 0 is allowed (exclusion-zone cut: "group g forbidden in W").
-    # Evaluator only counts cells inside W, so cert_max=0 fires only when master
-    # places g inside W (sound prune if oracle's K=0 is correct). When W is
-    # fully covered by static obstacles, safe_ub=0 forces cert_max=0 as the
-    # only valid value. Per Gemini F9 round 4 review: revert R3 BLOCKER #1
-    # patch — the original "tautologically fires" framing was incorrect.
-    # Tight-K verification requires NP-hard sub-problem replay (Phase 1.5+
-    # defer, same trade-off as F5 v1.0 trusting oracle INFEASIBLE).
+    # A smaller K is a STRONGER cut.  The static formula below proves only
+    # ``true_max_area(W,g) <= safe_ub``.  It does not prove
+    # ``true_max_area(W,g) <= cert_max`` for any cert_max < safe_ub.  Phase 1.2
+    # has no proof-carrying F9 sub-oracle replay wired into this validator, so
+    # non-trivial K must fail closed instead of trusting an oracle-supplied
+    # scalar.  This deliberately quarantines meaningful F9 cuts until the cert
+    # schema carries a replayable area-capacity proof.
     if cert_max > len(window_cells):
         return (
             _vr(
@@ -354,6 +353,18 @@ def _validate_max_allowed_area(
                 t0,
                 f"max_allowed_area {cert_max} > safe upper bound {safe_ub} "
                 f"(cert claims a looser bound than the static geometry allows)",
+            ),
+            cert_max,
+            safe_ub,
+        )
+    if cert_max < safe_ub:
+        return (
+            _vr(
+                "unsound",
+                t0,
+                f"max_allowed_area {cert_max} < static safe upper bound {safe_ub}; "
+                "Phase 1.2 F9 has no replayable proof that this tighter K is valid "
+                "(fail-closed until an area-capacity oracle cert is verified)",
             ),
             cert_max,
             safe_ub,
@@ -443,8 +454,9 @@ def validate_density_envelope(
        p ∈ pose_domain, multiset count ≤ group.demand
     7. ghost scope: scope.ghost_rect_id != GHOST_AGNOSTIC + cert.ghost_rect_repr
        byte-equal state.ghost_rect
-    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, ≤ safe upper bound
-       (validator independently recomputed)
+    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, and equal to the
+       only Phase-1.2-proven static upper bound unless a future replayable
+       F9 area-capacity oracle proof is added
     9. Witness overflow: sum |pose_cells ∩ W| > max_allowed_area (strict)
     """
     t0 = time.monotonic()

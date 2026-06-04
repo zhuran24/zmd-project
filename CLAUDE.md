@@ -51,10 +51,10 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 - Other bases (`valley4_infra_outpost`, `wuling_protocol_core`, etc.) are `future_scope`
 - Outer-deployment subsystem is adapter-side `future_scope`
 
-## Current Phase: 1.3A (cut-family LBBD master 集成)
+## Current Phase: 1.2 spike close (cut-family validator soundness 闭关 → P1.3A)
 
 - 范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计** (9 个 F1–F9 cut family 当 Benders cut 收紧 master)。
-- 当前: Phase 1.2 spike close (v22, GO_WITH_MINOR) 等 GPT pro 正式九审 → 过了进 **P1.3A 主体** (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛)。**单一 living 现状源 = CC memory `windows-ninth-review-pending`**。
+- 当前: **Phase 1.2 spike close** — prod-scale sizing + cut-family validator soundness 闭关审查 (大节点, 须连续独立外审零问题才 close) → 过了进 **P1.3A 主体** (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛)。**单一 living 现状源 = CC memory `windows-ninth-review-pending`** (含当前包版本 / 审查轮次 / 待办)。
 - **命名错位注意**: `docs/项目说明/06` 的 doc-P1.3A = attach spike (已 done)、doc-P1.3B = 真 master 集成 (= memory 口径的「P1.3A 主体」); `src/cuts/lifecycle.py` `step_8_apply_to_master` 仍 NotImplementedError。
 - 历史 Phase 3B (tuning paradigm, release `r20260416` 后) 已被取代; 下方 AI sidecar 契约仍有效。
 

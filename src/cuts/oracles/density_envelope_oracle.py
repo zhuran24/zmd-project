@@ -90,7 +90,7 @@ def _has_strict_area_overflow(
 ) -> bool:
     """Oracle-side sanity check; the validator re-verifies independently."""
     safe_ub = _compute_safe_max_allowed_area(window_cells, group_id, state)
-    if max_allowed_area > safe_ub:
+    if max_allowed_area != safe_ub:
         return False
     recomputed_sum = _recompute_assignment_area_overlap(
         assignment_witness, window_cells, state

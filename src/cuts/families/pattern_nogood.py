@@ -200,6 +200,8 @@ def _validate_forbidden_pose_pattern(
         )
     triples: List[Tuple[str, int, str]] = []
     seen: set[Tuple[str, int, str]] = set()
+    seen_slots: set[Tuple[str, int]] = set()
+    per_group_count: Dict[str, int] = {}
     for idx, entry in enumerate(raw):
         if not isinstance(entry, list) or len(entry) != 3:
             return (
@@ -232,8 +234,6 @@ def _validate_forbidden_pose_pattern(
                 _vr("schema_err", t0, f"forbidden_pose_pattern duplicate triple {triple!r}"),
                 None,
             )
-        seen.add(triple)
-        triples.append(triple)
         # pose ∈ state.groups[g].pose_domain check (defense-in-depth)
         group_state = state.groups.get(triple[0])
         if group_state is None:
@@ -242,6 +242,44 @@ def _validate_forbidden_pose_pattern(
                     "unsound",
                     t0,
                     f"forbidden_pose_pattern[{idx}] references unknown group_id {triple[0]!r}",
+                ),
+                None,
+            )
+        # Slot ids are anonymous but still denote distinct instances inside one
+        # group.  The oracle re-query may treat duplicate slot assignments as
+        # trivially UNSAT (one slot cannot take two poses), while the generic
+        # evaluator intentionally drops slot ids and checks only a (group, pose)
+        # multiset.  Therefore every cert literal must bind a real, unique slot.
+        if triple[1] >= group_state.demand:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"forbidden_pose_pattern[{idx}] slot_index {triple[1]} >= "
+                    f"group {triple[0]!r} demand {group_state.demand}",
+                ),
+                None,
+            )
+        slot_key = (triple[0], triple[1])
+        if slot_key in seen_slots:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"forbidden_pose_pattern[{idx}] reuses slot {slot_key!r}; "
+                    "slot-colliding cores are oracle-trivial but evaluator lifts them to a stronger multiset cut",
+                ),
+                None,
+            )
+        seen_slots.add(slot_key)
+        per_group_count[triple[0]] = per_group_count.get(triple[0], 0) + 1
+        if per_group_count[triple[0]] > group_state.demand:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"forbidden_pose_pattern contains {per_group_count[triple[0]]} literals "
+                    f"for group {triple[0]!r} with demand {group_state.demand}",
                 ),
                 None,
             )
@@ -254,6 +292,8 @@ def _validate_forbidden_pose_pattern(
                 ),
                 None,
             )
+        seen.add(triple)
+        triples.append(triple)
     return None, tuple(triples)
 
 

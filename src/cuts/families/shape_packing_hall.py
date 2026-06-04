@@ -314,6 +314,54 @@ def _validate_group_source_of_truth(
     return None
 
 
+def _opposite_region_kind(region_kind: str) -> RegionKind:
+    if region_kind == "left_baseline":
+        return "bottom_baseline"
+    if region_kind == "bottom_baseline":
+        return "left_baseline"
+    raise ValueError(f"unsupported region_kind={region_kind!r}")
+
+
+def _baseline_packable_capacity(region_kind: RegionKind, state: BState, pose_length: int) -> int:
+    lens, _offsets = compute_baseline_partition_lens(region_kind, state)
+    return sum(L // pose_length for L in lens)
+
+
+def _validate_region_demand_lower_bound(
+    cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Optional[ValidationResult]:
+    """Verify cert.region_demand is independently implied by source-of-truth.
+
+    For Phase 1.2 left_or_bottom_boundary groups, a single-side Hall cut is
+    valid only for a count that must appear on that side regardless of the
+    master's chosen split.  If total demand is D and the other baseline can
+    host at most C_other poses, then at least max(0, D - C_other) poses must
+    be on this baseline.  A larger per-side count may be true for one master
+    incumbent, but it is not a reusable geometric cut unless the cert carries
+    a separate proof of that incumbent-side assignment.
+    """
+    region_kind = cast(str, cert_dict["region_kind"])
+    try:
+        other_region = _opposite_region_kind(region_kind)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+    pose_length = cast(int, cert_dict["pose_length"])
+    group_demand = cast(int, cert_dict["group_demand"])
+    region_demand = cast(int, cert_dict["region_demand"])
+    other_capacity = _baseline_packable_capacity(other_region, state, pose_length)
+    proven_lower_bound = max(0, group_demand - other_capacity)
+    if region_demand > proven_lower_bound:
+        return _vr(
+            "unsound",
+            t0,
+            f"region_demand {region_demand} exceeds source-of-truth lower bound "
+            f"{proven_lower_bound} for {region_kind} "
+            f"(group_demand={group_demand}, other_region={other_region}, "
+            f"other_capacity={other_capacity}); cert lacks an incumbent-side proof",
+        )
+    return None
+
+
 def _validate_facility_template_match(
     cert_dict: Dict[str, Any], state: BState, t0: float
 ) -> Optional[ValidationResult]:
@@ -356,6 +404,15 @@ def _validate_facility_template_match(
             "unsound",
             t0,
             f"facility_templates[{facility_type!r}] missing or not a dict",
+        )
+    placement_rule = tpl.get("placement_rule")
+    if placement_rule != "left_or_bottom_boundary":
+        return _vr(
+            "unsound",
+            t0,
+            f"contributing_group {gid!r} facility_type {facility_type!r} placement_rule "
+            f"{placement_rule!r} is not 'left_or_bottom_boundary'; F6 Phase 1.2 cannot prove "
+            "single-baseline demand for this template",
         )
     dims = tpl.get("dimensions")
     if not isinstance(dims, dict):
@@ -505,12 +562,13 @@ def validate_shape_packing_hall(
     6. Hall witness strict (cert-internal total_packable < region_demand)
     7. Group source-of-truth (contributing_group ∈ state.groups,
        group_demand == state.groups[gid].demand, region_demand bounds)
-    8. Facility template match (pose_length × dimensions via
+    8. Facility template match (pose_length × dimensions + placement_rule via
        instance_to_facility_type → facility_templates)
-    9. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr byte-equal +
+    9. region_demand source-of-truth lower-bound proof
+    10. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr byte-equal +
        exterior_blocks_digest byte-equal)
-    10. Partition recompute byte-equal (lens + offsets)
-    11. Recomputed max_packable / total_packable / Hall strict
+    11. Partition recompute byte-equal (lens + offsets)
+    12. Recomputed max_packable / total_packable / Hall strict
     """
     t0 = time.monotonic()
     del canonical_rules  # state.canonical_rules carried inside state
@@ -547,6 +605,7 @@ def validate_shape_packing_hall(
         _validate_hall_witness_strict(cert_dict, t0),
         _validate_group_source_of_truth(cert_dict, state, t0),
         _validate_facility_template_match(cert_dict, state, t0),
+        _validate_region_demand_lower_bound(cert_dict, state, t0),
         _validate_ghost_scope_binding(cut, cert_dict, state, t0),
         _validate_partition_recompute(cert_dict, parsed, state, t0),
     ):
