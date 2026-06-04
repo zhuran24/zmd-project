@@ -1,5 +1,7 @@
 # IndustrialPlanner 70×70 Single-Base Current Landing / Download Bundle
 
+> **注 (2026-06-04)**：本文属 IndustrialPlanner **postprocess / adapter 交付面**（release `r20260416` 冻结），**非项目当前活动主线**（主线 = cut-family LBBD / Phase 1.2 spike close，见 `CLAUDE.md` + 根 `README.md`）。"current" 指交付面自身的当前态。
+
 This guide explains the stable **current entry layer** that now sits on top of
 `active_single_base_delivery_viewer.json`.
 

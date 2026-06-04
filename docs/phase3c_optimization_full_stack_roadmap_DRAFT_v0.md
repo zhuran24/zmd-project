@@ -1,5 +1,7 @@
 # Phase 3C — Optimization Full-Stack Roadmap
 
+> ⚠️ **HISTORICAL / SUPERSEDED (2026-06-04)**：本文是早期 DRAFT v0，已被 `phase3c_optimization_roadmap_v1.md` 取代；且整个 Phase 3C 优化范式已被 **cut-family LBBD** 取代（当前 Phase 1.2 spike close，见 `CLAUDE.md`）。作历史快照读。
+
 **Status:** Draft 2026-05-08
 **Source decision:** 用户 2026-05-08 战略决策，问题规模会持续指数膨胀（70×70 → 80×80，1.0 → 1.2 流水线复杂度 2-3×），单一优化方向不足，必须 stack 所有可能的性能提升手段。
 

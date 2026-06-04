@@ -1,5 +1,7 @@
 # Phase3B Repair5：性能调优 × AI 加速一体化全流程计划表
 
+> ⚠️ **HISTORICAL / SUPERSEDED (2026-06-04)**：整个 Phase 3B tuning paradigm 已被 **cut-family LBBD** 取代（当前 Phase 1.2 spike close，见 `CLAUDE.md`）。本计划本身已是历史（文内 L6 的 "superseded" 仅指更早的 13900KS 单线调优计划，不要误读为本计划仍是当前主线）。
+
 生成日期：2026-04-29  
 计划版本：v1.0  
 参考项目包：`phase3b_pre_production_full_audit_upload_20260429_repair5_20260429_213207.zip`  

@@ -1,5 +1,7 @@
 # IndustrialPlanner 70×70 Single-Base Delivery Release Guide
 
+> **注 (2026-06-04)**：本文属 IndustrialPlanner **postprocess / adapter 交付面**（release `r20260416` 冻结），**非项目当前活动主线**（主线 = cut-family LBBD / Phase 1.2 spike close，见 `CLAUDE.md` + 根 `README.md`）。
+
 This guide closes the next step after the active single-base end-to-end runbook:
 it turns one **delivery-ready** `valley4_protocol_core` 70×70 run into a
 **versioned delivery release** with a fixed release id, a self-contained bundle,

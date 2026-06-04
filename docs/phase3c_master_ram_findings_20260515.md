@@ -1,5 +1,7 @@
 # Phase 3C Master CP-SAT RAM 调研 findings (2026-05-15)
 
+> ⚠️ **HISTORICAL (2026-06-04)**：Phase 3C / 坐标-master 时代 RAM 调研，主线已转 **cut-family LBBD / B1 pose-bool**（当前 Phase 1.2 spike close，见 `CLAUDE.md`）。findings 作历史读（30GB propagation buffer 等结论仍记于 memory paradigm-death-timeline）。
+
 ## TL;DR
 
 - master CP-SAT peak **30 GB 大头** = solve-time propagation buffer (8 worker × ~3.5 GB/worker), 不是 build storage (build 完仅 3.10 GB).

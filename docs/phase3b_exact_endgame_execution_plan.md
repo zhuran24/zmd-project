@@ -26,7 +26,7 @@ owner: phase3b-exact-endgame
 - 为未来多基地提前扩宽当前单基地合同
 
 这些边界与当前主计划一致：现阶段唯一活跃面仍然是
-`valley4_protocol_core` 70×70，其他基地继续保留为 `future_scope`。fileciteturn0file0
+`valley4_protocol_core` 70×70，其他基地继续保留为 `future_scope`。turn0file0
 
 ---
 
