@@ -1,5 +1,5 @@
 ---
-status: HISTORICAL_DRAFT
+status: ACCEPTED_DRAFT
 source_of_truth: src/models/flow_subproblem.py plus PROJECT_LOCK.md exact-diagnostic boundary notes
 last_verified_against: 2026-03-23
 owner: flow-diagnostic
@@ -91,7 +91,7 @@ $$ \sum_{k \in \mathcal{K}} (f_{u,v}^k + f_{v,u}^k) \le C_{u,v} \quad \forall \t
 在 MCNF 模型中，所有的粉碎机都向同一个超级源点 $S_{\text{powder}}$ 汇入粉末，所有的研磨机都从该节点抽取粉末。
 **LP 求解器会根据最小流体阻力原则 (Minimum Resistance Principle)，自动将最近的粉碎机与研磨机在拓扑中被"软配对"**。如果 07 章布局混乱（如供需两端横跨地图且中间无通道），模型将轻易触发中部物理网格流量上限而宣告 Infeasible。这会通过 Benders Cut 逼迫 07 章主模型在迭代中自发地将上下游机器"靠拢"排布，最终涌现出极高的工业排布智能。
 ---
-status: HISTORICAL_DRAFT
+status: ACCEPTED_DRAFT
 source_of_truth: src/models/flow_subproblem.py plus PROJECT_LOCK.md exact-diagnostic boundary notes
 last_verified_against: 2026-03-23
 owner: flow-diagnostic

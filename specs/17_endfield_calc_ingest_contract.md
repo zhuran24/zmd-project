@@ -1,7 +1,7 @@
 # Spec 17 — endfield-calc Snapshot and TypeScript Ingest Contract
 
 **Status**: CURRENT_CODE_ALIGNED  
-**Updated**: 2026-03-27
+**Updated**: 2026-05-08 (vendored snapshot refresh; 具体 source_version / 计数以 `third_party_snapshots` endfield-calc `SOURCE_METADATA.json` 为准)
 
 ## Purpose
 
