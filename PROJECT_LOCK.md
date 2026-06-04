@@ -134,6 +134,15 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   family-local canonical-dims SoT 核对 (pose_length vs template dims, 经 state.facility_templates
   alias, sound fail-closed) 未走 canonical_sot、未进登记表 —— 它**非 fail-open 洞** (v28 合并只
   针对 fail-open), 是预存未 consolidate 项; meta-test 的 dimensions 私有扫描刻意不覆盖它。
+  **(2026-06-04 fresh-pass 补)**: `assumptions/verifiers.py` 的 `verify_power_pole_jump_radius`
+  曾藏 canonical pole-radius lookup 的**第 4 个逐字副本** (在 certified attach-scope 路径, 前 3
+  轮 + v28 外审全漏), 已委托 canonical_sot; meta-test 的私有-radius 扫描已扩到 validator-side
+  (families + assumptions)。**待办 (本轮未做)**: `verifiers.py` `verify_protocol_core_position`
+  是 F8 `_validate_pc_anchor_sot` 的**近似**副本 (非逐字), 未 consolidate; `oracles/
+  power_cover_oracle.py` 是 generator 侧读 canonical (产 cert 非验, 不在 scan 范围)。
+  **澄清: F1 region_capacity 的 `cells_per_pose` 不是未守 SoT** —— 是 Gemini round-14 #5 **刻意
+  信任 cert** (防 canonical pose-shape 微调时全 cut quarantine), 同 F9 tight-K 的 deferral 性质,
+  **勿 consolidate** (改了会反转刻意决定)。
 - **(2026-06-04 v28) F9 tight-K quarantine (supersedes Gemini round-4 oracle-trust
   deferral)**: density_envelope validator 对 `max_allowed_area = K < safe_ub` fail-
   closed 拒 (Phase 1.2 cert 不携带 replayable tight-bound proof)。净效果: F9 只剩

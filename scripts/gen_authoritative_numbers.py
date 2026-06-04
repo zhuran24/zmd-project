@@ -65,10 +65,12 @@ def load_core_node() -> Dict:
 def current_claims() -> Dict[str, str]:
     """Flat {key: display-string} for build-time injection.
 
-    A package build script should pull current-claim numbers from here instead
-    of hard-coding them in its README template, so the package README is a true
-    projection of the core node and cannot drift. Historical/changelog literals
-    in the template stay as written (the core node only carries current values).
+    A package build script SHOULD pull current-claim numbers from here instead of
+    hard-coding them in its README template — but that injection is NOT wired yet
+    (this function currently has no consumer), so the package README still hard-codes
+    its numbers and CAN drift; see authoritative_numbers.json _meta.projection_status.
+    Historical/changelog literals in the template stay as written (the core node
+    carries only current values).
     """
     core = load_core_node()
     out = {key: str(meta["value"]) for key, meta in core["numbers"].items()}

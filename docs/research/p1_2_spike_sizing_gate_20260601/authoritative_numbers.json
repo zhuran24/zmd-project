@@ -10,7 +10,7 @@
   },
   "numbers": {
     "cuts_tests_total": {
-      "value": 441,
+      "value": 442,
       "kind": "int",
       "recompute": "pytest_collect_only_count_src_tests_cuts",
       "stale": [
@@ -35,13 +35,13 @@
       "value": 81795,
       "kind": "int",
       "stale": [],
-      "provenance": "computed: sizing_gate sum(pool_sizes) (frozen spike)。"
+      "provenance": "computed: sizing_gate sum(pool_sizes), 输入 = data/preprocessed/candidate_placements.json (master artifact, **非** spike fixture) → 实为 master-recomputable + drift-prone (vendored snapshot refresh 改 pool 尺寸时会变)。**完整性 gap**: 当前与真 frozen-spike 的 f9/f4 混在一起、master 上未被强制重算 (待补 master-recompute path 才能 force)。"
     },
     "concrete_master_var_upper_proxy": {
       "value": 325747,
       "kind": "int",
       "stale": [],
-      "provenance": "computed: sizing_gate sum(pool_sizes*multipliers)。"
+      "provenance": "computed: sizing_gate sum(pool_sizes*multipliers), 输入 = candidate_placements + mandatory_exact_instances.json (master artifacts) → 同 type_pool_total_poses: master-recomputable, 当前未在 master 强制 (完整性 gap)。"
     },
     "f9_single_group_max": {
       "value": 784,

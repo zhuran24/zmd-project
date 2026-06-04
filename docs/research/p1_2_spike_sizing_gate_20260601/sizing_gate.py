@@ -287,13 +287,17 @@ def try_measure_ortools(total_vars: int = 81_795, term_counts: Sequence[int] = (
 
 
 def compute_sizing_numbers() -> Dict[str, int]:
-    """Headline sizing integers as a single source of truth.
+    """Headline sizing integers, recomputed from the same loaders/counters as main()'s
+    printed report.
 
-    Reuses the same loaders/counters as main()'s printed report, so the
-    ``authoritative_numbers.json`` core node (and every doc that projects from
-    it) cannot drift from the real computation. Consumed by
-    scripts/gen_authoritative_numbers.py and the
-    test_authoritative_numbers_currency.py forcing-function test.
+    Honesty note (do not over-read): these need the spike fixture (data/cuts/spike/, absent
+    on master), so on master they are NOT recomputed/force-checked — the core node carries
+    them as frozen spike values and only cuts_tests_total is force-checked on master (see
+    authoritative_numbers.json _meta.enforcement_tiers). Exception: type_pool_total_poses and
+    concrete_master_var_upper_proxy derive from master artifacts (candidate_placements +
+    mandatory) and ARE master-recomputable — currently still lumped with the frozen set (a
+    known completeness gap, see their provenance). Consumed by
+    scripts/gen_authoritative_numbers.py + test_authoritative_numbers_currency.py.
     """
     recs = load_fixture()
     pools = load_pools()

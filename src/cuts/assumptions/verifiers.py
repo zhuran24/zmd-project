@@ -102,25 +102,17 @@ def _parse_radius_value(value: str) -> Optional[float]:
 
 
 def _lookup_canonical_pole_radius(state: "BState") -> Optional[float]:
-    """Read state.canonical_rules.facility_templates.power_pole.power_coverage_radius.
+    """Delegates to the shared SoT helper (single implementation, fail-closed).
 
-    Returns None on any missing layer / non-numeric / bool — fail-closed.
+    Was a verbatim 4th copy of the canonical pole-radius lookup on the certified
+    attach-scope path; consolidated into src/cuts/helpers/canonical_sot.py so this
+    verifier cannot diverge from the F7/F8 cut-family validators (v28 fresh-review
+    fresh-pass finding). Local import avoids an import cycle (canonical_sot imports
+    src.cuts.lifecycle, which transitively reaches the assumptions registry).
     """
-    rules = getattr(state, "canonical_rules", None)
-    if not isinstance(rules, dict):
-        return None
-    templates = rules.get("facility_templates")
-    if not isinstance(templates, dict):
-        return None
-    pole_tpl = templates.get("power_pole")
-    if not isinstance(pole_tpl, dict):
-        return None
-    canonical_radius = pole_tpl.get("power_coverage_radius")
-    if isinstance(canonical_radius, bool):
-        return None
-    if not isinstance(canonical_radius, (int, float)):
-        return None
-    return float(canonical_radius)
+    from src.cuts.helpers.canonical_sot import lookup_canonical_pole_radius
+
+    return lookup_canonical_pole_radius(state)
 
 
 def verify_power_pole_jump_radius(state: "BState", value: str) -> bool:
