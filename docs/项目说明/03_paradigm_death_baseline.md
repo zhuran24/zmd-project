@@ -202,7 +202,7 @@ Issue 3 (manufacturing cluster trap) 是当前 cut framework 最弱点 — F5 pa
 
 ### 4.3 跟 Phase 3B 衔接
 
-Phase 3B repair5 (commit 7eb6e7f) master oracle 30 GB → 47 GB 是 cut framework 跑前提 — master 跑不起来 cut 没意义.
+Phase 3B repair5 (见 `docs/phase3b_repair5_acceleration_tuning_ai_plan.md`, 20260429 包) master oracle 30 GB → 47 GB 是 cut framework 跑前提 — master 跑不起来 cut 没意义.
 
 Phase 1.3 P1.3B 真集成时 cut framework wire 到 benders_loop 内 (`src/search/benders_loop.py`), env flag (§19) 切新框架. 不动 Phase 3A outer_search 跟 Phase 3B master/binding/routing/flow 架构.
 

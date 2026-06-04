@@ -34,9 +34,9 @@
 | `EXACT_MASTER_CP_SAT_WORKERS` | int | 8 | master_model.py | master.solve 内部 CP-SAT 并行 worker 数. 减 RAM peak. 1 = 12.78 GiB, 8 = 30 GiB |
 | `EXACT_BINDING_CP_SAT_WORKERS` | int | 4 | cp_sat_worker_config.py | binding subproblem CP-SAT worker |
 | `EXACT_ROUTING_CP_SAT_WORKERS` | int | 8 | cp_sat_worker_config.py | routing subproblem CP-SAT worker |
-| `EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS` | int | (auto) | cp_sat_worker_config.py | local power capacity 子求解器 CP-SAT worker |
+| `EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS` | int | 8 | cp_sat_worker_config.py (`DEFAULT_LOCAL_CAPACITY_CP_SAT_WORKERS=8`) | local power capacity 子求解器 CP-SAT worker |
 | `EXACT_CP_SAT_WORKERS` | int | (auto) | cp_sat_worker_config.py | fallback default for all CP-SAT calls if specific missing |
-| `EXACT_PARALLEL_PROCESSES` | int | 1 | run_campaign_linux.sh → readiness gate | 外层 outer_search 并行 process 数 (-p flag mirror) |
+| `EXACT_PARALLEL_PROCESSES` | int | main.py -p 默认 1 / readiness gate 缺省 4 | run_campaign_linux.sh → readiness gate (`production_readiness_gate.py`) | 外层 outer_search 并行 process 数 (-p flag mirror; **两处真实 default 不同**) |
 
 ---
 

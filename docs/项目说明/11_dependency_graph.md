@@ -31,7 +31,7 @@ F6 shape_packing_hall
 
 F7 power_hitting_set
    └─ F3 port_exposure 跟 power 版本同 dispatch
-   └─ power_network helper (现 src/cuts/helpers/power_network.py stub)
+   └─ power_network helper (`src/cuts/helpers/power_network.py`, 已实现)
 
 F8 power_grid_reach
    └─ F4 BFS helper 复用 (component reach)

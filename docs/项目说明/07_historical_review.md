@@ -142,7 +142,7 @@ v6 r1+r2 catch 3 新 P0, 同一 ghost lifecycle 漏口两端:
 同时另一份 deliverable: 外部 reviewer 评估 Gemini 数学 review 建议的 meta-review (action plan + 11 red fixture matrix + acceptance checklist + CP-SAT integration notes + F9 morphology caution).
 
 3 个 "降温" 修正 (Gemini 大方向对, 但表述过满 / 方法不可用):
-- **F5 不能扛 132 集群** (orbit-aware lift Gemini 说太满) — F5 是 fallback 不是主力, F9 才是主解, F5 ratio > 50% = stop-ship
+- **F5 不能扛 132 集群** (orbit-aware lift Gemini 说太满) — F5 是 fallback 不是主力, F9 才是主解, F5 ratio > 50% = stop-ship（⚠️ 此"F9 主解"定调已被 2026-06-04 v28 **F9 tight-K quarantine 实质停用** reverse，见 06 §F9 + PROJECT_LOCK §3A；本条作历史记录读）
 - **F9 不能 routing/binding overflow → density** (PROJECT_LOCK 锁: F9 only `area_capacity_overflow`)
 - **CP-SAT 当前不支持 `AddLazyConstraint`** (OR-Tools 9.15 没此 API) — 必须 LBBD 外循环 `solve → verify → generate cut → rebuild/resolve`
 

@@ -6,7 +6,7 @@
 - **多机分布式**: 硬件 1 主机 + 1 远程, WAN 延迟 ≥ 100 ms
 - **LP relaxation 替 CP-SAT**: B1 pose-bool master 已 verdict 死, master.solve
   解不动是 inherent
-- **27 lever 死路**: B1 / PCR-CUT / SAC-Hull / D2 / cand C / L01-L26 — 各
+- **27 lever 死路**: B1 / PCR-CUT / SAC-Hull / D2 / cand C / L01-L27 — 各
   paradigm_death_timeline.md cite 死法
 - **Step A-O 已 close 的 finding**: GPT v1-v6 + Gemini r33-35 catch + 8 invariant
   全 close, 不重复 (除非加新 evidence)

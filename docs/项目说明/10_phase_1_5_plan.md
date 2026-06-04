@@ -36,7 +36,7 @@ cert 改用 `contributing_route_ids` 不是 `contributing_commodities`.
 — 当前 Phase 1.1 / 1.2 / 1.3 不需要多 route 语义, 提前改 schema 风险 over-engineer.
 
 ### 13.3 各 family oracle 真实施
-当前 F2 / F3 / F4 oracle 是 stub `return []`. Phase 1.5+ 接真 generator:
+**(2026-06-04 现状)** F2 / F3 / F4 generator **已在 Phase 1.2 落地**（F3 special-case commit `c768806`；F2 `cutset_oracle` Dinic max-flow；F4 `component_reach_oracle` BFS edge-only）。Phase 1.5+ 待补的是 **production 增强**（F2 node-split 模式 + LP dual witness / F3 `active_port_witness` / F4 cell-flow capacity），不是整个 generator。下列是这些增强的设计预留：
 
 - **F2 cutset**: 复用 PCR-CUT `patch_routing_core.run()` (Phase 0-1 GO 但 Phase
   5 multi-anchor verdict NOT GO — 仍可作 generator 模板, paradigm 死的部分是

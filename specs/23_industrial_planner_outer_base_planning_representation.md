@@ -112,16 +112,11 @@ That suite consumes every listed strict/additive report set instead of
 hard-coding a single output directory, which makes the decision-surface gate
 scale cleanly if more checked-in report sets are added later.
 
-The current checked-in support-suite inventory intentionally covers two
-decision-surface shapes:
+The current checked-in support-suite inventory (per `full_demand_support_suite_inventory.json`):
 
-- `default_full_demand_support_suite` keeps the full all-known-base strict /
-  additive report set checked in at the root fixture directory;
-- `protocol_core_transition_support_suite` keeps a focused overlapping subset
-  for `valley4_protocol_core` + `wuling_protocol_core`, so the support-suite
-  gate now exercises both full-universe and focused-subset report sets while
-  tracking unique audited-base coverage and repeated-base overlap in its suite
-  summary.
+- `default_full_demand_support_suite` keeps the **single-base `valley4_protocol_core` 70×70** strict /
+  additive report set checked in at the root fixture directory (active);
+- `protocol_core_transition_support_suite` — **(2026-06-04) 已移入 `deactivated_entries` / `status: future_scope`**，不在 active gate（保留作 later reactivation；原设计是 `valley4_protocol_core` + `wuling_protocol_core` 的 focused overlapping subset）。故 gate 当前只跑单一 single-base report set。
 
 In parallel, the repository also carries a checked-in
 `data/examples/industrial_planner/outer_base_bundle_inventory.json` and an
@@ -130,8 +125,7 @@ workflow. That suite consumes every listed outer-deployment example instead of
 hard-coding a single directory, which makes the outer-path gate scale cleanly
 if more translated bundles or degenerate identity bundles are checked in later.
 
-The current checked-in outer-bundle inventory intentionally covers both of the
-implemented shapes:
+**(2026-06-04)** 下方 outer-bundle inventory（`outer_base_bundle_inventory.json`）现为 `inventory_status: future_scope`、**不在 active gate**（同 §4 末口径，保留作 later reactivation；数字 80×80 / 273 不改）。其原设计覆盖两种 shape:
 
 - `wuling_protocol_core_full_demand_outer_bundle` exercises the real translated
   larger-base path on an 80×80 lot;
