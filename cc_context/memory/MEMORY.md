@@ -5,6 +5,7 @@
 - [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界: 仓库 `D:\追光\zmd`, venv `.venv\Scripts\python.exe` (Py3.13.13+ortools9.15.6755), prod-scale 要回 Linux 主机, slug `D-----zmd`.
 - [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 2026-05-27 终态: 7/7 family close + F3 generator 实现, GPT 八审到 CLEAN GO, GO_WITH_MINOR. v22 已重建两版+本地九审 CLEAN GO (详交接条).
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径. 治本 3 个 HIGH 过时.
+- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — 用户指定把 memory 那套"核心节点+投影"架构套到项目文档/数字 + cut-family SoT. Design A (authoritative_numbers.json + drift-test) + Design B (canonical_sot helper + meta-test). 教训: 不扫散文找旧值 / spike 数据不在 master / 强制函数>规则.
 
 ## 打包 / 外部审查规范
 
