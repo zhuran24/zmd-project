@@ -1,21 +1,21 @@
 ## 当前状态 / 交接
 
-- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源**. 2026-05-31 交接 Windows, 本地独立九审复审 CLEAN GO, v22 包重建两版, 等 GPT pro 正式九审 → P1.3A. (现状只信这条)
-- [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 lifecycle.py step_8 桥; 范围收窄 F1-only; cut 强形式 vs nogood 头号决策; Step0 gate 8/8 PASS; 停在等用户 phase-boundary 决策.
+- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (Windows 交接 + Phase 1.2 spike-close 主线 + Design A/B 工装两条线; 最新 v28 外审修 4 洞/F9 quarantine, 详文件顶块).
+- [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; Step0 8/8 PASS; 等用户 phase-boundary 决策.
 - [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界: 仓库 `D:\追光\zmd`, venv `.venv\Scripts\python.exe` (Py3.13.13+ortools9.15.6755), prod-scale 要回 Linux 主机, slug `D-----zmd`.
-- [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 2026-05-27 终态: 7/7 family close + F3 generator 实现, GPT 八审到 CLEAN GO, GO_WITH_MINOR. v22 已重建两版+本地九审 CLEAN GO (详交接条).
+- [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 2026-05-27: 7/7 family close + F3 generator, GPT 八审 GO_WITH_MINOR (现状详交接条).
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径. 治本 3 个 HIGH 过时.
-- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — 用户指定把 memory 那套"核心节点+投影"架构套到项目文档/数字 + cut-family SoT. Design A (authoritative_numbers.json + drift-test) + Design B (canonical_sot helper + meta-test). 教训: 不扫散文找旧值 / spike 数据不在 master / 强制函数>规则.
+- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — "核心节点+投影+强制函数"架构套到项目数字 (Design A: authoritative_numbers.json+drift-test) + cut-family SoT (Design B: canonical_sot+meta-test). 教训: 不扫散文找旧值 / 强制函数>规则 / forcing 半边真·project 半边未接.
 
 ## 打包 / 外部审查规范
 
-- [打包簇 hub](index_packaging_cluster.md) — 打包外部审查包的全套规范入口: 何时打包/prompt/放什么/压缩/新窗口/finding 先 reproduce/GPT 错估分类. 召回任一打包条来这拿全套.
-- [大节点结束打包 GPT pro 审查](feedback_big_milestone_gpt_pro_review.md) — 何时打包: 大节点 (Phase 完成/ramp/paradigm shift) 整 phase deliverable 打包送 GPT pro. Gemini per-commit ≠ GPT pro batch 找 architectural 层.
+- [打包簇 hub](index_packaging_cluster.md) — 外审打包全套规范入口 (何时/prompt/放什么/压缩/新窗口/reproduce/错估分类). 召回任一打包条来这拿全套.
+- [大节点结束打包 GPT pro 审查](feedback_big_milestone_gpt_pro_review.md) — 大节点 (Phase 完成/ramp/paradigm shift) 整 phase 打包送 GPT pro (≠ Gemini per-commit). **close 门禁=连续≥3 次独立审查零问题**.
 - [External review prompt 7-section 模板](feedback_external_review_prompt_template.md) — prompt input 结构: 真瓶颈+死路 inventory+审查 axis+决策列选项+优先方向+不可达 armor+deliverable. §6 不可达是唯一允许的 schema 锁.
 - [GPT review prompt 加料 armor](feedback_gpt_review_prompt_armor.md) — 三段式: 真瓶颈 + 死路黑名单/白名单 + 不可达必须形式化证明 (cite literature, 不准 'I believe'). L14 实测起作用.
 - [GPT review 新窗口零历史](feedback_gpt_review_no_history.md) — 新窗口 0 memory; 包/prompt 不准引用上次 GPT 输出; 要 ref 必须打包进 zip 或 inline 展开.
 - [GPT prompt 不要催眠前缀](feedback_no_role_priming_for_reasoning_models.md) — "你是 X 专家" role-priming 对推理模型反作用; 直接讲任务 + format + 约束.
-- [Review 包不放 prompt + 不放主动性内容](feedback_review_pkg_no_prompt_inside.md) — zip 只放纯事实素材; **不放** prompt + 主动性内容 (verdict/Close 列表/审查指引). 唯一例外: code_context review-only mirror 的"非master"定向标注.
+- [Review 包不放 prompt + 不放主动性内容](feedback_review_pkg_no_prompt_inside.md) — zip 只放纯事实素材, **不放** prompt + 主动性内容 (verdict/Close/审查指引). 例外: code_context mirror 的"非master"标注.
 - [Review 包数据完整性 default](feedback_review_pkg_data_completeness.md) — 跟 [[review-pkg-no-prompt-inside]] 互补: 禁 priming 同时要 factual 完整. spike code/Gemini archive/telemetry/reproducer 全入.
 - [大 review pkg 用 7z + ship 7za 解压工具](reference_review_pkg_7z_strategy.md) — 全项目 scope (100+ MB) 用 7z -mx=9 压 5%, zip 壳含 project.7z + tools/7za + README + 排除清单. 本机无 7z 时单层 zip.
 - [新窗口 review 包不带历史](feedback_review_package_for_new_window.md) — 新 GPT 窗口 review 包 README 不写 carry-forward (跟 v3/v4 不一样); standalone 极简点指引, 详细数据让 GPT 自查 zip.
@@ -29,18 +29,18 @@
 
 ## 工作流 / 协作偏好
 
-- [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类别只信 main 自审; 派独立 workflow/子代理, **backstop 主体必须是被验对象本身(非 proxy, 如别拿 git log/记忆树代替 session 内容; 也别只抽 user 漏助手侧)**; 子代理报告/派生数字 main 自己核. 本 session 自证 (主体误成记忆树/只抽 user→假完整, 用户多次纠正).
-- [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察就编干净因果当事实=我反复犯的病; "改 X 就好了"≠"X 致因" (修复裹着重试, 可能只清掉随机故障); 要定因须对照重复. 实例: review 质量差异归 README / SendUserFile 无按钮归大小, 均被用户戳穿. 同根 [[external-review-reproducibility]].
-- [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 任务形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume 后台 Agent 无); dispatch 三选一 (线性已知→自己 / 散落→wf / 机械→子代理); Ultracode=穷尽不计 token.
+- [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类不只信 main 自审; 派独立 workflow/子代理, **主体=被验对象本身** (非 proxy/不切片/不限范围; user+助手都查); re-audit 须 fresh full re-review 非 verify-fixes (rule#4c) 不降 scope; 子代理报告 main 自核.
+- [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察编干净因果当事实=反复犯的病; "改 X 就好了"≠"X 致因", 要定因须对照重复. 实例: review 质量归 README / 无下载按钮归大小, 均被戳穿. 同根 [[external-review-reproducibility]].
+- [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume); dispatch 三选一 (线性→自己/散落→wf/机械→子代理); Ultracode=穷尽不计 token.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改 (新增/删条目/重组/slim MEMORY.md) 先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 (加索引前先 slim) + harness 重写 frontmatter 保 name. 区别于现状过时轴 [[memory-currency-protocol]].
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 遇 LP/CP-SAT/复杂度/proof system 数学问题调 Gemini free-tier 当轻量子代理, 不替代 GPT review.
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — Claude 默认 register 偏端着/工程化; 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.
 - [算法/数学层必经 Gemini cross-check (v2 加严)](feedback_gemini_review_algorithm_math.md) — "先 check 再继续". 每 commit 后立刻 cross-check 不堆 (堆到 round 14 找出 3 致命 bug). 纯 refactor/rename/IO 不算数学层.
 - [Gemini prompt audit 模式 — 不要 GO 章 ritual](feedback_gemini_prompt_audit_mode.md) — "Gemini 用来找问题不要被夸傻". 真数据进 paths + armor 强制 3 死法 + 反 vague hyperbole + 不重写 prompt 别调.
-- [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段 main 启 N=8 路 opus 子代理各带不同 slant, 自当 merger; 事前补 main RLHF bias. 紧时 N=2-3, 假设稳了才 fire.
+- [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段启 N=8 opus 子代理各带不同 slant, main 当 merger; 补 RLHF bias. 紧时 N=2-3, 假设稳才 fire.
 - [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活 (≥3 step) 直接 spawn opus background, 不问 user. (explore N 路 vs execute 单线)
-- [Phase boundary 替 user 做主的两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 往大扩 ("做全=安全" override simplicity) + 往小缩 (deferral flinch: 选彻底又递推后退路, 拿夸大依赖当 cover; tell=stated lean 后紧跟 escape hatch). **User 是唯一可信 phase boundary auditor**.
+- [Phase boundary 替 user 做主的两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 两镜像偏见: 往大扩 ("做全=安全") + 往小缩 (deferral flinch, tell=stated lean 后紧跟 escape hatch). **User 是唯一可信 phase boundary auditor**.
 - [Sub-problem vs augmented master 默认偏见](feedback_subproblem_vs_augmented_master_default.md) — 我默认走 LBBD sub-problem 不动 master; user 用语线索区分. 实施前必明确 4 件事 (vars 进 master? loop? cut form? 同质死法?).
 - [paradigm Phase 0 cheap gate workflow](feedback_paradigm_phase0_cheap_gate.md) — 新 paradigm 实施前必走 Phase 0 (≤1h cheap gate) 验前提, GO 后再投 Phase 1. 反例 Path 08 直接 Phase 1 浪费 4 form.
 - [plan doc 不是 TODO list, 必含战略层](feedback_plan_doc_strategic_layers.md) — plan doc 必含战略/数学原理/paradigm/历史/GO 标准/依赖图/风险/mitigation/回滚, 不只 commit-level TODO.
@@ -55,20 +55,20 @@
 - [代码注释别切到工程化语气](feedback_code_comments_plain.md) — 写注释不切"严谨技术文档"模式; 大段年代戳/学术段碍眼; 只在 why 非显然处留一句人话.
 - [优化必须 stack 所有方案](feedback_optimization_strategy.md) — 不按 ROI 单选, 全上是唯一选择 (游戏内容持续膨胀).
 - [不要进 micro-optimization 螺旋](feedback_avoid_micro_optimization_spiral.md) — 占比 <5% 就停手换方向 (前车之鉴 Codex).
-- [终末地项目流程要轻](feedback_keep_review_process_light.md) — preflight + 自主审查够用, 不要每个 patch 都套外部审查.
+- [终末地项目流程要轻](feedback_keep_review_process_light.md) — preflight + 自主审查够用, 不必每 patch 套外审.
 - [工时按 Claude 节奏估](feedback_work_time_estimates.md) — 不按人类工程师"安全 buffer"打底, 多数任务分钟级.
 - [运维脚本写完存入口](feedback_record_tool_entry_points.md) — refresh/sync 脚本写完立刻在 CLAUDE.md 加 runbook 段, 不然下次 session 会忘.
-- [调研后立刻归档 transcripts](feedback_archive_research_transcripts.md) — 触发=≥3 agent 跑完, 立刻 cp Temp→docs/research/ + 同步 INDEX.md 按 Round 分段 + 保原名, 不能等会丢.
+- [调研后立刻归档 transcripts](feedback_archive_research_transcripts.md) — ≥3 agent 跑完立刻 cp Temp→docs/research/ + 同步 INDEX.md 按 Round 分段 + 保原名, 别等会丢.
 - [调研价值用 ROI 算](feedback_research_roi_metric.md) — 节约时间÷调研时间, 金矿计数器易被门槛漂移操纵.
-- [solver 参数金矿必须核实源码](feedback_verify_solver_param_claims.md) — 进 P0/P1 前读 .cc/.proto/paper, 否则负 ROI. 11/11 audit 翻盘率. 新增项必填 ROI provenance. "X 件套" combined claim 自动触发 audit.
-- [vendor refresh 后跑全 pytest](feedback_full_pytest_after_vendor_refresh.md) — pre-commit hook PASS 不算数 (只测 86 子集), 全套 2086 才抓 vendor 漏改. 同适用依赖升级/canonical_rules 改/fixture 重构.
+- [solver 参数金矿必须核实源码](feedback_verify_solver_param_claims.md) — 进 P0/P1 前读 .cc/.proto/paper 否则负 ROI (11/11 翻盘). 新增填 ROI provenance; "X 件套" claim 自动 audit.
+- [vendor refresh 后跑全 pytest](feedback_full_pytest_after_vendor_refresh.md) — pre-commit 只测 86 子集不算数, 全套 2086 才抓 vendor 漏改. 同适用依赖升级/canonical 改/fixture 重构.
 - [放开手脚但是要记得审查](feedback_autopilot_with_review_gate.md) — autopilot 升级到 src 改动+commit 级别; 每次必须走审查闭环 (preflight + pytest + 自审).
-- [大表+1min心跳+自删工作流 (部分废弃)](feedback_autonomous_loop_workflow.md) — 用户离开前指令模板. **心跳 hook 已 commit 959b6de 移除, settings.json hooks 空** (见 [[phase-1-2-progress]]); 仅用户明确再下"设 1min 心跳"才适用.
+- [大表+1min心跳+自删工作流 (部分废弃)](feedback_autonomous_loop_workflow.md) — 用户离开前指令模板. **心跳 hook 已移除 (959b6de), settings.json hooks 空**; 仅用户明确再下"设 1min 心跳"才适用.
 - [长任务一律 background 模式](feedback_long_op_background_mode.md) — spawn Agent/Bash 长跑默认 run_in_background:true, 保 prompt cache TTL.
 - [/goal 不要 sleep loop 阻 hook](feedback_no_sleep_loop_for_goal_hook.md) — 烧 5h CPU 拖时间用户嫌烦; 接受 hook fires, 每 turn 做一件 real action 或 honest status.
 - [多进程 hang 必须全 worker py-spy](feedback_multiprocess_hang_inspect_all.md) — 之前 168h "IPC bug" hypothesis 是只 py-spy main 没看 worker 的误判.
 - [shell wait wrapper pgrep 自匹配 bug](feedback_shell_wrapper_pgrep_self_match.md) — wait wrapper cmdline 含搜索 pattern 会永远 pgrep 到自己; 用 wait $PID / pgrep -x / grep -v $$ 防.
-- [项目整理: 不丢东西 + 清晰](feedback_cleanup_preserve_clarify.md) — 重组/加文档/加索引 OK, **删任何文件不 OK**. HiGHS PoC/Codex archive/phase3b 670+ 文件全保留. 每动一个 commit 一次.
+- [项目整理: 不丢东西 + 清晰](feedback_cleanup_preserve_clarify.md) — 重组/加文档/加索引 OK, **删任何文件不 OK** (HiGHS PoC/Codex archive/phase3b 全留). 每动一个 commit 一次.
 - [审查策略树](project_review_strategy.md) — 3 层审查: preflight gate → 自主语义审查 → 每日 ultrareview.
 
 ## 项目主线进度
@@ -90,14 +90,15 @@
 
 > 详情各 linked file; 整合见 [[paradigm-death-timeline-27-lever]]。
 
-- [Paradigm death timeline (27 lever)](project_paradigm_death_timeline_27_lever.md) — 27 lever 合并: 5 类死法 + 4 共同 root cause + B 5 unsolved. Gemini cross-check 前必带.
-- [latency-bound 非 bandwidth-bound](project_workload_latency_bound_not_bandwidth.md) — BCP 指针追逐 + 280K pose L3 spill. **别再提带宽/多通道/dual rank**.
+- [Paradigm death timeline (27 lever)](project_paradigm_death_timeline_27_lever.md) — 27 lever 合并: 5 类死法 + 4 共同 root cause + B 5 unsolved. cross-check 前必带.
+- [latency-bound 非 bandwidth-bound](project_workload_latency_bound_not_bandwidth.md) — BCP 指针追逐 + 280K pose L3 spill. **别再提带宽/多通道**.
 - [硬件状态 (已扩展)](project_hardware_constraint_single_machine.md) — 2026-05-08 起主机+1远程 (WAN), 分布式仅 WAN-适配模式.
 - [P2 #14 dumper 路径 已解锁](project_p2_14_dumper_path_blocked.md) — 真因是 master 嵌套 CP-SAT 无 timeout 无限 hang, 2915d6f 修.
 - [P1 #24 4-parallel 撞 OOM](project_p1_24_oom_blocked.md) — 9 min OOM 退; 软优化全死; 硬件方向排除.
 - [30GB 大头是 propagation buffer](project_30gb_real_culprit_power_coverage.md) — 8 worker × propagation; workers=1 plateau 12.78 GB.
 - [HiGHS 重写硬瓶颈](project_highs_rewrite_blocker.md) — 加 power_coverage 后 42 GB > OR-Tools 30 GB; LP-MIP 不适 dense linear.
 - [重写路径全穷尽](project_rewrite_path_exhausted.md) — 单机 48GB + 准确性必保, 决定性收益物理不可达.
+- [换 Rust 不解决 (瓶颈非内存安全)](feedback_no_rust_rewrite_correctness_not_safety.md) — Rust 治内存安全, 但 30 轮 finding 全是校验逻辑/文档/数学类, 真热点在 CP-SAT C++ 核; 换 Rust 求解层零收益 + 清空 soundness 硬化. 真减审查轮数靠语言无关的单一来源+共享 SoT.
 - [RAM 优化跑偏 (历史)](project_2026_05_15_ram_session_misdirected.md) — worker 8→1 让 master 30→12 GB 但 51 cand 全 UNKNOWN; 真瓶颈 master 解不动.
 - [5-16 session 终态](project_2026_05_16_session_final_state.md) — GPT 三连死 (v8/v10/L14) + 12 lever. v9 SHA 79b5d1d7.
 - [5-17 session 终态](project_2026_05_17_session_terminal_state.md) — L15+L16 ❌ + 用户走 B1. 14 lever.
@@ -145,5 +146,5 @@
 - [CP-SAT 不支持 AddLazyConstraint](reference_cp_sat_no_add_lazy_constraint.md) — OR-Tools 9.15 Python 无此 API. 必走 LBBD 外循环 (solve → verify → cut → rebuild/resolve).
 - [F9 area-only invariant (PROJECT_LOCK 锁)](reference_f9_area_only_not_density.md) — F9 generator 只接受 area_capacity_overflow, 拒 routing/binding/pcr. Evaluator 必 area-based. 严格 > 才 cut.
 - [IP v2 蓝图 LP 建模规则](reference_ip_v2_blueprint_lp_modeling.md) — 外部源只有矿石 (硬白名单), unloader/storager 是内部 routing 不是源; 采种机 1→2 倍增. (annotate 脚本未进 git)
-- [GitHub 实时备份](reference_github_backup.md) — 项目+CC 上下文推私有库 zhuran24/endfield-exact-solver; 每 commit auto-push (post-commit hook, gh 全路径 credential, PATH 无关); memory 改后 sync cc_context; **绝不翻 public / 禁 rebase 重写历史**; gh re-setup (setup-git / workflow scope / refresh --hostname / git 身份单配)。
+- [GitHub 实时备份](reference_github_backup.md) — 推私有库 zhuran24/endfield-exact-solver; 每 commit auto-push (post-commit hook); memory 改后 sync cc_context (spike commit 用 --no-verify 是正当例外); **绝不翻 public / 禁 rebase**; gh re-setup 见文件.
 - [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 不稳要 Workflow resume.
