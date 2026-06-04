@@ -21,7 +21,7 @@
         425,
         437
       ],
-      "provenance": "computed: `pytest --collect-only -q src/tests/cuts` 的 collection 计数 (含 parametrize 展开, 故 > 纯 `def test_` 计数)。纯 def 级 = 425; meta-test 等参数化展开把它顶到当前值。stale 列旧值仅供人读。"
+      "provenance": "computed: `pytest --collect-only -q src/tests/cuts` 的 collection 计数 (含 parametrize 展开, 故 ≥ 纯 `def test_` 计数; 差额来自 parametrize)。不在此存具体 def 级数 (会随加测试漂)。stale 列的是旧 collection 值供人读 (425 = v28 soundness 后/Design B 前; 437 = Design B 后/本轮加固前)。"
     },
     "f3_micro_probe_cases": {
       "value": 12,

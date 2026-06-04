@@ -66,11 +66,8 @@ _PRIVATE_RADIUS_LOOKUP = re.compile(r"""(?:get\(\s*|\[\s*)['"]power_coverage_rad
 _DEF_TEST = re.compile(r"^\s*def (test_\w+)\s*\(", re.M)
 
 
-def _cuts_test_defs() -> set:
-    names: set = set()
-    for f in TESTS_DIR.glob("test_*.py"):
-        names |= set(_DEF_TEST.findall(f.read_text(encoding="utf-8")))
-    return names
+def _test_defs_in(path: Path) -> set:
+    return set(_DEF_TEST.findall(path.read_text(encoding="utf-8"))) if path.exists() else set()
 
 
 def test_shared_helper_present() -> None:
@@ -107,8 +104,11 @@ def test_family_does_not_reimplement_canonical_radius_lookup(family_file: str) -
 )
 def test_registered_behavioral_test_exists(family_file: str, test_name: str) -> None:
     """A renamed/deleted behavioral test must not pass silently — it is the only proof that a
-    forged canonical scalar is actually rejected end-to-end."""
-    assert test_name in _cuts_test_defs(), (
-        f"{family_file} registry names behavioral test {test_name!r} but it no longer exists in "
-        "src/tests/cuts — restore the test or update CANONICAL_SOT_REGISTRY."
+    forged canonical scalar is actually rejected end-to-end. Checked PER-FAMILY (in that family's
+    own test_family_*.py), so deleting one family's copy of a name it shares with another family
+    is still caught (a global name-set would miss that)."""
+    fam_test_file = TESTS_DIR / f"test_family_{family_file}"
+    assert test_name in _test_defs_in(fam_test_file), (
+        f"{family_file}: registry names behavioral test {test_name!r} but it is not defined in "
+        f"{fam_test_file.name} — restore the test or update CANONICAL_SOT_REGISTRY."
     )

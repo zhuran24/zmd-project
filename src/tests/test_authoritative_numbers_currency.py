@@ -10,8 +10,10 @@ false-positives everywhere. The robust forcing function is:
 
   core node value == live recomputation (zero false-positive risk).
 
-The package README projects the current-claim numbers by *reading* this core
-node at build time (build-time injection), so it cannot drift either.
+The package README is SUPPOSED to project these numbers by reading this core
+node at build time, but that injection is NOT wired yet (current_claims() has no
+consumer), so the package README can still drift — see authoritative_numbers.json
+_meta.projection_status. This test does NOT guard that.
 
 If this test is red:  python scripts/gen_authoritative_numbers.py
 """
