@@ -1,7 +1,7 @@
 ---
 status: ACCEPTED_DRAFT
 source_of_truth: terminology and units must stay aligned with downstream code consumers; geometry semantics are referenced by placement/routing/master specs
-last_verified_against: 2026-03-23
+last_verified_against: 2026-06-04 (§2.6.1/§6.1/§7.x PROJECT_LOCK 对齐修订)
 owner: docs-modeling
 ---
 > [!WARNING]

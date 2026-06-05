@@ -23,7 +23,7 @@ F4 component_reach
 F5 pattern_nogood
    └─ F1-F4 任一 INFEASIBLE 后 fallback (literal pattern catch geometric 漏掉的)
    └─ lifecycle step 2 minimize (F5 driver)
-   └─ L16 core_minimizer 复用 (deletion + QuickXplain)
+   └─ L16 `bounded_core_minimizer.py` 复用 (deletion + QuickXplain)
 
 F6 shape_packing_hall
    └─ F1 region helper 复用 (region_cells / capacity)

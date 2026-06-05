@@ -45,7 +45,7 @@ cert 改用 `contributing_route_ids` 不是 `contributing_commodities`.
   pose ports, 找 front_cell 被占的 case
 - **F4 component_reach**: 复用 `src/search/d2_separator.py` BFS components +
   find_separator
-- **F5 pattern_nogood**: deletion / QuickXplain 复用 L16 `core_minimizer.py`
+- **F5 pattern_nogood**: deletion / QuickXplain 复用 L16 artifact `src/cuts/helpers/bounded_core_minimizer.py`
 - **F6 / F8 / F9**: 各自 spec §5 generator pseudocode
 
 ### 13.4 F3 active_port_witness verify (production-前置 risk)

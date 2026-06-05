@@ -1,7 +1,7 @@
 ---
 status: ACCEPTED_DRAFT
 source_of_truth: src/models/master_model.py and src/models/exact_coordinate_master.py
-last_verified_against: 2026-03-23
+last_verified_against: 2026-06-04 (§2.6.1/§6.1/§7.x PROJECT_LOCK 对齐修订)
 owner: master-placement
 ---
 > [!NOTE]

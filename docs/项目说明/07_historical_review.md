@@ -1,7 +1,7 @@
 # 07 — 历史回顾 (Phase 0 → Step O)
 
-不是天降一份 4 family validator. 是 22+ commit + 11 GPT pro audit + 22
-Gemini round 一轮轮调过来的. 看完这段知道为啥某些 invariant 这样设计, 为啥
+不是天降一份 4 family validator. 是多轮 commit + GPT pro audit + Gemini cross-check
+一轮轮调过来的（**注：下文各段的 commit / round 计数是该阶段口径、非全局累加，小幅出入正常**）. 看完这段知道为啥某些 invariant 这样设计, 为啥
 某些 fix 反复在同一函数加.
 
 ### 5.1 Phase 0 (B Design v2 spec + invariants)
