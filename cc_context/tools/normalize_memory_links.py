@@ -17,7 +17,10 @@ Steps:
 
 --apply to actually write; default is dry-run.
 """
-import re, sys, os, io
+import re
+import sys
+import os
+import io
 
 MEM = r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory"
 PREFIXES = ("feedback_", "project_", "reference_", "handoff_", "index_")

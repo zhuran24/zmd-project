@@ -4,7 +4,9 @@ r"""从 CC session transcript 抽取「对话全文」(用户 + 助手 的自然
 决策 / 结论) 助手侧也大量产生; 只抽 user 会漏掉它们 (本项目 2026-06-01 两次踩到: 先用
 proxy=记忆树, 再只抽 user)。详见 memory verification-independent-backstop。
 用法: <venv-py> extract_session_turns.py [transcript.jsonl]  (默认抽到 %TEMP%\_session_turns.txt)"""
-import json, os, sys
+import json
+import os
+import sys
 
 src = sys.argv[1] if len(sys.argv) > 1 else r'C:\Users\Lenovo\.claude\projects\D-----zmd\ca5783d1-e3be-4591-8cfd-4ede5ed83635.jsonl'
 dst = os.path.join(os.environ['TEMP'], '_session_turns.txt')

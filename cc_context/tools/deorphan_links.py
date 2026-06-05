@@ -1,6 +1,7 @@
 """De-orphan: 给 10 个孤立 memory 节点补真实拓扑 [[link]] + 去掉 protocol 占位符。
 fail-closed: 目标名不存在则 skip+报告; 已存在的链接不重复加。只读校验后才写。"""
-import re, pathlib
+import re
+import pathlib
 from collections import defaultdict
 
 MEM = pathlib.Path(r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory")
@@ -46,11 +47,14 @@ edges = [
 add, skipped = defaultdict(list), []
 for s, t, r in edges:
     if s not in valid:
-        skipped.append(f"src 不存在: {s}"); continue
+        skipped.append(f"src 不存在: {s}")
+        continue
     if t not in valid:
-        skipped.append(f"tgt 不存在: {t}  (边 {s}->{t})"); continue
+        skipped.append(f"tgt 不存在: {t}  (边 {s}->{t})")
+        continue
     if f"[[{t}]]" in name2txt[s]:
-        skipped.append(f"已连过: {s} -> {t}"); continue
+        skipped.append(f"已连过: {s} -> {t}")
+        continue
     add[s].append((t, r))
 
 for s, links in add.items():

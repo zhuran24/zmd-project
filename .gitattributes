@@ -1,0 +1,3 @@
+# Byte-stable project artifacts: keep hash-gated JSON files LF-only across Windows/Linux checkouts.
+rules/*.json text eol=lf
+data/preprocessed/*.json text eol=lf

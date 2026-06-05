@@ -13,7 +13,7 @@ import hashlib
 import importlib.util
 import shutil
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 # --- Windows paths (override the Linux hardcoded module globals) ---
 REPO = Path(r"D:\追光\zmd\zmd")
@@ -62,13 +62,11 @@ mod.subprocess.run = _run_utf8
 # build scripts leak in. (parts-based EXCLUDE_TOPLEVEL/NAMES are separator-agnostic
 # so those still work.) Wrap should_skip to feed it a PurePosixPath so str()
 # yields "/" and the source logic runs unchanged.
-from pathlib import PurePosixPath as _PurePosix
-
 _orig_should_skip = mod.should_skip
 
 
 def _should_skip_posix(rel: Path) -> bool:  # type: ignore[no-untyped-def]
-    return _orig_should_skip(_PurePosix(*rel.parts))
+    return _orig_should_skip(PurePosixPath(*rel.parts))
 
 
 mod.should_skip = _should_skip_posix

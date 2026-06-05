@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """列出记忆树里 unresolved 的 [[wikilink]] (token + 出处文件), 配 report_link_graph.py 用。"""
-import re, os, io, sys
+import re
+import os
+import io
+import sys
 
 MEM = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory"
 LINK_RE = re.compile(r'\[\[([^\]\|]+?)\]\]')

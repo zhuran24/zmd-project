@@ -3,6 +3,8 @@
 .codex_test_logs/
 .codex_child_sessions/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
 .pytest_tmp/
 .pytest_tmp_*/
 .pytest_debug*/

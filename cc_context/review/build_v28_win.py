@@ -74,7 +74,7 @@ def _replace_once(text: str, old: str, new: str, label: str) -> str:
     return text.replace(old, new)
 
 
-V22_TO_V28_SECTION = """## v22 → v28 状态变化 (六轮外审 → 全修)
+V22_TO_V28_SECTION = r"""## v22 → v28 状态变化 (六轮外审 → 全修)
 
 > **⚠️ 数字时效性 (先读这条)**: 本 README/包内含大量 v17-v22 历史版本叙述的**快照数字**; **当前权威值**
 > (以本节 + 实跑为准): cuts tests = **418** (413 v17 → 414 v18 → 416 v26 → 418 v28), F3 micro-probe

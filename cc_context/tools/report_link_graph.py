@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Report link-graph health: nodes, edges, resolved/unresolved, isolated count."""
-import re, os, io, sys
+import re
+import os
+import io
+import sys
 
 MEM = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory"
 LINK_RE = re.compile(r'\[\[([^\]\|]+?)\]\]')
