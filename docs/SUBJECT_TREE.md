@@ -2,6 +2,17 @@
 
 The documentation tree is now governed by a subject/projection layer rather than by isolated file copies. The idea mirrors the CC memory instance/projection model: the abstract subject holds the context-independent truth, and concrete docs are projections that serve particular readers.
 
+
+## Logical project knowledge tree
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:shared_subject_layer START sha256:9dd6b559dd17a70fab730793a77d2e4a91c27eedcdfbf1bf81fdeba5f658592f -->
+The project uses **one logical knowledge tree with two physical projections**. `docs/` is the stable documentation projection; `cc_context/memory/` is the collaboration-continuity projection. Neither tree is allowed to become a second independent truth source: volatile living claims should be promoted into a subject field and projected to every surface that needs them.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:shared_subject_layer END -->
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:projection_rule START sha256:671f0705419a7ca28ff595ea1437d45799031db2ba94a84ac2ec8645b59a4f03 -->
+Living/current claims should flow through subject fields and registered projection slots. Historical review notes, raw transcripts, dated decisions, and evidence archives should remain evidence nodes: they may link to subjects, but they should not be auto-rewritten into present-tense truth.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:projection_rule END -->
+
 <!-- DOC-SUBJECT:doc_tree_architecture FIELD:governance_gate_summary START sha256:7adb5eada37f191c32fc8321b84bdc8a2b9208aa016d0c3e37a82790430a43bb -->
 Preflight runs `python scripts/sync_doc_subjects.py --check`. A changed subject with stale projections, or an edited projection that has not been absorbed into its subject, blocks the gate instead of silently drifting.
 <!-- DOC-SUBJECT:doc_tree_architecture FIELD:governance_gate_summary END -->

@@ -21,8 +21,10 @@ import re
 import sys
 import os
 import io
+from pathlib import Path
 
-MEM = r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory"
+DEFAULT_MEM = Path(__file__).resolve().parents[1] / "memory"
+MEM = str(Path(sys.argv[1]).resolve()) if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else str(DEFAULT_MEM)
 PREFIXES = ("feedback_", "project_", "reference_", "handoff_", "index_")
 APPLY = "--apply" in sys.argv
 

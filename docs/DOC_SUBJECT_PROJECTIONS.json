@@ -21,6 +21,10 @@
     "doc_tree_completeness": {
       "path": "docs/subjects/doc_tree_completeness.md",
       "kind": "documentation-closeout-contract"
+    },
+    "project_knowledge_tree": {
+      "path": "docs/subjects/project_knowledge_tree.md",
+      "kind": "cross-tree-knowledge-governance"
     }
   },
   "projections": [
@@ -137,6 +141,72 @@
       "subject": "doc_tree_architecture",
       "field": "project_book_entry",
       "purpose": "Project-book role declaration"
+    },
+    {
+      "path": "docs/README.md",
+      "subject": "project_knowledge_tree",
+      "field": "docs_role",
+      "purpose": "Docs front door separates stable documentation from memory continuity"
+    },
+    {
+      "path": "docs/SUBJECT_TREE.md",
+      "subject": "project_knowledge_tree",
+      "field": "shared_subject_layer",
+      "purpose": "Subject tree explains the single logical knowledge graph"
+    },
+    {
+      "path": "docs/SUBJECT_TREE.md",
+      "subject": "project_knowledge_tree",
+      "field": "projection_rule",
+      "purpose": "Subject tree records which claims are synchronized and which remain historical evidence"
+    },
+    {
+      "path": "cc_context/memory/project_knowledge_tree_architecture.md",
+      "subject": "project_knowledge_tree",
+      "field": "shared_subject_layer",
+      "purpose": "Memory-side handoff projection of the shared knowledge graph"
+    },
+    {
+      "path": "cc_context/memory/project_knowledge_tree_architecture.md",
+      "subject": "project_knowledge_tree",
+      "field": "memory_role",
+      "purpose": "Memory-side handoff projection of memory tree responsibility"
+    },
+    {
+      "path": "cc_context/memory/project_knowledge_tree_architecture.md",
+      "subject": "project_knowledge_tree",
+      "field": "projection_rule",
+      "purpose": "Memory-side handoff projection of living-vs-evidence update rule"
+    },
+    {
+      "path": "CLAUDE.md",
+      "subject": "project_knowledge_tree",
+      "field": "shared_subject_layer",
+      "purpose": "Agent front door: docs and memory are one logical knowledge graph"
+    },
+    {
+      "path": "CLAUDE.md",
+      "subject": "project_knowledge_tree",
+      "field": "memory_role",
+      "purpose": "Agent front door: memory is collaboration continuity, not formal docs"
+    },
+    {
+      "path": "START_HERE.md",
+      "subject": "project_knowledge_tree",
+      "field": "shared_subject_layer",
+      "purpose": "Repository front door: one logical tree, two projections"
+    },
+    {
+      "path": "START_HERE.md",
+      "subject": "project_knowledge_tree",
+      "field": "docs_role",
+      "purpose": "Repository front door: documentation role"
+    },
+    {
+      "path": "START_HERE.md",
+      "subject": "project_knowledge_tree",
+      "field": "memory_role",
+      "purpose": "Repository front door: memory role"
     }
   ]
 }

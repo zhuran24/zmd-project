@@ -61,6 +61,17 @@ Operational notes:
 - 范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计** (9 个 F1–F9 cut family 当 Benders cut 收紧 master)。
 - 单一 living 现状源仍要结合 CC memory `windows-ninth-review-pending` 读；本段只承载会被其它文档投影的 phase contract。
 
+
+## Knowledge Tree / Handoff Surfaces
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:shared_subject_layer START sha256:9dd6b559dd17a70fab730793a77d2e4a91c27eedcdfbf1bf81fdeba5f658592f -->
+The project uses **one logical knowledge tree with two physical projections**. `docs/` is the stable documentation projection; `cc_context/memory/` is the collaboration-continuity projection. Neither tree is allowed to become a second independent truth source: volatile living claims should be promoted into a subject field and projected to every surface that needs them.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:shared_subject_layer END -->
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:memory_role START sha256:29ad99c8cfd99eeb1c5b120f5028478ab5d2083ee1d4075293639ba3e6c66ea9 -->
+The memory tree is the collaboration-continuity surface. It answers: what the previous working window knew, which mistakes were already corrected, what user preferences or process constraints matter, which old statements must not be trusted blindly, and what the next window should read first.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:memory_role END -->
+
 ## AI Safety Contract
 
 AI modules may ONLY:

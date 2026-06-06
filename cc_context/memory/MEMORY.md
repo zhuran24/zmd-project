@@ -1,23 +1,25 @@
 ## 当前状态 / 交接
 
-- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (Windows 交接 + Phase 1.2 spike-close 主线 + Design A/B 工装两条线; 最新 v28 外审修 4 洞/F9 quarantine, 详文件顶块).
+- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**；2026-06-06 已含文档树/记忆树 closeout 与 GitHub 上传准备。
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; Step0 8/8 PASS; 等用户 phase-boundary 决策.
-- [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界: 仓库 `D:\追光\zmd`, venv `.venv\Scripts\python.exe` (Py3.13.13+ortools9.15.6755), prod-scale 要回 Linux 主机, slug `D-----zmd`.
-- [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 2026-05-27: 7/7 family close + F3 generator, GPT 八审 GO_WITH_MINOR (现状详交接条).
+- [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界、slug、prod-scale 回 Linux 主机；稳定环境细节只看该条。
+- [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 7/7 family close + F3 generator; 历史细节看该条, 当前现状看交接条。
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径. 治本 3 个 HIGH 过时.
-- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — "核心节点+投影+强制函数"架构套到项目数字 (Design A: authoritative_numbers.json+drift-test) + cut-family SoT (Design B: canonical_sot+meta-test). 教训: 不扫散文找旧值 / 强制函数>规则 / forcing 半边真·project 半边未接.
+- [记忆树 publish-safety/currentness gate](project_memory_tree_publish_safety.md) — 2026-06-06 补强: 当前树 secret scan、repo-native INSTANCE check、memory graph/index/live-mirror gate 接入 preflight; 旧 key 需 owner 侧轮换。
+- [项目知识树架构](project_knowledge_tree_architecture.md) — 逻辑单树/物理双树: docs=稳定项目表达, memory=协作连续性; living claim 走 subject/projection, evidence 节点保历史。
+- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — 项目数字 + cut-family SoT 的主体/投影/强制函数经验；教训: 强制函数 > 规则。
 
 ## 打包 / 外部审查规范
 
-- [打包簇 hub](index_packaging_cluster.md) — 外审打包全套规范入口 (何时/prompt/放什么/压缩/新窗口/reproduce/错估分类). 召回任一打包条来这拿全套.
+- [打包簇 hub](index_packaging_cluster.md) — 外审打包规范入口: 何时打、prompt、内容、压缩、新窗口、reproduce、错估分类.
 - [大节点结束打包 GPT pro 审查](feedback_big_milestone_gpt_pro_review.md) — 大节点 (Phase 完成/ramp/paradigm shift) 整 phase 打包送 GPT pro (≠ Gemini per-commit). **close 门禁=连续≥3 次独立审查零问题**.
-- [External review prompt 7-section 模板](feedback_external_review_prompt_template.md) — prompt input 结构: 真瓶颈+死路 inventory+审查 axis+决策列选项+优先方向+不可达 armor+deliverable. §6 不可达是唯一允许的 schema 锁.
+- [External review prompt 7-section 模板](feedback_external_review_prompt_template.md) — 真瓶颈、死路 inventory、审查 axis、决策选项、优先方向、不可达 armor、deliverable.
 - [GPT review prompt 加料 armor](feedback_gpt_review_prompt_armor.md) — 三段式: 真瓶颈 + 死路黑名单/白名单 + 不可达必须形式化证明 (cite literature, 不准 'I believe'). L14 实测起作用.
 - [GPT review 新窗口零历史](feedback_gpt_review_no_history.md) — 新窗口 0 memory; 包/prompt 不准引用上次 GPT 输出; 要 ref 必须打包进 zip 或 inline 展开.
 - [GPT prompt 不要催眠前缀](feedback_no_role_priming_for_reasoning_models.md) — "你是 X 专家" role-priming 对推理模型反作用; 直接讲任务 + format + 约束.
-- [Review 包不放 prompt + 不放主动性内容](feedback_review_pkg_no_prompt_inside.md) — zip 只放纯事实素材, **不放** prompt + 主动性内容 (verdict/Close/审查指引). 例外: code_context mirror 的"非master"标注.
-- [Review 包数据完整性 default](feedback_review_pkg_data_completeness.md) — 跟 [[review-pkg-no-prompt-inside]] 互补: 禁 priming 同时要 factual 完整. spike code/Gemini archive/telemetry/reproducer 全入.
-- [大 review pkg 用 7z + ship 7za 解压工具](reference_review_pkg_7z_strategy.md) — 全项目 scope (100+ MB) 用 7z -mx=9 压 5%, zip 壳含 project.7z + tools/7za + README + 排除清单. 本机无 7z 时单层 zip.
+- [Review 包不放 prompt + 主动性内容](feedback_review_pkg_no_prompt_inside.md) — zip 只放事实素材; prompt/verdict/Close/审查指引放包外.
+- [Review 包数据完整性 default](feedback_review_pkg_data_completeness.md) — 禁 priming 但 factual 要完整; code/archive/telemetry/reproducer 按需全入.
+- [大 review pkg 用 7z + ship 7za](reference_review_pkg_7z_strategy.md) — 大包默认 7z; 必要时带解压工具、README、排除清单.
 - [新窗口 review 包不带历史](feedback_review_package_for_new_window.md) — 新 GPT 窗口 review 包 README 不写 carry-forward (跟 v3/v4 不一样); standalone 极简点指引, 详细数据让 GPT 自查 zip.
 - [Audit finding 必先 reproduce 才 archive](feedback_audit_verify_before_archive.md) — 反 GO 章 ritual 反向: NOT GO + finding 也必 specific reproduce (script/grep) 全 pass 才 archive. ~5-15 min/finding cheap.
 - [外部审查报告 reproducibility 不足](feedback_external_review_reproducibility.md) — GPT 同 prompt 跑两次 finding 列表可能不同; sandbox 链接会过期立刻 cp 副本; 多次报告交叉信.
@@ -29,19 +31,19 @@
 
 ## 工作流 / 协作偏好
 
-- [验证类任务必派独立 backstop (长上下文防漏看)](feedback_verification_independent_backstop.md) — 验证/核对/查全类不只信 main 自审; 派独立 workflow/子代理, **主体=被验对象本身** (非 proxy/不切片/不限范围; user+助手都查); re-audit 须 fresh full re-review 非 verify-fixes (rule#4c) 不降 scope; 子代理报告 main 自核.
+- [验证类任务必派独立 backstop](feedback_verification_independent_backstop.md) — 验证/核对/查全类不只信 main 自审; 独立 workflow/子代理直接查被验对象本身, re-audit 不降 scope.
 - [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察编干净因果当事实=反复犯的病; "改 X 就好了"≠"X 致因", 要定因须对照重复. 实例: review 质量归 README / 无下载按钮归大小, 均被戳穿. 同根 [[external-review-reproducibility]].
 - [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume); dispatch 三选一 (线性→自己/散落→wf/机械→子代理); Ultracode=穷尽不计 token.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改 (新增/删条目/重组/slim MEMORY.md) 先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 (加索引前先 slim) + harness 重写 frontmatter 保 name. 区别于现状过时轴 [[memory-currency-protocol]].
-- [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 遇 LP/CP-SAT/复杂度/proof system 数学问题调 Gemini free-tier 当轻量子代理, 不替代 GPT review.
+- [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion；key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — Claude 默认 register 偏端着/工程化; 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.
 - [算法/数学层必经 Gemini cross-check (v2 加严)](feedback_gemini_review_algorithm_math.md) — "先 check 再继续". 每 commit 后立刻 cross-check 不堆 (堆到 round 14 找出 3 致命 bug). 纯 refactor/rename/IO 不算数学层.
 - [Gemini prompt audit 模式 — 不要 GO 章 ritual](feedback_gemini_prompt_audit_mode.md) — "Gemini 用来找问题不要被夸傻". 真数据进 paths + armor 强制 3 死法 + 反 vague hyperbole + 不重写 prompt 别调.
 - [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段启 N=8 opus 子代理各带不同 slant, main 当 merger; 补 RLHF bias. 紧时 N=2-3, 假设稳才 fire.
 - [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活 (≥3 step) 直接 spawn opus background, 不问 user. (explore N 路 vs execute 单线)
-- [Phase boundary 替 user 做主的两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 两镜像偏见: 往大扩 ("做全=安全") + 往小缩 (deferral flinch, tell=stated lean 后紧跟 escape hatch). **User 是唯一可信 phase boundary auditor**.
-- [Sub-problem vs augmented master 默认偏见](feedback_subproblem_vs_augmented_master_default.md) — 我默认走 LBBD sub-problem 不动 master; user 用语线索区分. 实施前必明确 4 件事 (vars 进 master? loop? cut form? 同质死法?).
+- [Phase boundary 两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 会往大扩或往小缩; **User 是唯一可信 phase boundary auditor**.
+- [Sub-problem vs augmented master 默认偏见](feedback_subproblem_vs_augmented_master_default.md) — 默认会偏 LBBD sub-problem; 实施前先明确 vars 是否进 master、loop、cut form、同质死法.
 - [paradigm Phase 0 cheap gate workflow](feedback_paradigm_phase0_cheap_gate.md) — 新 paradigm 实施前必走 Phase 0 (≤1h cheap gate) 验前提, GO 后再投 Phase 1. 反例 Path 08 直接 Phase 1 浪费 4 form.
 - [plan doc 不是 TODO list, 必含战略层](feedback_plan_doc_strategic_layers.md) — plan doc 必含战略/数学原理/paradigm/历史/GO 标准/依赖图/风险/mitigation/回滚, 不只 commit-level TODO.
 - [proof object 必须 6 步 lifecycle 闭环](feedback_proof_object_lifecycle.md) — generate→serialize→deserialize→validate→resolve→replay→regression; schema landed ≠ runtime correct; v4 replay bug 根因.

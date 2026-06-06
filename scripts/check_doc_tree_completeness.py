@@ -131,10 +131,16 @@ def check_surface_manifests(state: CheckState, manifest: dict[str, object]) -> N
         state.ok()
 
 
-def markdown_surfaces() -> list[Path]:
+def markdown_surfaces(extra_paths: list[Path] | None = None) -> list[Path]:
     paths = [REPO_ROOT / path for path in ROOT_MARKDOWN_SURFACES]
     paths.extend(sorted(DOCS_ROOT.rglob("*.md")))
-    return [path for path in paths if path.exists()]
+    if extra_paths:
+        paths.extend(extra_paths)
+    unique: dict[str, Path] = {}
+    for path in paths:
+        if path.exists():
+            unique[path.resolve().as_posix()] = path
+    return [unique[key] for key in sorted(unique)]
 
 
 def registered_projection_keys(projections: list[subject_sync.ProjectionSpec]) -> set[tuple[str, str, str]]:
@@ -175,9 +181,10 @@ def check_subject_projection_graph(state: CheckState, manifest: dict[str, object
         state.ok()
 
     registered_blocks = registered_projection_keys(projections)
+    registered_projection_paths = sorted({spec.path for spec in projections})
     discovered_blocks: set[tuple[str, str, str]] = set()
     duplicate_blocks: list[str] = []
-    for path in markdown_surfaces():
+    for path in markdown_surfaces(registered_projection_paths):
         text = path.read_text(encoding="utf-8")
         seen_in_file: set[tuple[str, str]] = set()
         for match in subject_sync.PROJECTION_RE.finditer(text):

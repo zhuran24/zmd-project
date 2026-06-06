@@ -7,16 +7,18 @@ Preflight gate — 提交前自动门禁检查。
     python scripts/preflight_gate.py --hook       # 作为 git pre-commit hook 运行
 
 检查项：
-    1. 冻结制品 hash 校验（canonical_rules, candidate_placements 等）
+    1. 冻结/外部制品 hash 校验（checked-in JSON + lightweight external artifacts）
     2. 禁止路径写入检查（checkpoint, proof, blueprint）
     3. AI 安全合同检查（ai_accel 不碰 proof 路径）
     4. 精确/探索边界隔离检查
     5. 调研产物 audit 覆盖检查
     6. 文档主体/投影同步检查
     7. 文档树完整收尾检查
-    8. mypy 严格类型 (cut lifecycle 核心两文件)
-    9. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
-    10. pytest 测试（核心门禁 / 全量取决于模式）
+    8. 发布安全 secret scan
+    9. 记忆树结构/currentness 检查
+    10. mypy 严格类型 (cut lifecycle 核心两文件)
+    11. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
+    12. pytest 测试（核心门禁 / 全量取决于模式）
 
 退出码：
     0 = 通过
@@ -38,9 +40,20 @@ BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
 
 FROZEN_ARTIFACTS = {
     "rules/canonical_rules.json": "8AC667A1BCE67FF9084701D18892F370E19D68CC9B5ACE44BD63C68B20D3D6EA",
-    "data/preprocessed/candidate_placements.json": "D5E3911FC1BC7C0AB48D67B981D28E8090741B04884C475E78DC0E128CA4683F",
     "data/preprocessed/mandatory_exact_instances.json": "545B98C2B4F96643F1346B423EDF2DC8E300A0C815B6CF821776CEED03CD4CD6",
     "data/preprocessed/generic_io_requirements.json": "AD5125B50E607A7F3F3BF0B54FEA64F93EDF87CEDB62E8D24F5590E1C895C44E",
+}
+
+EXTERNAL_FROZEN_ARTIFACTS = {
+    # The lightweight GitHub checkout intentionally omits this 53 MiB payload.
+    # If the file is restored into the working tree, preflight verifies its bytes;
+    # if it is absent, preflight records the external-artifact contract as OK and
+    # certified exact runs remain responsible for restoring it before solve time.
+    "data/preprocessed/candidate_placements.json": {
+        "sha256": "D5E3911FC1BC7C0AB48D67B981D28E8090741B04884C475E78DC0E128CA4683F",
+        "size_bytes": 53_594_995,
+        "policy_doc": "START_HERE.md",
+    },
 }
 
 FORBIDDEN_STAGED_PATHS = [
@@ -140,11 +153,11 @@ def get_staged_files() -> list[str]:
 
 
 def check_frozen_artifacts(gate: GateResult) -> None:
-    print("\n[1/10] 冻结制品 hash 校验")
+    print("\n[1/12] 冻结/外部制品 hash 校验")
     for rel_path, expected_hash in FROZEN_ARTIFACTS.items():
         full_path = PROJECT_ROOT / rel_path
         if not full_path.exists():
-            gate.block(f"冻结制品不存在: {rel_path}")
+            gate.block(f"checked-in 冻结制品不存在: {rel_path}")
             continue
         actual_hash = sha256_file(full_path)
         if actual_hash == expected_hash:
@@ -156,9 +169,32 @@ def check_frozen_artifacts(gate: GateResult) -> None:
                 f"         实际: {actual_hash}"
             )
 
+    for rel_path, info in EXTERNAL_FROZEN_ARTIFACTS.items():
+        full_path = PROJECT_ROOT / rel_path
+        expected_hash = str(info["sha256"])
+        expected_size = int(info["size_bytes"])
+        if not full_path.exists():
+            gate.ok(
+                f"{rel_path} 外部大制品未入轻量 checkout "
+                f"(expected sha256={expected_hash.lower()}, size={expected_size}; see {info['policy_doc']})"
+            )
+            continue
+        actual_size = full_path.stat().st_size
+        actual_hash = sha256_file(full_path)
+        if actual_hash == expected_hash and actual_size == expected_size:
+            gate.ok(f"{rel_path} restored external artifact")
+        else:
+            gate.block(
+                f"{rel_path} external artifact 不匹配!\n"
+                f"         期望 hash: {expected_hash}\n"
+                f"         实际 hash: {actual_hash}\n"
+                f"         期望 size: {expected_size}\n"
+                f"         实际 size: {actual_size}"
+            )
+
 
 def check_forbidden_paths(gate: GateResult) -> None:
-    print("\n[2/10] 禁止路径写入检查")
+    print("\n[2/12] 禁止路径写入检查")
     staged = get_staged_files()
     if not staged:
         gate.ok("无 staged 文件（或不在 git 仓库中）")
@@ -179,7 +215,7 @@ def check_forbidden_paths(gate: GateResult) -> None:
 
 
 def check_ai_safety_contract(gate: GateResult) -> None:
-    print("\n[3/10] AI 安全合同检查")
+    print("\n[3/12] AI 安全合同检查")
     ai_dir = PROJECT_ROOT / AI_MODULE_ROOT
     if not ai_dir.exists():
         gate.ok("ai_accel 目录不存在，跳过")
@@ -209,7 +245,7 @@ def check_ai_safety_contract(gate: GateResult) -> None:
 
 
 def check_exact_exploratory_isolation(gate: GateResult) -> None:
-    print("\n[4/10] 精确/探索边界隔离检查")
+    print("\n[4/12] 精确/探索边界隔离检查")
     staged = get_staged_files()
     if not staged:
         gate.ok("无 staged 文件")
@@ -288,13 +324,13 @@ _AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IG
 
 
 def check_research_audit_coverage(gate: GateResult) -> None:
-    """[5/10] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
+    """[5/12] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
 
     R13 教训: 调研 agent 报告即使引用 URL 也常出错 (5/5 历史 audit 翻盘)。
     路线图 / INDEX 改动如新增 R-N 调研引用，必须配套有 audit (agent ID) 引用。
     [W] warning 不阻塞 — audit 可能在另一 commit, 但提醒一下避免漏审。
     """
-    print("\n[5/10] 调研产物 audit 覆盖检查")
+    print("\n[5/12] 调研产物 audit 覆盖检查")
     staged = get_staged_files()
     touched = [f for f in staged if f.replace("\\", "/") in RESEARCH_TRACKED_FILES]
     if not touched:
@@ -346,14 +382,14 @@ def check_research_audit_coverage(gate: GateResult) -> None:
 
 
 def check_doc_subject_projections(gate: GateResult) -> None:
-    """[6/10] 文档主体/投影同步检查.
+    """[6/12] 文档主体/投影同步检查.
 
     文档树采用 subject/projection 架构: docs/subjects/*.md 是抽象主体,
     docs/DOC_SUBJECT_PROJECTIONS.json 登记 concrete document projection slots.
     这个 gate 只检查同步状态, 不自动写文件; 主体改动后运行
     `python scripts/sync_doc_subjects.py --sync`, 投影改动后运行 `--absorb`.
     """
-    print("\n[6/10] 文档主体/投影同步检查")
+    print("\n[6/12] 文档主体/投影同步检查")
     script = PROJECT_ROOT / "scripts" / "sync_doc_subjects.py"
     registry = PROJECT_ROOT / "docs" / "DOC_SUBJECT_PROJECTIONS.json"
     if not script.exists() or not registry.exists():
@@ -382,6 +418,70 @@ def check_doc_subject_projections(gate: GateResult) -> None:
         print(f"         {line}")
 
 
+def check_publish_secret_scan(gate: GateResult) -> None:
+    """[8/12] 发布安全 secret scan.
+
+    这层扫描当前 tracked/untracked 工作区文本, 防止 API key / token / private key
+    重新进入当前树。它不宣称清理 Git 历史; 已暴露 credential 仍需 owner 侧轮换。
+    """
+    print("\n[8/12] 发布安全 secret scan")
+    script = PROJECT_ROOT / "scripts" / "check_repo_secrets.py"
+    if not script.exists():
+        gate.block("secret scan 脚本不存在: scripts/check_repo_secrets.py")
+        return
+    try:
+        result = subprocess.run(
+            [sys.executable, str(script)],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        gate.block("secret scan 超时 (>30s)")
+        return
+    except FileNotFoundError:
+        gate.warn("python 不可用 — 跳过 secret scan")
+        return
+
+    out = (result.stdout or "").strip()
+    err = (result.stderr or "").strip()
+    if result.returncode == 0:
+        gate.ok(out.splitlines()[-1] if out else "repo secret scan passed")
+        return
+    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
+    gate.block(f"repo secret scan: {summary}")
+    for line in (out.splitlines() + err.splitlines())[:12]:
+        print(f"         {line}")
+
+
+def check_memory_tree_health(gate: GateResult) -> None:
+    """[9/12] 记忆树结构/currentness 检查."""
+    print("\n[9/12] 记忆树结构/currentness 检查")
+    script = PROJECT_ROOT / "scripts" / "check_memory_tree.py"
+    if not script.exists():
+        gate.block("memory tree check 脚本不存在: scripts/check_memory_tree.py")
+        return
+    try:
+        result = subprocess.run(
+            [sys.executable, str(script)],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        gate.block("memory tree check 超时 (>30s)")
+        return
+    except FileNotFoundError:
+        gate.warn("python 不可用 — 跳过 memory tree check")
+        return
+
+    out = (result.stdout or "").strip()
+    err = (result.stderr or "").strip()
+    if result.returncode == 0:
+        gate.ok(out.splitlines()[-1] if out else "memory tree check passed")
+        return
+    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
+    gate.block(f"memory tree check: {summary}")
+    for line in (out.splitlines() + err.splitlines())[:16]:
+        print(f"         {line}")
+
+
 MYPY_STRICT_TARGETS = [
     # GPT v4 follow-up G2/G3/G4: cut lifecycle + 求解核心两个大文件都进 strict gate.
     # 历史类型错全清 (master_model 69 错, benders_loop 8 错), 由 _Any annotation
@@ -394,13 +494,13 @@ MYPY_STRICT_TARGETS = [
 
 
 def check_doc_tree_completeness(gate: GateResult) -> None:
-    """[7/10] 文档树完整收尾检查.
+    """[7/12] 文档树完整收尾检查.
 
     这层不是语义 NLP 审查, 而是 structural closeout gate: docs surface
     manifest、subject/projection registry、无未登记 projection block、所有 subject
     field 至少有一个 concrete projection。
     """
-    print("\n[7/10] 文档树完整收尾检查")
+    print("\n[7/12] 文档树完整收尾检查")
     script = PROJECT_ROOT / "scripts" / "check_doc_tree_completeness.py"
     manifest = PROJECT_ROOT / "docs" / "DOC_TREE_COMPLETENESS.json"
     if not script.exists() or not manifest.exists():
@@ -435,7 +535,7 @@ def check_mypy(gate: GateResult) -> None:
     锁 BendersCut + CutManager + PowerPlacementSubproblem 不让类型生命周期破洞
     再次发生 (lifecycle bug 根因是 schema 字段落了但 runtime resolver 没跟上).
     """
-    print("\n[8/10] mypy 静态类型 (core lifecycle)")
+    print("\n[10/12] mypy 静态类型 (core lifecycle)")
     existing = [t for t in MYPY_STRICT_TARGETS if (PROJECT_ROOT / t).exists()]
     if not existing:
         gate.warn("mypy gate 目标文件不存在 — 跳过")
@@ -482,7 +582,7 @@ def check_ruff(gate: GateResult) -> None:
     跑全仓; 任何 warning 一律 BLOCK — 没有 "scripts 没事核心严格" 的二级容忍,
     因为 ruff.toml 已经把噪音吸收掉了.
     """
-    print("\n[9/10] ruff 静态检查")
+    print("\n[11/12] ruff 静态检查")
     try:
         result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", "."],
@@ -517,7 +617,7 @@ def check_ruff(gate: GateResult) -> None:
 
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = "全量" if full else "核心门禁"
-    print(f"\n[10/10] 测试门禁（{label}）")
+    print(f"\n[12/12] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
     timeout = 600 if full else 120
@@ -581,6 +681,8 @@ def run_gate(*, full: bool = False, hook: bool = False) -> int:
     check_research_audit_coverage(gate)
     check_doc_subject_projections(gate)
     check_doc_tree_completeness(gate)
+    check_publish_secret_scan(gate)
+    check_memory_tree_health(gate)
     check_mypy(gate)
     check_ruff(gate)
 

@@ -14,6 +14,15 @@ The documentation tree is organized around **subjects** and **projections**. Sub
 - `docs/research/` — research, review, and historical archive.
 - `specs/` — formal certified-path specifications.
 
+
+## Documentation vs memory
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:docs_role START sha256:33a68fa34851c05416e51ad86e69e80c86595e6cf05b70a8d248bac6bb916c63 -->
+The documentation tree is the stable project surface. It answers: what the project is, what the current contract is, how it is verified, how it is delivered, and where historical material lives. It should be publishable, reviewable, and low-noise.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:docs_role END -->
+
+The companion memory projection lives under `cc_context/memory/`; see `cc_context/memory/project_knowledge_tree_architecture.md` for the GPT handoff side of the same subject.
+
 ## Frozen artifact warning
 
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:7d54b0d99a9f208e7b36757aec06c1851a9aea69cd51c7d3e76eceabb59ae4a2 -->

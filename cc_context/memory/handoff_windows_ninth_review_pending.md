@@ -1,6 +1,6 @@
 ---
 name: windows-ninth-review-pending
-description: "单一 living 当前交接/现状源. 2026-05-31 交接 Windows. **2026-06-04 最新: v27 (第六轮外审 B-minor 纯文档) 全修→v28 (sha 6c90a199), 然后按用户『大节点 ≥3 连续独立审查零问题』标准跑内部多镜头对抗审查 (workflow) 7 轮. **R3 逮到 HIGH F7 soundness 洞**: power_hitting_set validator 不校验 cert.pole_radius vs canonical SoT → 伪造 tiny radius (0.0001 过 schema>0) → CoverSet 空 → 假阳 cut → 丢精确性; replay 路径可达; F8 早有 _validate_pole_radius_sot, F7 漏; **6 轮外部 GPT + 早先 backstop 全没抓到**. 镜像 F8 修 (加 _validate_pole_radius_sot + 2 回归测试, cuts 416→418), 提交 master `39c80c6`. R4-R7 全 doc-currency (cuts 416→418 / F3 micro-probe 9→12 / remap '36/50'→'36/150 pair ≈24%' / verdict banner '两轮'→多轮 / build 阶段 identity scrub: zhuran24·Lenovo·repo-dir·[盘符]:\ 路径→devuser·<local-path> / phase3b 残留 forward-slash 路径披露接受非身份). **实质自 R3 起持续 clean (critic 每轮 overall_clean, 无 soundness), 身份全清=0**. 现状: 内部审收敛中 (doc-currency 长尾, 每轮约 1-2 个镜像实例漏改, 实质已 clean), **未达 3 连续 clean**. 下一关 = 继续内部连续清零(R8+) 或 转外部 GPT 连续轮 (策略待用户定). spike HEAD `830c5fd` (7 commit ae83f45→830c5fd). 关键不变: type-pool(81795)≠concrete master literal(~325747), F9 single-group per-cut max 784.** (slug 旧名 ninth-review-pending). 环境见 windows-handoff-env, 设计见 p1-3a-design-phase."
+description: "单一 living 当前交接/现状源。2026-06-06 当前: 文档树 subject/projection + completeness gate 已收口到 004/005 clean 观察点; 本轮补强 memory publish-safety/currentness gate, 移除当前树 Gemini key, repo-native INSTANCE check, secret scan + memory health 接入 preflight。算法主线仍停在 Phase 1.2 spike close → v29 外审/之后 P1.3A 决策。"
 metadata: 
   node_type: memory
   type: project
@@ -13,9 +13,21 @@ metadata:
 **自动现状标记** (可推导现状每 commit 自动刷, 结构上不可能 stale; 人写的判断散文见下方各 `##` 块):
 - 最新 review 包: <!-- INSTANCE:latest_review_package -->v28 (sha `c00a957c73f1…`)<!-- /INSTANCE:latest_review_package -->
 - spike 分支 HEAD: `<!-- INSTANCE:spike_head -->1850bb6<!-- /INSTANCE:spike_head -->`
-- CLAUDE.md Current Phase: <!-- INSTANCE:current_phase -->1.2 spike close (cut-family validator soundness 闭关 → P1.3A)<!-- /INSTANCE:current_phase -->
-- GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/endfield-exact-solver<!-- /INSTANCE:repo_url -->
+- CLAUDE.md Current Phase: <!-- INSTANCE:current_phase -->1.2 spike close (subject projection)<!-- /INSTANCE:current_phase -->
+- GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/zmd<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
+
+## 最新状态 (2026-06-06) — GPT 接手后文档树/记忆树 closeout + GitHub 上传准备
+
+> **当前真相 (接手观察点)**: 当前干净项目观察点 HEAD = `89b5a641aee1b52b922a1c7da1db098b7fffe440` (`docs: close doc tree completeness gate`), branch `doc_tree_closeout_v20260606_004`; 观察点包解压后 `git status --short` 为空, memory repo mirror 与外层 `_cc_live_memory/` 字节一致。
+>
+> **文档树**: 已从“文件清单”升级成 subject/projection + completeness gate。`docs/subjects/*` 是抽象主体, concrete docs 内 `DOC-SUBJECT` blocks 是投影; `sync_doc_subjects.py --check` 与 `check_doc_tree_completeness.py` 已进 preflight。
+>
+> **记忆树**: 这轮补强见 [[memory-tree-publish-safety]]。重点是把 CC-era 半外部机制改成 repo-native：Gemini 明文 key 从当前树删除, Gemini scripts 改读 `GEMINI_API_KEY`; `stamp_living_status.py` 默认检查 `cc_context/memory`; 新增 secret scan + memory tree health gate 并接入 preflight。旧 key 已在历史/review 包里暴露, 最终止血需要 owner 在 Google 侧轮换/吊销。
+>
+> **GitHub**: GPT 连接器目标仓库曾显示不确定, 沙盒不能直接 `git push`。后续上传必须走 `zmd-gh-upload-bundle/v1` 给本地 Codex: 校验 SHA → apply patch → 跑 required checks → commit → 用户确认后 push/PR。
+>
+> **算法主线未改变**: certified exact / cut-family soundness 语义没动。Phase 1.2 spike close 之后仍应重建 v29 外审包、连续 clean 轮后再推进 P1.3A/step_8 master integration。下面 2026-06-04 v28 外审历史仍是算法主线最新 soundness 背景。
 
 ## 最新状态 (2026-06-04 晚) — v28 GPT 外审 = 4 个真 soundness 洞 (全修, F9 quarantine); 然后 Design A/B 工装 + 三轮对抗审查 (零 soundness); 后补验记忆覆盖
 
@@ -92,7 +104,7 @@ GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送�
 
 **v23 包已建 + 验 (2026-06-02)**: `cc_context/review/phase1_2_spike_review_v23.zip` (faithful, **只打完整包**, sha256 `131609a399f6afa00b2b58eb94afb1503efa3d500372cb930a84ca702d782b73`, 14.37 MB, 2189 files)。build 脚本 `cc_context/review/build_v23_win.py` (基于 build_v22_win, 修了 REPO 旧 dual-slug 路径 `zmd\zmd`→`zmd` + OUT_DIR 放 REPO 外防自包含 + README v22→v23 节)。spike overlay 用 `git show {分支}:` 自动取 a29fb44 修复版。多镜头对抗验证 (5 镜头 + critic, workflow): verdict/spike-code 与分支字节一致、secret=0、cc_context/gemini-key/.git/.venv/nested-zip/prompt/build-脚本 全 0 泄漏、candidate_placements 字节完整、4 source-of-truth 在 (3 个 CRLF vs LF 宇宙噪声, JSON parse 一致)。**逮到并修了 1 个 blocker**: README 自己那张 Finding 5 cover 表 #2 行漏改 YES→PARTIAL (verdict.md 改了 README 镜像表没改), 已在 build 脚本加 transform 修 + 重验 PASS。下次送审直接送这个 + deps 3 块 + prompt。
 
-**⚠️ 安全: v22 包 (已发 GPT) 泄漏 live Gemini key** — `scripts/gemini_cross_check_*.py` (10 文件) 内嵌真 key `AIzaSyC8D0a_...`, v22 build 没排除 → 已随 v22 review 包发给 GPT pro (OpenAI 现持有)。这跟 [[gemini-math-consultant]] 记的"key 留私库历史靠仓库私有保安全"不是一回事 (那防 GitHub 公开; 外发 LLM 厂商是另一暴露轴, 用户没拍过板)。v23 已排除 (secret=0)。**key 轮换 = 待用户决策** (倾向轮换: 成本低 + 外厂留存不可控; 用户之前接受私库留存风险但非外发语境)。轮换则改 Gemini key + 更新本地 10 个 gemini_cross_check 脚本即可。
+**⚠️ 安全: v22 包 (已发 GPT) 泄漏 live Gemini key** — `scripts/gemini_cross_check_*.py` (10 文件) 内嵌真 key `<redacted-gemini-key>`, v22 build 没排除 → 已随 v22 review 包发给 GPT pro (OpenAI 现持有)。这跟 [[gemini-math-consultant]] 记的"key 留私库历史靠仓库私有保安全"不是一回事 (那防 GitHub 公开; 外发 LLM 厂商是另一暴露轴, 用户没拍过板)。v23 已排除 (secret=0)。**key 轮换 = 待用户决策** (倾向轮换: 成本低 + 外厂留存不可控; 用户之前接受私库留存风险但非外发语境)。轮换则改 Gemini key + 更新本地 10 个 gemini_cross_check 脚本即可。
 
 ---
 

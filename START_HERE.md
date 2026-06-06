@@ -18,6 +18,21 @@ recording where the large certified-exact inputs came from.
   unfamiliar script.
 - `.github/` contains GitHub-side automation metadata.
 
+
+## Knowledge Surface Roles
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:shared_subject_layer START sha256:9dd6b559dd17a70fab730793a77d2e4a91c27eedcdfbf1bf81fdeba5f658592f -->
+The project uses **one logical knowledge tree with two physical projections**. `docs/` is the stable documentation projection; `cc_context/memory/` is the collaboration-continuity projection. Neither tree is allowed to become a second independent truth source: volatile living claims should be promoted into a subject field and projected to every surface that needs them.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:shared_subject_layer END -->
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:docs_role START sha256:33a68fa34851c05416e51ad86e69e80c86595e6cf05b70a8d248bac6bb916c63 -->
+The documentation tree is the stable project surface. It answers: what the project is, what the current contract is, how it is verified, how it is delivered, and where historical material lives. It should be publishable, reviewable, and low-noise.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:docs_role END -->
+
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:memory_role START sha256:29ad99c8cfd99eeb1c5b120f5028478ab5d2083ee1d4075293639ba3e6c66ea9 -->
+The memory tree is the collaboration-continuity surface. It answers: what the previous working window knew, which mistakes were already corrected, what user preferences or process constraints matter, which old statements must not be trusted blindly, and what the next window should read first.
+<!-- DOC-SUBJECT:project_knowledge_tree FIELD:memory_role END -->
+
 ## Large Artifact Policy
 
 Current `main` intentionally does not track these large working-tree payloads:

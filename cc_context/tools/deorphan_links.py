@@ -2,9 +2,11 @@
 fail-closed: 目标名不存在则 skip+报告; 已存在的链接不重复加。只读校验后才写。"""
 import re
 import pathlib
+import sys
 from collections import defaultdict
 
-MEM = pathlib.Path(r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory")
+DEFAULT_MEM = pathlib.Path(__file__).resolve().parents[1] / "memory"
+MEM = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else DEFAULT_MEM
 
 name2path, name2txt = {}, {}
 for f in MEM.glob("*.md"):
