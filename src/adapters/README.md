@@ -107,7 +107,7 @@ endfield-calc TS files (上游)
 
 adapter 改动 **不需要** update PROJECT_LOCK / FILE_STATUS / spec, 也不进 preflight gate 的 hash 校验列表. 但**不能**:
 - 重定义 canonical_rules.json (那是 PROJECT_LOCK gate)
-- 改变 candidate_placements.json / mandatory_exact_instances.json (frozen)
+- 改变 candidate_placements.json / mandatory_exact_instances.json (frozen；当前 GitHub `main` 中 production candidate_placements 是 required external artifact)
 - 把 exploratory 路径的输出当 certified 蓝图导出
 
 详见 `PROJECT_LOCK.md` "Forbidden Changes" 段.

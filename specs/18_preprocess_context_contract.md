@@ -33,11 +33,11 @@ The builder merges canonical rules first and then applies any overlay keys prese
 `PreprocessContext` is **not** the certified runtime input.
 The certified exact path still consumes frozen artifacts under `data/preprocessed/*`, especially:
 
-- `candidate_placements.json`
+- `candidate_placements.json` (required external large artifact in current lightweight GitHub checkout)
 - `mandatory_exact_instances.json`
 - `generic_io_requirements.json`
 
-`PreprocessContext` only governs how those preprocess artifacts can be regenerated and audited.
+`PreprocessContext` only governs how those preprocess artifacts can be regenerated and audited. The lightweight GitHub checkout does not carry the production `candidate_placements.json` working-tree file; restore it before certified runtime checks.
 
 ## 4. Contract contents
 

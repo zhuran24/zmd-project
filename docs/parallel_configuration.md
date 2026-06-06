@@ -33,6 +33,8 @@ The production parallel path uses separate worker processes.
 On the current platform, that means `spawn` semantics rather than implicit large-object sharing.
 Each worker independently loads large preprocess artifacts such as `candidate_placements.json`
 and constructs its own `ExactMasterCore`-side data.
+In the current lightweight GitHub checkout, restore that artifact before running
+certified parallel workers.
 
 So memory scales roughly with:
 
@@ -96,4 +98,3 @@ They only pass arguments and environment overrides through to `main.py`.
 If a run behaves unexpectedly, the first thing to inspect is the startup line printed by:
 
 `resolved_cp_sat_worker_profile: ...`
-

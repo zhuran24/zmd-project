@@ -90,7 +90,7 @@
 ### A.6 Data sources (`data/preprocessed/`)
 
 - **canonical_rules.json** — 项目 SoT, 含 17 recipe + facility templates + targets + commodity types. 详 `rules/canonical_rules.json`
-- **candidate_placements.json** — 全 pose 枚举 (instance, pose_idx, occupied_cells, ports, orientation, port_mode). Production 53 MB / 81795 pose; viewer sample ~273 pose
+- **candidate_placements.json** — 全 pose 枚举 (instance, pose_idx, occupied_cells, ports, orientation, port_mode). Production 53 MB / 81795 pose; current GitHub `main` keeps it as required external artifact; viewer sample ~273 pose
 - **mandatory_exact_instances.json** — 266 必装 facility instance
 - **generic_io_requirements.json** — commodity flow demand (per recipe / target)
 - **all_facility_instances.json** — 全 facility instance 详 (含可选 deployment)

@@ -16,8 +16,8 @@ The documentation tree is organized around **subjects** and **projections**. Sub
 
 ## Frozen artifact warning
 
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:fc60ac5d700c1afc66190d3e51efc022516405defce1e7c25053cbac2b439fab -->
-Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py`. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:7d54b0d99a9f208e7b36757aec06c1851a9aea69cd51c7d3e76eceabb59ae4a2 -->
+Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py` when present. In the lightweight GitHub checkout, `data/preprocessed/candidate_placements.json` is an external large artifact: expected size `53,594,995` bytes, expected SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`, recoverable from `C:\22957\download\zmd.7z` or historical commit `f58f0e2`. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract END -->
 
 ## Completeness gate

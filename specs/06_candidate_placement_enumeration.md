@@ -1,6 +1,6 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and frozen candidate_placements.json
+source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and the frozen candidate_placements artifact (external in current lightweight GitHub checkout)
 last_verified_against: 2026-06-04 (§2.6.1/§6.1/§7.x PROJECT_LOCK 对齐修订)
 owner: placement-preprocess
 ---
@@ -95,6 +95,11 @@ owner: placement-preprocess
 
 枚举引擎（预处理脚本）的最终使命，是输出一份高度结构化、绝对扁平的 JSON 静态编译文件：
 **`data/preprocessed/candidate_placements.json`**
+
+> 当前 GitHub `main` 是 lightweight checkout：production
+> `data/preprocessed/candidate_placements.json` 不在当前工作树里，但仍是 certified
+> exact 必需输入。恢复后应匹配 SHA256
+> `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`。
 
 数据结构范例：
 ```json

@@ -107,9 +107,13 @@ resume 后确认：
 只要下面任意 hash 真源变化，就必须接受 reset：
 
 - `rules/canonical_rules.json`
-- `data/preprocessed/candidate_placements.json`
+- `data/preprocessed/candidate_placements.json` (required external large artifact in the current lightweight GitHub checkout)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
+
+Before a certified campaign run from GitHub `main`, restore
+`data/preprocessed/candidate_placements.json` and verify its SHA256 matches
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`.
 
 reset 不是异常；它是证据链边界。记录时使用这个模板：
 

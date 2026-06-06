@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status**: CURRENT_INVENTORY
-**Updated**: 2026-06-04
+**Updated**: 2026-06-06
 **Purpose**: Inventory of runtime roles and trust status for the current repository.
 **History**: Engineering history moved to [CHANGELOG.md](CHANGELOG.md).
 
@@ -17,6 +17,7 @@ This file is an inventory projection, not the living status authority. Current p
 - `HISTORICAL_OR_EXPLORATORY`: retained for context, experiments, or legacy compatibility
 - `POSTPROCESS_ONLY`: additive output or visualization layer, not part of core proof semantics
 - `FUTURE_SCOPE`: preserved for later reactivation, but intentionally excluded from the active checked-in audit / CI surface
+- `EXTERNAL_ARTIFACT_REQUIRED`: required by the certified contract but intentionally absent from current lightweight GitHub `main`; restore before certified runs
 - `MIXED`: wildcard path containing files with different trust levels; inspect per-file metadata
 
 ## Cut-family LBBD Path (当前范式, 2026-06-04 补)
@@ -49,7 +50,7 @@ This file is an inventory projection, not the living status authority. Current p
 | `src/models/_cpsat_compat.py` | CURRENT_CODE_ALIGNED | CP-SAT compatibility shim | stabilizes enum/proto surfaces across OR-Tools versions |
 | `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | exact routing subproblem | certified routing proof path |
 | `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | frozen rules artifact | preprocess/runtime certified input; now carries consolidated recipes / production targets / commodity metadata |
-| `data/preprocessed/candidate_placements.json` | CURRENT_CODE_ALIGNED | frozen placement domain | certified pose domain |
+| `data/preprocessed/candidate_placements.json` | EXTERNAL_ARTIFACT_REQUIRED | frozen placement domain | certified pose domain; omitted from current lightweight GitHub tree, expected SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | frozen exact instances | certified mandatory instance source |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | frozen generic IO artifact | binding/runtime certified input |
 

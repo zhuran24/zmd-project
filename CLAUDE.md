@@ -24,7 +24,7 @@ Objective: `max_lex(area, min_side)` — maximize area first, then min-side.
 
 Certified path is grounded in:
 - `rules/canonical_rules.json` (consolidated preprocess/recipe/target/commodity truth)
-- `data/preprocessed/candidate_placements.json`
+- `data/preprocessed/candidate_placements.json` (required external large artifact in current lightweight GitHub checkout; restore before certified exact runs)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 

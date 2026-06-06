@@ -1,0 +1,66 @@
+# START_HERE.md
+
+This repository is a lightweight GitHub source checkout plus recoverable
+historical artifacts. It is meant to stay easy to clone and inspect while still
+recording where the large certified-exact inputs came from.
+
+## Current Development Surfaces
+
+- `src/` is the active solver implementation. The core exact path lives mainly
+  under `src/search/`, `src/models/`, and `src/cuts/`.
+- `rules/` and `data/preprocessed/` hold certified input contracts. In current
+  `main`, the large production placement pool is external; see "Large Artifact
+  Policy" below.
+- `specs/`, `PROJECT_LOCK.md`, and `docs/subjects/` carry the contract language
+  for exactness and documentation projections.
+- `scripts/` contains entrypoints, gates, artifact builders, audits, and many
+  historical spike helpers. Start with `scripts/README.md` before running an
+  unfamiliar script.
+- `.github/` contains GitHub-side automation metadata.
+
+## Large Artifact Policy
+
+Current `main` intentionally does not track these large working-tree payloads:
+
+- `data/preprocessed/candidate_placements.json`
+- `cc_context/review/*.zip`
+
+The production `candidate_placements.json` is still a certified-exact input. It
+is not optional for full certified runs, but it is stored outside the current
+GitHub working tree to keep the repository light.
+
+Known recovery facts for `data/preprocessed/candidate_placements.json`:
+
+- expected size: `53,594,995` bytes
+- expected SHA256:
+  `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`
+- historical Git source: commit `f58f0e2`, path
+  `data/preprocessed/candidate_placements.json`
+- local archive source used for the GitHub backup:
+  `C:\22957\download\zmd.7z`, nested under `zmd/data/preprocessed/`
+
+Do not recommit that file to normal Git unless the repository policy changes to
+Git LFS, release assets, or another explicit large-artifact store.
+
+## Historical And Context Surfaces
+
+- `_cc_live_memory/` is recovered context memory. It is useful for archaeology,
+  not a runtime entrypoint.
+- `.artifacts/` is generated review/probe output. Treat it as evidence and
+  history, not source code.
+- `cc_context/` contains review bundles, prompts, handoffs, and previous
+  external review context.
+- `docs/research/` and `third_party_snapshots/` preserve research and upstream
+  snapshots. Read them when needed, but do not treat every old note as current
+  project state.
+
+## First-Pass Cleanup Boundaries
+
+- Do not split `src/models/master_model.py`, `src/models/exact_coordinate_master.py`,
+  or `src/search/benders_loop.py` casually. They are large, but they also carry
+  exactness assumptions.
+- Do not weaken `PROJECT_LOCK.md` exactness rules to make a local test easier.
+- Do not promote postprocess, viewer, adapter, or exploratory artifacts into
+  certified proof inputs.
+- When changing documentation projections, edit the subject in `docs/subjects/`
+  and run `python scripts/sync_doc_subjects.py --sync`.

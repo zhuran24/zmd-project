@@ -1,8 +1,18 @@
 # scripts/ 目录入口分类
 
-315 个 `.py` + 13 个 `.sh` = 328 个脚本. 大部分是 Phase 3B `build_phase3b_*.py` artifact 生成器 (252 个), 跟 `src/search/phase3b_*` + `src/tests/test_phase3b_*` 三角形对应.
+当前 tracked source inventory（2026-06-06，不含 `__pycache__`）：423 个 `.py` + 13 个 `.ps1` + 12 个 `.sh` + 2 个 `.md` + 1 个 `.fzn` + 1 个 `.mjs` = 452 个文件。大部分仍是 Phase 3B / cut-family / delivery 的 artifact 生成器、审计器、spike 工具和历史 helper；不是每个脚本都是日常入口。
 
 这份 README 列**真正的入口点**, 你日常会跑的脚本. 完整 Phase 3B 列表见 `docs/phase3b_module_index.md`.
+
+脚本默认分五类读：
+
+| 类别 | 怎么看 |
+|---|---|
+| 当前推荐入口 | campaign wrapper、preflight、delivery e2e、vendor refresh |
+| Gate / 审计 | `preflight_gate.py`、`production_readiness_gate.py`、`audit_*` |
+| Artifact 生成器 | `build_*`，通常输出 `.artifacts/` 或 delivery bundle |
+| Spike / profiling | `*_poc.py`、`*_spike_*`、`profile_*`，默认历史参考 |
+| Future scope / historical | larger-base、outer-deployment、早期 Phase 3B tuning 辅助面 |
 
 ---
 

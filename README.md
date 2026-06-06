@@ -10,8 +10,8 @@ Current working state: **Phase 1.2 spike close** for cut-family validator soundn
 
 ## 精确性边界（subject projection）
 
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract START sha256:3b43b968c1dd26cfe824ead3065a56a7c9947bc5b1c0eef8f12c8bcf21a3ae17 -->
-Certified exact mode is separate from exploratory tooling. The exact objective is `max_lex(area, min_side)`, and exploratory caps or sidecar hints must never become certified feasibility bounds. The frozen source-of-truth artifacts are `rules/canonical_rules.json`, `data/preprocessed/candidate_placements.json`, `data/preprocessed/mandatory_exact_instances.json`, and `data/preprocessed/generic_io_requirements.json`.
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract START sha256:e8bdd52bb4ea38068e1e59d599ae362f8c66cb83423d851eee1748fd078ce8dd -->
+Certified exact mode is separate from exploratory tooling. The exact objective is `max_lex(area, min_side)`, and exploratory caps or sidecar hints must never become certified feasibility bounds. The frozen source-of-truth inputs are `rules/canonical_rules.json`, required external artifact `data/preprocessed/candidate_placements.json`, checked-in `data/preprocessed/mandatory_exact_instances.json`, and checked-in `data/preprocessed/generic_io_requirements.json`.
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract END -->
 
 ## 文档树入口（subject projection）
@@ -19,6 +19,13 @@ Certified exact mode is separate from exploratory tooling. The exact objective i
 <!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary START sha256:ca8444165fd1c2128cfdc08a6ad8da370a426d6727028353da593ea29d1768f2 -->
 The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
 <!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary END -->
+
+## GitHub checkout 导航
+
+先读 [`START_HERE.md`](START_HERE.md)。当前 GitHub `main` 是 lightweight
+checkout：源码、规格、文档和小型 certified inputs 留在树里，大型 review 包和
+production `data/preprocessed/candidate_placements.json` 不放在当前工作区；需要跑
+certified exact 前先按 `START_HERE.md` 恢复 artifact。
 
 ## 跑求解器
 

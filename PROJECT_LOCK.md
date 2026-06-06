@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-06-04 (v28 外审 cut-family validator SoT gate + F9 tight-K quarantine + specs 02/06/07 exact-cap 对齐)
+**Updated**: 2026-06-06 (lightweight GitHub checkout + external large artifact policy)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
@@ -20,11 +20,19 @@
 The certified path is grounded in:
 
 - `rules/canonical_rules.json` (now also carries consolidated preprocess recipe / target / commodity truth)
-- `data/preprocessed/candidate_placements.json`
+- `data/preprocessed/candidate_placements.json` (required external large artifact in the current lightweight GitHub checkout)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 - artifact-hash-compatible campaign state
 - provenance-complete exact-safe cuts
+
+The current GitHub `main` branch intentionally omits the large
+`data/preprocessed/candidate_placements.json` working-tree file after the
+2026-06-06 backup cleanup. This does **not** remove it from the certified
+contract: certified exact runs must restore the artifact first. Expected facts:
+size `53,594,995` bytes, SHA256
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`, historical
+commit `f58f0e2`, local archive source `C:\22957\download\zmd.7z`.
 
 The following remain additive postprocess artifacts and must not redefine internal solve schemas:
 

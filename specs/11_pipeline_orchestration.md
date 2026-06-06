@@ -18,11 +18,13 @@ must be updated in the same change.
 The certified path consumes these frozen preprocess artifacts:
 
 - `rules/canonical_rules.json`
-- `data/preprocessed/candidate_placements.json`
+- `data/preprocessed/candidate_placements.json` (required external large artifact in current lightweight GitHub checkout)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 
-Artifact hashes are part of the campaign resume contract.
+Artifact hashes are part of the campaign resume contract. Before a certified run
+from lightweight GitHub `main`, restore `candidate_placements.json` and verify
+the expected SHA256 recorded in `START_HERE.md` / `PROJECT_LOCK.md`.
 
 ## 3. Exact Objective and Candidate Domain
 

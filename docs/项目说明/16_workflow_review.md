@@ -11,7 +11,7 @@ Phase 1.1 经验: Gemini 11 round Day 15/16a/16b 堆到 round 14 才 cross-check
 
 **模式 (per [[gemini-prompt-audit-mode]])**
 - audit 模式, 不是 GO 章 ritual: 验 spec ↔ src ↔ data gap, push find problem
-- prompt 含 real data path (`data/preprocessed/candidate_placements.json` 等), 不只 sample
+- prompt 含 real data path (`data/preprocessed/candidate_placements.json` 等), 不只 sample；当前 lightweight checkout 需先恢复或单独附带该大 artifact
 - armor: 强制 3 死法 + 反 vague hyperbole + 不重写 prompt 别调
 - "GO" 不是 verdict 目标; "specific finding + reproducer" 才是
 
@@ -80,12 +80,12 @@ GPT pro 主要 catch (3+4+5) — Gemini 倾向 catch (1+2) schema 层. 实施 fa
 
 **Gemini per-commit 输入**
 - diff (commit SHA) + 改动 file 全文 + 相关 spec section (e.g. cut_family_specs/F1.md)
-- 真数据 path (e.g. data/preprocessed/candidate_placements.json) — 让 Gemini 跑 reproduce
+- 真数据 path (e.g. data/preprocessed/candidate_placements.json) — 让 Gemini 跑 reproduce；lightweight checkout 下要先恢复该 artifact
 - 不放: full project, 历史 GPT verdict, 多 commit 累积 diff
 
 **GPT pro batch 输入**
 - 全项目 zip (v8 模式, 7z 壳 + ship 7za)
-- 真数据 production 全集 (53 MB)
+- 真数据 production 全集 (53 MB；lightweight checkout 不含, review package 要单独恢复/附带)
 - audit archive 累积 (cross_check/ + external_review/) — 给 reviewer context 知道之前怎么修
 - spec 完整 (cut_lifecycle_v2 / state_machine_v2 / cut_family_specs/)
 - 不放: plan doc (主动性引导, per [[review-pkg-no-prompt-inside]]); prompt; verdict claim / Close 列表
@@ -197,4 +197,3 @@ GPT pro 主要 catch (3+4+5) — Gemini 倾向 catch (1+2) schema 层. 实施 fa
 - GPT pro 多 round verdict 不一致 ([[external-review-reproducibility]]) → finding 必 reproduce verify, 不照搬
 
 ---
-
