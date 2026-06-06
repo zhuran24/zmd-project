@@ -1,6 +1,6 @@
 ---
 name: gemini-math-consultant
-description: "Gemini 3.1 pro free-tier API key — 数学问题 second opinion 子代理. 用户明确授权记录, 免费额度即将到期赶紧用"
+description: "Gemini 3.1 pro 数学 second opinion 子代理。API key 不再进 repo/memory; 运行脚本只读 GEMINI_API_KEY 环境变量。已暴露旧 key 建议轮换。"
 metadata: 
   node_type: memory
   type: reference
@@ -11,8 +11,10 @@ metadata:
 
 ## API key
 
-```
-[REDACTED_GCP_API_KEY]
+不在 memory/repo 中保存明文 key。运行 Gemini 脚本前在本机 shell 设置环境变量：
+
+```bash
+export GEMINI_API_KEY=<redacted-local-only>
 ```
 
 ## 何时调
@@ -50,7 +52,7 @@ metadata:
 Google AI Studio API endpoint:
 
 ```bash
-KEY=[REDACTED_GCP_API_KEY]
+KEY="$GEMINI_API_KEY"
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro:generateContent?key=$KEY" \
   -H 'Content-Type: application/json' \
   -d '{
@@ -73,9 +75,10 @@ curl "https://generativelanguage.googleapis.com/v1beta/models?key=$KEY"
 
 ## 安全 caveat
 
-- key **已暴露** (出现过在 5-10 P2 #14 AlphaEvolve PoC memory + 这次 5-21 用户重复确认 free tier)。**⚠️ supersede (2026-06-01)**: 原"不要 commit 进 git"已被 [[github-backup]] 的"库设私有 + key 留私库历史"决策取代 —— 用户拍板接受 key 在私有库历史里, **不 scrub / 不吊销**。约束改为: 库**绝不翻 public** (翻了即泄密) + key **仍不能进送外部审查的 share/review package**
-- 这条 memory 在 CC 私有 memory 目录 (现 slug `D-----zmd`, 即 `~/.claude/projects/D-----zmd/memory/`; 旧 Linux slug `-home-zhuran24-claude-pj-zmd` 已废), 不进项目 git
-- free tier 配额受 Google policy 限制 (历史: 大陆 block + 训练数据污染 + 单方面砍 quota), 不能依赖
+- 2026-06-06 supersede: 旧 key 曾经进过 tracked scripts / memory / v22 review package, 已不能再视作 publish-safe。当前树只允许 `GEMINI_API_KEY` 环境变量, 不保存明文。
+- 已暴露 credential 的最终止血必须在 Google 侧轮换/吊销；repo patch 只能保证当前工作树不再携带它, 不能让 Git 历史或外发 review 包失忆。
+- 这条 memory 现在进入项目 `cc_context/memory/` 镜像, 所以必须按 GitHub publish-safe 标准写。库私有不是 secret 管理手段。
+- free tier 配额受 Google policy 限制 (历史: 大陆 block + 训练数据污染 + 单方面砍 quota), 不能依赖。
 
 ## 历史使用记录
 

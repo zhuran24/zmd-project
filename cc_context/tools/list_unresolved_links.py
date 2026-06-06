@@ -1,37 +1,48 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""列出记忆树里 unresolved 的 [[wikilink]] (token + 出处文件), 配 report_link_graph.py 用。"""
+"""List unresolved [[wikilink]] tokens in the repo memory tree."""
+from __future__ import annotations
+
+import argparse
 import re
-import os
-import io
-import sys
+from pathlib import Path
 
-MEM = sys.argv[1] if len(sys.argv) > 1 else r"C:\Users\Lenovo\.claude\projects\D-----zmd\memory"
-LINK_RE = re.compile(r'\[\[([^\]\|]+?)\]\]')
+DEFAULT_MEMORY_DIR = Path(__file__).resolve().parents[1] / "memory"
+LINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
+NAME_RE = re.compile(r"(?m)^name:[ \t]*(.+?)[ \t]*$")
 
-files = [f for f in os.listdir(MEM) if f.endswith(".md") and f != "MEMORY.md"]
-name_of = {}
-texts = {}
-for f in files:
-    with io.open(os.path.join(MEM, f), "r", encoding="utf-8") as fp:
-        t = fp.read()
-    texts[f] = t
-    m = re.search(r'(?m)^name:[ \t]*(.+?)[ \t]*$', t)
-    name_of[f] = (m.group(1).strip() if m else f).lower()
 
-names = set(name_of.values())
-mem_path = os.path.join(MEM, "MEMORY.md")
-extra = []
-if os.path.exists(mem_path):
-    with io.open(mem_path, "r", encoding="utf-8") as fp:
-        extra = [("MEMORY.md", fp.read())]
+def frontmatter_name(text: str, fallback: str) -> str:
+    match = NAME_RE.search(text)
+    return (match.group(1).strip().strip('"').strip("'") if match else fallback).lower()
 
-unresolved = []
-for f, t in list(texts.items()) + extra:
-    for m in LINK_RE.finditer(t):
-        tok = m.group(1).strip().lower()
-        if tok not in names:
-            unresolved.append((f, m.group(1).strip()))
 
-print("unresolved count:", len(unresolved))
-for f, tok in unresolved:
-    print("  [[%s]]  in  %s" % (tok, f))
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("memory_dir", nargs="?", type=Path, default=DEFAULT_MEMORY_DIR)
+    args = parser.parse_args()
+
+    memory_dir = args.memory_dir.resolve()
+    files = sorted(p for p in memory_dir.glob("*.md") if p.name != "MEMORY.md")
+    texts = {p.name: p.read_text(encoding="utf-8") for p in files}
+    names = {frontmatter_name(text, p[:-3]) for p, text in texts.items()}
+
+    unresolved: list[tuple[str, str]] = []
+    items = list(texts.items())
+    memory_index = memory_dir / "MEMORY.md"
+    if memory_index.exists():
+        items.append(("MEMORY.md", memory_index.read_text(encoding="utf-8")))
+    for filename, text in items:
+        for match in LINK_RE.finditer(text):
+            token = match.group(1).strip()
+            if token.lower() not in names:
+                unresolved.append((filename, token))
+
+    print("unresolved count:", len(unresolved))
+    for filename, token in unresolved:
+        print(f"  [[{token}]]  in  {filename}")
+    return 1 if unresolved else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

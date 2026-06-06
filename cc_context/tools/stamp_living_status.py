@@ -1,156 +1,215 @@
 #!/usr/bin/env python3
-r"""实例/分身 transclusion 引擎 (CC 记忆树单一真相源).
+r"""Repo-native INSTANCE/projection transclusion engine for the memory tree.
 
-架构 (用户 2026-06-02 提出): 把记忆树做成「单一真相源 + transclusion」——
-- **实例 (instance)** = 某个**可推导事实**的唯一权威值, context-independent (一处真值,
-  不被任意情景重新指定)。在下面 INSTANCES 注册表里, 每个实例 = 一个 resolver()->渲染字符串。
-- **分身 (projection)** = 任意 memory 节点里的 `<!-- INSTANCE:id -->…<!-- /INSTANCE:id -->`
-  槽, 它**引用**实例而非 copy。
-- 本 pass (pre-commit 每 commit 调) 把每个实例当前值 render 进它所有分身槽 → **重复的可推导值
-  结构上不可能 drift** (改实例 = 改 resolver/源, 一刷全分身同步)。
+Memory architecture: an INSTANCE is the single authoritative value for a
+context-independent, mechanically derivable fact; a projection is a slot inside a
+memory node:
 
-为什么 (根因, 见 memory-currency-protocol rule#7 + github-backup): 现状/重复值漏更反复复发, 不是
-知识缺口, 是这些值散在多节点、没有强制函数。记规则 (被动文本) 治不住没上锁的动作。本引擎 = 强制函数。
+    <!-- INSTANCE:current_phase -->...<!-- /INSTANCE:current_phase -->
 
-**只治「可推导值」** (sha / git HEAD / phase / repo url ...)。**规则/判断类不在此 transclude** ——
-逐字副本满树 = clutter; 规则靠 wikilink 链接 + 连通纪律 (见 memory-tree-structural-health)。
-
-**护栏** (blast radius 大, 严): fail-soft (任何错只 warn + exit 0, 绝不阻断 commit);
-只改 `INSTANCE:id` 槽**内**文本, 绝不碰其它; 幂等; resolver 失败 (返回空) 时**保留槽内旧值不 blank**;
-逐文件 try/except (一个坏文件不影响其它)。
-
-**扩展**: 新增实例 → 往 INSTANCES 加一个 resolver; 新增分身 → 在任意 memory .md 插
-`<!-- INSTANCE:id -->占位<!-- /INSTANCE:id -->`。(文件名沿用 stamp_living_status 仅为 hook/引用稳定;
-职责已泛化为全树 transclude。)
+`--sync` renders instance values into all slots. `--check` fails if any slot is
+stale, unknown, or malformed.  The default memory tree is the repository mirror
+`cc_context/memory`, so the gate works in clean archives, GitHub clones, local
+Codex worktrees, and the old CC live directory when explicitly passed with
+`--memory-dir`.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
 import sys
+from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 
-MEM = Path.home() / ".claude" / "projects" / "D-----zmd" / "memory"
 REPO = Path(__file__).resolve().parents[2]
-LIVING_SOURCE = MEM / "handoff_windows_ninth_review_pending.md"  # 单一 living 现状源
-SPIKE_BRANCH = "spike/prod_scale_master_integration_20260526"
+DEFAULT_MEMORY_DIR = REPO / "cc_context" / "memory"
 LATEST_PACKAGE = REPO / "cc_context" / "review" / "LATEST_PACKAGE.json"
-
-# SLOT: 槽 interior 用负向先行 `(?!<!-- /?INSTANCE:)` 限定**不能跨任何 INSTANCE open/close marker** ——
-# 这样不平衡/错配的 marker (悬空 open + 后面孤立 close / 错 id close) 不会让 `.*?` 跨行吞掉中间文本
-# (engine-adversarial 镜头实测的唯一损坏向量: 旧的裸 `.*?` 会 swallow KEEP_ME)。不平衡 → 不匹配 → 留原样。
+SPIKE_BRANCH = "spike/prod_scale_master_integration_20260526"
 SLOT = re.compile(
     r"<!-- INSTANCE:([a-z0-9_]+) -->(?:(?!<!-- /?INSTANCE:).)*?<!-- /INSTANCE:\1 -->",
     re.DOTALL,
 )
-OPEN = re.compile(r"<!-- INSTANCE:[a-z0-9_]+ -->")  # 用于 orphan/unbalanced 检测
+OPEN = re.compile(r"<!-- INSTANCE:[a-z0-9_]+ -->")
+
+
+@dataclass(frozen=True)
+class RenderResult:
+    rendered: str
+    slots: int
+    unknown: tuple[str, ...]
 
 
 def _git(*args: str) -> str:
     try:
-        r = subprocess.run(["git", "-C", str(REPO), *args],
-                           capture_output=True, text=True, encoding="utf-8", timeout=10)
-        return r.stdout.strip() if r.returncode == 0 else ""
+        result = subprocess.run(
+            ["git", "-C", str(REPO), *args],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=10,
+        )
     except Exception:
         return ""
+    return result.stdout.strip() if result.returncode == 0 else ""
 
 
 def _r_latest_review_package() -> str:
-    d = json.loads(LATEST_PACKAGE.read_text(encoding="utf-8"))
-    v, s = str(d.get("version", "")).strip(), str(d.get("sha256", ""))[:12]
-    return f"{v} (sha `{s}…`)" if v else ""
+    if not LATEST_PACKAGE.exists():
+        return ""
+    data = json.loads(LATEST_PACKAGE.read_text(encoding="utf-8"))
+    version = str(data.get("version", "")).strip()
+    digest = str(data.get("sha256", "")).strip()[:12]
+    return f"{version} (sha `{digest}…`)" if version else ""
 
 
 def _r_spike_head() -> str:
-    return _git("rev-parse", "--short", SPIKE_BRANCH)
+    value = _git("rev-parse", "--short", SPIKE_BRANCH)
+    if value:
+        return value
+    if LATEST_PACKAGE.exists():
+        try:
+            data = json.loads(LATEST_PACKAGE.read_text(encoding="utf-8"))
+            return str(data.get("spike_head", "")).strip()
+        except Exception:
+            return ""
+    return ""
 
 
 def _r_current_phase() -> str:
-    for ln in (REPO / "CLAUDE.md").read_text(encoding="utf-8").splitlines():
-        if ln.startswith("## Current Phase:"):
-            return ln[len("## Current Phase:"):].strip()
+    phase_file = REPO / "CLAUDE.md"
+    if not phase_file.exists():
+        return ""
+    for line in phase_file.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## Current Phase:"):
+            return line.split(":", 1)[1].strip()
     return ""
 
 
 def _r_repo_url() -> str:
-    u = _git("remote", "get-url", "origin")
-    m = re.search(r"github\.com[/:]([^/]+/[^/.]+)", u)
-    return m.group(1) if m else u
+    url = _git("remote", "get-url", "origin")
+    match = re.search(r"github\.com[/:]([^/]+/[^/.]+)", url)
+    return match.group(1) if match else url
 
 
-# 实例注册表: id -> resolver()->渲染串。只放可推导值。
-INSTANCES = {
+def _r_current_head() -> str:
+    return _git("rev-parse", "--short", "HEAD")
+
+
+INSTANCES: dict[str, Callable[[], str]] = {
     "latest_review_package": _r_latest_review_package,
     "spike_head": _r_spike_head,
     "current_phase": _r_current_phase,
     "repo_url": _r_repo_url,
+    "current_head": _r_current_head,
 }
 
 
+def resolve_instances() -> dict[str, str]:
+    values: dict[str, str] = {}
+    for instance_id, resolver in INSTANCES.items():
+        try:
+            values[instance_id] = (resolver() or "").strip()
+        except Exception:
+            values[instance_id] = ""
+    return values
+
+
+def render_text(text: str, values: dict[str, str]) -> RenderResult:
+    unknown: set[str] = set()
+    slots = 0
+
+    def repl(match: re.Match[str]) -> str:
+        nonlocal slots
+        instance_id = match.group(1)
+        if instance_id not in INSTANCES:
+            unknown.add(instance_id)
+            return match.group(0)
+        value = values.get(instance_id, "")
+        if not value:
+            return match.group(0)
+        slots += 1
+        return f"<!-- INSTANCE:{instance_id} -->{value}<!-- /INSTANCE:{instance_id} -->"
+
+    return RenderResult(SLOT.sub(repl, text), slots, tuple(sorted(unknown)))
+
+
+def _memory_files(memory_dir: Path) -> list[Path]:
+    return sorted(memory_dir.glob("*.md"))
+
+
+def check_or_sync(memory_dir: Path, *, write: bool, verbose: bool) -> int:
+    values = resolve_instances()
+    changed: list[str] = []
+    malformed: list[str] = []
+    unknown: set[str] = set()
+    filled_slots = 0
+
+    for path in _memory_files(memory_dir):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            print(f"[instances] cannot read {path}: {exc}", file=sys.stderr)
+            return 1
+        if "<!-- INSTANCE:" not in text:
+            continue
+        opens = len(OPEN.findall(text))
+        complete_slots = len(SLOT.findall(text))
+        if opens != complete_slots:
+            malformed.append(f"{path.name}: opens={opens}, complete_slots={complete_slots}")
+            continue
+        result = render_text(text, values)
+        filled_slots += result.slots
+        unknown.update(result.unknown)
+        if result.rendered != text:
+            changed.append(path.name)
+            if write:
+                path.write_text(result.rendered, encoding="utf-8", newline="\n")
+
+    if malformed:
+        print("[instances] malformed INSTANCE slots:", file=sys.stderr)
+        for item in malformed:
+            print(f"  {item}", file=sys.stderr)
+    if unknown:
+        print(f"[instances] unknown INSTANCE ids: {sorted(unknown)}", file=sys.stderr)
+
+    if changed and not write:
+        print("[instances] stale projection slots:", file=sys.stderr)
+        for name in changed[:30]:
+            print(f"  {name}", file=sys.stderr)
+        if len(changed) > 30:
+            print(f"  ... {len(changed) - 30} more", file=sys.stderr)
+
+    if verbose or not (malformed or unknown or changed):
+        mode = "sync" if write else "check"
+        print(
+            f"[instances] {mode}: files={len(_memory_files(memory_dir))}, "
+            f"slots={filled_slots}, changed={len(changed)}, values={values}"
+        )
+
+    return 1 if malformed or unknown or (changed and not write) else 0
+
+
 def main() -> int:
-    try:
-        # 1. resolve 每个实例一次 (resolver 自身失败 → 空串, 后面遇到就保留旧槽值)
-        values: dict[str, str] = {}
-        for iid, fn in INSTANCES.items():
-            try:
-                values[iid] = (fn() or "").strip()
-            except Exception:
-                values[iid] = ""
+    parser = argparse.ArgumentParser(description="Sync/check memory INSTANCE projection slots.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true", help="Fail if any projection is stale; do not write.")
+    mode.add_argument("--sync", action="store_true", help="Rewrite stale projection slots in place.")
+    parser.add_argument("--memory-dir", type=Path, default=DEFAULT_MEMORY_DIR)
+    parser.add_argument("--verbose", action="store_true")
+    args = parser.parse_args()
 
-        # 2. 扫全树, 填所有分身槽
-        changed = slots = 0
-        unknown: set[str] = set()
+    memory_dir = args.memory_dir.resolve()
+    if not memory_dir.is_dir():
+        print(f"[instances] memory dir not found: {memory_dir}", file=sys.stderr)
+        return 1
 
-        def render(m: "re.Match[str]") -> str:
-            nonlocal slots
-            iid = m.group(1)
-            if iid not in INSTANCES:
-                unknown.add(iid)
-                return m.group(0)
-            val = values.get(iid, "")
-            if not val:
-                return m.group(0)  # resolver 失败 → 保留旧值, 不 blank
-            slots += 1
-            return f"<!-- INSTANCE:{iid} -->{val}<!-- /INSTANCE:{iid} -->"
-
-        for f in sorted(MEM.glob("*.md")):
-            try:
-                text = f.read_text(encoding="utf-8")
-            except Exception:
-                continue
-            if "<!-- INSTANCE:" not in text:
-                continue
-            n_open, n_slot = len(OPEN.findall(text)), len(SLOT.findall(text))
-            if n_open != n_slot:
-                sys.stderr.write(
-                    f"⚠️  [instances] {f.name}: INSTANCE open marker 数({n_open}) ≠ 完整槽数({n_slot}) "
-                    f"—— 疑有不平衡/孤立 marker。已 fail-safe (不吞文本, 该槽不填), 但请检查 authoring。\n"
-                )
-            new = SLOT.sub(render, text)
-            if new != text:
-                try:
-                    f.write_text(new, encoding="utf-8")
-                    changed += 1
-                except Exception:
-                    pass
-
-        # 3. living 现状源「判断散文」lag warn (判断类推不出来, 只能 warn 提示人改)
-        ver = str(values.get("latest_review_package", "")).split(" ", 1)[0]
-        if ver and LIVING_SOURCE.exists():
-            prose = SLOT.sub("", LIVING_SOURCE.read_text(encoding="utf-8"))
-            if ver not in prose:
-                sys.stderr.write(
-                    f"\n⚠️  [instances] 最新 review 包 {ver}, 但 {LIVING_SOURCE.name} 的判断散文没提到它 —— "
-                    f"现状叙述可能 stale, 请手动更新 `## 最新状态` 块 (可推导槽已自动 transclude)。\n\n"
-                )
-        if unknown:
-            sys.stderr.write(f"⚠️  [instances] 未知实例 id (无 resolver, 槽未填): {sorted(unknown)}\n")
-        if "--verbose" in sys.argv:
-            sys.stderr.write(f"[instances] 填了 {slots} 个分身槽, 改了 {changed} 个文件; 实例值: {values}\n")
-    except Exception as exc:  # fail-soft: 绝不阻断 commit
-        sys.stderr.write(f"[instances] transclude 跳过 (非致命): {type(exc).__name__}: {exc}\n")
-    return 0
+    # Historical behavior was "run = sync" from a pre-commit hook.  Keep that
+    # default for humans, while gates call --check explicitly.
+    write = args.sync or not args.check
+    return check_or_sync(memory_dir, write=write, verbose=args.verbose)
 
 
 if __name__ == "__main__":

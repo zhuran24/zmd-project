@@ -31,7 +31,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ### 第3层：/ultrareview（用户每天早上手动触发）
 - 用于重大变更的全面外部审查
 - 用户每天起床后跑一次，覆盖前一天的所有改动
-- 前提：需要 main 分支存在 + GitHub repo（私有库 `https://github.com/<!-- INSTANCE:repo_url -->zhuran24/endfield-exact-solver<!-- /INSTANCE:repo_url -->`, 权威见 [[github-backup]]; 仓库名由 `repo_url` 实例 transclude, 不再手抄会漂的 URL）
+- 前提：需要 main 分支存在 + GitHub repo（私有库 `https://github.com/<!-- INSTANCE:repo_url -->zhuran24/zmd<!-- /INSTANCE:repo_url -->`, 权威见 [[github-backup]]; 仓库名由 `repo_url` 实例 transclude, 不再手抄会漂的 URL）
 
 ## 风险分级决策规则
 

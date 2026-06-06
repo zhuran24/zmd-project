@@ -11,13 +11,16 @@ Output: /home/zhuran24/linwin_share/gemini_round_30_gap6_audit_response.md
 """
 from __future__ import annotations
 
+import os
 import collections
 import json
 import time
 import urllib.request
 from pathlib import Path
 
-API_KEY = "[REDACTED_GCP_API_KEY]"
+API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+if not API_KEY:
+    raise SystemExit("Set GEMINI_API_KEY to run this Gemini cross-check script.")
 MODEL = "gemini-3.1-pro-preview"
 ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={API_KEY}"
 

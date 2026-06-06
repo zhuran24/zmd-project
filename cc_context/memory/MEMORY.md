@@ -1,11 +1,12 @@
 ## 当前状态 / 交接
 
-- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (Windows 交接 + Phase 1.2 spike-close 主线 + Design A/B 工装两条线; 最新 v28 外审修 4 洞/F9 quarantine, 详文件顶块).
+- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**；2026-06-06 已含文档树/记忆树 closeout 与 GitHub 上传准备。
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; Step0 8/8 PASS; 等用户 phase-boundary 决策.
-- [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界: 仓库 `D:\追光\zmd`, venv `.venv\Scripts\python.exe` (Py3.13.13+ortools9.15.6755), prod-scale 要回 Linux 主机, slug `D-----zmd`.
-- [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 2026-05-27: 7/7 family close + F3 generator, GPT 八审 GO_WITH_MINOR (现状详交接条).
+- [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界、slug、prod-scale 回 Linux 主机；稳定环境细节只看该条。
+- [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 7/7 family close + F3 generator; 历史细节看该条, 当前现状看交接条。
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径. 治本 3 个 HIGH 过时.
-- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — "核心节点+投影+强制函数"架构套到项目数字 (Design A: authoritative_numbers.json+drift-test) + cut-family SoT (Design B: canonical_sot+meta-test). 教训: 不扫散文找旧值 / 强制函数>规则 / forcing 半边真·project 半边未接.
+- [记忆树 publish-safety/currentness gate](project_memory_tree_publish_safety.md) — 2026-06-06 补强: 当前树 secret scan、repo-native INSTANCE check、memory graph/index/live-mirror gate 接入 preflight; 旧 key 需 owner 侧轮换。
+- [数字单一来源架构 (core-node+投影+强制函数)](project_authoritative_numbers_single_source.md) — 项目数字 + cut-family SoT 的主体/投影/强制函数经验；教训: 强制函数 > 规则。
 
 ## 打包 / 外部审查规范
 
@@ -34,7 +35,7 @@
 - [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume); dispatch 三选一 (线性→自己/散落→wf/机械→子代理); Ultracode=穷尽不计 token.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改 (新增/删条目/重组/slim MEMORY.md) 先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 (加索引前先 slim) + harness 重写 frontmatter 保 name. 区别于现状过时轴 [[memory-currency-protocol]].
-- [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 遇 LP/CP-SAT/复杂度/proof system 数学问题调 Gemini free-tier 当轻量子代理, 不替代 GPT review.
+- [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion；key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — Claude 默认 register 偏端着/工程化; 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.
 - [算法/数学层必经 Gemini cross-check (v2 加严)](feedback_gemini_review_algorithm_math.md) — "先 check 再继续". 每 commit 后立刻 cross-check 不堆 (堆到 round 14 找出 3 致命 bug). 纯 refactor/rename/IO 不算数学层.
 - [Gemini prompt audit 模式 — 不要 GO 章 ritual](feedback_gemini_prompt_audit_mode.md) — "Gemini 用来找问题不要被夸傻". 真数据进 paths + armor 强制 3 死法 + 反 vague hyperbole + 不重写 prompt 别调.
