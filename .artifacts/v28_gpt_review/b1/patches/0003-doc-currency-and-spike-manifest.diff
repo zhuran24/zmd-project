@@ -1,0 +1,66 @@
+--- a/CLAUDE.md	2026-06-03 17:28:01.696523861 +0000
++++ b/CLAUDE.md	2026-06-03 17:28:08.383101407 +0000
+@@ -51,11 +51,12 @@
+ - Other bases (`valley4_infra_outpost`, `wuling_protocol_core`, etc.) are `future_scope`
+ - Outer-deployment subsystem is adapter-side `future_scope`
+ 
+-## Current Phase: 1.3A (cut-family LBBD master 集成)
++## Current Phase: Phase 1.2 spike close review package (v28)
+ 
+ - 范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计** (9 个 F1–F9 cut family 当 Benders cut 收紧 master)。
+-- 当前: Phase 1.2 spike close (v22, GO_WITH_MINOR) 等 GPT pro 正式九审 → 过了进 **P1.3A 主体** (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛)。**单一 living 现状源 = CC memory `windows-ninth-review-pending`**。
+-- **命名错位注意**: `docs/项目说明/06` 的 doc-P1.3A = attach spike (已 done)、doc-P1.3B = 真 master 集成 (= memory 口径的「P1.3A 主体」); `src/cuts/lifecycle.py` `step_8_apply_to_master` 仍 NotImplementedError。
++- 当前包口径: **Phase 1.2 spike close v28**，交付目标是在进入 **P1.3A 主体** (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛) 前完成 sizing 与 cut-family validator soundness 闭关审查。
++- 包内 living source: 顶层 `README.md` / `project/README.md`、`docs/research/p1_2_spike_sizing_gate_20260601/RESULTS.md`、`data/cuts/spike/verdict.md` 与可复现实跑；不要引用未入包的 CC memory 作为唯一权威源。
++- **命名错位注意**: `docs/项目说明/06` 的 doc-P1.3A = attach spike (已 done)、doc-P1.3B = 真 master 集成；本包语境中的「P1.3A 主体」即真 master 集成。`src/cuts/lifecycle.py` `step_8_apply_to_master` 仍 NotImplementedError。
+ - 历史 Phase 3B (tuning paradigm, release `r20260416` 后) 已被取代; 下方 AI sidecar 契约仍有效。
+ 
+ ## AI Safety Contract
+--- a/code_context/spike/spike_prod_scale_runner.py	2026-06-03 17:28:01.704579622 +0000
++++ b/code_context/spike/spike_prod_scale_runner.py	2026-06-03 17:28:08.384492557 +0000
+@@ -553,21 +553,23 @@
+     lines.append("## Recommended next step (main conversation)")
+     lines.append("")
+     if overall == "GO":
+-        rec = ("**GO** to v20 review package build. Per MERGER §6.5: \"等 spike 跑完 verdict.md 后打 review 包 "
+-               "(含 patch verify + Finding 5 close spike verdict)\". Spike close 5/5 Finding 5 项 with all G PASS "
+-               "and zero N trigger. v20 package should include: spike verdict.md + B1-B6 commits + A3 fixture + "
+-               "MERGER round 0-3 cross-check archive + GPT pro audit. After v20 GPT pro review GO, proceed to "
+-               "P1.3A 主体 design (real PoseBoolExactMaster integration + LBBD multi-iter + 9 family translator "
+-               "+ 6-dim watcher + cut store) via N=8 parallel design protocol.")
++        rec = ("**GO** for this historical spike run. Package-build labels are supplied by the "
++               "current review wrapper (v28 in the 2026-06 package), not by this data-producing runner. "
++               "Spike close 5/5 Finding 5 项 with all G PASS and zero N trigger. Proceed only after "
++               "the package-level README/verdict/RESULTS review confirms current soundness and sizing gates; "
++               "then enter P1.3A 主体 design (real PoseBoolExactMaster integration + LBBD multi-iter + "
++               "9 family translator + 6-dim watcher + cut store).")
+     elif overall == "GO_WITH_MINOR":
+-        rec = (f"**GO_WITH_MINOR** to v20 package — soft fails: {g_fails}. All HARD G criteria PASS, zero "
+-               f"hard N trigger. Soft fails documented as known sizing limitations (G6a wall is toy artifact, "
+-               f"will be reassessed under real master in P1.3A). Recommend v20 package build with explicit "
+-               f"soft-fail flagging in cover doc.")
++        rec = (f"**GO_WITH_MINOR** for this historical spike run — soft fails: {g_fails}. All HARD "
++               f"G criteria PASS, zero hard N trigger. Soft fails documented as known sizing limitations "
++               f"(G6a wall is toy artifact, will be reassessed under real master in P1.3A). The current "
++               f"package wrapper must decide the actual package/version label and carry explicit soft-fail "
++               f"flagging in the cover doc.")
+     else:
+         rec = (f"**NOT_GO** — hard fails: {hard_g_fails}, hard N triggers: {[k for k, v in n_trigger.items() if v]}. "
+-               f"Do NOT proceed to v20 package. Reflect on each fail: harness bug? scope drift? real prod-shape "
+-               f"limit? Likely respins: B2 re-tune, B3 reconstruct, possibly re-spawn paralle design.")
++               f"Do NOT promote this spike result into the current package. Reflect on each fail: harness bug? "
++               f"scope drift? real prod-shape limit? Likely respins: B2 re-tune, B3 reconstruct, possibly "
++               f"re-spawn parallel design.")
+     lines.append(rec)
+     lines.append("")
+     lines.append("Off-limits enforce: PASS (B1-B6 added only spike-lib files + this verdict.md;")
+--- a/code_context/SHA256SUMS.spike_code.txt	2026-06-03 17:28:01.697533416 +0000
++++ b/code_context/SHA256SUMS.spike_code.txt	2026-06-03 17:28:08.386285383 +0000
+@@ -1,6 +1,6 @@
+ 055ff7cd8e552eacf956da0cdac344fe1c8f95de25bae5703d2f36a9914b3640  spike/spike_prod_scale_lib/telemetry.py
+ 079cee4a4a7a8f834401afd9c13ee2f46e21365b0aae10db3359267627dc7a33  spike/spike_prod_scale_lib/oracle_emit_fixture.py
+-3677be3551f6109ec890c67f86a79e00afc608de740b5b6c678802feaff650c2  spike/spike_prod_scale_runner.py
++9ff1ecf55039e27cfca50acaa61993c88fe201a1f165f5b23969f4b11a6e583e  spike/spike_prod_scale_runner.py
+ 63c962e1b8f6d638f52d70c6896c54211f2931c19d6488c8b8cf727a6a0fd118  spike/spike_prod_scale_lib/scale_ramp.py
+ 7965069fc6d9af03a15bd0a5156195a0e71eacdc4ff01ab900162b36fdac7357  spike/spike_prod_scale_lib/filter_mock.py
+ a51223f15649b9a8cd8d41d89f6dc91f7e32ff889d7b18f032583aadd56835d7  spike/spike_prod_scale_lib/feasible_smoke.py
