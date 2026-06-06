@@ -35,7 +35,10 @@
 
 | 脚本 | 何时跑 |
 |---|---|
-| `preflight_gate.py` | **pre-commit hook 自动跑**. 8 层守卫 (hash / 路径 / AI safety / exact-exploratory 隔离 / mypy / ruff / pytest). 见 `docs/env_variable_index.md` E/F 组 |
+| `preflight_gate.py` | Repo-native guardrail. Local default checks staged changes; CI uses `--ci --base-ref ...`. Covers frozen/external artifacts, path boundaries, AI safety, exact/exploratory isolation, knowledge-tree sync, doc completeness, secret scan, memory health, mypy, ruff, and core pytest. |
+| `install_git_hooks.py` | One-time local setup: points `core.hooksPath` at tracked `.githooks/` so `preflight_gate.py --hook` runs before commit. CI remains authoritative. |
+| `check_external_artifacts.py` | Verifies declared external large artifacts; use `--require candidate_placements` before certified exact production runs. |
+| `restore_external_artifacts.py` | Restores external artifacts from a local directory/archive and verifies size + sha256. It never downloads. |
 | `production_readiness_gate.py` | **启 168h 前手动跑**. 9 项 hard check (pacman freeze / venv / OOM headroom / THP / jemalloc / kernel) |
 | `pacman_campaign_freeze.sh` | 冻结 / 解冻 pacman 关键包 (campaign 期间防 -Syu 升级) |
 

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "description": "Recoverable large artifacts intentionally omitted from the lightweight GitHub checkout.",
+  "artifacts": {
+    "candidate_placements": {
+      "path": "data/preprocessed/candidate_placements.json",
+      "sha256": "d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f",
+      "size_bytes": 53594995,
+      "required_for": [
+        "certified_exact_production"
+      ],
+      "policy_doc": "START_HERE.md",
+      "restore_hints": [
+        "Historical Git source: commit f58f0e2, path data/preprocessed/candidate_placements.json.",
+        "Local observation archives named zmd.7z / zmd_*.7z may contain zmd/data/preprocessed/candidate_placements.json.",
+        "Run python scripts/restore_external_artifacts.py --artifact candidate_placements --source-archive <archive.7z> and then python scripts/check_external_artifacts.py --require candidate_placements."
+      ]
+    }
+  }
+}

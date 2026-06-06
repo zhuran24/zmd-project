@@ -57,6 +57,21 @@ Known recovery facts for `data/preprocessed/candidate_placements.json`:
 Do not recommit that file to normal Git unless the repository policy changes to
 Git LFS, release assets, or another explicit large-artifact store.
 
+Repository-native recovery helpers:
+
+```bash
+# Report declared external artifacts; missing artifacts are allowed in the lightweight checkout.
+python scripts/check_external_artifacts.py
+
+# Restore from a local archive that contains zmd/data/preprocessed/candidate_placements.json.
+python scripts/restore_external_artifacts.py \
+  --artifact candidate_placements \
+  --source-archive /path/to/zmd_with_candidate_placements.7z
+
+# Require the production placement pool before a certified exact production run.
+python scripts/check_external_artifacts.py --require candidate_placements
+```
+
 ## Historical And Context Surfaces
 
 - `_cc_live_memory/` is recovered context memory. It is useful for archaeology,

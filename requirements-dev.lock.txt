@@ -1,0 +1,10 @@
+# Development/test gate dependencies for Python 3.13 Linux x86_64.
+# Runtime/core dependencies remain in requirements.lock.txt.
+pytest-randomly==4.1.0
+mypy==2.1.0
+ruff==0.15.16
+rtree==1.4.1
+mypy-extensions==1.1.0
+pathspec==1.1.1
+librt==0.11.0
+ast-serialize==0.5.0

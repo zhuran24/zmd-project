@@ -1,42 +1,28 @@
-"""
-Preflight gate — 提交前自动门禁检查。
+"""Preflight gate — repo-native project guardrails.
 
-用法：
-    python scripts/preflight_gate.py              # 检查 staged changes
-    python scripts/preflight_gate.py --full       # 全量检查（含 pytest）
-    python scripts/preflight_gate.py --hook       # 作为 git pre-commit hook 运行
+Usage:
+    python scripts/preflight_gate.py
+    python scripts/preflight_gate.py --hook
+    python scripts/preflight_gate.py --full
+    python scripts/preflight_gate.py --ci --base-ref origin/main
 
-检查项：
-    1. 冻结/外部制品 hash 校验（checked-in JSON + lightweight external artifacts）
-    2. 禁止路径写入检查（checkpoint, proof, blueprint）
-    3. AI 安全合同检查（ai_accel 不碰 proof 路径）
-    4. 精确/探索边界隔离检查
-    5. 调研产物 audit 覆盖检查
-    6. 文档主体/投影同步检查
-    7. 文档树完整收尾检查
-    8. 发布安全 secret scan
-    9. 记忆树结构/currentness 检查
-    10. mypy 严格类型 (cut lifecycle 核心两文件)
-    11. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
-    12. pytest 测试（核心门禁 / 全量取决于模式）
-
-退出码：
-    0 = 通过
-    1 = 有硬阻塞问题
-    2 = 通过但有警告
+The default mode checks staged changes for diff-scoped rules. CI mode checks the
+merge/base diff, so GitHub Actions and PR reviews do not depend on local staged
+state.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
-import re
+import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
+EXTERNAL_ARTIFACTS_MANIFEST = PROJECT_ROOT / "data" / "external_artifacts.json"
 
 FROZEN_ARTIFACTS = {
     "rules/canonical_rules.json": "8AC667A1BCE67FF9084701D18892F370E19D68CC9B5ACE44BD63C68B20D3D6EA",
@@ -44,11 +30,7 @@ FROZEN_ARTIFACTS = {
     "data/preprocessed/generic_io_requirements.json": "AD5125B50E607A7F3F3BF0B54FEA64F93EDF87CEDB62E8D24F5590E1C895C44E",
 }
 
-EXTERNAL_FROZEN_ARTIFACTS = {
-    # The lightweight GitHub checkout intentionally omits this 53 MiB payload.
-    # If the file is restored into the working tree, preflight verifies its bytes;
-    # if it is absent, preflight records the external-artifact contract as OK and
-    # certified exact runs remain responsible for restoring it before solve time.
+FALLBACK_EXTERNAL_ARTIFACTS = {
     "data/preprocessed/candidate_placements.json": {
         "sha256": "D5E3911FC1BC7C0AB48D67B981D28E8090741B04884C475E78DC0E128CA4683F",
         "size_bytes": 53_594_995,
@@ -64,20 +46,7 @@ FORBIDDEN_STAGED_PATHS = [
 ]
 
 AI_MODULE_ROOT = "src/ai_accel"
-AI_FORBIDDEN_PATH_REFS = [
-    "data/checkpoints",
-    "data/solutions",
-    "data/blueprints",
-]
-
-AI_FORBIDDEN_FILE_OPS = [
-    "open(",
-    "write_text(",
-    "write_bytes(",
-    "Path(",
-    "pathlib",
-    "shutil",
-]
+AI_FORBIDDEN_PATH_REFS = ["data/checkpoints", "data/solutions", "data/blueprints"]
 
 EXPLORATORY_LEAK_PATTERNS = [
     "exploratory_optional_caps",
@@ -95,6 +64,30 @@ EXACT_MODE_FILES = [
     "src/search/benders_loop.py",
     "src/search/exact_campaign.py",
     "src/search/exact_parallel_scheduler.py",
+]
+
+CORE_TEST_FILES = [
+    "src/tests/test_exact_contract.py",
+    "src/tests/test_parallel_scheduler.py",
+    "src/tests/test_power_placement_subproblem.py",
+    "src/tests/test_coordinate_benders_cut_presence_nogood.py",
+    "src/tests/test_benders_cut_condition_lits.py",
+    "src/tests/test_benders_cut_replay_condition_lifecycle.py",
+    "src/tests/test_power_witness_cut_dilution.py",
+]
+
+RESEARCH_TRACKED_FILES = {
+    "docs/phase3c_optimization_roadmap_v1.md",
+    "docs/research/INDEX.md",
+}
+RESEARCH_REF_PATTERN = re.compile(r"\bR\d+\s+`([0-9a-f]{16,})`")
+AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IGNORECASE)
+
+MYPY_STRICT_TARGETS = [
+    "src/models/cut_manager.py",
+    "src/models/power_placement_subproblem.py",
+    "src/models/master_model.py",
+    "src/search/benders_loop.py",
 ]
 
 
@@ -118,9 +111,7 @@ class GateResult:
 
     @property
     def exit_code(self) -> int:
-        if self.blockers:
-            return 1
-        return 0
+        return 1 if self.blockers else 0
 
     def summary(self) -> str:
         parts = [f"{len(self.passed)} passed"]
@@ -131,25 +122,138 @@ class GateResult:
         return ", ".join(parts)
 
 
+class ChangeScope:
+    def __init__(self) -> None:
+        self.mode = "staged"
+        self.base_ref: str | None = None
+        self.files: list[str] | None = None
+        self.setup_warning: str | None = None
+
+
+CHANGE_SCOPE = ChangeScope()
+
+
+def git_output(args: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, cwd=PROJECT_ROOT, capture_output=True, text=True)
+
+
+def clean_file_list(stdout: str) -> list[str]:
+    return [line.strip().replace("\\", "/") for line in stdout.splitlines() if line.strip()]
+
+
+def git_ref_exists(ref: str) -> bool:
+    return git_output(["git", "rev-parse", "--verify", "--quiet", ref]).returncode == 0
+
+
+def resolve_base_ref(base_ref: str | None) -> str | None:
+    if not base_ref:
+        return None
+    if git_ref_exists(base_ref):
+        return base_ref
+    if base_ref.startswith("origin/"):
+        local_branch = base_ref.split("/", 1)[1]
+        if git_ref_exists(local_branch):
+            return local_branch
+    return None
+
+
+def configure_change_scope(*, ci: bool, base_ref: str | None, changed_files_from: str | None) -> None:
+    CHANGE_SCOPE.mode = "ci" if ci else "staged"
+    CHANGE_SCOPE.base_ref = None
+    CHANGE_SCOPE.files = None
+    CHANGE_SCOPE.setup_warning = None
+
+    if changed_files_from:
+        path = Path(changed_files_from)
+        if not path.is_absolute():
+            path = PROJECT_ROOT / path
+        CHANGE_SCOPE.mode = "changed-files"
+        if not path.exists():
+            CHANGE_SCOPE.files = []
+            CHANGE_SCOPE.setup_warning = f"changed-files file 不存在: {path}"
+            return
+        CHANGE_SCOPE.files = clean_file_list(path.read_text(encoding="utf-8"))
+        CHANGE_SCOPE.base_ref = resolve_base_ref(base_ref)
+        return
+
+    if not ci:
+        return
+
+    resolved = resolve_base_ref(base_ref) or resolve_base_ref("origin/main") or resolve_base_ref("main")
+    if not resolved:
+        CHANGE_SCOPE.files = []
+        CHANGE_SCOPE.setup_warning = (
+            "CI diff base 不存在; changed-file scoped checks will see no changed files. "
+            "Use --base-ref or --changed-files-from in CI."
+        )
+        return
+    CHANGE_SCOPE.base_ref = resolved
+    result = git_output(["git", "diff", "--name-only", f"{resolved}...HEAD"])
+    if result.returncode != 0:
+        result = git_output(["git", "diff", "--name-only", resolved, "HEAD"])
+    if result.returncode != 0:
+        CHANGE_SCOPE.files = []
+        CHANGE_SCOPE.setup_warning = f"无法计算 CI diff against {resolved}: {(result.stderr or result.stdout).strip()}"
+    else:
+        CHANGE_SCOPE.files = clean_file_list(result.stdout)
+
+
+def changed_files() -> list[str]:
+    if CHANGE_SCOPE.files is not None:
+        return list(CHANGE_SCOPE.files)
+    result = git_output(["git", "diff", "--cached", "--name-only"])
+    if result.returncode != 0:
+        return []
+    return clean_file_list(result.stdout)
+
+
+def changed_diff(path: str) -> str:
+    if CHANGE_SCOPE.base_ref:
+        result = git_output(["git", "diff", f"{CHANGE_SCOPE.base_ref}...HEAD", "--", path])
+        if result.returncode != 0:
+            result = git_output(["git", "diff", CHANGE_SCOPE.base_ref, "HEAD", "--", path])
+    elif CHANGE_SCOPE.mode == "staged":
+        result = git_output(["git", "diff", "--cached", "--", path])
+    else:
+        result = git_output(["git", "diff", "HEAD", "--", path])
+    return result.stdout if result.returncode == 0 else ""
+
+
+def change_scope_label() -> str:
+    if CHANGE_SCOPE.mode == "ci" and CHANGE_SCOPE.base_ref:
+        return f"CI diff against {CHANGE_SCOPE.base_ref}"
+    if CHANGE_SCOPE.mode == "changed-files":
+        return "provided changed-files list"
+    return "staged files"
+
+
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(65536), b""):
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest().upper()
 
 
-def get_staged_files() -> list[str]:
-    try:
-        result = subprocess.run(
-            ["git", "diff", "--cached", "--name-only"],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-        )
-        if result.returncode != 0:
-            return []
-        return [line.strip() for line in result.stdout.splitlines() if line.strip()]
-    except FileNotFoundError:
-        return []
+def load_external_frozen_artifacts() -> dict[str, dict[str, object]]:
+    if not EXTERNAL_ARTIFACTS_MANIFEST.exists():
+        return FALLBACK_EXTERNAL_ARTIFACTS
+    payload = json.loads(EXTERNAL_ARTIFACTS_MANIFEST.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != 1:
+        raise ValueError("data/external_artifacts.json schema_version must be 1")
+    raw = payload.get("artifacts", {})
+    if not isinstance(raw, dict):
+        raise ValueError("data/external_artifacts.json artifacts must be an object")
+    artifacts: dict[str, dict[str, object]] = {}
+    for name, info in sorted(raw.items()):
+        if not isinstance(info, dict):
+            raise ValueError(f"external artifact {name!r} must be an object")
+        artifacts[str(info["path"])] = {
+            "sha256": str(info["sha256"]).upper(),
+            "size_bytes": int(info["size_bytes"]),
+            "policy_doc": str(info.get("policy_doc", "START_HERE.md")),
+        }
+    return artifacts
 
 
 def check_frozen_artifacts(gate: GateResult) -> None:
@@ -161,17 +265,18 @@ def check_frozen_artifacts(gate: GateResult) -> None:
             continue
         actual_hash = sha256_file(full_path)
         if actual_hash == expected_hash:
-            gate.ok(f"{rel_path}")
+            gate.ok(rel_path)
         else:
-            gate.block(
-                f"{rel_path} hash 不匹配!\n"
-                f"         期望: {expected_hash}\n"
-                f"         实际: {actual_hash}"
-            )
+            gate.block(f"{rel_path} hash 不匹配!\n         期望: {expected_hash}\n         实际: {actual_hash}")
 
-    for rel_path, info in EXTERNAL_FROZEN_ARTIFACTS.items():
+    try:
+        external_artifacts = load_external_frozen_artifacts()
+    except (ValueError, json.JSONDecodeError) as exc:
+        gate.block(f"external artifact manifest 无效: {exc}")
+        external_artifacts = {}
+    for rel_path, info in external_artifacts.items():
         full_path = PROJECT_ROOT / rel_path
-        expected_hash = str(info["sha256"])
+        expected_hash = str(info["sha256"]).upper()
         expected_size = int(info["size_bytes"])
         if not full_path.exists():
             gate.ok(
@@ -186,32 +291,27 @@ def check_frozen_artifacts(gate: GateResult) -> None:
         else:
             gate.block(
                 f"{rel_path} external artifact 不匹配!\n"
-                f"         期望 hash: {expected_hash}\n"
-                f"         实际 hash: {actual_hash}\n"
-                f"         期望 size: {expected_size}\n"
-                f"         实际 size: {actual_size}"
+                f"         期望 hash: {expected_hash}\n         实际 hash: {actual_hash}\n"
+                f"         期望 size: {expected_size}\n         实际 size: {actual_size}"
             )
 
 
 def check_forbidden_paths(gate: GateResult) -> None:
     print("\n[2/12] 禁止路径写入检查")
-    staged = get_staged_files()
-    if not staged:
-        gate.ok("无 staged 文件（或不在 git 仓库中）")
+    files = changed_files()
+    if not files:
+        gate.ok(f"{change_scope_label()} 无文件（或不在 git 仓库中）")
         return
-
     violations = []
-    for staged_file in staged:
-        normalized = staged_file.replace("\\", "/")
+    for path in files:
         for forbidden in FORBIDDEN_STAGED_PATHS:
-            if normalized.startswith(forbidden) or normalized == forbidden.rstrip("/"):
-                violations.append((staged_file, forbidden))
-
+            if path.startswith(forbidden) or path == forbidden.rstrip("/"):
+                violations.append((path, forbidden))
     if violations:
-        for staged_file, rule in violations:
-            gate.block(f"禁止提交: {staged_file} (规则: {rule})")
+        for path, rule in violations:
+            gate.block(f"禁止提交: {path} (规则: {rule})")
     else:
-        gate.ok(f"已检查 {len(staged)} 个 staged 文件，无禁止路径违规")
+        gate.ok(f"已检查 {len(files)} 个 {change_scope_label()}，无禁止路径违规")
 
 
 def check_ai_safety_contract(gate: GateResult) -> None:
@@ -220,25 +320,23 @@ def check_ai_safety_contract(gate: GateResult) -> None:
     if not ai_dir.exists():
         gate.ok("ai_accel 目录不存在，跳过")
         return
-
     violations = []
     py_files = list(ai_dir.rglob("*.py"))
     for py_file in py_files:
+        rel = py_file.relative_to(PROJECT_ROOT).as_posix()
         try:
             content = py_file.read_text(encoding="utf-8")
-        except Exception:
+        except UnicodeDecodeError:
             continue
-        rel = py_file.relative_to(PROJECT_ROOT)
-        for i, line in enumerate(content.splitlines(), 1):
+        for lineno, line in enumerate(content.splitlines(), 1):
             stripped = line.lstrip()
             if stripped.startswith("#"):
                 continue
-            for path_ref in AI_FORBIDDEN_PATH_REFS:
-                if path_ref in line:
-                    violations.append((str(rel), i, path_ref, stripped))
-
+            for pattern in AI_FORBIDDEN_PATH_REFS:
+                if pattern in line:
+                    violations.append((rel, lineno, pattern))
     if violations:
-        for rel, lineno, pattern, line_text in violations:
+        for rel, lineno, pattern in violations:
             gate.block(f"AI 模块引用了禁止路径: {rel}:{lineno} 包含 '{pattern}'")
     else:
         gate.ok(f"已扫描 {len(py_files)} 个 AI 模块文件，无禁止引用")
@@ -246,371 +344,130 @@ def check_ai_safety_contract(gate: GateResult) -> None:
 
 def check_exact_exploratory_isolation(gate: GateResult) -> None:
     print("\n[4/12] 精确/探索边界隔离检查")
-    staged = get_staged_files()
-    if not staged:
-        gate.ok("无 staged 文件")
+    files = changed_files()
+    if not files:
+        gate.ok(f"{change_scope_label()} 无文件")
         return
-
-    exact_staged = [
-        f for f in staged
-        if f.replace("\\", "/") in EXACT_MODE_FILES
-    ]
-
-    if not exact_staged:
-        gate.ok("本次提交未修改精确求解核心文件")
+    exact_files = [path for path in files if path in EXACT_MODE_FILES]
+    if not exact_files:
+        gate.ok(f"{change_scope_label()} 未修改精确求解核心文件")
         return
-
     violations = []
-    for rel in exact_staged:
-        full_path = PROJECT_ROOT / rel
-        if not full_path.exists():
-            continue
-        try:
-            diff_result = subprocess.run(
-                ["git", "diff", "--cached", "--", rel],
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            )
-            diff_text = diff_result.stdout
-        except FileNotFoundError:
-            continue
-
-        added_lines = [
-            line[1:] for line in diff_text.splitlines()
-            if line.startswith("+") and not line.startswith("+++")
-        ]
-
-        for pattern in EXPLORATORY_LEAK_PATTERNS:
-            for line in added_lines:
-                if pattern.lower() in line.lower():
-                    violations.append((rel, pattern, line.strip()))
-
+    for path in exact_files:
+        for line in changed_diff(path).splitlines():
+            if not line.startswith("+") or line.startswith("+++"):
+                continue
+            added = line[1:]
+            for pattern in EXPLORATORY_LEAK_PATTERNS:
+                if pattern.lower() in added.lower():
+                    violations.append((path, pattern, added.strip()))
     if violations:
-        for rel, pattern, line_text in violations:
-            gate.block(
-                f"探索性约束泄漏到精确模式: {rel}\n"
-                f"         模式: '{pattern}'\n"
-                f"         内容: {line_text}"
-            )
+        for path, pattern, added in violations:
+            gate.block(f"探索性约束泄漏到精确模式: {path}\n         模式: '{pattern}'\n         内容: {added}")
     else:
-        gate.ok(f"已检查 {len(exact_staged)} 个核心文件的 diff，无探索性泄漏")
-
-    gate.warn(
-        f"本次提交修改了精确求解核心文件: {', '.join(exact_staged)}\n"
-        f"         建议做一次 AI 语义审查确认求解语义未变"
-    )
-
-
-CORE_TEST_FILES = [
-    "src/tests/test_exact_contract.py",
-    "src/tests/test_parallel_scheduler.py",
-    "src/tests/test_power_placement_subproblem.py",
-    "src/tests/test_coordinate_benders_cut_presence_nogood.py",
-    "src/tests/test_benders_cut_condition_lits.py",
-    # GPT v4 follow-up: cut 生命周期 + power witness dilution 进核心门禁.
-    "src/tests/test_benders_cut_replay_condition_lifecycle.py",
-    "src/tests/test_power_witness_cut_dilution.py",
-]
-
-
-RESEARCH_TRACKED_FILES = {
-    "docs/phase3c_optimization_roadmap_v1.md",
-    "docs/research/INDEX.md",
-}
-
-# 匹配 R-N 调研引用 (e.g. "R13 `a8a448561dbacf07c`"). agent ID 是 16+ hex chars.
-_RESEARCH_REF_PATTERN = re.compile(r"\bR\d+\s+`([0-9a-f]{16,})`")
-# 匹配 audit 引用 (e.g. "audit `a062ff6396a691d74`" / "audit by `xxx`").
-_AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IGNORECASE)
+        gate.ok(f"已检查 {len(exact_files)} 个核心文件的 diff，无探索性泄漏")
+    gate.warn(f"本次提交修改了精确求解核心文件: {', '.join(exact_files)}\n         建议做一次 AI 语义审查确认求解语义未变")
 
 
 def check_research_audit_coverage(gate: GateResult) -> None:
-    """[5/12] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
-
-    R13 教训: 调研 agent 报告即使引用 URL 也常出错 (5/5 历史 audit 翻盘)。
-    路线图 / INDEX 改动如新增 R-N 调研引用，必须配套有 audit (agent ID) 引用。
-    [W] warning 不阻塞 — audit 可能在另一 commit, 但提醒一下避免漏审。
-    """
     print("\n[5/12] 调研产物 audit 覆盖检查")
-    staged = get_staged_files()
-    touched = [f for f in staged if f.replace("\\", "/") in RESEARCH_TRACKED_FILES]
+    touched = [path for path in changed_files() if path in RESEARCH_TRACKED_FILES]
     if not touched:
         gate.ok("本次提交未修改路线图 / INDEX")
         return
-
     research_refs: set[str] = set()
     audit_refs: set[str] = set()
-    for rel in touched:
-        try:
-            diff_result = subprocess.run(
-                ["git", "diff", "--cached", "--", rel],
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            )
-        except FileNotFoundError:
-            continue
+    for path in touched:
         added = "\n".join(
-            line[1:] for line in diff_result.stdout.splitlines()
+            line[1:] for line in changed_diff(path).splitlines()
             if line.startswith("+") and not line.startswith("+++")
         )
-        research_refs.update(_RESEARCH_REF_PATTERN.findall(added))
-        audit_refs.update(_AUDIT_REF_PATTERN.findall(added))
-
+        research_refs.update(RESEARCH_REF_PATTERN.findall(added))
+        audit_refs.update(AUDIT_REF_PATTERN.findall(added))
     if not research_refs:
-        gate.ok(
-            f"路线图 / INDEX 改动 {len(touched)} 个文件，无新增 R-N 调研引用"
-            f"（可能是工时 / verdict 修订）"
-        )
+        gate.ok(f"路线图 / INDEX 改动 {len(touched)} 个文件，无新增 R-N 调研引用")
         return
-
     missing = research_refs - audit_refs
-    if not missing:
-        gate.ok(
+    if missing:
+        gate.warn(
             f"路线图 / INDEX 新增 {len(research_refs)} 个 R-N 调研引用，"
-            f"全部配套 audit ({len(audit_refs)} 个 audit agent ID)"
+            f"{len(missing)} 个未看到配套 audit (agent IDs: {', '.join(sorted(missing)[:3])})。"
         )
+    else:
+        gate.ok(f"路线图 / INDEX 新增 {len(research_refs)} 个 R-N 调研引用，全部配套 audit")
+
+
+def run_script_gate(gate: GateResult, *, index: str, label: str, script: str, args: list[str] | None = None, timeout: int = 30, missing_block: bool = False) -> None:
+    print(f"\n[{index}] {label}")
+    path = PROJECT_ROOT / script
+    if not path.exists():
+        msg = f"脚本不存在: {script}"
+        gate.block(msg) if missing_block else gate.warn(msg)
         return
-
-    sample = ", ".join(sorted(missing)[:3])
-    if len(missing) > 3:
-        sample += "..."
-    gate.warn(
-        f"路线图 / INDEX 新增 {len(research_refs)} 个 R-N 调研引用，"
-        f"{len(missing)} 个未看到配套 audit (agent IDs: {sample})。\n"
-        f"         按 memory feedback_research_roi_metric.md v2: "
-        f"调研产物进路线图前应做 zero-trust source-verify audit。"
-        f"\n         如果 audit 在另一 commit / 已在过去 commit, 忽略本警告。"
-    )
-
-
-def check_doc_subject_projections(gate: GateResult) -> None:
-    """[6/12] 文档主体/投影同步检查.
-
-    文档树采用 subject/projection 架构: docs/subjects/*.md 是抽象主体,
-    docs/DOC_SUBJECT_PROJECTIONS.json 登记 concrete document projection slots.
-    这个 gate 只检查同步状态, 不自动写文件; 主体改动后运行
-    `python scripts/sync_doc_subjects.py --sync`, 投影改动后运行 `--absorb`.
-    """
-    print("\n[6/12] 文档主体/投影同步检查")
-    script = PROJECT_ROOT / "scripts" / "sync_doc_subjects.py"
-    registry = PROJECT_ROOT / "docs" / "DOC_SUBJECT_PROJECTIONS.json"
-    if not script.exists() or not registry.exists():
-        gate.warn("文档主体/投影同步脚本或 registry 不存在 — 跳过")
-        return
+    cmd = [sys.executable, str(path), *(args or [])]
     try:
-        result = subprocess.run(
-            [sys.executable, str(script), "--check"],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
+        result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
-        gate.block("doc subject projection check 超时 (>30s)")
+        gate.block(f"{label} 超时 (>{timeout}s)")
         return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 doc subject projection check")
-        return
-
     out = (result.stdout or "").strip()
     err = (result.stderr or "").strip()
     if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "doc subject projection check passed")
+        gate.ok(out.splitlines()[-1] if out else f"{label} passed")
         return
     summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"doc subject projection check: {summary}")
-    for line in (out.splitlines() + err.splitlines())[:12]:
-        print(f"         {line}")
-
-
-def check_publish_secret_scan(gate: GateResult) -> None:
-    """[8/12] 发布安全 secret scan.
-
-    这层扫描当前 tracked/untracked 工作区文本, 防止 API key / token / private key
-    重新进入当前树。它不宣称清理 Git 历史; 已暴露 credential 仍需 owner 侧轮换。
-    """
-    print("\n[8/12] 发布安全 secret scan")
-    script = PROJECT_ROOT / "scripts" / "check_repo_secrets.py"
-    if not script.exists():
-        gate.block("secret scan 脚本不存在: scripts/check_repo_secrets.py")
-        return
-    try:
-        result = subprocess.run(
-            [sys.executable, str(script)],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.block("secret scan 超时 (>30s)")
-        return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 secret scan")
-        return
-
-    out = (result.stdout or "").strip()
-    err = (result.stderr or "").strip()
-    if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "repo secret scan passed")
-        return
-    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"repo secret scan: {summary}")
-    for line in (out.splitlines() + err.splitlines())[:12]:
-        print(f"         {line}")
-
-
-def check_memory_tree_health(gate: GateResult) -> None:
-    """[9/12] 记忆树结构/currentness 检查."""
-    print("\n[9/12] 记忆树结构/currentness 检查")
-    script = PROJECT_ROOT / "scripts" / "check_memory_tree.py"
-    if not script.exists():
-        gate.block("memory tree check 脚本不存在: scripts/check_memory_tree.py")
-        return
-    try:
-        result = subprocess.run(
-            [sys.executable, str(script)],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.block("memory tree check 超时 (>30s)")
-        return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 memory tree check")
-        return
-
-    out = (result.stdout or "").strip()
-    err = (result.stderr or "").strip()
-    if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "memory tree check passed")
-        return
-    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"memory tree check: {summary}")
+    gate.block(f"{label}: {summary}")
     for line in (out.splitlines() + err.splitlines())[:16]:
         print(f"         {line}")
 
 
-MYPY_STRICT_TARGETS = [
-    # GPT v4 follow-up G2/G3/G4: cut lifecycle + 求解核心两个大文件都进 strict gate.
-    # 历史类型错全清 (master_model 69 错, benders_loop 8 错), 由 _Any annotation
-    # 一招扫掉 ortools .pyi 不全的 attr-defined + 真 type bug 单点修.
-    "src/models/cut_manager.py",
-    "src/models/power_placement_subproblem.py",
-    "src/models/master_model.py",
-    "src/search/benders_loop.py",
-]
+def check_doc_subject_projections(gate: GateResult) -> None:
+    run_script_gate(gate, index="6/12", label="项目知识主体/投影同步检查", script="scripts/sync_doc_subjects.py", args=["--check"])
 
 
 def check_doc_tree_completeness(gate: GateResult) -> None:
-    """[7/12] 文档树完整收尾检查.
+    run_script_gate(gate, index="7/12", label="文档树完整收尾检查", script="scripts/check_doc_tree_completeness.py")
 
-    这层不是语义 NLP 审查, 而是 structural closeout gate: docs surface
-    manifest、subject/projection registry、无未登记 projection block、所有 subject
-    field 至少有一个 concrete projection。
-    """
-    print("\n[7/12] 文档树完整收尾检查")
-    script = PROJECT_ROOT / "scripts" / "check_doc_tree_completeness.py"
-    manifest = PROJECT_ROOT / "docs" / "DOC_TREE_COMPLETENESS.json"
-    if not script.exists() or not manifest.exists():
-        gate.warn("文档树完整收尾脚本或 manifest 不存在 — 跳过")
-        return
-    try:
-        result = subprocess.run(
-            [sys.executable, str(script)],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.block("doc tree completeness check 超时 (>30s)")
-        return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 doc tree completeness check")
-        return
 
-    out = (result.stdout or "").strip()
-    err = (result.stderr or "").strip()
-    if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "doc tree completeness check passed")
-        return
-    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"doc tree completeness check: {summary}")
-    for line in (out.splitlines() + err.splitlines())[:12]:
-        print(f"         {line}")
+def check_publish_secret_scan(gate: GateResult) -> None:
+    run_script_gate(gate, index="8/12", label="发布安全 secret scan", script="scripts/check_repo_secrets.py", missing_block=True)
+
+
+def check_memory_tree_health(gate: GateResult) -> None:
+    args = ["--require-live-mirror"] if (PROJECT_ROOT / "_cc_live_memory").exists() else []
+    run_script_gate(gate, index="9/12", label="记忆树结构/currentness 检查", script="scripts/check_memory_tree.py", args=args, missing_block=True)
 
 
 def check_mypy(gate: GateResult) -> None:
-    """GPT v4 follow-up G2: mypy 严格 gate cut lifecycle 核心.
-
-    锁 BendersCut + CutManager + PowerPlacementSubproblem 不让类型生命周期破洞
-    再次发生 (lifecycle bug 根因是 schema 字段落了但 runtime resolver 没跟上).
-    """
     print("\n[10/12] mypy 静态类型 (core lifecycle)")
-    existing = [t for t in MYPY_STRICT_TARGETS if (PROJECT_ROOT / t).exists()]
+    existing = [target for target in MYPY_STRICT_TARGETS if (PROJECT_ROOT / target).exists()]
     if not existing:
         gate.warn("mypy gate 目标文件不存在 — 跳过")
         return
-    try:
-        result = subprocess.run(
-            [
-                sys.executable, "-m", "mypy",
-                "--explicit-package-bases",
-                "--ignore-missing-imports",
-                "--follow-imports=silent",
-                *existing,
-            ],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=60,
-            env={**os.environ, "MYPYPATH": str(PROJECT_ROOT)},
-        )
-    except subprocess.TimeoutExpired:
-        gate.warn("mypy 超时 (>60s) — 跳过")
-        return
-    except FileNotFoundError:
-        gate.warn("mypy 未安装 — 跳过")
-        return
-
+    result = subprocess.run(
+        [sys.executable, "-m", "mypy", "--explicit-package-bases", "--ignore-missing-imports", "--follow-imports=silent", *existing],
+        cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=60,
+        env={**os.environ, "MYPYPATH": str(PROJECT_ROOT)},
+    )
     out = (result.stdout or "").strip()
     if result.returncode == 0:
-        last = out.splitlines()[-1] if out else "no issues found"
-        gate.ok(f"mypy: {last}")
+        gate.ok(f"mypy: {out.splitlines()[-1] if out else 'no issues found'}")
         return
-    summary = ""
-    for line in out.splitlines()[::-1]:
-        if line.startswith("Found "):
-            summary = line.strip()
-            break
-    gate.block(f"mypy core lifecycle: {summary or 'non-zero exit'}")
+    summary = next((line.strip() for line in reversed(out.splitlines()) if line.startswith("Found ")), "non-zero exit")
+    gate.block(f"mypy core lifecycle: {summary}")
     for line in out.splitlines()[:12]:
         print(f"         {line}")
 
 
 def check_ruff(gate: GateResult) -> None:
-    """GPT v4 follow-up G1: ruff 分层配置, core + scripts 全仓 0 警告.
-
-    `ruff.toml` 已经把脚本入口的 sys.path-后-import 模式 (E402) 标 ignore,
-    其他规则 (F4xx 系列 dead code / E7xx 命名 / W2xx 空白) 必须真过.
-    跑全仓; 任何 warning 一律 BLOCK — 没有 "scripts 没事核心严格" 的二级容忍,
-    因为 ruff.toml 已经把噪音吸收掉了.
-    """
     print("\n[11/12] ruff 静态检查")
-    try:
-        result = subprocess.run(
-            [sys.executable, "-m", "ruff", "check", "."],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.warn("ruff 超时 (>30s) — 跳过")
-        return
-    except FileNotFoundError:
-        gate.warn("ruff 未安装 — 跳过")
-        return
-
+    result = subprocess.run([sys.executable, "-m", "ruff", "check", "."], cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=30)
     if result.returncode == 0:
-        last = (result.stdout or "All checks passed!").splitlines()[-1].strip()
-        gate.ok(f"ruff: {last}")
+        gate.ok(f"ruff: {(result.stdout or 'All checks passed!').splitlines()[-1].strip()}")
         return
-
-    # ruff exit !=0 → 有问题. count 简单 grep `Found N error`.
-    out = result.stdout or ""
-    summary = ""
-    for line in out.splitlines()[::-1]:
-        if line.startswith("Found "):
-            summary = line.strip()
-            break
-    if not summary:
-        summary = "ruff 报告非 0 退出 (见 stdout)"
+    out = result.stdout or result.stderr or ""
+    summary = next((line.strip() for line in reversed(out.splitlines()) if line.startswith("Found ")), "ruff 报告非 0 退出")
     gate.block(f"ruff: {summary}")
-    # 输出前几行细节方便定位
     for line in out.splitlines()[:8]:
         print(f"         {line}")
 
@@ -618,61 +475,46 @@ def check_ruff(gate: GateResult) -> None:
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = "全量" if full else "核心门禁"
     print(f"\n[12/12] 测试门禁（{label}）")
-    test_target = "src/tests/" if full else None
-    test_files = None if full else CORE_TEST_FILES
-    timeout = 600 if full else 120
-
     cmd = [sys.executable, "-m", "pytest", "-q", "--tb=short", "--no-header"]
-    if test_files:
-        existing = [f for f in test_files if (PROJECT_ROOT / f).exists()]
+    if full:
+        cmd.append("src/tests/")
+        timeout = 600
+    else:
+        existing = [path for path in CORE_TEST_FILES if (PROJECT_ROOT / path).exists()]
         if not existing:
             gate.warn("核心测试文件不存在，跳过")
             return
         cmd.extend(existing)
-    else:
-        cmd.append(test_target)
-
-    # 隔离 production runtime env vars 不污染 unit test: 部分 test 验证
-    # default 行为 (e.g. UNKNOWN candidate 会被 retry), 而 EXACT_OUTER_SKIP_UNKNOWN
-    # / EXACT_BINDING_DUMP_STATE 等 env 会改 default → 守卫 fail.
-    pytest_env = os.environ.copy()
-    for runtime_env in (
-        "EXACT_OUTER_SKIP_UNKNOWN",
-        "EXACT_BINDING_DUMP_STATE",
-        "EXACT_MASTER_HINT_PERSISTENCE",
-        "EXACT_BINDING_USE_OVERLOAD_SEPARATION",
-    ):
-        pytest_env.pop(runtime_env, None)
-
+        timeout = 120
+    env = os.environ.copy()
+    for key in ("EXACT_OUTER_SKIP_UNKNOWN", "EXACT_BINDING_DUMP_STATE", "EXACT_MASTER_HINT_PERSISTENCE", "EXACT_BINDING_USE_OVERLOAD_SEPARATION"):
+        env.pop(key, None)
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            timeout=timeout, env=pytest_env,
-        )
-        last_lines = [line for line in result.stdout.splitlines() if line.strip()][-3:]
-        summary_line = last_lines[-1] if last_lines else ""
-
-        if result.returncode == 0:
-            gate.ok(f"pytest ({label}): {summary_line}")
-        else:
-            gate.block(f"pytest 失败 (exit={result.returncode}): {summary_line}")
-            if result.stdout:
-                for line in result.stdout.splitlines()[-10:]:
-                    print(f"         {line}")
+        result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=timeout, env=env)
     except subprocess.TimeoutExpired:
         gate.block(f"pytest 超时 (>{timeout}s)")
-    except FileNotFoundError:
-        gate.warn("pytest 不可用，跳过测试")
+        return
+    lines = [line for line in result.stdout.splitlines() if line.strip()]
+    summary = lines[-1] if lines else ""
+    if result.returncode == 0:
+        gate.ok(f"pytest ({label}): {summary}")
+    else:
+        gate.block(f"pytest 失败 (exit={result.returncode}): {summary}")
+        for line in lines[-10:]:
+            print(f"         {line}")
 
 
-def run_gate(*, full: bool = False, hook: bool = False) -> int:
+def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_ref: str | None = None, changed_files_from: str | None = None) -> int:
     print("=" * 60)
     print("Preflight Gate — 提交前门禁检查")
     print("=" * 60)
-    mode = "full" if full else ("hook" if hook else "staged")
+    configure_change_scope(ci=ci, base_ref=base_ref, changed_files_from=changed_files_from)
+    mode = "full" if full else ("hook" if hook else ("ci" if ci else "staged"))
     print(f"模式: {mode}")
-
+    print(f"变更范围: {change_scope_label()}")
     gate = GateResult()
+    if CHANGE_SCOPE.setup_warning:
+        gate.warn(CHANGE_SCOPE.setup_warning)
 
     check_frozen_artifacts(gate)
     check_forbidden_paths(gate)
@@ -685,13 +527,7 @@ def run_gate(*, full: bool = False, hook: bool = False) -> int:
     check_memory_tree_health(gate)
     check_mypy(gate)
     check_ruff(gate)
-
-    if full:
-        check_tests(gate, full=True)
-    elif hook:
-        check_tests(gate, full=False)
-    else:
-        check_tests(gate, full=False)
+    check_tests(gate, full=full)
 
     print("\n" + "=" * 60)
     verdict = "BLOCKED" if gate.blockers else ("PASSED (with warnings)" if gate.warnings else "PASSED")
@@ -700,7 +536,6 @@ def run_gate(*, full: bool = False, hook: bool = False) -> int:
     if gate.blockers:
         print(f"\n有 {len(gate.blockers)} 个硬阻塞问题，提交被拒绝。")
     print("=" * 60)
-
     return gate.exit_code
 
 
@@ -708,8 +543,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Preflight gate — 提交前门禁检查")
     parser.add_argument("--full", action="store_true", help="全量检查（含 pytest）")
     parser.add_argument("--hook", action="store_true", help="作为 git pre-commit hook 运行（快速模式）")
+    parser.add_argument("--ci", action="store_true", help="CI / PR 模式：用 base-ref...HEAD 计算变更范围")
+    parser.add_argument("--base-ref", default="origin/main", help="CI diff base ref，默认 origin/main")
+    parser.add_argument("--changed-files-from", default=None, help="从文件读取变更路径列表（一行一个），可与 --base-ref 配合取 diff hunk")
     args = parser.parse_args()
-    sys.exit(run_gate(full=args.full, hook=args.hook))
+    raise SystemExit(run_gate(full=args.full, hook=args.hook, ci=args.ci, base_ref=args.base_ref, changed_files_from=args.changed_files_from))
 
 
 if __name__ == "__main__":

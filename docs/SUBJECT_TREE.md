@@ -20,7 +20,7 @@ Preflight runs `python scripts/sync_doc_subjects.py --check`. A changed subject 
 ## Components
 
 1. **Subjects** live in `docs/subjects/*.md`. They contain `SUBJECT-FIELD` blocks.
-2. **Projection registry** lives in `docs/DOC_SUBJECT_PROJECTIONS.json`. It declares every concrete document projection.
+2. **Projection registry** lives in `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json`. It declares every concrete document or memory projection.
 3. **Projection slots** live in concrete Markdown files and are bounded by `DOC-SUBJECT` markers.
 4. **Sync tool** lives at `scripts/sync_doc_subjects.py`.
 5. **Preflight gate** runs `python scripts/sync_doc_subjects.py --check`.

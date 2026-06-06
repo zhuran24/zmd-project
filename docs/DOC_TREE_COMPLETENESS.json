@@ -11,19 +11,22 @@
     "docs/SUBJECT_TREE.md",
     "docs/DOC_TREE_COMPLETENESS.md",
     "docs/DOC_TREE_COMPLETENESS.json",
-    "docs/DOC_SUBJECT_PROJECTIONS.json",
     "docs/subjects/README.md",
     "docs/research/README.md",
     "docs/research/INDEX.md",
     "docs/项目说明/README.md",
     "docs/specs_index.md",
     "scripts/sync_doc_subjects.py",
-    "scripts/check_doc_tree_completeness.py"
+    "scripts/check_doc_tree_completeness.py",
+    "cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json",
+    "cc_context/knowledge/README.md",
+    "scripts/check_external_artifacts.py",
+    "scripts/restore_external_artifacts.py",
+    "scripts/install_git_hooks.py",
+    "requirements-dev.lock.txt",
+    ".github/workflows/project_guardrails.yml"
   ],
   "top_level_files": {
-    "docs/DOC_SUBJECT_PROJECTIONS.json": {
-      "role": "subject-projection-registry"
-    },
     "docs/DOC_TREE_COMPLETENESS.json": {
       "role": "closeout-manifest"
     },

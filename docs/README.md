@@ -7,7 +7,7 @@ The documentation tree is organized around **subjects** and **projections**. Sub
 ## High-level routes
 
 - `docs/subjects/` — abstract subject layer; edit these when the context-independent truth changes.
-- `docs/DOC_SUBJECT_PROJECTIONS.json` — subject-to-document projection registry.
+- `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json` — project knowledge subject-to-projection registry.
 - `docs/SUBJECT_TREE.md` — architecture and maintenance runbook.
 - `docs/DOC_TREE_COMPLETENESS.md` — explicit done criteria for documentation-tree closeout.
 - `docs/项目说明/` — living project book.
