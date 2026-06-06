@@ -51,12 +51,15 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 - Other bases (`valley4_infra_outpost`, `wuling_protocol_core`, etc.) are `future_scope`
 - Outer-deployment subsystem is adapter-side `future_scope`
 
-## Current Phase: 1.2 spike close (cut-family validator soundness 闭关 → P1.3A)
+## Current Phase: 1.2 spike close (subject projection)
 
+<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:b1ff54c09193e23c6d429d193eecb74218a78fc07f90e24a32e47d33611f35d5 -->
+Current phase: **Phase 1.2 spike close** — prod-scale sizing plus cut-family validator soundness review must close before the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
+<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract END -->
+
+Operational notes:
 - 范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计** (9 个 F1–F9 cut family 当 Benders cut 收紧 master)。
-- 当前: **Phase 1.2 spike close** — prod-scale sizing + cut-family validator soundness 闭关审查 (大节点, 须连续独立外审零问题才 close) → 过了进 **P1.3A 主体** (真 `PoseBoolExactMaster` 接入 LBBD + 多轮收敛)。**单一 living 现状源 = CC memory `windows-ninth-review-pending`** (含当前包版本 / 审查轮次 / 待办)。
-- **命名错位注意**: `docs/项目说明/06` 的 doc-P1.3A = attach spike (已 done)、doc-P1.3B = 真 master 集成 (= memory 口径的「P1.3A 主体」); `src/cuts/lifecycle.py` `step_8_apply_to_master` 仍 NotImplementedError。
-- 历史 Phase 3B (tuning paradigm, release `r20260416` 后) 已被取代; 下方 AI sidecar 契约仍有效。
+- 单一 living 现状源仍要结合 CC memory `windows-ninth-review-pending` 读；本段只承载会被其它文档投影的 phase contract。
 
 ## AI Safety Contract
 
@@ -113,6 +116,10 @@ Tests `src/tests/test_endfield_calc_typescript_snapshot.py` and `src/tests/test_
 
 ### 数字单一来源 (authoritative_numbers core node)
 
+<!-- DOC-SUBJECT:authoritative_numbers FIELD:runbook_summary START sha256:4fabdc1ac355deea3bf2ba6678b33a985d76bb09370b995c1edc136a81386ac8 -->
+Repeated review/package numbers must flow through `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json` and `scripts/gen_authoritative_numbers.py`. Prose projections should link to that core node instead of hand-copying volatile current values, unless the number is explicitly historical and dated.
+<!-- DOC-SUBJECT:authoritative_numbers FIELD:runbook_summary END -->
+
 > 评审包/文档里反复出现的权威数字 (cuts 计数 / sizing 投影 / F3 / remap) 不要散在各处手抄。**核心节点 = `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`**。架构**意图** = core-node + projection + forcing-function (同 [[memory-currency-protocol]] 给 handoff 的 stamp)。**诚实现状 (v28 外审 catch)**: forcing 半边落地, **projection 半边仍是未接线契约** (current_claims() 无消费者, 包 README 仍硬编码会漂)。
 
 ```powershell
@@ -124,7 +131,7 @@ python scripts/gen_authoritative_numbers.py --check   # exit 1 = 核心节点 st
 - **强制函数 (真 gate)** = `src/tests/test_authoritative_numbers_currency.py` (任何 pytest run 变红): 断言核心节点 == 实时计算。**master 上只焊 `cuts_tests_total`** (最易漂); sizing/F3/remap 见核心节点 `_meta.enforcement_tiers`。**不扫散文也不扫 projection_targets** —— 文档会 meta-讨论数字 (changelog 引旧值当历史 / "别把 36/50 读成 72%"), 裸扫到处误报。
 - **`--check` 未接 CI/pre-commit 硬 gate** (本机 pre-commit 仅 warn-loud, 不阻断); 真 gate 是上面那个 pytest 测试。
 - **sizing 6 个数字** 由 `sizing_gate.compute_sizing_numbers()` 算, 输入 fixture 在 `data/cuts/spike/` (build 时从 spike 分支 overlay, master 无) → master 不现算, 是冻结 spike 值; 仅包内/spike 上下文可复现。
-- **build 投影 (未接线契约)**: 包 build 脚本的 README 当前 claim 数字**应** `from gen_authoritative_numbers import current_claims` 注入 (changelog 历史字面量不动) —— 但**目前没接** (current_claims 无消费者, build_v28 仍硬编码 418 vs 核心节点当前 442)。接了之后包 README 才是真投影; 在那之前它会漂、不自动报红。
+- **build 投影 (未接线契约)**: 包 build 脚本的 README 当前 claim 数字**应** `from gen_authoritative_numbers import current_claims` 注入 (changelog 历史字面量不动) —— 但**目前没接** (current_claims 无消费者, build_v28 仍硬编码历史值 vs 核心节点当前值)。接了之后包 README 才是真投影; 在那之前它会漂、不自动报红。
 
 ### Linux migration setup (CachyOS target — switched from Fedora 2026-05-08)
 

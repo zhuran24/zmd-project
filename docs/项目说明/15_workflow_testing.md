@@ -1,13 +1,17 @@
 # 15 — 测试 strategy + fixture 清单
 
-当前 cuts test（计数权威见核心节点 `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json` 的 `cuts_tests_total`，2026-06-04 为 **442**；189 是 Phase 1.1 旧值）不是平铺, 按目标分 4 层. 本节定层 + 各层覆盖哪些 family + fixture 清单 + Phase 1.2 加 F5-F9 时怎么扩展.
+<!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer START sha256:cea93a49cee8af7c4d149443925f0b834a63001939d7048e126a97cfbbb758d2 -->
+The current cut-test total is not a freehand prose value. Use the `cuts_tests_total` entry in `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`; regenerate/check it with `python scripts/gen_authoritative_numbers.py --check`.
+<!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer END -->
+
+当前 cuts test（计数权威见核心节点；189 是 Phase 1.1 旧值）不是平铺, 按目标分 4 层. 本节定层 + 各层覆盖哪些 family + fixture 清单 + Phase 1.2 加 F5-F9 时怎么扩展.
 
 ### 21.1 测试 4 层
 
 | 层 | 目标 | 文件 | 数量 |
 |---|---|---|---|
 | **Unit** | 单 function/class 行为 (helpers / store / lifecycle 各 step 各分支) | `test_store.py` / `test_lifecycle.py` / `test_helpers_*.py` / `test_assumptions_verifiers.py` | ~80+ test |
-| **Family** | 单 family validator + evaluator + oracle 端到端 (per family schema + 真数据反例) | `test_family_{region_capacity,cutset,port_exposure,component_reach,pattern_nogood,shape_packing_hall,power_hitting_set,power_grid_reach,density_envelope}.py`（F1–F9 全已落地）| 计数见核心节点 (cuts 442) |
+| **Family** | 单 family validator + evaluator + oracle 端到端 (per family schema + 真数据反例) | `test_family_{region_capacity,cutset,port_exposure,component_reach,pattern_nogood,shape_packing_hall,power_hitting_set,power_grid_reach,density_envelope}.py`（F1–F9 全已落地）| 计数见核心节点 |
 | **Integration** | replay flow / on_ghost_rect_changed / add_cut 多 family 串 (跨 family interaction) | `test_replay.py` + 部分 `test_lifecycle.py` | ~15+ test |
 | **Adversarial** | 假 cert / cert↔literal 不绑 / GHOST_AGNOSTIC 非法 / canonical_rules=None bypass / out-of-grid cell 等 | 散在各 `test_family_*.py` (e.g. test_*_p_g_outside_R / test_*_ghost_agnostic_rejected) | ~10+ test |
 

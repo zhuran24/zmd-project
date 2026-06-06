@@ -2,6 +2,10 @@
 
 终末地 (Arknights: Endfield) IndustrialPlanner 70×70 grid certified exact solver 的项目说明文档. 21 个 sub-doc + 本 README. 不是计划书 / 不是 spec, 是**项目本身的说明** — 给 implementer / reviewer / maintainer / 用户的 SoT.
 
+<!-- DOC-SUBJECT:doc_tree_architecture FIELD:project_book_entry START sha256:fc164cc6924e340cc130c6942800b9e482681b1e4f38d60ef90e0aeaa43040ba -->
+`docs/项目说明/` is the living project book: overview, math, lifecycle, phase plans, go criteria, risks, workflow, and glossary. Its current-state statements should be registered projections of `docs/subjects/current_project_state.md` rather than independent copies.
+<!-- DOC-SUBJECT:doc_tree_architecture FIELD:project_book_entry END -->
+
 ## 文档地图
 
 | Sub-doc | 主题 | 来源 |

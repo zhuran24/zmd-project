@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "description": "Documentation subject/projection registry. Subjects are context-independent sources; projections are concrete document branches synchronized by scripts/sync_doc_subjects.py.",
+  "subjects": {
+    "authoritative_numbers": {
+      "path": "docs/subjects/authoritative_numbers.md",
+      "kind": "derived-claims-router"
+    },
+    "certified_exact_contract": {
+      "path": "docs/subjects/certified_exact_contract.md",
+      "kind": "exactness-contract"
+    },
+    "current_project_state": {
+      "path": "docs/subjects/current_project_state.md",
+      "kind": "living-status"
+    },
+    "doc_tree_architecture": {
+      "path": "docs/subjects/doc_tree_architecture.md",
+      "kind": "documentation-governance"
+    }
+  },
+  "projections": [
+    {
+      "path": "README.md",
+      "subject": "current_project_state",
+      "field": "frontdoor_snapshot",
+      "purpose": "Root front door current-state banner"
+    },
+    {
+      "path": "README.md",
+      "subject": "certified_exact_contract",
+      "field": "frontdoor_contract",
+      "purpose": "Root front door exactness contract"
+    },
+    {
+      "path": "README.md",
+      "subject": "doc_tree_architecture",
+      "field": "docs_readme_summary",
+      "purpose": "Root front door documentation architecture pointer"
+    },
+    {
+      "path": "CLAUDE.md",
+      "subject": "current_project_state",
+      "field": "claude_phase_contract",
+      "purpose": "Agent handoff current phase contract"
+    },
+    {
+      "path": "CLAUDE.md",
+      "subject": "authoritative_numbers",
+      "field": "runbook_summary",
+      "purpose": "Agent handoff numeric single-source rule"
+    },
+    {
+      "path": "FILE_STATUS.md",
+      "subject": "current_project_state",
+      "field": "file_status_notice",
+      "purpose": "Inventory disclaimer"
+    },
+    {
+      "path": "docs/README.md",
+      "subject": "doc_tree_architecture",
+      "field": "docs_readme_summary",
+      "purpose": "Docs root architecture summary"
+    },
+    {
+      "path": "docs/README.md",
+      "subject": "certified_exact_contract",
+      "field": "sot_contract",
+      "purpose": "Docs root frozen-artifact warning"
+    },
+    {
+      "path": "docs/项目说明/README.md",
+      "subject": "doc_tree_architecture",
+      "field": "project_book_entry",
+      "purpose": "Project-book role declaration"
+    },
+    {
+      "path": "docs/research/README.md",
+      "subject": "doc_tree_architecture",
+      "field": "research_archive_entry",
+      "purpose": "Research archive role declaration"
+    },
+    {
+      "path": "docs/SUBJECT_TREE.md",
+      "subject": "doc_tree_architecture",
+      "field": "governance_gate_summary",
+      "purpose": "Subject/projection gate summary"
+    },
+    {
+      "path": "docs/项目说明/15_workflow_testing.md",
+      "subject": "authoritative_numbers",
+      "field": "cuts_count_pointer",
+      "purpose": "Workflow testing cut-count pointer"
+    },
+    {
+      "path": "docs/项目说明/12_go_criteria.md",
+      "subject": "authoritative_numbers",
+      "field": "cuts_count_pointer",
+      "purpose": "Go criteria cut-count pointer"
+    }
+  ]
+}

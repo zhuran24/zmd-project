@@ -6,6 +6,8 @@ master index** —— `docs/research/` 下另有 ~46 个 dated 子目录（含 *
 `p1_2_spike_sizing_gate_20260601/`、各 paradigm/phase 研究、外审归档等），各自独立、见各子目录。
 Full agent transcripts (prompt + reasoning + tool uses + final report) are archived under `agent_transcripts/`.
 
+For the directory-level archive role, see `docs/research/README.md`.
+
 **Hard-rule for the research loop**: keep launching new rounds until **5
 consecutive rounds yield no high-quality findings**. Round counter resets
 whenever a round produces at least one actionable gold-mine.

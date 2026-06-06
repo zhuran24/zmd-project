@@ -2,17 +2,23 @@
 
 《明日方舟：终末地》基地排布的**精确最大空矩形求解器**：在 70×70 网格、266 个强制设施实例约束下，求 `max_lex(area, min_side)`（先最大化面积、再最大化短边）的**可证明最优**空地矩形。OR-Tools CP-SAT + Benders/LBBD 分解（master → binding → routing → flow）。
 
-> **当前主线（范式 = cut-family LBBD）**
->
-> 项目范式已从早期 tuning / Phase-3B 转为 **cut-family LBBD 重设计**：9 个 cut family **F1–F9** 当 Benders cut 收紧 master。当前阶段 = **Phase 1.2 spike close**（cut-family validator soundness 闭关）→ **P1.3B**（真 `PoseBoolExactMaster` 接 LBBD 真 master 集成 + 多轮收敛；P1.3A attach spike 已先验）。⚠️ 此处用 doc-tree 命名（P1.3B = 真 master 集成）≠ CC memory 口径的"P1.3A 主体"，见 `CLAUDE.md` 命名错位提示。
->
-> **现状 / phase 的权威源不在本 README**——见：
->
-> - **`CLAUDE.md`** — 求解器架构 + 当前 Phase + commands + runbook（单一操作手册）
-> - **`PROJECT_LOCK.md`** — 精确性宪法 + 禁条 + accepted invariants（exact 边界冻结）
-> - **`docs/项目说明/06_current_status.md`** — 现状细则；`docs/项目说明/`（21 篇）= overview / 数学基础 / 死路 baseline / 设计不变量 / 各 phase plan / glossary
-> - **`specs/`（01–23）** — certified 路径的形式规格
-> - **`docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`** — 评审/文档权威数字的单一来源（cuts 测试计数等；别在散文里另抄会漂的数）
+## 当前主线（subject projection）
+
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:ff8fdd45a63dc5ca9c06870d2daf0bda3e91db5c29387c7436143e43824b9d9e -->
+Current working state: **Phase 1.2 spike close** for cut-family validator soundness. The next major implementation body is the true `PoseBoolExactMaster` LBBD master integration, named `P1.3B` in the project-book docs and historically called `P1.3A 主体` in CC memory. Treat this as a living projection of `docs/subjects/current_project_state.md`; do not hand-copy a separate current-phase story elsewhere.
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
+
+## 精确性边界（subject projection）
+
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract START sha256:3b43b968c1dd26cfe824ead3065a56a7c9947bc5b1c0eef8f12c8bcf21a3ae17 -->
+Certified exact mode is separate from exploratory tooling. The exact objective is `max_lex(area, min_side)`, and exploratory caps or sidecar hints must never become certified feasibility bounds. The frozen source-of-truth artifacts are `rules/canonical_rules.json`, `data/preprocessed/candidate_placements.json`, `data/preprocessed/mandatory_exact_instances.json`, and `data/preprocessed/generic_io_requirements.json`.
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract END -->
+
+## 文档树入口（subject projection）
+
+<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary START sha256:ca8444165fd1c2128cfdc08a6ad8da370a426d6727028353da593ea29d1768f2 -->
+The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
+<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary END -->
 
 ## 跑求解器
 
@@ -27,7 +33,7 @@ python main.py --vis
 
 （Linux 生产启动须用 wrapper，单跑 `python main.py` 会丢调优；见 `CLAUDE.md` 的 Commands / Maintenance scripts 段。）
 
-## 精确性边界（摘要，权威见 `PROJECT_LOCK.md`）
+## 精确性边界补充摘要（权威见 `PROJECT_LOCK.md`）
 
 - `certified_exact` 与 `exploratory` 是**严格分离**的两条路径，绝不混用。
 - exact 目标 = `max_lex(area, min_side)`；`min_side >= 6` 是候选 admissibility，不是 tie-break。

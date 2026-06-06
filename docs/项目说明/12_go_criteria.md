@@ -1,5 +1,9 @@
 # 12 — GO 标准 / 验收准则
 
+<!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer START sha256:cea93a49cee8af7c4d149443925f0b834a63001939d7048e126a97cfbbb758d2 -->
+The current cut-test total is not a freehand prose value. Use the `cuts_tests_total` entry in `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`; regenerate/check it with `python scripts/gen_authoritative_numbers.py --check`.
+<!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer END -->
+
 每段 done 怎么定义. 不只 "代码改完 commit pass test", 而是要过 reviewer audit.
 
 ### 8.1 Phase 1.2 P1.2A 入门 GO (✅ 2026-05-24 final polish 后仍 GO)
@@ -72,7 +76,7 @@
 - [ ] capacity eviction 留 audit trail
 
 **F. Regression gate**
-- [ ] 现有 `src/tests/cuts/` **全 green**（计数以 collect-only / 核心节点 `authoritative_numbers.json` 为准，当前 442；189 是 Phase 1.1 旧值）
+- [ ] 现有 `src/tests/cuts/` **全 green**（计数以 collect-only / 核心节点 `authoritative_numbers.json` 为准；189 是 Phase 1.1 旧值）
 - [ ] `python -O -m pytest src/tests/cuts/ -q` **全 green**
 - [ ] 新 red fixture 全 green (详 [15_workflow_testing.md](15_workflow_testing.md))
 - [ ] ruff green
@@ -96,7 +100,7 @@
 - F5-F9 全 register FAMILY_VALIDATORS, strict gate ON
 
 验收:
-- 总 cuts test 以 `collect-only` / 核心节点 `authoritative_numbers.json` 为准（**2026-06-04 = 442**，F5-F9 落地后远超早先 ~240-265 估；189 是 Phase 1.1 旧值）
+- 总 cuts test 以 `collect-only` / 核心节点 `authoritative_numbers.json` 为准（当前值见核心节点；F5-F9 落地后远超早先 ~240-265 估；189 是 Phase 1.1 旧值）
 - 大节点审查通过——**现 close 门禁 = 大节点 ≥3 次连续独立审查零问题**（非单次 batch；见 §下文 + 16_workflow_review §22 + memory big-milestone-gpt-pro-review）
 - production smoke 真数据 F5-F9 oracle 跑通 (各 oracle 真 emit cut 或合理
   fail-closed)
