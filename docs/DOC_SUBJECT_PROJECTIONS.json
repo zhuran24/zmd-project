@@ -17,14 +17,30 @@
     "doc_tree_architecture": {
       "path": "docs/subjects/doc_tree_architecture.md",
       "kind": "documentation-governance"
+    },
+    "doc_tree_completeness": {
+      "path": "docs/subjects/doc_tree_completeness.md",
+      "kind": "documentation-closeout-contract"
     }
   },
   "projections": [
     {
-      "path": "README.md",
+      "path": "CLAUDE.md",
+      "subject": "authoritative_numbers",
+      "field": "runbook_summary",
+      "purpose": "Agent handoff numeric single-source rule"
+    },
+    {
+      "path": "CLAUDE.md",
       "subject": "current_project_state",
-      "field": "frontdoor_snapshot",
-      "purpose": "Root front door current-state banner"
+      "field": "claude_phase_contract",
+      "purpose": "Agent handoff current phase contract"
+    },
+    {
+      "path": "FILE_STATUS.md",
+      "subject": "current_project_state",
+      "field": "file_status_notice",
+      "purpose": "Inventory disclaimer"
     },
     {
       "path": "README.md",
@@ -34,27 +50,39 @@
     },
     {
       "path": "README.md",
+      "subject": "current_project_state",
+      "field": "frontdoor_snapshot",
+      "purpose": "Root front door current-state banner"
+    },
+    {
+      "path": "README.md",
       "subject": "doc_tree_architecture",
       "field": "docs_readme_summary",
       "purpose": "Root front door documentation architecture pointer"
     },
     {
-      "path": "CLAUDE.md",
-      "subject": "current_project_state",
-      "field": "claude_phase_contract",
-      "purpose": "Agent handoff current phase contract"
+      "path": "docs/DOC_TREE_COMPLETENESS.md",
+      "subject": "doc_tree_completeness",
+      "field": "definition",
+      "purpose": "Closeout definition authority"
     },
     {
-      "path": "CLAUDE.md",
-      "subject": "authoritative_numbers",
-      "field": "runbook_summary",
-      "purpose": "Agent handoff numeric single-source rule"
+      "path": "docs/DOC_TREE_COMPLETENESS.md",
+      "subject": "doc_tree_completeness",
+      "field": "done_criteria",
+      "purpose": "Closeout done criteria authority"
     },
     {
-      "path": "FILE_STATUS.md",
-      "subject": "current_project_state",
-      "field": "file_status_notice",
-      "purpose": "Inventory disclaimer"
+      "path": "docs/DOC_TREE_COMPLETENESS.md",
+      "subject": "doc_tree_completeness",
+      "field": "preflight_contract",
+      "purpose": "Closeout gate authority"
+    },
+    {
+      "path": "docs/README.md",
+      "subject": "certified_exact_contract",
+      "field": "sot_contract",
+      "purpose": "Docs root frozen-artifact warning"
     },
     {
       "path": "docs/README.md",
@@ -64,21 +92,9 @@
     },
     {
       "path": "docs/README.md",
-      "subject": "certified_exact_contract",
-      "field": "sot_contract",
-      "purpose": "Docs root frozen-artifact warning"
-    },
-    {
-      "path": "docs/项目说明/README.md",
-      "subject": "doc_tree_architecture",
-      "field": "project_book_entry",
-      "purpose": "Project-book role declaration"
-    },
-    {
-      "path": "docs/research/README.md",
-      "subject": "doc_tree_architecture",
-      "field": "research_archive_entry",
-      "purpose": "Research archive role declaration"
+      "subject": "doc_tree_completeness",
+      "field": "preflight_contract",
+      "purpose": "Docs root closeout/gate pointer"
     },
     {
       "path": "docs/SUBJECT_TREE.md",
@@ -87,16 +103,40 @@
       "purpose": "Subject/projection gate summary"
     },
     {
-      "path": "docs/项目说明/15_workflow_testing.md",
-      "subject": "authoritative_numbers",
-      "field": "cuts_count_pointer",
-      "purpose": "Workflow testing cut-count pointer"
+      "path": "docs/SUBJECT_TREE.md",
+      "subject": "doc_tree_completeness",
+      "field": "done_criteria",
+      "purpose": "Subject-tree closeout criteria"
+    },
+    {
+      "path": "docs/research/README.md",
+      "subject": "doc_tree_architecture",
+      "field": "research_archive_entry",
+      "purpose": "Research archive role declaration"
+    },
+    {
+      "path": "docs/项目说明/09_phase_1_3_plan.md",
+      "subject": "certified_exact_contract",
+      "field": "cut_lifecycle_contract",
+      "purpose": "Phase 1.3 master-integration trust boundary"
     },
     {
       "path": "docs/项目说明/12_go_criteria.md",
       "subject": "authoritative_numbers",
       "field": "cuts_count_pointer",
       "purpose": "Go criteria cut-count pointer"
+    },
+    {
+      "path": "docs/项目说明/15_workflow_testing.md",
+      "subject": "authoritative_numbers",
+      "field": "cuts_count_pointer",
+      "purpose": "Workflow testing cut-count pointer"
+    },
+    {
+      "path": "docs/项目说明/README.md",
+      "subject": "doc_tree_architecture",
+      "field": "project_book_entry",
+      "purpose": "Project-book role declaration"
     }
   ]
 }

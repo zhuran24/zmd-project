@@ -9,6 +9,7 @@ The documentation tree is organized around **subjects** and **projections**. Sub
 - `docs/subjects/` — abstract subject layer; edit these when the context-independent truth changes.
 - `docs/DOC_SUBJECT_PROJECTIONS.json` — subject-to-document projection registry.
 - `docs/SUBJECT_TREE.md` — architecture and maintenance runbook.
+- `docs/DOC_TREE_COMPLETENESS.md` — explicit done criteria for documentation-tree closeout.
 - `docs/项目说明/` — living project book.
 - `docs/research/` — research, review, and historical archive.
 - `specs/` — formal certified-path specifications.
@@ -18,6 +19,12 @@ The documentation tree is organized around **subjects** and **projections**. Sub
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:fc60ac5d700c1afc66190d3e51efc022516405defce1e7c25053cbac2b439fab -->
 Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py`. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract END -->
+
+## Completeness gate
+
+<!-- DOC-SUBJECT:doc_tree_completeness FIELD:preflight_contract START sha256:f5599b3201fb6b031d765fe0c39f369525e6cd7f9c47155849058fc9c75de39f -->
+Preflight treats documentation-tree completeness as a hard gate: run `python scripts/check_doc_tree_completeness.py` after adding, moving, or deleting documentation surfaces, and update the manifest only when the new surface has a declared role and authority boundary.
+<!-- DOC-SUBJECT:doc_tree_completeness FIELD:preflight_contract END -->
 
 ## Maintenance commands
 

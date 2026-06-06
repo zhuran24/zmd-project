@@ -33,6 +33,11 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 ## P1.3B — master integration (原 P1.21, spike GO 后进)
 
 ### 12.1 step_8_apply_to_master 实施
+
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:cut_lifecycle_contract START sha256:4787489db07f2d910aa3066abf723b63e692046e047f7ae31e1c4109ba7cf8c6 -->
+Cut-family LBBD work must respect the cut object lifecycle: generation, validation, replay, quarantine, storage, and master application are separate trust steps. `step_8_apply_to_master` is intentionally the unresolved integration boundary until the true master-integration phase starts.
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:cut_lifecycle_contract END -->
+
 - 当前 `lifecycle.py::step_8_apply_to_master` NotImplementedError
 - 接 `benders_loop` hook (env flag `EXACT_B_DESIGN_V2=1` 切新框架)
 - Lazy → hard constraint 转化, 跟 master CP-SAT model 真集成

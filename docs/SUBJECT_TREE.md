@@ -14,6 +14,12 @@ Preflight runs `python scripts/sync_doc_subjects.py --check`. A changed subject 
 4. **Sync tool** lives at `scripts/sync_doc_subjects.py`.
 5. **Preflight gate** runs `python scripts/sync_doc_subjects.py --check`.
 
+## Complete closeout criteria
+
+<!-- DOC-SUBJECT:doc_tree_completeness FIELD:done_criteria START sha256:8722751f983889bc1e2f736da422bb7447fedb0b2d78594570db6cf5c7501ed4 -->
+Done criteria: subject/projection sync is clean; no unregistered projection blocks exist; every subject field has at least one projection; `docs/` top-level files/directories, `docs/项目说明/` chapters, `docs/research/` first-level archive directories, and `specs/*.md` are all listed in `docs/DOC_TREE_COMPLETENESS.json`; required front-door projection slots exist; and `python scripts/check_doc_tree_completeness.py` passes.
+<!-- DOC-SUBJECT:doc_tree_completeness FIELD:done_criteria END -->
+
 ## Edit workflow
 
 When the abstract fact changes:
