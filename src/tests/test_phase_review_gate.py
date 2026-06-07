@@ -63,7 +63,8 @@ def test_validator_rejects_premature_source_boundary_implementation(tmp_path: Pa
 
     payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
     payload["last_reset"]["evidence_paths"] = []
-    payload["review_history"][0]["evidence_paths"] = []
+    for entry in payload["review_history"]:
+        entry["evidence_paths"] = []
     payload["required_doc_markers"] = []
     gate_path = fake_root / "phase_gate.json"
     gate_path.write_text(json.dumps(payload), encoding="utf-8")
@@ -73,3 +74,25 @@ def test_validator_rejects_premature_source_boundary_implementation(tmp_path: Pa
 
     assert "phase_1_2_spike_close" in summary
     assert any("source boundary no longer fail-closed" in error for error in errors)
+
+
+def test_validator_rejects_stale_last_reset_when_later_reset_history_exists(tmp_path: Path) -> None:
+    payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
+    payload["review_history"].append(
+        {
+            "package": "v999_non_clean_probe",
+            "review_type": "independent_full_external",
+            "outcome": "major_soundness_findings_found",
+            "clean": False,
+            "major_or_soundness_findings": 1,
+            "resets_counter": True,
+            "evidence_paths": [],
+        }
+    )
+    stale_gate = tmp_path / "stale_reset_gate.json"
+    stale_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    summary, errors = check_phase_review_gate.check_gate(stale_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("last_reset.review_package must match the latest resetting" in error for error in errors)

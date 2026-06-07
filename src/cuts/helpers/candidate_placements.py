@@ -44,6 +44,8 @@ Refs:
 """
 from __future__ import annotations
 
+import hashlib
+import json
 from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
 
 from src.cuts.helpers.canonical_rules import facility_type_for_group
@@ -61,6 +63,55 @@ DIRECTION_OFFSETS = {
 
 
 _POSE_CACHE_KEY = "__pose_id_cache__"
+_POSE_CACHE_DIGEST_KEY = "__pose_id_cache_digest__"
+
+
+def _cache_jsonable(value: Any) -> Any:
+    if isinstance(value, dict):
+        out: Dict[str, Any] = {}
+        for key, item in value.items():
+            if isinstance(key, str) and key.startswith("__"):
+                continue
+            out[str(key)] = _cache_jsonable(item)
+        return out
+    if isinstance(value, (list, tuple)):
+        return [_cache_jsonable(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return sorted((_cache_jsonable(item) for item in value), key=repr)
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return repr(value)
+
+
+def _facility_pools_digest(cp: Dict[str, Any]) -> Optional[str]:
+    pools = cp.get("facility_pools", {})
+    if not isinstance(pools, dict):
+        return None
+    blob = json.dumps(
+        _cache_jsonable(pools),
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()
+
+
+def _build_pose_cache(cp: Dict[str, Any]) -> Optional[Dict[Tuple[str, str], Dict[str, Any]]]:
+    pools = cp.get("facility_pools", {})
+    if not isinstance(pools, dict):
+        return None
+    cache: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    for pool_ft, pool in pools.items():
+        if not isinstance(pool_ft, str) or not isinstance(pool, list):
+            continue
+        for pose_raw in pool:
+            if not isinstance(pose_raw, dict):
+                continue
+            pose = cast(Dict[str, Any], pose_raw)
+            pid = pose.get("pose_id")
+            if isinstance(pid, str):
+                cache[(pool_ft, pid)] = pose
+    return cache
 
 
 def find_pose(
@@ -84,26 +135,25 @@ def find_pose(
     ft = facility_type_for_group(state, gid)
     if ft is None:
         return None
-    # Lazy build cache (first call cost O(N), subsequent O(1))
+    # Lazy build cache (first call cost O(N), subsequent O(1) when source is
+    # unchanged).  The digest is required for soundness because validators use
+    # this helper while CutScope.source_digest hashes candidate_placements
+    # without runtime ``__*`` caches.  A stale cache must not outlive a replaced
+    # or edited facility pool.
+    current_digest = _facility_pools_digest(cp)
+    if current_digest is None:
+        return None
     raw_cache = cp.get(_POSE_CACHE_KEY)
-    if isinstance(raw_cache, dict):
+    raw_digest = cp.get(_POSE_CACHE_DIGEST_KEY)
+    if isinstance(raw_cache, dict) and raw_digest == current_digest:
         cache = cast(Dict[Tuple[str, str], Dict[str, Any]], raw_cache)
     else:
-        cache = {}
-        pools = cp.get("facility_pools", {})
-        if not isinstance(pools, dict):
+        rebuilt = _build_pose_cache(cp)
+        if rebuilt is None:
             return None
-        for pool_ft, pool in pools.items():
-            if not isinstance(pool_ft, str) or not isinstance(pool, list):
-                continue
-            for pose_raw in pool:
-                if not isinstance(pose_raw, dict):
-                    continue
-                pose = cast(Dict[str, Any], pose_raw)
-                pid = pose.get("pose_id")
-                if isinstance(pid, str):
-                    cache[(pool_ft, pid)] = pose
+        cache = rebuilt
         cp[_POSE_CACHE_KEY] = cache
+        cp[_POSE_CACHE_DIGEST_KEY] = current_digest
     return cache.get((ft, pose_id))
 
 

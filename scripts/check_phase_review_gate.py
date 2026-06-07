@@ -207,6 +207,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     errors.extend(_check_evidence_paths(require_list(last_reset.get("evidence_paths"), "last_reset.evidence_paths"), "last_reset"))
 
     reset_entries = []
+    all_reset_entries: list[tuple[int, str]] = []
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
         package = require_str(entry.get("package"), f"review_history[{index}].package")
@@ -219,11 +220,20 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             errors.append(f"review_history[{index}] is clean but has {major} major/soundness findings")
         if not clean and major == 0 and require_bool(entry.get("resets_counter", False), f"review_history[{index}].resets_counter"):
             errors.append(f"review_history[{index}] resets counter but has zero major/soundness findings")
-        if package == reset_package and entry.get("resets_counter") is True:
-            reset_entries.append(index)
+        if entry.get("resets_counter") is True:
+            all_reset_entries.append((index, package))
+            if package == reset_package:
+                reset_entries.append(index)
         errors.extend(_check_evidence_paths(require_list(entry.get("evidence_paths", []), f"review_history[{index}].evidence_paths"), f"review_history[{index}]"))
     if not reset_entries:
         errors.append(f"review_history lacks reset entry for {reset_package}")
+    if all_reset_entries and all_reset_entries[-1][1] != reset_package:
+        latest_index, latest_package = all_reset_entries[-1]
+        errors.append(
+            "last_reset.review_package must match the latest resetting "
+            f"review_history entry: review_history[{latest_index}]={latest_package!r}, "
+            f"last_reset={reset_package!r}"
+        )
 
     errors.extend(_check_doc_markers(require_list(gate.get("required_doc_markers"), "required_doc_markers")))
     errors.extend(_check_source_boundaries(require_list(gate.get("source_boundaries", []), "source_boundaries"), status=status))

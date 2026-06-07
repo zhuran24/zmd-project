@@ -536,6 +536,109 @@ def test_source_digest_is_content_hash_and_ignores_runtime_pose_cache():
     assert compute_source_digest(changed_with_stale_note) != digest_1
 
 
+def test_source_digest_tracks_group_static_fields_but_not_selected_poses():
+    s = make_state_with_crusher_on_left_baseline()
+    digest_1 = compute_source_digest(s)
+
+    selected_changed_groups = {
+        gid: GroupState(
+            group_id=gid,
+            demand=g.demand,
+            pose_domain=g.pose_domain,
+            selected_poses=list(g.selected_poses) + (["p-new"] if gid == "crusher_blue_iron" else []),
+        )
+        for gid, g in s.groups.items()
+    }
+    selected_changed = BState(
+        groups=selected_changed_groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+    )
+    assert compute_source_digest(selected_changed) == digest_1
+
+    demand_changed_groups = {
+        gid: GroupState(
+            group_id=gid,
+            demand=(g.demand + 1 if gid == "boundary_storage_port" else g.demand),
+            pose_domain=g.pose_domain,
+            selected_poses=list(g.selected_poses),
+        )
+        for gid, g in s.groups.items()
+    }
+    demand_changed = BState(
+        groups=demand_changed_groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+    )
+    assert compute_source_digest(demand_changed) != digest_1
+
+    domain_changed_groups = {
+        gid: GroupState(
+            group_id=gid,
+            demand=g.demand,
+            pose_domain=(frozenset({"p-domain"}) if gid == "crusher_blue_iron" else g.pose_domain),
+            selected_poses=list(g.selected_poses),
+        )
+        for gid, g in s.groups.items()
+    }
+    domain_changed = BState(
+        groups=domain_changed_groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+    )
+    assert compute_source_digest(domain_changed) != digest_1
+
+
+def test_step_7_fails_closed_on_source_digest_drift_before_replay_quarantine():
+    s = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+
+    source_drift = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+        candidate_placements={"facility_pools": {"manufacturing_3x3": []}},
+    )
+    assert compute_source_digest(source_drift) != cut.scope.source_digest
+    assert step_6_attach_scope_check(cut, source_drift) == "QUARANTINE"
+
+    from src.cuts.families.region_capacity import evaluate_geometric_region_capacity
+
+    assert evaluate_geometric_region_capacity(cut, source_drift) is True
+    assert step_7_evaluate_cut(cut, source_drift) is False
+
+
 def test_deserialize_rejects_cert_hash_mismatch():
     s = make_state_with_crusher_on_left_baseline()
     cut = step_1_generate_region_capacity_combinatorial(

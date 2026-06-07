@@ -40,6 +40,7 @@ from src.cuts.lifecycle import (
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
+    compute_source_digest,
     evaluate_literal_multiset,
 )
 from src.cuts.oracles.power_cover_oracle import (
@@ -184,7 +185,7 @@ def _make_cut(
         ghost_rect_id=scope_ghost_id,
         blocked_cells_hash=compute_blocked_cells_hash(state),
         exterior_blocks_hash=compute_exterior_blocks_hash(state),
-        source_digest="test-source-digest",
+        source_digest=compute_source_digest(state),
         oracle_abstraction_version="power_cover_v1",
     )
     return Cut(

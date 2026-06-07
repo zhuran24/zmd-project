@@ -2,7 +2,7 @@
 
 Current gate state: BLOCKED.
 
-Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v28, and v28 found confirmed real soundness holes. That resets the consecutive-clean counter to zero.
+Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v31_candidate, and v31 found confirmed major/soundness issues. That resets/keeps the consecutive-clean counter at zero.
 
 The close policy is:
 

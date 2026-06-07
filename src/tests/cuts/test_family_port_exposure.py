@@ -16,9 +16,11 @@ Coverage:
 """
 from __future__ import annotations
 
+import copy
 import json
 
 from src.cuts.families.port_exposure import validate_port_exposure
+from src.cuts.helpers.candidate_placements import find_pose
 from src.cuts.oracles.port_exposure_oracle import generate_port_exposure_cuts
 from src.cuts.lifecycle import (
     AnonymousSlotRef,
@@ -26,9 +28,12 @@ from src.cuts.lifecycle import (
     Cut,
     CutLiteral,
     CutScope,
-    GHOST_AGNOSTIC,
     GroupState,
     OracleCert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+    compute_source_digest,
     evaluate_literal_multiset,
 )
 
@@ -115,6 +120,7 @@ def _make_port_exposure_cut(
     blocking_group: str = "refinery",
     blocking_slot: int = 0,
     blocking_pose_id: str = "p3",
+    scope_state: BState | None = None,
 ) -> Cut:
     literals = (
         CutLiteral(slot_ref=AnonymousSlotRef(facility_group, 0), pose_id=facility_pose_id),
@@ -123,14 +129,7 @@ def _make_port_exposure_cut(
             pose_id=blocking_pose_id,
         ),
     )
-    scope = CutScope(
-        ghost_rect_id=GHOST_AGNOSTIC,
-        blocked_cells_hash="h",
-        exterior_blocks_hash="h",
-        source_digest="poc_source_digest",
-        artifact_hashes={"canonical_rules.json": "h1"},
-        oracle_abstraction_version="port_exposure_v1",
-    )
+    scope = _scope_for_state(scope_state or _make_state())
     cert = OracleCert(
         cert_kind="port_exposure_blocked",
         cert_payload=cert_payload,
@@ -179,6 +178,17 @@ def _make_state(
     )
 
 
+def _scope_for_state(state: BState) -> CutScope:
+    return CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=compute_exterior_blocks_hash(state),
+        source_digest=compute_source_digest(state),
+        artifact_hashes=dict(state.artifact_hashes),
+        oracle_abstraction_version="port_exposure_v1",
+    )
+
+
 # ============================================================================
 # evaluate_literal_multiset (generic, state_machine_v2 §5)
 # ============================================================================
@@ -224,11 +234,7 @@ def test_multiset_eval_2_same_pose_required():
             CutLiteral(AnonymousSlotRef("crusher", 1), "p7"),  # same pose, different slot
         ),
         geometric_payload=None,
-        scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
-            exterior_blocks_hash="h", source_digest="poc_source_digest",
-            artifact_hashes={}, oracle_abstraction_version="port_exposure_v1",
-        ),
+        scope=_scope_for_state(_make_state()),
         cert=OracleCert(cert_kind="x", cert_payload=b"{}", cert_hash="ch"),
         family_version="v1.0", validator_version="v1.0",
     )
@@ -246,11 +252,7 @@ def test_multiset_eval_empty_literals_false():
         family="port_exposure",
         literals=(CutLiteral(AnonymousSlotRef("crusher", 0), "p1"),),  # need ≥ 1 per __post_init__
         geometric_payload=None,
-        scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
-            exterior_blocks_hash="h", source_digest="poc_source_digest",
-            artifact_hashes={}, oracle_abstraction_version="port_exposure_v1",
-        ),
+        scope=_scope_for_state(_make_state()),
         cert=OracleCert(cert_kind="x", cert_payload=b"{}", cert_hash="ch"),
         family_version="v1.0", validator_version="v1.0",
     )
@@ -264,11 +266,7 @@ def test_multiset_eval_unknown_group_false():
         family="port_exposure",
         literals=(CutLiteral(AnonymousSlotRef("never_exists", 0), "p1"),),
         geometric_payload=None,
-        scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
-            exterior_blocks_hash="h", source_digest="poc_source_digest",
-            artifact_hashes={}, oracle_abstraction_version="port_exposure_v1",
-        ),
+        scope=_scope_for_state(_make_state()),
         cert=OracleCert(cert_kind="x", cert_payload=b"{}", cert_hash="ch"),
         family_version="v1.0", validator_version="v1.0",
     )
@@ -279,6 +277,37 @@ def test_multiset_eval_unknown_group_false():
 # ============================================================================
 # F3 specific: validate_port_exposure
 # ============================================================================
+
+
+
+def test_evaluate_literal_multiset_fails_closed_on_source_digest_drift():
+    state = _make_state(crusher_poses=["p7"], refinery_poses=["p3"])
+    cut = _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=state)
+    source_drift = _make_state(crusher_poses=["p7"], refinery_poses=["p3"])
+    source_drift.candidate_placements = {"facility_pools": {"manufacturing_3x3": []}}
+
+    assert compute_source_digest(source_drift) != cut.scope.source_digest
+    assert evaluate_literal_multiset(cut, source_drift) is False
+
+
+def test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced():
+    state = _make_state(cell_owner={(9, 10): ("refinery", 0)}, refinery_poses=["p3"])
+    state.candidate_placements = copy.deepcopy(_CANDIDATE_PLACEMENTS)
+
+    old_pose = find_pose(state, "refinery", "p3")
+    assert old_pose is not None
+    assert [9, 10] in old_pose["occupied_cells"]
+
+    old_pool = state.candidate_placements["facility_pools"]["manufacturing_3x3"]
+    new_pool = [copy.deepcopy(old_pool[0]), copy.deepcopy(old_pool[1])]
+    new_pool[1]["occupied_cells"] = [[40, 40]]
+    state.candidate_placements["facility_pools"]["manufacturing_3x3"] = new_pool
+
+    cut = _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=state)
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+
+    assert vr.kind == "unsound"
+    assert "front_cell" in (vr.detail or "")
 
 def test_validate_port_exposure_ok():
     """Gap 11 修后: W=(-1,0), port (10,10) W → front (9, 10) outside facility."""
@@ -354,12 +383,7 @@ def test_validate_port_exposure_cert_literal_multiset_mismatch():
             CutLiteral(slot_ref=AnonymousSlotRef("refinery", 0), pose_id="p99"),  # ✗
         ),
         geometric_payload=None,
-        scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
-            exterior_blocks_hash="h", source_digest="poc_source_digest",
-            artifact_hashes={"canonical_rules.json": "h1"},
-            oracle_abstraction_version="port_exposure_v1",
-        ),
+        scope=_scope_for_state(_make_state()),
         cert=OracleCert(
             cert_kind="port_exposure_blocked",
             cert_payload=cert_payload,
@@ -393,12 +417,7 @@ def test_validate_port_exposure_slot_anonymity_in_binding():
             CutLiteral(slot_ref=AnonymousSlotRef("refinery", 5), pose_id="p3"),
         ),
         geometric_payload=None,
-        scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
-            exterior_blocks_hash="h", source_digest="poc_source_digest",
-            artifact_hashes={"canonical_rules.json": "h1"},
-            oracle_abstraction_version="port_exposure_v1",
-        ),
+        scope=_scope_for_state(_make_state()),
         cert=OracleCert(
             cert_kind="port_exposure_blocked",
             cert_payload=cert_payload,
@@ -425,12 +444,7 @@ def test_validate_port_exposure_one_literal_schema_err_python_O_safe():
         family="port_exposure",
         literals=(CutLiteral(slot_ref=AnonymousSlotRef("crusher", 0), pose_id="p7"),),
         geometric_payload=None,
-        scope=CutScope(
-            ghost_rect_id=GHOST_AGNOSTIC, blocked_cells_hash="h",
-            exterior_blocks_hash="h", source_digest="poc_source_digest",
-            artifact_hashes={"canonical_rules.json": "h1"},
-            oracle_abstraction_version="port_exposure_v1",
-        ),
+        scope=_scope_for_state(_make_state()),
         cert=OracleCert(
             cert_kind="port_exposure_blocked",
             cert_payload=cert_payload,

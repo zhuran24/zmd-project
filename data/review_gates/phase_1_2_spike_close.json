@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_pending_clean_reviews",
   "updated_at": "2026-06-07",
-  "summary": "P1.2 is not formally closed: v28 found real soundness holes and reset the consecutive-clean counter.",
-  "current_review_anchor": "v28",
+  "summary": "P1.2 is not formally closed: v31 candidate review found major/soundness issues and the consecutive-clean counter remains zero.",
+  "current_review_anchor": "v31_candidate",
   "close_policy": {
     "required_consecutive_clean_full_reviews": 3,
     "clean_review_definition": "An independent full external review that reports zero major or soundness findings against the current review package and its patched source tree.",
@@ -17,7 +17,7 @@
       "high",
       "major"
     ],
-    "reset_on_or_after_review_package": "v28"
+    "reset_on_or_after_review_package": "v31_candidate"
   },
   "counters": {
     "consecutive_clean_full_reviews_after_reset": 0,
@@ -25,19 +25,17 @@
     "remaining_clean_full_reviews": 3
   },
   "last_reset": {
-    "review_package": "v28",
-    "reason": "v28 GPT Pro external review found four confirmed real soundness holes: F5 slot collision, F9 quantifier inversion, F6 region_demand lower-bound, and F7/F8 canonical footprint/radius drift.",
+    "review_package": "v31_candidate",
+    "reason": "v31 candidate review found major/soundness issues in evaluator scope fail-closed behavior, candidate_placements cache soundness, and phase-gate provenance SoT freshness.",
     "resets_counter": true,
     "evidence_paths": [
-      ".artifacts/v28_gpt_review/b1/REVIEW.md",
-      ".artifacts/v28_gpt_review/b2/REVIEW.md",
-      "cc_context/review/LATEST_PACKAGE.json"
+      "docs/research/p1_2_v31_candidate_review_reset.md"
     ]
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
     "allowed": false,
-    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v28."
+    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v31_candidate."
   },
   "review_history": [
     {
@@ -51,6 +49,28 @@
         ".artifacts/v28_gpt_review/b1/REVIEW.md",
         ".artifacts/v28_gpt_review/b2/REVIEW.md"
       ]
+    },
+    {
+      "package": "v30_candidate",
+      "review_type": "independent_full_external",
+      "outcome": "major_soundness_findings_found",
+      "clean": false,
+      "major_or_soundness_findings": 1,
+      "resets_counter": true,
+      "evidence_paths": [
+        "docs/research/p1_2_v30_candidate_review_reset.md"
+      ]
+    },
+    {
+      "package": "v31_candidate",
+      "review_type": "independent_full_external",
+      "outcome": "major_soundness_findings_found",
+      "clean": false,
+      "major_or_soundness_findings": 3,
+      "resets_counter": true,
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md"
+      ]
     }
   ],
   "required_doc_markers": [
@@ -60,7 +80,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "contains": "v28 reset the consecutive-clean counter"
+      "contains": "v31 candidate review reset the consecutive-clean counter"
     },
     {
       "path": "docs/PHASE_1_2_CLOSE_GATE.md",

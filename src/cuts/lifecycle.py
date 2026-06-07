@@ -435,6 +435,23 @@ def _source_jsonable(value: Any) -> Any:
     return repr(value)
 
 
+def _group_static_source_payload(state: BState) -> JsonDict:
+    """Static per-group source fields that validators certify against.
+
+    ``selected_poses`` is deliberately excluded: it is the mutable incumbent
+    assignment that Step 7 evaluates.  ``demand`` and ``pose_domain`` are
+    canonical problem inputs used by F1/F2/F3/F5/F6/F7/F9 validators/generators,
+    so they must participate in replay scope.
+    """
+    return {
+        gid: {
+            "demand": group.demand,
+            "pose_domain": sorted(group.pose_domain),
+        }
+        for gid, group in sorted(state.groups.items())
+    }
+
+
 def compute_source_digest(state: BState) -> SourceDigestStr:
     """Return stable content digest for cross-session cut replay scope.
 
@@ -443,13 +460,14 @@ def compute_source_digest(state: BState) -> SourceDigestStr:
     into BState; otherwise a stale or hand-written digest can mask data changes.
     """
     parts: JsonDict = {
-        "schema_version": 1,
+        "schema_version": 2,
         "canonical_rules": state.canonical_rules or {},
         "candidate_placements": state.candidate_placements or {},
         "mandatory_exact_instances": state.instance_to_facility_type or {},
         "facility_templates": state.facility_templates or {},
         "generic_io_requirements": state.commodity_demands or {},
         "commodity_routes": state.commodity_routes or {},
+        "groups_static": _group_static_source_payload(state),
     }
     blob = json.dumps(
         _source_jsonable(parts),
@@ -906,6 +924,36 @@ def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
     return "ATTACH"
 
 
+def evaluator_scope_matches_current_state(cut: Cut, state: BState) -> bool:
+    """Fail-closed hot-path scope guard for Step 7 evaluation.
+
+    Replay/Step 6 is still the authoritative lifecycle transition because it
+    checks oracle availability and active assumptions.  Step 7 cannot safely
+    prune on a cut whose source, artifact, ghost, or exterior scope already
+    differs from the current BState; otherwise a stale cut can fire before the
+    replay machinery quarantines it.
+    """
+    if cut.scope is None:
+        return False
+    if cut.scope.source_digest != compute_source_digest(state):
+        return False
+
+    is_ghost_agnostic = cut.scope.ghost_rect_id == GHOST_AGNOSTIC
+    if is_ghost_agnostic:
+        if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
+            return False
+    else:
+        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
+            return False
+
+    for fname, expected_hash in cut.scope.artifact_hashes.items():
+        if state.artifact_hashes.get(fname) != expected_hash:
+            return False
+    return True
+
+
 def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
     """Generic literal-based cut evaluator (state_machine_v2 §5 multiset 语义).
 
@@ -931,13 +979,8 @@ def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
     """
     from collections import Counter
 
-    if cut.scope is None:
+    if not evaluator_scope_matches_current_state(cut, state):
         return False
-    if cut.scope.ghost_rect_id != GHOST_AGNOSTIC:
-        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
-            return False
-        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
-            return False
 
     if cut.literals is None or len(cut.literals) == 0:
         return False  # literal-based cut without literals is no-op
@@ -984,6 +1027,9 @@ def step_7_evaluate_cut(cut: Cut, state: BState) -> bool:
     Literal: F3 port_exposure / F5 pattern_nogood / F7 power_hitting_set 走
     generic evaluate_literal_multiset (state_machine_v2 §5 multiset semantics).
     """
+    if not evaluator_scope_matches_current_state(cut, state):
+        return False
+
     if cut.geometric_payload is not None:
         # Lazy import 避循环 (families import lifecycle for BState/Cut types).
         from src.cuts.families.component_reach import evaluate_geometric_component_reach
