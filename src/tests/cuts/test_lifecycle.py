@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import base64
 import json
+from dataclasses import replace
 
 import pytest
 
@@ -412,6 +413,51 @@ def test_attach_scope_oracle_version_unavailable():
     )
     decision = step_6_attach_scope_check(cut, replay_state)
     assert decision == "HOLD"
+
+
+def test_step_7_fails_closed_when_oracle_version_unavailable_before_replay_hold():
+    """V31-family regression: Step 7 must mirror Step 6 HOLD on oracle version."""
+    s = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+
+    replay_state = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=frozenset(),
+        canonical_rules=s.canonical_rules,
+        facility_templates=s.facility_templates,
+        instance_to_facility_type=s.instance_to_facility_type,
+        candidate_placements=s.candidate_placements,
+    )
+    assert step_6_attach_scope_check(cut, replay_state) == "HOLD"
+    assert step_7_evaluate_cut(cut, replay_state) is False
+
+
+def test_step_7_fails_closed_when_active_assumption_no_longer_holds_before_replay_hold():
+    """V31-family regression: assumption-expired cuts must not fire in Step 7."""
+    s = make_state_with_crusher_on_left_baseline()
+    cut = step_1_generate_region_capacity_combinatorial(
+        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
+    )
+    assert cut is not None
+    assert cut.scope is not None
+
+    assumption_bound_cut = replace(
+        cut,
+        scope=replace(
+            cut.scope,
+            active_assumptions=(Assumption(key="unknown_key", value="v"),),
+        ),
+    )
+    assert step_6_attach_scope_check(assumption_bound_cut, s) == "HOLD"
+    assert step_7_evaluate_cut(assumption_bound_cut, s) is False
 
 
 def test_evaluate_geometric_region_capacity_returns_true():

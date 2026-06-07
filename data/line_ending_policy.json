@@ -19,7 +19,9 @@
     "scripts/restore_external_artifacts.py",
     "scripts/sync_doc_subjects.py",
     "data/review_gates/*.json",
-    "docs/PHASE_1_2_CLOSE_GATE.md"
+    "docs/PHASE_1_2_CLOSE_GATE.md",
+    "data/proof_obligations/*.json",
+    "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
   ],
   "allowed_crlf_historical_globs": [
     "BORROWED_COMPONENTS.md",

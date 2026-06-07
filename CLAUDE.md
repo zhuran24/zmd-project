@@ -53,8 +53,8 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 
 ## Current Phase: 1.2 spike close (subject projection)
 
-<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:4690e0c5fc5609b4e2ea2778f804b1b16dd30e6481e10eff2f6d36433cbaa7d9 -->
-Current phase: **Phase 1.2 spike close is not formally closed** — v31 candidate review reset the consecutive-clean counter after major/soundness findings. The close gate is **3 consecutive independent full reviews with zero major/soundness findings**; until that gate closes, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
+<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:77615921f7dd995cbbca88d2811f7226a9f4f61532b37f08464478e9ce6901de -->
+Current phase: **Phase 1.2 spike close is not formally closed** — v31 candidate review plus `v31_postmortem_consolidation` reset/kept the consecutive-clean counter at 0 after major/soundness findings. The close gate is **3 consecutive independent full reviews with zero major/soundness findings** after that anchor; until the gate closes, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
 <!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract END -->
 
 Operational notes:

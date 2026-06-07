@@ -116,6 +116,7 @@ def _make_state(
             ),
         }
     state = BState(groups=groups)
+    state.available_oracle_versions = frozenset({"binding_v1"})
     state.source_digest = source_digest
     return state
 

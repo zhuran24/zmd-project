@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "gate_id": "p1_2_proof_obligation_consolidation",
+  "status": "active_fail_closed_contract",
+  "updated_at": "2026-06-07",
+  "review_anchor": "v31_postmortem_consolidation",
+  "summary": "Consolidates v29-v31 soundness findings into machine-checkable proof obligations before the next clean-review attempt.",
+  "phase_gate_required_anchor": "v31_postmortem_consolidation",
+  "step_7_contract": {
+    "decision_function": "step_7_evaluation_attach_decision",
+    "canonical_transition_function": "step_6_attach_scope_check",
+    "boolean_guard_function": "evaluator_scope_matches_current_state",
+    "guard_obligations": [
+      "source_digest",
+      "ghost_or_exterior_scope",
+      "artifact_hashes",
+      "oracle_abstraction_version",
+      "active_assumptions"
+    ],
+    "policy": "Every Step 7 evaluator must fail closed unless the side-effect-free Step 6 attach decision is ATTACH. HOLD and QUARANTINE are both non-pruning states in the hot path."
+  },
+  "source_digest_contract": {
+    "schema_version": 2,
+    "fields": [
+      "canonical_rules",
+      "candidate_placements",
+      "mandatory_exact_instances",
+      "facility_templates",
+      "generic_io_requirements",
+      "commodity_routes",
+      "groups_static"
+    ],
+    "runtime_cache_policy": "Runtime keys whose names start with '__' are non-authoritative caches and must not participate as independent proof facts. Validators that build such caches must rebuild or invalidate them from the canonical source payload."
+  },
+  "obligations": [
+    {
+      "id": "PO-STEP7-ATTACH-MIRROR",
+      "title": "Step 7 hot-path evaluation mirrors Step 6 attachability",
+      "v_findings": ["v30_candidate", "v31_candidate", "v31_postmortem_consolidation"],
+      "required_tests": [
+        "test_step_7_fails_closed_on_source_digest_drift_before_replay_quarantine",
+        "test_step_7_fails_closed_when_oracle_version_unavailable_before_replay_hold",
+        "test_step_7_fails_closed_when_active_assumption_no_longer_holds_before_replay_hold",
+        "test_evaluate_literal_multiset_fails_closed_on_source_digest_drift"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v30_candidate_review_reset.md",
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-SOURCE-DIGEST-COVERAGE",
+      "title": "Validator/generator source facts are covered by one source-digest contract",
+      "v_findings": ["v31_candidate"],
+      "required_tests": [
+        "test_source_digest_is_content_hash_and_ignores_runtime_pose_cache",
+        "test_source_digest_tracks_group_static_fields_but_not_selected_poses"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-RUNTIME-CACHE-NON-AUTHORITY",
+      "title": "Runtime caches cannot become hidden proof sources",
+      "v_findings": ["v31_candidate"],
+      "required_tests": [
+        "test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-PHASE-GATE-PROVENANCE",
+      "title": "Phase gate provenance follows the latest resetting review/postmortem entry",
+      "v_findings": ["v31_candidate"],
+      "required_tests": [
+        "test_validator_rejects_stale_last_reset_when_later_reset_history_exists"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    }
+  ]
+}

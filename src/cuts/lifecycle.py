@@ -81,6 +81,26 @@ _FAMILY_MODE_MAP: Dict[str, Literal["literal", "geometric"]] = {
 }
 
 
+SOURCE_DIGEST_SCHEMA_VERSION = 2
+SOURCE_DIGEST_FIELD_NAMES: Tuple[str, ...] = (
+    "canonical_rules",
+    "candidate_placements",
+    "mandatory_exact_instances",
+    "facility_templates",
+    "generic_io_requirements",
+    "commodity_routes",
+    "groups_static",
+)
+
+STEP_7_EVALUATION_GUARD_OBLIGATIONS: Tuple[str, ...] = (
+    "source_digest",
+    "ghost_or_exterior_scope",
+    "artifact_hashes",
+    "oracle_abstraction_version",
+    "active_assumptions",
+)
+
+
 def _is_strict_int(value: object) -> bool:
     """Runtime schema guard: bool/float/string must not pass as an int."""
     return isinstance(value, int) and not isinstance(value, bool)
@@ -452,15 +472,9 @@ def _group_static_source_payload(state: BState) -> JsonDict:
     }
 
 
-def compute_source_digest(state: BState) -> SourceDigestStr:
-    """Return stable content digest for cross-session cut replay scope.
-
-    ``BState.source_digest`` is treated as an optional caller-side note/cache,
-    not as authority. Step 6 must be tied to the actual source payloads injected
-    into BState; otherwise a stale or hand-written digest can mask data changes.
-    """
-    parts: JsonDict = {
-        "schema_version": 2,
+def source_digest_payload(state: BState) -> JsonDict:
+    """Return the canonical source payload covered by ``compute_source_digest``."""
+    source_fields: JsonDict = {
         "canonical_rules": state.canonical_rules or {},
         "candidate_placements": state.candidate_placements or {},
         "mandatory_exact_instances": state.instance_to_facility_type or {},
@@ -469,6 +483,22 @@ def compute_source_digest(state: BState) -> SourceDigestStr:
         "commodity_routes": state.commodity_routes or {},
         "groups_static": _group_static_source_payload(state),
     }
+    if tuple(source_fields) != SOURCE_DIGEST_FIELD_NAMES:
+        raise RuntimeError(
+            "source digest payload fields drifted from SOURCE_DIGEST_FIELD_NAMES: "
+            f"payload={tuple(source_fields)!r}, contract={SOURCE_DIGEST_FIELD_NAMES!r}"
+        )
+    return {"schema_version": SOURCE_DIGEST_SCHEMA_VERSION, **source_fields}
+
+
+def compute_source_digest(state: BState) -> SourceDigestStr:
+    """Return stable content digest for cross-session cut replay scope.
+
+    ``BState.source_digest`` is treated as an optional caller-side note/cache,
+    not as authority. Step 6 must be tied to the actual source payloads injected
+    into BState; otherwise a stale or hand-written digest can mask data changes.
+    """
+    parts = source_digest_payload(state)
     blob = json.dumps(
         _source_jsonable(parts),
         sort_keys=True,
@@ -924,34 +954,31 @@ def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
     return "ATTACH"
 
 
+def step_7_evaluation_attach_decision(cut: Cut, state: BState) -> AttachDecision:
+    """Side-effect-free Step 7 precondition: evaluate only attached cuts.
+
+    V29--V31 repeatedly exposed the same failure pattern: Step 6 would HOLD or
+    QUARANTINE a cut, but a hot-path evaluator could be called first and return
+    ``True``.  Keep the Step 7 guard as a direct mirror of Step 6 so source,
+    artifact, ghost/exterior scope, oracle-version, and active-assumption
+    obligations cannot drift independently.
+
+    ``step_6_attach_scope_check`` mutates no store state; quarantine/hold
+    transitions are performed by ``src.cuts.replay``.  It is therefore safe to
+    reuse here as the single attachability predicate.
+    """
+    return step_6_attach_scope_check(cut, state)
+
+
 def evaluator_scope_matches_current_state(cut: Cut, state: BState) -> bool:
     """Fail-closed hot-path scope guard for Step 7 evaluation.
 
     Replay/Step 6 is still the authoritative lifecycle transition because it
     checks oracle availability and active assumptions.  Step 7 cannot safely
-    prune on a cut whose source, artifact, ghost, or exterior scope already
-    differs from the current BState; otherwise a stale cut can fire before the
-    replay machinery quarantines it.
+    prune on a cut whose Step 6 decision is HOLD/QUARANTINE; otherwise a stale
+    or assumption-expired cut can fire before replay/store machinery handles it.
     """
-    if cut.scope is None:
-        return False
-    if cut.scope.source_digest != compute_source_digest(state):
-        return False
-
-    is_ghost_agnostic = cut.scope.ghost_rect_id == GHOST_AGNOSTIC
-    if is_ghost_agnostic:
-        if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
-            return False
-    else:
-        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
-            return False
-        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
-            return False
-
-    for fname, expected_hash in cut.scope.artifact_hashes.items():
-        if state.artifact_hashes.get(fname) != expected_hash:
-            return False
-    return True
+    return step_7_evaluation_attach_decision(cut, state) == "ATTACH"
 
 
 def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:

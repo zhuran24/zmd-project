@@ -44,8 +44,9 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 ### Phase close gates（大节点收口）
 
-- P1.2 spike close 当前由 `data/review_gates/phase_1_2_spike_close.json` 记录为 blocked-pending-clean-reviews。v28 找到真 soundness 洞后，连续 clean 计数器归零；进入 P1.3B 前必须有 3 次连续独立完整外审零 major/soundness finding。
-- 健康检查：`python scripts/check_phase_review_gate.py`；该检查在 blocked 状态也应通过，作用是防止文档/机器状态互相撒谎。
+- P1.2 spike close 当前由 `data/review_gates/phase_1_2_spike_close.json` 记录为 blocked-pending-clean-reviews。v31 candidate + v31 postmortem consolidation 后，连续 clean 计数器仍为 0/3；进入 P1.3B 前必须有 3 次连续独立完整外审零 major/soundness finding。
+- v29-v31 同族 finding 已汇总到 `data/proof_obligations/p1_2_proof_obligations.json`，由 `scripts/check_p1_2_proof_obligations.py` 检查；这不是 clean review，而是下一包审查前的 proof-obligation 收束。
+- 健康检查：`python scripts/check_phase_review_gate.py` + `python scripts/check_p1_2_proof_obligations.py`；blocked 状态也应通过，作用是防止文档/机器状态互相撒谎。
 
 ## 链 (补连 2026-06-01)
 - [[index-packaging-cluster]] — 审查打包规范全套入口

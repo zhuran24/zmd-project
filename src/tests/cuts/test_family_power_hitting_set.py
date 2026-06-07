@@ -136,6 +136,7 @@ def _make_state(
         instance_to_facility_type=instance_to_facility_type,
         facility_templates=facility_templates,
         canonical_rules=canonical_rules,
+        available_oracle_versions=frozenset({"power_cover_v1"}),
         source_digest="test-source-digest",
     )
 

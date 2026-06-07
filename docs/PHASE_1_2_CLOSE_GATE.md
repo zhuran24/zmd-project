@@ -2,7 +2,7 @@
 
 Current gate state: BLOCKED.
 
-Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v31_candidate, and v31 found confirmed major/soundness issues. That resets/keeps the consecutive-clean counter at zero.
+Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v31_postmortem_consolidation. The v31 candidate review found confirmed major/soundness issues, and the follow-up proof-obligation postmortem found one additional V31-family Step 7/Step 6 attachability gap. That resets/keeps the consecutive-clean counter at zero.
 
 The close policy is:
 
@@ -32,4 +32,4 @@ python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
 
 At the current baseline this command is expected to fail. It should become green only after the review counter reaches 3/3 and `next_phase_entry.allowed` is true.
 
-When v29 and later reviews are completed, update the JSON counter and review history. Only after the counter reaches three consecutive clean full reviews should `next_phase_entry.allowed` become `true` and `status` become `closed`.
+When the next review packages are completed, update the JSON counter and review history. Only after the counter reaches three consecutive clean full reviews should `next_phase_entry.allowed` become `true` and `status` become `closed`.
