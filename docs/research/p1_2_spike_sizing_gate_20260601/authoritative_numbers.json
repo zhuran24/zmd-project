@@ -10,7 +10,7 @@
   },
   "numbers": {
     "cuts_tests_total": {
-      "value": 460,
+      "value": 463,
       "kind": "int",
       "recompute": "pytest_collect_only_count_src_tests_cuts",
       "stale": [

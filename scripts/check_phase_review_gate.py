@@ -142,8 +142,15 @@ def _check_source_boundaries(boundaries: list[Any], *, status: str) -> list[str]
     return errors
 
 
-def _check_evidence_paths(paths: list[Any], label: str) -> list[str]:
+def _check_evidence_paths(
+    paths: list[Any],
+    label: str,
+    *,
+    required: bool = False,
+) -> list[str]:
     errors: list[str] = []
+    if required and not paths:
+        errors.append(f"{label}.evidence_paths must contain at least one evidence path")
     for raw_path in paths:
         rel_path = require_str(raw_path, f"{label} evidence path")
         full_path = PROJECT_ROOT / rel_path
@@ -227,7 +234,13 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     reset_package = require_str(last_reset.get("review_package"), "last_reset.review_package")
     if not require_bool(last_reset.get("resets_counter"), "last_reset.resets_counter"):
         errors.append("last_reset.resets_counter must be true")
-    errors.extend(_check_evidence_paths(require_list(last_reset.get("evidence_paths"), "last_reset.evidence_paths"), "last_reset"))
+    errors.extend(
+        _check_evidence_paths(
+            require_list(last_reset.get("evidence_paths"), "last_reset.evidence_paths"),
+            "last_reset",
+            required=True,
+        )
+    )
 
     reset_entries = []
     all_reset_entries: list[tuple[int, str]] = []
@@ -267,7 +280,20 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             all_reset_entries.append((index, package))
             if package == reset_package:
                 reset_entries.append(index)
-        errors.extend(_check_evidence_paths(require_list(entry.get("evidence_paths", []), f"review_history[{index}].evidence_paths"), f"review_history[{index}]"))
+        evidence_paths = require_list(entry.get("evidence_paths"), f"review_history[{index}].evidence_paths")
+        requires_evidence = resets_counter or (
+            review_type == CLEAN_FULL_REVIEW_TYPE
+            and clean
+            and major == 0
+            and not resets_counter
+        )
+        errors.extend(
+            _check_evidence_paths(
+                evidence_paths,
+                f"review_history[{index}]",
+                required=requires_evidence,
+            )
+        )
     latest_reset_index: int | None = None
     if not reset_entries:
         errors.append(f"review_history lacks reset entry for {reset_package}")

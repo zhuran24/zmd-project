@@ -44,6 +44,7 @@ Refs:
 """
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
@@ -64,11 +65,17 @@ DIRECTION_OFFSETS = {
 
 _POSE_CACHE_KEY = "__pose_id_cache__"
 _POSE_CACHE_DIGEST_KEY = "__pose_id_cache_digest__"
-# Private process-local cache keyed by id(candidate_placements).  The legacy
-# in-source cache keys above stay reserved/ignored by source_digest, but
-# validators must not trust cache payloads embedded in authoritative source
-# dicts: JSON cannot encode tuple keys, while in-process forged dicts can.
-_POSE_CACHE_BY_CP_ID: Dict[int, Tuple[str, Dict[Tuple[str, str], Dict[str, Any]]]] = {}
+# Private process-local cache keyed by facility_pools content digest, not by
+# object identity.  The legacy in-source cache keys above stay reserved/ignored
+# by source_digest, but validators must not trust cache payloads embedded in
+# authoritative source dicts: JSON cannot encode tuple keys, while in-process
+# forged dicts can.
+#
+# Cached pose dictionaries are deep-copied on build and on return.  This keeps
+# the cache a read-only acceleration of the source payload, not a hidden proof
+# source that can be mutated through a previously returned pose or resurrected
+# by CPython object-id reuse.
+_POSE_CACHE_BY_POOLS_DIGEST: Dict[str, Dict[Tuple[str, str], Dict[str, Any]]] = {}
 
 
 def _cache_jsonable(value: Any) -> Any:
@@ -113,7 +120,7 @@ def _build_pose_cache(cp: Dict[str, Any]) -> Optional[Dict[Tuple[str, str], Dict
             pose = cast(Dict[str, Any], pose_raw)
             pid = pose.get("pose_id")
             if isinstance(pid, str):
-                cache[(pool_ft, pid)] = pose
+                cache[(pool_ft, pid)] = copy.deepcopy(pose)
     return cache
 
 
@@ -125,10 +132,13 @@ def find_pose(
     """Locate pose dict from candidate_placements.
 
     Gap 14 修 (round 31): O(1) cache (dict[pose_id, pose]) 替 linear scan.
-    Cache is private process-local state keyed by the candidate_placements object
-    identity plus a digest of ``facility_pools``.  Reserved ``__pose_id_cache__``
-    keys may appear in old in-memory/source dicts for source-digest compatibility,
-    but this helper never trusts embedded cache payloads as proof source.
+    Cache is private process-local state keyed by the canonical digest of
+    ``facility_pools``.  It deliberately avoids ``id(candidate_placements)``:
+    object identities can be reused after a source dict is released, which would
+    let stale mutable cache content masquerade as the new source payload.
+    Reserved ``__pose_id_cache__`` keys may appear in old in-memory/source dicts
+    for source-digest compatibility, but this helper never trusts embedded cache
+    payloads as proof source.
 
     Maps group_id → facility_type via instance_to_facility_type, then O(1)
     dict lookup. Returns None if any step fails.
@@ -142,21 +152,22 @@ def find_pose(
     # Lazy build cache (first call cost O(N), subsequent O(1) when source is
     # unchanged).  The digest is required for soundness because validators use
     # this helper while CutScope.source_digest hashes candidate_placements
-    # without runtime ``__*`` caches.  A stale cache must not outlive a replaced
-    # or edited facility pool.
+    # without runtime ``__*`` caches.  Cache identity is content-addressed rather
+    # than object-addressed so object id reuse cannot revive stale proof data.
     current_digest = _facility_pools_digest(cp)
     if current_digest is None:
         return None
-    cache_record = _POSE_CACHE_BY_CP_ID.get(id(cp))
-    if cache_record is not None and cache_record[0] == current_digest:
-        cache = cache_record[1]
-    else:
+    cache = _POSE_CACHE_BY_POOLS_DIGEST.get(current_digest)
+    if cache is None:
         rebuilt = _build_pose_cache(cp)
         if rebuilt is None:
             return None
         cache = rebuilt
-        _POSE_CACHE_BY_CP_ID[id(cp)] = (current_digest, cache)
-    return cache.get((ft, pose_id))
+        _POSE_CACHE_BY_POOLS_DIGEST[current_digest] = cache
+    pose = cache.get((ft, pose_id))
+    if pose is None:
+        return None
+    return copy.deepcopy(pose)
 
 
 def pose_ports(

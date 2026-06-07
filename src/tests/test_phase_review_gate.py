@@ -113,7 +113,7 @@ def test_validator_rejects_fake_closed_gate_without_post_reset_clean_reviews(tmp
     assert any("review_history-derived" in error for error in errors)
 
 
-def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path) -> None:
+def test_validator_rejects_fake_clean_reviews_without_evidence(tmp_path: Path) -> None:
     payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
     payload["status"] = "closed"
     payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
@@ -129,6 +129,33 @@ def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_p
                 "major_or_soundness_findings": 0,
                 "resets_counter": False,
                 "evidence_paths": [],
+            }
+        )
+    fake_gate = tmp_path / "fake_clean_reviews_without_evidence.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("evidence_paths must contain at least one" in error for error in errors)
+
+
+def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path) -> None:
+    payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    for index in range(3):
+        payload["review_history"].append(
+            {
+                "package": f"v33_clean_full_review_{index + 1}",
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": ["docs/PHASE_1_2_CLOSE_GATE.md"],
             }
         )
     closed_gate = tmp_path / "closed_gate.json"

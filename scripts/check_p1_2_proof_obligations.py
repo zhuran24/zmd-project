@@ -157,6 +157,30 @@ def _uses_dunder_prefix_skip(node: ast.AST) -> bool:
     return False
 
 
+def _assigns_name(tree: ast.Module, name: str) -> bool:
+    for node in ast.walk(tree):
+        targets: list[ast.expr] = []
+        if isinstance(node, ast.Assign):
+            targets.extend(node.targets)
+        elif isinstance(node, ast.AnnAssign):
+            targets.append(node.target)
+        for target in targets:
+            if isinstance(target, ast.Name) and target.id == name:
+                return True
+    return False
+
+
+def _calls_id_on_candidate_placements(node: ast.AST) -> bool:
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Call):
+            continue
+        if not isinstance(child.func, ast.Name) or child.func.id != "id":
+            continue
+        if child.args and isinstance(child.args[0], ast.Name) and child.args[0].id in {"cp", "candidate_placements"}:
+            return True
+    return False
+
+
 def _check_runtime_cache_policy(manifest: dict[str, Any], lifecycle_tree: ast.Module) -> list[str]:
     errors: list[str] = []
     source_contract = manifest.get("source_digest_contract")
@@ -192,6 +216,16 @@ def _check_runtime_cache_policy(manifest: dict[str, Any], lifecycle_tree: ast.Mo
     )
     if _uses_dunder_prefix_skip(cache_jsonable_fn):
         errors.append("_cache_jsonable must not ignore schema-valid facility pool keys with startswith('__')")
+
+    find_pose_fn = _function_def(
+        candidate_tree,
+        "find_pose",
+        path=CANDIDATE_PLACEMENTS_PATH,
+    )
+    if _assigns_name(candidate_tree, "_POSE_CACHE_BY_CP_ID"):
+        errors.append("candidate placement runtime cache must not be keyed by candidate_placements object id")
+    if _calls_id_on_candidate_placements(find_pose_fn):
+        errors.append("find_pose must not key runtime cache by id(candidate_placements)")
     return errors
 
 

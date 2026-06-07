@@ -332,6 +332,81 @@ def test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced
 
 
 
+def test_find_pose_return_value_is_not_authoritative_mutation_channel():
+    state = _make_state(
+        crusher_poses=["p7"],
+        refinery_poses=["p3"],
+        cell_owner={(9, 10): ("refinery", 0)},
+    )
+    state.candidate_placements = copy.deepcopy(_CANDIDATE_PLACEMENTS)
+    source_pose = state.candidate_placements["facility_pools"]["manufacturing_3x3"][0]
+    source_pose["output_port_cells"] = []
+
+    returned_pose = find_pose(state, "crusher", "p7")
+    assert returned_pose is not None
+    returned_pose["output_port_cells"] = [
+        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+    ]
+
+    assert source_pose["output_port_cells"] == []
+
+
+def test_port_exposure_generator_ignores_orphaned_same_digest_pose_cache(monkeypatch):
+    monkeypatch.setenv("EXACT_F3_GENERATOR_ENABLED", "1")
+    state = _make_state(
+        crusher_poses=["p7"],
+        refinery_poses=["p3"],
+        cell_owner={(9, 10): ("refinery", 0)},
+    )
+    state.candidate_placements = copy.deepcopy(_CANDIDATE_PLACEMENTS)
+    state.candidate_placements["facility_pools"]["manufacturing_3x3"][0]["output_port_cells"] = []
+    source_digest = compute_source_digest(state)
+
+    returned_pose = find_pose(state, "crusher", "p7")
+    assert returned_pose is not None
+    state.candidate_placements["facility_pools"] = copy.deepcopy(
+        state.candidate_placements["facility_pools"]
+    )
+    assert compute_source_digest(state) == source_digest
+
+    returned_pose["output_port_cells"] = [
+        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+    ]
+    assert (
+        state.candidate_placements["facility_pools"]["manufacturing_3x3"][0]["output_port_cells"]
+        == []
+    )
+
+    cuts = generate_port_exposure_cuts(
+        state,
+        target_poses=[("crusher", 0, "p7")],
+    )
+    assert cuts == []
+
+
+def test_port_exposure_generator_ignores_mutated_find_pose_return(monkeypatch):
+    monkeypatch.setenv("EXACT_F3_GENERATOR_ENABLED", "1")
+    state = _make_state(
+        crusher_poses=["p7"],
+        refinery_poses=["p3"],
+        cell_owner={(9, 10): ("refinery", 0)},
+    )
+    state.candidate_placements = copy.deepcopy(_CANDIDATE_PLACEMENTS)
+    state.candidate_placements["facility_pools"]["manufacturing_3x3"][0]["output_port_cells"] = []
+
+    returned_pose = find_pose(state, "crusher", "p7")
+    assert returned_pose is not None
+    returned_pose["output_port_cells"] = [
+        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+    ]
+
+    cuts = generate_port_exposure_cuts(
+        state,
+        target_poses=[("crusher", 0, "p7")],
+    )
+    assert cuts == []
+
+
 def test_validate_port_exposure_ignores_forged_runtime_pose_cache_with_matching_digest():
     state = _make_state(
         crusher_poses=["p7"],
