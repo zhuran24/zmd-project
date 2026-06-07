@@ -5,8 +5,8 @@ The docs tree uses a subject/projection model inspired by the CC memory
 instance/projection transclusion scheme:
 
 - subject fields live in docs/subjects/*.md;
-- projection blocks live in concrete docs;
-- docs/DOC_SUBJECT_PROJECTIONS.json declares every projection;
+- projection blocks live in concrete docs and memory nodes;
+- cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json declares every projection;
 - --check fails on drift;
 - --sync copies subject fields to all projections;
 - --absorb updates a subject field from an intentionally edited projection,
@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-REGISTRY_PATH = REPO_ROOT / "docs" / "DOC_SUBJECT_PROJECTIONS.json"
+REGISTRY_PATH = REPO_ROOT / "cc_context" / "knowledge" / "PROJECT_SUBJECT_PROJECTIONS.json"
 
 FIELD_RE = re.compile(
     r"<!--\s*SUBJECT-FIELD:(?P<field>[A-Za-z0-9_.-]+)\s+START\s*-->\n"
@@ -108,7 +108,7 @@ def load_registry(path: Path = REGISTRY_PATH) -> tuple[dict[str, Path], list[Pro
         raise SubjectSyncError(f"registry not found: {rel(path)}")
     registry = json.loads(read_text(path))
     if registry.get("schema_version") != 1:
-        raise SubjectSyncError("docs/DOC_SUBJECT_PROJECTIONS.json schema_version must be 1")
+        raise SubjectSyncError("cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json schema_version must be 1")
 
     subjects: dict[str, Path] = {}
     for subject_id, info in registry.get("subjects", {}).items():

@@ -1,13 +1,13 @@
 # docs/ — documentation subject/projection front door
 
-<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary START sha256:ca8444165fd1c2128cfdc08a6ad8da370a426d6727028353da593ea29d1768f2 -->
-The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
+<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary START sha256:e99ba762ef5fb654e50fe091103cde7cff8cee13657021cc04d593d5bb9d3954 -->
+The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs and memory nodes carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
 <!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary END -->
 
 ## High-level routes
 
 - `docs/subjects/` — abstract subject layer; edit these when the context-independent truth changes.
-- `docs/DOC_SUBJECT_PROJECTIONS.json` — subject-to-document projection registry.
+- `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json` — repo-wide subject-to-projection registry for docs and memory.
 - `docs/SUBJECT_TREE.md` — architecture and maintenance runbook.
 - `docs/DOC_TREE_COMPLETENESS.md` — explicit done criteria for documentation-tree closeout.
 - `docs/项目说明/` — living project book.

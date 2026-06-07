@@ -1,13 +1,13 @@
 ---
 name: github-backup
-description: "2026-06-01 起项目+CC上下文实时备份到私有 GitHub；当前 repo_url 由 INSTANCE 槽从 git remote 推导。 每 commit 自动 push (post-commit hook). memory GitHub 发布面在 cc_context/memory, 当前观察点另有 _cc_live_memory 字节镜像, 改 memory 后两边要同步. 含 gh 认证/credential re-setup 踩坑点 (换机重装必看)."
+description: "2026-06-01 起项目+CC上下文实时备份到私有 GitHub；当前 repo_url 由 INSTANCE 槽从 git remote 推导。 当前不再假设每 commit 自动 push；发布通过显式 GitHub 上传包或普通 git push 分支完成。 memory GitHub 发布面在 cc_context/memory, 当前观察点另有 _cc_live_memory 字节镜像, 改 memory 后两边要同步. 含 gh 认证/credential re-setup 踩坑点 (换机重装必看)."
 metadata: 
   node_type: memory
   type: reference
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
-2026-06-01 起: 仓库 + CC 上下文实时备份到 GitHub；当前目标由 `repo_url` INSTANCE 从 git remote 推导（本观察点为 `github.com/zhuran24/zmd`）。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。**2026-06-06 supersede**: 当前树不再允许明文 API key / token 作为“私库可接受风险”存在；Gemini 脚本只读 `GEMINI_API_KEY`, preflight 有 secret scan。**硬约束**: ① 仍不要随意翻 public; ② 正常开发不 rebase / 不重写历史, 除非用户明确决定做 secret-history purge; ③ 免费私库未必有 push-protection, 所以当前树 secret=0 必须由本地 gate 保证。
+2026-06-01 起: 仓库 + CC 上下文开始备份到 GitHub；当前目标由 `repo_url` INSTANCE 从 git remote 推导（本观察点为 `github.com/zhuran24/zmd`）。动机: 老电脑坏过、得找人从硬盘提数据, 不能只靠本地。**2026-06-06 supersede**: 当前树不再允许明文 API key / token 作为“私库可接受风险”存在；Gemini 脚本只读 `GEMINI_API_KEY`, preflight 有 secret scan。**硬约束**: ① 仍不要随意翻 public; ② 正常开发不 rebase / 不重写历史, 除非用户明确决定做 secret-history purge; ③ 免费私库未必有 push-protection, 所以当前树 secret=0 必须由本地 gate 保证。
 
 ## ⚠️ 第三条暴露轴: review 包外发给 LLM 厂商 (跟 GitHub-public 不同, 2026-06-02 实证)
 
@@ -19,13 +19,16 @@ key 留私库历史防的是 GitHub 公开; 但**把仓库文件打成 review �
 
 详见 [[gemini-math-consultant]] (key 来源) + [[windows-ninth-review-pending]] (v22 漏 + 轮换待定的当时状态) + 打包簇 [[index-packaging-cluster]]。
 
-## 机制
-- **每次 commit 自动 push**: `.git/hooks/post-commit` 跑 `git push origin HEAD`, 失败记 `.git/auto-push.log` 但不阻断 commit (下次成功 push 补齐)。正常 commit 即实时上 GitHub。
-- **credential helper = gh 全路径** (`gh auth setup-git` 配的 `!'C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Links\gh.exe' auth git-credential`), **PATH 无关**, 任何 shell / hook 里 git push 都能认证。
-- git 身份 (repo-local): `zhuran24 <3240314610@qq.com>`。
+## 当前发布机制（2026-06-06 之后）
+- **显式发布，不再假设自动推送**：当前发布面使用 GitHub 上传包或普通 `git push origin <branch>`。旧 `post-commit auto-push` 是 CC 本机历史机制，不是 repo-native 契约。
+- **repo-native gate**：`scripts/preflight_gate.py` 是权威门禁；本地 hook 由 `.githooks/pre-commit` + `scripts/install_hooks.py` 安装，只是便利层。GitHub 侧应跑 `.github/workflows/project_foundation.yml`。
+- **credential helper**：换机时仍可用 `gh auth setup-git` 建立 GitHub 凭据，但不要把 token/key 写入仓库或 memory。
+- **git 身份**：repo-local author 仍由本机 `git config user.name/user.email` 决定。
 
-## CC memory 备份要点 (关键, 最易漏)
-memory 的 GitHub 发布面在 `cc_context/memory/`；当前 clean 观察点还跟踪 `_cc_live_memory/` 作为字节镜像，二者必须同步。旧 CC live path `~/.claude/projects/D-----zmd/memory` 只作为本机历史来源，不再是 repo-native gate 的默认路径。**改了 memory 后, commit 前要同步 `cc_context/memory/` 与 `_cc_live_memory/` 并运行 memory tree check**。`cc_context/` 结构 (2026-06-01 整理): `cc_context/memory/` 记忆快照 + `global_CLAUDE.md` + `README_CC_HANDOFF.md` + `HANDOFF.md`; **维护脚本在 `cc_context/tools/`** (normalize_memory_links / report_link_graph / deorphan_links / extract_session_turns / list_unresolved_links / **stamp_living_status** [pre-commit 调, 自动 stamp handoff 可推导现状字段] 等, 以实际 ls 为准); **审查打包工件在 `cc_context/review/`** (build_v22/v23/v24*.py / GPT_v24复审_prompt.md 等 / 打包原则_汇总.md / deps / zip, 随版本增长, 以实际 ls 为准)。root 只放项目源。
+## CC memory 备份要点（当前 repo-native 规则）
+memory 的 GitHub 发布面在 `cc_context/memory/`；当前 clean 观察点还跟踪 `_cc_live_memory/` 作为字节镜像，二者必须同步。旧 CC live path `~/.claude/projects/D-----zmd/memory` 只作为本机历史来源，不再是 repo-native gate 的默认路径。**改了 memory 后，同步 `cc_context/memory/` 与 `_cc_live_memory/` 并运行 `python scripts/check_memory_tree.py --require-live-mirror`**。
+
+`cc_context/` 结构：`cc_context/memory/` 记忆快照 + `global_CLAUDE.md` + `README_CC_HANDOFF.md` + `HANDOFF.md`; 维护脚本在 `cc_context/tools/`; 审查打包工件在 `cc_context/review/`。root 只放项目源。
 
 ## gh 认证 re-setup 踩坑 (换机 / 重装时按这个走, 省得再踩)
 1. gh 装 winget 用户级: `C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Links\gh.exe` (新 shell 才进 PATH, 老 shell 用全路径)。
@@ -37,12 +40,13 @@ memory 的 GitHub 发布面在 `cc_context/memory/`；当前 clean 观察点还�
 ## 不入库 (gitignore 已挡)
 `.venv` / `.artifacts` / `.upstream_clones` / `_codex_archive` / 缓存 / `*.zip` `*.7z` (review 包 regenerable) / `data/checkpoints|solutions|telemetry`。`data/preprocessed/candidate_placements.json` 53MB 入库 (>50MB GitHub 警告但 <100MB 硬限, 推得上)。
 
-## 已启用自动化 hook (2026-06-01)
-- **pre-commit memory-sync** (`.git/hooks/pre-commit`, 机器专属不入库): 每 commit 前把 live memory (`~/.claude/.../memory`) 镜像进 `cc_context/memory` + git add (temp-swap 安全式, cp 失败不动旧备份)。免手动 sync, 每个 commit 自动带最新记忆。
-  - ⚠️ **预期行为非失败 (改 memory 时反复遇到)**: 只改了 live memory 时, **首次 `git commit` 常报 "nothing to commit"** —— 因为 hook 在这次 commit 的快照算完后才 git-add 同步的 memory, 留在 index 里。**再 `git commit` 一次**即成功 (两步时序)。post-commit 已抢先 push 时, 后续手动 push 报 **"Everything up-to-date"** 也是正常 (已上去了)。
-  - **跨分支 (spike) 改动用 git worktree**: 守 PROJECT_LOCK 的 spike/master 隔离, 改 spike 代码走 `git worktree add <wt> <spike-branch>` + `git -C <wt> commit` (共用同一 `.git`, 不动 master working tree)。**验 push 已落必须 `git ls-remote origin <branch>`** —— worktree commit 的 post-commit push log 写进 worktree 自己的 git dir, **不进主 `.git/auto-push.log`**, 翻主 log 看不到 (本 session 一度误判 spike 没 push)。**spike commit 用 `--no-verify` 是正当例外** (与 [[autopilot-with-review-gate]] "别 --no-verify" 抵触但合理): pre-commit 的 memory-sync + stamp_living_status 会把整个 `cc_context/memory` git-add 进 spike commit, 污染历来 clean、off-老-master、本无 `cc_context/memory` 的 spike 分支 (且该 hook 对 spike 分支报错跳过、非验证闸) → spike commit 走 `--no-verify` 正确且与分支历史一致。
-- **实例/分身 transclusion 引擎** (2026-06-02, `.git/hooks/pre-commit` 在 memory-sync **之前**调 `cc_context/tools/stamp_living_status.py --sync --memory-dir <live-or-repo-memory>`, fail-soft `|| true` 绝不阻断 commit): 记忆树的**单一真相源 + transclusion** 模型。`INSTANCES` 注册表 = 一批**可推导事实**的唯一权威值 (`latest_review_package` 读 `cc_context/review/LATEST_PACKAGE.json` / `spike_head` / `current_phase` 读 CLAUDE.md / `repo_url` 读 git remote / `current_head`)。任意 memory 节点里 `<!-- INSTANCE:<id> -->…<!-- /INSTANCE:<id> -->` 槽 (示例用 `<id>` 占位, 真槽 id 用注册表真名) 是该实例的**分身**; 引擎每 commit 扫**全树**把实例当前值 transclude 进所有分身槽 → **重复的可推导值结构上不可能 drift** (改实例源, 一刷全分身同步; 同一 `repo_url` 现投影在 handoff + review_strategy 两处)。**这是治"现状/重复值漏更"根因的强制函数** —— 那根因 = 这些值散多节点、没强制函数, 光记规则 (被动文本) 治不住 (记完 rule#7 又犯)。**只治可推导值; 规则/判断靠 wikilink 不 transclude** (逐字副本满树=clutter)。另: handoff 判断散文没提最新包版本时 **stderr 大声 warn** (判断类推不出只能 warn)。**护栏**: 只改槽内、resolver 失败保留旧值不 blank、逐文件 try/except、幂等。**扩展**: 加实例=往 INSTANCES 加 resolver; 加分身=节点里插 `INSTANCE:id` 槽。**2026-06-06 supersede**: 引擎已 repo-native, 默认 memory dir = `cc_context/memory`, 并支持 `--check/--sync/--memory-dir`; preflight 现在会硬检查 INSTANCE drift。hook 机器本地仍不入库, 换机要按新参数重建。模型详 [[memory-tree-structural-health]] / [[memory-tree-publish-safety]]。
-- **SessionEnd WIP 兜底** (`.claude/settings.json` SessionEnd → `scripts/cc_wip_backup.ps1`, 入库随备份走): session 优雅退出若有未提交改动, 自动 `git add -A` + commit `SessionEnd WIP auto-checkpoint` (→ pre/post-commit 链同步 memory + push)。堵 session 间丢 WIP 的窗口。**机器崩溃(进程被杀)不 fire**, 崩溃靠 post-commit auto-push + 勤 commit 兜。
+## 旧 CC hook 机制（历史，不再作为当前契约）
+旧环境曾有机器本地 `.git/hooks/pre-commit` / `post-commit` 自动 memory-sync、stamp、push。该机制依赖外部 CC live path 和本机 GitHub 凭据，**不是当前 repo-native publish contract**。当前规则是：
+
+- 本地便利 hook：运行 `python scripts/install_hooks.py` 安装 tracked `.githooks/pre-commit`。
+- 强制门禁：直接运行 `python scripts/preflight_gate.py`；CI 运行 `python scripts/preflight_gate.py --ci --base-ref <ref>`。
+- memory currentness：`cc_context/tools/stamp_living_status.py` 已 repo-native，默认可检查 `cc_context/memory`，preflight 会检查 INSTANCE drift。
+- live mirror：如果 `_cc_live_memory/` 存在，preflight 要求它与 `cc_context/memory/` 字节一致。
 
 ### ⚠️ 维护义务 (用户明确要记: "以后才会知道要及时去整理")
 SessionEnd 会产生 `SessionEnd WIP auto-checkpoint` commit, 在历史里**会堆积**。**周期性 squash 整理** —— 建议 phase boundary / GPT review 打包前, 把连续的 WIP auto-checkpoint commit squash 成一个有意义的 commit, 否则历史越来越乱、git log/bisect 难用。这是已知 trade-off (用户接受 "WIP 可事后 squash" 换不丢活)。跟 [[memory-currency-protocol]] 同精神 (周期维护别让东西堆死)。

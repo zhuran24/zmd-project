@@ -6,8 +6,8 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 ## 4层审查体系
 
-### 第1层：Preflight Gate（每次 commit 自动触发）
-- 脚本：`scripts/preflight_gate.py`，通过 `.git/hooks/pre-commit` 挂载
+### 第1层：Preflight Gate（本地 hook + CI 显式触发）
+- 脚本：`scripts/preflight_gate.py`；本地便利 hook 由 `.githooks/pre-commit` + `scripts/install_hooks.py` 安装，CI 使用 `--ci --base-ref`
 - 检查项（实核 ~8 项: 冻结hash/禁止路径/AI安全合同/精确·探索隔离/R-N audit 覆盖/research_audit 覆盖/mypy/ruff + 核心测试 ~108 个）。**项数/测试数随加守卫漂移, 以 `scripts/preflight_gate.py` 实跑为准, 别记死数字**
 - 耗时 ~2.5s，全自动，零人工
 

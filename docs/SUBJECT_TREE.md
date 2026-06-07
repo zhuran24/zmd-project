@@ -13,14 +13,14 @@ The project uses **one logical knowledge tree with two physical projections**. `
 Living/current claims should flow through subject fields and registered projection slots. Historical review notes, raw transcripts, dated decisions, and evidence archives should remain evidence nodes: they may link to subjects, but they should not be auto-rewritten into present-tense truth.
 <!-- DOC-SUBJECT:project_knowledge_tree FIELD:projection_rule END -->
 
-<!-- DOC-SUBJECT:doc_tree_architecture FIELD:governance_gate_summary START sha256:7adb5eada37f191c32fc8321b84bdc8a2b9208aa016d0c3e37a82790430a43bb -->
-Preflight runs `python scripts/sync_doc_subjects.py --check`. A changed subject with stale projections, or an edited projection that has not been absorbed into its subject, blocks the gate instead of silently drifting.
+<!-- DOC-SUBJECT:doc_tree_architecture FIELD:governance_gate_summary START sha256:ea14d6f70199027bcb3e34f048060ae94a27de922bdb37c496043a2fef405272 -->
+Preflight runs `python scripts/sync_doc_subjects.py --check` against `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json`. A changed subject with stale projections, or an edited projection that has not been absorbed into its subject, blocks the gate instead of silently drifting.
 <!-- DOC-SUBJECT:doc_tree_architecture FIELD:governance_gate_summary END -->
 
 ## Components
 
 1. **Subjects** live in `docs/subjects/*.md`. They contain `SUBJECT-FIELD` blocks.
-2. **Projection registry** lives in `docs/DOC_SUBJECT_PROJECTIONS.json`. It declares every concrete document projection.
+2. **Projection registry** lives in `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json`. It declares every concrete docs/memory projection.
 3. **Projection slots** live in concrete Markdown files and are bounded by `DOC-SUBJECT` markers.
 4. **Sync tool** lives at `scripts/sync_doc_subjects.py`.
 5. **Preflight gate** runs `python scripts/sync_doc_subjects.py --check`.

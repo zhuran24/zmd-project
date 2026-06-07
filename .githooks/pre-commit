@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -eu
+
+PYTHON_BIN=${PYTHON_BIN:-python}
+exec "$PYTHON_BIN" scripts/preflight_gate.py --hook

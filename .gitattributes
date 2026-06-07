@@ -1,3 +1,16 @@
 # Byte-stable project artifacts: keep hash-gated JSON files LF-only across Windows/Linux checkouts.
 rules/*.json text eol=lf
 data/preprocessed/*.json text eol=lf
+
+# Repo-native guardrails: keep generated gates and CI metadata LF-only without
+# mass-renormalizing historical prose archives.
+.githooks/* text eol=lf
+.github/workflows/*.yml text eol=lf
+cc_context/knowledge/* text eol=lf
+data/external_artifacts.json text eol=lf
+data/line_ending_policy.json text eol=lf
+data/artifact_boundaries.json text eol=lf
+scripts/check_*.py text eol=lf
+scripts/external_artifacts.py text eol=lf
+scripts/install_hooks.py text eol=lf
+scripts/restore_external_artifacts.py text eol=lf

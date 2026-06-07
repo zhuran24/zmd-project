@@ -148,5 +148,5 @@
 - [CP-SAT 不支持 AddLazyConstraint](reference_cp_sat_no_add_lazy_constraint.md) — OR-Tools 9.15 Python 无此 API. 必走 LBBD 外循环 (solve → verify → cut → rebuild/resolve).
 - [F9 area-only invariant (PROJECT_LOCK 锁)](reference_f9_area_only_not_density.md) — F9 generator 只接受 area_capacity_overflow, 拒 routing/binding/pcr. Evaluator 必 area-based. 严格 > 才 cut.
 - [IP v2 蓝图 LP 建模规则](reference_ip_v2_blueprint_lp_modeling.md) — 外部源只有矿石 (硬白名单), unloader/storager 是内部 routing 不是源; 采种机 1→2 倍增. (annotate 脚本未进 git)
-- [GitHub 实时备份](reference_github_backup.md) — 推私有库 zhuran24/endfield-exact-solver; 每 commit auto-push (post-commit hook); memory 改后 sync cc_context (spike commit 用 --no-verify 是正当例外); **绝不翻 public / 禁 rebase**; gh re-setup 见文件.
+- [GitHub 实时备份](reference_github_backup.md) — 当前发布目标为 zhuran24/zmd；使用 GitHub 上传包或普通 git push 推分支，不再假设旧 post-commit auto-push。memory 改后必须保持 `cc_context/memory/` 与 `_cc_live_memory/` 镜像一致；不要随意翻 public。
 - [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 不稳要 Workflow resume.

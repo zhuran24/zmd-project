@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "description": "Small, safe LF policy for repo-native gates and hash-sensitive contracts. This intentionally avoids mass-renormalizing historical archive prose.",
+  "required_lf_globs": [
+    ".gitattributes",
+    ".github/workflows/*.yml",
+    ".githooks/*",
+    "cc_context/knowledge/*.json",
+    "cc_context/knowledge/*.md",
+    "data/external_artifacts.json",
+    "data/line_ending_policy.json",
+    "data/artifact_boundaries.json",
+    "rules/*.json",
+    "data/preprocessed/*.json",
+    "scripts/check_*.py",
+    "scripts/external_artifacts.py",
+    "scripts/install_hooks.py",
+    "scripts/preflight_gate.py",
+    "scripts/restore_external_artifacts.py",
+    "scripts/sync_doc_subjects.py"
+  ],
+  "allowed_crlf_historical_globs": [
+    "BORROWED_COMPONENTS.md",
+    "CHANGELOG.md",
+    "RESTORE.md",
+    ".artifacts/**"
+  ]
+}

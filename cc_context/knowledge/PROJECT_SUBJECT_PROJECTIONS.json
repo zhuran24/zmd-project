@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Documentation subject/projection registry. Subjects are context-independent sources; projections are concrete document branches synchronized by scripts/sync_doc_subjects.py.",
+  "description": "Repository-wide subject/projection registry. Subjects are context-independent sources; projections are concrete document and memory branches synchronized by scripts/sync_doc_subjects.py.",
   "subjects": {
     "authoritative_numbers": {
       "path": "docs/subjects/authoritative_numbers.md",

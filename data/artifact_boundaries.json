@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "description": "Boundary between tracked historical evidence under .artifacts/ and ignored regenerable runtime artifacts.",
+  "tracked_historical_evidence": [
+    {
+      "path_prefix": ".artifacts/v28_gpt_review/",
+      "reason": "Preserved Phase 1.2 v28 external review evidence and patched-file reproduction material."
+    },
+    {
+      "path_prefix": ".artifacts/phase3b_accel_tuning/",
+      "reason": "Preserved Phase 3B tuning scoreboards referenced by historical roadmap/memory."
+    },
+    {
+      "path_prefix": ".artifacts/phase3b_ai_accel_20260429/",
+      "reason": "Preserved AI acceleration feature dataset snapshot used by historical analysis."
+    },
+    {
+      "path_prefix": ".artifacts/_v28_",
+      "reason": "One-off v28 review hygiene helper scripts kept as evidence helpers."
+    }
+  ],
+  "ignored_runtime_artifact_prefixes": [
+    ".artifacts/takeover_read_20260607/",
+    ".artifacts/industrial_planner_checked_artifacts/",
+    ".artifacts/industrial_planner_single_base_delivery_surface_alignment/",
+    ".pytest_cache/",
+    ".pytest_tmp/",
+    ".ruff_cache/",
+    ".mypy_cache/"
+  ]
+}
