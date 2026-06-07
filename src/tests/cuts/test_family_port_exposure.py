@@ -17,10 +17,12 @@ Coverage:
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
+from dataclasses import replace
 
 from src.cuts.families.port_exposure import validate_port_exposure
-from src.cuts.helpers.candidate_placements import find_pose
+from src.cuts.helpers.candidate_placements import _facility_pools_digest, find_pose
 from src.cuts.oracles.port_exposure_oracle import generate_port_exposure_cuts
 from src.cuts.lifecycle import (
     AnonymousSlotRef,
@@ -38,6 +40,8 @@ from src.cuts.lifecycle import (
     step_6_attach_scope_check,
     step_7_evaluate_cut,
 )
+from src.cuts.replay import replay_cut
+from src.cuts.store import CutStore
 
 
 CANONICAL_RULES = {
@@ -148,6 +152,20 @@ def _make_port_exposure_cut(
         validator_version="v1.0",
     )
 
+
+
+def _with_valid_integrity(cut: Cut) -> Cut:
+    assert cut.cert is not None
+    cert_hash = hashlib.sha256(cut.cert.cert_payload).hexdigest()
+    return replace(
+        cut,
+        cert=OracleCert(
+            cert_kind=cut.cert.cert_kind,
+            cert_payload=cut.cert.cert_payload,
+            cert_hash=cert_hash,
+        ),
+        oracle_cert_hash=cert_hash,
+    )
 
 def _make_state(
     *,
@@ -310,6 +328,47 @@ def test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced
 
     assert vr.kind == "unsound"
     assert "front_cell" in (vr.detail or "")
+
+
+
+
+def test_validate_port_exposure_ignores_forged_runtime_pose_cache_with_matching_digest():
+    state = _make_state(
+        crusher_poses=["p7"],
+        refinery_poses=["p3"],
+        cell_owner={(9, 10): ("refinery", 0)},
+    )
+    state.candidate_placements = copy.deepcopy(_CANDIDATE_PLACEMENTS)
+    pool = state.candidate_placements["facility_pools"]["manufacturing_3x3"]
+    real_p7_no_port = pool[0]
+    real_p7_no_port["output_port_cells"] = []
+    forged_p7_with_port = copy.deepcopy(real_p7_no_port)
+    forged_p7_with_port["output_port_cells"] = [
+        {"x": 10, "y": 10, "dir": "W", "commodity": "test"},
+    ]
+    source_digest = compute_source_digest(state)
+
+    state.candidate_placements["__pose_id_cache_digest__"] = _facility_pools_digest(
+        state.candidate_placements
+    )
+    state.candidate_placements["__pose_id_cache__"] = {
+        ("manufacturing_3x3", "p7"): forged_p7_with_port,
+        ("manufacturing_3x3", "p3"): pool[1],
+    }
+    assert compute_source_digest(state) == source_digest
+
+    cut = _with_valid_integrity(
+        _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=state)
+    )
+    vr = validate_port_exposure(cut, state, CANONICAL_RULES)
+    assert vr.kind == "unsound"
+    assert "not in facility" in (vr.detail or "")
+
+    store = CutStore()
+    store.add_cut(cut)
+    decision = replay_cut(cut, state, store, canonical_rules=CANONICAL_RULES)
+    assert decision == "QUARANTINE"
+    assert not store.is_active(cut.cut_id)
 
 
 def _make_dunder_facility_state(*, producer_port_cell: tuple[int, int] = (10, 10)) -> BState:

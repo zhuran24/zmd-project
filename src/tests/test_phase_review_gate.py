@@ -96,3 +96,45 @@ def test_validator_rejects_stale_last_reset_when_later_reset_history_exists(tmp_
 
     assert "phase_1_2_spike_close" in summary
     assert any("last_reset.review_package must match the latest resetting" in error for error in errors)
+
+
+def test_validator_rejects_fake_closed_gate_without_post_reset_clean_reviews(tmp_path: Path) -> None:
+    payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    fake_gate = tmp_path / "fake_closed_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("review_history-derived" in error for error in errors)
+
+
+def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path) -> None:
+    payload = json.loads(GATE_PATH.read_text(encoding="utf-8"))
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    for index in range(3):
+        payload["review_history"].append(
+            {
+                "package": f"v33_clean_full_review_{index + 1}",
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [],
+            }
+        )
+    closed_gate = tmp_path / "closed_gate.json"
+    closed_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    summary, errors = check_phase_review_gate.check_gate(closed_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert errors == []

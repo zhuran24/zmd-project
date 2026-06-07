@@ -19,6 +19,7 @@ DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
 
 OPEN_STATUSES = {"blocked_pending_clean_reviews", "open", "blocked"}
 CLOSED_STATUS = "closed"
+CLEAN_FULL_REVIEW_TYPE = "independent_full_external"
 
 
 class GateError(RuntimeError):
@@ -94,6 +95,28 @@ def _function_body_is_fail_closed_not_implemented(source_path: Path, symbol: str
         return len(body) == 1 and _is_not_implemented_raise(body[0])
     raise GateError(f"source boundary symbol not found: {rel(source_path)}::{symbol}")
 
+
+
+def _review_history_clean_counter(
+    records: list[dict[str, Any]],
+    *,
+    latest_reset_index: int,
+) -> int:
+    """Derive the consecutive clean full-review counter from review_history.
+
+    The JSON counter is intentionally redundant: it is a human-readable summary,
+    not authority.  A gate is ready only when the review history after the latest
+    reset contains the required consecutive independent full external reviews.
+    """
+    count = 0
+    for record in records[latest_reset_index + 1:]:
+        if record["review_type"] != CLEAN_FULL_REVIEW_TYPE:
+            continue
+        if record["clean"] and record["major"] == 0 and not record["resets_counter"]:
+            count += 1
+        else:
+            count = 0
+    return count
 
 def _check_source_boundaries(boundaries: list[Any], *, status: str) -> list[str]:
     errors: list[str] = []
@@ -208,32 +231,65 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
 
     reset_entries = []
     all_reset_entries: list[tuple[int, str]] = []
+    history_records: list[dict[str, Any]] = []
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
         package = require_str(entry.get("package"), f"review_history[{index}].package")
+        review_type = require_str(entry.get("review_type"), f"review_history[{index}].review_type")
         clean = require_bool(entry.get("clean"), f"review_history[{index}].clean")
         major = require_int(
             entry.get("major_or_soundness_findings"),
             f"review_history[{index}].major_or_soundness_findings",
         )
+        resets_counter = require_bool(
+            entry.get("resets_counter", False),
+            f"review_history[{index}].resets_counter",
+        )
+        history_records.append(
+            {
+                "index": index,
+                "package": package,
+                "review_type": review_type,
+                "clean": clean,
+                "major": major,
+                "resets_counter": resets_counter,
+            }
+        )
         if clean and major != 0:
             errors.append(f"review_history[{index}] is clean but has {major} major/soundness findings")
-        if not clean and major == 0 and require_bool(entry.get("resets_counter", False), f"review_history[{index}].resets_counter"):
+        if clean and resets_counter:
+            errors.append(f"review_history[{index}] is clean but resets the clean-review counter")
+        if not clean and major == 0 and resets_counter:
             errors.append(f"review_history[{index}] resets counter but has zero major/soundness findings")
-        if entry.get("resets_counter") is True:
+        if not clean and major > 0 and not resets_counter:
+            errors.append(f"review_history[{index}] has major/soundness findings but does not reset counter")
+        if resets_counter:
             all_reset_entries.append((index, package))
             if package == reset_package:
                 reset_entries.append(index)
         errors.extend(_check_evidence_paths(require_list(entry.get("evidence_paths", []), f"review_history[{index}].evidence_paths"), f"review_history[{index}]"))
+    latest_reset_index: int | None = None
     if not reset_entries:
         errors.append(f"review_history lacks reset entry for {reset_package}")
-    if all_reset_entries and all_reset_entries[-1][1] != reset_package:
-        latest_index, latest_package = all_reset_entries[-1]
-        errors.append(
-            "last_reset.review_package must match the latest resetting "
-            f"review_history entry: review_history[{latest_index}]={latest_package!r}, "
-            f"last_reset={reset_package!r}"
-        )
+    if all_reset_entries:
+        latest_reset_index, latest_package = all_reset_entries[-1]
+        if latest_package != reset_package:
+            errors.append(
+                "last_reset.review_package must match the latest resetting "
+                f"review_history entry: review_history[{latest_reset_index}]={latest_package!r}, "
+                f"last_reset={reset_package!r}"
+            )
+        else:
+            derived_clean_count = _review_history_clean_counter(
+                history_records,
+                latest_reset_index=latest_reset_index,
+            )
+            if clean_count != derived_clean_count:
+                errors.append(
+                    "counters.consecutive_clean_full_reviews_after_reset "
+                    f"{clean_count} != review_history-derived {derived_clean_count} "
+                    f"since latest reset {reset_package!r}"
+                )
 
     errors.extend(_check_doc_markers(require_list(gate.get("required_doc_markers"), "required_doc_markers")))
     errors.extend(_check_source_boundaries(require_list(gate.get("source_boundaries", []), "source_boundaries"), status=status))

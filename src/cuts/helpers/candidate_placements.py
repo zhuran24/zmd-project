@@ -64,6 +64,11 @@ DIRECTION_OFFSETS = {
 
 _POSE_CACHE_KEY = "__pose_id_cache__"
 _POSE_CACHE_DIGEST_KEY = "__pose_id_cache_digest__"
+# Private process-local cache keyed by id(candidate_placements).  The legacy
+# in-source cache keys above stay reserved/ignored by source_digest, but
+# validators must not trust cache payloads embedded in authoritative source
+# dicts: JSON cannot encode tuple keys, while in-process forged dicts can.
+_POSE_CACHE_BY_CP_ID: Dict[int, Tuple[str, Dict[Tuple[str, str], Dict[str, Any]]]] = {}
 
 
 def _cache_jsonable(value: Any) -> Any:
@@ -120,9 +125,10 @@ def find_pose(
     """Locate pose dict from candidate_placements.
 
     Gap 14 修 (round 31): O(1) cache (dict[pose_id, pose]) 替 linear scan.
-    Cache 存 candidate_placements 内部 (under "__pose_id_cache__" key),
-    lazy-built first lookup. 266 instance × 4 facility_type, pool size up to
-    132 — linear scan was O(N) per validate.
+    Cache is private process-local state keyed by the candidate_placements object
+    identity plus a digest of ``facility_pools``.  Reserved ``__pose_id_cache__``
+    keys may appear in old in-memory/source dicts for source-digest compatibility,
+    but this helper never trusts embedded cache payloads as proof source.
 
     Maps group_id → facility_type via instance_to_facility_type, then O(1)
     dict lookup. Returns None if any step fails.
@@ -141,17 +147,15 @@ def find_pose(
     current_digest = _facility_pools_digest(cp)
     if current_digest is None:
         return None
-    raw_cache = cp.get(_POSE_CACHE_KEY)
-    raw_digest = cp.get(_POSE_CACHE_DIGEST_KEY)
-    if isinstance(raw_cache, dict) and raw_digest == current_digest:
-        cache = cast(Dict[Tuple[str, str], Dict[str, Any]], raw_cache)
+    cache_record = _POSE_CACHE_BY_CP_ID.get(id(cp))
+    if cache_record is not None and cache_record[0] == current_digest:
+        cache = cache_record[1]
     else:
         rebuilt = _build_pose_cache(cp)
         if rebuilt is None:
             return None
         cache = rebuilt
-        cp[_POSE_CACHE_KEY] = cache
-        cp[_POSE_CACHE_DIGEST_KEY] = current_digest
+        _POSE_CACHE_BY_CP_ID[id(cp)] = (current_digest, cache)
     return cache.get((ft, pose_id))
 
 
