@@ -51,6 +51,15 @@ def _3x3_pose_cells(anchor: Tuple[int, int]) -> List[List[int]]:
     return sorted([[x + dx, y + dy] for dx in range(3) for dy in range(3)])
 
 
+def _protocol_core_owner_cells(anchor: Tuple[int, int]) -> Dict[Tuple[int, int], Any]:
+    x, y = anchor
+    return {
+        (x + dx, y + dy): ("protocol_core_singleton", 0)
+        for dx in range(9)
+        for dy in range(9)
+    }
+
+
 def _f5_fixture_state(
     *,
     facility_anchor: Tuple[int, int] = (60, 60),
@@ -66,7 +75,10 @@ def _f5_fixture_state(
     pole_jump_radius=5 < ghost width=10 → no Left→Right jump possible.
     """
     if instance_to_facility_type is _UNSET:
-        instance_to_facility_type = {"crusher_blue_iron": "manufacturing_3x3"}
+        instance_to_facility_type = {
+            "crusher_blue_iron": "manufacturing_3x3",
+            "protocol_core_singleton": "protocol_core",
+        }
     if facility_templates is _UNSET:
         facility_templates = {
             "manufacturing_3x3": {
@@ -88,7 +100,7 @@ def _f5_fixture_state(
         (x + i, y + j) for i in range(h) for j in range(w)
     )
     if cell_owner is None:
-        cell_owner = {}
+        cell_owner = _protocol_core_owner_cells(pc_anchor)
     candidate_placements = {
         "facility_pools": {
             "manufacturing_3x3": [
@@ -231,6 +243,25 @@ def test_generator_no_pc_anchor_returns_empty(monkeypatch: pytest.MonkeyPatch) -
         state,
         target_poses=[("crusher_blue_iron", "p_3x3_a")],
         protocol_core_anchor=None,
+        pole_jump_radius=5.0,
+    )
+    assert cuts == []
+
+
+def test_generator_no_cut_when_protocol_core_not_in_cell_owner(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """v29 regression: explicit protocol_core_anchor is not SoT by itself.
+
+    F8 must not freeze an anchor into a cert unless the 9×9 footprint is
+    present in ``state.cell_owner`` and mapped to facility_type=protocol_core.
+    """
+    monkeypatch.setenv("EXACT_F8_GENERATOR_ENABLED", "1")
+    state = _f5_fixture_state(cell_owner={})
+    cuts = generate_power_grid_reach_cuts(
+        state,
+        target_poses=[("crusher_blue_iron", "p_3x3_a")],
+        protocol_core_anchor=(10, 10),
         pole_jump_radius=5.0,
     )
     assert cuts == []
@@ -395,6 +426,27 @@ def test_validator_unsound_ghost_agnostic_scope() -> None:
     assert "GHOST_AGNOSTIC" in (result.detail or "")
 
 
+def test_validator_unsound_when_protocol_core_not_in_cell_owner() -> None:
+    """v29 regression: bounds-only protocol_core_cell is not replayable proof."""
+    state = _f5_fixture_state(cell_owner={})
+    cert_payload = _make_cert(state, protocol_core_cell=[10, 10])
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_grid_reach(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "cell_owner" in (result.detail or "")
+
+
+def test_validator_unsound_when_protocol_core_instance_mapping_missing() -> None:
+    state = _f5_fixture_state(
+        instance_to_facility_type={"crusher_blue_iron": "manufacturing_3x3"},
+    )
+    cert_payload = _make_cert(state, protocol_core_cell=[10, 10])
+    cut = _make_cut(cert_payload, state)
+    result = validate_power_grid_reach(cut, state, canonical_rules={})
+    assert result.kind == "unsound"
+    assert "protocol_core" in (result.detail or "")
+
+
 def test_validator_unsound_when_connected() -> None:
     """Cert claims disconnect but with large R_jump the pole graph is connected."""
     state = _f5_fixture_state()
@@ -492,6 +544,14 @@ def test_evaluator_returns_false_when_facility_group_missing() -> None:
     cert_payload = _make_cert(state, facility_group="ghost_group")
     cut = _make_cut(cert_payload, state)
     assert evaluate_geometric_power_grid_reach(cut, state) is False
+
+
+def test_evaluator_returns_false_when_protocol_core_owner_absent() -> None:
+    state_with_pc = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    cert_payload = _make_cert(state_with_pc)
+    cut = _make_cut(cert_payload, state_with_pc)
+    state_missing_pc = _f5_fixture_state(cell_owner={}, selected_poses=["p_3x3_a"])
+    assert evaluate_geometric_power_grid_reach(cut, state_missing_pc) is False
 
 
 def test_evaluator_returns_false_when_protocol_core_moved() -> None:

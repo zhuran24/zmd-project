@@ -78,6 +78,27 @@ def _protocol_core_cells(anchor: Tuple[int, int]) -> FrozenSet[Cell]:
     )
 
 
+def _protocol_core_footprint_owned_by_state(
+    state: BState, anchor: Tuple[int, int]
+) -> bool:
+    """Fail-closed master SoT check for the F8 protocol_core anchor.
+
+    ``protocol_core_anchor`` is an explicit Phase 1.2 argument, so the
+    generator must prove it still names the placed protocol_core footprint
+    before freezing it into an active assumption / cert payload.
+    """
+    if state.instance_to_facility_type is None or not state.cell_owner:
+        return False
+    for cell in _protocol_core_cells(anchor):
+        owner = state.cell_owner.get(cell)
+        if owner is None:
+            return False
+        gid = owner[0] if isinstance(owner, tuple) else owner
+        if state.instance_to_facility_type.get(gid) != "protocol_core":
+            return False
+    return True
+
+
 def _facility_template_needs_power(state: BState, group_id: GroupId) -> Optional[str]:
     if state.instance_to_facility_type is None or state.facility_templates is None:
         return None
@@ -186,6 +207,8 @@ def generate_power_grid_reach_cuts(
     if target_poses is None or protocol_core_anchor is None or pole_jump_radius is None:
         return []
     if pole_jump_radius <= 0.0:
+        return []
+    if not _protocol_core_footprint_owned_by_state(state, protocol_core_anchor):
         return []
 
     cuts: List[Cut] = []

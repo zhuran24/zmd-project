@@ -393,6 +393,10 @@ CORE_TEST_FILES = [
     "src/tests/test_benders_cut_replay_condition_lifecycle.py",
     "src/tests/test_power_witness_cut_dilution.py",
     "src/tests/test_phase_review_gate.py",
+    # Phase 1.2 close gate is a cut-soundness gate: F1-F9 validator/evaluator/
+    # generator regressions must be caught by normal CI/preflight, not only by
+    # ad-hoc manual sweeps.
+    "src/tests/cuts",
 ]
 
 

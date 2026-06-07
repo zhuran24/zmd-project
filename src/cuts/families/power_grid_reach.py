@@ -589,11 +589,24 @@ def _validate_pc_anchor_sot(
 ) -> Optional[ValidationResult]:
     """Cross-check protocol_core anchor footprint vs state.cell_owner.
 
-    Phase 1.2: when state.cell_owner is empty (fixture / early phase),
-    accept bounds-only (already validated upstream by _parse_protocol_core_cell).
+    The 9×9 protocol_core anchor is part of the certified theorem, not a
+    caller hint. Missing master-placement SoT cannot justify bounds-only
+    acceptance; fail closed until the footprint is owned by protocol_core.
     """
-    if state.instance_to_facility_type is None or not state.cell_owner:
-        return None
+    if state.instance_to_facility_type is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.instance_to_facility_type missing — cannot verify "
+            "protocol_core_cell against master placement SoT (fail-closed)",
+        )
+    if not state.cell_owner:
+        return _vr(
+            "unsound",
+            t0,
+            "state.cell_owner empty — cannot verify protocol_core_cell is a "
+            "master-placed protocol_core footprint (fail-closed)",
+        )
     ax, ay = pc_anchor
     for dx in range(_PROTOCOL_CORE_SIZE):
         for dy in range(_PROTOCOL_CORE_SIZE):
@@ -662,7 +675,7 @@ def validate_power_grid_reach(
        cert.pole_jump_radius == canonical_rules.power_pole.power_coverage_radius;
        power_pole/protocol_core dimensions match canonical_rules;
        cert.protocol_core_cell footprint owned by protocol_core in state
-       (when cell_owner populated)
+       (missing cell_owner / mapping fails closed)
     7. Full disconnect recompute (CoverSet non-empty + BFS disjoint from pc)
     8. Ghost-only cause check (cell_owner is NOT the true cause)
     """
@@ -742,7 +755,7 @@ def _footprint_owned_by_protocol_core(
 ) -> bool:
     """All 9×9 cells at ``anchor`` owned by facility_type=protocol_core."""
     if state.instance_to_facility_type is None:
-        return True
+        return False
     for dx in range(_PROTOCOL_CORE_SIZE):
         for dy in range(_PROTOCOL_CORE_SIZE):
             owner = state.cell_owner.get((anchor[0] + dx, anchor[1] + dy))
@@ -759,13 +772,14 @@ def _eval_check_protocol_core_position(
 ) -> bool:
     """Gemini F8 round 4 Finding #1: if master moves protocol_core away from
     the cert anchor, the disconnect may no longer hold. Hot-path O(81)
-    check. Phase 1.2: bounds-only when state.cell_owner is empty.
+    check. Missing ``cell_owner`` is not replay evidence, so evaluation fails
+    closed instead of treating the cert anchor as bounds-only truth.
     """
     anchor = _parse_pc_anchor_int_pair(cert_dict.get("protocol_core_cell"))
     if anchor is None:
         return False
     if not state.cell_owner:
-        return True  # Phase 1.2 fixture/early-phase: bounds-only via validator scalars
+        return False
     return _footprint_owned_by_protocol_core(anchor, state)
 
 

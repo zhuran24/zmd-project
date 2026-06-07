@@ -262,13 +262,12 @@ def test_verify_power_pole_jump_radius_malformed_value() -> None:
         ) is False, f"value={bad!r}"
 
 
-def test_verify_protocol_core_position_bounds_only_when_owner_absent() -> None:
-    """Phase 1.2 fixture state without cell_owner: bounds-only check accepts
-    in-grid anchor where 9×9 footprint fits."""
+def test_verify_protocol_core_position_fails_closed_when_owner_absent() -> None:
+    """v29 regression: bounds-only protocol_core anchor is not certified SoT."""
     state = _make_f8_state(with_owner=False)
     assert assumption_holds(
         state, Assumption(key="protocol_core_position", value="(10,10)")
-    ) is True
+    ) is False
 
 
 def test_verify_protocol_core_position_out_of_grid() -> None:

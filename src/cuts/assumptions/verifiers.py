@@ -189,13 +189,13 @@ def verify_protocol_core_position(state: "BState", value: str) -> bool:
     - parse "(x,y)" — fail on malformed format
     - bounds: 0 ≤ x, y AND x + 9 ≤ 70 AND y + 9 ≤ 70 (protocol_core is 9×9
       and must fit in the 70×70 grid)
-    - cross-check with state: if the canonical 9×9 footprint at (x, y) has
+    - cross-check with state: the canonical 9×9 footprint at (x, y) must have
       every cell in ``state.cell_owner`` mapped to (group_id, _) where the
-      ``state.instance_to_facility_type[group_id] == "protocol_core"``, the
-      anchor is verified. If no such mapping is available (fixture/test
-      state without cell_owner), accept the bounds-only check.
+      ``state.instance_to_facility_type[group_id] == "protocol_core"``. Missing
+      ``cell_owner`` / instance mapping is not a certificate; fail closed.
 
-    Phase 1.5+: full master-state cross-check unconditional.
+    Phase 1.5+: this remains the full master-state cross-check, wired from the
+    real master placement source instead of Phase 1.2 fixture state.
     """
     parsed = _parse_position_value(value)
     if parsed is None:
@@ -205,9 +205,6 @@ def verify_protocol_core_position(state: "BState", value: str) -> bool:
     pc_size = 9
     if ax < 0 or ay < 0 or ax + pc_size > grid_size or ay + pc_size > grid_size:
         return False
-    # If no master placement info, bounds-only is the Phase 1.2 contract.
-    if state.instance_to_facility_type is None or not state.cell_owner:
-        return True
     return _protocol_core_footprint_owned(state, (ax, ay), pc_size)
 
 

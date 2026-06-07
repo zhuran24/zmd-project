@@ -7,8 +7,9 @@ PROJECT_LOCK §3A locked invariants (per docs/项目说明/04_design_invariants.
   > cert.max_allowed_area`` (NOT instance count, NOT origin-in-window,
   NOT all-in-window).
 - **strict inequality**: equality does not cut.
-- ``max_allowed_area`` must be a safe upper bound (validator independently
-  recomputes via ``|W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|``).
+- ``max_allowed_area`` must be the validator-recomputed static safe upper
+  bound ``|W| - |(ghost ∪ exterior) ∩ W|``. Tighter / dynamic bounds require
+  a replayable proof not present in Phase 1.2 and are quarantined.
 - F9 is ghost-bound; ``cut.scope.ghost_rect_id == GHOST_AGNOSTIC`` rejected.
 
 Cert payload schema (canonical JSON, sorted keys):
@@ -56,9 +57,9 @@ ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
 ACCEPTED_WITNESS_KIND: frozenset[str] = frozenset({"area_capacity_overflow"})
 
 # F1 / F9 are complementary families (cell-based vs area-based). The capacity
-# helpers are intentionally NOT shared: F1 cap_R is static (cell_owner-free
-# for cross-ghost replay), F9 safe_ub is dynamic (cell_owner-aware because F9
-# is always ghost-bound). Do not refactor into a shared helper.
+# helpers are intentionally NOT shared: F1 cap_R serves region-capacity proofs;
+# F9 safe_ub is static and cell_owner-free in Phase 1.2. Any tighter bound
+# would need an explicit replayable proof, so the validator quarantines it.
 
 
 def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
