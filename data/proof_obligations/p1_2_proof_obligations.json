@@ -104,7 +104,9 @@
       "required_tests": [
         "test_validator_rejects_stale_last_reset_when_later_reset_history_exists",
         "test_validator_rejects_fake_closed_gate_without_post_reset_clean_reviews",
-        "test_validator_rejects_fake_clean_reviews_without_evidence"
+        "test_validator_rejects_fake_clean_reviews_without_evidence",
+        "test_validator_rejects_fake_clean_reviews_with_nonreview_evidence",
+        "test_validator_rejects_reused_clean_review_evidence"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",

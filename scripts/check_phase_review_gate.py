@@ -20,6 +20,7 @@ DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
 OPEN_STATUSES = {"blocked_pending_clean_reviews", "open", "blocked"}
 CLOSED_STATUS = "closed"
 CLEAN_FULL_REVIEW_TYPE = "independent_full_external"
+REVIEW_EVIDENCE_ROOTS = (".artifacts", "docs/research")
 
 
 class GateError(RuntimeError):
@@ -58,6 +59,58 @@ def require_str(value: Any, label: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise GateError(f"{label} must be a non-empty string")
     return value
+
+
+def _normalized_match_text(value: str) -> str:
+    return "".join(ch for ch in value.lower() if ch.isalnum())
+
+
+def _package_tokens(package: str) -> list[str]:
+    tokens: list[str] = []
+    current: list[str] = []
+    for char in package.lower():
+        if char.isalnum():
+            current.append(char)
+            continue
+        if current:
+            token = "".join(current)
+            if len(token) >= 3:
+                tokens.append(token)
+            current = []
+    if current:
+        token = "".join(current)
+        if len(token) >= 3:
+            tokens.append(token)
+    return tokens
+
+
+def _is_review_evidence_path(rel_path: str) -> bool:
+    path = Path(rel_path)
+    if path.is_absolute() or ".." in path.parts:
+        return False
+    parts = path.parts
+    return any(parts[: len(root.split("/"))] == tuple(root.split("/")) for root in REVIEW_EVIDENCE_ROOTS)
+
+
+def _evidence_matches_package(rel_path: str, package: str) -> bool:
+    """Return whether an evidence artifact is tied to the claimed package.
+
+    This intentionally stays syntactic and local: it does not try to judge review
+    independence, but it prevents a closed gate from counting arbitrary existing
+    docs, duplicated front-door files, or old reset artifacts as fresh clean
+    review provenance.
+    """
+    full_path = PROJECT_ROOT / rel_path
+    try:
+        text = full_path.read_text(encoding="utf-8")[:200_000]
+    except Exception:  # noqa: BLE001 - existence/readability is reported elsewhere.
+        text = ""
+    haystack = _normalized_match_text(rel_path) + _normalized_match_text(text)
+    package_norm = _normalized_match_text(package)
+    if package_norm and package_norm in haystack:
+        return True
+    tokens = _package_tokens(package)
+    return bool(tokens) and all(token in haystack for token in tokens)
 
 
 def load_gate(path: Path) -> dict[str, Any]:
@@ -147,15 +200,31 @@ def _check_evidence_paths(
     label: str,
     *,
     required: bool = False,
+    package: str | None = None,
+    require_review_artifact: bool = False,
 ) -> list[str]:
     errors: list[str] = []
     if required and not paths:
         errors.append(f"{label}.evidence_paths must contain at least one evidence path")
+    seen_paths: set[str] = set()
     for raw_path in paths:
         rel_path = require_str(raw_path, f"{label} evidence path")
+        if rel_path in seen_paths:
+            errors.append(f"{label}.evidence_paths contains duplicate path: {rel_path}")
+        seen_paths.add(rel_path)
         full_path = PROJECT_ROOT / rel_path
         if not full_path.exists():
             errors.append(f"missing evidence path: {rel_path}")
+            continue
+        if require_review_artifact and not _is_review_evidence_path(rel_path):
+            errors.append(
+                f"{label}.evidence_paths must point to a review/research artifact "
+                f"under {', '.join(REVIEW_EVIDENCE_ROOTS)}: {rel_path}"
+            )
+        if package is not None and not _evidence_matches_package(rel_path, package):
+            errors.append(
+                f"{label}.evidence_paths must match review package {package!r}: {rel_path}"
+            )
     return errors
 
 
@@ -239,16 +308,21 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             require_list(last_reset.get("evidence_paths"), "last_reset.evidence_paths"),
             "last_reset",
             required=True,
+            package=reset_package,
+            require_review_artifact=True,
         )
     )
 
     reset_entries = []
     all_reset_entries: list[tuple[int, str]] = []
     history_records: list[dict[str, Any]] = []
+    clean_review_evidence_owner: dict[str, int] = {}
+    clean_review_package_owner: dict[str, int] = {}
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
         package = require_str(entry.get("package"), f"review_history[{index}].package")
         review_type = require_str(entry.get("review_type"), f"review_history[{index}].review_type")
+        outcome = require_str(entry.get("outcome"), f"review_history[{index}].outcome")
         clean = require_bool(entry.get("clean"), f"review_history[{index}].clean")
         major = require_int(
             entry.get("major_or_soundness_findings"),
@@ -263,11 +337,17 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 "index": index,
                 "package": package,
                 "review_type": review_type,
+                "outcome": outcome,
                 "clean": clean,
                 "major": major,
                 "resets_counter": resets_counter,
+                "evidence_paths": require_list(entry.get("evidence_paths"), f"review_history[{index}].evidence_paths"),
             }
         )
+        if clean and outcome != "clean":
+            errors.append(f"review_history[{index}] is clean but outcome is {outcome!r}")
+        if not clean and outcome == "clean":
+            errors.append(f"review_history[{index}] outcome is clean but clean=false")
         if clean and major != 0:
             errors.append(f"review_history[{index}] is clean but has {major} major/soundness findings")
         if clean and resets_counter:
@@ -280,8 +360,14 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             all_reset_entries.append((index, package))
             if package == reset_package:
                 reset_entries.append(index)
-        evidence_paths = require_list(entry.get("evidence_paths"), f"review_history[{index}].evidence_paths")
+        evidence_paths = history_records[-1]["evidence_paths"]
         requires_evidence = resets_counter or (
+            review_type == CLEAN_FULL_REVIEW_TYPE
+            and clean
+            and major == 0
+            and not resets_counter
+        )
+        requires_clean_review_evidence = (
             review_type == CLEAN_FULL_REVIEW_TYPE
             and clean
             and major == 0
@@ -292,8 +378,29 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 evidence_paths,
                 f"review_history[{index}]",
                 required=requires_evidence,
+                package=package if requires_evidence else None,
+                require_review_artifact=requires_evidence,
             )
         )
+        if requires_clean_review_evidence:
+            package_owner = clean_review_package_owner.get(package)
+            if package_owner is not None:
+                errors.append(
+                    f"review_history[{index}] reuses clean-review package "
+                    f"from review_history[{package_owner}]: {package}"
+                )
+            else:
+                clean_review_package_owner[package] = index
+            for raw_path in evidence_paths:
+                rel_path = require_str(raw_path, f"review_history[{index}] evidence path")
+                owner = clean_review_evidence_owner.get(rel_path)
+                if owner is not None:
+                    errors.append(
+                        f"review_history[{index}] reuses clean-review evidence path "
+                        f"from review_history[{owner}]: {rel_path}"
+                    )
+                else:
+                    clean_review_evidence_owner[rel_path] = index
     latest_reset_index: int | None = None
     if not reset_entries:
         errors.append(f"review_history lacks reset entry for {reset_package}")
@@ -306,6 +413,19 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 f"last_reset={reset_package!r}"
             )
         else:
+            latest_reset_evidence = set(
+                str(item)
+                for item in require_list(last_reset.get("evidence_paths"), "last_reset.evidence_paths")
+            )
+            history_reset_evidence = set(
+                str(item)
+                for item in history_records[latest_reset_index]["evidence_paths"]
+            )
+            if latest_reset_evidence != history_reset_evidence:
+                errors.append(
+                    "last_reset.evidence_paths must match the latest resetting "
+                    f"review_history[{latest_reset_index}].evidence_paths"
+                )
             derived_clean_count = _review_history_clean_counter(
                 history_records,
                 latest_reset_index=latest_reset_index,
