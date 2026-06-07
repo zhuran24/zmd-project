@@ -30,13 +30,23 @@
       "commodity_routes",
       "groups_static"
     ],
-    "runtime_cache_policy": "Runtime keys whose names start with '__' are non-authoritative caches and must not participate as independent proof facts. Validators that build such caches must rebuild or invalidate them from the canonical source payload."
+    "runtime_cache_policy": "Only explicitly declared runtime cache keys may be ignored by the source digest. Schema-valid authoritative keys that begin with '__' remain proof-carrying source facts. Validators that build runtime caches must rebuild or invalidate them from the canonical source payload.",
+    "runtime_cache_keys_by_path": {
+      "candidate_placements": [
+        "__pose_id_cache__",
+        "__pose_id_cache_digest__"
+      ]
+    }
   },
   "obligations": [
     {
       "id": "PO-STEP7-ATTACH-MIRROR",
       "title": "Step 7 hot-path evaluation mirrors Step 6 attachability",
-      "v_findings": ["v30_candidate", "v31_candidate", "v31_postmortem_consolidation"],
+      "v_findings": [
+        "v30_candidate",
+        "v31_candidate",
+        "v31_postmortem_consolidation"
+      ],
       "required_tests": [
         "test_step_7_fails_closed_on_source_digest_drift_before_replay_quarantine",
         "test_step_7_fails_closed_when_oracle_version_unavailable_before_replay_hold",
@@ -52,10 +62,14 @@
     {
       "id": "PO-SOURCE-DIGEST-COVERAGE",
       "title": "Validator/generator source facts are covered by one source-digest contract",
-      "v_findings": ["v31_candidate"],
+      "v_findings": [
+        "v31_candidate"
+      ],
       "required_tests": [
         "test_source_digest_is_content_hash_and_ignores_runtime_pose_cache",
-        "test_source_digest_tracks_group_static_fields_but_not_selected_poses"
+        "test_source_digest_tracks_group_static_fields_but_not_selected_poses",
+        "test_source_digest_tracks_authoritative_leading_dunder_keys_except_declared_runtime_caches",
+        "test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
@@ -65,9 +79,12 @@
     {
       "id": "PO-RUNTIME-CACHE-NON-AUTHORITY",
       "title": "Runtime caches cannot become hidden proof sources",
-      "v_findings": ["v31_candidate"],
+      "v_findings": [
+        "v31_candidate"
+      ],
       "required_tests": [
-        "test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced"
+        "test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced",
+        "test_find_pose_cache_tracks_schema_valid_leading_dunder_facility_pool_replacement"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
@@ -77,7 +94,9 @@
     {
       "id": "PO-PHASE-GATE-PROVENANCE",
       "title": "Phase gate provenance follows the latest resetting review/postmortem entry",
-      "v_findings": ["v31_candidate"],
+      "v_findings": [
+        "v31_candidate"
+      ],
       "required_tests": [
         "test_validator_rejects_stale_last_reset_when_later_reset_history_exists"
       ],

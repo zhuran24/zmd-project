@@ -17,6 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
 PHASE_GATE_PATH = PROJECT_ROOT / "data" / "review_gates" / "phase_1_2_spike_close.json"
 LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
+CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "src" / "cuts" / "helpers" / "candidate_placements.py"
 TEST_ROOT = PROJECT_ROOT / "src" / "tests"
 
 
@@ -50,18 +51,22 @@ def _require_list(value: Any, label: str) -> list[Any]:
     return value
 
 
-def _parse_lifecycle() -> ast.Module:
+def _parse_python(path: Path) -> ast.Module:
     try:
-        return ast.parse(LIFECYCLE_PATH.read_text(encoding="utf-8"))
+        return ast.parse(path.read_text(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
-        raise CheckError(f"cannot parse {_rel(LIFECYCLE_PATH)}: {exc}") from exc
+        raise CheckError(f"cannot parse {_rel(path)}: {exc}") from exc
 
 
-def _function_def(tree: ast.Module, name: str) -> ast.FunctionDef:
+def _parse_lifecycle() -> ast.Module:
+    return _parse_python(LIFECYCLE_PATH)
+
+
+def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -> ast.FunctionDef:
     for node in tree.body:
         if isinstance(node, ast.FunctionDef) and node.name == name:
             return node
-    raise CheckError(f"function not found in {_rel(LIFECYCLE_PATH)}: {name}")
+    raise CheckError(f"function not found in {_rel(path)}: {name}")
 
 
 def _calls_function(node: ast.AST, name: str) -> bool:
@@ -71,18 +76,24 @@ def _calls_function(node: ast.AST, name: str) -> bool:
     return False
 
 
-def _imports_lifecycle_constants() -> tuple[int, tuple[str, ...], tuple[str, ...]]:
+def _imports_lifecycle_constants() -> tuple[int, tuple[str, ...], tuple[str, ...], dict[str, tuple[str, ...]]]:
     sys.path.insert(0, str(PROJECT_ROOT))
     from src.cuts.lifecycle import (  # pylint: disable=import-outside-toplevel
         SOURCE_DIGEST_FIELD_NAMES,
+        SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH,
         SOURCE_DIGEST_SCHEMA_VERSION,
         STEP_7_EVALUATION_GUARD_OBLIGATIONS,
     )
 
+    runtime_cache_keys = {
+        ".".join(path): tuple(sorted(keys))
+        for path, keys in SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH.items()
+    }
     return (
         SOURCE_DIGEST_SCHEMA_VERSION,
         tuple(SOURCE_DIGEST_FIELD_NAMES),
         tuple(STEP_7_EVALUATION_GUARD_OBLIGATIONS),
+        runtime_cache_keys,
     )
 
 
@@ -131,13 +142,66 @@ def _check_step7_contract(manifest: dict[str, Any], tree: ast.Module) -> list[st
     return errors
 
 
+def _uses_dunder_prefix_skip(node: ast.AST) -> bool:
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Call):
+            continue
+        func = child.func
+        if not isinstance(func, ast.Attribute) or func.attr != "startswith":
+            continue
+        if not child.args:
+            continue
+        arg = child.args[0]
+        if isinstance(arg, ast.Constant) and arg.value == "__":
+            return True
+    return False
+
+
+def _check_runtime_cache_policy(manifest: dict[str, Any], lifecycle_tree: ast.Module) -> list[str]:
+    errors: list[str] = []
+    source_contract = manifest.get("source_digest_contract")
+    if not isinstance(source_contract, dict):
+        return ["source_digest_contract must be an object"]
+
+    _, _, _, code_cache_keys = _imports_lifecycle_constants()
+    manifest_cache_raw = source_contract.get("runtime_cache_keys_by_path")
+    if not isinstance(manifest_cache_raw, dict):
+        errors.append("source_digest_contract.runtime_cache_keys_by_path must be an object")
+    else:
+        manifest_cache_keys: dict[str, tuple[str, ...]] = {}
+        for raw_path, raw_keys in manifest_cache_raw.items():
+            path = _require_str(raw_path, "source_digest_contract.runtime_cache_keys_by_path key")
+            keys = tuple(sorted(str(key) for key in _require_list(raw_keys, f"runtime cache keys for {path}")))
+            manifest_cache_keys[path] = keys
+        if manifest_cache_keys != code_cache_keys:
+            errors.append(
+                "source_digest_contract.runtime_cache_keys_by_path disagrees with "
+                "SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH: "
+                f"manifest={manifest_cache_keys!r}, code={code_cache_keys!r}"
+            )
+
+    source_jsonable_fn = _function_def(lifecycle_tree, "_source_jsonable")
+    if _uses_dunder_prefix_skip(source_jsonable_fn):
+        errors.append("_source_jsonable must not ignore every key with startswith('__')")
+
+    candidate_tree = _parse_python(CANDIDATE_PLACEMENTS_PATH)
+    cache_jsonable_fn = _function_def(
+        candidate_tree,
+        "_cache_jsonable",
+        path=CANDIDATE_PLACEMENTS_PATH,
+    )
+    if _uses_dunder_prefix_skip(cache_jsonable_fn):
+        errors.append("_cache_jsonable must not ignore schema-valid facility pool keys with startswith('__')")
+    return errors
+
+
 def _check_source_digest_contract(manifest: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     source_contract = manifest.get("source_digest_contract")
     if not isinstance(source_contract, dict):
         return ["source_digest_contract must be an object"]
 
-    schema_version, field_names, guard_obligations = _imports_lifecycle_constants()
+    schema_version, field_names, guard_obligations, _ = _imports_lifecycle_constants()
     manifest_schema = source_contract.get("schema_version")
     if manifest_schema != schema_version:
         errors.append(
@@ -236,6 +300,7 @@ def main() -> int:
         errors.extend(_check_step7_contract(manifest, lifecycle_tree))
         errors.extend(_check_source_digest_contract(manifest))
         errors.extend(_check_source_digest_uses_contract(lifecycle_tree))
+        errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_evidence_and_tests(manifest))
         errors.extend(_check_phase_anchor(manifest))
     except CheckError as exc:

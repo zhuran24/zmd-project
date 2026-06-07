@@ -582,6 +582,89 @@ def test_source_digest_is_content_hash_and_ignores_runtime_pose_cache():
     assert compute_source_digest(changed_with_stale_note) != digest_1
 
 
+def test_source_digest_tracks_authoritative_leading_dunder_keys_except_declared_runtime_caches():
+    s = make_state_with_crusher_on_left_baseline()
+    base_cp = {
+        "facility_pools": {
+            "__schema_valid_hidden_ft": [
+                {
+                    "pose_id": "p-hidden",
+                    "occupied_cells": [[1, 1]],
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                }
+            ]
+        }
+    }
+    state_1 = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules={
+            "facility_templates": {
+                "__schema_valid_hidden_ft": {"dimensions": {"w": 1, "h": 1}}
+            }
+        },
+        facility_templates={"__schema_valid_hidden_ft": {"dimensions": {"w": 1, "h": 1}}},
+        instance_to_facility_type={"g_hidden": "__schema_valid_hidden_ft"},
+        candidate_placements=base_cp,
+    )
+    state_2 = BState(
+        groups=s.groups,
+        cell_owner=s.cell_owner,
+        ghost_rect=s.ghost_rect,
+        ghost_cells=s.ghost_cells,
+        exterior_blocks=s.exterior_blocks,
+        artifact_hashes=s.artifact_hashes,
+        available_oracle_versions=s.available_oracle_versions,
+        canonical_rules={
+            "facility_templates": {
+                "__schema_valid_hidden_ft": {"dimensions": {"w": 1, "h": 2}}
+            }
+        },
+        facility_templates={"__schema_valid_hidden_ft": {"dimensions": {"w": 1, "h": 2}}},
+        instance_to_facility_type={"g_hidden": "__schema_valid_hidden_ft"},
+        candidate_placements={
+            "facility_pools": {
+                "__schema_valid_hidden_ft": [
+                    {
+                        "pose_id": "p-hidden",
+                        "occupied_cells": [[1, 1], [1, 2]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                    }
+                ]
+            }
+        },
+    )
+    assert compute_source_digest(state_2) != compute_source_digest(state_1)
+
+    with_runtime_cache = BState(
+        groups=state_1.groups,
+        cell_owner=state_1.cell_owner,
+        ghost_rect=state_1.ghost_rect,
+        ghost_cells=state_1.ghost_cells,
+        exterior_blocks=state_1.exterior_blocks,
+        artifact_hashes=state_1.artifact_hashes,
+        available_oracle_versions=state_1.available_oracle_versions,
+        canonical_rules=state_1.canonical_rules,
+        facility_templates=state_1.facility_templates,
+        instance_to_facility_type=state_1.instance_to_facility_type,
+        candidate_placements={
+            **base_cp,
+            "__pose_id_cache__": {
+                ("__schema_valid_hidden_ft", "p-hidden"): {"pose_id": "p-hidden"}
+            },
+            "__pose_id_cache_digest__": "runtime-only",
+        },
+    )
+    assert compute_source_digest(with_runtime_cache) == compute_source_digest(state_1)
+
+
 def test_source_digest_tracks_group_static_fields_but_not_selected_poses():
     s = make_state_with_crusher_on_left_baseline()
     digest_1 = compute_source_digest(s)

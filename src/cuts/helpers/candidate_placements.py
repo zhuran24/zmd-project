@@ -70,8 +70,6 @@ def _cache_jsonable(value: Any) -> Any:
     if isinstance(value, dict):
         out: Dict[str, Any] = {}
         for key, item in value.items():
-            if isinstance(key, str) and key.startswith("__"):
-                continue
             out[str(key)] = _cache_jsonable(item)
         return out
     if isinstance(value, (list, tuple)):

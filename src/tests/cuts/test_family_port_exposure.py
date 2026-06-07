@@ -35,6 +35,8 @@ from src.cuts.lifecycle import (
     compute_ghost_rect_id,
     compute_source_digest,
     evaluate_literal_multiset,
+    step_6_attach_scope_check,
+    step_7_evaluate_cut,
 )
 
 
@@ -308,6 +310,95 @@ def test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced
 
     assert vr.kind == "unsound"
     assert "front_cell" in (vr.detail or "")
+
+
+def _make_dunder_facility_state(*, producer_port_cell: tuple[int, int] = (10, 10)) -> BState:
+    cp = {
+        "facility_pools": {
+            "__manufacturing_3x3": [
+                {
+                    "pose_id": "p7",
+                    "anchor": {"x": 10, "y": 10},
+                    "occupied_cells": [[10, 10], [11, 10], [12, 10]],
+                    "input_port_cells": [],
+                    "output_port_cells": [
+                        {
+                            "x": producer_port_cell[0],
+                            "y": producer_port_cell[1],
+                            "dir": "W",
+                            "commodity": "test",
+                        },
+                    ],
+                }
+            ],
+            "blocker_ft": [
+                {
+                    "pose_id": "p3",
+                    "anchor": {"x": 9, "y": 10},
+                    "occupied_cells": [[9, 10]],
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                }
+            ],
+        }
+    }
+    return BState(
+        groups={
+            "crusher": GroupState(
+                "crusher",
+                demand=1,
+                pose_domain=frozenset({"p7"}),
+                selected_poses=["p7"],
+            ),
+            "refinery": GroupState(
+                "refinery",
+                demand=1,
+                pose_domain=frozenset({"p3"}),
+                selected_poses=["p3"],
+            ),
+        },
+        cell_owner={(9, 10): ("refinery", 0)},
+        artifact_hashes={"canonical_rules.json": "h1"},
+        available_oracle_versions=frozenset({"port_exposure_v1"}),
+        canonical_rules={
+            "facility_templates": {"__manufacturing_3x3": {}, "blocker_ft": {}}
+        },
+        facility_templates={"__manufacturing_3x3": {}, "blocker_ft": {}},
+        instance_to_facility_type={
+            "crusher": "__manufacturing_3x3",
+            "refinery": "blocker_ft",
+        },
+        candidate_placements=cp,
+    )
+
+
+def test_find_pose_cache_tracks_schema_valid_leading_dunder_facility_pool_replacement():
+    state = _make_dunder_facility_state(producer_port_cell=(10, 10))
+    old_pose = find_pose(state, "crusher", "p7")
+    assert old_pose is not None
+    assert old_pose["output_port_cells"][0]["x"] == 10
+
+    replacement_pose = copy.deepcopy(old_pose)
+    replacement_pose["output_port_cells"] = [
+        {"x": 12, "y": 10, "dir": "W", "commodity": "test"},
+    ]
+    state.candidate_placements["facility_pools"]["__manufacturing_3x3"] = [replacement_pose]
+
+    refreshed_pose = find_pose(state, "crusher", "p7")
+    assert refreshed_pose is not None
+    assert refreshed_pose["output_port_cells"][0]["x"] == 12
+
+
+def test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift():
+    source_state = _make_dunder_facility_state(producer_port_cell=(10, 10))
+    cut = _make_port_exposure_cut(_make_port_exposure_cert(), scope_state=source_state)
+    assert validate_port_exposure(cut, source_state, CANONICAL_RULES).kind == "ok"
+
+    source_drift = _make_dunder_facility_state(producer_port_cell=(12, 10))
+    assert compute_source_digest(source_drift) != cut.scope.source_digest
+    assert step_6_attach_scope_check(cut, source_drift) == "QUARANTINE"
+    assert step_7_evaluate_cut(cut, source_drift) is False
+
 
 def test_validate_port_exposure_ok():
     """Gap 11 修后: W=(-1,0), port (10,10) W → front (9, 10) outside facility."""

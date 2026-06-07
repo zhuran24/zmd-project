@@ -92,6 +92,16 @@ SOURCE_DIGEST_FIELD_NAMES: Tuple[str, ...] = (
     "groups_static",
 )
 
+# Runtime-only caches are allowed only at explicitly enumerated source paths.
+# Do not treat every ``__*`` key as non-authoritative: schema-valid facility
+# template / facility pool identifiers may legally begin with underscores.
+SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH: Dict[Tuple[str, ...], FrozenSet[str]] = {
+    ("candidate_placements",): frozenset({
+        "__pose_id_cache__",
+        "__pose_id_cache_digest__",
+    }),
+}
+
 STEP_7_EVALUATION_GUARD_OBLIGATIONS: Tuple[str, ...] = (
     "source_digest",
     "ghost_or_exterior_scope",
@@ -437,19 +447,24 @@ def compute_exterior_blocks_hash(state: BState) -> Hash:
     return hashlib.sha256(blob).hexdigest()[:16]
 
 
-def _source_jsonable(value: Any) -> Any:
-    """Normalize source payloads before hashing; ignore runtime caches."""
+def _is_source_digest_runtime_cache_key(path: Tuple[str, ...], key: str) -> bool:
+    return key in SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH.get(path, frozenset())
+
+
+def _source_jsonable(value: Any, path: Tuple[str, ...] = ()) -> Any:
+    """Normalize source payloads before hashing; ignore only declared runtime caches."""
     if isinstance(value, dict):
         normalized: Dict[str, Any] = {}
         for key, item in value.items():
-            if isinstance(key, str) and key.startswith("__"):
+            key_text = str(key)
+            if _is_source_digest_runtime_cache_key(path, key_text):
                 continue
-            normalized[str(key)] = _source_jsonable(item)
+            normalized[key_text] = _source_jsonable(item, (*path, key_text))
         return normalized
     if isinstance(value, (list, tuple)):
-        return [_source_jsonable(item) for item in value]
+        return [_source_jsonable(item, path) for item in value]
     if isinstance(value, (set, frozenset)):
-        return sorted((_source_jsonable(item) for item in value), key=repr)
+        return sorted((_source_jsonable(item, path) for item in value), key=repr)
     if isinstance(value, (str, int, float, bool)) or value is None:
         return value
     return repr(value)
