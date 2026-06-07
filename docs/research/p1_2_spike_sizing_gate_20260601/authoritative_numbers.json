@@ -10,7 +10,7 @@
   },
   "numbers": {
     "cuts_tests_total": {
-      "value": 442,
+      "value": 446,
       "kind": "int",
       "recompute": "pytest_collect_only_count_src_tests_cuts",
       "stale": [
@@ -20,9 +20,10 @@
         418,
         425,
         437,
-        441
+        441,
+        442
       ],
-      "provenance": "computed: `pytest --collect-only -q src/tests/cuts` 的 collection 计数 (含 parametrize 展开, 故 ≥ 纯 `def test_` 计数; 差额来自 parametrize)。不在此存具体 def 级数 (会随加测试漂)。stale 列的是旧 collection 值供人读 (425 = v28 soundness 后/Design B 前; 437 = Design B 后/R1 meta-test 前; 441 = R1 meta-test 后/R3 前; 442 = R3 加 verifiers.py radius 回归后, 当前值)。"
+      "provenance": "computed: `pytest --collect-only -q src/tests/cuts` 的 collection 计数 (含 parametrize 展开, 故 ≥ 纯 `def test_` 计数; 差额来自 parametrize)。不在此存具体 def 级数 (会随加测试漂)。stale 列的是旧 collection 值供人读 (425 = v28 soundness 后/Design B 前; 437 = Design B 后/R1 meta-test 前; 441 = R1 meta-test 后/R3 前; 442 = R3 加 verifiers.py radius 回归后; 446 = v29 F8 protocol-core SoT 回归后当前值)。"
     },
     "f3_micro_probe_cases": {
       "value": 12,
