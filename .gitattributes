@@ -16,3 +16,5 @@ scripts/sync_doc_subjects.py text eol=lf
 scripts/external_artifacts.py text eol=lf
 scripts/install_hooks.py text eol=lf
 scripts/restore_external_artifacts.py text eol=lf
+data/review_gates/*.json text eol=lf
+docs/PHASE_1_2_CLOSE_GATE.md text eol=lf

@@ -17,7 +17,9 @@
     "scripts/install_hooks.py",
     "scripts/preflight_gate.py",
     "scripts/restore_external_artifacts.py",
-    "scripts/sync_doc_subjects.py"
+    "scripts/sync_doc_subjects.py",
+    "data/review_gates/*.json",
+    "docs/PHASE_1_2_CLOSE_GATE.md"
   ],
   "allowed_crlf_historical_globs": [
     "BORROWED_COMPONENTS.md",

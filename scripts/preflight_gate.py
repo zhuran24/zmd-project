@@ -20,9 +20,10 @@ Preflight gate — 提交前自动门禁检查。
     10. 发布安全 secret scan
     11. 记忆树结构/currentness 检查
     12. 历史证据/生成制品边界检查
-    13. mypy 严格类型 (cut lifecycle 核心两文件)
-    14. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
-    15. pytest 测试（核心门禁 / 全量取决于模式）
+    13. Phase review close-gate 状态一致性检查
+    14. mypy 严格类型 (cut lifecycle 核心两文件)
+    15. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
+    16. pytest 测试（核心门禁 / 全量取决于模式）
 
 退出码：
     0 = 通过
@@ -242,7 +243,7 @@ def get_staged_files() -> list[str]:
 
 
 def check_frozen_artifacts(gate: GateResult) -> None:
-    print("\n[1/15] 冻结/外部制品 hash 校验")
+    print("\n[1/16] 冻结/外部制品 hash 校验")
     for rel_path, expected_hash in FROZEN_ARTIFACTS.items():
         full_path = PROJECT_ROOT / rel_path
         if not full_path.exists():
@@ -283,7 +284,7 @@ def check_frozen_artifacts(gate: GateResult) -> None:
 
 
 def check_forbidden_paths(gate: GateResult) -> None:
-    print("\n[3/15] 禁止路径写入检查")
+    print("\n[3/16] 禁止路径写入检查")
     staged = get_staged_files()
     if not staged:
         gate.ok(f"无 {CHANGE_SCOPE_LABEL} 文件（或不在 git 仓库中）")
@@ -304,7 +305,7 @@ def check_forbidden_paths(gate: GateResult) -> None:
 
 
 def check_ai_safety_contract(gate: GateResult) -> None:
-    print("\n[4/15] AI 安全合同检查")
+    print("\n[4/16] AI 安全合同检查")
     ai_dir = PROJECT_ROOT / AI_MODULE_ROOT
     if not ai_dir.exists():
         gate.ok("ai_accel 目录不存在，跳过")
@@ -334,7 +335,7 @@ def check_ai_safety_contract(gate: GateResult) -> None:
 
 
 def check_exact_exploratory_isolation(gate: GateResult) -> None:
-    print("\n[5/15] 精确/探索边界隔离检查")
+    print("\n[5/16] 精确/探索边界隔离检查")
     staged = get_staged_files()
     if not staged:
         gate.ok(f"无 {CHANGE_SCOPE_LABEL} 文件")
@@ -391,6 +392,7 @@ CORE_TEST_FILES = [
     # GPT v4 follow-up: cut 生命周期 + power witness dilution 进核心门禁.
     "src/tests/test_benders_cut_replay_condition_lifecycle.py",
     "src/tests/test_power_witness_cut_dilution.py",
+    "src/tests/test_phase_review_gate.py",
 ]
 
 
@@ -406,13 +408,13 @@ _AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IG
 
 
 def check_research_audit_coverage(gate: GateResult) -> None:
-    """[6/15] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
+    """[6/16] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
 
     R13 教训: 调研 agent 报告即使引用 URL 也常出错 (5/5 历史 audit 翻盘)。
     路线图 / INDEX 改动如新增 R-N 调研引用，必须配套有 audit (agent ID) 引用。
     [W] warning 不阻塞 — audit 可能在另一 commit, 但提醒一下避免漏审。
     """
-    print("\n[6/15] 调研产物 audit 覆盖检查")
+    print("\n[6/16] 调研产物 audit 覆盖检查")
     staged = get_staged_files()
     touched = [f for f in staged if f.replace("\\", "/") in RESEARCH_TRACKED_FILES]
     if not touched:
@@ -458,14 +460,14 @@ def check_research_audit_coverage(gate: GateResult) -> None:
 
 
 def check_doc_subject_projections(gate: GateResult) -> None:
-    """[7/15] 文档/记忆主体投影同步检查.
+    """[7/16] 文档/记忆主体投影同步检查.
 
     项目知识树采用 subject/projection 架构: docs/subjects/*.md 是抽象主体,
     cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json 登记 docs + memory projection slots.
     这个 gate 只检查同步状态, 不自动写文件; 主体改动后运行
     `python scripts/sync_doc_subjects.py --sync`, 投影改动后运行 `--absorb`.
     """
-    print("\n[7/15] 文档/记忆主体投影同步检查")
+    print("\n[7/16] 文档/记忆主体投影同步检查")
     script = PROJECT_ROOT / "scripts" / "sync_doc_subjects.py"
     registry = PROJECT_ROOT / "cc_context" / "knowledge" / "PROJECT_SUBJECT_PROJECTIONS.json"
     if not script.exists() or not registry.exists():
@@ -525,27 +527,32 @@ def _run_script_check(gate: GateResult, *, title: str, script_name: str, ok_pref
 
 
 def check_external_artifact_manifest(gate: GateResult) -> None:
-    print("\n[2/15] 外部大制品 contract 检查")
+    print("\n[2/16] 外部大制品 contract 检查")
     _run_script_check(gate, title="external artifacts", script_name="check_external_artifacts.py", ok_prefix="external artifact check")
 
 
 def check_line_ending_policy(gate: GateResult) -> None:
-    print("\n[9/15] 行尾策略检查")
+    print("\n[9/16] 行尾策略检查")
     _run_script_check(gate, title="line endings", script_name="check_line_endings.py", ok_prefix="line-ending policy check")
 
 
 def check_artifact_boundaries(gate: GateResult) -> None:
-    print("\n[12/15] 历史证据/生成制品边界检查")
+    print("\n[12/16] 历史证据/生成制品边界检查")
     _run_script_check(gate, title="artifact boundaries", script_name="check_artifact_boundaries.py", ok_prefix="artifact boundary check")
 
 
+def check_phase_review_gate(gate: GateResult) -> None:
+    print("\n[13/16] Phase review close-gate 状态一致性检查")
+    _run_script_check(gate, title="phase review gate", script_name="check_phase_review_gate.py", ok_prefix="phase review gate check")
+
+
 def check_publish_secret_scan(gate: GateResult) -> None:
-    """[10/15] 发布安全 secret scan.
+    """[10/16] 发布安全 secret scan.
 
     这层扫描当前 tracked/untracked 工作区文本, 防止 API key / token / private key
     重新进入当前树。它不宣称清理 Git 历史; 已暴露 credential 仍需 owner 侧轮换。
     """
-    print("\n[10/15] 发布安全 secret scan")
+    print("\n[10/16] 发布安全 secret scan")
     script = PROJECT_ROOT / "scripts" / "check_repo_secrets.py"
     if not script.exists():
         gate.block("secret scan 脚本不存在: scripts/check_repo_secrets.py")
@@ -574,8 +581,8 @@ def check_publish_secret_scan(gate: GateResult) -> None:
 
 
 def check_memory_tree_health(gate: GateResult) -> None:
-    """[11/15] 记忆树结构/currentness 检查."""
-    print("\n[11/15] 记忆树结构/currentness 检查")
+    """[11/16] 记忆树结构/currentness 检查."""
+    print("\n[11/16] 记忆树结构/currentness 检查")
     script = PROJECT_ROOT / "scripts" / "check_memory_tree.py"
     if not script.exists():
         gate.block("memory tree check 脚本不存在: scripts/check_memory_tree.py")
@@ -618,13 +625,13 @@ MYPY_STRICT_TARGETS = [
 
 
 def check_doc_tree_completeness(gate: GateResult) -> None:
-    """[8/15] 文档树完整收尾检查.
+    """[8/16] 文档树完整收尾检查.
 
     这层不是语义 NLP 审查, 而是 structural closeout gate: docs surface
     manifest、subject/projection registry、无未登记 projection block、所有 subject
     field 至少有一个 concrete projection。
     """
-    print("\n[8/15] 文档树完整收尾检查")
+    print("\n[8/16] 文档树完整收尾检查")
     script = PROJECT_ROOT / "scripts" / "check_doc_tree_completeness.py"
     manifest = PROJECT_ROOT / "docs" / "DOC_TREE_COMPLETENESS.json"
     if not script.exists() or not manifest.exists():
@@ -662,7 +669,7 @@ def check_mypy(gate: GateResult) -> None:
     锁 BendersCut + CutManager + PowerPlacementSubproblem 不让类型生命周期破洞
     再次发生 (lifecycle bug 根因是 schema 字段落了但 runtime resolver 没跟上).
     """
-    print("\n[13/15] mypy 静态类型 (core lifecycle)")
+    print("\n[14/16] mypy 静态类型 (core lifecycle)")
     existing = [t for t in MYPY_STRICT_TARGETS if (PROJECT_ROOT / t).exists()]
     if not existing:
         gate.warn("mypy gate 目标文件不存在 — 跳过")
@@ -709,7 +716,7 @@ def check_ruff(gate: GateResult) -> None:
     跑全仓; 任何 warning 一律 BLOCK — 没有 "scripts 没事核心严格" 的二级容忍,
     因为 ruff.toml 已经把噪音吸收掉了.
     """
-    print("\n[14/15] ruff 静态检查")
+    print("\n[15/16] ruff 静态检查")
     try:
         result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", "."],
@@ -744,7 +751,7 @@ def check_ruff(gate: GateResult) -> None:
 
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = "全量" if full else "核心门禁"
-    print(f"\n[15/15] 测试门禁（{label}）")
+    print(f"\n[16/16] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
     timeout = 600 if full else 120
@@ -817,6 +824,7 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_r
     check_publish_secret_scan(gate)
     check_memory_tree_health(gate)
     check_artifact_boundaries(gate)
+    check_phase_review_gate(gate)
     check_mypy(gate)
     check_ruff(gate)
 

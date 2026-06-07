@@ -19,7 +19,10 @@
     "scripts/sync_doc_subjects.py",
     "scripts/check_doc_tree_completeness.py",
     "cc_context/knowledge/README.md",
-    "cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json"
+    "cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json",
+    "docs/PHASE_1_2_CLOSE_GATE.md",
+    "scripts/check_phase_review_gate.py",
+    "data/review_gates/phase_1_2_spike_close.json"
   ],
   "top_level_files": {
     "docs/DOC_TREE_COMPLETENESS.json": {
@@ -108,6 +111,9 @@
     },
     "docs/specs_index.md": {
       "role": "specification-index"
+    },
+    "docs/PHASE_1_2_CLOSE_GATE.md": {
+      "role": "phase-close-gate"
     }
   },
   "top_level_dirs": {

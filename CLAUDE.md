@@ -53,8 +53,8 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 
 ## Current Phase: 1.2 spike close (subject projection)
 
-<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:b1ff54c09193e23c6d429d193eecb74218a78fc07f90e24a32e47d33611f35d5 -->
-Current phase: **Phase 1.2 spike close** — prod-scale sizing plus cut-family validator soundness review must close before the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
+<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:65d19db70d670e3694c58c0db197c23a8c8a814d322206c6feb7085364832924 -->
+Current phase: **Phase 1.2 spike close is not formally closed** — v28 reset the consecutive-clean counter after real soundness findings. The close gate is **3 consecutive independent full reviews with zero major/soundness findings**; until that gate closes, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
 <!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract END -->
 
 Operational notes:

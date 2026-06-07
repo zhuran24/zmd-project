@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "gate_id": "phase_1_2_spike_close",
+  "phase": "Phase 1.2 spike close",
+  "status": "blocked_pending_clean_reviews",
+  "updated_at": "2026-06-07",
+  "summary": "P1.2 is not formally closed: v28 found real soundness holes and reset the consecutive-clean counter.",
+  "current_review_anchor": "v28",
+  "close_policy": {
+    "required_consecutive_clean_full_reviews": 3,
+    "clean_review_definition": "An independent full external review that reports zero major or soundness findings against the current review package and its patched source tree.",
+    "finding_classes_that_reset_counter": [
+      "soundness",
+      "P0",
+      "P1",
+      "critical",
+      "high",
+      "major"
+    ],
+    "reset_on_or_after_review_package": "v28"
+  },
+  "counters": {
+    "consecutive_clean_full_reviews_after_reset": 0,
+    "required_consecutive_clean_full_reviews": 3,
+    "remaining_clean_full_reviews": 3
+  },
+  "last_reset": {
+    "review_package": "v28",
+    "reason": "v28 GPT Pro external review found four confirmed real soundness holes: F5 slot collision, F9 quantifier inversion, F6 region_demand lower-bound, and F7/F8 canonical footprint/radius drift.",
+    "resets_counter": true,
+    "evidence_paths": [
+      ".artifacts/v28_gpt_review/b1/REVIEW.md",
+      ".artifacts/v28_gpt_review/b2/REVIEW.md",
+      "cc_context/review/LATEST_PACKAGE.json"
+    ]
+  },
+  "next_phase_entry": {
+    "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
+    "allowed": false,
+    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v28."
+  },
+  "review_history": [
+    {
+      "package": "v28",
+      "review_type": "independent_full_external",
+      "outcome": "major_soundness_findings_found",
+      "clean": false,
+      "major_or_soundness_findings": 4,
+      "resets_counter": true,
+      "evidence_paths": [
+        ".artifacts/v28_gpt_review/b1/REVIEW.md",
+        ".artifacts/v28_gpt_review/b2/REVIEW.md"
+      ]
+    }
+  ],
+  "required_doc_markers": [
+    {
+      "path": "README.md",
+      "contains": "Phase 1.2 spike close is not formally closed"
+    },
+    {
+      "path": "CLAUDE.md",
+      "contains": "v28 reset the consecutive-clean counter"
+    },
+    {
+      "path": "docs/PHASE_1_2_CLOSE_GATE.md",
+      "contains": "Current gate state: BLOCKED"
+    },
+    {
+      "path": "docs/项目说明/06_current_status.md",
+      "contains": "consecutive-clean 计数器**重置、尚未达标"
+    },
+    {
+      "path": "docs/项目说明/12_go_criteria.md",
+      "contains": "≥3 次连续独立审查零问题"
+    },
+    {
+      "path": "docs/项目说明/16_workflow_review.md",
+      "contains": "连续 ≥3 次独立审查零问题"
+    }
+  ],
+  "source_boundaries": [
+    {
+      "path": "src/cuts/lifecycle.py",
+      "symbol": "step_8_apply_to_master",
+      "required_state_until_closed": "fail_closed_not_implemented",
+      "reason": "P1.3B master integration must not land while Phase 1.2 close gate is blocked."
+    }
+  ]
+}

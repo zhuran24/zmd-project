@@ -18,6 +18,18 @@ recording where the large certified-exact inputs came from.
   unfamiliar script.
 - `.github/` contains GitHub-side automation metadata.
 
+## Phase Close Gate
+
+Phase 1.2 is not formally closed. The current machine-readable gate is
+`data/review_gates/phase_1_2_spike_close.json`; the human contract is
+`docs/PHASE_1_2_CLOSE_GATE.md`. Before P1.3B master-integration work, run:
+
+```bash
+python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
+```
+
+That command is expected to fail at the current baseline because v28 reset the
+clean-review counter to `0 / 3`.
 
 ## Knowledge Surface Roles
 
@@ -92,3 +104,6 @@ certified exact runs that need the production placement pool.
   certified proof inputs.
 - When changing documentation projections, edit the subject in `docs/subjects/`
   and run `python scripts/sync_doc_subjects.py --sync`.
+
+
+Phase close gate: docs/PHASE_1_2_CLOSE_GATE.md

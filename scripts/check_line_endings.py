@@ -4,26 +4,60 @@ from __future__ import annotations
 
 import fnmatch
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = PROJECT_ROOT / "data" / "line_ending_policy.json"
+SKIP_DIR_NAMES = {".git", ".mypy_cache", ".pytest_cache", ".ruff_cache", "__pycache__"}
 
 
-def iter_matches(pattern: str) -> list[Path]:
-    # pathlib glob does not support every gitignore-style pattern, but the
-    # policy uses simple repo-relative globs. We match against tracked-like
-    # existing files by walking once for predictable behavior across platforms.
-    matches: list[Path] = []
+def tracked_files_or_walk() -> list[Path]:
+    """Return tracked files when git is available, otherwise walk once.
+
+    The first version walked the whole repository once per glob.  That was
+    correct but made preflight latency scale as patterns × tree size.  The gate
+    is about publishable repo-native files, so `git ls-files --cached --others`
+    is the right fast path; the walk fallback keeps source archives without git
+    metadata usable.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        result = None
+    if result is not None and result.returncode == 0 and result.stdout:
+        paths: list[Path] = []
+        for raw in result.stdout.split(b"\0"):
+            if not raw:
+                continue
+            rel = raw.decode("utf-8", errors="surrogateescape")
+            path = PROJECT_ROOT / rel
+            if path.is_file():
+                paths.append(path)
+        return sorted(paths)
+
+    paths = []
     for path in PROJECT_ROOT.rglob("*"):
-        if ".git" in path.parts:
+        if any(part in SKIP_DIR_NAMES for part in path.parts):
             continue
         if path.is_file():
-            rel = path.relative_to(PROJECT_ROOT).as_posix()
-            if fnmatch.fnmatch(rel, pattern):
-                matches.append(path)
-    return sorted(matches)
+            paths.append(path)
+    return sorted(paths)
+
+
+def iter_matches(pattern: str, candidates: list[Path]) -> list[Path]:
+    matches: list[Path] = []
+    for path in candidates:
+        rel = path.relative_to(PROJECT_ROOT).as_posix()
+        if fnmatch.fnmatch(rel, pattern):
+            matches.append(path)
+    return matches
 
 
 def main() -> int:
@@ -36,11 +70,12 @@ def main() -> int:
         print("line-ending policy check failed: schema_version must be 1", file=sys.stderr)
         return 2
 
+    candidates = tracked_files_or_walk()
     checked = 0
     errors: list[str] = []
     seen: set[Path] = set()
     for pattern in policy.get("required_lf_globs", []):
-        matches = iter_matches(str(pattern))
+        matches = iter_matches(str(pattern), candidates)
         if not matches:
             errors.append(f"required_lf_glob matched no files: {pattern}")
             continue

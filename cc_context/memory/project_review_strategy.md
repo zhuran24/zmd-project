@@ -42,6 +42,11 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 **Why:** 项目有严格的精确性宪法（PROJECT_LOCK.md），机械性违规靠 gate 拦，**runtime path bug 靠 L1.5 短跑 smoke 抓**，语义性问题靠 Claude 自审 + 用户 ultrareview 兜底
 **How to apply:** 每次改动前先判断风险等级，选对应的审查层级；任何 env-gate 加入或改 runtime control flow 必跑 L1.5
 
+### Phase close gates（大节点收口）
+
+- P1.2 spike close 当前由 `data/review_gates/phase_1_2_spike_close.json` 记录为 blocked-pending-clean-reviews。v28 找到真 soundness 洞后，连续 clean 计数器归零；进入 P1.3B 前必须有 3 次连续独立完整外审零 major/soundness finding。
+- 健康检查：`python scripts/check_phase_review_gate.py`；该检查在 blocked 状态也应通过，作用是防止文档/机器状态互相撒谎。
+
 ## 链 (补连 2026-06-01)
 - [[index-packaging-cluster]] — 审查打包规范全套入口
 - [[big-milestone-gpt-pro-review]] — 大节点外审
