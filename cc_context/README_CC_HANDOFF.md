@@ -4,6 +4,14 @@
 
 ---
 
+> **CC-era handoff note, not the current project front door.**
+>
+> This document explains how the 2026-05-30 Claude Code handoff attached memory
+> to a local CC installation. For the current lightweight GitHub checkout, use
+> `START_HERE.md` and `CLAUDE.md` first. The repo-native memory mirror is
+> `cc_context/memory/`, and `_cc_live_memory/` is checked only as a byte-identical
+> mirror when present. GPT-side work does not need to install CC memory.
+
 ## 推荐: 一键脚本已经帮你做好了
 
 如果你跑过包根目录的 `setup.sh`，**memory 已经自动接到正确位置了，这份文档

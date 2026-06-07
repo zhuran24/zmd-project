@@ -1,5 +1,16 @@
 # 终末地 IndustrialPlanner Exact Solver — 项目交接包
 
+> ⚠️ **Historical handoff snapshot, not the current project front door.**
+>
+> This file records the 2026-05-30 CC-era transfer package. It is preserved for
+> archaeology only. It intentionally contains old facts and package assumptions,
+> including tracked `candidate_placements.json`, 414 cut tests, v22/v23 review
+> wording, old Gemini-key location notes, `master` as an active-branch name, old
+> automatic CC hook assumptions, and P1.3A naming. Current readers should start
+> from `START_HERE.md`, `CLAUDE.md`, `README.md`,
+> `docs/subjects/current_project_state.md`, and
+> `cc_context/memory/handoff_windows_ninth_review_pending.md`.
+
 > 交接日期: 2026-05-30 · 交接人 zhuran24 → 朋友接手
 > 本包目标: 体积最小 (~15MB) 但**完整可接手** —— 含全 git 历史 + 全部源码/数据 +
 > Claude Code (CC) 上下文 (memory + CLAUDE.md)。

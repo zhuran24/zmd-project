@@ -76,7 +76,8 @@ certified exact runs that need the production placement pool.
 - `.artifacts/` is generated review/probe output. Treat it as evidence and
   history, not source code.
 - `cc_context/` contains review bundles, prompts, handoffs, and previous
-  external review context.
+  external review context. `cc_context/HANDOFF.md` is a historical 2026-05-30
+  handoff snapshot and is not the current entrypoint.
 - `docs/research/` and `third_party_snapshots/` preserve research and upstream
   snapshots. Read them when needed, but do not treat every old note as current
   project state.

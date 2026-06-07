@@ -37,8 +37,8 @@ memory 的 GitHub 发布面在 `cc_context/memory/`；当前 clean 观察点还�
 4. **git commit 身份 ≠ gh 认证邮箱** —— git 不会自动用 GitHub 登录邮箱署名, 是两回事。换机/重装首 commit 会卡 `Author identity unknown`, 必须单独 `git config user.name/user.email` (name 可 `gh api user` 拉 = zhuran24, email 用 `3240314610@qq.com`)。
 5. `gh auth login` 交互序列: GitHub.com → HTTPS → "用 gh 凭据认证 git" 选 **Yes** → web 设备码。注意 **login 默认不需 `--hostname`, 唯独 `refresh` 在非交互 TTY 必须显式带**。
 
-## 不入库 (gitignore 已挡)
-`.venv` / `.artifacts` / `.upstream_clones` / `_codex_archive` / 缓存 / `*.zip` `*.7z` (review 包 regenerable) / `data/checkpoints|solutions|telemetry`。`data/preprocessed/candidate_placements.json` 53MB 入库 (>50MB GitHub 警告但 <100MB 硬限, 推得上)。
+## 不入库 / 外部制品
+`.venv` / 可再生 review 包 / 缓存 / `*.zip` `*.7z` / `data/checkpoints|solutions|telemetry` 不进普通源码提交。`data/preprocessed/candidate_placements.json` 是 certified-exact 生产输入, 但当前 lightweight GitHub checkout 明确把它作为外部大制品处理: 缺省不在工作树, 恢复后必须用 `python scripts/check_external_artifacts.py --require candidate_placements` 校验 size/hash, 不要重新塞回普通 Git。
 
 ## 旧 CC hook 机制（历史，不再作为当前契约）
 旧环境曾有机器本地 `.git/hooks/pre-commit` / `post-commit` 自动 memory-sync、stamp、push。该机制依赖外部 CC live path 和本机 GitHub 凭据，**不是当前 repo-native publish contract**。当前规则是：

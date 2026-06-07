@@ -145,21 +145,63 @@ def sha256_file(path: Path) -> str:
 
 CHANGE_SCOPE_FILES: list[str] | None = None
 CHANGE_SCOPE_LABEL = "staged"
+CHANGE_SCOPE_BASE_REF: str | None = None
+STRICT_TOOL_TIMEOUTS = False
 
 
-def _git_lines(args: list[str]) -> list[str]:
+def _git_run(args: list[str]) -> subprocess.CompletedProcess[str] | None:
     try:
-        result = subprocess.run(
+        return subprocess.run(
             ["git", *args],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
         )
     except FileNotFoundError:
-        return []
-    if result.returncode != 0:
+        return None
+
+
+def _git_lines(args: list[str]) -> list[str]:
+    result = _git_run(args)
+    if result is None or result.returncode != 0:
         return []
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+
+def _git_diff_text_for_file(rel_path: str) -> tuple[str, str | None]:
+    """Return the relevant diff text for one repo-relative file.
+
+    Local hook/staged mode reads the index diff.  CI mode must inspect
+    BASE...HEAD; otherwise a committed PR change leaves no cached diff and the
+    exact/exploratory and research-audit gates silently become no-ops.
+    """
+    if CHANGE_SCOPE_BASE_REF:
+        for range_expr in (f"{CHANGE_SCOPE_BASE_REF}...HEAD", f"{CHANGE_SCOPE_BASE_REF}..HEAD"):
+            result = _git_run(["diff", "--unified=0", range_expr, "--", rel_path])
+            if result is not None and result.returncode == 0:
+                return result.stdout, None
+        return "", f"cannot diff {CHANGE_SCOPE_BASE_REF} against HEAD for {rel_path}"
+
+    result = _git_run(["diff", "--cached", "--unified=0", "--", rel_path])
+    if result is None:
+        return "", "git 不可用"
+    if result.returncode != 0:
+        return "", f"cannot read staged diff for {rel_path}"
+    return result.stdout, None
+
+
+def _added_lines_from_diff(diff_text: str) -> list[str]:
+    return [
+        line[1:] for line in diff_text.splitlines()
+        if line.startswith("+") and not line.startswith("+++")
+    ]
+
+
+def _warn_or_block_tool_timeout(gate: GateResult, msg: str) -> None:
+    if STRICT_TOOL_TIMEOUTS:
+        gate.block(msg)
+    else:
+        gate.warn(msg)
 
 
 def _load_changed_files_file(path: Path) -> list[str]:
@@ -172,10 +214,11 @@ def configure_change_scope(*, ci: bool = False, base_ref: str | None = None, cha
     Local pre-commit mode uses staged files. CI/PR mode must not rely on staged
     files, so it compares BASE...HEAD or reads an explicit changed-files list.
     """
-    global CHANGE_SCOPE_FILES, CHANGE_SCOPE_LABEL
+    global CHANGE_SCOPE_FILES, CHANGE_SCOPE_LABEL, CHANGE_SCOPE_BASE_REF
     if changed_files_from is not None:
         CHANGE_SCOPE_FILES = _load_changed_files_file(changed_files_from)
         CHANGE_SCOPE_LABEL = f"changed-files:{changed_files_from}"
+        CHANGE_SCOPE_BASE_REF = base_ref
         return
     if ci:
         if not base_ref:
@@ -185,9 +228,11 @@ def configure_change_scope(*, ci: bool = False, base_ref: str | None = None, cha
             diff = _git_lines(["diff", "--name-only", f"{base_ref}..HEAD"])
         CHANGE_SCOPE_FILES = [line.replace("\\", "/") for line in diff]
         CHANGE_SCOPE_LABEL = f"ci:{base_ref}...HEAD"
+        CHANGE_SCOPE_BASE_REF = base_ref
         return
     CHANGE_SCOPE_FILES = None
     CHANGE_SCOPE_LABEL = "staged"
+    CHANGE_SCOPE_BASE_REF = None
 
 
 def get_staged_files() -> list[str]:
@@ -309,19 +354,12 @@ def check_exact_exploratory_isolation(gate: GateResult) -> None:
         full_path = PROJECT_ROOT / rel
         if not full_path.exists():
             continue
-        try:
-            diff_result = subprocess.run(
-                ["git", "diff", "--cached", "--", rel],
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            )
-            diff_text = diff_result.stdout
-        except FileNotFoundError:
+        diff_text, diff_error = _git_diff_text_for_file(rel)
+        if diff_error:
+            gate.block(f"无法读取 {CHANGE_SCOPE_LABEL} diff: {diff_error}")
             continue
 
-        added_lines = [
-            line[1:] for line in diff_text.splitlines()
-            if line.startswith("+") and not line.startswith("+++")
-        ]
+        added_lines = _added_lines_from_diff(diff_text)
 
         for pattern in EXPLORATORY_LEAK_PATTERNS:
             for line in added_lines:
@@ -384,17 +422,11 @@ def check_research_audit_coverage(gate: GateResult) -> None:
     research_refs: set[str] = set()
     audit_refs: set[str] = set()
     for rel in touched:
-        try:
-            diff_result = subprocess.run(
-                ["git", "diff", "--cached", "--", rel],
-                capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-            )
-        except FileNotFoundError:
+        diff_text, diff_error = _git_diff_text_for_file(rel)
+        if diff_error:
+            gate.block(f"无法读取 {CHANGE_SCOPE_LABEL} diff: {diff_error}")
             continue
-        added = "\n".join(
-            line[1:] for line in diff_result.stdout.splitlines()
-            if line.startswith("+") and not line.startswith("+++")
-        )
+        added = "\n".join(_added_lines_from_diff(diff_text))
         research_refs.update(_RESEARCH_REF_PATTERN.findall(added))
         audit_refs.update(_AUDIT_REF_PATTERN.findall(added))
 
@@ -648,10 +680,10 @@ def check_mypy(gate: GateResult) -> None:
             env={**os.environ, "MYPYPATH": str(PROJECT_ROOT)},
         )
     except subprocess.TimeoutExpired:
-        gate.warn("mypy 超时 (>60s) — 跳过")
+        _warn_or_block_tool_timeout(gate, "mypy 超时 (>60s) — 跳过")
         return
     except FileNotFoundError:
-        gate.warn("mypy 未安装 — 跳过")
+        _warn_or_block_tool_timeout(gate, "mypy 未安装 — 跳过")
         return
 
     out = (result.stdout or "").strip()
@@ -684,10 +716,10 @@ def check_ruff(gate: GateResult) -> None:
             capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
         )
     except subprocess.TimeoutExpired:
-        gate.warn("ruff 超时 (>30s) — 跳过")
+        _warn_or_block_tool_timeout(gate, "ruff 超时 (>30s) — 跳过")
         return
     except FileNotFoundError:
-        gate.warn("ruff 未安装 — 跳过")
+        _warn_or_block_tool_timeout(gate, "ruff 未安装 — 跳过")
         return
 
     if result.returncode == 0:
@@ -764,6 +796,8 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_r
     print("=" * 60)
     print("Preflight Gate — 提交前门禁检查")
     print("=" * 60)
+    global STRICT_TOOL_TIMEOUTS
+    STRICT_TOOL_TIMEOUTS = ci
     configure_change_scope(ci=ci, base_ref=base_ref, changed_files_from=changed_files_from)
     mode = "full" if full else ("ci" if ci else ("hook" if hook else "staged"))
     print(f"模式: {mode}")

@@ -40,6 +40,6 @@ python scripts/preflight_gate.py
 
 ## 边界
 
-这次补强不重写 Git 历史，也不声称已经推 GitHub。GitHub 上传走 `zmd-gh-upload-bundle/v1`，由本地 Codex 校验、应用 patch、测试、commit、push/PR。旧 Gemini key 即使已从当前树删除，也建议在 Google 侧轮换；这不是代码补丁能完成的事。
+这次补强不重写 Git 历史，也不声称已经推 GitHub。GitHub 上传走 `zmd-gh-upload-bundle/v1`，由本地 Codex 校验、应用 patch、测试、commit、push/PR。用户已确认旧 Gemini key 已经过期；代码侧仍必须保持 current tree / review package secret=0, 不把任何新 key 写回 repo 或 memory。
 
 关联：[[memory-currency-protocol]]、[[memory-tree-structural-health]]、[[github-backup]]、[[gemini-math-consultant]]。

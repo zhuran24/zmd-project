@@ -66,15 +66,19 @@ def _r_latest_review_package() -> str:
 
 
 def _r_spike_head() -> str:
-    value = _git("rev-parse", "--short", SPIKE_BRANCH)
-    if value:
-        return value
-    if LATEST_PACKAGE.exists():
-        try:
-            data = json.loads(LATEST_PACKAGE.read_text(encoding="utf-8"))
-            return str(data.get("spike_head", "")).strip()
-        except Exception:
-            return ""
+    for ref in (
+        SPIKE_BRANCH,
+        f"refs/heads/{SPIKE_BRANCH}",
+        f"origin/{SPIKE_BRANCH}",
+        f"refs/remotes/origin/{SPIKE_BRANCH}",
+    ):
+        value = _git("rev-parse", "--short", ref)
+        if value:
+            return value
+    # In a lightweight CI checkout or local clone the historical spike branch may
+    # be absent.  Returning an empty value preserves the checked-in slot instead
+    # of falling back to LATEST_PACKAGE, whose build-time spike_head is not the
+    # same thing as the current branch head and can make portable checks fail.
     return ""
 
 
@@ -91,7 +95,11 @@ def _r_current_phase() -> str:
 def _r_repo_url() -> str:
     url = _git("remote", "get-url", "origin")
     match = re.search(r"github\.com[/:]([^/]+/[^/.]+)", url)
-    return match.group(1) if match else url
+    if match:
+        return match.group(1)
+    # Local-path clones cannot reveal the canonical GitHub owner/repo.  Preserve
+    # the checked-in slot rather than rewriting it to /tmp/... or /mnt/... .
+    return ""
 
 
 def _r_current_head() -> str:

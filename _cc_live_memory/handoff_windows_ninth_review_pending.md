@@ -19,7 +19,7 @@ metadata:
 
 ## 最新状态 (2026-06-06) — GPT 接手后文档树/记忆树 closeout + GitHub 上传准备
 
-> **当前真相 (接手观察点)**: 当前干净项目观察点 HEAD = `89b5a641aee1b52b922a1c7da1db098b7fffe440` (`docs: close doc tree completeness gate`), branch `doc_tree_closeout_v20260606_004`; 观察点包解压后 `git status --short` 为空, memory repo mirror 与外层 `_cc_live_memory/` 字节一致。
+> **当前性修正 (2026-06-07)**: 早先这里写过 `89b5a641…` / `doc_tree_closeout_v20260606_004` 作为文档树 closeout 观察点。那是历史快照, 不是当前 checkout identity。不要在 living memory 散文里手抄当前 HEAD/branch: commit 之后它会立刻自我过期。需要当前提交身份时运行 `git rev-parse --short HEAD` 与 `git branch --show-current`; 记忆树只记录阶段语义和门禁状态。
 >
 > **文档树**: 已从“文件清单”升级成 subject/projection + completeness gate。`docs/subjects/*` 是抽象主体, concrete docs 内 `DOC-SUBJECT` blocks 是投影; `sync_doc_subjects.py --check` 与 `check_doc_tree_completeness.py` 已进 preflight。
 >
