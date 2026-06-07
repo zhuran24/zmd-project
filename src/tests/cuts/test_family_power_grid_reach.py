@@ -538,6 +538,18 @@ def test_evaluator_returns_false_when_facility_not_selected() -> None:
     assert evaluate_geometric_power_grid_reach(cut, state_without) is False
 
 
+def test_evaluator_returns_false_on_same_rect_ghost_cells_drift() -> None:
+    """Same ghost AABB but different ghost_cells invalidates F8 graph scope."""
+    state = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    new_state = _f5_fixture_state(selected_poses=["p_3x3_a"])
+    new_state.ghost_cells = frozenset()
+    assert compute_ghost_rect_id(new_state.ghost_rect) == cut.scope.ghost_rect_id
+    assert compute_blocked_cells_hash(new_state) != cut.scope.blocked_cells_hash
+    assert evaluate_geometric_power_grid_reach(cut, new_state) is False
+
+
 def test_evaluator_returns_false_when_facility_group_missing() -> None:
     """Cert references a group that no longer exists in state.groups."""
     state = _f5_fixture_state(selected_poses=["p_3x3_a"])

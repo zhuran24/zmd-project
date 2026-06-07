@@ -921,10 +921,23 @@ def evaluate_literal_multiset(cut: Cut, state: BState) -> bool:
     ``cut.literals``, ``state.groups[group_id].selected_poses`` contains at
     least that many copies (Counter ≥ Counter).
 
+    Ghost-bound literal families (F5/F7) still depend on concrete
+    ``ghost_cells ∪ exterior_blocks`` even though their violation predicate is
+    literal-based.  Guard the hot path here so a stale scoped literal cut
+    cannot fire if a caller reaches evaluation before replay/Step 6.
+
     Pre-check: each referenced group has enough total selected_poses
     (avoid unnecessary Counter walk). False on missing group.
     """
     from collections import Counter
+
+    if cut.scope is None:
+        return False
+    if cut.scope.ghost_rect_id != GHOST_AGNOSTIC:
+        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
+            return False
 
     if cut.literals is None or len(cut.literals) == 0:
         return False  # literal-based cut without literals is no-op

@@ -570,15 +570,14 @@ def test_evaluator_returns_false_when_no_owner_in_window():
     assert evaluate_geometric_density_envelope(cut, state) is False
 
 
-def test_evaluator_returns_true_when_owner_overflow():
-    """11 cells owned by g1 in W (max=10) → strict overflow → True."""
+def test_evaluator_rejects_unproved_tight_bound_before_counting():
+    """F9 evaluator mirrors quarantine: tight K=10 is not replay-proved."""
     cell_owner = {(i, 0): ("g1", 0) for i in range(7)}  # 7 cells in column y=0
     cell_owner.update({(i, 1): ("g1", 1) for i in range(4)})  # 4 more in y=1
-    # Total 11 cells in W (0,0,10,10) owned by g1; max=10 → strict overflow
     state = _make_state(cell_owner=cell_owner)
     cert_payload = _make_density_envelope_cert(max_allowed_area=10)
     cut = _make_density_envelope_cut(cert_payload)
-    assert evaluate_geometric_density_envelope(cut, state) is True
+    assert evaluate_geometric_density_envelope(cut, state) is False
 
 
 def test_evaluator_strict_inequality_at_equality_returns_false():
@@ -598,6 +597,17 @@ def test_evaluator_other_group_cells_ignored():
     cert_payload = _make_density_envelope_cert(max_allowed_area=10)
     cut = _make_density_envelope_cut(cert_payload)
     assert evaluate_geometric_density_envelope(cut, state) is False
+
+
+def test_evaluator_returns_false_on_same_rect_ghost_cells_drift():
+    """F9 scope must bind concrete blocked cells, not only ghost_rect_id."""
+    cert_payload = _make_density_envelope_cert(max_allowed_area=100)
+    cut = _make_density_envelope_cut(cert_payload)
+    new_state = _make_state(ghost_rect=(0, 0, 10, 10))
+    new_state.ghost_cells = frozenset({(0, 0)})
+    assert compute_ghost_rect_id(new_state.ghost_rect) == cut.scope.ghost_rect_id
+    assert compute_blocked_cells_hash(new_state) != cut.scope.blocked_cells_hash
+    assert evaluate_geometric_density_envelope(cut, new_state) is False
 
 
 def test_evaluator_fail_safe_on_malformed_payload():
@@ -704,8 +714,8 @@ def test_validate_rejects_cert_max_zero_without_replayable_proof():
     assert "no replayable proof" in (vr.detail or "")
 
 
-def test_evaluator_cert_max_zero_only_fires_when_g_inside_window():
-    """cert_max=0 sound semantics: only fires when group g actually places in W."""
+def test_evaluator_cert_max_zero_fails_closed_without_replayable_proof():
+    """cert_max=0 is a quarantined tight K in Phase 1.2, even if it would fire."""
     state_outside = _make_state(cell_owner={(50, 50): ("g1", 0)})  # outside W (0,0,10,10)
     state_inside = _make_state(cell_owner={(5, 5): ("g1", 0)})  # inside W
     cert_payload = _make_density_envelope_cert(
@@ -713,10 +723,8 @@ def test_evaluator_cert_max_zero_only_fires_when_g_inside_window():
         assignment_witness=[["g1", "p_3x3_a"]],
     )
     cut = _make_density_envelope_cut(cert_payload)
-    # g placed outside W: 0 > 0 is False → no spurious fire
     assert evaluate_geometric_density_envelope(cut, state_outside) is False
-    # g placed inside W: 1 > 0 is True → cut correctly prunes
-    assert evaluate_geometric_density_envelope(cut, state_inside) is True
+    assert evaluate_geometric_density_envelope(cut, state_inside) is False
 
 
 def test_safe_ub_static_immune_to_cell_owner_other_TOCTOU():

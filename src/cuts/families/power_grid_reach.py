@@ -61,6 +61,7 @@ from src.cuts.lifecycle import (
     Cell,
     Cut,
     ValidationResult,
+    compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
 )
@@ -786,10 +787,10 @@ def _eval_check_protocol_core_position(
 def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
     """Hot-path evaluator. True iff F8 disconnect still holds.
 
-    Per the F6/F7 pattern: under the scope binding (ghost + exterior), the
-    BFS disconnect is monotonically preserved by ``free_cells`` shrinking
-    (cell_owner only adds blockers). O(1) scope-drift guard suffices —
-    re-running the heavy BFS recompute on every evaluation is wasted work.
+    Per the F6/F7 pattern: under the scope binding (concrete ghost_cells +
+    exterior), the BFS disconnect is monotonically preserved by ``free_cells``
+    shrinking (cell_owner only adds blockers). O(1) scope-drift guard suffices
+    — re-running the heavy BFS recompute on every evaluation is wasted work.
 
     Gemini F8 round 1 Finding #3 (CRITICAL): spec §6 requires checking that
     the cert's (facility_group, facility_pose_id) is still in
@@ -811,6 +812,11 @@ def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
         if cert_dict.get("cert_kind") != "power_pole_bfs_disconnect_ghost":
             return False
         if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        # F8 graph topology depends on concrete ghost_cells ∪ exterior_blocks,
+        # not just the ghost AABB. A same-rect/different-cells replay state must
+        # fail closed before trusting the cert payload.
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
             return False
         if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
             return False

@@ -601,6 +601,20 @@ def test_evaluator_returns_false_on_exterior_drift() -> None:
     assert evaluate_geometric_shape_packing_hall(cut, new_state) is False
 
 
+def test_evaluator_returns_false_on_same_rect_ghost_cells_drift() -> None:
+    """Same ghost AABB but different ghost_cells invalidates the partition scope."""
+    state = _make_state()
+    cert_payload = _make_cert(state)
+    cut = _make_cut(cert_payload, state)
+    # Regression: ghost_rect_id stays equal, but the concrete ghost cell that
+    # split the baseline disappears. The old payload still says Hall holds,
+    # so evaluator must use blocked_cells_hash and fail closed.
+    new_state = _make_state(ghost_cells=frozenset())
+    assert compute_ghost_rect_id(new_state.ghost_rect) == cut.scope.ghost_rect_id
+    assert compute_blocked_cells_hash(new_state) != cut.scope.blocked_cells_hash
+    assert evaluate_geometric_shape_packing_hall(cut, new_state) is False
+
+
 def test_evaluator_failsafe_malformed_payload() -> None:
     state = _make_state()
     cert_payload = _make_cert(state)

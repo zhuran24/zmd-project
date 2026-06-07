@@ -47,6 +47,8 @@ from src.cuts.lifecycle import (
     GroupId,
     PoseId,
     ValidationResult,
+    compute_blocked_cells_hash,
+    compute_ghost_rect_id,
 )
 
 
@@ -524,22 +526,46 @@ def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
     """Evaluator: sum(|cells_of_cert_group ∈ cell_owner ∩ W|) > max_allowed_area.
 
     Strict inequality per PROJECT_LOCK §3A — equality does not cut.
-    Fail-safe: returns False on any malformed payload.
+
+    Phase 1.2 quarantine invariant: the only replayable F9 bound is the
+    validator-recomputed static safe upper bound.  Tighter oracle-supplied K
+    values have no proof in this phase, so the hot-path evaluator must fail
+    closed even if a caller bypasses ``validate_density_envelope``/replay.
+
+    Fail-safe: returns False on malformed payload, scope drift, or an
+    unproved ``max_allowed_area``.
     """
-    if cut.geometric_payload is None:
+    if cut.geometric_payload is None or cut.scope is None:
         return False
     try:
         cert_dict = _parse_cert_payload(cut.geometric_payload)
         if cert_dict.get("cert_kind") != "density_envelope_v1":
+            return False
+        if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+            return False
+        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
             return False
         window_rect = _parse_window_rect(cert_dict.get("window_rect"))
         group_id = cert_dict.get("group_id")
         max_allowed = cert_dict.get("max_allowed_area")
         if not _is_non_empty_str(group_id) or not _is_strict_int(max_allowed):
             return False
+        if cast(str, group_id) not in state.groups:
+            return False
+        window_cells = _window_cells(window_rect)
+        safe_ub = _compute_safe_max_allowed_area(
+            window_cells, cast(GroupId, group_id), state
+        )
+        if cast(int, max_allowed) != safe_ub:
+            return False
         wx, wy, wh, ww = window_rect
         occupied = 0
-        for cell, (owner_g, _slot) in state.cell_owner.items():
+        for cell, owner in state.cell_owner.items():
+            if not isinstance(owner, tuple) or len(owner) < 1:
+                return False
+            owner_g = owner[0]
             if owner_g != group_id:
                 continue
             cx, cy = cell

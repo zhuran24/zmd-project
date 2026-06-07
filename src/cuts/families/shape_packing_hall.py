@@ -63,6 +63,7 @@ from src.cuts.lifecycle import (
     BState,
     Cut,
     ValidationResult,
+    compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
 )
@@ -628,9 +629,10 @@ def evaluate_geometric_shape_packing_hall(cut: Cut, state: BState) -> bool:
       ``by_ghost_watcher`` waking the cut on a ghost change feeds the
       evaluator BEFORE scope re-check, so trusting the payload there would
       report the cut as still violating even though the scope is invalid.
-    - Fix: evaluator does an O(1) scope check (ghost_rect_id +
-      exterior_blocks_hash) before trusting the payload. If scope drifted,
-      return False — the cut is no longer active.
+    - Fix: evaluator does an O(1) scope check (ghost_rect_id + full
+      blocked_cells_hash). The full blocked hash is required because
+      ``ghost_rect_id`` identifies the AABB, not the concrete ghost cell set.
+      If scope drifted, return False — the cut is no longer active.
 
     Fail-safe: malformed payload / missing scope returns False.
     """
@@ -642,9 +644,13 @@ def evaluate_geometric_shape_packing_hall(cut: Cut, state: BState) -> bool:
             return False
         if cert_dict.get("cert_kind") != "hall_interval_witness":
             return False
-        # O(1) scope drift guard — partitions only depend on
-        # ghost+exterior, so a scope match is sufficient to trust payload.
+        # O(1) scope drift guard — partitions depend on the concrete
+        # ghost_cells ∪ exterior_blocks set.  ghost_rect_id alone is not
+        # enough: fixtures and replay states may keep the same AABB while
+        # changing the actual ghost cells.
         if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
             return False
         if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
             return False
