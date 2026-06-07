@@ -45,6 +45,12 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_clean_review_evidence_bound_only_by_filename",
             "test_validator_rejects_package_token_only_clean_review_evidence",
             "test_phase_gate_json_loader_rejects_duplicate_keys",
+            "test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews",
+            "test_validator_rejects_negative_major_or_soundness_findings_count",
+            "test_validator_rejects_clean_reviews_without_current_package_identity",
+            "test_validator_rejects_clean_review_package_that_differs_from_current_package",
+            "test_validator_rejects_body_only_current_package_binding",
+            "test_phase_gate_json_loader_rejects_duplicate_current_package_keys",
         }
     ),
 }

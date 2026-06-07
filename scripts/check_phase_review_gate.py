@@ -20,8 +20,18 @@ DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
 
 OPEN_STATUSES = {"blocked_pending_clean_reviews", "open", "blocked"}
 CLOSED_STATUS = "closed"
+MAJOR_OR_SOUNDNESS_OUTCOMES = {"major_soundness_findings_found"}
 CLEAN_FULL_REVIEW_TYPE = "independent_full_external"
 REVIEW_EVIDENCE_ROOTS = (".artifacts", "docs/research")
+REVIEW_PACKAGE_METADATA_KEYS = {
+    "archive_name",
+    "archive_sha256",
+    "archive_size_bytes",
+    "package",
+    "source_head",
+    "source_list_identity",
+}
+HEX_DIGITS = set("0123456789abcdef")
 
 
 class GateError(RuntimeError):
@@ -77,6 +87,10 @@ def _normalized_match_text(value: str) -> str:
 
 def _canonical_package_key(package: str) -> str:
     return _normalized_match_text(package)
+
+
+def _is_hex_digest(value: str, *, length: int) -> bool:
+    return len(value) == length and all(ch in HEX_DIGITS for ch in value.lower())
 
 
 def _is_review_evidence_path(rel_path: str) -> bool:
@@ -147,6 +161,115 @@ def _evidence_matches_package(rel_path: str, package: str) -> bool:
     haystack = _normalized_match_text(text)
     package_norm = _normalized_match_text(package)
     return bool(package_norm) and package_norm in haystack
+
+
+def _evidence_metadata_key(raw_key: str) -> str:
+    key = raw_key.strip().lower().replace("-", "_").replace(" ", "_")
+    while "__" in key:
+        key = key.replace("__", "_")
+    if key in {"archive_sha", "sha256"}:
+        return "archive_sha256"
+    if key in {"archive_size", "archive_size_byte", "size_bytes", "size"}:
+        return "archive_size_bytes"
+    if key in {"head", "commit", "source_commit", "source_commit_head"}:
+        return "source_head"
+    return key
+
+
+def _read_evidence_text(rel_path: str) -> str:
+    full_path = PROJECT_ROOT / rel_path
+    try:
+        with full_path.open("r", encoding="utf-8") as evidence_file:
+            return evidence_file.read(200_000)
+    except Exception as exc:  # noqa: BLE001 - gate evidence must be readable.
+        raise GateError(f"cannot read evidence path {rel_path}: {exc}") from exc
+
+
+def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for line in _read_evidence_text(rel_path).splitlines():
+        if ":" not in line:
+            continue
+        raw_key, raw_value = line.split(":", 1)
+        key = _evidence_metadata_key(raw_key)
+        if key not in REVIEW_PACKAGE_METADATA_KEYS:
+            continue
+        value = raw_value.strip()
+        if not value:
+            continue
+        if key in metadata:
+            raise GateError(f"duplicate evidence metadata key {key!r}: {rel_path}")
+        metadata[key] = value
+    return metadata
+
+
+def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
+    if raw_package is None:
+        return None
+    package = require_mapping(raw_package, "current_review_package")
+    archive_name = require_str(package.get("archive_name"), "current_review_package.archive_name")
+    package_key = require_str(package.get("package"), "current_review_package.package")
+    archive_sha256 = require_str(package.get("archive_sha256"), "current_review_package.archive_sha256").lower()
+    archive_size_bytes = require_int(
+        package.get("archive_size_bytes"),
+        "current_review_package.archive_size_bytes",
+    )
+    source_head = require_str(package.get("source_head"), "current_review_package.source_head").lower()
+    source_list_identity = require_str(
+        package.get("source_list_identity"),
+        "current_review_package.source_list_identity",
+    )
+    if not archive_name.endswith(".7z"):
+        raise GateError("current_review_package.archive_name must name a .7z archive")
+    if not _is_hex_digest(archive_sha256, length=64):
+        raise GateError("current_review_package.archive_sha256 must be a 64-character hex digest")
+    if archive_size_bytes <= 0:
+        raise GateError("current_review_package.archive_size_bytes must be positive")
+    if not _is_hex_digest(source_head, length=40):
+        raise GateError("current_review_package.source_head must be a 40-character hex commit")
+    if _canonical_package_key(package_key) != _canonical_package_key(archive_name):
+        raise GateError("current_review_package.package must match archive_name")
+    return {
+        "archive_name": archive_name,
+        "archive_sha256": archive_sha256,
+        "archive_size_bytes": archive_size_bytes,
+        "package": package_key,
+        "source_head": source_head,
+        "source_list_identity": source_list_identity,
+    }
+
+
+def _check_evidence_matches_current_package(
+    rel_path: str,
+    current_package: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        metadata = _extract_evidence_metadata(rel_path)
+    except GateError as exc:
+        return [str(exc)]
+
+    expected = {
+        "archive_name": current_package["archive_name"],
+        "archive_sha256": current_package["archive_sha256"],
+        "archive_size_bytes": str(current_package["archive_size_bytes"]),
+        "package": current_package["package"],
+        "source_head": current_package["source_head"],
+        "source_list_identity": current_package["source_list_identity"],
+    }
+    for key, expected_value in expected.items():
+        value = metadata.get(key)
+        if value is None:
+            errors.append(f"evidence path {rel_path} missing current package metadata: {key}")
+            continue
+        if key in {"archive_sha256", "source_head"}:
+            value = value.lower()
+        if value != expected_value:
+            errors.append(
+                f"evidence path {rel_path} current package metadata {key} "
+                f"{value!r} != {expected_value!r}"
+            )
+    return errors
 
 
 def _evidence_file_identity(rel_path: str) -> tuple[int, int]:
@@ -259,6 +382,7 @@ def _check_evidence_paths(
     *,
     required: bool = False,
     package: str | None = None,
+    current_review_package: dict[str, Any] | None = None,
     require_review_artifact: bool = False,
 ) -> tuple[list[str], list[str], list[tuple[int, int]], list[str]]:
     errors: list[str] = []
@@ -299,15 +423,18 @@ def _check_evidence_paths(
                 f"{label}.evidence_paths must point to a review/research artifact "
                 f"under {', '.join(REVIEW_EVIDENCE_ROOTS)}: {rel_path}"
             )
-        try:
-            package_matches = package is None or _evidence_matches_package(canonical_path, package)
-        except GateError as exc:
-            errors.append(str(exc))
-            continue
-        if not package_matches:
-            errors.append(
-                f"{label}.evidence_paths must match review package {package!r}: {rel_path}"
-            )
+        if current_review_package is not None:
+            errors.extend(_check_evidence_matches_current_package(canonical_path, current_review_package))
+        else:
+            try:
+                package_matches = package is None or _evidence_matches_package(canonical_path, package)
+            except GateError as exc:
+                errors.append(str(exc))
+                continue
+            if not package_matches:
+                errors.append(
+                    f"{label}.evidence_paths must match review package {package!r}: {rel_path}"
+                )
     return errors, canonical_paths, file_identities, content_digests
 
 
@@ -344,6 +471,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     next_phase_entry = require_mapping(gate.get("next_phase_entry"), "next_phase_entry")
     last_reset = require_mapping(gate.get("last_reset"), "last_reset")
     history = require_list(gate.get("review_history"), "review_history")
+    current_review_package = _validate_current_review_package(gate.get("current_review_package"))
 
     required = require_int(
         close_policy.get("required_consecutive_clean_full_reviews"),
@@ -410,7 +538,6 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     clean_review_evidence_owner: dict[str, int] = {}
     clean_review_file_owner: dict[tuple[int, int], int] = {}
     clean_review_content_owner: dict[str, int] = {}
-    clean_review_package_owner: dict[str, int] = {}
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
         package = require_str(entry.get("package"), f"review_history[{index}].package")
@@ -437,6 +564,11 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 "evidence_paths": require_list(entry.get("evidence_paths"), f"review_history[{index}].evidence_paths"),
             }
         )
+        outcome_reports_major = outcome in MAJOR_OR_SOUNDNESS_OUTCOMES
+        if major < 0:
+            errors.append(
+                f"review_history[{index}].major_or_soundness_findings cannot be negative: {major}"
+            )
         if clean and outcome != "clean":
             errors.append(f"review_history[{index}] is clean but outcome is {outcome!r}")
         if not clean and outcome == "clean":
@@ -445,9 +577,14 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             errors.append(f"review_history[{index}] is clean but has {major} major/soundness findings")
         if clean and resets_counter:
             errors.append(f"review_history[{index}] is clean but resets the clean-review counter")
+        if outcome_reports_major and major <= 0:
+            errors.append(
+                f"review_history[{index}] outcome {outcome!r} requires a positive "
+                "major_or_soundness_findings count"
+            )
         if not clean and major == 0 and resets_counter:
             errors.append(f"review_history[{index}] resets counter but has zero major/soundness findings")
-        if not clean and major > 0 and not resets_counter:
+        if not clean and (major > 0 or outcome_reports_major) and not resets_counter:
             errors.append(f"review_history[{index}] has major/soundness findings but does not reset counter")
         if resets_counter:
             all_reset_entries.append((index, package))
@@ -477,6 +614,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             f"review_history[{index}]",
             required=requires_evidence,
             package=package if requires_evidence else None,
+            current_review_package=current_review_package if requires_clean_review_evidence else None,
             require_review_artifact=requires_evidence,
         )
         errors.extend(evidence_errors)
@@ -490,20 +628,23 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 reset_review_content_owner[content_digest] = index
         if requires_clean_review_evidence:
             package_key = _canonical_package_key(package)
+            if current_review_package is None:
+                errors.append(
+                    f"review_history[{index}] clean review requires current_review_package identity"
+                )
+            else:
+                current_package_key = _canonical_package_key(current_review_package["package"])
+                if package_key != current_package_key:
+                    errors.append(
+                        f"review_history[{index}].package must match current_review_package.package "
+                        f"{current_review_package['package']!r}: {package}"
+                    )
             reset_package_owner = reset_review_package_owner.get(package_key)
             if reset_package_owner is not None:
                 errors.append(
                     f"review_history[{index}] reuses reset-review package "
                     f"from review_history[{reset_package_owner}]: {package}"
                 )
-            package_owner = clean_review_package_owner.get(package_key)
-            if package_owner is not None:
-                errors.append(
-                    f"review_history[{index}] reuses clean-review package "
-                    f"from review_history[{package_owner}]: {package}"
-                )
-            else:
-                clean_review_package_owner[package_key] = index
             for canonical_path in canonical_evidence_paths:
                 reset_owner = reset_review_evidence_owner.get(canonical_path)
                 if reset_owner is not None:

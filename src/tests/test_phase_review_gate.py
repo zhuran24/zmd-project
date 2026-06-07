@@ -15,14 +15,42 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GATE_PATH = PROJECT_ROOT / "data" / "review_gates" / "phase_1_2_spike_close.json"
 
 
-def _write_review_evidence(fake_root: Path, package: str) -> str:
-    rel = Path("docs") / "research" / f"{package}.md"
+def _current_review_package(package: str = "zmd_99.7z") -> dict:
+    return {
+        "package": package,
+        "archive_name": package,
+        "archive_sha256": "a" * 64,
+        "archive_size_bytes": 123456,
+        "source_head": "b" * 40,
+        "source_list_identity": "chatgpt-project-source:zmd_99.7z",
+    }
+
+
+def _write_review_evidence(
+    fake_root: Path,
+    package: str,
+    *,
+    current_package: dict | None = None,
+    filename: str | None = None,
+    nonce: str | None = None,
+) -> str:
+    rel = Path("docs") / "research" / (filename or f"{package}.md")
     path = fake_root / rel
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        f"# Review evidence for {package}\n\nPackage: {package}\n",
-        encoding="utf-8",
-    )
+    lines = [f"# Review evidence for {package}", "", f"Package: {package}"]
+    if current_package is not None:
+        lines.extend(
+            [
+                f"Archive name: {current_package['archive_name']}",
+                f"Archive sha256: {current_package['archive_sha256']}",
+                f"Archive size_bytes: {current_package['archive_size_bytes']}",
+                f"Source HEAD: {current_package['source_head']}",
+                f"Source list identity: {current_package['source_list_identity']}",
+            ]
+        )
+    if nonce is not None:
+        lines.append(f"Review nonce: {nonce}")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return rel.as_posix()
 
 
@@ -36,6 +64,48 @@ def _payload_for_fake_root(fake_root: Path) -> dict:
         _write_review_evidence(fake_root, payload["last_reset"]["review_package"])
     ]
     return payload
+
+
+
+
+def _payload_with_minimal_review_evidence(fake_root: Path) -> dict:
+    payload = _payload_for_fake_root(fake_root)
+    payload["required_doc_markers"] = []
+    payload["source_boundaries"] = []
+    return payload
+
+
+def _append_three_clean_reviews(fake_root: Path, payload: dict, *, prefix: str) -> None:
+    current_package = _current_review_package()
+    payload["current_review_package"] = current_package
+    for index in range(3):
+        package = current_package["package"]
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [
+                    _write_review_evidence(
+                        fake_root,
+                        package,
+                        current_package=current_package,
+                        filename=f"{prefix}_{index + 1}.md",
+                        nonce=f"{prefix}_{index + 1}",
+                    )
+                ],
+            }
+        )
+
+
+def _mark_payload_closed_ready(payload: dict) -> None:
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
 
 
 def test_phase_review_gate_manifest_is_consistent() -> None:
@@ -549,6 +619,145 @@ def test_validator_rejects_package_token_only_clean_review_evidence(tmp_path: Pa
     assert "phase_1_2_spike_close" in summary
     assert any("must match review package" in error for error in errors)
 
+
+def test_validator_rejects_clean_reviews_without_current_package_identity(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    for index in range(3):
+        package = f"zmd_14.7z_shadow_clean_{index + 1}"
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [_write_review_evidence(fake_root, package)],
+            }
+        )
+    fake_gate = fake_root / "fake_clean_without_current_package.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("clean review requires current_review_package identity" in error for error in errors)
+
+
+def test_validator_rejects_clean_review_package_that_differs_from_current_package(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    for index in range(3):
+        package = f"zmd_99.7z_shadow_clean_{index + 1}"
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [
+                    _write_review_evidence(
+                        fake_root,
+                        package,
+                        filename=f"shadow_package_{index + 1}.md",
+                        nonce=f"shadow-{index + 1}",
+                    )
+                ],
+            }
+        )
+    fake_gate = fake_root / "fake_clean_package_mismatch.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("package must match current_review_package.package" in error for error in errors)
+    assert any("missing current package metadata: archive_sha256" in error for error in errors)
+
+
+def test_validator_rejects_body_only_current_package_binding(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    for index in range(3):
+        evidence_rel = Path("docs") / "research" / f"body_only_current_package_{index + 1}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            "# Body-only clean review claim\n\n"
+            f"Package: {current_package['package']}\n"
+            "Archive sha256: NOT PROVIDED\n"
+            "Archive size_bytes: NOT PROVIDED\n"
+            "This evidence intentionally omits source HEAD and source-list identity.\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_body_only_current_package.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("current package metadata archive_sha256" in error for error in errors)
+    assert any("current package metadata archive_size_bytes" in error for error in errors)
+    assert any("missing current package metadata: source_head" in error for error in errors)
+
+
+def test_phase_gate_json_loader_rejects_duplicate_current_package_keys(tmp_path: Path, monkeypatch) -> None:
+    fake_root = tmp_path / "repo"
+    fake_root.mkdir(parents=True)
+    fake_gate = fake_root / "duplicate_current_package_key_gate.json"
+    fake_gate.write_text(
+        '{"schema_version": 1, "gate_id": "phase_1_2_spike_close", '
+        '"current_review_package": {"package": "zmd_99.7z", "package": "zmd_100.7z"}}',
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(check_phase_review_gate.GateError, match="duplicate JSON object key: package"):
+        check_phase_review_gate.load_gate(fake_gate)
+
+
 def test_phase_gate_json_loader_rejects_duplicate_keys(tmp_path: Path, monkeypatch) -> None:
     fake_root = tmp_path / "repo"
     fake_root.mkdir(parents=True)
@@ -566,12 +775,14 @@ def test_phase_gate_json_loader_rejects_duplicate_keys(tmp_path: Path, monkeypat
 def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path, monkeypatch) -> None:
     fake_root = tmp_path / "repo"
     payload = _payload_for_fake_root(fake_root)
+    current_package = _current_review_package()
+    payload["current_review_package"] = current_package
     payload["status"] = "closed"
     payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
     payload["counters"]["remaining_clean_full_reviews"] = 0
     payload["next_phase_entry"]["allowed"] = True
     for index in range(3):
-        package = f"v33_clean_full_review_{index + 1}"
+        package = current_package["package"]
         payload["review_history"].append(
             {
                 "package": package,
@@ -580,7 +791,15 @@ def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_p
                 "clean": True,
                 "major_or_soundness_findings": 0,
                 "resets_counter": False,
-                "evidence_paths": [_write_review_evidence(fake_root, package)],
+                "evidence_paths": [
+                    _write_review_evidence(
+                        fake_root,
+                        package,
+                        current_package=current_package,
+                        filename=f"v33_clean_full_review_{index + 1}.md",
+                        nonce=f"v33-clean-{index + 1}",
+                    )
+                ],
             }
         )
     closed_gate = fake_root / "closed_gate.json"
@@ -591,3 +810,63 @@ def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_p
 
     assert "phase_1_2_spike_close" in summary
     assert errors == []
+
+def test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    payload["review_history"].append(
+        {
+            "package": "v38_hidden_major_outcome",
+            "review_type": "independent_full_external",
+            "outcome": "major_soundness_findings_found",
+            "clean": False,
+            "major_or_soundness_findings": 0,
+            "resets_counter": False,
+            "evidence_paths": [],
+        }
+    )
+    _append_three_clean_reviews(fake_root, payload, prefix="v38_clean_after_hidden_major")
+    fake_gate = fake_root / "fake_hidden_major_outcome_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("requires a positive major_or_soundness_findings count" in error for error in errors)
+    assert any("does not reset counter" in error for error in errors)
+
+
+def test_validator_rejects_negative_major_or_soundness_findings_count(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    payload["review_history"].append(
+        {
+            "package": "v38_negative_major_count",
+            "review_type": "independent_full_external",
+            "outcome": "major_soundness_findings_found",
+            "clean": False,
+            "major_or_soundness_findings": -1,
+            "resets_counter": False,
+            "evidence_paths": [],
+        }
+    )
+    _append_three_clean_reviews(fake_root, payload, prefix="v38_clean_after_negative_major")
+    fake_gate = fake_root / "fake_negative_major_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("major_or_soundness_findings cannot be negative" in error for error in errors)
+    assert any("requires a positive major_or_soundness_findings count" in error for error in errors)
+    assert any("does not reset counter" in error for error in errors)
