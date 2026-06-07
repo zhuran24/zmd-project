@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -370,6 +371,197 @@ def test_require_ready_rejects_duplicate_gate_ids(tmp_path: Path, monkeypatch) -
             ["phase_1_2_spike_close"],
         )
 
+
+
+def test_validator_rejects_hardlinked_clean_review_evidence(tmp_path: Path, monkeypatch) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    packages = [
+        "v37_hardlink_clean_one",
+        "v37_hardlink_clean_two",
+        "v37_hardlink_clean_three",
+    ]
+    base_rel = Path("docs") / "research" / "v37_hardlink_clean_1.md"
+    base_path = fake_root / base_rel
+    base_path.parent.mkdir(parents=True, exist_ok=True)
+    base_path.write_text(
+        "# Shared hardlinked clean review evidence\n\n"
+        + "\n".join(f"Package: {package}" for package in packages),
+        encoding="utf-8",
+    )
+    evidence_paths = [base_rel.as_posix()]
+    for index in (2, 3):
+        linked_rel = Path("docs") / "research" / f"v37_hardlink_clean_{index}.md"
+        linked_path = fake_root / linked_rel
+        try:
+            os.link(base_path, linked_path)
+        except OSError as exc:
+            pytest.skip(f"hardlinks are not available in this test filesystem: {exc}")
+        evidence_paths.append(linked_rel.as_posix())
+    for package, evidence_path in zip(packages, evidence_paths, strict=True):
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_path],
+            }
+        )
+    fake_gate = fake_root / "fake_hardlinked_clean_evidence.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("reuses clean-review physical evidence file" in error for error in errors)
+
+
+def test_validator_rejects_copied_clean_review_evidence_content(tmp_path: Path, monkeypatch) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    packages = [
+        "v37_copied_content_clean_one",
+        "v37_copied_content_clean_two",
+        "v37_copied_content_clean_three",
+    ]
+    evidence_body = (
+        "# Copied clean review evidence\n\n"
+        + "\n".join(f"Package: {package}" for package in packages)
+    )
+    for index, package in enumerate(packages, start=1):
+        evidence_rel = Path("docs") / "research" / f"v37_copied_content_clean_{index}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(evidence_body, encoding="utf-8")
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_copied_content_clean_evidence.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("reuses clean-review evidence content" in error for error in errors)
+
+
+def test_validator_rejects_clean_review_evidence_bound_only_by_filename(tmp_path: Path, monkeypatch) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    packages = [
+        "v37_filename_only_clean_one",
+        "v37_filename_only_clean_two",
+        "v37_filename_only_clean_three",
+    ]
+    for index, package in enumerate(packages, start=1):
+        evidence_rel = Path("docs") / "research" / f"{package}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            f"# Generic clean review evidence {index}\n\nNo package binding in the body.\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_filename_only_evidence.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("must match review package" in error for error in errors)
+
+
+
+def test_validator_rejects_package_token_only_clean_review_evidence(tmp_path: Path, monkeypatch) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["status"] = "closed"
+    payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
+    payload["counters"]["remaining_clean_full_reviews"] = 0
+    payload["next_phase_entry"]["allowed"] = True
+    packages = [
+        "v37_token_probe_1",
+        "v37_token_probe_2",
+        "v37_token_probe_3",
+    ]
+    for index, package in enumerate(packages, start=1):
+        evidence_rel = Path("docs") / "research" / f"{package}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            "# Token-level evidence body\n\n"
+            f"This body mentions v37 token probe but omits the exact package suffix. Unique nonce {index}.\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": package,
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_token_only_evidence.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("must match review package" in error for error in errors)
+
+def test_phase_gate_json_loader_rejects_duplicate_keys(tmp_path: Path, monkeypatch) -> None:
+    fake_root = tmp_path / "repo"
+    fake_root.mkdir(parents=True)
+    fake_gate = fake_root / "duplicate_key_gate.json"
+    fake_gate.write_text(
+        '{"schema_version": 1, "gate_id": "phase_1_2_spike_close", '
+        '"status": "blocked_pending_clean_reviews", "status": "closed"}',
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(check_phase_review_gate.GateError, match="duplicate JSON object key: status"):
+        check_phase_review_gate.load_gate(fake_gate)
 
 def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path, monkeypatch) -> None:
     fake_root = tmp_path / "repo"

@@ -20,6 +20,35 @@ LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "src" / "cuts" / "helpers" / "candidate_placements.py"
 TEST_ROOT = PROJECT_ROOT / "src" / "tests"
 
+REQUIRED_OBLIGATION_IDS = frozenset(
+    {
+        "PO-STEP7-ATTACH-MIRROR",
+        "PO-SOURCE-DIGEST-COVERAGE",
+        "PO-RUNTIME-CACHE-NON-AUTHORITY",
+        "PO-PHASE-GATE-PROVENANCE",
+    }
+)
+REQUIRED_TESTS_BY_OBLIGATION_ID = {
+    "PO-PHASE-GATE-PROVENANCE": frozenset(
+        {
+            "test_validator_rejects_stale_last_reset_when_later_reset_history_exists",
+            "test_validator_rejects_fake_closed_gate_without_post_reset_clean_reviews",
+            "test_validator_rejects_fake_clean_reviews_without_evidence",
+            "test_validator_rejects_fake_clean_reviews_with_nonreview_evidence",
+            "test_validator_rejects_reused_clean_review_evidence",
+            "test_validator_rejects_reused_clean_review_evidence_path_aliases",
+            "test_validator_rejects_directory_evidence_even_when_path_matches_package",
+            "test_validator_rejects_clean_reviews_reusing_reset_evidence_and_package",
+            "test_require_ready_rejects_duplicate_gate_ids",
+            "test_validator_rejects_hardlinked_clean_review_evidence",
+            "test_validator_rejects_copied_clean_review_evidence_content",
+            "test_validator_rejects_clean_review_evidence_bound_only_by_filename",
+            "test_validator_rejects_package_token_only_clean_review_evidence",
+            "test_phase_gate_json_loader_rejects_duplicate_keys",
+        }
+    ),
+}
+
 
 class CheckError(RuntimeError):
     pass
@@ -29,9 +58,21 @@ def _rel(path: Path) -> str:
     return path.relative_to(PROJECT_ROOT).as_posix()
 
 
+def _json_object_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise CheckError(f"duplicate JSON object key: {key}")
+        result[key] = value
+    return result
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
+        value = json.loads(
+            path.read_text(encoding="utf-8"),
+            object_pairs_hook=_json_object_without_duplicate_keys,
+        )
     except Exception as exc:  # noqa: BLE001
         raise CheckError(f"cannot read {_rel(path)}: {exc}") from exc
     if not isinstance(value, dict):
@@ -282,6 +323,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
         return errors
 
     seen_ids: set[str] = set()
+    listed_tests_by_obligation: dict[str, set[str]] = {}
     for index, raw_obligation in enumerate(obligations):
         if not isinstance(raw_obligation, dict):
             errors.append(f"obligations[{index}] must be an object")
@@ -294,10 +336,24 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
             rel_path = _require_str(raw_path, f"{obligation_id}.evidence_paths[]")
             if not (PROJECT_ROOT / rel_path).exists():
                 errors.append(f"{obligation_id} missing evidence path: {rel_path}")
+        listed_tests: set[str] = set()
         for raw_test in _require_list(raw_obligation.get("required_tests"), f"{obligation_id}.required_tests"):
             test_name = _require_str(raw_test, f"{obligation_id}.required_tests[]")
+            listed_tests.add(test_name)
             if test_name not in test_symbols:
                 errors.append(f"{obligation_id} missing required test symbol: {test_name}")
+        listed_tests_by_obligation[obligation_id] = listed_tests
+
+    missing_obligation_ids = REQUIRED_OBLIGATION_IDS - seen_ids
+    for obligation_id in sorted(missing_obligation_ids):
+        errors.append(f"missing required obligation id: {obligation_id}")
+
+    for obligation_id, required_tests in sorted(REQUIRED_TESTS_BY_OBLIGATION_ID.items()):
+        if obligation_id not in seen_ids:
+            continue
+        missing_tests = required_tests - listed_tests_by_obligation.get(obligation_id, set())
+        for test_name in sorted(missing_tests):
+            errors.append(f"{obligation_id} omits required regression test: {test_name}")
     return errors
 
 

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import hashlib
 import json
 import sys
 from pathlib import Path, PurePosixPath
@@ -25,6 +26,15 @@ REVIEW_EVIDENCE_ROOTS = (".artifacts", "docs/research")
 
 class GateError(RuntimeError):
     pass
+
+
+def _json_object_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise GateError(f"duplicate JSON object key: {key}")
+        result[key] = value
+    return result
 
 
 def rel(path: Path) -> str:
@@ -67,25 +77,6 @@ def _normalized_match_text(value: str) -> str:
 
 def _canonical_package_key(package: str) -> str:
     return _normalized_match_text(package)
-
-
-def _package_tokens(package: str) -> list[str]:
-    tokens: list[str] = []
-    current: list[str] = []
-    for char in package.lower():
-        if char.isalnum():
-            current.append(char)
-            continue
-        if current:
-            token = "".join(current)
-            if len(token) >= 3:
-                tokens.append(token)
-            current = []
-    if current:
-        token = "".join(current)
-        if len(token) >= 3:
-            tokens.append(token)
-    return tokens
 
 
 def _is_review_evidence_path(rel_path: str) -> bool:
@@ -146,20 +137,43 @@ def _evidence_matches_package(rel_path: str, package: str) -> bool:
     """
     full_path = PROJECT_ROOT / rel_path
     try:
-        text = full_path.read_text(encoding="utf-8")[:200_000]
+        with full_path.open("r", encoding="utf-8") as evidence_file:
+            text = evidence_file.read(200_000)
     except Exception as exc:  # noqa: BLE001 - gate evidence must be readable, not path-name only.
         raise GateError(f"cannot read evidence path {rel_path}: {exc}") from exc
-    haystack = _normalized_match_text(rel_path) + _normalized_match_text(text)
+    # The filename is not provenance.  Require the evidence body itself to bind
+    # to the claimed review package so three package-named copies of one generic
+    # report cannot satisfy three clean-review slots.
+    haystack = _normalized_match_text(text)
     package_norm = _normalized_match_text(package)
-    if package_norm and package_norm in haystack:
-        return True
-    tokens = _package_tokens(package)
-    return bool(tokens) and all(token in haystack for token in tokens)
+    return bool(package_norm) and package_norm in haystack
+
+
+def _evidence_file_identity(rel_path: str) -> tuple[int, int]:
+    try:
+        stat_result = (PROJECT_ROOT / rel_path).stat()
+    except Exception as exc:  # noqa: BLE001 - evidence identity must be inspectable.
+        raise GateError(f"cannot stat evidence path {rel_path}: {exc}") from exc
+    return (int(stat_result.st_dev), int(stat_result.st_ino))
+
+
+def _evidence_content_digest(rel_path: str) -> str:
+    digest = hashlib.sha256()
+    try:
+        with (PROJECT_ROOT / rel_path).open("rb") as evidence_file:
+            for chunk in iter(lambda: evidence_file.read(1024 * 1024), b""):
+                digest.update(chunk)
+    except Exception as exc:  # noqa: BLE001 - evidence bytes must be readable.
+        raise GateError(f"cannot read evidence bytes {rel_path}: {exc}") from exc
+    return digest.hexdigest()
 
 
 def load_gate(path: Path) -> dict[str, Any]:
     try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = json.loads(
+            path.read_text(encoding="utf-8"),
+            object_pairs_hook=_json_object_without_duplicate_keys,
+        )
     except Exception as exc:  # noqa: BLE001
         raise GateError(f"cannot read {rel(path)}: {exc}") from exc
     return require_mapping(payload, rel(path))
@@ -246,23 +260,37 @@ def _check_evidence_paths(
     required: bool = False,
     package: str | None = None,
     require_review_artifact: bool = False,
-) -> tuple[list[str], list[str]]:
+) -> tuple[list[str], list[str], list[tuple[int, int]], list[str]]:
     errors: list[str] = []
     canonical_paths: list[str] = []
+    file_identities: list[tuple[int, int]] = []
+    content_digests: list[str] = []
     if required and not paths:
         errors.append(f"{label}.evidence_paths must contain at least one evidence path")
     seen_paths: set[str] = set()
+    seen_file_identities: set[tuple[int, int]] = set()
+    seen_content_digests: set[str] = set()
     for raw_path in paths:
         rel_path = require_str(raw_path, f"{label} evidence path")
         try:
             canonical_path = _canonical_project_rel_path(rel_path)
+            file_identity = _evidence_file_identity(canonical_path)
+            content_digest = _evidence_content_digest(canonical_path)
         except GateError as exc:
             errors.append(str(exc))
             continue
         canonical_paths.append(canonical_path)
+        file_identities.append(file_identity)
+        content_digests.append(content_digest)
         if canonical_path in seen_paths:
             errors.append(f"{label}.evidence_paths contains duplicate path: {rel_path}")
         seen_paths.add(canonical_path)
+        if file_identity in seen_file_identities:
+            errors.append(f"{label}.evidence_paths contains duplicate physical file: {rel_path}")
+        seen_file_identities.add(file_identity)
+        if content_digest in seen_content_digests:
+            errors.append(f"{label}.evidence_paths contains duplicate evidence content: {rel_path}")
+        seen_content_digests.add(content_digest)
         if require_review_artifact and (
             not _is_review_evidence_path(rel_path)
             or not _is_review_evidence_path(canonical_path)
@@ -280,7 +308,7 @@ def _check_evidence_paths(
             errors.append(
                 f"{label}.evidence_paths must match review package {package!r}: {rel_path}"
             )
-    return errors, canonical_paths
+    return errors, canonical_paths, file_identities, content_digests
 
 
 def _check_doc_markers(markers: list[Any]) -> list[str]:
@@ -358,7 +386,12 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     reset_package = require_str(last_reset.get("review_package"), "last_reset.review_package")
     if not require_bool(last_reset.get("resets_counter"), "last_reset.resets_counter"):
         errors.append("last_reset.resets_counter must be true")
-    last_reset_errors, last_reset_canonical_evidence_paths = _check_evidence_paths(
+    (
+        last_reset_errors,
+        last_reset_canonical_evidence_paths,
+        _last_reset_file_identities,
+        _last_reset_content_digests,
+    ) = _check_evidence_paths(
         require_list(last_reset.get("evidence_paths"), "last_reset.evidence_paths"),
         "last_reset",
         required=True,
@@ -371,8 +404,12 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     all_reset_entries: list[tuple[int, str]] = []
     history_records: list[dict[str, Any]] = []
     reset_review_evidence_owner: dict[str, int] = {}
+    reset_review_file_owner: dict[tuple[int, int], int] = {}
+    reset_review_content_owner: dict[str, int] = {}
     reset_review_package_owner: dict[str, int] = {}
     clean_review_evidence_owner: dict[str, int] = {}
+    clean_review_file_owner: dict[tuple[int, int], int] = {}
+    clean_review_content_owner: dict[str, int] = {}
     clean_review_package_owner: dict[str, int] = {}
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
@@ -430,7 +467,12 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             and major == 0
             and not resets_counter
         )
-        evidence_errors, canonical_evidence_paths = _check_evidence_paths(
+        (
+            evidence_errors,
+            canonical_evidence_paths,
+            evidence_file_identities,
+            evidence_content_digests,
+        ) = _check_evidence_paths(
             evidence_paths,
             f"review_history[{index}]",
             required=requires_evidence,
@@ -442,6 +484,10 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
         if resets_counter:
             for canonical_path in canonical_evidence_paths:
                 reset_review_evidence_owner[canonical_path] = index
+            for file_identity in evidence_file_identities:
+                reset_review_file_owner[file_identity] = index
+            for content_digest in evidence_content_digests:
+                reset_review_content_owner[content_digest] = index
         if requires_clean_review_evidence:
             package_key = _canonical_package_key(package)
             reset_package_owner = reset_review_package_owner.get(package_key)
@@ -473,6 +519,36 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                     )
                 else:
                     clean_review_evidence_owner[canonical_path] = index
+            for file_identity in evidence_file_identities:
+                reset_owner = reset_review_file_owner.get(file_identity)
+                if reset_owner is not None:
+                    errors.append(
+                        f"review_history[{index}] reuses reset-review physical evidence file "
+                        f"from review_history[{reset_owner}]"
+                    )
+                owner = clean_review_file_owner.get(file_identity)
+                if owner is not None:
+                    errors.append(
+                        f"review_history[{index}] reuses clean-review physical evidence file "
+                        f"from review_history[{owner}]"
+                    )
+                else:
+                    clean_review_file_owner[file_identity] = index
+            for content_digest in evidence_content_digests:
+                reset_owner = reset_review_content_owner.get(content_digest)
+                if reset_owner is not None:
+                    errors.append(
+                        f"review_history[{index}] reuses reset-review evidence content "
+                        f"from review_history[{reset_owner}]"
+                    )
+                owner = clean_review_content_owner.get(content_digest)
+                if owner is not None:
+                    errors.append(
+                        f"review_history[{index}] reuses clean-review evidence content "
+                        f"from review_history[{owner}]"
+                    )
+                else:
+                    clean_review_content_owner[content_digest] = index
     latest_reset_index: int | None = None
     if not reset_entries:
         errors.append(f"review_history lacks reset entry for {reset_package}")
