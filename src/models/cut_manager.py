@@ -26,6 +26,37 @@ def _optional_float(value: Any) -> Optional[float]:
     return None if value is None else float(value)
 
 
+def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
+    result: Dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def _loads_strict_json_object(text: str) -> Any:
+    return json.loads(text, object_pairs_hook=_reject_duplicate_json_keys)
+
+
+def _strict_int(value: Any, field: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"{field} must be an integer")
+    return int(value)
+
+
+def _strict_bool(value: Any, field: str) -> bool:
+    if not isinstance(value, bool):
+        raise ValueError(f"{field} must be a boolean")
+    return bool(value)
+
+
+def _optional_bool(value: Any, field: str) -> Optional[bool]:
+    if value is None:
+        return None
+    return _strict_bool(value, field)
+
+
 @dataclass
 class BendersCut:
     """Structured cut record for exact-contract compatibility."""
@@ -50,17 +81,17 @@ class BendersCut:
 
     def to_dict(self) -> Dict[str, Any]:
         payload: Dict[str, Any] = {
-            "schema_version": int(self.schema_version),
+            "schema_version": _strict_int(self.schema_version, "schema_version"),
             "cut_type": str(self.cut_type),
             "conflict_set": dict(self.conflict_set),
-            "iteration": int(self.iteration),
+            "iteration": _strict_int(self.iteration, "iteration"),
             "metadata": dict(self.metadata),
             "source_mode": str(self.source_mode),
-            "exact_safe": bool(self.exact_safe),
+            "exact_safe": _strict_bool(self.exact_safe, "exact_safe"),
             "artifact_hashes": dict(self.artifact_hashes),
             "proof_stage": self.proof_stage,
-            "binding_exhausted": self.binding_exhausted,
-            "routing_exhausted": self.routing_exhausted,
+            "binding_exhausted": _optional_bool(self.binding_exhausted, "binding_exhausted"),
+            "routing_exhausted": _optional_bool(self.routing_exhausted, "routing_exhausted"),
             "proof_summary": dict(self.proof_summary),
             "created_at": self.created_at,
             "epsilon_stage": self.epsilon_stage,
@@ -75,21 +106,21 @@ class BendersCut:
             raise ValueError("conflict_set must be a mapping for structured cuts")
 
         return cls(
-            schema_version=int(payload.get("schema_version", 1)),
+            schema_version=_strict_int(payload.get("schema_version", 1), "schema_version"),
             cut_type=str(payload["cut_type"]),
             conflict_set={str(k): v for k, v in conflict_set_raw.items()},
-            iteration=int(payload.get("iteration", 0)),
+            iteration=_strict_int(payload.get("iteration", 0), "iteration"),
             metadata=dict(payload.get("metadata", {})),
             source_mode=str(payload.get("source_mode", "exploratory")),
-            exact_safe=bool(payload.get("exact_safe", False)),
+            exact_safe=_strict_bool(payload.get("exact_safe", False), "exact_safe"),
             artifact_hashes={
                 str(k): str(v) for k, v in dict(payload.get("artifact_hashes", {})).items()
             },
             proof_stage=(
                 None if payload.get("proof_stage") is None else str(payload.get("proof_stage"))
             ),
-            binding_exhausted=payload.get("binding_exhausted"),
-            routing_exhausted=payload.get("routing_exhausted"),
+            binding_exhausted=_optional_bool(payload.get("binding_exhausted"), "binding_exhausted"),
+            routing_exhausted=_optional_bool(payload.get("routing_exhausted"), "routing_exhausted"),
             proof_summary=dict(payload.get("proof_summary", {})),
             created_at=(
                 None if payload.get("created_at") is None else str(payload.get("created_at"))
@@ -228,7 +259,7 @@ class CutManager:
                 if not line.strip():
                     continue
                 try:
-                    payload = json.loads(line)
+                    payload = _loads_strict_json_object(line)
                     conflict_set = payload.get("conflict_set", [])
                     if not isinstance(conflict_set, list):
                         continue
@@ -252,7 +283,7 @@ class CutManager:
         if not path.exists():
             return stats
 
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = _loads_strict_json_object(path.read_text(encoding="utf-8"))
         if isinstance(payload, list):
             stats["rejected_legacy"] = len(payload)
             return stats
@@ -280,7 +311,7 @@ class CutManager:
                 if cut.source_mode != "certified_exact":
                     stats["rejected_mode"] += 1
                     continue
-                if not cut.exact_safe:
+                if cut.exact_safe is not True:
                     stats["rejected_not_exact_safe"] += 1
                     continue
                 if self.current_hashes and cut.artifact_hashes != self.current_hashes:

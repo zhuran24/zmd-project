@@ -944,7 +944,7 @@ def collect_certification_blockers(
                     "cut_type": cut.cut_type,
                 }
             )
-        if not cut.exact_safe:
+        if cut.exact_safe is not True:
             blockers.append(
                 {
                     "code": "cut_not_exact_safe",

@@ -20,6 +20,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Tuple
 
+from src.models.cut_manager import BendersCut
+
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
 CAMPAIGN_SCHEMA_VERSION = 3
 PROOF_SUMMARY_SCHEMA_VERSION = 1
@@ -67,6 +69,19 @@ EXACT_HASH_FILES = {
     "canonical_rules": "rules/canonical_rules.json",
     "generic_io_requirements": "data/preprocessed/generic_io_requirements.json",
 }
+
+
+def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:
+    result: Dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
+def _loads_strict_json_object(text: str) -> Any:
+    return json.loads(text, object_pairs_hook=_reject_duplicate_json_keys)
 
 
 def now_ts() -> float:
@@ -254,8 +269,18 @@ def _validate_candidate_record(record_key: str, record: Mapping[str, Any]) -> Op
 
     if not isinstance(record.get("proof_summary"), Mapping):
         return f"candidate_invalid_proof_summary:{record_key}"
-    if not isinstance(record.get("exact_safe_cuts"), list):
+    exact_safe_cuts = record.get("exact_safe_cuts")
+    if not isinstance(exact_safe_cuts, list):
         return f"candidate_invalid_exact_safe_cuts:{record_key}"
+    for index, raw_cut in enumerate(exact_safe_cuts):
+        if not isinstance(raw_cut, Mapping):
+            return f"candidate_invalid_exact_safe_cut:{record_key}:{index}"
+        try:
+            cut = BendersCut.from_dict(raw_cut)
+        except Exception:
+            return f"candidate_invalid_exact_safe_cut:{record_key}:{index}"
+        if cut.source_mode != "certified_exact" or cut.exact_safe is not True:
+            return f"candidate_invalid_exact_safe_cut:{record_key}:{index}"
 
     for field in ("started_at", "updated_at"):
         if record.get(field) is None:
@@ -340,7 +365,7 @@ class ExactCampaign:
         reset_reason: Optional[str] = None
         if resume and path.exists():
             try:
-                loaded_state = json.loads(path.read_text(encoding="utf-8"))
+                loaded_state = _loads_strict_json_object(path.read_text(encoding="utf-8"))
             except Exception:
                 reset_reason = "state_json_invalid"
             else:

@@ -7,6 +7,9 @@ from pathlib import Path
 
 from src.models.cut_manager import BendersCut, CutManager
 from src.search.benders_loop import collect_certification_blockers
+from src.search.exact_campaign import ExactCampaign
+
+import pytest
 
 
 
@@ -36,6 +39,175 @@ def test_certified_exact_rejects_legacy_cut_file(tmp_path: Path) -> None:
     assert stats["loaded"] == 0
     assert stats["rejected_legacy"] == 1
 
+
+
+def test_benders_cut_from_dict_rejects_string_exact_safe_flag() -> None:
+    with pytest.raises(ValueError, match="exact_safe"):
+        BendersCut.from_dict(
+            {
+                "schema_version": 2,
+                "cut_type": "routing_exhausted_nogood",
+                "conflict_set": {"pose_optional::power_pole::pole_1": 1},
+                "iteration": 1,
+                "source_mode": "certified_exact",
+                "exact_safe": "false",
+                "artifact_hashes": {"candidate_placements": "abc"},
+                "proof_stage": "routing",
+                "binding_exhausted": True,
+                "routing_exhausted": True,
+                "proof_summary": {},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        )
+
+
+def test_collect_certification_blockers_rejects_non_bool_exact_safe_object() -> None:
+    cut = BendersCut(
+        cut_type="routing_exhausted_nogood",
+        conflict_set={"pose_optional::power_pole::pole_1": 1},
+        iteration=1,
+        source_mode="certified_exact",
+        exact_safe="false",  # type: ignore[arg-type]
+        artifact_hashes={"candidate_placements": "abc"},
+        proof_stage="routing",
+        binding_exhausted=True,
+        routing_exhausted=True,
+    )
+    blockers = collect_certification_blockers(
+        solve_mode="certified_exact",
+        loaded_cuts=[cut],
+        current_hashes={"candidate_placements": "abc"},
+    )
+    assert any(item["code"] == "cut_not_exact_safe" for item in blockers)
+
+
+def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) -> None:
+    project_root = tmp_path / "campaign_malformed_exact_safe"
+    (project_root / "data" / "preprocessed").mkdir(parents=True)
+    (project_root / "rules").mkdir(parents=True)
+    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "UNKNOWN",
+        exact_safe_cuts=[
+            {
+                "schema_version": 2,
+                "cut_type": "routing_exhausted_nogood",
+                "conflict_set": {"pose_optional::power_pole::pole_1": 1},
+                "iteration": 1,
+                "source_mode": "certified_exact",
+                "exact_safe": "false",
+                "artifact_hashes": campaign.artifact_hashes,
+                "proof_stage": "routing",
+                "binding_exhausted": True,
+                "routing_exhausted": True,
+                "proof_summary": {},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        ],
+        proof_summary={"master_status": "UNKNOWN"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
+
+
+def test_cut_manager_load_rejects_duplicate_exact_safe_key(tmp_path: Path) -> None:
+    exact_path = tmp_path / "cuts_duplicate_key.json"
+    exact_path.write_text(
+        r'''{
+  "schema_version": 2,
+  "cuts": [
+    {
+      "schema_version": 2,
+      "cut_type": "routing_exhausted_nogood",
+      "conflict_set": {"pose_optional::power_pole::pole_1": 1},
+      "iteration": 1,
+      "source_mode": "certified_exact",
+      "exact_safe": false,
+      "exact_safe": true,
+      "artifact_hashes": {"candidate_placements": "abc"},
+      "proof_stage": "routing",
+      "binding_exhausted": true,
+      "routing_exhausted": true,
+      "proof_summary": {},
+      "created_at": "2026-03-15T00:00:00Z"
+    }
+  ]
+}
+''',
+        encoding="utf-8",
+    )
+
+    manager = CutManager(
+        solve_mode="certified_exact",
+        current_hashes={"candidate_placements": "abc"},
+    )
+
+    with pytest.raises(ValueError, match="duplicate JSON key"):
+        manager.load(exact_path)
+
+
+def test_exact_campaign_resume_rejects_duplicate_json_key(tmp_path: Path) -> None:
+    project_root = tmp_path / "campaign_duplicate_exact_safe"
+    (project_root / "data" / "preprocessed").mkdir(parents=True)
+    (project_root / "rules").mkdir(parents=True)
+    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "UNKNOWN",
+        exact_safe_cuts=[
+            {
+                "schema_version": 2,
+                "cut_type": "routing_exhausted_nogood",
+                "conflict_set": {"pose_optional::power_pole::pole_1": 1},
+                "iteration": 1,
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": campaign.artifact_hashes,
+                "proof_stage": "routing",
+                "binding_exhausted": True,
+                "routing_exhausted": True,
+                "proof_summary": {},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        ],
+        proof_summary={"master_status": "UNKNOWN"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    path = campaign.path
+    raw = path.read_text(encoding="utf-8")
+    path.write_text(
+        raw.replace('"exact_safe": true', '"exact_safe": false, "exact_safe": true', 1),
+        encoding="utf-8",
+    )
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "state_json_invalid"
 
 
 def test_certified_exact_loads_only_matching_exact_safe_cuts(tmp_path: Path) -> None:
