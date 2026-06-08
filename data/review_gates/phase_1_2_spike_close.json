@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-08",
-  "summary": "P1.2 is not formally closed. The three-clean-review standard remains in force, but the repository no longer derives clean-review count or P1.3B readiness from receipts, Markdown reports, package metadata, source-tree manifests, or Git authority. The owner maintains the clean-review count outside the repo; this manifest stays fail-closed until an explicit owner manual decision opens P1.3B.",
-  "current_review_anchor": "v50_manual_phase_gate_simplification",
+  "summary": "P1.2 is not formally closed. The three-clean-review standard remains an owner-maintained manual count outside the repo. V53-V56 exposed certified exact persisted-cut replay and master faithful-encoding obligations, now consolidated under the V56 anchor. The repo remains fail-closed until an explicit owner manual decision opens P1.3B.",
+  "current_review_anchor": "v56_certified_cut_replay_consolidation",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,8 +26,8 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v50_manual_phase_gate_simplification",
-    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved."
+    "current_review_anchor": "v56_certified_cut_replay_consolidation",
+    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v56_certified_cut_replay_consolidation."
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
@@ -83,6 +83,22 @@
       "summary": "The repo no longer auto-counts clean reviews or auto-opens P1.3B from receipts. Owner manual decision is the only P1.3B entry authority.",
       "evidence_paths": [
         "docs/research/p1_2_v50_manual_phase_gate_simplification.md"
+      ]
+    },
+    {
+      "package": "v53_to_v56_certified_cut_replay",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V53-V56 found sibling findings in exact-safe BendersCut replay: strict evidence parsing, strict conflict/condition integer payloads, unresolved conflict member dilution, and aliasing conflict members that could strengthen a multi-member nogood into a one-literal ban.",
+      "evidence_paths": [
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md"
+      ]
+    },
+    {
+      "package": "v56_certified_cut_replay_consolidation",
+      "classification": "proof_obligation_consolidation",
+      "summary": "Certified cut replay faithfulness is now an explicit P1.2 proof obligation. Future reviews should start from this anchor and look for remaining payload-coercion, missing-member, aliasing, condition-resolution, or apply/register atomicity bypasses.",
+      "evidence_paths": [
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md"
       ]
     }
   ],

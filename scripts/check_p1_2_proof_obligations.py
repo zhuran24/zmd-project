@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Check the P1.2 proof-obligation consolidation manifest.
 
-This is a small structural gate, not a theorem prover.  It makes the v29-v31
-postmortem concrete enough that future reviews cannot silently drift back to
+This is a small structural gate, not a theorem prover.  It makes the P1.2
+postmortems concrete enough that future reviews cannot silently drift back to
 local, duplicated proof checks.
 """
 
@@ -20,6 +20,12 @@ PHASE_GATE_PATH = PROJECT_ROOT / "data" / "review_gates" / "phase_1_2_spike_clos
 PHASE_GATE_SCRIPT_PATH = PROJECT_ROOT / "scripts" / "check_phase_review_gate.py"
 LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "src" / "cuts" / "helpers" / "candidate_placements.py"
+CUT_MANAGER_PATH = PROJECT_ROOT / "src" / "models" / "cut_manager.py"
+EXACT_CAMPAIGN_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaign.py"
+BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
+MASTER_MODEL_PATH = PROJECT_ROOT / "src" / "models" / "master_model.py"
+EXACT_COORDINATE_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "exact_coordinate_master.py"
+POSE_BOOL_EXACT_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "pose_bool_exact_master.py"
 TEST_ROOT = PROJECT_ROOT / "src" / "tests"
 
 REQUIRED_OBLIGATION_IDS = frozenset(
@@ -27,10 +33,32 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-STEP7-ATTACH-MIRROR",
         "PO-SOURCE-DIGEST-COVERAGE",
         "PO-RUNTIME-CACHE-NON-AUTHORITY",
+        "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "PO-PHASE-GATE-PROVENANCE",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
+    "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS": frozenset(
+        {
+            "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
+            "test_collect_certification_blockers_rejects_non_bool_exact_safe_object",
+            "test_benders_cut_from_dict_rejects_string_conflict_pose_index",
+            "test_benders_cut_from_dict_rejects_bool_conflict_pose_index",
+            "test_benders_cut_from_dict_rejects_bool_condition_anchor_index",
+            "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
+            "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
+            "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
+            "test_cut_manager_load_rejects_duplicate_exact_safe_key",
+            "test_exact_campaign_resume_rejects_duplicate_json_key",
+            "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member",
+            "test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_literal",
+            "test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member",
+            "test_routing_front_blocked_unencodable_optional_conflict_fails_closed",
+            "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
+            "test_pose_bool_replay_alias_collision_fails_closed",
+            "test_legacy_benders_cut_alias_collision_fails_closed",
+        }
+    ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
         {
             "test_phase_review_gate_manifest_is_consistent",
@@ -117,11 +145,53 @@ def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -
     raise CheckError(f"function not found in {_rel(path)}: {name}")
 
 
+def _class_def(tree: ast.Module, name: str, *, path: Path) -> ast.ClassDef:
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef) and node.name == name:
+            return node
+    raise CheckError(f"class not found in {_rel(path)}: {name}")
+
+
+def _method_def(class_node: ast.ClassDef, name: str, *, path: Path) -> ast.FunctionDef:
+    for node in class_node.body:
+        if isinstance(node, ast.FunctionDef) and node.name == name:
+            return node
+    raise CheckError(f"method not found in {_rel(path)}: {class_node.name}.{name}")
+
+
 def _calls_function(node: ast.AST, name: str) -> bool:
     for child in ast.walk(node):
         if isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name:
             return True
     return False
+
+
+def _calls_attr(node: ast.AST, attr: str) -> bool:
+    for child in ast.walk(node):
+        if isinstance(child, ast.Call) and isinstance(child.func, ast.Attribute) and child.func.attr == attr:
+            return True
+    return False
+
+
+def _returns_constant(node: ast.AST, value: object) -> bool:
+    return any(isinstance(child, ast.Return) and isinstance(child.value, ast.Constant) and child.value.value is value for child in ast.walk(node))
+
+
+def _raises_value_error(node: ast.AST) -> bool:
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Raise):
+            continue
+        exc = child.exc
+        if isinstance(exc, ast.Call) and isinstance(exc.func, ast.Name) and exc.func.id == "ValueError":
+            return True
+        if isinstance(exc, ast.Name) and exc.id == "ValueError":
+            return True
+    return False
+
+
+def _source_text(path: Path, node: ast.AST) -> str:
+    source = path.read_text(encoding="utf-8")
+    return ast.get_source_segment(source, node) or ""
 
 
 def _uses_name(node: ast.AST, name: str) -> bool:
@@ -429,6 +499,98 @@ def _check_phase_gate_provenance_contract() -> list[str]:
     return errors
 
 
+def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
+    """Anchor the V53-V56 certified-cut replay faithful-encoding contract.
+
+    This is intentionally structural.  V53-V56 showed that a persisted
+    exact-safe Benders cut is only safe if every handoff in the replay chain is
+    fail-closed: strict payload parsing, resume validation, all-or-nothing
+    conflict member resolution, one-to-one member-to-literal encoding, and
+    register/count only after master application succeeds.
+    """
+
+    errors: list[str] = []
+    contract = manifest.get("certified_cut_replay_contract")
+    if not isinstance(contract, dict):
+        return ["certified_cut_replay_contract must be an object"]
+
+    for raw_path in _require_list(contract.get("backend_scope"), "certified_cut_replay_contract.backend_scope"):
+        rel_path = _require_str(raw_path, "certified_cut_replay_contract.backend_scope[]")
+        if not (PROJECT_ROOT / rel_path).exists():
+            errors.append(f"certified replay backend scope path missing: {rel_path}")
+
+    cut_manager_tree = _parse_python(CUT_MANAGER_PATH)
+    benders_cut_class = _class_def(cut_manager_tree, "BendersCut", path=CUT_MANAGER_PATH)
+    from_dict_fn = _method_def(benders_cut_class, "from_dict", path=CUT_MANAGER_PATH)
+    to_dict_fn = _method_def(benders_cut_class, "to_dict", path=CUT_MANAGER_PATH)
+    cut_manager_class = _class_def(cut_manager_tree, "CutManager", path=CUT_MANAGER_PATH)
+    load_fn = _method_def(cut_manager_class, "load", path=CUT_MANAGER_PATH)
+
+    for helper_name in ("_strict_int", "_strict_bool", "_strict_int_mapping", "_loads_strict_json_object"):
+        _function_def(cut_manager_tree, helper_name, path=CUT_MANAGER_PATH)
+    strict_int_fn = _function_def(cut_manager_tree, "_strict_int", path=CUT_MANAGER_PATH)
+    strict_bool_fn = _function_def(cut_manager_tree, "_strict_bool", path=CUT_MANAGER_PATH)
+    if not (_uses_name(strict_int_fn, "bool") and _raises_value_error(strict_int_fn)):
+        errors.append("_strict_int must reject bool-as-int certified replay payloads")
+    if not (_uses_name(strict_bool_fn, "bool") and _raises_value_error(strict_bool_fn)):
+        errors.append("_strict_bool must reject truthy/falsy non-bool exact_safe payloads")
+    for fn_name, fn in (("BendersCut.from_dict", from_dict_fn), ("BendersCut.to_dict", to_dict_fn)):
+        for helper_name in ("_strict_bool", "_strict_int", "_strict_int_mapping"):
+            if not _calls_function(fn, helper_name):
+                errors.append(f"{fn_name} must call {helper_name}")
+    if not _calls_function(load_fn, "_loads_strict_json_object"):
+        errors.append("CutManager.load must use strict JSON duplicate-key rejection")
+
+    exact_campaign_tree = _parse_python(EXACT_CAMPAIGN_PATH)
+    validate_record_fn = _function_def(exact_campaign_tree, "_validate_candidate_record", path=EXACT_CAMPAIGN_PATH)
+    validate_source = _source_text(EXACT_CAMPAIGN_PATH, validate_record_fn)
+    if "BendersCut.from_dict" not in validate_source:
+        errors.append("ExactCampaign resume validation must parse every exact_safe_cut with BendersCut.from_dict")
+    if "cut.exact_safe is not True" not in validate_source:
+        errors.append("ExactCampaign resume validation must require cut.exact_safe is True, not truthy")
+
+    benders_tree = _parse_python(BENDERS_LOOP_PATH)
+    controller_class = _class_def(benders_tree, "LBBDController", path=BENDERS_LOOP_PATH)
+    persisted_fn = _method_def(controller_class, "_add_exact_persisted_nogood", path=BENDERS_LOOP_PATH)
+    persisted_source = _source_text(BENDERS_LOOP_PATH, persisted_fn)
+    required_order = (
+        "self.master.add_benders_cut",
+        "self.cut_manager.register_structured_cut",
+        "self.generated_exact_safe_cuts.append",
+    )
+    positions = [persisted_source.find(needle) for needle in required_order]
+    if any(position < 0 for position in positions) or positions != sorted(positions):
+        errors.append(
+            "_add_exact_persisted_nogood must apply to master, then register, then count generated exact-safe cuts"
+        )
+
+    master_tree = _parse_python(MASTER_MODEL_PATH)
+    master_class = _class_def(master_tree, "MasterPlacementModel", path=MASTER_MODEL_PATH)
+    master_add_fn = _method_def(master_class, "add_benders_cut", path=MASTER_MODEL_PATH)
+    master_source = _source_text(MASTER_MODEL_PATH, master_add_fn)
+    if "seen_names" not in master_source or not _returns_constant(master_add_fn, False):
+        errors.append("MasterPlacementModel.add_benders_cut must fail closed on missing or aliasing literals")
+
+    coordinate_tree = _parse_python(EXACT_COORDINATE_MASTER_PATH)
+    coordinate_class = _class_def(coordinate_tree, "CoordinateExactMasterDelegate", path=EXACT_COORDINATE_MASTER_PATH)
+    entries_fn = _method_def(coordinate_class, "_conflict_pose_entries", path=EXACT_COORDINATE_MASTER_PATH)
+    coordinate_add_fn = _method_def(coordinate_class, "add_benders_cut", path=EXACT_COORDINATE_MASTER_PATH)
+    entries_source = _source_text(EXACT_COORDINATE_MASTER_PATH, entries_fn)
+    if "seen" not in entries_source or "return []" not in entries_source:
+        errors.append("CoordinateExactMasterDelegate._conflict_pose_entries must reject missing or aliasing members")
+    if not _calls_attr(coordinate_add_fn, "_conflict_pose_entries") or not _returns_constant(coordinate_add_fn, False):
+        errors.append("CoordinateExactMasterDelegate.add_benders_cut must fail closed when entries/literals are unresolved")
+
+    pose_bool_tree = _parse_python(POSE_BOOL_EXACT_MASTER_PATH)
+    pose_bool_class = _class_def(pose_bool_tree, "PoseBoolExactMasterDelegate", path=POSE_BOOL_EXACT_MASTER_PATH)
+    pose_bool_add_fn = _method_def(pose_bool_class, "add_benders_cut", path=POSE_BOOL_EXACT_MASTER_PATH)
+    pose_bool_source = _source_text(POSE_BOOL_EXACT_MASTER_PATH, pose_bool_add_fn)
+    if "seen_lit_names" not in pose_bool_source or not _returns_constant(pose_bool_add_fn, False):
+        errors.append("PoseBoolExactMasterDelegate.add_benders_cut must fail closed on missing or aliasing literals")
+
+    return errors
+
+
 def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     required_anchor = _require_str(
@@ -472,6 +634,7 @@ def main() -> int:
         errors.extend(_check_source_digest_contract(manifest))
         errors.extend(_check_source_digest_uses_contract(lifecycle_tree))
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
+        errors.extend(_check_certified_cut_replay_contract(manifest))
         errors.extend(_check_evidence_and_tests(manifest))
         errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))

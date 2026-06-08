@@ -4,8 +4,8 @@
 
 ## 当前主线（subject projection）
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:63a79397a34d61ddacd4a2185687ea883bbc784816d06fa23f2d9de8fd932764 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. V50 simplified the phase gate: the **three clean full reviews** standard still exists, but the clean-review count is now **owner-maintained outside the repo** rather than derived from JSON receipts, Markdown reports, source-tree manifests, package metadata, or package-internal Git authority. The repository remains fail-closed: P1.3B is blocked by default, review receipts are informational records only, and only an explicit owner manual decision may open the true `PoseBoolExactMaster` LBBD master integration (`P1.3B` in project-book docs, historically `P1.3A 主体` in older CC memory).
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:16429c8809c77f4e684466289993275d3587259a1c673be79f92eec7a8713709 -->
+Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V53-V56, the current review anchor is `v56_certified_cut_replay_consolidation`: persisted exact-safe `BendersCut` replay now has an explicit proof obligation requiring strict payload parsing, all-or-nothing member resolution, one-to-one master literal encoding, and apply-before-register atomicity. P1.3B remains blocked by default; review receipts are informational records only.
 <!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
 
 ## 精确性边界（subject projection）

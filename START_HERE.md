@@ -31,7 +31,9 @@ python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
 
 That command is expected to fail at the current baseline because P1.3B is not
 opened by an owner manual decision. The repo no longer computes the clean-review
-counter; the owner maintains that count outside the repository.
+counter; the owner maintains that count outside the repository.  The current
+post-V56 review anchor is `v56_certified_cut_replay_consolidation`, which adds
+a certified cut replay faithfulness obligation after V53-V56.
 
 ## Knowledge Surface Roles
 

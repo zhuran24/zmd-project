@@ -18,6 +18,21 @@ cut-family algorithmic bugs.  The safer model is now:
   P1.3B;
 - `next_phase_entry.allowed` must remain false without that decision.
 
+## Current review anchor
+
+After V53-V56, the current review anchor is:
+
+```text
+v56_certified_cut_replay_consolidation
+```
+
+Those rounds did not reopen the old automatic receipt/counter gate.  They found
+a real certified solver safety surface: exact-safe `BendersCut` persistence and
+replay must be strictly parsed, all-or-nothing, and faithfully encoded by the
+master.  The consolidated proof obligation is
+`PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS`; see
+`docs/research/p1_2_v56_certified_cut_replay_consolidation.md`.
+
 Daily consistency check:
 
 ```bash
