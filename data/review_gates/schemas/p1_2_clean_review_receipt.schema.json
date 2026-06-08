@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "schema_id": "p1_2_clean_review_receipt",
+  "description": "Machine receipt required for Phase 1.2 clean-review credit. Human reports are free text and are bound by report_sha256; machine package identity is read only from this strict JSON receipt.",
+  "required_keys": [
+    "schema_version",
+    "receipt_type",
+    "gate_id",
+    "review_package",
+    "archive_name",
+    "archive_sha256",
+    "archive_size_bytes",
+    "source_tree_identity",
+    "reviewer_id",
+    "review_run_id",
+    "review_result",
+    "major_or_soundness_findings",
+    "finding_domains_reviewed",
+    "report_path",
+    "report_sha256",
+    "target_anchor"
+  ],
+  "policy": {
+    "receipt_type": "p1_2_clean_review_receipt",
+    "review_result_for_clean_credit": "clean",
+    "major_or_soundness_findings_for_clean_credit": 0,
+    "source_identity_authority": "source_tree_identity",
+    "report_identity_authority": "report_sha256",
+    "forbidden_machine_authorities": [
+      "Markdown report metadata",
+      "HTML/XML/SVG/MathML report metadata",
+      "package-internal .git source_head authority"
+    ]
+  }
+}

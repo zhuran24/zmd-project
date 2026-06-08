@@ -28,9 +28,18 @@ DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
 OPEN_STATUSES = {"blocked_pending_clean_reviews", "open", "blocked"}
 CLOSED_STATUS = "closed"
 MAJOR_OR_SOUNDNESS_OUTCOMES = {"major_soundness_findings_found"}
-ALLOWED_OUTCOMES = {"clean", *MAJOR_OR_SOUNDNESS_OUTCOMES}
+INFRASTRUCTURE_HARDENING_OUTCOMES = {"infrastructure_hardening_findings_found", "review_protocol_redesign"}
+ALLOWED_OUTCOMES = {"clean", *MAJOR_OR_SOUNDNESS_OUTCOMES, *INFRASTRUCTURE_HARDENING_OUTCOMES}
+INFRASTRUCTURE_FINDING_DOMAINS = {"review_infrastructure_hardening", "review_protocol_hardening"}
+ALGORITHM_RESET_FINDING_DOMAINS = {
+    "algorithmic_soundness",
+    "proof_obligation_bypass",
+    "certified_false_negative",
+    "reachable_phase_gate_false_ready",
+}
 CLEAN_FULL_REVIEW_TYPE = "independent_full_external"
 REVIEW_EVIDENCE_ROOTS = (".artifacts", "docs/research")
+REVIEW_RECEIPT_ROOTS = ("cc_context/review/receipts", ".artifacts/review_receipts")
 REVIEW_PACKAGE_METADATA_KEYS = {
     "archive_name",
     "archive_sha256",
@@ -38,12 +47,33 @@ REVIEW_PACKAGE_METADATA_KEYS = {
     "package",
     "source_head",
     "source_list_identity",
+    "source_tree_identity",
 }
+REVIEW_RECEIPT_KEYS = frozenset(
+    {
+        "schema_version",
+        "receipt_type",
+        "gate_id",
+        "review_package",
+        "archive_name",
+        "archive_sha256",
+        "archive_size_bytes",
+        "source_tree_identity",
+        "reviewer_id",
+        "review_run_id",
+        "review_result",
+        "major_or_soundness_findings",
+        "finding_domains_reviewed",
+        "report_path",
+        "report_sha256",
+        "target_anchor",
+    }
+)
 HEX_DIGITS = set("0123456789abcdef")
 PLACEHOLDER_METADATA_VALUES = {"na", "none", "notprovided", "tbd", "unknown"}
 SAFE_ARCHIVE_NAME_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-")
 FULLWIDTH_COLON = "："
-CURRENT_REVIEW_PACKAGE_KEYS = REVIEW_PACKAGE_METADATA_KEYS
+CURRENT_REVIEW_PACKAGE_KEYS = REVIEW_PACKAGE_METADATA_KEYS | {"source_tree_manifest_sha256"}
 REVIEW_HISTORY_ENTRY_KEYS = frozenset(
     {
         "package",
@@ -53,6 +83,9 @@ REVIEW_HISTORY_ENTRY_KEYS = frozenset(
         "major_or_soundness_findings",
         "resets_counter",
         "evidence_paths",
+        "receipt_path",
+        "finding_domain",
+        "infrastructure_findings",
     }
 )
 WINDOWS_RESERVED_ARCHIVE_STEMS = frozenset(
@@ -595,6 +628,9 @@ def _evidence_metadata_key(raw_key: str) -> str:
         "sourcecommit": "source_head",
         "sourcecommithead": "source_head",
         "sourcelistidentity": "source_list_identity",
+        "sourcetreeidentity": "source_tree_identity",
+        "sourcetreehash": "source_tree_identity",
+        "sourcetreeidhash": "source_tree_identity",
     }
     if token in aliases:
         return aliases[token]
@@ -933,6 +969,15 @@ def _review_history_entry_key(raw_key: str) -> str:
         "evidence": "evidence_paths",
         "evidencepath": "evidence_paths",
         "evidencepaths": "evidence_paths",
+        "receipt": "receipt_path",
+        "receiptpath": "receipt_path",
+        "reviewreceipt": "receipt_path",
+        "reviewreceiptpath": "receipt_path",
+        "findingdomain": "finding_domain",
+        "domain": "finding_domain",
+        "infrastructurefinding": "infrastructure_findings",
+        "infrastructurefindings": "infrastructure_findings",
+        "infrafindings": "infrastructure_findings",
     }
     if token in aliases:
         return aliases[token]
@@ -976,11 +1021,6 @@ def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
         package.get("archive_size_bytes"),
         "current_review_package.archive_size_bytes",
     )
-    source_head = require_unpadded_str(package.get("source_head"), "current_review_package.source_head").lower()
-    source_list_identity = require_unpadded_str(
-        package.get("source_list_identity"),
-        "current_review_package.source_list_identity",
-    )
     if not _is_safe_archive_name(archive_name):
         raise GateError(
             "current_review_package.archive_name must be a path-free ASCII .7z archive basename"
@@ -989,13 +1029,67 @@ def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
         raise GateError("current_review_package.archive_sha256 must be a 64-character hex digest")
     if archive_size_bytes <= 0:
         raise GateError("current_review_package.archive_size_bytes must be positive")
+    if package_key != archive_name:
+        raise GateError("current_review_package.package must exactly match archive_name")
+
+    source_tree_identity_raw = package.get("source_tree_identity")
+    source_tree_manifest_raw = package.get("source_tree_manifest_sha256")
+    if source_tree_identity_raw is not None:
+        source_tree_identity = require_unpadded_str(
+            source_tree_identity_raw,
+            "current_review_package.source_tree_identity",
+        ).lower()
+        if not _is_hex_digest(source_tree_identity, length=64):
+            raise GateError("current_review_package.source_tree_identity must be a 64-character hex digest")
+        source_tree_manifest_sha256: str | None = None
+        if source_tree_manifest_raw is not None:
+            source_tree_manifest_sha256 = require_unpadded_str(
+                source_tree_manifest_raw,
+                "current_review_package.source_tree_manifest_sha256",
+            ).lower()
+            if not _is_hex_digest(source_tree_manifest_sha256, length=64):
+                raise GateError(
+                    "current_review_package.source_tree_manifest_sha256 must be a 64-character hex digest"
+                )
+        # If legacy Git fields are present alongside source_tree_identity, keep
+        # them informational only.  They must be well-formed when provided, but
+        # this gate no longer shells out to Git to prove package source identity.
+        source_head = package.get("source_head")
+        if source_head is not None:
+            source_head = require_unpadded_str(source_head, "current_review_package.source_head").lower()
+            if not _is_hex_digest(source_head, length=40):
+                raise GateError("current_review_package.source_head must be a 40-character hex commit when provided")
+        source_list_identity = package.get("source_list_identity")
+        if source_list_identity is not None and _is_placeholder_metadata_value(
+            require_unpadded_str(source_list_identity, "current_review_package.source_list_identity")
+        ):
+            raise GateError("current_review_package.source_list_identity must not be a placeholder")
+        result = {
+            "archive_name": archive_name,
+            "archive_sha256": archive_sha256,
+            "archive_size_bytes": archive_size_bytes,
+            "package": package_key,
+            "source_tree_identity": source_tree_identity,
+            "identity_mode": "source_tree_manifest",
+        }
+        if source_tree_manifest_sha256 is not None:
+            result["source_tree_manifest_sha256"] = source_tree_manifest_sha256
+        return result
+
+    # Legacy fallback for old tests and historical review packages.  Future clean
+    # review receipts cannot use this mode; _validate_clean_review_receipt()
+    # requires source_tree_identity and therefore keeps Git authority out of the
+    # clean-counter proof surface.
+    source_head = require_unpadded_str(package.get("source_head"), "current_review_package.source_head").lower()
+    source_list_identity = require_unpadded_str(
+        package.get("source_list_identity"),
+        "current_review_package.source_list_identity",
+    )
     if not _is_hex_digest(source_head, length=40):
         raise GateError("current_review_package.source_head must be a 40-character hex commit")
     project_head = _project_git_head()
     if project_head is not None and source_head != project_head:
         raise GateError(f"current_review_package.source_head must match project git HEAD {project_head}: {source_head}")
-    if package_key != archive_name:
-        raise GateError("current_review_package.package must exactly match archive_name")
     if _is_placeholder_metadata_value(source_list_identity):
         raise GateError("current_review_package.source_list_identity must not be a placeholder")
     return {
@@ -1005,13 +1099,20 @@ def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
         "package": package_key,
         "source_head": source_head,
         "source_list_identity": source_list_identity,
+        "identity_mode": "legacy_git_source_head",
     }
-
 
 def _check_evidence_matches_current_package(
     rel_path: str,
     current_package: dict[str, Any],
 ) -> list[str]:
+    """Optional human-report metadata hygiene for current clean-review reports.
+
+    Clean-review credit is now bound by a strict JSON receipt.  This scanner is
+    intentionally only fail-closed hygiene for reports that still carry visible
+    package metadata; it is no longer the authority by which the gate accepts a
+    clean review.
+    """
     errors: list[str] = []
     try:
         metadata = _extract_evidence_metadata(rel_path)
@@ -1023,20 +1124,146 @@ def _check_evidence_matches_current_package(
         "archive_sha256": current_package["archive_sha256"],
         "archive_size_bytes": str(current_package["archive_size_bytes"]),
         "package": current_package["package"],
-        "source_head": current_package["source_head"],
-        "source_list_identity": current_package["source_list_identity"],
     }
+    if current_package.get("identity_mode") == "source_tree_manifest":
+        expected["source_tree_identity"] = current_package["source_tree_identity"]
+    else:
+        expected["source_head"] = current_package["source_head"]
+        expected["source_list_identity"] = current_package["source_list_identity"]
+
     for key, expected_value in expected.items():
         value = metadata.get(key)
         if value is None:
-            errors.append(f"evidence path {rel_path} missing current package metadata: {key}")
+            # Receipts are authoritative now.  Reports may omit package identity
+            # metadata, but if they carry it, it must not contradict the receipt.
             continue
-        if key in {"archive_sha256", "source_head"}:
+        if key in {"archive_sha256", "source_head", "source_tree_identity"}:
             value = value.lower()
         if value != expected_value:
             errors.append(f"evidence path {rel_path} current package metadata {key} {value!r} != {expected_value!r}")
     return errors
 
+def _is_review_receipt_path(rel_path: str) -> bool:
+    path = PurePosixPath(rel_path)
+    if path.is_absolute() or "\\" in rel_path or any(part in {"", ".", ".."} for part in path.parts):
+        return False
+    if path.suffix != ".json":
+        return False
+    parts = path.parts
+    return any(parts[: len(root.split("/"))] == tuple(root.split("/")) for root in REVIEW_RECEIPT_ROOTS)
+
+
+def _check_exact_keys(payload: dict[str, Any], allowed_keys: frozenset[str], label: str) -> list[str]:
+    errors: list[str] = []
+    for raw_key in payload:
+        if not isinstance(raw_key, str):
+            errors.append(f"{label} keys must be strings")
+            continue
+        if raw_key not in allowed_keys:
+            errors.append(f"{label} has unsupported key: {raw_key!r}")
+    missing = sorted(allowed_keys - set(payload))
+    if missing:
+        errors.append(f"{label} missing required key(s): {', '.join(missing)}")
+    return errors
+
+
+def _canonical_json_payload(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(
+            path.read_text(encoding="utf-8"),
+            object_pairs_hook=_json_object_without_duplicate_keys,
+        )
+    except Exception as exc:  # noqa: BLE001 - receipt bytes must be strict JSON, not report prose.
+        raise GateError(f"cannot read strict JSON receipt {rel(path)}: {exc}") from exc
+    return require_mapping(payload, rel(path))
+
+
+def _source_tree_identity_from_package(package: dict[str, Any]) -> str:
+    source_tree_identity = package.get("source_tree_identity")
+    if isinstance(source_tree_identity, str) and source_tree_identity.strip():
+        return source_tree_identity.lower()
+    # Legacy packages used source_head/source_list_identity.  They remain readable
+    # for old reset artifacts, but new clean-review receipts must bind a source
+    # tree manifest hash instead of making the gate prove Git object authority.
+    raise GateError("current_review_package.source_tree_identity is required for clean-review receipts")
+
+
+def _validate_clean_review_receipt(
+    raw_receipt_path: Any,
+    *,
+    label: str,
+    gate_id: str,
+    current_package: dict[str, Any],
+    target_anchor: str,
+) -> tuple[list[str], str | None, tuple[int, int] | None, str | None]:
+    errors: list[str] = []
+    if raw_receipt_path is None:
+        return [f"{label}.receipt_path is required for clean-review credit"], None, None, None
+    try:
+        receipt_rel = _canonical_project_rel_path(require_str(raw_receipt_path, f"{label}.receipt_path"))
+        receipt_identity = _evidence_file_identity(receipt_rel)
+        receipt_digest = _evidence_content_digest(receipt_rel)
+    except GateError as exc:
+        return [str(exc)], None, None, None
+    if not _is_review_receipt_path(receipt_rel):
+        errors.append(
+            f"{label}.receipt_path must point to a strict JSON review receipt under "
+            f"{', '.join(REVIEW_RECEIPT_ROOTS)}: {receipt_rel}"
+        )
+    try:
+        receipt = _canonical_json_payload(PROJECT_ROOT / receipt_rel)
+    except GateError as exc:
+        errors.append(str(exc))
+        return errors, receipt_rel, receipt_identity, receipt_digest
+
+    errors.extend(_check_exact_keys(receipt, REVIEW_RECEIPT_KEYS, f"{label}.receipt"))
+    if errors:
+        return errors, receipt_rel, receipt_identity, receipt_digest
+
+    if receipt.get("schema_version") != 1:
+        errors.append(f"{label}.receipt.schema_version must be 1")
+    if receipt.get("receipt_type") != "p1_2_clean_review_receipt":
+        errors.append(f"{label}.receipt.receipt_type must be 'p1_2_clean_review_receipt'")
+    if require_str(receipt.get("gate_id"), f"{label}.receipt.gate_id") != gate_id:
+        errors.append(f"{label}.receipt.gate_id must match {gate_id!r}")
+    if require_str(receipt.get("review_package"), f"{label}.receipt.review_package") != current_package["package"]:
+        errors.append(f"{label}.receipt.review_package must match current package {current_package['package']!r}")
+    for key in ("archive_name", "archive_sha256", "archive_size_bytes", "source_tree_identity"):
+        expected = current_package[key] if key != "source_tree_identity" else _source_tree_identity_from_package(current_package)
+        value = receipt.get(key)
+        if key in {"archive_sha256", "source_tree_identity"} and isinstance(value, str):
+            value = value.lower()
+        if value != expected:
+            errors.append(f"{label}.receipt.{key} {value!r} != current package {expected!r}")
+    if require_str(receipt.get("review_result"), f"{label}.receipt.review_result") != "clean":
+        errors.append(f"{label}.receipt.review_result must be 'clean'")
+    if require_int(receipt.get("major_or_soundness_findings"), f"{label}.receipt.major_or_soundness_findings") != 0:
+        errors.append(f"{label}.receipt.major_or_soundness_findings must be 0")
+    domains = require_list(receipt.get("finding_domains_reviewed"), f"{label}.receipt.finding_domains_reviewed")
+    if "algorithmic_soundness" not in domains:
+        errors.append(f"{label}.receipt.finding_domains_reviewed must include 'algorithmic_soundness'")
+    report_path = require_str(receipt.get("report_path"), f"{label}.receipt.report_path")
+    try:
+        canonical_report_path = _canonical_project_rel_path(report_path)
+        report_digest = _evidence_content_digest(canonical_report_path)
+    except GateError as exc:
+        errors.append(str(exc))
+    else:
+        if not _is_review_evidence_path(canonical_report_path):
+            errors.append(
+                f"{label}.receipt.report_path must point to a review/research artifact "
+                f"under {', '.join(REVIEW_EVIDENCE_ROOTS)}: {report_path}"
+            )
+        expected_report_sha = require_str(receipt.get("report_sha256"), f"{label}.receipt.report_sha256").lower()
+        if not _is_hex_digest(expected_report_sha, length=64):
+            errors.append(f"{label}.receipt.report_sha256 must be a 64-character hex digest")
+        elif report_digest != expected_report_sha:
+            errors.append(
+                f"{label}.receipt.report_sha256 {expected_report_sha!r} != actual report digest {report_digest!r}"
+            )
+    if require_str(receipt.get("target_anchor"), f"{label}.receipt.target_anchor") != target_anchor:
+        errors.append(f"{label}.receipt.target_anchor must match current review anchor {target_anchor!r}")
+    return errors, receipt_rel, receipt_identity, receipt_digest
 
 def _evidence_file_identity(rel_path: str) -> tuple[int, int]:
     try:
@@ -1232,6 +1459,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
         errors.append(f"unsupported status: {status}")
 
     close_policy = require_mapping(gate.get("close_policy"), "close_policy")
+    current_review_anchor = require_str(gate.get("current_review_anchor"), "current_review_anchor")
     counters = require_mapping(gate.get("counters"), "counters")
     next_phase_entry = require_mapping(gate.get("next_phase_entry"), "next_phase_entry")
     last_reset = require_mapping(gate.get("last_reset"), "last_reset")
@@ -1303,6 +1531,9 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     clean_review_evidence_owner: dict[str, int] = {}
     clean_review_file_owner: dict[tuple[int, int], int] = {}
     clean_review_content_owner: dict[str, int] = {}
+    clean_review_receipt_owner: dict[str, int] = {}
+    clean_review_receipt_file_owner: dict[tuple[int, int], int] = {}
+    clean_review_receipt_content_owner: dict[str, int] = {}
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
         errors.extend(_check_review_history_entry_keys(entry, index))
@@ -1332,9 +1563,29 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 "major": major,
                 "resets_counter": resets_counter,
                 "evidence_paths": require_list(entry.get("evidence_paths"), f"review_history[{index}].evidence_paths"),
+                "receipt_path": entry.get("receipt_path"),
             }
         )
         canonical_outcome = _canonical_outcome(outcome)
+        default_finding_domain = (
+            "algorithmic_soundness"
+            if resets_counter or canonical_outcome in MAJOR_OR_SOUNDNESS_OUTCOMES or major != 0
+            else "review_infrastructure_hardening"
+        )
+        finding_domain = require_unpadded_str(
+            entry.get("finding_domain", default_finding_domain),
+            f"review_history[{index}].finding_domain",
+        )
+        infrastructure_findings = require_int(
+            entry.get("infrastructure_findings", 0),
+            f"review_history[{index}].infrastructure_findings",
+        )
+        if infrastructure_findings < 0:
+            errors.append(f"review_history[{index}].infrastructure_findings cannot be negative: {infrastructure_findings}")
+        infrastructure_hardening = (
+            finding_domain in INFRASTRUCTURE_FINDING_DOMAINS
+            or canonical_outcome in INFRASTRUCTURE_HARDENING_OUTCOMES
+        )
         if canonical_outcome not in ALLOWED_OUTCOMES:
             errors.append(f"review_history[{index}] has unsupported outcome: {outcome!r}")
         elif outcome != canonical_outcome:
@@ -1356,9 +1607,20 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             errors.append(
                 f"review_history[{index}] outcome {outcome!r} requires a positive major_or_soundness_findings count"
             )
+        if canonical_outcome in INFRASTRUCTURE_HARDENING_OUTCOMES:
+            if not infrastructure_hardening:
+                errors.append(f"review_history[{index}] infrastructure outcome requires infrastructure finding domain")
+            if infrastructure_findings <= 0:
+                errors.append(f"review_history[{index}] infrastructure outcome requires positive infrastructure_findings")
+            if major != 0:
+                errors.append(f"review_history[{index}] infrastructure hardening findings must not be counted as major/soundness findings")
+            if resets_counter:
+                errors.append(f"review_history[{index}] infrastructure hardening must not reset the algorithmic clean counter")
+        if resets_counter and finding_domain not in ALGORITHM_RESET_FINDING_DOMAINS:
+            errors.append(f"review_history[{index}] resets counter with non-algorithmic finding_domain {finding_domain!r}")
         if not clean and major == 0 and resets_counter:
             errors.append(f"review_history[{index}] resets counter but has zero major/soundness findings")
-        if not clean and (major > 0 or outcome_reports_major) and not resets_counter:
+        if not clean and (major > 0 or outcome_reports_major) and not resets_counter and not infrastructure_hardening:
             errors.append(f"review_history[{index}] has major/soundness findings but does not reset counter")
         if resets_counter:
             all_reset_entries.append((index, package))
@@ -1410,6 +1672,45 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                     f"review_history[{index}] reuses reset-review package "
                     f"from review_history[{reset_package_owner}]: {package}"
                 )
+            canonical_receipt_path = None
+            receipt_file_identity = None
+            receipt_content_digest = None
+            if current_review_package is not None:
+                (
+                    receipt_errors,
+                    canonical_receipt_path,
+                    receipt_file_identity,
+                    receipt_content_digest,
+                ) = _validate_clean_review_receipt(
+                    history_records[-1].get("receipt_path"),
+                    label=f"review_history[{index}]",
+                    gate_id=gate_id,
+                    current_package=current_review_package,
+                    target_anchor=current_review_anchor,
+                )
+                errors.extend(receipt_errors)
+            if canonical_receipt_path is not None:
+                owner = clean_review_receipt_owner.get(canonical_receipt_path)
+                if owner is not None:
+                    errors.append(
+                        f"review_history[{index}] reuses clean-review receipt path from review_history[{owner}]: "
+                        f"{canonical_receipt_path}"
+                    )
+                else:
+                    clean_review_receipt_owner[canonical_receipt_path] = index
+            if receipt_file_identity is not None:
+                owner = clean_review_receipt_file_owner.get(receipt_file_identity)
+                if owner is not None:
+                    errors.append(f"review_history[{index}] reuses clean-review physical receipt file from review_history[{owner}]")
+                else:
+                    clean_review_receipt_file_owner[receipt_file_identity] = index
+            if receipt_content_digest is not None:
+                owner = clean_review_receipt_content_owner.get(receipt_content_digest)
+                if owner is not None:
+                    errors.append(f"review_history[{index}] reuses clean-review receipt content from review_history[{owner}]")
+                else:
+                    clean_review_receipt_content_owner[receipt_content_digest] = index
+
             for canonical_path in canonical_evidence_paths:
                 reset_owner = reset_review_evidence_owner.get(canonical_path)
                 if reset_owner is not None:

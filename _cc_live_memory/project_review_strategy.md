@@ -44,8 +44,9 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 ### Phase close gates（大节点收口）
 
-- P1.2 spike close 当前由 `data/review_gates/phase_1_2_spike_close.json` 记录为 blocked-pending-clean-reviews。v31 candidate + v31 postmortem consolidation 后，连续 clean 计数器仍为 0/3；进入 P1.3B 前必须有 3 次连续独立完整外审零 major/soundness finding。
-- v29-v31 同族 finding 已汇总到 `data/proof_obligations/p1_2_proof_obligations.json`，由 `scripts/check_p1_2_proof_obligations.py` 检查；这不是 clean review，而是下一包审查前的 proof-obligation 收束。
+- P1.2 spike close 当前由 `data/review_gates/phase_1_2_spike_close.json` 记录为 blocked-pending-clean-reviews。`v46_review_protocol_redesign` 后，algorithmic clean 计数器仍为 0/3；进入 P1.3B 前必须有 3 次连续独立完整外审零 algorithmic/soundness finding。
+- V31-V46 finding 已拆成两类：algorithmic/proof-obligation finding 会重置 P1.2 algorithmic counter；review-infrastructure hardening（receipt/report/package/Git authority/parser provenance）只有在能证明 reachable P1.3B false-ready 或 certified lifecycle false-negative 时才重置 algorithmic counter。
+- v29-v31 同族 finding 与 V31-V46 taxonomy 已汇总到 `data/proof_obligations/p1_2_proof_obligations.json` + `docs/research/p1_2_v31_v46_finding_taxonomy.md`，由 `scripts/check_p1_2_proof_obligations.py` 检查；下一轮 clean review 必须使用 strict JSON review receipt + source-tree identity。
 - 健康检查：`python scripts/check_phase_review_gate.py` + `python scripts/check_p1_2_proof_obligations.py`；blocked 状态也应通过，作用是防止文档/机器状态互相撒谎。
 
 ## 链 (补连 2026-06-01)

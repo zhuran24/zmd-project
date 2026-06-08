@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -25,6 +26,48 @@ def _current_review_package(package: str = "zmd_99.7z") -> dict:
         "source_list_identity": "chatgpt-project-source:zmd_99.7z",
     }
 
+
+
+
+def _current_review_package_with_source_tree(package: str = "zmd_99.7z") -> dict:
+    payload = _current_review_package(package)
+    payload["source_tree_identity"] = "c" * 64
+    return payload
+
+
+def _write_review_receipt(
+    fake_root: Path,
+    package: str,
+    *,
+    current_package: dict,
+    report_path: str,
+    filename: str,
+    run_id: str,
+) -> str:
+    rel = Path("cc_context") / "review" / "receipts" / filename
+    path = fake_root / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    report_digest = hashlib.sha256((fake_root / report_path).read_bytes()).hexdigest()
+    payload = {
+        "schema_version": 1,
+        "receipt_type": "p1_2_clean_review_receipt",
+        "gate_id": "phase_1_2_spike_close",
+        "review_package": package,
+        "archive_name": current_package["archive_name"],
+        "archive_sha256": current_package["archive_sha256"],
+        "archive_size_bytes": current_package["archive_size_bytes"],
+        "source_tree_identity": current_package["source_tree_identity"],
+        "reviewer_id": "pytest-reviewer",
+        "review_run_id": run_id,
+        "review_result": "clean",
+        "major_or_soundness_findings": 0,
+        "finding_domains_reviewed": ["algorithmic_soundness", "phase_gate_false_ready"],
+        "report_path": report_path,
+        "report_sha256": report_digest,
+        "target_anchor": "v46_review_protocol_redesign",
+    }
+    path.write_text(json.dumps(payload, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    return rel.as_posix()
 
 def _write_review_evidence(
     fake_root: Path,
@@ -78,10 +121,25 @@ def _payload_with_minimal_review_evidence(fake_root: Path) -> dict:
 
 
 def _append_three_clean_reviews(fake_root: Path, payload: dict, *, prefix: str) -> None:
-    current_package = _current_review_package()
+    current_package = _current_review_package_with_source_tree()
     payload["current_review_package"] = current_package
     for index in range(3):
         package = current_package["package"]
+        report_path = _write_review_evidence(
+            fake_root,
+            package,
+            current_package=current_package,
+            filename=f"{prefix}_{index + 1}.md",
+            nonce=f"{prefix}_{index + 1}",
+        )
+        receipt_path = _write_review_receipt(
+            fake_root,
+            package,
+            current_package=current_package,
+            report_path=report_path,
+            filename=f"{prefix}_{index + 1}.receipt.json",
+            run_id=f"{prefix}_{index + 1}",
+        )
         payload["review_history"].append(
             {
                 "package": package,
@@ -90,18 +148,10 @@ def _append_three_clean_reviews(fake_root: Path, payload: dict, *, prefix: str) 
                 "clean": True,
                 "major_or_soundness_findings": 0,
                 "resets_counter": False,
-                "evidence_paths": [
-                    _write_review_evidence(
-                        fake_root,
-                        package,
-                        current_package=current_package,
-                        filename=f"{prefix}_{index + 1}.md",
-                        nonce=f"{prefix}_{index + 1}",
-                    )
-                ],
+                "receipt_path": receipt_path,
+                "evidence_paths": [report_path],
             }
         )
-
 
 def _mark_payload_closed_ready(payload: dict) -> None:
     payload["status"] = "closed"
@@ -713,7 +763,7 @@ def test_validator_rejects_clean_review_package_that_differs_from_current_packag
 
     assert "phase_1_2_spike_close" in summary
     assert any("package must exactly match current_review_package.package" in error for error in errors)
-    assert any("missing current package metadata: archive_sha256" in error for error in errors)
+    assert any("receipt_path is required for clean-review credit" in error for error in errors)
 
 
 def test_validator_rejects_body_only_current_package_binding(
@@ -760,7 +810,7 @@ def test_validator_rejects_body_only_current_package_binding(
     assert "phase_1_2_spike_close" in summary
     assert any("current package metadata archive_sha256" in error for error in errors)
     assert any("current package metadata archive_size_bytes" in error for error in errors)
-    assert any("missing current package metadata: source_head" in error for error in errors)
+    assert any("receipt_path is required for clean-review credit" in error for error in errors)
 
 
 def test_phase_gate_json_loader_rejects_duplicate_current_package_keys(tmp_path: Path, monkeypatch) -> None:
@@ -975,7 +1025,7 @@ def test_validator_rejects_review_history_major_findings_alias_key(
 ) -> None:
     fake_root = tmp_path / "repo"
     payload = _payload_for_fake_root(fake_root)
-    current_package = _current_review_package()
+    current_package = _current_review_package_with_source_tree()
     payload["current_review_package"] = current_package
     _mark_payload_closed_ready(payload)
     for index in range(3):
@@ -2376,7 +2426,7 @@ def test_windows_project_git_command_uses_standard_git_paths_before_os_defpath(
 def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path, monkeypatch) -> None:
     fake_root = tmp_path / "repo"
     payload = _payload_for_fake_root(fake_root)
-    current_package = _current_review_package()
+    current_package = _current_review_package_with_source_tree()
     payload["current_review_package"] = current_package
     payload["status"] = "closed"
     payload["counters"]["consecutive_clean_full_reviews_after_reset"] = 3
@@ -2384,6 +2434,21 @@ def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_p
     payload["next_phase_entry"]["allowed"] = True
     for index in range(3):
         package = current_package["package"]
+        report_path = _write_review_evidence(
+            fake_root,
+            package,
+            current_package=current_package,
+            filename=f"v33_clean_full_review_{index + 1}.md",
+            nonce=f"v33-clean-{index + 1}",
+        )
+        receipt_path = _write_review_receipt(
+            fake_root,
+            package,
+            current_package=current_package,
+            report_path=report_path,
+            filename=f"v33_clean_full_review_{index + 1}.receipt.json",
+            run_id=f"v33-clean-{index + 1}",
+        )
         payload["review_history"].append(
             {
                 "package": package,
@@ -2392,15 +2457,8 @@ def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_p
                 "clean": True,
                 "major_or_soundness_findings": 0,
                 "resets_counter": False,
-                "evidence_paths": [
-                    _write_review_evidence(
-                        fake_root,
-                        package,
-                        current_package=current_package,
-                        filename=f"v33_clean_full_review_{index + 1}.md",
-                        nonce=f"v33-clean-{index + 1}",
-                    )
-                ],
+                "receipt_path": receipt_path,
+                "evidence_paths": [report_path],
             }
         )
     closed_gate = fake_root / "closed_gate.json"
@@ -2412,6 +2470,50 @@ def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_p
     assert "phase_1_2_spike_close" in summary
     assert errors == []
 
+
+
+def test_validator_rejects_clean_review_receipt_source_tree_identity_mismatch(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="v47_receipt_source_tree")
+    first_receipt = fake_root / payload["review_history"][-3]["receipt_path"]
+    receipt = json.loads(first_receipt.read_text(encoding="utf-8"))
+    receipt["source_tree_identity"] = "d" * 64
+    first_receipt.write_text(json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    fake_gate = fake_root / "fake_receipt_source_tree_mismatch.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("receipt.source_tree_identity" in error and "current package" in error for error in errors)
+
+
+def test_validator_rejects_clean_review_receipt_report_sha_mismatch(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="v47_receipt_report_sha")
+    first_receipt = fake_root / payload["review_history"][-3]["receipt_path"]
+    receipt = json.loads(first_receipt.read_text(encoding="utf-8"))
+    receipt["report_sha256"] = "e" * 64
+    first_receipt.write_text(json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    fake_gate = fake_root / "fake_receipt_report_sha_mismatch.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("receipt.report_sha256" in error and "actual report digest" in error for error in errors)
 
 def test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews(
     tmp_path: Path,

@@ -103,6 +103,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_git_root_symlink_even_when_broken",
             "test_validator_rejects_escaped_and_wrapped_metadata_conflicts",
             "test_validator_rejects_xml_payload_and_attribute_wrapped_metadata_conflicts",
+            "test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews",
+            "test_validator_rejects_clean_review_receipt_source_tree_identity_mismatch",
+            "test_validator_rejects_clean_review_receipt_report_sha_mismatch",
         }
     ),
 }
@@ -511,6 +514,8 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         "_project_git_command",
         "_trusted_git_search_dirs",
         "_validate_project_git_authority_root",
+        "_validate_clean_review_receipt",
+        "_source_tree_identity_from_package",
         "_reject_git_config_external_authority",
         "_reject_git_promisor_pack_authority",
         "_ascii_security_skeleton",
@@ -530,14 +535,31 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
         manifest.get("phase_gate_required_anchor"),
         "phase_gate_required_anchor",
     )
+    required_reset_anchor = _require_str(
+        manifest.get("phase_gate_required_algorithmic_reset_anchor", required_anchor),
+        "phase_gate_required_algorithmic_reset_anchor",
+    )
     phase_gate = _load_json(PHASE_GATE_PATH)
     current_anchor = phase_gate.get("current_review_anchor")
     last_reset = phase_gate.get("last_reset")
     last_reset_package = last_reset.get("review_package") if isinstance(last_reset, dict) else None
+    counter_domains = phase_gate.get("counter_domains")
+    algorithmic_domain = counter_domains.get("algorithmic_soundness") if isinstance(counter_domains, dict) else None
+    algorithmic_last_reset = (
+        algorithmic_domain.get("last_reset_package") if isinstance(algorithmic_domain, dict) else None
+    )
     if current_anchor != required_anchor:
         errors.append(f"phase gate current_review_anchor {current_anchor!r} != required {required_anchor!r}")
-    if last_reset_package != required_anchor:
-        errors.append(f"phase gate last_reset.review_package {last_reset_package!r} != required {required_anchor!r}")
+    if last_reset_package != required_reset_anchor:
+        errors.append(
+            f"phase gate last_reset.review_package {last_reset_package!r} != required algorithmic reset "
+            f"{required_reset_anchor!r}"
+        )
+    if algorithmic_last_reset != required_reset_anchor:
+        errors.append(
+            "phase gate counter_domains.algorithmic_soundness.last_reset_package "
+            f"{algorithmic_last_reset!r} != required {required_reset_anchor!r}"
+        )
     return errors
 
 
