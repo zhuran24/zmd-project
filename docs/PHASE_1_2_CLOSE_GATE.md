@@ -2,7 +2,7 @@
 
 Current gate state: BLOCKED.
 
-Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v44_candidate. After the V43 hardening, V44 found two phase-gate provenance blockers: source_head authority could still be borrowed from sibling/bare/alternate Git roots, and clean-review evidence metadata could hide stale package identity through multiline/nested/escaped or delimited forms. That resets/keeps the consecutive-clean counter at zero.
+Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v45_candidate. After the V44 reset fixes, V45 found additional phase-gate provenance blockers: source_head authority still missed `.git/config.worktree` include indirection and dangling Git authority symlink entries, and clean-review evidence metadata could still hide stale package identity inside HTML/XML/SVG/MathML markup. That resets/keeps the consecutive-clean counter at zero.
 
 The close policy is:
 
@@ -30,6 +30,6 @@ The explicit phase-transition check is:
 python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
 ```
 
-At the current baseline this command is expected to fail. It should become green only after the review counter reaches 3/3 and `next_phase_entry.allowed` is true.
+At the current baseline this command is expected to fail with clean=0/3 after `v45_candidate`. It should become green only after the review counter reaches 3/3 and `next_phase_entry.allowed` is true.
 
 When the next review packages are completed, update the JSON counter and review history. Only after the counter reaches three consecutive clean full reviews should `next_phase_entry.allowed` become `true` and `status` become `closed`.

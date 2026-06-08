@@ -84,6 +84,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_latin_extended_metadata_key_conflict",
             "test_validator_rejects_html_table_package_metadata_conflict",
             "test_validator_rejects_fullwidth_pipe_table_package_metadata_conflict",
+            "test_validator_rejects_markup_wrapped_package_metadata_conflict",
             "test_validator_rejects_latin_extended_placeholder_source_list_identity",
             "test_validator_rejects_git_replace_ref_backed_non_commit_head",
             "test_project_git_command_ignores_relative_defpath_entries",
@@ -92,7 +93,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_git_objects_alternates_for_source_head_authority",
             "test_validator_rejects_bare_gitdir_source_head_authority",
             "test_validator_rejects_git_config_include_indirection_for_source_head_authority",
+            "test_validator_rejects_git_config_worktree_include_indirection_for_source_head_authority",
             "test_validator_rejects_git_authority_symlink_escape_for_source_head_authority",
+            "test_validator_rejects_broken_git_authority_symlink_escape_for_source_head_authority",
             "test_validator_rejects_git_root_symlink_even_when_broken",
             "test_validator_rejects_escaped_and_wrapped_metadata_conflicts",
         }

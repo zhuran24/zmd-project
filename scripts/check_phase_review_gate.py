@@ -319,10 +319,10 @@ def _git_authority_path_is_external(git_dir: Path, path: Path) -> bool:
 
 
 def _check_git_authority_path(git_dir: Path, path: Path, label: str) -> None:
-    if not path.exists():
-        return
     if path.is_symlink() or _path_is_junction(path):
         raise GateError(f"project git authority path must not be a symlink or junction: {label}")
+    if not path.exists():
+        return
     if _git_authority_path_is_external(git_dir, path):
         raise GateError(f"project git authority path resolves outside .git: {label}")
 
@@ -369,19 +369,22 @@ def _reject_git_common_dir_indirection(git_dir: Path) -> None:
 
 
 def _reject_git_config_includes(git_dir: Path) -> None:
-    text = _git_control_file_text(git_dir, "config")
-    if text is None:
-        return
-    for line in text.splitlines():
-        stripped = line.strip()
-        if not stripped or stripped.startswith(("#", ";")):
+    for rel_path in ("config", "config.worktree"):
+        text = _git_control_file_text(git_dir, rel_path)
+        if text is None:
             continue
-        if not stripped.startswith("[") or "]" not in stripped:
-            continue
-        section = stripped[1 : stripped.index("]")].strip().casefold()
-        section_head = section.split(maxsplit=1)[0]
-        if section_head.startswith(GIT_CONFIG_INCLUDE_SECTION_PREFIXES):
-            raise GateError("project git authority config must not use include/includeIf indirection")
+        for line in text.splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith(("#", ";")):
+                continue
+            if not stripped.startswith("[") or "]" not in stripped:
+                continue
+            section = stripped[1 : stripped.index("]")].strip().casefold()
+            section_head = section.split(maxsplit=1)[0]
+            if section_head.startswith(GIT_CONFIG_INCLUDE_SECTION_PREFIXES):
+                raise GateError(
+                    f"project git authority config must not use include/includeIf indirection: .git/{rel_path}"
+                )
 
 
 def _looks_like_bare_gitdir(path: Path) -> bool:
@@ -632,6 +635,24 @@ def _markdown_table_metadata_error(line: str, rel_path: str) -> str | None:
 HTML_TABLE_RE = re.compile(r"<\s*table\b.*?<\s*/\s*table\s*>", re.IGNORECASE | re.DOTALL)
 HTML_TABLE_CELL_RE = re.compile(r"<\s*t[dh]\b[^>]*>(.*?)<\s*/\s*t[dh]\s*>", re.IGNORECASE | re.DOTALL)
 HTML_TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
+HTML_TAG_NAME_RE = re.compile(r"<\s*/?\s*([A-Za-z][\w:.-]*)\b", re.IGNORECASE)
+HTML_TEXT_FRAGMENT_RE = re.compile(r">([^<>]+)(?=<|$)", re.DOTALL)
+METADATA_CELL_LIKE_TAGS = frozenset(
+    {
+        "td",
+        "th",
+        "dt",
+        "dd",
+        "text",
+        "mtext",
+        "mi",
+        "mn",
+        "mo",
+        "ms",
+        "title",
+        "desc",
+    }
+)
 
 
 def _html_cell_text(cell: str) -> str:
@@ -657,6 +678,44 @@ def _html_table_metadata_error(text: str, rel_path: str) -> str | None:
             key = _evidence_metadata_key(cell_text)
             if key in REVIEW_PACKAGE_METADATA_KEYS:
                 return f"evidence metadata key {key!r} must use ASCII colon delimiter, not HTML table syntax: {rel_path}"
+    return None
+
+
+def _markup_metadata_error(line: str, rel_path: str) -> str | None:
+    decoded_line = _deep_html_unescape(line)
+    if "<" not in decoded_line or ">" not in decoded_line:
+        return None
+
+    stripped_line = _html_cell_text(decoded_line)
+    if stripped_line and stripped_line != decoded_line.strip(" `*_\t\r\n"):
+        delimiter_error = _confusable_metadata_delimiter_error(stripped_line, rel_path)
+        if delimiter_error is not None:
+            return delimiter_error
+        delimited_error = _delimited_metadata_error(stripped_line, rel_path)
+        if delimited_error is not None:
+            return delimited_error
+        if ":" in stripped_line:
+            raw_key, raw_value = stripped_line.split(":", 1)
+            key = _evidence_metadata_key(raw_key)
+            if key in REVIEW_PACKAGE_METADATA_KEYS and raw_value.strip():
+                return (
+                    f"evidence metadata key {key!r} must use plain ASCII metadata lines, "
+                    f"not HTML/XML/SVG/MathML markup: {rel_path}"
+                )
+
+    tag_names = {match.casefold() for match in HTML_TAG_NAME_RE.findall(decoded_line)}
+    if not tag_names.intersection(METADATA_CELL_LIKE_TAGS):
+        return None
+    for fragment in HTML_TEXT_FRAGMENT_RE.findall(decoded_line):
+        fragment_text = _deep_html_unescape(fragment).strip(" `*_\t\r\n")
+        if not fragment_text:
+            continue
+        key = _evidence_metadata_key(fragment_text)
+        if key in REVIEW_PACKAGE_METADATA_KEYS:
+            return (
+                f"evidence metadata key {key!r} must use plain ASCII metadata lines, "
+                f"not HTML/XML/SVG/MathML markup: {rel_path}"
+            )
     return None
 
 
@@ -691,6 +750,9 @@ def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
         table_error = _markdown_table_metadata_error(line, rel_path)
         if table_error is not None:
             raise GateError(table_error)
+        markup_error = _markup_metadata_error(line, rel_path)
+        if markup_error is not None:
+            raise GateError(markup_error)
         delimited_error = _delimited_metadata_error(line, rel_path)
         if delimited_error is not None:
             raise GateError(delimited_error)

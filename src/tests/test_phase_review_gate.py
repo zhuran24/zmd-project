@@ -1799,6 +1799,65 @@ def test_validator_rejects_fullwidth_pipe_table_package_metadata_conflict(
     ("prefix_text", "expected_error"),
     [
         (
+            "<svg><text>Package: zmd_18.7z</text></svg>",
+            "not HTML/XML/SVG/MathML markup",
+        ),
+        (
+            f"<math><mtext>Archive SHA256</mtext><mo>:</mo><mtext>{'0' * 64}</mtext></math>",
+            "not HTML/XML/SVG/MathML markup",
+        ),
+        (
+            "<table><tr><td>Package<td>zmd_18.7z</table>",
+            "not HTML/XML/SVG/MathML markup",
+        ),
+    ],
+)
+def test_validator_rejects_markup_wrapped_package_metadata_conflict(
+    tmp_path: Path,
+    monkeypatch,
+    prefix_text: str,
+    expected_error: str,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    _mark_payload_closed_ready(payload)
+    for index in range(3):
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [
+                    _write_review_evidence(
+                        fake_root,
+                        current_package["package"],
+                        current_package=current_package,
+                        filename=f"markup_wrapped_metadata_conflict_{index + 1}.md",
+                        nonce=f"markup-wrapped-{index + 1}",
+                        prefix_text=prefix_text,
+                    )
+                ],
+            }
+        )
+    fake_gate = fake_root / "fake_markup_wrapped_metadata_conflict_gate.json"
+    fake_gate.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any(expected_error in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    ("prefix_text", "expected_error"),
+    [
+        (
             "<table>\n<tr>\n<th>P&amp;#x61;ckage</th>\n<td>zmd_18.7z</td>\n</tr>\n</table>",
             "not HTML table syntax",
         ),
@@ -2007,6 +2066,36 @@ def test_validator_rejects_git_config_include_indirection_for_source_head_author
         check_phase_review_gate.check_gate(fake_gate)
 
 
+def test_validator_rejects_git_config_worktree_include_indirection_for_source_head_authority(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    real_head = _init_git_repo_with_head(fake_root, content="config worktree include source authority\n")
+    config_path = fake_root / ".git" / "config"
+    config_path.write_text(
+        config_path.read_text(encoding="utf-8") + "\n[extensions]\n    worktreeConfig = true\n",
+        encoding="utf-8",
+    )
+    (fake_root / ".git" / "config.worktree").write_text(
+        "[includeIf \"gitdir:../*\"]\n    path = ../sibling.gitconfig\n",
+        encoding="utf-8",
+    )
+
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99.7z")
+    payload["current_review_package"]["source_head"] = real_head
+    fake_gate = fake_root / "fake_git_config_worktree_include.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="config.worktree",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
 def test_validator_rejects_git_authority_symlink_escape_for_source_head_authority(
     tmp_path: Path,
     monkeypatch,
@@ -2024,6 +2113,31 @@ def test_validator_rejects_git_authority_symlink_escape_for_source_head_authorit
     payload["current_review_package"] = _current_review_package("zmd_99.7z")
     payload["current_review_package"]["source_head"] = real_head
     fake_gate = fake_root / "fake_git_symlink_escape.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="symlink or junction",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_rejects_broken_git_authority_symlink_escape_for_source_head_authority(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    real_head = _init_git_repo_with_head(fake_root, content="broken symlink source authority\n")
+    try:
+        os.symlink(tmp_path / "missing-alternates", fake_root / ".git" / "objects" / "info" / "alternates")
+    except OSError as exc:
+        pytest.skip(f"cannot create symlink for Git authority test: {exc}")
+
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99.7z")
+    payload["current_review_package"]["source_head"] = real_head
+    fake_gate = fake_root / "fake_broken_git_authority_symlink_escape.json"
     fake_gate.write_text(json.dumps(payload), encoding="utf-8")
 
     monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)

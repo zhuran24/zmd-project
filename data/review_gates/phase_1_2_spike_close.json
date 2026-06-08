@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_pending_clean_reviews",
   "updated_at": "2026-06-08",
-  "summary": "P1.2 is not formally closed: V44 found phase-gate source-head authority and evidence-metadata provenance blockers after the V43 fixes, so the consecutive-clean counter remains zero.",
-  "current_review_anchor": "v44_candidate",
+  "summary": "P1.2 is not formally closed: V45 found phase-gate Git authority and evidence-metadata markup blockers after the V44 fixes, so the consecutive-clean counter remains zero.",
+  "current_review_anchor": "v45_candidate",
   "close_policy": {
     "required_consecutive_clean_full_reviews": 3,
     "clean_review_definition": "An independent full external review that reports zero major or soundness findings against the current review package and its patched source tree.",
@@ -17,7 +17,7 @@
       "high",
       "major"
     ],
-    "reset_on_or_after_review_package": "v44_candidate"
+    "reset_on_or_after_review_package": "v45_candidate"
   },
   "counters": {
     "consecutive_clean_full_reviews_after_reset": 0,
@@ -25,17 +25,17 @@
     "remaining_clean_full_reviews": 3
   },
   "last_reset": {
-    "review_package": "v44_candidate",
-    "reason": "V44 found phase-gate provenance blockers: source_head could be certified through sibling/bare/alternate Git authority roots, and clean-review evidence metadata could hide stale package identity through multiline/nested/escaped or delimited forms.",
+    "review_package": "v45_candidate",
+    "reason": "V45 found phase-gate provenance blockers: source_head authority missed .git/config.worktree include indirection and dangling Git authority symlinks, and clean-review evidence metadata could hide stale package identity in HTML/XML/SVG/MathML markup.",
     "resets_counter": true,
     "evidence_paths": [
-      "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md"
+      "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md"
     ]
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
     "allowed": false,
-    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v44_candidate."
+    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v45_candidate."
   },
   "review_history": [
     {
@@ -93,6 +93,17 @@
       "evidence_paths": [
         "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md"
       ]
+    },
+    {
+      "package": "v45_candidate",
+      "review_type": "independent_full_external",
+      "outcome": "major_soundness_findings_found",
+      "clean": false,
+      "major_or_soundness_findings": 3,
+      "resets_counter": true,
+      "evidence_paths": [
+        "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md"
+      ]
     }
   ],
   "required_doc_markers": [
@@ -102,7 +113,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "contains": "`v44_candidate` reset/kept the consecutive-clean counter"
+      "contains": "`v45_candidate` reset/kept the consecutive-clean counter"
     },
     {
       "path": "docs/PHASE_1_2_CLOSE_GATE.md",
@@ -110,7 +121,7 @@
     },
     {
       "path": "docs/项目说明/06_current_status.md",
-      "contains": "v44_candidate 后 consecutive-clean 计数器**重置、尚未达标"
+      "contains": "v45_candidate 后 consecutive-clean 计数器**重置、尚未达标"
     },
     {
       "path": "docs/项目说明/12_go_criteria.md",
