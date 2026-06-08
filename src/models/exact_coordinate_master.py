@@ -6501,12 +6501,14 @@ class CoordinateExactMasterDelegate:
         self, conflict_set: Mapping[str, int]
     ) -> List[Tuple[str, int, List[CoordinateSlotSpec], PoseTuple]]:
         # Normalize each (solution_id, pose_idx) into the slot set + pose tuple
-        # it can land in. Dedup by (scope, pose_idx) so two symmetric mandatory
-        # instances in the same group only contribute one presence literal
-        # (NoOverlap2D already forbids both taking the same pose).
-        # Certified replay must be all-or-nothing: silently dropping one malformed
-        # member of a persisted conflict would dilute a nogood over {A, B} into a
-        # stronger nogood over {A}, which can over-prune valid layouts.
+        # it can land in. Certified replay must be all-or-nothing: silently
+        # dropping one malformed member of a persisted conflict would dilute a
+        # nogood over {A, B} into a stronger nogood over {A}, which can
+        # over-prune valid layouts. The same fail-closed rule applies when two
+        # distinct conflict members alias to the same abstract presence literal
+        # (for example two symmetric mandatory instances in the same group with
+        # the same pose_idx): that persisted cut cannot be represented faithfully
+        # by this master backend.
         entries: List[Tuple[str, int, List[CoordinateSlotSpec], PoseTuple]] = []
         seen: Set[Tuple[str, int]] = set()
         for solution_id, raw_pose_idx in conflict_set.items():
@@ -6533,7 +6535,7 @@ class CoordinateExactMasterDelegate:
                     return []
                 key = (f"mandatory::{group_id}", pose_idx)
                 if key in seen:
-                    continue
+                    return []
                 seen.add(key)
                 entries.append(
                     (
@@ -6554,7 +6556,7 @@ class CoordinateExactMasterDelegate:
                 return []
             key = (f"optional::{tpl}", pose_idx)
             if key in seen:
-                continue
+                return []
             seen.add(key)
             slots: List[CoordinateSlotSpec] = []
             slots.extend(self.required_optional_slots.get(tpl, []))

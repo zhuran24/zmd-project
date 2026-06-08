@@ -714,7 +714,11 @@ class PoseBoolExactMasterDelegate:
         condition_lits: Sequence[cp_model.IntVar] = (),
     ) -> bool:
         # nogood: sum(present(pose) for pose in conflict_set) <= N - 1
+        # Certified conflict members must map one-to-one to concrete literals.
+        # If two distinct members alias to the same BoolVar, repeating or deduping
+        # that literal would strengthen the cut into a one-member ban.
         present_lits: List[cp_model.IntVar] = []
+        seen_lit_names: Set[str] = set()
         for inst_id, pose_idx in dict(conflict_set).items():
             try:
                 pose_idx_int = int(pose_idx)
@@ -738,6 +742,10 @@ class PoseBoolExactMasterDelegate:
                 return False
             if var is None:
                 return False
+            lit_name = var.Name()
+            if lit_name in seen_lit_names:
+                return False
+            seen_lit_names.add(lit_name)
             present_lits.append(var)
         if not present_lits:
             return False

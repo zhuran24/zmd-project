@@ -288,3 +288,138 @@ def test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member():
     assert added is False
     overlay2.model.Add(overlay2.u_vars[safe_ghost_idx] == 1)
     _solve_ok(overlay2)
+
+
+def _two_pose_two_miner_fixture():
+    instances = [
+        {
+            "instance_id": "miner_001",
+            "facility_type": "miner",
+            "operation_type": "mining",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+        {
+            "instance_id": "miner_002",
+            "facility_type": "miner",
+            "operation_type": "mining",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+    ]
+    pools = {
+        "miner": [
+            {
+                "pose_id": "A",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "B",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 3, "height": 1}},
+        "facility_templates": {
+            "miner": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+        },
+    }
+    return instances, pools, rules
+
+
+def _force_gap_ghost(model):
+    if not getattr(model, "u_vars", None):
+        return
+    rect_idx = _ghost_rect_idx_for_anchor(model, 1, 0)
+    model.model.Add(model.u_vars[rect_idx] == 1)
+
+
+def _build_two_pose_exact_model():
+    instances, pools, rules = _two_pose_two_miner_fixture()
+    model = MasterPlacementModel(
+        instances,
+        pools,
+        rules,
+        ghost_rect=(1, 1),
+        solve_mode="certified_exact",
+        skip_power_coverage=True,
+    )
+    model.build()
+    _force_gap_ghost(model)
+    return model
+
+
+def test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban():
+    """Two symmetric mandatory members can alias to one presence literal.
+
+    A persisted cut {miner_001@A, miner_002@A} is not representable in the
+    coordinate master: both members normalize to mandatory::<group>@pose A.
+    Replaying it as a deduped one-literal nogood would ban A entirely and turn
+    the only feasible {A, B} layout infeasible.
+    """
+
+    baseline = _build_two_pose_exact_model()
+    _solve_ok(baseline)
+    assert _miner_pose_ids(baseline) == {"A", "B"}
+
+    cut = BendersCut(
+        cut_type="routing_exhausted_nogood",
+        conflict_set={"miner_001": 0, "miner_002": 0},
+        iteration=1,
+        source_mode="certified_exact",
+        exact_safe=True,
+        artifact_hashes={},
+        proof_stage="routing",
+        binding_exhausted=True,
+        routing_exhausted=True,
+        schema_version=2,
+    )
+    replayed = BendersCut.from_dict(cut.to_dict())
+
+    overlay = _build_two_pose_exact_model()
+    added = overlay.add_benders_cut(replayed.conflict_set)
+
+    assert added is False
+    assert overlay.build_stats.get("coordinate_benders_last_cut") is None
+    _solve_ok(overlay)
+    assert _miner_pose_ids(overlay) == {"A", "B"}
+
+
+def test_pose_bool_replay_alias_collision_fails_closed(monkeypatch):
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    overlay = _build_two_pose_exact_model()
+    assert type(overlay._coordinate_delegate).__name__ == "PoseBoolExactMasterDelegate"
+
+    added = overlay.add_benders_cut({"miner_001": 0, "miner_002": 0})
+
+    assert added is False
+    assert overlay.build_stats.get("pose_bool_benders_cut_count") is None
+    _solve_ok(overlay)
+    assert _miner_pose_ids(overlay) == {"A", "B"}
+
+
+def test_legacy_benders_cut_alias_collision_fails_closed():
+    instances, pools, rules = _two_pose_two_miner_fixture()
+    model = MasterPlacementModel(
+        instances,
+        pools,
+        rules,
+        ghost_rect=(1, 1),
+        solve_mode="exploratory",
+        skip_power_coverage=True,
+    )
+    model.build()
+    _force_gap_ghost(model)
+
+    added = model.add_benders_cut({"miner_001": 0, "miner_002": 0})
+
+    assert added is False

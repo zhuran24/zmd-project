@@ -204,3 +204,38 @@ def test_whole_layout_nogood_normal_path_flag_off():
             proof_summary={"mode": "certified_exact"},
         )
     assert applied is True
+
+
+def test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member():
+    """If the master cannot encode a whole-layout member, helper must return False.
+
+    This keeps binding/routing callers from treating a rejected exact-safe cut as
+    an applied master cut.
+    """
+    instances, pools, rules = _fixture_one_powered_one_pole()
+    core = MasterPlacementModel.build_exact_core(
+        instances, pools, rules, skip_power_coverage=True,
+    )
+    master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+    master.solve(time_limit_seconds=5.0)
+    controller = _build_controller(master)
+
+    applied = controller._add_exact_whole_layout_nogood(
+        solution={
+            "missing_001": {
+                "instance_id": "missing_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            }
+        },
+        iteration=1,
+        cut_type="binding_infeasible_nogood",
+        proof_stage="binding",
+        binding_exhausted=True,
+        routing_exhausted=False,
+        proof_summary={"mode": "certified_exact"},
+    )
+
+    assert applied is False
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.cut_manager.cuts == []

@@ -5389,7 +5389,7 @@ class LBBDController:
             )
             return False
         conflict_set = self._build_whole_layout_conflict(solution)
-        self._add_exact_persisted_nogood(
+        return self._add_exact_persisted_nogood(
             conflict_set=conflict_set,
             iteration=iteration,
             cut_type=cut_type,
@@ -5399,7 +5399,6 @@ class LBBDController:
             binding_exhausted=binding_exhausted,
             routing_exhausted=routing_exhausted,
         )
-        return True
 
 
 def run_benders_for_ghost_rect(

@@ -11769,7 +11769,7 @@ class MasterPlacementModel:
                 return False
             name = var.Name()
             if name in seen_names:
-                continue
+                return False
             seen_names.add(name)
             literals.append(var)
 
