@@ -187,7 +187,9 @@
         "test_validator_rejects_clean_review_receipt_source_tree_identity_mismatch",
         "test_validator_rejects_clean_review_receipt_report_sha_mismatch",
         "test_validator_rejects_non_standard_json_constant_in_clean_review_receipt",
-        "test_validator_rejects_boolean_schema_version_in_clean_review_receipt"
+        "test_validator_rejects_boolean_schema_version_in_clean_review_receipt",
+        "test_validator_rejects_boolean_schema_version_in_phase_gate_manifest",
+        "test_validator_rejects_clean_review_with_algorithmic_reset_finding_domain"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",

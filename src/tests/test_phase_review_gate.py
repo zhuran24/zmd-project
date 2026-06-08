@@ -2561,6 +2561,47 @@ def test_validator_rejects_boolean_schema_version_in_clean_review_receipt(
     assert any("receipt.schema_version must be an integer" in error for error in errors)
 
 
+def test_validator_rejects_boolean_schema_version_in_phase_gate_manifest(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="v49_gate_bool_schema")
+    payload["schema_version"] = True
+    fake_gate = fake_root / "fake_gate_bool_schema.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any(error == "schema_version must be an integer" for error in errors)
+
+
+@pytest.mark.parametrize("finding_domain", sorted(check_phase_review_gate.ALGORITHM_RESET_FINDING_DOMAINS))
+def test_validator_rejects_clean_review_with_algorithmic_reset_finding_domain(
+    tmp_path: Path,
+    monkeypatch,
+    finding_domain: str,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix=f"v49_clean_{finding_domain}")
+    payload["review_history"][-3]["finding_domain"] = finding_domain
+    fake_gate = fake_root / f"fake_clean_{finding_domain}.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("clean review must not use algorithmic reset finding_domain" in error for error in errors)
+    assert any("review_history-derived 2" in error for error in errors)
+
+
 def test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews(
     tmp_path: Path,
     monkeypatch,

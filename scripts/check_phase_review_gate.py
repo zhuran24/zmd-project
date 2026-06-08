@@ -1377,7 +1377,12 @@ def _review_history_clean_counter(
     for record in records[latest_reset_index + 1 :]:
         if record["review_type"] != CLEAN_FULL_REVIEW_TYPE:
             continue
-        if record["clean"] and record["major"] == 0 and not record["resets_counter"]:
+        if (
+            record["clean"]
+            and record["major"] == 0
+            and not record["resets_counter"]
+            and record.get("finding_domain") not in ALGORITHM_RESET_FINDING_DOMAINS
+        ):
             count += 1
         else:
             count = 0
@@ -1485,8 +1490,13 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     gate = load_gate(path)
     errors: list[str] = []
 
-    if gate.get("schema_version") != 1:
-        errors.append("schema_version must be 1")
+    try:
+        schema_version = require_int(gate.get("schema_version"), "schema_version")
+    except GateError as exc:
+        errors.append(str(exc))
+    else:
+        if schema_version != 1:
+            errors.append("schema_version must be 1")
 
     gate_id = require_str(gate.get("gate_id"), "gate_id")
     status = require_str(gate.get("status"), "status")
@@ -1620,6 +1630,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
         infrastructure_finding_domain = finding_domain in INFRASTRUCTURE_FINDING_DOMAINS
         algorithmic_reset_finding_domain = finding_domain in ALGORITHM_RESET_FINDING_DOMAINS
         infrastructure_outcome = canonical_outcome in INFRASTRUCTURE_HARDENING_OUTCOMES
+        history_records[-1]["finding_domain"] = finding_domain
         if not infrastructure_finding_domain and not algorithmic_reset_finding_domain:
             errors.append(f"review_history[{index}] has unsupported finding_domain: {finding_domain!r}")
         if canonical_outcome not in ALLOWED_OUTCOMES:
@@ -1641,6 +1652,11 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             errors.append(f"review_history[{index}] is clean but has {major} major/soundness findings")
         if clean and resets_counter:
             errors.append(f"review_history[{index}] is clean but resets the clean-review counter")
+        if clean and algorithmic_reset_finding_domain:
+            errors.append(
+                f"review_history[{index}] clean review must not use algorithmic reset "
+                f"finding_domain {finding_domain!r}"
+            )
         if outcome_reports_major and major <= 0:
             errors.append(
                 f"review_history[{index}] outcome {outcome!r} requires a positive major_or_soundness_findings count"

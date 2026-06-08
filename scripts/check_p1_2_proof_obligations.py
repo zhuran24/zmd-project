@@ -110,6 +110,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_clean_review_receipt_report_sha_mismatch",
             "test_validator_rejects_non_standard_json_constant_in_clean_review_receipt",
             "test_validator_rejects_boolean_schema_version_in_clean_review_receipt",
+            "test_validator_rejects_boolean_schema_version_in_phase_gate_manifest",
+            "test_validator_rejects_clean_review_with_algorithmic_reset_finding_domain",
         }
     ),
 }
@@ -159,6 +161,12 @@ def _require_str(value: Any, label: str) -> str:
 def _require_list(value: Any, label: str) -> list[Any]:
     if not isinstance(value, list):
         raise CheckError(f"{label} must be a list")
+    return value
+
+
+def _require_int(value: Any, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise CheckError(f"{label} must be an integer")
     return value
 
 
@@ -576,8 +584,13 @@ def main() -> int:
     try:
         manifest = _load_json(MANIFEST_PATH)
         errors: list[str] = []
-        if manifest.get("schema_version") != 1:
-            errors.append("schema_version must be 1")
+        try:
+            schema_version = _require_int(manifest.get("schema_version"), "schema_version")
+        except CheckError as exc:
+            errors.append(str(exc))
+        else:
+            if schema_version != 1:
+                errors.append("schema_version must be 1")
         if manifest.get("gate_id") != "p1_2_proof_obligation_consolidation":
             errors.append("gate_id must be p1_2_proof_obligation_consolidation")
         lifecycle_tree = _parse_lifecycle()
