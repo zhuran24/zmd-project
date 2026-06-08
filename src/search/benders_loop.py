@@ -873,6 +873,10 @@ def compute_exact_static_area_lower_bound(
     return total
 
 
+def _has_non_strict_int_value(values: Mapping[str, Any]) -> bool:
+    return any(isinstance(value, bool) or not isinstance(value, int) for value in values.values())
+
+
 def collect_certification_blockers(
     *,
     instances: Optional[Sequence[Mapping[str, Any]]] = None,
@@ -960,6 +964,22 @@ def collect_certification_blockers(
                     "cut_type": cut.cut_type,
                 }
             )
+        if _has_non_strict_int_value(cut.conflict_set):
+            blockers.append(
+                {
+                    "code": "cut_conflict_set_malformed",
+                    "detail": "loaded cut conflict_set must contain strict integer pose indices",
+                    "cut_type": cut.cut_type,
+                }
+            )
+        if _has_non_strict_int_value(cut.condition_set):
+            blockers.append(
+                {
+                    "code": "cut_condition_set_malformed",
+                    "detail": "loaded cut condition_set must contain strict integer anchor indices",
+                    "cut_type": cut.cut_type,
+                }
+            )
 
     return blockers
 
@@ -989,10 +1009,9 @@ def _resolve_condition_lits_from_condition_set(
         key_str = str(key)
         if not key_str.startswith("ghost_anchor::"):
             return [], False
-        try:
-            rect_idx = int(raw_value)
-        except Exception:
+        if isinstance(raw_value, bool) or not isinstance(raw_value, int):
             return [], False
+        rect_idx = int(raw_value)
         try:
             coord_part = key_str.split("::", 1)[1].strip().lstrip("(").rstrip(")")
             xy = coord_part.split(",")

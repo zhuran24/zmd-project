@@ -57,6 +57,27 @@ def _optional_bool(value: Any, field: str) -> Optional[bool]:
     return _strict_bool(value, field)
 
 
+def _strict_mapping(value: Any, field: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping):
+        raise ValueError(f"{field} must be a mapping")
+    return value
+
+
+def _strict_int_mapping(value: Any, field: str) -> Dict[str, int]:
+    mapping = _strict_mapping(value, field)
+    return {str(k): _strict_int(v, f"{field}.{k}") for k, v in mapping.items()}
+
+
+def _strict_dict(value: Any, field: str) -> Dict[str, Any]:
+    mapping = _strict_mapping(value, field)
+    return {str(k): v for k, v in mapping.items()}
+
+
+def _strict_str_dict(value: Any, field: str) -> Dict[str, str]:
+    mapping = _strict_mapping(value, field)
+    return {str(k): str(v) for k, v in mapping.items()}
+
+
 @dataclass
 class BendersCut:
     """Structured cut record for exact-contract compatibility."""
@@ -80,55 +101,64 @@ class BendersCut:
     condition_set: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
+        source_mode = str(self.source_mode)
+        if source_mode == "certified_exact":
+            conflict_set = _strict_int_mapping(self.conflict_set, "conflict_set")
+            condition_set = _strict_int_mapping(self.condition_set, "condition_set")
+        else:
+            conflict_set = _strict_dict(self.conflict_set, "conflict_set")
+            condition_set = _strict_dict(self.condition_set, "condition_set")
         payload: Dict[str, Any] = {
             "schema_version": _strict_int(self.schema_version, "schema_version"),
             "cut_type": str(self.cut_type),
-            "conflict_set": dict(self.conflict_set),
+            "conflict_set": conflict_set,
             "iteration": _strict_int(self.iteration, "iteration"),
-            "metadata": dict(self.metadata),
-            "source_mode": str(self.source_mode),
+            "metadata": _strict_dict(self.metadata, "metadata"),
+            "source_mode": source_mode,
             "exact_safe": _strict_bool(self.exact_safe, "exact_safe"),
-            "artifact_hashes": dict(self.artifact_hashes),
+            "artifact_hashes": _strict_str_dict(self.artifact_hashes, "artifact_hashes"),
             "proof_stage": self.proof_stage,
             "binding_exhausted": _optional_bool(self.binding_exhausted, "binding_exhausted"),
             "routing_exhausted": _optional_bool(self.routing_exhausted, "routing_exhausted"),
-            "proof_summary": dict(self.proof_summary),
+            "proof_summary": _strict_dict(self.proof_summary, "proof_summary"),
             "created_at": self.created_at,
             "epsilon_stage": self.epsilon_stage,
-            "condition_set": dict(self.condition_set),
+            "condition_set": condition_set,
         }
         return payload
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "BendersCut":
-        conflict_set_raw = payload.get("conflict_set", {})
-        if not isinstance(conflict_set_raw, Mapping):
-            raise ValueError("conflict_set must be a mapping for structured cuts")
-
+        source_mode = str(payload.get("source_mode", "exploratory"))
+        exact_safe = _strict_bool(payload.get("exact_safe", False), "exact_safe")
+        if source_mode == "certified_exact":
+            conflict_set = _strict_int_mapping(payload.get("conflict_set", {}), "conflict_set")
+            condition_set = _strict_int_mapping(payload.get("condition_set", {}), "condition_set")
+        else:
+            conflict_set = _strict_dict(payload.get("conflict_set", {}), "conflict_set")
+            condition_set = _strict_dict(payload.get("condition_set", {}), "condition_set")
         return cls(
             schema_version=_strict_int(payload.get("schema_version", 1), "schema_version"),
             cut_type=str(payload["cut_type"]),
-            conflict_set={str(k): v for k, v in conflict_set_raw.items()},
+            conflict_set=conflict_set,
             iteration=_strict_int(payload.get("iteration", 0), "iteration"),
-            metadata=dict(payload.get("metadata", {})),
-            source_mode=str(payload.get("source_mode", "exploratory")),
-            exact_safe=_strict_bool(payload.get("exact_safe", False), "exact_safe"),
-            artifact_hashes={
-                str(k): str(v) for k, v in dict(payload.get("artifact_hashes", {})).items()
-            },
+            metadata=_strict_dict(payload.get("metadata", {}), "metadata"),
+            source_mode=source_mode,
+            exact_safe=exact_safe,
+            artifact_hashes=_strict_str_dict(
+                payload.get("artifact_hashes", {}), "artifact_hashes"
+            ),
             proof_stage=(
                 None if payload.get("proof_stage") is None else str(payload.get("proof_stage"))
             ),
             binding_exhausted=_optional_bool(payload.get("binding_exhausted"), "binding_exhausted"),
             routing_exhausted=_optional_bool(payload.get("routing_exhausted"), "routing_exhausted"),
-            proof_summary=dict(payload.get("proof_summary", {})),
+            proof_summary=_strict_dict(payload.get("proof_summary", {}), "proof_summary"),
             created_at=(
                 None if payload.get("created_at") is None else str(payload.get("created_at"))
             ),
             epsilon_stage=_optional_float(payload.get("epsilon_stage")),
-            condition_set={
-                str(k): v for k, v in dict(payload.get("condition_set", {})).items()
-            },
+            condition_set=condition_set,
         )
 
 
