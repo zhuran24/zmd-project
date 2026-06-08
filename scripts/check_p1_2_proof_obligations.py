@@ -60,6 +60,12 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_clean_review_history_package_canonical_collision",
             "test_validator_rejects_placeholder_source_list_identity",
             "test_validator_rejects_current_package_source_head_mismatch_with_git_head",
+            "test_validator_rejects_missing_resets_counter_on_clean_review",
+            "test_validator_rejects_current_package_archive_name_trailing_space",
+            "test_validator_rejects_current_package_path_like_archive_name",
+            "test_validator_rejects_current_package_unicode_archive_name",
+            "test_validator_rejects_fullwidth_colon_metadata_conflict",
+            "test_validator_rejects_semantic_placeholder_source_list_identity",
         }
     ),
 }

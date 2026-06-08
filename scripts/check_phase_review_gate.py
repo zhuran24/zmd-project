@@ -36,6 +36,9 @@ REVIEW_PACKAGE_METADATA_KEYS = {
 }
 HEX_DIGITS = set("0123456789abcdef")
 PLACEHOLDER_METADATA_VALUES = {"na", "none", "notprovided", "tbd", "unknown"}
+PLACEHOLDER_METADATA_SUBSTRINGS = {"notprovided", "tbd", "unknown"}
+SAFE_ARCHIVE_NAME_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-")
+FULLWIDTH_COLON = "："
 
 
 class GateError(RuntimeError):
@@ -85,6 +88,13 @@ def require_str(value: Any, label: str) -> str:
     return value
 
 
+def require_unpadded_str(value: Any, label: str) -> str:
+    text = require_str(value, label)
+    if text != text.strip():
+        raise GateError(f"{label} must not contain leading or trailing whitespace")
+    return text
+
+
 def _normalized_match_text(value: str) -> str:
     return "".join(ch for ch in value.lower() if ch.isalnum())
 
@@ -98,7 +108,21 @@ def _is_hex_digest(value: str, *, length: int) -> bool:
 
 
 def _is_placeholder_metadata_value(value: str) -> bool:
-    return _normalized_match_text(value) in PLACEHOLDER_METADATA_VALUES
+    normalized = _normalized_match_text(value)
+    return normalized in PLACEHOLDER_METADATA_VALUES or any(
+        placeholder in normalized for placeholder in PLACEHOLDER_METADATA_SUBSTRINGS
+    )
+
+
+def _is_safe_archive_name(value: str) -> bool:
+    return (
+        bool(value)
+        and value[0].isalnum()
+        and value.endswith(".7z")
+        and value == PurePosixPath(value).name
+        and "\\" not in value
+        and all(ch in SAFE_ARCHIVE_NAME_CHARS for ch in value)
+    )
 
 
 def _project_git_head() -> str | None:
@@ -236,7 +260,16 @@ def _read_evidence_text(rel_path: str) -> str:
 def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     metadata: dict[str, str] = {}
     for line in _read_evidence_text(rel_path).splitlines():
-        if ":" not in line:
+        ascii_colon_index = line.find(":")
+        fullwidth_colon_index = line.find(FULLWIDTH_COLON)
+        if fullwidth_colon_index != -1 and (ascii_colon_index == -1 or fullwidth_colon_index < ascii_colon_index):
+            raw_fullwidth_key = line[:fullwidth_colon_index]
+            fullwidth_key = _evidence_metadata_key(raw_fullwidth_key)
+            if fullwidth_key in REVIEW_PACKAGE_METADATA_KEYS:
+                raise GateError(
+                    f"evidence metadata key {fullwidth_key!r} must use ASCII colon delimiter: {rel_path}"
+                )
+        if ascii_colon_index == -1:
             continue
         raw_key, raw_value = line.split(":", 1)
         key = _evidence_metadata_key(raw_key)
@@ -255,20 +288,25 @@ def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
     if raw_package is None:
         return None
     package = require_mapping(raw_package, "current_review_package")
-    archive_name = require_str(package.get("archive_name"), "current_review_package.archive_name").strip()
-    package_key = require_str(package.get("package"), "current_review_package.package").strip()
-    archive_sha256 = require_str(package.get("archive_sha256"), "current_review_package.archive_sha256").strip().lower()
+    archive_name = require_unpadded_str(package.get("archive_name"), "current_review_package.archive_name")
+    package_key = require_unpadded_str(package.get("package"), "current_review_package.package")
+    archive_sha256 = require_unpadded_str(
+        package.get("archive_sha256"),
+        "current_review_package.archive_sha256",
+    ).lower()
     archive_size_bytes = require_int(
         package.get("archive_size_bytes"),
         "current_review_package.archive_size_bytes",
     )
-    source_head = require_str(package.get("source_head"), "current_review_package.source_head").strip().lower()
-    source_list_identity = require_str(
+    source_head = require_unpadded_str(package.get("source_head"), "current_review_package.source_head").lower()
+    source_list_identity = require_unpadded_str(
         package.get("source_list_identity"),
         "current_review_package.source_list_identity",
-    ).strip()
-    if not archive_name.endswith(".7z"):
-        raise GateError("current_review_package.archive_name must name a .7z archive")
+    )
+    if not _is_safe_archive_name(archive_name):
+        raise GateError(
+            "current_review_package.archive_name must be a path-free ASCII .7z archive basename"
+        )
     if not _is_hex_digest(archive_sha256, length=64):
         raise GateError("current_review_package.archive_sha256 must be a 64-character hex digest")
     if archive_size_bytes <= 0:
@@ -597,10 +635,14 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             entry.get("major_or_soundness_findings"),
             f"review_history[{index}].major_or_soundness_findings",
         )
-        resets_counter = require_bool(
-            entry.get("resets_counter", False),
-            f"review_history[{index}].resets_counter",
-        )
+        if "resets_counter" not in entry:
+            errors.append(f"review_history[{index}].resets_counter is required")
+            resets_counter = False
+        else:
+            resets_counter = require_bool(
+                entry.get("resets_counter"),
+                f"review_history[{index}].resets_counter",
+            )
         history_records.append(
             {
                 "index": index,

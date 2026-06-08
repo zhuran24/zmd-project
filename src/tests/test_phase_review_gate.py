@@ -1032,6 +1032,146 @@ def test_validator_rejects_archive_sha256_hyphen_alias_conflict(
     assert any("duplicate evidence metadata key 'archive_sha256'" in error for error in errors)
 
 
+
+def test_validator_rejects_missing_resets_counter_on_clean_review(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="v40_missing_resets_counter")
+    for entry in payload["review_history"][-3:]:
+        entry.pop("resets_counter")
+    fake_gate = fake_root / "fake_missing_resets_counter_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("resets_counter is required" in error for error in errors)
+
+
+def test_validator_rejects_current_package_archive_name_trailing_space(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99.7z")
+    payload["current_review_package"]["archive_name"] = "zmd_99.7z "
+    fake_gate = fake_root / "fake_archive_name_trailing_space.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="archive_name must not contain leading or trailing whitespace",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_rejects_current_package_path_like_archive_name(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("review/zmd_99.7z")
+    fake_gate = fake_root / "fake_path_like_archive_name.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="path-free ASCII .7z archive basename",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_rejects_current_package_unicode_archive_name(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99\u200b.7z")
+    fake_gate = fake_root / "fake_unicode_archive_name.json"
+    fake_gate.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="path-free ASCII .7z archive basename",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_rejects_fullwidth_colon_metadata_conflict(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    _mark_payload_closed_ready(payload)
+    for index in range(3):
+        evidence_rel = Path("docs") / "research" / f"fullwidth_colon_conflict_{index + 1}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            "# Clean review metadata prefix\n"
+            "Archive SHA-256： " + ("0" * 64) + "\n"
+            f"Package: {current_package['package']}\n"
+            f"Archive name: {current_package['archive_name']}\n"
+            f"Archive sha256: {current_package['archive_sha256']}\n"
+            f"Archive size_bytes: {current_package['archive_size_bytes']}\n"
+            f"Source HEAD: {current_package['source_head']}\n"
+            f"Source list identity: {current_package['source_list_identity']}\n"
+            f"Review nonce: {index}\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_fullwidth_colon_conflict_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("must use ASCII colon delimiter" in error for error in errors)
+
+
+def test_validator_rejects_semantic_placeholder_source_list_identity(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99.7z")
+    payload["current_review_package"]["source_list_identity"] = "the source list is not provided"
+    fake_gate = fake_root / "fake_semantic_placeholder_source_list_identity.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="source_list_identity must not be a placeholder",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
 def test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews(tmp_path: Path, monkeypatch) -> None:
     fake_root = tmp_path / "repo"
     payload = _payload_for_fake_root(fake_root)
