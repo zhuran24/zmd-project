@@ -1,248 +1,119 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "gate_id": "phase_1_2_spike_close",
   "phase": "Phase 1.2 spike close",
-  "status": "blocked_pending_clean_reviews",
+  "status": "blocked_manual_review_count",
   "updated_at": "2026-06-08",
-  "summary": "P1.2 is not formally closed: V31-V46 showed both algorithmic proof-obligation findings and review-infrastructure hardening findings. The gate now separates those domains and requires strict JSON clean-review receipts plus source-tree identity for future clean credit.",
-  "current_review_anchor": "v46_review_protocol_redesign",
-  "close_policy": {
+  "summary": "P1.2 is not formally closed. The three-clean-review standard remains in force, but the repository no longer derives clean-review count or P1.3B readiness from receipts, Markdown reports, package metadata, source-tree manifests, or Git authority. The owner maintains the clean-review count outside the repo; this manifest stays fail-closed until an explicit owner manual decision opens P1.3B.",
+  "current_review_anchor": "v50_manual_phase_gate_simplification",
+  "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
-    "clean_review_definition": "An independent full external review against the current receipt-bound review package that reports zero algorithmic/soundness findings and supplies a strict JSON clean-review receipt.",
-    "finding_classes_that_reset_counter": [
+    "counting_authority": "owner_manual_count_outside_repo",
+    "repo_derives_clean_count_from_receipts": false,
+    "receipt_role": "informational_record_only",
+    "finding_classes_that_break_manual_clean_review": [
       "unsound_cut",
       "certified_false_negative",
       "proof_obligation_bypass",
       "fake_certified_claim",
       "reachable_phase_gate_false_ready"
     ],
-    "reset_on_or_after_review_package": "v32_runtime_cache_source_digest_consolidation",
-    "review_infrastructure_findings_do_not_reset_algorithmic_counter_unless": "They demonstrate a reachable false-ready transition into P1.3B or a certified lifecycle false-negative path."
+    "policy_note": "Review receipts and reports can help the owner audit a review, but they are not machine authority for clean credit or P1.3B entry. Clean-review counting is an owner decision outside repo-derived automation."
   },
-  "counters": {
-    "consecutive_clean_full_reviews_after_reset": 0,
-    "required_consecutive_clean_full_reviews": 3,
-    "remaining_clean_full_reviews": 3
-  },
-  "last_reset": {
-    "review_package": "v32_runtime_cache_source_digest_consolidation",
-    "reason": "V32/V33 runtime-cache and source-digest findings remained algorithmic/proof-obligation risks after the V31 postmortem; later V37-V46 findings are classified as review-infrastructure hardening unless they demonstrate a reachable false-ready P1.3B transition.",
-    "resets_counter": true,
-    "evidence_paths": [
-      "docs/research/p1_2_v31_v46_finding_taxonomy.md"
-    ]
+  "owner_manual_state": {
+    "p1_2_close_status": "not_closed",
+    "p1_3b_entry_allowed": false,
+    "counting_authority": "owner_manual_count_outside_repo",
+    "owner_clean_count_status": "maintained_outside_repo",
+    "repo_derives_clean_count_from_receipts": false,
+    "current_review_anchor": "v50_manual_phase_gate_simplification",
+    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved."
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
     "allowed": false,
-    "reason": "Blocked until the algorithmic-soundness counter records three consecutive clean full reviews under the strict JSON receipt/source-tree identity protocol."
+    "authority": "owner_manual_decision_only",
+    "reason": "Blocked by default. P1.3B entry requires an explicit owner_manual_decision; review receipts cannot open this gate."
   },
-  "review_history": [
+  "informational_history": [
     {
       "package": "v28",
-      "review_type": "independent_full_external",
-      "outcome": "major_soundness_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 4,
-      "resets_counter": true,
+      "classification": "algorithmic_soundness_reset",
+      "summary": "External review found real soundness issues; this remains historical evidence, not an automatic counter input.",
       "evidence_paths": [
         ".artifacts/v28_gpt_review/b1/REVIEW.md",
         ".artifacts/v28_gpt_review/b2/REVIEW.md"
       ]
     },
     {
-      "package": "v30_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "major_soundness_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 1,
-      "resets_counter": true,
-      "evidence_paths": [
-        "docs/research/p1_2_v30_candidate_review_reset.md"
-      ]
-    },
-    {
-      "package": "v31_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "major_soundness_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 3,
-      "resets_counter": true,
-      "evidence_paths": [
-        "docs/research/p1_2_v31_candidate_review_reset.md"
-      ]
-    },
-    {
       "package": "v31_postmortem_consolidation",
-      "review_type": "internal_proof_obligation_consolidation",
-      "outcome": "major_soundness_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 1,
-      "resets_counter": true,
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "Step 7 evaluator attachability was consolidated with Step 6 after V29-V31 sibling bypasses.",
       "evidence_paths": [
         "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
       ]
     },
     {
       "package": "v32_runtime_cache_source_digest_consolidation",
-      "review_type": "internal_proof_obligation_consolidation",
-      "outcome": "major_soundness_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 2,
-      "resets_counter": true,
-      "finding_domain": "proof_obligation_bypass",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "Runtime-cache and source-digest findings remained algorithmic/proof-obligation risks.",
       "evidence_paths": [
         "docs/research/p1_2_v31_v46_finding_taxonomy.md"
       ]
-    },
-    {
-      "package": "v37_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "infrastructure_hardening_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 0,
-      "infrastructure_findings": 4,
-      "resets_counter": false,
-      "finding_domain": "review_infrastructure_hardening",
-      "evidence_paths": [
-        "docs/research/p1_2_v37_phase_gate_provenance_hardening.md"
-      ]
-    },
-    {
-      "package": "v38_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "infrastructure_hardening_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 0,
-      "infrastructure_findings": 4,
-      "resets_counter": false,
-      "finding_domain": "review_infrastructure_hardening",
-      "evidence_paths": [
-        "docs/research/p1_2_v38_phase_gate_package_identity.md"
-      ]
-    },
-    {
-      "package": "v44_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "infrastructure_hardening_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 0,
-      "resets_counter": false,
-      "evidence_paths": [
-        "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md"
-      ],
-      "infrastructure_findings": 2,
-      "finding_domain": "review_infrastructure_hardening"
-    },
-    {
-      "package": "v45_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "infrastructure_hardening_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 0,
-      "resets_counter": false,
-      "evidence_paths": [
-        "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md"
-      ],
-      "infrastructure_findings": 3,
-      "finding_domain": "review_infrastructure_hardening"
-    },
-    {
-      "package": "v46_candidate",
-      "review_type": "independent_full_external",
-      "outcome": "infrastructure_hardening_findings_found",
-      "clean": false,
-      "major_or_soundness_findings": 0,
-      "resets_counter": false,
-      "evidence_paths": [
-        "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md"
-      ],
-      "infrastructure_findings": 3,
-      "finding_domain": "review_infrastructure_hardening"
     },
     {
       "package": "v46_review_protocol_redesign",
-      "review_type": "internal_review_protocol_redesign",
-      "outcome": "review_protocol_redesign",
-      "clean": false,
-      "major_or_soundness_findings": 0,
-      "infrastructure_findings": 1,
-      "resets_counter": false,
-      "finding_domain": "review_protocol_hardening",
+      "classification": "review_protocol_redesign",
+      "summary": "V37-V46 findings showed that repo-derived receipt/report/Git authority was becoming its own attack surface.",
       "evidence_paths": [
         "docs/research/p1_2_v31_v46_finding_taxonomy.md"
+      ]
+    },
+    {
+      "package": "v47_to_v50_receipt_state_machine",
+      "classification": "review_protocol_state_machine_false_ready_hardening",
+      "summary": "V47-V50 closed strict-JSON receipt clean-counter state-machine false-ready paths, motivating removal of automatic repo-derived clean counting.",
+      "evidence_paths": [
+        "docs/research/p1_2_v50_manual_phase_gate_simplification.md"
+      ]
+    },
+    {
+      "package": "v50_manual_phase_gate_simplification",
+      "classification": "manual_gate_simplification",
+      "summary": "The repo no longer auto-counts clean reviews or auto-opens P1.3B from receipts. Owner manual decision is the only P1.3B entry authority.",
+      "evidence_paths": [
+        "docs/research/p1_2_v50_manual_phase_gate_simplification.md"
       ]
     }
   ],
   "required_doc_markers": [
     {
-      "path": "README.md",
-      "contains": "Phase 1.2 spike close is not formally closed"
+      "path": "docs/PHASE_1_2_CLOSE_GATE.md",
+      "contains": "owner manual decision"
     },
     {
       "path": "CLAUDE.md",
-      "contains": "`v46_review_protocol_redesign` separates algorithmic clean reviews from review-infrastructure hardening"
+      "contains": "owner-maintained outside the repo"
     },
     {
-      "path": "docs/PHASE_1_2_CLOSE_GATE.md",
-      "contains": "Current gate state: BLOCKED"
+      "path": "README.md",
+      "contains": "owner-maintained outside the repo"
     },
     {
-      "path": "docs/项目说明/06_current_status.md",
-      "contains": "v46_review_protocol_redesign 后 algorithmic clean 计数器仍为 0/3"
-    },
-    {
-      "path": "docs/项目说明/12_go_criteria.md",
-      "contains": "≥3 次连续独立审查零问题"
-    },
-    {
-      "path": "docs/项目说明/16_workflow_review.md",
-      "contains": "连续 ≥3 次独立审查零问题"
+      "path": "cc_context/review/receipts/README.md",
+      "contains": "informational"
     }
   ],
   "source_boundaries": [
     {
-      "path": "src/cuts/lifecycle.py",
-      "symbol": "step_8_apply_to_master",
-      "required_state_until_closed": "fail_closed_not_implemented",
-      "reason": "P1.3B master integration must not land while Phase 1.2 close gate is blocked."
+      "name": "candidate_placements",
+      "path": "data/preprocessed/candidate_placements.json",
+      "policy": "external_artifact_for_certified_runs"
     }
   ],
-  "counter_domains": {
-    "algorithmic_soundness": {
-      "status": "blocked_pending_clean_reviews",
-      "required_consecutive_clean_full_reviews": 3,
-      "consecutive_clean_full_reviews_after_reset": 0,
-      "remaining_clean_full_reviews": 3,
-      "last_reset_package": "v32_runtime_cache_source_digest_consolidation",
-      "reset_finding_domains": [
-        "algorithmic_soundness",
-        "proof_obligation_bypass",
-        "certified_false_negative",
-        "reachable_phase_gate_false_ready"
-      ],
-      "clean_review_credit_requires": "strict_json_review_receipt"
-    },
-    "review_infrastructure_hardening": {
-      "status": "open_hardening",
-      "current_anchor": "v46_review_protocol_redesign",
-      "tracked_finding_domains": [
-        "review_infrastructure_hardening",
-        "review_protocol_hardening"
-      ],
-      "does_not_automatically_reset_algorithmic_counter": true,
-      "reset_condition": "Only reset the algorithmic counter when the infrastructure finding is reachable as a P1.3B false-ready transition or certified lifecycle false negative."
-    }
-  },
-  "clean_review_receipt_protocol": {
-    "schema_version": 1,
-    "receipt_type": "p1_2_clean_review_receipt",
-    "receipt_roots": [
-      "cc_context/review/receipts",
-      ".artifacts/review_receipts"
-    ],
-    "machine_identity_source": "strict_json_receipt",
-    "report_policy": "Free-form reports are human-readable evidence only. The gate binds reports by report_sha256 and does not accept clean credit from Markdown/HTML/XML metadata.",
-    "source_identity_policy": "Clean-review receipts must bind source_tree_identity. Git source_head is informational and is not a gate authority in the receipt protocol."
+  "receipt_policy": {
+    "role": "informational_record_only",
+    "can_open_p1_3b": false,
+    "note": "Receipts remain useful for human audit trails, but this gate does not parse receipts to compute clean-review credit."
   }
 }

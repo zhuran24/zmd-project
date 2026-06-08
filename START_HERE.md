@@ -1,5 +1,6 @@
 # START_HERE.md
 
+Current phase: Phase 1.2 spike close remains blocked. V50 simplified the close gate: the three-clean-review standard is still owner policy, but the clean-review count is owner-maintained outside the repo. The repo no longer opens P1.3B from receipts, reports, package metadata, source-tree manifests, or package-internal Git authority; it remains fail-closed until an explicit owner manual decision.
 This repository is a lightweight GitHub source checkout plus recoverable
 historical artifacts. It is meant to stay easy to clone and inspect while still
 recording where the large certified-exact inputs came from.
@@ -28,8 +29,9 @@ Phase 1.2 is not formally closed. The current machine-readable gate is
 python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
 ```
 
-That command is expected to fail at the current baseline because v28 reset the
-clean-review counter to `0 / 3`.
+That command is expected to fail at the current baseline because P1.3B is not
+opened by an owner manual decision. The repo no longer computes the clean-review
+counter; the owner maintains that count outside the repository.
 
 ## Knowledge Surface Roles
 

@@ -53,8 +53,8 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 
 ## Current Phase: 1.2 spike close (subject projection)
 
-<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:cf7b470a22519303e0973815d0ea549c5058f508cdc7799bf92fd0855bfb7282 -->
-Current phase: **Phase 1.2 spike close is not formally closed** — `v46_review_protocol_redesign` separates algorithmic clean reviews from review-infrastructure hardening. The algorithmic close gate remains **3 consecutive independent full reviews with zero algorithmic/soundness findings** and currently stands at 0/3; clean credit now requires strict JSON review receipts bound to archive identity, report SHA256, and source-tree identity rather than Markdown/HTML/XML report metadata or package-internal Git authority. Until the gate closes, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
+<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:f0d39bb75e7733414d17d9524ca7aceff7e61efd5b5a19d7f1e6f85843dc7401 -->
+Current phase: **Phase 1.2 spike close is not formally closed** — V50 replaced the repo-derived 3-clean receipt/counter protocol with a manual owner-count gate. The standard remains **3 consecutive independent full reviews with zero algorithmic/soundness findings**, but the count is **owner-maintained outside the repo**; the repository no longer grants clean credit from JSON receipts, Markdown/HTML/XML report metadata, source-tree manifests, or package-internal Git authority. Until an explicit owner manual decision opens P1.3B, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
 <!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract END -->
 
 Operational notes:

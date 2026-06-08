@@ -33,86 +33,14 @@ REQUIRED_OBLIGATION_IDS = frozenset(
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
     "PO-PHASE-GATE-PROVENANCE": frozenset(
         {
-            "test_validator_rejects_stale_last_reset_when_later_reset_history_exists",
-            "test_validator_rejects_fake_closed_gate_without_post_reset_clean_reviews",
-            "test_validator_rejects_fake_clean_reviews_without_evidence",
-            "test_validator_rejects_fake_clean_reviews_with_nonreview_evidence",
-            "test_validator_rejects_reused_clean_review_evidence",
-            "test_validator_rejects_reused_clean_review_evidence_path_aliases",
-            "test_validator_rejects_directory_evidence_even_when_path_matches_package",
-            "test_validator_rejects_clean_reviews_reusing_reset_evidence_and_package",
-            "test_require_ready_rejects_duplicate_gate_ids",
-            "test_validator_rejects_hardlinked_clean_review_evidence",
-            "test_validator_rejects_copied_clean_review_evidence_content",
-            "test_validator_rejects_clean_review_evidence_bound_only_by_filename",
-            "test_validator_rejects_package_token_only_clean_review_evidence",
-            "test_phase_gate_json_loader_rejects_duplicate_keys",
-            "test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews",
-            "test_validator_rejects_misclassified_major_soundness_outcome_as_infrastructure_after_clean_reviews",
-            "test_validator_rejects_certified_false_negative_domain_without_algorithmic_reset_after_clean_reviews",
-            "test_validator_rejects_negative_major_or_soundness_findings_count",
-            "test_validator_rejects_clean_reviews_without_current_package_identity",
-            "test_validator_rejects_clean_review_package_that_differs_from_current_package",
-            "test_validator_rejects_body_only_current_package_binding",
-            "test_phase_gate_json_loader_rejects_duplicate_current_package_keys",
-            "test_validator_rejects_major_outcome_alias_without_reset",
-            "test_validator_rejects_unknown_review_history_outcome",
-            "test_validator_rejects_review_history_major_findings_alias_key",
-            "test_validator_rejects_conflicting_current_package_metadata_after_read_prefix",
-            "test_validator_rejects_archive_sha256_hyphen_alias_conflict",
-            "test_validator_rejects_current_package_archive_name_package_canonical_collision",
-            "test_validator_rejects_clean_review_history_package_canonical_collision",
-            "test_validator_rejects_placeholder_source_list_identity",
-            "test_validator_rejects_current_package_source_head_mismatch_with_git_head",
-            "test_validator_rejects_missing_resets_counter_on_clean_review",
-            "test_validator_rejects_current_package_archive_name_trailing_space",
-            "test_validator_rejects_current_package_path_like_archive_name",
-            "test_validator_rejects_current_package_unicode_archive_name",
-            "test_validator_rejects_fullwidth_colon_metadata_conflict",
-            "test_validator_rejects_semantic_placeholder_source_list_identity",
-            "test_validator_rejects_omitted_source_list_identity_placeholder",
-            "test_validator_rejects_current_package_json_alias_key_conflict",
-            "test_validator_rejects_windows_reserved_archive_name",
-            "test_validator_rejects_unicode_colon_metadata_conflict",
-            "test_validator_rejects_unicode_normalized_metadata_key_conflict",
-            "test_validator_rejects_confusable_metadata_key_conflict",
-            "test_validator_rejects_confusable_key_with_confusable_delimiter",
-            "test_validator_rejects_markdown_table_package_metadata_conflict",
-            "test_validator_rejects_confusable_placeholder_source_list_identity",
-            "test_validator_rejects_multilingual_placeholder_source_list_identity",
-            "test_validator_uses_project_git_head_despite_git_dir_environment",
-            "test_validator_uses_trusted_git_command_despite_path_environment",
-            "test_validator_rejects_git_head_that_is_not_a_commit_object",
-            "test_validator_rejects_latin_extended_metadata_key_conflict",
-            "test_validator_rejects_html_table_package_metadata_conflict",
-            "test_validator_rejects_fullwidth_pipe_table_package_metadata_conflict",
-            "test_validator_rejects_markup_wrapped_package_metadata_conflict",
-            "test_validator_rejects_latin_extended_placeholder_source_list_identity",
-            "test_validator_rejects_git_replace_ref_backed_non_commit_head",
-            "test_project_git_command_ignores_relative_defpath_entries",
-            "test_windows_project_git_command_uses_standard_git_paths_before_os_defpath",
-            "test_validator_rejects_gitdir_file_indirection_to_sibling_repo",
-            "test_validator_rejects_git_objects_alternates_for_source_head_authority",
-            "test_validator_rejects_bare_gitdir_source_head_authority",
-            "test_validator_rejects_git_config_include_indirection_for_source_head_authority",
-            "test_validator_rejects_git_config_worktree_include_indirection_for_source_head_authority",
-            "test_validator_rejects_broken_git_authority_control_file_symlink_for_source_head_authority",
-            "test_validator_rejects_git_promisor_remote_for_source_head_authority",
-            "test_validator_rejects_git_promisor_pack_marker_for_source_head_authority",
-            "test_project_git_env_disables_lazy_fetch",
-            "test_validator_rejects_git_authority_symlink_escape_for_source_head_authority",
-            "test_validator_rejects_broken_git_authority_symlink_escape_for_source_head_authority",
-            "test_validator_rejects_git_root_symlink_even_when_broken",
-            "test_validator_rejects_escaped_and_wrapped_metadata_conflicts",
-            "test_validator_rejects_xml_payload_and_attribute_wrapped_metadata_conflicts",
-            "test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews",
-            "test_validator_rejects_clean_review_receipt_source_tree_identity_mismatch",
-            "test_validator_rejects_clean_review_receipt_report_sha_mismatch",
-            "test_validator_rejects_clean_review_receipt_report_reuse_hidden_by_dummy_evidence",
-            "test_validator_rejects_non_standard_json_constant_in_clean_review_receipt",
-            "test_validator_rejects_boolean_schema_version_in_clean_review_receipt",
-            "test_validator_rejects_boolean_schema_version_in_phase_gate_manifest",
-            "test_validator_rejects_clean_review_with_algorithmic_reset_finding_domain",
+            "test_phase_review_gate_manifest_is_consistent",
+            "test_require_ready_fails_while_manual_gate_blocked",
+            "test_manual_gate_rejects_auto_counter_fields",
+            "test_manual_gate_rejects_next_phase_allowed_without_owner_decision",
+            "test_manual_gate_rejects_closed_status_without_owner_decision",
+            "test_manual_gate_requires_step_8_fail_closed_when_blocked",
+            "test_manual_gate_accepts_owner_decision_authority_fixture",
+            "test_manual_gate_receipts_are_informational_only",
         }
     ),
 }
@@ -445,105 +373,59 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 
 def _check_phase_gate_provenance_contract() -> list[str]:
+    """Check that the phase gate is now a small manual fail-closed gate.
+
+    V37-V50 showed that parsing receipts, prose reports, package metadata, and
+    Git authority had become a separate security protocol.  The proof-obligation
+    gate now anchors the opposite contract: P1.3B can only be opened by an owner
+    manual decision; receipts are informational and the repository does not
+    derive clean-review count.
+    """
     errors: list[str] = []
     tree = _parse_python(PHASE_GATE_SCRIPT_PATH)
 
-    current_package_fn = _function_def(
-        tree,
-        "_validate_current_review_package",
-        path=PHASE_GATE_SCRIPT_PATH,
-    )
-    for required_call in (
-        "_check_current_review_package_keys",
-        "require_unpadded_str",
-        "_is_safe_archive_name",
-        "_project_git_head",
-        "_is_placeholder_metadata_value",
-    ):
-        if not _calls_function(current_package_fn, required_call):
-            errors.append(f"_validate_current_review_package must call {required_call}")
-
-    security_skeleton_fn = _function_def(tree, "_ascii_security_skeleton", path=PHASE_GATE_SCRIPT_PATH)
-    if not _uses_name(security_skeleton_fn, "unicodedata"):
-        errors.append("_ascii_security_skeleton must Unicode-normalize metadata keys and placeholder text")
-
-    metadata_key_fn = _function_def(tree, "_evidence_metadata_key", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(metadata_key_fn, "_ascii_security_skeleton"):
-        errors.append("_evidence_metadata_key must use the review-gate ASCII security skeleton")
-
-    normalized_match_fn = _function_def(tree, "_normalized_match_text", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(normalized_match_fn, "_ascii_security_skeleton"):
-        errors.append("_normalized_match_text must use the review-gate ASCII security skeleton")
-
-    evidence_metadata_fn = _function_def(tree, "_extract_evidence_metadata", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(evidence_metadata_fn, "_confusable_metadata_delimiter_error"):
-        errors.append("_extract_evidence_metadata must reject confusable metadata delimiters")
-    if not _calls_function(evidence_metadata_fn, "_markdown_table_metadata_error"):
-        errors.append("_extract_evidence_metadata must reject table-form package metadata")
-    if not _calls_function(evidence_metadata_fn, "_html_table_metadata_error"):
-        errors.append("_extract_evidence_metadata must reject HTML table-form package metadata")
-    if not _calls_function(evidence_metadata_fn, "_xml_payload_metadata_error"):
-        errors.append("_extract_evidence_metadata must reject XML/SVG/MathML payload metadata wrappers")
-    if not _calls_function(evidence_metadata_fn, "_markup_attribute_metadata_error"):
-        errors.append("_extract_evidence_metadata must reject markup attribute metadata wrappers")
-
-    placeholder_fn = _function_def(tree, "_is_placeholder_metadata_value", path=PHASE_GATE_SCRIPT_PATH)
-    if not _uses_name(placeholder_fn, "PLACEHOLDER_METADATA_SUBSTRINGS"):
-        errors.append("_is_placeholder_metadata_value must check semantic placeholder substrings")
-
-    safe_name_fn = _function_def(tree, "_is_safe_archive_name", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(safe_name_fn, "_is_windows_reserved_archive_name"):
-        errors.append("_is_safe_archive_name must reject Windows reserved archive basenames")
-
-    project_git_head_fn = _function_def(tree, "_project_git_head", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(project_git_head_fn, "_validate_project_git_authority_root"):
-        errors.append("_project_git_head must reject sibling/bare/alternate Git authority roots")
-    if not _calls_function(project_git_head_fn, "_project_git_env"):
-        errors.append("_project_git_head must use a sanitized Git authority environment")
-    if not _calls_function(project_git_head_fn, "_project_git_command"):
-        errors.append("_project_git_head must use the trusted Git command resolver")
-
-    project_git_env_fn = _function_def(tree, "_project_git_env", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(project_git_env_fn, "_trusted_git_search_dirs"):
-        errors.append("_project_git_env must build PATH only from trusted Git search dirs")
-    if not _uses_constant(project_git_env_fn, "GIT_NO_REPLACE_OBJECTS"):
-        errors.append("_project_git_env must disable Git replacement refs while checking source_head")
-    if not _uses_constant(project_git_env_fn, "GIT_NO_LAZY_FETCH"):
-        errors.append("_project_git_env must disable Git lazy fetch while checking source_head")
-    if not _uses_constant(project_git_env_fn, "GIT_CONFIG_NOSYSTEM"):
-        errors.append("_project_git_env must ignore system Git config while checking source_head")
-
-    authority_root_fn = _function_def(tree, "_validate_project_git_authority_root", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(authority_root_fn, "_reject_git_config_external_authority"):
-        errors.append("_validate_project_git_authority_root must reject include and promisor config authority")
-    if not _calls_function(authority_root_fn, "_reject_git_promisor_pack_authority"):
-        errors.append("_validate_project_git_authority_root must reject promisor pack authority")
-
-    project_git_command_fn = _function_def(tree, "_project_git_command", path=PHASE_GATE_SCRIPT_PATH)
-    if not _calls_function(project_git_command_fn, "_trusted_git_search_dirs"):
-        errors.append("_project_git_command must not search caller/os.defpath directly")
-
     for required_symbol in (
-        "_check_current_review_package_keys",
-        "_check_review_history_entry_keys",
-        "_confusable_metadata_delimiter_error",
-        "_markdown_table_metadata_error",
-        "_project_git_env",
-        "_project_git_command",
-        "_trusted_git_search_dirs",
-        "_validate_project_git_authority_root",
-        "_validate_clean_review_receipt",
-        "_source_tree_identity_from_package",
-        "_reject_git_config_external_authority",
-        "_reject_git_promisor_pack_authority",
-        "_ascii_security_skeleton",
-        "_deep_html_unescape",
-        "_html_table_metadata_error",
-        "_xml_payload_metadata_error",
-        "_markup_attribute_metadata_error",
-        "_delimited_metadata_error",
+        "_check_manual_review_standard",
+        "_check_owner_manual_state",
+        "_check_owner_manual_decision",
+        "_step_8_apply_to_master_is_fail_closed",
+        "_check_step_8_boundary",
+        "check_gate",
     ):
         _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
+
+    check_gate_fn = _function_def(tree, "check_gate", path=PHASE_GATE_SCRIPT_PATH)
+    for required_call in (
+        "_check_manual_review_standard",
+        "_check_owner_manual_state",
+        "_check_owner_manual_decision",
+        "_check_step_8_boundary",
+    ):
+        if not _calls_function(check_gate_fn, required_call):
+            errors.append(f"manual phase gate check_gate must call {required_call}")
+
+    manual_standard_fn = _function_def(tree, "_check_manual_review_standard", path=PHASE_GATE_SCRIPT_PATH)
+    if not (_uses_constant(manual_standard_fn, "owner_manual_count_outside_repo") or _uses_name(manual_standard_fn, "COUNTING_AUTHORITY")):
+        errors.append("manual review standard must require owner_manual_count_outside_repo")
+    if not (_uses_constant(manual_standard_fn, "informational_record_only") or _uses_name(manual_standard_fn, "RECEIPT_ROLE")):
+        errors.append("manual review standard must require informational receipt role")
+
+    step8_boundary_fn = _function_def(tree, "_check_step_8_boundary", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(step8_boundary_fn, "_step_8_apply_to_master_is_fail_closed"):
+        errors.append("manual phase gate must verify step_8 remains fail-closed while blocked")
+
+    forbidden_symbols = (
+        "_validate_clean_review_receipt",
+        "_validate_current_review_package",
+        "_extract_evidence_metadata",
+        "_project_git_head",
+    )
+    for symbol in forbidden_symbols:
+        try:
+            _function_def(tree, symbol, path=PHASE_GATE_SCRIPT_PATH)
+        except CheckError:
+            continue
+        errors.append(f"manual phase gate should not retain automatic authority parser: {symbol}")
     return errors
 
 
@@ -553,31 +435,22 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
         manifest.get("phase_gate_required_anchor"),
         "phase_gate_required_anchor",
     )
-    required_reset_anchor = _require_str(
-        manifest.get("phase_gate_required_algorithmic_reset_anchor", required_anchor),
-        "phase_gate_required_algorithmic_reset_anchor",
-    )
     phase_gate = _load_json(PHASE_GATE_PATH)
     current_anchor = phase_gate.get("current_review_anchor")
-    last_reset = phase_gate.get("last_reset")
-    last_reset_package = last_reset.get("review_package") if isinstance(last_reset, dict) else None
-    counter_domains = phase_gate.get("counter_domains")
-    algorithmic_domain = counter_domains.get("algorithmic_soundness") if isinstance(counter_domains, dict) else None
-    algorithmic_last_reset = (
-        algorithmic_domain.get("last_reset_package") if isinstance(algorithmic_domain, dict) else None
-    )
+    owner_state = phase_gate.get("owner_manual_state")
+    owner_anchor = owner_state.get("current_review_anchor") if isinstance(owner_state, dict) else None
+    next_phase_entry = phase_gate.get("next_phase_entry")
+    next_allowed = next_phase_entry.get("allowed") if isinstance(next_phase_entry, dict) else None
+    receipt_policy = phase_gate.get("receipt_policy")
+    receipt_can_open = receipt_policy.get("can_open_p1_3b") if isinstance(receipt_policy, dict) else None
     if current_anchor != required_anchor:
         errors.append(f"phase gate current_review_anchor {current_anchor!r} != required {required_anchor!r}")
-    if last_reset_package != required_reset_anchor:
-        errors.append(
-            f"phase gate last_reset.review_package {last_reset_package!r} != required algorithmic reset "
-            f"{required_reset_anchor!r}"
-        )
-    if algorithmic_last_reset != required_reset_anchor:
-        errors.append(
-            "phase gate counter_domains.algorithmic_soundness.last_reset_package "
-            f"{algorithmic_last_reset!r} != required {required_reset_anchor!r}"
-        )
+    if owner_anchor != required_anchor:
+        errors.append(f"phase gate owner_manual_state.current_review_anchor {owner_anchor!r} != required {required_anchor!r}")
+    if next_allowed is not False:
+        errors.append("phase gate must remain blocked unless owner manual decision opens P1.3B")
+    if receipt_can_open is not False:
+        errors.append("phase gate receipt_policy.can_open_p1_3b must remain false")
     return errors
 
 

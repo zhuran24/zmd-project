@@ -39,7 +39,7 @@
 | `production_readiness_gate.py` | **启 168h 前手动跑**. 9 项 hard check (pacman freeze / venv / OOM headroom / THP / jemalloc / kernel) |
 | `install_hooks.py` | 安装 tracked local hooks 到 `.git/hooks/`。hook 是便利层，强制层仍是 preflight + CI。 |
 | `check_external_artifacts.py` / `restore_external_artifacts.py` | 检查或恢复轻量 checkout 中缺省的大制品，例如 `candidate_placements.json`。 |
-| `check_phase_review_gate.py` | 检查 Phase 1.2 close gate；日常默认验证 blocked 状态一致性，进入 P1.3B 前必须加 `--require-ready phase_1_2_spike_close`。 |
+| `check_phase_review_gate.py` | 检查 Phase 1.2 manual close gate；日常默认验证 fail-closed 状态一致性，进入 P1.3B 前必须加 `--require-ready phase_1_2_spike_close`，且只能由 owner manual decision 打开。 |
 | `pacman_campaign_freeze.sh` | 冻结 / 解冻 pacman 关键包 (campaign 期间防 -Syu 升级) |
 
 ---

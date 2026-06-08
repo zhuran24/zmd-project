@@ -2,7 +2,7 @@
 
 > **现状权威源**: 项目「当前 phase/状态」的 living 权威源 = `CLAUDE.md`（Current Phase 段）+ CC memory handoff（仓库外）。本文以下 Phase 1.1 段落是**已完成的历史里程碑**, 不是当前状态。
 
-**当前状态 (2026-06-08)**: **Phase 1.2 spike close 闭关中**（cut-family validator soundness 审查）。7/7 cut family + **F3 special-case phase 已完成**，但 P1.2 仍未正式收口。v28 到 v33 的有效 algorithmic/proof-obligation 问题仍将 algorithmic clean 计数器保持在 **0/3**；V37-V46 主要转为 review-infrastructure hardening（receipt/report/package/Git authority/parser provenance），现在已拆成单独轨道，除非能证明 reachable P1.3B false-ready 或 certified lifecycle false-negative，否则不再自动重置 algorithmic counter。未来 clean review 必须使用 strict JSON review receipt + source-tree identity，不再从 Markdown/HTML/XML 报告 metadata 或包内 Git source_head 接受 clean credit。其中 **F9 = tight-K quarantine（实质停用，见下方 F9 条 + PROJECT_LOCK §3A）**。下一关 = 基于 `v46_review_protocol_redesign` 重建候选包并做 V47 算法/证明收口审查；v46_review_protocol_redesign 后 algorithmic clean 计数器仍为 0/3，过 3 次连续 algorithmic clean 后才允许进入 **P1.3B**。
+**当前状态 (2026-06-08)**: **Phase 1.2 spike close 闭关中**（cut-family validator soundness 审查）。P1.2 仍未正式收口，且 V50 已将 phase close gate 简化为人工计数模型：三次连续 clean full review 仍是 owner 标准，但 clean 计数由 owner 在 repo 外维护，仓库不再从 JSON receipt、Markdown/HTML/XML 报告 metadata、source-tree manifest、package metadata 或包内 Git authority 自动推导 P1.3B ready。当前 repo 默认 fail-closed；只有显式 owner manual decision 才能打开 **P1.3B PoseBoolExactMaster LBBD master integration**。其中 **F9 = tight-K quarantine（实质停用，见下方 F9 条 + PROJECT_LOCK §3A）**。
 
 ---
 

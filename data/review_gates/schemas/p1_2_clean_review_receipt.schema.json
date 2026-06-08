@@ -1,8 +1,9 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "schema_id": "p1_2_clean_review_receipt",
-  "description": "Machine receipt required for Phase 1.2 clean-review credit. Human reports are free text and are bound by report_sha256; machine package identity is read only from this strict JSON receipt.",
-  "required_keys": [
+  "description": "Optional informational receipt for Phase 1.2 review auditing. Receipts no longer grant clean-review credit and cannot open P1.3B; the owner maintains the clean-review count outside the repo.",
+  "status": "informational_only",
+  "required_keys_for_optional_records": [
     "schema_version",
     "receipt_type",
     "gate_id",
@@ -22,14 +23,14 @@
   ],
   "policy": {
     "receipt_type": "p1_2_clean_review_receipt",
-    "review_result_for_clean_credit": "clean",
-    "major_or_soundness_findings_for_clean_credit": 0,
-    "source_identity_authority": "source_tree_identity",
-    "report_identity_authority": "report_sha256",
+    "receipt_role": "informational_record_only",
+    "can_open_p1_3b": false,
+    "clean_review_counting_authority": "owner_manual_count_outside_repo",
     "forbidden_machine_authorities": [
       "Markdown report metadata",
       "HTML/XML/SVG/MathML report metadata",
-      "package-internal .git source_head authority"
+      "package-internal .git source_head authority",
+      "repo-derived receipt counting"
     ]
   }
 }

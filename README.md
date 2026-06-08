@@ -4,8 +4,8 @@
 
 ## 当前主线（subject projection）
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:d28bce1483f5833451487ad45999824cdfa8deb16520c2b71cce90d370054e51 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. V31-V46 has now been classified into two domains: early algorithmic/proof-obligation findings still keep the P1.2 algorithmic clean counter at **0/3**, while later review-infrastructure findings are tracked separately unless they demonstrate a reachable P1.3B false-ready transition. Future clean-review credit must use the strict JSON receipt + source-tree identity protocol anchored at `v46_review_protocol_redesign`; do not enter the true `PoseBoolExactMaster` LBBD master integration (`P1.3B` in the project-book docs, historically `P1.3A 主体` in older CC memory) until the algorithmic counter reaches 3/3.
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:63a79397a34d61ddacd4a2185687ea883bbc784816d06fa23f2d9de8fd932764 -->
+Current working state: **Phase 1.2 spike close is not formally closed**. V50 simplified the phase gate: the **three clean full reviews** standard still exists, but the clean-review count is now **owner-maintained outside the repo** rather than derived from JSON receipts, Markdown reports, source-tree manifests, package metadata, or package-internal Git authority. The repository remains fail-closed: P1.3B is blocked by default, review receipts are informational records only, and only an explicit owner manual decision may open the true `PoseBoolExactMaster` LBBD master integration (`P1.3B` in project-book docs, historically `P1.3A 主体` in older CC memory).
 <!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
 
 ## 精确性边界（subject projection）
