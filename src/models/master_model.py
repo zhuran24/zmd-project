@@ -11766,7 +11766,7 @@ class MasterPlacementModel:
                 if tpl is not None:
                     var = self.optional_pose_vars.get(tpl, {}).get(int(pose_idx))
             if var is None:
-                continue
+                return False
             name = var.Name()
             if name in seen_names:
                 continue

@@ -6504,22 +6504,33 @@ class CoordinateExactMasterDelegate:
         # it can land in. Dedup by (scope, pose_idx) so two symmetric mandatory
         # instances in the same group only contribute one presence literal
         # (NoOverlap2D already forbids both taking the same pose).
+        # Certified replay must be all-or-nothing: silently dropping one malformed
+        # member of a persisted conflict would dilute a nogood over {A, B} into a
+        # stronger nogood over {A}, which can over-prune valid layouts.
         entries: List[Tuple[str, int, List[CoordinateSlotSpec], PoseTuple]] = []
         seen: Set[Tuple[str, int]] = set()
         for solution_id, raw_pose_idx in conflict_set.items():
-            pose_idx = int(raw_pose_idx)
+            try:
+                pose_idx = int(raw_pose_idx)
+            except Exception:
+                return []
             sid = str(solution_id)
 
             if sid in self.owner._group_id_by_instance:
                 group_id = str(self.owner._group_id_by_instance[sid])
                 tpl = next(
-                    str(group["facility_type"])
-                    for group in self.owner._mandatory_groups
-                    if str(group["group_id"]) == group_id
+                    (
+                        str(group["facility_type"])
+                        for group in self.owner._mandatory_groups
+                        if str(group["group_id"]) == group_id
+                    ),
+                    None,
                 )
+                if tpl is None:
+                    return []
                 pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
                 if pose_tuple is None:
-                    continue
+                    return []
                 key = (f"mandatory::{group_id}", pose_idx)
                 if key in seen:
                     continue
@@ -6536,11 +6547,11 @@ class CoordinateExactMasterDelegate:
 
             tpl = self.owner._infer_optional_template_from_solution_id(sid)
             if tpl is None:
-                continue
+                return []
             tpl = str(tpl)
             pose_tuple = self._template_pose_tuple_by_idx.get(tpl, {}).get(pose_idx)
             if pose_tuple is None:
-                continue
+                return []
             key = (f"optional::{tpl}", pose_idx)
             if key in seen:
                 continue
@@ -6575,8 +6586,9 @@ class CoordinateExactMasterDelegate:
             lit = self._pose_present_literal(
                 slots, pose_tuple, cut_tag=f"{cut_tag}_{pose_idx}"
             )
-            if lit is not None:
-                present_lits.append(lit)
+            if lit is None:
+                return False
+            present_lits.append(lit)
 
         if not present_lits:
             return False

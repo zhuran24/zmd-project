@@ -3290,7 +3290,7 @@ def test_binding_domain_empty_generates_singleton_cut_and_continues_master_loop(
     assert metadata["exact_safe_cuts"][0]["proof_summary"]["binding_domain_empty_cut_count"] == 1
 
 
-def test_routing_front_blocked_generates_small_cut_and_continues_master_loop(
+def test_routing_front_blocked_unencodable_optional_conflict_fails_closed(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -3411,20 +3411,14 @@ def test_routing_front_blocked_generates_small_cut_and_continues_master_loop(
     )
     metadata = getattr(run_benders_for_ghost_rect, "last_run_metadata")
 
-    assert status == RUN_STATUS_CERTIFIED
-    assert result is not None
-    assert result["tiny_001"]["pose_idx"] == 1
-    assert metadata["generated_exact_safe_cut_count"] == 1
-    assert metadata["fine_grained_exact_safe_cut_count"] == 1
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert metadata["generated_exact_safe_cut_count"] == 0
+    assert metadata["fine_grained_exact_safe_cut_count"] == 0
     assert metadata["binding_domain_empty_cut_count"] == 0
-    assert metadata["routing_front_blocked_cut_count"] == 1
-    assert metadata["exact_safe_cuts"][0]["cut_type"] == "routing_front_blocked_nogood"
-    assert set(metadata["exact_safe_cuts"][0]["conflict_set"]) == {
-        "tiny_001",
-        "pose_optional::power_pole::pole_block",
-    }
-    assert metadata["exact_safe_cuts"][0]["proof_summary"]["fine_grained_exact_safe_cut_count"] == 1
-    assert metadata["exact_safe_cuts"][0]["proof_summary"]["routing_front_blocked_cut_count"] == 1
+    assert metadata["routing_front_blocked_cut_count"] == 0
+    assert metadata["exact_safe_cuts"] == []
+    assert metadata["proof_summary"]["master_follow_up"] == "cut_stall"
 
 
 def test_relaxed_disconnected_only_rejects_binding_selection_without_persisted_cut(

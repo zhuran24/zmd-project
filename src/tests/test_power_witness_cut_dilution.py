@@ -79,9 +79,11 @@ def _build_controller(master):
     )
 
 
-def test_whole_layout_cut_dilution_repro_synthetic_pole_loses_literal():
-    """暴露 cut 形态: synthetic pose_optional::power_pole:: 不会贡献 presence
-    literal. flag on 时如果不 fail-closed, 这会过切.
+def test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_literal():
+    """synthetic pose_optional::power_pole:: 不能贡献 presence literal.
+
+    The cut builder must fail closed instead of diluting {machine, pole} into a
+    stronger machine-only nogood.
     """
     from src.models.power_placement_subproblem import (
         PowerPlacementSubproblem,
@@ -126,13 +128,8 @@ def test_whole_layout_cut_dilution_repro_synthetic_pole_loses_literal():
         )
         conflict_set = {k: int(v["pose_idx"]) for k, v in injected.items()}
         added = overlay.add_benders_cut(conflict_set)
-        assert added is True
-        last = dict(overlay.build_stats.get("coordinate_benders_last_cut") or {})
-        assert last.get("entries", 0) >= 2
-        assert last.get("presence_literals", 0) < last.get("entries", 0), (
-            f"dilution 假设破灭: presence_literals={last.get('presence_literals')} "
-            f"entries={last.get('entries')}. 如果 cut builder 改了, 本测试需要 review."
-        )
+        assert added is False
+        assert overlay.build_stats.get("coordinate_benders_last_cut") is None
 
 
 def test_whole_layout_nogood_fails_closed_when_flag_on_with_synthetic_pole():

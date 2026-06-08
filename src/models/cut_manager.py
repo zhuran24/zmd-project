@@ -373,6 +373,11 @@ class CutManager:
         self.cuts.append(cut)
         return True
 
+    def has_structured_cut(self, cut: BendersCut) -> bool:
+        """Return whether an equivalent structured cut is already registered."""
+
+        return self._structured_signature(cut) in self._cut_signatures
+
     def add_cut(self, conflict_set: List[Dict[str, str]], reason: str, source: str) -> bool:
         """Add one runtime cut record while preserving existing JSONL compatibility."""
 

@@ -5337,10 +5337,17 @@ class LBBDController:
             epsilon_stage=self.epsilon_stage,
             condition_set={str(k): v for k, v in (condition_set or {}).items()},
         )
+        if self.cut_manager.has_structured_cut(cut):
+            return False
+        applied = self.master.add_benders_cut(
+            conflict_set,
+            condition_lits=tuple(condition_lits),
+        )
+        if not applied:
+            return False
         if not self.cut_manager.register_structured_cut(cut):
             return False
         self.generated_exact_safe_cuts.append(cut)
-        self.master.add_benders_cut(conflict_set, condition_lits=tuple(condition_lits))
         return True
 
     def _add_exact_whole_layout_nogood(
@@ -5721,12 +5728,16 @@ def run_benders_for_ghost_rect(
             if not condition_ok:
                 cut_replay_condition_skipped += 1
                 continue
+            if cut_manager.has_structured_cut(cut):
+                continue
+            applied = master.add_benders_cut(
+                {str(k): int(v) for k, v in cut.conflict_set.items()},
+                condition_lits=tuple(resolved_lits),
+            )
+            if not applied:
+                continue
             if cut_manager.register_structured_cut(cut):
                 loaded_exact_safe_cuts.append(cut)
-                master.add_benders_cut(
-                    {str(k): int(v) for k, v in cut.conflict_set.items()},
-                    condition_lits=tuple(resolved_lits),
-                )
     cut_replay_seconds = time.perf_counter() - cut_replay_started
 
     if solve_mode == "certified_exact":

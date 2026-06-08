@@ -54,6 +54,40 @@ def _build_overlay():
     return MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
 
 
+def _single_pose_overlay():
+    instances = [
+        {
+            "instance_id": "machine_001",
+            "facility_type": "machine",
+            "operation_type": "processing",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    pools = {
+        "machine": [
+            {
+                "pose_id": "M0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {
+            "machine": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+        },
+    }
+    core = MasterPlacementModel.build_exact_core(
+        instances, pools, rules, skip_power_coverage=True,
+    )
+    return MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+
+
 def _ghost_rect_idx_for_anchor(overlay, x, y):
     for idx, dom in enumerate(overlay._ghost_domains):
         a = dom.get("anchor") or {}
@@ -218,3 +252,39 @@ def test_persisted_cut_replay_fires_when_condition_active():
     combo2 = _miner_pose_ids(overlay2)
     assert combo2 != combo1, "replay cut 没 fire, condition 是不是丢了?"
     assert combo2.issubset({"A", "B", "C"}) and len(combo2) == 2
+
+
+def test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member():
+    """A persisted certified cut must not dilute {valid, missing} into {valid}.
+
+    Before the guard, replay accepted the cut below, silently dropped the missing
+    conflict member, and banned the sole valid machine pose. That turns a
+    feasible certified candidate into INFEASIBLE.
+    """
+
+    overlay = _single_pose_overlay()
+    safe_ghost_idx = _ghost_rect_idx_for_anchor(overlay, 1, 0)
+    overlay.model.Add(overlay.u_vars[safe_ghost_idx] == 1)
+    _solve_ok(overlay)
+
+    cut = BendersCut(
+        cut_type="routing_exhausted_nogood",
+        conflict_set={"machine_001": 0, "missing_instance": 0},
+        iteration=1,
+        source_mode="certified_exact",
+        exact_safe=True,
+        artifact_hashes={},
+        proof_stage="routing",
+        binding_exhausted=True,
+        routing_exhausted=True,
+        schema_version=2,
+    )
+    payload = cut.to_dict()
+
+    overlay2 = _single_pose_overlay()
+    cut2 = BendersCut.from_dict(payload)
+    added = overlay2.add_benders_cut(cut2.conflict_set)
+
+    assert added is False
+    overlay2.model.Add(overlay2.u_vars[safe_ghost_idx] == 1)
+    _solve_ok(overlay2)

@@ -716,7 +716,10 @@ class PoseBoolExactMasterDelegate:
         # nogood: sum(present(pose) for pose in conflict_set) <= N - 1
         present_lits: List[cp_model.IntVar] = []
         for inst_id, pose_idx in dict(conflict_set).items():
-            pose_idx_int = int(pose_idx)
+            try:
+                pose_idx_int = int(pose_idx)
+            except Exception:
+                return False
             key = str(inst_id)
             var: Optional[cp_model.IntVar] = None
             if key in self._group_id_by_instance:
@@ -726,10 +729,16 @@ class PoseBoolExactMasterDelegate:
                 var = self.pole_vars.get(pose_idx_int)
             elif key.startswith("pose_optional::"):
                 # ro: extract tpl
-                _, tpl, *_rest = key.split("::")
+                parts = key.split("::")
+                if len(parts) < 2 or not parts[1]:
+                    return False
+                tpl = parts[1]
                 var = self.ro_vars.get((tpl, pose_idx_int))
-            if var is not None:
-                present_lits.append(var)
+            else:
+                return False
+            if var is None:
+                return False
+            present_lits.append(var)
         if not present_lits:
             return False
         cond = [lit for lit in condition_lits if lit is not None]
