@@ -2539,6 +2539,28 @@ def test_validator_rejects_non_standard_json_constant_in_clean_review_receipt(
     assert any("invalid JSON constant 'NaN'" in error for error in errors)
 
 
+def test_validator_rejects_boolean_schema_version_in_clean_review_receipt(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="v48_receipt_bool_schema")
+    first_receipt = fake_root / payload["review_history"][-3]["receipt_path"]
+    receipt = json.loads(first_receipt.read_text(encoding="utf-8"))
+    receipt["schema_version"] = True
+    first_receipt.write_text(json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    fake_gate = fake_root / "fake_receipt_bool_schema.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("receipt.schema_version must be an integer" in error for error in errors)
+
+
 def test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews(
     tmp_path: Path,
     monkeypatch,
@@ -2597,6 +2619,38 @@ def test_validator_rejects_misclassified_major_soundness_outcome_as_infrastructu
 
     assert "phase_1_2_spike_close" in summary
     assert any("major/soundness findings must use an algorithmic reset finding_domain" in error for error in errors)
+    assert any("has major/soundness findings but does not reset counter" in error for error in errors)
+
+
+def test_validator_rejects_certified_false_negative_domain_without_algorithmic_reset_after_clean_reviews(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    payload["review_history"].append(
+        {
+            "package": "v48_certified_false_negative_hidden_under_infrastructure",
+            "review_type": "independent_full_external",
+            "outcome": "infrastructure_hardening_findings_found",
+            "clean": False,
+            "major_or_soundness_findings": 0,
+            "infrastructure_findings": 1,
+            "resets_counter": False,
+            "finding_domain": "certified_false_negative",
+            "evidence_paths": [],
+        }
+    )
+    _append_three_clean_reviews(fake_root, payload, prefix="v48_clean_after_hidden_certified_false_negative")
+    fake_gate = fake_root / "fake_hidden_certified_false_negative_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("algorithmic reset finding_domain 'certified_false_negative'" in error for error in errors)
     assert any("has major/soundness findings but does not reset counter" in error for error in errors)
 
 

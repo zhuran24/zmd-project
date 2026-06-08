@@ -1225,61 +1225,78 @@ def _validate_clean_review_receipt(
     if errors:
         return errors, receipt_rel, receipt_identity, receipt_digest
 
-    if receipt.get("schema_version") != 1:
-        errors.append(f"{label}.receipt.schema_version must be 1")
-    if receipt.get("receipt_type") != "p1_2_clean_review_receipt":
-        errors.append(f"{label}.receipt.receipt_type must be 'p1_2_clean_review_receipt'")
-    if require_str(receipt.get("gate_id"), f"{label}.receipt.gate_id") != gate_id:
-        errors.append(f"{label}.receipt.gate_id must match {gate_id!r}")
-    if require_str(receipt.get("review_package"), f"{label}.receipt.review_package") != current_package["package"]:
-        errors.append(f"{label}.receipt.review_package must match current package {current_package['package']!r}")
-    for key in ("archive_name", "archive_sha256", "archive_size_bytes", "source_tree_identity"):
-        expected = current_package[key] if key != "source_tree_identity" else _source_tree_identity_from_package(current_package)
-        value = receipt.get(key)
-        if key in {"archive_sha256", "source_tree_identity"} and isinstance(value, str):
-            value = value.lower()
-        if value != expected:
-            errors.append(f"{label}.receipt.{key} {value!r} != current package {expected!r}")
-    if require_str(receipt.get("review_result"), f"{label}.receipt.review_result") != "clean":
-        errors.append(f"{label}.receipt.review_result must be 'clean'")
-    if require_int(receipt.get("major_or_soundness_findings"), f"{label}.receipt.major_or_soundness_findings") != 0:
-        errors.append(f"{label}.receipt.major_or_soundness_findings must be 0")
-    require_unpadded_str(receipt.get("reviewer_id"), f"{label}.receipt.reviewer_id")
-    require_unpadded_str(receipt.get("review_run_id"), f"{label}.receipt.review_run_id")
-    raw_domains = require_list(receipt.get("finding_domains_reviewed"), f"{label}.receipt.finding_domains_reviewed")
-    domains: list[str] = []
-    for domain_index, raw_domain in enumerate(raw_domains):
-        domains.append(
-            require_unpadded_str(
-                raw_domain,
-                f"{label}.receipt.finding_domains_reviewed[{domain_index}]",
-            )
-        )
-    if len(set(domains)) != len(domains):
-        errors.append(f"{label}.receipt.finding_domains_reviewed must not contain duplicate domains")
-    if "algorithmic_soundness" not in domains:
-        errors.append(f"{label}.receipt.finding_domains_reviewed must include 'algorithmic_soundness'")
-    report_path = require_str(receipt.get("report_path"), f"{label}.receipt.report_path")
     try:
-        canonical_report_path = _canonical_project_rel_path(report_path)
-        report_digest = _evidence_content_digest(canonical_report_path)
+        receipt_schema_version = require_int(receipt.get("schema_version"), f"{label}.receipt.schema_version")
+        if receipt_schema_version != 1:
+            errors.append(f"{label}.receipt.schema_version must be 1")
+        receipt_type = require_str(receipt.get("receipt_type"), f"{label}.receipt.receipt_type")
+        if receipt_type != "p1_2_clean_review_receipt":
+            errors.append(f"{label}.receipt.receipt_type must be 'p1_2_clean_review_receipt'")
+        if require_str(receipt.get("gate_id"), f"{label}.receipt.gate_id") != gate_id:
+            errors.append(f"{label}.receipt.gate_id must match {gate_id!r}")
+        if require_str(receipt.get("review_package"), f"{label}.receipt.review_package") != current_package["package"]:
+            errors.append(f"{label}.receipt.review_package must match current package {current_package['package']!r}")
+        actual_package_identity = {
+            "archive_name": require_unpadded_str(receipt.get("archive_name"), f"{label}.receipt.archive_name"),
+            "archive_sha256": require_unpadded_str(
+                receipt.get("archive_sha256"),
+                f"{label}.receipt.archive_sha256",
+            ).lower(),
+            "archive_size_bytes": require_int(
+                receipt.get("archive_size_bytes"),
+                f"{label}.receipt.archive_size_bytes",
+            ),
+            "source_tree_identity": require_unpadded_str(
+                receipt.get("source_tree_identity"),
+                f"{label}.receipt.source_tree_identity",
+            ).lower(),
+        }
+        for key, value in actual_package_identity.items():
+            expected = current_package[key] if key != "source_tree_identity" else _source_tree_identity_from_package(current_package)
+            if value != expected:
+                errors.append(f"{label}.receipt.{key} {value!r} != current package {expected!r}")
+        if require_str(receipt.get("review_result"), f"{label}.receipt.review_result") != "clean":
+            errors.append(f"{label}.receipt.review_result must be 'clean'")
+        if require_int(receipt.get("major_or_soundness_findings"), f"{label}.receipt.major_or_soundness_findings") != 0:
+            errors.append(f"{label}.receipt.major_or_soundness_findings must be 0")
+        require_unpadded_str(receipt.get("reviewer_id"), f"{label}.receipt.reviewer_id")
+        require_unpadded_str(receipt.get("review_run_id"), f"{label}.receipt.review_run_id")
+        raw_domains = require_list(receipt.get("finding_domains_reviewed"), f"{label}.receipt.finding_domains_reviewed")
+        domains: list[str] = []
+        for domain_index, raw_domain in enumerate(raw_domains):
+            domains.append(
+                require_unpadded_str(
+                    raw_domain,
+                    f"{label}.receipt.finding_domains_reviewed[{domain_index}]",
+                )
+            )
+        if len(set(domains)) != len(domains):
+            errors.append(f"{label}.receipt.finding_domains_reviewed must not contain duplicate domains")
+        if "algorithmic_soundness" not in domains:
+            errors.append(f"{label}.receipt.finding_domains_reviewed must include 'algorithmic_soundness'")
+        report_path = require_str(receipt.get("report_path"), f"{label}.receipt.report_path")
+        try:
+            canonical_report_path = _canonical_project_rel_path(report_path)
+            report_digest = _evidence_content_digest(canonical_report_path)
+        except GateError as exc:
+            errors.append(str(exc))
+        else:
+            if not _is_review_evidence_path(canonical_report_path):
+                errors.append(
+                    f"{label}.receipt.report_path must point to a review/research artifact "
+                    f"under {', '.join(REVIEW_EVIDENCE_ROOTS)}: {report_path}"
+                )
+            expected_report_sha = require_str(receipt.get("report_sha256"), f"{label}.receipt.report_sha256").lower()
+            if not _is_hex_digest(expected_report_sha, length=64):
+                errors.append(f"{label}.receipt.report_sha256 must be a 64-character hex digest")
+            elif report_digest != expected_report_sha:
+                errors.append(
+                    f"{label}.receipt.report_sha256 {expected_report_sha!r} != actual report digest {report_digest!r}"
+                )
+        if require_str(receipt.get("target_anchor"), f"{label}.receipt.target_anchor") != target_anchor:
+            errors.append(f"{label}.receipt.target_anchor must match current review anchor {target_anchor!r}")
     except GateError as exc:
         errors.append(str(exc))
-    else:
-        if not _is_review_evidence_path(canonical_report_path):
-            errors.append(
-                f"{label}.receipt.report_path must point to a review/research artifact "
-                f"under {', '.join(REVIEW_EVIDENCE_ROOTS)}: {report_path}"
-            )
-        expected_report_sha = require_str(receipt.get("report_sha256"), f"{label}.receipt.report_sha256").lower()
-        if not _is_hex_digest(expected_report_sha, length=64):
-            errors.append(f"{label}.receipt.report_sha256 must be a 64-character hex digest")
-        elif report_digest != expected_report_sha:
-            errors.append(
-                f"{label}.receipt.report_sha256 {expected_report_sha!r} != actual report digest {report_digest!r}"
-            )
-    if require_str(receipt.get("target_anchor"), f"{label}.receipt.target_anchor") != target_anchor:
-        errors.append(f"{label}.receipt.target_anchor must match current review anchor {target_anchor!r}")
     return errors, receipt_rel, receipt_identity, receipt_digest
 
 def _evidence_file_identity(rel_path: str) -> tuple[int, int]:
@@ -1600,10 +1617,11 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
         )
         if infrastructure_findings < 0:
             errors.append(f"review_history[{index}].infrastructure_findings cannot be negative: {infrastructure_findings}")
-        infrastructure_hardening = (
-            finding_domain in INFRASTRUCTURE_FINDING_DOMAINS
-            or canonical_outcome in INFRASTRUCTURE_HARDENING_OUTCOMES
-        )
+        infrastructure_finding_domain = finding_domain in INFRASTRUCTURE_FINDING_DOMAINS
+        algorithmic_reset_finding_domain = finding_domain in ALGORITHM_RESET_FINDING_DOMAINS
+        infrastructure_outcome = canonical_outcome in INFRASTRUCTURE_HARDENING_OUTCOMES
+        if not infrastructure_finding_domain and not algorithmic_reset_finding_domain:
+            errors.append(f"review_history[{index}] has unsupported finding_domain: {finding_domain!r}")
         if canonical_outcome not in ALLOWED_OUTCOMES:
             errors.append(f"review_history[{index}] has unsupported outcome: {outcome!r}")
         elif outcome != canonical_outcome:
@@ -1611,7 +1629,8 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 f"review_history[{index}].outcome must use canonical spelling {canonical_outcome!r}: {outcome!r}"
             )
         outcome_reports_major = canonical_outcome in MAJOR_OR_SOUNDNESS_OUTCOMES
-        signals_major_or_soundness = major > 0 or outcome_reports_major
+        finding_domain_reports_reset_grade = (not clean) and algorithmic_reset_finding_domain
+        signals_major_or_soundness = major > 0 or outcome_reports_major or finding_domain_reports_reset_grade
         if major < 0:
             errors.append(f"review_history[{index}].major_or_soundness_findings cannot be negative: {major}")
         if clean and canonical_outcome != "clean":
@@ -1626,18 +1645,28 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             errors.append(
                 f"review_history[{index}] outcome {outcome!r} requires a positive major_or_soundness_findings count"
             )
-        if canonical_outcome in INFRASTRUCTURE_HARDENING_OUTCOMES:
-            if not infrastructure_hardening:
-                errors.append(f"review_history[{index}] infrastructure outcome requires infrastructure finding domain")
+        if infrastructure_outcome:
+            if not infrastructure_finding_domain:
+                errors.append(f"review_history[{index}] infrastructure outcome requires infrastructure finding_domain")
             if infrastructure_findings <= 0:
                 errors.append(f"review_history[{index}] infrastructure outcome requires positive infrastructure_findings")
             if major != 0:
                 errors.append(f"review_history[{index}] infrastructure hardening findings must not be counted as major/soundness findings")
             if resets_counter:
                 errors.append(f"review_history[{index}] infrastructure hardening must not reset the algorithmic clean counter")
-        if resets_counter and finding_domain not in ALGORITHM_RESET_FINDING_DOMAINS:
+        if finding_domain_reports_reset_grade and infrastructure_outcome:
+            errors.append(
+                f"review_history[{index}] algorithmic reset finding_domain {finding_domain!r} "
+                "must not be paired with an infrastructure hardening outcome"
+            )
+        if finding_domain_reports_reset_grade and major <= 0:
+            errors.append(
+                f"review_history[{index}] algorithmic reset finding_domain {finding_domain!r} "
+                "requires a positive major_or_soundness_findings count"
+            )
+        if resets_counter and not algorithmic_reset_finding_domain:
             errors.append(f"review_history[{index}] resets counter with non-algorithmic finding_domain {finding_domain!r}")
-        if signals_major_or_soundness and infrastructure_hardening:
+        if signals_major_or_soundness and infrastructure_finding_domain:
             errors.append(
                 f"review_history[{index}] major/soundness findings must use an algorithmic reset finding_domain, "
                 f"not {finding_domain!r}"

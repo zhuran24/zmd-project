@@ -127,6 +127,7 @@
         "test_phase_gate_json_loader_rejects_duplicate_keys",
         "test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews",
         "test_validator_rejects_misclassified_major_soundness_outcome_as_infrastructure_after_clean_reviews",
+        "test_validator_rejects_certified_false_negative_domain_without_algorithmic_reset_after_clean_reviews",
         "test_validator_rejects_negative_major_or_soundness_findings_count",
         "test_validator_rejects_clean_reviews_without_current_package_identity",
         "test_validator_rejects_clean_review_package_that_differs_from_current_package",
@@ -185,7 +186,8 @@
         "test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews",
         "test_validator_rejects_clean_review_receipt_source_tree_identity_mismatch",
         "test_validator_rejects_clean_review_receipt_report_sha_mismatch",
-        "test_validator_rejects_non_standard_json_constant_in_clean_review_receipt"
+        "test_validator_rejects_non_standard_json_constant_in_clean_review_receipt",
+        "test_validator_rejects_boolean_schema_version_in_clean_review_receipt"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
