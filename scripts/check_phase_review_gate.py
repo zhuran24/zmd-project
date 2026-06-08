@@ -13,6 +13,7 @@ import ast
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import unicodedata
 import sys
@@ -41,10 +42,27 @@ PLACEHOLDER_METADATA_VALUES = {"na", "none", "notprovided", "tbd", "unknown"}
 SAFE_ARCHIVE_NAME_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-")
 FULLWIDTH_COLON = "："
 CURRENT_REVIEW_PACKAGE_KEYS = REVIEW_PACKAGE_METADATA_KEYS
+REVIEW_HISTORY_ENTRY_KEYS = frozenset(
+    {
+        "package",
+        "review_type",
+        "outcome",
+        "clean",
+        "major_or_soundness_findings",
+        "resets_counter",
+        "evidence_paths",
+    }
+)
 WINDOWS_RESERVED_ARCHIVE_STEMS = frozenset(
     {"con", "prn", "aux", "nul"}
     | {f"com{index}" for index in range(1, 10)}
     | {f"lpt{index}" for index in range(1, 10)}
+)
+WINDOWS_TRUSTED_GIT_COMMANDS = (
+    Path(r"C:\Program Files\Git\cmd\git.exe"),
+    Path(r"C:\Program Files\Git\bin\git.exe"),
+    Path(r"C:\Program Files (x86)\Git\cmd\git.exe"),
+    Path(r"C:\Program Files (x86)\Git\bin\git.exe"),
 )
 METADATA_DELIMITER_CONFUSABLES = frozenset(
     {
@@ -69,14 +87,79 @@ METADATA_DELIMITER_CONFUSABLES = frozenset(
 PLACEHOLDER_METADATA_SUBSTRINGS = {
     "notprovided",
     "notavailable",
+    "notsupplied",
+    "notincluded",
+    "notlisted",
     "unavailable",
     "tbd",
     "todo",
     "unknown",
+    "absent",
     "omitted",
     "missing",
     "unspecified",
     "placeholder",
+    "未提供",
+    "未给出",
+    "不可用",
+    "未知",
+    "省略",
+    "缺失",
+    "占位",
+    "待定",
+    "待办",
+}
+
+# Small, auditable security skeleton for the review-gate vocabulary.  NFKC
+# catches compatibility spellings (fullwidth, mathematical alphabets, etc.) but
+# not cross-script homoglyphs such as Cyrillic о in "оmitted" or Greek ο in
+# "nοt provided".  The gate only needs to normalize a narrow ASCII metadata and
+# placeholder vocabulary, so keep this local instead of depending on a broad
+# Unicode confusables database at release time.
+ASCII_SECURITY_CONFUSABLES = {
+    "ɑ": "a",
+    "α": "a",
+    "а": "a",
+    "ь": "b",
+    "β": "b",
+    "в": "b",
+    "ϲ": "c",
+    "с": "c",
+    "ԁ": "d",
+    "е": "e",
+    "ε": "e",
+    "ϵ": "e",
+    "ҽ": "e",
+    "һ": "h",
+    "н": "h",
+    "і": "i",
+    "ι": "i",
+    "ј": "j",
+    "κ": "k",
+    "к": "k",
+    "ӏ": "l",
+    "ⅼ": "l",
+    "м": "m",
+    "ո": "n",
+    "ο": "o",
+    "о": "o",
+    "օ": "o",
+    "ρ": "p",
+    "р": "p",
+    "ѕ": "s",
+    "τ": "t",
+    "т": "t",
+    "υ": "u",
+    "ս": "u",
+    "ν": "v",
+    "ѵ": "v",
+    "ԝ": "w",
+    "ω": "w",
+    "χ": "x",
+    "х": "x",
+    "γ": "y",
+    "у": "y",
+    "ү": "y",
 }
 
 
@@ -134,8 +217,19 @@ def require_unpadded_str(value: Any, label: str) -> str:
     return text
 
 
-def _normalized_match_text(value: str) -> str:
+def _ascii_security_skeleton(value: str) -> str:
     normalized = unicodedata.normalize("NFKC", value).casefold()
+    skeleton_chars: list[str] = []
+    for ch in normalized:
+        replacement = ASCII_SECURITY_CONFUSABLES.get(ch, ch)
+        for part in unicodedata.normalize("NFKD", replacement):
+            if not unicodedata.combining(part):
+                skeleton_chars.append(part)
+    return unicodedata.normalize("NFKC", "".join(skeleton_chars))
+
+
+def _normalized_match_text(value: str) -> str:
+    normalized = _ascii_security_skeleton(value)
     return "".join(ch for ch in normalized if ch.isalnum())
 
 
@@ -178,7 +272,23 @@ def _project_git_env() -> dict[str, str]:
     # Git identity is the checked-out project root, not caller-provided Git
     # environment overrides.  Inherited GIT_DIR/GIT_WORK_TREE can otherwise make
     # `git rev-parse HEAD` resolve an unrelated repository while .git is present.
-    return {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
+    trusted_dirs = [os.defpath]
+    if os.name == "nt":
+        trusted_dirs.extend(str(path.parent) for path in WINDOWS_TRUSTED_GIT_COMMANDS)
+    env["PATH"] = os.pathsep.join(trusted_dirs)
+    return env
+
+
+def _project_git_command() -> str:
+    git_command = shutil.which("git", path=os.defpath)
+    if git_command is not None:
+        return git_command
+    if os.name == "nt":
+        for candidate in WINDOWS_TRUSTED_GIT_COMMANDS:
+            if candidate.is_file():
+                return str(candidate)
+    raise GateError(f"cannot determine project git HEAD: git not found on trusted PATH {os.defpath!r}")
 
 
 def _project_git_head() -> str | None:
@@ -186,7 +296,7 @@ def _project_git_head() -> str | None:
         return None
     try:
         result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
+            [_project_git_command(), "rev-parse", "--verify", "HEAD^{commit}"],
             cwd=PROJECT_ROOT,
             check=True,
             capture_output=True,
@@ -272,8 +382,8 @@ def _evidence_matches_package(rel_path: str, package: str) -> bool:
 
 
 def _evidence_metadata_key(raw_key: str) -> str:
-    normalized_key = unicodedata.normalize("NFKC", raw_key)
-    token = "".join(ch for ch in normalized_key.casefold() if ch.isalnum())
+    normalized_key = _ascii_security_skeleton(raw_key)
+    token = "".join(ch for ch in normalized_key if ch.isalnum())
     aliases = {
         "archivename": "archive_name",
         "archivesha": "archive_sha256",
@@ -294,7 +404,7 @@ def _evidence_metadata_key(raw_key: str) -> str:
     }
     if token in aliases:
         return aliases[token]
-    key = normalized_key.strip().casefold().replace("-", "_").replace(" ", "_")
+    key = normalized_key.strip().replace("-", "_").replace(" ", "_")
     while "__" in key:
         key = key.replace("__", "_")
     return key
@@ -338,12 +448,32 @@ def _confusable_metadata_delimiter_error(line: str, rel_path: str) -> str | None
     return None
 
 
+def _markdown_table_metadata_error(line: str, rel_path: str) -> str | None:
+    stripped = line.strip()
+    if "|" not in stripped:
+        return None
+    cells = [cell.strip(" `*_\t") for cell in stripped.strip("|").split("|")]
+    if len(cells) < 2:
+        return None
+    for cell in cells:
+        compact = cell.replace(" ", "").replace(":", "")
+        if not compact or set(compact) <= {"-"}:
+            continue
+        key = _evidence_metadata_key(cell)
+        if key in REVIEW_PACKAGE_METADATA_KEYS:
+            return f"evidence metadata key {key!r} must use ASCII colon delimiter, not table syntax: {rel_path}"
+    return None
+
+
 def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     metadata: dict[str, str] = {}
     for line in _read_evidence_text(rel_path).splitlines():
         delimiter_error = _confusable_metadata_delimiter_error(line, rel_path)
         if delimiter_error is not None:
             raise GateError(delimiter_error)
+        table_error = _markdown_table_metadata_error(line, rel_path)
+        if table_error is not None:
+            raise GateError(table_error)
         if ":" not in line:
             continue
         raw_key, raw_value = line.split(":", 1)
@@ -372,6 +502,63 @@ def _check_current_review_package_keys(package: dict[str, Any]) -> None:
                 "use exact schema keys"
             )
         raise GateError(f"current_review_package has unsupported key: {raw_key!r}")
+
+
+def _review_history_entry_key(raw_key: str) -> str:
+    normalized_key = _ascii_security_skeleton(raw_key)
+    token = "".join(ch for ch in normalized_key if ch.isalnum())
+    aliases = {
+        "package": "package",
+        "reviewpackage": "package",
+        "reviewtype": "review_type",
+        "type": "review_type",
+        "outcome": "outcome",
+        "verdict": "outcome",
+        "clean": "clean",
+        "isclean": "clean",
+        "major": "major_or_soundness_findings",
+        "majorfinding": "major_or_soundness_findings",
+        "majorfindings": "major_or_soundness_findings",
+        "soundnessfinding": "major_or_soundness_findings",
+        "soundnessfindings": "major_or_soundness_findings",
+        "majororsoundnessfinding": "major_or_soundness_findings",
+        "majororsoundnessfindings": "major_or_soundness_findings",
+        "majororsoundnessfindingscount": "major_or_soundness_findings",
+        "finding": "major_or_soundness_findings",
+        "findings": "major_or_soundness_findings",
+        "findingcount": "major_or_soundness_findings",
+        "resetscounter": "resets_counter",
+        "resetcounter": "resets_counter",
+        "resetscleanreviewcounter": "resets_counter",
+        "evidence": "evidence_paths",
+        "evidencepath": "evidence_paths",
+        "evidencepaths": "evidence_paths",
+    }
+    if token in aliases:
+        return aliases[token]
+    key = normalized_key.strip().replace("-", "_").replace(" ", "_")
+    while "__" in key:
+        key = key.replace("__", "_")
+    return key
+
+
+def _check_review_history_entry_keys(entry: dict[str, Any], index: int) -> list[str]:
+    errors: list[str] = []
+    for raw_key in entry:
+        if not isinstance(raw_key, str):
+            errors.append(f"review_history[{index}] keys must be strings")
+            continue
+        canonical_key = _review_history_entry_key(raw_key)
+        if raw_key in REVIEW_HISTORY_ENTRY_KEYS:
+            continue
+        if canonical_key in REVIEW_HISTORY_ENTRY_KEYS:
+            errors.append(
+                f"review_history[{index}] key {raw_key!r} conflicts with canonical key {canonical_key!r}; "
+                "use exact schema keys"
+            )
+        else:
+            errors.append(f"review_history[{index}] has unsupported key: {raw_key!r}")
+    return errors
 
 
 def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
@@ -718,6 +905,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     clean_review_content_owner: dict[str, int] = {}
     for index, raw_entry in enumerate(history):
         entry = require_mapping(raw_entry, f"review_history[{index}]")
+        errors.extend(_check_review_history_entry_keys(entry, index))
         package = require_str(entry.get("package"), f"review_history[{index}].package")
         review_type = require_str(entry.get("review_type"), f"review_history[{index}].review_type")
         outcome = require_str(entry.get("outcome"), f"review_history[{index}].outcome")

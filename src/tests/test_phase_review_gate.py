@@ -965,6 +965,50 @@ def test_validator_rejects_unknown_review_history_outcome(
     assert any("unsupported outcome" in error for error in errors)
 
 
+def test_validator_rejects_review_history_major_findings_alias_key(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    current_package = _current_review_package()
+    payload["current_review_package"] = current_package
+    _mark_payload_closed_ready(payload)
+    for index in range(3):
+        package = current_package["package"]
+        entry = {
+            "package": package,
+            "review_type": "independent_full_external",
+            "outcome": "clean",
+            "clean": True,
+            "major_or_soundness_findings": 0,
+            "resets_counter": False,
+            "evidence_paths": [
+                _write_review_evidence(
+                    fake_root,
+                    package,
+                    current_package=current_package,
+                    filename=f"major_alias_clean_review_{index + 1}.md",
+                    nonce=f"major-alias-{index + 1}",
+                )
+            ],
+        }
+        if index == 0:
+            entry["major_findings"] = 1
+        payload["review_history"].append(entry)
+    fake_gate = fake_root / "fake_review_history_major_alias_key.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any(
+        "key 'major_findings' conflicts with canonical key 'major_or_soundness_findings'" in error
+        for error in errors
+    )
+
+
 def test_validator_rejects_conflicting_current_package_metadata_after_read_prefix(
     tmp_path: Path,
     monkeypatch,
@@ -1346,6 +1390,184 @@ def test_validator_rejects_unicode_normalized_metadata_key_conflict(
     assert any("duplicate evidence metadata key 'package'" in error for error in errors)
 
 
+def test_validator_rejects_confusable_metadata_key_conflict(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    _mark_payload_closed_ready(payload)
+    for index in range(3):
+        evidence_rel = Path("docs") / "research" / f"confusable_key_conflict_{index + 1}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            "# Clean review metadata prefix\n"
+            "Аrchive SHA256: " + ("0" * 64) + "\n"  # Cyrillic capital letter A.
+            f"Package: {current_package['package']}\n"
+            f"Archive name: {current_package['archive_name']}\n"
+            f"Archive sha256: {current_package['archive_sha256']}\n"
+            f"Archive size_bytes: {current_package['archive_size_bytes']}\n"
+            f"Source HEAD: {current_package['source_head']}\n"
+            f"Source list identity: {current_package['source_list_identity']}\n"
+            f"Review nonce: {index}\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_confusable_key_conflict_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("duplicate evidence metadata key 'archive_sha256'" in error for error in errors)
+
+
+def test_validator_rejects_confusable_key_with_confusable_delimiter(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    _mark_payload_closed_ready(payload)
+    for index in range(3):
+        evidence_rel = Path("docs") / "research" / f"confusable_key_delimiter_{index + 1}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            "# Clean review metadata prefix\n"
+            "Pаckage꞉ zmd_16.7z\n"  # Cyrillic small letter a + modifier letter colon.
+            f"Package: {current_package['package']}\n"
+            f"Archive name: {current_package['archive_name']}\n"
+            f"Archive sha256: {current_package['archive_sha256']}\n"
+            f"Archive size_bytes: {current_package['archive_size_bytes']}\n"
+            f"Source HEAD: {current_package['source_head']}\n"
+            f"Source list identity: {current_package['source_list_identity']}\n"
+            f"Review nonce: {index}\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_confusable_key_delimiter_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("must use ASCII colon delimiter" in error for error in errors)
+
+
+def test_validator_rejects_markdown_table_package_metadata_conflict(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    current_package = _current_review_package("zmd_99.7z")
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    _mark_payload_closed_ready(payload)
+    for index in range(3):
+        evidence_rel = Path("docs") / "research" / f"table_metadata_conflict_{index + 1}.md"
+        evidence_path = fake_root / evidence_rel
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_path.write_text(
+            "# Clean review metadata prefix\n"
+            "| Archive SHA256 | Package |\n"
+            "| --- | --- |\n"
+            f"| {'0' * 64} | zmd_16.7z |\n"
+            f"Package: {current_package['package']}\n"
+            f"Archive name: {current_package['archive_name']}\n"
+            f"Archive sha256: {current_package['archive_sha256']}\n"
+            f"Archive size_bytes: {current_package['archive_size_bytes']}\n"
+            f"Source HEAD: {current_package['source_head']}\n"
+            f"Source list identity: {current_package['source_list_identity']}\n"
+            f"Review nonce: {index}\n",
+            encoding="utf-8",
+        )
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "evidence_paths": [evidence_rel.as_posix()],
+            }
+        )
+    fake_gate = fake_root / "fake_table_metadata_conflict_gate.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("not table syntax" in error for error in errors)
+
+
+def test_validator_rejects_confusable_placeholder_source_list_identity(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99.7z")
+    payload["current_review_package"]["source_list_identity"] = "source list оmitted"
+    fake_gate = fake_root / "fake_confusable_source_list_identity.json"
+    fake_gate.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="source_list_identity must not be a placeholder",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_rejects_multilingual_placeholder_source_list_identity(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = _current_review_package("zmd_99.7z")
+    payload["current_review_package"]["source_list_identity"] = "源列表未提供"
+    fake_gate = fake_root / "fake_multilingual_source_list_identity.json"
+    fake_gate.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="source_list_identity must not be a placeholder",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
 def test_validator_uses_project_git_head_despite_git_dir_environment(
     tmp_path: Path,
     monkeypatch,
@@ -1368,6 +1590,60 @@ def test_validator_uses_project_git_head_despite_git_dir_environment(
     with pytest.raises(
         check_phase_review_gate.GateError,
         match=f"source_head must match project git HEAD {real_head}",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_uses_trusted_git_command_despite_path_environment(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    real_head = _init_git_repo_with_head(fake_root, content="real project root\n")
+    evil_head = "f" * 40
+    fake_bin = tmp_path / "fake_bin"
+    fake_bin.mkdir()
+    fake_git = fake_bin / "git"
+    fake_git.write_text(f"#!/bin/sh\nprintf '%s\\n' {evil_head}\n", encoding="utf-8")
+    fake_git.chmod(0o755)
+
+    current_package = _current_review_package("zmd_99.7z")
+    current_package["source_head"] = evil_head
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    fake_gate = fake_root / "fake_path_git_source_head.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    monkeypatch.setenv("PATH", str(fake_bin) + os.pathsep + os.environ.get("PATH", ""))
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match=f"source_head must match project git HEAD {real_head}",
+    ):
+        check_phase_review_gate.check_gate(fake_gate)
+
+
+def test_validator_rejects_git_head_that_is_not_a_commit_object(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    real_head = _init_git_repo_with_head(fake_root, content="real project root\n")
+    invalid_head = "f" * 40
+    assert real_head != invalid_head
+    (fake_root / ".git" / "refs" / "heads" / "master").write_text(invalid_head + "\n", encoding="utf-8")
+
+    current_package = _current_review_package("zmd_99.7z")
+    current_package["source_head"] = invalid_head
+    payload = _payload_for_fake_root(fake_root)
+    payload["current_review_package"] = current_package
+    fake_gate = fake_root / "fake_invalid_git_head.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    with pytest.raises(
+        check_phase_review_gate.GateError,
+        match="cannot determine project git HEAD",
     ):
         check_phase_review_gate.check_gate(fake_gate)
 

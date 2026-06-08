@@ -55,6 +55,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_phase_gate_json_loader_rejects_duplicate_current_package_keys",
             "test_validator_rejects_major_outcome_alias_without_reset",
             "test_validator_rejects_unknown_review_history_outcome",
+            "test_validator_rejects_review_history_major_findings_alias_key",
             "test_validator_rejects_conflicting_current_package_metadata_after_read_prefix",
             "test_validator_rejects_archive_sha256_hyphen_alias_conflict",
             "test_validator_rejects_current_package_archive_name_package_canonical_collision",
@@ -72,7 +73,14 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_windows_reserved_archive_name",
             "test_validator_rejects_unicode_colon_metadata_conflict",
             "test_validator_rejects_unicode_normalized_metadata_key_conflict",
+            "test_validator_rejects_confusable_metadata_key_conflict",
+            "test_validator_rejects_confusable_key_with_confusable_delimiter",
+            "test_validator_rejects_markdown_table_package_metadata_conflict",
+            "test_validator_rejects_confusable_placeholder_source_list_identity",
+            "test_validator_rejects_multilingual_placeholder_source_list_identity",
             "test_validator_uses_project_git_head_despite_git_dir_environment",
+            "test_validator_uses_trusted_git_command_despite_path_environment",
+            "test_validator_rejects_git_head_that_is_not_a_commit_object",
         }
     ),
 }
@@ -408,13 +416,23 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         if not _calls_function(current_package_fn, required_call):
             errors.append(f"_validate_current_review_package must call {required_call}")
 
+    security_skeleton_fn = _function_def(tree, "_ascii_security_skeleton", path=PHASE_GATE_SCRIPT_PATH)
+    if not _uses_name(security_skeleton_fn, "unicodedata"):
+        errors.append("_ascii_security_skeleton must Unicode-normalize metadata keys and placeholder text")
+
     metadata_key_fn = _function_def(tree, "_evidence_metadata_key", path=PHASE_GATE_SCRIPT_PATH)
-    if not _uses_name(metadata_key_fn, "unicodedata"):
-        errors.append("_evidence_metadata_key must Unicode-normalize metadata keys")
+    if not _calls_function(metadata_key_fn, "_ascii_security_skeleton"):
+        errors.append("_evidence_metadata_key must use the review-gate ASCII security skeleton")
+
+    normalized_match_fn = _function_def(tree, "_normalized_match_text", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(normalized_match_fn, "_ascii_security_skeleton"):
+        errors.append("_normalized_match_text must use the review-gate ASCII security skeleton")
 
     evidence_metadata_fn = _function_def(tree, "_extract_evidence_metadata", path=PHASE_GATE_SCRIPT_PATH)
     if not _calls_function(evidence_metadata_fn, "_confusable_metadata_delimiter_error"):
         errors.append("_extract_evidence_metadata must reject confusable metadata delimiters")
+    if not _calls_function(evidence_metadata_fn, "_markdown_table_metadata_error"):
+        errors.append("_extract_evidence_metadata must reject table-form package metadata")
 
     placeholder_fn = _function_def(tree, "_is_placeholder_metadata_value", path=PHASE_GATE_SCRIPT_PATH)
     if not _uses_name(placeholder_fn, "PLACEHOLDER_METADATA_SUBSTRINGS"):
@@ -427,11 +445,17 @@ def _check_phase_gate_provenance_contract() -> list[str]:
     project_git_head_fn = _function_def(tree, "_project_git_head", path=PHASE_GATE_SCRIPT_PATH)
     if not _calls_function(project_git_head_fn, "_project_git_env"):
         errors.append("_project_git_head must use a sanitized Git authority environment")
+    if not _calls_function(project_git_head_fn, "_project_git_command"):
+        errors.append("_project_git_head must use the trusted Git command resolver")
 
     for required_symbol in (
         "_check_current_review_package_keys",
+        "_check_review_history_entry_keys",
         "_confusable_metadata_delimiter_error",
+        "_markdown_table_metadata_error",
         "_project_git_env",
+        "_project_git_command",
+        "_ascii_security_skeleton",
     ):
         _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
     return errors
