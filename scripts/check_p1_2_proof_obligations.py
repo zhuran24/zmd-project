@@ -5,6 +5,7 @@ This is a small structural gate, not a theorem prover.  It makes the v29-v31
 postmortem concrete enough that future reviews cannot silently drift back to
 local, duplicated proof checks.
 """
+
 from __future__ import annotations
 
 import ast
@@ -51,6 +52,14 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_clean_review_package_that_differs_from_current_package",
             "test_validator_rejects_body_only_current_package_binding",
             "test_phase_gate_json_loader_rejects_duplicate_current_package_keys",
+            "test_validator_rejects_major_outcome_alias_without_reset",
+            "test_validator_rejects_unknown_review_history_outcome",
+            "test_validator_rejects_conflicting_current_package_metadata_after_read_prefix",
+            "test_validator_rejects_archive_sha256_hyphen_alias_conflict",
+            "test_validator_rejects_current_package_archive_name_package_canonical_collision",
+            "test_validator_rejects_clean_review_history_package_canonical_collision",
+            "test_validator_rejects_placeholder_source_list_identity",
+            "test_validator_rejects_current_package_source_head_mismatch_with_git_head",
         }
     ),
 }
@@ -133,8 +142,7 @@ def _imports_lifecycle_constants() -> tuple[int, tuple[str, ...], tuple[str, ...
     )
 
     runtime_cache_keys = {
-        ".".join(path): tuple(sorted(keys))
-        for path, keys in SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH.items()
+        ".".join(path): tuple(sorted(keys)) for path, keys in SOURCE_DIGEST_RUNTIME_CACHE_KEYS_BY_PATH.items()
     }
     return (
         SOURCE_DIGEST_SCHEMA_VERSION,
@@ -289,7 +297,9 @@ def _check_source_digest_contract(manifest: dict[str, Any]) -> list[str]:
             "source_digest_contract.schema_version disagrees with "
             f"SOURCE_DIGEST_SCHEMA_VERSION: manifest={manifest_schema!r}, code={schema_version!r}"
         )
-    manifest_fields = tuple(str(item) for item in _require_list(source_contract.get("fields"), "source_digest_contract.fields"))
+    manifest_fields = tuple(
+        str(item) for item in _require_list(source_contract.get("fields"), "source_digest_contract.fields")
+    )
     if manifest_fields != field_names:
         errors.append(
             "source_digest_contract.fields disagree with SOURCE_DIGEST_FIELD_NAMES: "
@@ -299,8 +309,7 @@ def _check_source_digest_contract(manifest: dict[str, Any]) -> list[str]:
     contract = manifest.get("step_7_contract")
     if isinstance(contract, dict):
         manifest_obligations = tuple(
-            str(item)
-            for item in _require_list(contract.get("guard_obligations"), "step_7_contract.guard_obligations")
+            str(item) for item in _require_list(contract.get("guard_obligations"), "step_7_contract.guard_obligations")
         )
         if manifest_obligations != guard_obligations:
             errors.append(
@@ -374,13 +383,9 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     last_reset = phase_gate.get("last_reset")
     last_reset_package = last_reset.get("review_package") if isinstance(last_reset, dict) else None
     if current_anchor != required_anchor:
-        errors.append(
-            f"phase gate current_review_anchor {current_anchor!r} != required {required_anchor!r}"
-        )
+        errors.append(f"phase gate current_review_anchor {current_anchor!r} != required {required_anchor!r}")
     if last_reset_package != required_anchor:
-        errors.append(
-            f"phase gate last_reset.review_package {last_reset_package!r} != required {required_anchor!r}"
-        )
+        errors.append(f"phase gate last_reset.review_package {last_reset_package!r} != required {required_anchor!r}")
     return errors
 
 

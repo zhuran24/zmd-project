@@ -125,7 +125,15 @@
         "test_validator_rejects_clean_reviews_without_current_package_identity",
         "test_validator_rejects_clean_review_package_that_differs_from_current_package",
         "test_validator_rejects_body_only_current_package_binding",
-        "test_phase_gate_json_loader_rejects_duplicate_current_package_keys"
+        "test_phase_gate_json_loader_rejects_duplicate_current_package_keys",
+        "test_validator_rejects_major_outcome_alias_without_reset",
+        "test_validator_rejects_unknown_review_history_outcome",
+        "test_validator_rejects_conflicting_current_package_metadata_after_read_prefix",
+        "test_validator_rejects_archive_sha256_hyphen_alias_conflict",
+        "test_validator_rejects_current_package_archive_name_package_canonical_collision",
+        "test_validator_rejects_clean_review_history_package_canonical_collision",
+        "test_validator_rejects_placeholder_source_list_identity",
+        "test_validator_rejects_current_package_source_head_mismatch_with_git_head"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",

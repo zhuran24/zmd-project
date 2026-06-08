@@ -5,12 +5,14 @@ The gate can be honestly blocked. This script is not a phase-transition button;
 it validates that blocked/closed state, review counters, evidence paths, and
 front-door documentation agree.
 """
+
 from __future__ import annotations
 
 import argparse
 import ast
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -21,6 +23,7 @@ DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
 OPEN_STATUSES = {"blocked_pending_clean_reviews", "open", "blocked"}
 CLOSED_STATUS = "closed"
 MAJOR_OR_SOUNDNESS_OUTCOMES = {"major_soundness_findings_found"}
+ALLOWED_OUTCOMES = {"clean", *MAJOR_OR_SOUNDNESS_OUTCOMES}
 CLEAN_FULL_REVIEW_TYPE = "independent_full_external"
 REVIEW_EVIDENCE_ROOTS = (".artifacts", "docs/research")
 REVIEW_PACKAGE_METADATA_KEYS = {
@@ -32,6 +35,7 @@ REVIEW_PACKAGE_METADATA_KEYS = {
     "source_list_identity",
 }
 HEX_DIGITS = set("0123456789abcdef")
+PLACEHOLDER_METADATA_VALUES = {"na", "none", "notprovided", "tbd", "unknown"}
 
 
 class GateError(RuntimeError):
@@ -91,6 +95,29 @@ def _canonical_package_key(package: str) -> str:
 
 def _is_hex_digest(value: str, *, length: int) -> bool:
     return len(value) == length and all(ch in HEX_DIGITS for ch in value.lower())
+
+
+def _is_placeholder_metadata_value(value: str) -> bool:
+    return _normalized_match_text(value) in PLACEHOLDER_METADATA_VALUES
+
+
+def _project_git_head() -> str | None:
+    if not (PROJECT_ROOT / ".git").exists():
+        return None
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except Exception as exc:  # noqa: BLE001 - a present .git directory is source identity authority.
+        raise GateError(f"cannot determine project git HEAD: {exc}") from exc
+    head = result.stdout.strip().lower()
+    if not _is_hex_digest(head, length=40):
+        raise GateError(f"project git HEAD is not a 40-character hex commit: {head!r}")
+    return head
 
 
 def _is_review_evidence_path(rel_path: str) -> bool:
@@ -164,23 +191,44 @@ def _evidence_matches_package(rel_path: str, package: str) -> bool:
 
 
 def _evidence_metadata_key(raw_key: str) -> str:
-    key = raw_key.strip().lower().replace("-", "_").replace(" ", "_")
+    token = "".join(ch for ch in raw_key.casefold() if ch.isalnum())
+    aliases = {
+        "archivename": "archive_name",
+        "archivesha": "archive_sha256",
+        "archivesha256": "archive_sha256",
+        "sha256": "archive_sha256",
+        "archivesize": "archive_size_bytes",
+        "archivesizebyte": "archive_size_bytes",
+        "archivesizebytes": "archive_size_bytes",
+        "size": "archive_size_bytes",
+        "sizebytes": "archive_size_bytes",
+        "package": "package",
+        "head": "source_head",
+        "commit": "source_head",
+        "sourcehead": "source_head",
+        "sourcecommit": "source_head",
+        "sourcecommithead": "source_head",
+        "sourcelistidentity": "source_list_identity",
+    }
+    if token in aliases:
+        return aliases[token]
+    key = raw_key.strip().casefold().replace("-", "_").replace(" ", "_")
     while "__" in key:
         key = key.replace("__", "_")
-    if key in {"archive_sha", "sha256"}:
-        return "archive_sha256"
-    if key in {"archive_size", "archive_size_byte", "size_bytes", "size"}:
-        return "archive_size_bytes"
-    if key in {"head", "commit", "source_commit", "source_commit_head"}:
-        return "source_head"
     return key
+
+
+def _canonical_outcome(raw_outcome: str) -> str:
+    outcome = raw_outcome.strip().casefold().replace("-", "_").replace(" ", "_")
+    while "__" in outcome:
+        outcome = outcome.replace("__", "_")
+    return outcome
 
 
 def _read_evidence_text(rel_path: str) -> str:
     full_path = PROJECT_ROOT / rel_path
     try:
-        with full_path.open("r", encoding="utf-8") as evidence_file:
-            return evidence_file.read(200_000)
+        return full_path.read_text(encoding="utf-8")
     except Exception as exc:  # noqa: BLE001 - gate evidence must be readable.
         raise GateError(f"cannot read evidence path {rel_path}: {exc}") from exc
 
@@ -207,18 +255,18 @@ def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
     if raw_package is None:
         return None
     package = require_mapping(raw_package, "current_review_package")
-    archive_name = require_str(package.get("archive_name"), "current_review_package.archive_name")
-    package_key = require_str(package.get("package"), "current_review_package.package")
-    archive_sha256 = require_str(package.get("archive_sha256"), "current_review_package.archive_sha256").lower()
+    archive_name = require_str(package.get("archive_name"), "current_review_package.archive_name").strip()
+    package_key = require_str(package.get("package"), "current_review_package.package").strip()
+    archive_sha256 = require_str(package.get("archive_sha256"), "current_review_package.archive_sha256").strip().lower()
     archive_size_bytes = require_int(
         package.get("archive_size_bytes"),
         "current_review_package.archive_size_bytes",
     )
-    source_head = require_str(package.get("source_head"), "current_review_package.source_head").lower()
+    source_head = require_str(package.get("source_head"), "current_review_package.source_head").strip().lower()
     source_list_identity = require_str(
         package.get("source_list_identity"),
         "current_review_package.source_list_identity",
-    )
+    ).strip()
     if not archive_name.endswith(".7z"):
         raise GateError("current_review_package.archive_name must name a .7z archive")
     if not _is_hex_digest(archive_sha256, length=64):
@@ -227,8 +275,13 @@ def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
         raise GateError("current_review_package.archive_size_bytes must be positive")
     if not _is_hex_digest(source_head, length=40):
         raise GateError("current_review_package.source_head must be a 40-character hex commit")
-    if _canonical_package_key(package_key) != _canonical_package_key(archive_name):
-        raise GateError("current_review_package.package must match archive_name")
+    project_head = _project_git_head()
+    if project_head is not None and source_head != project_head:
+        raise GateError(f"current_review_package.source_head must match project git HEAD {project_head}: {source_head}")
+    if package_key != archive_name:
+        raise GateError("current_review_package.package must exactly match archive_name")
+    if _is_placeholder_metadata_value(source_list_identity):
+        raise GateError("current_review_package.source_list_identity must not be a placeholder")
     return {
         "archive_name": archive_name,
         "archive_sha256": archive_sha256,
@@ -265,10 +318,7 @@ def _check_evidence_matches_current_package(
         if key in {"archive_sha256", "source_head"}:
             value = value.lower()
         if value != expected_value:
-            errors.append(
-                f"evidence path {rel_path} current package metadata {key} "
-                f"{value!r} != {expected_value!r}"
-            )
+            errors.append(f"evidence path {rel_path} current package metadata {key} {value!r} != {expected_value!r}")
     return errors
 
 
@@ -302,7 +352,6 @@ def load_gate(path: Path) -> dict[str, Any]:
     return require_mapping(payload, rel(path))
 
 
-
 def _is_not_implemented_raise(stmt: ast.stmt) -> bool:
     if not isinstance(stmt, ast.Raise) or stmt.exc is None:
         return False
@@ -322,13 +371,17 @@ def _function_body_is_fail_closed_not_implemented(source_path: Path, symbol: str
         if not isinstance(node, ast.FunctionDef) or node.name != symbol:
             continue
         body = list(node.body)
-        if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) and isinstance(body[0].value.value, str):
+        if (
+            body
+            and isinstance(body[0], ast.Expr)
+            and isinstance(body[0].value, ast.Constant)
+            and isinstance(body[0].value.value, str)
+        ):
             body = body[1:]
         if body and isinstance(body[0], ast.Delete):
             body = body[1:]
         return len(body) == 1 and _is_not_implemented_raise(body[0])
     raise GateError(f"source boundary symbol not found: {rel(source_path)}::{symbol}")
-
 
 
 def _review_history_clean_counter(
@@ -343,7 +396,7 @@ def _review_history_clean_counter(
     reset contains the required consecutive independent full external reviews.
     """
     count = 0
-    for record in records[latest_reset_index + 1:]:
+    for record in records[latest_reset_index + 1 :]:
         if record["review_type"] != CLEAN_FULL_REVIEW_TYPE:
             continue
         if record["clean"] and record["major"] == 0 and not record["resets_counter"]:
@@ -351,6 +404,7 @@ def _review_history_clean_counter(
         else:
             count = 0
     return count
+
 
 def _check_source_boundaries(boundaries: list[Any], *, status: str) -> list[str]:
     errors: list[str] = []
@@ -368,9 +422,7 @@ def _check_source_boundaries(boundaries: list[Any], *, status: str) -> list[str]
             continue
         if status != CLOSED_STATUS and required_state == "fail_closed_not_implemented":
             if not _function_body_is_fail_closed_not_implemented(full_path, symbol):
-                errors.append(
-                    f"source boundary no longer fail-closed before gate close: {rel_path}::{symbol}"
-                )
+                errors.append(f"source boundary no longer fail-closed before gate close: {rel_path}::{symbol}")
         elif required_state != "fail_closed_not_implemented":
             errors.append(f"unsupported source boundary required_state_until_closed: {required_state}")
     return errors
@@ -416,8 +468,7 @@ def _check_evidence_paths(
             errors.append(f"{label}.evidence_paths contains duplicate evidence content: {rel_path}")
         seen_content_digests.add(content_digest)
         if require_review_artifact and (
-            not _is_review_evidence_path(rel_path)
-            or not _is_review_evidence_path(canonical_path)
+            not _is_review_evidence_path(rel_path) or not _is_review_evidence_path(canonical_path)
         ):
             errors.append(
                 f"{label}.evidence_paths must point to a review/research artifact "
@@ -432,9 +483,7 @@ def _check_evidence_paths(
                 errors.append(str(exc))
                 continue
             if not package_matches:
-                errors.append(
-                    f"{label}.evidence_paths must match review package {package!r}: {rel_path}"
-                )
+                errors.append(f"{label}.evidence_paths must match review package {package!r}: {rel_path}")
     return errors, canonical_paths, file_identities, content_digests
 
 
@@ -564,14 +613,19 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 "evidence_paths": require_list(entry.get("evidence_paths"), f"review_history[{index}].evidence_paths"),
             }
         )
-        outcome_reports_major = outcome in MAJOR_OR_SOUNDNESS_OUTCOMES
-        if major < 0:
+        canonical_outcome = _canonical_outcome(outcome)
+        if canonical_outcome not in ALLOWED_OUTCOMES:
+            errors.append(f"review_history[{index}] has unsupported outcome: {outcome!r}")
+        elif outcome != canonical_outcome:
             errors.append(
-                f"review_history[{index}].major_or_soundness_findings cannot be negative: {major}"
+                f"review_history[{index}].outcome must use canonical spelling {canonical_outcome!r}: {outcome!r}"
             )
-        if clean and outcome != "clean":
+        outcome_reports_major = canonical_outcome in MAJOR_OR_SOUNDNESS_OUTCOMES
+        if major < 0:
+            errors.append(f"review_history[{index}].major_or_soundness_findings cannot be negative: {major}")
+        if clean and canonical_outcome != "clean":
             errors.append(f"review_history[{index}] is clean but outcome is {outcome!r}")
-        if not clean and outcome == "clean":
+        if not clean and canonical_outcome == "clean":
             errors.append(f"review_history[{index}] outcome is clean but clean=false")
         if clean and major != 0:
             errors.append(f"review_history[{index}] is clean but has {major} major/soundness findings")
@@ -579,8 +633,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
             errors.append(f"review_history[{index}] is clean but resets the clean-review counter")
         if outcome_reports_major and major <= 0:
             errors.append(
-                f"review_history[{index}] outcome {outcome!r} requires a positive "
-                "major_or_soundness_findings count"
+                f"review_history[{index}] outcome {outcome!r} requires a positive major_or_soundness_findings count"
             )
         if not clean and major == 0 and resets_counter:
             errors.append(f"review_history[{index}] resets counter but has zero major/soundness findings")
@@ -593,16 +646,10 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 reset_entries.append(index)
         evidence_paths = history_records[-1]["evidence_paths"]
         requires_evidence = resets_counter or (
-            review_type == CLEAN_FULL_REVIEW_TYPE
-            and clean
-            and major == 0
-            and not resets_counter
+            review_type == CLEAN_FULL_REVIEW_TYPE and clean and major == 0 and not resets_counter
         )
         requires_clean_review_evidence = (
-            review_type == CLEAN_FULL_REVIEW_TYPE
-            and clean
-            and major == 0
-            and not resets_counter
+            review_type == CLEAN_FULL_REVIEW_TYPE and clean and major == 0 and not resets_counter
         )
         (
             evidence_errors,
@@ -629,14 +676,11 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
         if requires_clean_review_evidence:
             package_key = _canonical_package_key(package)
             if current_review_package is None:
-                errors.append(
-                    f"review_history[{index}] clean review requires current_review_package identity"
-                )
+                errors.append(f"review_history[{index}] clean review requires current_review_package identity")
             else:
-                current_package_key = _canonical_package_key(current_review_package["package"])
-                if package_key != current_package_key:
+                if package != current_review_package["package"]:
                     errors.append(
-                        f"review_history[{index}].package must match current_review_package.package "
+                        f"review_history[{index}].package must exactly match current_review_package.package "
                         f"{current_review_package['package']!r}: {package}"
                     )
             reset_package_owner = reset_review_package_owner.get(package_key)
@@ -685,8 +729,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 owner = clean_review_content_owner.get(content_digest)
                 if owner is not None:
                     errors.append(
-                        f"review_history[{index}] reuses clean-review evidence content "
-                        f"from review_history[{owner}]"
+                        f"review_history[{index}] reuses clean-review evidence content from review_history[{owner}]"
                     )
                 else:
                     clean_review_content_owner[content_digest] = index
@@ -721,7 +764,9 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 )
 
     errors.extend(_check_doc_markers(require_list(gate.get("required_doc_markers"), "required_doc_markers")))
-    errors.extend(_check_source_boundaries(require_list(gate.get("source_boundaries", []), "source_boundaries"), status=status))
+    errors.extend(
+        _check_source_boundaries(require_list(gate.get("source_boundaries", []), "source_boundaries"), status=status)
+    )
     summary = f"{gate_id}: status={status}, clean={clean_count}/{required}, next_allowed={next_allowed}"
     return summary, errors
 
@@ -741,9 +786,7 @@ def _gate_by_id(paths: list[Path]) -> dict[str, dict[str, Any]]:
         gate = load_gate(path)
         gate_id = require_str(gate.get("gate_id"), f"{rel(path)}.gate_id")
         if gate_id in gates:
-            raise GateError(
-                f"duplicate gate_id {gate_id!r}: {rel(owners[gate_id])} and {rel(path)}"
-            )
+            raise GateError(f"duplicate gate_id {gate_id!r}: {rel(owners[gate_id])} and {rel(path)}")
         gates[gate_id] = gate
         owners[gate_id] = path
     return gates
@@ -787,8 +830,7 @@ def _check_required_ready(paths: list[Path], required_gate_ids: list[str]) -> li
         status = require_str(gate.get("status"), f"{gate_id}.status")
         if status != CLOSED_STATUS or clean_count < required or not next_allowed:
             errors.append(
-                f"{gate_id} is not ready: status={status}, "
-                f"clean={clean_count}/{required}, next_allowed={next_allowed}"
+                f"{gate_id} is not ready: status={status}, clean={clean_count}/{required}, next_allowed={next_allowed}"
             )
     return errors
 
