@@ -2,7 +2,7 @@
 
 Current gate state: BLOCKED.
 
-Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v31_postmortem_consolidation. The v31 candidate review found confirmed major/soundness issues, and the follow-up proof-obligation postmortem found one additional V31-family Step 7/Step 6 attachability gap. That resets/keeps the consecutive-clean counter at zero.
+Phase 1.2 spike close is deliberately not treated as complete yet. The current review anchor is v44_candidate. After the V43 hardening, V44 found two phase-gate provenance blockers: source_head authority could still be borrowed from sibling/bare/alternate Git roots, and clean-review evidence metadata could hide stale package identity through multiline/nested/escaped or delimited forms. That resets/keeps the consecutive-clean counter at zero.
 
 The close policy is:
 

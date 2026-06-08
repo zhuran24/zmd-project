@@ -86,6 +86,8 @@ METADATA_DELIMITER_CONFUSABLES = frozenset(
         "꛴",  # bamum colon
     }
 )
+HTML_UNESCAPE_MAX_DEPTH = 8
+GIT_CONFIG_INCLUDE_SECTION_PREFIXES = ("include", "includeif")
 PLACEHOLDER_METADATA_SUBSTRINGS = {
     "notprovided",
     "notavailable",
@@ -223,7 +225,7 @@ def require_unpadded_str(value: Any, label: str) -> str:
 
 
 def _ascii_security_skeleton(value: str) -> str:
-    normalized = unicodedata.normalize("NFKC", value).casefold()
+    normalized = unicodedata.normalize("NFKC", _deep_html_unescape(value)).casefold()
     skeleton_chars: list[str] = []
     for ch in normalized:
         replacement = ASCII_SECURITY_CONFUSABLES.get(ch, ch)
@@ -231,6 +233,17 @@ def _ascii_security_skeleton(value: str) -> str:
             if not unicodedata.combining(part):
                 skeleton_chars.append(part)
     return unicodedata.normalize("NFKC", "".join(skeleton_chars))
+
+
+def _deep_html_unescape(value: str) -> str:
+    """Decode nested HTML entities used to hide metadata vocabulary/delimiters."""
+    decoded = value
+    for _ in range(HTML_UNESCAPE_MAX_DEPTH):
+        next_decoded = html.unescape(decoded)
+        if next_decoded == decoded:
+            break
+        decoded = next_decoded
+    return decoded
 
 
 def _normalized_match_text(value: str) -> str:
@@ -285,11 +298,123 @@ def _trusted_git_search_dirs() -> list[str]:
     return trusted_dirs
 
 
+def _path_is_junction(path: Path) -> bool:
+    is_junction = getattr(path, "is_junction", None)
+    if is_junction is None:
+        return False
+    try:
+        return bool(is_junction())
+    except OSError:
+        return False
+
+
+def _git_authority_path_is_external(git_dir: Path, path: Path) -> bool:
+    try:
+        path.resolve(strict=True).relative_to(git_dir.resolve(strict=True))
+    except ValueError:
+        return True
+    except FileNotFoundError:
+        return False
+    return False
+
+
+def _check_git_authority_path(git_dir: Path, path: Path, label: str) -> None:
+    if not path.exists():
+        return
+    if path.is_symlink() or _path_is_junction(path):
+        raise GateError(f"project git authority path must not be a symlink or junction: {label}")
+    if _git_authority_path_is_external(git_dir, path):
+        raise GateError(f"project git authority path resolves outside .git: {label}")
+
+
+def _check_git_authority_tree(git_dir: Path, path: Path, label: str) -> None:
+    _check_git_authority_path(git_dir, path, label)
+    if not path.exists() or not path.is_dir():
+        return
+    for root, dirnames, filenames in os.walk(path):
+        root_path = Path(root)
+        for name in [*dirnames, *filenames]:
+            child = root_path / name
+            rel_child = child.relative_to(git_dir).as_posix()
+            _check_git_authority_path(git_dir, child, rel_child)
+
+
+def _git_control_file_text(git_dir: Path, rel_path: str) -> str | None:
+    path = git_dir / rel_path
+    if not path.exists():
+        return None
+    _check_git_authority_path(git_dir, path, rel_path)
+    if not path.is_file():
+        raise GateError(f"project git authority control path must be a file: {rel_path}")
+    try:
+        return path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return path.read_text(encoding="utf-8", errors="replace")
+    except Exception as exc:  # noqa: BLE001 - source identity controls must be readable.
+        raise GateError(f"cannot read project git authority control file {rel_path}: {exc}") from exc
+
+
+def _reject_git_alternates(git_dir: Path) -> None:
+    for rel_path in ("objects/info/alternates", "objects/info/http-alternates"):
+        text = _git_control_file_text(git_dir, rel_path)
+        if text is not None and text.strip():
+            raise GateError(f"project git authority must not use Git alternates: .git/{rel_path}")
+
+
+def _reject_git_common_dir_indirection(git_dir: Path) -> None:
+    for rel_path in ("commondir", "gitdir"):
+        text = _git_control_file_text(git_dir, rel_path)
+        if text is not None and text.strip():
+            raise GateError(f"project git authority must not use worktree/common-dir indirection: .git/{rel_path}")
+
+
+def _reject_git_config_includes(git_dir: Path) -> None:
+    text = _git_control_file_text(git_dir, "config")
+    if text is None:
+        return
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith(("#", ";")):
+            continue
+        if not stripped.startswith("[") or "]" not in stripped:
+            continue
+        section = stripped[1 : stripped.index("]")].strip().casefold()
+        section_head = section.split(maxsplit=1)[0]
+        if section_head.startswith(GIT_CONFIG_INCLUDE_SECTION_PREFIXES):
+            raise GateError("project git authority config must not use include/includeIf indirection")
+
+
+def _looks_like_bare_gitdir(path: Path) -> bool:
+    return (path / "HEAD").exists() and (path / "objects").exists() and (path / "refs").exists()
+
+
+def _validate_project_git_authority_root() -> Path | None:
+    git_dir = PROJECT_ROOT / ".git"
+    if git_dir.is_symlink() or _path_is_junction(git_dir):
+        raise GateError("project .git must not be a symlink or junction")
+    if not git_dir.exists():
+        if _looks_like_bare_gitdir(PROJECT_ROOT):
+            raise GateError("project git authority must be a worktree with a self-contained .git directory, not a bare gitdir")
+        return None
+    if not git_dir.is_dir():
+        raise GateError("project .git must be a self-contained directory, not a gitdir file/worktree/submodule indirection")
+    _check_git_authority_path(git_dir, git_dir / "HEAD", "HEAD")
+    _check_git_authority_tree(git_dir, git_dir / "objects", "objects")
+    _check_git_authority_tree(git_dir, git_dir / "refs", "refs")
+    _check_git_authority_path(git_dir, git_dir / "packed-refs", "packed-refs")
+    _reject_git_alternates(git_dir)
+    _reject_git_common_dir_indirection(git_dir)
+    _reject_git_config_includes(git_dir)
+    return git_dir
+
+
 def _project_git_env() -> dict[str, str]:
     # Git identity is the checked-out project root, not caller-provided Git
     # environment overrides.  Inherited GIT_DIR/GIT_WORK_TREE can otherwise make
     # `git rev-parse HEAD` resolve an unrelated repository while .git is present.
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
+    env["GIT_CONFIG_GLOBAL"] = os.devnull
+    env["GIT_CONFIG_NOSYSTEM"] = "1"
     env["PATH"] = os.pathsep.join(_trusted_git_search_dirs())
     if os.name == "nt":
         # subprocess is invoked with an explicit git.exe path on Windows; keep
@@ -317,7 +442,7 @@ def _project_git_command() -> str:
 
 
 def _project_git_head() -> str | None:
-    if not (PROJECT_ROOT / ".git").exists():
+    if _validate_project_git_authority_root() is None:
         return None
     try:
         result = subprocess.run(
@@ -475,6 +600,7 @@ def _is_metadata_delimiter_confusable(ch: str) -> bool:
 
 
 def _confusable_metadata_delimiter_error(line: str, rel_path: str) -> str | None:
+    line = _deep_html_unescape(line)
     ascii_colon_index = line.find(":")
     scan_limit = ascii_colon_index if ascii_colon_index != -1 else len(line)
     for index, ch in enumerate(line[:scan_limit]):
@@ -487,7 +613,7 @@ def _confusable_metadata_delimiter_error(line: str, rel_path: str) -> str | None
 
 
 def _markdown_table_metadata_error(line: str, rel_path: str) -> str | None:
-    stripped = unicodedata.normalize("NFKC", line.strip())
+    stripped = unicodedata.normalize("NFKC", _deep_html_unescape(line).strip())
     if "|" not in stripped:
         return None
     cells = [cell.strip(" `*_\t") for cell in stripped.strip("|").split("|")]
@@ -503,39 +629,71 @@ def _markdown_table_metadata_error(line: str, rel_path: str) -> str | None:
     return None
 
 
-HTML_TABLE_CELL_RE = re.compile(r"<\s*t[dh]\b[^>]*>(.*?)<\s*/\s*t[dh]\s*>", re.IGNORECASE)
-HTML_TAG_RE = re.compile(r"<[^>]+>")
+HTML_TABLE_RE = re.compile(r"<\s*table\b.*?<\s*/\s*table\s*>", re.IGNORECASE | re.DOTALL)
+HTML_TABLE_CELL_RE = re.compile(r"<\s*t[dh]\b[^>]*>(.*?)<\s*/\s*t[dh]\s*>", re.IGNORECASE | re.DOTALL)
+HTML_TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
 
 
-def _html_table_metadata_error(line: str, rel_path: str) -> str | None:
-    lowered = line.casefold()
+def _html_cell_text(cell: str) -> str:
+    return _deep_html_unescape(HTML_TAG_RE.sub(" ", cell)).strip(" `*_\t\r\n")
+
+
+def _html_table_metadata_error(text: str, rel_path: str) -> str | None:
+    decoded_text = _deep_html_unescape(text)
+    lowered = decoded_text.casefold()
     if not any(token in lowered for token in ("<table", "<td", "<th")):
         return None
-    cells = HTML_TABLE_CELL_RE.findall(line)
-    if not cells and "<table" in lowered:
-        cells = [line]
-    for cell in cells:
-        text = html.unescape(HTML_TAG_RE.sub(" ", cell)).strip(" `*_\t")
-        if not text:
+    chunks = HTML_TABLE_RE.findall(decoded_text) or [decoded_text]
+    for chunk in chunks:
+        if not any(token in chunk.casefold() for token in ("<table", "<td", "<th")):
             continue
-        key = _evidence_metadata_key(text)
-        if key in REVIEW_PACKAGE_METADATA_KEYS:
-            return f"evidence metadata key {key!r} must use ASCII colon delimiter, not HTML table syntax: {rel_path}"
+        cells = HTML_TABLE_CELL_RE.findall(chunk)
+        if not cells and "<table" in chunk.casefold():
+            cells = [chunk]
+        for cell in cells:
+            cell_text = _html_cell_text(cell)
+            if not cell_text:
+                continue
+            key = _evidence_metadata_key(cell_text)
+            if key in REVIEW_PACKAGE_METADATA_KEYS:
+                return f"evidence metadata key {key!r} must use ASCII colon delimiter, not HTML table syntax: {rel_path}"
+    return None
+
+
+def _delimited_metadata_error(line: str, rel_path: str) -> str | None:
+    stripped = unicodedata.normalize("NFKC", _deep_html_unescape(line).strip())
+    for delimiter in (",", ";"):
+        if delimiter not in stripped:
+            continue
+        cells = [cell.strip(" `*_[]\t") for cell in stripped.split(delimiter)]
+        if len(cells) < 2:
+            continue
+        for cell in cells:
+            if not cell:
+                continue
+            key = _evidence_metadata_key(cell)
+            if key in REVIEW_PACKAGE_METADATA_KEYS:
+                return f"evidence metadata key {key!r} must use ASCII colon delimiter, not delimited syntax: {rel_path}"
     return None
 
 
 def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     metadata: dict[str, str] = {}
-    for line in _read_evidence_text(rel_path).splitlines():
+    text = _read_evidence_text(rel_path)
+    html_table_error = _html_table_metadata_error(text, rel_path)
+    if html_table_error is not None:
+        raise GateError(html_table_error)
+    for raw_line in text.splitlines():
+        line = _deep_html_unescape(raw_line)
         delimiter_error = _confusable_metadata_delimiter_error(line, rel_path)
         if delimiter_error is not None:
             raise GateError(delimiter_error)
         table_error = _markdown_table_metadata_error(line, rel_path)
         if table_error is not None:
             raise GateError(table_error)
-        html_table_error = _html_table_metadata_error(line, rel_path)
-        if html_table_error is not None:
-            raise GateError(html_table_error)
+        delimited_error = _delimited_metadata_error(line, rel_path)
+        if delimited_error is not None:
+            raise GateError(delimited_error)
         if ":" not in line:
             continue
         raw_key, raw_value = line.split(":", 1)

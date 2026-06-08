@@ -88,6 +88,13 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_git_replace_ref_backed_non_commit_head",
             "test_project_git_command_ignores_relative_defpath_entries",
             "test_windows_project_git_command_uses_standard_git_paths_before_os_defpath",
+            "test_validator_rejects_gitdir_file_indirection_to_sibling_repo",
+            "test_validator_rejects_git_objects_alternates_for_source_head_authority",
+            "test_validator_rejects_bare_gitdir_source_head_authority",
+            "test_validator_rejects_git_config_include_indirection_for_source_head_authority",
+            "test_validator_rejects_git_authority_symlink_escape_for_source_head_authority",
+            "test_validator_rejects_git_root_symlink_even_when_broken",
+            "test_validator_rejects_escaped_and_wrapped_metadata_conflicts",
         }
     ),
 }
@@ -456,6 +463,8 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         errors.append("_is_safe_archive_name must reject Windows reserved archive basenames")
 
     project_git_head_fn = _function_def(tree, "_project_git_head", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(project_git_head_fn, "_validate_project_git_authority_root"):
+        errors.append("_project_git_head must reject sibling/bare/alternate Git authority roots")
     if not _calls_function(project_git_head_fn, "_project_git_env"):
         errors.append("_project_git_head must use a sanitized Git authority environment")
     if not _calls_function(project_git_head_fn, "_project_git_command"):
@@ -466,6 +475,8 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         errors.append("_project_git_env must build PATH only from trusted Git search dirs")
     if not _uses_constant(project_git_env_fn, "GIT_NO_REPLACE_OBJECTS"):
         errors.append("_project_git_env must disable Git replacement refs while checking source_head")
+    if not _uses_constant(project_git_env_fn, "GIT_CONFIG_NOSYSTEM"):
+        errors.append("_project_git_env must ignore system Git config while checking source_head")
 
     project_git_command_fn = _function_def(tree, "_project_git_command", path=PHASE_GATE_SCRIPT_PATH)
     if not _calls_function(project_git_command_fn, "_trusted_git_search_dirs"):
@@ -479,8 +490,11 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         "_project_git_env",
         "_project_git_command",
         "_trusted_git_search_dirs",
+        "_validate_project_git_authority_root",
         "_ascii_security_skeleton",
+        "_deep_html_unescape",
         "_html_table_metadata_error",
+        "_delimited_metadata_error",
     ):
         _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
     return errors

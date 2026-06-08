@@ -3,9 +3,9 @@
   "gate_id": "phase_1_2_spike_close",
   "phase": "Phase 1.2 spike close",
   "status": "blocked_pending_clean_reviews",
-  "updated_at": "2026-06-07",
-  "summary": "P1.2 is not formally closed: v31 candidate review and follow-up proof-obligation postmortem found major/soundness issues, so the consecutive-clean counter remains zero.",
-  "current_review_anchor": "v31_postmortem_consolidation",
+  "updated_at": "2026-06-08",
+  "summary": "P1.2 is not formally closed: V44 found phase-gate source-head authority and evidence-metadata provenance blockers after the V43 fixes, so the consecutive-clean counter remains zero.",
+  "current_review_anchor": "v44_candidate",
   "close_policy": {
     "required_consecutive_clean_full_reviews": 3,
     "clean_review_definition": "An independent full external review that reports zero major or soundness findings against the current review package and its patched source tree.",
@@ -17,7 +17,7 @@
       "high",
       "major"
     ],
-    "reset_on_or_after_review_package": "v31_postmortem_consolidation"
+    "reset_on_or_after_review_package": "v44_candidate"
   },
   "counters": {
     "consecutive_clean_full_reviews_after_reset": 0,
@@ -25,17 +25,17 @@
     "remaining_clean_full_reviews": 3
   },
   "last_reset": {
-    "review_package": "v31_postmortem_consolidation",
-    "reason": "The v31 postmortem found the same proof-obligation class was still not fully centralized: Step 7 hot-path evaluation mirrored source/artifact/ghost scope but not Step 6 HOLD decisions for unavailable oracle versions or inactive assumptions.",
+    "review_package": "v44_candidate",
+    "reason": "V44 found phase-gate provenance blockers: source_head could be certified through sibling/bare/alternate Git authority roots, and clean-review evidence metadata could hide stale package identity through multiline/nested/escaped or delimited forms.",
     "resets_counter": true,
     "evidence_paths": [
-      "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md"
     ]
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
     "allowed": false,
-    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v31_postmortem_consolidation."
+    "reason": "Blocked until status becomes closed and the counter records three consecutive clean full reviews after v44_candidate."
   },
   "review_history": [
     {
@@ -82,6 +82,17 @@
       "evidence_paths": [
         "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
       ]
+    },
+    {
+      "package": "v44_candidate",
+      "review_type": "independent_full_external",
+      "outcome": "major_soundness_findings_found",
+      "clean": false,
+      "major_or_soundness_findings": 2,
+      "resets_counter": true,
+      "evidence_paths": [
+        "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md"
+      ]
     }
   ],
   "required_doc_markers": [
@@ -91,7 +102,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "contains": "v31 candidate review plus `v31_postmortem_consolidation` reset/kept the consecutive-clean counter"
+      "contains": "`v44_candidate` reset/kept the consecutive-clean counter"
     },
     {
       "path": "docs/PHASE_1_2_CLOSE_GATE.md",
@@ -99,7 +110,7 @@
     },
     {
       "path": "docs/项目说明/06_current_status.md",
-      "contains": "consecutive-clean 计数器**重置、尚未达标"
+      "contains": "v44_candidate 后 consecutive-clean 计数器**重置、尚未达标"
     },
     {
       "path": "docs/项目说明/12_go_criteria.md",

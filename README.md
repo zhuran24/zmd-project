@@ -4,8 +4,8 @@
 
 ## 当前主线（subject projection）
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:875d122ed57542b6e32c777f0bb7a78a8310299dcaec90ad09b3e0cc03cdcab8 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. The v31 candidate review plus the follow-up proof-obligation postmortem found major/soundness issues and reset/kept the close counter at 0; the phase gate now requires **3 consecutive independent full reviews with zero major/soundness findings** after `v31_postmortem_consolidation` before entering the true `PoseBoolExactMaster` LBBD master integration (`P1.3B` in the project-book docs, historically `P1.3A 主体` in older CC memory). Treat this as a living projection of `docs/subjects/current_project_state.md`; do not hand-copy a separate current-phase story elsewhere.
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:ebe59b882a1004d22f193604e6f4aa9158a5aeb7df8ac4d354426bd678cb021b -->
+Current working state: **Phase 1.2 spike close is not formally closed**. The v44 candidate review found phase-gate source-head authority and evidence-metadata provenance blockers after the V43 hardening, so it reset/kept the close counter at 0; the phase gate now requires **3 consecutive independent full reviews with zero major/soundness findings** after `v44_candidate` before entering the true `PoseBoolExactMaster` LBBD master integration (`P1.3B` in the project-book docs, historically `P1.3A 主体` in older CC memory). Treat this as a living projection of `docs/subjects/current_project_state.md`; do not hand-copy a separate current-phase story elsewhere.
 <!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
 
 ## 精确性边界（subject projection）
