@@ -20,7 +20,7 @@ import subprocess
 import unicodedata
 import sys
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, NoReturn
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
@@ -215,6 +215,10 @@ def _json_object_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[st
             raise GateError(f"duplicate JSON object key: {key}")
         result[key] = value
     return result
+
+
+def _reject_json_constant(value: str) -> NoReturn:
+    raise GateError(f"invalid JSON constant {value!r}; phase-gate JSON must be strict JSON")
 
 
 def rel(path: Path) -> str:
@@ -1172,6 +1176,7 @@ def _canonical_json_payload(path: Path) -> dict[str, Any]:
         payload = json.loads(
             path.read_text(encoding="utf-8"),
             object_pairs_hook=_json_object_without_duplicate_keys,
+            parse_constant=_reject_json_constant,
         )
     except Exception as exc:  # noqa: BLE001 - receipt bytes must be strict JSON, not report prose.
         raise GateError(f"cannot read strict JSON receipt {rel(path)}: {exc}") from exc
@@ -1239,7 +1244,19 @@ def _validate_clean_review_receipt(
         errors.append(f"{label}.receipt.review_result must be 'clean'")
     if require_int(receipt.get("major_or_soundness_findings"), f"{label}.receipt.major_or_soundness_findings") != 0:
         errors.append(f"{label}.receipt.major_or_soundness_findings must be 0")
-    domains = require_list(receipt.get("finding_domains_reviewed"), f"{label}.receipt.finding_domains_reviewed")
+    require_unpadded_str(receipt.get("reviewer_id"), f"{label}.receipt.reviewer_id")
+    require_unpadded_str(receipt.get("review_run_id"), f"{label}.receipt.review_run_id")
+    raw_domains = require_list(receipt.get("finding_domains_reviewed"), f"{label}.receipt.finding_domains_reviewed")
+    domains: list[str] = []
+    for domain_index, raw_domain in enumerate(raw_domains):
+        domains.append(
+            require_unpadded_str(
+                raw_domain,
+                f"{label}.receipt.finding_domains_reviewed[{domain_index}]",
+            )
+        )
+    if len(set(domains)) != len(domains):
+        errors.append(f"{label}.receipt.finding_domains_reviewed must not contain duplicate domains")
     if "algorithmic_soundness" not in domains:
         errors.append(f"{label}.receipt.finding_domains_reviewed must include 'algorithmic_soundness'")
     report_path = require_str(receipt.get("report_path"), f"{label}.receipt.report_path")
@@ -1289,6 +1306,7 @@ def load_gate(path: Path) -> dict[str, Any]:
         payload = json.loads(
             path.read_text(encoding="utf-8"),
             object_pairs_hook=_json_object_without_duplicate_keys,
+            parse_constant=_reject_json_constant,
         )
     except Exception as exc:  # noqa: BLE001
         raise GateError(f"cannot read {rel(path)}: {exc}") from exc
@@ -1593,6 +1611,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 f"review_history[{index}].outcome must use canonical spelling {canonical_outcome!r}: {outcome!r}"
             )
         outcome_reports_major = canonical_outcome in MAJOR_OR_SOUNDNESS_OUTCOMES
+        signals_major_or_soundness = major > 0 or outcome_reports_major
         if major < 0:
             errors.append(f"review_history[{index}].major_or_soundness_findings cannot be negative: {major}")
         if clean and canonical_outcome != "clean":
@@ -1618,9 +1637,14 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                 errors.append(f"review_history[{index}] infrastructure hardening must not reset the algorithmic clean counter")
         if resets_counter and finding_domain not in ALGORITHM_RESET_FINDING_DOMAINS:
             errors.append(f"review_history[{index}] resets counter with non-algorithmic finding_domain {finding_domain!r}")
+        if signals_major_or_soundness and infrastructure_hardening:
+            errors.append(
+                f"review_history[{index}] major/soundness findings must use an algorithmic reset finding_domain, "
+                f"not {finding_domain!r}"
+            )
         if not clean and major == 0 and resets_counter:
             errors.append(f"review_history[{index}] resets counter but has zero major/soundness findings")
-        if not clean and (major > 0 or outcome_reports_major) and not resets_counter and not infrastructure_hardening:
+        if not clean and signals_major_or_soundness and not resets_counter:
             errors.append(f"review_history[{index}] has major/soundness findings but does not reset counter")
         if resets_counter:
             all_reset_entries.append((index, package))

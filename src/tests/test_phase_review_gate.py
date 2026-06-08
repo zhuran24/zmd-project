@@ -2515,6 +2515,30 @@ def test_validator_rejects_clean_review_receipt_report_sha_mismatch(
     assert "phase_1_2_spike_close" in summary
     assert any("receipt.report_sha256" in error and "actual report digest" in error for error in errors)
 
+def test_validator_rejects_non_standard_json_constant_in_clean_review_receipt(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="v47_receipt_nan")
+    first_receipt = fake_root / payload["review_history"][-3]["receipt_path"]
+    receipt_text = first_receipt.read_text(encoding="utf-8")
+    first_receipt.write_text(
+        receipt_text.replace('"reviewer_id":"pytest-reviewer"', '"reviewer_id":NaN'),
+        encoding="utf-8",
+    )
+    fake_gate = fake_root / "fake_receipt_nan.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("invalid JSON constant 'NaN'" in error for error in errors)
+
+
 def test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_clean_reviews(
     tmp_path: Path,
     monkeypatch,
@@ -2543,6 +2567,37 @@ def test_validator_rejects_hidden_major_outcome_without_reset_even_with_later_cl
     assert "phase_1_2_spike_close" in summary
     assert any("requires a positive major_or_soundness_findings count" in error for error in errors)
     assert any("does not reset counter" in error for error in errors)
+
+
+def test_validator_rejects_misclassified_major_soundness_outcome_as_infrastructure_after_clean_reviews(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    _append_three_clean_reviews(fake_root, payload, prefix="misclassified_major")
+    payload["review_history"].append(
+        {
+            "package": "v47_misclassified_major_soundness",
+            "review_type": "internal_proof_obligation_consolidation",
+            "outcome": "major_soundness_findings_found",
+            "clean": False,
+            "major_or_soundness_findings": 1,
+            "resets_counter": False,
+            "finding_domain": "review_infrastructure_hardening",
+            "evidence_paths": [],
+        }
+    )
+    fake_gate = fake_root / "fake_misclassified_major_soundness.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("major/soundness findings must use an algorithmic reset finding_domain" in error for error in errors)
+    assert any("has major/soundness findings but does not reset counter" in error for error in errors)
 
 
 def test_validator_rejects_negative_major_or_soundness_findings_count(
