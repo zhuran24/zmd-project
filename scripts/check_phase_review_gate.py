@@ -1200,16 +1200,16 @@ def _validate_clean_review_receipt(
     gate_id: str,
     current_package: dict[str, Any],
     target_anchor: str,
-) -> tuple[list[str], str | None, tuple[int, int] | None, str | None]:
+) -> tuple[list[str], str | None, tuple[int, int] | None, str | None, str | None]:
     errors: list[str] = []
     if raw_receipt_path is None:
-        return [f"{label}.receipt_path is required for clean-review credit"], None, None, None
+        return [f"{label}.receipt_path is required for clean-review credit"], None, None, None, None
     try:
         receipt_rel = _canonical_project_rel_path(require_str(raw_receipt_path, f"{label}.receipt_path"))
         receipt_identity = _evidence_file_identity(receipt_rel)
         receipt_digest = _evidence_content_digest(receipt_rel)
     except GateError as exc:
-        return [str(exc)], None, None, None
+        return [str(exc)], None, None, None, None
     if not _is_review_receipt_path(receipt_rel):
         errors.append(
             f"{label}.receipt_path must point to a strict JSON review receipt under "
@@ -1219,12 +1219,13 @@ def _validate_clean_review_receipt(
         receipt = _canonical_json_payload(PROJECT_ROOT / receipt_rel)
     except GateError as exc:
         errors.append(str(exc))
-        return errors, receipt_rel, receipt_identity, receipt_digest
+        return errors, receipt_rel, receipt_identity, receipt_digest, None
 
     errors.extend(_check_exact_keys(receipt, REVIEW_RECEIPT_KEYS, f"{label}.receipt"))
     if errors:
-        return errors, receipt_rel, receipt_identity, receipt_digest
+        return errors, receipt_rel, receipt_identity, receipt_digest, None
 
+    canonical_report_path: str | None = None
     try:
         receipt_schema_version = require_int(receipt.get("schema_version"), f"{label}.receipt.schema_version")
         if receipt_schema_version != 1:
@@ -1297,7 +1298,7 @@ def _validate_clean_review_receipt(
             errors.append(f"{label}.receipt.target_anchor must match current review anchor {target_anchor!r}")
     except GateError as exc:
         errors.append(str(exc))
-    return errors, receipt_rel, receipt_identity, receipt_digest
+    return errors, receipt_rel, receipt_identity, receipt_digest, canonical_report_path
 
 def _evidence_file_identity(rel_path: str) -> tuple[int, int]:
     try:
@@ -1750,6 +1751,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                     canonical_receipt_path,
                     receipt_file_identity,
                     receipt_content_digest,
+                    canonical_receipt_report_path,
                 ) = _validate_clean_review_receipt(
                     history_records[-1].get("receipt_path"),
                     label=f"review_history[{index}]",
@@ -1758,6 +1760,14 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
                     target_anchor=current_review_anchor,
                 )
                 errors.extend(receipt_errors)
+                if (
+                    canonical_receipt_report_path is not None
+                    and canonical_receipt_report_path not in canonical_evidence_paths
+                ):
+                    errors.append(
+                        f"review_history[{index}].receipt.report_path must be listed in "
+                        f"review_history[{index}].evidence_paths: {canonical_receipt_report_path}"
+                    )
             if canonical_receipt_path is not None:
                 owner = clean_review_receipt_owner.get(canonical_receipt_path)
                 if owner is not None:

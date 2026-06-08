@@ -108,6 +108,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_accepts_closed_gate_with_three_post_reset_clean_reviews",
             "test_validator_rejects_clean_review_receipt_source_tree_identity_mismatch",
             "test_validator_rejects_clean_review_receipt_report_sha_mismatch",
+            "test_validator_rejects_clean_review_receipt_report_reuse_hidden_by_dummy_evidence",
             "test_validator_rejects_non_standard_json_constant_in_clean_review_receipt",
             "test_validator_rejects_boolean_schema_version_in_clean_review_receipt",
             "test_validator_rejects_boolean_schema_version_in_phase_gate_manifest",

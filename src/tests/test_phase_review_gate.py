@@ -2515,6 +2515,61 @@ def test_validator_rejects_clean_review_receipt_report_sha_mismatch(
     assert "phase_1_2_spike_close" in summary
     assert any("receipt.report_sha256" in error and "actual report digest" in error for error in errors)
 
+
+def test_validator_rejects_clean_review_receipt_report_reuse_hidden_by_dummy_evidence(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    fake_root = tmp_path / "repo"
+    payload = _payload_with_minimal_review_evidence(fake_root)
+    _mark_payload_closed_ready(payload)
+    current_package = _current_review_package_with_source_tree()
+    payload["current_review_package"] = current_package
+    shared_report_path = _write_review_evidence(
+        fake_root,
+        current_package["package"],
+        current_package=current_package,
+        filename="v50_shared_clean_report.md",
+        nonce="v50_shared_clean_report",
+    )
+    for index in range(3):
+        dummy_evidence_path = _write_review_evidence(
+            fake_root,
+            current_package["package"],
+            current_package=current_package,
+            filename=f"v50_dummy_evidence_{index + 1}.md",
+            nonce=f"v50_dummy_evidence_{index + 1}",
+        )
+        receipt_path = _write_review_receipt(
+            fake_root,
+            current_package["package"],
+            current_package=current_package,
+            report_path=shared_report_path,
+            filename=f"v50_shared_report_receipt_{index + 1}.json",
+            run_id=f"v50_shared_report_receipt_{index + 1}",
+        )
+        payload["review_history"].append(
+            {
+                "package": current_package["package"],
+                "review_type": "independent_full_external",
+                "outcome": "clean",
+                "clean": True,
+                "major_or_soundness_findings": 0,
+                "resets_counter": False,
+                "receipt_path": receipt_path,
+                "evidence_paths": [dummy_evidence_path],
+            }
+        )
+    fake_gate = fake_root / "fake_shared_report_hidden_by_dummy_evidence.json"
+    fake_gate.write_text(json.dumps(payload), encoding="utf-8")
+
+    monkeypatch.setattr(check_phase_review_gate, "PROJECT_ROOT", fake_root)
+    summary, errors = check_phase_review_gate.check_gate(fake_gate)
+
+    assert "phase_1_2_spike_close" in summary
+    assert any("receipt.report_path must be listed" in error for error in errors)
+
+
 def test_validator_rejects_non_standard_json_constant_in_clean_review_receipt(
     tmp_path: Path,
     monkeypatch,
