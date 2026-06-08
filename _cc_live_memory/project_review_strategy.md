@@ -46,8 +46,7 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 
 - P1.2 spike close 当前由 `data/review_gates/phase_1_2_spike_close.json` 记录为 `blocked_manual_review_count`。V50 之后，三次连续 clean full review 仍是 owner 标准，但 clean 计数由 owner 在 repo 外维护；repo 不再自动从 receipt/report/package/source-tree/Git authority 推导 ready。
 - V31-V46 finding taxonomy 仍用于区分 algorithmic/proof-obligation 与 review-infrastructure hardening；V47-V50 说明 receipt/counter state machine 本身会成为审查对象，因此自动计数已降级为人工治理。
-- V53-V56 是新的 algorithmic/proof-obligation 同族 reset：certified exact persisted `BendersCut` replay 必须 strict payload、condition/member 全解析、master literal 一对一编码、apply-before-register。当前审查锚点是 `v56_certified_cut_replay_consolidation`，详见 `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`。
-- `scripts/check_phase_review_gate.py` 现在只验证 fail-closed 手动闸：P1.3B 默认 blocked，receipt 仅 informational，只有显式 owner manual decision 能打开 `next_phase_entry.allowed`。算法 proof obligations 仍由 `scripts/check_p1_2_proof_obligations.py` 检查，其中包括 `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS`。
+- `scripts/check_phase_review_gate.py` 现在只验证 fail-closed 手动闸：P1.3B 默认 blocked，receipt 仅 informational，只有显式 owner manual decision 能打开 `next_phase_entry.allowed`。算法 proof obligations 仍由 `scripts/check_p1_2_proof_obligations.py` 检查。
 - 健康检查：`python scripts/check_phase_review_gate.py` + `python scripts/check_p1_2_proof_obligations.py`；blocked 状态也应通过，作用是防止文档/机器状态互相撒谎。
 
 ## 链 (补连 2026-06-01)

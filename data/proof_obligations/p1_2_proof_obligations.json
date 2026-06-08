@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-08",
-  "review_anchor": "v56_certified_cut_replay_consolidation",
-  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V56 adds certified exact persisted-cut replay faithfulness: exact-safe cut payloads must be strictly typed, replay must be all-or-nothing, conflict members must map one-to-one to master literals, and a cut may only be registered after master application succeeds.",
-  "phase_gate_required_anchor": "v56_certified_cut_replay_consolidation",
+  "review_anchor": "v50_manual_phase_gate_simplification",
+  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary; review receipts are informational and cannot open P1.3B.",
+  "phase_gate_required_anchor": "v50_manual_phase_gate_simplification",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -96,40 +96,6 @@
       ]
     },
     {
-      "id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
-      "title": "Exact-safe BendersCut replay is strictly typed, all-or-nothing, and faithfully encoded by the master",
-      "v_findings": [
-        "v53_candidate",
-        "v54_candidate",
-        "v55_candidate",
-        "v56_candidate",
-        "v56_certified_cut_replay_consolidation"
-      ],
-      "required_tests": [
-        "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
-        "test_collect_certification_blockers_rejects_non_bool_exact_safe_object",
-        "test_benders_cut_from_dict_rejects_string_conflict_pose_index",
-        "test_benders_cut_from_dict_rejects_bool_conflict_pose_index",
-        "test_benders_cut_from_dict_rejects_bool_condition_anchor_index",
-        "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
-        "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
-        "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
-        "test_cut_manager_load_rejects_duplicate_exact_safe_key",
-        "test_exact_campaign_resume_rejects_duplicate_json_key",
-        "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member",
-        "test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_literal",
-        "test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member",
-        "test_routing_front_blocked_unencodable_optional_conflict_fails_closed",
-        "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
-        "test_pose_bool_replay_alias_collision_fails_closed",
-        "test_legacy_benders_cut_alias_collision_fails_closed"
-      ],
-      "evidence_paths": [
-        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md"
-      ],
-      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
-    },
-    {
       "id": "PO-PHASE-GATE-PROVENANCE",
       "title": "Manual phase gate remains fail-closed and does not derive clean count from receipts",
       "v_findings": [
@@ -172,35 +138,5 @@
       ],
       "policy": "The repo no longer proves or counts clean reviews. P1.3B opens only by owner_manual_decision; receipts are informational records."
     }
-  ],
-  "certified_cut_replay_contract": {
-    "title": "Exact-safe BendersCut replay must be strictly parsed and faithfully encoded by every certified master backend",
-    "backend_scope": [
-      "src/models/cut_manager.py",
-      "src/search/exact_campaign.py",
-      "src/search/benders_loop.py",
-      "src/models/master_model.py",
-      "src/models/exact_coordinate_master.py",
-      "src/models/pose_bool_exact_master.py"
-    ],
-    "replay_entrypoints": [
-      "src/search/exact_campaign.py::_validate_candidate_record",
-      "src/search/benders_loop.py::run_benders_for_ghost_rect",
-      "src/search/benders_loop.py::LBBDController._add_exact_persisted_nogood",
-      "src/models/cut_manager.py::BendersCut.from_dict",
-      "src/models/cut_manager.py::CutManager.load",
-      "src/models/exact_coordinate_master.py::CoordinateExactMasterDelegate.add_benders_cut",
-      "src/models/pose_bool_exact_master.py::PoseBoolExactMasterDelegate.add_benders_cut",
-      "src/models/master_model.py::MasterPlacementModel.add_benders_cut"
-    ],
-    "obligations": [
-      "Exact-safe certified cut JSON must be strict JSON with no duplicate keys, NaN, Infinity, or truthy string coercion.",
-      "source_mode=certified_exact cuts must use strict bool exact_safe fields and strict integer conflict_set / condition_set payloads; bool is not an int for proof payloads.",
-      "Campaign resume and pre-master replay must reject malformed exact_safe cuts before inheriting certification state.",
-      "Every conflict member must resolve to a concrete master literal; unresolved members fail closed instead of being dropped.",
-      "Distinct conflict members must map one-to-one to distinct backend literals; alias collisions fail closed instead of deduping into a stronger cut.",
-      "Exact-safe cuts are registered, persisted, or counted only after the master backend accepts the whole cut."
-    ],
-    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, or post-hoc registered cut is not replay-safe and must not prune certified search."
-  }
+  ]
 }
