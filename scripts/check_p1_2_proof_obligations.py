@@ -81,6 +81,13 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_uses_project_git_head_despite_git_dir_environment",
             "test_validator_uses_trusted_git_command_despite_path_environment",
             "test_validator_rejects_git_head_that_is_not_a_commit_object",
+            "test_validator_rejects_latin_extended_metadata_key_conflict",
+            "test_validator_rejects_html_table_package_metadata_conflict",
+            "test_validator_rejects_fullwidth_pipe_table_package_metadata_conflict",
+            "test_validator_rejects_latin_extended_placeholder_source_list_identity",
+            "test_validator_rejects_git_replace_ref_backed_non_commit_head",
+            "test_project_git_command_ignores_relative_defpath_entries",
+            "test_windows_project_git_command_uses_standard_git_paths_before_os_defpath",
         }
     ),
 }
@@ -155,6 +162,10 @@ def _calls_function(node: ast.AST, name: str) -> bool:
 
 def _uses_name(node: ast.AST, name: str) -> bool:
     return any(isinstance(child, ast.Name) and child.id == name for child in ast.walk(node))
+
+
+def _uses_constant(node: ast.AST, value: str) -> bool:
+    return any(isinstance(child, ast.Constant) and child.value == value for child in ast.walk(node))
 
 
 def _imports_lifecycle_constants() -> tuple[int, tuple[str, ...], tuple[str, ...], dict[str, tuple[str, ...]]]:
@@ -433,6 +444,8 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         errors.append("_extract_evidence_metadata must reject confusable metadata delimiters")
     if not _calls_function(evidence_metadata_fn, "_markdown_table_metadata_error"):
         errors.append("_extract_evidence_metadata must reject table-form package metadata")
+    if not _calls_function(evidence_metadata_fn, "_html_table_metadata_error"):
+        errors.append("_extract_evidence_metadata must reject HTML table-form package metadata")
 
     placeholder_fn = _function_def(tree, "_is_placeholder_metadata_value", path=PHASE_GATE_SCRIPT_PATH)
     if not _uses_name(placeholder_fn, "PLACEHOLDER_METADATA_SUBSTRINGS"):
@@ -448,6 +461,16 @@ def _check_phase_gate_provenance_contract() -> list[str]:
     if not _calls_function(project_git_head_fn, "_project_git_command"):
         errors.append("_project_git_head must use the trusted Git command resolver")
 
+    project_git_env_fn = _function_def(tree, "_project_git_env", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(project_git_env_fn, "_trusted_git_search_dirs"):
+        errors.append("_project_git_env must build PATH only from trusted Git search dirs")
+    if not _uses_constant(project_git_env_fn, "GIT_NO_REPLACE_OBJECTS"):
+        errors.append("_project_git_env must disable Git replacement refs while checking source_head")
+
+    project_git_command_fn = _function_def(tree, "_project_git_command", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(project_git_command_fn, "_trusted_git_search_dirs"):
+        errors.append("_project_git_command must not search caller/os.defpath directly")
+
     for required_symbol in (
         "_check_current_review_package_keys",
         "_check_review_history_entry_keys",
@@ -455,7 +478,9 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         "_markdown_table_metadata_error",
         "_project_git_env",
         "_project_git_command",
+        "_trusted_git_search_dirs",
         "_ascii_security_skeleton",
+        "_html_table_metadata_error",
     ):
         _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
     return errors

@@ -11,8 +11,10 @@ from __future__ import annotations
 import argparse
 import ast
 import hashlib
+import html
 import json
 import os
+import re
 import shutil
 import subprocess
 import unicodedata
@@ -130,10 +132,13 @@ ASCII_SECURITY_CONFUSABLES = {
     "ε": "e",
     "ϵ": "e",
     "ҽ": "e",
+    "ɡ": "g",
     "һ": "h",
     "н": "h",
     "і": "i",
     "ι": "i",
+    "ı": "i",
+    "ɪ": "i",
     "ј": "j",
     "κ": "k",
     "к": "k",
@@ -268,27 +273,47 @@ def _is_safe_archive_name(value: str) -> bool:
     )
 
 
+def _trusted_git_search_dirs() -> list[str]:
+    if os.name == "nt":
+        return [str(path.parent) for path in WINDOWS_TRUSTED_GIT_COMMANDS]
+    trusted_dirs: list[str] = []
+    for raw_dir in os.defpath.split(os.pathsep):
+        if not raw_dir or raw_dir == ".":
+            continue
+        if os.path.isabs(raw_dir):
+            trusted_dirs.append(raw_dir)
+    return trusted_dirs
+
+
 def _project_git_env() -> dict[str, str]:
     # Git identity is the checked-out project root, not caller-provided Git
     # environment overrides.  Inherited GIT_DIR/GIT_WORK_TREE can otherwise make
     # `git rev-parse HEAD` resolve an unrelated repository while .git is present.
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
-    trusted_dirs = [os.defpath]
+    env["PATH"] = os.pathsep.join(_trusted_git_search_dirs())
     if os.name == "nt":
-        trusted_dirs.extend(str(path.parent) for path in WINDOWS_TRUSTED_GIT_COMMANDS)
-    env["PATH"] = os.pathsep.join(trusted_dirs)
+        # subprocess is invoked with an explicit git.exe path on Windows; keep
+        # PATHEXT from reintroducing caller-controlled .bat/.cmd lookup semantics
+        # into any helper lookup Git may perform for this metadata-only command.
+        env["PATHEXT"] = ".EXE"
+    env["GIT_NO_REPLACE_OBJECTS"] = "1"
     return env
 
 
 def _project_git_command() -> str:
-    git_command = shutil.which("git", path=os.defpath)
-    if git_command is not None:
-        return git_command
+    trusted_dirs = _trusted_git_search_dirs()
     if os.name == "nt":
         for candidate in WINDOWS_TRUSTED_GIT_COMMANDS:
             if candidate.is_file():
                 return str(candidate)
-    raise GateError(f"cannot determine project git HEAD: git not found on trusted PATH {os.defpath!r}")
+        raise GateError(
+            "cannot determine project git HEAD: git.exe not found in trusted Git for Windows locations"
+        )
+    trusted_path = os.pathsep.join(trusted_dirs)
+    git_command = shutil.which("git", path=trusted_path)
+    if git_command is not None:
+        return git_command
+    raise GateError(f"cannot determine project git HEAD: git not found on trusted PATH {trusted_path!r}")
 
 
 def _project_git_head() -> str | None:
@@ -308,6 +333,19 @@ def _project_git_head() -> str | None:
     head = result.stdout.strip().lower()
     if not _is_hex_digest(head, length=40):
         raise GateError(f"project git HEAD is not a 40-character hex commit: {head!r}")
+    try:
+        type_result = subprocess.run(
+            [_project_git_command(), "cat-file", "-t", head],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+            env=_project_git_env(),
+        )
+    except Exception as exc:  # noqa: BLE001 - source_head must name a real commit object.
+        raise GateError(f"cannot verify project git HEAD object type: {exc}") from exc
+    if type_result.stdout.strip() != "commit":
+        raise GateError(f"project git HEAD is not a commit object: {head!r}")
     return head
 
 
@@ -449,7 +487,7 @@ def _confusable_metadata_delimiter_error(line: str, rel_path: str) -> str | None
 
 
 def _markdown_table_metadata_error(line: str, rel_path: str) -> str | None:
-    stripped = line.strip()
+    stripped = unicodedata.normalize("NFKC", line.strip())
     if "|" not in stripped:
         return None
     cells = [cell.strip(" `*_\t") for cell in stripped.strip("|").split("|")]
@@ -465,6 +503,27 @@ def _markdown_table_metadata_error(line: str, rel_path: str) -> str | None:
     return None
 
 
+HTML_TABLE_CELL_RE = re.compile(r"<\s*t[dh]\b[^>]*>(.*?)<\s*/\s*t[dh]\s*>", re.IGNORECASE)
+HTML_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def _html_table_metadata_error(line: str, rel_path: str) -> str | None:
+    lowered = line.casefold()
+    if not any(token in lowered for token in ("<table", "<td", "<th")):
+        return None
+    cells = HTML_TABLE_CELL_RE.findall(line)
+    if not cells and "<table" in lowered:
+        cells = [line]
+    for cell in cells:
+        text = html.unescape(HTML_TAG_RE.sub(" ", cell)).strip(" `*_\t")
+        if not text:
+            continue
+        key = _evidence_metadata_key(text)
+        if key in REVIEW_PACKAGE_METADATA_KEYS:
+            return f"evidence metadata key {key!r} must use ASCII colon delimiter, not HTML table syntax: {rel_path}"
+    return None
+
+
 def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     metadata: dict[str, str] = {}
     for line in _read_evidence_text(rel_path).splitlines():
@@ -474,6 +533,9 @@ def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
         table_error = _markdown_table_metadata_error(line, rel_path)
         if table_error is not None:
             raise GateError(table_error)
+        html_table_error = _html_table_metadata_error(line, rel_path)
+        if html_table_error is not None:
+            raise GateError(html_table_error)
         if ":" not in line:
             continue
         raw_key, raw_value = line.split(":", 1)
