@@ -88,6 +88,7 @@ METADATA_DELIMITER_CONFUSABLES = frozenset(
 )
 HTML_UNESCAPE_MAX_DEPTH = 8
 GIT_CONFIG_INCLUDE_SECTION_PREFIXES = ("include", "includeif")
+GIT_CONFIG_EXTERNAL_OBJECT_AUTHORITY_KEYS = frozenset({"promisor", "partialclonefilter"})
 PLACEHOLDER_METADATA_SUBSTRINGS = {
     "notprovided",
     "notavailable",
@@ -341,9 +342,9 @@ def _check_git_authority_tree(git_dir: Path, path: Path, label: str) -> None:
 
 def _git_control_file_text(git_dir: Path, rel_path: str) -> str | None:
     path = git_dir / rel_path
+    _check_git_authority_path(git_dir, path, rel_path)
     if not path.exists():
         return None
-    _check_git_authority_path(git_dir, path, rel_path)
     if not path.is_file():
         raise GateError(f"project git authority control path must be a file: {rel_path}")
     try:
@@ -368,23 +369,48 @@ def _reject_git_common_dir_indirection(git_dir: Path) -> None:
             raise GateError(f"project git authority must not use worktree/common-dir indirection: .git/{rel_path}")
 
 
-def _reject_git_config_includes(git_dir: Path) -> None:
+def _git_config_key_token(raw_key: str) -> str:
+    return "".join(ch for ch in raw_key.casefold() if ch.isalnum())
+
+
+def _reject_git_config_external_authority(git_dir: Path) -> None:
     for rel_path in ("config", "config.worktree"):
         text = _git_control_file_text(git_dir, rel_path)
         if text is None:
             continue
+        section_head = ""
         for line in text.splitlines():
             stripped = line.strip()
             if not stripped or stripped.startswith(("#", ";")):
                 continue
-            if not stripped.startswith("[") or "]" not in stripped:
+            if stripped.startswith("[") and "]" in stripped:
+                section = stripped[1 : stripped.index("]")].strip().casefold()
+                section_head = section.split(maxsplit=1)[0].split(".", 1)[0]
+                if section_head.startswith(GIT_CONFIG_INCLUDE_SECTION_PREFIXES):
+                    raise GateError(
+                        f"project git authority config must not use include/includeIf indirection: .git/{rel_path}"
+                    )
                 continue
-            section = stripped[1 : stripped.index("]")].strip().casefold()
-            section_head = section.split(maxsplit=1)[0]
-            if section_head.startswith(GIT_CONFIG_INCLUDE_SECTION_PREFIXES):
+            if "=" not in stripped:
+                continue
+            key_token = _git_config_key_token(stripped.split("=", 1)[0].strip())
+            if key_token in GIT_CONFIG_EXTERNAL_OBJECT_AUTHORITY_KEYS or (
+                section_head == "extensions" and key_token == "partialclone"
+            ):
                 raise GateError(
-                    f"project git authority config must not use include/includeIf indirection: .git/{rel_path}"
+                    f"project git authority config must not use promisor/partial-clone object authority: .git/{rel_path}"
                 )
+
+
+def _reject_git_promisor_pack_authority(git_dir: Path) -> None:
+    pack_dir = git_dir / "objects" / "pack"
+    _check_git_authority_path(git_dir, pack_dir, "objects/pack")
+    if not pack_dir.exists():
+        return
+    for promisor_marker in pack_dir.glob("*.promisor"):
+        rel_marker = promisor_marker.relative_to(git_dir).as_posix()
+        _check_git_authority_path(git_dir, promisor_marker, rel_marker)
+        raise GateError(f"project git authority must not use promisor pack object authority: .git/{rel_marker}")
 
 
 def _looks_like_bare_gitdir(path: Path) -> bool:
@@ -407,7 +433,8 @@ def _validate_project_git_authority_root() -> Path | None:
     _check_git_authority_path(git_dir, git_dir / "packed-refs", "packed-refs")
     _reject_git_alternates(git_dir)
     _reject_git_common_dir_indirection(git_dir)
-    _reject_git_config_includes(git_dir)
+    _reject_git_config_external_authority(git_dir)
+    _reject_git_promisor_pack_authority(git_dir)
     return git_dir
 
 
@@ -425,6 +452,7 @@ def _project_git_env() -> dict[str, str]:
         # into any helper lookup Git may perform for this metadata-only command.
         env["PATHEXT"] = ".EXE"
     env["GIT_NO_REPLACE_OBJECTS"] = "1"
+    env["GIT_NO_LAZY_FETCH"] = "1"
     return env
 
 
@@ -637,6 +665,14 @@ HTML_TABLE_CELL_RE = re.compile(r"<\s*t[dh]\b[^>]*>(.*?)<\s*/\s*t[dh]\s*>", re.I
 HTML_TAG_RE = re.compile(r"<[^>]+>", re.DOTALL)
 HTML_TAG_NAME_RE = re.compile(r"<\s*/?\s*([A-Za-z][\w:.-]*)\b", re.IGNORECASE)
 HTML_TEXT_FRAGMENT_RE = re.compile(r">([^<>]+)(?=<|$)", re.DOTALL)
+XML_MARKUP_PAYLOAD_RE = re.compile(
+    r"<!\[CDATA\[(.*?)\]\]>|<!--(.*?)-->|<\?(.*?)\?>",
+    re.IGNORECASE | re.DOTALL,
+)
+HTML_ATTRIBUTE_RE = re.compile(
+    r"""\s([A-Za-z_:][\w:.-]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))""",
+    re.IGNORECASE | re.DOTALL,
+)
 METADATA_CELL_LIKE_TAGS = frozenset(
     {
         "td",
@@ -653,6 +689,88 @@ METADATA_CELL_LIKE_TAGS = frozenset(
         "desc",
     }
 )
+
+
+def _markup_metadata_message(key: str, rel_path: str) -> str:
+    return (
+        f"evidence metadata key {key!r} must use plain ASCII metadata lines, "
+        f"not HTML/XML/SVG/MathML markup: {rel_path}"
+    )
+
+
+def _markup_payload_metadata_error(payload: str, rel_path: str) -> str | None:
+    payload_text = _deep_html_unescape(payload).strip(" `*_\t\r\n")
+    if not payload_text:
+        return None
+    payload_candidates = [payload_text]
+    split_payload = payload_text.split(maxsplit=1)
+    if len(split_payload) == 2:
+        # XML processing instructions have a target token before the payload,
+        # for example <?review Package: zmd_18.7z ?>.  The target is markup
+        # syntax, not part of the review metadata key.
+        payload_candidates.append(split_payload[1].strip(" `*_\t\r\n"))
+    for candidate in payload_candidates:
+        if not candidate:
+            continue
+        delimiter_error = _confusable_metadata_delimiter_error(candidate, rel_path)
+        if delimiter_error is not None:
+            return delimiter_error
+        delimited_error = _delimited_metadata_error(candidate, rel_path)
+        if delimited_error is not None:
+            return delimited_error
+        if ":" in candidate:
+            raw_key, raw_value = candidate.split(":", 1)
+            key = _evidence_metadata_key(raw_key)
+            if key in REVIEW_PACKAGE_METADATA_KEYS and raw_value.strip():
+                return _markup_metadata_message(key, rel_path)
+        key = _evidence_metadata_key(candidate)
+        if key in REVIEW_PACKAGE_METADATA_KEYS:
+            return _markup_metadata_message(key, rel_path)
+    return None
+
+
+def _xml_payload_metadata_error(text: str, rel_path: str) -> str | None:
+    decoded_text = _deep_html_unescape(text)
+    for match in XML_MARKUP_PAYLOAD_RE.finditer(decoded_text):
+        payload = next((group for group in match.groups() if group is not None), "")
+        payload_error = _markup_payload_metadata_error(payload, rel_path)
+        if payload_error is not None:
+            return payload_error
+    return None
+
+
+def _attribute_metadata_key(raw_name: str) -> str | None:
+    candidates = [raw_name]
+    stripped = re.sub(r"^(?:data|aria|xml)[_:.-]+", "", raw_name, flags=re.IGNORECASE)
+    if stripped != raw_name:
+        candidates.append(stripped)
+    for candidate in candidates:
+        key = _evidence_metadata_key(candidate)
+        if key in REVIEW_PACKAGE_METADATA_KEYS:
+            return key
+    token = _git_config_key_token(_ascii_security_skeleton(raw_name))
+    for key in REVIEW_PACKAGE_METADATA_KEYS:
+        key_token = key.replace("_", "")
+        if token == key_token or token.startswith(key_token) or token.endswith(key_token):
+            return key
+    return None
+
+
+def _markup_attribute_metadata_error(text: str, rel_path: str) -> str | None:
+    decoded_text = _deep_html_unescape(text)
+    for tag_match in HTML_TAG_RE.finditer(decoded_text):
+        tag = tag_match.group(0)
+        tag_start = tag.lstrip().casefold()
+        if tag_start.startswith(("</", "<!--", "<![cdata", "<?")):
+            continue
+        for attr_match in HTML_ATTRIBUTE_RE.finditer(tag):
+            key = _attribute_metadata_key(attr_match.group(1))
+            if key is None:
+                continue
+            value = next((group for group in attr_match.groups()[1:] if group is not None), "")
+            if value.strip():
+                return _markup_metadata_message(key, rel_path)
+    return None
 
 
 def _html_cell_text(cell: str) -> str:
@@ -698,10 +816,7 @@ def _markup_metadata_error(line: str, rel_path: str) -> str | None:
             raw_key, raw_value = stripped_line.split(":", 1)
             key = _evidence_metadata_key(raw_key)
             if key in REVIEW_PACKAGE_METADATA_KEYS and raw_value.strip():
-                return (
-                    f"evidence metadata key {key!r} must use plain ASCII metadata lines, "
-                    f"not HTML/XML/SVG/MathML markup: {rel_path}"
-                )
+                return _markup_metadata_message(key, rel_path)
 
     tag_names = {match.casefold() for match in HTML_TAG_NAME_RE.findall(decoded_line)}
     if not tag_names.intersection(METADATA_CELL_LIKE_TAGS):
@@ -712,10 +827,7 @@ def _markup_metadata_error(line: str, rel_path: str) -> str | None:
             continue
         key = _evidence_metadata_key(fragment_text)
         if key in REVIEW_PACKAGE_METADATA_KEYS:
-            return (
-                f"evidence metadata key {key!r} must use plain ASCII metadata lines, "
-                f"not HTML/XML/SVG/MathML markup: {rel_path}"
-            )
+            return _markup_metadata_message(key, rel_path)
     return None
 
 
@@ -742,6 +854,12 @@ def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     html_table_error = _html_table_metadata_error(text, rel_path)
     if html_table_error is not None:
         raise GateError(html_table_error)
+    xml_payload_error = _xml_payload_metadata_error(text, rel_path)
+    if xml_payload_error is not None:
+        raise GateError(xml_payload_error)
+    attribute_error = _markup_attribute_metadata_error(text, rel_path)
+    if attribute_error is not None:
+        raise GateError(attribute_error)
     for raw_line in text.splitlines():
         line = _deep_html_unescape(raw_line)
         delimiter_error = _confusable_metadata_delimiter_error(line, rel_path)

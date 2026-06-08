@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-08",
-  "review_anchor": "v45_candidate",
-  "summary": "Consolidates v29-v44 soundness and phase-gate provenance findings into machine-checkable proof obligations before the next clean-review attempt.",
-  "phase_gate_required_anchor": "v45_candidate",
+  "review_anchor": "v46_candidate",
+  "summary": "Consolidates v29-v46 soundness and phase-gate provenance findings into machine-checkable proof obligations before the next clean-review attempt.",
+  "phase_gate_required_anchor": "v46_candidate",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -106,7 +106,8 @@
         "v38_candidate",
         "v41_candidate",
         "v44_candidate",
-        "v45_candidate"
+        "v45_candidate",
+        "v46_candidate"
       ],
       "required_tests": [
         "test_validator_rejects_stale_last_reset_when_later_reset_history_exists",
@@ -170,10 +171,15 @@
         "test_validator_rejects_bare_gitdir_source_head_authority",
         "test_validator_rejects_git_config_include_indirection_for_source_head_authority",
         "test_validator_rejects_git_config_worktree_include_indirection_for_source_head_authority",
+        "test_validator_rejects_broken_git_authority_control_file_symlink_for_source_head_authority",
+        "test_validator_rejects_git_promisor_remote_for_source_head_authority",
+        "test_validator_rejects_git_promisor_pack_marker_for_source_head_authority",
+        "test_project_git_env_disables_lazy_fetch",
         "test_validator_rejects_git_authority_symlink_escape_for_source_head_authority",
         "test_validator_rejects_broken_git_authority_symlink_escape_for_source_head_authority",
         "test_validator_rejects_git_root_symlink_even_when_broken",
-        "test_validator_rejects_escaped_and_wrapped_metadata_conflicts"
+        "test_validator_rejects_escaped_and_wrapped_metadata_conflicts",
+        "test_validator_rejects_xml_payload_and_attribute_wrapped_metadata_conflicts"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
@@ -181,7 +187,8 @@
         "docs/research/p1_2_v37_phase_gate_provenance_hardening.md",
         "docs/research/p1_2_v38_phase_gate_package_identity.md",
         "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md",
-        "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md"
+        "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md",
+        "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md"
       ]
     }
   ]
