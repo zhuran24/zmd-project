@@ -103,7 +103,8 @@
         "v35_candidate",
         "v36_candidate",
         "v37_candidate",
-        "v38_candidate"
+        "v38_candidate",
+        "v41_candidate"
       ],
       "required_tests": [
         "test_validator_rejects_stale_last_reset_when_later_reset_history_exists",
@@ -139,7 +140,13 @@
         "test_validator_rejects_current_package_path_like_archive_name",
         "test_validator_rejects_current_package_unicode_archive_name",
         "test_validator_rejects_fullwidth_colon_metadata_conflict",
-        "test_validator_rejects_semantic_placeholder_source_list_identity"
+        "test_validator_rejects_semantic_placeholder_source_list_identity",
+        "test_validator_rejects_omitted_source_list_identity_placeholder",
+        "test_validator_rejects_current_package_json_alias_key_conflict",
+        "test_validator_rejects_windows_reserved_archive_name",
+        "test_validator_rejects_unicode_colon_metadata_conflict",
+        "test_validator_rejects_unicode_normalized_metadata_key_conflict",
+        "test_validator_uses_project_git_head_despite_git_dir_environment"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",

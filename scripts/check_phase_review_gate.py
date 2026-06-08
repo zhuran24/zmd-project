@@ -12,7 +12,9 @@ import argparse
 import ast
 import hashlib
 import json
+import os
 import subprocess
+import unicodedata
 import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -36,9 +38,46 @@ REVIEW_PACKAGE_METADATA_KEYS = {
 }
 HEX_DIGITS = set("0123456789abcdef")
 PLACEHOLDER_METADATA_VALUES = {"na", "none", "notprovided", "tbd", "unknown"}
-PLACEHOLDER_METADATA_SUBSTRINGS = {"notprovided", "tbd", "unknown"}
 SAFE_ARCHIVE_NAME_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-")
 FULLWIDTH_COLON = "："
+CURRENT_REVIEW_PACKAGE_KEYS = REVIEW_PACKAGE_METADATA_KEYS
+WINDOWS_RESERVED_ARCHIVE_STEMS = frozenset(
+    {"con", "prn", "aux", "nul"}
+    | {f"com{index}" for index in range(1, 10)}
+    | {f"lpt{index}" for index in range(1, 10)}
+)
+METADATA_DELIMITER_CONFUSABLES = frozenset(
+    {
+        FULLWIDTH_COLON,
+        "︓",  # presentation form for vertical colon
+        "﹕",  # small colon
+        "꞉",  # modifier letter colon
+        "ː",  # modifier letter triangular colon
+        "˸",  # modifier letter raised colon
+        "∶",  # ratio
+        "∷",  # proportion
+        "⁚",  # two dot punctuation
+        "⦂",  # z notation type colon
+        "ꓽ",  # lisu tone letter rendered as a colon-like mark
+        "፥",  # ethiopic colon
+        "׃",  # hebrew sof pasuq
+        "։",  # armenian full stop rendered as a colon-like mark
+        "᠄",  # mongolian colon
+        "꛴",  # bamum colon
+    }
+)
+PLACEHOLDER_METADATA_SUBSTRINGS = {
+    "notprovided",
+    "notavailable",
+    "unavailable",
+    "tbd",
+    "todo",
+    "unknown",
+    "omitted",
+    "missing",
+    "unspecified",
+    "placeholder",
+}
 
 
 class GateError(RuntimeError):
@@ -96,7 +135,8 @@ def require_unpadded_str(value: Any, label: str) -> str:
 
 
 def _normalized_match_text(value: str) -> str:
-    return "".join(ch for ch in value.lower() if ch.isalnum())
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    return "".join(ch for ch in normalized if ch.isalnum())
 
 
 def _canonical_package_key(package: str) -> str:
@@ -114,6 +154,14 @@ def _is_placeholder_metadata_value(value: str) -> bool:
     )
 
 
+def _is_windows_reserved_archive_name(value: str) -> bool:
+    # Windows treats device names as reserved even when an extension is present
+    # (for example, CON.7z or LPT1.7z).  Keep the cross-platform archive
+    # identity inside the same safe basename set humans and tooling can share.
+    stem = value.split(".", 1)[0].casefold()
+    return stem in WINDOWS_RESERVED_ARCHIVE_STEMS
+
+
 def _is_safe_archive_name(value: str) -> bool:
     return (
         bool(value)
@@ -122,7 +170,15 @@ def _is_safe_archive_name(value: str) -> bool:
         and value == PurePosixPath(value).name
         and "\\" not in value
         and all(ch in SAFE_ARCHIVE_NAME_CHARS for ch in value)
+        and not _is_windows_reserved_archive_name(value)
     )
+
+
+def _project_git_env() -> dict[str, str]:
+    # Git identity is the checked-out project root, not caller-provided Git
+    # environment overrides.  Inherited GIT_DIR/GIT_WORK_TREE can otherwise make
+    # `git rev-parse HEAD` resolve an unrelated repository while .git is present.
+    return {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
 
 
 def _project_git_head() -> str | None:
@@ -135,6 +191,7 @@ def _project_git_head() -> str | None:
             check=True,
             capture_output=True,
             text=True,
+            env=_project_git_env(),
         )
     except Exception as exc:  # noqa: BLE001 - a present .git directory is source identity authority.
         raise GateError(f"cannot determine project git HEAD: {exc}") from exc
@@ -215,7 +272,8 @@ def _evidence_matches_package(rel_path: str, package: str) -> bool:
 
 
 def _evidence_metadata_key(raw_key: str) -> str:
-    token = "".join(ch for ch in raw_key.casefold() if ch.isalnum())
+    normalized_key = unicodedata.normalize("NFKC", raw_key)
+    token = "".join(ch for ch in normalized_key.casefold() if ch.isalnum())
     aliases = {
         "archivename": "archive_name",
         "archivesha": "archive_sha256",
@@ -236,7 +294,7 @@ def _evidence_metadata_key(raw_key: str) -> str:
     }
     if token in aliases:
         return aliases[token]
-    key = raw_key.strip().casefold().replace("-", "_").replace(" ", "_")
+    key = normalized_key.strip().casefold().replace("-", "_").replace(" ", "_")
     while "__" in key:
         key = key.replace("__", "_")
     return key
@@ -257,19 +315,36 @@ def _read_evidence_text(rel_path: str) -> str:
         raise GateError(f"cannot read evidence path {rel_path}: {exc}") from exc
 
 
+def _is_metadata_delimiter_confusable(ch: str) -> bool:
+    if ch == ":":
+        return False
+    if ch in METADATA_DELIMITER_CONFUSABLES:
+        return True
+    if unicodedata.normalize("NFKC", ch) == ":":
+        return True
+    name = unicodedata.name(ch, "")
+    return "COLON" in name or "RATIO" in name
+
+
+def _confusable_metadata_delimiter_error(line: str, rel_path: str) -> str | None:
+    ascii_colon_index = line.find(":")
+    scan_limit = ascii_colon_index if ascii_colon_index != -1 else len(line)
+    for index, ch in enumerate(line[:scan_limit]):
+        if not _is_metadata_delimiter_confusable(ch):
+            continue
+        key = _evidence_metadata_key(line[:index])
+        if key in REVIEW_PACKAGE_METADATA_KEYS:
+            return f"evidence metadata key {key!r} must use ASCII colon delimiter: {rel_path}"
+    return None
+
+
 def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     metadata: dict[str, str] = {}
     for line in _read_evidence_text(rel_path).splitlines():
-        ascii_colon_index = line.find(":")
-        fullwidth_colon_index = line.find(FULLWIDTH_COLON)
-        if fullwidth_colon_index != -1 and (ascii_colon_index == -1 or fullwidth_colon_index < ascii_colon_index):
-            raw_fullwidth_key = line[:fullwidth_colon_index]
-            fullwidth_key = _evidence_metadata_key(raw_fullwidth_key)
-            if fullwidth_key in REVIEW_PACKAGE_METADATA_KEYS:
-                raise GateError(
-                    f"evidence metadata key {fullwidth_key!r} must use ASCII colon delimiter: {rel_path}"
-                )
-        if ascii_colon_index == -1:
+        delimiter_error = _confusable_metadata_delimiter_error(line, rel_path)
+        if delimiter_error is not None:
+            raise GateError(delimiter_error)
+        if ":" not in line:
             continue
         raw_key, raw_value = line.split(":", 1)
         key = _evidence_metadata_key(raw_key)
@@ -284,10 +359,26 @@ def _extract_evidence_metadata(rel_path: str) -> dict[str, str]:
     return metadata
 
 
+def _check_current_review_package_keys(package: dict[str, Any]) -> None:
+    for raw_key in package:
+        if not isinstance(raw_key, str):
+            raise GateError("current_review_package keys must be strings")
+        canonical_key = _evidence_metadata_key(raw_key)
+        if raw_key in CURRENT_REVIEW_PACKAGE_KEYS:
+            continue
+        if canonical_key in CURRENT_REVIEW_PACKAGE_KEYS:
+            raise GateError(
+                f"current_review_package key {raw_key!r} conflicts with canonical key {canonical_key!r}; "
+                "use exact schema keys"
+            )
+        raise GateError(f"current_review_package has unsupported key: {raw_key!r}")
+
+
 def _validate_current_review_package(raw_package: Any) -> dict[str, Any] | None:
     if raw_package is None:
         return None
     package = require_mapping(raw_package, "current_review_package")
+    _check_current_review_package_keys(package)
     archive_name = require_unpadded_str(package.get("archive_name"), "current_review_package.archive_name")
     package_key = require_unpadded_str(package.get("package"), "current_review_package.package")
     archive_sha256 = require_unpadded_str(

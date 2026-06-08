@@ -17,6 +17,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
 PHASE_GATE_PATH = PROJECT_ROOT / "data" / "review_gates" / "phase_1_2_spike_close.json"
+PHASE_GATE_SCRIPT_PATH = PROJECT_ROOT / "scripts" / "check_phase_review_gate.py"
 LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "src" / "cuts" / "helpers" / "candidate_placements.py"
 TEST_ROOT = PROJECT_ROOT / "src" / "tests"
@@ -66,6 +67,12 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_validator_rejects_current_package_unicode_archive_name",
             "test_validator_rejects_fullwidth_colon_metadata_conflict",
             "test_validator_rejects_semantic_placeholder_source_list_identity",
+            "test_validator_rejects_omitted_source_list_identity_placeholder",
+            "test_validator_rejects_current_package_json_alias_key_conflict",
+            "test_validator_rejects_windows_reserved_archive_name",
+            "test_validator_rejects_unicode_colon_metadata_conflict",
+            "test_validator_rejects_unicode_normalized_metadata_key_conflict",
+            "test_validator_uses_project_git_head_despite_git_dir_environment",
         }
     ),
 }
@@ -136,6 +143,10 @@ def _calls_function(node: ast.AST, name: str) -> bool:
         if isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name:
             return True
     return False
+
+
+def _uses_name(node: ast.AST, name: str) -> bool:
+    return any(isinstance(child, ast.Name) and child.id == name for child in ast.walk(node))
 
 
 def _imports_lifecycle_constants() -> tuple[int, tuple[str, ...], tuple[str, ...], dict[str, tuple[str, ...]]]:
@@ -378,6 +389,54 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
     return errors
 
 
+def _check_phase_gate_provenance_contract() -> list[str]:
+    errors: list[str] = []
+    tree = _parse_python(PHASE_GATE_SCRIPT_PATH)
+
+    current_package_fn = _function_def(
+        tree,
+        "_validate_current_review_package",
+        path=PHASE_GATE_SCRIPT_PATH,
+    )
+    for required_call in (
+        "_check_current_review_package_keys",
+        "require_unpadded_str",
+        "_is_safe_archive_name",
+        "_project_git_head",
+        "_is_placeholder_metadata_value",
+    ):
+        if not _calls_function(current_package_fn, required_call):
+            errors.append(f"_validate_current_review_package must call {required_call}")
+
+    metadata_key_fn = _function_def(tree, "_evidence_metadata_key", path=PHASE_GATE_SCRIPT_PATH)
+    if not _uses_name(metadata_key_fn, "unicodedata"):
+        errors.append("_evidence_metadata_key must Unicode-normalize metadata keys")
+
+    evidence_metadata_fn = _function_def(tree, "_extract_evidence_metadata", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(evidence_metadata_fn, "_confusable_metadata_delimiter_error"):
+        errors.append("_extract_evidence_metadata must reject confusable metadata delimiters")
+
+    placeholder_fn = _function_def(tree, "_is_placeholder_metadata_value", path=PHASE_GATE_SCRIPT_PATH)
+    if not _uses_name(placeholder_fn, "PLACEHOLDER_METADATA_SUBSTRINGS"):
+        errors.append("_is_placeholder_metadata_value must check semantic placeholder substrings")
+
+    safe_name_fn = _function_def(tree, "_is_safe_archive_name", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(safe_name_fn, "_is_windows_reserved_archive_name"):
+        errors.append("_is_safe_archive_name must reject Windows reserved archive basenames")
+
+    project_git_head_fn = _function_def(tree, "_project_git_head", path=PHASE_GATE_SCRIPT_PATH)
+    if not _calls_function(project_git_head_fn, "_project_git_env"):
+        errors.append("_project_git_head must use a sanitized Git authority environment")
+
+    for required_symbol in (
+        "_check_current_review_package_keys",
+        "_confusable_metadata_delimiter_error",
+        "_project_git_env",
+    ):
+        _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
+    return errors
+
+
 def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     required_anchor = _require_str(
@@ -409,6 +468,7 @@ def main() -> int:
         errors.extend(_check_source_digest_uses_contract(lifecycle_tree))
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_evidence_and_tests(manifest))
+        errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))
     except CheckError as exc:
         print(f"P1.2 proof obligation check failed: {exc}", file=sys.stderr)
