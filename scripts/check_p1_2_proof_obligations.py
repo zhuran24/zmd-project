@@ -827,6 +827,11 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES",
         path=BENDERS_LOOP_PATH,
     )
+    power_witness_env_map_source = _assignment_source(
+        benders_tree,
+        "_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS",
+        path=BENDERS_LOOP_PATH,
+    )
     benders_loop_source = BENDERS_LOOP_PATH.read_text(encoding="utf-8")
     for needle in (
         "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
@@ -850,6 +855,32 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         if needle not in benders_loop_source:
             errors.append(
                 "certified exact master-domain env blocker must retain the declared env/code symbol: "
+                f"{needle}"
+            )
+    for needle in (
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV",
+        "power_family_lookup_encoding_not_certified",
+        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV",
+        "power_pole_shell_distance_encoding_not_certified",
+        "EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV",
+        "power_coverage_witness_encoding_not_certified",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV",
+        "power_coverage_witness_block_geometry_not_certified",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV",
+        "power_coverage_witness_block_size_not_certified",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV",
+        "power_coverage_witness_block_templates_not_certified",
+        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV",
+        "power_coverage_selected_interval_encoding_not_certified",
+    ):
+        if needle not in forbidden_env_source and needle not in power_witness_env_map_source:
+            errors.append(
+                "certified exact power-witness env blocker must reject every non-canonical representation override: "
+                f"{needle}"
+            )
+        if needle not in benders_loop_source:
+            errors.append(
+                "certified exact power-witness env blocker must retain the declared env/code symbol: "
                 f"{needle}"
             )
     resolve_condition_fn = _function_def(

@@ -70,6 +70,20 @@ from src.models.cut_manager import (
     _parse_ghost_anchor_condition_key,
 )
 from src.models.flow_subproblem import FlowSubproblem, build_flow_network
+from src.models.exact_coordinate_master import (
+    EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS,
+    EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_FINAL_TARGET,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_ENCODING_ELEMENT,
+    EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV,
+    EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV,
+    EXACT_POWER_FAMILY_LOOKUP_ENCODING_TABLE,
+    EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT,
+    EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV,
+)
 from src.models.master_model import (
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT,
@@ -451,6 +465,43 @@ _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
         "forensic power-placement bypass is not allowed in certified lifecycle runs",
     ),
 }
+_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS: Mapping[str, tuple[str, str, str]] = {
+    EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV: (
+        EXACT_POWER_FAMILY_LOOKUP_ENCODING_TABLE,
+        "power_family_lookup_encoding_not_certified",
+        "power family lookup encoding changes certified master power-witness representation",
+    ),
+    EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV: (
+        EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT,
+        "power_pole_shell_distance_encoding_not_certified",
+        "power pole shell-distance encoding changes certified master power-witness representation",
+    ),
+    EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV: (
+        EXACT_POWER_COVERAGE_WITNESS_ENCODING_ELEMENT,
+        "power_coverage_witness_encoding_not_certified",
+        "power coverage witness encoding changes certified master power-witness representation",
+    ),
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV: (
+        EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_FINAL_TARGET,
+        "power_coverage_witness_block_geometry_not_certified",
+        "power coverage block-witness geometry changes certified witness representation",
+    ),
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV: (
+        "128",
+        "power_coverage_witness_block_size_not_certified",
+        "power coverage block-witness size changes certified witness representation",
+    ),
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV: (
+        "",
+        "power_coverage_witness_block_templates_not_certified",
+        "power coverage block-witness template filtering changes certified witness representation",
+    ),
+    EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV: (
+        EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS,
+        "power_coverage_selected_interval_encoding_not_certified",
+        "power coverage selected-interval encoding changes certified master power-witness representation",
+    ),
+}
 
 
 def _env_override_enabled_for_certified_master_domain(raw_value: object) -> bool:
@@ -459,16 +510,29 @@ def _env_override_enabled_for_certified_master_domain(raw_value: object) -> bool
     return str(raw_value).strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
 
 
+def _certified_power_witness_env_is_noncanonical(
+    raw_value: object,
+    canonical_value: str,
+) -> bool:
+    if raw_value is None:
+        return False
+    raw_text = str(raw_value).strip()
+    if raw_text == "":
+        return False
+    return raw_text.lower() != str(canonical_value).strip().lower()
+
+
 def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str, Any]]:
     """Return env overrides that mutate certified master/domain semantics.
 
-    V61/V64 PROJECT_LOCK: terminal certified_exact evidence is a full unfiltered
-    master-domain claim under the certified power-witness representation.
-    Env/debug paths that swap the master representation, tighten slot families,
-    slice anchors, or remove/delegate power-completion evidence must be blocked
-    before ExactSearchSession construction; otherwise the persisted
-    master_domain_contract can describe the intended domain while the solver
-    actually searched a sibling domain or witness representation.
+    V61/V64/V65 PROJECT_LOCK: terminal certified_exact evidence is a full
+    unfiltered master-domain claim under the canonical certified power-witness
+    representation. Env/debug paths that swap the master representation, tighten
+    slot families, slice anchors, remove/delegate power-completion evidence, or
+    select an alternate power-witness encoding must be blocked before
+    ExactSearchSession construction; otherwise the persisted master_domain_contract
+    can describe the intended domain while the solver actually searched a sibling
+    domain or witness representation.
     """
 
     blockers: List[Dict[str, Any]] = []
@@ -484,6 +548,21 @@ def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str,
                 "detail": detail,
             }
         )
+    for env_name, (canonical_value, code, detail) in sorted(
+        _CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS.items()
+    ):
+        raw_value = os.environ.get(env_name)
+        if not _certified_power_witness_env_is_noncanonical(raw_value, canonical_value):
+            continue
+        blockers.append(
+            {
+                "code": code,
+                "env": env_name,
+                "value": str(raw_value),
+                "canonical_value": str(canonical_value),
+                "detail": detail,
+            }
+        )
     return blockers
 
 
@@ -495,7 +574,7 @@ def _resolve_ghost_anchor_filter_from_env() -> Optional[FrozenSet[Tuple[int, int
     """
 
     raw = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, "")
-    if not raw.strip():
+    if not raw.strip() or raw.strip().lower() in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES:
         return None
     anchors: List[Tuple[int, int]] = []
     for token in raw.split(";"):
@@ -1126,6 +1205,16 @@ class ExactSearchSession:
     ) -> "ExactSearchSession":
         if solve_mode != "certified_exact":
             raise ValueError("ExactSearchSession only supports certified_exact")
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            blocker_summary = ", ".join(
+                f"{blocker.get('env')}={blocker.get('value')}:{blocker.get('code')}"
+                for blocker in unsafe_domain_env_blockers
+            )
+            raise RuntimeError(
+                "unsafe certified_exact master-domain/power-representation env before "
+                f"ExactSearchSession construction: {blocker_summary}"
+            )
 
         instances, facility_pools, rules = load_project_data(project_root, solve_mode=solve_mode)
         generic_io_requirements = load_generic_io_requirements_artifact(project_root)
@@ -1163,6 +1252,9 @@ def create_exact_search_session(
     master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
 ) -> ExactSearchSession:
     if solve_mode == "certified_exact":
+        # Centralized guard also covers EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV
+        # (ghost_anchor_filter_not_certified); keep this entrypoint's evidence
+        # boundary tied to the same map as the direct ExactSearchSession.create path.
         unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
         if unsafe_domain_env_blockers:
             blocker_summary = ", ".join(
@@ -5548,45 +5640,9 @@ def run_benders_for_ghost_rect(
     cut_replay_seconds = 0.0
     ghost_anchor_filter_override: Optional[FrozenSet[Tuple[int, int]]] = None
     if solve_mode == "certified_exact":
-        ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
-        if ghost_anchor_filter_override is not None:
-            _emit_campaign_heartbeat(
-                {
-                    "stage": "master_domain_contract",
-                    "event": "blocked",
-                    "blocker_code": "ghost_anchor_filter_not_certified",
-                    "anchor_filter_count": len(ghost_anchor_filter_override),
-                }
-            )
-            proof_summary = {
-                "mode": "certified_exact",
-                "master_status": "BLOCKED",
-                "diagnostic_flow_status": "NOT_RUN",
-                "enumerated_bindings": 0,
-                "routing_attempts": 0,
-                "used_greedy_hint": False,
-                "greedy_hint_instances": 0,
-                "master_hinted_literals": 0,
-                "blockers": [
-                    {
-                        "code": "ghost_anchor_filter_not_certified",
-                        "env": EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
-                        "anchor_filter_count": len(ghost_anchor_filter_override),
-                        "detail": (
-                            "certified exact campaign candidates are full unfiltered "
-                            "ghost-anchor-domain claims"
-                        ),
-                    }
-                ],
-            }
-            _publish_last_run_metadata(
-                proof_summary,
-                [],
-                loaded_exact_safe_cut_count=0,
-                generated_exact_safe_cut_count=0,
-            )
-            return RUN_STATUS_UNPROVEN, None
-
+        # Centralized guard also covers EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV
+        # (ghost_anchor_filter_not_certified); keep this entrypoint's evidence
+        # boundary tied to the same map as create_exact_search_session.
         unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
         if unsafe_domain_env_blockers:
             _emit_campaign_heartbeat(
@@ -5615,6 +5671,8 @@ def run_benders_for_ghost_rect(
                 generated_exact_safe_cut_count=0,
             )
             return RUN_STATUS_UNPROVEN, None
+
+        ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
 
     exact_session: Optional[ExactSearchSession] = None
     if solve_mode == "certified_exact":

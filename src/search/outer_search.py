@@ -43,7 +43,12 @@ from src.search.campaign_telemetry import (
     build_wave_summary,
     load_campaign_telemetry_payload,
 )
-from src.search.exact_campaign import ExactCampaign, atomic_write_json
+from src.search.exact_campaign import (
+    ExactCampaign,
+    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    atomic_write_json,
+    has_terminal_full_frontier_certified_evidence,
+)
 from src.search.exact_parallel_scheduler import (
     ExactParallelWorkerPool,
     WorkerResult,
@@ -97,6 +102,10 @@ def _mark_certified_campaign_blocked(
     reason: str,
     blockers: Sequence[Mapping[str, Any]],
 ) -> None:
+    # Fail closed on resumed terminal states: an unsafe/manual-gate blocker must
+    # not leave stale CERTIFIED-looking final_result payloads in the checkpoint.
+    exact_campaign.state["final_result"] = None
+    exact_campaign.state["final_status"] = None
     exact_campaign.mark_campaign_stopped(reason, status=RUN_STATUS_UNPROVEN)
     stop_record = exact_campaign.state.get("last_stop_reason")
     if isinstance(stop_record, dict):
@@ -714,6 +723,23 @@ def _build_certified_result(
             "frontier_candidate_metrics": dict(frontier_candidate_metrics),
         },
     }
+
+
+def _commit_terminal_full_frontier_certified_result(
+    exact_campaign: ExactCampaign,
+    result: Mapping[str, Any],
+) -> None:
+    exact_campaign.state["final_result"] = dict(result)
+    exact_campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+    exact_campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        status=RUN_STATUS_CERTIFIED,
+    )
+    if not has_terminal_full_frontier_certified_evidence(exact_campaign.state):
+        raise RuntimeError(
+            "terminal certified_exact export attempted before full-frontier evidence was committed"
+        )
+    exact_campaign.save()
 
 
 def _save_final_result(
@@ -1486,13 +1512,13 @@ def run_outer_search(
 
     exact_campaign: Optional[ExactCampaign] = None
     if solve_mode == "certified_exact":
-        exact_campaign = ExactCampaign.load_or_create(
-            project_root,
-            campaign_hours=campaign_hours,
-            resume=resume_campaign,
-        )
         unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
         if unsafe_domain_env_blockers:
+            exact_campaign = ExactCampaign.load_or_create(
+                project_root,
+                campaign_hours=campaign_hours,
+                resume=False,
+            )
             _mark_certified_campaign_blocked(
                 exact_campaign,
                 reason="unsafe_certified_exact_master_domain_env",
@@ -1501,12 +1527,22 @@ def run_outer_search(
             return RUN_STATUS_UNPROVEN, None
         if _outer_skip_unknown_enabled():
             blocker = _certified_outer_skip_unknown_blocker()
+            exact_campaign = ExactCampaign.load_or_create(
+                project_root,
+                campaign_hours=campaign_hours,
+                resume=False,
+            )
             _mark_certified_campaign_blocked(
                 exact_campaign,
                 reason=str(blocker["code"]),
                 blockers=[blocker],
             )
             return RUN_STATUS_UNPROVEN, None
+        exact_campaign = ExactCampaign.load_or_create(
+            project_root,
+            campaign_hours=campaign_hours,
+            resume=resume_campaign,
+        )
         probe_state = _load_frontier_probe_state(exact_campaign)
         probe_state["mode"] = frontier_probe_mode
         _persist_frontier_probe_state(exact_campaign, probe_state)
@@ -1630,19 +1666,17 @@ def run_outer_search(
                                 best_proof_summary.get("frontier_candidate_metrics", {})
                             ),
                         )
+                        if exact_campaign is not None:
+                            _commit_terminal_full_frontier_certified_result(
+                                exact_campaign,
+                                result,
+                            )
                         _save_final_result(
                             project_root,
                             result,
                             facility_pools=_pools,
                         )
                         if exact_campaign is not None:
-                            exact_campaign.state["final_result"] = dict(result)
-                            exact_campaign.state["final_status"] = RUN_STATUS_CERTIFIED
-                            exact_campaign.mark_campaign_stopped(
-                                "search_exhausted_all_candidates",
-                                status=RUN_STATUS_CERTIFIED,
-                            )
-                            exact_campaign.save()
                             _refresh_certified_delivery_manifest_if_any(
                                 project_root=project_root,
                                 exact_campaign=exact_campaign,

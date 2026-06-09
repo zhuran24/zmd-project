@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
+import src.search.benders_loop as benders_loop_module
 import src.search.outer_search as outer_search_module
 from src.io.delivery_manifest import delivery_manifest_output_path
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_UNKNOWN, RUN_STATUS_UNPROVEN
-from src.search.exact_campaign import ExactCampaign
+from src.search.exact_campaign import ExactCampaign, has_terminal_full_frontier_certified_evidence
 from src.search.outer_search import run_outer_search
 from src.tests.test_exact_contract import _build_frontier_project
 
@@ -235,3 +237,192 @@ def test_v62_best_effort_exhaustion_blocks_before_final_solution_export(
     assert stop.get("status") == RUN_STATUS_UNPROVEN
     assert state.get("final_result") is None
     assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("env_name", "env_value"),
+    [
+        ("EXACT_POWER_FAMILY_LOOKUP_ENCODING", "linear_shell_guards"),
+        ("EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING", "linear_minmax"),
+        ("EXACT_POWER_COVERAGE_WITNESS_ENCODING", "block_element"),
+        ("EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY", "selected_block"),
+        ("EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE", "64"),
+        ("EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES", "power_pole"),
+        ("EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING", "delta"),
+    ],
+)
+def test_v65_outer_search_blocks_power_witness_encoding_env_before_session(
+    tmp_path: Path,
+    monkeypatch,
+    env_name: str,
+    env_value: str,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=2, height=2)
+    monkeypatch.setenv(env_name, env_value)
+
+    def fail_if_session_constructed(*_args, **_kwargs):  # pragma: no cover - assertion path
+        raise AssertionError("ExactSearchSession constructed before unsafe env guard")
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        fail_if_session_constructed,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=4,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=False,
+    )
+
+    state = _read_state(project_root)
+    stop = state.get("last_stop_reason", {})
+    assert status == RUN_STATUS_UNPROVEN
+    assert result is None
+    assert stop.get("reason") == "unsafe_certified_exact_master_domain_env"
+    assert stop.get("status") == RUN_STATUS_UNPROVEN
+    assert stop.get("blockers", [{}])[0].get("env") == env_name
+    assert state.get("candidates") == {}
+
+
+def test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("EXACT_POWER_COVERAGE_WITNESS_ENCODING", "block_element")
+
+    def fail_if_project_loaded(*_args, **_kwargs):  # pragma: no cover - assertion path
+        raise AssertionError("project data loaded before unsafe env guard")
+
+    monkeypatch.setattr(benders_loop_module, "load_project_data", fail_if_project_loaded)
+
+    with pytest.raises(RuntimeError, match="EXACT_POWER_COVERAGE_WITNESS_ENCODING"):
+        benders_loop_module.ExactSearchSession.create(
+            tmp_path / "missing_project",
+            solve_mode="certified_exact",
+        )
+
+
+def test_v65_unsafe_env_block_clears_resumed_terminal_final_result(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    campaign = ExactCampaign.load_or_create(project_root, resume=False)
+    terminal_result = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {"placements": [], "objective": 1},
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {},
+    }
+    campaign.state["final_result"] = dict(terminal_result)
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    campaign.save()
+    assert has_terminal_full_frontier_certified_evidence(campaign.state)
+
+    monkeypatch.setenv("EXACT_POWER_COVERAGE_WITNESS_ENCODING", "block_element")
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=1,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=True,
+    )
+
+    state = _read_state(project_root)
+    stop = state.get("last_stop_reason", {})
+    assert status == RUN_STATUS_UNPROVEN
+    assert result is None
+    assert state.get("final_result") is None
+    assert state.get("final_status") == RUN_STATUS_UNPROVEN
+    assert stop.get("reason") == "unsafe_certified_exact_master_domain_env"
+    assert stop.get("status") == RUN_STATUS_UNPROVEN
+    assert not has_terminal_full_frontier_certified_evidence(state)
+
+
+def test_v65_terminal_result_is_committed_before_final_solution_export(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+
+    def fake_run_benders_for_ghost_rect(**kwargs):
+        ghost_w = int(kwargs["ghost_w"])
+        ghost_h = int(kwargs["ghost_h"])
+        fake_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_CERTIFIED,
+            },
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        return RUN_STATUS_CERTIFIED, {
+            "ghost_rect": {"w": ghost_w, "h": ghost_h, "area": ghost_w * ghost_h},
+            "placements": [],
+            "objective": ghost_w * ghost_h,
+        }
+
+    fake_run_benders_for_ghost_rect.last_run_metadata = {}
+
+    observed_terminal_state_before_export: list[bool] = []
+    real_save_final_result = outer_search_module._save_final_result
+
+    def assert_terminal_state_before_export(project_root_arg, result, *, facility_pools):
+        observed_terminal_state_before_export.append(
+            has_terminal_full_frontier_certified_evidence(_read_state(project_root_arg))
+        )
+        assert observed_terminal_state_before_export[-1]
+        return real_save_final_result(
+            project_root_arg,
+            result,
+            facility_pools=facility_pools,
+        )
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        lambda *args, **kwargs: SimpleNamespace(core=object()),
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_evaluate_pre_master_precheck_best_effort",
+        lambda **kwargs: {"triggered": False, "status": None, "proof_summary": {}},
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "run_benders_for_ghost_rect",
+        fake_run_benders_for_ghost_rect,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_save_final_result",
+        assert_terminal_state_before_export,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=1,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=False,
+    )
+
+    assert status == RUN_STATUS_CERTIFIED
+    assert result is not None
+    assert observed_terminal_state_before_export == [True]
+    assert has_terminal_full_frontier_certified_evidence(_read_state(project_root))
+    assert (project_root / "data" / "solutions" / "final_solution.json").exists()
