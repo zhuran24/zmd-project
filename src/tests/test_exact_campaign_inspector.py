@@ -126,6 +126,34 @@ def test_inspector_summarizes_valid_resume_state(tmp_path: Path) -> None:
         "CERTIFIED": 1,
         "INFEASIBLE": 1,
     }
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+
+
+def test_inspector_summarizes_terminal_full_frontier_certified_result(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    campaign.save()
+
+    inspection = build_exact_campaign_inspection(project_root)
+
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is True
     assert inspection["campaign"]["best_certified_result"]["ghost_rect"] == {
         "w": 2,
         "h": 1,
@@ -214,7 +242,7 @@ def test_inspector_reports_artifact_mismatch_without_mutating_state(tmp_path: Pa
         ("worker_process_failed", RUN_STATUS_UNKNOWN),
     ],
 )
-def test_inspector_keeps_stop_reason_and_best_certified_result_visible(
+def test_inspector_keeps_stop_reason_visible_without_nonterminal_best_certified_result(
     tmp_path: Path,
     stop_reason: str,
     status: str,
@@ -235,8 +263,9 @@ def test_inspector_keeps_stop_reason_and_best_certified_result_visible(
     inspection = build_exact_campaign_inspection(project_root)
 
     assert inspection["campaign"]["last_stop_reason"]["reason"] == stop_reason
-    assert inspection["campaign"]["final_status"] == RUN_STATUS_CERTIFIED
-    assert inspection["campaign"]["best_certified_result"]["ghost_rect"]["area"] == 2
+    assert inspection["campaign"]["final_status"] == status
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
 
 
 def test_inspector_summarizes_telemetry(tmp_path: Path) -> None:
@@ -311,3 +340,66 @@ def test_inspector_cli_writes_and_no_write_skips_output(tmp_path: Path) -> None:
     assert output_path.exists()
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["metadata"]["source"] == "phase3b_exact_campaign_inspector_v1"
+
+def test_inspector_hides_stale_final_result_without_terminal_frontier_evidence(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+    campaign.save()
+
+    inspection = build_exact_campaign_inspection(project_root)
+
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is False
+    assert inspection["campaign"]["resume_validation_reason"] == (
+        "terminal_certified_frontier_evidence_invalid"
+    )
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+
+
+def test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    _write_json(
+        manifest_path,
+        {
+            "metadata": {"source": "test"},
+            "campaign": {
+                "final_status": RUN_STATUS_CERTIFIED,
+                "last_stop_reason": {
+                    "reason": "candidate_returned_unknown",
+                    "status": RUN_STATUS_UNKNOWN,
+                },
+                "declare_mode": "strict",
+            },
+            "best_certified_result": {
+                "ghost_rect": {"w": 2, "h": 1, "area": 2},
+                "search_status": RUN_STATUS_CERTIFIED,
+                "placement_solution": _certified_solution(),
+            },
+        },
+    )
+
+    inspection = build_exact_campaign_inspection(project_root)
+
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["best_certified_result"] is None
+

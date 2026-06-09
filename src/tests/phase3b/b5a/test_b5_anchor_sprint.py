@@ -344,6 +344,12 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path) -> N
         solution=_certified_solution(),
         proof_summary={"mode": "certified_exact", "master_status": "CERTIFIED"},
     )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 4, "h": 1, "area": 4},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
     campaign.save()
     append_campaign_wave_summary(
         project_root=project_root,
@@ -758,3 +764,31 @@ def test_b5a_summary_cli_writes_and_no_write_skips_output(tmp_path: Path) -> Non
     assert (output_dir / "operator_summary.txt").exists()
     payload = json.loads((output_dir / "operator_summary.json").read_text(encoding="utf-8"))
     assert payload["status"]["outcome"] == "no_campaign_state"
+
+def test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "stale_certified_anchor")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(4, 1)
+    campaign.mark_candidate_result(
+        4,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"mode": "certified_exact", "master_status": "CERTIFIED"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 4, "h": 1, "area": 4},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+    campaign.save()
+
+    summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert summary["status"]["anchor_found"] is False
+    assert summary["anchor"] is None
+

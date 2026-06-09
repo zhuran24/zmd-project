@@ -49,7 +49,10 @@ def build_phase3b_b5_anchor_sprint_summary(
     delivery_manifest = _mapping(inspection.get("delivery_manifest"))
     best_certified = _mapping_or_none(campaign.get("best_certified_result"))
     final_status = campaign.get("final_status")
-    anchor_found = bool(final_status == "CERTIFIED" and best_certified)
+    terminal_full_frontier_certified = bool(
+        campaign.get("terminal_full_frontier_certified", False)
+    )
+    anchor_found = bool(terminal_full_frontier_certified and best_certified)
     last_stop_reason = _mapping_or_none(campaign.get("last_stop_reason"))
     candidate_status_counts = _mapping(campaign.get("candidate_status_counts"))
     triage_summary = _mapping(triage.get("summary"))

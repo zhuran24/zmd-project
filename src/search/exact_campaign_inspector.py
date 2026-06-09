@@ -10,6 +10,7 @@ from src.search.campaign_telemetry import campaign_telemetry_output_path
 from src.search.exact_campaign import (
     EXACT_HASH_FILES,
     compute_exact_artifact_hashes,
+    has_terminal_full_frontier_certified_evidence,
     now_iso,
     validate_exact_campaign_resume_state,
 )
@@ -178,6 +179,7 @@ def _campaign_summary(
             "present": False,
             "final_status": None,
             "last_stop_reason": None,
+            "terminal_full_frontier_certified": False,
             "reset_reason": None,
             "candidate_count": 0,
             "candidate_status_counts": {},
@@ -195,15 +197,19 @@ def _campaign_summary(
         if isinstance(record, Mapping):
             status_counts[str(record.get("status", ""))] += 1
 
+    terminal_certified = has_terminal_full_frontier_certified_evidence(state)
     return {
         "present": True,
         "final_status": state.get("final_status"),
         "last_stop_reason": _mapping_or_none(state.get("last_stop_reason")),
+        "terminal_full_frontier_certified": terminal_certified,
         "reset_reason": state.get("reset_reason"),
         "candidate_count": int(len(candidates)),
         "candidate_status_counts": _ordered_counter(status_counts),
         "top_candidates": _top_candidates(candidates),
-        "best_certified_result": _best_certified_summary(state.get("final_result")),
+        "best_certified_result": _best_certified_summary(state.get("final_result"))
+        if terminal_certified
+        else None,
         "artifact_hashes": dict(state.get("artifact_hashes", {}))
         if isinstance(state.get("artifact_hashes"), Mapping)
         else {},
@@ -242,6 +248,7 @@ def _delivery_manifest_summary(
             "present": False,
             "campaign_final_status": None,
             "campaign_last_stop_reason": None,
+            "terminal_full_frontier_certified": False,
             "best_certified_result": None,
         }
     campaign = (
@@ -249,13 +256,24 @@ def _delivery_manifest_summary(
         if isinstance(delivery_manifest.get("campaign"), Mapping)
         else {}
     )
+    terminal_certified = has_terminal_full_frontier_certified_evidence(
+        {
+            "declare_mode": campaign.get("declare_mode"),
+            "final_status": campaign.get("final_status"),
+            "last_stop_reason": campaign.get("last_stop_reason"),
+            "final_result": delivery_manifest.get("best_certified_result"),
+        }
+    )
     return {
         "present": True,
         "campaign_final_status": campaign.get("final_status"),
         "campaign_last_stop_reason": _mapping_or_none(campaign.get("last_stop_reason")),
+        "terminal_full_frontier_certified": terminal_certified,
         "best_certified_result": _best_certified_summary(
             delivery_manifest.get("best_certified_result")
-        ),
+        )
+        if terminal_certified
+        else None,
     }
 
 

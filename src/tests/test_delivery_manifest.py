@@ -10,7 +10,7 @@ from src.io.delivery_manifest import (
     export_certified_delivery_manifest,
 )
 from src.io.serializer import export_certified_blueprint
-from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
+from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN
 from src.search.exact_campaign import ExactCampaign
 
 
@@ -196,3 +196,56 @@ def test_delivery_manifest_rejects_best_effort_final_result(tmp_path: Path) -> N
             campaign_state=campaign.state,
             campaign_path=campaign.path,
         )
+
+def test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence(
+    tmp_path: Path,
+) -> None:
+    project_root, _facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_missing_final_result"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    campaign.save()
+
+    with pytest.raises(ValueError, match="terminal final_result evidence"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_delivery_manifest_rejects_stale_certified_final_result_without_terminal_frontier_evidence(
+    tmp_path: Path,
+) -> None:
+    project_root, _facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_stale_final_result"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution={"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+    campaign.save()
+
+    with pytest.raises(ValueError, match="exhausted strict candidate frontier"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+

@@ -6,7 +6,14 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Tuple
 
 from src.io.output_schema import blueprint_output_path
-from src.search.exact_campaign import DEFAULT_CAMPAIGN_FILENAME, atomic_write_json, candidate_key, now_iso
+from src.search.exact_campaign import (
+    DEFAULT_CAMPAIGN_FILENAME,
+    atomic_write_json,
+    candidate_key,
+    has_certified_export_surface,
+    has_terminal_full_frontier_certified_evidence,
+    now_iso,
+)
 
 DELIVERY_MANIFEST_VERSION = "1.0.0"
 DELIVERY_MANIFEST_SOURCE = "certified_exact_delivery_manifest_v1"
@@ -30,14 +37,21 @@ def build_certified_delivery_manifest(
         project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
     )
     declare_mode = str(campaign_state.get("declare_mode", "strict"))
-    if isinstance(campaign_state.get("final_result"), Mapping):
+    final_result = campaign_state.get("final_result")
+    final_status = _optional_string(campaign_state.get("final_status"))
+    has_certified_surface = has_certified_export_surface(campaign_state)
+    if has_certified_surface:
         if declare_mode != "strict":
             raise ValueError("certified delivery manifest requires strict declare_mode")
-        if not _is_terminal_full_frontier_certified(campaign_state):
+        if final_status == "CERTIFIED" and not isinstance(final_result, Mapping):
+            raise ValueError("certified delivery manifest requires terminal final_result evidence")
+        if not has_terminal_full_frontier_certified_evidence(campaign_state):
             raise ValueError(
                 "certified delivery manifest requires exhausted strict candidate frontier"
             )
     best_result = _build_best_certified_result_payload(campaign_state)
+    if has_certified_surface and best_result is None:
+        raise ValueError("certified delivery manifest requires terminal final_result evidence")
     payload = {
         "metadata": {
             "version": DELIVERY_MANIFEST_VERSION,
@@ -46,7 +60,7 @@ def build_certified_delivery_manifest(
         },
         "campaign": {
             "solve_mode": str(campaign_state.get("solve_mode", "")),
-            "final_status": _optional_string(campaign_state.get("final_status")),
+            "final_status": final_status,
             "last_stop_reason": _mapping_or_none(campaign_state.get("last_stop_reason")),
             "declare_mode": declare_mode,
             "campaign_hours": float(campaign_state.get("campaign_hours", 0.0)),
@@ -113,24 +127,12 @@ def _artifact_entry(project_root: Path, path: Path) -> Dict[str, Any]:
     }
 
 
-def _is_terminal_full_frontier_certified(campaign_state: Mapping[str, Any]) -> bool:
-    if str(campaign_state.get("final_status")) != "CERTIFIED":
-        return False
-    stop_record = campaign_state.get("last_stop_reason")
-    if not isinstance(stop_record, Mapping):
-        return False
-    return (
-        str(stop_record.get("status")) == "CERTIFIED"
-        and str(stop_record.get("reason")) == "search_exhausted_all_candidates"
-    )
-
-
 def _build_best_certified_result_payload(
     campaign_state: Mapping[str, Any],
 ) -> Optional[Dict[str, Any]]:
     if str(campaign_state.get("declare_mode", "strict")) != "strict":
         return None
-    if not _is_terminal_full_frontier_certified(campaign_state):
+    if not has_terminal_full_frontier_certified_evidence(campaign_state):
         return None
     final_result = campaign_state.get("final_result")
     if not isinstance(final_result, Mapping):
@@ -143,6 +145,8 @@ def _build_best_certified_result_payload(
     ghost_w = int(ghost_rect.get("w", 0))
     ghost_h = int(ghost_rect.get("h", 0))
     record = _best_certified_candidate_record(campaign_state, ghost_w=ghost_w, ghost_h=ghost_h)
+    if record is None:
+        return None
     search_stats = final_result.get("search_stats")
     if not isinstance(search_stats, Mapping):
         search_stats = {}
@@ -166,15 +170,15 @@ def _best_certified_candidate_record(
     *,
     ghost_w: int,
     ghost_h: int,
-) -> Mapping[str, Any]:
+) -> Optional[Mapping[str, Any]]:
     candidates = campaign_state.get("candidates")
     if not isinstance(candidates, Mapping):
-        return {}
+        return None
     record = candidates.get(candidate_key(ghost_w, ghost_h))
     if not isinstance(record, Mapping):
-        return {}
+        return None
     if str(record.get("status", "")) != "CERTIFIED":
-        return {}
+        return None
     return record
 
 

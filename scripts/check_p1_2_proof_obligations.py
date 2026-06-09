@@ -86,6 +86,13 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_certified_exact_blocks_pose_bool_master_env_before_session",
             "test_certified_exact_blocks_power_pole_slot_override_before_session",
             "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
+            "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
+            "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence",
+            "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence",
+            "test_delivery_manifest_rejects_stale_certified_final_result_without_terminal_frontier_evidence",
+            "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence",
+            "test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence",
+            "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -322,6 +329,19 @@ def _assigns_name(tree: ast.Module, name: str) -> bool:
             if isinstance(target, ast.Name) and target.id == name:
                 return True
     return False
+
+
+def _assignment_source(tree: ast.Module, name: str, *, path: Path) -> str:
+    for node in ast.walk(tree):
+        targets: list[ast.expr] = []
+        if isinstance(node, ast.Assign):
+            targets.extend(node.targets)
+        elif isinstance(node, ast.AnnAssign):
+            targets.append(node.target)
+        for target in targets:
+            if isinstance(target, ast.Name) and target.id == name:
+                return _source_text(path, node)
+    raise CheckError(f"assignment not found in {_rel(path)}: {name}")
 
 
 def _calls_id_on_candidate_placements(node: ast.AST) -> bool:
@@ -708,12 +728,54 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         path=DELIVERY_MANIFEST_PATH,
     )
     build_manifest_source = _source_text(DELIVERY_MANIFEST_PATH, build_manifest_fn)
+    delivery_manifest_source_text = DELIVERY_MANIFEST_PATH.read_text(encoding="utf-8")
     for needle in ("declare_mode", "strict", "certified delivery manifest requires strict declare_mode"):
         if needle not in build_manifest_source:
             errors.append(
                 "certified delivery manifest must reject non-strict final_result inheritance: "
                 f"{needle}"
             )
+    for needle in (
+        "has_terminal_full_frontier_certified_evidence",
+        "has_certified_export_surface",
+        "certified delivery manifest requires exhausted strict candidate frontier",
+        "certified delivery manifest requires terminal final_result evidence",
+    ):
+        if needle not in build_manifest_source and needle not in delivery_manifest_source_text:
+            errors.append(
+                "certified delivery manifest must share the terminal full-frontier evidence guard: "
+                f"{needle}"
+            )
+
+    exact_campaign_tree = _parse_python(EXACT_CAMPAIGN_PATH)
+    resume_fn = _function_def(exact_campaign_tree, "_validate_resume_state", path=EXACT_CAMPAIGN_PATH)
+    resume_source = _source_text(EXACT_CAMPAIGN_PATH, resume_fn)
+    exact_campaign_source = EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "has_terminal_full_frontier_certified_evidence",
+        "certified_terminal_evidence_violation",
+        "terminal_certified_frontier_evidence_invalid",
+    ):
+        if needle not in resume_source and needle not in exact_campaign_source:
+            errors.append(
+                "campaign resume/import must reject stale or contradictory terminal certified evidence: "
+                f"{needle}"
+            )
+
+    inspector_source = (PROJECT_ROOT / "src" / "search" / "exact_campaign_inspector.py").read_text(encoding="utf-8")
+    for needle in (
+        "has_terminal_full_frontier_certified_evidence",
+        "terminal_full_frontier_certified",
+    ):
+        if needle not in inspector_source:
+            errors.append(
+                "campaign inspector/report must share terminal full-frontier evidence: "
+                f"{needle}"
+            )
+
+    b5a_source = (PROJECT_ROOT / "src" / "search" / "phase3b" / "b5a" / "b5_anchor_sprint.py").read_text(encoding="utf-8")
+    if "terminal_full_frontier_certified" not in b5a_source:
+        errors.append("B5A wrapper must consume the inspector terminal full-frontier evidence flag")
 
     benders_tree = _parse_python(BENDERS_LOOP_PATH)
     run_benders_fn = _function_def(
@@ -741,16 +803,28 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         path=BENDERS_LOOP_PATH,
     )
     forbidden_env_source = _source_text(BENDERS_LOOP_PATH, forbidden_env_fn)
+    unsafe_env_map_source = _assignment_source(
+        benders_tree,
+        "_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES",
+        path=BENDERS_LOOP_PATH,
+    )
     benders_loop_source = BENDERS_LOOP_PATH.read_text(encoding="utf-8")
     for needle in (
+        "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
+        "ghost_anchor_filter_not_certified",
         "EXACT_USE_POSE_BOOL_MASTER_ENV",
         "pose_bool_master_not_certified",
         "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV",
         "power_pole_slot_upper_bound_override_not_certified",
     ):
-        if needle not in forbidden_env_source and needle not in benders_loop_source:
+        if needle not in forbidden_env_source and needle not in unsafe_env_map_source:
             errors.append(
-                "certified exact master-domain env blocker must reject sibling-domain overrides: "
+                "certified exact master-domain env blocker must reject every master-domain override from the centralized unsafe map: "
+                f"{needle}"
+            )
+        if needle not in benders_loop_source:
+            errors.append(
+                "certified exact master-domain env blocker must retain the declared env/code symbol: "
                 f"{needle}"
             )
     resolve_condition_fn = _function_def(

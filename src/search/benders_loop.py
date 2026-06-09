@@ -421,6 +421,10 @@ EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV = "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE
 
 _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
 _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
+    EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV: (
+        "ghost_anchor_filter_not_certified",
+        "ghost-anchor filter narrows the certified full ghost-anchor domain",
+    ),
     EXACT_USE_POSE_BOOL_MASTER_ENV: (
         "pose_bool_master_not_certified",
         "pose-bool master does not construct the certified full ghost-anchor domain",

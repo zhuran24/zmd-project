@@ -26,6 +26,7 @@ DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
 CAMPAIGN_SCHEMA_VERSION = 4
 MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION = 1
 PROOF_SUMMARY_SCHEMA_VERSION = 1
+TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"
 VALID_CANDIDATE_STATUSES = {
     "RUNNING",
     "CERTIFIED",
@@ -507,6 +508,9 @@ def _validate_resume_state(
         return "declare_mode_invalid"
     if final_result is not None and declare_mode != "strict":
         return "final_result_declare_mode_not_strict"
+    terminal_violation = certified_terminal_evidence_violation(state)
+    if terminal_violation is not None:
+        return terminal_violation
 
     try:
         grid_dimensions = _load_exact_grid_dimensions(project_root)
@@ -537,6 +541,43 @@ def validate_exact_campaign_resume_state(
         current_hashes=current_hashes,
         project_root=project_root,
     )
+
+
+def has_certified_export_surface(state: Mapping[str, Any]) -> bool:
+    """Return True when a state carries any terminal/certified-looking export claim."""
+
+    if str(state.get("final_status")) == "CERTIFIED":
+        return True
+    if isinstance(state.get("final_result"), Mapping):
+        return True
+    stop_record = state.get("last_stop_reason")
+    return isinstance(stop_record, Mapping) and str(stop_record.get("status")) == "CERTIFIED"
+
+
+def has_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]) -> bool:
+    """Return True only for strict terminal full-frontier CERTIFIED evidence."""
+
+    if str(state.get("declare_mode")) != "strict":
+        return False
+    if str(state.get("final_status")) != "CERTIFIED":
+        return False
+    if not isinstance(state.get("final_result"), Mapping):
+        return False
+    stop_record = state.get("last_stop_reason")
+    if not isinstance(stop_record, Mapping):
+        return False
+    return (
+        str(stop_record.get("status")) == "CERTIFIED"
+        and str(stop_record.get("reason")) == TERMINAL_FULL_FRONTIER_CERTIFIED_REASON
+    )
+
+
+def certified_terminal_evidence_violation(state: Mapping[str, Any]) -> Optional[str]:
+    """Return a fail-closed reason for stale or contradictory certified export claims."""
+
+    if has_certified_export_surface(state) and not has_terminal_full_frontier_certified_evidence(state):
+        return "terminal_certified_frontier_evidence_invalid"
+    return None
 
 
 @dataclass
@@ -871,16 +912,7 @@ class ExactCampaign:
         self.state["updated_at"] = timestamp
 
     def best_certified_result(self) -> Optional[Dict[str, Any]]:
-        if str(self.state.get("declare_mode")) != "strict":
-            return None
-        if str(self.state.get("final_status")) != "CERTIFIED":
-            return None
-        stop_record = self.state.get("last_stop_reason")
-        if not isinstance(stop_record, Mapping):
-            return None
-        if str(stop_record.get("status")) != "CERTIFIED":
-            return None
-        if str(stop_record.get("reason")) != "search_exhausted_all_candidates":
+        if not has_terminal_full_frontier_certified_evidence(self.state):
             return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):

@@ -111,6 +111,42 @@ def test_v62_outer_search_blocks_unsafe_master_domain_env_before_session(
     assert state.get("candidates") == {}
 
 
+def test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=2, height=2)
+    monkeypatch.setenv("EXACT_MASTER_GHOST_ANCHOR_FILTER", "0,0")
+
+    def fail_if_session_constructed(*_args, **_kwargs):  # pragma: no cover - assertion path
+        raise AssertionError("ExactSearchSession constructed before unsafe env guard")
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        fail_if_session_constructed,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=4,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=False,
+    )
+
+    state = _read_state(project_root)
+    stop = state.get("last_stop_reason", {})
+    assert status == RUN_STATUS_UNPROVEN
+    assert result is None
+    assert stop.get("reason") == "unsafe_certified_exact_master_domain_env"
+    assert stop.get("status") == RUN_STATUS_UNPROVEN
+    assert stop.get("blockers", [{}])[0].get("env") == "EXACT_MASTER_GHOST_ANCHOR_FILTER"
+    assert state.get("candidates") == {}
+
+
 def test_v62_best_effort_exhaustion_blocks_before_final_solution_export(
     tmp_path: Path,
 ) -> None:
