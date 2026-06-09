@@ -4,8 +4,8 @@
 
 ## 当前主线（subject projection）
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:0cde85223dc78854000f2c87119c11367e0c34f79e72eb3b077be8ff25baed11 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V61, the current review anchor is `v61_master_domain_candidate_frontier_contract`: persisted exact-safe `BendersCut` replay now has an explicit proof obligation requiring strict payload parsing, all-or-nothing member resolution, one-to-one master literal encoding, condition/domain/master-domain faithfulness, apply-before-register atomicity, certified master-domain env override fail-closed behavior, and strict candidate-frontier `declare_mode` evidence. P1.3B remains blocked by default; review receipts are informational records only.
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:6fefc32e3826f9af5d3ba7eda625743819bca2e8f15810fdc8dd18d85f93922f -->
+Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V62, the current review anchor is `v62_frontier_terminal_evidence_and_outer_master_domain_guard`: persisted exact-safe `BendersCut` replay now has an explicit proof obligation requiring strict payload parsing, all-or-nothing member resolution, one-to-one master literal encoding, condition/domain/master-domain faithfulness, apply-before-register atomicity, certified master-domain env override fail-closed behavior before any session/precheck construction, and strict terminal candidate-frontier evidence before certified artifacts are exported. P1.3B remains blocked by default; review receipts are informational records only.
 <!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
 
 ## 精确性边界（subject projection）

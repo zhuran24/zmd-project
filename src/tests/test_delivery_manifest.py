@@ -88,6 +88,19 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
         loaded_exact_safe_cut_count=1,
         generated_exact_safe_cut_count=2,
     )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {
+            "tiny_001": {
+                "pose_idx": 0,
+                "pose_id": "tiny_pose_0",
+                "anchor": {"x": 0, "y": 0},
+                "facility_type": "tiny_facility",
+            }
+        },
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
     campaign.save()
 
@@ -168,6 +181,13 @@ def test_delivery_manifest_rejects_best_effort_final_result(tmp_path: Path) -> N
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
     )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {"tiny_001": {"pose_idx": 0}},
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
     campaign.state["declare_mode"] = "best_effort"
 
     with pytest.raises(ValueError, match="strict declare_mode"):

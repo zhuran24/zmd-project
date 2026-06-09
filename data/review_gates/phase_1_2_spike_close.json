@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-09",
-  "summary": "P1.2 is not formally closed. The three-clean-review standard remains an owner-maintained manual count outside the repo. V57-V61 extended the certified exact persisted-cut replay obligation into condition/domain/master-domain/candidate-frontier faithfulness, now anchored at the V61 master-domain and candidate-frontier contract. The repo remains fail-closed until an explicit owner manual decision opens P1.3B.",
-  "current_review_anchor": "v61_master_domain_candidate_frontier_contract",
+  "summary": "P1.2 is not formally closed. The three-clean-review standard remains an owner-maintained manual count outside the repo. V57-V62 extended the certified exact persisted-cut replay obligation into condition/domain/master-domain/candidate-frontier faithfulness, now anchored at the V62 terminal frontier evidence and outer master-domain guard contract. The repo remains fail-closed until an explicit owner manual decision opens P1.3B.",
+  "current_review_anchor": "v62_frontier_terminal_evidence_and_outer_master_domain_guard",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,8 +26,8 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v61_master_domain_candidate_frontier_contract",
-    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v61_master_domain_candidate_frontier_contract."
+    "current_review_anchor": "v62_frontier_terminal_evidence_and_outer_master_domain_guard",
+    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v62_frontier_terminal_evidence_and_outer_master_domain_guard."
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
@@ -125,6 +125,14 @@
       "summary": "V61 found sibling certified lifecycle blockers after the V60 master-domain patch: pose-bool master and power-pole slot env overrides could change the actual constructed master domain, while EXACT_OUTER_SKIP_UNKNOWN could turn a candidate-subset or best-effort outer campaign into full-domain certified evidence. The gate remains manual/fail-closed, but future reviews should start from the V61 master-domain plus candidate-frontier contract.",
       "evidence_paths": [
         "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md"
+      ]
+    },
+    {
+      "package": "v62_frontier_terminal_evidence_and_outer_master_domain_guard",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V62 found sibling/order certified lifecycle blockers after V61: candidate-level incumbents could survive UNKNOWN/max-attempt partial-frontier stops as terminal certified evidence, outer_search precheck paths could construct sessions under unsafe master-domain env before the V61 guard, and best_effort resume exhaustion could write certified-looking artifacts before manifest fail-closed. Future reviews should start from the V62 terminal frontier evidence and outer master-domain guard contract.",
+      "evidence_paths": [
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md"
       ]
     }
   ],

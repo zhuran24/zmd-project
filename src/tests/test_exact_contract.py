@@ -2236,7 +2236,8 @@ def test_campaign_resume_keeps_valid_candidates(tmp_path: Path) -> None:
     assert resumed.compatible_hashes is True
     assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_INFEASIBLE
     assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_CERTIFIED
-    assert resumed.best_certified_result()["ghost_rect"] == {"w": 2, "h": 1, "area": 2}
+    assert resumed.get_candidate_record(2, 1)["solution"]["tiny_001"]["pose_id"] == "tiny_left"
+    assert resumed.best_certified_result() is None
 
 
 def test_campaign_save_is_atomic_and_resumeable(tmp_path: Path) -> None:
@@ -2264,7 +2265,7 @@ def test_campaign_save_is_atomic_and_resumeable(tmp_path: Path) -> None:
     assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_INFEASIBLE
 
 
-def test_campaign_keeps_best_certified_result_when_smaller_certified_candidate_finishes(
+def test_campaign_keeps_certified_candidate_records_without_terminal_final_result(
     tmp_path: Path,
 ) -> None:
     project_root = _build_toy_exact_project(tmp_path / "campaign_best_certified_monotone")
@@ -2311,13 +2312,14 @@ def test_campaign_keeps_best_certified_result_when_smaller_certified_candidate_f
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     assert resumed.resumed is True
     assert resumed.compatible_hashes is True
-    assert resumed.state["final_status"] == RUN_STATUS_CERTIFIED
-    assert resumed.best_certified_result()["ghost_rect"] == {"w": 2, "h": 1, "area": 2}
+    assert resumed.state["final_status"] is None
+    assert resumed.state.get("final_result") is None
+    assert resumed.best_certified_result() is None
     assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_CERTIFIED
     assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_CERTIFIED
 
 
-def test_campaign_keeps_best_certified_result_when_later_terminal_status_is_unknown(
+def test_campaign_does_not_export_certified_result_when_later_terminal_status_is_unknown(
     tmp_path: Path,
 ) -> None:
     project_root = _build_toy_exact_project(tmp_path / "campaign_best_certified_unknown_stop")
@@ -2357,9 +2359,10 @@ def test_campaign_keeps_best_certified_result_when_later_terminal_status_is_unkn
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     assert resumed.resumed is True
     assert resumed.compatible_hashes is True
-    assert resumed.state["final_status"] == RUN_STATUS_CERTIFIED
+    assert resumed.state["final_status"] == RUN_STATUS_UNKNOWN
     assert resumed.state["last_stop_reason"]["reason"] == "candidate_returned_unknown"
-    assert resumed.best_certified_result()["ghost_rect"] == {"w": 2, "h": 1, "area": 2}
+    assert resumed.state.get("final_result") is None
+    assert resumed.best_certified_result() is None
 
 
 
@@ -3838,7 +3841,7 @@ def test_requested_master_search_profile_is_reflected_in_serial_exact_metadata(
     }
 
 
-def test_unknown_stop_persists_best_certified_result_to_outputs_without_regression(
+def test_unknown_stop_does_not_persist_incumbent_certified_result_to_outputs(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -3905,26 +3908,18 @@ def test_unknown_stop_persists_best_certified_result_to_outputs_without_regressi
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
-    assert state["final_status"] == RUN_STATUS_CERTIFIED
-    assert state["final_result"]["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
+    assert state["final_status"] == RUN_STATUS_UNKNOWN
+    assert state.get("final_result") is None
     assert state["last_stop_reason"]["reason"] == "candidate_returned_unknown"
-    assert final_solution_path.exists()
-    assert blueprint_path.exists()
+    assert not final_solution_path.exists()
+    assert not blueprint_path.exists()
     assert manifest_path.exists()
 
-    final_solution_payload = json.loads(final_solution_path.read_text(encoding="utf-8"))
-    blueprint_payload = normalize_blueprint_payload(
-        json.loads(blueprint_path.read_text(encoding="utf-8"))
-    )
     manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-
-    assert final_solution_payload["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
-    assert blueprint_payload["objective_achieved"]["empty_rect"]["w"] == 6
-    assert blueprint_payload["objective_achieved"]["empty_rect"]["h"] == 1
-    assert manifest_payload["campaign"]["final_status"] == RUN_STATUS_CERTIFIED
-    assert manifest_payload["best_certified_result"]["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
-    assert manifest_payload["artifacts"]["final_solution"]["exists"] is True
-    assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is True
+    assert manifest_payload["campaign"]["final_status"] == RUN_STATUS_UNKNOWN
+    assert manifest_payload["best_certified_result"] is None
+    assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
+    assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is False
 
 
 def test_unproven_result_is_persisted_to_campaign(tmp_path: Path) -> None:
@@ -5316,7 +5311,7 @@ def test_generate_candidate_sizes_orders_by_area_then_min_side() -> None:
     assert positions[(400, 20, 20)] < positions[(400, 40, 10)]
 
 
-def test_campaign_final_result_replacement_uses_area_then_min_side(
+def test_campaign_candidate_records_keep_area_then_min_side_incumbents_non_terminal(
     tmp_path: Path,
 ) -> None:
     project_root = _build_toy_exact_project(tmp_path / "campaign_area_min_side_objective")
@@ -5397,9 +5392,10 @@ def test_campaign_final_result_replacement_uses_area_then_min_side(
 
     best_result = campaign.best_certified_result()
 
-    assert best_result is not None
-    assert best_result["ghost_rect"] == {"w": 20, "h": 20, "area": 400}
-    assert campaign.state["final_result"]["ghost_rect"] == {"w": 20, "h": 20, "area": 400}
+    assert best_result is None
+    assert campaign.state.get("final_result") is None
+    assert campaign.get_candidate_record(20, 20)["status"] == RUN_STATUS_CERTIFIED
+    assert campaign.get_candidate_record(20, 20)["solution"]["square_best"]["pose_id"] == "ghost_20x20"
 
 
 def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(

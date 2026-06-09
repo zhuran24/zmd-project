@@ -30,8 +30,13 @@ def build_certified_delivery_manifest(
         project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
     )
     declare_mode = str(campaign_state.get("declare_mode", "strict"))
-    if isinstance(campaign_state.get("final_result"), Mapping) and declare_mode != "strict":
-        raise ValueError("certified delivery manifest requires strict declare_mode")
+    if isinstance(campaign_state.get("final_result"), Mapping):
+        if declare_mode != "strict":
+            raise ValueError("certified delivery manifest requires strict declare_mode")
+        if not _is_terminal_full_frontier_certified(campaign_state):
+            raise ValueError(
+                "certified delivery manifest requires exhausted strict candidate frontier"
+            )
     best_result = _build_best_certified_result_payload(campaign_state)
     payload = {
         "metadata": {
@@ -108,10 +113,24 @@ def _artifact_entry(project_root: Path, path: Path) -> Dict[str, Any]:
     }
 
 
+def _is_terminal_full_frontier_certified(campaign_state: Mapping[str, Any]) -> bool:
+    if str(campaign_state.get("final_status")) != "CERTIFIED":
+        return False
+    stop_record = campaign_state.get("last_stop_reason")
+    if not isinstance(stop_record, Mapping):
+        return False
+    return (
+        str(stop_record.get("status")) == "CERTIFIED"
+        and str(stop_record.get("reason")) == "search_exhausted_all_candidates"
+    )
+
+
 def _build_best_certified_result_payload(
     campaign_state: Mapping[str, Any],
 ) -> Optional[Dict[str, Any]]:
     if str(campaign_state.get("declare_mode", "strict")) != "strict":
+        return None
+    if not _is_terminal_full_frontier_certified(campaign_state):
         return None
     final_result = campaign_state.get("final_result")
     if not isinstance(final_result, Mapping):

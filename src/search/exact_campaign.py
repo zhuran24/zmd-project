@@ -816,30 +816,17 @@ class ExactCampaign:
             )
 
         if solution is not None and status == "CERTIFIED":
+            # Candidate-level CERTIFIED evidence is only an incumbent until the
+            # outer frontier has been exhausted.  Do not promote it to
+            # state["final_result"] here: UNKNOWN/time-budget/worker-failure stops
+            # must remain non-terminal and must not export best-effort evidence as
+            # a full-frontier certificate.
             record["solution"] = dict(solution)
-            candidate_result = {
-                "ghost_rect": {"w": ghost_w, "h": ghost_h, "area": ghost_w * ghost_h},
-                "placement_solution": dict(solution),
-                "search_status": status,
-                "search_stats": {
-                    "campaign_resumed": self.resumed,
-                    "timestamp": timestamp,
-                },
-            }
             if str(self.state.get("declare_mode")) != "strict":
                 record["proof_summary"] = dict(record.get("proof_summary", {}))
                 record["proof_summary"]["final_result_blocked_reason"] = (
                     "final_result_requires_strict_declare_mode"
                 )
-            else:
-                existing_result = self.state.get("final_result")
-                if not isinstance(existing_result, Mapping) or _candidate_objective_from_rect(
-                    ghost_w,
-                    ghost_h,
-                ) >= _final_result_objective(existing_result):
-                    self.state["final_result"] = candidate_result
-                    self.state["final_status"] = "CERTIFIED"
-                    self.state["last_stop_reason"] = None
         elif status != "CERTIFIED":
             record.pop("solution", None)
 
@@ -880,22 +867,26 @@ class ExactCampaign:
         }
         self.state["last_stop_reason"] = stop_record
         if status is not None:
-            if _has_certified_final_result(self.state) and str(status) != "CERTIFIED":
-                self.state["final_status"] = "CERTIFIED"
-            else:
-                self.state["final_status"] = str(status)
+            self.state["final_status"] = str(status)
         self.state["updated_at"] = timestamp
 
     def best_certified_result(self) -> Optional[Dict[str, Any]]:
         if str(self.state.get("declare_mode")) != "strict":
+            return None
+        if str(self.state.get("final_status")) != "CERTIFIED":
+            return None
+        stop_record = self.state.get("last_stop_reason")
+        if not isinstance(stop_record, Mapping):
+            return None
+        if str(stop_record.get("status")) != "CERTIFIED":
+            return None
+        if str(stop_record.get("reason")) != "search_exhausted_all_candidates":
             return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):
             return None
         result_copy = dict(result)
         result_copy["search_status"] = "CERTIFIED"
-        self.state["final_result"] = dict(result_copy)
-        self.state["final_status"] = "CERTIFIED"
         return result_copy
 
     def save(self) -> None:

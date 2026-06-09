@@ -952,7 +952,7 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
     assert sum(1 for record in state["candidates"].values() if record["status"] == RUN_STATUS_CERTIFIED) >= 2
 
 
-def test_worker_failure_preserves_best_certified_result_for_resume(
+def test_worker_failure_preserves_certified_candidate_records_without_terminal_export(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -1023,9 +1023,11 @@ def test_worker_failure_preserves_best_certified_result_for_resume(
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
-    assert state["final_status"] == RUN_STATUS_CERTIFIED
+    assert state["final_status"] == RUN_STATUS_UNKNOWN
     assert state["last_stop_reason"]["reason"] == "worker_process_failed"
-    assert state["final_result"]["ghost_rect"] == expected_best["ghost_rect"]
+    assert state.get("final_result") is None
     assert resumed.resumed is True
     assert resumed.compatible_hashes is True
-    assert resumed.best_certified_result()["ghost_rect"] == expected_best["ghost_rect"]
+    candidate_key = f"{expected_best['ghost_rect']['w']}x{expected_best['ghost_rect']['h']}"
+    assert state["candidates"][candidate_key]["status"] == RUN_STATUS_CERTIFIED
+    assert resumed.best_certified_result() is None

@@ -32,6 +32,7 @@ from src.models.master_model import (
 from src.runtime.process_priority import apply_process_priority_if_configured
 from src.search.benders_loop import (
     ExactSearchSession,
+    _collect_forbidden_certified_master_domain_env_overrides,
     compute_exact_static_area_lower_bound,
     create_exact_search_session,
     evaluate_exact_candidate_pre_master_precheck,
@@ -86,6 +87,36 @@ def _certified_outer_skip_unknown_blocker() -> Dict[str, Any]:
         "detail": (
             "skipping UNKNOWN frontier candidates makes the campaign declare_mode "
             "best_effort, not a strict full candidate-domain certificate"
+        ),
+    }
+
+
+def _mark_certified_campaign_blocked(
+    exact_campaign: ExactCampaign,
+    *,
+    reason: str,
+    blockers: Sequence[Mapping[str, Any]],
+) -> None:
+    exact_campaign.mark_campaign_stopped(reason, status=RUN_STATUS_UNPROVEN)
+    stop_record = exact_campaign.state.get("last_stop_reason")
+    if isinstance(stop_record, dict):
+        stop_record["blockers"] = [dict(blocker) for blocker in blockers]
+    exact_campaign.save()
+
+
+def _declare_mode_is_strict(exact_campaign: Optional[ExactCampaign]) -> bool:
+    if exact_campaign is None:
+        return True
+    return str(exact_campaign.state.get("declare_mode", "strict")) == "strict"
+
+
+def _non_strict_terminal_certified_blocker(exact_campaign: ExactCampaign) -> Dict[str, Any]:
+    return {
+        "code": "final_result_requires_strict_declare_mode",
+        "declare_mode": str(exact_campaign.state.get("declare_mode", "strict")),
+        "detail": (
+            "terminal certified_exact results require strict declare_mode; "
+            "best_effort or candidate-subset campaigns must not export certified evidence"
         ),
     }
 
@@ -1460,16 +1491,21 @@ def run_outer_search(
             campaign_hours=campaign_hours,
             resume=resume_campaign,
         )
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            _mark_certified_campaign_blocked(
+                exact_campaign,
+                reason="unsafe_certified_exact_master_domain_env",
+                blockers=unsafe_domain_env_blockers,
+            )
+            return RUN_STATUS_UNPROVEN, None
         if _outer_skip_unknown_enabled():
             blocker = _certified_outer_skip_unknown_blocker()
-            exact_campaign.mark_campaign_stopped(
-                str(blocker["code"]),
-                status=RUN_STATUS_UNPROVEN,
+            _mark_certified_campaign_blocked(
+                exact_campaign,
+                reason=str(blocker["code"]),
+                blockers=[blocker],
             )
-            stop_record = exact_campaign.state.get("last_stop_reason")
-            if isinstance(stop_record, dict):
-                stop_record["blockers"] = [dict(blocker)]
-            exact_campaign.save()
             return RUN_STATUS_UNPROVEN, None
         probe_state = _load_frontier_probe_state(exact_campaign)
         probe_state["mode"] = frontier_probe_mode
@@ -1561,6 +1597,15 @@ def run_outer_search(
                 frontier_peak_size = max(frontier_peak_size, int(frontier_state["frontier_size"]))
 
                 if not frontier_state["potential_domain"]:
+                    if exact_campaign is not None and not _declare_mode_is_strict(exact_campaign):
+                        blocker = _non_strict_terminal_certified_blocker(exact_campaign)
+                        _mark_certified_campaign_blocked(
+                            exact_campaign,
+                            reason=str(blocker["code"]),
+                            blockers=[blocker],
+                        )
+                        return RUN_STATUS_UNPROVEN, None
+
                     best_candidate = frontier_state["best_certified_candidate"]
                     best_record = frontier_state["best_certified_record"]
                     if best_candidate is not None and isinstance(best_record, dict):
