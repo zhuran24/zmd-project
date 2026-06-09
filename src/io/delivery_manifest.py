@@ -29,6 +29,9 @@ def build_certified_delivery_manifest(
     resolved_campaign_path = campaign_path or (
         project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
     )
+    declare_mode = str(campaign_state.get("declare_mode", "strict"))
+    if isinstance(campaign_state.get("final_result"), Mapping) and declare_mode != "strict":
+        raise ValueError("certified delivery manifest requires strict declare_mode")
     best_result = _build_best_certified_result_payload(campaign_state)
     payload = {
         "metadata": {
@@ -40,6 +43,7 @@ def build_certified_delivery_manifest(
             "solve_mode": str(campaign_state.get("solve_mode", "")),
             "final_status": _optional_string(campaign_state.get("final_status")),
             "last_stop_reason": _mapping_or_none(campaign_state.get("last_stop_reason")),
+            "declare_mode": declare_mode,
             "campaign_hours": float(campaign_state.get("campaign_hours", 0.0)),
             "schema_version": int(campaign_state.get("schema_version", 0)),
             "proof_summary_schema_version": int(
@@ -107,6 +111,8 @@ def _artifact_entry(project_root: Path, path: Path) -> Dict[str, Any]:
 def _build_best_certified_result_payload(
     campaign_state: Mapping[str, Any],
 ) -> Optional[Dict[str, Any]]:
+    if str(campaign_state.get("declare_mode", "strict")) != "strict":
+        return None
     final_result = campaign_state.get("final_result")
     if not isinstance(final_result, Mapping):
         return None

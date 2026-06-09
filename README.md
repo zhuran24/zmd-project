@@ -4,8 +4,8 @@
 
 ## 当前主线（subject projection）
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:bb66f5c997c0c0ac9466dd2f08f2434dee999ed0edf66247e21bdce90ab75aa4 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V60, the current review anchor is `v60_master_domain_contract`: persisted exact-safe `BendersCut` replay now has an explicit proof obligation requiring strict payload parsing, all-or-nothing member resolution, one-to-one master literal encoding, condition/domain/master-domain faithfulness, and apply-before-register atomicity. P1.3B remains blocked by default; review receipts are informational records only.
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:0cde85223dc78854000f2c87119c11367e0c34f79e72eb3b077be8ff25baed11 -->
+Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V61, the current review anchor is `v61_master_domain_candidate_frontier_contract`: persisted exact-safe `BendersCut` replay now has an explicit proof obligation requiring strict payload parsing, all-or-nothing member resolution, one-to-one master literal encoding, condition/domain/master-domain faithfulness, apply-before-register atomicity, certified master-domain env override fail-closed behavior, and strict candidate-frontier `declare_mode` evidence. P1.3B remains blocked by default; review receipts are informational records only.
 <!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
 
 ## 精确性边界（subject projection）

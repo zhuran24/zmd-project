@@ -9,6 +9,26 @@ env on 是违反 max_lex 严格性的 best-effort 模式, 仅在收 binding 实�
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
+
+def _write_minimal_exact_campaign_artifacts(project_root: Path) -> None:
+    (project_root / "data" / "preprocessed").mkdir(parents=True)
+    (project_root / "rules").mkdir(parents=True)
+    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text(
+        "[]", encoding="utf-8"
+    )
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
 def test_terminal_stop_reason_default_unknown_returns_candidate_returned_unknown(monkeypatch):
     """default (env unset): UNKNOWN candidate 触发 campaign terminal stop."""
@@ -73,3 +93,44 @@ def test_frontier_skip_set_env_on_includes_unknown(monkeypatch):
     import os
     val = os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower()
     assert val in {"1", "true", "yes", "on"}
+
+
+def test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    """EXACT_OUTER_SKIP_UNKNOWN is best-effort and must not reach certified lifecycle."""
+    project_root = tmp_path / "outer_skip_unknown_blocked"
+    _write_minimal_exact_campaign_artifacts(project_root)
+    monkeypatch.setenv("EXACT_OUTER_SKIP_UNKNOWN", "1")
+
+    from src.search.outer_search import run_outer_search
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        max_attempts=1,
+        campaign_hours=1.0,
+    )
+
+    assert status == "UNPROVEN"
+    assert result is None
+    state = json.loads(
+        (project_root / "data" / "checkpoints" / "exact_campaign_state.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert state["declare_mode"] == "strict"
+    assert state["final_result"] is None
+    assert state["final_status"] == "UNPROVEN"
+    assert state["last_stop_reason"]["reason"] == "outer_skip_unknown_not_certified"
+    assert state["last_stop_reason"]["blockers"] == [
+        {
+            "code": "outer_skip_unknown_not_certified",
+            "env": "EXACT_OUTER_SKIP_UNKNOWN",
+            "detail": (
+                "skipping UNKNOWN frontier candidates makes the campaign declare_mode "
+                "best_effort, not a strict full candidate-domain certificate"
+            ),
+        }
+    ]

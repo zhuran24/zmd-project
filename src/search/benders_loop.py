@@ -416,6 +416,52 @@ def _master_cp_sat_log_heartbeat_max_chars() -> int:
 
 
 EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV = "EXACT_MASTER_GHOST_ANCHOR_FILTER"
+EXACT_USE_POSE_BOOL_MASTER_ENV = "EXACT_USE_POSE_BOOL_MASTER"
+EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV = "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE"
+
+_CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
+_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
+    EXACT_USE_POSE_BOOL_MASTER_ENV: (
+        "pose_bool_master_not_certified",
+        "pose-bool master does not construct the certified full ghost-anchor domain",
+    ),
+    EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV: (
+        "power_pole_slot_upper_bound_override_not_certified",
+        "power-pole slot upper-bound override tightens the certified master domain",
+    ),
+}
+
+
+def _env_override_enabled_for_certified_master_domain(raw_value: object) -> bool:
+    if raw_value is None:
+        return False
+    return str(raw_value).strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
+
+
+def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str, Any]]:
+    """Return env overrides that mutate the actual certified master domain.
+
+    V61 PROJECT_LOCK: terminal certified_exact evidence is a full unfiltered
+    master-domain claim.  Env/debug paths that swap the master representation or
+    tighten slot families must be blocked before ExactSearchSession construction;
+    otherwise the persisted master_domain_contract can describe the intended
+    domain while the solver actually searched a sibling domain.
+    """
+
+    blockers: List[Dict[str, Any]] = []
+    for env_name, (code, detail) in sorted(_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES.items()):
+        raw_value = os.environ.get(env_name)
+        if not _env_override_enabled_for_certified_master_domain(raw_value):
+            continue
+        blockers.append(
+            {
+                "code": code,
+                "env": env_name,
+                "value": str(raw_value),
+                "detail": detail,
+            }
+        )
+    return blockers
 
 
 def _resolve_ghost_anchor_filter_from_env() -> Optional[FrozenSet[Tuple[int, int]]]:
@@ -5498,6 +5544,35 @@ def run_benders_for_ghost_rect(
                         ),
                     }
                 ],
+            }
+            _publish_last_run_metadata(
+                proof_summary,
+                [],
+                loaded_exact_safe_cut_count=0,
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_UNPROVEN, None
+
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            _emit_campaign_heartbeat(
+                {
+                    "stage": "master_domain_contract",
+                    "event": "blocked",
+                    "blocker_code": "unsafe_certified_exact_master_domain_env",
+                    "envs": [str(blocker["env"]) for blocker in unsafe_domain_env_blockers],
+                }
+            )
+            proof_summary = {
+                "mode": "certified_exact",
+                "master_status": "BLOCKED",
+                "diagnostic_flow_status": "NOT_RUN",
+                "enumerated_bindings": 0,
+                "routing_attempts": 0,
+                "used_greedy_hint": False,
+                "greedy_hint_instances": 0,
+                "master_hinted_literals": 0,
+                "blockers": unsafe_domain_env_blockers,
             }
             _publish_last_run_metadata(
                 proof_summary,

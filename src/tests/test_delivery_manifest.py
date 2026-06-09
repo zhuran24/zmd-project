@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from src.io.delivery_manifest import (
     delivery_manifest_output_path,
     export_certified_delivery_manifest,
@@ -151,3 +153,26 @@ def test_delivery_manifest_allows_terminal_campaign_without_best_certified_resul
     assert payload["artifacts"]["candidate_placements"]["exists"] is True
     assert payload["artifacts"]["final_solution"]["exists"] is False
     assert payload["artifacts"]["optimal_blueprint"]["exists"] is False
+
+
+def test_delivery_manifest_rejects_best_effort_final_result(tmp_path: Path) -> None:
+    project_root, _facility_pools = _build_manifest_project(tmp_path / "delivery_manifest_best_effort")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution={"tiny_001": {"pose_idx": 0}},
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["declare_mode"] = "best_effort"
+
+    with pytest.raises(ValueError, match="strict declare_mode"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )

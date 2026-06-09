@@ -20,8 +20,9 @@ cd "$(dirname "$0")/.."
 # (per-worker peak estimate for readiness gate OOM check).
 export EXACT_MASTER_CP_SAT_WORKERS="${EXACT_MASTER_CP_SAT_WORKERS:-2}"
 export EXACT_GATE_WORKER_PEAK_RSS_GIB="${EXACT_GATE_WORKER_PEAK_RSS_GIB:-20.5}"
-# 防 main.py 在 UNKNOWN 后 auto-stop (实测 workers≤2 trial 大量 UNKNOWN)
-export EXACT_OUTER_SKIP_UNKNOWN="${EXACT_OUTER_SKIP_UNKNOWN:-1}"
+# Certified campaigns must not skip UNKNOWN candidates by default: that is a
+# data-collection/best-effort mode, not a strict full candidate-domain certificate.
+export EXACT_OUTER_SKIP_UNKNOWN="${EXACT_OUTER_SKIP_UNKNOWN:-0}"
 
 # Community blueprint hint (D step 2): 跟 run_campaign_p2_workers1.sh 同一 default
 ZMD_DEFAULT_COMMUNITY_HINT="$(pwd)/data/hints/blueprint_2026_05_13_master_hint.json"

@@ -68,6 +68,26 @@ _FRONTIER_PROBE_MIN_POTENTIAL_DOMAIN = 32
 _FRONTIER_PROBE_FRONTIER_RATIO = 4
 _FRONTIER_PROBE_MAX_ANCHORS = 64
 _FRONTIER_PROBE_MAX_ANCHORS_ENV = "EXACT_FRONTIER_PROBE_MAX_ANCHORS"
+EXACT_OUTER_SKIP_UNKNOWN_ENV = "EXACT_OUTER_SKIP_UNKNOWN"
+_EXACT_OUTER_SKIP_UNKNOWN_TRUE_VALUES = {"1", "true", "yes", "on"}
+
+
+def _outer_skip_unknown_enabled() -> bool:
+    return (
+        os.environ.get(EXACT_OUTER_SKIP_UNKNOWN_ENV, "").strip().lower()
+        in _EXACT_OUTER_SKIP_UNKNOWN_TRUE_VALUES
+    )
+
+
+def _certified_outer_skip_unknown_blocker() -> Dict[str, Any]:
+    return {
+        "code": "outer_skip_unknown_not_certified",
+        "env": EXACT_OUTER_SKIP_UNKNOWN_ENV,
+        "detail": (
+            "skipping UNKNOWN frontier candidates makes the campaign declare_mode "
+            "best_effort, not a strict full candidate-domain certificate"
+        ),
+    }
 
 
 def _resolve_nonnegative_int_env(env_name: str, default: int) -> int:
@@ -495,7 +515,7 @@ def _compute_exact_frontier_state(
     # 配合 _terminal_stop_reason_for_status (line ~1373) 同 env-gate. 让 outer
     # 真探下一个 candidate 而不是反复 try 同一 UNKNOWN. default off 不影响.
     _frontier_skip_statuses = {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE}
-    if os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower() in {"1", "true", "yes", "on"}:
+    if _outer_skip_unknown_enabled():
         _frontier_skip_statuses.add(RUN_STATUS_UNKNOWN)
     for candidate in candidates:
         _area, ghost_w, ghost_h = candidate
@@ -1393,7 +1413,7 @@ def _terminal_stop_reason_for_status(status: str) -> Optional[str]:
         # candidate (求解器超时未确定是否 FEASIBLE). audit_log 应标记
         # campaign 含 UNKNOWN gap → declare 为 best_effort 而非 strict.
         # default off 保留严格证明语义.
-        if os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower() in {"1", "true", "yes", "on"}:
+        if _outer_skip_unknown_enabled():
             return None
         return "candidate_returned_unknown"
     if normalized_status == RUN_STATUS_UNPROVEN:
@@ -1440,13 +1460,17 @@ def run_outer_search(
             campaign_hours=campaign_hours,
             resume=resume_campaign,
         )
-        # P2 #14 数据收集 audit: A 方案 env on 时 mark campaign declare_mode
-        # = best_effort. declare 出的"最优"可能漏 UNKNOWN candidate, 不再是
-        # 严格 max_lex 证明. follow-up Verdict 脚本应据此字段标 audit warning.
-        if os.environ.get("EXACT_OUTER_SKIP_UNKNOWN", "").strip().lower() in {"1", "true", "yes", "on"}:
-            if exact_campaign.state.get("declare_mode") != "best_effort":
-                exact_campaign.state["declare_mode"] = "best_effort"
-                exact_campaign.save()
+        if _outer_skip_unknown_enabled():
+            blocker = _certified_outer_skip_unknown_blocker()
+            exact_campaign.mark_campaign_stopped(
+                str(blocker["code"]),
+                status=RUN_STATUS_UNPROVEN,
+            )
+            stop_record = exact_campaign.state.get("last_stop_reason")
+            if isinstance(stop_record, dict):
+                stop_record["blockers"] = [dict(blocker)]
+            exact_campaign.save()
+            return RUN_STATUS_UNPROVEN, None
         probe_state = _load_frontier_probe_state(exact_campaign)
         probe_state["mode"] = frontier_probe_mode
         _persist_frontier_probe_state(exact_campaign, probe_state)
@@ -2266,9 +2290,7 @@ def run_outer_search(
                     # return 没 fix), 导致 168h best-effort 跑撞第一个 UNKNOWN 就
                     # stop 退出. 这里补齐 — env on 时 skip mark_stopped + continue
                     # wave loop 探下个 candidate.
-                    _skip_unknown_env = os.environ.get(
-                        "EXACT_OUTER_SKIP_UNKNOWN", ""
-                    ).strip().lower() in {"1", "true", "yes", "on"}
+                    _skip_unknown_env = _outer_skip_unknown_enabled()
                     if exact_campaign is not None:
                         exact_campaign.mark_candidate_result(
                             ghost_w,

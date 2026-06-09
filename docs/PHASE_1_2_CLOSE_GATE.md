@@ -20,23 +20,25 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V60, the current review anchor is:
+After V57-V61, the current review anchor is:
 
 ```text
-v60_master_domain_contract
+v61_master_domain_candidate_frontier_contract
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
 a real certified solver safety surface: exact-safe `BendersCut` persistence and
 replay must be strictly parsed, all-or-nothing, and faithfully encoded by the
-master.  V57-V60 narrowed that same family into condition/domain/master-domain
-faithfulness: condition-required cuts, strict condition keys, current-domain
-membership, and the actual full unfiltered master-domain contract must agree
-before terminal certified evidence is inherited.  The consolidated proof
+master.  V57-V61 narrowed that same family into condition/domain/master-domain
+and candidate-frontier faithfulness: condition-required cuts, strict condition
+keys, current-domain membership, the actual full unfiltered master-domain
+contract, unsafe certified master-domain env overrides, and strict
+candidate-frontier `declare_mode` evidence must agree before terminal certified
+evidence is inherited.  The consolidated proof
 obligation is
 `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS`; see
 `docs/research/p1_2_v56_certified_cut_replay_consolidation.md` and
-`docs/research/p1_2_v60_master_domain_contract.md`.
+`docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md`.
 
 Daily consistency check:
 

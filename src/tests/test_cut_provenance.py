@@ -401,6 +401,64 @@ def test_exact_campaign_resume_rejects_filtered_master_domain_contract(
     assert resumed.reset_reason == "master_domain_contract_invalid"
 
 
+def test_exact_campaign_resume_rejects_float_state_schema_version(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_float_state_schema_version"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["schema_version"] = 4.0
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "schema_version_mismatch"
+
+
+def test_exact_campaign_resume_rejects_float_proof_summary_schema_version(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_float_proof_summary_schema_version"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["proof_summary_schema_version"] = 1.0
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "proof_summary_schema_version_mismatch"
+
+
+def test_exact_campaign_resume_rejects_bool_generated_cut_count(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_bool_generated_cut_count"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "UNKNOWN",
+        exact_safe_cuts=[],
+        proof_summary={"master_status": "UNKNOWN"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["candidates"]["1x1"]["generated_exact_safe_cut_count"] = True
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_count:1x1"
+
+
 def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) -> None:
     project_root = tmp_path / "campaign_malformed_exact_safe"
     (project_root / "data" / "preprocessed").mkdir(parents=True)
@@ -890,6 +948,50 @@ def test_exact_campaign_resume_rejects_json_nan_constant(tmp_path: Path) -> None
 
     assert resumed.resumed is False
     assert resumed.reset_reason == "state_json_invalid"
+
+
+
+def test_exact_campaign_resume_rejects_best_effort_final_result(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_best_effort_final_result"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "CERTIFIED",
+        exact_safe_cuts=[],
+        solution={"tiny_001": {"pose_idx": 0}},
+        proof_summary={"master_status": "CERTIFIED"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["declare_mode"] = "best_effort"
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "final_result_declare_mode_not_strict"
+
+
+def test_exact_campaign_resume_rejects_missing_declare_mode(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_missing_declare_mode"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state.pop("declare_mode")
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "missing_state_field:declare_mode"
 
 
 def test_certified_exact_loads_only_matching_exact_safe_cuts(tmp_path: Path) -> None:

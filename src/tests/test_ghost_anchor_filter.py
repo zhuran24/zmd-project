@@ -14,6 +14,8 @@ import pytest
 from src.models.master_model import MasterPlacementModel
 from src.search.benders_loop import (
     EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
+    EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV,
+    EXACT_USE_POSE_BOOL_MASTER_ENV,
     _resolve_ghost_anchor_filter_from_env,
     run_benders_for_ghost_rect,
 )
@@ -190,5 +192,85 @@ def test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_termina
                 "certified exact campaign candidates are full unfiltered "
                 "ghost-anchor-domain claims"
             ),
+        }
+    ]
+
+
+def test_certified_exact_blocks_pose_bool_master_env_before_session(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, raising=False)
+    monkeypatch.setenv(EXACT_USE_POSE_BOOL_MASTER_ENV, "1")
+
+    def _forbidden_session_factory(*_args, **_kwargs):  # pragma: no cover - failure sentinel
+        raise AssertionError("certified exact domain env blocker must run before ExactSearchSession")
+
+    monkeypatch.setattr(
+        "src.search.benders_loop.create_exact_search_session",
+        _forbidden_session_factory,
+    )
+
+    status, solution = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+        max_iterations=1,
+    )
+
+    metadata = run_benders_for_ghost_rect.last_run_metadata
+    assert status == "UNPROVEN"
+    assert solution is None
+    assert metadata["exact_safe_cuts"] == []
+    assert metadata["generated_exact_safe_cut_count"] == 0
+    assert metadata["proof_summary"]["master_status"] == "BLOCKED"
+    blockers = metadata["proof_summary"]["blockers"]
+    assert blockers == [
+        {
+            "code": "pose_bool_master_not_certified",
+            "env": EXACT_USE_POSE_BOOL_MASTER_ENV,
+            "value": "1",
+            "detail": "pose-bool master does not construct the certified full ghost-anchor domain",
+        }
+    ]
+
+
+def test_certified_exact_blocks_power_pole_slot_override_before_session(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, raising=False)
+    monkeypatch.setenv(EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV, "1")
+
+    def _forbidden_session_factory(*_args, **_kwargs):  # pragma: no cover - failure sentinel
+        raise AssertionError("certified exact domain env blocker must run before ExactSearchSession")
+
+    monkeypatch.setattr(
+        "src.search.benders_loop.create_exact_search_session",
+        _forbidden_session_factory,
+    )
+
+    status, solution = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+        max_iterations=1,
+    )
+
+    metadata = run_benders_for_ghost_rect.last_run_metadata
+    assert status == "UNPROVEN"
+    assert solution is None
+    assert metadata["exact_safe_cuts"] == []
+    assert metadata["generated_exact_safe_cut_count"] == 0
+    assert metadata["proof_summary"]["master_status"] == "BLOCKED"
+    blockers = metadata["proof_summary"]["blockers"]
+    assert blockers == [
+        {
+            "code": "power_pole_slot_upper_bound_override_not_certified",
+            "env": EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV,
+            "value": "1",
+            "detail": "power-pole slot upper-bound override tightens the certified master domain",
         }
     ]

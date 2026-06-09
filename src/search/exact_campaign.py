@@ -50,6 +50,7 @@ REQUIRED_STATE_FIELDS = {
     "final_result",
     "final_status",
     "last_stop_reason",
+    "declare_mode",
     "candidates",
 }
 
@@ -376,8 +377,8 @@ def _build_initial_state(
         # candidate 跳过 frontier → declare 出的 "最优" 可能漏 UNKNOWN 实际为
         # FEASIBLE, 违反 max_lex 严格证明. 此字段标记 campaign declare 严格度:
         #   "strict" (default) — declare 是真 max_lex 最优 (严格证明)
-        #   "best_effort"      — campaign 含 UNKNOWN gap, declare 仅"算清范围内最优"
-        # outer_search 启动时若 EXACT_OUTER_SKIP_UNKNOWN env on, 把此字段升 best_effort.
+        #   "best_effort"      — historical/data-collection states only; resume/export
+        #                         must not inherit terminal certified evidence from it.
         "declare_mode": "strict",
         "candidates": {},
     }
@@ -405,9 +406,15 @@ def _validate_candidate_record(
         return f"candidate_invalid_ghost_rect:{record_key}"
 
     try:
-        int(record.get("attempts", 0))
-        int(record.get("loaded_exact_safe_cut_count", 0))
-        int(record.get("generated_exact_safe_cut_count", 0))
+        _strict_resume_int(record.get("attempts", 0), f"candidate.{record_key}.attempts")
+        _strict_resume_int(
+            record.get("loaded_exact_safe_cut_count", 0),
+            f"candidate.{record_key}.loaded_exact_safe_cut_count",
+        )
+        _strict_resume_int(
+            record.get("generated_exact_safe_cut_count", 0),
+            f"candidate.{record_key}.generated_exact_safe_cut_count",
+        )
     except Exception:
         return f"candidate_invalid_count:{record_key}"
 
@@ -454,7 +461,11 @@ def _validate_resume_state(
     current_hashes: Mapping[str, str],
     project_root: Optional[Path] = None,
 ) -> Optional[str]:
-    if int(state.get("schema_version", -1)) != CAMPAIGN_SCHEMA_VERSION:
+    try:
+        schema_version = _strict_resume_int(state.get("schema_version"), "schema_version")
+    except Exception:
+        return "schema_version_mismatch"
+    if schema_version != CAMPAIGN_SCHEMA_VERSION:
         return "schema_version_mismatch"
     if str(state.get("solve_mode")) != "certified_exact":
         return "solve_mode_mismatch"
@@ -464,7 +475,14 @@ def _validate_resume_state(
     domain_contract_reason = _validate_master_domain_contract(state)
     if domain_contract_reason is not None:
         return domain_contract_reason
-    if int(state.get("proof_summary_schema_version", -1)) != PROOF_SUMMARY_SCHEMA_VERSION:
+    try:
+        proof_summary_schema_version = _strict_resume_int(
+            state.get("proof_summary_schema_version"),
+            "proof_summary_schema_version",
+        )
+    except Exception:
+        return "proof_summary_schema_version_mismatch"
+    if proof_summary_schema_version != PROOF_SUMMARY_SCHEMA_VERSION:
         return "proof_summary_schema_version_mismatch"
     if not isinstance(state.get("artifact_hashes"), Mapping):
         return "artifact_hashes_invalid"
@@ -484,6 +502,11 @@ def _validate_resume_state(
         return "final_status_invalid"
     if final_result is not None and final_status != "CERTIFIED":
         return "final_status_mismatch"
+    declare_mode = state.get("declare_mode")
+    if not isinstance(declare_mode, str) or declare_mode not in {"strict", "best_effort"}:
+        return "declare_mode_invalid"
+    if final_result is not None and declare_mode != "strict":
+        return "final_result_declare_mode_not_strict"
 
     try:
         grid_dimensions = _load_exact_grid_dimensions(project_root)
@@ -771,15 +794,25 @@ class ExactCampaign:
             record["exact_safe_cuts"] = list(record.get("exact_safe_cuts", []))
 
         if loaded_exact_safe_cut_count is not None:
-            record["loaded_exact_safe_cut_count"] = int(loaded_exact_safe_cut_count)
+            record["loaded_exact_safe_cut_count"] = _strict_resume_int(
+                loaded_exact_safe_cut_count,
+                "loaded_exact_safe_cut_count",
+            )
         else:
-            record["loaded_exact_safe_cut_count"] = int(record.get("loaded_exact_safe_cut_count", 0))
+            record["loaded_exact_safe_cut_count"] = _strict_resume_int(
+                record.get("loaded_exact_safe_cut_count", 0),
+                "loaded_exact_safe_cut_count",
+            )
 
         if generated_exact_safe_cut_count is not None:
-            record["generated_exact_safe_cut_count"] = int(generated_exact_safe_cut_count)
+            record["generated_exact_safe_cut_count"] = _strict_resume_int(
+                generated_exact_safe_cut_count,
+                "generated_exact_safe_cut_count",
+            )
         else:
-            record["generated_exact_safe_cut_count"] = int(
-                record.get("generated_exact_safe_cut_count", 0)
+            record["generated_exact_safe_cut_count"] = _strict_resume_int(
+                record.get("generated_exact_safe_cut_count", 0),
+                "generated_exact_safe_cut_count",
             )
 
         if solution is not None and status == "CERTIFIED":
@@ -793,14 +826,20 @@ class ExactCampaign:
                     "timestamp": timestamp,
                 },
             }
-            existing_result = self.state.get("final_result")
-            if not isinstance(existing_result, Mapping) or _candidate_objective_from_rect(
-                ghost_w,
-                ghost_h,
-            ) >= _final_result_objective(existing_result):
-                self.state["final_result"] = candidate_result
-                self.state["final_status"] = "CERTIFIED"
-                self.state["last_stop_reason"] = None
+            if str(self.state.get("declare_mode")) != "strict":
+                record["proof_summary"] = dict(record.get("proof_summary", {}))
+                record["proof_summary"]["final_result_blocked_reason"] = (
+                    "final_result_requires_strict_declare_mode"
+                )
+            else:
+                existing_result = self.state.get("final_result")
+                if not isinstance(existing_result, Mapping) or _candidate_objective_from_rect(
+                    ghost_w,
+                    ghost_h,
+                ) >= _final_result_objective(existing_result):
+                    self.state["final_result"] = candidate_result
+                    self.state["final_status"] = "CERTIFIED"
+                    self.state["last_stop_reason"] = None
         elif status != "CERTIFIED":
             record.pop("solution", None)
 
@@ -848,6 +887,8 @@ class ExactCampaign:
         self.state["updated_at"] = timestamp
 
     def best_certified_result(self) -> Optional[Dict[str, Any]]:
+        if str(self.state.get("declare_mode")) != "strict":
+            return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):
             return None

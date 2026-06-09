@@ -22,7 +22,9 @@ LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "src" / "cuts" / "helpers" / "candidate_placements.py"
 CUT_MANAGER_PATH = PROJECT_ROOT / "src" / "models" / "cut_manager.py"
 EXACT_CAMPAIGN_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaign.py"
+OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
+DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
 MASTER_MODEL_PATH = PROJECT_ROOT / "src" / "models" / "master_model.py"
 EXACT_COORDINATE_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "exact_coordinate_master.py"
 POSE_BOOL_EXACT_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "pose_bool_exact_master.py"
@@ -74,7 +76,16 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
             "test_exact_campaign_state_persists_full_master_domain_contract",
             "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
+            "test_exact_campaign_resume_rejects_float_state_schema_version",
+            "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
+            "test_exact_campaign_resume_rejects_bool_generated_cut_count",
+            "test_exact_campaign_resume_rejects_best_effort_final_result",
+            "test_exact_campaign_resume_rejects_missing_declare_mode",
+            "test_delivery_manifest_rejects_best_effort_final_result",
             "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
+            "test_certified_exact_blocks_pose_bool_master_env_before_session",
+            "test_certified_exact_blocks_power_pole_slot_override_before_session",
+            "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -651,8 +662,58 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         errors.append("ExactCampaign resume validation must load current grid dimensions for condition resolver support checks")
     if "_validate_master_domain_contract" not in resume_source:
         errors.append("ExactCampaign resume validation must reject restricted or missing master domain contracts")
-    if "master_domain_contract" not in EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8"):
+    exact_campaign_source = EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
+    if "master_domain_contract" not in exact_campaign_source:
         errors.append("ExactCampaign state must persist an explicit full master-domain contract")
+    for needle in (
+        '_strict_resume_int(state.get("schema_version")',
+        'state.get("proof_summary_schema_version")',
+        "declare_mode",
+        "final_result_declare_mode_not_strict",
+        "final_result_requires_strict_declare_mode",
+    ):
+        if needle not in exact_campaign_source:
+            errors.append(f"ExactCampaign resume/final evidence contract must fail closed on non-strict or non-strictly-typed state: {needle}")
+
+    outer_tree = _parse_python(OUTER_SEARCH_PATH)
+    run_outer_fn = _function_def(outer_tree, "run_outer_search", path=OUTER_SEARCH_PATH)
+    run_outer_source = _source_text(OUTER_SEARCH_PATH, run_outer_fn)
+    outer_source = OUTER_SEARCH_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "EXACT_OUTER_SKIP_UNKNOWN_ENV",
+        "outer_skip_unknown_not_certified",
+        "_certified_outer_skip_unknown_blocker",
+    ):
+        if needle not in outer_source:
+            errors.append(
+                "certified outer search must define a fail-closed UNKNOWN-skip blocker: "
+                f"{needle}"
+            )
+    for needle in (
+        "_outer_skip_unknown_enabled()",
+        "_certified_outer_skip_unknown_blocker",
+        "mark_campaign_stopped",
+        "RUN_STATUS_UNPROVEN",
+    ):
+        if needle not in run_outer_source:
+            errors.append(
+                "certified outer search must fail closed before candidate subset/best-effort evidence: "
+                f"{needle}"
+            )
+
+    delivery_manifest_tree = _parse_python(DELIVERY_MANIFEST_PATH)
+    build_manifest_fn = _function_def(
+        delivery_manifest_tree,
+        "build_certified_delivery_manifest",
+        path=DELIVERY_MANIFEST_PATH,
+    )
+    build_manifest_source = _source_text(DELIVERY_MANIFEST_PATH, build_manifest_fn)
+    for needle in ("declare_mode", "strict", "certified delivery manifest requires strict declare_mode"):
+        if needle not in build_manifest_source:
+            errors.append(
+                "certified delivery manifest must reject non-strict final_result inheritance: "
+                f"{needle}"
+            )
 
     benders_tree = _parse_python(BENDERS_LOOP_PATH)
     run_benders_fn = _function_def(
@@ -664,6 +725,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     for needle in (
         "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
         "ghost_anchor_filter_not_certified",
+        "_collect_forbidden_certified_master_domain_env_overrides",
+        "unsafe_certified_exact_master_domain_env",
         "_publish_last_run_metadata",
         "RUN_STATUS_UNPROVEN",
     ):
@@ -671,6 +734,24 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
             errors.append(
                 "certified exact run entrypoint must fail closed when the "
                 f"ghost-anchor domain is env-filtered: {needle}"
+            )
+    forbidden_env_fn = _function_def(
+        benders_tree,
+        "_collect_forbidden_certified_master_domain_env_overrides",
+        path=BENDERS_LOOP_PATH,
+    )
+    forbidden_env_source = _source_text(BENDERS_LOOP_PATH, forbidden_env_fn)
+    benders_loop_source = BENDERS_LOOP_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "EXACT_USE_POSE_BOOL_MASTER_ENV",
+        "pose_bool_master_not_certified",
+        "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV",
+        "power_pole_slot_upper_bound_override_not_certified",
+    ):
+        if needle not in forbidden_env_source and needle not in benders_loop_source:
+            errors.append(
+                "certified exact master-domain env blocker must reject sibling-domain overrides: "
+                f"{needle}"
             )
     resolve_condition_fn = _function_def(
         benders_tree,

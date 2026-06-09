@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-09",
-  "review_anchor": "v60_master_domain_contract",
-  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V60 extends certified exact persisted-cut replay faithfulness into condition/domain/master-domain faithfulness: exact-safe cut payloads must be strictly typed, replay must be all-or-nothing, conflict members must map one-to-one to master literals, generated and persisted condition domains must match the current master domain, a cut may only be registered after master application succeeds, and terminal certified evidence must be bound to the actual full unfiltered master-domain contract.",
-  "phase_gate_required_anchor": "v60_master_domain_contract",
+  "review_anchor": "v61_master_domain_candidate_frontier_contract",
+  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V61 extends certified exact persisted-cut replay faithfulness into the actual constructed master-domain and candidate-frontier contract: exact-safe cut payloads must be strictly typed, replay must be all-or-nothing, conflict members must map one-to-one to master literals, generated and persisted condition domains must match the current master domain, a cut may only be registered after master application succeeds, terminal certified evidence must be bound to the actual full unfiltered master-domain contract, certified master-domain-changing env/debug overrides must fail closed before session construction, and candidate-subset or best-effort outer campaigns must not export full-domain certified results.",
+  "phase_gate_required_anchor": "v61_master_domain_candidate_frontier_contract",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -108,7 +108,8 @@
         "v58_candidate",
         "v59_candidate",
         "v60_candidate",
-        "v60_master_domain_contract"
+        "v60_master_domain_contract",
+        "v61_candidate"
       ],
       "required_tests": [
         "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
@@ -145,15 +146,25 @@
         "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
         "test_exact_campaign_state_persists_full_master_domain_contract",
         "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
-        "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status"
+        "test_exact_campaign_resume_rejects_float_state_schema_version",
+        "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
+        "test_exact_campaign_resume_rejects_bool_generated_cut_count",
+        "test_exact_campaign_resume_rejects_best_effort_final_result",
+        "test_exact_campaign_resume_rejects_missing_declare_mode",
+        "test_delivery_manifest_rejects_best_effort_final_result",
+        "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
+        "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
+        "test_certified_exact_blocks_pose_bool_master_env_before_session",
+        "test_certified_exact_blocks_power_pole_slot_override_before_session"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
         "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
         "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
-        "docs/research/p1_2_v60_master_domain_contract.md"
+        "docs/research/p1_2_v60_master_domain_contract.md",
+        "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md"
       ],
-      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
+      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, and apply-before-register atomicity are all part of the certified replay boundary."
     },
     {
       "id": "PO-PHASE-GATE-PROVENANCE",
@@ -205,6 +216,8 @@
       "src/models/cut_manager.py",
       "src/search/exact_campaign.py",
       "src/search/benders_loop.py",
+      "src/search/outer_search.py",
+      "src/io/delivery_manifest.py",
       "src/models/master_model.py",
       "src/models/exact_coordinate_master.py",
       "src/models/pose_bool_exact_master.py"
@@ -217,7 +230,9 @@
       "src/models/cut_manager.py::CutManager.load",
       "src/models/exact_coordinate_master.py::CoordinateExactMasterDelegate.add_benders_cut",
       "src/models/pose_bool_exact_master.py::PoseBoolExactMasterDelegate.add_benders_cut",
-      "src/models/master_model.py::MasterPlacementModel.add_benders_cut"
+      "src/models/master_model.py::MasterPlacementModel.add_benders_cut",
+      "src/search/outer_search.py::run_outer_search",
+      "src/io/delivery_manifest.py::build_certified_delivery_manifest"
     ],
     "obligations": [
       "Exact-safe certified cut JSON must be strict JSON with no duplicate keys, NaN, Infinity, or truthy string coercion.",
@@ -229,8 +244,11 @@
       "Every non-empty certified condition_set must use a resolver-supported condition key grammar; unsupported keys fail closed before resume or replay.",
       "Condition-required power-subproblem cuts must bind ghost_anchor condition keys to matching metadata.ghost_anchor and metadata.ghost_rect_idx values.",
       "Condition-required ghost_anchor keys must be canonical non-negative decimal coordinates with no whitespace, signs, leading zero ambiguity, underscores, extra fields, or overflow-shaped values.",
-      "Campaign resume must validate every non-empty condition_set against the current candidate ghost domain, including the canonical rect-index enumeration used by master replay."
+      "Campaign resume must validate every non-empty condition_set against the current candidate ghost domain, including the canonical rect-index enumeration used by master replay.",
+      "Certified campaign terminal evidence must require strict declare_mode; best_effort or candidate-subset campaigns must not export full-domain certified results.",
+      "Certified outer search must not skip UNKNOWN frontier candidates unless a separate partition/coverage proof exists and is machine-gated.",
+      "Certified delivery manifests must reject non-strict final_result inheritance rather than presenting best-effort state as certified delivery evidence."
     ],
-    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, or post-hoc registered cut is not replay-safe and must not prune certified search."
+    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, non-strict declare_mode, candidate-subset, or post-hoc registered cut/result is not replay-safe and must not prune or certify search."
   }
 }
