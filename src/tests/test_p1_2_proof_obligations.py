@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v56_certified_cut_replay_consolidation"
+    assert manifest["phase_gate_required_anchor"] == "v60_master_domain_contract"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:

@@ -2,10 +2,10 @@
   "schema_version": 1,
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
-  "updated_at": "2026-06-08",
-  "review_anchor": "v56_certified_cut_replay_consolidation",
-  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V56 adds certified exact persisted-cut replay faithfulness: exact-safe cut payloads must be strictly typed, replay must be all-or-nothing, conflict members must map one-to-one to master literals, and a cut may only be registered after master application succeeds.",
-  "phase_gate_required_anchor": "v56_certified_cut_replay_consolidation",
+  "updated_at": "2026-06-09",
+  "review_anchor": "v60_master_domain_contract",
+  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V60 extends certified exact persisted-cut replay faithfulness into condition/domain/master-domain faithfulness: exact-safe cut payloads must be strictly typed, replay must be all-or-nothing, conflict members must map one-to-one to master literals, generated and persisted condition domains must match the current master domain, a cut may only be registered after master application succeeds, and terminal certified evidence must be bound to the actual full unfiltered master-domain contract.",
+  "phase_gate_required_anchor": "v60_master_domain_contract",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -105,7 +105,10 @@
         "v56_candidate",
         "v56_certified_cut_replay_consolidation",
         "v57_candidate",
-        "v58_candidate"
+        "v58_candidate",
+        "v59_candidate",
+        "v60_candidate",
+        "v60_master_domain_contract"
       ],
       "required_tests": [
         "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
