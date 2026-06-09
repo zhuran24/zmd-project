@@ -72,6 +72,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_pose_bool_replay_alias_collision_fails_closed",
             "test_legacy_benders_cut_alias_collision_fails_closed",
             "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+            "test_exact_campaign_state_persists_full_master_domain_contract",
+            "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
+            "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -630,6 +633,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "_strict_candidate_ghost_rect",
         "_expected_unfiltered_ghost_anchor_index",
         "_validate_cut_condition_domain",
+        "_default_master_domain_contract",
+        "_validate_master_domain_contract",
     ):
         _function_def(exact_campaign_tree, helper_name, path=EXACT_CAMPAIGN_PATH)
     validate_record_fn = _function_def(exact_campaign_tree, "_validate_candidate_record", path=EXACT_CAMPAIGN_PATH)
@@ -644,8 +649,29 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     resume_source = _source_text(EXACT_CAMPAIGN_PATH, resume_fn)
     if "_load_exact_grid_dimensions" not in resume_source or "project_root" not in resume_source:
         errors.append("ExactCampaign resume validation must load current grid dimensions for condition resolver support checks")
+    if "_validate_master_domain_contract" not in resume_source:
+        errors.append("ExactCampaign resume validation must reject restricted or missing master domain contracts")
+    if "master_domain_contract" not in EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8"):
+        errors.append("ExactCampaign state must persist an explicit full master-domain contract")
 
     benders_tree = _parse_python(BENDERS_LOOP_PATH)
+    run_benders_fn = _function_def(
+        benders_tree,
+        "run_benders_for_ghost_rect",
+        path=BENDERS_LOOP_PATH,
+    )
+    run_benders_source = _source_text(BENDERS_LOOP_PATH, run_benders_fn)
+    for needle in (
+        "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
+        "ghost_anchor_filter_not_certified",
+        "_publish_last_run_metadata",
+        "RUN_STATUS_UNPROVEN",
+    ):
+        if needle not in run_benders_source:
+            errors.append(
+                "certified exact run entrypoint must fail closed when the "
+                f"ghost-anchor domain is env-filtered: {needle}"
+            )
     resolve_condition_fn = _function_def(
         benders_tree,
         "_resolve_condition_lits_from_condition_set",

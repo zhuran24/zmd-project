@@ -368,6 +368,39 @@ def test_collect_certification_blockers_rejects_bool_conflict_pose_index() -> No
     assert any(item["code"] == "cut_conflict_set_malformed" for item in blockers)
 
 
+def test_exact_campaign_state_persists_full_master_domain_contract(tmp_path: Path) -> None:
+    project_root = tmp_path / "campaign_master_domain_contract"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+
+    assert campaign.state["master_domain_contract"] == {
+        "schema_version": 1,
+        "ghost_anchor_domain": "full_unfiltered",
+        "ghost_anchor_filter": None,
+    }
+
+
+def test_exact_campaign_resume_rejects_filtered_master_domain_contract(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_filtered_master_domain_contract"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["master_domain_contract"] = {
+        "schema_version": 1,
+        "ghost_anchor_domain": "filtered",
+        "ghost_anchor_filter": [[0, 0]],
+    }
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "master_domain_contract_invalid"
+
+
 def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) -> None:
     project_root = tmp_path / "campaign_malformed_exact_safe"
     (project_root / "data" / "preprocessed").mkdir(parents=True)

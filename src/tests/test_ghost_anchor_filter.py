@@ -15,6 +15,7 @@ from src.models.master_model import MasterPlacementModel
 from src.search.benders_loop import (
     EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
     _resolve_ghost_anchor_filter_from_env,
+    run_benders_for_ghost_rect,
 )
 
 
@@ -158,3 +159,36 @@ def test_env_parser_rejects_non_integer(monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, "abc,def")
     with pytest.raises(ValueError, match="non-integer coordinate"):
         _resolve_ghost_anchor_filter_from_env()
+
+
+def test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, "0,0")
+
+    status, solution = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+        max_iterations=1,
+    )
+
+    metadata = run_benders_for_ghost_rect.last_run_metadata
+    assert status == "UNPROVEN"
+    assert solution is None
+    assert metadata["exact_safe_cuts"] == []
+    assert metadata["generated_exact_safe_cut_count"] == 0
+    blockers = metadata["proof_summary"]["blockers"]
+    assert blockers == [
+        {
+            "code": "ghost_anchor_filter_not_certified",
+            "env": EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
+            "anchor_filter_count": 1,
+            "detail": (
+                "certified exact campaign candidates are full unfiltered "
+                "ghost-anchor-domain claims"
+            ),
+        }
+    ]

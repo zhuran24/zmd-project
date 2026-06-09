@@ -139,14 +139,18 @@
         "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
         "test_pose_bool_replay_alias_collision_fails_closed",
         "test_legacy_benders_cut_alias_collision_fails_closed",
-        "test_resolver_fails_closed_on_malformed_ghost_anchor_key"
+        "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+        "test_exact_campaign_state_persists_full_master_domain_contract",
+        "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
+        "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
         "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
-        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md"
+        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+        "docs/research/p1_2_v60_master_domain_contract.md"
       ],
-      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
+      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
     },
     {
       "id": "PO-PHASE-GATE-PROVENANCE",

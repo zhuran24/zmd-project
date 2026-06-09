@@ -5466,6 +5466,47 @@ def run_benders_for_ghost_rect(
     overlay_build_seconds = 0.0
     ghost_constraint_seconds = 0.0
     cut_replay_seconds = 0.0
+    ghost_anchor_filter_override: Optional[FrozenSet[Tuple[int, int]]] = None
+    if solve_mode == "certified_exact":
+        ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
+        if ghost_anchor_filter_override is not None:
+            _emit_campaign_heartbeat(
+                {
+                    "stage": "master_domain_contract",
+                    "event": "blocked",
+                    "blocker_code": "ghost_anchor_filter_not_certified",
+                    "anchor_filter_count": len(ghost_anchor_filter_override),
+                }
+            )
+            proof_summary = {
+                "mode": "certified_exact",
+                "master_status": "BLOCKED",
+                "diagnostic_flow_status": "NOT_RUN",
+                "enumerated_bindings": 0,
+                "routing_attempts": 0,
+                "used_greedy_hint": False,
+                "greedy_hint_instances": 0,
+                "master_hinted_literals": 0,
+                "blockers": [
+                    {
+                        "code": "ghost_anchor_filter_not_certified",
+                        "env": EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
+                        "anchor_filter_count": len(ghost_anchor_filter_override),
+                        "detail": (
+                            "certified exact campaign candidates are full unfiltered "
+                            "ghost-anchor-domain claims"
+                        ),
+                    }
+                ],
+            }
+            _publish_last_run_metadata(
+                proof_summary,
+                [],
+                loaded_exact_safe_cut_count=0,
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_UNPROVEN, None
+
     exact_session: Optional[ExactSearchSession] = None
     if solve_mode == "certified_exact":
         _emit_campaign_heartbeat(
@@ -5620,7 +5661,6 @@ def run_benders_for_ghost_rect(
             }
         )
         overlay_started = time.perf_counter()
-        ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
         # B1 Phase 3: env on 时跳过 from_exact_core 的 proto-sharing (那是 coordinate-
         # specific), 走 direct instantiation. PoseBool delegate build 23s, 不需要
         # 跨 candidate 共享 proto.

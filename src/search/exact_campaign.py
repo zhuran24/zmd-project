@@ -23,7 +23,8 @@ from typing import Any, Dict, Mapping, Optional, Tuple
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
-CAMPAIGN_SCHEMA_VERSION = 3
+CAMPAIGN_SCHEMA_VERSION = 4
+MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION = 1
 PROOF_SUMMARY_SCHEMA_VERSION = 1
 VALID_CANDIDATE_STATUSES = {
     "RUNNING",
@@ -43,6 +44,7 @@ REQUIRED_STATE_FIELDS = {
     "created_at",
     "updated_at",
     "artifact_hashes",
+    "master_domain_contract",
     "proof_summary_schema_version",
     "reset_reason",
     "final_result",
@@ -50,6 +52,44 @@ REQUIRED_STATE_FIELDS = {
     "last_stop_reason",
     "candidates",
 }
+
+
+def _default_master_domain_contract() -> Dict[str, Any]:
+    """Certified exact campaign states are full ghost-anchor-domain proofs.
+
+    The runtime may have experimental anchor slicing knobs for RAM probes, but a
+    terminal campaign candidate is a whole-candidate claim.  Persist the domain
+    contract explicitly so resume validation does not treat a domain-slice proof
+    as release-authoritative evidence.
+    """
+
+    return {
+        "schema_version": MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION,
+        "ghost_anchor_domain": "full_unfiltered",
+        "ghost_anchor_filter": None,
+    }
+
+
+def _validate_master_domain_contract(state: Mapping[str, Any]) -> Optional[str]:
+    contract = state.get("master_domain_contract")
+    if not isinstance(contract, Mapping):
+        return "master_domain_contract_invalid"
+    try:
+        schema_version = _strict_resume_int(
+            contract.get("schema_version"),
+            "master_domain_contract.schema_version",
+        )
+    except Exception:
+        return "master_domain_contract_invalid"
+    if schema_version != MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION:
+        return "master_domain_contract_invalid"
+    if str(contract.get("ghost_anchor_domain")) != "full_unfiltered":
+        return "master_domain_contract_invalid"
+    if contract.get("ghost_anchor_filter") is not None:
+        return "master_domain_contract_invalid"
+    return None
+
+
 REQUIRED_CANDIDATE_FIELDS = {
     "ghost_rect",
     "attempts",
@@ -326,6 +366,7 @@ def _build_initial_state(
         "created_at": timestamp,
         "updated_at": timestamp,
         "artifact_hashes": {str(k): str(v) for k, v in current_hashes.items()},
+        "master_domain_contract": _default_master_domain_contract(),
         "proof_summary_schema_version": PROOF_SUMMARY_SCHEMA_VERSION,
         "reset_reason": reset_reason,
         "final_result": None,
@@ -413,13 +454,16 @@ def _validate_resume_state(
     current_hashes: Mapping[str, str],
     project_root: Optional[Path] = None,
 ) -> Optional[str]:
-    missing = sorted(REQUIRED_STATE_FIELDS.difference(state.keys()))
-    if missing:
-        return f"missing_state_field:{missing[0]}"
     if int(state.get("schema_version", -1)) != CAMPAIGN_SCHEMA_VERSION:
         return "schema_version_mismatch"
     if str(state.get("solve_mode")) != "certified_exact":
         return "solve_mode_mismatch"
+    missing = sorted(REQUIRED_STATE_FIELDS.difference(state.keys()))
+    if missing:
+        return f"missing_state_field:{missing[0]}"
+    domain_contract_reason = _validate_master_domain_contract(state)
+    if domain_contract_reason is not None:
+        return domain_contract_reason
     if int(state.get("proof_summary_schema_version", -1)) != PROOF_SUMMARY_SCHEMA_VERSION:
         return "proof_summary_schema_version_mismatch"
     if not isinstance(state.get("artifact_hashes"), Mapping):
