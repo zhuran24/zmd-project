@@ -1,0 +1,7 @@
+# P1.2 V66 stale delivery artifact guard
+
+V66 closes two certified_exact fail-closed residue paths. First, blocker branches already cleared terminal `final_result` / `final_status` in the campaign checkpoint, but could leave older `data/solutions/final_solution.json`, `data/blueprints/optimal_blueprint.json`, or `data/solutions/certified_delivery_manifest.json` surfaces beside the new UNPROVEN state. Second, terminal full-frontier state is intentionally committed before final export, but an export failure could otherwise leave the checkpoint certified while `final_solution`, blueprint, or delivery manifest artifacts were missing or partial.
+
+The active contract is that unsafe certified_exact blockers return `UNPROVEN`, purge stale certified-looking solution artifacts, and refresh the delivery manifest from the current blocked campaign state. If final artifact export fails after terminal evidence is committed, the run must also roll back to `UNPROVEN`, purge partial artifacts, and refresh the manifest. The refreshed manifest must expose no `best_certified_result` and must mark terminal solution artifacts absent. This keeps the filesystem export surface aligned with the fail-closed campaign state instead of allowing a stale or partial certified package to outlive the run that blocked it.
+
+Regression anchors: `test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts`, `test_v66_terminal_export_failure_clears_terminal_state_and_artifacts`.

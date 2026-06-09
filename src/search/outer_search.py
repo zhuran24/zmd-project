@@ -16,7 +16,11 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
-from src.io.delivery_manifest import export_certified_delivery_manifest
+from src.io.delivery_manifest import (
+    delivery_manifest_output_path,
+    export_certified_delivery_manifest,
+)
+from src.io.output_schema import blueprint_output_path
 from src.io.serializer import export_certified_blueprint
 from src.models.cut_manager import (
     RUN_STATUS_CERTIFIED,
@@ -103,7 +107,8 @@ def _mark_certified_campaign_blocked(
     blockers: Sequence[Mapping[str, Any]],
 ) -> None:
     # Fail closed on resumed terminal states: an unsafe/manual-gate blocker must
-    # not leave stale CERTIFIED-looking final_result payloads in the checkpoint.
+    # not leave stale CERTIFIED-looking final_result payloads in the checkpoint
+    # or stale delivery artifacts on disk.
     exact_campaign.state["final_result"] = None
     exact_campaign.state["final_status"] = None
     exact_campaign.mark_campaign_stopped(reason, status=RUN_STATUS_UNPROVEN)
@@ -111,6 +116,26 @@ def _mark_certified_campaign_blocked(
     if isinstance(stop_record, dict):
         stop_record["blockers"] = [dict(blocker) for blocker in blockers]
     exact_campaign.save()
+    _clear_certified_delivery_solution_artifacts(exact_campaign.project_root)
+    _refresh_certified_delivery_manifest_if_any(
+        project_root=exact_campaign.project_root,
+        exact_campaign=exact_campaign,
+    )
+
+
+def _clear_certified_delivery_solution_artifacts(project_root: Path) -> None:
+    """Remove export artifacts that must not survive a fail-closed blocker."""
+
+    stale_artifact_paths = [
+        project_root / "data" / "solutions" / "final_solution.json",
+        blueprint_output_path(project_root),
+        delivery_manifest_output_path(project_root),
+    ]
+    for artifact_path in stale_artifact_paths:
+        try:
+            artifact_path.unlink()
+        except FileNotFoundError:
+            continue
 
 
 def _declare_mode_is_strict(exact_campaign: Optional[ExactCampaign]) -> bool:
@@ -1671,16 +1696,32 @@ def run_outer_search(
                                 exact_campaign,
                                 result,
                             )
-                        _save_final_result(
-                            project_root,
-                            result,
-                            facility_pools=_pools,
-                        )
-                        if exact_campaign is not None:
-                            _refresh_certified_delivery_manifest_if_any(
-                                project_root=project_root,
-                                exact_campaign=exact_campaign,
+                        try:
+                            _save_final_result(
+                                project_root,
+                                result,
+                                facility_pools=_pools,
                             )
+                            if exact_campaign is not None:
+                                _refresh_certified_delivery_manifest_if_any(
+                                    project_root=project_root,
+                                    exact_campaign=exact_campaign,
+                                )
+                        except Exception as exc:  # noqa: BLE001
+                            if exact_campaign is None:
+                                raise
+                            _mark_certified_campaign_blocked(
+                                exact_campaign,
+                                reason="terminal_certified_export_failed",
+                                blockers=[
+                                    {
+                                        "code": "terminal_certified_export_failed",
+                                        "exception_type": type(exc).__name__,
+                                        "detail": str(exc),
+                                    }
+                                ],
+                            )
+                            return RUN_STATUS_UNPROVEN, None
                         return RUN_STATUS_CERTIFIED, result
 
                     if exact_campaign is not None:

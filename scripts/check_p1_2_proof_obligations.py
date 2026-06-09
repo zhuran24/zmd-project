@@ -96,6 +96,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence",
             "test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence",
             "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result",
+            "test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts",
+            "test_v66_terminal_export_failure_clears_terminal_state_and_artifacts",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -717,11 +719,45 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "_certified_outer_skip_unknown_blocker",
         "mark_campaign_stopped",
         "RUN_STATUS_UNPROVEN",
+        "terminal_certified_export_failed",
     ):
         if needle not in run_outer_source:
             errors.append(
                 "certified outer search must fail closed before candidate subset/best-effort evidence: "
                 f"{needle}"
+            )
+    mark_blocked_fn = _function_def(
+        outer_tree,
+        "_mark_certified_campaign_blocked",
+        path=OUTER_SEARCH_PATH,
+    )
+    mark_blocked_source = _source_text(OUTER_SEARCH_PATH, mark_blocked_fn)
+    for needle in (
+        "_clear_certified_delivery_solution_artifacts",
+        "_refresh_certified_delivery_manifest_if_any",
+        "RUN_STATUS_UNPROVEN",
+    ):
+        if needle not in mark_blocked_source:
+            errors.append(
+                "certified outer blocker paths must purge stale certified-looking "
+                f"delivery artifacts and refresh the manifest: {needle}"
+            )
+    clear_artifacts_fn = _function_def(
+        outer_tree,
+        "_clear_certified_delivery_solution_artifacts",
+        path=OUTER_SEARCH_PATH,
+    )
+    clear_artifacts_source = _source_text(OUTER_SEARCH_PATH, clear_artifacts_fn)
+    for needle in (
+        '"final_solution.json"',
+        "blueprint_output_path",
+        "delivery_manifest_output_path",
+        ".unlink()",
+    ):
+        if needle not in clear_artifacts_source:
+            errors.append(
+                "certified outer blocker artifact purge must remove stale solution "
+                f"surfaces: {needle}"
             )
 
     delivery_manifest_tree = _parse_python(DELIVERY_MANIFEST_PATH)
