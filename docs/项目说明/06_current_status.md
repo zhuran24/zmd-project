@@ -2,7 +2,7 @@
 
 > **现状权威源**: 项目「当前 phase/状态」的 living 权威源 = `CLAUDE.md`（Current Phase 段）+ CC memory handoff（仓库外）。本文以下 Phase 1.1 段落是**已完成的历史里程碑**, 不是当前状态。
 
-**当前状态 (2026-06-08)**: **Phase 1.2 spike close 闭关中**（cut-family validator soundness 审查）。P1.2 仍未正式收口，且 V50 已将 phase close gate 简化为人工计数模型：三次连续 clean full review 仍是 owner 标准，但 clean 计数由 owner 在 repo 外维护，仓库不再从 JSON receipt、Markdown/HTML/XML 报告 metadata、source-tree manifest、package metadata 或包内 Git authority 自动推导 P1.3B ready。当前 repo 默认 fail-closed；只有显式 owner manual decision 才能打开 **P1.3B PoseBoolExactMaster LBBD master integration**。其中 **F9 = tight-K quarantine（实质停用，见下方 F9 条 + PROJECT_LOCK §3A）**。
+**当前状态 (2026-06-08)**: **Phase 1.2 spike close 闭关中**（cut-family / certified replay soundness 审查）。P1.2 仍未正式收口；V50 已将 phase close gate 简化为人工计数模型，三次连续 clean full review 仍是 owner 标准，但 clean 计数由 owner 在 repo 外维护，仓库不再从 JSON receipt、Markdown/HTML/XML 报告 metadata、source-tree manifest、package metadata 或包内 Git authority 自动推导 P1.3B ready。V53-V56 之后，当前审查锚点是 `v56_certified_cut_replay_consolidation`：exact-safe `BendersCut` persistence/replay 现在有显式 proof obligation，要求 strict payload、成员全解析、master literal 一对一编码、apply-before-register。当前 repo 默认 fail-closed；只有显式 owner manual decision 才能打开 **P1.3B PoseBoolExactMaster LBBD master integration**。其中 **F9 = tight-K quarantine（实质停用，见下方 F9 条 + PROJECT_LOCK §3A）**。
 
 ---
 

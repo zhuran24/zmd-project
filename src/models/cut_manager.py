@@ -35,8 +35,16 @@ def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
     return result
 
 
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant: {value}")
+
+
 def _loads_strict_json_object(text: str) -> Any:
-    return json.loads(text, object_pairs_hook=_reject_duplicate_json_keys)
+    return json.loads(
+        text,
+        object_pairs_hook=_reject_duplicate_json_keys,
+        parse_constant=_reject_json_constant,
+    )
 
 
 def _strict_int(value: Any, field: str) -> int:
