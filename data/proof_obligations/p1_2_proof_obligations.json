@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-09",
-  "review_anchor": "v64_power_witness_representation_env_guard",
-  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V64 extends certified exact persisted-cut replay faithfulness into terminal candidate-frontier evidence, outer master-domain guard ordering, certified export-boundary consistency, and certified power-witness representation guard ordering: exact-safe cut payloads must be strictly typed, replay must be all-or-nothing, conflict members must map one-to-one to master literals, generated and persisted condition domains must match the current master domain, a cut may only be registered after master application succeeds, terminal certified evidence must be bound to the actual full unfiltered master-domain and fully exhausted candidate frontier, certified master-domain or power-witness representation env/debug overrides must fail closed before any session or precheck construction, and resume/import, manifest, inspector/report, wrapper, candidate-subset, or best-effort outer campaign paths must not export full-domain certified results or certified-looking artifacts without terminal full-frontier evidence. V66 closes fail-closed blocker residue by requiring stale final_solution/blueprint artifacts to be removed and the certified delivery manifest to be refreshed whenever an unsafe certified_exact blocker fires. Terminal certified state must also be rolled back to UNPROVEN if final artifact or manifest export fails after the terminal evidence commit.",
-  "phase_gate_required_anchor": "v64_power_witness_representation_env_guard",
+  "review_anchor": "v66_certified_lifecycle_evidence_consolidation",
+  "summary": "Consolidates P1.2 algorithmic proof obligations while keeping the phase gate as a manual fail-closed boundary. V66 splits the previous oversized certified replay obligation into explicit lifecycle compartments: exact-safe cut replay faithfulness, certified master-domain/witness representation faithfulness, certified frontier terminal evidence, and certified export-surface consistency. The contract remains fail-closed: exact-safe cut payloads must be strictly typed and all-or-nothing; condition domains must match the current candidate/master domain; certified master-domain and power-witness env/debug overrides must fail closed before session, precheck, or project-load side effects; terminal certified evidence must mean a strict full-frontier exhaustion result; and resume/import, final_solution, delivery manifest, inspector/report, and wrapper export paths must not expose certified artifacts before that terminal evidence is committed. V66 also closes fail-closed blocker residue by requiring stale final_solution/blueprint artifacts to be removed and the certified delivery manifest to be refreshed whenever an unsafe certified_exact blocker fires. Terminal certified state must be rolled back to UNPROVEN if final artifact or manifest export fails after the terminal evidence commit.",
+  "phase_gate_required_anchor": "v66_certified_lifecycle_evidence_consolidation",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -106,13 +106,7 @@
         "v56_certified_cut_replay_consolidation",
         "v57_candidate",
         "v58_candidate",
-        "v59_candidate",
-        "v60_candidate",
-        "v60_master_domain_contract",
-        "v61_candidate",
-        "v62_candidate",
-        "v63_candidate",
-        "v64_candidate"
+        "v59_candidate"
       ],
       "required_tests": [
         "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
@@ -146,45 +140,109 @@
         "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
         "test_pose_bool_replay_alias_collision_fails_closed",
         "test_legacy_benders_cut_alias_collision_fails_closed",
-        "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+        "test_resolver_fails_closed_on_malformed_ghost_anchor_key"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
+        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+      "title": "The certified master domain and power-witness representation match the full-domain contract before session construction",
+      "v_findings": [
+        "v60_candidate",
+        "v60_master_domain_contract",
+        "v61_candidate",
+        "v62_candidate",
+        "v63_candidate",
+        "v64_candidate",
+        "v65_candidate",
+        "v66_candidate",
+        "v66_certified_lifecycle_evidence_consolidation"
+      ],
+      "required_tests": [
         "test_exact_campaign_state_persists_full_master_domain_contract",
         "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
-        "test_exact_campaign_resume_rejects_float_state_schema_version",
-        "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
-        "test_exact_campaign_resume_rejects_bool_generated_cut_count",
-        "test_exact_campaign_resume_rejects_best_effort_final_result",
-        "test_exact_campaign_resume_rejects_missing_declare_mode",
-        "test_delivery_manifest_rejects_best_effort_final_result",
-        "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
         "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
         "test_certified_exact_blocks_pose_bool_master_env_before_session",
         "test_certified_exact_blocks_power_pole_slot_override_before_session",
         "test_certified_exact_blocks_power_representation_env_before_session",
         "test_create_exact_search_session_blocks_power_representation_env_before_session",
         "test_v64_outer_search_blocks_power_representation_env_before_session",
-        "test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified",
         "test_v62_outer_search_blocks_unsafe_master_domain_env_before_session",
-        "test_v62_best_effort_exhaustion_blocks_before_final_solution_export",
         "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
-        "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence",
-        "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence",
-        "test_delivery_manifest_rejects_stale_certified_final_result_without_terminal_frontier_evidence",
-        "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence",
-        "test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence",
-        "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result",
-        "test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts",
-        "test_v66_terminal_export_failure_clears_terminal_state_and_artifacts"
+        "test_v65_outer_search_blocks_power_witness_encoding_env_before_session",
+        "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load"
       ],
       "evidence_paths": [
-        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
-        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
-        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
         "docs/research/p1_2_v60_master_domain_contract.md",
         "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
         "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
         "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
-        "docs/research/p1_2_v66_stale_delivery_artifact_guard.md"
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+      "title": "Certified terminal status requires strict full-frontier exhaustion evidence, not a candidate-level incumbent or best-effort stop",
+      "v_findings": [
+        "v61_candidate",
+        "v62_candidate",
+        "v63_candidate",
+        "v65_candidate",
+        "v66_candidate",
+        "v66_certified_lifecycle_evidence_consolidation"
+      ],
+      "required_tests": [
+        "test_exact_campaign_resume_rejects_float_state_schema_version",
+        "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
+        "test_exact_campaign_resume_rejects_bool_generated_cut_count",
+        "test_exact_campaign_resume_rejects_best_effort_final_result",
+        "test_exact_campaign_resume_rejects_missing_declare_mode",
+        "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
+        "test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified",
+        "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+        "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-EXPORT-SURFACE",
+      "title": "Certified export surfaces only expose artifacts after terminal full-frontier evidence is committed",
+      "v_findings": [
+        "v62_candidate",
+        "v63_candidate",
+        "v65_candidate",
+        "v66_candidate",
+        "v66_certified_lifecycle_evidence_consolidation"
+      ],
+      "required_tests": [
+        "test_delivery_manifest_rejects_best_effort_final_result",
+        "test_v62_best_effort_exhaustion_blocks_before_final_solution_export",
+        "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence",
+        "test_delivery_manifest_rejects_stale_certified_final_result_without_terminal_frontier_evidence",
+        "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence",
+        "test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence",
+        "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result",
+        "test_v65_unsafe_env_block_clears_resumed_terminal_final_result",
+        "test_v65_terminal_result_is_committed_before_final_solution_export",
+        "test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts",
+        "test_v66_terminal_export_failure_clears_terminal_state_and_artifacts"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+        "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+        "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
+        "docs/research/p1_2_v66_stale_delivery_artifact_guard.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails."
     },

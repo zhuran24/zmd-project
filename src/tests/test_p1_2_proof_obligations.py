@@ -24,7 +24,7 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "P1.2 proof obligation check passed: 5 obligations anchored" in result.stdout
+    assert "P1.2 proof obligation check passed: 8 obligations anchored" in result.stdout
 
 
 def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v64_power_witness_representation_env_guard"
+    assert manifest["phase_gate_required_anchor"] == "v66_certified_lifecycle_evidence_consolidation"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -49,31 +49,28 @@ def test_p1_2_proof_obligation_manifest_is_strict_json(tmp_path: Path) -> None:
         check_p1_2_proof_obligations._load_json(duplicate_key_manifest)
 
 
-def test_p1_2_proof_obligation_manifest_lists_replay_regressions() -> None:
+def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartment() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    replay_obligation = next(
-        item for item in manifest["obligations"] if item["id"] == "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS"
-    )
+    obligations = {item["id"]: set(item["required_tests"]) for item in manifest["obligations"]}
 
-    required_tests = set(replay_obligation["required_tests"])
-    assert "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member" in required_tests
-    assert "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban" in required_tests
-    assert "test_pose_bool_replay_alias_collision_fails_closed" in required_tests
-    assert "test_legacy_benders_cut_alias_collision_fails_closed" in required_tests
-    assert "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session" in required_tests
-    assert (
-        "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence"
-        in required_tests
-    )
-    assert (
-        "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence"
-        in required_tests
-    )
-    assert (
-        "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence"
-        in required_tests
-    )
-    assert (
-        "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result"
-        in required_tests
-    )
+    replay_tests = obligations["PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS"]
+    assert "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member" in replay_tests
+    assert "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban" in replay_tests
+    assert "test_pose_bool_replay_alias_collision_fails_closed" in replay_tests
+    assert "test_legacy_benders_cut_alias_collision_fails_closed" in replay_tests
+    assert "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key" in replay_tests
+
+    master_domain_tests = obligations["PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS"]
+    assert "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session" in master_domain_tests
+    assert "test_v65_outer_search_blocks_power_witness_encoding_env_before_session" in master_domain_tests
+    assert "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load" in master_domain_tests
+
+    frontier_tests = obligations["PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE"]
+    assert "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence" in frontier_tests
+    assert "test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified" in frontier_tests
+
+    export_tests = obligations["PO-CERTIFIED-EXPORT-SURFACE"]
+    assert "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence" in export_tests
+    assert "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence" in export_tests
+    assert "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result" in export_tests
+    assert "test_v65_terminal_result_is_committed_before_final_solution_export" in export_tests

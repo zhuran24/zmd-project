@@ -14,6 +14,7 @@ from fractions import Fraction
 import json
 import os
 from pathlib import Path
+import shutil
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from src.io.delivery_manifest import (
@@ -52,6 +53,7 @@ from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     atomic_write_json,
     has_terminal_full_frontier_certified_evidence,
+    has_valid_terminal_full_frontier_certified_evidence,
 )
 from src.search.exact_parallel_scheduler import (
     ExactParallelWorkerPool,
@@ -133,7 +135,10 @@ def _clear_certified_delivery_solution_artifacts(project_root: Path) -> None:
     ]
     for artifact_path in stale_artifact_paths:
         try:
-            artifact_path.unlink()
+            if artifact_path.is_dir() and not artifact_path.is_symlink():
+                shutil.rmtree(artifact_path)
+            else:
+                artifact_path.unlink()
         except FileNotFoundError:
             continue
 
@@ -760,7 +765,7 @@ def _commit_terminal_full_frontier_certified_result(
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
         status=RUN_STATUS_CERTIFIED,
     )
-    if not has_terminal_full_frontier_certified_evidence(exact_campaign.state):
+    if not has_valid_terminal_full_frontier_certified_evidence(exact_campaign.state):
         raise RuntimeError(
             "terminal certified_exact export attempted before full-frontier evidence was committed"
         )
@@ -795,6 +800,7 @@ def _persist_best_certified_result_if_any(
         return None
     best_result = exact_campaign.best_certified_result()
     if best_result is None:
+        _clear_certified_delivery_solution_artifacts(project_root)
         return None
     _save_final_result(
         project_root,
@@ -1730,9 +1736,10 @@ def run_outer_search(
                             status=RUN_STATUS_INFEASIBLE,
                         )
                         exact_campaign.save()
-                        _refresh_certified_delivery_manifest_if_any(
+                        _refresh_certified_delivery_outputs(
                             project_root=project_root,
                             exact_campaign=exact_campaign,
+                            facility_pools=_pools,
                         )
                     return RUN_STATUS_INFEASIBLE, None
 

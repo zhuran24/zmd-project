@@ -10,8 +10,10 @@ from src.search.exact_campaign import (
     DEFAULT_CAMPAIGN_FILENAME,
     atomic_write_json,
     candidate_key,
+    certified_terminal_evidence_violation,
     has_certified_export_surface,
     has_terminal_full_frontier_certified_evidence,
+    has_valid_terminal_full_frontier_certified_evidence,
     now_iso,
 )
 
@@ -48,6 +50,12 @@ def build_certified_delivery_manifest(
         if not has_terminal_full_frontier_certified_evidence(campaign_state):
             raise ValueError(
                 "certified delivery manifest requires exhausted strict candidate frontier"
+            )
+        terminal_violation = certified_terminal_evidence_violation(campaign_state)
+        if terminal_violation is not None:
+            raise ValueError(
+                "certified delivery manifest requires valid terminal final_result evidence: "
+                f"{terminal_violation}"
             )
     best_result = _build_best_certified_result_payload(campaign_state)
     if has_certified_surface and best_result is None:
@@ -132,7 +140,7 @@ def _build_best_certified_result_payload(
 ) -> Optional[Dict[str, Any]]:
     if str(campaign_state.get("declare_mode", "strict")) != "strict":
         return None
-    if not has_terminal_full_frontier_certified_evidence(campaign_state):
+    if not has_valid_terminal_full_frontier_certified_evidence(campaign_state):
         return None
     final_result = campaign_state.get("final_result")
     if not isinstance(final_result, Mapping):

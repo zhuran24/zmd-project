@@ -572,12 +572,71 @@ def has_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]) -> b
     )
 
 
+def terminal_certified_final_result_violation(state: Mapping[str, Any]) -> Optional[str]:
+    """Return a fail-closed reason for malformed terminal CERTIFIED result evidence."""
+
+    if not has_terminal_full_frontier_certified_evidence(state):
+        return None
+    final_result = state.get("final_result")
+    if not isinstance(final_result, Mapping):
+        return "terminal_certified_final_result_invalid"
+    if str(final_result.get("search_status", "")) != "CERTIFIED":
+        return "terminal_certified_final_result_status_invalid"
+
+    ghost_rect = final_result.get("ghost_rect")
+    if not isinstance(ghost_rect, Mapping):
+        return "terminal_certified_final_result_ghost_rect_invalid"
+    try:
+        ghost_w = _strict_resume_int(ghost_rect.get("w"), "final_result.ghost_rect.w")
+        ghost_h = _strict_resume_int(ghost_rect.get("h"), "final_result.ghost_rect.h")
+        area = _strict_resume_int(ghost_rect.get("area"), "final_result.ghost_rect.area")
+    except Exception:
+        return "terminal_certified_final_result_ghost_rect_invalid"
+    if ghost_w <= 0 or ghost_h <= 0 or area != ghost_w * ghost_h:
+        return "terminal_certified_final_result_ghost_rect_invalid"
+
+    placement_solution = final_result.get("placement_solution")
+    if not isinstance(placement_solution, Mapping):
+        return "terminal_certified_final_result_solution_missing"
+
+    candidates = state.get("candidates")
+    if not isinstance(candidates, Mapping):
+        return "terminal_certified_candidate_record_missing"
+    key = candidate_key(ghost_w, ghost_h)
+    record = candidates.get(key)
+    if not isinstance(record, Mapping):
+        return "terminal_certified_candidate_record_missing"
+    try:
+        record_w, record_h = _strict_candidate_ghost_rect(record)
+    except Exception:
+        return "terminal_certified_candidate_record_ghost_rect_invalid"
+    if record_w != ghost_w or record_h != ghost_h:
+        return "terminal_certified_candidate_record_ghost_rect_mismatch"
+    if str(record.get("status", "")) != "CERTIFIED":
+        return "terminal_certified_candidate_record_not_certified"
+    record_solution = record.get("solution")
+    if not isinstance(record_solution, Mapping):
+        return "terminal_certified_candidate_solution_missing"
+    if dict(record_solution) != dict(placement_solution):
+        return "terminal_certified_final_result_solution_mismatch"
+    return None
+
+
+def has_valid_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]) -> bool:
+    """Return True only when terminal CERTIFIED state and candidate evidence agree."""
+
+    return (
+        has_terminal_full_frontier_certified_evidence(state)
+        and terminal_certified_final_result_violation(state) is None
+    )
+
+
 def certified_terminal_evidence_violation(state: Mapping[str, Any]) -> Optional[str]:
     """Return a fail-closed reason for stale or contradictory certified export claims."""
 
     if has_certified_export_surface(state) and not has_terminal_full_frontier_certified_evidence(state):
         return "terminal_certified_frontier_evidence_invalid"
-    return None
+    return terminal_certified_final_result_violation(state)
 
 
 @dataclass
@@ -912,7 +971,7 @@ class ExactCampaign:
         self.state["updated_at"] = timestamp
 
     def best_certified_result(self) -> Optional[Dict[str, Any]]:
-        if not has_terminal_full_frontier_certified_evidence(self.state):
+        if not has_valid_terminal_full_frontier_certified_evidence(self.state):
             return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):

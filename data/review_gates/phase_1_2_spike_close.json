@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-09",
-  "summary": "P1.2 is not formally closed. The three-clean-review standard remains an owner-maintained manual count outside the repo. V57-V64 extended the certified exact persisted-cut replay obligation into condition/domain/master-domain/candidate-frontier/terminal-export/power-witness-representation faithfulness, now anchored at the V64 power witness representation env guard contract. The repo remains fail-closed until an explicit owner manual decision opens P1.3B.",
-  "current_review_anchor": "v64_power_witness_representation_env_guard",
+  "summary": "P1.2 is not formally closed. The three-clean-review standard remains an owner-maintained manual count outside the repo. V57-V66 exposed certified lifecycle evidence risks that now split into explicit proof obligations: cut replay faithfulness, master-domain/witness representation faithfulness, frontier terminal evidence, and export-surface consistency. The repo remains fail-closed until an explicit owner manual decision opens P1.3B.",
+  "current_review_anchor": "v66_certified_lifecycle_evidence_consolidation",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,8 +26,8 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v64_power_witness_representation_env_guard",
-    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v64_power_witness_representation_env_guard."
+    "current_review_anchor": "v66_certified_lifecycle_evidence_consolidation",
+    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v66_certified_lifecycle_evidence_consolidation."
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
@@ -149,6 +149,22 @@
       "summary": "V64 found a sibling certified lifecycle blocker after V63: power-witness representation env knobs such as EXACT_LAZY_POWER_COMPLETION, EXACT_POWER_PLACEMENT_SUBPROBLEM, and its forensic bypass could change certified power evidence semantics before the centralized pre-session guard blocked them. Future reviews should start from the V64 power witness representation env guard contract.",
       "evidence_paths": [
         "docs/research/p1_2_v64_power_witness_representation_env_guard.md"
+      ]
+    },
+    {
+      "package": "v65_to_v66_certified_env_and_export_guards",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V65/V66 found sibling certified lifecycle blockers after V64: additional power-witness encoding env knobs could alter the certified witness representation, direct ExactSearchSession construction had to block unsafe env before project load, unsafe-env blocks had to clear stale resumed terminal state, and terminal full-frontier evidence had to be committed before final_solution export.",
+      "evidence_paths": [
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+      ]
+    },
+    {
+      "package": "v66_certified_lifecycle_evidence_consolidation",
+      "classification": "proof_obligation_consolidation",
+      "summary": "The oversized certified cut replay obligation is split into four lifecycle compartments: cut replay, master-domain/witness representation, frontier terminal evidence, and export surface. Future reviews should start from this anchor and classify findings against those compartments.",
+      "evidence_paths": [
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
       ]
     }
   ],

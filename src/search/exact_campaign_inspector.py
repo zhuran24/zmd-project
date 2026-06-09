@@ -11,6 +11,7 @@ from src.search.exact_campaign import (
     EXACT_HASH_FILES,
     compute_exact_artifact_hashes,
     has_terminal_full_frontier_certified_evidence,
+    has_valid_terminal_full_frontier_certified_evidence,
     now_iso,
     validate_exact_campaign_resume_state,
 )
@@ -197,7 +198,10 @@ def _campaign_summary(
         if isinstance(record, Mapping):
             status_counts[str(record.get("status", ""))] += 1
 
-    terminal_certified = has_terminal_full_frontier_certified_evidence(state)
+    terminal_certified = (
+        has_terminal_full_frontier_certified_evidence(state)
+        and has_valid_terminal_full_frontier_certified_evidence(state)
+    )
     return {
         "present": True,
         "final_status": state.get("final_status"),

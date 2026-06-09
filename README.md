@@ -4,8 +4,8 @@
 
 ## 当前主线（subject projection）
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:8e55d4fed4bdc068ffe9f2816f29b22aa93df495060dc741c6b47730c62657b8 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V64, the current review anchor is `v64_power_witness_representation_env_guard`: persisted exact-safe `BendersCut` replay now has an explicit proof obligation requiring strict payload parsing, all-or-nothing member resolution, one-to-one master literal encoding, condition/domain/master-domain/power-witness-representation faithfulness, apply-before-register atomicity, certified master-domain and power-witness env override fail-closed behavior before any session/precheck construction, strict terminal candidate-frontier evidence, and shared terminal full-frontier evidence checks across resume/import, manifest, inspector/report, and wrapper export paths before certified artifacts are exported. P1.3B remains blocked by default; review receipts are informational records only.
+<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:94826b710750875b90adb82d3cb205cafef30268cc149c25a18d06a585f826c9 -->
+Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V66, the current review anchor is `v66_certified_lifecycle_evidence_consolidation`: certified lifecycle evidence is now split into explicit proof obligations for exact-safe cut replay, certified master-domain and power-witness representation faithfulness, strict full-frontier terminal evidence, and certified export-surface consistency. P1.3B remains blocked by default; review receipts are informational records only.
 <!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
 
 ## 精确性边界（subject projection）

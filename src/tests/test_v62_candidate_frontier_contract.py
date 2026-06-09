@@ -568,3 +568,123 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
     assert manifest.get("artifacts", {}).get("optimal_blueprint", {}).get("exists") is False
     assert not final_solution_path.exists()
     assert not blueprint_path.exists()
+
+
+def test_v67_nonterminal_refresh_clears_stale_certified_delivery_artifacts(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=2, height=2)
+    solutions_dir = project_root / "data" / "solutions"
+    solutions_dir.mkdir(parents=True, exist_ok=True)
+    final_solution_path = solutions_dir / "final_solution.json"
+    blueprint_path = blueprint_output_path(project_root)
+    manifest_path = delivery_manifest_output_path(project_root)
+    blueprint_path.parent.mkdir(parents=True, exist_ok=True)
+    final_solution_path.write_text(
+        json.dumps({"stale": "certified-looking solution"}),
+        encoding="utf-8",
+    )
+    blueprint_path.write_text(
+        json.dumps({"stale": "certified-looking blueprint"}),
+        encoding="utf-8",
+    )
+    manifest_path.write_text(
+        json.dumps({"best_certified_result": {"stale": True}}),
+        encoding="utf-8",
+    )
+
+    def fake_run_benders_for_ghost_rect(**kwargs):
+        fake_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        return RUN_STATUS_UNKNOWN, None
+
+    fake_run_benders_for_ghost_rect.last_run_metadata = {}
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        lambda *args, **kwargs: SimpleNamespace(core=object()),
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_evaluate_pre_master_precheck_best_effort",
+        lambda **kwargs: {"triggered": False, "status": None, "proof_summary": {}},
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "run_benders_for_ghost_rect",
+        fake_run_benders_for_ghost_rect,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=1,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=False,
+    )
+
+    state = _read_state(project_root)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert state.get("final_status") == RUN_STATUS_UNKNOWN
+    assert state.get("final_result") is None
+    assert manifest.get("best_certified_result") is None
+    assert manifest.get("artifacts", {}).get("final_solution", {}).get("exists") is False
+    assert manifest.get("artifacts", {}).get("optimal_blueprint", {}).get("exists") is False
+    assert not final_solution_path.exists()
+    assert not blueprint_path.exists()
+
+
+def test_v67_blocker_cleanup_removes_directory_artifact_and_refreshes_manifest(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+    blueprint_path = blueprint_output_path(project_root)
+    manifest_path = delivery_manifest_output_path(project_root)
+    final_solution_path.mkdir(parents=True)
+    blueprint_path.parent.mkdir(parents=True, exist_ok=True)
+    blueprint_path.write_text(
+        json.dumps({"stale": "certified-looking blueprint"}),
+        encoding="utf-8",
+    )
+    manifest_path.write_text(
+        json.dumps({"best_certified_result": {"stale": True}}),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("EXACT_POWER_COVERAGE_WITNESS_ENCODING", "block_element")
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        area_upper_bound=1,
+        max_attempts=1,
+        parallel_processes=1,
+        resume_campaign=True,
+    )
+
+    state = _read_state(project_root)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert status == RUN_STATUS_UNPROVEN
+    assert result is None
+    assert state.get("final_status") == RUN_STATUS_UNPROVEN
+    assert state.get("final_result") is None
+    assert manifest.get("best_certified_result") is None
+    assert manifest.get("campaign", {}).get("final_status") == RUN_STATUS_UNPROVEN
+    assert manifest.get("artifacts", {}).get("final_solution", {}).get("exists") is False
+    assert manifest.get("artifacts", {}).get("optimal_blueprint", {}).get("exists") is False
+    assert not final_solution_path.exists()
+    assert not blueprint_path.exists()

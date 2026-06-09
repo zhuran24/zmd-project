@@ -20,28 +20,33 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V64, the current review anchor is:
+After V57-V66 and the lifecycle-evidence consolidation, the current review anchor is:
 
 ```text
-v64_power_witness_representation_env_guard
+v66_certified_lifecycle_evidence_consolidation
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
-a real certified solver safety surface: exact-safe `BendersCut` persistence and
-replay must be strictly parsed, all-or-nothing, and faithfully encoded by the
-master.  V57-V64 narrowed that same family into condition/domain/master-domain
-and candidate-frontier faithfulness: condition-required cuts, strict condition
-keys, current-domain membership, the actual full unfiltered master-domain
-contract, unsafe certified master-domain env overrides before any session or
-precheck construction, strict terminal candidate-frontier evidence, and shared
-terminal full-frontier evidence checks across resume/import, manifest,
-inspector/report, wrapper export paths, and certified power-witness
-representation env guards must agree before certified
-artifacts are inherited or exported.  The consolidated proof
-obligation is
-`PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS`; see
-`docs/research/p1_2_v56_certified_cut_replay_consolidation.md` and
-`docs/research/p1_2_v64_power_witness_representation_env_guard.md`.
+a real certified solver safety surface: certified lifecycle evidence must stay
+faithful from exact-safe cut replay through master-domain construction, outer
+frontier termination, and certified export surfaces.  V66 splits the previous
+oversized replay obligation into four compartments:
+
+- `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
+  replay, all-or-nothing member resolution, one-to-one master literal encoding,
+  and apply-before-register atomicity;
+- `PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS` for the full unfiltered
+  master-domain and canonical power-witness representation contract, including
+  unsafe env fail-closed behavior before session/precheck/project-load side
+  effects;
+- `PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE` for strict full-frontier exhaustion
+  evidence rather than candidate-level or best-effort incumbents;
+- `PO-CERTIFIED-EXPORT-SURFACE` for `final_result`, `final_solution`, delivery
+  manifest, inspector/report, and wrapper export surfaces.
+
+See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
+`docs/research/p1_2_v64_power_witness_representation_env_guard.md`, and
+`docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md`.
 
 Daily consistency check:
 

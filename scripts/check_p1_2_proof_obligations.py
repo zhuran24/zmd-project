@@ -36,6 +36,9 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-SOURCE-DIGEST-COVERAGE",
         "PO-RUNTIME-CACHE-NON-AUTHORITY",
         "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "PO-CERTIFIED-EXPORT-SURFACE",
         "PO-PHASE-GATE-PROVENANCE",
     }
 )
@@ -74,28 +77,47 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_pose_bool_replay_alias_collision_fails_closed",
             "test_legacy_benders_cut_alias_collision_fails_closed",
             "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+        }
+    ),
+    "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS": frozenset(
+        {
             "test_exact_campaign_state_persists_full_master_domain_contract",
             "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
-            "test_exact_campaign_resume_rejects_float_state_schema_version",
-            "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
-            "test_exact_campaign_resume_rejects_bool_generated_cut_count",
-            "test_exact_campaign_resume_rejects_best_effort_final_result",
-            "test_exact_campaign_resume_rejects_missing_declare_mode",
-            "test_delivery_manifest_rejects_best_effort_final_result",
             "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
             "test_certified_exact_blocks_pose_bool_master_env_before_session",
             "test_certified_exact_blocks_power_pole_slot_override_before_session",
             "test_certified_exact_blocks_power_representation_env_before_session",
             "test_create_exact_search_session_blocks_power_representation_env_before_session",
             "test_v64_outer_search_blocks_power_representation_env_before_session",
-            "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
+            "test_v62_outer_search_blocks_unsafe_master_domain_env_before_session",
             "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
+            "test_v65_outer_search_blocks_power_witness_encoding_env_before_session",
+            "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load",
+        }
+    ),
+    "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE": frozenset(
+        {
+            "test_exact_campaign_resume_rejects_float_state_schema_version",
+            "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
+            "test_exact_campaign_resume_rejects_bool_generated_cut_count",
+            "test_exact_campaign_resume_rejects_best_effort_final_result",
+            "test_exact_campaign_resume_rejects_missing_declare_mode",
+            "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
+            "test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified",
             "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence",
+        }
+    ),
+    "PO-CERTIFIED-EXPORT-SURFACE": frozenset(
+        {
+            "test_delivery_manifest_rejects_best_effort_final_result",
+            "test_v62_best_effort_exhaustion_blocks_before_final_solution_export",
             "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence",
             "test_delivery_manifest_rejects_stale_certified_final_result_without_terminal_frontier_evidence",
             "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence",
             "test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence",
             "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result",
+            "test_v65_unsafe_env_block_clears_resumed_terminal_final_result",
+            "test_v65_terminal_result_is_committed_before_final_solution_export",
             "test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts",
             "test_v66_terminal_export_failure_clears_terminal_state_and_artifacts",
         }

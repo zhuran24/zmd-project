@@ -192,11 +192,8 @@ def test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_termina
         {
             "code": "ghost_anchor_filter_not_certified",
             "env": EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
-            "anchor_filter_count": 1,
-            "detail": (
-                "certified exact campaign candidates are full unfiltered "
-                "ghost-anchor-domain claims"
-            ),
+            "value": "0,0",
+            "detail": "ghost-anchor filter narrows the certified full ghost-anchor domain",
         }
     ]
 
