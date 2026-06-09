@@ -21,6 +21,11 @@ RUN_STATUS_INFEASIBLE = "INFEASIBLE"
 RUN_STATUS_UNKNOWN = "UNKNOWN"
 RUN_STATUS_UNPROVEN = "UNPROVEN"
 
+CONDITION_REQUIRED_CERTIFIED_CUT_TYPES = frozenset({"power_subproblem_infeasible_nogood"})
+CONDITION_REQUIRED_CERTIFIED_METADATA_KINDS = frozenset(
+    {"power_subproblem_ghost_conditioned_nogood"}
+)
+
 
 def _optional_float(value: Any) -> Optional[float]:
     return None if value is None else float(value)
@@ -86,6 +91,31 @@ def _strict_str_dict(value: Any, field: str) -> Dict[str, str]:
     return {str(k): str(v) for k, v in mapping.items()}
 
 
+def _cut_requires_condition_set(cut_type: str, metadata: Mapping[str, Any]) -> bool:
+    metadata_kind = metadata.get("kind")
+    return (
+        cut_type in CONDITION_REQUIRED_CERTIFIED_CUT_TYPES
+        or str(metadata_kind) in CONDITION_REQUIRED_CERTIFIED_METADATA_KINDS
+    )
+
+
+def _validate_certified_condition_requirement(
+    *,
+    cut_type: str,
+    source_mode: str,
+    exact_safe: bool,
+    metadata: Mapping[str, Any],
+    condition_set: Mapping[str, Any],
+) -> None:
+    if (
+        source_mode == "certified_exact"
+        and exact_safe is True
+        and _cut_requires_condition_set(cut_type, metadata)
+        and not condition_set
+    ):
+        raise ValueError(f"condition_set is required for certified exact cut_type={cut_type}")
+
+
 @dataclass
 class BendersCut:
     """Structured cut record for exact-contract compatibility."""
@@ -110,20 +140,30 @@ class BendersCut:
 
     def to_dict(self) -> Dict[str, Any]:
         source_mode = str(self.source_mode)
+        cut_type = str(self.cut_type)
+        exact_safe = _strict_bool(self.exact_safe, "exact_safe")
+        metadata = _strict_dict(self.metadata, "metadata")
         if source_mode == "certified_exact":
             conflict_set = _strict_int_mapping(self.conflict_set, "conflict_set")
             condition_set = _strict_int_mapping(self.condition_set, "condition_set")
         else:
             conflict_set = _strict_dict(self.conflict_set, "conflict_set")
             condition_set = _strict_dict(self.condition_set, "condition_set")
+        _validate_certified_condition_requirement(
+            cut_type=cut_type,
+            source_mode=source_mode,
+            exact_safe=exact_safe,
+            metadata=metadata,
+            condition_set=condition_set,
+        )
         payload: Dict[str, Any] = {
             "schema_version": _strict_int(self.schema_version, "schema_version"),
-            "cut_type": str(self.cut_type),
+            "cut_type": cut_type,
             "conflict_set": conflict_set,
             "iteration": _strict_int(self.iteration, "iteration"),
-            "metadata": _strict_dict(self.metadata, "metadata"),
+            "metadata": metadata,
             "source_mode": source_mode,
-            "exact_safe": _strict_bool(self.exact_safe, "exact_safe"),
+            "exact_safe": exact_safe,
             "artifact_hashes": _strict_str_dict(self.artifact_hashes, "artifact_hashes"),
             "proof_stage": self.proof_stage,
             "binding_exhausted": _optional_bool(self.binding_exhausted, "binding_exhausted"),
@@ -138,19 +178,28 @@ class BendersCut:
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "BendersCut":
         source_mode = str(payload.get("source_mode", "exploratory"))
+        cut_type = str(payload["cut_type"])
         exact_safe = _strict_bool(payload.get("exact_safe", False), "exact_safe")
+        metadata = _strict_dict(payload.get("metadata", {}), "metadata")
         if source_mode == "certified_exact":
             conflict_set = _strict_int_mapping(payload.get("conflict_set", {}), "conflict_set")
             condition_set = _strict_int_mapping(payload.get("condition_set", {}), "condition_set")
         else:
             conflict_set = _strict_dict(payload.get("conflict_set", {}), "conflict_set")
             condition_set = _strict_dict(payload.get("condition_set", {}), "condition_set")
+        _validate_certified_condition_requirement(
+            cut_type=cut_type,
+            source_mode=source_mode,
+            exact_safe=exact_safe,
+            metadata=metadata,
+            condition_set=condition_set,
+        )
         return cls(
             schema_version=_strict_int(payload.get("schema_version", 1), "schema_version"),
-            cut_type=str(payload["cut_type"]),
+            cut_type=cut_type,
             conflict_set=conflict_set,
             iteration=_strict_int(payload.get("iteration", 0), "iteration"),
-            metadata=_strict_dict(payload.get("metadata", {}), "metadata"),
+            metadata=metadata,
             source_mode=source_mode,
             exact_safe=exact_safe,
             artifact_hashes=_strict_str_dict(

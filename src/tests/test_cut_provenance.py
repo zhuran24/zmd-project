@@ -120,6 +120,47 @@ def test_benders_cut_from_dict_rejects_bool_condition_anchor_index() -> None:
         )
 
 
+def test_benders_cut_from_dict_rejects_condition_required_power_cut_without_condition_set() -> None:
+    with pytest.raises(ValueError, match="condition_set is required"):
+        BendersCut.from_dict(
+            {
+                "schema_version": 3,
+                "cut_type": "power_subproblem_infeasible_nogood",
+                "conflict_set": {"machine_001": 0},
+                "iteration": 1,
+                "metadata": {"kind": "power_subproblem_ghost_conditioned_nogood"},
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": {"candidate_placements": "abc"},
+                "proof_stage": "power_placement_subproblem",
+                "binding_exhausted": False,
+                "routing_exhausted": False,
+                "proof_summary": {},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        )
+
+
+def test_benders_cut_to_dict_rejects_condition_required_power_cut_without_condition_set() -> None:
+    cut = BendersCut(
+        schema_version=3,
+        cut_type="power_subproblem_infeasible_nogood",
+        conflict_set={"machine_001": 0},
+        iteration=1,
+        metadata={"kind": "power_subproblem_ghost_conditioned_nogood"},
+        source_mode="certified_exact",
+        exact_safe=True,
+        artifact_hashes={"candidate_placements": "abc"},
+        proof_stage="power_placement_subproblem",
+        binding_exhausted=False,
+        routing_exhausted=False,
+        proof_summary={},
+    )
+
+    with pytest.raises(ValueError, match="condition_set is required"):
+        cut.to_dict()
+
+
 def test_collect_certification_blockers_rejects_non_bool_exact_safe_object() -> None:
     cut = BendersCut(
         cut_type="routing_exhausted_nogood",
@@ -230,6 +271,58 @@ def test_exact_campaign_resume_rejects_bool_conflict_pose_index(tmp_path: Path) 
                 "proof_stage": "routing",
                 "binding_exhausted": True,
                 "routing_exhausted": True,
+                "proof_summary": {},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        ],
+        proof_summary={"master_status": "UNKNOWN"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
+
+
+def test_exact_campaign_resume_rejects_condition_required_power_cut_without_condition_set(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_missing_condition_power_cut"
+    (project_root / "data" / "preprocessed").mkdir(parents=True)
+    (project_root / "rules").mkdir(parents=True)
+    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text(
+        "[]", encoding="utf-8"
+    )
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "UNKNOWN",
+        exact_safe_cuts=[
+            {
+                "schema_version": 3,
+                "cut_type": "power_subproblem_infeasible_nogood",
+                "conflict_set": {"machine_001": 0},
+                "iteration": 1,
+                "metadata": {"kind": "power_subproblem_ghost_conditioned_nogood"},
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": campaign.artifact_hashes,
+                "proof_stage": "power_placement_subproblem",
+                "binding_exhausted": False,
+                "routing_exhausted": False,
                 "proof_summary": {},
                 "created_at": "2026-03-15T00:00:00Z",
             }
