@@ -25,7 +25,10 @@ def _write_minimal_exact_campaign_artifacts(project_root: Path) -> None:
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
         "{}", encoding="utf-8"
     )
-    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
 
 def _condition_required_power_cut_payload(
@@ -288,6 +291,43 @@ def test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mis
         )
 
 
+def test_benders_cut_from_dict_rejects_noncanonical_ghost_anchor_condition_keys() -> None:
+    bad_keys = [
+        "ghost_anchor::( 0,0)",
+        "ghost_anchor::(0,0 )",
+        "ghost_anchor::(+0,0)",
+        "ghost_anchor::(-1,0)",
+        "ghost_anchor::(01,0)",
+        "ghost_anchor::(1_000,0)",
+        "ghost_anchor::(2147483648,0)",
+        "ghost_anchor::(0,0,extra)",
+    ]
+    for bad_key in bad_keys:
+        with pytest.raises(ValueError, match="condition_set"):
+            BendersCut.from_dict(
+                {
+                    "schema_version": 3,
+                    "cut_type": "power_subproblem_infeasible_nogood",
+                    "conflict_set": {"machine_001": 0},
+                    "iteration": 1,
+                    "metadata": {
+                        "kind": "power_subproblem_ghost_conditioned_nogood",
+                        "ghost_rect_idx": 0,
+                        "ghost_anchor": {"x": 0, "y": 0},
+                    },
+                    "source_mode": "certified_exact",
+                    "exact_safe": True,
+                    "artifact_hashes": {"candidate_placements": "abc"},
+                    "proof_stage": "power_placement_subproblem",
+                    "binding_exhausted": False,
+                    "routing_exhausted": False,
+                    "proof_summary": {},
+                    "condition_set": {bad_key: 0},
+                    "created_at": "2026-03-15T00:00:00Z",
+                }
+            )
+
+
 def test_collect_certification_blockers_rejects_non_bool_exact_safe_object() -> None:
     cut = BendersCut(
         cut_type="routing_exhausted_nogood",
@@ -335,7 +375,10 @@ def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) 
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text("{}", encoding="utf-8")
-    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -378,7 +421,10 @@ def test_exact_campaign_resume_rejects_bool_conflict_pose_index(tmp_path: Path) 
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text("{}", encoding="utf-8")
-    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -429,7 +475,10 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_without_cond
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
         "{}", encoding="utf-8"
     )
-    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -531,6 +580,111 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mis
     assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
 
 
+def test_exact_campaign_resume_rejects_condition_required_power_cut_rect_idx_not_resolver_supported(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_condition_rect_idx_not_resolver_supported"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "INFEASIBLE",
+        exact_safe_cuts=[
+            _condition_required_power_cut_payload(
+                campaign,
+                condition_set={"ghost_anchor::(1,0)": 0},
+                metadata={
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 0,
+                    "ghost_anchor": {"x": 1, "y": 0},
+                },
+            )
+        ],
+        proof_summary={"master_status": "INFEASIBLE"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
+
+
+def test_exact_campaign_resume_accepts_condition_required_power_cut_with_resolver_supported_anchor(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_condition_rect_idx_resolver_supported"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "INFEASIBLE",
+        exact_safe_cuts=[
+            _condition_required_power_cut_payload(
+                campaign,
+                condition_set={"ghost_anchor::(1,0)": 1},
+                metadata={
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 1,
+                    "ghost_anchor": {"x": 1, "y": 0},
+                },
+            )
+        ],
+        proof_summary={"master_status": "INFEASIBLE"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is True
+    assert resumed.reset_reason is None
+
+
+def test_exact_campaign_resume_rejects_condition_required_power_cut_anchor_outside_domain(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_condition_anchor_outside_domain"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "INFEASIBLE",
+        exact_safe_cuts=[
+            _condition_required_power_cut_payload(
+                campaign,
+                condition_set={"ghost_anchor::(2,0)": 0},
+                metadata={
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 0,
+                    "ghost_anchor": {"x": 2, "y": 0},
+                },
+            )
+        ],
+        proof_summary={"master_status": "INFEASIBLE"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
+
+
 def test_cut_manager_load_rejects_duplicate_exact_safe_key(tmp_path: Path) -> None:
     exact_path = tmp_path / "cuts_duplicate_key.json"
     exact_path.write_text(
@@ -609,7 +763,10 @@ def test_exact_campaign_resume_rejects_duplicate_json_key(tmp_path: Path) -> Non
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text("{}", encoding="utf-8")
-    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -659,7 +816,10 @@ def test_exact_campaign_resume_rejects_json_nan_constant(tmp_path: Path) -> None
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text("{}", encoding="utf-8")
-    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+    (project_root / "rules" / "canonical_rules.json").write_text(
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        encoding="utf-8",
+    )
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)

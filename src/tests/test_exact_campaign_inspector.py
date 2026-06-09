@@ -137,6 +137,49 @@ def test_inspector_summarizes_valid_resume_state(tmp_path: Path) -> None:
     }
 
 
+def test_inspector_accepts_resume_state_with_resolver_supported_condition_cut(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "INFEASIBLE",
+        exact_safe_cuts=[
+            {
+                "schema_version": 3,
+                "cut_type": "power_subproblem_infeasible_nogood",
+                "conflict_set": {"tiny_001": 0},
+                "iteration": 1,
+                "metadata": {
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 3,
+                    "ghost_anchor": {"x": 1, "y": 0},
+                },
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": campaign.artifact_hashes,
+                "proof_stage": "power_placement_subproblem",
+                "binding_exhausted": False,
+                "routing_exhausted": False,
+                "proof_summary": {},
+                "created_at": "2026-03-15T00:00:00Z",
+                "condition_set": {"ghost_anchor::(1,0)": 3},
+            }
+        ],
+        proof_summary={"master_status": "INFEASIBLE"},
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    inspection = build_exact_campaign_inspection(project_root)
+
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is True
+    assert inspection["campaign"]["resume_validation_reason"] is None
+
+
 def test_inspector_reports_artifact_mismatch_without_mutating_state(tmp_path: Path) -> None:
     project_root = _build_exact_project(tmp_path / "project")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)

@@ -99,20 +99,40 @@ def _cut_requires_condition_set(cut_type: str, metadata: Mapping[str, Any]) -> b
     )
 
 
-def _parse_ghost_anchor_condition_key(key: str) -> Optional[Tuple[int, int]]:
-    prefix = "ghost_anchor::"
-    if not key.startswith(prefix):
+GHOST_ANCHOR_CONDITION_PREFIX = "ghost_anchor::"
+# CP-SAT and project grid coordinates are finite non-negative cell indices.
+# Rejecting values above signed 32-bit range keeps persisted condition keys
+# canonical and blocks overflow-shaped payloads before replay can diverge.
+MAX_GHOST_ANCHOR_CONDITION_COORD = 2_147_483_647
+
+
+def _parse_canonical_nonnegative_coord(token: str) -> Optional[int]:
+    if not token:
         return None
-    suffix = key[len(prefix) :].strip()
+    if len(token) > 1 and token.startswith("0"):
+        return None
+    if not all("0" <= char <= "9" for char in token):
+        return None
+    value = int(token)
+    if value > MAX_GHOST_ANCHOR_CONDITION_COORD:
+        return None
+    return value
+
+
+def _parse_ghost_anchor_condition_key(key: str) -> Optional[Tuple[int, int]]:
+    if not key.startswith(GHOST_ANCHOR_CONDITION_PREFIX):
+        return None
+    suffix = key[len(GHOST_ANCHOR_CONDITION_PREFIX) :]
     if not suffix.startswith("(") or not suffix.endswith(")"):
         return None
-    parts = [part.strip() for part in suffix[1:-1].split(",")]
+    parts = suffix[1:-1].split(",")
     if len(parts) != 2:
         return None
-    try:
-        return int(parts[0]), int(parts[1])
-    except ValueError:
+    anchor_x = _parse_canonical_nonnegative_coord(parts[0])
+    anchor_y = _parse_canonical_nonnegative_coord(parts[1])
+    if anchor_x is None or anchor_y is None:
         return None
+    return anchor_x, anchor_y
 
 
 def _validate_certified_condition_shape(

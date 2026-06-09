@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Tuple
 
-from src.models.cut_manager import BendersCut
+from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
 CAMPAIGN_SCHEMA_VERSION = 3
@@ -125,6 +125,96 @@ def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
     for key, relative_path in EXACT_HASH_FILES.items():
         hashes[key] = sha256_file(project_root / relative_path)
     return hashes
+
+
+def _strict_resume_int(value: Any, field: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"{field} must be an integer")
+    return int(value)
+
+
+def _load_exact_grid_dimensions(project_root: Optional[Path]) -> Optional[Tuple[int, int]]:
+    if project_root is None:
+        return None
+    rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
+    payload = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise ValueError("canonical_rules must be a JSON object")
+    globals_payload = payload.get("globals")
+    if not isinstance(globals_payload, Mapping):
+        raise ValueError("canonical_rules.globals must be a mapping")
+    grid = globals_payload.get("grid")
+    if not isinstance(grid, Mapping):
+        raise ValueError("canonical_rules.globals.grid must be a mapping")
+    grid_w = _strict_resume_int(grid.get("width"), "canonical_rules.globals.grid.width")
+    grid_h = _strict_resume_int(grid.get("height"), "canonical_rules.globals.grid.height")
+    if grid_w <= 0 or grid_h <= 0:
+        raise ValueError("canonical_rules grid dimensions must be positive")
+    return grid_w, grid_h
+
+
+def _strict_candidate_ghost_rect(record: Mapping[str, Any]) -> Tuple[int, int]:
+    ghost_rect = record.get("ghost_rect")
+    if not isinstance(ghost_rect, Mapping):
+        raise ValueError("candidate ghost_rect must be a mapping")
+    ghost_w = _strict_resume_int(ghost_rect.get("w"), "candidate.ghost_rect.w")
+    ghost_h = _strict_resume_int(ghost_rect.get("h"), "candidate.ghost_rect.h")
+    area = _strict_resume_int(ghost_rect.get("area"), "candidate.ghost_rect.area")
+    if ghost_w <= 0 or ghost_h <= 0 or area != ghost_w * ghost_h:
+        raise ValueError("candidate ghost_rect dimensions must be positive and area-consistent")
+    return ghost_w, ghost_h
+
+
+def _expected_unfiltered_ghost_anchor_index(
+    *,
+    grid_w: int,
+    grid_h: int,
+    ghost_w: int,
+    ghost_h: int,
+    anchor_x: int,
+    anchor_y: int,
+) -> Optional[int]:
+    if ghost_w <= 0 or ghost_h <= 0 or ghost_w > grid_w or ghost_h > grid_h:
+        return None
+    if anchor_x < 0 or anchor_y < 0:
+        return None
+    y_count = grid_h - ghost_h + 1
+    if anchor_x > grid_w - ghost_w or anchor_y > grid_h - ghost_h:
+        return None
+    return int(anchor_x) * int(y_count) + int(anchor_y)
+
+
+def _validate_cut_condition_domain(
+    *,
+    record: Mapping[str, Any],
+    cut: BendersCut,
+    grid_dimensions: Optional[Tuple[int, int]],
+) -> None:
+    if not cut.condition_set:
+        return
+    if grid_dimensions is None:
+        raise ValueError("condition_set domain validation requires canonical grid dimensions")
+    grid_w, grid_h = grid_dimensions
+    ghost_w, ghost_h = _strict_candidate_ghost_rect(record)
+    for key, rect_idx in cut.condition_set.items():
+        parsed_anchor = _parse_ghost_anchor_condition_key(str(key))
+        if parsed_anchor is None:
+            raise ValueError(f"unsupported condition_set key: {key}")
+        expected_rect_idx = _expected_unfiltered_ghost_anchor_index(
+            grid_w=int(grid_w),
+            grid_h=int(grid_h),
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+            anchor_x=int(parsed_anchor[0]),
+            anchor_y=int(parsed_anchor[1]),
+        )
+        if expected_rect_idx is None:
+            raise ValueError(f"condition_set ghost anchor is outside the candidate domain: {key}")
+        if int(rect_idx) != expected_rect_idx:
+            raise ValueError(
+                "condition_set ghost anchor index does not match the current "
+                f"candidate domain for key {key}"
+            )
 
 
 def candidate_key(ghost_w: int, ghost_h: int) -> str:
@@ -252,7 +342,12 @@ def _build_initial_state(
     }
 
 
-def _validate_candidate_record(record_key: str, record: Mapping[str, Any]) -> Optional[str]:
+def _validate_candidate_record(
+    record_key: str,
+    record: Mapping[str, Any],
+    *,
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+) -> Optional[str]:
     missing = sorted(REQUIRED_CANDIDATE_FIELDS.difference(record.keys()))
     if missing:
         return f"candidate_missing_field:{record_key}:{missing[0]}"
@@ -263,6 +358,10 @@ def _validate_candidate_record(record_key: str, record: Mapping[str, Any]) -> Op
     for field in ("w", "h", "area"):
         if field not in ghost_rect:
             return f"candidate_missing_ghost_rect_field:{record_key}:{field}"
+    try:
+        _strict_candidate_ghost_rect(record)
+    except Exception:
+        return f"candidate_invalid_ghost_rect:{record_key}"
 
     try:
         int(record.get("attempts", 0))
@@ -289,6 +388,14 @@ def _validate_candidate_record(record_key: str, record: Mapping[str, Any]) -> Op
             return f"candidate_invalid_exact_safe_cut:{record_key}:{index}"
         if cut.source_mode != "certified_exact" or cut.exact_safe is not True:
             return f"candidate_invalid_exact_safe_cut:{record_key}:{index}"
+        try:
+            _validate_cut_condition_domain(
+                record=record,
+                cut=cut,
+                grid_dimensions=grid_dimensions,
+            )
+        except Exception:
+            return f"candidate_invalid_exact_safe_cut:{record_key}:{index}"
 
     for field in ("started_at", "updated_at"):
         if record.get(field) is None:
@@ -304,6 +411,7 @@ def _validate_resume_state(
     state: Mapping[str, Any],
     *,
     current_hashes: Mapping[str, str],
+    project_root: Optional[Path] = None,
 ) -> Optional[str]:
     missing = sorted(REQUIRED_STATE_FIELDS.difference(state.keys()))
     if missing:
@@ -333,10 +441,19 @@ def _validate_resume_state(
     if final_result is not None and final_status != "CERTIFIED":
         return "final_status_mismatch"
 
+    try:
+        grid_dimensions = _load_exact_grid_dimensions(project_root)
+    except Exception:
+        return "canonical_grid_invalid"
+
     for record_key, record in dict(state.get("candidates", {})).items():
         if not isinstance(record, Mapping):
             return f"candidate_invalid:{record_key}"
-        reason = _validate_candidate_record(str(record_key), record)
+        reason = _validate_candidate_record(
+            str(record_key),
+            record,
+            grid_dimensions=grid_dimensions,
+        )
         if reason is not None:
             return reason
     return None
@@ -345,8 +462,14 @@ def _validate_resume_state(
 def validate_exact_campaign_resume_state(
     state: Mapping[str, Any],
     current_hashes: Mapping[str, str],
+    *,
+    project_root: Optional[Path] = None,
 ) -> Optional[str]:
-    return _validate_resume_state(state, current_hashes=current_hashes)
+    return _validate_resume_state(
+        state,
+        current_hashes=current_hashes,
+        project_root=project_root,
+    )
 
 
 @dataclass
@@ -381,6 +504,7 @@ class ExactCampaign:
                     reset_reason = _validate_resume_state(
                         loaded_state,
                         current_hashes=current_hashes,
+                        project_root=project_root,
                     )
                     if reset_reason is None:
                         state = dict(loaded_state)

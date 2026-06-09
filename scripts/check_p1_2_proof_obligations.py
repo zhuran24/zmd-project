@@ -50,12 +50,16 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key",
             "test_benders_cut_from_dict_rejects_condition_required_power_cut_metadata_mismatch",
             "test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mismatch",
+            "test_benders_cut_from_dict_rejects_noncanonical_ghost_anchor_condition_keys",
             "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
             "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
             "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
             "test_exact_campaign_resume_rejects_condition_required_power_cut_without_condition_set",
             "test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown_condition_key",
             "test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mismatch",
+            "test_exact_campaign_resume_rejects_condition_required_power_cut_rect_idx_not_resolver_supported",
+            "test_exact_campaign_resume_accepts_condition_required_power_cut_with_resolver_supported_anchor",
+            "test_exact_campaign_resume_rejects_condition_required_power_cut_anchor_outside_domain",
             "test_cut_manager_load_rejects_duplicate_exact_safe_key",
             "test_exact_campaign_resume_rejects_duplicate_json_key",
             "test_exact_campaign_resume_rejects_json_nan_constant",
@@ -544,6 +548,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "_loads_strict_json_object",
         "_reject_json_constant",
         "_cut_requires_condition_set",
+        "_parse_canonical_nonnegative_coord",
         "_parse_ghost_anchor_condition_key",
         "_validate_certified_condition_shape",
         "_validate_condition_required_power_metadata",
@@ -553,6 +558,11 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     strict_int_fn = _function_def(cut_manager_tree, "_strict_int", path=CUT_MANAGER_PATH)
     strict_bool_fn = _function_def(cut_manager_tree, "_strict_bool", path=CUT_MANAGER_PATH)
     strict_json_fn = _function_def(cut_manager_tree, "_loads_strict_json_object", path=CUT_MANAGER_PATH)
+    parse_coord_fn = _function_def(
+        cut_manager_tree,
+        "_parse_canonical_nonnegative_coord",
+        path=CUT_MANAGER_PATH,
+    )
     parse_condition_key_fn = _function_def(
         cut_manager_tree,
         "_parse_ghost_anchor_condition_key",
@@ -574,9 +584,21 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         errors.append("_strict_bool must reject truthy/falsy non-bool exact_safe payloads")
     if "parse_constant" not in _source_text(CUT_MANAGER_PATH, strict_json_fn):
         errors.append("CutManager strict JSON loader must reject NaN/Infinity constants")
+    parse_coord_source = _source_text(CUT_MANAGER_PATH, parse_coord_fn)
+    for needle in (
+        'startswith("0")',
+        '"0" <= char <= "9"',
+        "MAX_GHOST_ANCHOR_CONDITION_COORD",
+    ):
+        if needle not in parse_coord_source:
+            errors.append(f"condition_set coordinate parser must enforce canonical non-negative decimal token: {needle}")
     parse_condition_key_source = _source_text(CUT_MANAGER_PATH, parse_condition_key_fn)
-    if "ghost_anchor::" not in parse_condition_key_source or "len(parts) != 2" not in parse_condition_key_source:
+    if "GHOST_ANCHOR_CONDITION_PREFIX" not in parse_condition_key_source or "len(parts) != 2" not in parse_condition_key_source:
         errors.append("condition_set ghost anchors must use a strict ghost_anchor::(x,y) parser")
+    if "_parse_canonical_nonnegative_coord" not in parse_condition_key_source:
+        errors.append("condition_set ghost anchors must reject whitespace, sign, underscore, negative, and overflow-like coordinates")
+    if ".strip" in parse_condition_key_source or "int(parts" in parse_condition_key_source:
+        errors.append("condition_set ghost anchor parser must not normalize malformed coordinate keys")
     condition_shape_source = _source_text(CUT_MANAGER_PATH, condition_shape_fn)
     if "_parse_ghost_anchor_condition_key" not in condition_shape_source or "rect_idx" not in condition_shape_source:
         errors.append("certified condition_set payloads must reject unsupported or malformed condition anchors")
@@ -603,12 +625,25 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     _function_def(exact_campaign_tree, "_reject_json_constant", path=EXACT_CAMPAIGN_PATH)
     if "parse_constant" not in _source_text(EXACT_CAMPAIGN_PATH, exact_campaign_strict_json_fn):
         errors.append("ExactCampaign strict JSON loader must reject NaN/Infinity constants")
+    for helper_name in (
+        "_load_exact_grid_dimensions",
+        "_strict_candidate_ghost_rect",
+        "_expected_unfiltered_ghost_anchor_index",
+        "_validate_cut_condition_domain",
+    ):
+        _function_def(exact_campaign_tree, helper_name, path=EXACT_CAMPAIGN_PATH)
     validate_record_fn = _function_def(exact_campaign_tree, "_validate_candidate_record", path=EXACT_CAMPAIGN_PATH)
     validate_source = _source_text(EXACT_CAMPAIGN_PATH, validate_record_fn)
     if "BendersCut.from_dict" not in validate_source:
         errors.append("ExactCampaign resume validation must parse every exact_safe_cut with BendersCut.from_dict")
     if "cut.exact_safe is not True" not in validate_source:
         errors.append("ExactCampaign resume validation must require cut.exact_safe is True, not truthy")
+    if "_validate_cut_condition_domain" not in validate_source:
+        errors.append("ExactCampaign resume validation must reject condition_set keys that cannot resolve in the candidate ghost domain")
+    resume_fn = _function_def(exact_campaign_tree, "_validate_resume_state", path=EXACT_CAMPAIGN_PATH)
+    resume_source = _source_text(EXACT_CAMPAIGN_PATH, resume_fn)
+    if "_load_exact_grid_dimensions" not in resume_source or "project_root" not in resume_source:
+        errors.append("ExactCampaign resume validation must load current grid dimensions for condition resolver support checks")
 
     benders_tree = _parse_python(BENDERS_LOOP_PATH)
     resolve_condition_fn = _function_def(

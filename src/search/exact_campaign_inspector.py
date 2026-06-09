@@ -55,7 +55,11 @@ def build_exact_campaign_inspection(
     elif hash_error is not None:
         resume_reason = hash_error
     else:
-        resume_reason = validate_exact_campaign_resume_state(state, current_hashes)
+        resume_reason = validate_exact_campaign_resume_state(
+            state,
+            current_hashes,
+            project_root=project_root,
+        )
 
     resume_compatible = state is not None and resume_reason is None
     checks.append(
@@ -186,7 +190,7 @@ def _campaign_summary(
         }
 
     candidates = dict(state.get("candidates", {})) if isinstance(state.get("candidates"), Mapping) else {}
-    status_counts = Counter()
+    status_counts: Counter[str] = Counter()
     for record in candidates.values():
         if isinstance(record, Mapping):
             status_counts[str(record.get("status", ""))] += 1

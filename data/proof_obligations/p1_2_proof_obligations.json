@@ -118,12 +118,16 @@
         "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key",
         "test_benders_cut_from_dict_rejects_condition_required_power_cut_metadata_mismatch",
         "test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mismatch",
+        "test_benders_cut_from_dict_rejects_noncanonical_ghost_anchor_condition_keys",
         "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
         "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
         "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
         "test_exact_campaign_resume_rejects_condition_required_power_cut_without_condition_set",
         "test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown_condition_key",
         "test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mismatch",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_rect_idx_not_resolver_supported",
+        "test_exact_campaign_resume_accepts_condition_required_power_cut_with_resolver_supported_anchor",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_anchor_outside_domain",
         "test_cut_manager_load_rejects_duplicate_exact_safe_key",
         "test_exact_campaign_resume_rejects_duplicate_json_key",
         "test_exact_campaign_resume_rejects_json_nan_constant",
@@ -139,9 +143,10 @@
       ],
       "evidence_paths": [
         "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
-        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md"
+        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md"
       ],
-      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, condition-key parsing, condition/metadata self-consistency, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
+      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
     },
     {
       "id": "PO-PHASE-GATE-PROVENANCE",
@@ -215,8 +220,10 @@
       "Distinct conflict members must map one-to-one to distinct backend literals; alias collisions fail closed instead of deduping into a stronger cut.",
       "Exact-safe cuts are registered, persisted, or counted only after the master backend accepts the whole cut.",
       "Every non-empty certified condition_set must use a resolver-supported condition key grammar; unsupported keys fail closed before resume or replay.",
-      "Condition-required power-subproblem cuts must bind ghost_anchor condition keys to matching metadata.ghost_anchor and metadata.ghost_rect_idx values."
+      "Condition-required power-subproblem cuts must bind ghost_anchor condition keys to matching metadata.ghost_anchor and metadata.ghost_rect_idx values.",
+      "Condition-required ghost_anchor keys must be canonical non-negative decimal coordinates with no whitespace, signs, leading zero ambiguity, underscores, extra fields, or overflow-shaped values.",
+      "Campaign resume must validate every non-empty condition_set against the current candidate ghost domain, including the canonical rect-index enumeration used by master replay."
     ],
-    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, or post-hoc registered cut is not replay-safe and must not prune certified search."
+    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, or post-hoc registered cut is not replay-safe and must not prune certified search."
   }
 }
