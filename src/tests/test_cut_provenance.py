@@ -969,6 +969,16 @@ def test_exact_campaign_resume_rejects_best_effort_final_result(
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
     )
+    # V63 keeps candidate-level CERTIFIED records as incumbents until the
+    # full outer frontier is exhausted.  Exercise the intended invalid state
+    # directly: a best-effort campaign must not resume with a final_result
+    # that looks like terminal certified export evidence.
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {"tiny_001": {"pose_idx": 0}},
+        "search_status": "CERTIFIED",
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status="CERTIFIED")
     campaign.state["declare_mode"] = "best_effort"
     campaign.save()
 

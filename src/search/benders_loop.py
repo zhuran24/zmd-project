@@ -418,6 +418,11 @@ def _master_cp_sat_log_heartbeat_max_chars() -> int:
 EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV = "EXACT_MASTER_GHOST_ANCHOR_FILTER"
 EXACT_USE_POSE_BOOL_MASTER_ENV = "EXACT_USE_POSE_BOOL_MASTER"
 EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV = "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE"
+EXACT_LAZY_POWER_COMPLETION_ENV = "EXACT_LAZY_POWER_COMPLETION"
+EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV = "EXACT_POWER_PLACEMENT_SUBPROBLEM"
+EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV = (
+    "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST"
+)
 
 _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
 _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
@@ -433,6 +438,18 @@ _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
         "power_pole_slot_upper_bound_override_not_certified",
         "power-pole slot upper-bound override tightens the certified master domain",
     ),
+    EXACT_LAZY_POWER_COMPLETION_ENV: (
+        "lazy_power_completion_not_certified",
+        "lazy power completion removes certified master power-coverage constraints",
+    ),
+    EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV: (
+        "power_placement_subproblem_not_certified",
+        "power placement subproblem changes certified master power-witness representation",
+    ),
+    EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV: (
+        "power_placement_forensic_bypass_not_certified",
+        "forensic power-placement bypass is not allowed in certified lifecycle runs",
+    ),
 }
 
 
@@ -443,13 +460,15 @@ def _env_override_enabled_for_certified_master_domain(raw_value: object) -> bool
 
 
 def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str, Any]]:
-    """Return env overrides that mutate the actual certified master domain.
+    """Return env overrides that mutate certified master/domain semantics.
 
-    V61 PROJECT_LOCK: terminal certified_exact evidence is a full unfiltered
-    master-domain claim.  Env/debug paths that swap the master representation or
-    tighten slot families must be blocked before ExactSearchSession construction;
-    otherwise the persisted master_domain_contract can describe the intended
-    domain while the solver actually searched a sibling domain.
+    V61/V64 PROJECT_LOCK: terminal certified_exact evidence is a full unfiltered
+    master-domain claim under the certified power-witness representation.
+    Env/debug paths that swap the master representation, tighten slot families,
+    slice anchors, or remove/delegate power-completion evidence must be blocked
+    before ExactSearchSession construction; otherwise the persisted
+    master_domain_contract can describe the intended domain while the solver
+    actually searched a sibling domain or witness representation.
     """
 
     blockers: List[Dict[str, Any]] = []
@@ -1143,6 +1162,17 @@ def create_exact_search_session(
     solve_mode: str = "certified_exact",
     master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
 ) -> ExactSearchSession:
+    if solve_mode == "certified_exact":
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            blocker_summary = ", ".join(
+                f"{blocker.get('env')}={blocker.get('value')}:{blocker.get('code')}"
+                for blocker in unsafe_domain_env_blockers
+            )
+            raise RuntimeError(
+                "unsafe certified_exact master-domain/power-representation env before "
+                f"ExactSearchSession construction: {blocker_summary}"
+            )
     try:
         return ExactSearchSession.create(
             project_root,

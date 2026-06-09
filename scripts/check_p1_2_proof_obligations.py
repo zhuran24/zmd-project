@@ -85,6 +85,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
             "test_certified_exact_blocks_pose_bool_master_env_before_session",
             "test_certified_exact_blocks_power_pole_slot_override_before_session",
+            "test_certified_exact_blocks_power_representation_env_before_session",
+            "test_create_exact_search_session_blocks_power_representation_env_before_session",
+            "test_v64_outer_search_blocks_power_representation_env_before_session",
             "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
             "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
             "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence",
@@ -797,6 +800,22 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
                 "certified exact run entrypoint must fail closed when the "
                 f"ghost-anchor domain is env-filtered: {needle}"
             )
+    create_session_fn = _function_def(
+        benders_tree,
+        "create_exact_search_session",
+        path=BENDERS_LOOP_PATH,
+    )
+    create_session_source = _source_text(BENDERS_LOOP_PATH, create_session_fn)
+    for needle in (
+        "_collect_forbidden_certified_master_domain_env_overrides",
+        "ExactSearchSession construction",
+    ):
+        if needle not in create_session_source:
+            errors.append(
+                "certified exact session factory must fail closed before session construction on unsafe master-domain/power-representation envs: "
+                f"{needle}"
+            )
+
     forbidden_env_fn = _function_def(
         benders_tree,
         "_collect_forbidden_certified_master_domain_env_overrides",
@@ -816,10 +835,16 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "pose_bool_master_not_certified",
         "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV",
         "power_pole_slot_upper_bound_override_not_certified",
+        "EXACT_LAZY_POWER_COMPLETION_ENV",
+        "lazy_power_completion_not_certified",
+        "EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV",
+        "power_placement_subproblem_not_certified",
+        "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV",
+        "power_placement_forensic_bypass_not_certified",
     ):
         if needle not in forbidden_env_source and needle not in unsafe_env_map_source:
             errors.append(
-                "certified exact master-domain env blocker must reject every master-domain override from the centralized unsafe map: "
+                "certified exact master-domain env blocker must reject every master-domain/power-representation override from the centralized unsafe map: "
                 f"{needle}"
             )
         if needle not in benders_loop_source:

@@ -13,9 +13,14 @@ import pytest
 
 from src.models.master_model import MasterPlacementModel
 from src.search.benders_loop import (
+    EXACT_LAZY_POWER_COMPLETION_ENV,
     EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV,
     EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV,
+    EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV,
+    EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV,
     EXACT_USE_POSE_BOOL_MASTER_ENV,
+    ExactSearchSession,
+    create_exact_search_session,
     _resolve_ghost_anchor_filter_from_env,
     run_benders_for_ghost_rect,
 )
@@ -274,3 +279,100 @@ def test_certified_exact_blocks_power_pole_slot_override_before_session(
             "detail": "power-pole slot upper-bound override tightens the certified master domain",
         }
     ]
+
+
+@pytest.mark.parametrize(
+    ("env_name", "blocker_code", "detail"),
+    [
+        (
+            EXACT_LAZY_POWER_COMPLETION_ENV,
+            "lazy_power_completion_not_certified",
+            "lazy power completion removes certified master power-coverage constraints",
+        ),
+        (
+            EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV,
+            "power_placement_subproblem_not_certified",
+            "power placement subproblem changes certified master power-witness representation",
+        ),
+        (
+            EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV,
+            "power_placement_forensic_bypass_not_certified",
+            "forensic power-placement bypass is not allowed in certified lifecycle runs",
+        ),
+    ],
+)
+def test_certified_exact_blocks_power_representation_env_before_session(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+    env_name: str,
+    blocker_code: str,
+    detail: str,
+) -> None:
+    monkeypatch.delenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, raising=False)
+    monkeypatch.setenv(env_name, "1")
+
+    def _forbidden_session_factory(*_args, **_kwargs):  # pragma: no cover - failure sentinel
+        raise AssertionError("certified exact domain env blocker must run before ExactSearchSession")
+
+    monkeypatch.setattr(
+        "src.search.benders_loop.create_exact_search_session",
+        _forbidden_session_factory,
+    )
+
+    status, solution = run_benders_for_ghost_rect(
+        ghost_w=1,
+        ghost_h=1,
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+        max_iterations=1,
+    )
+
+    metadata = run_benders_for_ghost_rect.last_run_metadata
+    assert status == "UNPROVEN"
+    assert solution is None
+    assert metadata["exact_safe_cuts"] == []
+    assert metadata["generated_exact_safe_cut_count"] == 0
+    assert metadata["proof_summary"]["master_status"] == "BLOCKED"
+    blockers = metadata["proof_summary"]["blockers"]
+    assert blockers == [
+        {
+            "code": blocker_code,
+            "env": env_name,
+            "value": "1",
+            "detail": detail,
+        }
+    ]
+
+
+@pytest.mark.parametrize(
+    ("env_name", "blocker_code"),
+    [
+        (EXACT_LAZY_POWER_COMPLETION_ENV, "lazy_power_completion_not_certified"),
+        (EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV, "power_placement_subproblem_not_certified"),
+        (
+            EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV,
+            "power_placement_forensic_bypass_not_certified",
+        ),
+    ],
+)
+def test_create_exact_search_session_blocks_power_representation_env_before_session(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+    env_name: str,
+    blocker_code: str,
+) -> None:
+    monkeypatch.delenv(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, raising=False)
+    monkeypatch.setenv(env_name, "1")
+
+    def _forbidden_create(*_args, **_kwargs):  # pragma: no cover - failure sentinel
+        raise AssertionError("ExactSearchSession.create was reached before unsafe env guard")
+
+    monkeypatch.setattr(ExactSearchSession, "create", _forbidden_create)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        create_exact_search_session(tmp_path, solve_mode="certified_exact")
+
+    message = str(exc_info.value)
+    assert "before ExactSearchSession construction" in message
+    assert env_name in message
+    assert blocker_code in message
