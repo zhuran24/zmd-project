@@ -99,21 +99,94 @@ def _cut_requires_condition_set(cut_type: str, metadata: Mapping[str, Any]) -> b
     )
 
 
+def _parse_ghost_anchor_condition_key(key: str) -> Optional[Tuple[int, int]]:
+    prefix = "ghost_anchor::"
+    if not key.startswith(prefix):
+        return None
+    suffix = key[len(prefix) :].strip()
+    if not suffix.startswith("(") or not suffix.endswith(")"):
+        return None
+    parts = [part.strip() for part in suffix[1:-1].split(",")]
+    if len(parts) != 2:
+        return None
+    try:
+        return int(parts[0]), int(parts[1])
+    except ValueError:
+        return None
+
+
+def _validate_certified_condition_shape(
+    *,
+    source_mode: str,
+    exact_safe: bool,
+    condition_set: Mapping[str, int],
+) -> None:
+    if source_mode != "certified_exact" or exact_safe is not True:
+        return
+    for key, rect_idx in condition_set.items():
+        if _parse_ghost_anchor_condition_key(str(key)) is None:
+            raise ValueError(f"condition_set has unsupported condition key: {key}")
+        if int(rect_idx) < 0:
+            raise ValueError(f"condition_set ghost anchor index must be non-negative: {key}")
+
+
+def _validate_condition_required_power_metadata(
+    *,
+    cut_type: str,
+    metadata: Mapping[str, Any],
+    condition_set: Mapping[str, int],
+) -> None:
+    if len(condition_set) != 1:
+        raise ValueError(
+            f"condition_set must contain exactly one ghost_anchor condition for cut_type={cut_type}"
+        )
+    (key, rect_idx), = condition_set.items()
+    parsed_anchor = _parse_ghost_anchor_condition_key(str(key))
+    if parsed_anchor is None:
+        raise ValueError(f"condition_set has unsupported condition key for cut_type={cut_type}: {key}")
+    anchor_x, anchor_y = parsed_anchor
+
+    metadata_rect_idx = _strict_int(metadata.get("ghost_rect_idx"), "metadata.ghost_rect_idx")
+    if metadata_rect_idx != int(rect_idx):
+        raise ValueError(
+            "condition_set ghost anchor index must match metadata.ghost_rect_idx "
+            f"for cut_type={cut_type}"
+        )
+
+    metadata_anchor = _strict_mapping(metadata.get("ghost_anchor"), "metadata.ghost_anchor")
+    metadata_x = _strict_int(metadata_anchor.get("x"), "metadata.ghost_anchor.x")
+    metadata_y = _strict_int(metadata_anchor.get("y"), "metadata.ghost_anchor.y")
+    if (metadata_x, metadata_y) != (anchor_x, anchor_y):
+        raise ValueError(
+            "condition_set ghost anchor key must match metadata.ghost_anchor "
+            f"for cut_type={cut_type}"
+        )
+
+
 def _validate_certified_condition_requirement(
     *,
     cut_type: str,
     source_mode: str,
     exact_safe: bool,
     metadata: Mapping[str, Any],
-    condition_set: Mapping[str, Any],
+    condition_set: Mapping[str, int],
 ) -> None:
-    if (
-        source_mode == "certified_exact"
-        and exact_safe is True
-        and _cut_requires_condition_set(cut_type, metadata)
-        and not condition_set
-    ):
+    _validate_certified_condition_shape(
+        source_mode=source_mode,
+        exact_safe=exact_safe,
+        condition_set=condition_set,
+    )
+    if source_mode != "certified_exact" or exact_safe is not True:
+        return
+    if not _cut_requires_condition_set(cut_type, metadata):
+        return
+    if not condition_set:
         raise ValueError(f"condition_set is required for certified exact cut_type={cut_type}")
+    _validate_condition_required_power_metadata(
+        cut_type=cut_type,
+        metadata=metadata,
+        condition_set=condition_set,
+    )
 
 
 @dataclass

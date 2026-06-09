@@ -103,7 +103,9 @@
         "v54_candidate",
         "v55_candidate",
         "v56_candidate",
-        "v56_certified_cut_replay_consolidation"
+        "v56_certified_cut_replay_consolidation",
+        "v57_candidate",
+        "v58_candidate"
       ],
       "required_tests": [
         "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
@@ -113,10 +115,15 @@
         "test_benders_cut_from_dict_rejects_bool_condition_anchor_index",
         "test_benders_cut_from_dict_rejects_condition_required_power_cut_without_condition_set",
         "test_benders_cut_to_dict_rejects_condition_required_power_cut_without_condition_set",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_metadata_mismatch",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mismatch",
         "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
         "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
         "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
         "test_exact_campaign_resume_rejects_condition_required_power_cut_without_condition_set",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown_condition_key",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mismatch",
         "test_cut_manager_load_rejects_duplicate_exact_safe_key",
         "test_exact_campaign_resume_rejects_duplicate_json_key",
         "test_exact_campaign_resume_rejects_json_nan_constant",
@@ -127,12 +134,14 @@
         "test_routing_front_blocked_unencodable_optional_conflict_fails_closed",
         "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
         "test_pose_bool_replay_alias_collision_fails_closed",
-        "test_legacy_benders_cut_alias_collision_fails_closed"
+        "test_legacy_benders_cut_alias_collision_fails_closed",
+        "test_resolver_fails_closed_on_malformed_ghost_anchor_key"
       ],
       "evidence_paths": [
-        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md"
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
+        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md"
       ],
-      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
+      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, condition-key parsing, condition/metadata self-consistency, condition resolution, member resolution, literal de-aliasing, and apply-before-register atomicity are all part of the certified replay boundary."
     },
     {
       "id": "PO-PHASE-GATE-PROVENANCE",
@@ -204,8 +213,10 @@
       "Campaign resume and pre-master replay must reject malformed exact_safe cuts before inheriting certification state.",
       "Every conflict member must resolve to a concrete master literal; unresolved members fail closed instead of being dropped.",
       "Distinct conflict members must map one-to-one to distinct backend literals; alias collisions fail closed instead of deduping into a stronger cut.",
-      "Exact-safe cuts are registered, persisted, or counted only after the master backend accepts the whole cut."
+      "Exact-safe cuts are registered, persisted, or counted only after the master backend accepts the whole cut.",
+      "Every non-empty certified condition_set must use a resolver-supported condition key grammar; unsupported keys fail closed before resume or replay.",
+      "Condition-required power-subproblem cuts must bind ghost_anchor condition keys to matching metadata.ghost_anchor and metadata.ghost_rect_idx values."
     ],
-    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, or post-hoc registered cut is not replay-safe and must not prune certified search."
+    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, or post-hoc registered cut is not replay-safe and must not prune certified search."
   }
 }

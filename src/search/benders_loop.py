@@ -67,6 +67,7 @@ from src.models.cut_manager import (
     RUN_STATUS_INFEASIBLE,
     RUN_STATUS_UNKNOWN,
     RUN_STATUS_UNPROVEN,
+    _parse_ghost_anchor_condition_key,
 )
 from src.models.flow_subproblem import FlowSubproblem, build_flow_network
 from src.models.master_model import (
@@ -1012,13 +1013,10 @@ def _resolve_condition_lits_from_condition_set(
         if isinstance(raw_value, bool) or not isinstance(raw_value, int):
             return [], False
         rect_idx = int(raw_value)
-        try:
-            coord_part = key_str.split("::", 1)[1].strip().lstrip("(").rstrip(")")
-            xy = coord_part.split(",")
-            expected_x = int(xy[0])
-            expected_y = int(xy[1])
-        except Exception:
+        parsed_anchor = _parse_ghost_anchor_condition_key(key_str)
+        if parsed_anchor is None:
             return [], False
+        expected_x, expected_y = parsed_anchor
         if rect_idx not in u_vars:
             return [], False
         if rect_idx < 0 or rect_idx >= len(ghost_domains):
@@ -5337,6 +5335,10 @@ class LBBDController:
             epsilon_stage=self.epsilon_stage,
             condition_set={str(k): v for k, v in (condition_set or {}).items()},
         )
+        try:
+            cut = BendersCut.from_dict(cut.to_dict())
+        except Exception:
+            return False
         if self.cut_manager.has_structured_cut(cut):
             return False
         applied = self.master.add_benders_cut(

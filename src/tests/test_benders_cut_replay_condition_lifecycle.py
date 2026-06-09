@@ -144,6 +144,15 @@ def test_resolver_fails_closed_on_unknown_key():
     assert lits == []
 
 
+def test_resolver_fails_closed_on_malformed_ghost_anchor_key():
+    overlay = _build_overlay()
+    lits, ok = _resolve_condition_lits_from_condition_set(
+        overlay, {"ghost_anchor::(0,0,extra)": 0}
+    )
+    assert ok is False
+    assert lits == []
+
+
 def test_resolver_fails_closed_on_anchor_mismatch():
     overlay = _build_overlay()
     rect_idx = _ghost_rect_idx_for_anchor(overlay, 1, 0)

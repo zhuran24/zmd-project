@@ -47,10 +47,15 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_benders_cut_from_dict_rejects_bool_condition_anchor_index",
             "test_benders_cut_from_dict_rejects_condition_required_power_cut_without_condition_set",
             "test_benders_cut_to_dict_rejects_condition_required_power_cut_without_condition_set",
+            "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key",
+            "test_benders_cut_from_dict_rejects_condition_required_power_cut_metadata_mismatch",
+            "test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mismatch",
             "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
             "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
             "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
             "test_exact_campaign_resume_rejects_condition_required_power_cut_without_condition_set",
+            "test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown_condition_key",
+            "test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mismatch",
             "test_cut_manager_load_rejects_duplicate_exact_safe_key",
             "test_exact_campaign_resume_rejects_duplicate_json_key",
             "test_exact_campaign_resume_rejects_json_nan_constant",
@@ -62,6 +67,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
             "test_pose_bool_replay_alias_collision_fails_closed",
             "test_legacy_benders_cut_alias_collision_fails_closed",
+            "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -531,21 +537,64 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     cut_manager_class = _class_def(cut_manager_tree, "CutManager", path=CUT_MANAGER_PATH)
     load_fn = _method_def(cut_manager_class, "load", path=CUT_MANAGER_PATH)
 
-    for helper_name in ("_strict_int", "_strict_bool", "_strict_int_mapping", "_loads_strict_json_object", "_reject_json_constant"):
+    for helper_name in (
+        "_strict_int",
+        "_strict_bool",
+        "_strict_int_mapping",
+        "_loads_strict_json_object",
+        "_reject_json_constant",
+        "_cut_requires_condition_set",
+        "_parse_ghost_anchor_condition_key",
+        "_validate_certified_condition_shape",
+        "_validate_condition_required_power_metadata",
+        "_validate_certified_condition_requirement",
+    ):
         _function_def(cut_manager_tree, helper_name, path=CUT_MANAGER_PATH)
     strict_int_fn = _function_def(cut_manager_tree, "_strict_int", path=CUT_MANAGER_PATH)
     strict_bool_fn = _function_def(cut_manager_tree, "_strict_bool", path=CUT_MANAGER_PATH)
     strict_json_fn = _function_def(cut_manager_tree, "_loads_strict_json_object", path=CUT_MANAGER_PATH)
+    parse_condition_key_fn = _function_def(
+        cut_manager_tree,
+        "_parse_ghost_anchor_condition_key",
+        path=CUT_MANAGER_PATH,
+    )
+    condition_shape_fn = _function_def(
+        cut_manager_tree,
+        "_validate_certified_condition_shape",
+        path=CUT_MANAGER_PATH,
+    )
+    condition_metadata_fn = _function_def(
+        cut_manager_tree,
+        "_validate_condition_required_power_metadata",
+        path=CUT_MANAGER_PATH,
+    )
     if not (_uses_name(strict_int_fn, "bool") and _raises_value_error(strict_int_fn)):
         errors.append("_strict_int must reject bool-as-int certified replay payloads")
     if not (_uses_name(strict_bool_fn, "bool") and _raises_value_error(strict_bool_fn)):
         errors.append("_strict_bool must reject truthy/falsy non-bool exact_safe payloads")
     if "parse_constant" not in _source_text(CUT_MANAGER_PATH, strict_json_fn):
         errors.append("CutManager strict JSON loader must reject NaN/Infinity constants")
+    parse_condition_key_source = _source_text(CUT_MANAGER_PATH, parse_condition_key_fn)
+    if "ghost_anchor::" not in parse_condition_key_source or "len(parts) != 2" not in parse_condition_key_source:
+        errors.append("condition_set ghost anchors must use a strict ghost_anchor::(x,y) parser")
+    condition_shape_source = _source_text(CUT_MANAGER_PATH, condition_shape_fn)
+    if "_parse_ghost_anchor_condition_key" not in condition_shape_source or "rect_idx" not in condition_shape_source:
+        errors.append("certified condition_set payloads must reject unsupported or malformed condition anchors")
+    condition_metadata_source = _source_text(CUT_MANAGER_PATH, condition_metadata_fn)
+    for needle in (
+        "len(condition_set) != 1",
+        "metadata.ghost_rect_idx",
+        "metadata.ghost_anchor",
+        "_parse_ghost_anchor_condition_key",
+    ):
+        if needle not in condition_metadata_source:
+            errors.append(f"condition-required power cuts must validate {needle}")
     for fn_name, fn in (("BendersCut.from_dict", from_dict_fn), ("BendersCut.to_dict", to_dict_fn)):
         for helper_name in ("_strict_bool", "_strict_int", "_strict_int_mapping"):
             if not _calls_function(fn, helper_name):
                 errors.append(f"{fn_name} must call {helper_name}")
+        if not _calls_function(fn, "_validate_certified_condition_requirement"):
+            errors.append(f"{fn_name} must enforce certified condition requirements")
     if not _calls_function(load_fn, "_loads_strict_json_object"):
         errors.append("CutManager.load must use strict JSON duplicate-key rejection")
 
@@ -562,9 +611,20 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         errors.append("ExactCampaign resume validation must require cut.exact_safe is True, not truthy")
 
     benders_tree = _parse_python(BENDERS_LOOP_PATH)
+    resolve_condition_fn = _function_def(
+        benders_tree,
+        "_resolve_condition_lits_from_condition_set",
+        path=BENDERS_LOOP_PATH,
+    )
+    resolve_condition_source = _source_text(BENDERS_LOOP_PATH, resolve_condition_fn)
+    if "_parse_ghost_anchor_condition_key" not in resolve_condition_source:
+        errors.append("condition_set replay resolver must share the strict ghost_anchor parser")
+
     controller_class = _class_def(benders_tree, "LBBDController", path=BENDERS_LOOP_PATH)
     persisted_fn = _method_def(controller_class, "_add_exact_persisted_nogood", path=BENDERS_LOOP_PATH)
     persisted_source = _source_text(BENDERS_LOOP_PATH, persisted_fn)
+    if "BendersCut.from_dict(cut.to_dict())" not in persisted_source:
+        errors.append("generated certified cuts must round-trip through BendersCut validation before master apply")
     required_order = (
         "self.master.add_benders_cut",
         "self.cut_manager.register_structured_cut",

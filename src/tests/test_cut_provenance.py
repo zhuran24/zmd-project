@@ -4,12 +4,61 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Mapping
 
 from src.models.cut_manager import BendersCut, CutManager
 from src.search.benders_loop import collect_certification_blockers
 from src.search.exact_campaign import ExactCampaign
 
 import pytest
+
+
+def _write_minimal_exact_campaign_artifacts(project_root: Path) -> None:
+    (project_root / "data" / "preprocessed").mkdir(parents=True)
+    (project_root / "rules").mkdir(parents=True)
+    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text(
+        "[]", encoding="utf-8"
+    )
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
+        "{}", encoding="utf-8"
+    )
+    (project_root / "rules" / "canonical_rules.json").write_text("{}", encoding="utf-8")
+
+
+def _condition_required_power_cut_payload(
+    campaign: ExactCampaign,
+    *,
+    condition_set: Mapping[str, int] | None = None,
+    metadata: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    payload: dict[str, object] = {
+        "schema_version": 3,
+        "cut_type": "power_subproblem_infeasible_nogood",
+        "conflict_set": {"machine_001": 0},
+        "iteration": 1,
+        "metadata": dict(
+            metadata
+            or {
+                "kind": "power_subproblem_ghost_conditioned_nogood",
+                "ghost_rect_idx": 0,
+                "ghost_anchor": {"x": 0, "y": 0},
+            }
+        ),
+        "source_mode": "certified_exact",
+        "exact_safe": True,
+        "artifact_hashes": campaign.artifact_hashes,
+        "proof_stage": "power_placement_subproblem",
+        "binding_exhausted": False,
+        "routing_exhausted": False,
+        "proof_summary": {},
+        "created_at": "2026-03-15T00:00:00Z",
+    }
+    if condition_set is not None:
+        payload["condition_set"] = dict(condition_set)
+    return payload
 
 
 def test_certified_exact_rejects_legacy_cut_file(tmp_path: Path) -> None:
@@ -159,6 +208,84 @@ def test_benders_cut_to_dict_rejects_condition_required_power_cut_without_condit
 
     with pytest.raises(ValueError, match="condition_set is required"):
         cut.to_dict()
+
+
+def test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key() -> None:
+    with pytest.raises(ValueError, match="condition_set"):
+        BendersCut.from_dict(
+            {
+                "schema_version": 3,
+                "cut_type": "power_subproblem_infeasible_nogood",
+                "conflict_set": {"machine_001": 0},
+                "iteration": 1,
+                "metadata": {
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 0,
+                    "ghost_anchor": {"x": 0, "y": 0},
+                },
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": {"candidate_placements": "abc"},
+                "proof_stage": "power_placement_subproblem",
+                "binding_exhausted": False,
+                "routing_exhausted": False,
+                "proof_summary": {},
+                "condition_set": {"unknown_condition_kind::(0,0)": 0},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        )
+
+
+def test_benders_cut_from_dict_rejects_condition_required_power_cut_metadata_mismatch() -> None:
+    with pytest.raises(ValueError, match="metadata.ghost_anchor"):
+        BendersCut.from_dict(
+            {
+                "schema_version": 3,
+                "cut_type": "power_subproblem_infeasible_nogood",
+                "conflict_set": {"machine_001": 0},
+                "iteration": 1,
+                "metadata": {
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 0,
+                    "ghost_anchor": {"x": 1, "y": 0},
+                },
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": {"candidate_placements": "abc"},
+                "proof_stage": "power_placement_subproblem",
+                "binding_exhausted": False,
+                "routing_exhausted": False,
+                "proof_summary": {},
+                "condition_set": {"ghost_anchor::(0,0)": 0},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        )
+
+
+def test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mismatch() -> None:
+    with pytest.raises(ValueError, match="metadata.ghost_rect_idx"):
+        BendersCut.from_dict(
+            {
+                "schema_version": 3,
+                "cut_type": "power_subproblem_infeasible_nogood",
+                "conflict_set": {"machine_001": 0},
+                "iteration": 1,
+                "metadata": {
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 1,
+                    "ghost_anchor": {"x": 0, "y": 0},
+                },
+                "source_mode": "certified_exact",
+                "exact_safe": True,
+                "artifact_hashes": {"candidate_placements": "abc"},
+                "proof_stage": "power_placement_subproblem",
+                "binding_exhausted": False,
+                "routing_exhausted": False,
+                "proof_summary": {},
+                "condition_set": {"ghost_anchor::(0,0)": 0},
+                "created_at": "2026-03-15T00:00:00Z",
+            }
+        )
 
 
 def test_collect_certification_blockers_rejects_non_bool_exact_safe_object() -> None:
@@ -328,6 +455,71 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_without_cond
             }
         ],
         proof_summary={"master_status": "UNKNOWN"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
+
+
+def test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown_condition_key(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_unknown_condition_power_cut"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "INFEASIBLE",
+        exact_safe_cuts=[
+            _condition_required_power_cut_payload(
+                campaign,
+                condition_set={"unknown_condition_kind::(0,0)": 0},
+            )
+        ],
+        proof_summary={"master_status": "INFEASIBLE"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=1,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "candidate_invalid_exact_safe_cut:1x1:0"
+
+
+def test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mismatch(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "campaign_condition_metadata_mismatch_power_cut"
+    _write_minimal_exact_campaign_artifacts(project_root)
+
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        "INFEASIBLE",
+        exact_safe_cuts=[
+            _condition_required_power_cut_payload(
+                campaign,
+                condition_set={"ghost_anchor::(0,0)": 0},
+                metadata={
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": 0,
+                    "ghost_anchor": {"x": 1, "y": 0},
+                },
+            )
+        ],
+        proof_summary={"master_status": "INFEASIBLE"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
