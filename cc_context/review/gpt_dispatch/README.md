@@ -51,6 +51,17 @@ python ...\dispatch_gpt_task.py --resume "https://chatgpt.com/g/.../c/<id>"
 
 双信号 + 稳定窗口:①「停止生成」按钮消失(主信号,秒级响应);② 最后一条回复文本长度连续 3 次轮询(30s)不变(兜底,防选择器漂移)。两者同时满足、且 assistant 消息数达到发送前基线 +1,才判完成;轮询 10s 一次。(曾有「继续生成」按钮自动点击逻辑,2026-06-11 owner 裁决移除——现版 ChatGPT 实测不存在该按钮,宽文本匹配反而有误点风险。)
 
+## 第三托底通道:ChatGPT 桌面 App(2026-06-11 打通)
+
+App 是 Electron(Chromium 内核),内部加载的就是 chatgpt.com 网页前端,**DOM 与网页版同构**,dispatch 脚本可直接驱动——不同客户端可能在不同限流池,Edge 通道被静默限时值得切:
+
+```powershell
+& cc_context\review\gpt_dispatch\start_gpt_automation_chrome.ps1 -App     # App 带 CDP 9224 启动
+python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --cdp-url http://localhost:9224 --pack --prompt-file <md>
+```
+
+关键约束:**必须用 `Invoke-CommandInDesktopPackage` 以 MSIX 包身份启动**(start 脚本 -App 已封装)——裸跑 WindowsApps 里的 exe 会因拿不到包上下文而主进程崩溃(弹 "A JavaScript error occurred in the main process");App 不支持开新标签页,脚本自动复用主窗口页面且结束时不关它。完整托底链:脚本@Edge 主实例(9222)→ 插件@Edge(手动)→ 脚本@App(9224)。
+
 ## 网络抖动 / 页面卡死恢复
 
 等待期每拍先做页面活性探测(`document.readyState`);连续 2 拍(~20s)无响应 → **同 URL 新开页面、关掉老页面**(owner 处方;比 reload 可靠——渲染进程挂死时 reload 自己也会卡),换新页面继续等,稳定计数清零。恢复失败(网络还断着)下一拍重试;3 次换页后仍无响应 → attention 退出,`--resume` 可在网络恢复后续等。此路径未经真实网络故障实测(无法按需复现),逻辑保守:恢复失败时退回旧页面继续轮询,不会比不恢复更糟。

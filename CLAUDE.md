@@ -129,6 +129,7 @@ python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --resume "<会话URL>
 ```
 
 - 退出码: 0=交付到手 / 2=完成无附件 / 3=异常(看 attention 截图) / 4=超时 / 5=疑似降级。详见 `cc_context/review/gpt_dispatch/README.md`。
+- **第三托底通道 = ChatGPT 桌面 App** (Electron, DOM 与网页同构, 不同客户端可能不同限流池): `start 脚本 -App` 以 MSIX 包身份带 CDP 9224 启动 (裸跑 exe 会崩), dispatch 加 `--cdp-url http://localhost:9224`。完整托底链: 脚本@Edge(9222) → 插件@Edge(手动) → 脚本@App(9224)。
 - **Pro 静默降级 (owner 经验)**: 不在任何明面标注, 唯一判据 = 真实任务完整生成 <1min。脚本自动刷新重跑一次 (`--downgrade-retries`), 仍快 → exit 5, CC 改走 Claude-in-Chrome 插件通道 (Edge, 已登录) 托底重发。轻量测试传 `--min-gen-seconds 0`。
 - 内建: 附件 404 自动救援 (sandbox 文件回收后让 GPT 重新生成再收)、浏览器 tab 自动回收、非预期状态截图+DOM 现场落盘。
 

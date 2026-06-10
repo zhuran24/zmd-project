@@ -33,7 +33,21 @@ function Find-Exe([string[]]$candidates) {
     $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 }
 
-if (-not $Isolated) {
+if ($App) {
+    $pkg = Get-AppxPackage OpenAI.ChatGPT-Desktop
+    if (-not $pkg) { Write-Host "FATAL: ChatGPT desktop app not installed."; exit 1 }
+    $running = Get-Process ChatGPT -ErrorAction SilentlyContinue
+    if ($running) {
+        Write-Host "ChatGPT app is running without the debug port — closing to restart with it..."
+        $running | ForEach-Object { $null = $_.CloseMainWindow() }
+        Start-Sleep -Seconds 3
+        Get-Process ChatGPT -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 1
+    }
+    Invoke-CommandInDesktopPackage -PackageFamilyName $pkg.PackageFamilyName -AppId "ChatGPT" `
+        -Command (Join-Path $pkg.InstallLocation "app\ChatGPT.exe") `
+        -Args "--remote-debugging-port=$port"
+} elseif (-not $Isolated) {
     $edge = Find-Exe @(
         "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
         "C:\Program Files\Microsoft\Edge\Application\msedge.exe"

@@ -564,6 +564,8 @@ def main() -> int:
     ap.add_argument("--resume", help="existing conversation URL: skip upload/send, just wait+collect")
     ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
     ap.add_argument("--project-url", default=PROJECT_URL)
+    ap.add_argument("--cdp-url", default=CDP_URL,
+                    help="CDP 端点; 浏览器通道默认 9222, ChatGPT 桌面 App 通道传 http://localhost:9224 (先跑 start 脚本 -App)")
     ap.add_argument("--timeout-hours", type=float, default=3.5)
     ap.add_argument("--min-gen-seconds", type=int, default=60,
                     help="生成耗时下限 (秒, 默认 60 — owner 经验: 真实任务 <1min 极大概率被静默限制)。轻量测试传 0 关闭")
@@ -583,11 +585,12 @@ def main() -> int:
 
     with sync_playwright() as p:
         try:
-            ctx, page = attach(p)
+            ctx, page, owns_page = attach(p, args.cdp_url)
         except Exception as e:
             rep.log("attach", "FATAL", error=str(e)[:300],
                     hint="run start_gpt_automation_chrome.ps1 first")
             return 1
+        rep.log("attach", "ok", cdp_url=args.cdp_url, owns_page=owns_page)
         cleanup_stale_tabs(ctx, page, rep)
         try:
             if args.resume:
@@ -672,7 +675,9 @@ def main() -> int:
         finally:
             try:
                 _close_stray_download_tabs(page)
-                if len(page.context.pages) <= 1:
+                if not owns_page:
+                    pass  # App 通道复用主窗口页面, 关了 App 就空了 — 留在原地
+                elif len(page.context.pages) <= 1:
                     # 自己是最后一个 tab: 关掉会把整个浏览器带退、CDP 断 — 留空白页保活
                     page.goto("about:blank")
                 else:
