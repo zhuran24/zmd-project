@@ -4,8 +4,7 @@
 - v22-v28 (CC 时代): 全项目 root copy, 但排除 CC 侧工件 (cc_context/_cc_live_memory/
   补丁包/build 脚本) 与含密钥风险的 scripts/gemini_cross_check*.py。
 - v80 起 (2026-06-10 用户裁决): **除缓存文件外全部入包**。cc_context、_cc_live_memory、
-  补丁包 历史归档、.artifacts、.claude、.githooks、.github 全打。打包前已 grep 确认
-  全树无硬编码 API key (gemini 脚本从 env 读 key), 安全检查通过才允许全打。
+  补丁包 历史归档、.artifacts、.claude、.githooks、.github 全打。
 - 本包性质是 **实现任务委托包** (发 GPT Pro 沙盒做 V80 三件套实现), 不是审查包;
   no-priming 原则只约束审查包, 不约束实现任务包。
 
