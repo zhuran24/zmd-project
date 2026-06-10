@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
-from src.models.master_model import infer_certified_optional_lower_bounds
+from src.models.master_model import POSE_LEVEL_OPTIONAL_TEMPLATES, infer_certified_optional_lower_bounds
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
     terminal_frontier_evidence_violation,
@@ -158,6 +158,8 @@ def iso_to_ts(iso_text: str) -> float:
 def sha256_file(path: Path) -> str:
     if not path.exists():
         raise FileNotFoundError(path)
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f"exact artifact must be a regular file: {path}")
     digest = hashlib.sha256()
     with path.open("rb") as fh:
         while True:
@@ -301,11 +303,45 @@ def _pose_occupied_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[i
     return cells
 
 
+def _is_authorized_exact_pose_optional_solution_entry(
+    *,
+    instance_id: str,
+    entry: Mapping[str, Any],
+    pose: Mapping[str, Any],
+    facility_type: str,
+) -> bool:
+    parts = str(instance_id).split("::", 2)
+    if len(parts) != 3 or parts[0] != "pose_optional":
+        return False
+    optional_facility_type = parts[1]
+    pose_id = parts[2]
+    if optional_facility_type != str(facility_type):
+        return False
+    if optional_facility_type not in POSE_LEVEL_OPTIONAL_TEMPLATES:
+        return False
+    if str(pose.get("pose_id", "")) != pose_id:
+        return False
+    raw_pose_id = entry.get("pose_id")
+    if raw_pose_id is not None and str(raw_pose_id) != pose_id:
+        return False
+    raw_is_mandatory = entry.get("is_mandatory")
+    if raw_is_mandatory is not None and bool(raw_is_mandatory) is not False:
+        return False
+    raw_bound_type = entry.get("bound_type")
+    if raw_bound_type is not None and str(raw_bound_type) != "exact_pose_optional":
+        return False
+    raw_solve_mode = entry.get("solve_mode")
+    if raw_solve_mode is not None and str(raw_solve_mode) != "certified_exact":
+        return False
+    return True
+
+
 def _validate_terminal_solution_against_project(
     *,
     final_result: Mapping[str, Any],
     project_root: Path,
     grid_dimensions: Tuple[int, int],
+    min_side_admissibility: Optional[int] = None,
 ) -> Optional[str]:
     placement_solution = final_result.get("placement_solution")
     if not isinstance(placement_solution, Mapping):
@@ -350,9 +386,17 @@ def _validate_terminal_solution_against_project(
         pool = facility_pools.get(facility_type)
         if pool is None or pose_idx < 0 or pose_idx >= len(pool):
             return "terminal_certified_final_result_solution_pose_invalid"
+        pose = pool[int(pose_idx)]
+        if expected_instance is None and not _is_authorized_exact_pose_optional_solution_entry(
+            instance_id=str(instance_id),
+            entry=entry,
+            pose=pose,
+            facility_type=facility_type,
+        ):
+            return "terminal_certified_final_result_solution_unknown_instance"
         try:
             cells = _pose_occupied_cells(
-                pool[int(pose_idx)],
+                pose,
                 field=f"candidate_placements.{facility_type}[{int(pose_idx)}]",
             )
         except Exception:
@@ -376,19 +420,125 @@ def _validate_terminal_solution_against_project(
     if ghost_w <= 0 or ghost_h <= 0 or ghost_w > grid_w or ghost_h > grid_h:
         return "terminal_certified_final_result_ghost_rect_invalid"
 
-    for anchor_x in range(0, grid_w - int(ghost_w) + 1):
-        for anchor_y in range(0, grid_h - int(ghost_h) + 1):
-            blocked = False
-            for x in range(anchor_x, anchor_x + int(ghost_w)):
-                for y in range(anchor_y, anchor_y + int(ghost_h)):
-                    if (x, y) in occupied_cells:
-                        blocked = True
-                        break
-                if blocked:
-                    break
-            if not blocked:
-                return None
-    return "terminal_certified_final_result_empty_rect_not_witnessed"
+    occupancy_prefix = _build_occupancy_prefix(
+        occupied_cells=occupied_cells,
+        grid_w=grid_w,
+        grid_h=grid_h,
+    )
+    if not _empty_rect_exists(
+        occupancy_prefix=occupancy_prefix,
+        grid_w=grid_w,
+        grid_h=grid_h,
+        rect_w=int(ghost_w),
+        rect_h=int(ghost_h),
+    ):
+        return "terminal_certified_final_result_empty_rect_not_witnessed"
+
+    try:
+        admissible_min_side = 1 if min_side_admissibility is None else _strict_resume_int(
+            min_side_admissibility,
+            "project.min_side_admissibility",
+        )
+    except Exception:
+        return "terminal_certified_final_result_solution_geometry_invalid"
+    if admissible_min_side <= 0:
+        return "terminal_certified_final_result_solution_geometry_invalid"
+    best_empty_objective = _best_empty_rect_objective(
+        occupancy_prefix=occupancy_prefix,
+        grid_w=grid_w,
+        grid_h=grid_h,
+        min_side_admissibility=int(admissible_min_side),
+    )
+    claimed_objective = (int(ghost_w) * int(ghost_h), min(int(ghost_w), int(ghost_h)))
+    if best_empty_objective > claimed_objective:
+        return "terminal_certified_final_result_layout_has_better_empty_rect"
+    return None
+
+
+def _build_occupancy_prefix(
+    *,
+    occupied_cells: set[tuple[int, int]],
+    grid_w: int,
+    grid_h: int,
+) -> list[list[int]]:
+    prefix = [[0 for _ in range(int(grid_h) + 1)] for _ in range(int(grid_w) + 1)]
+    for x in range(int(grid_w)):
+        running = 0
+        for y in range(int(grid_h)):
+            running += 1 if (x, y) in occupied_cells else 0
+            prefix[x + 1][y + 1] = prefix[x][y + 1] + running
+    return prefix
+
+
+def _occupied_count_in_rect(
+    *,
+    occupancy_prefix: Sequence[Sequence[int]],
+    anchor_x: int,
+    anchor_y: int,
+    rect_w: int,
+    rect_h: int,
+) -> int:
+    x0 = int(anchor_x)
+    y0 = int(anchor_y)
+    x1 = x0 + int(rect_w)
+    y1 = y0 + int(rect_h)
+    return int(
+        occupancy_prefix[x1][y1]
+        - occupancy_prefix[x0][y1]
+        - occupancy_prefix[x1][y0]
+        + occupancy_prefix[x0][y0]
+    )
+
+
+def _empty_rect_exists(
+    *,
+    occupancy_prefix: Sequence[Sequence[int]],
+    grid_w: int,
+    grid_h: int,
+    rect_w: int,
+    rect_h: int,
+) -> bool:
+    if rect_w <= 0 or rect_h <= 0 or rect_w > grid_w or rect_h > grid_h:
+        return False
+    for anchor_x in range(0, int(grid_w) - int(rect_w) + 1):
+        for anchor_y in range(0, int(grid_h) - int(rect_h) + 1):
+            if (
+                _occupied_count_in_rect(
+                    occupancy_prefix=occupancy_prefix,
+                    anchor_x=anchor_x,
+                    anchor_y=anchor_y,
+                    rect_w=int(rect_w),
+                    rect_h=int(rect_h),
+                )
+                == 0
+            ):
+                return True
+    return False
+
+
+def _best_empty_rect_objective(
+    *,
+    occupancy_prefix: Sequence[Sequence[int]],
+    grid_w: int,
+    grid_h: int,
+    min_side_admissibility: int,
+) -> Tuple[int, int]:
+    best = (0, 0)
+    min_side = int(min_side_admissibility)
+    for rect_w in range(min_side, int(grid_w) + 1):
+        for rect_h in range(min_side, int(grid_h) + 1):
+            objective = (int(rect_w) * int(rect_h), min(int(rect_w), int(rect_h)))
+            if objective <= best:
+                continue
+            if _empty_rect_exists(
+                occupancy_prefix=occupancy_prefix,
+                grid_w=int(grid_w),
+                grid_h=int(grid_h),
+                rect_w=int(rect_w),
+                rect_h=int(rect_h),
+            ):
+                best = objective
+    return best
 
 
 def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[int]:
@@ -782,6 +932,7 @@ def _validate_resume_state(
                 final_result=final_result_for_project,
                 project_root=Path(project_root),
                 grid_dimensions=grid_dimensions,
+                min_side_admissibility=min_side_admissibility,
             )
             if solution_reason is not None:
                 return solution_reason
@@ -954,6 +1105,7 @@ def terminal_certified_final_result_violation_for_project(
             final_result=final_result,
             project_root=resolved_project_root,
             grid_dimensions=grid_dimensions,
+            min_side_admissibility=min_side_admissibility,
         )
     return None
 
