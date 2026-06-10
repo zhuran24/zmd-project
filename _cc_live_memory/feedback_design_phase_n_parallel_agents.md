@@ -47,7 +47,7 @@ N=2 默认 slant: 路 1 (correctness-paranoid) + 路 4 (integration-first).
 
 实操注意:
 - spawn 必走**单 message multi Agent tool call** parallel (per CLAUDE.md "无依赖 tool call 并行")
-- `model="opus"`, `subagent_type="general-purpose"` (default)
+- model 按 [[subagent-model-by-weight]] 重量定 — 设计探索属重活, opus 仍是默认; paradigm 级特别重要可上 fable。`subagent_type="general-purpose"` (default)
 - `run_in_background=true` (user 期间能 idle 或干别的, 不 block chat)
 - 子代理 0 history, prompt self-contained:
   - 项目背景 (Endfield + 当前 phase)

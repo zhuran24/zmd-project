@@ -27,7 +27,8 @@
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 + harness 重写 frontmatter 保 name.
 - [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段 N 路子代理各带不同 slant, main 当 merger; 补 RLHF bias. (Workflow 裁决后仅"确实必要"时用)
-- [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活直接 spawn opus background, 不问 user.
+- [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活直接 spawn background, 不问 user.
+- [子代理模型按重量派](feedback_subagent_model_by_weight.md) — 轻活 sonnet / 重活 opus / 特别重要 fable; 按具体难度不按任务类别; 取代旧"默认 opus".
 - [Phase boundary 两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 会往大扩或往小缩; **User 是唯一可信 phase boundary auditor**.
 - [paradigm Phase 0 cheap gate workflow](feedback_paradigm_phase0_cheap_gate.md) — 新 paradigm 实施前必走 Phase 0 (≤1h cheap gate) 验前提, GO 后再投 Phase 1.
 - [plan doc 不是 TODO list, 必含战略层](feedback_plan_doc_strategic_layers.md) — plan doc 必含战略/数学原理/paradigm/历史/GO 标准/依赖图/风险/回滚.

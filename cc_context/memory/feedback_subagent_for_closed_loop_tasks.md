@@ -9,7 +9,7 @@ metadata:
 
 ## 规则
 
-当任务符合**三个条件全满足**时, 直接 spawn sub-agent (opus 默认),
+当任务符合**三个条件全满足**时, 直接 spawn sub-agent (模型按 [[subagent-model-by-weight]] 重量定),
 **不在主对话里自己做, 也不问用户是否该 spawn**:
 
 1. **独立闭环** — read + edit + verify 一个完整 loop, 不需主对话当前 context
@@ -47,7 +47,7 @@ spawn agent 不心疼算力. 主对话省的是用户 attention + context 不是
 - 决策清吗? (中途会冒出 user-facing 抉择吗?)
 - done 可验? (能给 agent 一个 objective done 标准吗?)
 
-三个全 yes → spawn agent (background, opus). 主对话给用户 1 句话说 spawn 了
+三个全 yes → spawn agent (background, 模型按重量定). 主对话给用户 1 句话说 spawn 了
 什么 + 等 notification, 不轮询.
 
 不再问 user "要不要 spawn agent" — 跟 [[lazy-mode]] 同 root: 心里有答案的
