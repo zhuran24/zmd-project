@@ -1,0 +1,414 @@
+"""GPT Pro 外发全流程自动化: 上传包 + 发 prompt + 等完成 + 收交付。
+
+用法:
+    # 前置: 专用 Chrome 已起 (start_gpt_automation_chrome.ps1, 首次需手动登录一次)
+    python dispatch_gpt_task.py --pack --prompt-file prompt.md            # 自动打全项目单包再发
+    python dispatch_gpt_task.py --package X.zip [--package Y.zip] --prompt-file prompt.md
+    python dispatch_gpt_task.py --resume https://chatgpt.com/.../c/<id>   # 重连续等/补收
+
+输出 (--out-dir, 默认 补丁包/gpt_deliveries/<时间戳>/):
+    final_reply.md     GPT 最后回复全文
+    <附件原名>          回复里的全部文件附件
+    run_log.jsonl      各阶段时间戳/状态 (心跳每分钟一条, 可 tail 监控)
+    attention_*.png/html  非预期状态的现场截图 + DOM dump (托底用)
+
+退出码: 0=交付到手  2=完成但无附件(看 final_reply.md)  3=异常需托底  4=超时  1=环境错误
+
+完成检测 (双信号 + 稳定窗口):
+    信号1 = 停止生成按钮消失; 信号2 = 最后一条回复文本长度连续 STABLE_TICKS 次轮询不变。
+    两信号同时满足才判完成。「继续生成」按钮出现会自动点击。
+"""
+from __future__ import annotations
+
+import argparse
+import base64
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+import zipfile
+from datetime import datetime
+from pathlib import Path
+
+from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+
+CDP_URL = "http://localhost:9222"
+PROJECT_URL = "https://chatgpt.com/g/g-p-69b585dfc29c819186b93a166f5266a5-zhong-mo-di/project"
+CONV_URL_RE = re.compile(r"/c/[0-9a-f-]{10,}")
+
+POLL_SECONDS = 10
+STABLE_TICKS = 3
+HEARTBEAT_TICKS = 6  # 每 ~1 分钟一条心跳日志
+
+SEL = {
+    "composer": "#prompt-textarea",
+    "send_btn": 'button[data-testid="send-button"]',
+    "stop_btn": 'button[data-testid="stop-button"]',
+    "assistant_msg": 'div[data-message-author-role="assistant"]',
+    "file_input": 'input[type="file"]',
+    "model_btn_texts": ["专业", "Pro", "进阶"],
+    "continue_texts": ["继续生成", "Continue generating"],
+    "error_texts": ["出错了", "Something went wrong", "网络错误"],
+}
+FILE_EXT_RE = re.compile(
+    r"\.(zip|7z|tar|gz|tgz|md|py|json|patch|diff|txt|csv|log|whl)(\?|$)", re.I
+)
+
+
+class Reporter:
+    def __init__(self, out_dir: Path):
+        self.out_dir = out_dir
+        out_dir.mkdir(parents=True, exist_ok=True)
+        self.log_path = out_dir / "run_log.jsonl"
+        self.attention_count = 0
+
+    def log(self, stage: str, status: str, **kw):
+        entry = {"ts": datetime.now().isoformat(timespec="seconds"), "stage": stage, "status": status, **kw}
+        with self.log_path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        print(f"[{entry['ts']}] {stage}: {status} {kw if kw else ''}", flush=True)
+
+    def attention(self, page, stage: str, reason: str):
+        """非预期状态: 截图 + DOM dump + 日志, 供托底接手。不抛异常。"""
+        self.attention_count += 1
+        tag = f"attention_{self.attention_count:02d}_{stage}"
+        shot, dump = None, None
+        try:
+            shot = str(self.out_dir / f"{tag}.png")
+            page.screenshot(path=shot, full_page=False)
+        except Exception:
+            shot = None
+        try:
+            dump = str(self.out_dir / f"{tag}.html")
+            Path(dump).write_text(page.content(), encoding="utf-8")
+        except Exception:
+            dump = None
+        self.log(stage, "NEEDS_ATTENTION", reason=reason, screenshot=shot, dom_dump=dump, url=page.url)
+
+
+def attach(p):
+    browser = p.chromium.connect_over_cdp(CDP_URL)
+    if not browser.contexts:
+        raise RuntimeError("automation Chrome has no browser context")
+    ctx = browser.contexts[0]
+    page = ctx.new_page()
+    return ctx, page
+
+
+def assert_logged_in(page, rep: Reporter) -> bool:
+    if "auth" in page.url or "login" in page.url:
+        rep.attention(page, "login", "redirected to login page — log in once in the automation Chrome")
+        return False
+    return True
+
+
+def verify_model(page, rep: Reporter):
+    for text in SEL["model_btn_texts"]:
+        try:
+            if page.locator(f'button:has-text("{text}")').first.is_visible(timeout=2000):
+                rep.log("model", "ok", matched=text)
+                return
+        except Exception:
+            continue
+    rep.attention(page, "model", "model selector text does not look like Pro — verify manually; proceeding anyway")
+
+
+def upload_files(page, paths: list[Path], rep: Reporter):
+    inputs = page.locator(SEL["file_input"])
+    n = inputs.count()
+    if n == 0:
+        raise RuntimeError("no file input found on page")
+    str_paths = [str(p) for p in paths]
+    attached = False
+    for i in range(n):
+        try:
+            inputs.nth(i).set_input_files(str_paths)
+        except Exception:
+            continue
+        try:
+            page.locator(f'text="{paths[0].name}"').first.wait_for(state="visible", timeout=15000)
+            attached = True
+            break
+        except PWTimeout:
+            continue
+    if not attached:
+        raise RuntimeError("set_input_files on every candidate input, attachment card never appeared")
+    rep.log("upload", "attached", files=[p.name for p in paths], input_index=i)
+
+    deadline = time.time() + 600
+    while time.time() < deadline:
+        try:
+            if page.locator(f'{SEL["send_btn"]}:not([disabled])').count() > 0:
+                time.sleep(3)
+                rep.log("upload", "ready")
+                return
+        except Exception:
+            pass
+        time.sleep(2)
+    raise RuntimeError("upload did not become ready within 10 min")
+
+
+def fill_and_send(page, prompt_text: str, rep: Reporter) -> str:
+    page.locator(SEL["composer"]).click()
+    page.keyboard.insert_text(prompt_text)
+    time.sleep(1)
+    rep.log("prompt", "filled", chars=len(prompt_text))
+    page.locator(SEL["send_btn"]).click()
+    try:
+        page.wait_for_url(CONV_URL_RE, timeout=60000)
+    except PWTimeout:
+        rep.attention(page, "send", "URL did not switch to a conversation within 60s")
+    conv_url = page.url
+    rep.log("send", "sent", conversation_url=conv_url)
+    return conv_url
+
+
+def _stop_visible(page) -> bool:
+    try:
+        if page.locator(SEL["stop_btn"]).count() > 0:
+            return True
+        for label in ("停止", "Stop streaming", "Stop generating"):
+            if page.locator(f'button[aria-label*="{label}"]').count() > 0:
+                return True
+    except Exception:
+        pass
+    return False
+
+
+def _last_assistant_text(page) -> str:
+    try:
+        msgs = page.locator(SEL["assistant_msg"])
+        if msgs.count() == 0:
+            return ""
+        return msgs.last.inner_text(timeout=5000)
+    except Exception:
+        return ""
+
+
+def wait_done(page, rep: Reporter, timeout_hours: float) -> str:
+    """返回 'done' | 'timeout' | 'attention'"""
+    deadline = time.time() + timeout_hours * 3600
+    start = time.time()
+    stable = 0
+    last_len = -1
+    tick = 0
+    while time.time() < deadline:
+        tick += 1
+        if not assert_logged_in(page, rep):
+            return "attention"
+        for t in SEL["continue_texts"]:
+            try:
+                btn = page.locator(f'button:has-text("{t}")')
+                if btn.count() > 0 and btn.first.is_visible():
+                    btn.first.click()
+                    rep.log("waiting", "clicked_continue")
+                    stable, last_len = 0, -1
+            except Exception:
+                pass
+        generating = _stop_visible(page)
+        text = _last_assistant_text(page)
+        cur_len = len(text)
+        has_turn = page.locator(SEL["assistant_msg"]).count() > 0
+        if not generating and has_turn and cur_len == last_len:
+            stable += 1
+            if stable >= STABLE_TICKS:
+                rep.log("waiting", "done", elapsed_s=int(time.time() - start), reply_chars=cur_len)
+                return "done"
+        else:
+            stable = 0
+        if not generating and cur_len == 0 and time.time() - start > 300:
+            for t in SEL["error_texts"]:
+                if page.locator(f'text="{t}"').count() > 0:
+                    rep.attention(page, "waiting", f"error banner detected: {t}")
+                    return "attention"
+        last_len = cur_len
+        if tick % HEARTBEAT_TICKS == 0:
+            rep.log("waiting", "heartbeat", elapsed_s=int(time.time() - start),
+                    generating=generating, reply_chars=cur_len)
+        time.sleep(POLL_SECONDS)
+    rep.attention(page, "waiting", f"timed out after {timeout_hours}h")
+    return "timeout"
+
+
+def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None:
+    try:
+        with page.expect_download(timeout=60000) as dl_info:
+            link.click()
+        dl = dl_info.value
+        target = out_dir / dl.suggested_filename
+        dl.save_as(str(target))
+        return target
+    except Exception as e:
+        rep.log("collect", "click_download_failed", error=str(e)[:200])
+        return None
+
+
+def _download_via_fetch(page, href: str, name: str, out_dir: Path, rep: Reporter) -> Path | None:
+    try:
+        b64 = page.evaluate(
+            """async (url) => {
+                const r = await fetch(url, {credentials: 'include'});
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const buf = await r.arrayBuffer();
+                let bin = '';
+                const bytes = new Uint8Array(buf);
+                for (let i = 0; i < bytes.length; i += 0x8000)
+                    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+                return btoa(bin);
+            }""",
+            href,
+        )
+        target = out_dir / name
+        target.write_bytes(base64.b64decode(b64))
+        return target
+    except Exception as e:
+        rep.log("collect", "fetch_download_failed", href=href[:120], error=str(e)[:200])
+        return None
+
+
+def collect(page, out_dir: Path, rep: Reporter) -> int:
+    text = _last_assistant_text(page)
+    (out_dir / "final_reply.md").write_text(text, encoding="utf-8")
+    rep.log("collect", "reply_saved", chars=len(text))
+
+    msgs = page.locator(SEL["assistant_msg"])
+    if msgs.count() == 0:
+        rep.attention(page, "collect", "no assistant message found")
+        return 0
+    last = msgs.last
+    candidates = []
+    links = last.locator("a[href]")
+    for i in range(links.count()):
+        link = links.nth(i)
+        try:
+            href = link.get_attribute("href") or ""
+            label = (link.inner_text() or "").strip()
+        except Exception:
+            continue
+        if FILE_EXT_RE.search(href) or FILE_EXT_RE.search(label) or "sandbox" in href:
+            candidates.append((link, href, label))
+    # sandbox 文件常渲染为 <button>name.zip</button> (behavior-btn), 没有 href
+    buttons = last.locator("button")
+    for i in range(buttons.count()):
+        btn = buttons.nth(i)
+        try:
+            label = (btn.inner_text() or "").strip()
+        except Exception:
+            continue
+        if FILE_EXT_RE.search(label):
+            candidates.append((btn, "", label))
+    rep.log("collect", "file_links_found", count=len(candidates),
+            labels=[c[2][:60] for c in candidates])
+
+    got = 0
+    for link, href, label in candidates:
+        target = _download_via_click(page, link, out_dir, rep)
+        if target is None and href.startswith("http"):
+            name = label if FILE_EXT_RE.search(label) else f"attachment_{got + 1}"
+            target = _download_via_fetch(page, href, name, out_dir, rep)
+        if target is None:
+            rep.attention(page, "collect", f"could not download attachment: {label or href[:80]}")
+            continue
+        info = {"file": target.name, "bytes": target.stat().st_size}
+        if target.suffix == ".zip":
+            info["zip_ok"] = zipfile.is_zipfile(target)
+            if info["zip_ok"]:
+                with zipfile.ZipFile(target) as zf:
+                    info["zip_entries"] = len(zf.namelist())
+        rep.log("collect", "attachment_saved", **info)
+        got += 1
+    return got
+
+
+def pack_repo(repo_root: Path, rep: Reporter) -> Path:
+    """跑全项目单包构建脚本, 返回产出 zip 路径。"""
+    builder = repo_root / "cc_context" / "review" / "build_v80_single_win.py"
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(builder)],
+        capture_output=True, text=True, encoding="utf-8", errors="replace", env=env,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(f"pack failed: {proc.stderr[-500:]}")
+    pkg = sha = None
+    for line in proc.stdout.splitlines():
+        if line.startswith("package: "):
+            pkg = Path(line.split("package: ", 1)[1].strip())
+        elif line.startswith("sha256: "):
+            sha = line.split("sha256: ", 1)[1].strip()
+    if pkg is None or not pkg.is_file():
+        raise RuntimeError(f"pack output not found in builder stdout: {proc.stdout[-300:]}")
+    rep.log("pack", "built", package=str(pkg), sha256=sha,
+            size_mb=round(pkg.stat().st_size / 1024 / 1024, 1))
+    return pkg
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pack", action="store_true", help="build the full-project single zip first and upload it")
+    ap.add_argument("--package", action="append", default=[], help="zip to upload; repeatable")
+    ap.add_argument("--prompt-file", help="markdown file with the prompt text")
+    ap.add_argument("--resume", help="existing conversation URL: skip upload/send, just wait+collect")
+    ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
+    ap.add_argument("--project-url", default=PROJECT_URL)
+    ap.add_argument("--timeout-hours", type=float, default=3.5)
+    args = ap.parse_args()
+
+    if not args.resume and not ((args.package or args.pack) and args.prompt_file):
+        ap.error("either --resume, or --prompt-file plus --pack/--package")
+
+    repo_root = Path(__file__).resolve().parents[3]
+    out_dir = Path(args.out_dir) if args.out_dir else (
+        repo_root / "补丁包" / "gpt_deliveries" / datetime.now().strftime("%Y%m%d_%H%M%S")
+    )
+    rep = Reporter(out_dir)
+    rep.log("init", "start", mode="resume" if args.resume else "dispatch", out_dir=str(out_dir))
+
+    with sync_playwright() as p:
+        try:
+            ctx, page = attach(p)
+        except Exception as e:
+            rep.log("attach", "FATAL", error=str(e)[:300],
+                    hint="run start_gpt_automation_chrome.ps1 first")
+            return 1
+        try:
+            if args.resume:
+                page.goto(args.resume, wait_until="domcontentloaded")
+                page.wait_for_timeout(5000)
+                if not assert_logged_in(page, rep):
+                    return 3
+            else:
+                packages = [Path(x).resolve() for x in args.package]
+                for pkg in packages:
+                    if not pkg.is_file():
+                        rep.log("init", "FATAL", error=f"package not found: {pkg}")
+                        return 1
+                if args.pack:
+                    packages.insert(0, pack_repo(repo_root, rep))
+                prompt_text = Path(args.prompt_file).read_text(encoding="utf-8")
+                page.goto(args.project_url, wait_until="domcontentloaded")
+                page.wait_for_timeout(3000)
+                if not assert_logged_in(page, rep):
+                    return 3
+                page.locator(SEL["composer"]).wait_for(state="visible", timeout=30000)
+                verify_model(page, rep)
+                upload_files(page, packages, rep)
+                fill_and_send(page, prompt_text, rep)
+
+            status = wait_done(page, rep, args.timeout_hours)
+            if status == "timeout":
+                return 4
+            if status == "attention":
+                return 3
+            got = collect(page, out_dir, rep)
+            rep.log("finish", "ok" if got else "no_attachments", attachments=got)
+            return 0 if got else 2
+        except Exception as e:
+            rep.attention(page, "fatal", f"unhandled: {e}")
+            return 3
+
+
+if __name__ == "__main__":
+    sys.exit(main())
