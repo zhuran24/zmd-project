@@ -25,9 +25,11 @@ metadata:
 > **当前轮次状态 (每轮收尾更新此行)**: V81 修复轮已落地 (外审报告 `补丁包/gpt_deliveries/20260611_013112/V81_REVIEW.md`; F-01 partial precheck 当 INFEASIBLE + F-02 release 自称 CERTIFIED, 双双 probe 复现后修复; 5 新测试; 锚推 `v81_partial_precheck_and_release_claim_sealing` 七处全套; 全量 2793 passed 基线一致; preflight 20/20)。**clean 连击 = 0**。V82 审查中 (dispatch 02:19 发出, 包 sha `4d90b200…`, run_log 在 `补丁包/gpt_deliveries/20260611_021946/`)。附件抓取脚本 owner 确认已修复 (V81 时抓不到 zip/patch 链接的形态问题), V83+ prompt 恢复正常附件交付措辞, 不必再要求正文自包含。
 > **纪律不放松**: 夜间轮与白天同标准。每轮收尾: 更新本块状态行 + 双镜像同步 (`cc_context/memory/` copy) + commit。
 
-## 工具上线 stamp (2026-06-11) — GPT Pro 外发全流程自动化脚本验收通过
+## 工具上线 stamp (2026-06-11, 当晚定版) — GPT Pro 外发全流程自动化脚本验收通过
 
-> `cc_context/review/gpt_dispatch/dispatch_gpt_task.py` (Playwright CDP attach 专用自动化 Chrome, 9222): **--pack 打包→上传→发送→双信号等完成→收附件全链路实测通过** (含 40MB 包上传 51s、附件三种渲染形态、404 自动救援让 GPT 重新生成 `rescues:1 exit:0`)。用法/退出码/降级处置见 CLAUDE.md runbook 段 + gpt_dispatch/README.md。**关键经验**: ① Pro 静默降级无任何明面标注 (model-slug 照写 pro), 唯一判据 = 真实任务生成 <1min, 处置 = 刷新重跑→换插件通道 (插件浏览器是 Edge 且已登录, CC 直接托底); ② sandbox 附件几分钟就回收 (404), 完成后必须立即收, 收不到走救援追问; ③ ChatGPT 附件渲染至少三形态 (a[href]/无 href 的 decorated-link/button), decorated-link 会弹「外部网站」确认框且下载发生在新 tab, 捕获用 CDP Browser.setDownloadBehavior 浏览器级; ④ 脚本开的 tab 必须回收 (启动清扫+结束自关+保活逻辑), 不然浏览器卡死。
+> `cc_context/review/gpt_dispatch/dispatch_gpt_task.py`: **--pack 打包→上传→发送→双信号等完成→收附件全链路实测通过** (40MB 包上传 51s、404 自动救援 `rescues:1 exit:0`、主实例 Edge 复测 exit 0、V81 三附件补收 exit 0)。用法/退出码/降级处置见 CLAUDE.md runbook 段 + gpt_dispatch/README.md。
+> **通道拓扑 (owner 裁决定版)**: 首选 = **用户日常 Edge 主实例** (9222, 不搞独立 profile, 已登录零配置; start 脚本在 Edge 没带调试端口时会**温和重启用户 Edge**——执行前注意是否正用着, Edge 每次重启后要重跑 start)。**三层托底链**: 脚本@Edge(9222) → 插件@Edge(手动, CC 操作) → 脚本@ChatGPT桌面App(9224, Electron 与网页 DOM 同构, `start -App` 以 MSIX 包身份启动——裸跑 exe 主进程崩弹 Error 框; dispatch 加 `--cdp-url`; 不同客户端可能不同限流池)。
+> **关键经验**: ① Pro 静默降级无任何明面标注 (model-slug 照写 pro 不可信), 唯一判据 = 真实任务生成 <1min; 脚本阶梯 = 刷新重跑一次→exit 5→CC 切插件通道; ② sandbox 附件几分钟就回收 (404), 完成后立即收, 收不到走救援追问让 GPT 重新生成; ③ **附件识别按结构 class (behavior-btn/decorated-link), 不能只靠扩展名匹配锚文本**——锚文本常是中文描述, V81 实测扩展名过滤 3 漏 2 (恰好漏完整包), 已修; 落盘名取 CDP downloadWillBegin 的 suggestedFilename; ④ tab 回收: 主实例上只清 /mnt/data 残留页, 绝不动用户自己的 chatgpt 标签; ⑤ 页面卡死恢复 (网络抖动): 连续 ~20s 无响应 → 同 URL 新开页关旧页 (reload 在渲染挂死时自己也卡), 3 次不行 attention; ⑥ 「继续生成」自动点击已移除 (现版 ChatGPT 无此按钮, 宽文本匹配有误点风险); ⑦ Edge 下载记录里 GUID 名+「已删除」条目是正常痕迹 (allowAndName 模式落盘 GUID 名后脚本改真名)。
 
 ## 最新状态 (2026-06-11) — V80 已交付并落地: 范式从黑名单枚举翻转为 deny-unknown 封闭白名单
 
