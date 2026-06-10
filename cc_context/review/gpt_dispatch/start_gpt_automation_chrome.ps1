@@ -1,15 +1,16 @@
-# 启动 GPT 外发自动化专用浏览器 (独立 profile + CDP 9222)。
-# 已在跑则直接报告就绪。首次使用需要在弹出的窗口里手动登录 chatgpt.com 一次,
-# 之后 cookie 长期有效, dispatch_gpt_task.py 复用这个实例。
-# Chromium 系浏览器都支持 CDP: -Browser edge 用 Edge (本机自带), 默认 chrome。
-# 注意 Edge/Chrome 各用各的 profile 目录, 切换浏览器要重新登录一次。
-param([ValidateSet("chrome", "edge")][string]$Browser = "chrome")
+# 让 dispatch 脚本可连的浏览器就绪 (CDP 9222)。
+# 默认 = 用户日常 Edge 主实例 (2026-06-11 owner 裁决: 不搞独立 profile, 已登录零配置)。
+#   Edge 已带端口在跑 → 直接报就绪;
+#   Edge 在跑但没带端口 → 温和关窗 (等同点 X, 会话可恢复) → 带 9222 重启并恢复标签;
+#   Edge 没在跑 → 直接带端口启动。
+# -Isolated 切回独立 profile 模式 (chrome/edge 二选一, 首次需手动登录) 备用。
+
+param(
+    [switch]$Isolated,
+    [ValidateSet("chrome", "edge")][string]$Browser = "edge"
+)
 
 $port = 9222
-$profileDir = "C:\Users\22957\.zmd_gpt_automation_profile_$Browser"
-if ($Browser -eq "chrome" -and -not (Test-Path $profileDir) -and (Test-Path "C:\Users\22957\.zmd_gpt_automation_profile")) {
-    $profileDir = "C:\Users\22957\.zmd_gpt_automation_profile"  # 沿用首版 chrome profile (已登录)
-}
 
 function Test-Cdp {
     try {
@@ -19,48 +20,73 @@ function Test-Cdp {
 }
 
 if (Test-Cdp) {
-    Write-Host "CDP already up on port $port — automation Chrome is ready."
+    Write-Host "CDP already up on port $port — browser is ready."
     exit 0
 }
 
-$candidates = if ($Browser -eq "edge") {
-    @(
+function Find-Exe([string[]]$candidates) {
+    $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+
+if (-not $Isolated) {
+    $edge = Find-Exe @(
         "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
         "C:\Program Files\Microsoft\Edge\Application\msedge.exe"
     )
+    if (-not $edge) { Write-Host "FATAL: msedge.exe not found."; exit 1 }
+
+    $running = Get-Process msedge -ErrorAction SilentlyContinue
+    if ($running) {
+        Write-Host "Edge is running without the debug port — closing windows gracefully to restart with it..."
+        $running | ForEach-Object { $null = $_.CloseMainWindow() }
+        $deadline = (Get-Date).AddSeconds(15)
+        while ((Get-Date) -lt $deadline -and (Get-Process msedge -ErrorAction SilentlyContinue)) {
+            Start-Sleep -Milliseconds 500
+        }
+        # Edge 的「启动加速」后台常驻进程没有主窗口, graceful 关不掉 — 强制清掉
+        Get-Process msedge -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 1
+    }
+    Start-Process $edge -ArgumentList "--remote-debugging-port=$port", "--restore-last-session"
 } else {
-    @(
-        "C:\Program Files\Google\Chrome\Application\chrome.exe",
-        "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
-        "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe"
+    $profileDir = "C:\Users\22957\.zmd_gpt_automation_profile_$Browser"
+    if ($Browser -eq "chrome" -and -not (Test-Path $profileDir) -and (Test-Path "C:\Users\22957\.zmd_gpt_automation_profile")) {
+        $profileDir = "C:\Users\22957\.zmd_gpt_automation_profile"
+    }
+    $candidates = if ($Browser -eq "edge") {
+        @(
+            "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+            "C:\Program Files\Microsoft\Edge\Application\msedge.exe"
+        )
+    } else {
+        @(
+            "C:\Program Files\Google\Chrome\Application\chrome.exe",
+            "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+            "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe"
+        )
+    }
+    $exe = Find-Exe $candidates
+    if (-not $exe) { Write-Host "FATAL: $Browser executable not found."; exit 1 }
+    $firstRun = -not (Test-Path $profileDir)
+    Start-Process $exe -ArgumentList @(
+        "--remote-debugging-port=$port",
+        "--user-data-dir=$profileDir",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "https://chatgpt.com"
     )
+    if ($firstRun) {
+        Write-Host "FIRST RUN (isolated profile): log in to chatgpt.com manually once in the new window."
+    }
 }
-$chrome = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-
-if (-not $chrome) {
-    Write-Host "FATAL: $Browser executable not found in standard locations."
-    exit 1
-}
-
-$firstRun = -not (Test-Path $profileDir)
-Start-Process $chrome -ArgumentList @(
-    "--remote-debugging-port=$port",
-    "--user-data-dir=$profileDir",
-    "--no-first-run",
-    "--no-default-browser-check",
-    "https://chatgpt.com"
-)
 
 $deadline = (Get-Date).AddSeconds(20)
 while ((Get-Date) -lt $deadline) {
     if (Test-Cdp) {
-        Write-Host "Automation Chrome started, CDP up on port $port."
-        if ($firstRun) {
-            Write-Host "FIRST RUN: log in to chatgpt.com manually in the new window once; the session persists afterwards."
-        }
+        Write-Host "Browser ready, CDP up on port $port."
         exit 0
     }
     Start-Sleep -Milliseconds 500
 }
-Write-Host "FATAL: Chrome started but CDP port $port did not come up."
+Write-Host "FATAL: browser started but CDP port $port did not come up."
 exit 1

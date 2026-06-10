@@ -40,5 +40,5 @@ metadata:
 - 重组后跑全套 pytest 验证 import 路径都对, 不能 break 现有测试
 
 **链**:
-- [[2026-05-15-ram-session-misdirected]] — 这次 session 跑偏的反思
+- 2026-05-15-ram-session-misdirected — 这次 session 跑偏的反思
 - [[clarity-over-brevity]] — 沟通清晰原则的姐妹条目

@@ -59,7 +59,6 @@ from src.search.exact_campaign import (
     ExactCampaign,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     _load_exact_min_side_admissibility,
-    has_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
 )
 from src.search.exact_parallel_scheduler import (

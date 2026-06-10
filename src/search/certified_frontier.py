@@ -246,7 +246,6 @@ def build_terminal_frontier_evidence(
     candidate_generation: Mapping[str, Any],
 ) -> Dict[str, Any]:
     evidence_params = normalize_terminal_frontier_domain_contract(candidate_generation)
-    params = candidate_generation_kwargs(evidence_params)
     normalized_candidates = [_normalize_candidate(candidate) for candidate in candidates]
     projection = compute_terminal_frontier_projection(
         candidates=normalized_candidates,

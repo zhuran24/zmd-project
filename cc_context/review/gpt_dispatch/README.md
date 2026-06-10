@@ -5,7 +5,8 @@
 ## 一次性准备
 
 ```powershell
-# 1. 起专用自动化 Chrome (独立 profile, CDP 9222; 已在跑则直接报就绪)
+# 1. 起专用自动化浏览器 (默认 Edge — owner 经验 Edge 通道更稳; -Browser chrome 可切回。
+#    独立 profile, CDP 9222; 已在跑则直接报就绪)
 & cc_context\review\gpt_dispatch\start_gpt_automation_chrome.ps1
 # 2. 首次使用: 在弹出的窗口里手动登录 chatgpt.com 一次 (cookie 长期有效)
 ```

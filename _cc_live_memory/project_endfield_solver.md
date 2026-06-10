@@ -7,7 +7,7 @@ originSessionId: 8ac66da5-49ee-4b7b-85e4-523f02bbc9e3
 项目是明日方舟：终末地(Arknights: Endfield)的IndustrialPlanner精确求解器，在70×70网格上放置266个强制设施并找最大合法空矩形。
 
 > ⚠️ **现状已演进, 本条只保留稳定身份 (项目是什么 / PROJECT_LOCK 边界 / 依赖), 不再作当前 phase 真相来源** (per [[memory-currency-protocol]])。当前 phase/交接状态见单一 living 源 [[windows-ninth-review-pending]]。
-> **范式反转链**: 早期 Phase 3B tuning paradigm (latency-bound master 解不动 + 软优化全死) 经 **27 lever 全死** → **B1 pose-bool master** → **B Design v2 cut-family LBBD** 重写 → Phase 1.1 GO → Phase 1.2 close (2026-05-27, GO_WITH_MINOR) → 现处 **P1.3A**。见 [[phase-1-2-progress]] / [[paradigm-death-timeline-27-lever]]。
+> **范式反转链**: 早期 Phase 3B tuning paradigm (latency-bound master 解不动 + 软优化全死) 经 **27 lever 全死** → **B1 pose-bool master** → **B Design v2 cut-family LBBD** 重写 → Phase 1.1 GO → Phase 1.2 close (2026-05-27, GO_WITH_MINOR) → 现处 **P1.3A**。见 phase-1-2-progress / [[paradigm-death-timeline-27-lever]]。
 
 **Why:** 用户之前用Codex(GPT)开发，因GPT呆板迁移到Claude Code。
 

@@ -11,7 +11,7 @@ metadata:
 
 ## 两个已发生的实例 (同一个病)
 
-1. **v22 vs v23 两份外审质量差异 → 归因到 README**: 我说"完整版那份更深是因为 README 给了 reviewer 不同上下文"。但每个包只送审**一次**, 无法把"README 差异"和"GPT 同 prompt 跑两次本就不同"分开。用户: "即使是相同的包两次审查也可能带来不同的结果。" (见 [[external-review-reproducibility]])
+1. **v22 vs v23 两份外审质量差异 → 归因到 README**: 我说"完整版那份更深是因为 README 给了 reviewer 不同上下文"。但每个包只送审**一次**, 无法把"README 差异"和"GPT 同 prompt 跑两次本就不同"分开。用户: "即使是相同的包两次审查也可能带来不同的结果。" (见 external-review-reproducibility)
 
 2. **SendUserFile 手机端无下载按钮 → 归因到"文件太大/重复文件名"**: 两个都是 N=1 观察。而且我用的"修复"(拆小 / 改名) **每个都含一次重试** —— 所以"改完就好了"完全可能是"重试碰巧清掉瞬时故障", 跟我归因的变量无关。我没做对照实验 (同一大文件重发看是否稳定失败 / 二分体积找阈值 / 同名重发 N 次)。用户: "你是如何排除随机故障的?" (见 [[windows-powershell-harness-pitfalls]])
 
@@ -27,7 +27,7 @@ metadata:
 1. **报因果前先问**: 我有几次有效观测? 是不是 N=1? "随机/噪声/瞬时故障"这个 null 排除了吗? 我的"修复"是不是裹着一次重试?
 2. **N=1 时别说死**: 老实讲"**不知道为啥**; 这有个 workaround **不管真因是哪种都管用**; 要定因得做对照实验"。把"workaround 有效"当成"我的因果对"是偷换 (workaround 里含重试)。
 3. **想真定因 → 设计对照重复**, 别拿单次"改 X 就好了"充数。
-4. 这条跟 [[external-review-reproducibility]] (同 prompt 多跑结果飘) 同根, 跟 [[verification-independent-backstop]] (验证别只信自审) 互补。落 memory 时, **机制类断言**尤其要标清楚是"观察到的共现"还是"已验证的因果"。
+4. 这条跟 external-review-reproducibility (同 prompt 多跑结果飘) 同根, 跟 [[verification-independent-backstop]] (验证别只信自审) 互补。落 memory 时, **机制类断言**尤其要标清楚是"观察到的共现"还是"已验证的因果"。
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)
 - [[gemini-math-consultant]] — gemini cand-C NO-GO 归因是 N=1 实例(已互引)

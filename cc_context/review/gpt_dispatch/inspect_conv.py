@@ -1,5 +1,4 @@
 """临时诊断: dump 会话最后一条 assistant 消息里附件卡片的 DOM 结构。"""
-import re
 import sys
 
 from playwright.sync_api import sync_playwright

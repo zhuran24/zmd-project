@@ -27,7 +27,7 @@ EXTERNAL_SOURCE_ITEMS = {"item_iron_ore", "item_originium_ore"}
 **已验证蓝图**:
 - `~/下载/BP-2026-05-13 08_35_36.blueprint.json` (LP-verified 1156 设备) → LP 算出稳态 18 电池_3 + 12 胶囊_3 / min, 所有 production machine 100% 利用率, 收支守恒. 用户手动恢复的版本, 拓扑正确.
 - 2026-05-16 update: 用户 redownload 版 `BP-2026-05-13 08_35_36.blueprint(1).json` (5/16 mtime, 1175 设备) — createdAt 仍 5/13 08:35:36, updatedAt None. 多出 19 设备可能 user 之后又加了 belts. 拓扑核心同, 仍是手调最终版.
-- **D step 2 master hint 注入用这个文件** [[d-step2-blueprint-converter-state]]
+- **D step 2 master hint 注入用这个文件** d-step2-blueprint-converter-state
 
 **关于"过剩"利用率**:
 - 上游 capacity ≥ 下游 demand 是合理设计冗余, 不是 bug
