@@ -1,6 +1,6 @@
 ---
 name: windows-ninth-review-pending
-description: "单一 living 当前交接/现状源。2026-06-10 晚: CC 接手收尾完成 — V73-V78 工作收口提交 + 8 旧测试迁移到权威全域契约 + 对抗审查抓到 V79 切片域轴 (aspect/min_side) 并修复落锚; 当前审查锚 v79_terminal_domain_axis_sealing; residual = min_side<6 发布轴 (V80 候选)。V50 手动 owner-count gate 不变, 等 owner 决策开 P1.3B。项目在 C:/claude pj/zmd_pj 轻量 checkout 无 venv; 全量 pytest 必须独占跑 (.pytest_tmp 并发互删坑)。"
+description: "单一 living 当前交接/现状源。2026-06-10 深夜: V80 范式翻转三件套 (admissibility 发布闸 + evidence 白名单封闭 + env allowlist) 已委托 GPT Pro 实现, 任务在 ChatGPT 终末地 Project 跑; 等交付后本地 apply+复验+推锚。当前审查锚 v79_terminal_domain_axis_sealing。V50 手动 owner-count gate 不变。打包新规则: 除缓存外全打; 上传走剪贴板 SetFileDropList+Ctrl+V。"
 metadata: 
   node_type: memory
   type: project
@@ -17,7 +17,18 @@ metadata:
 - GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/zmd<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
 
-## 最新状态 (2026-06-10 晚) — CC 接手收尾: V73-V78 工作收口 + 8 个旧测试迁移到新契约 + 对抗审查抓到 V79 (切片域轴) 并修复落锚
+## 最新状态 (2026-06-10 深夜) — V80 范式翻转三件套已委托 GPT Pro 实现 (外发进行中)
+
+> **当前真相 (2026-06-10 深夜, 外发委托轮)**:
+> **⓪ owner 裁决方向**: 对"P1.2 审了几十轮不闭合"的诊断 = 防御范式是黑名单枚举 (每轮审查找到下一个未封轴) + certified 表面积大; 出路 = **翻转为 deny-unknown 封闭白名单**。owner 决定把实现委托给 GPT Pro (省 CC 额度), 三件套: **A) V80 admissibility 发布闸** (V79 residual, 项目级 admissibility 字段 = canonical-schema 决策, 设计核心是 sub-admissible 支配者下 admissible-optimality 的证明义务) + **B) terminal evidence 域契约白名单封闭** (certified_frontier.py:258 if 链 → 未知键/非权威值一律拒) + **C) certified env guard 翻转 allowlist** (benders_loop.py:441 黑名单 → 242 个 EXACT_* knob 逐个分类, 未分类 fail-closed)。
+> **① 已发出 (2026-06-10 深夜)**: ChatGPT「终末地」Project 会话 `c/6a298208-a568-83ea-9a88-a8fd4b03d413`, 模型 Pro·进阶 (= GPT Pro 扩展模式, 用户确认「进阶专业」即是)。附件 = `zmd_v80_impl_full_20260610_single.zip` (14.2MB LZMA, 2925 文件, sha256 `f127bbe7…3bf4`, git HEAD b1cadaa 全项目快照); prompt 全文存 `cc_context/review/GPT_v80_实现任务_prompt.md` (7267 字, 含三件套定义/PROJECT_LOCK 硬约束/锚定仪式六处清单/沙盒工作流/环境性失败基线/armor 条款)。deps wheels 用户此前已传 Project 文件区, 沙盒 Python 3.13。
+> **② 打包新规则 (用户裁决, 优先于旧原则)**: **除缓存外全项目打进去** (cc_context/_cc_live_memory/补丁包 历史归档全入; 排除仅 .git/__pycache__/.pytest_*/.ruff_cache/.venv/.upstream_clones/*.pyc/输出 zip/prompt 文件)。全打前必须 grep 全树无硬编码 API key (本次已查, 干净)。build 脚本: `cc_context/review/build_v80_impl_win.py` (按压缩后物理大小动态分卷 ≤9MB) + `build_v80_single_win.py` (单包变体)。150MB 旧包印象 = 含 candidate_placements 53.6MB 真数据 + deps; 本 checkout 大文件外置, 14.2MB 是对的 (v22 先例 14.41MB)。
+> **③ 上传通道实测 (重要, 以后都这么传)**: Chrome 插件 `file_upload` 工具 10MB 上限且新版拒收主机路径 (paths 版本失配)。**标准姿势 = Windows 剪贴板**: PS7 `[System.Windows.Forms.Clipboard]::SetFileDropList()` (Set-Clipboard -Path 是 5.1 专属) → 聚焦 ChatGPT 输入框 Ctrl+V → 14.2MB 实测成功 (网页自身上限 512MB)。LZMA zip 接收端要 `python -m zipfile -e` 解 (Linux unzip 不支持)。
+> **④ 接收流程 (GPT 交付后的下一步)**: 下载交付 zip → 本地 apply patches → **独占全量复验** (xdist 跑法, 对照环境性失败基线) → 推锚三易漏点复核 (PO json `phase_gate_required_anchor` / gate json `owner_manual_state.current_review_anchor` / 测试硬编码锚) → commit (即 push)。**不能盲信的两处**: 242 knob 分类表要抽查 (proof-affecting 漏归类 = 下轮审查 finding); 工作项 A 的 admissible-optimality 论证必须自己读懂——若 GPT 主张"可无条件回收 best admissible", 警惕支配剪枝语义下的证明义务缺口。
+> **⑤ 独立性边界**: 本次是**实现委托**不是审查 (no-priming 不适用, prompt 给足设计意图是对的); 但落地后的下轮**外审必须新窗口零历史**, 不得在同一会话续问审查。
+> **⑥ 治理面不变**: V50 手动 owner-count gate; P1.3B 等 owner 显式决策; V80 落地也不 claim clean-review credit。
+
+## (历史) 2026-06-10 晚 — CC 接手收尾: V73-V78 工作收口 + 8 个旧测试迁移到新契约 + 对抗审查抓到 V79 (切片域轴) 并修复落锚
 
 > **当前真相 (2026-06-10 晚, 接手收尾轮)**:
 > **① V73-V78 收尾**: Codex 留下的未提交工作经验证后连同本轮工作一起提交 (见 git log)。8 个旧集成测试 (test_regression 5 + test_parallel_scheduler 1 + test_exact_contract 3 处窄域参数 + test_lbbd_epsilon Fake 接口) 迁移到 V75/V76 权威全域契约: 收窄域场景不再能宣称 terminal CERTIFIED, 测试改用权威全域 + helper 加 synthetic pose pool 让 blueprint 导出/反查链真正走通。迁移经 4+1 镜头对抗审查 workflow 判 sound (含 helper 影响面 16 调用点审计)。
