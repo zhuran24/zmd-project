@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v85_required_optional_terminal_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v86_power_witness_terminal_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -101,3 +101,5 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle" in export_tests
     assert "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance" in export_tests
     assert "test_v85_terminal_project_validation_rejects_missing_required_pose_optional" in export_tests
+    assert "test_terminal_project_validator_rejects_powered_facility_without_selected_power_coverer" in export_tests
+    assert "test_terminal_project_validator_accepts_selected_power_coverer" in export_tests

@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-11",
-  "summary": "P1.2 remains manually blocked. V85 (fifth overnight independent review) sealed one seam: the project-bound terminal validator now enforces the inferred required pose-level optional lower bounds, so a forged checkpoint can no longer omit required protocol storage boxes and publish an empty rectangle that cannot coexist with them.",
-  "current_review_anchor": "v85_required_optional_terminal_sealing",
+  "summary": "P1.2 remains manually blocked. V86 (sixth overnight independent review) sealed one seam: the project-bound terminal validator now replays the power-coverage witness, so a forged checkpoint placing powered facilities without selected power poles can no longer publish a CERTIFIED result the exact master itself proves INFEASIBLE.",
+  "current_review_anchor": "v86_power_witness_terminal_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v85_required_optional_terminal_sealing",
+    "current_review_anchor": "v86_power_witness_terminal_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -269,6 +269,14 @@
       "summary": "V85 external review found one soundness finding, locally reproduced: the terminal validator enforced mandatory coverage but not the generic_io-inferred required pose-level optionals, so a forged terminal checkpoint omitting the required protocol_storage_box published a CERTIFIED rectangle that is geometrically impossible once the box is placed. Sealed fail-closed. Owner clean-streak count resets to 0.",
       "evidence_paths": [
         "docs/research/p1_2_v85_required_optional_terminal_sealing.md"
+      ]
+    },
+    {
+      "package": "v86_power_witness_terminal_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V86 external review found one soundness finding, locally reproduced with a master-level contradiction probe: the terminal validator never replayed power coverage, so a layout with a needs_power mandatory facility and no selected pole published as CERTIFIED while the certified master solved the same layout INFEASIBLE. Sealed fail-closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v86_power_witness_terminal_sealing.md"
       ]
     }
   ],

@@ -185,6 +185,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
             "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
             "test_v85_terminal_project_validation_rejects_missing_required_pose_optional",
+            "test_terminal_project_validator_rejects_powered_facility_without_selected_power_coverer",
+            "test_terminal_project_validator_accepts_selected_power_coverer",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -1246,6 +1248,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "exact artifact must be a regular file",
         "terminal_certified_final_result_solution_missing_required_optional_instance",
         "infer_certified_optional_lower_bounds",
+        "terminal_certified_final_result_solution_power_coverage_missing",
     ):
         if needle not in exact_campaign_source_v83:
             errors.append(

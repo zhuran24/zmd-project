@@ -285,6 +285,22 @@ def _load_exact_facility_pools(project_root: Path) -> Dict[str, list[Dict[str, A
     return pools
 
 
+def _load_exact_facility_templates(project_root: Path) -> Dict[str, Dict[str, Any]]:
+    rules_path = Path(project_root) / EXACT_HASH_FILES["canonical_rules"]
+    payload = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise ValueError("canonical_rules must be a JSON object")
+    raw_templates = payload.get("facility_templates")
+    if not isinstance(raw_templates, Mapping):
+        raise ValueError("canonical_rules.facility_templates must be a JSON object")
+    templates: Dict[str, Dict[str, Any]] = {}
+    for facility_type, raw_template in raw_templates.items():
+        if not isinstance(raw_template, Mapping):
+            raise ValueError(f"facility template {facility_type!r} must be a JSON object")
+        templates[str(facility_type)] = dict(raw_template)
+    return templates
+
+
 def _pose_occupied_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[int, int]]:
     raw_cells = pose.get("occupied_cells")
     if not isinstance(raw_cells, list):
@@ -299,6 +315,26 @@ def _pose_occupied_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[i
             raise ValueError(f"{field}.occupied_cells[{index}] must be [x,y]")
         x = _strict_resume_int(raw_cell[0], f"{field}.occupied_cells[{index}][0]")
         y = _strict_resume_int(raw_cell[1], f"{field}.occupied_cells[{index}][1]")
+        cells.append((int(x), int(y)))
+    return cells
+
+
+def _pose_power_coverage_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[int, int]]:
+    raw_cells = pose.get("power_coverage_cells")
+    if raw_cells is None:
+        return []
+    if not isinstance(raw_cells, list):
+        raise ValueError(f"{field}.power_coverage_cells must be a JSON array or null")
+    cells: list[tuple[int, int]] = []
+    for index, raw_cell in enumerate(raw_cells):
+        if (
+            isinstance(raw_cell, (str, bytes))
+            or not isinstance(raw_cell, Sequence)
+            or len(raw_cell) != 2
+        ):
+            raise ValueError(f"{field}.power_coverage_cells[{index}] must be [x,y]")
+        x = _strict_resume_int(raw_cell[0], f"{field}.power_coverage_cells[{index}][0]")
+        y = _strict_resume_int(raw_cell[1], f"{field}.power_coverage_cells[{index}][1]")
         cells.append((int(x), int(y)))
     return cells
 
@@ -349,6 +385,7 @@ def _validate_terminal_solution_against_project(
     try:
         mandatory_instances = _load_validated_mandatory_exact_instances(project_root)
         facility_pools = _load_exact_facility_pools(project_root)
+        facility_templates = _load_exact_facility_templates(project_root)
         required_optional_lower_bounds = _load_exact_required_optional_lower_bounds(project_root)
     except Exception:
         return "terminal_certified_project_solution_authority_invalid"
@@ -361,6 +398,8 @@ def _validate_terminal_solution_against_project(
     grid_w, grid_h = int(grid_dimensions[0]), int(grid_dimensions[1])
     occupied_cells: set[tuple[int, int]] = set()
     optional_solution_counts: Dict[str, int] = {}
+    selected_power_pole_coverage_cells: set[tuple[int, int]] = set()
+    powered_solution_cells: list[tuple[str, set[tuple[int, int]]]] = []
     for instance_id, raw_entry in placement_solution.items():
         # The ghost_pick entry is the empty rectangle's own placement marker:
         # its cells are the claimed empty area, not facility occupancy.
@@ -388,6 +427,9 @@ def _validate_terminal_solution_against_project(
         pool = facility_pools.get(facility_type)
         if pool is None or pose_idx < 0 or pose_idx >= len(pool):
             return "terminal_certified_final_result_solution_pose_invalid"
+        template = facility_templates.get(facility_type)
+        if template is None:
+            return "terminal_certified_project_solution_authority_invalid"
         pose = pool[int(pose_idx)]
         if expected_instance is None:
             if not _is_authorized_exact_pose_optional_solution_entry(
@@ -414,10 +456,28 @@ def _validate_terminal_solution_against_project(
             if cell in occupied_cells:
                 return "terminal_certified_final_result_solution_geometry_invalid"
             occupied_cells.add(cell)
+        if facility_type == "power_pole":
+            try:
+                coverage_cells = _pose_power_coverage_cells(
+                    pose,
+                    field=f"candidate_placements.{facility_type}[{int(pose_idx)}]",
+                )
+            except Exception:
+                return "terminal_certified_final_result_solution_pose_invalid"
+            for cell in coverage_cells:
+                x, y = cell
+                if 0 <= x < grid_w and 0 <= y < grid_h:
+                    selected_power_pole_coverage_cells.add(cell)
+        elif bool(template.get("needs_power", False)):
+            powered_solution_cells.append((str(instance_id), set(cells)))
 
     for facility_type, required_count in sorted(required_optional_lower_bounds.items()):
         if optional_solution_counts.get(str(facility_type), 0) < int(required_count):
             return "terminal_certified_final_result_solution_missing_required_optional_instance"
+
+    for _instance_id, cells in powered_solution_cells:
+        if not any(cell in selected_power_pole_coverage_cells for cell in cells):
+            return "terminal_certified_final_result_solution_power_coverage_missing"
 
     ghost_rect = final_result.get("ghost_rect")
     if not isinstance(ghost_rect, Mapping):
