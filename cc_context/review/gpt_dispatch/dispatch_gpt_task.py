@@ -488,9 +488,12 @@ def collect(page, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
         rep.attention(page, "collect", "no assistant message found")
         return 0
     # sandbox 文件的渲染形态至少有三种, 都要覆盖:
-    #   <a href="...">name.zip</a>            经典链接
-    #   <a class="decorated-link">name.zip</a> 无 href, JS 点击下载
-    #   <button>name.zip</button>              behavior-btn 内联引用
+    #   <a href="...">name.zip</a>             经典链接
+    #   <a class="decorated-link">...</a>      无 href, JS 点击下载
+    #   <button class="behavior-btn">...</button> 内联文件引用
+    # 锚文本可能是中文描述 (「下载 V81 审查交付 zip」) 而非文件名 — 不能只靠
+    # 扩展名匹配, 结构 class (behavior-btn / decorated-link) 是更可靠的判据
+    # (V81 实测: 只按扩展名漏掉 3 个附件里的 2 个, 恰好包括完整包)。
     last = msgs.last
     candidates = []
     seen_labels = set()
@@ -501,10 +504,18 @@ def collect(page, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
             try:
                 href = el.get_attribute("href") or ""
                 label = (el.inner_text() or "").strip()
+                cls = el.get_attribute("class") or ""
             except Exception:
                 continue
-            if not (FILE_EXT_RE.search(href) or FILE_EXT_RE.search(label) or "sandbox" in href):
+            file_like = (
+                FILE_EXT_RE.search(href) or FILE_EXT_RE.search(label)
+                or "sandbox" in href
+                or "behavior-btn" in cls or "decorated-link" in cls
+            )
+            if not file_like:
                 continue
+            if not label and not href:
+                continue  # 空文本按钮 (代码块「复制」等) 不是文件
             key = label or href
             if key in seen_labels:
                 continue
