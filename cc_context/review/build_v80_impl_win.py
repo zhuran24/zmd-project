@@ -64,7 +64,12 @@ def iter_package_files() -> list[Path]:
             continue
         if path == PROMPT_FILE:
             continue
-        if path.parent == OUT_DIR and path.name.startswith(OUT_STEM):
+        # 本工具历任输出都排除 (前缀不带日期 — 带日期的话隔天就漏, 旧输出包
+        # 会被打进新包里滚雪球: 实测 14.2MB → 40MB)
+        if path.parent == OUT_DIR and path.name.startswith("zmd_v80_impl_full_"):
+            continue
+        # GPT 交付物目录 (dispatch 工具的下载输出) 同理不回灌
+        if "gpt_deliveries" in rel.parts:
             continue
         files.append(path)
     return files
