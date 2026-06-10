@@ -349,6 +349,7 @@ def _validate_terminal_solution_against_project(
     try:
         mandatory_instances = _load_validated_mandatory_exact_instances(project_root)
         facility_pools = _load_exact_facility_pools(project_root)
+        required_optional_lower_bounds = _load_exact_required_optional_lower_bounds(project_root)
     except Exception:
         return "terminal_certified_project_solution_authority_invalid"
 
@@ -359,6 +360,7 @@ def _validate_terminal_solution_against_project(
 
     grid_w, grid_h = int(grid_dimensions[0]), int(grid_dimensions[1])
     occupied_cells: set[tuple[int, int]] = set()
+    optional_solution_counts: Dict[str, int] = {}
     for instance_id, raw_entry in placement_solution.items():
         # The ghost_pick entry is the empty rectangle's own placement marker:
         # its cells are the claimed empty area, not facility occupancy.
@@ -387,13 +389,17 @@ def _validate_terminal_solution_against_project(
         if pool is None or pose_idx < 0 or pose_idx >= len(pool):
             return "terminal_certified_final_result_solution_pose_invalid"
         pose = pool[int(pose_idx)]
-        if expected_instance is None and not _is_authorized_exact_pose_optional_solution_entry(
-            instance_id=str(instance_id),
-            entry=entry,
-            pose=pose,
-            facility_type=facility_type,
-        ):
-            return "terminal_certified_final_result_solution_unknown_instance"
+        if expected_instance is None:
+            if not _is_authorized_exact_pose_optional_solution_entry(
+                instance_id=str(instance_id),
+                entry=entry,
+                pose=pose,
+                facility_type=facility_type,
+            ):
+                return "terminal_certified_final_result_solution_unknown_instance"
+            optional_solution_counts[str(facility_type)] = (
+                optional_solution_counts.get(str(facility_type), 0) + 1
+            )
         try:
             cells = _pose_occupied_cells(
                 pose,
@@ -408,6 +414,10 @@ def _validate_terminal_solution_against_project(
             if cell in occupied_cells:
                 return "terminal_certified_final_result_solution_geometry_invalid"
             occupied_cells.add(cell)
+
+    for facility_type, required_count in sorted(required_optional_lower_bounds.items()):
+        if optional_solution_counts.get(str(facility_type), 0) < int(required_count):
+            return "terminal_certified_final_result_solution_missing_required_optional_instance"
 
     ghost_rect = final_result.get("ghost_rect")
     if not isinstance(ghost_rect, Mapping):
@@ -548,6 +558,28 @@ def _best_empty_rect_objective(
             ):
                 best = objective
     return best
+
+
+def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, int]:
+    rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
+    generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
+    rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+    generic_io_requirements = _loads_strict_json_object(
+        generic_path.read_text(encoding="utf-8")
+    )
+    if not isinstance(rules, Mapping):
+        raise ValueError("canonical_rules must be a JSON object")
+    if not isinstance(generic_io_requirements, Mapping):
+        raise ValueError("generic_io_requirements must be a JSON object")
+    lower_bounds: Dict[str, int] = {}
+    for facility_type, count in infer_certified_optional_lower_bounds(
+        rules,
+        generic_io_requirements,
+    ).items():
+        required_count = int(count)
+        if required_count > 0:
+            lower_bounds[str(facility_type)] = required_count
+    return lower_bounds
 
 
 def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[int]:
