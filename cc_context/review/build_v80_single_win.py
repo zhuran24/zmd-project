@@ -1,25 +1,108 @@
-"""单包变体: 复用 build_v80_impl_win 的文件遍历/排除逻辑, 打一个不分卷的完整 LZMA zip。
+"""V80+ 外发任务全项目单包构建 (Windows, ZIP_LZMA)。
 
-用途: 经剪贴板 (SetFileDropList + Ctrl+V) 上传时没有 10MB 工具上限, 单包更省事;
-分卷主脚本留给将来 file_upload 工具路径修好后的场景。
+打包规则 (2026-06-10 用户裁决): **除缓存文件外全项目入包**。排除仅:
+.git / __pycache__ / .pytest_cache / .pytest_tmp / .ruff_cache / .mypy_cache /
+node_modules / .venv / .upstream_clones / *.pyc / 本系列输出 zip / GPT prompt 文件
+(prompt 是临时 directive 且内含包 sha256, 入包会自引用)。
+
+上传走剪贴板或 gpt_dispatch 自动化 (无 10MB 工具上限) → 单包即可。
+旧的动态分卷脚本 build_v80_impl_win.py 已归档 cc_context/review/archive/
+(2026-06-11 owner 裁决: 暂时用不到), 如需复活注意它当时被本脚本 import 复用。
+接收端解包: python -m zipfile -e <zip> .  (Linux unzip 不支持 LZMA method)
 """
+from __future__ import annotations
+
 import hashlib
-import sys
+import json
+import subprocess
 import zipfile
+from datetime import date
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import build_v80_impl_win as b
+REPO_ROOT = Path(__file__).resolve().parents[2]
+OUT_STEM = f"zmd_v80_impl_full_{date.today().strftime('%Y%m%d')}"
+OUT_DIR = REPO_ROOT / "补丁包"
+PROMPT_FILE = REPO_ROOT / "cc_context" / "review" / "GPT_v80_实现任务_prompt.md"
 
-files = b.iter_package_files()
-out = b.OUT_DIR / (b.OUT_STEM + "_single.zip")
-if out.exists():
-    out.unlink()
-with zipfile.ZipFile(out, "w", zipfile.ZIP_LZMA) as zf:
-    for p in files:
-        zf.write(p, "project/" + p.relative_to(b.REPO_ROOT).as_posix())
-    zf.writestr("PACKAGE_BUILD_INFO.json", b.build_info_payload(1, len(files)))
-print(f"package: {out}")
-print(f"files: {len(files)}")
-print(f"zip_mb: {out.stat().st_size / 1024 / 1024:.1f}")
-print(f"sha256: {hashlib.sha256(out.read_bytes()).hexdigest()}")
+EXCLUDED_DIR_NAMES = {
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".pytest_tmp",
+    ".ruff_cache",
+    ".mypy_cache",
+    "node_modules",
+    ".venv",
+    ".upstream_clones",
+}
+EXCLUDED_FILE_SUFFIXES = {".pyc"}
+
+
+def iter_package_files() -> list[Path]:
+    files: list[Path] = []
+    for path in sorted(REPO_ROOT.rglob("*")):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(REPO_ROOT)
+        if any(part in EXCLUDED_DIR_NAMES for part in rel.parts):
+            continue
+        if path.suffix in EXCLUDED_FILE_SUFFIXES:
+            continue
+        if path == PROMPT_FILE:
+            continue
+        if path.parent == OUT_DIR and path.name.startswith("zmd_v80_impl_full_"):
+            continue
+        files.append(path)
+    return files
+
+
+def git_head() -> str:
+    try:
+        return subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+    except Exception:
+        return "unknown"
+
+
+def build_info_payload(file_count: int) -> str:
+    return json.dumps(
+        {
+            "package": f"{OUT_STEM}_single.zip",
+            "purpose": "external GPT Pro task dispatch (full-project snapshot)",
+            "built_on": date.today().isoformat(),
+            "git_head": git_head(),
+            "file_count": file_count,
+            "packaging_rule": "full project except caches (owner ruling 2026-06-10)",
+            "excluded_dir_names": sorted(EXCLUDED_DIR_NAMES),
+            "known_absent_artifact": "data/preprocessed/candidate_placements.json (53.6MB, externalized; causes ~20 known environmental test failures)",
+            "build_script": "cc_context/review/build_v80_single_win.py",
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+
+
+def main() -> int:
+    files = iter_package_files()
+    OUT_DIR.mkdir(exist_ok=True)
+    out = OUT_DIR / (OUT_STEM + "_single.zip")
+    if out.exists():
+        out.unlink()
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_LZMA) as zf:
+        for p in files:
+            zf.write(p, "project/" + p.relative_to(REPO_ROOT).as_posix())
+        zf.writestr("PACKAGE_BUILD_INFO.json", build_info_payload(len(files)))
+    print(f"package: {out}")
+    print(f"files: {len(files)}")
+    print(f"zip_mb: {out.stat().st_size / 1024 / 1024:.1f}")
+    print(f"sha256: {hashlib.sha256(out.read_bytes()).hexdigest()}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
