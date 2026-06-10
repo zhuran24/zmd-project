@@ -398,7 +398,7 @@ def _validate_terminal_solution_against_project(
     grid_w, grid_h = int(grid_dimensions[0]), int(grid_dimensions[1])
     occupied_cells: set[tuple[int, int]] = set()
     optional_solution_counts: Dict[str, int] = {}
-    selected_power_pole_coverage_cells: set[tuple[int, int]] = set()
+    selected_power_poles: list[tuple[str, set[tuple[int, int]]]] = []
     powered_solution_cells: list[tuple[str, set[tuple[int, int]]]] = []
     for instance_id, raw_entry in placement_solution.items():
         # The ghost_pick entry is the empty rectangle's own placement marker:
@@ -464,10 +464,12 @@ def _validate_terminal_solution_against_project(
                 )
             except Exception:
                 return "terminal_certified_final_result_solution_pose_invalid"
+            in_grid_coverage_cells: set[tuple[int, int]] = set()
             for cell in coverage_cells:
                 x, y = cell
                 if 0 <= x < grid_w and 0 <= y < grid_h:
-                    selected_power_pole_coverage_cells.add(cell)
+                    in_grid_coverage_cells.add(cell)
+            selected_power_poles.append((str(instance_id), in_grid_coverage_cells))
         elif bool(template.get("needs_power", False)):
             powered_solution_cells.append((str(instance_id), set(cells)))
 
@@ -475,9 +477,33 @@ def _validate_terminal_solution_against_project(
         if optional_solution_counts.get(str(facility_type), 0) < int(required_count):
             return "terminal_certified_final_result_solution_missing_required_optional_instance"
 
-    for _instance_id, cells in powered_solution_cells:
-        if not any(cell in selected_power_pole_coverage_cells for cell in cells):
+    power_coverers_by_instance: Dict[str, list[str]] = {}
+    power_targets_by_pole: Dict[str, set[str]] = {
+        pole_instance_id: set() for pole_instance_id, _coverage_cells in selected_power_poles
+    }
+    for powered_instance_id, cells in powered_solution_cells:
+        coverers = [
+            pole_instance_id
+            for pole_instance_id, coverage_cells in selected_power_poles
+            if any(cell in coverage_cells for cell in cells)
+        ]
+        if not coverers:
             return "terminal_certified_final_result_solution_power_coverage_missing"
+        power_coverers_by_instance[str(powered_instance_id)] = list(coverers)
+        for pole_instance_id in coverers:
+            power_targets_by_pole.setdefault(str(pole_instance_id), set()).add(str(powered_instance_id))
+
+    if len(selected_power_poles) > len(powered_solution_cells):
+        return "terminal_certified_final_result_solution_unforced_power_pole_instance"
+    for pole_instance_id, _coverage_cells in selected_power_poles:
+        covered_powered_instances = power_targets_by_pole.get(str(pole_instance_id), set())
+        if not covered_powered_instances:
+            return "terminal_certified_final_result_solution_unforced_power_pole_instance"
+        if not any(
+            power_coverers_by_instance.get(str(powered_instance_id)) == [str(pole_instance_id)]
+            for powered_instance_id in covered_powered_instances
+        ):
+            return "terminal_certified_final_result_solution_unforced_power_pole_instance"
 
     ghost_rect = final_result.get("ghost_rect")
     if not isinstance(ghost_rect, Mapping):
@@ -495,6 +521,34 @@ def _validate_terminal_solution_against_project(
         grid_w=grid_w,
         grid_h=grid_h,
     )
+    if ghost_rect.get("anchor_x") is not None or ghost_rect.get("anchor_y") is not None:
+        try:
+            anchor_x = _strict_resume_int(
+                ghost_rect.get("anchor_x"),
+                "final_result.ghost_rect.anchor_x",
+            )
+            anchor_y = _strict_resume_int(
+                ghost_rect.get("anchor_y"),
+                "final_result.ghost_rect.anchor_y",
+            )
+        except Exception:
+            return "terminal_certified_final_result_ghost_rect_anchor_invalid"
+        if (
+            anchor_x < 0
+            or anchor_y < 0
+            or anchor_x > grid_w - int(ghost_w)
+            or anchor_y > grid_h - int(ghost_h)
+        ):
+            return "terminal_certified_final_result_ghost_rect_anchor_invalid"
+        if _occupied_count_in_rect(
+            occupancy_prefix=occupancy_prefix,
+            anchor_x=int(anchor_x),
+            anchor_y=int(anchor_y),
+            rect_w=int(ghost_w),
+            rect_h=int(ghost_h),
+        ) != 0:
+            return "terminal_certified_final_result_ghost_rect_anchor_occupied"
+
     if not _empty_rect_exists(
         occupancy_prefix=occupancy_prefix,
         grid_w=grid_w,
