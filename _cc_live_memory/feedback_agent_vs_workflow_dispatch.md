@@ -1,13 +1,17 @@
 ---
 name: agent-vs-workflow-dispatch
-description: "派遣方式选型 + Ultracode 默认偏好: Ultracode 开 = 实质任务优先/追求穷尽/不计 token; Agent vs Workflow 按任务形状二选一; dispatch 三选一 (线性已知内容→自己落 / 发现散落→workflow / 机械活→子代理); Workflow 有 resume 后台 Agent 无。"
+description: "派遣方式选型: 2026-06-10 用户裁决非必要不用 Workflow, 审查类任务用 Claude in Chrome 浏览器插件发给 GPT 外审; 旧的形状二选一/三选一指导仅在'确实必要'时参考; Workflow 有 resume 后台 Agent 无。"
 metadata: 
   node_type: memory
   type: feedback
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
-2026-06-01 用户开了 Ultracode 并指明"这个复杂任务派 workflow 比较好"。沉淀派遣方式选型的偏好。
+> **2026-06-10 用户裁决 (优先于下面全部旧指导)**: **非必要不要用 Workflow,特别是审查类任务**。审查/外审类活改用 **Claude in Chrome 浏览器插件** (`mcp__Claude_in_Chrome__*` 工具) 把任务发给 GPT (chatgpt.com) 完成——这就是项目一直在用的 GPT 外审通道,只是从"打包给用户手动上传"升级为"插件直接发"。
+> **Why (当日实测教训)**: 对抗审查 workflow 跑了 38 分钟还撞 API stream 超时 (critic 挂掉要 resume 续跑); 审查 agent 并发跑 pytest 互删仓库根 `.pytest_tmp` 把两轮全量测试污染成假失败; token 成本高。外部 GPT 审查更稳更省, 且项目的外审规范 (打包簇 hub / prompt 模板 / 不准 priming) 全部沿用。
+> **How to apply**: 默认单干或 Agent 子代理; "必要"= 用户明确点名要 workflow, 或任务确实离不开本地多路编排且无法外发。审查任务一律走浏览器插件发 GPT。
+
+2026-06-01 用户开了 Ultracode 并指明"这个复杂任务派 workflow 比较好"。沉淀派遣方式选型的偏好。(2026-06-10 起按上方裁决收紧。)
 
 ## Ultracode 默认偏好
 

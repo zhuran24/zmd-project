@@ -33,7 +33,7 @@
 
 - [验证类任务必派独立 backstop](feedback_verification_independent_backstop.md) — 验证/核对/查全类不只信 main 自审; 独立 workflow/子代理直接查被验对象本身, re-audit 不降 scope.
 - [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察编干净因果当事实=反复犯的病; "改 X 就好了"≠"X 致因", 要定因须对照重复. 实例: review 质量归 README / 无下载按钮归大小, 均被戳穿. 同根 [[external-review-reproducibility]].
-- [Agent vs Workflow 派遣选型 + Ultracode](feedback_agent_vs_workflow_dispatch.md) — 形状二选一 (单闭环→Agent / 扇出·流水线·对抗核→Workflow, 后者有 resume); dispatch 三选一 (线性→自己/散落→wf/机械→子代理); Ultracode=穷尽不计 token.
+- [Agent vs Workflow 派遣选型](feedback_agent_vs_workflow_dispatch.md) — **2026-06-10 用户裁决: 非必要不用 Workflow; 审查类任务用 Claude in Chrome 插件发 GPT 外审**; 旧形状二选一/三选一仅"确实必要"时参考.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改 (新增/删条目/重组/slim MEMORY.md) 先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 (加索引前先 slim) + harness 重写 frontmatter 保 name. 区别于现状过时轴 [[memory-currency-protocol]].
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion；key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
