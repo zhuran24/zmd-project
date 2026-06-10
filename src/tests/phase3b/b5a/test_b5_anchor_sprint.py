@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from src.io.delivery_manifest import export_certified_delivery_manifest
+from src.io.serializer import export_certified_blueprint, load_candidate_placements
 from src.models.cut_manager import (
     RUN_STATUS_CERTIFIED,
     RUN_STATUS_INFEASIBLE,
@@ -15,6 +17,7 @@ from src.search.exact_campaign import ExactCampaign
 from src.search.phase3b.campaign.repair import (
     mark_running_exact_campaign_candidates_interrupted,
 )
+from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
 from src.search.phase3b.b5a.b5_anchor_sprint import (
     build_phase3b_b5_anchor_sprint_summary,
     render_phase3b_b5_anchor_sprint_markdown,
@@ -350,7 +353,28 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path) -> N
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
     campaign.save()
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    facility_pools = load_candidate_placements(
+        project_root / "data" / "preprocessed" / "candidate_placements.json"
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
     append_campaign_wave_summary(
         project_root=project_root,
         campaign_path=campaign.path,

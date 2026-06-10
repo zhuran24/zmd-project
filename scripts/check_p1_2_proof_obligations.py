@@ -22,9 +22,13 @@ LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 CANDIDATE_PLACEMENTS_PATH = PROJECT_ROOT / "src" / "cuts" / "helpers" / "candidate_placements.py"
 CUT_MANAGER_PATH = PROJECT_ROOT / "src" / "models" / "cut_manager.py"
 EXACT_CAMPAIGN_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaign.py"
+EXACT_CAMPAIGN_INSPECTOR_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaign_inspector.py"
+CERTIFIED_FRONTIER_PATH = PROJECT_ROOT / "src" / "search" / "certified_frontier.py"
+CERTIFIED_SURFACE_PATH = PROJECT_ROOT / "src" / "search" / "certified_surface.py"
 OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
 DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
+SERIALIZER_PATH = PROJECT_ROOT / "src" / "io" / "serializer.py"
 MASTER_MODEL_PATH = PROJECT_ROOT / "src" / "models" / "master_model.py"
 EXACT_COORDINATE_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "exact_coordinate_master.py"
 POSE_BOOL_EXACT_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "pose_bool_exact_master.py"
@@ -105,6 +109,14 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
             "test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified",
             "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence",
+            "test_v75_resume_rejects_terminal_certified_without_replayable_frontier_evidence",
+            "test_v75_resume_rejects_terminal_evidence_with_unexhausted_frontier",
+            "test_v75_resume_rejects_terminal_evidence_from_start_area_slice",
+            "test_v79_resume_rejects_terminal_evidence_from_aspect_ratio_slice",
+            "test_v79_resume_rejects_terminal_evidence_from_min_side_slice",
+            "test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_project_domain",
+            "test_v68_resume_rejects_certified_candidate_without_solution",
+            "test_v69_resume_inspector_and_b5a_reject_terminal_final_result_not_best_candidate",
         }
     ),
     "PO-CERTIFIED-EXPORT-SURFACE": frozenset(
@@ -120,6 +132,35 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v65_terminal_result_is_committed_before_final_solution_export",
             "test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts",
             "test_v66_terminal_export_failure_clears_terminal_state_and_artifacts",
+            "test_v68_terminal_commit_failure_clears_stale_certified_delivery_artifacts",
+            "test_v68_inspector_requires_current_campaign_evidence_for_terminal_manifest",
+            "test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts",
+            "test_v69_delivery_manifest_rejects_stale_final_solution_artifact",
+            "test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact",
+            "test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_campaign",
+            "test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_result",
+            "test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports",
+            "test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table",
+            "test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields",
+            "test_v72_manifest_currentness_rejects_extra_metadata_fields",
+            "test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_solution",
+            "test_v72_blocked_campaign_cleanup_runs_even_when_checkpoint_save_fails",
+            "test_v73_inspector_uses_certified_surface_verifier_for_public_certified",
+            "test_v73_b5a_uses_certified_surface_verifier_for_anchor_publication",
+            "test_v73_certified_surface_verdict_is_single_gate_for_inspector_and_b5a",
+            "test_v73_certified_surface_rejects_non_regular_manifest_path",
+            "test_v74_certified_surface_rejects_memory_manifest_when_disk_manifest_stale",
+            "test_v74_certified_surface_rejects_memory_campaign_when_disk_checkpoint_differs",
+            "test_v74_certified_surface_recomputes_exact_hashes_even_when_caller_claims_resume_ok",
+            "test_v74_inspector_rejects_duplicate_key_delivery_manifest",
+            "test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact",
+            "test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoint_differs",
+            "test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_best_result",
+            "test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanonical_output_path",
+            "test_v78_write_certified_delivery_manifest_rejects_direct_best_result_payload",
+            "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result",
+            "test_v79_delivery_manifest_rejects_non_instance_placement_solution",
+            "test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -142,7 +183,10 @@ class CheckError(RuntimeError):
 
 
 def _rel(path: Path) -> str:
-    return path.relative_to(PROJECT_ROOT).as_posix()
+    try:
+        return path.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def _json_object_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -758,6 +802,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "_clear_certified_delivery_solution_artifacts",
         "_refresh_certified_delivery_manifest_if_any",
         "RUN_STATUS_UNPROVEN",
+        "save_error",
+        "cleanup_error",
     ):
         if needle not in mark_blocked_source:
             errors.append(
@@ -770,16 +816,33 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         path=OUTER_SEARCH_PATH,
     )
     clear_artifacts_source = _source_text(OUTER_SEARCH_PATH, clear_artifacts_fn)
+    certified_surface_tree = _parse_python(CERTIFIED_SURFACE_PATH)
+    certified_surface_source_text = CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    clear_surface_fn = _function_def(
+        certified_surface_tree,
+        "clear_certified_delivery_surface_artifacts",
+        path=CERTIFIED_SURFACE_PATH,
+    )
+    clear_surface_source = _source_text(CERTIFIED_SURFACE_PATH, clear_surface_fn)
+    if "clear_certified_delivery_surface_artifacts" not in clear_artifacts_source:
+        errors.append(
+            "certified outer blocker artifact purge must delegate to the central "
+            "certified surface artifact cleanup helper"
+        )
     for needle in (
         '"final_solution.json"',
         "blueprint_output_path",
         "delivery_manifest_output_path",
         ".unlink()",
     ):
-        if needle not in clear_artifacts_source:
+        if (
+            needle not in clear_artifacts_source
+            and needle not in clear_surface_source
+            and needle not in certified_surface_source_text
+        ):
             errors.append(
                 "certified outer blocker artifact purge must remove stale solution "
-                f"surfaces: {needle}"
+                f"surfaces through the central verifier module: {needle}"
             )
 
     delivery_manifest_tree = _parse_python(DELIVERY_MANIFEST_PATH)
@@ -807,6 +870,153 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
                 "certified delivery manifest must share the terminal full-frontier evidence guard: "
                 f"{needle}"
             )
+    for needle in (
+        "_validate_campaign_resume_compatible_with_current_artifacts",
+        "validate_exact_campaign_resume_state",
+        "compute_exact_artifact_hashes",
+        "build_blueprint_payload_from_certified_result",
+        "validate_certified_delivery_manifest_matches_campaign",
+    ):
+        if needle not in delivery_manifest_source_text:
+            errors.append(
+                "certified delivery manifest currentness must be structurally anchored to "
+                f"campaign hash compatibility, canonical blueprint export, and manifest/artifact compare: {needle}"
+            )
+    for needle in (
+        "_validate_campaign_state_matches_disk_authority",
+        "_campaign_path_for_regular_file_check",
+        "disk checkpoint authority",
+        "_is_regular_file(raw_state_path)",
+        "_load_json_mapping(raw_state_path",
+        "_json_equivalent(disk_payload, campaign_state)",
+    ):
+        if needle not in delivery_manifest_source_text:
+            errors.append(
+                "certified delivery manifest writer must treat the regular disk checkpoint as "
+                f"authority before writing best_certified_result: {needle}"
+            )
+    for needle in (
+        "_validate_certified_manifest_output_path",
+        "direct certified delivery manifest writes",
+        "canonical output path for best_certified_result",
+        "regular canonical delivery manifest output",
+        "target_path.is_absolute()",
+        "atomic_write_json(target_path, normalized)",
+        "raw_output_path.parent.resolve().relative_to(project_root)",
+    ):
+        if needle not in delivery_manifest_source_text:
+            errors.append(
+                "certified delivery manifest writer must keep best_certified_result on the "
+                f"canonical in-project manifest surface and block raw direct writers: {needle}"
+            )
+    if "allow_certified_payload" in delivery_manifest_source_text:
+        errors.append(
+            "certified delivery manifest raw writer must not expose a certified-payload override"
+        )
+    for needle in (
+        "set(metadata.keys())",
+        '"export_timestamp"',
+        "raw_blueprint_payload",
+        "_json_equivalent(raw_blueprint_payload, expected_blueprint)",
+        "instance-shaped placement_solution",
+    ):
+        if needle not in delivery_manifest_source_text:
+            errors.append(
+                "certified delivery manifest must compare raw current artifacts and only exempt "
+                f"the manifest export timestamp: {needle}"
+            )
+
+    serializer_source_text = SERIALIZER_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "_routing_solution_from_result",
+        "_coerce_routing_solution",
+        '"routing_solution"',
+        '"routing_network"',
+        "blueprint-projectable routing_solution",
+    ):
+        if needle not in serializer_source_text:
+            errors.append(
+                "certified blueprint projection must fail closed on terminal routing results "
+                f"that cannot be projected into optimal_blueprint: {needle}"
+            )
+
+    for needle in (
+        "CERTIFIED_SURFACE_VERIFIER_SOURCE",
+        "evaluate_certified_delivery_surface",
+        "verify_certified_delivery_surface",
+        "_resolve_campaign_state_payload",
+        "campaign_state_payload_mismatch",
+        "delivery_manifest_payload_mismatch",
+        "_load_strict_json_mapping",
+        "_reject_duplicate_json_keys",
+        "provided_exact_artifact_hashes_stale",
+        "validate_delivery_artifacts_match_campaign",
+        "validate_certified_delivery_manifest_matches_campaign",
+        "has_valid_terminal_full_frontier_certified_evidence",
+        "redact_certified_status",
+        "redact_certified_stop_reason",
+        "clear_certified_delivery_surface_artifacts",
+        "export_and_verify_certified_delivery_manifest",
+    ):
+        if needle not in certified_surface_source_text:
+            errors.append(
+                "certified public surfaces must share the central verifier/cleanup/export gate: "
+                f"{needle}"
+            )
+
+    resume_verifier_fn = _function_def(
+        certified_surface_tree,
+        "_resolve_resume_validation_reason",
+        path=CERTIFIED_SURFACE_PATH,
+    )
+    resume_verifier_source = _source_text(CERTIFIED_SURFACE_PATH, resume_verifier_fn)
+    if "campaign_resume_compatible is True" in resume_verifier_source:
+        errors.append(
+            "certified surface verifier must not trust caller-supplied resume-compatible=True; "
+            "it must recompute exact artifact hashes before publishing CERTIFIED"
+        )
+
+    for needle in (
+        "_reject_duplicate_json_keys",
+        "_reject_json_constant",
+        "_loads_strict_json_object",
+        "strict readable JSON",
+    ):
+        if needle not in delivery_manifest_source_text:
+            errors.append(
+                "certified delivery artifact validation must use strict JSON loads for raw artifacts: "
+                f"{needle}"
+            )
+    for needle in ("_reject_duplicate_json_keys", "_reject_json_constant"):
+        if needle not in serializer_source_text:
+            errors.append(
+                "certified blueprint/candidate placement readers must reject duplicate keys and JSON constants: "
+                f"{needle}"
+            )
+
+    inspector_tree = _parse_python(EXACT_CAMPAIGN_INSPECTOR_PATH)
+    delivery_summary_fn = _function_def(
+        inspector_tree,
+        "_delivery_manifest_summary",
+        path=EXACT_CAMPAIGN_INSPECTOR_PATH,
+    )
+    delivery_summary_source = _source_text(EXACT_CAMPAIGN_INSPECTOR_PATH, delivery_summary_fn)
+    inspector_source_text = EXACT_CAMPAIGN_INSPECTOR_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "validate_certified_delivery_manifest_matches_campaign",
+        "campaign_resume_compatible",
+        "has_valid_terminal_full_frontier_certified_evidence",
+        "certified_delivery_current",
+    ):
+        if (
+            needle not in delivery_summary_source
+            and needle not in inspector_source_text
+            and needle not in certified_surface_source_text
+        ):
+            errors.append(
+                "campaign inspector manifest terminal predicate must be a current campaign + "
+                f"current manifest + current artifact conjunction via the central certified surface verifier: {needle}"
+            )
 
     exact_campaign_tree = _parse_python(EXACT_CAMPAIGN_PATH)
     resume_fn = _function_def(exact_campaign_tree, "_validate_resume_state", path=EXACT_CAMPAIGN_PATH)
@@ -816,6 +1026,10 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "has_terminal_full_frontier_certified_evidence",
         "certified_terminal_evidence_violation",
         "terminal_certified_frontier_evidence_invalid",
+        "terminal_frontier_evidence",
+        "terminal_frontier_evidence_violation",
+        "_load_exact_safe_area_upper_bound",
+        "safe_area_upper_bound",
     ):
         if needle not in resume_source and needle not in exact_campaign_source:
             errors.append(
@@ -823,20 +1037,80 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
                 f"{needle}"
             )
 
-    inspector_source = (PROJECT_ROOT / "src" / "search" / "exact_campaign_inspector.py").read_text(encoding="utf-8")
+    certified_frontier_tree = _parse_python(CERTIFIED_FRONTIER_PATH)
+    certified_frontier_source = CERTIFIED_FRONTIER_PATH.read_text(encoding="utf-8")
+    for helper_name in (
+        "generate_candidate_sizes",
+        "normalize_terminal_frontier_domain_contract",
+        "candidate_generation_kwargs",
+        "candidate_key",
+        "candidate_objective",
+        "candidate_sort_key",
+        "compute_terminal_frontier_projection",
+        "build_terminal_frontier_evidence",
+        "terminal_frontier_evidence_violation",
+        "_candidate_status_digest",
+    ):
+        _function_def(certified_frontier_tree, helper_name, path=CERTIFIED_FRONTIER_PATH)
     for needle in (
-        "has_terminal_full_frontier_certified_evidence",
+        "TERMINAL_FRONTIER_EVIDENCE_SOURCE",
+        "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
+        "candidate_status_digest",
+        "potential_domain_size",
+        "frontier_keys",
+        "safe_area_upper_bound",
+        "terminal_frontier_start_area_not_full_domain",
+        "terminal_frontier_area_upper_bound_not_authoritative",
+        "terminal_frontier_aspect_ratio_sliced_domain",
+        "terminal_frontier_min_side_sliced_domain",
+        "TERMINAL_FRONTIER_MIN_SIDE_ADMISSIBILITY",
+        "terminal_frontier_candidate_status_digest_mismatch",
+        "terminal_frontier_potential_domain_not_exhausted",
+    ):
+        if needle not in certified_frontier_source:
+            errors.append(
+                "terminal CERTIFIED frontier evidence must be replayable, authority-bound, and digest-sealed: "
+                f"{needle}"
+            )
+
+    outer_source_text = OUTER_SEARCH_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "build_terminal_frontier_evidence",
+        "candidate_generation",
+        "candidate_generation_kwargs",
+        "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
+        "safe_area_upper_bound",
+        "terminal_frontier_evidence",
+    ):
+        if needle not in outer_source_text:
+            errors.append(
+                "outer search must commit replayable full-domain terminal frontier evidence before CERTIFIED export: "
+                f"{needle}"
+            )
+
+    inspector_source = EXACT_CAMPAIGN_INSPECTOR_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "verify_certified_delivery_surface",
+        "certified_surface",
         "terminal_full_frontier_certified",
     ):
         if needle not in inspector_source:
             errors.append(
-                "campaign inspector/report must share terminal full-frontier evidence: "
+                "campaign inspector/report must publish terminal evidence through the central certified surface verifier: "
                 f"{needle}"
             )
+    if "has_terminal_full_frontier_certified_evidence" not in certified_surface_source_text:
+        errors.append(
+            "campaign inspector/report must share terminal full-frontier evidence via certified_surface.py"
+        )
 
     b5a_source = (PROJECT_ROOT / "src" / "search" / "phase3b" / "b5a" / "b5_anchor_sprint.py").read_text(encoding="utf-8")
-    if "terminal_full_frontier_certified" not in b5a_source:
-        errors.append("B5A wrapper must consume the inspector terminal full-frontier evidence flag")
+    for needle in ("certified_surface", "certified_surface_publishable", "anchor_found"):
+        if needle not in b5a_source:
+            errors.append(
+                "B5A wrapper must consume the inspector certified surface verdict before publishing an anchor: "
+                f"{needle}"
+            )
 
     benders_tree = _parse_python(BENDERS_LOOP_PATH)
     run_benders_fn = _function_def(

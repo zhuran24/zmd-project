@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v66_certified_lifecycle_evidence_consolidation"
+    assert manifest["phase_gate_required_anchor"] == "v79_terminal_domain_axis_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -74,3 +74,8 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence" in export_tests
     assert "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result" in export_tests
     assert "test_v65_terminal_result_is_committed_before_final_solution_export" in export_tests
+    assert "test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoint_differs" in export_tests
+    assert "test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_best_result" in export_tests
+    assert "test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanonical_output_path" in export_tests
+    assert "test_v78_write_certified_delivery_manifest_rejects_direct_best_result_payload" in export_tests
+    assert "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result" in export_tests

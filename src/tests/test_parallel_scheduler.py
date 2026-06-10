@@ -37,10 +37,31 @@ def _build_empty_frontier_project(
         project_root / "rules" / "canonical_rules.json",
         {
             "globals": {"grid": {"width": width, "height": height}},
-            "facility_templates": {},
+            "facility_templates": {
+                "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            },
         },
     )
-    _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", {"facility_pools": {}})
+    # 单个真实 pose 让 terminal CERTIFIED 场景能走通 blueprint 导出/反查校验链
+    # (V73+ 的 manifest 校验会把 blueprint facility 反查回 facility_pools)。
+    _write_json(
+        project_root / "data" / "preprocessed" / "candidate_placements.json",
+        {
+            "facility_pools": {
+                "synthetic": [
+                    {
+                        "pose_id": "synthetic_pose_0",
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [[0, 0]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": None,
+                        "pose_params": {"orientation": 0, "port_mode": "default"},
+                    }
+                ]
+            }
+        },
+    )
     _write_json(project_root / "data" / "preprocessed" / "mandatory_exact_instances.json", [])
     _write_json(project_root / "data" / "preprocessed" / "all_facility_instances.json", [])
     _write_json(
@@ -719,7 +740,7 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
 
     def fake_serial_benders(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         del session, kwargs
-        if (int(ghost_w), int(ghost_h)) == (2, 1):
+        if (int(ghost_w), int(ghost_h)) != (1, 1):
             fake_serial_benders.last_run_metadata = {
                 "proof_summary": {"master_status": RUN_STATUS_INFEASIBLE},
                 "exact_safe_cuts": [],
@@ -736,7 +757,8 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
         return RUN_STATUS_CERTIFIED, {
             "ghost_pick": {
                 "pose_idx": 0,
-                "pose_id": f"ghost_{ghost_w}x{ghost_h}",
+                "pose_id": "synthetic_pose_0",
+                "anchor": {"x": 0, "y": 0},
                 "facility_type": "synthetic",
             }
         }
@@ -752,7 +774,7 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
         del pool
         results = []
         for task in reversed(tasks):
-            if (int(task.candidate[1]), int(task.candidate[2])) == (2, 1):
+            if (int(task.candidate[1]), int(task.candidate[2])) != (1, 1):
                 results.append(
                     WorkerResult(
                         dispatch_seq=task.dispatch_seq,
@@ -770,8 +792,6 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
                     )
                 )
             else:
-                ghost_w = int(task.candidate[1])
-                ghost_h = int(task.candidate[2])
                 results.append(
                     WorkerResult(
                         dispatch_seq=task.dispatch_seq,
@@ -781,7 +801,8 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
                         solution={
                             "ghost_pick": {
                                 "pose_idx": 0,
-                                "pose_id": f"ghost_{ghost_w}x{ghost_h}",
+                                "pose_id": "synthetic_pose_0",
+                                "anchor": {"x": 0, "y": 0},
                                 "facility_type": "synthetic",
                             }
                         },
@@ -814,9 +835,8 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
     serial_status, serial_result = run_outer_search(
         project_root=serial_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=4,
         min_side=1,
-        area_upper_bound=2,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -831,9 +851,8 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
     parallel_status, parallel_result = run_outer_search(
         project_root=parallel_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=4,
         min_side=1,
-        area_upper_bound=2,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -862,7 +881,35 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
 
     def fake_wave_executor(*, pool, tasks):
         assert isinstance(pool, _DummyParallelWorkerPool)
-        assert len(tasks) >= 2
+        # 权威全域的支配 frontier 从单头 (6,6) 起步, 头几波只有一个 head;
+        # 单头波一律判 INFEASIBLE 削掉支配角, 等 frontier 裂成 ≥2 头的那一波
+        # 再乱序回报两个 CERTIFIED, 专测乱序 merge 不丢 best。
+        if len(tasks) < 2:
+            return ParallelWaveExecution(
+                completed=True,
+                failure_reason=None,
+                results=tuple(
+                    WorkerResult(
+                        dispatch_seq=task.dispatch_seq,
+                        attempt_index=task.attempt_index,
+                        candidate=task.candidate,
+                        status=RUN_STATUS_INFEASIBLE,
+                        solution=None,
+                        proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
+                        exact_safe_cuts=[],
+                        loaded_exact_safe_cut_count=0,
+                        generated_exact_safe_cut_count=0,
+                        worker_wall_seconds=0.01,
+                        peak_rss_bytes=1,
+                        error=None,
+                    )
+                    for task in tasks
+                ),
+                dispatched_candidate_keys=tuple(task.candidate_key for task in tasks),
+                elapsed_seconds=0.02,
+                peak_rss_bytes_external_total=2,
+                peak_rss_bytes_internal_max_single_process=1,
+            )
         sorted_tasks = sorted(tasks, key=lambda task: int(task.candidate[0]))
         small_task = sorted_tasks[0]
         big_task = sorted_tasks[-1]
@@ -883,7 +930,7 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                     solution={
                         "small_pick": {
                             "pose_idx": 0,
-                            "pose_id": "ghost_1x1",
+                            "pose_id": "synthetic_pose_0",
                             "facility_type": "synthetic",
                             "anchor": {"x": 0, "y": 0},
                         }
@@ -904,7 +951,7 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                     solution={
                         "big_pick": {
                             "pose_idx": 0,
-                            "pose_id": f"ghost_{int(big_task.candidate[1])}x{int(big_task.candidate[2])}",
+                            "pose_id": "synthetic_pose_0",
                             "facility_type": "synthetic",
                             "anchor": {"x": 0, "y": 0},
                         }
@@ -930,9 +977,8 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
     status, result = run_outer_search(
         project_root=project_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=8,
         min_side=1,
-        area_upper_bound=9,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,

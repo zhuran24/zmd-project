@@ -8,10 +8,18 @@ import pytest
 from src.io.delivery_manifest import (
     delivery_manifest_output_path,
     export_certified_delivery_manifest,
+    validate_certified_delivery_manifest_matches_campaign,
+    write_certified_delivery_manifest,
 )
-from src.io.serializer import export_certified_blueprint
+from src.io.output_schema import blueprint_output_path
+from src.io.serializer import (
+    build_blueprint_payload_from_certified_result,
+    export_certified_blueprint,
+    write_blueprint_payload,
+)
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN
 from src.search.exact_campaign import ExactCampaign
+from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -102,6 +110,7 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
         "search_stats": {"campaign_resumed": False},
     }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
     best_result = campaign.best_certified_result()
@@ -249,3 +258,929 @@ def test_delivery_manifest_rejects_stale_certified_final_result_without_terminal
             campaign_path=campaign.path,
         )
 
+
+def test_v79_delivery_manifest_rejects_non_instance_placement_solution(
+    tmp_path: Path,
+) -> None:
+    # V79: 非 instance 形状的 placement_solution 无法反查回 facility_pools,
+    # terminal certified 发布必须 fail-closed 而不是静默跳过深校验。
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_non_instance_solution"
+    )
+    freeform_solution = {"freeform": {"comment": "not a pose pick"}}
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=freeform_solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": freeform_solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    # ghost_rect 匹配的合法空 blueprint: 深校验的非 instance 检查必须先于
+    # blueprint/placement 等价比较 fail-closed。
+    write_blueprint_payload(
+        blueprint_output_path(project_root),
+        build_blueprint_payload_from_certified_result(
+            result={
+                "ghost_rect": {"w": 1, "h": 1, "area": 1},
+                "placement_solution": {},
+                "search_stats": {},
+            },
+            facility_pools=facility_pools,
+        ),
+    )
+
+    with pytest.raises(ValueError, match="instance-shaped placement_solution"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts(
+    tmp_path: Path,
+) -> None:
+    project_root, _facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_missing_export_artifacts"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    with pytest.raises(ValueError, match="exported delivery artifacts"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v69_delivery_manifest_rejects_stale_final_solution_artifact(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_stale_final_solution_artifact"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(
+        project_root / "data" / "solutions" / "final_solution.json",
+        {
+            "ghost_rect": {"w": 2, "h": 1, "area": 2},
+            "placement_solution": {},
+            "search_status": RUN_STATUS_CERTIFIED,
+            "search_stats": {"campaign_resumed": False, "stale": True},
+        },
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+
+    with pytest.raises(ValueError, match="final_solution artifact to match terminal final_result"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_stale_blueprint_artifact"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    stale_blueprint_result = dict(best_result)
+    stale_blueprint_result["ghost_rect"] = {"w": 2, "h": 1, "area": 2}
+    export_certified_blueprint(
+        project_root=project_root,
+        result=stale_blueprint_result,
+        facility_pools=facility_pools,
+    )
+
+    with pytest.raises(ValueError, match="optimal_blueprint artifact to match terminal final_result"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v70_delivery_manifest_accepts_master_solution_metadata_not_in_blueprint(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_master_metadata_fields"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "instance_id": "tiny_001",
+            "facility_type": "tiny_facility",
+            "operation_type": "build",
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "is_mandatory": True,
+            "bound_type": "exact",
+            "solve_mode": "certified_exact",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+
+    _output_path, payload = export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+
+    assert payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+
+
+def test_v70_delivery_manifest_rejects_non_integer_blueprint_score(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_non_integer_blueprint_score"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    blueprint_path = blueprint_output_path(project_root)
+    blueprint_payload = json.loads(blueprint_path.read_text(encoding="utf-8"))
+    blueprint_payload["objective_achieved"]["empty_rect"]["score"] = 1.49
+    _write_json(blueprint_path, blueprint_payload)
+
+    with pytest.raises(ValueError, match="optimal_blueprint artifact to match terminal final_result"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+def test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_result(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_stale_exact_hash"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
+        {"required_generic_outputs": {"stale_after_campaign": 1}, "required_generic_inputs": {}},
+    )
+
+    with pytest.raises(ValueError, match="resume-compatible with current exact artifacts"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_tampered_blueprint_ports"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    blueprint_path = blueprint_output_path(project_root)
+    blueprint_payload = json.loads(blueprint_path.read_text(encoding="utf-8"))
+    blueprint_payload["facilities"][0]["active_ports"] = [
+        {"type": "input", "x": 9, "y": 9, "dir": "N", "commodity": "stale"}
+    ]
+    _write_json(blueprint_path, blueprint_payload)
+
+    with pytest.raises(ValueError, match="optimal_blueprint artifact to match terminal final_result"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_blueprint_extra_raw_fields"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    blueprint_path = blueprint_output_path(project_root)
+    blueprint_payload = json.loads(blueprint_path.read_text(encoding="utf-8"))
+    blueprint_payload["stale_certified_shadow"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    _write_json(blueprint_path, blueprint_payload)
+
+    with pytest.raises(ValueError, match="optimal_blueprint artifact to match terminal final_result"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v72_manifest_currentness_rejects_extra_metadata_fields(tmp_path: Path) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_extra_metadata_fields"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    _output_path, manifest_payload = export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+    manifest_payload["metadata"]["stale_proof_hash"] = "0" * 64
+
+    with pytest.raises(ValueError, match="metadata does not match current contract"):
+        validate_certified_delivery_manifest_matches_campaign(
+            project_root=project_root,
+            delivery_manifest=manifest_payload,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_solution(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_routing_solution_projection"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    routing_solution = [
+        {
+            "x": 0,
+            "y": 0,
+            "layer": 0,
+            "component_type": "belt",
+            "commodity": "test_item",
+            "flow_in": ["N"],
+            "flow_out": ["E"],
+        }
+    ]
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "routing_solution": routing_solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result={k: v for k, v in best_result.items() if k != "routing_solution"},
+        facility_pools=facility_pools,
+    )
+
+    with pytest.raises(ValueError, match="optimal_blueprint artifact to match terminal final_result"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_duplicate_final_solution_key"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED},
+        loaded_exact_safe_cut_count=1,
+        generated_exact_safe_cut_count=2,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+    _write_json(final_solution_path, best_result)
+    final_solution_path.write_text(
+        final_solution_path.read_text(encoding="utf-8").replace(
+            '  "search_status": "CERTIFIED"',
+            '  "search_status": "BAD",\n  "search_status": "CERTIFIED"',
+            1,
+        ),
+        encoding="utf-8",
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+
+    with pytest.raises(ValueError, match="strict readable JSON final_solution artifact"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoint_differs(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_writer_disk_authority"
+    )
+    disk_campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    disk_campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_INFEASIBLE)
+    disk_campaign.save()
+
+    memory_campaign = ExactCampaign.load_or_create(
+        project_root,
+        campaign_hours=2.0,
+        resume=False,
+        filename="memory_exact_campaign_state.json",
+    )
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    memory_campaign.mark_candidate_started(1, 1)
+    memory_campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    memory_campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    memory_campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(memory_campaign, project_root)
+
+    best_result = memory_campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+
+    with pytest.raises(ValueError, match="disk checkpoint authority"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=memory_campaign.state,
+            campaign_path=disk_campaign.path,
+        )
+    assert not delivery_manifest_output_path(project_root).exists()
+
+
+def test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_best_result(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_writer_symlink_checkpoint"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    symlink_path = campaign.path.with_name("symlink_exact_campaign_state.json")
+    symlink_path.symlink_to(campaign.path.name)
+
+    with pytest.raises(ValueError, match="regular campaign checkpoint"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=symlink_path,
+        )
+    assert not delivery_manifest_output_path(project_root).exists()
+
+
+def test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanonical_output_path(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_writer_noncanonical_output"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    side_output_path = project_root / "data" / "solutions" / "side_certified_manifest.json"
+
+    with pytest.raises(ValueError, match="canonical output path"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+            output_path=side_output_path,
+        )
+    assert not side_output_path.exists()
+    assert not delivery_manifest_output_path(project_root).exists()
+
+
+def test_v78_write_certified_delivery_manifest_rejects_direct_best_result_payload(
+    tmp_path: Path,
+) -> None:
+    output_path = tmp_path / "certified_delivery_manifest.json"
+    with pytest.raises(ValueError, match="direct certified delivery manifest writes"):
+        write_certified_delivery_manifest(
+            output_path,
+            {
+                "metadata": {"version": "1.0.0"},
+                "campaign": {"final_status": RUN_STATUS_CERTIFIED},
+                "best_certified_result": {"search_status": RUN_STATUS_CERTIFIED},
+                "artifacts": {},
+            },
+        )
+    assert not output_path.exists()
+
+
+def test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(
+        tmp_path / "delivery_manifest_writer_symlink_output"
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    solution = {
+        "tiny_001": {
+            "pose_idx": 0,
+            "pose_id": "tiny_pose_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "tiny_facility",
+        }
+    }
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": solution,
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    canonical_manifest_path = delivery_manifest_output_path(project_root)
+    shadow_path = canonical_manifest_path.with_name("shadow_manifest.json")
+    shadow_path.write_text("{}", encoding="utf-8")
+    canonical_manifest_path.symlink_to(shadow_path.name)
+
+    with pytest.raises(ValueError, match="regular canonical delivery manifest output"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+    assert canonical_manifest_path.is_symlink()

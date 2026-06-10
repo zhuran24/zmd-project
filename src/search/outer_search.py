@@ -14,15 +14,8 @@ from fractions import Fraction
 import json
 import os
 from pathlib import Path
-import shutil
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
-from src.io.delivery_manifest import (
-    delivery_manifest_output_path,
-    export_certified_delivery_manifest,
-)
-from src.io.output_schema import blueprint_output_path
-from src.io.serializer import export_certified_blueprint
 from src.models.cut_manager import (
     RUN_STATUS_CERTIFIED,
     RUN_STATUS_INFEASIBLE,
@@ -48,10 +41,23 @@ from src.search.campaign_telemetry import (
     build_wave_summary,
     load_campaign_telemetry_payload,
 )
+from src.search.certified_frontier import (
+    TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
+    build_terminal_frontier_evidence,
+    candidate_generation_kwargs,
+    candidate_key as certified_frontier_candidate_key,
+    candidate_objective as certified_frontier_candidate_objective,
+    candidate_sort_key as certified_frontier_candidate_sort_key,
+    generate_candidate_sizes as generate_certified_frontier_candidate_sizes,
+)
+from src.search.certified_surface import (
+    clear_certified_delivery_surface_artifacts,
+    export_and_verify_certified_delivery_manifest,
+    save_certified_final_solution_and_blueprint,
+)
 from src.search.exact_campaign import (
     ExactCampaign,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-    atomic_write_json,
     has_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence,
 )
@@ -110,37 +116,55 @@ def _mark_certified_campaign_blocked(
 ) -> None:
     # Fail closed on resumed terminal states: an unsafe/manual-gate blocker must
     # not leave stale CERTIFIED-looking final_result payloads in the checkpoint
-    # or stale delivery artifacts on disk.
+    # or stale delivery artifacts on disk.  Cleanup is attempted even if the
+    # checkpoint rewrite fails, because inspector/B5A currentness depends on the
+    # absence of stale final artifacts and stale certified manifests.
     exact_campaign.state["final_result"] = None
     exact_campaign.state["final_status"] = None
+    exact_campaign.state["terminal_frontier_evidence"] = None
     exact_campaign.mark_campaign_stopped(reason, status=RUN_STATUS_UNPROVEN)
     stop_record = exact_campaign.state.get("last_stop_reason")
     if isinstance(stop_record, dict):
         stop_record["blockers"] = [dict(blocker) for blocker in blockers]
-    exact_campaign.save()
-    _clear_certified_delivery_solution_artifacts(exact_campaign.project_root)
-    _refresh_certified_delivery_manifest_if_any(
-        project_root=exact_campaign.project_root,
-        exact_campaign=exact_campaign,
-    )
+
+    save_error: Optional[BaseException] = None
+    cleanup_error: Optional[BaseException] = None
+    refresh_error: Optional[BaseException] = None
+    try:
+        exact_campaign.save()
+    except Exception as exc:  # noqa: BLE001
+        save_error = exc
+
+    try:
+        _clear_certified_delivery_solution_artifacts(exact_campaign.project_root)
+    except Exception as exc:  # noqa: BLE001
+        cleanup_error = exc
+
+    if save_error is None:
+        try:
+            _refresh_certified_delivery_manifest_if_any(
+                project_root=exact_campaign.project_root,
+                exact_campaign=exact_campaign,
+            )
+        except Exception as exc:  # noqa: BLE001
+            refresh_error = exc
+
+    if save_error is not None:
+        if cleanup_error is not None:
+            save_error.add_note(f"certified artifact cleanup also failed: {cleanup_error}")
+        raise save_error
+    if refresh_error is not None:
+        if cleanup_error is not None:
+            refresh_error.add_note(f"certified artifact cleanup also failed: {cleanup_error}")
+        raise refresh_error
+    if cleanup_error is not None:
+        raise cleanup_error
 
 
 def _clear_certified_delivery_solution_artifacts(project_root: Path) -> None:
     """Remove export artifacts that must not survive a fail-closed blocker."""
 
-    stale_artifact_paths = [
-        project_root / "data" / "solutions" / "final_solution.json",
-        blueprint_output_path(project_root),
-        delivery_manifest_output_path(project_root),
-    ]
-    for artifact_path in stale_artifact_paths:
-        try:
-            if artifact_path.is_dir() and not artifact_path.is_symlink():
-                shutil.rmtree(artifact_path)
-            else:
-                artifact_path.unlink()
-        except FileNotFoundError:
-            continue
+    clear_certified_delivery_surface_artifacts(project_root)
 
 
 def _declare_mode_is_strict(exact_campaign: Optional[ExactCampaign]) -> bool:
@@ -340,39 +364,31 @@ def generate_candidate_sizes(
     min_side: int = 6,
     max_aspect_ratio: Optional[float] = None,
     area_upper_bound: Optional[int] = None,
+    start_area: Optional[int] = None,
 ) -> List[Tuple[int, int, int]]:
-    candidates: List[Tuple[int, int, int]] = []
-    for w in range(min_side, max_w + 1):
-        for h in range(min_side, min(max_h, w) + 1):
-            area = w * h
-            if area_upper_bound is not None and area > area_upper_bound:
-                continue
-            if max_aspect_ratio is not None and max_aspect_ratio > 0:
-                longer = max(w, h)
-                shorter = max(1, min(w, h))
-                if longer / shorter > max_aspect_ratio:
-                    continue
-            candidates.append((area, w, h))
-    candidates.sort(key=_candidate_sort_key)
-    return candidates
+    normalized_max_aspect_ratio = max_aspect_ratio
+    if normalized_max_aspect_ratio is not None and float(normalized_max_aspect_ratio) <= 0.0:
+        normalized_max_aspect_ratio = None
+    return generate_certified_frontier_candidate_sizes(
+        max_w=max_w,
+        max_h=max_h,
+        min_side=min_side,
+        max_aspect_ratio=normalized_max_aspect_ratio,
+        area_upper_bound=area_upper_bound,
+        start_area=start_area,
+    )
 
 
 def _candidate_objective(candidate: Tuple[int, int, int]) -> Tuple[int, int]:
-    area, ghost_w, ghost_h = candidate
-    return (int(area), int(min(int(ghost_w), int(ghost_h))))
+    return certified_frontier_candidate_objective(candidate)
 
 
 def _candidate_sort_key(candidate: Tuple[int, int, int]) -> Tuple[int, int, int, int]:
-    area, ghost_w, ghost_h = candidate
-    min_side = min(int(ghost_w), int(ghost_h))
-    max_side = max(int(ghost_w), int(ghost_h))
-    # Exact objective source-of-truth is max_lex(area, min_side).
-    # Longer-side ordering below is stability-only for deterministic runs.
-    return (-int(area), -int(min_side), -int(max_side), -int(int(ghost_w)))
+    return certified_frontier_candidate_sort_key(candidate)
 
 
 def _candidate_key(candidate: Tuple[int, int, int]) -> str:
-    return f"{int(candidate[1])}x{int(candidate[2])}"
+    return certified_frontier_candidate_key(candidate)
 
 
 def _candidate_dict(candidate: Tuple[int, int, int]) -> Dict[str, int]:
@@ -758,12 +774,21 @@ def _build_certified_result(
 def _commit_terminal_full_frontier_certified_result(
     exact_campaign: ExactCampaign,
     result: Mapping[str, Any],
+    *,
+    candidates: Sequence[Tuple[int, int, int]],
+    candidate_generation: Mapping[str, Any],
 ) -> None:
     exact_campaign.state["final_result"] = dict(result)
     exact_campaign.state["final_status"] = RUN_STATUS_CERTIFIED
     exact_campaign.mark_campaign_stopped(
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
         status=RUN_STATUS_CERTIFIED,
+    )
+    exact_campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=exact_campaign.state.get("candidates", {}),
+        final_result=result,
+        candidate_generation=candidate_generation,
     )
     if not has_valid_terminal_full_frontier_certified_evidence(exact_campaign.state):
         raise RuntimeError(
@@ -778,16 +803,11 @@ def _save_final_result(
     *,
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
 ) -> Path:
-    output_dir = project_root / "data" / "solutions"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / "final_solution.json"
-    atomic_write_json(output_path, result)
-    export_certified_blueprint(
+    return save_certified_final_solution_and_blueprint(
         project_root=project_root,
         result=result,
         facility_pools=facility_pools,
     )
-    return output_path
 
 
 def _persist_best_certified_result_if_any(
@@ -817,12 +837,10 @@ def _refresh_certified_delivery_manifest_if_any(
 ) -> Optional[Dict[str, Any]]:
     if exact_campaign is None:
         return None
-    _path, payload = export_certified_delivery_manifest(
+    return export_and_verify_certified_delivery_manifest(
         project_root=project_root,
-        campaign_state=exact_campaign.state,
-        campaign_path=exact_campaign.path,
+        exact_campaign=exact_campaign,
     )
-    return payload
 
 
 def _refresh_certified_delivery_outputs(
@@ -1610,15 +1628,20 @@ def run_outer_search(
     else:
         area_upper_bound = min(int(area_upper_bound), safe_area_upper_bound)
 
-    candidates = generate_candidate_sizes(
-        max_w=grid_w,
-        max_h=grid_h,
-        min_side=min_side,
-        max_aspect_ratio=max_aspect_ratio,
-        area_upper_bound=area_upper_bound,
-    )
-    if start_area is not None:
-        candidates = [item for item in candidates if item[0] <= start_area]
+    normalized_max_aspect_ratio = max_aspect_ratio
+    if normalized_max_aspect_ratio is not None and float(normalized_max_aspect_ratio) <= 0.0:
+        normalized_max_aspect_ratio = None
+    candidate_generation = {
+        "max_w": grid_w,
+        "max_h": grid_h,
+        "min_side": min_side,
+        "max_aspect_ratio": normalized_max_aspect_ratio,
+        "area_upper_bound": area_upper_bound,
+        "start_area": start_area,
+        "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
+        "safe_area_upper_bound": safe_area_upper_bound,
+    }
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
 
     evaluation_attempts = 0
     solve_attempts = 0
@@ -1697,12 +1720,14 @@ def run_outer_search(
                                 best_proof_summary.get("frontier_candidate_metrics", {})
                             ),
                         )
-                        if exact_campaign is not None:
-                            _commit_terminal_full_frontier_certified_result(
-                                exact_campaign,
-                                result,
-                            )
                         try:
+                            if exact_campaign is not None:
+                                _commit_terminal_full_frontier_certified_result(
+                                    exact_campaign,
+                                    result,
+                                    candidates=candidates,
+                                    candidate_generation=candidate_generation,
+                                )
                             _save_final_result(
                                 project_root,
                                 result,

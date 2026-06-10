@@ -15,8 +15,25 @@ from src.io.output_schema import (
 from src.search.exact_campaign import atomic_write_json
 
 
+def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:
+    payload: Dict[str, Any] = {}
+    for key, value in pairs:
+        if key in payload:
+            raise ValueError(f"duplicate JSON key: {key}")
+        payload[key] = value
+    return payload
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant: {value}")
+
+
 def load_json_mapping(path: Path) -> Dict[str, Any]:
-    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    payload = json.loads(
+        Path(path).read_text(encoding="utf-8"),
+        object_pairs_hook=_reject_duplicate_json_keys,
+        parse_constant=_reject_json_constant,
+    )
     if not isinstance(payload, Mapping):
         raise TypeError(f"expected JSON mapping at {path}")
     return dict(payload)
@@ -77,11 +94,16 @@ def build_blueprint_payload_from_certified_result(
     search_stats = result.get("search_stats", {})
     if not isinstance(search_stats, Mapping):
         search_stats = {}
+    resolved_routing_solution = (
+        _routing_solution_from_result(result)
+        if routing_solution is None
+        else _coerce_routing_solution(routing_solution)
+    )
     return build_canonical_blueprint_payload(
         placement_solution=_mapping_or_empty(result.get("placement_solution")),
         facility_pools=facility_pools,
         ghost_rect=_mapping_or_empty(result.get("ghost_rect")),
-        routing_solution=routing_solution,
+        routing_solution=resolved_routing_solution,
         solve_time_seconds=float(search_stats.get("solve_time_seconds", 0.0)),
         benders_iterations=int(search_stats.get("benders_iterations", 0)),
         export_timestamp=export_timestamp,
@@ -323,6 +345,32 @@ def _normalize_flow_list(raw: Any, *, fallback_key: str, segment: Mapping[str, A
     if fallback is None:
         return []
     return [str(fallback)]
+
+
+def _routing_solution_from_result(result: Mapping[str, Any]) -> Sequence[Mapping[str, Any]]:
+    if "routing_solution" in result:
+        return _coerce_routing_solution(result.get("routing_solution"))
+    if "routing_network" in result:
+        routing_network = result.get("routing_network")
+        if routing_network in (None, {}):
+            return []
+        raise ValueError(
+            "certified result routing_network is not a blueprint-projectable routing_solution"
+        )
+    return []
+
+
+def _coerce_routing_solution(raw: Any) -> Sequence[Mapping[str, Any]]:
+    if raw is None:
+        return []
+    if isinstance(raw, (str, bytes)) or not isinstance(raw, Sequence):
+        raise ValueError("routing_solution must be a sequence of mapping segments")
+    segments: list[Mapping[str, Any]] = []
+    for index, segment in enumerate(raw):
+        if not isinstance(segment, Mapping):
+            raise ValueError(f"routing_solution segment {index} must be a mapping")
+        segments.append(dict(segment))
+    return segments
 
 
 def _resolve_pose(

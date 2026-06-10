@@ -44,15 +44,17 @@ def build_phase3b_b5_anchor_sprint_summary(
     )
     operating_profile = build_phase3b_operating_profile_summary(project_root)
 
+    certified_surface = _mapping(inspection.get("certified_surface"))
     campaign = _mapping(inspection.get("campaign"))
     telemetry = _mapping(inspection.get("telemetry"))
     delivery_manifest = _mapping(inspection.get("delivery_manifest"))
     best_certified = _mapping_or_none(campaign.get("best_certified_result"))
     final_status = campaign.get("final_status")
-    terminal_full_frontier_certified = bool(
-        campaign.get("terminal_full_frontier_certified", False)
+    delivery_manifest_terminal_certified = bool(
+        delivery_manifest.get("terminal_full_frontier_certified", False)
     )
-    anchor_found = bool(terminal_full_frontier_certified and best_certified)
+    certified_surface_publishable = bool(certified_surface.get("publishable", False))
+    anchor_found = bool(certified_surface_publishable and best_certified)
     last_stop_reason = _mapping_or_none(campaign.get("last_stop_reason"))
     candidate_status_counts = _mapping(campaign.get("candidate_status_counts"))
     triage_summary = _mapping(triage.get("summary"))
@@ -94,6 +96,10 @@ def build_phase3b_b5_anchor_sprint_summary(
             "campaign_present": bool(campaign.get("present", False)),
             "telemetry_present": bool(telemetry.get("present", False)),
             "delivery_manifest_present": bool(delivery_manifest.get("present", False)),
+            "delivery_manifest_terminal_full_frontier_certified": delivery_manifest_terminal_certified,
+            "certified_surface_public": certified_surface_publishable,
+            "certified_surface_publishable": certified_surface_publishable,
+            "certified_surface_blocked_reason": certified_surface.get("blocked_reason"),
             "source_matches_coordinator": bool(
                 source_provenance.get("workspace_source_matches_coordinator", False)
             ),
@@ -127,6 +133,10 @@ def build_phase3b_b5_anchor_sprint_summary(
                 campaign.get("resume_compatible_with_current_hashes", False)
             ),
             "resume_validation_reason": campaign.get("resume_validation_reason"),
+            "delivery_manifest_terminal_full_frontier_certified": delivery_manifest_terminal_certified,
+            "certified_surface_public": certified_surface_publishable,
+            "certified_surface_publishable": certified_surface_publishable,
+            "certified_surface_blocked_reason": certified_surface.get("blocked_reason"),
         },
         "telemetry": {
             "wave_count": int(telemetry.get("wave_count", 0)),

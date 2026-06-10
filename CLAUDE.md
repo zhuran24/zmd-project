@@ -43,6 +43,9 @@ src/models/routing_subproblem.py # Grid routing
 src/models/flow_subproblem.py    # Multi-commodity flow diagnostic
 src/search/exact_campaign.py     # Campaign persistence + resume
 src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
+src/search/certified_surface.py  # Central verifier for public CERTIFIED delivery surfaces (V73+)
+src/search/certified_frontier.py # Replayable terminal full-frontier evidence (V75+)
+src/io/delivery_manifest.py      # Disk-authoritative certified delivery manifest writer (V77/V78)
 ```
 
 ## Active Scope
@@ -53,8 +56,8 @@ src/search/exact_parallel_scheduler.py  # Multi-process parallel waves
 
 ## Current Phase: 1.2 spike close (subject projection)
 
-<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:76cfb058081e199b5fb29953e6b2ade15a0c713706ddd28665d8215fbc879e0d -->
-Current phase: **Phase 1.2 spike close is not formally closed** — the V50 manual owner-count gate remains in force, and V66 anchors certified lifecycle evidence after V57-V66 found sibling findings across condition/domain replay, master-domain and power-witness representation, full-frontier terminal evidence, and certified export surfaces. The standard remains **3 consecutive independent full reviews with zero algorithmic/soundness findings**, with the count **owner-maintained outside the repo**; the repository no longer grants clean credit from receipts or report metadata. Until an explicit owner manual decision opens P1.3B, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
+<!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract START sha256:508b4d5a333a03ce52a777b18bc6f0d998263cc20931848b632af9e5bdea521f -->
+Current phase: **Phase 1.2 spike close is not formally closed** — the V50 manual owner-count gate remains in force, and V79 anchors certified lifecycle evidence after V57-V79 found sibling findings across condition/domain replay, master-domain and power-witness representation, replayable full-frontier terminal evidence (all four candidate-domain slicing axes sealed), disk-authoritative delivery-manifest writing, canonical certified manifest publication, and certified export surfaces. The standard remains **3 consecutive independent full reviews with zero algorithmic/soundness findings**, with the count **owner-maintained outside the repo**; the repository no longer grants clean credit from receipts or report metadata. Until an explicit owner manual decision opens P1.3B, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
 <!-- DOC-SUBJECT:current_project_state FIELD:claude_phase_contract END -->
 
 Operational notes:
@@ -93,8 +96,12 @@ AI modules must NEVER:
 # Run solver (default certified_exact mode)
 python main.py --campaign-hours 168.0 --parallel-processes 4
 
-# Run tests
+# Run tests (full suite ~7min serial; the parallel form below is ~85s and was
+# verified to produce the identical failure set)
 python -m pytest src/tests/ -q
+# Fast parallel form (pytest-xdist): isolated basetemp also avoids the
+# repo-root .pytest_tmp clobbering when several pytest processes run at once
+python -m pytest src/tests/ -q -p no:randomly -n 8 --dist loadfile --basetemp="$env:TEMP\zmd_pytest"
 
 # Single-base e2e workflow
 python scripts/run_industrial_planner_single_base_e2e.py --run-dir .artifacts/industrial_planner_single_base_e2e
@@ -393,6 +400,13 @@ These clones are **NOT** part of the build, are NOT scanned by tests, and do NOT
 
 - Python 3.13
 - ortools (9.15.6755), pydantic (>=2), numpy, matplotlib, psutil, pandas, jsonschema, Pillow
+
+### 当前 Windows checkout 环境 (2026-06-10)
+
+- 当前工作区 `C:\claude pj\zmd_pj` 是轻量 GitHub checkout (zhuran24/zmd); 旧 `D:\追光\zmd` 位置已不存在。
+- **本 checkout 无 `.venv`** — 直接用全局 Store Python 3.13.13 (`python`), 依赖已装全 (ortools 9.15.6755)。CLAUDE.md/记忆里的 `.venv\Scripts\python.exe` / `.venv/bin/python` 写法是旧环境遗留, 在这里会假成功或报错。
+- `data/preprocessed/candidate_placements.json` (53.6MB) 外置未恢复; certified exact 大跑前按 START_HERE.md 的 restore 命令恢复。
+- post-commit hook 会自动 push GitHub (commit ≈ push); pre-commit 的 memory 镜像源 (旧 slug `D-----zmd`) 不存在会静默跳过 → 改记忆需手动双写 `_cc_live_memory/` 与 `cc_context/memory/`。
 
 ## Conventions
 

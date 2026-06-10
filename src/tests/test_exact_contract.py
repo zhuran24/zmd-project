@@ -246,10 +246,31 @@ def _build_frontier_project(project_root: Path, *, width: int = 6, height: int =
         rules_dir / "canonical_rules.json",
         {
             "globals": {"grid": {"width": width, "height": height}},
-            "facility_templates": {},
+            "facility_templates": {
+                "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            },
         },
     )
-    _write_json(data_dir / "candidate_placements.json", {"facility_pools": {}})
+    # 单个真实 pose 让 terminal CERTIFIED 场景能走通 blueprint 导出/反查校验链
+    # (V73+ 的 manifest 校验会把 blueprint facility 反查回 facility_pools)。
+    _write_json(
+        data_dir / "candidate_placements.json",
+        {
+            "facility_pools": {
+                "synthetic": [
+                    {
+                        "pose_id": "synthetic_pose_0",
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [[0, 0]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": None,
+                        "pose_params": {"orientation": 0, "port_mode": "default"},
+                    }
+                ]
+            }
+        },
+    )
     _write_json(data_dir / "mandatory_exact_instances.json", [])
     _write_json(data_dir / "all_facility_instances.json", [])
     _write_json(
@@ -5423,7 +5444,8 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
             return RUN_STATUS_CERTIFIED, {
                 "ghost_pick": {
                     "pose_idx": 0,
-                    "pose_id": f"ghost_{ghost_w}x{ghost_h}",
+                    "pose_id": "synthetic_pose_0",
+                    "anchor": {"x": 0, "y": 0},
                     "facility_type": "synthetic",
                 }
             }
@@ -5447,8 +5469,6 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
         max_w=6,
         max_h=6,
         min_side=1,
-        max_aspect_ratio=3.0,
-        area_upper_bound=12,
     )
     frontier_state = outer_search_module._compute_exact_frontier_state(
         explicit_candidates,
@@ -5466,8 +5486,6 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
         solve_mode="certified_exact",
         max_attempts=64,
         min_side=1,
-        area_upper_bound=12,
-        max_aspect_ratio=3.0,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -5538,7 +5556,8 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
         return RUN_STATUS_CERTIFIED, {
             "ghost_pick": {
                 "pose_idx": 0,
-                "pose_id": f"ghost_{ghost_w}x{ghost_h}",
+                "pose_id": "synthetic_pose_0",
+                "anchor": {"x": 0, "y": 0},
                 "facility_type": "synthetic",
             }
         }
@@ -5619,7 +5638,8 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
             return RUN_STATUS_CERTIFIED, {
                 "ghost_pick": {
                     "pose_idx": 0,
-                    "pose_id": f"ghost_{ghost_w}x{ghost_h}",
+                    "pose_id": "synthetic_pose_0",
+                    "anchor": {"x": 0, "y": 0},
                     "facility_type": "synthetic",
                 }
             }
@@ -5642,9 +5662,8 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
     status, result = run_outer_search(
         project_root=project_root,
         solve_mode="certified_exact",
-        max_attempts=1,
+        max_attempts=3,
         min_side=1,
-        area_upper_bound=9,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -5655,11 +5674,13 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
-    assert calls == [(6, 1)]
+    assert calls == [(6, 6), (6, 5), (6, 4)]
 
     partial_state = _read_campaign_state(project_root)
-    assert "6x1" in partial_state["candidates"]
-    assert "3x3" not in partial_state["candidates"]
+    assert "6x4" in partial_state["candidates"]
+    # prune-first 在 {(5,5),(6,4)} 双头处偏离 objective 前缀: objective 头 (5,5)
+    # 还没被解, 部分跑可以偏离 objective 序而 resume 后仍收敛。
+    assert "5x5" not in partial_state["candidates"]
     assert partial_state["last_stop_reason"]["reason"] == "max_attempts_exhausted"
 
     status, result = run_outer_search(
@@ -5667,7 +5688,6 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
         solve_mode="certified_exact",
         max_attempts=32,
         min_side=1,
-        area_upper_bound=9,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,

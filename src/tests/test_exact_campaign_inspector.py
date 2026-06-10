@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -12,12 +13,20 @@ from src.models.cut_manager import (
     RUN_STATUS_UNKNOWN,
     RUN_STATUS_UNPROVEN,
 )
+from src.io.delivery_manifest import (
+    delivery_manifest_output_path,
+    export_certified_delivery_manifest,
+)
+from src.io.serializer import export_certified_blueprint, load_candidate_placements
 from src.search.campaign_telemetry import (
     append_campaign_wave_summary,
     build_wave_summary,
 )
-from src.search.exact_campaign import ExactCampaign
+from src.search.certified_surface import verify_certified_delivery_surface
+from src.search.exact_campaign import ExactCampaign, compute_exact_artifact_hashes
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
+from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
+from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -149,7 +158,28 @@ def test_inspector_summarizes_terminal_full_frontier_certified_result(
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
     campaign.save()
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    facility_pools = load_candidate_placements(
+        project_root / "data" / "preprocessed" / "candidate_placements.json"
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
 
     inspection = build_exact_campaign_inspection(project_root)
 
@@ -403,3 +433,502 @@ def test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_ev
     assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
     assert inspection["delivery_manifest"]["best_certified_result"] is None
 
+
+
+def test_v68_inspector_requires_current_campaign_evidence_for_terminal_manifest(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_campaign_stopped("max_attempts_exhausted", status=RUN_STATUS_UNKNOWN)
+    campaign.save()
+    manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    _write_json(
+        manifest_path,
+        {
+            "metadata": {"source": "stale"},
+            "campaign": {
+                "final_status": RUN_STATUS_CERTIFIED,
+                "last_stop_reason": {
+                    "reason": "search_exhausted_all_candidates",
+                    "status": RUN_STATUS_CERTIFIED,
+                },
+                "declare_mode": "strict",
+            },
+            "best_certified_result": {
+                "ghost_rect": {"w": 2, "h": 1, "area": 2},
+                "search_status": RUN_STATUS_CERTIFIED,
+                "placement_solution": _certified_solution(),
+            },
+        },
+    )
+
+    inspection = build_exact_campaign_inspection(project_root)
+
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is True
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+    assert inspection["delivery_manifest"]["campaign_final_status"] is None
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["best_certified_result"] is None
+
+
+def test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_campaign(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
+        loaded_exact_safe_cut_count=1,
+        generated_exact_safe_cut_count=2,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
+    campaign.save()
+
+    manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    _write_json(
+        manifest_path,
+        {
+            "metadata": {"source": "stale"},
+            "campaign": {
+                "final_status": RUN_STATUS_CERTIFIED,
+                "last_stop_reason": {
+                    "reason": "search_exhausted_all_candidates",
+                    "status": RUN_STATUS_CERTIFIED,
+                },
+                "declare_mode": "strict",
+            },
+            "best_certified_result": {
+                "ghost_rect": {"w": 2, "h": 1, "area": 2},
+                "search_status": RUN_STATUS_CERTIFIED,
+                "search_stats": {"campaign_resumed": False},
+                "proof_summary": {"master_status": "STALE"},
+                "loaded_exact_safe_cut_count": 1,
+                "generated_exact_safe_cut_count": 2,
+            },
+        },
+    )
+
+    inspection = build_exact_campaign_inspection(project_root)
+
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is True
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["best_certified_result"] is None
+
+
+def test_v70_inspector_and_b5a_reject_stale_terminal_after_artifact_hash_mismatch(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
+    campaign.save()
+
+    rules_path = project_root / "rules" / "canonical_rules.json"
+    rules_payload = json.loads(rules_path.read_text(encoding="utf-8"))
+    rules_payload["globals"]["grid"]["width"] = 4
+    _write_json(rules_path, rules_payload)
+
+    inspection = build_exact_campaign_inspection(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is False
+    assert inspection["campaign"]["resume_validation_reason"] == "artifact_hash_mismatch"
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+    assert b5a_summary["status"]["anchor_found"] is False
+    assert b5a_summary["anchor"] is None
+
+
+def test_v70_inspector_and_b5a_reject_terminal_manifest_without_current_delivery_artifacts(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
+    campaign.save()
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    facility_pools = load_candidate_placements(
+        project_root / "data" / "preprocessed" / "candidate_placements.json"
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+
+    (project_root / "data" / "solutions" / "final_solution.json").unlink()
+    inspection = build_exact_campaign_inspection(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+    assert inspection["delivery_manifest"]["present"] is True
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["best_certified_result"] is None
+    assert b5a_summary["status"]["anchor_found"] is False
+    assert b5a_summary["anchor"] is None
+
+
+def test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_exact_project(tmp_path / "project")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
+        loaded_exact_safe_cut_count=1,
+        generated_exact_safe_cut_count=2,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
+    campaign.save()
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    facility_pools = load_candidate_placements(
+        project_root / "data" / "preprocessed" / "candidate_placements.json"
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+    manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_payload["campaign"]["updated_at"] = "2000-01-01T00:00:00Z"
+    manifest_payload["artifacts"]["final_solution"]["sha256"] = "0" * 64
+    manifest_payload["artifacts"]["final_solution"]["size_bytes"] = 1
+    _write_json(manifest_path, manifest_payload)
+
+    inspection = build_exact_campaign_inspection(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["campaign"]["best_certified_result"] is None
+    assert inspection["delivery_manifest"]["present"] is True
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["best_certified_result"] is None
+    assert b5a_summary["status"]["delivery_manifest_terminal_full_frontier_certified"] is False
+    assert b5a_summary["status"]["anchor_found"] is False
+    assert b5a_summary["anchor"] is None
+
+
+def _export_current_certified_surface(project_root: Path) -> ExactCampaign:
+    if project_root.exists():
+        shutil.rmtree(project_root)
+    project_root = _build_exact_project(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=_certified_solution(),
+        proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
+        loaded_exact_safe_cut_count=1,
+        generated_exact_safe_cut_count=2,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "placement_solution": _certified_solution(),
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(
+        campaign,
+        project_root,
+        fill_unresolved_better_candidates_as_infeasible=True,
+    )
+    campaign.save()
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    facility_pools = load_candidate_placements(
+        project_root / "data" / "preprocessed" / "candidate_placements.json"
+    )
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+    return campaign
+
+
+def _assert_certified_surface_verdict_is_single_gate_for_inspector_and_b5a(
+    project_root: Path,
+) -> None:
+    _export_current_certified_surface(project_root)
+
+    inspection = build_exact_campaign_inspection(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert inspection["certified_surface"]["source"] == "certified_surface_verifier_v1"
+    assert inspection["certified_surface"]["publishable"] is True
+    assert inspection["certified_surface"]["terminal_full_frontier_certified"] is True
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is True
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is True
+    assert b5a_summary["status"]["certified_surface_publishable"] is True
+    assert b5a_summary["status"]["anchor_found"] is True
+
+    delivery_manifest_output_path(project_root).unlink()
+
+    stale_inspection = build_exact_campaign_inspection(project_root)
+    stale_b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert stale_inspection["certified_surface"]["publishable"] is False
+    assert stale_inspection["certified_surface"]["blocked_reason"] == "delivery_manifest_missing"
+    assert stale_inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert stale_inspection["campaign"]["best_certified_result"] is None
+    assert stale_inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert stale_b5a_summary["status"]["certified_surface_publishable"] is False
+    assert stale_b5a_summary["status"]["anchor_found"] is False
+    assert stale_b5a_summary["anchor"] is None
+
+
+def test_v73_inspector_uses_certified_surface_verifier_for_public_certified(
+    tmp_path: Path,
+) -> None:
+    _assert_certified_surface_verdict_is_single_gate_for_inspector_and_b5a(
+        tmp_path / "single_certified_surface_gate"
+    )
+
+
+def test_v73_certified_surface_verdict_is_single_gate_for_inspector_and_b5a(
+    tmp_path: Path,
+) -> None:
+    _assert_certified_surface_verdict_is_single_gate_for_inspector_and_b5a(
+        tmp_path / "single_certified_surface_verdict"
+    )
+
+
+def test_v73_b5a_uses_certified_surface_verifier_for_anchor_publication(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "b5a_certified_surface_verifier"
+    _export_current_certified_surface(project_root)
+
+    current_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert current_summary["status"]["certified_surface_public"] is True
+    assert current_summary["status"]["certified_surface_publishable"] is True
+    assert current_summary["status"]["anchor_found"] is True
+    assert current_summary["anchor"] is not None
+
+    delivery_manifest_output_path(project_root).unlink()
+    stale_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert stale_summary["status"]["certified_surface_public"] is False
+    assert stale_summary["status"]["certified_surface_publishable"] is False
+    assert stale_summary["status"]["certified_surface_blocked_reason"] == "delivery_manifest_missing"
+    assert stale_summary["status"]["anchor_found"] is False
+    assert stale_summary["anchor"] is None
+
+
+def test_v73_certified_surface_rejects_non_regular_manifest_path(tmp_path: Path) -> None:
+    project_root = tmp_path / "non_regular_certified_manifest"
+    _export_current_certified_surface(project_root)
+    manifest_path = delivery_manifest_output_path(project_root)
+    manifest_path.unlink()
+    manifest_path.mkdir()
+
+    inspection = build_exact_campaign_inspection(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert inspection["certified_surface"]["publishable"] is False
+    assert inspection["certified_surface"]["delivery_manifest_regular_file"] is False
+    assert inspection["certified_surface"]["blocked_reason"] == "delivery_manifest_not_regular_file"
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["present"] is False
+    assert b5a_summary["status"]["certified_surface_publishable"] is False
+    assert b5a_summary["status"]["anchor_found"] is False
+
+
+def test_v74_certified_surface_rejects_memory_manifest_when_disk_manifest_stale(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "memory_manifest_not_authoritative"
+    campaign = _export_current_certified_surface(project_root)
+    manifest_path = delivery_manifest_output_path(project_root)
+    valid_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    stale_manifest = dict(valid_manifest)
+    stale_manifest["best_certified_result"] = None
+    _write_json(manifest_path, stale_manifest)
+
+    verdict = verify_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+        delivery_manifest=valid_manifest,
+    )
+
+    assert verdict.publishable is False
+    assert verdict.blocked_reason == "delivery_manifest_payload_mismatch"
+
+
+def test_v74_certified_surface_rejects_memory_campaign_when_disk_checkpoint_differs(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "memory_campaign_not_authoritative"
+    campaign = _export_current_certified_surface(project_root)
+    forged_terminal_state = dict(campaign.state)
+    stale_checkpoint = dict(campaign.state)
+    stale_checkpoint["final_result"] = None
+    stale_checkpoint["final_status"] = None
+    stale_checkpoint["last_stop_reason"] = None
+    manifest_payload = json.loads(
+        delivery_manifest_output_path(project_root).read_text(encoding="utf-8")
+    )
+    _write_json(campaign.path, stale_checkpoint)
+
+    verdict = verify_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=forged_terminal_state,
+        campaign_path=campaign.path,
+        delivery_manifest=manifest_payload,
+    )
+
+    assert verdict.publishable is False
+    assert verdict.blocked_reason == "campaign_state_payload_mismatch"
+
+
+def test_v74_certified_surface_recomputes_exact_hashes_even_when_caller_claims_resume_ok(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "caller_hash_claim_not_authoritative"
+    campaign = _export_current_certified_surface(project_root)
+    stale_hashes = compute_exact_artifact_hashes(project_root)
+    _write_json(
+        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
+        {"required_generic_outputs": {"tampered": 1}, "required_generic_inputs": {}},
+    )
+
+    verdict = verify_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+        delivery_manifest=json.loads(delivery_manifest_output_path(project_root).read_text()),
+        current_hashes=stale_hashes,
+        campaign_resume_compatible=True,
+    )
+
+    assert verdict.publishable is False
+    assert verdict.blocked_reason == "provided_exact_artifact_hashes_stale"
+
+
+def test_v74_inspector_rejects_duplicate_key_delivery_manifest(tmp_path: Path) -> None:
+    project_root = tmp_path / "duplicate_key_delivery_manifest"
+    _export_current_certified_surface(project_root)
+    manifest_path = delivery_manifest_output_path(project_root)
+    manifest_text = manifest_path.read_text(encoding="utf-8")
+    manifest_path.write_text(
+        manifest_text.replace(
+            '  "best_certified_result": {',
+            '  "best_certified_result": null,\n  "best_certified_result": {',
+            1,
+        ),
+        encoding="utf-8",
+    )
+
+    inspection = build_exact_campaign_inspection(project_root)
+    b5a_summary = build_phase3b_b5_anchor_sprint_summary(project_root)
+
+    assert inspection["certified_surface"]["publishable"] is False
+    assert inspection["certified_surface"]["blocked_reason"].startswith(
+        "json_load_error:ValueError:duplicate JSON key: best_certified_result"
+    )
+    assert inspection["campaign"]["terminal_full_frontier_certified"] is False
+    assert inspection["delivery_manifest"]["terminal_full_frontier_certified"] is False
+    assert b5a_summary["status"]["certified_surface_publishable"] is False
+    assert b5a_summary["status"]["anchor_found"] is False

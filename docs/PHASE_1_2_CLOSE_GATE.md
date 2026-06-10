@@ -20,17 +20,46 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V66 and the lifecycle-evidence consolidation, the current review anchor is:
+After V57-V79, lifecycle-evidence consolidation, certified-surface verifier
+centralization, authority-boundary hardening, replayable terminal frontier
+evidence sealing, project-bound terminal-evidence hardening, direct
+manifest-writer disk-authority hardening, canonical certified-manifest
+publication hardening, and terminal candidate-domain axis sealing, the current
+review anchor is:
 
 ```text
-v66_certified_lifecycle_evidence_consolidation
+v79_terminal_domain_axis_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
 a real certified solver safety surface: certified lifecycle evidence must stay
 faithful from exact-safe cut replay through master-domain construction, outer
-frontier termination, and certified export surfaces.  V66 splits the previous
-oversized replay obligation into four compartments:
+frontier termination, and certified export surfaces.  V73 made the public
+CERTIFIED decision a single central verifier shared by the inspector, delivery
+manifest path, and B5A anchor publication.  V74 hardened that verifier so disk
+artifacts, recomputed exact hashes, strict JSON, and regular-file boundaries are
+authoritative over caller memory payloads.  V75 then closes the remaining
+terminal-proof seam beneath the verifier: full-frontier exhaustion is now a
+replayable, digest-sealed candidate-domain projection with an authoritative
+safe-area bound, not just a stop-reason string plus an incumbent.  V76 then
+confirmed the central public-verifier architecture and tightened the
+pre-publication helper path: in-memory terminal evidence must replay against the
+current project grid and authoritative safe-area bound before it may seed a
+`best_certified_result` or delivery-manifest payload.  V77 leaves the central
+public architecture intact and closes the direct manifest-writer seam: any
+manifest payload that carries `best_certified_result` must now prove that the
+caller-supplied campaign state matches the regular in-project disk checkpoint
+selected by `campaign_path`.  V78 closes the remaining writer-publication seam:
+`best_certified_result` can only be persisted by the canonical export writer to
+the regular in-project `data/solutions/certified_delivery_manifest.json`; raw
+writer calls and side output paths are not certified publication authority.
+V79 seals the remaining candidate-domain slicing axes inside the V75 terminal
+evidence contract: an exhausted `max_aspect_ratio`-sliced domain or an
+above-admissibility `min_side` (>6) domain is rejected exactly like a
+`start_area` slice, and the delivery-manifest deep validation fails closed on
+non-instance-shaped terminal placement solutions instead of skipping the
+blueprint reverse-lookup.  The
+obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
   replay, all-or-nothing member resolution, one-to-one master literal encoding,
@@ -40,13 +69,21 @@ oversized replay obligation into four compartments:
   unsafe env fail-closed behavior before session/precheck/project-load side
   effects;
 - `PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE` for strict full-frontier exhaustion
-  evidence rather than candidate-level or best-effort incumbents;
+  evidence, including replayable candidate generation, status digests, and safe-area-bound authority, rather than
+  candidate-level or best-effort incumbents;
 - `PO-CERTIFIED-EXPORT-SURFACE` for `final_result`, `final_solution`, delivery
   manifest, inspector/report, and wrapper export surfaces.
 
 See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
-`docs/research/p1_2_v64_power_witness_representation_env_guard.md`, and
-`docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md`.
+`docs/research/p1_2_v64_power_witness_representation_env_guard.md`,
+`docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md`,
+`docs/research/p1_2_v73_certified_surface_verifier_consolidation.md`,
+`docs/research/p1_2_v74_certified_surface_authority_hardening.md`,
+`docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md`,
+`docs/research/p1_2_v76_project_bound_terminal_evidence.md`,
+`docs/research/p1_2_v77_delivery_manifest_writer_authority.md`,
+`docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`, and
+`docs/research/p1_2_v79_terminal_domain_axis_sealing.md`.
 
 Daily consistency check:
 

@@ -37,13 +37,16 @@ def test_persisted_nogood_tags_epsilon_stage():
     captured = []
 
     class FakeCutManager:
+        def has_structured_cut(self, cut):
+            return False
+
         def register_structured_cut(self, cut):
             captured.append(cut)
             return True
 
     class FakeMaster:
         def add_benders_cut(self, conflict_set, *, condition_lits=()):
-            pass
+            return True
 
     obj = type("Stub", (), {})()
     obj.cut_manager = FakeCutManager()
@@ -75,13 +78,16 @@ def test_persisted_nogood_no_epsilon_stage_when_unset():
     captured = []
 
     class FakeCutManager:
+        def has_structured_cut(self, cut):
+            return False
+
         def register_structured_cut(self, cut):
             captured.append(cut)
             return True
 
     class FakeMaster:
         def add_benders_cut(self, conflict_set, *, condition_lits=()):
-            pass
+            return True
 
     obj = type("Stub", (), {})()
     obj.cut_manager = FakeCutManager()

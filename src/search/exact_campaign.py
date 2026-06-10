@@ -21,9 +21,11 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
+from src.models.master_model import infer_certified_optional_lower_bounds
+from src.search.certified_frontier import terminal_frontier_evidence_violation
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
-CAMPAIGN_SCHEMA_VERSION = 4
+CAMPAIGN_SCHEMA_VERSION = 5
 MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION = 1
 PROOF_SUMMARY_SCHEMA_VERSION = 1
 TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"
@@ -51,6 +53,7 @@ REQUIRED_STATE_FIELDS = {
     "final_result",
     "final_status",
     "last_stop_reason",
+    "terminal_frontier_evidence",
     "declare_mode",
     "candidates",
 }
@@ -193,6 +196,47 @@ def _load_exact_grid_dimensions(project_root: Optional[Path]) -> Optional[Tuple[
     if grid_w <= 0 or grid_h <= 0:
         raise ValueError("canonical_rules grid dimensions must be positive")
     return grid_w, grid_h
+
+
+def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[int]:
+    if project_root is None:
+        return None
+    rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
+    instances_path = project_root / EXACT_HASH_FILES["mandatory_exact_instances"]
+    generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
+    rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+    instances = _loads_strict_json_object(instances_path.read_text(encoding="utf-8"))
+    generic_io_requirements = _loads_strict_json_object(
+        generic_path.read_text(encoding="utf-8")
+    )
+    if not isinstance(rules, Mapping):
+        raise ValueError("canonical_rules must be a JSON object")
+    if not isinstance(instances, list):
+        raise ValueError("mandatory_exact_instances must be a JSON array")
+    if not isinstance(generic_io_requirements, Mapping):
+        raise ValueError("generic_io_requirements must be a JSON object")
+    grid_w, grid_h = _load_exact_grid_dimensions(project_root) or (0, 0)
+    templates = dict(rules.get("facility_templates", {}))
+    lower_bound = 0
+    for instance in instances:
+        if not isinstance(instance, Mapping):
+            raise ValueError("mandatory exact instance must be a JSON object")
+        if not bool(instance.get("is_mandatory")):
+            continue
+        if str(instance.get("bound_type", "exact")) != "exact":
+            continue
+        facility_type = str(instance.get("facility_type"))
+        template = templates[facility_type]
+        dims = dict(template["dimensions"])
+        lower_bound += int(dims["w"]) * int(dims["h"])
+    for facility_type, count in infer_certified_optional_lower_bounds(
+        rules,
+        generic_io_requirements,
+    ).items():
+        template = dict(templates[str(facility_type)])
+        dims = dict(template["dimensions"])
+        lower_bound += int(count) * int(dims["w"]) * int(dims["h"])
+    return max(0, int(grid_w) * int(grid_h) - int(lower_bound))
 
 
 def _strict_candidate_ghost_rect(record: Mapping[str, Any]) -> Tuple[int, int]:
@@ -374,6 +418,7 @@ def _build_initial_state(
         "final_result": None,
         "final_status": None,
         "last_stop_reason": None,
+        "terminal_frontier_evidence": None,
         # P2 #14 数据收集 audit: A 方案 (EXACT_OUTER_SKIP_UNKNOWN) 让 UNKNOWN
         # candidate 跳过 frontier → declare 出的 "最优" 可能漏 UNKNOWN 实际为
         # FEASIBLE, 违反 max_lex 严格证明. 此字段标记 campaign declare 严格度:
@@ -390,6 +435,7 @@ def _validate_candidate_record(
     record: Mapping[str, Any],
     *,
     grid_dimensions: Optional[Tuple[int, int]] = None,
+    safe_area_upper_bound: Optional[int] = None,
 ) -> Optional[str]:
     missing = sorted(REQUIRED_CANDIDATE_FIELDS.difference(record.keys()))
     if missing:
@@ -402,9 +448,11 @@ def _validate_candidate_record(
         if field not in ghost_rect:
             return f"candidate_missing_ghost_rect_field:{record_key}:{field}"
     try:
-        _strict_candidate_ghost_rect(record)
+        ghost_w, ghost_h = _strict_candidate_ghost_rect(record)
     except Exception:
         return f"candidate_invalid_ghost_rect:{record_key}"
+    if record_key != candidate_key(ghost_w, ghost_h):
+        return f"candidate_key_ghost_rect_mismatch:{record_key}"
 
     try:
         _strict_resume_int(record.get("attempts", 0), f"candidate.{record_key}.attempts")
@@ -422,6 +470,8 @@ def _validate_candidate_record(
     status = str(record.get("status", ""))
     if status not in VALID_CANDIDATE_STATUSES:
         return f"candidate_invalid_status:{record_key}:{status}"
+    if status == "CERTIFIED" and not isinstance(record.get("solution"), Mapping):
+        return f"candidate_certified_solution_missing:{record_key}"
 
     if not isinstance(record.get("proof_summary"), Mapping):
         return f"candidate_invalid_proof_summary:{record_key}"
@@ -508,14 +558,19 @@ def _validate_resume_state(
         return "declare_mode_invalid"
     if final_result is not None and declare_mode != "strict":
         return "final_result_declare_mode_not_strict"
-    terminal_violation = certified_terminal_evidence_violation(state)
-    if terminal_violation is not None:
-        return terminal_violation
-
     try:
         grid_dimensions = _load_exact_grid_dimensions(project_root)
+        safe_area_upper_bound = _load_exact_safe_area_upper_bound(project_root)
     except Exception:
         return "canonical_grid_invalid"
+
+    terminal_violation = certified_terminal_evidence_violation(
+        state,
+        grid_dimensions=grid_dimensions,
+        safe_area_upper_bound=safe_area_upper_bound,
+    )
+    if terminal_violation is not None:
+        return terminal_violation
 
     for record_key, record in dict(state.get("candidates", {})).items():
         if not isinstance(record, Mapping):
@@ -572,7 +627,12 @@ def has_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]) -> b
     )
 
 
-def terminal_certified_final_result_violation(state: Mapping[str, Any]) -> Optional[str]:
+def terminal_certified_final_result_violation(
+    state: Mapping[str, Any],
+    *,
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+    safe_area_upper_bound: Optional[int] = None,
+) -> Optional[str]:
     """Return a fail-closed reason for malformed terminal CERTIFIED result evidence."""
 
     if not has_terminal_full_frontier_certified_evidence(state):
@@ -619,6 +679,29 @@ def terminal_certified_final_result_violation(state: Mapping[str, Any]) -> Optio
         return "terminal_certified_candidate_solution_missing"
     if dict(record_solution) != dict(placement_solution):
         return "terminal_certified_final_result_solution_mismatch"
+
+    final_objective = _candidate_objective_from_rect(ghost_w, ghost_h)
+    for other_key, other_record in candidates.items():
+        if not isinstance(other_record, Mapping):
+            continue
+        if str(other_record.get("status", "")) != "CERTIFIED":
+            continue
+        try:
+            other_w, other_h = _strict_candidate_ghost_rect(other_record)
+        except Exception:
+            return "terminal_certified_candidate_record_ghost_rect_invalid"
+        if _candidate_objective_from_rect(other_w, other_h) > final_objective:
+            return "terminal_certified_final_result_not_best_candidate"
+
+    frontier_reason = terminal_frontier_evidence_violation(
+        evidence=state.get("terminal_frontier_evidence"),
+        candidate_records=candidates,
+        final_result=final_result,
+        grid_dimensions=grid_dimensions,
+        safe_area_upper_bound=safe_area_upper_bound,
+    )
+    if frontier_reason is not None:
+        return frontier_reason
     return None
 
 
@@ -631,12 +714,58 @@ def has_valid_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]
     )
 
 
-def certified_terminal_evidence_violation(state: Mapping[str, Any]) -> Optional[str]:
+def terminal_certified_final_result_violation_for_project(
+    state: Mapping[str, Any],
+    *,
+    project_root: Path,
+) -> Optional[str]:
+    """Return a fail-closed terminal-evidence reason bound to the project domain."""
+
+    try:
+        grid_dimensions = _load_exact_grid_dimensions(Path(project_root))
+        safe_area_upper_bound = _load_exact_safe_area_upper_bound(Path(project_root))
+    except Exception:
+        return "canonical_grid_invalid"
+    return terminal_certified_final_result_violation(
+        state,
+        grid_dimensions=grid_dimensions,
+        safe_area_upper_bound=safe_area_upper_bound,
+    )
+
+
+def has_valid_terminal_full_frontier_certified_evidence_for_project(
+    state: Mapping[str, Any],
+    *,
+    project_root: Path,
+) -> bool:
+    """Return True only when terminal evidence is replayable on the current project domain."""
+
+    if not has_terminal_full_frontier_certified_evidence(state):
+        return False
+    return (
+        terminal_certified_final_result_violation_for_project(
+            state,
+            project_root=project_root,
+        )
+        is None
+    )
+
+
+def certified_terminal_evidence_violation(
+    state: Mapping[str, Any],
+    *,
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+    safe_area_upper_bound: Optional[int] = None,
+) -> Optional[str]:
     """Return a fail-closed reason for stale or contradictory certified export claims."""
 
     if has_certified_export_surface(state) and not has_terminal_full_frontier_certified_evidence(state):
         return "terminal_certified_frontier_evidence_invalid"
-    return terminal_certified_final_result_violation(state)
+    return terminal_certified_final_result_violation(
+        state,
+        grid_dimensions=grid_dimensions,
+        safe_area_upper_bound=safe_area_upper_bound,
+    )
 
 
 @dataclass
@@ -968,10 +1097,18 @@ class ExactCampaign:
         self.state["last_stop_reason"] = stop_record
         if status is not None:
             self.state["final_status"] = str(status)
+        if (
+            str(stop_record.get("status")) != "CERTIFIED"
+            or str(stop_record.get("reason")) != TERMINAL_FULL_FRONTIER_CERTIFIED_REASON
+        ):
+            self.state["terminal_frontier_evidence"] = None
         self.state["updated_at"] = timestamp
 
     def best_certified_result(self) -> Optional[Dict[str, Any]]:
-        if not has_valid_terminal_full_frontier_certified_evidence(self.state):
+        if not has_valid_terminal_full_frontier_certified_evidence_for_project(
+            self.state,
+            project_root=self.project_root,
+        ):
             return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):

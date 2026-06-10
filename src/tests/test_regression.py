@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from src.io.delivery_manifest import delivery_manifest_output_path
 from ortools.sat.python import cp_model
 
@@ -36,10 +38,31 @@ def _build_empty_frontier_project(project_root: Path) -> Path:
         project_root / "rules" / "canonical_rules.json",
         {
             "globals": {"grid": {"width": 6, "height": 6}},
-            "facility_templates": {},
+            "facility_templates": {
+                "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            },
         },
     )
-    _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", {"facility_pools": {}})
+    # 单个真实 pose 让 terminal CERTIFIED 场景能走通 blueprint 导出/反查校验链
+    # (V73+ 的 manifest 校验会把 blueprint facility 反查回 facility_pools)。
+    _write_json(
+        project_root / "data" / "preprocessed" / "candidate_placements.json",
+        {
+            "facility_pools": {
+                "synthetic": [
+                    {
+                        "pose_id": "synthetic_pose_0",
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [[0, 0]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": None,
+                        "pose_params": {"orientation": 0, "port_mode": "default"},
+                    }
+                ]
+            }
+        },
+    )
     _write_json(project_root / "data" / "preprocessed" / "mandatory_exact_instances.json", [])
     _write_json(project_root / "data" / "preprocessed" / "all_facility_instances.json", [])
     _write_json(
@@ -447,7 +470,8 @@ def test_campaign_resume_reconstructs_frontier_without_reinvoking_solver(
             return "CERTIFIED", {
                 "ghost_pick": {
                     "pose_idx": 0,
-                    "pose_id": f"ghost_{ghost_w}x{ghost_h}",
+                    "pose_id": "synthetic_pose_0",
+                    "anchor": {"x": 0, "y": 0},
                     "facility_type": "synthetic",
                 }
             }
@@ -472,8 +496,6 @@ def test_campaign_resume_reconstructs_frontier_without_reinvoking_solver(
         solve_mode="certified_exact",
         max_attempts=64,
         min_side=1,
-        area_upper_bound=12,
-        max_aspect_ratio=3.0,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -492,8 +514,6 @@ def test_campaign_resume_reconstructs_frontier_without_reinvoking_solver(
         solve_mode="certified_exact",
         max_attempts=64,
         min_side=1,
-        area_upper_bound=12,
-        max_aspect_ratio=3.0,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -618,7 +638,8 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
             return "CERTIFIED", {
                 "ghost_pick": {
                     "pose_idx": 0,
-                    "pose_id": "ghost_1x1",
+                    "pose_id": "synthetic_pose_0",
+                    "anchor": {"x": 0, "y": 0},
                     "facility_type": "synthetic",
                 }
             }
@@ -645,9 +666,8 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
     serial_status, serial_result = run_outer_search(
         project_root=serial_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=64,
         min_side=1,
-        area_upper_bound=2,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -679,7 +699,8 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
                         solution={
                             "ghost_pick": {
                                 "pose_idx": 0,
-                                "pose_id": "ghost_1x1",
+                                "pose_id": "synthetic_pose_0",
+                                "anchor": {"x": 0, "y": 0},
                                 "facility_type": "synthetic",
                             }
                         },
@@ -725,9 +746,8 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
     parallel_status, parallel_result = run_outer_search(
         project_root=parallel_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=64,
         min_side=1,
-        area_upper_bound=2,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -746,27 +766,36 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
+    # certified 模式下串行推进撞到第一个 UNKNOWN 头就 fail-closed 退出 (不做
+    # best-effort incumbent 积累); 并行 wave 则可能在同一波里乱序拿到 CERTIFIED
+    # 与 UNKNOWN。本测试守护同一契约在两条路径的表达:
+    # 串行段: 头部 (6,6) UNKNOWN 即停 — mock 世界里 (6,4) 本可 CERTIFIED, 若实现
+    #   回归为 best-effort 继续推进就会解出它, 被「无 CERTIFIED 记录」断言抓红;
+    # 并行段: 同一波乱序拿到 CERTIFIED 时记录保留在 checkpoint (resume 可用);
+    # 两条路径的公开 certified 面 (best_certified_result / manifest / 导出工件)
+    #   在非 terminal 状态下都必须为空。
     serial_root = _build_empty_frontier_project(tmp_path / "parallel_best_serial")
     parallel_root = _build_empty_frontier_project(tmp_path / "parallel_best_parallel")
 
     def fake_serial_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         del session, kwargs
+        status = "CERTIFIED" if (ghost_w, ghost_h) == (6, 4) else "UNKNOWN"
         fake_serial_run_benders_for_ghost_rect.last_run_metadata = {
             "proof_summary": {
                 "mode": "certified_exact",
-                "master_status": "CERTIFIED" if (ghost_w, ghost_h) == (6, 1) else "UNKNOWN",
+                "master_status": status,
             },
             "exact_safe_cuts": [],
             "loaded_exact_safe_cut_count": 0,
             "generated_exact_safe_cut_count": 0,
         }
-        if (ghost_w, ghost_h) == (6, 1):
+        if status == "CERTIFIED":
             return "CERTIFIED", {
                 "big_pick": {
                     "pose_idx": 0,
-                    "pose_id": "ghost_6x1",
-                    "facility_type": "synthetic",
+                    "pose_id": "synthetic_pose_0",
                     "anchor": {"x": 0, "y": 0},
+                    "facility_type": "synthetic",
                 }
             }
         return "UNKNOWN", None
@@ -792,9 +821,8 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
     serial_status, serial_result = run_outer_search(
         project_root=serial_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=64,
         min_side=1,
-        area_upper_bound=9,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -812,51 +840,50 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
         def close(self) -> None:
             return None
 
+    wave_phase = {"certified_emitted": False}
+
     def fake_parallel_wave(*, pool, tasks):
         assert isinstance(pool, _DummyParallelWorkerPool)
+        # 权威全域的支配 frontier 从单头 (6,6) 起步: 单头波判 INFEASIBLE 削角,
+        # 裂成 ≥2 头的那一波乱序回报 (6,4) CERTIFIED + 其余 UNKNOWN, 之后保持
+        # UNKNOWN, 让 run 以非 terminal UNKNOWN 退出但保留 CERTIFIED 记录。
         results = []
         for task in reversed(tasks):
-            if (int(task.candidate[1]), int(task.candidate[2])) == (6, 1):
-                results.append(
-                    WorkerResult(
-                        dispatch_seq=task.dispatch_seq,
-                        attempt_index=task.attempt_index,
-                        candidate=task.candidate,
-                        status="CERTIFIED",
-                        solution={
-                            "big_pick": {
-                                "pose_idx": 0,
-                                "pose_id": "ghost_6x1",
-                                "facility_type": "synthetic",
-                                "anchor": {"x": 0, "y": 0},
-                            }
-                        },
-                        proof_summary={"mode": "certified_exact", "master_status": "CERTIFIED"},
-                        exact_safe_cuts=[],
-                        loaded_exact_safe_cut_count=0,
-                        generated_exact_safe_cut_count=0,
-                        worker_wall_seconds=0.01,
-                        peak_rss_bytes=1,
-                        error=None,
-                    )
-                )
+            candidate_wh = (int(task.candidate[1]), int(task.candidate[2]))
+            if len(tasks) < 2 and not wave_phase["certified_emitted"]:
+                status = "INFEASIBLE"
+                solution = None
+            elif candidate_wh == (6, 4) and not wave_phase["certified_emitted"]:
+                status = "CERTIFIED"
+                solution = {
+                    "big_pick": {
+                        "pose_idx": 0,
+                        "pose_id": "synthetic_pose_0",
+                        "anchor": {"x": 0, "y": 0},
+                        "facility_type": "synthetic",
+                    }
+                }
             else:
-                results.append(
-                    WorkerResult(
-                        dispatch_seq=task.dispatch_seq,
-                        attempt_index=task.attempt_index,
-                        candidate=task.candidate,
-                        status="UNKNOWN",
-                        solution=None,
-                        proof_summary={"mode": "certified_exact", "master_status": "UNKNOWN"},
-                        exact_safe_cuts=[],
-                        loaded_exact_safe_cut_count=0,
-                        generated_exact_safe_cut_count=0,
-                        worker_wall_seconds=0.01,
-                        peak_rss_bytes=1,
-                        error=None,
-                    )
+                status = "UNKNOWN"
+                solution = None
+            results.append(
+                WorkerResult(
+                    dispatch_seq=task.dispatch_seq,
+                    attempt_index=task.attempt_index,
+                    candidate=task.candidate,
+                    status=status,
+                    solution=solution,
+                    proof_summary={"mode": "certified_exact", "master_status": status},
+                    exact_safe_cuts=[],
+                    loaded_exact_safe_cut_count=0,
+                    generated_exact_safe_cut_count=0,
+                    worker_wall_seconds=0.01,
+                    peak_rss_bytes=1,
+                    error=None,
                 )
+            )
+        if any(result.status == "CERTIFIED" for result in results):
+            wave_phase["certified_emitted"] = True
         return ParallelWaveExecution(
             completed=True,
             failure_reason=None,
@@ -873,9 +900,8 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
     parallel_status, parallel_result = run_outer_search(
         project_root=parallel_root,
         solve_mode="certified_exact",
-        max_attempts=2,
+        max_attempts=64,
         min_side=1,
-        area_upper_bound=9,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -896,27 +922,72 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
 
     assert serial_status == parallel_status == "UNKNOWN"
     assert serial_result is None and parallel_result is None
-    assert serial_campaign.best_certified_result()["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
-    assert parallel_campaign.best_certified_result()["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
-    assert serial_campaign.state["final_status"] == "CERTIFIED"
-    assert parallel_campaign.state["final_status"] == "CERTIFIED"
-    assert serial_manifest["best_certified_result"]["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
-    assert parallel_manifest["best_certified_result"]["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
-    assert serial_manifest["artifacts"]["final_solution"]["exists"] is True
-    assert parallel_manifest["artifacts"]["optimal_blueprint"]["exists"] is True
+    # 串行: 第一个 UNKNOWN 头 fail-closed 退出, certified 模式不做 best-effort 积累。
+    # mock 世界里 (6,4) 本可 CERTIFIED — best-effort 回归会解出它并把下面的断言变红。
+    assert serial_campaign.state["last_stop_reason"]["reason"] == "candidate_returned_unknown"
+    assert all(
+        record["status"] != "CERTIFIED"
+        for record in serial_campaign.state["candidates"].values()
+    )
+    # 并行: 同一波里乱序拿到的 CERTIFIED 记录保留在 checkpoint (resume 可用)。
+    assert parallel_campaign.state["candidates"]["6x4"]["status"] == "CERTIFIED"
+    assert (
+        parallel_campaign.state["candidates"]["6x4"]["solution"]["big_pick"]["pose_id"]
+        == "synthetic_pose_0"
+    )
+    # 两条路径的公开 certified 面一致为空: 非 terminal 不发布 (V75/V76 契约)。
+    assert serial_campaign.best_certified_result() is None
+    assert parallel_campaign.best_certified_result() is None
+    assert serial_campaign.state["final_status"] == "UNKNOWN"
+    assert parallel_campaign.state["final_status"] == "UNKNOWN"
+    assert serial_manifest["campaign"]["final_status"] == "UNKNOWN"
+    assert parallel_manifest["campaign"]["final_status"] == "UNKNOWN"
+    assert serial_manifest["best_certified_result"] is None
+    assert parallel_manifest["best_certified_result"] is None
+    assert serial_manifest["artifacts"]["final_solution"]["exists"] is False
+    assert parallel_manifest["artifacts"]["optimal_blueprint"]["exists"] is False
 
 
 def test_infeasible_terminal_delivery_manifest_does_not_forge_certified_result(
+    monkeypatch,
     tmp_path: Path,
 ) -> None:
     project_root = _build_empty_frontier_project(tmp_path / "manifest_infeasible_terminal")
+
+    # min_side=6 在 6x6 grid 的权威全域里只留 (6,6) 一个候选; mock 把它判
+    # INFEASIBLE 后整个域被穷尽, 走 search_exhausted_all_candidates 的
+    # terminal INFEASIBLE 路径 — manifest 不得伪造任何 certified 结果。
+    def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
+        fake_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": "INFEASIBLE",
+            },
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        return "INFEASIBLE", None
+
+    fake_run_benders_for_ghost_rect.last_run_metadata = {
+        "proof_summary": {},
+        "exact_safe_cuts": [],
+        "loaded_exact_safe_cut_count": 0,
+        "generated_exact_safe_cut_count": 0,
+    }
+
+    monkeypatch.setattr(outer_search_module, "run_benders_for_ghost_rect", fake_run_benders_for_ghost_rect)
+    monkeypatch.setattr(
+        outer_search_module.ExactSearchSession,
+        "create",
+        staticmethod(lambda project_root, solve_mode="certified_exact": object()),
+    )
 
     status, result = run_outer_search(
         project_root=project_root,
         solve_mode="certified_exact",
         max_attempts=2,
-        min_side=7,
-        area_upper_bound=1,
+        min_side=6,
         master_seconds=0.01,
         binding_seconds=0.01,
         routing_seconds=0.01,
@@ -932,6 +1003,166 @@ def test_infeasible_terminal_delivery_manifest_does_not_forge_certified_result(
 
     assert status == "INFEASIBLE"
     assert result is None
+    assert manifest_payload["campaign"]["final_status"] == "INFEASIBLE"
+    assert manifest_payload["best_certified_result"] is None
+    assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
+    assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is False
+
+
+def test_aspect_ratio_sliced_search_cannot_claim_terminal_certified(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    # V79: max_aspect_ratio 会从候选域里滤掉高长宽比候选 (它们从未被反驳), 所以
+    # 带 aspect 过滤的搜索即使耗尽剩余域也不得宣称 terminal full-frontier
+    # CERTIFIED — 导出被 evidence 校验 fail-closed 拒掉, 退 UNPROVEN。
+    project_root = _build_empty_frontier_project(tmp_path / "aspect_sliced_search")
+
+    def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
+        feasible = (ghost_w <= 4 and ghost_h <= 3) or (ghost_w <= 6 and ghost_h <= 2)
+        fake_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": "FEASIBLE" if feasible else "INFEASIBLE",
+            },
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        if feasible:
+            return "CERTIFIED", {
+                "ghost_pick": {
+                    "pose_idx": 0,
+                    "pose_id": "synthetic_pose_0",
+                    "anchor": {"x": 0, "y": 0},
+                    "facility_type": "synthetic",
+                }
+            }
+        return "INFEASIBLE", None
+
+    fake_run_benders_for_ghost_rect.last_run_metadata = {
+        "proof_summary": {},
+        "exact_safe_cuts": [],
+        "loaded_exact_safe_cut_count": 0,
+        "generated_exact_safe_cut_count": 0,
+    }
+
+    monkeypatch.setattr(outer_search_module, "run_benders_for_ghost_rect", fake_run_benders_for_ghost_rect)
+    monkeypatch.setattr(
+        outer_search_module.ExactSearchSession,
+        "create",
+        staticmethod(lambda project_root, solve_mode="certified_exact": object()),
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        max_attempts=64,
+        min_side=1,
+        max_aspect_ratio=3.0,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+        resume_campaign=False,
+    )
+
+    assert status == "UNPROVEN"
+    assert result is None
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    assert campaign.best_certified_result() is None
+    assert campaign.state["final_status"] != "CERTIFIED"
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+
+
+def test_min_side_exceeding_grid_fails_closed_with_value_error(tmp_path: Path) -> None:
+    # V75 起 min_side 超出 grid 的退化输入不再静默产生空候选域, 而是在
+    # candidate_generation 规范化处 fail-closed 抛 ValueError。
+    project_root = _build_empty_frontier_project(tmp_path / "min_side_exceeds_grid")
+
+    with pytest.raises(ValueError, match="min_side exceeds grid dimensions"):
+        run_outer_search(
+            project_root=project_root,
+            solve_mode="certified_exact",
+            max_attempts=2,
+            min_side=7,
+            master_seconds=0.01,
+            binding_seconds=0.01,
+            routing_seconds=0.01,
+            benders_max_iter=1,
+            campaign_hours=1.0,
+            resume_campaign=False,
+            parallel_processes=1,
+        )
+
+    # 异常退出不得留下任何 certified 公开面工件。
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+    assert not delivery_manifest_output_path(project_root).exists()
+
+
+def test_static_lower_bound_empty_domain_terminates_infeasible_without_solver_calls(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    # 权威全域下空候选域仍可达: mandatory 静态面积下界把 safe_area_upper_bound
+    # 压到 min_side^2 以下 (33 格 mandatory → safe=3 < 36)。该路径必须零 solver
+    # 调用直接 terminal INFEASIBLE, 且 manifest 不伪造 certified 结果。
+    project_root = _build_empty_frontier_project(tmp_path / "empty_domain_infeasible")
+    _write_json(
+        project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+        [
+            {
+                "instance_id": f"synthetic_{idx:03d}",
+                "facility_type": "synthetic",
+                "is_mandatory": True,
+                "bound_type": "exact",
+                "solve_modes": ["certified_exact"],
+            }
+            for idx in range(33)
+        ],
+    )
+
+    calls: list[tuple[int, int]] = []
+
+    def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
+        calls.append((ghost_w, ghost_h))
+        return "INFEASIBLE", None
+
+    fake_run_benders_for_ghost_rect.last_run_metadata = {
+        "proof_summary": {},
+        "exact_safe_cuts": [],
+        "loaded_exact_safe_cut_count": 0,
+        "generated_exact_safe_cut_count": 0,
+    }
+    monkeypatch.setattr(outer_search_module, "run_benders_for_ghost_rect", fake_run_benders_for_ghost_rect)
+    monkeypatch.setattr(
+        outer_search_module.ExactSearchSession,
+        "create",
+        staticmethod(lambda project_root, solve_mode="certified_exact": object()),
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        max_attempts=4,
+        min_side=6,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+        resume_campaign=False,
+        parallel_processes=1,
+    )
+
+    manifest_payload = json.loads(
+        delivery_manifest_output_path(project_root).read_text(encoding="utf-8")
+    )
+
+    assert status == "INFEASIBLE"
+    assert result is None
+    assert calls == []
     assert manifest_payload["campaign"]["final_status"] == "INFEASIBLE"
     assert manifest_payload["best_certified_result"] is None
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
