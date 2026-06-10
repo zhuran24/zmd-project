@@ -84,6 +84,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_pose_bool_replay_alias_collision_fails_closed",
             "test_legacy_benders_cut_alias_collision_fails_closed",
             "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+            "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated",
+            "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master",
         }
     ),
     "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS": frozenset(
@@ -129,6 +131,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch",
             "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
             "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
+            "test_full_frontier_candidate_domain_keeps_oriented_dimensions",
         }
     ),
     "PO-CERTIFIED-EXPORT-SURFACE": frozenset(
@@ -1091,6 +1094,10 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "TERMINAL_FRONTIER_MIN_SIDE_ADMISSIBILITY",
         "terminal_frontier_candidate_status_digest_mismatch",
         "terminal_frontier_potential_domain_not_exhausted",
+        # V82: the candidate domain is oriented; half-domain evidence must be
+        # rejected explicitly via the bumped authority string.
+        "outer_search_static_area_bound_oriented_v2",
+        "Do not canonicalize",
     ):
         if needle not in certified_frontier_source:
             errors.append(
@@ -1205,6 +1212,17 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
             errors.append(
                 "certified exact env guard must be a closed allowlist that fails closed on unknown or proof-semantics EXACT_* knobs: "
                 f"{needle}"
+            )
+    # V82: persisted exact_safe_cuts are telemetry, not proof objects; certified
+    # runs must regenerate cuts instead of replaying checkpoint/IPC payloads.
+    for needle in (
+        "persisted_exact_safe_cut_replay_input_count",
+        "persisted_exact_safe_cut_replay_enabled",
+    ):
+        if needle not in benders_loop_source:
+            errors.append(
+                "certified cut replay must not consume persisted exact_safe_cuts "
+                f"as proof objects: {needle}"
             )
     # V81: a time-budget-interrupted mandatory-rectangle precheck group must not
     # be consumed as a complete all-anchors-infeasible candidate proof.

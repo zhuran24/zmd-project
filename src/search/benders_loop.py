@@ -1042,6 +1042,8 @@ def _publish_last_run_metadata(
     *,
     loaded_exact_safe_cut_count: int = 0,
     generated_exact_safe_cut_count: int = 0,
+    persisted_exact_safe_cut_replay_input_count: int = 0,
+    persisted_exact_safe_cut_replay_enabled: bool = False,
 ) -> None:
     normalized_proof_summary = dict(proof_summary)
     run_benders_for_ghost_rect.last_run_metadata = {  # type: ignore[attr-defined]
@@ -1049,6 +1051,12 @@ def _publish_last_run_metadata(
         "exact_safe_cuts": [cut.to_dict() for cut in exact_safe_cuts],
         "loaded_exact_safe_cut_count": int(loaded_exact_safe_cut_count),
         "generated_exact_safe_cut_count": int(generated_exact_safe_cut_count),
+        "persisted_exact_safe_cut_replay_input_count": int(
+            persisted_exact_safe_cut_replay_input_count
+        ),
+        "persisted_exact_safe_cut_replay_enabled": bool(
+            persisted_exact_safe_cut_replay_enabled
+        ),
         "fine_grained_exact_safe_cut_count": int(
             normalized_proof_summary.get("fine_grained_exact_safe_cut_count", 0)
         ),
@@ -6253,11 +6261,20 @@ def run_benders_for_ghost_rect(
     cut_replay_started = time.perf_counter()
     raw_candidate_cuts: Sequence[Mapping[str, Any]] = []
     cut_replay_condition_skipped = 0
+    persisted_cut_replay_input_count = 0
     if solve_mode == "certified_exact":
         if preloaded_exact_safe_cuts is not None:
-            raw_candidate_cuts = list(preloaded_exact_safe_cuts)
+            persisted_cut_replay_input_count = len(list(preloaded_exact_safe_cuts))
         elif isinstance(campaign, ExactCampaign):
-            raw_candidate_cuts = campaign.get_candidate_cuts(int(ghost_w), int(ghost_h))
+            persisted_cut_replay_input_count = len(
+                campaign.get_candidate_cuts(int(ghost_w), int(ghost_h))
+            )
+        # V82 fail-closed fix: persisted exact_safe_cuts are performance hints,
+        # not proof objects.  Replaying them after checkpoint/IPC boundaries lets
+        # a forged JSON cut prune a feasible master solution before any fresh
+        # binding/routing proof obligation is discharged.  Certified runs must
+        # regenerate exact-safe cuts in the current process instead.
+        raw_candidate_cuts = []
     if solve_mode == "certified_exact":
         for raw_cut in raw_candidate_cuts:
             try:
@@ -6585,6 +6602,8 @@ def run_benders_for_ghost_rect(
         [*loaded_exact_safe_cuts, *controller.generated_exact_safe_cuts],
         loaded_exact_safe_cut_count=len(loaded_exact_safe_cuts),
         generated_exact_safe_cut_count=len(controller.generated_exact_safe_cuts),
+        persisted_exact_safe_cut_replay_input_count=persisted_cut_replay_input_count,
+        persisted_exact_safe_cut_replay_enabled=False,
     )
     return status, solution
 

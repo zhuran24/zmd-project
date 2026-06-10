@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-11",
-  "summary": "P1.2 remains manually blocked. V81 (independent external review of the V80 deny-unknown surface) found and sealed two seams: a time-budget-interrupted mandatory-rectangle precheck group could be consumed as a complete all-anchors-infeasible proof (certified false negative), and the single-base delivery release builder propagated a self-claimed exact_full_scale_certified CERTIFIED status from run_summary.json into release and pointer artifacts. Both paths now fail closed.",
-  "current_review_anchor": "v81_partial_precheck_and_release_claim_sealing",
+  "summary": "P1.2 remains manually blocked. V82 (second independent external review of the overnight loop) found and sealed two algorithmic/soundness seams: the certified candidate domain only enumerated h<=w shapes while the exact masters treat (w,h) as oriented, so full-frontier terminal proofs covered half the real domain and could publish a wrong optimum; and persisted exact_safe_cuts were replayed into the certified master after shape-only validation, letting a forged checkpoint cut flip a feasible candidate to INFEASIBLE. The domain is now fully oriented with a bumped domain authority, and persisted cuts are telemetry only.",
+  "current_review_anchor": "v82_oriented_domain_and_cut_replay_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v81_partial_precheck_and_release_claim_sealing",
+    "current_review_anchor": "v82_oriented_domain_and_cut_replay_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -237,6 +237,14 @@
       "summary": "V81 external review (first round after the V80 deny-unknown flip) found one algorithmic/soundness finding and one publication finding: F-01 mandatory-rectangle precheck consumers ignored partial_due_to_time_budget, so an infeasible anchor prefix could prune a candidate as INFEASIBLE; F-02 the single-base release builder accepted a run summary self-claiming CERTIFIED. Owner clean-streak count resets to 0.",
       "evidence_paths": [
         "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
+      ]
+    },
+    {
+      "package": "v82_oriented_domain_and_cut_replay_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V82 external review found two soundness findings, both locally reproduced end-to-end: F-1 the candidate domain canonicalized by h<=w while master feasibility is orientation-sensitive, so terminal full-frontier evidence proved exhaustion over half the domain (wrong published optimum demonstrated on a 3x3 toy); F-2 checkpoint/preloaded exact_safe_cuts entered the master after structural validation only, so a forged cut could prune the only feasible pose. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md"
       ]
     }
   ],

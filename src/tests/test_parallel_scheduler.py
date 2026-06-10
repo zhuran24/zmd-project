@@ -4,6 +4,7 @@ import json
 from dataclasses import fields
 from pathlib import Path
 
+import src.search.certified_frontier as certified_frontier_module
 import src.search.outer_search as outer_search_module
 from src.models.cut_manager import (
     RUN_STATUS_CERTIFIED,
@@ -655,7 +656,7 @@ def test_frontier_probe_auto_records_campaign_and_telemetry_and_retries_pending_
     assert state["frontier_probe"]["executed_candidate_keys"] == ["6x5"]
     assert state["frontier_probe"]["execution_count"] == 1
     assert state["frontier_probe"]["last_candidate_key"] == "6x5"
-    assert state["frontier_probe"]["last_probe_prune_gain"] == 37
+    assert state["frontier_probe"]["last_probe_prune_gain"] == 69
     assert state["frontier_probe"]["last_probe_resume_pending"] is False
 
     candidate_record = state["candidates"]["6x5"]
@@ -664,7 +665,7 @@ def test_frontier_probe_auto_records_campaign_and_telemetry_and_retries_pending_
         "mode": "auto",
         "probe_candidate": True,
         "probe_resume_pending": False,
-        "probe_prune_gain": 37,
+        "probe_prune_gain": 69,
     }
 
     telemetry = _read_campaign_telemetry(project_root)
@@ -674,17 +675,17 @@ def test_frontier_probe_auto_records_campaign_and_telemetry_and_retries_pending_
     assert telemetry["aggregate"]["probe_mode_counts"] == {"auto": 1}
     assert telemetry["aggregate"]["probe_round_count"] == 1
     assert telemetry["aggregate"]["probe_candidate_count"] == 1
-    assert telemetry["aggregate"]["probe_prune_gain_sum"] == 37
-    assert telemetry["aggregate"]["probe_prune_gain_max"] == 37
+    assert telemetry["aggregate"]["probe_prune_gain_sum"] == 69
+    assert telemetry["aggregate"]["probe_prune_gain_max"] == 69
     assert telemetry["aggregate"]["probe_resume_pending_count"] == 0
     assert telemetry["waves"][0]["probe_round_active"] is True
     assert telemetry["waves"][0]["probe_candidate_keys"] == ["6x5"]
-    assert telemetry["waves"][0]["probe_prune_gain_sum"] == 37
+    assert telemetry["waves"][0]["probe_prune_gain_sum"] == 69
     assert telemetry["waves"][0]["probe_resume_pending_count"] == 0
     assert telemetry["waves"][0]["candidate_results"][0]["selection_reason"] == outer_search_module.FRONTIER_PROBE_SELECTION_REASON
     assert telemetry["waves"][0]["candidate_results"][0]["frontier_probe_mode"] == "auto"
     assert telemetry["waves"][0]["candidate_results"][0]["probe_candidate"] is True
-    assert telemetry["waves"][0]["candidate_results"][0]["probe_prune_gain"] == 37
+    assert telemetry["waves"][0]["candidate_results"][0]["probe_prune_gain"] == 69
     assert telemetry["waves"][0]["candidate_results"][0]["probe_resume_pending"] is False
 
     calls.clear()
@@ -711,7 +712,7 @@ def test_frontier_probe_auto_records_campaign_and_telemetry_and_retries_pending_
     assert state["frontier_probe"]["executed_candidate_keys"] == ["6x5"]
     assert state["frontier_probe"]["execution_count"] == 1
     assert state["frontier_probe"]["last_candidate_key"] == "6x5"
-    assert state["frontier_probe"]["last_probe_prune_gain"] == 37
+    assert state["frontier_probe"]["last_probe_prune_gain"] == 69
     assert state["frontier_probe"]["last_probe_resume_pending"] is True
 
     telemetry = _read_campaign_telemetry(project_root)
@@ -721,12 +722,12 @@ def test_frontier_probe_auto_records_campaign_and_telemetry_and_retries_pending_
     assert telemetry["aggregate"]["probe_mode_counts"] == {"auto": 2}
     assert telemetry["aggregate"]["probe_round_count"] == 2
     assert telemetry["aggregate"]["probe_candidate_count"] == 2
-    assert telemetry["aggregate"]["probe_prune_gain_sum"] == 74
-    assert telemetry["aggregate"]["probe_prune_gain_max"] == 37
+    assert telemetry["aggregate"]["probe_prune_gain_sum"] == 138
+    assert telemetry["aggregate"]["probe_prune_gain_max"] == 69
     assert telemetry["aggregate"]["probe_resume_pending_count"] == 1
     assert telemetry["waves"][-1]["probe_round_active"] is True
     assert telemetry["waves"][-1]["probe_candidate_keys"] == ["6x5"]
-    assert telemetry["waves"][-1]["probe_prune_gain_sum"] == 37
+    assert telemetry["waves"][-1]["probe_prune_gain_sum"] == 69
     assert telemetry["waves"][-1]["probe_resume_pending_count"] == 1
     assert telemetry["waves"][-1]["candidate_results"][0]["probe_resume_pending"] is True
 
@@ -910,9 +911,15 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                 peak_rss_bytes_external_total=2,
                 peak_rss_bytes_internal_max_single_process=1,
             )
-        sorted_tasks = sorted(tasks, key=lambda task: int(task.candidate[0]))
-        small_task = sorted_tasks[0]
-        big_task = sorted_tasks[-1]
+        # V82 oriented domain: equal-area transposed candidates (e.g. (6,5) and
+        # (5,6)) can share a wave, so pick the wave's best by the same canonical
+        # sort the campaign uses, not by bare area.
+        sorted_tasks = sorted(
+            tasks,
+            key=lambda task: certified_frontier_module.candidate_sort_key(task.candidate),
+        )
+        big_task = sorted_tasks[0]
+        small_task = sorted_tasks[-1]
         expected_best["ghost_rect"] = {
             "w": int(big_task.candidate[1]),
             "h": int(big_task.candidate[2]),

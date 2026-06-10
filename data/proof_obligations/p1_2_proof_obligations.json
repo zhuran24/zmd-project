@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-11",
-  "review_anchor": "v81_partial_precheck_and_release_claim_sealing",
-  "summary": "P1.2 remains fail-closed. V81 seals two independently found seams: a mandatory-rectangle precheck group interrupted by the time budget (partial_due_to_time_budget) is no longer accepted as an all-anchors-infeasible candidate proof, and the single-base delivery release path fails closed on a run summary that self-claims exact_full_scale_certified CERTIFIED instead of propagating it into release/pointer artifacts.",
-  "phase_gate_required_anchor": "v81_partial_precheck_and_release_claim_sealing",
+  "review_anchor": "v82_oriented_domain_and_cut_replay_sealing",
+  "summary": "P1.2 remains fail-closed. V82 seals two independently found soundness seams: the certified candidate domain is now oriented (both (w,h) and (h,w) are enumerated, with the domain authority bumped to outer_search_static_area_bound_oriented_v2 so half-domain terminal evidence is rejected explicitly), and certified_exact no longer replays persisted exact_safe_cuts across checkpoint/IPC boundaries into the master (they are counted as telemetry, never consumed as proof objects).",
+  "phase_gate_required_anchor": "v82_oriented_domain_and_cut_replay_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -106,7 +106,8 @@
         "v56_certified_cut_replay_consolidation",
         "v57_candidate",
         "v58_candidate",
-        "v59_candidate"
+        "v59_candidate",
+        "v82_oriented_domain_and_cut_replay_sealing"
       ],
       "required_tests": [
         "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
@@ -140,13 +141,16 @@
         "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
         "test_pose_bool_replay_alias_collision_fails_closed",
         "test_legacy_benders_cut_alias_collision_fails_closed",
-        "test_resolver_fails_closed_on_malformed_ghost_anchor_key"
+        "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+        "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated",
+        "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
         "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
         "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
-        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md"
       ]
     },
     {
@@ -209,7 +213,8 @@
         "v75_terminal_frontier_evidence_sealing",
         "v76_project_bound_terminal_evidence",
         "v79_terminal_domain_axis_sealing",
-        "v80_deny_unknown_certified_surface"
+        "v80_deny_unknown_certified_surface",
+        "v82_oriented_domain_and_cut_replay_sealing"
       ],
       "required_tests": [
         "test_exact_campaign_resume_rejects_float_state_schema_version",
@@ -231,7 +236,8 @@
         "test_v80_resume_rejects_terminal_evidence_unknown_candidate_generation_key",
         "test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch",
         "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
-        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility"
+        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
+        "test_full_frontier_candidate_domain_keeps_oriented_dimensions"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
@@ -243,7 +249,8 @@
         "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
         "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
         "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
-        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md"
       ]
     },
     {

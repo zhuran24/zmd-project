@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v81_partial_precheck_and_release_claim_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v82_oriented_domain_and_cut_replay_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -59,6 +59,8 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_pose_bool_replay_alias_collision_fails_closed" in replay_tests
     assert "test_legacy_benders_cut_alias_collision_fails_closed" in replay_tests
     assert "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key" in replay_tests
+    assert "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated" in replay_tests
+    assert "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master" in replay_tests
 
     master_domain_tests = obligations["PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS"]
     assert "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session" in master_domain_tests
@@ -77,6 +79,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch" in frontier_tests
     assert "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema" in frontier_tests
     assert "test_v80_resume_rejects_terminal_final_result_below_project_admissibility" in frontier_tests
+    assert "test_full_frontier_candidate_domain_keeps_oriented_dimensions" in frontier_tests
 
     export_tests = obligations["PO-CERTIFIED-EXPORT-SURFACE"]
     assert "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence" in export_tests

@@ -5244,13 +5244,15 @@ def test_certification_first_frontier_prefers_prune_per_anchor_over_objective_he
 
     assert frontier_state["frontier"][0] == (9, 3, 3)
     assert frontier_state["selected_candidate"] == (6, 6, 1)
+    # V82: the candidate domain is oriented, so transposed candidates exist;
+    # objective-dominance prune gain and frontier size grow accordingly.
     assert frontier_state["selected_candidate_metrics"] == {
-        "selection_score_num": 7,
-        "selection_score_den": 6,
-        "certification_prune_gain": 7,
+        "selection_score_num": 2,
+        "selection_score_den": 1,
+        "certification_prune_gain": 12,
         "infeasible_prune_gain": 1,
         "anchor_count": 6,
-        "frontier_size": 3,
+        "frontier_size": 5,
     }
 
 
@@ -5279,7 +5281,9 @@ def test_frontier_probe_auto_selects_non_frontier_mid_domain_candidate() -> None
     assert frontier_state["probe_candidate_source"] == outer_search_module.FRONTIER_PROBE_SELECTION_POLICY
     assert frontier_state["probe_candidate_metrics"]["probe_candidate"] == 1
     assert frontier_state["probe_candidate_metrics"]["anchor_count"] == 56
-    assert frontier_state["probe_candidate_metrics"]["probe_prune_gain"] == 37
+    # V82 oriented domain: the probe's objective-dominance gain covers the
+    # transposed candidates as well.
+    assert frontier_state["probe_candidate_metrics"]["probe_prune_gain"] == 69
 
 
 def test_frontier_probe_auto_skips_probe_when_anchor_count_exceeds_cap(monkeypatch) -> None:
@@ -5674,7 +5678,7 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
     status, result = run_outer_search(
         project_root=project_root,
         solve_mode="certified_exact",
-        max_attempts=3,
+        max_attempts=4,
         min_side=1,
         master_seconds=0.01,
         binding_seconds=0.01,
@@ -5686,12 +5690,14 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
-    assert calls == [(6, 6), (6, 5), (6, 4)]
+    # V82 oriented domain: objective order is (6,6),(6,5),(5,6),(5,5),(6,4),...
+    # prune-first deviates at step 4 by taking (6,4) before objective head (5,5).
+    assert calls == [(6, 6), (6, 5), (5, 6), (6, 4)]
 
     partial_state = _read_campaign_state(project_root)
     assert "6x4" in partial_state["candidates"]
-    # prune-first 在 {(5,5),(6,4)} 双头处偏离 objective 前缀: objective 头 (5,5)
-    # 还没被解, 部分跑可以偏离 objective 序而 resume 后仍收敛。
+    # prune-first 偏离 objective 前缀: objective 头 (5,5) 还没被解,
+    # 部分跑可以偏离 objective 序而 resume 后仍收敛。
     assert "5x5" not in partial_state["candidates"]
     assert partial_state["last_stop_reason"]["reason"] == "max_attempts_exhausted"
 

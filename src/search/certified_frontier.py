@@ -19,7 +19,11 @@ from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
 TERMINAL_FRONTIER_EVIDENCE_SCHEMA_VERSION = 2
 TERMINAL_FRONTIER_EVIDENCE_SOURCE = "certified_terminal_frontier_evidence_v2"
 TERMINAL_FRONTIER_EXHAUSTED_REASON = "search_exhausted_all_candidates"
-TERMINAL_FRONTIER_DOMAIN_AUTHORITY = "outer_search_static_area_bound_v1"
+# V82: the candidate domain became oriented (both (w,h) and (h,w) are
+# enumerated).  The authority string is bumped so terminal evidence produced
+# over the old h<=w half-domain is rejected explicitly, not just via digest
+# drift.
+TERMINAL_FRONTIER_DOMAIN_AUTHORITY = "outer_search_static_area_bound_oriented_v2"
 # PROJECT_LOCK: the production project currently publishes min_side >= 6 as the
 # admissibility floor.  The canonical project schema carries the authoritative
 # value; this constant is the production projection/default used by compatibility
@@ -66,8 +70,12 @@ def generate_candidate_sizes(
         }
     )
     candidates: list[Candidate] = []
+    # Width and height are oriented in the exact masters: (w, h) enumerates
+    # anchors with dx in range(w) and dy in range(h).  Do not canonicalize
+    # by h <= w here, or a certified full-frontier proof can miss a feasible
+    # vertical rectangle whose transposed horizontal candidate is infeasible.
     for w in range(int(params["min_side"]), int(params["max_w"]) + 1):
-        for h in range(int(params["min_side"]), min(int(params["max_h"]), w) + 1):
+        for h in range(int(params["min_side"]), int(params["max_h"]) + 1):
             area = w * h
             area_upper_bound = params["area_upper_bound"]
             if area_upper_bound is not None and area > int(area_upper_bound):

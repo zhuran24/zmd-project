@@ -840,20 +840,25 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
         def close(self) -> None:
             return None
 
-    wave_phase = {"certified_emitted": False}
+    wave_phase = {"certified_emitted": False, "certified_key": None}
 
     def fake_parallel_wave(*, pool, tasks):
         assert isinstance(pool, _DummyParallelWorkerPool)
         # 权威全域的支配 frontier 从单头 (6,6) 起步: 单头波判 INFEASIBLE 削角,
-        # 裂成 ≥2 头的那一波乱序回报 (6,4) CERTIFIED + 其余 UNKNOWN, 之后保持
+        # 裂成 ≥2 头的那一波乱序回报一个 CERTIFIED + 其余 UNKNOWN, 之后保持
         # UNKNOWN, 让 run 以非 terminal UNKNOWN 退出但保留 CERTIFIED 记录。
+        # V82 有向域下波的具体形状会漂, 所以 certified 目标取该波第一个候选
+        # 而不锚定 (6,4) 这类具体尺寸。
+        certified_target = None
+        if len(tasks) >= 2 and not wave_phase["certified_emitted"]:
+            certified_target = (int(tasks[0].candidate[1]), int(tasks[0].candidate[2]))
         results = []
         for task in reversed(tasks):
             candidate_wh = (int(task.candidate[1]), int(task.candidate[2]))
             if len(tasks) < 2 and not wave_phase["certified_emitted"]:
                 status = "INFEASIBLE"
                 solution = None
-            elif candidate_wh == (6, 4) and not wave_phase["certified_emitted"]:
+            elif candidate_wh == certified_target:
                 status = "CERTIFIED"
                 solution = {
                     "big_pick": {
@@ -882,8 +887,12 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
                     error=None,
                 )
             )
-        if any(result.status == "CERTIFIED" for result in results):
-            wave_phase["certified_emitted"] = True
+        for result in results:
+            if result.status == "CERTIFIED":
+                wave_phase["certified_emitted"] = True
+                wave_phase["certified_key"] = (
+                    f"{int(result.candidate[1])}x{int(result.candidate[2])}"
+                )
         return ParallelWaveExecution(
             completed=True,
             failure_reason=None,
@@ -930,9 +939,11 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
         for record in serial_campaign.state["candidates"].values()
     )
     # 并行: 同一波里乱序拿到的 CERTIFIED 记录保留在 checkpoint (resume 可用)。
-    assert parallel_campaign.state["candidates"]["6x4"]["status"] == "CERTIFIED"
+    certified_key = wave_phase["certified_key"]
+    assert certified_key is not None
+    assert parallel_campaign.state["candidates"][certified_key]["status"] == "CERTIFIED"
     assert (
-        parallel_campaign.state["candidates"]["6x4"]["solution"]["big_pick"]["pose_id"]
+        parallel_campaign.state["candidates"][certified_key]["solution"]["big_pick"]["pose_id"]
         == "synthetic_pose_0"
     )
     # 两条路径的公开 certified 面一致为空: 非 terminal 不发布 (V75/V76 契约)。
@@ -2295,10 +2306,17 @@ def test_production_campaign_child_reports_empty_pool_candidate_precheck_master_
     }
 
 
-def test_resume_replays_fine_grained_exact_safe_cuts_into_master(
+def test_resume_does_not_replay_persisted_exact_safe_cuts_into_master(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
+    """V82: persisted exact_safe_cuts are telemetry, not proof objects.
+
+    This test originally asserted that resume replays checkpoint cuts into the
+    master. V82 found that path lets a forged JSON cut prune a feasible
+    candidate (certified false negative), so the guarded behavior is inverted:
+    persisted cuts must be counted but never applied.
+    """
     project_root = _build_empty_frontier_project(tmp_path / "resume_fine_grained_cuts")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     exact_cut = {
@@ -2370,5 +2388,7 @@ def test_resume_replays_fine_grained_exact_safe_cuts_into_master(
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
-    assert replayed_cuts == [{"pose_optional::power_pole::pole_0": 0}]
-    assert metadata["loaded_exact_safe_cut_count"] == 1
+    assert replayed_cuts == []
+    assert metadata["loaded_exact_safe_cut_count"] == 0
+    assert metadata["persisted_exact_safe_cut_replay_input_count"] == 1
+    assert metadata["persisted_exact_safe_cut_replay_enabled"] is False

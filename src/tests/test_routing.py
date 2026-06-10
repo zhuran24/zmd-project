@@ -489,7 +489,7 @@ def test_benders_loop_import(project_root):
 # ============================================================================
 
 def test_candidate_sizes_generation(project_root):
-    """候选尺寸应按面积降序排列。"""
+    """候选尺寸应按面积降序排列, 且域是有向全域 (V82)。"""
     import sys
     sys.path.insert(0, str(project_root))
     from src.search.outer_search import generate_candidate_sizes
@@ -506,9 +506,13 @@ def test_candidate_sizes_generation(project_root):
     # 最小面积应为 3x3=9
     assert sizes[-1] == (9, 3, 3)
 
-    # w >= h 避免重复
-    for a, w, h in sizes:
-        assert w >= h
+    # V82: master 把 (w,h) 当有向尺寸, 可行性对转置敏感 —— 全域必须同时
+    # 枚举 (w,h) 与 (h,w), 不得用 w >= h 折叠 (那会让 full-frontier 证明
+    # 漏掉竖向矩形)。
+    shape_set = {(w, h) for _a, w, h in sizes}
+    assert len(sizes) == 8 * 8
+    for w, h in list(shape_set):
+        assert (h, w) in shape_set
 
 
 def test_outer_search_import(project_root):

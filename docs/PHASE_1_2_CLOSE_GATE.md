@@ -20,16 +20,16 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V81, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V82, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
 publication hardening, terminal candidate-domain axis sealing, deny-unknown
-certified-surface hardening, and partial-precheck/release-claim sealing, the
-current review anchor is:
+certified-surface hardening, partial-precheck/release-claim sealing, and
+oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v81_partial_precheck_and_release_claim_sealing
+v82_oriented_domain_and_cut_replay_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -70,7 +70,14 @@ budget (`partial_due_to_time_budget`) is no longer consumed as a complete
 all-anchors-infeasible candidate proof, and the single-base delivery release
 path fails closed on a run summary that self-claims
 `exact_full_scale_certified` CERTIFIED instead of propagating it into
-release/pointer artifacts.  The
+release/pointer artifacts.  V82 seals two further soundness seams found by the
+second independent review: the candidate domain is now fully oriented (the old
+`h <= w` canonicalization let full-frontier proofs cover half the real domain
+while master feasibility is orientation-sensitive; the domain authority is
+bumped to `outer_search_static_area_bound_oriented_v2`), and persisted
+`exact_safe_cuts` are telemetry only — `certified_exact` never replays
+checkpoint/IPC cut payloads into the master, because shape-level validation
+cannot rebuild the family-specific proof obligation.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -96,8 +103,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v77_delivery_manifest_writer_authority.md`,
 `docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`,
 `docs/research/p1_2_v79_terminal_domain_axis_sealing.md`,
-`docs/research/p1_2_v80_deny_unknown_certified_surface.md`, and
-`docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md`.
+`docs/research/p1_2_v80_deny_unknown_certified_surface.md`,
+`docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md`, and
+`docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md`.
 
 Daily consistency check:
 
