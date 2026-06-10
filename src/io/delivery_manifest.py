@@ -575,7 +575,16 @@ def _ghost_rect_summary(raw_rect: Any) -> Optional[Dict[str, int]]:
         area = int(raw_rect.get("area", w * h))
     except Exception:
         return None
-    return {"w": w, "h": h, "area": area}
+    if "anchor_x" not in raw_rect or "anchor_y" not in raw_rect:
+        return None
+    try:
+        anchor_x = int(raw_rect.get("anchor_x"))
+        anchor_y = int(raw_rect.get("anchor_y"))
+    except Exception:
+        return None
+    if anchor_x < 0 or anchor_y < 0:
+        return None
+    return {"w": w, "h": h, "area": area, "anchor_x": anchor_x, "anchor_y": anchor_y}
 
 
 def _blueprint_export_timestamp(blueprint_payload: Mapping[str, Any]) -> Optional[str]:
@@ -606,7 +615,16 @@ def _blueprint_ghost_rect_summary(blueprint_payload: Mapping[str, Any]) -> Optio
     area = int(raw_score)
     if area != w * h:
         return None
-    return {"w": w, "h": h, "area": area}
+    if "anchor_x" not in empty_rect or "anchor_y" not in empty_rect:
+        return None
+    try:
+        anchor_x = int(empty_rect.get("anchor_x"))
+        anchor_y = int(empty_rect.get("anchor_y"))
+    except Exception:
+        return None
+    if anchor_x < 0 or anchor_y < 0:
+        return None
+    return {"w": w, "h": h, "area": area, "anchor_x": anchor_x, "anchor_y": anchor_y}
 
 
 _BLUEPRINT_COMPARABLE_SOLUTION_FIELDS = frozenset(
@@ -700,6 +718,8 @@ def _build_best_certified_result_payload(
             "w": ghost_w,
             "h": ghost_h,
             "area": int(ghost_rect.get("area", ghost_w * ghost_h)),
+            "anchor_x": int(ghost_rect.get("anchor_x")),
+            "anchor_y": int(ghost_rect.get("anchor_y")),
         },
         "search_status": "CERTIFIED",
         "search_stats": dict(search_stats),

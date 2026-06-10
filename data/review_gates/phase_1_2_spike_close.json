@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-11",
-  "summary": "P1.2 remains manually blocked. V87 (seventh overnight independent review) sealed two seams: unforced surplus power poles can no longer act as occupancy blockers that shrink the apparent best empty rectangle, and the published ghost anchor coordinates are now replayed for emptiness instead of only proving an arbitrary same-size placement.",
-  "current_review_anchor": "v87_anchor_and_pole_irredundancy_sealing",
+  "summary": "P1.2 remains manually blocked. V88 (eighth overnight independent review) sealed the remaining anchor seam: ghost_rect anchor fields are now a required part of the published protocol end to end, so the V87 anchor replay can no longer be bypassed by omitting them. Five reviewer-patch defects in downstream solution consumers were corrected during landing (ghost_pick is a marker, not a facility).",
+  "current_review_anchor": "v88_ghost_anchor_required_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v87_anchor_and_pole_irredundancy_sealing",
+    "current_review_anchor": "v88_ghost_anchor_required_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -285,6 +285,14 @@
       "summary": "V87 external review found two soundness findings, both locally reproduced: authorized-but-unforced power poles were counted as occupancy (letting a forged checkpoint flood cells and publish a smaller optimum), and final_result.ghost_rect anchor coordinates were never replayed (letting a blueprint publish a CERTIFIED rectangle on top of facilities). Sealed fail-closed. Owner clean-streak count resets to 0.",
       "evidence_paths": [
         "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md"
+      ]
+    },
+    {
+      "package": "v88_ghost_anchor_required_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V88 external review found one soundness finding, locally reproduced: omitting ghost_rect.anchor_x/y bypassed the V87 anchor replay and published anchor=-1,-1 blueprints as CERTIFIED. The anchor is now protocol-required end to end. The reviewer patch broke the real-solver path (five downstream consumers treated the new ghost_pick marker as a facility); corrected during landing. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v88_ghost_anchor_required_sealing.md"
       ]
     }
   ],

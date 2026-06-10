@@ -865,7 +865,7 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
 
     assert serial_status == parallel_status == RUN_STATUS_CERTIFIED
     assert serial_result is not None and parallel_result is not None
-    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0}
 
     serial_state = _read_campaign_state(serial_root)
     parallel_state = _read_campaign_state(parallel_root)
@@ -924,6 +924,8 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
             "w": int(big_task.candidate[1]),
             "h": int(big_task.candidate[2]),
             "area": int(big_task.candidate[0]),
+            "anchor_x": 0,
+            "anchor_y": 0,
         }
         return ParallelWaveExecution(
             completed=True,
@@ -1022,6 +1024,8 @@ def test_worker_failure_preserves_certified_candidate_records_without_terminal_e
             "w": int(big_task.candidate[1]),
             "h": int(big_task.candidate[2]),
             "area": int(big_task.candidate[0]),
+            "anchor_x": 0,
+            "anchor_y": 0,
         }
         return ParallelWaveExecution(
             completed=False,

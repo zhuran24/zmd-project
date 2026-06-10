@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-11",
-  "review_anchor": "v87_anchor_and_pole_irredundancy_sealing",
-  "summary": "P1.2 remains fail-closed. V87 seals two adversarial deepenings of the terminal replay: surplus authorized power poles that force no coverage obligation are rejected as occupancy blockers, and the published ghost_rect anchor coordinates are replayed against the occupancy grid instead of only proving some same-size placement exists.",
-  "phase_gate_required_anchor": "v87_anchor_and_pole_irredundancy_sealing",
+  "review_anchor": "v88_ghost_anchor_required_sealing",
+  "summary": "P1.2 remains fail-closed. V88 makes the published ghost anchor part of the certified protocol: the master extracts the proven ghost pick with its anchor, terminal validation and the blueprint serializer fail closed when anchor_x/anchor_y are missing, closing the bypass of the V87 anchor replay.",
+  "phase_gate_required_anchor": "v88_ghost_anchor_required_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -286,7 +286,8 @@
         "v84_layout_optimality_and_artifact_boundary_sealing",
         "v85_required_optional_terminal_sealing",
         "v86_power_witness_terminal_sealing",
-        "v87_anchor_and_pole_irredundancy_sealing"
+        "v87_anchor_and_pole_irredundancy_sealing",
+        "v88_ghost_anchor_required_sealing"
       ],
       "required_tests": [
         "test_delivery_manifest_rejects_best_effort_final_result",
@@ -340,7 +341,11 @@
         "test_terminal_project_validator_rejects_powered_facility_without_selected_power_coverer",
         "test_terminal_project_validator_accepts_selected_power_coverer",
         "test_terminal_project_validator_rejects_occupied_claimed_ghost_anchor",
-        "test_terminal_project_validator_rejects_unforced_power_pole_blocker"
+        "test_terminal_project_validator_rejects_unforced_power_pole_blocker",
+        "test_terminal_project_validator_requires_ghost_anchor",
+        "test_certified_blueprint_builder_rejects_missing_ghost_anchor",
+        "test_outer_search_certified_result_carries_ghost_anchor",
+        "test_terminal_solution_match_ignores_candidate_record_ghost_marker"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -361,7 +366,8 @@
         "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
         "docs/research/p1_2_v85_required_optional_terminal_sealing.md",
         "docs/research/p1_2_v86_power_witness_terminal_sealing.md",
-        "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md"
+        "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md",
+        "docs/research/p1_2_v88_ghost_anchor_required_sealing.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority."
     },

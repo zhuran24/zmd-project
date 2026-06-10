@@ -20,7 +20,7 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V87, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V88, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
@@ -29,7 +29,7 @@ certified-surface hardening, partial-precheck/release-claim sealing, and
 oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v87_anchor_and_pole_irredundancy_sealing
+v88_ghost_anchor_required_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -100,7 +100,10 @@ validator: powered facilities without a selected covering pole fail closed
 instead of publishing a result the exact master proves infeasible.  V87
 (seventh overnight independent review) seals two further deepenings:
 unforced surplus power poles are rejected as occupancy blockers, and the
-published ghost anchor coordinates are replayed for emptiness.  The
+published ghost anchor coordinates are replayed for emptiness.  V88
+(eighth overnight independent review) makes the anchor protocol-required
+end to end: omitting anchor fields no longer bypasses that replay, and
+the blueprint serializer refuses anchorless certified rectangles.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -132,8 +135,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md`,
 `docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md`,
 `docs/research/p1_2_v85_required_optional_terminal_sealing.md`,
-`docs/research/p1_2_v86_power_witness_terminal_sealing.md`, and
-`docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md`.
+`docs/research/p1_2_v86_power_witness_terminal_sealing.md`,
+`docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md`, and
+`docs/research/p1_2_v88_ghost_anchor_required_sealing.md`.
 
 Daily consistency check:
 

@@ -156,7 +156,7 @@ def test_inspector_summarizes_terminal_full_frontier_certified_result(
         proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
@@ -388,7 +388,7 @@ def test_inspector_hides_stale_final_result_without_terminal_frontier_evidence(
         proof_summary={"master_status": "CERTIFIED"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
@@ -424,7 +424,7 @@ def test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_ev
                 "declare_mode": "strict",
             },
             "best_certified_result": {
-                "ghost_rect": {"w": 2, "h": 1, "area": 2},
+                "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
                 "search_status": RUN_STATUS_CERTIFIED,
                 "placement_solution": _certified_solution(),
             },
@@ -459,7 +459,7 @@ def test_v68_inspector_requires_current_campaign_evidence_for_terminal_manifest(
                 "declare_mode": "strict",
             },
             "best_certified_result": {
-                "ghost_rect": {"w": 2, "h": 1, "area": 2},
+                "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
                 "search_status": RUN_STATUS_CERTIFIED,
                 "placement_solution": _certified_solution(),
             },
@@ -492,7 +492,7 @@ def test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_
         generated_exact_safe_cut_count=2,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -519,7 +519,7 @@ def test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_
                 "declare_mode": "strict",
             },
             "best_certified_result": {
-                "ghost_rect": {"w": 2, "h": 1, "area": 2},
+                "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
                 "search_status": RUN_STATUS_CERTIFIED,
                 "search_stats": {"campaign_resumed": False},
                 "proof_summary": {"master_status": "STALE"},
@@ -552,7 +552,7 @@ def test_v70_inspector_and_b5a_reject_stale_terminal_after_artifact_hash_mismatc
         proof_summary={"master_status": "CERTIFIED", "selection_reason": "objective_head"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
@@ -596,7 +596,7 @@ def test_v70_inspector_and_b5a_reject_terminal_manifest_without_current_delivery
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -654,7 +654,7 @@ def test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table(
         generated_exact_safe_cut_count=2,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -718,7 +718,7 @@ def _export_current_certified_surface(project_root: Path) -> ExactCampaign:
         generated_exact_safe_cut_count=2,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 2, "h": 1, "area": 2},
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},

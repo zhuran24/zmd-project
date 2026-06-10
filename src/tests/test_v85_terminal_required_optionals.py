@@ -98,7 +98,7 @@ def test_v85_terminal_project_validation_rejects_missing_required_pose_optional(
     }
     final_result = {
         "search_status": "CERTIFIED",
-        "ghost_rect": {"w": 2, "h": 2, "area": 4},
+        "ghost_rect": {"w": 2, "h": 2, "area": 4, "anchor_x": 0, "anchor_y": 0},
         "placement_solution": placement_solution,
         "search_stats": {"probe": "required_optional_omitted"},
     }

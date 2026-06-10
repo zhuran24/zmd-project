@@ -2417,7 +2417,7 @@ def test_toy_project_can_be_truly_certified(tmp_path: Path) -> None:
     )
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
     state = _read_campaign_state(project_root)
     candidate = state["candidates"]["1x1"]
     assert state["final_status"] == RUN_STATUS_CERTIFIED
@@ -5085,7 +5085,7 @@ def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> 
     )
     manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
 
-    assert final_solution_payload["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert final_solution_payload["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
     assert blueprint_payload["objective_achieved"]["empty_rect"]["w"] == 1
     assert blueprint_payload["objective_achieved"]["empty_rect"]["h"] == 1
     assert blueprint_payload["facilities"][0]["instance_id"] == "tiny_001"
@@ -5093,7 +5093,7 @@ def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> 
     assert blueprint_payload["facilities"][0]["port_mode"] == "default"
     assert blueprint_payload["routing_network"] == {"L0_ground": {}, "L1_elevated": {}}
     assert manifest_payload["campaign"]["final_status"] == RUN_STATUS_CERTIFIED
-    assert manifest_payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert manifest_payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is True
     assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is True
 
@@ -5503,7 +5503,15 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": expected[1], "h": expected[2], "area": expected[0]}
+    # V88: the published ghost_rect carries the proven anchor; the mock pick
+    # always anchors at (0,0).
+    assert result["ghost_rect"] == {
+        "w": expected[1],
+        "h": expected[2],
+        "area": expected[0],
+        "anchor_x": 0,
+        "anchor_y": 0,
+    }
     assert calls[0][:2] == (
         frontier_state["selected_candidate"][1],
         frontier_state["selected_candidate"][2],
@@ -5616,7 +5624,7 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 2, "h": 1, "area": 2}
+    assert result["ghost_rect"] == {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0}
     assert call_counts[(2, 2)] == 2
 
 
@@ -5707,7 +5715,7 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
+    assert result["ghost_rect"] == {"w": 6, "h": 1, "area": 6, "anchor_x": 0, "anchor_y": 0}
 
 
 def _clear_exact_env_for_v80_guard(monkeypatch) -> None:

@@ -741,6 +741,30 @@ def _compute_exact_frontier_state(
     }
 
 
+def _ghost_anchor_from_solution(solution: Mapping[str, Any]) -> Optional[Tuple[int, int]]:
+    ghost_pick = solution.get("ghost_pick")
+    try:
+        if isinstance(ghost_pick, Mapping):
+            raw_anchor = ghost_pick.get("anchor")
+            if isinstance(raw_anchor, Mapping):
+                return int(raw_anchor.get("x")), int(raw_anchor.get("y"))
+            if "anchor_x" in ghost_pick and "anchor_y" in ghost_pick:
+                return int(ghost_pick.get("anchor_x")), int(ghost_pick.get("anchor_y"))
+        raw_anchor = solution.get("ghost_anchor")
+        if isinstance(raw_anchor, Mapping):
+            return int(raw_anchor.get("x")), int(raw_anchor.get("y"))
+        if isinstance(raw_anchor, (list, tuple)) and len(raw_anchor) == 2:
+            return int(raw_anchor[0]), int(raw_anchor[1])
+    except Exception:
+        return None
+    return None
+
+
+
+def _placement_solution_without_ghost_marker(solution: Mapping[str, Any]) -> Dict[str, Any]:
+    return {str(key): value for key, value in solution.items() if str(key) != "ghost_pick"}
+
+
 def _build_certified_result(
     *,
     candidate: Tuple[int, int, int],
@@ -754,9 +778,14 @@ def _build_certified_result(
     frontier_candidate_metrics: Mapping[str, Any],
 ) -> Dict[str, Any]:
     area, ghost_w, ghost_h = candidate
+    ghost_rect = {"w": ghost_w, "h": ghost_h, "area": area}
+    ghost_anchor = _ghost_anchor_from_solution(solution)
+    if ghost_anchor is not None:
+        ghost_rect["anchor_x"] = int(ghost_anchor[0])
+        ghost_rect["anchor_y"] = int(ghost_anchor[1])
     return {
-        "ghost_rect": {"w": ghost_w, "h": ghost_h, "area": area},
-        "placement_solution": dict(solution),
+        "ghost_rect": ghost_rect,
+        "placement_solution": _placement_solution_without_ghost_marker(solution),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {
             "attempts": attempts,

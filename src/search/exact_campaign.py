@@ -183,6 +183,10 @@ def _strict_resume_int(value: Any, field: str) -> int:
     return int(value)
 
 
+def _solution_without_ghost_marker(solution: Mapping[str, Any]) -> Dict[str, Any]:
+    return {str(key): value for key, value in solution.items() if str(key) != "ghost_pick"}
+
+
 def _load_exact_grid_dimensions(project_root: Optional[Path]) -> Optional[Tuple[int, int]]:
     if project_root is None:
         return None
@@ -521,33 +525,34 @@ def _validate_terminal_solution_against_project(
         grid_w=grid_w,
         grid_h=grid_h,
     )
-    if ghost_rect.get("anchor_x") is not None or ghost_rect.get("anchor_y") is not None:
-        try:
-            anchor_x = _strict_resume_int(
-                ghost_rect.get("anchor_x"),
-                "final_result.ghost_rect.anchor_x",
-            )
-            anchor_y = _strict_resume_int(
-                ghost_rect.get("anchor_y"),
-                "final_result.ghost_rect.anchor_y",
-            )
-        except Exception:
-            return "terminal_certified_final_result_ghost_rect_anchor_invalid"
-        if (
-            anchor_x < 0
-            or anchor_y < 0
-            or anchor_x > grid_w - int(ghost_w)
-            or anchor_y > grid_h - int(ghost_h)
-        ):
-            return "terminal_certified_final_result_ghost_rect_anchor_invalid"
-        if _occupied_count_in_rect(
-            occupancy_prefix=occupancy_prefix,
-            anchor_x=int(anchor_x),
-            anchor_y=int(anchor_y),
-            rect_w=int(ghost_w),
-            rect_h=int(ghost_h),
-        ) != 0:
-            return "terminal_certified_final_result_ghost_rect_anchor_occupied"
+    if "anchor_x" not in ghost_rect or "anchor_y" not in ghost_rect:
+        return "terminal_certified_final_result_ghost_rect_anchor_missing"
+    try:
+        anchor_x = _strict_resume_int(
+            ghost_rect.get("anchor_x"),
+            "final_result.ghost_rect.anchor_x",
+        )
+        anchor_y = _strict_resume_int(
+            ghost_rect.get("anchor_y"),
+            "final_result.ghost_rect.anchor_y",
+        )
+    except Exception:
+        return "terminal_certified_final_result_ghost_rect_anchor_invalid"
+    if (
+        anchor_x < 0
+        or anchor_y < 0
+        or anchor_x > grid_w - int(ghost_w)
+        or anchor_y > grid_h - int(ghost_h)
+    ):
+        return "terminal_certified_final_result_ghost_rect_anchor_invalid"
+    if _occupied_count_in_rect(
+        occupancy_prefix=occupancy_prefix,
+        anchor_x=int(anchor_x),
+        anchor_y=int(anchor_y),
+        rect_w=int(ghost_w),
+        rect_h=int(ghost_h),
+    ) != 0:
+        return "terminal_certified_final_result_ghost_rect_anchor_occupied"
 
     if not _empty_rect_exists(
         occupancy_prefix=occupancy_prefix,
@@ -1191,7 +1196,7 @@ def terminal_certified_final_result_violation(
     record_solution = record.get("solution")
     if not isinstance(record_solution, Mapping):
         return "terminal_certified_candidate_solution_missing"
-    if dict(record_solution) != dict(placement_solution):
+    if _solution_without_ghost_marker(record_solution) != _solution_without_ghost_marker(placement_solution):
         return "terminal_certified_final_result_solution_mismatch"
 
     final_objective = _candidate_objective_from_rect(ghost_w, ghost_h)

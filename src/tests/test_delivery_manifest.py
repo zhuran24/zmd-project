@@ -97,7 +97,7 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
         generated_exact_safe_cut_count=2,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": {
             "tiny_001": {
                 "pose_idx": 0,
@@ -135,7 +135,7 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
     assert output_path == delivery_manifest_output_path(project_root)
     assert payload["campaign"]["solve_mode"] == "certified_exact"
     assert payload["campaign"]["final_status"] == RUN_STATUS_CERTIFIED
-    assert payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
     assert payload["best_certified_result"]["proof_summary"]["master_status"] == RUN_STATUS_CERTIFIED
     assert payload["best_certified_result"]["loaded_exact_safe_cut_count"] == 1
     assert payload["best_certified_result"]["generated_exact_safe_cut_count"] == 2
@@ -191,7 +191,7 @@ def test_delivery_manifest_rejects_best_effort_final_result(tmp_path: Path) -> N
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": {"tiny_001": {"pose_idx": 0}},
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -242,7 +242,7 @@ def test_delivery_manifest_rejects_stale_certified_final_result_without_terminal
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -280,7 +280,7 @@ def test_v79_delivery_manifest_rejects_non_instance_placement_solution(
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": freeform_solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -330,7 +330,7 @@ def test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts(
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -373,7 +373,7 @@ def test_v69_delivery_manifest_rejects_stale_final_solution_artifact(
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -433,7 +433,7 @@ def test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact(
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -446,7 +446,7 @@ def test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact(
     assert best_result is not None
     _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
     stale_blueprint_result = dict(best_result)
-    stale_blueprint_result["ghost_rect"] = {"w": 2, "h": 1, "area": 2}
+    stale_blueprint_result["ghost_rect"] = {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0}
     export_certified_blueprint(
         project_root=project_root,
         result=stale_blueprint_result,
@@ -492,7 +492,7 @@ def test_v70_delivery_manifest_accepts_master_solution_metadata_not_in_blueprint
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -516,7 +516,7 @@ def test_v70_delivery_manifest_accepts_master_solution_metadata_not_in_blueprint
         campaign_path=campaign.path,
     )
 
-    assert payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
 
 
 def test_v70_delivery_manifest_rejects_non_integer_blueprint_score(
@@ -545,7 +545,7 @@ def test_v70_delivery_manifest_rejects_non_integer_blueprint_score(
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -598,7 +598,7 @@ def test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_res
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -652,7 +652,7 @@ def test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports(
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -708,7 +708,7 @@ def test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields(
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -763,7 +763,7 @@ def test_v72_manifest_currentness_rejects_extra_metadata_fields(tmp_path: Path) 
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -831,7 +831,7 @@ def test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_soluti
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "routing_solution": routing_solution,
         "search_status": RUN_STATUS_CERTIFIED,
@@ -884,7 +884,7 @@ def test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact(
         generated_exact_safe_cut_count=2,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -953,7 +953,7 @@ def test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoi
         generated_exact_safe_cut_count=0,
     )
     memory_campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -1008,7 +1008,7 @@ def test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_be
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -1066,7 +1066,7 @@ def test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanoni
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
@@ -1142,7 +1142,7 @@ def test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_
         generated_exact_safe_cut_count=0,
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},

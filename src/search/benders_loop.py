@@ -4835,6 +4835,10 @@ class LBBDController:
         port_dict: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
 
         for instance_id, solution_entry in solution.items():
+            # V88: the ghost_pick marker is the empty rectangle itself, not a
+            # facility; it has no pool pose, occupancy, or ports.
+            if str(instance_id) == "ghost_pick":
+                continue
             pose_idx = int(solution_entry["pose_idx"])
             facility_type = str(solution_entry["facility_type"])
             pose = self.master.facility_pools[facility_type][pose_idx]
@@ -5775,6 +5779,9 @@ class LBBDController:
     ) -> Dict[Tuple[int, int], str]:
         owner_by_cell: Dict[Tuple[int, int], str] = {}
         for instance_id, solution_entry in solution.items():
+            # V88: ghost_pick is the empty rectangle marker, not an occupier.
+            if str(instance_id) == "ghost_pick":
+                continue
             pose_idx = int(solution_entry["pose_idx"])
             facility_type = str(solution_entry["facility_type"])
             pose = self.master.facility_pools[facility_type][pose_idx]
@@ -5787,7 +5794,10 @@ class LBBDController:
         solution: Mapping[str, Mapping[str, Any]],
     ) -> Set[Tuple[int, int]]:
         occupied_cells: Set[Tuple[int, int]] = set()
-        for solution_entry in solution.values():
+        for instance_id, solution_entry in solution.items():
+            # V88: ghost_pick is the empty rectangle marker, not an occupier.
+            if str(instance_id) == "ghost_pick":
+                continue
             pose_idx = int(solution_entry["pose_idx"])
             facility_type = str(solution_entry["facility_type"])
             pose = self.master.facility_pools[facility_type][pose_idx]
@@ -5809,6 +5819,9 @@ class LBBDController:
         return {
             str(instance_id): int(solution_entry["pose_idx"])
             for instance_id, solution_entry in solution.items()
+            # V88: ghost_pick carries the ghost rect index, not a facility
+            # pose; it must never enter a conflict/nogood literal set.
+            if str(instance_id) != "ghost_pick"
         }
 
     def _build_conflict_from_instance_ids(

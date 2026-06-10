@@ -759,7 +759,7 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
 
     assert serial_status == parallel_status == "CERTIFIED"
     assert serial_result is not None and parallel_result is not None
-    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1}
+    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0}
 
 
 def test_parallel_and_serial_preserve_same_best_certified_result(

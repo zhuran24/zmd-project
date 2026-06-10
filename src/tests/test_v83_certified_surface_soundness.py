@@ -124,11 +124,11 @@ def test_v83_publishable_surface_rejects_certified_result_without_empty_rect_wit
 
     final_result = {
         "search_status": "CERTIFIED",
-        "ghost_rect": {"w": 3, "h": 2, "area": 6},
+        "ghost_rect": {"w": 3, "h": 2, "area": 6, "anchor_x": 0, "anchor_y": 0},
         "placement_solution": {"must_place": {"facility_type": "T", "pose_idx": 0}},
     }
     record = {
-        "ghost_rect": {"w": 3, "h": 2, "area": 6},
+        "ghost_rect": {"w": 3, "h": 2, "area": 6, "anchor_x": 0, "anchor_y": 0},
         "attempts": 1,
         "started_at": "2026-06-10T00:00:00Z",
         "updated_at": "2026-06-10T00:00:01Z",
@@ -179,7 +179,7 @@ def test_v83_publishable_surface_rejects_certified_result_without_empty_rect_wit
     _write_json(checkpoint_path, state)
     save_certified_final_solution_and_blueprint(project_root=root, result=final_result, facility_pools=facility_pools)
 
-    with pytest.raises(ValueError, match="terminal_certified_final_result_empty_rect_not_witnessed"):
+    with pytest.raises(ValueError, match="terminal_certified_final_result_ghost_rect_anchor_occupied"):
         export_certified_delivery_manifest(project_root=root, campaign_state=state, campaign_path=checkpoint_path)
 
 

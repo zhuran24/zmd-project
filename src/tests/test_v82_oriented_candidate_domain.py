@@ -124,4 +124,4 @@ def test_full_frontier_candidate_domain_keeps_oriented_dimensions(tmp_path: Path
     )
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 1, "h": 3, "area": 3}
+    assert result["ghost_rect"] == {"w": 1, "h": 3, "area": 3, "anchor_x": 0, "anchor_y": 0}

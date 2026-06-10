@@ -189,6 +189,10 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_terminal_project_validator_accepts_selected_power_coverer",
             "test_terminal_project_validator_rejects_occupied_claimed_ghost_anchor",
             "test_terminal_project_validator_rejects_unforced_power_pole_blocker",
+            "test_terminal_project_validator_requires_ghost_anchor",
+            "test_certified_blueprint_builder_rejects_missing_ghost_anchor",
+            "test_outer_search_certified_result_carries_ghost_anchor",
+            "test_terminal_solution_match_ignores_candidate_record_ghost_marker",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -1253,6 +1257,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "terminal_certified_final_result_solution_power_coverage_missing",
         "terminal_certified_final_result_solution_unforced_power_pole_instance",
         "terminal_certified_final_result_ghost_rect_anchor_occupied",
+        "terminal_certified_final_result_ghost_rect_anchor_missing",
     ):
         if needle not in exact_campaign_source_v83:
             errors.append(

@@ -85,9 +85,11 @@ class PowerPlacementSubproblem:
 
     def _fixed_occupied_cells(self) -> Set[Cell]:
         occupied: Set[Cell] = set(self.ghost_cells)
-        for entry in self.master_solution.values():
+        for instance_id, entry in self.master_solution.items():
             tpl = str(entry.get("facility_type"))
-            if tpl == "power_pole":
+            # V88: ghost_pick is the empty rectangle marker (already counted
+            # via ghost_cells), not a facility with a pool pose.
+            if tpl == "power_pole" or str(instance_id) == "ghost_pick":
                 continue
             pose_idx = int(entry["pose_idx"])
             occupied |= self._cells_for_pose(tpl, pose_idx, "occupied_cells")

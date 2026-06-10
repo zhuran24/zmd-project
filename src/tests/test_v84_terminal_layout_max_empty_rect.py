@@ -78,7 +78,7 @@ def test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectan
 
     final_result = {
         "search_status": "CERTIFIED",
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": {"must_place": {"facility_type": "T", "pose_idx": 0}},
     }
     candidate_generation = {
@@ -285,7 +285,7 @@ def test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance(
 
     final_result = {
         "search_status": "CERTIFIED",
-        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 2, "anchor_y": 0},
         "placement_solution": {
             "must_place": {"facility_type": "T", "pose_idx": 0},
             "forged_extra_blocker": {"facility_type": "T", "pose_idx": 1},

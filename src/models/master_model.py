@@ -11696,6 +11696,47 @@ class MasterPlacementModel:
             out["gap"] = float(out["ub"] - out["lb"]) / float(denom)
         return out
 
+    def _extract_selected_ghost_pick(self) -> Optional[Dict[str, Any]]:
+        solver = getattr(self, "_solver", None)
+        u_vars = getattr(self, "u_vars", None) or {}
+        ghost_domains = getattr(self, "_ghost_domains", None) or []
+        if solver is None or not u_vars or not ghost_domains:
+            return None
+        for rect_idx, var in sorted(u_vars.items(), key=lambda item: int(item[0])):
+            try:
+                if int(solver.Value(var)) != 1:
+                    continue
+                domain = dict(ghost_domains[int(rect_idx)])
+                anchor = domain.get("anchor")
+                if not isinstance(anchor, Mapping):
+                    cells = domain.get("cells") or []
+                    if not cells:
+                        return None
+                    anchor = {
+                        "x": min(int(cell[0]) for cell in cells),
+                        "y": min(int(cell[1]) for cell in cells),
+                    }
+                raw_anchor_x = anchor.get("x")
+                raw_anchor_y = anchor.get("y")
+                if raw_anchor_x is None or raw_anchor_y is None:
+                    return None
+                anchor_x = int(raw_anchor_x)
+                anchor_y = int(raw_anchor_y)
+                return {
+                    "instance_id": "ghost_pick",
+                    "facility_type": "ghost_rect",
+                    "pose_idx": int(rect_idx),
+                    "pose_id": f"ghost_anchor::{anchor_x},{anchor_y}",
+                    "anchor": {"x": anchor_x, "y": anchor_y},
+                    "is_mandatory": False,
+                    "bound_type": "ghost_rect",
+                    "solve_mode": self.solve_mode,
+                }
+            except Exception:
+                continue
+        return None
+
+
     def extract_solution(self) -> Dict[str, Any]:
         if self._solver is None or self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             return {}
@@ -11703,6 +11744,9 @@ class MasterPlacementModel:
             return dict(self._last_solution)
         if self.exact_mode and self._coordinate_delegate is not None:
             self._last_solution = dict(self._coordinate_delegate.extract_solution())
+            ghost_pick = self._extract_selected_ghost_pick()
+            if ghost_pick is not None:
+                self._last_solution["ghost_pick"] = ghost_pick
             return dict(self._last_solution)
 
         solution: Dict[str, Any] = {}
@@ -11748,6 +11792,10 @@ class MasterPlacementModel:
                     "bound_type": "exact_pose_optional" if self.exact_mode else "exploratory_pose_optional",
                     "solve_mode": self.solve_mode,
                 }
+
+        ghost_pick = self._extract_selected_ghost_pick()
+        if ghost_pick is not None:
+            solution["ghost_pick"] = ghost_pick
 
         self._last_solution = dict(solution)
         return solution

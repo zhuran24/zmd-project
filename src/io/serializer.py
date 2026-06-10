@@ -51,6 +51,16 @@ def load_legacy_render_payload(path: Path) -> Dict[str, Any]:
     return load_json_mapping(path)
 
 
+def _certified_empty_rect_anchor(ghost_rect: Mapping[str, Any]) -> Tuple[int, int]:
+    if "anchor_x" not in ghost_rect or "anchor_y" not in ghost_rect:
+        raise ValueError("certified blueprint empty_rect requires anchor_x and anchor_y")
+    anchor_x = int(ghost_rect.get("anchor_x"))
+    anchor_y = int(ghost_rect.get("anchor_y"))
+    if anchor_x < 0 or anchor_y < 0:
+        raise ValueError("certified blueprint empty_rect anchor must be non-negative")
+    return anchor_x, anchor_y
+
+
 def build_canonical_blueprint_payload(
     *,
     placement_solution: Mapping[str, Any],
@@ -94,6 +104,8 @@ def build_blueprint_payload_from_certified_result(
     search_stats = result.get("search_stats", {})
     if not isinstance(search_stats, Mapping):
         search_stats = {}
+    ghost_rect = _mapping_or_empty(result.get("ghost_rect"))
+    _certified_empty_rect_anchor(ghost_rect)
     resolved_routing_solution = (
         _routing_solution_from_result(result)
         if routing_solution is None
@@ -102,7 +114,7 @@ def build_blueprint_payload_from_certified_result(
     return build_canonical_blueprint_payload(
         placement_solution=_mapping_or_empty(result.get("placement_solution")),
         facility_pools=facility_pools,
-        ghost_rect=_mapping_or_empty(result.get("ghost_rect")),
+        ghost_rect=ghost_rect,
         routing_solution=resolved_routing_solution,
         solve_time_seconds=float(search_stats.get("solve_time_seconds", 0.0)),
         benders_iterations=int(search_stats.get("benders_iterations", 0)),
@@ -259,6 +271,8 @@ def _build_facilities(
 ) -> list[Dict[str, Any]]:
     facilities: list[Dict[str, Any]] = []
     for instance_id in sorted(str(key) for key in placement_solution.keys()):
+        if instance_id == "ghost_pick":
+            continue
         solution_entry = _mapping_or_empty(placement_solution.get(instance_id))
         facility_type = str(solution_entry.get("facility_type", "unknown"))
         pose_idx = int(solution_entry.get("pose_idx", 0))

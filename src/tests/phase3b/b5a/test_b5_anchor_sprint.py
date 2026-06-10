@@ -354,7 +354,7 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path) -> N
         proof_summary={"mode": "certified_exact", "master_status": "CERTIFIED"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 4, "h": 1, "area": 4},
+        "ghost_rect": {"w": 4, "h": 1, "area": 4, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
@@ -809,7 +809,7 @@ def test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result(
         proof_summary={"mode": "certified_exact", "master_status": "CERTIFIED"},
     )
     campaign.state["final_result"] = {
-        "ghost_rect": {"w": 4, "h": 1, "area": 4},
+        "ghost_rect": {"w": 4, "h": 1, "area": 4, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": _certified_solution(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
