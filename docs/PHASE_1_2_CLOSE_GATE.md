@@ -20,15 +20,16 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V80, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V81, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
-publication hardening, terminal candidate-domain axis sealing, and deny-unknown
-certified-surface hardening, the current review anchor is:
+publication hardening, terminal candidate-domain axis sealing, deny-unknown
+certified-surface hardening, and partial-precheck/release-claim sealing, the
+current review anchor is:
 
 ```text
-v80_deny_unknown_certified_surface
+v81_partial_precheck_and_release_claim_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -63,7 +64,13 @@ canonical project schema now carries the empty-rectangle admissibility floor,
 terminal-frontier evidence schema v2 rejects unknown `candidate_generation`
 keys and sub-admissible terminal final results, and `certified_exact` env
 handling is a closed allowlist where future/unclassified `EXACT_*` names fail
-closed.  The
+closed.  V81 (the first independent external review after the V80 flip) seals
+two further seams: a mandatory-rectangle precheck group interrupted by the time
+budget (`partial_due_to_time_budget`) is no longer consumed as a complete
+all-anchors-infeasible candidate proof, and the single-base delivery release
+path fails closed on a run summary that self-claims
+`exact_full_scale_certified` CERTIFIED instead of propagating it into
+release/pointer artifacts.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -88,8 +95,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v76_project_bound_terminal_evidence.md`,
 `docs/research/p1_2_v77_delivery_manifest_writer_authority.md`,
 `docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`,
-`docs/research/p1_2_v79_terminal_domain_axis_sealing.md`, and
-`docs/research/p1_2_v80_deny_unknown_certified_surface.md`.
+`docs/research/p1_2_v79_terminal_domain_axis_sealing.md`,
+`docs/research/p1_2_v80_deny_unknown_certified_surface.md`, and
+`docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md`.
 
 Daily consistency check:
 

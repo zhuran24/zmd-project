@@ -1780,6 +1780,10 @@ def _triggered_mandatory_rectangle_precheck_group(
             for entry in list(mandatory_group_prechecks.get("groups", []))
             if isinstance(entry, Mapping)
             and bool(entry.get("supported", False))
+            # V81: a group interrupted by the precheck time budget only covers an
+            # anchor prefix; an exhausted prefix of infeasible anchors is not an
+            # all-anchors-infeasible proof for the candidate.
+            and not bool(entry.get("partial_due_to_time_budget", False))
             and int(entry.get("considered_anchor_count", 0)) > 0
             and int(entry.get("screen_pass_anchor_count", 0)) == 0
             and int(entry.get("screened_infeasible_anchor_count", 0))
@@ -6429,6 +6433,9 @@ def run_benders_for_ghost_rect(
                 dict(entry)
                 for entry in list(mandatory_group_prechecks.get("groups", []))
                 if bool(entry.get("supported", False))
+                # V81: same partial-prefix exclusion as
+                # _triggered_mandatory_rectangle_precheck_group.
+                and not bool(entry.get("partial_due_to_time_budget", False))
                 and int(entry.get("considered_anchor_count", 0)) > 0
                 and int(entry.get("screen_pass_anchor_count", 0)) == 0
                 and int(entry.get("screened_infeasible_anchor_count", 0))

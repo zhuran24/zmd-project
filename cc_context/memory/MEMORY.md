@@ -2,7 +2,7 @@
 
 ## 当前状态 / 交接
 
-- [交接 Windows + V80 外发进行中 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**;2026-06-10 深夜: V80 范式翻转三件套已委托 GPT Pro 实现 (终末地 Project 跑着), 等交付后本地 apply+复验+推锚;当前审查锚 v79;V50 手动 owner-count gate 不变。
+- [交接 Windows + 过夜审查循环 ACTIVE (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**;2026-06-11: V80 已落地, V81 外审两 finding 已修复推锚, 过夜自主审查循环进行中 (目标 3 连零 P1.2 闭合);当前审查锚 v81;V50 手动 owner-count gate 不变。
 - [zmd 项目入口指针 (新会话先读顺序)](zmd-project-entry.md) — 项目记忆体系在哪/接手读文件顺序/双写规矩;指向 _cc_live_memory/handoff 为单一现状源
 - [zmd Windows checkout 环境事实](zmd-checkout-env.md) — 无 venv 用全局 Python 3.13.13;commit 即 auto-push 且 CI preflight gate;candidate_placements 外置
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; 等 owner phase-boundary 决策.

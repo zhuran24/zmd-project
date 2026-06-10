@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v80_deny_unknown_certified_surface"
+    assert manifest["phase_gate_required_anchor"] == "v81_partial_precheck_and_release_claim_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -67,6 +67,8 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob" in master_domain_tests
     assert "test_v80_certified_exact_env_guard_blocks_known_proof_knob" in master_domain_tests
     assert "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs" in master_domain_tests
+    assert "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible" in master_domain_tests
+    assert "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible" in master_domain_tests
 
     frontier_tests = obligations["PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE"]
     assert "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence" in frontier_tests
@@ -87,3 +89,6 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v78_write_certified_delivery_manifest_rejects_direct_best_result_payload" in export_tests
     assert "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result" in export_tests
     assert "test_v80_resume_rejects_terminal_final_result_below_project_admissibility" in export_tests
+    assert "test_v81_release_rejects_self_claimed_certified_run_summary" in export_tests
+    assert "test_v81_release_rejects_lowercase_certified_claim" in export_tests
+    assert "test_v81_release_accepts_open_exact_certified_status" in export_tests

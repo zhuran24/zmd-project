@@ -3,9 +3,9 @@
   "gate_id": "phase_1_2_spike_close",
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
-  "updated_at": "2026-06-10",
-  "summary": "P1.2 remains manually blocked. V80 keeps the centralized CERTIFIED surface verifier architecture and changes the remaining publication-adjacent defenses from enumerating known-bad axes to deny-unknown contracts: project-level min_side admissibility is now bound into terminal evidence, unknown terminal candidate-generation axes are rejected, old terminal evidence schema resumes fail closed, sub-admissible terminal publication is refused, and certified_exact EXACT_* environment overrides are governed by an allowlist.",
-  "current_review_anchor": "v80_deny_unknown_certified_surface",
+  "updated_at": "2026-06-11",
+  "summary": "P1.2 remains manually blocked. V81 (independent external review of the V80 deny-unknown surface) found and sealed two seams: a time-budget-interrupted mandatory-rectangle precheck group could be consumed as a complete all-anchors-infeasible proof (certified false negative), and the single-base delivery release builder propagated a self-claimed exact_full_scale_certified CERTIFIED status from run_summary.json into release and pointer artifacts. Both paths now fail closed.",
+  "current_review_anchor": "v81_partial_precheck_and_release_claim_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v80_deny_unknown_certified_surface",
+    "current_review_anchor": "v81_partial_precheck_and_release_claim_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -229,6 +229,14 @@
       "summary": "V80 closes the V79 residual and flips two enumerative defenses to deny-unknown. Terminal frontier evidence now includes project-level min_side admissibility and rejects unknown candidate_generation keys, stale v1 schema, min-side mismatches, and sub-admissible terminal final_result publication. certified_exact env overrides are checked by an allowlist: production operational knobs remain admitted, known proof-semantics knobs must stay canonical false/default, and future unclassified EXACT_* names fail closed.",
       "evidence_paths": [
         "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
+      ]
+    },
+    {
+      "package": "v81_partial_precheck_and_release_claim_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V81 external review (first round after the V80 deny-unknown flip) found one algorithmic/soundness finding and one publication finding: F-01 mandatory-rectangle precheck consumers ignored partial_due_to_time_budget, so an infeasible anchor prefix could prune a candidate as INFEASIBLE; F-02 the single-base release builder accepted a run summary self-claiming CERTIFIED. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
       ]
     }
   ],

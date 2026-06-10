@@ -5768,3 +5768,35 @@ def test_v80_certified_exact_env_guard_allows_production_wrapper_operational_env
     blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
 
     assert blockers == []
+
+
+def test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible() -> None:
+    partial_group = {
+        "group_id": "g_partial",
+        "supported": True,
+        "considered_anchor_count": 1,
+        "screened_infeasible_anchor_count": 1,
+        "screen_pass_anchor_count": 0,
+        "unsupported_anchor_count": 0,
+        "partial_due_to_time_budget": True,
+    }
+    triggered = benders_loop_module._triggered_mandatory_rectangle_precheck_group(
+        {"groups": [partial_group]}
+    )
+    assert triggered is None
+
+
+def test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible() -> None:
+    complete_group = {
+        "group_id": "g_complete",
+        "supported": True,
+        "considered_anchor_count": 3,
+        "screened_infeasible_anchor_count": 3,
+        "screen_pass_anchor_count": 0,
+        "unsupported_anchor_count": 0,
+    }
+    triggered = benders_loop_module._triggered_mandatory_rectangle_precheck_group(
+        {"groups": [complete_group]}
+    )
+    assert triggered is not None
+    assert triggered["group_id"] == "g_complete"

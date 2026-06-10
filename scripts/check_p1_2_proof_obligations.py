@@ -32,6 +32,9 @@ SERIALIZER_PATH = PROJECT_ROOT / "src" / "io" / "serializer.py"
 MASTER_MODEL_PATH = PROJECT_ROOT / "src" / "models" / "master_model.py"
 EXACT_COORDINATE_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "exact_coordinate_master.py"
 POSE_BOOL_EXACT_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "pose_bool_exact_master.py"
+SINGLE_BASE_RELEASE_BUILDER_PATH = (
+    PROJECT_ROOT / "scripts" / "build_industrial_planner_single_base_delivery_release.py"
+)
 TEST_ROOT = PROJECT_ROOT / "src" / "tests"
 
 REQUIRED_OBLIGATION_IDS = frozenset(
@@ -100,6 +103,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob",
             "test_v80_certified_exact_env_guard_blocks_known_proof_knob",
             "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
+            "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
+            "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible",
         }
     ),
     "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE": frozenset(
@@ -168,6 +173,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result",
             "test_v79_delivery_manifest_rejects_non_instance_placement_solution",
             "test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
+            "test_v81_release_rejects_self_claimed_certified_run_summary",
+            "test_v81_release_rejects_lowercase_certified_claim",
+            "test_v81_release_accepts_open_exact_certified_status",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -1197,6 +1205,27 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
             errors.append(
                 "certified exact env guard must be a closed allowlist that fails closed on unknown or proof-semantics EXACT_* knobs: "
                 f"{needle}"
+            )
+    # V81: a time-budget-interrupted mandatory-rectangle precheck group must not
+    # be consumed as a complete all-anchors-infeasible candidate proof.
+    if benders_loop_source.count(
+        'not bool(entry.get("partial_due_to_time_budget", False))'
+    ) < 2:
+        errors.append(
+            "mandatory-rectangle precheck consumers must exclude "
+            "partial_due_to_time_budget groups in both trigger predicates "
+            "(benders_loop helper and run_benders_for_ghost_rect inline)"
+        )
+    single_base_release_source = SINGLE_BASE_RELEASE_BUILDER_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "exact_full_scale_certified",
+        "may not claim 'CERTIFIED' ",
+        "certified_delivery_manifest/certified_surface verifier",
+    ):
+        if needle not in single_base_release_source:
+            errors.append(
+                "single-base release readiness validation must fail closed on a "
+                f"self-claimed CERTIFIED run summary: {needle}"
             )
     for needle in (
         "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",

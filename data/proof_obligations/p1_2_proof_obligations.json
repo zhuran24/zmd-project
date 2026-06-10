@@ -2,10 +2,10 @@
   "schema_version": 1,
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
-  "updated_at": "2026-06-10",
-  "review_anchor": "v80_deny_unknown_certified_surface",
-  "summary": "P1.2 remains fail-closed. V80 converts the remaining enumerative certified defenses into deny-unknown contracts: terminal frontier evidence now carries project-level empty-rectangle admissibility, rejects unknown candidate_generation keys and stale v1 evidence, and refuses sub-admissible terminal CERTIFIED publication; certified_exact env handling is now an allowlist where unclassified future EXACT_* knobs fail closed and known proof-semantics knobs require canonical false/default values. The V73-V79 centralized certified-surface architecture is unchanged.",
-  "phase_gate_required_anchor": "v80_deny_unknown_certified_surface",
+  "updated_at": "2026-06-11",
+  "review_anchor": "v81_partial_precheck_and_release_claim_sealing",
+  "summary": "P1.2 remains fail-closed. V81 seals two independently found seams: a mandatory-rectangle precheck group interrupted by the time budget (partial_due_to_time_budget) is no longer accepted as an all-anchors-infeasible candidate proof, and the single-base delivery release path fails closed on a run summary that self-claims exact_full_scale_certified CERTIFIED instead of propagating it into release/pointer artifacts.",
+  "phase_gate_required_anchor": "v81_partial_precheck_and_release_claim_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -162,7 +162,8 @@
         "v65_candidate",
         "v66_candidate",
         "v66_certified_lifecycle_evidence_consolidation",
-        "v80_deny_unknown_certified_surface"
+        "v80_deny_unknown_certified_surface",
+        "v81_partial_precheck_and_release_claim_sealing"
       ],
       "required_tests": [
         "test_exact_campaign_state_persists_full_master_domain_contract",
@@ -179,7 +180,9 @@
         "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load",
         "test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob",
         "test_v80_certified_exact_env_guard_blocks_known_proof_knob",
-        "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs"
+        "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
+        "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
+        "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v60_master_domain_contract.md",
@@ -188,7 +191,8 @@
         "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
         "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
         "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
-        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
       ]
     },
     {
@@ -260,7 +264,8 @@
         "v77_delivery_manifest_writer_authority",
         "v78_certified_manifest_writer_canonical_surface",
         "v79_terminal_domain_axis_sealing",
-        "v80_deny_unknown_certified_surface"
+        "v80_deny_unknown_certified_surface",
+        "v81_partial_precheck_and_release_claim_sealing"
       ],
       "required_tests": [
         "test_delivery_manifest_rejects_best_effort_final_result",
@@ -303,7 +308,10 @@
         "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result",
         "test_v79_delivery_manifest_rejects_non_instance_placement_solution",
         "test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
-        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility"
+        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
+        "test_v81_release_rejects_self_claimed_certified_run_summary",
+        "test_v81_release_rejects_lowercase_certified_claim",
+        "test_v81_release_accepts_open_exact_certified_status"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -318,7 +326,8 @@
         "docs/research/p1_2_v77_delivery_manifest_writer_authority.md",
         "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
         "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
-        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority."
     },

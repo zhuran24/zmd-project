@@ -572,6 +572,11 @@ def _validate_ready_run_summary(summary: Mapping[str, Any], *, expected_base_id:
         if isinstance(summary.get("checked_artifact_suite"), Mapping)
         else {}
     )
+    exact_certified = (
+        summary.get("exact_full_scale_certified")
+        if isinstance(summary.get("exact_full_scale_certified"), Mapping)
+        else {}
+    )
 
     if overall_status != "success":
         problems.append(f"overall_status must be 'success', got {overall_status!r}")
@@ -606,6 +611,16 @@ def _validate_ready_run_summary(summary: Mapping[str, Any], *, expected_base_id:
         problems.append(
             "checked_artifact_suite.status must be 'clean', "
             f"got {str(checked_artifact.get('status', '')).strip()!r}"
+        )
+    # V81: the run summary is not a certified authority. Until this release
+    # path consumes the canonical certified_surface verifier verdict, a
+    # self-claimed CERTIFIED status must fail closed instead of propagating
+    # into the release manifest and active pointer.
+    if str(exact_certified.get("status", "")).strip().upper() == "CERTIFIED":
+        problems.append(
+            "run_summary.exact_full_scale_certified.status may not claim 'CERTIFIED' "
+            "on the single-base release path; exact CERTIFIED publication must be "
+            "produced by the canonical certified_delivery_manifest/certified_surface verifier"
         )
 
     if problems:
