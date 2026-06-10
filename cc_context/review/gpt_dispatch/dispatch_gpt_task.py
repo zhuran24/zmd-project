@@ -233,20 +233,47 @@ def wait_done(page, rep: Reporter, timeout_hours: float) -> str:
 
 
 def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None:
-    try:
-        with page.expect_download(timeout=60000) as dl_info:
-            link.click()
-            # decorated-link 形态会弹「外部网站」确认框, 要点「打开链接」才真正下载
+    """点击附件并捕获 download — 必须在 context 级监听: 「打开链接」确认或
+    decorated-link 点击常在新标签页里触发下载, 原 page 的 expect_download 收不到。"""
+    ctx = page.context
+    holder: dict = {}
+
+    def on_download(dl):
+        holder.setdefault("dl", dl)
+
+    def on_page(pg):
+        try:
+            pg.on("download", on_download)
+        except Exception:
+            pass
+
+    page.on("download", on_download)
+    ctx.on("page", on_page)
+    for existing in ctx.pages:
+        if existing is not page:
             try:
-                confirm = page.locator(
-                    'button:has-text("打开链接"), button:has-text("Open link")'
-                ).first
-                confirm.wait_for(state="visible", timeout=5000)
-                confirm.click()
-                rep.log("collect", "confirmed_external_link_dialog")
+                existing.on("download", on_download)
             except Exception:
                 pass
-        dl = dl_info.value
+    try:
+        link.click()
+        try:
+            confirm = page.locator(
+                'button:has-text("打开链接"), button:has-text("Open link")'
+            ).first
+            confirm.wait_for(state="visible", timeout=5000)
+            confirm.click()
+            rep.log("collect", "confirmed_external_link_dialog")
+        except Exception:
+            pass
+        deadline = time.time() + 60
+        while time.time() < deadline and "dl" not in holder:
+            page.wait_for_timeout(500)
+        if "dl" not in holder:
+            rep.log("collect", "click_download_failed", error="no download event within 60s (context-wide)")
+            page.keyboard.press("Escape")
+            return None
+        dl = holder["dl"]
         target = out_dir / dl.suggested_filename
         dl.save_as(str(target))
         return target
@@ -257,6 +284,12 @@ def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None
         except Exception:
             pass
         return None
+    finally:
+        try:
+            page.remove_listener("download", on_download)
+            ctx.remove_listener("page", on_page)
+        except Exception:
+            pass
 
 
 def _download_via_fetch(page, href: str, name: str, out_dir: Path, rep: Reporter) -> Path | None:
