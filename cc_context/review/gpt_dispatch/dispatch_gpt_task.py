@@ -277,28 +277,29 @@ def collect(page, out_dir: Path, rep: Reporter) -> int:
     if msgs.count() == 0:
         rep.attention(page, "collect", "no assistant message found")
         return 0
+    # sandbox 文件的渲染形态至少有三种, 都要覆盖:
+    #   <a href="...">name.zip</a>            经典链接
+    #   <a class="decorated-link">name.zip</a> 无 href, JS 点击下载
+    #   <button>name.zip</button>              behavior-btn 内联引用
     last = msgs.last
     candidates = []
-    links = last.locator("a[href]")
-    for i in range(links.count()):
-        link = links.nth(i)
-        try:
-            href = link.get_attribute("href") or ""
-            label = (link.inner_text() or "").strip()
-        except Exception:
-            continue
-        if FILE_EXT_RE.search(href) or FILE_EXT_RE.search(label) or "sandbox" in href:
-            candidates.append((link, href, label))
-    # sandbox 文件常渲染为 <button>name.zip</button> (behavior-btn), 没有 href
-    buttons = last.locator("button")
-    for i in range(buttons.count()):
-        btn = buttons.nth(i)
-        try:
-            label = (btn.inner_text() or "").strip()
-        except Exception:
-            continue
-        if FILE_EXT_RE.search(label):
-            candidates.append((btn, "", label))
+    seen_labels = set()
+    for css in ("a", "button"):
+        elems = last.locator(css)
+        for i in range(elems.count()):
+            el = elems.nth(i)
+            try:
+                href = el.get_attribute("href") or ""
+                label = (el.inner_text() or "").strip()
+            except Exception:
+                continue
+            if not (FILE_EXT_RE.search(href) or FILE_EXT_RE.search(label) or "sandbox" in href):
+                continue
+            key = label or href
+            if key in seen_labels:
+                continue
+            seen_labels.add(key)
+            candidates.append((el, href, label))
     rep.log("collect", "file_links_found", count=len(candidates),
             labels=[c[2][:60] for c in candidates])
 
