@@ -260,8 +260,44 @@ def _thinking_marker(page) -> str:
         return ""
 
 
-def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: int = 1) -> str:
-    """返回 'done' | 'timeout' | 'attention'。
+def _page_alive(page) -> bool:
+    try:
+        page.evaluate("document.readyState")
+        return True
+    except Exception:
+        return False
+
+
+def _revive_page(page, rep: Reporter, reason: str):
+    """网络抖动/渲染进程挂死导致页面卡住的恢复 (owner 处方): 同 URL 新开一个
+    页面, 关掉老的。比 page.reload 可靠 — 渲染进程挂死时 reload 自己也会卡。
+    恢复失败 (网络还断着) 则返回旧 page, 下一拍再试。"""
+    url = page.url
+    ctx = page.context
+    new_page = None
+    try:
+        new_page = ctx.new_page()
+        new_page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        new_page.wait_for_timeout(3000)
+    except Exception as e:
+        rep.log("waiting", "page_revive_failed", error=str(e)[:150])
+        if new_page is not None:
+            try:
+                new_page.close()
+            except Exception:
+                pass
+        return page
+    try:
+        page.close()
+    except Exception:
+        pass
+    rep.log("waiting", "page_revived", reason=reason, url=url)
+    return new_page
+
+
+def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: int = 1):
+    """返回 (status, page); status = 'done' | 'timeout' | 'attention'。
+    page 可能被换新 — 页面卡住时同 URL 重开, 调用方必须用返回的 page 继续。
     min_assistant_count: 完成判定要求 assistant 消息数达到该值 — 发送/救援后必须
     等到新回复出现, 否则旧消息的稳定文本会被误判为完成。"""
     deadline = time.time() + timeout_hours * 3600
@@ -269,10 +305,25 @@ def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: in
     stable = 0
     last_len = -1
     tick = 0
+    dead_ticks = 0
+    revives = 0
     while time.time() < deadline:
         tick += 1
+        if not _page_alive(page):
+            dead_ticks += 1
+            if dead_ticks >= 2:  # 连续 ~20s 无响应才动手, 单拍抖动不折腾
+                if revives >= 3:
+                    rep.attention(page, "waiting", "page unresponsive after 3 revives — network likely down")
+                    return "attention", page
+                page = _revive_page(page, rep, "page unresponsive")
+                revives += 1
+                dead_ticks = 0
+                stable, last_len = 0, -1
+            time.sleep(POLL_SECONDS)
+            continue
+        dead_ticks = 0
         if not assert_logged_in(page, rep):
-            return "attention"
+            return "attention", page
         generating = _stop_visible(page)
         text = _last_assistant_text(page)
         cur_len = len(text)
@@ -282,21 +333,21 @@ def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: in
             if stable >= STABLE_TICKS:
                 rep.log("waiting", "done", elapsed_s=int(time.time() - start), reply_chars=cur_len,
                         thinking_marker=_thinking_marker(page) or "none")
-                return "done"
+                return "done", page
         else:
             stable = 0
         if not generating and cur_len == 0 and time.time() - start > 300:
             for t in SEL["error_texts"]:
                 if page.locator(f'text="{t}"').count() > 0:
                     rep.attention(page, "waiting", f"error banner detected: {t}")
-                    return "attention"
+                    return "attention", page
         last_len = cur_len
         if tick % HEARTBEAT_TICKS == 0:
             rep.log("waiting", "heartbeat", elapsed_s=int(time.time() - start),
                     generating=generating, reply_chars=cur_len)
         time.sleep(POLL_SECONDS)
     rep.attention(page, "waiting", f"timed out after {timeout_hours}h")
-    return "timeout"
+    return "timeout", page
 
 
 def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None:
@@ -549,7 +600,7 @@ def main() -> int:
                 fill_and_send(page, prompt_text, rep)
 
             gen_start = time.time()
-            status = wait_done(page, rep, args.timeout_hours)
+            status, page = wait_done(page, rep, args.timeout_hours)
             if status == "timeout":
                 return 4
             if status == "attention":
@@ -568,8 +619,8 @@ def main() -> int:
                     n_before = page.locator(SEL["assistant_msg"]).count()
                     send_followup(page, DOWNGRADE_RETRY_PROMPT, rep)
                     gen_start = time.time()
-                    status = wait_done(page, rep, args.timeout_hours,
-                                       min_assistant_count=n_before + 1)
+                    status, page = wait_done(page, rep, args.timeout_hours,
+                                             min_assistant_count=n_before + 1)
                     if status != "done":
                         return 4 if status == "timeout" else 3
                     gen_elapsed = int(time.time() - gen_start)
@@ -590,8 +641,8 @@ def main() -> int:
                 rep.log("rescue", "requesting_regeneration", attempt=rescue)
                 n_before = page.locator(SEL["assistant_msg"]).count()
                 send_followup(page, RESCUE_PROMPT, rep)
-                status = wait_done(page, rep, min(args.timeout_hours, 0.5),
-                                   min_assistant_count=n_before + 1)
+                status, page = wait_done(page, rep, min(args.timeout_hours, 0.5),
+                                         min_assistant_count=n_before + 1)
                 if status != "done":
                     return 4 if status == "timeout" else 3
                 got, found = collect(page, out_dir, rep)
