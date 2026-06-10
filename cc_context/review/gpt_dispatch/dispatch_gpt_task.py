@@ -49,7 +49,6 @@ SEL = {
     "assistant_msg": 'div[data-message-author-role="assistant"]',
     "file_input": 'input[type="file"]',
     "model_btn_texts": ["专业", "Pro", "进阶"],
-    "continue_texts": ["继续生成", "Continue generating"],
     "error_texts": ["出错了", "Something went wrong", "网络错误"],
 }
 FILE_EXT_RE = re.compile(
@@ -274,15 +273,6 @@ def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: in
         tick += 1
         if not assert_logged_in(page, rep):
             return "attention"
-        for t in SEL["continue_texts"]:
-            try:
-                btn = page.locator(f'button:has-text("{t}")')
-                if btn.count() > 0 and btn.first.is_visible():
-                    btn.first.click()
-                    rep.log("waiting", "clicked_continue")
-                    stable, last_len = 0, -1
-            except Exception:
-                pass
         generating = _stop_visible(page)
         text = _last_assistant_text(page)
         cur_len = len(text)
