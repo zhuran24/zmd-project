@@ -22,7 +22,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OUT_STEM = f"zmd_v80_impl_full_{date.today().strftime('%Y%m%d')}"
 OUT_DIR = REPO_ROOT / "补丁包"
-PROMPT_FILE = REPO_ROOT / "cc_context" / "review" / "GPT_v80_实现任务_prompt.md"
+# 每轮外发的 prompt 都含本包 sha256, 入包会自引用 → 按模式排除整个系列
+PROMPT_DIR = REPO_ROOT / "cc_context" / "review"
+PROMPT_GLOB = "GPT_*prompt*.md"
 
 EXCLUDED_DIR_NAMES = {
     ".git",
@@ -48,7 +50,7 @@ def iter_package_files() -> list[Path]:
             continue
         if path.suffix in EXCLUDED_FILE_SUFFIXES:
             continue
-        if path == PROMPT_FILE:
+        if path.parent == PROMPT_DIR and path.match(PROMPT_GLOB):
             continue
         if path.parent == OUT_DIR and path.name.startswith("zmd_v80_impl_full_"):
             continue
