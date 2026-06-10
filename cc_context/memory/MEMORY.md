@@ -3,6 +3,8 @@
 ## 当前状态 / 交接
 
 - [交接 Windows + V80 外发进行中 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**;2026-06-10 深夜: V80 范式翻转三件套已委托 GPT Pro 实现 (终末地 Project 跑着), 等交付后本地 apply+复验+推锚;当前审查锚 v79;V50 手动 owner-count gate 不变。
+- [zmd 项目入口指针 (新会话先读顺序)](zmd-project-entry.md) — 项目记忆体系在哪/接手读文件顺序/双写规矩;指向 _cc_live_memory/handoff 为单一现状源
+- [zmd Windows checkout 环境事实](zmd-checkout-env.md) — 无 venv 用全局 Python 3.13.13;commit 即 auto-push 且 CI preflight gate;candidate_placements 外置
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; 等 owner phase-boundary 决策.
 - [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界、slug、prod-scale 回 Linux 主机;稳定环境细节只看该条。
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 仓库相对路径.
@@ -13,6 +15,7 @@
 ## 外发 GPT Pro (2026-06-10 起的轻量规则, 老审查/打包规范已废除并归档)
 
 - [任务外发 GPT Pro 通道 (权威条目)](feedback_agent_vs_workflow_dispatch.md) — **非必要不用 Workflow**; 审查/实现类任务经 Chrome 插件发 chatgpt.com「终末地」Project, 模型 Pro·进阶 (=GPT Pro 扩展模式); **非必要不用老窗口** (默认新会话); **打包 = 除缓存文件外全项目打** (build 脚本 cc_context/review/build_v80_*.py); 上传走剪贴板。
+- [非必要不用 Workflow (GPT 外审裁决)](no-workflow-use-chrome-gpt-review.md) — 发送三条设置+打包规则+首选自动化脚本(gpt_dispatch)+Pro 降级判据+插件托底上传姿势;老审查规范已废除
 - [GPT prompt 不要催眠前缀](feedback_no_role_priming_for_reasoning_models.md) — "你是 X 专家" role-priming 对推理模型反作用; 直接讲任务 + format + 约束.
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion;key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.

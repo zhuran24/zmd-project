@@ -87,13 +87,21 @@ class Reporter:
         self.log(stage, "NEEDS_ATTENTION", reason=reason, screenshot=shot, dom_dump=dump, url=page.url)
 
 
-def attach(p):
-    browser = p.chromium.connect_over_cdp(CDP_URL)
+def attach(p, cdp_url: str = CDP_URL):
+    """返回 (ctx, page, owns_page)。浏览器通道开自己的新 tab (owns=True);
+    ChatGPT 桌面 App (Electron, 9224) 不支持 new_page — 复用主窗口页面
+    (owns=False, 结束时不能关它, 关了 App 就空了)。"""
+    browser = p.chromium.connect_over_cdp(cdp_url)
     if not browser.contexts:
-        raise RuntimeError("automation Chrome has no browser context")
+        raise RuntimeError("no browser context on " + cdp_url)
     ctx = browser.contexts[0]
-    page = ctx.new_page()
-    return ctx, page
+    try:
+        page = ctx.new_page()
+        return ctx, page, True
+    except Exception:
+        if not ctx.pages:
+            raise RuntimeError("cannot create a page and none exists on " + cdp_url)
+        return ctx, ctx.pages[0], False
 
 
 def cleanup_stale_tabs(ctx, page, rep: Reporter):
@@ -286,6 +294,12 @@ def _revive_page(page, rep: Reporter, reason: str):
                 new_page.close()
             except Exception:
                 pass
+        # App (Electron) 通道开不了新页 — 退而求其次试 reload
+        try:
+            page.reload(wait_until="domcontentloaded", timeout=60000)
+            rep.log("waiting", "page_reloaded_in_place", reason=reason)
+        except Exception:
+            pass
         return page
     try:
         page.close()

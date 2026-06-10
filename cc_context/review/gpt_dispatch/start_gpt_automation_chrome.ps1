@@ -5,12 +5,17 @@
 #   Edge 没在跑 → 直接带端口启动。
 # -Isolated 切回独立 profile 模式 (chrome/edge 二选一, 首次需手动登录) 备用。
 
+# -App = 第三托底通道: ChatGPT 桌面 App (Electron) 带 CDP 9224 启动。
+# 必须用 Invoke-CommandInDesktopPackage 以 MSIX 包身份启动 — 裸跑 WindowsApps
+# 里的 exe 会因 Windows.Storage.ApplicationData.get_Current 拿不到包上下文
+# 而主进程崩溃弹 "A JavaScript error occurred in the main process"。
 param(
     [switch]$Isolated,
+    [switch]$App,
     [ValidateSet("chrome", "edge")][string]$Browser = "edge"
 )
 
-$port = 9222
+$port = if ($App) { 9224 } else { 9222 }
 
 function Test-Cdp {
     try {
