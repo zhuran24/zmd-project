@@ -1,6 +1,6 @@
 ## 当前状态 / 交接
 
-- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**；2026-06-06 已含文档树/记忆树 closeout 与 GitHub 上传准备。
+- [交接 Windows + 九审待外审 (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条**；2026-06-10 晚已含 CC 接手收尾 (V73-V78 收口 + 测试迁移 + V79 切片域轴修复落锚 + V80 候选 residual) + V50 手动 gate + 新 checkout 环境/并发测试陷阱。
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; Step0 8/8 PASS; 等用户 phase-boundary 决策.
 - [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界、slug、prod-scale 回 Linux 主机；稳定环境细节只看该条。
 - [Phase 1.2 spike close ✅ + F3 phase 完成](project_phase_1_2_progress.md) — 7/7 family close + F3 generator; 历史细节看该条, 当前现状看交接条。

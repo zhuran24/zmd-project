@@ -1,6 +1,6 @@
 ---
 name: windows-ninth-review-pending
-description: "单一 living 当前交接/现状源。2026-06-06 当前: 文档树 subject/projection + completeness gate 已收口到 004/005 clean 观察点; 本轮补强 memory publish-safety/currentness gate, 移除当前树 Gemini key, repo-native INSTANCE check, secret scan + memory health 接入 preflight。算法主线仍停在 Phase 1.2 spike close → v29 外审/之后 P1.3A 决策。"
+description: "单一 living 当前交接/现状源。2026-06-10 晚: CC 接手收尾完成 — V73-V78 工作收口提交 + 8 旧测试迁移到权威全域契约 + 对抗审查抓到 V79 切片域轴 (aspect/min_side) 并修复落锚; 当前审查锚 v79_terminal_domain_axis_sealing; residual = min_side<6 发布轴 (V80 候选)。V50 手动 owner-count gate 不变, 等 owner 决策开 P1.3B。项目在 C:/claude pj/zmd_pj 轻量 checkout 无 venv; 全量 pytest 必须独占跑 (.pytest_tmp 并发互删坑)。"
 metadata: 
   node_type: memory
   type: project
@@ -17,7 +17,26 @@ metadata:
 - GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/zmd<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
 
-## 最新状态 (2026-06-06) — GPT 接手后文档树/记忆树 closeout + GitHub 上传准备
+## 最新状态 (2026-06-10 晚) — CC 接手收尾: V73-V78 工作收口 + 8 个旧测试迁移到新契约 + 对抗审查抓到 V79 (切片域轴) 并修复落锚
+
+> **当前真相 (2026-06-10 晚, 接手收尾轮)**:
+> **① V73-V78 收尾**: Codex 留下的未提交工作经验证后连同本轮工作一起提交 (见 git log)。8 个旧集成测试 (test_regression 5 + test_parallel_scheduler 1 + test_exact_contract 3 处窄域参数 + test_lbbd_epsilon Fake 接口) 迁移到 V75/V76 权威全域契约: 收窄域场景不再能宣称 terminal CERTIFIED, 测试改用权威全域 + helper 加 synthetic pose pool 让 blueprint 导出/反查链真正走通。迁移经 4+1 镜头对抗审查 workflow 判 sound (含 helper 影响面 16 调用点审计)。
+> **② V79 = 本轮审查的真收获 (双镜头独立实证 + critic probe 复核)**: V75 terminal evidence 验证器只封了 start_area / area_upper_bound 两条切片轴, **max_aspect_ratio 切片域和 min_side>6 子域能伪装权威全域 terminal CERTIFIED** (aspect=3.0 在 6x6 上滤掉 (6,1) 后照样发布"全域最优", CLI --max-aspect-ratio 可达)。修复: `terminal_frontier_evidence_violation` 新增 `terminal_frontier_aspect_ratio_sliced_domain` + `terminal_frontier_min_side_sliced_domain` (admissibility floor 常量 6, PROJECT_LOCK); delivery manifest 深校验对非 instance 形状 placement_solution 从静默跳过改 fail-closed raise。4 个新回归测试 + PO json/check 脚本/gate json/关门文档/subject 投影全部锚到 `v79_terminal_domain_axis_sealing`。生产默认 (min_side=6, aspect=None) 不受影响。
+> **③ V79 已知 residual (critic 留给下轮)**: `--min-side <6` 超域跑可以把 min_side<6 的不可采纳矩形当 terminal CERTIFIED best 发布 (无发布时 admissibility 守卫)。干净修法需要项目级 admissibility 字段 (canonical schema 决策, toy 测试合法用小 floor), 不是 validator 补丁; 已在 v79 文档 Closure position 诚实披露。**下轮外审/V80 候选**。
+> **④ 工程坑 (重要, 全量测试口径)**: pytest.ini 配 `--basetemp=.pytest_tmp` 在仓库根 → **多个 pytest 进程并发会互删对方临时目录** (Windows 上 rm_rf 失败/FileExistsError/setup ERROR, 表现为随机的"顺序依赖失败")。曾两次全量都在审查 agent 并发跑测试期间执行, 得到 19/14 failed 的污染结果; 单跑/独占全过。**结论: 全量 pytest 必须独占跑 (无并发 agent 跑测试时)**。干净基线见 commit 附带说明; 环境性失败 (candidate_placements.json 外置) ~20 个不变。
+> **⑤ 治理面不变**: V50 手动 owner-count gate; P1.3B 等 owner 手动决策; V79 不 claim clean-review credit。
+
+## (历史) 最新状态 (2026-06-10) — Codex 接手期完成 v29→v78 外审循环; V50 协议重设计; V73-V78 certified-surface 架构; CC 重新接手盘点
+
+> **当前真相 (2026-06-10, CC 重新接手时盘点; 下面 2026-06-06 块起全部是历史)**:
+> **① Codex 接手期 (06-07 晚 → 06-10 凌晨 ~03:00, project-foundation 分支)**: 下方 06-06 块说的「重建 v29 + 续外审」实际由本地 Codex 执行了 ~50 轮: 外审 **v29 → v78 全部完成** (审查包/补丁工件在仓库根 `补丁包/`, zip/7z 被 gitignore 不入库; 流程 = GPT 外审 → Codex 应用补丁 → commit → post-commit 自动 push GitHub)。V57-V78 的 finding **全是 certified lifecycle evidence 发布面** (cut replay / master-domain / terminal frontier evidence / export surface), **无一指向 cut-family LBBD 算法本身** (v78 文档原话: "No new architecture-breaking flaw was found in the exact/LBBD proof kernel")。各轮细节见 `docs/research/p1_2_v5x..v78_*.md`。
+> **② V50 协议重设计 (06-09 `a8172b2`, 关键治理变化)**: close gate 从自动 receipt/counter 改成**手动 owner-count gate** — repo 不再计数 clean review 轮次、不再从 receipt/report metadata 授予 clean credit; 「3 连续独立全审零 finding」标准仍在但**计数由 owner 在仓库外维护**; P1.3B 只能由 owner 显式手动决策打开。`check_phase_review_gate.py --require-ready phase_1_2_spike_close` 在当前基线**预期 fail** (不是 bug)。
+> **③ V73-V78 certified-surface 新架构**: 公开 CERTIFIED 可见性收口到单一中央验证器 `src/search/certified_surface.py` (V73 建立, V74 disk-authority 硬化); terminal full-frontier 证据从 stop-reason 字符串升级为可重放 digest-sealed candidate-domain 投影 `src/search/certified_frontier.py` (V75, V76 加 project-bound); delivery manifest writer 权威化 (V77 disk-authoritative, V78 canonical 收口: `best_certified_result` 只能由 canonical export writer 写到 `data/solutions/certified_delivery_manifest.json`, raw writer / 侧路径全拒)。
+> **④ 工作树状态 (06-10 盘点时)**: **V73-V78 工作未提交** — ~3265 行修改 (delivery_manifest.py +614 / test_delivery_manifest.py +877 / exact_campaign.py +157 / 文档投影 V66→V78 等) + 未跟踪 `certified_surface.py` / `certified_frontier.py` / `certified_frontier_helpers.py` / v73-v78 研究文档 6 篇。CC 盘点验证: `check_p1_2_proof_obligations.py` 8/8 PASS + v78 验证子集 99/99 PASS + `sync_doc_subjects --check` / `gen_authoritative_numbers --check` 双绿。**全量 pytest = 2764 passed / 21 failed / 10 errors**: 其中 ~24 个失败是环境性 (candidate_placements.json 外置未恢复, FileNotFoundError); **真正要处理的是 5 个旧测试与 V75/V76 新契约的冲突** (test_regression:485/740/899 + test_parallel_scheduler:947 + test_infeasible_terminal_delivery_manifest) — 根因全部同一个: V75 起 `terminal_frontier_evidence_violation` 要求 terminal CERTIFIED 必须是**权威全域** (`area_upper_bound == safe_area_upper_bound` 且 `start_area=None`, certified_frontier.py:286-291), V76 起 `best_certified_result()` 也要求 project-bound terminal evidence; 这 5 个旧测试全用收窄域 (`area_upper_bound=2/9/12`) 或 `min_side=7>grid6` 空域构造 CERTIFIED 场景 → 新语义下降 UNPROVEN / 抛 ValueError。**定性 = codex 有意收紧语义 (方向更严, 无 soundness 回归, 生产 70x70 全域默认参数不受影响) 但没迁移旧测试 = 未完成收尾**。待办: 5 个测试迁移到新契约 (注意保住 test_infeasible_terminal… 的「manifest 不伪造」守护意图, 需换成合法 INFEASIBLE 场景而非期望 ValueError) → 全量绿后才能 commit (commit 即 auto-push)。**顺带观察 (潜在下轮外审点)**: `max_aspect_ratio` 同样缩域但 evidence 校验不拒, 与 start_area/area_upper_bound 处理不一致。
+> **⑤ 环境变化 (重要, 接手陷阱)**: 项目现在在 **`C:\claude pj\zmd_pj`** (轻量 GitHub checkout, zhuran24/zmd); **旧 `D:\追光\zmd` 不存在了**; **无 .venv** — 用全局 Store Python 3.13.13 (依赖已装全, 直接 `python`; 跑 `.venv\Scripts\python.exe` 会假成功/报错)。`candidate_placements.json` (53.6MB) 外置未恢复, certified 大跑前按 START_HERE 恢复。pre-commit 的 memory 镜像源 (旧 slug `D-----zmd`) 不存在 → 同步静默跳过, **改 memory 必须手动双写 `_cc_live_memory/` + `cc_context/memory/`**。AUTO-STATUS 槽 `latest_review_package` 停在 v28 是预期 (stamp 读 `cc_context/review/LATEST_PACKAGE.json`, Codex 期的包在 `补丁包/` 未登记)。
+> **⑥ 下一关**: 治理面不变 — owner 手动维护 clean-review 计数, 决定何时开 P1.3B (真 `PoseBoolExactMaster` LBBD master integration, 即旧称「P1.3A 主体」)。在那之前不动 `step_8_apply_to_master`。工程面近期待办: V73-V78 未提交工作收尾 commit (全量 pytest 过后)。
+
+## (历史) 最新状态 (2026-06-06) — GPT 接手后文档树/记忆树 closeout + GitHub 上传准备
 
 > **当前性修正 (2026-06-07)**: 早先这里写过 `89b5a641…` / `doc_tree_closeout_v20260606_004` 作为文档树 closeout 观察点。那是历史快照, 不是当前 checkout identity。不要在 living memory 散文里手抄当前 HEAD/branch: commit 之后它会立刻自我过期。需要当前提交身份时运行 `git rev-parse --short HEAD` 与 `git branch --show-current`; 记忆树只记录阶段语义和门禁状态。
 >

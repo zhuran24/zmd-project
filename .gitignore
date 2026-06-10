@@ -62,3 +62,7 @@ scripts/pumpkin_poc/run_log.txt
 # 依赖包 (GPT 上传用, 从 requirements.lock regenerable, 巨大不入库; .whl 默认不被 *.zip 挡)
 cc_context/review/deps/
 .reaudit_v25_extract/
+
+# Codex 接手期外审包/补丁工作目录 (v29-v78 审查工件; zip/7z 已被上面的规则挡,
+# 解包出的散文件同样不入库 — 审查工件归档走 cc_context/review/)
+补丁包/
