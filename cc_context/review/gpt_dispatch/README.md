@@ -2,14 +2,13 @@
 
 把「打包 → 上传 → 发送 → 等完成 → 收交付」整条流程交给本地脚本跑,全程零 token(只在起止时看一眼)。
 
-## 一次性准备
+## 前置(每次 Edge 重启后跑一次)
 
 ```powershell
-# 1. 起专用自动化浏览器 (默认 Edge — owner 经验 Edge 通道更稳; -Browser chrome 可切回。
-#    独立 profile, CDP 9222; 已在跑则直接报就绪)
 & cc_context\review\gpt_dispatch\start_gpt_automation_chrome.ps1
-# 2. 首次使用: 在弹出的窗口里手动登录 chatgpt.com 一次 (cookie 长期有效)
 ```
+
+默认连**用户日常 Edge 主实例**(owner 裁决:不搞独立 profile,直接用已登录状态,零配置)。行为:端口已通直接报就绪;Edge 在跑但没带端口 → **温和关窗后带 9222 重启并恢复会话标签**(⚠️ 会重启用户正用着的浏览器,执行前注意);Edge 没跑 → 直接带端口启动。`-Isolated [-Browser chrome|edge]` 切独立 profile 模式备用(那个才需要首次手动登录)。
 
 ## 用法
 

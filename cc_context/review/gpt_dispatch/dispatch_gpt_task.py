@@ -98,20 +98,20 @@ def attach(p):
 
 
 def cleanup_stale_tabs(ctx, page, rep: Reporter):
-    """关掉历轮脚本残留的 chatgpt 标签页 (含异常退出留下的) — tab 不回收会越积
-    越多拖死浏览器。先开好自己的 page 再清扫, 保证浏览器始终有至少一个 tab。"""
+    """只清理下载残留页 (/mnt/data 404 之类) — 连的是用户日常 Edge 主实例,
+    绝不能动用户自己开的 chatgpt 标签页。脚本自己的 page 由 finally 自关。"""
     closed = 0
     for pg in list(ctx.pages):
         if pg is page:
             continue
         try:
-            if "chatgpt.com" in pg.url:
+            if "/mnt/data" in pg.url:
                 pg.close()
                 closed += 1
         except Exception:
             pass
     if closed:
-        rep.log("init", "stale_tabs_closed", count=closed)
+        rep.log("init", "stale_download_tabs_closed", count=closed)
 
 
 def assert_logged_in(page, rep: Reporter) -> bool:
