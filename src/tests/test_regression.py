@@ -37,7 +37,7 @@ def _build_empty_frontier_project(project_root: Path) -> Path:
     _write_json(
         project_root / "rules" / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": 6, "height": 6}},
+            "globals": {"grid": {"width": 6, "height": 6}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },
@@ -237,7 +237,7 @@ def test_exact_master_notes_keep_power_pole_area_lower_bound_disabled() -> None:
         instances=[],
         facility_pools={"power_pole": [], "protocol_storage_box": []},
         rules={
-            "globals": {"grid": {"width": 2, "height": 2}},
+            "globals": {"grid": {"width": 2, "height": 2}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
                 "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
@@ -276,7 +276,7 @@ def test_exact_core_packaging_profile_uses_owner_transfer_snapshot_modes() -> No
             ]
         },
         rules={
-            "globals": {"grid": {"width": 2, "height": 1}},
+            "globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "miner": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },

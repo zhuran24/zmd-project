@@ -32,11 +32,13 @@ python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
 That command is expected to fail at the current baseline because P1.3B is not
 opened by an owner manual decision. The repo no longer computes the clean-review
 counter; the owner maintains that count outside the repository.  The current
-post-V79 review anchor is `v79_terminal_domain_axis_sealing`,
+post-V80 review anchor is `v80_deny_unknown_certified_surface`,
 which keeps certified lifecycle evidence split into cut replay, master-domain,
-replayable frontier terminal evidence (all four candidate-domain slicing axes
-sealed), disk-authoritative delivery-manifest writing, canonical certified
-manifest publication, and export-surface proof obligations after V57-V79.
+replayable frontier terminal evidence (candidate-domain slicing axes sealed,
+project-level admissibility bound, and deny-unknown evidence keys),
+disk-authoritative delivery-manifest writing, canonical certified manifest
+publication, export-surface proof obligations, and closed allowlist handling for
+certified `EXACT_*` env knobs after V57-V80.
 
 ## Knowledge Surface Roles
 

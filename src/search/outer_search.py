@@ -58,8 +58,9 @@ from src.search.certified_surface import (
 from src.search.exact_campaign import (
     ExactCampaign,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    _load_exact_min_side_admissibility,
     has_terminal_full_frontier_certified_evidence,
-    has_valid_terminal_full_frontier_certified_evidence,
+    has_valid_terminal_full_frontier_certified_evidence_for_project,
 )
 from src.search.exact_parallel_scheduler import (
     ExactParallelWorkerPool,
@@ -790,9 +791,12 @@ def _commit_terminal_full_frontier_certified_result(
         final_result=result,
         candidate_generation=candidate_generation,
     )
-    if not has_valid_terminal_full_frontier_certified_evidence(exact_campaign.state):
+    if not has_valid_terminal_full_frontier_certified_evidence_for_project(
+        exact_campaign.state,
+        project_root=exact_campaign.project_root,
+    ):
         raise RuntimeError(
-            "terminal certified_exact export attempted before full-frontier evidence was committed"
+            "terminal certified_exact export attempted before project-bound full-frontier evidence was committed"
         )
     exact_campaign.save()
 
@@ -1561,19 +1565,6 @@ def run_outer_search(
 
     exact_campaign: Optional[ExactCampaign] = None
     if solve_mode == "certified_exact":
-        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
-        if unsafe_domain_env_blockers:
-            exact_campaign = ExactCampaign.load_or_create(
-                project_root,
-                campaign_hours=campaign_hours,
-                resume=False,
-            )
-            _mark_certified_campaign_blocked(
-                exact_campaign,
-                reason="unsafe_certified_exact_master_domain_env",
-                blockers=unsafe_domain_env_blockers,
-            )
-            return RUN_STATUS_UNPROVEN, None
         if _outer_skip_unknown_enabled():
             blocker = _certified_outer_skip_unknown_blocker()
             exact_campaign = ExactCampaign.load_or_create(
@@ -1585,6 +1576,19 @@ def run_outer_search(
                 exact_campaign,
                 reason=str(blocker["code"]),
                 blockers=[blocker],
+            )
+            return RUN_STATUS_UNPROVEN, None
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            exact_campaign = ExactCampaign.load_or_create(
+                project_root,
+                campaign_hours=campaign_hours,
+                resume=False,
+            )
+            _mark_certified_campaign_blocked(
+                exact_campaign,
+                reason="unsafe_certified_exact_master_domain_env",
+                blockers=unsafe_domain_env_blockers,
             )
             return RUN_STATUS_UNPROVEN, None
         exact_campaign = ExactCampaign.load_or_create(
@@ -1627,6 +1631,7 @@ def run_outer_search(
         area_upper_bound = safe_area_upper_bound
     else:
         area_upper_bound = min(int(area_upper_bound), safe_area_upper_bound)
+    min_side_admissibility = _load_exact_min_side_admissibility(project_root)
 
     normalized_max_aspect_ratio = max_aspect_ratio
     if normalized_max_aspect_ratio is not None and float(normalized_max_aspect_ratio) <= 0.0:
@@ -1640,6 +1645,7 @@ def run_outer_search(
         "start_area": start_area,
         "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
         "safe_area_upper_bound": safe_area_upper_bound,
+        "min_side_admissibility": min_side_admissibility,
     }
     candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
 

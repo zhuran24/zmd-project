@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-10",
-  "review_anchor": "v79_terminal_domain_axis_sealing",
-  "summary": "P1.2 remains fail-closed. V79 seals the remaining candidate-domain slicing axes in the terminal full-frontier evidence contract: a max_aspect_ratio filter or an above-admissibility min_side (>6) slices the generated candidate domain exactly like start_area, so such evidence is rejected and cannot claim authoritative full-frontier CERTIFIED. V79 also closes the delivery-manifest deep-validation skip: a terminal certified final_result whose placement_solution is not instance-shaped cannot be reverse-validated against facility_pools and now fails closed instead of silently bypassing the blueprint recovery check. The V73-V78 centralized certified-surface architecture is unchanged.",
-  "phase_gate_required_anchor": "v79_terminal_domain_axis_sealing",
+  "review_anchor": "v80_deny_unknown_certified_surface",
+  "summary": "P1.2 remains fail-closed. V80 converts the remaining enumerative certified defenses into deny-unknown contracts: terminal frontier evidence now carries project-level empty-rectangle admissibility, rejects unknown candidate_generation keys and stale v1 evidence, and refuses sub-admissible terminal CERTIFIED publication; certified_exact env handling is now an allowlist where unclassified future EXACT_* knobs fail closed and known proof-semantics knobs require canonical false/default values. The V73-V79 centralized certified-surface architecture is unchanged.",
+  "phase_gate_required_anchor": "v80_deny_unknown_certified_surface",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -161,7 +161,8 @@
         "v64_candidate",
         "v65_candidate",
         "v66_candidate",
-        "v66_certified_lifecycle_evidence_consolidation"
+        "v66_certified_lifecycle_evidence_consolidation",
+        "v80_deny_unknown_certified_surface"
       ],
       "required_tests": [
         "test_exact_campaign_state_persists_full_master_domain_contract",
@@ -175,7 +176,10 @@
         "test_v62_outer_search_blocks_unsafe_master_domain_env_before_session",
         "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
         "test_v65_outer_search_blocks_power_witness_encoding_env_before_session",
-        "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load"
+        "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load",
+        "test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob",
+        "test_v80_certified_exact_env_guard_blocks_known_proof_knob",
+        "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v60_master_domain_contract.md",
@@ -183,7 +187,8 @@
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
         "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
         "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
-        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ]
     },
     {
@@ -199,7 +204,8 @@
         "v75_candidate",
         "v75_terminal_frontier_evidence_sealing",
         "v76_project_bound_terminal_evidence",
-        "v79_terminal_domain_axis_sealing"
+        "v79_terminal_domain_axis_sealing",
+        "v80_deny_unknown_certified_surface"
       ],
       "required_tests": [
         "test_exact_campaign_resume_rejects_float_state_schema_version",
@@ -217,7 +223,11 @@
         "test_v75_resume_rejects_terminal_evidence_from_start_area_slice",
         "test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_project_domain",
         "test_v79_resume_rejects_terminal_evidence_from_aspect_ratio_slice",
-        "test_v79_resume_rejects_terminal_evidence_from_min_side_slice"
+        "test_v79_resume_rejects_terminal_evidence_from_min_side_slice",
+        "test_v80_resume_rejects_terminal_evidence_unknown_candidate_generation_key",
+        "test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch",
+        "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
+        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
@@ -228,7 +238,8 @@
         "src/tests/certified_frontier_helpers.py",
         "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
         "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
-        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md"
+        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ]
     },
     {
@@ -248,7 +259,8 @@
         "v76_project_bound_terminal_evidence",
         "v77_delivery_manifest_writer_authority",
         "v78_certified_manifest_writer_canonical_surface",
-        "v79_terminal_domain_axis_sealing"
+        "v79_terminal_domain_axis_sealing",
+        "v80_deny_unknown_certified_surface"
       ],
       "required_tests": [
         "test_delivery_manifest_rejects_best_effort_final_result",
@@ -290,7 +302,8 @@
         "test_v78_write_certified_delivery_manifest_rejects_direct_best_result_payload",
         "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result",
         "test_v79_delivery_manifest_rejects_non_instance_placement_solution",
-        "test_aspect_ratio_sliced_search_cannot_claim_terminal_certified"
+        "test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
+        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -304,7 +317,8 @@
         "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
         "docs/research/p1_2_v77_delivery_manifest_writer_authority.md",
         "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
-        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md"
+        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority."
     },
@@ -326,7 +340,8 @@
         "v48_candidate",
         "v49_candidate",
         "v50_candidate",
-        "v50_manual_phase_gate_simplification"
+        "v50_manual_phase_gate_simplification",
+        "v80_deny_unknown_certified_surface"
       ],
       "required_tests": [
         "test_phase_review_gate_manifest_is_consistent",
@@ -347,7 +362,8 @@
         "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md",
         "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md",
         "docs/research/p1_2_v31_v46_finding_taxonomy.md",
-        "docs/research/p1_2_v50_manual_phase_gate_simplification.md"
+        "docs/research/p1_2_v50_manual_phase_gate_simplification.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ],
       "policy": "The repo no longer proves or counts clean reviews. P1.3B opens only by owner_manual_decision; receipts are informational records."
     }

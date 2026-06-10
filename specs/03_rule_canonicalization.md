@@ -118,6 +118,10 @@ owner: rules
 后续目标函数中所定义的“最大连续完整矩形空地”，在拓扑上**不要求**与主基地外界连通。  
 因此，空地允许被其他设施与物流网络完全围住，形成封闭内天井。
 
+### 3.3.7 空地目标与可采纳下限
+
+精确 certified 路径的空地目标为 `max_lex(area, min_side)`。其中 `min_side` 的项目级可采纳下限由 `rules/canonical_rules.json::globals.empty_rectangle.min_side_admissibility` 给出；当前生产项目取值为 `6`。该下限是发布可采纳性条件，不是目标函数的 tie-break 替代品。toy / 测试项目可以在 canonical schema 中显式声明更小的正整数下限。
+
 ---
 
 ## 3.4 实体设施几何规则总表
@@ -566,6 +570,8 @@ owner: rules
    - `allow_fully_enclosed_empty_rectangle = true`
    - `allow_continuous_elevated_bridge = true`
    - `agriculture_is_self_sustained = true`
+   - `empty_rectangle.objective = max_lex_area_min_side`
+   - `empty_rectangle.min_side_admissibility = 6`（生产项目；schema 允许 toy 项目显式取更小正整数）
 
 ---
 

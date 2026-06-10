@@ -17,7 +17,11 @@ metadata:
 - GitHub repo: <!-- INSTANCE:repo_url -->zhuran24/zmd<!-- /INSTANCE:repo_url -->
 <!-- AUTO-STATUS:END -->
 
-## 最新状态 (2026-06-10 深夜) — V80 范式翻转三件套已委托 GPT Pro 实现 (外发进行中)
+## 最新状态 (2026-06-11) — V80 已交付并落地: 范式从黑名单枚举翻转为 deny-unknown 封闭白名单
+
+> **落地 stamp (2026-06-11, 验收轮)**: GPT Pro 交付包 (`C:\22957\download\zmd_v80_delivery.zip`, 解包归档在 `补丁包/gpt_deliveries/v80/`) **已验收落地**: 30 个补丁全部干净 apply; 自测日志可信 (sha 对上/基线 5 失败=外置数据/242 knob 数对上)。**验收抽查结论**: 工作项 A 的 admissible-optimality 论证正确 (sub-admissible 支配者经 objective-pruning 剪掉 admissible 候选 → 证明义务缺口 → fail-closed 拒绝发布, 不做无条件回收); `EXACT_COORDINATE_MASTER_SEARCH_PROFILE` 归 operational 成立 (封闭 3-profile 枚举只选 CP-SAT 搜索策略); allowlist 实现正确 (未知 EXACT_* 出现即拒 `unclassified_exact_env_not_certified`)。**GPT 唯一漏网**: `src/tests/phase3b/b5a/test_b5_anchor_sprint.py` 的 toy fixture canonical_rules 没加 `empty_rectangle` 块 (不在目标测试集里它看不见) → 本地补 `min_side_admissibility: 1` 修复, b5a 134 全绿。**最终全量 = 2788 passed, 失败集与 V79 环境性基线逐项一致** (10F+10E 全是 candidate_placements 外置)。锚点已推 `v80_deny_unknown_certified_surface` (PO 双字段/gate 双处/测试硬编码锚/六处文档投影全就位, sync+authoritative-numbers 双绿)。**V80 残留 (DESIGN_NOTES 披露)**: ① 旧 v1 terminal evidence 不迁移 (fail-closed, 重新生成 v2); ② knob 分类把握度 medium, 个别 blocked 名深审后可能其实 operational (误杀方向安全, owner 有空可复审); ③ `EXACT_GATE_WORKER_PEAK_RSS_GIB` 在 allowlist 里用字符串拼接写法避免 grep 计入 242 口径 (hacky 但已披露)。**canonical_rules.json 动了 frozen artifact** (加 `globals.empty_rectangle`, objective + min_side_admissibility=6): owner 委托决策 + lock/spec/schema/test 三层同步齐, 17-recipe 投影未碰。下轮外审 (必须新窗口零历史) 的起点 = v80 锚 + 这三条残留。
+
+## (历史) 2026-06-10 深夜 — V80 范式翻转三件套已委托 GPT Pro 实现 (外发进行中)
 
 > **当前真相 (2026-06-10 深夜, 外发委托轮)**:
 > **⓪ owner 裁决方向**: 对"P1.2 审了几十轮不闭合"的诊断 = 防御范式是黑名单枚举 (每轮审查找到下一个未封轴) + certified 表面积大; 出路 = **翻转为 deny-unknown 封闭白名单**。owner 决定把实现委托给 GPT Pro (省 CC 额度), 三件套: **A) V80 admissibility 发布闸** (V79 residual, 项目级 admissibility 字段 = canonical-schema 决策, 设计核心是 sub-admissible 支配者下 admissible-optimality 的证明义务) + **B) terminal evidence 域契约白名单封闭** (certified_frontier.py:258 if 链 → 未知键/非权威值一律拒) + **C) certified env guard 翻转 allowlist** (benders_loop.py:441 黑名单 → 242 个 EXACT_* knob 逐个分类, 未分类 fail-closed)。

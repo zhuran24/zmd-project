@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-10",
-  "summary": "P1.2 remains manually blocked. V79 keeps the centralized CERTIFIED surface verifier architecture and seals the remaining candidate-domain slicing axes in the terminal full-frontier evidence contract: max_aspect_ratio filters and above-admissibility min_side values are rejected like start_area slices, and the delivery-manifest deep validation fails closed on non-instance-shaped terminal placement solutions.",
-  "current_review_anchor": "v79_terminal_domain_axis_sealing",
+  "summary": "P1.2 remains manually blocked. V80 keeps the centralized CERTIFIED surface verifier architecture and changes the remaining publication-adjacent defenses from enumerating known-bad axes to deny-unknown contracts: project-level min_side admissibility is now bound into terminal evidence, unknown terminal candidate-generation axes are rejected, old terminal evidence schema resumes fail closed, sub-admissible terminal publication is refused, and certified_exact EXACT_* environment overrides are governed by an allowlist.",
+  "current_review_anchor": "v80_deny_unknown_certified_surface",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,8 +26,8 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v79_terminal_domain_axis_sealing",
-    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v78_certified_manifest_writer_canonical_surface."
+    "current_review_anchor": "v80_deny_unknown_certified_surface",
+    "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
     "phase": "P1.3B PoseBoolExactMaster LBBD master integration",
@@ -221,6 +221,14 @@
       "summary": "V79 found two unsealed candidate-domain slicing axes in the V75 terminal-evidence validator: an exhausted max_aspect_ratio-sliced domain and an above-admissibility min_side (>6) domain both validated as authoritative full-frontier CERTIFIED while the filtered candidates were never refuted. Both axes are now rejected. The delivery-manifest deep validation also no longer skips the blueprint reverse-lookup for non-instance-shaped terminal placement solutions; it fails closed.",
       "evidence_paths": [
         "docs/research/p1_2_v79_terminal_domain_axis_sealing.md"
+      ]
+    },
+    {
+      "package": "v80_deny_unknown_certified_surface",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V80 closes the V79 residual and flips two enumerative defenses to deny-unknown. Terminal frontier evidence now includes project-level min_side admissibility and rejects unknown candidate_generation keys, stale v1 schema, min-side mismatches, and sub-admissible terminal final_result publication. certified_exact env overrides are checked by an allowlist: production operational knobs remain admitted, known proof-semantics knobs must stay canonical false/default, and future unclassified EXACT_* names fail closed.",
+      "evidence_paths": [
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ]
     }
   ],

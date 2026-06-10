@@ -22,7 +22,10 @@ from typing import Any, Dict, Mapping, Optional, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 from src.models.master_model import infer_certified_optional_lower_bounds
-from src.search.certified_frontier import terminal_frontier_evidence_violation
+from src.search.certified_frontier import (
+    TERMINAL_FRONTIER_OBJECTIVE,
+    terminal_frontier_evidence_violation,
+)
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
 CAMPAIGN_SCHEMA_VERSION = 5
@@ -196,6 +199,32 @@ def _load_exact_grid_dimensions(project_root: Optional[Path]) -> Optional[Tuple[
     if grid_w <= 0 or grid_h <= 0:
         raise ValueError("canonical_rules grid dimensions must be positive")
     return grid_w, grid_h
+
+
+
+
+def _load_exact_min_side_admissibility(project_root: Optional[Path]) -> Optional[int]:
+    if project_root is None:
+        return None
+    rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
+    payload = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise ValueError("canonical_rules must be a JSON object")
+    globals_payload = payload.get("globals")
+    if not isinstance(globals_payload, Mapping):
+        raise ValueError("canonical_rules.globals must be a mapping")
+    empty_rectangle = globals_payload.get("empty_rectangle")
+    if not isinstance(empty_rectangle, Mapping):
+        raise ValueError("canonical_rules.globals.empty_rectangle must be a mapping")
+    if str(empty_rectangle.get("objective", "")) != TERMINAL_FRONTIER_OBJECTIVE:
+        raise ValueError("canonical_rules.globals.empty_rectangle.objective invalid")
+    min_side_admissibility = _strict_resume_int(
+        empty_rectangle.get("min_side_admissibility"),
+        "canonical_rules.globals.empty_rectangle.min_side_admissibility",
+    )
+    if min_side_admissibility <= 0:
+        raise ValueError("canonical min_side_admissibility must be positive")
+    return int(min_side_admissibility)
 
 
 def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[int]:
@@ -563,11 +592,20 @@ def _validate_resume_state(
         safe_area_upper_bound = _load_exact_safe_area_upper_bound(project_root)
     except Exception:
         return "canonical_grid_invalid"
+    try:
+        min_side_admissibility = (
+            _load_exact_min_side_admissibility(project_root)
+            if has_certified_export_surface(state)
+            else None
+        )
+    except Exception:
+        return "canonical_min_side_admissibility_invalid"
 
     terminal_violation = certified_terminal_evidence_violation(
         state,
         grid_dimensions=grid_dimensions,
         safe_area_upper_bound=safe_area_upper_bound,
+        min_side_admissibility=min_side_admissibility,
     )
     if terminal_violation is not None:
         return terminal_violation
@@ -632,6 +670,7 @@ def terminal_certified_final_result_violation(
     *,
     grid_dimensions: Optional[Tuple[int, int]] = None,
     safe_area_upper_bound: Optional[int] = None,
+    min_side_admissibility: Optional[int] = None,
 ) -> Optional[str]:
     """Return a fail-closed reason for malformed terminal CERTIFIED result evidence."""
 
@@ -654,6 +693,10 @@ def terminal_certified_final_result_violation(
         return "terminal_certified_final_result_ghost_rect_invalid"
     if ghost_w <= 0 or ghost_h <= 0 or area != ghost_w * ghost_h:
         return "terminal_certified_final_result_ghost_rect_invalid"
+    if min_side_admissibility is not None and min(int(ghost_w), int(ghost_h)) < int(
+        min_side_admissibility
+    ):
+        return "terminal_certified_final_result_below_admissibility"
 
     placement_solution = final_result.get("placement_solution")
     if not isinstance(placement_solution, Mapping):
@@ -699,6 +742,7 @@ def terminal_certified_final_result_violation(
         final_result=final_result,
         grid_dimensions=grid_dimensions,
         safe_area_upper_bound=safe_area_upper_bound,
+        min_side_admissibility=min_side_admissibility,
     )
     if frontier_reason is not None:
         return frontier_reason
@@ -722,14 +766,20 @@ def terminal_certified_final_result_violation_for_project(
     """Return a fail-closed terminal-evidence reason bound to the project domain."""
 
     try:
-        grid_dimensions = _load_exact_grid_dimensions(Path(project_root))
-        safe_area_upper_bound = _load_exact_safe_area_upper_bound(Path(project_root))
+        resolved_project_root = Path(project_root)
+        grid_dimensions = _load_exact_grid_dimensions(resolved_project_root)
+        safe_area_upper_bound = _load_exact_safe_area_upper_bound(resolved_project_root)
     except Exception:
         return "canonical_grid_invalid"
+    try:
+        min_side_admissibility = _load_exact_min_side_admissibility(resolved_project_root)
+    except Exception:
+        return "canonical_min_side_admissibility_invalid"
     return terminal_certified_final_result_violation(
         state,
         grid_dimensions=grid_dimensions,
         safe_area_upper_bound=safe_area_upper_bound,
+        min_side_admissibility=min_side_admissibility,
     )
 
 
@@ -756,6 +806,7 @@ def certified_terminal_evidence_violation(
     *,
     grid_dimensions: Optional[Tuple[int, int]] = None,
     safe_area_upper_bound: Optional[int] = None,
+    min_side_admissibility: Optional[int] = None,
 ) -> Optional[str]:
     """Return a fail-closed reason for stale or contradictory certified export claims."""
 
@@ -765,6 +816,7 @@ def certified_terminal_evidence_violation(
         state,
         grid_dimensions=grid_dimensions,
         safe_area_upper_bound=safe_area_upper_bound,
+        min_side_admissibility=min_side_admissibility,
     )
 
 

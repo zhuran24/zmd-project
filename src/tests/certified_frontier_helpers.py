@@ -14,6 +14,7 @@ from src.search.certified_frontier import (
 from src.search.exact_campaign import (
     ExactCampaign,
     _load_exact_grid_dimensions,
+    _load_exact_min_side_admissibility,
     _load_exact_safe_area_upper_bound,
 )
 
@@ -33,6 +34,9 @@ def attach_terminal_frontier_evidence(
     safe_area_upper_bound = _load_exact_safe_area_upper_bound(project_root)
     if safe_area_upper_bound is None:
         raise AssertionError("test project must define a safe area upper bound")
+    min_side_admissibility = _load_exact_min_side_admissibility(project_root)
+    if min_side_admissibility is None:
+        raise AssertionError("test project must define min_side admissibility")
     candidate_generation = {
         "max_w": grid_w,
         "max_h": grid_h,
@@ -42,6 +46,7 @@ def attach_terminal_frontier_evidence(
         "start_area": None,
         "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
         "safe_area_upper_bound": safe_area_upper_bound,
+        "min_side_admissibility": min_side_admissibility,
     }
     candidates = generate_candidate_sizes(
         max_w=grid_w,

@@ -13,12 +13,13 @@ This document records the first consolidation step after the frozen-compatible p
 Current split:
 
 - `canonical_rules.json`
-  - grid / time / logistics globals
+  - grid / time / logistics / empty-rectangle globals
   - routing rules
   - facility templates
   - the 17 real preprocess recipes
   - `production_targets`
   - `commodity_metadata`
+  - `globals.empty_rectangle.objective` and `globals.empty_rectangle.min_side_admissibility` for project-bound certified publication admissibility
 - `preprocess_plan.json`
   - cycle groups
   - utility operations
@@ -41,10 +42,11 @@ Certified exact runtime still consumes:
 
 ## 4. Current guarantees
 
-- `CanonicalRulesDocument` validates the consolidated fields.
+- `CanonicalRulesDocument` validates the consolidated fields, including the empty-rectangle objective/admissibility contract.
 - `CanonicalSemanticValidator` now checks production-target and commodity-metadata consistency.
 - `PreprocessContext` merges canonical rules first and then applies overlay keys from `preprocess_plan.json`.
 - Context-driven regeneration continues to match the frozen preprocess artifacts.
+- Certified terminal-frontier evidence consumes the canonical empty-rectangle admissibility field as publication authority; constants in search code are production projections, not independent schema truth.
 
 ## 5. Deferred work
 

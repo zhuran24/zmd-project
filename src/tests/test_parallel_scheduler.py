@@ -36,7 +36,7 @@ def _build_empty_frontier_project(
     _write_json(
         project_root / "rules" / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": width, "height": height}},
+            "globals": {"grid": {"width": width, "height": height}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },

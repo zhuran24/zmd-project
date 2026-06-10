@@ -16,6 +16,10 @@
       "belt_capacity_per_tick": 1.0,
       "port_max_throughput_per_tick": 1.0,
       "machine_min_clearance_cells": 1
+    },
+    "empty_rectangle": {
+      "objective": "max_lex_area_min_side",
+      "min_side_admissibility": 6
     }
   },
   "routing_rules": {

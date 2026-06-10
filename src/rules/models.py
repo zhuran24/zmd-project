@@ -46,8 +46,14 @@ class LogisticsConfig(StrictBaseModel):
     machine_min_clearance_cells: int = Field(..., ge=0)
 
 
+class EmptyRectangleConfig(StrictBaseModel):
+    objective: Literal["max_lex_area_min_side"]
+    min_side_admissibility: int = Field(..., ge=1)
+
+
 class GlobalsConfig(StrictBaseModel):
     grid: GridConfig
+    empty_rectangle: EmptyRectangleConfig
     time: TimeConfig
     logistics: LogisticsConfig
 

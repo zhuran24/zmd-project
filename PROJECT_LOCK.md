@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-06-06 (lightweight GitHub checkout + external large artifact policy)
+**Updated**: 2026-06-10 (V80 deny-unknown certified-surface hardening)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
@@ -10,6 +10,7 @@
 - `certified_exact` and `exploratory` are separate paths. Exploratory outputs must not be promoted as certified evidence.
 - The exact empty-rectangle objective is `max_lex(area, min_side)`.
 - `min_side >= 6` is a candidate admissibility rule, not an objective tie-break.
+- `rules/canonical_rules.json::globals.empty_rectangle.min_side_admissibility` is the project-level authority for that admissibility floor; the production project value is `6`, while toy projects may use smaller explicit floors.
 - `Phi(w, h)` is not the exact source of truth.
 - `(area, width, height)` is not the exact source-of-truth comparator.
 - Exact mode has no hard `50 power poles + 10 protocol storage boxes` cap. If that number appears anywhere, it is exploratory-only guidance.
@@ -19,7 +20,7 @@
 
 The certified path is grounded in:
 
-- `rules/canonical_rules.json` (now also carries consolidated preprocess recipe / target / commodity truth)
+- `rules/canonical_rules.json` (now also carries consolidated preprocess recipe / target / commodity truth and empty-rectangle admissibility)
 - `data/preprocessed/candidate_placements.json` (required external large artifact in the current lightweight GitHub checkout)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
@@ -84,6 +85,8 @@ Phase 0 close (`docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md`) 后,
 - Optional frontier probe mode is an exact-safe scheduling hint only and must not replace completeness requirements.
 - Global pooling semantics for shared boundary/core resources must remain commodity-aggregated.
 - A fully enclosed legal empty rectangle remains allowed; exterior connectivity is not part of the exact contract.
+- Terminal certified frontier evidence is a closed, project-bound contract: unknown `candidate_generation` keys, non-authoritative domain values, stale evidence schema versions, and sub-admissible terminal best results must fail closed before any public CERTIFIED surface.
+- In `certified_exact`, `EXACT_*` environment knobs are deny-unknown by default: only documented operational allowlist entries may be present, known proof-semantics knobs must stay at canonical false/default values, and future/unclassified names must block the run.
 
 ### 3A. B Design v2 invariant additions (2026-05-22)
 
@@ -182,6 +185,8 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
 - Reintroducing exploratory caps as exact-mode bounds.
 - Treating exploratory artifacts, legacy cuts, or diagnostic flow checks as certified proof.
 - Changing campaign, artifact, or proof schemas without explicitly updating the lock/spec/test boundary together.
+- Publishing a terminal `CERTIFIED` final result whose empty-rectangle `min_side` is below the canonical project `min_side_admissibility`, even if it was found in a superdomain run.
+- Adding a new `candidate_generation` or `EXACT_*` certified-surface axis without first classifying it in the closed contract and adding fail-closed red tests.
 - Rebinding globally pooled resources into per-line or per-instance hard bindings without a new exact proof basis.
 - Adding any exterior-path requirement for the ghost rectangle.
 - Enabling `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` in any certified / production campaign path. The power-pole subproblem feature flag is exploratory only. Status of the three known exactness gaps (originally characterized in the GPT v4 review follow-up; 三项 status 至 v28 外审未变, gate 仍强制):

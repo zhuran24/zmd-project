@@ -97,6 +97,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
             "test_v65_outer_search_blocks_power_witness_encoding_env_before_session",
             "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load",
+            "test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob",
+            "test_v80_certified_exact_env_guard_blocks_known_proof_knob",
+            "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
         }
     ),
     "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE": frozenset(
@@ -117,6 +120,10 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_project_domain",
             "test_v68_resume_rejects_certified_candidate_without_solution",
             "test_v69_resume_inspector_and_b5a_reject_terminal_final_result_not_best_candidate",
+            "test_v80_resume_rejects_terminal_evidence_unknown_candidate_generation_key",
+            "test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch",
+            "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
+            "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
         }
     ),
     "PO-CERTIFIED-EXPORT-SURFACE": frozenset(
@@ -1029,7 +1036,10 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "terminal_frontier_evidence",
         "terminal_frontier_evidence_violation",
         "_load_exact_safe_area_upper_bound",
+        "_load_exact_min_side_admissibility",
         "safe_area_upper_bound",
+        "min_side_admissibility",
+        "terminal_certified_final_result_below_admissibility",
     ):
         if needle not in resume_source and needle not in exact_campaign_source:
             errors.append(
@@ -1054,7 +1064,11 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         _function_def(certified_frontier_tree, helper_name, path=CERTIFIED_FRONTIER_PATH)
     for needle in (
         "TERMINAL_FRONTIER_EVIDENCE_SOURCE",
+        "TERMINAL_FRONTIER_EVIDENCE_SCHEMA_VERSION = 2",
+        "certified_terminal_frontier_evidence_v2",
         "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
+        "TERMINAL_FRONTIER_OBJECTIVE",
+        "_TERMINAL_FRONTIER_DOMAIN_CONTRACT_KEYS",
         "candidate_status_digest",
         "potential_domain_size",
         "frontier_keys",
@@ -1063,6 +1077,9 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "terminal_frontier_area_upper_bound_not_authoritative",
         "terminal_frontier_aspect_ratio_sliced_domain",
         "terminal_frontier_min_side_sliced_domain",
+        "terminal_frontier_candidate_generation_unknown_key",
+        "terminal_frontier_min_side_admissibility_mismatch",
+        "terminal_frontier_final_result_below_admissibility",
         "TERMINAL_FRONTIER_MIN_SIDE_ADMISSIBILITY",
         "terminal_frontier_candidate_status_digest_mismatch",
         "terminal_frontier_potential_domain_not_exhausted",
@@ -1080,6 +1097,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "candidate_generation_kwargs",
         "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
         "safe_area_upper_bound",
+        "min_side_admissibility",
         "terminal_frontier_evidence",
     ):
         if needle not in outer_source_text:
@@ -1165,6 +1183,21 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         path=BENDERS_LOOP_PATH,
     )
     benders_loop_source = BENDERS_LOOP_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "_CERTIFIED_KNOWN_ENV_NAMES",
+        "_CERTIFIED_OPERATIONAL_ENV_ALLOWLIST",
+        "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
+        "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE",
+        "unclassified_exact_env_not_certified",
+        "proof_semantics_exact_env_not_certified",
+        "EXACT_COMMUNITY_BLUEPRINT_HINT_PATH",
+        "GATE_WORKER_PEAK_RSS_GIB",
+    ):
+        if needle not in benders_loop_source:
+            errors.append(
+                "certified exact env guard must be a closed allowlist that fails closed on unknown or proof-semantics EXACT_* knobs: "
+                f"{needle}"
+            )
     for needle in (
         "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
         "ghost_anchor_filter_not_certified",

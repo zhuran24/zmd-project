@@ -36,6 +36,7 @@
       "type": "object",
       "required": [
         "grid",
+        "empty_rectangle",
         "time",
         "logistics"
       ],
@@ -90,6 +91,26 @@
             "machine_min_clearance_cells": {
               "type": "integer",
               "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "empty_rectangle": {
+          "type": "object",
+          "required": [
+            "objective",
+            "min_side_admissibility"
+          ],
+          "properties": {
+            "objective": {
+              "type": "string",
+              "enum": [
+                "max_lex_area_min_side"
+              ]
+            },
+            "min_side_admissibility": {
+              "type": "integer",
+              "minimum": 1
             }
           },
           "additionalProperties": false

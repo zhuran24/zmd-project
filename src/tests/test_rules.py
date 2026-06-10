@@ -61,6 +61,8 @@ def test_schema_rejects_unknown_fields(raw_rules_dict, raw_schema_dict):
 def test_pydantic_parsing(raw_rules_dict):
     doc = CanonicalRulesDocument.model_validate(raw_rules_dict)
     assert doc.globals.grid.width == 70
+    assert doc.globals.empty_rectangle.objective == "max_lex_area_min_side"
+    assert doc.globals.empty_rectangle.min_side_admissibility == 6
     assert doc.routing_rules.bridge_mechanics.can_turn is False
     assert "packaging_battery" in doc.recipes
     assert doc.production_targets["valley_battery"].final_recipe_id == "packaging_battery"

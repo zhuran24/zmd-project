@@ -47,7 +47,7 @@ def _build_manifest_project(project_root: Path) -> tuple[Path, dict[str, list[di
     _write_json(
         rules_dir / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": 2, "height": 1}},
+            "globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },

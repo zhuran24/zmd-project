@@ -435,6 +435,7 @@ def test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_projec
             "start_area": None,
             "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
             "safe_area_upper_bound": 1,
+            "min_side_admissibility": 1,
         },
     )
 
@@ -447,3 +448,162 @@ def test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_projec
     assert has_valid_terminal_full_frontier_certified_evidence(campaign.state) is True
     assert campaign.best_certified_result() is None
     assert reason == "terminal_frontier_candidate_generation_grid_mismatch"
+
+
+def test_v80_resume_rejects_terminal_evidence_unknown_candidate_generation_key(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution={},
+        proof_summary={"mode": "certified_exact", "master_status": RUN_STATUS_CERTIFIED},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.state["terminal_frontier_evidence"]["candidate_generation"][
+        "future_candidate_axis"
+    ] = "full"
+
+    reason = validate_exact_campaign_resume_state(
+        campaign.state,
+        campaign.artifact_hashes,
+        project_root=project_root,
+    )
+
+    assert reason == "terminal_frontier_candidate_generation_unknown_key"
+
+
+def test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution={},
+        proof_summary={"mode": "certified_exact", "master_status": RUN_STATUS_CERTIFIED},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.state["terminal_frontier_evidence"]["candidate_generation"][
+        "min_side_admissibility"
+    ] = 2
+
+    reason = validate_exact_campaign_resume_state(
+        campaign.state,
+        campaign.artifact_hashes,
+        project_root=project_root,
+    )
+
+    assert reason == "terminal_frontier_min_side_admissibility_mismatch"
+
+
+def test_v80_resume_rejects_v1_terminal_frontier_evidence_schema(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution={},
+        proof_summary={"mode": "certified_exact", "master_status": RUN_STATUS_CERTIFIED},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1},
+        "placement_solution": {},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.state["terminal_frontier_evidence"]["schema_version"] = 1
+    campaign.state["terminal_frontier_evidence"]["source"] = (
+        "certified_terminal_frontier_evidence_v1"
+    )
+
+    reason = validate_exact_campaign_resume_state(
+        campaign.state,
+        campaign.artifact_hashes,
+        project_root=project_root,
+    )
+
+    assert reason == "terminal_frontier_evidence_schema_invalid"
+
+
+def test_v80_resume_rejects_terminal_final_result_below_project_admissibility(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_frontier_project(
+        tmp_path / "project",
+        width=7,
+        height=7,
+        min_side_admissibility=6,
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(7, 5)
+    campaign.mark_candidate_result(
+        7,
+        5,
+        RUN_STATUS_CERTIFIED,
+        solution={},
+        proof_summary={"mode": "certified_exact", "master_status": RUN_STATUS_CERTIFIED},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 7, "h": 5, "area": 35},
+        "placement_solution": {},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    campaign.mark_campaign_stopped(
+        "search_exhausted_all_candidates",
+        status=RUN_STATUS_CERTIFIED,
+    )
+    attach_terminal_frontier_evidence(campaign, project_root, min_side=1)
+
+    reason = validate_exact_campaign_resume_state(
+        campaign.state,
+        campaign.artifact_hashes,
+        project_root=project_root,
+    )
+
+    assert reason == "terminal_certified_final_result_below_admissibility"

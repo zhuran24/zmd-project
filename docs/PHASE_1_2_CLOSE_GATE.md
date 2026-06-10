@@ -20,15 +20,15 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V79, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V80, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
-publication hardening, and terminal candidate-domain axis sealing, the current
-review anchor is:
+publication hardening, terminal candidate-domain axis sealing, and deny-unknown
+certified-surface hardening, the current review anchor is:
 
 ```text
-v79_terminal_domain_axis_sealing
+v80_deny_unknown_certified_surface
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -58,7 +58,12 @@ evidence contract: an exhausted `max_aspect_ratio`-sliced domain or an
 above-admissibility `min_side` (>6) domain is rejected exactly like a
 `start_area` slice, and the delivery-manifest deep validation fails closed on
 non-instance-shaped terminal placement solutions instead of skipping the
-blueprint reverse-lookup.  The
+blueprint reverse-lookup.  V80 closes the residual below that seal: the
+canonical project schema now carries the empty-rectangle admissibility floor,
+terminal-frontier evidence schema v2 rejects unknown `candidate_generation`
+keys and sub-admissible terminal final results, and `certified_exact` env
+handling is a closed allowlist where future/unclassified `EXACT_*` names fail
+closed.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -69,7 +74,7 @@ obligations remain split into four compartments:
   unsafe env fail-closed behavior before session/precheck/project-load side
   effects;
 - `PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE` for strict full-frontier exhaustion
-  evidence, including replayable candidate generation, status digests, and safe-area-bound authority, rather than
+  evidence, including replayable candidate generation, status digests, safe-area-bound authority, and canonical min-side admissibility, rather than
   candidate-level or best-effort incumbents;
 - `PO-CERTIFIED-EXPORT-SURFACE` for `final_result`, `final_solution`, delivery
   manifest, inspector/report, and wrapper export surfaces.
@@ -82,8 +87,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md`,
 `docs/research/p1_2_v76_project_bound_terminal_evidence.md`,
 `docs/research/p1_2_v77_delivery_manifest_writer_authority.md`,
-`docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`, and
-`docs/research/p1_2_v79_terminal_domain_axis_sealing.md`.
+`docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`,
+`docs/research/p1_2_v79_terminal_domain_axis_sealing.md`, and
+`docs/research/p1_2_v80_deny_unknown_certified_surface.md`.
 
 Daily consistency check:
 

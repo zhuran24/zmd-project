@@ -38,7 +38,7 @@ def _build_exact_project(project_root: Path) -> Path:
     _write_json(
         project_root / "rules" / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": 3, "height": 3}},
+            "globals": {"grid": {"width": 3, "height": 3}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
             },

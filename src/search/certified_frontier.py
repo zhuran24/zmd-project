@@ -16,15 +16,16 @@ from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
 
-TERMINAL_FRONTIER_EVIDENCE_SCHEMA_VERSION = 1
-TERMINAL_FRONTIER_EVIDENCE_SOURCE = "certified_terminal_frontier_evidence_v1"
+TERMINAL_FRONTIER_EVIDENCE_SCHEMA_VERSION = 2
+TERMINAL_FRONTIER_EVIDENCE_SOURCE = "certified_terminal_frontier_evidence_v2"
 TERMINAL_FRONTIER_EXHAUSTED_REASON = "search_exhausted_all_candidates"
 TERMINAL_FRONTIER_DOMAIN_AUTHORITY = "outer_search_static_area_bound_v1"
-# PROJECT_LOCK: min_side >= 6 is admissibility, so the certified target domain is
-# exactly the min_side=6 domain.  A terminal full-frontier claim generated with a
-# larger min_side searched a strict sub-domain and must be rejected; a smaller
-# min_side searched a superset and stays safe.
+# PROJECT_LOCK: the production project currently publishes min_side >= 6 as the
+# admissibility floor.  The canonical project schema carries the authoritative
+# value; this constant is the production projection/default used by compatibility
+# callers that are not project-bound.
 TERMINAL_FRONTIER_MIN_SIDE_ADMISSIBILITY = 6
+TERMINAL_FRONTIER_OBJECTIVE = "max_lex_area_min_side"
 _MISSING_STATUS = "MISSING"
 _GENERATION_PARAM_KEYS = {
     "max_w",
@@ -34,6 +35,13 @@ _GENERATION_PARAM_KEYS = {
     "area_upper_bound",
     "start_area",
 }
+_TERMINAL_FRONTIER_DOMAIN_CONTRACT_KEYS = _GENERATION_PARAM_KEYS.union(
+    {
+        "domain_authority",
+        "safe_area_upper_bound",
+        "min_side_admissibility",
+    }
+)
 
 Candidate = Tuple[int, int, int]
 
@@ -79,6 +87,7 @@ def generate_candidate_sizes(
 
 
 def normalize_candidate_generation_params(raw_params: Mapping[str, Any]) -> Dict[str, Any]:
+    _reject_unknown_candidate_generation_keys(raw_params, allowed_keys=_GENERATION_PARAM_KEYS)
     max_w = _strict_positive_int(raw_params.get("max_w"), "candidate_generation.max_w")
     max_h = _strict_positive_int(raw_params.get("max_h"), "candidate_generation.max_h")
     min_side = _strict_positive_int(raw_params.get("min_side"), "candidate_generation.min_side")
@@ -104,17 +113,34 @@ def normalize_candidate_generation_params(raw_params: Mapping[str, Any]) -> Dict
 
 
 def normalize_terminal_frontier_domain_contract(raw_params: Mapping[str, Any]) -> Dict[str, Any]:
-    params = normalize_candidate_generation_params(raw_params)
+    _reject_unknown_candidate_generation_keys(
+        raw_params,
+        allowed_keys=_TERMINAL_FRONTIER_DOMAIN_CONTRACT_KEYS,
+    )
+    generation_payload = {key: raw_params.get(key) for key in _GENERATION_PARAM_KEYS}
+    params = normalize_candidate_generation_params(generation_payload)
     params["domain_authority"] = str(raw_params.get("domain_authority", ""))
     params["safe_area_upper_bound"] = _optional_nonnegative_int(
         raw_params.get("safe_area_upper_bound"),
         "candidate_generation.safe_area_upper_bound",
     )
+    params["min_side_admissibility"] = _strict_positive_int(
+        raw_params.get("min_side_admissibility"),
+        "candidate_generation.min_side_admissibility",
+    )
     return params
 
 
 def candidate_generation_kwargs(raw_params: Mapping[str, Any]) -> Dict[str, Any]:
-    params = normalize_candidate_generation_params(raw_params)
+    raw_keys = set(raw_params.keys())
+    allowed_keys = (
+        _TERMINAL_FRONTIER_DOMAIN_CONTRACT_KEYS
+        if raw_keys.issubset(_TERMINAL_FRONTIER_DOMAIN_CONTRACT_KEYS)
+        else _GENERATION_PARAM_KEYS
+    )
+    _reject_unknown_candidate_generation_keys(raw_params, allowed_keys=allowed_keys)
+    generation_payload = {key: raw_params.get(key) for key in _GENERATION_PARAM_KEYS}
+    params = normalize_candidate_generation_params(generation_payload)
     return {key: params[key] for key in sorted(_GENERATION_PARAM_KEYS)}
 
 
@@ -262,6 +288,7 @@ def terminal_frontier_evidence_violation(
     final_result: Mapping[str, Any],
     grid_dimensions: Optional[tuple[int, int]] = None,
     safe_area_upper_bound: Optional[int] = None,
+    min_side_admissibility: Optional[int] = None,
 ) -> Optional[str]:
     if not isinstance(evidence, Mapping):
         return "terminal_frontier_evidence_missing"
@@ -276,12 +303,33 @@ def terminal_frontier_evidence_violation(
     if str(evidence.get("reason", "")) != TERMINAL_FRONTIER_EXHAUSTED_REASON:
         return "terminal_frontier_evidence_reason_invalid"
     try:
-        evidence_params = normalize_terminal_frontier_domain_contract(
-            _require_mapping(evidence.get("candidate_generation"))
-        )
+        raw_candidate_generation = _require_mapping(evidence.get("candidate_generation"))
+    except Exception:
+        return "terminal_frontier_candidate_generation_invalid"
+    unknown_candidate_generation_keys = sorted(
+        set(raw_candidate_generation.keys()).difference(_TERMINAL_FRONTIER_DOMAIN_CONTRACT_KEYS)
+    )
+    if unknown_candidate_generation_keys:
+        return "terminal_frontier_candidate_generation_unknown_key"
+    if "min_side_admissibility" not in raw_candidate_generation:
+        return "terminal_frontier_min_side_admissibility_missing"
+    try:
+        evidence_params = normalize_terminal_frontier_domain_contract(raw_candidate_generation)
         params = candidate_generation_kwargs(evidence_params)
     except Exception:
         return "terminal_frontier_candidate_generation_invalid"
+    if min_side_admissibility is not None:
+        try:
+            expected_min_side_admissibility = _strict_positive_int(
+                min_side_admissibility,
+                "project.min_side_admissibility",
+            )
+        except Exception:
+            return "terminal_frontier_min_side_admissibility_invalid"
+        if int(evidence_params["min_side_admissibility"]) != expected_min_side_admissibility:
+            return "terminal_frontier_min_side_admissibility_mismatch"
+    else:
+        expected_min_side_admissibility = int(evidence_params["min_side_admissibility"])
     if grid_dimensions is not None:
         grid_w, grid_h = grid_dimensions
         if int(params["max_w"]) != int(grid_w) or int(params["max_h"]) != int(grid_h):
@@ -295,7 +343,7 @@ def terminal_frontier_evidence_violation(
     # masquerade as authoritative full-frontier exhaustion.
     if evidence_params.get("max_aspect_ratio") is not None:
         return "terminal_frontier_aspect_ratio_sliced_domain"
-    if int(params["min_side"]) > TERMINAL_FRONTIER_MIN_SIDE_ADMISSIBILITY:
+    if int(params["min_side"]) > int(expected_min_side_admissibility):
         return "terminal_frontier_min_side_sliced_domain"
     if evidence_params.get("safe_area_upper_bound") is None:
         return "terminal_frontier_safe_area_upper_bound_missing"
@@ -311,6 +359,11 @@ def terminal_frontier_evidence_violation(
         candidate_records=candidate_records,
     )
     final_key = _final_result_candidate_key(final_result)
+    final_min_side = _final_result_min_side(final_result)
+    if final_min_side is None:
+        return "terminal_frontier_final_result_key_mismatch"
+    if int(final_min_side) < int(expected_min_side_admissibility):
+        return "terminal_frontier_final_result_below_admissibility"
     best_certified_candidate = projection.get("best_certified_candidate")
     best_key = None if best_certified_candidate is None else candidate_key(best_certified_candidate)
 
@@ -427,6 +480,28 @@ def _final_result_candidate_key(final_result: Mapping[str, Any]) -> Optional[str
         )
     except Exception:
         return None
+
+
+def _final_result_min_side(final_result: Mapping[str, Any]) -> Optional[int]:
+    ghost_rect = final_result.get("ghost_rect")
+    if not isinstance(ghost_rect, Mapping):
+        return None
+    try:
+        ghost_w = _strict_int(ghost_rect.get("w"), "final_result.ghost_rect.w")
+        ghost_h = _strict_int(ghost_rect.get("h"), "final_result.ghost_rect.h")
+    except Exception:
+        return None
+    return min(int(ghost_w), int(ghost_h))
+
+
+def _reject_unknown_candidate_generation_keys(
+    raw_params: Mapping[str, Any],
+    *,
+    allowed_keys: set[str],
+) -> None:
+    unknown_keys = sorted(set(raw_params.keys()).difference(allowed_keys))
+    if unknown_keys:
+        raise ValueError(f"candidate_generation unknown key: {unknown_keys[0]}")
 
 
 def _require_mapping(value: Any) -> Mapping[str, Any]:

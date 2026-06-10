@@ -69,7 +69,7 @@ def _build_toy_exact_project(project_root: Path) -> Path:
     _write_json(
         rules_dir / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": 2, "height": 1}},
+            "globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },
@@ -120,7 +120,7 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
     _write_json(
         rules_dir / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": 2, "height": 2}},
+            "globals": {"grid": {"width": 2, "height": 2}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
                 "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
@@ -212,7 +212,7 @@ def _build_multi_pose_exact_project(
     _write_json(
         rules_dir / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": grid_width, "height": 1}},
+            "globals": {"grid": {"width": grid_width, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": facility_templates,
         },
     )
@@ -238,14 +238,26 @@ def _build_multi_pose_exact_project(
     return project_root
 
 
-def _build_frontier_project(project_root: Path, *, width: int = 6, height: int = 6) -> Path:
+def _build_frontier_project(
+    project_root: Path,
+    *,
+    width: int = 6,
+    height: int = 6,
+    min_side_admissibility: int = 1,
+) -> Path:
     data_dir = project_root / "data" / "preprocessed"
     rules_dir = project_root / "rules"
 
     _write_json(
         rules_dir / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": width, "height": height}},
+            "globals": {
+                "grid": {"width": width, "height": height},
+                "empty_rectangle": {
+                    "objective": "max_lex_area_min_side",
+                    "min_side_admissibility": min_side_admissibility,
+                },
+            },
             "facility_templates": {
                 "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             },
@@ -2846,7 +2858,7 @@ def test_ghost_rect_can_screen_high_capacity_pole_in_exact_master() -> None:
         ],
     }
     rules = {
-        "globals": {"grid": {"width": 6, "height": 2}},
+        "globals": {"grid": {"width": 6, "height": 2}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
         "facility_templates": {
             "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
             "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
@@ -2925,7 +2937,7 @@ def test_fully_enclosed_ghost_rectangle_is_legal() -> None:
         ]
     }
     rules = {
-        "globals": {"grid": {"width": 4, "height": 4}},
+        "globals": {"grid": {"width": 4, "height": 4}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
         "facility_templates": {
             "wall": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
         },
@@ -5699,3 +5711,60 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
     assert result["ghost_rect"] == {"w": 6, "h": 1, "area": 6}
+
+
+def _clear_exact_env_for_v80_guard(monkeypatch) -> None:
+    for key in list(benders_loop_module.os.environ):
+        if str(key).startswith("EXACT_"):
+            monkeypatch.delenv(str(key), raising=False)
+
+
+def test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob(monkeypatch) -> None:
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    future_env = "EX" "ACT_" "FUTURE_UNREVIEWED_KNOB"
+    monkeypatch.setenv(future_env, "0")
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == [
+        {
+            "code": "unclassified_exact_env_not_certified",
+            "env": future_env,
+            "value": "0",
+            "detail": "unknown EXACT_* env is not on the certified_exact allowlist",
+        }
+    ]
+
+
+def test_v80_certified_exact_env_guard_blocks_known_proof_knob(monkeypatch) -> None:
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_B1_SEPARATOR_HULL", "1")
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == [
+        {
+            "code": "proof_semantics_exact_env_not_certified",
+            "env": "EXACT_B1_SEPARATOR_HULL",
+            "value": "1",
+            "detail": (
+                "EXACT_* env is classified proof-semantics-affecting and has "
+                "no certified canonical non-default override"
+            ),
+        }
+    ]
+
+
+def test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs(
+    monkeypatch,
+) -> None:
+    _clear_exact_env_for_v80_guard(monkeypatch)
+    monkeypatch.setenv("EXACT_MASTER_CP_SAT_WORKERS", "2")
+    monkeypatch.setenv("EX" "ACT_" "GATE_WORKER_PEAK_RSS_GIB", "20.5")
+    monkeypatch.setenv("EXACT_OUTER_SKIP_UNKNOWN", "0")
+    monkeypatch.setenv("EXACT_COMMUNITY_BLUEPRINT_HINT_PATH", "/tmp/community_hint.json")
+    monkeypatch.setenv("EXACT_PARALLEL_PROCESSES", "2")
+
+    blockers = benders_loop_module._collect_forbidden_certified_master_domain_env_overrides()
+
+    assert blockers == []
