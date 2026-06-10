@@ -52,4 +52,4 @@ V80(最近一轮,刚落地)把 certified 面的防御范式从"枚举已知坏�
 - exploratory 路径只审"能否污染 certified 面",不审其自身质量。
 - 9 个 cut family 的数学(F1-F9)经历过 v28 等多轮专项外审,可以审但不是本轮重心;它们的 validator 与 certified 面的衔接(replay/lifecycle)在重心内。
 
-包 sha256:`66778633e2b5df898d531d670b6cb01300c28920dcf6a6f1e82bcd0a73323a81`
+包 sha256:`70267323d13674a8392a461e9194c161952fa949611858e4f0158405796f49a4`
