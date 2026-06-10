@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-11",
-  "summary": "P1.2 remains manually blocked. V83 (third overnight independent review) found and sealed three soundness seams: forged self-consistent checkpoints could publish geometrically false CERTIFIED results (now blocked by project-bound geometric re-verification at publication); single-layout binding/routing nogoods escalated to candidate INFEASIBLE on the default master path (now the LBBD loop continues with the cut); and malformed mandatory_exact_instances records were silently filtered (now deny-unknown fail-closed).",
-  "current_review_anchor": "v83_geometry_witness_nogood_scope_and_loader_sealing",
+  "summary": "P1.2 remains manually blocked. V84 (fourth overnight independent review) sealed three seams in the V83 geometric re-verification: the terminal witness must be the layout's lex-best empty rectangle (not merely an existing one), artifact hashing rejects symlinks, and unknown extra placement instances are rejected. A scope correction was applied during landing: the optimality scan is gated on a non-empty mandatory set, because empty-mandatory synthetic projects can never claim a non-full-grid rectangle consistently; production mandatory data is non-empty and pinned by frozen-artifact hashes.",
+  "current_review_anchor": "v84_layout_optimality_and_artifact_boundary_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v83_geometry_witness_nogood_scope_and_loader_sealing",
+    "current_review_anchor": "v84_layout_optimality_and_artifact_boundary_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -253,6 +253,14 @@
       "summary": "V83 external review found three soundness findings, all locally reproduced: F-01 forged checkpoint with self-consistent terminal evidence published a geometrically impossible empty rectangle; F-02 whole-layout nogoods were escalated to candidate INFEASIBLE on the default coordinate-master path; F-03 the certified mandatory-instance loader silently shrank the instance set on malformed records. A reviewer-patch defect (ghost_pick counted as occupancy, which would have rejected every genuine terminal result) was caught and corrected during local landing. Owner clean-streak count resets to 0.",
       "evidence_paths": [
         "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
+      ]
+    },
+    {
+      "package": "v84_layout_optimality_and_artifact_boundary_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V84 external review found three soundness findings, all locally reproduced: the V83 witness scan proved existence but not optimality of the claimed empty rectangle; exact artifact hashing followed symlinks outside the project; and unknown extra instances in the terminal placement solution could forge occupancy blockers. All sealed fail-closed; the optimality scan is scoped to non-empty mandatory sets during landing. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md"
       ]
     }
   ],

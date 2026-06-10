@@ -182,6 +182,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v81_release_rejects_lowercase_certified_claim",
             "test_v81_release_accepts_open_exact_certified_status",
             "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
+            "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
+            "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -1234,6 +1236,18 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         errors.append(
             "certified mandatory_exact_instances loader must be deny-unknown: is_mandatory must be true"
         )
+    # V84: the terminal witness must be the layout's best empty rectangle,
+    # artifact hashing must reject symlinks, and unknown extra placement
+    # instances must fail closed.
+    for needle in (
+        "terminal_certified_final_result_layout_has_better_empty_rect",
+        "terminal_certified_final_result_solution_unknown_instance",
+        "exact artifact must be a regular file",
+    ):
+        if needle not in exact_campaign_source_v83:
+            errors.append(
+                f"V84 layout-optimality/artifact-boundary sealing must stay wired: {needle}"
+            )
     # V82: persisted exact_safe_cuts are telemetry, not proof objects; certified
     # runs must regenerate cuts instead of replaying checkpoint/IPC payloads.
     for needle in (

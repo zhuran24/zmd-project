@@ -35,7 +35,7 @@ def _build_exact_project(project_root: Path) -> Path:
         project_root / "rules" / "canonical_rules.json",
         {
             "globals": {
-                "grid": {"width": 6, "height": 6},
+                "grid": {"width": 5, "height": 1},
                 "empty_rectangle": {
                     "objective": "max_lex_area_min_side",
                     "min_side_admissibility": 1,

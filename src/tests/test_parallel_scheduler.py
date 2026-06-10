@@ -935,7 +935,9 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                     candidate=small_task.candidate,
                     status=RUN_STATUS_CERTIFIED,
                     solution={
-                        "small_pick": {
+                        # V84: terminal placement solutions may only carry
+                        # mandatory instances and the ghost_pick marker.
+                        "ghost_pick": {
                             "pose_idx": 0,
                             "pose_id": "synthetic_pose_0",
                             "facility_type": "synthetic",
@@ -956,7 +958,7 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                     candidate=big_task.candidate,
                     status=RUN_STATUS_CERTIFIED,
                     solution={
-                        "big_pick": {
+                        "ghost_pick": {
                             "pose_idx": 0,
                             "pose_id": "synthetic_pose_0",
                             "facility_type": "synthetic",

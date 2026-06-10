@@ -38,7 +38,10 @@ def _build_exact_project(project_root: Path) -> Path:
     _write_json(
         project_root / "rules" / "canonical_rules.json",
         {
-            "globals": {"grid": {"width": 3, "height": 3}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
+            # V84: the terminal claim (2x1) must be the layout's true maximum
+            # empty rectangle. With tiny_facility on (0,0), a 2x2 grid leaves
+            # exactly a 2x1 (and the transposed 1x2) as the best empty area.
+            "globals": {"grid": {"width": 2, "height": 2}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}},
             "facility_templates": {
                 "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
             },
@@ -213,7 +216,7 @@ def test_inspector_accepts_resume_state_with_resolver_supported_condition_cut(
                 "iteration": 1,
                 "metadata": {
                     "kind": "power_subproblem_ghost_conditioned_nogood",
-                    "ghost_rect_idx": 3,
+                    "ghost_rect_idx": 2,
                     "ghost_anchor": {"x": 1, "y": 0},
                 },
                 "source_mode": "certified_exact",
@@ -224,7 +227,7 @@ def test_inspector_accepts_resume_state_with_resolver_supported_condition_cut(
                 "routing_exhausted": False,
                 "proof_summary": {},
                 "created_at": "2026-03-15T00:00:00Z",
-                "condition_set": {"ghost_anchor::(1,0)": 3},
+                "condition_set": {"ghost_anchor::(1,0)": 2},
             }
         ],
         proof_summary={"master_status": "INFEASIBLE"},
