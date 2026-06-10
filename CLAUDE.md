@@ -112,6 +112,25 @@ python main.py --vis
 
 ## Maintenance scripts (runbook)
 
+### GPT Pro 外发自动化 (2026-06-11 上线, 完整流程已验收)
+
+外发任务全流程脚本化 (打包→上传→发送→等完成→收交付), 跑在本地零 token:
+
+```powershell
+# 前置 (一次性): 起专用自动化 Chrome; 首次需在弹出窗口手动登录 chatgpt.com
+& cc_context\review\gpt_dispatch\start_gpt_automation_chrome.ps1
+
+# 标准用法: 自动打全项目单包 + 发「终末地」Project (Pro·进阶) + 等 + 收
+python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <prompt.md>
+
+# 托底/续等: 脚本挂掉或超时后重连同一会话, 不重发任务
+python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --resume "<会话URL>"
+```
+
+- 退出码: 0=交付到手 / 2=完成无附件 / 3=异常(看 attention 截图) / 4=超时 / 5=疑似降级。详见 `cc_context/review/gpt_dispatch/README.md`。
+- **Pro 静默降级 (owner 经验)**: 不在任何明面标注, 唯一判据 = 真实任务完整生成 <1min。脚本自动刷新重跑一次 (`--downgrade-retries`), 仍快 → exit 5, CC 改走 Claude-in-Chrome 插件通道 (Edge, 已登录) 托底重发。轻量测试传 `--min-gen-seconds 0`。
+- 内建: 附件 404 自动救援 (sandbox 文件回收后让 GPT 重新生成再收)、浏览器 tab 自动回收、非预期状态截图+DOM 现场落盘。
+
 > **重要**：用户可能会问"上游更新了怎么办"——答案是这两条命令，不是手动复制文件。
 
 ```powershell

@@ -97,6 +97,23 @@ def attach(p):
     return ctx, page
 
 
+def cleanup_stale_tabs(ctx, page, rep: Reporter):
+    """关掉历轮脚本残留的 chatgpt 标签页 (含异常退出留下的) — tab 不回收会越积
+    越多拖死浏览器。先开好自己的 page 再清扫, 保证浏览器始终有至少一个 tab。"""
+    closed = 0
+    for pg in list(ctx.pages):
+        if pg is page:
+            continue
+        try:
+            if "chatgpt.com" in pg.url:
+                pg.close()
+                closed += 1
+        except Exception:
+            pass
+    if closed:
+        rep.log("init", "stale_tabs_closed", count=closed)
+
+
 def assert_logged_in(page, rep: Reporter) -> bool:
     if "auth" in page.url or "login" in page.url:
         rep.attention(page, "login", "redirected to login page — log in once in the automation Chrome")
@@ -165,6 +182,37 @@ def fill_and_send(page, prompt_text: str, rep: Reporter) -> str:
     return conv_url
 
 
+RESCUE_PROMPT = (
+    "刚才下载附件时返回 404——沙盒文件应该已被回收。"
+    "请重新运行生成步骤重建该文件,并再次作为文件附件给出(文件名保持不变)。回复简短即可。"
+)
+
+DOWNGRADE_RETRY_PROMPT = (
+    "上一条回复的生成时间异常短,怀疑没有走完整的 Pro 推理。"
+    "请重新完整执行原任务:重新分析、重新生成全部交付文件,不要复用上一次的结论。"
+)
+
+
+def send_followup(page, text: str, rep: Reporter):
+    page.locator(SEL["composer"]).click()
+    page.keyboard.insert_text(text)
+    time.sleep(0.5)
+    page.locator(SEL["send_btn"]).click()
+    rep.log("rescue", "followup_sent", chars=len(text))
+
+
+def _close_stray_download_tabs(page):
+    """点击 sandbox 链接会开出 /mnt/data 新标签页 (常 404), 收完顺手关掉。"""
+    for pg in list(page.context.pages):
+        if pg is page:
+            continue
+        try:
+            if "/mnt/data" in pg.url or pg.url.rstrip("/").endswith((".zip", ".7z", ".tar", ".gz")):
+                pg.close()
+        except Exception:
+            pass
+
+
 def _stop_visible(page) -> bool:
     try:
         if page.locator(SEL["stop_btn"]).count() > 0:
@@ -187,8 +235,36 @@ def _last_assistant_text(page) -> str:
         return ""
 
 
-def wait_done(page, rep: Reporter, timeout_hours: float) -> str:
-    """返回 'done' | 'timeout' | 'attention'"""
+def _last_model_slug(page) -> str:
+    """回复 DOM 上的模型标识。注意: Pro 静默降级时这里可能照样写 pro (路由层
+    降级不改前端元数据), 只作参考记录, 真正的降级检测靠行为侧信号 (生成耗时)。"""
+    try:
+        msgs = page.locator(SEL["assistant_msg"])
+        if msgs.count():
+            return msgs.last.get_attribute("data-message-model-slug") or ""
+    except Exception:
+        pass
+    return ""
+
+
+_THINKING_RE = re.compile(r"(思考[用耗]?时?\s*\d+|Thought for\s+\d+[^\n]{0,20}|Reasoned for\s+\d+[^\n]{0,20})")
+
+
+def _thinking_marker(page) -> str:
+    """抓 Pro 回复的思考块时长文本 (行为旁证, 降级模型不会有长思考块)。"""
+    try:
+        turn = page.locator(SEL["assistant_msg"]).last.locator("xpath=ancestor::article[1]")
+        scope = turn if turn.count() else page.locator(SEL["assistant_msg"]).last
+        m = _THINKING_RE.search(scope.inner_text(timeout=5000) or "")
+        return m.group(0) if m else ""
+    except Exception:
+        return ""
+
+
+def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: int = 1) -> str:
+    """返回 'done' | 'timeout' | 'attention'。
+    min_assistant_count: 完成判定要求 assistant 消息数达到该值 — 发送/救援后必须
+    等到新回复出现, 否则旧消息的稳定文本会被误判为完成。"""
     deadline = time.time() + timeout_hours * 3600
     start = time.time()
     stable = 0
@@ -210,11 +286,12 @@ def wait_done(page, rep: Reporter, timeout_hours: float) -> str:
         generating = _stop_visible(page)
         text = _last_assistant_text(page)
         cur_len = len(text)
-        has_turn = page.locator(SEL["assistant_msg"]).count() > 0
+        has_turn = page.locator(SEL["assistant_msg"]).count() >= min_assistant_count
         if not generating and has_turn and cur_len == last_len:
             stable += 1
             if stable >= STABLE_TICKS:
-                rep.log("waiting", "done", elapsed_s=int(time.time() - start), reply_chars=cur_len)
+                rep.log("waiting", "done", elapsed_s=int(time.time() - start), reply_chars=cur_len,
+                        thinking_marker=_thinking_marker(page) or "none")
                 return "done"
         else:
             stable = 0
@@ -233,49 +310,76 @@ def wait_done(page, rep: Reporter, timeout_hours: float) -> str:
 
 
 def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None:
-    """点击附件并捕获 download — 必须在 context 级监听: 「打开链接」确认或
-    decorated-link 点击常在新标签页里触发下载, 原 page 的 expect_download 收不到。"""
-    ctx = page.context
-    holder: dict = {}
+    """点击附件, 在 CDP 浏览器层捕获下载 (Browser.setDownloadBehavior 直接落盘到
+    out_dir, 任何标签页触发都能抓到 — Playwright 的 page/context download 事件在
+    「新标签页秒开秒关触发下载」场景下收不到)。点击带重试: resume 重载后的页面
+    JS handler 可能未挂载, 首次点击会无反应。"""
+    session = page.context.browser.new_browser_cdp_session()
+    state: dict = {}
 
-    def on_download(dl):
-        holder.setdefault("dl", dl)
+    def on_begin(e):
+        if "guid" not in state:
+            state["guid"] = e["guid"]
+            state["name"] = e.get("suggestedFilename") or "download.bin"
 
-    def on_page(pg):
+    def on_progress(e):
+        if e.get("guid") == state.get("guid"):
+            if e.get("state") == "completed":
+                state["done"] = True
+            elif e.get("state") == "canceled":
+                state["canceled"] = True
+
+    session.on("Browser.downloadWillBegin", on_begin)
+    session.on("Browser.downloadProgress", on_progress)
+    session.send(
+        "Browser.setDownloadBehavior",
+        {"behavior": "allowAndName", "downloadPath": str(out_dir), "eventsEnabled": True},
+    )
+    confirm = page.locator('button:has-text("打开链接"), button:has-text("Open link")').first
+
+    def _click_confirm_if_visible(wait_ms: int) -> bool:
         try:
-            pg.on("download", on_download)
-        except Exception:
-            pass
-
-    page.on("download", on_download)
-    ctx.on("page", on_page)
-    for existing in ctx.pages:
-        if existing is not page:
-            try:
-                existing.on("download", on_download)
-            except Exception:
-                pass
-    try:
-        link.click()
-        try:
-            confirm = page.locator(
-                'button:has-text("打开链接"), button:has-text("Open link")'
-            ).first
-            confirm.wait_for(state="visible", timeout=5000)
+            confirm.wait_for(state="visible", timeout=wait_ms)
             confirm.click()
             rep.log("collect", "confirmed_external_link_dialog")
+            return True
         except Exception:
-            pass
-        deadline = time.time() + 60
-        while time.time() < deadline and "dl" not in holder:
-            page.wait_for_timeout(500)
-        if "dl" not in holder:
-            rep.log("collect", "click_download_failed", error="no download event within 60s (context-wide)")
+            return False
+
+    try:
+        for attempt in range(1, 4):
+            # 上一轮点击可能弹出的「外部网站」确认框还挡在屏上 — 先处理它,
+            # 否则重试 click 会被 modal 拦截 hit-target 卡到超时
+            if not _click_confirm_if_visible(1000):
+                try:
+                    link.click(timeout=10000)
+                except Exception as e:
+                    rep.log("collect", "click_blocked", attempt=attempt, error=str(e)[:120])
+                    page.keyboard.press("Escape")
+                    continue
+                _click_confirm_if_visible(4000)
+            t0 = time.time()
+            while time.time() - t0 < 12 and "guid" not in state:
+                page.wait_for_timeout(400)
+            if "guid" in state:
+                break
+            rep.log("collect", "click_retry", attempt=attempt)
+        if "guid" not in state:
+            rep.log("collect", "click_download_failed", error="no downloadWillBegin after 3 clicks")
             page.keyboard.press("Escape")
             return None
-        dl = holder["dl"]
-        target = out_dir / dl.suggested_filename
-        dl.save_as(str(target))
+        t0 = time.time()
+        while time.time() - t0 < 180 and not state.get("done") and not state.get("canceled"):
+            page.wait_for_timeout(500)
+        if not state.get("done"):
+            rep.log("collect", "click_download_failed",
+                    error=f"download did not complete (canceled={state.get('canceled', False)})")
+            return None
+        src = out_dir / state["guid"]  # allowAndName 模式落盘名 = guid
+        target = out_dir / state["name"]
+        if target.exists():
+            target = out_dir / f"{int(time.time())}_{state['name']}"
+        src.rename(target)
         return target
     except Exception as e:
         rep.log("collect", "click_download_failed", error=str(e)[:200])
@@ -286,8 +390,7 @@ def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None
         return None
     finally:
         try:
-            page.remove_listener("download", on_download)
-            ctx.remove_listener("page", on_page)
+            session.detach()
         except Exception:
             pass
 
@@ -315,10 +418,15 @@ def _download_via_fetch(page, href: str, name: str, out_dir: Path, rep: Reporter
         return None
 
 
-def collect(page, out_dir: Path, rep: Reporter) -> int:
+def collect(page, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
     text = _last_assistant_text(page)
     (out_dir / "final_reply.md").write_text(text, encoding="utf-8")
-    rep.log("collect", "reply_saved", chars=len(text))
+    slug = _last_model_slug(page)
+    rep.log("collect", "reply_saved", chars=len(text), model_slug=slug or "unknown")
+    if expect_model and slug and expect_model not in slug.lower():
+        rep.attention(page, "collect",
+                      f"reply model slug '{slug}' does not contain '{expect_model}' — "
+                      "Pro may have been silently downgraded; review the deliverable critically")
 
     msgs = page.locator(SEL["assistant_msg"])
     if msgs.count() == 0:
@@ -367,7 +475,7 @@ def collect(page, out_dir: Path, rep: Reporter) -> int:
                     info["zip_entries"] = len(zf.namelist())
         rep.log("collect", "attachment_saved", **info)
         got += 1
-    return got
+    return got, len(candidates)
 
 
 def pack_repo(repo_root: Path, rep: Reporter) -> Path:
@@ -402,6 +510,10 @@ def main() -> int:
     ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
     ap.add_argument("--project-url", default=PROJECT_URL)
     ap.add_argument("--timeout-hours", type=float, default=3.5)
+    ap.add_argument("--min-gen-seconds", type=int, default=60,
+                    help="生成耗时下限 (秒, 默认 60 — owner 经验: 真实任务 <1min 极大概率被静默限制)。轻量测试传 0 关闭")
+    ap.add_argument("--downgrade-retries", type=int, default=1,
+                    help="疑似降级时自动 刷新页面+要求重新完整执行 的次数 (默认 1); 用尽仍快则报 attention 建议换 Edge")
     args = ap.parse_args()
 
     if not args.resume and not ((args.package or args.pack) and args.prompt_file):
@@ -421,6 +533,7 @@ def main() -> int:
             rep.log("attach", "FATAL", error=str(e)[:300],
                     hint="run start_gpt_automation_chrome.ps1 first")
             return 1
+        cleanup_stale_tabs(ctx, page, rep)
         try:
             if args.resume:
                 page.goto(args.resume, wait_until="domcontentloaded")
@@ -445,17 +558,72 @@ def main() -> int:
                 upload_files(page, packages, rep)
                 fill_and_send(page, prompt_text, rep)
 
+            gen_start = time.time()
             status = wait_done(page, rep, args.timeout_hours)
             if status == "timeout":
                 return 4
             if status == "attention":
                 return 3
-            got = collect(page, out_dir, rep)
-            rep.log("finish", "ok" if got else "no_attachments", attachments=got)
+            gen_elapsed = int(time.time() - gen_start)
+            # 疑似静默降级 (owner 经验: 真实任务完整生成 <1min 极大概率被限) →
+            # 阶梯处置: 刷新页面 + 要求重新完整执行; 用尽重试仍快 → attention 建议换 Edge
+            suspected_downgrade = False
+            if args.min_gen_seconds and not args.resume:
+                tries = 0
+                while gen_elapsed < args.min_gen_seconds and tries < args.downgrade_retries:
+                    tries += 1
+                    rep.log("downgrade", "suspected_retrying", elapsed_s=gen_elapsed, retry=tries)
+                    page.reload(wait_until="domcontentloaded")
+                    page.wait_for_timeout(5000)
+                    n_before = page.locator(SEL["assistant_msg"]).count()
+                    send_followup(page, DOWNGRADE_RETRY_PROMPT, rep)
+                    gen_start = time.time()
+                    status = wait_done(page, rep, args.timeout_hours,
+                                       min_assistant_count=n_before + 1)
+                    if status != "done":
+                        return 4 if status == "timeout" else 3
+                    gen_elapsed = int(time.time() - gen_start)
+                if gen_elapsed < args.min_gen_seconds:
+                    suspected_downgrade = True
+                    rep.attention(page, "downgrade",
+                                  f"still finishing in {gen_elapsed}s after {args.downgrade_retries} "
+                                  "retries — suspected silent Pro limit on this automation Chrome; "
+                                  "FALLBACK: re-dispatch via the Claude-in-Chrome plugin channel "
+                                  "(Edge, already logged in) — Claude handles that directly")
+            got, found = collect(page, out_dir, rep)
+            # 救援: 找到了附件候选却一个都没下载到 (sandbox 文件回收后 404),
+            # 让 GPT 重新生成一次再收。最多两轮。
+            rescue = 0
+            while got == 0 and found > 0 and rescue < 2:
+                rescue += 1
+                _close_stray_download_tabs(page)
+                rep.log("rescue", "requesting_regeneration", attempt=rescue)
+                n_before = page.locator(SEL["assistant_msg"]).count()
+                send_followup(page, RESCUE_PROMPT, rep)
+                status = wait_done(page, rep, min(args.timeout_hours, 0.5),
+                                   min_assistant_count=n_before + 1)
+                if status != "done":
+                    return 4 if status == "timeout" else 3
+                got, found = collect(page, out_dir, rep)
+            _close_stray_download_tabs(page)
+            rep.log("finish", "ok" if got else "no_attachments", attachments=got, rescues=rescue,
+                    suspected_downgrade=suspected_downgrade)
+            if suspected_downgrade:
+                return 5
             return 0 if got else 2
         except Exception as e:
             rep.attention(page, "fatal", f"unhandled: {e}")
             return 3
+        finally:
+            try:
+                _close_stray_download_tabs(page)
+                if len(page.context.pages) <= 1:
+                    # 自己是最后一个 tab: 关掉会把整个浏览器带退、CDP 断 — 留空白页保活
+                    page.goto("about:blank")
+                else:
+                    page.close()
+            except Exception:
+                pass
 
 
 if __name__ == "__main__":

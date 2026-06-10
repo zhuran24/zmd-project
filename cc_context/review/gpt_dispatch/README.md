@@ -40,7 +40,12 @@ python ...\dispatch_gpt_task.py --resume "https://chatgpt.com/g/.../c/<id>"
 | 2 | 回复完成但没有文件附件 | 读 final_reply.md 决定下一步 |
 | 3 | 异常(未登录/错误横幅/未预期 DOM) | 看 attention_* 截图,必要时 --resume |
 | 4 | 超时(默认 3.5h) | 看心跳判断是否还在跑,--resume 续等 |
+| 5 | 疑似 Pro 静默降级(重试后生成仍 <60s) | 交付已收但不可信;Claude 改走插件通道(Edge,已登录)重发 |
 | 1 | 环境错误(CDP 不通/包不存在) | 起 Chrome / 查路径 |
+
+## Pro 静默降级(owner 经验,2026-06-11)
+
+降级**不在任何明面标注**(model-slug 照样写 pro),唯一判据是行为:**真实任务完整生成 <1min 极大概率被限**。脚本处置阶梯:①自动刷新页面 + 要求重新完整执行(`--downgrade-retries`,默认 1 次);②仍快 → exit 5,由 Claude 切到 Claude-in-Chrome 插件通道(Edge,已登录)托底重发。轻量测试任务跑得快是正常的,传 `--min-gen-seconds 0` 关闭检查。
 
 ## 完成检测原理
 
