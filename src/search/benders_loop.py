@@ -5101,11 +5101,10 @@ class LBBDController:
             if not cut_applied:
                 # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
                 return RUN_STATUS_UNKNOWN, None
-            # B1 Phase 3: pose-bool master 可以从 nogood cut 学习, 让 LBBD 重选 layout.
-            # Coordinate path 直接 return INFEASIBLE (这个分支保留 default).
-            if os.environ.get("EXACT_USE_POSE_BOOL_MASTER", "").strip().lower() in {"1", "true", "yes", "on"}:
-                return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
-            return RUN_STATUS_INFEASIBLE, None
+            # A whole-layout nogood only disproves the current master layout.
+            # Certified exact must continue the LBBD loop so the master can either
+            # select another layout or prove the candidate infeasible after the cut.
+            return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
 
         self._emit_heartbeat(
             stage="routing_core_build",
@@ -5718,15 +5717,10 @@ class LBBDController:
         if not cut_applied:
             # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
             return RUN_STATUS_UNKNOWN, None
-        # B1 Phase 6 第 3 条架构改: env on 时 routing INFEASIBLE 不直接 declare
-        # candidate INFEASIBLE, 而是返 MASTER_CUT_ADDED_CONTINUE 让 outer for-iter
-        # continue (master 加 cut 后下次解次优 layout, 真 enumerate verdict).
-        _b1_iter_on_routing_inf = os.environ.get(
-            "EXACT_B1_ITER_ON_ROUTING_INFEASIBLE", ""
-        ).strip().lower() in {"1", "true", "yes", "on"}
-        if _b1_iter_on_routing_inf:
-            return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
-        return RUN_STATUS_INFEASIBLE, None
+        # A routing-exhausted whole-layout nogood is also local to the current
+        # placement layout.  Do not let an env-default turn that local cut into a
+        # candidate-wide INFEASIBLE certificate.
+        return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
 
     def _retry_binding_without_overload_separation(
         self,

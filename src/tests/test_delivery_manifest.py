@@ -289,24 +289,14 @@ def test_v79_delivery_manifest_rejects_non_instance_placement_solution(
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
-    best_result = campaign.best_certified_result()
-    assert best_result is not None
-    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
-    # ghost_rect 匹配的合法空 blueprint: 深校验的非 instance 检查必须先于
-    # blueprint/placement 等价比较 fail-closed。
-    write_blueprint_payload(
-        blueprint_output_path(project_root),
-        build_blueprint_payload_from_certified_result(
-            result={
-                "ghost_rect": {"w": 1, "h": 1, "area": 1},
-                "placement_solution": {},
-                "search_stats": {},
-            },
-            facility_pools=facility_pools,
-        ),
-    )
+    # V83: 非 project-bound 的 terminal final_result 在 best_result/export
+    # 入口更早 fail-closed；delivery manifest 不应再把它推进到 artifact 比对层。
+    assert campaign.best_certified_result() is None
 
-    with pytest.raises(ValueError, match="instance-shaped placement_solution"):
+    with pytest.raises(
+        ValueError,
+        match="terminal_certified_final_result_solution_missing_mandatory_instance",
+    ):
         export_certified_delivery_manifest(
             project_root=project_root,
             campaign_state=campaign.state,

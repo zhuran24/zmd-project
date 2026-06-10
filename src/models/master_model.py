@@ -2023,21 +2023,40 @@ def _normalize_solve_mode(
     return solve_mode
 
 
+def _strict_mandatory_instance_text(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} must be a non-empty string")
+    return value.strip()
+
+
+def _validate_mandatory_exact_instances_payload(payload: Any) -> List[Dict[str, Any]]:
+    if not isinstance(payload, list):
+        raise ValueError("mandatory_exact_instances.json must be a top-level JSON array")
+    validated: List[Dict[str, Any]] = []
+    seen_ids: Set[str] = set()
+    for index, raw_instance in enumerate(payload):
+        field_prefix = f"mandatory_exact_instances[{index}]"
+        if not isinstance(raw_instance, Mapping):
+            raise ValueError(f"{field_prefix} must be a JSON object")
+        instance = dict(raw_instance)
+        instance_id = _strict_mandatory_instance_text(instance.get("instance_id"), f"{field_prefix}.instance_id")
+        if instance_id in seen_ids:
+            raise ValueError(f"duplicate mandatory exact instance_id: {instance_id}")
+        seen_ids.add(instance_id)
+        _strict_mandatory_instance_text(instance.get("facility_type"), f"{field_prefix}.facility_type")
+        if instance.get("is_mandatory") is not True:
+            raise ValueError(f"{field_prefix}.is_mandatory must be true")
+        if str(instance.get("bound_type", "")) != "exact":
+            raise ValueError(f"{field_prefix}.bound_type must be exact")
+        validated.append(instance)
+    return validated
+
+
 def _load_mandatory_exact_instances(data_dir: Path) -> List[Dict[str, Any]]:
     exact_path = data_dir / "mandatory_exact_instances.json"
-    if exact_path.exists():
-        payload = _load_json(exact_path)
-        if isinstance(payload, dict) and "instances" in payload:
-            return list(payload["instances"])
-        return list(payload)
-
-    all_path = data_dir / "all_facility_instances.json"
-    payload = _load_json(all_path)
-    return [
-        dict(inst)
-        for inst in payload
-        if bool(inst.get("is_mandatory")) and inst.get("bound_type") == "exact"
-    ]
+    if not exact_path.is_file():
+        raise FileNotFoundError(exact_path)
+    return _validate_mandatory_exact_instances_payload(_load_json(exact_path))
 
 
 def _load_all_facility_instances(data_dir: Path) -> List[Dict[str, Any]]:

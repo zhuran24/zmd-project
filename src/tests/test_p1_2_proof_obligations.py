@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v82_oriented_domain_and_cut_replay_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v83_geometry_witness_nogood_scope_and_loader_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -61,6 +61,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key" in replay_tests
     assert "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated" in replay_tests
     assert "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master" in replay_tests
+    assert "test_v83_binding_whole_layout_nogood_continues_lbbd" in replay_tests
 
     master_domain_tests = obligations["PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS"]
     assert "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session" in master_domain_tests
@@ -71,6 +72,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs" in master_domain_tests
     assert "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible" in master_domain_tests
     assert "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible" in master_domain_tests
+    assert "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact" in master_domain_tests
 
     frontier_tests = obligations["PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE"]
     assert "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence" in frontier_tests
@@ -95,3 +97,4 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v81_release_rejects_self_claimed_certified_run_summary" in export_tests
     assert "test_v81_release_rejects_lowercase_certified_claim" in export_tests
     assert "test_v81_release_accepts_open_exact_certified_status" in export_tests
+    assert "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness" in export_tests

@@ -86,6 +86,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
             "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated",
             "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master",
+            "test_v83_binding_whole_layout_nogood_continues_lbbd",
         }
     ),
     "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS": frozenset(
@@ -107,6 +108,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
             "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
             "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible",
+            "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact",
         }
     ),
     "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE": frozenset(
@@ -179,6 +181,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v81_release_rejects_self_claimed_certified_run_summary",
             "test_v81_release_rejects_lowercase_certified_claim",
             "test_v81_release_accepts_open_exact_certified_status",
+            "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -1213,6 +1216,24 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
                 "certified exact env guard must be a closed allowlist that fails closed on unknown or proof-semantics EXACT_* knobs: "
                 f"{needle}"
             )
+    # V83: terminal certified results require project-bound geometric evidence,
+    # whole-layout nogoods must not escalate to candidate INFEASIBLE, and the
+    # certified mandatory loader is deny-unknown.
+    exact_campaign_source_v83 = EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "terminal_certified_final_result_empty_rect_not_witnessed",
+        "terminal_certified_final_result_solution_missing_mandatory_instance",
+        '== "ghost_pick"',
+    ):
+        if needle not in exact_campaign_source_v83:
+            errors.append(
+                f"terminal certified final_result must carry project-bound geometric evidence: {needle}"
+            )
+    master_model_source_v83 = MASTER_MODEL_PATH.read_text(encoding="utf-8")
+    if "is_mandatory must be true" not in master_model_source_v83:
+        errors.append(
+            "certified mandatory_exact_instances loader must be deny-unknown: is_mandatory must be true"
+        )
     # V82: persisted exact_safe_cuts are telemetry, not proof objects; certified
     # runs must regenerate cuts instead of replaying checkpoint/IPC payloads.
     for needle in (

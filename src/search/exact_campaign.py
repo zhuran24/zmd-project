@@ -18,7 +18,7 @@ import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 from src.models.master_model import infer_certified_optional_lower_bounds
@@ -227,33 +227,188 @@ def _load_exact_min_side_admissibility(project_root: Optional[Path]) -> Optional
     return int(min_side_admissibility)
 
 
+def _strict_nonempty_string(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} must be a non-empty string")
+    return value.strip()
+
+
+def _validated_mandatory_exact_instances_payload(raw_instances: Any) -> list[Dict[str, Any]]:
+    if not isinstance(raw_instances, list):
+        raise ValueError("mandatory_exact_instances must be a JSON array")
+    validated: list[Dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for index, raw_instance in enumerate(raw_instances):
+        field_prefix = f"mandatory_exact_instances[{index}]"
+        if not isinstance(raw_instance, Mapping):
+            raise ValueError(f"{field_prefix} must be a JSON object")
+        instance = dict(raw_instance)
+        instance_id = _strict_nonempty_string(instance.get("instance_id"), f"{field_prefix}.instance_id")
+        if instance_id in seen_ids:
+            raise ValueError(f"duplicate mandatory exact instance_id: {instance_id}")
+        seen_ids.add(instance_id)
+        _strict_nonempty_string(instance.get("facility_type"), f"{field_prefix}.facility_type")
+        if instance.get("is_mandatory") is not True:
+            raise ValueError(f"{field_prefix}.is_mandatory must be true")
+        if str(instance.get("bound_type", "")) != "exact":
+            raise ValueError(f"{field_prefix}.bound_type must be exact")
+        validated.append(instance)
+    return validated
+
+
+def _load_validated_mandatory_exact_instances(project_root: Path) -> list[Dict[str, Any]]:
+    instances_path = Path(project_root) / EXACT_HASH_FILES["mandatory_exact_instances"]
+    raw_instances = _loads_strict_json_object(instances_path.read_text(encoding="utf-8"))
+    return _validated_mandatory_exact_instances_payload(raw_instances)
+
+
+def _load_exact_facility_pools(project_root: Path) -> Dict[str, list[Dict[str, Any]]]:
+    placements_path = Path(project_root) / EXACT_HASH_FILES["candidate_placements"]
+    payload = _loads_strict_json_object(placements_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise ValueError("candidate_placements must be a JSON object")
+    raw_pools = payload.get("facility_pools")
+    if not isinstance(raw_pools, Mapping):
+        raise ValueError("candidate_placements.facility_pools must be a JSON object")
+    pools: Dict[str, list[Dict[str, Any]]] = {}
+    for facility_type, raw_pool in raw_pools.items():
+        if not isinstance(raw_pool, list):
+            raise ValueError(f"facility pool {facility_type!r} must be a JSON array")
+        pool: list[Dict[str, Any]] = []
+        for index, raw_pose in enumerate(raw_pool):
+            if not isinstance(raw_pose, Mapping):
+                raise ValueError(f"facility pool {facility_type!r}[{index}] must be a JSON object")
+            pool.append(dict(raw_pose))
+        pools[str(facility_type)] = pool
+    return pools
+
+
+def _pose_occupied_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[int, int]]:
+    raw_cells = pose.get("occupied_cells")
+    if not isinstance(raw_cells, list):
+        raise ValueError(f"{field}.occupied_cells must be a JSON array")
+    cells: list[tuple[int, int]] = []
+    for index, raw_cell in enumerate(raw_cells):
+        if (
+            isinstance(raw_cell, (str, bytes))
+            or not isinstance(raw_cell, Sequence)
+            or len(raw_cell) != 2
+        ):
+            raise ValueError(f"{field}.occupied_cells[{index}] must be [x,y]")
+        x = _strict_resume_int(raw_cell[0], f"{field}.occupied_cells[{index}][0]")
+        y = _strict_resume_int(raw_cell[1], f"{field}.occupied_cells[{index}][1]")
+        cells.append((int(x), int(y)))
+    return cells
+
+
+def _validate_terminal_solution_against_project(
+    *,
+    final_result: Mapping[str, Any],
+    project_root: Path,
+    grid_dimensions: Tuple[int, int],
+) -> Optional[str]:
+    placement_solution = final_result.get("placement_solution")
+    if not isinstance(placement_solution, Mapping):
+        return "terminal_certified_final_result_solution_missing"
+    try:
+        mandatory_instances = _load_validated_mandatory_exact_instances(project_root)
+        facility_pools = _load_exact_facility_pools(project_root)
+    except Exception:
+        return "terminal_certified_project_solution_authority_invalid"
+
+    mandatory_by_id = {str(instance["instance_id"]): dict(instance) for instance in mandatory_instances}
+    missing_mandatory = sorted(set(mandatory_by_id).difference(str(key) for key in placement_solution.keys()))
+    if missing_mandatory:
+        return "terminal_certified_final_result_solution_missing_mandatory_instance"
+
+    grid_w, grid_h = int(grid_dimensions[0]), int(grid_dimensions[1])
+    occupied_cells: set[tuple[int, int]] = set()
+    for instance_id, raw_entry in placement_solution.items():
+        # The ghost_pick entry is the empty rectangle's own placement marker:
+        # its cells are the claimed empty area, not facility occupancy.
+        # Counting it as occupied would make the witness scan reject every
+        # genuine terminal result (the witness would have to avoid itself).
+        if str(instance_id) == "ghost_pick":
+            continue
+        if not isinstance(raw_entry, Mapping):
+            return "terminal_certified_final_result_solution_invalid"
+        entry = dict(raw_entry)
+        try:
+            facility_type = _strict_nonempty_string(
+                entry.get("facility_type"),
+                f"final_result.placement_solution.{instance_id}.facility_type",
+            )
+            pose_idx = _strict_resume_int(
+                entry.get("pose_idx"),
+                f"final_result.placement_solution.{instance_id}.pose_idx",
+            )
+        except Exception:
+            return "terminal_certified_final_result_solution_invalid"
+        expected_instance = mandatory_by_id.get(str(instance_id))
+        if expected_instance is not None and facility_type != str(expected_instance.get("facility_type")):
+            return "terminal_certified_final_result_solution_facility_type_mismatch"
+        pool = facility_pools.get(facility_type)
+        if pool is None or pose_idx < 0 or pose_idx >= len(pool):
+            return "terminal_certified_final_result_solution_pose_invalid"
+        try:
+            cells = _pose_occupied_cells(
+                pool[int(pose_idx)],
+                field=f"candidate_placements.{facility_type}[{int(pose_idx)}]",
+            )
+        except Exception:
+            return "terminal_certified_final_result_solution_pose_invalid"
+        for cell in cells:
+            x, y = cell
+            if x < 0 or y < 0 or x >= grid_w or y >= grid_h:
+                return "terminal_certified_final_result_solution_geometry_invalid"
+            if cell in occupied_cells:
+                return "terminal_certified_final_result_solution_geometry_invalid"
+            occupied_cells.add(cell)
+
+    ghost_rect = final_result.get("ghost_rect")
+    if not isinstance(ghost_rect, Mapping):
+        return "terminal_certified_final_result_ghost_rect_invalid"
+    try:
+        ghost_w = _strict_resume_int(ghost_rect.get("w"), "final_result.ghost_rect.w")
+        ghost_h = _strict_resume_int(ghost_rect.get("h"), "final_result.ghost_rect.h")
+    except Exception:
+        return "terminal_certified_final_result_ghost_rect_invalid"
+    if ghost_w <= 0 or ghost_h <= 0 or ghost_w > grid_w or ghost_h > grid_h:
+        return "terminal_certified_final_result_ghost_rect_invalid"
+
+    for anchor_x in range(0, grid_w - int(ghost_w) + 1):
+        for anchor_y in range(0, grid_h - int(ghost_h) + 1):
+            blocked = False
+            for x in range(anchor_x, anchor_x + int(ghost_w)):
+                for y in range(anchor_y, anchor_y + int(ghost_h)):
+                    if (x, y) in occupied_cells:
+                        blocked = True
+                        break
+                if blocked:
+                    break
+            if not blocked:
+                return None
+    return "terminal_certified_final_result_empty_rect_not_witnessed"
+
+
 def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[int]:
     if project_root is None:
         return None
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
-    instances_path = project_root / EXACT_HASH_FILES["mandatory_exact_instances"]
     generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
-    instances = _loads_strict_json_object(instances_path.read_text(encoding="utf-8"))
+    instances = _load_validated_mandatory_exact_instances(project_root)
     generic_io_requirements = _loads_strict_json_object(
         generic_path.read_text(encoding="utf-8")
     )
     if not isinstance(rules, Mapping):
         raise ValueError("canonical_rules must be a JSON object")
-    if not isinstance(instances, list):
-        raise ValueError("mandatory_exact_instances must be a JSON array")
     if not isinstance(generic_io_requirements, Mapping):
         raise ValueError("generic_io_requirements must be a JSON object")
     grid_w, grid_h = _load_exact_grid_dimensions(project_root) or (0, 0)
     templates = dict(rules.get("facility_templates", {}))
     lower_bound = 0
     for instance in instances:
-        if not isinstance(instance, Mapping):
-            raise ValueError("mandatory exact instance must be a JSON object")
-        if not bool(instance.get("is_mandatory")):
-            continue
-        if str(instance.get("bound_type", "exact")) != "exact":
-            continue
         facility_type = str(instance.get("facility_type"))
         template = templates[facility_type]
         dims = dict(template["dimensions"])
@@ -620,6 +775,16 @@ def _validate_resume_state(
         )
         if reason is not None:
             return reason
+    if project_root is not None and has_terminal_full_frontier_certified_evidence(state):
+        final_result_for_project = state.get("final_result")
+        if isinstance(final_result_for_project, Mapping) and grid_dimensions is not None:
+            solution_reason = _validate_terminal_solution_against_project(
+                final_result=final_result_for_project,
+                project_root=Path(project_root),
+                grid_dimensions=grid_dimensions,
+            )
+            if solution_reason is not None:
+                return solution_reason
     return None
 
 
@@ -775,12 +940,22 @@ def terminal_certified_final_result_violation_for_project(
         min_side_admissibility = _load_exact_min_side_admissibility(resolved_project_root)
     except Exception:
         return "canonical_min_side_admissibility_invalid"
-    return terminal_certified_final_result_violation(
+    reason = terminal_certified_final_result_violation(
         state,
         grid_dimensions=grid_dimensions,
         safe_area_upper_bound=safe_area_upper_bound,
         min_side_admissibility=min_side_admissibility,
     )
+    if reason is not None:
+        return reason
+    final_result = state.get("final_result")
+    if isinstance(final_result, Mapping):
+        return _validate_terminal_solution_against_project(
+            final_result=final_result,
+            project_root=resolved_project_root,
+            grid_dimensions=grid_dimensions,
+        )
+    return None
 
 
 def has_valid_terminal_full_frontier_certified_evidence_for_project(

@@ -31,6 +31,7 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 from ortools.sat.python import cp_model
 
 from src.io.delivery_manifest import delivery_manifest_output_path
@@ -3128,8 +3129,11 @@ def test_routing_exhaustion_generates_exact_safe_whole_layout_cut(monkeypatch, t
     assert cuts[0]["proof_stage"] == "routing"
     assert cuts[0]["binding_exhausted"] is True
     assert cuts[0]["routing_exhausted"] is True
-    assert metadata["proof_summary"]["enumerated_bindings"] == 2
-    assert metadata["proof_summary"]["routing_attempts"] == 2
+    # V83: routing exhaustion no longer short-circuits the candidate; the
+    # whole-layout nogood is applied and LBBD continues, so the final
+    # INFEASIBLE comes from the master proving the cut-augmented model empty.
+    # The last-iteration proof summary therefore reports the master round.
+    assert metadata["proof_summary"]["master_status"] == "INFEASIBLE"
     assert metadata["loaded_exact_safe_cut_count"] == 0
     assert metadata["generated_exact_safe_cut_count"] == 1
 
@@ -3956,6 +3960,11 @@ def test_unknown_stop_does_not_persist_incumbent_certified_result_to_outputs(
 
 
 def test_unproven_result_is_persisted_to_campaign(tmp_path: Path) -> None:
+    # V83: a malformed mandatory_exact_instances artifact (non-mandatory /
+    # non-exact records under the certified filename) now fails closed at the
+    # loader instead of silently producing a BLOCKED/UNPROVEN run. The
+    # UNPROVEN persistence semantics remain covered by the scheduler and
+    # inspector suites.
     project_root = _build_toy_exact_project(tmp_path / "campaign_unproven")
     _write_json(
         project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
@@ -3970,38 +3979,20 @@ def test_unproven_result_is_persisted_to_campaign(tmp_path: Path) -> None:
         ],
     )
 
-    status, result = run_outer_search(
-        project_root=project_root,
-        solve_mode="certified_exact",
-        max_attempts=1,
-        min_side=1,
-        area_upper_bound=1,
-        master_seconds=0.01,
-        binding_seconds=0.01,
-        routing_seconds=0.01,
-        benders_max_iter=1,
-        campaign_hours=1.0,
-        resume_campaign=False,
-    )
-    state = _read_campaign_state(project_root)
-    candidate = state["candidates"]["1x1"]
-
-    assert status == RUN_STATUS_UNPROVEN
-    assert result is None
-    assert state["final_status"] == RUN_STATUS_UNPROVEN
-    assert state["last_stop_reason"]["reason"] == "candidate_returned_unproven"
-    assert candidate["status"] == RUN_STATUS_UNPROVEN
-    telemetry = _read_campaign_telemetry(project_root)
-    assert telemetry["aggregate"]["status_counts"] == {RUN_STATUS_UNPROVEN: 1}
-    assert telemetry["aggregate"]["outcome_counts"] == {"unproven": 1}
-    assert telemetry["aggregate"]["selection_reason_counts"] == {"prune_head": 1}
-    assert telemetry["aggregate"]["master_status_counts"] == {"BLOCKED": 1}
-    candidate_result = telemetry["waves"][0]["candidate_results"][0]
-    assert candidate_result["selection_reason"] == "prune_head"
-    assert candidate_result["wave_slot_index"] == 0
-    assert candidate["finished_at"] is not None
-    assert candidate["proof_summary"]["master_status"] == "BLOCKED"
-    assert candidate["proof_summary"]["blockers"]
+    with pytest.raises(ValueError, match="is_mandatory must be true"):
+        run_outer_search(
+            project_root=project_root,
+            solve_mode="certified_exact",
+            max_attempts=1,
+            min_side=1,
+            area_upper_bound=1,
+            master_seconds=0.01,
+            binding_seconds=0.01,
+            routing_seconds=0.01,
+            benders_max_iter=1,
+            campaign_hours=1.0,
+            resume_campaign=False,
+        )
 
 
 def test_candidate_outcome_taxonomy_covers_certified_terminal_categories() -> None:

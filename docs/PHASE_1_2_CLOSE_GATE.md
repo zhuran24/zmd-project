@@ -20,7 +20,7 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V82, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V83, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
@@ -29,7 +29,7 @@ certified-surface hardening, partial-precheck/release-claim sealing, and
 oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v82_oriented_domain_and_cut_replay_sealing
+v83_geometry_witness_nogood_scope_and_loader_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -77,7 +77,14 @@ while master feasibility is orientation-sensitive; the domain authority is
 bumped to `outer_search_static_area_bound_oriented_v2`), and persisted
 `exact_safe_cuts` are telemetry only — `certified_exact` never replays
 checkpoint/IPC cut payloads into the master, because shape-level validation
-cannot rebuild the family-specific proof obligation.  The
+cannot rebuild the family-specific proof obligation.  V83 (third overnight
+independent review) seals three further seams: terminal certified final
+results now require project-bound geometric evidence (mandatory coverage,
+pose reverse-lookup, occupancy, and a real empty-rectangle witness scan, with
+the `ghost_pick` marker excluded from occupancy); whole-layout
+binding/routing nogoods keep the LBBD loop running instead of escalating to
+candidate INFEASIBLE; and the certified `mandatory_exact_instances` loader is
+deny-unknown instead of silently filtering malformed records.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -104,8 +111,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`,
 `docs/research/p1_2_v79_terminal_domain_axis_sealing.md`,
 `docs/research/p1_2_v80_deny_unknown_certified_surface.md`,
-`docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md`, and
-`docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md`.
+`docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md`,
+`docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md`, and
+`docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md`.
 
 Daily consistency check:
 

@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-11",
-  "review_anchor": "v82_oriented_domain_and_cut_replay_sealing",
-  "summary": "P1.2 remains fail-closed. V82 seals two independently found soundness seams: the certified candidate domain is now oriented (both (w,h) and (h,w) are enumerated, with the domain authority bumped to outer_search_static_area_bound_oriented_v2 so half-domain terminal evidence is rejected explicitly), and certified_exact no longer replays persisted exact_safe_cuts across checkpoint/IPC boundaries into the master (they are counted as telemetry, never consumed as proof objects).",
-  "phase_gate_required_anchor": "v82_oriented_domain_and_cut_replay_sealing",
+  "review_anchor": "v83_geometry_witness_nogood_scope_and_loader_sealing",
+  "summary": "P1.2 remains fail-closed. V83 seals three soundness seams: terminal certified final results now require project-bound geometric evidence (mandatory coverage, pose reverse-lookup, occupancy, and a real empty-rectangle witness scan, with the ghost_pick marker excluded from occupancy); whole-layout nogoods from binding/routing keep the LBBD loop running instead of escalating to candidate INFEASIBLE; and the mandatory_exact_instances loader is deny-unknown instead of silently filtering malformed records.",
+  "phase_gate_required_anchor": "v83_geometry_witness_nogood_scope_and_loader_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -107,7 +107,8 @@
         "v57_candidate",
         "v58_candidate",
         "v59_candidate",
-        "v82_oriented_domain_and_cut_replay_sealing"
+        "v82_oriented_domain_and_cut_replay_sealing",
+        "v83_geometry_witness_nogood_scope_and_loader_sealing"
       ],
       "required_tests": [
         "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
@@ -143,14 +144,16 @@
         "test_legacy_benders_cut_alias_collision_fails_closed",
         "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
         "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated",
-        "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master"
+        "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master",
+        "test_v83_binding_whole_layout_nogood_continues_lbbd"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
         "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
         "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
         "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
-        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md"
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md",
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
       ]
     },
     {
@@ -167,7 +170,8 @@
         "v66_candidate",
         "v66_certified_lifecycle_evidence_consolidation",
         "v80_deny_unknown_certified_surface",
-        "v81_partial_precheck_and_release_claim_sealing"
+        "v81_partial_precheck_and_release_claim_sealing",
+        "v83_geometry_witness_nogood_scope_and_loader_sealing"
       ],
       "required_tests": [
         "test_exact_campaign_state_persists_full_master_domain_contract",
@@ -186,7 +190,8 @@
         "test_v80_certified_exact_env_guard_blocks_known_proof_knob",
         "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
         "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
-        "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible"
+        "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible",
+        "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v60_master_domain_contract.md",
@@ -196,7 +201,8 @@
         "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
         "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
         "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
-        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
       ]
     },
     {
@@ -272,7 +278,8 @@
         "v78_certified_manifest_writer_canonical_surface",
         "v79_terminal_domain_axis_sealing",
         "v80_deny_unknown_certified_surface",
-        "v81_partial_precheck_and_release_claim_sealing"
+        "v81_partial_precheck_and_release_claim_sealing",
+        "v83_geometry_witness_nogood_scope_and_loader_sealing"
       ],
       "required_tests": [
         "test_delivery_manifest_rejects_best_effort_final_result",
@@ -318,7 +325,8 @@
         "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
         "test_v81_release_rejects_self_claimed_certified_run_summary",
         "test_v81_release_rejects_lowercase_certified_claim",
-        "test_v81_release_accepts_open_exact_certified_status"
+        "test_v81_release_accepts_open_exact_certified_status",
+        "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -334,7 +342,8 @@
         "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
         "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
         "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
-        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority."
     },
