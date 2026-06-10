@@ -236,12 +236,26 @@ def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None
     try:
         with page.expect_download(timeout=60000) as dl_info:
             link.click()
+            # decorated-link 形态会弹「外部网站」确认框, 要点「打开链接」才真正下载
+            try:
+                confirm = page.locator(
+                    'button:has-text("打开链接"), button:has-text("Open link")'
+                ).first
+                confirm.wait_for(state="visible", timeout=5000)
+                confirm.click()
+                rep.log("collect", "confirmed_external_link_dialog")
+            except Exception:
+                pass
         dl = dl_info.value
         target = out_dir / dl.suggested_filename
         dl.save_as(str(target))
         return target
     except Exception as e:
         rep.log("collect", "click_download_failed", error=str(e)[:200])
+        try:
+            page.keyboard.press("Escape")
+        except Exception:
+            pass
         return None
 
 

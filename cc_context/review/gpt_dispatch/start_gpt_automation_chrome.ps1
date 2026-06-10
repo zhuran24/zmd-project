@@ -1,9 +1,15 @@
-# 启动 GPT 外发自动化专用 Chrome (独立 profile + CDP 9222)。
+# 启动 GPT 外发自动化专用浏览器 (独立 profile + CDP 9222)。
 # 已在跑则直接报告就绪。首次使用需要在弹出的窗口里手动登录 chatgpt.com 一次,
 # 之后 cookie 长期有效, dispatch_gpt_task.py 复用这个实例。
+# Chromium 系浏览器都支持 CDP: -Browser edge 用 Edge (本机自带), 默认 chrome。
+# 注意 Edge/Chrome 各用各的 profile 目录, 切换浏览器要重新登录一次。
+param([ValidateSet("chrome", "edge")][string]$Browser = "chrome")
 
 $port = 9222
-$profileDir = "C:\Users\22957\.zmd_gpt_automation_profile"
+$profileDir = "C:\Users\22957\.zmd_gpt_automation_profile_$Browser"
+if ($Browser -eq "chrome" -and -not (Test-Path $profileDir) -and (Test-Path "C:\Users\22957\.zmd_gpt_automation_profile")) {
+    $profileDir = "C:\Users\22957\.zmd_gpt_automation_profile"  # 沿用首版 chrome profile (已登录)
+}
 
 function Test-Cdp {
     try {
@@ -17,14 +23,22 @@ if (Test-Cdp) {
     exit 0
 }
 
-$chrome = @(
-    "C:\Program Files\Google\Chrome\Application\chrome.exe",
-    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
-    "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe"
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
+$candidates = if ($Browser -eq "edge") {
+    @(
+        "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        "C:\Program Files\Microsoft\Edge\Application\msedge.exe"
+    )
+} else {
+    @(
+        "C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe"
+    )
+}
+$chrome = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 
 if (-not $chrome) {
-    Write-Host "FATAL: chrome.exe not found in standard locations."
+    Write-Host "FATAL: $Browser executable not found in standard locations."
     exit 1
 }
 
