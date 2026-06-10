@@ -7,7 +7,7 @@ metadata:
   originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 
-> **⚠️ 现状 (2026-06-04, v28 GPT 外审): F9 整族已 QUARANTINE (fail-closed 停用)。** 外审 catch F9 `max_allowed_area` **量词倒置**: validator 只验 `K≤safe_ub` + `∃witness area>K`, 不证 `∀legal area≤K` → 伪 `K<safe_ub`(如 K=0) cert 过 validator → 误剪合法布局 = FP。NP-hard tight-K 无便宜中间地带, validator 现 fail-closed 拒 `K<safe_ub` → F9 只剩平凡 cut = 实质停用; **反转了 Gemini round-4 刻意 oracle-trust deferral** (r3 提出、r4 撤销并以 `test_validate_ok_cert_max_zero_exclusion_zone` 记录"信任 oracle tight-K、NP-hard 重验 defer P1.5+"; 外审新窗口零历史重撞 = [[gpt-error-types-taxonomy]] "前提错估")。解封须 P1.5+ 给 cert 加 area-capacity proof-carrying 字段 + replay 校验。**下面的 area-based 不变量描述 F9 *active 时* 的正确语义 (仍是 area-only 真相), 但 F9 当前不产非平凡 cut。** 现状权威源 [[windows-ninth-review-pending]]。
+> **⚠️ 现状 (2026-06-04, v28 GPT 外审): F9 整族已 QUARANTINE (fail-closed 停用)。** 外审 catch F9 `max_allowed_area` **量词倒置**: validator 只验 `K≤safe_ub` + `∃witness area>K`, 不证 `∀legal area≤K` → 伪 `K<safe_ub`(如 K=0) cert 过 validator → 误剪合法布局 = FP。NP-hard tight-K 无便宜中间地带, validator 现 fail-closed 拒 `K<safe_ub` → F9 只剩平凡 cut = 实质停用; **反转了 Gemini round-4 刻意 oracle-trust deferral** (r3 提出、r4 撤销并以 `test_validate_ok_cert_max_zero_exclusion_zone` 记录"信任 oracle tight-K、NP-hard 重验 defer P1.5+"; 外审新窗口零历史重撞 = gpt-error-types-taxonomy "前提错估")。解封须 P1.5+ 给 cert 加 area-capacity proof-carrying 字段 + replay 校验。**下面的 area-based 不变量描述 F9 *active 时* 的正确语义 (仍是 area-only 真相), 但 F9 当前不产非平凡 cut。** 现状权威源 [[windows-ninth-review-pending]]。
 
 2026-05-23 Gemini math review meta-audit catch: 原 Gemini 建议把 routing/binding 死锁泛化成 "窗口里设施太密" density cut. 但这会**误剪合法解** — local routing 死锁依赖端口朝向、相对位置、障碍细节, 不是 area capacity 问题.
 
@@ -77,4 +77,4 @@ morphology 产 cut 时, cert 必声明语义 (all-in-window placement / overlap-
 - `docs/项目说明/02_mathematical_foundations.md §3.9` F9 详
 - `docs/项目说明/04_design_invariants.md §18` PROJECT_LOCK F9 area-only invariant
 - `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/F9_MORPHOLOGY_CAUTION.md` (source)
-- [[phase-1-1-go-blessed]] / [[cp-sat-no-add-lazy-constraint]]
+- phase-1-1-go-blessed / [[cp-sat-no-add-lazy-constraint]]

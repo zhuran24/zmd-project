@@ -31,4 +31,4 @@ main 等 worker result 永远等不到. 浪费 1+ session 在 IPC 假设上.
 
 ## 链 (补连 2026-06-01)
 - [[shell-wrapper-pgrep-self-match]] — 进程调试 lore
-- [[p2-14-dumper-path-blocked]] — hang 实例
+- p2-14-dumper-path-blocked — hang 实例

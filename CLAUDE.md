@@ -117,7 +117,8 @@ python main.py --vis
 外发任务全流程脚本化 (打包→上传→发送→等完成→收交付), 跑在本地零 token:
 
 ```powershell
-# 前置 (一次性): 起专用自动化浏览器 (默认 Edge, -Browser chrome 可切); 首次需手动登录 chatgpt.com
+# 前置 (Edge 每次重启后跑一次): 默认连用户日常 Edge 主实例 (已登录零配置);
+# ⚠️ Edge 在跑但没带调试端口时, 脚本会温和重启 Edge — 执行前注意用户是否正用着
 & cc_context\review\gpt_dispatch\start_gpt_automation_chrome.ps1
 
 # 标准用法: 自动打全项目单包 + 发「终末地」Project (Pro·进阶) + 等 + 收

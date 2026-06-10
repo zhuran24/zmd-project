@@ -17,7 +17,7 @@ metadata:
 
 **真正能减审查轮数的是语言无关的结构性修法**: 数字单一来源 (核心节点 + drift-test) + 共享 SoT helper + meta-test (见 [[authoritative-numbers-single-source]]) —— 把"改一处漏多处"的 doc-currency 长尾 + 私有 SoT 副本发散从根上消掉。
 
-**怎么用**: 再遇"换 X 语言/框架更好吗"类归因, 先分清"那语言治的是哪类病 vs 我们的 finding/瓶颈是哪类"。本项目: 瓶颈 = 数学正确性 + 文档纪律 + CP-SAT C++ 核, **不是内存安全**。区别于 [[v14-review-findings]] / [[phase0-b-prep-progress]] 里记的"Rust perf bitset kernel defer Phase 2"(那是性能微优化框架, 跟"换语言治安全"完全两回事, 不能混)。
+**怎么用**: 再遇"换 X 语言/框架更好吗"类归因, 先分清"那语言治的是哪类病 vs 我们的 finding/瓶颈是哪类"。本项目: 瓶颈 = 数学正确性 + 文档纪律 + CP-SAT C++ 核, **不是内存安全**。区别于 v14-review-findings / phase0-b-prep-progress 里记的"Rust perf bitset kernel defer Phase 2"(那是性能微优化框架, 跟"换语言治安全"完全两回事, 不能混)。
 
 ## 链
 - [[paradigm-death-timeline-27-lever]] —— 重写路径全穷尽 (单机准确性必保, 决定性收益物理不可达)

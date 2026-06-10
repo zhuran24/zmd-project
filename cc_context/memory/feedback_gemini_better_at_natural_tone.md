@@ -45,7 +45,7 @@ Gemini 默认更口语化 / 自然分段. 用 "比方说" / "咱们" / "最要�
 - [[clarity-over-brevity]] — 清晰展开是好的, 但 clarity ≠ 工程化
 - [[no-role-priming-for-reasoning-models]] — Claude 写 prompt 时自己注意, **不写进 prompt 内容**
 - [[gemini-math-consultant]] — Gemini 数学 consultant 用法 (已有), 这条扩到 register-sensitive writing
-- [[review-package-for-new-window]] — review 包 standalone 极简点指引 (跟自然口吻 align)
+- review-package-for-new-window — review 包 standalone 极简点指引 (跟自然口吻 align)
 - [[code-comments-plain]] — 别工程化语气
 
 **Cross-domain implication**: Anthropic 训练在 helpfulness + structured response 上调过头, 长文本 default register 偏正式. 不是 Claude 不会自然口吻, 是 default 没去那个方向. 通过 explicit prompt instruction 可以 push, 但对话内 inline rewriting 抓不准 — 让 Gemini 这种 default register 更口语化的 model 起手, 我 review 细节, 是 robust workflow.

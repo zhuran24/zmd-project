@@ -17,7 +17,7 @@ key 留私库历史防的是 GitHub 公开; 但**把仓库文件打成 review �
 - **secret 扫描 = 0 当 build 硬闸**: build 后扫整包 Gemini/OpenAI/GitHub/private-key 等 secret pattern, 命中 ≠ 0 不准交付 (这道闸我自己跑、不委托)。注意扫描 pattern 别写太宽——`docs/research/.../gemini_cross_check_*` 的**归档 prompt/response** 是 reviewer 要的 Gemini archive 且无 key, 别误杀 (v23 build 时撞过这个 false-positive)。
 - 历史坑: `build_v22_win.py` 的 `REPO` 是旧 dual-slug `zmd\zmd` (仓库上移后失效) + 仓库整理后 `cc_context/` 进了仓库才暴露这条 —— v23+ build 脚本已修 REPO 路径 + 加 cc_context/gemini 排除。
 
-详见 [[gemini-math-consultant]] (key 来源) + [[windows-ninth-review-pending]] (v22 漏 + 轮换待定的当时状态) + 打包簇 [[index-packaging-cluster]]。
+详见 [[gemini-math-consultant]] (key 来源) + [[windows-ninth-review-pending]] (v22 漏 + 轮换待定的当时状态) + 打包簇 index-packaging-cluster。
 
 ## 当前发布机制（2026-06-06 之后）
 - **显式发布，不再假设自动推送**：当前发布面使用 GitHub 上传包或普通 `git push origin <branch>`。旧 `post-commit auto-push` 是 CC 本机历史机制，不是 repo-native 契约。

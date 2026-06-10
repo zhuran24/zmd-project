@@ -47,10 +47,10 @@ metadata:
 ## Refs
 
 - 完整 doc: `docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md`
-- [[v14-review-findings]] / [[phase0-b-prep-progress]] / [[gemini-review-algorithm-math]]
+- v14-review-findings / phase0-b-prep-progress / gemini-review-algorithm-math
 - `cross_check/gemini_round_14_cut_families.md` — Gemini round 14 答复
 
 ## 链 (补连 2026-06-01)
-- [[lever25-ihs-dead]] — Lever 25 详情
-- [[lever24-augmented-master-dead]] — Lever 24 详情 (body 已点名为死法实例, hub 该出链)
-- [[lever26-benders-symmetry-dead]] — Lever 26 详情 (同上)
+- lever25-ihs-dead — Lever 25 详情
+- lever24-augmented-master-dead — Lever 24 详情 (body 已点名为死法实例, hub 该出链)
+- lever26-benders-symmetry-dead — Lever 26 详情 (同上)

@@ -5,7 +5,7 @@ type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 
-> ⚠️ **2026-05-27 起部分废弃**: 硬编码 **1min 心跳 hook** 已于 commit `959b6de` 移除, **无自动心跳/cron fire**。(注: `.claude/settings.json` 现非空 —— 后来 [[github-backup]] 又加了 `SessionEnd` WIP-backup hook 跑 `cc_wip_backup.ps1`; 那是退出兜底备份, 不是心跳, 不每分钟 fire。早先此处写的 `{"hooks":{}}` 字面已过时。) 本工作流 (尤其「设 1min cron 心跳」一步) 仅在用户明确再次下「设置 1min 心跳」指令时适用, **不再作 autopilot 默认**。其余 (大表 inline / 每 stage 独立 commit / 阻塞转下一项 / 做完自删 cron) 仍有效。见 [[phase-1-2-progress]]。
+> ⚠️ **2026-05-27 起部分废弃**: 硬编码 **1min 心跳 hook** 已于 commit `959b6de` 移除, **无自动心跳/cron fire**。(注: `.claude/settings.json` 现非空 —— 后来 [[github-backup]] 又加了 `SessionEnd` WIP-backup hook 跑 `cc_wip_backup.ps1`; 那是退出兜底备份, 不是心跳, 不每分钟 fire。早先此处写的 `{"hooks":{}}` 字面已过时。) 本工作流 (尤其「设 1min cron 心跳」一步) 仅在用户明确再次下「设置 1min 心跳」指令时适用, **不再作 autopilot 默认**。其余 (大表 inline / 每 stage 独立 commit / 阻塞转下一项 / 做完自删 cron) 仍有效。见 phase-1-2-progress。
 
 用户 2026-05-08 在去睡前下了一个明确的工作流指令：
 > "你设置一个一分钟心跳然后把现在能做的工作全做了，等下你先列个大表，做完之后你自己把心跳删了，整个流程你记一下"

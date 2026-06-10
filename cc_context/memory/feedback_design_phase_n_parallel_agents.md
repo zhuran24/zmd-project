@@ -9,7 +9,7 @@ metadata:
 
 实时推进代码设计阶段, main 启 N 路 parallel opus 子代理各带不同 slant, 自当 merger.
 
-**Why**: main Claude 同种 RLHF bias 在设计当下容易"看上去都对", 实际 Gemini cross-check 出洞 (per [[gemini-review-algorithm-math]] Day 15/16a/16b round 14 catch 3 致命 bug + 2 schema 漏之教训). audit 链 (Gemini per-commit + GPT pro 大节点 + ultrareview) 是**事后**催熟, parallel 子代理是**事前**预防. 异种 ensemble 已是项目既有 (Gemini + GPT pro 异源), 但 implementation 设计当下还是 main 一个人埋头写完才发出去 — 那个时间窗口 audit 链够不到, N 路并行子代理才覆盖.
+**Why**: main Claude 同种 RLHF bias 在设计当下容易"看上去都对", 实际 Gemini cross-check 出洞 (per gemini-review-algorithm-math Day 15/16a/16b round 14 catch 3 致命 bug + 2 schema 漏之教训). audit 链 (Gemini per-commit + GPT pro 大节点 + ultrareview) 是**事后**催熟, parallel 子代理是**事前**预防. 异种 ensemble 已是项目既有 (Gemini + GPT pro 异源), 但 implementation 设计当下还是 main 一个人埋头写完才发出去 — 那个时间窗口 audit 链够不到, N 路并行子代理才覆盖.
 
 User 原话 2026-05-24:
 - "实时推进代码设计的时候这里还是只有你一个人来做"
@@ -70,7 +70,7 @@ N=2 默认 slant: 路 1 (correctness-paranoid) + 路 4 (integration-first).
     - merger 用 throughput-slant 风格急着出 final (没 paranoia 跟自己 5 路 spawn 的初衷矛盾)
     - merger 跟某一路框架 anchor, 其他路被当 "也说了类似的" 一笔带过 (隐性 N=1)
   - **user-visible transparency**: merger output 给 user 时**含 5 路 raw + main 合并 reasoning**. 这不是 niceness, 是让 user audit "main 决策对不对" 的必要 trace. 等于 main 给自己加了 reviewer.
-- 实施前必经 Gemini cross-check (per [[gemini-review-algorithm-math]])
+- 实施前必经 Gemini cross-check (per gemini-review-algorithm-math)
 - 实施后 commit + Gemini per-commit cross-check (既有 protocol)
 
 **先决条件**: 设计假设要稳了才能 spawn N 路 agent — 假设变 spawn 是空转. 跑 GPT pro 大节点 audit 期间不要 fire (audit 可能改 spec). 等 audit verdict 落地 → spec frozen → 再 kickoff design spawn.
@@ -100,8 +100,8 @@ merger anti-pattern 实战教训 (避):
 - **2026-05-26 prod-scale spike batch** (跟 [[main-merger-scope-creep-bias]] 配套): N=8 design simplicity slant explicit 划界 "spike 不接 LBBD 外循环 / 不答'P1.3A close 了吗'", main merger D3 折中时 dilute 成 "5 iter × 3 candidate + sub-problem stub" 隐性 N=1, leak 进 P1.3A 主体. 2 round Gemini cross-check 全 NOT_GO + 10 finding fix 但 0 catch phase boundary leak. User 2026-05-26 catch + force shrink 回 simplicity scope (20-29h → 8-12h Claude). 教训: **simplicity slant explicit phase boundary 划界必 verbatim listen**, 不 fold; Gemini cross-check 看不见 phase boundary 层 audit, user 是唯一可信 phase boundary auditor.
 
 **Refs**:
-- [[gemini-review-algorithm-math]] — main 同种 bias 实际案例
-- [[gpt-error-types-taxonomy]] — 3 类错估 (算法 / 前提 / 数学能力上限)
+- gemini-review-algorithm-math — main 同种 bias 实际案例
+- gpt-error-types-taxonomy — 3 类错估 (算法 / 前提 / 数学能力上限)
 - [[lazy-mode]] — 替 user 想, 不无谓盖章
 - [[paradigm-phase0-cheap-gate]] — 每 paradigm 实施前 Phase 0 cheap gate (跟此 protocol 不冲突, cheap gate 验前提, N 路并行验设计方案)
 
