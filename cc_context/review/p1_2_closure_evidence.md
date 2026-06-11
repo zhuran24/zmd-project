@@ -11,7 +11,7 @@
 | 2 | 几何 master | 算法审 1 轮 (B-01 → 已修) + 再审 1 轮 (2 finding → 已修) + 确认 1 轮零 | 1 | 续审中 |
 | 3 | routing + guard/lazy cut | P0-1 双层修复 + lazy cut 双独立零 finding + guard 完整性 1 轮 (审出对偶条件类缺陷已修*) | 见注 | 审得最透 |
 | 4 | cuts 机制 (F1-F9/PCR) | 算法审 1 轮 (C-3/C-4 latent, 非公开路径) | 0 (latent 待办挂账) | 待续审 |
-| 5 | preprocess 链 | r1 (2026-06-12): F-01 P0+F-02 P1 已验真+完整修复落地 fbb0466 (2900 全绿); **r2 确认轮又抓 F-03 P0** (wireless 终品生产端输出口仍进 routing → 虚假 front_blocked) | **0 (r2 非零)** | **F-03 待验收+修 (补丁已归档, 跨 binding/routing 接口需专门一轮)** |
+| 5 | preprocess 链 | r1: F-01/F-02 → 修复 fbb0466; r2: F-03 P0 → **修复已验收落地 b7d2115** (纯终品前提实证 + 单通道论证 + stash 判别 + 全量 2901 全绿 + 三件套含 specs/08 对偶); **r3 确认轮在途 (会话 6a2b3e58)** | **0** | r3 零 finding 才计本批收口 |
 | 6 | binding 建模忠实度 | 未审 (C 轮只审了 cut 不是 binding 数学) | — | 排队 |
 | 7 | campaign/resume 状态机 | 未审 | — | 排队 |
 | 8 | parallel scheduler 合并 | 未审 | — | 排队 |
