@@ -1,7 +1,7 @@
 ---
 status: ACCEPTED_DRAFT
 source_of_truth: src/cuts/families/ (F1–F9 当前 cut-family 范式) + src/cuts/lifecycle.py + src/models/cut_manager.py (早期 no-good 范式) + src/search/benders_loop.py + exact-contract regressions
-last_verified_against: 2026-03-23
+last_verified_against: 2026-06-11 (P0 binding-local routing-precheck cut ladder修订)
 owner: cut-manager
 ---
 > [!NOTE]
@@ -86,3 +86,12 @@ $$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conf
 
 > [!NOTE]
 > **[竣工图]** CP-SAT 不支持真正的惰性约束回调 (Lazy Constraint Callback)。代码中使用「累积切面 + 重新求解」的模式替代：每轮将新切面注入模型后重新调用 `model.Solve()`，通过 `model.AddHint()` 提供上一轮解作为热启动。效果等价但每轮有模型重建开销。
+
+
+---
+
+## 10.7 [2026-06-11 P0 Soundness Addendum] Binding-local precheck evidence ladder
+
+Routing precheck 的 `binding_selection_safe_reject=True` 只说明当前 binding selection 不可接受，不自动证明当前 placement pose combination 不可路由。尤其是 `front_blocked`：端口前格是否被占用取决于 `binding_idx` 选出的具体端口/方向；同一 pose 换另一个 binding 可能打开前格。
+
+因此 LBBD loop 对 `front_blocked` 与 `relaxed_disconnected` 使用同一 proof ladder：只要 binding model 仍有可枚举替代，先写 binding-level nogood (`binding_model.add_nogood_cut(selection)`) 并重解 binding。只有所有 binding 替代已穷尽，或另有独立 exact proof 表明该 placement 下任意 binding 都必然失败，才允许投影为 master placement-level nogood。若无法建立 exact placement-level proof，certified path 必须返回 `UNKNOWN` 而不是误剪 placement。

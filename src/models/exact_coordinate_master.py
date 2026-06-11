@@ -40,7 +40,7 @@ from ortools.sat.python import cp_model
 from src.preprocess.operation_profiles import get_operation_port_profile
 
 
-ModeToken = Tuple[str, str]
+ModeToken = Tuple[str, str, str]
 PoseTuple = Tuple[int, int, int]
 
 DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE = "exact_coordinate_guided_branching_v4"
@@ -699,6 +699,10 @@ class ModeRectDomain:
     mode_id: int
     orientation: str
     port_mode: str
+    footprint_key: str
+    footprint_bounds: Tuple[int, int, int, int]
+    footprint_width: int
+    footprint_height: int
     x_min: int
     x_max: int
     y_min: int
@@ -736,6 +740,14 @@ class CoordinateSlotSpec:
     order_key: Optional[cp_model.IntVar] = None
     signature: Optional[cp_model.IntVar] = None
     family: Optional[cp_model.IntVar] = None
+    footprint_dx_min: Optional[cp_model.IntVar] = None
+    footprint_dy_min: Optional[cp_model.IntVar] = None
+    footprint_width: Optional[cp_model.IntVar] = None
+    footprint_height: Optional[cp_model.IntVar] = None
+    footprint_x_start: Optional[cp_model.IntVar] = None
+    footprint_y_start: Optional[cp_model.IntVar] = None
+    footprint_x_end: Optional[cp_model.IntVar] = None
+    footprint_y_end: Optional[cp_model.IntVar] = None
     x_interval: Optional[Any] = None
     y_interval: Optional[Any] = None
 
@@ -947,9 +959,49 @@ class CoordinateExactMasterDelegate:
         self._prepare_power_pole_families()
         self._prepare_slot_specs()
 
+    def _pose_relative_occupied_cells(
+        self,
+        pose: Mapping[str, Any],
+    ) -> Set[Tuple[int, int]]:
+        anchor = dict(pose.get("anchor", {}))
+        anchor_x = int(anchor.get("x", 0))
+        anchor_y = int(anchor.get("y", 0))
+        relative_cells: Set[Tuple[int, int]] = set()
+        for cell in pose.get("occupied_cells", []) or []:
+            if isinstance(cell, Mapping):
+                cell_x, cell_y = int(cell.get("x", 0)), int(cell.get("y", 0))
+            else:
+                cell_x, cell_y = int(cell[0]), int(cell[1])
+            relative_cells.add((int(cell_x - anchor_x), int(cell_y - anchor_y)))
+        return relative_cells
+
+    def _pose_footprint_bounds_from_pose(
+        self,
+        pose: Mapping[str, Any],
+    ) -> Optional[Tuple[int, int, int, int]]:
+        relative_cells = self._pose_relative_occupied_cells(pose)
+        if not relative_cells:
+            return None
+        xs = sorted({int(x_val) for x_val, _ in relative_cells})
+        ys = sorted({int(y_val) for _, y_val in relative_cells})
+        return int(min(xs)), int(max(xs)), int(min(ys)), int(max(ys))
+
+    def _pose_footprint_key(self, pose: Mapping[str, Any]) -> str:
+        relative_cells = sorted(self._pose_relative_occupied_cells(pose))
+        if not relative_cells:
+            return "footprint::missing"
+        bounds = self._pose_footprint_bounds_from_pose(pose)
+        bounds_token = "missing" if bounds is None else ":".join(str(int(v)) for v in bounds)
+        cell_token = ";".join(f"{int(x)}:{int(y)}" for x, y in relative_cells)
+        return f"footprint::{bounds_token}::{cell_token}"
+
     def _pose_mode_token(self, pose: Mapping[str, Any]) -> ModeToken:
         params = dict(pose.get("pose_params", {}))
-        return (str(params.get("orientation", "")), str(params.get("port_mode", "")))
+        return (
+            str(params.get("orientation", "")),
+            str(params.get("port_mode", "")),
+            self._pose_footprint_key(pose),
+        )
 
     def _rect_points(
         self,
@@ -1022,16 +1074,7 @@ class CoordinateExactMasterDelegate:
         if int(pose_idx) < 0 or int(pose_idx) >= len(pool):
             return None
         pose = pool[int(pose_idx)]
-        anchor = dict(pose.get("anchor", {}))
-        anchor_x = int(anchor.get("x", 0))
-        anchor_y = int(anchor.get("y", 0))
-        relative_cells: Set[Tuple[int, int]] = set()
-        for cell in pose.get("occupied_cells", []) or []:
-            if isinstance(cell, Mapping):
-                cell_x, cell_y = int(cell.get("x", 0)), int(cell.get("y", 0))
-            else:
-                cell_x, cell_y = int(cell[0]), int(cell[1])
-            relative_cells.add((int(cell_x - anchor_x), int(cell_y - anchor_y)))
+        relative_cells = self._pose_relative_occupied_cells(pose)
         if not relative_cells:
             return None
         xs = sorted({int(x_val) for x_val, _ in relative_cells})
@@ -1515,16 +1558,39 @@ class CoordinateExactMasterDelegate:
         label: str,
     ) -> Tuple[Dict[int, ModeRectDomain], bool]:
         cells_by_mode: DefaultDict[int, Set[Tuple[int, int]]] = defaultdict(set)
+        footprint_bounds_by_mode: DefaultDict[int, Set[Tuple[int, int, int, int]]] = defaultdict(set)
         for pose_idx in pose_indices:
             pose_tuple = self._template_pose_tuple_by_idx[tpl].get(int(pose_idx))
             if pose_tuple is None:
                 continue
             x_val, y_val, mode_id = pose_tuple
             cells_by_mode[int(mode_id)].add((int(x_val), int(y_val)))
+            pool = self.owner.facility_pools.get(str(tpl), [])
+            if int(pose_idx) < 0 or int(pose_idx) >= len(pool):
+                raise ValueError(
+                    f"Missing candidate pose for coordinate footprint domain: {label} {tpl}[{pose_idx}]"
+                )
+            footprint_bounds = self._pose_footprint_bounds_from_pose(pool[int(pose_idx)])
+            if footprint_bounds is None:
+                raise ValueError(
+                    "Missing occupied_cells for coordinate footprint domain: "
+                    f"{label} {tpl}[{pose_idx}]"
+                )
+            footprint_bounds_by_mode[int(mode_id)].add(
+                tuple(int(value) for value in footprint_bounds)
+            )
 
         mode_rect_domains: Dict[int, ModeRectDomain] = {}
         use_domain_table = False
         for mode_id, cells in sorted(cells_by_mode.items()):
+            footprint_bounds_seen = footprint_bounds_by_mode.get(int(mode_id), set())
+            if len(footprint_bounds_seen) != 1:
+                raise ValueError(
+                    "Coordinate mode footprint is not stable after footprint-token split: "
+                    f"{label} tpl={tpl} mode={mode_id} bounds={sorted(footprint_bounds_seen)}"
+                )
+            footprint_bounds = next(iter(footprint_bounds_seen))
+            min_dx, max_dx, min_dy, max_dy = tuple(int(value) for value in footprint_bounds)
             xs = sorted({int(x_val) for x_val, _ in cells})
             ys = sorted({int(y_val) for _, y_val in cells})
             if xs != list(range(min(xs), max(xs) + 1)) or ys != list(range(min(ys), max(ys) + 1)):
@@ -1532,11 +1598,15 @@ class CoordinateExactMasterDelegate:
             full_rect = self._rect_points(min(xs), max(xs), min(ys), max(ys))
             if cells != full_rect:
                 use_domain_table = True
-            orientation, port_mode = self._template_mode_tokens[tpl][int(mode_id)]
+            orientation, port_mode, footprint_key = self._template_mode_tokens[tpl][int(mode_id)]
             mode_rect_domains[int(mode_id)] = ModeRectDomain(
                 mode_id=int(mode_id),
                 orientation=str(orientation),
                 port_mode=str(port_mode),
+                footprint_key=str(footprint_key),
+                footprint_bounds=(int(min_dx), int(max_dx), int(min_dy), int(max_dy)),
+                footprint_width=int(max_dx - min_dx + 1),
+                footprint_height=int(max_dy - min_dy + 1),
                 x_min=int(min(xs)),
                 x_max=int(max(xs)),
                 y_min=int(min(ys)),
@@ -1580,7 +1650,9 @@ class CoordinateExactMasterDelegate:
     def _prepare_template_domains(self) -> None:
         for tpl in self._exact_templates_for_coordinate_master():
             pool = list(self.owner.facility_pools.get(str(tpl), []))
-            mode_tokens = sorted({self._pose_mode_token(pose) for pose in pool}) or [("", "")]
+            mode_tokens = sorted({self._pose_mode_token(pose) for pose in pool}) or [
+                ("", "", "footprint::missing")
+            ]
             mode_id_by_token = {token: idx for idx, token in enumerate(mode_tokens)}
             tuple_to_pose_idx: Dict[PoseTuple, int] = {}
             pose_tuple_by_idx: Dict[int, PoseTuple] = {}
@@ -2260,6 +2332,151 @@ class CoordinateExactMasterDelegate:
         self.model.Add(end_var == start_var + int(size))
         return end_var
 
+    def _create_slot_footprint_intervals(
+        self,
+        slot: CoordinateSlotSpec,
+        *,
+        optional: bool,
+    ) -> None:
+        domains = list(slot.mode_rect_domains.values())
+        if not domains:
+            raise ValueError(f"slot has no footprint domains: {slot.key}")
+        if slot.x is None or slot.y is None or slot.mode is None:
+            raise RuntimeError(f"slot missing base coordinate channels: {slot.key}")
+        min_dx = min(int(domain.footprint_bounds[0]) for domain in domains)
+        max_dx = max(int(domain.footprint_bounds[1]) for domain in domains)
+        min_dy = min(int(domain.footprint_bounds[2]) for domain in domains)
+        max_dy = max(int(domain.footprint_bounds[3]) for domain in domains)
+        max_width = max(int(domain.footprint_width) for domain in domains)
+        max_height = max(int(domain.footprint_height) for domain in domains)
+        x_start_lower = min(int(domain.x_min) + int(domain.footprint_bounds[0]) for domain in domains)
+        x_start_upper = max(int(domain.x_max) + int(domain.footprint_bounds[0]) for domain in domains)
+        y_start_lower = min(int(domain.y_min) + int(domain.footprint_bounds[2]) for domain in domains)
+        y_start_upper = max(int(domain.y_max) + int(domain.footprint_bounds[2]) for domain in domains)
+        x_end_lower = min(int(domain.x_min) + int(domain.footprint_bounds[1]) + 1 for domain in domains)
+        x_end_upper = max(int(domain.x_max) + int(domain.footprint_bounds[1]) + 1 for domain in domains)
+        y_end_lower = min(int(domain.y_min) + int(domain.footprint_bounds[3]) + 1 for domain in domains)
+        y_end_upper = max(int(domain.y_max) + int(domain.footprint_bounds[3]) + 1 for domain in domains)
+
+        slot.footprint_dx_min = self.model.NewIntVar(
+            int(min_dx),
+            int(max_dx),
+            f"footprint_dx_min__{slot.key}",
+        )
+        slot.footprint_dy_min = self.model.NewIntVar(
+            int(min_dy),
+            int(max_dy),
+            f"footprint_dy_min__{slot.key}",
+        )
+        slot.footprint_width = self.model.NewIntVar(
+            1,
+            int(max_width),
+            f"footprint_w__{slot.key}",
+        )
+        slot.footprint_height = self.model.NewIntVar(
+            1,
+            int(max_height),
+            f"footprint_h__{slot.key}",
+        )
+        footprint_rows = [
+            [
+                int(domain.mode_id),
+                int(domain.footprint_bounds[0]),
+                int(domain.footprint_bounds[2]),
+                int(domain.footprint_width),
+                int(domain.footprint_height),
+            ]
+            for domain in sorted(domains, key=lambda item: int(item.mode_id))
+        ]
+        self.model.AddAllowedAssignments(
+            [
+                slot.mode,
+                slot.footprint_dx_min,
+                slot.footprint_dy_min,
+                slot.footprint_width,
+                slot.footprint_height,
+            ],
+            footprint_rows,
+        )
+
+        slot.footprint_x_start = self.model.NewIntVar(
+            int(x_start_lower),
+            int(x_start_upper),
+            f"footprint_x_start__{slot.key}",
+        )
+        slot.footprint_y_start = self.model.NewIntVar(
+            int(y_start_lower),
+            int(y_start_upper),
+            f"footprint_y_start__{slot.key}",
+        )
+        slot.footprint_x_end = self.model.NewIntVar(
+            int(x_end_lower),
+            int(x_end_upper),
+            f"footprint_x_end__{slot.key}",
+        )
+        slot.footprint_y_end = self.model.NewIntVar(
+            int(y_end_lower),
+            int(y_end_upper),
+            f"footprint_y_end__{slot.key}",
+        )
+        self.model.Add(slot.footprint_x_start == slot.x + slot.footprint_dx_min)
+        self.model.Add(slot.footprint_y_start == slot.y + slot.footprint_dy_min)
+        self.model.Add(slot.footprint_x_end == slot.footprint_x_start + slot.footprint_width)
+        self.model.Add(slot.footprint_y_end == slot.footprint_y_start + slot.footprint_height)
+
+        if optional:
+            if slot.active is None:
+                raise RuntimeError(f"optional slot missing active literal: {slot.key}")
+            slot.x_interval = self.model.NewOptionalIntervalVar(
+                slot.footprint_x_start,
+                slot.footprint_width,
+                slot.footprint_x_end,
+                slot.active,
+                f"x_iv__{slot.key}",
+            )
+            slot.y_interval = self.model.NewOptionalIntervalVar(
+                slot.footprint_y_start,
+                slot.footprint_height,
+                slot.footprint_y_end,
+                slot.active,
+                f"y_iv__{slot.key}",
+            )
+        else:
+            slot.x_interval = self.model.NewIntervalVar(
+                slot.footprint_x_start,
+                slot.footprint_width,
+                slot.footprint_x_end,
+                f"x_iv__{slot.key}",
+            )
+            slot.y_interval = self.model.NewIntervalVar(
+                slot.footprint_y_start,
+                slot.footprint_height,
+                slot.footprint_y_end,
+                f"y_iv__{slot.key}",
+            )
+        self._core_x_intervals.append(slot.x_interval)
+        self._core_y_intervals.append(slot.y_interval)
+
+    def _slot_footprint_x_start(self, slot: CoordinateSlotSpec) -> cp_model.IntVar:
+        if slot.footprint_x_start is None:
+            raise RuntimeError(f"slot missing footprint x start channel: {slot.key}")
+        return slot.footprint_x_start
+
+    def _slot_footprint_y_start(self, slot: CoordinateSlotSpec) -> cp_model.IntVar:
+        if slot.footprint_y_start is None:
+            raise RuntimeError(f"slot missing footprint y start channel: {slot.key}")
+        return slot.footprint_y_start
+
+    def _slot_footprint_width(self, slot: CoordinateSlotSpec) -> cp_model.IntVar:
+        if slot.footprint_width is None:
+            raise RuntimeError(f"slot missing footprint width channel: {slot.key}")
+        return slot.footprint_width
+
+    def _slot_footprint_height(self, slot: CoordinateSlotSpec) -> cp_model.IntVar:
+        if slot.footprint_height is None:
+            raise RuntimeError(f"slot missing footprint height channel: {slot.key}")
+        return slot.footprint_height
+
     def _slot_order_key_bounds(self, slot: CoordinateSlotSpec) -> Tuple[int, int]:
         mode_count = max(1, self._template_mode_literals.get(slot.template, 1))
         scale_x = int(self.grid_h * mode_count)
@@ -2330,30 +2547,7 @@ class CoordinateExactMasterDelegate:
             == slot.x * int(scale_x) + slot.y * int(scale_y) + slot.mode
         )
 
-        x_end = self._new_interval_end(slot.x, int(slot.dims[0]), f"x_end__{slot.key}")
-        y_end = self._new_interval_end(slot.y, int(slot.dims[1]), f"y_end__{slot.key}")
-        if optional:
-            if slot.active is None:
-                raise RuntimeError(f"optional slot missing active literal: {slot.key}")
-            slot.x_interval = self.model.NewOptionalIntervalVar(
-                slot.x,
-                int(slot.dims[0]),
-                x_end,
-                slot.active,
-                f"x_iv__{slot.key}",
-            )
-            slot.y_interval = self.model.NewOptionalIntervalVar(
-                slot.y,
-                int(slot.dims[1]),
-                y_end,
-                slot.active,
-                f"y_iv__{slot.key}",
-            )
-        else:
-            slot.x_interval = self.model.NewIntervalVar(slot.x, int(slot.dims[0]), x_end, f"x_iv__{slot.key}")
-            slot.y_interval = self.model.NewIntervalVar(slot.y, int(slot.dims[1]), y_end, f"y_iv__{slot.key}")
-        self._core_x_intervals.append(slot.x_interval)
-        self._core_y_intervals.append(slot.y_interval)
+        self._create_slot_footprint_intervals(slot, optional=optional)
 
         if slot.use_domain_table and slot.allowed_tuples:
             allowed_rows = [
@@ -4707,7 +4901,12 @@ class CoordinateExactMasterDelegate:
         for tpl, slot_specs in self.residual_optional_slots.items():
             if tpl in self.owner._powered_templates and tpl != "power_pole":
                 powered_slots.extend(slot_specs)
-        return powered_slots
+        # Empty-domain slots take the _create_base_slot_geometry fast path that
+        # forces the model infeasible (Add(0 == 1)) and never builds footprint
+        # channels.  Their power-coverage geometry is moot (the model is already
+        # UNSAT) and the footprint-based witnesses would crash on the missing
+        # channel, so exclude them: power coverage only constrains placeable slots.
+        return [slot for slot in powered_slots if slot.footprint_x_start is not None]
 
     def _power_coverage_radius(self) -> int:
         template = self.owner.templates.get("power_pole")
@@ -4850,47 +5049,57 @@ class CoordinateExactMasterDelegate:
             enforcements = extra_enforcements
         stats = self._power_coverage_witness_encoding_stats
         constraints = []
+        powered_x_start = self._slot_footprint_x_start(powered_slot)
+        powered_y_start = self._slot_footprint_y_start(powered_slot)
+        powered_width = self._slot_footprint_width(powered_slot)
+        powered_height = self._slot_footprint_height(powered_slot)
         if cover_choice_active is not None:
             constraints.append(self.model.Add(cover_choice_active == 1))
         if (
             self._power_coverage_selected_interval_encoding
             == EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_DELTA
         ):
-            constraints.append(
-                self._add_power_coverage_axis_delta_constraint(
-                    powered_coord=powered_slot.x,
-                    cover_coord=cover_choice_x,
-                    span=int(powered_slot.dims[0]),
-                    radius=int(radius),
-                    name=f"cover_choice_delta_x__{powered_slot.key}",
-                )
+            x_constraints = self._add_power_coverage_axis_delta_constraints(
+                powered_coord=powered_x_start,
+                cover_coord=cover_choice_x,
+                span=powered_width,
+                span_upper=max(
+                    int(domain.footprint_width)
+                    for domain in powered_slot.mode_rect_domains.values()
+                ),
+                radius=int(radius),
+                name=f"cover_choice_delta_x__{powered_slot.key}",
             )
-            constraints.append(
-                self._add_power_coverage_axis_delta_constraint(
-                    powered_coord=powered_slot.y,
-                    cover_coord=cover_choice_y,
-                    span=int(powered_slot.dims[1]),
-                    radius=int(radius),
-                    name=f"cover_choice_delta_y__{powered_slot.key}",
-                )
+            y_constraints = self._add_power_coverage_axis_delta_constraints(
+                powered_coord=powered_y_start,
+                cover_coord=cover_choice_y,
+                span=powered_height,
+                span_upper=max(
+                    int(domain.footprint_height)
+                    for domain in powered_slot.mode_rect_domains.values()
+                ),
+                radius=int(radius),
+                name=f"cover_choice_delta_y__{powered_slot.key}",
             )
+            constraints.extend(x_constraints)
+            constraints.extend(y_constraints)
             stats["selected_interval_delta_constraint_count"] = int(
                 stats.get("selected_interval_delta_constraint_count", 0)
-            ) + 2
+            ) + int(len(x_constraints) + len(y_constraints))
         else:
             constraints.extend(
                 [
-                    self.model.Add(powered_slot.x <= cover_choice_x + 2 + radius - 1),
+                    self.model.Add(powered_x_start <= cover_choice_x + 2 + radius - 1),
                     self.model.Add(
                         cover_choice_x
                         - radius
-                        <= powered_slot.x + int(powered_slot.dims[0]) - 1
+                        <= powered_x_start + powered_width - 1
                     ),
-                    self.model.Add(powered_slot.y <= cover_choice_y + 2 + radius - 1),
+                    self.model.Add(powered_y_start <= cover_choice_y + 2 + radius - 1),
                     self.model.Add(
                         cover_choice_y
                         - radius
-                        <= powered_slot.y + int(powered_slot.dims[1]) - 1
+                        <= powered_y_start + powered_height - 1
                     ),
                 ]
             )
@@ -4902,23 +5111,28 @@ class CoordinateExactMasterDelegate:
                 constraint.OnlyEnforceIf(enforcements)
         return int(len(constraints))
 
-    def _add_power_coverage_axis_delta_constraint(
+    def _add_power_coverage_axis_delta_constraints(
         self,
         *,
         powered_coord: cp_model.IntVar,
         cover_coord: cp_model.IntVar,
-        span: int,
+        span: cp_model.IntVar,
+        span_upper: int,
         radius: int,
         name: str,
-    ) -> Any:
-        lower = 1 - int(span) - int(radius)
+    ) -> List[Any]:
+        lower = 1 - int(span_upper) - int(radius)
         upper = int(radius) + 1
         delta = self.model.NewIntVar(int(lower), int(upper), str(name))
         stats = self._power_coverage_witness_encoding_stats
         stats["selected_interval_delta_var_count"] = int(
             stats.get("selected_interval_delta_var_count", 0)
         ) + 1
-        return self.model.Add(delta == powered_coord - cover_coord)
+        return [
+            self.model.Add(delta == powered_coord - cover_coord),
+            self.model.Add(delta <= int(radius) + 1),
+            self.model.Add(delta + span >= 1 - int(radius)),
+        ]
 
     def _create_cover_choice_local_selected_literals(
         self,

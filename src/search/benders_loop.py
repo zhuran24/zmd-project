@@ -5205,6 +5205,49 @@ class LBBDController:
             ).strip().lower() in {"1", "true", "yes", "on"}:
                 precheck_status = "feasible"  # 让 routing.solve 实际跑
 
+            if (
+                bool(routing_precheck_summary.get("binding_selection_safe_reject", False))
+                and precheck_status in {"front_blocked", "relaxed_disconnected"}
+                and self._binding_has_alternatives(binding_model)
+            ):
+                self._routing_precheck_rejections += 1
+                binding_model.add_nogood_cut(selection)
+                self._emit_heartbeat(
+                    stage="binding_resolve",
+                    event="start",
+                    iteration=iteration,
+                    extra={
+                        "previous_routing_precheck_status": str(precheck_status),
+                        "binding_selection_safe_reject": True,
+                        "enumerated_bindings": int(enumerated_bindings),
+                        "routing_attempts": int(routing_attempts),
+                    },
+                )
+                binding_status = binding_model.solve(time_limit_seconds=self.binding_seconds)
+                if binding_status == "TIMEOUT":
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "TIMEOUT",
+                        "routing_status": f"PRECHECK_{precheck_status.upper()}",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_precheck": dict(routing_precheck_summary),
+                        "binding_selection_safe_reject": True,
+                        "master_follow_up": "fail_closed_unknown",
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+                if binding_status == "FEASIBLE":
+                    continue
+                break
+
             if precheck_status == "front_blocked":
                 self._routing_precheck_rejections += 1
                 cut_added = False

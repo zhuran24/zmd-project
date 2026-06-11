@@ -8575,7 +8575,11 @@ def test_power_coverage_selected_interval_delta_encoding_is_default_off(
     stats = model.build_stats["power_coverage"]["witness_encoding"]
     assert stats["selected_interval_encoding"] == "delta"
     assert stats["selected_interval_delta_var_count"] == 2
-    assert stats["selected_interval_delta_constraint_count"] == 2
+    # P0-2 / B-01 fix: selected geometry now links the powered slot's x/y start
+    # through footprint channels instead of slot.x/slot.y + template dims, so the
+    # delta encoding emits the footprint-channel linking constraints in addition
+    # to the two delta vars (var count unchanged at 2; constraint count 2 -> 6).
+    assert stats["selected_interval_delta_constraint_count"] == 6
     assert stats["selected_interval_bounds_constraint_count"] == 0
     assert stats["final_target_channel_count"] == 3
 

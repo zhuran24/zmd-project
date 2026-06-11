@@ -1,7 +1,7 @@
 ---
 status: ACCEPTED_DRAFT
 source_of_truth: src/models/master_model.py and src/models/exact_coordinate_master.py
-last_verified_against: 2026-06-04 (§2.6.1/§6.1/§7.x PROJECT_LOCK 对齐修订)
+last_verified_against: 2026-06-11 (P0 footprint-channelled coordinate master soundness修订)
 owner: master-placement
 ---
 > [!NOTE]
@@ -106,3 +106,12 @@ $$ \sum_{j \in \mathcal{I}_{\text{poles}}} x_j \ge 24 $$
 如果子问题发现布线死锁，将返回 **Benders 冲突切平面 (No-good Cut)**：
 $$ \sum_{i \in C} z_{i, p_i^*} \le |C| - 1 $$
 主模型将收纳此切平面作为新增约束，并跳转去寻找下一个数学可行解。
+
+
+---
+
+## 7.8 [2026-06-11 P0 Soundness Addendum] Candidate-pose footprint channels
+
+Coordinate exact master 的 CP-SAT interval 几何不得只使用 `facility_templates[tpl].dimensions`。同一 template 的候选 pose 可以因朝向或生成器变体而拥有不同真实占据 footprint，例如模板默认 6×4、竖向 pose 实际 4×6。Certified backend 必须从每个候选 pose 的 `occupied_cells` 相对 anchor 推导 footprint bounding box，并把该 footprint token 纳入 mode domain。
+
+对每个 coordinate slot，`mode -> (dx_min, dy_min, width, height)` 必须通过 `AllowedAssignments` channel 到变量尺寸 interval，再交给 `AddNoOverlap2D`。幽灵空地相关占位、强制设施互斥、power coverage selected-geometry witness 都必须读取同一组 footprint start/span channel。若候选 pose 缺失 `occupied_cells` 或同一 mode token 下 footprint bounds 不稳定，certified path 必须 fail closed；对非矩形 footprint，允许用 bounding box 做保守 over-approximation，但绝不允许用模板尺寸 under-approximate。

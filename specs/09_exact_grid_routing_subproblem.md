@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/models/routing_subproblem.py and routing-focused regression tests; splitter/merger support is current-code aligned
-last_verified_against: 2026-03-23
+last_verified_against: 2026-06-11 (P0 incumbent source-sink connectivity guard修订)
 owner: exact-routing
 ---
 > [!NOTE]
@@ -93,3 +93,14 @@ $$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| -
 如果本模型返回 **SATISFIABLE (YES)**，系统将提取全量 0-1 决策变量，输出包含以下信息的**终极蓝图**：
 1.  **全体刚体的绝对位姿与朝向**（266 必选 + 被激活的可选实例；源自 07 章主问题。注：早先写的"326"是 exploratory 参考全集，certified-exact 可选数为变量 / demand 驱动、无硬 50/10/60 cap，见 07 章 §7.4.1 后 [PROJECT_LOCK 对齐] 注）。
 2.  **$70 \times 70 \times 2$ 空间内每一个物流组件的类型、坐标、朝向、承载物料**（源自本章微观解）。
+
+
+---
+
+## 9.7 [2026-06-11 P0 Soundness Addendum] Incumbent-level source→sink reachability
+
+`_add_continuity_constraints` 的局部 predecessor/successor 支撑只证明每个被选 route-state 在邻域中有局部接续；它不单独证明某个 commodity 的源 front 与汇 front 处于同一个有向连通分量。Certified acceptance 因此不得把 CP-SAT `FEASIBLE` 直接等同于 routable。
+
+`RoutingSubproblem.solve()` 在接受 incumbent 前必须重建选中 route-state 的有向图：按 commodity 从所有 source front 对应的 selected state 出发，沿 `flow_out` 到邻格 `flow_in` 遍历，要求每个 source front 至少到达一个 sink front，并要求每个 sink front 被某个 source front 到达。失败 incumbent 必须加 selected-route nogood 后继续求解。若 CP-SAT 证明所有这类 incumbent 不可行，则返回 `INFEASIBLE`；若时间/预算耗尽或无法形成 connected incumbent，则返回 `TIMEOUT`/`UNKNOWN`，不得生成 false `CERTIFIED`。
+
+长期方向仍是把 per-commodity reachability/flow 一等编码进 routing CP-SAT；当前 guard 是 certified-safe 的 fail-closed boundary。
