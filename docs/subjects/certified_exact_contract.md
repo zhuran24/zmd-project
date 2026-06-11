@@ -9,7 +9,7 @@ Certified exact mode is separate from exploratory tooling. The exact objective i
 <!-- SUBJECT-FIELD:frontdoor_contract END -->
 
 <!-- SUBJECT-FIELD:sot_contract START -->
-Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py` when present. In the lightweight GitHub checkout, `data/preprocessed/candidate_placements.json` is an external large artifact: expected size `53,594,995` bytes, expected SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`, recoverable from `C:\22957\download\zmd.7z` or historical commit `f58f0e2`. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
+Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py` when present. In the lightweight GitHub checkout, `data/preprocessed/candidate_placements.json` is an external large artifact: expected size `45,773,799` bytes, expected SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`, regenerated with `python src/placement/placement_generator.py` or restored from a clean archive containing the 2026-06-12 preprocess F-01/F-02 repair. The previous size `53,594,995` bytes / SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` artifact is superseded and hash-incompatible. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
 <!-- SUBJECT-FIELD:sot_contract END -->
 
 <!-- SUBJECT-FIELD:cut_lifecycle_contract START -->

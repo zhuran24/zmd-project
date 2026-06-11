@@ -25,8 +25,8 @@ The companion memory projection lives under `cc_context/memory/`; see `cc_contex
 
 ## Frozen artifact warning
 
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:7d54b0d99a9f208e7b36757aec06c1851a9aea69cd51c7d3e76eceabb59ae4a2 -->
-Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py` when present. In the lightweight GitHub checkout, `data/preprocessed/candidate_placements.json` is an external large artifact: expected size `53,594,995` bytes, expected SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`, recoverable from `C:\22957\download\zmd.7z` or historical commit `f58f0e2`. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
+<!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:9672e73f0a6845e84f28608483f9cefb3948ef374022d72110cbcc117b826a5e -->
+Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py` when present. In the lightweight GitHub checkout, `data/preprocessed/candidate_placements.json` is an external large artifact: expected size `45,773,799` bytes, expected SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`, regenerated with `python src/placement/placement_generator.py` or restored from a clean archive containing the 2026-06-12 preprocess F-01/F-02 repair. The previous size `53,594,995` bytes / SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` artifact is superseded and hash-incompatible. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
 <!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract END -->
 
 ## Completeness gate

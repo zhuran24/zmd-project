@@ -111,9 +111,13 @@ resume 后确认：
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 
-Before a certified campaign run from GitHub `main`, restore
-`data/preprocessed/candidate_placements.json` and verify its SHA256 matches
-`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`.
+Before a certified campaign run from GitHub `main`, restore or regenerate
+`data/preprocessed/candidate_placements.json` and verify size `45,773,799`
+bytes with SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. The
+previous size `53,594,995` bytes / SHA256
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` artifact is
+superseded and must trigger `artifact_hash_mismatch` on resume.
 
 reset 不是异常；它是证据链边界。记录时使用这个模板：
 
@@ -126,6 +130,8 @@ operator_note:
 
 如果 inspector 显示 `resume_validation_reason = artifact_hash_mismatch`，
 不要用旧 campaign 继续冒充同一条 proof chain。
+
+Community blueprint hints are advisory only. `data/hints/blueprint_2026_05_13_master_hint.json` was generated against the superseded candidate pool, so its stored `pose_idx` values are stale after the 2026-06-12 repair. Because the source community blueprint is not part of this package, regenerate the hint locally with `scripts/blueprint_to_master_hint.py` before using it for performance; stale hints must not be treated as proof evidence and do not affect soundness.
 
 ## 6. Worker Failure
 

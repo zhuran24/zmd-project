@@ -51,13 +51,13 @@ FROZEN_ARTIFACTS = {
 }
 
 EXTERNAL_FROZEN_ARTIFACTS = {
-    # The lightweight GitHub checkout intentionally omits this 53 MiB payload.
+    # The lightweight GitHub checkout intentionally omits this 45.8 MiB payload.
     # If the file is restored into the working tree, preflight verifies its bytes;
     # if it is absent, preflight records the external-artifact contract as OK and
     # certified exact runs remain responsible for restoring it before solve time.
     "data/preprocessed/candidate_placements.json": {
-        "sha256": "D5E3911FC1BC7C0AB48D67B981D28E8090741B04884C475E78DC0E128CA4683F",
-        "size_bytes": 53_594_995,
+        "sha256": "ADCC2A6E8A1DAAA9DEA6CAE68883301AD07CE123FA286B55DCBE79CA2F34BEC0",
+        "size_bytes": 45_773_799,
         "policy_doc": "START_HERE.md",
     },
 }

@@ -72,13 +72,13 @@ Phase 1.2 加 F5-F9 时按 §11 各 family 步骤每加 1 family 至少 1 red fi
 
 ### 21.5 viewer sample vs production 全集
 
-cut framework 测试用 **viewer sample** (~273 pose, BSP=54), production 168h 用 **全集** (~81795 pose, BSP=134). Sample 是单测 + 反例 reproduce 用 (上传 review pkg 时也是 sample, 大小 < 1 MB), 全集仅生产 trial 用 (53 MB).
+cut framework 测试用 **viewer sample** (~273 pose, BSP=54), production 168h 用 **全集** (~66,403 pose, BSP=134). Sample 是单测 + 反例 reproduce 用 (上传 review pkg 时也是 sample, 大小 < 1 MB), 全集仅生产 trial 用 (45.8 MB).
 
 差异:
 - sample F1 14 outside-pose 反例数字 (GPT v3 cite) 来自 viewer sample, **production 全集 outside count 不同**
 - adversarial 反例若 cite 具体 pose_id, 测试 fixture 必显式声明 sample-only, 不假定全集 reproduce
 
-review pkg 默认 ship 全集 (53 MB), README 提醒 reviewer 反例数字 vs sample 关系 (build_v8 script 已加).
+review pkg 默认 ship 全集 (45.8 MB), README 提醒 reviewer 反例数字 vs sample 关系 (build_v8 script 已加).
 
 ### 21.6 静态 gate (lint / type / dead code / security / complexity)
 

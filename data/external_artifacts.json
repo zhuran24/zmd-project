@@ -5,16 +5,17 @@
     {
       "id": "candidate_placements",
       "path": "data/preprocessed/candidate_placements.json",
-      "sha256": "d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f",
-      "size_bytes": 53594995,
+      "sha256": "adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0",
+      "size_bytes": 45773799,
       "optional_in_lightweight_checkout": true,
       "required_for": [
         "certified_exact_production_run",
         "placement_pool_replay"
       ],
       "restore_hints": [
-        "Historical git commit f58f0e2 at data/preprocessed/candidate_placements.json",
-        "Local clean observation archives that still contain zmd/data/preprocessed/candidate_placements.json"
+        "Regenerate with python src/placement/placement_generator.py",
+        "Restore only from a clean archive containing the 2026-06-12 F-01/F-02 preprocess repair",
+        "Superseded artifact SHA256 d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f (53,594,995 bytes) is hash-incompatible"
       ]
     }
   ]

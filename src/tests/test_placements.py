@@ -207,18 +207,26 @@ def test_power_pole_coverage_size(facility_pools):
 # 核心测试：协议箱端口几何
 # ============================================================================
 
-def test_protocol_box_has_square_side_ports(facility_pools):
-    """协议箱虽然支持无线清仓，但仍应保留 3 入 3 出的方形边端口。"""
+def test_protocol_box_is_omni_wireless_with_no_physical_ports(facility_pools):
+    """canonical `omni_wireless`: 协议箱无任何实体端口, 单 orientation 全 anchor 枚举。
+
+    (2026-06-12 preprocess F-01 修复前, 本测试曾断言错误的「3 入 3 出方形边端口」
+    旧行为 —— 那正是被审查推翻的错编码; binding 侧的无线消费语义见
+    test_wireless_sink_binding_semantics.py。)
+    """
     if "protocol_storage_box" not in facility_pools:
         pytest.skip("无 protocol_storage_box 池")
 
-    for pose in facility_pools["protocol_storage_box"]:
-        assert len(pose["input_port_cells"]) == 3, (
-            f"协议箱 {pose['pose_id']} 应有 3 个输入端口"
+    poses = facility_pools["protocol_storage_box"]
+    assert len(poses) == 68 * 68
+    for pose in poses:
+        assert pose["input_port_cells"] == [], (
+            f"协议箱 {pose['pose_id']} 不应有实体输入端口 (omni_wireless)"
         )
-        assert len(pose["output_port_cells"]) == 3, (
-            f"协议箱 {pose['pose_id']} 应有 3 个输出端口"
+        assert pose["output_port_cells"] == [], (
+            f"协议箱 {pose['pose_id']} 不应有实体输出端口 (omni_wireless)"
         )
+        assert pose["pose_params"]["port_mode"] == "omni"
 
 
 # ============================================================================

@@ -50,7 +50,7 @@ This file is an inventory projection, not the living status authority. Current p
 | `src/models/_cpsat_compat.py` | CURRENT_CODE_ALIGNED | CP-SAT compatibility shim | stabilizes enum/proto surfaces across OR-Tools versions |
 | `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | exact routing subproblem | certified routing proof path; final guard plus self-checked lazy source-side connectivity cuts |
 | `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | frozen rules artifact | preprocess/runtime certified input; now carries consolidated recipes / production targets / commodity metadata / empty-rectangle admissibility |
-| `data/preprocessed/candidate_placements.json` | EXTERNAL_ARTIFACT_REQUIRED | frozen placement domain | certified pose domain; omitted from current lightweight GitHub tree, expected SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` |
+| `data/preprocessed/candidate_placements.json` | EXTERNAL_ARTIFACT_REQUIRED | frozen placement domain | certified pose domain; omitted from current lightweight GitHub tree, expected size `45,773,799` bytes, SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`; previous `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` is superseded |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | frozen exact instances | certified mandatory instance source |
 | `data/preprocessed/generic_io_requirements.json` | CURRENT_CODE_ALIGNED | frozen generic IO artifact | binding/runtime certified input |
 
@@ -63,6 +63,7 @@ This file is an inventory projection, not the living status authority. Current p
 | `src/preprocess/operation_profiles.py` | CURRENT_CODE_ALIGNED | preprocess-only | port-slot aggregation and operation summaries |
 | `rules/preprocess_plan.json` | CURRENT_CODE_ALIGNED | build-time preprocess overlay | additive cycle-group / utility-operation overlay plus optional future overrides for PreprocessContext |
 | `rules/preprocess_plan.schema.json` | CURRENT_CODE_ALIGNED | build-time preprocess schema | validates preprocess plan payloads |
+| `data/hints/blueprint_2026_05_13_master_hint.json` | STALE_ADVISORY_HINT | exact master performance hint | pose_idx values were generated against superseded candidate pool; regenerate from source blueprint with `scripts/blueprint_to_master_hint.py`; not certified proof evidence |
 | `src/interchange/preprocess_context.py` | CURRENT_CODE_ALIGNED | build-time preprocess contract | assembles canonical rules + preprocess plan without changing runtime truth |
 | `src/placement/placement_generator.py` | CURRENT_CODE_ALIGNED | preprocess-only | candidate placement enumeration |
 | `data/preprocessed/commodity_demands.json` | CURRENT_CODE_ALIGNED | frozen preprocess artifact | generated from demand solver |

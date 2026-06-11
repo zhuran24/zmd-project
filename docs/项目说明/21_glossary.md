@@ -57,7 +57,7 @@
 - **candidate** — outer search 一次 try 的 (area, min_side, anchor) 三元组. ~1000-10000 candidate / 168h
 - **benders_loop** — `src/search/benders_loop.py` 的 LBBD 主循环. cut framework Phase 1.3 接进的 attach point
 - **ghost rectangle** — 70×70 grid 中 candidate 选中的目标 max empty rect, master 必保留其内部空
-- **pose** — 一个 facility instance 在 grid 上的具体 (位置, 方向, port mode). 项目 production data 81795 pose / 266 instance
+- **pose** — 一个 facility instance 在 grid 上的具体 (位置, 方向, port mode). 项目 production data 66,403 pose / 266 instance
 - **anchor** — ghost rectangle 的锚定 cell (左下角 / 旋转中心 等, 视 family 定)
 - **BSP** — `boundary_storage_port` (边界存储口 facility). production 134 BSP, sample 54 BSP
 - **mfg_3x3 / mfg_5x5 / mfg_6x4** — manufacturing facility 尺寸变体 (3x3 / 5x5 / 6x4 grid cell)
@@ -90,7 +90,7 @@
 ### A.6 Data sources (`data/preprocessed/`)
 
 - **canonical_rules.json** — 项目 SoT, 含 17 recipe + facility templates + targets + commodity types. 详 `rules/canonical_rules.json`
-- **candidate_placements.json** — 全 pose 枚举 (instance, pose_idx, occupied_cells, ports, orientation, port_mode). Production 53 MB / 81795 pose; current GitHub `main` keeps it as required external artifact; viewer sample ~273 pose
+- **candidate_placements.json** — 全 pose 枚举 (instance, pose_idx, occupied_cells, ports, orientation, port_mode). Production 45.8 MB / 66,403 pose; current GitHub `main` keeps it as required external artifact; viewer sample ~273 pose
 - **mandatory_exact_instances.json** — 266 必装 facility instance
 - **generic_io_requirements.json** — commodity flow demand (per recipe / target)
 - **all_facility_instances.json** — 全 facility instance 详 (含可选 deployment)

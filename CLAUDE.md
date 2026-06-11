@@ -426,7 +426,7 @@ These clones are **NOT** part of the build, are NOT scanned by tests, and do NOT
 
 - 当前工作区 `C:\claude pj\zmd_pj` 是轻量 GitHub checkout (zhuran24/zmd); 旧 `D:\追光\zmd` 位置已不存在。
 - **本 checkout 无 `.venv`** — 直接用全局 Store Python 3.13.13 (`python`), 依赖已装全 (ortools 9.15.6755)。CLAUDE.md/记忆里的 `.venv\Scripts\python.exe` / `.venv/bin/python` 写法是旧环境遗留, 在这里会假成功或报错。
-- `data/preprocessed/candidate_placements.json` (53.6MB) 外置未恢复; certified exact 大跑前按 START_HERE.md 的 restore 命令恢复。
+- `data/preprocessed/candidate_placements.json` (45.8MB) 外置未恢复; certified exact 大跑前按 START_HERE.md 的 restore 命令恢复。
 - post-commit hook 会自动 push GitHub (commit ≈ push); pre-commit 的 memory 镜像源 (旧 slug `D-----zmd`) 不存在会静默跳过 → 改记忆需手动双写 `_cc_live_memory/` 与 `cc_context/memory/`。
 
 ## Conventions

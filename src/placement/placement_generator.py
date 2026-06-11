@@ -13,13 +13,19 @@ Status: ACCEPTED_DRAFT
 import json
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 # ==========================================
 # 0. 常量
 # ==========================================
 GRID_W = 70
 GRID_H = 70
+DIR_DELTA: Dict[str, Tuple[int, int]] = {
+    "N": (0, 1),
+    "S": (0, -1),
+    "E": (1, 0),
+    "W": (-1, 0),
+}
 
 # ==========================================
 # 1. 基础几何辅助函数
@@ -62,17 +68,33 @@ def get_edge_ports(x: int, y: int, w: int, h: int, edge: str,
     return ports
 
 
+def get_port_front_cell(port: Dict[str, Any]) -> Tuple[int, int]:
+    """Return the first routable grid cell in front of a physical port.
+
+    Candidate ports are encoded as the outside-adjacent connector cell plus an
+    outward normal.  Routing consumes `front = port + DIR_DELTA[dir]`; the
+    generator must therefore fail closed when that front cell is outside the
+    70x70 routable grid.
+    """
+
+    dx, dy = DIR_DELTA[str(port["dir"])]
+    return int(port["x"]) + dx, int(port["y"]) + dy
+
+
 def is_edge_starved(ports: List[Dict[str, Any]]) -> bool:
-    """面壁死锁法则 (06章 §6.5.1)：
-    若该边的所有端口的接管格坐标全部落在地图外，则返回 True。
-    端口的接管格坐标已经是"向外一格"，所以只需检查 [0, 69] 范围。
+    """面壁死锁法则 (06章 §6.5.1)。
+
+    A side is starved when every active port on that side has no in-grid routing
+    front cell.  Checking the port coordinate itself is insufficient because the
+    port coordinate is the outside-adjacent connector; routing starts one cell
+    further along the outward normal.
     """
     if not ports:
         return False
 
     def is_blocked(p: Dict[str, Any]) -> bool:
-        px, py = p['x'], p['y']
-        return px < 0 or px >= GRID_W or py < 0 or py >= GRID_H
+        fx, fy = get_port_front_cell(p)
+        return fx < 0 or fx >= GRID_W or fy < 0 or fy >= GRID_H
 
     return all(is_blocked(p) for p in ports)
 
@@ -199,10 +221,17 @@ def gen_protocol_core() -> List[Dict]:
 def gen_protocol_storage_box() -> List[Dict]:
     """生成 3x3 协议储存箱。
 
-    虽然协议箱支持无线清仓，但根据冻结规则，它仍有明确的物理输入/输出边，
-    因此候选几何必须保留和方形设施一致的对边端口模式。
+    canonical_rules.json declares port_rule=omni_wireless for this template.  It
+    still occupies a 3x3 powered body, but it does not expose physical input or
+    output ports and must not inherit manufacturing port modes or edge filters.
     """
-    return gen_square_manufacturing(3)
+
+    placements = []
+    w = h = 3
+    for x in range(GRID_W - w + 1):
+        for y in range(GRID_H - h + 1):
+            placements.append(build_placement_obj(x, y, 0, 'omni', w, h, [], []))
+    return placements
 
 
 def gen_power_pole() -> List[Dict]:

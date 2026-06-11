@@ -66,3 +66,4 @@ cc_context/review/deps/
 # Codex 接手期外审包/补丁工作目录 (v29-v78 审查工件; zip/7z 已被上面的规则挡,
 # 解包出的散文件同样不入库 — 审查工件归档走 cc_context/review/)
 补丁包/
+data/preprocessed/candidate_placements.json

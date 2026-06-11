@@ -685,7 +685,7 @@ def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
                 "pose_id": "box_pose_0",
                 "anchor": {"x": 2, "y": 0},
                 "occupied_cells": [[2, 0]],
-                "input_port_cells": [{"x": 2, "y": 0, "dir": "W"}],
+                "input_port_cells": [],
                 "output_port_cells": [],
                 "power_coverage_cells": None,
             }
@@ -711,9 +711,20 @@ def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
     model.build()
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
 
+    selection = model.extract_selection()
+    assert (
+        selection["generic_inputs"][
+            "pose_optional::protocol_storage_box::box_pose_0:in:0"
+        ]
+        == "valley_battery"
+    )
+
     specs = model.extract_port_specs()
-    assert any(spec["instance_id"] == "pose_optional::protocol_storage_box::box_pose_0" for spec in specs)
-    assert any(spec["commodity"] == "valley_battery" for spec in specs)
+    assert not any(
+        spec["instance_id"] == "pose_optional::protocol_storage_box::box_pose_0"
+        for spec in specs
+    )
+    assert not any(spec["commodity"] == "valley_battery" for spec in specs)
 
 
 

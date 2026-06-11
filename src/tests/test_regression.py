@@ -183,7 +183,7 @@ def test_frozen_counts_align_with_new_split() -> None:
     assert len(all_instances) == 326
     assert caps["power_pole"]["cap"] == 50
     assert caps["protocol_storage_box"]["cap"] == 10
-    assert total_poses == 81795
+    assert total_poses == 66403
 
 
 

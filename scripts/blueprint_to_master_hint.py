@@ -17,7 +17,7 @@ Mapping rules (verified 2026-05-16 from candidate_placements + IP v2 source):
     item_port_filling_pd_mc_1   (6x4) -> manufacturing_6x4
     item_port_tools_asm_mc_1    (6x4) -> manufacturing_6x4
     item_port_sp_hub_1     (9x9) -> protocol_core
-    item_port_storager_1   (3x3) -> protocol_storage_box   (optional, skipped)
+    item_port_storager_1   (3x3) -> protocol_storage_box   (optional, omni hint)
     item_port_power_sta_1  (2x2) -> power_pole             (optional, skipped)
     item_port_power_diffuser_1 (2x2) -> power_pole         (optional, skipped)
 
@@ -37,6 +37,8 @@ Mapping rules (verified 2026-05-16 from candidate_placements + IP v2 source):
       180 -> (1, 'bottom_base')
     Protocol core (9x9):
       0   -> (0, 'core_LR_out')   # only rotation 0 observed in blueprint
+    Protocol storage box (3x3, omni_wireless):
+      any -> (0, 'omni')          # rotation-independent, no physical ports
 """
 
 from __future__ import annotations
@@ -62,6 +64,7 @@ TYPE_ID_TO_FACILITY: Dict[str, str] = {
     "item_port_filling_pd_mc_1": "manufacturing_6x4",
     "item_port_tools_asm_mc_1": "manufacturing_6x4",
     "item_port_sp_hub_1": "protocol_core",
+    "item_port_storager_1": "protocol_storage_box",
 }
 
 SQUARE_MANUF_TYPES = {"manufacturing_3x3", "manufacturing_5x5"}
@@ -94,6 +97,8 @@ def rotation_to_orient_mode(facility_type: str, rotation: int) -> Optional[Tuple
         return BOUNDARY_ROT.get(rotation)
     if facility_type == "protocol_core":
         return (0, "core_LR_out") if rotation == 0 else None
+    if facility_type == "protocol_storage_box":
+        return (0, "omni")
     return None
 
 
@@ -181,12 +186,31 @@ def convert(
 
     solution_hint: Dict[str, int] = {}
     coverage_per_type: Dict[str, Tuple[int, int]] = {}
+    optional_hint_ordinals: Dict[str, int] = defaultdict(int)
     for facility_type, pose_indices in hint_pose_indices_by_type.items():
         instance_ids = instances_by_type.get(facility_type, [])
-        zipped = list(zip(instance_ids, pose_indices))
-        for inst_id, pose_idx in zipped:
-            solution_hint[inst_id] = int(pose_idx)
-        coverage_per_type[facility_type] = (len(zipped), len(instance_ids))
+        if instance_ids:
+            zipped = list(zip(instance_ids, pose_indices))
+            for inst_id, pose_idx in zipped:
+                solution_hint[inst_id] = int(pose_idx)
+            coverage_per_type[facility_type] = (len(zipped), len(instance_ids))
+            continue
+
+        # protocol_storage_box is pose-optional. Coordinate exact master accepts
+        # synthetic pose_optional::* solution ids and uses the pose index as an
+        # advisory active optional slot hint. The concrete id only needs to carry
+        # the template prefix, but the pose_id suffix keeps stale hint files
+        # human-auditable after candidate pool changes.
+        if facility_type == "protocol_storage_box":
+            for pose_idx in pose_indices:
+                pose = cp["facility_pools"][facility_type][int(pose_idx)]
+                ordinal = optional_hint_ordinals[facility_type]
+                optional_hint_ordinals[facility_type] += 1
+                solution_id = (
+                    f"pose_optional::{facility_type}::{pose['pose_id']}::hint{ordinal}"
+                )
+                solution_hint[solution_id] = int(pose_idx)
+            coverage_per_type[facility_type] = (len(pose_indices), 0)
 
     if verbose:
         print(f"[summary] devices: {counters}", file=sys.stderr)

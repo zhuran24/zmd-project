@@ -28,7 +28,7 @@ R 是 G 内的轴向 rectangle, π: instances → poses 满足 π(i) ∈ P(i)
 
 ### 1.2 离散组合优化空间复杂度
 
-**Pose enumeration**: 当前 production artifact `candidate_placements.json` ~81795 pose / 266 instance ≈ 平均 308 pose/instance；GitHub `main` 是 lightweight checkout，跑 certified exact 前需要先恢复该大 artifact。
+**Pose enumeration**: 当前 production artifact `candidate_placements.json` ~66,403 pose / 266 instance ≈ 平均约 250 pose/instance；GitHub `main` 是 lightweight checkout，跑 certified exact 前需要先恢复该大 artifact。
 
 **Ghost rectangle 候选**: 70×70 grid 内 rectangle 数 = `C(71, 2)² ≈ 6.4 million`. 加 min_side ≥ 6 admissibility 后 ~3 million; outer search frontier 实际 reach ~1000-10000 candidate (Phase 3A frontier 设计).
 

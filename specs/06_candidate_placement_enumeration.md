@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and the frozen candidate_placements artifact (external in current lightweight GitHub checkout)
-last_verified_against: 2026-06-04 (§2.6.1/§6.1/§7.x PROJECT_LOCK 对齐修订)
+last_verified_against: 2026-06-12 (preprocess F-01/F-02 geometry repair)
 owner: placement-preprocess
 ---
 # 06 候选摆位枚举与几何降维引擎 (Candidate Placement Enumeration)
@@ -49,7 +49,8 @@ owner: placement-preprocess
 *   **平移域**：$x \in [0, 70-w], y \in [0, 70-h]$。（$w, h$ 为当前旋转姿态 $o$ 下的包围盒宽与高）。
 *   **模式扩展 ($m$)**：
     *   长方形机器 (6x4)：端口强制分布在两条长边上，无需额外模式枚举。
-    *   方形机器 (3x3, 5x5, 协议箱)：在每个合法 $(x,y,o)$ 下，必须生成两组正交的端口模式：模式 `NS` (上下边作为出入口) 与模式 `EW` (左右边作为出入口)。
+    *   方形机器 (3x3, 5x5)：在每个合法 $(x,y,o)$ 下，必须生成两组正交的端口模式：模式 `NS` (上下边作为出入口) 与模式 `EW` (左右边作为出入口)。
+    *   协议箱 (3x3)：服从 canonical `omni_wireless`，无实体输入/输出端口；仅枚举 `orientation = 0`, `port_mode = "omni"` 的全 anchor 空间，$x,y \in [0,67]$，闭式计数 $68 \times 68 = 4624$。
 
 ### 6.4.2 供电桩的极简扫描 (2x2)
 *   **旋转对称性剪枝**：供电桩为绝对正方形且无实体端口，旋转 $o$ 无物理意义，强制锁定 $o=0$。
@@ -69,10 +70,10 @@ owner: placement-preprocess
 在全量生成位姿时，必须应用以下过滤层，将“注定无法连线”的废解当场抹杀，这能削减至少 30% 的无用搜索空间：
 
 ### 6.5.1 面壁死锁剔除 (Wall-Facing Port Starvation)
-**物理逻辑**：传送带必须占用 $1 \times 1$ 的网格。如果一台机器的某个激活端口边紧贴着地图的绝对边界（例如端口边在 $X=0$ 且接管法向朝西 $W$），由于地图外没有格子，**绝对不可能有任何传送带能够接入或接出该边**。
+**物理逻辑**：传送带必须占用端口正前方的 $1 \times 1$ routing front cell。端口本体坐标仍可位于地图边界；真正不可用的是 `(port.x, port.y) + DIR_DELTA[port.dir]` 落到 $70 \times 70$ 网格外。
 **剔除法则**：
-若一个位姿 $p$ 导致其选定的输入/输出边紧贴地图物理边界（$x=0, x=69, y=0, y=69$），且该边的接管法向向量朝向地图外侧，导致该边所有的合法端口被全部封死，则该位姿 $p$ 视为“绝对面壁废解”，**立刻从 $\mathcal{P}_t$ 中永久删除**。
-*(例外：边界仓库存/取货口原生豁免此法则，因其天然向内吞吐。)*
+对一个候选位姿分别检查激活输入端口集合与输出端口集合。若某一集合非空，且该集合内所有端口的 routing front cell 都越界，则该位姿视为“绝对面壁废解”，**立刻从 $\mathcal{P}_t$ 中永久删除**；只要同一集合中仍存在至少一个 front cell 留在网格内，该集合不得触发剪枝。
+*(例外：边界仓库存/取货口原生豁免此法则，因其天然向内吞吐；`omni_wireless` 协议箱没有实体端口，front 规则不适用。)*
 
 ### 6.5.2 旋转对等性去重 (Rotational Symmetry Pruning)
 **物理逻辑**：正方形机器在内部配方无方向性时，正放与倒放在占格和端口拓扑上可能完全等价。
@@ -98,8 +99,23 @@ owner: placement-preprocess
 
 > 当前 GitHub `main` 是 lightweight checkout：production
 > `data/preprocessed/candidate_placements.json` 不在当前工作树里，但仍是 certified
-> exact 必需输入。恢复后应匹配 SHA256
-> `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`。
+> exact 必需输入。2026-06-12 F-01/F-02 修复后的恢复/再生成结果应匹配
+> size `45,773,799` bytes, SHA256
+> `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。旧 size `53,594,995` bytes / SHA256
+> `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` 已 superseded。
+
+当前闭式池计数：
+
+| facility_type | closed form | count |
+| --- | ---: | ---: |
+| `manufacturing_3x3` | `4 * 68 * 64` | 17,408 |
+| `manufacturing_5x5` | `4 * 66 * 62` | 16,368 |
+| `manufacturing_6x4` | `4 * 65 * 63` | 16,380 |
+| `protocol_core` | `2 * 58 * 58` | 6,728 |
+| `protocol_storage_box` | `68 * 68` | 4,624 |
+| `power_pole` | `69 * 69` | 4,761 |
+| `boundary_storage_port` | `2 * 67` | 134 |
+| **total** |  | **66,403** |
 
 数据结构范例：
 ```json

@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-06-11 (V80 P0 certified soundness fixes + P0-1 lazy routing connectivity cuts)
+**Updated**: 2026-06-12 (preprocess F-01/F-02 geometry repair + omni_wireless binding semantics)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
@@ -30,10 +30,17 @@ The certified path is grounded in:
 The current GitHub `main` branch intentionally omits the large
 `data/preprocessed/candidate_placements.json` working-tree file after the
 2026-06-06 backup cleanup. This does **not** remove it from the certified
-contract: certified exact runs must restore the artifact first. Expected facts:
-size `53,594,995` bytes, SHA256
-`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`, historical
-commit `f58f0e2`, local archive source `C:\22957\download\zmd.7z`.
+contract: certified exact runs must restore or regenerate the artifact first.
+Expected facts after the 2026-06-12 preprocess F-01/F-02 repair: size
+`45,773,799` bytes, SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. The
+former artifact (size `53,594,995` bytes, SHA256
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`) is
+superseded and must be treated as hash-incompatible evidence; campaign
+resume must fail closed with `artifact_hash_mismatch`. Regeneration source:
+`python src/placement/placement_generator.py`.
+Older archives such as `C:\22957\download\zmd.7z` may still contain the
+superseded bytes and are not valid restore sources for the current lock.
 
 The following remain additive postprocess artifacts and must not redefine internal solve schemas:
 
@@ -84,6 +91,7 @@ Phase 0 close (`docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md`) 后,
 - Production parallel scheduling uses a coordinator-only writer with disjoint candidate waves.
 - Optional frontier probe mode is an exact-safe scheduling hint only and must not replace completeness requirements.
 - Global pooling semantics for shared boundary/core resources must remain commodity-aggregated.
+- `protocol_storage_box` follows canonical `omni_wireless`: candidate poses have no physical input/output port cells, use `orientation = 0` and `port_mode = "omni"`, and binding materializes the plan-defined virtual generic input slots (`rules/preprocess_plan.json::utility_operations.wireless_sink.generic_input_slots = 3`). These slots are commodity binding capacity only; they must not emit routing port specs or routing/flow sink fronts.
 - A fully enclosed legal empty rectangle remains allowed; exterior connectivity is not part of the exact contract.
 - Terminal certified frontier evidence is a closed, project-bound contract: unknown `candidate_generation` keys, non-authoritative domain values, stale evidence schema versions, and sub-admissible terminal best results must fail closed before any public CERTIFIED surface.
 - In `certified_exact`, `EXACT_*` environment knobs are deny-unknown by default: only documented operational allowlist entries may be present, known proof-semantics knobs must stay at canonical false/default values, and future/unclassified names must block the run.

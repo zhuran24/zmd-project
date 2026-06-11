@@ -98,6 +98,12 @@ owner: preprocess-instances
 
 如果文档里出现 `50 / 10`，应默认把它理解为 exploratory guidance，而不是 exact 主线事实。
 
+### 5.4.3 Certified exact 中的协议箱无线消费语义
+
+`rules/canonical_rules.json` 声明 `protocol_storage_box.port_rule = "omni_wireless"`，`rules/preprocess_plan.json` 声明 `wireless_sink.generic_input_slots = 3`。因此 certified exact 中的协议箱不是带实体端口的 3×3 机器，而是由需求驱动激活的 required-optional wireless sink。
+
+被选中的协议箱 pose 必须只暴露 3 个虚拟 generic input 槽：槽参与 binding 的 commodity 分配与 `__unused__` 互斥数学，但不携带坐标、方向或 port cell，也不经过 routing front 可用性过滤。`extract_port_specs()` 不得为这些虚拟槽输出 port spec，因此 routing 与 flow 子问题不会收到通向协议箱的 sink front；无线消费只消耗 binding 容量，不要求皮带可达。
+
 ---
 
 ## 5.5 当前实例工件的正确阅读方式

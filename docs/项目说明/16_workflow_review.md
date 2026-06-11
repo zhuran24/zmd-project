@@ -85,7 +85,7 @@ GPT pro 主要 catch (3+4+5) — Gemini 倾向 catch (1+2) schema 层. 实施 fa
 
 **GPT pro batch 输入**
 - 全项目 zip (v8 模式, 7z 壳 + ship 7za)
-- 真数据 production 全集 (53 MB；lightweight checkout 不含, review package 要单独恢复/附带)
+- 真数据 production 全集 (45.8 MB；lightweight checkout 不含, review package 要单独恢复/附带)
 - audit archive 累积 (cross_check/ + external_review/) — 给 reviewer context 知道之前怎么修
 - spec 完整 (cut_lifecycle_v2 / state_machine_v2 / cut_family_specs/)
 - 不放: plan doc (主动性引导, per [[review-pkg-no-prompt-inside]]); prompt; verdict claim / Close 列表

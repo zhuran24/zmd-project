@@ -46,6 +46,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 GENERIC_IO_REQUIREMENTS_PATH = (
     PROJECT_ROOT / "data" / "preprocessed" / "generic_io_requirements.json"
 )
+PREPROCESS_PLAN_PATH = PROJECT_ROOT / "rules" / "preprocess_plan.json"
 
 POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
     "protocol_storage_box": "wireless_sink",
@@ -53,6 +54,46 @@ POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
 }
 
 
+def load_wireless_sink_generic_input_slots(
+    *,
+    project_root: Optional[Path] = None,
+    path: Optional[Path] = None,
+) -> int:
+    """Load the canonical wireless-sink generic input slot count.
+
+    protocol_storage_box is declared as ``omni_wireless`` in canonical rules and as
+    ``wireless_sink`` in preprocess_plan.json. The binding model therefore
+    accounts for generic input capacity without requiring a physical port cell.
+    """
+
+    if path is None:
+        path = (
+            PREPROCESS_PLAN_PATH
+            if project_root is None
+            else project_root / "rules" / "preprocess_plan.json"
+        )
+
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Missing preprocess_plan artifact（缺少预处理计划工件）: {path}"
+        )
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    utility_operations = dict(payload.get("utility_operations", {}))
+    wireless_sink = dict(utility_operations.get("wireless_sink", {}))
+    if "generic_input_slots" not in wireless_sink:
+        raise KeyError(
+            "preprocess_plan utility_operations.wireless_sink.generic_input_slots "
+            "is required for wireless sink binding（无线消费槽位数缺失）"
+        )
+
+    slot_count = int(wireless_sink["generic_input_slots"])
+    if slot_count < 0:
+        raise ValueError(
+            "wireless_sink.generic_input_slots must be non-negative "
+            f"（无线消费槽位数不能为负）: {slot_count}"
+        )
+    return slot_count
 
 def load_generic_io_requirements(
     *,
@@ -106,6 +147,7 @@ class PortBindingModel:
     ):
         self.project_root = project_root or PROJECT_ROOT
         self.io_requirements_path = io_requirements_path
+        self._wireless_sink_generic_input_slots: Optional[int] = None
         self.placement_solution = {
             str(instance_id): dict(sol)
             for instance_id, sol in placement_solution.items()
@@ -507,13 +549,20 @@ class PortBindingModel:
                     )
                 self.model.AddExactlyOne(list(self.generic_output_vars[slot_id].values()))
 
+    def _wireless_sink_input_slot_count(self) -> int:
+        if self._wireless_sink_generic_input_slots is None:
+            self._wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
+                project_root=self.project_root
+            )
+        return self._wireless_sink_generic_input_slots
+
     def _build_generic_input_domains(self) -> None:
         generic_commodities = sorted(self.required_generic_inputs.keys())
         if not generic_commodities:
             return
         slot_commodities = generic_commodities + ["__unused__"]
 
-        for instance_id, sol in self.placement_solution.items():
+        for instance_id, _sol in self.placement_solution.items():
             inst = self._resolve_instance(instance_id)
             if not inst:
                 continue
@@ -521,25 +570,22 @@ class PortBindingModel:
             if operation_type != "wireless_sink":
                 continue
 
-            tpl = str(sol["facility_type"])
-            pose = self._resolve_pose(tpl, int(sol["pose_idx"]))
-            for local_idx, port in enumerate(pose.get("input_port_cells", [])):
+            # ``wireless_sink`` is intentionally routing-free: protocol storage
+            # boxes have no physical input port cells under the canonical
+            # ``omni_wireless`` rule. Binding still needs the capacity rows, so
+            # materialize virtual generic-input slots from preprocess_plan.json
+            # and do not pass them through routing-front filtering.
+            for local_idx in range(self._wireless_sink_input_slot_count()):
                 self.routing_aware_filter_stats["generic_input_slots_pre_filter"] += 1
-                # RAB-SEP Phase 1: skip front-blocked generic input slot
-                # (__unused__ sentinel is moot — slot 不存在 == slot 永远 unused)
-                if self.routing_context is not None:
-                    from src.models.routing_binding_context import is_port_front_usable
-                    if not is_port_front_usable(port, self.routing_context, instance_id):
-                        continue
                 self.routing_aware_filter_stats["generic_input_slots_post_filter"] += 1
                 slot_id = f"{instance_id}:in:{local_idx}"
                 slot = {
                     "slot_id": slot_id,
                     "instance_id": instance_id,
-                    "x": int(port["x"]),
-                    "y": int(port["y"]),
-                    "dir": str(port["dir"]),
                     "type": "in",
+                    "operation_type": "wireless_sink",
+                    "routing_free": True,
+                    "virtual": True,
                 }
                 self.generic_input_slots.append(slot)
                 self.generic_input_vars[slot_id] = {}
@@ -788,6 +834,8 @@ class PortBindingModel:
             slot_id = slot["slot_id"]
             commodity = selection["generic_inputs"].get(slot_id)
             if commodity in (None, "__unused__"):
+                continue
+            if slot.get("routing_free") or slot.get("virtual"):
                 continue
             port_specs.append(
                 {

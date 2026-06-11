@@ -71,13 +71,14 @@ GitHub working tree to keep the repository light.
 
 Known recovery facts for `data/preprocessed/candidate_placements.json`:
 
-- expected size: `53,594,995` bytes
+- expected size: `45,773,799` bytes
 - expected SHA256:
-  `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`
-- historical Git source: commit `f58f0e2`, path
-  `data/preprocessed/candidate_placements.json`
-- local archive source used for the GitHub backup:
-  `C:\22957\download\zmd.7z`, nested under `zmd/data/preprocessed/`
+  `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`
+- regeneration source: `python src/placement/placement_generator.py`
+- restore source: only a clean archive containing the 2026-06-12 F-01/F-02
+  preprocess repair; older archives such as `C:\22957\download\zmd.7z` or
+  historical commit `f58f0e2` may contain superseded bytes and are not valid
+  restore sources for the current lock
 
 Do not recommit that file to normal Git unless the repository policy changes to
 Git LFS, release assets, or another explicit large-artifact store.

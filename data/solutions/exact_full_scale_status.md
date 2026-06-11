@@ -37,7 +37,7 @@
 
 | Artifact | SHA256 |
 |---|---|
-| `candidate_placements` | `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` |
+| `candidate_placements` | `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0` |
 | `canonical_rules` | `8ac667a1bce67ff9084701d18892f370e19d68cc9b5ace44bd63c68b20d3d6ea` |
 | `generic_io_requirements` | `ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e` |
 | `mandatory_exact_instances` | `545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6` |

@@ -164,6 +164,14 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
     model.build()
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
 
+    assert len(model.generic_input_slots) == 3
+    assert all(slot.get("virtual") is True for slot in model.generic_input_slots)
+    assert all(slot.get("routing_free") is True for slot in model.generic_input_slots)
+    assert all(
+        "x" not in slot and "y" not in slot and "dir" not in slot
+        for slot in model.generic_input_slots
+    )
+
     selection = model.extract_selection()
     assert len(selection["generic_inputs"]) == 3
     assert sum(1 for c in selection["generic_inputs"].values() if c == "valley_battery") == 1
@@ -171,8 +179,12 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
     assert sum(1 for c in selection["generic_inputs"].values() if c == "__unused__") == 1
 
     port_specs = model.extract_port_specs()
-    sink_specs = [p for p in port_specs if p["instance_id"] == "protocol_box_001" and p["type"] == "in"]
-    assert len(sink_specs) == 2
+    sink_specs = [
+        p
+        for p in port_specs
+        if p["instance_id"] == "protocol_box_001" and p["type"] == "in"
+    ]
+    assert sink_specs == []
 
 
 def test_binding_model_overload_separation_default_off(project_root, facility_pools, monkeypatch):

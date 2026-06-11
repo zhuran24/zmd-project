@@ -108,6 +108,14 @@ HAND_VERIFIED_SAMPLES = [
         "RL",
         "p_x35_y15_o0_m_RL",
     ),
+    (
+        "item_port_storager_1",
+        270,
+        (10, 10),
+        0,
+        "omni",
+        "p_x10_y10_o0_m_omni",
+    ),
 ]
 
 
@@ -161,3 +169,11 @@ def test_rotation_mapping_matches_hand_derivation(
         f"{type_id} at {origin} rot={rotation}: pose_id script={pose['pose_id']} "
         f"expected={expected_pose_id}"
     )
+
+
+def test_protocol_storage_box_rotation_is_omni_for_all_blueprint_rotations() -> None:
+    assert TYPE_ID_TO_FACILITY["item_port_storager_1"] == "protocol_storage_box"
+    assert {
+        rotation_to_orient_mode("protocol_storage_box", rotation)
+        for rotation in (0, 90, 180, 270, 13)
+    } == {(0, "omni")}
