@@ -22,6 +22,8 @@ metadata:
 
 **插件手动上传姿势(托底通道用):** 插件 `file_upload` 工具 10MB 上限且新版拒收主机路径——别用它。走 Windows 剪贴板:用 `C:\Users\22957\clip_send.ps1 -Files <path>`(**别裸调 SetFileDropList——其数据随设置进程退出消失,必须 DataObject + SetDataObject(copy:=true) 冲刷,脚本已内置**;`Set-Clipboard -Path` 是 5.1 专属),聚焦 ChatGPT 输入框发 Ctrl+V(14.2MB 实测成功,网页上限 512MB)。长 prompt 同理 `Set-Clipboard -Value` + Ctrl+V。LZMA zip 让对方用 `python -m zipfile -e` 解(Linux unzip 不支持)。**sandbox 附件几分钟就回收(404)**:完成后立即收,收不到就追问一句让 GPT 重新生成(沙盒重建文件)。
 
+**降级机理 + 通道实证(2026-06-11 夜, 24 次交付数据)**: 脚本发送白天 21h / 20+ 次全真 Pro(elapsed_s 21-44min), 直到一次 4 路并发触发 Sentinel(~22:16)→ 此后**脚本特征发送被降到 40-70s, 但手动发送(Edge 或 App)仍吃真 Pro**(22:42 手动 R2 = 43min, 轻量手动测试秒回健康)。**唯一可靠降级信号 = elapsed_s**: `model_slug` 全程 `gpt-5-5-pro`、`thinking_marker` 全程 `none`(连真 Pro 也 none), 明面字段全撒谎。**App = 独立手动通道**, Edge 脚本被 flag 时 App 仍能正常手动发; 但裸开 App 无 CDP 9224 → `--resume` 盯不了, 手动收交付到 `C:\22957\download`。**"HAR 里有 sentinel 请求" 不算证据**(sentinel 是所有 ChatGPT 会话通用的请求门, 人人都有, 客服一看就知道); 找客服的唯一真证据是时长对比(同 Project / slug, 手动 43min vs 脚本 40-70s)。
+
 **Why:** 本地审查 workflow 实测 38 分钟 + API stream 超时挂 critic + 审查 agent 并发跑 pytest 互删 `.pytest_tmp` 污染全量测试;GPT Pro 外发更稳更省额度。老审查规范是几十轮外审循环时代的产物,用户裁决"现在不用这么麻烦了"。
 
 **How to apply:** 默认自己干或单个 Agent 子代理;"必要" = 用户明确点名要 workflow,或任务确实离不开本地多路编排且无法外发。委托实现的交付物拿回来后:本地 apply → check 脚本 + 目标测试 → 独占全量复验 → **`python scripts/preflight_gate.py --ci --base-ref HEAD~1` 全 gate(必跑!pytest 盖不到 frozen hash/行尾/记忆树三类检查,漏跑 = push 即 CI 红 + 邮件轰炸,V80 实测教训)** → 推锚易漏点复核 → commit,不盲信关键论证。外发 prompt 的锚定清单要含:若改 frozen artifact,`preflight_gate.py::FROZEN_ARTIFACTS` sha256 同批推进;要求 GPT 产物 LF 行尾。
