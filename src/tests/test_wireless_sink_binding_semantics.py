@@ -40,6 +40,28 @@ def _wireless_box_pose(anchor_x: int = 10, anchor_y: int = 10) -> dict[str, Any]
     }
 
 
+def _filling_capsule_pose(anchor_x: int = 10, anchor_y: int = 10) -> dict[str, Any]:
+    return {
+        "pose_id": f"filling_capsule_probe_x{anchor_x:02d}_y{anchor_y:02d}",
+        "anchor": {"x": anchor_x, "y": anchor_y},
+        "pose_params": {"orientation": 0, "port_mode": "probe"},
+        "occupied_cells": [
+            [anchor_x + dx, anchor_y + dy]
+            for dx in range(6)
+            for dy in range(4)
+        ],
+        "input_port_cells": [
+            {"x": anchor_x + dx, "y": anchor_y + 4, "dir": "N"}
+            for dx in range(6)
+        ],
+        "output_port_cells": [
+            {"x": anchor_x + dx, "y": anchor_y - 1, "dir": "S"}
+            for dx in range(6)
+        ],
+        "power_coverage_cells": None,
+    }
+
+
 def _wireless_binding_model(
     *,
     required_inputs: dict[str, int],
@@ -159,6 +181,73 @@ def test_wireless_sink_routing_has_no_sink_front_and_needs_no_belt_to_box() -> N
     )
     assert flow.build_and_solve(time_limit_ms=1000) == "FEASIBLE"
     assert not any("demo_wireless_item" in node for node in flow_network.nodes)
+
+
+def test_wireless_sink_commodity_does_not_reenter_routing_from_producer_output() -> None:
+    producer_pose = _filling_capsule_pose()
+    sink_pose = _wireless_box_pose(anchor_x=30, anchor_y=30)
+    sink_instance_id = "pose_optional::protocol_storage_box::box_x30_y30_omni"
+    model = PortBindingModel(
+        placement_solution={
+            "filling_capsule_001": {
+                "facility_type": "manufacturing_6x4",
+                "pose_idx": 0,
+                "pose_id": producer_pose["pose_id"],
+                "anchor": dict(producer_pose["anchor"]),
+                "orientation": 0,
+                "port_mode": "probe",
+            },
+            sink_instance_id: {
+                "facility_type": "protocol_storage_box",
+                "pose_idx": 0,
+                "pose_id": sink_pose["pose_id"],
+                "anchor": dict(sink_pose["anchor"]),
+                "orientation": 0,
+                "port_mode": "omni",
+                "bound_type": "exact_pose_optional",
+                "solve_mode": "certified_exact",
+            },
+        },
+        facility_pools={
+            "manufacturing_6x4": [producer_pose],
+            "protocol_storage_box": [sink_pose],
+        },
+        instances=[
+            {
+                "instance_id": "filling_capsule_001",
+                "facility_type": "manufacturing_6x4",
+                "operation_type": "filling_capsule",
+                "is_mandatory": True,
+            }
+        ],
+        required_generic_outputs={},
+        required_generic_inputs={"qiaoyu_capsule": 1},
+        project_root=PROJECT_ROOT,
+    )
+    model.build()
+
+    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    selection = model.extract_selection()
+    port_specs = model.extract_port_specs()
+
+    assert "qiaoyu_capsule" in selection["generic_inputs"].values()
+    assert all(spec["commodity"] != "qiaoyu_capsule" for spec in port_specs)
+    assert any(spec["commodity"] == "fine_buckwheat_powder" for spec in port_specs)
+    assert any(spec["commodity"] == "steel_bottle" for spec in port_specs)
+
+    occupied = {
+        (int(x), int(y))
+        for pose in (producer_pose, sink_pose)
+        for x, y in pose["occupied_cells"]
+    }
+    placement_core = RoutingPlacementCore.from_occupied_cells(occupied)
+    precheck = run_exact_routing_precheck(
+        placement_core=placement_core,
+        port_specs=port_specs,
+    )
+
+    assert precheck["status"] == "feasible"
+    assert "qiaoyu_capsule" not in precheck["_analysis"]["commodity_front_metadata"]
 
 
 def test_campaign_resume_rejects_stale_candidate_placement_hash(tmp_path: Path) -> None:

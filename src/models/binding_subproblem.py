@@ -185,6 +185,11 @@ class PortBindingModel:
                 else io_requirements["required_generic_inputs"]
             ).items()
         }
+        self.routing_free_sink_commodities = {
+            str(commodity)
+            for commodity, required in self.required_generic_inputs.items()
+            if int(required) > 0
+        }
 
         self.model = cp_model.CpModel()
         self._solver: Optional[cp_model.CpSolver] = None
@@ -200,6 +205,7 @@ class PortBindingModel:
             "binding_domain_reused_instances": [],
             "required_generic_outputs": dict(self.required_generic_outputs),
             "required_generic_inputs": dict(self.required_generic_inputs),
+            "routing_free_sink_commodities": sorted(self.routing_free_sink_commodities),
         }
 
         self.binding_domains: Dict[str, List[Dict[str, List[Dict[str, Any]]]]] = {}
@@ -819,6 +825,12 @@ class PortBindingModel:
                 continue
             for side_key in ("input_ports", "output_ports"):
                 for port in domain[binding_idx][side_key]:
+                    commodity = str(port["commodity"])
+                    if (
+                        side_key == "output_ports"
+                        and commodity in self.routing_free_sink_commodities
+                    ):
+                        continue
                     port_specs.append(
                         {
                             "instance_id": instance_id,
@@ -826,7 +838,7 @@ class PortBindingModel:
                             "y": int(port["y"]),
                             "dir": str(port["dir"]),
                             "type": "in" if side_key == "input_ports" else "out",
-                            "commodity": str(port["commodity"]),
+                            "commodity": commodity,
                         }
                     )
 
@@ -852,6 +864,8 @@ class PortBindingModel:
             slot_id = slot["slot_id"]
             commodity = selection["generic_outputs"].get(slot_id)
             if commodity is None:
+                continue
+            if str(commodity) in self.routing_free_sink_commodities:
                 continue
             port_specs.append(
                 {

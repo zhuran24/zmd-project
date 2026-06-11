@@ -22,7 +22,7 @@ owner: flow-diagnostic
 给定主模型传递的当前确定性摆放解 $\mathbf{z}^*$，全场 4900 个格子的占据状态已知。我们据此构建一个有向网络流图 $\mathcal{G} = (\mathcal{V}, \mathcal{E})$。
 ### 8.2.1 节点集合 ($\mathcal{V}$)
 1.  **自由网格节点 $\mathcal{V}_{\text{free}}$**：所有未被任何绝对刚体（实体机器、供电桩、幽灵空地）覆盖的空白格子。
-2.  **物理端口节点 $\mathcal{V}_{\text{port}}$**：所有被激活机器暴露在外的、合法的物理输入/输出边缘格。
+2.  **物理端口节点 $\mathcal{V}_{\text{port}}$**：所有被激活机器暴露在外的、合法的物理输入/输出边缘格。**例外（无线 routing-free，见 05 章 §5.4.3 + PROJECT_LOCK preprocess F-03）**：无线终品（`commodity_metadata.sink_kind = "generic_input"`，如 `qiaoyu_capsule`、`valley_battery`）既不暴露消费端 sink 口（协议箱无端口），也**不把生产端实体输出口计入 $\mathcal{V}_{\text{port}}$**——这类终品被无线消费、不在物流网络里流动；`extract_port_specs()` 在源头排除其输出口，故它们根本不进入本子问题的 port 集合（生产设施的原料输入口仍计入）。
 3.  **超级源点与超级汇点 ($\mathcal{V}_{\text{super}}$)**：为实现 03/04 章设定的**"全局物料池化"**，对每一种独立物料 $k \in \mathcal{K}$（如蓝铁矿、钢块），在物理网格之外凭空创建一对超级源点 $S_k$ 与超级汇点 $T_k$。
 ### 8.2.2 边集合与宏观容量 ($\mathcal{E}$ & $C_e$)
 定义网络中的拓扑边及其稳态容量上限（单位：个/Tick）：
