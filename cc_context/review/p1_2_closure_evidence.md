@@ -11,7 +11,7 @@
 | 2 | 几何 master | 算法审 1 轮 (B-01 → 已修) + 再审 1 轮 (2 finding → 已修) + 确认 1 轮零 | 1 | 续审中 |
 | 3 | routing + guard/lazy cut | P0-1 双层修复 + lazy cut 双独立零 finding + guard 完整性 1 轮 (审出对偶条件类缺陷已修*) | 见注 | 审得最透 |
 | 4 | cuts 机制 (F1-F9/PCR) | 算法审 1 轮 (C-3/C-4 latent, 非公开路径) | 0 (latent 待办挂账) | 待续审 |
-| 5 | preprocess 链 | **第 1 轮 (2026-06-12): F-01 P0 + F-02 P1, 已验真** | **0** | **修复在途 (会话 6a2b22ee)** |
+| 5 | preprocess 链 | 第 1 轮 (2026-06-12): F-01 P0 + F-02 P1 已验真; **完整修复已验收落地 (commit fbb0466, 全量 2900 passed 史上首次全绿)** | **0** | **确认轮在途 (round 2, 会话 6a2b34fc)** |
 | 6 | binding 建模忠实度 | 未审 (C 轮只审了 cut 不是 binding 数学) | — | 排队 |
 | 7 | campaign/resume 状态机 | 未审 | — | 排队 |
 | 8 | parallel scheduler 合并 | 未审 | — | 排队 |
@@ -36,7 +36,7 @@
 
 ## 四、当前阻塞闭合的事项 (按序)
 
-1. **preprocess F-01/F-02 完整修复落地** (委托实现在途, 任务书 `GPT_algofix_preprocess_wireless_prompt.md`): 生成器 + binding 无线虚拟槽 + 冻结工件再生 (hash `d5e3911f…` → `adcc2a6e…`) + lock/spec/docs 三件套。
+1. ~~preprocess F-01/F-02 完整修复落地~~ ✅ (commit fbb0466, 2026-06-12 清晨; 全量 2900 passed 首次全绿)。**当前在途 = 其零 finding 确认轮 (round 2)**, 通过才按安全修复完整性计完成。
 2. preprocess 面修复后续审至饱和 (≥2 连零)。
 3. 面 6/7/8 各自首轮 + 饱和。
 4. 面 4 latent 待办 (C-3 F2 容量 / C-4 readiness gate blocker) 处置或显式划出 P1.2 范围 (owner 决策)。
