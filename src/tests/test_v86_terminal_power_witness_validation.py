@@ -101,7 +101,7 @@ def _write_power_project(root: Path, *, include_selected_covering_pole: bool) ->
         "search_status": "CERTIFIED",
         "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 2, "anchor_y": 0},
         "placement_solution": placement_solution,
-        "search_stats": {"probe": "v86_terminal_power_witness"},
+        "search_stats": {"campaign_resumed": False},
     }
     candidate_generation = {
         "max_w": 3,

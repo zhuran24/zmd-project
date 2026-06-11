@@ -20,7 +20,7 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V90, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V91, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
@@ -29,7 +29,7 @@ certified-surface hardening, partial-precheck/release-claim sealing, and
 oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v90_final_result_field_allowlist_sealing
+v91_nested_public_field_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -109,7 +109,10 @@ provenance against the published anchor, so omitting or tampering the
 marker fails closed.  V90 (tenth overnight independent review) closes
 the deny-unknown loop on the final_result top level: only the four
 allowlisted fields may appear, so unbound payloads such as a forged
-routing_solution can no longer reach public artifacts.  The
+routing_solution can no longer reach public artifacts.  V91 (eleventh
+overnight independent review) closes the nested shapes inside those
+allowlisted fields: unknown ghost_rect/search_stats keys and
+contradictory mandatory placement metadata fail closed.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -144,8 +147,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v86_power_witness_terminal_sealing.md`,
 `docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md`,
 `docs/research/p1_2_v88_ghost_anchor_required_sealing.md`,
-`docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md`, and
-`docs/research/p1_2_v90_final_result_field_allowlist_sealing.md`.
+`docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md`,
+`docs/research/p1_2_v90_final_result_field_allowlist_sealing.md`, and
+`docs/research/p1_2_v91_nested_public_field_sealing.md`.
 
 Daily consistency check:
 

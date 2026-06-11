@@ -79,7 +79,7 @@ def _terminal_state(root: Path, record_solution: dict[str, object]) -> dict[str,
         "search_status": "CERTIFIED",
         "ghost_rect": {"w": 2, "h": 3, "area": 6, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": placement_solution,
-        "search_stats": {"probe": "v89_terminal_ghost_pick_protocol"},
+        "search_stats": {"campaign_resumed": False},
     }
     candidate_generation = {
         "max_w": 3,

@@ -132,7 +132,7 @@ def test_terminal_project_validator_rejects_unforced_power_pole_blocker(
         "search_status": "CERTIFIED",
         "ghost_rect": {"w": 3, "h": 1, "area": 3, "anchor_x": 0, "anchor_y": 2},
         "placement_solution": placement_solution,
-        "search_stats": {"probe": "v87_terminal_power_pole_irredundancy"},
+        "search_stats": {"campaign_resumed": False},
     }
     candidate_generation = {
         "max_w": 3,

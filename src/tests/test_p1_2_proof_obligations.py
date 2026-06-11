@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v90_final_result_field_allowlist_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v91_nested_public_field_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -112,3 +112,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_terminal_project_validator_rejects_missing_candidate_ghost_pick" in export_tests
     assert "test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anchor" in export_tests
     assert "test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor" in export_tests
+    assert "test_v91_rejects_nested_ghost_rect_fake_certified_claim" in export_tests
+    assert "test_v91_rejects_search_stats_fake_certified_claim" in export_tests
+    assert "test_v91_rejects_contradictory_mandatory_solution_metadata" in export_tests
+    assert "test_v91_rejects_mandatory_operation_type_metadata_mismatch" in export_tests

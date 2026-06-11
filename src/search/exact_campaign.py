@@ -58,6 +58,43 @@ TERMINAL_CERTIFIED_FINAL_RESULT_ALLOWED_FIELDS = frozenset(
         "search_stats",
     }
 )
+TERMINAL_CERTIFIED_GHOST_RECT_ALLOWED_FIELDS = frozenset(
+    {
+        "w",
+        "h",
+        "area",
+        "anchor_x",
+        "anchor_y",
+    }
+)
+TERMINAL_CERTIFIED_SEARCH_STATS_ALLOWED_FIELDS = frozenset(
+    {
+        "attempts",
+        "explicit_candidate_solves",
+        "solve_mode",
+        "campaign_resumed",
+        "frontier_peak_size",
+        "derived_pruned_candidates",
+        "frontier_selection_policy",
+        "frontier_candidate_metrics",
+        "solve_time_seconds",
+        "benders_iterations",
+    }
+)
+TERMINAL_CERTIFIED_FRONTIER_METRIC_ALLOWED_FIELDS = frozenset(
+    {
+        "selection_score_num",
+        "selection_score_den",
+        "certification_prune_gain",
+        "infeasible_prune_gain",
+        "anchor_count",
+        "frontier_size",
+        "potential_domain_size",
+        "probe_candidate",
+        "probe_prune_gain",
+        "probe_resume_pending",
+    }
+)
 REQUIRED_STATE_FIELDS = {
     "schema_version",
     "solve_mode",
@@ -202,6 +239,101 @@ def _solution_without_ghost_marker(solution: Mapping[str, Any]) -> Dict[str, Any
     return {str(key): value for key, value in solution.items() if str(key) != "ghost_pick"}
 
 
+def _terminal_certified_ghost_rect_unknown_field(ghost_rect: Mapping[str, Any]) -> Optional[str]:
+    unknown_fields = sorted(
+        str(field)
+        for field in ghost_rect.keys()
+        if str(field) not in TERMINAL_CERTIFIED_GHOST_RECT_ALLOWED_FIELDS
+    )
+    if unknown_fields:
+        return f"terminal_certified_final_result_ghost_rect_unknown_field:{unknown_fields[0]}"
+    return None
+
+
+def _nonnegative_number(value: Any) -> bool:
+    return (
+        not isinstance(value, bool)
+        and isinstance(value, (int, float))
+        and float(value) >= 0.0
+        and float(value) != float("inf")
+    )
+
+
+def _terminal_certified_search_stats_violation(raw_search_stats: Any) -> Optional[str]:
+    if raw_search_stats is None:
+        return None
+    if not isinstance(raw_search_stats, Mapping):
+        return "terminal_certified_final_result_search_stats_invalid"
+    unknown_fields = sorted(
+        str(field)
+        for field in raw_search_stats.keys()
+        if str(field) not in TERMINAL_CERTIFIED_SEARCH_STATS_ALLOWED_FIELDS
+    )
+    if unknown_fields:
+        return f"terminal_certified_final_result_search_stats_unknown_field:{unknown_fields[0]}"
+
+    for field in (
+        "attempts",
+        "explicit_candidate_solves",
+        "frontier_peak_size",
+        "derived_pruned_candidates",
+        "benders_iterations",
+    ):
+        if field in raw_search_stats:
+            try:
+                value = _strict_resume_int(raw_search_stats.get(field), f"final_result.search_stats.{field}")
+            except Exception:
+                return "terminal_certified_final_result_search_stats_invalid"
+            if int(value) < 0:
+                return "terminal_certified_final_result_search_stats_invalid"
+
+    if "solve_time_seconds" in raw_search_stats and not _nonnegative_number(
+        raw_search_stats.get("solve_time_seconds")
+    ):
+        return "terminal_certified_final_result_search_stats_invalid"
+    if "solve_mode" in raw_search_stats and str(raw_search_stats.get("solve_mode")) != "certified_exact":
+        return "terminal_certified_final_result_search_stats_invalid"
+    if "campaign_resumed" in raw_search_stats and not isinstance(
+        raw_search_stats.get("campaign_resumed"),
+        bool,
+    ):
+        return "terminal_certified_final_result_search_stats_invalid"
+    if "frontier_selection_policy" in raw_search_stats:
+        try:
+            _strict_nonempty_string(
+                raw_search_stats.get("frontier_selection_policy"),
+                "final_result.search_stats.frontier_selection_policy",
+            )
+        except Exception:
+            return "terminal_certified_final_result_search_stats_invalid"
+
+    raw_metrics = raw_search_stats.get("frontier_candidate_metrics")
+    if raw_metrics is not None:
+        if not isinstance(raw_metrics, Mapping):
+            return "terminal_certified_final_result_search_stats_invalid"
+        unknown_metric_fields = sorted(
+            str(field)
+            for field in raw_metrics.keys()
+            if str(field) not in TERMINAL_CERTIFIED_FRONTIER_METRIC_ALLOWED_FIELDS
+        )
+        if unknown_metric_fields:
+            return (
+                "terminal_certified_final_result_search_stats_frontier_metric_unknown_field:"
+                f"{unknown_metric_fields[0]}"
+            )
+        for field, raw_value in raw_metrics.items():
+            try:
+                value = _strict_resume_int(
+                    raw_value,
+                    f"final_result.search_stats.frontier_candidate_metrics.{field}",
+                )
+            except Exception:
+                return "terminal_certified_final_result_search_stats_invalid"
+            if int(value) < 0:
+                return "terminal_certified_final_result_search_stats_invalid"
+    return None
+
+
 def _terminal_candidate_ghost_pick_binding_violation(
     state: Mapping[str, Any],
     *,
@@ -219,6 +351,9 @@ def _terminal_candidate_ghost_pick_binding_violation(
     ghost_rect = final_result.get("ghost_rect")
     if not isinstance(ghost_rect, Mapping):
         return "terminal_certified_final_result_ghost_rect_invalid"
+    ghost_rect_unknown_field = _terminal_certified_ghost_rect_unknown_field(ghost_rect)
+    if ghost_rect_unknown_field is not None:
+        return ghost_rect_unknown_field
     try:
         ghost_w = _strict_resume_int(ghost_rect.get("w"), "final_result.ghost_rect.w")
         ghost_h = _strict_resume_int(ghost_rect.get("h"), "final_result.ghost_rect.h")
@@ -449,7 +584,7 @@ def _is_authorized_exact_pose_optional_solution_entry(
     if raw_pose_id is not None and str(raw_pose_id) != pose_id:
         return False
     raw_is_mandatory = entry.get("is_mandatory")
-    if raw_is_mandatory is not None and bool(raw_is_mandatory) is not False:
+    if raw_is_mandatory is not None and raw_is_mandatory is not False:
         return False
     raw_bound_type = entry.get("bound_type")
     if raw_bound_type is not None and str(raw_bound_type) != "exact_pose_optional":
@@ -458,6 +593,102 @@ def _is_authorized_exact_pose_optional_solution_entry(
     if raw_solve_mode is not None and str(raw_solve_mode) != "certified_exact":
         return False
     return True
+
+
+def _terminal_solution_entry_pose_metadata_violation(
+    *,
+    instance_id: str,
+    entry: Mapping[str, Any],
+    pose: Mapping[str, Any],
+) -> Optional[str]:
+    raw_pose_id = entry.get("pose_id")
+    if raw_pose_id is not None and str(raw_pose_id) != str(pose.get("pose_id", "")):
+        return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+
+    raw_anchor = entry.get("anchor")
+    if raw_anchor is not None:
+        pose_anchor = pose.get("anchor")
+        if not isinstance(raw_anchor, Mapping) or not isinstance(pose_anchor, Mapping):
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+        try:
+            raw_anchor_x = _strict_resume_int(
+                raw_anchor.get("x"),
+                f"final_result.placement_solution.{instance_id}.anchor.x",
+            )
+            raw_anchor_y = _strict_resume_int(
+                raw_anchor.get("y"),
+                f"final_result.placement_solution.{instance_id}.anchor.y",
+            )
+            pose_anchor_x = _strict_resume_int(
+                pose_anchor.get("x"),
+                f"candidate_placements.{instance_id}.anchor.x",
+            )
+            pose_anchor_y = _strict_resume_int(
+                pose_anchor.get("y"),
+                f"candidate_placements.{instance_id}.anchor.y",
+            )
+        except Exception:
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+        if int(raw_anchor_x) != int(pose_anchor_x) or int(raw_anchor_y) != int(pose_anchor_y):
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+
+    pose_params = pose.get("pose_params")
+    raw_orientation = entry.get("orientation")
+    if raw_orientation is not None:
+        if not isinstance(pose_params, Mapping):
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+        try:
+            raw_orientation_int = _strict_resume_int(
+                raw_orientation,
+                f"final_result.placement_solution.{instance_id}.orientation",
+            )
+            pose_orientation_int = _strict_resume_int(
+                pose_params.get("orientation", 0),
+                f"candidate_placements.{instance_id}.pose_params.orientation",
+            )
+        except Exception:
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+        if int(raw_orientation_int) != int(pose_orientation_int):
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+
+    raw_port_mode = entry.get("port_mode")
+    if raw_port_mode is not None:
+        expected_port_mode = (
+            pose_params.get("port_mode", "default")
+            if isinstance(pose_params, Mapping)
+            else "default"
+        )
+        if str(raw_port_mode) != str(expected_port_mode):
+            return "terminal_certified_final_result_solution_pose_metadata_mismatch"
+    return None
+
+
+def _mandatory_solution_entry_metadata_violation(
+    *,
+    instance_id: str,
+    entry: Mapping[str, Any],
+    expected_instance: Mapping[str, Any],
+) -> Optional[str]:
+    raw_instance_id = entry.get("instance_id")
+    if raw_instance_id is not None and str(raw_instance_id) != str(instance_id):
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+    raw_is_mandatory = entry.get("is_mandatory")
+    if raw_is_mandatory is not None and raw_is_mandatory is not True:
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+    raw_bound_type = entry.get("bound_type")
+    if raw_bound_type is not None and str(raw_bound_type) != "exact":
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+    raw_operation_type = entry.get("operation_type")
+    if (
+        raw_operation_type is not None
+        and "operation_type" in expected_instance
+        and str(raw_operation_type) != str(expected_instance.get("operation_type"))
+    ):
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+    raw_solve_mode = entry.get("solve_mode")
+    if raw_solve_mode is not None and str(raw_solve_mode) != "certified_exact":
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+    return None
 
 
 def _validate_terminal_solution_against_project(
@@ -519,6 +750,21 @@ def _validate_terminal_solution_against_project(
         if template is None:
             return "terminal_certified_project_solution_authority_invalid"
         pose = pool[int(pose_idx)]
+        pose_metadata_reason = _terminal_solution_entry_pose_metadata_violation(
+            instance_id=str(instance_id),
+            entry=entry,
+            pose=pose,
+        )
+        if pose_metadata_reason is not None:
+            return pose_metadata_reason
+        if expected_instance is not None:
+            mandatory_metadata_reason = _mandatory_solution_entry_metadata_violation(
+                instance_id=str(instance_id),
+                entry=entry,
+                expected_instance=expected_instance,
+            )
+            if mandatory_metadata_reason is not None:
+                return mandatory_metadata_reason
         if expected_instance is None:
             if not _is_authorized_exact_pose_optional_solution_entry(
                 instance_id=str(instance_id),
@@ -1254,10 +1500,16 @@ def terminal_certified_final_result_violation(
         return f"terminal_certified_final_result_unknown_field:{unknown_final_result_fields[0]}"
     if str(final_result.get("search_status", "")) != "CERTIFIED":
         return "terminal_certified_final_result_status_invalid"
+    search_stats_reason = _terminal_certified_search_stats_violation(final_result.get("search_stats"))
+    if search_stats_reason is not None:
+        return search_stats_reason
 
     ghost_rect = final_result.get("ghost_rect")
     if not isinstance(ghost_rect, Mapping):
         return "terminal_certified_final_result_ghost_rect_invalid"
+    ghost_rect_unknown_field = _terminal_certified_ghost_rect_unknown_field(ghost_rect)
+    if ghost_rect_unknown_field is not None:
+        return ghost_rect_unknown_field
     try:
         ghost_w = _strict_resume_int(ghost_rect.get("w"), "final_result.ghost_rect.w")
         ghost_h = _strict_resume_int(ghost_rect.get("h"), "final_result.ghost_rect.h")

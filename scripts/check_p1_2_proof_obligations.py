@@ -196,6 +196,10 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_terminal_project_validator_rejects_missing_candidate_ghost_pick",
             "test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anchor",
             "test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor",
+            "test_v91_rejects_nested_ghost_rect_fake_certified_claim",
+            "test_v91_rejects_search_stats_fake_certified_claim",
+            "test_v91_rejects_contradictory_mandatory_solution_metadata",
+            "test_v91_rejects_mandatory_operation_type_metadata_mismatch",
         }
     ),
     "PO-PHASE-GATE-PROVENANCE": frozenset(
@@ -1264,6 +1268,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "terminal_certified_candidate_solution_ghost_pick_missing",
         "terminal_certified_candidate_solution_ghost_pick_mismatch",
         "terminal_certified_final_result_unknown_field",
+        "terminal_certified_final_result_ghost_rect_unknown_field",
+        "terminal_certified_final_result_search_stats_unknown_field",
     ):
         if needle not in exact_campaign_source_v83:
             errors.append(
