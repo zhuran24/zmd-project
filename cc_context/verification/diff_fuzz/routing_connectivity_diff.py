@@ -77,6 +77,16 @@ def verify_routes_connectivity(
     nodes = [_node_of(r) for r in routes]
     node_set = set(nodes)
 
+    # Capacity: the model adds AddAtMostOne per (cell, layer) ACROSS commodities
+    # (routing_subproblem._add_capacity_constraints). A selected routing must put
+    # at most one route-state on each (x, y, layer).
+    cell_layer_count: Dict[Tuple[int, int, int], int] = defaultdict(int)
+    for (x, y, layer, _fi, _fo, _c) in nodes:
+        cell_layer_count[(x, y, layer)] += 1
+    for (x, y, layer), cnt in cell_layer_count.items():
+        if cnt > 1:
+            reasons.append(f"capacity: ({x},{y},L{layer}) carries {cnt} route-states")
+
     # capacity: at most one ground route-state per (x,y) per commodity, and no
     # two distinct commodities share a ground cell (cell-layer capacity = 1).
     ground_cell_users: Dict[Tuple[int, int], Set[str]] = defaultdict(set)
@@ -143,12 +153,17 @@ def verify_routes_connectivity(
         for v in sink_nodes_by_front.values():
             all_sinks |= v
 
+        # Port adherence: the model forces sum(states at front in that dir) == 1
+        # per port (_add_port_adherence). Exactly one selected ground state must
+        # sit on each front in the port direction.
         for front in s_fronts:
-            if not src_nodes_by_front.get(front):
-                reasons.append(f"[{c}] source front {front} has no selected state")
+            cnt = len(src_nodes_by_front.get(front, set()))
+            if cnt != 1:
+                reasons.append(f"[{c}] source front {front} has {cnt} selected states (need exactly 1)")
         for front in k_fronts:
-            if not sink_nodes_by_front.get(front):
-                reasons.append(f"[{c}] sink front {front} has no selected state")
+            cnt = len(sink_nodes_by_front.get(front, set()))
+            if cnt != 1:
+                reasons.append(f"[{c}] sink front {front} has {cnt} selected states (need exactly 1)")
 
         # every source front must reach a sink (drainage) ...
         for front, snodes in src_nodes_by_front.items():
@@ -249,7 +264,18 @@ def _self_test() -> int:
         print("SELF-TEST FAIL: the A-1 dead-end was NOT caught.")
         return 1
 
-    print("[self-test] PASS — verifier accepts valid flow, catches A-1 dead-end.")
+    # capacity violation: a second ore state on (2,0,L0) must be flagged
+    cap = connected + [
+        {"x": 2, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["S"], "flow_out": ["N"]},
+    ]
+    ok3, reasons3 = verify_routes_connectivity(cap, single_src, ["ore"])
+    flagged_cap = any("capacity" in r for r in reasons3)
+    print(f"[self-test] capacity dup-cell: ok={ok3} capacity_flagged={flagged_cap}")
+    if ok3 or not flagged_cap:
+        print("SELF-TEST FAIL: capacity overload not caught.")
+        return 1
+
+    print("[self-test] PASS — accepts valid flow; catches A-1 dead-end + capacity overload.")
     return 0
 
 
