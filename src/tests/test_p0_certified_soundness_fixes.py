@@ -420,6 +420,140 @@ def test_routing_lazy_connectivity_cut_self_check_falls_back_to_nogood(monkeypat
     assert routing.extract_routes()
 
 
+def test_routing_guard_rejects_source_front_without_sink_reachability() -> None:
+    """A source front whose flow dead-ends must be rejected even when all sinks are fed."""
+
+    connected_path = {
+        (1, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 0, ("W",), ("E",), "ore"),
+        (3, 0, 0, ("W",), ("E",), "ore"),
+        (4, 0, 0, ("W",), ("N",), "ore"),
+        (4, 1, 0, ("S",), ("E",), "ore"),
+        (5, 1, 0, ("W",), ("E",), "ore"),
+        (6, 1, 0, ("W",), ("S",), "ore"),
+        (6, 0, 0, ("N",), ("W",), "ore"),
+        (5, 0, 0, ("E",), ("W",), "ore"),
+    }
+    dead_end_loop = {
+        (1, 3, 0, ("E", "W"), ("N",), "ore"),
+        (1, 4, 0, ("S",), ("E",), "ore"),
+        (2, 4, 0, ("W",), ("S",), "ore"),
+        (2, 3, 0, ("N",), ("W",), "ore"),
+    }
+    incumbent = connected_path | dead_end_loop
+    active_cells = {(int(state[0]), int(state[1])) for state in incumbent}
+    port_specs = [
+        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "src_b", "x": 0, "y": 3, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        ["ore"],
+        domain_analysis=_routing_domain_analysis({"ore": active_cells}),
+    )
+    routing.build()
+    _force_exact_route_states(routing, incumbent)
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["rejected_incumbents"] == 1
+    assert routing.extract_routes() == []
+    failure = guard["attempts"][0]["connectivity"]["failures"][0]
+    assert failure["source_fronts_without_sink"] == [[1, 3, "W"]]
+    assert failure["unreachable_sink_fronts"] == []
+
+
+def test_geometric_power_coverage_falls_back_for_mixed_powered_footprints() -> None:
+    """One rectangular pose must not re-enable bbox witnesses for L-shaped siblings."""
+
+    instances = [
+        {
+            "instance_id": "blocker_001",
+            "facility_type": "blocker",
+            "operation_type": "block",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    pools = {
+        "blocker": [
+            {
+                "pose_id": "block_B",
+                "anchor": {"x": 2, "y": 1},
+                "occupied_cells": [[2, 1]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "protocol_storage_box": [
+            {
+                "pose_id": "box_A_hole_false",
+                "anchor": {"x": 0, "y": 0},
+                "pose_params": {"orientation": "L", "port_mode": "same"},
+                "occupied_cells": [[0, 0], [0, 1], [1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "box_B_real_covered_but_blocked",
+                "anchor": {"x": 1, "y": 1},
+                "pose_params": {"orientation": "L", "port_mode": "same"},
+                "occupied_cells": [[1, 1], [1, 2], [2, 1]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "box_C_rect_not_covered",
+                "anchor": {"x": 0, "y": 2},
+                "pose_params": {"orientation": "R", "port_mode": "same"},
+                "occupied_cells": [[0, 2], [0, 3]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ],
+        "power_pole": [
+            {
+                "pose_id": "pole_covers_A_hole_and_B",
+                "anchor": {"x": 1, "y": 1},
+                "occupied_cells": [[3, 3]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[1, 1], [1, 2], [2, 1], [2, 2]],
+            }
+        ],
+    }
+    rules = {
+        "globals": {"grid": {"width": 4, "height": 4}},
+        "facility_templates": {
+            "blocker": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "protocol_storage_box": {"dimensions": {"w": 2, "h": 2}, "needs_power": True},
+            "power_pole": {
+                "dimensions": {"w": 1, "h": 1},
+                "needs_power": False,
+                "power_coverage_radius": 0,
+            },
+        },
+    }
+    generic_io_requirements = {"required_generic_inputs": {"ore": 1}, "required_generic_outputs": {}}
+    core = MasterPlacementModel.build_exact_core(
+        instances,
+        pools,
+        rules,
+        generic_io_requirements=generic_io_requirements,
+        enable_symmetry_breaking=False,
+    )
+    overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=None)
+
+    assert overlay.build_stats["power_coverage"]["representation"] == "coordinate_cover_table"
+    assert overlay._power_coverers_by_template_pose["protocol_storage_box"] == {0: [], 1: [0], 2: []}
+    assert overlay.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
+
+
 def test_coordinate_powered_pose_without_occupied_cells_fails_closed() -> None:
     """Missing footprint evidence on a powered pose must not fall through to bbox witnesses."""
 
