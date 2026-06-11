@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v97_canonical_checkpoint_authority_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v98_b5a_symlink_authority_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -110,6 +110,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v97_certified_surface_rejects_certified_shadow_campaign_checkpoint" in export_tests
     assert "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint" in export_tests
     assert "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier" in export_tests
+    assert "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier" in export_tests
     assert "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness" in export_tests
     assert "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle" in export_tests
     assert "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance" in export_tests

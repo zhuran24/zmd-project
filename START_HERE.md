@@ -32,7 +32,7 @@ python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
 That command is expected to fail at the current baseline because P1.3B is not
 opened by an owner manual decision. The repo no longer computes the clean-review
 counter; the owner maintains that count outside the repository.  The current
-post-V97 review anchor is `v97_canonical_checkpoint_authority_sealing`,
+post-V98 review anchor is `v98_b5a_symlink_authority_sealing`,
 which keeps certified lifecycle evidence split into cut replay (persisted
 exact_safe_cuts are telemetry, never proof objects), master-domain
 (time-budget-partial precheck groups never stand in for complete infeasibility
@@ -42,7 +42,7 @@ bound, and deny-unknown evidence keys), disk-authoritative delivery-manifest
 writing, canonical certified manifest publication, export-surface proof
 obligations (the single-base release path rejects self-claimed CERTIFIED run
 summaries), and closed allowlist handling for certified `EXACT_*` env knobs
-after V57-V97.
+after V57-V98.
 
 ## Knowledge Surface Roles
 

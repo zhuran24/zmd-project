@@ -600,10 +600,17 @@ def _anchor_summary(best_certified: Mapping[str, Any]) -> Dict[str, Any]:
 
 
 def _resolve_path(project_root: Path, path: Path) -> Path:
+    """Return the caller-visible campaign path without erasing symlinks.
+
+    B5A delegates public CERTIFIED authority to the exact-campaign inspector and
+    ultimately to ``certified_surface``.  Resolving here would wash a symlinked
+    caller path before that verifier can reject the non-regular artifact path.
+    """
+
     path = Path(path)
     if path.is_absolute():
-        return path.resolve()
-    return (project_root / path).resolve()
+        return path
+    return project_root / path
 
 
 def _display_path(project_root: Path, path: Path) -> str:

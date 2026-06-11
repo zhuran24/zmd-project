@@ -194,6 +194,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v97_certified_surface_rejects_certified_shadow_campaign_checkpoint",
             "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint",
             "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier",
+            "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier",
             "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
             "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
             "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
