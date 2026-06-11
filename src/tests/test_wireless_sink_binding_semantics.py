@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from src.models.binding_subproblem import PortBindingModel
+from src.models.routing_binding_context import build_routing_binding_context
 from src.models.flow_subproblem import FlowSubproblem, build_flow_network
 from src.models.routing_subproblem import (
     RoutingPlacementCore,
@@ -248,6 +249,76 @@ def test_wireless_sink_commodity_does_not_reenter_routing_from_producer_output()
 
     assert precheck["status"] == "feasible"
     assert "qiaoyu_capsule" not in precheck["_analysis"]["commodity_front_metadata"]
+
+
+def test_routing_aware_filter_ignores_blocked_wireless_producer_output_fronts() -> None:
+    producer_pose = _filling_capsule_pose()
+    first_blocker_pose = _wireless_box_pose(anchor_x=10, anchor_y=6)
+    second_blocker_pose = _wireless_box_pose(anchor_x=13, anchor_y=6)
+    placement_solution = {
+        "filling_capsule_001": {
+            "facility_type": "manufacturing_6x4",
+            "pose_idx": 0,
+            "pose_id": producer_pose["pose_id"],
+            "anchor": dict(producer_pose["anchor"]),
+            "orientation": 0,
+            "port_mode": "probe",
+        },
+        "pose_optional::protocol_storage_box::blocks_left_output_fronts": {
+            "facility_type": "protocol_storage_box",
+            "pose_idx": 0,
+            "pose_id": first_blocker_pose["pose_id"],
+            "anchor": dict(first_blocker_pose["anchor"]),
+            "orientation": 0,
+            "port_mode": "omni",
+            "bound_type": "exact_pose_optional",
+            "solve_mode": "certified_exact",
+        },
+        "pose_optional::protocol_storage_box::blocks_right_output_fronts": {
+            "facility_type": "protocol_storage_box",
+            "pose_idx": 1,
+            "pose_id": second_blocker_pose["pose_id"],
+            "anchor": dict(second_blocker_pose["anchor"]),
+            "orientation": 0,
+            "port_mode": "omni",
+            "bound_type": "exact_pose_optional",
+            "solve_mode": "certified_exact",
+        },
+    }
+    facility_pools = {
+        "manufacturing_6x4": [producer_pose],
+        "protocol_storage_box": [first_blocker_pose, second_blocker_pose],
+    }
+    routing_context = build_routing_binding_context(
+        placement_solution,
+        facility_pools,
+        grid_w=70,
+        grid_h=70,
+    )
+    model = PortBindingModel(
+        placement_solution=placement_solution,
+        facility_pools=facility_pools,
+        instances=[
+            {
+                "instance_id": "filling_capsule_001",
+                "facility_type": "manufacturing_6x4",
+                "operation_type": "filling_capsule",
+                "is_mandatory": True,
+            }
+        ],
+        required_generic_outputs={},
+        required_generic_inputs={"qiaoyu_capsule": 1},
+        project_root=PROJECT_ROOT,
+        routing_context=routing_context,
+    )
+    model.build()
+
+    assert model.extract_empty_binding_domain_instances() == []
+    assert len(model.binding_domains["filling_capsule_001"]) == 540
+    assert model.routing_aware_filter_stats["front_blocked_patterns_pruned"] == 0
+    assert model.extract_routing_aware_certificates() == []
+    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    assert all(spec["commodity"] != "qiaoyu_capsule" for spec in model.extract_port_specs())
 
 
 def test_campaign_resume_rejects_stale_candidate_placement_hash(tmp_path: Path) -> None:

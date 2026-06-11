@@ -181,3 +181,17 @@ def test_semantic_production_target_requires_generic_input_sink(raw_rules_dict):
 
     with pytest.raises(SemanticValidationError, match="必须在 commodity_metadata 中声明 sink_kind='generic_input'"):
         validate_canonical_document(doc)
+
+
+def test_semantic_generic_input_sink_must_not_be_recipe_input(raw_rules_dict):
+    mutated = copy.deepcopy(raw_rules_dict)
+    mutated["commodity_metadata"]["steel_part"]["sink_kind"] = "generic_input"
+    mutated["production_targets"]["steel_part"] = {
+        "mode": "equivalent_full_speed_lines",
+        "value": 1.0,
+        "final_recipe_id": "parts_maker",
+    }
+    doc = CanonicalRulesDocument.model_validate(mutated)
+
+    with pytest.raises(SemanticValidationError, match="不能同时作为配方输入"):
+        validate_canonical_document(doc)

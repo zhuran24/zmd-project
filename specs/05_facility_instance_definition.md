@@ -104,7 +104,7 @@ owner: preprocess-instances
 
 被选中的协议箱 pose 必须只暴露 3 个虚拟 generic input 槽：槽参与 binding 的 commodity 分配与 `__unused__` 互斥数学，但不携带坐标、方向或 port cell，也不经过 routing front 可用性过滤。`extract_port_specs()` 不得为这些虚拟槽输出 port spec，因此 routing 与 flow 子问题不会收到通向协议箱的 sink front；无线消费只消耗 binding 容量，不要求皮带可达。
 
-**生产端对偶 (preprocess F-03)**：上面讲的是无线消费端（虚拟槽不进 routing），生产端同样要对偶处理。无线终品（canonical `commodity_metadata` 中 `sink_kind = "generic_input"`，即 positive `required_generic_inputs`，如 `qiaoyu_capsule`、`valley_battery`；它们只作 recipe output、从不作任何 recipe input，是纯终品）被无线消费、在 routing 网络里没有 sink，因此其**生产设施的实体输出口**（以及该 commodity 的任何 generic-output 口）也必须从 `extract_port_specs()` 排除——生产设施的原料**输入口**仍保留 routing。若把这些输出口导出成 routing terminal，会在 routing 里制造一个无 sink 的孤立 source，触发虚假 `front_blocked` / false-INFEASIBLE，错误拒绝合法布局。`extract_port_specs()` 是商品进入 routing/precheck 的唯一通道，故排除逻辑落在此处。
+**生产端对偶 (preprocess F-03)**：上面讲的是无线消费端（虚拟槽不进 routing），生产端同样要对偶处理。无线终品（canonical `commodity_metadata` 中 `sink_kind = "generic_input"`，即 positive `required_generic_inputs`，如 `qiaoyu_capsule`、`valley_battery`；它们只作 recipe output、从不作任何 recipe input，是纯终品）被无线消费、在 routing 网络里没有 sink，因此其**生产设施的实体输出口**（以及该 commodity 的任何 generic-output 口）也必须从 `extract_port_specs()` 排除——生产设施的原料**输入口**仍保留 routing。若把这些输出口导出成 routing terminal，会在 routing 里制造一个无 sink 的孤立 source，触发虚假 `front_blocked` / false-INFEASIBLE，错误拒绝合法布局。排除必须覆盖**所有**消费端口 front 可达性的位置：`extract_port_specs()`（routing/precheck 的入口）、RAB build-time 域过滤 `_filter_pose_binding_domain()` 与 RAB blocker 证书（F03-R3-01 教训：build-time 过滤是不经 port specs 的独立侧门）。另有语义校验 fail-closed 守卫：`sink_kind = "generic_input"` 商品一旦同时出现在任何 recipe input 中即拒绝（dual-role 会让本排除静默断真实消费者的料）。
 
 ---
 

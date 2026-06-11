@@ -124,9 +124,12 @@ class CanonicalSemanticValidator:
 
     def _check_commodity_metadata(self) -> None:
         producers: dict[str, list[str]] = {}
+        consumers: dict[str, list[str]] = {}
         for recipe_id, recipe in self.doc.recipes.items():
             for commodity_id in recipe.outputs:
                 producers.setdefault(commodity_id, []).append(recipe_id)
+            for commodity_id in recipe.inputs:
+                consumers.setdefault(commodity_id, []).append(recipe_id)
 
         for commodity_id, meta in self.doc.commodity_metadata.items():
             if meta.source_kind == "cycle_internal" and not meta.cycle_group:
@@ -136,6 +139,11 @@ class CanonicalSemanticValidator:
             if meta.sink_kind == "generic_input" and commodity_id not in self.doc.production_targets:
                 self.errors.append(
                     f"商品元数据冲突：generic_input 商品 '{commodity_id}' 必须对应一个 production_target。"
+                )
+            if meta.sink_kind == "generic_input" and commodity_id in consumers:
+                self.errors.append(
+                    f"商品元数据冲突：generic_input 商品 '{commodity_id}' 是 routing-free 无线终品，不能同时作为配方输入；"
+                    f"否则生产端输出口会被 routing 排除但下游仍需要实体供料。消费者 recipes: {', '.join(sorted(consumers[commodity_id]))}。"
                 )
 
         for commodity_id in self.doc.production_targets:

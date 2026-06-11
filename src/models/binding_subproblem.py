@@ -387,11 +387,15 @@ class PortBindingModel:
         """RAB-SEP Phase 1: layout-local front-free filter on raw binding patterns.
 
         Returns NEW list (raw cache not polluted). Pattern is kept iff every
-        active port (input + output) has front cell in-grid and free.
+        routing-visible active port has front cell in-grid and free. Routing-free
+        wireless final commodities are excluded on the producer-output side here,
+        matching extract_port_specs(): their output ports are binding choices only,
+        not routing terminals.
 
         Phase 3 side effect: collect blocker instance_ids for cert generation
-        — every blocker that occupies an active port front cell across any
-        raw pattern is recorded. Used by extract_routing_aware_certificates().
+        — every blocker that occupies a routing-visible active port front cell
+        across any raw pattern is recorded. Used by
+        extract_routing_aware_certificates().
         """
         if self.routing_context is None:
             return list(raw_patterns)
@@ -400,7 +404,13 @@ class PortBindingModel:
         blockers: Set[str] = set()
         for pattern in raw_patterns:
             ok = True
-            for port in pattern.get("input_ports", []) + pattern.get("output_ports", []):
+            routing_visible_ports = list(pattern.get("input_ports", []))
+            routing_visible_ports.extend(
+                port
+                for port in pattern.get("output_ports", [])
+                if str(port.get("commodity", "")) not in self.routing_free_sink_commodities
+            )
+            for port in routing_visible_ports:
                 status = port_front_status(port, self.routing_context, owner_instance_id)
                 if not (status.in_grid and status.is_free):
                     ok = False
