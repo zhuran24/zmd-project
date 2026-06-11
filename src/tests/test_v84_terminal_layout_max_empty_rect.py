@@ -222,6 +222,48 @@ def test_v84_exact_artifact_hashes_reject_symlinked_project_authority(
         compute_exact_artifact_hashes(root)
 
 
+def test_v96_exact_artifact_hashes_reject_symlinked_parent_project_authority(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "symlinked_exact_artifact_parent"
+    external_preprocessed_dir = tmp_path / "external_preprocessed_authority"
+    (root / "data").mkdir(parents=True)
+    (root / "rules").mkdir(parents=True)
+    external_preprocessed_dir.mkdir(parents=True)
+
+    _write_json(
+        root / "rules" / "canonical_rules.json",
+        {
+            "globals": {
+                "grid": {"width": 2, "height": 1},
+                "empty_rectangle": {
+                    "objective": "max_lex_area_min_side",
+                    "min_side_admissibility": 1,
+                },
+            }
+        },
+    )
+    _write_json(
+        external_preprocessed_dir / "mandatory_exact_instances.json",
+        [],
+    )
+    _write_json(
+        external_preprocessed_dir / "candidate_placements.json",
+        {"facility_pools": {}},
+    )
+    _write_json(
+        external_preprocessed_dir / "generic_io_requirements.json",
+        {"required_generic_inputs": {}, "required_generic_outputs": {}},
+    )
+    (root / "data" / "preprocessed").symlink_to(
+        external_preprocessed_dir,
+        target_is_directory=True,
+    )
+
+    with pytest.raises(ValueError, match="exact artifact must be a regular file"):
+        compute_exact_artifact_hashes(root)
+
+
 def test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance(
     tmp_path: Path,
 ) -> None:

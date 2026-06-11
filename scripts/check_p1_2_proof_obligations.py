@@ -189,6 +189,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_terminal_project_validator_rejects_surplus_protocol_storage_box_blockers",
             "test_v95_rejects_contradictory_pose_optional_public_metadata",
             "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field",
+            "test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent",
             "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
             "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
             "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",

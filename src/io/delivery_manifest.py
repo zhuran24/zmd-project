@@ -17,6 +17,7 @@ from src.io.serializer import (
 )
 from src.search.exact_campaign import (
     DEFAULT_CAMPAIGN_FILENAME,
+    _path_has_symlink_component,
     atomic_write_json,
     candidate_key,
     certified_terminal_evidence_violation,
@@ -411,7 +412,7 @@ def _artifact_entry(project_root: Path, path: Path) -> Dict[str, Any]:
 
 
 def _is_regular_file(path: Path) -> bool:
-    return bool(path.is_file() and not path.is_symlink())
+    return bool(path.is_file() and not _path_has_symlink_component(path))
 
 
 def _file_sha256(path: Path) -> str:

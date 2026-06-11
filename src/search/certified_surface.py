@@ -25,6 +25,7 @@ from src.io.output_schema import blueprint_output_path
 from src.io.serializer import export_certified_blueprint
 from src.search.exact_campaign import (
     DEFAULT_CAMPAIGN_FILENAME,
+    _path_has_symlink_component,
     atomic_write_json,
     compute_exact_artifact_hashes,
     has_terminal_full_frontier_certified_evidence,
@@ -502,7 +503,7 @@ def _resolve_manifest_payload(
     delivery_manifest: Optional[Mapping[str, Any]],
     delivery_manifest_load_error: Optional[str],
 ) -> tuple[Optional[Dict[str, Any]], Optional[str], bool]:
-    regular_file = bool(manifest_path.is_file() and not manifest_path.is_symlink())
+    regular_file = bool(manifest_path.is_file() and not _path_has_symlink_component(manifest_path))
     if not manifest_path.exists():
         if delivery_manifest_load_error is not None:
             return None, str(delivery_manifest_load_error), False
@@ -539,7 +540,7 @@ def _resolve_campaign_state_payload(
         return None, "campaign_state_missing"
     if not state_path.exists():
         return _mapping_or_none(campaign_state), "campaign_state_file_missing"
-    if not state_path.is_file() or state_path.is_symlink():
+    if not state_path.is_file() or _path_has_symlink_component(state_path):
         return _mapping_or_none(campaign_state), "campaign_state_not_regular_file"
     try:
         disk_payload = _load_strict_json_mapping(state_path)

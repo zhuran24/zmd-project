@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -22,6 +23,7 @@ from src.search.exact_campaign import (
     ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
+from src.search.certified_surface import verify_certified_delivery_surface
 from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
 
 
@@ -168,6 +170,80 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
     assert payload["artifacts"]["benders_cuts"]["exists"] is True
     assert all(":" not in entry["path"] for entry in payload["artifacts"].values())
     assert json.loads(output_path.read_text(encoding="utf-8")) == payload
+
+
+def test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent(
+    tmp_path: Path,
+) -> None:
+    project_root, facility_pools = _build_manifest_project(tmp_path / "delivery_manifest_parent_symlink")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
+    campaign.mark_candidate_started(1, 1)
+    campaign.mark_candidate_result(
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution={
+            "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
+            "tiny_001": {
+                "pose_idx": 0,
+                "pose_id": "tiny_pose_0",
+                "anchor": {"x": 0, "y": 0},
+                "facility_type": "tiny_facility",
+            },
+        },
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
+    )
+    campaign.state["final_result"] = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
+        "placement_solution": {
+            "tiny_001": {
+                "pose_idx": 0,
+                "pose_id": "tiny_pose_0",
+                "anchor": {"x": 0, "y": 0},
+                "facility_type": "tiny_facility",
+            }
+        },
+        "search_status": RUN_STATUS_CERTIFIED,
+        "search_stats": {"campaign_resumed": False},
+    }
+    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    attach_terminal_frontier_evidence(campaign, project_root)
+    campaign.save()
+
+    best_result = campaign.best_certified_result()
+    assert best_result is not None
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
+    export_certified_blueprint(
+        project_root=project_root,
+        result=best_result,
+        facility_pools=facility_pools,
+    )
+    (project_root / "data" / "checkpoints" / "benders_cuts.jsonl").write_text(
+        '{"schema_version": 2}\n',
+        encoding="utf-8",
+    )
+    export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+
+    external_solutions_dir = tmp_path / "external_solutions_authority"
+    shutil.move(str(project_root / "data" / "solutions"), str(external_solutions_dir))
+    (project_root / "data" / "solutions").symlink_to(
+        external_solutions_dir,
+        target_is_directory=True,
+    )
+
+    verdict = verify_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=campaign.state,
+        campaign_path=campaign.path,
+    )
+
+    assert verdict.publishable is False
+    assert verdict.delivery_manifest_regular_file is False
+    assert verdict.blocked_reason == "delivery_artifacts_not_current:ValueError"
 
 
 def test_delivery_manifest_allows_terminal_campaign_without_best_certified_result(

@@ -233,11 +233,27 @@ def iso_to_ts(iso_text: str) -> float:
         return now_ts()
 
 
+def _path_has_symlink_component(path: Path) -> bool:
+    candidate = Path(path)
+    if not candidate.parts:
+        return False
+    current = Path(candidate.anchor) if candidate.is_absolute() else Path()
+    parts = candidate.parts[1:] if candidate.is_absolute() else candidate.parts
+    for part in parts:
+        current = current / part
+        try:
+            if current.is_symlink():
+                return True
+        except OSError:
+            return False
+    return False
+
+
 def sha256_file(path: Path) -> str:
     if not path.exists():
         raise FileNotFoundError(path)
-    if path.is_symlink() or not path.is_file():
-        raise ValueError(f"exact artifact must be a regular file: {path}")
+    if _path_has_symlink_component(path) or not path.is_file():
+        raise ValueError(f"exact artifact must be a regular file with no symlink components: {path}")
     digest = hashlib.sha256()
     with path.open("rb") as fh:
         while True:

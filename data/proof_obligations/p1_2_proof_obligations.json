@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-11",
-  "review_anchor": "v95_optional_metadata_and_stop_reason_sealing",
-  "summary": "P1.2 remains fail-closed. V95 closes the optional-entry public metadata (must agree with the canonical pose identity) and the last_stop_reason shape, completing the closed-contract coverage of every public payload component.",
-  "phase_gate_required_anchor": "v95_optional_metadata_and_stop_reason_sealing",
+  "review_anchor": "v96_symlink_ancestor_boundary_sealing",
+  "summary": "P1.2 remains fail-closed. V96 extends the V84 symlink rejection from the artifact leaf to every path component: certified exact artifacts and public delivery-surface artifacts reject symlinked ancestor directories, so out-of-project content can no longer be served under canonical in-project path names.",
+  "phase_gate_required_anchor": "v96_symlink_ancestor_boundary_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -64,19 +64,22 @@
       "title": "Validator/generator source facts are covered by one source-digest contract",
       "v_findings": [
         "v31_candidate",
-        "v84_layout_optimality_and_artifact_boundary_sealing"
+        "v84_layout_optimality_and_artifact_boundary_sealing",
+        "v96_symlink_ancestor_boundary_sealing"
       ],
       "required_tests": [
         "test_source_digest_is_content_hash_and_ignores_runtime_pose_cache",
         "test_source_digest_tracks_group_static_fields_but_not_selected_poses",
         "test_source_digest_tracks_authoritative_leading_dunder_keys_except_declared_runtime_caches",
         "test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift",
-        "test_v84_exact_artifact_hashes_reject_symlinked_project_authority"
+        "test_v84_exact_artifact_hashes_reject_symlinked_project_authority",
+        "test_v96_exact_artifact_hashes_reject_symlinked_parent_project_authority"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
         "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md",
-        "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md"
+        "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
+        "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md"
       ]
     },
     {
@@ -294,7 +297,8 @@
         "v92_release_status_allowlist_sealing",
         "v93_note_and_solution_entry_sealing",
         "v94_protocol_storage_surplus_sealing",
-        "v95_optional_metadata_and_stop_reason_sealing"
+        "v95_optional_metadata_and_stop_reason_sealing",
+        "v96_symlink_ancestor_boundary_sealing"
       ],
       "required_tests": [
         "test_delivery_manifest_rejects_best_effort_final_result",
@@ -367,7 +371,8 @@
         "test_v93_rejects_public_final_result_ghost_pick_marker",
         "test_terminal_project_validator_rejects_surplus_protocol_storage_box_blockers",
         "test_v95_rejects_contradictory_pose_optional_public_metadata",
-        "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field"
+        "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field",
+        "test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -396,7 +401,8 @@
         "docs/research/p1_2_v92_release_status_allowlist_sealing.md",
         "docs/research/p1_2_v93_note_and_solution_entry_sealing.md",
         "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md",
-        "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md"
+        "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md",
+        "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority."
     },
