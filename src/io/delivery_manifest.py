@@ -345,6 +345,13 @@ def _validate_campaign_state_matches_disk_authority(
         raise ValueError(
             "certified delivery manifest requires campaign checkpoint inside project"
         ) from exc
+    canonical_state_path = (
+        project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
+    ).resolve()
+    if state_path != canonical_state_path:
+        raise ValueError(
+            "certified delivery manifest requires canonical campaign checkpoint authority"
+        )
     if not _is_regular_file(raw_state_path):
         raise ValueError(
             "certified delivery manifest requires regular campaign checkpoint artifact"

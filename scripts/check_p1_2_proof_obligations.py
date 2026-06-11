@@ -190,6 +190,10 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v95_rejects_contradictory_pose_optional_public_metadata",
             "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field",
             "test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent",
+            "test_v97_delivery_manifest_rejects_certified_shadow_campaign_checkpoint",
+            "test_v97_certified_surface_rejects_certified_shadow_campaign_checkpoint",
+            "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint",
+            "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier",
             "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
             "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
             "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
@@ -866,6 +870,13 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     clear_artifacts_source = _source_text(OUTER_SEARCH_PATH, clear_artifacts_fn)
     certified_surface_tree = _parse_python(CERTIFIED_SURFACE_PATH)
     certified_surface_source_text = CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    # V97: the certified surface must pin the publishing authority to the
+    # canonical in-project checkpoint and reject non-canonical shadow paths.
+    if "campaign_state_path_not_canonical" not in certified_surface_source_text:
+        errors.append(
+            "certified surface must reject a non-canonical campaign checkpoint "
+            "authority: campaign_state_path_not_canonical"
+        )
     clear_surface_fn = _function_def(
         certified_surface_tree,
         "clear_certified_delivery_surface_artifacts",

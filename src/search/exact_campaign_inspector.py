@@ -169,10 +169,17 @@ def build_exact_campaign_inspection(
 
 
 def _resolve_path(project_root: Path, path: Path) -> Path:
+    """Return the caller-visible artifact path without erasing symlink components.
+
+    The central certified-surface verifier performs regular-file and symlink
+    ancestry checks on the raw path it is handed.  Resolving here would turn a
+    symlinked campaign checkpoint into its target before those checks run.
+    """
+
     path = Path(path)
     if path.is_absolute():
-        return path.resolve()
-    return (project_root / path).resolve()
+        return path
+    return project_root / path
 
 
 def _current_hashes(project_root: Path) -> tuple[Dict[str, str], Optional[str]]:

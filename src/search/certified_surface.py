@@ -28,6 +28,7 @@ from src.search.exact_campaign import (
     _path_has_symlink_component,
     atomic_write_json,
     compute_exact_artifact_hashes,
+    has_certified_export_surface,
     has_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
@@ -531,39 +532,68 @@ def _resolve_campaign_state_payload(
     campaign_state: Optional[Mapping[str, Any]],
     campaign_path: Optional[Path],
 ) -> tuple[Optional[Dict[str, Any]], Optional[str]]:
-    state_path = _resolve_campaign_path(project_root=project_root, campaign_path=campaign_path)
+    raw_state_path = _campaign_path_for_regular_file_check(
+        project_root=project_root,
+        campaign_path=campaign_path,
+    )
+    state_path = raw_state_path.resolve()
+    provided_payload = _mapping_or_none(campaign_state)
     try:
         state_path.relative_to(project_root)
     except ValueError:
-        return _mapping_or_none(campaign_state), "campaign_state_path_outside_project"
+        return provided_payload, "campaign_state_path_outside_project"
     if campaign_state is None:
         return None, "campaign_state_missing"
-    if not state_path.exists():
-        return _mapping_or_none(campaign_state), "campaign_state_file_missing"
-    if not state_path.is_file() or _path_has_symlink_component(state_path):
-        return _mapping_or_none(campaign_state), "campaign_state_not_regular_file"
+    if not raw_state_path.exists():
+        return provided_payload, "campaign_state_file_missing"
+    if not raw_state_path.is_file() or _path_has_symlink_component(raw_state_path):
+        return provided_payload, "campaign_state_not_regular_file"
     try:
-        disk_payload = _load_strict_json_mapping(state_path)
+        disk_payload = _load_strict_json_mapping(raw_state_path)
     except Exception as exc:  # noqa: BLE001 - verifier reports fail-closed reason.
         return (
-            _mapping_or_none(campaign_state),
+            provided_payload,
             f"campaign_state_json_load_error:{type(exc).__name__}:{exc}",
         )
-    provided_payload = _mapping_or_none(campaign_state)
     if provided_payload is None:
         return disk_payload, "campaign_state_payload_not_object"
+    if has_certified_export_surface(provided_payload):
+        canonical_state_path = _canonical_campaign_state_path(project_root)
+        if state_path != canonical_state_path:
+            return disk_payload, "campaign_state_path_not_canonical"
     if not _json_equivalent(provided_payload, disk_payload):
         return disk_payload, "campaign_state_payload_mismatch"
     return disk_payload, None
 
 
-def _resolve_campaign_path(*, project_root: Path, campaign_path: Optional[Path]) -> Path:
+def _campaign_path_for_regular_file_check(
+    *,
+    project_root: Path,
+    campaign_path: Optional[Path],
+) -> Path:
+    project_root = Path(project_root).resolve()
     if campaign_path is None:
-        return (project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME).resolve()
+        return project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
     path = Path(campaign_path)
     if path.is_absolute():
-        return path.resolve()
-    return (project_root / path).resolve()
+        return path
+    return project_root / path
+
+
+def _canonical_campaign_state_path(project_root: Path) -> Path:
+    return (
+        Path(project_root).resolve()
+        / "data"
+        / "checkpoints"
+        / DEFAULT_CAMPAIGN_FILENAME
+    ).resolve()
+
+
+def _resolve_campaign_path(*, project_root: Path, campaign_path: Optional[Path]) -> Path:
+    return _campaign_path_for_regular_file_check(
+        project_root=project_root,
+        campaign_path=campaign_path,
+    ).resolve()
 
 
 def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:

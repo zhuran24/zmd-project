@@ -20,7 +20,7 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V96, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V97, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
@@ -29,7 +29,7 @@ certified-surface hardening, partial-precheck/release-claim sealing, and
 oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v96_symlink_ancestor_boundary_sealing
+v97_canonical_checkpoint_authority_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -127,7 +127,9 @@ metadata and the last_stop_reason shape, completing closed-contract
 coverage of every public payload component.  V96 (sixteenth overnight
 independent review) extends the symlink rejection to every path
 component, closing the symlinked-ancestor escape from the artifact
-authority boundary.  The
+authority boundary.  V97 (seventeenth overnight independent review) pins
+the publishing authority to the canonical in-project checkpoint and
+removes a resolve-then-trust symlink gap in the inspector.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -168,8 +170,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v92_release_status_allowlist_sealing.md`,
 `docs/research/p1_2_v93_note_and_solution_entry_sealing.md`,
 `docs/research/p1_2_v94_protocol_storage_surplus_sealing.md`,
-`docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md`, and
-`docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md`.
+`docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md`,
+`docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md`, and
+`docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md`.
 
 Daily consistency check:
 
