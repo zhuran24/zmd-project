@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/models/routing_subproblem.py and routing-focused regression tests; splitter/merger support is current-code aligned
-last_verified_against: 2026-06-11 (P0 incumbent source-sink connectivity guard修订)
+last_verified_against: 2026-06-11 (P0-1 lazy source-side connectivity cuts修订)
 owner: exact-routing
 ---
 > [!NOTE]
@@ -101,6 +101,30 @@ $$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| -
 
 `_add_continuity_constraints` 的局部 predecessor/successor 支撑只证明每个被选 route-state 在邻域中有局部接续；它不单独证明某个 commodity 的源 front 与汇 front 处于同一个有向连通分量。Certified acceptance 因此不得把 CP-SAT `FEASIBLE` 直接等同于 routable。
 
-`RoutingSubproblem.solve()` 在接受 incumbent 前必须重建选中 route-state 的有向图：按 commodity 从所有 source front 对应的 selected state 出发，沿 `flow_out` 到邻格 `flow_in` 遍历，要求每个 source front 至少到达一个 sink front，并要求每个 sink front 被某个 source front 到达。失败 incumbent 必须加 selected-route nogood 后继续求解。若 CP-SAT 证明所有这类 incumbent 不可行，则返回 `INFEASIBLE`；若时间/预算耗尽或无法形成 connected incumbent，则返回 `TIMEOUT`/`UNKNOWN`，不得生成 false `CERTIFIED`。
+`RoutingSubproblem.solve()` 在接受 incumbent 前必须重建选中 route-state 的有向图：按 commodity 从所有 source front 对应的 selected state 出发，沿 `flow_out` 到邻格 `flow_in` 遍历，要求每个 source front 至少到达一个 sink front，并要求每个 sink front 被某个 source front 到达。失败 incumbent 必须先尝试 self-checked lazy source-side connectivity cut；若 cut 证书失败则回退加 selected-route nogood，然后继续求解。若 CP-SAT 证明所有这类 incumbent 不可行，则返回 `INFEASIBLE`；若时间/预算耗尽或无法形成 connected incumbent，则返回 `TIMEOUT`/`UNKNOWN`，不得生成 false `CERTIFIED`。
 
 长期方向仍是把 per-commodity reachability/flow 一等编码进 routing CP-SAT；当前 guard 是 certified-safe 的 fail-closed boundary。
+
+## 9.8 [2026-06-11 P0-1] Lazy source-side connectivity cuts
+
+The §9.7 guard remains the certified acceptance boundary.  The lazy cut described here is only a convergence accelerator inside the guard rejection loop; it never allows a CP-SAT incumbent to bypass the final selected-graph reachability validation.
+
+For a rejected commodity $k$, rebuild the selected route-state graph with the exact same directed arc semantics used by the guard: a selected state $u=(x,y,L,d_{in},d_{out},k)$ has an arc to a selected state $v$ when some $d \in d_{out}$ points to the adjacent cell and $v$ has $\mathrm{Opp}(d)$ in its `flow_in`; terminal sink-front outputs are not expanded.  Let $W$ be the closure reachable from all selected source-front states of commodity $k$ in that selected graph.  For the rejected incumbent considered by this cut, no sink-front state may lie in $W$.
+
+The lazy cut set $X$ is a vertex cut over **candidate** route-states, not merely selected route-states.  It contains every candidate state outside $W$ that could be the first route-state reached after leaving the selected source-side closure: (1) every non-$W$ candidate state that can receive directly from a commodity-$k$ source front, and (2) every non-$W$ candidate state reached by a potential guard-isomorphic arc from a state in $W$.  The attached inequality is:
+
+$$
+\sum_{s \in X} r_s^k \ge 1.
+$$
+
+Validity: any physical routing that connects a commodity-$k$ source front to a sink front induces a directed candidate-state path from a source-front state to a sink-front state.  If that path starts with a source-front state outside the incumbent closure $W$, its first state is in $X$.  Otherwise the path starts inside $W$; since no sink front is in $W$, the path has a first state outside $W$, and that first outside state is reached by a guard-isomorphic arc from a state in $W$, so it is also in $X$.  Therefore every feasible connected routing selects at least one state in $X$, and the inequality cannot remove a true routing solution.  This is stronger than a selected-positive nogood because the rejected incumbent selects zero states in $X$, so the cut removes that incumbent and every other incumbent with the same source-side reachable closure, instead of only one exact selected set.
+
+Every lazy cut must pass an independent fail-closed certificate check before it is added to the CP-SAT model:
+
+1. Recompute $W$ from the incumbent selected graph and confirm that every source front has a selected source-front state in $W$ and that no sink-front candidate state is in $W$.
+2. Rebuild the full potential candidate-state graph for commodity $k$, remove $X$, and run a fresh BFS from all source-front candidate states.  No sink-front candidate state may remain reachable.  This proves $X$ is a complete crossing boundary for the modeled arc semantics.
+3. Confirm the incumbent selected route-state set is disjoint from $X$, so the newly attached inequality actually separates the rejected incumbent.
+
+If any certificate check fails, the solver must attach the pre-existing selected-positive nogood for the rejected incumbent and record the fallback reason in `build_stats["last_solve"]["connectivity_guard"]`.  Multiple failing commodities in the same incumbent are handled independently: each commodity attempts its own source-side cut, and each failed certificate contributes a telemetry fallback record.  `cuts_added`, `cut_sizes`, and `fallback_nogoods` are diagnostic telemetry only; certified soundness continues to come from the final §9.7 guard.
+
+No environment knob controls this behavior.  It is enabled by default because it only adds self-certified valid inequalities or falls back to the previous fail-closed nogood path.  The long-term P1.3B direction remains to encode per-commodity flow/connectivity directly in CP-SAT; this lazy-cut graph machinery is deliberately reusable for that future first-class encoding, but it is not that encoding.

@@ -1,7 +1,7 @@
 # FILE_STATUS.md
 
 **Status**: CURRENT_INVENTORY
-**Updated**: 2026-06-06
+**Updated**: 2026-06-11
 **Purpose**: Inventory of runtime roles and trust status for the current repository.
 **History**: Engineering history moved to [CHANGELOG.md](CHANGELOG.md).
 
@@ -48,7 +48,7 @@ This file is an inventory projection, not the living status authority. Current p
 | `src/models/master_model.py` | CURRENT_CODE_ALIGNED | exact master placement model | coordinate exact mainline |
 | `src/models/binding_subproblem.py` | CURRENT_CODE_ALIGNED | exact binding subproblem | certified subsolver path |
 | `src/models/_cpsat_compat.py` | CURRENT_CODE_ALIGNED | CP-SAT compatibility shim | stabilizes enum/proto surfaces across OR-Tools versions |
-| `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | exact routing subproblem | certified routing proof path |
+| `src/models/routing_subproblem.py` | CURRENT_CODE_ALIGNED | exact routing subproblem | certified routing proof path; final guard plus self-checked lazy source-side connectivity cuts |
 | `rules/canonical_rules.json` | CURRENT_CODE_ALIGNED | frozen rules artifact | preprocess/runtime certified input; now carries consolidated recipes / production targets / commodity metadata / empty-rectangle admissibility |
 | `data/preprocessed/candidate_placements.json` | EXTERNAL_ARTIFACT_REQUIRED | frozen placement domain | certified pose domain; omitted from current lightweight GitHub tree, expected SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` |
 | `data/preprocessed/mandatory_exact_instances.json` | CURRENT_CODE_ALIGNED | frozen exact instances | certified mandatory instance source |
@@ -122,7 +122,7 @@ This file is an inventory projection, not the living status authority. Current p
 | `README.md` | CURRENT_CODE_ALIGNED | repo entry guide | top-level quick path into the active IndustrialPlanner single-base delivery surfaces, now including the browse-first/download-first repo-front entry split, plus the current project boundary |
 | `CHANGELOG.md` | CURRENT_CODE_ALIGNED | engineering history log | canonical home for dated history |
 | `specs/01_problem_statement.md` | CURRENT_CODE_ALIGNED | problem statement | current exact objective, admissibility, and geometry legality boundary |
-| `specs/09_exact_grid_routing_subproblem.md` | CURRENT_CODE_ALIGNED | routing spec | splitter/merger support already present |
+| `specs/09_exact_grid_routing_subproblem.md` | CURRENT_CODE_ALIGNED | routing spec | splitter/merger support plus P0-1 lazy connectivity cut contract |
 | `specs/11_pipeline_orchestration.md` | CURRENT_CODE_ALIGNED | orchestration spec | current runtime worker/default behavior |
 | `specs/12_output_blueprint_schema.md` | CURRENT_CODE_ALIGNED | output contract spec | blueprint delivery schema |
 | `specs/13_ecosystem_borrowing_and_compatibility_plan.md` | ACCEPTED_DRAFT | ecosystem upgrade plan | additive roadmap, not runtime truth |

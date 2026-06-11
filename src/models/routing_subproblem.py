@@ -1014,6 +1014,323 @@ class RoutingSubproblem:
             for x, y, direction in sorted(triples)
         ]
 
+    def _route_state_input_index(
+        self,
+        keys: Iterable[RouteStateKey],
+    ) -> Dict[Tuple[int, int, str, str], List[RouteStateKey]]:
+        by_input: Dict[Tuple[int, int, str, str], List[RouteStateKey]] = defaultdict(list)
+        for key in keys:
+            x, y, _layer, flow_in, _flow_out, commodity = key
+            for direction in flow_in:
+                by_input[(int(x), int(y), str(direction), str(commodity))].append(key)
+        return by_input
+
+    def _terminal_nodes_by_front_for_keys(
+        self,
+        keys: Iterable[RouteStateKey],
+        source_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+        sink_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+    ) -> Tuple[
+        Dict[Tuple[str, int, int, str], Set[RouteStateKey]],
+        Dict[Tuple[str, int, int, str], Set[RouteStateKey]],
+    ]:
+        source_nodes_by_front: Dict[Tuple[str, int, int, str], Set[RouteStateKey]] = defaultdict(set)
+        sink_nodes_by_front: Dict[Tuple[str, int, int, str], Set[RouteStateKey]] = defaultdict(set)
+        for key in keys:
+            x, y, layer, flow_in, flow_out, commodity = key
+            commodity = str(commodity)
+            if layer != GROUND_LAYER:
+                continue
+            for direction in flow_in:
+                front = (int(x), int(y), str(direction))
+                if front in source_fronts.get(commodity, set()):
+                    source_nodes_by_front[(commodity, front[0], front[1], front[2])].add(key)
+            for direction in flow_out:
+                front = (int(x), int(y), str(direction))
+                if front in sink_fronts.get(commodity, set()):
+                    sink_nodes_by_front[(commodity, front[0], front[1], front[2])].add(key)
+        return source_nodes_by_front, sink_nodes_by_front
+
+    def _route_state_adjacency(
+        self,
+        keys: Iterable[RouteStateKey],
+        sink_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+    ) -> Dict[RouteStateKey, Set[RouteStateKey]]:
+        key_set = set(keys)
+        by_input = self._route_state_input_index(key_set)
+        adjacency: Dict[RouteStateKey, Set[RouteStateKey]] = defaultdict(set)
+        for key in key_set:
+            x, y, _layer, _flow_in, flow_out, commodity = key
+            commodity = str(commodity)
+            for direction in flow_out:
+                if (int(x), int(y), str(direction)) in sink_fronts.get(commodity, set()):
+                    continue
+                dx, dy = DIR_DELTA[str(direction)]
+                nx, ny = int(x) + dx, int(y) + dy
+                recv_dir = DIR_OPP[str(direction)]
+                for dst in by_input.get((nx, ny, recv_dir, commodity), []):
+                    adjacency[key].add(dst)
+        return adjacency
+
+    def _reachable_route_states(
+        self,
+        starts: Iterable[RouteStateKey],
+        adjacency: Mapping[RouteStateKey, Set[RouteStateKey]],
+        *,
+        removed: Optional[Set[RouteStateKey]] = None,
+    ) -> Set[RouteStateKey]:
+        blocked = removed or set()
+        reachable: Set[RouteStateKey] = set()
+        stack = [node for node in starts if node not in blocked]
+        while stack:
+            current = stack.pop()
+            if current in blocked or current in reachable:
+                continue
+            reachable.add(current)
+            for nxt in adjacency.get(current, set()):
+                if nxt not in blocked and nxt not in reachable:
+                    stack.append(nxt)
+        return reachable
+
+    def _commodity_source_start_nodes(
+        self,
+        commodity: str,
+        expected_sources: Iterable[Tuple[int, int, str]],
+        source_nodes_by_front: Mapping[Tuple[str, int, int, str], Set[RouteStateKey]],
+    ) -> Set[RouteStateKey]:
+        starts: Set[RouteStateKey] = set()
+        for front in expected_sources:
+            starts.update(source_nodes_by_front.get((commodity, front[0], front[1], front[2]), set()))
+        return starts
+
+    def _commodity_sink_nodes_by_plain_front(
+        self,
+        commodity: str,
+        expected_sinks: Iterable[Tuple[int, int, str]],
+        sink_nodes_by_front: Mapping[Tuple[str, int, int, str], Set[RouteStateKey]],
+    ) -> Dict[Tuple[int, int, str], Set[RouteStateKey]]:
+        sink_nodes_by_plain_front: Dict[Tuple[int, int, str], Set[RouteStateKey]] = defaultdict(set)
+        for front in expected_sinks:
+            nodes = set(sink_nodes_by_front.get((commodity, front[0], front[1], front[2]), set()))
+            sink_nodes_by_plain_front[front].update(nodes)
+        return sink_nodes_by_plain_front
+
+    def _potential_route_keys_for_commodity(self, commodity: str) -> Set[RouteStateKey]:
+        return {key for key in self.r_vars if str(key[5]) == str(commodity)}
+
+    def _compute_selected_source_side_closure(
+        self,
+        selected: Set[RouteStateKey],
+        commodity: str,
+        expected_sources: Set[Tuple[int, int, str]],
+        source_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+        sink_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+    ) -> Tuple[
+        Set[RouteStateKey],
+        Dict[Tuple[str, int, int, str], Set[RouteStateKey]],
+        Dict[Tuple[str, int, int, str], Set[RouteStateKey]],
+    ]:
+        selected_for_commodity = {key for key in selected if str(key[5]) == commodity}
+        selected_source_nodes_by_front, selected_sink_nodes_by_front = self._terminal_nodes_by_front_for_keys(
+            selected_for_commodity,
+            source_fronts,
+            sink_fronts,
+        )
+        selected_adjacency = self._route_state_adjacency(selected_for_commodity, sink_fronts)
+        starts = self._commodity_source_start_nodes(
+            commodity,
+            expected_sources,
+            selected_source_nodes_by_front,
+        )
+        return (
+            self._reachable_route_states(starts, selected_adjacency),
+            selected_source_nodes_by_front,
+            selected_sink_nodes_by_front,
+        )
+
+    def _source_side_crossing_boundary(
+        self,
+        commodity: str,
+        w_closure: Set[RouteStateKey],
+        expected_sources: Set[Tuple[int, int, str]],
+        source_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+        sink_fronts: Mapping[str, Set[Tuple[int, int, str]]],
+    ) -> Set[RouteStateKey]:
+        potential_keys = self._potential_route_keys_for_commodity(commodity)
+        potential_source_nodes_by_front, _potential_sink_nodes_by_front = self._terminal_nodes_by_front_for_keys(
+            potential_keys,
+            source_fronts,
+            sink_fronts,
+        )
+        potential_adjacency = self._route_state_adjacency(potential_keys, sink_fronts)
+
+        crossing: Set[RouteStateKey] = set()
+        for front in expected_sources:
+            for key in potential_source_nodes_by_front.get((commodity, front[0], front[1], front[2]), set()):
+                if key not in w_closure:
+                    crossing.add(key)
+        for src in w_closure:
+            for dst in potential_adjacency.get(src, set()):
+                if dst not in w_closure:
+                    crossing.add(dst)
+        return crossing
+
+    def _self_check_source_side_connectivity_cut(
+        self,
+        *,
+        selected: Set[RouteStateKey],
+        commodity: str,
+        crossing: Set[RouteStateKey],
+    ) -> Tuple[bool, str, Dict[str, Any]]:
+        source_fronts, sink_fronts = self._terminal_fronts_by_commodity()
+        expected_sources = set(source_fronts.get(commodity, set()))
+        expected_sinks = set(sink_fronts.get(commodity, set()))
+        diagnostics: Dict[str, Any] = {
+            "commodity": commodity,
+            "source_fronts": self._front_triples_for_diagnostic(expected_sources),
+            "sink_fronts": self._front_triples_for_diagnostic(expected_sinks),
+        }
+        if not expected_sources:
+            return False, "missing_source_fronts", diagnostics
+        if not expected_sinks:
+            return False, "missing_sink_fronts", diagnostics
+
+        potential_keys = self._potential_route_keys_for_commodity(commodity)
+        if not crossing <= potential_keys:
+            diagnostics["crossing_outside_potential"] = int(len(crossing - potential_keys))
+            return False, "crossing_outside_potential_graph", diagnostics
+
+        w_recomputed, selected_source_nodes_by_front, _selected_sink_nodes_by_front = (
+            self._compute_selected_source_side_closure(
+                selected,
+                commodity,
+                expected_sources,
+                source_fronts,
+                sink_fronts,
+            )
+        )
+        diagnostics["w_size"] = int(len(w_recomputed))
+        diagnostics["x_size"] = int(len(crossing))
+
+        missing_sources = {
+            front
+            for front in expected_sources
+            if not (
+                selected_source_nodes_by_front.get((commodity, front[0], front[1], front[2]), set())
+                & w_recomputed
+            )
+        }
+        _potential_source_nodes_by_front, potential_sink_nodes_by_front = self._terminal_nodes_by_front_for_keys(
+            potential_keys,
+            source_fronts,
+            sink_fronts,
+        )
+        sink_fronts_inside_w = {
+            front
+            for front in expected_sinks
+            if potential_sink_nodes_by_front.get((commodity, front[0], front[1], front[2]), set())
+            & w_recomputed
+        }
+        if missing_sources:
+            diagnostics["missing_sources_in_w"] = self._front_triples_for_diagnostic(missing_sources)
+            return False, "source_front_not_in_w", diagnostics
+        if sink_fronts_inside_w:
+            diagnostics["sink_fronts_inside_w"] = self._front_triples_for_diagnostic(sink_fronts_inside_w)
+            return False, "sink_front_inside_w", diagnostics
+
+        potential_adjacency = self._route_state_adjacency(potential_keys, sink_fronts)
+        potential_source_nodes_by_front, potential_sink_nodes_by_front = self._terminal_nodes_by_front_for_keys(
+            potential_keys,
+            source_fronts,
+            sink_fronts,
+        )
+        potential_starts = self._commodity_source_start_nodes(
+            commodity,
+            expected_sources,
+            potential_source_nodes_by_front,
+        )
+        reachable_after_removal = self._reachable_route_states(
+            potential_starts,
+            potential_adjacency,
+            removed=set(crossing),
+        )
+        sink_nodes_by_front = self._commodity_sink_nodes_by_plain_front(
+            commodity,
+            expected_sinks,
+            potential_sink_nodes_by_front,
+        )
+        reachable_sink_fronts = {
+            front for front, nodes in sink_nodes_by_front.items() if nodes & reachable_after_removal
+        }
+        if reachable_sink_fronts:
+            diagnostics["reachable_sink_fronts_after_x_removal"] = self._front_triples_for_diagnostic(
+                reachable_sink_fronts
+            )
+            return False, "x_not_complete_crossing_boundary", diagnostics
+
+        selected_crossing = selected & crossing
+        if selected_crossing:
+            diagnostics["selected_crossing_states"] = int(len(selected_crossing))
+            return False, "incumbent_intersects_crossing", diagnostics
+
+        return True, "ok", diagnostics
+
+    def _add_source_side_connectivity_cut(
+        self,
+        solver: cp_model.CpSolver,
+        commodity: str,
+    ) -> Dict[str, Any]:
+        selected = self._selected_route_keys(solver)
+        source_fronts, sink_fronts = self._terminal_fronts_by_commodity()
+        expected_sources = set(source_fronts.get(commodity, set()))
+        expected_sinks = set(sink_fronts.get(commodity, set()))
+        if not expected_sources:
+            return {"kind": "fallback", "commodity": commodity, "reason": "missing_source_fronts"}
+        if not expected_sinks:
+            return {"kind": "fallback", "commodity": commodity, "reason": "missing_sink_fronts"}
+
+        w_closure, _selected_source_nodes_by_front, _selected_sink_nodes_by_front = (
+            self._compute_selected_source_side_closure(
+                selected,
+                commodity,
+                expected_sources,
+                source_fronts,
+                sink_fronts,
+            )
+        )
+        crossing = self._source_side_crossing_boundary(
+            commodity,
+            w_closure,
+            expected_sources,
+            source_fronts,
+            sink_fronts,
+        )
+        ok, reason, diagnostics = self._self_check_source_side_connectivity_cut(
+            selected=selected,
+            commodity=commodity,
+            crossing=crossing,
+        )
+        if not ok:
+            return {
+                "kind": "fallback",
+                "commodity": commodity,
+                "reason": reason,
+                "diagnostics": diagnostics,
+            }
+
+        cut_vars = [self.r_vars[key] for key in sorted(crossing)]
+        if cut_vars:
+            self.model.Add(sum(cut_vars) >= 1)
+        else:
+            self.model.Add(0 == 1)
+        return {
+            "kind": "cut",
+            "commodity": commodity,
+            "size": int(len(cut_vars)),
+            "w_size": int(len(w_closure)),
+            "self_check": diagnostics,
+        }
+
     def _validate_selected_route_connectivity(
         self,
         solver: cp_model.CpSolver,
@@ -1029,35 +1346,12 @@ class RoutingSubproblem:
 
         selected = self._selected_route_keys(solver)
         source_fronts, sink_fronts = self._terminal_fronts_by_commodity()
-        selected_by_input: Dict[Tuple[int, int, str, str], List[RouteStateKey]] = defaultdict(list)
-        source_nodes_by_front: Dict[Tuple[str, int, int, str], Set[RouteStateKey]] = defaultdict(set)
-        sink_nodes_by_front: Dict[Tuple[str, int, int, str], Set[RouteStateKey]] = defaultdict(set)
-
-        for key in selected:
-            x, y, layer, flow_in, flow_out, commodity = key
-            commodity = str(commodity)
-            for direction in flow_in:
-                selected_by_input[(int(x), int(y), str(direction), commodity)].append(key)
-                if layer == GROUND_LAYER and (int(x), int(y), str(direction)) in source_fronts.get(commodity, set()):
-                    source_nodes_by_front[(commodity, int(x), int(y), str(direction))].add(key)
-            if layer != GROUND_LAYER:
-                continue
-            for direction in flow_out:
-                if (int(x), int(y), str(direction)) in sink_fronts.get(commodity, set()):
-                    sink_nodes_by_front[(commodity, int(x), int(y), str(direction))].add(key)
-
-        adjacency: Dict[RouteStateKey, Set[RouteStateKey]] = defaultdict(set)
-        for key in selected:
-            x, y, _layer, _flow_in, flow_out, commodity = key
-            commodity = str(commodity)
-            for direction in flow_out:
-                if (int(x), int(y), str(direction)) in sink_fronts.get(commodity, set()):
-                    continue
-                dx, dy = DIR_DELTA[str(direction)]
-                nx, ny = int(x) + dx, int(y) + dy
-                recv_dir = DIR_OPP[str(direction)]
-                for dst in selected_by_input.get((nx, ny, recv_dir, commodity), []):
-                    adjacency[key].add(dst)
+        source_nodes_by_front, sink_nodes_by_front = self._terminal_nodes_by_front_for_keys(
+            selected,
+            source_fronts,
+            sink_fronts,
+        )
+        adjacency = self._route_state_adjacency(selected, sink_fronts)
 
         failures: List[Dict[str, Any]] = []
         commodities_to_check = sorted(set(source_fronts) | set(sink_fronts) | set(self.commodities))
@@ -1077,29 +1371,21 @@ class RoutingSubproblem:
                 if not sink_nodes_by_front.get((commodity, front[0], front[1], front[2]))
             }
 
-            all_source_nodes: Set[RouteStateKey] = set()
-            for front in expected_sources:
-                all_source_nodes.update(
-                    source_nodes_by_front.get((commodity, front[0], front[1], front[2]), set())
-                )
+            all_source_nodes = self._commodity_source_start_nodes(
+                commodity,
+                expected_sources,
+                source_nodes_by_front,
+            )
+            sink_nodes_by_plain_front = self._commodity_sink_nodes_by_plain_front(
+                commodity,
+                expected_sinks,
+                sink_nodes_by_front,
+            )
             all_sink_nodes: Set[RouteStateKey] = set()
-            sink_nodes_by_plain_front: Dict[Tuple[int, int, str], Set[RouteStateKey]] = defaultdict(set)
-            for front in expected_sinks:
-                nodes = set(sink_nodes_by_front.get((commodity, front[0], front[1], front[2]), set()))
+            for nodes in sink_nodes_by_plain_front.values():
                 all_sink_nodes.update(nodes)
-                sink_nodes_by_plain_front[front].update(nodes)
 
-            reachable_from_any_source: Set[RouteStateKey] = set()
-            stack = list(all_source_nodes)
-            while stack:
-                current = stack.pop()
-                if current in reachable_from_any_source:
-                    continue
-                reachable_from_any_source.add(current)
-                for nxt in adjacency.get(current, set()):
-                    if nxt not in reachable_from_any_source:
-                        stack.append(nxt)
-
+            reachable_from_any_source = self._reachable_route_states(all_source_nodes, adjacency)
             unreachable_sinks = {
                 front
                 for front, nodes in sink_nodes_by_plain_front.items()
@@ -1108,19 +1394,8 @@ class RoutingSubproblem:
 
             source_fronts_without_sink: Set[Tuple[int, int, str]] = set()
             for front in expected_sources:
-                front_nodes = set(
-                    source_nodes_by_front.get((commodity, front[0], front[1], front[2]), set())
-                )
-                reachable_from_front: Set[RouteStateKey] = set()
-                stack = list(front_nodes)
-                while stack:
-                    current = stack.pop()
-                    if current in reachable_from_front:
-                        continue
-                    reachable_from_front.add(current)
-                    for nxt in adjacency.get(current, set()):
-                        if nxt not in reachable_from_front:
-                            stack.append(nxt)
+                front_nodes = set(source_nodes_by_front.get((commodity, front[0], front[1], front[2]), set()))
+                reachable_from_front = self._reachable_route_states(front_nodes, adjacency)
                 if not (reachable_from_front & all_sink_nodes):
                     source_fronts_without_sink.add(front)
 
@@ -1166,11 +1441,41 @@ class RoutingSubproblem:
         self.model.Add(0 == 1)
         return 0
 
+    def _connectivity_guard_telemetry(
+        self,
+        *,
+        attempts: List[Dict[str, Any]],
+        rejected_incumbents: int,
+        cuts_added: int,
+        cut_sizes: List[int],
+        fallback_nogoods: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        return {
+            "attempts": attempts,
+            "rejected_incumbents": int(rejected_incumbents),
+            "cuts_added": int(cuts_added),
+            "cut_sizes": [int(size) for size in cut_sizes],
+            "fallback_nogoods": [dict(item) for item in fallback_nogoods],
+        }
+
+    def _failed_connectivity_commodities(self, connectivity_summary: Mapping[str, Any]) -> List[str]:
+        commodities: List[str] = []
+        for failure in list(connectivity_summary.get("failures", [])):
+            if not isinstance(failure, Mapping):
+                continue
+            commodity = str(failure.get("commodity", ""))
+            if commodity and commodity not in commodities:
+                commodities.append(commodity)
+        return commodities
+
     def solve(self, time_limit: float = 60.0) -> str:
         deadline = time.perf_counter() + max(0.0, float(time_limit))
         self._connectivity_guard_accepted = False
         attempts: List[Dict[str, Any]] = []
         rejected_incumbents = 0
+        cuts_added = 0
+        cut_sizes: List[int] = []
+        fallback_nogoods: List[Dict[str, Any]] = []
 
         while True:
             remaining = deadline - time.perf_counter()
@@ -1180,10 +1485,13 @@ class RoutingSubproblem:
                 self.build_stats["last_solve"] = {
                     "status": "CONNECTIVITY_GUARD_TIMEOUT",
                     "wall_time": float(max(0.0, float(time_limit) - max(0.0, remaining))),
-                    "connectivity_guard": {
-                        "attempts": attempts,
-                        "rejected_incumbents": int(rejected_incumbents),
-                    },
+                    "connectivity_guard": self._connectivity_guard_telemetry(
+                        attempts=attempts,
+                        rejected_incumbents=rejected_incumbents,
+                        cuts_added=cuts_added,
+                        cut_sizes=cut_sizes,
+                        fallback_nogoods=fallback_nogoods,
+                    ),
                 }
                 return "TIMEOUT"
 
@@ -1213,24 +1521,63 @@ class RoutingSubproblem:
                     self._connectivity_guard_accepted = True
                     self.build_stats["last_solve"] = {
                         **attempt_summary,
-                        "connectivity_guard": {
-                            "attempts": attempts,
-                            "rejected_incumbents": int(rejected_incumbents),
-                        },
+                        "connectivity_guard": self._connectivity_guard_telemetry(
+                            attempts=attempts,
+                            rejected_incumbents=rejected_incumbents,
+                            cuts_added=cuts_added,
+                            cut_sizes=cut_sizes,
+                            fallback_nogoods=fallback_nogoods,
+                        ),
                     }
                     return "FEASIBLE"
+
                 rejected_incumbents += 1
-                nogood_size = self._add_selected_route_nogood(solver)
-                attempt_summary["connectivity_nogood_size"] = int(nogood_size)
+                cut_actions: List[Dict[str, Any]] = []
+                cut_fallbacks: List[Dict[str, Any]] = []
+                failed_commodities = self._failed_connectivity_commodities(connectivity_summary)
+                if failed_commodities:
+                    for commodity in failed_commodities:
+                        action = self._add_source_side_connectivity_cut(solver, commodity)
+                        cut_actions.append(action)
+                        if action.get("kind") == "cut":
+                            cuts_added += 1
+                            cut_sizes.append(int(action.get("size", 0)))
+                        else:
+                            cut_fallbacks.append(action)
+                else:
+                    cut_fallbacks.append(
+                        {
+                            "kind": "fallback",
+                            "commodity": "",
+                            "reason": "no_failed_commodity_diagnostics",
+                        }
+                    )
+
+                if cut_fallbacks:
+                    nogood_size = self._add_selected_route_nogood(solver)
+                    attempt_summary["connectivity_nogood_size"] = int(nogood_size)
+                    for fallback in cut_fallbacks:
+                        fallback_record = {
+                            "commodity": str(fallback.get("commodity", "")),
+                            "reason": str(fallback.get("reason", "unknown")),
+                            "nogood_size": int(nogood_size),
+                        }
+                        if "diagnostics" in fallback:
+                            fallback_record["diagnostics"] = dict(fallback.get("diagnostics", {}))
+                        fallback_nogoods.append(fallback_record)
+                attempt_summary["connectivity_cut_actions"] = cut_actions or cut_fallbacks
                 continue
 
             attempts.append(attempt_summary)
             self.build_stats["last_solve"] = {
                 **attempt_summary,
-                "connectivity_guard": {
-                    "attempts": attempts,
-                    "rejected_incumbents": int(rejected_incumbents),
-                },
+                "connectivity_guard": self._connectivity_guard_telemetry(
+                    attempts=attempts,
+                    rejected_incumbents=rejected_incumbents,
+                    cuts_added=cuts_added,
+                    cut_sizes=cut_sizes,
+                    fallback_nogoods=fallback_nogoods,
+                ),
             }
 
             if status == cp_model.INFEASIBLE:

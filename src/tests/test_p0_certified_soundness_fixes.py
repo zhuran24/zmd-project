@@ -75,6 +75,51 @@ def _build_tiny_exact_project(project_root: Path) -> Path:
     return project_root
 
 
+def _disconnected_route_states(commodity: str = "ore", dy: int = 0) -> set[tuple[Any, ...]]:
+    return {
+        (1, 0 + dy, 0, ("E", "W"), ("N",), commodity),
+        (1, 1 + dy, 0, ("S",), ("E",), commodity),
+        (2, 1 + dy, 0, ("W",), ("S",), commodity),
+        (2, 0 + dy, 0, ("N",), ("W",), commodity),
+        (5, 0 + dy, 0, ("E",), ("N", "W"), commodity),
+        (5, 1 + dy, 0, ("S",), ("E",), commodity),
+        (6, 1 + dy, 0, ("W",), ("S",), commodity),
+        (6, 0 + dy, 0, ("N",), ("W",), commodity),
+    }
+
+
+def _force_exact_route_states(routing: RoutingSubproblem, selected_states: set[tuple[Any, ...]]) -> None:
+    assert selected_states <= set(routing.r_vars)
+    for key, var in routing.r_vars.items():
+        routing.model.Add(var == (1 if key in selected_states else 0))
+
+
+def _routing_domain_analysis(active_cells_by_commodity: dict[str, set[tuple[int, int]]]) -> dict[str, Any]:
+    return {
+        "status": "feasible",
+        "commodity_component_cells": {
+            commodity: [list(cell) for cell in sorted(active_cells)]
+            for commodity, active_cells in active_cells_by_commodity.items()
+        },
+        "commodity_active_cells": {
+            commodity: [list(cell) for cell in sorted(active_cells)]
+            for commodity, active_cells in active_cells_by_commodity.items()
+        },
+        "domain_stats": {
+            "domain_cells": sum(len(active_cells) for active_cells in active_cells_by_commodity.values()),
+            "terminal_core_cells": sum(len(active_cells) for active_cells in active_cells_by_commodity.values()),
+            "commodity_component_cells": {
+                commodity: len(active_cells)
+                for commodity, active_cells in active_cells_by_commodity.items()
+            },
+            "commodity_active_cells": {
+                commodity: len(active_cells)
+                for commodity, active_cells in active_cells_by_commodity.items()
+            },
+        },
+    }
+
+
 def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> None:
     """Reject a locally closed source component plus a separate sink component."""
 
@@ -118,6 +163,8 @@ def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> No
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
     guard = routing.build_stats["last_solve"]["connectivity_guard"]
     assert guard["rejected_incumbents"] == 1
+    assert guard["cuts_added"] >= 1
+    assert guard["fallback_nogoods"] == []
     assert guard["attempts"][0]["connectivity"]["failures"][0]["unreachable_sink_fronts"] == [
         [5, 0, "W"]
     ]
@@ -167,8 +214,8 @@ def test_routing_guard_timeout_does_not_expose_rejected_routes(monkeypatch: Any)
     assert routing.solve(time_limit=1.0) == "TIMEOUT"
     guard = routing.build_stats["last_solve"]["connectivity_guard"]
     assert guard["rejected_incumbents"] == 1
+    assert guard["cuts_added"] >= 1
     assert routing.extract_routes() == []
-
 
 
 def test_routing_guard_checks_each_selected_commodity() -> None:
@@ -222,6 +269,155 @@ def test_routing_guard_checks_each_selected_commodity() -> None:
     connectivity = routing.build_stats["last_solve"]["connectivity_guard"]["attempts"][0]["connectivity"]
     assert connectivity["failure_count"] == 2
     assert {failure["commodity"] for failure in connectivity["failures"]} == {"ore", "water"}
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["cuts_added"] + len(guard["fallback_nogoods"]) >= 2
+
+
+def test_routing_lazy_connectivity_cuts_converge_on_three_commodity_probe() -> None:
+    """A 3-commodity disconnected-incumbent probe should converge through cuts, not nogood-only churn."""
+
+    commodities = ["ore", "water", "sand"]
+    offsets = {"ore": 0, "water": 3, "sand": 6}
+    port_specs = []
+    active_cells_by_commodity: dict[str, set[tuple[int, int]]] = {}
+    disconnected_incumbent: set[tuple[Any, ...]] = set()
+    for commodity in commodities:
+        dy = offsets[commodity]
+        states = _disconnected_route_states(commodity, dy)
+        disconnected_incumbent.update(states)
+        active_cells_by_commodity[commodity] = {(int(state[0]), int(state[1])) for state in states}
+        port_specs.extend(
+            [
+                {
+                    "instance_id": f"{commodity}_src",
+                    "x": 0,
+                    "y": dy,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": commodity,
+                },
+                {
+                    "instance_id": f"{commodity}_sink",
+                    "x": 6,
+                    "y": dy,
+                    "dir": "W",
+                    "type": "in",
+                    "commodity": commodity,
+                },
+            ]
+        )
+
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        commodities,
+        domain_analysis=_routing_domain_analysis(active_cells_by_commodity),
+    )
+    routing.build()
+    _force_exact_route_states(routing, disconnected_incumbent)
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["rejected_incumbents"] == 1
+    assert guard["cuts_added"] >= 3
+    assert guard["fallback_nogoods"] == []
+    assert len(guard["cut_sizes"]) >= 3
+
+
+def test_routing_lazy_connectivity_cut_preserves_real_feasible_path() -> None:
+    """A disconnected optimal incumbent is cut away, then a real source→sink path survives."""
+
+    active_cells = {
+        (1, 0),
+        (1, 1),
+        (2, 0),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (4, 1),
+        (5, 0),
+        (5, 1),
+        (6, 0),
+        (6, 1),
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        ["ore"],
+        domain_analysis=_routing_domain_analysis({"ore": active_cells}),
+    )
+    routing.build()
+    disconnected_incumbent = _disconnected_route_states("ore")
+    connected_path = {
+        (1, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 0, ("W",), ("E",), "ore"),
+        (3, 0, 0, ("W",), ("E",), "ore"),
+        (4, 0, 0, ("W",), ("N",), "ore"),
+        (4, 1, 0, ("S",), ("E",), "ore"),
+        (5, 1, 0, ("W",), ("E",), "ore"),
+        (6, 1, 0, ("W",), ("S",), "ore"),
+        (6, 0, 0, ("N",), ("W",), "ore"),
+        (5, 0, 0, ("E",), ("W",), "ore"),
+    }
+    assert disconnected_incumbent <= set(routing.r_vars)
+    assert connected_path <= set(routing.r_vars)
+    routing.model.Maximize(sum(routing.r_vars[key] for key in disconnected_incumbent))
+
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["rejected_incumbents"] >= 1
+    assert guard["cuts_added"] >= 1
+    assert guard["fallback_nogoods"] == []
+    assert routing.extract_routes()
+
+
+def test_routing_lazy_connectivity_cut_self_check_falls_back_to_nogood(monkeypatch: Any) -> None:
+    """If the independently verified crossing boundary is incomplete, fall back to the old nogood."""
+
+    active_cells = {
+        (1, 0),
+        (1, 1),
+        (2, 0),
+        (2, 1),
+        (3, 0),
+        (4, 0),
+        (4, 1),
+        (5, 0),
+        (5, 1),
+        (6, 0),
+        (6, 1),
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        ["ore"],
+        domain_analysis=_routing_domain_analysis({"ore": active_cells}),
+    )
+    routing.build()
+    disconnected_incumbent = _disconnected_route_states("ore")
+    routing.model.Maximize(sum(routing.r_vars[key] for key in disconnected_incumbent))
+
+    original_boundary = routing._source_side_crossing_boundary
+    required_source_state = (1, 0, 0, ("W",), ("E",), "ore")
+
+    def broken_boundary(*args: Any, **kwargs: Any) -> set[Any]:
+        crossing = set(original_boundary(*args, **kwargs))
+        crossing.discard(required_source_state)
+        return crossing
+
+    monkeypatch.setattr(routing, "_source_side_crossing_boundary", broken_boundary)
+
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["fallback_nogoods"]
+    assert guard["fallback_nogoods"][0]["reason"] == "x_not_complete_crossing_boundary"
+    assert guard["fallback_nogoods"][0]["nogood_size"] > 0
+    assert routing.extract_routes()
 
 
 def test_coordinate_powered_pose_without_occupied_cells_fails_closed() -> None:

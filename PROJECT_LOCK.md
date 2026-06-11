@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-06-11 (V80 P0 certified soundness fixes: routing connectivity, pose footprints, binding-local precheck cuts)
+**Updated**: 2026-06-11 (V80 P0 certified soundness fixes + P0-1 lazy routing connectivity cuts)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
@@ -87,7 +87,8 @@ Phase 0 close (`docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md`) 后,
 - A fully enclosed legal empty rectangle remains allowed; exterior connectivity is not part of the exact contract.
 - Terminal certified frontier evidence is a closed, project-bound contract: unknown `candidate_generation` keys, non-authoritative domain values, stale evidence schema versions, and sub-admissible terminal best results must fail closed before any public CERTIFIED surface.
 - In `certified_exact`, `EXACT_*` environment knobs are deny-unknown by default: only documented operational allowlist entries may be present, known proof-semantics knobs must stay at canonical false/default values, and future/unclassified names must block the run.
-- Routing CP-SAT `FEASIBLE` is not a certification boundary by itself: certified acceptance must rebuild the selected per-commodity route-state graph and prove every source front reaches a sink front and every sink front is reachable from a source. A locally closed but globally disconnected incumbent must be no-gooded and re-solved; if the budget is exhausted before a connected incumbent is found, the certified path returns `UNKNOWN`/`TIMEOUT`, never `CERTIFIED`.
+- Routing CP-SAT `FEASIBLE` is not a certification boundary by itself: certified acceptance must rebuild the selected per-commodity route-state graph and prove every source front reaches a sink front and every sink front is reachable from a source. A locally closed but globally disconnected incumbent must be rejected and re-solved; if the budget is exhausted before a connected incumbent is found, the certified path returns `UNKNOWN`/`TIMEOUT`, never `CERTIFIED`.
+- P0-1 lazy routing connectivity cuts are acceleration-only proof obligations: every source-side component cut must independently revalidate its `W`/`X` certificate (source fronts in `W`, sink fronts outside `W`; removing `X` disconnects all source fronts from sink fronts in the full potential state graph; incumbent selected states are disjoint from `X`) before attachment, otherwise it must fall back to the selected-positive nogood.
 - Coordinate exact master geometry must be keyed by each candidate pose's `occupied_cells` footprint, not by template default dimensions alone. No-overlap, ghost interaction, and power-coverage witness spans must use a mode-channelled footprint bounding box derived from the selected pose; non-rectangular footprints may be conservatively over-approximated by that box but must not under-approximate.
 - `binding_selection_safe_reject=True` routing precheck evidence is binding-local. `front_blocked` and `relaxed_disconnected` must first add a binding-level nogood and enumerate alternative port bindings while any remain. A master placement-level nogood is allowed only after binding alternatives are exhausted or an independent placement-level proof exists; otherwise the certified path fails closed as `UNKNOWN`.
 
