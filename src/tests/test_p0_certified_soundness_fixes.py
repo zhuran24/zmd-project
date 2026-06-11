@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
 from ortools.sat.python import cp_model
 
 import src.search.benders_loop as benders_loop_module
@@ -167,6 +168,120 @@ def test_routing_guard_timeout_does_not_expose_rejected_routes(monkeypatch: Any)
     guard = routing.build_stats["last_solve"]["connectivity_guard"]
     assert guard["rejected_incumbents"] == 1
     assert routing.extract_routes() == []
+
+
+
+def test_routing_guard_checks_each_selected_commodity() -> None:
+    """A disconnected incumbent must be rejected for every commodity, not just the first."""
+
+    def shifted_state(state: tuple[Any, ...], dy: int, commodity: str) -> tuple[Any, ...]:
+        x, y, layer, flow_in, flow_out, _old_commodity = state
+        return (x, y + dy, layer, flow_in, flow_out, commodity)
+
+    base_states = {
+        (1, 0, 0, ("E", "W"), ("N",), "ore"),
+        (1, 1, 0, ("S",), ("E",), "ore"),
+        (2, 1, 0, ("W",), ("S",), "ore"),
+        (2, 0, 0, ("N",), ("W",), "ore"),
+        (5, 0, 0, ("E",), ("N", "W"), "ore"),
+        (5, 1, 0, ("S",), ("E",), "ore"),
+        (6, 1, 0, ("W",), ("S",), "ore"),
+        (6, 0, 0, ("N",), ("W",), "ore"),
+    }
+    port_specs = [
+        {"instance_id": "ore_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "water_src", "x": 0, "y": 3, "dir": "E", "type": "out", "commodity": "water"},
+        {"instance_id": "water_sink", "x": 6, "y": 3, "dir": "W", "type": "in", "commodity": "water"},
+    ]
+    domain_analysis = {
+        "status": "feasible",
+        "commodity_component_cells": {
+            "ore": [list(cell) for cell in sorted((state[0], state[1]) for state in base_states)],
+            "water": [list(cell) for cell in sorted((state[0], state[1] + 3) for state in base_states)],
+        },
+        "commodity_active_cells": {
+            "ore": [list(cell) for cell in sorted((state[0], state[1]) for state in base_states)],
+            "water": [list(cell) for cell in sorted((state[0], state[1] + 3) for state in base_states)],
+        },
+        "domain_stats": {},
+    }
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        ["ore", "water"],
+        domain_analysis=domain_analysis,
+    )
+    routing.build()
+
+    disconnected_incumbent = base_states | {shifted_state(state, 3, "water") for state in base_states}
+    assert disconnected_incumbent <= set(routing.r_vars)
+    for key, var in routing.r_vars.items():
+        routing.model.Add(var == (1 if key in disconnected_incumbent else 0))
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+    connectivity = routing.build_stats["last_solve"]["connectivity_guard"]["attempts"][0]["connectivity"]
+    assert connectivity["failure_count"] == 2
+    assert {failure["commodity"] for failure in connectivity["failures"]} == {"ore", "water"}
+
+
+def test_coordinate_powered_pose_without_occupied_cells_fails_closed() -> None:
+    """Missing footprint evidence on a powered pose must not fall through to bbox witnesses."""
+
+    rules = {
+        "globals": {"grid": {"width": 4, "height": 4}},
+        "facility_templates": {
+            "powered": {"dimensions": {"w": 2, "h": 2}, "needs_power": True},
+            "power_pole": {
+                "dimensions": {"w": 1, "h": 1},
+                "needs_power": False,
+                "power_coverage_radius": 1,
+            },
+        },
+    }
+    instances = [
+        {
+            "instance_id": "powered_001",
+            "facility_type": "powered",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+        {
+            "instance_id": "pole_001",
+            "facility_type": "power_pole",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+    ]
+    pools = {
+        "powered": [
+            {
+                "pose_id": "powered_missing_cells",
+                "anchor": {"x": 1, "y": 1},
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "power_pole": [
+            {
+                "pose_id": "pole",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0], [0, 1], [1, 0], [1, 1]],
+            }
+        ],
+    }
+
+    with pytest.raises(ValueError, match="Missing occupied_cells for coordinate footprint domain"):
+        core = MasterPlacementModel.build_exact_core(
+            instances,
+            pools,
+            rules,
+            generic_io_requirements={"required_generic_outputs": {}, "required_generic_inputs": {}},
+        )
+        MasterPlacementModel.from_exact_core(core, ghost_rect=None)
 
 
 def test_coordinate_master_no_overlap_uses_pose_footprint_not_template_dims() -> None:
