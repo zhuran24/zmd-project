@@ -837,6 +837,20 @@ def _validate_terminal_solution_against_project(
         if optional_solution_counts.get(str(facility_type), 0) < int(required_count):
             return "terminal_certified_final_result_solution_missing_required_optional_instance"
 
+    # Protocol storage boxes are only justified on the public certified surface by
+    # the replayable generic-input lower-bound contract.  Extra pose-optional boxes
+    # are cheap blockers for the terminal empty-rectangle replay; routing/provenance
+    # evidence for such surplus selections belongs in a future proof-carrying
+    # certificate, so the current public validator fails closed.
+    required_protocol_storage_boxes = int(
+        required_optional_lower_bounds.get("protocol_storage_box", 0)
+    )
+    selected_protocol_storage_boxes = int(
+        optional_solution_counts.get("protocol_storage_box", 0)
+    )
+    if selected_protocol_storage_boxes > required_protocol_storage_boxes:
+        return "terminal_certified_final_result_solution_excess_protocol_storage_box_instance"
+
     power_coverers_by_instance: Dict[str, list[str]] = {}
     power_targets_by_pole: Dict[str, set[str]] = {
         pole_instance_id: set() for pole_instance_id, _coverage_cells in selected_power_poles

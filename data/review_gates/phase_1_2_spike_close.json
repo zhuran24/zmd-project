@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-11",
-  "summary": "P1.2 remains manually blocked. V93 (thirteenth overnight independent review) sealed two seams: the free-text exact-status note no longer smuggles certified prose into release surfaces, and public placement entries are shape-closed with the ghost_pick marker rejected on the public final_result.",
-  "current_review_anchor": "v93_note_and_solution_entry_sealing",
+  "summary": "P1.2 remains manually blocked. V94 (fourteenth overnight independent review) sealed the storage-box sibling of the V87 pole blocker: surplus protocol storage boxes beyond the inferred requirement fail closed instead of shrinking the apparent best empty rectangle.",
+  "current_review_anchor": "v94_protocol_storage_surplus_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v93_note_and_solution_entry_sealing",
+    "current_review_anchor": "v94_protocol_storage_surplus_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -333,6 +333,14 @@
       "summary": "V93 external review found two soundness findings, both locally reproduced: the exact-status note projected forged certified prose under status open, and forged placement-entry fields (plus a skipped public ghost_pick) could land in final_solution.json before later comparisons fired. Both fail closed now. Owner clean-streak count resets to 0.",
       "evidence_paths": [
         "docs/research/p1_2_v93_note_and_solution_entry_sealing.md"
+      ]
+    },
+    {
+      "package": "v94_protocol_storage_surplus_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V94 external review found one soundness finding, locally reproduced: surplus protocol storage boxes acted as occupancy blockers (removing them flipped the validator to layout_has_better_empty_rect). Excess boxes now fail closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md"
       ]
     }
   ],
