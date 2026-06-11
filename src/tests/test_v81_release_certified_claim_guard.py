@@ -43,6 +43,23 @@ def test_v81_release_rejects_lowercase_certified_claim() -> None:
         _validate_ready_run_summary(summary, expected_base_id="valley4_protocol_core")
 
 
+def test_v92_release_rejects_embedded_certified_claim() -> None:
+    summary = _delivery_ready_run_summary("valley4_protocol_core")
+    summary["exact_full_scale_certified"] = {
+        "status": "CERTIFIED_BY_FAKE_RELEASE_SUMMARY",
+        "note": "token smuggled through a non-authoritative status",
+    }
+    with pytest.raises(SingleBaseDeliveryReleaseError, match="may not claim 'CERTIFIED'"):
+        _validate_ready_run_summary(summary, expected_base_id="valley4_protocol_core")
+
+
+def test_v92_release_rejects_non_allowlisted_exact_status() -> None:
+    summary = _delivery_ready_run_summary("valley4_protocol_core")
+    summary["exact_full_scale_certified"] = {"status": "proof_complete"}
+    with pytest.raises(SingleBaseDeliveryReleaseError, match="must be one of"):
+        _validate_ready_run_summary(summary, expected_base_id="valley4_protocol_core")
+
+
 def test_v81_release_accepts_open_exact_certified_status() -> None:
     summary = _delivery_ready_run_summary("valley4_protocol_core")
     summary["exact_full_scale_certified"] = {"status": "open"}

@@ -28,6 +28,7 @@ from src.render.report_builder import (
     build_viewer_report_from_blueprint_payload,
     write_viewer_report,
 )
+from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
 from src.search.exact_campaign import atomic_write_json
 
 _VIEWER_MANIFEST_FILENAME = "release_viewer_manifest.json"
@@ -250,6 +251,10 @@ def build_single_base_delivery_viewer_bundle(
     atomic_write_json(output_dir / _VIEWER_MANIFEST_FILENAME, viewer_manifest_payload)
 
     exact_full_scale_certified = _mapping(release_manifest_payload.get("exact_full_scale_certified"))
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_full_scale_certified.get("status", "unknown"),
+        context="release_manifest.exact_full_scale_certified",
+    )
     return SingleBaseDeliveryViewerBundleResult(
         release_id=str(release_info.get("release_id", current_release.get("release_id", "unknown_release"))),
         base_id=str(release_info.get("base_id", current_release.get("base_id", "unknown_base"))),
@@ -263,7 +268,7 @@ def build_single_base_delivery_viewer_bundle(
         payload_download_count=len(payload_downloads),
         metadata_download_count=len(metadata_downloads),
         quick_download_count=len(quick_downloads),
-        exact_full_scale_certified_status=str(exact_full_scale_certified.get("status", "unknown")),
+        exact_full_scale_certified_status=exact_status,
     )
 
 
@@ -541,6 +546,11 @@ def _build_viewer_manifest_payload(
     release_info = _mapping(release_manifest_payload.get("release"))
     source_run = _mapping(release_manifest_payload.get("source_run"))
     exact_full_scale_certified = _mapping(release_manifest_payload.get("exact_full_scale_certified"))
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_full_scale_certified.get("status", "unknown"),
+        context="release_manifest.exact_full_scale_certified",
+    )
+    exact_note = str(exact_full_scale_certified.get("note", ""))
 
     download_groups = _group_downloads(
         payload_downloads=payload_downloads,
@@ -562,7 +572,10 @@ def _build_viewer_manifest_payload(
             "scope_note": str(release_info.get("scope_note", current_release.get("scope_note", ""))),
         },
         "source_run": dict(source_run),
-        "exact_full_scale_certified": dict(exact_full_scale_certified),
+        "exact_full_scale_certified": {
+            "status": exact_status,
+            "note": exact_note,
+        },
         "viewer_bundle": {
             "output_dir": str(output_dir),
             "pointer_json_path": str(pointer_json_path),
@@ -583,7 +596,7 @@ def _build_viewer_manifest_payload(
         "metadata_downloads": [copied.to_dict() for copied in metadata_downloads],
         "notes": [
             str(release_info.get("scope_note", current_release.get("scope_note", ""))),
-            str(exact_full_scale_certified.get("note", "")),
+            exact_note,
         ],
     }
 

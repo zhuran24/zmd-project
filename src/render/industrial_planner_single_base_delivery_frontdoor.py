@@ -19,6 +19,7 @@ import tempfile
 from typing import Any, Mapping, Sequence
 
 from src.io.serializer import load_json_mapping
+from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
 from src.search.exact_campaign import atomic_write_json, sha256_file
 
 _FRONTDOOR_MANIFEST_FILENAME = "frontdoor_manifest.json"
@@ -254,6 +255,10 @@ def build_single_base_delivery_frontdoor(
     manifest_payload = load_json_mapping(frontdoor_manifest_path)
     current_frontdoor = _mapping(manifest_payload.get("current_frontdoor"))
     exact_payload = _mapping(manifest_payload.get("exact_full_scale_certified"))
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="frontdoor_manifest.exact_full_scale_certified",
+    )
     surface_alignment_payload = _mapping(manifest_payload.get("surface_alignment"))
     return SingleBaseDeliveryFrontdoorResult(
         release_id=str(current_frontdoor.get("release_id", "unknown_release")),
@@ -269,7 +274,7 @@ def build_single_base_delivery_frontdoor(
         latest_bundle_pointer_markdown_path=output_dir / str(current_frontdoor.get("latest_bundle_pointer_markdown", _LATEST_BUNDLE_POINTER_MARKDOWN_FILENAME)),
         quick_download_count=len(manifest_payload.get("quick_downloads") or []),
         download_group_count=len(manifest_payload.get("download_groups") or []),
-        exact_full_scale_certified_status=str(exact_payload.get("status", "unknown")),
+        exact_full_scale_certified_status=exact_status,
         surface_alignment_status=(
             str(surface_alignment_payload.get("status", "")).strip() or None
         ),
@@ -301,6 +306,12 @@ def _build_frontdoor_manifest_payload(
     current_landing = _mapping(landing_payload.get("current_landing"))
     current_release = _mapping(landing_payload.get("current_release"))
     exact_payload = _mapping(landing_payload.get("exact_full_scale_certified"))
+    # A non-allowlisted exact status fails closed here before projection.
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="landing_manifest.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
     current_bundle_archive = _mapping(landing_payload.get("current_bundle_archive"))
 
     landing_dir = landing_manifest_json_path.parent.resolve()
@@ -483,8 +494,8 @@ def _build_frontdoor_manifest_payload(
             "scope_note": current_frontdoor["scope_note"],
         },
         "exact_full_scale_certified": {
-            "status": str(exact_payload.get("status", "unknown")),
-            "note": str(exact_payload.get("note", "")),
+            "status": exact_status,
+            "note": exact_note,
         },
         "actions": prefixed_actions,
         "entry_modes": {
@@ -1125,6 +1136,13 @@ def _materialize_latest_bundle_alias(
     current_landing = _mapping(landing_payload.get("current_landing"))
     current_release = _mapping(landing_payload.get("current_release"))
     exact_payload = _mapping(landing_payload.get("exact_full_scale_certified"))
+    # Validation-only here: a non-allowlisted exact status must fail closed
+    # before the alias bundle is built; the payload projection happens in
+    # _build_latest_bundle_pointer_payload.
+    normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="landing_manifest.exact_full_scale_certified",
+    )
     current_bundle_archive = _mapping(landing_payload.get("current_bundle_archive"))
     actions = _mapping(landing_payload.get("actions"))
 
@@ -1234,6 +1252,12 @@ def _build_latest_bundle_pointer_payload(
     metadata_file_count = int(current_bundle_archive.get("metadata_file_count", 0) or 0)
     included_entry_count = int(current_bundle_archive.get("included_entry_count", payload_file_count + metadata_file_count) or 0)
     archive_root = str(current_bundle_archive.get("archive_root", "industrial_planner_current_single_base_delivery_bundle"))
+    # V92: a non-allowlisted exact status fails closed before projection.
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="landing_manifest.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
 
     return {
         "metadata": {
@@ -1261,8 +1285,8 @@ def _build_latest_bundle_pointer_payload(
             "scope_note": scope_note,
         },
         "exact_full_scale_certified": {
-            "status": str(exact_payload.get("status", "unknown")),
-            "note": str(exact_payload.get("note", "")),
+            "status": exact_status,
+            "note": exact_note,
         },
         "included_roots": {
             "release": (Path(archive_root) / "release").as_posix(),
@@ -1276,7 +1300,7 @@ def _build_latest_bundle_pointer_payload(
         },
         "notes": [
             scope_note,
-            str(exact_payload.get("note", "")),
+            exact_note,
             (
                 "This repo-front latest alias mirrors the stable current-delivery bundle under a shorter checked-in path, "
                 "so script consumers can fetch the active single-base payload + metadata ZIP without remembering "

@@ -16,6 +16,7 @@ import tempfile
 from typing import Any, Mapping
 
 from src.io.serializer import load_json_mapping
+from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
 from src.search.exact_campaign import atomic_write_json
 
 _ENTRYPOINTS_SOURCE = "industrial_planner_single_base_delivery_entrypoints_v3"
@@ -1066,7 +1067,10 @@ def _extract_exact_status_from_release_payload(path: Path, payload: Mapping[str,
             f"release pointer {path} does not contain current_release.exact_full_scale_certified"
         )
     return _ExactStatus(
-        status=_require_string(exact_payload, "status", context="release exact status"),
+        status=normalize_non_authoritative_exact_status(
+            _require_string(exact_payload, "status", context="release exact status"),
+            context="release pointer current_release.exact_full_scale_certified",
+        ),
         note=str(exact_payload.get("note", "")).strip(),
     )
 
@@ -1080,7 +1084,10 @@ def _extract_exact_status_from_viewer_payload(path: Path, payload: Mapping[str, 
             f"viewer pointer {path} does not contain current_viewer.exact_full_scale_certified"
         )
     return _ExactStatus(
-        status=_require_string(exact_payload, "status", context="viewer exact status"),
+        status=normalize_non_authoritative_exact_status(
+            _require_string(exact_payload, "status", context="viewer exact status"),
+            context="viewer pointer current_viewer.exact_full_scale_certified",
+        ),
         note=str(exact_payload.get("note", "")).strip(),
     )
 
@@ -1089,7 +1096,10 @@ def _extract_exact_status_from_viewer_payload(path: Path, payload: Mapping[str, 
 def _extract_exact_status_from_mapping_payload(path: Path, payload: Mapping[str, Any]) -> _ExactStatus:
     exact_payload = _require_mapping(payload, "exact_full_scale_certified", path)
     return _ExactStatus(
-        status=_require_string(exact_payload, "status", context=f"exact status in {path}"),
+        status=normalize_non_authoritative_exact_status(
+            _require_string(exact_payload, "status", context=f"exact status in {path}"),
+            context=f"{path}.exact_full_scale_certified",
+        ),
         note=str(exact_payload.get("note", "")).strip(),
     )
 

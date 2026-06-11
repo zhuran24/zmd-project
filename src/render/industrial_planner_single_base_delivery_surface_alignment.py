@@ -20,6 +20,7 @@ import tempfile
 from typing import Any, Mapping
 
 from src.io.serializer import load_json_mapping
+from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
 from src.search.exact_campaign import atomic_write_json
 
 _SURFACE_ALIGNMENT_SOURCE = "industrial_planner_single_base_delivery_surface_alignment_v3"
@@ -407,7 +408,10 @@ def build_single_base_delivery_surface_alignment_result(
     base_id = _require_string(active_contract, "base_id", context="active_contract")
     lot_size = _require_int(active_contract, "lot_size", context="active_contract")
     delivery_status = _require_string(active_contract, "delivery_status", context="active_contract")
-    exact_status = _require_string(entrypoints_exact, "status", context="exact_full_scale_certified")
+    exact_status = normalize_non_authoritative_exact_status(
+        _require_string(entrypoints_exact, "status", context="exact_full_scale_certified"),
+        context="entrypoints.exact_full_scale_certified",
+    )
 
     frontdoor_dir = frontdoor_manifest_json_path.parent.resolve()
     entrypoints_json_relative = _relative_from(frontdoor_dir, entrypoints_json_path)

@@ -52,6 +52,9 @@ from src.render.industrial_planner_single_base_delivery_viewer import (  # noqa:
     SingleBaseDeliveryViewerBundleError,
     build_single_base_delivery_viewer_bundle,
 )
+from src.render.industrial_planner_exact_status import (  # noqa: E402
+    normalize_non_authoritative_exact_status,
+)
 from src.adapters.industrial_planner import DEFAULT_BASE_ID  # noqa: E402
 from src.search.exact_campaign import atomic_write_json, now_iso, sha256_file  # noqa: E402
 
@@ -612,16 +615,20 @@ def _validate_ready_run_summary(summary: Mapping[str, Any], *, expected_base_id:
             "checked_artifact_suite.status must be 'clean', "
             f"got {str(checked_artifact.get('status', '')).strip()!r}"
         )
-    # V81: the run summary is not a certified authority. Until this release
-    # path consumes the canonical certified_surface verifier verdict, a
-    # self-claimed CERTIFIED status must fail closed instead of propagating
-    # into the release manifest and active pointer.
-    if str(exact_certified.get("status", "")).strip().upper() == "CERTIFIED":
-        problems.append(
-            "run_summary.exact_full_scale_certified.status may not claim 'CERTIFIED' "
-            "on the single-base release path; exact CERTIFIED publication must be "
-            "produced by the canonical certified_delivery_manifest/certified_surface verifier"
+    # V81/V92: the run summary is not a certified authority. Until this
+    # release path consumes the canonical certified_surface verifier verdict,
+    # any status that embeds the reserved CERTIFIED token or leaves the
+    # non-authoritative allowlist must fail closed instead of propagating into
+    # public release artifacts. The error path intentionally preserves the
+    # anchored wording "may not claim 'CERTIFIED' " and
+    # "certified_delivery_manifest/certified_surface verifier".
+    try:
+        normalize_non_authoritative_exact_status(
+            exact_certified.get("status", "unknown"),
+            context="run_summary.exact_full_scale_certified",
         )
+    except ValueError as exc:
+        problems.append(str(exc))
 
     if problems:
         details = "\n".join(f"- {problem}" for problem in problems)
@@ -692,6 +699,11 @@ def _build_release_manifest_payload(
             "status": "unknown",
             "note": "source run summary did not provide exact full-scale certification state",
         }
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="run_summary.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
 
     release_command = [
         "python scripts/build_industrial_planner_single_base_delivery_release.py",
@@ -775,8 +787,8 @@ def _build_release_manifest_payload(
             ),
         },
         "exact_full_scale_certified": {
-            "status": str(exact_payload.get("status", "")),
-            "note": str(exact_payload.get("note", "")),
+            "status": exact_status,
+            "note": exact_note,
         },
         "artifacts": [artifact.to_dict() for artifact in artifacts],
         "generated_files": {
@@ -798,7 +810,7 @@ def _build_release_manifest_payload(
         "notes": [
             "This release captures only the active `valley4_protocol_core` 70×70 delivery surface.",
             "Other bases remain preserved `future_scope` metadata and are not reactivated here.",
-            str(exact_payload.get("note", "")),
+            exact_note,
         ],
     }
     return payload
@@ -942,6 +954,11 @@ def _build_pointer_payload(
         if isinstance(release_payload.get("exact_full_scale_certified"), Mapping)
         else {}
     )
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="release_payload.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
     generated_files = (
         release_payload.get("generated_files", {})
         if isinstance(release_payload.get("generated_files"), Mapping)
@@ -968,8 +985,8 @@ def _build_pointer_payload(
             "release_manifest_markdown": str(generated_files.get("release_manifest_markdown", "")),
             "sha256sums": str(generated_files.get("sha256sums", "")),
             "exact_full_scale_certified": {
-                "status": str(exact_payload.get("status", "")),
-                "note": str(exact_payload.get("note", "")),
+                "status": exact_status,
+                "note": exact_note,
             },
             "scope_note": str(release.get("scope_note", _SCOPE_NOTE)),
         },
@@ -1105,6 +1122,11 @@ def _build_viewer_pointer_payload(
         if isinstance(viewer_manifest_payload.get("exact_full_scale_certified"), Mapping)
         else {}
     )
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="viewer_manifest.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
     viewer_bundle = (
         viewer_manifest_payload.get("viewer_bundle", {})
         if isinstance(viewer_manifest_payload.get("viewer_bundle"), Mapping)
@@ -1175,8 +1197,8 @@ def _build_viewer_pointer_payload(
             "quick_download_count": len(normalized_quick_downloads),
             "quick_downloads": normalized_quick_downloads,
             "exact_full_scale_certified": {
-                "status": str(exact_payload.get("status", "")),
-                "note": str(exact_payload.get("note", "")),
+                "status": exact_status,
+                "note": exact_note,
             },
             "scope_note": str(current_release.get("scope_note", _SCOPE_NOTE)),
             "release_pointer_json": _display_path(release_pointer_json_path),
@@ -1268,6 +1290,10 @@ def _build_viewer_index_payload(
         )
         output_dir = manifest_path.parent.resolve()
         index_html_relative = str(asset_paths.get("index_html", "index.html"))
+        exact_status = normalize_non_authoritative_exact_status(
+            exact_payload.get("status", "unknown"),
+            context=f"viewer manifest {manifest_path}.exact_full_scale_certified",
+        )
         entries.append(
             {
                 "release_id": str(current_release.get("release_id", manifest_path.parent.name)),
@@ -1278,7 +1304,7 @@ def _build_viewer_index_payload(
                 "index_html": str(_display_path((output_dir / Path(index_html_relative)).resolve())),
                 "viewer_manifest_json": str(_display_path(manifest_path.resolve())),
                 "generated_at": str(metadata.get("generated_at", "")),
-                "exact_full_scale_certified_status": str(exact_payload.get("status", "")),
+                "exact_full_scale_certified_status": exact_status,
                 "selected_facility_type_count": int(viewer_bundle.get("selected_facility_type_count", 0) or 0),
                 "selected_pose_count": int(viewer_bundle.get("selected_pose_count", 0) or 0),
             }
@@ -1363,6 +1389,10 @@ def _build_release_index_payload(
             manifest_payload.get("metadata", {}) if isinstance(manifest_payload.get("metadata"), Mapping) else {}
         )
         release_id = str(release.get("release_id", manifest_path.parent.name))
+        exact_status = normalize_non_authoritative_exact_status(
+            exact_payload.get("status", "unknown"),
+            context=f"release manifest {manifest_path}.exact_full_scale_certified",
+        )
         entries.append(
             {
                 "release_id": release_id,
@@ -1372,7 +1402,7 @@ def _build_release_index_payload(
                 "release_dir": str(release.get("release_dir", _display_path(manifest_path.parent))),
                 "blueprint": str(entrypoints.get("blueprint", "")),
                 "generated_at": str(metadata.get("generated_at", "")),
-                "exact_full_scale_certified_status": str(exact_payload.get("status", "")),
+                "exact_full_scale_certified_status": exact_status,
             }
         )
     entries.sort(key=lambda entry: (entry.get("generated_at", ""), entry.get("release_id", "")), reverse=True)
@@ -2462,8 +2492,8 @@ def build_single_base_delivery_release(
             index_markdown_path=resolved_index_markdown_path,
             delivery_status=str(summary.get("deliverable_status", "")),
             exact_full_scale_certified_status=str(
-                ((summary.get("exact_full_scale_certified") or {}).get("status", ""))
-                if isinstance(summary.get("exact_full_scale_certified"), Mapping)
+                release_payload.get("exact_full_scale_certified", {}).get("status", "")
+                if isinstance(release_payload.get("exact_full_scale_certified"), Mapping)
                 else ""
             ),
             payload_artifact_count=len(artifacts),

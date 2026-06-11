@@ -18,6 +18,7 @@ import zipfile
 from typing import Any, Mapping, Sequence
 
 from src.io.serializer import load_json_mapping
+from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
 from src.search.exact_campaign import atomic_write_json, sha256_file
 
 _LANDING_MANIFEST_FILENAME = "landing_manifest.json"
@@ -193,6 +194,10 @@ def build_single_base_delivery_landing_bundle(
     manifest_payload = load_json_mapping(manifest_path)
     current_landing = _mapping(manifest_payload.get("current_landing"))
     exact_payload = _mapping(manifest_payload.get("exact_full_scale_certified"))
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="landing_manifest.exact_full_scale_certified",
+    )
     return SingleBaseDeliveryLandingBundleResult(
         release_id=str(current_landing.get("release_id", release_id)),
         base_id=str(current_landing.get("base_id", base_id)),
@@ -211,7 +216,7 @@ def build_single_base_delivery_landing_bundle(
         current_bundle_metadata_file_count=int(current_landing.get("current_bundle_metadata_file_count", 0) or 0),
         quick_download_count=len(manifest_payload.get("quick_downloads") or []),
         download_group_count=len(manifest_payload.get("download_groups") or []),
-        exact_full_scale_certified_status=str(exact_payload.get("status", "unknown")),
+        exact_full_scale_certified_status=exact_status,
     )
 
 
@@ -230,6 +235,11 @@ def _build_landing_manifest_payload(
     current_viewer = _mapping(pointer_payload.get("current_viewer"))
     current_release = _mapping(viewer_manifest_payload.get("current_release"))
     exact_payload = _mapping(viewer_manifest_payload.get("exact_full_scale_certified"))
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="viewer_manifest.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
     viewer_bundle = _mapping(viewer_manifest_payload.get("viewer_bundle"))
 
     quick_downloads = _prefix_quick_downloads(
@@ -311,8 +321,8 @@ def _build_landing_manifest_payload(
             "scope_note": current_landing["scope_note"],
         },
         "exact_full_scale_certified": {
-            "status": str(exact_payload.get("status", "unknown")),
-            "note": str(exact_payload.get("note", "")),
+            "status": exact_status,
+            "note": exact_note,
         },
         "actions": actions,
         "quick_downloads": quick_downloads,
@@ -331,7 +341,7 @@ def _build_landing_manifest_payload(
         },
         "notes": [
             current_landing["scope_note"],
-            str(exact_payload.get("note", "")),
+            exact_note,
             (
                 "A stable one-file ZIP alias now sits under current_delivery/downloads/ so "
                 "download-first consumers can pull the active bundle without piecing together "
@@ -476,6 +486,11 @@ def _materialize_current_bundle_archive(
 
     current_release = _mapping(viewer_manifest_payload.get("current_release"))
     exact_payload = _mapping(viewer_manifest_payload.get("exact_full_scale_certified"))
+    exact_status = normalize_non_authoritative_exact_status(
+        exact_payload.get("status", "unknown"),
+        context="viewer_manifest.exact_full_scale_certified",
+    )
+    exact_note = str(exact_payload.get("note", ""))
     current_viewer = _mapping(pointer_payload.get("current_viewer"))
     pointer_payload_data = {
         "metadata": {
@@ -501,8 +516,8 @@ def _materialize_current_bundle_archive(
             "scope_note": str(current_release.get("scope_note", current_viewer.get("scope_note", ""))),
         },
         "exact_full_scale_certified": {
-            "status": str(exact_payload.get("status", "unknown")),
-            "note": str(exact_payload.get("note", "")),
+            "status": exact_status,
+            "note": exact_note,
         },
         "included_roots": {
             "release": (Path(_CURRENT_BUNDLE_ARCHIVE_ROOT) / "release").as_posix(),

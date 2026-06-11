@@ -15,6 +15,7 @@ import tempfile
 from typing import Any, Mapping
 
 from src.io.serializer import load_json_mapping
+from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
 from src.search.exact_campaign import atomic_write_json
 
 _SURFACE_HEALTH_SOURCE = "industrial_planner_single_base_delivery_surface_health_v1"
@@ -245,8 +246,9 @@ def build_single_base_delivery_surface_health(
             base_id=_require_string(active_contract, "base_id", context="active_contract"),
             lot_size=_require_int(active_contract, "lot_size", context="active_contract"),
             delivery_status=_require_string(active_contract, "delivery_status", context="active_contract"),
-            exact_full_scale_certified_status=_require_string(
-                exact_payload, "status", context="exact_full_scale_certified"
+            exact_full_scale_certified_status=normalize_non_authoritative_exact_status(
+                _require_string(exact_payload, "status", context="exact_full_scale_certified"),
+                context="surface_alignment.exact_full_scale_certified",
             ),
             status=_require_string(summary, "status", context="summary"),
             is_clean=bool(summary.get("is_clean")),

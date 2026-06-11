@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v91_nested_public_field_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v92_release_status_allowlist_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -97,6 +97,8 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v81_release_rejects_self_claimed_certified_run_summary" in export_tests
     assert "test_v81_release_rejects_lowercase_certified_claim" in export_tests
     assert "test_v81_release_accepts_open_exact_certified_status" in export_tests
+    assert "test_v92_release_rejects_embedded_certified_claim" in export_tests
+    assert "test_v92_release_rejects_non_allowlisted_exact_status" in export_tests
     assert "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness" in export_tests
     assert "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle" in export_tests
     assert "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance" in export_tests
