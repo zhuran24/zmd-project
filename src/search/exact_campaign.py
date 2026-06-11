@@ -43,6 +43,21 @@ VALID_CANDIDATE_STATUSES = {
     # 是哪个 ε 阶段（0.05/0.01/0.0）。final_status 同样可以是 EPSILON_CERTIFIED。
     "EPSILON_CERTIFIED",
 }
+
+# A terminal public final_result is a projection of the certified candidate
+# placement witness, not an extensible proof envelope.  Extra top-level fields can
+# be copied into final_solution.json / optimal_blueprint.json by downstream
+# serializers without being bound to the candidate-record solution digest.  Keep
+# the public CERTIFIED surface fail-closed until such fields have a replayable
+# proof contract.
+TERMINAL_CERTIFIED_FINAL_RESULT_ALLOWED_FIELDS = frozenset(
+    {
+        "ghost_rect",
+        "placement_solution",
+        "search_status",
+        "search_stats",
+    }
+)
 REQUIRED_STATE_FIELDS = {
     "schema_version",
     "solve_mode",
@@ -1230,6 +1245,13 @@ def terminal_certified_final_result_violation(
     final_result = state.get("final_result")
     if not isinstance(final_result, Mapping):
         return "terminal_certified_final_result_invalid"
+    unknown_final_result_fields = sorted(
+        str(field)
+        for field in final_result.keys()
+        if str(field) not in TERMINAL_CERTIFIED_FINAL_RESULT_ALLOWED_FIELDS
+    )
+    if unknown_final_result_fields:
+        return f"terminal_certified_final_result_unknown_field:{unknown_final_result_fields[0]}"
     if str(final_result.get("search_status", "")) != "CERTIFIED":
         return "terminal_certified_final_result_status_invalid"
 

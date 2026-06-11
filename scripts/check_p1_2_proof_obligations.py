@@ -1263,6 +1263,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "terminal_certified_final_result_ghost_rect_anchor_missing",
         "terminal_certified_candidate_solution_ghost_pick_missing",
         "terminal_certified_candidate_solution_ghost_pick_mismatch",
+        "terminal_certified_final_result_unknown_field",
     ):
         if needle not in exact_campaign_source_v83:
             errors.append(

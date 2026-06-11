@@ -4,8 +4,8 @@
   "phase": "Phase 1.2 spike close",
   "status": "blocked_manual_review_count",
   "updated_at": "2026-06-11",
-  "summary": "P1.2 remains manually blocked. V89 (ninth overnight independent review) sealed the ghost_pick provenance seam: the winning candidate record's ghost_pick anchor is now replayed against the published final_result anchor, so omitting or tampering the marker fails closed.",
-  "current_review_anchor": "v89_ghost_pick_terminal_binding_sealing",
+  "summary": "P1.2 remains manually blocked. V90 (tenth overnight independent review) applied the deny-unknown paradigm to the final_result top level: forged unbound fields such as a routing_solution can no longer be projected into public artifacts.",
+  "current_review_anchor": "v90_final_result_field_allowlist_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
     "counting_authority": "owner_manual_count_outside_repo",
@@ -26,7 +26,7 @@
     "counting_authority": "owner_manual_count_outside_repo",
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
-    "current_review_anchor": "v89_ghost_pick_terminal_binding_sealing",
+    "current_review_anchor": "v90_final_result_field_allowlist_sealing",
     "note": "The repo intentionally does not record or compute 0/3, 1/3, 2/3, or 3/3. The owner keeps the count and will add an explicit owner_manual_decision if P1.3B entry is approved. Current review anchor for subsequent review packages is v80_deny_unknown_certified_surface."
   },
   "next_phase_entry": {
@@ -301,6 +301,14 @@
       "summary": "V89 external review found one soundness finding, locally reproduced in both directions: the candidate record's ghost_pick provenance was never replayed, so forged checkpoints with a missing or tampered marker still published CERTIFIED. The binding is now fail-closed. Owner clean-streak count resets to 0.",
       "evidence_paths": [
         "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md"
+      ]
+    },
+    {
+      "package": "v90_final_result_field_allowlist_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V90 external review found one soundness finding, locally reproduced: arbitrary top-level final_result fields were projected into the public blueprint without any binding (forged belt routes published as CERTIFIED). The final_result shape is now a closed allowlist. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md"
       ]
     }
   ],

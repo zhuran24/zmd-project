@@ -18,7 +18,10 @@ from src.io.serializer import (
     write_blueprint_payload,
 )
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN
-from src.search.exact_campaign import ExactCampaign
+from src.search.exact_campaign import (
+    ExactCampaign,
+    terminal_certified_final_result_violation_for_project,
+)
 from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
 
 
@@ -855,16 +858,19 @@ def test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_soluti
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
-    best_result = campaign.best_certified_result()
-    assert best_result is not None
-    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
-    export_certified_blueprint(
-        project_root=project_root,
-        result={k: v for k, v in best_result.items() if k != "routing_solution"},
-        facility_pools=facility_pools,
+    assert (
+        terminal_certified_final_result_violation_for_project(
+            campaign.state,
+            project_root=project_root,
+        )
+        == "terminal_certified_final_result_unknown_field:routing_solution"
     )
+    assert campaign.best_certified_result() is None
 
-    with pytest.raises(ValueError, match="optimal_blueprint artifact to match terminal final_result"):
+    with pytest.raises(
+        ValueError,
+        match="terminal_certified_final_result_unknown_field:routing_solution",
+    ):
         export_certified_delivery_manifest(
             project_root=project_root,
             campaign_state=campaign.state,
