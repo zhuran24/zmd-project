@@ -40,7 +40,7 @@ python ...\dispatch_gpt_task.py --resume "https://chatgpt.com/g/.../c/<id>"
 | 2 | 回复完成但没有文件附件 | 读 final_reply.md 决定下一步 |
 | 3 | 异常(未登录/错误横幅/未预期 DOM) | 看 attention_* 截图,必要时 --resume |
 | 4 | 超时(默认 3.5h) | 看心跳判断是否还在跑,--resume 续等 |
-| 5 | 疑似 Pro 静默降级(重试后生成仍 <60s) | 交付已收但不可信;Claude 改走插件通道(Edge,已登录)重发 |
+| 5 | 疑似 Pro 静默降级(重试后生成仍 <`--min-gen-seconds`,默认 300s;2026-06-11 实测 70s 降级回复曾溜过旧 60s 判据成 exit 2) | 交付已收但不可信;Claude 改走插件通道(Edge,已登录)重发 |
 | 1 | 环境错误(CDP 不通/包不存在) | 起 Chrome / 查路径 |
 
 ## Pro 静默降级(owner 经验,2026-06-11)

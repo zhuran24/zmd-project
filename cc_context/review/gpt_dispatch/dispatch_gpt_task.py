@@ -578,8 +578,8 @@ def main() -> int:
     ap.add_argument("--cdp-url", default=CDP_URL,
                     help="CDP 端点; 浏览器通道默认 9222, ChatGPT 桌面 App 通道传 http://localhost:9224 (先跑 start 脚本 -App)")
     ap.add_argument("--timeout-hours", type=float, default=3.5)
-    ap.add_argument("--min-gen-seconds", type=int, default=60,
-                    help="生成耗时下限 (秒, 默认 60 — owner 经验: 真实任务 <1min 极大概率被静默限制)。轻量测试传 0 关闭")
+    ap.add_argument("--min-gen-seconds", type=int, default=300,
+                    help="生成耗时下限 (秒, 默认 300 — owner 经验: 真实审查/实现任务要 30min+, 5min 内完成 = 极大概率被静默降级; 2026-06-11 实测 70s 降级回复溜过旧 60s 判据成 exit 2)。轻量测试传 0 关闭")
     ap.add_argument("--downgrade-retries", type=int, default=1,
                     help="疑似降级时自动 刷新页面+要求重新完整执行 的次数 (默认 1); 用尽仍快则报 attention 建议换 Edge")
     args = ap.parse_args()
