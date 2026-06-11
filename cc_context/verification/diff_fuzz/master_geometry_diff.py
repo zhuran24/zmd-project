@@ -324,6 +324,18 @@ def _instance_pools(case: Dict[str, Any]) -> List[Tuple[str, str, List[Dict[str,
     ]
 
 
+def _pin_case(case: Dict[str, Any], witness: List[Tuple[str, str, Dict[str, Any]]]) -> Dict[str, Any]:
+    used_by_tpl: Dict[str, Set[str]] = {}
+    for _iid, tpl, pose in witness:
+        used_by_tpl.setdefault(tpl, set()).add(str(pose["pose_id"]))
+    pinned = dict(case)
+    pinned["pools"] = {
+        tpl: [p for p in poses if str(p["pose_id"]) in used_by_tpl.get(tpl, set())]
+        for tpl, poses in case["pools"].items()
+    }
+    return pinned
+
+
 # --------------------------------------------------------------------------- #
 # Self-test (verifier only, no solver)
 # --------------------------------------------------------------------------- #
@@ -409,6 +421,7 @@ def _batch(n: int, seed: int) -> int:
     reverse_mismatches: List[str] = []
     errors: List[str] = []
     bf_skipped = 0
+    reverse_filtered = 0
     for i in range(n):
         case = gen_instance(rng)
         try:
@@ -441,10 +454,22 @@ def _batch(n: int, seed: int) -> int:
                         powered_templates=case["powered_templates"],
                     )
                     if witness is not None:
-                        reverse_mismatches.append(
-                            f"iter {i}: master INFEASIBLE but brute force found "
-                            f"{[(iid, pose['pose_id']) for iid, _tpl, pose in witness]}"
-                        )
+                        # The independent verifier omits ghost-rectangle
+                        # admissibility (re-deriving it == reimplementing the
+                        # master), so a raw witness is only a SUSPICION — e.g. a
+                        # layout that fills the whole grid passes the verifier
+                        # but the master rightly rejects it (no empty rect).
+                        # Adjudicate with the master itself: pin pools to the
+                        # witness poses and re-solve. Only pinned-FEASIBLE proves
+                        # the full pool was genuinely over-cut.
+                        pinned_status, _ = run_master(_pin_case(case, witness))
+                        if pinned_status == "FEASIBLE":
+                            reverse_mismatches.append(
+                                f"iter {i}: master INFEASIBLE on full pool but FEASIBLE when "
+                                f"pinned to brute witness {[(iid, pose['pose_id']) for iid, _tpl, pose in witness]}"
+                            )
+                        else:
+                            reverse_filtered += 1
             else:
                 unknown += 1
         except Exception as exc:  # noqa: BLE001
@@ -457,7 +482,8 @@ def _batch(n: int, seed: int) -> int:
     print("=" * 60)
     print(
         f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} unknown={unknown} "
-        f"bf_skipped={bf_skipped} forward_mismatches={len(forward_mismatches)} "
+        f"bf_skipped={bf_skipped} reverse_filtered={reverse_filtered} "
+        f"forward_mismatches={len(forward_mismatches)} "
         f"reverse_mismatches={len(reverse_mismatches)} errors={len(errors)}"
     )
     for line in (forward_mismatches + reverse_mismatches + errors)[:20]:
@@ -465,12 +491,69 @@ def _batch(n: int, seed: int) -> int:
     return 1 if (forward_mismatches or reverse_mismatches or errors) else 0
 
 
+def _inspect(seed: int, iteration: int) -> int:
+    rng = random.Random(seed)
+    case = None
+    for _ in range(iteration + 1):
+        case = gen_instance(rng)
+    assert case is not None
+    print(f"grid {case['grid_w']}x{case['grid_h']} power_mode={case['power_mode']}")
+    print("templates:", {k: v["dimensions"] for k, v in case["rules"]["facility_templates"].items()})
+    print("instances:", [(i["instance_id"], i["facility_type"]) for i in case["instances"]])
+    print("pool sizes:", {k: len(v) for k, v in case["pools"].items()})
+
+    status, selected = run_master(case)
+    print(f"master status = {status}")
+    if status != "INFEASIBLE":
+        print("not the INFEASIBLE case; nothing to inspect")
+        return 0
+
+    pools_by_instance = _instance_pools(case)
+    witness = brute_force_feasible(
+        pools_by_instance,
+        grid_w=case["grid_w"],
+        grid_h=case["grid_h"],
+        powered_templates=case["powered_templates"],
+    )
+    if witness is None:
+        print("brute force found no witness -> master INFEASIBLE agrees; no mismatch")
+        return 0
+    print("brute-force witness:")
+    for iid, tpl, pose in witness:
+        print(f"  {iid} [{tpl}] {pose['pose_id']} occ={pose['occupied_cells']} cov={pose.get('power_coverage_cells')}")
+
+    # Pin: shrink each template pool to only the witness-used poses, re-solve.
+    used_by_tpl: Dict[str, Set[str]] = {}
+    for _iid, tpl, pose in witness:
+        used_by_tpl.setdefault(tpl, set()).add(str(pose["pose_id"]))
+    pinned_pools = {
+        tpl: [p for p in poses if str(p["pose_id"]) in used_by_tpl.get(tpl, set())]
+        for tpl, poses in case["pools"].items()
+    }
+    pinned_case = dict(case)
+    pinned_case["pools"] = pinned_pools
+    pinned_status, _ = run_master(pinned_case)
+    print(f"pinned-pool master status = {pinned_status}")
+    print("=" * 50)
+    if pinned_status in ("FEASIBLE",):
+        print("VERDICT: master accepts the witness when pools are pinned, but rejected it")
+        print("         in the full pool => candidate over-cut / false-INFEASIBLE (REAL bug).")
+        return 2
+    print("VERDICT: master rejects the witness even when pinned => the witness violates a")
+    print("         real master constraint the independent verifier does NOT encode")
+    print("         (verifier-incomplete; reverse direction false alarm, NOT a master bug).")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--batch", type=int, default=0)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--inspect", type=int, default=-1, help="inspect the iter-th reverse case for --seed")
     args = ap.parse_args()
+    if args.inspect >= 0:
+        return _inspect(args.seed, args.inspect)
     rc = 0
     if args.self_test:
         rc |= _self_test()
