@@ -24,8 +24,8 @@
 
 | 切片 | 覆盖 | 结果 | 工具 |
 |---|---|---|---|
-| 1 | routing 全局连通 + cell-layer capacity + port exact-one (A-1 类及端口履行/容量类) | 初版 100 + 扩展 200 + 强化 oracle 后 150, 共 450 随机实例 0 不一致 (oracle 含 3 个 self-test 必抓案例: dead-end/容量超载/有效流) | `cc_context/verification/diff_fuzz/routing_connectivity_diff.py` |
-| 2 | master no-overlap/bounds/电力 (B-01 类) 正向 + false-INFEASIBLE 反向 | seed 0-11 共 ~920 实例 0 不一致 (反向经 master-pinned 二次裁决, 19 个 ghost 占满假阳性全过滤) | `cc_context/verification/diff_fuzz/master_geometry_diff.py` |
+| 1 | routing 全局连通 + cell-layer capacity + port exact-one (A-1 类及端口履行/容量类) | 累计 750 随机实例 0 不一致 (强化 oracle 后 450; oracle 含 3 个 self-test 必抓案例: dead-end/容量超载/有效流) | `cc_context/verification/diff_fuzz/routing_connectivity_diff.py` |
+| 2 | master no-overlap/bounds/电力 (B-01 类) 正向 + false-INFEASIBLE 反向 | seed 0-17 共 ~1400 实例 0 不一致 (反向经 master-pinned 二次裁决, 40 个 ghost 占满假阳性全过滤) | `cc_context/verification/diff_fuzz/master_geometry_diff.py` |
 | 待做 | binding oracle / wireless 修复落地后按新几何重跑全部切片 | — | — |
 
 方法论要点 (审计可复核): 独立验证器零共享被测代码路径; reverse 方向因 ghost 矩形可行性 oracle 不可独立重写, 用「嫌疑 witness pinned 重喂 master」自裁, 只有 pinned-FEASIBLE 才计真 over-cut。
