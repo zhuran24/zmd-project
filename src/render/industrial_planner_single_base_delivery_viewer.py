@@ -28,7 +28,10 @@ from src.render.report_builder import (
     build_viewer_report_from_blueprint_payload,
     write_viewer_report,
 )
-from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
+from src.render.industrial_planner_exact_status import (
+    normalize_non_authoritative_exact_note,
+    normalize_non_authoritative_exact_status,
+)
 from src.search.exact_campaign import atomic_write_json
 
 _VIEWER_MANIFEST_FILENAME = "release_viewer_manifest.json"
@@ -550,7 +553,11 @@ def _build_viewer_manifest_payload(
         exact_full_scale_certified.get("status", "unknown"),
         context="release_manifest.exact_full_scale_certified",
     )
-    exact_note = str(exact_full_scale_certified.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_full_scale_certified.get("note", ""),
+        status=exact_status,
+        context="release_manifest.exact_full_scale_certified",
+    )
 
     download_groups = _group_downloads(
         payload_downloads=payload_downloads,

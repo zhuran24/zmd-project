@@ -53,6 +53,7 @@ from src.adapters.industrial_planner import (  # noqa: E402
     write_industrial_planner_export_bundle,
 )
 from src.search.exact_campaign import atomic_write_json  # noqa: E402
+from src.render.industrial_planner_exact_status import NON_AUTHORITATIVE_EXACT_OPEN_NOTE  # noqa: E402
 
 _DEFAULT_RUN_DIR = PROJECT_ROOT / ".artifacts" / "industrial_planner_single_base_e2e"
 
@@ -79,11 +80,7 @@ _DEFAULT_SCOPE_STATEMENT = (
     "Other known bases and the larger-base outer-deployment path remain preserved as `future_scope` "
     "and do not re-enter the active checked-in CI surface through this workflow."
 )
-_EXACT_CERTIFIED_NOTE = (
-    "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. "
-    "This workflow validates the current single-base delivery bundle and checked-in support surfaces only; "
-    "it does not claim that the full exact terminal proof artifact has already been checked in."
-)
+_EXACT_CERTIFIED_NOTE = NON_AUTHORITATIVE_EXACT_OPEN_NOTE
 
 
 @dataclass(frozen=True)

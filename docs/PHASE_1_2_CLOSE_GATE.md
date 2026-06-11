@@ -20,7 +20,7 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V92, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V93, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
@@ -29,7 +29,7 @@ certified-surface hardening, partial-precheck/release-claim sealing, and
 oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v92_release_status_allowlist_sealing
+v93_note_and_solution_entry_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -115,7 +115,11 @@ allowlisted fields: unknown ghost_rect/search_stats keys and
 contradictory mandatory placement metadata fail closed.  V92 (twelfth
 overnight independent review) turns the release-status guard into a
 deny-unknown allowlist so embedded CERTIFIED tokens cannot reach the
-release, pointer, or Markdown surfaces.  The
+release, pointer, or Markdown surfaces.  V93 (thirteenth overnight
+independent review) seals the free-text note and the placement-entry
+shapes: certified prose cannot ride in the exact-status note, and
+public placement entries (including a rejected public ghost_pick
+marker) are closed shapes.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -152,8 +156,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v88_ghost_anchor_required_sealing.md`,
 `docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md`,
 `docs/research/p1_2_v90_final_result_field_allowlist_sealing.md`,
-`docs/research/p1_2_v91_nested_public_field_sealing.md`, and
-`docs/research/p1_2_v92_release_status_allowlist_sealing.md`.
+`docs/research/p1_2_v91_nested_public_field_sealing.md`,
+`docs/research/p1_2_v92_release_status_allowlist_sealing.md`, and
+`docs/research/p1_2_v93_note_and_solution_entry_sealing.md`.
 
 Daily consistency check:
 

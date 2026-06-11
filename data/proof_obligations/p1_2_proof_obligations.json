@@ -3,9 +3,9 @@
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-11",
-  "review_anchor": "v92_release_status_allowlist_sealing",
-  "summary": "P1.2 remains fail-closed. V92 turns the release-status guard into an allowlist: embedded CERTIFIED tokens or any non-allowlisted exact status fail closed on the single-base release path and its render projections.",
-  "phase_gate_required_anchor": "v92_release_status_allowlist_sealing",
+  "review_anchor": "v93_note_and_solution_entry_sealing",
+  "summary": "P1.2 remains fail-closed. V93 seals the remaining free-text and entry-shape seams: the release exact-status note is canonical text bound to the allowlisted status, public placement entries are shape-closed, and a ghost_pick marker in the public final_result fails closed instead of being skipped.",
+  "phase_gate_required_anchor": "v93_note_and_solution_entry_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -291,7 +291,8 @@
         "v89_ghost_pick_terminal_binding_sealing",
         "v90_final_result_field_allowlist_sealing",
         "v91_nested_public_field_sealing",
-        "v92_release_status_allowlist_sealing"
+        "v92_release_status_allowlist_sealing",
+        "v93_note_and_solution_entry_sealing"
       ],
       "required_tests": [
         "test_delivery_manifest_rejects_best_effort_final_result",
@@ -358,7 +359,10 @@
         "test_v91_rejects_contradictory_mandatory_solution_metadata",
         "test_v91_rejects_mandatory_operation_type_metadata_mismatch",
         "test_v92_release_rejects_embedded_certified_claim",
-        "test_v92_release_rejects_non_allowlisted_exact_status"
+        "test_v92_release_rejects_non_allowlisted_exact_status",
+        "test_v93_release_rejects_forged_exact_note_with_open_status",
+        "test_v93_rejects_solution_entry_fake_certified_claim",
+        "test_v93_rejects_public_final_result_ghost_pick_marker"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -384,7 +388,8 @@
         "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md",
         "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md",
         "docs/research/p1_2_v91_nested_public_field_sealing.md",
-        "docs/research/p1_2_v92_release_status_allowlist_sealing.md"
+        "docs/research/p1_2_v92_release_status_allowlist_sealing.md",
+        "docs/research/p1_2_v93_note_and_solution_entry_sealing.md"
       ],
       "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority."
     },

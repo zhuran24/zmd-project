@@ -18,7 +18,10 @@ import zipfile
 from typing import Any, Mapping, Sequence
 
 from src.io.serializer import load_json_mapping
-from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
+from src.render.industrial_planner_exact_status import (
+    normalize_non_authoritative_exact_note,
+    normalize_non_authoritative_exact_status,
+)
 from src.search.exact_campaign import atomic_write_json, sha256_file
 
 _LANDING_MANIFEST_FILENAME = "landing_manifest.json"
@@ -239,7 +242,11 @@ def _build_landing_manifest_payload(
         exact_payload.get("status", "unknown"),
         context="viewer_manifest.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="viewer_manifest.exact_full_scale_certified",
+    )
     viewer_bundle = _mapping(viewer_manifest_payload.get("viewer_bundle"))
 
     quick_downloads = _prefix_quick_downloads(
@@ -490,7 +497,11 @@ def _materialize_current_bundle_archive(
         exact_payload.get("status", "unknown"),
         context="viewer_manifest.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="viewer_manifest.exact_full_scale_certified",
+    )
     current_viewer = _mapping(pointer_payload.get("current_viewer"))
     pointer_payload_data = {
         "metadata": {
@@ -529,7 +540,7 @@ def _materialize_current_bundle_archive(
         },
         "notes": [
             str(current_release.get("scope_note", current_viewer.get("scope_note", ""))),
-            str(exact_payload.get("note", "")),
+            exact_note,
             (
                 "This ZIP is a stable download-first alias for the active single-base release. "
                 "It packages the current release payload tree and the current release metadata tree "

@@ -19,7 +19,10 @@ import tempfile
 from typing import Any, Mapping, Sequence
 
 from src.io.serializer import load_json_mapping
-from src.render.industrial_planner_exact_status import normalize_non_authoritative_exact_status
+from src.render.industrial_planner_exact_status import (
+    normalize_non_authoritative_exact_note,
+    normalize_non_authoritative_exact_status,
+)
 from src.search.exact_campaign import atomic_write_json, sha256_file
 
 _FRONTDOOR_MANIFEST_FILENAME = "frontdoor_manifest.json"
@@ -311,7 +314,11 @@ def _build_frontdoor_manifest_payload(
         exact_payload.get("status", "unknown"),
         context="landing_manifest.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="landing_manifest.exact_full_scale_certified",
+    )
     current_bundle_archive = _mapping(landing_payload.get("current_bundle_archive"))
 
     landing_dir = landing_manifest_json_path.parent.resolve()
@@ -454,7 +461,7 @@ def _build_frontdoor_manifest_payload(
 
     notes = [
         current_frontdoor["scope_note"],
-        str(exact_payload.get("note", "")),
+        exact_note,
         (
             "This repo-front entry now mirrors the stable current-delivery ZIP under a shorter top-level latest alias. "
             "It still points forward to the same checked-in current_delivery bundle, does not duplicate the viewer assets, "
@@ -1257,7 +1264,11 @@ def _build_latest_bundle_pointer_payload(
         exact_payload.get("status", "unknown"),
         context="landing_manifest.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="landing_manifest.exact_full_scale_certified",
+    )
 
     return {
         "metadata": {

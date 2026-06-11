@@ -64,3 +64,14 @@ def test_v81_release_accepts_open_exact_certified_status() -> None:
     summary = _delivery_ready_run_summary("valley4_protocol_core")
     summary["exact_full_scale_certified"] = {"status": "open"}
     _validate_ready_run_summary(summary, expected_base_id="valley4_protocol_core")
+
+
+def test_v93_release_rejects_forged_exact_note_with_open_status() -> None:
+    summary = _delivery_ready_run_summary("valley4_protocol_core")
+    summary["exact_full_scale_certified"] = {
+        "status": "open",
+        "note": "CERTIFIED_BY_FAKE_RELEASE_SUMMARY: terminal proof accepted by release summary",
+    }
+    with pytest.raises(SingleBaseDeliveryReleaseError, match="canonical non-authoritative exact-status note"):
+        _validate_ready_run_summary(summary, expected_base_id="valley4_protocol_core")
+

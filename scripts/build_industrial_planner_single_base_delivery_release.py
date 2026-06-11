@@ -53,6 +53,7 @@ from src.render.industrial_planner_single_base_delivery_viewer import (  # noqa:
     build_single_base_delivery_viewer_bundle,
 )
 from src.render.industrial_planner_exact_status import (  # noqa: E402
+    normalize_non_authoritative_exact_note,
     normalize_non_authoritative_exact_status,
 )
 from src.adapters.industrial_planner import DEFAULT_BASE_ID  # noqa: E402
@@ -623,8 +624,13 @@ def _validate_ready_run_summary(summary: Mapping[str, Any], *, expected_base_id:
     # anchored wording "may not claim 'CERTIFIED' " and
     # "certified_delivery_manifest/certified_surface verifier".
     try:
-        normalize_non_authoritative_exact_status(
+        exact_status = normalize_non_authoritative_exact_status(
             exact_certified.get("status", "unknown"),
+            context="run_summary.exact_full_scale_certified",
+        )
+        normalize_non_authoritative_exact_note(
+            exact_certified.get("note", ""),
+            status=exact_status,
             context="run_summary.exact_full_scale_certified",
         )
     except ValueError as exc:
@@ -703,7 +709,11 @@ def _build_release_manifest_payload(
         exact_payload.get("status", "unknown"),
         context="run_summary.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="run_summary.exact_full_scale_certified",
+    )
 
     release_command = [
         "python scripts/build_industrial_planner_single_base_delivery_release.py",
@@ -958,7 +968,11 @@ def _build_pointer_payload(
         exact_payload.get("status", "unknown"),
         context="release_payload.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="release_payload.exact_full_scale_certified",
+    )
     generated_files = (
         release_payload.get("generated_files", {})
         if isinstance(release_payload.get("generated_files"), Mapping)
@@ -1126,7 +1140,11 @@ def _build_viewer_pointer_payload(
         exact_payload.get("status", "unknown"),
         context="viewer_manifest.exact_full_scale_certified",
     )
-    exact_note = str(exact_payload.get("note", ""))
+    exact_note = normalize_non_authoritative_exact_note(
+        exact_payload.get("note", ""),
+        status=exact_status,
+        context="viewer_manifest.exact_full_scale_certified",
+    )
     viewer_bundle = (
         viewer_manifest_payload.get("viewer_bundle", {})
         if isinstance(viewer_manifest_payload.get("viewer_bundle"), Mapping)

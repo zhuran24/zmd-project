@@ -165,3 +165,49 @@ def test_v91_rejects_mandatory_operation_type_metadata_mismatch(tmp_path: Path) 
     assert reason == "terminal_certified_final_result_solution_metadata_mismatch"
     assert campaign.best_certified_result() is None
 
+
+
+def test_v93_rejects_solution_entry_fake_certified_claim(tmp_path: Path) -> None:
+    project_root = tmp_path / "v93_solution_entry_fake_certified_claim"
+    campaign = _terminal_campaign_with_public_payload(
+        project_root,
+        solution_extra={
+            "proof_status": "CERTIFIED_BY_FORGED_SOLUTION_FIELD",
+        },
+    )
+
+    reason = terminal_certified_final_result_violation_for_project(
+        campaign.state,
+        project_root=project_root,
+    )
+
+    assert reason == "terminal_certified_final_result_solution_unknown_field:tiny_001.proof_status"
+    assert campaign.best_certified_result() is None
+    with pytest.raises(ValueError, match="solution_unknown_field:tiny_001.proof_status"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
+
+
+def test_v93_rejects_public_final_result_ghost_pick_marker(tmp_path: Path) -> None:
+    project_root = tmp_path / "v93_public_final_result_ghost_pick_marker"
+    campaign = _terminal_campaign_with_public_payload(project_root)
+    campaign.state["final_result"]["placement_solution"]["ghost_pick"] = {
+        "proof_status": "CERTIFIED_BY_GHOST_PICK_PUBLIC",
+    }
+
+    reason = terminal_certified_final_result_violation_for_project(
+        campaign.state,
+        project_root=project_root,
+    )
+
+    assert reason == "terminal_certified_final_result_solution_contains_ghost_pick_marker"
+    assert campaign.best_certified_result() is None
+    with pytest.raises(ValueError, match="solution_contains_ghost_pick_marker"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )

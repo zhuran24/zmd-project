@@ -67,6 +67,21 @@ TERMINAL_CERTIFIED_GHOST_RECT_ALLOWED_FIELDS = frozenset(
         "anchor_y",
     }
 )
+TERMINAL_CERTIFIED_PLACEMENT_SOLUTION_ENTRY_ALLOWED_FIELDS = frozenset(
+    {
+        "facility_type",
+        "pose_idx",
+        "pose_id",
+        "anchor",
+        "orientation",
+        "port_mode",
+        "instance_id",
+        "operation_type",
+        "is_mandatory",
+        "bound_type",
+        "solve_mode",
+    }
+)
 TERMINAL_CERTIFIED_SEARCH_STATS_ALLOWED_FIELDS = frozenset(
     {
         "attempts",
@@ -257,6 +272,14 @@ def _nonnegative_number(value: Any) -> bool:
         and float(value) >= 0.0
         and float(value) != float("inf")
     )
+
+
+def _terminal_certified_solution_entry_unknown_field(raw_entry: Mapping[str, Any]) -> Optional[str]:
+    for key in raw_entry:
+        field = str(key)
+        if field not in TERMINAL_CERTIFIED_PLACEMENT_SOLUTION_ENTRY_ALLOWED_FIELDS:
+            return field
+    return None
 
 
 def _terminal_certified_search_stats_violation(raw_search_stats: Any) -> Optional[str]:
@@ -725,10 +748,13 @@ def _validate_terminal_solution_against_project(
         # Counting it as occupied would make the witness scan reject every
         # genuine terminal result (the witness would have to avoid itself).
         if str(instance_id) == "ghost_pick":
-            continue
+            return "terminal_certified_final_result_solution_contains_ghost_pick_marker"
         if not isinstance(raw_entry, Mapping):
             return "terminal_certified_final_result_solution_invalid"
         entry = dict(raw_entry)
+        unknown_entry_field = _terminal_certified_solution_entry_unknown_field(entry)
+        if unknown_entry_field is not None:
+            return f"terminal_certified_final_result_solution_unknown_field:{instance_id}.{unknown_entry_field}"
         try:
             facility_type = _strict_nonempty_string(
                 entry.get("facility_type"),

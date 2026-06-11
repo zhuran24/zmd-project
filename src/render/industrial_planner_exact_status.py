@@ -6,6 +6,18 @@ from typing import Any
 
 _ALLOWED_NON_AUTHORITATIVE_EXACT_STATUSES = frozenset({"open", "unknown"})
 _RESERVED_CERTIFIED_TOKEN = "CERTIFIED"
+NON_AUTHORITATIVE_EXACT_OPEN_NOTE = (
+    "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. "
+    "This workflow validates the current single-base delivery bundle and checked-in support surfaces only; "
+    "it does not claim that the full exact terminal proof artifact has already been checked in."
+)
+NON_AUTHORITATIVE_EXACT_UNKNOWN_NOTE = (
+    "source run summary did not provide exact full-scale certification state"
+)
+_ALLOWED_NON_AUTHORITATIVE_EXACT_NOTES = {
+    "open": frozenset({"", NON_AUTHORITATIVE_EXACT_OPEN_NOTE}),
+    "unknown": frozenset({"", NON_AUTHORITATIVE_EXACT_UNKNOWN_NOTE}),
+}
 
 
 def normalize_non_authoritative_exact_status(raw_status: Any, *, context: str) -> str:
@@ -39,3 +51,37 @@ def normalize_non_authoritative_exact_status(raw_status: Any, *, context: str) -
             f"{sorted(_ALLOWED_NON_AUTHORITATIVE_EXACT_STATUSES)!r}; got {normalized!r}"
         )
     return normalized
+
+
+def normalize_non_authoritative_exact_note(
+    raw_note: Any,
+    *,
+    status: str,
+    context: str,
+) -> str:
+    """Return a canonical non-authoritative exact note or fail closed.
+
+    Release/viewer notes are public prose, but they are still part of the exact
+    status capsule.  Keep them on a tiny allowlist so a forged run summary cannot
+    smuggle a CERTIFIED-looking proof claim through a status value of ``open``.
+    """
+
+    normalized_status = normalize_non_authoritative_exact_status(
+        status,
+        context=context,
+    )
+    if raw_note is None:
+        normalized_note = ""
+    elif isinstance(raw_note, str):
+        normalized_note = raw_note.strip()
+    else:
+        raise ValueError(f"{context}.note must be a string")
+
+    allowed_notes = _ALLOWED_NON_AUTHORITATIVE_EXACT_NOTES.get(normalized_status, frozenset({""}))
+    if normalized_note not in allowed_notes:
+        raise ValueError(
+            f"{context}.note must be a canonical non-authoritative exact-status note "
+            f"for status {normalized_status!r}; arbitrary exact-status prose may not be "
+            "projected by this delivery path"
+        )
+    return normalized_note

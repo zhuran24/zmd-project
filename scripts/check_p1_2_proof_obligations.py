@@ -183,6 +183,9 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v81_release_accepts_open_exact_certified_status",
             "test_v92_release_rejects_embedded_certified_claim",
             "test_v92_release_rejects_non_allowlisted_exact_status",
+            "test_v93_release_rejects_forged_exact_note_with_open_status",
+            "test_v93_rejects_solution_entry_fake_certified_claim",
+            "test_v93_rejects_public_final_result_ghost_pick_marker",
             "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
             "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
             "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
@@ -1303,6 +1306,7 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "exact_full_scale_certified",
         "may not claim 'CERTIFIED'",
         "normalize_non_authoritative_exact_status",
+        "normalize_non_authoritative_exact_note",
         "certified_delivery_manifest/certified_surface verifier",
     ):
         if needle not in single_base_release_source:
