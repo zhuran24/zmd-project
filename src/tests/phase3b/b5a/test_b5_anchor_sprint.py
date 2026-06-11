@@ -83,8 +83,16 @@ def _build_exact_project(project_root: Path) -> Path:
     return project_root
 
 
-def _certified_solution() -> dict[str, object]:
+def _certified_placement() -> dict[str, object]:
     return {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}}
+
+
+def _certified_solution() -> dict[str, object]:
+    # V89: candidate records carry the ghost_pick provenance marker.
+    return {
+        "tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0},
+        "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
+    }
 
 
 def test_b5a_prepare_workspace_script_defaults_to_e_and_refuses_overwrite() -> None:
@@ -355,7 +363,7 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path) -> N
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 4, "h": 1, "area": 4, "anchor_x": 1, "anchor_y": 0},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
@@ -810,7 +818,7 @@ def test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result(
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 4, "h": 1, "area": 4, "anchor_x": 1, "anchor_y": 0},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)

@@ -187,6 +187,75 @@ def _solution_without_ghost_marker(solution: Mapping[str, Any]) -> Dict[str, Any
     return {str(key): value for key, value in solution.items() if str(key) != "ghost_pick"}
 
 
+def _terminal_candidate_ghost_pick_binding_violation(
+    state: Mapping[str, Any],
+    *,
+    final_result: Mapping[str, Any],
+) -> Optional[str]:
+    """Return a reason when terminal candidate evidence is not bound to its ghost anchor.
+
+    The public final_result deliberately strips the synthetic ``ghost_pick`` marker
+    from ``placement_solution``.  The terminal candidate record remains the
+    authority that the master selected a concrete anchor, so project-bound
+    validators must check that marker instead of accepting a hand-authored
+    final_result anchor on its own.
+    """
+
+    ghost_rect = final_result.get("ghost_rect")
+    if not isinstance(ghost_rect, Mapping):
+        return "terminal_certified_final_result_ghost_rect_invalid"
+    try:
+        ghost_w = _strict_resume_int(ghost_rect.get("w"), "final_result.ghost_rect.w")
+        ghost_h = _strict_resume_int(ghost_rect.get("h"), "final_result.ghost_rect.h")
+    except Exception:
+        return "terminal_certified_final_result_ghost_rect_invalid"
+    if "anchor_x" not in ghost_rect or "anchor_y" not in ghost_rect:
+        return "terminal_certified_final_result_ghost_rect_anchor_missing"
+    try:
+        anchor_x = _strict_resume_int(
+            ghost_rect.get("anchor_x"),
+            "final_result.ghost_rect.anchor_x",
+        )
+        anchor_y = _strict_resume_int(
+            ghost_rect.get("anchor_y"),
+            "final_result.ghost_rect.anchor_y",
+        )
+    except Exception:
+        return "terminal_certified_final_result_ghost_rect_anchor_invalid"
+
+    candidates = state.get("candidates")
+    if not isinstance(candidates, Mapping):
+        return "terminal_certified_candidate_record_missing"
+    record = candidates.get(candidate_key(ghost_w, ghost_h))
+    if not isinstance(record, Mapping):
+        return "terminal_certified_candidate_record_missing"
+    record_solution = record.get("solution")
+    if not isinstance(record_solution, Mapping):
+        return "terminal_certified_candidate_solution_missing"
+    if "ghost_pick" not in record_solution:
+        return "terminal_certified_candidate_solution_ghost_pick_missing"
+    ghost_pick = record_solution.get("ghost_pick")
+    if not isinstance(ghost_pick, Mapping):
+        return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    anchor = ghost_pick.get("anchor")
+    if not isinstance(anchor, Mapping):
+        return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    try:
+        pick_anchor_x = _strict_resume_int(
+            anchor.get("x"),
+            "candidate.solution.ghost_pick.anchor.x",
+        )
+        pick_anchor_y = _strict_resume_int(
+            anchor.get("y"),
+            "candidate.solution.ghost_pick.anchor.y",
+        )
+    except Exception:
+        return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    if int(pick_anchor_x) != int(anchor_x) or int(pick_anchor_y) != int(anchor_y):
+        return "terminal_certified_candidate_solution_ghost_pick_mismatch"
+    return None
+
+
 def _load_exact_grid_dimensions(project_root: Optional[Path]) -> Optional[Tuple[int, int]]:
     if project_root is None:
         return None
@@ -1096,6 +1165,12 @@ def _validate_resume_state(
             )
             if solution_reason is not None:
                 return solution_reason
+            ghost_pick_reason = _terminal_candidate_ghost_pick_binding_violation(
+                state,
+                final_result=final_result_for_project,
+            )
+            if ghost_pick_reason is not None:
+                return ghost_pick_reason
     return None
 
 
@@ -1261,11 +1336,17 @@ def terminal_certified_final_result_violation_for_project(
         return reason
     final_result = state.get("final_result")
     if isinstance(final_result, Mapping):
-        return _validate_terminal_solution_against_project(
+        solution_reason = _validate_terminal_solution_against_project(
             final_result=final_result,
             project_root=resolved_project_root,
             grid_dimensions=grid_dimensions,
             min_side_admissibility=min_side_admissibility,
+        )
+        if solution_reason is not None:
+            return solution_reason
+        return _terminal_candidate_ghost_pick_binding_violation(
+            state,
+            final_result=final_result,
         )
     return None
 

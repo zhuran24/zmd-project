@@ -22,6 +22,19 @@ from src.search.exact_campaign import ExactCampaign
 from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
 
 
+
+# V89: candidate records keep the ghost_pick provenance marker; the public
+# final_result placement_solution strips it by protocol.
+_V89_GHOST_PICK = {
+    "ghost_pick": {
+        "pose_idx": 0,
+        "pose_id": "ghost_anchor::1,0",
+        "anchor": {"x": 1, "y": 0},
+        "facility_type": "ghost_rect",
+    }
+}
+
+
 def _write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -85,6 +98,7 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
         1,
         RUN_STATUS_CERTIFIED,
         solution={
+            "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
             "tiny_001": {
                 "pose_idx": 0,
                 "pose_id": "tiny_pose_0",
@@ -185,7 +199,7 @@ def test_delivery_manifest_rejects_best_effort_final_result(tmp_path: Path) -> N
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution={"tiny_001": {"pose_idx": 0}},
+        solution={"tiny_001": {"pose_idx": 0}, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -236,7 +250,7 @@ def test_delivery_manifest_rejects_stale_certified_final_result_without_terminal
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution={"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
+        solution={"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -324,7 +338,7 @@ def test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -367,7 +381,7 @@ def test_v69_delivery_manifest_rejects_stale_final_solution_artifact(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -427,7 +441,7 @@ def test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -486,7 +500,7 @@ def test_v70_delivery_manifest_accepts_master_solution_metadata_not_in_blueprint
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -539,7 +553,7 @@ def test_v70_delivery_manifest_rejects_non_integer_blueprint_score(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -594,7 +608,7 @@ def test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_res
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
@@ -648,7 +662,7 @@ def test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
@@ -704,7 +718,7 @@ def test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
@@ -759,7 +773,7 @@ def test_v72_manifest_currentness_rejects_extra_metadata_fields(tmp_path: Path) 
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
@@ -827,7 +841,7 @@ def test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_soluti
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
     )
     campaign.state["final_result"] = {
@@ -878,7 +892,7 @@ def test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact(
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED},
         loaded_exact_safe_cut_count=1,
         generated_exact_safe_cut_count=2,
@@ -947,7 +961,7 @@ def test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoi
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -1002,7 +1016,7 @@ def test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_be
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -1060,7 +1074,7 @@ def test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanoni
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,
@@ -1136,7 +1150,7 @@ def test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_
         1,
         1,
         RUN_STATUS_CERTIFIED,
-        solution=solution,
+        solution={**solution, **_V89_GHOST_PICK},
         proof_summary={"master_status": RUN_STATUS_CERTIFIED, "mode": "certified_exact"},
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=0,

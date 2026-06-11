@@ -84,8 +84,17 @@ def _build_exact_project(project_root: Path) -> Path:
     return project_root
 
 
-def _certified_solution() -> dict[str, object]:
+def _certified_placement() -> dict[str, object]:
+    # V89: the public final_result placement strips the ghost_pick marker.
     return {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}}
+
+
+def _certified_solution() -> dict[str, object]:
+    # V89: candidate records carry the ghost_pick provenance marker.
+    return {
+        "tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0},
+        "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::0,1", "anchor": {"x": 0, "y": 1}, "facility_type": "ghost_rect"},
+    }
 
 
 def test_inspector_reports_missing_campaign_state(tmp_path: Path) -> None:
@@ -157,7 +166,7 @@ def test_inspector_summarizes_terminal_full_frontier_certified_result(
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
@@ -389,7 +398,7 @@ def test_inspector_hides_stale_final_result_without_terminal_frontier_evidence(
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
@@ -426,7 +435,7 @@ def test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_ev
             "best_certified_result": {
                 "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
                 "search_status": RUN_STATUS_CERTIFIED,
-                "placement_solution": _certified_solution(),
+                "placement_solution": _certified_placement(),
             },
         },
     )
@@ -461,7 +470,7 @@ def test_v68_inspector_requires_current_campaign_evidence_for_terminal_manifest(
             "best_certified_result": {
                 "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
                 "search_status": RUN_STATUS_CERTIFIED,
-                "placement_solution": _certified_solution(),
+                "placement_solution": _certified_placement(),
             },
         },
     )
@@ -493,7 +502,7 @@ def test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
@@ -553,7 +562,7 @@ def test_v70_inspector_and_b5a_reject_stale_terminal_after_artifact_hash_mismatc
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
@@ -597,7 +606,7 @@ def test_v70_inspector_and_b5a_reject_terminal_manifest_without_current_delivery
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
@@ -655,7 +664,7 @@ def test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table(
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
@@ -719,7 +728,7 @@ def _export_current_certified_surface(project_root: Path) -> ExactCampaign:
     )
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1},
-        "placement_solution": _certified_solution(),
+        "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }

@@ -131,7 +131,10 @@ def _write_power_project(root: Path, *, include_selected_covering_pole: bool) ->
             "generated_exact_safe_cut_count": 0,
         }
         if status == "CERTIFIED":
-            record["solution"] = placement_solution
+            record["solution"] = {
+                **placement_solution,
+                "ghost_pick": {"anchor": {"x": 2, "y": 0}},
+            }
         candidate_records[f"{ghost_w}x{ghost_h}"] = record
 
     return {

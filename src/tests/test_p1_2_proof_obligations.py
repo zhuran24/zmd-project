@@ -33,7 +33,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v88_ghost_anchor_required_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v89_ghost_pick_terminal_binding_sealing"
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -109,3 +109,6 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_certified_blueprint_builder_rejects_missing_ghost_anchor" in export_tests
     assert "test_outer_search_certified_result_carries_ghost_anchor" in export_tests
     assert "test_terminal_solution_match_ignores_candidate_record_ghost_marker" in export_tests
+    assert "test_terminal_project_validator_rejects_missing_candidate_ghost_pick" in export_tests
+    assert "test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anchor" in export_tests
+    assert "test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor" in export_tests
