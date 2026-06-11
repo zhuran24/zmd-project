@@ -233,7 +233,8 @@ def _self_test() -> int:
     ok, reasons = verify_routes_connectivity(connected, single_src, ["ore"])
     print(f"[self-test] connected single-source: ok={ok} reasons={reasons}")
     if not ok:
-        print("SELF-TEST FAIL: a valid path was flagged."); return 1
+        print("SELF-TEST FAIL: a valid path was flagged.")
+        return 1
 
     # The A-1 incumbent: S1->sink connected + S2 isolated loop -> must be flagged.
     a1 = connected + [
@@ -245,7 +246,8 @@ def _self_test() -> int:
     ok2, reasons2 = verify_routes_connectivity(a1, port_specs, ["ore"])
     print(f"[self-test] A-1 dead-end source: ok={ok2} reasons={reasons2}")
     if ok2:
-        print("SELF-TEST FAIL: the A-1 dead-end was NOT caught."); return 1
+        print("SELF-TEST FAIL: the A-1 dead-end was NOT caught.")
+        return 1
 
     print("[self-test] PASS — verifier accepts valid flow, catches A-1 dead-end.")
     return 0
