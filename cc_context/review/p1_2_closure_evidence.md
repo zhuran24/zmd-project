@@ -11,7 +11,7 @@
 | 2 | 几何 master | 算法审 1 轮 (B-01 → 已修) + 再审 1 轮 (2 finding → 已修) + 确认 1 轮零 | 1 | 续审中 |
 | 3 | routing + guard/lazy cut | P0-1 双层修复 + lazy cut 双独立零 finding + guard 完整性 1 轮 (审出对偶条件类缺陷已修*) | 见注 | 审得最透 |
 | 4 | cuts 机制 (F1-F9/PCR) | 算法审 1 轮 (C-3/C-4 latent, 非公开路径) | 0 (latent 待办挂账) | 待续审 |
-| 5 | preprocess 链 | 第 1 轮 (2026-06-12): F-01 P0 + F-02 P1 已验真; **完整修复已验收落地 (commit fbb0466, 全量 2900 passed 史上首次全绿)** | **0** | **确认轮在途 (round 2, 会话 6a2b34fc)** |
+| 5 | preprocess 链 | r1 (2026-06-12): F-01 P0+F-02 P1 已验真+完整修复落地 fbb0466 (2900 全绿); **r2 确认轮又抓 F-03 P0** (wireless 终品生产端输出口仍进 routing → 虚假 front_blocked) | **0 (r2 非零)** | **F-03 待验收+修 (补丁已归档, 跨 binding/routing 接口需专门一轮)** |
 | 6 | binding 建模忠实度 | 未审 (C 轮只审了 cut 不是 binding 数学) | — | 排队 |
 | 7 | campaign/resume 状态机 | 未审 | — | 排队 |
 | 8 | parallel scheduler 合并 | 未审 | — | 排队 |
@@ -36,7 +36,7 @@
 
 ## 四、当前阻塞闭合的事项 (按序)
 
-1. ~~preprocess F-01/F-02 完整修复落地~~ ✅ (commit fbb0466, 2026-06-12 清晨; 全量 2900 passed 首次全绿)。**当前在途 = 其零 finding 确认轮 (round 2)**, 通过才按安全修复完整性计完成。
+1. ~~preprocess F-01/F-02 完整修复落地~~ ✅ (commit fbb0466)。**但 round 2 确认轮又抓 F-03 P0** (wireless 终品生产端实体输出口仍被 `extract_port_specs` 导出成 routing terminal → 孤立 source 无 sink → 虚假 `front_blocked` → 拒合法布局 = false-INFEASIBLE; 与 fuzz 切片1 的 A-1 source-drain 对偶条件互为旁证)。reviewer 补丁 `cc_context/review/algofix_preprocess_F03_routing_free_leak.patch` (加 `routing_free_sink_commodities`, extract_port_specs 跳这些商品 output 口)。**待 CC 验收**——核心待核: 这些 required_generic_inputs 商品是否纯终品 (不会同时作别的设施 routing 中间输入, 否则跳过会断真实消费者料); 跨 binding/routing 接口, 专门一轮。修+再确认轮才计 preprocess 收口。
 2. preprocess 面修复后续审至饱和 (≥2 连零)。
 3. 面 6/7/8 各自首轮 + 饱和。
 4. 面 4 latent 待办 (C-3 F2 容量 / C-4 readiness gate blocker) 处置或显式划出 P1.2 范围 (owner 决策)。
