@@ -21,7 +21,11 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
-from src.models.master_model import POSE_LEVEL_OPTIONAL_TEMPLATES, infer_certified_optional_lower_bounds
+from src.models.master_model import (
+    POSE_LEVEL_OPTIONAL_OPERATIONS,
+    POSE_LEVEL_OPTIONAL_TEMPLATES,
+    infer_certified_optional_lower_bounds,
+)
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
     terminal_frontier_evidence_violation,
@@ -80,6 +84,13 @@ TERMINAL_CERTIFIED_PLACEMENT_SOLUTION_ENTRY_ALLOWED_FIELDS = frozenset(
         "is_mandatory",
         "bound_type",
         "solve_mode",
+    }
+)
+TERMINAL_CERTIFIED_LAST_STOP_REASON_ALLOWED_FIELDS = frozenset(
+    {
+        "reason",
+        "status",
+        "updated_at",
     }
 )
 TERMINAL_CERTIFIED_SEARCH_STATS_ALLOWED_FIELDS = frozenset(
@@ -262,6 +273,27 @@ def _terminal_certified_ghost_rect_unknown_field(ghost_rect: Mapping[str, Any]) 
     )
     if unknown_fields:
         return f"terminal_certified_final_result_ghost_rect_unknown_field:{unknown_fields[0]}"
+    return None
+
+
+def _terminal_certified_last_stop_reason_violation(state: Mapping[str, Any]) -> Optional[str]:
+    stop_record = state.get("last_stop_reason")
+    if not isinstance(stop_record, Mapping):
+        return "terminal_certified_last_stop_reason_invalid"
+    unknown_fields = sorted(
+        str(field)
+        for field in stop_record.keys()
+        if str(field) not in TERMINAL_CERTIFIED_LAST_STOP_REASON_ALLOWED_FIELDS
+    )
+    if unknown_fields:
+        return f"terminal_certified_last_stop_reason_unknown_field:{unknown_fields[0]}"
+    if str(stop_record.get("reason", "")) != TERMINAL_FULL_FRONTIER_CERTIFIED_REASON:
+        return "terminal_certified_last_stop_reason_invalid"
+    if str(stop_record.get("status", "")) != "CERTIFIED":
+        return "terminal_certified_last_stop_reason_invalid"
+    raw_updated_at = stop_record.get("updated_at")
+    if raw_updated_at is not None and not isinstance(raw_updated_at, str):
+        return "terminal_certified_last_stop_reason_invalid"
     return None
 
 
@@ -686,6 +718,23 @@ def _terminal_solution_entry_pose_metadata_violation(
     return None
 
 
+def _pose_optional_solution_entry_metadata_violation(
+    *,
+    instance_id: str,
+    entry: Mapping[str, Any],
+    facility_type: str,
+) -> Optional[str]:
+    raw_instance_id = entry.get("instance_id")
+    if raw_instance_id is not None and str(raw_instance_id) != str(instance_id):
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+
+    raw_operation_type = entry.get("operation_type")
+    expected_operation_type = POSE_LEVEL_OPTIONAL_OPERATIONS.get(str(facility_type))
+    if raw_operation_type is not None and str(raw_operation_type) != str(expected_operation_type):
+        return "terminal_certified_final_result_solution_metadata_mismatch"
+    return None
+
+
 def _mandatory_solution_entry_metadata_violation(
     *,
     instance_id: str,
@@ -799,6 +848,13 @@ def _validate_terminal_solution_against_project(
                 facility_type=facility_type,
             ):
                 return "terminal_certified_final_result_solution_unknown_instance"
+            optional_metadata_reason = _pose_optional_solution_entry_metadata_violation(
+                instance_id=str(instance_id),
+                entry=entry,
+                facility_type=facility_type,
+            )
+            if optional_metadata_reason is not None:
+                return optional_metadata_reason
             optional_solution_counts[str(facility_type)] = (
                 optional_solution_counts.get(str(facility_type), 0) + 1
             )
@@ -1528,6 +1584,9 @@ def terminal_certified_final_result_violation(
 
     if not has_terminal_full_frontier_certified_evidence(state):
         return None
+    stop_reason = _terminal_certified_last_stop_reason_violation(state)
+    if stop_reason is not None:
+        return stop_reason
     final_result = state.get("final_result")
     if not isinstance(final_result, Mapping):
         return "terminal_certified_final_result_invalid"

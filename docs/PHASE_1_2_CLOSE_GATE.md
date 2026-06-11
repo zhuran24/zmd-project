@@ -20,7 +20,7 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V94, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V95, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
@@ -29,7 +29,7 @@ certified-surface hardening, partial-precheck/release-claim sealing, and
 oriented-domain/persisted-cut-replay sealing, the current review anchor is:
 
 ```text
-v94_protocol_storage_surplus_sealing
+v95_optional_metadata_and_stop_reason_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -121,7 +121,10 @@ shapes: certified prose cannot ride in the exact-status note, and
 public placement entries (including a rejected public ghost_pick
 marker) are closed shapes.  V94 (fourteenth overnight independent
 review) bounds the storage boxes from above as well: surplus entries
-beyond the inferred requirement are rejected as occupancy blockers.  The
+beyond the inferred requirement are rejected as occupancy blockers.  V95
+(fifteenth overnight independent review) closes optional-entry public
+metadata and the last_stop_reason shape, completing closed-contract
+coverage of every public payload component.  The
 obligations remain split into four compartments:
 
 - `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
@@ -160,8 +163,9 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v90_final_result_field_allowlist_sealing.md`,
 `docs/research/p1_2_v91_nested_public_field_sealing.md`,
 `docs/research/p1_2_v92_release_status_allowlist_sealing.md`,
-`docs/research/p1_2_v93_note_and_solution_entry_sealing.md`, and
-`docs/research/p1_2_v94_protocol_storage_surplus_sealing.md`.
+`docs/research/p1_2_v93_note_and_solution_entry_sealing.md`,
+`docs/research/p1_2_v94_protocol_storage_surplus_sealing.md`, and
+`docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md`.
 
 Daily consistency check:
 
