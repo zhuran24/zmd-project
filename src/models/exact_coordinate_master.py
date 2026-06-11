@@ -4919,6 +4919,21 @@ class CoordinateExactMasterDelegate:
         if not template or "power_coverage_radius" not in template:
             return False
         radius = int(template.get("power_coverage_radius", 0))
+        # Geometric power witnesses below test rectangle intersection between a
+        # pole coverage rectangle and the powered slot's footprint bounding box.
+        # That is exact only when every powered facility footprint is itself a
+        # full rectangle.  For an L-shaped powered footprint, a pole can touch a
+        # bounding-box hole without covering any occupied powered cell, so the
+        # coordinate table witness must be used instead.
+        for powered_tpl in sorted(self.owner._powered_templates):
+            if str(powered_tpl) == "power_pole":
+                continue
+            for pose in self.owner.facility_pools.get(str(powered_tpl), []):
+                relative_cells = self._pose_relative_occupied_cells(pose)
+                if not relative_cells:
+                    return False
+                if not self._is_rectangular_set(relative_cells):
+                    return False
         for pose in self.owner.facility_pools.get("power_pole", []):
             anchor = dict(pose.get("anchor", {}))
             x0 = int(anchor.get("x", 0))

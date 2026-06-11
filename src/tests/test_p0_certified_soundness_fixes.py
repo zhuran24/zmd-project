@@ -11,6 +11,7 @@ from ortools.sat.python import cp_model
 import src.search.benders_loop as benders_loop_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
 from src.models.master_model import MasterPlacementModel
+import src.models.routing_subproblem as routing_subproblem_module
 from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
 from src.search.benders_loop import run_benders_for_ghost_rect
 
@@ -121,6 +122,53 @@ def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> No
     ]
 
 
+def test_routing_guard_timeout_does_not_expose_rejected_routes(monkeypatch: Any) -> None:
+    """A timeout after a guard rejection must not leave extract_routes on a stale incumbent."""
+
+    active_cells = {(1, 0), (1, 1), (2, 1), (2, 0), (5, 0), (5, 1), (6, 1), (6, 0)}
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    domain_analysis = {
+        "status": "feasible",
+        "commodity_component_cells": {"ore": [list(cell) for cell in sorted(active_cells)]},
+        "commodity_active_cells": {"ore": [list(cell) for cell in sorted(active_cells)]},
+        "domain_stats": {},
+    }
+    routing = RoutingSubproblem(
+        RoutingGrid(set(), port_specs),
+        ["ore"],
+        domain_analysis=domain_analysis,
+    )
+    routing.build()
+
+    disconnected_incumbent = {
+        (1, 0, 0, ("E", "W"), ("N",), "ore"),
+        (1, 1, 0, ("S",), ("E",), "ore"),
+        (2, 1, 0, ("W",), ("S",), "ore"),
+        (2, 0, 0, ("N",), ("W",), "ore"),
+        (5, 0, 0, ("E",), ("N", "W"), "ore"),
+        (5, 1, 0, ("S",), ("E",), "ore"),
+        (6, 1, 0, ("W",), ("S",), "ore"),
+        (6, 0, 0, ("N",), ("W",), "ore"),
+    }
+    for key, var in routing.r_vars.items():
+        routing.model.Add(var == (1 if key in disconnected_incumbent else 0))
+
+    perf_counter_values = iter([0.0, 0.0, 100.0, 100.0])
+    monkeypatch.setattr(
+        routing_subproblem_module.time,
+        "perf_counter",
+        lambda: next(perf_counter_values, 100.0),
+    )
+
+    assert routing.solve(time_limit=1.0) == "TIMEOUT"
+    guard = routing.build_stats["last_solve"]["connectivity_guard"]
+    assert guard["rejected_incumbents"] == 1
+    assert routing.extract_routes() == []
+
+
 def test_coordinate_master_no_overlap_uses_pose_footprint_not_template_dims() -> None:
     """Two real 4x6 vertical footprints cannot pass as template-sized 6x4 rectangles."""
 
@@ -180,6 +228,87 @@ def test_coordinate_master_no_overlap_uses_pose_footprint_not_template_dims() ->
     )
     overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=None)
 
+    assert overlay.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
+
+
+def test_geometric_power_coverage_falls_back_for_nonrectangular_powered_footprints() -> None:
+    """Bounding-box overlap must not certify power through a hole in an L footprint."""
+
+    instances = [
+        {
+            "instance_id": "blocker_001",
+            "facility_type": "blocker",
+            "operation_type": "block",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    pools = {
+        "blocker": [
+            {
+                "pose_id": "block_B",
+                "anchor": {"x": 2, "y": 1},
+                "occupied_cells": [[2, 1]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "protocol_storage_box": [
+            {
+                "pose_id": "box_A_hole_false",
+                "anchor": {"x": 0, "y": 0},
+                "pose_params": {"orientation": "L", "port_mode": "same"},
+                "occupied_cells": [[0, 0], [0, 1], [1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "box_B_real_covered_but_blocked",
+                "anchor": {"x": 1, "y": 1},
+                "pose_params": {"orientation": "L", "port_mode": "same"},
+                "occupied_cells": [[1, 1], [1, 2], [2, 1]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ],
+        "power_pole": [
+            {
+                "pose_id": "pole_covers_A_hole_and_B",
+                "anchor": {"x": 1, "y": 1},
+                "occupied_cells": [[3, 3]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[1, 1], [1, 2], [2, 1], [2, 2]],
+            }
+        ],
+    }
+    rules = {
+        "globals": {"grid": {"width": 4, "height": 4}},
+        "facility_templates": {
+            "blocker": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "protocol_storage_box": {"dimensions": {"w": 2, "h": 2}, "needs_power": True},
+            "power_pole": {
+                "dimensions": {"w": 1, "h": 1},
+                "needs_power": False,
+                "power_coverage_radius": 0,
+            },
+        },
+    }
+    generic_io_requirements = {"required_generic_inputs": {"ore": 1}, "required_generic_outputs": {}}
+    core = MasterPlacementModel.build_exact_core(
+        instances,
+        pools,
+        rules,
+        generic_io_requirements=generic_io_requirements,
+        enable_symmetry_breaking=False,
+    )
+    overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=None)
+
+    assert overlay.build_stats["power_coverage"]["representation"] == "coordinate_cover_table"
+    assert overlay._power_coverers_by_template_pose["protocol_storage_box"] == {0: [], 1: [0]}
     assert overlay.solve(time_limit_seconds=5.0) == cp_model.INFEASIBLE
 
 

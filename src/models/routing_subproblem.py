@@ -564,6 +564,7 @@ class RoutingSubproblem:
         self._state_meta: Dict[RouteStateKey, Dict[str, Any]] = {}
         self._solver: Optional[cp_model.CpSolver] = None
         self._status = None
+        self._connectivity_guard_accepted = False
         self.build_stats: Dict[str, Any] = {}
 
         self._domain_analysis: Optional[Mapping[str, Any]] = dict(domain_analysis) if domain_analysis else None
@@ -1167,12 +1168,15 @@ class RoutingSubproblem:
 
     def solve(self, time_limit: float = 60.0) -> str:
         deadline = time.perf_counter() + max(0.0, float(time_limit))
+        self._connectivity_guard_accepted = False
         attempts: List[Dict[str, Any]] = []
         rejected_incumbents = 0
 
         while True:
             remaining = deadline - time.perf_counter()
             if attempts and remaining <= 0.0:
+                self._solver = None
+                self._status = cp_model.UNKNOWN
                 self.build_stats["last_solve"] = {
                     "status": "CONNECTIVITY_GUARD_TIMEOUT",
                     "wall_time": float(max(0.0, float(time_limit) - max(0.0, remaining))),
@@ -1206,6 +1210,7 @@ class RoutingSubproblem:
                 attempt_summary["connectivity"] = connectivity_summary
                 attempts.append(attempt_summary)
                 if connected:
+                    self._connectivity_guard_accepted = True
                     self.build_stats["last_solve"] = {
                         **attempt_summary,
                         "connectivity_guard": {
@@ -1233,7 +1238,10 @@ class RoutingSubproblem:
             return "TIMEOUT"
 
     def extract_routes(self) -> List[Dict[str, Any]]:
-        if self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        if (
+            self._status not in (cp_model.OPTIMAL, cp_model.FEASIBLE)
+            or not bool(getattr(self, "_connectivity_guard_accepted", False))
+        ):
             return []
 
         routes = []
