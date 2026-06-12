@@ -18,7 +18,7 @@ pose forces c 的 output ports 全在 L (没在 R 也没在 W ambig). ambiguous 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Sequence, Tuple
+from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set, Tuple
 
 
 _DIR_DELTA: Dict[str, Tuple[int, int]] = {
@@ -132,6 +132,8 @@ def classify_pose_commodity_side(
     separator: Separator,
     grid_w: int,
     grid_h: int,
+    *,
+    routing_free_sink_commodities: Optional[Set[str]] = None,
 ) -> Dict[str, PoseCommoditySide]:
     """For each commodity that this pose has (input or output), classify
     whether forced source/sink onto L, R, or AMBIG.
@@ -143,8 +145,17 @@ def classify_pose_commodity_side(
         profile = get_operation_port_profile(operation_type)
     except Exception:
         return {}
+    routing_free_outputs = {str(c) for c in (routing_free_sink_commodities or set())}
     input_commodities = set(profile.input_slots.keys()) if hasattr(profile, "input_slots") else set()
-    output_commodities = set(profile.output_slots.keys()) if hasattr(profile, "output_slots") else set()
+    output_commodities = (
+        {
+            str(c)
+            for c in profile.output_slots.keys()
+            if str(c) not in routing_free_outputs
+        }
+        if hasattr(profile, "output_slots")
+        else set()
+    )
 
     def front_side(port: Mapping[str, Any]) -> str:
         dx, dy = _DIR_DELTA.get(str(port["dir"]), (0, 0))
@@ -190,6 +201,7 @@ def add_separator_capacity_hull_constraints(
     grid_w: int,
     grid_h: int,
     max_dense_side_lits: int = 50000,
+    routing_free_sink_commodities: Optional[Set[str]] = None,
 ) -> Dict[str, Any]:
     """Add SAC-Hull constraints to model. Returns stats.
 
@@ -223,7 +235,12 @@ def add_separator_capacity_hull_constraints(
             continue
         for sep in separators:
             classification = classify_pose_commodity_side(
-                meta.operation_type, meta.pose, sep, grid_w, grid_h,
+                meta.operation_type,
+                meta.pose,
+                sep,
+                grid_w,
+                grid_h,
+                routing_free_sink_commodities=routing_free_sink_commodities,
             )
             for c, sides in classification.items():
                 bucket = forced[sep.sep_id].setdefault(c, {

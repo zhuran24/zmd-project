@@ -69,6 +69,9 @@ class PoseBoolExactMasterDelegate:
         self._poses_by_port_at_cell_dir: Dict[
             Tuple[int, int, str], List[cp_model.IntVar]
         ] = {}
+        self._routing_visible_poses_by_port_at_cell_dir: Dict[
+            Tuple[int, int, str], List[cp_model.IntVar]
+        ] = {}
         self._port_lookup_built = False
         # Phase 6.2 v2: grid-level front_clear BoolVars 替代 per-port port_active.
         # 数量 ~19K (70x70x4 dir) vs ~2.3M per-port → 100x 小.
@@ -99,6 +102,62 @@ class PoseBoolExactMasterDelegate:
                         cells.add((int(ax) + dx, int(ay) + dy))
             return cells
         return set()
+
+    def _routing_free_sink_commodities(self) -> Set[str]:
+        gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
+        return {
+            str(commodity)
+            for commodity, required in dict(
+                gen_io.get("required_generic_inputs", {}) or {}
+            ).items()
+            if int(required) > 0
+        }
+
+    def _profile_port_demands(self, operation_type: str) -> Tuple[int, int, int, int]:
+        try:
+            profile = get_operation_port_profile(operation_type)
+        except KeyError:
+            return 0, 0, 0, 0
+        routing_free_outputs = self._routing_free_sink_commodities()
+        total_input = sum(int(v) for v in profile.input_slots.values()) + int(
+            profile.generic_input_slots
+        )
+        total_output = sum(int(v) for v in profile.output_slots.values()) + int(
+            profile.generic_output_slots
+        )
+        visible_output = sum(
+            int(count)
+            for commodity, count in profile.output_slots.items()
+            if str(commodity) not in routing_free_outputs
+        ) + int(profile.generic_output_slots)
+        # There is no input-side routing-free role in the canonical contract; all
+        # concrete input requirements remain route-visible.  The validator fails
+        # closed if a future generic-input target is also a recipe input.
+        visible_input = total_input
+        return int(visible_input), int(visible_output), int(total_input), int(total_output)
+
+    def _routing_visible_profile_demands(self, operation_type: str) -> Tuple[int, int]:
+        visible_input, visible_output, _total_input, _total_output = self._profile_port_demands(
+            operation_type
+        )
+        return int(visible_input), int(visible_output)
+
+    def _mandatory_port_side_is_routing_visible(
+        self, group_id: str, side_key: str
+    ) -> bool:
+        operation_type = self._mandatory_operation_by_group.get(str(group_id), "")
+        input_demand, output_demand, _total_input, total_output = self._profile_port_demands(
+            operation_type
+        )
+        if side_key == "input_port_cells":
+            return input_demand > 0
+        if side_key == "output_port_cells":
+            # The hard/cache path indexes raw pose ports without binding-slot
+            # identity.  It is only sound when every output-side slot is
+            # routing-visible.  Mixed visible/routing-free output operations are
+            # handled by the weaker demand-count cuts instead.
+            return output_demand > 0 and output_demand == total_output
+        return False
 
     def _pose_cells(self, tpl: str, pose_idx: int) -> List[Tuple[int, int]]:
         pose = self.owner.facility_pools[tpl][int(pose_idx)]
@@ -295,12 +354,9 @@ class PoseBoolExactMasterDelegate:
             for (gid_key, pose_idx), x_var in self.x_vars.items():
                 op = self._mandatory_operation_by_group.get(gid_key, "")
                 tpl_m = self._mandatory_template_by_group.get(gid_key, "")
-                try:
-                    profile = get_operation_port_profile(op)
-                except KeyError:
+                in_demand, out_demand = self._routing_visible_profile_demands(op)
+                if in_demand <= 0 and out_demand <= 0:
                     continue
-                in_demand = sum(profile.input_slots.values()) + int(profile.generic_input_slots)
-                out_demand = sum(profile.output_slots.values()) + int(profile.generic_output_slots)
                 pose = self.owner.facility_pools[tpl_m][int(pose_idx)]
                 if in_demand > 0:
                     input_cells = pose.get("input_port_cells", []) or []
@@ -380,7 +436,7 @@ class PoseBoolExactMasterDelegate:
             self._build_port_lookup_cache()
             # 对每 (port_cell, dir) 已知有 pose 配置, 加 "如果某 pose 在 cell 有
             # port 朝 dir 被选 → front_cell 必空".
-            for (px, py, direction), port_poses in self._poses_by_port_at_cell_dir.items():
+            for (px, py, direction), port_poses in self._routing_visible_poses_by_port_at_cell_dir.items():
                 if not port_poses:
                     continue
                 dx, dy = _DIR_DELTA.get(str(direction), (0, 0))
@@ -456,6 +512,7 @@ class PoseBoolExactMasterDelegate:
                 pose_var_metadata=self._sac_pose_metadata,
                 cell_poses=self._sac_cell_poses,
                 grid_w=self.grid_w, grid_h=self.grid_h,
+                routing_free_sink_commodities=self._routing_free_sink_commodities(),
             )
             sac_hull_stats["enabled"] = True
             sac_hull_stats["pose_metadata_count"] = len(self._sac_pose_metadata)
@@ -639,6 +696,7 @@ class PoseBoolExactMasterDelegate:
             pose_var_metadata=self._sac_pose_metadata,
             cell_poses=self._sac_cell_poses,
             grid_w=self.grid_w, grid_h=self.grid_h,
+            routing_free_sink_commodities=self._routing_free_sink_commodities(),
         )
         return bool(stats.get("capacity_constraints", 0) > 0)
 
@@ -810,7 +868,8 @@ class PoseBoolExactMasterDelegate:
             return
         # mandatory + ro
         for (key, pose_idx), var in list(self.x_vars.items()) + list(self.ro_vars.items()):
-            if key in self._mandatory_template_by_group:
+            is_mandatory = key in self._mandatory_template_by_group
+            if is_mandatory:
                 tpl = self._mandatory_template_by_group[key]
             else:
                 tpl = key  # ro key 是 template name
@@ -824,6 +883,11 @@ class PoseBoolExactMasterDelegate:
                 cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
             for port_list_key in ("input_port_cells", "output_port_cells"):
+                side_is_visible = (
+                    self._mandatory_port_side_is_routing_visible(str(key), port_list_key)
+                    if is_mandatory
+                    else True
+                )
                 for port in pose.get(port_list_key, []) or []:
                     key_tup = (
                         int(port.get("x", 0)) + ax,
@@ -831,6 +895,10 @@ class PoseBoolExactMasterDelegate:
                         str(port.get("dir", "")),
                     )
                     self._poses_by_port_at_cell_dir.setdefault(key_tup, []).append(var)
+                    if side_is_visible:
+                        self._routing_visible_poses_by_port_at_cell_dir.setdefault(
+                            key_tup, []
+                        ).append(var)
         # pole
         for pose_idx, var in self.pole_vars.items():
             pool = self.owner.facility_pools.get("power_pole", [])
@@ -905,9 +973,8 @@ class PoseBoolExactMasterDelegate:
         加 input + output 两边 cut (各自 K vs demand 看 slack). 无 slack 一边
         跳过. 至少一边 add 才 return True.
         """
-        try:
-            profile = get_operation_port_profile(op_type)
-        except KeyError:
+        input_demand, output_demand = self._routing_visible_profile_demands(op_type)
+        if input_demand <= 0 and output_demand <= 0:
             return False
         pool = self.owner.facility_pools.get(tpl, [])
         if int(pose_idx) >= len(pool):
@@ -917,14 +984,8 @@ class PoseBoolExactMasterDelegate:
         self._build_global_pose_cache()
         cut_added = False
         for side_cells_key, side_demand in (
-            (
-                "input_port_cells",
-                sum(profile.input_slots.values()) + int(profile.generic_input_slots),
-            ),
-            (
-                "output_port_cells",
-                sum(profile.output_slots.values()) + int(profile.generic_output_slots),
-            ),
+            ("input_port_cells", input_demand),
+            ("output_port_cells", output_demand),
         ):
             port_cells = pose.get(side_cells_key, []) or []
             K = len(port_cells)
@@ -961,7 +1022,7 @@ class PoseBoolExactMasterDelegate:
         self, grid_cell: Tuple[int, int], direction: str
     ) -> List[cp_model.IntVar]:
         self._build_port_lookup_cache()
-        return list(self._poses_by_port_at_cell_dir.get(
+        return list(self._routing_visible_poses_by_port_at_cell_dir.get(
             (int(grid_cell[0]), int(grid_cell[1]), str(direction)), []
         ))
 

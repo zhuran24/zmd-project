@@ -19,7 +19,7 @@ vars ≤ 5K, constraints ≤ 5K. L2 solve ≤ 5s.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Set, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -62,6 +62,7 @@ def solve_abstract_routing(
     separator_limit: int = 64,
     include_axis: bool = True,
     include_ghost_moat: bool = True,
+    routing_free_sink_commodities: Optional[Set[str]] = None,
 ) -> AbstractRoutingResult:
     """L2 abstract routing subproblem.
 
@@ -128,8 +129,17 @@ def solve_abstract_routing(
             profile = get_operation_port_profile(operation_type)
         except Exception:
             continue
+        routing_free_outputs = {str(c) for c in (routing_free_sink_commodities or set())}
         input_commodities = set(profile.input_slots.keys()) if hasattr(profile, "input_slots") else set()
-        output_commodities = set(profile.output_slots.keys()) if hasattr(profile, "output_slots") else set()
+        output_commodities = (
+            {
+                str(c)
+                for c in profile.output_slots.keys()
+                if str(c) not in routing_free_outputs
+            }
+            if hasattr(profile, "output_slots")
+            else set()
+        )
         tpl = str(sol.get("facility_type", ""))
         pool = facility_pools.get(tpl, [])
         pose_idx = int(sol.get("pose_idx", -1))
@@ -285,6 +295,7 @@ def solve_abstract_routing(
             ghost_anchor=ghost_anchor, ghost_size=ghost_size,
             include_axis=include_axis, include_ghost_moat=include_ghost_moat,
             separator_limit=separator_limit,
+            routing_free_sink_commodities=routing_free_sink_commodities,
         )
 
     return AbstractRoutingResult(

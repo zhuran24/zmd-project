@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Sequence, Set, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 
 _DIR_DELTA: Dict[str, Tuple[int, int]] = {
@@ -34,6 +34,38 @@ _DIR_DELTA: Dict[str, Tuple[int, int]] = {
     "E": (1, 0),
     "W": (-1, 0),
 }
+
+RoutingVisiblePortKey = Tuple[int, int, str, str]
+
+
+def build_routing_visible_port_keys_by_instance(
+    port_specs: Sequence[Mapping[str, Any]],
+) -> Dict[str, Set[RoutingVisiblePortKey]]:
+    """Normalize selected routing-visible binding port specs for the oracle.
+
+    The deletion-core oracle is deliberately cheaper than routing precheck, but
+    it must consume the same *visible terminal* set.  In particular, wireless
+    final producer outputs are absent from ``extract_port_specs()`` and must not
+    be resurrected from raw pose geometry here.
+    """
+
+    result: Dict[str, Set[RoutingVisiblePortKey]] = {}
+    for spec in port_specs:
+        instance_id = str(spec.get("instance_id", ""))
+        if not instance_id:
+            continue
+        port_type = str(spec.get("type", ""))
+        if port_type not in {"in", "out"}:
+            continue
+        result.setdefault(instance_id, set()).add(
+            (
+                int(spec["x"]),
+                int(spec["y"]),
+                str(spec["dir"]),
+                port_type,
+            )
+        )
+    return result
 
 
 @dataclass
@@ -52,6 +84,10 @@ def _oracle_front_blocked(
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
     grid_w: int,
     grid_h: int,
+    *,
+    routing_visible_port_keys_by_instance: Optional[
+        Mapping[str, Set[RoutingVisiblePortKey]]
+    ] = None,
 ) -> bool:
     """Cheap oracle: 给 layout subset, 任一 instance 的某 port front 被另一 instance
     占 → return True (仍 front_blocked).
@@ -86,11 +122,18 @@ def _oracle_front_blocked(
         if pose_idx >= len(pool):
             continue
         pose = pool[pose_idx]
-        for port_list_key in ("input_port_cells", "output_port_cells"):
+        for port_list_key, port_type in (("input_port_cells", "in"), ("output_port_cells", "out")):
+            visible_keys = (
+                None
+                if routing_visible_port_keys_by_instance is None
+                else set(routing_visible_port_keys_by_instance.get(str(iid), set()))
+            )
             for port in pose.get(port_list_key, []) or []:
                 px = int(port.get("x", 0))
                 py = int(port.get("y", 0))
                 direction = str(port.get("dir", ""))
+                if visible_keys is not None and (px, py, direction, port_type) not in visible_keys:
+                    continue
                 dx, dy = _DIR_DELTA.get(direction, (0, 0))
                 fx, fy = px + dx, py + dy
                 if not (0 <= fx < grid_w and 0 <= fy < grid_h):
@@ -122,6 +165,9 @@ def minimize_routing_front_blocked_core(
     grid_w: int,
     grid_h: int,
     blocker_instance_ids: Set[str],  # 从 routing blocked_ports.placement_level_conflict_set 集
+    routing_visible_port_keys_by_instance: Optional[
+        Mapping[str, Set[RoutingVisiblePortKey]]
+    ] = None,
     max_oracle_calls: int = 64,
     max_seconds: float = 30.0,
     verbose: bool = False,
@@ -139,7 +185,11 @@ def minimize_routing_front_blocked_core(
     # Initial oracle check — confirm full layout indeed front_blocked.
     t_o0 = time.perf_counter()
     initial_blocked = _oracle_front_blocked(
-        full_solution, facility_pools, grid_w, grid_h
+        full_solution,
+        facility_pools,
+        grid_w,
+        grid_h,
+        routing_visible_port_keys_by_instance=routing_visible_port_keys_by_instance,
     )
     oracle_seconds_total += time.perf_counter() - t_o0
     oracle_calls += 1
@@ -168,7 +218,11 @@ def minimize_routing_front_blocked_core(
         sub_layout = {k: full_solution[k] for k in trial}
         t_o = time.perf_counter()
         still_blocked = _oracle_front_blocked(
-            sub_layout, facility_pools, grid_w, grid_h
+            sub_layout,
+            facility_pools,
+            grid_w,
+            grid_h,
+            routing_visible_port_keys_by_instance=routing_visible_port_keys_by_instance,
         )
         oracle_seconds_total += time.perf_counter() - t_o
         oracle_calls += 1

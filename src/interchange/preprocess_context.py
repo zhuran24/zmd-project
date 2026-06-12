@@ -244,6 +244,10 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             )
 
     producers = build_producer_index(context)
+    consumers: dict[str, list[str]] = {}
+    for recipe_id, recipe in context.recipes.items():
+        for commodity_id in recipe.inputs:
+            consumers.setdefault(str(commodity_id), []).append(str(recipe_id))
 
     for commodity_id, target in context.targets.items():
         if target.mode not in _ALLOWED_TARGET_MODES:
@@ -265,6 +269,16 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(f"unknown source_kind for commodity {role.commodity_id!r}: {role.source_kind!r}")
         if role.sink_kind not in _ALLOWED_SINK_KINDS:
             raise ValueError(f"unknown sink_kind for commodity {role.commodity_id!r}: {role.sink_kind!r}")
+        if role.sink_kind == "generic_input":
+            if role.commodity_id not in context.targets:
+                raise ValueError(
+                    f"generic_input commodity {role.commodity_id!r} must correspond to a production target"
+                )
+            if role.commodity_id in consumers:
+                raise ValueError(
+                    f"generic_input commodity {role.commodity_id!r} cannot also be a recipe input; "
+                    f"consumer recipes: {', '.join(sorted(consumers[role.commodity_id]))}"
+                )
         if role.source_kind == "cycle_internal":
             if not role.cycle_group:
                 raise ValueError(f"cycle_internal commodity {role.commodity_id!r} must declare cycle_group")
@@ -272,6 +286,15 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
                 raise ValueError(
                     f"commodity {role.commodity_id!r} references unknown cycle_group {role.cycle_group!r}"
                 )
+
+    for commodity_id in context.targets:
+        role = context.commodity_roles.get(commodity_id)
+        if role is None:
+            raise ValueError(f"production target {commodity_id!r} is missing commodity_roles entry")
+        if role.sink_kind != "generic_input":
+            raise ValueError(
+                f"production target {commodity_id!r} must declare sink_kind='generic_input'"
+            )
 
     for group in context.cycle_groups.values():
         if len(group.internal_commodities) != len(group.recipes):

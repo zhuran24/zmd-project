@@ -4536,6 +4536,15 @@ class LBBDController:
             flow_status, _bottlenecks = self._run_flow_diagnostic(solution)
             diagnostic_flow_status = flow_status
 
+            _generic_io_requirements = getattr(self.master, "generic_io_requirements", None) or {}
+            _routing_free_sink_commodities = {
+                str(commodity)
+                for commodity, required in dict(
+                    _generic_io_requirements.get("required_generic_inputs", {}) or {}
+                ).items()
+                if int(required) > 0
+            }
+
             # SAC-Hull Phase 3: L2 abstract routing layer. master OPTIMAL 后,
             # 跑 L2 (lightweight CP-SAT, decides ambiguous side under SAC capacity hull).
             # L2 FEASIBLE → 进 binding/routing. L2 INFEASIBLE → 加 SAC cut + continue iter.
@@ -4565,6 +4574,7 @@ class LBBDController:
                     separator_limit=l2_sep_limit,
                     include_axis=True,
                     include_ghost_moat=True,
+                    routing_free_sink_commodities=_routing_free_sink_commodities,
                 )
                 print(
                     f"[l2-sac] iter {iteration}: status={l2_result.status} wall={l2_result.wall_seconds:.2f}s "
@@ -4626,6 +4636,7 @@ class LBBDController:
                     ghost_size=ghost_size,
                     include_axis=True,
                     include_ghost_moat=False,
+                    routing_free_sink_commodities=_routing_free_sink_commodities,
                 )
                 delegate = getattr(self.master, "_coordinate_delegate", None)
                 if violations and delegate is not None and hasattr(delegate, "add_separator_capacity_cut"):
@@ -5406,6 +5417,7 @@ class LBBDController:
                     _b1_use_deletion_core = False
                 if _b1_use_deletion_core:
                     from src.search.routing_deletion_core_minimizer import (
+                        build_routing_visible_port_keys_by_instance,
                         minimize_routing_front_blocked_core,
                     )
                     blocker_ids: Set[str] = set()
@@ -5422,6 +5434,9 @@ class LBBDController:
                             grid_w=int(self.master.grid_w),
                             grid_h=int(self.master.grid_h),
                             blocker_instance_ids=blocker_ids,
+                            routing_visible_port_keys_by_instance=(
+                                build_routing_visible_port_keys_by_instance(port_specs)
+                            ),
                             max_oracle_calls=128,
                             max_seconds=30.0,
                         )
