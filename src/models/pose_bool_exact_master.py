@@ -113,27 +113,100 @@ class PoseBoolExactMasterDelegate:
             if int(required) > 0
         }
 
+    def _required_generic_output_slot_total(self) -> int:
+        gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
+        return sum(
+            int(required)
+            for required in dict(gen_io.get("required_generic_outputs", {}) or {}).values()
+        )
+
+    def _mandatory_generic_output_capacity_total(self) -> Optional[int]:
+        """Return the mandatory generic-output slot capacity if it is knowable.
+
+        Generic-output slots are binding capacity: ``PortBindingModel`` may assign
+        ``__unused__`` to any such physical output slot unless the global generic
+        output demand saturates all mandatory generic-output slots.  Pose-level
+        cell-pattern/front-clear cuts have no binding slot identity, so they may
+        treat generic-output cells as necessarily active only when that global
+        saturation proof is available from the master group's operation snapshot.
+        """
+        total = 0
+        saw_generic_output_provider = False
+
+        mandatory_groups = list(getattr(self.owner, "_mandatory_groups", []) or [])
+        if mandatory_groups:
+            for group in mandatory_groups:
+                try:
+                    operation_type = str(group.get("operation_type", ""))
+                    profile = get_operation_port_profile(operation_type)
+                    slots = int(profile.generic_output_slots)
+                    count = int(group.get("count", len(group.get("instance_ids", []) or [])))
+                except Exception:
+                    return None
+                if slots <= 0:
+                    continue
+                if count <= 0:
+                    # A generic-output-providing group with an unknowable instance
+                    # count makes the capacity total unknowable: an undercounted
+                    # capacity could fake saturation and over-cut.
+                    return None
+                saw_generic_output_provider = True
+                total += slots * count
+            return total if saw_generic_output_provider else 0
+
+        if not self._mandatory_operation_by_group:
+            return None
+        for group_id, operation_type in self._mandatory_operation_by_group.items():
+            try:
+                profile = get_operation_port_profile(str(operation_type))
+                slots = int(profile.generic_output_slots)
+            except Exception:
+                return None
+            if slots <= 0:
+                continue
+            instance_ids = self._instance_ids_by_group.get(str(group_id), [])
+            if not instance_ids:
+                # Same fail-closed rule as above: without the group's instance
+                # list the capacity cannot be proven, so saturation must not be
+                # claimed (assuming 1 instance undercounts multi-instance groups).
+                return None
+            saw_generic_output_provider = True
+            total += slots * len(instance_ids)
+        return total if saw_generic_output_provider else 0
+
+    def _generic_output_slots_are_globally_saturated(self) -> bool:
+        try:
+            required = int(self._required_generic_output_slot_total())
+            capacity = self._mandatory_generic_output_capacity_total()
+        except Exception:
+            return False
+        return capacity is not None and capacity > 0 and required == int(capacity)
+
     def _profile_port_demands(self, operation_type: str) -> Tuple[int, int, int, int]:
         try:
             profile = get_operation_port_profile(operation_type)
         except KeyError:
             return 0, 0, 0, 0
         routing_free_outputs = self._routing_free_sink_commodities()
-        total_input = sum(int(v) for v in profile.input_slots.values()) + int(
-            profile.generic_input_slots
-        )
+        concrete_input_demand = sum(int(v) for v in profile.input_slots.values())
+        total_input = concrete_input_demand + int(profile.generic_input_slots)
         total_output = sum(int(v) for v in profile.output_slots.values()) + int(
             profile.generic_output_slots
+        )
+        generic_output_visible = (
+            int(profile.generic_output_slots)
+            if self._generic_output_slots_are_globally_saturated()
+            else 0
         )
         visible_output = sum(
             int(count)
             for commodity, count in profile.output_slots.items()
             if str(commodity) not in routing_free_outputs
-        ) + int(profile.generic_output_slots)
-        # There is no input-side routing-free role in the canonical contract; all
-        # concrete input requirements remain route-visible.  The validator fails
-        # closed if a future generic-input target is also a recipe input.
-        visible_input = total_input
+        ) + generic_output_visible
+        # Generic-input slots are virtual wireless capacity (no physical front);
+        # all concrete input requirements remain route-visible.  The validator
+        # fails closed if a future generic-input target is also a recipe input.
+        visible_input = concrete_input_demand
         return int(visible_input), int(visible_output), int(total_input), int(total_output)
 
     def _routing_visible_profile_demands(self, operation_type: str) -> Tuple[int, int]:
@@ -186,8 +259,9 @@ class PoseBoolExactMasterDelegate:
         except Exception:
             return False
         if side_key == "input_port_cells":
-            # Canonical input slots are all routing-visible.  The per-cell pattern
-            # is exact only when all physical input ports are required active.
+            # Concrete input slots are routing-visible.  Generic-input capacity is
+            # virtual, so the per-cell pattern is exact only when concrete demand
+            # covers every physical input port.
             return int(input_demand) >= int(port_count)
         if side_key == "output_port_cells":
             # Output sides that mix visible and routing-free sinks are handled by
