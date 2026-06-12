@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `{PACKAGE_NAME}`, sha256 `{PACKAGE_SHA256}`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_audit_snapshot_6867b7ce.zip`, sha256 `6867b7ce75b5aa61efe9864572cc1b2781ea68d07bcf7efeca28a3ec8ee3487b`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 ## 项目一句话
 
@@ -39,7 +39,7 @@ Benders/LBBD 主循环面 (`src/search/benders_loop.py` 的候选求解编排) �
 
 ## 自验环境与已知基线
 
-- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2927 passed, 0 failed)**; 跑不完就跑专项 + 如实声明 (`-p no:randomly`)。
+- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2941 passed, 0 failed)**; 跑不完就跑专项 + 如实声明 (`-p no:randomly`)。
 - `python scripts/check_p1_2_proof_obligations.py` pass。
 - finding 必须带可复现 probe 或严谨论证 (file:line); 状态矩阵类 finding 给出构造该组合的最小实例; 实证推翻你的怀疑就不要报。
 

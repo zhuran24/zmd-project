@@ -79,6 +79,25 @@ def _load_strict_json(path: Path) -> Any:
     return _loads_strict_json(path.read_text(encoding="utf-8"))
 
 
+def _normalize_wireless_sink_generic_input_slots(
+    raw_slot_count: Any,
+    *,
+    field: str = "wireless_sink.generic_input_slots",
+) -> int:
+    if isinstance(raw_slot_count, bool) or not isinstance(raw_slot_count, int):
+        raise TypeError(
+            f"{field} must be an integer "
+            "（无线消费槽位数必须是整数）"
+        )
+    slot_count = int(raw_slot_count)
+    if slot_count < 0:
+        raise ValueError(
+            f"{field} must be non-negative "
+            f"（无线消费槽位数不能为负）: {slot_count}"
+        )
+    return slot_count
+
+
 def load_wireless_sink_generic_input_slots(
     *,
     project_root: Optional[Path] = None,
@@ -127,19 +146,10 @@ def load_wireless_sink_generic_input_slots(
             "is required for wireless sink binding（无线消费槽位数缺失）"
         )
 
-    raw_slot_count = wireless_sink["generic_input_slots"]
-    if isinstance(raw_slot_count, bool) or not isinstance(raw_slot_count, int):
-        raise TypeError(
-            "wireless_sink.generic_input_slots must be an integer "
-            "（无线消费槽位数必须是整数）"
-        )
-    slot_count = int(raw_slot_count)
-    if slot_count < 0:
-        raise ValueError(
-            "wireless_sink.generic_input_slots must be non-negative "
-            f"（无线消费槽位数不能为负）: {slot_count}"
-        )
-    return slot_count
+    return _normalize_wireless_sink_generic_input_slots(
+        wireless_sink["generic_input_slots"],
+        field="wireless_sink.generic_input_slots",
+    )
 
 def load_generic_io_requirements(
     *,
@@ -306,11 +316,19 @@ class PortBindingModel:
         required_generic_inputs: Optional[Mapping[str, int]] = None,
         project_root: Optional[Path] = None,
         io_requirements_path: Optional[Path] = None,
+        wireless_sink_generic_input_slots: Optional[int] = None,
         routing_context: Optional[Any] = None,  # RAB-SEP Phase 1: routing-aware filter
     ):
         self.project_root = project_root or PROJECT_ROOT
         self.io_requirements_path = io_requirements_path
-        self._wireless_sink_generic_input_slots: Optional[int] = None
+        self._wireless_sink_generic_input_slots: Optional[int] = (
+            None
+            if wireless_sink_generic_input_slots is None
+            else _normalize_wireless_sink_generic_input_slots(
+                wireless_sink_generic_input_slots,
+                field="wireless_sink_generic_input_slots",
+            )
+        )
         self.placement_solution = {
             str(instance_id): dict(sol)
             for instance_id, sol in placement_solution.items()

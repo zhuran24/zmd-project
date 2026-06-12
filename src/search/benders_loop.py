@@ -4909,10 +4909,31 @@ class LBBDController:
             raise RuntimeError(
                 "certified binding requires normalized master generic IO sections"
             )
-        return {
+        kwargs: Dict[str, Any] = {
             "required_generic_outputs": dict(required_generic_outputs),
             "required_generic_inputs": dict(required_generic_inputs),
         }
+        if required_generic_inputs:
+            wireless_sink_generic_input_slots = getattr(
+                self.master,
+                "wireless_sink_generic_input_slots",
+                None,
+            )
+            if isinstance(wireless_sink_generic_input_slots, bool) or not isinstance(
+                wireless_sink_generic_input_slots,
+                int,
+            ):
+                raise RuntimeError(
+                    "certified binding requires the master wireless_sink_generic_input_slots snapshot"
+                )
+            if wireless_sink_generic_input_slots < 0:
+                raise RuntimeError(
+                    "certified binding requires a non-negative master wireless_sink_generic_input_slots snapshot"
+                )
+            kwargs["wireless_sink_generic_input_slots"] = int(
+                wireless_sink_generic_input_slots
+            )
+        return kwargs
 
 
     def _run_exact_binding_and_routing(

@@ -927,3 +927,63 @@ def test_load_wireless_sink_generic_input_slots_rejects_duplicate_json_keys(tmp_
 
     with pytest.raises(ValueError, match="duplicate JSON key"):
         load_wireless_sink_generic_input_slots(path=path)
+
+def test_binding_uses_injected_wireless_slot_snapshot_over_project_root_plan(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    rules_dir = tmp_path / "rules"
+    rules_dir.mkdir(parents=True)
+    (rules_dir / "preprocess_plan.json").write_text(
+        json.dumps(
+            {
+                "utility_operations": {
+                    "wireless_sink": {
+                        "facility_type": "protocol_storage_box",
+                        "generic_input_slots": 1,
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    pose = {
+        "pose_id": "box_pose",
+        "anchor": {"x": 1, "y": 1},
+        "occupied_cells": [],
+        "input_port_cells": [],
+        "output_port_cells": [],
+    }
+    instances = [
+        {
+            "instance_id": "box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": True,
+        }
+    ]
+    placement = {
+        "box_001": {
+            "pose_idx": 0,
+            "pose_id": "box_pose",
+            "anchor": {"x": 1, "y": 1},
+            "facility_type": "protocol_storage_box",
+        }
+    }
+
+    model = PortBindingModel(
+        placement,
+        {"protocol_storage_box": [pose]},
+        instances,
+        required_generic_outputs={},
+        required_generic_inputs={"valley_battery": 3},
+        project_root=tmp_path,
+        wireless_sink_generic_input_slots=3,
+    )
+    model.build()
+
+    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    assert len(model.generic_input_slots) == 3

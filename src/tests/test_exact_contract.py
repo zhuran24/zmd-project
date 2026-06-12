@@ -160,12 +160,14 @@ def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
         generic_io_requirements={
             "required_generic_outputs": {"source_ore": 1},
             "required_generic_inputs": {"valley_battery": 2},
-        }
+        },
+        wireless_sink_generic_input_slots=3,
     )
 
     assert controller._binding_generic_requirements_kwargs() == {
         "required_generic_outputs": {"source_ore": 1},
         "required_generic_inputs": {"valley_battery": 2},
+        "wireless_sink_generic_input_slots": 3,
     }
 
     controller.solve_mode = "exploratory"
@@ -209,6 +211,7 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
             "required_generic_outputs": {"source_ore": 1},
             "required_generic_inputs": {"valley_battery": 2},
         },
+        wireless_sink_generic_input_slots=3,
     )
 
     _model, status = benders_loop_module.LBBDController._retry_binding_without_overload_separation(
@@ -220,6 +223,23 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
     assert status == "FEASIBLE"
     assert captured_kwargs["required_generic_outputs"] == {"source_ore": 1}
     assert captured_kwargs["required_generic_inputs"] == {"valley_battery": 2}
+    assert captured_kwargs["wireless_sink_generic_input_slots"] == 3
+
+
+def test_certified_binding_kwargs_require_wireless_slot_snapshot_for_generic_inputs() -> None:
+    controller = benders_loop_module.LBBDController.__new__(
+        benders_loop_module.LBBDController
+    )
+    controller.solve_mode = "certified_exact"
+    controller.master = SimpleNamespace(
+        generic_io_requirements={
+            "required_generic_outputs": {},
+            "required_generic_inputs": {"valley_battery": 1},
+        }
+    )
+
+    with pytest.raises(RuntimeError, match="wireless_sink_generic_input_slots snapshot"):
+        controller._binding_generic_requirements_kwargs()
 
 
 def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> None:
