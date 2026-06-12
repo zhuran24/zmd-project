@@ -101,7 +101,11 @@ class Cdp:
         except Exception:
             return None
 
+    async def hover_xy(self, x: float, y: float):
+        await self.call("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+
     async def click_xy(self, x: float, y: float):
+        await self.hover_xy(x, y)
         base = {"x": x, "y": y, "button": "left", "clickCount": 1}
         await self.call("Input.dispatchMouseEvent", {"type": "mousePressed", **base})
         await self.call("Input.dispatchMouseEvent", {"type": "mouseReleased", **base})
@@ -186,6 +190,87 @@ async def find_and_click(cdp: Cdp, texts: list[str], what: str, out_dir: Path) -
     return spot["text"]
 
 
+def action_button_for_name_js(filename: str) -> str:
+    """定位「文件名 == filename」那一行的「源文件操作」按钮中心坐标。
+    **按文件名精确匹配** (==, 非 includes), 绝不会命中别的文件 (如依赖包) 的按钮。"""
+    return (
+        "(() => {"
+        f"  const target = {json.dumps(filename)};"
+        "  for (const op of document.querySelectorAll('button[aria-label=\"源文件操作\"],"
+        "       button[aria-label=\"Source file actions\"]')) {"
+        "    let el = op, name = null;"
+        "    for (let i = 0; i < 6 && el; i++) {"
+        "      el = el.parentElement;"
+        "      if (!el) break;"
+        "      const m = (el.innerText || '').match(/[\\w.\\-]+\\.zip/);"
+        "      if (m) { name = m[0]; break; }"
+        "    }"
+        "    if (name === target) {"
+        "      const r = op.getBoundingClientRect();"
+        "      return {x: r.x + r.width / 2, y: r.y + r.height / 2};"
+        "    }"
+        "  }"
+        "  return null;"
+        "})()"
+    )
+
+
+def menu_delete_spot_js() -> str:
+    """在已弹出的操作菜单里定位「删除」项中心坐标 (只认菜单项, 不误点别处)。"""
+    return (
+        "(() => {"
+        "  const texts = ['删除', 'Delete'];"
+        "  const els = [...document.querySelectorAll('[role=menuitem],[role=option],button')]"
+        "    .filter(e => e.offsetParent);"
+        "  for (const t of texts) {"
+        "    const el = els.find(e => (e.innerText || '').trim() === t);"
+        "    if (el) { const r = el.getBoundingClientRect();"
+        "      return {x: r.x + r.width / 2, y: r.y + r.height / 2}; }"
+        "  }"
+        "  return null;"
+        "})()"
+    )
+
+
+async def delete_named_sources(cdp: Cdp, filename: str, out_dir: Path) -> int:
+    """删除文件区里**所有**文件名 == filename 的条目 (精确匹配, 不碰其它文件)。
+    返回删除条数。删除 UI 实测 (2026-06-12): 点该行「源文件操作」按钮 → 弹菜单
+    (下载/删除) → 点「删除」**立即生效、无确认框**。"""
+    deleted = 0
+    for _ in range(10):  # 上限护栏: 同名最多删 10 个
+        before = await cdp.js(count_list_entries_js(filename))
+        if not isinstance(before, int) or before <= 0:
+            break
+        spot = await cdp.js(action_button_for_name_js(filename))
+        if not spot:
+            break
+        # 点操作按钮弹菜单; 实测有时首点只 hover 出图标, 菜单没出 → 重试一次
+        del_spot = None
+        for attempt in range(2):
+            await cdp.hover_xy(spot["x"], spot["y"])
+            await asyncio.sleep(0.3)
+            await cdp.click_xy(spot["x"], spot["y"])
+            await asyncio.sleep(0.8)
+            del_spot = await cdp.js(menu_delete_spot_js())
+            if del_spot:
+                break
+            log("delete", "menu_retry", filename=filename, attempt=attempt + 1)
+        if not del_spot:
+            await cdp.screenshot(out_dir / "attention_no_delete_item.png")
+            log("delete", "FATAL", error="action menu opened but 删除 item not found")
+            raise RuntimeError("delete menu item not found")
+        await cdp.click_xy(del_spot["x"], del_spot["y"])
+        await asyncio.sleep(1.5)
+        after = await cdp.js(count_list_entries_js(filename))
+        if isinstance(after, int) and after < before:
+            deleted += 1
+            log("delete", "removed_one", filename=filename, remaining=after)
+        else:
+            log("delete", "no_progress", filename=filename, before=before, after=after)
+            break
+    return deleted
+
+
 async def run(args, pkg: Path, out_dir: Path) -> int:
     sources_url = args.project_url.rstrip("/")
     sources_url += ("&" if "?" in sources_url else "?") + "tab=sources"
@@ -223,6 +308,13 @@ async def run(args, pkg: Path, out_dir: Path) -> int:
 
             before = await cdp.js(count_list_entries_js(pkg.name))
             log("upload", "entries_before", count=before)
+
+            # --replace: 传新包前先删同名旧包 (精确文件名匹配, 不碰依赖包等其它文件)
+            if args.replace and isinstance(before, int) and before > 0:
+                n = await delete_named_sources(cdp, pkg.name, out_dir)
+                log("replace", "old_same_name_deleted", count=n)
+                await cdp.screenshot(out_dir / "after_delete.png")
+                before = await cdp.js(count_list_entries_js(pkg.name))
 
             await cdp.js(GUARD_JS)
             await find_and_click(cdp, ADD_SOURCE_TEXTS, "add_source", out_dir)
@@ -314,6 +406,9 @@ def main() -> int:
                     help="upload settle timeout (entry must appear in the sources list)")
     ap.add_argument("--on-duplicate", choices=["skip", "overwrite"], default="skip",
                     help="同名文件已在来源里时: skip=点跳过(默认,保持幂等) / overwrite=点仍然上传(造新版本)")
+    ap.add_argument("--replace", action="store_true",
+                    help="传新包前先删掉来源里**同名**的旧包 (按文件名精确匹配, 不碰依赖包等其它文件); "
+                         "实现「新快照替换旧快照、依赖包保留」的每轮工作流")
     ap.add_argument("--out-dir", help="screenshots/evidence dir; default 补丁包/gpt_deliveries/<ts>_project_upload")
     args = ap.parse_args()
 
