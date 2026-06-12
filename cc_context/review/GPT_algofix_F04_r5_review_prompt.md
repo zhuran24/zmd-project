@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-附件是完整项目快照 zip (zip 内 `project/` 为仓库根; ZIP_LZMA, `python -m zipfile -e <附件>.zip .` 解包)。依赖 wheels 在本 Project 文件区, 沙盒 Python 3.13, 离线 `pip install --no-index --find-links <wheels目录> -r requirements.txt`。
+完整项目快照 zip 已上传在本 Project **文件区 (来源)**: `zmd_v80_impl_full_20260612_single.zip` (zip 内 `project/` 为仓库根; ZIP_LZMA, `python -m zipfile -e <该zip> .` 解包)。依赖 wheels 同在 Project 文件区, 沙盒 Python 3.13, 离线 `pip install --no-index --find-links <wheels目录> -r requirements.txt`。本会话不带消息附件, 一切从 Project 文件区取; 开工前先校验包 sha256 与文末一致。
 
 修复链背景 (归档全在包内 `cc_context/review/algoaudit_preprocess_face_r{1,2,3,4}_REVIEW_20260612.md`): r1 = F-01/F-02 (协议箱 omni_wireless 几何) → r2 = F-03 (无线终品生产端输出口经 `extract_port_specs` 泄入 routing) → r3 = F03-R3-01 (RAB build-time 侧门) + H03-R3-02 (dual-role 语义守卫) → **r4 = 全仓穷举确认轮又出 4 组 residual, 本包刚落地其修复** (commit c7f3bb5):
 
