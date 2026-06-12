@@ -1,0 +1,744 @@
+diff --git a/src/search/exact_campaign.py b/src/search/exact_campaign.py
+index 5df465a..856205a 100644
+--- a/src/search/exact_campaign.py
++++ b/src/search/exact_campaign.py
+@@ -47,6 +47,7 @@ VALID_CANDIDATE_STATUSES = {
+     # 是哪个 ε 阶段（0.05/0.01/0.0）。final_status 同样可以是 EPSILON_CERTIFIED。
+     "EPSILON_CERTIFIED",
+ }
++STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
+ 
+ # A terminal public final_result is a projection of the certified candidate
+ # placement witness, not an extensible proof envelope.  Extra top-level fields can
+@@ -1421,6 +1422,8 @@ def _validate_candidate_record(
+         return f"candidate_invalid_status:{record_key}:{status}"
+     if status == "CERTIFIED" and not isinstance(record.get("solution"), Mapping):
+         return f"candidate_certified_solution_missing:{record_key}"
++    if status != "CERTIFIED" and "solution" in record:
++        return f"candidate_non_certified_solution_present:{record_key}"
+ 
+     if not isinstance(record.get("proof_summary"), Mapping):
+         return f"candidate_invalid_proof_summary:{record_key}"
+@@ -1995,6 +1998,15 @@ class ExactCampaign:
+         key = candidate_key(ghost_w, ghost_h)
+         candidates = self.state.setdefault("candidates", {})
+         existing = candidates.get(key, {})
++        if (
++            isinstance(existing, Mapping)
++            and str(existing.get("status", "")) in STRONG_CANDIDATE_STATUSES
++        ):
++            # A same-artifact CERTIFIED / INFEASIBLE conclusion is monotone
++            # evidence.  A later rerun attempt must not erase it by first
++            # downgrading the record to RUNNING; mark_candidate_result will either
++            # refresh the same terminal status or reject a contradiction.
++            return
+         record = _candidate_defaults(ghost_w, ghost_h)
+         if isinstance(existing, Mapping):
+             record.update(dict(existing))
+@@ -2005,6 +2017,7 @@ class ExactCampaign:
+         record["started_at"] = timestamp
+         record["updated_at"] = timestamp
+         record["finished_at"] = None
++        record.pop("solution", None)
+ 
+         candidates[key] = record
+         self.state["last_stop_reason"] = None
+@@ -2024,15 +2037,52 @@ class ExactCampaign:
+         loaded_exact_safe_cut_count: Optional[int] = None,
+         generated_exact_safe_cut_count: Optional[int] = None,
+     ) -> None:
++        normalized_status = str(status)
++        if normalized_status not in VALID_CANDIDATE_STATUSES:
++            raise ValueError(f"candidate result status is invalid: {normalized_status}")
++        if normalized_status == "CERTIFIED" and not isinstance(solution, Mapping):
++            raise ValueError("CERTIFIED candidate result requires a fresh solution mapping")
++        if normalized_status != "CERTIFIED" and solution is not None:
++            raise ValueError("non-CERTIFIED candidate result must not carry a solution")
++
+         key = candidate_key(ghost_w, ghost_h)
+         candidates = self.state.setdefault("candidates", {})
+         existing = candidates.get(key, {})
++        existing_status = (
++            str(existing.get("status", "")) if isinstance(existing, Mapping) else ""
++        )
++        if (
++            existing_status in STRONG_CANDIDATE_STATUSES
++            and normalized_status in STRONG_CANDIDATE_STATUSES
++            and existing_status != normalized_status
++        ):
++            raise ValueError(
++                "conflicting terminal candidate result: "
++                f"existing={existing_status} incoming={normalized_status}"
++            )
++        if (
++            existing_status in STRONG_CANDIDATE_STATUSES
++            and normalized_status not in STRONG_CANDIDATE_STATUSES
++        ):
++            audit_log = self.state.setdefault("audit_log", [])
++            if isinstance(audit_log, list):
++                audit_log.append(
++                    {
++                        "ts": now_iso(),
++                        "candidate_key": key,
++                        "event": "CANDIDATE_STRONG_STATUS_DOWNGRADE_BLOCKED",
++                        "existing_status": existing_status,
++                        "incoming_status": normalized_status,
++                    }
++                )
++            self.state["updated_at"] = now_iso()
++            return
+         record = _candidate_defaults(ghost_w, ghost_h)
+         if isinstance(existing, Mapping):
+             record.update(dict(existing))
+ 
+         timestamp = now_iso()
+-        record["status"] = str(status)
++        record["status"] = normalized_status
+         record["updated_at"] = timestamp
+         record["finished_at"] = timestamp
+         if record.get("started_at") is None:
+@@ -2066,7 +2116,7 @@ class ExactCampaign:
+                 "generated_exact_safe_cut_count",
+             )
+ 
+-        if solution is not None and status == "CERTIFIED":
++        if normalized_status == "CERTIFIED":
+             # Candidate-level CERTIFIED evidence is only an incumbent until the
+             # outer frontier has been exhausted.  Do not promote it to
+             # state["final_result"] here: UNKNOWN/time-budget/worker-failure stops
+@@ -2078,7 +2128,7 @@ class ExactCampaign:
+                 record["proof_summary"]["final_result_blocked_reason"] = (
+                     "final_result_requires_strict_declare_mode"
+                 )
+-        elif status != "CERTIFIED":
++        else:
+             record.pop("solution", None)
+ 
+         candidates[key] = record
+diff --git a/src/search/exact_parallel_scheduler.py b/src/search/exact_parallel_scheduler.py
+index 845c21c..bae88eb 100644
+--- a/src/search/exact_parallel_scheduler.py
++++ b/src/search/exact_parallel_scheduler.py
+@@ -18,6 +18,11 @@ from src.search.benders_loop import (
+ )
+ 
+ 
++VALID_WORKER_RESULT_STATUSES = frozenset(
++    {"CERTIFIED", "INFEASIBLE", "UNKNOWN", "UNPROVEN"}
++)
++
++
+ @dataclass(frozen=True)
+ class WorkerTask:
+     dispatch_seq: int
+@@ -71,6 +76,68 @@ class ParallelWaveExecution:
+     heartbeat_events: Tuple[Dict[str, Any], ...] = field(default_factory=tuple)
+ 
+ 
++def _worker_result_identity_violation(
++    result: WorkerResult,
++    *,
++    tasks_by_seq: Mapping[int, WorkerTask],
++) -> Optional[str]:
++    try:
++        dispatch_seq = int(result.dispatch_seq)
++    except Exception:
++        return "worker_result_dispatch_seq_invalid"
++    task = tasks_by_seq.get(dispatch_seq)
++    if task is None:
++        return f"worker_result_dispatch_seq_unknown:{dispatch_seq}"
++    try:
++        result_attempt_index = int(result.attempt_index)
++    except Exception:
++        return f"worker_result_attempt_index_invalid:{dispatch_seq}"
++    if result_attempt_index != int(task.attempt_index):
++        return f"worker_result_attempt_index_mismatch:{dispatch_seq}"
++    try:
++        result_candidate = tuple(int(value) for value in result.candidate)
++    except Exception:
++        return f"worker_result_candidate_invalid:{dispatch_seq}"
++    if result_candidate != tuple(int(value) for value in task.candidate):
++        return f"worker_result_candidate_mismatch:{dispatch_seq}"
++    if str(result.candidate_key) != str(task.candidate_key):
++        return f"worker_result_candidate_key_mismatch:{dispatch_seq}"
++    return None
++
++
++def _record_worker_result(
++    results_by_seq: Dict[int, WorkerResult],
++    result: WorkerResult,
++    *,
++    tasks_by_seq: Mapping[int, WorkerTask],
++) -> Optional[str]:
++    identity_reason = _worker_result_identity_violation(
++        result,
++        tasks_by_seq=tasks_by_seq,
++    )
++    if identity_reason is not None:
++        return identity_reason
++    dispatch_seq = int(result.dispatch_seq)
++    if result.error is not None:
++        return str(result.error)
++    normalized_status = str(result.status)
++    if normalized_status not in VALID_WORKER_RESULT_STATUSES:
++        return f"worker_result_status_invalid:{dispatch_seq}:{normalized_status}"
++    if normalized_status == "CERTIFIED" and not isinstance(result.solution, Mapping):
++        return f"worker_result_certified_solution_missing:{dispatch_seq}"
++    if normalized_status != "CERTIFIED" and result.solution is not None:
++        return f"worker_result_non_certified_solution_present:{dispatch_seq}"
++    if not isinstance(result.proof_summary, Mapping):
++        return f"worker_result_proof_summary_invalid:{dispatch_seq}"
++    if not isinstance(result.exact_safe_cuts, list):
++        return f"worker_result_exact_safe_cuts_invalid:{dispatch_seq}"
++    existing = results_by_seq.get(dispatch_seq)
++    if existing is not None:
++        return f"worker_result_duplicate_dispatch_seq:{dispatch_seq}"
++    results_by_seq[dispatch_seq] = result
++    return None
++
++
+ def build_parallel_worker_tasks(
+     *,
+     candidates: Sequence[Tuple[int, int, int]],
+@@ -382,6 +449,10 @@ class ExactParallelWorkerPool:
+             )
+         self.start()
+ 
++        tasks_by_seq = {int(task.dispatch_seq): task for task in tasks}
++        if len(tasks_by_seq) != len(tasks):
++            raise ValueError("parallel worker tasks must have unique dispatch_seq values")
++
+         started = time.perf_counter()
+         for task in tasks:
+             self._task_queue.put(task)
+@@ -408,7 +479,17 @@ class ExactParallelWorkerPool:
+                         elif msg_type == "RESULT":
+                             r = msg.get("result")
+                             if isinstance(r, WorkerResult):
+-                                results_by_seq.setdefault(int(r.dispatch_seq), r)
++                                result_reason = _record_worker_result(
++                                    results_by_seq,
++                                    r,
++                                    tasks_by_seq=tasks_by_seq,
++                                )
++                                if result_reason is not None and failure_reason is None:
++                                    failure_reason = result_reason
++                            elif failure_reason is None:
++                                failure_reason = "worker_result_invalid"
++                    if failure_reason is not None:
++                        break
+                     pending = [t for t in tasks if t.dispatch_seq not in results_by_seq]
+                     if not pending:
+                         break
+@@ -440,9 +521,13 @@ class ExactParallelWorkerPool:
+             if not isinstance(result, WorkerResult):
+                 failure_reason = "worker_result_invalid"
+                 break
+-            results_by_seq[int(result.dispatch_seq)] = result
+-            if result.error is not None and failure_reason is None:
+-                failure_reason = str(result.error)
++            result_reason = _record_worker_result(
++                results_by_seq,
++                result,
++                tasks_by_seq=tasks_by_seq,
++            )
++            if result_reason is not None and failure_reason is None:
++                failure_reason = result_reason
+                 break
+ 
+         while True:
+@@ -459,7 +544,15 @@ class ExactParallelWorkerPool:
+                 continue
+             result = message.get("result")
+             if isinstance(result, WorkerResult):
+-                results_by_seq.setdefault(int(result.dispatch_seq), result)
++                result_reason = _record_worker_result(
++                    results_by_seq,
++                    result,
++                    tasks_by_seq=tasks_by_seq,
++                )
++                if result_reason is not None and failure_reason is None:
++                    failure_reason = result_reason
++            elif failure_reason is None:
++                failure_reason = "worker_result_invalid"
+ 
+         if failure_reason is not None:
+             self.terminate()
+diff --git a/src/search/outer_search.py b/src/search/outer_search.py
+index b118ef4..cad9808 100644
+--- a/src/search/outer_search.py
++++ b/src/search/outer_search.py
+@@ -64,6 +64,7 @@ from src.search.exact_campaign import (
+ from src.search.exact_parallel_scheduler import (
+     ExactParallelWorkerPool,
+     WorkerResult,
++    WorkerTask,
+     build_parallel_worker_tasks,
+     run_parallel_exact_campaign_wave,
+ )
+@@ -88,6 +89,9 @@ _FRONTIER_PROBE_MAX_ANCHORS = 64
+ _FRONTIER_PROBE_MAX_ANCHORS_ENV = "EXACT_FRONTIER_PROBE_MAX_ANCHORS"
+ EXACT_OUTER_SKIP_UNKNOWN_ENV = "EXACT_OUTER_SKIP_UNKNOWN"
+ _EXACT_OUTER_SKIP_UNKNOWN_TRUE_VALUES = {"1", "true", "yes", "on"}
++_VALID_PARALLEL_WORKER_RESULT_STATUSES = frozenset(
++    {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN, RUN_STATUS_UNPROVEN}
++)
+ 
+ 
+ def _outer_skip_unknown_enabled() -> bool:
+@@ -108,6 +112,52 @@ def _certified_outer_skip_unknown_blocker() -> Dict[str, Any]:
+     }
+ 
+ 
++def _parallel_wave_result_identity_failure(
++    *,
++    results: Sequence[WorkerResult],
++    tasks: Sequence[WorkerTask],
++) -> Optional[str]:
++    tasks_by_seq = {int(task.dispatch_seq): task for task in tasks}
++    if len(tasks_by_seq) != len(tasks):
++        return "parallel_wave_duplicate_task_dispatch_seq"
++    seen: set[int] = set()
++    for result in results:
++        try:
++            dispatch_seq = int(result.dispatch_seq)
++        except Exception:
++            return "parallel_wave_result_dispatch_seq_invalid"
++        if dispatch_seq in seen:
++            return f"parallel_wave_result_duplicate_dispatch_seq:{dispatch_seq}"
++        seen.add(dispatch_seq)
++        task = tasks_by_seq.get(dispatch_seq)
++        if task is None:
++            return f"parallel_wave_result_dispatch_seq_unknown:{dispatch_seq}"
++        try:
++            attempt_index = int(result.attempt_index)
++        except Exception:
++            return f"parallel_wave_result_attempt_index_invalid:{dispatch_seq}"
++        if attempt_index != int(task.attempt_index):
++            return f"parallel_wave_result_attempt_index_mismatch:{dispatch_seq}"
++        try:
++            result_candidate = tuple(int(value) for value in result.candidate)
++        except Exception:
++            return f"parallel_wave_result_candidate_invalid:{dispatch_seq}"
++        if result_candidate != tuple(int(value) for value in task.candidate):
++            return f"parallel_wave_result_candidate_mismatch:{dispatch_seq}"
++        if str(result.candidate_key) != str(task.candidate_key):
++            return f"parallel_wave_result_candidate_key_mismatch:{dispatch_seq}"
++        if result.error is not None:
++            return f"parallel_wave_result_error:{dispatch_seq}:{result.error}"
++        normalized_status = str(result.status)
++        if normalized_status not in _VALID_PARALLEL_WORKER_RESULT_STATUSES:
++            return f"parallel_wave_result_status_invalid:{dispatch_seq}:{normalized_status}"
++        if normalized_status == RUN_STATUS_CERTIFIED and not isinstance(result.solution, Mapping):
++            return f"parallel_wave_result_certified_solution_missing:{dispatch_seq}"
++        if normalized_status != RUN_STATUS_CERTIFIED and result.solution is not None:
++            return f"parallel_wave_result_non_certified_solution_present:{dispatch_seq}"
++    return None
++
++
+ def _mark_certified_campaign_blocked(
+     exact_campaign: ExactCampaign,
+     *,
+@@ -2140,8 +2190,20 @@ def run_outer_search(
+                         pool=parallel_worker_pool,
+                         tasks=tasks,
+                     )
++                    wave_identity_failure = _parallel_wave_result_identity_failure(
++                        results=wave_execution.results,
++                        tasks=tasks,
++                    )
++                    effective_wave_completed = (
++                        bool(wave_execution.completed) and wave_identity_failure is None
++                    )
++                    effective_failure_reason = (
++                        wave_identity_failure
++                        if wave_identity_failure is not None
++                        else wave_execution.failure_reason
++                    )
+                     sorted_wave_results = sorted(
+-                        wave_execution.results,
++                        () if wave_identity_failure is not None else wave_execution.results,
+                         key=lambda result: int(result.dispatch_seq),
+                     )
+ 
+@@ -2284,8 +2346,8 @@ def run_outer_search(
+                             exact_campaign=exact_campaign,
+                             wave_index=telemetry_wave_index,
+                             candidate_results=ordered_wave_candidate_results,
+-                            completed=bool(wave_execution.completed),
+-                            failure_reason=wave_execution.failure_reason,
++                            completed=bool(effective_wave_completed),
++                            failure_reason=effective_failure_reason,
+                             dispatched_candidate_keys=wave_execution.dispatched_candidate_keys,
+                             elapsed_seconds=float(wave_execution.elapsed_seconds),
+                             peak_rss_bytes_external_total=int(
+@@ -2298,7 +2360,7 @@ def run_outer_search(
+                         )
+                         reset_campaign_telemetry = False
+ 
+-                        if not wave_execution.completed:
++                        if not effective_wave_completed:
+                             exact_campaign.mark_campaign_stopped(
+                                 "worker_process_failed",
+                                 status=RUN_STATUS_UNKNOWN,
+diff --git a/src/tests/test_exact_campaign_state_soundness.py b/src/tests/test_exact_campaign_state_soundness.py
+new file mode 100644
+index 0000000..0a7e491
+--- /dev/null
++++ b/src/tests/test_exact_campaign_state_soundness.py
+@@ -0,0 +1,103 @@
++from __future__ import annotations
++
++from pathlib import Path
++
++import pytest
++
++from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_UNKNOWN
++from src.search.exact_campaign import ExactCampaign, validate_exact_campaign_resume_state
++from src.tests.test_v89_terminal_ghost_pick_protocol_validation import _write_project
++
++
++def _certified_solution() -> dict[str, object]:
++    return {
++        "solid_001": {"facility_type": "solid", "pose_idx": 0},
++        "ghost_pick": {"anchor": {"x": 1, "y": 0}},
++    }
++
++
++def test_candidate_strong_result_survives_rerun_and_requires_fresh_solution(
++    tmp_path: Path,
++) -> None:
++    project_root = tmp_path / "project"
++    _write_project(project_root)
++    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
++
++    campaign.mark_candidate_started(2, 3)
++    campaign.mark_candidate_result(
++        2,
++        3,
++        RUN_STATUS_CERTIFIED,
++        solution=_certified_solution(),
++        proof_summary={"master_status": RUN_STATUS_CERTIFIED},
++        exact_safe_cuts=[],
++        loaded_exact_safe_cut_count=0,
++        generated_exact_safe_cut_count=0,
++    )
++
++    campaign.mark_candidate_started(2, 3)
++    record_after_start = campaign.get_candidate_record(2, 3)
++    assert record_after_start is not None
++    assert record_after_start["status"] == RUN_STATUS_CERTIFIED
++    assert record_after_start["solution"] == _certified_solution()
++
++    with pytest.raises(ValueError, match="fresh solution"):
++        campaign.mark_candidate_result(
++            2,
++            3,
++            RUN_STATUS_CERTIFIED,
++            proof_summary={"master_status": RUN_STATUS_CERTIFIED},
++            exact_safe_cuts=[],
++            loaded_exact_safe_cut_count=0,
++            generated_exact_safe_cut_count=0,
++        )
++
++    campaign.mark_candidate_result(
++        2,
++        3,
++        RUN_STATUS_UNKNOWN,
++        proof_summary={"master_status": RUN_STATUS_UNKNOWN},
++        exact_safe_cuts=[],
++        loaded_exact_safe_cut_count=0,
++        generated_exact_safe_cut_count=0,
++    )
++
++    record_after_weak_result = campaign.get_candidate_record(2, 3)
++    assert record_after_weak_result is not None
++    assert record_after_weak_result["status"] == RUN_STATUS_CERTIFIED
++    assert record_after_weak_result["solution"] == _certified_solution()
++    assert any(
++        entry.get("event") == "CANDIDATE_STRONG_STATUS_DOWNGRADE_BLOCKED"
++        and entry.get("incoming_status") == RUN_STATUS_UNKNOWN
++        for entry in campaign.get_audit_log()
++    )
++
++
++def test_resume_rejects_non_certified_candidate_with_stale_solution(
++    tmp_path: Path,
++) -> None:
++    project_root = tmp_path / "project"
++    _write_project(project_root)
++    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
++    campaign.mark_candidate_started(2, 3)
++    campaign.mark_candidate_result(
++        2,
++        3,
++        RUN_STATUS_CERTIFIED,
++        solution=_certified_solution(),
++        proof_summary={"master_status": RUN_STATUS_CERTIFIED},
++        exact_safe_cuts=[],
++        loaded_exact_safe_cut_count=0,
++        generated_exact_safe_cut_count=0,
++    )
++
++    campaign.state["candidates"]["2x3"]["status"] = RUN_STATUS_UNKNOWN
++
++    assert (
++        validate_exact_campaign_resume_state(
++            campaign.state,
++            campaign.artifact_hashes,
++            project_root=project_root,
++        )
++        == "candidate_non_certified_solution_present:2x3"
++    )
+diff --git a/src/tests/test_parallel_scheduler.py b/src/tests/test_parallel_scheduler.py
+index dca0d06..80d63ee 100644
+--- a/src/tests/test_parallel_scheduler.py
++++ b/src/tests/test_parallel_scheduler.py
+@@ -1,6 +1,7 @@
+ from __future__ import annotations
+ 
+ import json
++import queue
+ from dataclasses import fields
+ from pathlib import Path
+ 
+@@ -14,6 +15,7 @@ from src.models.cut_manager import (
+ )
+ from src.search.exact_campaign import ExactCampaign
+ from src.search.exact_parallel_scheduler import (
++    ExactParallelWorkerPool,
+     ParallelWaveExecution,
+     WorkerResult,
+     WorkerTask,
+@@ -96,6 +98,27 @@ class _DummyParallelWorkerPool:
+         return None
+ 
+ 
++class _SyntheticTaskQueue:
++    def put(self, item: object) -> None:
++        return None
++
++
++class _SyntheticResultQueue:
++    def __init__(self, messages: list[dict[str, object]]) -> None:
++        self._messages = list(messages)
++
++    def get(self, timeout: float | None = None) -> dict[str, object]:
++        del timeout
++        if not self._messages:
++            raise queue.Empty()
++        return self._messages.pop(0)
++
++    def get_nowait(self) -> dict[str, object]:
++        if not self._messages:
++            raise queue.Empty()
++        return self._messages.pop(0)
++
++
+ def test_parallel_wave_selection_diversifies_and_deduplicates_heads() -> None:
+     frontier_state = {
+         "frontier": [
+@@ -516,6 +539,176 @@ def test_parallel_merge_is_deterministic_under_out_of_order_worker_completion(
+     assert [entry["wave_slot_index"] for entry in telemetry["waves"][0]["candidate_results"]] == [0, 1]
+ 
+ 
++def test_parallel_worker_pool_rejects_result_candidate_mismatch() -> None:
++    tasks = [
++        WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
++        WorkerTask(1, 2, (4, 2, 2), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
++    ]
++    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
++    pool._closed = False
++    pool._started = True
++    pool._processes = []
++    pool._task_queue = _SyntheticTaskQueue()
++    pool._result_queue = _SyntheticResultQueue(
++        [
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=0,
++                    attempt_index=1,
++                    candidate=(1, 1, 1),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            },
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=1,
++                    attempt_index=2,
++                    candidate=(4, 2, 2),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            },
++        ]
++    )
++    pool.rss_sample_interval_seconds = 0.01
++    pool._total_crash_respawns = 0
++    pool.start = lambda: None
++    pool._respawn_all_workers = lambda: None
++    pool.terminate = lambda: None
++    pool._sum_process_tree_rss = lambda: 0
++
++    wave = ExactParallelWorkerPool.run_wave(pool, tasks)
++
++    assert wave.completed is False
++    assert wave.failure_reason == "worker_result_candidate_mismatch:0"
++    assert wave.dispatched_candidate_keys == ("3x3", "2x2")
++    assert all(result.candidate_key != "1x1" for result in wave.results)
++
++
++def test_parallel_worker_pool_drops_errored_strong_result() -> None:
++    task = WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple())
++    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
++    pool._closed = False
++    pool._started = True
++    pool._processes = []
++    pool._task_queue = _SyntheticTaskQueue()
++    pool._result_queue = _SyntheticResultQueue(
++        [
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=0,
++                    attempt_index=1,
++                    candidate=(9, 3, 3),
++                    status=RUN_STATUS_CERTIFIED,
++                    solution={"ghost_pick": {"anchor": {"x": 0, "y": 0}}},
++                    proof_summary={"master_status": RUN_STATUS_CERTIFIED},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error="RuntimeError: synthetic crash after partial result",
++                ),
++            },
++        ]
++    )
++    pool.rss_sample_interval_seconds = 0.01
++    pool._total_crash_respawns = 0
++    pool.start = lambda: None
++    pool._respawn_all_workers = lambda: None
++    pool.terminate = lambda: None
++    pool._sum_process_tree_rss = lambda: 0
++
++    wave = ExactParallelWorkerPool.run_wave(pool, [task])
++
++    assert wave.completed is False
++    assert wave.failure_reason == "RuntimeError: synthetic crash after partial result"
++    assert wave.results == ()
++
++
++def test_outer_search_rejects_wave_result_candidate_mismatch(
++    monkeypatch,
++    tmp_path: Path,
++) -> None:
++    project_root = _build_empty_frontier_project(tmp_path / "outer_wave_mismatch")
++
++    def fake_wave_executor(*, pool, tasks):
++        assert isinstance(pool, _DummyParallelWorkerPool)
++        first = tasks[0]
++        return ParallelWaveExecution(
++            completed=True,
++            failure_reason=None,
++            results=(
++                WorkerResult(
++                    dispatch_seq=first.dispatch_seq,
++                    attempt_index=first.attempt_index,
++                    candidate=(1, 1, 1),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            ),
++            dispatched_candidate_keys=tuple(task.candidate_key for task in tasks),
++            elapsed_seconds=0.02,
++            peak_rss_bytes_external_total=2,
++            peak_rss_bytes_internal_max_single_process=1,
++        )
++
++    monkeypatch.setattr(outer_search_module, "ExactParallelWorkerPool", _DummyParallelWorkerPool)
++    monkeypatch.setattr(outer_search_module, "run_parallel_exact_campaign_wave", fake_wave_executor)
++
++    status, result = run_outer_search(
++        project_root=project_root,
++        solve_mode="certified_exact",
++        max_attempts=2,
++        min_side=1,
++        area_upper_bound=9,
++        master_seconds=0.01,
++        binding_seconds=0.01,
++        routing_seconds=0.01,
++        benders_max_iter=1,
++        campaign_hours=1.0,
++        resume_campaign=False,
++        parallel_processes=2,
++    )
++
++    assert status == RUN_STATUS_UNKNOWN
++    assert result is None
++    state = _read_campaign_state(project_root)
++    assert state["last_stop_reason"]["reason"] == "worker_process_failed"
++    assert "1x1" not in state["candidates"]
++    telemetry = _read_campaign_telemetry(project_root)
++    assert telemetry["waves"][0]["completed"] is False
++    assert telemetry["waves"][0]["failure_reason"] == (
++        "parallel_wave_result_candidate_mismatch:0"
++    )
++    assert telemetry["waves"][0]["candidate_results"] == []
++
++
+ def test_worker_failure_preserves_completed_progress_and_keeps_campaign_readable(
+     monkeypatch,
+     tmp_path: Path,
+diff --git a/src/tests/test_v63_terminal_evidence_contract.py b/src/tests/test_v63_terminal_evidence_contract.py
+index 3c2a2d6..3837aff 100644
+--- a/src/tests/test_v63_terminal_evidence_contract.py
++++ b/src/tests/test_v63_terminal_evidence_contract.py
+@@ -303,15 +303,13 @@ def test_v68_resume_rejects_certified_candidate_without_solution(
+     project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+     campaign.mark_candidate_started(1, 1)
+-    campaign.mark_candidate_result(
+-        1,
+-        1,
+-        RUN_STATUS_CERTIFIED,
+-        proof_summary={"mode": "certified_exact", "master_status": RUN_STATUS_CERTIFIED},
+-        exact_safe_cuts=[],
+-        loaded_exact_safe_cut_count=0,
+-        generated_exact_safe_cut_count=0,
+-    )
++    record = campaign.state["candidates"]["1x1"]
++    record["status"] = RUN_STATUS_CERTIFIED
++    record["finished_at"] = record["updated_at"]
++    record["proof_summary"] = {
++        "mode": "certified_exact",
++        "master_status": RUN_STATUS_CERTIFIED,
++    }
+     campaign.save()
+ 
+     reason = validate_exact_campaign_resume_state(

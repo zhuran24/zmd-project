@@ -18,6 +18,11 @@ from src.search.benders_loop import (
 )
 
 
+VALID_WORKER_RESULT_STATUSES = frozenset(
+    {"CERTIFIED", "INFEASIBLE", "UNKNOWN", "UNPROVEN"}
+)
+
+
 @dataclass(frozen=True)
 class WorkerTask:
     dispatch_seq: int
@@ -69,6 +74,68 @@ class ParallelWaveExecution:
     peak_rss_bytes_external_total: int
     peak_rss_bytes_internal_max_single_process: int
     heartbeat_events: Tuple[Dict[str, Any], ...] = field(default_factory=tuple)
+
+
+def _worker_result_identity_violation(
+    result: WorkerResult,
+    *,
+    tasks_by_seq: Mapping[int, WorkerTask],
+) -> Optional[str]:
+    try:
+        dispatch_seq = int(result.dispatch_seq)
+    except Exception:
+        return "worker_result_dispatch_seq_invalid"
+    task = tasks_by_seq.get(dispatch_seq)
+    if task is None:
+        return f"worker_result_dispatch_seq_unknown:{dispatch_seq}"
+    try:
+        result_attempt_index = int(result.attempt_index)
+    except Exception:
+        return f"worker_result_attempt_index_invalid:{dispatch_seq}"
+    if result_attempt_index != int(task.attempt_index):
+        return f"worker_result_attempt_index_mismatch:{dispatch_seq}"
+    try:
+        result_candidate = tuple(int(value) for value in result.candidate)
+    except Exception:
+        return f"worker_result_candidate_invalid:{dispatch_seq}"
+    if result_candidate != tuple(int(value) for value in task.candidate):
+        return f"worker_result_candidate_mismatch:{dispatch_seq}"
+    if str(result.candidate_key) != str(task.candidate_key):
+        return f"worker_result_candidate_key_mismatch:{dispatch_seq}"
+    return None
+
+
+def _record_worker_result(
+    results_by_seq: Dict[int, WorkerResult],
+    result: WorkerResult,
+    *,
+    tasks_by_seq: Mapping[int, WorkerTask],
+) -> Optional[str]:
+    identity_reason = _worker_result_identity_violation(
+        result,
+        tasks_by_seq=tasks_by_seq,
+    )
+    if identity_reason is not None:
+        return identity_reason
+    dispatch_seq = int(result.dispatch_seq)
+    if result.error is not None:
+        return str(result.error)
+    normalized_status = str(result.status)
+    if normalized_status not in VALID_WORKER_RESULT_STATUSES:
+        return f"worker_result_status_invalid:{dispatch_seq}:{normalized_status}"
+    if normalized_status == "CERTIFIED" and not isinstance(result.solution, Mapping):
+        return f"worker_result_certified_solution_missing:{dispatch_seq}"
+    if normalized_status != "CERTIFIED" and result.solution is not None:
+        return f"worker_result_non_certified_solution_present:{dispatch_seq}"
+    if not isinstance(result.proof_summary, Mapping):
+        return f"worker_result_proof_summary_invalid:{dispatch_seq}"
+    if not isinstance(result.exact_safe_cuts, list):
+        return f"worker_result_exact_safe_cuts_invalid:{dispatch_seq}"
+    existing = results_by_seq.get(dispatch_seq)
+    if existing is not None:
+        return f"worker_result_duplicate_dispatch_seq:{dispatch_seq}"
+    results_by_seq[dispatch_seq] = result
+    return None
 
 
 def build_parallel_worker_tasks(
@@ -382,6 +449,10 @@ class ExactParallelWorkerPool:
             )
         self.start()
 
+        tasks_by_seq = {int(task.dispatch_seq): task for task in tasks}
+        if len(tasks_by_seq) != len(tasks):
+            raise ValueError("parallel worker tasks must have unique dispatch_seq values")
+
         started = time.perf_counter()
         for task in tasks:
             self._task_queue.put(task)
@@ -408,7 +479,17 @@ class ExactParallelWorkerPool:
                         elif msg_type == "RESULT":
                             r = msg.get("result")
                             if isinstance(r, WorkerResult):
-                                results_by_seq.setdefault(int(r.dispatch_seq), r)
+                                result_reason = _record_worker_result(
+                                    results_by_seq,
+                                    r,
+                                    tasks_by_seq=tasks_by_seq,
+                                )
+                                if result_reason is not None and failure_reason is None:
+                                    failure_reason = result_reason
+                            elif failure_reason is None:
+                                failure_reason = "worker_result_invalid"
+                    if failure_reason is not None:
+                        break
                     pending = [t for t in tasks if t.dispatch_seq not in results_by_seq]
                     if not pending:
                         break
@@ -440,9 +521,13 @@ class ExactParallelWorkerPool:
             if not isinstance(result, WorkerResult):
                 failure_reason = "worker_result_invalid"
                 break
-            results_by_seq[int(result.dispatch_seq)] = result
-            if result.error is not None and failure_reason is None:
-                failure_reason = str(result.error)
+            result_reason = _record_worker_result(
+                results_by_seq,
+                result,
+                tasks_by_seq=tasks_by_seq,
+            )
+            if result_reason is not None and failure_reason is None:
+                failure_reason = result_reason
                 break
 
         while True:
@@ -459,7 +544,15 @@ class ExactParallelWorkerPool:
                 continue
             result = message.get("result")
             if isinstance(result, WorkerResult):
-                results_by_seq.setdefault(int(result.dispatch_seq), result)
+                result_reason = _record_worker_result(
+                    results_by_seq,
+                    result,
+                    tasks_by_seq=tasks_by_seq,
+                )
+                if result_reason is not None and failure_reason is None:
+                    failure_reason = result_reason
+            elif failure_reason is None:
+                failure_reason = "worker_result_invalid"
 
         if failure_reason is not None:
             self.terminate()

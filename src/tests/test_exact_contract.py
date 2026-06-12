@@ -4841,6 +4841,7 @@ def test_parallel_coordinator_does_not_enable_mandatory_rectangle_precheck(
                 exact_safe_cuts=[],
                 loaded_exact_safe_cut_count=0,
                 generated_exact_safe_cut_count=0,
+                error=None,
             )
             for task in tasks
         )
@@ -4991,6 +4992,7 @@ def test_parallel_coordinator_sweeps_precheck_candidates_before_worker_dispatch(
                 exact_safe_cuts=[],
                 loaded_exact_safe_cut_count=0,
                 generated_exact_safe_cut_count=0,
+                error=None,
             )
             for task in tasks
         )

@@ -303,15 +303,13 @@ def test_v68_resume_rejects_certified_candidate_without_solution(
     project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
-    campaign.mark_candidate_result(
-        1,
-        1,
-        RUN_STATUS_CERTIFIED,
-        proof_summary={"mode": "certified_exact", "master_status": RUN_STATUS_CERTIFIED},
-        exact_safe_cuts=[],
-        loaded_exact_safe_cut_count=0,
-        generated_exact_safe_cut_count=0,
-    )
+    record = campaign.state["candidates"]["1x1"]
+    record["status"] = RUN_STATUS_CERTIFIED
+    record["finished_at"] = record["updated_at"]
+    record["proof_summary"] = {
+        "mode": "certified_exact",
+        "master_status": RUN_STATUS_CERTIFIED,
+    }
     campaign.save()
 
     reason = validate_exact_campaign_resume_state(

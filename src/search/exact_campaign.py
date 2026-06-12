@@ -47,6 +47,7 @@ VALID_CANDIDATE_STATUSES = {
     # 是哪个 ε 阶段（0.05/0.01/0.0）。final_status 同样可以是 EPSILON_CERTIFIED。
     "EPSILON_CERTIFIED",
 }
+STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
 
 # A terminal public final_result is a projection of the certified candidate
 # placement witness, not an extensible proof envelope.  Extra top-level fields can
@@ -1421,6 +1422,8 @@ def _validate_candidate_record(
         return f"candidate_invalid_status:{record_key}:{status}"
     if status == "CERTIFIED" and not isinstance(record.get("solution"), Mapping):
         return f"candidate_certified_solution_missing:{record_key}"
+    if status != "CERTIFIED" and "solution" in record:
+        return f"candidate_non_certified_solution_present:{record_key}"
 
     if not isinstance(record.get("proof_summary"), Mapping):
         return f"candidate_invalid_proof_summary:{record_key}"
@@ -1995,6 +1998,15 @@ class ExactCampaign:
         key = candidate_key(ghost_w, ghost_h)
         candidates = self.state.setdefault("candidates", {})
         existing = candidates.get(key, {})
+        if (
+            isinstance(existing, Mapping)
+            and str(existing.get("status", "")) in STRONG_CANDIDATE_STATUSES
+        ):
+            # A same-artifact CERTIFIED / INFEASIBLE conclusion is monotone
+            # evidence.  A later rerun attempt must not erase it by first
+            # downgrading the record to RUNNING; mark_candidate_result will either
+            # refresh the same terminal status or reject a contradiction.
+            return
         record = _candidate_defaults(ghost_w, ghost_h)
         if isinstance(existing, Mapping):
             record.update(dict(existing))
@@ -2005,6 +2017,7 @@ class ExactCampaign:
         record["started_at"] = timestamp
         record["updated_at"] = timestamp
         record["finished_at"] = None
+        record.pop("solution", None)
 
         candidates[key] = record
         self.state["last_stop_reason"] = None
@@ -2024,15 +2037,52 @@ class ExactCampaign:
         loaded_exact_safe_cut_count: Optional[int] = None,
         generated_exact_safe_cut_count: Optional[int] = None,
     ) -> None:
+        normalized_status = str(status)
+        if normalized_status not in VALID_CANDIDATE_STATUSES:
+            raise ValueError(f"candidate result status is invalid: {normalized_status}")
+        if normalized_status == "CERTIFIED" and not isinstance(solution, Mapping):
+            raise ValueError("CERTIFIED candidate result requires a fresh solution mapping")
+        if normalized_status != "CERTIFIED" and solution is not None:
+            raise ValueError("non-CERTIFIED candidate result must not carry a solution")
+
         key = candidate_key(ghost_w, ghost_h)
         candidates = self.state.setdefault("candidates", {})
         existing = candidates.get(key, {})
+        existing_status = (
+            str(existing.get("status", "")) if isinstance(existing, Mapping) else ""
+        )
+        if (
+            existing_status in STRONG_CANDIDATE_STATUSES
+            and normalized_status in STRONG_CANDIDATE_STATUSES
+            and existing_status != normalized_status
+        ):
+            raise ValueError(
+                "conflicting terminal candidate result: "
+                f"existing={existing_status} incoming={normalized_status}"
+            )
+        if (
+            existing_status in STRONG_CANDIDATE_STATUSES
+            and normalized_status not in STRONG_CANDIDATE_STATUSES
+        ):
+            audit_log = self.state.setdefault("audit_log", [])
+            if isinstance(audit_log, list):
+                audit_log.append(
+                    {
+                        "ts": now_iso(),
+                        "candidate_key": key,
+                        "event": "CANDIDATE_STRONG_STATUS_DOWNGRADE_BLOCKED",
+                        "existing_status": existing_status,
+                        "incoming_status": normalized_status,
+                    }
+                )
+            self.state["updated_at"] = now_iso()
+            return
         record = _candidate_defaults(ghost_w, ghost_h)
         if isinstance(existing, Mapping):
             record.update(dict(existing))
 
         timestamp = now_iso()
-        record["status"] = str(status)
+        record["status"] = normalized_status
         record["updated_at"] = timestamp
         record["finished_at"] = timestamp
         if record.get("started_at") is None:
@@ -2066,7 +2116,7 @@ class ExactCampaign:
                 "generated_exact_safe_cut_count",
             )
 
-        if solution is not None and status == "CERTIFIED":
+        if normalized_status == "CERTIFIED":
             # Candidate-level CERTIFIED evidence is only an incumbent until the
             # outer frontier has been exhausted.  Do not promote it to
             # state["final_result"] here: UNKNOWN/time-budget/worker-failure stops
@@ -2078,7 +2128,7 @@ class ExactCampaign:
                 record["proof_summary"]["final_result_blocked_reason"] = (
                     "final_result_requires_strict_declare_mode"
                 )
-        elif status != "CERTIFIED":
+        else:
             record.pop("solution", None)
 
         candidates[key] = record

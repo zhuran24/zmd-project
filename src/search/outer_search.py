@@ -64,6 +64,7 @@ from src.search.exact_campaign import (
 from src.search.exact_parallel_scheduler import (
     ExactParallelWorkerPool,
     WorkerResult,
+    WorkerTask,
     build_parallel_worker_tasks,
     run_parallel_exact_campaign_wave,
 )
@@ -88,6 +89,9 @@ _FRONTIER_PROBE_MAX_ANCHORS = 64
 _FRONTIER_PROBE_MAX_ANCHORS_ENV = "EXACT_FRONTIER_PROBE_MAX_ANCHORS"
 EXACT_OUTER_SKIP_UNKNOWN_ENV = "EXACT_OUTER_SKIP_UNKNOWN"
 _EXACT_OUTER_SKIP_UNKNOWN_TRUE_VALUES = {"1", "true", "yes", "on"}
+_VALID_PARALLEL_WORKER_RESULT_STATUSES = frozenset(
+    {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN, RUN_STATUS_UNPROVEN}
+)
 
 
 def _outer_skip_unknown_enabled() -> bool:
@@ -106,6 +110,52 @@ def _certified_outer_skip_unknown_blocker() -> Dict[str, Any]:
             "best_effort, not a strict full candidate-domain certificate"
         ),
     }
+
+
+def _parallel_wave_result_identity_failure(
+    *,
+    results: Sequence[WorkerResult],
+    tasks: Sequence[WorkerTask],
+) -> Optional[str]:
+    tasks_by_seq = {int(task.dispatch_seq): task for task in tasks}
+    if len(tasks_by_seq) != len(tasks):
+        return "parallel_wave_duplicate_task_dispatch_seq"
+    seen: set[int] = set()
+    for result in results:
+        try:
+            dispatch_seq = int(result.dispatch_seq)
+        except Exception:
+            return "parallel_wave_result_dispatch_seq_invalid"
+        if dispatch_seq in seen:
+            return f"parallel_wave_result_duplicate_dispatch_seq:{dispatch_seq}"
+        seen.add(dispatch_seq)
+        task = tasks_by_seq.get(dispatch_seq)
+        if task is None:
+            return f"parallel_wave_result_dispatch_seq_unknown:{dispatch_seq}"
+        try:
+            attempt_index = int(result.attempt_index)
+        except Exception:
+            return f"parallel_wave_result_attempt_index_invalid:{dispatch_seq}"
+        if attempt_index != int(task.attempt_index):
+            return f"parallel_wave_result_attempt_index_mismatch:{dispatch_seq}"
+        try:
+            result_candidate = tuple(int(value) for value in result.candidate)
+        except Exception:
+            return f"parallel_wave_result_candidate_invalid:{dispatch_seq}"
+        if result_candidate != tuple(int(value) for value in task.candidate):
+            return f"parallel_wave_result_candidate_mismatch:{dispatch_seq}"
+        if str(result.candidate_key) != str(task.candidate_key):
+            return f"parallel_wave_result_candidate_key_mismatch:{dispatch_seq}"
+        if result.error is not None:
+            return f"parallel_wave_result_error:{dispatch_seq}:{result.error}"
+        normalized_status = str(result.status)
+        if normalized_status not in _VALID_PARALLEL_WORKER_RESULT_STATUSES:
+            return f"parallel_wave_result_status_invalid:{dispatch_seq}:{normalized_status}"
+        if normalized_status == RUN_STATUS_CERTIFIED and not isinstance(result.solution, Mapping):
+            return f"parallel_wave_result_certified_solution_missing:{dispatch_seq}"
+        if normalized_status != RUN_STATUS_CERTIFIED and result.solution is not None:
+            return f"parallel_wave_result_non_certified_solution_present:{dispatch_seq}"
+    return None
 
 
 def _mark_certified_campaign_blocked(
@@ -2140,8 +2190,20 @@ def run_outer_search(
                         pool=parallel_worker_pool,
                         tasks=tasks,
                     )
+                    wave_identity_failure = _parallel_wave_result_identity_failure(
+                        results=wave_execution.results,
+                        tasks=tasks,
+                    )
+                    effective_wave_completed = (
+                        bool(wave_execution.completed) and wave_identity_failure is None
+                    )
+                    effective_failure_reason = (
+                        wave_identity_failure
+                        if wave_identity_failure is not None
+                        else wave_execution.failure_reason
+                    )
                     sorted_wave_results = sorted(
-                        wave_execution.results,
+                        () if wave_identity_failure is not None else wave_execution.results,
                         key=lambda result: int(result.dispatch_seq),
                     )
 
@@ -2284,8 +2346,8 @@ def run_outer_search(
                             exact_campaign=exact_campaign,
                             wave_index=telemetry_wave_index,
                             candidate_results=ordered_wave_candidate_results,
-                            completed=bool(wave_execution.completed),
-                            failure_reason=wave_execution.failure_reason,
+                            completed=bool(effective_wave_completed),
+                            failure_reason=effective_failure_reason,
                             dispatched_candidate_keys=wave_execution.dispatched_candidate_keys,
                             elapsed_seconds=float(wave_execution.elapsed_seconds),
                             peak_rss_bytes_external_total=int(
@@ -2298,7 +2360,7 @@ def run_outer_search(
                         )
                         reset_campaign_telemetry = False
 
-                        if not wave_execution.completed:
+                        if not effective_wave_completed:
                             exact_campaign.mark_campaign_stopped(
                                 "worker_process_failed",
                                 status=RUN_STATUS_UNKNOWN,
