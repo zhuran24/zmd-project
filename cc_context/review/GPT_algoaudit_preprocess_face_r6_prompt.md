@@ -57,6 +57,7 @@ preprocess 输出三件 (placements / instances / io_requirements) 之间的一�
 ## 交付物
 
 - `REVIEW.md`: 逐条 finding (severity / file:line / probe 或论证 / 修法), 有把握附 unified diff + regression (LF 行尾); 关键论证写正文。
+- **冻结工件条款 (本轮范围特别相关)**: 若修复牵涉 `data/preprocessed/` 三件或 `rules/canonical_rules.json` (登记 hash 的冻结工件), 交付必须包含: ① 工件再生命令与步骤; ② 再生后的期望 sha256 与字节数; ③ 明确列出哪些登记位置要同批推进 (`scripts/preflight_gate.py::FROZEN_ARTIFACTS` / PROJECT_LOCK / specs 中的 hash 引用)。漏了这个 = 落地即 CI 红。canonical_rules 的内容扩展是 owner gate, 只能报不能改。
 - **若确认 sound, 明确写「本轮零 soundness finding」** + 列实际复核过的推导链/生成器路径/一致性面清单。
 
 ## 范围边界
