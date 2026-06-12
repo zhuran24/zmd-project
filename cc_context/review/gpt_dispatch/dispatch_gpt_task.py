@@ -524,6 +524,14 @@ async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
         dead_ticks = 0
         try:
             u = await page.url()
+            # 会话锚定 (2026-06-12): 已知自己的会话 URL 时, 当前页漂到**别的**
+            # 会话 (owner 手动切换/误导航) 就主动导航回去, 绝不跟随漂移 —
+            # 跟着读别人的页面会误判完成并收走别的会话的附件 (face 3 串线事故)。
+            if conv_url and u and CONV_URL_RE.search(u) and not u.startswith(conv_url):
+                rep.log("waiting", "anchored_back_to_conversation", drifted_to=u[:90])
+                await page.navigate(conv_url, settle_seconds=5)
+                stable, last_len = 0, -1
+                u = conv_url
             if u:
                 last_url = u
         except Exception:
