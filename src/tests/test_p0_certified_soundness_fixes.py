@@ -81,10 +81,10 @@ def _disconnected_route_states(commodity: str = "ore", dy: int = 0) -> set[tuple
         (1, 1 + dy, 0, ("S",), ("E",), commodity),
         (2, 1 + dy, 0, ("W",), ("S",), commodity),
         (2, 0 + dy, 0, ("N",), ("W",), commodity),
-        (5, 0 + dy, 0, ("E",), ("N", "W"), commodity),
-        (5, 1 + dy, 0, ("S",), ("E",), commodity),
-        (6, 1 + dy, 0, ("W",), ("S",), commodity),
-        (6, 0 + dy, 0, ("N",), ("W",), commodity),
+        (5, 0 + dy, 0, ("N",), ("E", "W"), commodity),
+        (4, 0 + dy, 0, ("E",), ("N",), commodity),
+        (4, 1 + dy, 0, ("S",), ("E",), commodity),
+        (5, 1 + dy, 0, ("W",), ("S",), commodity),
     }
 
 
@@ -123,7 +123,8 @@ def _routing_domain_analysis(active_cells_by_commodity: dict[str, set[tuple[int,
 def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> None:
     """Reject a locally closed source component plus a separate sink component."""
 
-    active_cells = {(1, 0), (1, 1), (2, 1), (2, 0), (5, 0), (5, 1), (6, 1), (6, 0)}
+    disconnected_incumbent = _disconnected_route_states("ore")
+    active_cells = {(int(state[0]), int(state[1])) for state in disconnected_incumbent}
     port_specs = [
         {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
         {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
@@ -146,16 +147,6 @@ def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> No
     )
     routing.build()
 
-    disconnected_incumbent = {
-        (1, 0, 0, ("E", "W"), ("N",), "ore"),
-        (1, 1, 0, ("S",), ("E",), "ore"),
-        (2, 1, 0, ("W",), ("S",), "ore"),
-        (2, 0, 0, ("N",), ("W",), "ore"),
-        (5, 0, 0, ("E",), ("N", "W"), "ore"),
-        (5, 1, 0, ("S",), ("E",), "ore"),
-        (6, 1, 0, ("W",), ("S",), "ore"),
-        (6, 0, 0, ("N",), ("W",), "ore"),
-    }
     assert disconnected_incumbent <= set(routing.r_vars)
     for key, var in routing.r_vars.items():
         routing.model.Add(var == (1 if key in disconnected_incumbent else 0))
@@ -166,14 +157,15 @@ def test_routing_feasible_incumbent_requires_source_to_sink_connectivity() -> No
     assert guard["cuts_added"] >= 1
     assert guard["fallback_nogoods"] == []
     assert guard["attempts"][0]["connectivity"]["failures"][0]["unreachable_sink_fronts"] == [
-        [5, 0, "W"]
+        [5, 0, "E"]
     ]
 
 
 def test_routing_guard_timeout_does_not_expose_rejected_routes(monkeypatch: Any) -> None:
     """A timeout after a guard rejection must not leave extract_routes on a stale incumbent."""
 
-    active_cells = {(1, 0), (1, 1), (2, 1), (2, 0), (5, 0), (5, 1), (6, 1), (6, 0)}
+    disconnected_incumbent = _disconnected_route_states("ore")
+    active_cells = {(int(state[0]), int(state[1])) for state in disconnected_incumbent}
     port_specs = [
         {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
         {"instance_id": "sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
@@ -191,16 +183,6 @@ def test_routing_guard_timeout_does_not_expose_rejected_routes(monkeypatch: Any)
     )
     routing.build()
 
-    disconnected_incumbent = {
-        (1, 0, 0, ("E", "W"), ("N",), "ore"),
-        (1, 1, 0, ("S",), ("E",), "ore"),
-        (2, 1, 0, ("W",), ("S",), "ore"),
-        (2, 0, 0, ("N",), ("W",), "ore"),
-        (5, 0, 0, ("E",), ("N", "W"), "ore"),
-        (5, 1, 0, ("S",), ("E",), "ore"),
-        (6, 1, 0, ("W",), ("S",), "ore"),
-        (6, 0, 0, ("N",), ("W",), "ore"),
-    }
     for key, var in routing.r_vars.items():
         routing.model.Add(var == (1 if key in disconnected_incumbent else 0))
 
@@ -225,16 +207,7 @@ def test_routing_guard_checks_each_selected_commodity() -> None:
         x, y, layer, flow_in, flow_out, _old_commodity = state
         return (x, y + dy, layer, flow_in, flow_out, commodity)
 
-    base_states = {
-        (1, 0, 0, ("E", "W"), ("N",), "ore"),
-        (1, 1, 0, ("S",), ("E",), "ore"),
-        (2, 1, 0, ("W",), ("S",), "ore"),
-        (2, 0, 0, ("N",), ("W",), "ore"),
-        (5, 0, 0, ("E",), ("N", "W"), "ore"),
-        (5, 1, 0, ("S",), ("E",), "ore"),
-        (6, 1, 0, ("W",), ("S",), "ore"),
-        (6, 0, 0, ("N",), ("W",), "ore"),
-    }
+    base_states = _disconnected_route_states("ore")
     port_specs = [
         {"instance_id": "ore_src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
         {"instance_id": "ore_sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
@@ -326,18 +299,17 @@ def test_routing_lazy_connectivity_cuts_converge_on_three_commodity_probe() -> N
 def test_routing_lazy_connectivity_cut_preserves_real_feasible_path() -> None:
     """A disconnected optimal incumbent is cut away, then a real source→sink path survives."""
 
+    disconnected_incumbent = _disconnected_route_states("ore")
+    connected_path = {
+        (1, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 0, ("W",), ("E",), "ore"),
+        (3, 0, 0, ("W",), ("E",), "ore"),
+        (4, 0, 0, ("W",), ("E",), "ore"),
+        (5, 0, 0, ("W",), ("E",), "ore"),
+    }
     active_cells = {
-        (1, 0),
-        (1, 1),
-        (2, 0),
-        (2, 1),
-        (3, 0),
-        (4, 0),
-        (4, 1),
-        (5, 0),
-        (5, 1),
-        (6, 0),
-        (6, 1),
+        (int(state[0]), int(state[1]))
+        for state in disconnected_incumbent | connected_path
     }
     port_specs = [
         {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
@@ -349,18 +321,6 @@ def test_routing_lazy_connectivity_cut_preserves_real_feasible_path() -> None:
         domain_analysis=_routing_domain_analysis({"ore": active_cells}),
     )
     routing.build()
-    disconnected_incumbent = _disconnected_route_states("ore")
-    connected_path = {
-        (1, 0, 0, ("W",), ("E",), "ore"),
-        (2, 0, 0, ("W",), ("E",), "ore"),
-        (3, 0, 0, ("W",), ("E",), "ore"),
-        (4, 0, 0, ("W",), ("N",), "ore"),
-        (4, 1, 0, ("S",), ("E",), "ore"),
-        (5, 1, 0, ("W",), ("E",), "ore"),
-        (6, 1, 0, ("W",), ("S",), "ore"),
-        (6, 0, 0, ("N",), ("W",), "ore"),
-        (5, 0, 0, ("E",), ("W",), "ore"),
-    }
     assert disconnected_incumbent <= set(routing.r_vars)
     assert connected_path <= set(routing.r_vars)
     routing.model.Maximize(sum(routing.r_vars[key] for key in disconnected_incumbent))
@@ -376,18 +336,17 @@ def test_routing_lazy_connectivity_cut_preserves_real_feasible_path() -> None:
 def test_routing_lazy_connectivity_cut_self_check_falls_back_to_nogood(monkeypatch: Any) -> None:
     """If the independently verified crossing boundary is incomplete, fall back to the old nogood."""
 
+    disconnected_incumbent = _disconnected_route_states("ore")
+    connected_path = {
+        (1, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 0, ("W",), ("E",), "ore"),
+        (3, 0, 0, ("W",), ("E",), "ore"),
+        (4, 0, 0, ("W",), ("E",), "ore"),
+        (5, 0, 0, ("W",), ("E",), "ore"),
+    }
     active_cells = {
-        (1, 0),
-        (1, 1),
-        (2, 0),
-        (2, 1),
-        (3, 0),
-        (4, 0),
-        (4, 1),
-        (5, 0),
-        (5, 1),
-        (6, 0),
-        (6, 1),
+        (int(state[0]), int(state[1]))
+        for state in disconnected_incumbent | connected_path
     }
     port_specs = [
         {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
@@ -399,7 +358,6 @@ def test_routing_lazy_connectivity_cut_self_check_falls_back_to_nogood(monkeypat
         domain_analysis=_routing_domain_analysis({"ore": active_cells}),
     )
     routing.build()
-    disconnected_incumbent = _disconnected_route_states("ore")
     routing.model.Maximize(sum(routing.r_vars[key] for key in disconnected_incumbent))
 
     original_boundary = routing._source_side_crossing_boundary
@@ -427,12 +385,8 @@ def test_routing_guard_rejects_source_front_without_sink_reachability() -> None:
         (1, 0, 0, ("W",), ("E",), "ore"),
         (2, 0, 0, ("W",), ("E",), "ore"),
         (3, 0, 0, ("W",), ("E",), "ore"),
-        (4, 0, 0, ("W",), ("N",), "ore"),
-        (4, 1, 0, ("S",), ("E",), "ore"),
-        (5, 1, 0, ("W",), ("E",), "ore"),
-        (6, 1, 0, ("W",), ("S",), "ore"),
-        (6, 0, 0, ("N",), ("W",), "ore"),
-        (5, 0, 0, ("E",), ("W",), "ore"),
+        (4, 0, 0, ("W",), ("E",), "ore"),
+        (5, 0, 0, ("W",), ("E",), "ore"),
     }
     dead_end_loop = {
         (1, 3, 0, ("E", "W"), ("N",), "ore"),

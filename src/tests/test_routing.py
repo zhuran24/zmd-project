@@ -98,6 +98,104 @@ def test_routing_supports_splitter_state(project_root):
     assert any(seg["component_type"] == "splitter" for seg in routes)
 
 
+def _tiny_domain_analysis(active_cells_by_commodity):
+    return {
+        "status": "feasible",
+        "commodity_component_cells": {
+            commodity: [list(cell) for cell in sorted(active_cells)]
+            for commodity, active_cells in active_cells_by_commodity.items()
+        },
+        "commodity_active_cells": {
+            commodity: [list(cell) for cell in sorted(active_cells)]
+            for commodity, active_cells in active_cells_by_commodity.items()
+        },
+        "domain_stats": {},
+    }
+
+
+def test_sink_front_consumes_against_outward_normal_on_straight_corridor(project_root):
+    """An input port's front cell must send back toward the facility connector."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import (
+        RoutingGrid,
+        RoutingSubproblem,
+        analyze_exact_routing_domain,
+    )
+
+    allowed = {(1, 0), (2, 0), (3, 0)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    grid = RoutingGrid(occupied, port_specs)
+    precheck = analyze_exact_routing_domain(grid)
+    assert precheck["status"] == "feasible"
+
+    routing = RoutingSubproblem(
+        grid,
+        ["ore"],
+        domain_analysis=_tiny_domain_analysis({"ore": allowed}),
+    )
+    routing.build()
+
+    assert routing.build_stats["port_adherence"]["exact_links"] == 2
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
+
+    sink_front_segments = [
+        seg
+        for seg in routing.extract_routes()
+        if seg["x"] == 3 and seg["y"] == 0 and seg["commodity"] == "ore"
+    ]
+    assert sink_front_segments
+    assert any(seg["flow_out"] == ["E"] for seg in sink_front_segments)
+
+
+def test_bridge_overlap_cannot_duplicate_single_edge_channel(project_root):
+    """L0/L1 overlap cannot create a hidden 1-to-2 channel fork."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    allowed = {(1, 0), (2, 0), (3, 0)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    routing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["ore"],
+        domain_analysis=_tiny_domain_analysis({"ore": allowed}),
+    )
+    routing.build()
+
+    illegal_duplicate = {
+        (1, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 0, ("W",), ("E",), "ore"),
+        (2, 0, 1, ("W",), ("E",), "ore"),
+        (3, 0, 0, ("W",), ("E",), "ore"),
+    }
+    assert illegal_duplicate <= set(routing.r_vars)
+    for key, var in routing.r_vars.items():
+        routing.model.Add(var == (1 if key in illegal_duplicate else 0))
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+
+
 def test_packaging_battery_pose_binding_domain(project_root):
     """6x4 电池封装机的 pose-level 绑定域应可被精确枚举。"""
     import sys

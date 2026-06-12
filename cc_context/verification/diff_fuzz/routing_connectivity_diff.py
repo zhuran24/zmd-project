@@ -61,7 +61,10 @@ def _port_fronts(port_specs: List[Dict[str, Any]]):
         if str(ps["type"]) == "out":
             source_fronts[c].add((fx, fy, DIR_OPP[d]))  # recv dir
         else:
-            sink_fronts[c].add((fx, fy, d))
+            # send dir: the sink front cell sends back toward the facility
+            # connector, i.e. against the outward normal (R2-Q2-01 polarity —
+            # the old `d` key here was the same-source error as the solver's).
+            sink_fronts[c].add((fx, fy, DIR_OPP[d]))
     return source_fronts, sink_fronts
 
 
@@ -230,19 +233,15 @@ def _self_test() -> int:
         {"instance_id": "ore_src2", "x": 0, "y": 3, "dir": "E", "type": "out", "commodity": "ore"},
         {"instance_id": "ore_sink", "x": 6, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
     ]
-    # A valid S1->sink path (no S2) — the proven-feasible detour from the
-    # regression suite: sink-front state (5,0) must be flow_out=W and a belt
-    # cannot be in=W/out=W, so the path approaches (5,0) from the east.
+    # A valid S1->sink path (no S2) — straight corridor under the corrected
+    # sink polarity (R2-Q2-01): sink port (6,0,W) has front (5,0) whose state
+    # sends flow_out=E back toward the connector.
     connected = [
         {"x": 1, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
         {"x": 2, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
         {"x": 3, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
-        {"x": 4, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["N"]},
-        {"x": 4, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["S"], "flow_out": ["E"]},
-        {"x": 5, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
-        {"x": 6, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["S"]},
-        {"x": 6, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["N"], "flow_out": ["W"]},
-        {"x": 5, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["E"], "flow_out": ["W"]},
+        {"x": 4, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
+        {"x": 5, "y": 0, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
     ]
     single_src = [p for p in port_specs if p["instance_id"] != "ore_src2"]
     ok, reasons = verify_routes_connectivity(connected, single_src, ["ore"])

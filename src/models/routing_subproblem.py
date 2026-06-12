@@ -612,7 +612,8 @@ class RoutingSubproblem:
                 recv_dir = DIR_OPP[direction]
                 self._source_port_fronts[(fx, fy, recv_dir, commodity)] += 1
             else:
-                self._sink_port_fronts[(fx, fy, direction, commodity)] += 1
+                send_dir = DIR_OPP[direction]
+                self._sink_port_fronts[(fx, fy, send_dir, commodity)] += 1
 
     def build(self, time_limit: float = 60.0):
         del time_limit
@@ -640,6 +641,7 @@ class RoutingSubproblem:
         self._add_capacity_constraints()
         self._add_bridge_constraints()
         self._add_continuity_constraints()
+        self._add_directed_edge_balance_constraints()
         self._add_port_adherence()
         self._add_gap_rule()
         self._add_bridge_count_hint()
@@ -871,6 +873,58 @@ class RoutingSubproblem:
                     for d_in in DIRECTIONS:
                         self._add_predecessor_constraints(x, y, layer, d_in, commodity)
 
+    def _add_directed_edge_balance_constraints(self) -> None:
+        """Conserve selected route channels across every interior grid edge.
+
+        The predecessor/successor support constraints are intentionally local:
+        a selected state with an outgoing side needs some compatible receiver,
+        and a selected state with an incoming side needs some compatible sender.
+        With two physical layers, however, a ground belt and an elevated bridge
+        may legally occupy the same 2-D cell.  Counting support only as
+        ``>= 1`` would let one sender simultaneously justify both layer states,
+        creating a phantom splitter/merger at a bridge overlap.  The real grid
+        has one channel crossing per selected side, so the number of selected
+        senders and receivers must match on each directed cell-to-cell edge.
+
+        Source and sink terminals are not cell-to-cell edges: a source injects
+        into its front cell from the port side, and a sink consumes from its
+        front cell toward the port side.  Those terminal sides are already
+        handled exactly by _add_port_adherence and are skipped here.
+        """
+
+        edge_balance_constraints = 0
+        for commodity in self.commodities:
+            active_cells = self._commodity_active_cells.get(commodity, set())
+            for x, y in active_cells:
+                for d_out, (dx, dy) in DIR_DELTA.items():
+                    if self._sink_port_fronts.get((x, y, d_out, commodity), 0) > 0:
+                        continue
+
+                    nx, ny = x + dx, y + dy
+                    if (nx, ny) not in active_cells:
+                        continue
+
+                    recv_dir = DIR_OPP[d_out]
+                    if self._source_port_fronts.get((nx, ny, recv_dir, commodity), 0) > 0:
+                        continue
+
+                    send_vars = self._vars_by_cell_dir_out_commodity.get(
+                        (x, y, d_out, commodity),
+                        [],
+                    )
+                    recv_vars = self._vars_by_cell_dir_in_commodity.get(
+                        (nx, ny, recv_dir, commodity),
+                        [],
+                    )
+                    if not send_vars and not recv_vars:
+                        continue
+                    self.model.Add(sum(send_vars) == sum(recv_vars))
+                    edge_balance_constraints += 1
+
+        self.build_stats["directed_edge_balance"] = {
+            "constraints": int(edge_balance_constraints),
+        }
+
     def _add_successor_constraints(
         self,
         x: int,
@@ -960,8 +1014,9 @@ class RoutingSubproblem:
                     [],
                 )
             else:
+                send_dir = DIR_OPP[direction]
                 vars_for_port = self._vars_by_cell_layer_dir_out_commodity.get(
-                    (fx, fy, GROUND_LAYER, direction, commodity),
+                    (fx, fy, GROUND_LAYER, send_dir, commodity),
                     [],
                 )
 
