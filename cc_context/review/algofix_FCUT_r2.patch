@@ -1,0 +1,213 @@
+--- a/src/models/pose_bool_exact_master.py
++++ b/src/models/pose_bool_exact_master.py
+@@ -159,6 +159,48 @@
+             return output_demand > 0 and output_demand == total_output
+         return False
+ 
++    def _mandatory_port_side_is_cell_pattern_exact(
++        self, group_id: str, side_key: str, port_count: int
++    ) -> bool:
++        """Return True only when each physical port on this side is necessarily
++        routing-visible whenever the pose is selected.
++
++        Cell-pattern cuts are master-level cuts over pose variables.  They do not
++        know which binding alternative will be chosen in a future subproblem, so a
++        raw ``has a port at cell`` index is exact only for sides where the visible
++        demand consumes every physical port on that side.  Otherwise the blocked
++        physical port may be an inactive binding slot and banning the pose+blocker
++        pattern would be an over-cut.
++        """
++        if port_count <= 0:
++            return False
++        try:
++            (
++                input_demand,
++                output_demand,
++                _total_input,
++                total_output,
++            ) = self._profile_port_demands(
++                self._mandatory_operation_by_group.get(str(group_id), "")
++            )
++        except Exception:
++            return False
++        if side_key == "input_port_cells":
++            # Canonical input slots are all routing-visible.  The per-cell pattern
++            # is exact only when all physical input ports are required active.
++            return int(input_demand) >= int(port_count)
++        if side_key == "output_port_cells":
++            # Output sides that mix visible and routing-free sinks are handled by
++            # demand-count cuts; raw per-cell output cuts are exact only when all
++            # output demand is routing-visible and every physical output port must
++            # be active.
++            return (
++                int(output_demand) > 0
++                and int(output_demand) == int(total_output)
++                and int(output_demand) >= int(port_count)
++            )
++        return False
++
+     def _pose_cells(self, tpl: str, pose_idx: int) -> List[Tuple[int, int]]:
+         pose = self.owner.facility_pools[tpl][int(pose_idx)]
+         return [(int(c[0]), int(c[1])) for c in pose.get("occupied_cells", [])]
+@@ -877,21 +919,22 @@
+             if int(pose_idx) >= len(pool):
+                 continue
+             pose = pool[int(pose_idx)]
+-            anchor = pose.get("anchor", {})
+-            ax, ay = int(anchor.get("x", 0)), int(anchor.get("y", 0))
+             for cell in pose.get("occupied_cells", []):
+-                cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
++                cell_xy = (int(cell[0]), int(cell[1]))
+                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
+             for port_list_key in ("input_port_cells", "output_port_cells"):
++                ports = list(pose.get(port_list_key, []) or [])
+                 side_is_visible = (
+-                    self._mandatory_port_side_is_routing_visible(str(key), port_list_key)
++                    self._mandatory_port_side_is_cell_pattern_exact(
++                        str(key), port_list_key, len(ports)
++                    )
+                     if is_mandatory
+-                    else True
++                    else False
+                 )
+-                for port in pose.get(port_list_key, []) or []:
++                for port in ports:
+                     key_tup = (
+-                        int(port.get("x", 0)) + ax,
+-                        int(port.get("y", 0)) + ay,
++                        int(port.get("x", 0)),
++                        int(port.get("y", 0)),
+                         str(port.get("dir", "")),
+                     )
+                     self._poses_by_port_at_cell_dir.setdefault(key_tup, []).append(var)
+@@ -905,10 +948,8 @@
+             if int(pose_idx) >= len(pool):
+                 continue
+             pose = pool[int(pose_idx)]
+-            anchor = pose.get("anchor", {})
+-            ax, ay = int(anchor.get("x", 0)), int(anchor.get("y", 0))
+             for cell in pose.get("occupied_cells", []):
+-                cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
++                cell_xy = (int(cell[0]), int(cell[1]))
+                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
+         self._port_lookup_built = True
+ 
+--- a/src/tests/test_wireless_front_consumers_r4.py
++++ b/src/tests/test_wireless_front_consumers_r4.py
+@@ -151,6 +151,116 @@
+     assert not delegate._routing_visible_poses_by_port_at_cell_dir
+ 
+ 
++def test_pose_bool_port_lookup_cache_uses_global_cells_without_anchor_shift() -> None:
++    class Owner:
++        def __init__(self) -> None:
++            self.model = cp_model.CpModel()
++            self.grid_w = 70
++            self.grid_h = 70
++            self.generic_io_requirements = {"required_generic_inputs": {}, "required_generic_outputs": {}}
++            self.facility_pools = {
++                "maker": [
++                    {
++                        # candidate_placements.json stores global cells and an
++                        # anchor snapshot.  The cache must not add the anchor a
++                        # second time.
++                        "anchor": {"x": 10, "y": 20},
++                        "occupied_cells": [(11, 21)],
++                        "input_port_cells": [{"x": 11, "y": 22, "dir": "N"}],
++                        "output_port_cells": [],
++                    }
++                ]
++            }
++
++    owner = Owner()
++    delegate = PoseBoolExactMasterDelegate(owner)
++    delegate.x_vars[("g", 0)] = owner.model.NewBoolVar("x_g_0")
++    delegate._mandatory_template_by_group["g"] = "maker"
++    delegate._mandatory_operation_by_group["g"] = "crusher_blue_iron"
++
++    delegate._build_port_lookup_cache()
++
++    assert (11, 21) in delegate._poses_by_cell
++    assert (21, 41) not in delegate._poses_by_cell
++    assert (11, 22, "N") in delegate._routing_visible_poses_by_port_at_cell_dir
++    assert (21, 42, "N") not in delegate._routing_visible_poses_by_port_at_cell_dir
++
++
++def test_pose_bool_cell_pattern_cut_refuses_inactive_binding_slot_overcut(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    import src.models.pose_bool_exact_master as pose_master
++
++    class OneOfTwoInputProfile:
++        input_slots = {"ore": 1}
++        output_slots = {}
++        generic_input_slots = 0
++        generic_output_slots = 0
++
++    monkeypatch.setattr(
++        pose_master,
++        "get_operation_port_profile",
++        lambda operation_type: OneOfTwoInputProfile(),
++    )
++
++    class Owner:
++        def __init__(self) -> None:
++            self.model = cp_model.CpModel()
++            self.grid_w = 70
++            self.grid_h = 70
++            self.generic_io_requirements = {"required_generic_inputs": {}, "required_generic_outputs": {}}
++            self.build_stats = {}
++            self._last_solution = None
++            self.facility_pools = {
++                "maker": [
++                    {
++                        "anchor": {"x": 0, "y": 0},
++                        "occupied_cells": [(0, 0)],
++                        # Demand is one, so either input slot can be selected by
++                        # binding.  A blocked first slot does not make the pose
++                        # plus blocker pattern infeasible: the second slot can be
++                        # used instead.
++                        "input_port_cells": [
++                            {"x": 0, "y": 1, "dir": "N"},
++                            {"x": 1, "y": 1, "dir": "N"},
++                        ],
++                        "output_port_cells": [],
++                    }
++                ],
++                "blocker": [
++                    {
++                        "anchor": {"x": 0, "y": 0},
++                        "occupied_cells": [(0, 2)],
++                        "input_port_cells": [],
++                        "output_port_cells": [],
++                    }
++                ],
++            }
++
++    owner = Owner()
++    delegate = PoseBoolExactMasterDelegate(owner)
++    maker = owner.model.NewBoolVar("maker")
++    blocker = owner.model.NewBoolVar("blocker")
++    delegate.x_vars[("g_maker", 0)] = maker
++    delegate.x_vars[("g_blocker", 0)] = blocker
++    delegate._mandatory_template_by_group["g_maker"] = "maker"
++    delegate._mandatory_operation_by_group["g_maker"] = "one_of_two_inputs"
++    delegate._mandatory_template_by_group["g_blocker"] = "blocker"
++    delegate._mandatory_operation_by_group["g_blocker"] = "one_of_two_inputs"
++
++    owner.model.Add(maker == 1)
++    owner.model.Add(blocker == 1)
++
++    added = delegate.add_routing_port_blocking_cell_cut(
++        port_cell=(0, 1),
++        direction="N",
++        front_cell=(0, 2),
++    )
++
++    assert added is False
++    assert cp_model.CpSolver().Solve(owner.model) in {cp_model.FEASIBLE, cp_model.OPTIMAL}
++
++
+ def test_separator_capacity_classification_excludes_routing_free_sources() -> None:
+     sep = Separator(
+         sep_id="V_5",

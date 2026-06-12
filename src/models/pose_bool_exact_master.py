@@ -159,6 +159,48 @@ class PoseBoolExactMasterDelegate:
             return output_demand > 0 and output_demand == total_output
         return False
 
+    def _mandatory_port_side_is_cell_pattern_exact(
+        self, group_id: str, side_key: str, port_count: int
+    ) -> bool:
+        """Return True only when each physical port on this side is necessarily
+        routing-visible whenever the pose is selected.
+
+        Cell-pattern cuts are master-level cuts over pose variables.  They do not
+        know which binding alternative will be chosen in a future subproblem, so a
+        raw ``has a port at cell`` index is exact only for sides where the visible
+        demand consumes every physical port on that side.  Otherwise the blocked
+        physical port may be an inactive binding slot and banning the pose+blocker
+        pattern would be an over-cut.
+        """
+        if port_count <= 0:
+            return False
+        try:
+            (
+                input_demand,
+                output_demand,
+                _total_input,
+                total_output,
+            ) = self._profile_port_demands(
+                self._mandatory_operation_by_group.get(str(group_id), "")
+            )
+        except Exception:
+            return False
+        if side_key == "input_port_cells":
+            # Canonical input slots are all routing-visible.  The per-cell pattern
+            # is exact only when all physical input ports are required active.
+            return int(input_demand) >= int(port_count)
+        if side_key == "output_port_cells":
+            # Output sides that mix visible and routing-free sinks are handled by
+            # demand-count cuts; raw per-cell output cuts are exact only when all
+            # output demand is routing-visible and every physical output port must
+            # be active.
+            return (
+                int(output_demand) > 0
+                and int(output_demand) == int(total_output)
+                and int(output_demand) >= int(port_count)
+            )
+        return False
+
     def _pose_cells(self, tpl: str, pose_idx: int) -> List[Tuple[int, int]]:
         pose = self.owner.facility_pools[tpl][int(pose_idx)]
         return [(int(c[0]), int(c[1])) for c in pose.get("occupied_cells", [])]
@@ -877,21 +919,22 @@ class PoseBoolExactMasterDelegate:
             if int(pose_idx) >= len(pool):
                 continue
             pose = pool[int(pose_idx)]
-            anchor = pose.get("anchor", {})
-            ax, ay = int(anchor.get("x", 0)), int(anchor.get("y", 0))
             for cell in pose.get("occupied_cells", []):
-                cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
+                cell_xy = (int(cell[0]), int(cell[1]))
                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
             for port_list_key in ("input_port_cells", "output_port_cells"):
+                ports = list(pose.get(port_list_key, []) or [])
                 side_is_visible = (
-                    self._mandatory_port_side_is_routing_visible(str(key), port_list_key)
+                    self._mandatory_port_side_is_cell_pattern_exact(
+                        str(key), port_list_key, len(ports)
+                    )
                     if is_mandatory
-                    else True
+                    else False
                 )
-                for port in pose.get(port_list_key, []) or []:
+                for port in ports:
                     key_tup = (
-                        int(port.get("x", 0)) + ax,
-                        int(port.get("y", 0)) + ay,
+                        int(port.get("x", 0)),
+                        int(port.get("y", 0)),
                         str(port.get("dir", "")),
                     )
                     self._poses_by_port_at_cell_dir.setdefault(key_tup, []).append(var)
@@ -905,10 +948,8 @@ class PoseBoolExactMasterDelegate:
             if int(pose_idx) >= len(pool):
                 continue
             pose = pool[int(pose_idx)]
-            anchor = pose.get("anchor", {})
-            ax, ay = int(anchor.get("x", 0)), int(anchor.get("y", 0))
             for cell in pose.get("occupied_cells", []):
-                cell_xy = (int(cell[0]) + ax, int(cell[1]) + ay)
+                cell_xy = (int(cell[0]), int(cell[1]))
                 self._poses_by_cell.setdefault(cell_xy, []).append(var)
         self._port_lookup_built = True
 

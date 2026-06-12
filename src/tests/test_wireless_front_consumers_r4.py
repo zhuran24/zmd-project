@@ -151,6 +151,116 @@ def test_pose_bool_visible_cache_is_conservative_for_mixed_output_side(monkeypat
     assert not delegate._routing_visible_poses_by_port_at_cell_dir
 
 
+def test_pose_bool_port_lookup_cache_uses_global_cells_without_anchor_shift() -> None:
+    class Owner:
+        def __init__(self) -> None:
+            self.model = cp_model.CpModel()
+            self.grid_w = 70
+            self.grid_h = 70
+            self.generic_io_requirements = {"required_generic_inputs": {}, "required_generic_outputs": {}}
+            self.facility_pools = {
+                "maker": [
+                    {
+                        # candidate_placements.json stores global cells and an
+                        # anchor snapshot.  The cache must not add the anchor a
+                        # second time.
+                        "anchor": {"x": 10, "y": 20},
+                        "occupied_cells": [(11, 21)],
+                        "input_port_cells": [{"x": 11, "y": 22, "dir": "N"}],
+                        "output_port_cells": [],
+                    }
+                ]
+            }
+
+    owner = Owner()
+    delegate = PoseBoolExactMasterDelegate(owner)
+    delegate.x_vars[("g", 0)] = owner.model.NewBoolVar("x_g_0")
+    delegate._mandatory_template_by_group["g"] = "maker"
+    delegate._mandatory_operation_by_group["g"] = "crusher_blue_iron"
+
+    delegate._build_port_lookup_cache()
+
+    assert (11, 21) in delegate._poses_by_cell
+    assert (21, 41) not in delegate._poses_by_cell
+    assert (11, 22, "N") in delegate._routing_visible_poses_by_port_at_cell_dir
+    assert (21, 42, "N") not in delegate._routing_visible_poses_by_port_at_cell_dir
+
+
+def test_pose_bool_cell_pattern_cut_refuses_inactive_binding_slot_overcut(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.models.pose_bool_exact_master as pose_master
+
+    class OneOfTwoInputProfile:
+        input_slots = {"ore": 1}
+        output_slots = {}
+        generic_input_slots = 0
+        generic_output_slots = 0
+
+    monkeypatch.setattr(
+        pose_master,
+        "get_operation_port_profile",
+        lambda operation_type: OneOfTwoInputProfile(),
+    )
+
+    class Owner:
+        def __init__(self) -> None:
+            self.model = cp_model.CpModel()
+            self.grid_w = 70
+            self.grid_h = 70
+            self.generic_io_requirements = {"required_generic_inputs": {}, "required_generic_outputs": {}}
+            self.build_stats = {}
+            self._last_solution = None
+            self.facility_pools = {
+                "maker": [
+                    {
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [(0, 0)],
+                        # Demand is one, so either input slot can be selected by
+                        # binding.  A blocked first slot does not make the pose
+                        # plus blocker pattern infeasible: the second slot can be
+                        # used instead.
+                        "input_port_cells": [
+                            {"x": 0, "y": 1, "dir": "N"},
+                            {"x": 1, "y": 1, "dir": "N"},
+                        ],
+                        "output_port_cells": [],
+                    }
+                ],
+                "blocker": [
+                    {
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [(0, 2)],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                    }
+                ],
+            }
+
+    owner = Owner()
+    delegate = PoseBoolExactMasterDelegate(owner)
+    maker = owner.model.NewBoolVar("maker")
+    blocker = owner.model.NewBoolVar("blocker")
+    delegate.x_vars[("g_maker", 0)] = maker
+    delegate.x_vars[("g_blocker", 0)] = blocker
+    delegate._mandatory_template_by_group["g_maker"] = "maker"
+    delegate._mandatory_operation_by_group["g_maker"] = "one_of_two_inputs"
+    delegate._mandatory_template_by_group["g_blocker"] = "blocker"
+    delegate._mandatory_operation_by_group["g_blocker"] = "one_of_two_inputs"
+
+    owner.model.Add(maker == 1)
+    owner.model.Add(blocker == 1)
+
+    added = delegate.add_routing_port_blocking_cell_cut(
+        port_cell=(0, 1),
+        direction="N",
+        front_cell=(0, 2),
+    )
+
+    assert added is False
+    assert cp_model.CpSolver().Solve(owner.model) in {cp_model.FEASIBLE, cp_model.OPTIMAL}
+
+
 def test_separator_capacity_classification_excludes_routing_free_sources() -> None:
     sep = Separator(
         sep_id="V_5",

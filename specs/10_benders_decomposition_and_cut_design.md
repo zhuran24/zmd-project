@@ -95,3 +95,11 @@ $$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conf
 Routing precheck 的 `binding_selection_safe_reject=True` 只说明当前 binding selection 不可接受，不自动证明当前 placement pose combination 不可路由。尤其是 `front_blocked`：端口前格是否被占用取决于 `binding_idx` 选出的具体端口/方向；同一 pose 换另一个 binding 可能打开前格。
 
 因此 LBBD loop 对 `front_blocked` 与 `relaxed_disconnected` 使用同一 proof ladder：只要 binding model 仍有可枚举替代，先写 binding-level nogood (`binding_model.add_nogood_cut(selection)`) 并重解 binding。只有所有 binding 替代已穷尽，或另有独立 exact proof 表明该 placement 下任意 binding 都必然失败，才允许投影为 master placement-level nogood。若无法建立 exact placement-level proof，certified path 必须返回 `UNKNOWN` 而不是误剪 placement。
+
+## 10.8 [2026-06-12 cuts R2 Addendum] Cell-pattern cut 的必然激活端口前提 (F-CUT-R2-01)
+
+env 门控的 pose-bool cell cut（`add_routing_port_blocking_cell_cut`，形状 `sum(在 (cell,dir) 有端口的 pose) + sum(占 front cell 的 pose) <= 1`）是 master 级 cut，对 pose 变量量化，构造时不知道未来 binding 子问题会选哪个 alternative。其隐含定理"port pose + blocker pose 同选必然 front_blocked"需要一个关键前提：**该物理端口在 pose 被选中时必然 active 且 routing-visible**。
+
+因此 raw per-cell 端口只在该 side 的 visible demand 覆盖该 side 全部物理端口时才允许登记进 routing-visible 索引（`_mandatory_port_side_is_cell_pattern_exact()`——input 侧：`input_demand >= 物理端口数`；output 侧：visible output 非零、等于 total output、且 `>= 物理端口数`）。否则被挡的端口可能只是一个 binding 可不选的 slot：binding 换另一个槽后 placement 仍可行，cut 会误剪（最小反例：双输入口、demand=1 的机器 + 占第一口 front cell 的 blocker——binding 选第二口即合法）。混合 visible + routing-free 的输出侧继续交给更弱但 exact 的 lazy-demand/count cut；residual-optional pose 没有 operation binding identity，不登记 raw per-cell 索引。
+
+另一同源前提：candidate pose data 是 global 坐标（同 `_build_global_pose_cache` 的注释），端口/格子 lookup cache 不得再叠加 anchor 偏移——double-anchor 会把 candidate alias 到幻影格，轻则漏 cut、重则把无关 pose 带进 cut。该 hook 在公开 certified 路径被 `pose_bool_master_not_certified` env guard 阻断；本前提约束任何未来把 pose-bool/cell cut 提升为 certified 的决定。
