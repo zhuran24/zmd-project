@@ -710,7 +710,11 @@ def test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_res
     )
     _write_json(
         project_root / "data" / "preprocessed" / "generic_io_requirements.json",
-        {"required_generic_outputs": {"stale_after_campaign": 1}, "required_generic_inputs": {}},
+        {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+            "stale_after_campaign_marker": 1,
+        },
     )
 
     with pytest.raises(ValueError, match="resume-compatible with current exact artifacts"):

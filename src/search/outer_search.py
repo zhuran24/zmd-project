@@ -1697,6 +1697,13 @@ def run_outer_search(
 
     exact_instances, _pools, rules = load_project_data(project_root, solve_mode="certified_exact")
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+    wireless_sink_generic_input_slots = None
+    if generic_io_requirements.get("required_generic_inputs", {}):
+        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+
+        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
+            project_root=project_root
+        )
     grid = dict(rules["globals"]["grid"])
     grid_w = int(grid["width"])
     grid_h = int(grid["height"])
@@ -1704,6 +1711,7 @@ def run_outer_search(
         exact_instances,
         rules,
         generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     )
     if area_upper_bound is None:
         area_upper_bound = safe_area_upper_bound

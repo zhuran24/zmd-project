@@ -1,0 +1,850 @@
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/REVIEW.md zmd_fbind_r3_audit/project/REVIEW.md
+--- zmd_fbind_r3_orig/project/REVIEW.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_fbind_r3_audit/project/REVIEW.md	2026-06-12 10:10:41.170782855 +0000
+@@ -0,0 +1,122 @@
++# 终末地 IndustrialPlanner 精确求解器 — F-BIND-R3 binding 建模忠实度面审查
++
++审查对象：`zmd_fbind_r3_snapshot_50360c1d.zip`
++
++开工校验：`sha256sum /mnt/data/zmd_fbind_r3_snapshot_50360c1d.zip` = `50360c1d82504d4de5b5af026c00d8d235db8ded32304b293a3d0d8a7c550893`，与任务指定值一致。只解包并审查该快照，`project/` 作为仓库根。
++
++结论：本轮不是零 finding。R2 的两个定向修复本身基本 sound，但在“proof 输入单一解析/单一快照”泛化穷举中发现 5 个可达 soundness 风险，均已给出补丁与回归测试。冻结工件未改动，无需再生 `candidate_placements.json` 或推进登记 hash。
++
++## Findings
++
++### F-BIND-R3-01 — HIGH — certified binding 仍可重读磁盘需求，master/binding 非同源快照
++
++位置：`src/search/benders_loop.py:4892-4952`, `src/search/benders_loop.py:5851-5857`；原始触发点为主 binding `PortBindingModel(... project_root=...)` 和 overload retry binding 构造后由 binding 子问题自行从磁盘读取 `generic_io_requirements.json`。
++
++R2-01 把 master 侧 loader 委托给 binding loader 后，certified session 在 `ExactSearchSession` 构造时先把 strict/canonical 校验后的 requirements 喂入 `build_exact_core`。但实际 binding 构造仍只传 `project_root`，`PortBindingModel` 会再次从磁盘加载同一工件。若同一 certified 进程中 master core 已建立、随后磁盘工件被替换，master 硬约束/optional 下界和 binding 实际绑定需求可以分裂。这不是“两个 schema 宽松度不同”的旧缝，而是“同一 proof 工件两个时间点、两个快照”的新缝。
++
++修复：新增 `LBBDController._binding_generic_requirements_kwargs()`，certified 模式下把 `self.master.generic_io_requirements` 的 normalized snapshot 显式传入 `PortBindingModel`，主 binding 与 overload retry 统一使用；非 certified/legacy stub 返回空 kwargs 保持旧测试与非证明路径兼容。
++
++回归：`src/tests/test_exact_contract.py:154-221` 覆盖主 binding 与 retry binding 都接收 master snapshot，而不是重读 `project_root`。
++
++### F-BIND-R3-02 — HIGH — master proof 工件 `_load_json` 仍用默认 JSON，可吞重复 key / NaN
++
++位置：`src/models/master_model.py:1949-1958`, `src/models/master_model.py:2161`；原始触发点为 `_load_json()` 默认 `json.load()`，被 `load_project_data()` 用于 `mandatory_exact_instances.json`、`candidate_placements.json`、`canonical_rules.json`。
++
++R2-02 为 binding 需求、无线槽数、canonical commodity metadata 加了 strict JSON，但 certified master 的核心 proof 输入仍通过普通 JSON 解析。重复 key 会 last-write-wins；`NaN`、`Infinity`、`-Infinity` 会被 CPython JSON 接受。对 `mandatory_exact_instances.json` 这类强制实例输入，重复 key 可以静默改写字段；对候选/规则输入也会制造 proof surface 与人工审查可见文本的语义分叉。
++
++修复：在 `master_model.py` 加入同 binding 等价的 strict JSON helper，`_load_json()` 改为 `read_text(encoding="utf-8")` + strict `json.loads(object_pairs_hook=..., parse_constant=...)`。`object_pairs_hook` 覆盖嵌套对象重复 key；`parse_constant` 拒 `NaN`、`Infinity`、`-Infinity`。
++
++回归：`src/tests/test_exact_contract.py:118-151` 覆盖 mandatory artifact 嵌套重复 key 与 candidate artifact 非标准 JSON constant 均 fail-closed。另以审查 probe 验证 binding/master/preprocess 三个 strict helper 都拒绝嵌套重复 key与三类非标准 constant。
++
++### F-BIND-R3-03 — HIGH — `preprocess_plan.json` 仍有宽松解析分叉，utility 槽数可被 `int()` 吞类型
++
++位置：`src/interchange/preprocess_context.py:40-48`, `src/interchange/preprocess_context.py:380-395`, `src/interchange/preprocess_context.py:529-553`；原始触发点为 `load_default_preprocess_context()` / `load_preprocess_context_from_paths()` 默认 JSON，加 `_parse_utility_operation()` 对 `generic_input_slots` / `generic_output_slots` 直接 `int()`。
++
++`preprocess_plan.json` 同时是 operation profile 与 binding 无线槽数的规则源。R2-02 只把 binding 的无线槽数读取切到 strict JSON，但 `preprocess_context` 仍允许重复 key/NaN，并允许字符串、float、bool 经 `int()` 变成槽数。这会造成同一规则源在 binding 与 operation profile 端 schema 不一致；对于无线槽数这类会进入 optional lower bound 的值，属于 proof 输入分叉。
++
++修复：`preprocess_context` 增加 strict JSON helper；默认/显式 path loader 都使用 strict JSON；utility profile 槽数改为 `_strict_nonnegative_int()`，拒 bool、float、str、负数。
++
++回归：`src/tests/test_preprocess_context.py:81-105` 覆盖 path loader 拒嵌套重复 key，并拒字符串/float/bool/负数槽数。
++
++### F-BIND-R3-04 — HIGH — wireless sink generic-input slots 未进入 master core 快照，optional 下界可与 project-root 规则漂移
++
++位置：`src/models/master_model.py:2016-2055`, `src/models/master_model.py:2194`, `src/models/master_model.py:2220-2280`, `src/models/master_model.py:2531-2598`, `src/search/benders_loop.py:1361-1368`, `src/search/benders_loop.py:1571-1588`, `src/search/outer_search.py:1698-1715`, `src/search/exact_campaign.py:1139-1196`, `src/models/exact_coordinate_master.py:5971`。
++
++`infer_certified_optional_lower_bounds()` 原先用 import-time `get_operation_port_profile("wireless_sink").generic_input_slots`。而 R2 的 strict wireless loader 只保障 binding 自己读 `project_root/rules/preprocess_plan.json`。因此 master optional lower bound、outer safe area upper bound、campaign proof helpers、coordinate stats 仍可能用默认仓库 profile，而不是正在验证的 project-root proof 输入。若 synthetic/test project 或未来冻结工件的无线槽数不同，master 下界与 binding capacity 会不一致，构成 false-INFEASIBLE 或 false proof-bound 风险。
++
++修复：`infer_certified_optional_lower_bounds()` 增加 `wireless_sink_generic_input_slots` 参数；`MasterPlacementModel` / `ExactMasterCore` 持有 strict normalized 槽数；certified session 在 generic inputs 非空时从 binding 的 `load_wireless_sink_generic_input_slots(project_root=...)` 读取同一 project-root snapshot，并传给 master core、outer safe-area 计算、campaign helpers、coordinate stats。
++
++回归：`src/tests/test_exact_contract.py:225-253` 证明同一 rules + generic requirements 在 `wireless_sink_generic_input_slots=4` 时 optional area 下界为 9，在 `=2` 时为 18，且 certified 静态下界显式使用该 snapshot。
++
++### F-BIND-R3-05 — HIGH — exact_campaign proof helpers 直接解析 generic IO，绕过 R2 canonical 校验
++
++位置：`src/search/exact_campaign.py:1139-1159`, `src/search/exact_campaign.py:1166-1196`；原始触发点为 `_load_exact_required_optional_lower_bounds()` / `_load_exact_safe_area_upper_bound()` 直接 `_loads_strict_json_object(generic_io_requirements.json)` 后喂入 `infer_certified_optional_lower_bounds()`。
++
++R2-01 的 proof-surface 约束是“单一装载入口，禁止第二解析分叉”。`exact_campaign` 已有 strict JSON，但仍没有使用 `master_model.load_generic_io_requirements_artifact()`，因此缺少 binding loader 的 canonical commodity role 校验、required sections 校验、reserved sentinel 校验。它可能先于或独立于 LBBD session 计算 required optional lower bounds / safe area upper bound，使 public proof-surface helper 对坏 artifact fail-open 到“只要 section 是 mapping 就参与计算”的状态。
++
++修复：`exact_campaign` 导入并使用 `load_generic_io_requirements_artifact(project_root)`，与 master/binding 共用单一 artifact loader；同时接入 project-root wireless slot snapshot，避免 F-BIND-R3-04 的同类漂移。
++
++回归：`src/tests/test_exact_contract.py:324-337` 构造未登记 generic input commodity，`_load_exact_required_optional_lower_bounds()` 现在经 delegated loader fail-closed。
++
++## Q1：R2 修复本身复核
++
++R2-01 定向修复“master loader 委托 binding loader”是 sound 的：`src/models/master_model.py:2006-2014` 仍只委托 `src.models.binding_subproblem.load_generic_io_requirements(project_root=...)`，因此 on-disk artifact 的 strict JSON、required section、strict int、sentinel、canonical role 校验保持同源。`_normalize_generic_io_requirements_payload()` 的生产调用点仅处理已加载 snapshot 或显式传入的 in-memory maps；补丁后 binding 调用也使用 master normalized snapshot，不再依赖第二次磁盘读取。合法 synthetic/test 工程若直接传 in-memory requirements 仍不强迫 canonical artifact 存在；只在 on-disk proof artifact loader 入口 fail-closed。
++
++R2-02 strict JSON helper 的实现语义是 sound 的：`object_pairs_hook` 在 Python JSON decoder 的每个对象层级调用，覆盖嵌套重复 key；`parse_constant` 覆盖 CPython JSON 接受的 `NaN`、`Infinity`、`-Infinity` 三个非标准常量。审查 probe 已验证 binding/master/preprocess 三处 helper 对嵌套重复 key 与三类 constant 均拒绝。
++
++## Q2：proof 工件 × loader 矩阵
++
++| 工件 / 规则源 | certified 消费点 | 审查结果 |
++| --- | --- | --- |
++| `generic_io_requirements.json` | binding `load_generic_io_requirements`; master `load_generic_io_requirements_artifact`; LBBD certified binding; outer safe-area; exact_campaign proof helpers | 补丁后 on-disk artifact 单一入口为 binding loader；master/session/campaign/outer 共用 normalized snapshot 或 delegated loader。主 binding 与 retry binding 不再重读磁盘。 |
++| `rules/preprocess_plan.json` | binding `load_wireless_sink_generic_input_slots`; `preprocess_context`; operation profiles; master optional lower bounds; outer safe-area; exact_campaign helpers | 补丁后 JSON 解析 strict，utility slot schema strict，wireless slot snapshot 显式进入 master core/outer/campaign。 |
++| `data/mandatory_exact_instances.json` | master `load_project_data`; exact_campaign `_load_validated_mandatory_exact_instances`; public validators/tests | 补丁后 master 侧 strict JSON + schema；exact_campaign 侧已有 strict object/schema。未发现 certified 链上 A strict/B `.get(default)` 改写强制实例语义的分叉。 |
++| `data/candidate_placements.json` | master `load_project_data`; exact_campaign candidate/resume helpers; serializer/hash tooling | 补丁后 master 侧 strict JSON；campaign 侧 strict object parser已存在。深层候选字段仍在 coerce/use 点 fail-closed；未发现 binding/master proof 链的宽松第二解析器。 |
++| `rules/canonical_rules.json` | master `load_project_data`; binding canonical commodity role check; `preprocess_context`; exact_campaign helpers | 补丁后 master/preprocess strict；binding role check strict；campaign strict。未发现能让 canonical role 与 master rules 分裂的 certified proof-surface 分叉。 |
++
++本轮仍保留的普通 `json.loads/json.load` 调用经 grep 分类后主要在 telemetry、render/ascii、campaign inspector/triage、phase3b exploratory/preflight、checkpoint-free evaluator、HiGHS evaluator、tests、cut telemetry/persisted payload。它们不位于本轮 OR-Tools LBBD certified binding proof 输入链；`binding_subproblem._load_overload_classification` 仍是普通 JSON，但 overload/RAB 已在任务边界中列为 certified guard 阻断或非本轮 finding，因此未报。
++
++## Q3：strict JSON 之外解析层检查
++
++重复 key：binding/master/preprocess 三个 proof loader helper 均覆盖嵌套对象，probe 通过。
++
++非标准 constants：`NaN`、`Infinity`、`-Infinity` 全部由 `parse_constant` 拒绝，probe 通过。
++
++整数精度：Python JSON 对整数为 arbitrary precision，不存在 JSON 大整数自动转 float 的精度损失；本轮把 generic IO requirements、preprocess utility slot、wireless slot 相关入口均收紧为 strict int，拒 bool/float/string/负数。其他 candidate 坐标/尺寸字段在 schema/coerce 使用点仍以 int 检查或会 fail-closed，未构造出可达语义改写。
++
++Unicode 归一化：未发现 NFC/NFKC 自动归一化。commodity/facility id 是精确字符串匹配 canonical metadata；同形异码不会 alias，只会成为未登记 id 并 fail-closed。若 canonical 自身登记同形异码，那是冻结规则内容质量问题，不是解析层缝。
++
++编码/BOM：proof loaders 使用 `read_text(encoding="utf-8")`。非法 UTF-8 fail-closed；UTF-8 BOM 没有用 `utf-8-sig` 吞掉，JSON parser 会拒绝，偏 fail-closed。未发现 proof 链上同时存在 `utf-8` 与 `utf-8-sig` 对同一冻结工件产生不同语义的可达路径。
++
++## Q4：前轮“无 finding”抽查
++
++抽查 1：fixed pattern / operation profile 端口充足性口径。当前 `preprocess_plan.json` 中 operation profile 总数 21，其中 recipe operation 17、utility operation 4。utility roster 为：`boundary_io -> boundary_storage_port` 槽 0/1，`power_supply -> power_pole` 槽 0/0，`protocol_core -> protocol_core` 槽 0/6，`wireless_sink -> protocol_storage_box` 槽 3/0。17 类 recipe operation 全在 profile 中；本轮未推翻 r2 “fixed pattern 枚举端口数充足”的结论。
++
++抽查 2：`_ordered_generic_slot_commodities` 仅 hint。该符号只在 `src/models/binding_subproblem.py:804-864` 的 `AddDecisionStrategy` 顺序构造中使用，不进入约束、目标、容量或可行性判定。本轮未推翻 r2 结论。
++
++## 回归与自验
++
++已执行：
++
++```text
++sha256sum /mnt/data/zmd_fbind_r3_snapshot_50360c1d.zip
++# 50360c1d82504d4de5b5af026c00d8d235db8ded32304b293a3d0d8a7c550893
++
++python -m pytest -q -p no:randomly src/tests/test_preprocess_context.py src/tests/test_binding.py src/tests/test_exact_contract.py
++# 120 passed in 5.47s
++
++python -m pytest -q -p no:randomly src/tests/test_master.py
++# 226 passed in 13.57s
++
++python scripts/check_p1_2_proof_obligations.py
++# P1.2 proof obligation check passed: 8 obligations anchored
++
++strict JSON probe
++# strict-json-probe-ok
++```
++
++未跑完全量 `python -m pytest -q src/tests`；本轮按任务重点执行了 binding / exact_contract / master / preprocess_context 专项与 proof obligation 脚本。
++
++## 冻结工件条款
++
++本补丁只改 Python 源码与测试，未修改 `data/candidate_placements.json`、`data/mandatory_exact_instances.json`、`rules/canonical_rules.json`、`rules/preprocess_plan.json`、hash manifest 或 PROJECT_LOCK。无需冻结工件再生步骤、无需新增期望 sha256/字节数、无需推进登记位置。
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/interchange/preprocess_context.py zmd_fbind_r3_audit/project/src/interchange/preprocess_context.py
+--- zmd_fbind_r3_orig/project/src/interchange/preprocess_context.py	2026-06-12 10:04:01.285868986 +0000
++++ zmd_fbind_r3_audit/project/src/interchange/preprocess_context.py	2026-06-12 10:05:24.378171220 +0000
+@@ -24,6 +24,31 @@
+ _ALLOWED_SINK_KINDS = {"generic_input", "none", None}
+ 
+ 
++def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
++    payload: dict[str, Any] = {}
++    for key, value in pairs:
++        if key in payload:
++            raise ValueError(f"duplicate JSON key: {key}")
++        payload[key] = value
++    return payload
++
++
++def _reject_json_constant(value: str) -> None:
++    raise ValueError(f"invalid JSON constant: {value}")
++
++
++def _loads_strict_json(text: str) -> Any:
++    return json.loads(
++        text,
++        object_pairs_hook=_reject_duplicate_json_keys,
++        parse_constant=_reject_json_constant,
++    )
++
++
++def _load_strict_json(path: Path) -> Any:
++    return _loads_strict_json(Path(path).read_text(encoding="utf-8"))
++
++
+ @dataclass(frozen=True)
+ class PreprocessRecipe:
+     recipe_id: str
+@@ -355,8 +380,8 @@
+ @lru_cache(maxsize=1)
+ def load_default_preprocess_context() -> PreprocessContext:
+     project_root = Path(__file__).resolve().parent.parent.parent
+-    rules_payload = json.loads((project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"))
+-    plan_payload = json.loads((project_root / "rules" / "preprocess_plan.json").read_text(encoding="utf-8"))
++    rules_payload = _load_strict_json(project_root / "rules" / "canonical_rules.json")
++    plan_payload = _load_strict_json(project_root / "rules" / "preprocess_plan.json")
+     return build_preprocess_context_from_rules_and_plan(rules_payload, plan_payload)
+ 
+ 
+@@ -366,8 +391,8 @@
+     plan_path: Path,
+ ) -> PreprocessContext:
+     return build_preprocess_context_from_rules_and_plan(
+-        json.loads(Path(rules_path).read_text(encoding="utf-8")),
+-        json.loads(Path(plan_path).read_text(encoding="utf-8")),
++        _load_strict_json(Path(rules_path)),
++        _load_strict_json(Path(plan_path)),
+     )
+ 
+ 
+@@ -504,13 +529,27 @@
+     )
+ 
+ 
++def _strict_nonnegative_int(value: Any, field: str) -> int:
++    if isinstance(value, bool) or not isinstance(value, int):
++        raise TypeError(f"{field} must be an integer")
++    if value < 0:
++        raise ValueError(f"{field} must be non-negative")
++    return int(value)
++
++
+ def _parse_utility_operation(operation_type: str, raw_utility: Any) -> UtilityOperation:
+     utility = _mapping_or_empty(raw_utility)
+     return UtilityOperation(
+         operation_type=str(operation_type),
+         facility_type=str(utility.get("facility_type", "")).strip(),
+-        generic_input_slots=int(utility.get("generic_input_slots", 0)),
+-        generic_output_slots=int(utility.get("generic_output_slots", 0)),
++        generic_input_slots=_strict_nonnegative_int(
++            utility.get("generic_input_slots", 0),
++            f"utility_operations.{operation_type}.generic_input_slots",
++        ),
++        generic_output_slots=_strict_nonnegative_int(
++            utility.get("generic_output_slots", 0),
++            f"utility_operations.{operation_type}.generic_output_slots",
++        ),
+     )
+ 
+ 
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/models/exact_coordinate_master.py zmd_fbind_r3_audit/project/src/models/exact_coordinate_master.py
+--- zmd_fbind_r3_orig/project/src/models/exact_coordinate_master.py	2026-06-12 10:04:01.302871415 +0000
++++ zmd_fbind_r3_audit/project/src/models/exact_coordinate_master.py	2026-06-12 10:05:24.392089162 +0000
+@@ -5968,7 +5968,7 @@
+         stats["optional_cardinality_bounds"]["protocol_storage_box"] = {
+             "mode": "required_lower_bound",
+             "required_generic_input_slots": int(self.owner._required_generic_input_slot_total()),
+-            "slots_per_pose": int(get_operation_port_profile("wireless_sink").generic_input_slots),
++            "slots_per_pose": int(self.owner.wireless_sink_generic_input_slots),
+             "lower": int(protocol_count),
+             "upper": None,
+             "candidate_pose_count": int(len(self.owner.facility_pools.get("protocol_storage_box", []))),
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/models/master_model.py zmd_fbind_r3_audit/project/src/models/master_model.py
+--- zmd_fbind_r3_orig/project/src/models/master_model.py	2026-06-12 10:04:01.307031152 +0000
++++ zmd_fbind_r3_audit/project/src/models/master_model.py	2026-06-12 10:05:24.385356442 +0000
+@@ -1933,9 +1933,29 @@
+     coverers: Tuple[int, ...]
+ 
+ 
++def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
++    payload: Dict[str, Any] = {}
++    for key, value in pairs:
++        if key in payload:
++            raise ValueError(f"duplicate JSON key: {key}")
++        payload[key] = value
++    return payload
++
++
++def _reject_json_constant(value: str) -> None:
++    raise ValueError(f"invalid JSON constant: {value}")
++
++
++def _loads_strict_json(text: str) -> Any:
++    return json.loads(
++        text,
++        object_pairs_hook=_reject_duplicate_json_keys,
++        parse_constant=_reject_json_constant,
++    )
++
++
+ def _load_json(path: Path) -> Any:
+-    with path.open("r", encoding="utf-8") as fh:
+-        return json.load(fh)
++    return _loads_strict_json(path.read_text(encoding="utf-8"))
+ 
+ 
+ def _normalize_generic_io_requirement_section(
+@@ -1993,9 +2013,25 @@
+     return load_generic_io_requirements(project_root=project_root)
+ 
+ 
++def _normalize_wireless_sink_generic_input_slots(value: Optional[Any]) -> int:
++    if value is None:
++        return int(
++            get_operation_port_profile(
++                POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
++            ).generic_input_slots
++        )
++    if isinstance(value, bool) or not isinstance(value, int):
++        raise TypeError("wireless_sink_generic_input_slots must be a strict integer")
++    if value < 0:
++        raise ValueError("wireless_sink_generic_input_slots must be non-negative")
++    return int(value)
++
++
+ def infer_certified_optional_lower_bounds(
+     rules: Mapping[str, Any],
+     generic_io_requirements: Optional[Mapping[str, Any]] = None,
++    *,
++    wireless_sink_generic_input_slots: Optional[int] = None,
+ ) -> Dict[str, int]:
+     normalized_requirements = _normalize_generic_io_requirements_payload(
+         generic_io_requirements
+@@ -2004,10 +2040,8 @@
+     required_counts: Dict[str, int] = {}
+ 
+     if "protocol_storage_box" in templates:
+-        slots_per_box = int(
+-            get_operation_port_profile(
+-                POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
+-            ).generic_input_slots
++        slots_per_box = _normalize_wireless_sink_generic_input_slots(
++            wireless_sink_generic_input_slots
+         )
+         required_slots = sum(
+             int(v)
+@@ -2024,12 +2058,15 @@
+ def infer_exact_required_pose_optional_counts(
+     rules: Mapping[str, Any],
+     generic_io_requirements: Optional[Mapping[str, Any]] = None,
++    *,
++    wireless_sink_generic_input_slots: Optional[int] = None,
+ ) -> Dict[str, int]:
+     """Backward-compatible alias for certified-exact lower-bound inference."""
+ 
+     return infer_certified_optional_lower_bounds(
+         rules,
+         generic_io_requirements,
++        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+     )
+ 
+ 
+@@ -2154,6 +2191,7 @@
+     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]]
+     rules: Mapping[str, Any]
+     generic_io_requirements: Mapping[str, Mapping[str, int]]
++    wireless_sink_generic_input_slots: int
+     exact_required_pose_optional_counts: Mapping[str, int]
+     build_stats: Mapping[str, Any]
+     z_var_indices: Dict[str, Dict[int, int]]
+@@ -2179,6 +2217,7 @@
+         skip_power_coverage: bool = False,
+         enable_symmetry_breaking: bool = True,
+         generic_io_requirements: Optional[Mapping[str, Any]] = None,
++        wireless_sink_generic_input_slots: Optional[int] = None,
+         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
+         exact_mode: Optional[bool] = None,
+         solve_mode: Optional[str] = None,
+@@ -2224,6 +2263,9 @@
+         self.generic_io_requirements = _normalize_generic_io_requirements_payload(
+             generic_io_requirements
+         )
++        self.wireless_sink_generic_input_slots = _normalize_wireless_sink_generic_input_slots(
++            wireless_sink_generic_input_slots
++        )
+         self._exact_required_pose_optional_counts = {
+             str(k): int(v)
+             for k, v in dict(exact_required_pose_optional_counts or {}).items()
+@@ -2233,6 +2275,7 @@
+             infer_certified_optional_lower_bounds(
+                 self.rules,
+                 self.generic_io_requirements,
++                wireless_sink_generic_input_slots=self.wireless_sink_generic_input_slots,
+             )
+             if self.exact_mode
+             else {}
+@@ -2485,6 +2528,7 @@
+         skip_power_coverage: bool = False,
+         enable_symmetry_breaking: bool = True,
+         generic_io_requirements: Optional[Mapping[str, Any]] = None,
++        wireless_sink_generic_input_slots: Optional[int] = None,
+         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
+         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+     ) -> ExactMasterCore:
+@@ -2497,6 +2541,7 @@
+             skip_power_coverage=skip_power_coverage,
+             enable_symmetry_breaking=enable_symmetry_breaking,
+             generic_io_requirements=generic_io_requirements,
++            wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+             exact_required_pose_optional_counts=exact_required_pose_optional_counts,
+             solve_mode="certified_exact",
+             master_search_profile=master_search_profile,
+@@ -2548,6 +2593,7 @@
+             facility_pools=model.facility_pools,
+             rules=model.rules,
+             generic_io_requirements=model.generic_io_requirements,
++            wireless_sink_generic_input_slots=int(model.wireless_sink_generic_input_slots),
+             exact_required_pose_optional_counts=dict(model._exact_required_pose_optional_counts),
+             build_stats=build_stats,
+             z_var_indices=model._current_z_var_indices(),
+@@ -2639,6 +2685,7 @@
+             skip_power_coverage=core.skip_power_coverage,
+             enable_symmetry_breaking=core.enable_symmetry_breaking,
+             generic_io_requirements=core.generic_io_requirements,
++            wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
+             exact_required_pose_optional_counts=core.exact_required_pose_optional_counts,
+             solve_mode="certified_exact",
+             master_search_profile=normalized_master_search_profile,
+@@ -5192,11 +5239,7 @@
+         optional_bounds["protocol_storage_box"] = {
+             "mode": "required_lower_bound",
+             "required_generic_input_slots": int(required_generic_input_slots),
+-            "slots_per_pose": int(
+-                get_operation_port_profile(
+-                    POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
+-                ).generic_input_slots
+-            ),
++            "slots_per_pose": int(self.wireless_sink_generic_input_slots),
+             "lower": int(protocol_storage_box_count),
+             "upper": None,
+             "candidate_pose_count": len(protocol_box_terms),
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/search/benders_loop.py zmd_fbind_r3_audit/project/src/search/benders_loop.py
+--- zmd_fbind_r3_orig/project/src/search/benders_loop.py	2026-06-12 10:04:01.335903205 +0000
++++ zmd_fbind_r3_audit/project/src/search/benders_loop.py	2026-06-12 10:05:24.388359321 +0000
+@@ -1357,12 +1357,15 @@
+     instances: Sequence[Mapping[str, Any]],
+     rules: Mapping[str, Any],
+     generic_io_requirements: Optional[Mapping[str, Any]] = None,
++    *,
++    wireless_sink_generic_input_slots: Optional[int] = None,
+ ) -> int:
+     total = compute_mandatory_area_lower_bound(instances, rules)
+     templates = dict(rules.get("facility_templates", {}))
+     optional_lower_bounds = infer_certified_optional_lower_bounds(
+         rules,
+         generic_io_requirements,
++        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+     )
+     for facility_type, count in optional_lower_bounds.items():
+         template = dict(templates[str(facility_type)])
+@@ -1567,6 +1570,13 @@
+ 
+         instances, facility_pools, rules = load_project_data(project_root, solve_mode=solve_mode)
+         generic_io_requirements = load_generic_io_requirements_artifact(project_root)
++        wireless_sink_generic_input_slots = None
++        if generic_io_requirements.get("required_generic_inputs", {}):
++            from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
++
++            wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
++                project_root=project_root
++            )
+         artifact_hashes = compute_exact_artifact_hashes(project_root)
+         core_started = time.perf_counter()
+         core = MasterPlacementModel.build_exact_core(
+@@ -1574,6 +1584,7 @@
+             facility_pools,
+             rules,
+             generic_io_requirements=generic_io_requirements,
++            wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+             master_search_profile=master_search_profile,
+         )
+         return cls(
+@@ -4878,6 +4889,32 @@
+         flow_status = flow_subproblem.build_and_solve(time_limit_ms=int(self.flow_seconds * 1000))
+         return flow_status, set(flow_subproblem.extract_bottleneck_instances())
+ 
++    def _binding_generic_requirements_kwargs(self) -> Dict[str, Dict[str, int]]:
++        if getattr(self, "solve_mode", None) != "certified_exact":
++            return {}
++        generic_io_requirements = getattr(self.master, "generic_io_requirements", None)
++        if not isinstance(generic_io_requirements, Mapping):
++            raise RuntimeError(
++                "certified binding requires the master generic_io_requirements snapshot"
++            )
++        required_generic_outputs = generic_io_requirements.get(
++            "required_generic_outputs", {}
++        )
++        required_generic_inputs = generic_io_requirements.get(
++            "required_generic_inputs", {}
++        )
++        if not isinstance(required_generic_outputs, Mapping) or not isinstance(
++            required_generic_inputs, Mapping
++        ):
++            raise RuntimeError(
++                "certified binding requires normalized master generic IO sections"
++            )
++        return {
++            "required_generic_outputs": dict(required_generic_outputs),
++            "required_generic_inputs": dict(required_generic_inputs),
++        }
++
++
+     def _run_exact_binding_and_routing(
+         self,
+         *,
+@@ -4912,6 +4949,7 @@
+             self.master.source_instances,
+             project_root=self.project_root,
+             routing_context=_rab_sep_routing_context,
++            **LBBDController._binding_generic_requirements_kwargs(self),
+         )
+         binding_model.build()
+         self._used_routing_core_reuse = False
+@@ -5815,6 +5853,7 @@
+                 self.master.facility_pools,
+                 self.master.source_instances,
+                 project_root=self.project_root,
++                **LBBDController._binding_generic_requirements_kwargs(self),
+             )
+             retry_model.build()
+             retry_status = retry_model.solve(time_limit_seconds=self.binding_seconds)
+@@ -6169,6 +6208,7 @@
+             instances,
+             rules,
+             exact_session.core.generic_io_requirements,
++            wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+         )
+     if static_area_lower_bound + int(ghost_w) * int(ghost_h) > grid_area:
+         _publish_last_run_metadata(
+@@ -6259,7 +6299,9 @@
+             # 系统性 INFEASIBLE (master 不出 storage box).
+             from src.models.master_model import infer_exact_required_pose_optional_counts
+             _inferred_counts = infer_exact_required_pose_optional_counts(
+-                exact_session.core.rules, exact_session.core.generic_io_requirements
++                exact_session.core.rules,
++                exact_session.core.generic_io_requirements,
++                wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+             )
+             master = MasterPlacementModel(
+                 list(exact_session.core.source_instances),
+@@ -6269,6 +6311,7 @@
+                 skip_power_coverage=bool(exact_session.core.skip_power_coverage),
+                 enable_symmetry_breaking=bool(exact_session.core.enable_symmetry_breaking),
+                 generic_io_requirements=exact_session.core.generic_io_requirements,
++                wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+                 exact_required_pose_optional_counts=_inferred_counts,
+                 solve_mode="certified_exact",
+                 master_search_profile=master_search_profile,
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/search/exact_campaign.py zmd_fbind_r3_audit/project/src/search/exact_campaign.py
+--- zmd_fbind_r3_orig/project/src/search/exact_campaign.py	2026-06-12 10:04:01.339986054 +0000
++++ zmd_fbind_r3_audit/project/src/search/exact_campaign.py	2026-06-12 10:05:24.389275288 +0000
+@@ -25,6 +25,7 @@
+     POSE_LEVEL_OPTIONAL_OPERATIONS,
+     POSE_LEVEL_OPTIONAL_TEMPLATES,
+     infer_certified_optional_lower_bounds,
++    load_generic_io_requirements_artifact,
+ )
+ from src.search.certified_frontier import (
+     TERMINAL_FRONTIER_OBJECTIVE,
+@@ -1137,19 +1138,24 @@
+ 
+ def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, int]:
+     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
+-    generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
+     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+-    generic_io_requirements = _loads_strict_json_object(
+-        generic_path.read_text(encoding="utf-8")
+-    )
++    generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+     if not isinstance(rules, Mapping):
+         raise ValueError("canonical_rules must be a JSON object")
+     if not isinstance(generic_io_requirements, Mapping):
+         raise ValueError("generic_io_requirements must be a JSON object")
++    wireless_sink_generic_input_slots = None
++    if generic_io_requirements.get("required_generic_inputs", {}):
++        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
++
++        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
++            project_root=project_root
++        )
+     lower_bounds: Dict[str, int] = {}
+     for facility_type, count in infer_certified_optional_lower_bounds(
+         rules,
+         generic_io_requirements,
++        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+     ).items():
+         required_count = int(count)
+         if required_count > 0:
+@@ -1161,12 +1167,9 @@
+     if project_root is None:
+         return None
+     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
+-    generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
+     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
+     instances = _load_validated_mandatory_exact_instances(project_root)
+-    generic_io_requirements = _loads_strict_json_object(
+-        generic_path.read_text(encoding="utf-8")
+-    )
++    generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+     if not isinstance(rules, Mapping):
+         raise ValueError("canonical_rules must be a JSON object")
+     if not isinstance(generic_io_requirements, Mapping):
+@@ -1179,9 +1182,17 @@
+         template = templates[facility_type]
+         dims = dict(template["dimensions"])
+         lower_bound += int(dims["w"]) * int(dims["h"])
++    wireless_sink_generic_input_slots = None
++    if generic_io_requirements.get("required_generic_inputs", {}):
++        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
++
++        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
++            project_root=project_root
++        )
+     for facility_type, count in infer_certified_optional_lower_bounds(
+         rules,
+         generic_io_requirements,
++        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+     ).items():
+         template = dict(templates[str(facility_type)])
+         dims = dict(template["dimensions"])
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/search/outer_search.py zmd_fbind_r3_audit/project/src/search/outer_search.py
+--- zmd_fbind_r3_orig/project/src/search/outer_search.py	2026-06-12 10:04:01.346768697 +0000
++++ zmd_fbind_r3_audit/project/src/search/outer_search.py	2026-06-12 10:05:24.390447820 +0000
+@@ -1697,6 +1697,13 @@
+ 
+     exact_instances, _pools, rules = load_project_data(project_root, solve_mode="certified_exact")
+     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
++    wireless_sink_generic_input_slots = None
++    if generic_io_requirements.get("required_generic_inputs", {}):
++        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
++
++        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
++            project_root=project_root
++        )
+     grid = dict(rules["globals"]["grid"])
+     grid_w = int(grid["width"])
+     grid_h = int(grid["height"])
+@@ -1704,6 +1711,7 @@
+         exact_instances,
+         rules,
+         generic_io_requirements,
++        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+     )
+     if area_upper_bound is None:
+         area_upper_bound = safe_area_upper_bound
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/tests/test_exact_contract.py zmd_fbind_r3_audit/project/src/tests/test_exact_contract.py
+--- zmd_fbind_r3_orig/project/src/tests/test_exact_contract.py	2026-06-12 10:04:01.563099146 +0000
++++ zmd_fbind_r3_audit/project/src/tests/test_exact_contract.py	2026-06-12 10:05:24.394121151 +0000
+@@ -43,8 +43,9 @@
+     RUN_STATUS_UNKNOWN,
+     RUN_STATUS_UNPROVEN,
+ )
+-from src.models.master_model import MasterPlacementModel
++from src.models.master_model import MasterPlacementModel, load_project_data
+ import src.search.benders_loop as benders_loop_module
++import src.search.exact_campaign as exact_campaign_module
+ import src.search.outer_search as outer_search_module
+ from src.search.benders_loop import collect_certification_blockers, run_benders_for_ghost_rect
+ from src.search.campaign_telemetry import (
+@@ -114,6 +115,144 @@
+     return project_root
+ 
+ 
++def test_certified_project_loader_rejects_duplicate_keys_in_mandatory_artifact(
++    tmp_path: Path,
++) -> None:
++    project_root = _build_toy_exact_project(tmp_path / "duplicate_mandatory_keys")
++    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text(
++        '[{"instance_id":"tiny_001",'
++        '"instance_id":"tiny_002",'
++        '"facility_type":"tiny_facility",'
++        '"is_mandatory":true,'
++        '"bound_type":"exact"}]',
++        encoding="utf-8",
++    )
++
++    with pytest.raises(ValueError, match="duplicate JSON key"):
++        load_project_data(project_root, solve_mode="certified_exact")
++
++
++def test_certified_project_loader_rejects_nonstandard_json_constants(
++    tmp_path: Path,
++) -> None:
++    project_root = _build_toy_exact_project(tmp_path / "nonstandard_candidate_constant")
++    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
++        '{"facility_pools":{"tiny_facility":[{'
++        '"pose_id":"tiny_left",'
++        '"anchor":{"x":0,"y":0},'
++        '"occupied_cells":[[0,0]],'
++        '"input_port_cells":[],'
++        '"output_port_cells":[],'
++        '"power_coverage_cells":NaN}]}}',
++        encoding="utf-8",
++    )
++
++    with pytest.raises(ValueError, match="invalid JSON constant"):
++        load_project_data(project_root, solve_mode="certified_exact")
++
++
++def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
++    controller = benders_loop_module.LBBDController.__new__(
++        benders_loop_module.LBBDController
++    )
++    controller.solve_mode = "certified_exact"
++    controller.master = SimpleNamespace(
++        generic_io_requirements={
++            "required_generic_outputs": {"source_ore": 1},
++            "required_generic_inputs": {"valley_battery": 2},
++        }
++    )
++
++    assert controller._binding_generic_requirements_kwargs() == {
++        "required_generic_outputs": {"source_ore": 1},
++        "required_generic_inputs": {"valley_battery": 2},
++    }
++
++    controller.solve_mode = "exploratory"
++    assert controller._binding_generic_requirements_kwargs() == {}
++
++
++def test_certified_retry_binding_receives_master_generic_io_snapshot(
++    tmp_path: Path,
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    captured_kwargs: dict[str, object] = {}
++
++    class CapturingBindingModel:
++        def __init__(self, *_args, **kwargs):
++            captured_kwargs.update(kwargs)
++
++        def build(self) -> None:
++            return None
++
++        def solve(self, **_kwargs) -> str:
++            return "FEASIBLE"
++
++        def extract_conflict_summary(self) -> dict:
++            return {
++                "overload_separation_enabled": False,
++                "overload_nogoods_added": 0,
++            }
++
++    monkeypatch.setattr(benders_loop_module, "PortBindingModel", CapturingBindingModel)
++    controller = benders_loop_module.LBBDController.__new__(
++        benders_loop_module.LBBDController
++    )
++    controller.solve_mode = "certified_exact"
++    controller.project_root = tmp_path
++    controller.binding_seconds = 1.0
++    controller._emit_heartbeat = lambda **_kwargs: None
++    controller.master = SimpleNamespace(
++        facility_pools={},
++        source_instances=[],
++        generic_io_requirements={
++            "required_generic_outputs": {"source_ore": 1},
++            "required_generic_inputs": {"valley_battery": 2},
++        },
++    )
++
++    _model, status = benders_loop_module.LBBDController._retry_binding_without_overload_separation(
++        controller,
++        solution={},
++        iteration=0,
++    )
++
++    assert status == "FEASIBLE"
++    assert captured_kwargs["required_generic_outputs"] == {"source_ore": 1}
++    assert captured_kwargs["required_generic_inputs"] == {"valley_battery": 2}
++
++
++def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> None:
++    rules = {
++        "facility_templates": {
++            "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}}
++        }
++    }
++    generic_io_requirements = {
++        "required_generic_outputs": {},
++        "required_generic_inputs": {"valley_battery": 4},
++    }
++
++    assert (
++        benders_loop_module.compute_exact_static_area_lower_bound(
++            [],
++            rules,
++            generic_io_requirements,
++            wireless_sink_generic_input_slots=4,
++        )
++        == 9
++    )
++    assert (
++        benders_loop_module.compute_exact_static_area_lower_bound(
++            [],
++            rules,
++            generic_io_requirements,
++            wireless_sink_generic_input_slots=2,
++        )
++        == 18
++    )
++
++
+ def _build_required_protocol_box_project(project_root: Path) -> Path:
+     data_dir = project_root / "data" / "preprocessed"
+     rules_dir = project_root / "rules"
+@@ -167,9 +306,37 @@
+             "required_generic_inputs": {"valley_battery": 1},
+         },
+     )
++    _write_json(
++        rules_dir / "preprocess_plan.json",
++        {
++            "utility_operations": {
++                "wireless_sink": {
++                    "facility_type": "protocol_storage_box",
++                    "generic_input_slots": 3,
++                    "generic_output_slots": 0,
++                }
++            }
++        },
++    )
+     return project_root
+ 
+ 
++def test_certified_campaign_optional_bounds_delegate_generic_io_loader(tmp_path: Path) -> None:
++    project_root = _build_required_protocol_box_project(
++        tmp_path / "campaign_generic_io_role_check"
++    )
++    _write_json(
++        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
++        {
++            "required_generic_outputs": {},
++            "required_generic_inputs": {"unregistered_sink": 1},
++        },
++    )
++
++    with pytest.raises(KeyError, match="generic input commodity"):
++        exact_campaign_module._load_exact_required_optional_lower_bounds(project_root)
++
++
+ def _build_multi_pose_exact_project(
+     project_root: Path,
+     *,
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' '--exclude=.pytest_tmp' zmd_fbind_r3_orig/project/src/tests/test_preprocess_context.py zmd_fbind_r3_audit/project/src/tests/test_preprocess_context.py
+--- zmd_fbind_r3_orig/project/src/tests/test_preprocess_context.py	2026-06-12 10:04:01.588508936 +0000
++++ zmd_fbind_r3_audit/project/src/tests/test_preprocess_context.py	2026-06-12 10:05:24.392826121 +0000
+@@ -9,6 +9,7 @@
+ from src.interchange.preprocess_context import (
+     build_preprocess_context_from_rules_and_plan,
+     load_default_preprocess_context,
++    load_preprocess_context_from_paths,
+ )
+ from src.preprocess.demand_solver import (
+     generate_ceil_machine_counts,
+@@ -77,6 +78,33 @@
+     assert context.commodity_roles["source_ore"].source_kind == "external_boundary"
+ 
+ 
++def test_preprocess_context_path_loader_rejects_duplicate_json_keys(tmp_path: Path) -> None:
++    rules_path = tmp_path / "canonical_rules.json"
++    plan_path = tmp_path / "preprocess_plan.json"
++    rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
++    plan_path.write_text(
++        '{"utility_operations":{"wireless_sink":{'
++        '"facility_type":"protocol_storage_box",'
++        '"generic_input_slots":3,'
++        '"generic_input_slots":0}}}',
++        encoding="utf-8",
++    )
++
++    with pytest.raises(ValueError, match="duplicate JSON key"):
++        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
++
++
++def test_preprocess_context_rejects_loose_utility_slot_counts(
++    raw_rules_dict,
++    raw_plan_dict,
++) -> None:
++    mutated_plan = copy.deepcopy(raw_plan_dict)
++    mutated_plan["utility_operations"]["wireless_sink"]["generic_input_slots"] = "3"
++
++    with pytest.raises(TypeError, match="generic_input_slots"):
++        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
++
++
+ @pytest.mark.parametrize("overlay_key", ["recipes", "production_targets", "commodity_roles"])
+ def test_preprocess_context_rejects_canonical_metadata_overrides(
+     raw_rules_dict,

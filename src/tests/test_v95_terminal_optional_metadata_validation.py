@@ -59,6 +59,20 @@ def _write_optional_project(root: Path) -> dict[str, list[dict[str, object]]]:
                     "needs_power": False,
                 },
             },
+            "commodity_metadata": {
+                "demo_input": {"source_kind": "internal_only", "sink_kind": "generic_input"},
+            },
+        },
+    )
+    _write_json(
+        root / "rules" / "preprocess_plan.json",
+        {
+            "utility_operations": {
+                "wireless_sink": {
+                    "facility_type": "protocol_storage_box",
+                    "generic_input_slots": 3,
+                }
+            }
         },
     )
     _write_json(root / "data" / "preprocessed" / "candidate_placements.json", {"facility_pools": facility_pools})

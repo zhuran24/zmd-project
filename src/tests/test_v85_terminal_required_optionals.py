@@ -48,6 +48,9 @@ def test_v85_terminal_project_validation_rejects_missing_required_pose_optional(
             "T": {"dimensions": {"w": 1, "h": 1}},
             "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}},
         },
+        "commodity_metadata": {
+            "iron_ore": {"source_kind": "internal_only", "sink_kind": "generic_input"},
+        },
     }
     t_cells = [(2, 0), (2, 1), (0, 2), (1, 2)]
     facility_pools = {
@@ -85,6 +88,17 @@ def test_v85_terminal_project_validation_rejects_missing_required_pose_optional(
         for i in range(4)
     ]
     _write_json(rules_dir / "canonical_rules.json", rules)
+    _write_json(
+        rules_dir / "preprocess_plan.json",
+        {
+            "utility_operations": {
+                "wireless_sink": {
+                    "facility_type": "protocol_storage_box",
+                    "generic_input_slots": 3,
+                }
+            }
+        },
+    )
     _write_json(data_dir / "candidate_placements.json", {"facility_pools": facility_pools})
     _write_json(data_dir / "mandatory_exact_instances.json", mandatory_instances)
     _write_json(

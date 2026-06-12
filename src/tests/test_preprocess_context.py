@@ -94,6 +94,33 @@ def test_preprocess_context_path_loader_rejects_nonfinite_json_constants(tmp_pat
     with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
         load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
 
+
+def test_preprocess_context_plan_rejects_duplicate_slot_keys(tmp_path: Path) -> None:
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    plan_path.write_text(
+        '{"utility_operations":{"wireless_sink":{'
+        '"facility_type":"protocol_storage_box",'
+        '"generic_input_slots":3,'
+        '"generic_input_slots":0}}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate JSON key"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_rejects_loose_utility_slot_counts(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_plan["utility_operations"]["wireless_sink"]["generic_input_slots"] = "3"
+
+    with pytest.raises(TypeError, match="generic_input_slots"):
+        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
+
 def test_preprocess_context_accepts_overlay_only_plan(raw_rules_dict, raw_plan_dict) -> None:
     minimal_overlay = {
         "$schema": raw_plan_dict.get("$schema"),

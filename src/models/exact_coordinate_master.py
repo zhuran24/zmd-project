@@ -5968,7 +5968,7 @@ class CoordinateExactMasterDelegate:
         stats["optional_cardinality_bounds"]["protocol_storage_box"] = {
             "mode": "required_lower_bound",
             "required_generic_input_slots": int(self.owner._required_generic_input_slot_total()),
-            "slots_per_pose": int(get_operation_port_profile("wireless_sink").generic_input_slots),
+            "slots_per_pose": int(self.owner.wireless_sink_generic_input_slots),
             "lower": int(protocol_count),
             "upper": None,
             "candidate_pose_count": int(len(self.owner.facility_pools.get("protocol_storage_box", []))),

@@ -1933,9 +1933,29 @@ class _PowerSupportBucketRecord:
     coverers: Tuple[int, ...]
 
 
+def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
+    payload: Dict[str, Any] = {}
+    for key, value in pairs:
+        if key in payload:
+            raise ValueError(f"duplicate JSON key: {key}")
+        payload[key] = value
+    return payload
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant: {value}")
+
+
+def _loads_strict_json(text: str) -> Any:
+    return json.loads(
+        text,
+        object_pairs_hook=_reject_duplicate_json_keys,
+        parse_constant=_reject_json_constant,
+    )
+
+
 def _load_json(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
+    return _loads_strict_json(path.read_text(encoding="utf-8"))
 
 
 def _normalize_generic_io_requirement_section(
@@ -1993,9 +2013,25 @@ def load_generic_io_requirements_artifact(project_root: Path) -> Dict[str, Dict[
     return load_generic_io_requirements(project_root=project_root)
 
 
+def _normalize_wireless_sink_generic_input_slots(value: Optional[Any]) -> int:
+    if value is None:
+        return int(
+            get_operation_port_profile(
+                POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
+            ).generic_input_slots
+        )
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError("wireless_sink_generic_input_slots must be a strict integer")
+    if value < 0:
+        raise ValueError("wireless_sink_generic_input_slots must be non-negative")
+    return int(value)
+
+
 def infer_certified_optional_lower_bounds(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
+    *,
+    wireless_sink_generic_input_slots: Optional[int] = None,
 ) -> Dict[str, int]:
     normalized_requirements = _normalize_generic_io_requirements_payload(
         generic_io_requirements
@@ -2004,10 +2040,8 @@ def infer_certified_optional_lower_bounds(
     required_counts: Dict[str, int] = {}
 
     if "protocol_storage_box" in templates:
-        slots_per_box = int(
-            get_operation_port_profile(
-                POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
-            ).generic_input_slots
+        slots_per_box = _normalize_wireless_sink_generic_input_slots(
+            wireless_sink_generic_input_slots
         )
         required_slots = sum(
             int(v)
@@ -2024,12 +2058,15 @@ def infer_certified_optional_lower_bounds(
 def infer_exact_required_pose_optional_counts(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
+    *,
+    wireless_sink_generic_input_slots: Optional[int] = None,
 ) -> Dict[str, int]:
     """Backward-compatible alias for certified-exact lower-bound inference."""
 
     return infer_certified_optional_lower_bounds(
         rules,
         generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     )
 
 
@@ -2154,6 +2191,7 @@ class ExactMasterCore:
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]]
     rules: Mapping[str, Any]
     generic_io_requirements: Mapping[str, Mapping[str, int]]
+    wireless_sink_generic_input_slots: int
     exact_required_pose_optional_counts: Mapping[str, int]
     build_stats: Mapping[str, Any]
     z_var_indices: Dict[str, Dict[int, int]]
@@ -2179,6 +2217,7 @@ class MasterPlacementModel:
         skip_power_coverage: bool = False,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
+        wireless_sink_generic_input_slots: Optional[int] = None,
         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
         exact_mode: Optional[bool] = None,
         solve_mode: Optional[str] = None,
@@ -2224,6 +2263,9 @@ class MasterPlacementModel:
         self.generic_io_requirements = _normalize_generic_io_requirements_payload(
             generic_io_requirements
         )
+        self.wireless_sink_generic_input_slots = _normalize_wireless_sink_generic_input_slots(
+            wireless_sink_generic_input_slots
+        )
         self._exact_required_pose_optional_counts = {
             str(k): int(v)
             for k, v in dict(exact_required_pose_optional_counts or {}).items()
@@ -2233,6 +2275,7 @@ class MasterPlacementModel:
             infer_certified_optional_lower_bounds(
                 self.rules,
                 self.generic_io_requirements,
+                wireless_sink_generic_input_slots=self.wireless_sink_generic_input_slots,
             )
             if self.exact_mode
             else {}
@@ -2485,6 +2528,7 @@ class MasterPlacementModel:
         skip_power_coverage: bool = False,
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
+        wireless_sink_generic_input_slots: Optional[int] = None,
         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     ) -> ExactMasterCore:
@@ -2497,6 +2541,7 @@ class MasterPlacementModel:
             skip_power_coverage=skip_power_coverage,
             enable_symmetry_breaking=enable_symmetry_breaking,
             generic_io_requirements=generic_io_requirements,
+            wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
             exact_required_pose_optional_counts=exact_required_pose_optional_counts,
             solve_mode="certified_exact",
             master_search_profile=master_search_profile,
@@ -2548,6 +2593,7 @@ class MasterPlacementModel:
             facility_pools=model.facility_pools,
             rules=model.rules,
             generic_io_requirements=model.generic_io_requirements,
+            wireless_sink_generic_input_slots=int(model.wireless_sink_generic_input_slots),
             exact_required_pose_optional_counts=dict(model._exact_required_pose_optional_counts),
             build_stats=build_stats,
             z_var_indices=model._current_z_var_indices(),
@@ -2639,6 +2685,7 @@ class MasterPlacementModel:
             skip_power_coverage=core.skip_power_coverage,
             enable_symmetry_breaking=core.enable_symmetry_breaking,
             generic_io_requirements=core.generic_io_requirements,
+            wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
             exact_required_pose_optional_counts=core.exact_required_pose_optional_counts,
             solve_mode="certified_exact",
             master_search_profile=normalized_master_search_profile,
@@ -5192,11 +5239,7 @@ class MasterPlacementModel:
         optional_bounds["protocol_storage_box"] = {
             "mode": "required_lower_bound",
             "required_generic_input_slots": int(required_generic_input_slots),
-            "slots_per_pose": int(
-                get_operation_port_profile(
-                    POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"]
-                ).generic_input_slots
-            ),
+            "slots_per_pose": int(self.wireless_sink_generic_input_slots),
             "lower": int(protocol_storage_box_count),
             "upper": None,
             "candidate_pose_count": len(protocol_box_terms),

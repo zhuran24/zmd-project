@@ -506,13 +506,27 @@ def _parse_cycle_group(group_id: str, raw_group: Any) -> CycleGroup:
     )
 
 
+def _strict_nonnegative_int(value: Any, field: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError(f"{field} must be an integer")
+    if value < 0:
+        raise ValueError(f"{field} must be non-negative")
+    return int(value)
+
+
 def _parse_utility_operation(operation_type: str, raw_utility: Any) -> UtilityOperation:
     utility = _mapping_or_empty(raw_utility)
     return UtilityOperation(
         operation_type=str(operation_type),
         facility_type=str(utility.get("facility_type", "")).strip(),
-        generic_input_slots=int(utility.get("generic_input_slots", 0)),
-        generic_output_slots=int(utility.get("generic_output_slots", 0)),
+        generic_input_slots=_strict_nonnegative_int(
+            utility.get("generic_input_slots", 0),
+            f"utility_operations.{operation_type}.generic_input_slots",
+        ),
+        generic_output_slots=_strict_nonnegative_int(
+            utility.get("generic_output_slots", 0),
+            f"utility_operations.{operation_type}.generic_output_slots",
+        ),
     )
 
 

@@ -54,6 +54,10 @@ def test_v83_binding_whole_layout_nogood_continues_lbbd(monkeypatch: pytest.Monk
         source_instances=[{"instance_id": "i", "facility_type": "T"}],
         grid_w=2,
         grid_h=2,
+        generic_io_requirements={
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        },
     )
     controller = bl.LBBDController(
         master=master,

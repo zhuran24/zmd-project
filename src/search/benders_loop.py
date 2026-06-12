@@ -1357,12 +1357,15 @@ def compute_exact_static_area_lower_bound(
     instances: Sequence[Mapping[str, Any]],
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
+    *,
+    wireless_sink_generic_input_slots: Optional[int] = None,
 ) -> int:
     total = compute_mandatory_area_lower_bound(instances, rules)
     templates = dict(rules.get("facility_templates", {}))
     optional_lower_bounds = infer_certified_optional_lower_bounds(
         rules,
         generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     )
     for facility_type, count in optional_lower_bounds.items():
         template = dict(templates[str(facility_type)])
@@ -1567,6 +1570,13 @@ class ExactSearchSession:
 
         instances, facility_pools, rules = load_project_data(project_root, solve_mode=solve_mode)
         generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+        wireless_sink_generic_input_slots = None
+        if generic_io_requirements.get("required_generic_inputs", {}):
+            from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+
+            wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
+                project_root=project_root
+            )
         artifact_hashes = compute_exact_artifact_hashes(project_root)
         core_started = time.perf_counter()
         core = MasterPlacementModel.build_exact_core(
@@ -1574,6 +1584,7 @@ class ExactSearchSession:
             facility_pools,
             rules,
             generic_io_requirements=generic_io_requirements,
+            wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
             master_search_profile=master_search_profile,
         )
         return cls(
@@ -4878,6 +4889,32 @@ class LBBDController:
         flow_status = flow_subproblem.build_and_solve(time_limit_ms=int(self.flow_seconds * 1000))
         return flow_status, set(flow_subproblem.extract_bottleneck_instances())
 
+    def _binding_generic_requirements_kwargs(self) -> Dict[str, Any]:
+        if getattr(self, "solve_mode", None) != "certified_exact":
+            return {}
+        generic_io_requirements = getattr(self.master, "generic_io_requirements", None)
+        if not isinstance(generic_io_requirements, Mapping):
+            raise RuntimeError(
+                "certified binding requires the master generic_io_requirements snapshot"
+            )
+        required_generic_outputs = generic_io_requirements.get(
+            "required_generic_outputs", {}
+        )
+        required_generic_inputs = generic_io_requirements.get(
+            "required_generic_inputs", {}
+        )
+        if not isinstance(required_generic_outputs, Mapping) or not isinstance(
+            required_generic_inputs, Mapping
+        ):
+            raise RuntimeError(
+                "certified binding requires normalized master generic IO sections"
+            )
+        return {
+            "required_generic_outputs": dict(required_generic_outputs),
+            "required_generic_inputs": dict(required_generic_inputs),
+        }
+
+
     def _run_exact_binding_and_routing(
         self,
         *,
@@ -4912,6 +4949,7 @@ class LBBDController:
             self.master.source_instances,
             project_root=self.project_root,
             routing_context=_rab_sep_routing_context,
+            **LBBDController._binding_generic_requirements_kwargs(self),
         )
         binding_model.build()
         self._used_routing_core_reuse = False
@@ -5815,6 +5853,7 @@ class LBBDController:
                 self.master.facility_pools,
                 self.master.source_instances,
                 project_root=self.project_root,
+                **LBBDController._binding_generic_requirements_kwargs(self),
             )
             retry_model.build()
             retry_status = retry_model.solve(time_limit_seconds=self.binding_seconds)
@@ -6169,6 +6208,7 @@ def run_benders_for_ghost_rect(
             instances,
             rules,
             exact_session.core.generic_io_requirements,
+            wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
         )
     if static_area_lower_bound + int(ghost_w) * int(ghost_h) > grid_area:
         _publish_last_run_metadata(
@@ -6259,7 +6299,9 @@ def run_benders_for_ghost_rect(
             # 系统性 INFEASIBLE (master 不出 storage box).
             from src.models.master_model import infer_exact_required_pose_optional_counts
             _inferred_counts = infer_exact_required_pose_optional_counts(
-                exact_session.core.rules, exact_session.core.generic_io_requirements
+                exact_session.core.rules,
+                exact_session.core.generic_io_requirements,
+                wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
             )
             master = MasterPlacementModel(
                 list(exact_session.core.source_instances),
@@ -6269,6 +6311,7 @@ def run_benders_for_ghost_rect(
                 skip_power_coverage=bool(exact_session.core.skip_power_coverage),
                 enable_symmetry_breaking=bool(exact_session.core.enable_symmetry_breaking),
                 generic_io_requirements=exact_session.core.generic_io_requirements,
+                wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
                 exact_required_pose_optional_counts=_inferred_counts,
                 solve_mode="certified_exact",
                 master_search_profile=master_search_profile,

@@ -25,6 +25,7 @@ from src.models.master_model import (
     POSE_LEVEL_OPTIONAL_OPERATIONS,
     POSE_LEVEL_OPTIONAL_TEMPLATES,
     infer_certified_optional_lower_bounds,
+    load_generic_io_requirements_artifact,
 )
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
@@ -1137,19 +1138,24 @@ def _best_empty_rect_objective(
 
 def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, int]:
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
-    generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
-    generic_io_requirements = _loads_strict_json_object(
-        generic_path.read_text(encoding="utf-8")
-    )
+    generic_io_requirements = load_generic_io_requirements_artifact(project_root)
     if not isinstance(rules, Mapping):
         raise ValueError("canonical_rules must be a JSON object")
     if not isinstance(generic_io_requirements, Mapping):
         raise ValueError("generic_io_requirements must be a JSON object")
+    wireless_sink_generic_input_slots = None
+    if generic_io_requirements.get("required_generic_inputs", {}):
+        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+
+        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
+            project_root=project_root
+        )
     lower_bounds: Dict[str, int] = {}
     for facility_type, count in infer_certified_optional_lower_bounds(
         rules,
         generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     ).items():
         required_count = int(count)
         if required_count > 0:
@@ -1161,12 +1167,9 @@ def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[
     if project_root is None:
         return None
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
-    generic_path = project_root / EXACT_HASH_FILES["generic_io_requirements"]
     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
     instances = _load_validated_mandatory_exact_instances(project_root)
-    generic_io_requirements = _loads_strict_json_object(
-        generic_path.read_text(encoding="utf-8")
-    )
+    generic_io_requirements = load_generic_io_requirements_artifact(project_root)
     if not isinstance(rules, Mapping):
         raise ValueError("canonical_rules must be a JSON object")
     if not isinstance(generic_io_requirements, Mapping):
@@ -1179,9 +1182,17 @@ def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[
         template = templates[facility_type]
         dims = dict(template["dimensions"])
         lower_bound += int(dims["w"]) * int(dims["h"])
+    wireless_sink_generic_input_slots = None
+    if generic_io_requirements.get("required_generic_inputs", {}):
+        from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+
+        wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
+            project_root=project_root
+        )
     for facility_type, count in infer_certified_optional_lower_bounds(
         rules,
         generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     ).items():
         template = dict(templates[str(facility_type)])
         dims = dict(template["dimensions"])

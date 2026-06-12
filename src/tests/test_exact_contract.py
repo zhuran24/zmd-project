@@ -43,8 +43,9 @@ from src.models.cut_manager import (
     RUN_STATUS_UNKNOWN,
     RUN_STATUS_UNPROVEN,
 )
-from src.models.master_model import MasterPlacementModel
+from src.models.master_model import MasterPlacementModel, load_project_data
 import src.search.benders_loop as benders_loop_module
+import src.search.exact_campaign as exact_campaign_module
 import src.search.outer_search as outer_search_module
 from src.search.benders_loop import collect_certification_blockers, run_benders_for_ghost_rect
 from src.search.campaign_telemetry import (
@@ -114,6 +115,144 @@ def _build_toy_exact_project(project_root: Path) -> Path:
     return project_root
 
 
+def test_certified_project_loader_rejects_duplicate_keys_in_mandatory_artifact(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "duplicate_mandatory_keys")
+    (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text(
+        '[{"instance_id":"tiny_001",'
+        '"instance_id":"tiny_002",'
+        '"facility_type":"tiny_facility",'
+        '"is_mandatory":true,'
+        '"bound_type":"exact"}]',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate JSON key"):
+        load_project_data(project_root, solve_mode="certified_exact")
+
+
+def test_certified_project_loader_rejects_nonstandard_json_constants(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "nonstandard_candidate_constant")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
+        '{"facility_pools":{"tiny_facility":[{'
+        '"pose_id":"tiny_left",'
+        '"anchor":{"x":0,"y":0},'
+        '"occupied_cells":[[0,0]],'
+        '"input_port_cells":[],'
+        '"output_port_cells":[],'
+        '"power_coverage_cells":NaN}]}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="invalid JSON constant"):
+        load_project_data(project_root, solve_mode="certified_exact")
+
+
+def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
+    controller = benders_loop_module.LBBDController.__new__(
+        benders_loop_module.LBBDController
+    )
+    controller.solve_mode = "certified_exact"
+    controller.master = SimpleNamespace(
+        generic_io_requirements={
+            "required_generic_outputs": {"source_ore": 1},
+            "required_generic_inputs": {"valley_battery": 2},
+        }
+    )
+
+    assert controller._binding_generic_requirements_kwargs() == {
+        "required_generic_outputs": {"source_ore": 1},
+        "required_generic_inputs": {"valley_battery": 2},
+    }
+
+    controller.solve_mode = "exploratory"
+    assert controller._binding_generic_requirements_kwargs() == {}
+
+
+def test_certified_retry_binding_receives_master_generic_io_snapshot(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured_kwargs: dict[str, object] = {}
+
+    class CapturingBindingModel:
+        def __init__(self, *_args, **kwargs):
+            captured_kwargs.update(kwargs)
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, **_kwargs) -> str:
+            return "FEASIBLE"
+
+        def extract_conflict_summary(self) -> dict:
+            return {
+                "overload_separation_enabled": False,
+                "overload_nogoods_added": 0,
+            }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", CapturingBindingModel)
+    controller = benders_loop_module.LBBDController.__new__(
+        benders_loop_module.LBBDController
+    )
+    controller.solve_mode = "certified_exact"
+    controller.project_root = tmp_path
+    controller.binding_seconds = 1.0
+    controller._emit_heartbeat = lambda **_kwargs: None
+    controller.master = SimpleNamespace(
+        facility_pools={},
+        source_instances=[],
+        generic_io_requirements={
+            "required_generic_outputs": {"source_ore": 1},
+            "required_generic_inputs": {"valley_battery": 2},
+        },
+    )
+
+    _model, status = benders_loop_module.LBBDController._retry_binding_without_overload_separation(
+        controller,
+        solution={},
+        iteration=0,
+    )
+
+    assert status == "FEASIBLE"
+    assert captured_kwargs["required_generic_outputs"] == {"source_ore": 1}
+    assert captured_kwargs["required_generic_inputs"] == {"valley_battery": 2}
+
+
+def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> None:
+    rules = {
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}}
+        }
+    }
+    generic_io_requirements = {
+        "required_generic_outputs": {},
+        "required_generic_inputs": {"valley_battery": 4},
+    }
+
+    assert (
+        benders_loop_module.compute_exact_static_area_lower_bound(
+            [],
+            rules,
+            generic_io_requirements,
+            wireless_sink_generic_input_slots=4,
+        )
+        == 9
+    )
+    assert (
+        benders_loop_module.compute_exact_static_area_lower_bound(
+            [],
+            rules,
+            generic_io_requirements,
+            wireless_sink_generic_input_slots=2,
+        )
+        == 18
+    )
+
+
 def _build_required_protocol_box_project(project_root: Path) -> Path:
     data_dir = project_root / "data" / "preprocessed"
     rules_dir = project_root / "rules"
@@ -167,7 +306,35 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
             "required_generic_inputs": {"valley_battery": 1},
         },
     )
+    _write_json(
+        rules_dir / "preprocess_plan.json",
+        {
+            "utility_operations": {
+                "wireless_sink": {
+                    "facility_type": "protocol_storage_box",
+                    "generic_input_slots": 3,
+                    "generic_output_slots": 0,
+                }
+            }
+        },
+    )
     return project_root
+
+
+def test_certified_campaign_optional_bounds_delegate_generic_io_loader(tmp_path: Path) -> None:
+    project_root = _build_required_protocol_box_project(
+        tmp_path / "campaign_generic_io_role_check"
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
+        {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {"unregistered_sink": 1},
+        },
+    )
+
+    with pytest.raises(KeyError, match="generic input commodity"):
+        exact_campaign_module._load_exact_required_optional_lower_bounds(project_root)
 
 
 def _build_multi_pose_exact_project(
