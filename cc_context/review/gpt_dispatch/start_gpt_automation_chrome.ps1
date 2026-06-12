@@ -66,7 +66,12 @@ if ($App) {
         Get-Process msedge -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
         Start-Sleep -Seconds 1
     }
-    Start-Process $edge -ArgumentList "--remote-debugging-port=$port", "--restore-last-session"
+    # 防后台节流三旗标 (2026-06-12): 两个 dispatch 并发时被节流的后台 tab 前端
+    # 停止渲染 DOM (停在回复第一个字符), 脚本读到假状态。带旗标启动后并发可用。
+    Start-Process $edge -ArgumentList "--remote-debugging-port=$port", "--restore-last-session", `
+        "--disable-background-timer-throttling", `
+        "--disable-backgrounding-occluded-windows", `
+        "--disable-renderer-backgrounding"
 } else {
     $profileDir = "C:\Users\22957\.zmd_gpt_automation_profile_$Browser"
     if ($Browser -eq "chrome" -and -not (Test-Path $profileDir) -and (Test-Path "C:\Users\22957\.zmd_gpt_automation_profile")) {
@@ -92,6 +97,9 @@ if ($App) {
         "--user-data-dir=$profileDir",
         "--no-first-run",
         "--no-default-browser-check",
+        "--disable-background-timer-throttling",
+        "--disable-backgrounding-occluded-windows",
+        "--disable-renderer-backgrounding",
         "https://chatgpt.com"
     )
     if ($firstRun) {
