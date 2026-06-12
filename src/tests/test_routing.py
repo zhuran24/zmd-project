@@ -227,6 +227,85 @@ def test_port_connector_cell_cannot_be_reused_as_routing_cell(project_root):
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
 
 
+def test_same_commodity_disconnected_source_sink_islands_are_routable(project_root):
+    """Same-commodity islands are valid when each island has a source and a sink."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import (
+        RoutingGrid,
+        RoutingSubproblem,
+        analyze_exact_routing_domain,
+    )
+
+    allowed = {(1, 0), (2, 0), (3, 0), (1, 10), (2, 10), (3, 10)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink_a", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "src_b", "x": 0, "y": 10, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink_b", "x": 4, "y": 10, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    grid = RoutingGrid(occupied, port_specs)
+
+    precheck = analyze_exact_routing_domain(grid)
+    assert precheck["status"] == "feasible"
+    assert precheck["domain_stats"]["commodity_component_cells"]["ore"] == len(allowed)
+    assert precheck["domain_stats"]["commodity_active_cells"]["ore"] == len(allowed)
+
+    routing = RoutingSubproblem(grid, ["ore"])
+    routing.build()
+
+    assert routing.build_stats["port_adherence"]["exact_links"] == len(port_specs)
+    assert routing.solve(time_limit=5.0) == "FEASIBLE"
+    assert routing.build_stats["last_solve"]["connectivity"]["failure_count"] == 0
+
+
+def test_duplicate_terminal_front_keys_fail_closed(project_root):
+    """External port_specs must not collapse two physical ports into one exact-one key."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import (
+        RoutingGrid,
+        RoutingSubproblem,
+        analyze_exact_routing_domain,
+    )
+
+    allowed = {(1, 0), (2, 0), (3, 0)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "src_b", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    grid = RoutingGrid(occupied, port_specs)
+
+    precheck = analyze_exact_routing_domain(grid)
+    assert precheck["status"] == "front_blocked"
+    assert precheck["blocked_ports"][0]["reason"] == "duplicate_terminal_front_key"
+
+    routing = RoutingSubproblem(
+        grid,
+        ["ore"],
+        domain_analysis=_tiny_domain_analysis({"ore": allowed}),
+    )
+    routing.build()
+
+    assert routing.build_stats["duplicate_terminal_front_keys"][0]["multiplicity"] == 2
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+
+
 def test_packaging_battery_pose_binding_domain(project_root):
     """6x4 电池封装机的 pose-level 绑定域应可被精确枚举。"""
     import sys

@@ -1,0 +1,291 @@
+--- a/src/models/routing_subproblem.py
++++ b/src/models/routing_subproblem.py
+@@ -131,6 +131,59 @@
+         if _in_grid_cell(cell):
+             cells.add(cell)
+     return cells
++
++
++def _duplicate_terminal_front_keys(
++    port_specs: Sequence[Mapping[str, Any]],
++) -> List[Dict[str, Any]]:
++    """Detect repeated physical-port terminal keys.
++
++    Port adherence is exact-one per physical port.  Canonical placement geometry
++    must not generate two ports with the same front cell, terminal direction,
++    commodity, and type; if an external/future port_specs entry does, reusing the
++    same exact-one row would collapse multiplicity.  Fail closed instead.
++    """
++
++    by_key: Dict[Tuple[int, int, str, str, str], List[Dict[str, Any]]] = defaultdict(list)
++    for spec in port_specs:
++        px = int(spec["x"])
++        py = int(spec["y"])
++        direction = str(spec["dir"])
++        commodity = str(spec.get("commodity", ""))
++        port_type = str(spec.get("type", ""))
++        dx, dy = DIR_DELTA[direction]
++        fx, fy = px + dx, py + dy
++        terminal_dir = DIR_OPP[direction]
++        by_key[(fx, fy, terminal_dir, commodity, port_type)].append(
++            {
++                "instance_id": str(spec.get("instance_id", "")),
++                "port_cell": [px, py],
++                "front_cell": [fx, fy],
++                "dir": direction,
++                "terminal_dir": terminal_dir,
++                "commodity": commodity,
++                "type": port_type,
++            }
++        )
++
++    duplicates: List[Dict[str, Any]] = []
++    for (fx, fy, terminal_dir, commodity, port_type), specs_for_key in sorted(by_key.items()):
++        if len(specs_for_key) <= 1:
++            continue
++        instance_ids = [str(item["instance_id"]) for item in specs_for_key if item.get("instance_id")]
++        duplicates.append(
++            {
++                "reason": "duplicate_terminal_front_key",
++                "commodity": commodity,
++                "type": port_type,
++                "front_cell": [fx, fy],
++                "terminal_dir": terminal_dir,
++                "multiplicity": len(specs_for_key),
++                "instance_ids": instance_ids,
++                "ports": specs_for_key,
++            }
++        )
++    return duplicates
+ 
+ 
+ def _filter_free_neighbors(
+@@ -342,6 +395,27 @@
+         port_specs=port_specs,
+         occupied_owner_by_cell=occupied_owner_by_cell,
+     )
++    duplicate_terminal_keys = _duplicate_terminal_front_keys(resolved_port_specs)
++    if duplicate_terminal_keys:
++        placement_level_conflict_set: List[str] = []
++        for duplicate in duplicate_terminal_keys:
++            for instance_id in duplicate.get("instance_ids", []):
++                if instance_id and instance_id not in placement_level_conflict_set:
++                    placement_level_conflict_set.append(str(instance_id))
++        domain_stats = _empty_domain_stats()
++        domain_stats["blocked_ports"] = len(duplicate_terminal_keys)
++        return {
++            "status": "front_blocked",
++            "binding_selection_safe_reject": True,
++            "placement_level_conflict_set": placement_level_conflict_set,
++            "blocked_ports": duplicate_terminal_keys,
++            "disconnected_commodities": [],
++            "commodity_front_metadata": {},
++            "commodity_component_cells": {},
++            "commodity_active_cells": {},
++            "domain_stats": domain_stats,
++        }
++
+     blocked_ports: List[Dict[str, Any]] = []
+     commodity_fronts: Dict[str, Set[Tuple[int, int]]] = defaultdict(set)
+     commodity_source_fronts: Dict[str, Set[Tuple[int, int]]] = defaultdict(set)
+@@ -424,27 +498,79 @@
+     commodity_active_cells: Dict[str, Set[Tuple[int, int]]] = {}
+ 
+     for commodity, front_cells in sorted(commodity_fronts.items()):
+-        component_ids = {component_by_cell.get(cell, -1) for cell in front_cells}
+-        if len(component_ids) > 1:
++        source_fronts = set(commodity_source_fronts.get(commodity, set()))
++        sink_fronts = set(commodity_sink_fronts.get(commodity, set()))
++        fronts_by_component: Dict[int, Set[Tuple[int, int]]] = defaultdict(set)
++        for cell in front_cells:
++            fronts_by_component[component_by_cell.get(cell, -1)].add(cell)
++
++        if not source_fronts or not sink_fronts:
++            component_ids = set(fronts_by_component)
++            if len(component_ids) > 1:
++                disconnected_commodities.append(
++                    {
++                        "commodity": commodity,
++                        "front_cells": _sorted_cells(front_cells),
++                        "component_ids": sorted(component_ids),
++                    }
++                )
++                commodity_component_cells[commodity] = set()
++                commodity_active_cells[commodity] = set()
++                continue
++
++            component_id = next(iter(component_ids), -1)
++            component_cells = set(cells_by_component.get(component_id, set()))
++            commodity_component_cells[commodity] = component_cells
++            commodity_active_cells[commodity] = _peel_terminal_core(
++                component_cells,
++                set(front_cells),
++                free_neighbors_by_cell=free_neighbors_by_cell,
++            )
++            continue
++
++        missing_counterpart_components: List[Dict[str, Any]] = []
++        component_union: Set[Tuple[int, int]] = set()
++        active_union: Set[Tuple[int, int]] = set()
++
++        for component_id, component_fronts in sorted(fronts_by_component.items()):
++            component_sources = component_fronts & source_fronts
++            component_sinks = component_fronts & sink_fronts
++            if not component_sources or not component_sinks:
++                missing_counterpart_components.append(
++                    {
++                        "component_id": component_id,
++                        "front_cells": _sorted_cells(component_fronts),
++                        "source_front_cells": _sorted_cells(component_sources),
++                        "sink_front_cells": _sorted_cells(component_sinks),
++                    }
++                )
++                continue
++
++            component_cells = set(cells_by_component.get(component_id, set()))
++            component_union.update(component_cells)
++            active_union.update(
++                _peel_terminal_core(
++                    component_cells,
++                    component_fronts,
++                    free_neighbors_by_cell=free_neighbors_by_cell,
++                )
++            )
++
++        if missing_counterpart_components:
+             disconnected_commodities.append(
+                 {
+                     "commodity": commodity,
+                     "front_cells": _sorted_cells(front_cells),
+-                    "component_ids": sorted(component_ids),
++                    "component_ids": sorted(fronts_by_component),
++                    "components": missing_counterpart_components,
+                 }
+             )
+             commodity_component_cells[commodity] = set()
+             commodity_active_cells[commodity] = set()
+             continue
+ 
+-        component_id = next(iter(component_ids), -1)
+-        component_cells = set(cells_by_component.get(component_id, set()))
+-        commodity_component_cells[commodity] = component_cells
+-        commodity_active_cells[commodity] = _peel_terminal_core(
+-            component_cells,
+-            set(front_cells),
+-            free_neighbors_by_cell=free_neighbors_by_cell,
+-        )
++        commodity_component_cells[commodity] = component_union
++        commodity_active_cells[commodity] = active_union
+ 
+     domain_stats = {
+         "commodity_component_cells": {
+@@ -632,6 +758,7 @@
+             commodity: set() for commodity in self.commodities
+         }
+ 
++        self._duplicate_terminal_front_keys = _duplicate_terminal_front_keys(self.grid.port_specs)
+         self._source_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
+         self._sink_port_fronts: Dict[Tuple[int, int, str, str], int] = defaultdict(int)
+         self._index_port_fronts()
+@@ -683,6 +810,13 @@
+             )
+         )
+         self._bind_domain_analysis(analysis)
++
++        if self._duplicate_terminal_front_keys:
++            self.model.Add(0 == 1)
++            self.build_stats["duplicate_terminal_front_keys"] = list(self._duplicate_terminal_front_keys)
++            elapsed = time.time() - t0
++            print(f"[Routing Model] build {elapsed:.1f}s")
++            return
+ 
+         if str(analysis.get("status", "feasible")) != "feasible":
+             self.model.Add(0 == 1)
+--- a/src/tests/test_routing.py
++++ b/src/tests/test_routing.py
+@@ -224,6 +224,85 @@
+     routing = RoutingSubproblem(grid, ["ore", "water"])
+     routing.build()
+ 
++    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
++
++
++def test_same_commodity_disconnected_source_sink_islands_are_routable(project_root):
++    """Same-commodity islands are valid when each island has a source and a sink."""
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.models.routing_subproblem import (
++        RoutingGrid,
++        RoutingSubproblem,
++        analyze_exact_routing_domain,
++    )
++
++    allowed = {(1, 0), (2, 0), (3, 0), (1, 10), (2, 10), (3, 10)}
++    occupied = {
++        (x, y)
++        for x in range(70)
++        for y in range(70)
++        if (x, y) not in allowed
++    }
++    port_specs = [
++        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
++        {"instance_id": "sink_a", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
++        {"instance_id": "src_b", "x": 0, "y": 10, "dir": "E", "type": "out", "commodity": "ore"},
++        {"instance_id": "sink_b", "x": 4, "y": 10, "dir": "W", "type": "in", "commodity": "ore"},
++    ]
++    grid = RoutingGrid(occupied, port_specs)
++
++    precheck = analyze_exact_routing_domain(grid)
++    assert precheck["status"] == "feasible"
++    assert precheck["domain_stats"]["commodity_component_cells"]["ore"] == len(allowed)
++    assert precheck["domain_stats"]["commodity_active_cells"]["ore"] == len(allowed)
++
++    routing = RoutingSubproblem(grid, ["ore"])
++    routing.build()
++
++    assert routing.build_stats["port_adherence"]["exact_links"] == len(port_specs)
++    assert routing.solve(time_limit=5.0) == "FEASIBLE"
++    assert routing.build_stats["last_solve"]["connectivity"]["failure_count"] == 0
++
++
++def test_duplicate_terminal_front_keys_fail_closed(project_root):
++    """External port_specs must not collapse two physical ports into one exact-one key."""
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.models.routing_subproblem import (
++        RoutingGrid,
++        RoutingSubproblem,
++        analyze_exact_routing_domain,
++    )
++
++    allowed = {(1, 0), (2, 0), (3, 0)}
++    occupied = {
++        (x, y)
++        for x in range(70)
++        for y in range(70)
++        if (x, y) not in allowed
++    }
++    port_specs = [
++        {"instance_id": "src_a", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
++        {"instance_id": "src_b", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
++        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
++    ]
++    grid = RoutingGrid(occupied, port_specs)
++
++    precheck = analyze_exact_routing_domain(grid)
++    assert precheck["status"] == "front_blocked"
++    assert precheck["blocked_ports"][0]["reason"] == "duplicate_terminal_front_key"
++
++    routing = RoutingSubproblem(
++        grid,
++        ["ore"],
++        domain_analysis=_tiny_domain_analysis({"ore": allowed}),
++    )
++    routing.build()
++
++    assert routing.build_stats["duplicate_terminal_front_keys"][0]["multiplicity"] == 2
+     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+ 
+ 
