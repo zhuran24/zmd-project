@@ -34,7 +34,7 @@ The repository has now performed a **partial canonical-rules consolidation**:
 - `canonical_rules.json` carries `commodity_metadata`
 - `preprocess_plan.json` remains the additive plan for cycle groups and utility operations only — canonical recipe/target/commodity overrides are rejected fail-closed (R6-F-01), and the plan is bound into the exact campaign hash closure + preflight frozen registry
 
-This reduces duplicated truth while keeping the certified runtime input surface unchanged.
+This reduces duplicated truth while keeping the default frozen preprocess placement/IO artifact surface unchanged. `preprocess_plan.json` itself is explicitly a hash-bound runtime semantic input (operation-profile and utility-slot derivation, R6-F-01) — it is not a shadow override layer, and "unchanged surface" must not be read as "no plan bytes affect certified runtime semantics".
 
 ## 4. Frozen-compatible guarantee
 
@@ -42,7 +42,7 @@ The success criterion remains:
 
 - remove recipe/template/profile hardcoding from preprocess code paths
 - regenerate the same frozen business results
-- keep certified runtime reading the same frozen preprocess artifacts
+- keep certified runtime reading the same frozen preprocess placement/IO artifacts, with the additive plan separately hash-bound for operation-profile and utility-slot semantics
 
 ## 5. Shadow parity and audit outputs
 
