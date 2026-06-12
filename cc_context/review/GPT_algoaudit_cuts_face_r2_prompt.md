@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `{PACKAGE_NAME}`, sha256 `{PACKAGE_SHA256}`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_cuts_r2_snapshot_db740254.zip`, sha256 `db740254b993c2c5870698e220b10c7110a6624dfe19405b67cae1df653bc144`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 ## 项目一句话
 
@@ -48,7 +48,8 @@ cut 添加到哪个模型实例 (per-candidate master? 跨 candidate?)? PROJECT_
 
 ## 自验环境与已知基线
 
-- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2927 passed, 0 failed)**; 跑不完就跑专项 (src/tests/cuts/ + test_p0_certified_soundness_fixes) + 如实声明 (`-p no:randomly`)。
+- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2949 passed, 0 failed)**; 跑不完就跑专项 (src/tests/cuts/ + test_p0_certified_soundness_fixes) + 如实声明 (`-p no:randomly`)。
+- 注意: 包内带着同日其它面刚落的修复 (benders_loop 的 F-BL-R3 状态契约 / routing 的 F-RT-R2 极性与边守恒 / binding 的 F-BIND 系列) — 修复本体不在本面范围, 但它们与 cut 生成/replay 的交互在 Q3 范围内。
 - `python scripts/check_p1_2_proof_obligations.py` pass。
 - finding 必须带可复现 probe 或严谨论证 (file:line); over-cut 类 finding 给出被误切的可行解实例; 实证推翻你的怀疑就不要报。
 
