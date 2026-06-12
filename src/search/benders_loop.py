@@ -5763,9 +5763,29 @@ class LBBDController:
                 }
                 return RUN_STATUS_UNKNOWN, None
 
+            if routing_status != "INFEASIBLE":
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "FEASIBLE",
+                    "routing_status": str(routing_status),
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "subproblem_status_contract_violation": "unexpected_routing_status",
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_summary": dict(routing_model.build_stats),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+
             # B1 Phase 6 第 3 条: env on 时 cap binding alt loop iterations,
-            # 防 Phase 4 那种 42 min 卡死. enumerated_bindings >= cap → break
-            # 让 master whole-layout cut + iter continue.
+            # 防 Phase 4 那种 42 min 卡死. 但 cap 只证明 search budget
+            # 耗尽, 不证明剩余 binding alternatives 不可行；必须 fail-closed.
             _b1_binding_alt_cap_str = os.environ.get(
                 "EXACT_B1_BINDING_ALT_CAP", ""
             ).strip()
@@ -5775,7 +5795,27 @@ class LBBDController:
             except ValueError:
                 _b1_binding_alt_cap = 0
             _exceeded_cap = _b1_binding_alt_cap > 0 and enumerated_bindings >= _b1_binding_alt_cap
-            if not _exceeded_cap and self._binding_has_alternatives(binding_model):
+            has_binding_alternatives = self._binding_has_alternatives(binding_model)
+            if _exceeded_cap and has_binding_alternatives:
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "ALT_CAP_REACHED",
+                    "routing_status": "INFEASIBLE",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_alternative_cap": int(_b1_binding_alt_cap),
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_summary": dict(routing_model.build_stats),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+            if has_binding_alternatives:
                 binding_model.add_nogood_cut(selection)
                 self._emit_heartbeat(
                     stage="binding_resolve",

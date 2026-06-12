@@ -36,6 +36,9 @@ EXCLUDED_DIR_NAMES = {
     "node_modules",
     ".venv",
     ".upstream_clones",
+    # 外发产物堆放区: 历史 snapshot 包 (sha 唯一名副本) + GPT 交付目录。
+    # 入包 = 自引用套娃, 2026-06-12 实测包从 54MB 指数膨胀到 818MB。
+    "补丁包",
 }
 EXCLUDED_FILE_SUFFIXES = {".pyc"}
 
