@@ -254,6 +254,107 @@ def test_input_port_adherence_uses_direction_toward_sink_port():
     assert status == "FEASIBLE", f"expected straight source-to-sink corridor, got {status}"
 
 
+def test_patch_routing_keeps_external_connector_when_front_cell_is_inside_patch():
+    """A port connector just outside the patch is still a patch terminal if its front is inside.
+
+    Full routing injects/consumes flow on the front cell, not on the occupied
+    connector cell.  Dropping a front-in-patch external connector would make the
+    patch model stricter than full routing and could create a false infeasible
+    PCR certificate.
+    """
+    from src.models.patch_routing_core import (
+        PatchPortSpec, PatchRoutingCore, PatchSpec, PoseAssumption,
+    )
+    from src.models.routing_subproblem import GRID_H, GRID_W, RoutingGrid, RoutingSubproblem
+
+    ports = [
+        PatchPortSpec(instance_id="src", x=0, y=0, direction="E", commodity="ore", type="out", pose_idx=0),
+        PatchPortSpec(instance_id="sink", x=3, y=0, direction="W", commodity="ore", type="in", pose_idx=0),
+    ]
+    assumptions = [
+        PoseAssumption("src", 0, "src_p0", "assum_src"),
+        PoseAssumption("sink", 0, "sink_p0", "assum_sink"),
+    ]
+
+    full_ports = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "commodity": "ore", "type": "out"},
+        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "commodity": "ore", "type": "in"},
+    ]
+    free_corridor = {(1, 0), (2, 0)}
+    full_occupied = {
+        (x, y)
+        for x in range(GRID_W)
+        for y in range(GRID_H)
+        if (x, y) not in free_corridor
+    }
+    full = RoutingSubproblem(RoutingGrid(full_occupied, full_ports), ["ore"])
+    full.build()
+    assert full.solve(time_limit=5.0) == "FEASIBLE"
+
+    patch_cells = frozenset({(1, 0), (2, 0), (3, 0)})
+    core = PatchRoutingCore(
+        patch_spec=PatchSpec.from_cells("external_connector_front", patch_cells),
+        full_grid_occupied={(0, 0), (3, 0)},
+        full_grid_active_cells={"ore": set(free_corridor)},
+        patch_port_specs=ports,
+        pose_assumptions=assumptions,
+        boundary_relaxation=False,
+    )
+    core.build()
+    assert dict(core._patch_port_fronts_source) == {(1, 0, "W", "ore"): 1}
+    assert dict(core._patch_port_fronts_sink) == {(2, 0, "E", "ore"): 1}
+    assert core.solve(time_limit=2.0) == "FEASIBLE"
+
+
+def test_patch_separator_includes_external_connector_with_front_cell_in_patch():
+    """Separator support and patch ports must include external connectors by front cell."""
+    from src.search.patch_conflict_separator import _PatchCandidateRecord, _build_patch_inputs
+
+    placement_solution = {
+        "src": {"facility_type": "source", "pose_idx": 0},
+        "sink": {"facility_type": "sink", "pose_idx": 0},
+    }
+    facility_pools = {
+        "source": [
+            {
+                "occupied_cells": [(0, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 0, "y": 0, "dir": "E", "commodity": "ore"}],
+            }
+        ],
+        "sink": [
+            {
+                "occupied_cells": [(3, 0)],
+                "input_port_cells": [{"x": 3, "y": 0, "dir": "W", "commodity": "ore"}],
+                "output_port_cells": [],
+            }
+        ],
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "commodity": "ore", "type": "out", "pose_idx": 0},
+        {"instance_id": "sink", "x": 3, "y": 0, "dir": "W", "commodity": "ore", "type": "in", "pose_idx": 0},
+    ]
+    candidate = _PatchCandidateRecord(
+        patch_id="front_cell_patch",
+        cells=frozenset({(1, 0), (2, 0), (3, 0)}),
+        kind="unit",
+        score=1.0,
+        source_witness={},
+    )
+
+    _spec, _occupied, _active, patch_ports, assumptions, support_cells = _build_patch_inputs(
+        candidate,
+        placement_solution,
+        facility_pools,
+        port_specs,
+        grid_w=5,
+        grid_h=5,
+    )
+    assert {pp.instance_id for pp in patch_ports} == {"src", "sink"}
+    assert {pa.instance_id for pa in assumptions} == {"src", "sink"}
+    assert (0, 0) in support_cells
+
+
 def test_patch_core_cut_support_includes_constant_occupancy_blocker():
     """A blocker encoded as patch occupancy must appear in the lifted master cut support.
 
@@ -416,6 +517,25 @@ def test_build_local_pose_signature_only_intersecting_geometry():
     sig = build_local_pose_signature(facility_type="X", operation_type="op", pose=pose, patch_cells=patch_cells)
     assert sig.footprint_in_patch == frozenset({(0, 0), (1, 0)})
     assert sig.ports_in_patch == ((0, 0, "N", "iron", "in"),)
+
+
+def test_build_local_pose_signature_keeps_external_port_with_front_inside_patch():
+    """Signature lifting must distinguish a connector outside patch whose terminal front is inside."""
+    from src.models.patch_routing_core import build_local_pose_signature
+
+    pose = {
+        "occupied_cells": [(0, 0)],
+        "input_port_cells": [],
+        "output_port_cells": [{"x": 0, "y": 0, "dir": "E", "commodity": "iron"}],
+    }
+    sig = build_local_pose_signature(
+        facility_type="X",
+        operation_type="op",
+        pose=pose,
+        patch_cells=frozenset({(1, 0), (2, 0)}),
+    )
+    assert sig.footprint_in_patch == frozenset()
+    assert sig.ports_in_patch == ((0, 0, "E", "iron", "out"),)
 
 
 def test_pose_local_signature_equivalence():

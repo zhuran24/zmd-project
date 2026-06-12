@@ -125,11 +125,12 @@ def build_local_pose_signature(
 ) -> PoseLocalSignature:
     """Compute the patch-local signature of a pose.
 
-    Only patch-overlapping geometry contributes; ports whose port_cell is outside the
-    patch are dropped because they are not constrained by the patch router. The
-    resulting signature is the equivalence class under "same patch routing
-    requirements", which is exactly the relation that justifies a single core cut
-    covering multiple poses.
+    Only patch-overlapping geometry contributes.  A port contributes when either
+    its physical connector cell or its terminal front cell intersects the patch:
+    a connector just outside the patch can still inject/consume flow on a front
+    cell inside the patch router.  The resulting signature is the equivalence
+    class under "same patch routing requirements", which is exactly the relation
+    that justifies a single core cut covering multiple poses.
     """
     occupied = pose.get("occupied_cells") or []
     footprint = frozenset(
@@ -142,9 +143,11 @@ def build_local_pose_signature(
         for port in pose.get(side_key, []) or []:
             x = int(port["x"])
             y = int(port["y"])
-            if (x, y) not in patch_cells:
-                continue
             d = str(port.get("dir", ""))
+            dx, dy = DIR_DELTA.get(d, (0, 0))
+            fx, fy = x + dx, y + dy
+            if (x, y) not in patch_cells and (fx, fy) not in patch_cells:
+                continue
             commodity = str(port.get("commodity", ""))
             port_entries.append((x, y, d, commodity, side_type))
     port_entries.sort()
@@ -320,12 +323,9 @@ class PatchRoutingCore:
             self._patch_active_cells_by_commodity[commodity] = full_active & self._patch_free_cells
 
     def _index_port_fronts(self) -> None:
-        """Patch 内 port 的 front cell — 跟 routing_subproblem._index_port_fronts 同语义."""
+        """Patch-visible port fronts — same terminal semantics as routing_subproblem."""
         for ps in self.patch_port_specs:
             px, py = ps.x, ps.y
-            if (px, py) not in self.patch_spec.cells:
-                # port lies outside patch → ignore (cross-patch interface goes via boundary relaxation)
-                continue
             dx, dy = DIR_DELTA[ps.direction]
             fx, fy = px + dx, py + dy
             if (fx, fy) not in self._patch_free_cells:
@@ -574,10 +574,10 @@ class PatchRoutingCore:
         unconditional_links = 0
         for ps in self.patch_port_specs:
             px, py = ps.x, ps.y
-            if (px, py) not in self.patch_spec.cells:
-                continue
             dx, dy = DIR_DELTA[ps.direction]
             fx, fy = px + dx, py + dy
+            if (px, py) not in self.patch_spec.cells and (fx, fy) not in self.patch_spec.cells:
+                continue
 
             assumption_lits = assumption_by_instance.get(ps.instance_id, [])
 

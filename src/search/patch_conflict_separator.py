@@ -314,13 +314,16 @@ def _build_patch_inputs(
     patch_ports: List[PatchPortSpec] = []
     for ps in port_specs:
         cell = (int(ps["x"]), int(ps["y"]))
-        if cell not in patch_cells:
+        direction = str(ps["dir"])
+        dx, dy = DIR_DELTA[direction]
+        front_cell = (cell[0] + dx, cell[1] + dy)
+        if cell not in patch_cells and front_cell not in patch_cells:
             continue
         patch_ports.append(PatchPortSpec(
             instance_id=str(ps.get("instance_id", "")),
             x=int(ps["x"]),
             y=int(ps["y"]),
-            direction=str(ps["dir"]),
+            direction=direction,
             commodity=str(ps["commodity"]),
             type=str(ps["type"]),
             pose_idx=int(ps.get("pose_idx", placement_solution.get(str(ps.get("instance_id", "")), {}).get("pose_idx", -1))),
