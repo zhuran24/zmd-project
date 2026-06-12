@@ -1,18 +1,27 @@
 """GPT Pro 外发全流程自动化: 发包 + 发 prompt + 等完成 + 收交付。
 
+引擎 (2026-06-12 重写) = **raw CDP over page 级 websocket** (与 upload_project_file.py
+同范式), 不再用 Playwright `connect_over_cdp`。原因 (当天实锤, 协议级 trace 钉死):
+Playwright 的 browser 级连接会对浏览器里**每一个**打开的页面做完整初始化
+(attach 全部 target + 给每个 frame 建 isolated world); 任何一个"病页" (如 B 站这类
+iframe 高频轮换的视频站) 都会让 `Page.createIsolatedWorld` 撞上 "No frame for
+given id found", 初始化 promise 永久挂起 → connect 直到超时。page 级 ws 只跟自己
+的 tab 说话, 其它页什么状态都无关; 下载捕获用一条**裸 browser 级 ws** (browser-ws
+本身健康, 病的只是 Playwright 的全量初始化)。
+
 发包通道 (--package-channel, 2026-06-12 owner 裁决默认 sources):
     sources    = 包上传到 Project 文件页「来源区」(子进程调 upload_project_file.py,
-                 page 级 CDP, 分块灌字节), 消息只发纯文字 prompt — prompt 必须自己
-                 指认文件区包文件名 + sha256 (本脚本不代写)。默认先按白名单清旧快照
-                 (保留依赖包), --keep-old-snapshots 关闭清理。同名已在 → 幂等跳过。
+                 网页端专用), 消息只发纯文字 prompt — prompt 必须自己指认文件区包
+                 文件名 + sha256。发送前自动 --list 验证 prompt 指认的包真在文件区
+                 (prompt-only 模式缺包 fail-closed)。默认先按白名单清旧快照,
+                 --keep-old-snapshots 关闭清理。
     attachment = 旧模式: 包随消息当附件发 (会话内传大附件疑似风控诱因, 仅留作备选)。
 
 用法:
-    # 前置: 专用 Chrome 已起 (start_gpt_automation_chrome.ps1, 首次需手动登录一次)
-    python dispatch_gpt_task.py --package X.zip --prompt-file prompt.md   # 默认 sources 通道
-    python dispatch_gpt_task.py --pack --prompt-file prompt.md            # 打包再发 (sources 下自动改唯一名)
-    python dispatch_gpt_task.py --package X.zip --prompt-file p.md --package-channel attachment
-    python dispatch_gpt_task.py --resume https://chatgpt.com/.../c/<id>   # 重连续等/补收
+    python dispatch_gpt_task.py --prompt-file prompt.md                   # prompt-only (包已在文件区)
+    python dispatch_gpt_task.py --package X.zip --prompt-file prompt.md  # 传包+发送
+    python dispatch_gpt_task.py --pack --prompt-file prompt.md           # 打包再发 (sources 下自动唯一名)
+    python dispatch_gpt_task.py --resume https://chatgpt.com/.../c/<id>  # 重连续等/补收
 
 输出 (--out-dir, 默认 补丁包/gpt_deliveries/<时间戳>/):
     final_reply.md     GPT 最后回复全文
@@ -20,15 +29,16 @@
     run_log.jsonl      各阶段时间戳/状态 (心跳每分钟一条, 可 tail 监控)
     attention_*.png/html  非预期状态的现场截图 + DOM dump (托底用)
 
-退出码: 0=交付到手  2=完成但无附件(看 final_reply.md)  3=异常需托底  4=超时  1=环境错误
+退出码: 0=交付到手  2=完成但无附件(看 final_reply.md)  3=异常需托底  4=超时
+        5=疑似降级  1=环境错误
 
 完成检测 (双信号 + 稳定窗口):
     信号1 = 停止生成按钮消失; 信号2 = 最后一条回复文本长度连续 STABLE_TICKS 次轮询不变。
-    两信号同时满足才判完成。「继续生成」按钮出现会自动点击。
 """
 from __future__ import annotations
 
 import argparse
+import asyncio
 import base64
 import json
 import os
@@ -36,13 +46,15 @@ import re
 import subprocess
 import sys
 import time
+import urllib.request
 import zipfile
 from datetime import datetime
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+import websockets
 
 CDP_URL = "http://localhost:9222"
+APP_CDP_URL = "http://localhost:9224"
 PROJECT_URL = "https://chatgpt.com/g/g-p-69b585dfc29c819186b93a166f5266a5-zhong-mo-di/project"
 CONV_URL_RE = re.compile(r"/c/[0-9a-f-]{10,}")
 
@@ -50,18 +62,31 @@ POLL_SECONDS = 10
 STABLE_TICKS = 3
 HEARTBEAT_TICKS = 6  # 每 ~1 分钟一条心跳日志
 
-SEL = {
-    "composer": "#prompt-textarea",
-    "send_btn": 'button[data-testid="send-button"]',
-    "stop_btn": 'button[data-testid="stop-button"]',
-    "assistant_msg": 'div[data-message-author-role="assistant"]',
-    "file_input": 'input[type="file"]',
-    "model_btn_texts": ["专业", "Pro", "进阶"],
-    "error_texts": ["出错了", "Something went wrong", "网络错误"],
-}
+MODEL_BTN_TEXTS = ["专业", "Pro", "进阶"]
+ERROR_TEXTS = ["出错了", "Something went wrong", "网络错误"]
 FILE_EXT_RE = re.compile(
     r"\.(zip|7z|tar|gz|tgz|md|py|json|patch|diff|txt|csv|log|whl)(\?|$)", re.I
 )
+
+RESCUE_PROMPT = (
+    "刚才下载附件时返回 404——沙盒文件应该已被回收。"
+    "请重新运行生成步骤重建该文件,并再次作为文件附件给出(文件名保持不变)。回复简短即可。"
+)
+
+DOWNGRADE_RETRY_PROMPT = (
+    "上一条回复的生成时间异常短,怀疑没有走完整的 Pro 推理。"
+    "请重新完整执行原任务:重新分析、重新生成全部交付文件,不要复用上一次的结论。"
+)
+
+
+def http(method: str, path: str, base: str):
+    req = urllib.request.Request(base + path, method=method)
+    with urllib.request.urlopen(req, timeout=10) as r:
+        body = r.read()
+    try:
+        return json.loads(body) if body else None
+    except json.JSONDecodeError:
+        return body.decode("utf-8", "replace")  # /json/close 返回纯文本
 
 
 class Reporter:
@@ -77,273 +102,379 @@ class Reporter:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         print(f"[{entry['ts']}] {stage}: {status} {kw if kw else ''}", flush=True)
 
-    def attention(self, page, stage: str, reason: str):
+    async def attention(self, page, stage: str, reason: str):
         """非预期状态: 截图 + DOM dump + 日志, 供托底接手。不抛异常。"""
         self.attention_count += 1
         tag = f"attention_{self.attention_count:02d}_{stage}"
-        shot, dump = None, None
+        shot = dump = url = None
+        if page is not None:
+            try:
+                shot = await page.screenshot(self.out_dir / f"{tag}.png")
+            except Exception:
+                shot = None
+            try:
+                html = await page.js("document.documentElement.outerHTML", timeout=15)
+                if html:
+                    p = self.out_dir / f"{tag}.html"
+                    p.write_text(html, encoding="utf-8")
+                    dump = str(p)
+            except Exception:
+                dump = None
+            try:
+                url = await page.url()
+            except Exception:
+                url = None
+        self.log(stage, "NEEDS_ATTENTION", reason=reason, screenshot=shot, dom_dump=dump, url=url)
+
+
+class PageCdp:
+    """单 page 目标的最小 CDP 客户端 (与 upload_project_file.Cdp 同范式)。"""
+
+    def __init__(self, ws, http_base: str, tab_id: str | None, owns_tab: bool):
+        self.ws = ws
+        self.http_base = http_base
+        self.tab_id = tab_id
+        self.owns_tab = owns_tab
+        self._id = 0
+        self.events: list[dict] = []
+
+    async def call(self, method: str, params: dict | None = None, timeout: float = 30.0):
+        self._id += 1
+        mid = self._id
+        await self.ws.send(json.dumps({"id": mid, "method": method, "params": params or {}}))
+        deadline = time.time() + timeout
+        while True:
+            remain = deadline - time.time()
+            if remain <= 0:
+                raise TimeoutError(f"CDP {method} timed out")
+            msg = json.loads(await asyncio.wait_for(self.ws.recv(), remain))
+            if msg.get("id") == mid:
+                if "error" in msg:
+                    raise RuntimeError(f"CDP {method}: {msg['error']}")
+                return msg.get("result", {})
+            if msg.get("method"):
+                self.events.append(msg)
+
+    async def js(self, expression: str, timeout: float = 30.0):
+        res = await self.call(
+            "Runtime.evaluate",
+            {"expression": expression, "returnByValue": True, "awaitPromise": True},
+            timeout=timeout,
+        )
+        if res.get("exceptionDetails"):
+            raise RuntimeError(f"page JS threw: {json.dumps(res['exceptionDetails'])[:300]}")
+        return res.get("result", {}).get("value")
+
+    async def navigate(self, url: str, settle_seconds: float = 3.0):
+        await self.call("Page.navigate", {"url": url}, timeout=60)
+        await asyncio.sleep(settle_seconds)
+
+    async def url(self) -> str:
+        return (await self.js("window.location.href", timeout=10)) or ""
+
+    async def alive(self) -> bool:
         try:
-            shot = str(self.out_dir / f"{tag}.png")
-            page.screenshot(path=shot, full_page=False)
+            await self.js("document.readyState", timeout=8)
+            return True
         except Exception:
-            shot = None
+            return False
+
+    async def screenshot(self, out_path: Path):
         try:
-            dump = str(self.out_dir / f"{tag}.html")
-            Path(dump).write_text(page.content(), encoding="utf-8")
+            res = await self.call("Page.captureScreenshot", {"format": "png"}, timeout=20)
+            out_path.write_bytes(base64.b64decode(res["data"]))
+            return str(out_path)
         except Exception:
-            dump = None
-        self.log(stage, "NEEDS_ATTENTION", reason=reason, screenshot=shot, dom_dump=dump, url=page.url)
+            return None
+
+    async def hover_xy(self, x: float, y: float):
+        await self.call("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+
+    async def click_xy(self, x: float, y: float):
+        await self.hover_xy(x, y)
+        base = {"x": x, "y": y, "button": "left", "clickCount": 1}
+        await self.call("Input.dispatchMouseEvent", {"type": "mousePressed", **base})
+        await self.call("Input.dispatchMouseEvent", {"type": "mouseReleased", **base})
+
+    async def press_escape(self):
+        for t in ("keyDown", "keyUp"):
+            await self.call("Input.dispatchKeyEvent",
+                            {"type": t, "key": "Escape", "code": "Escape",
+                             "windowsVirtualKeyCode": 27})
+
+    async def insert_text(self, text: str):
+        await self.call("Input.insertText", {"text": text}, timeout=60)
+
+    async def close(self):
+        try:
+            await self.ws.close()
+        except Exception:
+            pass
+        if self.owns_tab and self.tab_id:
+            try:
+                pages = http("GET", "/json/list", self.http_base) or []
+                others = [t for t in pages if t.get("type") == "page" and t.get("id") != self.tab_id]
+                if others:
+                    http("GET", "/json/close/" + self.tab_id, self.http_base)
+                # 自己是最后一个 page: 关掉会把浏览器带退 — 留着不动
+            except Exception:
+                pass
 
 
-def attach(p, cdp_url: str = CDP_URL, timeout_ms: int = 45000):
-    """返回 (ctx, page, owns_page)。浏览器通道开自己的新 tab (owns=True);
-    ChatGPT 桌面 App (Electron, 9224) 不支持 new_page — 复用主窗口页面
-    (owns=False, 结束时不能关它, 关了 App 就空了)。
+# --------------------------------------------------------------------------- #
+# attach / tab 管理
+# --------------------------------------------------------------------------- #
+async def _connect_page(http_base: str, ws_url: str, tab_id: str | None, owns_tab: bool) -> PageCdp:
+    ws = await websockets.connect(ws_url, max_size=64 * 1024 * 1024, open_timeout=20)
+    page = PageCdp(ws, http_base, tab_id, owns_tab)
+    await page.call("Page.enable")
+    await page.call("Runtime.enable")
+    return page
 
-    timeout 收紧到 45s: claude-in-chrome 插件用 chrome.debugger 占着 tab 时,
-    Playwright 的 target auto-attach 会僵 (默认 180s 才报) — 快速失败好让
-    调用方落到 App 通道。"""
-    browser = p.chromium.connect_over_cdp(cdp_url, timeout=timeout_ms)
-    if not browser.contexts:
-        raise RuntimeError("no browser context on " + cdp_url)
-    ctx = browser.contexts[0]
+
+async def attach_page(http_base: str, rep: Reporter) -> PageCdp:
+    """浏览器通道: /json/new 开自己的 tab (owns=True)。
+    ChatGPT 桌面 App (Electron) 不支持 /json/new — 复用主窗口页面 (owns=False,
+    结束时不能关它, 关了 App 就空了)。"""
     try:
-        page = ctx.new_page()
-        return ctx, page, True
+        tab = http("PUT", "/json/new", http_base)
+        if isinstance(tab, dict) and tab.get("webSocketDebuggerUrl"):
+            return await _connect_page(http_base, tab["webSocketDebuggerUrl"], tab.get("id"), True)
     except Exception:
-        if not ctx.pages:
-            raise RuntimeError("cannot create a page and none exists on " + cdp_url)
-        return ctx, ctx.pages[0], False
+        pass
+    targets = http("GET", "/json/list", http_base) or []
+    pages = [t for t in targets if t.get("type") == "page" and t.get("webSocketDebuggerUrl")]
+    if not pages:
+        raise RuntimeError(f"no attachable page target on {http_base}")
+    pages.sort(key=lambda t: ("chatgpt.com" not in (t.get("url") or "")))
+    t = pages[0]
+    return await _connect_page(http_base, t["webSocketDebuggerUrl"], t.get("id"), False)
 
 
-def attach_with_fallback(p, args, rep: Reporter):
-    """主通道 attach 失败时自动落 App 通道 (9224, 无插件争用; owner 裁决
-    第三托底不需逐次点头)。App 没带 CDP 在跑则不强启, 报 FATAL 留给人工。"""
+async def attach_with_fallback(args, rep: Reporter) -> PageCdp:
+    """主通道失败自动落 App (9224; owner 裁决第三托底不需逐次点头)。
+    raw page-ws 没有 Playwright 的全浏览器初始化, attach 失败 = 端点真不可用。"""
     try:
-        ctx, page, owns_page = attach(p, args.cdp_url)
-        rep.log("attach", "ok", cdp_url=args.cdp_url, owns_page=owns_page)
-        return ctx, page, owns_page
+        page = await attach_page(args.cdp_url, rep)
+        rep.log("attach", "ok", cdp_url=args.cdp_url, owns_tab=page.owns_tab)
+        return page
     except Exception as e:
         rep.log("attach", "failed", cdp_url=args.cdp_url, error=str(e)[:200])
     if "9224" in args.cdp_url:
         raise RuntimeError("attach failed on App channel; no further fallback")
-    fallback = "http://localhost:9224"
-    ctx, page, owns_page = attach(p, fallback)
-    rep.log("attach", "fallback_ok", cdp_url=fallback, owns_page=owns_page,
-            note="Edge browser-ws contended (claude-in-chrome debugger) — using App channel")
-    return ctx, page, owns_page
+    page = await attach_page(APP_CDP_URL, rep)
+    rep.log("attach", "fallback_ok", cdp_url=APP_CDP_URL, owns_tab=page.owns_tab,
+            note="primary endpoint unavailable — using App channel")
+    return page
 
 
-def cleanup_stale_tabs(ctx, page, rep: Reporter):
+def cleanup_stale_tabs(http_base: str, keep_tab_id: str | None, rep: Reporter):
     """只清理下载残留页 (/mnt/data 404 之类) — 连的是用户日常 Edge 主实例,
-    绝不能动用户自己开的 chatgpt 标签页。脚本自己的 page 由 finally 自关。"""
+    绝不能动用户自己开的标签页。"""
     closed = 0
-    for pg in list(ctx.pages):
-        if pg is page:
-            continue
-        try:
-            if "/mnt/data" in pg.url:
-                pg.close()
-                closed += 1
-        except Exception:
-            pass
+    try:
+        for t in http("GET", "/json/list", http_base) or []:
+            if t.get("id") == keep_tab_id or t.get("type") != "page":
+                continue
+            url = t.get("url") or ""
+            if "/mnt/data" in url:
+                try:
+                    http("GET", "/json/close/" + t["id"], http_base)
+                    closed += 1
+                except Exception:
+                    pass
+    except Exception:
+        pass
     if closed:
         rep.log("init", "stale_download_tabs_closed", count=closed)
 
 
-def assert_logged_in(page, rep: Reporter) -> bool:
-    if "auth" in page.url or "login" in page.url:
-        rep.attention(page, "login", "redirected to login page — log in once in the automation Chrome")
-        return False
-    return True
+# --------------------------------------------------------------------------- #
+# 页面状态 JS 探针
+# --------------------------------------------------------------------------- #
+def _find_button_js(texts: list[str]) -> str:
+    return (
+        "(() => {"
+        f"  const texts = {json.dumps(texts)};"
+        "  const els = [...document.querySelectorAll('button,[role=\"button\"]')];"
+        "  for (const t of texts) {"
+        "    const el = els.find(e => e.offsetParent && (e.innerText || '').trim().includes(t));"
+        "    if (el) {"
+        "      const r = el.getBoundingClientRect();"
+        "      return {x: r.x + r.width / 2, y: r.y + r.height / 2, text: t};"
+        "    }"
+        "  }"
+        "  return null;"
+        "})()"
+    )
 
 
-def verify_model(page, rep: Reporter):
-    for text in SEL["model_btn_texts"]:
-        try:
-            if page.locator(f'button:has-text("{text}")').first.is_visible(timeout=2000):
-                rep.log("model", "ok", matched=text)
-                return
-        except Exception:
-            continue
-    rep.attention(page, "model", "model selector text does not look like Pro — verify manually; proceeding anyway")
-
-
-def upload_files(page, paths: list[Path], rep: Reporter):
-    inputs = page.locator(SEL["file_input"])
-    n = inputs.count()
-    if n == 0:
-        raise RuntimeError("no file input found on page")
-    str_paths = [str(p) for p in paths]
-    attached = False
-    for i in range(n):
-        try:
-            inputs.nth(i).set_input_files(str_paths)
-        except Exception:
-            continue
-        try:
-            page.locator(f'text="{paths[0].name}"').first.wait_for(state="visible", timeout=15000)
-            attached = True
-            break
-        except PWTimeout:
-            continue
-    if not attached:
-        raise RuntimeError("set_input_files on every candidate input, attachment card never appeared")
-    rep.log("upload", "attached", files=[p.name for p in paths], input_index=i)
-
-    deadline = time.time() + 600
-    while time.time() < deadline:
-        try:
-            if page.locator(f'{SEL["send_btn"]}:not([disabled])').count() > 0:
-                time.sleep(3)
-                rep.log("upload", "ready")
-                return
-        except Exception:
-            pass
-        time.sleep(2)
-    raise RuntimeError("upload did not become ready within 10 min")
-
-
-def fill_and_send(page, prompt_text: str, rep: Reporter) -> str:
-    page.locator(SEL["composer"]).click()
-    page.keyboard.insert_text(prompt_text)
-    time.sleep(1)
-    rep.log("prompt", "filled", chars=len(prompt_text))
-    page.locator(SEL["send_btn"]).click()
-    try:
-        page.wait_for_url(CONV_URL_RE, timeout=60000)
-    except PWTimeout:
-        rep.attention(page, "send", "URL did not switch to a conversation within 60s")
-    conv_url = page.url
-    rep.log("send", "sent", conversation_url=conv_url)
-    return conv_url
-
-
-RESCUE_PROMPT = (
-    "刚才下载附件时返回 404——沙盒文件应该已被回收。"
-    "请重新运行生成步骤重建该文件,并再次作为文件附件给出(文件名保持不变)。回复简短即可。"
+_STOP_VISIBLE_JS = (
+    "(() => {"
+    "  if (document.querySelector('button[data-testid=\"stop-button\"]')) return true;"
+    "  for (const lbl of ['停止', 'Stop streaming', 'Stop generating']) {"
+    "    if ([...document.querySelectorAll('button[aria-label]')]"
+    "        .some(b => (b.getAttribute('aria-label') || '').includes(lbl))) return true;"
+    "  }"
+    "  return false;"
+    "})()"
 )
 
-DOWNGRADE_RETRY_PROMPT = (
-    "上一条回复的生成时间异常短,怀疑没有走完整的 Pro 推理。"
-    "请重新完整执行原任务:重新分析、重新生成全部交付文件,不要复用上一次的结论。"
+_LAST_ASSISTANT_JS = (
+    "(() => {"
+    "  const msgs = document.querySelectorAll('div[data-message-author-role=\"assistant\"]');"
+    "  if (!msgs.length) return {count: 0, text: '', slug: ''};"
+    "  const last = msgs[msgs.length - 1];"
+    "  return {count: msgs.length, text: last.innerText || '',"
+    "          slug: last.getAttribute('data-message-model-slug') || ''};"
+    "})()"
 )
 
-
-def send_followup(page, text: str, rep: Reporter):
-    page.locator(SEL["composer"]).click()
-    page.keyboard.insert_text(text)
-    time.sleep(0.5)
-    page.locator(SEL["send_btn"]).click()
-    rep.log("rescue", "followup_sent", chars=len(text))
-
-
-def _close_stray_download_tabs(page):
-    """点击 sandbox 链接会开出 /mnt/data 新标签页 (常 404), 收完顺手关掉。"""
-    for pg in list(page.context.pages):
-        if pg is page:
-            continue
-        try:
-            if "/mnt/data" in pg.url or pg.url.rstrip("/").endswith((".zip", ".7z", ".tar", ".gz")):
-                pg.close()
-        except Exception:
-            pass
-
-
-def _stop_visible(page) -> bool:
-    try:
-        if page.locator(SEL["stop_btn"]).count() > 0:
-            return True
-        for label in ("停止", "Stop streaming", "Stop generating"):
-            if page.locator(f'button[aria-label*="{label}"]').count() > 0:
-                return True
-    except Exception:
-        pass
-    return False
-
-
-def _last_assistant_text(page) -> str:
-    try:
-        msgs = page.locator(SEL["assistant_msg"])
-        if msgs.count() == 0:
-            return ""
-        return msgs.last.inner_text(timeout=5000)
-    except Exception:
-        return ""
-
-
-def _last_model_slug(page) -> str:
-    """回复 DOM 上的模型标识。注意: Pro 静默降级时这里可能照样写 pro (路由层
-    降级不改前端元数据), 只作参考记录, 真正的降级检测靠行为侧信号 (生成耗时)。"""
-    try:
-        msgs = page.locator(SEL["assistant_msg"])
-        if msgs.count():
-            return msgs.last.get_attribute("data-message-model-slug") or ""
-    except Exception:
-        pass
-    return ""
-
+_LAST_TURN_TEXT_JS = (
+    "(() => {"
+    "  const msgs = document.querySelectorAll('div[data-message-author-role=\"assistant\"]');"
+    "  if (!msgs.length) return '';"
+    "  const last = msgs[msgs.length - 1];"
+    "  const art = last.closest('article');"
+    "  return (art || last).innerText || '';"
+    "})()"
+)
 
 _THINKING_RE = re.compile(r"(思考[用耗]?时?\s*\d+|Thought for\s+\d+[^\n]{0,20}|Reasoned for\s+\d+[^\n]{0,20})")
 
 
-def _thinking_marker(page) -> str:
-    """抓 Pro 回复的思考块时长文本 (行为旁证, 降级模型不会有长思考块)。"""
-    try:
-        turn = page.locator(SEL["assistant_msg"]).last.locator("xpath=ancestor::article[1]")
-        scope = turn if turn.count() else page.locator(SEL["assistant_msg"]).last
-        m = _THINKING_RE.search(scope.inner_text(timeout=5000) or "")
-        return m.group(0) if m else ""
-    except Exception:
-        return ""
+def _error_banner_js() -> str:
+    return (
+        "(() => {"
+        f"  const texts = {json.dumps(ERROR_TEXTS)};"
+        "  const body = document.body ? (document.body.innerText || '') : '';"
+        "  return texts.find(t => body.includes(t)) || '';"
+        "})()"
+    )
 
 
-def _page_alive(page) -> bool:
-    try:
-        page.evaluate("document.readyState")
-        return True
-    except Exception:
-        return False
+_COMPOSER_READY_JS = "(() => !!document.querySelector('#prompt-textarea'))()"
+
+_SEND_READY_JS = (
+    "(() => {"
+    "  const b = document.querySelector('button[data-testid=\"send-button\"]');"
+    "  if (!b) return 'absent';"
+    "  return b.disabled ? 'disabled' : 'ready';"
+    "})()"
+)
 
 
-def _revive_page(page, rep: Reporter, reason: str):
-    """网络抖动/渲染进程挂死导致页面卡住的恢复 (owner 处方): 同 URL 新开一个
-    页面, 关掉老的。比 page.reload 可靠 — 渲染进程挂死时 reload 自己也会卡。
-    恢复失败 (网络还断着) 则返回旧 page, 下一拍再试。"""
-    url = page.url
-    ctx = page.context
-    new_page = None
+async def _last_assistant(page: PageCdp) -> dict:
     try:
-        new_page = ctx.new_page()
-        new_page.goto(url, wait_until="domcontentloaded", timeout=60000)
-        new_page.wait_for_timeout(3000)
-    except Exception as e:
-        rep.log("waiting", "page_revive_failed", error=str(e)[:150])
-        if new_page is not None:
-            try:
-                new_page.close()
-            except Exception:
-                pass
-        # App (Electron) 通道开不了新页 — 退而求其次试 reload
-        try:
-            page.reload(wait_until="domcontentloaded", timeout=60000)
-            rep.log("waiting", "page_reloaded_in_place", reason=reason)
-        except Exception:
-            pass
-        return page
-    try:
-        page.close()
+        v = await page.js(_LAST_ASSISTANT_JS, timeout=10)
+        if isinstance(v, dict):
+            return v
     except Exception:
         pass
-    rep.log("waiting", "page_revived", reason=reason, url=url)
-    return new_page
+    return {"count": 0, "text": "", "slug": ""}
 
 
-def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: int = 1):
+async def assert_logged_in(page: PageCdp, rep: Reporter) -> bool:
+    u = await page.url()
+    if "auth" in u or "login" in u:
+        await rep.attention(page, "login", "redirected to login page — log in once in that browser")
+        return False
+    return True
+
+
+async def verify_model(page: PageCdp, rep: Reporter):
+    spot = await page.js(_find_button_js(MODEL_BTN_TEXTS), timeout=10)
+    if spot:
+        rep.log("model", "ok", matched=spot.get("text"))
+        return
+    await rep.attention(page, "model", "model selector text does not look like Pro — verify manually; proceeding anyway")
+
+
+async def fill_and_send(page: PageCdp, prompt_text: str, rep: Reporter) -> str:
+    for _ in range(30):
+        if await page.js(_COMPOSER_READY_JS, timeout=10):
+            break
+        await asyncio.sleep(1)
+    focused = await page.js(
+        "(() => { const c = document.querySelector('#prompt-textarea');"
+        "  if (!c) return false; c.focus(); return true; })()", timeout=10)
+    if not focused:
+        raise RuntimeError("composer #prompt-textarea not found")
+    await page.insert_text(prompt_text)
+    await asyncio.sleep(1)
+    rep.log("prompt", "filled", chars=len(prompt_text))
+    spot = await page.js(
+        "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
+        "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
+        "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()", timeout=10)
+    if not spot:
+        raise RuntimeError("send button not found/enabled after fill")
+    await page.click_xy(spot["x"], spot["y"])
+    conv_url = ""
+    deadline = time.time() + 60
+    while time.time() < deadline:
+        conv_url = await page.url()
+        if CONV_URL_RE.search(conv_url):
+            break
+        await asyncio.sleep(2)
+    if not CONV_URL_RE.search(conv_url):
+        await rep.attention(page, "send", "URL did not switch to a conversation within 60s")
+    rep.log("send", "sent", conversation_url=conv_url)
+    return conv_url
+
+
+async def send_followup(page: PageCdp, text: str, rep: Reporter):
+    await page.js(
+        "(() => { const c = document.querySelector('#prompt-textarea');"
+        "  if (c) c.focus(); return !!c; })()", timeout=10)
+    await page.insert_text(text)
+    await asyncio.sleep(0.5)
+    spot = await page.js(
+        "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
+        "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
+        "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()", timeout=10)
+    if spot:
+        await page.click_xy(spot["x"], spot["y"])
+    rep.log("rescue", "followup_sent", chars=len(text))
+
+
+async def _revive_page(page: PageCdp, last_url: str, rep: Reporter, reason: str) -> PageCdp:
+    """网络抖动/渲染挂死恢复: 自有 tab → 关旧开新同 URL; App 主窗口 → 原地重导航。"""
+    http_base = page.http_base
+    owns = page.owns_tab
+    if owns:
+        try:
+            await page.close()
+        except Exception:
+            pass
+        try:
+            new_page = await attach_page(http_base, rep)
+            await new_page.navigate(last_url, settle_seconds=3)
+            rep.log("waiting", "page_revived", reason=reason, url=last_url)
+            return new_page
+        except Exception as e:
+            rep.log("waiting", "page_revive_failed", error=str(e)[:150])
+            return page
+    try:
+        await page.navigate(last_url, settle_seconds=3)
+        rep.log("waiting", "page_reloaded_in_place", reason=reason)
+    except Exception as e:
+        rep.log("waiting", "page_revive_failed", error=str(e)[:150])
+        # ws 可能已断 — 重连同一 target
+        try:
+            new_page = await attach_page(http_base, rep)
+            await new_page.navigate(last_url, settle_seconds=3)
+            rep.log("waiting", "page_reattached", reason=reason)
+            return new_page
+        except Exception as e2:
+            rep.log("waiting", "page_reattach_failed", error=str(e2)[:150])
+    return page
+
+
+async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
+                    min_assistant_count: int = 1, conv_url: str = ""):
     """返回 (status, page); status = 'done' | 'timeout' | 'attention'。
-    page 可能被换新 — 页面卡住时同 URL 重开, 调用方必须用返回的 page 继续。
-    min_assistant_count: 完成判定要求 assistant 消息数达到该值 — 发送/救援后必须
-    等到新回复出现, 否则旧消息的稳定文本会被误判为完成。"""
+    page 可能被换新 — 调用方必须用返回的 page 继续。"""
     deadline = time.time() + timeout_hours * 3600
     start = time.time()
     stable = 0
@@ -351,149 +482,262 @@ def wait_done(page, rep: Reporter, timeout_hours: float, min_assistant_count: in
     tick = 0
     dead_ticks = 0
     revives = 0
+    last_url = conv_url
     while time.time() < deadline:
         tick += 1
-        if not _page_alive(page):
+        if not await page.alive():
             dead_ticks += 1
-            if dead_ticks >= 2:  # 连续 ~20s 无响应才动手, 单拍抖动不折腾
+            if dead_ticks >= 2:  # 连续 ~20s 无响应才动手
                 if revives >= 3:
-                    rep.attention(page, "waiting", "page unresponsive after 3 revives — network likely down")
+                    await rep.attention(page, "waiting", "page unresponsive after 3 revives — network likely down")
                     return "attention", page
-                page = _revive_page(page, rep, "page unresponsive")
+                page = await _revive_page(page, last_url or PROJECT_URL, rep, "page unresponsive")
                 revives += 1
                 dead_ticks = 0
                 stable, last_len = 0, -1
-            time.sleep(POLL_SECONDS)
+            await asyncio.sleep(POLL_SECONDS)
             continue
         dead_ticks = 0
-        if not assert_logged_in(page, rep):
+        try:
+            u = await page.url()
+            if u:
+                last_url = u
+        except Exception:
+            pass
+        if not await assert_logged_in(page, rep):
             return "attention", page
-        generating = _stop_visible(page)
-        text = _last_assistant_text(page)
-        cur_len = len(text)
-        has_turn = page.locator(SEL["assistant_msg"]).count() >= min_assistant_count
+        try:
+            generating = bool(await page.js(_STOP_VISIBLE_JS, timeout=10))
+        except Exception:
+            generating = False
+        info = await _last_assistant(page)
+        cur_len = len(info["text"])
+        has_turn = info["count"] >= min_assistant_count
         if not generating and has_turn and cur_len == last_len:
             stable += 1
             if stable >= STABLE_TICKS:
+                marker = ""
+                try:
+                    m = _THINKING_RE.search(await page.js(_LAST_TURN_TEXT_JS, timeout=10) or "")
+                    marker = m.group(0) if m else ""
+                except Exception:
+                    pass
                 rep.log("waiting", "done", elapsed_s=int(time.time() - start), reply_chars=cur_len,
-                        thinking_marker=_thinking_marker(page) or "none")
+                        thinking_marker=marker or "none")
                 return "done", page
         else:
             stable = 0
         if not generating and cur_len == 0 and time.time() - start > 300:
-            for t in SEL["error_texts"]:
-                if page.locator(f'text="{t}"').count() > 0:
-                    rep.attention(page, "waiting", f"error banner detected: {t}")
-                    return "attention", page
+            try:
+                banner = await page.js(_error_banner_js(), timeout=10)
+            except Exception:
+                banner = ""
+            if banner:
+                await rep.attention(page, "waiting", f"error banner detected: {banner}")
+                return "attention", page
         last_len = cur_len
         if tick % HEARTBEAT_TICKS == 0:
             rep.log("waiting", "heartbeat", elapsed_s=int(time.time() - start),
                     generating=generating, reply_chars=cur_len)
-        time.sleep(POLL_SECONDS)
-    rep.attention(page, "waiting", f"timed out after {timeout_hours}h")
+        await asyncio.sleep(POLL_SECONDS)
+    await rep.attention(page, "waiting", f"timed out after {timeout_hours}h")
     return "timeout", page
 
 
-def _download_via_click(page, link, out_dir: Path, rep: Reporter) -> Path | None:
-    """点击附件, 在 CDP 浏览器层捕获下载 (Browser.setDownloadBehavior 直接落盘到
-    out_dir, 任何标签页触发都能抓到 — Playwright 的 page/context download 事件在
-    「新标签页秒开秒关触发下载」场景下收不到)。点击带重试: resume 重载后的页面
-    JS handler 可能未挂载, 首次点击会无反应。"""
-    session = page.context.browser.new_browser_cdp_session()
-    state: dict = {}
+# --------------------------------------------------------------------------- #
+# 收交付
+# --------------------------------------------------------------------------- #
+class DownloadWatch:
+    """裸 browser 级 ws 捕获下载 (Browser.setDownloadBehavior allowAndName)。
+    browser-ws 本身健康 — Playwright 病的是全量初始化, 不是这条 ws。"""
 
-    def on_begin(e):
-        if "guid" not in state:
-            state["guid"] = e["guid"]
-            state["name"] = e.get("suggestedFilename") or "download.bin"
+    def __init__(self, http_base: str, out_dir: Path):
+        self.http_base = http_base
+        self.out_dir = out_dir
+        self.ws = None
+        self._id = 1000
 
-    def on_progress(e):
-        if e.get("guid") == state.get("guid"):
-            if e.get("state") == "completed":
-                state["done"] = True
-            elif e.get("state") == "canceled":
-                state["canceled"] = True
+    async def __aenter__(self):
+        info = http("GET", "/json/version", self.http_base)
+        self.ws = await websockets.connect(info["webSocketDebuggerUrl"],
+                                           max_size=16 * 1024 * 1024, open_timeout=15)
+        await self._call("Browser.setDownloadBehavior",
+                         {"behavior": "allowAndName", "downloadPath": str(self.out_dir),
+                          "eventsEnabled": True})
+        return self
 
-    session.on("Browser.downloadWillBegin", on_begin)
-    session.on("Browser.downloadProgress", on_progress)
-    session.send(
-        "Browser.setDownloadBehavior",
-        {"behavior": "allowAndName", "downloadPath": str(out_dir), "eventsEnabled": True},
-    )
-    confirm = page.locator('button:has-text("打开链接"), button:has-text("Open link")').first
-
-    def _click_confirm_if_visible(wait_ms: int) -> bool:
+    async def __aexit__(self, *exc):
         try:
-            confirm.wait_for(state="visible", timeout=wait_ms)
-            confirm.click()
-            rep.log("collect", "confirmed_external_link_dialog")
-            return True
+            await self.ws.close()
         except Exception:
-            return False
+            pass
 
+    async def _call(self, method: str, params: dict):
+        self._id += 1
+        mid = self._id
+        await self.ws.send(json.dumps({"id": mid, "method": method, "params": params}))
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            msg = json.loads(await asyncio.wait_for(self.ws.recv(), deadline - time.time()))
+            if msg.get("id") == mid:
+                if "error" in msg:
+                    raise RuntimeError(f"CDP {method}: {msg['error']}")
+                return msg.get("result", {})
+
+    async def wait_begin(self, seconds: float) -> dict | None:
+        deadline = time.time() + seconds
+        while time.time() < deadline:
+            try:
+                msg = json.loads(await asyncio.wait_for(self.ws.recv(), deadline - time.time()))
+            except (asyncio.TimeoutError, TimeoutError):
+                return None
+            if msg.get("method") == "Browser.downloadWillBegin":
+                p = msg["params"]
+                return {"guid": p["guid"], "name": p.get("suggestedFilename") or "download.bin"}
+        return None
+
+    async def wait_finish(self, guid: str, seconds: float) -> str:
+        deadline = time.time() + seconds
+        while time.time() < deadline:
+            try:
+                msg = json.loads(await asyncio.wait_for(self.ws.recv(), deadline - time.time()))
+            except (asyncio.TimeoutError, TimeoutError):
+                return "timeout"
+            if msg.get("method") == "Browser.downloadProgress" and msg["params"].get("guid") == guid:
+                st = msg["params"].get("state")
+                if st in ("completed", "canceled"):
+                    return st
+        return "timeout"
+
+
+def _candidates_js() -> str:
+    """枚举最后一条 assistant 消息里的文件附件候选。
+    锚文本可能是中文描述 — 不能只靠扩展名, 结构 class 是更可靠判据 (V81 实测)。"""
+    return (
+        "(() => {"
+        "  const msgs = document.querySelectorAll('div[data-message-author-role=\"assistant\"]');"
+        "  if (!msgs.length) return [];"
+        "  const last = msgs[msgs.length - 1];"
+        "  const out = [];"
+        "  const seen = new Set();"
+        "  for (const el of last.querySelectorAll('a,button')) {"
+        "    const href = el.getAttribute('href') || '';"
+        "    const label = (el.innerText || '').trim();"
+        "    const cls = el.getAttribute('class') || '';"
+        "    const extRe = /\\.(zip|7z|tar|gz|tgz|md|py|json|patch|diff|txt|csv|log|whl)(\\?|$)/i;"
+        "    const fileLike = extRe.test(href) || extRe.test(label) || href.includes('sandbox')"
+        "      || cls.includes('behavior-btn') || cls.includes('decorated-link');"
+        "    if (!fileLike) continue;"
+        "    if (!label && !href) continue;"
+        "    const key = label || href;"
+        "    if (seen.has(key)) continue;"
+        "    seen.add(key);"
+        "    out.push({idx: out.length, href, label, cls});"
+        "  }"
+        "  return out;"
+        "})()"
+    )
+
+
+def _candidate_rect_js(idx: int) -> str:
+    """按 _candidates_js 同样的枚举顺序重算第 idx 个候选的中心坐标 (点击前实时取)。"""
+    return (
+        "(() => {"
+        "  const msgs = document.querySelectorAll('div[data-message-author-role=\"assistant\"]');"
+        "  if (!msgs.length) return null;"
+        "  const last = msgs[msgs.length - 1];"
+        "  const seen = new Set();"
+        "  let i = 0;"
+        "  for (const el of last.querySelectorAll('a,button')) {"
+        "    const href = el.getAttribute('href') || '';"
+        "    const label = (el.innerText || '').trim();"
+        "    const cls = el.getAttribute('class') || '';"
+        "    const extRe = /\\.(zip|7z|tar|gz|tgz|md|py|json|patch|diff|txt|csv|log|whl)(\\?|$)/i;"
+        "    const fileLike = extRe.test(href) || extRe.test(label) || href.includes('sandbox')"
+        "      || cls.includes('behavior-btn') || cls.includes('decorated-link');"
+        "    if (!fileLike) continue;"
+        "    if (!label && !href) continue;"
+        "    const key = label || href;"
+        "    if (seen.has(key)) continue;"
+        "    seen.add(key);"
+        f"    if (i === {idx}) {{"
+        "      el.scrollIntoView({block: 'center'});"
+        "      const r = el.getBoundingClientRect();"
+        "      return {x: r.x + r.width / 2, y: r.y + r.height / 2};"
+        "    }"
+        "    i++;"
+        "  }"
+        "  return null;"
+        "})()"
+    )
+
+
+async def _click_confirm_if_visible(page: PageCdp, rep: Reporter) -> bool:
+    spot = await page.js(_find_button_js(["打开链接", "Open link"]), timeout=8)
+    if spot:
+        await page.click_xy(spot["x"], spot["y"])
+        rep.log("collect", "confirmed_external_link_dialog")
+        return True
+    return False
+
+
+async def _download_via_click(page: PageCdp, idx: int, out_dir: Path, rep: Reporter) -> Path | None:
     try:
-        for attempt in range(1, 4):
-            # 上一轮点击可能弹出的「外部网站」确认框还挡在屏上 — 先处理它,
-            # 否则重试 click 会被 modal 拦截 hit-target 卡到超时
-            if not _click_confirm_if_visible(1000):
-                try:
-                    link.click(timeout=10000)
-                except Exception as e:
-                    rep.log("collect", "click_blocked", attempt=attempt, error=str(e)[:120])
-                    page.keyboard.press("Escape")
-                    continue
-                _click_confirm_if_visible(4000)
-            t0 = time.time()
-            while time.time() - t0 < 12 and "guid" not in state:
-                page.wait_for_timeout(400)
-            if "guid" in state:
-                break
-            rep.log("collect", "click_retry", attempt=attempt)
-        if "guid" not in state:
-            rep.log("collect", "click_download_failed", error="no downloadWillBegin after 3 clicks")
-            page.keyboard.press("Escape")
-            return None
-        t0 = time.time()
-        while time.time() - t0 < 180 and not state.get("done") and not state.get("canceled"):
-            page.wait_for_timeout(500)
-        if not state.get("done"):
-            rep.log("collect", "click_download_failed",
-                    error=f"download did not complete (canceled={state.get('canceled', False)})")
-            return None
-        src = out_dir / state["guid"]  # allowAndName 模式落盘名 = guid
-        target = out_dir / state["name"]
-        if target.exists():
-            target = out_dir / f"{int(time.time())}_{state['name']}"
-        src.rename(target)
-        return target
+        async with DownloadWatch(page.http_base, out_dir) as watch:
+            begin = None
+            for attempt in range(1, 4):
+                if not await _click_confirm_if_visible(page, rep):
+                    spot = await page.js(_candidate_rect_js(idx), timeout=10)
+                    if not spot:
+                        rep.log("collect", "click_blocked", attempt=attempt, error="candidate rect not found")
+                        await page.press_escape()
+                        continue
+                    await asyncio.sleep(0.3)
+                    await page.click_xy(spot["x"], spot["y"])
+                    await asyncio.sleep(0.5)
+                    await _click_confirm_if_visible(page, rep)
+                begin = await watch.wait_begin(12)
+                if begin:
+                    break
+                rep.log("collect", "click_retry", attempt=attempt)
+            if not begin:
+                rep.log("collect", "click_download_failed", error="no downloadWillBegin after 3 clicks")
+                await page.press_escape()
+                return None
+            state = await watch.wait_finish(begin["guid"], 180)
+            if state != "completed":
+                rep.log("collect", "click_download_failed",
+                        error=f"download did not complete (state={state})")
+                return None
+            src = out_dir / begin["guid"]  # allowAndName 模式落盘名 = guid
+            target = out_dir / begin["name"]
+            if target.exists():
+                target = out_dir / f"{int(time.time())}_{begin['name']}"
+            src.rename(target)
+            return target
     except Exception as e:
         rep.log("collect", "click_download_failed", error=str(e)[:200])
         try:
-            page.keyboard.press("Escape")
+            await page.press_escape()
         except Exception:
             pass
         return None
-    finally:
-        try:
-            session.detach()
-        except Exception:
-            pass
 
 
-def _download_via_fetch(page, href: str, name: str, out_dir: Path, rep: Reporter) -> Path | None:
+async def _download_via_fetch(page: PageCdp, href: str, name: str, out_dir: Path, rep: Reporter) -> Path | None:
     try:
-        b64 = page.evaluate(
-            """async (url) => {
-                const r = await fetch(url, {credentials: 'include'});
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                const buf = await r.arrayBuffer();
-                let bin = '';
-                const bytes = new Uint8Array(buf);
-                for (let i = 0; i < bytes.length; i += 0x8000)
-                    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-                return btoa(bin);
-            }""",
-            href,
+        b64 = await page.js(
+            "(async () => {"
+            f"  const r = await fetch({json.dumps(href)}, {{credentials: 'include'}});"
+            "  if (!r.ok) throw new Error('HTTP ' + r.status);"
+            "  const buf = await r.arrayBuffer();"
+            "  let bin = '';"
+            "  const bytes = new Uint8Array(buf);"
+            "  for (let i = 0; i < bytes.length; i += 0x8000)"
+            "    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));"
+            "  return btoa(bin);"
+            "})()",
+            timeout=120,
         )
         target = out_dir / name
         target.write_bytes(base64.b64decode(b64))
@@ -503,77 +747,96 @@ def _download_via_fetch(page, href: str, name: str, out_dir: Path, rep: Reporter
         return None
 
 
-def collect(page, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
-    text = _last_assistant_text(page)
+async def collect(page: PageCdp, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
+    info = await _last_assistant(page)
+    text = info["text"]
     (out_dir / "final_reply.md").write_text(text, encoding="utf-8")
-    slug = _last_model_slug(page)
+    slug = info["slug"]
     rep.log("collect", "reply_saved", chars=len(text), model_slug=slug or "unknown")
     if expect_model and slug and expect_model not in slug.lower():
-        rep.attention(page, "collect",
-                      f"reply model slug '{slug}' does not contain '{expect_model}' — "
-                      "Pro may have been silently downgraded; review the deliverable critically")
+        await rep.attention(page, "collect",
+                            f"reply model slug '{slug}' does not contain '{expect_model}' — "
+                            "Pro may have been silently downgraded; review the deliverable critically")
+    if info["count"] == 0:
+        await rep.attention(page, "collect", "no assistant message found")
+        return 0, 0
 
-    msgs = page.locator(SEL["assistant_msg"])
-    if msgs.count() == 0:
-        rep.attention(page, "collect", "no assistant message found")
-        return 0
-    # sandbox 文件的渲染形态至少有三种, 都要覆盖:
-    #   <a href="...">name.zip</a>             经典链接
-    #   <a class="decorated-link">...</a>      无 href, JS 点击下载
-    #   <button class="behavior-btn">...</button> 内联文件引用
-    # 锚文本可能是中文描述 (「下载 V81 审查交付 zip」) 而非文件名 — 不能只靠
-    # 扩展名匹配, 结构 class (behavior-btn / decorated-link) 是更可靠的判据
-    # (V81 实测: 只按扩展名漏掉 3 个附件里的 2 个, 恰好包括完整包)。
-    last = msgs.last
-    candidates = []
-    seen_labels = set()
-    for css in ("a", "button"):
-        elems = last.locator(css)
-        for i in range(elems.count()):
-            el = elems.nth(i)
-            try:
-                href = el.get_attribute("href") or ""
-                label = (el.inner_text() or "").strip()
-                cls = el.get_attribute("class") or ""
-            except Exception:
-                continue
-            file_like = (
-                FILE_EXT_RE.search(href) or FILE_EXT_RE.search(label)
-                or "sandbox" in href
-                or "behavior-btn" in cls or "decorated-link" in cls
-            )
-            if not file_like:
-                continue
-            if not label and not href:
-                continue  # 空文本按钮 (代码块「复制」等) 不是文件
-            key = label or href
-            if key in seen_labels:
-                continue
-            seen_labels.add(key)
-            candidates.append((el, href, label))
+    candidates = await page.js(_candidates_js(), timeout=15) or []
     rep.log("collect", "file_links_found", count=len(candidates),
-            labels=[c[2][:60] for c in candidates])
+            labels=[c["label"][:60] for c in candidates])
 
     got = 0
-    for link, href, label in candidates:
-        target = _download_via_click(page, link, out_dir, rep)
-        if target is None and href.startswith("http"):
-            name = label if FILE_EXT_RE.search(label) else f"attachment_{got + 1}"
-            target = _download_via_fetch(page, href, name, out_dir, rep)
+    for c in candidates:
+        target = await _download_via_click(page, c["idx"], out_dir, rep)
+        if target is None and (c["href"] or "").startswith("http"):
+            name = c["label"] if FILE_EXT_RE.search(c["label"]) else f"attachment_{got + 1}"
+            target = await _download_via_fetch(page, c["href"], name, out_dir, rep)
         if target is None:
-            rep.attention(page, "collect", f"could not download attachment: {label or href[:80]}")
+            await rep.attention(page, "collect", f"could not download attachment: {c['label'] or c['href'][:80]}")
             continue
-        info = {"file": target.name, "bytes": target.stat().st_size}
+        info2 = {"file": target.name, "bytes": target.stat().st_size}
         if target.suffix == ".zip":
-            info["zip_ok"] = zipfile.is_zipfile(target)
-            if info["zip_ok"]:
+            info2["zip_ok"] = zipfile.is_zipfile(target)
+            if info2["zip_ok"]:
                 with zipfile.ZipFile(target) as zf:
-                    info["zip_entries"] = len(zf.namelist())
-        rep.log("collect", "attachment_saved", **info)
+                    info2["zip_entries"] = len(zf.namelist())
+        rep.log("collect", "attachment_saved", **info2)
         got += 1
     return got, len(candidates)
 
 
+# --------------------------------------------------------------------------- #
+# attachment 通道 (旧模式备选): 包随消息发附件
+# --------------------------------------------------------------------------- #
+async def upload_files(page: PageCdp, paths: list[Path], rep: Reporter):
+    """composer 附件上传: DOM.setFileInputFiles 喂真实路径 (composer 附件管道
+    与来源区不同, 历史上 Playwright set_input_files 即此姿势, 一直可用)。"""
+    doc = await page.call("DOM.getDocument", {"depth": 1})
+    root_id = doc["root"]["nodeId"]
+    found = await page.call("DOM.querySelectorAll",
+                            {"nodeId": root_id, "selector": "input[type=file]"})
+    node_ids = found.get("nodeIds") or []
+    if not node_ids:
+        raise RuntimeError("no file input found on page")
+    str_paths = [str(p) for p in paths]
+    attached = False
+    for nid in node_ids:
+        try:
+            await page.call("DOM.setFileInputFiles", {"files": str_paths, "nodeId": nid}, timeout=60)
+        except Exception:
+            continue
+        name_js = (
+            "(() => document.body && document.body.innerText.includes("
+            + json.dumps(paths[0].name) + "))()"
+        )
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            if await page.js(name_js, timeout=10):
+                attached = True
+                break
+            await asyncio.sleep(1)
+        if attached:
+            break
+    if not attached:
+        raise RuntimeError("setFileInputFiles on every candidate input, attachment card never appeared")
+    rep.log("upload", "attached", files=[p.name for p in paths])
+
+    deadline = time.time() + 600
+    while time.time() < deadline:
+        try:
+            if (await page.js(_SEND_READY_JS, timeout=10)) == "ready":
+                await asyncio.sleep(3)
+                rep.log("upload", "ready")
+                return
+        except Exception:
+            pass
+        await asyncio.sleep(2)
+    raise RuntimeError("upload did not become ready within 10 min")
+
+
+# --------------------------------------------------------------------------- #
+# 打包 / sources 通道 (子进程, 与浏览器层无关)
+# --------------------------------------------------------------------------- #
 def pack_repo(repo_root: Path, rep: Reporter, unique_name: bool = False) -> Path:
     """跑全项目单包构建脚本, 返回产出 zip 路径。
 
@@ -608,10 +871,8 @@ def pack_repo(repo_root: Path, rep: Reporter, unique_name: bool = False) -> Path
 
 def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) -> bool:
     """sources 通道: 子进程调 upload_project_file.py 把包传到 Project 文件页来源区。
-    子进程用 page 级 CDP websocket, 与本脚本的 Playwright browser 级连接互不干扰。
     **上传永远走网页端 (--sources-cdp-http), 与发送通道解耦** — App 的文件上传
-    流程与网页端不同, 绝不能对 App 跑 (owner 2026-06-12 裁决)。
-    返回 True=全部成功 (含同名幂等跳过)。"""
+    流程与网页端不同, 绝不能对 App 跑 (owner 2026-06-12 裁决)。"""
     uploader = Path(__file__).resolve().parent / "upload_project_file.py"
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
     for i, pkg in enumerate(packages):
@@ -619,7 +880,6 @@ def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) 
                "--cdp-http", args.sources_cdp_http,
                "--project-url", args.project_url,
                "--out-dir", str(out_dir / f"sources_upload_{i}")]
-        # 仅第一个包做旧快照清理 (白名单保留依赖包); 后续包追加不再清
         if i == 0 and not args.keep_old_snapshots:
             cmd.append("--replace")
         rep.log("sources_upload", "start", file=pkg.name,
@@ -678,6 +938,112 @@ def verify_prompt_packages_in_sources(prompt_text: str, args, rep: Reporter,
     return not missing
 
 
+# --------------------------------------------------------------------------- #
+# 主流程
+# --------------------------------------------------------------------------- #
+async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> int:
+    try:
+        page = await attach_with_fallback(args, rep)
+    except Exception as e:
+        rep.log("attach", "FATAL", error=str(e)[:300],
+                hint="run start_gpt_automation_chrome.ps1 first (browser and/or -App)")
+        return 1
+    if page.owns_tab:
+        cleanup_stale_tabs(page.http_base, page.tab_id, rep)
+    conv_url = args.resume or ""
+    try:
+        if args.resume:
+            await page.navigate(args.resume, settle_seconds=5)
+            if not await assert_logged_in(page, rep):
+                return 3
+        else:
+            packages = [Path(x).resolve() for x in args.package]
+            for pkg in packages:
+                if not pkg.is_file():
+                    rep.log("init", "FATAL", error=f"package not found: {pkg}")
+                    return 1
+            if args.pack:
+                packages.insert(0, pack_repo(repo_root, rep,
+                                             unique_name=args.package_channel == "sources"))
+            prompt_text = Path(args.prompt_file).read_text(encoding="utf-8")
+            if args.package_channel == "sources":
+                for pkg in packages:
+                    if pkg.name not in prompt_text:
+                        rep.log("sources_upload", "WARN_prompt_missing_filename",
+                                file=pkg.name,
+                                hint="prompt 没提到该包文件名 — GPT 可能找不到包, 确认 brief 指认正确")
+                if packages and not upload_to_sources(packages, args, rep, out_dir):
+                    await rep.attention(page, "sources_upload", "file-area upload failed — see sources_upload_* logs")
+                    return 3
+                if not verify_prompt_packages_in_sources(prompt_text, args, rep, out_dir,
+                                                         just_uploaded=bool(packages)):
+                    await rep.attention(page, "sources_verify",
+                                        "prompt-referenced package missing from Sources — upload it first")
+                    return 3
+            await page.navigate(args.project_url, settle_seconds=3)
+            if not await assert_logged_in(page, rep):
+                return 3
+            await verify_model(page, rep)
+            if args.package_channel == "attachment" and packages:
+                await upload_files(page, packages, rep)
+            conv_url = await fill_and_send(page, prompt_text, rep)
+
+        gen_start = time.time()
+        status, page = await wait_done(page, rep, args.timeout_hours, conv_url=conv_url)
+        if status == "timeout":
+            return 4
+        if status == "attention":
+            return 3
+        gen_elapsed = int(time.time() - gen_start)
+        suspected_downgrade = False
+        if args.min_gen_seconds and not args.resume:
+            tries = 0
+            while gen_elapsed < args.min_gen_seconds and tries < args.downgrade_retries:
+                tries += 1
+                rep.log("downgrade", "suspected_retrying", elapsed_s=gen_elapsed, retry=tries)
+                await page.navigate(conv_url or args.project_url, settle_seconds=5)
+                n_before = (await _last_assistant(page))["count"]
+                await send_followup(page, DOWNGRADE_RETRY_PROMPT, rep)
+                gen_start = time.time()
+                status, page = await wait_done(page, rep, args.timeout_hours,
+                                               min_assistant_count=n_before + 1, conv_url=conv_url)
+                if status != "done":
+                    return 4 if status == "timeout" else 3
+                gen_elapsed = int(time.time() - gen_start)
+            if gen_elapsed < args.min_gen_seconds:
+                suspected_downgrade = True
+                await rep.attention(page, "downgrade",
+                                    f"still finishing in {gen_elapsed}s after {args.downgrade_retries} "
+                                    "retries — suspected silent Pro limit; "
+                                    "FALLBACK: clipboard handoff for owner manual send")
+        got, found = await collect(page, out_dir, rep)
+        rescue = 0
+        while got == 0 and found > 0 and rescue < 2:
+            rescue += 1
+            if page.owns_tab:
+                cleanup_stale_tabs(page.http_base, page.tab_id, rep)
+            rep.log("rescue", "requesting_regeneration", attempt=rescue)
+            n_before = (await _last_assistant(page))["count"]
+            await send_followup(page, RESCUE_PROMPT, rep)
+            status, page = await wait_done(page, rep, min(args.timeout_hours, 0.5),
+                                           min_assistant_count=n_before + 1, conv_url=conv_url)
+            if status != "done":
+                return 4 if status == "timeout" else 3
+            got, found = await collect(page, out_dir, rep)
+        if page.owns_tab:
+            cleanup_stale_tabs(page.http_base, page.tab_id, rep)
+        rep.log("finish", "ok" if got else "no_attachments", attachments=got, rescues=rescue,
+                suspected_downgrade=suspected_downgrade)
+        if suspected_downgrade:
+            return 5
+        return 0 if got else 2
+    except Exception as e:
+        await rep.attention(page, "fatal", f"unhandled: {e}")
+        return 3
+    finally:
+        await page.close()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pack", action="store_true", help="build the full-project single zip first and upload it")
@@ -692,16 +1058,17 @@ def main() -> int:
     ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
     ap.add_argument("--project-url", default=PROJECT_URL)
     ap.add_argument("--cdp-url", default=CDP_URL,
-                    help="发送通道 CDP 端点; 浏览器通道默认 9222 (attach 失败自动落 App 9224), "
-                         "ChatGPT 桌面 App 通道传 http://localhost:9224 (先跑 start 脚本 -App)")
+                    help="发送通道 CDP HTTP 端点; 默认 Edge 9222 (失败自动落 App 9224), "
+                         "App 通道传 http://localhost:9224 (先跑 start 脚本 -App)")
     ap.add_argument("--sources-cdp-http", default="http://localhost:9222",
                     help="文件区上传/枚举专用 web CDP 端点 — 上传只能走网页端 (App 上传流程不同), "
                          "与发送通道 --cdp-url 解耦")
     ap.add_argument("--timeout-hours", type=float, default=3.5)
     ap.add_argument("--min-gen-seconds", type=int, default=300,
-                    help="生成耗时下限 (秒, 默认 300 — owner 经验: 真实审查/实现任务要 30min+, 5min 内完成 = 极大概率被静默降级; 2026-06-11 实测 70s 降级回复溜过旧 60s 判据成 exit 2)。轻量测试传 0 关闭")
+                    help="生成耗时下限 (秒, 默认 300 — owner 经验: 真实审查/实现任务要 30min+, "
+                         "5min 内完成 = 极大概率被静默降级)。轻量测试传 0 关闭")
     ap.add_argument("--downgrade-retries", type=int, default=1,
-                    help="疑似降级时自动 刷新页面+要求重新完整执行 的次数 (默认 1); 用尽仍快则报 attention 建议换 Edge")
+                    help="疑似降级时自动 重新导航+要求重新完整执行 的次数 (默认 1)")
     args = ap.parse_args()
 
     if not args.resume and not args.prompt_file:
@@ -716,127 +1083,9 @@ def main() -> int:
         repo_root / "补丁包" / "gpt_deliveries" / datetime.now().strftime("%Y%m%d_%H%M%S")
     )
     rep = Reporter(out_dir)
-    rep.log("init", "start", mode="resume" if args.resume else "dispatch", out_dir=str(out_dir))
-
-    with sync_playwright() as p:
-        try:
-            ctx, page, owns_page = attach_with_fallback(p, args, rep)
-        except Exception as e:
-            rep.log("attach", "FATAL", error=str(e)[:300],
-                    hint="run start_gpt_automation_chrome.ps1 first (browser and/or -App)")
-            return 1
-        cleanup_stale_tabs(ctx, page, rep)
-        try:
-            if args.resume:
-                page.goto(args.resume, wait_until="domcontentloaded")
-                page.wait_for_timeout(5000)
-                if not assert_logged_in(page, rep):
-                    return 3
-            else:
-                packages = [Path(x).resolve() for x in args.package]
-                for pkg in packages:
-                    if not pkg.is_file():
-                        rep.log("init", "FATAL", error=f"package not found: {pkg}")
-                        return 1
-                if args.pack:
-                    packages.insert(0, pack_repo(repo_root, rep,
-                                                 unique_name=args.package_channel == "sources"))
-                prompt_text = Path(args.prompt_file).read_text(encoding="utf-8")
-                if args.package_channel == "sources":
-                    # 文件区通道: 先把包传上来源区 (子进程, 网页端 page 级 CDP), 消息只发纯文字。
-                    # prompt 应已指认文件区包文件名 + sha256 — 这里做一道防呆提醒。
-                    for pkg in packages:
-                        if pkg.name not in prompt_text:
-                            rep.log("sources_upload", "WARN_prompt_missing_filename",
-                                    file=pkg.name,
-                                    hint="prompt 没提到该包文件名 — GPT 可能找不到包, 确认 brief 指认正确")
-                    if packages and not upload_to_sources(packages, args, rep, out_dir):
-                        rep.attention(page, "sources_upload", "file-area upload failed — see sources_upload_* logs")
-                        return 3
-                    # 发送前防呆: prompt 指认的每个 .zip 必须真在文件区 (prompt-only 模式尤其)
-                    if not verify_prompt_packages_in_sources(prompt_text, args, rep, out_dir,
-                                                             just_uploaded=bool(packages)):
-                        rep.attention(page, "sources_verify",
-                                      "prompt-referenced package missing from Sources — upload it first")
-                        return 3
-                page.goto(args.project_url, wait_until="domcontentloaded")
-                page.wait_for_timeout(3000)
-                if not assert_logged_in(page, rep):
-                    return 3
-                page.locator(SEL["composer"]).wait_for(state="visible", timeout=30000)
-                verify_model(page, rep)
-                if args.package_channel == "attachment" and packages:
-                    upload_files(page, packages, rep)
-                fill_and_send(page, prompt_text, rep)
-
-            gen_start = time.time()
-            status, page = wait_done(page, rep, args.timeout_hours)
-            if status == "timeout":
-                return 4
-            if status == "attention":
-                return 3
-            gen_elapsed = int(time.time() - gen_start)
-            # 疑似静默降级 (owner 经验: 真实任务完整生成 <1min 极大概率被限) →
-            # 阶梯处置: 刷新页面 + 要求重新完整执行; 用尽重试仍快 → attention 建议换 Edge
-            suspected_downgrade = False
-            if args.min_gen_seconds and not args.resume:
-                tries = 0
-                while gen_elapsed < args.min_gen_seconds and tries < args.downgrade_retries:
-                    tries += 1
-                    rep.log("downgrade", "suspected_retrying", elapsed_s=gen_elapsed, retry=tries)
-                    page.reload(wait_until="domcontentloaded")
-                    page.wait_for_timeout(5000)
-                    n_before = page.locator(SEL["assistant_msg"]).count()
-                    send_followup(page, DOWNGRADE_RETRY_PROMPT, rep)
-                    gen_start = time.time()
-                    status, page = wait_done(page, rep, args.timeout_hours,
-                                             min_assistant_count=n_before + 1)
-                    if status != "done":
-                        return 4 if status == "timeout" else 3
-                    gen_elapsed = int(time.time() - gen_start)
-                if gen_elapsed < args.min_gen_seconds:
-                    suspected_downgrade = True
-                    rep.attention(page, "downgrade",
-                                  f"still finishing in {gen_elapsed}s after {args.downgrade_retries} "
-                                  "retries — suspected silent Pro limit on this automation Chrome; "
-                                  "FALLBACK: re-dispatch via the Claude-in-Chrome plugin channel "
-                                  "(Edge, already logged in) — Claude handles that directly")
-            got, found = collect(page, out_dir, rep)
-            # 救援: 找到了附件候选却一个都没下载到 (sandbox 文件回收后 404),
-            # 让 GPT 重新生成一次再收。最多两轮。
-            rescue = 0
-            while got == 0 and found > 0 and rescue < 2:
-                rescue += 1
-                _close_stray_download_tabs(page)
-                rep.log("rescue", "requesting_regeneration", attempt=rescue)
-                n_before = page.locator(SEL["assistant_msg"]).count()
-                send_followup(page, RESCUE_PROMPT, rep)
-                status, page = wait_done(page, rep, min(args.timeout_hours, 0.5),
-                                         min_assistant_count=n_before + 1)
-                if status != "done":
-                    return 4 if status == "timeout" else 3
-                got, found = collect(page, out_dir, rep)
-            _close_stray_download_tabs(page)
-            rep.log("finish", "ok" if got else "no_attachments", attachments=got, rescues=rescue,
-                    suspected_downgrade=suspected_downgrade)
-            if suspected_downgrade:
-                return 5
-            return 0 if got else 2
-        except Exception as e:
-            rep.attention(page, "fatal", f"unhandled: {e}")
-            return 3
-        finally:
-            try:
-                _close_stray_download_tabs(page)
-                if not owns_page:
-                    pass  # App 通道复用主窗口页面, 关了 App 就空了 — 留在原地
-                elif len(page.context.pages) <= 1:
-                    # 自己是最后一个 tab: 关掉会把整个浏览器带退、CDP 断 — 留空白页保活
-                    page.goto("about:blank")
-                else:
-                    page.close()
-            except Exception:
-                pass
+    rep.log("init", "start", mode="resume" if args.resume else "dispatch",
+            out_dir=str(out_dir), engine="raw-page-cdp")
+    return asyncio.run(run_dispatch(args, rep, out_dir, repo_root))
 
 
 if __name__ == "__main__":
