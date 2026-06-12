@@ -232,6 +232,44 @@ def menu_delete_spot_js() -> str:
     )
 
 
+def list_source_zip_names_js() -> str:
+    """枚举来源区里所有 .zip 文件名 (排除对话框文本)。"""
+    return (
+        "(() => {"
+        "  const inDialog = el => !!el.closest('[role=dialog]');"
+        "  const names = new Set();"
+        "  for (const el of document.querySelectorAll('a,div,span,button')) {"
+        "    if (inDialog(el) || el.childElementCount !== 0) continue;"
+        "    const t = (el.textContent || '').trim();"
+        "    if (/^[\\w.\\-]+\\.zip$/.test(t)) names.add(t);"
+        "  }"
+        "  return JSON.stringify([...names]);"
+        "})()"
+    )
+
+
+async def delete_sources_except(cdp: Cdp, keep_names: list[str], out_dir: Path) -> int:
+    """删除来源区所有 .zip 条目, **白名单 keep_names 里的除外** (默认=依赖包)。
+    对「旧快照包名字与新包不同」鲁棒: 不靠同名匹配, 而是保留白名单、清其余。"""
+    keep = set(keep_names)
+    deleted = 0
+    for _ in range(20):  # 上限护栏
+        raw = await cdp.js(list_source_zip_names_js())
+        try:
+            names = json.loads(raw) if raw else []
+        except (json.JSONDecodeError, TypeError):
+            names = []
+        targets = [n for n in names if n not in keep]
+        if not targets:
+            break
+        n = await delete_named_sources(cdp, targets[0], out_dir)
+        if n == 0:
+            log("replace", "delete_no_progress", filename=targets[0])
+            break
+        deleted += n
+    return deleted
+
+
 async def delete_named_sources(cdp: Cdp, filename: str, out_dir: Path) -> int:
     """删除文件区里**所有**文件名 == filename 的条目 (精确匹配, 不碰其它文件)。
     返回删除条数。删除 UI 实测 (2026-06-12): 点该行「源文件操作」按钮 → 弹菜单
@@ -277,7 +315,7 @@ async def run(args, pkg: Path, out_dir: Path) -> int:
     base = args.cdp_http.rstrip("/")
 
     try:
-        tab = http("PUT", "/json/new?" + urllib.parse.quote(sources_url, safe=":/?&="), base)
+        tab = http("PUT", "/json/new", base)  # 开空 tab; 导航走显式 Page.navigate
     except Exception as e:
         log("attach", "FATAL", error=str(e)[:200], hint="Edge with CDP up? run start_gpt_automation_chrome.ps1")
         return 1
@@ -290,31 +328,41 @@ async def run(args, pkg: Path, out_dir: Path) -> int:
             await cdp.call("Page.enable")
             await cdp.call("Runtime.enable")
             await cdp.call("DOM.enable")
+            # 显式导航 — 靠 /json/new?<url> 的查询参数导航实测会卡在 about:blank
+            await cdp.call("Page.navigate", {"url": sources_url})
 
-            # 等加载 + React 渲染
+            # 等来源区真正渲染 — SPA 客户端渲染, readyState complete 不代表右侧列表
+            # 已出来 (实测撞到过整片空白就操作 → count=0/按钮找不到)。轮询到「添加源」
+            # 按钮真出现, 再多等让已有列表条目渲染 (条目比按钮出得慢)。
+            url_now = ""
             deadline = time.time() + 60
+            ready = False
             while time.time() < deadline:
-                if await cdp.js("document.readyState") == "complete":
+                url_now = await cdp.js("window.location.href") or ""
+                if "auth" in url_now or "login" in url_now:
+                    await cdp.screenshot(out_dir / "attention_login.png")
+                    log("nav", "FATAL", error="redirected to login")
+                    return 3
+                if await cdp.js(FIND_BUTTON_JS.format(texts=json.dumps(ADD_SOURCE_TEXTS))):
+                    ready = True
                     break
-                await asyncio.sleep(1)
-            await asyncio.sleep(4)
-
-            url_now = await cdp.js("window.location.href")
-            if "auth" in url_now or "login" in url_now:
-                await cdp.screenshot(out_dir / "attention_login.png")
-                log("nav", "FATAL", error="redirected to login")
+                await asyncio.sleep(1.5)
+            if not ready:
+                await cdp.screenshot(out_dir / "attention_sources_not_rendered.png")
+                log("nav", "FATAL", error="sources panel did not render (添加源 not found in 60s)")
                 return 3
+            await asyncio.sleep(4)  # 让已有列表条目渲染完 (否则 entries/删除枚举数到 0)
             log("nav", "sources_page_ready", url=url_now[:90])
+
+            # --replace: 传新包前先删旧快照。**按白名单保留依赖包、删其余所有 .zip**
+            # (不靠同名 — 旧快照包版本名可能与新包不同, owner 2026-06-12 指正)。
+            if args.replace:
+                n = await delete_sources_except(cdp, args.keep, out_dir)
+                log("replace", "old_snapshots_deleted", count=n, kept_whitelist=args.keep)
+                await cdp.screenshot(out_dir / "after_delete.png")
 
             before = await cdp.js(count_list_entries_js(pkg.name))
             log("upload", "entries_before", count=before)
-
-            # --replace: 传新包前先删同名旧包 (精确文件名匹配, 不碰依赖包等其它文件)
-            if args.replace and isinstance(before, int) and before > 0:
-                n = await delete_named_sources(cdp, pkg.name, out_dir)
-                log("replace", "old_same_name_deleted", count=n)
-                await cdp.screenshot(out_dir / "after_delete.png")
-                before = await cdp.js(count_list_entries_js(pkg.name))
 
             await cdp.js(GUARD_JS)
             await find_and_click(cdp, ADD_SOURCE_TEXTS, "add_source", out_dir)
@@ -407,10 +455,15 @@ def main() -> int:
     ap.add_argument("--on-duplicate", choices=["skip", "overwrite"], default="skip",
                     help="同名文件已在来源里时: skip=点跳过(默认,保持幂等) / overwrite=点仍然上传(造新版本)")
     ap.add_argument("--replace", action="store_true",
-                    help="传新包前先删掉来源里**同名**的旧包 (按文件名精确匹配, 不碰依赖包等其它文件); "
-                         "实现「新快照替换旧快照、依赖包保留」的每轮工作流")
+                    help="传新包前先删掉来源里所有旧快照包 (保留 --keep 白名单, 默认依赖包); "
+                         "对旧快照包改名鲁棒, 实现「新快照替换旧快照、依赖包保留」每轮工作流")
+    ap.add_argument("--keep", action="append", default=None,
+                    help="--replace 时**保留不删**的文件名白名单 (可重复); 默认 = 依赖包 zmd_py313_linux_x86_64.zip")
     ap.add_argument("--out-dir", help="screenshots/evidence dir; default 补丁包/gpt_deliveries/<ts>_project_upload")
     args = ap.parse_args()
+
+    if args.keep is None:
+        args.keep = ["zmd_py313_linux_x86_64.zip"]  # 依赖包默认永不删
 
     pkg = Path(args.file).resolve()
     if not pkg.is_file():
