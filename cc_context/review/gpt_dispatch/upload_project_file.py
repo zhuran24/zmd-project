@@ -573,10 +573,10 @@ async def run(args, pkg: Path | None, out_dir: Path) -> int:
 
     try:
         tab = http("PUT", "/json/new", base)  # 开空 tab; 导航走显式 Page.navigate
+        tab_id, ws_url = tab["id"], tab["webSocketDebuggerUrl"]  # 非 dict 返回也算端点不可用
     except Exception as e:
         log("attach", "FATAL", error=str(e)[:200], hint="Edge with CDP up? run start_gpt_automation_chrome.ps1")
         return 1
-    tab_id, ws_url = tab["id"], tab["webSocketDebuggerUrl"]
     log("attach", "tab_created", tab=tab_id)
 
     try:
@@ -733,7 +733,7 @@ def main() -> int:
     ap.add_argument("--cdp-http", default=CDP_HTTP,
                     help="CDP HTTP 端点 (page 级 ws 由此发现; 不走 browser 级 ws)")
     ap.add_argument("--timeout-minutes", type=float, default=10.0,
-                    help="真完成信号超时 (行菜单必须出现「下载」项)")
+                    help="真完成信号超时 (等挂载 POST 200; 收不到时退回行菜单「下载」UI 判据)")
     ap.add_argument("--on-duplicate", choices=["skip", "overwrite"], default="skip",
                     help="同名文件已在来源里时: skip=点跳过(默认,保持幂等) / overwrite=点仍然上传(造新版本)")
     ap.add_argument("--replace", action="store_true",

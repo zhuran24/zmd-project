@@ -102,8 +102,8 @@ class Reporter:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         try:
             print(f"[{entry['ts']}] {stage}: {status} {kw if kw else ''}", flush=True)
-        except OSError:
-            pass  # stdout 管道被对端关闭 (如 head 类管道) 不该杀进程 — run_log 是真相源
+        except Exception:
+            pass  # stdout 管道断开 (head 类) / GBK 控制台编码失败都不该杀进程 — run_log 是真相源
 
     async def attention(self, page, stage: str, reason: str):
         """非预期状态: 截图 + DOM dump + 日志, 供托底接手。不抛异常。"""
@@ -421,24 +421,44 @@ async def fill_and_send(page: PageCdp, prompt_text: str, rep: Reporter) -> str:
             break
         await asyncio.sleep(2)
     if not CONV_URL_RE.search(conv_url):
+        # 假 URL (如 project?tab=sources) 不能外流 — 会污染 revive 导航 / --resume 提示
         await rep.attention(page, "send", "URL did not switch to a conversation within 60s")
-    rep.log("send", "sent", conversation_url=conv_url)
+        conv_url = ""
+    rep.log("send", "sent", conversation_url=conv_url or "unknown")
     return conv_url
 
 
-async def send_followup(page: PageCdp, text: str, rep: Reporter):
-    await page.js(
-        "(() => { const c = document.querySelector('#prompt-textarea');"
-        "  if (c) c.focus(); return !!c; })()", timeout=10)
+async def send_followup(page: PageCdp, text: str, rep: Reporter) -> bool:
+    """追问 (404 救援 / 降级重试)。返回是否真发出去了 — 以前点不到发送按钮也
+    照记 followup_sent, 下游就干等一个永远不来的回复直到烧满超时。"""
+    focused = False
+    for _ in range(15):
+        focused = await page.js(
+            "(() => { const c = document.querySelector('#prompt-textarea');"
+            "  if (!c) return false; c.focus(); return true; })()", timeout=10)
+        if focused:
+            break
+        await asyncio.sleep(1)
+    if not focused:
+        rep.log("followup", "send_failed", error="composer #prompt-textarea not found")
+        return False
     await page.insert_text(text)
     await asyncio.sleep(0.5)
-    spot = await page.js(
-        "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
-        "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
-        "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()", timeout=10)
-    if spot:
-        await page.click_xy(spot["x"], spot["y"])
-    rep.log("rescue", "followup_sent", chars=len(text))
+    spot = None
+    for _ in range(10):
+        spot = await page.js(
+            "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
+            "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
+            "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()", timeout=10)
+        if spot:
+            break
+        await asyncio.sleep(1)
+    if not spot:
+        rep.log("followup", "send_failed", error="send button not found/enabled after fill")
+        return False
+    await page.click_xy(spot["x"], spot["y"])
+    rep.log("followup", "sent", chars=len(text))
+    return True
 
 
 async def _revive_page(page: PageCdp, last_url: str, rep: Reporter, reason: str) -> PageCdp:
@@ -475,7 +495,8 @@ async def _revive_page(page: PageCdp, last_url: str, rep: Reporter, reason: str)
 
 
 async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
-                    min_assistant_count: int = 1, conv_url: str = ""):
+                    min_assistant_count: int = 1, conv_url: str = "",
+                    project_url: str = PROJECT_URL):
     """返回 (status, page); status = 'done' | 'timeout' | 'attention'。
     page 可能被换新 — 调用方必须用返回的 page 继续。"""
     deadline = time.time() + timeout_hours * 3600
@@ -494,7 +515,7 @@ async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
                 if revives >= 3:
                     await rep.attention(page, "waiting", "page unresponsive after 3 revives — network likely down")
                     return "attention", page
-                page = await _revive_page(page, last_url or PROJECT_URL, rep, "page unresponsive")
+                page = await _revive_page(page, last_url or project_url, rep, "page unresponsive")
                 revives += 1
                 dead_ticks = 0
                 stable, last_len = 0, -1
@@ -552,11 +573,17 @@ async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
 # --------------------------------------------------------------------------- #
 class DownloadWatch:
     """裸 browser 级 ws 捕获下载 (Browser.setDownloadBehavior allowAndName)。
-    browser-ws 本身健康 — Playwright 病的是全量初始化, 不是这条 ws。"""
+    browser-ws 本身健康 — Playwright 病的是全量初始化, 不是这条 ws。
 
-    def __init__(self, http_base: str, out_dir: Path):
+    setDownloadBehavior 是**浏览器全局**状态: 生效期间用户在任何标签页手动下载
+    都会落进 out_dir 并改名 GUID — 所以 (a) 退出时必须复位回 default, 否则关掉
+    脚本后用户的 Edge 下载继续静默消失进交付目录; (b) wait_begin 按 frame_id
+    过滤, 只认自己页面触发的下载, 不抢用户同窗口期的手动下载。"""
+
+    def __init__(self, http_base: str, out_dir: Path, frame_id: str | None = None):
         self.http_base = http_base
         self.out_dir = out_dir
+        self.frame_id = frame_id
         self.ws = None
         self._id = 1000
 
@@ -570,6 +597,11 @@ class DownloadWatch:
         return self
 
     async def __aexit__(self, *exc):
+        try:
+            await self._call("Browser.setDownloadBehavior",
+                             {"behavior": "default", "eventsEnabled": False})
+        except Exception:
+            pass  # 复位尽力而为; ws 已断时只能靠浏览器重启兜底
         try:
             await self.ws.close()
         except Exception:
@@ -596,6 +628,8 @@ class DownloadWatch:
                 return None
             if msg.get("method") == "Browser.downloadWillBegin":
                 p = msg["params"]
+                if self.frame_id and p.get("frameId") and p["frameId"] != self.frame_id:
+                    continue  # 别的页面 (含用户手动) 的下载 — 不是我们点出来的
                 return {"guid": p["guid"], "name": p.get("suggestedFilename") or "download.bin"}
         return None
 
@@ -685,8 +719,13 @@ async def _click_confirm_if_visible(page: PageCdp, rep: Reporter) -> bool:
 
 
 async def _download_via_click(page: PageCdp, idx: int, out_dir: Path, rep: Reporter) -> Path | None:
+    frame_id = None
     try:
-        async with DownloadWatch(page.http_base, out_dir) as watch:
+        frame_id = (await page.call("Page.getFrameTree"))["frameTree"]["frame"]["id"]
+    except Exception:
+        pass  # 拿不到就不过滤 (退回旧行为), 下载捕获照常工作
+    try:
+        async with DownloadWatch(page.http_base, out_dir, frame_id) as watch:
             begin = None
             for attempt in range(1, 4):
                 if not await _click_confirm_if_visible(page, rep):
@@ -992,7 +1031,17 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
             conv_url = await fill_and_send(page, prompt_text, rep)
 
         gen_start = time.time()
-        status, page = await wait_done(page, rep, args.timeout_hours, conv_url=conv_url)
+        status, page = await wait_done(page, rep, args.timeout_hours, conv_url=conv_url,
+                                       project_url=args.project_url)
+        if not conv_url:
+            # 发送时 URL 没及时切换 — 等待期 SPA 多半已经切了, 现在补记 (供 --resume / 重试导航)
+            try:
+                u = await page.url()
+                if CONV_URL_RE.search(u):
+                    conv_url = u
+                    rep.log("send", "conversation_url_recovered", conversation_url=u)
+            except Exception:
+                pass
         if status == "timeout":
             return 4
         if status == "attention":
@@ -1004,12 +1053,25 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
             while gen_elapsed < args.min_gen_seconds and tries < args.downgrade_retries:
                 tries += 1
                 rep.log("downgrade", "suspected_retrying", elapsed_s=gen_elapsed, retry=tries)
-                await page.navigate(conv_url or args.project_url, settle_seconds=5)
+                # 刷新 = 重导航到会话 URL; 不知道会话 URL 时刷当前页 — 绝不能退到
+                # project 主页, 那会把重试 prompt 发成一个全新会话 (丢上下文)
+                refresh_url = conv_url
+                if not refresh_url:
+                    try:
+                        refresh_url = await page.url()
+                    except Exception:
+                        refresh_url = ""
+                if refresh_url:
+                    await page.navigate(refresh_url, settle_seconds=5)
                 n_before = (await _last_assistant(page))["count"]
-                await send_followup(page, DOWNGRADE_RETRY_PROMPT, rep)
+                if not await send_followup(page, DOWNGRADE_RETRY_PROMPT, rep):
+                    rep.log("downgrade", "retry_send_failed",
+                            note="按疑似降级收尾 (exit 5), 交付不可信")
+                    break
                 gen_start = time.time()
                 status, page = await wait_done(page, rep, args.timeout_hours,
-                                               min_assistant_count=n_before + 1, conv_url=conv_url)
+                                               min_assistant_count=n_before + 1, conv_url=conv_url,
+                                               project_url=args.project_url)
                 if status != "done":
                     return 4 if status == "timeout" else 3
                 gen_elapsed = int(time.time() - gen_start)
@@ -1027,16 +1089,21 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                 cleanup_stale_tabs(page.http_base, page.tab_id, rep)
             rep.log("rescue", "requesting_regeneration", attempt=rescue)
             n_before = (await _last_assistant(page))["count"]
-            await send_followup(page, RESCUE_PROMPT, rep)
+            if not await send_followup(page, RESCUE_PROMPT, rep):
+                await rep.attention(page, "rescue", "rescue followup could not be sent — "
+                                    "attachments stay uncollected, resume manually")
+                break
             status, page = await wait_done(page, rep, min(args.timeout_hours, 0.5),
-                                           min_assistant_count=n_before + 1, conv_url=conv_url)
+                                           min_assistant_count=n_before + 1, conv_url=conv_url,
+                                           project_url=args.project_url)
             if status != "done":
                 return 4 if status == "timeout" else 3
             got, found = await collect(page, out_dir, rep)
         if page.owns_tab:
             cleanup_stale_tabs(page.http_base, page.tab_id, rep)
-        rep.log("finish", "ok" if got else "no_attachments", attachments=got, rescues=rescue,
-                suspected_downgrade=suspected_downgrade)
+        # links_found 让 exit 2 的两种情况可区分: 真没附件 vs 附件在但没下下来
+        rep.log("finish", "ok" if got else "no_attachments", attachments=got,
+                links_found=found, rescues=rescue, suspected_downgrade=suspected_downgrade)
         if suspected_downgrade:
             return 5
         return 0 if got else 2

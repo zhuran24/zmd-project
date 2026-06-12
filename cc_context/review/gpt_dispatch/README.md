@@ -12,9 +12,13 @@
 
 ## 用法
 
+⚠️ 本机入口用 `python3.13`(不是 `python`): 裸 `python` 现在解析到 Program Files 下
+一个没装依赖的新环境, import websockets 直接挂; 子进程走 `sys.executable` 会跟随入口,
+所以只要入口对, 打包/上传整条链都对。
+
 ```powershell
 # 标准: 自动打全项目单包 (除缓存全打) + 发任务 + 等 + 收
-python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <prompt.md>
+python3.13 cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <prompt.md>
 
 # 指定现成包 (可多个 --package)
 python ...\dispatch_gpt_task.py --package X.zip --prompt-file prompt.md
@@ -91,5 +95,5 @@ python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --cdp-url http://loca
 
 ## 已知边界
 
-- ChatGPT DOM 改版可能破选择器(集中在脚本顶部 `SEL` 字典,改那里即可)
+- ChatGPT DOM 改版可能破选择器(集中在 dispatch 脚本顶部的 JS 探针常量:`_STOP_VISIBLE_JS` / `_LAST_ASSISTANT_JS` / `_candidates_js` / `MODEL_BTN_TEXTS` 等,改那里即可;旧文档说的 `SEL` 字典在 2026-06-12 raw-CDP 重写后已不存在)
 - 多轮追问不在 V1 范围:GPT 若反问而不是交付,脚本会以 exit 2 收文本,由我判断后用 --resume 或新任务跟进
