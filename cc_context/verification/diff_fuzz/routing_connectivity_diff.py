@@ -68,6 +68,17 @@ def _port_fronts(port_specs: List[Dict[str, Any]]):
     return source_fronts, sink_fronts
 
 
+def _port_connector_cells(port_specs: List[Dict[str, Any]]) -> Set[Tuple[int, int]]:
+    """Physical port connector cells are terminal nodes, not route-state cells."""
+
+    cells: Set[Tuple[int, int]] = set()
+    for ps in port_specs:
+        x, y = int(ps["x"]), int(ps["y"])
+        if 0 <= x < 70 and 0 <= y < 70:
+            cells.add((x, y))
+    return cells
+
+
 def verify_routes_connectivity(
     routes: List[Dict[str, Any]],
     port_specs: List[Dict[str, Any]],
@@ -76,9 +87,14 @@ def verify_routes_connectivity(
     """Independent brute-force check that `routes` is a valid global flow."""
     reasons: List[str] = []
     source_fronts, sink_fronts = _port_fronts(port_specs)
+    port_connector_cells = _port_connector_cells(port_specs)
 
     nodes = [_node_of(r) for r in routes]
     node_set = set(nodes)
+
+    for (x, y, layer, _fi, _fo, c) in nodes:
+        if (x, y) in port_connector_cells:
+            reasons.append(f"[{c}] route-state occupies physical port connector cell ({x},{y},L{layer})")
 
     # Capacity: the model adds AddAtMostOne per (cell, layer) ACROSS commodities
     # (routing_subproblem._add_capacity_constraints). A selected routing must put
@@ -274,7 +290,27 @@ def _self_test() -> int:
         print("SELF-TEST FAIL: capacity overload not caught.")
         return 1
 
-    print("[self-test] PASS — accepts valid flow; catches A-1 dead-end + capacity overload.")
+    connector_ports = [
+        {"instance_id": "ore_src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 4, "y": 1, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "water_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "water"},
+        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
+    ]
+    connector_reuse = [
+        {"x": 1, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
+        {"x": 2, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
+        {"x": 3, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
+        {"x": 2, "y": 2, "layer": 0, "commodity": "water", "component_type": "belt", "flow_in": ["S"], "flow_out": ["N"]},
+        {"x": 2, "y": 3, "layer": 0, "commodity": "water", "component_type": "belt", "flow_in": ["S"], "flow_out": ["N"]},
+    ]
+    ok4, reasons4 = verify_routes_connectivity(connector_reuse, connector_ports, ["ore", "water"])
+    flagged_connector = any("port connector" in r for r in reasons4)
+    print(f"[self-test] connector-cell reuse: ok={ok4} connector_flagged={flagged_connector}")
+    if ok4 or not flagged_connector:
+        print("SELF-TEST FAIL: port connector cell reuse not caught.")
+        return 1
+
+    print("[self-test] PASS — accepts valid flow; catches A-1 dead-end + capacity overload + connector reuse.")
     return 0
 
 

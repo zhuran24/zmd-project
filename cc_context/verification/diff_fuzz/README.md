@@ -29,7 +29,7 @@ exit 0 = 全净; exit 1 = 有 mismatch/异常 (输出前 20 条)。
 
 ## 坑备忘
 
-- routing 的 sink-front 状态约定是 `flow_out = port.dir` (几何上"背对" port), 真路径必须绕到 front 格另一侧进入; 独立实现别按直觉几何想当然 (踩过)。
+- routing 的 sink-front 状态约定是 `flow_out = Opp(port.dir)`，即 front 格朝 connector 送料；独立实现别按直觉几何想当然 (踩过)。
 - `defaultdict.get(k)` 无默认值返回 None——遍历邻接表用 `.get(k, ())`。
 - AI Safety Contract: 本工具只读被测对象 + 自建实例, 不写 checkpoints/solutions/blueprints, 不碰证明源。
 

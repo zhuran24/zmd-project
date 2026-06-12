@@ -1,0 +1,267 @@
+--- a/src/models/routing_subproblem.py
++++ b/src/models/routing_subproblem.py
+@@ -112,6 +112,52 @@
+     return neighbors
+ 
+ 
++def _in_grid_cell(cell: Tuple[int, int]) -> bool:
++    x, y = cell
++    return 0 <= x < GRID_W and 0 <= y < GRID_H
++
++
++def _port_connector_cells(port_specs: Sequence[Mapping[str, Any]]) -> Set[Tuple[int, int]]:
++    """Return in-grid physical port connector cells.
++
++    Binding/candidate placements encode a port as the outside-adjacent connector
++    cell plus an outward normal; routing variables live on the front cell
++    ``port + dir``.  Connector cells are terminal nodes, not free belt cells.
++    """
++
++    cells: Set[Tuple[int, int]] = set()
++    for spec in port_specs:
++        cell = (int(spec["x"]), int(spec["y"]))
++        if _in_grid_cell(cell):
++            cells.add(cell)
++    return cells
++
++
++def _filter_free_neighbors(
++    free_cells: Set[Tuple[int, int]],
++    free_neighbors_by_cell: Optional[Mapping[Tuple[int, int], Sequence[Tuple[int, int]]]],
++) -> Optional[Dict[Tuple[int, int], Tuple[Tuple[int, int], ...]]]:
++    if free_neighbors_by_cell is None:
++        return None
++    return {
++        cell: tuple(neighbor for neighbor in free_neighbors_by_cell.get(cell, ()) if neighbor in free_cells)
++        for cell in free_cells
++    }
++
++
++def _annotate_port_connector_owners(
++    owner_map: Dict[Tuple[int, int], str],
++    port_specs: Sequence[Mapping[str, Any]],
++) -> None:
++    for spec in port_specs:
++        cell = (int(spec["x"]), int(spec["y"]))
++        if not _in_grid_cell(cell):
++            continue
++        instance_id = str(spec.get("instance_id", ""))
++        if instance_id:
++            owner_map.setdefault(cell, instance_id)
++
++
+ def _compute_free_components(
+     free_cells: Set[Tuple[int, int]],
+     *,
+@@ -230,6 +276,8 @@
+     else:
+         resolved_port_specs = [dict(spec) for spec in list(port_specs or [])]
+ 
++    port_connector_cells = _port_connector_cells(resolved_port_specs)
++
+     if resolved_core is not None:
+         owner_map = dict(resolved_core.occupied_owner_by_cell)
+         if occupied_owner_by_cell is not None:
+@@ -239,20 +287,27 @@
+                     for cell, owner in dict(occupied_owner_by_cell).items()
+                 }
+             )
++        _annotate_port_connector_owners(owner_map, resolved_port_specs)
++        resolved_free_cells = set(resolved_core.free_cells) - port_connector_cells
++        resolved_free_neighbors = _filter_free_neighbors(
++            resolved_free_cells,
++            resolved_core.free_neighbors_by_cell,
++        )
++        component_by_cell, cells_by_component = _compute_free_components(
++            resolved_free_cells,
++            free_neighbors_by_cell=resolved_free_neighbors,
++        )
+         return (
+             resolved_grid,
+             resolved_port_specs,
+-            set(resolved_core.free_cells),
++            resolved_free_cells,
+             owner_map,
+-            dict(resolved_core.component_by_cell),
+-            {
+-                int(component_id): set(cells)
+-                for component_id, cells in resolved_core.cells_by_component.items()
+-            },
+-            dict(resolved_core.free_neighbors_by_cell),
++            component_by_cell,
++            cells_by_component,
++            resolved_free_neighbors,
+         )
+ 
+-    resolved_free_cells = set(getattr(resolved_grid, "free_cells", set()))
++    resolved_free_cells = set(getattr(resolved_grid, "free_cells", set())) - port_connector_cells
+     owner_map = {
+         (int(cell[0]), int(cell[1])): str(owner)
+         for cell, owner in dict(
+@@ -261,6 +316,7 @@
+             else getattr(resolved_grid, "occupied_owner_by_cell", {})
+         ).items()
+     }
++    _annotate_port_connector_owners(owner_map, resolved_port_specs)
+     component_by_cell, cells_by_component = _compute_free_components(resolved_free_cells)
+     return (
+         resolved_grid,
+@@ -654,15 +710,16 @@
+ 
+         raw_component_cells = dict(analysis.get("commodity_component_cells", {}))
+         raw_active_cells = dict(analysis.get("commodity_active_cells", {}))
++        port_connector_cells = _port_connector_cells(self.grid.port_specs)
+         for commodity in self.commodities:
+             component_cells = {
+                 (int(cell[0]), int(cell[1]))
+                 for cell in raw_component_cells.get(commodity, [])
+-            }
++            } - port_connector_cells
+             active_cells = {
+                 (int(cell[0]), int(cell[1]))
+                 for cell in raw_active_cells.get(commodity, [])
+-            }
++            } - port_connector_cells
+             self._commodity_component_cells[commodity] = component_cells
+             self._commodity_active_cells[commodity] = active_cells
+ 
+@@ -948,6 +1005,11 @@
+             return
+ 
+         recv_dir = DIR_OPP[d_out]
++        if self._source_port_fronts.get((nx, ny, recv_dir, commodity), 0) > 0:
++            for var in out_vars:
++                self.model.Add(var == 0)
++            return
++
+         recv_vars = self._vars_by_cell_dir_in_commodity.get((nx, ny, recv_dir, commodity), [])
+         if not recv_vars:
+             for var in out_vars:
+@@ -981,6 +1043,11 @@
+             return
+ 
+         send_dir = DIR_OPP[d_in]
++        if self._sink_port_fronts.get((px, py, send_dir, commodity), 0) > 0:
++            for var in in_vars:
++                self.model.Add(var == 0)
++            return
++
+         send_vars = self._vars_by_cell_dir_out_commodity.get((px, py, send_dir, commodity), [])
+         if not send_vars:
+             for var in in_vars:
+--- a/src/tests/test_routing.py
++++ b/src/tests/test_routing.py
+@@ -196,6 +196,37 @@
+     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+ 
+ 
++def test_port_connector_cell_cannot_be_reused_as_routing_cell(project_root):
++    """A physical port connector cell is terminal-only, not a routable belt cell."""
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem, analyze_exact_routing_domain
++
++    allowed = {(1, 1), (2, 1), (3, 1), (2, 2), (2, 3)}
++    occupied = {
++        (x, y)
++        for x in range(70)
++        for y in range(70)
++        if (x, y) not in allowed
++    }
++    port_specs = [
++        {"instance_id": "ore_src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
++        {"instance_id": "ore_sink", "x": 4, "y": 1, "dir": "W", "type": "in", "commodity": "ore"},
++        {"instance_id": "water_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "water"},
++        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
++    ]
++    grid = RoutingGrid(occupied, port_specs)
++    precheck = analyze_exact_routing_domain(grid)
++    assert precheck["status"] == "relaxed_disconnected"
++    assert any(item["commodity"] == "ore" for item in precheck["disconnected_commodities"])
++
++    routing = RoutingSubproblem(grid, ["ore", "water"])
++    routing.build()
++
++    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
++
++
+ def test_packaging_battery_pose_binding_domain(project_root):
+     """6x4 电池封装机的 pose-level 绑定域应可被精确枚举。"""
+     import sys
+--- a/cc_context/verification/diff_fuzz/routing_connectivity_diff.py
++++ b/cc_context/verification/diff_fuzz/routing_connectivity_diff.py
+@@ -68,6 +68,17 @@
+     return source_fronts, sink_fronts
+ 
+ 
++def _port_connector_cells(port_specs: List[Dict[str, Any]]) -> Set[Tuple[int, int]]:
++    """Physical port connector cells are terminal nodes, not route-state cells."""
++
++    cells: Set[Tuple[int, int]] = set()
++    for ps in port_specs:
++        x, y = int(ps["x"]), int(ps["y"])
++        if 0 <= x < 70 and 0 <= y < 70:
++            cells.add((x, y))
++    return cells
++
++
+ def verify_routes_connectivity(
+     routes: List[Dict[str, Any]],
+     port_specs: List[Dict[str, Any]],
+@@ -76,10 +87,15 @@
+     """Independent brute-force check that `routes` is a valid global flow."""
+     reasons: List[str] = []
+     source_fronts, sink_fronts = _port_fronts(port_specs)
++    port_connector_cells = _port_connector_cells(port_specs)
+ 
+     nodes = [_node_of(r) for r in routes]
+     node_set = set(nodes)
+ 
++    for (x, y, layer, _fi, _fo, c) in nodes:
++        if (x, y) in port_connector_cells:
++            reasons.append(f"[{c}] route-state occupies physical port connector cell ({x},{y},L{layer})")
++
+     # Capacity: the model adds AddAtMostOne per (cell, layer) ACROSS commodities
+     # (routing_subproblem._add_capacity_constraints). A selected routing must put
+     # at most one route-state on each (x, y, layer).
+@@ -274,7 +290,27 @@
+         print("SELF-TEST FAIL: capacity overload not caught.")
+         return 1
+ 
+-    print("[self-test] PASS — accepts valid flow; catches A-1 dead-end + capacity overload.")
++    connector_ports = [
++        {"instance_id": "ore_src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
++        {"instance_id": "ore_sink", "x": 4, "y": 1, "dir": "W", "type": "in", "commodity": "ore"},
++        {"instance_id": "water_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "water"},
++        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
++    ]
++    connector_reuse = [
++        {"x": 1, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
++        {"x": 2, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
++        {"x": 3, "y": 1, "layer": 0, "commodity": "ore", "component_type": "belt", "flow_in": ["W"], "flow_out": ["E"]},
++        {"x": 2, "y": 2, "layer": 0, "commodity": "water", "component_type": "belt", "flow_in": ["S"], "flow_out": ["N"]},
++        {"x": 2, "y": 3, "layer": 0, "commodity": "water", "component_type": "belt", "flow_in": ["S"], "flow_out": ["N"]},
++    ]
++    ok4, reasons4 = verify_routes_connectivity(connector_reuse, connector_ports, ["ore", "water"])
++    flagged_connector = any("port connector" in r for r in reasons4)
++    print(f"[self-test] connector-cell reuse: ok={ok4} connector_flagged={flagged_connector}")
++    if ok4 or not flagged_connector:
++        print("SELF-TEST FAIL: port connector cell reuse not caught.")
++        return 1
++
++    print("[self-test] PASS — accepts valid flow; catches A-1 dead-end + capacity overload + connector reuse.")
+     return 0
+ 
+ 
+--- a/cc_context/verification/diff_fuzz/README.md
++++ b/cc_context/verification/diff_fuzz/README.md
+@@ -29,7 +29,7 @@
+ 
+ ## 坑备忘
+ 
+-- routing 的 sink-front 状态约定是 `flow_out = port.dir` (几何上"背对" port), 真路径必须绕到 front 格另一侧进入; 独立实现别按直觉几何想当然 (踩过)。
++- routing 的 sink-front 状态约定是 `flow_out = Opp(port.dir)`，即 front 格朝 connector 送料；独立实现别按直觉几何想当然 (踩过)。
+ - `defaultdict.get(k)` 无默认值返回 None——遍历邻接表用 `.get(k, ())`。
+ - AI Safety Contract: 本工具只读被测对象 + 自建实例, 不写 checkpoints/solutions/blueprints, 不碰证明源。
+ 

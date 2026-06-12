@@ -112,6 +112,52 @@ def _cell_neighbors(cell: Tuple[int, int]) -> List[Tuple[int, int]]:
     return neighbors
 
 
+def _in_grid_cell(cell: Tuple[int, int]) -> bool:
+    x, y = cell
+    return 0 <= x < GRID_W and 0 <= y < GRID_H
+
+
+def _port_connector_cells(port_specs: Sequence[Mapping[str, Any]]) -> Set[Tuple[int, int]]:
+    """Return in-grid physical port connector cells.
+
+    Binding/candidate placements encode a port as the outside-adjacent connector
+    cell plus an outward normal; routing variables live on the front cell
+    ``port + dir``.  Connector cells are terminal nodes, not free belt cells.
+    """
+
+    cells: Set[Tuple[int, int]] = set()
+    for spec in port_specs:
+        cell = (int(spec["x"]), int(spec["y"]))
+        if _in_grid_cell(cell):
+            cells.add(cell)
+    return cells
+
+
+def _filter_free_neighbors(
+    free_cells: Set[Tuple[int, int]],
+    free_neighbors_by_cell: Optional[Mapping[Tuple[int, int], Sequence[Tuple[int, int]]]],
+) -> Optional[Dict[Tuple[int, int], Tuple[Tuple[int, int], ...]]]:
+    if free_neighbors_by_cell is None:
+        return None
+    return {
+        cell: tuple(neighbor for neighbor in free_neighbors_by_cell.get(cell, ()) if neighbor in free_cells)
+        for cell in free_cells
+    }
+
+
+def _annotate_port_connector_owners(
+    owner_map: Dict[Tuple[int, int], str],
+    port_specs: Sequence[Mapping[str, Any]],
+) -> None:
+    for spec in port_specs:
+        cell = (int(spec["x"]), int(spec["y"]))
+        if not _in_grid_cell(cell):
+            continue
+        instance_id = str(spec.get("instance_id", ""))
+        if instance_id:
+            owner_map.setdefault(cell, instance_id)
+
+
 def _compute_free_components(
     free_cells: Set[Tuple[int, int]],
     *,
@@ -230,6 +276,8 @@ def _resolve_routing_domain_context(
     else:
         resolved_port_specs = [dict(spec) for spec in list(port_specs or [])]
 
+    port_connector_cells = _port_connector_cells(resolved_port_specs)
+
     if resolved_core is not None:
         owner_map = dict(resolved_core.occupied_owner_by_cell)
         if occupied_owner_by_cell is not None:
@@ -239,20 +287,27 @@ def _resolve_routing_domain_context(
                     for cell, owner in dict(occupied_owner_by_cell).items()
                 }
             )
+        _annotate_port_connector_owners(owner_map, resolved_port_specs)
+        resolved_free_cells = set(resolved_core.free_cells) - port_connector_cells
+        resolved_free_neighbors = _filter_free_neighbors(
+            resolved_free_cells,
+            resolved_core.free_neighbors_by_cell,
+        )
+        component_by_cell, cells_by_component = _compute_free_components(
+            resolved_free_cells,
+            free_neighbors_by_cell=resolved_free_neighbors,
+        )
         return (
             resolved_grid,
             resolved_port_specs,
-            set(resolved_core.free_cells),
+            resolved_free_cells,
             owner_map,
-            dict(resolved_core.component_by_cell),
-            {
-                int(component_id): set(cells)
-                for component_id, cells in resolved_core.cells_by_component.items()
-            },
-            dict(resolved_core.free_neighbors_by_cell),
+            component_by_cell,
+            cells_by_component,
+            resolved_free_neighbors,
         )
 
-    resolved_free_cells = set(getattr(resolved_grid, "free_cells", set()))
+    resolved_free_cells = set(getattr(resolved_grid, "free_cells", set())) - port_connector_cells
     owner_map = {
         (int(cell[0]), int(cell[1])): str(owner)
         for cell, owner in dict(
@@ -261,6 +316,7 @@ def _resolve_routing_domain_context(
             else getattr(resolved_grid, "occupied_owner_by_cell", {})
         ).items()
     }
+    _annotate_port_connector_owners(owner_map, resolved_port_specs)
     component_by_cell, cells_by_component = _compute_free_components(resolved_free_cells)
     return (
         resolved_grid,
@@ -654,15 +710,16 @@ class RoutingSubproblem:
 
         raw_component_cells = dict(analysis.get("commodity_component_cells", {}))
         raw_active_cells = dict(analysis.get("commodity_active_cells", {}))
+        port_connector_cells = _port_connector_cells(self.grid.port_specs)
         for commodity in self.commodities:
             component_cells = {
                 (int(cell[0]), int(cell[1]))
                 for cell in raw_component_cells.get(commodity, [])
-            }
+            } - port_connector_cells
             active_cells = {
                 (int(cell[0]), int(cell[1]))
                 for cell in raw_active_cells.get(commodity, [])
-            }
+            } - port_connector_cells
             self._commodity_component_cells[commodity] = component_cells
             self._commodity_active_cells[commodity] = active_cells
 
@@ -948,6 +1005,11 @@ class RoutingSubproblem:
             return
 
         recv_dir = DIR_OPP[d_out]
+        if self._source_port_fronts.get((nx, ny, recv_dir, commodity), 0) > 0:
+            for var in out_vars:
+                self.model.Add(var == 0)
+            return
+
         recv_vars = self._vars_by_cell_dir_in_commodity.get((nx, ny, recv_dir, commodity), [])
         if not recv_vars:
             for var in out_vars:
@@ -981,6 +1043,11 @@ class RoutingSubproblem:
             return
 
         send_dir = DIR_OPP[d_in]
+        if self._sink_port_fronts.get((px, py, send_dir, commodity), 0) > 0:
+            for var in in_vars:
+                self.model.Add(var == 0)
+            return
+
         send_vars = self._vars_by_cell_dir_out_commodity.get((px, py, send_dir, commodity), [])
         if not send_vars:
             for var in in_vars:

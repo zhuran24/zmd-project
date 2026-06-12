@@ -196,6 +196,37 @@ def test_bridge_overlap_cannot_duplicate_single_edge_channel(project_root):
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
 
 
+def test_port_connector_cell_cannot_be_reused_as_routing_cell(project_root):
+    """A physical port connector cell is terminal-only, not a routable belt cell."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem, analyze_exact_routing_domain
+
+    allowed = {(1, 1), (2, 1), (3, 1), (2, 2), (2, 3)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "ore_src", "x": 0, "y": 1, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "ore_sink", "x": 4, "y": 1, "dir": "W", "type": "in", "commodity": "ore"},
+        {"instance_id": "water_src", "x": 2, "y": 1, "dir": "N", "type": "out", "commodity": "water"},
+        {"instance_id": "water_sink", "x": 2, "y": 4, "dir": "S", "type": "in", "commodity": "water"},
+    ]
+    grid = RoutingGrid(occupied, port_specs)
+    precheck = analyze_exact_routing_domain(grid)
+    assert precheck["status"] == "relaxed_disconnected"
+    assert any(item["commodity"] == "ore" for item in precheck["disconnected_commodities"])
+
+    routing = RoutingSubproblem(grid, ["ore", "water"])
+    routing.build()
+
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+
+
 def test_packaging_battery_pose_binding_domain(project_root):
     """6x4 电池封装机的 pose-level 绑定域应可被精确枚举。"""
     import sys
