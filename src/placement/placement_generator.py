@@ -122,6 +122,99 @@ def build_placement_obj(x: int, y: int, o: int, mode: str, w: int, h: int,
     }
 
 
+def _require_positive_int(value: Any, field_name: str) -> int:
+    """Return a positive JSON integer, rejecting bool/float drift fail-closed."""
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise ValueError(f"{field_name} must be a positive integer, got {value!r}")
+    return value
+
+
+def _require_exact_dimensions(tpl_key: str, port_rule: str, w: int, h: int,
+                              expected_w: int, expected_h: int) -> None:
+    """Lock hard-coded generators to the canonical geometry they actually emit."""
+    if (w, h) != (expected_w, expected_h):
+        raise ValueError(
+            f"{tpl_key} uses port_rule={port_rule!r}, whose generator emits "
+            f"{expected_w}x{expected_h} poses; canonical dimensions are {w}x{h}"
+        )
+
+
+def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) -> Tuple[int, int, str]:
+    """Validate schema-visible template geometry against generator assumptions.
+
+    Several template families are emitted by closed-form geometry generators rather
+    than by a generic rotation matrix over arbitrary dimensions.  This guard keeps
+    a schema-valid canonical edit from silently desynchronizing template geometry
+    and generated candidate poses.
+    """
+    if not isinstance(tpl_def, dict):
+        raise ValueError(f"template {tpl_key!r} must be an object")
+
+    dims = tpl_def.get("dimensions")
+    if not isinstance(dims, dict):
+        raise ValueError(f"{tpl_key}.dimensions must be an object")
+
+    w = _require_positive_int(dims.get("w"), f"{tpl_key}.dimensions.w")
+    h = _require_positive_int(dims.get("h"), f"{tpl_key}.dimensions.h")
+
+    port_rule = tpl_def.get("port_rule")
+    if not isinstance(port_rule, str):
+        raise ValueError(f"{tpl_key}.port_rule must be a string, got {port_rule!r}")
+
+    if port_rule == "long_sides":
+        if w <= h:
+            raise ValueError(
+                f"{tpl_key} uses port_rule='long_sides' but dimensions are {w}x{h}; "
+                "the manufacturing generator expects the unrotated long side on top/bottom (w > h)"
+            )
+
+    elif port_rule == "opposite_parallel_sides":
+        if w != h:
+            raise ValueError(
+                f"{tpl_key} uses port_rule='opposite_parallel_sides' but dimensions are {w}x{h}; "
+                "the square manufacturing generator requires w == h"
+            )
+
+    elif port_rule == "core_specific":
+        _require_exact_dimensions(tpl_key, port_rule, w, h, 9, 9)
+        core_limits = tpl_def.get("core_limits")
+        if not isinstance(core_limits, dict):
+            raise ValueError(f"{tpl_key}.core_limits must be present for port_rule='core_specific'")
+        max_outputs = _require_positive_int(core_limits.get("max_outputs"), f"{tpl_key}.core_limits.max_outputs")
+        max_inputs = _require_positive_int(core_limits.get("max_inputs"), f"{tpl_key}.core_limits.max_inputs")
+        if (max_outputs, max_inputs) != (6, 14):
+            raise ValueError(
+                f"{tpl_key}.core_limits are {max_outputs}/{max_inputs}; "
+                "the core_specific generator emits exactly 6 outputs and 14 inputs"
+            )
+
+    elif port_rule == "omni_wireless":
+        _require_exact_dimensions(tpl_key, port_rule, w, h, 3, 3)
+
+    elif port_rule == "none":
+        _require_exact_dimensions(tpl_key, port_rule, w, h, 2, 2)
+        radius = _require_positive_int(tpl_def.get("power_coverage_radius"), f"{tpl_key}.power_coverage_radius")
+        if radius != 5:
+            raise ValueError(
+                f"{tpl_key}.power_coverage_radius is {radius}; "
+                "the power-pole generator emits the frozen radius-5 coverage stencil"
+            )
+
+    elif port_rule == "inward_facing":
+        _require_exact_dimensions(tpl_key, port_rule, w, h, 1, 3)
+        placement_rule = tpl_def.get("placement_rule")
+        if placement_rule != "left_or_bottom_boundary":
+            raise ValueError(
+                f"{tpl_key}.placement_rule must be 'left_or_bottom_boundary' for port_rule='inward_facing', "
+                f"got {placement_rule!r}"
+            )
+
+    else:
+        raise ValueError(f"未知的 port_rule: {port_rule} (模板: {tpl_key})")
+
+    return w, h, port_rule
+
+
 # ==========================================
 # 2. 设施模板遍历发生器 (Generators)
 # ==========================================
@@ -325,9 +418,7 @@ def generate_all_pools(templates: Dict[str, Any]) -> Dict[str, List[Dict]]:
     pools: Dict[str, List[Dict]] = {}
 
     for tpl_key, tpl_def in templates.items():
-        dims = tpl_def["dimensions"]
-        w, h = dims["w"], dims["h"]
-        port_rule = tpl_def["port_rule"]
+        w, h, port_rule = _validate_template_geometry_contract(tpl_key, tpl_def)
 
         if port_rule == "long_sides":
             # 长方形制造设施 (如 manufacturing_6x4)
@@ -354,8 +445,6 @@ def generate_all_pools(templates: Dict[str, Any]) -> Dict[str, List[Dict]]:
             # 边界仓库口
             pools[tpl_key] = gen_boundary_ports()
 
-        else:
-            raise ValueError(f"未知的 port_rule: {port_rule} (模板: {tpl_key})")
 
     return pools
 

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import pytest
+from jsonschema import ValidationError as JsonSchemaValidationError
 
 from src.interchange.preprocess_context import (
     build_preprocess_context_from_rules_and_plan,
@@ -107,6 +108,32 @@ def test_preprocess_context_path_loader_rejects_overflow_json_numbers(tmp_path: 
     plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
 
     with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_schema_missing_required_rule_field(tmp_path: Path) -> None:
+    rules_payload = json.loads(RULES_JSON_PATH.read_text(encoding="utf-8"))
+    del rules_payload["globals"]["time"]["tick_interval_seconds"]
+
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(json.dumps(rules_payload), encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(JsonSchemaValidationError, match="tick_interval_seconds"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_schema_missing_required_plan_field(tmp_path: Path) -> None:
+    plan_payload = json.loads(PLAN_JSON_PATH.read_text(encoding="utf-8"))
+    del plan_payload["utility_operations"]["wireless_sink"]["generic_input_slots"]
+
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    plan_path.write_text(json.dumps(plan_payload), encoding="utf-8")
+
+    with pytest.raises(JsonSchemaValidationError, match="generic_input_slots"):
         load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
 
 

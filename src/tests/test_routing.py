@@ -227,6 +227,37 @@ def test_port_connector_cell_cannot_be_reused_as_routing_cell(project_root):
     assert routing.solve(time_limit=5.0) == "INFEASIBLE"
 
 
+def test_external_domain_analysis_cannot_route_through_occupied_cell(project_root):
+    """Stale caller-supplied routing domains must be clipped to the real free grid."""
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem, analyze_exact_routing_domain
+
+    allowed = {(1, 0), (3, 0)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    grid = RoutingGrid(occupied, port_specs)
+
+    precheck = analyze_exact_routing_domain(grid)
+    assert precheck["status"] == "relaxed_disconnected"
+
+    stale_domain_analysis = _tiny_domain_analysis({"ore": {(1, 0), (2, 0), (3, 0)}})
+    routing = RoutingSubproblem(grid, ["ore"], domain_analysis=stale_domain_analysis)
+    routing.build()
+
+    assert all((key[0], key[1]) != (2, 0) for key in routing.r_vars)
+    assert routing.solve(time_limit=5.0) == "INFEASIBLE"
+
+
 def test_same_commodity_disconnected_source_sink_islands_are_routable(project_root):
     """Same-commodity islands are valid when each island has a source and a sink."""
     import sys

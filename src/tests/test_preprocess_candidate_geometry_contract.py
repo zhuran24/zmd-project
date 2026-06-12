@@ -1,3 +1,7 @@
+import copy
+
+import pytest
+
 from src.placement.placement_generator import (
     GRID_H,
     GRID_W,
@@ -9,6 +13,52 @@ from src.placement.placement_generator import (
 
 def _in_grid(x: int, y: int) -> bool:
     return 0 <= x < GRID_W and 0 <= y < GRID_H
+
+
+def _single_mutated_template(template_id: str, mutator):
+    templates = load_templates()
+    mutated_template = copy.deepcopy(templates[template_id])
+    mutator(mutated_template)
+    return {template_id: mutated_template}
+
+
+def test_generate_all_pools_rejects_schema_valid_template_geometry_drift():
+    cases = [
+        (
+            "protocol_core",
+            lambda tpl: tpl["dimensions"].__setitem__("w", 10),
+            r"protocol_core.*9x9",
+        ),
+        (
+            "protocol_storage_box",
+            lambda tpl: tpl["dimensions"].__setitem__("w", 4),
+            r"protocol_storage_box.*3x3",
+        ),
+        (
+            "power_pole",
+            lambda tpl: tpl["dimensions"].__setitem__("w", 3),
+            r"power_pole.*2x2",
+        ),
+        (
+            "power_pole",
+            lambda tpl: tpl.__setitem__("power_coverage_radius", 99),
+            r"power_coverage_radius.*radius-5",
+        ),
+        (
+            "boundary_storage_port",
+            lambda tpl: tpl["dimensions"].__setitem__("w", 2),
+            r"boundary_storage_port.*1x3",
+        ),
+        (
+            "manufacturing_6x4",
+            lambda tpl: tpl.__setitem__("dimensions", {"w": 4, "h": 6}),
+            r"long_sides.*w > h",
+        ),
+    ]
+
+    for template_id, mutator, expected_message in cases:
+        with pytest.raises(ValueError, match=expected_message):
+            generate_all_pools(_single_mutated_template(template_id, mutator))
 
 
 def test_protocol_storage_box_omni_wireless_has_no_physical_ports_and_full_anchor_domain():

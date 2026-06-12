@@ -845,15 +845,16 @@ class RoutingSubproblem:
         raw_component_cells = dict(analysis.get("commodity_component_cells", {}))
         raw_active_cells = dict(analysis.get("commodity_active_cells", {}))
         port_connector_cells = _port_connector_cells(self.grid.port_specs)
+        routable_domain_cells = set(self.grid.free_cells) - port_connector_cells
         for commodity in self.commodities:
             component_cells = {
                 (int(cell[0]), int(cell[1]))
                 for cell in raw_component_cells.get(commodity, [])
-            } - port_connector_cells
+            } & routable_domain_cells
             active_cells = {
                 (int(cell[0]), int(cell[1]))
                 for cell in raw_active_cells.get(commodity, [])
-            } - port_connector_cells
+            } & routable_domain_cells
             self._commodity_component_cells[commodity] = component_cells
             self._commodity_active_cells[commodity] = active_cells
 

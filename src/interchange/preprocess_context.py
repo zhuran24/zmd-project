@@ -16,6 +16,8 @@ import copy
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
+from jsonschema import validate as validate_json_schema
+
 from src.io.strict_json import load_strict_json
 
 PREPROCESS_PLAN_VERSION = "0.2.0"
@@ -354,11 +356,33 @@ def build_producer_index(context: PreprocessContext) -> dict[str, tuple[str, ...
     }
 
 
+@lru_cache(maxsize=None)
+def _load_json_schema(schema_name: str) -> Mapping[str, Any]:
+    project_root = Path(__file__).resolve().parent.parent.parent
+    return load_strict_json(project_root / "rules" / schema_name)
+
+
+def _validate_preprocess_source_schemas(
+    rules_payload: Mapping[str, Any],
+    plan_payload: Mapping[str, Any],
+) -> None:
+    """Validate strict-loaded source documents before applying context defaults."""
+    validate_json_schema(
+        instance=rules_payload,
+        schema=_load_json_schema("canonical_rules.schema.json"),
+    )
+    validate_json_schema(
+        instance=plan_payload,
+        schema=_load_json_schema("preprocess_plan.schema.json"),
+    )
+
+
 @lru_cache(maxsize=1)
 def load_default_preprocess_context() -> PreprocessContext:
     project_root = Path(__file__).resolve().parent.parent.parent
     rules_payload = load_strict_json(project_root / "rules" / "canonical_rules.json")
     plan_payload = load_strict_json(project_root / "rules" / "preprocess_plan.json")
+    _validate_preprocess_source_schemas(rules_payload, plan_payload)
     return build_preprocess_context_from_rules_and_plan(rules_payload, plan_payload)
 
 
@@ -367,9 +391,12 @@ def load_preprocess_context_from_paths(
     rules_path: Path,
     plan_path: Path,
 ) -> PreprocessContext:
+    rules_payload = load_strict_json(Path(rules_path))
+    plan_payload = load_strict_json(Path(plan_path))
+    _validate_preprocess_source_schemas(rules_payload, plan_payload)
     return build_preprocess_context_from_rules_and_plan(
-        load_strict_json(Path(rules_path)),
-        load_strict_json(Path(plan_path)),
+        rules_payload,
+        plan_payload,
     )
 
 

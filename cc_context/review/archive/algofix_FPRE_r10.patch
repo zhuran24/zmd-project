@@ -1,0 +1,303 @@
+--- a/src/placement/placement_generator.py
++++ b/src/placement/placement_generator.py
+@@ -122,6 +122,99 @@
+     }
+ 
+ 
++def _require_positive_int(value: Any, field_name: str) -> int:
++    """Return a positive JSON integer, rejecting bool/float drift fail-closed."""
++    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
++        raise ValueError(f"{field_name} must be a positive integer, got {value!r}")
++    return value
++
++
++def _require_exact_dimensions(tpl_key: str, port_rule: str, w: int, h: int,
++                              expected_w: int, expected_h: int) -> None:
++    """Lock hard-coded generators to the canonical geometry they actually emit."""
++    if (w, h) != (expected_w, expected_h):
++        raise ValueError(
++            f"{tpl_key} uses port_rule={port_rule!r}, whose generator emits "
++            f"{expected_w}x{expected_h} poses; canonical dimensions are {w}x{h}"
++        )
++
++
++def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) -> Tuple[int, int, str]:
++    """Validate schema-visible template geometry against generator assumptions.
++
++    Several template families are emitted by closed-form geometry generators rather
++    than by a generic rotation matrix over arbitrary dimensions.  This guard keeps
++    a schema-valid canonical edit from silently desynchronizing template geometry
++    and generated candidate poses.
++    """
++    if not isinstance(tpl_def, dict):
++        raise ValueError(f"template {tpl_key!r} must be an object")
++
++    dims = tpl_def.get("dimensions")
++    if not isinstance(dims, dict):
++        raise ValueError(f"{tpl_key}.dimensions must be an object")
++
++    w = _require_positive_int(dims.get("w"), f"{tpl_key}.dimensions.w")
++    h = _require_positive_int(dims.get("h"), f"{tpl_key}.dimensions.h")
++
++    port_rule = tpl_def.get("port_rule")
++    if not isinstance(port_rule, str):
++        raise ValueError(f"{tpl_key}.port_rule must be a string, got {port_rule!r}")
++
++    if port_rule == "long_sides":
++        if w <= h:
++            raise ValueError(
++                f"{tpl_key} uses port_rule='long_sides' but dimensions are {w}x{h}; "
++                "the manufacturing generator expects the unrotated long side on top/bottom (w > h)"
++            )
++
++    elif port_rule == "opposite_parallel_sides":
++        if w != h:
++            raise ValueError(
++                f"{tpl_key} uses port_rule='opposite_parallel_sides' but dimensions are {w}x{h}; "
++                "the square manufacturing generator requires w == h"
++            )
++
++    elif port_rule == "core_specific":
++        _require_exact_dimensions(tpl_key, port_rule, w, h, 9, 9)
++        core_limits = tpl_def.get("core_limits")
++        if not isinstance(core_limits, dict):
++            raise ValueError(f"{tpl_key}.core_limits must be present for port_rule='core_specific'")
++        max_outputs = _require_positive_int(core_limits.get("max_outputs"), f"{tpl_key}.core_limits.max_outputs")
++        max_inputs = _require_positive_int(core_limits.get("max_inputs"), f"{tpl_key}.core_limits.max_inputs")
++        if (max_outputs, max_inputs) != (6, 14):
++            raise ValueError(
++                f"{tpl_key}.core_limits are {max_outputs}/{max_inputs}; "
++                "the core_specific generator emits exactly 6 outputs and 14 inputs"
++            )
++
++    elif port_rule == "omni_wireless":
++        _require_exact_dimensions(tpl_key, port_rule, w, h, 3, 3)
++
++    elif port_rule == "none":
++        _require_exact_dimensions(tpl_key, port_rule, w, h, 2, 2)
++        radius = _require_positive_int(tpl_def.get("power_coverage_radius"), f"{tpl_key}.power_coverage_radius")
++        if radius != 5:
++            raise ValueError(
++                f"{tpl_key}.power_coverage_radius is {radius}; "
++                "the power-pole generator emits the frozen radius-5 coverage stencil"
++            )
++
++    elif port_rule == "inward_facing":
++        _require_exact_dimensions(tpl_key, port_rule, w, h, 1, 3)
++        placement_rule = tpl_def.get("placement_rule")
++        if placement_rule != "left_or_bottom_boundary":
++            raise ValueError(
++                f"{tpl_key}.placement_rule must be 'left_or_bottom_boundary' for port_rule='inward_facing', "
++                f"got {placement_rule!r}"
++            )
++
++    else:
++        raise ValueError(f"未知的 port_rule: {port_rule} (模板: {tpl_key})")
++
++    return w, h, port_rule
++
++
+ # ==========================================
+ # 2. 设施模板遍历发生器 (Generators)
+ # ==========================================
+@@ -325,9 +418,7 @@
+     pools: Dict[str, List[Dict]] = {}
+ 
+     for tpl_key, tpl_def in templates.items():
+-        dims = tpl_def["dimensions"]
+-        w, h = dims["w"], dims["h"]
+-        port_rule = tpl_def["port_rule"]
++        w, h, port_rule = _validate_template_geometry_contract(tpl_key, tpl_def)
+ 
+         if port_rule == "long_sides":
+             # 长方形制造设施 (如 manufacturing_6x4)
+@@ -354,8 +445,6 @@
+             # 边界仓库口
+             pools[tpl_key] = gen_boundary_ports()
+ 
+-        else:
+-            raise ValueError(f"未知的 port_rule: {port_rule} (模板: {tpl_key})")
+ 
+     return pools
+ 
+--- a/src/interchange/preprocess_context.py
++++ b/src/interchange/preprocess_context.py
+@@ -16,6 +16,8 @@
+ from pathlib import Path
+ from typing import Any, Iterable, Mapping
+ 
++from jsonschema import validate as validate_json_schema
++
+ from src.io.strict_json import load_strict_json
+ 
+ PREPROCESS_PLAN_VERSION = "0.2.0"
+@@ -354,11 +356,33 @@
+     }
+ 
+ 
++@lru_cache(maxsize=None)
++def _load_json_schema(schema_name: str) -> Mapping[str, Any]:
++    project_root = Path(__file__).resolve().parent.parent.parent
++    return load_strict_json(project_root / "rules" / schema_name)
++
++
++def _validate_preprocess_source_schemas(
++    rules_payload: Mapping[str, Any],
++    plan_payload: Mapping[str, Any],
++) -> None:
++    """Validate strict-loaded source documents before applying context defaults."""
++    validate_json_schema(
++        instance=rules_payload,
++        schema=_load_json_schema("canonical_rules.schema.json"),
++    )
++    validate_json_schema(
++        instance=plan_payload,
++        schema=_load_json_schema("preprocess_plan.schema.json"),
++    )
++
++
+ @lru_cache(maxsize=1)
+ def load_default_preprocess_context() -> PreprocessContext:
+     project_root = Path(__file__).resolve().parent.parent.parent
+     rules_payload = load_strict_json(project_root / "rules" / "canonical_rules.json")
+     plan_payload = load_strict_json(project_root / "rules" / "preprocess_plan.json")
++    _validate_preprocess_source_schemas(rules_payload, plan_payload)
+     return build_preprocess_context_from_rules_and_plan(rules_payload, plan_payload)
+ 
+ 
+@@ -367,9 +391,12 @@
+     rules_path: Path,
+     plan_path: Path,
+ ) -> PreprocessContext:
++    rules_payload = load_strict_json(Path(rules_path))
++    plan_payload = load_strict_json(Path(plan_path))
++    _validate_preprocess_source_schemas(rules_payload, plan_payload)
+     return build_preprocess_context_from_rules_and_plan(
+-        load_strict_json(Path(rules_path)),
+-        load_strict_json(Path(plan_path)),
++        rules_payload,
++        plan_payload,
+     )
+ 
+ 
+--- a/src/tests/test_preprocess_candidate_geometry_contract.py
++++ b/src/tests/test_preprocess_candidate_geometry_contract.py
+@@ -1,3 +1,7 @@
++import copy
++
++import pytest
++
+ from src.placement.placement_generator import (
+     GRID_H,
+     GRID_W,
+@@ -11,6 +15,52 @@
+     return 0 <= x < GRID_W and 0 <= y < GRID_H
+ 
+ 
++def _single_mutated_template(template_id: str, mutator):
++    templates = load_templates()
++    mutated_template = copy.deepcopy(templates[template_id])
++    mutator(mutated_template)
++    return {template_id: mutated_template}
++
++
++def test_generate_all_pools_rejects_schema_valid_template_geometry_drift():
++    cases = [
++        (
++            "protocol_core",
++            lambda tpl: tpl["dimensions"].__setitem__("w", 10),
++            r"protocol_core.*9x9",
++        ),
++        (
++            "protocol_storage_box",
++            lambda tpl: tpl["dimensions"].__setitem__("w", 4),
++            r"protocol_storage_box.*3x3",
++        ),
++        (
++            "power_pole",
++            lambda tpl: tpl["dimensions"].__setitem__("w", 3),
++            r"power_pole.*2x2",
++        ),
++        (
++            "power_pole",
++            lambda tpl: tpl.__setitem__("power_coverage_radius", 99),
++            r"power_coverage_radius.*radius-5",
++        ),
++        (
++            "boundary_storage_port",
++            lambda tpl: tpl["dimensions"].__setitem__("w", 2),
++            r"boundary_storage_port.*1x3",
++        ),
++        (
++            "manufacturing_6x4",
++            lambda tpl: tpl.__setitem__("dimensions", {"w": 4, "h": 6}),
++            r"long_sides.*w > h",
++        ),
++    ]
++
++    for template_id, mutator, expected_message in cases:
++        with pytest.raises(ValueError, match=expected_message):
++            generate_all_pools(_single_mutated_template(template_id, mutator))
++
++
+ def test_protocol_storage_box_omni_wireless_has_no_physical_ports_and_full_anchor_domain():
+     pools = generate_all_pools(load_templates())
+     poses = pools["protocol_storage_box"]
+--- a/src/tests/test_preprocess_context.py
++++ b/src/tests/test_preprocess_context.py
+@@ -5,6 +5,7 @@
+ from pathlib import Path
+ 
+ import pytest
++from jsonschema import ValidationError as JsonSchemaValidationError
+ 
+ from src.interchange.preprocess_context import (
+     build_preprocess_context_from_rules_and_plan,
+@@ -110,6 +111,32 @@
+         load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+ 
+ 
++def test_preprocess_context_path_loader_rejects_schema_missing_required_rule_field(tmp_path: Path) -> None:
++    rules_payload = json.loads(RULES_JSON_PATH.read_text(encoding="utf-8"))
++    del rules_payload["globals"]["time"]["tick_interval_seconds"]
++
++    rules_path = tmp_path / "canonical_rules.json"
++    plan_path = tmp_path / "preprocess_plan.json"
++    rules_path.write_text(json.dumps(rules_payload), encoding="utf-8")
++    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
++
++    with pytest.raises(JsonSchemaValidationError, match="tick_interval_seconds"):
++        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
++
++
++def test_preprocess_context_path_loader_rejects_schema_missing_required_plan_field(tmp_path: Path) -> None:
++    plan_payload = json.loads(PLAN_JSON_PATH.read_text(encoding="utf-8"))
++    del plan_payload["utility_operations"]["wireless_sink"]["generic_input_slots"]
++
++    rules_path = tmp_path / "canonical_rules.json"
++    plan_path = tmp_path / "preprocess_plan.json"
++    rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
++    plan_path.write_text(json.dumps(plan_payload), encoding="utf-8")
++
++    with pytest.raises(JsonSchemaValidationError, match="generic_input_slots"):
++        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
++
++
+ def test_preprocess_context_report_writer_rejects_nonfinite_numbers(tmp_path: Path) -> None:
+     from scripts.build_current_preprocess_context import _atomic_write_json_strict
+ 
+--- a/data/solutions/current_preprocess_context.json
++++ b/data/solutions/current_preprocess_context.json
+@@ -4,9 +4,9 @@
+     "description": "Additive preprocess overlay for cycle groups, utility operations, and optional future overrides after canonical rules consolidation.",
+     "source_rules_version": "1.1.0",
+     "source_plan_version": "0.2.0",
+-    "recipe_source": "canonical_rules_plus_overlay",
+-    "target_source": "canonical_rules_plus_overlay",
+-    "commodity_role_source": "canonical_rules_plus_overlay"
++    "recipe_source": "canonical_rules",
++    "target_source": "canonical_rules",
++    "commodity_role_source": "canonical_rules"
+   },
+   "tick_interval_seconds": 2,
+   "belt_capacity_per_tick": 1,

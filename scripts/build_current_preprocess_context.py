@@ -72,7 +72,7 @@ def _atomic_write_json_strict(path: Path, payload: Mapping[str, Any]) -> None:
     )
     tmp_path = Path(raw_tmp_path)
     try:
-        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
             json.dump(payload, handle, indent=2, ensure_ascii=False, allow_nan=False)
             handle.flush()
             os.fsync(handle.fileno())
@@ -220,7 +220,9 @@ def main() -> None:
     _atomic_write_json_strict(Path(args.diff_json), diff_report)
     diff_md_path = Path(args.diff_md)
     diff_md_path.parent.mkdir(parents=True, exist_ok=True)
-    diff_md_path.write_text(render_diff_report_markdown(diff_report), encoding="utf-8")
+    diff_md_path.write_text(
+        render_diff_report_markdown(diff_report), encoding="utf-8", newline="\n"
+    )
 
     print(f"preprocess context written: {args.output}")
     print(f"diff report written: {args.diff_json}")
