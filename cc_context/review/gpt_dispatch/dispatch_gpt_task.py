@@ -1,9 +1,17 @@
-"""GPT Pro 外发全流程自动化: 上传包 + 发 prompt + 等完成 + 收交付。
+"""GPT Pro 外发全流程自动化: 发包 + 发 prompt + 等完成 + 收交付。
+
+发包通道 (--package-channel, 2026-06-12 owner 裁决默认 sources):
+    sources    = 包上传到 Project 文件页「来源区」(子进程调 upload_project_file.py,
+                 page 级 CDP, 分块灌字节), 消息只发纯文字 prompt — prompt 必须自己
+                 指认文件区包文件名 + sha256 (本脚本不代写)。默认先按白名单清旧快照
+                 (保留依赖包), --keep-old-snapshots 关闭清理。同名已在 → 幂等跳过。
+    attachment = 旧模式: 包随消息当附件发 (会话内传大附件疑似风控诱因, 仅留作备选)。
 
 用法:
     # 前置: 专用 Chrome 已起 (start_gpt_automation_chrome.ps1, 首次需手动登录一次)
-    python dispatch_gpt_task.py --pack --prompt-file prompt.md            # 自动打全项目单包再发
-    python dispatch_gpt_task.py --package X.zip [--package Y.zip] --prompt-file prompt.md
+    python dispatch_gpt_task.py --package X.zip --prompt-file prompt.md   # 默认 sources 通道
+    python dispatch_gpt_task.py --pack --prompt-file prompt.md            # 打包再发 (sources 下自动改唯一名)
+    python dispatch_gpt_task.py --package X.zip --prompt-file p.md --package-channel attachment
     python dispatch_gpt_task.py --resume https://chatgpt.com/.../c/<id>   # 重连续等/补收
 
 输出 (--out-dir, 默认 补丁包/gpt_deliveries/<时间戳>/):
@@ -544,8 +552,12 @@ def collect(page, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
     return got, len(candidates)
 
 
-def pack_repo(repo_root: Path, rep: Reporter) -> Path:
-    """跑全项目单包构建脚本, 返回产出 zip 路径。"""
+def pack_repo(repo_root: Path, rep: Reporter, unique_name: bool = False) -> Path:
+    """跑全项目单包构建脚本, 返回产出 zip 路径。
+
+    unique_name=True (sources 通道默认): 把 builder 的固定名输出立刻复制成
+    sha 前缀唯一名 (zmd_snapshot_<sha8>.zip) — 固定名输出会被并发会话的重打
+    覆盖 (2026-06-12 r7 实测), 唯一名把这轮的字节钉死。"""
     builder = repo_root / "cc_context" / "review" / "build_v80_single_win.py"
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
     proc = subprocess.run(
@@ -562,15 +574,51 @@ def pack_repo(repo_root: Path, rep: Reporter) -> Path:
             sha = line.split("sha256: ", 1)[1].strip()
     if pkg is None or not pkg.is_file():
         raise RuntimeError(f"pack output not found in builder stdout: {proc.stdout[-300:]}")
+    if unique_name and sha:
+        unique = pkg.with_name(f"zmd_snapshot_{sha[:8]}.zip")
+        if not unique.exists():
+            unique.write_bytes(pkg.read_bytes())
+        pkg = unique
     rep.log("pack", "built", package=str(pkg), sha256=sha,
             size_mb=round(pkg.stat().st_size / 1024 / 1024, 1))
     return pkg
+
+
+def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) -> bool:
+    """sources 通道: 子进程调 upload_project_file.py 把包传到 Project 文件页来源区。
+    子进程用 page 级 CDP websocket, 与本脚本的 Playwright browser 级连接互不干扰。
+    返回 True=全部成功 (含同名幂等跳过)。"""
+    uploader = Path(__file__).resolve().parent / "upload_project_file.py"
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    for i, pkg in enumerate(packages):
+        cmd = [sys.executable, str(uploader), "--file", str(pkg),
+               "--cdp-http", args.cdp_url,
+               "--project-url", args.project_url,
+               "--out-dir", str(out_dir / f"sources_upload_{i}")]
+        # 仅第一个包做旧快照清理 (白名单保留依赖包); 后续包追加不再清
+        if i == 0 and not args.keep_old_snapshots:
+            cmd.append("--replace")
+        rep.log("sources_upload", "start", file=pkg.name,
+                replace=(i == 0 and not args.keep_old_snapshots))
+        proc = subprocess.run(cmd, capture_output=True, text=True,
+                              encoding="utf-8", errors="replace", env=env)
+        tail = (proc.stdout or "").strip().splitlines()[-8:]
+        rep.log("sources_upload", "done" if proc.returncode == 0 else "FAILED",
+                file=pkg.name, exit_code=proc.returncode, tail=" | ".join(tail))
+        if proc.returncode != 0:
+            return False
+    return True
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pack", action="store_true", help="build the full-project single zip first and upload it")
     ap.add_argument("--package", action="append", default=[], help="zip to upload; repeatable")
+    ap.add_argument("--package-channel", choices=["sources", "attachment"], default="sources",
+                    help="发包通道: sources=上传 Project 文件页来源区+纯文字 prompt (默认, owner 裁决); "
+                         "attachment=包随消息发附件 (旧模式备选)")
+    ap.add_argument("--keep-old-snapshots", action="store_true",
+                    help="sources 通道默认会先按白名单清掉来源区旧快照包 (保留依赖包); 加本旗标关闭清理")
     ap.add_argument("--prompt-file", help="markdown file with the prompt text")
     ap.add_argument("--resume", help="existing conversation URL: skip upload/send, just wait+collect")
     ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
@@ -616,15 +664,28 @@ def main() -> int:
                         rep.log("init", "FATAL", error=f"package not found: {pkg}")
                         return 1
                 if args.pack:
-                    packages.insert(0, pack_repo(repo_root, rep))
+                    packages.insert(0, pack_repo(repo_root, rep,
+                                                 unique_name=args.package_channel == "sources"))
                 prompt_text = Path(args.prompt_file).read_text(encoding="utf-8")
+                if args.package_channel == "sources" and packages:
+                    # 文件区通道: 先把包传上来源区 (子进程, page 级 CDP), 消息只发纯文字。
+                    # prompt 应已指认文件区包文件名 + sha256 — 这里做一道防呆提醒。
+                    for pkg in packages:
+                        if pkg.name not in prompt_text:
+                            rep.log("sources_upload", "WARN_prompt_missing_filename",
+                                    file=pkg.name,
+                                    hint="prompt 没提到该包文件名 — GPT 可能找不到包, 确认 brief 指认正确")
+                    if not upload_to_sources(packages, args, rep, out_dir):
+                        rep.attention(page, "sources_upload", "file-area upload failed — see sources_upload_* logs")
+                        return 3
                 page.goto(args.project_url, wait_until="domcontentloaded")
                 page.wait_for_timeout(3000)
                 if not assert_logged_in(page, rep):
                     return 3
                 page.locator(SEL["composer"]).wait_for(state="visible", timeout=30000)
                 verify_model(page, rep)
-                upload_files(page, packages, rep)
+                if args.package_channel == "attachment" and packages:
+                    upload_files(page, packages, rep)
                 fill_and_send(page, prompt_text, rep)
 
             gen_start = time.time()
