@@ -126,6 +126,9 @@ def _build_required_protocol_box_project(project_root: Path) -> Path:
                 "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
                 "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
             },
+            "commodity_metadata": {
+                "valley_battery": {"sink_kind": "generic_input"},
+            },
         },
     )
     _write_json(

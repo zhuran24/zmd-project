@@ -1938,27 +1938,59 @@ def _load_json(path: Path) -> Any:
         return json.load(fh)
 
 
+def _normalize_generic_io_requirement_section(
+    section: Mapping[str, Any],
+    section_name: str,
+) -> Dict[str, int]:
+    if not isinstance(section, Mapping):
+        raise TypeError(f"{section_name} must be a JSON object")
+
+    normalized: Dict[str, int] = {}
+    for commodity, raw_count in section.items():
+        commodity_id = str(commodity)
+        if commodity_id == "__unused__":
+            raise ValueError(
+                f"{section_name} contains reserved commodity id {commodity_id!r}"
+            )
+        if isinstance(raw_count, bool) or not isinstance(raw_count, int):
+            raise TypeError(
+                f"{section_name}[{commodity_id!r}] must be a strict integer slot count"
+            )
+        if raw_count < 0:
+            raise ValueError(
+                f"{section_name}[{commodity_id!r}] must be non-negative"
+            )
+        normalized[commodity_id] = int(raw_count)
+    return normalized
+
+
 def _normalize_generic_io_requirements_payload(
     payload: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Dict[str, int]]:
-    payload = dict(payload or {})
+    if payload is None:
+        payload = {}
+    if not isinstance(payload, Mapping):
+        raise TypeError("generic IO requirements payload must be a JSON object")
     return {
-        "required_generic_outputs": {
-            str(k): int(v)
-            for k, v in dict(payload.get("required_generic_outputs", {})).items()
-        },
-        "required_generic_inputs": {
-            str(k): int(v)
-            for k, v in dict(payload.get("required_generic_inputs", {})).items()
-        },
+        "required_generic_outputs": _normalize_generic_io_requirement_section(
+            payload.get("required_generic_outputs", {}),
+            "required_generic_outputs",
+        ),
+        "required_generic_inputs": _normalize_generic_io_requirement_section(
+            payload.get("required_generic_inputs", {}),
+            "required_generic_inputs",
+        ),
     }
 
 
 def load_generic_io_requirements_artifact(project_root: Path) -> Dict[str, Dict[str, int]]:
-    data_dir = project_root / "data" / "preprocessed"
-    return _normalize_generic_io_requirements_payload(
-        _load_json(data_dir / "generic_io_requirements.json")
-    )
+    # Certified master construction consumes the same frozen artifact before the
+    # binding subproblem is reached.  Delegate the on-disk artifact path to the
+    # binding loader so malformed sections, loose counts, reserved sentinel names,
+    # and canonical role violations fail closed at the first proof boundary.
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    return load_generic_io_requirements(project_root=project_root)
 
 
 def infer_certified_optional_lower_bounds(

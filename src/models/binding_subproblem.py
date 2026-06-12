@@ -17,7 +17,7 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Set
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -54,6 +54,31 @@ POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
 }
 
 
+def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
+    payload: Dict[str, Any] = {}
+    for key, value in pairs:
+        if key in payload:
+            raise ValueError(f"duplicate JSON key: {key}")
+        payload[key] = value
+    return payload
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant: {value}")
+
+
+def _loads_strict_json(text: str) -> Any:
+    return json.loads(
+        text,
+        object_pairs_hook=_reject_duplicate_json_keys,
+        parse_constant=_reject_json_constant,
+    )
+
+
+def _load_strict_json(path: Path) -> Any:
+    return _loads_strict_json(path.read_text(encoding="utf-8"))
+
+
 def load_wireless_sink_generic_input_slots(
     *,
     project_root: Optional[Path] = None,
@@ -78,7 +103,7 @@ def load_wireless_sink_generic_input_slots(
             f"Missing preprocess_plan artifact（缺少预处理计划工件）: {path}"
         )
 
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload = _load_strict_json(path)
     if not isinstance(payload, Mapping):
         raise TypeError(
             "preprocess_plan must be a JSON object "
@@ -140,7 +165,7 @@ def load_generic_io_requirements(
             f"Missing generic_io_requirements artifact（缺少通用 I/O 需求工件）: {path}"
         )
 
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload = _load_strict_json(path)
     if not isinstance(payload, Mapping):
         raise TypeError(
             "generic_io_requirements must be a JSON object "
@@ -228,7 +253,9 @@ def _validate_generic_io_requirement_roles(
             f"（缺少 canonical_rules 以校验通用 I/O）: {canonical_path}"
         )
 
-    canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+    canonical = _load_strict_json(canonical_path)
+    if not isinstance(canonical, Mapping):
+        raise TypeError("canonical_rules must be a JSON object for generic I/O validation")
     commodity_metadata = canonical.get("commodity_metadata")
     if not isinstance(commodity_metadata, Mapping):
         raise KeyError(

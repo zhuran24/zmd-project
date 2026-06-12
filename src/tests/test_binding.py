@@ -837,3 +837,93 @@ def test_load_generic_io_requirements_rejects_reserved_unused_commodity(tmp_path
 
     with pytest.raises(ValueError, match="__unused__"):
         load_generic_io_requirements(path=path, validate_against_canonical=False)
+
+
+def test_master_generic_io_artifact_loader_rejects_loose_counts(tmp_path, project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.master_model import load_generic_io_requirements_artifact
+
+    (tmp_path / "data" / "preprocessed").mkdir(parents=True)
+    (tmp_path / "rules").mkdir(parents=True)
+    (tmp_path / "rules" / "canonical_rules.json").write_text(
+        (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    (tmp_path / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"source_ore": 0},
+                "required_generic_inputs": {"valley_battery": "100"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(TypeError, match="valley_battery"):
+        load_generic_io_requirements_artifact(tmp_path)
+
+
+def test_master_generic_io_artifact_loader_rejects_noncanonical_roles(tmp_path, project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.master_model import load_generic_io_requirements_artifact
+
+    (tmp_path / "data" / "preprocessed").mkdir(parents=True)
+    (tmp_path / "rules").mkdir(parents=True)
+    (tmp_path / "rules" / "canonical_rules.json").write_text(
+        (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    (tmp_path / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {},
+                "required_generic_inputs": {"steel_block": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="generic_input"):
+        load_generic_io_requirements_artifact(tmp_path)
+
+
+def test_load_generic_io_requirements_rejects_duplicate_json_keys(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(
+        '{"required_generic_outputs":{"source_ore":1},'
+        '"required_generic_outputs":{},'
+        '"required_generic_inputs":{}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate JSON key"):
+        load_generic_io_requirements(path=path, validate_against_canonical=False)
+
+
+def test_load_wireless_sink_generic_input_slots_rejects_duplicate_json_keys(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+
+    path = tmp_path / "preprocess_plan.json"
+    path.write_text(
+        '{"utility_operations":{"wireless_sink":{'
+        '"generic_input_slots":3,'
+        '"generic_input_slots":0}}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate JSON key"):
+        load_wireless_sink_generic_input_slots(path=path)
