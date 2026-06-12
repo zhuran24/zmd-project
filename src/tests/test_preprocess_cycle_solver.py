@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from fractions import Fraction
 
+import pytest
+
 from src.interchange.preprocess_context import load_default_preprocess_context, solve_cycle_group_exact
 
 
@@ -27,3 +29,11 @@ def test_sandleaf_cycle_solver_matches_frozen_business_truth() -> None:
 
     assert solution["planter_sandleaf"] == Fraction(21, 1)
     assert solution["seed_collector_sandleaf"] == Fraction(21, 2)
+
+
+def test_cycle_solver_rejects_positive_external_demand_for_non_export_internal_commodity() -> None:
+    context = load_default_preprocess_context()
+
+    with pytest.raises(ValueError, match="net_export"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat_seed": Fraction(1)})
+

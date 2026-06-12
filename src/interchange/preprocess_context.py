@@ -270,6 +270,11 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
         if target.value <= 0:
             raise ValueError(f"production target {commodity_id!r} must be > 0")
 
+    cycle_group_internal_commodities = {
+        group_id: set(group.internal_commodities)
+        for group_id, group in context.cycle_groups.items()
+    }
+
     for role in context.commodity_roles.values():
         if role.source_kind not in _ALLOWED_SOURCE_KINDS:
             raise ValueError(f"unknown source_kind for commodity {role.commodity_id!r}: {role.source_kind!r}")
@@ -292,6 +297,15 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
                 raise ValueError(
                     f"commodity {role.commodity_id!r} references unknown cycle_group {role.cycle_group!r}"
                 )
+            if role.commodity_id not in cycle_group_internal_commodities[role.cycle_group]:
+                raise ValueError(
+                    f"cycle_internal commodity {role.commodity_id!r} declares cycle_group {role.cycle_group!r} "
+                    "but is not listed in that group's internal_commodities"
+                )
+        elif role.cycle_group is not None:
+            raise ValueError(
+                f"non-cycle commodity {role.commodity_id!r} cannot declare cycle_group {role.cycle_group!r}"
+            )
 
     for commodity_id in context.targets:
         role = context.commodity_roles.get(commodity_id)
@@ -433,6 +447,33 @@ def _solve_cycle_group_exact(
     if group is None:
         raise KeyError(f"unknown cycle group: {group_id}")
 
+    internal_commodities = set(group.internal_commodities)
+    net_export_commodities = set(group.net_export_commodities)
+    normalized_external_demands: dict[str, Fraction] = {}
+    for raw_commodity_id, raw_demand in external_demands.items():
+        commodity_id = str(raw_commodity_id)
+        demand = _to_fraction(raw_demand)
+        if demand < 0:
+            raise ValueError(
+                f"cycle group {group_id!r} external demand for commodity {commodity_id!r} "
+                f"must be non-negative: {demand}"
+            )
+        if demand == 0:
+            continue
+        if commodity_id not in internal_commodities:
+            raise ValueError(
+                f"cycle group {group_id!r} external demand commodity {commodity_id!r} "
+                "is not listed in internal_commodities"
+            )
+        if commodity_id not in net_export_commodities:
+            raise ValueError(
+                f"cycle group {group_id!r} external demand commodity {commodity_id!r} "
+                "is not declared in net_export_commodities"
+            )
+        normalized_external_demands[commodity_id] = normalized_external_demands.get(
+            commodity_id, Fraction(0)
+        ) + demand
+
     matrix: list[list[Fraction]] = []
     rhs: list[Fraction] = []
     for commodity_id in group.internal_commodities:
@@ -442,7 +483,7 @@ def _solve_cycle_group_exact(
             net_rate = recipe.output_rate(commodity_id) - recipe.input_rate(commodity_id)
             row.append(net_rate)
         matrix.append(row)
-        rhs.append(_to_fraction(external_demands.get(commodity_id, Fraction(0))))
+        rhs.append(normalized_external_demands.get(commodity_id, Fraction(0)))
 
     solution = _solve_square_linear_system(matrix, rhs)
     for index, run_rate in enumerate(solution):
