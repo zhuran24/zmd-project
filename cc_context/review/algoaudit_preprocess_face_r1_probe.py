@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
-from collections import Counter, defaultdict
-from pathlib import Path
+from collections import Counter
 
 from src.placement.placement_generator import GRID_W, GRID_H, load_templates, generate_all_pools
 
@@ -34,9 +33,11 @@ def main():
             for c in occ:
                 if not in_grid(c):
                     geometry_errors.append((tpl, idx, pose['pose_id'], f'occupied out of grid {c}'))
-            xs=[c[0] for c in occ]; ys=[c[1] for c in occ]
+            xs=[c[0] for c in occ]
+            ys=[c[1] for c in occ]
             if xs and ys:
-                w=max(xs)-min(xs)+1; h=max(ys)-min(ys)+1
+                w=max(xs)-min(xs)+1
+                h=max(ys)-min(ys)+1
                 if len(occ) != w*h:
                     geometry_errors.append((tpl, idx, pose['pose_id'], f'not full rectangle len={len(occ)} box={w}x{h}'))
             for side in ('input_port_cells','output_port_cells'):
@@ -46,7 +47,8 @@ def main():
                         front_oog.append((tpl, idx, pose['pose_id'], side, (p['x'],p['y'],p['dir']), f))
                     # Port must be adjacent outside bbox, direction away.
                     if occ:
-                        x0,x1=min(xs),max(xs); y0,y1=min(ys),max(ys)
+                        x0,x1=min(xs),max(xs)
+                        y0,y1=min(ys),max(ys)
                         px,py,di=p['x'],p['y'],p['dir']
                         ok = ((di=='N' and py==y1+1 and x0<=px<=x1) or
                               (di=='S' and py==y0-1 and x0<=px<=x1) or
@@ -60,13 +62,17 @@ def main():
                 if ins or outs:
                     protocol_ports.append((tpl, idx, pose['pose_id'], len(ins), len(outs)))
     print(f'geometry_errors: {len(geometry_errors)}')
-    for e in geometry_errors[:5]: print('  ', e)
+    for e in geometry_errors[:5]:
+        print('  ', e)
     bytpl=Counter(x[0] for x in front_oog)
     print(f'front_oog_ports: {len(front_oog)}')
-    for tpl,cnt in sorted(bytpl.items()): print(f'  {tpl}: {cnt}')
-    for e in front_oog[:8]: print('  sample', e)
+    for tpl,cnt in sorted(bytpl.items()):
+        print(f'  {tpl}: {cnt}')
+    for e in front_oog[:8]:
+        print('  sample', e)
     print(f'protocol_storage_box_physical_port_poses: {len(protocol_ports)}')
-    for e in protocol_ports[:4]: print('  sample', e)
+    for e in protocol_ports[:4]:
+        print('  sample', e)
 
     # Expected exact current generator external hash, compact format used by writer.
     text=json.dumps({'facility_pools': pools}, ensure_ascii=False, separators=(',', ':'))
