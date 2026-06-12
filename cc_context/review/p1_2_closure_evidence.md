@@ -47,5 +47,6 @@
 
 - 3 真 P0 (A-1/B-01/A-2) 修复 + 两轮外审收口: commits 415c0c0/eb016ef/863f6d2, 归档 `cc_context/review/algofix_p0_*`。
 - P0-1 lazy connectivity cut: commit 1876a6e, 双独立零 finding (`algofix_p0_1_lazycut_review_r1a/r1b_20260612.md`)。
-- preprocess 面审查交付链: r1 `cc_context/review/algoaudit_preprocess_face_r1_*` (commit a716173); r2 `algoaudit_preprocess_face_r2_REVIEW_20260612.md` + `algofix_preprocess_F03_routing_free_leak.patch`; r3 `algoaudit_preprocess_face_r3_REVIEW_20260612.md` + `algofix_F03_r3_residual.patch`; r4 `algoaudit_preprocess_face_r4_REVIEW_20260612.md` + `algofix_F04_r4_residual.patch`。
+- preprocess 面审查交付链: r1 `cc_context/review/algoaudit_preprocess_face_r1_*` (commit a716173); r2 `algoaudit_preprocess_face_r2_REVIEW_20260612.md` + `algofix_preprocess_F03_routing_free_leak.patch`; r3 `algoaudit_preprocess_face_r3_REVIEW_20260612.md` + `algofix_F03_r3_residual.patch`; r4 `algoaudit_preprocess_face_r4_REVIEW_20260612.md` + `algofix_F04_r4_residual.patch`; r5 (零 finding 确认轮) `algoaudit_preprocess_face_r5_REVIEW_20260612.md`。
+- wireless 修复链 (F-01..F04-R4) 全弧线收口: 5 轮收敛 (2 finding → 1 → 2 → 4 → 0), 每轮 brief 点名上轮修复为攻击面; 终轮独立穷举复核全部 raw port/front 消费点 + 交互 + 文档一致。
 - 单一 living 现状源: `_cc_live_memory/handoff_windows_ninth_review_pending.md` (stamp #4 为当前)。
