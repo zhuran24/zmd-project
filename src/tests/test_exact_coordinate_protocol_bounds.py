@@ -175,3 +175,42 @@ def test_fixed_required_power_pole_slots_cover_powered_facilities() -> None:
     assert len(model._coordinate_delegate.required_optional_slots["power_pole"]) == 1
     assert len(model._coordinate_delegate.residual_optional_slots.get("power_pole", [])) == 0
     assert model.build_stats["power_coverage"]["pole_slots"] == 1
+
+
+def test_fixed_required_power_pole_without_powered_demand_keeps_geometry_semantics() -> None:
+    pools = {
+        "power_pole": [
+            {
+                "pose_id": "pole_0",
+                "anchor": {"x": 0, "y": 0},
+                "pose_params": {"orientation": 0, "port_mode": "none"},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0], [1, 0]],
+            }
+        ],
+    }
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {
+            "power_pole": {
+                "dimensions": {"w": 1, "h": 1},
+                "needs_power": False,
+                "power_coverage_radius": 1,
+            },
+        },
+    }
+    model = MasterPlacementModel(
+        instances=[],
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        exact_required_pose_optional_counts={"power_pole": 1},
+    )
+
+    status = model.solve(time_limit_seconds=2.0)
+
+    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    assert len(model._coordinate_delegate.required_optional_slots["power_pole"]) == 1
+    assert len(model._coordinate_delegate._all_power_pole_slots()) == 1

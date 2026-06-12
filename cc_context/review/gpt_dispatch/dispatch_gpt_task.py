@@ -852,6 +852,15 @@ async def _download_via_click(page: PageCdp, idx: int, out_dir: Path, rep: Repor
         async with DownloadWatch(page.http_base, out_dir, frame_id) as watch:
             begin = None
             for attempt in range(1, 4):
+                if attempt >= 2 and page.tab_id:
+                    # 后台 tab 的坐标点击被 compositor 静默丢弃 (与发送侧
+                    # _click_send_verified 同根因); 第二次尝试起先拉前台再点。
+                    try:
+                        http("GET", "/json/activate/" + page.tab_id, page.http_base)
+                        await asyncio.sleep(1)
+                        rep.log("collect", "tab_activated_for_download", attempt=attempt)
+                    except Exception:
+                        pass
                 if not await _click_confirm_if_visible(page, rep):
                     spot = await page.js(_candidate_rect_js(idx), timeout=10)
                     if not spot:

@@ -4716,12 +4716,16 @@ class LBBDController:
             "diagnostic_flow_status": diagnostic_flow_status,
             "enumerated_bindings": 0,
             "routing_attempts": 0,
-            "exact_safe_cut_count": len(self.loaded_exact_safe_cuts) + len(self.generated_exact_safe_cuts),
+            "master_follow_up": "fail_closed_unknown",
+            "exact_safe_cut_count": (
+                len(self.loaded_exact_safe_cuts) + len(self.generated_exact_safe_cuts)
+            ),
             **self._exact_warm_start_summary(),
+            **self._master_search_summary(),
             **self._subproblem_reuse_summary(),
             **self._exact_cut_ladder_summary(),
         }
-        return RUN_STATUS_UNPROVEN, None
+        return RUN_STATUS_UNKNOWN, None
 
     def _selected_ghost_cells(self) -> Set[Tuple[int, int]]:
         u_vars = getattr(self.master, "u_vars", None) or {}

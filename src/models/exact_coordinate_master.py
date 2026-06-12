@@ -2985,6 +2985,14 @@ class CoordinateExactMasterDelegate:
         required_pole_slots = list(self.required_optional_slots.get("power_pole", []))
         if not required_pole_slots:
             return
+        if not self._power_pole_family_name_by_int:
+            # There is no capacity-family semantic channel to attach when power
+            # coverage is explicitly skipped or when the model has no powered
+            # demand at all.  Fixed required poles are still real geometry slots;
+            # forcing an empty family table here would reject those legal
+            # geometry-only configurations before the relevant witness/capacity
+            # constraints even exist.
+            return
         sentinel_family = int(len(self._power_pole_family_name_by_int))
         tuple_rows = self._power_pole_family_pose_tuple_rows_for_required_slots()
         for slot in required_pole_slots:

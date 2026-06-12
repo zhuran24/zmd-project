@@ -3747,6 +3747,46 @@ def test_power_placement_abort_returns_unknown_with_matching_proof_summary(
     assert proof_summary["master_follow_up"] == "fail_closed_unknown"
 
 
+def test_certified_max_iterations_cap_returns_unknown_without_exact_safe_cut(
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        master_search_profile = "default_automatic"
+        build_stats = {
+            "last_solve": {},
+            "search_guidance": {"profile": "default_automatic"},
+        }
+
+        def build_exact_candidate_warm_start(self) -> dict:
+            return {}
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=0,
+        master_seconds=1.0,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    status, result = controller.run_with_status()
+    proof_summary = controller.last_proof_summary
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert proof_summary["master_status"] == "MAX_ITERATIONS"
+    assert proof_summary["master_follow_up"] == "fail_closed_unknown"
+    assert proof_summary["exact_safe_cut_count"] == 0
+
+
 def test_unexpected_routing_status_returns_unknown_without_exact_safe_cut(
     monkeypatch,
     tmp_path: Path,
