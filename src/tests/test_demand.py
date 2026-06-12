@@ -45,6 +45,15 @@ def test_load_machine_counts_rejects_nonfinite_json_constants(tmp_path) -> None:
     with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
         load_machine_counts(path)
 
+
+def test_load_machine_counts_rejects_overflow_json_numbers(tmp_path) -> None:
+    path = tmp_path / "machine_counts.json"
+    path.write_text('{"crusher_source": 1e309}', encoding="utf-8")
+
+    with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
+        load_machine_counts(path)
+
+
 def test_target_flows_accuracy(solved_data) -> None:
     flows, _, _, _ = solved_data
     assert math.isclose(flows["valley_battery"], 0.6)

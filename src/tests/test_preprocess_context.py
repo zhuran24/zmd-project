@@ -95,6 +95,31 @@ def test_preprocess_context_path_loader_rejects_nonfinite_json_constants(tmp_pat
         load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
 
 
+def test_preprocess_context_path_loader_rejects_overflow_json_numbers(tmp_path: Path) -> None:
+    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
+        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
+        '"value": 1e309,\n      "final_recipe_id": "packaging_battery"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_report_writer_rejects_nonfinite_numbers(tmp_path: Path) -> None:
+    from scripts.build_current_preprocess_context import _atomic_write_json_strict
+
+    output_path = tmp_path / "context.json"
+    with pytest.raises(ValueError, match="Out of range float values"):
+        _atomic_write_json_strict(output_path, {"bad": float("nan")})
+
+    assert not output_path.exists()
+
+
 def test_preprocess_context_plan_rejects_duplicate_slot_keys(tmp_path: Path) -> None:
     rules_path = tmp_path / "canonical_rules.json"
     plan_path = tmp_path / "preprocess_plan.json"

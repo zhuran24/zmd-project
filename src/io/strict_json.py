@@ -8,6 +8,7 @@ consumed artifacts whose meaning is defined by exact source files.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -25,13 +26,21 @@ def _reject_json_constant(value: str) -> None:
     raise ValueError(f"invalid JSON constant: {value}")
 
 
+def _parse_json_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise ValueError(f"non-finite JSON number: {value}")
+    return parsed
+
+
 def loads_strict_json(text: str) -> Any:
-    """Decode JSON while rejecting duplicate keys and non-finite constants."""
+    """Decode JSON while rejecting duplicate keys and non-finite values."""
 
     return json.loads(
         text,
         object_pairs_hook=_reject_duplicate_json_keys,
         parse_constant=_reject_json_constant,
+        parse_float=_parse_json_float,
     )
 
 

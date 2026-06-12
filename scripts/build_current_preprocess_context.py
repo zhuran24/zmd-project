@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import json
+import os
 from pathlib import Path
 import sys
+import tempfile
 from typing import Any, Mapping
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -27,7 +30,6 @@ from src.preprocess.instance_builder import (
     build_manufacturing_instances,
 )
 from src.preprocess.operation_profiles import aggregate_port_slots, count_operations
-from src.search.exact_campaign import atomic_write_json
 
 
 def _canonicalize(value: Any) -> Any:
@@ -44,6 +46,41 @@ def _canonicalize(value: Any) -> Any:
 
 def _load_json(path: Path) -> Any:
     return load_strict_json(path)
+
+
+def _fsync_directory(path: Path) -> None:
+    if not hasattr(os, "O_DIRECTORY"):
+        return
+    try:
+        dir_fd = os.open(str(path), os.O_RDONLY | os.O_DIRECTORY)
+    except OSError:
+        return
+    try:
+        os.fsync(dir_fd)
+    except OSError:
+        pass
+    finally:
+        os.close(dir_fd)
+
+
+def _atomic_write_json_strict(path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, raw_tmp_path = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-",
+        suffix=".json",
+        dir=str(path.parent),
+    )
+    tmp_path = Path(raw_tmp_path)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=2, ensure_ascii=False, allow_nan=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(str(tmp_path), str(path))
+        _fsync_directory(path.parent)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
 
 
 def _diff_entry(*, name: str, regenerated: Any, frozen: Any) -> dict[str, Any]:
@@ -177,10 +214,10 @@ def main() -> None:
         plan_path=Path(args.plan),
     )
     context_payload = context.to_dict()
-    atomic_write_json(Path(args.output), context_payload)
+    _atomic_write_json_strict(Path(args.output), context_payload)
 
     diff_report = build_diff_report(PROJECT_ROOT, context_payload=context_payload)
-    atomic_write_json(Path(args.diff_json), diff_report)
+    _atomic_write_json_strict(Path(args.diff_json), diff_report)
     diff_md_path = Path(args.diff_md)
     diff_md_path.parent.mkdir(parents=True, exist_ok=True)
     diff_md_path.write_text(render_diff_report_markdown(diff_report), encoding="utf-8")

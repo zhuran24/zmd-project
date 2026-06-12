@@ -1,0 +1,190 @@
+--- a/src/io/strict_json.py
++++ b/src/io/strict_json.py
+@@ -8,6 +8,7 @@
+ from __future__ import annotations
+ 
+ import json
++import math
+ from pathlib import Path
+ from typing import Any
+ 
+@@ -25,13 +26,21 @@
+     raise ValueError(f"invalid JSON constant: {value}")
+ 
+ 
++def _parse_json_float(value: str) -> float:
++    parsed = float(value)
++    if not math.isfinite(parsed):
++        raise ValueError(f"non-finite JSON number: {value}")
++    return parsed
++
++
+ def loads_strict_json(text: str) -> Any:
+-    """Decode JSON while rejecting duplicate keys and non-finite constants."""
++    """Decode JSON while rejecting duplicate keys and non-finite values."""
+ 
+     return json.loads(
+         text,
+         object_pairs_hook=_reject_duplicate_json_keys,
+         parse_constant=_reject_json_constant,
++        parse_float=_parse_json_float,
+     )
+ 
+ 
+--- a/scripts/build_current_preprocess_context.py
++++ b/scripts/build_current_preprocess_context.py
+@@ -3,8 +3,11 @@
+ from __future__ import annotations
+ 
+ import argparse
++import json
++import os
+ from pathlib import Path
+ import sys
++import tempfile
+ from typing import Any, Mapping
+ 
+ PROJECT_ROOT = Path(__file__).resolve().parent.parent
+@@ -27,7 +30,6 @@
+     build_manufacturing_instances,
+ )
+ from src.preprocess.operation_profiles import aggregate_port_slots, count_operations
+-from src.search.exact_campaign import atomic_write_json
+ 
+ 
+ def _canonicalize(value: Any) -> Any:
+@@ -44,6 +46,41 @@
+ 
+ def _load_json(path: Path) -> Any:
+     return load_strict_json(path)
++
++
++def _fsync_directory(path: Path) -> None:
++    if not hasattr(os, "O_DIRECTORY"):
++        return
++    try:
++        dir_fd = os.open(str(path), os.O_RDONLY | os.O_DIRECTORY)
++    except OSError:
++        return
++    try:
++        os.fsync(dir_fd)
++    except OSError:
++        pass
++    finally:
++        os.close(dir_fd)
++
++
++def _atomic_write_json_strict(path: Path, payload: Mapping[str, Any]) -> None:
++    path.parent.mkdir(parents=True, exist_ok=True)
++    fd, raw_tmp_path = tempfile.mkstemp(
++        prefix=f".{path.name}.tmp-",
++        suffix=".json",
++        dir=str(path.parent),
++    )
++    tmp_path = Path(raw_tmp_path)
++    try:
++        with os.fdopen(fd, "w", encoding="utf-8") as handle:
++            json.dump(payload, handle, indent=2, ensure_ascii=False, allow_nan=False)
++            handle.flush()
++            os.fsync(handle.fileno())
++        os.replace(str(tmp_path), str(path))
++        _fsync_directory(path.parent)
++    finally:
++        if tmp_path.exists():
++            tmp_path.unlink()
+ 
+ 
+ def _diff_entry(*, name: str, regenerated: Any, frozen: Any) -> dict[str, Any]:
+@@ -177,10 +214,10 @@
+         plan_path=Path(args.plan),
+     )
+     context_payload = context.to_dict()
+-    atomic_write_json(Path(args.output), context_payload)
++    _atomic_write_json_strict(Path(args.output), context_payload)
+ 
+     diff_report = build_diff_report(PROJECT_ROOT, context_payload=context_payload)
+-    atomic_write_json(Path(args.diff_json), diff_report)
++    _atomic_write_json_strict(Path(args.diff_json), diff_report)
+     diff_md_path = Path(args.diff_md)
+     diff_md_path.parent.mkdir(parents=True, exist_ok=True)
+     diff_md_path.write_text(render_diff_report_markdown(diff_report), encoding="utf-8")
+--- a/src/tests/test_preprocess_context.py
++++ b/src/tests/test_preprocess_context.py
+@@ -95,6 +95,31 @@
+         load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+ 
+ 
++def test_preprocess_context_path_loader_rejects_overflow_json_numbers(tmp_path: Path) -> None:
++    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
++        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
++        '"value": 1e309,\n      "final_recipe_id": "packaging_battery"',
++        1,
++    )
++    rules_path = tmp_path / "canonical_rules.json"
++    plan_path = tmp_path / "preprocess_plan.json"
++    rules_path.write_text(rules_text, encoding="utf-8")
++    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
++
++    with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
++        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
++
++
++def test_preprocess_context_report_writer_rejects_nonfinite_numbers(tmp_path: Path) -> None:
++    from scripts.build_current_preprocess_context import _atomic_write_json_strict
++
++    output_path = tmp_path / "context.json"
++    with pytest.raises(ValueError, match="Out of range float values"):
++        _atomic_write_json_strict(output_path, {"bad": float("nan")})
++
++    assert not output_path.exists()
++
++
+ def test_preprocess_context_plan_rejects_duplicate_slot_keys(tmp_path: Path) -> None:
+     rules_path = tmp_path / "canonical_rules.json"
+     plan_path = tmp_path / "preprocess_plan.json"
+--- a/src/tests/test_placements.py
++++ b/src/tests/test_placements.py
+@@ -95,6 +95,25 @@
+     with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+         load_templates(rules_path)
+ 
++
++def test_placement_template_loader_rejects_overflow_json_numbers(tmp_path, project_root):
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.placement.placement_generator import load_templates
++
++    rules_text = (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8").replace(
++        '"w": 3',
++        '"w": 1e309',
++        1,
++    )
++    rules_path = tmp_path / "canonical_rules.json"
++    rules_path.write_text(rules_text, encoding="utf-8")
++
++    with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
++        load_templates(rules_path)
++
++
+ def test_pool_keys_match_canonical(facility_pools, canonical_templates):
+     """Pool key 必须与 canonical_rules.json 的 template key 一一对应。"""
+     pool_keys = set(facility_pools.keys())
+--- a/src/tests/test_demand.py
++++ b/src/tests/test_demand.py
+@@ -44,6 +44,15 @@
+ 
+     with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+         load_machine_counts(path)
++
++
++def test_load_machine_counts_rejects_overflow_json_numbers(tmp_path) -> None:
++    path = tmp_path / "machine_counts.json"
++    path.write_text('{"crusher_source": 1e309}', encoding="utf-8")
++
++    with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
++        load_machine_counts(path)
++
+ 
+ def test_target_flows_accuracy(solved_data) -> None:
+     flows, _, _, _ = solved_data

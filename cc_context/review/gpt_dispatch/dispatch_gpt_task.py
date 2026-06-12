@@ -292,6 +292,53 @@ def cleanup_stale_tabs(http_base: str, keep_tab_id: str | None, rep: Reporter):
         rep.log("init", "stale_download_tabs_closed", count=closed)
 
 
+def close_same_conversation_tabs(http_base: str, conv_url: str,
+                                 keep_tab_id: str | None, rep: Reporter):
+    """resume 前回收同一会话的旧 tab (异常退出留现场的 owns_tab=False tab,
+    现场截图/DOM 早已落盘, resume 时即无保留价值)。只按 /c/<conv-id> 精确匹配,
+    同会话重复 tab 关掉零损失, 绝不动其它页面。"""
+    m = CONV_URL_RE.search(conv_url or "")
+    if not m:
+        return
+    conv_id = m.group(0)
+    closed = 0
+    try:
+        for t in http("GET", "/json/list", http_base) or []:
+            if t.get("id") == keep_tab_id or t.get("type") != "page":
+                continue
+            if conv_id in (t.get("url") or ""):
+                try:
+                    http("GET", "/json/close/" + t["id"], http_base)
+                    closed += 1
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    if closed:
+        rep.log("init", "stale_conversation_tabs_closed", count=closed, conv_id=conv_id)
+
+
+def cleanup_project_tabs(http_base: str) -> int:
+    """--cleanup-tabs 运维模式: 关闭本 Project 下所有 chatgpt 会话/项目页 tab。
+    只在确认无在途 dispatch 任务时手动跑 (在途任务的 tab 也会被关, 不可区分)。
+    匹配按 project id 前缀 (URL 可能带或不带 -zhong-mo-di slug 尾巴)。"""
+    project_prefix = PROJECT_URL.split("-zhong-mo-di")[0]
+    closed = 0
+    for t in http("GET", "/json/list", http_base) or []:
+        if t.get("type") != "page":
+            continue
+        url = t.get("url") or ""
+        if url.startswith(project_prefix):
+            print(f"closing: {url[:110]}")
+            try:
+                http("GET", "/json/close/" + t["id"], http_base)
+                closed += 1
+            except Exception as e:
+                print(f"  close failed: {e}")
+    print(f"closed {closed} project tab(s)")
+    return closed
+
+
 # --------------------------------------------------------------------------- #
 # 页面状态 JS 探针
 # --------------------------------------------------------------------------- #
@@ -1003,6 +1050,7 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
     conv_url = args.resume or ""
     try:
         if args.resume:
+            close_same_conversation_tabs(page.http_base, args.resume, page.tab_id, rep)
             await page.navigate(args.resume, settle_seconds=5)
             if not await assert_logged_in(page, rep):
                 return 3
@@ -1171,7 +1219,14 @@ def main() -> int:
                          "5min 内完成 = 极大概率被静默降级)。轻量测试传 0 关闭")
     ap.add_argument("--downgrade-retries", type=int, default=1,
                     help="疑似降级时自动 重新导航+要求重新完整执行 的次数 (默认 1)")
+    ap.add_argument("--cleanup-tabs", action="store_true",
+                    help="运维模式: 关闭本 Project 下所有 chatgpt tab 后退出 "
+                         "(⚠️ 在途任务的 tab 也会被关 — 仅在确认无在途 dispatch 时跑)")
     args = ap.parse_args()
+
+    if args.cleanup_tabs:
+        cleanup_project_tabs(args.cdp_url)
+        return 0
 
     if not args.resume and not args.prompt_file:
         ap.error("either --resume, or --prompt-file (optionally with --pack/--package)")
@@ -1181,7 +1236,9 @@ def main() -> int:
                  "prompt-only send is a sources-channel mode (package already in the file area)")
 
     repo_root = Path(__file__).resolve().parents[3]
-    out_dir = Path(args.out_dir) if args.out_dir else (
+    # resolve() 必须有: out_dir 会喂给 Browser.setDownloadBehavior 的 downloadPath,
+    # Edge 进程解析不了相对路径 (cwd 不是 repo root), 相对路径 = 下载全部 canceled
+    out_dir = Path(args.out_dir).resolve() if args.out_dir else (
         repo_root / "补丁包" / "gpt_deliveries" / datetime.now().strftime("%Y%m%d_%H%M%S")
     )
     rep = Reporter(out_dir)
