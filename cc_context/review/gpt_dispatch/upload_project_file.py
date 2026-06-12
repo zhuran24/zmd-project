@@ -17,7 +17,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+from playwright.sync_api import sync_playwright
 
 CDP_URL = "http://localhost:9222"
 PROJECT_URL = "https://chatgpt.com/g/g-p-69b585dfc29c819186b93a166f5266a5-zhong-mo-di/project"
@@ -68,8 +68,10 @@ def click_sources_tab(page):
 
 
 def open_file_chooser(page, out_dir: Path):
-    """点「添加源」拿原生 file chooser。两种形态都接:
-    a) 点按钮直接弹 chooser; b) 点按钮先出菜单, 再点「上传」类菜单项弹 chooser。"""
+    """点「添加源」→ 弹「添加源」模态框 → 点模态框里的「上传」→ 弹原生 file chooser。
+    实测 (2026-06-12 插件手操摸清): 点「添加源」**只弹模态框** (拖放区 +
+    四按钮: 上传 / 文本输入 / Google 云端硬盘 / Slack), chooser 必须再点「上传」
+    才弹 — 早先把这步当成「点添加源直接弹 chooser」是上传失败的设计错因。"""
     add_btn = None
     for t in ADD_SOURCE_TEXTS:
         cand = page.locator(f'button:has-text("{t}"), [role="button"]:has-text("{t}")').first
@@ -83,34 +85,23 @@ def open_file_chooser(page, out_dir: Path):
     if add_btn is None:
         shoot(page, out_dir, "attention_no_add_button")
         raise RuntimeError("add-source button not found on project page")
+    add_btn.click()
+    page.wait_for_timeout(1200)  # 等「添加源」模态框渲染
 
-    # 形态 a: 点击直接弹 chooser
-    try:
-        with page.expect_file_chooser(timeout=5000) as fc:
-            add_btn.click()
-        log("upload", "chooser_direct")
-        return fc.value
-    except PWTimeout:
-        pass
-
-    # 形态 b: 点击后出菜单, 找「上传」菜单项
-    page.wait_for_timeout(800)
+    # 模态框里的「上传」按钮触发隐藏 input[type=file] → 弹原生 chooser
     for t in UPLOAD_MENU_TEXTS:
-        item = page.locator(
-            f'[role="menuitem"]:has-text("{t}"), [role="option"]:has-text("{t}"), '
-            f'button:has-text("{t}")'
-        ).first
+        item = page.locator(f'button:has-text("{t}")').first
         try:
             if not item.is_visible(timeout=1500):
                 continue
             with page.expect_file_chooser(timeout=8000) as fc:
                 item.click()
-            log("upload", "chooser_via_menu", text=t)
+            log("upload", "chooser_via_upload_button", text=t)
             return fc.value
         except Exception:
             continue
     shoot(page, out_dir, "attention_no_chooser")
-    raise RuntimeError("clicked add-source but no file chooser appeared (menu shape changed?)")
+    raise RuntimeError("add-source modal opened but no file chooser after clicking 上传/Upload")
 
 
 def main() -> int:
@@ -138,20 +129,25 @@ def main() -> int:
 
     with sync_playwright() as p:
         try:
-            browser = p.chromium.connect_over_cdp(args.cdp_url)
+            # 30s 超时: CDP 端口被 claude-in-chrome 插件占用时快速失败, 不干等 180s
+            browser = p.chromium.connect_over_cdp(args.cdp_url, timeout=30000)
             ctx = browser.contexts[0]
             page = ctx.new_page()
         except Exception as e:
-            log("attach", "FATAL", error=str(e)[:200], hint="run start_gpt_automation_chrome.ps1 first")
+            log("attach", "FATAL", error=str(e)[:200],
+                hint="run start_gpt_automation_chrome.ps1 first; if a claude-in-chrome "
+                     "plugin session is attached to the same CDP port, detach it first")
             return 1
         try:
-            page.goto(args.project_url, wait_until="domcontentloaded")
+            sources_url = args.project_url.rstrip("/")
+            sources_url += ("&" if "?" in sources_url else "?") + "tab=sources"
+            page.goto(sources_url, wait_until="domcontentloaded")
             page.wait_for_timeout(4000)
             if "auth" in page.url or "login" in page.url:
                 shoot(page, out_dir, "attention_login")
                 log("nav", "FATAL", error="redirected to login")
                 return 3
-            click_sources_tab(page)
+            click_sources_tab(page)  # URL 参数没生效时的兜底
             before = count_entries(page, pkg.name)
             log("upload", "entries_before", count=before)
 
