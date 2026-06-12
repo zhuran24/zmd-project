@@ -1043,9 +1043,25 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
             except Exception:
                 pass
         if status == "timeout":
+            page.owns_tab = False  # 留现场: 超时 tab 不回收, 便于 --resume / 手动续
             return 4
         if status == "attention":
+            page.owns_tab = False
             return 3
+        # 后台 tab 节流防呆 (2026-06-12 owner 抓的): 两个 dispatch 并发时, 被节流
+        # 的后台 tab 前端停止渲染 DOM (停在回复第一个字符), GPT 服务端照常生成完;
+        # done 判定后读到异常短回复 = 渲染挂起而非真短回复 → 重导航强制重渲染再读。
+        try:
+            _la = await _last_assistant(page)
+            if len(_la.get("text", "")) < 50:
+                rep.log("collect", "stalled_render_suspected", chars=len(_la.get("text", "")))
+                refresh_url = conv_url or (await page.url())
+                if refresh_url and CONV_URL_RE.search(refresh_url):
+                    await page.navigate(refresh_url, settle_seconds=8)
+                    _la2 = await _last_assistant(page)
+                    rep.log("collect", "stalled_render_reread", chars=len(_la2.get("text", "")))
+        except Exception:
+            pass
         gen_elapsed = int(time.time() - gen_start)
         suspected_downgrade = False
         if args.min_gen_seconds and not args.resume:
@@ -1105,10 +1121,18 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
         rep.log("finish", "ok" if got else "no_attachments", attachments=got,
                 links_found=found, rescues=rescue, suspected_downgrade=suspected_downgrade)
         if suspected_downgrade:
+            page.owns_tab = False  # 交付不可信, 留现场
             return 5
-        return 0 if got else 2
+        if not got:
+            # 没收到附件 ≠ 没有附件 (可能是渲染挂起/读取误判) — 关掉现场会把
+            # 还没下载的交付窗口带走 (2026-06-12 owner 抓的)。留 tab 便于复查。
+            page.owns_tab = False
+            rep.log("finish", "tab_kept_open", reason="no_attachments_collected")
+            return 2
+        return 0
     except Exception as e:
         await rep.attention(page, "fatal", f"unhandled: {e}")
+        page.owns_tab = False  # 异常退出留现场
         return 3
     finally:
         await page.close()

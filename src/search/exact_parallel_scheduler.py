@@ -198,6 +198,7 @@ def _worker_entry(
     master_search_profile: str,
     task_queue: Any,
     result_queue: Any,
+    expected_artifact_hashes: Optional[Mapping[str, str]] = None,
 ) -> None:
     # Phase 3C P1 #11 (PT-style portfolio): when EXACT_MASTER_RANDOM_SEED_BASE
     # is set in the parent process, dispatch per-worker random_seed = base +
@@ -222,6 +223,13 @@ def _worker_entry(
             solve_mode=solve_mode,
             master_search_profile=master_search_profile,
         )
+        if expected_artifact_hashes is not None and dict(session.artifact_hashes) != dict(
+            expected_artifact_hashes
+        ):
+            raise RuntimeError(
+                "parallel worker ExactSearchSession artifact hashes do not match "
+                "the coordinator certified frontier snapshot"
+            )
         peak_rss_bytes = max(peak_rss_bytes, _rss_bytes(process))
         result_queue.put(
             {
@@ -333,12 +341,18 @@ class ExactParallelWorkerPool:
         solve_mode: str = "certified_exact",
         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
         rss_sample_interval_seconds: float = 0.25,
+        expected_artifact_hashes: Optional[Mapping[str, str]] = None,
     ) -> None:
         self.process_count = int(process_count)
         self.project_root = Path(project_root).resolve()
         self.solve_mode = str(solve_mode)
         self.master_search_profile = str(master_search_profile)
         self.rss_sample_interval_seconds = float(rss_sample_interval_seconds)
+        self.expected_artifact_hashes = (
+            None
+            if expected_artifact_hashes is None
+            else {str(key): str(value) for key, value in expected_artifact_hashes.items()}
+        )
         self._ctx = mp.get_context("spawn")
         self._task_queue = self._ctx.Queue()
         self._result_queue = self._ctx.Queue()
@@ -404,6 +418,7 @@ class ExactParallelWorkerPool:
                     "master_search_profile": self.master_search_profile,
                     "task_queue": self._task_queue,
                     "result_queue": self._result_queue,
+                    "expected_artifact_hashes": self.expected_artifact_hashes,
                 },
             )
             process.start()

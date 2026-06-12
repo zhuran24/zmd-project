@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `{PACKAGE_NAME}`, sha256 `{PACKAGE_SHA256}`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_routing_r2_snapshot_a02b7aed.zip`, sha256 `a02b7aed5910e33670b46c21985c4497b11ee826481366a161f1ddcb6b29aed2`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 ## 项目一句话
 
@@ -43,7 +43,7 @@ guard 重建验证器与 routing CP-SAT 的"严格同构"声明 (前轮已审): 
 
 ## 自验环境与已知基线
 
-- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2927 passed, 0 failed)**; 跑不完就跑专项 (test_routing* / test_p0_certified_soundness_fixes) + 如实声明 (`-p no:randomly`)。
+- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2946 passed, 0 failed)**; 跑不完就跑专项 (test_routing* / test_p0_certified_soundness_fixes) + 如实声明 (`-p no:randomly`)。
 - `python scripts/check_p1_2_proof_obligations.py` pass。
 - finding 必须带可复现 probe 或严谨论证 (file:line); 过剪类给出被误拒的合法布线实例, 过松类给出被接受的非法路径实例; 实证推翻你的怀疑就不要报。
 

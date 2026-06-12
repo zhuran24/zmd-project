@@ -6207,3 +6207,101 @@ def test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible() -> N
     )
     assert triggered is not None
     assert triggered["group_id"] == "g_complete"
+
+
+def test_outer_search_rejects_wireless_slot_drift_between_frontier_and_session(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "outer_snapshot_slot_drift")
+    generic_io_requirements = {
+        "required_generic_outputs": {},
+        "required_generic_inputs": {"valley_battery": 1},
+    }
+    _write_json(
+        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
+        generic_io_requirements,
+    )
+    _write_json(
+        project_root / "rules" / "preprocess_plan.json",
+        {"utility_operations": {"wireless_sink": {"generic_input_slots": 3}}},
+    )
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "load_generic_io_requirements_artifact",
+        lambda _project_root: generic_io_requirements,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "compute_exact_static_area_lower_bound",
+        lambda *_args, **_kwargs: 0,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "generate_candidate_sizes",
+        lambda **_kwargs: [(1, 1, 1)],
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_compute_exact_frontier_state",
+        lambda *_args, **_kwargs: {
+            "potential_domain": [(1, 1, 1)],
+            "frontier_size": 1,
+            "frontier": [(1, 1, 1)],
+            "best_certified_candidate": None,
+            "best_certified_record": None,
+            "frontier_metrics_by_key": {"1x1": {}},
+            "frontier_probe_mode": outer_search_module.FRONTIER_PROBE_MODE_OFF,
+        },
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_select_precheck_lookahead_candidate_entries",
+        lambda *_args, **_kwargs: [
+            {
+                "candidate": (1, 1, 1),
+                "selection_reason": "head",
+                "wave_slot_index": 0,
+                "frontier_candidate_metrics": {},
+            }
+        ],
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_evaluate_pre_master_precheck_best_effort",
+        lambda **_kwargs: {"triggered": False, "status": None, "proof_summary": {}},
+    )
+
+    def create_drifted_session(*_args, **_kwargs):
+        return outer_search_module.ExactSearchSession(
+            project_root=project_root,
+            solve_mode="certified_exact",
+            instances=[],
+            facility_pools={},
+            rules={"globals": {"grid": {"width": 2, "height": 1}}},
+            artifact_hashes=exact_campaign_module.compute_exact_artifact_hashes(project_root),
+            master_search_profile="test",
+            core=SimpleNamespace(
+                generic_io_requirements=generic_io_requirements,
+                wireless_sink_generic_input_slots=1,
+            ),
+            core_build_seconds=0.0,
+        )
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        create_drifted_session,
+    )
+
+    with pytest.raises(RuntimeError, match="wireless sink slot snapshot changed"):
+        run_outer_search(
+            project_root=project_root,
+            solve_mode="certified_exact",
+            max_attempts=0,
+            min_side=1,
+            area_upper_bound=1,
+            campaign_hours=1.0,
+            resume_campaign=False,
+        )

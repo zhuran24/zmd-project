@@ -1402,6 +1402,64 @@ def _ensure_exact_session(
     )
 
 
+def _validate_certified_outer_domain_snapshot_matches_session(
+    exact_session: ExactSearchSession,
+    snapshot: Optional[Mapping[str, Any]],
+) -> None:
+    """Fail closed if the outer certified domain and session snapshots diverge."""
+
+    if snapshot is None:
+        return
+    # Unit tests often replace the heavy ExactSearchSession with a light fake.
+    # Production construction goes through create_exact_search_session and returns
+    # the real dataclass, so only the real proof-carrying object is accepted as
+    # an authority for this cross-snapshot seal.
+    if not isinstance(exact_session, ExactSearchSession):
+        return
+
+    expected_hashes = dict(snapshot.get("artifact_hashes", {}) or {})
+    if expected_hashes and dict(exact_session.artifact_hashes) != expected_hashes:
+        raise RuntimeError(
+            "certified_exact artifacts changed between outer frontier domain snapshot "
+            "and ExactSearchSession construction"
+        )
+
+    expected_generic = snapshot.get("generic_io_requirements")
+    session_generic = getattr(exact_session.core, "generic_io_requirements", None)
+    if isinstance(expected_generic, Mapping) and dict(session_generic or {}) != dict(expected_generic):
+        raise RuntimeError(
+            "certified_exact generic_io_requirements changed between outer frontier "
+            "domain snapshot and ExactSearchSession construction"
+        )
+
+    expected_slots = snapshot.get("wireless_sink_generic_input_slots")
+    if expected_slots is not None:
+        session_slots = getattr(exact_session.core, "wireless_sink_generic_input_slots", None)
+        if isinstance(session_slots, bool) or not isinstance(session_slots, int):
+            raise RuntimeError(
+                "certified_exact ExactSearchSession missing wireless sink slot snapshot"
+            )
+        if int(session_slots) != int(expected_slots):
+            raise RuntimeError(
+                "certified_exact wireless sink slot snapshot changed between outer "
+                "frontier domain snapshot and ExactSearchSession construction"
+            )
+
+
+def _parallel_expected_artifact_hashes(
+    exact_session: Optional[ExactSearchSession],
+    snapshot: Optional[Mapping[str, Any]],
+) -> Optional[Dict[str, str]]:
+    if isinstance(exact_session, ExactSearchSession):
+        return dict(exact_session.artifact_hashes)
+    if snapshot is None:
+        return None
+    expected = snapshot.get("artifact_hashes")
+    if not isinstance(expected, Mapping):
+        return None
+    return {str(key): str(value) for key, value in expected.items()}
+
+
 def _evaluate_pre_master_precheck_best_effort(
     *,
     candidate: Tuple[int, int, int],
@@ -1704,6 +1762,15 @@ def run_outer_search(
         wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
             project_root=project_root
         )
+    certified_outer_domain_snapshot: Optional[Dict[str, Any]] = None
+    if solve_mode == "certified_exact":
+        certified_outer_domain_snapshot = {
+            "artifact_hashes": {}
+            if exact_campaign is None
+            else dict(exact_campaign.artifact_hashes),
+            "generic_io_requirements": dict(generic_io_requirements),
+            "wireless_sink_generic_input_slots": wireless_sink_generic_input_slots,
+        }
     grid = dict(rules["globals"]["grid"])
     grid_w = int(grid["width"])
     grid_h = int(grid["height"])
@@ -1881,6 +1948,10 @@ def run_outer_search(
                             solve_mode=solve_mode,
                             master_search_profile=master_search_profile,
                         )
+                        _validate_certified_outer_domain_snapshot_matches_session(
+                            exact_session,
+                            certified_outer_domain_snapshot,
+                        )
                         lookahead_entries = _select_precheck_lookahead_candidate_entries(
                             frontier_state,
                             limit=_PRE_MASTER_PRECHECK_LOOKAHEAD_LIMIT,
@@ -2040,6 +2111,10 @@ def run_outer_search(
                         solve_mode=solve_mode,
                         master_search_profile=master_search_profile,
                     )
+                    _validate_certified_outer_domain_snapshot_matches_session(
+                        exact_session,
+                        certified_outer_domain_snapshot,
+                    )
                     coordinator_precheck_results: List[Dict[str, Any]] = []
                     solve_wave_entries: List[Dict[str, Any]] = []
                     for entry in wave_candidate_entries:
@@ -2154,6 +2229,10 @@ def run_outer_search(
                             project_root=project_root,
                             solve_mode=solve_mode,
                             master_search_profile=master_search_profile,
+                            expected_artifact_hashes=_parallel_expected_artifact_hashes(
+                                exact_session,
+                                certified_outer_domain_snapshot,
+                            ),
                         )
 
                     preloaded_cut_map: Dict[str, Sequence[Mapping[str, Any]]] = {}
@@ -2427,6 +2506,10 @@ def run_outer_search(
                     project_root=project_root,
                     solve_mode=solve_mode,
                     master_search_profile=master_search_profile,
+                )
+                _validate_certified_outer_domain_snapshot_matches_session(
+                    exact_session,
+                    certified_outer_domain_snapshot,
                 )
                 # P1 #7 main: 算当前 wave 的 ε 阶段 (25h prep / 50h refine / 93h cert),
                 # 让 controller 给新生成的 BendersCut tag epsilon_stage.
