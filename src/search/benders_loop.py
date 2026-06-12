@@ -4537,6 +4537,21 @@ class LBBDController:
                     iteration += 1
                     continue
                 else:
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "stage": "power_placement_subproblem",
+                        "power_placement_status": str(power_status),
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": 0,
+                        "routing_attempts": 0,
+                        "master_follow_up": "fail_closed_unknown",
+                        **self._exact_warm_start_summary(),
+                        **self._master_search_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
                     return RUN_STATUS_UNKNOWN, None
 
             self._emit_heartbeat(

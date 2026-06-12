@@ -3662,6 +3662,91 @@ def test_unexpected_binding_resolve_status_returns_unknown_without_exhaustion_cu
         == "unexpected_binding_status"
     )
 
+
+def test_power_placement_abort_returns_unknown_with_matching_proof_summary(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        source_instances = []
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        grid_w = 2
+        grid_h = 1
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        wireless_sink_generic_input_slots = 0
+        master_search_profile = "default_automatic"
+        build_stats = {
+            "last_solve": {},
+            "search_guidance": {"profile": "default_automatic"},
+        }
+
+        def build_exact_candidate_warm_start(self) -> dict:
+            return {}
+
+        def solve(self, *args, **kwargs):
+            self.build_stats["last_solve"] = {
+                "status": "FEASIBLE",
+                "wall_time": 0.0,
+                "user_time": 0.0,
+                "deterministic_time": 0.0,
+                "branches": 0,
+                "conflicts": 0,
+                "hinted_literals": 0,
+                "known_feasible_hint": False,
+                "search_profile": "default_automatic",
+            }
+            return cp_model.FEASIBLE
+
+        def extract_solution(self):
+            return {
+                "tiny_001": {
+                    "facility_type": "tiny_facility",
+                    "pose_idx": 0,
+                    "pose_id": "tiny_left",
+                }
+            }
+
+    def fake_power_abort(self, *, solution, iteration):
+        return "ABORT", None
+
+    monkeypatch.setenv("EXACT_POWER_PLACEMENT_SUBPROBLEM", "1")
+    monkeypatch.setattr(
+        benders_loop_module.LBBDController,
+        "_run_power_placement_subproblem",
+        fake_power_abort,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        master_seconds=1.0,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    status, result = controller.run_with_status()
+    proof_summary = controller.last_proof_summary
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert proof_summary["master_status"] == "FEASIBLE"
+    assert proof_summary["stage"] == "power_placement_subproblem"
+    assert proof_summary["power_placement_status"] == "ABORT"
+    assert proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
 def test_unexpected_routing_status_returns_unknown_without_exact_safe_cut(
     monkeypatch,
     tmp_path: Path,
