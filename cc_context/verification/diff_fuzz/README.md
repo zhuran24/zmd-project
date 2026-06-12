@@ -13,8 +13,8 @@
 
 | 文件 | 被测 | oracle 覆盖 | 已知结果 |
 |---|---|---|---|
-| `routing_connectivity_diff.py` | `RoutingSubproblem.solve/extract_routes` | 全局 source→sink 连通 + 每 source 必有出路 (A-1 对偶) + cell-layer 容量 + port exact-one | 450 实例 0 不一致 |
-| `master_geometry_diff.py` | `MasterPlacementModel` exact 坐标路径 | 正向: no-overlap (真实 footprint) / bounds / 电力覆盖 (coverage∩occupied); 反向: 小实例暴力穷举 + pinned 自裁 | ~920 实例 0 不一致 (19 假阳性全滤) |
+| `routing_connectivity_diff.py` | `RoutingSubproblem.solve/extract_routes` | 全局 source→sink 连通 + 每 source 必有出路 (A-1 对偶) + cell-layer 容量 + port exact-one | 累计 900 实例 0 不一致 (含 F04-R4 落地后复跑 150) |
+| `master_geometry_diff.py` | `MasterPlacementModel` exact 坐标路径 | 正向: no-overlap (真实 footprint) / bounds / 电力覆盖 (coverage∩occupied); 反向: 小实例暴力穷举 + pinned 自裁; **生成器含无线箱形态** (方形无端口单朝向全 anchor, 镜像 post-F-01 协议箱几何, `wireless_mode` ~50% 掺入) | 累计 ~1760 实例 0 不一致 (28 假阳性全滤; 其中无线箱形态 168 实例, seeds 100-105) |
 
 ## 用法 (repo 根, `python3.13`)
 
@@ -36,4 +36,4 @@ exit 0 = 全净; exit 1 = 有 mismatch/异常 (输出前 20 条)。
 ## 待做
 
 - binding 建模忠实度 oracle (难点: binding 语义本身要独立重述)。
-- preprocess wireless 修复落地后, 按新候选几何重跑全部切片 + 把无线箱实例形态加进 master 切片生成器。
+- ~~preprocess wireless 修复落地后, 按新候选几何重跑全部切片 + 把无线箱实例形态加进 master 切片生成器~~ ✅ 2026-06-12 (wireless_mode 形态 + seeds 100-105 共 360 实例 + routing 复跑 150, 全 0 不一致)。

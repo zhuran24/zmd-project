@@ -212,6 +212,7 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
     grid_w = rng.randint(3, 5)
     grid_h = rng.randint(3, 4)
     power_mode = rng.random() < 0.5
+    wireless_mode = rng.random() < 0.5
     max_poses = rng.randint(4, 8)
 
     dim_choices = [(1, 3), (2, 3), (1, 2), (2, 2), (1, 4)]
@@ -276,6 +277,27 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         )
         powered_templates.add("pressb")
 
+    if wireless_mode:
+        # Wireless protocol-box form under the post-F-01 geometry: a square
+        # omni pose set — one pose per anchor (no rotated duplicate), zero
+        # physical port cells. Mirrors gen_protocol_storage_box() shape-wise;
+        # ports are irrelevant to the master slice, so what this adds is the
+        # square no-port template mixed into tight no-overlap/ghost packing.
+        side = 3 if (grid_w >= 3 and grid_h >= 3 and rng.random() < 0.7) else 2
+        side = min(side, grid_w, grid_h)
+        templates["wbox"] = {"dimensions": {"w": side, "h": side}, "needs_power": False}
+        pools["wbox"] = _rect_poses("wbox", side, side, grid_w, grid_h, rng, max_poses)
+        for i in range(1, rng.randint(1, 2) + 1):
+            instances.append(
+                {
+                    "instance_id": f"wbox_{i:03d}",
+                    "facility_type": "wbox",
+                    "operation_type": "wireless_sink",
+                    "is_mandatory": True,
+                    "bound_type": "exact",
+                }
+            )
+
     rules = {
         "globals": {"grid": {"width": grid_w, "height": grid_h}},
         "facility_templates": templates,
@@ -284,6 +306,7 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         "grid_w": grid_w,
         "grid_h": grid_h,
         "power_mode": power_mode,
+        "wireless_mode": wireless_mode,
         "rules": rules,
         "pools": pools,
         "instances": instances,
@@ -410,6 +433,23 @@ def _self_test() -> int:
     if found is None:
         return 1
 
+    # 5. wireless-box form: square no-port pose passes standalone; an overlap
+    # with another footprint must still be flagged (ports being absent must not
+    # weaken the geometry check).
+    wbox = pose([[x, y] for x in range(3) for y in range(3)])
+    ok5, _ = verify_selected_placement(
+        [("w", "wbox", wbox)], grid_w=4, grid_h=4, powered_templates=set()
+    )
+    ok6, reasons6 = verify_selected_placement(
+        [("w", "wbox", wbox), ("a", "blocka", pose([[2, 2], [3, 2]]))],
+        grid_w=4,
+        grid_h=4,
+        powered_templates=set(),
+    )
+    print(f"[self-test] wbox standalone ok={ok5}, overlap flagged={not ok6} ({len(reasons6)})")
+    if not ok5 or ok6:
+        return 1
+
     print("[self-test] PASS")
     return 0
 
@@ -417,6 +457,7 @@ def _self_test() -> int:
 def _batch(n: int, seed: int) -> int:
     rng = random.Random(seed)
     feasible = infeasible = unknown = 0
+    wireless_cases = 0
     forward_mismatches: List[str] = []
     reverse_mismatches: List[str] = []
     errors: List[str] = []
@@ -424,6 +465,8 @@ def _batch(n: int, seed: int) -> int:
     reverse_filtered = 0
     for i in range(n):
         case = gen_instance(rng)
+        if case.get("wireless_mode"):
+            wireless_cases += 1
         try:
             status, selected = run_master(case)
             if status == "FEASIBLE":
@@ -482,6 +525,7 @@ def _batch(n: int, seed: int) -> int:
     print("=" * 60)
     print(
         f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} unknown={unknown} "
+        f"wireless_cases={wireless_cases} "
         f"bf_skipped={bf_skipped} reverse_filtered={reverse_filtered} "
         f"forward_mismatches={len(forward_mismatches)} "
         f"reverse_mismatches={len(reverse_mismatches)} errors={len(errors)}"
