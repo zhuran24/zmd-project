@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-附件是完整项目快照 zip (zip 内 `project/` 为仓库根; ZIP_LZMA, 用 `python -m zipfile -e <附件>.zip .` 解包)。依赖 wheels 在本 Project 文件区, 沙盒 Python 3.13, 离线 `pip install --no-index --find-links <wheels目录> -r requirements.txt`。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_r7_snapshot_e8c7dac3.zip`, sha256 `e8c7dac3ca8af15e8ea23098f70304735a7b4a1bf6ee75045122f5ad64ae5179`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线 `pip install --no-index --find-links <wheels目录> -r requirements.txt`。
 
 求解内核 (master/binding/routing/cuts) 与 preprocess 链已多轮对抗审查。**本轮审从未独立审过的两个证据持久化面**: 168h campaign 的断点续跑状态机, 和多进程并行波次的结果合并。这两层不做数学证明, 但它们**搬运并存活证明结论**——任何一处把弱结论存成强结论 (UNKNOWN→CERTIFIED / 半途→完成 / 张冠李戴的候选结果), 都等价于 false CERTIFIED; 任何一处把强结论丢弱 (CERTIFIED 被覆盖/丢失) 都伤完整性。若审完确认无残留, 明确报零——这是 owner 判定该面「第一轮干净」的输入。
 
@@ -29,7 +29,7 @@
 
 ### Q2 resume 的 deny-unknown 与 fail-closed
 - `_validate_resume_state` / `_validate_candidate_record`: 哪些字段是 deny-unknown 封闭的, 哪些放行自由值? 一个被手工篡改/旧 schema 的 state 文件能否 resume 出比它实际证明强的状态?
-- artifact hash 兼容检查 (`is_compatible_with_current_hashes`): 工件换代后 resume 是否严格 fail-closed 拒绝 (这条很快会被真实触发——preprocess 修复将换 `candidate_placements` hash)?
+- artifact hash 兼容检查 (`is_compatible_with_current_hashes`): 工件换代后 resume 是否严格 fail-closed 拒绝? 注意 hash 闭包刚扩容 (R6-F-01: `OPTIONAL_EXACT_HASH_FILES` 纳入 `rules/preprocess_plan.json`, 缺文件记 sentinel `__MISSING_OPTIONAL_EXACT_ARTIFACT__`)——sentinel 路径、新旧 state 混用、dict 全等比较的边角是否都 fail-closed (r7 已抽查主路径, 你从状态机视角再独立看)?
 - `atomic_write_json` + `_fsync_directory`: 断电/崩溃在写状态文件中途, 重启后读到的是旧完整版还是半写版? Windows 与 Linux 语义差异?
 - `mark_candidate_started` 后崩溃 (无 finished): resume 后该候选会被重跑还是被误当完成?
 
@@ -45,19 +45,18 @@ respawn 计数/泄漏、result 队列 drain 竞态、heartbeat 仅遥测不入�
 
 - persisted `exact_safe_cuts` 是 telemetry 不是 proof object (V82 已封口, 重放校验在 cut 消费侧)。
 - proof-carrying certificate (future work); P1.3B `step_8_apply_to_master` 禁区; exploratory 不审。
-- `candidate_placements.json` 外置缺失本身 (已知)。
-- preprocess 链已另行审查处置中, 非本轮范围。
+- `candidate_placements.json` 外置缺失本身 (已知; 再生 `python src/placement/placement_generator.py`, 期望 sha `adcc2a6e…`, 不准伪造)。
+- 旧 campaign state 缺 `preprocess_plan` hash key 导致 resume mismatch——这是 R6-F-01 修复的预期 fail-closed 行为, 不是 bug。
+- preprocess 链已 7 轮审查收口中 (r7 零 finding), 非本轮范围。
 
 ## 自验环境与已知基线
 
+- 再生 candidate 工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2912 passed, 0 failed)**; 跑不完就跑专项 + 如实声明 (campaign/scheduler 相关测试族: `test_exact_campaign_inspector.py` / `test_parallel_scheduler.py` / `test_v8x_terminal_*` 族, 以包内实际收集为准)。
 - `python scripts/check_p1_2_proof_obligations.py` 应 pass。
-- `python -m pytest -q -p no:randomly src/tests/test_exact_campaign_inspector.py src/tests/test_parallel_scheduler.py` 与 campaign 相关测试族应过 (以包内实际收集为准)。
-- 已知环境性失败 (非 finding, 因外置工件): test_binding 10 ERROR / test_regression 5 / test_routing 3 / test_master 1 / test_preprocess_golden 1。
 - finding 必须带可复现 probe (构造 state 文件/模拟 crash-resume/伪造 wave 结果, 实证状态机吐出错误强度 = 金标准) 或严谨论证 (file:line)。实证推翻你的怀疑就不要报。
 
 ## 交付物
 
-- `REVIEW.md`: 逐条 finding (severity / file:line / probe 或论证 / 修法), 有把握附 unified diff + regression; **关键论证写在回复正文**。
+- `REVIEW.md`: 逐条 finding (severity / file:line / probe 或论证 / 修法), 有把握附 unified diff + regression (LF 行尾); **关键论证写在回复正文**。
+- **冻结工件条款**: 若修复牵涉登记 hash 的冻结工件, 交付必须含再生步骤 + 期望 sha256/字节数 + 要同批推进的登记位置清单 (`FROZEN_ARTIFACTS` / `EXACT_HASH_FILES` 族 / PROJECT_LOCK / specs)。canonical 内容扩展是 owner gate, 只能报不能改。
 - **若审完确认两面 sound, 明确写「本轮零 soundness finding」** + 列实际审过的面、构造过的攻击 probe、论证依据。
-
-包 sha256: `<SEND_TIME_FILL>`
