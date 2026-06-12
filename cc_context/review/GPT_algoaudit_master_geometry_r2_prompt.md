@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `{PACKAGE_NAME}`, sha256 `{PACKAGE_SHA256}`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_audit_snapshot_6867b7ce.zip`, sha256 `6867b7ce75b5aa61efe9864572cc1b2781ea68d07bcf7efeca28a3ec8ee3487b`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 ## 项目一句话
 
@@ -45,7 +45,8 @@
 
 ## 自验环境与已知基线
 
-- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2927 passed, 0 failed)**; 跑不完就跑专项 (test_master / test_exact_contract / test_v84_terminal_layout_max_empty_rect) + 如实声明 (`-p no:randomly`)。
+- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈2941 passed, 0 failed)**; 跑不完就跑专项 (test_master / test_exact_contract / test_v84_terminal_layout_max_empty_rect) + 如实声明 (`-p no:randomly`)。
+- 注意: 包内 master_model.py 带着 binding 面 (另一条线) 的 F-BIND-R2/R3 修复 (loader 委托 + strict JSON + wireless 槽数参数化) — 修复本体不在本面范围, 但它们对 master 几何/约束构建的涟漪在 Q3 范围内。
 - `python scripts/check_p1_2_proof_obligations.py` pass。
 - finding 必须带可复现 probe 或严谨论证 (file:line); 过剪类 finding 给出被误拒的具体合法布局实例; 实证推翻你的怀疑就不要报。
 

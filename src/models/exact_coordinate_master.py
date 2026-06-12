@@ -5965,6 +5965,10 @@ class CoordinateExactMasterDelegate:
             )
 
         protocol_count = int(self.owner._required_protocol_storage_box_lower_bound())
+        protocol_fixed_required_count = int(
+            len(self.required_optional_slots.get("protocol_storage_box", []))
+        )
+        protocol_slots = list(self.residual_optional_slots.get("protocol_storage_box", []))
         stats["optional_cardinality_bounds"]["protocol_storage_box"] = {
             "mode": "required_lower_bound",
             "required_generic_input_slots": int(self.owner._required_generic_input_slot_total()),
@@ -5972,7 +5976,7 @@ class CoordinateExactMasterDelegate:
             "lower": int(protocol_count),
             "upper": None,
             "candidate_pose_count": int(len(self.owner.facility_pools.get("protocol_storage_box", []))),
-            "slot_pool_upper_bound": int(len(self.residual_optional_slots.get("protocol_storage_box", []))),
+            "slot_pool_upper_bound": int(len(protocol_slots)),
         }
         stats["applied"].append(
             {
@@ -5983,20 +5987,18 @@ class CoordinateExactMasterDelegate:
                 "upper": None,
             }
         )
-        protocol_slots = list(self.residual_optional_slots.get("protocol_storage_box", []))
         if protocol_count > 0:
-            if protocol_slots:
-                protocol_terms = [
-                    slot.active
-                    for slot in protocol_slots
-                    if slot.active is not None
-                ]
+            protocol_terms = [
+                slot.active
+                for slot in protocol_slots
+                if slot.active is not None
+            ]
+            protocol_shortfall = int(protocol_count) - int(protocol_fixed_required_count)
+            if protocol_shortfall > 0:
                 if protocol_terms:
-                    self.model.Add(sum(protocol_terms) >= int(protocol_count))
+                    self.model.Add(sum(protocol_terms) >= int(protocol_shortfall))
                 else:
-                    self.model.Add(0 >= int(protocol_count))
-            else:
-                self.model.Add(0 >= int(protocol_count))
+                    self.model.Add(0 >= int(protocol_shortfall))
 
         mandatory_powered_nonpole = int(self.owner._mandatory_powered_nonpole_count())
         optional_powered_templates = sorted(
