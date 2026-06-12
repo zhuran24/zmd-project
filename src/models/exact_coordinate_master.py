@@ -947,6 +947,9 @@ class CoordinateExactMasterDelegate:
             "mandatory_signature_monotonic_constraints": 0,
             "required_optional_signature_monotonic_constraints": 0,
             "residual_optional_signature_monotonic_constraints": 0,
+            "mandatory_signature_monotonic_skipped_incompatible_order": 0,
+            "required_optional_signature_monotonic_skipped_incompatible_order": 0,
+            "residual_optional_signature_monotonic_skipped_incompatible_order": 0,
             "slot_order_key_monotonic_constraints": 0,
             "power_pole_family_order_constraints": 0,
         }
@@ -2506,6 +2509,108 @@ class CoordinateExactMasterDelegate:
         mode_count = max(1, self._template_mode_literals.get(slot.template, 1))
         return int((self.grid_w - 1) * scale_x + (self.grid_h - 1) * scale_y + (mode_count - 1))
 
+    def _slot_order_key_for_pose_tuple(
+        self,
+        slot: CoordinateSlotSpec,
+        pose_tuple: PoseTuple,
+    ) -> int:
+        scale_x, scale_y = self._slot_order_key_bounds(slot)
+        x_val, y_val, mode_id = pose_tuple
+        return int(int(x_val) * int(scale_x) + int(y_val) * int(scale_y) + int(mode_id))
+
+    def _slot_signature_order_pose_indices(
+        self,
+        slot: CoordinateSlotSpec,
+    ) -> Tuple[int, ...]:
+        pose_indices: Set[int] = set()
+        if slot.allowed_tuples:
+            for raw_pose_tuple in slot.allowed_tuples:
+                pose_tuple = tuple(int(value) for value in raw_pose_tuple)
+                pose_idx = slot.tuple_to_pose_idx.get(pose_tuple)
+                if pose_idx is not None:
+                    pose_indices.add(int(pose_idx))
+            return tuple(sorted(pose_indices))
+        return tuple(sorted(int(pose_idx) for pose_idx in slot.tuple_to_pose_idx.values()))
+
+    def _pose_signature_int_by_bucket_defs(
+        self,
+        bucket_defs: Sequence[Mapping[str, Any]],
+        allowed_pose_indices: Optional[Iterable[int]] = None,
+    ) -> Dict[int, int]:
+        allowed_set: Optional[Set[int]] = None
+        if allowed_pose_indices is not None:
+            allowed_set = {int(pose_idx) for pose_idx in allowed_pose_indices}
+        pose_signature_int_by_idx: Dict[int, int] = {}
+        for signature_int, bucket in enumerate(bucket_defs):
+            for raw_pose_idx in bucket.get("pose_indices", []) or []:
+                pose_idx = int(raw_pose_idx)
+                if allowed_set is not None and pose_idx not in allowed_set:
+                    continue
+                pose_signature_int_by_idx[pose_idx] = int(signature_int)
+        return pose_signature_int_by_idx
+
+    def _signature_order_is_compatible_with_slot_order(
+        self,
+        slot: CoordinateSlotSpec,
+        pose_signature_int_by_idx: Mapping[int, int],
+    ) -> bool:
+        rows: List[Tuple[int, int, int]] = []
+        template_pose_tuples = self._template_pose_tuple_by_idx.get(str(slot.template), {})
+        for pose_idx in self._slot_signature_order_pose_indices(slot):
+            signature_int = pose_signature_int_by_idx.get(int(pose_idx))
+            pose_tuple = template_pose_tuples.get(int(pose_idx))
+            if signature_int is None or pose_tuple is None:
+                continue
+            rows.append(
+                (
+                    self._slot_order_key_for_pose_tuple(slot, pose_tuple),
+                    int(signature_int),
+                    int(pose_idx),
+                )
+            )
+        previous_signature: Optional[int] = None
+        for _, signature_int, _ in sorted(rows):
+            if previous_signature is not None and int(signature_int) < int(previous_signature):
+                return False
+            previous_signature = int(signature_int)
+        return True
+
+    def _add_signature_monotonic_constraints_if_compatible(
+        self,
+        slot_specs: Sequence[CoordinateSlotSpec],
+        *,
+        bucket_defs: Sequence[Mapping[str, Any]],
+        allowed_pose_indices: Optional[Iterable[int]],
+        skipped_stats_key: str,
+    ) -> int:
+        ordered_slots = list(slot_specs)
+        if len(ordered_slots) < 2:
+            return 0
+        pose_signature_int_by_idx = self._pose_signature_int_by_bucket_defs(
+            bucket_defs,
+            allowed_pose_indices,
+        )
+        if any(
+            not self._signature_order_is_compatible_with_slot_order(
+                slot,
+                pose_signature_int_by_idx,
+            )
+            for slot in ordered_slots
+        ):
+            skipped = len(ordered_slots) - 1
+            self._coordinate_symmetry_stats[skipped_stats_key] = int(
+                self._coordinate_symmetry_stats.get(skipped_stats_key, 0)
+            ) + int(skipped)
+            return 0
+
+        added = 0
+        for left_slot, right_slot in zip(ordered_slots, ordered_slots[1:]):
+            if left_slot.signature is None or right_slot.signature is None:
+                continue
+            self.model.Add(left_slot.signature <= right_slot.signature)
+            added += 1
+        return int(added)
+
     def _create_base_slot_geometry(
         self,
         slot: CoordinateSlotSpec,
@@ -3459,22 +3564,36 @@ class CoordinateExactMasterDelegate:
             slot_specs = list(self.mandatory_slots.get(group_id, []))
             if len(slot_specs) < 2 or self._mandatory_group_uses_signature_table.get(group_id, False):
                 continue
-            for left_slot, right_slot in zip(slot_specs, slot_specs[1:]):
-                if left_slot.signature is None or right_slot.signature is None:
-                    continue
-                self.model.Add(left_slot.signature <= right_slot.signature)
-                mandatory_signature_monotonic_constraints += 1
+            mandatory_signature_monotonic_constraints += (
+                self._add_signature_monotonic_constraints_if_compatible(
+                    slot_specs,
+                    bucket_defs=list(
+                        self.owner._mandatory_signature_buckets.get(group_id, [])
+                    ),
+                    allowed_pose_indices=self.owner._candidate_pose_indices_for_group(group),
+                    skipped_stats_key=(
+                        "mandatory_signature_monotonic_skipped_incompatible_order"
+                    ),
+                )
+            )
 
         required_optional_signature_monotonic_constraints = 0
         for tpl, slot_specs in sorted(self.required_optional_slots.items()):
             ordered_slot_specs = list(slot_specs)
             if len(ordered_slot_specs) < 2 or self._required_optional_uses_signature_table.get(str(tpl), False):
                 continue
-            for left_slot, right_slot in zip(ordered_slot_specs, ordered_slot_specs[1:]):
-                if left_slot.signature is None or right_slot.signature is None:
-                    continue
-                self.model.Add(left_slot.signature <= right_slot.signature)
-                required_optional_signature_monotonic_constraints += 1
+            required_optional_signature_monotonic_constraints += (
+                self._add_signature_monotonic_constraints_if_compatible(
+                    ordered_slot_specs,
+                    bucket_defs=list(
+                        self.owner._required_optional_signature_buckets.get(str(tpl), [])
+                    ),
+                    allowed_pose_indices=range(len(self.owner.facility_pools.get(str(tpl), []))),
+                    skipped_stats_key=(
+                        "required_optional_signature_monotonic_skipped_incompatible_order"
+                    ),
+                )
+            )
 
         stats["mandatory_signature_monotonic_constraints"] = int(
             mandatory_signature_monotonic_constraints
@@ -3492,11 +3611,18 @@ class CoordinateExactMasterDelegate:
                 False,
             ):
                 continue
-            for left_slot, right_slot in zip(ordered_slot_specs, ordered_slot_specs[1:]):
-                if left_slot.signature is None or right_slot.signature is None:
-                    continue
-                self.model.Add(left_slot.signature <= right_slot.signature)
-                residual_optional_signature_monotonic_constraints += 1
+            residual_optional_signature_monotonic_constraints += (
+                self._add_signature_monotonic_constraints_if_compatible(
+                    ordered_slot_specs,
+                    bucket_defs=list(
+                        self._residual_optional_signature_buckets.get(str(tpl), [])
+                    ),
+                    allowed_pose_indices=range(len(self.owner.facility_pools.get(str(tpl), []))),
+                    skipped_stats_key=(
+                        "residual_optional_signature_monotonic_skipped_incompatible_order"
+                    ),
+                )
+            )
         stats["residual_optional_signature_monotonic_constraints"] = int(
             residual_optional_signature_monotonic_constraints
         )
@@ -6651,6 +6777,12 @@ class CoordinateExactMasterDelegate:
                 }
         return solution
 
+    @staticmethod
+    def _strict_int_hint_value(value: Any) -> Optional[int]:
+        if type(value) is int:
+            return int(value)
+        return None
+
     def apply_solution_hint(
         self,
         solution_hint: Mapping[str, int],
@@ -6667,9 +6799,8 @@ class CoordinateExactMasterDelegate:
             for group in self.owner._mandatory_groups
         }
         for solution_id, pose_idx in solution_hint.items():
-            try:
-                pose_idx_int = int(pose_idx)
-            except (TypeError, ValueError):
+            pose_idx_int = self._strict_int_hint_value(pose_idx)
+            if pose_idx_int is None:
                 continue
             if solution_id in self.owner._group_id_by_instance:
                 group_id = str(self.owner._group_id_by_instance[solution_id])
@@ -6722,16 +6853,13 @@ class CoordinateExactMasterDelegate:
                     residual_optional_zero_hints += 1
 
         ghost_anchor_hint_applied = False
-        if ghost_anchor_hint_idx is not None and self.owner.u_vars:
-            try:
-                selected_idx = int(ghost_anchor_hint_idx)
-            except (TypeError, ValueError):
-                selected_idx = None
-            if selected_idx is not None and selected_idx in self.owner.u_vars:
+        selected_ghost_anchor_hint_idx = self._strict_int_hint_value(ghost_anchor_hint_idx)
+        if selected_ghost_anchor_hint_idx is not None and self.owner.u_vars:
+            if selected_ghost_anchor_hint_idx in self.owner.u_vars:
                 for rect_idx in self.owner._ordered_ghost_anchor_indices():
                     self.model.AddHint(
                         self.owner.u_vars[int(rect_idx)],
-                        1 if int(rect_idx) == selected_idx else 0,
+                        1 if int(rect_idx) == selected_ghost_anchor_hint_idx else 0,
                     )
                     hinted += 1
                 ghost_anchor_hint_applied = True
@@ -6739,9 +6867,7 @@ class CoordinateExactMasterDelegate:
         return {
             "hinted_literals": int(hinted),
             "ghost_anchor_hint_applied": bool(ghost_anchor_hint_applied),
-            "ghost_anchor_hint_idx": None
-            if ghost_anchor_hint_idx is None
-            else int(ghost_anchor_hint_idx),
+            "ghost_anchor_hint_idx": selected_ghost_anchor_hint_idx,
             "residual_optional_zero_hinting_enabled": bool(
                 hint_inactive_residual_optionals
             ),

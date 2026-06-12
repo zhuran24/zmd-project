@@ -1206,6 +1206,64 @@ def _build_exact_mandatory_signature_upper_bound_model(
     )
 
 
+def _build_exact_incompatible_signature_order_model() -> MasterPlacementModel:
+    instances = [
+        {
+            "instance_id": "tiny_001",
+            "facility_type": "tiny_router",
+            "operation_type": "routing",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+        {
+            "instance_id": "tiny_002",
+            "facility_type": "tiny_router",
+            "operation_type": "routing",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+    ]
+    pools = {
+        "tiny_router": [
+            {
+                "pose_id": "order_low_signature_high",
+                "anchor": {"x": 0, "y": 0},
+                "pose_params": {"orientation": "same", "port_mode": "same"},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 0, "y": 0, "dir": "E"}],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "order_high_signature_low",
+                "anchor": {"x": 1, "y": 0},
+                "pose_params": {"orientation": "same", "port_mode": "same"},
+                "occupied_cells": [[1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 1, "y": 0, "dir": "W"}],
+                "power_coverage_cells": None,
+            },
+        ],
+        "power_pole": [],
+        "protocol_storage_box": [],
+    }
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {
+            "tiny_router": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
+        },
+    }
+    return MasterPlacementModel(
+        instances,
+        pools,
+        rules,
+        solve_mode="certified_exact",
+        skip_power_coverage=True,
+    )
+
+
 def _build_exact_mandatory_signature_multicell_region_model(
     *,
     ghost_rect: tuple[int, int] | None = None,
@@ -5675,6 +5733,23 @@ def test_coordinate_symmetry_breaking_orders_mandatory_signature_slots() -> None
         cp_model.OPTIMAL,
         cp_model.FEASIBLE,
     )
+
+
+def test_coordinate_symmetry_breaking_skips_incompatible_signature_order_slots() -> None:
+    model = _build_exact_incompatible_signature_order_model()
+
+    status = model.solve(time_limit_seconds=5.0)
+
+    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    symmetry_stats = model.build_stats["coordinate_symmetry"]
+    assert symmetry_stats["enabled"] is True
+    assert symmetry_stats["mandatory_signature_monotonic_constraints"] == 0
+    assert symmetry_stats[
+        "mandatory_signature_monotonic_skipped_incompatible_order"
+    ] == 1
+    assert {
+        placement["pose_idx"] for placement in model.extract_solution().values()
+    } == {0, 1}
 
 
 def test_coordinate_symmetry_breaking_orders_required_optional_signature_slots() -> None:
