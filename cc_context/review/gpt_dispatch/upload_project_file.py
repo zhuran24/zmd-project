@@ -39,6 +39,9 @@ PROJECT_URL = "https://chatgpt.com/g/g-p-69b585dfc29c819186b93a166f5266a5-zhong-
 
 ADD_SOURCE_TEXTS = ["添加源", "添加来源", "Add source", "Add sources", "添加文件", "Add files"]
 UPLOAD_BTN_TEXTS = ["上传", "Upload"]
+DUP_DIALOG_TEXTS = ["已经存在", "已存在", "already exists"]
+DUP_OVERWRITE_TEXTS = ["仍然上传", "Upload anyway", "仍然"]
+DUP_SKIP_TEXTS = ["跳过", "Skip"]
 
 
 def log(stage: str, status: str, **kw):
@@ -144,8 +147,33 @@ GUARD_JS = """
 """
 
 
-def count_entries_js(filename: str) -> str:
-    return f"document.body.innerText.split({json.dumps(filename)}).length - 1"
+def count_list_entries_js(filename: str) -> str:
+    """数「来源列表」里该文件名条目数 — 排除模态框/对话框 (role=dialog) 内的文本,
+    否则「文件已存在」对话框里的同名文本会污染计数 (实测假阳性根因)。"""
+    return (
+        "(() => {"
+        "  const inDialog = el => !!el.closest('[role=dialog]');"
+        f"  const name = {json.dumps(filename)};"
+        "  let n = 0;"
+        "  for (const el of document.querySelectorAll('a,div,span,button')) {"
+        "    if (inDialog(el)) continue;"
+        "    const t = (el.childElementCount === 0 ? (el.textContent || '') : '');"
+        "    if (t.trim() === name) n++;"
+        "  }"
+        "  return n;"
+        "})()"
+    )
+
+
+def dialog_present_js() -> str:
+    texts = json.dumps(DUP_DIALOG_TEXTS)
+    return (
+        "(() => {"
+        f"  const texts = {texts};"
+        "  const body = document.body.innerText || '';"
+        "  return texts.some(t => body.includes(t));"
+        "})()"
+    )
 
 
 async def find_and_click(cdp: Cdp, texts: list[str], what: str, out_dir: Path) -> str:
@@ -193,7 +221,7 @@ async def run(args, pkg: Path, out_dir: Path) -> int:
                 return 3
             log("nav", "sources_page_ready", url=url_now[:90])
 
-            before = await cdp.js(count_entries_js(pkg.name))
+            before = await cdp.js(count_list_entries_js(pkg.name))
             log("upload", "entries_before", count=before)
 
             await cdp.js(GUARD_JS)
@@ -226,10 +254,35 @@ async def run(args, pkg: Path, out_dir: Path) -> int:
             )
             log("upload", "file_set", file=pkg.name)
 
+            # 同名时 ChatGPT 弹「文件已经存在」对话框 (跳过 / 仍然上传)。先短轮询看它出不出现。
+            dup = False
+            dup_deadline = time.time() + 20
+            while time.time() < dup_deadline:
+                if await cdp.js(dialog_present_js()):
+                    dup = True
+                    break
+                if isinstance(before, int):
+                    now = await cdp.js(count_list_entries_js(pkg.name))
+                    if isinstance(now, int) and now > before:
+                        break  # 全新文件名: 列表直接 +1, 不会弹对话框
+                await asyncio.sleep(2)
+
+            if dup:
+                # 上传管道已验证 (ChatGPT 收下文件、算名、判重)。按策略收尾对话框。
+                if args.on_duplicate == "overwrite":
+                    await find_and_click(cdp, DUP_OVERWRITE_TEXTS, "dup_overwrite", out_dir)
+                else:
+                    await find_and_click(cdp, DUP_SKIP_TEXTS, "dup_skip", out_dir)
+                await asyncio.sleep(3)
+                shot = await cdp.screenshot(out_dir / "final_state.png")
+                log("upload", "ok_duplicate", on_duplicate=args.on_duplicate,
+                    note="same-name file already in sources; upload pipeline verified", screenshot=shot)
+                return 0
+
             deadline = time.time() + args.timeout_minutes * 60
             settled = False
             while time.time() < deadline:
-                now = await cdp.js(count_entries_js(pkg.name))
+                now = await cdp.js(count_list_entries_js(pkg.name))
                 if isinstance(now, int) and isinstance(before, int) and now > before:
                     settled = True
                     break
@@ -239,7 +292,7 @@ async def run(args, pkg: Path, out_dir: Path) -> int:
                 log("upload", "TIMEOUT", error="new entry never appeared in sources list", screenshot=shot)
                 return 3
             await asyncio.sleep(5)  # 让后端处理收尾 (zip 显示「文件内容可能无法访问」属正常)
-            log("upload", "ok", entries_now=await cdp.js(count_entries_js(pkg.name)), screenshot=shot)
+            log("upload", "ok", entries_now=await cdp.js(count_list_entries_js(pkg.name)), screenshot=shot)
             return 0
     except Exception as e:
         log("fatal", "unhandled", error=str(e)[:300])
@@ -259,6 +312,8 @@ def main() -> int:
                     help="CDP HTTP 端点 (page 级 ws 由此发现; 不走 browser 级 ws)")
     ap.add_argument("--timeout-minutes", type=float, default=10.0,
                     help="upload settle timeout (entry must appear in the sources list)")
+    ap.add_argument("--on-duplicate", choices=["skip", "overwrite"], default="skip",
+                    help="同名文件已在来源里时: skip=点跳过(默认,保持幂等) / overwrite=点仍然上传(造新版本)")
     ap.add_argument("--out-dir", help="screenshots/evidence dir; default 补丁包/gpt_deliveries/<ts>_project_upload")
     args = ap.parse_args()
 
