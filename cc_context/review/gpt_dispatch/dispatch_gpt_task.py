@@ -100,7 +100,10 @@ class Reporter:
         entry = {"ts": datetime.now().isoformat(timespec="seconds"), "stage": stage, "status": status, **kw}
         with self.log_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        print(f"[{entry['ts']}] {stage}: {status} {kw if kw else ''}", flush=True)
+        try:
+            print(f"[{entry['ts']}] {stage}: {status} {kw if kw else ''}", flush=True)
+        except OSError:
+            pass  # stdout 管道被对端关闭 (如 head 类管道) 不该杀进程 — run_log 是真相源
 
     async def attention(self, page, stage: str, reason: str):
         """非预期状态: 截图 + DOM dump + 日志, 供托底接手。不抛异常。"""
