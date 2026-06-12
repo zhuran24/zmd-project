@@ -1639,7 +1639,25 @@ class CoordinateExactMasterDelegate:
         tpl = str(tpl)
         if tpl == "power_pole":
             return int(self._power_pole_slot_upper_bound)
-        return int(self.owner._certified_optional_slot_upper_bound(str(tpl)))
+        total_upper_bound = int(self.owner._certified_optional_slot_upper_bound(str(tpl)))
+        fixed_required_count = int(
+            self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)
+        )
+        if fixed_required_count > 0:
+            return int(max(0, total_upper_bound - fixed_required_count))
+        return int(total_upper_bound)
+
+    def _needs_residual_optional_slots_after_fixed_required(self, tpl: str) -> bool:
+        tpl = str(tpl)
+        fixed_required_count = int(
+            self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)
+        )
+        if fixed_required_count <= 0:
+            return True
+        if tpl == "protocol_storage_box":
+            lower_bound = int(self.owner._required_protocol_storage_box_lower_bound())
+            return bool(lower_bound > fixed_required_count)
+        return False
 
     def _power_pole_family_count_upper_bound(self, family_name: str) -> int:
         family_name = str(family_name)
@@ -1956,7 +1974,7 @@ class CoordinateExactMasterDelegate:
         for tpl in ("protocol_storage_box",):
             if str(tpl) not in self.owner.templates:
                 continue
-            if int(self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)) > 0:
+            if not self._needs_residual_optional_slots_after_fixed_required(str(tpl)):
                 continue
             slot_upper_bound = int(self._residual_optional_slot_upper_bound(str(tpl)))
             if slot_upper_bound <= 0:
@@ -2278,7 +2296,7 @@ class CoordinateExactMasterDelegate:
         for tpl in ("protocol_storage_box", "power_pole"):
             if tpl not in self.owner.templates:
                 continue
-            if int(self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)) > 0:
+            if not self._needs_residual_optional_slots_after_fixed_required(str(tpl)):
                 continue
             if (
                 str(tpl) == "power_pole"

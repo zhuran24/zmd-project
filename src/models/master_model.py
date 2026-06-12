@@ -5220,13 +5220,24 @@ class MasterPlacementModel:
         }
 
     def _residual_optional_powered_slot_upper_bounds(self) -> Dict[str, int]:
-        return {
-            str(tpl): int(upper_bound)
-            for tpl, upper_bound in sorted(self._certified_optional_slot_upper_bounds().items())
-            if str(tpl) in self._powered_templates
-            and str(tpl) != "power_pole"
-            and int(self._exact_required_pose_optional_counts.get(str(tpl), 0)) <= 0
-        }
+        residual_bounds: Dict[str, int] = {}
+        for tpl, upper_bound in sorted(self._certified_optional_slot_upper_bounds().items()):
+            tpl = str(tpl)
+            if tpl not in self._powered_templates or tpl == "power_pole":
+                continue
+            fixed_required_count = int(self._exact_required_pose_optional_counts.get(tpl, 0))
+            if fixed_required_count > 0:
+                if tpl != "protocol_storage_box":
+                    continue
+                lower_bound = int(self._certified_optional_lower_bounds.get(tpl, 0))
+                if lower_bound <= fixed_required_count:
+                    continue
+                residual_upper_bound = max(0, int(upper_bound) - fixed_required_count)
+            else:
+                residual_upper_bound = int(upper_bound)
+            if residual_upper_bound > 0:
+                residual_bounds[tpl] = int(residual_upper_bound)
+        return residual_bounds
 
     def _add_exact_optional_cardinality_bounds(self, stats: Dict[str, Any]) -> None:
         optional_bounds: Dict[str, Any] = {}

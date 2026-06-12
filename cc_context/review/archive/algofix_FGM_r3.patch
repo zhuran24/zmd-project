@@ -1,0 +1,148 @@
+--- a/src/models/exact_coordinate_master.py
++++ b/src/models/exact_coordinate_master.py
+@@ -1639,7 +1639,25 @@
+         tpl = str(tpl)
+         if tpl == "power_pole":
+             return int(self._power_pole_slot_upper_bound)
+-        return int(self.owner._certified_optional_slot_upper_bound(str(tpl)))
++        total_upper_bound = int(self.owner._certified_optional_slot_upper_bound(str(tpl)))
++        fixed_required_count = int(
++            self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)
++        )
++        if fixed_required_count > 0:
++            return int(max(0, total_upper_bound - fixed_required_count))
++        return int(total_upper_bound)
++
++    def _needs_residual_optional_slots_after_fixed_required(self, tpl: str) -> bool:
++        tpl = str(tpl)
++        fixed_required_count = int(
++            self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)
++        )
++        if fixed_required_count <= 0:
++            return True
++        if tpl == "protocol_storage_box":
++            lower_bound = int(self.owner._required_protocol_storage_box_lower_bound())
++            return bool(lower_bound > fixed_required_count)
++        return False
+ 
+     def _power_pole_family_count_upper_bound(self, family_name: str) -> int:
+         family_name = str(family_name)
+@@ -1956,7 +1974,7 @@
+         for tpl in ("protocol_storage_box",):
+             if str(tpl) not in self.owner.templates:
+                 continue
+-            if int(self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)) > 0:
++            if not self._needs_residual_optional_slots_after_fixed_required(str(tpl)):
+                 continue
+             slot_upper_bound = int(self._residual_optional_slot_upper_bound(str(tpl)))
+             if slot_upper_bound <= 0:
+@@ -2278,7 +2296,7 @@
+         for tpl in ("protocol_storage_box", "power_pole"):
+             if tpl not in self.owner.templates:
+                 continue
+-            if int(self.owner._exact_required_pose_optional_counts.get(str(tpl), 0)) > 0:
++            if not self._needs_residual_optional_slots_after_fixed_required(str(tpl)):
+                 continue
+             if (
+                 str(tpl) == "power_pole"
+--- a/src/models/master_model.py
++++ b/src/models/master_model.py
+@@ -5220,13 +5220,24 @@
+         }
+ 
+     def _residual_optional_powered_slot_upper_bounds(self) -> Dict[str, int]:
+-        return {
+-            str(tpl): int(upper_bound)
+-            for tpl, upper_bound in sorted(self._certified_optional_slot_upper_bounds().items())
+-            if str(tpl) in self._powered_templates
+-            and str(tpl) != "power_pole"
+-            and int(self._exact_required_pose_optional_counts.get(str(tpl), 0)) <= 0
+-        }
++        residual_bounds: Dict[str, int] = {}
++        for tpl, upper_bound in sorted(self._certified_optional_slot_upper_bounds().items()):
++            tpl = str(tpl)
++            if tpl not in self._powered_templates or tpl == "power_pole":
++                continue
++            fixed_required_count = int(self._exact_required_pose_optional_counts.get(tpl, 0))
++            if fixed_required_count > 0:
++                if tpl != "protocol_storage_box":
++                    continue
++                lower_bound = int(self._certified_optional_lower_bounds.get(tpl, 0))
++                if lower_bound <= fixed_required_count:
++                    continue
++                residual_upper_bound = max(0, int(upper_bound) - fixed_required_count)
++            else:
++                residual_upper_bound = int(upper_bound)
++            if residual_upper_bound > 0:
++                residual_bounds[tpl] = int(residual_upper_bound)
++        return residual_bounds
+ 
+     def _add_exact_optional_cardinality_bounds(self, stats: Dict[str, Any]) -> None:
+         optional_bounds: Dict[str, Any] = {}
+--- a/src/tests/test_exact_coordinate_protocol_bounds.py
++++ b/src/tests/test_exact_coordinate_protocol_bounds.py
+@@ -51,3 +51,64 @@
+     ]["protocol_storage_box"]
+     assert protocol_stats["lower"] == 1
+     assert protocol_stats["slot_pool_upper_bound"] == 0
++
++
++def test_protocol_lower_bound_shortfall_keeps_residual_storage_pool() -> None:
++    pools = {
++        "power_pole": [],
++        "protocol_storage_box": [
++            {
++                "pose_id": "box_0",
++                "anchor": {"x": 0, "y": 0},
++                "pose_params": {"orientation": 0, "port_mode": "omni"},
++                "occupied_cells": [[0, 0]],
++                "input_port_cells": [],
++                "output_port_cells": [],
++                "power_coverage_cells": None,
++            },
++            {
++                "pose_id": "box_1",
++                "anchor": {"x": 1, "y": 0},
++                "pose_params": {"orientation": 0, "port_mode": "omni"},
++                "occupied_cells": [[1, 0]],
++                "input_port_cells": [],
++                "output_port_cells": [],
++                "power_coverage_cells": None,
++            },
++        ],
++    }
++    rules = {
++        "globals": {"grid": {"width": 3, "height": 3}},
++        "facility_templates": {
++            "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
++            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
++        },
++    }
++    model = MasterPlacementModel(
++        instances=[],
++        facility_pools=pools,
++        rules=rules,
++        solve_mode="certified_exact",
++        skip_power_coverage=True,
++        generic_io_requirements={
++            "required_generic_outputs": {},
++            "required_generic_inputs": {
++                "final_a": 1,
++                "final_b": 1,
++                "final_c": 1,
++                "final_d": 1,
++            },
++        },
++        wireless_sink_generic_input_slots=3,
++        exact_required_pose_optional_counts={"protocol_storage_box": 1},
++    )
++
++    status = model.solve(time_limit_seconds=2.0)
++
++    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
++    protocol_stats = model.build_stats["global_valid_inequalities"][
++        "optional_cardinality_bounds"
++    ]["protocol_storage_box"]
++    assert protocol_stats["lower"] == 2
++    assert protocol_stats["slot_pool_upper_bound"] == 1
++    assert model._residual_optional_powered_slot_upper_bounds()["protocol_storage_box"] == 1
