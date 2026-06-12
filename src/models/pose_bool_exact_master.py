@@ -120,6 +120,25 @@ class PoseBoolExactMasterDelegate:
             for required in dict(gen_io.get("required_generic_outputs", {}) or {}).values()
         )
 
+    def _required_generic_output_commodities(self) -> Set[str]:
+        gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
+        return {
+            str(commodity)
+            for commodity, required in dict(
+                gen_io.get("required_generic_outputs", {}) or {}
+            ).items()
+            if int(required) > 0
+        }
+
+    def _required_generic_outputs_are_all_routing_visible(self) -> bool:
+        try:
+            return not (
+                self._required_generic_output_commodities()
+                & self._routing_free_sink_commodities()
+            )
+        except Exception:
+            return False
+
     def _mandatory_generic_output_capacity_total(self) -> Optional[int]:
         """Return the mandatory generic-output slot capacity if it is knowable.
 
@@ -195,7 +214,10 @@ class PoseBoolExactMasterDelegate:
         )
         generic_output_visible = (
             int(profile.generic_output_slots)
-            if self._generic_output_slots_are_globally_saturated()
+            if (
+                self._generic_output_slots_are_globally_saturated()
+                and self._required_generic_outputs_are_all_routing_visible()
+            )
             else 0
         )
         visible_output = sum(

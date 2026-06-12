@@ -564,6 +564,163 @@ def test_pose_bool_cell_pattern_cut_refuses_unknowable_generic_output_capacity()
     ) is False
 
 
+def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut() -> None:
+    """Saturation removes ``__unused__`` but does not make routing-free commodities routed."""
+
+    from src.models.binding_subproblem import PortBindingModel
+
+    required_outputs = {"wireless_ore": 2}
+    required_inputs = {"wireless_ore": 1}
+    facility_pools = {
+        "boundary_storage_port": [
+            {
+                "pose_id": "bsp_a",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [(0, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 0, "y": 1, "dir": "N"}],
+            },
+            {
+                "pose_id": "bsp_b",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [(2, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 2, "y": 1, "dir": "N"}],
+            },
+        ],
+        "protocol_storage_box": [
+            {
+                "pose_id": "sink",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [(4, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [],
+            }
+        ],
+        "blocker": [
+            {
+                "pose_id": "block_a_front",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [(0, 2)],
+                "input_port_cells": [],
+                "output_port_cells": [],
+            }
+        ],
+    }
+    placement_solution = {
+        "b1": {
+            "facility_type": "boundary_storage_port",
+            "operation_type": "boundary_io",
+            "pose_idx": 0,
+        },
+        "b2": {
+            "facility_type": "boundary_storage_port",
+            "operation_type": "boundary_io",
+            "pose_idx": 1,
+        },
+        "sink1": {
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "pose_idx": 0,
+        },
+        "blk": {"facility_type": "blocker", "operation_type": "power_supply", "pose_idx": 0},
+    }
+    instances = [
+        {
+            "instance_id": "b1",
+            "facility_type": "boundary_storage_port",
+            "operation_type": "boundary_io",
+            "is_mandatory": True,
+        },
+        {
+            "instance_id": "b2",
+            "facility_type": "boundary_storage_port",
+            "operation_type": "boundary_io",
+            "is_mandatory": True,
+        },
+        {
+            "instance_id": "sink1",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
+        {
+            "instance_id": "blk",
+            "facility_type": "blocker",
+            "operation_type": "power_supply",
+            "is_mandatory": True,
+        },
+    ]
+    binding_model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances,
+        required_generic_outputs=required_outputs,
+        required_generic_inputs=required_inputs,
+        wireless_sink_generic_input_slots=3,
+    )
+    binding_model.build()
+
+    assert binding_model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+    assert binding_model.extract_port_specs() == []
+
+    class Owner:
+        def __init__(self) -> None:
+            self.model = cp_model.CpModel()
+            self.grid_w = 8
+            self.grid_h = 8
+            self.generic_io_requirements = {
+                "required_generic_outputs": required_outputs,
+                "required_generic_inputs": required_inputs,
+            }
+            self.build_stats = {}
+            self._last_solution = None
+            self.facility_pools = facility_pools
+            self._mandatory_groups = [
+                {
+                    "group_id": "g_boundary",
+                    "facility_type": "boundary_storage_port",
+                    "operation_type": "boundary_io",
+                    "count": 2,
+                    "instance_ids": ["b1", "b2"],
+                },
+                {
+                    "group_id": "g_blocker",
+                    "facility_type": "blocker",
+                    "operation_type": "power_supply",
+                    "count": 1,
+                    "instance_ids": ["blk"],
+                },
+            ]
+
+    owner = Owner()
+    delegate = PoseBoolExactMasterDelegate(owner)
+    b1_var = owner.model.NewBoolVar("b1_pose")
+    b2_var = owner.model.NewBoolVar("b2_pose")
+    blocker_var = owner.model.NewBoolVar("blocker_pose")
+    delegate.x_vars[("g_boundary", 0)] = b1_var
+    delegate.x_vars[("g_boundary", 1)] = b2_var
+    delegate.x_vars[("g_blocker", 0)] = blocker_var
+    delegate._mandatory_template_by_group["g_boundary"] = "boundary_storage_port"
+    delegate._mandatory_operation_by_group["g_boundary"] = "boundary_io"
+    delegate._instance_ids_by_group["g_boundary"] = ["b1", "b2"]
+    delegate._mandatory_template_by_group["g_blocker"] = "blocker"
+    delegate._mandatory_operation_by_group["g_blocker"] = "power_supply"
+    delegate._instance_ids_by_group["g_blocker"] = ["blk"]
+    owner.model.Add(b1_var == 1)
+    owner.model.Add(b2_var == 1)
+    owner.model.Add(blocker_var == 1)
+
+    assert delegate._generic_output_slots_are_globally_saturated() is True
+    assert delegate._routing_visible_profile_demands("boundary_io") == (0, 0)
+    assert delegate.add_routing_port_blocking_cell_cut(
+        port_cell=(0, 1),
+        direction="N",
+        front_cell=(0, 2),
+    ) is False
+    assert cp_model.CpSolver().Solve(owner.model) in {cp_model.FEASIBLE, cp_model.OPTIMAL}
+
+
 def test_separator_capacity_classification_excludes_routing_free_sources() -> None:
     sep = Separator(
         sep_id="V_5",
