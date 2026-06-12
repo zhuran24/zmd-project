@@ -1,7 +1,7 @@
 # P1.2 闭合证据台账 (living, CC 维护)
 
 > 目的: 给 owner 的手动闭合决策 (`phase_1_2_spike_close` gate, 计数权在 owner) 提供**系统性、可核查**的证据汇总。本文件只汇总与指路, 不重复论证细节 (逐项有归档指针)。闭合判据 = 连续独立全审零 finding (owner 计数) + 验证加固阶梯交叉确认。
-> 最后更新: 2026-06-12 05:15 (自主夜班)。**当前诚实结论: P1.2 尚不可闭合** — preprocess 面刚爆出 2 个真 finding, 修复在途。
+> 最后更新: 2026-06-12 08:40。**当前诚实结论: P1.2 尚不可闭合** — preprocess 面 r4 穷举确认轮又出 4 组 residual (全是「绕过 routing-visible port specs、重新消费 raw port/front」的同类侧门, 修复已验收落地), 需 r5 再确认; 面 6/7/8 未开。
 
 ## 一、按面滚动续审状态 (tier ③, 饱和判据 = 每面连续 2-3 轮独立零 finding)
 
@@ -11,7 +11,7 @@
 | 2 | 几何 master | 算法审 1 轮 (B-01 → 已修) + 再审 1 轮 (2 finding → 已修) + 确认 1 轮零 | 1 | 续审中 |
 | 3 | routing + guard/lazy cut | P0-1 双层修复 + lazy cut 双独立零 finding + guard 完整性 1 轮 (审出对偶条件类缺陷已修*) | 见注 | 审得最透 |
 | 4 | cuts 机制 (F1-F9/PCR) | 算法审 1 轮 (C-3/C-4 latent, 非公开路径) | 0 (latent 待办挂账) | 待续审 |
-| 5 | preprocess 链 | r1: F-01/F-02 → fbb0466; r2: F-03 → b7d2115; r3: F03-R3-01 (RAB build-time 侧门, env 潜伏) + H03-R3-02 (dual-role 语义守卫) → **修复落地 51c5f90** (stash 判别恰 2 红 + 全量 2903 全绿 + lock/spec 措辞修正「单通道」→「所有消费点」); **r4 确认轮在途 (会话 6a2b454d, 重点=front 消费点全仓穷举)** | **0** | r4 零 finding 才计收口 |
+| 5 | preprocess 链 | r1: F-01/F-02 → fbb0466; r2: F-03 → b7d2115; r3: F03-R3-01 (RAB build-time 侧门, env 潜伏) + H03-R3-02 (dual-role 语义守卫) → 51c5f90; **r4 (front 消费点全仓穷举轮, owner 手动发) 又出 4 组 residual 已修复落地**: F04-R4-01 (preprocess_context 直构路径绕过 dual-role 守卫 → 双层 fail-closed) + F04-R4-02 (deletion-core raw oracle, env `EXACT_B1_DELETION_CORE_CUT`) + F04-R4-03 (pose-bool master 四处 raw port/front: PORT_ACTIVE/CLEARANCE_HARD/blocking-cell/lazy-demand, env 门控) + F04-R4-04 (SAC/L2/dynamic separator 把 routing-free 终品当 routed source)。验收: 2 probe unpatched 复现 + patched 翻转, 行为级判别 (separator 分类 probe + pose-bool :303/:926 现场), 全量 **2908 绿** (+5 回归), preflight 20/20, lock/spec 消费点清单扩列 | **0** | **r5 再确认轮零 finding 才计收口** |
 | 6 | binding 建模忠实度 | 未审 (C 轮只审了 cut 不是 binding 数学) | — | 排队 |
 | 7 | campaign/resume 状态机 | 未审 | — | 排队 |
 | 8 | parallel scheduler 合并 | 未审 | — | 排队 |
@@ -36,7 +36,7 @@
 
 ## 四、当前阻塞闭合的事项 (按序)
 
-1. ~~preprocess F-01/F-02 完整修复落地~~ ✅ (commit fbb0466)。**但 round 2 确认轮又抓 F-03 P0** (wireless 终品生产端实体输出口仍被 `extract_port_specs` 导出成 routing terminal → 孤立 source 无 sink → 虚假 `front_blocked` → 拒合法布局 = false-INFEASIBLE; 与 fuzz 切片1 的 A-1 source-drain 对偶条件互为旁证)。reviewer 补丁 `cc_context/review/algofix_preprocess_F03_routing_free_leak.patch` (加 `routing_free_sink_commodities`, extract_port_specs 跳这些商品 output 口)。**待 CC 验收**——核心待核: 这些 required_generic_inputs 商品是否纯终品 (不会同时作别的设施 routing 中间输入, 否则跳过会断真实消费者料); 跨 binding/routing 接口, 专门一轮。修+再确认轮才计 preprocess 收口。
+1. ~~preprocess F-01/F-02~~ ✅ fbb0466 → ~~r2 F-03~~ ✅ b7d2115 → ~~r3 F03-R3~~ ✅ 51c5f90 → ~~r4 四组 residual~~ ✅ 已落地 (见面 5 行)。**当前在此: r5 再确认轮** (穷举确认轮自身又出货, 收敛判据 = 确认轮真正零 finding; r5 brief 须点名 r4 修的 4 处为攻击面 + 继续全仓穷举 raw port/front 消费)。
 2. preprocess 面修复后续审至饱和 (≥2 连零)。
 3. 面 6/7/8 各自首轮 + 饱和。
 4. 面 4 latent 待办 (C-3 F2 容量 / C-4 readiness gate blocker) 处置或显式划出 P1.2 范围 (owner 决策)。
@@ -47,5 +47,5 @@
 
 - 3 真 P0 (A-1/B-01/A-2) 修复 + 两轮外审收口: commits 415c0c0/eb016ef/863f6d2, 归档 `cc_context/review/algofix_p0_*`。
 - P0-1 lazy connectivity cut: commit 1876a6e, 双独立零 finding (`algofix_p0_1_lazycut_review_r1a/r1b_20260612.md`)。
-- preprocess 面 round-1 审查交付: `cc_context/review/algoaudit_preprocess_face_r1_*` (commit a716173)。
+- preprocess 面审查交付链: r1 `cc_context/review/algoaudit_preprocess_face_r1_*` (commit a716173); r2 `algoaudit_preprocess_face_r2_REVIEW_20260612.md` + `algofix_preprocess_F03_routing_free_leak.patch`; r3 `algoaudit_preprocess_face_r3_REVIEW_20260612.md` + `algofix_F03_r3_residual.patch`; r4 `algoaudit_preprocess_face_r4_REVIEW_20260612.md` + `algofix_F04_r4_residual.patch`。
 - 单一 living 现状源: `_cc_live_memory/handoff_windows_ninth_review_pending.md` (stamp #4 为当前)。
