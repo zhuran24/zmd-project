@@ -6662,13 +6662,28 @@ class CoordinateExactMasterDelegate:
         residual_optional_zero_hints = 0
         grouped_hints: DefaultDict[str, List[int]] = defaultdict(list)
         optional_hints: DefaultDict[str, List[int]] = defaultdict(list)
+        mandatory_template_by_group = {
+            str(group["group_id"]): str(group["facility_type"])
+            for group in self.owner._mandatory_groups
+        }
         for solution_id, pose_idx in solution_hint.items():
+            try:
+                pose_idx_int = int(pose_idx)
+            except (TypeError, ValueError):
+                continue
             if solution_id in self.owner._group_id_by_instance:
-                grouped_hints[str(self.owner._group_id_by_instance[solution_id])].append(int(pose_idx))
+                group_id = str(self.owner._group_id_by_instance[solution_id])
+                tpl = mandatory_template_by_group.get(group_id)
+                if tpl is None or pose_idx_int not in self._template_pose_tuple_by_idx.get(tpl, {}):
+                    continue
+                grouped_hints[group_id].append(pose_idx_int)
                 continue
             tpl = self.owner._infer_optional_template_from_solution_id(str(solution_id))
             if tpl is not None:
-                optional_hints[str(tpl)].append(int(pose_idx))
+                tpl_key = str(tpl)
+                if pose_idx_int not in self._template_pose_tuple_by_idx.get(tpl_key, {}):
+                    continue
+                optional_hints[tpl_key].append(pose_idx_int)
 
         for group in self.owner._mandatory_groups:
             group_id = str(group["group_id"])
@@ -6708,14 +6723,18 @@ class CoordinateExactMasterDelegate:
 
         ghost_anchor_hint_applied = False
         if ghost_anchor_hint_idx is not None and self.owner.u_vars:
-            selected_idx = int(ghost_anchor_hint_idx)
-            for rect_idx in self.owner._ordered_ghost_anchor_indices():
-                self.model.AddHint(
-                    self.owner.u_vars[int(rect_idx)],
-                    1 if int(rect_idx) == selected_idx else 0,
-                )
-                hinted += 1
-            ghost_anchor_hint_applied = selected_idx in self.owner.u_vars
+            try:
+                selected_idx = int(ghost_anchor_hint_idx)
+            except (TypeError, ValueError):
+                selected_idx = None
+            if selected_idx is not None and selected_idx in self.owner.u_vars:
+                for rect_idx in self.owner._ordered_ghost_anchor_indices():
+                    self.model.AddHint(
+                        self.owner.u_vars[int(rect_idx)],
+                        1 if int(rect_idx) == selected_idx else 0,
+                    )
+                    hinted += 1
+                ghost_anchor_hint_applied = True
 
         return {
             "hinted_literals": int(hinted),

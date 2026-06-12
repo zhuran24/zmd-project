@@ -1,0 +1,190 @@
+--- a/src/models/exact_coordinate_master.py
++++ b/src/models/exact_coordinate_master.py
+@@ -6662,13 +6662,28 @@
+         residual_optional_zero_hints = 0
+         grouped_hints: DefaultDict[str, List[int]] = defaultdict(list)
+         optional_hints: DefaultDict[str, List[int]] = defaultdict(list)
++        mandatory_template_by_group = {
++            str(group["group_id"]): str(group["facility_type"])
++            for group in self.owner._mandatory_groups
++        }
+         for solution_id, pose_idx in solution_hint.items():
++            try:
++                pose_idx_int = int(pose_idx)
++            except (TypeError, ValueError):
++                continue
+             if solution_id in self.owner._group_id_by_instance:
+-                grouped_hints[str(self.owner._group_id_by_instance[solution_id])].append(int(pose_idx))
++                group_id = str(self.owner._group_id_by_instance[solution_id])
++                tpl = mandatory_template_by_group.get(group_id)
++                if tpl is None or pose_idx_int not in self._template_pose_tuple_by_idx.get(tpl, {}):
++                    continue
++                grouped_hints[group_id].append(pose_idx_int)
+                 continue
+             tpl = self.owner._infer_optional_template_from_solution_id(str(solution_id))
+             if tpl is not None:
+-                optional_hints[str(tpl)].append(int(pose_idx))
++                tpl_key = str(tpl)
++                if pose_idx_int not in self._template_pose_tuple_by_idx.get(tpl_key, {}):
++                    continue
++                optional_hints[tpl_key].append(pose_idx_int)
+ 
+         for group in self.owner._mandatory_groups:
+             group_id = str(group["group_id"])
+@@ -6708,14 +6723,18 @@
+ 
+         ghost_anchor_hint_applied = False
+         if ghost_anchor_hint_idx is not None and self.owner.u_vars:
+-            selected_idx = int(ghost_anchor_hint_idx)
+-            for rect_idx in self.owner._ordered_ghost_anchor_indices():
+-                self.model.AddHint(
+-                    self.owner.u_vars[int(rect_idx)],
+-                    1 if int(rect_idx) == selected_idx else 0,
+-                )
+-                hinted += 1
+-            ghost_anchor_hint_applied = selected_idx in self.owner.u_vars
++            try:
++                selected_idx = int(ghost_anchor_hint_idx)
++            except (TypeError, ValueError):
++                selected_idx = None
++            if selected_idx is not None and selected_idx in self.owner.u_vars:
++                for rect_idx in self.owner._ordered_ghost_anchor_indices():
++                    self.model.AddHint(
++                        self.owner.u_vars[int(rect_idx)],
++                        1 if int(rect_idx) == selected_idx else 0,
++                    )
++                    hinted += 1
++                ghost_anchor_hint_applied = True
+ 
+         return {
+             "hinted_literals": int(hinted),
+--- a/src/models/master_model.py
++++ b/src/models/master_model.py
+@@ -11313,7 +11313,11 @@
+             hinted = int(hint_application.get("hinted_literals", 0))
+         elif solution_hint:
+             for key, pose_idx in solution_hint.items():
+-                var = self._hint_var_for_key(str(key), int(pose_idx))
++                try:
++                    pose_idx_int = int(pose_idx)
++                except (TypeError, ValueError):
++                    continue
++                var = self._hint_var_for_key(str(key), pose_idx_int)
+                 if var is None:
+                     continue
+                 self.model.AddHint(var, 1)
+--- a/src/tests/test_solution_hint_malformed_defense.py
++++ b/src/tests/test_solution_hint_malformed_defense.py
+@@ -0,0 +1,112 @@
++"""Regression coverage for malformed solution hints.
++
++Hints are search guidance only. Bad hint entries must not mutate the feasible
++set, and direct API callers should not lose a solve because a performance hint
++contains a malformed pose index.
++"""
++
++from __future__ import annotations
++
++from ortools.sat.python import cp_model
++
++from src.models.master_model import MasterPlacementModel
++
++
++def _fixture(*, ghost_rect=None) -> MasterPlacementModel:
++    instances = [
++        {
++            "instance_id": "solid_1",
++            "facility_type": "solid",
++            "operation_type": "noop",
++            "is_mandatory": True,
++            "bound_type": "exact",
++        }
++    ]
++    pools = {
++        "solid": [
++            {
++                "pose_id": "solid_0",
++                "anchor": {"x": 0, "y": 0},
++                "occupied_cells": [[0, 0]],
++                "input_port_cells": [],
++                "output_port_cells": [],
++                "power_coverage_cells": None,
++            },
++            {
++                "pose_id": "solid_1",
++                "anchor": {"x": 1, "y": 0},
++                "occupied_cells": [[1, 0]],
++                "input_port_cells": [],
++                "output_port_cells": [],
++                "power_coverage_cells": None,
++            },
++        ]
++    }
++    rules = {
++        "globals": {"grid": {"width": 2, "height": 1}},
++        "facility_templates": {
++            "solid": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
++        },
++    }
++    return MasterPlacementModel(
++        instances=instances,
++        facility_pools=pools,
++        rules=rules,
++        solve_mode="certified_exact",
++        skip_power_coverage=True,
++        ghost_rect=ghost_rect,
++    )
++
++
++def test_exact_solution_hint_skips_non_int_and_out_of_range_pose_indices() -> None:
++    model = _fixture()
++
++    status = model.solve(
++        time_limit_seconds=2.0,
++        solution_hint={
++            "solid_1": "not_an_int",
++            "pose_optional::power_pole::missing": 999,
++        },
++    )
++
++    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
++    assert model.build_stats["last_solve"]["hinted_literals"] == 0
++    assert model.extract_solution()["solid_1"]["pose_idx"] in {0, 1}
++
++    model_oob = _fixture()
++    status_oob = model_oob.solve(
++        time_limit_seconds=2.0,
++        solution_hint={"solid_1": 999},
++    )
++    assert status_oob in {cp_model.OPTIMAL, cp_model.FEASIBLE}
++    assert model_oob.build_stats["last_solve"]["hinted_literals"] == 0
++
++
++def test_exact_ghost_anchor_hint_skips_missing_anchor_index() -> None:
++    model = _fixture(ghost_rect=(1, 1))
++
++    status = model.solve(time_limit_seconds=2.0, ghost_anchor_hint_idx=999)
++
++    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
++    assert model.build_stats["last_solve"]["hinted_literals"] == 0
++    assert model.build_stats["last_solve"]["ghost_anchor_hint_applied"] is False
++
++
++def test_legacy_solution_hint_skips_non_int_pose_index() -> None:
++    instances, pools, rules = (
++        _fixture().source_instances,
++        _fixture().facility_pools,
++        _fixture().rules,
++    )
++    model = MasterPlacementModel(
++        instances=instances,
++        facility_pools=pools,
++        rules=rules,
++        solve_mode="exploratory",
++        skip_power_coverage=True,
++    )
++
++    status = model.solve(time_limit_seconds=2.0, solution_hint={"solid_1": "not_an_int"})
++
++    assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
++    assert model.build_stats["last_solve"]["hinted_literals"] == 0

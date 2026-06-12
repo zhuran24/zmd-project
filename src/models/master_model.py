@@ -11313,7 +11313,11 @@ class MasterPlacementModel:
             hinted = int(hint_application.get("hinted_literals", 0))
         elif solution_hint:
             for key, pose_idx in solution_hint.items():
-                var = self._hint_var_for_key(str(key), int(pose_idx))
+                try:
+                    pose_idx_int = int(pose_idx)
+                except (TypeError, ValueError):
+                    continue
+                var = self._hint_var_for_key(str(key), pose_idx_int)
                 if var is None:
                     continue
                 self.model.AddHint(var, 1)
