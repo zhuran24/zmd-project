@@ -132,7 +132,7 @@ python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --resume "<会话URL>
 - **第三托底通道 = ChatGPT 桌面 App** (Electron, DOM 与网页同构, 不同客户端可能不同限流池): `start 脚本 -App` 以 MSIX 包身份带 CDP 9224 启动 (裸跑 exe 会崩), dispatch 加 `--cdp-url http://localhost:9224`。完整托底链: 脚本@Edge(9222) → 插件@Edge(手动) → 脚本@App(9224)。
 - **Pro 静默降级 (owner 经验)**: 不在任何明面标注, 唯一判据 = 真实任务完整生成 <1min。脚本自动刷新重跑一次 (`--downgrade-retries`), 仍快 → exit 5, CC 改走 Claude-in-Chrome 插件通道 (Edge, 已登录) 托底重发。轻量测试传 `--min-gen-seconds 0`。
 - 内建: 附件 404 自动救援 (sandbox 文件回收后让 GPT 重新生成再收)、浏览器 tab 自动回收、非预期状态截图+DOM 现场落盘。
-- **包递交通道 (2026-06-12 owner 裁决)**: 项目快照包**上传到「终末地」Project 文件页 (来源区), 不随消息发附件** (Codex 时代文件页模式从未触发风控; 会话内反复传大附件疑似风控诱因)。新包上传后**删老快照包**; 依赖包 `zmd_py313_linux_x86_64.zip` (wheels) **永远不删**。prompt 指认文件区包文件名 + sha256 让 GPT 开工前校验。注意: dispatch 脚本当前的 --pack/--package 仍是消息附件模式, 恢复脚本前需适配。
+- **包递交通道 (2026-06-12 owner 裁决)**: 项目快照包**上传到「终末地」Project 文件页 (来源区), 不随消息发附件** (Codex 时代文件页模式从未触发风控; 会话内反复传大附件疑似风控诱因)。新包上传后**删老快照包**; 依赖包 `zmd_py313_linux_x86_64.zip` (wheels) **永远不删**。prompt 指认文件区包文件名 + sha256 让 GPT 开工前校验。**上传已脚本化 (2026-06-12 跑通, 18MB 大文件实测)**: `upload_project_file.py --file <包> --replace` (另有 --list / --delete-name 运维模式; ⚠️ --replace 白名单语义会删期间新出现的文件, owner 正在手动操作文件区时别跑, 详见 gpt_dispatch/README.md)。注意: dispatch 脚本当前的 --pack/--package 仍是消息附件模式, 恢复脚本前需适配。
 
 > **重要**：用户可能会问"上游更新了怎么办"——答案是这两条命令，不是手动复制文件。
 

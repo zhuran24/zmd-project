@@ -23,6 +23,29 @@ python ...\dispatch_gpt_task.py --package X.zip --prompt-file prompt.md
 python ...\dispatch_gpt_task.py --resume "https://chatgpt.com/g/.../c/<id>"
 ```
 
+## Project 文件页上传器 (包递交通道, 2026-06-12 跑通)
+
+包走 Project「来源」文件区, 不随消息发附件 (owner 裁决)。`upload_project_file.py`
+引擎 = raw CDP page 级 ws (与 claude-in-chrome 插件共存); 字节通道 = 分块灌进页面构造
+内存 File (页面内 sha256 比对); 完成判据 = 监听挂载 POST `/backend-api/projects/<id>/files`
+返回 200, 再刷新复核条目仍在 + 行菜单出「下载」。**上传期间脚本不碰 UI** —— 提前刷新
+会掐断 in-flight 挂载请求, 文件传上去了却挂不到 Project (2026-06-12 对照实测)。
+
+```powershell
+# 标准每轮工作流: 删旧快照(保白名单, 默认依赖包) + 传新包
+python cc_context\review\gpt_dispatch\upload_project_file.py --file <包.zip> --replace
+
+# 运维: 只读枚举 / 精确删除
+python ...\upload_project_file.py --list
+python ...\upload_project_file.py --delete-name <文件名.zip>
+```
+
+⚠️ `--replace` 是白名单语义 (删除**所有**不在 `--keep` 里的 .zip) — owner 可能正在
+手动操作文件区时**不要跑** (2026-06-12 事故: 测试窗口期 owner 手传的包被清, 靠本地
+副本救回); 动手前 delete_targets 日志会亮出完整删除清单。同名已存在默认点「跳过」
+(幂等), `--on-duplicate overwrite` 改点「仍然上传」。退出码: 0=挂载成功+复核通过 /
+1=环境错误 / 3=异常(看 attention 截图)。
+
 默认发到「终末地」Project(`--project-url` 可换),模型沿用 Project 记住的 Pro·进阶(脚本只校验不切换,不像 Pro 会报 attention)。
 
 ## 输出(默认 `补丁包/gpt_deliveries/<时间戳>/`)
