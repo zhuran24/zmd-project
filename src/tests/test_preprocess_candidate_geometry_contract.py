@@ -54,6 +54,26 @@ def test_generate_all_pools_rejects_schema_valid_template_geometry_drift():
             lambda tpl: tpl.__setitem__("dimensions", {"w": 4, "h": 6}),
             r"long_sides.*w > h",
         ),
+        (
+            "manufacturing_6x4",
+            lambda tpl: tpl.__setitem__("rotatable", False),
+            r"manufacturing_6x4\.rotatable.*rotatable=True",
+        ),
+        (
+            "protocol_core",
+            lambda tpl: tpl.__setitem__("rotatable", False),
+            r"protocol_core\.rotatable.*rotatable=True",
+        ),
+        (
+            "boundary_storage_port",
+            lambda tpl: tpl.__setitem__("rotatable", False),
+            r"boundary_storage_port\.rotatable.*rotatable=True",
+        ),
+        (
+            "manufacturing_3x3",
+            lambda tpl: tpl.__setitem__("is_solid_z", False),
+            r"manufacturing_3x3\.is_solid_z.*occupied_cells",
+        ),
     ]
 
     for template_id, mutator, expected_message in cases:

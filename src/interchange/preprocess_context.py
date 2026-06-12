@@ -307,6 +307,7 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(
                 f"cycle group {group.group_id!r} must be square: recipes={len(group.recipes)} internal_commodities={len(group.internal_commodities)}"
             )
+        internal_commodities = set(group.internal_commodities)
         for recipe_id in group.recipes:
             if recipe_id not in context.recipes:
                 raise ValueError(f"cycle group {group.group_id!r} references unknown recipe {recipe_id!r}")
@@ -320,7 +321,15 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
                 raise ValueError(
                     f"commodity {commodity_id!r} declares cycle_group {role.cycle_group!r}, expected {group.group_id!r}"
                 )
+        for commodity_id in group.net_export_commodities:
+            if commodity_id not in internal_commodities:
+                raise ValueError(
+                    f"cycle group {group.group_id!r} net_export_commodity {commodity_id!r} "
+                    "is not listed in internal_commodities"
+                )
         _solve_cycle_group_exact(context, group.group_id, {})
+        for commodity_id in group.net_export_commodities:
+            _solve_cycle_group_exact(context, group.group_id, {commodity_id: Fraction(1)})
 
     for commodity_id, recipe_ids in producers.items():
         role = context.commodity_role(commodity_id)
@@ -436,6 +445,12 @@ def _solve_cycle_group_exact(
         rhs.append(_to_fraction(external_demands.get(commodity_id, Fraction(0))))
 
     solution = _solve_square_linear_system(matrix, rhs)
+    for index, run_rate in enumerate(solution):
+        if run_rate < 0:
+            recipe_id = group.recipes[index]
+            raise ValueError(
+                f"cycle group {group_id!r} produced negative run rate for recipe {recipe_id!r}: {run_rate}"
+            )
     return {
         recipe_id: solution[index]
         for index, recipe_id in enumerate(group.recipes)

@@ -13,6 +13,7 @@ Status: ACCEPTED_DRAFT
 import json
 import sys
 import time
+from functools import lru_cache
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
@@ -20,6 +21,8 @@ if __package__ in {None, ""}:
     PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
     if str(PROJECT_ROOT) not in sys.path:
         sys.path.insert(0, str(PROJECT_ROOT))
+
+from jsonschema import validate as validate_json_schema
 
 from src.io.strict_json import load_strict_json
 
@@ -129,6 +132,13 @@ def _require_positive_int(value: Any, field_name: str) -> int:
     return value
 
 
+def _require_bool(value: Any, field_name: str) -> bool:
+    """Return a JSON boolean, rejecting truthy/falsy non-bool drift fail-closed."""
+    if not isinstance(value, bool):
+        raise ValueError(f"{field_name} must be a boolean, got {value!r}")
+    return value
+
+
 def _require_exact_dimensions(tpl_key: str, port_rule: str, w: int, h: int,
                               expected_w: int, expected_h: int) -> None:
     """Lock hard-coded generators to the canonical geometry they actually emit."""
@@ -136,6 +146,15 @@ def _require_exact_dimensions(tpl_key: str, port_rule: str, w: int, h: int,
         raise ValueError(
             f"{tpl_key} uses port_rule={port_rule!r}, whose generator emits "
             f"{expected_w}x{expected_h} poses; canonical dimensions are {w}x{h}"
+        )
+
+
+def _require_exact_rotatable(tpl_key: str, actual: bool, expected: bool, reason: str) -> None:
+    """Lock canonical rotatability to the orientation family emitted by a generator."""
+    if actual != expected:
+        raise ValueError(
+            f"{tpl_key}.rotatable is {actual!r}; {reason}; "
+            f"the placement generator expects rotatable={expected!r}"
         )
 
 
@@ -160,8 +179,21 @@ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) 
     port_rule = tpl_def.get("port_rule")
     if not isinstance(port_rule, str):
         raise ValueError(f"{tpl_key}.port_rule must be a string, got {port_rule!r}")
+    rotatable = _require_bool(tpl_def.get("rotatable"), f"{tpl_key}.rotatable")
+    is_solid_z = _require_bool(tpl_def.get("is_solid_z"), f"{tpl_key}.is_solid_z")
+    if not is_solid_z:
+        raise ValueError(
+            f"{tpl_key}.is_solid_z is {is_solid_z!r}; "
+            "the placement generator emits solid occupied_cells for every template"
+        )
 
     if port_rule == "long_sides":
+        _require_exact_rotatable(
+            tpl_key,
+            rotatable,
+            True,
+            "long_sides generation emits both unrotated and rotated rectangular footprints",
+        )
         if w <= h:
             raise ValueError(
                 f"{tpl_key} uses port_rule='long_sides' but dimensions are {w}x{h}; "
@@ -169,6 +201,12 @@ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) 
             )
 
     elif port_rule == "opposite_parallel_sides":
+        _require_exact_rotatable(
+            tpl_key,
+            rotatable,
+            True,
+            "opposite_parallel_sides generation encodes orthogonal side-pair modes",
+        )
         if w != h:
             raise ValueError(
                 f"{tpl_key} uses port_rule='opposite_parallel_sides' but dimensions are {w}x{h}; "
@@ -176,6 +214,12 @@ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) 
             )
 
     elif port_rule == "core_specific":
+        _require_exact_rotatable(
+            tpl_key,
+            rotatable,
+            True,
+            "core_specific generation emits o=0 and o=1 port topologies",
+        )
         _require_exact_dimensions(tpl_key, port_rule, w, h, 9, 9)
         core_limits = tpl_def.get("core_limits")
         if not isinstance(core_limits, dict):
@@ -189,9 +233,21 @@ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) 
             )
 
     elif port_rule == "omni_wireless":
+        _require_exact_rotatable(
+            tpl_key,
+            rotatable,
+            True,
+            "omni_wireless templates are canonical rotatable square bodies even though the pool is orientation-deduplicated",
+        )
         _require_exact_dimensions(tpl_key, port_rule, w, h, 3, 3)
 
     elif port_rule == "none":
+        _require_exact_rotatable(
+            tpl_key,
+            rotatable,
+            False,
+            "none/power-pole generation emits a single fixed orientation",
+        )
         _require_exact_dimensions(tpl_key, port_rule, w, h, 2, 2)
         radius = _require_positive_int(tpl_def.get("power_coverage_radius"), f"{tpl_key}.power_coverage_radius")
         if radius != 5:
@@ -201,6 +257,12 @@ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) 
             )
 
     elif port_rule == "inward_facing":
+        _require_exact_rotatable(
+            tpl_key,
+            rotatable,
+            True,
+            "inward_facing boundary generation emits vertical left-base and rotated horizontal bottom-base poses",
+        )
         _require_exact_dimensions(tpl_key, port_rule, w, h, 1, 3)
         placement_rule = tpl_def.get("placement_rule")
         if placement_rule != "left_or_bottom_boundary":
@@ -402,12 +464,20 @@ def generate_empty_rect_domain(w: int, h: int) -> List[Dict]:
 # 3. 主控引擎
 # ==========================================
 
+
+@lru_cache(maxsize=1)
+def _load_canonical_rules_schema() -> Dict[str, Any]:
+    project_root = Path(__file__).resolve().parent.parent.parent
+    return load_strict_json(project_root / "rules" / "canonical_rules.schema.json")
+
+
 def load_templates(rules_path: Optional[Path] = None) -> Dict[str, Any]:
     """从 canonical_rules.json 动态加载模板定义。"""
     if rules_path is None:
         project_root = Path(__file__).resolve().parent.parent.parent
         rules_path = project_root / "rules" / "canonical_rules.json"
     rules = load_strict_json(rules_path)
+    validate_json_schema(instance=rules, schema=_load_canonical_rules_schema())
     return rules["facility_templates"]
 
 

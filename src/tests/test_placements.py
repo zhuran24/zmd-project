@@ -20,6 +20,7 @@ import math
 import pytest
 from pathlib import Path
 from typing import Dict, List, Any
+from jsonschema import ValidationError as JsonSchemaValidationError
 
 # ============================================================================
 # 夹具 (Fixtures)
@@ -111,6 +112,21 @@ def test_placement_template_loader_rejects_overflow_json_numbers(tmp_path, proje
     rules_path.write_text(rules_text, encoding="utf-8")
 
     with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
+        load_templates(rules_path)
+
+
+def test_placement_template_loader_rejects_schema_missing_required_template_field(tmp_path, project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.placement.placement_generator import load_templates
+
+    rules_payload = json.loads((project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"))
+    del rules_payload["facility_templates"]["manufacturing_3x3"]["rotatable"]
+    rules_path = tmp_path / "canonical_rules.json"
+    rules_path.write_text(json.dumps(rules_payload), encoding="utf-8")
+
+    with pytest.raises(JsonSchemaValidationError, match="rotatable"):
         load_templates(rules_path)
 
 

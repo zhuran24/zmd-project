@@ -1,0 +1,270 @@
+--- a/src/placement/placement_generator.py
++++ b/src/placement/placement_generator.py
+@@ -13,6 +13,7 @@
+ import json
+ import sys
+ import time
++from functools import lru_cache
+ from pathlib import Path
+ from typing import List, Dict, Any, Optional, Tuple
+ 
+@@ -21,6 +22,8 @@
+     if str(PROJECT_ROOT) not in sys.path:
+         sys.path.insert(0, str(PROJECT_ROOT))
+ 
++from jsonschema import validate as validate_json_schema
++
+ from src.io.strict_json import load_strict_json
+ 
+ # ==========================================
+@@ -129,6 +132,13 @@
+     return value
+ 
+ 
++def _require_bool(value: Any, field_name: str) -> bool:
++    """Return a JSON boolean, rejecting truthy/falsy non-bool drift fail-closed."""
++    if not isinstance(value, bool):
++        raise ValueError(f"{field_name} must be a boolean, got {value!r}")
++    return value
++
++
+ def _require_exact_dimensions(tpl_key: str, port_rule: str, w: int, h: int,
+                               expected_w: int, expected_h: int) -> None:
+     """Lock hard-coded generators to the canonical geometry they actually emit."""
+@@ -139,6 +149,15 @@
+         )
+ 
+ 
++def _require_exact_rotatable(tpl_key: str, actual: bool, expected: bool, reason: str) -> None:
++    """Lock canonical rotatability to the orientation family emitted by a generator."""
++    if actual != expected:
++        raise ValueError(
++            f"{tpl_key}.rotatable is {actual!r}; {reason}; "
++            f"the placement generator expects rotatable={expected!r}"
++        )
++
++
+ def _validate_template_geometry_contract(tpl_key: str, tpl_def: Dict[str, Any]) -> Tuple[int, int, str]:
+     """Validate schema-visible template geometry against generator assumptions.
+ 
+@@ -160,8 +179,21 @@
+     port_rule = tpl_def.get("port_rule")
+     if not isinstance(port_rule, str):
+         raise ValueError(f"{tpl_key}.port_rule must be a string, got {port_rule!r}")
++    rotatable = _require_bool(tpl_def.get("rotatable"), f"{tpl_key}.rotatable")
++    is_solid_z = _require_bool(tpl_def.get("is_solid_z"), f"{tpl_key}.is_solid_z")
++    if not is_solid_z:
++        raise ValueError(
++            f"{tpl_key}.is_solid_z is {is_solid_z!r}; "
++            "the placement generator emits solid occupied_cells for every template"
++        )
+ 
+     if port_rule == "long_sides":
++        _require_exact_rotatable(
++            tpl_key,
++            rotatable,
++            True,
++            "long_sides generation emits both unrotated and rotated rectangular footprints",
++        )
+         if w <= h:
+             raise ValueError(
+                 f"{tpl_key} uses port_rule='long_sides' but dimensions are {w}x{h}; "
+@@ -169,6 +201,12 @@
+             )
+ 
+     elif port_rule == "opposite_parallel_sides":
++        _require_exact_rotatable(
++            tpl_key,
++            rotatable,
++            True,
++            "opposite_parallel_sides generation encodes orthogonal side-pair modes",
++        )
+         if w != h:
+             raise ValueError(
+                 f"{tpl_key} uses port_rule='opposite_parallel_sides' but dimensions are {w}x{h}; "
+@@ -176,6 +214,12 @@
+             )
+ 
+     elif port_rule == "core_specific":
++        _require_exact_rotatable(
++            tpl_key,
++            rotatable,
++            True,
++            "core_specific generation emits o=0 and o=1 port topologies",
++        )
+         _require_exact_dimensions(tpl_key, port_rule, w, h, 9, 9)
+         core_limits = tpl_def.get("core_limits")
+         if not isinstance(core_limits, dict):
+@@ -189,9 +233,21 @@
+             )
+ 
+     elif port_rule == "omni_wireless":
++        _require_exact_rotatable(
++            tpl_key,
++            rotatable,
++            True,
++            "omni_wireless templates are canonical rotatable square bodies even though the pool is orientation-deduplicated",
++        )
+         _require_exact_dimensions(tpl_key, port_rule, w, h, 3, 3)
+ 
+     elif port_rule == "none":
++        _require_exact_rotatable(
++            tpl_key,
++            rotatable,
++            False,
++            "none/power-pole generation emits a single fixed orientation",
++        )
+         _require_exact_dimensions(tpl_key, port_rule, w, h, 2, 2)
+         radius = _require_positive_int(tpl_def.get("power_coverage_radius"), f"{tpl_key}.power_coverage_radius")
+         if radius != 5:
+@@ -201,6 +257,12 @@
+             )
+ 
+     elif port_rule == "inward_facing":
++        _require_exact_rotatable(
++            tpl_key,
++            rotatable,
++            True,
++            "inward_facing boundary generation emits vertical left-base and rotated horizontal bottom-base poses",
++        )
+         _require_exact_dimensions(tpl_key, port_rule, w, h, 1, 3)
+         placement_rule = tpl_def.get("placement_rule")
+         if placement_rule != "left_or_bottom_boundary":
+@@ -402,12 +464,20 @@
+ # 3. 主控引擎
+ # ==========================================
+ 
++
++@lru_cache(maxsize=1)
++def _load_canonical_rules_schema() -> Dict[str, Any]:
++    project_root = Path(__file__).resolve().parent.parent.parent
++    return load_strict_json(project_root / "rules" / "canonical_rules.schema.json")
++
++
+ def load_templates(rules_path: Optional[Path] = None) -> Dict[str, Any]:
+     """从 canonical_rules.json 动态加载模板定义。"""
+     if rules_path is None:
+         project_root = Path(__file__).resolve().parent.parent.parent
+         rules_path = project_root / "rules" / "canonical_rules.json"
+     rules = load_strict_json(rules_path)
++    validate_json_schema(instance=rules, schema=_load_canonical_rules_schema())
+     return rules["facility_templates"]
+ 
+ 
+--- a/src/interchange/preprocess_context.py
++++ b/src/interchange/preprocess_context.py
+@@ -307,6 +307,7 @@
+             raise ValueError(
+                 f"cycle group {group.group_id!r} must be square: recipes={len(group.recipes)} internal_commodities={len(group.internal_commodities)}"
+             )
++        internal_commodities = set(group.internal_commodities)
+         for recipe_id in group.recipes:
+             if recipe_id not in context.recipes:
+                 raise ValueError(f"cycle group {group.group_id!r} references unknown recipe {recipe_id!r}")
+@@ -320,7 +321,15 @@
+                 raise ValueError(
+                     f"commodity {commodity_id!r} declares cycle_group {role.cycle_group!r}, expected {group.group_id!r}"
+                 )
++        for commodity_id in group.net_export_commodities:
++            if commodity_id not in internal_commodities:
++                raise ValueError(
++                    f"cycle group {group.group_id!r} net_export_commodity {commodity_id!r} "
++                    "is not listed in internal_commodities"
++                )
+         _solve_cycle_group_exact(context, group.group_id, {})
++        for commodity_id in group.net_export_commodities:
++            _solve_cycle_group_exact(context, group.group_id, {commodity_id: Fraction(1)})
+ 
+     for commodity_id, recipe_ids in producers.items():
+         role = context.commodity_role(commodity_id)
+@@ -436,6 +445,12 @@
+         rhs.append(_to_fraction(external_demands.get(commodity_id, Fraction(0))))
+ 
+     solution = _solve_square_linear_system(matrix, rhs)
++    for index, run_rate in enumerate(solution):
++        if run_rate < 0:
++            recipe_id = group.recipes[index]
++            raise ValueError(
++                f"cycle group {group_id!r} produced negative run rate for recipe {recipe_id!r}: {run_rate}"
++            )
+     return {
+         recipe_id: solution[index]
+         for index, recipe_id in enumerate(group.recipes)
+--- a/src/tests/test_placements.py
++++ b/src/tests/test_placements.py
+@@ -20,6 +20,7 @@
+ import pytest
+ from pathlib import Path
+ from typing import Dict, List, Any
++from jsonschema import ValidationError as JsonSchemaValidationError
+ 
+ # ============================================================================
+ # 夹具 (Fixtures)
+@@ -114,6 +115,21 @@
+         load_templates(rules_path)
+ 
+ 
++def test_placement_template_loader_rejects_schema_missing_required_template_field(tmp_path, project_root):
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.placement.placement_generator import load_templates
++
++    rules_payload = json.loads((project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"))
++    del rules_payload["facility_templates"]["manufacturing_3x3"]["rotatable"]
++    rules_path = tmp_path / "canonical_rules.json"
++    rules_path.write_text(json.dumps(rules_payload), encoding="utf-8")
++
++    with pytest.raises(JsonSchemaValidationError, match="rotatable"):
++        load_templates(rules_path)
++
++
+ def test_pool_keys_match_canonical(facility_pools, canonical_templates):
+     """Pool key 必须与 canonical_rules.json 的 template key 一一对应。"""
+     pool_keys = set(facility_pools.keys())
+--- a/src/tests/test_preprocess_candidate_geometry_contract.py
++++ b/src/tests/test_preprocess_candidate_geometry_contract.py
+@@ -54,6 +54,26 @@
+             lambda tpl: tpl.__setitem__("dimensions", {"w": 4, "h": 6}),
+             r"long_sides.*w > h",
+         ),
++        (
++            "manufacturing_6x4",
++            lambda tpl: tpl.__setitem__("rotatable", False),
++            r"manufacturing_6x4\.rotatable.*rotatable=True",
++        ),
++        (
++            "protocol_core",
++            lambda tpl: tpl.__setitem__("rotatable", False),
++            r"protocol_core\.rotatable.*rotatable=True",
++        ),
++        (
++            "boundary_storage_port",
++            lambda tpl: tpl.__setitem__("rotatable", False),
++            r"boundary_storage_port\.rotatable.*rotatable=True",
++        ),
++        (
++            "manufacturing_3x3",
++            lambda tpl: tpl.__setitem__("is_solid_z", False),
++            r"manufacturing_3x3\.is_solid_z.*occupied_cells",
++        ),
+     ]
+ 
+     for template_id, mutator, expected_message in cases:
+--- a/src/tests/test_preprocess_context.py
++++ b/src/tests/test_preprocess_context.py
+@@ -221,6 +221,14 @@
+         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+ 
+ 
++def test_preprocess_context_rejects_negative_cycle_solution(raw_rules_dict, raw_plan_dict) -> None:
++    mutated_rules = copy.deepcopy(raw_rules_dict)
++    mutated_rules["recipes"]["seed_collector_buckwheat"]["outputs"]["buckwheat_seed"] = 0.5
++
++    with pytest.raises(ValueError, match="negative run rate"):
++        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
++
++
+ def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
+     context = load_default_preprocess_context()
+     flows, fractional = solve_demands(context=context)

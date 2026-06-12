@@ -221,6 +221,14 @@ def test_preprocess_context_validates_target_final_recipe(raw_rules_dict, raw_pl
         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
 
 
+def test_preprocess_context_rejects_negative_cycle_solution(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["seed_collector_buckwheat"]["outputs"]["buckwheat_seed"] = 0.5
+
+    with pytest.raises(ValueError, match="negative run rate"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
 def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
     context = load_default_preprocess_context()
     flows, fractional = solve_demands(context=context)
