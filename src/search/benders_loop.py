@@ -5131,6 +5131,12 @@ class LBBDController:
                     self._update_binding_cache_from_summary(
                         binding_model.extract_conflict_summary()
                     )
+                elif retry_status == "INFEASIBLE":
+                    binding_model = retry_model
+                    binding_status = retry_status
+                    self._update_binding_cache_from_summary(
+                        binding_model.extract_conflict_summary()
+                    )
                 elif retry_status == "TIMEOUT":
                     self.last_proof_summary = {
                         "mode": "certified_exact",
@@ -5146,6 +5152,17 @@ class LBBDController:
                         **self._subproblem_reuse_summary(),
                         **self._exact_cut_ladder_summary(),
                     }
+                    return RUN_STATUS_UNKNOWN, None
+                else:
+                    self._record_unexpected_binding_status(
+                        iteration=iteration,
+                        binding_status=retry_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=retry_model,
+                        extra={"overload_fallback_outcome": str(retry_status)},
+                    )
                     return RUN_STATUS_UNKNOWN, None
 
         if binding_status == "INFEASIBLE":
@@ -5179,6 +5196,17 @@ class LBBDController:
             # Certified exact must continue the LBBD loop so the master can either
             # select another layout or prove the candidate infeasible after the cut.
             return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
+
+        if binding_status != "FEASIBLE":
+            self._record_unexpected_binding_status(
+                iteration=iteration,
+                binding_status=binding_status,
+                diagnostic_flow_status=diagnostic_flow_status,
+                enumerated_bindings=enumerated_bindings,
+                routing_attempts=routing_attempts,
+                binding_model=binding_model,
+            )
+            return RUN_STATUS_UNKNOWN, None
 
         self._emit_heartbeat(
             stage="routing_core_build",
@@ -5316,7 +5344,20 @@ class LBBDController:
                     return RUN_STATUS_UNKNOWN, None
                 if binding_status == "FEASIBLE":
                     continue
-                break
+                if binding_status == "INFEASIBLE":
+                    break
+                self._record_unexpected_binding_status(
+                    iteration=iteration,
+                    binding_status=binding_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_status=f"PRECHECK_{precheck_status.upper()}",
+                    routing_precheck=routing_precheck_summary,
+                    extra={"binding_selection_safe_reject": True},
+                )
+                return RUN_STATUS_UNKNOWN, None
 
             if precheck_status == "front_blocked":
                 self._routing_precheck_rejections += 1
@@ -5663,7 +5704,21 @@ class LBBDController:
                             **self._exact_cut_ladder_summary(),
                         }
                         return RUN_STATUS_UNKNOWN, None
-                    continue
+                    if binding_status == "FEASIBLE":
+                        continue
+                    if binding_status == "INFEASIBLE":
+                        break
+                    self._record_unexpected_binding_status(
+                        iteration=iteration,
+                        binding_status=binding_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=binding_model,
+                        routing_status="PRECHECK_RELAXED_DISCONNECTED",
+                        routing_precheck=routing_precheck_summary,
+                    )
+                    return RUN_STATUS_UNKNOWN, None
                 break
 
             commodities = sorted({str(port["commodity"]) for port in port_specs})
@@ -5846,7 +5901,21 @@ class LBBDController:
                         **self._exact_cut_ladder_summary(),
                     }
                     return RUN_STATUS_UNKNOWN, None
-                continue
+                if binding_status == "FEASIBLE":
+                    continue
+                if binding_status == "INFEASIBLE":
+                    break
+                self._record_unexpected_binding_status(
+                    iteration=iteration,
+                    binding_status=binding_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_status="INFEASIBLE",
+                    routing_summary=routing_model.build_stats,
+                )
+                return RUN_STATUS_UNKNOWN, None
 
             break
 
@@ -5969,6 +6038,48 @@ class LBBDController:
             or binding_model.generic_input_vars
             or binding_model.generic_output_vars
         )
+
+    def _record_unexpected_binding_status(
+        self,
+        *,
+        iteration: int,
+        binding_status: Any,
+        diagnostic_flow_status: str,
+        enumerated_bindings: int,
+        routing_attempts: int,
+        binding_model: PortBindingModel,
+        routing_status: Optional[str] = None,
+        routing_summary: Optional[Mapping[str, Any]] = None,
+        routing_precheck: Optional[Mapping[str, Any]] = None,
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        """Record a fail-closed proof summary for binding status contract breaches."""
+
+        proof_summary: Dict[str, Any] = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": str(binding_status),
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "subproblem_status_contract_violation": "unexpected_binding_status",
+            "binding_summary": binding_model.extract_conflict_summary(),
+            "master_follow_up": "fail_closed_unknown",
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        if routing_status is not None:
+            proof_summary["routing_status"] = str(routing_status)
+        if routing_summary is not None:
+            proof_summary["routing_summary"] = dict(routing_summary)
+        if routing_precheck is not None:
+            proof_summary["routing_precheck"] = dict(routing_precheck)
+        if extra is not None:
+            proof_summary.update(dict(extra))
+        self.last_proof_summary = proof_summary
 
     def _build_whole_layout_conflict(
         self,

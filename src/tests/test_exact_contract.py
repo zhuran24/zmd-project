@@ -3461,6 +3461,207 @@ def test_binding_alt_cap_returns_unknown_without_whole_layout_cut(
     assert controller.last_proof_summary["binding_alternative_cap"] == 1
 
 
+def test_unexpected_initial_binding_status_returns_unknown_without_exact_safe_cut(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+        def add_benders_cut(self, *args, **kwargs):
+            raise AssertionError("unexpected binding status must not emit a master cut")
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "MODEL_INVALID"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "unexpected_initial_binding_status"}
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError("unexpected binding status must fail closed before whole-layout nogood")
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["binding_status"] == "MODEL_INVALID"
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "unexpected_binding_status"
+    )
+
+
+def test_unexpected_binding_resolve_status_returns_unknown_without_exhaustion_cut(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+        def add_benders_cut(self, *args, **kwargs):
+            raise AssertionError("unexpected binding re-solve must not emit a master cut")
+
+    class FakeBindingModel:
+        instances = []
+
+        def __init__(self, *args, **kwargs):
+            self.solve_calls = 0
+            self.nogoods = []
+            self.binding_vars = {"tiny_001": {0: object(), 1: object()}}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+            FakeBindingModel.instances.append(self)
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            self.solve_calls += 1
+            if self.solve_calls == 1:
+                return "FEASIBLE"
+            return "MODEL_INVALID"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return []
+
+        def add_nogood_cut(self, selection: dict) -> None:
+            self.nogoods.append(dict(selection))
+
+        def extract_conflict_summary(self) -> dict:
+            return {
+                "fake": "unexpected_binding_resolve_status",
+                "solve_calls": self.solve_calls,
+                "nogoods": len(self.nogoods),
+            }
+
+    class FakeRoutingGrid:
+        def __init__(self, occupied_cells, port_specs, **kwargs):
+            self.occupied_cells = occupied_cells
+            self.port_specs = port_specs
+
+    class FakeRoutingSubproblem:
+        def __init__(self, grid, commodities):
+            self.build_stats = {"fake": "routing_infeasible"}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit: float = 60.0) -> str:
+            return "INFEASIBLE"
+
+    monkeypatch.delenv("EXACT_B1_BINDING_ALT_CAP", raising=False)
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(benders_loop_module, "RoutingGrid", FakeRoutingGrid)
+    monkeypatch.setattr(benders_loop_module, "RoutingSubproblem", FakeRoutingSubproblem)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        lambda *args, **kwargs: {"status": "feasible", "domain_stats": {}},
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError("unexpected binding re-solve must fail closed before exhaustion cut")
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert FakeBindingModel.instances[0].nogoods
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["binding_status"] == "MODEL_INVALID"
+    assert controller.last_proof_summary["routing_status"] == "INFEASIBLE"
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "unexpected_binding_status"
+    )
+
 def test_unexpected_routing_status_returns_unknown_without_exact_safe_cut(
     monkeypatch,
     tmp_path: Path,
