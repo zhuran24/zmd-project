@@ -12,9 +12,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 from functools import lru_cache
-import json
+import copy
 from pathlib import Path
 from typing import Any, Iterable, Mapping
+
+from src.io.strict_json import load_strict_json
 
 PREPROCESS_PLAN_VERSION = "0.2.0"
 PLAN_CANONICAL_OVERRIDE_KEYS = ("recipes", "production_targets", "commodity_roles")
@@ -88,7 +90,7 @@ class PreprocessContext:
             "metadata": dict(self.metadata),
             "tick_interval_seconds": _fraction_to_json_value(self.tick_interval_seconds),
             "belt_capacity_per_tick": _fraction_to_json_value(self.belt_capacity_per_tick),
-            "facility_templates": json.loads(json.dumps(self.facility_templates, ensure_ascii=False)),
+            "facility_templates": copy.deepcopy(self.facility_templates),
             "recipes": {
                 recipe_id: {
                     "template": recipe.template,
@@ -222,7 +224,7 @@ def build_preprocess_context_from_rules_and_plan(
         },
         tick_interval_seconds=tick_interval_seconds,
         belt_capacity_per_tick=belt_capacity_per_tick,
-        facility_templates=json.loads(json.dumps(facility_templates, ensure_ascii=False)),
+        facility_templates=copy.deepcopy(facility_templates),
         recipes=recipes,
         targets=targets,
         commodity_roles=commodity_roles,
@@ -355,8 +357,8 @@ def build_producer_index(context: PreprocessContext) -> dict[str, tuple[str, ...
 @lru_cache(maxsize=1)
 def load_default_preprocess_context() -> PreprocessContext:
     project_root = Path(__file__).resolve().parent.parent.parent
-    rules_payload = json.loads((project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"))
-    plan_payload = json.loads((project_root / "rules" / "preprocess_plan.json").read_text(encoding="utf-8"))
+    rules_payload = load_strict_json(project_root / "rules" / "canonical_rules.json")
+    plan_payload = load_strict_json(project_root / "rules" / "preprocess_plan.json")
     return build_preprocess_context_from_rules_and_plan(rules_payload, plan_payload)
 
 
@@ -366,8 +368,8 @@ def load_preprocess_context_from_paths(
     plan_path: Path,
 ) -> PreprocessContext:
     return build_preprocess_context_from_rules_and_plan(
-        json.loads(Path(rules_path).read_text(encoding="utf-8")),
-        json.loads(Path(plan_path).read_text(encoding="utf-8")),
+        load_strict_json(Path(rules_path)),
+        load_strict_json(Path(plan_path)),
     )
 
 

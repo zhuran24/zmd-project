@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 import sys
 from typing import Any, Mapping
@@ -13,6 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.interchange.preprocess_context import build_template_mapping, load_preprocess_context_from_paths
+from src.io.strict_json import load_strict_json
 from src.preprocess.demand_solver import (
     generate_ceil_machine_counts,
     generate_generic_io_requirements,
@@ -43,7 +43,7 @@ def _canonicalize(value: Any) -> Any:
 
 
 def _load_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return load_strict_json(path)
 
 
 def _diff_entry(*, name: str, regenerated: Any, frozen: Any) -> dict[str, Any]:

@@ -225,7 +225,7 @@ def save_preprocessed_artifacts(
     }
     for filename, payload in artifacts.items():
         with (output_dir / filename).open("w", encoding="utf-8") as fh:
-            json.dump(normalize_json_numbers(payload), fh, indent=2, ensure_ascii=False)
+            json.dump(normalize_json_numbers(payload), fh, indent=2, ensure_ascii=False, allow_nan=False)
             fh.write("\n")
 
 

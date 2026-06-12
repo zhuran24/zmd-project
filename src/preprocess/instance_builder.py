@@ -24,6 +24,7 @@ import json
 from typing import Any, Dict, Iterable, List, Mapping
 
 from src.interchange.preprocess_context import build_template_mapping, load_default_preprocess_context
+from src.io.strict_json import load_strict_json
 
 DEFAULT_PREPROCESS_CONTEXT = load_default_preprocess_context()
 TEMPLATE_MAPPING = build_template_mapping(DEFAULT_PREPROCESS_CONTEXT)
@@ -124,10 +125,28 @@ def build_exploratory_optional_instances(
 
 
 
+def load_machine_counts(path: Path) -> Dict[str, int]:
+    payload = load_strict_json(path)
+    if not isinstance(payload, Mapping):
+        raise TypeError("machine_counts.json must be a JSON object")
+    counts: Dict[str, int] = {}
+    for operation_type, raw_count in payload.items():
+        if isinstance(raw_count, bool) or not isinstance(raw_count, int):
+            raise TypeError(
+                f"machine_counts.{operation_type} must be an integer count"
+            )
+        if raw_count < 0:
+            raise ValueError(
+                f"machine_counts.{operation_type} must be non-negative: {raw_count}"
+            )
+        counts[str(operation_type)] = int(raw_count)
+    return counts
+
+
 def save_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as fh:
-        json.dump(payload, fh, indent=2, ensure_ascii=False)
+        json.dump(payload, fh, indent=2, ensure_ascii=False, allow_nan=False)
         fh.write("\n")
 
 
@@ -157,7 +176,7 @@ def main() -> None:
     if not counts_path.exists():
         raise FileNotFoundError(f"缺少 {counts_path}；请先运行 demand_solver.py")
 
-    machine_counts = json.loads(counts_path.read_text(encoding="utf-8"))
+    machine_counts = load_machine_counts(counts_path)
 
     mandatory_exact_instances = (
         build_manufacturing_instances(machine_counts)

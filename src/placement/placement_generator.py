@@ -11,9 +11,17 @@ Status: ACCEPTED_DRAFT
 """
 
 import json
+import sys
 import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
+
+if __package__ in {None, ""}:
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+    if str(PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.io.strict_json import load_strict_json
 
 # ==========================================
 # 0. 常量
@@ -301,12 +309,12 @@ def generate_empty_rect_domain(w: int, h: int) -> List[Dict]:
 # 3. 主控引擎
 # ==========================================
 
-def load_templates() -> Dict[str, Any]:
+def load_templates(rules_path: Optional[Path] = None) -> Dict[str, Any]:
     """从 canonical_rules.json 动态加载模板定义。"""
-    project_root = Path(__file__).resolve().parent.parent.parent
-    rules_path = project_root / "rules" / "canonical_rules.json"
-    with open(rules_path, "r", encoding="utf-8") as f:
-        rules = json.load(f)
+    if rules_path is None:
+        project_root = Path(__file__).resolve().parent.parent.parent
+        rules_path = project_root / "rules" / "canonical_rules.json"
+    rules = load_strict_json(rules_path)
     return rules["facility_templates"]
 
 
@@ -378,7 +386,7 @@ def main():
 
     # 使用紧凑格式节约 IO 体积
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump({"facility_pools": facility_pools}, f, separators=(',', ':'))
+        json.dump({"facility_pools": facility_pools}, f, separators=(',', ':'), allow_nan=False)
 
     file_size_mb = output_path.stat().st_size / (1024 * 1024)
     print(f"💾 [保存] 降维字典序列化完成！文件大小约 {file_size_mb:.2f} MB")

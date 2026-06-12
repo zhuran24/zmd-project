@@ -9,6 +9,7 @@ import pytest
 from src.interchange.preprocess_context import (
     build_preprocess_context_from_rules_and_plan,
     load_default_preprocess_context,
+    load_preprocess_context_from_paths,
 )
 from src.preprocess.demand_solver import (
     generate_ceil_machine_counts,
@@ -62,6 +63,36 @@ def test_default_preprocess_context_loads_expected_counts() -> None:
     assert context.recipes["packaging_battery"].template == "manufacturing_6x4"
     assert context.targets["valley_battery"].final_recipe_id == "packaging_battery"
 
+
+
+def test_preprocess_context_path_loader_rejects_duplicate_json_keys(tmp_path: Path) -> None:
+    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
+        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
+        '"value": 3.0,\n      "value": 999.0,\n      "final_recipe_id": "packaging_battery"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="duplicate JSON key: value"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_nonfinite_json_constants(tmp_path: Path) -> None:
+    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
+        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
+        '"value": NaN,\n      "final_recipe_id": "packaging_battery"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
 
 def test_preprocess_context_accepts_overlay_only_plan(raw_rules_dict, raw_plan_dict) -> None:
     minimal_overlay = {

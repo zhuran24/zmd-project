@@ -59,6 +59,42 @@ def all_instances(project_root):
 # 核心测试：Pool 对齐
 # ============================================================================
 
+
+def test_placement_template_loader_rejects_duplicate_json_keys(tmp_path, project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.placement.placement_generator import load_templates
+
+    rules_text = (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8").replace(
+        '"port_rule": "opposite_parallel_sides"',
+        '"port_rule": "opposite_parallel_sides", "port_rule": "none"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+
+    with pytest.raises(ValueError, match="duplicate JSON key: port_rule"):
+        load_templates(rules_path)
+
+
+def test_placement_template_loader_rejects_nonfinite_json_constants(tmp_path, project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.placement.placement_generator import load_templates
+
+    rules_text = (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8").replace(
+        '"w": 3',
+        '"w": NaN',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+
+    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+        load_templates(rules_path)
+
 def test_pool_keys_match_canonical(facility_pools, canonical_templates):
     """Pool key 必须与 canonical_rules.json 的 template key 一一对应。"""
     pool_keys = set(facility_pools.keys())

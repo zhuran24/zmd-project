@@ -18,6 +18,7 @@ from src.preprocess.demand_solver import (
     save_preprocessed_artifacts,
     solve_demands,
 )
+from src.preprocess.instance_builder import load_machine_counts
 
 
 @pytest.fixture
@@ -27,6 +28,22 @@ def solved_data() -> Tuple[Dict[str, float], Dict[str, float], Dict[str, int], D
     budget = generate_port_budget(flows)
     return flows, fractional, counts, budget
 
+
+
+def test_load_machine_counts_rejects_duplicate_json_keys(tmp_path) -> None:
+    path = tmp_path / "machine_counts.json"
+    path.write_text('{"crusher_source": 18, "crusher_source": 1}', encoding="utf-8")
+
+    with pytest.raises(ValueError, match="duplicate JSON key: crusher_source"):
+        load_machine_counts(path)
+
+
+def test_load_machine_counts_rejects_nonfinite_json_constants(tmp_path) -> None:
+    path = tmp_path / "machine_counts.json"
+    path.write_text('{"crusher_source": NaN}', encoding="utf-8")
+
+    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+        load_machine_counts(path)
 
 def test_target_flows_accuracy(solved_data) -> None:
     flows, _, _, _ = solved_data

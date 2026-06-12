@@ -1,0 +1,369 @@
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/scripts/build_current_preprocess_context.py zmd_r8_work/project/scripts/build_current_preprocess_context.py
+--- zmd_r8_orig/project/scripts/build_current_preprocess_context.py	2026-06-12 09:46:39.153558407 +0000
++++ zmd_r8_work/project/scripts/build_current_preprocess_context.py	2026-06-12 09:40:26.103307877 +0000
+@@ -3,7 +3,6 @@
+ from __future__ import annotations
+ 
+ import argparse
+-import json
+ from pathlib import Path
+ import sys
+ from typing import Any, Mapping
+@@ -13,6 +12,7 @@
+     sys.path.insert(0, str(PROJECT_ROOT))
+ 
+ from src.interchange.preprocess_context import build_template_mapping, load_preprocess_context_from_paths
++from src.io.strict_json import load_strict_json
+ from src.preprocess.demand_solver import (
+     generate_ceil_machine_counts,
+     generate_generic_io_requirements,
+@@ -43,7 +43,7 @@
+ 
+ 
+ def _load_json(path: Path) -> Any:
+-    return json.loads(path.read_text(encoding="utf-8"))
++    return load_strict_json(path)
+ 
+ 
+ def _diff_entry(*, name: str, regenerated: Any, frozen: Any) -> dict[str, Any]:
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/interchange/preprocess_context.py zmd_r8_work/project/src/interchange/preprocess_context.py
+--- zmd_r8_orig/project/src/interchange/preprocess_context.py	2026-06-12 09:46:39.329344916 +0000
++++ zmd_r8_work/project/src/interchange/preprocess_context.py	2026-06-12 09:38:18.270088014 +0000
+@@ -12,10 +12,12 @@
+ from dataclasses import dataclass
+ from fractions import Fraction
+ from functools import lru_cache
+-import json
++import copy
+ from pathlib import Path
+ from typing import Any, Iterable, Mapping
+ 
++from src.io.strict_json import load_strict_json
++
+ PREPROCESS_PLAN_VERSION = "0.2.0"
+ PLAN_CANONICAL_OVERRIDE_KEYS = ("recipes", "production_targets", "commodity_roles")
+ 
+@@ -88,7 +90,7 @@
+             "metadata": dict(self.metadata),
+             "tick_interval_seconds": _fraction_to_json_value(self.tick_interval_seconds),
+             "belt_capacity_per_tick": _fraction_to_json_value(self.belt_capacity_per_tick),
+-            "facility_templates": json.loads(json.dumps(self.facility_templates, ensure_ascii=False)),
++            "facility_templates": copy.deepcopy(self.facility_templates),
+             "recipes": {
+                 recipe_id: {
+                     "template": recipe.template,
+@@ -222,7 +224,7 @@
+         },
+         tick_interval_seconds=tick_interval_seconds,
+         belt_capacity_per_tick=belt_capacity_per_tick,
+-        facility_templates=json.loads(json.dumps(facility_templates, ensure_ascii=False)),
++        facility_templates=copy.deepcopy(facility_templates),
+         recipes=recipes,
+         targets=targets,
+         commodity_roles=commodity_roles,
+@@ -355,8 +357,8 @@
+ @lru_cache(maxsize=1)
+ def load_default_preprocess_context() -> PreprocessContext:
+     project_root = Path(__file__).resolve().parent.parent.parent
+-    rules_payload = json.loads((project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"))
+-    plan_payload = json.loads((project_root / "rules" / "preprocess_plan.json").read_text(encoding="utf-8"))
++    rules_payload = load_strict_json(project_root / "rules" / "canonical_rules.json")
++    plan_payload = load_strict_json(project_root / "rules" / "preprocess_plan.json")
+     return build_preprocess_context_from_rules_and_plan(rules_payload, plan_payload)
+ 
+ 
+@@ -366,8 +368,8 @@
+     plan_path: Path,
+ ) -> PreprocessContext:
+     return build_preprocess_context_from_rules_and_plan(
+-        json.loads(Path(rules_path).read_text(encoding="utf-8")),
+-        json.loads(Path(plan_path).read_text(encoding="utf-8")),
++        load_strict_json(Path(rules_path)),
++        load_strict_json(Path(plan_path)),
+     )
+ 
+ 
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/io/strict_json.py zmd_r8_work/project/src/io/strict_json.py
+--- zmd_r8_orig/project/src/io/strict_json.py	1970-01-01 00:00:00.000000000 +0000
++++ zmd_r8_work/project/src/io/strict_json.py	2026-06-12 09:38:17.060984000 +0000
+@@ -0,0 +1,41 @@
++"""Strict JSON helpers for proof-surface artifacts.
++
++The standard library JSON decoder accepts duplicate object keys via last-write-wins
++and accepts non-finite constants (NaN/Infinity).  Both are unsafe for generated or
++consumed artifacts whose meaning is defined by exact source files.
++"""
++
++from __future__ import annotations
++
++import json
++from pathlib import Path
++from typing import Any
++
++
++def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
++    payload: dict[str, Any] = {}
++    for key, value in pairs:
++        if key in payload:
++            raise ValueError(f"duplicate JSON key: {key}")
++        payload[key] = value
++    return payload
++
++
++def _reject_json_constant(value: str) -> None:
++    raise ValueError(f"invalid JSON constant: {value}")
++
++
++def loads_strict_json(text: str) -> Any:
++    """Decode JSON while rejecting duplicate keys and non-finite constants."""
++
++    return json.loads(
++        text,
++        object_pairs_hook=_reject_duplicate_json_keys,
++        parse_constant=_reject_json_constant,
++    )
++
++
++def load_strict_json(path: Path | str) -> Any:
++    """Read and strictly decode a JSON file."""
++
++    return loads_strict_json(Path(path).read_text(encoding="utf-8"))
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/placement/placement_generator.py zmd_r8_work/project/src/placement/placement_generator.py
+--- zmd_r8_orig/project/src/placement/placement_generator.py	2026-06-12 09:46:39.343375013 +0000
++++ zmd_r8_work/project/src/placement/placement_generator.py	2026-06-12 09:41:09.815753712 +0000
+@@ -11,10 +11,18 @@
+ """
+ 
+ import json
++import sys
+ import time
+ from pathlib import Path
+ from typing import List, Dict, Any, Optional, Tuple
+ 
++if __package__ in {None, ""}:
++    PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
++    if str(PROJECT_ROOT) not in sys.path:
++        sys.path.insert(0, str(PROJECT_ROOT))
++
++from src.io.strict_json import load_strict_json
++
+ # ==========================================
+ # 0. 常量
+ # ==========================================
+@@ -301,12 +309,12 @@
+ # 3. 主控引擎
+ # ==========================================
+ 
+-def load_templates() -> Dict[str, Any]:
++def load_templates(rules_path: Optional[Path] = None) -> Dict[str, Any]:
+     """从 canonical_rules.json 动态加载模板定义。"""
+-    project_root = Path(__file__).resolve().parent.parent.parent
+-    rules_path = project_root / "rules" / "canonical_rules.json"
+-    with open(rules_path, "r", encoding="utf-8") as f:
+-        rules = json.load(f)
++    if rules_path is None:
++        project_root = Path(__file__).resolve().parent.parent.parent
++        rules_path = project_root / "rules" / "canonical_rules.json"
++    rules = load_strict_json(rules_path)
+     return rules["facility_templates"]
+ 
+ 
+@@ -378,7 +386,7 @@
+ 
+     # 使用紧凑格式节约 IO 体积
+     with open(output_path, "w", encoding="utf-8") as f:
+-        json.dump({"facility_pools": facility_pools}, f, separators=(',', ':'))
++        json.dump({"facility_pools": facility_pools}, f, separators=(',', ':'), allow_nan=False)
+ 
+     file_size_mb = output_path.stat().st_size / (1024 * 1024)
+     print(f"💾 [保存] 降维字典序列化完成！文件大小约 {file_size_mb:.2f} MB")
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/preprocess/demand_solver.py zmd_r8_work/project/src/preprocess/demand_solver.py
+--- zmd_r8_orig/project/src/preprocess/demand_solver.py	2026-06-12 09:46:39.343937657 +0000
++++ zmd_r8_work/project/src/preprocess/demand_solver.py	2026-06-12 09:38:18.271399430 +0000
+@@ -225,7 +225,7 @@
+     }
+     for filename, payload in artifacts.items():
+         with (output_dir / filename).open("w", encoding="utf-8") as fh:
+-            json.dump(normalize_json_numbers(payload), fh, indent=2, ensure_ascii=False)
++            json.dump(normalize_json_numbers(payload), fh, indent=2, ensure_ascii=False, allow_nan=False)
+             fh.write("\n")
+ 
+ 
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/preprocess/instance_builder.py zmd_r8_work/project/src/preprocess/instance_builder.py
+--- zmd_r8_orig/project/src/preprocess/instance_builder.py	2026-06-12 09:46:39.344176165 +0000
++++ zmd_r8_work/project/src/preprocess/instance_builder.py	2026-06-12 09:38:18.271017022 +0000
+@@ -24,6 +24,7 @@
+ from typing import Any, Dict, Iterable, List, Mapping
+ 
+ from src.interchange.preprocess_context import build_template_mapping, load_default_preprocess_context
++from src.io.strict_json import load_strict_json
+ 
+ DEFAULT_PREPROCESS_CONTEXT = load_default_preprocess_context()
+ TEMPLATE_MAPPING = build_template_mapping(DEFAULT_PREPROCESS_CONTEXT)
+@@ -124,10 +125,28 @@
+ 
+ 
+ 
++def load_machine_counts(path: Path) -> Dict[str, int]:
++    payload = load_strict_json(path)
++    if not isinstance(payload, Mapping):
++        raise TypeError("machine_counts.json must be a JSON object")
++    counts: Dict[str, int] = {}
++    for operation_type, raw_count in payload.items():
++        if isinstance(raw_count, bool) or not isinstance(raw_count, int):
++            raise TypeError(
++                f"machine_counts.{operation_type} must be an integer count"
++            )
++        if raw_count < 0:
++            raise ValueError(
++                f"machine_counts.{operation_type} must be non-negative: {raw_count}"
++            )
++        counts[str(operation_type)] = int(raw_count)
++    return counts
++
++
+ def save_json(path: Path, payload: Any) -> None:
+     path.parent.mkdir(parents=True, exist_ok=True)
+     with path.open("w", encoding="utf-8") as fh:
+-        json.dump(payload, fh, indent=2, ensure_ascii=False)
++        json.dump(payload, fh, indent=2, ensure_ascii=False, allow_nan=False)
+         fh.write("\n")
+ 
+ 
+@@ -157,7 +176,7 @@
+     if not counts_path.exists():
+         raise FileNotFoundError(f"缺少 {counts_path}；请先运行 demand_solver.py")
+ 
+-    machine_counts = json.loads(counts_path.read_text(encoding="utf-8"))
++    machine_counts = load_machine_counts(counts_path)
+ 
+     mandatory_exact_instances = (
+         build_manufacturing_instances(machine_counts)
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/tests/test_demand.py zmd_r8_work/project/src/tests/test_demand.py
+--- zmd_r8_orig/project/src/tests/test_demand.py	2026-06-12 09:46:39.578691576 +0000
++++ zmd_r8_work/project/src/tests/test_demand.py	2026-06-12 09:38:46.239452910 +0000
+@@ -18,6 +18,7 @@
+     save_preprocessed_artifacts,
+     solve_demands,
+ )
++from src.preprocess.instance_builder import load_machine_counts
+ 
+ 
+ @pytest.fixture
+@@ -28,6 +29,22 @@
+     return flows, fractional, counts, budget
+ 
+ 
++
++def test_load_machine_counts_rejects_duplicate_json_keys(tmp_path) -> None:
++    path = tmp_path / "machine_counts.json"
++    path.write_text('{"crusher_source": 18, "crusher_source": 1}', encoding="utf-8")
++
++    with pytest.raises(ValueError, match="duplicate JSON key: crusher_source"):
++        load_machine_counts(path)
++
++
++def test_load_machine_counts_rejects_nonfinite_json_constants(tmp_path) -> None:
++    path = tmp_path / "machine_counts.json"
++    path.write_text('{"crusher_source": NaN}', encoding="utf-8")
++
++    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
++        load_machine_counts(path)
++
+ def test_target_flows_accuracy(solved_data) -> None:
+     flows, _, _, _ = solved_data
+     assert math.isclose(flows["valley_battery"], 0.6)
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/tests/test_placements.py zmd_r8_work/project/src/tests/test_placements.py
+--- zmd_r8_orig/project/src/tests/test_placements.py	2026-06-12 09:46:39.603542924 +0000
++++ zmd_r8_work/project/src/tests/test_placements.py	2026-06-12 09:38:46.239193679 +0000
+@@ -59,6 +59,42 @@
+ # 核心测试：Pool 对齐
+ # ============================================================================
+ 
++
++def test_placement_template_loader_rejects_duplicate_json_keys(tmp_path, project_root):
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.placement.placement_generator import load_templates
++
++    rules_text = (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8").replace(
++        '"port_rule": "opposite_parallel_sides"',
++        '"port_rule": "opposite_parallel_sides", "port_rule": "none"',
++        1,
++    )
++    rules_path = tmp_path / "canonical_rules.json"
++    rules_path.write_text(rules_text, encoding="utf-8")
++
++    with pytest.raises(ValueError, match="duplicate JSON key: port_rule"):
++        load_templates(rules_path)
++
++
++def test_placement_template_loader_rejects_nonfinite_json_constants(tmp_path, project_root):
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.placement.placement_generator import load_templates
++
++    rules_text = (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8").replace(
++        '"w": 3',
++        '"w": NaN',
++        1,
++    )
++    rules_path = tmp_path / "canonical_rules.json"
++    rules_path.write_text(rules_text, encoding="utf-8")
++
++    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
++        load_templates(rules_path)
++
+ def test_pool_keys_match_canonical(facility_pools, canonical_templates):
+     """Pool key 必须与 canonical_rules.json 的 template key 一一对应。"""
+     pool_keys = set(facility_pools.keys())
+diff -ruN -x __pycache__ -x '*.pyc' -x REVIEW.md -x .pytest_cache -x .pytest_tmp zmd_r8_orig/project/src/tests/test_preprocess_context.py zmd_r8_work/project/src/tests/test_preprocess_context.py
+--- zmd_r8_orig/project/src/tests/test_preprocess_context.py	2026-06-12 09:46:39.604438252 +0000
++++ zmd_r8_work/project/src/tests/test_preprocess_context.py	2026-06-12 09:38:46.238434498 +0000
+@@ -9,6 +9,7 @@
+ from src.interchange.preprocess_context import (
+     build_preprocess_context_from_rules_and_plan,
+     load_default_preprocess_context,
++    load_preprocess_context_from_paths,
+ )
+ from src.preprocess.demand_solver import (
+     generate_ceil_machine_counts,
+@@ -63,6 +64,36 @@
+     assert context.targets["valley_battery"].final_recipe_id == "packaging_battery"
+ 
+ 
++
++def test_preprocess_context_path_loader_rejects_duplicate_json_keys(tmp_path: Path) -> None:
++    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
++        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
++        '"value": 3.0,\n      "value": 999.0,\n      "final_recipe_id": "packaging_battery"',
++        1,
++    )
++    rules_path = tmp_path / "canonical_rules.json"
++    plan_path = tmp_path / "preprocess_plan.json"
++    rules_path.write_text(rules_text, encoding="utf-8")
++    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
++
++    with pytest.raises(ValueError, match="duplicate JSON key: value"):
++        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
++
++
++def test_preprocess_context_path_loader_rejects_nonfinite_json_constants(tmp_path: Path) -> None:
++    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
++        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
++        '"value": NaN,\n      "final_recipe_id": "packaging_battery"',
++        1,
++    )
++    rules_path = tmp_path / "canonical_rules.json"
++    plan_path = tmp_path / "preprocess_plan.json"
++    rules_path.write_text(rules_text, encoding="utf-8")
++    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
++
++    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
++        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
++
+ def test_preprocess_context_accepts_overlay_only_plan(raw_rules_dict, raw_plan_dict) -> None:
+     minimal_overlay = {
+         "$schema": raw_plan_dict.get("$schema"),
