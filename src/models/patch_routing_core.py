@@ -334,7 +334,8 @@ class PatchRoutingCore:
                 recv_dir = DIR_OPP[ps.direction]
                 self._patch_port_fronts_source[(fx, fy, recv_dir, ps.commodity)] += 1
             else:
-                self._patch_port_fronts_sink[(fx, fy, ps.direction, ps.commodity)] += 1
+                send_dir = DIR_OPP[ps.direction]
+                self._patch_port_fronts_sink[(fx, fy, send_dir, ps.commodity)] += 1
 
     def _create_assumption_vars(self) -> None:
         for pa in self.pose_assumptions:
@@ -425,7 +426,17 @@ class PatchRoutingCore:
 
     def _create_boundary_vars(self) -> None:
         """For each patch boundary cell, create boundary_in/out vars for each direction that
-        crosses out of patch (per commodity, ground layer only — bridges don't cross boundary)."""
+        crosses out of patch (per commodity, per layer).
+
+        Boundary vars are deliberately an over-approximation of the full-grid route
+        continuation outside the patch: they do not consume patch capacity and they
+        are not balanced against other boundary vars.  They must nevertheless exist
+        for every routing layer because the full routing model allows elevated
+        bridge states to continue across ordinary cell-to-cell edges just like
+        ground belts.  Restricting the artificial boundary to ground only makes the
+        patch model stricter than the full model and can turn a feasible elevated
+        detour outside the patch into a false patch conflict.
+        """
         if not self.boundary_relaxation:
             return
         for cell in self.patch_spec.boundary_cells:
@@ -437,14 +448,15 @@ class PatchRoutingCore:
                     continue
                 for d in DIRECTIONS:
                     if self._neighbor_is_outside_patch_but_in_full_active(x, y, d, commodity):
-                        out_key = (x, y, GROUND_LAYER, d, commodity)
-                        self._boundary_out_vars[out_key] = self.model.NewBoolVar(
-                            f"bdry_out_{x}_{y}_{d}_{commodity}"
-                        )
-                        in_key = (x, y, GROUND_LAYER, d, commodity)
-                        self._boundary_in_vars[in_key] = self.model.NewBoolVar(
-                            f"bdry_in_{x}_{y}_{d}_{commodity}"
-                        )
+                        for layer in LAYERS:
+                            out_key = (x, y, layer, d, commodity)
+                            self._boundary_out_vars[out_key] = self.model.NewBoolVar(
+                                f"bdry_out_{x}_{y}_l{layer}_{d}_{commodity}"
+                            )
+                            in_key = (x, y, layer, d, commodity)
+                            self._boundary_in_vars[in_key] = self.model.NewBoolVar(
+                                f"bdry_in_{x}_{y}_l{layer}_{d}_{commodity}"
+                            )
 
     def _add_capacity_constraints(self) -> None:
         # one belt-state per (cell, layer). boundary vars do not consume cell capacity
@@ -502,8 +514,8 @@ class PatchRoutingCore:
             return
 
         # successor is outside patch — boundary relaxation
-        if layer == GROUND_LAYER and self.boundary_relaxation:
-            bdry_var = self._boundary_out_vars.get((x, y, GROUND_LAYER, d_out, commodity))
+        if self.boundary_relaxation:
+            bdry_var = self._boundary_out_vars.get((x, y, layer, d_out, commodity))
             if bdry_var is not None:
                 for var in out_vars:
                     self.model.AddImplication(var, bdry_var)
@@ -537,8 +549,8 @@ class PatchRoutingCore:
                 self.model.Add(send_sum >= 1).OnlyEnforceIf(var)
             return
 
-        if layer == GROUND_LAYER and self.boundary_relaxation:
-            bdry_var = self._boundary_in_vars.get((x, y, GROUND_LAYER, d_in, commodity))
+        if self.boundary_relaxation:
+            bdry_var = self._boundary_in_vars.get((x, y, layer, d_in, commodity))
             if bdry_var is not None:
                 for var in in_vars:
                     self.model.AddImplication(var, bdry_var)
@@ -594,8 +606,9 @@ class PatchRoutingCore:
                     (fx, fy, GROUND_LAYER, recv_dir, ps.commodity), []
                 )
             else:
+                send_dir = DIR_OPP[ps.direction]
                 vars_for_port = self._vars_by_cell_layer_dir_out_commodity.get(
-                    (fx, fy, GROUND_LAYER, ps.direction, ps.commodity), []
+                    (fx, fy, GROUND_LAYER, send_dir, ps.commodity), []
                 )
 
             if not vars_for_port:

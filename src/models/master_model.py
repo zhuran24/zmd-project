@@ -11935,7 +11935,12 @@ class MasterPlacementModel:
         bound = self.model.Add(sum(literals) <= len(literals) - 1)
         if cond:
             bound.OnlyEnforceIf(cond)
+        # The benders cut mutates the CP-SAT model.  The previous solver response
+        # may now violate the strengthened model, so it must not be used for a
+        # fresh extract_solution()/extract_bound_state() call before re-solving.
         self._last_solution = None
+        self._solver = None
+        self._status = None
         return True
 
 

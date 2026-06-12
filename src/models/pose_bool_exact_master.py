@@ -775,6 +775,7 @@ class PoseBoolExactMasterDelegate:
         from src.models.patch_routing_core import build_local_pose_signature
         accumulated_terms: List[List[cp_model.IntVar]] = []
         signature_lift_counts: List[int] = []
+        seen_lifted_var_names: Set[str] = set()
         for (inst_id, pose_idx) in core_terms:
             resolved = self._resolve_pose_pool_for_instance(inst_id)
             if resolved is None:
@@ -794,6 +795,17 @@ class PoseBoolExactMasterDelegate:
             equivalent_vars = self.enumerate_pose_vars_with_patch_signature(inst_id, target_sig, patch_cells)
             if not equivalent_vars:
                 return {"added": False, "reason": "no_equivalent_vars", "instance_id": str(inst_id), "pose_idx": pi}
+            lifted_var_names = {var.Name() for var in equivalent_vars}
+            overlap = seen_lifted_var_names & lifted_var_names
+            if overlap:
+                return {
+                    "added": False,
+                    "reason": "overlapping_signature_lift_terms",
+                    "instance_id": str(inst_id),
+                    "pose_idx": pi,
+                    "overlap_count": len(overlap),
+                }
+            seen_lifted_var_names.update(lifted_var_names)
             accumulated_terms.append(equivalent_vars)
             signature_lift_counts.append(len(equivalent_vars))
         if not accumulated_terms:

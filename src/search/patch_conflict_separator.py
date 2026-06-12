@@ -118,6 +118,50 @@ def _collect_blocked_port_cells(
     return clusters, blocked
 
 
+def _patch_support_signature_cells(
+    patch_cells: Set[Tuple[int, int]],
+    *,
+    grid_w: int = GRID_W,
+    grid_h: int = GRID_H,
+) -> FrozenSet[Tuple[int, int]]:
+    """Cells whose selected occupancy can affect a patch certificate.
+
+    The patch CP-SAT treats placement footprints as constants. Interior patch
+    cells decide local route capacity, and the one-cell cardinal ring decides
+    whether boundary relaxation may hand a route to the full grid. Signature
+    lifting must therefore key support poses on this expanded cell set, otherwise
+    a cut could forget the blocker whose constant occupancy made the patch
+    infeasible.
+    """
+
+    support: Set[Tuple[int, int]] = set(patch_cells)
+    for x, y in patch_cells:
+        for dx, dy in DIR_DELTA.values():
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < grid_w and 0 <= ny < grid_h:
+                support.add((nx, ny))
+    return frozenset(support)
+
+
+def _augment_core_with_patch_support(
+    solver_core: Sequence[PoseAssumption],
+    support_assumptions: Sequence[PoseAssumption],
+) -> List[PoseAssumption]:
+    """Add constant-occupancy support owners to a solver UNSAT core.
+
+    Extra terms only weaken the master nogood. They are required because the
+    patch solver's assumptions guard port obligations, while footprint obstacles
+    and boundary-neighbour occupancy are encoded as constants in the patch model.
+    """
+
+    by_key: Dict[Tuple[str, int], PoseAssumption] = {}
+    for pa in solver_core:
+        by_key[(str(pa.instance_id), int(pa.pose_idx))] = pa
+    for pa in support_assumptions:
+        by_key.setdefault((str(pa.instance_id), int(pa.pose_idx)), pa)
+    return [by_key[key] for key in sorted(by_key.keys())]
+
+
 def _make_strip_patch(sep_id: str, wall_cells: Iterable[Tuple[int, int]], r: int, grid_w: int, grid_h: int) -> Set[Tuple[int, int]]:
     if sep_id.startswith("V_"):
         x_center = int(sep_id[2:])
@@ -251,11 +295,18 @@ def _build_patch_inputs(
     port_specs: Sequence[Mapping[str, Any]],
     grid_w: int = GRID_W,
     grid_h: int = GRID_H,
-) -> Tuple[PatchSpec, Set[Tuple[int, int]], Dict[str, Set[Tuple[int, int]]], List[PatchPortSpec], List[PoseAssumption]]:
+) -> Tuple[
+    PatchSpec,
+    Set[Tuple[int, int]],
+    Dict[str, Set[Tuple[int, int]]],
+    List[PatchPortSpec],
+    List[PoseAssumption],
+    FrozenSet[Tuple[int, int]],
+]:
     patch_cells = set(candidate.cells)
     spec = PatchSpec.from_cells(candidate.patch_id, patch_cells, source_witness=dict(candidate.source_witness))
 
-    occupied, _owner_by_cell = _placement_to_occupied(placement_solution, facility_pools)
+    occupied, owner_by_cell = _placement_to_occupied(placement_solution, facility_pools)
     free_cells = {(x, y) for x in range(grid_w) for y in range(grid_h) if (x, y) not in occupied}
     commodities = {str(ps["commodity"]) for ps in port_specs}
     active_cells: Dict[str, Set[Tuple[int, int]]] = {c: set(free_cells) for c in commodities}
@@ -275,21 +326,29 @@ def _build_patch_inputs(
             pose_idx=int(ps.get("pose_idx", placement_solution.get(str(ps.get("instance_id", "")), {}).get("pose_idx", -1))),
         ))
 
-    seen: Set[str] = set()
+    support_signature_cells = _patch_support_signature_cells(
+        patch_cells,
+        grid_w=grid_w,
+        grid_h=grid_h,
+    )
+    support_instance_ids: Set[str] = {
+        str(owner_by_cell[cell])
+        for cell in support_signature_cells
+        if cell in owner_by_cell
+    }
+    support_instance_ids.update(pp.instance_id for pp in patch_ports if pp.instance_id)
+
     assumptions: List[PoseAssumption] = []
-    for pp in patch_ports:
-        if pp.instance_id in seen:
-            continue
-        seen.add(pp.instance_id)
-        pose_idx = int(placement_solution.get(pp.instance_id, {}).get("pose_idx", -1))
+    for instance_id in sorted(support_instance_ids):
+        pose_idx = int(placement_solution.get(instance_id, {}).get("pose_idx", -1))
         assumptions.append(PoseAssumption(
-            instance_id=pp.instance_id,
+            instance_id=instance_id,
             pose_idx=pose_idx,
-            local_signature=f"{pp.instance_id}_p{pose_idx}",
-            assumption_name=f"assum_{pp.instance_id}",
+            local_signature=f"{instance_id}_p{pose_idx}",
+            assumption_name=f"assum_{instance_id}",
         ))
 
-    return spec, occupied, active_cells, patch_ports, assumptions
+    return spec, occupied, active_cells, patch_ports, assumptions, support_signature_cells
 
 
 def patch_core_to_master_terms(
@@ -369,7 +428,7 @@ def run_patch_conflict_separation(
     for cand in candidates:
         if time.perf_counter() - t_start > seconds_budget:
             break
-        spec, occupied, active_cells, patch_ports, assumptions = _build_patch_inputs(
+        spec, occupied, active_cells, patch_ports, assumptions, support_signature_cells = _build_patch_inputs(
             cand, placement_solution, facility_pools, port_specs, grid_w=grid_w, grid_h=grid_h,
         )
         if not assumptions or not patch_ports:
@@ -414,8 +473,9 @@ def run_patch_conflict_separation(
 
         minimized_validation = lifecycle["minimized_validation"]
         minimized_core = minimized_validation.candidate_core if minimized_validation else lifecycle["raw_validation"].candidate_core
+        augmented_core = _augment_core_with_patch_support(minimized_core, assumptions)
 
-        master_terms = patch_core_to_master_terms(minimized_core)
+        master_terms = patch_core_to_master_terms(augmented_core)
         cut_meta = build_patch_certificate_metadata(
             patch_spec=spec,
             raw_core_size=lifecycle["raw_core_size"],
@@ -427,9 +487,12 @@ def run_patch_conflict_separation(
                 "wall_s": getattr(lifecycle["quickxplain"], "wall_s", None),
             } if lifecycle["quickxplain"] else None,
         )
+        cut_meta["solver_core_size"] = int(len(minimized_core))
+        cut_meta["support_augmented_core_size"] = int(len(augmented_core))
+        cut_meta["support_signature_cell_count"] = int(len(support_signature_cells))
 
         add_outcome = master_delegate.add_patch_routing_core_cut(
-            master_terms, spec.cells, certificate_metadata=cut_meta,
+            master_terms, support_signature_cells, certificate_metadata=cut_meta,
         )
         if add_outcome.get("added"):
             cuts_accepted += 1

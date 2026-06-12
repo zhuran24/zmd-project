@@ -186,6 +186,183 @@ def test_boundary_relaxation_allows_feasibility():
     assert status == "FEASIBLE", f"expected FEASIBLE with boundary relaxation, got {status}"
 
 
+def test_boundary_relaxation_allows_elevated_bridge_crossing_patch_boundary():
+    """Patch relaxation must not forbid elevated routes that can continue outside the patch.
+
+    The full routing model treats ordinary cell-to-cell continuation on the elevated
+    layer the same way it treats ground-layer continuation.  A patch core is only a
+    sound conflict certificate when its artificial boundary relaxes both layers.
+    """
+    from src.models.patch_routing_core import (
+        ELEVATED_LAYER, PatchRoutingCore, PatchSpec,
+    )
+
+    cell = (10, 10)
+    full_active = {(x, y) for x in range(70) for y in range(70)}
+    core = PatchRoutingCore(
+        patch_spec=PatchSpec.from_cells("one_cell", frozenset({cell})),
+        full_grid_occupied=set(),
+        full_grid_active_cells={"ore": full_active},
+        patch_port_specs=[],
+        pose_assumptions=[],
+        boundary_relaxation=True,
+    )
+    core.build()
+
+    bridge_key = (10, 10, ELEVATED_LAYER, ("W",), ("E",), "ore")
+    bridge_var = core._r_vars.get(bridge_key)
+    assert bridge_var is not None, "expected an elevated west-to-east bridge state"
+
+    core.model.Add(bridge_var == 1)
+    status = core.solve(time_limit=2.0)
+    assert status == "FEASIBLE", f"expected relaxed elevated boundary crossing, got {status}"
+
+
+def test_input_port_adherence_uses_direction_toward_sink_port():
+    """Input ports consume flow from the front cell toward the port cell.
+
+    This mirrors RoutingSubproblem: a port with direction W has its front cell to
+    the west of the port, so the route state on that front cell must send E into
+    the sink port.  Requiring W would make a straight in-patch corridor falsely
+    infeasible.
+    """
+    from src.models.patch_routing_core import (
+        PatchPortSpec, PatchRoutingCore, PatchSpec, PoseAssumption,
+    )
+
+    patch_cells = frozenset({(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)})
+    occupied = {(0, 0), (4, 0)}
+    active = {"ore": set(patch_cells) - occupied}
+    ports = [
+        PatchPortSpec(instance_id="src", x=0, y=0, direction="E", commodity="ore", type="out", pose_idx=0),
+        PatchPortSpec(instance_id="sink", x=4, y=0, direction="W", commodity="ore", type="in", pose_idx=0),
+    ]
+    assumptions = [
+        PoseAssumption("src", 0, "src_p0", "assum_src"),
+        PoseAssumption("sink", 0, "sink_p0", "assum_sink"),
+    ]
+    core = PatchRoutingCore(
+        patch_spec=PatchSpec.from_cells("corridor", patch_cells),
+        full_grid_occupied=occupied,
+        full_grid_active_cells=active,
+        patch_port_specs=ports,
+        pose_assumptions=assumptions,
+        boundary_relaxation=False,
+    )
+    core.build()
+    status = core.solve(time_limit=2.0)
+    assert status == "FEASIBLE", f"expected straight source-to-sink corridor, got {status}"
+
+
+def test_patch_core_cut_support_includes_constant_occupancy_blocker():
+    """A blocker encoded as patch occupancy must appear in the lifted master cut support.
+
+    The solver UNSAT core only sees port-owner assumption literals.  Occupied cells
+    are constants in the patch model, so the separator must add the owners of those
+    constants back before emitting a master nogood.
+    """
+    from src.search.patch_conflict_separator import (
+        _PatchCandidateRecord,
+        _augment_core_with_patch_support,
+        _build_patch_inputs,
+    )
+    from src.models.patch_routing_core import (
+        PatchRoutingCore,
+        extract_and_validate_patch_core,
+    )
+
+    placement_solution = {
+        "victim": {"facility_type": "source", "pose_idx": 0},
+        "blocker": {"facility_type": "blocker", "pose_idx": 0},
+    }
+    facility_pools = {
+        "source": [
+            {
+                "occupied_cells": [(0, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 0, "y": 0, "dir": "E", "commodity": "ore"}],
+            }
+        ],
+        "blocker": [
+            {
+                "occupied_cells": [(1, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [],
+            }
+        ],
+    }
+    port_specs = [
+        {"instance_id": "victim", "x": 0, "y": 0, "dir": "E", "commodity": "ore", "type": "out", "pose_idx": 0}
+    ]
+    candidate = _PatchCandidateRecord(
+        patch_id="blocked_front",
+        cells=frozenset({(0, 0), (1, 0), (2, 0)}),
+        kind="unit",
+        score=1.0,
+        source_witness={},
+    )
+    spec, occupied, active, patch_ports, assumptions, support_cells = _build_patch_inputs(
+        candidate,
+        placement_solution,
+        facility_pools,
+        port_specs,
+        grid_w=5,
+        grid_h=5,
+    )
+    assert {pa.instance_id for pa in assumptions} == {"victim", "blocker"}
+    assert (1, 0) in support_cells
+
+    core = PatchRoutingCore(
+        patch_spec=spec,
+        full_grid_occupied=occupied,
+        full_grid_active_cells=active,
+        patch_port_specs=patch_ports,
+        pose_assumptions=assumptions,
+        boundary_relaxation=True,
+    )
+    core.build()
+    assert core.solve(time_limit=2.0) == "INFEASIBLE"
+    lifecycle = extract_and_validate_patch_core(core, minimize=True, time_limit_per_call=2.0, oracle_call_cap=8)
+    assert lifecycle["accepted"] is True
+
+    solver_core = lifecycle["minimized_validation"].candidate_core
+    augmented = _augment_core_with_patch_support(solver_core, assumptions)
+    assert {pa.instance_id for pa in augmented} == {"victim", "blocker"}
+
+
+def test_patch_signature_lift_rejects_overlapping_master_terms():
+    """Two core owners must not contribute the same lifted BoolVar set twice."""
+    from types import SimpleNamespace
+
+    from ortools.sat.python import cp_model
+
+    from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
+
+    model = cp_model.CpModel()
+    pose = {"occupied_cells": [(0, 0)], "input_port_cells": [], "output_port_cells": []}
+    owner = SimpleNamespace(
+        model=model,
+        grid_w=70,
+        grid_h=70,
+        facility_pools={"tpl": [pose, dict(pose)]},
+        build_stats={},
+        _last_solution=None,
+    )
+    delegate = PoseBoolExactMasterDelegate(owner)
+    delegate._group_id_by_instance = {"A": "g", "B": "g"}
+    delegate._mandatory_template_by_group = {"g": "tpl"}
+    delegate._mandatory_operation_by_group = {"g": "op"}
+    delegate.x_vars[("g", 0)] = model.NewBoolVar("x_g_0")
+    delegate.x_vars[("g", 1)] = model.NewBoolVar("x_g_1")
+
+    outcome = delegate.add_patch_routing_core_cut(
+        [("A", 0), ("B", 1)],
+        frozenset({(0, 0)}),
+    )
+    assert outcome["added"] is False
+    assert outcome["reason"] == "overlapping_signature_lift_terms"
+
+
 def test_quickxplain_minimizes_core():
     """Adding irrelevant assumptions should still let QuickXplain isolate the true conflict."""
     from src.models.patch_routing_core import (

@@ -6925,5 +6925,12 @@ class CoordinateExactMasterDelegate:
             ),
             "condition_count": len(cond),
         }
+        # The model now contains a new constraint, so the previous CpSolver
+        # response is no longer a valid witness for this model version.  Clearing
+        # only _last_solution is insufficient: extract_solution() can otherwise
+        # re-read the old solver assignment and hand downstream a layout that the
+        # just-applied cut forbids.
         self.owner._last_solution = None
+        self.owner._solver = None
+        self.owner._status = None
         return True
