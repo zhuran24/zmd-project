@@ -18,5 +18,6 @@ zmd 项目(`C:\claude pj\zmd_pj`)自带完整的项目级记忆体系,**不要�
 4. `docs/PHASE_1_2_CLOSE_GATE.md` — 当前关门协议(V50 手动 owner-count gate)
 
 改记忆的规矩:**必须手动双写** `_cc_live_memory/` 和 `cc_context/memory/` 两份(pre-commit 镜像源指旧 slug `D-----zmd` 已不存在,同步会静默跳过)。改完用 Get-FileHash 验证两边一致。
+注意(2026-06-13 审计沉淀):同一条记忆在 harness 树与仓库镜像两边同名时,仓库副本会把 harness-only 的双方括号 wikilink(目标只在 harness 树里)**故意降为纯文本**——否则 CI 的 memory-tree 死链 gate 会 BLOCK(有翻车先例,连字面写出双方括号都会触发,本条措辞就是被 gate 现场拦过一次后改的)。所以 harness 版与仓库版哈希不同**不一定是漂移**,先 diff 内容判方向再同步;从 harness 整文件拷进镜像前,检查文内全部 wikilink 目标是否都存在于项目树。
 
 相关:[[zmd-checkout-env]]
