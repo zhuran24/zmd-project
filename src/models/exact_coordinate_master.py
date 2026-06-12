@@ -1662,7 +1662,7 @@ class CoordinateExactMasterDelegate:
     def _power_pole_family_count_upper_bound(self, family_name: str) -> int:
         family_name = str(family_name)
         family_size = int(self._power_pole_family_pose_counts.get(family_name, 0))
-        slot_pool_upper_bound = int(len(self.residual_optional_slots.get("power_pole", [])))
+        slot_pool_upper_bound = int(len(self._all_power_pole_slots()))
         return int(min(family_size, slot_pool_upper_bound))
 
     def _prepare_template_domains(self) -> None:
@@ -2954,6 +2954,59 @@ class CoordinateExactMasterDelegate:
             family_lits_by_int[int(family_int)] = family_lit
         return family_lits_by_int
 
+    def _power_pole_family_pose_tuple_rows_for_required_slots(self) -> List[Tuple[int, int, int, int]]:
+        rows: List[Tuple[int, int, int, int]] = []
+        for pose_idx, pose_tuple in sorted(self._template_pose_tuple_by_idx.get("power_pole", {}).items()):
+            family_id = self._power_pole_family_id_by_pose_idx.get(int(pose_idx))
+            if family_id is None:
+                continue
+            rows.append(
+                (
+                    int(pose_tuple[0]),
+                    int(pose_tuple[1]),
+                    int(pose_tuple[2]),
+                    int(family_id),
+                )
+            )
+        return rows
+
+    def _slot_active_lookup_value(self, slot: CoordinateSlotSpec) -> cp_model.LinearExpr:
+        if slot.active is not None:
+            return slot.active
+        return self.model.NewConstant(1)
+
+    def _all_power_pole_slots(self) -> List[CoordinateSlotSpec]:
+        pole_slots: List[CoordinateSlotSpec] = []
+        pole_slots.extend(self.required_optional_slots.get("power_pole", []))
+        pole_slots.extend(self.residual_optional_slots.get("power_pole", []))
+        return [slot for slot in pole_slots if slot.x is not None and slot.y is not None]
+
+    def _attach_required_power_pole_family_channels(self) -> None:
+        required_pole_slots = list(self.required_optional_slots.get("power_pole", []))
+        if not required_pole_slots:
+            return
+        sentinel_family = int(len(self._power_pole_family_name_by_int))
+        tuple_rows = self._power_pole_family_pose_tuple_rows_for_required_slots()
+        for slot in required_pole_slots:
+            if slot.x is None or slot.y is None or slot.mode is None:
+                # Empty-domain required slots have already made the model infeasible
+                # in _create_base_slot_geometry; there is no live pole channel to add.
+                continue
+            slot.family = self.model.NewIntVar(
+                0,
+                max(0, sentinel_family - 1),
+                f"family__{slot.key}",
+            )
+            if tuple_rows:
+                self.model.AddAllowedAssignments(
+                    [slot.x, slot.y, slot.mode, slot.family],
+                    tuple_rows,
+                )
+            else:
+                self.model.Add(0 == 1)
+            self._slot_binding.setdefault(slot.key, {})["family"] = int(slot.family.Index())
+            self._create_power_pole_family_literals(slot)
+
     def _add_power_pole_linear_shell_lookup_constraints(
         self,
         *,
@@ -3127,6 +3180,8 @@ class CoordinateExactMasterDelegate:
         pole_domain = pole_domains[int(pole_mode_id)]
         sentinel_family = len(self._power_pole_family_name_by_int)
 
+        self._attach_required_power_pole_family_channels()
+
         for slot in self.residual_optional_slots.get("power_pole", []):
             slot.active = self.model.NewBoolVar(f"active__{slot.key}")
             self._create_base_slot_geometry(slot, optional=True)
@@ -3272,7 +3327,7 @@ class CoordinateExactMasterDelegate:
                 "master_constraints": 0,
                 "master_witness_vars": 0,
                 "power_pole_slots_materialized": bool(
-                    self.residual_optional_slots.get("power_pole")
+                    self._all_power_pole_slots()
                 ),
             }
         elif self._delegate_power_placement_to_subproblem():
@@ -4970,7 +5025,7 @@ class CoordinateExactMasterDelegate:
 
     def _add_table_power_coverage_constraints(self) -> int:
         powered_slots = self._all_powered_slots()
-        pole_slots = list(self.residual_optional_slots.get("power_pole", []))
+        pole_slots = self._all_power_pole_slots()
         cover_literals = 0
         for powered_slot in powered_slots:
             allowed_tuples: List[Tuple[int, ...]] = []
@@ -4996,7 +5051,8 @@ class CoordinateExactMasterDelegate:
             witnesses: List[cp_model.IntVar] = []
             for pole_slot in pole_slots:
                 cover_lit = self.model.NewBoolVar(f"covers__{pole_slot.key}__{powered_slot.key}")
-                self.model.Add(cover_lit <= pole_slot.active)
+                if pole_slot.active is not None:
+                    self.model.Add(cover_lit <= pole_slot.active)
                 if powered_slot.active is not None:
                     self.model.Add(cover_lit <= powered_slot.active)
                 if allowed_tuples:
@@ -5431,7 +5487,11 @@ class CoordinateExactMasterDelegate:
                 f"cover_choice_block_y__{powered_slot.key}__block::{block_index:03d}",
             )
             if block_active is not None:
-                self.model.AddElement(cover_choice_local_idx, [slot.active for slot in padded_slots], block_active)
+                self.model.AddElement(
+                    cover_choice_local_idx,
+                    [self._slot_active_lookup_value(slot) for slot in padded_slots],
+                    block_active,
+                )
             self.model.AddElement(cover_choice_local_idx, [slot.x for slot in padded_slots], block_x)
             self.model.AddElement(cover_choice_local_idx, [slot.y for slot in padded_slots], block_y)
             block_active_lookup.append(block_active)
@@ -5615,7 +5675,7 @@ class CoordinateExactMasterDelegate:
 
     def _add_geometric_power_coverage_constraints(self) -> None:
         powered_slots = self._all_powered_slots()
-        pole_slots = list(self.residual_optional_slots.get("power_pole", []))
+        pole_slots = self._all_power_pole_slots()
         radius = self._power_coverage_radius()
         if not self._supports_rectangular_power_coverage():
             cover_literals = self._add_table_power_coverage_constraints()
@@ -5649,7 +5709,7 @@ class CoordinateExactMasterDelegate:
             }
             return
 
-        active_lookup = [slot.active for slot in pole_slots if slot.active is not None]
+        active_lookup = [self._slot_active_lookup_value(slot) for slot in pole_slots]
         x_lookup = [slot.x for slot in pole_slots if slot.x is not None]
         y_lookup = [slot.y for slot in pole_slots if slot.y is not None]
         for powered_slot in powered_slots:
