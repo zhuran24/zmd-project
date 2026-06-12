@@ -12,13 +12,12 @@
 
 ## 用法
 
-⚠️ 本机入口用 `python3.13`(不是 `python`): 裸 `python` 现在解析到 Program Files 下
-一个没装依赖的新环境, import websockets 直接挂; 子进程走 `sys.executable` 会跟随入口,
-所以只要入口对, 打包/上传整条链都对。
+(2026-06-12 起 `python` = Program Files 主环境, 依赖齐全可直接用; `python3.13` 商店版备份也行。
+子进程走 `sys.executable` 跟随入口。)
 
 ```powershell
 # 标准: 自动打全项目单包 (除缓存全打) + 发任务 + 等 + 收
-python3.13 cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <prompt.md>
+python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <prompt.md>
 
 # 指定现成包 (可多个 --package)
 python ...\dispatch_gpt_task.py --package X.zip --prompt-file prompt.md
