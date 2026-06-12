@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_v80_impl_full_20260612_single.zip`, sha256 `ca38fe30dfa01708cb95db0e2d699d52f2ee2d3aa4d59ca312f55ce56561f213`。**开工前先校验 sha256, 对不上停下来报告** (文件区可能残留老包, 以本 sha 为准)。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包)。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_r7_snapshot_e8c7dac3.zip`, sha256 `e8c7dac3ca8af15e8ea23098f70304735a7b4a1bf6ee75045122f5ad64ae5179`。**只认这个文件名 (名字里带 sha 前 8 位), 文件区里旧的 `zmd_v80_impl_full_*.zip` 一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包)。本包为干净 git 树快照 (不含历史交付归档杂物)。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 ## 背景: r6 出了 R6-F-01, 本包刚落地其修复
 
