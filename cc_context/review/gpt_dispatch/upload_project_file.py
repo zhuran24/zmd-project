@@ -597,6 +597,7 @@ async def run(args, pkg: Path | None, out_dir: Path) -> int:
                 names = json.loads(raw) if raw else []
                 shot = await cdp.screenshot(out_dir / "sources_list.png")
                 log("list", "ok", zips=json.dumps(names, ensure_ascii=False), screenshot=shot)
+                print("SOURCES_JSON:" + json.dumps(names, ensure_ascii=False), flush=True)
                 return 0
             if args.delete_name:
                 n = await delete_named_sources(cdp, args.delete_name, out_dir)

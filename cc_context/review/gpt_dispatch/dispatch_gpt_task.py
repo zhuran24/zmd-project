@@ -95,11 +95,15 @@ class Reporter:
         self.log(stage, "NEEDS_ATTENTION", reason=reason, screenshot=shot, dom_dump=dump, url=page.url)
 
 
-def attach(p, cdp_url: str = CDP_URL):
+def attach(p, cdp_url: str = CDP_URL, timeout_ms: int = 45000):
     """返回 (ctx, page, owns_page)。浏览器通道开自己的新 tab (owns=True);
     ChatGPT 桌面 App (Electron, 9224) 不支持 new_page — 复用主窗口页面
-    (owns=False, 结束时不能关它, 关了 App 就空了)。"""
-    browser = p.chromium.connect_over_cdp(cdp_url)
+    (owns=False, 结束时不能关它, 关了 App 就空了)。
+
+    timeout 收紧到 45s: claude-in-chrome 插件用 chrome.debugger 占着 tab 时,
+    Playwright 的 target auto-attach 会僵 (默认 180s 才报) — 快速失败好让
+    调用方落到 App 通道。"""
+    browser = p.chromium.connect_over_cdp(cdp_url, timeout=timeout_ms)
     if not browser.contexts:
         raise RuntimeError("no browser context on " + cdp_url)
     ctx = browser.contexts[0]
@@ -110,6 +114,24 @@ def attach(p, cdp_url: str = CDP_URL):
         if not ctx.pages:
             raise RuntimeError("cannot create a page and none exists on " + cdp_url)
         return ctx, ctx.pages[0], False
+
+
+def attach_with_fallback(p, args, rep: Reporter):
+    """主通道 attach 失败时自动落 App 通道 (9224, 无插件争用; owner 裁决
+    第三托底不需逐次点头)。App 没带 CDP 在跑则不强启, 报 FATAL 留给人工。"""
+    try:
+        ctx, page, owns_page = attach(p, args.cdp_url)
+        rep.log("attach", "ok", cdp_url=args.cdp_url, owns_page=owns_page)
+        return ctx, page, owns_page
+    except Exception as e:
+        rep.log("attach", "failed", cdp_url=args.cdp_url, error=str(e)[:200])
+    if "9224" in args.cdp_url:
+        raise RuntimeError("attach failed on App channel; no further fallback")
+    fallback = "http://localhost:9224"
+    ctx, page, owns_page = attach(p, fallback)
+    rep.log("attach", "fallback_ok", cdp_url=fallback, owns_page=owns_page,
+            note="Edge browser-ws contended (claude-in-chrome debugger) — using App channel")
+    return ctx, page, owns_page
 
 
 def cleanup_stale_tabs(ctx, page, rep: Reporter):
@@ -587,12 +609,14 @@ def pack_repo(repo_root: Path, rep: Reporter, unique_name: bool = False) -> Path
 def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) -> bool:
     """sources 通道: 子进程调 upload_project_file.py 把包传到 Project 文件页来源区。
     子进程用 page 级 CDP websocket, 与本脚本的 Playwright browser 级连接互不干扰。
+    **上传永远走网页端 (--sources-cdp-http), 与发送通道解耦** — App 的文件上传
+    流程与网页端不同, 绝不能对 App 跑 (owner 2026-06-12 裁决)。
     返回 True=全部成功 (含同名幂等跳过)。"""
     uploader = Path(__file__).resolve().parent / "upload_project_file.py"
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
     for i, pkg in enumerate(packages):
         cmd = [sys.executable, str(uploader), "--file", str(pkg),
-               "--cdp-http", args.cdp_url,
+               "--cdp-http", args.sources_cdp_http,
                "--project-url", args.project_url,
                "--out-dir", str(out_dir / f"sources_upload_{i}")]
         # 仅第一个包做旧快照清理 (白名单保留依赖包); 后续包追加不再清
@@ -610,6 +634,50 @@ def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) 
     return True
 
 
+def list_sources(args, rep: Reporter, out_dir: Path) -> list[str] | None:
+    """--list 枚举文件区 .zip 文件名 (网页端 page-ws)。None = 枚举本身失败。"""
+    uploader = Path(__file__).resolve().parent / "upload_project_file.py"
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    proc = subprocess.run(
+        [sys.executable, str(uploader), "--list",
+         "--cdp-http", args.sources_cdp_http,
+         "--project-url", args.project_url,
+         "--out-dir", str(out_dir / "sources_list")],
+        capture_output=True, text=True, encoding="utf-8", errors="replace", env=env,
+    )
+    for line in (proc.stdout or "").splitlines():
+        if line.startswith("SOURCES_JSON:"):
+            try:
+                return json.loads(line[len("SOURCES_JSON:"):])
+            except json.JSONDecodeError:
+                break
+    rep.log("sources_list", "FAILED", exit_code=proc.returncode,
+            tail=" | ".join((proc.stdout or "").strip().splitlines()[-4:]))
+    return None
+
+
+def verify_prompt_packages_in_sources(prompt_text: str, args, rep: Reporter,
+                                      out_dir: Path, just_uploaded: bool) -> bool:
+    """发送前防呆 (2026-06-12 教训: 假设包还在就发, 实际早被误删 → 白发一单):
+    prompt 里指认的每个 .zip 必须真的在文件区。just_uploaded=True 时枚举失败仅
+    WARN (上传子进程刚自验过持久化); prompt-only 模式枚举失败 = fail-closed。"""
+    mentioned = sorted(set(re.findall(r"[\w.\-]+\.zip", prompt_text)))
+    if not mentioned:
+        return True
+    names = list_sources(args, rep, out_dir)
+    if names is None:
+        if just_uploaded:
+            rep.log("sources_verify", "WARN_list_failed",
+                    note="上传子进程已自验持久化, 继续; 但 --list 失败值得查")
+            return True
+        rep.log("sources_verify", "FATAL", error="cannot enumerate Sources to verify prompt packages")
+        return False
+    missing = [n for n in mentioned if n not in names]
+    rep.log("sources_verify", "ok" if not missing else "FATAL",
+            mentioned=mentioned, in_sources=names, missing=missing)
+    return not missing
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pack", action="store_true", help="build the full-project single zip first and upload it")
@@ -624,7 +692,11 @@ def main() -> int:
     ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
     ap.add_argument("--project-url", default=PROJECT_URL)
     ap.add_argument("--cdp-url", default=CDP_URL,
-                    help="CDP 端点; 浏览器通道默认 9222, ChatGPT 桌面 App 通道传 http://localhost:9224 (先跑 start 脚本 -App)")
+                    help="发送通道 CDP 端点; 浏览器通道默认 9222 (attach 失败自动落 App 9224), "
+                         "ChatGPT 桌面 App 通道传 http://localhost:9224 (先跑 start 脚本 -App)")
+    ap.add_argument("--sources-cdp-http", default="http://localhost:9222",
+                    help="文件区上传/枚举专用 web CDP 端点 — 上传只能走网页端 (App 上传流程不同), "
+                         "与发送通道 --cdp-url 解耦")
     ap.add_argument("--timeout-hours", type=float, default=3.5)
     ap.add_argument("--min-gen-seconds", type=int, default=300,
                     help="生成耗时下限 (秒, 默认 300 — owner 经验: 真实审查/实现任务要 30min+, 5min 内完成 = 极大概率被静默降级; 2026-06-11 实测 70s 降级回复溜过旧 60s 判据成 exit 2)。轻量测试传 0 关闭")
@@ -648,12 +720,11 @@ def main() -> int:
 
     with sync_playwright() as p:
         try:
-            ctx, page, owns_page = attach(p, args.cdp_url)
+            ctx, page, owns_page = attach_with_fallback(p, args, rep)
         except Exception as e:
             rep.log("attach", "FATAL", error=str(e)[:300],
-                    hint="run start_gpt_automation_chrome.ps1 first")
+                    hint="run start_gpt_automation_chrome.ps1 first (browser and/or -App)")
             return 1
-        rep.log("attach", "ok", cdp_url=args.cdp_url, owns_page=owns_page)
         cleanup_stale_tabs(ctx, page, rep)
         try:
             if args.resume:
@@ -671,16 +742,22 @@ def main() -> int:
                     packages.insert(0, pack_repo(repo_root, rep,
                                                  unique_name=args.package_channel == "sources"))
                 prompt_text = Path(args.prompt_file).read_text(encoding="utf-8")
-                if args.package_channel == "sources" and packages:
-                    # 文件区通道: 先把包传上来源区 (子进程, page 级 CDP), 消息只发纯文字。
+                if args.package_channel == "sources":
+                    # 文件区通道: 先把包传上来源区 (子进程, 网页端 page 级 CDP), 消息只发纯文字。
                     # prompt 应已指认文件区包文件名 + sha256 — 这里做一道防呆提醒。
                     for pkg in packages:
                         if pkg.name not in prompt_text:
                             rep.log("sources_upload", "WARN_prompt_missing_filename",
                                     file=pkg.name,
                                     hint="prompt 没提到该包文件名 — GPT 可能找不到包, 确认 brief 指认正确")
-                    if not upload_to_sources(packages, args, rep, out_dir):
+                    if packages and not upload_to_sources(packages, args, rep, out_dir):
                         rep.attention(page, "sources_upload", "file-area upload failed — see sources_upload_* logs")
+                        return 3
+                    # 发送前防呆: prompt 指认的每个 .zip 必须真在文件区 (prompt-only 模式尤其)
+                    if not verify_prompt_packages_in_sources(prompt_text, args, rep, out_dir,
+                                                             just_uploaded=bool(packages)):
+                        rep.attention(page, "sources_verify",
+                                      "prompt-referenced package missing from Sources — upload it first")
                         return 3
                 page.goto(args.project_url, wait_until="domcontentloaded")
                 page.wait_for_timeout(3000)
