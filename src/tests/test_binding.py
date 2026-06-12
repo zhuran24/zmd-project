@@ -667,3 +667,173 @@ def test_binding_solver_worker_override_changes_only_solver_parameter(
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
     assert model._solver is not None
     assert int(model._solver.parameters.num_workers) == 2
+
+
+def test_binding_model_allows_unused_generic_output_slots():
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    pose = {
+        "pose_id": "protocol_core_two_outputs",
+        "anchor": {"x": 10, "y": 10},
+        "occupied_cells": [],
+        "input_port_cells": [],
+        "output_port_cells": [
+            {"x": 10, "y": 9, "dir": "N"},
+            {"x": 11, "y": 9, "dir": "N"},
+        ],
+    }
+    instances = [
+        {
+            "instance_id": "core_001",
+            "facility_type": "protocol_core",
+            "operation_type": "protocol_core",
+            "is_mandatory": True,
+        }
+    ]
+    placement_solution = {
+        "core_001": {
+            "pose_idx": 0,
+            "pose_id": pose["pose_id"],
+            "anchor": pose["anchor"],
+            "facility_type": "protocol_core",
+        }
+    }
+
+    model = PortBindingModel(
+        placement_solution,
+        {"protocol_core": [pose]},
+        instances,
+        required_generic_outputs={"source_ore": 1},
+        required_generic_inputs={},
+    )
+    model.build()
+    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
+
+    selection = model.extract_selection()
+    assert sorted(selection["generic_outputs"].values()) == ["__unused__", "source_ore"]
+
+    port_specs = model.extract_port_specs()
+    assert len(port_specs) == 1
+    assert port_specs[0]["commodity"] == "source_ore"
+
+
+def test_load_generic_io_requirements_rejects_missing_sections(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(json.dumps({"required_generic_outputs": {}}), encoding="utf-8")
+
+    with pytest.raises(KeyError, match="required_generic_inputs"):
+        load_generic_io_requirements(path=path, validate_against_canonical=False)
+
+
+def test_load_generic_io_requirements_rejects_invalid_slot_counts(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"source_ore": 0.5},
+                "required_generic_inputs": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(TypeError, match="source_ore"):
+        load_generic_io_requirements(path=path, validate_against_canonical=False)
+
+
+def test_load_generic_io_requirements_rejects_non_canonical_roles(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"steel_block": 1},
+                "required_generic_inputs": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="external_boundary"):
+        load_generic_io_requirements(project_root=project_root, path=path)
+
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {},
+                "required_generic_inputs": {"steel_block": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="generic_input"):
+        load_generic_io_requirements(project_root=project_root, path=path)
+
+
+def test_load_wireless_sink_generic_input_slots_rejects_non_integer(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
+
+    path = tmp_path / "preprocess_plan.json"
+    path.write_text(
+        json.dumps(
+            {
+                "utility_operations": {
+                    "wireless_sink": {
+                        "generic_input_slots": 3.5,
+                    },
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(TypeError, match="generic_input_slots"):
+        load_wireless_sink_generic_input_slots(path=path)
+
+
+def test_load_generic_io_requirements_rejects_reserved_unused_commodity(tmp_path):
+    import sys
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"__unused__": 1},
+                "required_generic_inputs": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="__unused__"):
+        load_generic_io_requirements(path=path, validate_against_canonical=False)

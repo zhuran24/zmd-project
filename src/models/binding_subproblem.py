@@ -79,15 +79,36 @@ def load_wireless_sink_generic_input_slots(
         )
 
     payload = json.loads(path.read_text(encoding="utf-8"))
-    utility_operations = dict(payload.get("utility_operations", {}))
-    wireless_sink = dict(utility_operations.get("wireless_sink", {}))
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "preprocess_plan must be a JSON object "
+            "（预处理计划工件顶层必须是对象）"
+        )
+    utility_operations = payload.get("utility_operations")
+    if not isinstance(utility_operations, Mapping):
+        raise KeyError(
+            "preprocess_plan.utility_operations is required for wireless sink binding "
+            "（预处理计划缺少 utility_operations）"
+        )
+    wireless_sink = utility_operations.get("wireless_sink")
+    if not isinstance(wireless_sink, Mapping):
+        raise KeyError(
+            "preprocess_plan.utility_operations.wireless_sink is required for "
+            "wireless sink binding（预处理计划缺少 wireless_sink）"
+        )
     if "generic_input_slots" not in wireless_sink:
         raise KeyError(
             "preprocess_plan utility_operations.wireless_sink.generic_input_slots "
             "is required for wireless sink binding（无线消费槽位数缺失）"
         )
 
-    slot_count = int(wireless_sink["generic_input_slots"])
+    raw_slot_count = wireless_sink["generic_input_slots"]
+    if isinstance(raw_slot_count, bool) or not isinstance(raw_slot_count, int):
+        raise TypeError(
+            "wireless_sink.generic_input_slots must be an integer "
+            "（无线消费槽位数必须是整数）"
+        )
+    slot_count = int(raw_slot_count)
     if slot_count < 0:
         raise ValueError(
             "wireless_sink.generic_input_slots must be non-negative "
@@ -99,6 +120,7 @@ def load_generic_io_requirements(
     *,
     project_root: Optional[Path] = None,
     path: Optional[Path] = None,
+    validate_against_canonical: bool = True,
 ) -> Dict[str, Dict[str, int]]:
     """Load generic I/O requirements（加载通用 I/O 需求）.
 
@@ -119,16 +141,130 @@ def load_generic_io_requirements(
         )
 
     payload = json.loads(path.read_text(encoding="utf-8"))
-    return {
-        "required_generic_outputs": {
-            str(k): int(v)
-            for k, v in dict(payload.get("required_generic_outputs", {})).items()
-        },
-        "required_generic_inputs": {
-            str(k): int(v)
-            for k, v in dict(payload.get("required_generic_inputs", {})).items()
-        },
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "generic_io_requirements must be a JSON object "
+            "（通用 I/O 需求工件顶层必须是对象）"
+        )
+
+    requirements = {
+        "required_generic_outputs": _load_generic_io_requirement_section(
+            payload,
+            "required_generic_outputs",
+        ),
+        "required_generic_inputs": _load_generic_io_requirement_section(
+            payload,
+            "required_generic_inputs",
+        ),
     }
+    if validate_against_canonical:
+        _validate_generic_io_requirement_roles(
+            requirements,
+            project_root=project_root or PROJECT_ROOT,
+        )
+    return requirements
+
+
+def _load_generic_io_requirement_section(
+    payload: Mapping[str, Any],
+    section_name: str,
+) -> Dict[str, int]:
+    if section_name not in payload:
+        raise KeyError(
+            f"generic_io_requirements.{section_name} is required "
+            f"（通用 I/O 需求工件缺少 {section_name}）"
+        )
+
+    raw_section = payload[section_name]
+    if not isinstance(raw_section, Mapping):
+        raise TypeError(
+            f"generic_io_requirements.{section_name} must be an object "
+            f"（{section_name} 必须是对象）"
+        )
+    return _normalize_generic_io_requirement_mapping(raw_section, section_name)
+
+
+def _normalize_generic_io_requirement_mapping(
+    raw_section: Mapping[str, Any],
+    section_name: str,
+) -> Dict[str, int]:
+    section: Dict[str, int] = {}
+    for raw_commodity, raw_count in raw_section.items():
+        commodity = str(raw_commodity)
+        if commodity == "__unused__":
+            raise ValueError(
+                f"generic_io_requirements.{section_name}.__unused__ is reserved "
+                "for the binding model sentinel "
+                f"（{section_name}.__unused__ 是 binding 未使用槽哨兵，不能作为商品）"
+            )
+        if isinstance(raw_count, bool) or not isinstance(raw_count, int):
+            raise TypeError(
+                f"generic_io_requirements.{section_name}.{commodity} must be an integer "
+                f"（{section_name}.{commodity} 必须是整数槽数）"
+            )
+        if raw_count < 0:
+            raise ValueError(
+                f"generic_io_requirements.{section_name}.{commodity} must be non-negative "
+                f"（{section_name}.{commodity} 不能为负）: {raw_count}"
+            )
+        section[commodity] = int(raw_count)
+    return section
+
+
+def _validate_generic_io_requirement_roles(
+    requirements: Mapping[str, Mapping[str, int]],
+    *,
+    project_root: Path,
+) -> None:
+    output_commodities = tuple(requirements.get("required_generic_outputs", {}))
+    input_commodities = tuple(requirements.get("required_generic_inputs", {}))
+    if not output_commodities and not input_commodities:
+        return
+
+    canonical_path = project_root / "rules" / "canonical_rules.json"
+    if not canonical_path.exists():
+        raise FileNotFoundError(
+            f"Missing canonical_rules artifact for generic I/O validation "
+            f"（缺少 canonical_rules 以校验通用 I/O）: {canonical_path}"
+        )
+
+    canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+    commodity_metadata = canonical.get("commodity_metadata")
+    if not isinstance(commodity_metadata, Mapping):
+        raise KeyError(
+            "canonical_rules.commodity_metadata is required for generic I/O validation "
+            "（canonical_rules 缺少 commodity_metadata）"
+        )
+
+    for commodity in output_commodities:
+        metadata = commodity_metadata.get(commodity)
+        if not isinstance(metadata, Mapping):
+            raise KeyError(
+                f"generic output commodity {commodity!r} is absent from "
+                "canonical_rules.commodity_metadata "
+                f"（通用输出商品 {commodity!r} 未登记在 canonical commodity_metadata）"
+            )
+        if metadata.get("source_kind") != "external_boundary":
+            raise ValueError(
+                f"generic output commodity {commodity!r} must have "
+                "source_kind=external_boundary in canonical_rules "
+                f"（通用输出商品 {commodity!r} 必须是外部边界源）"
+            )
+
+    for commodity in input_commodities:
+        metadata = commodity_metadata.get(commodity)
+        if not isinstance(metadata, Mapping):
+            raise KeyError(
+                f"generic input commodity {commodity!r} is absent from "
+                "canonical_rules.commodity_metadata "
+                f"（通用输入商品 {commodity!r} 未登记在 canonical commodity_metadata）"
+            )
+        if metadata.get("sink_kind") != "generic_input":
+            raise ValueError(
+                f"generic input commodity {commodity!r} must have "
+                "sink_kind=generic_input in canonical_rules "
+                f"（通用输入商品 {commodity!r} 必须是通用输入终端商品）"
+            )
 
 
 class PortBindingModel:
@@ -169,22 +305,22 @@ class PortBindingModel:
                 "required_generic_inputs": {},
             }
 
-        self.required_generic_outputs = {
-            str(k): int(v)
-            for k, v in (
+        self.required_generic_outputs = _normalize_generic_io_requirement_mapping(
+            (
                 required_generic_outputs
                 if required_generic_outputs is not None
                 else io_requirements["required_generic_outputs"]
-            ).items()
-        }
-        self.required_generic_inputs = {
-            str(k): int(v)
-            for k, v in (
+            ),
+            "required_generic_outputs",
+        )
+        self.required_generic_inputs = _normalize_generic_io_requirement_mapping(
+            (
                 required_generic_inputs
                 if required_generic_inputs is not None
                 else io_requirements["required_generic_inputs"]
-            ).items()
-        }
+            ),
+            "required_generic_inputs",
+        )
         self.routing_free_sink_commodities = {
             str(commodity)
             for commodity, required in self.required_generic_inputs.items()
@@ -529,6 +665,7 @@ class PortBindingModel:
         generic_commodities = sorted(self.required_generic_outputs.keys())
         if not generic_commodities:
             return
+        slot_commodities = generic_commodities + ["__unused__"]
 
         for instance_id, sol in self.placement_solution.items():
             inst = self._resolve_instance(instance_id)
@@ -559,7 +696,7 @@ class PortBindingModel:
                 }
                 self.generic_output_slots.append(slot)
                 self.generic_output_vars[slot_id] = {}
-                for commodity in generic_commodities:
+                for commodity in slot_commodities:
                     self.generic_output_vars[slot_id][commodity] = self.model.NewBoolVar(
                         f"slot_{slot_id}_{commodity}"
                     )
@@ -873,7 +1010,7 @@ class PortBindingModel:
         for slot in self.generic_output_slots:
             slot_id = slot["slot_id"]
             commodity = selection["generic_outputs"].get(slot_id)
-            if commodity is None:
+            if commodity in (None, "__unused__"):
                 continue
             if str(commodity) in self.routing_free_sink_commodities:
                 continue
