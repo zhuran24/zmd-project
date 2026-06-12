@@ -413,6 +413,77 @@ _SEND_READY_JS = (
     "})()"
 )
 
+_SEND_BTN_SPOT_JS = (
+    "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
+    "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
+    "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()"
+)
+
+_SEND_BTN_JS_CLICK_JS = (
+    "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
+    "  if (!b || b.disabled) return false; b.click(); return true; })()"
+)
+
+_COMPOSER_TEXT_LEN_JS = (
+    "(() => { const c = document.querySelector('#prompt-textarea');"
+    "  return c ? (c.innerText || '').trim().length : -1; })()"
+)
+
+
+async def _click_send_verified(page: PageCdp, rep: Reporter, stage: str,
+                               url_switch_counts: bool = True) -> bool:
+    """点击发送并验证真发出去了 (composer 清空或 URL 切到会话页)。
+
+    后台 tab 上 Input.dispatchMouseEvent 的合成点击会被 compositor 静默丢弃
+    (2026-06-13 owner 破案: 平时新 tab 默认前台所以没踩; owner 同窗口期切走
+    活动 tab → dispatch tab 变后台 → 坐标点击无效, 提示词留在 composer 里
+    全程没发出去)。三层升级: 坐标点击 → JS element.click() (渲染进程内派发,
+    不依赖前台) → /json/activate 拉前台再坐标点击。"""
+    for attempt in (1, 2, 3):
+        try:
+            if attempt == 1:
+                spot = await page.js(_SEND_BTN_SPOT_JS, timeout=10)
+                if not spot:
+                    return False
+                await page.click_xy(spot["x"], spot["y"])
+            elif attempt == 2:
+                clicked = await page.js(_SEND_BTN_JS_CLICK_JS, timeout=10)
+                if not clicked:
+                    # 按钮没了/禁用 — 可能上一层其实已发出, 交给验证判定
+                    pass
+            else:
+                if page.tab_id:
+                    try:
+                        http("GET", "/json/activate/" + page.tab_id, page.http_base)
+                        await asyncio.sleep(1)
+                    except Exception:
+                        pass
+                spot = await page.js(_SEND_BTN_SPOT_JS, timeout=10)
+                if spot:
+                    await page.click_xy(spot["x"], spot["y"])
+        except Exception as e:
+            rep.log(stage, "send_click_error", attempt=attempt, error=str(e)[:120])
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            try:
+                remaining = await page.js(_COMPOSER_TEXT_LEN_JS, timeout=10)
+                if isinstance(remaining, (int, float)) and 0 <= remaining < 10:
+                    if attempt > 1:
+                        rep.log(stage, "send_recovered", attempt=attempt)
+                    return True
+                if url_switch_counts:
+                    u = await page.url()
+                    if CONV_URL_RE.search(u):
+                        if attempt > 1:
+                            rep.log(stage, "send_recovered", attempt=attempt)
+                        return True
+            except Exception:
+                pass
+            await asyncio.sleep(2)
+        rep.log(stage, "send_not_confirmed", attempt=attempt,
+                note="composer still holds text; escalating click strategy")
+    return False
+
 
 async def _last_assistant(page: PageCdp) -> dict:
     try:
@@ -453,13 +524,12 @@ async def fill_and_send(page: PageCdp, prompt_text: str, rep: Reporter) -> str:
     await page.insert_text(prompt_text)
     await asyncio.sleep(1)
     rep.log("prompt", "filled", chars=len(prompt_text))
-    spot = await page.js(
-        "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
-        "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
-        "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()", timeout=10)
-    if not spot:
+    ready = await page.js(_SEND_BTN_SPOT_JS, timeout=10)
+    if not ready:
         raise RuntimeError("send button not found/enabled after fill")
-    await page.click_xy(spot["x"], spot["y"])
+    if not await _click_send_verified(page, rep, "send"):
+        await rep.attention(page, "send", "send click never took effect (composer still holds prompt after 3 strategies)")
+        raise RuntimeError("send click never took effect")
     conv_url = ""
     deadline = time.time() + 60
     while time.time() < deadline:
@@ -493,17 +563,16 @@ async def send_followup(page: PageCdp, text: str, rep: Reporter) -> bool:
     await asyncio.sleep(0.5)
     spot = None
     for _ in range(10):
-        spot = await page.js(
-            "(() => { const b = document.querySelector('button[data-testid=\"send-button\"]');"
-            "  if (!b || b.disabled) return null; const r = b.getBoundingClientRect();"
-            "  return {x: r.x + r.width / 2, y: r.y + r.height / 2}; })()", timeout=10)
+        spot = await page.js(_SEND_BTN_SPOT_JS, timeout=10)
         if spot:
             break
         await asyncio.sleep(1)
     if not spot:
         rep.log("followup", "send_failed", error="send button not found/enabled after fill")
         return False
-    await page.click_xy(spot["x"], spot["y"])
+    if not await _click_send_verified(page, rep, "followup", url_switch_counts=False):
+        rep.log("followup", "send_failed", error="send click never took effect (3 strategies)")
+        return False
     rep.log("followup", "sent", chars=len(text))
     return True
 
