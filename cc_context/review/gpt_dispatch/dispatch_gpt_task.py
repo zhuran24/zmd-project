@@ -632,8 +632,12 @@ def main() -> int:
                     help="疑似降级时自动 刷新页面+要求重新完整执行 的次数 (默认 1); 用尽仍快则报 attention 建议换 Edge")
     args = ap.parse_args()
 
-    if not args.resume and not ((args.package or args.pack) and args.prompt_file):
-        ap.error("either --resume, or --prompt-file plus --pack/--package")
+    if not args.resume and not args.prompt_file:
+        ap.error("either --resume, or --prompt-file (optionally with --pack/--package)")
+    if (not args.resume and not args.package and not args.pack
+            and args.package_channel == "attachment"):
+        ap.error("attachment channel needs --pack/--package; "
+                 "prompt-only send is a sources-channel mode (package already in the file area)")
 
     repo_root = Path(__file__).resolve().parents[3]
     out_dir = Path(args.out_dir) if args.out_dir else (
