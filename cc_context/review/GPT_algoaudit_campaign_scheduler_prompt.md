@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_r7_snapshot_e8c7dac3.zip`, sha256 `e8c7dac3ca8af15e8ea23098f70304735a7b4a1bf6ee75045122f5ad64ae5179`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线 `pip install --no-index --find-links <wheels目录> -r requirements.txt`。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_f78_snapshot_1ebcc03b.zip`, sha256 `1ebcc03bf93cfd980286392e39e10c02f48c8393cf1d5df108f0b1eaf42527f4`。**只认这个文件名, 文件区其它旧快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线 `pip install --no-index --find-links <wheels目录> -r requirements.txt`。
 
 求解内核 (master/binding/routing/cuts) 与 preprocess 链已多轮对抗审查。**本轮审从未独立审过的两个证据持久化面**: 168h campaign 的断点续跑状态机, 和多进程并行波次的结果合并。这两层不做数学证明, 但它们**搬运并存活证明结论**——任何一处把弱结论存成强结论 (UNKNOWN→CERTIFIED / 半途→完成 / 张冠李戴的候选结果), 都等价于 false CERTIFIED; 任何一处把强结论丢弱 (CERTIFIED 被覆盖/丢失) 都伤完整性。若审完确认无残留, 明确报零——这是 owner 判定该面「第一轮干净」的输入。
 
