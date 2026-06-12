@@ -24,13 +24,12 @@ It removes recipe / template / port-profile hardcoding from Python code without 
 2. `rules/preprocess_plan.json`
    - cycle groups
    - utility operation slot declarations
-   - optional future overlay overrides
 
-The builder merges canonical rules first and then applies any overlay keys present in `preprocess_plan.json`.
+The plan layer is **additive-only**. Recipe / production-target / commodity-metadata truth derives exclusively from `rules/canonical_rules.json`; if the plan carries any of `recipes`, `production_targets`, or `commodity_roles`, the builder fails closed with a `ValueError` (R6-F-01: a same-key overlay could silently rewrite operation profiles without touching any canonical hash). The plan schema (`rules/preprocess_plan.schema.json`) no longer admits those sections.
 
 ## 3. Current runtime boundary
 
-`PreprocessContext` is **not** the certified runtime input.
+`PreprocessContext` is **not** the certified runtime placement input, but it is no longer a regeneration-only concern: `src/preprocess/operation_profiles.py` derives the runtime `OPERATION_PORT_PROFILES` from `load_default_preprocess_context()` at import time, and the binding subproblem reads utility slot declarations from `rules/preprocess_plan.json` at runtime. The plan is therefore bound into the exact campaign hash closure (`exact_campaign.OPTIONAL_EXACT_HASH_FILES`, with a missing-file sentinel for synthetic test projects) and the preflight frozen-artifact registry — a plan edit can never ride on otherwise-stale exact artifacts.
 The certified exact path still consumes frozen artifacts under `data/preprocessed/*`, especially:
 
 - `candidate_placements.json` (required external large artifact in current lightweight GitHub checkout)

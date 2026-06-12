@@ -195,6 +195,13 @@ EXACT_HASH_FILES = {
     "canonical_rules": "rules/canonical_rules.json",
     "generic_io_requirements": "data/preprocessed/generic_io_requirements.json",
 }
+OPTIONAL_EXACT_HASH_FILES = {
+    # Runtime preprocess profiles still consume utility/cycle-group declarations
+    # from preprocess_plan.json.  Bind it to checkpoints when present so a plan
+    # edit cannot ride on stale exact artifacts.
+    "preprocess_plan": "rules/preprocess_plan.json",
+}
+MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
 
 
 def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:
@@ -268,6 +275,12 @@ def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
     hashes: Dict[str, str] = {}
     for key, relative_path in EXACT_HASH_FILES.items():
         hashes[key] = sha256_file(project_root / relative_path)
+    for key, relative_path in OPTIONAL_EXACT_HASH_FILES.items():
+        artifact_path = project_root / relative_path
+        if artifact_path.exists() or _path_has_symlink_component(artifact_path):
+            hashes[key] = sha256_file(artifact_path)
+        else:
+            hashes[key] = MISSING_OPTIONAL_EXACT_ARTIFACT_HASH
     return hashes
 
 

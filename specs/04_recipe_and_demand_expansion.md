@@ -6,7 +6,7 @@ owner: preprocess-demand
 ---
 # 04 配方网络与需求展开 (Recipe Network and Demand Expansion)
 
-> **当前仓库状态说明（2026-03-25）**：真实 preprocess recipe / production target / commodity metadata 已折回 `rules/canonical_rules.json`；`rules/preprocess_plan.json` 仅保留 cycle groups、utility operations 与可选 overlay。运行时 certified exact 仍默认消费冻结的 `data/preprocessed/*` 工件。
+> **当前仓库状态说明（2026-03-25）**：真实 preprocess recipe / production target / commodity metadata 已折回 `rules/canonical_rules.json`；`rules/preprocess_plan.json` 仅保留 cycle groups 与 utility operations（additive-only；携带 `recipes`/`production_targets`/`commodity_roles` 任一键即 fail-closed 拒绝，R6-F-01），且因其喂给运行时 operation profiles/binding utility slots，已纳入 exact campaign hash 闭包与 preflight 冻结登记。运行时 certified exact 仍默认消费冻结的 `data/preprocessed/*` 工件。
 
 ## 4.1 文档目的与适用范围
 

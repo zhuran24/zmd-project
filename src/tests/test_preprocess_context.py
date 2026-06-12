@@ -52,7 +52,7 @@ def test_default_preprocess_context_loads_expected_counts() -> None:
 
     assert context.metadata["source_rules_version"] == "1.1.0"
     assert context.metadata["source_plan_version"] == "0.2.0"
-    assert context.metadata["recipe_source"] == "canonical_rules_plus_overlay"
+    assert context.metadata["recipe_source"] == "canonical_rules"
     assert float(context.tick_interval_seconds) == 2.0
     assert float(context.belt_capacity_per_tick) == 1.0
     assert len(context.recipes) == 17
@@ -75,6 +75,19 @@ def test_preprocess_context_accepts_overlay_only_plan(raw_rules_dict, raw_plan_d
     assert len(context.recipes) == 17
     assert len(context.targets) == 2
     assert context.commodity_roles["source_ore"].source_kind == "external_boundary"
+
+
+@pytest.mark.parametrize("overlay_key", ["recipes", "production_targets", "commodity_roles"])
+def test_preprocess_context_rejects_canonical_metadata_overrides(
+    raw_rules_dict,
+    raw_plan_dict,
+    overlay_key,
+) -> None:
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_plan[overlay_key] = {}
+
+    with pytest.raises(ValueError, match="additive-only"):
+        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
 
 
 def test_preprocess_context_rejects_multiple_non_cycle_producers(raw_rules_dict, raw_plan_dict) -> None:

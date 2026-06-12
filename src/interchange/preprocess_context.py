@@ -3,7 +3,7 @@
 This module introduces the build-time `PreprocessContext` layer used by preprocess
 regeneration. Canonical rules now carry the repository-owned recipe / target /
 commodity metadata truth; `preprocess_plan.json` remains the additive overlay for
-cycle groups, utility operations, and optional future overrides.
+cycle groups and utility operations only.
 The certified runtime still consumes frozen `data/preprocessed/*` artifacts.
 """
 
@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 PREPROCESS_PLAN_VERSION = "0.2.0"
+PLAN_CANONICAL_OVERRIDE_KEYS = ("recipes", "production_targets", "commodity_roles")
 
 _ALLOWED_TARGET_MODES = {"equivalent_full_speed_lines", "rate_per_tick"}
 _ALLOWED_SOURCE_KINDS = {"external_boundary", "cycle_internal", "internal_only", None}
@@ -169,18 +170,19 @@ def build_preprocess_context_from_rules_and_plan(
     rules_metadata = _mapping_or_empty(rules_payload.get("metadata"))
     plan_metadata = _mapping_or_empty(plan_payload.get("metadata"))
 
-    merged_recipes = _merge_overlay(
-        _mapping_or_empty(rules_payload.get("recipes")),
-        _mapping_or_empty(plan_payload.get("recipes")),
+    plan_override_keys = sorted(
+        key for key in PLAN_CANONICAL_OVERRIDE_KEYS if key in plan_payload
     )
-    merged_targets = _merge_overlay(
-        _mapping_or_empty(rules_payload.get("production_targets")),
-        _mapping_or_empty(plan_payload.get("production_targets")),
-    )
-    merged_commodity_roles = _merge_overlay(
-        _mapping_or_empty(rules_payload.get("commodity_metadata")),
-        _mapping_or_empty(plan_payload.get("commodity_roles")),
-    )
+    if plan_override_keys:
+        raise ValueError(
+            "preprocess_plan.json must be additive-only; canonical recipe/target/"
+            "commodity metadata overrides are not allowed: "
+            + ", ".join(plan_override_keys)
+        )
+
+    merged_recipes = _mapping_or_empty(rules_payload.get("recipes"))
+    merged_targets = _mapping_or_empty(rules_payload.get("production_targets"))
+    merged_commodity_roles = _mapping_or_empty(rules_payload.get("commodity_metadata"))
 
     recipes = {
         recipe_id: _parse_recipe(recipe_id, raw_recipe)
@@ -214,9 +216,9 @@ def build_preprocess_context_from_rules_and_plan(
             ),
             "source_rules_version": str(rules_metadata.get("version", "unknown")),
             "source_plan_version": str(plan_metadata.get("version", PREPROCESS_PLAN_VERSION)),
-            "recipe_source": "canonical_rules_plus_overlay",
-            "target_source": "canonical_rules_plus_overlay",
-            "commodity_role_source": "canonical_rules_plus_overlay",
+            "recipe_source": "canonical_rules",
+            "target_source": "canonical_rules",
+            "commodity_role_source": "canonical_rules",
         },
         tick_interval_seconds=tick_interval_seconds,
         belt_capacity_per_tick=belt_capacity_per_tick,

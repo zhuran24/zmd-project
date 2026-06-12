@@ -32,7 +32,7 @@ The repository has now performed a **partial canonical-rules consolidation**:
 - `canonical_rules.json` carries the 17 real preprocess recipes
 - `canonical_rules.json` carries `production_targets`
 - `canonical_rules.json` carries `commodity_metadata`
-- `preprocess_plan.json` remains the additive overlay for cycle groups, utility operations, and optional future overrides
+- `preprocess_plan.json` remains the additive plan for cycle groups and utility operations only — canonical recipe/target/commodity overrides are rejected fail-closed (R6-F-01), and the plan is bound into the exact campaign hash closure + preflight frozen registry
 
 This reduces duplicated truth while keeping the certified runtime input surface unchanged.
 

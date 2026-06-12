@@ -46,6 +46,9 @@ BASELINE_PATH = PROJECT_ROOT / "scripts" / "preflight_baseline.json"
 
 FROZEN_ARTIFACTS = {
     "rules/canonical_rules.json": "36A461884FDD2451DFEAD8AD2C19C053F17D74F573A53A6F851A4E0B3CE6015D",
+    # R6-F-01: the plan feeds runtime operation profiles / binding utility slots,
+    # so it is hash-bound like the canonical rules (also in campaign hash closure).
+    "rules/preprocess_plan.json": "1BCF0D13E1709CD7E04DDEA439EE005E837584F2F66A1A921159D198019C9ED8",
     "data/preprocessed/mandatory_exact_instances.json": "545B98C2B4F96643F1346B423EDF2DC8E300A0C815B6CF821776CEED03CD4CD6",
     "data/preprocessed/generic_io_requirements.json": "AD5125B50E607A7F3F3BF0B54FEA64F93EDF87CEDB62E8D24F5590E1C895C44E",
 }

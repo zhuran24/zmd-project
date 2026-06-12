@@ -23,13 +23,13 @@ Current split:
 - `preprocess_plan.json`
   - cycle groups
   - utility operations
-  - optional overlay overrides
+  (additive-only; canonical recipe/target/commodity overrides are rejected fail-closed, R6-F-01)
 
 ## 2. Why this split exists
 
 The goal of consolidation is to reduce duplicate truth without immediately widening the certified runtime input surface.
 `canonical_rules.json` now carries the stable, repository-owned recipe and target truth.
-`preprocess_plan.json` remains as an additive overlay for the parts that are still most naturally expressed as regeneration-time helper data.
+`preprocess_plan.json` remains as an additive plan for the parts that are still most naturally expressed as regeneration-time helper data; it cannot shadow canonical truth, and because it feeds runtime operation profiles it is hash-bound (campaign hash closure + preflight frozen registry).
 
 ## 3. Runtime boundary
 
@@ -44,7 +44,7 @@ Certified exact runtime still consumes:
 
 - `CanonicalRulesDocument` validates the consolidated fields, including the empty-rectangle objective/admissibility contract.
 - `CanonicalSemanticValidator` now checks production-target and commodity-metadata consistency.
-- `PreprocessContext` merges canonical rules first and then applies overlay keys from `preprocess_plan.json`.
+- `PreprocessContext` derives recipe/target/commodity truth exclusively from canonical rules and fails closed if `preprocess_plan.json` carries `recipes` / `production_targets` / `commodity_roles`.
 - Context-driven regeneration continues to match the frozen preprocess artifacts.
 - Certified terminal-frontier evidence consumes the canonical empty-rectangle admissibility field as publication authority; constants in search code are production projections, not independent schema truth.
 

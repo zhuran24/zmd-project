@@ -52,7 +52,7 @@ The following remain additive postprocess artifacts and must not redefine intern
 - adapter-side outer deployment sidecars / validator probes for IndustrialPlanner larger-base experiments
 - neutral interchange contracts under `src/interchange/*`
 - build-time / export-time adapters under `src/adapters/*`
-- build-time preprocess overlays such as `rules/preprocess_plan.json` and `src/interchange/preprocess_context.py` (currently cycle groups / utility operations / optional future overrides only)
+- build-time preprocess plan `rules/preprocess_plan.json` and `src/interchange/preprocess_context.py` — **additive-only** (cycle groups / utility operations). The plan must never carry `recipes` / `production_targets` / `commodity_roles`: recipe/target/commodity truth derives exclusively from `rules/canonical_rules.json`, and the context builder fails closed on any such key (R6-F-01: a same-key plan overlay could silently rewrite runtime operation profiles). Because the plan feeds runtime operation profiles and binding utility slots, it is bound into the exact campaign hash closure (`exact_campaign.OPTIONAL_EXACT_HASH_FILES`) and the preflight frozen-artifact registry; editing it is a freeze-ritual change, not a free overlay edit.
 
 ## 2B. B Design v2 Cut Object Boundary (2026-05-22)
 
