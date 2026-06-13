@@ -21,6 +21,7 @@ metadata:
 
 - **CC harness 写 memory 时会重写 frontmatter** (加 `originSessionId`, 偶尔搞坏某文件需手修), 但**归一后的 `name:` 字段被保留 → rename 耐久**, 不会被 harness 冲掉。
 - 维护脚本在 `cc_context/tools/` (相对路径, 别用绝对): `normalize_memory_links.py` (命名归一)、`report_link_graph.py` (健康报告: 文件数/link 数/resolved/孤点)、`deorphan_links.py` (**批量补链**: 喂 `(from,to,reason)` 边表, fail-closed=校验目标 slug 存在 + 去重已连的 + 只读校验后才写; 连通审计出缺链清单后用它批量补 [比手工逐处 edit 稳], 但**逐条先 vet why 非盲信** per [[verification-independent-backstop]] 规则#3)、`extract_session_turns.py` (抽对话当 backstop 主体)、`stamp_living_status.py` (实例/分身 transclude 引擎, pre-commit 调)。
+- **2026-06-14 机器检查加固**: `scripts/check_memory_tree.py` (preflight 已调, push 门禁) 现额外跑两条 **warn-only** 检查 —— ① **harness↔cc_context 共维护文件 drift** (规范化跨树 wikilink 后比内容; 补 2026-06-14 禁用 pre-commit 自动镜像后的缺口, 防两树再分叉); ② **活树裸引用已归档节点未标 (已归档)** (link checker 只抓 `[[]]`, 抓不到 prose `见 X` 形式; 扫全部 archive slug, 根治归档时手列不全 —— 首跑即抓出 20 处遗漏)。两条都 warn 不 block, 不适用环境 (CI/换机) 自动 skip; 测试 `src/tests/test_memory_tree_guards.py`。归档节点时仍要 grep 全树清裸引用, 这条 lint 兜底响亮提示。
 
 ## 第三个失效轴: 同话题散在多条 memory 没跨链 (2026-06-02 用户 catch)
 
