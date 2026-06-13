@@ -3864,6 +3864,135 @@ def test_unexpected_routing_status_returns_unknown_without_exact_safe_cut(
     )
 
 
+def test_unexpected_routing_precheck_status_returns_unknown_without_routing_cut(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+        def add_benders_cut(self, *args, **kwargs):
+            raise AssertionError(
+                "unexpected routing precheck status must not emit a master cut"
+            )
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return []
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "unexpected_routing_precheck_status"}
+
+    class FakeRoutingGrid:
+        def __init__(self, occupied_cells, port_specs, **kwargs):
+            self.occupied_cells = occupied_cells
+            self.port_specs = port_specs
+            self.free_cells = set()
+
+    class ShouldNotBuildRoutingSubproblem:
+        def __init__(self, *args, **kwargs):
+            raise AssertionError(
+                "unexpected routing precheck status must fail closed before routing build"
+            )
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        return {
+            "status": "TIMEOUT",
+            "binding_selection_safe_reject": False,
+            "placement_level_conflict_set": [],
+            "blocked_ports": [],
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "regression"},
+            "_analysis": {
+                "status": "TIMEOUT",
+                "domain_stats": {"source": "regression"},
+            },
+        }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(benders_loop_module, "RoutingGrid", FakeRoutingGrid)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "RoutingSubproblem",
+        ShouldNotBuildRoutingSubproblem,
+    )
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError(
+            "unexpected routing precheck status must fail closed before exhaustion cut"
+        )
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["routing_status"] == "PRECHECK_TIMEOUT"
+    assert controller.last_proof_summary["routing_precheck"]["status"] == "TIMEOUT"
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "unexpected_routing_precheck_status"
+    )
+    assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
 def test_routing_timeout_returns_unknown_without_exact_safe_cut(monkeypatch, tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_routing_timeout")
 

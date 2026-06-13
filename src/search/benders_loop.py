@@ -120,6 +120,9 @@ EXACT_REQUIRED_ARTIFACTS = {
 }
 
 _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE = "master_cut_added_continue"
+_EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES = frozenset(
+    {"feasible", "front_blocked", "relaxed_disconnected"}
+)
 _CERTIFIED_SOLVE_MODES = {"certified_exact", "exploratory"}
 _CampaignHeartbeatCallback = Callable[[Mapping[str, Any]], None]
 _PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS = 32
@@ -5299,6 +5302,7 @@ class LBBDController:
 
             routing_domain_analysis = None
             routing_precheck = None
+            routing_precheck_error: Optional[Dict[str, Any]] = None
             if routing_placement_core is not None and hasattr(RoutingGrid, "from_placement_core"):
                 try:
                     routing_precheck = run_exact_routing_precheck(
@@ -5308,14 +5312,40 @@ class LBBDController:
                     )
                 except TypeError:
                     routing_precheck = None
-            if routing_precheck is None and hasattr(routing_grid, "free_cells") and hasattr(routing_grid, "port_specs"):
+                except Exception as exc:
+                    routing_precheck_error = {
+                        "status": "ERROR",
+                        "error_type": type(exc).__name__,
+                        "error_message": str(exc),
+                    }
+            if (
+                routing_precheck is None
+                and routing_precheck_error is None
+                and hasattr(routing_grid, "free_cells")
+                and hasattr(routing_grid, "port_specs")
+            ):
                 try:
                     routing_precheck = run_exact_routing_precheck(
                         routing_grid,
                         occupied_owner_by_cell=occupied_owner_by_cell,
                     )
                 except TypeError:
-                    routing_precheck = run_exact_routing_precheck(routing_grid)
+                    try:
+                        routing_precheck = run_exact_routing_precheck(routing_grid)
+                    except Exception as exc:
+                        routing_precheck_error = {
+                            "status": "ERROR",
+                            "error_type": type(exc).__name__,
+                            "error_message": str(exc),
+                        }
+                except Exception as exc:
+                    routing_precheck_error = {
+                        "status": "ERROR",
+                        "error_type": type(exc).__name__,
+                        "error_message": str(exc),
+                    }
+            if routing_precheck_error is not None:
+                routing_precheck = dict(routing_precheck_error)
             if routing_precheck is None:
                 routing_precheck = {
                     "status": "feasible",
@@ -5335,6 +5365,32 @@ class LBBDController:
             )
             precheck_status = str(routing_precheck_summary.get("status", "feasible"))
             self._routing_precheck_statuses.append(precheck_status)
+            if precheck_status not in _EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES:
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "FEASIBLE",
+                    "routing_status": (
+                        f"PRECHECK_{precheck_status.upper()}"
+                        if precheck_status
+                        else "PRECHECK_UNKNOWN"
+                    ),
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_precheck": dict(routing_precheck_summary),
+                    "subproblem_status_contract_violation": (
+                        "unexpected_routing_precheck_status"
+                    ),
+                    "master_follow_up": "fail_closed_unknown",
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
 
             # B1 Phase 4: env on 时 skip front_blocked early reject — precheck 是
             # heuristic, routing CP-SAT 实际能绕路. pose-bool master 不知 port
