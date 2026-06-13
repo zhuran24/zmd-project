@@ -7,10 +7,12 @@ D2 cut form: support-augmented instance-pose conjunction no-good over the
 terminal owners and placement footprints that were compiled into the D2 proof
 context.
 
-soundness: D2 model 是 production C2 routing 的 relaxation (cell capacity ≤ 1
-per layer 是 必要 condition, flow conservation 也是 必要 condition). 如果
-relaxation INFEASIBLE under the same terminal/occupancy support context, 任何
-包含该 support tuple 的 master layout 也 production C2-INFEASIBLE. cut sound.
+soundness: D2's CP-SAT core is not itself the certified production-routing
+relaxation boundary.  A D2 cut is emitted only when the production routing
+precheck already proves the same occupied grid + terminal context impossible
+(front_blocked / relaxed_disconnected); the D2 core may then shrink the logged
+terminal core, while the master cut remains support-augmented to the full
+precheck/D2 context.
 
 fail-closed: D2 exception / UNKNOWN / FEASIBLE 都不写 cut, 让 LBBD loop fall
 through 到现有 binding/routing path.
@@ -27,6 +29,7 @@ from src.models.d2_commodity_flow_core import (
     D2CoreResult,
     D2PoseAssumption,
 )
+from src.models.routing_subproblem import RoutingGrid, run_exact_routing_precheck
 
 GRID_W = 70
 GRID_H = 70
@@ -51,6 +54,11 @@ def _placement_to_occupied(
 ) -> Set[Tuple[int, int]]:
     occupied: Set[Tuple[int, int]] = set()
     for iid, sol in placement_solution.items():
+        # V88/CUT-R8-H1: ghost_pick is the empty-rectangle provenance marker, not
+        # a facility.  Keep D2's compiled occupancy口径 identical to the routing
+        # production path and to the support tuple below.
+        if str(iid) == "ghost_pick":
+            continue
         tpl = str(sol.get("facility_type", ""))
         pool = facility_pools.get(tpl, [])
         pose_idx = int(sol.get("pose_idx", -1))
@@ -161,6 +169,29 @@ def _build_d2_cut_metadata(
     }
 
 
+def _d2_precheck_status_for_cut_context(
+    *,
+    occupied: Set[Tuple[int, int]],
+    port_specs: Sequence[Mapping[str, Any]],
+) -> Tuple[str, Dict[str, Any]]:
+    """Return the production routing precheck status that certifies D2 context.
+
+    D2 is a separator only when its support-augmented tuple is no broader than a
+    production routing proof context.  The current D2 CP-SAT core is intentionally
+    coarse and may be stricter than production routing (for example it has no
+    explicit two-layer bridge semantics and uses flow conservation rather than
+    splitter/merger topology).  Therefore D2 cuts are accepted only when the
+    production precheck already classifies the same occupied grid + terminals as a
+    layout-local routing impossibility.  Otherwise D2 may still be a diagnostic,
+    but it is not a certified master-cut source.
+    """
+
+    summary = run_exact_routing_precheck(
+        RoutingGrid(set(occupied), [dict(ps) for ps in port_specs])
+    )
+    return str(summary.get("status", "unknown")), dict(summary)
+
+
 def run_d2_separation(
     *,
     master_delegate: Any,
@@ -185,7 +216,47 @@ def run_d2_separation(
             reason="empty_placement_or_ports",
         )
 
+    if any(not str(ps.get("instance_id", "")) for ps in port_specs):
+        return D2SeparationResult(
+            cut_added=False, d2_status="ERROR", d2_wall_s=0.0,
+            d2_total_vars=0, d2_constraints=0, raw_core_size=0,
+            reason="unowned_port_spec_not_certified_for_d2_cut",
+        )
+
     occupied = _placement_to_occupied(placement_solution, facility_pools)
+    try:
+        precheck_status, precheck_summary = _d2_precheck_status_for_cut_context(
+            occupied=occupied,
+            port_specs=port_specs,
+        )
+    except Exception as exc:
+        return D2SeparationResult(
+            cut_added=False,
+            d2_status="ERROR",
+            d2_wall_s=time.perf_counter() - t_start,
+            d2_total_vars=0,
+            d2_constraints=0,
+            raw_core_size=0,
+            reason=f"routing_precheck_error: {type(exc).__name__}",
+        )
+
+    if precheck_status not in {"front_blocked", "relaxed_disconnected"}:
+        return D2SeparationResult(
+            cut_added=False,
+            d2_status="MODEL_INVALID",
+            d2_wall_s=time.perf_counter() - t_start,
+            d2_total_vars=0,
+            d2_constraints=0,
+            raw_core_size=0,
+            cut_metadata={
+                "routing_precheck_status": precheck_status,
+                "routing_precheck_domain_stats": dict(
+                    precheck_summary.get("domain_stats", {})
+                ),
+            },
+            reason=f"routing_precheck_{precheck_status}_not_certified_for_d2_cut",
+        )
+
     assumptions = _build_pose_assumptions_for_owners_with_ports(placement_solution, port_specs)
     if not assumptions:
         return D2SeparationResult(
@@ -251,6 +322,10 @@ def run_d2_separation(
         raw_core=raw_core,
     )
     cut_metadata = _build_d2_cut_metadata(d2_result=result, raw_core=raw_core)
+    cut_metadata["routing_precheck_status"] = precheck_status
+    cut_metadata["routing_precheck_domain_stats"] = dict(
+        precheck_summary.get("domain_stats", {})
+    )
     cut_metadata["support_conflict_size"] = len(conflict_set)
     cut_metadata["support_owners"] = sorted(conflict_set.keys())
 
