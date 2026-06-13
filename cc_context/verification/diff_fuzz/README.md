@@ -14,7 +14,7 @@
 
 | 文件 | 被测 | oracle 覆盖 | 已知结果 |
 |---|---|---|---|
-| `routing_connectivity_diff.py` | `RoutingSubproblem.solve/extract_routes` | 全局 source→sink 连通 + 每 source 必有出路 (A-1 对偶) + cell-layer 容量 + port exact-one | 累计 900 实例 0 不一致 (含 F04-R4 落地后复跑 150) |
+| `routing_connectivity_diff.py` | `RoutingSubproblem.solve/extract_routes` | 全局 source→sink 连通 + 每 source 必有出路 (A-1 对偶) + cell-layer 容量 + port exact-one; **+ pattern-closure**: 每个 route-state 的 (flow_in,flow_out,layer) ∈ 独立推导的 48-pattern 合法集 (belt12+splitter16+merger16 + 4 直桥, 从 specs/03 §3.6.5-3.6.8 + specs/09 §9.3.3 推, 已对照 `_iter_state_patterns` 逐元素相等) + 桥下 L0 必空或直线带; 生成器 multi-sink/multi-source 逼出 splitter/merger, 双商品交叉自然产桥 | 累计 ~1350 实例 0 不一致 (pattern 扩展后 450: seeds 0-2 各 150, 实测每批 belt~2500 / bridge~800 / splitter~65 / merger~65 全类型压到) |
 | `master_geometry_diff.py` | `MasterPlacementModel` exact 坐标路径 | 正向: no-overlap (真实 footprint) / bounds / 电力覆盖 (coverage∩occupied); 反向: 小实例暴力穷举 + pinned 自裁; **生成器含无线箱形态** (方形无端口单朝向全 anchor, 镜像 post-F-01 协议箱几何, `wireless_mode` ~50% 掺入) | 累计 ~1760 实例 0 不一致 (28 假阳性全滤; 其中无线箱形态 168 实例, seeds 100-105) |
 | `binding_model_diff.py` | `PortBindingModel.build/solve/extract_selection/extract_port_specs` + `port_binding` 枚举 (默认 `routing_context=None` 路径) | [A] 固定操作 pose 级绑定域 set-equality + **多项式闭式计数二次见证** + active_ports 一致性; 可行性精确刻画 (FEASIBLE ⟺ sum(req_out)≤#out_slots ∧ sum(req_in)≤#in_slots ∧ 各 pose 端口格够, 双向无 pinned); [C1] 绑定选择合法 + [C2]/[C3] generic 输出/输入 per-commodity 精确计数 + 单赋; [D] extract_port_specs 重建 (routing_free/virtual 过滤, instance_id 区分). 生成器掺 pose_optional 合成 + shared-namespace (驱动 routing_free 输出过滤) | 累计 ~1210 实例 0 不一致 (加固后 600: seeds 0-4 各 120, pose_optional ~30/批 + shared_ns ~35/批 + 端口不足 expected_errors ~10/批如期 ValueError) |
 
@@ -46,4 +46,6 @@ exit 0 = 全净; exit 1 = 有 mismatch/异常 (输出前 20 条)。
 
 - ~~binding 建模忠实度 oracle (难点: binding 语义本身要独立重述)~~ ✅ 2026-06-14 (`binding_model_diff.py`; 默认 `routing_context=None` 路径; 4 视角 workflow 对抗式复核后加固: 多项式二次见证破同构盲区 / [C1] 非法绑定+越界自检 / overload-env 守卫 / pose_optional+shared_ns 覆盖 / dup-cell 诚实 NOTE)。
 - **binding RAB-SEP `routing_context!=None` 路径** (front-blocked 绑定 pattern 剪枝, 可致 false-INFEASIBLE) 独立切片 —— 需独立重导 port-front-status oracle (重述 occupancy + front 几何), 当前 binding 切片显式不覆盖。
+- **routing 实体排斥 + 桥不穿实体 (specs/09 §9.3.1 / §9.3.3.3, HIGH)** —— routing 切片当前用 `RoutingGrid(set(), ...)` 空占用, 整个 solid-obstacle 排斥面 (route-state 不落实体格、桥不跨实体、桥端无缝起降) 完全未压, 是 routing 面**最大真缺口**。下一增量 = generator 植入 occupied cells + RoutingGrid 带非空占用 + 独立查"无 route-state 落实体 / 无桥跨实体"。
+- **routing 端口度数精确 = N (N>1) (specs/09 §9.4.1, MED)** —— 当前 generator 只发单度端口 (每 front 一个 spec, N=1 隐含), N≥2 的 `sum(发射)==N` 度数履行未压。(1 格间隔 §9.3.5 由 placement 面负责, SUT 在 routing 侧是 stub, 不属本切片。)
 - ~~preprocess wireless 修复落地后, 按新候选几何重跑全部切片 + 把无线箱实例形态加进 master 切片生成器~~ ✅ 2026-06-12 (wireless_mode 形态 + seeds 100-105 共 360 实例 + routing 复跑 150, 全 0 不一致)。
