@@ -20,6 +20,7 @@ import argparse
 import random
 import sys
 from collections import defaultdict
+from itertools import combinations
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
 
@@ -201,6 +202,94 @@ def verify_routes_connectivity(
 
 
 # --------------------------------------------------------------------------- #
+# Pattern-closure verifier (route-state legality), independent of the solver
+# --------------------------------------------------------------------------- #
+def _legal_pattern_sets() -> Tuple[Set[Tuple[frozenset, frozenset]], Set[Tuple[frozenset, frozenset]]]:
+    """Independently re-derive the legal route-state pattern closed set.
+
+    Derived straight from the rules, NOT from RoutingSubproblem._iter_state_patterns:
+      * specs/03 §3.6.5 belt: 1 in, 1 out, in != out  -> 4*3 = 12
+      * specs/03 §3.6.7 splitter: 1 in, 2-3 out, out ⊆ dirs\\{in}  -> 4*(C(3,2)+C(3,3)) = 16
+      * specs/03 §3.6.8 merger: 2-3 in, 1 out, in ⊆ dirs\\{out}    -> 16
+      * specs/09 §9.3.3 bridge (L1): straight only, in={d}, out={Opp(d)} -> 4
+    L0 (ground) total = 44, L1 (elevated) total = 4 (sum 48). Returned as sets of
+    (frozenset(flow_in), frozenset(flow_out)).
+    """
+    dirs = ("N", "S", "E", "W")
+    dset = set(dirs)
+    l0: Set[Tuple[frozenset, frozenset]] = set()
+    for di in dirs:                                  # belt
+        for do in dirs:
+            if di != do:
+                l0.add((frozenset({di}), frozenset({do})))
+    for di in dirs:                                  # splitter (1 in, 2-3 out)
+        others = sorted(dset - {di})
+        for k in (2, 3):
+            for combo in combinations(others, k):
+                l0.add((frozenset({di}), frozenset(combo)))
+    for do in dirs:                                  # merger (2-3 in, 1 out)
+        others = sorted(dset - {do})
+        for k in (2, 3):
+            for combo in combinations(others, k):
+                l0.add((frozenset(combo), frozenset({do})))
+    l1: Set[Tuple[frozenset, frozenset]] = {
+        (frozenset({d}), frozenset({DIR_OPP[d]})) for d in dirs
+    }
+    return l0, l1
+
+
+_LEGAL_L0, _LEGAL_L1 = _legal_pattern_sets()
+_STRAIGHT_L0 = {(frozenset({d}), frozenset({DIR_OPP[d]})) for d in DIR_DELTA}
+
+
+def _classify_state(flow_in: frozenset, flow_out: frozenset, layer: int) -> str:
+    if layer == 1:
+        return "bridge"
+    if len(flow_in) == 1 and len(flow_out) == 1:
+        return "belt"
+    if len(flow_in) == 1 and len(flow_out) >= 2:
+        return "splitter"
+    if len(flow_in) >= 2 and len(flow_out) == 1:
+        return "merger"
+    return "other"
+
+
+def verify_pattern_closure(routes: List[Dict[str, Any]]) -> Tuple[bool, List[str]]:
+    """Each selected route-state must be a legal belt/splitter/merger/bridge,
+    and every L1 bridge may only sit over an empty cell or a straight L0 belt
+    (specs/09 §9.3.3). Illegal pattern accepted by the model => false-FEASIBLE.
+    """
+    reasons: List[str] = []
+    l0_by_cell: Dict[Tuple[int, int], Tuple[frozenset, frozenset]] = {}
+    bridge_cells: List[Tuple[int, int, str]] = []
+    for r in routes:
+        fi = frozenset(r["flow_in"])
+        fo = frozenset(r["flow_out"])
+        layer = int(r["layer"])
+        x, y, c = int(r["x"]), int(r["y"]), str(r["commodity"])
+        if layer == 0:
+            if (fi, fo) not in _LEGAL_L0:
+                reasons.append(f"[PAT] illegal L0 pattern ({x},{y}) [{c}]: in={sorted(fi)} out={sorted(fo)}")
+            l0_by_cell[(x, y)] = (fi, fo)
+        elif layer == 1:
+            if (fi, fo) not in _LEGAL_L1:
+                reasons.append(f"[PAT] illegal L1 bridge ({x},{y}) [{c}]: in={sorted(fi)} out={sorted(fo)} (bridge must be straight)")
+            bridge_cells.append((x, y, c))
+        else:
+            reasons.append(f"[PAT] unknown layer {layer} at ({x},{y}) [{c}]")
+    # Commodity is intentionally ignored here: the SUT's bridge/L0 coexistence
+    # constraint is cell-keyed (a bridge of any commodity over a non-straight L0
+    # of any commodity is illegal). Do NOT "fix" this into per-commodity.
+    for (x, y, c) in bridge_cells:
+        below = l0_by_cell.get((x, y))
+        if below is not None and below not in _STRAIGHT_L0:
+            reasons.append(
+                f"[PAT] bridge ({x},{y}) [{c}] sits over non-straight L0 {sorted(below[0])}->{sorted(below[1])} (specs/09 §9.3.3)"
+            )
+    return (not reasons), reasons
+
+
+# --------------------------------------------------------------------------- #
 # Instance generator
 # --------------------------------------------------------------------------- #
 def _domain(active_by_commodity: Dict[str, Set[Tuple[int, int]]]) -> Dict[str, Any]:
@@ -217,26 +306,39 @@ def _domain(active_by_commodity: Dict[str, Set[Tuple[int, int]]]) -> Dict[str, A
 
 
 def gen_instance(rng: random.Random) -> Tuple[List[Dict[str, Any]], List[str], Dict[str, Any]]:
-    """Random tiny routing instance: small grid, 1-2 commodities, 1 src+1 sink each."""
+    """Random tiny routing instance: small grid, 1-2 commodities.
+
+    Per commodity the source/sink multiplicity is randomized so the solver is
+    forced to use the full pattern alphabet, not just belts:
+      * belt:     1 source (left, E) + 1 sink (right, W)
+      * splitter: 1 source + 2 sinks (one source must feed two sinks)
+      * merger:   2 sources + 1 sink (two sources must merge into one sink)
+    L1 bridges arise on their own when two commodities' paths must cross.
+    """
     w = rng.randint(5, 9)
     h = rng.randint(4, 7)
     ncommod = rng.randint(1, 2)
     names = ["ore", "water"][:ncommod]
     port_specs: List[Dict[str, Any]] = []
     active: Dict[str, Set[Tuple[int, int]]] = {}
+
+    def distinct_ys(count: int) -> List[int]:
+        # count is at most 2 (splitter/merger multiplicity) and h >= 4, so
+        # distinct front rows always exist — no duplicate-front collisions.
+        return rng.sample(range(h), count)
+
     for c in names:
-        # full interior grid as active domain for this commodity
-        cells = {(x, y) for x in range(w) for y in range(h)}
-        active[c] = cells
-        # source on the left edge emitting E, sink on the right edge receiving W
-        sy = rng.randint(0, h - 1)
-        ky = rng.randint(0, h - 1)
-        port_specs.append(
-            {"instance_id": f"{c}_src", "x": -1, "y": sy, "dir": "E", "type": "out", "commodity": c}
-        )
-        port_specs.append(
-            {"instance_id": f"{c}_sink", "x": w, "y": ky, "dir": "W", "type": "in", "commodity": c}
-        )
+        active[c] = {(x, y) for x in range(w) for y in range(h)}
+        mode = rng.choice(["belt", "belt", "splitter", "merger"])  # belt weighted
+        n_src, n_sink = {"belt": (1, 1), "splitter": (1, 2), "merger": (2, 1)}[mode]
+        for i, sy in enumerate(distinct_ys(n_src)):
+            port_specs.append(
+                {"instance_id": f"{c}_src{i}", "x": -1, "y": sy, "dir": "E", "type": "out", "commodity": c}
+            )
+        for i, ky in enumerate(distinct_ys(n_sink)):
+            port_specs.append(
+                {"instance_id": f"{c}_sink{i}", "x": w, "y": ky, "dir": "W", "type": "in", "commodity": c}
+            )
     return port_specs, names, _domain(active)
 
 
@@ -310,13 +412,49 @@ def _self_test() -> int:
         print("SELF-TEST FAIL: port connector cell reuse not caught.")
         return 1
 
-    print("[self-test] PASS — accepts valid flow; catches A-1 dead-end + capacity overload + connector reuse.")
+    # --- pattern-closure self-tests (independent of the solver) ---
+    if len(_LEGAL_L0) != 44 or len(_LEGAL_L1) != 4:
+        print(f"SELF-TEST FAIL: legal pattern counts L0={len(_LEGAL_L0)} (want 44) L1={len(_LEGAL_L1)} (want 4).")
+        return 1
+    print(f"[self-test] legal pattern closed set: L0={len(_LEGAL_L0)} L1={len(_LEGAL_L1)} (48 total)")
+
+    # legal splitter (1 in, 2 out) + merger (2 in, 1 out) must pass.
+    legal_pat = [
+        {"x": 1, "y": 1, "layer": 0, "commodity": "ore", "flow_in": ["W"], "flow_out": ["E", "N"]},
+        {"x": 2, "y": 2, "layer": 0, "commodity": "ore", "flow_in": ["W", "S"], "flow_out": ["E"]},
+        {"x": 3, "y": 3, "layer": 1, "commodity": "ore", "flow_in": ["W"], "flow_out": ["E"]},
+    ]
+    okp, rp = verify_pattern_closure(legal_pat)
+    print(f"[self-test] legal splitter/merger/bridge: ok={okp}")
+    if not okp:
+        print(f"SELF-TEST FAIL: legal patterns flagged: {rp}")
+        return 1
+
+    # illegal patterns must all be flagged.
+    bad_cases = [
+        ("U-turn belt in==out", [{"x": 0, "y": 0, "layer": 0, "commodity": "ore", "flow_in": ["E"], "flow_out": ["E"]}]),
+        ("2-in-2-out crossing", [{"x": 0, "y": 0, "layer": 0, "commodity": "ore", "flow_in": ["N", "S"], "flow_out": ["E", "W"]}]),
+        ("L1 turn bridge", [{"x": 0, "y": 0, "layer": 1, "commodity": "ore", "flow_in": ["W"], "flow_out": ["N"]}]),
+        ("bridge over turn belt", [
+            {"x": 5, "y": 5, "layer": 0, "commodity": "water", "flow_in": ["W"], "flow_out": ["N"]},
+            {"x": 5, "y": 5, "layer": 1, "commodity": "ore", "flow_in": ["W"], "flow_out": ["E"]},
+        ]),
+    ]
+    for label, routes in bad_cases:
+        okb, rb = verify_pattern_closure(routes)
+        print(f"[self-test] illegal '{label}': flagged={not okb}")
+        if okb:
+            print(f"SELF-TEST FAIL: illegal pattern '{label}' NOT caught.")
+            return 1
+
+    print("[self-test] PASS — connectivity (A-1/capacity/connector) + pattern closure (illegal belt/splitter/bridge) all caught.")
     return 0
 
 
 def _batch(n: int, seed: int) -> int:
     rng = random.Random(seed)
     feasible = mismatches = infeasible = errors = 0
+    seen = defaultdict(int)  # pattern-type telemetry across feasible cases
     mismatch_cases: List[str] = []
     for i in range(n):
         port_specs, names, domain = gen_instance(rng)
@@ -327,10 +465,13 @@ def _batch(n: int, seed: int) -> int:
             if status in ("FEASIBLE",):
                 feasible += 1
                 routes = routing.extract_routes()
-                ok, reasons = verify_routes_connectivity(routes, port_specs, names)
-                if not ok:
+                ok_c, reasons_c = verify_routes_connectivity(routes, port_specs, names)
+                ok_p, reasons_p = verify_pattern_closure(routes)
+                for r in routes:
+                    seen[_classify_state(frozenset(r["flow_in"]), frozenset(r["flow_out"]), int(r["layer"]))] += 1
+                if not (ok_c and ok_p):
                     mismatches += 1
-                    mismatch_cases.append(f"seed-iter {i}: status={status} reasons={reasons[:3]}")
+                    mismatch_cases.append(f"seed-iter {i}: status={status} reasons={(reasons_c + reasons_p)[:4]}")
             else:
                 infeasible += 1
         except Exception as exc:  # noqa: BLE001
@@ -341,6 +482,7 @@ def _batch(n: int, seed: int) -> int:
     print("=" * 60)
     print(f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} "
           f"mismatches={mismatches} errors={errors}")
+    print(f"pattern states seen: {dict(seen)}")
     for case in mismatch_cases[:20]:
         print("  MISMATCH:", case)
     return 1 if (mismatches or errors) else 0
