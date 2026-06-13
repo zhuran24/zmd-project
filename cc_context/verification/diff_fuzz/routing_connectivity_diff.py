@@ -22,7 +22,7 @@ import sys
 from collections import defaultdict
 from itertools import combinations
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 REPO = Path(__file__).resolve().parents[3]
 if str(REPO) not in sys.path:
@@ -311,6 +311,57 @@ def verify_obstacle_exclusion(
     return (not reasons), reasons
 
 
+def _single_commodity_routable(
+    port_specs: List[Dict[str, Any]],
+    domain: Dict[str, Any],
+    occupied: Set[Tuple[int, int]],
+) -> Optional[bool]:
+    """Exact single-commodity routing-feasibility witness (REVERSE direction).
+
+    Eligible only when there is exactly ONE commodity carrying exactly one source
+    and one sink. For such an instance a valid routing exists IFF the source
+    front and sink front lie in the same 4-connected component of the routable
+    region (active domain minus solid cells): any simple grid path realizes as a
+    legal belt chain, and any routing induces such a path — so connectivity is
+    necessary AND sufficient. If the model returns INFEASIBLE while this returns
+    True, that is a false-INFEASIBLE (an over-cut — e.g. an unsound lazy
+    connectivity cut or an over-restricted domain — removing a real routing).
+    Returns None when not eligible (multi-commodity / splitter / merger need a
+    harder oracle; left to the forward checks).
+    """
+    by_c: Dict[str, Dict[str, List[Dict[str, Any]]]] = defaultdict(lambda: {"src": [], "sink": []})
+    for ps in port_specs:
+        by_c[str(ps["commodity"])]["src" if ps["type"] == "out" else "sink"].append(ps)
+    if len(by_c) != 1:
+        return None
+    commodity, sides = next(iter(by_c.items()))
+    if len(sides["src"]) != 1 or len(sides["sink"]) != 1:
+        return None
+    src, sink = sides["src"][0], sides["sink"][0]
+
+    def front(ps: Dict[str, Any]) -> Tuple[int, int]:
+        dx, dy = DIR_DELTA[str(ps["dir"])]
+        return (int(ps["x"]) + dx, int(ps["y"]) + dy)
+
+    src_front, sink_front = front(src), front(sink)
+    active = {(int(a), int(b)) for a, b in domain.get("commodity_active_cells", {}).get(commodity, [])}
+    free = active - {(int(x), int(y)) for x, y in occupied}
+    if src_front not in free or sink_front not in free:
+        return None  # a port front is itself blocked/out-of-domain (front_blocked), not an over-cut
+    seen = {src_front}
+    stack = [src_front]
+    while stack:
+        cx, cy = stack.pop()
+        if (cx, cy) == sink_front:
+            return True
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nb = (cx + dx, cy + dy)
+            if nb in free and nb not in seen:
+                seen.add(nb)
+                stack.append(nb)
+    return sink_front in seen
+
+
 # --------------------------------------------------------------------------- #
 # Instance generator
 # --------------------------------------------------------------------------- #
@@ -357,6 +408,15 @@ def gen_instance(
     n_occ = rng.randint(0, 3)
     occupied: Set[Tuple[int, int]] = set(rng.sample(interior, min(n_occ, len(interior)))) if interior else set()
     stale_domain = rng.random() < 0.5  # leave occupied IN the active domain to test the intersection guard
+
+    # Single-commodity wall stress: drop a partial/full column wall so genuinely
+    # INFEASIBLE single-commodity cases get produced. Without it single-commodity
+    # belts are almost always feasible and the reverse routability oracle never
+    # fires; gap=0 -> full wall -> infeasible, gap>=1 -> passable -> feasible.
+    if ncommod == 1 and w >= 3 and rng.random() < 0.6:
+        wx = rng.randint(1, w - 2)
+        gap = set(rng.sample(range(h), rng.randint(0, min(2, h))))
+        occupied |= {(wx, y) for y in range(h) if y not in gap}
 
     def distinct_ys(count: int) -> List[int]:
         # count is at most 2 (splitter/merger multiplicity) and h >= 4, so
@@ -499,14 +559,32 @@ def _self_test() -> int:
         print("SELF-TEST FAIL: obstacle exclusion check broken.")
         return 1
 
-    print("[self-test] PASS — connectivity (A-1/capacity/connector) + pattern closure (illegal belt/splitter/bridge) + obstacle exclusion (穿墙/桥穿实体) all caught.")
+    # --- reverse-direction single-commodity routability self-tests ---
+    sc_region = {(x, y) for x in range(5) for y in range(3)}
+    sc_ports = [
+        {"instance_id": "o_src", "x": -1, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "o_sink", "x": 5, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    r_conn = _single_commodity_routable(sc_ports, _domain({"ore": set(sc_region)}), set())
+    r_wall = _single_commodity_routable(sc_ports, _domain({"ore": set(sc_region)}), {(2, y) for y in range(3)})
+    mc_ports = sc_ports + [
+        {"instance_id": "w_src", "x": -1, "y": 2, "dir": "E", "type": "out", "commodity": "water"},
+        {"instance_id": "w_sink", "x": 5, "y": 2, "dir": "W", "type": "in", "commodity": "water"},
+    ]
+    r_mc = _single_commodity_routable(mc_ports, _domain({"ore": set(sc_region), "water": set(sc_region)}), set())
+    print(f"[self-test] reverse: connected={r_conn} walled={r_wall} multi-commodity={r_mc}")
+    if r_conn is not True or r_wall is not False or r_mc is not None:
+        print("SELF-TEST FAIL: single-commodity routability oracle broken.")
+        return 1
+
+    print("[self-test] PASS — connectivity (A-1/capacity/connector) + pattern closure (illegal belt/splitter/bridge) + obstacle exclusion (穿墙/桥穿实体) + reverse single-commodity routability all caught.")
     return 0
 
 
 def _batch(n: int, seed: int) -> int:
     rng = random.Random(seed)
-    feasible = mismatches = infeasible = errors = 0
-    occupied_cases = 0
+    feasible = mismatches = infeasible = errors = other = 0
+    occupied_cases = rev_confirmed = 0  # rev_confirmed = INFEASIBLE independently confirmed disconnected
     seen = defaultdict(int)  # pattern-type telemetry across feasible cases
     mismatch_cases: List[str] = []
     for i in range(n):
@@ -528,16 +606,26 @@ def _batch(n: int, seed: int) -> int:
                 if not (ok_c and ok_p and ok_s):
                     mismatches += 1
                     mismatch_cases.append(f"seed-iter {i}: status={status} reasons={(reasons_c + reasons_p + reasons_s)[:4]}")
-            else:
+            elif status == "INFEASIBLE":
                 infeasible += 1
+                # REVERSE direction: single-commodity INFEASIBLE must be genuinely disconnected.
+                routable = _single_commodity_routable(port_specs, domain, occupied)
+                if routable is True:
+                    mismatches += 1
+                    mismatch_cases.append(f"seed-iter {i}: FALSE-INFEASIBLE — single-commodity src/sink 4-connected in free region but model INFEASIBLE")
+                elif routable is False:
+                    rev_confirmed += 1
+            else:  # TIMEOUT / UNKNOWN — not a definitive INFEASIBLE claim, skip reverse
+                other += 1
         except Exception as exc:  # noqa: BLE001
             errors += 1
             mismatch_cases.append(f"seed-iter {i}: EXC {type(exc).__name__}: {exc}")
         if (i + 1) % 25 == 0:
             print(f"  ...{i + 1}/{n}  feasible={feasible} mismatch={mismatches} infeasible={infeasible} err={errors}")
     print("=" * 60)
-    print(f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} "
-          f"mismatches={mismatches} errors={errors} occupied_cases={occupied_cases}")
+    print(f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} other={other} "
+          f"mismatches={mismatches} errors={errors} occupied_cases={occupied_cases} "
+          f"rev_confirmed_disconnected={rev_confirmed}")
     print(f"pattern states seen: {dict(seen)}")
     for case in mismatch_cases[:20]:
         print("  MISMATCH:", case)
