@@ -14,6 +14,7 @@ from __future__ import annotations
 import os
 import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 from ortools.sat.python import cp_model
@@ -301,6 +302,72 @@ def _fixture_powered_with_unpowered_pole_blocker():
         },
     }
     return instances, pools, rules
+
+
+def test_power_subproblem_aborts_when_selected_ghost_context_missing(tmp_path):
+    """Delegated power witness must not run with an empty/missing ghost context.
+
+    Without this guard the FEASIBLE branch can solve a de-ghosted subproblem and
+    inject a pole witness that would be illegal for the selected empty rectangle.
+    """
+    from src.search.benders_loop import LBBDController
+
+    pools = {
+        "powered_widget": [
+            {
+                "pose_id": "machine_left",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "power_pole": [
+            {
+                "pose_id": "pole_on_unresolved_ghost",
+                "anchor": {"x": 1, "y": 0},
+                "occupied_cells": [[1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0]],
+            }
+        ],
+    }
+    master = SimpleNamespace(
+        facility_pools=pools,
+        _powered_templates={"powered_widget"},
+        _power_coverers_by_template_pose={"powered_widget": {0: [0]}},
+        u_vars={},
+        _ghost_domains=[],
+        _solver=None,
+    )
+    controller = LBBDController(
+        master=master,
+        cut_manager=CutManager(tmp_path / "checkpoints", solve_mode="certified_exact"),
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+    )
+
+    outcome, payload = controller._run_power_placement_subproblem(
+        solution={
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+            "ghost_pick": {
+                "instance_id": "ghost_pick",
+                "facility_type": "ghost_pick",
+                "pose_idx": 0,
+            },
+        },
+        iteration=1,
+    )
+
+    assert outcome == "ABORT"
+    assert payload is None
+    assert controller.generated_exact_safe_cuts == []
 
 
 def test_power_subproblem_infeasible_cut_keeps_unpowered_occupancy_support():

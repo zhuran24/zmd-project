@@ -4774,7 +4774,29 @@ class LBBDController:
         coverers = (
             getattr(self.master, "_power_coverers_by_template_pose", {}) or {}
         )
+        ghost_anchor_info = self._selected_ghost_anchor()
+        if ghost_anchor_info is None:
+            # The delegated power witness is part of the same empty-rectangle proof
+            # context as the master solution.  If the selected ghost alternative
+            # cannot be recovered, do not solve a de-ghosted subproblem: a FEASIBLE
+            # witness could otherwise place poles inside the certified empty rect.
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_missing_ghost_anchor",
+                iteration=iteration,
+            )
+            return "ABORT", None
+        rect_idx, u_var, anchor = ghost_anchor_info
+
         ghost_cells = self._selected_ghost_cells()
+        if not ghost_cells:
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_missing_ghost_cells",
+                iteration=iteration,
+                extra={"ghost_rect_idx": int(rect_idx)},
+            )
+            return "ABORT", None
 
         sub = PowerPlacementSubproblem(
             master_solution=solution,
@@ -4827,19 +4849,6 @@ class LBBDController:
             if not conflict_set:
                 return "ABORT", None
 
-            ghost_anchor_info = self._selected_ghost_anchor()
-            if ghost_anchor_info is None:
-                # ghost anchor 取不到 → exact-safe fallback 是 abort, 不退化到
-                # 全局 cut (按 GPT v3 P0 #1 建议).
-                self._emit_heartbeat(
-                    stage="power_placement_subproblem",
-                    event="cut_skipped_no_ghost_anchor",
-                    iteration=iteration,
-                    extra={"conflict_size": len(conflict_set)},
-                )
-                return "ABORT", None
-
-            rect_idx, u_var, anchor = ghost_anchor_info
             anchor_x = int(anchor.get("x", 0))
             anchor_y = int(anchor.get("y", 0))
             condition_set = {f"ghost_anchor::({anchor_x},{anchor_y})": int(rect_idx)}

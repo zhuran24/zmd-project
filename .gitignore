@@ -67,3 +67,6 @@ cc_context/review/deps/
 # 解包出的散文件同样不入库 — 审查工件归档走 cc_context/review/)
 补丁包/
 data/preprocessed/candidate_placements.json
+
+# GPT dispatch 录屏工件 (二进制大文件, 本地保留)
+cc_context/review/gpt_dispatch/recordings/
