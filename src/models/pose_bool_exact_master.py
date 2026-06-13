@@ -90,6 +90,14 @@ class PoseBoolExactMasterDelegate:
         ] = {}
         self._global_cache_built = False
 
+    def _invalidate_owner_solver_witness(self) -> None:
+        # The delegate mutates owner.model after solve when adding cuts.  Any
+        # previous CpSolver response may now violate the strengthened model, so
+        # extract_solution()/extract_bound_state() must not re-read it.
+        self.owner._last_solution = None
+        self.owner._solver = None
+        self.owner._status = None
+
     def _forbidden_cells(self) -> Set[Tuple[int, int]]:
         if not self.owner.ghost_rect:
             return set()
@@ -371,6 +379,7 @@ class PoseBoolExactMasterDelegate:
         ro_counts: Mapping[str, Any] = getattr(
             self.owner, "_exact_required_pose_optional_counts", {}
         ) or {}
+        required_power_pole_demand = 0
         for tpl, demand_raw in dict(ro_counts).items():
             try:
                 demand = int(demand_raw)
@@ -378,8 +387,9 @@ class PoseBoolExactMasterDelegate:
                 continue
             if demand <= 0:
                 continue
-            if tpl == "power_pole":
-                continue  # power_pole 走 residual_optional path
+            if str(tpl) == "power_pole":
+                required_power_pole_demand += int(demand)
+                continue  # enforced on the shared pole pool after feasible pole vars exist
             ro_templates_seen.append(str(tpl))
             self._ro_demand[str(tpl)] = demand
             feas = self._feasible_poses(str(tpl), forbidden)
@@ -417,6 +427,13 @@ class PoseBoolExactMasterDelegate:
             for c in cells:
                 cell_poses.setdefault(c, []).append(v)
         self.residual_optional_slots["power_pole"] = list(range(len(self.pole_vars)))
+        if required_power_pole_demand > 0:
+            self.required_optional_slots["power_pole"] = list(range(int(required_power_pole_demand)))
+            pole_terms = list(self.pole_vars.values())
+            if len(pole_terms) < int(required_power_pole_demand):
+                self.model.Add(0 >= int(required_power_pole_demand))
+                return
+            self.model.Add(sum(pole_terms) >= int(required_power_pole_demand))
 
         # Cell exclusivity
         for vars_in_cell in cell_poses.values():
@@ -817,7 +834,7 @@ class PoseBoolExactMasterDelegate:
         self.model.Add(sum(sig_exprs) <= K - 1)
         cut_index = int(self.owner.build_stats.get("patch_routing_core_cut_count", 0))
         self.owner.build_stats["patch_routing_core_cut_count"] = cut_index + 1
-        self.owner._last_solution = None
+        self._invalidate_owner_solver_witness()
         return {
             "added": True,
             "reason": "ok",
@@ -849,7 +866,10 @@ class PoseBoolExactMasterDelegate:
             grid_w=self.grid_w, grid_h=self.grid_h,
             routing_free_sink_commodities=self._routing_free_sink_commodities(),
         )
-        return bool(stats.get("capacity_constraints", 0) > 0)
+        added = bool(stats.get("capacity_constraints", 0) > 0)
+        if added:
+            self._invalidate_owner_solver_witness()
+        return added
 
     def extract_solution(self) -> Dict[str, Any]:
         solver = self.owner._solver
@@ -964,7 +984,7 @@ class PoseBoolExactMasterDelegate:
             constraint.OnlyEnforceIf(cond)
         cut_index = int(self.owner.build_stats.get("pose_bool_benders_cut_count", 0))
         self.owner.build_stats["pose_bool_benders_cut_count"] = cut_index + 1
-        self.owner._last_solution = None
+        self._invalidate_owner_solver_witness()
         return True
 
     def apply_solution_hint(
@@ -1167,7 +1187,7 @@ class PoseBoolExactMasterDelegate:
         if cut_added:
             cut_index = int(self.owner.build_stats.get("pose_bool_lazy_demand_cut_count", 0))
             self.owner.build_stats["pose_bool_lazy_demand_cut_count"] = cut_index + 1
-            self.owner._last_solution = None
+            self._invalidate_owner_solver_witness()
         return cut_added
 
     def _enumerate_poses_with_port_at(
@@ -1223,5 +1243,5 @@ class PoseBoolExactMasterDelegate:
             "port_candidates": len(port_candidates),
             "blocker_candidates": len(blocker_candidates),
         }
-        self.owner._last_solution = None
+        self._invalidate_owner_solver_witness()
         return True
