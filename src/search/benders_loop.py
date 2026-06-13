@@ -5267,10 +5267,12 @@ class LBBDController:
         self._routing_core_build_seconds = time.perf_counter() - routing_core_started
         binding_rejected_selections: List[Dict[str, Any]] = []
 
-        def _retry_current_binding_without_overload_separation() -> Optional[str]:
+        def _retry_current_binding_without_overload_separation() -> str:
             nonlocal binding_model, binding_status
             if not self._binding_used_overload_separation(binding_model):
-                return None
+                # 未启用 overload separation: 不需 env-off fallback, 原 INFEASIBLE 即真,
+                # 返回当前 binding_status (调用点恒为 "INFEASIBLE") 让调用处走 exhaustion break。
+                return binding_status
             retry_model, retry_status = self._retry_binding_without_overload_separation(
                 solution=solution,
                 iteration=iteration,
