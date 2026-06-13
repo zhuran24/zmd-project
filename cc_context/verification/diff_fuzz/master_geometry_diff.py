@@ -302,6 +302,12 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         "globals": {"grid": {"width": grid_w, "height": grid_h}},
         "facility_templates": templates,
     }
+    # ~40% of cases also demand a small empty ghost rectangle (the certified
+    # max-empty-rect objective). The master must keep gw*gh cells facility-free;
+    # the forward verifier checks the chosen rect is genuinely empty.
+    ghost_rect = None
+    if rng.random() < 0.4:
+        ghost_rect = (rng.randint(1, min(2, grid_w)), rng.randint(1, min(2, grid_h)))
     return {
         "grid_w": grid_w,
         "grid_h": grid_h,
@@ -311,10 +317,44 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         "pools": pools,
         "instances": instances,
         "powered_templates": powered_templates,
+        "ghost_rect": ghost_rect,
     }
 
 
-def run_master(case: Dict[str, Any]) -> Tuple[str, List[Tuple[str, str, Dict[str, Any]]]]:
+def verify_ghost_emptiness(
+    ghost_pick: Optional[Dict[str, Any]],
+    ghost_rect: Optional[Tuple[int, int]],
+    selected: List[Tuple[str, str, Dict[str, Any]]],
+    *,
+    grid_w: int,
+    grid_h: int,
+) -> Tuple[bool, List[str]]:
+    """The chosen ghost rectangle (the certified MAX-EMPTY-RECT, the project's
+    whole objective) must be a genuine empty rectangle: in-grid and disjoint from
+    every selected facility's occupied cells. A facility overlapping the 'empty'
+    rect = false CERTIFIED of a non-empty empty-rectangle. Independent: just
+    expand anchor+dims and intersect with the occupied set."""
+    reasons: List[str] = []
+    if ghost_rect is None:
+        return True, reasons
+    if ghost_pick is None:
+        return False, ["ghost_rect set but FEASIBLE solution has no ghost_pick"]
+    gw, gh = int(ghost_rect[0]), int(ghost_rect[1])
+    ax, ay = int(ghost_pick["anchor"]["x"]), int(ghost_pick["anchor"]["y"])
+    ghost_cells = {(ax + dx, ay + dy) for dx in range(gw) for dy in range(gh)}
+    for (x, y) in ghost_cells:
+        if not (0 <= x < grid_w and 0 <= y < grid_h):
+            reasons.append(f"ghost cell {(x, y)} outside {grid_w}x{grid_h}")
+    occupied: Set[Cell] = set()
+    for _iid, _tpl, pose in selected:
+        occupied |= _cells(pose)
+    overlap = ghost_cells & occupied
+    if overlap:
+        reasons.append(f"ghost rect overlaps facility cells {sorted(overlap)[:4]} (non-empty 'empty' rect)")
+    return (not reasons), reasons
+
+
+def run_master(case: Dict[str, Any]) -> Tuple[str, List[Tuple[str, str, Dict[str, Any]]], Optional[Dict[str, Any]]]:
     core = MasterPlacementModel.build_exact_core(
         case["instances"],
         case["pools"],
@@ -323,21 +363,25 @@ def run_master(case: Dict[str, Any]) -> Tuple[str, List[Tuple[str, str, Dict[str
         skip_power_coverage=not case["power_mode"],
         enable_symmetry_breaking=False,
     )
-    overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=None)
+    overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=case.get("ghost_rect"))
     status = overlay.solve(time_limit_seconds=10.0)
     if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         solution = overlay.extract_solution()
         selected: List[Tuple[str, str, Dict[str, Any]]] = []
+        ghost_pick: Optional[Dict[str, Any]] = None
         for solution_id, entry in solution.items():
-            if solution_id == "ghost_pick" or not isinstance(entry, dict):
+            if not isinstance(entry, dict):
+                continue
+            if solution_id == "ghost_pick":
+                ghost_pick = entry
                 continue
             tpl = str(entry["facility_type"])
             pose = case["pools"][tpl][int(entry["pose_idx"])]
             selected.append((str(solution_id), tpl, pose))
-        return "FEASIBLE", selected
+        return "FEASIBLE", selected, ghost_pick
     if status == cp_model.INFEASIBLE:
-        return "INFEASIBLE", []
-    return "UNKNOWN", []
+        return "INFEASIBLE", [], None
+    return "UNKNOWN", [], None
 
 
 def _instance_pools(case: Dict[str, Any]) -> List[Tuple[str, str, List[Dict[str, Any]]]]:
@@ -450,6 +494,15 @@ def _self_test() -> int:
     if not ok5 or ok6:
         return 1
 
+    # 6. ghost-rect emptiness: the chosen empty rectangle must be facility-free.
+    gp = {"anchor": {"x": 5, "y": 5}}
+    g_ok, _ = verify_ghost_emptiness(gp, (2, 2), [("a", "blocka", pose([[0, 0], [1, 0]]))], grid_w=10, grid_h=10)
+    g_bad, _ = verify_ghost_emptiness(gp, (2, 2), [("b", "blocka", pose([[5, 5], [6, 5]]))], grid_w=10, grid_h=10)
+    g_none, _ = verify_ghost_emptiness(None, (2, 2), [], grid_w=10, grid_h=10)
+    print(f"[self-test] ghost: clean ok={g_ok}, overlap flagged={not g_bad}, no-pick flagged={not g_none}")
+    if not g_ok or g_bad or g_none:
+        return 1
+
     print("[self-test] PASS")
     return 0
 
@@ -463,12 +516,15 @@ def _batch(n: int, seed: int) -> int:
     errors: List[str] = []
     bf_skipped = 0
     reverse_filtered = 0
+    ghost_cases = ghost_feasible = 0
     for i in range(n):
         case = gen_instance(rng)
         if case.get("wireless_mode"):
             wireless_cases += 1
+        if case.get("ghost_rect"):
+            ghost_cases += 1
         try:
-            status, selected = run_master(case)
+            status, selected, ghost_pick = run_master(case)
             if status == "FEASIBLE":
                 feasible += 1
                 ok, reasons = verify_selected_placement(
@@ -482,6 +538,15 @@ def _batch(n: int, seed: int) -> int:
                 if not mandatory_ids <= selected_ids:
                     ok = False
                     reasons.append(f"missing mandatory ids: {sorted(mandatory_ids - selected_ids)}")
+                if case.get("ghost_rect"):
+                    ghost_feasible += 1
+                gok, greasons = verify_ghost_emptiness(
+                    ghost_pick, case.get("ghost_rect"), selected,
+                    grid_w=case["grid_w"], grid_h=case["grid_h"],
+                )
+                if not gok:
+                    ok = False
+                    reasons.extend(greasons)
                 if not ok:
                     forward_mismatches.append(f"iter {i}: {reasons[:4]}")
             elif status == "INFEASIBLE":
@@ -505,7 +570,7 @@ def _batch(n: int, seed: int) -> int:
                         # Adjudicate with the master itself: pin pools to the
                         # witness poses and re-solve. Only pinned-FEASIBLE proves
                         # the full pool was genuinely over-cut.
-                        pinned_status, _ = run_master(_pin_case(case, witness))
+                        pinned_status, _, _ = run_master(_pin_case(case, witness))
                         if pinned_status == "FEASIBLE":
                             reverse_mismatches.append(
                                 f"iter {i}: master INFEASIBLE on full pool but FEASIBLE when "
@@ -525,7 +590,7 @@ def _batch(n: int, seed: int) -> int:
     print("=" * 60)
     print(
         f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} unknown={unknown} "
-        f"wireless_cases={wireless_cases} "
+        f"wireless_cases={wireless_cases} ghost_cases={ghost_cases} ghost_feasible={ghost_feasible} "
         f"bf_skipped={bf_skipped} reverse_filtered={reverse_filtered} "
         f"forward_mismatches={len(forward_mismatches)} "
         f"reverse_mismatches={len(reverse_mismatches)} errors={len(errors)}"
@@ -546,7 +611,7 @@ def _inspect(seed: int, iteration: int) -> int:
     print("instances:", [(i["instance_id"], i["facility_type"]) for i in case["instances"]])
     print("pool sizes:", {k: len(v) for k, v in case["pools"].items()})
 
-    status, selected = run_master(case)
+    status, selected, _ghost_pick = run_master(case)
     print(f"master status = {status}")
     if status != "INFEASIBLE":
         print("not the INFEASIBLE case; nothing to inspect")
@@ -576,7 +641,7 @@ def _inspect(seed: int, iteration: int) -> int:
     }
     pinned_case = dict(case)
     pinned_case["pools"] = pinned_pools
-    pinned_status, _ = run_master(pinned_case)
+    pinned_status, _, _ = run_master(pinned_case)
     print(f"pinned-pool master status = {pinned_status}")
     print("=" * 50)
     if pinned_status in ("FEASIBLE",):
