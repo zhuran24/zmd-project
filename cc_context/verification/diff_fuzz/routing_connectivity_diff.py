@@ -397,10 +397,13 @@ def gen_instance(
     so the model's free-cell intersection guard (F-RT-R5-01) is exercised; the
     model must still keep route-states off the solids. Returns the occupied set.
     """
-    w = rng.randint(5, 9)
-    h = rng.randint(4, 7)
-    ncommod = rng.randint(1, 2)
-    names = ["ore", "water"][:ncommod]
+    ncommod = rng.randint(1, 3)
+    names = ["ore", "water", "stone"][:ncommod]
+    # Scale the grid up with commodity count so 3-commodity crossings stay
+    # solvable (more commodities -> more bridges + tighter connectivity stress,
+    # closer to the real 70x70 multi-commodity pressure) without timing out.
+    w = rng.randint(5, 9) + 2 * (ncommod - 1)
+    h = rng.randint(4, 7) + (ncommod - 1)
     port_specs: List[Dict[str, Any]] = []
     active: Dict[str, Set[Tuple[int, int]]] = {}
 
