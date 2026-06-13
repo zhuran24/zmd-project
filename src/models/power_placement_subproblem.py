@@ -21,11 +21,12 @@ Exact-preservation argument:
   which is what the in-master coverage encoding consults. So an in-master
   solution and a (master+subproblem) solution describe the same set of
   feasible layouts.
-- If the subproblem is INFEASIBLE for a given master layout, we feed a
+- If the subproblem is INFEASIBLE for a given master layout, the caller feeds a
   conservative presence-no-good back to the master via `add_benders_cut`,
-  forbidding that exact powered-instance pose tuple from co-occurring again.
-  That preserves exactness: the cut only rules out a layout proven
-  uncoverable by *any* pole configuration.
+  forbidding the fixed non-pole facility occupancy support that made the pole
+  subproblem uncoverable.  That preserves exactness: the cut only rules out a
+  layout proven uncoverable by *any* pole configuration under that fixed
+  support.
 """
 from __future__ import annotations
 

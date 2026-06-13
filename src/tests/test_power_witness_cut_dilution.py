@@ -239,3 +239,114 @@ def test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member()
     assert applied is False
     assert controller.generated_exact_safe_cuts == []
     assert controller.cut_manager.cuts == []
+
+
+def _fixture_powered_with_unpowered_pole_blocker():
+    instances = [
+        {
+            "instance_id": "powered_001",
+            "facility_type": "powered_widget",
+            "operation_type": "processing",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+        {
+            "instance_id": "boundary_001",
+            "facility_type": "boundary_storage_port",
+            "operation_type": "boundary_io",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+    ]
+    pools = {
+        "powered_widget": [
+            {
+                "pose_id": "machine_left",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ],
+        "boundary_storage_port": [
+            {
+                "pose_id": "unpowered_blocker_on_only_pole_cell",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ],
+        "power_pole": [
+            {
+                "pose_id": "only_covering_pole",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0]],
+            },
+        ],
+        "protocol_storage_box": [],
+    }
+    rules = {
+        "globals": {"grid": {"width": 4, "height": 1}},
+        "facility_templates": {
+            "powered_widget": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
+            "boundary_storage_port": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
+        },
+    }
+    return instances, pools, rules
+
+
+def test_power_subproblem_infeasible_cut_keeps_unpowered_occupancy_support():
+    """Unpowered placed cells can make the deferred pole subproblem infeasible.
+
+    The ghost-conditioned power cut must therefore retain every fixed facility
+    occupancy literal used by the subproblem, not just the powered consumers.
+    Otherwise the cut can reject a later layout with the same powered machine
+    and ghost anchor after moving the unpowered blocker away from the only pole
+    cell.
+    """
+    instances, pools, rules = _fixture_powered_with_unpowered_pole_blocker()
+    with mock.patch.dict(
+        os.environ,
+        {
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM": "1",
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST": "1",
+        },
+    ):
+        core = MasterPlacementModel.build_exact_core(
+            instances, pools, rules, skip_power_coverage=True,
+        )
+        master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+        status = master.solve(time_limit_seconds=5.0)
+        assert status in (cp_model.OPTIMAL, cp_model.FEASIBLE)
+        controller = _build_controller(master)
+        solution = {
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+            "boundary_001": {
+                "instance_id": "boundary_001",
+                "facility_type": "boundary_storage_port",
+                "pose_idx": 0,
+            },
+        }
+        outcome, payload = controller._run_power_placement_subproblem(
+            solution=solution,
+            iteration=1,
+        )
+
+    assert outcome == "INFEASIBLE_CUT_ADDED"
+    assert payload is None
+    assert controller.generated_exact_safe_cuts
+    cut = controller.generated_exact_safe_cuts[-1]
+    assert cut.cut_type == "power_subproblem_infeasible_nogood"
+    assert cut.conflict_set == {"powered_001": 0, "boundary_001": 0}

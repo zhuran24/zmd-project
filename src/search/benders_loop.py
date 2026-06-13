@@ -4807,11 +4807,23 @@ class LBBDController:
             # 覆盖到 ghost cells, ghost A 挡住唯一可用 pole 时 infeasible 不代表
             # ghost B 下同一组 pose 也 infeasible. cut 必须 ghost-conditioned,
             # 否则 over-prune 跨 ghost alternatives.
+            #
+            # The subproblem filters candidate poles against *all* fixed master
+            # occupancy, not only powered consumers.  Therefore an exact-safe
+            # infeasible cut must keep the full non-pole facility support that
+            # participated in that fixed occupancy.  Projecting this proof down
+            # to powered instances alone can over-cut layouts where an unpowered
+            # blocker moves away while the powered tuple and ghost anchor remain
+            # unchanged.
             conflict_set: Dict[str, int] = {}
             for instance_id, entry in solution.items():
                 tpl = str(entry.get("facility_type"))
-                if tpl in powered_templates and tpl != "power_pole":
+                if tpl == "power_pole" or str(instance_id) == "ghost_pick":
+                    continue
+                try:
                     conflict_set[str(instance_id)] = int(entry["pose_idx"])
+                except Exception:
+                    return "ABORT", None
             if not conflict_set:
                 return "ABORT", None
 
@@ -4843,6 +4855,7 @@ class LBBDController:
                     "stage": "power_placement_subproblem",
                     "status": "INFEASIBLE",
                     "uncovered_instances": list(result.uncovered_instance_ids),
+                    "support_conflict_scope": "all_non_pole_selected_occupancy",
                     **self._exact_warm_start_summary(),
                 },
                 metadata={
