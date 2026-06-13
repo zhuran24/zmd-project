@@ -289,6 +289,28 @@ def verify_pattern_closure(routes: List[Dict[str, Any]]) -> Tuple[bool, List[str
     return (not reasons), reasons
 
 
+def verify_obstacle_exclusion(
+    routes: List[Dict[str, Any]],
+    occupied: Set[Tuple[int, int]],
+) -> Tuple[bool, List[str]]:
+    """No route-state may sit on a solid (occupied) cell, on EITHER layer.
+
+    Covers specs/09 §9.3.1 (solid obstacle exclusion: ground + elevated both
+    locked over occupied coords) and specs/03 §3.6.6.6 (a bridge must not pass
+    through any solid facility body). A route-state on an occupied cell = a belt
+    or bridge driven through a facility = false-FEASIBLE (穿墙). Independent of
+    the solver: we just intersect the extracted coords with the known solid set.
+    """
+    reasons: List[str] = []
+    occ = {(int(x), int(y)) for x, y in occupied}
+    for r in routes:
+        if (int(r["x"]), int(r["y"])) in occ:
+            reasons.append(
+                f"[SOLID] route-state on occupied cell ({r['x']},{r['y']}) L{r['layer']} [{r['commodity']}] (穿墙)"
+            )
+    return (not reasons), reasons
+
+
 # --------------------------------------------------------------------------- #
 # Instance generator
 # --------------------------------------------------------------------------- #
@@ -305,7 +327,9 @@ def _domain(active_by_commodity: Dict[str, Set[Tuple[int, int]]]) -> Dict[str, A
     }
 
 
-def gen_instance(rng: random.Random) -> Tuple[List[Dict[str, Any]], List[str], Dict[str, Any]]:
+def gen_instance(
+    rng: random.Random,
+) -> Tuple[List[Dict[str, Any]], List[str], Dict[str, Any], Set[Tuple[int, int]]]:
     """Random tiny routing instance: small grid, 1-2 commodities.
 
     Per commodity the source/sink multiplicity is randomized so the solver is
@@ -314,6 +338,13 @@ def gen_instance(rng: random.Random) -> Tuple[List[Dict[str, Any]], List[str], D
       * splitter: 1 source + 2 sinks (one source must feed two sinks)
       * merger:   2 sources + 1 sink (two sources must merge into one sink)
     L1 bridges arise on their own when two commodities' paths must cross.
+
+    Solid obstacles: 0-3 occupied cells are planted in the interior columns
+    (x in [1, w-2], so the x=0 source fronts and x=w-1 sink fronts stay free and
+    do not spuriously trip front_blocked). With ~50% probability the per-commodity
+    active domain is left INCLUDING the occupied cells ("stale/malicious domain")
+    so the model's free-cell intersection guard (F-RT-R5-01) is exercised; the
+    model must still keep route-states off the solids. Returns the occupied set.
     """
     w = rng.randint(5, 9)
     h = rng.randint(4, 7)
@@ -322,13 +353,19 @@ def gen_instance(rng: random.Random) -> Tuple[List[Dict[str, Any]], List[str], D
     port_specs: List[Dict[str, Any]] = []
     active: Dict[str, Set[Tuple[int, int]]] = {}
 
+    interior = [(x, y) for x in range(1, w - 1) for y in range(h)]
+    n_occ = rng.randint(0, 3)
+    occupied: Set[Tuple[int, int]] = set(rng.sample(interior, min(n_occ, len(interior)))) if interior else set()
+    stale_domain = rng.random() < 0.5  # leave occupied IN the active domain to test the intersection guard
+
     def distinct_ys(count: int) -> List[int]:
         # count is at most 2 (splitter/merger multiplicity) and h >= 4, so
         # distinct front rows always exist — no duplicate-front collisions.
         return rng.sample(range(h), count)
 
+    region = {(x, y) for x in range(w) for y in range(h)}
     for c in names:
-        active[c] = {(x, y) for x in range(w) for y in range(h)}
+        active[c] = set(region) if stale_domain else (region - occupied)
         mode = rng.choice(["belt", "belt", "splitter", "merger"])  # belt weighted
         n_src, n_sink = {"belt": (1, 1), "splitter": (1, 2), "merger": (2, 1)}[mode]
         for i, sy in enumerate(distinct_ys(n_src)):
@@ -339,7 +376,7 @@ def gen_instance(rng: random.Random) -> Tuple[List[Dict[str, Any]], List[str], D
             port_specs.append(
                 {"instance_id": f"{c}_sink{i}", "x": w, "y": ky, "dir": "W", "type": "in", "commodity": c}
             )
-    return port_specs, names, _domain(active)
+    return port_specs, names, _domain(active), occupied
 
 
 # --------------------------------------------------------------------------- #
@@ -447,19 +484,37 @@ def _self_test() -> int:
             print(f"SELF-TEST FAIL: illegal pattern '{label}' NOT caught.")
             return 1
 
-    print("[self-test] PASS — connectivity (A-1/capacity/connector) + pattern closure (illegal belt/splitter/bridge) all caught.")
+    # --- obstacle-exclusion self-tests (specs/09 §9.3.1 + §3.6.6.6) ---
+    occ = {(2, 0), (3, 1)}
+    clean_routes = [{"x": 1, "y": 0, "layer": 0, "commodity": "ore", "flow_in": ["W"], "flow_out": ["N"]}]
+    okx_clean, _ = verify_obstacle_exclusion(clean_routes, occ)
+    okx_l0, _ = verify_obstacle_exclusion(
+        [{"x": 2, "y": 0, "layer": 0, "commodity": "ore", "flow_in": ["W"], "flow_out": ["E"]}], occ
+    )
+    okx_bridge, _ = verify_obstacle_exclusion(
+        [{"x": 3, "y": 1, "layer": 1, "commodity": "ore", "flow_in": ["W"], "flow_out": ["E"]}], occ
+    )
+    print(f"[self-test] obstacle: clean ok={okx_clean}, belt-on-solid flagged={not okx_l0}, bridge-through-solid flagged={not okx_bridge}")
+    if not okx_clean or okx_l0 or okx_bridge:
+        print("SELF-TEST FAIL: obstacle exclusion check broken.")
+        return 1
+
+    print("[self-test] PASS — connectivity (A-1/capacity/connector) + pattern closure (illegal belt/splitter/bridge) + obstacle exclusion (穿墙/桥穿实体) all caught.")
     return 0
 
 
 def _batch(n: int, seed: int) -> int:
     rng = random.Random(seed)
     feasible = mismatches = infeasible = errors = 0
+    occupied_cases = 0
     seen = defaultdict(int)  # pattern-type telemetry across feasible cases
     mismatch_cases: List[str] = []
     for i in range(n):
-        port_specs, names, domain = gen_instance(rng)
+        port_specs, names, domain, occupied = gen_instance(rng)
+        if occupied:
+            occupied_cases += 1
         try:
-            routing = RoutingSubproblem(RoutingGrid(set(), port_specs), names, domain_analysis=domain)
+            routing = RoutingSubproblem(RoutingGrid(occupied, port_specs), names, domain_analysis=domain)
             routing.build()
             status = routing.solve(time_limit=5.0)
             if status in ("FEASIBLE",):
@@ -467,11 +522,12 @@ def _batch(n: int, seed: int) -> int:
                 routes = routing.extract_routes()
                 ok_c, reasons_c = verify_routes_connectivity(routes, port_specs, names)
                 ok_p, reasons_p = verify_pattern_closure(routes)
+                ok_s, reasons_s = verify_obstacle_exclusion(routes, occupied)
                 for r in routes:
                     seen[_classify_state(frozenset(r["flow_in"]), frozenset(r["flow_out"]), int(r["layer"]))] += 1
-                if not (ok_c and ok_p):
+                if not (ok_c and ok_p and ok_s):
                     mismatches += 1
-                    mismatch_cases.append(f"seed-iter {i}: status={status} reasons={(reasons_c + reasons_p)[:4]}")
+                    mismatch_cases.append(f"seed-iter {i}: status={status} reasons={(reasons_c + reasons_p + reasons_s)[:4]}")
             else:
                 infeasible += 1
         except Exception as exc:  # noqa: BLE001
@@ -481,7 +537,7 @@ def _batch(n: int, seed: int) -> int:
             print(f"  ...{i + 1}/{n}  feasible={feasible} mismatch={mismatches} infeasible={infeasible} err={errors}")
     print("=" * 60)
     print(f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} "
-          f"mismatches={mismatches} errors={errors}")
+          f"mismatches={mismatches} errors={errors} occupied_cases={occupied_cases}")
     print(f"pattern states seen: {dict(seen)}")
     for case in mismatch_cases[:20]:
         print("  MISMATCH:", case)
