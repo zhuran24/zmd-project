@@ -110,7 +110,7 @@ def verify_rab(
     spec = case["owner_slots"]
     in_cells = case["owner_in_cells"]
     out_cells = case["owner_out_cells"]
-    routing_free: Set[str] = set()  # req_in empty by construction
+    routing_free: Set[str] = {str(c) for c, n in case.get("req_in", {}).items() if int(n) > 0}
     raw = independent_binding_domain(spec["input_slots"], spec["output_slots"], in_cells, out_cells) or set()
 
     # --- (A) filter soundness: model post-filter domain == independent filter ---
@@ -186,12 +186,22 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         "output_port_cells": [{"x": x, "y": y, "dir": d} for (x, y, d) in out_cells],
     }
 
-    # Plant 0..len(all_fronts) blockers, each a 1-cell wireless_sink body sitting
-    # exactly on one chosen front (so it blocks that port). Random subset size so
-    # a healthy share of cases fully blocks the owner (empty domain -> cert).
-    n_block = rng.randint(0, len(all_fronts)) if all_fronts else 0
-    chosen = rng.sample(all_fronts, n_block) if n_block else []
-    chosen = list(dict.fromkeys(chosen))  # de-dup (distinct fronts already, but be safe)
+    # Mode: routing_free_output exercises the SUT rule that a routing-free
+    # (wireless-final) commodity's OUTPUT port is NOT a routing terminal, so its
+    # blocked front must NOT prune. Make the owner's output commodity oc
+    # routing-free (req_in={oc:1}, satisfied by a side wireless_sink) and block
+    # ALL output fronts while leaving input fronts free: the pattern MUST survive.
+    req_in: Dict[str, int] = {}
+    wireless_slots = 1
+    rf_mode = out_need >= 1 and rng.random() < 0.3
+    if rf_mode:
+        req_in = {sorted(prof["output_slots"])[0]: 1}
+        wireless_slots = 2
+        chosen = list(out_fronts)  # block all output fronts (routing-free => must NOT prune)
+    else:
+        n_block = rng.randint(0, len(all_fronts)) if all_fronts else 0
+        chosen = rng.sample(all_fronts, n_block) if n_block else []
+        chosen = list(dict.fromkeys(chosen))  # de-dup (distinct fronts already, but be safe)
 
     instances: List[Dict[str, Any]] = [
         {"instance_id": "owner", "facility_type": "owner_tpl", "operation_type": prof["operation_type"],
@@ -215,6 +225,20 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         cells_by_instance[bid] = {(fx, fy)}
         blocker_cells.add((fx, fy))
 
+    # routing_free mode: a side wireless_sink satisfies req_in[oc]=1; placed away
+    # from the owner's port fronts so it never blocks them (in occupancy as any
+    # other facility — added to blocker_cells = the full non-self occupancy set).
+    if rf_mode:
+        sx, sy = bx + 10, by
+        pools["sink_box_tpl"] = [{"pose_id": "sink_box_p0", "anchor": {"x": sx, "y": sy},
+                                  "occupied_cells": [[sx, sy]], "input_port_cells": [], "output_port_cells": []}]
+        instances.append({"instance_id": "sink_box", "facility_type": "sink_box_tpl",
+                          "operation_type": "wireless_sink", "is_mandatory": False, "bound_type": "exact"})
+        placement["sink_box"] = {"pose_idx": 0, "pose_id": "sink_box_p0",
+                                 "anchor": {"x": sx, "y": sy}, "facility_type": "sink_box_tpl"}
+        cells_by_instance["sink_box"] = {(sx, sy)}
+        blocker_cells.add((sx, sy))
+
     return {
         "owner_id": "owner",
         "owner_slots": {"input_slots": prof["input_slots"], "output_slots": prof["output_slots"]},
@@ -225,6 +249,8 @@ def gen_instance(rng: random.Random) -> Dict[str, Any]:
         "instances": instances,
         "pools": pools,
         "placement": placement,
+        "req_in": req_in,
+        "wireless_slots": wireless_slots,
     }
 
 
@@ -232,8 +258,8 @@ def run_rab(case: Dict[str, Any]) -> Tuple[str, Dict[str, List[Dict[str, Any]]],
     ctx = build_routing_binding_context(case["placement"], case["pools"], GRID, GRID)
     model = PortBindingModel(
         case["placement"], case["pools"], case["instances"],
-        required_generic_outputs={}, required_generic_inputs={},
-        wireless_sink_generic_input_slots=1, routing_context=ctx,
+        required_generic_outputs={}, required_generic_inputs=case.get("req_in", {}),
+        wireless_sink_generic_input_slots=int(case.get("wireless_slots", 1)), routing_context=ctx,
     )
     model.build()
     status = model.solve(time_limit_seconds=10.0)
@@ -323,10 +349,12 @@ def _pattern_to_dict(atoms: frozenset) -> Dict[str, Any]:
 # --------------------------------------------------------------------------- #
 def _batch(n: int, seed: int) -> int:
     rng = random.Random(seed)
-    feasible = infeasible = errors = certs_seen = empty_owner = 0
+    feasible = infeasible = errors = certs_seen = empty_owner = rf_cases = 0
     mismatches: List[str] = []
     for i in range(n):
         case = gen_instance(rng)
+        if case.get("req_in"):
+            rf_cases += 1
         try:
             status, binding_domains, certs = run_rab(case)
         except Exception as exc:  # noqa: BLE001
@@ -348,7 +376,8 @@ def _batch(n: int, seed: int) -> int:
                   f"certs={certs_seen} mm={len(mismatches)} err={errors}")
     print("=" * 60)
     print(f"batch={n} seed={seed}: feasible={feasible} infeasible={infeasible} "
-          f"empty_owner={empty_owner} certs_seen={certs_seen} mismatches={len(mismatches)} errors={errors}")
+          f"empty_owner={empty_owner} certs_seen={certs_seen} routing_free_cases={rf_cases} "
+          f"mismatches={len(mismatches)} errors={errors}")
     for line in mismatches[:20]:
         print("  MISMATCH:", line)
     return 1 if mismatches else 0
