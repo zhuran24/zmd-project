@@ -20,4 +20,6 @@ zmd 项目(`C:\claude pj\zmd_pj`)自带完整的项目级记忆体系,**不要�
 改记忆的规矩:**必须手动双写** `_cc_live_memory/` 和 `cc_context/memory/` 两份(pre-commit 镜像源指旧 slug `D-----zmd` 已不存在,同步会静默跳过)。改完用 Get-FileHash 验证两边一致。
 注意(2026-06-13 审计沉淀):同一条记忆在 harness 树与仓库镜像两边同名时,仓库副本会把 harness-only 的双方括号 wikilink(目标只在 harness 树里)**故意降为纯文本**——否则 CI 的 memory-tree 死链 gate 会 BLOCK(有翻车先例,连字面写出双方括号都会触发,本条措辞就是被 gate 现场拦过一次后改的)。所以 harness 版与仓库版哈希不同**不一定是漂移**,先 diff 内容判方向再同步;从 harness 整文件拷进镜像前,检查文内全部 wikilink 目标是否都存在于项目树。
 
+**超长行 living 文件编辑 (2026-06-14):** 台账 `cc_context/review/p1_2_closure_evidence.md` (~82KB) 与 handoff 都是单行几 KB 的超长行,**Read/Edit 工具读不动** (token 超限,且 Edit 强制先 Read 成死锁)。改它们用 PowerShell:替换走 `Get-Content -Raw` + `[regex]::Matches($c,[regex]::Escape($old)).Count -eq 1` 校验唯一 + `$c.Replace()` + `Set-Content -NoNewline -Encoding UTF8`;handoff 加 stamp 走数组插入 (找 `stamp #N` 行 index → `$lines[0..($i-1)]+$new+$lines[$i..]` → Set-Content → `Copy-Item` 到另一镜像 → `Get-FileHash` 验两边一致)。
+
 相关:[[zmd-checkout-env]]
