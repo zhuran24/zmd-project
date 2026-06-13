@@ -1,0 +1,199 @@
+--- a/PROJECT_LOCK.md
++++ b/PROJECT_LOCK.md
+@@ -109,6 +109,8 @@
+ - Cycle-group solutions must be proven non-negative, not just unique (F-PRE-R11-03): a square non-singular cycle system can still yield negative run rates under canonical drift, and downstream demand aggregation filters non-positive entries — silently deleting machines from the frozen demand artifacts. Context validation must prove each net-export commodity admits a non-negative basis solution, every net-export commodity must be an internal commodity of its group, and `_solve_cycle_group_exact()` must fail closed on any negative run rate at solve time.
+ - Cycle-group demand keys are a closed set, membership-checked at both ends (F-PRE-R12-01): the RHS is assembled by iterating `internal_commodities`, so a positive external demand keyed by a commodity outside that list would be silently dropped — producing frozen demand/instance artifacts that are missing the supporting machines (fail-open). Context validation must require every `cycle_internal` commodity to be listed in its declared group's `internal_commodities` (reverse-index check, not just group existence), and `_solve_cycle_group_exact()` must reject positive demand keys that are not both internal and net-export (preserving the R11-03 proof premise that RHS lies in the non-negative span of proven net-export unit directions) and reject negative demands outright; explicit zero entries stay accepted.
+ - Cycle groups must be a recipe I/O closure, checked at both ends (F-PRE-R13-01): the cycle solver builds its matrix and downstream machine-run aggregation only over `internal_commodities`, so any cycle recipe input/output referencing a commodity outside that list is silently dropped from demand propagation — under canonical drift a cycle recipe consuming an external commodity (e.g. an ore) would leave the frozen `commodity_demands`/`port_budget`/`generic_io_requirements` artifacts missing that supply requirement while still claiming the 52-port budget feasible (fail-open, the F-PRE-R12-01 membership-closure class extended from demand keys to recipe I/O). Context validation must require every cycle-group recipe's `inputs ∪ outputs` to lie entirely within the group's `internal_commodities`, and `_solve_cycle_group_exact()` must repeat the check at its entry to cover direct solver calls on unvalidated contexts.
++- Preprocess recipes are single-output until a coupled co-product demand solve exists (F-PRE-R14-01): the current backward demand expansion owns a commodity by selecting its unique producer and charging that recipe's run rate per demanded output, so a schema-valid multi-output recipe with two demanded products would double-charge the same operation instead of sharing co-products. Canonical rule schema validation, `validate_canonical_document()`, and direct `validate_preprocess_context()` construction must fail closed on `len(outputs) != 1`; relaxing this requires replacing the per-output backpropagation with an explicit coupled recipe-flow solve and updating the frozen-artifact proof obligations.
++- Cycle-internal commodity producers are owned by their declared cycle group (F-PRE-R14-02): demand propagation routes any positive demand for a `cycle_group` commodity directly into the cycle solver before consulting the non-cycle producer index, so a recipe outside that group that outputs the same cycle-internal commodity would be ignored while its target/output rate could still seed downstream demand. Context validation must reject any recipe output of a cycle-internal commodity unless that recipe is a member of the commodity's declared cycle group; non-cycle consumption of cycle-internal commodities remains the intended external-demand edge into the group.
+ - A fully enclosed legal empty rectangle remains allowed; exterior connectivity is not part of the exact contract.
+ - Terminal certified frontier evidence is a closed, project-bound contract: unknown `candidate_generation` keys, non-authoritative domain values, stale evidence schema versions, and sub-admissible terminal best results must fail closed before any public CERTIFIED surface.
+ - In `certified_exact`, `EXACT_*` environment knobs are deny-unknown by default: only documented operational allowlist entries may be present, known proof-semantics knobs must stay at canonical false/default values, and future/unclassified names must block the run.
+--- a/specs/18_preprocess_context_contract.md
++++ b/specs/18_preprocess_context_contract.md
+@@ -37,6 +37,10 @@
+ 
+ Round 13 closes the recipe I/O side of the same membership boundary (F-PRE-R13-01): the cycle matrix and the post-solve machine-run aggregation only ever look at `internal_commodities`, so a cycle recipe whose inputs or outputs reference a commodity outside that list contributes machines whose external consumption/production never reaches `commodity_demands`/`port_budget`/`generic_io_requirements` — under canonical drift the frozen artifacts would under-state external supply while still reporting the 52-port budget feasible (fail-open). Validation now requires every cycle-group recipe's `inputs ∪ outputs` to be a subset of the group's `internal_commodities` (`_cycle_group_recipe_io_outside_internal()`), and `_solve_cycle_group_exact()` repeats the check at its entry so direct solver calls on unvalidated contexts are covered too.
+ 
++Round 14 keeps the demand-expansion model fail-closed for co-product drift (F-PRE-R14-01): `_backpropagate_non_cycle_demands()` expands one demanded commodity at a time by selecting its unique producer and adding that producer's run rate. That is exact for the current canonical single-output recipes, but a multi-output recipe with two demanded outputs would be charged twice instead of sharing the same recipe run. Until preprocess owns a coupled co-product solve, `canonical_rules.schema.json`, `validate_canonical_document()`, and `validate_preprocess_context()` all require every recipe to provide exactly one output commodity.
++
++The same round also seals cycle-internal producer ownership (F-PRE-R14-02): a commodity with `cycle_group` set is supplied by that group's exact cycle solve, and `_backpropagate_non_cycle_demands()` forwards positive demand for it before any non-cycle producer lookup. Therefore recipes outside the declared group may consume cycle-internal commodities as external demand edges, but may not output them; `validate_preprocess_context()` rejects such outsider producers so their machines/inputs cannot be silently skipped.
++
+ ## 3. Current runtime boundary
+ 
+ `PreprocessContext` is **not** the certified runtime placement input, but it is no longer a regeneration-only concern: `src/preprocess/operation_profiles.py` derives the runtime `OPERATION_PORT_PROFILES` from `load_default_preprocess_context()` at import time, and the binding subproblem reads utility slot declarations from `rules/preprocess_plan.json` at runtime. The plan is therefore bound into the exact campaign hash closure (`exact_campaign.OPTIONAL_EXACT_HASH_FILES`, with a missing-file sentinel for synthetic test projects) and the preflight frozen-artifact registry — a plan edit can never ride on otherwise-stale exact artifacts.
+--- a/rules/canonical_rules.schema.json
++++ b/rules/canonical_rules.schema.json
+@@ -377,6 +377,8 @@
+             },
+             "outputs": {
+               "type": "object",
++              "minProperties": 1,
++              "maxProperties": 1,
+               "patternProperties": {
+                 "^[a-zA-Z0-9_]+$": {
+                   "type": "number",
+--- a/src/interchange/preprocess_context.py
++++ b/src/interchange/preprocess_context.py
+@@ -248,6 +248,11 @@
+             raise ValueError(
+                 f"preprocess recipe {recipe.recipe_id!r} references unknown template {recipe.template!r}"
+             )
++        if len(recipe.outputs) != 1:
++            raise ValueError(
++                f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
++                "multi-output co-product recipes require a coupled demand solve and are not supported"
++            )
+ 
+     producers = build_producer_index(context)
+     consumers: dict[str, list[str]] = {}
+@@ -274,6 +279,10 @@
+         group_id: set(group.internal_commodities)
+         for group_id, group in context.cycle_groups.items()
+     }
++    cycle_group_recipes = {
++        group_id: set(group.recipes)
++        for group_id, group in context.cycle_groups.items()
++    }
+ 
+     for role in context.commodity_roles.values():
+         if role.source_kind not in _ALLOWED_SOURCE_KINDS:
+@@ -307,6 +316,17 @@
+                 f"non-cycle commodity {role.commodity_id!r} cannot declare cycle_group {role.cycle_group!r}"
+             )
+ 
++    for recipe_id, recipe in context.recipes.items():
++        for commodity_id in recipe.outputs:
++            role = context.commodity_roles.get(str(commodity_id))
++            if role is None or role.cycle_group is None:
++                continue
++            if recipe_id not in cycle_group_recipes.get(role.cycle_group, set()):
++                raise ValueError(
++                    f"cycle_internal commodity {str(commodity_id)!r} cannot be produced by recipe "
++                    f"{recipe_id!r} outside cycle group {role.cycle_group!r}"
++                )
++
+     for commodity_id in context.targets:
+         role = context.commodity_roles.get(commodity_id)
+         if role is None:
+--- a/src/rules/semantic_validator.py
++++ b/src/rules/semantic_validator.py
+@@ -101,6 +101,12 @@
+         for recipe_id, recipe in self.doc.recipes.items():
+             if not recipe.outputs:
+                 self.errors.append(f"配方死环：配方 '{recipe_id}' 没有任何输出，违反了节点连通性。")
++            elif len(recipe.outputs) > 1:
++                outputs = ", ".join(sorted(recipe.outputs))
++                self.errors.append(
++                    f"配方多输出未支持：配方 '{recipe_id}' 输出 {outputs}；"
++                    "preprocess demand solver 目前按单输出后向展开，co-product 需求共享需 fail-closed。"
++                )
+ 
+             overlap = set(recipe.inputs.keys()).intersection(set(recipe.outputs.keys()))
+             if overlap:
+--- a/src/tests/test_preprocess_context.py
++++ b/src/tests/test_preprocess_context.py
+@@ -213,6 +213,24 @@
+         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+ 
+ 
++def test_preprocess_context_rejects_multi_output_recipe(raw_rules_dict, raw_plan_dict) -> None:
++    mutated_rules = copy.deepcopy(raw_rules_dict)
++    mutated_rules["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1
++    mutated_rules["production_targets"]["bonus_battery"] = {
++        "mode": "equivalent_full_speed_lines",
++        "value": 1.0,
++        "final_recipe_id": "packaging_battery",
++    }
++    mutated_rules["commodity_metadata"]["bonus_battery"] = {
++        "source_kind": "internal_only",
++        "sink_kind": "generic_input",
++        "cycle_group": None,
++    }
++
++    with pytest.raises(ValueError, match="exactly one output commodity"):
++        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
++
++
+ def test_preprocess_context_validates_target_final_recipe(raw_rules_dict, raw_plan_dict) -> None:
+     mutated_rules = copy.deepcopy(raw_rules_dict)
+     mutated_rules["production_targets"]["valley_battery"]["final_recipe_id"] = "parts_maker"
+@@ -255,6 +273,44 @@
+         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+ 
+ 
++def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_commodity(
++    raw_rules_dict,
++    raw_plan_dict,
++) -> None:
++    mutated_rules = copy.deepcopy(raw_rules_dict)
++    mutated_plan = copy.deepcopy(raw_plan_dict)
++    mutated_rules["recipes"]["orb_cycle_generator"] = {
++        "template": "manufacturing_3x3",
++        "ticks_per_cycle": 1,
++        "inputs": {},
++        "outputs": {"orb": 1},
++    }
++    mutated_rules["recipes"]["synthetic_orb"] = {
++        "template": "manufacturing_6x4",
++        "ticks_per_cycle": 5,
++        "inputs": {"source_ore": 1},
++        "outputs": {"orb": 1},
++    }
++    mutated_rules["commodity_metadata"]["orb"] = {
++        "source_kind": "cycle_internal",
++        "sink_kind": "generic_input",
++        "cycle_group": "orb_cycle",
++    }
++    mutated_rules["production_targets"]["orb"] = {
++        "mode": "equivalent_full_speed_lines",
++        "value": 1.0,
++        "final_recipe_id": "synthetic_orb",
++    }
++    mutated_plan["cycle_groups"]["orb_cycle"] = {
++        "recipes": ["orb_cycle_generator"],
++        "internal_commodities": ["orb"],
++        "net_export_commodities": ["orb"],
++    }
++
++    with pytest.raises(ValueError, match="synthetic_orb.*outside cycle group 'orb_cycle'"):
++        build_preprocess_context_from_rules_and_plan(mutated_rules, mutated_plan)
++
++
+ def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
+     context = load_default_preprocess_context()
+     flows, fractional = solve_demands(context=context)
+--- a/src/tests/test_rules.py
++++ b/src/tests/test_rules.py
+@@ -58,6 +58,15 @@
+     assert "illegal_max_count" in exc_info.value.message
+ 
+ 
++def test_schema_rejects_multi_output_recipe(raw_rules_dict, raw_schema_dict):
++    mutated_dict = copy.deepcopy(raw_rules_dict)
++    mutated_dict["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1
++
++    with pytest.raises(JsonSchemaValidationError) as exc_info:
++        validate(instance=mutated_dict, schema=raw_schema_dict)
++    assert "has too many properties" in exc_info.value.message
++
++
+ def test_pydantic_parsing(raw_rules_dict):
+     doc = CanonicalRulesDocument.model_validate(raw_rules_dict)
+     assert doc.globals.grid.width == 70
+@@ -138,6 +147,15 @@
+         validate_canonical_document(doc)
+ 
+ 
++def test_semantic_recipe_multi_output_rejected(raw_rules_dict):
++    mutated = copy.deepcopy(raw_rules_dict)
++    mutated["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1.0
++    doc = CanonicalRulesDocument.model_validate(mutated)
++
++    with pytest.raises(SemanticValidationError, match="配方多输出未支持"):
++        validate_canonical_document(doc)
++
++
+ def test_semantic_recipe_self_loop(raw_rules_dict):
+     mutated = copy.deepcopy(raw_rules_dict)
+     mutated["recipes"]["refinery_steel"]["inputs"]["steel_block"] = 1.0

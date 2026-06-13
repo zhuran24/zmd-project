@@ -248,6 +248,11 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(
                 f"preprocess recipe {recipe.recipe_id!r} references unknown template {recipe.template!r}"
             )
+        if len(recipe.outputs) != 1:
+            raise ValueError(
+                f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
+                "multi-output co-product recipes require a coupled demand solve and are not supported"
+            )
 
     producers = build_producer_index(context)
     consumers: dict[str, list[str]] = {}
@@ -272,6 +277,10 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
 
     cycle_group_internal_commodities = {
         group_id: set(group.internal_commodities)
+        for group_id, group in context.cycle_groups.items()
+    }
+    cycle_group_recipes = {
+        group_id: set(group.recipes)
         for group_id, group in context.cycle_groups.items()
     }
 
@@ -306,6 +315,17 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(
                 f"non-cycle commodity {role.commodity_id!r} cannot declare cycle_group {role.cycle_group!r}"
             )
+
+    for recipe_id, recipe in context.recipes.items():
+        for commodity_id in recipe.outputs:
+            role = context.commodity_roles.get(str(commodity_id))
+            if role is None or role.cycle_group is None:
+                continue
+            if recipe_id not in cycle_group_recipes.get(role.cycle_group, set()):
+                raise ValueError(
+                    f"cycle_internal commodity {str(commodity_id)!r} cannot be produced by recipe "
+                    f"{recipe_id!r} outside cycle group {role.cycle_group!r}"
+                )
 
     for commodity_id in context.targets:
         role = context.commodity_roles.get(commodity_id)

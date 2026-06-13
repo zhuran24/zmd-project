@@ -101,6 +101,12 @@ class CanonicalSemanticValidator:
         for recipe_id, recipe in self.doc.recipes.items():
             if not recipe.outputs:
                 self.errors.append(f"配方死环：配方 '{recipe_id}' 没有任何输出，违反了节点连通性。")
+            elif len(recipe.outputs) > 1:
+                outputs = ", ".join(sorted(recipe.outputs))
+                self.errors.append(
+                    f"配方多输出未支持：配方 '{recipe_id}' 输出 {outputs}；"
+                    "preprocess demand solver 目前按单输出后向展开，co-product 需求共享需 fail-closed。"
+                )
 
             overlap = set(recipe.inputs.keys()).intersection(set(recipe.outputs.keys()))
             if overlap:

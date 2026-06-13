@@ -58,6 +58,15 @@ def test_schema_rejects_unknown_fields(raw_rules_dict, raw_schema_dict):
     assert "illegal_max_count" in exc_info.value.message
 
 
+def test_schema_rejects_multi_output_recipe(raw_rules_dict, raw_schema_dict):
+    mutated_dict = copy.deepcopy(raw_rules_dict)
+    mutated_dict["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1
+
+    with pytest.raises(JsonSchemaValidationError) as exc_info:
+        validate(instance=mutated_dict, schema=raw_schema_dict)
+    assert "has too many properties" in exc_info.value.message
+
+
 def test_pydantic_parsing(raw_rules_dict):
     doc = CanonicalRulesDocument.model_validate(raw_rules_dict)
     assert doc.globals.grid.width == 70
@@ -135,6 +144,15 @@ def test_semantic_recipe_no_outputs(raw_rules_dict):
     doc = CanonicalRulesDocument.model_validate(mutated)
 
     with pytest.raises(SemanticValidationError, match="没有任何输出"):
+        validate_canonical_document(doc)
+
+
+def test_semantic_recipe_multi_output_rejected(raw_rules_dict):
+    mutated = copy.deepcopy(raw_rules_dict)
+    mutated["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1.0
+    doc = CanonicalRulesDocument.model_validate(mutated)
+
+    with pytest.raises(SemanticValidationError, match="配方多输出未支持"):
         validate_canonical_document(doc)
 
 

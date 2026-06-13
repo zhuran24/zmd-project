@@ -213,6 +213,24 @@ def test_preprocess_context_rejects_multiple_non_cycle_producers(raw_rules_dict,
         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
 
 
+def test_preprocess_context_rejects_multi_output_recipe(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1
+    mutated_rules["production_targets"]["bonus_battery"] = {
+        "mode": "equivalent_full_speed_lines",
+        "value": 1.0,
+        "final_recipe_id": "packaging_battery",
+    }
+    mutated_rules["commodity_metadata"]["bonus_battery"] = {
+        "source_kind": "internal_only",
+        "sink_kind": "generic_input",
+        "cycle_group": None,
+    }
+
+    with pytest.raises(ValueError, match="exactly one output commodity"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
 def test_preprocess_context_validates_target_final_recipe(raw_rules_dict, raw_plan_dict) -> None:
     mutated_rules = copy.deepcopy(raw_rules_dict)
     mutated_rules["production_targets"]["valley_battery"]["final_recipe_id"] = "parts_maker"
@@ -253,6 +271,44 @@ def test_preprocess_context_rejects_cycle_recipe_io_outside_group_internal_commo
 
     with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_commodity(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_rules["recipes"]["orb_cycle_generator"] = {
+        "template": "manufacturing_3x3",
+        "ticks_per_cycle": 1,
+        "inputs": {},
+        "outputs": {"orb": 1},
+    }
+    mutated_rules["recipes"]["synthetic_orb"] = {
+        "template": "manufacturing_6x4",
+        "ticks_per_cycle": 5,
+        "inputs": {"source_ore": 1},
+        "outputs": {"orb": 1},
+    }
+    mutated_rules["commodity_metadata"]["orb"] = {
+        "source_kind": "cycle_internal",
+        "sink_kind": "generic_input",
+        "cycle_group": "orb_cycle",
+    }
+    mutated_rules["production_targets"]["orb"] = {
+        "mode": "equivalent_full_speed_lines",
+        "value": 1.0,
+        "final_recipe_id": "synthetic_orb",
+    }
+    mutated_plan["cycle_groups"]["orb_cycle"] = {
+        "recipes": ["orb_cycle_generator"],
+        "internal_commodities": ["orb"],
+        "net_export_commodities": ["orb"],
+    }
+
+    with pytest.raises(ValueError, match="synthetic_orb.*outside cycle group 'orb_cycle'"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, mutated_plan)
 
 
 def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
