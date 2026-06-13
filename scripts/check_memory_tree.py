@@ -207,15 +207,6 @@ def _check_live_mirror(memory_dir: Path, mirror_dir: Path, *, require: bool) -> 
 
 _ARCHIVE_REF_EXEMPT = {"project_paradigm_death_timeline_27_lever.md"}
 
-# harness↔cc_context 共维护文件 (两树都有, 内容应一致; 只跨树 wikilink 风格可不同)。
-_CO_MAINTAINED = {
-    "zmd-checkout-env.md",
-    "zmd-project-entry.md",
-    "no-workflow-use-chrome-gpt-review.md",
-    "workflow-approval-not-avoidance.md",
-}
-
-
 def _normalize_crosstree(text: str) -> str:
     """归一两树对 harness-only 节点的引用风格 (harness 用 [[slug]], cc_context 用
     散文 harness memory「slug」), 这样只把真内容 drift 报出来, 不误报合法风格差异。"""
@@ -241,14 +232,15 @@ def _check_harness_mirror(memory_dir: Path, harness_dir: Path | None = None) -> 
         harness_dir = Path.home() / ".claude" / "projects" / slug / "memory"
     if not harness_dir.is_dir():
         return []
-    drift: list[str] = []
-    for name in sorted(_CO_MAINTAINED):
-        proj = memory_dir / name
-        harn = harness_dir / name
-        if not proj.exists() or not harn.exists():
-            continue
-        if _normalize_crosstree(_read(proj)) != _normalize_crosstree(_read(harn)):
-            drift.append(name)
+    # 共维护文件 = 两树文件名交集 (动态发现, 含将来新增的共维护文件; harness kebab 与
+    # cc_context snake 命名体系隔离, 交集即真共维护项, 不会误纳任一树独有的节点)。
+    proj = {p.name: p for p in memory_dir.glob("*.md") if p.name != "MEMORY.md"}
+    harn = {p.name: p for p in harness_dir.glob("*.md") if p.name != "MEMORY.md"}
+    drift = [
+        name
+        for name in sorted(set(proj) & set(harn))
+        if _normalize_crosstree(_read(proj[name])) != _normalize_crosstree(_read(harn[name]))
+    ]
     if drift:
         return [
             "harness↔cc_context co-maintained drift (手动双写漏了, 同步 "
