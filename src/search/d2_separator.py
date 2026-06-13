@@ -3,13 +3,14 @@
 Pipeline: master OPTIMAL + binding FEASIBLE + port_specs → build D2 model →
 solve in budget → if INFEASIBLE, extract assumption core → master no-good cut.
 
-D2 cut form: `sum_{(i,p_i) in core} x_{i,p_i} ≤ |core| - 1` (instance-pose
-conjunction no-good, 跟 RAB-SEP cert 同形式).
+D2 cut form: support-augmented instance-pose conjunction no-good over the
+terminal owners and placement footprints that were compiled into the D2 proof
+context.
 
 soundness: D2 model 是 production C2 routing 的 relaxation (cell capacity ≤ 1
 per layer 是 必要 condition, flow conservation 也是 必要 condition). 如果
-relaxation INFEASIBLE under owner subset S, 任何包含 S 的 master layout 也
-production C2-INFEASIBLE. cut sound.
+relaxation INFEASIBLE under the same terminal/occupancy support context, 任何
+包含该 support tuple 的 master layout 也 production C2-INFEASIBLE. cut sound.
 
 fail-closed: D2 exception / UNKNOWN / FEASIBLE 都不写 cut, 让 LBBD loop fall
 through 到现有 binding/routing path.
@@ -82,6 +83,67 @@ def _build_pose_assumptions_for_owners_with_ports(
     return assumptions
 
 
+def _build_occupancy_support_pose_terms(
+    placement_solution: Mapping[str, Mapping[str, Any]],
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> Dict[str, int]:
+    """Return every selected owner whose footprint is encoded as a D2 constant.
+
+    D2's grid domain is built from `occupied_cells` as constants, not from
+    assumption literals.  A valid master nogood must therefore be conditioned on
+    all selected poses that contributed occupied cells; otherwise a core over
+    terminal owners could be replayed under a different obstacle layout.
+    """
+
+    support: Dict[str, int] = {}
+    for iid, sol in placement_solution.items():
+        instance_id = str(iid)
+        if instance_id == "ghost_pick":
+            continue
+        tpl = str(sol.get("facility_type", ""))
+        try:
+            pose_idx = int(sol.get("pose_idx", -1))
+        except Exception:
+            continue
+        if pose_idx < 0:
+            continue
+        pool = facility_pools.get(tpl, [])
+        if pose_idx >= len(pool):
+            continue
+        if pool[pose_idx].get("occupied_cells", []) or []:
+            support[instance_id] = pose_idx
+    return support
+
+
+def _build_d2_supported_conflict_set(
+    *,
+    placement_solution: Mapping[str, Mapping[str, Any]],
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    assumptions: Sequence[D2PoseAssumption],
+    raw_core: Sequence[D2PoseAssumption],
+) -> Dict[str, int]:
+    """Lift a D2 UNSAT core to the full context actually used by the model.
+
+    The solver core identifies terminal-owner assumptions sufficient under the
+    current D2 model.  The model also contains two kinds of unguarded context:
+    all non-core terminal owners are free helper literals at their current
+    positions, and every selected footprint is compiled into constant occupied
+    cells.  Adding both sets to the master nogood only weakens the cut, and makes
+    the forbidden tuple no broader than the proof context.
+    """
+
+    conflict: Dict[str, int] = {}
+    for pa in assumptions:
+        conflict[str(pa.instance_id)] = int(pa.pose_idx)
+    for instance_id, pose_idx in _build_occupancy_support_pose_terms(
+        placement_solution, facility_pools
+    ).items():
+        conflict[str(instance_id)] = int(pose_idx)
+    for pa in raw_core:
+        conflict[str(pa.instance_id)] = int(pa.pose_idx)
+    return conflict
+
+
 def _build_d2_cut_metadata(
     *,
     d2_result: D2CoreResult,
@@ -111,7 +173,7 @@ def run_d2_separation(
     1. Build D2 model on full grid based on placement + port_specs.
     2. Solve with time budget.
     3. If INFEASIBLE, extract assumption core.
-    4. Add master no-good cut `sum x_{i,p_i} <= |core|-1`.
+    4. Add a support-augmented master no-good cut over the D2 proof context.
     5. Return result with metadata.
     """
     t_start = time.perf_counter()
@@ -176,10 +238,21 @@ def run_d2_separation(
     # 后者跟 PCR-CUT signature lifting 绑死, empty patch_cells 会让 owner 全 pose
     # 都同 signature, cut 退化为 forbid owner 整体跟 mandatory exactly-one 冲突 →
     # immediate INFEASIBLE (unsound).
-    # add_benders_cut form: sum(x_{i,p_i} for i,p_i in core) <= |core|-1
-    # — 只 forbid 当前 (instance, pose_idx) tuple, sound.
-    conflict_set: Dict[str, int] = {pa.instance_id: int(pa.pose_idx) for pa in raw_core}
+    #
+    # D2 的 occupied grid 和所有当前 terminal helper literals 都是 proof context.
+    # UNSAT core 只返回一部分 terminal assumptions; 直接按 raw_core 加 cut 会把
+    # “当前障碍/当前其它 terminal 下不可行” 升级成 “这些 core poses 本身
+    # 不可行”. 这里把所有 port owners + occupancy contributors 纳入 conflict，
+    # 只会弱化 cut，但让 cut 的生效范围不超过 D2 实际证明范围。
+    conflict_set = _build_d2_supported_conflict_set(
+        placement_solution=placement_solution,
+        facility_pools=facility_pools,
+        assumptions=assumptions,
+        raw_core=raw_core,
+    )
     cut_metadata = _build_d2_cut_metadata(d2_result=result, raw_core=raw_core)
+    cut_metadata["support_conflict_size"] = len(conflict_set)
+    cut_metadata["support_owners"] = sorted(conflict_set.keys())
 
     try:
         cut_added_bool = master_delegate.add_benders_cut(conflict_set)

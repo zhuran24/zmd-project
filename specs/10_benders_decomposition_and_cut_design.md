@@ -105,3 +105,9 @@ env 门控的 pose-bool cell cut（`add_routing_port_blocking_cell_cut`，形状
 CUT-R4-H1 补充：上述饱和只推出“非 `__unused__`”，不自动推出“routing-visible”。若某个正数 required generic-output commodity 同时属于 routing-free generic-input sink 集，binding 可把被挡的物理输出槽赋给该无线终品；`extract_port_specs()` 会丢弃它，routing 不要求该 front 可达。因此 pose-bool 的 per-pose visible demand 只有在所有正数 required generic-output commodity 都不在 routing-free sink 集时，才允许把 saturated generic-output 槽计为 visible。混合 routed + routing-free generic-output 需求目前 fail-closed 为不登记，等待 binding-aware/global count proof。
 
 另一同源前提：candidate pose data 是 global 坐标（同 `_build_global_pose_cache` 的注释），端口/格子 lookup cache 不得再叠加 anchor 偏移——double-anchor 会把 candidate alias 到幻影格，轻则漏 cut、重则把无关 pose 带进 cut。该 hook 在公开 certified 路径被 `pose_bool_master_not_certified` env guard 阻断；本前提约束任何未来把 pose-bool/cell cut 提升为 certified 的决定。
+
+## 10.9 [2026-06-13 cuts R8 Addendum] Separator cut 不得窄于其模型编译进的 layout context (CUT-R8-H1)
+
+任何 separator（D2 commodity-flow、未来同构通道）若把当前 layout 状态编译为模型**常量**（selected footprints 构成的 occupied grid、helper terminal 的当前端口位置），其 CP-SAT assumption core 只覆盖 assumption literals，常量部分是不受保护的 proof context。只按 raw core 写 master no-good，等于把"该 terminal 子集在当前障碍上下文下不可行"升级成"这些 pose 在任意 layout 下不可行"——over-cut（PCR-R5-H3 constant-support 义务在另一通道的复发；最小反例：单行走廊 + 墙挡中点，core 只含 source，移墙后同一对 source/sink pose 可行）。
+
+义务：master conflict tuple 必须在 raw core 之外并入**所有贡献了编译常量的 selected pose**（全部 occupancy contributors + 全部当前 port owners，`ghost_pick` 除外）。并入只会弱化 cut，使被禁集合不超出 D2 实际证明范围。`EXACT_B1_D2_COMMODITY_FLOW` rung 曾违反一次（raw terminal core cut，而整个 layout footprint 都是模型常量），修复为 support-augmented conflict set（`_build_d2_supported_conflict_set`），回归 `src/tests/test_d2_separator_support_context.py` 固定 toy 反例。
