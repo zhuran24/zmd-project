@@ -325,6 +325,9 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
         for recipe_id in group.recipes:
             if recipe_id not in context.recipes:
                 raise ValueError(f"cycle group {group.group_id!r} references unknown recipe {recipe_id!r}")
+        outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
+        if outside_internal_by_recipe:
+            raise ValueError(_format_cycle_group_io_closure_error(group.group_id, outside_internal_by_recipe))
         for commodity_id in group.internal_commodities:
             role = context.commodity_roles.get(commodity_id)
             if role is None:
@@ -447,6 +450,10 @@ def _solve_cycle_group_exact(
     if group is None:
         raise KeyError(f"unknown cycle group: {group_id}")
 
+    outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
+    if outside_internal_by_recipe:
+        raise ValueError(_format_cycle_group_io_closure_error(group_id, outside_internal_by_recipe))
+
     internal_commodities = set(group.internal_commodities)
     net_export_commodities = set(group.net_export_commodities)
     normalized_external_demands: dict[str, Fraction] = {}
@@ -496,6 +503,37 @@ def _solve_cycle_group_exact(
         recipe_id: solution[index]
         for index, recipe_id in enumerate(group.recipes)
     }
+
+
+def _cycle_group_recipe_io_outside_internal(
+    context: PreprocessContext,
+    group: CycleGroup,
+) -> dict[str, tuple[str, ...]]:
+    internal_commodities = set(group.internal_commodities)
+    outside_by_recipe: dict[str, tuple[str, ...]] = {}
+    for recipe_id in group.recipes:
+        recipe = context.recipes.get(recipe_id)
+        if recipe is None:
+            continue
+        referenced_commodities = set(recipe.inputs) | set(recipe.outputs)
+        outside = tuple(sorted(referenced_commodities - internal_commodities))
+        if outside:
+            outside_by_recipe[recipe_id] = outside
+    return outside_by_recipe
+
+
+def _format_cycle_group_io_closure_error(
+    group_id: str,
+    outside_by_recipe: Mapping[str, tuple[str, ...]],
+) -> str:
+    details = "; ".join(
+        f"{recipe_id}: {', '.join(commodities)}"
+        for recipe_id, commodities in sorted(outside_by_recipe.items())
+    )
+    return (
+        f"cycle group {group_id!r} recipes must reference only commodities listed in "
+        f"internal_commodities; outside commodities: {details}"
+    )
 
 
 def _solve_square_linear_system(matrix: list[list[Fraction]], rhs: list[Fraction]) -> list[Fraction]:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from fractions import Fraction
 
 import pytest
@@ -36,4 +37,12 @@ def test_cycle_solver_rejects_positive_external_demand_for_non_export_internal_c
 
     with pytest.raises(ValueError, match="net_export"):
         solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat_seed": Fraction(1)})
+
+
+def test_cycle_solver_rejects_unvalidated_context_with_cycle_recipe_io_outside_internal() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["planter_buckwheat"].inputs["source_ore"] = Fraction(1)
+
+    with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
 

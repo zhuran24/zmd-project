@@ -244,6 +244,17 @@ def test_preprocess_context_rejects_cycle_internal_commodity_missing_from_group_
         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
 
 
+def test_preprocess_context_rejects_cycle_recipe_io_outside_group_internal_commodities(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["planter_buckwheat"]["inputs"]["source_ore"] = 1
+
+    with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
 def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
     context = load_default_preprocess_context()
     flows, fractional = solve_demands(context=context)

@@ -1,0 +1,102 @@
+--- a/src/interchange/preprocess_context.py
++++ b/src/interchange/preprocess_context.py
+@@ -325,6 +325,9 @@
+         for recipe_id in group.recipes:
+             if recipe_id not in context.recipes:
+                 raise ValueError(f"cycle group {group.group_id!r} references unknown recipe {recipe_id!r}")
++        outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
++        if outside_internal_by_recipe:
++            raise ValueError(_format_cycle_group_io_closure_error(group.group_id, outside_internal_by_recipe))
+         for commodity_id in group.internal_commodities:
+             role = context.commodity_roles.get(commodity_id)
+             if role is None:
+@@ -447,6 +450,10 @@
+     if group is None:
+         raise KeyError(f"unknown cycle group: {group_id}")
+ 
++    outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
++    if outside_internal_by_recipe:
++        raise ValueError(_format_cycle_group_io_closure_error(group_id, outside_internal_by_recipe))
++
+     internal_commodities = set(group.internal_commodities)
+     net_export_commodities = set(group.net_export_commodities)
+     normalized_external_demands: dict[str, Fraction] = {}
+@@ -498,6 +505,37 @@
+     }
+ 
+ 
++def _cycle_group_recipe_io_outside_internal(
++    context: PreprocessContext,
++    group: CycleGroup,
++) -> dict[str, tuple[str, ...]]:
++    internal_commodities = set(group.internal_commodities)
++    outside_by_recipe: dict[str, tuple[str, ...]] = {}
++    for recipe_id in group.recipes:
++        recipe = context.recipes.get(recipe_id)
++        if recipe is None:
++            continue
++        referenced_commodities = set(recipe.inputs) | set(recipe.outputs)
++        outside = tuple(sorted(referenced_commodities - internal_commodities))
++        if outside:
++            outside_by_recipe[recipe_id] = outside
++    return outside_by_recipe
++
++
++def _format_cycle_group_io_closure_error(
++    group_id: str,
++    outside_by_recipe: Mapping[str, tuple[str, ...]],
++) -> str:
++    details = "; ".join(
++        f"{recipe_id}: {', '.join(commodities)}"
++        for recipe_id, commodities in sorted(outside_by_recipe.items())
++    )
++    return (
++        f"cycle group {group_id!r} recipes must reference only commodities listed in "
++        f"internal_commodities; outside commodities: {details}"
++    )
++
++
+ def _solve_square_linear_system(matrix: list[list[Fraction]], rhs: list[Fraction]) -> list[Fraction]:
+     size = len(matrix)
+     if size == 0:
+--- a/src/tests/test_preprocess_context.py
++++ b/src/tests/test_preprocess_context.py
+@@ -244,6 +244,17 @@
+         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+ 
+ 
++def test_preprocess_context_rejects_cycle_recipe_io_outside_group_internal_commodities(
++    raw_rules_dict,
++    raw_plan_dict,
++) -> None:
++    mutated_rules = copy.deepcopy(raw_rules_dict)
++    mutated_rules["recipes"]["planter_buckwheat"]["inputs"]["source_ore"] = 1
++
++    with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
++        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
++
++
+ def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
+     context = load_default_preprocess_context()
+     flows, fractional = solve_demands(context=context)
+--- a/src/tests/test_preprocess_cycle_solver.py
++++ b/src/tests/test_preprocess_cycle_solver.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++import copy
+ from fractions import Fraction
+ 
+ import pytest
+@@ -37,3 +38,11 @@
+     with pytest.raises(ValueError, match="net_export"):
+         solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat_seed": Fraction(1)})
+ 
++
++def test_cycle_solver_rejects_unvalidated_context_with_cycle_recipe_io_outside_internal() -> None:
++    context = copy.deepcopy(load_default_preprocess_context())
++    context.recipes["planter_buckwheat"].inputs["source_ore"] = Fraction(1)
++
++    with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
++        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
++
