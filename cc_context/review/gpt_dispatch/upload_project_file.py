@@ -571,13 +571,32 @@ async def run(args, pkg: Path | None, out_dir: Path) -> int:
     sources_url += ("&" if "?" in sources_url else "?") + "tab=sources"
     base = args.cdp_http.rstrip("/")
 
-    try:
-        tab = http("PUT", "/json/new", base)  # 开空 tab; 导航走显式 Page.navigate
-        tab_id, ws_url = tab["id"], tab["webSocketDebuggerUrl"]  # 非 dict 返回也算端点不可用
-    except Exception as e:
-        log("attach", "FATAL", error=str(e)[:200], hint="Edge with CDP up? run start_gpt_automation_chrome.ps1")
-        return 1
-    log("attach", "tab_created", tab=tab_id)
+    opened_tab = False
+    if args.reuse_tab_id:
+        # 复用调用方已开的 tab — 不开空页 (owner 2026-06-14)。调用方在阻塞等本子进程,
+        # 其 page-ws 此刻空闲, 我们另开一条 ws 连同一 tab 操作, 不冲突; 结束不关 (no_close)。
+        try:
+            targets = http("GET", "/json/list", base) or []
+            match = next((t for t in targets if t.get("id") == args.reuse_tab_id
+                          and t.get("webSocketDebuggerUrl")), None)
+            if not match:
+                log("attach", "FATAL", error=f"reuse-tab-id {args.reuse_tab_id} not in /json/list")
+                return 1
+            tab_id, ws_url = match["id"], match["webSocketDebuggerUrl"]
+        except Exception as e:
+            log("attach", "FATAL", error=str(e)[:200], hint="reuse-tab-id lookup failed")
+            return 1
+        log("attach", "tab_reused", tab=tab_id)
+    else:
+        try:
+            tab = http("PUT", "/json/new", base)  # 开空 tab; 导航走显式 Page.navigate
+            tab_id, ws_url = tab["id"], tab["webSocketDebuggerUrl"]  # 非 dict 返回也算端点不可用
+        except Exception as e:
+            log("attach", "FATAL", error=str(e)[:200], hint="Edge with CDP up? run start_gpt_automation_chrome.ps1")
+            return 1
+        opened_tab = True
+        log("attach", "tab_created", tab=tab_id)
+    print("KEPT_TAB_ID:" + tab_id, flush=True)  # 调用方据此复用同一 tab 发送
 
     try:
         async with websockets.connect(ws_url, max_size=64 * 1024 * 1024, open_timeout=20) as ws:
@@ -716,10 +735,12 @@ async def run(args, pkg: Path | None, out_dir: Path) -> int:
         log("fatal", "unhandled", error=str(e)[:300])
         return 3
     finally:
-        try:
-            http("GET", "/json/close/" + tab_id, base)
-        except Exception:
-            pass
+        # 只关自己开的 tab; 复用调用方 tab 或 --no-close 时留着给下一步 (发送) 用
+        if opened_tab and not args.no_close:
+            try:
+                http("GET", "/json/close/" + tab_id, base)
+            except Exception:
+                pass
 
 
 def main() -> int:
@@ -741,6 +762,11 @@ def main() -> int:
                          "对旧快照包改名鲁棒, 实现「新快照替换旧快照、依赖包保留」每轮工作流")
     ap.add_argument("--keep", action="append", default=None,
                     help="--replace 时**保留不删**的文件名白名单 (可重复); 默认 = 依赖包 zmd_py313_linux_x86_64.zip")
+    ap.add_argument("--reuse-tab-id", default=None,
+                    help="复用调用方已开的 tab (按 id 连其 page-ws), 不再 PUT /json/new 开空 tab; "
+                         "配 --no-close 让上传后页面留给下一步 (发送) 复用 (owner 2026-06-14 裁决: 别开空页传完就关)")
+    ap.add_argument("--no-close", action="store_true",
+                    help="结束时不关 tab (留给调用方继续用); 复用 tab 时本就不该关")
     ap.add_argument("--out-dir", help="screenshots/evidence dir; default 补丁包/gpt_deliveries/<ts>_project_upload")
     args = ap.parse_args()
 

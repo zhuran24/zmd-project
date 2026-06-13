@@ -503,12 +503,89 @@ async def assert_logged_in(page: PageCdp, rep: Reporter) -> bool:
     return True
 
 
+# 目标模型 = 「智能水平」菜单里 role=menuitemradio 文本 "Pro 扩展" (= Pro·进阶/扩展模式)。
+# 该菜单 (2026-06-14 实地探明) 项: 极速/均衡/高级/超高/Pro 扩展/GPT-5.5, 选中项 aria-checked=true。
+# 模型按钮 (aria-haspopup=menu) 的可见文本 = 当前选中项, 故按钮文本即可判当前模型。
+TARGET_MODEL_TEXT = "Pro 扩展"
+
+_MODEL_BTN_RECT_JS = (
+    "(() => {"
+    "  const bs=[...document.querySelectorAll("
+    "    'button[aria-haspopup=menu],[role=button][aria-haspopup=menu]')];"
+    "  for (const b of bs) {"
+    "    const t=(b.innerText||'').trim();"
+    "    if (/GPT|Pro|进阶|专业|扩展|5\\.5|Auto|自动/i.test(t) && t.length<40) {"
+    "      const r=b.getBoundingClientRect();"
+    "      return JSON.stringify({x:r.x+r.width/2,y:r.y+r.height/2,text:t});"
+    "    }"
+    "  }"
+    "  return null;"
+    "})()"
+)
+
+_PRO_RADIO_RECT_JS = (
+    "(() => {"
+    "  const its=[...document.querySelectorAll('[role=menuitemradio]')];"
+    "  for (const it of its) {"
+    "    if ((it.innerText||'').trim().startsWith('Pro 扩展')) {"
+    "      const r=it.getBoundingClientRect();"
+    "      return JSON.stringify({x:r.x+r.width/2,y:r.y+r.height/2,"
+    "        checked:it.getAttribute('aria-checked')});"
+    "    }"
+    "  }"
+    "  return null;"
+    "})()"
+)
+
+
+async def _model_button(page: PageCdp) -> dict | None:
+    raw = await page.js(_MODEL_BTN_RECT_JS, timeout=10)
+    try:
+        return json.loads(raw) if raw else None
+    except (TypeError, ValueError):
+        return None
+
+
 async def verify_model(page: PageCdp, rep: Reporter):
-    spot = await page.js(_find_button_js(MODEL_BTN_TEXTS), timeout=10)
-    if spot:
-        rep.log("model", "ok", matched=spot.get("text"))
+    """检查当前模型, 若不是 Pro 扩展则打开「智能水平」菜单切过去 (owner 2026-06-14:
+    上传完包后必须确认/修正模型再发, 不能只警告)。已对则 no-op (按钮文本即当前模型)。"""
+    info = await _model_button(page)
+    if info is None:
+        await rep.attention(page, "model",
+                            "model selector button not found — verify manually; proceeding")
         return
-    await rep.attention(page, "model", "model selector text does not look like Pro — verify manually; proceeding anyway")
+    if TARGET_MODEL_TEXT in info["text"]:
+        rep.log("model", "ok", current=info["text"])
+        return
+    # 不对 → 打开菜单切到 Pro 扩展 (真实 pointer; .click() 对 Radix 菜单不可靠)
+    rep.log("model", "wrong_model", current=info["text"], target=TARGET_MODEL_TEXT)
+    await page.click_xy(info["x"], info["y"])
+    await asyncio.sleep(1.2)
+    raw = await page.js(_PRO_RADIO_RECT_JS, timeout=10)
+    try:
+        opt = json.loads(raw) if raw else None
+    except (TypeError, ValueError):
+        opt = None
+    if opt is None:
+        await page.press_escape()
+        await rep.attention(page, "model",
+                            f"Pro 扩展 option not found in model menu (current={info['text']});"
+                            " verify manually")
+        return
+    if opt.get("checked") == "true":
+        # 按钮文本与选中项不一致但 radio 已勾选 — 关菜单按已对处理
+        await page.press_escape()
+        rep.log("model", "ok_radio_checked", current=info["text"])
+        return
+    await page.click_xy(opt["x"], opt["y"])
+    await asyncio.sleep(1.0)
+    after = await _model_button(page)
+    if after is not None and TARGET_MODEL_TEXT in after["text"]:
+        rep.log("model", "switched_to_pro", from_model=info["text"], to=after["text"])
+    else:
+        await rep.attention(page, "model",
+                            "model switch to Pro 扩展 not confirmed "
+                            f"(now={after['text'] if after else '?'}); verify manually")
 
 
 async def fill_and_send(page: PageCdp, prompt_text: str, rep: Reporter) -> str:
@@ -1044,17 +1121,31 @@ def pack_repo(repo_root: Path, rep: Reporter, unique_name: bool = False) -> Path
     return pkg
 
 
-def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) -> bool:
+def _reuse_tab_args(page: "PageCdp | None", args) -> list[str]:
+    """dispatch 的 page 与 sources 上传同端点 (Edge 9222) 时, 让上传/枚举子进程复用
+    dispatch 已开的 tab、且传完不关 — 一页到底, 不开空页不关页 (owner 2026-06-14)。
+    dispatch 此刻阻塞等子进程, 其 page-ws 空闲, 子进程另开一条 ws 操作同 tab 不冲突。
+    App 通道 (9224) 上传仍走 9222 网页端, tab 不通用 → 不复用 (子进程自开自关)。"""
+    if (page is not None and page.tab_id
+            and page.http_base.rstrip("/") == args.sources_cdp_http.rstrip("/")):
+        return ["--reuse-tab-id", page.tab_id, "--no-close"]
+    return []
+
+
+def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path,
+                      page: "PageCdp | None" = None) -> bool:
     """sources 通道: 子进程调 upload_project_file.py 把包传到 Project 文件页来源区。
     **上传永远走网页端 (--sources-cdp-http), 与发送通道解耦** — App 的文件上传
-    流程与网页端不同, 绝不能对 App 跑 (owner 2026-06-12 裁决)。"""
+    流程与网页端不同, 绝不能对 App 跑 (owner 2026-06-12 裁决)。
+    page 同端点时复用其 tab (见 _reuse_tab_args)。"""
     uploader = Path(__file__).resolve().parent / "upload_project_file.py"
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    reuse = _reuse_tab_args(page, args)
     for i, pkg in enumerate(packages):
         cmd = [sys.executable, str(uploader), "--file", str(pkg),
                "--cdp-http", args.sources_cdp_http,
                "--project-url", args.project_url,
-               "--out-dir", str(out_dir / f"sources_upload_{i}")]
+               "--out-dir", str(out_dir / f"sources_upload_{i}")] + reuse
         if i == 0 and not args.keep_old_snapshots:
             cmd.append("--replace")
         rep.log("sources_upload", "start", file=pkg.name,
@@ -1069,15 +1160,17 @@ def upload_to_sources(packages: list[Path], args, rep: Reporter, out_dir: Path) 
     return True
 
 
-def list_sources(args, rep: Reporter, out_dir: Path) -> list[str] | None:
-    """--list 枚举文件区 .zip 文件名 (网页端 page-ws)。None = 枚举本身失败。"""
+def list_sources(args, rep: Reporter, out_dir: Path,
+                 page: "PageCdp | None" = None) -> list[str] | None:
+    """--list 枚举文件区 .zip 文件名 (网页端 page-ws)。None = 枚举本身失败。
+    page 同端点时复用其 tab (不开空页)。"""
     uploader = Path(__file__).resolve().parent / "upload_project_file.py"
     env = dict(os.environ, PYTHONIOENCODING="utf-8")
     proc = subprocess.run(
         [sys.executable, str(uploader), "--list",
          "--cdp-http", args.sources_cdp_http,
          "--project-url", args.project_url,
-         "--out-dir", str(out_dir / "sources_list")],
+         "--out-dir", str(out_dir / "sources_list")] + _reuse_tab_args(page, args),
         capture_output=True, text=True, encoding="utf-8", errors="replace", env=env,
     )
     for line in (proc.stdout or "").splitlines():
@@ -1092,14 +1185,15 @@ def list_sources(args, rep: Reporter, out_dir: Path) -> list[str] | None:
 
 
 def verify_prompt_packages_in_sources(prompt_text: str, args, rep: Reporter,
-                                      out_dir: Path, just_uploaded: bool) -> bool:
+                                      out_dir: Path, just_uploaded: bool,
+                                      page: "PageCdp | None" = None) -> bool:
     """发送前防呆 (2026-06-12 教训: 假设包还在就发, 实际早被误删 → 白发一单):
     prompt 里指认的每个 .zip 必须真的在文件区。just_uploaded=True 时枚举失败仅
     WARN (上传子进程刚自验过持久化); prompt-only 模式枚举失败 = fail-closed。"""
     mentioned = sorted(set(re.findall(r"[\w.\-]+\.zip", prompt_text)))
     if not mentioned:
         return True
-    names = list_sources(args, rep, out_dir)
+    names = list_sources(args, rep, out_dir, page=page)
     if names is None:
         if just_uploaded:
             rep.log("sources_verify", "WARN_list_failed",
@@ -1148,11 +1242,11 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                         rep.log("sources_upload", "WARN_prompt_missing_filename",
                                 file=pkg.name,
                                 hint="prompt 没提到该包文件名 — GPT 可能找不到包, 确认 brief 指认正确")
-                if packages and not upload_to_sources(packages, args, rep, out_dir):
+                if packages and not upload_to_sources(packages, args, rep, out_dir, page=page):
                     await rep.attention(page, "sources_upload", "file-area upload failed — see sources_upload_* logs")
                     return 3
                 if not verify_prompt_packages_in_sources(prompt_text, args, rep, out_dir,
-                                                         just_uploaded=bool(packages)):
+                                                         just_uploaded=bool(packages), page=page):
                     await rep.attention(page, "sources_verify",
                                         "prompt-referenced package missing from Sources — upload it first")
                     return 3
