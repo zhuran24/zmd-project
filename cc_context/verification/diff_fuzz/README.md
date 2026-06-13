@@ -29,6 +29,12 @@ python3.13 cc_context/verification/diff_fuzz/master_geometry_diff.py --seed 1 --
 python3.13 cc_context/verification/diff_fuzz/binding_model_diff.py --self-test
 python3.13 cc_context/verification/diff_fuzz/binding_model_diff.py --batch 120 --seed 0
 python3.13 cc_context/verification/diff_fuzz/binding_model_diff.py --seed 0 --inspect 7  # 复现单例
+python3.13 cc_context/verification/diff_fuzz/routing_aware_binding_diff.py --self-test
+python3.13 cc_context/verification/diff_fuzz/routing_aware_binding_diff.py --batch 120 --seed 0
+
+# 全套一键回归门 (上游一旦动 src/ 就跑这个; 零外发, 仅本地 CP-SAT, 任一 mismatch 非零退出)
+python3.13 cc_context/verification/diff_fuzz/run_all.py            # seed 0, 全量 batch
+python3.13 cc_context/verification/diff_fuzz/run_all.py 7 --quick  # seed 7, 小 batch 快验
 ```
 
 > 注: 本 checkout 主环境是 `python` (python.org 3.13), `python3.13` 是商店备份; 二者都能跑, README 沿用历史 `python3.13` 写法。
