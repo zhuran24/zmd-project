@@ -74,6 +74,7 @@ from src.models.exact_coordinate_master import (
     resolve_ghost_signature_bucket_residual_overlay_instrumentation_enabled,
 )
 from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
+from src.models.solution_hint_parser import parse_strict_int_hint_value
 from src.preprocess.operation_profiles import get_operation_port_profile
 
 ModeToken = Tuple[str, str]
@@ -11313,9 +11314,8 @@ class MasterPlacementModel:
             hinted = int(hint_application.get("hinted_literals", 0))
         elif solution_hint:
             for key, pose_idx in solution_hint.items():
-                try:
-                    pose_idx_int = int(pose_idx)
-                except (TypeError, ValueError):
+                pose_idx_int = parse_strict_int_hint_value(pose_idx)
+                if pose_idx_int is None:
                     continue
                 var = self._hint_var_for_key(str(key), pose_idx_int)
                 if var is None:

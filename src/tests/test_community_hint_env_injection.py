@@ -12,6 +12,8 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict
 
+from src.models.solution_hint_parser import parse_strict_int_hint_value
+
 
 def _merge_community_hint_into_greedy(
     community_path: str,
@@ -49,9 +51,8 @@ def _merge_community_hint_into_greedy(
             "error": "JSONDecodeError",
         }
     for inst_id, pose_idx in dict(community_raw or {}).items():
-        try:
-            pose_idx_int = int(pose_idx)
-        except (TypeError, ValueError):
+        pose_idx_int = parse_strict_int_hint_value(pose_idx)
+        if pose_idx_int is None:
             continue
         key = str(inst_id)
         if key in greedy_hint:
@@ -139,8 +140,8 @@ def test_invalid_pose_idx_values_skipped(tmp_path: Path) -> None:
     assert "a" not in out["greedy_hint"]
     assert out["greedy_hint"]["b"] == 42
     assert "c" not in out["greedy_hint"]
-    assert out["greedy_hint"]["d"] == 3
-    assert out["greedy_hint"]["e"] == 1
+    assert "d" not in out["greedy_hint"]
+    assert "e" not in out["greedy_hint"]
 
 
 def test_realistic_blueprint_hint_merge() -> None:

@@ -23,6 +23,7 @@ from typing import Any, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set,
 
 from ortools.sat.python import cp_model
 
+from src.models.solution_hint_parser import parse_strict_int_hint_value
 from src.preprocess.operation_profiles import get_operation_port_profile
 
 
@@ -977,7 +978,9 @@ class PoseBoolExactMasterDelegate:
         # hint_inactive_residual_optionals 在 pose-bool form 下不强制 zero hint poles (CP-SAT 自找).
         hinted = 0
         for inst_id, pose_idx in dict(solution_hint or {}).items():
-            pose_idx_int = int(pose_idx)
+            pose_idx_int = parse_strict_int_hint_value(pose_idx)
+            if pose_idx_int is None:
+                continue
             key = str(inst_id)
             var: Optional[cp_model.IntVar] = None
             if key in self._group_id_by_instance:

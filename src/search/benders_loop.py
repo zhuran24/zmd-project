@@ -84,6 +84,7 @@ from src.models.exact_coordinate_master import (
     EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT,
     EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV,
 )
+from src.models.solution_hint_parser import parse_strict_int_hint_value
 from src.models.master_model import (
     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT,
@@ -4172,9 +4173,8 @@ class LBBDController:
                 )
                 community_hint_raw = {}
             for inst_id, pose_idx in dict(community_hint_raw or {}).items():
-                try:
-                    pose_idx_int = int(pose_idx)
-                except (TypeError, ValueError):
+                pose_idx_int = parse_strict_int_hint_value(pose_idx)
+                if pose_idx_int is None:
                     continue
                 key = str(inst_id)
                 if key in self._greedy_hint:
@@ -4194,8 +4194,8 @@ class LBBDController:
         self._master_hinted_literals = 0
         self._ghost_anchor_hint_applied = False
         raw_ghost_anchor_hint_idx = warm_start.get("ghost_anchor_hint_idx")
-        self._ghost_anchor_hint_idx = (
-            None if raw_ghost_anchor_hint_idx is None else int(raw_ghost_anchor_hint_idx)
+        self._ghost_anchor_hint_idx = parse_strict_int_hint_value(
+            raw_ghost_anchor_hint_idx
         )
         self._ghost_anchor_hint_status = str(
             warm_start.get("ghost_anchor_hint_status", "not_used")
@@ -4445,8 +4445,11 @@ class LBBDController:
                     last_solve.get("ghost_anchor_hint_applied", False)
                 )
                 _ghost_anchor_hint_idx_value = last_solve.get("ghost_anchor_hint_idx")
-                if _ghost_anchor_hint_idx_value is not None:
-                    self._ghost_anchor_hint_idx = int(_ghost_anchor_hint_idx_value)
+                parsed_ghost_anchor_hint_idx = parse_strict_int_hint_value(
+                    _ghost_anchor_hint_idx_value
+                )
+                if parsed_ghost_anchor_hint_idx is not None:
+                    self._ghost_anchor_hint_idx = parsed_ghost_anchor_hint_idx
                 self._residual_optional_zero_hinting_enabled = bool(
                     last_solve.get(
                         "residual_optional_zero_hinting_enabled",

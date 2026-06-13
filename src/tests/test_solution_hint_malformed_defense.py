@@ -11,6 +11,7 @@ import pytest
 from ortools.sat.python import cp_model
 
 from src.models.master_model import MasterPlacementModel
+from src.models.solution_hint_parser import parse_strict_int_hint_value
 
 
 def _fixture(*, ghost_rect=None) -> MasterPlacementModel:
@@ -117,7 +118,8 @@ def test_exact_ghost_anchor_hint_skips_non_integral_anchor_index_types(
     assert model.build_stats["last_solve"]["ghost_anchor_hint_idx"] is None
 
 
-def test_legacy_solution_hint_skips_non_int_pose_index() -> None:
+@pytest.mark.parametrize("pose_idx", [0.0, 0.9, 1.0, True, False, "0", "1.0", "not_an_int"])
+def test_legacy_solution_hint_skips_non_int_pose_index(pose_idx: object) -> None:
     instances, pools, rules = (
         _fixture().source_instances,
         _fixture().facility_pools,
@@ -131,7 +133,13 @@ def test_legacy_solution_hint_skips_non_int_pose_index() -> None:
         skip_power_coverage=True,
     )
 
-    status = model.solve(time_limit_seconds=2.0, solution_hint={"solid_1": "not_an_int"})
+    status = model.solve(time_limit_seconds=2.0, solution_hint={"solid_1": pose_idx})
 
     assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
     assert model.build_stats["last_solve"]["hinted_literals"] == 0
+
+
+def test_strict_solution_hint_parser_rejects_bool_float_and_strings() -> None:
+    assert parse_strict_int_hint_value(7) == 7
+    for value in (True, False, 0.0, 1.0, "0", "7", None):
+        assert parse_strict_int_hint_value(value) is None

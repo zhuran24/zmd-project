@@ -1,0 +1,217 @@
+diff --git a/src/models/exact_coordinate_master.py b/src/models/exact_coordinate_master.py
+index 99967f0..90a9a89 100644
+--- a/src/models/exact_coordinate_master.py
++++ b/src/models/exact_coordinate_master.py
+@@ -37,6 +37,7 @@ from typing import Any, DefaultDict, Dict, Iterable, List, Mapping, Optional, Se
+ 
+ from ortools.sat.python import cp_model
+ 
++from src.models.solution_hint_parser import parse_strict_int_hint_value
+ from src.preprocess.operation_profiles import get_operation_port_profile
+ 
+ 
+@@ -6779,9 +6780,7 @@ class CoordinateExactMasterDelegate:
+ 
+     @staticmethod
+     def _strict_int_hint_value(value: Any) -> Optional[int]:
+-        if type(value) is int:
+-            return int(value)
+-        return None
++        return parse_strict_int_hint_value(value)
+ 
+     def apply_solution_hint(
+         self,
+diff --git a/src/models/master_model.py b/src/models/master_model.py
+index 175ed6a..9a59e27 100644
+--- a/src/models/master_model.py
++++ b/src/models/master_model.py
+@@ -74,6 +74,7 @@ from src.models.exact_coordinate_master import (
+     resolve_ghost_signature_bucket_residual_overlay_instrumentation_enabled,
+ )
+ from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
++from src.models.solution_hint_parser import parse_strict_int_hint_value
+ from src.preprocess.operation_profiles import get_operation_port_profile
+ 
+ ModeToken = Tuple[str, str]
+@@ -11313,9 +11314,8 @@ class MasterPlacementModel:
+             hinted = int(hint_application.get("hinted_literals", 0))
+         elif solution_hint:
+             for key, pose_idx in solution_hint.items():
+-                try:
+-                    pose_idx_int = int(pose_idx)
+-                except (TypeError, ValueError):
++                pose_idx_int = parse_strict_int_hint_value(pose_idx)
++                if pose_idx_int is None:
+                     continue
+                 var = self._hint_var_for_key(str(key), pose_idx_int)
+                 if var is None:
+diff --git a/src/models/pose_bool_exact_master.py b/src/models/pose_bool_exact_master.py
+index 0fbd0e4..f61b47a 100644
+--- a/src/models/pose_bool_exact_master.py
++++ b/src/models/pose_bool_exact_master.py
+@@ -23,6 +23,7 @@ from typing import Any, Dict, FrozenSet, List, Mapping, Optional, Sequence, Set,
+ 
+ from ortools.sat.python import cp_model
+ 
++from src.models.solution_hint_parser import parse_strict_int_hint_value
+ from src.preprocess.operation_profiles import get_operation_port_profile
+ 
+ 
+@@ -977,7 +978,9 @@ class PoseBoolExactMasterDelegate:
+         # hint_inactive_residual_optionals 在 pose-bool form 下不强制 zero hint poles (CP-SAT 自找).
+         hinted = 0
+         for inst_id, pose_idx in dict(solution_hint or {}).items():
+-            pose_idx_int = int(pose_idx)
++            pose_idx_int = parse_strict_int_hint_value(pose_idx)
++            if pose_idx_int is None:
++                continue
+             key = str(inst_id)
+             var: Optional[cp_model.IntVar] = None
+             if key in self._group_id_by_instance:
+diff --git a/src/models/solution_hint_parser.py b/src/models/solution_hint_parser.py
+new file mode 100644
+index 0000000..ac92163
+--- /dev/null
++++ b/src/models/solution_hint_parser.py
+@@ -0,0 +1,19 @@
++"""Strict parsing helpers for CP-SAT solution hints.
++
++Solution hints are search guidance only, but every public hint ingress should
++share the same fail-closed type policy: only real ``int`` values are accepted.
++In particular, ``bool`` is rejected even though it subclasses ``int`` in Python,
++and floats / numeric strings are not truncated or coerced.
++"""
++
++from __future__ import annotations
++
++from typing import Any, Optional
++
++
++def parse_strict_int_hint_value(value: Any) -> Optional[int]:
++    """Return ``value`` as int only when it is exactly an ``int`` instance."""
++
++    if type(value) is int:
++        return int(value)
++    return None
+diff --git a/src/search/benders_loop.py b/src/search/benders_loop.py
+index 11f61ed..2d0544f 100644
+--- a/src/search/benders_loop.py
++++ b/src/search/benders_loop.py
+@@ -84,6 +84,7 @@ from src.models.exact_coordinate_master import (
+     EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT,
+     EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV,
+ )
++from src.models.solution_hint_parser import parse_strict_int_hint_value
+ from src.models.master_model import (
+     DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+     EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT,
+@@ -4172,9 +4173,8 @@ class LBBDController:
+                 )
+                 community_hint_raw = {}
+             for inst_id, pose_idx in dict(community_hint_raw or {}).items():
+-                try:
+-                    pose_idx_int = int(pose_idx)
+-                except (TypeError, ValueError):
++                pose_idx_int = parse_strict_int_hint_value(pose_idx)
++                if pose_idx_int is None:
+                     continue
+                 key = str(inst_id)
+                 if key in self._greedy_hint:
+@@ -4194,8 +4194,8 @@ class LBBDController:
+         self._master_hinted_literals = 0
+         self._ghost_anchor_hint_applied = False
+         raw_ghost_anchor_hint_idx = warm_start.get("ghost_anchor_hint_idx")
+-        self._ghost_anchor_hint_idx = (
+-            None if raw_ghost_anchor_hint_idx is None else int(raw_ghost_anchor_hint_idx)
++        self._ghost_anchor_hint_idx = parse_strict_int_hint_value(
++            raw_ghost_anchor_hint_idx
+         )
+         self._ghost_anchor_hint_status = str(
+             warm_start.get("ghost_anchor_hint_status", "not_used")
+@@ -4445,8 +4445,11 @@ class LBBDController:
+                     last_solve.get("ghost_anchor_hint_applied", False)
+                 )
+                 _ghost_anchor_hint_idx_value = last_solve.get("ghost_anchor_hint_idx")
+-                if _ghost_anchor_hint_idx_value is not None:
+-                    self._ghost_anchor_hint_idx = int(_ghost_anchor_hint_idx_value)
++                parsed_ghost_anchor_hint_idx = parse_strict_int_hint_value(
++                    _ghost_anchor_hint_idx_value
++                )
++                if parsed_ghost_anchor_hint_idx is not None:
++                    self._ghost_anchor_hint_idx = parsed_ghost_anchor_hint_idx
+                 self._residual_optional_zero_hinting_enabled = bool(
+                     last_solve.get(
+                         "residual_optional_zero_hinting_enabled",
+diff --git a/src/tests/test_community_hint_env_injection.py b/src/tests/test_community_hint_env_injection.py
+index 407a983..959abf3 100644
+--- a/src/tests/test_community_hint_env_injection.py
++++ b/src/tests/test_community_hint_env_injection.py
+@@ -12,6 +12,8 @@ import tempfile
+ from pathlib import Path
+ from typing import Any, Dict
+ 
++from src.models.solution_hint_parser import parse_strict_int_hint_value
++
+ 
+ def _merge_community_hint_into_greedy(
+     community_path: str,
+@@ -49,9 +51,8 @@ def _merge_community_hint_into_greedy(
+             "error": "JSONDecodeError",
+         }
+     for inst_id, pose_idx in dict(community_raw or {}).items():
+-        try:
+-            pose_idx_int = int(pose_idx)
+-        except (TypeError, ValueError):
++        pose_idx_int = parse_strict_int_hint_value(pose_idx)
++        if pose_idx_int is None:
+             continue
+         key = str(inst_id)
+         if key in greedy_hint:
+@@ -139,8 +140,8 @@ def test_invalid_pose_idx_values_skipped(tmp_path: Path) -> None:
+     assert "a" not in out["greedy_hint"]
+     assert out["greedy_hint"]["b"] == 42
+     assert "c" not in out["greedy_hint"]
+-    assert out["greedy_hint"]["d"] == 3
+-    assert out["greedy_hint"]["e"] == 1
++    assert "d" not in out["greedy_hint"]
++    assert "e" not in out["greedy_hint"]
+ 
+ 
+ def test_realistic_blueprint_hint_merge() -> None:
+diff --git a/src/tests/test_solution_hint_malformed_defense.py b/src/tests/test_solution_hint_malformed_defense.py
+index 17479e1..a6858a3 100644
+--- a/src/tests/test_solution_hint_malformed_defense.py
++++ b/src/tests/test_solution_hint_malformed_defense.py
+@@ -11,6 +11,7 @@ import pytest
+ from ortools.sat.python import cp_model
+ 
+ from src.models.master_model import MasterPlacementModel
++from src.models.solution_hint_parser import parse_strict_int_hint_value
+ 
+ 
+ def _fixture(*, ghost_rect=None) -> MasterPlacementModel:
+@@ -117,7 +118,8 @@ def test_exact_ghost_anchor_hint_skips_non_integral_anchor_index_types(
+     assert model.build_stats["last_solve"]["ghost_anchor_hint_idx"] is None
+ 
+ 
+-def test_legacy_solution_hint_skips_non_int_pose_index() -> None:
++@pytest.mark.parametrize("pose_idx", [0.0, 0.9, 1.0, True, False, "0", "1.0", "not_an_int"])
++def test_legacy_solution_hint_skips_non_int_pose_index(pose_idx: object) -> None:
+     instances, pools, rules = (
+         _fixture().source_instances,
+         _fixture().facility_pools,
+@@ -131,7 +133,13 @@ def test_legacy_solution_hint_skips_non_int_pose_index() -> None:
+         skip_power_coverage=True,
+     )
+ 
+-    status = model.solve(time_limit_seconds=2.0, solution_hint={"solid_1": "not_an_int"})
++    status = model.solve(time_limit_seconds=2.0, solution_hint={"solid_1": pose_idx})
+ 
+     assert status in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+     assert model.build_stats["last_solve"]["hinted_literals"] == 0
++
++
++def test_strict_solution_hint_parser_rejects_bool_float_and_strings() -> None:
++    assert parse_strict_int_hint_value(7) == 7
++    for value in (True, False, 0.0, 1.0, "0", "7", None):
++        assert parse_strict_int_hint_value(value) is None

@@ -37,6 +37,7 @@ from typing import Any, DefaultDict, Dict, Iterable, List, Mapping, Optional, Se
 
 from ortools.sat.python import cp_model
 
+from src.models.solution_hint_parser import parse_strict_int_hint_value
 from src.preprocess.operation_profiles import get_operation_port_profile
 
 
@@ -6779,9 +6780,7 @@ class CoordinateExactMasterDelegate:
 
     @staticmethod
     def _strict_int_hint_value(value: Any) -> Optional[int]:
-        if type(value) is int:
-            return int(value)
-        return None
+        return parse_strict_int_hint_value(value)
 
     def apply_solution_hint(
         self,
