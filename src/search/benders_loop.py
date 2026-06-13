@@ -5161,15 +5161,12 @@ class LBBDController:
             #   INFEASIBLE -> genuine infeasibility, fall through
             #   TIMEOUT    -> env-off status unknown; can't certify INFEASIBLE,
             #                 surface as TIMEOUT/UNKNOWN to keep the proof sound
-            first_pass_summary = binding_model.extract_conflict_summary()
-            if (
-                first_pass_summary.get("overload_separation_enabled") is True
-                and int(first_pass_summary.get("overload_nogoods_added", 0)) > 0
-            ):
+            if self._binding_used_overload_separation(binding_model):
                 retry_model, retry_status = (
                     self._retry_binding_without_overload_separation(
                         solution=solution,
                         iteration=iteration,
+                        routing_context=_rab_sep_routing_context,
                     )
                 )
                 if retry_status == "FEASIBLE":
@@ -5268,6 +5265,22 @@ class LBBDController:
         )
         self._used_routing_core_reuse = True
         self._routing_core_build_seconds = time.perf_counter() - routing_core_started
+        binding_rejected_selections: List[Dict[str, Any]] = []
+
+        def _retry_current_binding_without_overload_separation() -> Optional[str]:
+            nonlocal binding_model, binding_status
+            if not self._binding_used_overload_separation(binding_model):
+                return None
+            retry_model, retry_status = self._retry_binding_without_overload_separation(
+                solution=solution,
+                iteration=iteration,
+                rejected_selections=binding_rejected_selections,
+                routing_context=_rab_sep_routing_context,
+            )
+            binding_model = retry_model
+            binding_status = retry_status
+            self._update_binding_cache_from_summary(binding_model.extract_conflict_summary())
+            return retry_status
 
         while binding_status == "FEASIBLE":
             selection = binding_model.extract_selection()
@@ -5409,6 +5422,7 @@ class LBBDController:
                 and self._binding_has_alternatives(binding_model)
             ):
                 self._routing_precheck_rejections += 1
+                binding_rejected_selections.append(copy.deepcopy(selection))
                 binding_model.add_nogood_cut(selection)
                 self._emit_heartbeat(
                     stage="binding_resolve",
@@ -5445,6 +5459,46 @@ class LBBDController:
                 if binding_status == "FEASIBLE":
                     continue
                 if binding_status == "INFEASIBLE":
+                    retry_status = _retry_current_binding_without_overload_separation()
+                    if retry_status == "FEASIBLE":
+                        continue
+                    if retry_status == "TIMEOUT":
+                        self.last_proof_summary = {
+                            "mode": "certified_exact",
+                            "benders_iterations": iteration,
+                            "master_status": "FEASIBLE",
+                            "binding_status": "TIMEOUT",
+                            "routing_status": f"PRECHECK_{precheck_status.upper()}",
+                            "diagnostic_flow_status": diagnostic_flow_status,
+                            "enumerated_bindings": enumerated_bindings,
+                            "routing_attempts": routing_attempts,
+                            "binding_summary": binding_model.extract_conflict_summary(),
+                            "routing_precheck": dict(routing_precheck_summary),
+                            "binding_selection_safe_reject": True,
+                            "overload_fallback_outcome": "TIMEOUT",
+                            "master_follow_up": "fail_closed_unknown",
+                            **self._exact_warm_start_summary(),
+                            **self._subproblem_reuse_summary(),
+                            **self._routing_shrink_summary(),
+                            **self._exact_cut_ladder_summary(),
+                        }
+                        return RUN_STATUS_UNKNOWN, None
+                    if retry_status not in {None, "INFEASIBLE"}:
+                        self._record_unexpected_binding_status(
+                            iteration=iteration,
+                            binding_status=retry_status,
+                            diagnostic_flow_status=diagnostic_flow_status,
+                            enumerated_bindings=enumerated_bindings,
+                            routing_attempts=routing_attempts,
+                            binding_model=binding_model,
+                            routing_status=f"PRECHECK_{precheck_status.upper()}",
+                            routing_precheck=routing_precheck_summary,
+                            extra={
+                                "binding_selection_safe_reject": True,
+                                "overload_fallback_outcome": str(retry_status),
+                            },
+                        )
+                        return RUN_STATUS_UNKNOWN, None
                     break
                 self._record_unexpected_binding_status(
                     iteration=iteration,
@@ -5784,6 +5838,7 @@ class LBBDController:
             if precheck_status == "relaxed_disconnected":
                 self._routing_precheck_rejections += 1
                 if self._binding_has_alternatives(binding_model):
+                    binding_rejected_selections.append(copy.deepcopy(selection))
                     binding_model.add_nogood_cut(selection)
                     binding_status = binding_model.solve(time_limit_seconds=self.binding_seconds)
                     if binding_status == "TIMEOUT":
@@ -5807,6 +5862,41 @@ class LBBDController:
                     if binding_status == "FEASIBLE":
                         continue
                     if binding_status == "INFEASIBLE":
+                        retry_status = _retry_current_binding_without_overload_separation()
+                        if retry_status == "FEASIBLE":
+                            continue
+                        if retry_status == "TIMEOUT":
+                            self.last_proof_summary = {
+                                "mode": "certified_exact",
+                                "benders_iterations": iteration,
+                                "master_status": "FEASIBLE",
+                                "binding_status": "TIMEOUT",
+                                "routing_status": "PRECHECK_RELAXED_DISCONNECTED",
+                                "diagnostic_flow_status": diagnostic_flow_status,
+                                "enumerated_bindings": enumerated_bindings,
+                                "routing_attempts": routing_attempts,
+                                "binding_summary": binding_model.extract_conflict_summary(),
+                                "routing_precheck": dict(routing_precheck_summary),
+                                "overload_fallback_outcome": "TIMEOUT",
+                                **self._exact_warm_start_summary(),
+                                **self._subproblem_reuse_summary(),
+                                **self._routing_shrink_summary(),
+                                **self._exact_cut_ladder_summary(),
+                            }
+                            return RUN_STATUS_UNKNOWN, None
+                        if retry_status not in {None, "INFEASIBLE"}:
+                            self._record_unexpected_binding_status(
+                                iteration=iteration,
+                                binding_status=retry_status,
+                                diagnostic_flow_status=diagnostic_flow_status,
+                                enumerated_bindings=enumerated_bindings,
+                                routing_attempts=routing_attempts,
+                                binding_model=binding_model,
+                                routing_status="PRECHECK_RELAXED_DISCONNECTED",
+                                routing_precheck=routing_precheck_summary,
+                                extra={"overload_fallback_outcome": str(retry_status)},
+                            )
+                            return RUN_STATUS_UNKNOWN, None
                         break
                     self._record_unexpected_binding_status(
                         iteration=iteration,
@@ -5971,6 +6061,7 @@ class LBBDController:
                 }
                 return RUN_STATUS_UNKNOWN, None
             if has_binding_alternatives:
+                binding_rejected_selections.append(copy.deepcopy(selection))
                 binding_model.add_nogood_cut(selection)
                 self._emit_heartbeat(
                     stage="binding_resolve",
@@ -6004,6 +6095,41 @@ class LBBDController:
                 if binding_status == "FEASIBLE":
                     continue
                 if binding_status == "INFEASIBLE":
+                    retry_status = _retry_current_binding_without_overload_separation()
+                    if retry_status == "FEASIBLE":
+                        continue
+                    if retry_status == "TIMEOUT":
+                        self.last_proof_summary = {
+                            "mode": "certified_exact",
+                            "benders_iterations": iteration,
+                            "master_status": "FEASIBLE",
+                            "binding_status": "TIMEOUT",
+                            "routing_status": "INFEASIBLE",
+                            "diagnostic_flow_status": diagnostic_flow_status,
+                            "enumerated_bindings": enumerated_bindings,
+                            "routing_attempts": routing_attempts,
+                            "binding_summary": binding_model.extract_conflict_summary(),
+                            "routing_summary": dict(routing_model.build_stats),
+                            "overload_fallback_outcome": "TIMEOUT",
+                            **self._exact_warm_start_summary(),
+                            **self._subproblem_reuse_summary(),
+                            **self._routing_shrink_summary(),
+                            **self._exact_cut_ladder_summary(),
+                        }
+                        return RUN_STATUS_UNKNOWN, None
+                    if retry_status not in {None, "INFEASIBLE"}:
+                        self._record_unexpected_binding_status(
+                            iteration=iteration,
+                            binding_status=retry_status,
+                            diagnostic_flow_status=diagnostic_flow_status,
+                            enumerated_bindings=enumerated_bindings,
+                            routing_attempts=routing_attempts,
+                            binding_model=binding_model,
+                            routing_status="INFEASIBLE",
+                            routing_summary=routing_model.build_stats,
+                            extra={"overload_fallback_outcome": str(retry_status)},
+                        )
+                        return RUN_STATUS_UNKNOWN, None
                     break
                 self._record_unexpected_binding_status(
                     iteration=iteration,
@@ -6052,19 +6178,34 @@ class LBBDController:
         # candidate-wide INFEASIBLE certificate.
         return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
 
+    def _binding_used_overload_separation(self, binding_model: PortBindingModel) -> bool:
+        summary = binding_model.extract_conflict_summary()
+        return (
+            summary.get("overload_separation_enabled") is True
+            and int(summary.get("overload_nogoods_added", 0)) > 0
+        )
+
     def _retry_binding_without_overload_separation(
         self,
         *,
         solution: Dict[str, Any],
         iteration: int,
+        rejected_selections: Optional[Sequence[Mapping[str, Any]]] = None,
+        routing_context: Optional[Any] = None,
     ) -> Tuple[PortBindingModel, str]:
         """P1 #9 hint 2 stage 3: caller fallback ladder.
 
         Re-construct the binding model with EXACT_BINDING_USE_OVERLOAD_SEPARATION
         forced off and re-solve once. Caller invokes this only after the
-        first-pass solve returned INFEASIBLE while overload separation was
-        active and had injected nogoods. Env value is restored before
-        return regardless of outcome.
+        first-pass solve, or a later re-solve after binding nogoods, returned
+        INFEASIBLE while overload separation was active and had injected
+        nogoods. Env value is restored before return regardless of outcome.
+
+        When retrying after binding alternatives have already been rejected by
+        routing, replay those exact rejected selections.  Otherwise the env-off
+        retry can resurrect a binding that this layout already proved unusable,
+        which would make the fallback a search rewind rather than a sound
+        exhaustion check.
 
         Returns (retry_model, retry_status). retry_status is one of
         "FEASIBLE" | "INFEASIBLE" | "TIMEOUT".
@@ -6083,9 +6224,12 @@ class LBBDController:
                 self.master.facility_pools,
                 self.master.source_instances,
                 project_root=self.project_root,
+                routing_context=routing_context,
                 **LBBDController._binding_generic_requirements_kwargs(self),
             )
             retry_model.build()
+            for rejected_selection in rejected_selections or ():
+                retry_model.add_nogood_cut(rejected_selection)
             retry_status = retry_model.solve(time_limit_seconds=self.binding_seconds)
         finally:
             if saved is None:

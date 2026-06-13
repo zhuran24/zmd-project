@@ -1,0 +1,97 @@
+--- a/src/models/binding_subproblem.py
++++ b/src/models/binding_subproblem.py
+@@ -251,10 +251,10 @@
+     *,
+     project_root: Path,
+ ) -> None:
+-    output_commodities = tuple(requirements.get("required_generic_outputs", {}))
+-    input_commodities = tuple(requirements.get("required_generic_inputs", {}))
+-    if not output_commodities and not input_commodities:
+-        return
++    output_requirements = requirements.get("required_generic_outputs", {})
++    input_requirements = requirements.get("required_generic_inputs", {})
++    output_commodities = tuple(output_requirements)
++    input_commodities = tuple(input_requirements)
+ 
+     canonical_path = project_root / "rules" / "canonical_rules.json"
+     if not canonical_path.exists():
+@@ -303,6 +303,34 @@
+                 f"（通用输入商品 {commodity!r} 必须是通用输入终端商品）"
+             )
+ 
++    canonical_generic_inputs = sorted(
++        str(commodity)
++        for commodity, metadata in commodity_metadata.items()
++        if isinstance(metadata, Mapping) and metadata.get("sink_kind") == "generic_input"
++    )
++    missing_generic_inputs = [
++        commodity
++        for commodity in canonical_generic_inputs
++        if commodity not in input_requirements
++    ]
++    non_positive_generic_inputs = [
++        commodity
++        for commodity in canonical_generic_inputs
++        if commodity in input_requirements and int(input_requirements[commodity]) <= 0
++    ]
++    if missing_generic_inputs or non_positive_generic_inputs:
++        details = []
++        if missing_generic_inputs:
++            details.append("missing=" + ",".join(missing_generic_inputs))
++        if non_positive_generic_inputs:
++            details.append("non_positive=" + ",".join(non_positive_generic_inputs))
++        raise ValueError(
++            "generic_io_requirements.required_generic_inputs must include every "
++            "canonical sink_kind=generic_input commodity with a positive slot count "
++            f"（通用输入需求必须以正槽数覆盖所有 canonical generic_input 终品）: "
++            + "; ".join(details)
++        )
++
+ 
+ class PortBindingModel:
+     """CP-SAT model（CP-SAT 模型）for exact port binding（精确端口绑定）."""
+--- a/src/tests/test_binding.py
++++ b/src/tests/test_binding.py
+@@ -792,6 +792,42 @@
+         load_generic_io_requirements(project_root=project_root, path=path)
+ 
+ 
++def test_load_generic_io_requirements_rejects_missing_or_zero_canonical_generic_inputs(
++    tmp_path, project_root
++):
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.models.binding_subproblem import load_generic_io_requirements
++
++    path = tmp_path / "generic_io_requirements.json"
++    path.write_text(
++        json.dumps(
++            {
++                "required_generic_outputs": {"source_ore": 18, "blue_iron_ore": 34},
++                "required_generic_inputs": {"valley_battery": 1},
++            }
++        ),
++        encoding="utf-8",
++    )
++
++    with pytest.raises(ValueError, match="missing=qiaoyu_capsule"):
++        load_generic_io_requirements(project_root=project_root, path=path)
++
++    path.write_text(
++        json.dumps(
++            {
++                "required_generic_outputs": {"source_ore": 18, "blue_iron_ore": 34},
++                "required_generic_inputs": {"qiaoyu_capsule": 0, "valley_battery": 1},
++            }
++        ),
++        encoding="utf-8",
++    )
++
++    with pytest.raises(ValueError, match="non_positive=qiaoyu_capsule"):
++        load_generic_io_requirements(project_root=project_root, path=path)
++
++
+ def test_load_wireless_sink_generic_input_slots_rejects_non_integer(tmp_path):
+     import sys
+ 

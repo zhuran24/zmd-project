@@ -413,6 +413,107 @@ def test_lbbd_retry_helper_restores_env_even_when_solve_raises(
     assert os.environ.get("EXACT_BINDING_USE_OVERLOAD_SEPARATION") == "yes"
 
 
+def test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion(
+    project_root, facility_pools, monkeypatch
+):
+    """When overload separation exhausts only the separated assignments, the
+    fallback must retry env-off with all prior routing-rejected selections
+    replayed.  Otherwise a later INFEASIBLE after binding nogoods can be
+    mistaken for true binding exhaustion."""
+    import os
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+    from src.search import benders_loop as bl
+
+    def fake_classification(self):
+        return {
+            "qiaoyu_capsule": "high_prod_low_demand",
+            "valley_battery": "low_prod_high_demand",
+        }
+
+    monkeypatch.setattr(
+        PortBindingModel,
+        "_load_overload_classification",
+        fake_classification,
+    )
+    monkeypatch.setenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", "1")
+
+    instances = []
+    placement_solution = {}
+    for index in range(2):
+        instance_id = f"protocol_box_{index + 1:03d}"
+        pose = facility_pools["protocol_storage_box"][index]
+        instances.append(
+            {
+                "instance_id": instance_id,
+                "facility_type": "protocol_storage_box",
+                "operation_type": "wireless_sink",
+                "is_mandatory": False,
+            }
+        )
+        placement_solution[instance_id] = {
+            "pose_idx": index,
+            "pose_id": pose["pose_id"],
+            "anchor": pose["anchor"],
+            "facility_type": "protocol_storage_box",
+        }
+
+    generic_io_requirements = {
+        "required_generic_outputs": {"source_ore": 0, "blue_iron_ore": 0},
+        "required_generic_inputs": {"qiaoyu_capsule": 1, "valley_battery": 1},
+    }
+    env_on_model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances,
+        project_root=project_root,
+        wireless_sink_generic_input_slots=3,
+        **generic_io_requirements,
+    )
+    env_on_model.build()
+    assert env_on_model.extract_conflict_summary()["overload_nogoods_added"] == 18
+
+    status = env_on_model.solve(time_limit_seconds=1.0)
+    rejected_selections = []
+    while status == "FEASIBLE":
+        selection = env_on_model.extract_selection()
+        rejected_selections.append(selection)
+        env_on_model.add_nogood_cut(selection)
+        status = env_on_model.solve(time_limit_seconds=1.0)
+
+    assert status == "INFEASIBLE"
+    assert len(rejected_selections) == 18
+
+    stub = _make_lbbd_controller_stub(project_root)
+    stub.solve_mode = "certified_exact"
+    stub.master.facility_pools = facility_pools
+    stub.master.source_instances = instances
+    stub.master.generic_io_requirements = generic_io_requirements
+    stub.master.wireless_sink_generic_input_slots = 3
+
+    retry_model, retry_status = bl.LBBDController._retry_binding_without_overload_separation(
+        stub,
+        solution=placement_solution,
+        iteration=0,
+        rejected_selections=rejected_selections,
+    )
+
+    assert retry_status == "FEASIBLE"
+    assert os.environ.get("EXACT_BINDING_USE_OVERLOAD_SEPARATION") == "1"
+    retry_summary = retry_model.extract_conflict_summary()
+    assert retry_summary["overload_separation_enabled"] is False
+    selected_inputs = retry_model.extract_selection()["generic_inputs"]
+    by_instance = {}
+    for slot_id, commodity in selected_inputs.items():
+        if commodity == "__unused__":
+            continue
+        instance_id = slot_id.split(":in:", maxsplit=1)[0]
+        by_instance.setdefault(instance_id, set()).add(commodity)
+    assert {"qiaoyu_capsule", "valley_battery"} in by_instance.values()
+
+
 def test_binding_model_reports_pose_binding_domain_cache_reuse(project_root, facility_pools):
     import sys
 
@@ -789,6 +890,42 @@ def test_load_generic_io_requirements_rejects_non_canonical_roles(tmp_path):
     )
 
     with pytest.raises(ValueError, match="generic_input"):
+        load_generic_io_requirements(project_root=project_root, path=path)
+
+
+def test_load_generic_io_requirements_rejects_missing_or_zero_canonical_generic_inputs(
+    tmp_path, project_root
+):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"source_ore": 18, "blue_iron_ore": 34},
+                "required_generic_inputs": {"valley_battery": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="missing=qiaoyu_capsule"):
+        load_generic_io_requirements(project_root=project_root, path=path)
+
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"source_ore": 18, "blue_iron_ore": 34},
+                "required_generic_inputs": {"qiaoyu_capsule": 0, "valley_battery": 1},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="non_positive=qiaoyu_capsule"):
         load_generic_io_requirements(project_root=project_root, path=path)
 
 
