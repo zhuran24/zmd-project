@@ -31,6 +31,22 @@ def _make_stub(*, solver=None, status=None, ctx=None, exact_mode=False):
     return obj
 
 
+class _FakeVar:
+    def __init__(self, name: str):
+        self._name = str(name)
+
+    def Name(self):
+        return self._name
+
+
+class _FakeModel:
+    def __init__(self):
+        self.hints = []
+
+    def AddHint(self, var, value):
+        self.hints.append((var.Name(), value))
+
+
 def test_set_hint_persistence_context_stores_tuple(tmp_path):
     obj = _make_stub()
     MasterPlacementModel.set_hint_persistence_context(obj, tmp_path, "70x70")
@@ -137,3 +153,22 @@ def test_apply_master_hints_no_op_when_empty(tmp_path):
     obj = _make_stub()
     n = MasterPlacementModel.apply_master_hints(obj, {})
     assert n == 0
+
+
+def test_apply_master_hints_rejects_non_strict_int_values(tmp_path):
+    obj = _make_stub()
+    obj.model = _FakeModel()
+    obj.z_vars = {
+        "template": {
+            0: _FakeVar("ok"),
+            1: _FakeVar("string"),
+            2: _FakeVar("bool"),
+            3: _FakeVar("float"),
+        }
+    }
+    n = MasterPlacementModel.apply_master_hints(
+        obj,
+        {"ok": 1, "string": "1", "bool": True, "float": 1.0},
+    )
+    assert n == 1
+    assert obj.model.hints == [("ok", 1)]

@@ -31,6 +31,8 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional
 
+from src.models.solution_hint_parser import parse_strict_int_hint_value
+
 
 HINT_PERSISTENCE_ENV = "EXACT_MASTER_HINT_PERSISTENCE"
 HINT_DIR_NAME = "master_hints"
@@ -73,11 +75,20 @@ def write_master_hints(
     """
     target = hint_path(project_root, candidate_key)
     target.parent.mkdir(parents=True, exist_ok=True)
+    normalized_var_values: Dict[str, int] = {}
+    for key, value in var_values.items():
+        parsed_value = parse_strict_int_hint_value(value)
+        if parsed_value is None:
+            raise TypeError(
+                "master hint value for "
+                f"{key!r} must be exactly int, got {type(value).__name__}"
+            )
+        normalized_var_values[str(key)] = int(parsed_value)
     payload: Dict[str, Any] = {
         "candidate_key": candidate_key,
         "schema_version": HINT_SCHEMA_VERSION,
         "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "var_values": {str(k): int(v) for k, v in var_values.items()},
+        "var_values": normalized_var_values,
     }
     tmp = target.with_suffix(target.suffix + ".tmp")
     tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -108,10 +119,13 @@ def load_master_hints(
     var_values = payload.get("var_values")
     if not isinstance(var_values, dict):
         return None
-    try:
-        return {str(k): int(v) for k, v in var_values.items()}
-    except (TypeError, ValueError):
-        return None
+    normalized_var_values: Dict[str, int] = {}
+    for key, value in var_values.items():
+        parsed_value = parse_strict_int_hint_value(value)
+        if parsed_value is None:
+            return None
+        normalized_var_values[str(key)] = int(parsed_value)
+    return normalized_var_values
 
 
 def clear_master_hints(project_root: Path, candidate_key: str) -> bool:

@@ -49,6 +49,28 @@ def test_load_returns_none_on_wrong_schema_version(tmp_path):
     assert mhp.load_master_hints(tmp_path, "70x70") is None
 
 
+@pytest.mark.parametrize("bad_value", ["1", True, 1.0, None])
+def test_load_rejects_non_strict_int_var_values(tmp_path, bad_value):
+    path = mhp.hint_path(tmp_path, "70x70")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": mhp.HINT_SCHEMA_VERSION,
+                "var_values": {"x": bad_value},
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert mhp.load_master_hints(tmp_path, "70x70") is None
+
+
+@pytest.mark.parametrize("bad_value", ["1", True, 1.0, None])
+def test_write_rejects_non_strict_int_var_values(tmp_path, bad_value):
+    with pytest.raises(TypeError):
+        mhp.write_master_hints(tmp_path, "70x70", {"x": bad_value})
+
+
 def test_clear_removes_file(tmp_path):
     mhp.write_master_hints(tmp_path, "70x70", {"x": 1})
     assert mhp.clear_master_hints(tmp_path, "70x70") is True

@@ -11682,20 +11682,20 @@ class MasterPlacementModel:
             for var in by_pose.values():
                 name = var.Name()
                 if name in hints:
-                    try:
-                        self.model.AddHint(var, int(hints[name]))
-                        hits += 1
-                    except Exception:
+                    hint_value = parse_strict_int_hint_value(hints[name])
+                    if hint_value is None:
                         continue
+                    self.model.AddHint(var, hint_value)
+                    hits += 1
         for by_pose in getattr(self, "optional_pose_vars", {}).values():
             for var in by_pose.values():
                 name = var.Name()
                 if name in hints:
-                    try:
-                        self.model.AddHint(var, int(hints[name]))
-                        hits += 1
-                    except Exception:
+                    hint_value = parse_strict_int_hint_value(hints[name])
+                    if hint_value is None:
                         continue
+                    self.model.AddHint(var, hint_value)
+                    hits += 1
         return hits
 
     def _maybe_load_hints_from_persistence(self) -> int:
