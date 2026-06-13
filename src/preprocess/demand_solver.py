@@ -33,6 +33,7 @@ from src.interchange.preprocess_context import (
     build_producer_index,
     load_default_preprocess_context,
     solve_cycle_group_exact,
+    validate_preprocess_context,
 )
 
 EPSILON = 1e-9
@@ -105,6 +106,7 @@ def solve_demands_exact(
     context: PreprocessContext | None = None,
 ) -> tuple[dict[str, Fraction], dict[str, Fraction]]:
     resolved_context = context or load_default_preprocess_context()
+    validate_preprocess_context(resolved_context)
     target_demands = {
         commodity_id: _target_rate_per_tick(resolved_context, commodity_id)
         for commodity_id in sorted(resolved_context.targets)

@@ -5,7 +5,11 @@ from fractions import Fraction
 
 import pytest
 
-from src.interchange.preprocess_context import load_default_preprocess_context, solve_cycle_group_exact
+from src.interchange.preprocess_context import (
+    PreprocessRecipe,
+    load_default_preprocess_context,
+    solve_cycle_group_exact,
+)
 
 
 def test_buckwheat_cycle_solver_matches_frozen_business_truth() -> None:
@@ -44,5 +48,18 @@ def test_cycle_solver_rejects_unvalidated_context_with_cycle_recipe_io_outside_i
     context.recipes["planter_buckwheat"].inputs["source_ore"] = Fraction(1)
 
     with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
+
+def test_cycle_solver_rejects_unvalidated_context_with_outside_producer_for_cycle_internal_output() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["synthetic_buckwheat"] = PreprocessRecipe(
+        recipe_id="synthetic_buckwheat",
+        template="manufacturing_3x3",
+        ticks_per_cycle=1,
+        inputs={"source_ore": Fraction(1)},
+        outputs={"buckwheat": Fraction(1)},
+    )
+
+    with pytest.raises(ValueError, match="synthetic_buckwheat.*outside cycle group 'buckwheat_cycle'"):
         solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
 

@@ -1,0 +1,245 @@
+--- a/PROJECT_LOCK.md
++++ b/PROJECT_LOCK.md
+@@ -111,6 +111,7 @@
+ - Cycle groups must be a recipe I/O closure, checked at both ends (F-PRE-R13-01): the cycle solver builds its matrix and downstream machine-run aggregation only over `internal_commodities`, so any cycle recipe input/output referencing a commodity outside that list is silently dropped from demand propagation — under canonical drift a cycle recipe consuming an external commodity (e.g. an ore) would leave the frozen `commodity_demands`/`port_budget`/`generic_io_requirements` artifacts missing that supply requirement while still claiming the 52-port budget feasible (fail-open, the F-PRE-R12-01 membership-closure class extended from demand keys to recipe I/O). Context validation must require every cycle-group recipe's `inputs ∪ outputs` to lie entirely within the group's `internal_commodities`, and `_solve_cycle_group_exact()` must repeat the check at its entry to cover direct solver calls on unvalidated contexts.
+ - Preprocess recipes are single-output until a coupled co-product demand solve exists (F-PRE-R14-01): the current backward demand expansion owns a commodity by selecting its unique producer and charging that recipe's run rate per demanded output, so a schema-valid multi-output recipe with two demanded products would double-charge the same operation instead of sharing co-products. Canonical rule schema validation, `validate_canonical_document()`, and direct `validate_preprocess_context()` construction must fail closed on `len(outputs) != 1`; relaxing this requires replacing the per-output backpropagation with an explicit coupled recipe-flow solve and updating the frozen-artifact proof obligations.
+ - Cycle-internal commodity producers are owned by their declared cycle group (F-PRE-R14-02): demand propagation routes any positive demand for a `cycle_group` commodity directly into the cycle solver before consulting the non-cycle producer index, so a recipe outside that group that outputs the same cycle-internal commodity would be ignored while its target/output rate could still seed downstream demand. Context validation must reject any recipe output of a cycle-internal commodity unless that recipe is a member of the commodity's declared cycle group; non-cycle consumption of cycle-internal commodities remains the intended external-demand edge into the group.
++- Public preprocess solvers must re-check the full `PreprocessContext` validity before demand expansion (F-PRE-R15-01): the file loaders and builder validate the canonical path, but direct callers can still pass a hand-built or mutated context into `solve_demands_exact()` / `solve_demands()`. That entry must call `validate_preprocess_context()` before computing target rates or backpropagating demands, so the R14 single-output and cycle-internal producer-ownership premises cannot be bypassed. The direct cycle-group solver must also repeat the cycle-internal output ownership guard for the requested group, matching the R12/R13 two-ended membership checks.
+ - A fully enclosed legal empty rectangle remains allowed; exterior connectivity is not part of the exact contract.
+ - Terminal certified frontier evidence is a closed, project-bound contract: unknown `candidate_generation` keys, non-authoritative domain values, stale evidence schema versions, and sub-admissible terminal best results must fail closed before any public CERTIFIED surface.
+ - In `certified_exact`, `EXACT_*` environment knobs are deny-unknown by default: only documented operational allowlist entries may be present, known proof-semantics knobs must stay at canonical false/default values, and future/unclassified names must block the run.
+--- a/specs/18_preprocess_context_contract.md
++++ b/specs/18_preprocess_context_contract.md
+@@ -41,6 +41,8 @@
+ 
+ The same round also seals cycle-internal producer ownership (F-PRE-R14-02): a commodity with `cycle_group` set is supplied by that group's exact cycle solve, and `_backpropagate_non_cycle_demands()` forwards positive demand for it before any non-cycle producer lookup. Therefore recipes outside the declared group may consume cycle-internal commodities as external demand edges, but may not output them; `validate_preprocess_context()` rejects such outsider producers so their machines/inputs cannot be silently skipped.
+ 
++Round 15 closes the direct-context replay hole around the R14 premises (F-PRE-R15-01): public demand expansion (`solve_demands_exact()` and therefore `solve_demands()`) revalidates any supplied `PreprocessContext` before target-rate calculation or backpropagation. This covers hand-built or mutated contexts that bypassed the file loaders and builder. The direct cycle-group solver also repeats the cycle-internal output ownership guard for its requested group, so outsider producers of a cycle-internal commodity cannot be silently ignored through a raw cycle solve.
++
+ ## 3. Current runtime boundary
+ 
+ `PreprocessContext` is **not** the certified runtime placement input, but it is no longer a regeneration-only concern: `src/preprocess/operation_profiles.py` derives the runtime `OPERATION_PORT_PROFILES` from `load_default_preprocess_context()` at import time, and the binding subproblem reads utility slot declarations from `rules/preprocess_plan.json` at runtime. The plan is therefore bound into the exact campaign hash closure (`exact_campaign.OPTIONAL_EXACT_HASH_FILES`, with a missing-file sentinel for synthetic test projects) and the preflight frozen-artifact registry — a plan edit can never ride on otherwise-stale exact artifacts.
+--- a/src/interchange/preprocess_context.py
++++ b/src/interchange/preprocess_context.py
+@@ -248,11 +248,7 @@
+             raise ValueError(
+                 f"preprocess recipe {recipe.recipe_id!r} references unknown template {recipe.template!r}"
+             )
+-        if len(recipe.outputs) != 1:
+-            raise ValueError(
+-                f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
+-                "multi-output co-product recipes require a coupled demand solve and are not supported"
+-            )
++    _validate_single_output_recipes(context)
+ 
+     producers = build_producer_index(context)
+     consumers: dict[str, list[str]] = {}
+@@ -279,11 +275,6 @@
+         group_id: set(group.internal_commodities)
+         for group_id, group in context.cycle_groups.items()
+     }
+-    cycle_group_recipes = {
+-        group_id: set(group.recipes)
+-        for group_id, group in context.cycle_groups.items()
+-    }
+-
+     for role in context.commodity_roles.values():
+         if role.source_kind not in _ALLOWED_SOURCE_KINDS:
+             raise ValueError(f"unknown source_kind for commodity {role.commodity_id!r}: {role.source_kind!r}")
+@@ -316,16 +307,7 @@
+                 f"non-cycle commodity {role.commodity_id!r} cannot declare cycle_group {role.cycle_group!r}"
+             )
+ 
+-    for recipe_id, recipe in context.recipes.items():
+-        for commodity_id in recipe.outputs:
+-            role = context.commodity_roles.get(str(commodity_id))
+-            if role is None or role.cycle_group is None:
+-                continue
+-            if recipe_id not in cycle_group_recipes.get(role.cycle_group, set()):
+-                raise ValueError(
+-                    f"cycle_internal commodity {str(commodity_id)!r} cannot be produced by recipe "
+-                    f"{recipe_id!r} outside cycle group {role.cycle_group!r}"
+-                )
++    _validate_cycle_internal_output_ownership(context)
+ 
+     for commodity_id in context.targets:
+         role = context.commodity_roles.get(commodity_id)
+@@ -402,6 +384,50 @@
+     }
+ 
+ 
++def _validate_single_output_recipes(
++    context: PreprocessContext,
++    *,
++    recipe_ids: Iterable[str] | None = None,
++) -> None:
++    if recipe_ids is None:
++        recipes = context.recipes.values()
++    else:
++        recipes = (
++            context.recipes[recipe_id]
++            for recipe_id in recipe_ids
++            if recipe_id in context.recipes
++        )
++    for recipe in recipes:
++        if len(recipe.outputs) != 1:
++            raise ValueError(
++                f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
++                "multi-output co-product recipes require a coupled demand solve and are not supported"
++            )
++
++
++def _validate_cycle_internal_output_ownership(
++    context: PreprocessContext,
++    *,
++    group_ids: set[str] | None = None,
++) -> None:
++    cycle_group_recipes = {
++        group_id: set(group.recipes)
++        for group_id, group in context.cycle_groups.items()
++    }
++    for recipe_id, recipe in context.recipes.items():
++        for commodity_id in recipe.outputs:
++            role = context.commodity_roles.get(str(commodity_id))
++            if role is None or role.cycle_group is None:
++                continue
++            if group_ids is not None and role.cycle_group not in group_ids:
++                continue
++            if recipe_id not in cycle_group_recipes.get(role.cycle_group, set()):
++                raise ValueError(
++                    f"cycle_internal commodity {str(commodity_id)!r} cannot be produced by recipe "
++                    f"{recipe_id!r} outside cycle group {role.cycle_group!r}"
++                )
++
++
+ @lru_cache(maxsize=None)
+ def _load_json_schema(schema_name: str) -> Mapping[str, Any]:
+     project_root = Path(__file__).resolve().parent.parent.parent
+@@ -470,6 +496,9 @@
+     if group is None:
+         raise KeyError(f"unknown cycle group: {group_id}")
+ 
++    _validate_single_output_recipes(context, recipe_ids=group.recipes)
++    _validate_cycle_internal_output_ownership(context, group_ids={group_id})
++
+     outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
+     if outside_internal_by_recipe:
+         raise ValueError(_format_cycle_group_io_closure_error(group_id, outside_internal_by_recipe))
+--- a/src/preprocess/demand_solver.py
++++ b/src/preprocess/demand_solver.py
+@@ -33,6 +33,7 @@
+     build_producer_index,
+     load_default_preprocess_context,
+     solve_cycle_group_exact,
++    validate_preprocess_context,
+ )
+ 
+ EPSILON = 1e-9
+@@ -105,6 +106,7 @@
+     context: PreprocessContext | None = None,
+ ) -> tuple[dict[str, Fraction], dict[str, Fraction]]:
+     resolved_context = context or load_default_preprocess_context()
++    validate_preprocess_context(resolved_context)
+     target_demands = {
+         commodity_id: _target_rate_per_tick(resolved_context, commodity_id)
+         for commodity_id in sorted(resolved_context.targets)
+--- a/src/tests/test_preprocess_context.py
++++ b/src/tests/test_preprocess_context.py
+@@ -2,12 +2,16 @@
+ 
+ import copy
+ import json
++from fractions import Fraction
+ from pathlib import Path
+ 
+ import pytest
+ from jsonschema import ValidationError as JsonSchemaValidationError
+ 
+ from src.interchange.preprocess_context import (
++    CommodityRole,
++    PreprocessRecipe,
++    ProductionTarget,
+     build_preprocess_context_from_rules_and_plan,
+     load_default_preprocess_context,
+     load_preprocess_context_from_paths,
+@@ -18,6 +22,7 @@
+     generate_port_budget,
+     normalize_json_numbers,
+     solve_demands,
++    solve_demands_exact,
+ )
+ 
+ 
+@@ -311,6 +316,40 @@
+         build_preprocess_context_from_rules_and_plan(mutated_rules, mutated_plan)
+ 
+ 
++def test_solve_demands_exact_revalidates_direct_context_multi_output_recipe() -> None:
++    context = copy.deepcopy(load_default_preprocess_context())
++    context.recipes["packaging_battery"].outputs["bonus_battery"] = Fraction(1)
++    context.targets["bonus_battery"] = ProductionTarget(
++        commodity_id="bonus_battery",
++        mode="equivalent_full_speed_lines",
++        value=Fraction(1),
++        final_recipe_id="packaging_battery",
++    )
++    context.commodity_roles["bonus_battery"] = CommodityRole(
++        commodity_id="bonus_battery",
++        source_kind="internal_only",
++        sink_kind="generic_input",
++        cycle_group=None,
++    )
++
++    with pytest.raises(ValueError, match="exactly one output commodity"):
++        solve_demands_exact(context=context)
++
++
++def test_solve_demands_exact_revalidates_direct_context_cycle_internal_outside_producer() -> None:
++    context = copy.deepcopy(load_default_preprocess_context())
++    context.recipes["synthetic_buckwheat"] = PreprocessRecipe(
++        recipe_id="synthetic_buckwheat",
++        template="manufacturing_3x3",
++        ticks_per_cycle=1,
++        inputs={"source_ore": Fraction(1)},
++        outputs={"buckwheat": Fraction(1)},
++    )
++
++    with pytest.raises(ValueError, match="synthetic_buckwheat.*outside cycle group 'buckwheat_cycle'"):
++        solve_demands_exact(context=context)
++
++
+ def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
+     context = load_default_preprocess_context()
+     flows, fractional = solve_demands(context=context)
+--- a/src/tests/test_preprocess_cycle_solver.py
++++ b/src/tests/test_preprocess_cycle_solver.py
+@@ -5,7 +5,11 @@
+ 
+ import pytest
+ 
+-from src.interchange.preprocess_context import load_default_preprocess_context, solve_cycle_group_exact
++from src.interchange.preprocess_context import (
++    PreprocessRecipe,
++    load_default_preprocess_context,
++    solve_cycle_group_exact,
++)
+ 
+ 
+ def test_buckwheat_cycle_solver_matches_frozen_business_truth() -> None:
+@@ -46,3 +50,16 @@
+     with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
+         solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
+ 
++def test_cycle_solver_rejects_unvalidated_context_with_outside_producer_for_cycle_internal_output() -> None:
++    context = copy.deepcopy(load_default_preprocess_context())
++    context.recipes["synthetic_buckwheat"] = PreprocessRecipe(
++        recipe_id="synthetic_buckwheat",
++        template="manufacturing_3x3",
++        ticks_per_cycle=1,
++        inputs={"source_ore": Fraction(1)},
++        outputs={"buckwheat": Fraction(1)},
++    )
++
++    with pytest.raises(ValueError, match="synthetic_buckwheat.*outside cycle group 'buckwheat_cycle'"):
++        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
++

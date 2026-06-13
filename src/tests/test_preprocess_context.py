@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import copy
 import json
+from fractions import Fraction
 from pathlib import Path
 
 import pytest
 from jsonschema import ValidationError as JsonSchemaValidationError
 
 from src.interchange.preprocess_context import (
+    CommodityRole,
+    PreprocessRecipe,
+    ProductionTarget,
     build_preprocess_context_from_rules_and_plan,
     load_default_preprocess_context,
     load_preprocess_context_from_paths,
@@ -18,6 +22,7 @@ from src.preprocess.demand_solver import (
     generate_port_budget,
     normalize_json_numbers,
     solve_demands,
+    solve_demands_exact,
 )
 
 
@@ -309,6 +314,40 @@ def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_c
 
     with pytest.raises(ValueError, match="synthetic_orb.*outside cycle group 'orb_cycle'"):
         build_preprocess_context_from_rules_and_plan(mutated_rules, mutated_plan)
+
+
+def test_solve_demands_exact_revalidates_direct_context_multi_output_recipe() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["packaging_battery"].outputs["bonus_battery"] = Fraction(1)
+    context.targets["bonus_battery"] = ProductionTarget(
+        commodity_id="bonus_battery",
+        mode="equivalent_full_speed_lines",
+        value=Fraction(1),
+        final_recipe_id="packaging_battery",
+    )
+    context.commodity_roles["bonus_battery"] = CommodityRole(
+        commodity_id="bonus_battery",
+        source_kind="internal_only",
+        sink_kind="generic_input",
+        cycle_group=None,
+    )
+
+    with pytest.raises(ValueError, match="exactly one output commodity"):
+        solve_demands_exact(context=context)
+
+
+def test_solve_demands_exact_revalidates_direct_context_cycle_internal_outside_producer() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["synthetic_buckwheat"] = PreprocessRecipe(
+        recipe_id="synthetic_buckwheat",
+        template="manufacturing_3x3",
+        ticks_per_cycle=1,
+        inputs={"source_ore": Fraction(1)},
+        outputs={"buckwheat": Fraction(1)},
+    )
+
+    with pytest.raises(ValueError, match="synthetic_buckwheat.*outside cycle group 'buckwheat_cycle'"):
+        solve_demands_exact(context=context)
 
 
 def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:

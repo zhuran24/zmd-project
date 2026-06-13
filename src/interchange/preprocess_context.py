@@ -248,11 +248,7 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(
                 f"preprocess recipe {recipe.recipe_id!r} references unknown template {recipe.template!r}"
             )
-        if len(recipe.outputs) != 1:
-            raise ValueError(
-                f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
-                "multi-output co-product recipes require a coupled demand solve and are not supported"
-            )
+    _validate_single_output_recipes(context)
 
     producers = build_producer_index(context)
     consumers: dict[str, list[str]] = {}
@@ -279,11 +275,6 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
         group_id: set(group.internal_commodities)
         for group_id, group in context.cycle_groups.items()
     }
-    cycle_group_recipes = {
-        group_id: set(group.recipes)
-        for group_id, group in context.cycle_groups.items()
-    }
-
     for role in context.commodity_roles.values():
         if role.source_kind not in _ALLOWED_SOURCE_KINDS:
             raise ValueError(f"unknown source_kind for commodity {role.commodity_id!r}: {role.source_kind!r}")
@@ -316,16 +307,7 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
                 f"non-cycle commodity {role.commodity_id!r} cannot declare cycle_group {role.cycle_group!r}"
             )
 
-    for recipe_id, recipe in context.recipes.items():
-        for commodity_id in recipe.outputs:
-            role = context.commodity_roles.get(str(commodity_id))
-            if role is None or role.cycle_group is None:
-                continue
-            if recipe_id not in cycle_group_recipes.get(role.cycle_group, set()):
-                raise ValueError(
-                    f"cycle_internal commodity {str(commodity_id)!r} cannot be produced by recipe "
-                    f"{recipe_id!r} outside cycle group {role.cycle_group!r}"
-                )
+    _validate_cycle_internal_output_ownership(context)
 
     for commodity_id in context.targets:
         role = context.commodity_roles.get(commodity_id)
@@ -402,6 +384,50 @@ def build_producer_index(context: PreprocessContext) -> dict[str, tuple[str, ...
     }
 
 
+def _validate_single_output_recipes(
+    context: PreprocessContext,
+    *,
+    recipe_ids: Iterable[str] | None = None,
+) -> None:
+    if recipe_ids is None:
+        recipes = context.recipes.values()
+    else:
+        recipes = (
+            context.recipes[recipe_id]
+            for recipe_id in recipe_ids
+            if recipe_id in context.recipes
+        )
+    for recipe in recipes:
+        if len(recipe.outputs) != 1:
+            raise ValueError(
+                f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
+                "multi-output co-product recipes require a coupled demand solve and are not supported"
+            )
+
+
+def _validate_cycle_internal_output_ownership(
+    context: PreprocessContext,
+    *,
+    group_ids: set[str] | None = None,
+) -> None:
+    cycle_group_recipes = {
+        group_id: set(group.recipes)
+        for group_id, group in context.cycle_groups.items()
+    }
+    for recipe_id, recipe in context.recipes.items():
+        for commodity_id in recipe.outputs:
+            role = context.commodity_roles.get(str(commodity_id))
+            if role is None or role.cycle_group is None:
+                continue
+            if group_ids is not None and role.cycle_group not in group_ids:
+                continue
+            if recipe_id not in cycle_group_recipes.get(role.cycle_group, set()):
+                raise ValueError(
+                    f"cycle_internal commodity {str(commodity_id)!r} cannot be produced by recipe "
+                    f"{recipe_id!r} outside cycle group {role.cycle_group!r}"
+                )
+
+
 @lru_cache(maxsize=None)
 def _load_json_schema(schema_name: str) -> Mapping[str, Any]:
     project_root = Path(__file__).resolve().parent.parent.parent
@@ -469,6 +495,9 @@ def _solve_cycle_group_exact(
     group = context.cycle_groups.get(group_id)
     if group is None:
         raise KeyError(f"unknown cycle group: {group_id}")
+
+    _validate_single_output_recipes(context, recipe_ids=group.recipes)
+    _validate_cycle_internal_output_ownership(context, group_ids={group_id})
 
     outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
     if outside_internal_by_recipe:
