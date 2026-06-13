@@ -213,3 +213,12 @@ def test_semantic_generic_input_sink_must_not_be_recipe_input(raw_rules_dict):
 
     with pytest.raises(SemanticValidationError, match="不能同时作为配方输入"):
         validate_canonical_document(doc)
+
+
+def test_semantic_external_boundary_source_must_not_have_recipe_producer(raw_rules_dict):
+    mutated = copy.deepcopy(raw_rules_dict)
+    mutated["commodity_metadata"]["steel_part"]["source_kind"] = "external_boundary"
+    doc = CanonicalRulesDocument.model_validate(mutated)
+
+    with pytest.raises(SemanticValidationError, match="external_boundary 商品 'steel_part' 不能同时由配方生产"):
+        validate_canonical_document(doc)

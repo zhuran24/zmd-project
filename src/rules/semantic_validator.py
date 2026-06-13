@@ -151,6 +151,11 @@ class CanonicalSemanticValidator:
                     f"商品元数据冲突：generic_input 商品 '{commodity_id}' 是 routing-free 无线终品，不能同时作为配方输入；"
                     f"否则生产端输出口会被 routing 排除但下游仍需要实体供料。消费者 recipes: {', '.join(sorted(consumers[commodity_id]))}。"
                 )
+            if meta.source_kind == "external_boundary" and commodity_id in producers:
+                self.errors.append(
+                    f"商品元数据冲突：external_boundary 商品 '{commodity_id}' 不能同时由配方生产；"
+                    f"否则 demand backprop 会在边界源处停止并跳过 producer 机器。生产 recipes: {', '.join(sorted(producers[commodity_id]))}。"
+                )
 
         for commodity_id in self.doc.production_targets:
             meta = self.doc.commodity_metadata.get(commodity_id)

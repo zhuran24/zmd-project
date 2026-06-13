@@ -280,6 +280,11 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(f"unknown source_kind for commodity {role.commodity_id!r}: {role.source_kind!r}")
         if role.sink_kind not in _ALLOWED_SINK_KINDS:
             raise ValueError(f"unknown sink_kind for commodity {role.commodity_id!r}: {role.sink_kind!r}")
+        if role.source_kind == "external_boundary" and role.commodity_id in producers:
+            raise ValueError(
+                f"external_boundary commodity {role.commodity_id!r} cannot also be produced by recipes: "
+                f"{', '.join(producers[role.commodity_id])}"
+            )
         if role.sink_kind == "generic_input":
             if role.commodity_id not in context.targets:
                 raise ValueError(
@@ -428,6 +433,40 @@ def _validate_cycle_internal_output_ownership(
                 )
 
 
+def _validate_cycle_group_local_contract(context: PreprocessContext, group: CycleGroup) -> None:
+    if len(group.internal_commodities) != len(group.recipes):
+        raise ValueError(
+            f"cycle group {group.group_id!r} must be square: "
+            f"recipes={len(group.recipes)} internal_commodities={len(group.internal_commodities)}"
+        )
+    internal_commodities = set(group.internal_commodities)
+    for recipe_id in group.recipes:
+        if recipe_id not in context.recipes:
+            raise ValueError(f"cycle group {group.group_id!r} references unknown recipe {recipe_id!r}")
+    for commodity_id in group.internal_commodities:
+        role = context.commodity_roles.get(commodity_id)
+        if role is None:
+            raise ValueError(
+                f"cycle group {group.group_id!r} commodity {commodity_id!r} is missing commodity_roles entry"
+            )
+        if role.source_kind != "cycle_internal":
+            raise ValueError(
+                f"cycle group {group.group_id!r} commodity {commodity_id!r} "
+                "must declare source_kind='cycle_internal'"
+            )
+        if role.cycle_group != group.group_id:
+            raise ValueError(
+                f"commodity {commodity_id!r} declares cycle_group {role.cycle_group!r}, "
+                f"expected {group.group_id!r}"
+            )
+    for commodity_id in group.net_export_commodities:
+        if commodity_id not in internal_commodities:
+            raise ValueError(
+                f"cycle group {group.group_id!r} net_export_commodity {commodity_id!r} "
+                "is not listed in internal_commodities"
+            )
+
+
 @lru_cache(maxsize=None)
 def _load_json_schema(schema_name: str) -> Mapping[str, Any]:
     project_root = Path(__file__).resolve().parent.parent.parent
@@ -498,6 +537,7 @@ def _solve_cycle_group_exact(
 
     _validate_single_output_recipes(context, recipe_ids=group.recipes)
     _validate_cycle_internal_output_ownership(context, group_ids={group_id})
+    _validate_cycle_group_local_contract(context, group)
 
     outside_internal_by_recipe = _cycle_group_recipe_io_outside_internal(context, group)
     if outside_internal_by_recipe:

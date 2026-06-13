@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import replace
 from fractions import Fraction
 
 import pytest
@@ -61,5 +62,16 @@ def test_cycle_solver_rejects_unvalidated_context_with_outside_producer_for_cycl
     )
 
     with pytest.raises(ValueError, match="synthetic_buckwheat.*outside cycle group 'buckwheat_cycle'"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
+
+
+def test_cycle_solver_rejects_unvalidated_context_with_internal_role_group_mismatch() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.commodity_roles["buckwheat"] = replace(
+        context.commodity_roles["buckwheat"],
+        cycle_group="sandleaf_cycle",
+    )
+
+    with pytest.raises(ValueError, match="cycle_group 'sandleaf_cycle'.*expected 'buckwheat_cycle'"):
         solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
 

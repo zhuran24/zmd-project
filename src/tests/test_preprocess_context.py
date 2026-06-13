@@ -278,6 +278,17 @@ def test_preprocess_context_rejects_cycle_recipe_io_outside_group_internal_commo
         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
 
 
+def test_preprocess_context_rejects_external_boundary_commodity_with_producer(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["commodity_metadata"]["steel_part"]["source_kind"] = "external_boundary"
+
+    with pytest.raises(ValueError, match="external_boundary commodity 'steel_part'.*parts_maker"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
 def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_commodity(
     raw_rules_dict,
     raw_plan_dict,
