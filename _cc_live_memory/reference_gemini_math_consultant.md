@@ -83,11 +83,11 @@ curl "https://generativelanguage.googleapis.com/v1beta/models?key=$KEY"
 ## 历史使用记录
 
 - 2026-05-10 P2 #14 AlphaEvolve PoC: Gemini 3.1 pro preview 6 变体平均 10.17/11 vs Opus 4.7 6 变体 10.92/11 (差 -6.9%). 双路径都 GO 但 Anthropic 质量更高.
-- 见 p2-14-dumper-path-blocked 的 5-10 session 记录.
+- 见 p2-14-dumper-path-blocked(已归档) 的 5-10 session 记录.
 
 ## 跟 GPT v12 review 区别
 
 - GPT v12 = 主对话外部 second opinion, 重大方向决策时用 (v3 / v8 / v10 / v11 / v12), 有 review prompt armor 流程
 - Gemini = 内部数学小问题 second opinion, 轻量级 + 即时, 不走 review armor
 
-external-review-reproducibility 同 prompt 跑两次 finding 可能不一样 — Gemini 也适用, 关键 finding 必须 main-对话验.
+external-review-reproducibility(已归档) 同 prompt 跑两次 finding 可能不一样 — Gemini 也适用, 关键 finding 必须 main-对话验.

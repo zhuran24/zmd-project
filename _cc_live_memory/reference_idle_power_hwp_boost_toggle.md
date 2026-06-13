@@ -93,7 +93,7 @@ sudo sysctl --system
 # 5. 重启让 cmdline 生效
 sudo reboot
 
-# 6. 启动前 readiness gate (9/9 项 verify)
+# 6. 启动前 readiness gate (当前 11 项 = 5 blocker + 6 warning, 以脚本 docstring 为准)
 .venv/bin/python scripts/production_readiness_gate.py
 
 # 7. pacman freeze (campaign 启动前)
@@ -134,5 +134,5 @@ revert 全 cmdline 后预期 idle:
 
 - CLAUDE.md "CachyOS 主机生产力调优 (host-level, 2026-05-10)" 段
 - [[workload-latency-bound-not-bandwidth]] — 项目 perf 调优 latency-bound 假设
-- scripts/production_readiness_gate.py — 168h campaign 启动前 9 项 gate
+- scripts/production_readiness_gate.py — 168h campaign 启动前 gate (当前 11 项 = 5 blocker + 6 warning, 随门禁演进以脚本 docstring 为准)
 - scripts/pacman_campaign_freeze.sh — 包冻结 toggle

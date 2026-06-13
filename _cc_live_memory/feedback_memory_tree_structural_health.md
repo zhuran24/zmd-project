@@ -26,7 +26,7 @@ metadata:
 
 同一情况/规则常散在**多条** memory。它们若没好好互相 wikilink, 两个失效, 都已实证复发:
 - **改不全 (write 时)**: 改正一条、漏掉同话题其它条 = 假修。实例: "≤29MB 是下载安全线"这个未验证幻觉散在 SendUserFile 段 + pitfalls description + handoff 三处, 我第一次"修"只改了一处 (用户 catch)。
-- **召不全 (read 时)**: 召回一条、没拉进同簇其它条 → 该用的规则没 surface。实例: "修完再审直到 clean" 记在 gemini-review-algorithm-math §循环规则 (Gemini 语境), 但没连 [[verification-independent-backstop]]/audit-verify-before-archive; 我跑 GPT-review workflow loop 时没想起它 → 同问题复发 (用户 2026-06-02 第二次 catch)。
+- **召不全 (read 时)**: 召回一条、没拉进同簇其它条 → 该用的规则没 surface。实例: "修完再审直到 clean" 记在 gemini-review-algorithm-math(已归档) §循环规则 (Gemini 语境), 但没连 [[verification-independent-backstop]]/audit-verify-before-archive(已归档); 我跑 GPT-review workflow loop 时没想起它 → 同问题复发 (用户 2026-06-02 第二次 catch)。
 
 **协议 (两手都要 —— 别只靠被动 recall: recall 按 description 匹配注入、不自动顺着 wikilink 走)**:
 1. **改/记一条 memory 前, 先 grep 该话题关键词跨全树**找所有实例 (不只手头那条), 全部一起改/对齐 —— 这是 [[verification-independent-backstop]] 的"完整性"用到 memory 编辑本身 ("修就修全, 别只改手头一处")。
@@ -38,7 +38,7 @@ metadata:
 
 记一条 lesson 时, 它若**本质通用** (适用多个触发语境), 却被记成 / 框成只属于**首次触发的那个具体语境/标题**, 它就在别的语境**不 surface** = silo。**这是第三轴 (连接性) 的上游**: 一开始就记对抽象层 → 根本不形成 silo, 不用事后补链。
 
-实例 (用户原话点名): **"review 修完要再审直到 clean" 本是通用 review/verify 规则**, 但 2026-05-24 被我记成了 gemini-review-algorithm-math 的「循环规则」—— **锁在 "Gemini 审查" 这个语境框里**。跑 GPT-pro-review workflow loop 时它没 surface → 同问题复发 (用户两次 catch)。根因不只"没跨链", 更上游是**记的当下没想到它通用, 按触发语境 (Gemini) 归了档**, 即"泛化不够 / 没对当时具体情况想透它的适用边界"。
+实例 (用户原话点名): **"review 修完要再审直到 clean" 本是通用 review/verify 规则**, 但 2026-05-24 被我记成了 gemini-review-algorithm-math(已归档) 的「循环规则」—— **锁在 "Gemini 审查" 这个语境框里**。跑 GPT-pro-review workflow loop 时它没 surface → 同问题复发 (用户两次 catch)。根因不只"没跨链", 更上游是**记的当下没想到它通用, 按触发语境 (Gemini) 归了档**, 即"泛化不够 / 没对当时具体情况想透它的适用边界"。
 
 **协议**: 记 lesson 前停一秒问 —— **"这条只适用眼前这个具体场景, 还是其实更通用?"** 判别法: 把规则里的具体名词 (Gemini / GPT / 这个文件 / 这个 family) 换成占位符, 规则还成立吗? 成立 = 该泛化。通用的就**记成通用规则 (放通用 memory / 起通用标题), 把当前事件当 example 挂规则下**, 别让标题/归档语境把规则窄化。触发实例要留 (它是证据), 但不能当成规则的边界。(这跟 [[no-causal-claim-from-n1]] 是镜像的两种 over/under-fit: 那条是从 N=1 过度泛化出因果, 这条是该泛化时泛化不足。)
 
@@ -55,4 +55,4 @@ metadata:
 
 **判别**: 一个事实**既出现在 ≥2 节点、又随时间变** (drift-prone) → 升成实例。只一处的、永不变的 → 留着别过度范式化。**诚实边界**: transclusion 只填**标记过的槽**, 改不了自由散文里隐式提到实例的地方 (那残留靠 currency-protocol rule#7 的 warn 兜)。
 
-**How to apply**: 周期性 (phase boundary / 大 review 前) 跑 `report_link_graph.py` 查连通 + 看 MEMORY.md 字节数 + 按第三轴协议查同话题簇缺链。加索引条前先 slim。改/记 memory 前 grep 全树找同话题所有实例一起改。**记新 lesson 时先判它通不通用 (占位符测试), 通用就记到通用层别锁触发语境**。**重复的可推导值 → 升实例 + 分身槽 (别手抄); 重复的规则 → wikilink 别重述**。关联 [[memory-currency-protocol]] (内容轴, 互补) [[verification-independent-backstop]] (完整性 → 改全 + 记对抽象层) [[no-causal-claim-from-n1]] (over-fit 镜像) gemini-review-algorithm-math (under-fit 实例) [[github-backup]] [[memory-edit-confirmation]]。
+**How to apply**: 周期性 (phase boundary / 大 review 前) 跑 `report_link_graph.py` 查连通 + 看 MEMORY.md 字节数 + 按第三轴协议查同话题簇缺链。加索引条前先 slim。改/记 memory 前 grep 全树找同话题所有实例一起改。**记新 lesson 时先判它通不通用 (占位符测试), 通用就记到通用层别锁触发语境**。**重复的可推导值 → 升实例 + 分身槽 (别手抄); 重复的规则 → wikilink 别重述**。关联 [[memory-currency-protocol]] (内容轴, 互补) [[verification-independent-backstop]] (完整性 → 改全 + 记对抽象层) [[no-causal-claim-from-n1]] (over-fit 镜像) gemini-review-algorithm-math(已归档) (under-fit 实例) [[github-backup]] [[memory-edit-confirmation]]。

@@ -77,4 +77,4 @@ morphology 产 cut 时, cert 必声明语义 (all-in-window placement / overlap-
 - `docs/项目说明/02_mathematical_foundations.md §3.9` F9 详
 - `docs/项目说明/04_design_invariants.md §18` PROJECT_LOCK F9 area-only invariant
 - `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/F9_MORPHOLOGY_CAUTION.md` (source)
-- phase-1-1-go-blessed / [[cp-sat-no-add-lazy-constraint]]
+- phase-1-1-go-blessed(已归档) / [[cp-sat-no-add-lazy-constraint]]

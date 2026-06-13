@@ -6,7 +6,7 @@
 - [zmd 项目入口指针 (新会话先读顺序)](zmd-project-entry.md) — 项目记忆体系在哪/接手读文件顺序/双写规矩;指向 _cc_live_memory/handoff 为单一现状源
 - [zmd Windows checkout 环境事实](zmd-checkout-env.md) — 无 venv 用全局 Python 3.13 (主环境=python.org `python`, 商店版备份);commit 即 auto-push 且 CI preflight gate + pre-push 机械门禁;candidate_placements 已回树(gitignore)+秒级可再生
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; 等 owner phase-boundary 决策.
-- [Windows 接手环境 (稳定 reference)](project_windows_handoff_env.md) — 路径/venv/能力边界、slug、prod-scale 回 Linux 主机;稳定环境细节只看该条。
+- [Windows 接手环境 (历史快照, 已 superseded)](project_windows_handoff_env.md) — 2026-05-30 初次 Linux→Windows 接手记录;路径/venv/slug 均失效, **当前 Windows 环境现状看 zmd-checkout-env**;仅"prod-scale 回 Linux 主机"能力边界仍有效。
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 仓库相对路径.
 - [记忆树 publish-safety/currentness gate](project_memory_tree_publish_safety.md) — secret scan、repo-native INSTANCE check、memory graph/index/live-mirror gate; 旧 key 需 owner 侧轮换。
 - [项目知识树架构](project_knowledge_tree_architecture.md) — 逻辑单树/物理双树: docs=稳定项目表达, memory=协作连续性; living claim 走 subject/projection。
@@ -15,7 +15,8 @@
 ## 外发 GPT Pro (2026-06-10 起的轻量规则, 老审查/打包规范已废除并归档)
 
 - [任务外发 GPT Pro 通道 (权威条目)](feedback_agent_vs_workflow_dispatch.md) — **非必要不用 Workflow**; 审查/实现类任务经 Chrome 插件发 chatgpt.com「终末地」Project, 模型 Pro·进阶 (=GPT Pro 扩展模式); **非必要不用老窗口** (默认新会话); **打包 = 除缓存文件外全项目打** (build 脚本 cc_context/review/build_v80_*.py); 包走 Project 文件页(来源区), 上传/发送已全脚本化 (详见 no-workflow 条目与 CLAUDE.md runbook)。
-- [非必要不用 Workflow (GPT 外审裁决)](no-workflow-use-chrome-gpt-review.md) — 发送三条设置+打包规则+首选自动化脚本(gpt_dispatch)+Pro 降级判据+插件托底上传姿势;老审查规范已废除
+- [非必要不用 Workflow (GPT 外审裁决)](no-workflow-use-chrome-gpt-review.md) — 发送三条设置+打包规则+首选自动化脚本(gpt_dispatch)+Pro 降级判据+插件托底上传姿势;老审查规范已废除;**06-14 厘清: no-workflow 只管审查判定本身, 准备/调研/编排可 workflow; 并发上限已字段化**
+- [Workflow 申请≠回避理由](workflow-approval-not-avoidance.md) — 报备=用前说一声不是别用;approval_required=false 该用就用;别因"要申请"退回单代理/手动 (owner 06-13 纠正)
 - [GPT prompt 不要催眠前缀](feedback_no_role_priming_for_reasoning_models.md) — "你是 X 专家" role-priming 对推理模型反作用; 直接讲任务 + format + 约束.
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion;key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.

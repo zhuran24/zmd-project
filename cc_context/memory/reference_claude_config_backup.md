@@ -1,11 +1,13 @@
 ---
 name: claude-config-backup
-description: "~/.claude.json daily 自动备份到外盘 (systemd timer, 2026-05-20 装). 防 ENOSPC / 覆盖事故. 含恢复命令 + 不要重蹈覆辙的硬警告."
+description: "**(旧 Linux/CachyOS 主机 reference; 当前 CC 在 Windows 跑, 下述 systemd/外盘路径不适用)** ~/.claude.json daily 自动备份到外盘 (systemd timer, 2026-05-20 装). 防 ENOSPC / 覆盖事故. 含恢复命令 + 不要重蹈覆辙的硬警告."
 metadata: 
   node_type: memory
   type: reference
   originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
+
+> **⚠️ 本机制属旧 Linux (CachyOS) 主机环境** (systemd user timer + 外盘 `/mnt/wd_external`)。当前 CC harness 跑在 **Windows**(用户目录 `C:\Users\22957`, 无 systemd), 下述 systemd/外盘路径与恢复命令在 Windows 上**不可执行**, 仅在回到 Linux 主机时有效 —— 别在 Windows 下 .claude.json 损坏时照搬这些 Linux 命令。
 
 ## 自动备份机制 (2026-05-20 起)
 

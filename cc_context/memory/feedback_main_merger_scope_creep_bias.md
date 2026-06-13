@@ -97,6 +97,6 @@ Gemini 全没 catch — 这层 user 是唯一可信.
   pattern (本 memory 是 anti-pattern 实战补强)
 - adversarial-soundness-audit — Layer 1/2 数据层 audit (跟 phase
   boundary audit 不同 vector 同种"看不见")
-- gemini-review-algorithm-math — Gemini cross-check 强项 (数学/paradigm)
+- gemini-review-algorithm-math(已归档) — Gemini cross-check 强项 (数学/paradigm)
 - [[no-giveup-options]] — user 拍板时 main 应列候选 + cost 不 dilute
 - [[lazy-mode]] — 想替 user 想, 不是想替 user 做 phase boundary 决策

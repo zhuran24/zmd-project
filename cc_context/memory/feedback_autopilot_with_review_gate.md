@@ -57,5 +57,5 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 **底层精神**：用户雇我是来做事的，不是来当**他的 router**把所有决策反弹回去。能 audit 就 audit，能排序就排序，能落地就落地。真不能（外部依赖 / 物理约束）才 escalate。
 
 ## 链 (补连 2026-06-01)
-- keep-review-process-light — 流程轻量
+- keep-review-process-light(已归档) — 流程轻量
 - [[lazy-mode]] — 同 root

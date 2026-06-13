@@ -79,4 +79,4 @@ cut 只对某 ghost candidate valid → 不能无条件 attach:
 - `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md` (source)
 - `docs/项目说明/09_phase_1_3_plan.md` P1.3A spike
 - `docs/项目说明/05_open_questions.md` Q10 verdict
-- phase-1-1-go-blessed — exit hardening delivery 含此 finding
+- phase-1-1-go-blessed(已归档) — exit hardening delivery 含此 finding

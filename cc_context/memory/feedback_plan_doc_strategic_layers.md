@@ -64,5 +64,5 @@ metadata:
 - `docs/research/p3_b_design_v2_20260521/PHASE_POST_1_1_REFACTOR_PLAN.md`
   最终版 — 18 section / 1363 line / 54 KB, 含完整 13 数学原理 subsection
   + 战略 + paradigm + 历史 + GO 标准 + 依赖图 + 风险 + 回滚 + 边界 invariant
-- review-pkg-no-prompt-inside — plan/roadmap doc 不放 review pkg
+- review-pkg-no-prompt-inside(已归档) — plan/roadmap doc 不放 review pkg
   (引导 reviewer 反 falsification)

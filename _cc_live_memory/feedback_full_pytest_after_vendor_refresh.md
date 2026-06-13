@@ -15,10 +15,10 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 - 看到 ❌ 立刻修，不要拖到下次发现
 - **不要信 pre-commit hook 的 PASSED**——它只测 certified path 守卫子集，不测 vendor adapter / IndustrialPlanner 转译 / endfield-calc semantic mapping 这些
 - 同样适用于：依赖升级（`pip install -U ortools` 等）、`canonical_rules.json` 修改、任何外部 fixture 重构
-- 顺便：项目主分支当前有 ~29 个长期 baseline failures（Codex 时期遗留），跑全套时要会区分"我引入的"vs"baseline"——拿 git stash 抽走改动后再跑同测试，仍 fail 就是 baseline
+- （**历史: 2026-05 旧环境曾有 ~29 个 Codex 遗留 baseline failures**, 当时要靠 git stash 区分"我引入的"vs"baseline"）。**现状 (2026-06-12 fbb0466 起): 全量基线已全绿 0 failed, 旧"约 20/29 个环境性失败"豁免清单作废 —— 今后任何 failed 都是真问题, 绝不能再当 baseline 放过** (见 [[zmd-checkout-env]] / 台账 cc_context/review/p1_2_closure_evidence.md)。
 
 ## 链 (补连 2026-06-01)
 - [[autopilot-with-review-gate]] — 审查闸跑全测
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)
-- audit-verify-before-archive — 别信 cheap gate 独立跑全 — 同 don't-trust-cheap-signal 家族
+- audit-verify-before-archive (已归档 memory_archive/feedback_audit_verify_before_archive.md) — 别信 cheap gate 独立跑全 — 同 don't-trust-cheap-signal 家族

@@ -251,7 +251,7 @@ metadata:
 
 ## (历史快照, 已被上方纠正) v23 已建+多镜头验证 PASS
 
-GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送审, 两份报告都贴回主代理)。**双双判 B (未 clean close)**, 不是之前本地预审的 CLEAN GO —— 以正式九审为准 (per [[memory-currency-protocol]] §5: judgment 级结论由做判断的主体定, 正式九审 > 本地预审)。两份报告 finding 主代理**逐条对真代码+真数据复核, 全属实** (base64 不 validate / 36-unknown 静默 remap / salted hash / schema_err 不进门禁 / Finding 5 #2 sizing overclaim)。两份质量对比: 完整版那次更深 (36-unknown 那条), 干净版更广 (独占 3 条), 但**单跑各一次无法把"包差异"和"GPT run-to-run 噪声"分离** (只有 README 不同, 取并集才对, 见 external-review-reproducibility)。
+GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送审, 两份报告都贴回主代理)。**双双判 B (未 clean close)**, 不是之前本地预审的 CLEAN GO —— 以正式九审为准 (per [[memory-currency-protocol]] §5: judgment 级结论由做判断的主体定, 正式九审 > 本地预审)。两份报告 finding 主代理**逐条对真代码+真数据复核, 全属实** (base64 不 validate / 36-unknown 静默 remap / salted hash / schema_err 不进门禁 / Finding 5 #2 sizing overclaim)。两份质量对比: 完整版那次更深 (36-unknown 那条), 干净版更广 (独占 3 条), 但**单跑各一次无法把"包差异"和"GPT run-to-run 噪声"分离** (只有 README 不同, 取并集才对, 见 external-review-reproducibility(已归档))。
 
 **已落修复 (2026-06-02):**
 - spike `a29fb44` (`[SPIKE-V23-PATCH]`): toy_translator 4 修 (validate=True + blake2b stable hash + remap telemetry + schema_err 门禁), micro-probe 9→12 case 全 PASS; verdict.md Finding 5 #2 `YES→PARTIAL` + 第九审修正章 + Layer-2 risk #6。
@@ -274,7 +274,7 @@ GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送�
 - v22 spike harness `toy_translator` F3 malformed fail-closed: 读逻辑核过 (`_decode_cert_b64` isinstance(dict) guard + F3 family 移出 payload-not-None 块) + 9-case 自测脚本实跑 9/9 PASS
 - verdict.md 诚实 (Sizing-only, 5 项 Layer-2 风险明确 defer, 无 overclaim)
 
-**已交付物** (在 `cc_context/review/`; ⚠️ `*.zip` 被 `.gitignore:49` 全局忽略 → review 包**不入库 / 不上 GitHub**, regenerable: build 脚本 + spike 分支 a29fb44 可重建; build 脚本本身 tracked; faithful + clean 两版 per review-pkg-no-prompt-inside):
+**已交付物** (在 `cc_context/review/`; ⚠️ `*.zip` 被 `.gitignore:49` 全局忽略 → review 包**不入库 / 不上 GitHub**, regenerable: build 脚本 + spike 分支 a29fb44 可重建; build 脚本本身 tracked; faithful + clean 两版 per review-pkg-no-prompt-inside(已归档)):
 - `phase1_2_spike_review_v22.zip` (faithful, sha256 `a29f017a379d0774f9fc72d321f0d3cd95ee783ae3be1484b7fd2ceda8a4a29a`) + `phase1_2_spike_review_v22_clean.zip` (clean, 删 reviewer-priming) — v22 包 Windows 重建版, 单层 zip (原 7z-in-zip 双层换掉, 本机无 7z)。独立验过: build 脚本 0 泄漏 / 无 .git .venv / 无 prompt 混入 / code_context spike 11 文件 / candidate_placements 53.6MB 字节完整 / 无 priming。
 - build 脚本 `build_v22_win.py` (faithful) + `build_v22_clean_win.py` (clean) 在 `cc_context/review/`, **可复用** portable builder: import 原 `scripts/build_phase1_2_spike_review_v22.py` 复用全部 README/文件清单/helper, 只换打包机制。修了 2 个 Windows 移植 bug: ① git show text-mode 强制 `encoding=utf-8` (GBK 呛中文 commit msg) ② `should_skip` 喂 `PurePosixPath` (Windows `\` 导致初版漏 21 个进包)。
 - `GPT九审_prompt.md` — chat 单独给的审查 prompt (7-section + 不可达 armor, **不进 zip**)。
@@ -287,7 +287,7 @@ GPT pro 正式九审跑了 (用户把 v22 **faithful + clean 两版独立**送�
 
 **基础设施** (本 session 2026-06-01 落地): GitHub 实时备份已 live(私有库 zhuran24/endfield-exact-solver, post-commit 自动 push, pre-commit 自动同步 memory, SessionEnd 兜底 WIP) + 项目结构整理(CC/审查工件归 cc_context/{memory,tools,review}, root 清爽)。详 [[github-backup]]。
 
-**下一步** (2026-06-02 修订, 九审已回 B 后): 正式九审已跑完 (B, 修复已落, 见顶部「最新状态」), 不再是「等送审」。真正的下一关 = **P1.3A 的 lowering 决策** —— sizing gate (LSB-corrected) 把它量成带数字硬约束: **任何**族走 expanded lowering 都要设 per-cut term cap + cumulative proto budget (不止 F1/F9; fixture 尺度 ~百级 term/cut ~0.1–0.3GB 不爆, 大 region 才数 GB), 或维持 compact (witness/no-good) lowering 则全 9 族安全。**(注: 早先此处写的 ~2–3K term/1.9GB/"只 F1/F9" 是 MSB bug 假数字, 已废, 见顶部块。)** 这个决策走 **N=8 parallel design** (不 cherry-pick spike code), 由用户当 phase boundary auditor 拍板 (per [[main-merger-scope-creep-bias]])。production step_8 (F1-only) 落代码前先定这个 lowering。Step 0 cheap gate 当时 8/8 PASS 但**产物已随 untracked 文件丢失** (详 [[p1-3a-design-phase]] 顶部丢失警告)。如还要再送一轮 GPT pro 外审, 现已有 **v24 终包** (sha 991c5b79, 见上)。见 phase-1-2-progress + [[design-phase-n-parallel-agents]]。
+**下一步** (2026-06-02 修订, 九审已回 B 后): 正式九审已跑完 (B, 修复已落, 见顶部「最新状态」), 不再是「等送审」。真正的下一关 = **P1.3A 的 lowering 决策** —— sizing gate (LSB-corrected) 把它量成带数字硬约束: **任何**族走 expanded lowering 都要设 per-cut term cap + cumulative proto budget (不止 F1/F9; fixture 尺度 ~百级 term/cut ~0.1–0.3GB 不爆, 大 region 才数 GB), 或维持 compact (witness/no-good) lowering 则全 9 族安全。**(注: 早先此处写的 ~2–3K term/1.9GB/"只 F1/F9" 是 MSB bug 假数字, 已废, 见顶部块。)** 这个决策走 **N=8 parallel design** (不 cherry-pick spike code), 由用户当 phase boundary auditor 拍板 (per [[main-merger-scope-creep-bias]])。production step_8 (F1-only) 落代码前先定这个 lowering。Step 0 cheap gate 当时 8/8 PASS 但**产物已随 untracked 文件丢失** (详 [[p1-3a-design-phase]] 顶部丢失警告)。如还要再送一轮 GPT pro 外审, 现已有 **v24 终包** (sha 991c5b79, 见上)。见 phase-1-2-progress(已归档) + [[design-phase-n-parallel-agents]]。
 
 **送审 (历史口径, 若再送)**: 见下方「送审清单」, 但包要先 v23 重建。
 
