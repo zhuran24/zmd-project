@@ -339,3 +339,44 @@ def test_d2_separator_refuses_precheck_feasible_splitter_context() -> None:
     assert delegate.conflicts == []
     assert result.d2_status == "MODEL_INVALID"
     assert result.reason == "routing_precheck_feasible_not_certified_for_d2_cut"
+
+
+def test_d2_separator_rejects_none_port_owner_before_precheck_or_model() -> None:
+    placement, facility_pools, ports = _toy_corridor_case(blocked=True)
+    ports = [dict(port) for port in ports]
+    ports[0]["instance_id"] = None
+    delegate = _RecordingMasterDelegate()
+
+    result = run_d2_separation(
+        master_delegate=delegate,
+        placement_solution=placement,
+        facility_pools=facility_pools,
+        port_specs=ports,
+        time_limit=5.0,
+    )
+
+    assert result.cut_added is False
+    assert delegate.conflicts == []
+    assert result.d2_status == "ERROR"
+    assert result.reason == "unowned_port_spec_not_certified_for_d2_cut"
+
+
+def test_d2_separator_rejects_port_owner_absent_from_placement() -> None:
+    placement, facility_pools, ports = _toy_corridor_case(blocked=True)
+    ports = [dict(port) for port in ports]
+    ports[0]["instance_id"] = "missing_owner"
+    delegate = _RecordingMasterDelegate()
+
+    result = run_d2_separation(
+        master_delegate=delegate,
+        placement_solution=placement,
+        facility_pools=facility_pools,
+        port_specs=ports,
+        time_limit=5.0,
+    )
+
+    assert result.cut_added is False
+    assert delegate.conflicts == []
+    assert result.d2_status == "ERROR"
+    assert result.reason == "port_spec_owner_not_in_placement_not_certified_for_d2_cut"
+

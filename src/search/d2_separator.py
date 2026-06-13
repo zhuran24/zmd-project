@@ -169,6 +169,37 @@ def _build_d2_cut_metadata(
     }
 
 
+def _d2_port_owner_validation_error(
+    *,
+    placement_solution: Mapping[str, Mapping[str, Any]],
+    port_specs: Sequence[Mapping[str, Any]],
+) -> str:
+    """Return a fail-closed reason when a port spec has no selected owner.
+
+    Port owners are part of the support-augmented proof context: D2 assumption
+    literals and the final master tuple both rely on mapping each terminal back to
+    a concrete selected pose.  Treat missing/None/blank owners, ghost owners, and
+    owners absent from the current placement as uncertified instead of letting
+    them become synthetic strings such as ``"None"`` or pose ``-1``.
+    """
+
+    placement_owner_ids = {
+        str(instance_id)
+        for instance_id in placement_solution
+        if str(instance_id) != "ghost_pick"
+    }
+    for ps in port_specs:
+        raw_instance_id = ps.get("instance_id")
+        if raw_instance_id is None:
+            return "unowned_port_spec_not_certified_for_d2_cut"
+        instance_id = str(raw_instance_id)
+        if not instance_id.strip():
+            return "unowned_port_spec_not_certified_for_d2_cut"
+        if instance_id not in placement_owner_ids:
+            return "port_spec_owner_not_in_placement_not_certified_for_d2_cut"
+    return ""
+
+
 def _d2_precheck_status_for_cut_context(
     *,
     occupied: Set[Tuple[int, int]],
@@ -216,11 +247,15 @@ def run_d2_separation(
             reason="empty_placement_or_ports",
         )
 
-    if any(not str(ps.get("instance_id", "")) for ps in port_specs):
+    port_owner_error = _d2_port_owner_validation_error(
+        placement_solution=placement_solution,
+        port_specs=port_specs,
+    )
+    if port_owner_error:
         return D2SeparationResult(
             cut_added=False, d2_status="ERROR", d2_wall_s=0.0,
             d2_total_vars=0, d2_constraints=0, raw_core_size=0,
-            reason="unowned_port_spec_not_certified_for_d2_cut",
+            reason=port_owner_error,
         )
 
     occupied = _placement_to_occupied(placement_solution, facility_pools)
