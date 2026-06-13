@@ -12,6 +12,7 @@ metadata:
 > **打包规则 (唯一存留的打包规则)**: **除缓存文件外全项目打进去** (排除 .git/__pycache__/.pytest_*/.ruff_cache/.venv/.upstream_clones/*.pyc/输出 zip/prompt 文件)。build 脚本 `cc_context/review/build_v80_single_win.py` (单包自包含, gpt_dispatch --pack 调用; 分卷版已归档 review/archive/)。**老的审查打包规范 (no-priming/7-section prompt 模板/armor/7z 策略/数据完整性细则等) 已全部废除**, 原文备份在 `cc_context/memory_archive/` 与 `cc_context/review/archive/`。
 > **Why (当日实测教训)**: 对抗审查 workflow 跑了 38 分钟还撞 API stream 超时; 审查 agent 并发跑 pytest 互删仓库根 `.pytest_tmp` 污染全量测试; token 成本高。外部 GPT Pro 沙盒能解包跑 pytest 自验, 更稳更省; 自动化脚本再把"CC 手动操作浏览器"这截 token 也省掉。
 > **How to apply**: 默认单干或 Agent 子代理; "必要"= 用户明确点名要 workflow, 或任务确实离不开本地多路编排且无法外发。给 GPT 的 prompt 直接讲任务+约束+交付物即可, 不再套旧模板。
+> **2026-06-13/06-14 owner 更正 (优先级最高, 别再误读)**: ① Workflow 本身已放开 — `approval_required=false` (见 [[workflow-approval-not-avoidance]]), 别把"非必要不用 Workflow"读成"因为要申请所以默认单 Agent"; owner 发现这个误读让 wf 频率大降。② **本裁决只管「审查 / 判 soundness 这个动作本身」**(不开本地多代理审查 wf), **不等于所有任务都默认单代理**——准备/调研/编排(如调研代码写审查 prompt 素材)完全可以 workflow fan-out, 实测 3 个 opus agent 并行调研三面高效且不违反本裁决。判据看**任务实质**(准备/调研/编排 → 可 workflow; soundness 审查判定 → 外发 GPT Pro), 不看"是不是外审相关"。
 
 2026-06-01 用户开了 Ultracode 并指明"这个复杂任务派 workflow 比较好"。沉淀派遣方式选型的偏好。(2026-06-10 起按上方裁决收紧。)
 

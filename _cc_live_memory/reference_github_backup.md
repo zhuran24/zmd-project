@@ -1,6 +1,6 @@
 ---
 name: github-backup
-description: "2026-06-01 起项目+CC上下文实时备份到私有 GitHub；当前 repo_url 由 INSTANCE 槽从 git remote 推导。 当前不再假设每 commit 自动 push；发布通过显式 GitHub 上传包或普通 git push 分支完成。 memory GitHub 发布面在 cc_context/memory, 当前观察点另有 _cc_live_memory 字节镜像, 改 memory 后两边要同步. 含 gh 认证/credential re-setup 踩坑点 (换机重装必看)."
+description: "2026-06-01 起项目+CC上下文实时备份到私有 GitHub；当前 repo_url 由 INSTANCE 槽从 git remote 推导。 本机 post-commit hook 当前每 commit 自动 push (commit≈push, 2026-06-12 重申); 仓库层面发布契约不依赖该 hook (也可显式 push/CI), 但本机实配就是提交即推送, 提交敏感物前按"即将公开"对待。 memory GitHub 发布面在 cc_context/memory, 当前观察点另有 _cc_live_memory 字节镜像, 改 memory 后两边要同步. 含 gh 认证/credential re-setup 踩坑点 (换机重装必看)."
 metadata: 
   node_type: memory
   type: reference
@@ -17,10 +17,10 @@ key 留私库历史防的是 GitHub 公开; 但**把仓库文件打成 review �
 - **secret 扫描 = 0 当 build 硬闸**: build 后扫整包 Gemini/OpenAI/GitHub/private-key 等 secret pattern, 命中 ≠ 0 不准交付 (这道闸我自己跑、不委托)。注意扫描 pattern 别写太宽——`docs/research/.../gemini_cross_check_*` 的**归档 prompt/response** 是 reviewer 要的 Gemini archive 且无 key, 别误杀 (v23 build 时撞过这个 false-positive)。
 - 历史坑: `build_v22_win.py` 的 `REPO` 是旧 dual-slug `zmd\zmd` (仓库上移后失效) + 仓库整理后 `cc_context/` 进了仓库才暴露这条 —— v23+ build 脚本已修 REPO 路径 + 加 cc_context/gemini 排除。
 
-详见 [[gemini-math-consultant]] (key 来源) + [[windows-ninth-review-pending]] (v22 漏 + 轮换待定的当时状态) + 打包簇 index-packaging-cluster。
+详见 [[gemini-math-consultant]] (key 来源) + [[windows-ninth-review-pending]] (v22 漏 + 轮换待定的当时状态) + 打包簇 index-packaging-cluster (已归档 memory_archive/)。
 
 ## 当前发布机制（2026-06-06 之后）
-- **显式发布，不再假设自动推送**：当前发布面使用 GitHub 上传包或普通 `git push origin <branch>`。旧 `post-commit auto-push` 是 CC 本机历史机制，不是 repo-native 契约。
+- **本机当前 = commit≈push（重要, 别误读）**：本机 `.git/hooks/post-commit` 当前**每次 commit 后自动 `git push origin HEAD`**（2026-06-12 重申/改进了失败可见性），即提交即推送、即发布（见 [[zmd-checkout-env]] / CLAUDE.md「commit ≈ push」）。**区分**: 这是**本机 hook 行为**（别人 clone 没这 hook），不是 repo-native 强制契约; 仓库层面也可走显式 `git push origin <branch>` / CI。但在**本机**别假设"commit 留在本地不外发"——它会推, 所以提交前先想清楚 secret。
 - **repo-native gate**：`scripts/preflight_gate.py` 是权威门禁；本地 hook 由 `.githooks/pre-commit` + `scripts/install_hooks.py` 安装，只是便利层。GitHub 侧应跑 `.github/workflows/project_foundation.yml`。
 - **credential helper**：换机时仍可用 `gh auth setup-git` 建立 GitHub 凭据，但不要把 token/key 写入仓库或 memory。
 - **git 身份**：repo-local author 仍由本机 `git config user.name/user.email` 决定。
@@ -31,7 +31,7 @@ memory 的 GitHub 发布面在 `cc_context/memory/`；当前 clean 观察点还�
 `cc_context/` 结构：`cc_context/memory/` 记忆快照 + `global_CLAUDE.md` + `README_CC_HANDOFF.md` + `HANDOFF.md`; 维护脚本在 `cc_context/tools/`; 审查打包工件在 `cc_context/review/`。root 只放项目源。
 
 ## gh 认证 re-setup 踩坑 (换机 / 重装时按这个走, 省得再踩)
-1. gh 装 winget 用户级: `C:\Users\Lenovo\AppData\Local\Microsoft\WinGet\Links\gh.exe` (新 shell 才进 PATH, 老 shell 用全路径)。
+1. gh 装 winget 用户级。**路径别写死用户名, 用 `(Get-Command gh).Source` 取实际值** (实测当前 = `C:\Users\22957\AppData\Local\Microsoft\WinGet\Packages\GitHub.cli_Microsoft.Winget.Source_8wekyb3d8bbwe\bin\gh.exe`, 不是旧记的 `C:\Users\Lenovo\...\WinGet\Links\gh.exe`)。新 shell 才进 PATH, 老 shell 用全路径。
 2. `gh auth login` 在 `!` 非交互下会**跳过"用 gh 认证 git"** → 登录后**必跑** `gh auth setup-git --hostname github.com`, 否则 git 走 GCM 无凭据, 私库 push 报 `Repository not found` (404 不是真没库)。
 3. 仓库有 `.github/workflows/*.yml` → token 必须有 `workflow` scope, 否则 push 被 GitHub 拒。补: `gh auth refresh -s workflow --hostname github.com` (**非交互必带 `--hostname`**, 否则报 "--hostname required when not running interactively")。
 4. **git commit 身份 ≠ gh 认证邮箱** —— git 不会自动用 GitHub 登录邮箱署名, 是两回事。换机/重装首 commit 会卡 `Author identity unknown`, 必须单独 `git config user.name/user.email` (name 可 `gh api user` 拉 = zhuran24, email 用 `3240314610@qq.com`)。
@@ -40,8 +40,8 @@ memory 的 GitHub 发布面在 `cc_context/memory/`；当前 clean 观察点还�
 ## 不入库 / 外部制品
 `.venv` / 可再生 review 包 / 缓存 / `*.zip` `*.7z` / `data/checkpoints|solutions|telemetry` 不进普通源码提交。`data/preprocessed/candidate_placements.json` 是 certified-exact 生产输入, 但当前 lightweight GitHub checkout 明确把它作为外部大制品处理: 缺省不在工作树, 恢复后必须用 `python scripts/check_external_artifacts.py --require candidate_placements` 校验 size/hash, 不要重新塞回普通 Git。
 
-## 旧 CC hook 机制（历史，不再作为当前契约）
-旧环境曾有机器本地 `.git/hooks/pre-commit` / `post-commit` 自动 memory-sync、stamp、push。该机制依赖外部 CC live path 和本机 GitHub 凭据，**不是当前 repo-native publish contract**。当前规则是：
+## CC 本机 hook（便利层, 当前在用; 区别于 repo-native 契约）
+本机 `.git/hooks/pre-commit` / `post-commit` **当前仍在用** (memory-sync、stamp、auto-push), 依赖外部 CC live path 和本机 GitHub 凭据。**注意**: 它们是**本机便利层**, 不是 repo-native publish contract (别人 clone 没有); 但在本机它们**生效中** —— 尤其 post-commit 每 commit auto-push。⚠️ 本节标题旧写"历史、不再作为当前契约"是 **repo-native 层面**的说法, **别误读成"本机 hook 已停"** —— 本机 hook 在跑。repo-native 规则:
 
 - 本地便利 hook：运行 `python scripts/install_hooks.py` 安装 tracked `.githooks/pre-commit`。
 - 强制门禁：直接运行 `python scripts/preflight_gate.py`；CI 运行 `python scripts/preflight_gate.py --ci --base-ref <ref>`。

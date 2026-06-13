@@ -1,13 +1,13 @@
 ---
 name: endfield-solver
-description: 明日方舟终末地70x70工业规划器精确求解器项目身份根 (稳定身份 + PROJECT_LOCK + 依赖)，从Codex(GPT)迁移到Claude Code。现状/phase 不在本条，见 handoff-windows-ninth-review-pending。范式已从 Phase 3B tuning → 27 lever 全死 → B1 → B-design v2 cut-family LBBD → 现 P1.3A。
+description: 明日方舟终末地70x70工业规划器精确求解器项目身份根 (稳定身份 + PROJECT_LOCK + 依赖)，从Codex(GPT)迁移到Claude Code。现状/phase 不在本条，见 handoff-windows-ninth-review-pending。范式演进史: Phase 3B tuning → 27 lever 全死 → B1 → B-design v2 cut-family LBBD (当前 phase/是否闭合一律见 living 源, 不在本条)。
 type: project
 originSessionId: 8ac66da5-49ee-4b7b-85e4-523f02bbc9e3
 ---
 项目是明日方舟：终末地(Arknights: Endfield)的IndustrialPlanner精确求解器，在70×70网格上放置266个强制设施并找最大合法空矩形。
 
 > ⚠️ **现状已演进, 本条只保留稳定身份 (项目是什么 / PROJECT_LOCK 边界 / 依赖), 不再作当前 phase 真相来源** (per [[memory-currency-protocol]])。当前 phase/交接状态见单一 living 源 [[windows-ninth-review-pending]]。
-> **范式反转链**: 早期 Phase 3B tuning paradigm (latency-bound master 解不动 + 软优化全死) 经 **27 lever 全死** → **B1 pose-bool master** → **B Design v2 cut-family LBBD** 重写 → Phase 1.1 GO → Phase 1.2 close (2026-05-27, GO_WITH_MINOR) → 现处 **P1.3A**。见 phase-1-2-progress / [[paradigm-death-timeline-27-lever]]。
+> **范式反转链 (历史演进, 非现状判断)**: 早期 Phase 3B tuning paradigm (latency-bound master 解不动 + 软优化全死) 经 **27 lever 全死** → **B1 pose-bool master** → **B Design v2 cut-family LBBD** 重写 → Phase 1.1 GO → Phase 1.2 spike (2026-05-27 GO_WITH_MINOR 进入 spike)。**当前是否闭合 / 处于哪个 phase 一律见 living 源 [[windows-ninth-review-pending]]** —— 注意 CLAUDE.md 明确 P1.2 spike close **未正式关闭** (V50 owner-count gate 在 force); 旧 CC memory 称的「P1.3A 主体」= 项目书 P1.3B, owner 没显式开就**未启动**, 别把本链读成「现处 P1.3A」。历史进度细节见归档 `cc_context/memory_archive/project_phase_1_2_progress.md` 与 [[paradigm-death-timeline-27-lever]]。
 
 **Why:** 用户之前用Codex(GPT)开发，因GPT呆板迁移到Claude Code。
 

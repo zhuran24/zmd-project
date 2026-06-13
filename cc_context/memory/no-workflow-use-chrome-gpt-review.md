@@ -33,4 +33,8 @@ metadata:
 
 **How to apply:** 默认自己干或单个 Agent 子代理;"必要" = 用户明确点名要 workflow,或任务确实离不开本地多路编排且无法外发。委托实现的交付物拿回来后:本地 apply → check 脚本 + 目标测试 → 独占全量复验 → **`python scripts/preflight_gate.py --ci --base-ref HEAD~1` 全 gate(必跑!pytest 盖不到 frozen hash/行尾/记忆树三类检查,漏跑 = push 即 CI 红 + 邮件轰炸,V80 实测教训)** → 推锚易漏点复核 → commit,不盲信关键论证。外发 prompt 的锚定清单要含:若改 frozen artifact,`preflight_gate.py::FROZEN_ARTIFACTS` sha256 同批推进;要求 GPT 产物 LF 行尾。
 
+**并发上限已字段化 (2026-06-14 owner 放开)**: GPT 外发"一次最多 2 条在途"的旧软上限 (上面风控时间线留下的 1-2) owner 裁决去掉——需要发多少条就发多少条。现由字段控制: `C:\Users\22957\cc_watchdog\gpt_dispatch_concurrency.json` 的 `max_in_flight` (null=不限=当前默认; 整数 N=最多 N 条同时在途未收完)。CC 每次发新外发请求前读此字段决定并发度。dispatch 脚本本身无硬并发限制 (代码里没有 max_in_flight gate, grep 确认), 旧上限纯是 CC 操作软规则, 现移到字段。**Why**: 一刀切写死"最多 2"在记忆里, 风控冷却后也没人改回来, owner 要的是可调旋钮; 风控复发时把 max_in_flight 设回整数即可临时收紧, 而非永久卡死。**仍成立的护栏 (与并发数无关, 别一起去掉)**: 在途单未收完别清旧快照包 (传新包加 --keep-old-snapshots, sha 唯一名防并发覆盖)、每单 dispatch 只挂一个后台 shell 当唤醒源、包走 Project 文件区模式。
+
+**workflow vs no-workflow 厘清 (2026-06-14 owner 纠正, 别再误读)**: 本 no-workflow 裁决**只管一件事**——「审查 / 判 soundness 这个动作本身」外发 GPT Pro 做、不开本地多代理**审查** workflow(实测教训: 审查 agent 并发跑 pytest 互删 .pytest_tmp + API 超时挂 critic)。它**不**等于「所有任务都默认单 Agent」。**准备工作**(调研代码、综合素材写审查 prompt 这类, 不跑 pytest 不判 soundness)完全可以用 workflow 并行 fan-out —— 实测用 Workflow 3 个 opus agent 并行调研 binding/campaign/scheduler 三面产出 prompt 素材, 高效且不违反 no-workflow。owner 06-14 抓到我又把 no-workflow 误读成「默认单 Agent」退回串行单代理, 纠正: workflow 已放开(approval_required=false, 见 [[workflow-approval-not-avoidance]]), 该用就用; no-workflow 的边界是「审查判定本身」不是「所有外审相关的活」。判据看**任务实质**(准备/调研/编排 → 可 workflow; soundness 审查判定 → 外发 GPT Pro), 不看「是不是外审相关」。
+
 相关:[[zmd-project-entry]]
