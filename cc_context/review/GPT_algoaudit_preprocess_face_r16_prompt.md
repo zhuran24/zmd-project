@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话零历史, 独立对抗审查)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_snapshot_c9315ba2.zip`, sha256 `c9315ba216598e08ecb4103ca2563d7aabdecae11d48205803c17921fc4ead61`。**只认这个文件名, 文件区其它快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_snapshot_5e5e0c86.zip`, sha256 `5e5e0c863fba4247158c55108eb8bdf4d29e872660312e0f61a1a8cb15029b4a`。**只认这个文件名, 文件区其它快照包一律无视; 开工前先校验 sha256, 对不上停下来报告**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包), 干净 git 树快照。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 ## 项目一句话
 
@@ -45,7 +45,7 @@ r15 补丁动了 demand_solver 入口 + preprocess_context 的 validation 结构
 
 ## 自验环境与已知基线
 
-- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈3036 passed, 0 failed)**; 跑不完就跑专项 + 如实声明 (沙盒 pytest-randomly 报 seed 错就 `-p no:randomly`)。
+- 再生工件后全量 `python -m pytest -q src/tests` 应 **全绿 (≈3037 passed, 0 failed)**; 跑不完就跑专项 + 如实声明 (沙盒 pytest-randomly 报 seed 错就 `-p no:randomly`)。
 - `python scripts/check_p1_2_proof_obligations.py` pass。
 - finding 必须带可复现 probe 或严谨论证 (file:line); 实证推翻你的怀疑就不要报。
 
