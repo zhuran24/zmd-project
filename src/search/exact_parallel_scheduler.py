@@ -474,6 +474,7 @@ class ExactParallelWorkerPool:
 
         results_by_seq: Dict[int, WorkerResult] = {}
         failure_reason: Optional[str] = None
+        discard_results_due_to_worker_result_failure = False
         peak_rss_total_bytes = 0
         heartbeat_events: List[Dict[str, Any]] = []
         wave_crash_respawns = 0
@@ -499,10 +500,15 @@ class ExactParallelWorkerPool:
                                     r,
                                     tasks_by_seq=tasks_by_seq,
                                 )
-                                if result_reason is not None and failure_reason is None:
-                                    failure_reason = result_reason
+                                if result_reason is not None:
+                                    if failure_reason is None:
+                                        failure_reason = result_reason
+                                    discard_results_due_to_worker_result_failure = True
+                                    results_by_seq.clear()
                             elif failure_reason is None:
                                 failure_reason = "worker_result_invalid"
+                                discard_results_due_to_worker_result_failure = True
+                                results_by_seq.clear()
                     if failure_reason is not None:
                         break
                     pending = [t for t in tasks if t.dispatch_seq not in results_by_seq]
@@ -541,8 +547,11 @@ class ExactParallelWorkerPool:
                 result,
                 tasks_by_seq=tasks_by_seq,
             )
-            if result_reason is not None and failure_reason is None:
-                failure_reason = result_reason
+            if result_reason is not None:
+                if failure_reason is None:
+                    failure_reason = result_reason
+                discard_results_due_to_worker_result_failure = True
+                results_by_seq.clear()
                 break
 
         while True:
@@ -557,6 +566,8 @@ class ExactParallelWorkerPool:
                 continue
             if message_type != "RESULT":
                 continue
+            if discard_results_due_to_worker_result_failure:
+                continue
             result = message.get("result")
             if isinstance(result, WorkerResult):
                 result_reason = _record_worker_result(
@@ -564,10 +575,16 @@ class ExactParallelWorkerPool:
                     result,
                     tasks_by_seq=tasks_by_seq,
                 )
-                if result_reason is not None and failure_reason is None:
-                    failure_reason = result_reason
-            elif failure_reason is None:
-                failure_reason = "worker_result_invalid"
+                if result_reason is not None:
+                    if failure_reason is None:
+                        failure_reason = result_reason
+                    discard_results_due_to_worker_result_failure = True
+                    results_by_seq.clear()
+            else:
+                if failure_reason is None:
+                    failure_reason = "worker_result_invalid"
+                discard_results_due_to_worker_result_failure = True
+                results_by_seq.clear()
 
         if failure_reason is not None:
             self.terminate()

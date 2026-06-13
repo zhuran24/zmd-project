@@ -158,6 +158,17 @@ def _parallel_wave_result_identity_failure(
     return None
 
 
+def _parallel_wave_failure_discards_results(failure_reason: Optional[str]) -> bool:
+    if failure_reason is None:
+        return False
+    normalized_reason = str(failure_reason)
+    if normalized_reason.startswith("worker_process_failed"):
+        return False
+    if normalized_reason.startswith("worker_crash_respawn_limit"):
+        return False
+    return True
+
+
 def _mark_certified_campaign_blocked(
     exact_campaign: ExactCampaign,
     *,
@@ -2289,8 +2300,17 @@ def run_outer_search(
                         if wave_identity_failure is not None
                         else wave_execution.failure_reason
                     )
+                    discard_wave_results = (
+                        wave_identity_failure is not None
+                        or (
+                            not bool(wave_execution.completed)
+                            and _parallel_wave_failure_discards_results(
+                                effective_failure_reason
+                            )
+                        )
+                    )
                     sorted_wave_results = sorted(
-                        () if wave_identity_failure is not None else wave_execution.results,
+                        () if discard_wave_results else wave_execution.results,
                         key=lambda result: int(result.dispatch_seq),
                     )
 
