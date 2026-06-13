@@ -31,7 +31,7 @@ spike 是 risk-discovery 不是 P1.3A 半成品" — 这是**phase boundary 声�
    - Gemini round 1+2 cross-check (各 NOT_GO + finding fix) 全 focus 数学/CP-SAT
      internals, **0 catch phase boundary leak**
    - Gemini 数学/paradigm 强 audit 但 phase boundary / project 流程 audit 没
-     strong opinion (跟 adversarial-soundness-audit Layer 2 数据层 attack
+     strong opinion (跟 adversarial-soundness-audit(已归档) Layer 2 数据层 attack
      不同 vector, 但同种"看不见"特征)
 3. **User 是唯一可信 phase boundary auditor**: 项目历史 context + 主线 plan
    视角 + multi-phase ramp 经验 — 这些 Gemini / GPT pro / 8 路 sibling 都
@@ -95,7 +95,7 @@ Gemini 全没 catch — 这层 user 是唯一可信.
 
 - [[design-phase-n-parallel-agents]] — N=8 parallel slant + merger anti-
   pattern (本 memory 是 anti-pattern 实战补强)
-- adversarial-soundness-audit — Layer 1/2 数据层 audit (跟 phase
+- adversarial-soundness-audit(已归档) — Layer 1/2 数据层 audit (跟 phase
   boundary audit 不同 vector 同种"看不见")
 - gemini-review-algorithm-math(已归档) — Gemini cross-check 强项 (数学/paradigm)
 - [[no-giveup-options]] — user 拍板时 main 应列候选 + cost 不 dilute

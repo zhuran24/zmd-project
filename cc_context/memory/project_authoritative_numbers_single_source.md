@@ -36,5 +36,5 @@ Design A+B 落地后跑了三轮: architecture-review→fix / fix-reverify / **f
 ## 链
 - [[memory-currency-protocol]] —— 同架构给 handoff 现状 (核心节点=LATEST_PACKAGE.json, 投影=stamp_living_status)
 - [[verification-independent-backstop]] —— 三轮审查方法论 (rule#4c fresh full re-review)
-- review-pkg-data-completeness —— 包数字完整性
+- review-pkg-data-completeness(已归档) —— 包数字完整性
 - runbook 入口见 `CLAUDE.md` "数字单一来源 (authoritative_numbers core node)" 段

@@ -81,5 +81,5 @@ metadata:
 ## Refs
 
 - `docs/项目说明/README.md` — 入口
-- gpt-pro-p11-audit-not-go — Phase 1.1 audit 历史
+- gpt-pro-p11-audit-not-go(已归档) — Phase 1.1 audit 历史
 - [[plan-doc-strategic-layers]] — plan doc 必含战略层 (现 superseded by 项目说明 dir 结构)

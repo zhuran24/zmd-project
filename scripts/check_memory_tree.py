@@ -205,6 +205,100 @@ def _check_live_mirror(memory_dir: Path, mirror_dir: Path, *, require: bool) -> 
     return errors
 
 
+_ARCHIVE_REF_EXEMPT = {"project_paradigm_death_timeline_27_lever.md"}
+
+# harness↔cc_context 共维护文件 (两树都有, 内容应一致; 只跨树 wikilink 风格可不同)。
+_CO_MAINTAINED = {
+    "zmd-checkout-env.md",
+    "zmd-project-entry.md",
+    "no-workflow-use-chrome-gpt-review.md",
+    "workflow-approval-not-avoidance.md",
+}
+
+
+def _normalize_crosstree(text: str) -> str:
+    """归一两树对 harness-only 节点的引用风格 (harness 用 [[slug]], cc_context 用
+    散文 harness memory「slug」), 这样只把真内容 drift 报出来, 不误报合法风格差异。"""
+    text = text.replace("harness memory「", "「")
+    for token in ("[[", "]]", "「", "」"):
+        text = text.replace(token, "")
+    return text
+
+
+def _check_harness_mirror(memory_dir: Path, harness_dir: Path | None = None) -> list[str]:
+    """Warn (non-blocking) on content drift of co-maintained files between the
+    project tree and the live CC harness tree.
+
+    harness (~/.claude/projects/<slug>/memory, kebab operational memory) and
+    cc_context/memory (snake project memory) are DIFFERENT content sets — only a
+    few files live in both. We compare those (cross-tree wikilink style
+    normalized away) so a harness edit that was not manually mirrored shows up
+    loudly instead of silently diverging (the 2026-06-14 root cause). Harness
+    unreachable (CI / fresh clone / other machine) -> skip. Never blocks.
+    """
+    if harness_dir is None:
+        slug = re.sub(r"[^A-Za-z0-9]", "-", str(PROJECT_ROOT))
+        harness_dir = Path.home() / ".claude" / "projects" / slug / "memory"
+    if not harness_dir.is_dir():
+        return []
+    drift: list[str] = []
+    for name in sorted(_CO_MAINTAINED):
+        proj = memory_dir / name
+        harn = harness_dir / name
+        if not proj.exists() or not harn.exists():
+            continue
+        if _normalize_crosstree(_read(proj)) != _normalize_crosstree(_read(harn)):
+            drift.append(name)
+    if drift:
+        return [
+            "harness↔cc_context co-maintained drift (手动双写漏了, 同步 "
+            f"cc_context+_cc_live+harness 三处): {', '.join(drift)}"
+        ]
+    return []
+
+
+def _check_archived_dangling(memory_dir: Path, known: set[str], archive_dir: Path | None = None) -> list[str]:
+    """Warn (non-blocking) if active prose references an archived node by bare slug.
+
+    Wikilink form [[slug]] to an archived node is already caught by _check_links
+    (unresolved). This catches the BARE prose form ("见 X") the link checker can
+    not see — the 2026-06-14 cleanup found 26 such leftovers from the 2026-06-10
+    slimming. A slug already annotated with (已归档)/(archived), or inside [[ ]],
+    is fine. The dead-end timeline node intentionally points at archived single
+    entries, so it is exempt.
+    """
+    archive_dir = archive_dir or PROJECT_ROOT / "cc_context" / "memory_archive"
+    if not archive_dir.is_dir():
+        return []
+    archive_slugs: set[str] = set()
+    for path in archive_dir.glob("*.md"):
+        name = _frontmatter_name(path, _read(path))
+        if name:
+            archive_slugs.add(name.lower())
+    archive_only = archive_slugs - known
+    if not archive_only:
+        return []
+    hits: list[str] = []
+    for path in sorted(memory_dir.glob("*.md")):
+        if path.name == "MEMORY.md" or path.name in _ARCHIVE_REF_EXEMPT:
+            continue
+        text = _read(path).lower()
+        for slug in sorted(archive_only):
+            for match in re.finditer(re.escape(slug), text):
+                if text[max(0, match.start() - 2):match.start()] == "[[":
+                    continue
+                if re.match(r"\s*[(（](?:已归档|archived)", text[match.end():match.end() + 10]):
+                    continue
+                hits.append(f"{path.name}: '{slug}'")
+                break
+    if hits:
+        return [
+            "archived-node prose refs not annotated (顺指针会扑空, 标 (已归档)): "
+            + "; ".join(hits[:12])
+        ]
+    return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check repo memory-tree structural and currency health.")
     parser.add_argument("--memory-dir", type=Path, default=DEFAULT_MEMORY_DIR)
@@ -219,6 +313,7 @@ def main() -> int:
         return 1
 
     errors: list[str] = []
+    warnings: list[str] = []
     name_to_path, path_to_name, load_errors = _load_memory(memory_dir)
     errors.extend(load_errors)
     errors.extend(_check_links(memory_dir, name_to_path, path_to_name))
@@ -226,6 +321,13 @@ def main() -> int:
     errors.extend(_check_stamp_engine(memory_dir))
     errors.extend(_check_memory_index_size(memory_dir, args.max_memory_index_bytes))
     errors.extend(_check_live_mirror(memory_dir, args.live_mirror.resolve(), require=args.require_live_mirror))
+    warnings.extend(_check_harness_mirror(memory_dir))
+    warnings.extend(_check_archived_dangling(memory_dir, set(name_to_path)))
+
+    if warnings:
+        print("memory tree warnings (non-blocking):")
+        for warning in warnings[:20]:
+            print(f"  WARN {warning}")
 
     if errors:
         print("memory tree check failed:")
@@ -235,9 +337,10 @@ def main() -> int:
             print(f"  ... {len(errors) - 50} more")
         return 1
 
+    suffix = f", {len(warnings)} warning(s)" if warnings else ""
     print(
         "memory tree check passed: "
-        f"{len(name_to_path)} nodes, index within cap, graph/currency healthy"
+        f"{len(name_to_path)} nodes, index within cap, graph/currency healthy{suffix}"
     )
     return 0
 

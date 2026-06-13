@@ -36,7 +36,7 @@ metadata:
 **待用户 phase-boundary 决策(§10)**: (1) 接受 F1-only 收窄? (2) 接受强 cut 分 family 方案? (3) 现在进 Step 0 cheap gate 落代码 vs 先等 v22 GPT 九审 GO? (4) F8 defer 可接受? **当前停在等用户这 4 个决定, 未动任何代码。**
 
 **Why**: 接手后首个实质设计推进, 8 路并行 + merger 结论 + 头号架构决策, 非显然且决定 P1.3A 走向。
-**How to apply**: 实施顺序(原在已丢的 `P1_3A_MERGED_DESIGN.md` §9, 现仅凭本 memory 复述): Step0 Windows cheap gate → F1 step_8 → benders hook → Windows verify → [GATE] Linux 收敛; 收敛验证 defer Linux; 别 fold 9-family 收敛。(原始 merged design 文件不在仓库, 见顶部丢失警告; 真要细节回 Linux 原机取或按本 memory 各 § 重建。)relate [[windows-handoff-env]] [[main-merger-scope-creep-bias]] [[paradigm-phase0-cheap-gate]] subproblem-vs-augmented-master-default。
+**How to apply**: 实施顺序(原在已丢的 `P1_3A_MERGED_DESIGN.md` §9, 现仅凭本 memory 复述): Step0 Windows cheap gate → F1 step_8 → benders hook → Windows verify → [GATE] Linux 收敛; 收敛验证 defer Linux; 别 fold 9-family 收敛。(原始 merged design 文件不在仓库, 见顶部丢失警告; 真要细节回 Linux 原机取或按本 memory 各 § 重建。)relate [[windows-handoff-env]] [[main-merger-scope-creep-bias]] [[paradigm-phase0-cheap-gate]] subproblem-vs-augmented-master-default(已归档)。
 
 ## GPT Pro 设计审 verdict (2026-05-30) — GO(收窄)+ 硬细化
 

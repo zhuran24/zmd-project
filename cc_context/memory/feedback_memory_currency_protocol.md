@@ -32,7 +32,7 @@ metadata:
    - **⚠️ 根因比"少了条规则"更深 (2026-06-02 用户三连追问后定)**: 这个现状漏更**反复复发, 连记完 rule#7 没几步又犯** —— 因为它**不是知识缺口** (我知道、甚至明说"回来再更"), 而是 handoff 更新是项目里**唯一没有强制函数、不挂任何产物完成定义**的关键动作 (commit/push/memory-sync/链接/测试 都有钩子或会大声报错, 唯独它没有)。**用记规则 (被动文本) 治一个"没上锁"的动作 = 治不住** (这就是为什么记完又犯)。
    - **治本 = 给它强制函数 (2026-06-02 落地, 见 [[github-backup]])**: `pre-commit` 调 `cc_context/tools/stamp_living_status.py`, 每 commit **自动 stamp** handoff 可推导字段 (最新包 sha 读自 `cc_context/review/LATEST_PACKAGE.json` / spike HEAD / phase) → 可推导现状不可能 stale; (⚠️ 2026-06 更正: 原设计还有"散文没提最新包版本就 stderr 大声 warn"这半个安全网, 但 `stamp_living_status.py` 在 commit f866cd5 泛化成纯「实例/分身」transclusion 引擎后**已移除散文 warn** —— 现脚本只对 malformed/unknown/stale 的 INSTANCE 槽报错, 不扫自由散文。可推导现状靠槽锁死不漂, 散文里隐式旧值无机器保护、仍靠 currency-sweep 人工兜; 别再以为漏提包版本会被自动响亮提醒)。**别再靠"记更强的规则"防它 —— 强制函数才是解, 规则只是 fallback 文档。**
 
-relate [[endfield-solver]] [[windows-ninth-review-pending]] review-pkg-data-completeness [[main-merger-scope-creep-bias]] [[memory-tree-structural-health]]。
+relate [[endfield-solver]] [[windows-ninth-review-pending]] review-pkg-data-completeness(已归档) [[main-merger-scope-creep-bias]] [[memory-tree-structural-health]]。
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)
 - [[memory-tree-structural-health]] — 记忆树两失效轴: 内容过时 vs 结构

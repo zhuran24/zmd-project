@@ -41,8 +41,8 @@ metadata:
 - 当不确定模型类型: **默认不写** role-priming, 安全
 
 **Related**:
-- gpt-review-prompt-armor — armor 是任务侧约束, 不是身份侧催眠
-- gpt-review-no-history — 历史引用问题
+- gpt-review-prompt-armor(已归档) — armor 是任务侧约束, 不是身份侧催眠
+- gpt-review-no-history(已归档) — 历史引用问题
 
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)
-- external-review-prompt-template — no-priming 是 prompt 模板硬规则
+- external-review-prompt-template(已归档) — no-priming 是 prompt 模板硬规则

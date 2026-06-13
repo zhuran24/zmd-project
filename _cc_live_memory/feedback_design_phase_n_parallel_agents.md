@@ -101,7 +101,7 @@ merger anti-pattern 实战教训 (避):
 
 **Refs**:
 - gemini-review-algorithm-math(已归档) — main 同种 bias 实际案例
-- gpt-error-types-taxonomy — 3 类错估 (算法 / 前提 / 数学能力上限)
+- gpt-error-types-taxonomy(已归档) — 3 类错估 (算法 / 前提 / 数学能力上限)
 - [[lazy-mode]] — 替 user 想, 不无谓盖章
 - [[paradigm-phase0-cheap-gate]] — 每 paradigm 实施前 Phase 0 cheap gate (跟此 protocol 不冲突, cheap gate 验前提, N 路并行验设计方案)
 
