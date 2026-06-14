@@ -124,3 +124,5 @@
 - [GitHub 实时备份](reference_github_backup.md) — 发布目标 zhuran24/zmd;memory 改后必须保持 `cc_context/memory/` 与 `_cc_live_memory/` 镜像一致.
 - [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK (批量删/移挪到 Bash 工具做) / here-string 展开 $env 坏脚本 / 控制台中文乱码≠文件坏.
 - [graphify 代码语义地图 (query before grep)](reference_graphify_codegraph.md) — src→确定性代码结构图 + Claude 补语义层, 新窗口先查图再 grep; .mcp.json 注册 mcp__graphify__*; graph.json gitignore 需刷新; 只读导航辅助不进 certified 证明路径.
+
+- [Round2+dispatch-fix 会话快照](zmd-round2-dispatch-fix-state.md) — P1.2 Round2 已结: master_geometry 真 reachable false-CERTIFIED→连续干净计数清零到0(已修推送382d764/LOCK F-GM-BS-R2-01); 重启R3/4/5三连干净 + dispatch 4故障 team修复 + owner离线全自主
