@@ -87,6 +87,7 @@
 ## 项目主线
 
 - [Endfield 求解器项目 (身份根)](project_endfield_solver.md) — 终末地 70×70 工业规划器精确求解器身份根 (稳定身份+PROJECT_LOCK+依赖). 现状见交接条. 范式 = cut-family LBBD.
+- [certified 红线召回锚点 (PROJECT_LOCK §1+§3)](project_certified_redlines.md) — 要动 certified/proof/schema/cut 前先读 lock; 5 条 forbidden + 易撞 invariant + 3 真 P0 反面教材; 召回锚点非 proof 源, 不拓宽 proof 语义.
 - [用户画像](user_profile.md) — 终末地玩家+开发者, 中文沟通, 偏好自动化.
 - [Phase 3C 路线图 v1](project_phase3c_roadmap.md) — 22 个 P0/P1/P2 项 + 12 个 Excluded, 按 ROI 分级.
 - [项目说明 docs/项目说明/ 21 sub-doc](reference_docs_project_spec_folder.md) — 拆顶层 21 sub-doc + README 索引 + 受众分流.
