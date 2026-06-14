@@ -485,7 +485,97 @@ async def _click_send_verified(page: PageCdp, rep: Reporter, stage: str,
     return False
 
 
+# --- 后端会话 JSON 直读 (env GPT_DISPATCH_BACKEND_READ=1, 默认关, fail-safe 回落 DOM) - #
+# 根因: _last_assistant 读渲染后 DOM, 后台/非活动 tab 渲染冻结 -> 高并发 collect 串台/
+# 卡死 (见记忆 chatgpt-throttled-tab-render)。后端会话 JSON
+# (/backend-api/conversation/<id>) 不依赖 DOM 渲染, 即便前台 tab 冻结也有全文 —
+# 2026-06-14 探测实证: 取回了一条 DOM 卡死(reply_chars=1)会话的完整回复。
+# 开启后任何失败 (URL 非 /c/、token 取不到、fetch 非 200、形态异常) 都返回 None /
+# 抛出, 由 _last_assistant 自动回落既有 DOM 读 -> 默认路径与历史行为零差异。
+_BACKEND_CONV_JS = r"""
+(async () => {
+  const out = {ok:false};
+  try {
+    const sess = await fetch('/api/auth/session',{credentials:'include'}).then(r=>r.json());
+    const hdrs = (sess && sess.accessToken) ? {Authorization:'Bearer '+sess.accessToken} : {};
+    const r = await fetch('/backend-api/conversation/__CONV_ID__',{credentials:'include',headers:hdrs});
+    out.status = r.status;
+    if (!r.ok) return JSON.stringify(out);
+    const conv = await r.json();
+    const mapping = conv.mapping || {};
+    const nodes = [];
+    for (const n of Object.values(mapping)) {
+      const m = n.message;
+      if (!m || !m.author || !m.content) continue;
+      const c = m.content;
+      const parts = Array.isArray(c.parts) ? c.parts.filter(p => typeof p === 'string') : [];
+      nodes.push({
+        role: m.author.role,
+        create_time: m.create_time || 0,
+        content_type: c.content_type || '',
+        parts: parts,
+        slug: (m.metadata && (m.metadata.resolved_model_slug || m.metadata.model_slug)) || ''
+      });
+    }
+    out.ok = true; out.nodes = nodes;
+  } catch (e) { out.error = String(e); }
+  return JSON.stringify(out);
+})()
+"""
+
+
+def _reduce_backend_assistant(payload: dict) -> dict:
+    """把后端会话 slim payload 归约成与 _last_assistant 同形的 {count,text,slug}。
+
+    取 create_time 最大的 assistant 节点为最后一条回复, parts 字符串拼接为全文。
+    纯函数, 离线可单测 (src/tests/test_dispatch_backend_reduce.py)。"""
+    if not isinstance(payload, dict) or not payload.get("ok"):
+        return {"count": 0, "text": "", "slug": ""}
+    # 只认 content_type=="text" 的可见回复节点 (排除 reasoning/thoughts/tool 内部节点,
+    # 否则尾随的 reasoning 节点会被当成"最后一条回复", count 也会虚高)。
+    assistants = [
+        n for n in payload.get("nodes", [])
+        if isinstance(n, dict)
+        and n.get("role") == "assistant"
+        and n.get("content_type") == "text"
+        and isinstance(n.get("parts"), list)
+    ]
+    if not assistants:
+        return {"count": 0, "text": "", "slug": ""}
+    assistants.sort(key=lambda n: n.get("create_time") or 0)
+    last = assistants[-1]
+    text = "\n".join(p for p in last.get("parts", []) if isinstance(p, str)).strip()
+    return {"count": len(assistants), "text": text, "slug": last.get("slug") or ""}
+
+
+async def _last_assistant_backend(page: PageCdp) -> dict | None:
+    """从当前会话 URL 推 conv_id, 页内 fetch 后端会话 JSON, 归约成 {count,text,slug}。
+
+    URL 不是 /c/<id>、后端读失败、或归约出空回复 -> 返回 None 让调用方回落 DOM。"""
+    u = await page.url()
+    m = CONV_URL_RE.search(u or "")
+    if not m:
+        return None
+    conv_id = m.group()[3:]  # 去掉前缀 '/c/'
+    raw = await page.js(_BACKEND_CONV_JS.replace("__CONV_ID__", conv_id), timeout=25)
+    try:
+        payload = json.loads(raw) if isinstance(raw, str) else None
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(payload, dict) or not payload.get("ok"):
+        return None
+    info = _reduce_backend_assistant(payload)
+    return info if info.get("count") else None
+
+
 async def _last_assistant(page: PageCdp) -> dict:
+    if os.environ.get("GPT_DISPATCH_BACKEND_READ") == "1":
+        try:
+            info = await _last_assistant_backend(page)
+            if info:
+                return info
+        except Exception:
+            pass  # fail-safe: 后端读任何异常都回落 DOM 读
     try:
         v = await page.js(_LAST_ASSISTANT_JS, timeout=10)
         if isinstance(v, dict):

@@ -92,6 +92,21 @@ python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --cdp-url http://loca
 
 等待期每拍先做页面活性探测(`document.readyState`);连续 2 拍(~20s)无响应 → **同 URL 新开页面、关掉老页面**(owner 处方;比 reload 可靠——渲染进程挂死时 reload 自己也会卡),换新页面继续等,稳定计数清零。恢复失败(网络还断着)下一拍重试;3 次换页后仍无响应 → attention 退出,`--resume` 可在网络恢复后续等。此路径未经真实网络故障实测(无法按需复现),逻辑保守:恢复失败时退回旧页面继续轮询,不会比不恢复更糟。
 
+## 高并发 collect: 后端会话直读 (env `GPT_DISPATCH_BACKEND_READ=1`, 实验, 默认关)
+
+`collect` / 完成检测默认从**渲染后 DOM** 读回复 (`_last_assistant`)。Edge 只渲染前台 tab,
+≥~4 并发同时收件时其余后台 tab DOM 渲染冻结 → 读到 0/1 字符 → exit 2 `no_attachments`
+甚至卡在等待循环 (见记忆 `chatgpt-throttled-tab-render`)。当前稳妥办法 = **收集串行化**
+(并发 send/generate, 全 finish 后逐个 `--resume` 前台读)。
+
+根治 = 收回复**文本**改读后端会话 JSON (`/backend-api/conversation/<id>`, bearer 取自
+`/api/auth/session`),不依赖 DOM 渲染。设 `GPT_DISPATCH_BACKEND_READ=1` 开启:`_last_assistant`
+先尝试后端读,**任何失败 (URL 非 /c/、token 取不到、非 200、形态异常) 自动回落既有 DOM 读**,
+默认路径零改动。2026-06-14 探测+live 实证:对一条 DOM 卡死(reply_chars=1)会话,后端读取回
+完整回复 (2128 字符) + 正确 model slug;DOM 读 count=0 时后端读 count=4 真回复。**残余待验** =
+真并发多 tab 流式生成下的完成/稳定检测行为 (下次实跑置 1 验);**附件下载仍走既有 DOM/download
+路径不变** (那是另一条已单独加固的路径,见 `chatgpt-attachment-capture`)。
+
 ## 已知边界
 
 - ChatGPT DOM 改版可能破选择器(集中在 dispatch 脚本顶部的 JS 探针常量:`_STOP_VISIBLE_JS` / `_LAST_ASSISTANT_JS` / `_candidates_js` / `MODEL_BTN_TEXTS` 等,改那里即可;旧文档说的 `SEL` 字典在 2026-06-12 raw-CDP 重写后已不存在)
