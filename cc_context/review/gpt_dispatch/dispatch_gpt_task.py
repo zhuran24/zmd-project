@@ -593,10 +593,11 @@ async def assert_logged_in(page: PageCdp, rep: Reporter) -> bool:
     return True
 
 
-# 目标模型 = 「智能水平」菜单里 role=menuitemradio 文本 "Pro 扩展" (= Pro·进阶/扩展模式)。
-# 该菜单 (2026-06-14 实地探明) 项: 极速/均衡/高级/超高/Pro 扩展/GPT-5.5, 选中项 aria-checked=true。
-# 模型按钮 (aria-haspopup=menu) 的可见文本 = 当前选中项, 故按钮文本即可判当前模型。
-TARGET_MODEL_TEXT = "Pro 扩展"
+# 只校验「模型是不是 Pro」(模型按钮文本 = "Pro")。
+# owner 2026-06-14: Pro 扩展 vs 标准 是 Project 记住的黏性设置、基本不变 → 不再校验/切换那一层
+# (它在「智能水平」菜单里要钻两级子菜单 Pro 标准/Pro 扩展, 是 ChatGPT DOM 漂移的脆弱点)。
+# 所以这里只确认顶层是 Pro、不开/不钻子菜单 (happy path 连菜单都不开); 极少数不是 Pro 时只告警, 不自动切。
+TARGET_MODEL_TEXT = "Pro"
 
 _MODEL_BTN_RECT_JS = (
     "(() => {"
@@ -613,21 +614,6 @@ _MODEL_BTN_RECT_JS = (
     "})()"
 )
 
-_PRO_RADIO_RECT_JS = (
-    "(() => {"
-    "  const its=[...document.querySelectorAll('[role=menuitemradio]')];"
-    "  for (const it of its) {"
-    "    if ((it.innerText||'').trim().startsWith('Pro 扩展')) {"
-    "      const r=it.getBoundingClientRect();"
-    "      return JSON.stringify({x:r.x+r.width/2,y:r.y+r.height/2,"
-    "        checked:it.getAttribute('aria-checked')});"
-    "    }"
-    "  }"
-    "  return null;"
-    "})()"
-)
-
-
 async def _model_button(page: PageCdp) -> dict | None:
     raw = await page.js(_MODEL_BTN_RECT_JS, timeout=10)
     try:
@@ -637,45 +623,22 @@ async def _model_button(page: PageCdp) -> dict | None:
 
 
 async def verify_model(page: PageCdp, rep: Reporter):
-    """检查当前模型, 若不是 Pro 扩展则打开「智能水平」菜单切过去 (owner 2026-06-14:
-    上传完包后必须确认/修正模型再发, 不能只警告)。已对则 no-op (按钮文本即当前模型)。"""
+    """只确认模型是 Pro (模型按钮文本含 "Pro")。owner 2026-06-14: Pro 扩展 vs 标准 是
+    Project 黏性设置、基本不变 → 不再校验/切换那一层 (它要钻两级子菜单, 是 DOM 漂移脆弱点)。
+    happy path 完全不开菜单。极少数不是 Pro 时只告警 (非致命), 不自动切。"""
     info = await _model_button(page)
     if info is None:
         await rep.attention(page, "model",
                             "model selector button not found — verify manually; proceeding")
         return
     if TARGET_MODEL_TEXT in info["text"]:
-        rep.log("model", "ok", current=info["text"])
+        rep.log("model", "ok_is_pro", button_text=info["text"],
+                note="扩展/标准 视为黏性设置, 不校验")
         return
-    # 不对 → 打开菜单切到 Pro 扩展 (真实 pointer; .click() 对 Radix 菜单不可靠)
-    rep.log("model", "wrong_model", current=info["text"], target=TARGET_MODEL_TEXT)
-    await page.click_xy(info["x"], info["y"])
-    await asyncio.sleep(1.2)
-    raw = await page.js(_PRO_RADIO_RECT_JS, timeout=10)
-    try:
-        opt = json.loads(raw) if raw else None
-    except (TypeError, ValueError):
-        opt = None
-    if opt is None:
-        await page.press_escape()
-        await rep.attention(page, "model",
-                            f"Pro 扩展 option not found in model menu (current={info['text']});"
-                            " verify manually")
-        return
-    if opt.get("checked") == "true":
-        # 按钮文本与选中项不一致但 radio 已勾选 — 关菜单按已对处理
-        await page.press_escape()
-        rep.log("model", "ok_radio_checked", current=info["text"])
-        return
-    await page.click_xy(opt["x"], opt["y"])
-    await asyncio.sleep(1.0)
-    after = await _model_button(page)
-    if after is not None and TARGET_MODEL_TEXT in after["text"]:
-        rep.log("model", "switched_to_pro", from_model=info["text"], to=after["text"])
-    else:
-        await rep.attention(page, "model",
-                            "model switch to Pro 扩展 not confirmed "
-                            f"(now={after['text'] if after else '?'}); verify manually")
+    # 不是 Pro — 不钻 扩展/标准 子菜单自动切 (黏性设置极少跑偏); 仅告警, 继续发送。
+    await rep.attention(page, "model",
+                        f"model button is not Pro (={info['text']}); not auto-switching "
+                        "(avoids fragile two-level submenu); verify manually")
 
 
 async def fill_and_send(page: PageCdp, prompt_text: str, rep: Reporter) -> str:
@@ -683,14 +646,35 @@ async def fill_and_send(page: PageCdp, prompt_text: str, rep: Reporter) -> str:
         if await page.js(_COMPOSER_READY_JS, timeout=10):
             break
         await asyncio.sleep(1)
+    # focus + 全选 composer 现有内容, 让随后的 insert_text 替换而非追加。
+    # 不清空会踩并发串台 bug: ChatGPT 项目级 composer 草稿跨 tab 持久/同步,
+    # 8 并发各开同一项目新会话 composer 时, 后填的 tab 会把自己的 prompt 追加在
+    # 别的 tab 已灌入的草稿后面 → 会话拿到多个面 prompt 拼接 (2026-06-14 实测).
     focused = await page.js(
         "(() => { const c = document.querySelector('#prompt-textarea');"
-        "  if (!c) return false; c.focus(); return true; })()", timeout=10)
+        "  if (!c) return false; c.focus();"
+        "  const sel = window.getSelection(); const r = document.createRange();"
+        "  r.selectNodeContents(c); sel.removeAllRanges(); sel.addRange(r);"
+        "  return true; })()", timeout=10)
     if not focused:
         raise RuntimeError("composer #prompt-textarea not found")
-    await page.insert_text(prompt_text)
+    await page.insert_text(prompt_text)  # 替换全选内容 = 清空 + 填充
     await asyncio.sleep(1)
-    rep.log("prompt", "filled", chars=len(prompt_text))
+    # 发送前硬校验: composer 实际内容长度必须 ≈ prompt 长度。对不上 = 被并发串入
+    # 别的 prompt / 草稿污染 → fail-closed 不发 (绝不把拼接 prompt 发出去).
+    got = await page.js(
+        "(() => { const c = document.querySelector('#prompt-textarea');"
+        "  return c ? (c.innerText || c.textContent || '') : ''; })()", timeout=10)
+    got_len = len((got or "").strip())
+    want_len = len(prompt_text.strip())
+    if abs(got_len - want_len) > max(40, int(want_len * 0.08)):
+        rep.log("prompt", "content_mismatch", composer_chars=got_len, prompt_chars=want_len)
+        await rep.attention(
+            page, "send",
+            f"composer content mismatch (got {got_len} vs prompt {want_len}) — "
+            "likely concurrent draft cross-wiring; NOT sending a polluted prompt")
+        raise RuntimeError(f"composer content mismatch: {got_len} vs {want_len}")
+    rep.log("prompt", "filled", chars=len(prompt_text), composer_chars=got_len)
     ready = await page.js(_SEND_BTN_SPOT_JS, timeout=10)
     if not ready:
         raise RuntimeError("send button not found/enabled after fill")
@@ -717,16 +701,21 @@ async def send_followup(page: PageCdp, text: str, rep: Reporter) -> bool:
     照记 followup_sent, 下游就干等一个永远不来的回复直到烧满超时。"""
     focused = False
     for _ in range(15):
+        # focus + 全选清空 (同 fill_and_send: insert_text 追加不替换, 不清空会把
+        # 追问拼在 composer 残留草稿后面)。
         focused = await page.js(
             "(() => { const c = document.querySelector('#prompt-textarea');"
-            "  if (!c) return false; c.focus(); return true; })()", timeout=10)
+            "  if (!c) return false; c.focus();"
+            "  const sel = window.getSelection(); const r = document.createRange();"
+            "  r.selectNodeContents(c); sel.removeAllRanges(); sel.addRange(r);"
+            "  return true; })()", timeout=10)
         if focused:
             break
         await asyncio.sleep(1)
     if not focused:
         rep.log("followup", "send_failed", error="composer #prompt-textarea not found")
         return False
-    await page.insert_text(text)
+    await page.insert_text(text)  # 替换全选内容 = 清空 + 填充
     await asyncio.sleep(0.5)
     spot = None
     for _ in range(10):
