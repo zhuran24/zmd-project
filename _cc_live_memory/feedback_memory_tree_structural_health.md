@@ -1,6 +1,6 @@
 ---
 name: memory-tree-structural-health
-description: "记忆树结构健康 (区别于 [[memory-currency-protocol]] 的内容现状轴): wikilink 命名须统一口径否则断链 + MEMORY.md ~24576B 自动加载上限超了尾部静默截断 + harness 重写 frontmatter 但保 name 字段→rename 耐久 + 维护脚本语义 + **第三轴: 同话题散多条 memory 没跨链 → 改不全(改一漏多)+召不全(该用的没 surface), 治法=改前 grep 全树找全实例一起改 + 同话题簇互相 wikilink + description 带共同话题词**。**第四轴(第三轴上游): 记忆时泛化不足, 把通用规则锁死在首次触发的具体语境(如'反复审查'锁在Gemini)→别处不surface; 治法=记前问'只适用眼前还是更通用'(占位符测试), 通用就记通用层别锁语境**。**实例/分身模型(单一真相源+transclusion, 三轴统一根治): 可推导值(sha/HEAD/phase/url)升「实例」+ 节点里 `INSTANCE:id` 分身槽, pre-commit 引擎(stamp_living_status.py)扫全树自动 transclude→不可能 drift; 规则类靠 wikilink 不抄副本**。"
+description: "记忆树**结构**健康轴(区别于 [[memory-currency-protocol]] 内容现状轴),六条:① wikilink 命名口径统一否则断链;② MEMORY.md ~24576B 自动加载上限、超了尾部静默截断;③ harness 重写 frontmatter 但保 name 字段→rename 耐久;④ 第三轴 同话题散多条没跨链=改不全+召不全(治法 grep 全树一起改 + 互相 wikilink + 共同话题词);⑤ 第四轴 泛化不足(规则锁死首次语境)→记前问'只适用眼前还是更通用';⑥ 实例/transclusion 模型(可推导值升 INSTANCE 槽、stamp 引擎自动 transclude)单一真相源根治 drift。细节见正文。"
 metadata: 
   node_type: memory
   type: feedback

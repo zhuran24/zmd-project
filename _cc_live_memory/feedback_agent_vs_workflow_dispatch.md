@@ -7,12 +7,8 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
-> **2026-06-10 用户裁决 (优先于下面全部旧指导; 当晚二次裁决又精简了规则集)**: **非必要不要用 Workflow,特别是审查类任务**。审查/外审/委托实现类活外发给 GPT Pro (chatgpt.com) 完成。**发送设置: ① 模型选 Pro·进阶 (= GPT Pro 扩展模式, 中文 UI 叫「进阶专业」); ② 请求发在 ChatGPT 的「终末地」Project 里面; ③ 非必要不用老窗口 — 每个新任务默认开新会话, 只有同一任务的连续追问才留在原会话**。
-> **外发通道 (2026-06-11 起首选自动化脚本, 完整验收通过)**: `python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <md>` — 打包→上传→发送→双信号等完成→收附件全自动, 本地跑零 token; 挂了 `--resume <会话URL>` 续; 附件 404 自动救援 (追问让 GPT 重新生成); 退出码/降级阶梯见 CLAUDE.md runbook + gpt_dispatch/README.md。**浏览器 = 用户日常 Edge 主实例** (owner 裁决, 不搞独立 profile, 直接用已登录态; 前置 start 脚本在 Edge 没带调试端口时会**温和重启用户 Edge**——执行前注意是否正用着; Edge 每次重启后要重跑一次 start)。**托底链两层**: 脚本 exit 5 (疑似 Pro 静默降级, 判据 = 真实任务完整生成 <1min, 无任何明面标注) 时 CC 切 ① 同一 Edge 上的 Claude in Chrome 插件手动发收; 还不行切 ② ChatGPT 桌面 App 通道 (`start 脚本 -App` MSIX 包身份带 CDP 9224 启动, dispatch 加 `--cdp-url http://localhost:9224`; Electron 与网页 DOM 同构, 不同客户端可能不同限流池)。
-> **打包规则 (唯一存留的打包规则)**: **除缓存文件外全项目打进去** (排除 .git/__pycache__/.pytest_*/.ruff_cache/.venv/.upstream_clones/*.pyc/输出 zip/prompt 文件)。build 脚本 `cc_context/review/build_v80_single_win.py` (单包自包含, gpt_dispatch --pack 调用; 分卷版已归档 review/archive/)。**老的审查打包规范 (no-priming/7-section prompt 模板/armor/7z 策略/数据完整性细则等) 已全部废除**, 原文备份在 `cc_context/memory_archive/` 与 `cc_context/review/archive/`。
-> **Why (当日实测教训)**: 对抗审查 workflow 跑了 38 分钟还撞 API stream 超时; 审查 agent 并发跑 pytest 互删仓库根 `.pytest_tmp` 污染全量测试; token 成本高。外部 GPT Pro 沙盒能解包跑 pytest 自验, 更稳更省; 自动化脚本再把"CC 手动操作浏览器"这截 token 也省掉。
-> **How to apply**: 默认单干或 Agent 子代理; "必要"= 用户明确点名要 workflow, 或任务确实离不开本地多路编排且无法外发。给 GPT 的 prompt 直接讲任务+约束+交付物即可, 不再套旧模板。
-> **2026-06-13/06-14 owner 更正 (优先级最高, 别再误读)**: ① Workflow 本身已放开 — `approval_required=false` (见 [[workflow-approval-not-avoidance]]), 别把"非必要不用 Workflow"读成"因为要申请所以默认单 Agent"; owner 发现这个误读让 wf 频率大降。② **本裁决只管「审查 / 判 soundness 这个动作本身」**(不开本地多代理审查 wf), **不等于所有任务都默认单代理**——准备/调研/编排(如调研代码写审查 prompt 素材)完全可以 workflow fan-out, 实测 3 个 opus agent 并行调研三面高效且不违反本裁决。判据看**任务实质**(准备/调研/编排 → 可 workflow; soundness 审查判定 → 外发 GPT Pro), 不看"是不是外审相关"。
+> **GPT Pro 外发审查/委托的完整规则(核心裁决 / 四条发送设置 / 打包 `build_v80_single_win.py` / dispatch 通道 + 两层托底链 / 降级判据 / 并发 / scope 厘清)见 [[no-workflow-use-chrome-gpt-review]] 子树,本节不复述以防双处漂移**(议会 redundancy 收口 2026-06-14:同话题别抄副本、用 wikilink)。
+> **不变的要点(读全规则去子树)**: ① 非必要不用 Workflow 做 **soundness 审查这个动作**、审查/外审/委托实现外发 GPT Pro;② 但 Workflow 本身**已放开**(`approval_required=false`,见 [[workflow-approval-not-avoidance]]),别把"非必要不用 Workflow"误读成"默认单 Agent";③ 本裁决**只管「判 soundness 的动作」**,准备/调研/编排可 workflow fan-out(判据看任务实质,见 [[no-workflow-scope-clarification]])。
 
 2026-06-01 用户开了 Ultracode 并指明"这个复杂任务派 workflow 比较好"。沉淀派遣方式选型的偏好。(2026-06-10 起按上方裁决收紧。)
 
