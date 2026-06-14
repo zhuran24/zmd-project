@@ -13,6 +13,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
+# dispatch_gpt_task imports `websockets`, which is absent from the offline review
+# sandbox (not in the vendored wheel pack). Skip cleanly there instead of breaking
+# full `pytest src/tests` collection for every external reviewer.
+pytest.importorskip("websockets")
+
 _DISPATCH_DIR = (
     Path(__file__).resolve().parents[2] / "cc_context" / "review" / "gpt_dispatch"
 )
