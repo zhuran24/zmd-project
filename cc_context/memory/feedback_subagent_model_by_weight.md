@@ -24,6 +24,7 @@ metadata:
 - 派遣前先掂这个活的真实重量 (步骤数 / 需要的判断深度 / 做错的代价), 再选档; 拿不准时往上取一档 (宁可 opus 跑轻活, 别 sonnet 跑重活)。
 - 主会话当前模型是 fable, **"继承主会话模型"不再是默认正确做法** —— 轻活/重活要显式传 `model="sonnet"` / `model="opus"`; 只有特别重要的活才让它继承 (或显式 `model="fable"`)。
 - Agent 工具无独立 effort/thinking-budget 旋钮, `model` 参数是控制力度的唯一硬杠杆 (软杠杆 = prompt 措辞)。
+- **fable 子代理可能派不出 (2026-06-14 实测)**: 派 model=fable 的 subagent 报 `model claude-fable-5 may not exist or you may not have access` → 当场退 opus 重派, 别卡住。可能 transient/额度; 若持续派不出, 重活/关键活默认 opus 足够 (fable 是更优不是必须), 别因'特别重要必须 fable'而阻塞。
 
 ## 链
 - [[agent-vs-workflow-dispatch]] — "派给谁"的选型框架; 本条管"派出去后用什么模型"
