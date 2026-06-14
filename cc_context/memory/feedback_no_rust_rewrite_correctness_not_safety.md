@@ -1,6 +1,6 @@
 ---
 name: no-rust-rewrite-correctness-not-safety
-description: "用户问\"审了快30次还在找问题, 会是 Python 问题吗/换 Rust 更安全?\" → 不换 Rust。Rust 治的是内存安全, 而本项目的瓶颈/审查 finding 全是另一类 (校验逻辑正确性 + 文档纪律 + CP-SAT C++ 核的数学), 换 Rust 求解层零收益且清空已硬化的 soundness 成果。"
+description: "用户问\"审了快30次还在找问题, 会是 Python 问题吗/换 Rust 更安全?\" → 不换 Rust。Rust 治的是内存安全, 而本项目的瓶颈/审查 finding 全是另一类 (校验逻辑正确性 + 文档纪律 + CP-SAT C++ 核的数学), 换 Rust 求解层零收益且清空已硬化的 soundness 成果。通则: 任何'换 X 语言/框架/求解器(HiGHS/CaDiCaL 等)更好吗、重写求解层更快吗'的工具背锅式归因都适用——先分清那工具治哪类病 vs 本项目瓶颈(数学正确性/文档纪律/CP-SAT C++ 核)是哪类。"
 metadata: 
   node_type: memory
   type: feedback

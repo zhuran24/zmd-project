@@ -6,8 +6,8 @@ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 
 Phase 3C 优化研究阶段于 2026-05-08 收尾，正式路线图见仓库相对路径
-`docs/phase3c_optimization_roadmap_v1.md` (相对仓库根 `D:\追光\zmd`)。
-(旧绝对路径 `D:\claude pj\zmd\docs\...` 已随项目搬家失效, 用相对路径防再漂。)
+`docs/phase3c_optimization_roadmap_v1.md`（相对仓库根，不点绝对路径）。
+（早期记忆里的 `D:\追光\zmd` / `D:\claude pj\zmd` 绝对根均已随项目搬到当前 `C:\claude pj\zmd_pj` 失效，认相对路径防再漂。）
 
 **Why:** 10 轮 80 个 agent transcript 累积出 50+ "金矿"，但全部未落地。继续调研边际 ROI ≤ 1，正确动作是停止调研、开始落地。Stop 信号触发于用户 2026-05-08 一句话："按节约的时间与调研时间的值来算"。
 
