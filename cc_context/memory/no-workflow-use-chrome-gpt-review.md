@@ -1,42 +1,24 @@
 ---
 name: no-workflow-use-chrome-gpt-review
-description: "用户裁决(2026-06-10,当晚精简版):非必要不用 Workflow;审查/实现任务外发 GPT Pro;四条发送设置(含 06-12 包走 Project 文件页) + 打包除缓存全打;老审查规范已废除"
-metadata: 
+description: "GPT Pro 外发审查/委托主题索引(原巨型节点已拆);非必要不用 Workflow、审查外发 GPT Pro 这套规则的总入口,具体设置/通道/风控/降级/并发见子节点"
+metadata:
   node_type: memory
   type: feedback
   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
 ---
 
-用户裁决:**非必要不用 Workflow 多代理编排**(即使 Ultracode 开着)。审查、外审、委托实现类任务用 Claude in Chrome 插件发到 chatgpt.com 让 GPT Pro 做。zmd 项目 v22-v79 全是 GPT 外审的,GPT Pro 沙盒(Python 3.13)能解包、装离线 wheels、跑 pytest 自验,实现任务也能整包委托。
+「非必要不用 Workflow,审查/委托实现外发 GPT Pro」这套规则的索引节点(原 15KB 巨型节点已按事实拆分,提高召回)。按需读对应子节点:
 
-**发送设置三条(用户指定):**
-1. 模型选 **Pro·进阶**(= GPT Pro 扩展模式;中文 UI「进阶专业」就是它,不用另找开关)
-2. 发在 ChatGPT 的**「终末地」Project** 里面
-3. **非必要不用老窗口**——新任务默认开新会话,只有同一任务的连续追问才留原会话
-4. **包走 Project 文件页(来源区), 不随消息发附件 (2026-06-12 owner 裁决)**: 新项目快照包上传文件页后**删掉老的快照包**; 但依赖包 `zmd_py313_linux_x86_64.zip` (wheels) **永远不删**。prompt 里指认文件区的包文件名 + sha256 让 GPT 开工前校验, 并写明"本会话不带消息附件,一切从 Project 文件区取"。**Why**: Codex 时代包一直放文件页、从未触发过风控; 这轮风控全发生在会话内反复传大附件模式下——疑似诱因, 切回文件页模式验证。此模式下剪贴板交付 = 包路径→提示词两条文字, **不放包文件本体** (贴进会话就又变附件模式; owner 上传文件页时用路径在文件选择器定位)。[⚠️ 已 superseded — 见本文末「2026-06-12 下午终态」块, 上传全链路已脚本化打通] **上传脚本化现状 (2026-06-12, 未跑通)**: 写了 `upload_project_file.py`(raw CDP page-ws, 能跟插件共存; 删旧逻辑=白名单保留依赖包删其余, 见 harness memory「chatgpt-browser-automation-pitfalls」), 但**核心上传步 `DOM.setFileInputFiles` 对大 zip 字节没真传上去**(spinner 永转→回收, 实测推翻"已落地") → **文件区上传目前还得 owner 手动拖**。脚本的导航/删除/白名单/完成判据逻辑都摸清可用, 只差一个真能传字节的上传方式(拖放 DataTransfer / 直调上传 API, 未验证)。**另: 探删除时把 owner 手动传的好快照包误删了**(删除无确认框、点即生效) → 当前文件区只剩依赖包待恢复, 教训 = 别在生产数据上"试探"不可逆 UI。
-
-**打包规则(唯一存留):除缓存文件外全项目打**(排除 .git/__pycache__/.pytest_*/.ruff_cache/.venv/.upstream_clones/*.pyc/输出 zip/prompt 文件)。build 脚本在 `cc_context/review/build_v80_single_win.py`(单包,自包含,gpt_dispatch --pack 调用它;分卷版已归档 review/archive/)。**打包纪律 (2026-06-12 r7 教训)**: ① build 脚本固定输出同名 zip, 多会话共用工作区会被并发覆盖 (实测: 打完几分钟内被姊妹会话重打, sha 漂了, owner 险些传错包) → **每轮包用 `git worktree add --detach <tmp> HEAD` 的干净树打 + 立刻复制成 sha 前缀唯一名** (如 `zmd_r7_snapshot_<sha8>.zip`), prompt 只指认唯一名; ② 干净树打的副产品 = 不混入脏 WIP 和未跟踪历史归档 (r5/r6 reviewer 抱怨的裸 pytest 误收集杂物源), 包从 ~18MB 降 ~12MB; ③ **交付前最后一步重新 `Get-FileHash` 核对 = prompt 里的 sha**。**老的审查打包规范(no-priming/7-section prompt 模板/armor/7z 策略等)2026-06-10 全部废除**,备份在项目 `cc_context/memory_archive/` 与 `cc_context/review/archive/`。给 GPT 的 prompt 直接讲任务+约束+交付物即可。
-
-**发送分工(2026-06-11 用户裁决):单发任务默认 CC 用 dispatch 脚本自动发;只有多路并行外发(脚本不支持同浏览器并发,start/cleanup 会互关 tab)或 CC 自己的额度快用尽时,才改由用户手动发**(跟 GPT 那边的额度无关)。CC 手上有现成包+prompt 时别把单发推回给用户。**并发上限(2026-06-11 风控教训):同时在途/正在生成的 GPT 请求最多 2 个**——同窗口期曾 4 路并发,随后脚本通道连续静默降级、App 通道卡顿,疑似触发风控。**疑似风控(脚本连续降级/App 卡顿)= 无自动托底,停下来**(2026-06-11 最终裁决):插件通道本质也是同一浏览器同一账号的自动化,同样会被风控——换通道硬试只会加重。处置 = **停止一切自动外发**,把待发的包+prompt 路径落盘进 handoff/现场,等 owner 手动发或风控冷却。交 owner 手动发时跑 `C:\Users\22957\clip_send.ps1 -TextFile <prompt.md> -Files <包.zip>`:提示词文字先进(滚入剪贴板历史)、包文件后进(占当前位,文件不进历史)→ owner 先 Ctrl+V 贴包、再 Win+V 翻历史贴提示词,一次交付两样(2026-06-11 用户裁决的剪贴板交付约定,详见 harness memory「clipboard-handoff-convention」)。已发出的会话仍可用脚本 `--resume <URL>` 盯回复+收附件(只读不发,不刺激风控;注意 resume 跳过降级检测,收件后自查生成耗时)。**风控时间线 (滚动)**: 2026-06-11 夜首次触发 (4 路并发) → 06-12 凌晨 owner 宣布解除, 脚本恢复 → **当天上午连发 4 单后风控复发 (06-12 上午, owner 裁决再停脚本)**——经验: 脚本通道一个窗口期连发 ~4 单左右就可能再触发, 即使单发在途也别连珠炮。**当前状态 (2026-06-12 上午): 脚本停用中, 外发全走 owner 手动 (剪贴板交付), 等 owner 宣布解除**。风控下脚本已发出的请求视为废弃 (生成会被降级/不可信), 重要任务用剪贴板交 owner 手动重发, 别指望"已发出的那条会正常生成"。`--package <现成包>` 比 `--pack` 重打包好 (sha 不漂)。**骤死坑**: CC harness 后台跑 dispatch 的 wait/collect 必被掐 (exit 58/255, 心跳健康时死, run_log 无尾)——`--resume "<URL>"` 重连续盯可救; **resume 页下载另有坑** (click_download canceled=True 三连, 同附件 owner 手动下载正常)——兜底 = owner 手动下, 拿到后尽快 TaskStop 脚本防它发多余救援追问。
-
-**通道现状补 (2026-06-12 夜)**: ① **并发已根治** — 单字符事故根因 = Edge 后台 tab 节流冻结渲染 (owner 破案), start 脚本已给 Edge 加三防节流旗标 (`--disable-background-timer-throttling` 等, Edge 重启生效, 实战验证后台 tab 流式渲染正常) → **旗标生效的 Edge 实例上并发 dispatch 可用** (在途 2 上限仍守); 旧实例/未重启 = 串行。② dispatch 三加固: 异常退出留 tab 现场 / 短回复 (<50 字符) 重导航重渲染再读 / **会话锚定** (owner 切走脚本 tab 会被自动导航回来, 不再串线收错附件)。③ build_v80 排除 `補丁包/` (包套娃教训)。④ **每单唤醒 = 单个后台 bash until-finish** (跨压缩可靠; 曾配 Monitor/tail-f 双保险, 06-13 owner 裁决退役 — 与 shell 盯同一 run_log 无独立托底价值还产孤儿)。⑤ owner 手动介入网页期间脚本读到的状态不可信 — 介入过的单子用 `--resume` 重收最稳。
-
-**通道现状 (2026-06-12 下午终态: 全链路脚本化已打通)**: ① **dispatch 浏览器层已整体重写 raw page 级 CDP** (commit fab40a7, 弃 Playwright) — 旧 Playwright connect 超时的真根因不是插件而是「病页毒死全浏览器初始化」(见 harness memory「chatgpt-browser-automation-pitfalls」 终诊条); raw 引擎带毒环境 4s attach, 传包→Sources 防呆→发送→等→收全流程实弹验证 (face7/8 两单), resume 收件可靠 (旧 resume 下载必败已不复现)。② 上传段 `upload_project_file.py` **铁律: 只能打网页端 (Edge 9222), 绝不能对 App 跑** (owner 指正: App 文件上传流程与网页端不同); dispatch 的 `--sources-cdp-http` 永远钉网页 9222 与发送通道解耦。③ App 通道 (9224) = 自动 fallback, **owner 澄清第三托底不需逐次点头**; 真正的错是「没验证包在不在就发」→ 已根治 (发送前 --list 防呆, prompt-only 缺包 fail-closed)。④ **跑法纪律**: dispatch 长等待用 `Start-Process` detached + 单个后台 bash 盯 run_log 文件 (dispatch 本体 harness 后台跑必骤死 exit 58; Monitor 已退役); **dispatch stdout 别接 head 类管道** (`Select-Object -First N` 拿满即关管道→旧版 print 踩 Errno 22 全程崩, 已加固 best-effort 但习惯别养); 骤死后从最新 run_log 取会话 URL detached 跑 `--resume`。⑤ 风控时间线续: 06-12 下午 owner 让脚本恢复试发, 全链路通, **当前状态 = 脚本可用** (单发在途上限 1-2, 别连珠炮)。
-
-**首选通道(2026-06-11 起):外发自动化脚本,全程零 token。** `python cc_context\review\gpt_dispatch\dispatch_gpt_task.py --pack --prompt-file <md>`。前置 = `start_gpt_automation_chrome.ps1`:**默认 attach 用户日常 Edge 主实例**(用户裁决,不搞独立 profile,直接用已登录态零配置)。**⚠️ 重要 caveat:Edge 在跑但没带调试端口时,start 脚本会温和重启用户的 Edge**——跑之前先想想用户是不是正用着浏览器,必要时知会;Edge 每次正常重启后端口就丢了,下次 dispatch 前要再跑一次 start。打包→上传→发送→等完成→收交付全自动;挂了 `--resume <会话URL>` 续;完整流程已验收(含 40MB 包、附件 404 自动救援)。退出码/细节见项目 CLAUDE.md runbook 段。**Pro 静默降级(用户经验)**:无任何明面标注(DOM model-slug 照写 pro,不可信),唯一判据 = 生成耗时(真实审查/实现任务要 30min+,**5min 内完成 = 极大概率降级**;2026-06-11 实测 70s 降级回复溜过旧 60s 判据成 exit 2 + 只回"我计划怎么审"提纲零沙盒动作——脚本默认已改 300s);处置 = 脚本自动刷新重跑一次,仍快(exit 5)→ 托底两层:① 我改走插件通道手动发收(同一个 Edge 上的 Claude in Chrome 插件);② 还不行切 **ChatGPT 桌面 App 通道**(`start 脚本 -App` 以 MSIX 包身份带 CDP 9224 启动,dispatch 加 `--cdp-url http://localhost:9224`;Electron,DOM 与网页同构,不同客户端可能不同限流池)。
-
-**插件手动上传姿势(托底通道用):** 插件 `file_upload` 工具 10MB 上限且新版拒收主机路径——别用它。走 Windows 剪贴板:用 `C:\Users\22957\clip_send.ps1 -Files <path>`(**别裸调 SetFileDropList——其数据随设置进程退出消失,必须 DataObject + SetDataObject(copy:=true) 冲刷,脚本已内置**;`Set-Clipboard -Path` 是 5.1 专属),聚焦 ChatGPT 输入框发 Ctrl+V(14.2MB 实测成功,网页上限 512MB)。长 prompt 同理 `Set-Clipboard -Value` + Ctrl+V。LZMA zip 让对方用 `python -m zipfile -e` 解(Linux unzip 不支持)。**sandbox 附件几分钟就回收(404)**:完成后立即收,收不到就追问一句让 GPT 重新生成(沙盒重建文件)。
-
-**降级机理 + 通道实证(2026-06-11 夜, 24 次交付数据)**: 脚本发送白天 21h / 20+ 次全真 Pro(elapsed_s 21-44min), 直到一次 4 路并发触发 Sentinel(~22:16)→ 此后**脚本特征发送被降到 40-70s, 但手动发送(Edge 或 App)仍吃真 Pro**(22:42 手动 R2 = 43min, 轻量手动测试秒回健康)。**唯一可靠降级信号 = elapsed_s**: `model_slug` 全程 `gpt-5-5-pro`、`thinking_marker` 全程 `none`(连真 Pro 也 none), 明面字段全撒谎。**App = 独立手动通道**, Edge 脚本被 flag 时 App 仍能正常手动发; 但裸开 App 无 CDP 9224 → `--resume` 盯不了, 手动收交付到 `C:\22957\download`。**"HAR 里有 sentinel 请求" 不算证据**(sentinel 是所有 ChatGPT 会话通用的请求门, 人人都有, 客服一看就知道); 找客服的唯一真证据是时长对比(同 Project / slug, 手动 43min vs 脚本 40-70s)。
-
-**Why:** 本地审查 workflow 实测 38 分钟 + API stream 超时挂 critic + 审查 agent 并发跑 pytest 互删 `.pytest_tmp` 污染全量测试;GPT Pro 外发更稳更省额度。老审查规范是几十轮外审循环时代的产物,用户裁决"现在不用这么麻烦了"。
-
-**How to apply:** 默认自己干或单个 Agent 子代理;"必要" = 用户明确点名要 workflow,或任务确实离不开本地多路编排且无法外发。委托实现的交付物拿回来后:本地 apply → check 脚本 + 目标测试 → 独占全量复验 → **`python scripts/preflight_gate.py --ci --base-ref HEAD~1` 全 gate(必跑!pytest 盖不到 frozen hash/行尾/记忆树三类检查,漏跑 = push 即 CI 红 + 邮件轰炸,V80 实测教训)** → 推锚易漏点复核 → commit,不盲信关键论证。外发 prompt 的锚定清单要含:若改 frozen artifact,`preflight_gate.py::FROZEN_ARTIFACTS` sha256 同批推进;要求 GPT 产物 LF 行尾。
-
-**并发上限已字段化 (2026-06-14 owner 放开)**: GPT 外发"一次最多 2 条在途"的旧软上限 (上面风控时间线留下的 1-2) owner 裁决去掉——需要发多少条就发多少条。现由字段控制: `C:\Users\22957\cc_watchdog\gpt_dispatch_concurrency.json` 的 `max_in_flight` (null=不限=当前默认; 整数 N=最多 N 条同时在途未收完)。CC 每次发新外发请求前读此字段决定并发度。dispatch 脚本本身无硬并发限制 (代码里没有 max_in_flight gate, grep 确认), 旧上限纯是 CC 操作软规则, 现移到字段。**Why**: 一刀切写死"最多 2"在记忆里, 风控冷却后也没人改回来, owner 要的是可调旋钮; 风控复发时把 max_in_flight 设回整数即可临时收紧, 而非永久卡死。**仍成立的护栏 (与并发数无关, 别一起去掉)**: 在途单未收完别清旧快照包 (传新包加 --keep-old-snapshots, sha 唯一名防并发覆盖)、每单 dispatch 只挂一个后台 shell 当唤醒源、包走 Project 文件区模式。
-
-**dispatch 大改 (2026-06-14 owner 裁决, commit 51e5c47/9465731): 复用页 + 不关页 + 模型自检自修 + 接收侧 model 复核。** ① **一页到底零 churn**: upload_project_file.py 加 --reuse-tab-id (复用 dispatch 已开的 tab, 不再 PUT /json/new 开空页) + --no-close (传完留页给发送); dispatch sources 流程让同一 tab 走 blank→sources→composer。靠"dispatch 调 upload 子进程时事件循环阻塞、那条 page-ws 此刻空闲"避免两连接同操一 tab 的竞态 (子进程阻塞 = 天然串行边界); 同端点 (Edge 9222) 才复用, App 9224 各自开 tab。② **模型自检自修**: verify_model 从"只警告"升级成"不是 Pro 扩展就真打开『智能水平』菜单点过去" —— DOM 实地探明: 模型按钮 aria-haspopup=menu, 菜单项 role=menuitemradio 文本 "Pro 扩展" 带 aria-checked (同级有 极速/均衡/高级/超高/GPT-5.5); 开菜单要真实 pointer (CDP click_xy), .click() 对 Radix 不可靠。③ **接收侧 model 复核**: collect() 复核回复 model-slug 含 "pro", 不符并入 suspected_downgrade → exit 5 (与生成时长 min-gen-seconds 降级同档; test 模式 --min-gen-seconds 0 不升级)。④ **cargo-cult 教训 (owner 方法论铁律, 务必记)**: upload 之前"先开空页/先去主页再导航"是我把某次问题根因猜错留下的迷信式防御绕路 —— owner 原话"遇到问题理清逻辑, 链条不清楚不严谨就不要进行误认, 不然跟拜神有什么区别"。这次先读真实 CDP/页面代码搞懂因果 (churn 真根因 = 两处 PUT /json/new 开空页 + upload finally 无条件关 tab + upload/dispatch 两进程各开 tab) 才重构掉。**通用原则: 改前先理清严谨因果链, 别凭猜加 workaround。** ⑤ selfguard -SendSeqB64 单 worker 串行排多条 (msg1→见忙确认起回合→等空闲→msg2), 避免两次 -Send 抢同一空窗竞态 (owner 实现); 配 precompact skill。⑥ 模型对不对/降没降级是脚本两端的活, 别手动复盘也别每次报告念叨"真 Pro" (owner 嫌烦), 详见 gpt-delivery-acceptance-discipline 记忆。
-
-**workflow vs no-workflow 厘清 (2026-06-14 owner 纠正, 别再误读)**: 本 no-workflow 裁决**只管一件事**——「审查 / 判 soundness 这个动作本身」外发 GPT Pro 做、不开本地多代理**审查** workflow(实测教训: 审查 agent 并发跑 pytest 互删 .pytest_tmp + API 超时挂 critic)。它**不**等于「所有任务都默认单 Agent」。**准备工作**(调研代码、综合素材写审查 prompt 这类, 不跑 pytest 不判 soundness)完全可以用 workflow 并行 fan-out —— 实测用 Workflow 3 个 opus agent 并行调研 binding/campaign/scheduler 三面产出 prompt 素材, 高效且不违反 no-workflow。owner 06-14 抓到我又把 no-workflow 误读成「默认单 Agent」退回串行单代理, 纠正: workflow 已放开(approval_required=false, 见 [[workflow-approval-not-avoidance]]), 该用就用; no-workflow 的边界是「审查判定本身」不是「所有外审相关的活」。判据看**任务实质**(准备/调研/编排 → 可 workflow; soundness 审查判定 → 外发 GPT Pro), 不看「是不是外审相关」。
+- [[no-gpt-pro-outsource-core]] — 核心裁决:非必要不用 Workflow 多代理;审查/外审/委托实现外发 GPT Pro;Why + How to apply(交付物验收 preflight gate)
+- [[no-gpt-send-settings]] — 四条发送设置:Pro·进阶模型 / 终末地 Project / 新会话 / 包走 Project 文件页(来源区)删旧保依赖
+- [[no-gpt-packaging-rules]] — 打包规则:除缓存全打 + build_v80_single_win.py + worktree 干净树 sha 唯一名纪律;老审查打包规范已全废
+- [[no-gpt-dispatch-vs-manual-riskctrl]] — 发送分工(脚本默认/手动条件)+ 疑似风控停止处置 + 剪贴板交付 + dispatch 后台骤死用 --resume
+- [[no-gpt-channel-architecture]] — 通道架构终态:raw CDP 重写 + upload 只打网页端 Edge 9222 + App 9224 fallback + 跑法纪律
+- [[no-gpt-dispatch-command-and-downgrade]] — 首选通道 dispatch 命令 + start 脚本 Edge caveat + Pro 静默降级判据(elapsed_s)+ 托底两层
+- [[no-gpt-plugin-clipboard-upload]] — 托底通道手动上传:clip_send.ps1 剪贴板 / 插件 file_upload 限制 / sandbox 404
+- [[no-gpt-downgrade-evidence]] — 降级机理实证(24 次数据):唯一信号 elapsed_s,明面字段全撒谎,找客服真证据=时长对比
+- [[no-gpt-concurrency-field]] — 并发上限已字段化(max_in_flight),旧"最多 2"软上限去掉;仍成立护栏
+- [[no-gpt-dispatch-rewrite-0614]] — dispatch 大改:复用页/不关页/模型自检自修/接收侧 model 复核 + cargo-cult 方法论铁律
+- [[no-workflow-scope-clarification]] — workflow vs no-workflow 厘清:只「审查判定本身」外发,准备/调研/编排可 workflow
 
 相关:[[zmd-project-entry]]

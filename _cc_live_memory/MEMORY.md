@@ -4,7 +4,20 @@
 
 - [交接 Windows + 过夜审查循环 ACTIVE (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (读法: 正文 stamp 编号最大的块 = 最新现状; 逐面轮次史以台账 cc_context/review/p1_2_closure_evidence.md 为准, 本行不手抄易漂数值);V50 手动 owner-count gate 不变。
 - [zmd 项目入口指针 (新会话先读顺序)](zmd-project-entry.md) — 项目记忆体系在哪/接手读文件顺序/双写规矩;指向 _cc_live_memory/handoff 为单一现状源
-- [zmd Windows checkout 环境事实](zmd-checkout-env.md) — 无 venv 用全局 Python 3.13 (主环境=python.org `python`, 商店版备份);commit 即 auto-push 且 CI preflight gate + pre-push 机械门禁;candidate_placements 已回树(gitignore)+秒级可再生
+- [zmd Windows checkout 环境事实索引](zmd-checkout-env.md) — 当前 Windows checkout 环境事实索引;无 venv/Python/auto-push/pytest/CI/记忆同步等子主题见各子节点
+- [zmd-env 工作区路径](zmd-env-checkout-location.md) — C:\claude pj\zmd_pj 是轻量 GitHub checkout(zhuran24/zmd,分支 project-foundation);旧 D:\追光\zmd 已不存在,记忆里 D 盘路径全失效
+- [zmd-env 用哪个 Python](zmd-env-python.md) — 无 .venv;主环境=C:\Program Files\Python313\ 的 python.org 3.13.14(`python`);依赖 --no-deps 克隆(litellm 钉 jsonschema 必须 --no-deps);商店版 python3.13 备份
+- [zmd-env 商店 Python alias 坑](zmd-env-store-python-alias-pitfall.md) — 商店 Store Python 半夜自动升级弄坏 `python` alias(静默失败 exit 49/9009 会话中途挂),python3.13.exe 是好的;alias 坏时 pre-commit 误报 STALE 先用 python3.13 复核
+- [zmd-env exit code 假通过坑](zmd-env-exit-code-falsepass.md) — PowerShell `& venv\python xxx; Write-Host exit:$LASTEXITCODE` venv 不存在时 & 失败但 Write-Host 把整条洗成 exit 0;判断脚本通过必须看脚本自身输出不能只看 exit code
+- [zmd-env post-commit 自动 push](zmd-env-auto-push.md) — post-commit hook 自动 push GitHub(commit ≈ 发布到远程),提交前想清楚;推送历史在 .git/auto-push.log
+- [zmd-env 记忆 sync 现状](zmd-env-memory-sync.md) — pre-commit memory sync 只 auto-stamp handoff INSTANCE 槽,整目录镜像覆盖块已移除别加回(会用 harness 十几条覆盖 cc_context 几十条=删数据);共维护文件改动靠手动双写三处
+- [zmd-env candidate_placements](zmd-env-candidate-placements.md) — certified exact 必需输入已就位且随时可再生(本地 45,773,799B sha adcc2a6e,.gitignore 防误推);丢了用 placement_generator.py 现场再生 ~3s;旧版/zmd.7z 老归档带病不可作恢复源
+- [zmd-env 补丁包/ 目录](zmd-env-patch-dir.md) — 仓库根 补丁包/ = Codex 接手期 v29→v78 外审包/补丁存放处,zip/7z 被 gitignore;最近补丁审查情况.txt 是 0 字节空文件
+- [zmd-env pytest 独占跑](zmd-env-pytest-isolation.md) — 全量 pytest 必须独占(pytest.ini --basetemp=.pytest_tmp 在仓库根,多进程并发互删→Windows 随机 FileExistsError);加速跑法 xdist 8 worker -n8+独立 basetemp ~85s
+- [zmd-env 测试基线全绿](zmd-env-test-baseline.md) — 全量测试基线=全绿(2026-06-12 wireless 修复 fbb0466 起项目史上首次)0 failed/74 skipped;passed 数以台账 p1_2_closure_evidence.md+handoff stamp 为准;旧 20 个环境失败清单作废,今后任何 failed 都是真问题无豁免
+- [zmd-env CI gate](zmd-env-ci-gate.md) — CI=GitHub Actions project-foundation gate,每次 push 跑 preflight_gate.py --ci(17 项)失败给 owner 发邮件;落地前必本地跑同款全绿;pytest 盖不到三类:frozen-artifact hash/LF 行尾政策/记忆树死链
+- [zmd-env 邮件轰炸根因](zmd-env-email-bomb.md) — 归档 GPT 审查 probe 带 ruff error 入库→连续 push 连红每红一封;三层教训:gate ruff 扫全仓含 cc_context 入库前必 ruff check、纯文档/归档 commit 不豁免 preflight、push 后 gh run list -L 1 回看
+- [zmd-env pre-push 机械门禁](zmd-env-prepush-gate.md) — .git/hooks/pre-push(机器专属不入库)强制跑 preflight_gate.py --hook(20 项 ≈20s)BLOCK 就物理挡 push,逃生口 ZMD_SKIP_PUSH_GATE=1;装机坑 PYTEST_ADDOPTS 反斜杠被 shlex 吃掉必 tr 转正斜杠
 - [P1.3A design phase (N=8 merger)](project_p1_3a_design_phase.md) — 设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; 等 owner phase-boundary 决策.
 - [Windows 接手环境 (历史快照, 已 superseded)](project_windows_handoff_env.md) — 2026-05-30 初次 Linux→Windows 接手记录;路径/venv/slug 均失效, **当前 Windows 环境现状看 zmd-checkout-env**;仅"prod-scale 回 Linux 主机"能力边界仍有效。
 - [记忆现状防过时协议](feedback_memory_currency_protocol.md) — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 仓库相对路径.
@@ -15,7 +28,18 @@
 ## 外发 GPT Pro (2026-06-10 起的轻量规则, 老审查/打包规范已废除并归档)
 
 - [任务外发 GPT Pro 通道 (权威条目)](feedback_agent_vs_workflow_dispatch.md) — **非必要不用 Workflow**; 审查/实现类任务经 Chrome 插件发 chatgpt.com「终末地」Project, 模型 Pro·进阶 (=GPT Pro 扩展模式); **非必要不用老窗口** (默认新会话); **打包 = 除缓存文件外全项目打** (build 脚本 cc_context/review/build_v80_*.py); 包走 Project 文件页(来源区), 上传/发送已全脚本化 (详见 no-workflow 条目与 CLAUDE.md runbook)。
-- [非必要不用 Workflow (GPT 外审裁决)](no-workflow-use-chrome-gpt-review.md) — 发送三条设置+打包规则+首选自动化脚本(gpt_dispatch)+Pro 降级判据+插件托底上传姿势;老审查规范已废除;**06-14 厘清: no-workflow 只管审查判定本身, 准备/调研/编排可 workflow; 并发上限已字段化**
+- [非必要不用 Workflow 外发 GPT 索引](no-workflow-use-chrome-gpt-review.md) — GPT Pro 外发审查/委托主题索引(原巨型节点已拆);具体设置/通道/风控/降级/并发见各子节点
+- [核心裁决:外发 GPT Pro](no-gpt-pro-outsource-core.md) — 2026-06-10:非必要不用 Workflow 多代理;审查/外审/委托实现外发 GPT Pro;GPT Pro 沙盒能解包/装离线 wheels/跑 pytest 自验
+- [四条发送设置](no-gpt-send-settings.md) — 模型 Pro·进阶 + 终末地 Project + 新会话默认 + 包走 Project 文件页(来源区)不随消息发附件;删旧快照保留依赖包,prompt 指认文件名+sha256
+- [打包规则](no-gpt-packaging-rules.md) — 除缓存全打(build_v80_single_win.py);r7 纪律=git worktree 干净树打+复制成 sha 前缀唯一名防并发覆盖+交付前 Get-FileHash 核对;老审查打包规范已全废
+- [发送分工+风控处置](no-gpt-dispatch-vs-manual-riskctrl.md) — 单发默认 dispatch 脚本,多路并行/额度紧改手动;疑似风控=无自动托底停一切落盘等 owner;手动发走 clip_send.ps1;dispatch 后台骤死(exit 58)用 --resume 重连
+- [通道架构终态](no-gpt-channel-architecture.md) — 2026-06-12 全链路脚本化:dispatch 浏览器层重写 raw page 级 CDP(弃 Playwright fab40a7);upload 铁律只打网页端 Edge 9222 绝不对 App;App 9224 自动 fallback;跑法纪律 Start-Process detached+单后台 bash
+- [dispatch 命令+降级判据](no-gpt-dispatch-command-and-downgrade.md) — 首选 dispatch_gpt_task.py --pack --prompt-file;前置 start 脚本 attach 日常 Edge(无端口温和重启 Edge,重启后端口丢需重跑 start);Pro 降级唯一判据=生成耗时(5min 内极大概率降级);托底两层=插件/App 9224
+- [插件剪贴板上传姿势](no-gpt-plugin-clipboard-upload.md) — 插件 file_upload 10MB 上限且拒主机路径别用;改走 clip_send.ps1 -Files(必须 DataObject+SetDataObject copy:=true)聚焦输入框 Ctrl+V;长 prompt 同理;sandbox 附件几分钟 404 完成立即收
+- [降级机理实证](no-gpt-downgrade-evidence.md) — 24 次交付数据:4 路并发触发 Sentinel 后脚本特征发送降到 40-70s,手动(Edge/App)仍真 Pro;唯一可靠信号=elapsed_s(model_slug/thinking_marker 全撒谎);找客服真证据=时长对比非 HAR sentinel 请求
+- [并发上限已字段化](no-gpt-concurrency-field.md) — 2026-06-14 owner 放开:旧"最多 2 条在途"软上限去掉,改由 gpt_dispatch_concurrency.json 的 max_in_flight 控制(null=不限);仍成立护栏=在途未收完别清旧快照、每单一个后台 shell、包走文件区
+- [dispatch 0614 大改](no-gpt-dispatch-rewrite-0614.md) — commit 51e5c47/9465731:复用页+不关页(--reuse-tab-id/--no-close)+模型自检自修(verify_model 真开『智能水平』菜单点 Pro 扩展,Radix 要 CDP click_xy)+接收侧 model 复核 exit 5;cargo-cult 铁律=改前理清因果链别凭猜加 workaround
+- [workflow vs no-workflow 厘清](no-workflow-scope-clarification.md) — 2026-06-14 owner 纠正:no-workflow 只管「审查/判 soundness 动作本身」外发,不等于所有任务默认单 Agent;准备/调研/编排可 workflow 并行 fan-out;判据看任务实质
 - [Workflow 申请≠回避理由](workflow-approval-not-avoidance.md) — 报备=用前说一声不是别用;approval_required=false 该用就用;别因"要申请"退回单代理/手动 (owner 06-13 纠正)
 - [GPT prompt 不要催眠前缀](feedback_no_role_priming_for_reasoning_models.md) — "你是 X 专家" role-priming 对推理模型反作用; 直接讲任务 + format + 约束.
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion;key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
