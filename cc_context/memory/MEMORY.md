@@ -70,6 +70,7 @@
 - [代码注释别切到工程化语气](feedback_code_comments_plain.md) — 只在 why 非显然处留一句人话.
 - [优化必须 stack 所有方案](feedback_optimization_strategy.md) — 不按 ROI 单选, 全上是唯一选择.
 - [不要进 micro-optimization 螺旋](feedback_avoid_micro_optimization_spiral.md) — 占比 <5% 就停手换方向.
+- [用力程度匹配任务 stakes (治用力过猛)](feedback_effort_matches_stakes.md) — 多代理/对抗/穷尽/backstop 的力度匹配「做错代价×不确定性×规模」不默认拉满; "能更彻底"≠"该更彻底"; 与"别过度保守"是一对(都=匹配实质); Ultracode 是工具非默认; 调节 optimization-stack/verification-backstop 别脱 scope 泛化.
 - [工时按 Claude 节奏估](feedback_work_time_estimates.md) — 不按人类工程师"安全 buffer"打底, 多数任务分钟级.
 - [运维脚本写完存入口](feedback_record_tool_entry_points.md) — refresh/sync 脚本写完立刻在 CLAUDE.md 加 runbook 段.
 - [调研后立刻归档 transcripts](feedback_archive_research_transcripts.md) — ≥3 agent 跑完立刻 cp Temp→docs/research/ + 同步 INDEX.md.

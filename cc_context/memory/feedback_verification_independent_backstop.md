@@ -11,7 +11,7 @@ metadata:
 
 ## 规则
 
-1. **长上下文下 LLM 注意力会漏看**。**验证 / 确认 / 核对 / "是否完整 / 是否全做了 / 有没有遗漏" 类任务, 不能只信 main 自己的回忆或自审** —— 必须派 workflow / 独立子代理作补充托底。(U37)
+1. **长上下文下 LLM 注意力会漏看**。**验证 / 确认 / 核对 / "是否完整 / 是否全做了 / 有没有遗漏" 类任务, 不能只信 main 自己的回忆或自审** —— 必须派 workflow / 独立子代理作补充托底。(U37) **但派 backstop 的力度匹配 stakes(见 [[effort-matches-stakes]])**: 高风险 soundness 验证(漏看会出 false-CERTIFIED、代价大)才上 workflow / 多代理; 低风险核对(查个数字对不对、几个 description 改没改对)主会话自己再独立核一遍即可, 别无差别上重武器。
 2. **backstop 的主体 (被检查对象) 必须是「要验证的东西本身」, 不能换成 proxy。** 例: 验"本 session 内容是否全落盘 memory" → 主体 = **整段对话本身 (用户消息 + 助手消息)**, **不是** 记忆树内部一致性 / git log / repo, **也不是只抽用户消息**。proxy 只看得见文件改动, 漏掉**只存在于对话里**的偏好/决策/口头反馈; 而只抽用户消息会漏掉**助手侧产**的 finding / 踩坑修法 / 决策 / 结论 —— 这些同样 memory-worthy。(U39/U40 + 2026-06-01 二次纠正)
 3. 子代理跑完报告的**根因 / 数字, main 要自己核实**, 不能直接转述未验证的 (U17 同源)。
    - **3b — workflow 回来读「原始镜头输出」, 别停在 critic 综合 (2026-06-02 用户 catch "报告你看了吗")**: critic/synth 层会**把某个镜头的非-blocker finding 没往上提 / 淡化**。实例: whtrpfv0j critic 综合说"engine 全 sound、对抗 well-covered", 但 engine-adversarial 镜头的原始 notes 里有条 hardening note —— SLOT 正则不平衡 marker 会**吞文本** (旧 `.*?` 跨行吃掉 KEEP_ME), 镜头自评非 blocker 故 critic 没提。我只读了 critic 综合就以为干净, 用户追问才去解 `wf_*/agent-*.jsonl` 抽 5 镜头原始 notes, 才发现 + harden (负向先行限 interior 不跨 marker)。**workflow 完成通知通常只带 critic 的 return value, 镜头级 finding/notes 在 output/agent transcript 里 —— 要解出来逐镜头读, 尤其最高风险件那一镜头**。critic 综合是入口不是终点 (同 rule#3 "别只信子代理转述")。

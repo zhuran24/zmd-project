@@ -15,6 +15,7 @@ metadata:
 ## Ultracode 默认偏好
 
 用户开 Ultracode = 让我**优化最穷尽、最正确的答案, 不是最快最省**: 实质任务优先用多代理编排, token 成本不是约束。它**不碰工具 schema, 只改 main 的默认倾向**。开着时实质活默认走 Workflow / 多代理 + 对抗核验; 只有对话/琐碎 turn 才单干。关了就回到"显式 opt-in 才用 workflow"。
+- **但「穷尽 ≠ 给每件事上多代理」(见 [[effort-matches-stakes]])**: Ultracode = token 不设限地把力气花在**值得的地方**, 不是无脑拉满。用力程度仍匹配任务 stakes(做错代价×不确定性×规模)——审一棵个人记忆树 / 改几个 description 这种低风险活, 主会话自己串行做就对, 别上 3 个 workflow + 4 人对抗议会(2026-06-14 真栽过)。对的工具配对的活: 精细编辑配串行、广度搜索配 fan-out、高风险判定才配对抗。
 
 ## Agent vs Workflow 按任务形状二选一
 
