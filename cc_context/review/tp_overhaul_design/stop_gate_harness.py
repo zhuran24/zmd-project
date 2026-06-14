@@ -4,7 +4,6 @@
 import json
 import os
 import subprocess
-import sys
 import tempfile
 
 PY = r"C:\Program Files\Python313\python.exe"

@@ -170,12 +170,17 @@ def _list_field(block: str, field: str) -> list[str]:
 
 # ------------------------------------------------------------------ node model
 class _Node:
-    __slots__ = ("name", "path", "role", "derives_from", "body_links")
+    __slots__ = ("name", "path", "role", "type_", "derives_from", "body_links")
 
     def __init__(self, name: str, path: Path, block: str, text: str):
         self.name = name
         self.path = path
+        # fact 标记两种口径都认 (对齐落地实际): GPT/km-arbiter retype 落地用 `type: fact`;
+        # team-lead 原措辞 + 我早先草稿用 `node_role: fact`。落地走了 type:fact (实测 harness
+        # fact-* 节点 frontmatter 全是 metadata.type: fact), 故 gate 必须认 type:fact 否则
+        # 对落地的 fact 全空转。同时保留 node_role 兼容, 不破任何一边。
         self.role = (_scalar(block, "node_role") or "").lower()
+        self.type_ = (_scalar(block, "type") or "").lower()
         # 关系的唯一真值源: 投影声明自己派生自哪个 fact。fact 侧**不**维护 projections
         # 清单 (v1 砍掉 — 冗余拷贝会漂)。fact 的被投影集由全树 derives_from 反向派生。
         self.derives_from = [s.lower() for s in _list_field(block, "derives_from")]
@@ -185,7 +190,7 @@ class _Node:
 
     @property
     def is_fact(self) -> bool:
-        return self.role == "fact"
+        return self.role == "fact" or self.type_ == "fact"
 
     @property
     def is_projection(self) -> bool:

@@ -206,7 +206,23 @@ verification-hardening-ladder · gpt-delivery-acceptance-discipline。
 
 ## 6. 边界与已知局限 (诚实声明)
 
-- **不测语义忠实度** (铁律 B): 投影正文写歪了但 wikilink 还在, gate 抓不到。这交人工/审查。
+- **不测源内容漂移 (类型 C) — 能抓但不值, 不是抓不到** (km-skeptic 反例精确化): 一种漂移
+  本设计放过 = fact body 内容被改、projections/derives_from 引用图纹丝不动 (投影现在挂在一个
+  变味的 fact 上)。这正是 team-lead 原文「投影声称依据的事实与事实实际内容漂移」的字面情形。
+  **更正我早先的措辞「抓不到」**: 它**能**不靠 NL 抓到 —— 用 content-hash (项目 `sync_doc_subjects.py`
+  第 15-16/220-221 行已实现: projection marker 嵌 `sha256:<源 field hash>`, 源变 hash 变即报)。
+  但对 fact↔memory 投影**抓它不值**, 三条:
+  ① **性质不匹配**: docs 的 marker-sha 是给「投影=从 subject field 渲染生成的副本」(强同步)设计的;
+     fact↔memory 投影是**松散语义引用** (lazy-mode 是独立写的规则, 「派生自」ownership fact 不是
+     从 fact body 生成), 把强渲染机制硬移植到松散引用上用错了地方。
+  ② **必误报到废**: fact body 任何措辞微调 (改错字/补例子) 都翻转 hash → 所有投影标 stale →
+     owner 被迫复核一堆没歪的投影。这跟拒 NL 比对要躲的「误报淹没真信号」是同一个病 (只是从
+     NL 误报变 hash 误报)。
+  ③ **真值源是假的**: hash 能确定性算 (机器真值), 但「hash 变 = 投影需复核」这个**推论**不是
+     真值 (hash 变常是无关编辑)。守的是「源动过没」的代理信号, 代理触发的复核负担落回人 = 又一
+     层要人维护的补丁 —— 正是反讽门槛要拒的。
+  → 经得起 owner 问「那为什么 docs 那边用了 hash」: 答 = docs 是渲染同步、memory 是松散引用,
+  两种关系。语义/源忠实度交人工/审查, 不进 gate。
 - **harness 树不在 gate 范围**: harness 侧的 fact/投影漂移本 gate 不管 (check_memory_tree
   只扫 repo)。harness 一致性靠 sync_memory_to_harness.py + check_harness_links.py (既有工具)。
 - **依赖 frontmatter 显式声明**: 作者忘了写 `node_role:fact` / `derives_from`, gate 当它

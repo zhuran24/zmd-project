@@ -1,6 +1,17 @@
-# 知识侧 normalize 最终方案 (km-arbiter 定稿 v4 — 吸收 skeptic 反 transclusion, team-lead scope 裁决)
+# 知识侧 normalize 最终方案 (km-arbiter)
 
-> 状态: 定稿, 可直接落地。team-lead 落地, 我未动 live 树。
+> **v5 状态头 (最新, 反映实际落地)**: owner/team-lead 已按 **GPT 7-fact 路线**落地到 live 树
+> (7 个 fact_*.md + MEMORY.md 抽象事实层块 + fact gate + exemptions + harness sync 已 apply)。
+> 真 live 树实测 `check_memory_tree.py --require-live-mirror` = **exit 0** (head 55d8c33+, 102 节点, 7 fact)。
+> 我的 2 个复验 finding 都已按推荐修法解决 (F1 design-creative-use-team 加 fact 回指; F2 harness sync gate
+> 降 warning)。下方 v4 的「retype scope」是我吸收 skeptic 后的备选方案, **已被 owner 的落地动作 supersede**
+> —— 留作记录, 不是当前实现。registry 抉择见 **§7 (最新追加)**。
+>
+> ---
+>
+> ## (历史) v4 — 吸收 skeptic 反 transclusion, team-lead scope 裁决
+>
+> 状态: 备选方案 (已被 7-fact 落地 supersede)。我未动 live 树。
 > 全部字节/节点/wikilink/gate 结果**在当前真 repo 副本实测**。
 >
 > **一句话**: 不照搬 GPT 的「新建 7 个 fact 副本」(违反本树自己的反 transclusion 架构)。最终 =
@@ -137,3 +148,52 @@ python cc_context\tools\check_harness_links.py               # harness 死链复
 - **不做 140 节点全树重构** (skeptic 对: index 父节点已是两层)。
 - **第二轮 F5/F6/F7 簇** (GPT交付/审查/opsec) 投影纯 harness-only: repo fact body **不能 `[[harness-only-slug]]`**
   (unresolved 硬阻断); 那些 harness 投影用 `[[verification-independent-backstop]]` 当 repo 锚 (projection-codex 提醒)。
+
+---
+
+## 7. registry 抉择: 注册 subject vs 手搓 fact 节点 (最新, 据 sync_doc_subjects.py + registry 源码实测)
+
+team-lead 追加: `cc_context/knowledge/` 是官方 control layer, 有现成 `sync_doc_subjects.py --check` forcing function,
+新 gate 别重复它。我读了 README + PROJECT_SUBJECT_PROJECTIONS.json + sync_doc_subjects.py 源码, 结论如下。
+
+### 7.1 两个系统是不同层, 零重叠 (不是手搓平行系统)
+
+| | sync_doc_subjects (registry) | fact gate (_check_fact_projection_contract) |
+|---|---|---|
+| 管什么 | 同一段**文字**在多处的**字面副本同步** (transclusion) | memory 树内**节点间的引用边存在性** (graph shape) |
+| subject 在哪 | `docs/subjects/*.md` 的 `<!-- SUBJECT-FIELD -->` 块 | memory 树 `type:fact` 节点 |
+| projection 是什么 | 同一段文字嵌进 CLAUDE.md/docs/memory 的 `<!-- DOC-SUBJECT -->` **字段块** (带 sha256) | feedback 节点里的 `[[fact-x]]` **wikilink 边** |
+| 查什么 | block body + marker sha == subject field (**byte 同步**) | fact 有 ≥1 回指 + 新 feedback 引 fact (**edge 存在**) |
+| 现状 | 真 repo exit 0 (6 subjects/19 fields/30 projections) | owner 已落地, 真 repo exit 0 (7 facts/24 edges) |
+
+**一个查 byte 同步, 一个查 edge 存在。registry 根本管不了 memory 树内的 wikilink 引用图** (它只认
+SUBJECT-FIELD/DOC-SUBJECT 标记块)。所以 fact gate **不重复** sync_doc_subjects, 它填的是 registry 的盲区。
+km-forcing 已同步此边界。
+
+### 7.2 「任务推进方式」该注册 registry 还是手搓 fact? — 答: 都不是 registry, 已落 fact
+
+逐项过 (据实测, 诚实对 team-lead「优先注册 registry」给出不同判断):
+- **registry subject 的用例 = 同一段文字有多处字面副本、需防漂**。grep 实测: 「回合出口门/四终态」内容
+  **只在 CLAUDE.md(行为契约) + lazy_mode/fact 节点(memory 协作层), docs 树里完全没有** (docs/subjects 6 个
+  全是项目内容治理类, 无行为规则)。
+- 关键: lazy-mode / root-cause / fact 节点**不是 CLAUDE.md 那段文字的字面副本**, 是「同一抽象的不同侧面/不同节点」。
+  registry 的 transclusion 同步的是**逐字副本**; 把不同侧面的节点硬塞成一个 subject 的 projection 块 = 误用 (它们
+  body 不同, --check 会永远 drift)。所以 **「任务推进方式」不适合注册成 registry subject**。
+- 它适合的正是 **fact 节点 + wikilink 引用图** (已落地的 7-fact 路线): fact 是抽象, lazy-mode 等是不同侧面的
+  投影, wikilink 回指 —— 这是 registry 管不了、fact gate 正好管的层。
+- **所以: 不注册 registry, 以已落地的 fact 节点承载。** 与 team-lead「优先注册」相反, 理由是 registry 的
+  字面同步语义不匹配「不同节点写同一抽象的不同侧面」。
+
+### 7.3 一个真实的 registry 候选 (供 exec/owner 定, 不在知识侧 scope)
+
+grep 发现 `cc_context/global_CLAUDE.md` (repo 镜像, 19332B, 旧版「懒狗」段) 与 `~/.claude/CLAUDE.md`
+(home, 8132B, 新版「回合出口门」段 + 含 `[[fact-decision-boundary-is-ability]]`) **不同步**。
+**若**这两处本该是同一份全局 CLAUDE.md 的副本 → 这才是 registry transclusion 的真用例 (注册成 subject 防漂)。
+但两者大小差异大 (19332 vs 8132), 可能 repo 镜像是历史快照而非活副本 —— **我不下「该同步」的因果结论**
+(N=1 看到不同 ≠ 该同步)。这归 exec/owner 确认两者关系后定, 超出知识侧 normalize scope。
+
+### 7.4 ledger (standing-authorizations.json) 落点
+
+确认落 **`cc_context/knowledge/standing-authorizations.json`** (与 PROJECT_SUBJECT_PROJECTIONS.json 同住
+control-layer)。它是**真值数据 (json)**, **不进 registry 的 subjects** (registry subject 是 docs/subjects/*.md
+的 markdown field, 不是 json 数据)。ledger 是独立 control-layer 文件, 自成一类。CLAUDE.md 已引用此路径。

@@ -52,14 +52,15 @@ skeptic 划的边界我完全接受并守死: 注入的是**一个可机械执�
 
 ## 注入文案草稿 (turn_exit_self_check_inject.py 的 additionalContext)
 
-> 台账路径 = `cc_context/knowledge/standing-authorizations.json` (km-skeptic 核实订正:
-> **不是**种子三方写的 `cc_context/memory/`——那是纯 .md 节点树, 塞 .json 会游离在
-> check_memory_tree / sync_memory_to_harness 所有 forcing 之外却看着在体系内; `knowledge/`
-> 是官方 control layer, 同类 .json (PROJECT_SUBJECT_PROJECTIONS.json) 已住那、有现成
-> sync_doc_subjects.py forcing 工具链)。
-> fact 锚点 = wikilink 指三个**既有 harness slug** (km-skeptic 给 + 我核实存在, 不指待建):
-> `[[lazy-mode]]` (能做却请示·判据) / `[[workflow-approval-not-avoidance]]` (目标=站着授权) /
-> `[[root-cause-over-symptom]]` (收到消息就反应·共同上游)。无「待新建 fact slug」依赖风险。
+> 台账路径 = `cc_context/knowledge/standing-authorizations.json` (km-skeptic + km-arbiter 双人
+> 独立 grep live 树 + 我 Test-Path **三方坐实已落地**, 10504 字节 owner 已填内容; **不是**种子三方
+> 写的 `cc_context/memory/`——后者是纯 .md 节点树, 塞 .json 会游离在 check_memory_tree /
+> sync_memory_to_harness 所有 forcing 之外却看着在体系内; `knowledge/` 是官方 control layer,
+> 同类 .json (PROJECT_SUBJECT_PROJECTIONS.json) 已住那、有现成 sync_doc_subjects.py forcing 工具链)。
+> fact 锚点 = 四个 harness slug, 三个语义点 (km-arbiter 定主锚 + 我 Test-Path 复核**全部已在 harness
+> 树、不指空**; km-arbiter 中途「改指 root-cause-over-symptom」那条已自行作废, 以 decision-boundary 为准):
+> 判据 → `[[fact-decision-boundary-is-ability]]` (认识论根, 主锚) + `[[lazy-mode]]` (偷懒型近义病, 语义互补) /
+> 站着授权 → `[[workflow-approval-not-avoidance]]` / 共同上游 → `[[root-cause-over-symptom]]`。
 
 ```
 【回合收尾自检 · 出口门】
@@ -119,18 +120,20 @@ WAITING_EXTERNAL(已挂外部等待源, 说清等什么) / BLOCKED_USER_ONLY(只
 - **要不要问 → 查表**: 把「临场感觉」替换成「查 cc_context/knowledge/standing-authorizations.json」,
   这是 hook 之外独立成立的降病手段 (km 侧主力 #2)。
 - **指根因 fact**: 完整版 wikilink 四个 harness slug 锚到三个语义点, 让 CC 能召回 why、内化而非死记:
-  - 判据 (核心) → **[[fact-decision-boundary-is-ability]]** (km-arbiter 知识侧 normalize 新建的一等
-    认识论根, 最准) **+ [[lazy-mode]]** (偷懒型近义病, 现在就通的既有锚)。**双挂是刻意的**: 前者落地前
-    暂时跳空 (km 侧 patch 后才进 live 树), 后者保证判据这条最核心锚点**任何落地顺序下都不空挂**, 知识侧
-    一落地就自动升级到最准的那个。
+  - 判据 (核心) → **[[fact-decision-boundary-is-ability]]** (km-arbiter 知识侧 normalize 出的一等
+    认识论根, 最准——「判据=能不能自己定/做而非措辞」) **+ [[lazy-mode]]** (偷懒型近义病)。**双挂是刻意的**:
+    decision-boundary 是认识论根、lazy-mode 是其偷懒型表现, 两个语义互补, 一起召回对 CC 内化最有益。
+    (注: 主锚**已落地**——km-arbiter grep + 我 Test-Path 双证它现在就在 harness 树、被 7 节点回指,
+    不是先前以为的「待建会跳空」; 双挂理由从早期「兜底防空挂」更新为「语义互补」。)
   - 站着授权 → [[workflow-approval-not-avoidance]] (既有, 通)。
-  - 共同上游 → [[root-cause-over-symptom]] (既有, 通; km-arbiter 确认它被 retype 成 type:fact 承载
-    「先理解再产出」, 正是这条该指的孪生根)。
+  - 共同上游 → [[root-cause-over-symptom]] (既有, 通; 承载「先理解再产出」, 是 decision-boundary 的孪生根。
+    注: km-arbiter 中途「判据改指 root-cause-over-symptom」是个已作废的 retype 备选, 不采纳——判据主锚
+    以独立 fact 节点 [[fact-decision-boundary-is-ability]] 为准, root-cause 只当共同上游这条的锚)。
   - **用 `[[slug]]` 不用散文** `harness memory「slug」`: 注入文案是 CC 实际阅读、CC 召回系统认得 wikilink
     的 prompt 文本 (同 CLAUDE.md 用 `[[subagent-model-by-weight]]` 指 harness 的既有约定); 它不在
     cc_context/memory 记忆树里、不被 check_memory_tree 的 link 解析扫到, 所以 `[[]]` **不会触发 unresolved
     死链** —— 这正是 km-skeptic 「repo 引 harness 是哑链」说的另一面: 哑 = CI 不强校验, 对注入文案恰好是
-    优点 (km-arbiter 也确认: 落地早于知识侧只是暂时跳空, 不影响注入)。
+    优点 (即便某锚将来被重构而暂时缺位也不报错; 当前四锚全部已在 harness 树、不指空)。
   - 精简版每回合灌, 不带 wikilink (只触发动作), 根因指引放完整版一次足矣, 省 context。
 
 ---
@@ -207,13 +210,14 @@ if __name__ == "__main__":
 ## 与其它两侧 (knowledge / CLAUDE.md) 的接口
 
 - 执行侧只**指向**台账和 fact 锚点, 不**定义**它们 (那是 km 侧的活)。引用已经 km-skeptic + km-arbiter
-  核实定稿: 台账 = `cc_context/knowledge/standing-authorizations.json` (km 负责建/维护); fact 锚点 =
-  判据主锚 [[fact-decision-boundary-is-ability]] (km-arbiter 知识侧新建, 落地后进 live 树) + 三个既有
-  harness slug ([[lazy-mode]] / [[workflow-approval-not-avoidance]] / [[root-cause-over-symptom]],
-  我已核实存在)。
-  **执行侧无硬阻塞依赖**: 唯一未落地的 [[fact-decision-boundary-is-ability]] 跳空也不影响注入 (注入文案
-  不走 check_memory_tree gate), 且判据这条同时挂了现通的 [[lazy-mode]] 不空挂; 知识侧 patch 落地后两边
-  自动接上。注入文案落地与知识侧 patch **谁先谁后都行**。
+  双人核实定稿、**全部已在 live**: 台账 = `cc_context/knowledge/standing-authorizations.json` (已建,
+  10504 字节); fact 锚点四个 slug ([[fact-decision-boundary-is-ability]] 主锚 + [[lazy-mode]] /
+  [[workflow-approval-not-avoidance]] / [[root-cause-over-symptom]]) 我 Test-Path 复核**全部在 harness
+  树、无一指空**。
+  **执行侧无任何外部待解/阻塞依赖**: 四个锚点现在就通; 即便将来某锚被 km 侧重构而暂时缺位, 注入文案也
+  不走 check_memory_tree gate (跳空不报错不影响注入), 判据这条又双挂语义互补的两锚。注入 hook 落地与
+  知识侧任何后续演化 **谁先谁后、建几个都互不阻塞** (这是刻意的依赖方向: 执行侧只依赖既有稳定锚, 不被
+  知识侧 fact 簇演化反向震到)。
 - CLAUDE.md 新段落 (builder §D 的「任务推进方式（回合出口门）」rewrite) 我**保留**——它是行为契约
   本身, 注入文案是它的 generation 侧投影, 二者一致 (同样的四终态、同样指台账+夹具)。但 §D 里
   「各种新马甲例子已移出本段、进 stop_gate 回归夹具」这句要改: Stop hook 砍了, 夹具不再是生产物。
