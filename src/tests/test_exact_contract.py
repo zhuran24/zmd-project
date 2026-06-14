@@ -3542,10 +3542,11 @@ def test_binding_missing_instance_metadata_returns_unknown_before_routing(
     tmp_path: Path,
 ) -> None:
     project_root = Path(__file__).resolve().parent.parent.parent
+    candidate_path = project_root / "data" / "preprocessed" / "candidate_placements.json"
+    if not candidate_path.exists():
+        pytest.skip("requires external candidate_placements.json artifact (absent in CI)")
     facility_pools = json.loads(
-        (project_root / "data" / "preprocessed" / "candidate_placements.json").read_text(
-            encoding="utf-8"
-        )
+        candidate_path.read_text(encoding="utf-8")
     )["facility_pools"]
     pose = facility_pools["manufacturing_6x4"][0]
 
