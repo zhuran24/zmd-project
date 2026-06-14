@@ -82,6 +82,15 @@ python cc_context\tools\sync_memory_to_harness.py --check   # 报 repo→harness
 python cc_context\tools\sync_memory_to_harness.py --apply   # 投影缺失节点 + 重建 3 个索引父节点
 ```
 
+记忆树审查衍生工具 (2026-06-14 四路审查落地):
+
+```powershell
+# harness-only 节点 (~47 个 repo 镜像没有的: chatgpt-*/cc-*/gpt-delivery-*/verification-*/通用协议) 单向快照备份
+python cc_context\tools\snapshot_harness_memory.py   # → cc_context/harness_memory_snapshot/ (数据安全 git 备份 + 干净 clone 可见; 纯快照非正式记忆树, 不 sync/不召回/不引死链; harness/代码大改后重跑刷新)
+# 本地 harness 召回树链接健康检查 (check_memory_tree 是 CI gate 只扫 cc_context repo 树、CI 无本地 harness → harness wikilink 死链只能本地查, harness 不在场时优雅 skip, 故不能进自动 gate)
+python cc_context\tools\check_harness_links.py
+```
+
 单向 repo→harness;跳过 `handoff_*` 现状源(harness 留指针 stub 防漂)。kebab 共维护节点(`no-gpt-*`/`zmd-env-*` 等 AI 写、双写 repo 的)双向 drift 不进自动同步,靠 `scripts/check_memory_tree.py` 的 `harness↔cc_context co-maintained drift` warn 提醒、人工判方向对齐。
 
 ## AI Safety Contract

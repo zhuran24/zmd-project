@@ -1,6 +1,6 @@
 ---
 name: design-phase-n-parallel-agents
-description: "实时推进代码设计阶段 (新 family kickoff / 复杂 algorithm 抉择 / 接口决策), 启 N=2-8 parallel opus 子代理各带不同 slant, main 当 merger. audit 链 (Gemini per-commit + GPT pro 大节点) 是事后, 此 protocol 是事前补 main 同种 RLHF bias. 2026-05-24 user 提议, 2026-05-25 user 加严 N=8."
+description: "实时推进代码设计阶段 (新 family kickoff / 复杂 algorithm 抉择 / 接口决策), 启 N=2-8 parallel opus 子代理各带不同 slant, main 当 merger. audit 链 (Gemini per-commit + GPT pro 大节点) 是事后, 此 protocol 是事前补 main 同种 RLHF bias. 2026-05-24 user 提议, 2026-05-25 user 加严 N=8. 含 agents team 变体(成员互相挑战、维度从对话涌现、contrarian 反趋同 — 区别于互不通信的 fan-out; team 是重武器、用力匹配 stakes, 2026-06-14 审记忆树首次实操且用力过猛)."
 metadata: 
   node_type: memory
   type: feedback
@@ -105,5 +105,16 @@ merger anti-pattern 实战教训 (避):
 - [[lazy-mode]] — 替 user 想, 不无谓盖章
 - [[paradigm-phase0-cheap-gate]] — 每 paradigm 实施前 Phase 0 cheap gate (跟此 protocol 不冲突, cheap gate 验前提, N 路并行验设计方案)
 
+## agents team 变体 (成员互相挑战、维度涌现 — 区别于上面的 N 路 fan-out)
+
+上面 N 路并行是**单向 fan-out**: main 预设各路 slant、子代理**互不通信**、main 当 merger。**当「该查什么 / 该怎么分解」本身不确定、需要成员相互挑战才能涌现维度时**, 改用 **agents team** (TeamCreate + Agent spawn 带 name/team_name + SendMessage 互通): 成员互相看、互相批, 维度从对话**长出来** (不是 main 预设的)。2026-06-14 审记忆树首次实操。
+
+- **contrarian 反趋同角色 (team 的核心增量)**: 一群 claude 共同先验、极易趋同 → 设一个**只挑刺不产出**的唱反调成员, 专盯"大家是不是人云亦云 / 整组共同盲区 / 谁的批判是换词附和"。实测它自我证伪三轮、抓出 lead 喂进议会的失真实例、自己警觉"别变成新趋同源"。**对抗才是防趋同的真机制, 不是多 spawn 几个同质 agent**。
+- **协调坑**: ① 消息时序交错 (成员基于半个状态误判, 看全后自撤); ② agent 越界 — lead 每轮采纳某成员产出 = 无意激励它从"裁判"滑向"运动员", 要警觉; ③ 角色独立性 — 涌现某维度的成员不该同时主审+核实它 (运动员兼裁判), 判别法移交、核实留别人。
+- **lead 独有价值**: 同时看到多成员消息 → 消除信息不对称 + 把独有信息 (如并行 workflow 结果) 喂议会聚焦、不重复劳动。
+
+**⚠️ team 是重武器 (见 [[effort-matches-stakes]])**: 编排成本高、消息往返多。2026-06-14 用 4 人议会审一棵**个人记忆树** = **用力过猛活教材** (低 stakes 上重武器)。只对"维度本身不确定 + 高 stakes + 真需要相互挑战"的任务用; 简单/低风险审查主会话自己串行做。
+
 ## 链 (补连 2026-06-02 连通审计 whcb890zi)
 - [[long-op-background-mode]] — N=8 spawn = 长跑用 background
+- [[effort-matches-stakes]] — team/多代理是重武器, 用力匹配 stakes 别滥用
