@@ -18,3 +18,8 @@ metadata:
 **同根**: 这跟 cargo-cult 铁律([[no-workflow-use-chrome-gpt-review]] ④:"遇到问题理清逻辑,链条不清楚不严谨就不要进行误认,不然跟拜神有什么区别")是**同一个病**——没搞清真正原因 / 意图就先行动。也跟 hallucination-fabricated-rationale-to-override-rule(仅 harness 树有此节点)同源(没据真因就给结论)。
 
 **How to apply**: 收到消息 / 遇到问题,**先停一拍**自问:我真懂他要什么、这事的根因是什么了吗? 没懂就**别急着产出反应**(尤其别用"请示"或"猜个重点"充数)。先把"为什么"弄清再动。对自己犯的错——改"产生错的原因",不是道歉式复述症状。这条比"具体某次该不该问/该不该并发"优先级高,是它们的上游。
+
+## 链 (下游症状簇 — 都是本根「赶产出跳过理解」的具体表现)
+- [[lazy-mode]] / [[no-reply-means-agree]] — "用问 / 请示充当产出"的具体形态
+- [[workflow-approval-not-avoidance]] — "因要申请退回单代理 / 手动"也是赶省事的浅路
+- harness 树节点「verify-before-claiming」(repo 无此 slug) — "没核就断言"同根
