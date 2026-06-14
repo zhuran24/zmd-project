@@ -9,7 +9,7 @@ dump 所有 worker 进程 stack, 不光看 main**.
 
 **Why:** 2026-05-11 P2 #14 dumper 0 触发, 当时只 py-spy main 看到卡
 `multiprocessing/queues.py:111 get()`, 推断 "worker→main IPC bug". 实际真因
-是 worker 自己 hang 在 master 构造的嵌套 CP-SAT 无 timeout (master_model.py:6736),
+是 worker 自己 hang 在 master 构造的嵌套 CP-SAT 无 timeout (master_model.py 的嵌套 CP-SAT 构造处, 现已带 timeout cap),
 main 等 worker result 永远等不到. 浪费 1+ session 在 IPC 假设上.
 
 **How to apply:**

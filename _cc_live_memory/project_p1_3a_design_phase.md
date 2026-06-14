@@ -1,6 +1,6 @@
 ---
 name: p1-3a-design-phase
-description: "2026-05-30 接手后首个 design phase — P1.3A 主体 (真 PoseBoolExactMaster + cut framework step_8 集成) 走 N=8 并行 opus 设计 + main merger. 关键: LBBD loop/桥/nogood 通道/replay 已落地在跑, P1.3A 只缺 src/cuts/lifecycle.py:1005 step_8 桥; 收敛是几何/paradigm 性质只能 Linux multi-anchor falsify; P1.3A 在 Windows 只 close soundness/termination/不-stall + 安全机制; 范围收窄 F1-only, 别 fold 9-family 收敛. 设计产物 docs/research/p1_3a_master_integration_design_20260530/ (DESIGN_BRIEF + 8 slant + P1_3A_MERGED_DESIGN + step0) **untracked, Windows 仓库已丢, 结论仅存本 memory 文本** (见正文顶部警告)."
+description: "2026-05-30 接手后首个 design phase — P1.3A 主体 (真 PoseBoolExactMaster + cut framework step_8 集成) 走 N=8 并行 opus 设计 + main merger. 关键: LBBD loop/桥/nogood 通道/replay 已落地在跑, P1.3A 只缺 src/cuts/lifecycle.py 的 step_8 桥; 收敛是几何/paradigm 性质只能 Linux multi-anchor falsify; P1.3A 在 Windows 只 close soundness/termination/不-stall + 安全机制; 范围收窄 F1-only, 别 fold 9-family 收敛. 设计产物 docs/research/p1_3a_master_integration_design_20260530/ (DESIGN_BRIEF + 8 slant + P1_3A_MERGED_DESIGN + step0) **untracked, Windows 仓库已丢, 结论仅存本 memory 文本** (见正文顶部警告)."
 metadata: 
   node_type: memory
   type: project
@@ -16,7 +16,7 @@ metadata:
 **产物**: `docs/research/p1_3a_master_integration_design_20260530/` —— `DESIGN_BRIEF.md` + 8 份 `<slant>_design.md`(correctness/throughput/adversarial/integration/simplicity/rollback_safety/observability/historical_paradigm_context)+ `P1_3A_MERGED_DESIGN.md`(merger 合成 + 实施蓝图 §9 + 给用户的决策清单 §10)。
 
 **8 路一致结论**:
-- LBBD 外循环 + `add_benders_cut` 桥 + `_add_exact_persisted_nogood` nogood 通道 + fail-closed replay **已落地在跑**; P1.3A 真正缺的只有 `src/cuts/lifecycle.py:1005 step_8`(NotImplementedError stub)。brief「设计整个 loop」高估。
+- LBBD 外循环 + `add_benders_cut` 桥 + `_add_exact_persisted_nogood` nogood 通道 + fail-closed replay **已落地在跑**; P1.3A 真正缺的只有 `src/cuts/lifecycle.py` 的 step_8_apply_to_master(NotImplementedError stub)。brief「设计整个 loop」高估。
 - **收敛只能 Linux multi-anchor campaign falsify**(死路全死在 multi-anchor 0/8); P1.3A 在 Windows 只能 close soundness + termination + 不-stall + 5 风险的安全机制。**UNPROVEN 是合法终态**(historical 提醒, 对齐 06 doc sound≠converge)。
 - 范围收窄: **P1.3A = F1 单 family 在 real PoseBool master 单 anchor 驱动收敛、sound/单调/不振荡**; **别把 9-family 收敛证明 fold 进来**(前 6 paradigm 撞死的墙, simplicity verbatim 划界, per [[main-merger-scope-creep-bias]])。
 
