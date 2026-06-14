@@ -1000,18 +1000,23 @@ async def _download_via_fetch(page: PageCdp, href: str, name: str, out_dir: Path
 
 
 async def collect(page: PageCdp, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
+    """收回复。第三个返回值 model_mismatch=True 表示回复的 model-slug 不含期望模型
+    (收到的实际模型不对/疑似降级) —— 调用方据此并入 suspected_downgrade 走 exit 5
+    (与生成时长降级判据互补: 发送时 verify_model 校验选择器, 这里复核实际出稿模型)。"""
     info = await _last_assistant(page)
     text = info["text"]
     (out_dir / "final_reply.md").write_text(text, encoding="utf-8")
     slug = info["slug"]
-    rep.log("collect", "reply_saved", chars=len(text), model_slug=slug or "unknown")
-    if expect_model and slug and expect_model not in slug.lower():
+    model_mismatch = bool(expect_model and slug and expect_model not in slug.lower())
+    rep.log("collect", "reply_saved", chars=len(text), model_slug=slug or "unknown",
+            model_ok=not model_mismatch)
+    if model_mismatch:
         await rep.attention(page, "collect",
                             f"reply model slug '{slug}' does not contain '{expect_model}' — "
                             "Pro may have been silently downgraded; review the deliverable critically")
     if info["count"] == 0:
         await rep.attention(page, "collect", "no assistant message found")
-        return 0, 0
+        return 0, 0, model_mismatch
 
     candidates = await page.js(_candidates_js(), timeout=15) or []
     rep.log("collect", "file_links_found", count=len(candidates),
@@ -1034,7 +1039,7 @@ async def collect(page: PageCdp, out_dir: Path, rep: Reporter, expect_model: str
                     info2["zip_entries"] = len(zf.namelist())
         rep.log("collect", "attachment_saved", **info2)
         got += 1
-    return got, len(candidates)
+    return got, len(candidates), model_mismatch
 
 
 # --------------------------------------------------------------------------- #
@@ -1325,7 +1330,11 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                                     f"still finishing in {gen_elapsed}s after {args.downgrade_retries} "
                                     "retries — suspected silent Pro limit; "
                                     "FALLBACK: clipboard handoff for owner manual send")
-        got, found = await collect(page, out_dir, rep)
+        got, found, model_mismatch = await collect(page, out_dir, rep)
+        if model_mismatch and args.min_gen_seconds:
+            suspected_downgrade = True
+            rep.log("downgrade", "model_slug_mismatch_escalated",
+                    note="收到的回复 model-slug 不含 'pro' — 接收侧复核判降级, 按 exit 5 处置")
         rescue = 0
         while got == 0 and found > 0 and rescue < 2:
             rescue += 1
@@ -1342,7 +1351,9 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                                            project_url=args.project_url)
             if status != "done":
                 return 4 if status == "timeout" else 3
-            got, found = await collect(page, out_dir, rep)
+            got, found, model_mismatch = await collect(page, out_dir, rep)
+            if model_mismatch and args.min_gen_seconds:
+                suspected_downgrade = True
         if page.owns_tab:
             cleanup_stale_tabs(page.http_base, page.tab_id, rep)
         # links_found 让 exit 2 的两种情况可区分: 真没附件 vs 附件在但没下下来
