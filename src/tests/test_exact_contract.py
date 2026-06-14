@@ -3537,6 +3537,86 @@ def test_unexpected_initial_binding_status_returns_unknown_without_exact_safe_cu
     )
 
 
+def test_binding_missing_instance_metadata_returns_unknown_before_routing(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    project_root = Path(__file__).resolve().parent.parent.parent
+    facility_pools = json.loads(
+        (project_root / "data" / "preprocessed" / "candidate_placements.json").read_text(
+            encoding="utf-8"
+        )
+    )["facility_pools"]
+    pose = facility_pools["manufacturing_6x4"][0]
+
+    class MasterStub:
+        source_instances: list[dict] = []
+        grid_w = 70
+        grid_h = 70
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+        def __init__(self) -> None:
+            self.facility_pools = facility_pools
+
+        def add_benders_cut(self, *args, **kwargs):
+            raise AssertionError("invalid binding input must not emit a master cut")
+
+    class FailRoutingGrid:
+        def __init__(self, *args, **kwargs):
+            raise AssertionError("invalid binding input must fail closed before routing")
+
+    monkeypatch.setattr(benders_loop_module, "RoutingGrid", FailRoutingGrid)
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        project_root,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError("invalid binding input must not emit an exact-safe cut")
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "packaging_battery_001": {
+                "pose_idx": 0,
+                "pose_id": pose["pose_id"],
+                "anchor": pose["anchor"],
+                "facility_type": "manufacturing_6x4",
+            },
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["binding_status"] == "INVALID_INPUT"
+    assert controller.last_proof_summary["binding_summary"]["missing_instance_ids"] == [
+        "packaging_battery_001",
+    ]
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "unexpected_binding_status"
+    )
+
+
 def test_unexpected_binding_resolve_status_returns_unknown_without_exhaustion_cut(
     monkeypatch,
     tmp_path: Path,
@@ -5238,6 +5318,120 @@ def test_front_blocked_precheck_blocked_ports_must_be_analysis_backed_before_cut
         == "routing_precheck_analysis_blocked_ports_mismatch"
     )
     assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
+def test_front_blocked_precheck_unresolved_conflict_id_fails_closed_before_cut(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": [[0, 0]]}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+        def add_benders_cut(self, *args, **kwargs):
+            raise AssertionError(
+                "front_blocked conflict containing an unresolved instance id must not cut"
+            )
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 0,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "front_blocked_unresolved_conflict_id"}
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        analysis = {
+            "status": "front_blocked",
+            "binding_selection_safe_reject": True,
+            "placement_level_conflict_set": ["tiny_001", "missing_blocker"],
+            "blocked_ports": [
+                {
+                    "instance_id": "tiny_001",
+                    "placement_level_conflict_set": ["tiny_001", "missing_blocker"],
+                    "blocking_instance_ids": ["missing_blocker"],
+                    "port_cell": [0, 0],
+                    "front_cell": [1, 0],
+                    "dir": "E",
+                }
+            ],
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "unresolved-conflict-id-regression"},
+        }
+        return {**analysis, "_analysis": dict(analysis)}
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["routing_status"] == "PRECHECK_FRONT_BLOCKED"
+    assert controller.last_proof_summary["master_follow_up"] == "cut_stall"
 
 
 def test_routing_timeout_returns_unknown_without_exact_safe_cut(monkeypatch, tmp_path: Path) -> None:

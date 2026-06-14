@@ -6832,10 +6832,22 @@ class LBBDController:
         instance_ids: Sequence[str],
     ) -> Dict[str, int]:
         conflict_set: Dict[str, int] = {}
-        for instance_id in instance_ids:
-            if instance_id not in solution:
+        for raw_instance_id in instance_ids:
+            if not isinstance(raw_instance_id, str):
+                return {}
+            instance_id = raw_instance_id.strip()
+            if not instance_id:
+                return {}
+            if instance_id in conflict_set:
                 continue
-            conflict_set[str(instance_id)] = int(solution[instance_id]["pose_idx"])
+            solution_entry = solution.get(instance_id)
+            if not isinstance(solution_entry, Mapping):
+                return {}
+            try:
+                pose_idx = int(solution_entry["pose_idx"])
+            except (KeyError, TypeError, ValueError):
+                return {}
+            conflict_set[instance_id] = pose_idx
         return conflict_set
 
     def _add_exact_persisted_nogood(

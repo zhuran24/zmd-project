@@ -246,6 +246,7 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
 
     _validate_context_mapping_id_consistency(context)
     _validate_commodity_role_coverage(context)
+    _validate_utility_operation_namespace_is_additive(context)
 
     for recipe in context.recipes.values():
         if recipe.template not in context.facility_templates:
@@ -454,6 +455,18 @@ def _validate_commodity_role_coverage(context: PreprocessContext) -> None:
         raise ValueError(
             "commodity_roles is missing entries for recipe/target commodities: "
             + ", ".join(missing)
+        )
+
+
+def _validate_utility_operation_namespace_is_additive(context: PreprocessContext) -> None:
+    shadowed_recipe_ids = tuple(
+        sorted(set(context.utility_operations).intersection(context.recipes))
+    )
+    if shadowed_recipe_ids:
+        raise ValueError(
+            "utility_operations must be additive-only and must not shadow recipe "
+            "operation profiles: "
+            + ", ".join(shadowed_recipe_ids)
         )
 
 

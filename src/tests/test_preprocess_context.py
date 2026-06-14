@@ -206,6 +206,21 @@ def test_preprocess_context_rejects_canonical_metadata_overrides(
         build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
 
 
+def test_preprocess_context_rejects_utility_operation_recipe_shadow(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_plan["utility_operations"]["packaging_battery"] = {
+        "facility_type": "protocol_core",
+        "generic_input_slots": 0,
+        "generic_output_slots": 0,
+    }
+
+    with pytest.raises(ValueError, match="must not shadow recipe operation profiles"):
+        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
+
+
 def test_preprocess_context_rejects_multiple_non_cycle_producers(raw_rules_dict, raw_plan_dict) -> None:
     mutated_rules = copy.deepcopy(raw_rules_dict)
     mutated_rules["recipes"]["duplicate_battery"] = {

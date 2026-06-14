@@ -31,6 +31,10 @@ from src.models.port_binding import (
     enumerate_pose_level_port_bindings_with_cache_info,
     supports_exact_pose_level_binding,
 )
+from src.preprocess.operation_profiles import (
+    OPERATION_PORT_PROFILES,
+    get_operation_port_profile,
+)
 from src.search.commodity_throughput import (
     classify_commodity_flow,
     compute_commodity_throughput,
@@ -52,6 +56,14 @@ POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
     "protocol_storage_box": "wireless_sink",
     "power_pole": "power_supply",
 }
+NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
+CANONICAL_PROFILE_FACILITY_TYPES = {
+    str(profile.facility_type) for profile in OPERATION_PORT_PROFILES.values()
+}
+
+
+def _is_non_facility_placement_marker(instance_id: str) -> bool:
+    return str(instance_id) in NON_FACILITY_PLACEMENT_MARKER_IDS
 
 
 def _reject_duplicate_json_keys(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
@@ -416,6 +428,9 @@ class PortBindingModel:
             "placement_instances": sorted(self.placement_solution.keys()),
             "synthesized_instances": [],
             "missing_instance_ids": [],
+            "ignored_placement_marker_ids": [],
+            "invalid_instance_metadata": [],
+            "invalid_binding_input_reasons": [],
             "binding_domains": {},
             "empty_binding_domain_instances": [],
             "binding_domain_cache_hits": 0,
@@ -437,6 +452,7 @@ class PortBindingModel:
         self.binding_domain_cache_hits = 0
         self.binding_domain_cache_misses = 0
         self.binding_domain_reused_instances: List[str] = []
+        self._ignored_placement_marker_ids: List[str] = []
 
         # RAB-SEP Phase 1: routing-aware filter context (None when disabled)
         self.routing_context = routing_context
@@ -456,13 +472,16 @@ class PortBindingModel:
         self.routing_aware_blockers_by_owner: Dict[str, Set[str]] = {}
 
         self._materialize_pose_optional_instances()
+        self._validate_placement_instance_metadata()
 
     def _materialize_pose_optional_instances(self) -> None:
         synthesized: List[str] = []
-        missing: List[str] = []
 
         for instance_id, sol in self.placement_solution.items():
             if instance_id in self.instances_by_id:
+                continue
+            if _is_non_facility_placement_marker(instance_id):
+                self._record_ignored_placement_marker(instance_id)
                 continue
 
             facility_type = str(sol.get("facility_type", ""))
@@ -474,7 +493,7 @@ class PortBindingModel:
                     facility_type = inferred_tpl
 
             if operation_type is None:
-                missing.append(instance_id)
+                self._record_missing_instance_id(instance_id)
                 continue
 
             self.instances_by_id[instance_id] = {
@@ -488,7 +507,164 @@ class PortBindingModel:
             synthesized.append(instance_id)
 
         self._conflict_summary["synthesized_instances"] = synthesized
-        self._conflict_summary["missing_instance_ids"] = missing
+        self._conflict_summary["ignored_placement_marker_ids"] = list(
+            self._ignored_placement_marker_ids
+        )
+
+    def _record_ignored_placement_marker(self, instance_id: str) -> None:
+        marker_id = str(instance_id)
+        if marker_id not in self._ignored_placement_marker_ids:
+            self._ignored_placement_marker_ids.append(marker_id)
+
+    def _record_missing_instance_id(self, instance_id: str) -> None:
+        missing_id = str(instance_id)
+        missing = self._conflict_summary.setdefault("missing_instance_ids", [])
+        if missing_id not in missing:
+            missing.append(missing_id)
+
+    def _record_invalid_instance_metadata(
+        self,
+        instance_id: str,
+        reason: str,
+        **details: Any,
+    ) -> None:
+        record = {
+            "instance_id": str(instance_id),
+            "reason": str(reason),
+            **{str(key): value for key, value in details.items()},
+        }
+        records = self._conflict_summary.setdefault("invalid_instance_metadata", [])
+        if not any(
+            existing.get("instance_id") == record["instance_id"]
+            and existing.get("reason") == record["reason"]
+            for existing in records
+        ):
+            records.append(record)
+
+    def _validate_placement_instance_metadata(self) -> None:
+        for instance_id, sol in self.placement_solution.items():
+            if _is_non_facility_placement_marker(instance_id):
+                continue
+            inst = self.instances_by_id.get(instance_id)
+            if inst is None:
+                continue
+            self._validate_instance_metadata_consistency(instance_id, sol, inst)
+
+    def _validate_instance_metadata_consistency(
+        self,
+        instance_id: str,
+        sol: Mapping[str, Any],
+        inst: Mapping[str, Any],
+    ) -> None:
+        raw_solution_facility_type = sol.get("facility_type")
+        solution_facility_type = str(raw_solution_facility_type or "")
+        if not solution_facility_type:
+            self._record_invalid_instance_metadata(
+                instance_id,
+                "missing_solution_facility_type",
+            )
+
+        raw_pose_idx = sol.get("pose_idx")
+        pose_idx: Optional[int]
+        if isinstance(raw_pose_idx, bool) or raw_pose_idx is None:
+            pose_idx = None
+            self._record_invalid_instance_metadata(
+                instance_id,
+                "invalid_solution_pose_idx",
+                pose_idx=raw_pose_idx,
+            )
+        else:
+            try:
+                pose_idx = int(raw_pose_idx)
+            except (TypeError, ValueError):
+                pose_idx = None
+                self._record_invalid_instance_metadata(
+                    instance_id,
+                    "invalid_solution_pose_idx",
+                    pose_idx=raw_pose_idx,
+                )
+        if solution_facility_type and pose_idx is not None:
+            pool = self.facility_pools.get(solution_facility_type, [])
+            if pose_idx < 0 or pose_idx >= len(pool):
+                self._record_invalid_instance_metadata(
+                    instance_id,
+                    "solution_pose_idx_out_of_range",
+                    facility_type=solution_facility_type,
+                    pose_idx=pose_idx,
+                )
+
+        raw_instance_facility_type = inst.get("facility_type")
+        instance_facility_type = str(raw_instance_facility_type or "")
+        if not instance_facility_type:
+            self._record_invalid_instance_metadata(
+                instance_id,
+                "missing_instance_facility_type",
+            )
+        elif solution_facility_type and instance_facility_type != solution_facility_type:
+            self._record_invalid_instance_metadata(
+                instance_id,
+                "instance_facility_type_mismatch",
+                instance_facility_type=instance_facility_type,
+                solution_facility_type=solution_facility_type,
+            )
+
+        is_canonical_solution_facility = (
+            solution_facility_type in CANONICAL_PROFILE_FACILITY_TYPES
+        )
+
+        raw_operation_type = inst.get("operation_type")
+        operation_type = str(raw_operation_type or "")
+        if not operation_type:
+            if is_canonical_solution_facility:
+                self._record_invalid_instance_metadata(
+                    instance_id,
+                    "missing_operation_type",
+                )
+            return
+
+        try:
+            profile = get_operation_port_profile(operation_type)
+        except KeyError:
+            if is_canonical_solution_facility:
+                self._record_invalid_instance_metadata(
+                    instance_id,
+                    "unknown_operation_type",
+                    operation_type=operation_type,
+                )
+            return
+
+        expected_facility_type = str(profile.facility_type)
+        if (
+            is_canonical_solution_facility
+            and expected_facility_type != solution_facility_type
+        ):
+            self._record_invalid_instance_metadata(
+                instance_id,
+                "operation_facility_type_mismatch",
+                operation_type=operation_type,
+                expected_facility_type=expected_facility_type,
+                solution_facility_type=solution_facility_type,
+            )
+
+    def _has_invalid_binding_input(self) -> bool:
+        return bool(
+            self._conflict_summary.get("missing_instance_ids")
+            or self._conflict_summary.get("invalid_instance_metadata")
+        )
+
+    def _mark_invalid_binding_input_summary(self) -> None:
+        reasons: List[str] = []
+        if self._conflict_summary.get("missing_instance_ids"):
+            reasons.append("missing_instance_metadata")
+        invalid_metadata_reasons = sorted(
+            {
+                str(record.get("reason"))
+                for record in self._conflict_summary.get("invalid_instance_metadata", [])
+                if record.get("reason")
+            }
+        )
+        reasons.extend(invalid_metadata_reasons)
+        self._conflict_summary["invalid_binding_input_reasons"] = reasons
 
     def build(self) -> None:
         self._build_fixed_operation_domains()
@@ -496,6 +672,7 @@ class PortBindingModel:
         self._build_generic_output_domains()
         self._add_generic_input_requirements()
         self._add_generic_output_requirements()
+        self._mark_invalid_binding_input_summary()
         if self.empty_binding_domain_instances:
             self.model.Add(0 == 1)
         self._add_search_guidance()
@@ -594,7 +771,13 @@ class PortBindingModel:
         inst = self.instances_by_id.get(instance_id)
         if inst is not None:
             return inst
-        self._conflict_summary.setdefault("missing_instance_ids", []).append(instance_id)
+        if _is_non_facility_placement_marker(instance_id):
+            self._record_ignored_placement_marker(instance_id)
+            self._conflict_summary["ignored_placement_marker_ids"] = list(
+                self._ignored_placement_marker_ids
+            )
+            return None
+        self._record_missing_instance_id(instance_id)
         return None
 
     def _filter_pose_binding_domain(
@@ -971,6 +1154,21 @@ class PortBindingModel:
 
     def solve(self, time_limit_seconds: float = 30.0) -> str:
         self._maybe_dump_state(time_limit_seconds)
+        self._mark_invalid_binding_input_summary()
+        if self._has_invalid_binding_input():
+            self._solver = None
+            self._status = None
+            self._conflict_summary["solver_status"] = "INVALID_INPUT"
+            self._conflict_summary["wall_time"] = 0.0
+            self._conflict_summary["search_profile"] = str(
+                self._conflict_summary.get("search_guidance", {}).get(
+                    "profile",
+                    "exact_binding_guided_branching_v1",
+                )
+            )
+            self._conflict_summary["search_branching"] = "NOT_SOLVED_INVALID_INPUT"
+            return "INVALID_INPUT"
+
         solver = cp_model.CpSolver()
         solver.parameters.max_time_in_seconds = float(time_limit_seconds)
         solver.parameters.num_workers = resolve_cp_sat_worker_count(
@@ -1110,11 +1308,13 @@ class PortBindingModel:
         return port_specs
 
     def extract_conflict_summary(self) -> Dict[str, Any]:
+        self._mark_invalid_binding_input_summary()
+        empty_binding_domain_instances = self.extract_empty_binding_domain_instances()
         summary = dict(self._conflict_summary)
         summary["binding_domain_count"] = sum(len(v) for v in self.binding_domains.values())
         summary["binding_instance_count"] = len(self.binding_domains)
-        summary["empty_binding_domain_count"] = len(self.empty_binding_domain_instances)
-        summary["empty_binding_domain_instances"] = self.extract_empty_binding_domain_instances()
+        summary["empty_binding_domain_count"] = len(empty_binding_domain_instances)
+        summary["empty_binding_domain_instances"] = empty_binding_domain_instances
         summary["binding_domain_cache_hits"] = int(self.binding_domain_cache_hits)
         summary["binding_domain_cache_misses"] = int(self.binding_domain_cache_misses)
         summary["binding_domain_reused_instances"] = list(self.binding_domain_reused_instances)
@@ -1122,6 +1322,8 @@ class PortBindingModel:
         return summary
 
     def extract_empty_binding_domain_instances(self) -> List[Dict[str, Any]]:
+        if self._has_invalid_binding_input():
+            return []
         return [dict(item) for item in self.empty_binding_domain_instances]
 
     def add_nogood_cut(self, selection: Mapping[str, Any]) -> None:

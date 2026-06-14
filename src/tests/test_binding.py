@@ -187,6 +187,138 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
     assert sink_specs == []
 
 
+def test_binding_model_missing_instance_metadata_returns_invalid_input(
+    project_root,
+    facility_pools,
+):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    pose = facility_pools["manufacturing_6x4"][0]
+    placement_solution = {
+        "packaging_battery_001": {
+            "pose_idx": 0,
+            "pose_id": pose["pose_id"],
+            "anchor": pose["anchor"],
+            "facility_type": "manufacturing_6x4",
+        },
+    }
+
+    model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances=[],
+        required_generic_outputs={},
+        required_generic_inputs={},
+    )
+    model.build()
+
+    summary = model.extract_conflict_summary()
+    assert summary["missing_instance_ids"] == ["packaging_battery_001"]
+    assert summary["invalid_binding_input_reasons"] == [
+        "missing_instance_metadata",
+    ]
+    assert model.extract_empty_binding_domain_instances() == []
+
+    assert model.solve(time_limit_seconds=1.0) == "INVALID_INPUT"
+    assert model.extract_selection() == {}
+    assert model.extract_port_specs() == []
+
+    solved_summary = model.extract_conflict_summary()
+    assert solved_summary["solver_status"] == "INVALID_INPUT"
+
+
+def test_binding_model_mismatched_operation_metadata_returns_invalid_input(
+    project_root,
+    facility_pools,
+):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    pose = facility_pools["manufacturing_6x4"][0]
+    placement_solution = {
+        "packaging_battery_001": {
+            "pose_idx": 0,
+            "pose_id": pose["pose_id"],
+            "anchor": pose["anchor"],
+            "facility_type": "manufacturing_6x4",
+        },
+    }
+    instances = [
+        {
+            "instance_id": "packaging_battery_001",
+            "facility_type": "manufacturing_6x4",
+            "operation_type": "wireless_sink",
+            "is_mandatory": True,
+        },
+    ]
+
+    model = PortBindingModel(
+        placement_solution,
+        facility_pools,
+        instances=instances,
+        required_generic_outputs={},
+        required_generic_inputs={},
+    )
+    model.build()
+
+    summary = model.extract_conflict_summary()
+    assert summary["missing_instance_ids"] == []
+    assert summary["invalid_instance_metadata"] == [
+        {
+            "instance_id": "packaging_battery_001",
+            "reason": "operation_facility_type_mismatch",
+            "operation_type": "wireless_sink",
+            "expected_facility_type": "protocol_storage_box",
+            "solution_facility_type": "manufacturing_6x4",
+        },
+    ]
+    assert summary["invalid_binding_input_reasons"] == [
+        "operation_facility_type_mismatch",
+    ]
+    assert model.extract_empty_binding_domain_instances() == []
+
+    assert model.solve(time_limit_seconds=1.0) == "INVALID_INPUT"
+    assert model.extract_selection() == {}
+    assert model.extract_port_specs() == []
+
+
+def test_binding_model_ignores_ghost_pick_marker_without_invalidating(
+    project_root,
+    facility_pools,
+):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    model = PortBindingModel(
+        {
+            "ghost_pick": {
+                "pose_idx": 0,
+                "pose_id": "ghost_anchor::0,0",
+                "anchor": {"x": 0, "y": 0},
+                "facility_type": "ghost_rect",
+            },
+        },
+        facility_pools,
+        instances=[],
+        required_generic_outputs={},
+        required_generic_inputs={},
+    )
+    model.build()
+
+    summary = model.extract_conflict_summary()
+    assert summary["missing_instance_ids"] == []
+    assert summary["ignored_placement_marker_ids"] == ["ghost_pick"]
+    assert summary["invalid_binding_input_reasons"] == []
+    assert model.solve(time_limit_seconds=1.0) == "FEASIBLE"
+
+
 def test_binding_model_overload_separation_default_off(project_root, facility_pools, monkeypatch):
     """P1 #9 hint 2 stage 2: with EXACT_BINDING_USE_OVERLOAD_SEPARATION
     unset (default), nogood method must NOT be invoked and
