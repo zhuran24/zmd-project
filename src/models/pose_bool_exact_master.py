@@ -112,6 +112,108 @@ class PoseBoolExactMasterDelegate:
             return cells
         return set()
 
+    def _add_pose_bool_ghost_constraints(
+        self,
+        cell_poses: Mapping[Tuple[int, int], Sequence[cp_model.IntVar]],
+    ) -> bool:
+        """Encode the empty rectangle as an explicit body-overlap choice.
+
+        The legacy/coordinate exact masters enumerate ghost anchors and block
+        only facility body cells from overlapping the selected rectangle.  The
+        pose-bool backend must do the same: a union-of-forbidden-cells filter is
+        exact only for a singleton anchor, and no filter is not a proof that an
+        empty rectangle exists.
+        """
+        if self.owner.ghost_rect is None:
+            self.owner.build_stats["ghost_rect"] = {"enabled": False}
+            return True
+
+        ghost_w = int(self.owner.ghost_rect[0])
+        ghost_h = int(self.owner.ghost_rect[1])
+        self.owner._ghost_domains.clear()
+        self.owner.u_vars.clear()
+
+        base_stats: Dict[str, Any] = {
+            "enabled": True,
+            "size": {"w": ghost_w, "h": ghost_h},
+            "anchor_filter_applied": self.owner.ghost_anchor_filter is not None,
+            "encoding": "pose_bool_cell_overlap_v1",
+        }
+        if ghost_w <= 0 or ghost_h <= 0:
+            self.model.Add(0 >= 1)
+            stats = dict(base_stats)
+            stats.update({"placements": 0, "reason": "invalid_size"})
+            self.owner.build_stats["ghost_rect"] = stats
+            return False
+        if ghost_w > self.grid_w or ghost_h > self.grid_h:
+            self.model.Add(0 >= 1)
+            stats = dict(base_stats)
+            stats.update({"placements": 0, "reason": "rectangle_larger_than_grid"})
+            self.owner.build_stats["ghost_rect"] = stats
+            return False
+
+        anchor_filter = self.owner.ghost_anchor_filter
+        skipped_by_filter = 0
+        rect_terms_by_cell: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
+        for anchor_x in range(self.grid_w - ghost_w + 1):
+            for anchor_y in range(self.grid_h - ghost_h + 1):
+                anchor = (int(anchor_x), int(anchor_y))
+                if anchor_filter is not None and anchor not in anchor_filter:
+                    skipped_by_filter += 1
+                    continue
+                cells = [
+                    (int(anchor_x) + dx, int(anchor_y) + dy)
+                    for dx in range(ghost_w)
+                    for dy in range(ghost_h)
+                ]
+                rect_idx = len(self.owner._ghost_domains)
+                u = self.model.NewBoolVar(f"pbghost__{anchor_x}_{anchor_y}_{ghost_w}_{ghost_h}")
+                self.owner.u_vars[rect_idx] = u
+                self.owner._ghost_domains.append(
+                    {
+                        "anchor": {"x": int(anchor_x), "y": int(anchor_y)},
+                        "w": ghost_w,
+                        "h": ghost_h,
+                        "cells": [[int(x), int(y)] for x, y in cells],
+                    }
+                )
+                for cell in cells:
+                    rect_terms_by_cell.setdefault(cell, []).append(u)
+
+        if not self.owner.u_vars:
+            self.model.Add(0 >= 1)
+            stats = dict(base_stats)
+            reason = "anchor_filter_empty" if anchor_filter is not None else "no_placements"
+            stats.update(
+                {
+                    "placements": 0,
+                    "anchor_filter_skipped": skipped_by_filter,
+                    "reason": reason,
+                }
+            )
+            self.owner.build_stats["ghost_rect"] = stats
+            return False
+
+        self.model.AddExactlyOne(list(self.owner.u_vars.values()))
+        overlap_constraints = 0
+        for cell, rect_terms in rect_terms_by_cell.items():
+            occ_terms = list(cell_poses.get(cell, []))
+            if not occ_terms:
+                continue
+            self.model.Add(sum(occ_terms) + sum(rect_terms) <= 1)
+            overlap_constraints += 1
+
+        stats = dict(base_stats)
+        stats.update(
+            {
+                "placements": len(self.owner.u_vars),
+                "anchor_filter_skipped": skipped_by_filter,
+                "overlap_constraints": overlap_constraints,
+            }
+        )
+        self.owner.build_stats["ghost_rect"] = stats
+        return True
+
     def _routing_free_sink_commodities(self) -> Set[str]:
         gen_io = getattr(self.owner, "generic_io_requirements", None) or {}
         return {
@@ -336,7 +438,11 @@ class PoseBoolExactMasterDelegate:
                 "no_op_reason": "ghost_rect_none_at_build_exact_core_stage",
             }
             return
-        forbidden = self._forbidden_cells()
+        # Ghost/body separation is encoded after all pose vars exist, with an
+        # explicit ghost-anchor BoolVar and overlap constraints.  A pre-build
+        # union filter is conservative for multi-anchor filters and unsound when
+        # no filter is present, so do not use it to delete pose candidates here.
+        forbidden: Set[Tuple[int, int]] = set()
 
         cell_poses: Dict[Tuple[int, int], List[cp_model.IntVar]] = {}
         powered_group_keys: List[Tuple[str, str]] = []  # (group_id, tpl) for mandatory
@@ -375,10 +481,15 @@ class PoseBoolExactMasterDelegate:
                     cell_poses.setdefault(c, []).append(v)
             self.model.Add(sum(group_vars) == demand)
 
-        # Required optional (e.g. protocol_storage_box) — fixed demand
+        # Required optional (fixed demand) plus certified residual lower bounds
+        # (e.g. protocol_storage_box from generic input slots).  Coordinate exact
+        # models fixed slots and residual slots separately; pose-bool has one
+        # literal per concrete pose, so the sound count requirement is over the
+        # total selected pose literals.
         ro_counts: Mapping[str, Any] = getattr(
             self.owner, "_exact_required_pose_optional_counts", {}
         ) or {}
+        fixed_optional_counts: Dict[str, int] = {}
         required_power_pole_demand = 0
         for tpl, demand_raw in dict(ro_counts).items():
             try:
@@ -390,11 +501,31 @@ class PoseBoolExactMasterDelegate:
             if str(tpl) == "power_pole":
                 required_power_pole_demand += int(demand)
                 continue  # enforced on the shared pole pool after feasible pole vars exist
+            fixed_optional_counts[str(tpl)] = fixed_optional_counts.get(str(tpl), 0) + int(demand)
+
+        certified_lower_bounds: Dict[str, int] = {}
+        for tpl, lower_raw in dict(getattr(self.owner, "_certified_optional_lower_bounds", {}) or {}).items():
+            try:
+                lower = int(lower_raw)
+            except (TypeError, ValueError):
+                continue
+            if lower > 0 and str(tpl) != "power_pole":
+                certified_lower_bounds[str(tpl)] = int(lower)
+
+        optional_templates_to_encode = sorted(
+            set(fixed_optional_counts) | set(certified_lower_bounds)
+        )
+        for tpl in optional_templates_to_encode:
+            fixed_demand = int(fixed_optional_counts.get(str(tpl), 0))
+            lower_bound = int(certified_lower_bounds.get(str(tpl), 0))
+            min_selected = max(fixed_demand, lower_bound)
+            if min_selected <= 0:
+                continue
             ro_templates_seen.append(str(tpl))
-            self._ro_demand[str(tpl)] = demand
+            self._ro_demand[str(tpl)] = int(min_selected)
             feas = self._feasible_poses(str(tpl), forbidden)
-            if len(feas) < demand:
-                self.model.Add(0 >= 1)
+            if len(feas) < int(min_selected):
+                self.model.Add(0 >= int(min_selected))
                 return
             is_powered = (tpl in self.owner._powered_templates and tpl != "power_pole")
             if is_powered:
@@ -406,8 +537,14 @@ class PoseBoolExactMasterDelegate:
                 ro_vars_for_tpl.append(v)
                 for c in cells:
                     cell_poses.setdefault(c, []).append(v)
-            self.model.Add(sum(ro_vars_for_tpl) == demand)
-            self.required_optional_slots[str(tpl)] = list(range(demand))  # placeholder
+            if lower_bound > fixed_demand:
+                self.model.Add(sum(ro_vars_for_tpl) >= int(min_selected))
+                self.residual_optional_slots[str(tpl)] = list(range(len(ro_vars_for_tpl)))
+                if fixed_demand > 0:
+                    self.required_optional_slots[str(tpl)] = list(range(fixed_demand))
+            else:
+                self.model.Add(sum(ro_vars_for_tpl) == int(fixed_demand))
+                self.required_optional_slots[str(tpl)] = list(range(fixed_demand))  # placeholder
 
         self._ro_templates = ro_templates_seen
 
@@ -439,6 +576,16 @@ class PoseBoolExactMasterDelegate:
         for vars_in_cell in cell_poses.values():
             if len(vars_in_cell) > 1:
                 self.model.AddAtMostOne(vars_in_cell)
+
+        if not self._add_pose_bool_ghost_constraints(cell_poses):
+            self.owner.build_stats["master_representation"] = self.master_representation
+            self.owner.build_stats["pose_bool_master"] = {
+                "x_vars": len(self.x_vars),
+                "ro_vars": len(self.ro_vars),
+                "pole_vars": len(self.pole_vars),
+                "fail_closed_reason": self.owner.build_stats.get("ghost_rect", {}).get("reason"),
+            }
+            return
 
         # Power coverage: x_{g,p} <= sum y_{coverer_pole}
         coverers_table = self.owner._power_coverers_by_template_pose
@@ -648,14 +795,17 @@ class PoseBoolExactMasterDelegate:
                 limit = 64
             include_axis = os.environ.get("EXACT_B1_SEPARATOR_HULL_INCLUDE_AXIS", "1").strip().lower() in {"1", "true", "yes", "on"}
             include_moat = os.environ.get("EXACT_B1_SEPARATOR_HULL_INCLUDE_GHOST_MOAT", "1").strip().lower() in {"1", "true", "yes", "on"}
-            # ghost_rect format: tuple (w, h); ghost_anchor 从 forbidden cells 推回 (min x, min y)
+            # Static ghost-moat separators have a single fixed anchor only when
+            # the caller supplied a singleton filter.  The general pose-bool
+            # ghost encoding above may choose among many anchors, so no static
+            # moat separator is emitted for that case.
             ghost_anchor: Optional[Tuple[int, int]] = None
             ghost_size: Optional[Tuple[int, int]] = None
-            if self.owner.ghost_rect is not None and forbidden:
+            if self.owner.ghost_rect is not None:
                 ghost_size = (int(self.owner.ghost_rect[0]), int(self.owner.ghost_rect[1]))
-                xs = [c[0] for c in forbidden]
-                ys = [c[1] for c in forbidden]
-                ghost_anchor = (min(xs), min(ys))
+                anchor_filter_for_hull = self.owner.ghost_anchor_filter
+                if anchor_filter_for_hull and len(anchor_filter_for_hull) == 1:
+                    ghost_anchor = next(iter(anchor_filter_for_hull))
             seps = build_static_separator_library(
                 grid_w=self.grid_w, grid_h=self.grid_h,
                 ghost_anchor=ghost_anchor, ghost_size=ghost_size,

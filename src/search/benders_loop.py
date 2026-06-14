@@ -120,6 +120,7 @@ EXACT_REQUIRED_ARTIFACTS = {
 }
 
 _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE = "master_cut_added_continue"
+_EXACT_ROUTING_PRECHECK_MISSING_STATUS = "MISSING_STATUS"
 _EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES = frozenset(
     {"feasible", "front_blocked", "relaxed_disconnected"}
 )
@@ -5435,33 +5436,49 @@ class LBBDController:
             self._update_routing_shrink_from_domain_stats(
                 routing_precheck_summary.get("domain_stats")
             )
-            precheck_status = str(routing_precheck_summary.get("status", "feasible"))
+            precheck_status = (
+                _EXACT_ROUTING_PRECHECK_MISSING_STATUS
+                if "status" not in routing_precheck_summary
+                else str(routing_precheck_summary["status"])
+            )
             self._routing_precheck_statuses.append(precheck_status)
             if precheck_status not in _EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES:
-                self.last_proof_summary = {
-                    "mode": "certified_exact",
-                    "benders_iterations": iteration,
-                    "master_status": "FEASIBLE",
-                    "binding_status": "FEASIBLE",
-                    "routing_status": (
-                        f"PRECHECK_{precheck_status.upper()}"
-                        if precheck_status
-                        else "PRECHECK_UNKNOWN"
-                    ),
-                    "diagnostic_flow_status": diagnostic_flow_status,
-                    "enumerated_bindings": enumerated_bindings,
-                    "routing_attempts": routing_attempts,
-                    "binding_summary": binding_model.extract_conflict_summary(),
-                    "routing_precheck": dict(routing_precheck_summary),
-                    "subproblem_status_contract_violation": (
-                        "unexpected_routing_precheck_status"
-                    ),
-                    "master_follow_up": "fail_closed_unknown",
-                    **self._exact_warm_start_summary(),
-                    **self._subproblem_reuse_summary(),
-                    **self._routing_shrink_summary(),
-                    **self._exact_cut_ladder_summary(),
-                }
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            routing_domain_analysis_status = None
+            if routing_domain_analysis is not None:
+                if not isinstance(routing_domain_analysis, Mapping):
+                    routing_domain_analysis_status = "NON_MAPPING_ANALYSIS"
+                elif "status" not in routing_domain_analysis:
+                    routing_domain_analysis_status = _EXACT_ROUTING_PRECHECK_MISSING_STATUS
+                else:
+                    routing_domain_analysis_status = str(routing_domain_analysis["status"])
+            if (
+                routing_domain_analysis_status is not None
+                and routing_domain_analysis_status != precheck_status
+            ):
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_precheck_analysis_status_mismatch",
+                    extra={
+                        "routing_domain_analysis_status": routing_domain_analysis_status
+                    },
+                )
                 return RUN_STATUS_UNKNOWN, None
 
             # B1 Phase 4: env on 时 skip front_blocked early reject — precheck 是
@@ -6014,6 +6031,48 @@ class LBBDController:
             self._routing_overlay_build_seconds = time.perf_counter() - routing_overlay_started
             self._update_routing_shrink_from_build_stats(routing_model.build_stats)
             routing_attempts += 1
+            duplicate_terminal_front_keys = list(
+                dict(routing_model.build_stats).get("duplicate_terminal_front_keys", [])
+                or []
+            )
+            if duplicate_terminal_front_keys:
+                self._record_unexpected_routing_build_domain_status(
+                    iteration=iteration,
+                    build_domain_status="DUPLICATE_TERMINAL_FRONT_KEYS",
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_summary=routing_model.build_stats,
+                    routing_precheck=routing_precheck_summary,
+                    violation="duplicate_terminal_front_keys_at_routing_build",
+                    extra={
+                        "duplicate_terminal_front_keys": duplicate_terminal_front_keys
+                    },
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            build_domain_analysis = dict(routing_model.build_stats).get("domain_analysis")
+            build_domain_status = None
+            if isinstance(build_domain_analysis, Mapping):
+                build_domain_status = (
+                    _EXACT_ROUTING_PRECHECK_MISSING_STATUS
+                    if "status" not in build_domain_analysis
+                    else str(build_domain_analysis["status"])
+                )
+            if build_domain_status is not None and build_domain_status != "feasible":
+                self._record_unexpected_routing_build_domain_status(
+                    iteration=iteration,
+                    build_domain_status=build_domain_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_summary=routing_model.build_stats,
+                    routing_precheck=routing_precheck_summary,
+                    violation="unexpected_routing_build_domain_status",
+                )
+                return RUN_STATUS_UNKNOWN, None
             self._emit_heartbeat(
                 stage="routing_solve",
                 event="start",
@@ -6380,6 +6439,92 @@ class LBBDController:
             proof_summary["routing_summary"] = dict(routing_summary)
         if routing_precheck is not None:
             proof_summary["routing_precheck"] = dict(routing_precheck)
+        if extra is not None:
+            proof_summary.update(dict(extra))
+        self.last_proof_summary = proof_summary
+
+    def _record_unexpected_routing_precheck_status(
+        self,
+        *,
+        iteration: int,
+        precheck_status: Any,
+        diagnostic_flow_status: str,
+        enumerated_bindings: int,
+        routing_attempts: int,
+        binding_model: PortBindingModel,
+        routing_precheck: Mapping[str, Any],
+        violation: str = "unexpected_routing_precheck_status",
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        """Record a fail-closed proof summary for routing-precheck contract breaches."""
+
+        precheck_status_text = str(precheck_status)
+        proof_summary: Dict[str, Any] = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": "FEASIBLE",
+            "routing_status": (
+                f"PRECHECK_{precheck_status_text.upper()}"
+                if precheck_status_text
+                else "PRECHECK_UNKNOWN"
+            ),
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "binding_summary": binding_model.extract_conflict_summary(),
+            "routing_precheck": dict(routing_precheck),
+            "subproblem_status_contract_violation": str(violation),
+            "master_follow_up": "fail_closed_unknown",
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        if extra is not None:
+            proof_summary.update(dict(extra))
+        self.last_proof_summary = proof_summary
+
+    def _record_unexpected_routing_build_domain_status(
+        self,
+        *,
+        iteration: int,
+        build_domain_status: Any,
+        diagnostic_flow_status: str,
+        enumerated_bindings: int,
+        routing_attempts: int,
+        binding_model: PortBindingModel,
+        routing_summary: Mapping[str, Any],
+        routing_precheck: Mapping[str, Any],
+        violation: str,
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        """Record a fail-closed proof summary when routing build inserted a non-proof contradiction."""
+
+        build_status_text = str(build_domain_status)
+        proof_summary: Dict[str, Any] = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": "FEASIBLE",
+            "routing_status": (
+                f"BUILD_DOMAIN_{build_status_text.upper()}"
+                if build_status_text
+                else "BUILD_DOMAIN_UNKNOWN"
+            ),
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "binding_summary": binding_model.extract_conflict_summary(),
+            "routing_summary": dict(routing_summary),
+            "routing_precheck": dict(routing_precheck),
+            "subproblem_status_contract_violation": str(violation),
+            "master_follow_up": "fail_closed_unknown",
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
         if extra is not None:
             proof_summary.update(dict(extra))
         self.last_proof_summary = proof_summary

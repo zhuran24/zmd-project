@@ -185,3 +185,167 @@ def test_pose_bool_exact_required_power_pole_is_enforced_against_ghost(monkeypat
     )
 
     assert model.solve(time_limit_seconds=2.0) == cp_model.INFEASIBLE
+
+
+def test_pose_bool_unfiltered_ghost_rect_blocks_required_pole_body(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    pools = {
+        "power_pole": [
+            {
+                "pose_id": "pole_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [],
+            }
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 1, "height": 1}},
+        "facility_templates": {
+            "power_pole": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
+        },
+    }
+    model = MasterPlacementModel(
+        instances=[],
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        skip_power_coverage=True,
+        exact_required_pose_optional_counts={"power_pole": 1},
+    )
+
+    assert model.solve(time_limit_seconds=2.0) == cp_model.INFEASIBLE
+
+
+def test_pose_bool_unfiltered_ghost_rect_extracts_selected_ghost(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {},
+    }
+    model = MasterPlacementModel(
+        instances=[],
+        facility_pools={},
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        skip_power_coverage=True,
+    )
+
+    assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    solution = model.extract_solution()
+    ghost_pick = solution["ghost_pick"]
+    assert ghost_pick["facility_type"] == "ghost_rect"
+    assert (ghost_pick["anchor"]["x"], ghost_pick["anchor"]["y"]) in {(0, 0), (1, 0)}
+    assert model.build_stats["ghost_rect"]["placements"] == 2
+
+
+def test_pose_bool_protocol_storage_lower_bound_requires_candidate(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    rules = {
+        "globals": {"grid": {"width": 1, "height": 1}},
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
+        },
+    }
+    model = MasterPlacementModel(
+        instances=[],
+        facility_pools={"protocol_storage_box": []},
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        skip_power_coverage=True,
+        generic_io_requirements={"required_generic_inputs": {"item": 1}},
+        wireless_sink_generic_input_slots=1,
+    )
+
+    assert model.solve(time_limit_seconds=2.0) == cp_model.INFEASIBLE
+
+
+def test_pose_bool_protocol_storage_lower_bound_selects_pose(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    pools = {
+        "protocol_storage_box": [
+            {
+                "pose_id": "box_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
+        },
+    }
+    model = MasterPlacementModel(
+        instances=[],
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        ghost_anchor_filter={(1, 0)},
+        skip_power_coverage=True,
+        generic_io_requirements={"required_generic_inputs": {"item": 1}},
+        wireless_sink_generic_input_slots=1,
+    )
+
+    assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    solution = model.extract_solution()
+    assert "pose_optional::protocol_storage_box::box_0" in solution
+
+
+def test_pose_bool_protocol_storage_lower_bound_counts_beyond_fixed_required(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    pools = {
+        "protocol_storage_box": [
+            {
+                "pose_id": "box_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+            {
+                "pose_id": "box_1",
+                "anchor": {"x": 1, "y": 0},
+                "occupied_cells": [[1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            },
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 3, "height": 1}},
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
+        },
+    }
+    model = MasterPlacementModel(
+        instances=[],
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        ghost_anchor_filter={(2, 0)},
+        skip_power_coverage=True,
+        generic_io_requirements={"required_generic_inputs": {"item": 2}},
+        wireless_sink_generic_input_slots=1,
+        exact_required_pose_optional_counts={"protocol_storage_box": 1},
+    )
+
+    assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    selected_boxes = [
+        key for key in model.extract_solution()
+        if key.startswith("pose_optional::protocol_storage_box::")
+    ]
+    assert len(selected_boxes) == 2
