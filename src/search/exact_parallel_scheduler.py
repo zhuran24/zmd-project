@@ -119,7 +119,7 @@ def _record_worker_result(
         return identity_reason
     dispatch_seq = int(result.dispatch_seq)
     if result.error is not None:
-        return str(result.error)
+        return f"worker_result_error:{dispatch_seq}:{result.error}"
     normalized_status = str(result.status)
     if normalized_status not in VALID_WORKER_RESULT_STATUSES:
         return f"worker_result_status_invalid:{dispatch_seq}:{normalized_status}"
@@ -493,6 +493,8 @@ class ExactParallelWorkerPool:
                         if msg_type == "HEARTBEAT":
                             heartbeat_events.append(_normalize_heartbeat_message(msg))
                         elif msg_type == "RESULT":
+                            if discard_results_due_to_worker_result_failure:
+                                continue
                             r = msg.get("result")
                             if isinstance(r, WorkerResult):
                                 result_reason = _record_worker_result(
@@ -541,6 +543,8 @@ class ExactParallelWorkerPool:
             result = message.get("result")
             if not isinstance(result, WorkerResult):
                 failure_reason = "worker_result_invalid"
+                discard_results_due_to_worker_result_failure = True
+                results_by_seq.clear()
                 break
             result_reason = _record_worker_result(
                 results_by_seq,
@@ -590,6 +594,9 @@ class ExactParallelWorkerPool:
             self.terminate()
         else:
             self._respawn_all_workers()
+
+        if discard_results_due_to_worker_result_failure:
+            results_by_seq.clear()
 
         sorted_results = tuple(
             results_by_seq[dispatch_seq] for dispatch_seq in sorted(results_by_seq.keys())

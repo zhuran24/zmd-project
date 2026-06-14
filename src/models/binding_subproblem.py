@@ -304,42 +304,41 @@ def _validate_generic_io_requirement_roles(
             )
 
     # F-BIND-R8-02（owner-channel, LOW availability hardening）: 一旦声明了非空
-    # generic input 需求, 它必须以正槽数覆盖所有 canonical sink_kind=generic_input
+    # generic I/O 需求工件, 它必须以正槽数覆盖所有 canonical sink_kind=generic_input
     # 终品. 漏声明或零槽数会悄悄缩小 binding capacity, 并把该终品移出 routing-free
     # sink 集合, 使其 producer 的无线终品输出变成孤儿 routing terminal（spurious
-    # front_blocked / false-INFEASIBLE）. 空需求是合法退化态（上方 early return 已处理）,
-    # 故此校验只在 caller 声明了非空 generic input 集合后才触发, 不影响 toy/test 退化场景.
-    if input_commodities:
-        canonical_generic_inputs = sorted(
-            str(commodity)
-            for commodity, metadata in commodity_metadata.items()
-            if isinstance(metadata, Mapping)
-            and metadata.get("sink_kind") == "generic_input"
+    # front_blocked / false-INFEASIBLE）. 只有 output+input 双空才是合法退化态
+    #（上方 early return 已处理）; output-only 工件不是空需求, 也必须接受完备性校验.
+    canonical_generic_inputs = sorted(
+        str(commodity)
+        for commodity, metadata in commodity_metadata.items()
+        if isinstance(metadata, Mapping)
+        and metadata.get("sink_kind") == "generic_input"
+    )
+    input_requirements = requirements.get("required_generic_inputs", {})
+    missing_generic_inputs = [
+        commodity
+        for commodity in canonical_generic_inputs
+        if commodity not in input_requirements
+    ]
+    non_positive_generic_inputs = [
+        commodity
+        for commodity in canonical_generic_inputs
+        if commodity in input_requirements
+        and int(input_requirements[commodity]) <= 0
+    ]
+    if missing_generic_inputs or non_positive_generic_inputs:
+        details = []
+        if missing_generic_inputs:
+            details.append("missing=" + ",".join(missing_generic_inputs))
+        if non_positive_generic_inputs:
+            details.append("non_positive=" + ",".join(non_positive_generic_inputs))
+        raise ValueError(
+            "generic_io_requirements.required_generic_inputs must include every "
+            "canonical sink_kind=generic_input commodity with a positive slot count "
+            "（非空 generic I/O 需求工件必须以正槽数覆盖所有 canonical generic_input 终品）: "
+            + "; ".join(details)
         )
-        input_requirements = requirements.get("required_generic_inputs", {})
-        missing_generic_inputs = [
-            commodity
-            for commodity in canonical_generic_inputs
-            if commodity not in input_requirements
-        ]
-        non_positive_generic_inputs = [
-            commodity
-            for commodity in canonical_generic_inputs
-            if commodity in input_requirements
-            and int(input_requirements[commodity]) <= 0
-        ]
-        if missing_generic_inputs or non_positive_generic_inputs:
-            details = []
-            if missing_generic_inputs:
-                details.append("missing=" + ",".join(missing_generic_inputs))
-            if non_positive_generic_inputs:
-                details.append("non_positive=" + ",".join(non_positive_generic_inputs))
-            raise ValueError(
-                "generic_io_requirements.required_generic_inputs must include every "
-                "canonical sink_kind=generic_input commodity with a positive slot count "
-                "（声明 generic input 需求时必须以正槽数覆盖所有 canonical generic_input 终品）: "
-                + "; ".join(details)
-            )
 
 
 class PortBindingModel:

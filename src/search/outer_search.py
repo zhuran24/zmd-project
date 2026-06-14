@@ -162,10 +162,13 @@ def _parallel_wave_failure_discards_results(failure_reason: Optional[str]) -> bo
     if failure_reason is None:
         return False
     normalized_reason = str(failure_reason)
-    if normalized_reason.startswith("worker_process_failed"):
-        return False
-    if normalized_reason.startswith("worker_crash_respawn_limit"):
-        return False
+    result_preserving_failure_prefixes = (
+        "worker_process_failed",
+        "worker_crash_respawn_limit",
+    )
+    for prefix in result_preserving_failure_prefixes:
+        if normalized_reason == prefix or normalized_reason.startswith(f"{prefix}:"):
+            return False
     return True
 
 

@@ -1,0 +1,120 @@
+--- a/src/models/binding_subproblem.py	2026-06-13 23:57:15.799149371 +0000
++++ b/src/models/binding_subproblem.py	2026-06-13 23:56:21.572384732 +0000
+@@ -304,42 +304,41 @@
+             )
+ 
+     # F-BIND-R8-02（owner-channel, LOW availability hardening）: 一旦声明了非空
+-    # generic input 需求, 它必须以正槽数覆盖所有 canonical sink_kind=generic_input
++    # generic I/O 需求工件, 它必须以正槽数覆盖所有 canonical sink_kind=generic_input
+     # 终品. 漏声明或零槽数会悄悄缩小 binding capacity, 并把该终品移出 routing-free
+     # sink 集合, 使其 producer 的无线终品输出变成孤儿 routing terminal（spurious
+-    # front_blocked / false-INFEASIBLE）. 空需求是合法退化态（上方 early return 已处理）,
+-    # 故此校验只在 caller 声明了非空 generic input 集合后才触发, 不影响 toy/test 退化场景.
+-    if input_commodities:
+-        canonical_generic_inputs = sorted(
+-            str(commodity)
+-            for commodity, metadata in commodity_metadata.items()
+-            if isinstance(metadata, Mapping)
+-            and metadata.get("sink_kind") == "generic_input"
++    # front_blocked / false-INFEASIBLE）. 只有 output+input 双空才是合法退化态
++    #（上方 early return 已处理）; output-only 工件不是空需求, 也必须接受完备性校验.
++    canonical_generic_inputs = sorted(
++        str(commodity)
++        for commodity, metadata in commodity_metadata.items()
++        if isinstance(metadata, Mapping)
++        and metadata.get("sink_kind") == "generic_input"
++    )
++    input_requirements = requirements.get("required_generic_inputs", {})
++    missing_generic_inputs = [
++        commodity
++        for commodity in canonical_generic_inputs
++        if commodity not in input_requirements
++    ]
++    non_positive_generic_inputs = [
++        commodity
++        for commodity in canonical_generic_inputs
++        if commodity in input_requirements
++        and int(input_requirements[commodity]) <= 0
++    ]
++    if missing_generic_inputs or non_positive_generic_inputs:
++        details = []
++        if missing_generic_inputs:
++            details.append("missing=" + ",".join(missing_generic_inputs))
++        if non_positive_generic_inputs:
++            details.append("non_positive=" + ",".join(non_positive_generic_inputs))
++        raise ValueError(
++            "generic_io_requirements.required_generic_inputs must include every "
++            "canonical sink_kind=generic_input commodity with a positive slot count "
++            "（非空 generic I/O 需求工件必须以正槽数覆盖所有 canonical generic_input 终品）: "
++            + "; ".join(details)
+         )
+-        input_requirements = requirements.get("required_generic_inputs", {})
+-        missing_generic_inputs = [
+-            commodity
+-            for commodity in canonical_generic_inputs
+-            if commodity not in input_requirements
+-        ]
+-        non_positive_generic_inputs = [
+-            commodity
+-            for commodity in canonical_generic_inputs
+-            if commodity in input_requirements
+-            and int(input_requirements[commodity]) <= 0
+-        ]
+-        if missing_generic_inputs or non_positive_generic_inputs:
+-            details = []
+-            if missing_generic_inputs:
+-                details.append("missing=" + ",".join(missing_generic_inputs))
+-            if non_positive_generic_inputs:
+-                details.append("non_positive=" + ",".join(non_positive_generic_inputs))
+-            raise ValueError(
+-                "generic_io_requirements.required_generic_inputs must include every "
+-                "canonical sink_kind=generic_input commodity with a positive slot count "
+-                "（声明 generic input 需求时必须以正槽数覆盖所有 canonical generic_input 终品）: "
+-                + "; ".join(details)
+-            )
+ 
+ 
+ class PortBindingModel:
+--- a/src/tests/test_binding.py	2026-06-13 23:57:16.171691380 +0000
++++ b/src/tests/test_binding.py	2026-06-13 23:56:23.331692446 +0000
+@@ -893,6 +893,29 @@
+         load_generic_io_requirements(project_root=project_root, path=path)
+ 
+ 
++def test_load_generic_io_requirements_rejects_output_only_when_canonical_generic_inputs_exist(
++    tmp_path, project_root
++):
++    import sys
++
++    sys.path.insert(0, str(project_root))
++    from src.models.binding_subproblem import load_generic_io_requirements
++
++    path = tmp_path / "generic_io_requirements.json"
++    path.write_text(
++        json.dumps(
++            {
++                "required_generic_outputs": {"source_ore": 18, "blue_iron_ore": 34},
++                "required_generic_inputs": {},
++            }
++        ),
++        encoding="utf-8",
++    )
++
++    with pytest.raises(ValueError, match="missing=qiaoyu_capsule,valley_battery"):
++        load_generic_io_requirements(project_root=project_root, path=path)
++
++
+ def test_load_generic_io_requirements_rejects_missing_or_zero_canonical_generic_inputs(
+     tmp_path, project_root
+ ):
+--- a/PROJECT_LOCK.md	2026-06-13 23:57:15.518991969 +0000
++++ b/PROJECT_LOCK.md	2026-06-13 23:58:50.871460679 +0000
+@@ -132,7 +132,7 @@
+ - The env-gated pose-bool master backend is in geometry-master scope and its soundness obligations mirror the coordinate backend's (F-GM-R11-PB-01): even though `PoseBoolExactMasterDelegate` is reachable only under `EXACT_USE_POSE_BOOL_MASTER=1` and is gated off the public certified path by `pose_bool_master_not_certified`, it is a directly enablable master backend, so its false-FEASIBLE and stale-witness seams bind. (a) Fixed required `power_pole` demand must be enforced on the shared pole pool (F-GM-R11-PB-REQ-POLE-01): the pose-bool build previously `continue`d past `exact_required_pose_optional_counts["power_pole"]`, building only a residual optional pole pool with "no demand fix", so when every pole pose is excluded by the ghost body the model returned `OPTIMAL` with no pole — a true INFEASIBLE minted as FEASIBLE (the coordinate-backend obligation F-GM-Q3-01-R4-A recurring in the pose-bool backend). The fixed demand must accumulate and, once feasible pole vars exist, add `sum(pole_vars) >= required_power_pole_demand` (and `0 >= demand` fail-closed when feasible poles number fewer than the demand); `>=` not `==` so residual poles may still appear as extra coverage witnesses, and `required_optional_slots["power_pole"]` is populated so slot/statistics semantics stay visible. (b) Applying a pose-bool local-model cut must invalidate the owner solver witness, not just `_last_solution` (F-GM-R11-PB-STALE-01, same shape as F-GM-R6-01): the delegate's incremental cut paths (`add_patch_routing_core_cut`, `add_separator_capacity_cut`, `add_benders_cut`, `add_routing_port_lazy_demand_cut`, `add_routing_port_blocking_cell_cut`) must clear `owner._last_solution`/`_solver`/`_status` together through a shared `_invalidate_owner_solver_witness()` helper, or `MasterPlacementModel.extract_solution()`/`extract_bound_state()` rebuild the just-cut placement from the stale `CpSolver` until the next solve.
+ - Coordinate exact master geometry must be keyed by each candidate pose's `occupied_cells` footprint, not by template default dimensions alone. No-overlap, ghost interaction, and power-coverage witness spans must use a mode-channelled footprint bounding box derived from the selected pose; non-rectangular footprints may be conservatively over-approximated by that box but must not under-approximate.
+ - `binding_selection_safe_reject=True` routing precheck evidence is binding-local. `front_blocked` and `relaxed_disconnected` must first add a binding-level nogood and enumerate alternative port bindings while any remain. A master placement-level nogood is allowed only after binding alternatives are exhausted or an independent placement-level proof exists; otherwise the certified path fails closed as `UNKNOWN`. When `EXACT_BINDING_USE_OVERLOAD_SEPARATION` is active and has injected hard overload nogoods, an `INFEASIBLE` binding re-solve is not on its own an exhaustion proof (F-BIND-R8-01): every binding re-solve site must first retry with overload separation forced off and **all** prior routing-rejected selections replayed, and only an env-off `INFEASIBLE` that survives the replay may feed the exhaustion chain (an env-off `FEASIBLE` resumes enumeration; a `TIMEOUT` fails closed as `UNKNOWN`) — otherwise the heuristic's local nogood exhaustion is miscertified as true binding/routing exhaustion (false-INFEASIBLE).
+-- `load_generic_io_requirements()` integrity (F-BIND-R8-02, availability hardening): once a non-empty `required_generic_inputs` set is declared, it must cover every canonical `sink_kind == generic_input` commodity with a positive slot count, else the loader fails closed — a missing or non-positive canonical generic-input entry would silently shrink binding capacity and drop that commodity from the routing-free sink set, turning a producer's wireless final output into an orphan routing terminal (spurious `front_blocked` / false-INFEASIBLE). An empty requirements set remains a legal degenerate case (early return), so the check fires only after a non-empty generic-input set is declared.
++- `load_generic_io_requirements()` integrity (F-BIND-R8-02 / F-BIND-R9-01, availability hardening): once a generic I/O requirements artifact is non-empty (either `required_generic_outputs` or `required_generic_inputs`), its `required_generic_inputs` section must cover every canonical `sink_kind == generic_input` commodity with a positive slot count, else the loader fails closed — a missing or non-positive canonical generic-input entry would silently shrink binding capacity and drop that commodity from the routing-free sink set, turning a producer's wireless final output into an orphan routing terminal (spurious `front_blocked` / false-INFEASIBLE). A fully empty requirements set (both output/input sections empty) remains a legal degenerate case (early return); an output-only artifact is non-empty and must be rejected by the same completeness check.
+ - Budget exhaustion is never an exhaustion proof (F-BL-R3-01): hitting an enumeration cap (e.g. `EXACT_B1_BINDING_ALT_CAP`) while binding alternatives remain must return `UNKNOWN` without minting any binding-level or whole-layout nogood — only a binding CP-SAT `INFEASIBLE` re-solve proves the alternatives are exhausted. Likewise the main loop consumes subproblem statuses through an explicit contract (F-BL-R3-02): any routing status other than `FEASIBLE`/`INFEASIBLE`/`TIMEOUT` fails closed as `UNKNOWN` with no cut, never down the infeasible branch. The same contract binds every binding solve and re-solve site (F-BL-R4-01): any binding status other than `FEASIBLE`/`INFEASIBLE`/`TIMEOUT` — at the initial solve, overload-fallback retry, precheck safe-reject re-solve, relaxed-disconnected re-solve, or post-routing-INFEASIBLE re-enumeration — fails closed as `UNKNOWN` (`subproblem_status_contract_violation="unexpected_binding_status"`) without entering the exhaustion chain; only a contract-valid binding `INFEASIBLE` re-solve may feed the binding/routing-exhausted whole-layout nogood. The same status contract binds the routing precheck consumer (F-BL-R7-01): `_run_exact_binding_and_routing()` must check `run_exact_routing_precheck()['status']` against the verified allowlist `{feasible, front_blocked, relaxed_disconnected}` before any B1 bypass, front-blocked cut, relaxed-disconnected branch, or routing build — because `RoutingSubproblem.build()` adds `0 == 1` whenever `domain_analysis['status'] != 'feasible'`, an un-allowlisted precheck status (`TIMEOUT`/`UNKNOWN`/`MODEL_INVALID`/`ERROR`/misspelled, or a captured precheck exception coerced to status `ERROR`) would otherwise be transcribed into a CP-SAT `INFEASIBLE` proof and could mint a whole-layout nogood deleting a legal master solution. Any non-allowlisted status fails closed to `UNKNOWN` (`subproblem_status_contract_violation="unexpected_routing_precheck_status"`, `master_follow_up="fail_closed_unknown"`), building no routing subproblem and registering no cut.
+ - Master-level cell-pattern cuts may only quantify over necessarily-active ports (F-CUT-R2-01): the env-gated pose-bool cell cut `sum(poses with a port at (cell,dir)) + sum(poses occupying the front cell) <= 1` is exact only when every enumerated port candidate is necessarily active and routing-visible whenever its pose is selected — the side's visible demand must cover all physical ports on that side (input: concrete routing-visible `input_demand >= physical_port_count`; output: visible output non-zero, equal to total output, and `>= physical_port_count`). Generic utility slots are binding capacity, not mandatory per-port demand (CUT-R3-H1): generic-input slots are virtual wireless capacity and never count as physical front demand; generic-output slots may count as visible output demand only when the required generic-output total globally saturates the mandatory generic-output capacity (saturation forces every physical slot away from `__unused__`), and the capacity total must be computed fail-closed — any generic-output-providing group whose instance count is unknowable makes the capacity unknowable and the side is not registered (an undercounted capacity could fake saturation and over-cut). A blocked port that binding may leave inactive does not make pose+blocker infeasible (binding can select another slot), so registering optional binding slots — or residual-optional poses without operation binding identity — in the routing-visible per-cell port index over-cuts feasible placements; mixed visible+routing-free output sides stay with the weaker-but-exact lazy-demand/count cut. Candidate pose data is global-coordinate: port/cell lookup caches must not re-apply the anchor offset (double-anchoring aliases candidates to phantom cells, silently missing or mis-targeting cuts). The hook is blocked on the public certified path by the `pose_bool_master_not_certified` env guard; this clause binds any future promotion of pose-bool/cell cuts into certified.
+   CUT-R4-H1 addendum: generic-output saturation proves only that slots are non-`__unused__`; it does not prove routing visibility for commodities that are also routing-free generic-input sinks. Pose-bool visible demand may therefore count saturated generic-output slots only when every positive required generic-output commodity is disjoint from the routing-free sink set. If the generic-output requirement set mixes routed and routing-free commodities, raw per-pose generic-output fronts remain unregistered until a binding-aware/global count proof exists.

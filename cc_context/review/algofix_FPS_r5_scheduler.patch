@@ -1,0 +1,340 @@
+--- a/src/search/exact_parallel_scheduler.py
++++ b/src/search/exact_parallel_scheduler.py
+@@ -119,7 +119,7 @@
+         return identity_reason
+     dispatch_seq = int(result.dispatch_seq)
+     if result.error is not None:
+-        return str(result.error)
++        return f"worker_result_error:{dispatch_seq}:{result.error}"
+     normalized_status = str(result.status)
+     if normalized_status not in VALID_WORKER_RESULT_STATUSES:
+         return f"worker_result_status_invalid:{dispatch_seq}:{normalized_status}"
+@@ -493,6 +493,8 @@
+                         if msg_type == "HEARTBEAT":
+                             heartbeat_events.append(_normalize_heartbeat_message(msg))
+                         elif msg_type == "RESULT":
++                            if discard_results_due_to_worker_result_failure:
++                                continue
+                             r = msg.get("result")
+                             if isinstance(r, WorkerResult):
+                                 result_reason = _record_worker_result(
+@@ -541,6 +543,8 @@
+             result = message.get("result")
+             if not isinstance(result, WorkerResult):
+                 failure_reason = "worker_result_invalid"
++                discard_results_due_to_worker_result_failure = True
++                results_by_seq.clear()
+                 break
+             result_reason = _record_worker_result(
+                 results_by_seq,
+@@ -590,6 +594,9 @@
+             self.terminate()
+         else:
+             self._respawn_all_workers()
++
++        if discard_results_due_to_worker_result_failure:
++            results_by_seq.clear()
+ 
+         sorted_results = tuple(
+             results_by_seq[dispatch_seq] for dispatch_seq in sorted(results_by_seq.keys())
+--- a/src/search/outer_search.py
++++ b/src/search/outer_search.py
+@@ -162,10 +162,13 @@
+     if failure_reason is None:
+         return False
+     normalized_reason = str(failure_reason)
+-    if normalized_reason.startswith("worker_process_failed"):
+-        return False
+-    if normalized_reason.startswith("worker_crash_respawn_limit"):
+-        return False
++    result_preserving_failure_prefixes = (
++        "worker_process_failed",
++        "worker_crash_respawn_limit",
++    )
++    for prefix in result_preserving_failure_prefixes:
++        if normalized_reason == prefix or normalized_reason.startswith(f"{prefix}:"):
++            return False
+     return True
+ 
+ 
+--- a/src/tests/test_parallel_scheduler.py
++++ b/src/tests/test_parallel_scheduler.py
+@@ -117,6 +117,17 @@
+         if not self._messages:
+             raise queue.Empty()
+         return self._messages.pop(0)
++
++
++class _CrashDrainResultQueue(_SyntheticResultQueue):
++    def get(self, timeout: float | None = None) -> dict[str, object]:
++        del timeout
++        raise queue.Empty()
++
++
++class _SyntheticCrashedProcess:
++    pid = 12345
++    exitcode = 1
+ 
+ 
+ def test_parallel_wave_selection_diversifies_and_deduplicates_heads() -> None:
+@@ -648,8 +659,169 @@
+     wave = ExactParallelWorkerPool.run_wave(pool, [task])
+ 
+     assert wave.completed is False
+-    assert wave.failure_reason == "RuntimeError: synthetic crash after partial result"
++    assert wave.failure_reason == (
++        "worker_result_error:0:RuntimeError: synthetic crash after partial result"
++    )
+     assert wave.results == ()
++
++
++def test_parallel_worker_pool_discards_results_after_main_loop_invalid_message() -> None:
++    tasks = [
++        WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
++        WorkerTask(1, 2, (4, 2, 2), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
++    ]
++    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
++    pool._closed = False
++    pool._started = True
++    pool._processes = []
++    pool._task_queue = _SyntheticTaskQueue()
++    pool._result_queue = _SyntheticResultQueue(
++        [
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=0,
++                    attempt_index=1,
++                    candidate=(9, 3, 3),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            },
++            {"message_type": "RESULT", "result": {"not": "a WorkerResult"}},
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=1,
++                    attempt_index=2,
++                    candidate=(4, 2, 2),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            },
++        ]
++    )
++    pool.rss_sample_interval_seconds = 0.01
++    pool._total_crash_respawns = 0
++    pool.start = lambda: None
++    pool._respawn_all_workers = lambda: None
++    pool.terminate = lambda: None
++    pool._sum_process_tree_rss = lambda: 0
++
++    wave = ExactParallelWorkerPool.run_wave(pool, tasks)
++
++    assert wave.completed is False
++    assert wave.failure_reason == "worker_result_invalid"
++    assert wave.results == ()
++
++
++def test_parallel_worker_pool_crash_drain_stops_after_validation_failure() -> None:
++    tasks = [
++        WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
++        WorkerTask(1, 2, (4, 2, 2), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
++    ]
++    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
++    pool._closed = False
++    pool._started = True
++    pool._processes = [_SyntheticCrashedProcess()]
++    pool._task_queue = _SyntheticTaskQueue()
++    pool._result_queue = _CrashDrainResultQueue(
++        [
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=0,
++                    attempt_index=1,
++                    candidate=(1, 1, 1),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            },
++            {
++                "message_type": "RESULT",
++                "result": WorkerResult(
++                    dispatch_seq=1,
++                    attempt_index=2,
++                    candidate=(4, 2, 2),
++                    status=RUN_STATUS_INFEASIBLE,
++                    solution=None,
++                    proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            },
++        ]
++    )
++    pool.rss_sample_interval_seconds = 0.01
++    pool._total_crash_respawns = 0
++    pool.start = lambda: None
++    pool._respawn_all_workers = lambda: None
++    pool.terminate = lambda: None
++    pool._sum_process_tree_rss = lambda: 0
++
++    wave = ExactParallelWorkerPool.run_wave(pool, tasks)
++
++    assert wave.completed is False
++    assert wave.failure_reason == "worker_result_candidate_mismatch:0"
++    assert wave.results == ()
++
++
++def test_parallel_wave_failure_discard_helper_rejects_prefix_collisions() -> None:
++    assert outer_search_module._parallel_wave_failure_discards_results(None) is False
++    assert (
++        outer_search_module._parallel_wave_failure_discards_results(
++            "worker_process_failed:pid=1:exitcode=1"
++        )
++        is False
++    )
++    assert (
++        outer_search_module._parallel_wave_failure_discards_results(
++            "worker_crash_respawn_limit:2:pid=1:exit=1"
++        )
++        is False
++    )
++    assert (
++        outer_search_module._parallel_wave_failure_discards_results(
++            "worker_process_failed_validation_failure:spoofed"
++        )
++        is True
++    )
++    assert (
++        outer_search_module._parallel_wave_failure_discards_results(
++            "worker_crash_respawn_limit_validation_failure:spoofed"
++        )
++        is True
++    )
++    assert (
++        outer_search_module._parallel_wave_failure_discards_results(
++            "worker_result_error:0:worker_crash_respawn_limit:spoofed"
++        )
++        is True
++    )
+ 
+ 
+ def test_parallel_worker_pool_discards_all_results_after_duplicate_dispatch_seq() -> None:
+@@ -862,6 +1034,89 @@
+     telemetry = _read_campaign_telemetry(project_root)
+     assert telemetry["waves"][0]["completed"] is False
+     assert telemetry["waves"][0]["failure_reason"] == "worker_result_duplicate_dispatch_seq:0"
++    assert telemetry["waves"][0]["candidate_results"] == []
++
++
++def test_outer_search_discards_worker_failure_prefix_collision_results(
++    monkeypatch,
++    tmp_path: Path,
++) -> None:
++    project_root = _build_empty_frontier_project(tmp_path / "outer_wave_prefix_collision")
++
++    def fake_wave_executor(*, pool, tasks):
++        assert isinstance(pool, _DummyParallelWorkerPool)
++        first = tasks[0]
++        return ParallelWaveExecution(
++            completed=False,
++            failure_reason="worker_process_failed_validation_failure:spoofed",
++            results=(
++                WorkerResult(
++                    dispatch_seq=first.dispatch_seq,
++                    attempt_index=first.attempt_index,
++                    candidate=first.candidate,
++                    status=RUN_STATUS_CERTIFIED,
++                    solution={
++                        "ghost_pick": {
++                            "pose_idx": 0,
++                            "pose_id": "synthetic_pose_0",
++                            "facility_type": "synthetic",
++                            "anchor": {"x": 0, "y": 0},
++                        }
++                    },
++                    proof_summary={"master_status": RUN_STATUS_CERTIFIED},
++                    exact_safe_cuts=[],
++                    loaded_exact_safe_cut_count=0,
++                    generated_exact_safe_cut_count=0,
++                    worker_wall_seconds=0.01,
++                    peak_rss_bytes=1,
++                    error=None,
++                ),
++            ),
++            dispatched_candidate_keys=tuple(task.candidate_key for task in tasks),
++            elapsed_seconds=0.02,
++            peak_rss_bytes_external_total=2,
++            peak_rss_bytes_internal_max_single_process=1,
++        )
++
++    monkeypatch.setattr(
++        outer_search_module,
++        "ExactParallelWorkerPool",
++        _DummyParallelWorkerPool,
++    )
++    monkeypatch.setattr(
++        outer_search_module,
++        "run_parallel_exact_campaign_wave",
++        fake_wave_executor,
++    )
++
++    status, result = run_outer_search(
++        project_root=project_root,
++        solve_mode="certified_exact",
++        max_attempts=2,
++        min_side=1,
++        area_upper_bound=9,
++        master_seconds=0.01,
++        binding_seconds=0.01,
++        routing_seconds=0.01,
++        benders_max_iter=1,
++        campaign_hours=1.0,
++        resume_campaign=False,
++        parallel_processes=2,
++    )
++
++    assert status == RUN_STATUS_UNKNOWN
++    assert result is None
++    state = _read_campaign_state(project_root)
++    assert state["last_stop_reason"]["reason"] == "worker_process_failed"
++    assert RUN_STATUS_CERTIFIED not in {
++        str(record["status"]) for record in state["candidates"].values()
++    }
++    assert {str(record["status"]) for record in state["candidates"].values()} == {"RUNNING"}
++    telemetry = _read_campaign_telemetry(project_root)
++    assert telemetry["waves"][0]["completed"] is False
++    assert telemetry["waves"][0]["failure_reason"] == (
++        "worker_process_failed_validation_failure:spoofed"
++    )
+     assert telemetry["waves"][0]["candidate_results"] == []
+ 
+ 

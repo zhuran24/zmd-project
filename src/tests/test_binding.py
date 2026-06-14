@@ -893,6 +893,29 @@ def test_load_generic_io_requirements_rejects_non_canonical_roles(tmp_path):
         load_generic_io_requirements(project_root=project_root, path=path)
 
 
+def test_load_generic_io_requirements_rejects_output_only_when_canonical_generic_inputs_exist(
+    tmp_path, project_root
+):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import load_generic_io_requirements
+
+    path = tmp_path / "generic_io_requirements.json"
+    path.write_text(
+        json.dumps(
+            {
+                "required_generic_outputs": {"source_ore": 18, "blue_iron_ore": 34},
+                "required_generic_inputs": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="missing=qiaoyu_capsule,valley_battery"):
+        load_generic_io_requirements(project_root=project_root, path=path)
+
+
 def test_load_generic_io_requirements_rejects_missing_or_zero_canonical_generic_inputs(
     tmp_path, project_root
 ):
