@@ -2682,6 +2682,19 @@ class MasterPlacementModel:
 
         overlay_started = time.perf_counter()
         phase_started = time.perf_counter()
+        exact_required_pose_optional_counts_for_overlay: Mapping[str, Any] = (
+            core.exact_required_pose_optional_counts
+        )
+        if (
+            str(core.master_representation).startswith("pose_bool_exact_v")
+            and not dict(exact_required_pose_optional_counts_for_overlay)
+        ):
+            exact_required_pose_optional_counts_for_overlay = infer_exact_required_pose_optional_counts(
+                core.rules,
+                core.generic_io_requirements,
+                wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
+            )
+
         model = cls(
             core.source_instances,
             cast("Mapping[str, List[Dict[str, Any]]]", core.facility_pools),
@@ -2691,7 +2704,7 @@ class MasterPlacementModel:
             enable_symmetry_breaking=core.enable_symmetry_breaking,
             generic_io_requirements=core.generic_io_requirements,
             wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
-            exact_required_pose_optional_counts=core.exact_required_pose_optional_counts,
+            exact_required_pose_optional_counts=exact_required_pose_optional_counts_for_overlay,
             solve_mode="certified_exact",
             master_search_profile=normalized_master_search_profile,
             ghost_anchor_filter=ghost_anchor_filter,
@@ -2711,6 +2724,38 @@ class MasterPlacementModel:
             if port_profile_cache_publication_enabled
             else {}
         )
+
+        if str(core.master_representation).startswith("pose_bool_exact_v"):
+            # Pose-bool exact cores intentionally carry a no-op proto: the backend
+            # does not participate in coordinate proto sharing.  Treating that
+            # empty proto as a reusable master drops mandatory/optional/no-overlap
+            # constraints, so rebuild a concrete overlay instead of cloning it.
+            direct_rebuild_started = time.perf_counter()
+            model.build()
+            direct_rebuild_seconds = time.perf_counter() - direct_rebuild_started
+            overlay_build_seconds = time.perf_counter() - overlay_started
+            model.build_stats["exact_core_reuse"] = {
+                "used": False,
+                "reason": "pose_bool_exact_core_proto_is_packaging_noop_direct_rebuild",
+                "core_master_representation": str(core.master_representation),
+                "core_proto_variables": len(core.proto.variables),
+                "core_proto_constraints": len(core.proto.constraints),
+                "overlay_build_seconds": float(overlay_build_seconds),
+                "ghost_constraint_seconds": 0.0,
+                "direct_rebuild_seconds": float(direct_rebuild_seconds),
+                "proto_reused": False,
+            }
+            if precomputed_boundary_port_feasibility is not None:
+                model._exact_candidate_boundary_port_feasibility_cache = (
+                    model._normalize_exact_candidate_boundary_port_feasibility_payload(
+                        precomputed_boundary_port_feasibility
+                    )
+                )
+                model._publish_exact_candidate_boundary_port_feasibility_summary(
+                    model._exact_candidate_boundary_port_feasibility_cache
+                )
+            return model
+
         _record_outer_subphase(
             outer_exact_core_overlay_subphase_seconds,
             "model_shell_construction",

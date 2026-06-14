@@ -4660,6 +4660,145 @@ def test_feasible_routing_build_port_adherence_blocked_ports_fail_closed_before_
     assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
 
 
+
+def test_routing_build_port_adherence_blocked_ports_rejects_fractional_count(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 0,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "fractional_port_adherence_blocked_ports"}
+
+    class FakeRoutingSubproblem:
+        def __init__(self, *args, **kwargs):
+            self.build_stats = {
+                "domain_analysis": {"status": "feasible"},
+                "port_adherence": {"blocked_ports": 0.4},
+            }
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit: float = 60.0) -> str:
+            raise AssertionError(
+                "fractional port_adherence.blocked_ports must fail closed before solve"
+            )
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        return {
+            "status": "feasible",
+            "binding_selection_safe_reject": False,
+            "placement_level_conflict_set": [],
+            "blocked_ports": [],
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "fractional-port-adherence-regression"},
+            "_analysis": {
+                "status": "feasible",
+                "binding_selection_safe_reject": False,
+                "placement_level_conflict_set": [],
+                "blocked_ports": [],
+                "disconnected_commodities": [],
+                "domain_stats": {"source": "fractional-port-adherence-regression"},
+            },
+        }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(benders_loop_module, "RoutingSubproblem", FakeRoutingSubproblem)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError(
+            "fractional port_adherence.blocked_ports must not reach whole-layout cut"
+        )
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert (
+        controller.last_proof_summary["routing_status"]
+        == "BUILD_DOMAIN_PORT_ADHERENCE_BLOCKED_PORTS"
+    )
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "routing_build_port_adherence_blocked_ports"
+    )
+    assert controller.last_proof_summary["port_adherence"]["blocked_ports"] == 0.4
+    assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
 def test_front_blocked_precheck_without_analysis_fails_closed_before_cut(
     monkeypatch,
     tmp_path: Path,
@@ -4938,6 +5077,168 @@ def test_reject_precheck_status_requires_true_safe_reject_before_cut(
             == analysis_safe_reject
         )
     assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
+
+@pytest.mark.parametrize(
+    ("summary_blocked_ports", "analysis_blocked_ports"),
+    [
+        (
+            [
+                {
+                    "instance_id": "tiny_001",
+                    "placement_level_conflict_set": ["tiny_001"],
+                    "blocking_instance_ids": [],
+                    "port_cell": [0, 0],
+                    "front_cell": [1, 0],
+                    "dir": "E",
+                }
+            ],
+            [],
+        ),
+        (
+            [
+                {
+                    "instance_id": "tiny_001",
+                    "placement_level_conflict_set": "tiny_001",
+                    "blocking_instance_ids": [],
+                    "port_cell": [0, 0],
+                    "front_cell": [1, 0],
+                    "dir": "E",
+                }
+            ],
+            [
+                {
+                    "instance_id": "tiny_001",
+                    "placement_level_conflict_set": "tiny_001",
+                    "blocking_instance_ids": [],
+                    "port_cell": [0, 0],
+                    "front_cell": [1, 0],
+                    "dir": "E",
+                }
+            ],
+        ),
+    ],
+)
+def test_front_blocked_precheck_blocked_ports_must_be_analysis_backed_before_cut(
+    monkeypatch,
+    tmp_path: Path,
+    summary_blocked_ports,
+    analysis_blocked_ports,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 0,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "front_blocked_blocked_ports_not_proof_backed"}
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        return {
+            "status": "front_blocked",
+            "binding_selection_safe_reject": True,
+            "placement_level_conflict_set": [],
+            "blocked_ports": summary_blocked_ports,
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "blocked-ports-proof-regression"},
+            "_analysis": {
+                "status": "front_blocked",
+                "binding_selection_safe_reject": True,
+                "placement_level_conflict_set": [],
+                "blocked_ports": analysis_blocked_ports,
+                "disconnected_commodities": [],
+                "domain_stats": {"source": "blocked-ports-proof-regression"},
+            },
+        }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_persisted_nogood(**kwargs):
+        raise AssertionError(
+            "front_blocked blocked_ports must be proof-backed before cut"
+        )
+
+    controller._add_exact_persisted_nogood = fail_persisted_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["routing_status"] == "PRECHECK_FRONT_BLOCKED"
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "routing_precheck_analysis_blocked_ports_mismatch"
+    )
+    assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
 
 def test_routing_timeout_returns_unknown_without_exact_safe_cut(monkeypatch, tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_routing_timeout")
@@ -7974,7 +8275,26 @@ def test_run_benders_precheck_triggered_non_infeasible_falls_through(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    project_root = tmp_path / "run_benders_invalid_precheck"
+    _assert_run_benders_drifted_precheck_reaches_controller(
+        monkeypatch,
+        tmp_path,
+        {
+            "triggered": True,
+            "status": RUN_STATUS_UNKNOWN,
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+        },
+    )
+
+
+def _assert_run_benders_drifted_precheck_reaches_controller(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    precheck_outcome: object,
+) -> None:
+    project_root = tmp_path / "run_benders_drifted_precheck"
     project_root.mkdir()
     controller_constructed: list[bool] = []
 
@@ -7998,14 +8318,7 @@ def test_run_benders_precheck_triggered_non_infeasible_falls_through(
 
     def fake_precheck(*, ghost_w, ghost_h, exact_session, master_search_profile):
         del ghost_w, ghost_h, exact_session, master_search_profile
-        return {
-            "triggered": True,
-            "status": RUN_STATUS_UNKNOWN,
-            "proof_summary": {
-                "mode": "certified_exact",
-                "master_status": RUN_STATUS_UNKNOWN,
-            },
-        }
+        return precheck_outcome
 
     class DummyCutManager:
         def __init__(self, *args, **kwargs):
@@ -8111,3 +8424,35 @@ def test_run_benders_precheck_triggered_non_infeasible_falls_through(
     assert status == RUN_STATUS_UNKNOWN
     assert solution is None
     assert controller_constructed == [True]
+
+
+@pytest.mark.parametrize(
+    "precheck_outcome",
+    [
+        [],
+        {
+            "triggered": True,
+            "status": RUN_STATUS_UNKNOWN,
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+            "boundary_port_precheck": 1,
+        },
+        {
+            "triggered": True,
+            "status": RUN_STATUS_UNKNOWN,
+            "proof_summary": 1,
+        },
+    ],
+)
+def test_run_benders_malformed_precheck_outcome_falls_through(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    precheck_outcome: object,
+) -> None:
+    _assert_run_benders_drifted_precheck_reaches_controller(
+        monkeypatch,
+        tmp_path,
+        precheck_outcome,
+    )

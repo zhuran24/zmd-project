@@ -302,6 +302,16 @@ def _strict_resume_nonnegative_float(value: Any, field: str) -> float:
     return numeric
 
 
+def _strict_resume_timestamp(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} must be an ISO UTC timestamp string")
+    try:
+        time.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+    except Exception as exc:
+        raise ValueError(f"{field} must be an ISO UTC timestamp string") from exc
+    return value
+
+
 def _solution_without_ghost_marker(solution: Mapping[str, Any]) -> Dict[str, Any]:
     return {str(key): value for key, value in solution.items() if str(key) != "ghost_pick"}
 
@@ -1472,10 +1482,19 @@ def _validate_candidate_record(
     for field in ("started_at", "updated_at"):
         if record.get(field) is None:
             return f"candidate_missing_timestamp:{record_key}:{field}"
+        try:
+            _strict_resume_timestamp(record.get(field), f"candidate.{record_key}.{field}")
+        except Exception:
+            return f"candidate_invalid_timestamp:{record_key}:{field}"
     if status == "RUNNING" and record.get("finished_at") is not None:
         return f"candidate_running_has_finished_at:{record_key}"
-    if status != "RUNNING" and record.get("finished_at") is None:
-        return f"candidate_terminal_missing_finished_at:{record_key}"
+    if status != "RUNNING":
+        if record.get("finished_at") is None:
+            return f"candidate_terminal_missing_finished_at:{record_key}"
+        try:
+            _strict_resume_timestamp(record.get("finished_at"), f"candidate.{record_key}.finished_at")
+        except Exception:
+            return f"candidate_invalid_timestamp:{record_key}:finished_at"
     return None
 
 
@@ -1496,6 +1515,23 @@ def _validate_resume_state(
     missing = sorted(REQUIRED_STATE_FIELDS.difference(state.keys()))
     if missing:
         return f"missing_state_field:{missing[0]}"
+    try:
+        _strict_resume_timestamp(state.get("created_at"), "created_at")
+    except Exception:
+        return "created_at_invalid"
+    try:
+        _strict_resume_timestamp(state.get("updated_at"), "updated_at")
+    except Exception:
+        return "updated_at_invalid"
+    reset_reason_value = state.get("reset_reason")
+    if reset_reason_value is not None and not isinstance(reset_reason_value, str):
+        return "reset_reason_invalid"
+    terminal_frontier_evidence_value = state.get("terminal_frontier_evidence")
+    if terminal_frontier_evidence_value is not None and not isinstance(
+        terminal_frontier_evidence_value,
+        Mapping,
+    ):
+        return "terminal_frontier_evidence_invalid"
     domain_contract_reason = _validate_master_domain_contract(state)
     if domain_contract_reason is not None:
         return domain_contract_reason

@@ -124,6 +124,45 @@ _EXACT_ROUTING_PRECHECK_MISSING_STATUS = "MISSING_STATUS"
 _EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES = frozenset(
     {"feasible", "front_blocked", "relaxed_disconnected"}
 )
+
+
+def _routing_precheck_blocked_ports_well_formed(value: Any) -> bool:
+    """Return whether front_blocked blocked_ports can carry cut evidence."""
+
+    if not isinstance(value, list) or not value:
+        return False
+    for blocked_port in value:
+        if not isinstance(blocked_port, Mapping):
+            return False
+        conflict_set = blocked_port.get("placement_level_conflict_set", [])
+        if not isinstance(conflict_set, list):
+            return False
+        if any(not isinstance(instance_id, str) for instance_id in conflict_set):
+            return False
+        instance_id = blocked_port.get("instance_id")
+        if instance_id is not None and not isinstance(instance_id, str):
+            return False
+        blocking_instance_ids = blocked_port.get("blocking_instance_ids", [])
+        if not isinstance(blocking_instance_ids, list):
+            return False
+        if any(not isinstance(instance_id, str) for instance_id in blocking_instance_ids):
+            return False
+        for cell_key in ("port_cell", "front_cell"):
+            if cell_key not in blocked_port:
+                continue
+            cell = blocked_port.get(cell_key)
+            if not isinstance(cell, list) or len(cell) != 2:
+                return False
+            if any(isinstance(coord, bool) or not isinstance(coord, int) for coord in cell):
+                return False
+        if (
+            "dir" in blocked_port
+            and str(blocked_port.get("dir")) not in {"N", "S", "E", "W"}
+        ):
+            return False
+    return True
+
+
 _CERTIFIED_SOLVE_MODES = {"certified_exact", "exploratory"}
 _CampaignHeartbeatCallback = Callable[[Mapping[str, Any]], None]
 _PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS = 32
@@ -4863,6 +4902,51 @@ class LBBDController:
         rect_idx, u_var, anchor, _cells = context
         return rect_idx, u_var, anchor
 
+    def _solution_ghost_pick_matches_selected_context(
+        self,
+        solution: Mapping[str, Any],
+        *,
+        rect_idx: int,
+        anchor: Mapping[str, Any],
+    ) -> bool:
+        """Return True only when solution["ghost_pick"] matches the live u-var.
+
+        Delegated power witnesses carry the extracted master solution through to
+        the final certified payload.  The subproblem already avoids the cells
+        recovered from the selected ghost literal; if a forensic/future caller
+        provides a stale or malformed ghost_pick entry in ``solution``, the
+        injected pole could be legal for the live literal but overlap the empty
+        rectangle recorded in the returned witness.  Treat such mixed provenance
+        as unsafe and fail closed.  Missing ghost_pick is allowed here because
+        older unit fixtures build minimal solutions by hand; the live ghost
+        context itself is still mandatory for delegated power.
+        """
+        raw_pick = solution.get("ghost_pick")
+        if raw_pick is None:
+            return True
+        if not isinstance(raw_pick, Mapping):
+            return False
+        if str(raw_pick.get("facility_type")) != "ghost_rect":
+            return False
+
+        try:
+            pose_idx_raw = raw_pick.get("pose_idx")
+            if pose_idx_raw is None or int(pose_idx_raw) != int(rect_idx):
+                return False
+
+            pick_anchor = raw_pick.get("anchor")
+            if not isinstance(pick_anchor, Mapping):
+                return False
+            px = pick_anchor.get("x")
+            py = pick_anchor.get("y")
+            ax = anchor.get("x")
+            ay = anchor.get("y")
+            if px is None or py is None or ax is None or ay is None:
+                return False
+            return int(px) == int(ax) and int(py) == int(ay)
+        except Exception:
+            return False
+
     def _run_power_placement_subproblem(
         self,
         *,
@@ -4907,6 +4991,27 @@ class LBBDController:
             )
             return "ABORT", None
         rect_idx, u_var, anchor, ghost_cells = ghost_context
+        if not self._solution_ghost_pick_matches_selected_context(
+            solution, rect_idx=rect_idx, anchor=anchor
+        ):
+            # The solution payload is the final witness that gets returned after
+            # injection.  Its ghost_pick marker must describe the same selected
+            # ghost literal/cells that the delegated power subproblem avoided.
+            # Otherwise a stale marker could make an injected pole overlap the
+            # empty rectangle claimed by the certified witness.
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_ghost_pick_context_mismatch",
+                iteration=iteration,
+                extra={
+                    "ghost_rect_idx": int(rect_idx),
+                    "ghost_anchor": {
+                        "x": int(anchor.get("x", 0)),
+                        "y": int(anchor.get("y", 0)),
+                    },
+                },
+            )
+            return "ABORT", None
 
         sub = PowerPlacementSubproblem(
             master_solution=solution,
@@ -5613,6 +5718,33 @@ class LBBDController:
                 )
                 return RUN_STATUS_UNKNOWN, None
 
+            if precheck_status == "front_blocked" and isinstance(
+                routing_domain_analysis, Mapping
+            ):
+                summary_blocked_ports = routing_precheck_summary.get("blocked_ports")
+                analysis_blocked_ports = routing_domain_analysis.get("blocked_ports")
+                if (
+                    not _routing_precheck_blocked_ports_well_formed(summary_blocked_ports)
+                    or not _routing_precheck_blocked_ports_well_formed(analysis_blocked_ports)
+                    or summary_blocked_ports != analysis_blocked_ports
+                ):
+                    self._record_unexpected_routing_precheck_status(
+                        iteration=iteration,
+                        precheck_status=precheck_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=binding_model,
+                        routing_precheck=routing_precheck_summary,
+                        violation="routing_precheck_analysis_blocked_ports_mismatch",
+                        extra={
+                            "routing_domain_analysis_blocked_ports": (
+                                analysis_blocked_ports
+                            ),
+                        },
+                    )
+                    return RUN_STATUS_UNKNOWN, None
+
             if (
                 precheck_binding_selection_safe_reject
                 and precheck_status in {"front_blocked", "relaxed_disconnected"}
@@ -6202,12 +6334,15 @@ class LBBDController:
                 isinstance(port_adherence_stats, Mapping)
                 and "blocked_ports" in port_adherence_stats
             ):
-                try:
-                    port_adherence_blocked_ports = int(
-                        port_adherence_stats.get("blocked_ports", 0)
-                    )
-                except (TypeError, ValueError):
+                raw_blocked_ports = port_adherence_stats.get("blocked_ports", 0)
+                if (
+                    isinstance(raw_blocked_ports, bool)
+                    or not isinstance(raw_blocked_ports, int)
+                    or raw_blocked_ports < 0
+                ):
                     port_adherence_blocked_ports = 1
+                else:
+                    port_adherence_blocked_ports = raw_blocked_ports
             if port_adherence_blocked_ports > 0:
                 self._record_unexpected_routing_build_domain_status(
                     iteration=iteration,
@@ -7024,12 +7159,6 @@ def run_benders_for_ghost_rect(
             exact_session=exact_session,
             master_search_profile=str(master_search_profile),
         )
-        boundary_port_precheck = dict(
-            pre_master_precheck.get(
-                "boundary_port_precheck",
-                MasterPlacementModel._default_exact_candidate_boundary_port_feasibility_payload(),
-            )
-        )
         if is_valid_pre_master_precheck_elimination(pre_master_precheck):
             proof_summary = dict(pre_master_precheck.get("proof_summary", {}))
             _publish_last_run_metadata(
@@ -7039,6 +7168,16 @@ def run_benders_for_ghost_rect(
                 generated_exact_safe_cut_count=0,
             )
             return RUN_STATUS_INFEASIBLE, None
+
+        boundary_port_precheck = (
+            MasterPlacementModel._default_exact_candidate_boundary_port_feasibility_payload()
+        )
+        if isinstance(pre_master_precheck, Mapping):
+            raw_boundary_port_precheck = pre_master_precheck.get(
+                "boundary_port_precheck"
+            )
+            if isinstance(raw_boundary_port_precheck, Mapping):
+                boundary_port_precheck = dict(raw_boundary_port_precheck)
     cut_manager = CutManager(
         checkpoint_dir=project_root / "data" / "checkpoints",
         solve_mode=solve_mode,
@@ -7440,7 +7579,13 @@ def run_benders_for_ghost_rect(
     # #7b prep 的 cut_manager.cuts_for_stage 实现 ε 阶段跨 wave bucketing.
     controller.set_epsilon_stage(epsilon_stage)
     if solve_mode == "certified_exact":
-        pre_master_proof_summary = dict(pre_master_precheck.get("proof_summary", {}))
+        pre_master_proof_summary: Dict[str, Any] = {}
+        if isinstance(pre_master_precheck, Mapping):
+            raw_pre_master_proof_summary = pre_master_precheck.get(
+                "proof_summary", {}
+            )
+            if isinstance(raw_pre_master_proof_summary, Mapping):
+                pre_master_proof_summary = dict(raw_pre_master_proof_summary)
         reused_advisory = _copy_anchor119_row_domain_guard_advisory_from_proof_summary(
             controller._master_candidate_precheck,
             proof_summary=pre_master_proof_summary,

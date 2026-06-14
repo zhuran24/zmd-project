@@ -305,6 +305,16 @@ def test_preprocess_context_rejects_direct_role_key_identity_mismatch_before_ext
         solve_demands_exact(context=context)
 
 
+def test_preprocess_context_rejects_missing_role_for_recipe_referenced_commodity() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    del context.commodity_roles["steel_part"]
+
+    with pytest.raises(ValueError, match="commodity_roles is missing entries.*steel_part"):
+        validate_preprocess_context(context)
+    with pytest.raises(ValueError, match="commodity_roles is missing entries.*steel_part"):
+        solve_demands_exact(context=context)
+
+
 def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_commodity(
     raw_rules_dict,
     raw_plan_dict,
@@ -393,6 +403,19 @@ def test_preprocess_context_rejects_direct_recipe_nonpositive_input_amount() -> 
 
     with pytest.raises(ValueError, match="packaging_battery.*input amount.*steel_part.*must be > 0"):
         validate_preprocess_context(context)
+
+
+@pytest.mark.parametrize("bad_ticks", [True, 1.5, "1"])
+def test_preprocess_context_rejects_direct_builder_loose_recipe_ticks_per_cycle(
+    raw_rules_dict,
+    raw_plan_dict,
+    bad_ticks,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["parts_maker"]["ticks_per_cycle"] = bad_ticks
+
+    with pytest.raises(TypeError, match="recipes.parts_maker.ticks_per_cycle must be an integer"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
 
 
 def test_preprocess_context_rejects_direct_nonstring_facility_template_key() -> None:

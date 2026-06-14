@@ -55,7 +55,8 @@ def build_manufacturing_instances(
         template = mapping.get(operation_type)
         if template is None:
             raise ValueError(f"未知 operation_type（操作类型）: {operation_type}")
-        for index in range(1, int(count) + 1):
+        validated_count = _strict_machine_count(operation_type, count)
+        for index in range(1, validated_count + 1):
             instances.append(
                 {
                     "instance_id": f"{operation_type}_{index:03d}",
@@ -131,16 +132,20 @@ def load_machine_counts(path: Path) -> Dict[str, int]:
         raise TypeError("machine_counts.json must be a JSON object")
     counts: Dict[str, int] = {}
     for operation_type, raw_count in payload.items():
-        if isinstance(raw_count, bool) or not isinstance(raw_count, int):
-            raise TypeError(
-                f"machine_counts.{operation_type} must be an integer count"
-            )
-        if raw_count < 0:
-            raise ValueError(
-                f"machine_counts.{operation_type} must be non-negative: {raw_count}"
-            )
-        counts[str(operation_type)] = int(raw_count)
+        counts[str(operation_type)] = _strict_machine_count(operation_type, raw_count)
     return counts
+
+
+def _strict_machine_count(operation_type: Any, raw_count: Any) -> int:
+    if isinstance(raw_count, bool) or not isinstance(raw_count, int):
+        raise TypeError(
+            f"machine_counts.{operation_type} must be an integer count"
+        )
+    if raw_count < 0:
+        raise ValueError(
+            f"machine_counts.{operation_type} must be non-negative: {raw_count}"
+        )
+    return int(raw_count)
 
 
 def save_json(path: Path, payload: Any) -> None:

@@ -18,7 +18,7 @@ from src.preprocess.demand_solver import (
     save_preprocessed_artifacts,
     solve_demands,
 )
-from src.preprocess.instance_builder import load_machine_counts
+from src.preprocess.instance_builder import build_manufacturing_instances, load_machine_counts
 
 
 @pytest.fixture
@@ -52,6 +52,17 @@ def test_load_machine_counts_rejects_overflow_json_numbers(tmp_path) -> None:
 
     with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
         load_machine_counts(path)
+
+
+@pytest.mark.parametrize("bad_count", [True, 1.5, "2"])
+def test_build_manufacturing_instances_rejects_loose_direct_counts(bad_count) -> None:
+    with pytest.raises(TypeError, match="machine_counts.packaging_battery must be an integer count"):
+        build_manufacturing_instances({"packaging_battery": bad_count})
+
+
+def test_build_manufacturing_instances_rejects_negative_direct_counts() -> None:
+    with pytest.raises(ValueError, match="machine_counts.packaging_battery must be non-negative"):
+        build_manufacturing_instances({"packaging_battery": -1})
 
 
 def test_target_flows_accuracy(solved_data) -> None:

@@ -424,8 +424,92 @@ def test_pose_bool_exact_core_packaging_no_ghost_remains_intentional_noop(monkey
     assert core.build_stats["pose_bool_master"]["no_op_reason"] == "ghost_rect_none_at_build_exact_core_stage"
 
 
+def test_pose_bool_exact_core_overlay_rebuilds_instead_of_reusing_empty_proto(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    pools = {
+        "protocol_storage_box": [
+            {
+                "pose_id": "box_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 1, "height": 1}},
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 1, "h": 1}, "needs_power": False}
+        },
+    }
+
+    core = MasterPlacementModel.build_exact_core(
+        instances=[],
+        facility_pools=pools,
+        rules=rules,
+        skip_power_coverage=True,
+        exact_required_pose_optional_counts={"protocol_storage_box": 1},
+    )
+    assert core.master_representation == "pose_bool_exact_v1"
+    assert len(core.proto.variables) == 0
+    assert len(core.proto.constraints) == 0
+
+    overlay = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+
+    assert overlay.build_stats["exact_core_reuse"]["proto_reused"] is False
+    assert overlay.build_stats["exact_core_reuse"]["reason"] == (
+        "pose_bool_exact_core_proto_is_packaging_noop_direct_rebuild"
+    )
+    assert overlay.solve(time_limit_seconds=2.0) == cp_model.INFEASIBLE
+
+
 def test_pose_bool_respects_skip_power_coverage_for_powered_mandatory(monkeypatch) -> None:
     monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    instances = [
+        {
+            "instance_id": "machine_1",
+            "facility_type": "machine",
+            "operation_type": "noop",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    pools = {
+        "machine": [
+            {
+                "pose_id": "machine_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {
+            "machine": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
+        },
+    }
+    model = MasterPlacementModel(
+        instances=instances,
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        ghost_anchor_filter={(1, 0)},
+        skip_power_coverage=True,
+    )
+
+    assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    assert model.extract_solution()["machine_1"]["pose_idx"] == 0
+
+
+def test_coordinate_exact_skip_power_keeps_powered_candidate_without_coverer(monkeypatch) -> None:
+    monkeypatch.delenv("EXACT_USE_POSE_BOOL_MASTER", raising=False)
     instances = [
         {
             "instance_id": "machine_1",

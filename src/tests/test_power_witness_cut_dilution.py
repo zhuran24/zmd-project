@@ -502,6 +502,82 @@ def test_power_subproblem_aborts_when_selected_ghost_anchor_lacks_coordinates(tm
     assert controller.generated_exact_safe_cuts == []
 
 
+def test_power_subproblem_aborts_when_solution_ghost_pick_disagrees_with_selected_context(tmp_path):
+    """The returned witness ghost_pick must match the live selected ghost literal.
+
+    The subproblem avoids cells from the selected master ghost context.  If a
+    future/forensic caller passes a stale ghost_pick entry in the solution,
+    injection would otherwise preserve that marker and add a pole that overlaps
+    the empty rectangle claimed by the final witness.
+    """
+    from src.search.benders_loop import LBBDController
+
+    class FakeSolver:
+        def Value(self, _var):
+            return 1
+
+    pools = {
+        "powered_widget": [
+            {
+                "pose_id": "machine_left",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "power_pole": [
+            {
+                "pose_id": "pole_inside_stale_solution_ghost",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0]],
+            }
+        ],
+    }
+    master = SimpleNamespace(
+        facility_pools=pools,
+        _powered_templates={"powered_widget"},
+        _power_coverers_by_template_pose={"powered_widget": {0: [0]}},
+        u_vars={0: object()},
+        _ghost_domains=[{"anchor": {"x": 1, "y": 0}, "cells": [(1, 0)]}],
+        _solver=FakeSolver(),
+        ghost_rect=(1, 1),
+    )
+    controller = LBBDController(
+        master=master,
+        cut_manager=CutManager(tmp_path / "checkpoints", solve_mode="certified_exact"),
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+    )
+
+    outcome, payload = controller._run_power_placement_subproblem(
+        solution={
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+            "ghost_pick": {
+                "instance_id": "ghost_pick",
+                "facility_type": "ghost_rect",
+                "pose_idx": 1,
+                "pose_id": "ghost_anchor::2,0",
+                "anchor": {"x": 2, "y": 0},
+                "bound_type": "ghost_rect",
+            },
+        },
+        iteration=1,
+    )
+
+    assert outcome == "ABORT"
+    assert payload is None
+    assert controller.generated_exact_safe_cuts == []
+
+
 def test_power_subproblem_aborts_when_solution_already_has_power_pole(tmp_path):
     """Do not mix delegated pole variables with an already materialized pole.
 

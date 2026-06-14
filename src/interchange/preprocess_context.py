@@ -10,6 +10,7 @@ The certified runtime still consumes frozen `data/preprocessed/*` artifacts.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from decimal import Decimal
 from fractions import Fraction
 from functools import lru_cache
 import copy
@@ -18,7 +19,7 @@ from typing import Any, Iterable, Mapping
 
 from jsonschema import validate as validate_json_schema
 
-from src.io.strict_json import load_strict_json
+from src.io.strict_json import load_strict_json, load_strict_json_exact_decimal
 
 PREPROCESS_PLAN_VERSION = "0.2.0"
 PLAN_CANONICAL_OVERRIDE_KEYS = ("recipes", "production_targets", "commodity_roles")
@@ -244,6 +245,7 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
         raise ValueError("preprocess context must contain at least one production target")
 
     _validate_context_mapping_id_consistency(context)
+    _validate_commodity_role_coverage(context)
 
     for recipe in context.recipes.values():
         if recipe.template not in context.facility_templates:
@@ -435,6 +437,26 @@ def _require_string_identifier(value: Any, label: str) -> None:
         raise ValueError(f"{label} must be a string identifier: {value!r}")
 
 
+def _validate_commodity_role_coverage(context: PreprocessContext) -> None:
+    referenced_commodities: set[str] = set(context.targets)
+    for recipe in context.recipes.values():
+        referenced_commodities.update(recipe.inputs)
+        referenced_commodities.update(recipe.outputs)
+
+    missing = tuple(
+        sorted(
+            commodity_id
+            for commodity_id in referenced_commodities
+            if commodity_id not in context.commodity_roles
+        )
+    )
+    if missing:
+        raise ValueError(
+            "commodity_roles is missing entries for recipe/target commodities: "
+            + ", ".join(missing)
+        )
+
+
 
 def _merge_overlay(base: Mapping[str, Any], overlay: Mapping[str, Any]) -> dict[str, Any]:
     merged = dict(base)
@@ -591,8 +613,8 @@ def _validate_preprocess_source_schemas(
 @lru_cache(maxsize=1)
 def load_default_preprocess_context() -> PreprocessContext:
     project_root = Path(__file__).resolve().parent.parent.parent
-    rules_payload = load_strict_json(project_root / "rules" / "canonical_rules.json")
-    plan_payload = load_strict_json(project_root / "rules" / "preprocess_plan.json")
+    rules_payload = load_strict_json_exact_decimal(project_root / "rules" / "canonical_rules.json")
+    plan_payload = load_strict_json_exact_decimal(project_root / "rules" / "preprocess_plan.json")
     _validate_preprocess_source_schemas(rules_payload, plan_payload)
     return build_preprocess_context_from_rules_and_plan(rules_payload, plan_payload)
 
@@ -602,8 +624,8 @@ def load_preprocess_context_from_paths(
     rules_path: Path,
     plan_path: Path,
 ) -> PreprocessContext:
-    rules_payload = load_strict_json(Path(rules_path))
-    plan_payload = load_strict_json(Path(plan_path))
+    rules_payload = load_strict_json_exact_decimal(Path(rules_path))
+    plan_payload = load_strict_json_exact_decimal(Path(plan_path))
     _validate_preprocess_source_schemas(rules_payload, plan_payload)
     return build_preprocess_context_from_rules_and_plan(
         rules_payload,
@@ -780,7 +802,10 @@ def _parse_recipe(recipe_id: str, raw_recipe: Any) -> PreprocessRecipe:
     return PreprocessRecipe(
         recipe_id=str(recipe_id),
         template=str(recipe.get("template", "")).strip(),
-        ticks_per_cycle=int(recipe.get("ticks_per_cycle", 0)),
+        ticks_per_cycle=_strict_positive_int(
+            recipe.get("ticks_per_cycle", 0),
+            f"recipes.{recipe_id}.ticks_per_cycle",
+        ),
         inputs=inputs,
         outputs=outputs,
     )
@@ -827,6 +852,14 @@ def _strict_nonnegative_int(value: Any, field: str) -> int:
     return int(value)
 
 
+def _strict_positive_int(value: Any, field: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError(f"{field} must be an integer")
+    if value <= 0:
+        raise ValueError(f"{field} must be > 0")
+    return int(value)
+
+
 def _parse_utility_operation(operation_type: str, raw_utility: Any) -> UtilityOperation:
     utility = _mapping_or_empty(raw_utility)
     return UtilityOperation(
@@ -864,6 +897,8 @@ def _to_fraction(value: Any) -> Fraction:
         raise TypeError("boolean values are not valid Fraction inputs")
     if isinstance(value, int):
         return Fraction(int(value), 1)
+    if isinstance(value, Decimal):
+        return Fraction(value)
     if isinstance(value, float):
         return Fraction(str(value))
     if isinstance(value, str):

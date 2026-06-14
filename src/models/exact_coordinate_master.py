@@ -1914,12 +1914,28 @@ class CoordinateExactMasterDelegate:
             for bucket in bucket_defs
         }
 
+    def _coordinate_master_pose_indices_for_group(
+        self,
+        group: Mapping[str, Any],
+    ) -> List[int]:
+        tpl = str(group["facility_type"])
+        if (
+            self.owner.skip_power_coverage
+            and tpl in self.owner._powered_templates
+            and tpl != "power_pole"
+        ):
+            return sorted(
+                range(len(self.owner.facility_pools.get(tpl, []))),
+                key=lambda pose_idx: self.owner._pose_sort_key(tpl, int(pose_idx)),
+            )
+        return self.owner._candidate_pose_indices_for_group(group)
+
     def _prepare_signature_maps(self) -> None:
         for group in self.owner._mandatory_groups:
             group_id = str(group["group_id"])
             tpl = str(group["facility_type"])
             allowed_pose_indices = {
-                int(pose_idx) for pose_idx in self.owner._candidate_pose_indices_for_group(group)
+                int(pose_idx) for pose_idx in self._coordinate_master_pose_indices_for_group(group)
             }
             payload = self._signature_domain_payload(
                 tpl,
@@ -2251,7 +2267,7 @@ class CoordinateExactMasterDelegate:
             candidate_tuples = tuple(
                 sorted(
                     self._template_pose_tuple_by_idx[tpl][int(pose_idx)]
-                    for pose_idx in sorted(self.owner._candidate_pose_indices_for_group(group))
+                    for pose_idx in sorted(self._coordinate_master_pose_indices_for_group(group))
                     if int(pose_idx) in self._template_pose_tuple_by_idx[tpl]
                 )
             )
