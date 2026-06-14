@@ -23,6 +23,7 @@
 
 ## 工作流 / 协作偏好
 
+- [问题不是重点·原因才是重点 (根因优先, 严重级)](root-cause-over-symptom.md) — owner 铁律:遇事找产生问题的原因别停在症状;我反复会错意/请示/不长记性的根因=默认「收到消息就赶产出反应」跳过「先理解意图+根因」
 - [验证类任务必派独立 backstop](feedback_verification_independent_backstop.md) — 验证/核对/查全类不只信 main 自审; 独立子代理直接查被验对象本身, re-audit 不降 scope.
 - [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察编干净因果当事实=反复犯的病; 要定因须对照重复.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改先给用户确认.
