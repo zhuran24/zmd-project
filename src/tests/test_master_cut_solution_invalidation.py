@@ -349,3 +349,119 @@ def test_pose_bool_protocol_storage_lower_bound_counts_beyond_fixed_required(mon
         if key.startswith("pose_optional::protocol_storage_box::")
     ]
     assert len(selected_boxes) == 2
+
+
+def test_pose_bool_direct_no_ghost_build_still_enforces_body_packing(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    instances = [
+        {
+            "instance_id": "a_1",
+            "facility_type": "a",
+            "operation_type": "noop",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+        {
+            "instance_id": "b_1",
+            "facility_type": "b",
+            "operation_type": "noop",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        },
+    ]
+    pools = {
+        "a": [
+            {
+                "pose_id": "a_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "b": [
+            {
+                "pose_id": "b_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+    }
+    rules = {
+        "globals": {"grid": {"width": 1, "height": 1}},
+        "facility_templates": {
+            "a": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            "b": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+        },
+    }
+    model = MasterPlacementModel(
+        instances=instances,
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        skip_power_coverage=True,
+    )
+
+    assert model.solve(time_limit_seconds=2.0) == cp_model.INFEASIBLE
+
+
+def test_pose_bool_exact_core_packaging_no_ghost_remains_intentional_noop(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    instances, pools, rules = _two_pose_fixture()
+
+    core = MasterPlacementModel.build_exact_core(
+        instances=instances,
+        facility_pools=pools,
+        rules=rules,
+        skip_power_coverage=True,
+    )
+
+    assert core.master_representation == "pose_bool_exact_v1"
+    assert core.build_stats["pose_bool_master"]["no_op_reason"] == "ghost_rect_none_at_build_exact_core_stage"
+
+
+def test_pose_bool_respects_skip_power_coverage_for_powered_mandatory(monkeypatch) -> None:
+    monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
+    instances = [
+        {
+            "instance_id": "machine_1",
+            "facility_type": "machine",
+            "operation_type": "noop",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    pools = {
+        "machine": [
+            {
+                "pose_id": "machine_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ]
+    }
+    rules = {
+        "globals": {"grid": {"width": 2, "height": 1}},
+        "facility_templates": {
+            "machine": {"dimensions": {"w": 1, "h": 1}, "needs_power": True},
+        },
+    }
+    model = MasterPlacementModel(
+        instances=instances,
+        facility_pools=pools,
+        rules=rules,
+        solve_mode="certified_exact",
+        ghost_rect=(1, 1),
+        ghost_anchor_filter={(1, 0)},
+        skip_power_coverage=True,
+    )
+
+    assert model.solve(time_limit_seconds=2.0) in {cp_model.OPTIMAL, cp_model.FEASIBLE}
+    assert model.extract_solution()["machine_1"]["pose_idx"] == 0

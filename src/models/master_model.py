@@ -2547,7 +2547,11 @@ class MasterPlacementModel:
             solve_mode="certified_exact",
             master_search_profile=master_search_profile,
         )
-        model.build()
+        setattr(model, "_pose_bool_exact_core_proto_build", True)
+        try:
+            model.build()
+        finally:
+            setattr(model, "_pose_bool_exact_core_proto_build", False)
         proto_capture_started = time.perf_counter()
         core_proto = model.model.Proto()
         proto_capture_seconds = time.perf_counter() - proto_capture_started

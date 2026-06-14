@@ -13,6 +13,7 @@ from __future__ import annotations
 import calendar
 import hashlib
 import json
+import math
 import os
 import tempfile
 import time
@@ -290,6 +291,15 @@ def _strict_resume_int(value: Any, field: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise ValueError(f"{field} must be an integer")
     return int(value)
+
+
+def _strict_resume_nonnegative_float(value: Any, field: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{field} must be a finite non-negative number")
+    numeric = float(value)
+    if not math.isfinite(numeric) or numeric < 0.0:
+        raise ValueError(f"{field} must be a finite non-negative number")
+    return numeric
 
 
 def _solution_without_ghost_marker(solution: Mapping[str, Any]) -> Dict[str, Any]:
@@ -1498,6 +1508,10 @@ def _validate_resume_state(
         return "proof_summary_schema_version_mismatch"
     if proof_summary_schema_version != PROOF_SUMMARY_SCHEMA_VERSION:
         return "proof_summary_schema_version_mismatch"
+    try:
+        _strict_resume_nonnegative_float(state.get("campaign_hours"), "campaign_hours")
+    except Exception:
+        return "campaign_hours_invalid"
     if not isinstance(state.get("artifact_hashes"), Mapping):
         return "artifact_hashes_invalid"
     if dict(state.get("artifact_hashes", {})) != dict(current_hashes):

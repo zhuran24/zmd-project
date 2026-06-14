@@ -11,7 +11,7 @@ from src.preprocess.demand_solver import (
     normalize_json_numbers,
     generate_port_budget,
     save_preprocessed_artifacts,
-    solve_demands,
+    solve_demands_exact,
 )
 from src.preprocess.instance_builder import (
     EXPLORATORY_OPTIONAL_CAPS,
@@ -58,7 +58,7 @@ def test_preprocess_chain_regenerates_frozen_artifacts_from_source_code(tmp_path
     golden_dir = project_root / "data" / "preprocessed"
     regen_dir = tmp_path / "data" / "preprocessed"
 
-    flows, fractional_counts = solve_demands()
+    flows, fractional_counts = solve_demands_exact()
     machine_counts = generate_ceil_machine_counts(fractional_counts)
     port_budget = generate_port_budget(flows)
     generic_io_requirements = generate_generic_io_requirements(flows, port_budget)
@@ -103,7 +103,7 @@ def test_preprocess_chain_regenerates_frozen_artifacts_from_source_code(tmp_path
 
 
 def test_regenerated_instance_distribution_matches_machine_counts() -> None:
-    flows, fractional_counts = solve_demands()
+    flows, fractional_counts = solve_demands_exact()
     del flows
     machine_counts = generate_ceil_machine_counts(fractional_counts)
     mandatory_exact_instances = (
@@ -129,7 +129,7 @@ def test_regenerated_instance_distribution_matches_machine_counts() -> None:
 
 
 def test_regenerated_preprocess_invariants_match_current_frozen_contract() -> None:
-    flows, fractional_counts = solve_demands()
+    flows, fractional_counts = solve_demands_exact()
     machine_counts = generate_ceil_machine_counts(fractional_counts)
     port_budget = generate_port_budget(flows)
     generic_io_requirements = generate_generic_io_requirements(flows, port_budget)

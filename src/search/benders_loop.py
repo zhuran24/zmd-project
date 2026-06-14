@@ -159,6 +159,37 @@ def _normalize_solve_mode(
     return solve_mode
 
 
+def is_valid_pre_master_precheck_elimination(precheck_outcome: Any) -> bool:
+    """Return whether a pre-master precheck result may skip the master solve.
+
+    This is the shared campaign/write and solver-entry contract: a truthy
+    ``triggered`` flag alone is not enough to convert a candidate into a strong
+    INFEASIBLE result.
+    """
+    if not isinstance(precheck_outcome, Mapping):
+        return False
+    if precheck_outcome.get("triggered") is not True:
+        return False
+    if str(precheck_outcome.get("status", "")) != RUN_STATUS_INFEASIBLE:
+        return False
+    proof_summary = precheck_outcome.get("proof_summary")
+    if not isinstance(proof_summary, Mapping):
+        return False
+    if str(proof_summary.get("master_status", "")) != RUN_STATUS_INFEASIBLE:
+        return False
+    master_candidate_precheck = proof_summary.get("master_candidate_precheck")
+    if not isinstance(master_candidate_precheck, Mapping):
+        return False
+    if master_candidate_precheck.get("triggered") is not True:
+        return False
+    if master_candidate_precheck.get("master_solve_skipped") is not True:
+        return False
+    precheck_reason = master_candidate_precheck.get("precheck_reason")
+    if not isinstance(precheck_reason, str) or not precheck_reason.strip():
+        return False
+    return True
+
+
 def _maybe_attach_anchor119_row_domain_guard_advisory(
     master_candidate_precheck_payload: Dict[str, Any],
     *,
@@ -4844,6 +4875,24 @@ class LBBDController:
         coverers = (
             getattr(self.master, "_power_coverers_by_template_pose", {}) or {}
         )
+        preexisting_power_poles = [
+            str(instance_id)
+            for instance_id, entry in solution.items()
+            if str((entry or {}).get("facility_type")) == "power_pole"
+        ]
+        if preexisting_power_poles:
+            # The delegated power subproblem treats power-pole poses as variables of
+            # its own.  Re-solving on top of an already materialized pole would
+            # require that pole to be carried as proof support for both FEASIBLE
+            # witnesses and INFEASIBLE cuts.  Until that mixed context is modeled,
+            # fail closed instead of injecting an overlapping synthetic pole.
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_preexisting_power_pole_context",
+                iteration=iteration,
+                extra={"preexisting_power_pole_count": len(preexisting_power_poles)},
+            )
+            return "ABORT", None
         ghost_context = self._selected_ghost_context()
         if ghost_context is None:
             # The delegated power witness is part of the same empty-rectangle proof
@@ -5480,6 +5529,21 @@ class LBBDController:
                     },
                 )
                 return RUN_STATUS_UNKNOWN, None
+            if (
+                routing_domain_analysis_status is None
+                and precheck_status in {"front_blocked", "relaxed_disconnected"}
+            ):
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_precheck_missing_domain_analysis",
+                )
+                return RUN_STATUS_UNKNOWN, None
 
             # B1 Phase 4: env on 时 skip front_blocked early reject — precheck 是
             # heuristic, routing CP-SAT 实际能绕路. pose-bool master 不知 port
@@ -5492,8 +5556,65 @@ class LBBDController:
             ).strip().lower() in {"1", "true", "yes", "on"}:
                 precheck_status = "feasible"  # 让 routing.solve 实际跑
 
+            precheck_binding_selection_safe_reject_value = (
+                routing_precheck_summary.get("binding_selection_safe_reject", False)
+            )
+            precheck_binding_selection_safe_reject = (
+                precheck_binding_selection_safe_reject_value is True
+            )
             if (
-                bool(routing_precheck_summary.get("binding_selection_safe_reject", False))
+                precheck_status in {"front_blocked", "relaxed_disconnected"}
+                and isinstance(routing_domain_analysis, Mapping)
+            ):
+                routing_domain_analysis_safe_reject_value = (
+                    routing_domain_analysis.get("binding_selection_safe_reject", False)
+                )
+                if (
+                    routing_domain_analysis_safe_reject_value
+                    is not precheck_binding_selection_safe_reject_value
+                ):
+                    self._record_unexpected_routing_precheck_status(
+                        iteration=iteration,
+                        precheck_status=precheck_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=binding_model,
+                        routing_precheck=routing_precheck_summary,
+                        violation="routing_precheck_analysis_safe_reject_mismatch",
+                        extra={
+                            "binding_selection_safe_reject": (
+                                precheck_binding_selection_safe_reject_value
+                            ),
+                            "routing_domain_analysis_binding_selection_safe_reject": (
+                                routing_domain_analysis_safe_reject_value
+                            ),
+                        },
+                    )
+                    return RUN_STATUS_UNKNOWN, None
+            if (
+                precheck_status in {"front_blocked", "relaxed_disconnected"}
+                and not precheck_binding_selection_safe_reject
+            ):
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_precheck_reject_status_not_binding_selection_safe",
+                    extra={
+                        "binding_selection_safe_reject": (
+                            precheck_binding_selection_safe_reject_value
+                        )
+                    },
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            if (
+                precheck_binding_selection_safe_reject
                 and precheck_status in {"front_blocked", "relaxed_disconnected"}
                 and self._binding_has_alternatives(binding_model)
             ):
@@ -6031,8 +6152,9 @@ class LBBDController:
             self._routing_overlay_build_seconds = time.perf_counter() - routing_overlay_started
             self._update_routing_shrink_from_build_stats(routing_model.build_stats)
             routing_attempts += 1
+            routing_build_stats = dict(routing_model.build_stats)
             duplicate_terminal_front_keys = list(
-                dict(routing_model.build_stats).get("duplicate_terminal_front_keys", [])
+                routing_build_stats.get("duplicate_terminal_front_keys", [])
                 or []
             )
             if duplicate_terminal_front_keys:
@@ -6052,7 +6174,7 @@ class LBBDController:
                 )
                 return RUN_STATUS_UNKNOWN, None
 
-            build_domain_analysis = dict(routing_model.build_stats).get("domain_analysis")
+            build_domain_analysis = routing_build_stats.get("domain_analysis")
             build_domain_status = None
             if isinstance(build_domain_analysis, Mapping):
                 build_domain_status = (
@@ -6073,6 +6195,34 @@ class LBBDController:
                     violation="unexpected_routing_build_domain_status",
                 )
                 return RUN_STATUS_UNKNOWN, None
+
+            port_adherence_stats = routing_build_stats.get("port_adherence")
+            port_adherence_blocked_ports = 0
+            if (
+                isinstance(port_adherence_stats, Mapping)
+                and "blocked_ports" in port_adherence_stats
+            ):
+                try:
+                    port_adherence_blocked_ports = int(
+                        port_adherence_stats.get("blocked_ports", 0)
+                    )
+                except (TypeError, ValueError):
+                    port_adherence_blocked_ports = 1
+            if port_adherence_blocked_ports > 0:
+                self._record_unexpected_routing_build_domain_status(
+                    iteration=iteration,
+                    build_domain_status="PORT_ADHERENCE_BLOCKED_PORTS",
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_summary=routing_model.build_stats,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_build_port_adherence_blocked_ports",
+                    extra={"port_adherence": dict(port_adherence_stats or {})},
+                )
+                return RUN_STATUS_UNKNOWN, None
+
             self._emit_heartbeat(
                 stage="routing_solve",
                 event="start",
@@ -6880,7 +7030,7 @@ def run_benders_for_ghost_rect(
                 MasterPlacementModel._default_exact_candidate_boundary_port_feasibility_payload(),
             )
         )
-        if bool(pre_master_precheck.get("triggered", False)):
+        if is_valid_pre_master_precheck_elimination(pre_master_precheck):
             proof_summary = dict(pre_master_precheck.get("proof_summary", {}))
             _publish_last_run_metadata(
                 proof_summary,

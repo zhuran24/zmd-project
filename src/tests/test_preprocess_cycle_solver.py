@@ -90,3 +90,35 @@ def test_cycle_solver_rejects_unvalidated_context_with_role_declaring_group_but_
     with pytest.raises(ValueError, match="ghost_spore.*internal_commodities"):
         solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
 
+
+def test_cycle_solver_rejects_unvalidated_context_with_role_key_identity_mismatch() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.commodity_roles["buckwheat"] = CommodityRole(
+        commodity_id="buckwheat_seed",
+        source_kind="cycle_internal",
+        sink_kind="none",
+        cycle_group="buckwheat_cycle",
+    )
+
+    with pytest.raises(ValueError, match=r"commodity_roles key 'buckwheat'.*role\.commodity_id 'buckwheat_seed'"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
+
+
+def test_cycle_solver_rejects_unvalidated_context_with_recipe_key_identity_mismatch() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["planter_buckwheat"] = replace(
+        context.recipes["planter_buckwheat"],
+        recipe_id="alias_planter_buckwheat",
+    )
+
+    with pytest.raises(ValueError, match=r"preprocess recipes key 'planter_buckwheat'.*recipe\.recipe_id 'alias_planter_buckwheat'"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
+
+
+def test_cycle_solver_rejects_unvalidated_context_with_nonpositive_cycle_recipe_amount() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["seed_collector_buckwheat"].outputs["buckwheat_seed"] = Fraction(0)
+
+    with pytest.raises(ValueError, match="seed_collector_buckwheat.*output amount.*buckwheat_seed.*must be > 0"):
+        solve_cycle_group_exact(context, "buckwheat_cycle", {"buckwheat": Fraction(1)})
+

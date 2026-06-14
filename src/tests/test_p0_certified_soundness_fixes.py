@@ -784,6 +784,22 @@ def test_front_blocked_safe_reject_enumerates_binding_before_master_cut(
                     }
                 ],
                 "disconnected_commodities": [],
+                "_analysis": {
+                    "status": "front_blocked",
+                    "binding_selection_safe_reject": True,
+                    "placement_level_conflict_set": ["tiny_001"],
+                    "blocked_ports": [
+                        {
+                            "instance_id": "tiny_001",
+                            "placement_level_conflict_set": ["tiny_001"],
+                            "port_cell": [0, 0],
+                            "front_cell": [1, 0],
+                            "dir": "E",
+                        }
+                    ],
+                    "disconnected_commodities": [],
+                    "domain_stats": {"blocked_ports": 1},
+                },
             }
         return {
             "status": "feasible",

@@ -502,6 +502,88 @@ def test_power_subproblem_aborts_when_selected_ghost_anchor_lacks_coordinates(tm
     assert controller.generated_exact_safe_cuts == []
 
 
+def test_power_subproblem_aborts_when_solution_already_has_power_pole(tmp_path):
+    """Do not mix delegated pole variables with an already materialized pole.
+
+    PowerPlacementSubproblem deliberately ignores power_pole entries in
+    _fixed_occupied_cells() because poles are normally its decision variables.
+    When a future/forensic caller feeds a solution that already contains a
+    power_pole, re-solving the delegated witness can otherwise inject another
+    synthetic pole on the same occupied cell under a different pose_id.
+    """
+    from src.search.benders_loop import LBBDController
+
+    class FakeSolver:
+        def Value(self, _var):
+            return 1
+
+    pools = {
+        "powered_widget": [
+            {
+                "pose_id": "machine_left",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "power_pole": [
+            {
+                "pose_id": "existing_pole",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [],
+            },
+            {
+                "pose_id": "synthetic_overlap",
+                "anchor": {"x": 2, "y": 0},
+                "occupied_cells": [[2, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0]],
+            },
+        ],
+    }
+    master = SimpleNamespace(
+        facility_pools=pools,
+        _powered_templates={"powered_widget"},
+        _power_coverers_by_template_pose={"powered_widget": {0: [1]}},
+        u_vars={0: object()},
+        _ghost_domains=[{"anchor": {"x": 3, "y": 0}, "cells": [(3, 0)]}],
+        _solver=FakeSolver(),
+        ghost_rect=(1, 1),
+    )
+    controller = LBBDController(
+        master=master,
+        cut_manager=CutManager(tmp_path / "checkpoints", solve_mode="certified_exact"),
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+    )
+
+    outcome, payload = controller._run_power_placement_subproblem(
+        solution={
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+            "existing_power_pole": {
+                "instance_id": "existing_power_pole",
+                "facility_type": "power_pole",
+                "pose_idx": 0,
+            },
+        },
+        iteration=1,
+    )
+
+    assert outcome == "ABORT"
+    assert payload is None
+    assert controller.generated_exact_safe_cuts == []
+
+
 def test_power_subproblem_infeasible_cut_keeps_unpowered_occupancy_support():
     """Unpowered placed cells can make the deferred pole subproblem infeasible.
 

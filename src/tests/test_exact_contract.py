@@ -4535,6 +4535,410 @@ def test_duplicate_terminal_front_keys_at_routing_build_fail_closed_before_cut(
     assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
 
 
+def test_feasible_routing_build_port_adherence_blocked_ports_fail_closed_before_cut(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 0,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "malformed_feasible_domain_analysis"}
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        return {
+            "status": "feasible",
+            "binding_selection_safe_reject": False,
+            "placement_level_conflict_set": [],
+            "blocked_ports": [],
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "malformed-feasible-domain-analysis"},
+            "_analysis": {
+                "status": "feasible",
+                "binding_selection_safe_reject": False,
+                "placement_level_conflict_set": [],
+                "blocked_ports": [],
+                "disconnected_commodities": [],
+                "commodity_front_metadata": {},
+                "commodity_component_cells": {},
+                "commodity_active_cells": {},
+                "domain_stats": {"source": "malformed-feasible-domain-analysis"},
+            },
+        }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_whole_layout_nogood(**kwargs):
+        raise AssertionError(
+            "port-adherence build contradiction must not become a whole-layout cut"
+        )
+
+    controller._add_exact_whole_layout_nogood = fail_whole_layout_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert (
+        controller.last_proof_summary["routing_status"]
+        == "BUILD_DOMAIN_PORT_ADHERENCE_BLOCKED_PORTS"
+    )
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "routing_build_port_adherence_blocked_ports"
+    )
+    assert controller.last_proof_summary["port_adherence"]["blocked_ports"] == 1
+    assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
+def test_front_blocked_precheck_without_analysis_fails_closed_before_cut(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 0,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "front_blocked_missing_analysis"}
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        return {
+            "status": "front_blocked",
+            "binding_selection_safe_reject": True,
+            "placement_level_conflict_set": ["tiny_001"],
+            "blocked_ports": [
+                {
+                    "instance_id": "tiny_001",
+                    "placement_level_conflict_set": ["tiny_001"],
+                    "port_cell": [0, 0],
+                    "front_cell": [1, 0],
+                    "dir": "E",
+                }
+            ],
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "missing-analysis-regression"},
+        }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_persisted_nogood(**kwargs):
+        raise AssertionError(
+            "front_blocked precheck without _analysis must fail closed before cut"
+        )
+
+    controller._add_exact_persisted_nogood = fail_persisted_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["routing_status"] == "PRECHECK_FRONT_BLOCKED"
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == "routing_precheck_missing_domain_analysis"
+    )
+    assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
+
+
+@pytest.mark.parametrize(
+    (
+        "summary_safe_reject",
+        "analysis_safe_reject",
+        "expected_violation",
+    ),
+    [
+        ("False", "False", "routing_precheck_reject_status_not_binding_selection_safe"),
+        (True, False, "routing_precheck_analysis_safe_reject_mismatch"),
+    ],
+)
+def test_reject_precheck_status_requires_true_safe_reject_before_cut(
+    monkeypatch,
+    tmp_path: Path,
+    summary_safe_reject,
+    analysis_safe_reject,
+    expected_violation: str,
+) -> None:
+    class MasterStub:
+        facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
+        source_instances = []
+        grid_w = 4
+        grid_h = 4
+        generic_io_requirements = {
+            "required_generic_outputs": {},
+            "required_generic_inputs": {},
+        }
+        _coordinate_delegate = None
+
+    class FakeBindingModel:
+        def __init__(self, *args, **kwargs):
+            self.binding_vars = {"tiny_001": {0: object(), 1: object()}}
+            self.generic_input_vars = {}
+            self.generic_output_vars = {}
+
+        def build(self) -> None:
+            return None
+
+        def solve(self, time_limit_seconds: float = 30.0) -> str:
+            return "FEASIBLE"
+
+        def extract_empty_binding_domain_instances(self) -> list:
+            return []
+
+        def extract_selection(self) -> dict:
+            return {
+                "binding_choice": {"tiny_001": 0},
+                "generic_inputs": {},
+                "generic_outputs": {},
+            }
+
+        def extract_port_specs(self) -> list[dict]:
+            return [
+                {
+                    "instance_id": "tiny_001",
+                    "x": 0,
+                    "y": 0,
+                    "dir": "E",
+                    "type": "out",
+                    "commodity": "ore",
+                }
+            ]
+
+        def add_nogood_cut(self, selection: dict) -> None:
+            raise AssertionError(
+                "reject status without boolean-true safe reject must not add binding cut"
+            )
+
+        def extract_conflict_summary(self) -> dict:
+            return {"fake": "reject_status_not_safe"}
+
+    def fake_routing_precheck(*args, **kwargs) -> dict:
+        return {
+            "status": "front_blocked",
+            "binding_selection_safe_reject": summary_safe_reject,
+            "placement_level_conflict_set": ["tiny_001"],
+            "blocked_ports": [
+                {
+                    "instance_id": "tiny_001",
+                    "placement_level_conflict_set": ["tiny_001"],
+                    "port_cell": [0, 0],
+                    "front_cell": [1, 0],
+                    "dir": "E",
+                }
+            ],
+            "disconnected_commodities": [],
+            "domain_stats": {"source": "unsafe-reject-regression"},
+            "_analysis": {
+                "status": "front_blocked",
+                "binding_selection_safe_reject": analysis_safe_reject,
+                "placement_level_conflict_set": ["tiny_001"],
+                "blocked_ports": [
+                    {
+                        "instance_id": "tiny_001",
+                        "placement_level_conflict_set": ["tiny_001"],
+                        "port_cell": [0, 0],
+                        "front_cell": [1, 0],
+                        "dir": "E",
+                    }
+                ],
+                "disconnected_commodities": [],
+                "domain_stats": {"source": "unsafe-reject-regression"},
+            },
+        }
+
+    monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "run_exact_routing_precheck",
+        fake_routing_precheck,
+    )
+
+    cut_manager = benders_loop_module.CutManager(
+        tmp_path / "checkpoints",
+        solve_mode="certified_exact",
+        current_hashes={},
+    )
+    controller = benders_loop_module.LBBDController(
+        MasterStub(),
+        cut_manager,
+        tmp_path,
+        "certified_exact",
+        max_iterations=1,
+        binding_seconds=1.0,
+        routing_seconds=1.0,
+    )
+
+    def fail_persisted_nogood(**kwargs):
+        raise AssertionError(
+            "reject status without boolean-true safe reject must fail closed before cut"
+        )
+
+    controller._add_exact_persisted_nogood = fail_persisted_nogood
+
+    status, result = controller._run_exact_binding_and_routing(
+        iteration=1,
+        solution={
+            "tiny_001": {"pose_idx": 0, "facility_type": "tiny_facility"},
+        },
+        diagnostic_flow_status="SKIPPED",
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert controller.generated_exact_safe_cuts == []
+    assert controller.last_proof_summary["routing_status"] == "PRECHECK_FRONT_BLOCKED"
+    assert (
+        controller.last_proof_summary["subproblem_status_contract_violation"]
+        == expected_violation
+    )
+    assert controller.last_proof_summary["binding_selection_safe_reject"] == summary_safe_reject
+    if expected_violation == "routing_precheck_analysis_safe_reject_mismatch":
+        assert (
+            controller.last_proof_summary[
+                "routing_domain_analysis_binding_selection_safe_reject"
+            ]
+            == analysis_safe_reject
+        )
+    assert controller.last_proof_summary["master_follow_up"] == "fail_closed_unknown"
+
 def test_routing_timeout_returns_unknown_without_exact_safe_cut(monkeypatch, tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_routing_timeout")
 
@@ -4951,6 +5355,14 @@ def test_relaxed_disconnected_only_rejects_binding_selection_without_persisted_c
                 "placement_level_conflict_set": [],
                 "blocked_ports": [],
                 "disconnected_commodities": [{"commodity": "ore"}],
+                "_analysis": {
+                    "status": "relaxed_disconnected",
+                    "binding_selection_safe_reject": True,
+                    "placement_level_conflict_set": [],
+                    "blocked_ports": [],
+                    "disconnected_commodities": [{"commodity": "ore"}],
+                    "domain_stats": {"disconnected_commodity_count": 1},
+                },
             }
         return {
             "status": "feasible",
@@ -7534,3 +7946,168 @@ def test_outer_search_rejects_wireless_slot_drift_between_frontier_and_session(
             campaign_hours=1.0,
             resume_campaign=False,
         )
+
+
+def test_pre_master_precheck_elimination_contract_rejects_truthy_non_bool() -> None:
+    drifted_outcome = {
+        "triggered": "true",
+        "status": RUN_STATUS_INFEASIBLE,
+        "proof_summary": {
+            "master_status": RUN_STATUS_INFEASIBLE,
+            "master_candidate_precheck": {
+                "triggered": True,
+                "master_solve_skipped": True,
+                "precheck_reason": "boundary_port_all_anchors_infeasible",
+            },
+        },
+    }
+
+    assert not benders_loop_module.is_valid_pre_master_precheck_elimination(
+        drifted_outcome
+    )
+    assert not outer_search_module._is_valid_pre_master_precheck_elimination(
+        drifted_outcome
+    )
+
+
+def test_run_benders_precheck_triggered_non_infeasible_falls_through(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "run_benders_invalid_precheck"
+    project_root.mkdir()
+    controller_constructed: list[bool] = []
+
+    exact_session = SimpleNamespace(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        master_search_profile=benders_loop_module.DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+        instances=[],
+        facility_pools={},
+        rules={"globals": {"grid": {"width": 70, "height": 70}}},
+        artifact_hashes={},
+        core=SimpleNamespace(
+            generic_io_requirements={
+                "required_generic_outputs": {},
+                "required_generic_inputs": {},
+            },
+            wireless_sink_generic_input_slots=0,
+        ),
+        core_build_seconds=0.0,
+    )
+
+    def fake_precheck(*, ghost_w, ghost_h, exact_session, master_search_profile):
+        del ghost_w, ghost_h, exact_session, master_search_profile
+        return {
+            "triggered": True,
+            "status": RUN_STATUS_UNKNOWN,
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+        }
+
+    class DummyCutManager:
+        def __init__(self, *args, **kwargs):
+            del args, kwargs
+
+    class DummyMaster:
+        build_stats = {
+            "exact_core_reuse": {
+                "overlay_build_seconds": 0.0,
+                "ghost_constraint_seconds": 0.0,
+            }
+        }
+
+        def set_hint_persistence_context(self, *args, **kwargs):
+            del args, kwargs
+
+        def evaluate_exact_candidate_mandatory_support_diagnostics(self):
+            return {
+                "unsupported_group_count": 0,
+                "empty_candidate_pool_group_count": 0,
+                "groups": [],
+            }
+
+        def evaluate_exact_candidate_boundary_port_feasibility(self):
+            return {
+                "supported": True,
+                "required_count": 0,
+                "considered_anchor_count": 0,
+                "screened_infeasible_anchor_count": 0,
+                "screen_pass_anchor_count": 0,
+                "screen_pass_anchor_indices": [],
+                "unsupported_anchor_count": 0,
+            }
+
+    class DummyController:
+        generated_exact_safe_cuts: list[object]
+
+        def __init__(self, *args, **kwargs):
+            del args, kwargs
+            controller_constructed.append(True)
+            self.generated_exact_safe_cuts = []
+            self._master_candidate_precheck = {}
+            self.last_proof_summary = {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+                "binding_summary": {},
+            }
+
+        def set_epsilon_stage(self, epsilon_stage):
+            self.epsilon_stage = epsilon_stage
+
+        def run_with_status(self):
+            return RUN_STATUS_UNKNOWN, None
+
+        def _master_search_summary(self):
+            return {}
+
+        def _routing_shrink_summary(self):
+            return {}
+
+    monkeypatch.setattr(
+        benders_loop_module,
+        "collect_certification_blockers",
+        lambda *args, **kwargs: [],
+    )
+    monkeypatch.setattr(
+        benders_loop_module,
+        "compute_mandatory_area_lower_bound",
+        lambda *args, **kwargs: 0,
+    )
+    monkeypatch.setattr(
+        benders_loop_module,
+        "compute_exact_static_area_lower_bound",
+        lambda *args, **kwargs: 0,
+    )
+    monkeypatch.setattr(
+        benders_loop_module,
+        "evaluate_exact_candidate_pre_master_precheck",
+        fake_precheck,
+    )
+    monkeypatch.setattr(benders_loop_module, "CutManager", DummyCutManager)
+    monkeypatch.setattr(
+        benders_loop_module.MasterPlacementModel,
+        "from_exact_core",
+        staticmethod(lambda *args, **kwargs: DummyMaster()),
+    )
+    monkeypatch.setattr(
+        benders_loop_module,
+        "_maybe_attach_anchor119_row_domain_guard_advisory",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(benders_loop_module, "LBBDController", DummyController)
+
+    status, solution = benders_loop_module.run_benders_for_ghost_rect(
+        ghost_w=4,
+        ghost_h=4,
+        project_root=project_root,
+        solve_mode="certified_exact",
+        session=exact_session,
+        max_iterations=1,
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert solution is None
+    assert controller_constructed == [True]

@@ -429,10 +429,15 @@ class PoseBoolExactMasterDelegate:
         return feas
 
     def build(self) -> None:
-        # ghost_rect=None 出现在 build_exact_core 的 "build core proto" 阶段,
-        # pose-bool delegate 不参与 proto-sharing (走 direct instantiation),
-        # 所以这种 case graceful no-op, 等真 build 在 ghost_rect 设上后再来.
-        if self.owner.ghost_rect is None:
+        # ghost_rect=None is intentionally used while packaging an ExactMasterCore.
+        # The pose-bool backend does not participate in proto sharing, so that
+        # specific core-packaging path may no-op and the real candidate overlay is
+        # built by direct instantiation with a concrete ghost_rect.  A direct
+        # pose-bool solve with ghost_rect=None is still a real master model and
+        # must not skip mandatory/optional geometry constraints.
+        if self.owner.ghost_rect is None and bool(
+            getattr(self.owner, "_pose_bool_exact_core_proto_build", False)
+        ):
             self.owner.build_stats["master_representation"] = self.master_representation
             self.owner.build_stats["pose_bool_master"] = {
                 "no_op_reason": "ghost_rect_none_at_build_exact_core_stage",
@@ -587,32 +592,40 @@ class PoseBoolExactMasterDelegate:
             }
             return
 
-        # Power coverage: x_{g,p} <= sum y_{coverer_pole}
-        coverers_table = self.owner._power_coverers_by_template_pose
-        # mandatory powered groups
-        for gid, tpl in powered_group_keys:
-            tpl_cov = coverers_table.get(tpl, {})
-            for (gid_in_key, pose_idx), x_var in self.x_vars.items():
-                if gid_in_key != gid:
-                    continue
-                coverer_pole_indices = tpl_cov.get(int(pose_idx), [])
-                cov_vars = [self.pole_vars[int(p)] for p in coverer_pole_indices if int(p) in self.pole_vars]
-                if cov_vars:
-                    self.model.Add(x_var <= sum(cov_vars))
-                else:
-                    self.model.Add(x_var == 0)
-        # required_optional powered tpls
-        for tpl in powered_ro_templates:
-            tpl_cov = coverers_table.get(tpl, {})
-            for (tpl_in_key, pose_idx), v in self.ro_vars.items():
-                if tpl_in_key != tpl:
-                    continue
-                coverer_pole_indices = tpl_cov.get(int(pose_idx), [])
-                cov_vars = [self.pole_vars[int(p)] for p in coverer_pole_indices if int(p) in self.pole_vars]
-                if cov_vars:
-                    self.model.Add(v <= sum(cov_vars))
-                else:
-                    self.model.Add(v == 0)
+        # Power coverage: x_{g,p} <= sum y_{coverer_pole}.  Mirror the
+        # coordinate/legacy owner switch: when power coverage is explicitly
+        # skipped, pose-bool must not pin powered poses to zero.
+        if not bool(getattr(self.owner, "skip_power_coverage", False)):
+            coverers_table = self.owner._power_coverers_by_template_pose
+            # mandatory powered groups
+            for gid, tpl in powered_group_keys:
+                tpl_cov = coverers_table.get(tpl, {})
+                for (gid_in_key, pose_idx), x_var in self.x_vars.items():
+                    if gid_in_key != gid:
+                        continue
+                    coverer_pole_indices = tpl_cov.get(int(pose_idx), [])
+                    cov_vars = [self.pole_vars[int(p)] for p in coverer_pole_indices if int(p) in self.pole_vars]
+                    if cov_vars:
+                        self.model.Add(x_var <= sum(cov_vars))
+                    else:
+                        self.model.Add(x_var == 0)
+            # required_optional powered tpls
+            for tpl in powered_ro_templates:
+                tpl_cov = coverers_table.get(tpl, {})
+                for (tpl_in_key, pose_idx), v in self.ro_vars.items():
+                    if tpl_in_key != tpl:
+                        continue
+                    coverer_pole_indices = tpl_cov.get(int(pose_idx), [])
+                    cov_vars = [self.pole_vars[int(p)] for p in coverer_pole_indices if int(p) in self.pole_vars]
+                    if cov_vars:
+                        self.model.Add(v <= sum(cov_vars))
+                    else:
+                        self.model.Add(v == 0)
+        else:
+            self.owner.build_stats["power_coverage"] = {
+                "skipped": True,
+                "reason": "power_coverage_skipped",
+            }
 
         # B1 Phase 6.2 v2: grid-level front_clear + pose-level cleared-count
         # 约束替代 Phase 5b "所有 port front 必空" over-approximation.

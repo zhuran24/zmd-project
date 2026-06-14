@@ -23,7 +23,6 @@ if __package__ in {None, ""}:
         sys.path.insert(0, str(PROJECT_ROOT))
 
 import json
-import math
 from collections import defaultdict, deque
 from fractions import Fraction
 from typing import Any, Dict, Mapping
@@ -79,12 +78,10 @@ def normalize_json_numbers(value: Any) -> Any:
 
 
 def ceil_machine_count(value: float | Fraction) -> int:
-    """Ceil machine counts with the same tolerance contract as artifact output."""
+    """Return the exact integer ceiling for a machine-run count."""
 
-    normalized = normalize_artifact_number(value)
-    if isinstance(normalized, int):
-        return int(normalized)
-    return int(math.ceil(float(normalized) - INTEGER_SNAP_TOLERANCE))
+    normalized = _to_fraction(value)
+    return int((normalized.numerator + normalized.denominator - 1) // normalized.denominator)
 
 
 def solve_demands(context: PreprocessContext | None = None) -> tuple[Dict[str, float], Dict[str, float]]:
@@ -235,7 +232,7 @@ def main() -> None:
     print("🚀 [预处理] 启动 Global Demand Solver（全局需求求解器）...")
 
     context = load_default_preprocess_context()
-    flows, machines_fractional = solve_demands(context=context)
+    flows, machines_fractional = solve_demands_exact(context=context)
     machine_counts = generate_ceil_machine_counts(machines_fractional)
     port_budget = generate_port_budget(flows, context=context)
     generic_io_requirements = generate_generic_io_requirements(flows, port_budget, context=context)

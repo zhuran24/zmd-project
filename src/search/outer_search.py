@@ -34,6 +34,7 @@ from src.search.benders_loop import (
     compute_exact_static_area_lower_bound,
     create_exact_search_session,
     evaluate_exact_candidate_pre_master_precheck,
+    is_valid_pre_master_precheck_elimination,
     run_benders_for_ghost_rect,
 )
 from src.search.campaign_telemetry import (
@@ -1508,29 +1509,9 @@ def _evaluate_pre_master_precheck_best_effort(
 
 
 def _is_valid_pre_master_precheck_elimination(
-    precheck_outcome: Mapping[str, Any],
+    precheck_outcome: Any,
 ) -> bool:
-    if not isinstance(precheck_outcome, Mapping):
-        return False
-    if not bool(precheck_outcome.get("triggered", False)):
-        return False
-    if str(precheck_outcome.get("status", "")) != RUN_STATUS_INFEASIBLE:
-        return False
-    proof_summary = precheck_outcome.get("proof_summary")
-    if not isinstance(proof_summary, Mapping):
-        return False
-    if str(proof_summary.get("master_status", "")) != RUN_STATUS_INFEASIBLE:
-        return False
-    master_candidate_precheck = proof_summary.get("master_candidate_precheck")
-    if not isinstance(master_candidate_precheck, Mapping):
-        return False
-    if not bool(master_candidate_precheck.get("triggered", False)):
-        return False
-    if not bool(master_candidate_precheck.get("master_solve_skipped", False)):
-        return False
-    if not str(master_candidate_precheck.get("precheck_reason", "")):
-        return False
-    return True
+    return is_valid_pre_master_precheck_elimination(precheck_outcome)
 
 
 def _record_precheck_elimination(

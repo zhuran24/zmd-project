@@ -250,6 +250,7 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
             raise ValueError(
                 f"preprocess recipe {recipe.recipe_id!r} references unknown template {recipe.template!r}"
             )
+    _validate_recipe_rate_contract(context)
     _validate_single_output_recipes(context)
 
     producers = build_producer_index(context)
@@ -375,9 +376,12 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
 
 
 def _validate_context_mapping_id_consistency(context: PreprocessContext) -> None:
+    for facility_type in context.facility_templates:
+        _require_string_identifier(facility_type, "facility_templates key")
     for recipe_id, recipe in context.recipes.items():
         _require_string_identifier(recipe_id, "preprocess recipes key")
         _require_string_identifier(recipe.recipe_id, "recipe.recipe_id")
+        _require_string_identifier(recipe.template, f"recipe {recipe_id!r} template")
         if recipe_id != recipe.recipe_id:
             raise ValueError(
                 f"preprocess recipes key {recipe_id!r} does not match recipe.recipe_id {recipe.recipe_id!r}"
@@ -389,6 +393,7 @@ def _validate_context_mapping_id_consistency(context: PreprocessContext) -> None
     for commodity_id, target in context.targets.items():
         _require_string_identifier(commodity_id, "production_targets key")
         _require_string_identifier(target.commodity_id, "target.commodity_id")
+        _require_string_identifier(target.final_recipe_id, f"production target {commodity_id!r} final_recipe_id")
         if commodity_id != target.commodity_id:
             raise ValueError(
                 f"production_targets key {commodity_id!r} does not match target.commodity_id {target.commodity_id!r}"
@@ -396,6 +401,8 @@ def _validate_context_mapping_id_consistency(context: PreprocessContext) -> None
     for commodity_id, role in context.commodity_roles.items():
         _require_string_identifier(commodity_id, "commodity_roles key")
         _require_string_identifier(role.commodity_id, "role.commodity_id")
+        if role.cycle_group is not None:
+            _require_string_identifier(role.cycle_group, f"role {commodity_id!r} cycle_group")
         if commodity_id != role.commodity_id:
             raise ValueError(
                 f"commodity_roles key {commodity_id!r} does not match role.commodity_id {role.commodity_id!r}"
@@ -416,6 +423,7 @@ def _validate_context_mapping_id_consistency(context: PreprocessContext) -> None
     for operation_type, utility in context.utility_operations.items():
         _require_string_identifier(operation_type, "utility_operations key")
         _require_string_identifier(utility.operation_type, "utility.operation_type")
+        _require_string_identifier(utility.facility_type, f"utility {operation_type!r} facility_type")
         if operation_type != utility.operation_type:
             raise ValueError(
                 f"utility_operations key {operation_type!r} does not match utility.operation_type {utility.operation_type!r}"
@@ -444,20 +452,45 @@ def build_producer_index(context: PreprocessContext) -> dict[str, tuple[str, ...
     }
 
 
+def _iter_selected_recipes(
+    context: PreprocessContext,
+    recipe_ids: Iterable[str] | None = None,
+) -> Iterable[PreprocessRecipe]:
+    if recipe_ids is None:
+        return context.recipes.values()
+    return (
+        context.recipes[recipe_id]
+        for recipe_id in recipe_ids
+        if recipe_id in context.recipes
+    )
+
+
+def _validate_recipe_rate_contract(
+    context: PreprocessContext,
+    *,
+    recipe_ids: Iterable[str] | None = None,
+) -> None:
+    for recipe in _iter_selected_recipes(context, recipe_ids):
+        if isinstance(recipe.ticks_per_cycle, bool) or not isinstance(recipe.ticks_per_cycle, int):
+            raise ValueError(f"preprocess recipe {recipe.recipe_id!r} ticks_per_cycle must be an integer")
+        if recipe.ticks_per_cycle <= 0:
+            raise ValueError(f"preprocess recipe {recipe.recipe_id!r} ticks_per_cycle must be > 0")
+        for direction, amounts in (("input", recipe.inputs), ("output", recipe.outputs)):
+            for commodity_id, amount in amounts.items():
+                amount_fraction = _to_fraction(amount)
+                if amount_fraction <= 0:
+                    raise ValueError(
+                        f"preprocess recipe {recipe.recipe_id!r} {direction} amount for "
+                        f"commodity {commodity_id!r} must be > 0"
+                    )
+
+
 def _validate_single_output_recipes(
     context: PreprocessContext,
     *,
     recipe_ids: Iterable[str] | None = None,
 ) -> None:
-    if recipe_ids is None:
-        recipes = context.recipes.values()
-    else:
-        recipes = (
-            context.recipes[recipe_id]
-            for recipe_id in recipe_ids
-            if recipe_id in context.recipes
-        )
-    for recipe in recipes:
+    for recipe in _iter_selected_recipes(context, recipe_ids):
         if len(recipe.outputs) != 1:
             raise ValueError(
                 f"preprocess recipe {recipe.recipe_id!r} must provide exactly one output commodity; "
@@ -598,10 +631,13 @@ def _solve_cycle_group_exact(
     group_id: str,
     external_demands: Mapping[str, Fraction | int | float],
 ) -> dict[str, Fraction]:
+    _validate_context_mapping_id_consistency(context)
+
     group = context.cycle_groups.get(group_id)
     if group is None:
         raise KeyError(f"unknown cycle group: {group_id}")
 
+    _validate_recipe_rate_contract(context, recipe_ids=group.recipes)
     _validate_single_output_recipes(context, recipe_ids=group.recipes)
     _validate_cycle_internal_output_ownership(context, group_ids={group_id})
     _validate_cycle_group_local_contract(context, group)

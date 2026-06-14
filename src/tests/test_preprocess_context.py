@@ -377,9 +377,43 @@ def test_solve_demands_exact_revalidates_direct_context_cycle_internal_outside_p
         solve_demands_exact(context=context)
 
 
+def test_preprocess_context_rejects_direct_recipe_nonpositive_output_amount() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["packaging_battery"].outputs["valley_battery"] = Fraction(0)
+
+    with pytest.raises(ValueError, match="packaging_battery.*output amount.*valley_battery.*must be > 0"):
+        validate_preprocess_context(context)
+    with pytest.raises(ValueError, match="packaging_battery.*output amount.*valley_battery.*must be > 0"):
+        solve_demands_exact(context=context)
+
+
+def test_preprocess_context_rejects_direct_recipe_nonpositive_input_amount() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["packaging_battery"].inputs["steel_part"] = Fraction(-1)
+
+    with pytest.raises(ValueError, match="packaging_battery.*input amount.*steel_part.*must be > 0"):
+        validate_preprocess_context(context)
+
+
+def test_preprocess_context_rejects_direct_nonstring_facility_template_key() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.facility_templates[123] = context.facility_templates["manufacturing_3x3"]
+
+    with pytest.raises(ValueError, match="facility_templates key must be a string identifier"):
+        validate_preprocess_context(context)
+
+
+def test_ceil_machine_count_uses_exact_rational_ceiling_above_integer_band() -> None:
+    fractional_above_integer = Fraction(2_000_000_001, 1_000_000_000)
+
+    assert generate_ceil_machine_counts({"near_integer_machine": fractional_above_integer}) == {
+        "near_integer_machine": 3
+    }
+
+
 def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
     context = load_default_preprocess_context()
-    flows, fractional = solve_demands(context=context)
+    flows, fractional = solve_demands_exact(context=context)
     counts = generate_ceil_machine_counts(fractional)
     budget = generate_port_budget(flows, context=context)
     generic_io = generate_generic_io_requirements(flows, budget, context=context)

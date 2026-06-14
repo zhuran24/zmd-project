@@ -21,7 +21,7 @@ from src.preprocess.demand_solver import (
     generate_generic_io_requirements,
     generate_port_budget,
     normalize_json_numbers,
-    solve_demands,
+    solve_demands_exact,
 )
 from src.preprocess.instance_builder import (
     build_boundary_ports,
@@ -103,7 +103,7 @@ def build_diff_report(project_root: Path, *, context_payload: Mapping[str, Any])
         rules_path=project_root / "rules" / "canonical_rules.json",
         plan_path=project_root / "rules" / "preprocess_plan.json",
     )
-    flows, fractional = solve_demands(context=context)
+    flows, fractional = solve_demands_exact(context=context)
     machine_counts = generate_ceil_machine_counts(fractional)
     port_budget = generate_port_budget(flows, context=context)
     generic_io = generate_generic_io_requirements(flows, port_budget, context=context)

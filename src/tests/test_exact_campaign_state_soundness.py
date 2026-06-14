@@ -101,3 +101,18 @@ def test_resume_rejects_non_certified_candidate_with_stale_solution(
         )
         == "candidate_non_certified_solution_present:2x3"
     )
+
+
+def test_resume_rejects_null_campaign_hours_without_crashing(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    _write_project(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["campaign_hours"] = None
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "campaign_hours_invalid"
