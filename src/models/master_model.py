@@ -8835,19 +8835,6 @@ class MasterPlacementModel:
 
         for pose_idx in candidate_indices:
             cells = self._pose_cells("boundary_storage_port", int(pose_idx))
-            pose = dict(self.facility_pools["boundary_storage_port"][int(pose_idx)])
-            port_cells: Set[Tuple[int, int]] = set()
-            for port_entry in list(pose.get("input_port_cells", [])) + list(
-                pose.get("output_port_cells", [])
-            ):
-                if isinstance(port_entry, Mapping):
-                    port_cells.add(
-                        (int(port_entry.get("x", 0)), int(port_entry.get("y", 0)))
-                    )
-                else:
-                    port_pair = list(port_entry)
-                    if len(port_pair) >= 2:
-                        port_cells.add((int(port_pair[0]), int(port_pair[1])))
             if len(cells) != 3:
                 unsupported_payload.update(
                     {
@@ -8916,7 +8903,14 @@ class MasterPlacementModel:
                     "start": int(start),
                     "end": int(end),
                     "cells": frozenset(cells),
-                    "blocking_cells": frozenset(set(cells) | port_cells),
+                    # Keep the screen's hard proof premise identical to the
+                    # coordinate master/terminal validator: ghost emptiness is
+                    # checked against facility occupied cells.  Boundary port
+                    # connector cells are routing terminals, not master
+                    # occupancy blockers; using them here would make this
+                    # precheck stricter than the certified master and could
+                    # wrongly delete legal ghost anchors.
+                    "blocking_cells": frozenset(cells),
                 }
             )
 

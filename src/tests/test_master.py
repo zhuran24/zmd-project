@@ -2509,7 +2509,7 @@ def test_boundary_storage_port_feasibility_screen_can_skip_infeasible_anchors() 
     assert failure_stats["failure_reason_counts"] == {}
 
 
-def test_boundary_storage_port_feasibility_screen_blocks_port_cells() -> None:
+def test_boundary_storage_port_feasibility_screen_ignores_port_cells() -> None:
     model = _build_boundary_storage_port_screen_model(required_count=4)
     for pose in model.facility_pools["boundary_storage_port"]:
         pose["output_port_cells"] = [{"x": 7, "y": 7, "dir": "E"}]
@@ -2519,22 +2519,21 @@ def test_boundary_storage_port_feasibility_screen_blocks_port_cells() -> None:
     warm_start = model.build_exact_candidate_warm_start()
     stats = model.build_stats["exact_candidate_warm_start_boundary_port_feasibility"]
 
-    assert summary["rebuild_anchor_indices"] == ()
+    assert summary["rebuild_anchor_indices"] == tuple(model._ordered_ghost_anchor_indices())
     assert stats == {
         "supported": True,
         "required_count": 4,
         "considered_anchor_count": len(model.u_vars),
-        "screened_infeasible_anchor_count": len(model.u_vars),
-        "screen_pass_anchor_count": 0,
+        "screened_infeasible_anchor_count": 0,
+        "screen_pass_anchor_count": len(model.u_vars),
         "unsupported_anchor_count": 0,
-        "max_packable_min": 0,
-        "max_packable_max": 0,
-        "first_infeasible_anchor_idx": 0,
-        "first_infeasible_anchor_max_packable": 0,
+        "max_packable_min": 4,
+        "max_packable_max": 4,
+        "first_infeasible_anchor_idx": None,
+        "first_infeasible_anchor_max_packable": None,
     }
-    assert warm_start["ghost_anchor_hint_idx"] is None
-    assert warm_start["ghost_anchor_hint_status"] == "none_compatible"
-    assert warm_start["warm_start_strategy"] == "global_greedy_fallback"
+    assert warm_start["ghost_anchor_hint_status"] == "applied"
+    assert warm_start["warm_start_strategy"] == "ghost_aware_mandatory_rebuild"
 
 
 def test_boundary_storage_port_greedy_blocks_port_cells() -> None:
