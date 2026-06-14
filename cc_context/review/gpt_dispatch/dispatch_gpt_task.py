@@ -569,7 +569,10 @@ async def _last_assistant_backend(page: PageCdp) -> dict | None:
 
 
 async def _last_assistant(page: PageCdp) -> dict:
-    if os.environ.get("GPT_DISPATCH_BACKEND_READ") == "1":
+    # 默认走后端会话 JSON 直读 (并发 collect 唯一标准): 不受"单前台 tab 才渲染 DOM"
+    # 限制, 8 并发收件不串台/不冻结。仅 GPT_DISPATCH_BACKEND_READ="0" 显式关。
+    # 后端读任何异常自动回落 DOM 读 (fail-safe), 默认路径零回归。
+    if os.environ.get("GPT_DISPATCH_BACKEND_READ", "1") != "0":
         try:
             info = await _last_assistant_backend(page)
             if info:
