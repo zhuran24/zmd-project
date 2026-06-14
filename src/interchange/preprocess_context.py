@@ -243,6 +243,8 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
     if not context.targets:
         raise ValueError("preprocess context must contain at least one production target")
 
+    _validate_context_mapping_id_consistency(context)
+
     for recipe in context.recipes.values():
         if recipe.template not in context.facility_templates:
             raise ValueError(
@@ -372,6 +374,59 @@ def validate_preprocess_context(context: PreprocessContext) -> None:
 
 
 
+def _validate_context_mapping_id_consistency(context: PreprocessContext) -> None:
+    for recipe_id, recipe in context.recipes.items():
+        _require_string_identifier(recipe_id, "preprocess recipes key")
+        _require_string_identifier(recipe.recipe_id, "recipe.recipe_id")
+        if recipe_id != recipe.recipe_id:
+            raise ValueError(
+                f"preprocess recipes key {recipe_id!r} does not match recipe.recipe_id {recipe.recipe_id!r}"
+            )
+        for commodity_id in recipe.inputs:
+            _require_string_identifier(commodity_id, f"recipe {recipe_id!r} input commodity key")
+        for commodity_id in recipe.outputs:
+            _require_string_identifier(commodity_id, f"recipe {recipe_id!r} output commodity key")
+    for commodity_id, target in context.targets.items():
+        _require_string_identifier(commodity_id, "production_targets key")
+        _require_string_identifier(target.commodity_id, "target.commodity_id")
+        if commodity_id != target.commodity_id:
+            raise ValueError(
+                f"production_targets key {commodity_id!r} does not match target.commodity_id {target.commodity_id!r}"
+            )
+    for commodity_id, role in context.commodity_roles.items():
+        _require_string_identifier(commodity_id, "commodity_roles key")
+        _require_string_identifier(role.commodity_id, "role.commodity_id")
+        if commodity_id != role.commodity_id:
+            raise ValueError(
+                f"commodity_roles key {commodity_id!r} does not match role.commodity_id {role.commodity_id!r}"
+            )
+    for group_id, group in context.cycle_groups.items():
+        _require_string_identifier(group_id, "cycle_groups key")
+        _require_string_identifier(group.group_id, "group.group_id")
+        if group_id != group.group_id:
+            raise ValueError(
+                f"cycle_groups key {group_id!r} does not match group.group_id {group.group_id!r}"
+            )
+        for recipe_id in group.recipes:
+            _require_string_identifier(recipe_id, f"cycle group {group_id!r} recipe id")
+        for commodity_id in group.internal_commodities:
+            _require_string_identifier(commodity_id, f"cycle group {group_id!r} internal commodity id")
+        for commodity_id in group.net_export_commodities:
+            _require_string_identifier(commodity_id, f"cycle group {group_id!r} net-export commodity id")
+    for operation_type, utility in context.utility_operations.items():
+        _require_string_identifier(operation_type, "utility_operations key")
+        _require_string_identifier(utility.operation_type, "utility.operation_type")
+        if operation_type != utility.operation_type:
+            raise ValueError(
+                f"utility_operations key {operation_type!r} does not match utility.operation_type {utility.operation_type!r}"
+            )
+
+
+def _require_string_identifier(value: Any, label: str) -> None:
+    if not isinstance(value, str):
+        raise ValueError(f"{label} must be a string identifier: {value!r}")
+
+
 
 def _merge_overlay(base: Mapping[str, Any], overlay: Mapping[str, Any]) -> dict[str, Any]:
     merged = dict(base)
@@ -464,6 +519,18 @@ def _validate_cycle_group_local_contract(context: PreprocessContext, group: Cycl
             raise ValueError(
                 f"cycle group {group.group_id!r} net_export_commodity {commodity_id!r} "
                 "is not listed in internal_commodities"
+            )
+    for role in context.commodity_roles.values():
+        if role.cycle_group != group.group_id:
+            continue
+        if role.source_kind != "cycle_internal":
+            raise ValueError(
+                f"non-cycle commodity {role.commodity_id!r} cannot declare cycle_group {group.group_id!r}"
+            )
+        if role.commodity_id not in internal_commodities:
+            raise ValueError(
+                f"cycle_internal commodity {role.commodity_id!r} declares cycle_group {group.group_id!r} "
+                "but is not listed in that group's internal_commodities"
             )
 
 

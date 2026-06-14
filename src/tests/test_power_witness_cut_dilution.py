@@ -370,6 +370,138 @@ def test_power_subproblem_aborts_when_selected_ghost_context_missing(tmp_path):
     assert controller.generated_exact_safe_cuts == []
 
 
+def test_power_subproblem_aborts_when_selected_ghost_context_diverges(tmp_path):
+    """Anchor/cells must come from one unique selected ghost domain.
+
+    This fake master simulates a corrupted/future backend state where two u-vars
+    read as selected and the first domain has a valid anchor but malformed cells.
+    The old two-helper recovery path took anchor from rect 0, skipped its bad
+    cells, took cells from rect 1, and then injected a pole inside rect 0.
+    """
+    from src.search.benders_loop import LBBDController
+
+    class FakeSolver:
+        def Value(self, _var):
+            return 1
+
+    pools = {
+        "powered_widget": [
+            {
+                "pose_id": "machine_left",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+            }
+        ],
+        "power_pole": [
+            {
+                "pose_id": "pole_inside_rect0",
+                "anchor": {"x": 1, "y": 0},
+                "occupied_cells": [[1, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": [[0, 0]],
+            }
+        ],
+    }
+    master = SimpleNamespace(
+        facility_pools=pools,
+        _powered_templates={"powered_widget"},
+        _power_coverers_by_template_pose={"powered_widget": {0: [0]}},
+        u_vars={0: object(), 1: object()},
+        _ghost_domains=[
+            {"anchor": {"x": 1, "y": 0}, "cells": ["malformed_cell"]},
+            {"anchor": {"x": 2, "y": 0}, "cells": [(2, 0)]},
+        ],
+        _solver=FakeSolver(),
+        ghost_rect=(1, 1),
+    )
+    controller = LBBDController(
+        master=master,
+        cut_manager=CutManager(tmp_path / "checkpoints", solve_mode="certified_exact"),
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+    )
+
+    outcome, payload = controller._run_power_placement_subproblem(
+        solution={
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+        },
+        iteration=1,
+    )
+
+    assert outcome == "ABORT"
+    assert payload is None
+    assert controller.generated_exact_safe_cuts == []
+
+
+def test_power_subproblem_aborts_when_selected_ghost_anchor_lacks_coordinates(tmp_path):
+    """Missing anchor x/y must not silently become ghost_anchor::(0,0)."""
+    from src.search.benders_loop import LBBDController
+
+    class FakeSolver:
+        def Value(self, _var):
+            return 1
+
+    master = SimpleNamespace(
+        facility_pools={
+            "powered_widget": [
+                {
+                    "pose_id": "machine_left",
+                    "anchor": {"x": 0, "y": 0},
+                    "occupied_cells": [[0, 0]],
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                    "power_coverage_cells": None,
+                }
+            ],
+            "power_pole": [
+                {
+                    "pose_id": "blocked_only_pole",
+                    "anchor": {"x": 1, "y": 0},
+                    "occupied_cells": [[1, 0]],
+                    "input_port_cells": [],
+                    "output_port_cells": [],
+                    "power_coverage_cells": [[0, 0]],
+                }
+            ],
+        },
+        _powered_templates={"powered_widget"},
+        _power_coverers_by_template_pose={"powered_widget": {0: [0]}},
+        u_vars={0: object()},
+        _ghost_domains=[{"anchor": {"y": 0}, "cells": [(1, 0)]}],
+        _solver=FakeSolver(),
+        ghost_rect=(1, 1),
+    )
+    controller = LBBDController(
+        master=master,
+        cut_manager=CutManager(tmp_path / "checkpoints", solve_mode="certified_exact"),
+        project_root=tmp_path,
+        solve_mode="certified_exact",
+    )
+
+    outcome, payload = controller._run_power_placement_subproblem(
+        solution={
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+        },
+        iteration=1,
+    )
+
+    assert outcome == "ABORT"
+    assert payload is None
+    assert controller.generated_exact_safe_cuts == []
+
+
 def test_power_subproblem_infeasible_cut_keeps_unpowered_occupancy_support():
     """Unpowered placed cells can make the deferred pole subproblem infeasible.
 

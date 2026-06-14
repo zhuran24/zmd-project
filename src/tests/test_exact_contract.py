@@ -5063,6 +5063,99 @@ def test_serial_precheck_sweep_preserves_solve_budget(
     }
 
 
+def test_serial_precheck_triggered_non_infeasible_does_not_mark_strong_record(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "serial_precheck_invalid_status")
+    sequence = [(4, 4, 1)]
+    solve_calls: list[tuple[int, int]] = []
+
+    def fake_frontier_state(
+        candidates,
+        campaign,
+        *,
+        grid_w,
+        grid_h,
+        frontier_probe_mode=outer_search_module.FRONTIER_PROBE_MODE_OFF,
+    ):
+        del candidates, grid_w, grid_h, frontier_probe_mode
+        return _mock_frontier_state_from_sequence(sequence, campaign)
+
+    def fake_precheck(*, ghost_w, ghost_h, exact_session, master_search_profile):
+        del ghost_w, ghost_h, exact_session, master_search_profile
+        return {
+            "triggered": True,
+            "status": RUN_STATUS_UNKNOWN,
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+        }
+
+    def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
+        del session, kwargs
+        solve_calls.append((int(ghost_w), int(ghost_h)))
+        fake_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        return RUN_STATUS_UNKNOWN, None
+
+    fake_run_benders_for_ghost_rect.last_run_metadata = {
+        "proof_summary": {},
+        "exact_safe_cuts": [],
+        "loaded_exact_safe_cut_count": 0,
+        "generated_exact_safe_cut_count": 0,
+    }
+
+    monkeypatch.setattr(outer_search_module, "_compute_exact_frontier_state", fake_frontier_state)
+    monkeypatch.setattr(
+        outer_search_module,
+        "evaluate_exact_candidate_pre_master_precheck",
+        fake_precheck,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        lambda *args, **kwargs: SimpleNamespace(core=object()),
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "run_benders_for_ghost_rect",
+        fake_run_benders_for_ghost_rect,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        max_attempts=1,
+        min_side=1,
+        area_upper_bound=4,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+        resume_campaign=False,
+    )
+
+    state = _read_campaign_state(project_root)
+    telemetry = _read_campaign_telemetry(project_root)
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    assert solve_calls == [(4, 1)]
+    assert state["candidates"]["4x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert state["candidates"]["4x1"]["attempts"] == 1
+    assert telemetry["aggregate"]["precheck_elimination_count"] == 0
+
+
 def test_serial_precheck_lookahead_eliminates_non_head_without_writing_non_triggered(
     monkeypatch,
     tmp_path: Path,
@@ -5907,6 +6000,145 @@ def test_parallel_coordinator_sweeps_precheck_candidates_before_worker_dispatch(
     assert telemetry["aggregate"]["solve_attempt_count"] == 2
     assert telemetry["aggregate"]["precheck_elimination_count"] == 1
     assert telemetry["aggregate"]["precheck_lookahead_elimination_count"] == 0
+
+
+def test_parallel_precheck_triggered_non_infeasible_is_dispatched_to_worker(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    project_root = _build_frontier_project(tmp_path / "parallel_precheck_invalid_status")
+    sequence = [(4, 4, 1), (3, 3, 1)]
+    dispatched_candidate_keys: list[str] = []
+
+    def fake_frontier_state(
+        candidates,
+        campaign,
+        *,
+        grid_w,
+        grid_h,
+        frontier_probe_mode=outer_search_module.FRONTIER_PROBE_MODE_OFF,
+    ):
+        del candidates, grid_w, grid_h, frontier_probe_mode
+        return _mock_frontier_state_from_sequence(sequence, campaign)
+
+    def fake_precheck(*, ghost_w, ghost_h, exact_session, master_search_profile):
+        del ghost_w, ghost_h, exact_session, master_search_profile
+        return {
+            "triggered": True,
+            "status": RUN_STATUS_UNKNOWN,
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": RUN_STATUS_UNKNOWN,
+            },
+        }
+
+    def fake_select_parallel_wave_candidate_entries(
+        frontier_state,
+        *,
+        parallel_processes,
+        remaining_attempt_budget,
+    ):
+        del frontier_state, parallel_processes, remaining_attempt_budget
+        return [
+            {
+                "candidate": sequence[0],
+                "selection_reason": "objective_head",
+                "wave_slot_index": 0,
+            },
+            {
+                "candidate": sequence[1],
+                "selection_reason": "prune_head",
+                "wave_slot_index": 1,
+            },
+        ]
+
+    class DummyPool:
+        def __init__(self, *args, **kwargs):
+            del args, kwargs
+
+        def close(self):
+            return None
+
+    def fake_run_parallel_exact_campaign_wave(*, pool, tasks):
+        del pool
+        dispatched_candidate_keys[:] = [
+            f"{int(task.candidate[1])}x{int(task.candidate[2])}" for task in tasks
+        ]
+        return SimpleNamespace(
+            completed=True,
+            failure_reason=None,
+            results=tuple(
+                SimpleNamespace(
+                    dispatch_seq=int(task.dispatch_seq),
+                    attempt_index=int(task.attempt_index),
+                    candidate=tuple(task.candidate),
+                    candidate_key=f"{int(task.candidate[1])}x{int(task.candidate[2])}",
+                    status=RUN_STATUS_INFEASIBLE,
+                    solution=None,
+                    proof_summary={
+                        "mode": "certified_exact",
+                        "master_status": RUN_STATUS_INFEASIBLE,
+                    },
+                    exact_safe_cuts=[],
+                    loaded_exact_safe_cut_count=0,
+                    generated_exact_safe_cut_count=0,
+                    error=None,
+                )
+                for task in tasks
+            ),
+            dispatched_candidate_keys=tuple(dispatched_candidate_keys),
+            elapsed_seconds=0.01,
+            peak_rss_bytes_external_total=0,
+            peak_rss_bytes_internal_max_single_process=0,
+        )
+
+    monkeypatch.setattr(outer_search_module, "_compute_exact_frontier_state", fake_frontier_state)
+    monkeypatch.setattr(
+        outer_search_module,
+        "evaluate_exact_candidate_pre_master_precheck",
+        fake_precheck,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "create_exact_search_session",
+        lambda *args, **kwargs: SimpleNamespace(core=object()),
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_select_parallel_wave_candidate_entries",
+        fake_select_parallel_wave_candidate_entries,
+    )
+    monkeypatch.setattr(outer_search_module, "ExactParallelWorkerPool", DummyPool)
+    monkeypatch.setattr(
+        outer_search_module,
+        "run_parallel_exact_campaign_wave",
+        fake_run_parallel_exact_campaign_wave,
+    )
+
+    status, result = run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        max_attempts=2,
+        min_side=1,
+        area_upper_bound=4,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+        resume_campaign=False,
+        parallel_processes=2,
+    )
+
+    state = _read_campaign_state(project_root)
+    telemetry = _read_campaign_telemetry(project_root)
+
+    assert status == RUN_STATUS_INFEASIBLE
+    assert result is None
+    assert dispatched_candidate_keys == ["4x1", "3x1"]
+    assert state["candidates"]["4x1"]["attempts"] == 1
+    assert state["candidates"]["3x1"]["attempts"] == 1
+    assert telemetry["aggregate"]["precheck_elimination_count"] == 0
 
 
 def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> None:

@@ -13,6 +13,7 @@ from src.interchange.preprocess_context import (
     PreprocessRecipe,
     ProductionTarget,
     build_preprocess_context_from_rules_and_plan,
+    validate_preprocess_context,
     load_default_preprocess_context,
     load_preprocess_context_from_paths,
 )
@@ -287,6 +288,21 @@ def test_preprocess_context_rejects_external_boundary_commodity_with_producer(
 
     with pytest.raises(ValueError, match="external_boundary commodity 'steel_part'.*parts_maker"):
         build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_direct_role_key_identity_mismatch_before_external_boundary_short_circuit() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.commodity_roles["steel_part"] = CommodityRole(
+        commodity_id="not_steel_part",
+        source_kind="external_boundary",
+        sink_kind="none",
+        cycle_group=None,
+    )
+
+    with pytest.raises(ValueError, match=r"commodity_roles key 'steel_part'.*role\.commodity_id 'not_steel_part'"):
+        validate_preprocess_context(context)
+    with pytest.raises(ValueError, match=r"commodity_roles key 'steel_part'.*role\.commodity_id 'not_steel_part'"):
+        solve_demands_exact(context=context)
 
 
 def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_commodity(

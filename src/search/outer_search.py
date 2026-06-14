@@ -1507,6 +1507,32 @@ def _evaluate_pre_master_precheck_best_effort(
         return {"triggered": False, "status": None, "proof_summary": {}}
 
 
+def _is_valid_pre_master_precheck_elimination(
+    precheck_outcome: Mapping[str, Any],
+) -> bool:
+    if not isinstance(precheck_outcome, Mapping):
+        return False
+    if not bool(precheck_outcome.get("triggered", False)):
+        return False
+    if str(precheck_outcome.get("status", "")) != RUN_STATUS_INFEASIBLE:
+        return False
+    proof_summary = precheck_outcome.get("proof_summary")
+    if not isinstance(proof_summary, Mapping):
+        return False
+    if str(proof_summary.get("master_status", "")) != RUN_STATUS_INFEASIBLE:
+        return False
+    master_candidate_precheck = proof_summary.get("master_candidate_precheck")
+    if not isinstance(master_candidate_precheck, Mapping):
+        return False
+    if not bool(master_candidate_precheck.get("triggered", False)):
+        return False
+    if not bool(master_candidate_precheck.get("master_solve_skipped", False)):
+        return False
+    if not str(master_candidate_precheck.get("precheck_reason", "")):
+        return False
+    return True
+
+
 def _record_precheck_elimination(
     *,
     selected_candidate: Tuple[int, int, int],
@@ -1981,7 +2007,9 @@ def run_outer_search(
                                 master_search_profile=master_search_profile,
                                 include_mandatory_rectangle_precheck=True,
                             )
-                            if not bool(precheck_outcome.get("triggered", False)):
+                            if not _is_valid_pre_master_precheck_elimination(
+                                precheck_outcome
+                            ):
                                 continue
                             if str(entry["selection_reason"]) == FRONTIER_PROBE_SELECTION_REASON:
                                 _record_probe_candidate_dispatch(
@@ -2161,7 +2189,9 @@ def run_outer_search(
                             exact_session=exact_session,
                             master_search_profile=master_search_profile,
                         )
-                        if bool(precheck_outcome.get("triggered", False)):
+                        if _is_valid_pre_master_precheck_elimination(
+                            precheck_outcome
+                        ):
                             coordinator_precheck_results.append(
                                 _record_precheck_elimination(
                                     selected_candidate=candidate,

@@ -28,6 +28,17 @@ def test_operation_profiles_cover_all_instance_operations(project_root):
     assert not find_unprofiled_operations(instances)
 
 
+def test_rate_to_slots_does_not_round_down_slightly_over_integer_rates(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.preprocess.operation_profiles import _rate_to_slots
+
+    assert _rate_to_slots(1.0, belt_capacity_per_tick=1.0) == 1
+    assert _rate_to_slots(1.0000000005, belt_capacity_per_tick=1.0) == 2
+    assert _rate_to_slots(2.0000000005, belt_capacity_per_tick=1.0) == 3
+
+
 def test_aggregated_operation_rates_match_global_flows(project_root):
     import sys
 

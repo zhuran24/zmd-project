@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 from collections import Counter, defaultdict
 from dataclasses import dataclass
+from fractions import Fraction
 from typing import DefaultDict, Dict, Iterable, Mapping, Tuple
 
 from src.interchange.preprocess_context import PreprocessContext, load_default_preprocess_context
@@ -23,11 +24,11 @@ class OperationPortProfile:
 
     operation_type: str
     facility_type: str
-    input_rates: Mapping[str, float]
-    output_rates: Mapping[str, float]
+    input_rates: Mapping[str, Fraction]
+    output_rates: Mapping[str, Fraction]
     generic_input_slots: int = 0
     generic_output_slots: int = 0
-    belt_capacity_per_tick: float = 1.0
+    belt_capacity_per_tick: Fraction = Fraction(1, 1)
 
     @property
     def input_slots(self) -> Dict[str, int]:
@@ -45,21 +46,39 @@ class OperationPortProfile:
 
 
 
-def _rate_to_slots(rate: float, *, belt_capacity_per_tick: float = 1.0) -> int:
+def _to_exact_fraction(value: object) -> Fraction:
+    if isinstance(value, Fraction):
+        return value
+    if isinstance(value, bool):
+        raise TypeError("boolean values are not valid rate inputs")
+    if isinstance(value, int):
+        return Fraction(value, 1)
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("rate inputs must be finite")
+        return Fraction(str(value))
+    if isinstance(value, str):
+        return Fraction(value)
+    raise TypeError(f"cannot convert {type(value).__name__} to Fraction")
+
+
+def _rate_to_slots(rate: object, *, belt_capacity_per_tick: object = Fraction(1, 1)) -> int:
     """Convert per-tick rate to the exact minimum integer port-slot count."""
-    if rate <= 0:
+    rate_fraction = _to_exact_fraction(rate)
+    if rate_fraction <= 0:
         return 0
-    capacity = float(belt_capacity_per_tick)
+    capacity = _to_exact_fraction(belt_capacity_per_tick)
     if capacity <= 0:
         raise ValueError("belt_capacity_per_tick must be > 0")
-    return int(math.ceil((rate / capacity) - EPSILON))
+    required = rate_fraction / capacity
+    return int((required.numerator + required.denominator - 1) // required.denominator)
 
 
 
 def build_operation_port_profiles(
     context: PreprocessContext,
 ) -> Dict[str, OperationPortProfile]:
-    belt_capacity_per_tick = float(context.belt_capacity_per_tick)
+    belt_capacity_per_tick = context.belt_capacity_per_tick
     profiles: Dict[str, OperationPortProfile] = {}
 
     for recipe_id, recipe in sorted(context.recipes.items()):
@@ -67,11 +86,11 @@ def build_operation_port_profiles(
             operation_type=recipe_id,
             facility_type=recipe.template,
             input_rates={
-                commodity_id: float(recipe.input_rate(commodity_id))
+                commodity_id: recipe.input_rate(commodity_id)
                 for commodity_id in sorted(recipe.inputs)
             },
             output_rates={
-                commodity_id: float(recipe.output_rate(commodity_id))
+                commodity_id: recipe.output_rate(commodity_id)
                 for commodity_id in sorted(recipe.outputs)
             },
             belt_capacity_per_tick=belt_capacity_per_tick,
@@ -137,9 +156,9 @@ def aggregate_commodity_rates(
         if not profile:
             continue
         for commodity, rate in profile.input_rates.items():
-            total_inputs[commodity] += rate * count
+            total_inputs[commodity] += float(rate) * count
         for commodity, rate in profile.output_rates.items():
-            total_outputs[commodity] += rate * count
+            total_outputs[commodity] += float(rate) * count
 
     return dict(total_inputs), dict(total_outputs)
 

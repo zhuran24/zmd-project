@@ -4733,37 +4733,103 @@ class LBBDController:
         }
         return RUN_STATUS_UNKNOWN, None
 
-    def _selected_ghost_cells(self) -> Set[Tuple[int, int]]:
-        u_vars = getattr(self.master, "u_vars", None) or {}
-        ghost_domains = getattr(self.master, "_ghost_domains", None) or []
-        solver = getattr(self.master, "_solver", None)
-        if not u_vars or not ghost_domains or solver is None:
-            return set()
-        for rect_idx, var in u_vars.items():
-            try:
-                if int(solver.Value(var)) == 1:
-                    cells = ghost_domains[int(rect_idx)].get("cells") or []
-                    return {(int(c[0]), int(c[1])) for c in cells}
-            except Exception:
-                continue
-        return set()
+    def _selected_ghost_context(
+        self,
+    ) -> Optional[Tuple[int, Any, Mapping[str, Any], Set[Tuple[int, int]]]]:
+        """Recover the unique selected ghost anchor and its cells as one proof context.
 
-    def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
-        # 返回 (rect_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition
-        # — 让 cut 只在当前 ghost anchor 下生效, 不过切 ghost B 下合法解.
+        Delegated power completion uses the ghost cells as fixed obstacles, while
+        the INFEASIBLE nogood is conditioned by the selected ghost literal.  Those
+        two pieces must be a single, geometrically self-consistent provenance
+        record.  Any ambiguity or malformed domain is fail-closed: the caller must
+        not solve a de-ghosted or cross-ghost power subproblem.
+        """
         u_vars = getattr(self.master, "u_vars", None) or {}
         ghost_domains = getattr(self.master, "_ghost_domains", None) or []
         solver = getattr(self.master, "_solver", None)
         if not u_vars or not ghost_domains or solver is None:
             return None
-        for rect_idx, var in u_vars.items():
+
+        selected: List[Tuple[int, Any]] = []
+        for raw_rect_idx, var in u_vars.items():
             try:
+                rect_idx = int(raw_rect_idx)
                 if int(solver.Value(var)) == 1:
-                    domain = ghost_domains[int(rect_idx)]
-                    return int(rect_idx), var, dict(domain.get("anchor") or {})
+                    selected.append((rect_idx, var))
             except Exception:
-                continue
-        return None
+                return None
+        if len(selected) != 1:
+            return None
+
+        rect_idx, u_var = selected[0]
+        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+            return None
+        domain = ghost_domains[rect_idx]
+        if not isinstance(domain, Mapping):
+            return None
+
+        anchor_raw = domain.get("anchor")
+        if not isinstance(anchor_raw, Mapping):
+            return None
+        anchor_x_raw = anchor_raw.get("x")
+        anchor_y_raw = anchor_raw.get("y")
+        if anchor_x_raw is None or anchor_y_raw is None:
+            return None
+        try:
+            anchor_x = int(anchor_x_raw)
+            anchor_y = int(anchor_y_raw)
+        except Exception:
+            return None
+
+        raw_cells = domain.get("cells") or []
+        try:
+            cells = {(int(c[0]), int(c[1])) for c in raw_cells}
+        except Exception:
+            return None
+        if not cells:
+            return None
+
+        ghost_rect = getattr(self.master, "ghost_rect", None)
+        if ghost_rect is not None:
+            try:
+                ghost_w = int(ghost_rect[0])
+                ghost_h = int(ghost_rect[1])
+            except Exception:
+                return None
+            if ghost_w <= 0 or ghost_h <= 0:
+                return None
+            expected_cells = {
+                (anchor_x + dx, anchor_y + dy)
+                for dx in range(ghost_w)
+                for dy in range(ghost_h)
+            }
+            if cells != expected_cells:
+                return None
+        else:
+            try:
+                min_x = min(x for x, _y in cells)
+                min_y = min(y for _x, y in cells)
+                if min_x != anchor_x or min_y != anchor_y:
+                    return None
+            except Exception:
+                return None
+
+        return rect_idx, u_var, {"x": anchor_x, "y": anchor_y}, cells
+
+    def _selected_ghost_cells(self) -> Set[Tuple[int, int]]:
+        context = self._selected_ghost_context()
+        if context is None:
+            return set()
+        return set(context[3])
+
+    def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
+        # 返回 (rect_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition
+        # — 让 cut 只在当前 ghost anchor 下生效, 不过切 ghost B 下合法解.
+        context = self._selected_ghost_context()
+        if context is None:
+            return None
+        rect_idx, u_var, anchor, _cells = context
+        return rect_idx, u_var, anchor
 
     def _run_power_placement_subproblem(
         self,
@@ -4777,29 +4843,20 @@ class LBBDController:
         coverers = (
             getattr(self.master, "_power_coverers_by_template_pose", {}) or {}
         )
-        ghost_anchor_info = self._selected_ghost_anchor()
-        if ghost_anchor_info is None:
+        ghost_context = self._selected_ghost_context()
+        if ghost_context is None:
             # The delegated power witness is part of the same empty-rectangle proof
             # context as the master solution.  If the selected ghost alternative
-            # cannot be recovered, do not solve a de-ghosted subproblem: a FEASIBLE
-            # witness could otherwise place poles inside the certified empty rect.
+            # cannot be recovered as one self-consistent provenance record, do not
+            # solve a de-ghosted or cross-ghost subproblem: a FEASIBLE witness could
+            # otherwise place poles inside the certified empty rect.
             self._emit_heartbeat(
                 stage="power_placement_subproblem",
-                event="abort_missing_ghost_anchor",
+                event="abort_missing_ghost_context",
                 iteration=iteration,
             )
             return "ABORT", None
-        rect_idx, u_var, anchor = ghost_anchor_info
-
-        ghost_cells = self._selected_ghost_cells()
-        if not ghost_cells:
-            self._emit_heartbeat(
-                stage="power_placement_subproblem",
-                event="abort_missing_ghost_cells",
-                iteration=iteration,
-                extra={"ghost_rect_idx": int(rect_idx)},
-            )
-            return "ABORT", None
+        rect_idx, u_var, anchor, ghost_cells = ghost_context
 
         sub = PowerPlacementSubproblem(
             master_solution=solution,
