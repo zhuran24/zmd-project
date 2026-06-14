@@ -1,5 +1,6 @@
 ---
 name: memory-tree-publish-safety
+description: "记忆树 publish-safety/currentness gate(2026-06-06 补强):check_repo_secrets 扫 secret + check_memory_tree 查 wikilink/孤点/MEMORY.md 24KiB/INSTANCE/live-mirror 字节一致 + stamp_living_status repo-native + preflight 接入;结构性 memory 改动后必跑这套核验;旧 key 需 owner 侧轮换"
 metadata:
   node_type: memory
   type: project

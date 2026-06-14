@@ -75,6 +75,15 @@ The project uses **one logical knowledge tree with two physical projections**. `
 The memory tree is the collaboration-continuity surface. It answers: what the previous working window knew, which mistakes were already corrected, what user preferences or process constraints matter, which old statements must not be trusted blindly, and what the next window should read first.
 <!-- DOC-SUBJECT:project_knowledge_tree FIELD:memory_role END -->
 
+**实际有第三个物理投影:harness 召回树**(上面 subject 段的「two physical projections」是历史表述、已不准 — 改它要走 `sync_doc_subjects.py` 的 subject 源,不在此处手改)。Claude Code 的 auto-memory 真正自动召回读的是 `~/.claude/projects/<slug>/memory/`(harness),**不是** `cc_context/memory/`。两者 frontmatter `name` 与 wikilink 同为 kebab 命名空间,仅文件名风格不同(repo 用 `feedback_/project_/reference_/user_` snake 前缀,harness 用 kebab)。**owner 在 `cc_context/memory/` 维护的规则若不投影进 harness,AI 召回侧根本读不到**(2026-06-14 体检发现:repo 60+ 节点、含几十条 `feedback_*` 工作规则当时全不在召回树,`CLAUDE.md` 里 `[[subagent-model-by-weight]]` 等 wikilink 跨树跳空 — 已全部投影补齐)。投影/防漂工具:
+
+```powershell
+python cc_context\tools\sync_memory_to_harness.py --check   # 报 repo→harness drift, exit 1 = 有漂移
+python cc_context\tools\sync_memory_to_harness.py --apply   # 投影缺失节点 + 重建 3 个索引父节点
+```
+
+单向 repo→harness;跳过 `handoff_*` 现状源(harness 留指针 stub 防漂)。kebab 共维护节点(`no-gpt-*`/`zmd-env-*` 等 AI 写、双写 repo 的)双向 drift 不进自动同步,靠 `scripts/check_memory_tree.py` 的 `harness↔cc_context co-maintained drift` warn 提醒、人工判方向对齐。
+
 ## AI Safety Contract
 
 AI modules may ONLY:
