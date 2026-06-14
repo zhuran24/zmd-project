@@ -70,3 +70,8 @@ data/preprocessed/candidate_placements.json
 
 # GPT dispatch 录屏工件 (二进制大文件, 本地保留)
 cc_context/review/gpt_dispatch/recordings/
+
+# graphify 代码语义地图的工作产物 (graph.json 20MB / src_mirror 镜像 / chunks 命名中间件;
+# 全部离线可重生, 见 cc_context/graphify/README.md 刷新流程; 成品 SEMANTIC_MAP.md +
+# community_semantics.json 在 cc_context/graphify/ 顶层进 git, 这里只挡 out/ 大产物)
+cc_context/graphify/out/
