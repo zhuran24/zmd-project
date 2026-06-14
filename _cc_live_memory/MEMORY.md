@@ -54,6 +54,7 @@
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 + harness 重写 frontmatter 保 name.
 - [记忆价值尺: 丢了能否重建](feedback_memory_value_yardstick.md) — 该不该记看"丢了能否重建"不是"重不重要"; 重要≠该常驻; 算法知识只存指针不是缺陷; 判断类错靠对抗/自反驳防、成文治不住 (本节点=对抗引信非 forcing 铁律).
 - [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段 N 路子代理各带不同 slant, main 当 merger; 补 RLHF bias. (Workflow 裁决后仅"确实必要"时用)
+- [设计/创造性开 Team](design-creative-use-team.md) — 设计/创造/开放式任务用 Agents Team 讨论收敛, 不单干也不用纯确定性 Workflow 顶替; 确定性 fan-out/对抗验证才用 Workflow (2026-06-14 owner)
 - [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活直接 spawn background, 不问 user.
 - [子代理模型按重量派](feedback_subagent_model_by_weight.md) — 轻活 sonnet / 重活 opus / 特别重要 fable; 按具体难度不按任务类别; 取代旧"默认 opus".
 - [Phase boundary 两镜像偏见](feedback_main_merger_scope_creep_bias.md) — 会往大扩或往小缩; **User 是唯一可信 phase boundary auditor**.
