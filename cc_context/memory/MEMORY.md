@@ -52,6 +52,7 @@
 - [N=1 别当因果 (先排随机)](feedback_no_causal_claim_from_n1.md) — 单次观察编干净因果当事实=反复犯的病; 要定因须对照重复.
 - [改 memory 前先过方案](feedback_memory_edit_confirmation.md) — 机械安全小改直接做; 结构性大改先给用户确认.
 - [记忆树结构健康](feedback_memory_tree_structural_health.md) — wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 + harness 重写 frontmatter 保 name.
+- [记忆价值尺: 丢了能否重建](feedback_memory_value_yardstick.md) — 该不该记看"丢了能否重建"不是"重不重要"; 重要≠该常驻; 算法知识只存指针不是缺陷; 判断类错靠对抗/自反驳防、成文治不住 (本节点=对抗引信非 forcing 铁律).
 - [设计阶段 N 路并行子代理](feedback_design_phase_n_parallel_agents.md) — 代码设计阶段 N 路子代理各带不同 slant, main 当 merger; 补 RLHF bias. (Workflow 裁决后仅"确实必要"时用)
 - [闭环任务直接 spawn sub-agent](feedback_subagent_for_closed_loop_tasks.md) — 独立闭环 + 不需中途决策 + 可验证的中等粒度活直接 spawn background, 不问 user.
 - [子代理模型按重量派](feedback_subagent_model_by_weight.md) — 轻活 sonnet / 重活 opus / 特别重要 fable; 按具体难度不按任务类别; 取代旧"默认 opus".
@@ -107,3 +108,4 @@
 - [IP v2 蓝图 LP 建模规则](reference_ip_v2_blueprint_lp_modeling.md) — 外部源只有矿石 (硬白名单); 采种机 1→2 倍增.
 - [GitHub 实时备份](reference_github_backup.md) — 发布目标 zhuran24/zmd;memory 改后必须保持 `cc_context/memory/` 与 `_cc_live_memory/` 镜像一致.
 - [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK (批量删/移挪到 Bash 工具做) / here-string 展开 $env 坏脚本 / 控制台中文乱码≠文件坏.
+- [graphify 代码语义地图 (query before grep)](reference_graphify_codegraph.md) — src→确定性代码结构图 + Claude 补语义层, 新窗口先查图再 grep; .mcp.json 注册 mcp__graphify__*; graph.json gitignore 需刷新; 只读导航辅助不进 certified 证明路径.
