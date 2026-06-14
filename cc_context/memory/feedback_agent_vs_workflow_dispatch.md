@@ -7,6 +7,8 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
+> 事实依据: [[fact-self-report-is-not-evidence]] [[fact-conversation-state-is-window-local]]
+
 > **GPT Pro 外发审查/委托的完整规则(核心裁决 / 四条发送设置 / 打包 `build_v80_single_win.py` / dispatch 通道 + 两层托底链 / 降级判据 / 并发 / scope 厘清)见 [[no-workflow-use-chrome-gpt-review]] 子树,本节不复述以防双处漂移**(议会 redundancy 收口 2026-06-14:同话题别抄副本、用 wikilink)。
 > **不变的要点(读全规则去子树)**: ① 非必要不用 Workflow 做 **soundness 审查这个动作**、审查/外审/委托实现外发 GPT Pro;② 但 Workflow 本身**已放开**(`approval_required=false`,见 [[workflow-approval-not-avoidance]]),别把"非必要不用 Workflow"误读成"默认单 Agent";③ 本裁决**只管「判 soundness 的动作」**,准备/调研/编排可 workflow fan-out(判据看任务实质,见 [[no-workflow-scope-clarification]])。
 

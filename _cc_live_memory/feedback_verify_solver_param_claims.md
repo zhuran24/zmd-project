@@ -5,6 +5,8 @@ type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 
+> 事实依据: [[fact-evidence-before-story]]
+
 agent 调研产出的"求解器内部参数级金矿"（如 `shared_tree_num_workers`、`linearization_level`、`presolve_*` 类参数）进入路线图 P0/P1 **之前**，必须用一个 follow-up agent 直接读官方源码（GitHub `ortools/sat/*.cc`、`sat_parameters.proto`、issue tracker）核实参数的实际数学行为。**不能只信"agent 引用了某 benchmark 说 +N%"**。
 
 **Why:** 用户 2026-05-08 让我开 follow-up agent 查 `shared_tree_num_workers` 的官方公式（P0 #1 实施前的"数学依据查证"）。结果**直接推翻了 R5 那个 🥇🥇 双金金矿**：

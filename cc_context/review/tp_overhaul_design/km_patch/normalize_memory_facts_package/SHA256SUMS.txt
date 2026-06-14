@@ -1,0 +1,2 @@
+f88a692d5a6c2d42ccd2d1caa024e5b8e6083e7a55ef0aa1852ba92360c93122  /mnt/data/normalize_memory_facts_package/normalize_memory_facts.patch
+94af99161a8c7f39a7d847b10b0f6d32c635aebb41c9de1f872df97957a12ea8  /mnt/data/normalize_memory_facts_package/PATCH_SUMMARY.md

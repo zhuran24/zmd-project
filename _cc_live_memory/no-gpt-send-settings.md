@@ -6,6 +6,8 @@ metadata:
   type: feedback
 ---
 
+> 事实依据: [[fact-conversation-state-is-window-local]]
+
 **发送设置(用户指定):**
 1. 模型选 **Pro·进阶**(= GPT Pro 扩展模式;中文 UI「进阶专业」就是它,不用另找开关)
 2. 发在 ChatGPT 的**「终末地」Project** 里面

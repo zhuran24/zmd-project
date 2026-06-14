@@ -7,6 +7,8 @@ metadata:
   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
 ---
 
+> 事实依据: [[fact-conversation-state-is-window-local]]
+
 「非必要不用 Workflow,审查/委托实现外发 GPT Pro」这套规则的索引节点(原 15KB 巨型节点已按事实拆分,提高召回)。按需读对应子节点:
 
 - [[no-gpt-pro-outsource-core]] — 核心裁决:非必要不用 Workflow 多代理;审查/外审/委托实现外发 GPT Pro;Why + How to apply(交付物验收 preflight gate)

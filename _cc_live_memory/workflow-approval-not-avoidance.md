@@ -7,6 +7,8 @@ metadata:
   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
 ---
 
+> 事实依据: [[fact-decision-boundary-is-ability]]
+
 owner 2026-06-13 纠正: 我把"用 Workflow 前要申请"误读成了**回避理由** —— 逻辑变成"因为要申请所以干脆别用 wf", 导致 wf 使用频率大幅下降。owner 的本意是**报备**: "我要用 wf 了 → 用前打个招呼说一声 (跑什么 / 几个 agent / 预估 token)", 这是说明不是障碍。
 
 **当前状态**: `C:\Users\22957\cc_watchdog\workflow_approval.json` 的 `approval_required = false` (owner 放开, 类比 owner_sleep 离线开关)。该用 Workflow 就直接用, 用前报备一句即可, 不阻塞不等同意。

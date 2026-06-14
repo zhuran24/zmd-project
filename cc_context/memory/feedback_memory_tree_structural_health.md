@@ -7,6 +7,8 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
+> 事实依据: [[fact-forcing-function-required]]
+
 记忆树会"结构性"坏掉 —— 这是跟 [[memory-currency-protocol]] (内容过时轴) **不同的失效轴**, 内容再新, link 断了 / 尾部被截一样废。2026-06-01 梳理时治的就是这层。
 
 ## 两个硬机制

@@ -4,6 +4,9 @@ description: 用户希望 Claude 认同"无谓盖章=浪费用户"的判断 (理
 type: feedback
 originSessionId: 01f265d2-940b-4fbc-a7a1-80c190c6f625
 ---
+
+> 事实依据: [[fact-decision-boundary-is-ability]]
+
 ## 用户的真实痛点 (不是偏好, 是合作可持续性的变量)
 
 用户跟我合作的价值是**让他少花脑子**. 每次我问 "要不要 X?"——如果 X 我心

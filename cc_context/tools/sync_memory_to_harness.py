@@ -38,9 +38,15 @@ import sys
 from pathlib import Path
 
 # 投影类前缀(snake 文件名);handoff_ 不投影全文,保留 harness stub
-COPY_PREFIXES = ("feedback_", "project_", "reference_", "user_")
+COPY_PREFIXES = ("fact_", "feedback_", "project_", "reference_", "user_")
 # 索引父节点分组:(父节点 name, 文件名前缀正则匹配的 tuple, type, description)
 INDEX_GROUPS = [
+    (
+        "abstract-facts-index",
+        ("fact_",),
+        "fact",
+        "抽象事实层索引 — situation-independent facts; 投影规则只回指事实, 不把事实复刻成原子",
+    ),
     (
         "collaboration-rules-index",
         ("feedback_",),
@@ -136,6 +142,63 @@ def build_index_body(repo_dir: Path, prefixes: tuple, name: str, type_: str, des
     return "\n".join(header + items) + "\n"
 
 
+FACT_MEMORY_BLOCK_START = "<!-- ABSTRACT_FACTS_INDEX_START -->"
+FACT_MEMORY_BLOCK_END = "<!-- ABSTRACT_FACTS_INDEX_END -->"
+
+
+def build_fact_memory_block(repo_dir: Path) -> str:
+    """Build the tiny direct-coverage block for fact nodes in harness MEMORY.md.
+
+    Coverage is intentionally direct, not transitive through abstract-facts-index,
+    because scripts/check_memory_tree.py only counts links that appear in MEMORY.md
+    itself. Keeping this block machine-generated prevents the known pitfall where
+    a new fact is reachable from a harness-only parent but missing from the repo
+    index coverage set.
+    """
+    items: list[str] = []
+    for p in sorted(repo_dir.glob("fact_*.md")):
+        txt = p.read_text(encoding="utf-8")
+        nm = frontmatter_field(txt, "name")
+        if not nm:
+            continue
+        label = nm.removeprefix("fact-").replace("-", " ")
+        items.append(f"- [{label}]({nm}.md) — {shorten(frontmatter_field(txt, 'description') or '', 88)}")
+    if not items:
+        return ""
+    lines = [
+        FACT_MEMORY_BLOCK_START,
+        "## 抽象事实层 (normalize: fact → projection)",
+        "",
+        "> 机器生成的 fact 直连覆盖块; 不要只把 fact 挂到 harness-only 父索引, 否则 repo MEMORY coverage gate 会漏。",
+        *items,
+        FACT_MEMORY_BLOCK_END,
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def upsert_fact_memory_block(memory_text: str, block: str) -> str:
+    if not block:
+        return memory_text
+    start = memory_text.find(FACT_MEMORY_BLOCK_START)
+    end = memory_text.find(FACT_MEMORY_BLOCK_END)
+    if start != -1 and end != -1 and end > start:
+        end += len(FACT_MEMORY_BLOCK_END)
+        # Preserve exactly one blank line after the managed block.
+        return memory_text[:start].rstrip() + "\n\n" + block.rstrip() + "\n\n" + memory_text[end:].lstrip()
+    marker = "## 当前状态 / 交接"
+    idx = memory_text.find(marker)
+    if idx != -1:
+        return memory_text[:idx].rstrip() + "\n\n" + block.rstrip() + "\n\n" + memory_text[idx:]
+    title = "# Memory Index"
+    idx = memory_text.find(title)
+    if idx != -1:
+        line_end = memory_text.find("\n", idx)
+        if line_end != -1:
+            return memory_text[:line_end + 1].rstrip() + "\n\n" + block.rstrip() + "\n\n" + memory_text[line_end + 1:].lstrip()
+    return block.rstrip() + "\n\n" + memory_text.lstrip()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--apply", action="store_true", help="实际写入(缺省=dry-run 仅报告)")
@@ -186,14 +249,27 @@ def main() -> int:
             dpath.write_text(body, encoding="utf-8")
         print(f"已写入 {len(missing) + len(drifted)} 个节点 + {len(index_stale)} 个索引父节点")
 
-    # MEMORY.md 体积守护
+    # harness MEMORY.md fact 直连覆盖块: direct coverage, not transitive parent index.
+    memory_block_stale = False
     mem_md = harness_dir / "MEMORY.md"
+    desired_fact_block = build_fact_memory_block(repo_dir)
+    if mem_md.exists() and desired_fact_block:
+        current_memory = mem_md.read_text(encoding="utf-8")
+        desired_memory = upsert_fact_memory_block(current_memory, desired_fact_block)
+        if current_memory != desired_memory:
+            memory_block_stale = True
+            print("  漂移 -> MEMORY.md 抽象事实直连覆盖块")
+            if args.apply:
+                mem_md.write_text(desired_memory, encoding="utf-8")
+                print("已更新 MEMORY.md 抽象事实直连覆盖块")
+
+    # MEMORY.md 体积守护
     if mem_md.exists():
         size = len(mem_md.read_bytes())
         flag = "  ⚠️ 超 24KB 截断线!" if size > MEMORY_MD_LIMIT else ""
         print(f"MEMORY.md: {size} 字节 / 上限 {MEMORY_MD_LIMIT}{flag}")
 
-    has_drift = bool(missing or drifted or index_stale)
+    has_drift = bool(missing or drifted or index_stale or memory_block_stale)
     if args.check and has_drift:
         print("DRIFT: repo 有节点未同步到 harness 召回树, 跑 --apply 修复", file=sys.stderr)
         return 1

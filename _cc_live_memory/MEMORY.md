@@ -1,5 +1,16 @@
 > 2026-06-10 记忆树瘦身:73 条老记忆(老进度快照 / 死路单条 verdict / 已废除的打包审查规则)备份在 `cc_context/memory_archive/`(单份,不双镜像)。需要历史细节去那里翻;本索引只留活记忆。
 
+## 抽象事实层 (normalize: fact → projection)
+
+> 投影节点只回指这里的事实,不要把抽象事实再复刻成新原子。每个 fact 在 MEMORY.md 直接覆盖,避免父索引传递覆盖失效。
+- [决策边界=能力](fact_decision_boundary_is_ability.md) — 能不能问 owner 看我能不能自己做/定; 目标/先例/放开开关=授权
+- [先理解再产出](fact_understand_before_output.md) — 默认病是抢可见反应,正确顺序是先读懂意图+根因
+- [证据先于叙事](fact_evidence_before_story.md) — N=1/终态/重试不定因; 明确数字/规则优先
+- [自报不算证据](fact_self_report_is_not_evidence.md) — 自验摘要/metadata/单次结果不裸信,靠独立复现和端到端验收
+- [零 finding 不是 proof](fact_zero_finding_is_not_proof.md) — 审查只能证有问题; 闭合靠独立对拍/fuzz/proof/多轮计数
+- [强制函数优先](fact_forcing_function_required.md) — 复发行为/漂移靠 hook/test/gate/stamp,规则只做 fallback
+- [会话状态局部](fact_conversation_state_is_window_local.md) — 新会话不带隐式记忆; 新任务隔离与 opsec 都按显式材料算
+
 ## 当前状态 / 交接
 
 - [交接 Windows + 过夜审查循环 ACTIVE (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (读法: 正文 stamp 编号最大的块 = 最新现状; 逐面轮次史以台账 cc_context/review/p1_2_closure_evidence.md 为准, 本行不手抄易漂数值);V50 手动 owner-count gate 不变。

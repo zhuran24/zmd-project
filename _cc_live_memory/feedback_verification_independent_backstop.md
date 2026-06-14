@@ -7,6 +7,8 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
+> 事实依据: [[fact-self-report-is-not-evidence]] [[fact-zero-finding-is-not-proof]] [[fact-evidence-before-story]]
+
 2026-06-01 用户原话: "llm 的注意力机制现在在长上下文下很容易出现漏看的问题, 至少让 workflow 或者多个子代理去作为补充和托底"; 紧接着纠正 "你让它确认的主体是记忆树, 但我想让它检查的主体却是当前的这个 session …… 你把检查的主体弄错了"。
 
 ## 规则

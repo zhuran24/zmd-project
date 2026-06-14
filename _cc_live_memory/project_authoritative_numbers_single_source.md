@@ -7,6 +7,8 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
+> 事实依据: [[fact-forcing-function-required]] [[fact-zero-finding-is-not-proof]]
+
 用户 2026-06-04 要求把"主体为核心节点、其余是它的投影"这套架构 (本就给 memory 用, 见 [[memory-currency-protocol]] rule1/2 + stamp_living_status) **也套到项目文档/数字上**。两件事 (Design A + B) 落地, 都用 **core-node + projection + forcing-function**。**诚实现状 (v28 外审 catch)**: **forcing 半边真落地, projection 半边仍是未接线契约** —— 见各 Design 的诚实边界段, 别 over-read 成"全部数字都被守住"。
 
 ## Design A — 数字单一来源 (doc-currency 治本)

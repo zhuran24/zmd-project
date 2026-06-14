@@ -645,14 +645,21 @@ async def run(args, pkg: Path | None, out_dir: Path) -> int:
 
             await cdp.js(GUARD_JS)
             await find_and_click(cdp, ADD_SOURCE_TEXTS, "add_source", out_dir)
-            await asyncio.sleep(1.5)  # 等「添加源」模态框渲染
-            await find_and_click(cdp, UPLOAD_BTN_TEXTS, "upload_button", out_dir)
-            await asyncio.sleep(0.8)
-
+            await asyncio.sleep(1.5)  # 等「添加源」面板 / 隐藏 file input 就绪
+            # 现行 UI (2026-06-14 实测): 点「添加源」直接驱动相邻隐藏 input[type=file],
+            # 已无第二级「上传」按钮。先看 guard 是否已被点中; 没有再退回旧的两级
+            # 「上传」按钮流 (老版本兼容)。
             guard_clicks = await cdp.js("window.__ccUploadGuard.clicks")
             if not guard_clicks:
+                spot = await cdp.js(FIND_BUTTON_JS.format(texts=json.dumps(UPLOAD_BTN_TEXTS)))
+                if spot:
+                    await cdp.click_xy(spot["x"], spot["y"])
+                    log("upload", "upload_button_clicked", text=spot["text"])
+                    await asyncio.sleep(0.8)
+                    guard_clicks = await cdp.js("window.__ccUploadGuard.clicks")
+            if not guard_clicks:
                 await cdp.screenshot(out_dir / "attention_no_input_click.png")
-                log("upload", "FATAL", error="upload button did not drive a file input (UI changed?)")
+                log("upload", "FATAL", error="add_source did not drive a file input; no upload button (UI changed?)")
                 return 3
 
             # 喂文件前清空事件缓冲 — 此后的网络事件全归上传管道观测

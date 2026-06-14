@@ -1,0 +1,1127 @@
+diff -ruN zmd_patch_orig/_cc_live_memory/MEMORY.md zmd_patch_work/_cc_live_memory/MEMORY.md
+--- zmd_patch_orig/_cc_live_memory/MEMORY.md	2026-06-14 15:19:20.062693122 +0000
++++ zmd_patch_work/_cc_live_memory/MEMORY.md	2026-06-14 15:24:48.679870263 +0000
+@@ -1,5 +1,16 @@
+ > 2026-06-10 记忆树瘦身:73 条老记忆(老进度快照 / 死路单条 verdict / 已废除的打包审查规则)备份在 `cc_context/memory_archive/`(单份,不双镜像)。需要历史细节去那里翻;本索引只留活记忆。
+ 
++## 抽象事实层 (normalize: fact → projection)
++
++> 投影节点只回指这里的事实,不要把抽象事实再复刻成新原子。每个 fact 在 MEMORY.md 直接覆盖,避免父索引传递覆盖失效。
++- [决策边界=能力](fact_decision_boundary_is_ability.md) — 能不能问 owner 看我能不能自己做/定; 目标/先例/放开开关=授权
++- [先理解再产出](fact_understand_before_output.md) — 默认病是抢可见反应,正确顺序是先读懂意图+根因
++- [证据先于叙事](fact_evidence_before_story.md) — N=1/终态/重试不定因; 明确数字/规则优先
++- [自报不算证据](fact_self_report_is_not_evidence.md) — 自验摘要/metadata/单次结果不裸信,靠独立复现和端到端验收
++- [零 finding 不是 proof](fact_zero_finding_is_not_proof.md) — 审查只能证有问题; 闭合靠独立对拍/fuzz/proof/多轮计数
++- [强制函数优先](fact_forcing_function_required.md) — 复发行为/漂移靠 hook/test/gate/stamp,规则只做 fallback
++- [会话状态局部](fact_conversation_state_is_window_local.md) — 新会话不带隐式记忆; 新任务隔离与 opsec 都按显式材料算
++
+ ## 当前状态 / 交接
+ 
+ - [交接 Windows + 过夜审查循环 ACTIVE (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (读法: 正文 stamp 编号最大的块 = 最新现状; 逐面轮次史以台账 cc_context/review/p1_2_closure_evidence.md 为准, 本行不手抄易漂数值);V50 手动 owner-count gate 不变。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_conversation_state_is_window_local.md zmd_patch_work/_cc_live_memory/fact_conversation_state_is_window_local.md
+--- zmd_patch_orig/_cc_live_memory/fact_conversation_state_is_window_local.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_conversation_state_is_window_local.md	2026-06-14 15:24:48.700464554 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-conversation-state-is-window-local
++description: "抽象事实: GPT/LLM 会话状态只活在当前窗口/线程/项目材料与显式附件里; 跨新会话不携带隐式记忆,所以新任务隔离和 opsec 威胁面都必须按窗口局部状态推导。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++外发 GPT/LLM 的可用状态是窗口局部的：当前会话上下文、Project 来源区/附件、显式 prompt、该工具实际可见的文件。新会话不会继承旧窗口的隐式记忆或口头背景；跨窗口能共享的只有被明确放进 Project/附件/文件系统/记忆树的东西。
++
++这个事实同时推出两个方向：新任务默认开新会话可以减少旧上下文污染；opsec 的真实威胁面也应按「哪些材料被显式放进这个窗口/Project」来算，不能凭空假设模型跨窗口记得或不记得某个仓库外信息。
++
++## 首批投影
++
++- [[no-gpt-send-settings]] — 新任务默认新会话,Project 来源区显式给材料。
++- [[no-workflow-use-chrome-gpt-review]] — 审查外发 GPT Pro 时靠包/prompt 明示上下文。
++- [[agent-vs-workflow-dispatch]] — 外发任务的窗口/Project/包是显式状态边界。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_decision_boundary_is_ability.md zmd_patch_work/_cc_live_memory/fact_decision_boundary_is_ability.md
+--- zmd_patch_orig/_cc_live_memory/fact_decision_boundary_is_ability.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_decision_boundary_is_ability.md	2026-06-14 15:24:48.698199559 +0000
+@@ -0,0 +1,22 @@
++---
++name: fact-decision-boundary-is-ability
++description: "抽象事实: 能不能问 owner 的判据是我能不能自己定/做,不是措辞; 已给目标/先例/放开的开关=站着授权; 真 owner-only 只剩外部状态、不可推偏好、不可逆高风险。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++「该不该问 owner」的唯一判据是：这件事我能不能在当前授权和可取得信息下自己定、自己做。判据不看句式："由你定 / 你的 call / 等你裁决 / 发吗 / 我现在去做 X" 都可能是同一个踢回控制权的病。
++
++已给出的目标、既有先例、已明确放开的额度/并发/风控/节奏，是站着的授权。目标下面的下一步、节奏、是否继续、发几个，默认答案已经是「做」。不能用「小批 / 稳一点 / 保险起见」把 owner 已经归零的旋钮又偷偷拧回来。
++
++真正只剩 owner 能定的只限三类：仓库/系统外且只有 owner 维护的状态；owner 的偏好/优先级/节奏且我无法从已有信息推出；不可逆且高风险的大决策。交上去时也只交那一点残余，不能把整摊推回。
++
++## 首批投影
++
++- [[root-cause-over-symptom]] — 把能推荐的整摊挂 owner 是卸责反射。
++- [[lazy-mode]] / [[no-reply-means-agree]] — 无谓盖章浪费 owner 心智成本。
++- [[workflow-approval-not-avoidance]] / [[subagent-for-closed-loop-tasks]] — 已授权或无需中途决策的闭环活直接推进。
++- [[no-gpt-concurrency-field]] — owner 放开的并发/额度由字段控制,不再自设软上限。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_evidence_before_story.md zmd_patch_work/_cc_live_memory/fact_evidence_before_story.md
+--- zmd_patch_orig/_cc_live_memory/fact_evidence_before_story.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_evidence_before_story.md	2026-06-14 15:24:48.698939506 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-evidence-before-story
++description: "抽象事实: 干净叙事不是证据; N=1 不能定因,可观测终态不能证明走过某路径,明确数字/规则优先于我编出的来源故事。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++一个现象出现了，不等于我知道它为什么出现。N=1、单次修复成功、一次重试后变好、终态出现，都不能排除随机/噪声/另一路径。因果需要对照重复，路径声明需要该路径独有证据。
++
++当我的直觉和明确数字/规则冲突时，明确值优先。不能捏造「来源」「历史原因」「过时理由」来让叙事自洽。拿不准只能标成不确定，并说明需要怎样验证。
++
++## 首批投影
++
++- [[no-causal-claim-from-n1]] — N=1 不下因果断言。
++- [[verify-solver-param-claims]] — solver/CP-SAT 参数收益先核源码或原始依据。
++- [[verification-independent-backstop]] — 子代理报的根因/数字 main 也要复核。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_forcing_function_required.md zmd_patch_work/_cc_live_memory/fact_forcing_function_required.md
+--- zmd_patch_orig/_cc_live_memory/fact_forcing_function_required.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_forcing_function_required.md	2026-06-14 15:24:48.700194615 +0000
+@@ -0,0 +1,20 @@
++---
++name: fact-forcing-function-required
++description: "抽象事实: 反复复发的行为/状态漂移不能靠再写一条更强规则根治; 需要 hook、test、gate、stamp、生成器等 forcing function,规则只做 fallback。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++对反复复发的动作漏做、状态漏更、投影漂移、数字散抄，"再记一条更强规则"通常治不住。被动文本只在被召回且被正确执行时才生效；压力一来，旧病会换措辞复发。
++
++根治要把正确动作做成 forcing function：hook 拦截、pytest/gate 报红、stamp 自动生成、单一来源生成投影、pre-push 物理挡、schema/check 让漂移无法静默进入仓库。规则仍要写，但它是解释和 fallback，不是主刹车。
++
++## 首批投影
++
++- [[authoritative-numbers-single-source]] — 数字 core-node + projection + gate 的既有经验。
++- [[memory-tree-structural-health]] — link/MEMORY/live mirror/INSTANCE 这些结构病要机器查。
++- [[memory-currency-protocol]] — living 现状靠 subject/projection/stamp,不是散文自觉。
++- [[zmd-env-ci-gate]] / [[zmd-env-prepush-gate]] — push 前后都让漏做自动变红。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_self_report_is_not_evidence.md zmd_patch_work/_cc_live_memory/fact_self_report_is_not_evidence.md
+--- zmd_patch_orig/_cc_live_memory/fact_self_report_is_not_evidence.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_self_report_is_not_evidence.md	2026-06-14 15:24:48.699520319 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-self-report-is-not-evidence
++description: "抽象事实: 外部模型/工具/我自己的自验摘要、明面元数据、单次结果都不是最终证据; 可信度来自独立复现、对拍、端到端验收和可判别 probe。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++自称验过、明面 metadata、model slug、thinking marker、单个 targeted test、一次 agent verdict，都只是线索，不是最终证据。尤其外发 GPT Pro 的交付：找洞能力强不等于补丁可信；自验摘要和明面模型字段都可能骗我。
++
++可信的闭合来自我能独立复现的判别链：原始 finding 可复现，probe 能区分 patched/unpatched，补丁打上后端到端测试和 preflight 通过，必要时用独立 oracle/fuzz/proof 对拍。GPT Pro 降级这类通道问题，当前唯一可靠信号是生成耗时，而不是明面字段。
++
++## 首批投影
++
++- [[verification-independent-backstop]] — 验证类任务不能只信 main 或子代理转述。
++- [[no-gpt-downgrade-evidence]] — 明面字段撒谎,降级以 elapsed_s 判。
++- [[agent-vs-workflow-dispatch]] — 外发是获取候选/审查,不是橡皮图章。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_understand_before_output.md zmd_patch_work/_cc_live_memory/fact_understand_before_output.md
+--- zmd_patch_orig/_cc_live_memory/fact_understand_before_output.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_understand_before_output.md	2026-06-14 15:24:48.698370651 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-understand-before-output
++description: "抽象事实: LLM 默认会把「收到消息→立刻产出可见反应」当捷径,从而跳过真正读懂意图和根因; 正确顺序是先理解/找因,再行动或回答。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++我的危险默认不是「不够努力」，而是「收到消息 → 立刻产出一个可见反应」。答案、状态汇报、反问、计划、道歉都可能成为这种可见反应。理解意图和找根因慢且不可见，所以压力下容易被跳过。
++
++因此遇到问题、指令、纠正、极简回复时，第一步不是抢一个输出，而是先弄清「owner 到底要什么」「这个现象为什么发生」「我是否把症状当成了原因」。没懂就动，会把后续所有规则都带歪。
++
++## 首批投影
++
++- [[root-cause-over-symptom]] — 该事实的主投影。
++- [[directly-state-core-finding]] — 直接给核心定位,不是用 menu 反应填充。
++- [[memory-value-yardstick]] — 判断该不该记时先停一拍,不要按"重要"反射下手。
+diff -ruN zmd_patch_orig/_cc_live_memory/fact_zero_finding_is_not_proof.md zmd_patch_work/_cc_live_memory/fact_zero_finding_is_not_proof.md
+--- zmd_patch_orig/_cc_live_memory/fact_zero_finding_is_not_proof.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/_cc_live_memory/fact_zero_finding_is_not_proof.md	2026-06-14 15:24:48.699886751 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-zero-finding-is-not-proof
++description: "抽象事实: 审查零 finding 只能说明该审查没找到问题,不能证明没有问题; 终结需要独立性可保证的对拍/fuzz/proof,或多轮独立零 finding 加外部计数闭合。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++审查只能证明「发现了问题」；零 finding 不能证明「没有问题」。零 finding 与 reviewer 到达能力上限在结果上不可区分。尤其长上下文/外发模型/多轮审查，负结果必须按能力边界解释。
++
++真正能推进到闭合的东西是独立性更强的证据：本地差分对拍、fuzz、独立 oracle、proof-carrying verifier、fresh full re-audit、以及 owner 仓库外维护的连续独立零 finding 计数。零 finding 可以计数，不能单次封神。
++
++## 首批投影
++
++- [[verification-independent-backstop]] — re-audit 不能降 scope/rigor,必须 fresh full。
++- [[memory-currency-protocol]] — living 计数/状态不能散文手抄。
++- [[authoritative-numbers-single-source]] — 计数走单一来源和 gate。
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_agent_vs_workflow_dispatch.md zmd_patch_work/_cc_live_memory/feedback_agent_vs_workflow_dispatch.md
+--- zmd_patch_orig/_cc_live_memory/feedback_agent_vs_workflow_dispatch.md	2026-06-14 15:19:20.034006514 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_agent_vs_workflow_dispatch.md	2026-06-14 15:24:48.662529174 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-self-report-is-not-evidence]] [[fact-conversation-state-is-window-local]]
++
+ > **GPT Pro 外发审查/委托的完整规则(核心裁决 / 四条发送设置 / 打包 `build_v80_single_win.py` / dispatch 通道 + 两层托底链 / 降级判据 / 并发 / scope 厘清)见 [[no-workflow-use-chrome-gpt-review]] 子树,本节不复述以防双处漂移**(议会 redundancy 收口 2026-06-14:同话题别抄副本、用 wikilink)。
+ > **不变的要点(读全规则去子树)**: ① 非必要不用 Workflow 做 **soundness 审查这个动作**、审查/外审/委托实现外发 GPT Pro;② 但 Workflow 本身**已放开**(`approval_required=false`,见 [[workflow-approval-not-avoidance]]),别把"非必要不用 Workflow"误读成"默认单 Agent";③ 本裁决**只管「判 soundness 的动作」**,准备/调研/编排可 workflow fan-out(判据看任务实质,见 [[no-workflow-scope-clarification]])。
+ 
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_lazy_mode.md zmd_patch_work/_cc_live_memory/feedback_lazy_mode.md
+--- zmd_patch_orig/_cc_live_memory/feedback_lazy_mode.md	2026-06-14 15:19:20.046213062 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_lazy_mode.md	2026-06-14 15:24:48.665161869 +0000
+@@ -4,6 +4,9 @@
+ type: feedback
+ originSessionId: 01f265d2-940b-4fbc-a7a1-80c190c6f625
+ ---
++
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ ## 用户的真实痛点 (不是偏好, 是合作可持续性的变量)
+ 
+ 用户跟我合作的价值是**让他少花脑子**. 每次我问 "要不要 X?"——如果 X 我心
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_memory_currency_protocol.md zmd_patch_work/_cc_live_memory/feedback_memory_currency_protocol.md
+--- zmd_patch_orig/_cc_live_memory/feedback_memory_currency_protocol.md	2026-06-14 15:19:20.047939315 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_memory_currency_protocol.md	2026-06-14 15:24:48.665674163 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ 记忆树更新长期滞后于项目 phase 转换 → 现状类 memory 反复过时 (2026-06-01 staleness 审计抓出 3 个 HIGH: 项目身份根 memory 仍把 Phase 3B tuning 当现状 + 06_current_status 仍说 Phase 1.1 GO + F3 oracle 闭环口径错)。**补 (2026-06-01)**: 同类 drift 还有 `CLAUDE.md` "Current Phase: 3B Optimization" 旧编号 (实际已转 cut-family LBBD / P1.3A), 本 session 已改正 —— staleness sweep 要把 **CLAUDE.md 自身**也纳入扫描对象, 不只 memory。本协议是这类 drift 的治本规则。
+ 
+ **Why**: phase close / milestone / paradigm shift 频繁, 但「现状」散写在多条 memory 里, 每次转换只更新一两条, 其余变 stale。下次 session 接手按 stale memory 误判项目所处阶段 / 找已废弃的路径。根因不是某条写错, 是**没有单一权威现状源 + 没有转换时的更新仪式**。
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_memory_tree_structural_health.md zmd_patch_work/_cc_live_memory/feedback_memory_tree_structural_health.md
+--- zmd_patch_orig/_cc_live_memory/feedback_memory_tree_structural_health.md	2026-06-14 15:19:20.048663840 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_memory_tree_structural_health.md	2026-06-14 15:24:48.674290961 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ 记忆树会"结构性"坏掉 —— 这是跟 [[memory-currency-protocol]] (内容过时轴) **不同的失效轴**, 内容再新, link 断了 / 尾部被截一样废。2026-06-01 梳理时治的就是这层。
+ 
+ ## 两个硬机制
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_no_causal_claim_from_n1.md zmd_patch_work/_cc_live_memory/feedback_no_causal_claim_from_n1.md
+--- zmd_patch_orig/_cc_live_memory/feedback_no_causal_claim_from_n1.md	2026-06-14 15:19:20.050050762 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_no_causal_claim_from_n1.md	2026-06-14 15:24:48.676008408 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-evidence-before-story]]
++
+ 我有个**反复发作**的毛病: 看到一个现象, 立刻给它配一个**听起来干净的因果解释**, 并以"已确定/实测"的口气说出来 —— 但其实只有**一次**有效观测, 没做对照实验, 没排除"就是随机/噪声"这个 null hypothesis。用户多次戳穿。
+ 
+ ## 两个已发生的实例 (同一个病)
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_no_reply_means_agree.md zmd_patch_work/_cc_live_memory/feedback_no_reply_means_agree.md
+--- zmd_patch_orig/_cc_live_memory/feedback_no_reply_means_agree.md	2026-06-14 15:19:20.050617497 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_no_reply_means_agree.md	2026-06-14 15:24:48.676336051 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ 2026-05-24 用户原话: "以后记一下不回复就是默认同意你的倾向"
+ 
+ ## 规则
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_subagent_for_closed_loop_tasks.md zmd_patch_work/_cc_live_memory/feedback_subagent_for_closed_loop_tasks.md
+--- zmd_patch_orig/_cc_live_memory/feedback_subagent_for_closed_loop_tasks.md	2026-06-14 15:19:20.053999084 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_subagent_for_closed_loop_tasks.md	2026-06-14 15:24:48.678138591 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 8ce2a10d-50a6-4d5c-82bf-3c4414cb623f
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ ## 规则
+ 
+ 当任务符合**三个条件全满足**时, 直接 spawn sub-agent (模型按 [[subagent-model-by-weight]] 重量定),
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_verification_independent_backstop.md zmd_patch_work/_cc_live_memory/feedback_verification_independent_backstop.md
+--- zmd_patch_orig/_cc_live_memory/feedback_verification_independent_backstop.md	2026-06-14 15:19:20.054969803 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_verification_independent_backstop.md	2026-06-14 15:24:48.678429871 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-self-report-is-not-evidence]] [[fact-zero-finding-is-not-proof]] [[fact-evidence-before-story]]
++
+ 2026-06-01 用户原话: "llm 的注意力机制现在在长上下文下很容易出现漏看的问题, 至少让 workflow 或者多个子代理去作为补充和托底"; 紧接着纠正 "你让它确认的主体是记忆树, 但我想让它检查的主体却是当前的这个 session …… 你把检查的主体弄错了"。
+ 
+ ## 规则
+diff -ruN zmd_patch_orig/_cc_live_memory/feedback_verify_solver_param_claims.md zmd_patch_work/_cc_live_memory/feedback_verify_solver_param_claims.md
+--- zmd_patch_orig/_cc_live_memory/feedback_verify_solver_param_claims.md	2026-06-14 15:19:20.055553643 +0000
++++ zmd_patch_work/_cc_live_memory/feedback_verify_solver_param_claims.md	2026-06-14 15:24:48.678561706 +0000
+@@ -5,6 +5,8 @@
+ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
+ ---
+ 
++> 事实依据: [[fact-evidence-before-story]]
++
+ agent 调研产出的"求解器内部参数级金矿"（如 `shared_tree_num_workers`、`linearization_level`、`presolve_*` 类参数）进入路线图 P0/P1 **之前**，必须用一个 follow-up agent 直接读官方源码（GitHub `ortools/sat/*.cc`、`sat_parameters.proto`、issue tracker）核实参数的实际数学行为。**不能只信"agent 引用了某 benchmark 说 +N%"**。
+ 
+ **Why:** 用户 2026-05-08 让我开 follow-up agent 查 `shared_tree_num_workers` 的官方公式（P0 #1 实施前的"数学依据查证"）。结果**直接推翻了 R5 那个 🥇🥇 双金金矿**：
+diff -ruN zmd_patch_orig/_cc_live_memory/no-gpt-concurrency-field.md zmd_patch_work/_cc_live_memory/no-gpt-concurrency-field.md
+--- zmd_patch_orig/_cc_live_memory/no-gpt-concurrency-field.md	2026-06-14 15:19:20.063660285 +0000
++++ zmd_patch_work/_cc_live_memory/no-gpt-concurrency-field.md	2026-06-14 15:24:48.680471414 +0000
+@@ -6,4 +6,6 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ **并发上限已字段化 (2026-06-14 owner 放开)**: GPT 外发"一次最多 2 条在途"的旧软上限 owner 裁决去掉——需要发多少条就发多少条。现由字段控制: `C:\Users\22957\cc_watchdog\gpt_dispatch_concurrency.json` 的 `max_in_flight` (null=不限=当前默认; 整数 N=最多 N 条同时在途未收完)。CC 每次发新外发请求前读此字段决定并发度。dispatch 脚本本身无硬并发限制 (代码里没有 max_in_flight gate, grep 确认), 旧上限纯是 CC 操作软规则, 现移到字段。**Why**: 一刀切写死"最多 2"在记忆里, 风控冷却后也没人改回来, owner 要的是可调旋钮; 风控复发时把 max_in_flight 设回整数即可临时收紧, 而非永久卡死。**仍成立的护栏 (与并发数无关, 别一起去掉)**: 在途单未收完别清旧快照包 (传新包加 --keep-old-snapshots, sha 唯一名防并发覆盖)、每单 dispatch 只挂一个后台 shell 当唤醒源、包走 Project 文件区模式。
+diff -ruN zmd_patch_orig/_cc_live_memory/no-gpt-downgrade-evidence.md zmd_patch_work/_cc_live_memory/no-gpt-downgrade-evidence.md
+--- zmd_patch_orig/_cc_live_memory/no-gpt-downgrade-evidence.md	2026-06-14 15:19:20.064869373 +0000
++++ zmd_patch_work/_cc_live_memory/no-gpt-downgrade-evidence.md	2026-06-14 15:24:48.681205166 +0000
+@@ -6,4 +6,6 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-self-report-is-not-evidence]]
++
+ **降级机理 + 通道实证(2026-06-11 夜, 24 次交付数据)**: 脚本发送白天 21h / 20+ 次全真 Pro(elapsed_s 21-44min), 直到一次 4 路并发触发 Sentinel(~22:16)→ 此后**脚本特征发送被降到 40-70s, 但手动发送(Edge 或 App)仍吃真 Pro**(22:42 手动 R2 = 43min, 轻量手动测试秒回健康)。**唯一可靠降级信号 = elapsed_s**: `model_slug` 全程 `gpt-5-5-pro`、`thinking_marker` 全程 `none`(连真 Pro 也 none), 明面字段全撒谎。**App = 独立手动通道**, Edge 脚本被 flag 时 App 仍能正常手动发; 但裸开 App 无 CDP 9224 → `--resume` 盯不了, 手动收交付到 `C:\22957\download`。**"HAR 里有 sentinel 请求" 不算证据**(sentinel 是所有 ChatGPT 会话通用的请求门, 人人都有, 客服一看就知道); 找客服的唯一真证据是时长对比(同 Project / slug, 手动 43min vs 脚本 40-70s)。
+diff -ruN zmd_patch_orig/_cc_live_memory/no-gpt-send-settings.md zmd_patch_work/_cc_live_memory/no-gpt-send-settings.md
+--- zmd_patch_orig/_cc_live_memory/no-gpt-send-settings.md	2026-06-14 15:19:20.066709523 +0000
++++ zmd_patch_work/_cc_live_memory/no-gpt-send-settings.md	2026-06-14 15:24:48.681799572 +0000
+@@ -6,6 +6,8 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-conversation-state-is-window-local]]
++
+ **发送设置(用户指定):**
+ 1. 模型选 **Pro·进阶**(= GPT Pro 扩展模式;中文 UI「进阶专业」就是它,不用另找开关)
+ 2. 发在 ChatGPT 的**「终末地」Project** 里面
+diff -ruN zmd_patch_orig/_cc_live_memory/no-workflow-use-chrome-gpt-review.md zmd_patch_work/_cc_live_memory/no-workflow-use-chrome-gpt-review.md
+--- zmd_patch_orig/_cc_live_memory/no-workflow-use-chrome-gpt-review.md	2026-06-14 15:19:20.068363663 +0000
++++ zmd_patch_work/_cc_live_memory/no-workflow-use-chrome-gpt-review.md	2026-06-14 15:24:48.682087790 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
+ ---
+ 
++> 事实依据: [[fact-conversation-state-is-window-local]]
++
+ 「非必要不用 Workflow,审查/委托实现外发 GPT Pro」这套规则的索引节点(原 15KB 巨型节点已按事实拆分,提高召回)。按需读对应子节点:
+ 
+ - [[no-gpt-pro-outsource-core]] — 核心裁决:非必要不用 Workflow 多代理;审查/外审/委托实现外发 GPT Pro;Why + How to apply(交付物验收 preflight gate)
+diff -ruN zmd_patch_orig/_cc_live_memory/project_authoritative_numbers_single_source.md zmd_patch_work/_cc_live_memory/project_authoritative_numbers_single_source.md
+--- zmd_patch_orig/_cc_live_memory/project_authoritative_numbers_single_source.md	2026-06-14 15:19:20.068830370 +0000
++++ zmd_patch_work/_cc_live_memory/project_authoritative_numbers_single_source.md	2026-06-14 15:24:48.682290960 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]] [[fact-zero-finding-is-not-proof]]
++
+ 用户 2026-06-04 要求把"主体为核心节点、其余是它的投影"这套架构 (本就给 memory 用, 见 [[memory-currency-protocol]] rule1/2 + stamp_living_status) **也套到项目文档/数字上**。两件事 (Design A + B) 落地, 都用 **core-node + projection + forcing-function**。**诚实现状 (v28 外审 catch)**: **forcing 半边真落地, projection 半边仍是未接线契约** —— 见各 Design 的诚实边界段, 别 over-read 成"全部数字都被守住"。
+ 
+ ## Design A — 数字单一来源 (doc-currency 治本)
+diff -ruN zmd_patch_orig/_cc_live_memory/root-cause-over-symptom.md zmd_patch_work/_cc_live_memory/root-cause-over-symptom.md
+--- zmd_patch_orig/_cc_live_memory/root-cause-over-symptom.md	2026-06-14 15:19:20.079376082 +0000
++++ zmd_patch_work/_cc_live_memory/root-cause-over-symptom.md	2026-06-14 15:24:48.686006733 +0000
+@@ -6,6 +6,8 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-understand-before-output]] [[fact-decision-boundary-is-ability]]
++
+ **owner 2026-06-14 立的通则(严重级, owner 原话"问题不是重点,重点是产生问题的原因")**: 遇到任何问题,**问题本身 / 症状不是重点,产生它的"原因"才是重点**。停在"这问题是什么、怎么绕过"= 治标;必须往上一层问"**为什么会出现它**",改原因。对**我自己反复犯的行为错**同样适用——别只描述"我又 X 了 / 我错在 X",要挖"**为什么我会 X**"。
+ 
+ **这次逼出的根因(我那一长串症状的共同上游)**: 我的默认行为是「**收到消息 → 立刻产出一个反应**(答案 / 动作 / 反问)」,把「**先真正读懂意图 + 搞清当下根因**」这步跳过了。产出快且可见,理解慢且不可见,我在"赶紧给点东西"的惯性下默认走浅路。于是下游全是症状:
+diff -ruN zmd_patch_orig/_cc_live_memory/workflow-approval-not-avoidance.md zmd_patch_work/_cc_live_memory/workflow-approval-not-avoidance.md
+--- zmd_patch_orig/_cc_live_memory/workflow-approval-not-avoidance.md	2026-06-14 15:19:20.079906630 +0000
++++ zmd_patch_work/_cc_live_memory/workflow-approval-not-avoidance.md	2026-06-14 15:24:48.686441073 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ owner 2026-06-13 纠正: 我把"用 Workflow 前要申请"误读成了**回避理由** —— 逻辑变成"因为要申请所以干脆别用 wf", 导致 wf 使用频率大幅下降。owner 的本意是**报备**: "我要用 wf 了 → 用前打个招呼说一声 (跑什么 / 几个 agent / 预估 token)", 这是说明不是障碍。
+ 
+ **当前状态**: `C:\Users\22957\cc_watchdog\workflow_approval.json` 的 `approval_required = false` (owner 放开, 类比 owner_sleep 离线开关)。该用 Workflow 就直接用, 用前报备一句即可, 不阻塞不等同意。
+diff -ruN zmd_patch_orig/_cc_live_memory/zmd-env-ci-gate.md zmd_patch_work/_cc_live_memory/zmd-env-ci-gate.md
+--- zmd_patch_orig/_cc_live_memory/zmd-env-ci-gate.md	2026-06-14 15:19:20.080817711 +0000
++++ zmd_patch_work/_cc_live_memory/zmd-env-ci-gate.md	2026-06-14 15:24:48.687820969 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 01ce64d2-c550-4722-ba4f-1042a3935678
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ - **CI = GitHub Actions `project-foundation` gate**:每次 push(main/project-foundation 分支)跑 `python scripts/preflight_gate.py --ci`(17 项),失败给 owner 发邮件——push 频繁时红一次就是邮件轰炸(V80 落地实测几十封)。**任何落地(尤其外发委托交付)commit 前必须本地跑同款命令全绿**;pytest 盖不到其中三类:frozen-artifact hash(`preflight_gate.py::FROZEN_ARTIFACTS`,改 canonical_rules 必须同批推进 sha256)、LF 行尾政策(`data/line_ending_policy.json`)、记忆树死链(删 memory 节点必须同时清全树 wikilink 引用)。
+ 
+ 相关:[[zmd-checkout-env]] [[zmd-env-email-bomb]] [[zmd-env-prepush-gate]]
+diff -ruN zmd_patch_orig/_cc_live_memory/zmd-env-prepush-gate.md zmd_patch_work/_cc_live_memory/zmd-env-prepush-gate.md
+--- zmd_patch_orig/_cc_live_memory/zmd-env-prepush-gate.md	2026-06-14 15:19:20.082347719 +0000
++++ zmd_patch_work/_cc_live_memory/zmd-env-prepush-gate.md	2026-06-14 15:24:48.697026443 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 01ce64d2-c550-4722-ba4f-1042a3935678
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ - **机械门禁已装 (2026-06-12, 一劳永逸层, owner 问"怎么保证不再犯"的答案)**: `.git/hooks/pre-push` (机器专属不入库) 强制跑 `preflight_gate.py --hook` (20 项 ≈20s), 任一 BLOCK 就物理挡掉 push (commit 留本地, 修好重推自动补齐); 逃生口 `ZMD_SKIP_PUSH_GATE=1 git push origin HEAD` (紧急用)。同时 post-commit auto-push 改成失败时控制台大声报 + tail `auto-push.log` (原版 `2>&1` 全吞进 log = 可见性黑洞本洞)。**装机坑**: hook 里注入 `PYTEST_ADDOPTS` 隔离 basetemp 时, Windows 反斜杠路径会被 pytest 的 shlex 解析当转义符吃掉 (实测 71 errors), 必须 `tr '\\' '/'` 转正斜杠。**残余敞口(诚实边界)**: ① 检的是工作树近似, 不是被推 commit 的快照——双线程共用 checkout 时另一线程脏 WIP 可能误挡 (误挡是响的, 无害); ② `--hook` 与 CI `--ci` 的 diff-range 类检查可能有范围差; ③ 换机/重 clone 后 hook 不在, 按本条手动重装。`gh run list -L 1` push 后回看降级为兜底纪律。
+ 
+ 相关:[[zmd-checkout-env]] [[zmd-env-ci-gate]] [[zmd-env-auto-push]]
+diff -ruN zmd_patch_orig/cc_context/memory/MEMORY.md zmd_patch_work/cc_context/memory/MEMORY.md
+--- zmd_patch_orig/cc_context/memory/MEMORY.md	2026-06-14 15:19:21.723066923 +0000
++++ zmd_patch_work/cc_context/memory/MEMORY.md	2026-06-14 15:24:48.622980683 +0000
+@@ -1,5 +1,16 @@
+ > 2026-06-10 记忆树瘦身:73 条老记忆(老进度快照 / 死路单条 verdict / 已废除的打包审查规则)备份在 `cc_context/memory_archive/`(单份,不双镜像)。需要历史细节去那里翻;本索引只留活记忆。
+ 
++## 抽象事实层 (normalize: fact → projection)
++
++> 投影节点只回指这里的事实,不要把抽象事实再复刻成新原子。每个 fact 在 MEMORY.md 直接覆盖,避免父索引传递覆盖失效。
++- [决策边界=能力](fact_decision_boundary_is_ability.md) — 能不能问 owner 看我能不能自己做/定; 目标/先例/放开开关=授权
++- [先理解再产出](fact_understand_before_output.md) — 默认病是抢可见反应,正确顺序是先读懂意图+根因
++- [证据先于叙事](fact_evidence_before_story.md) — N=1/终态/重试不定因; 明确数字/规则优先
++- [自报不算证据](fact_self_report_is_not_evidence.md) — 自验摘要/metadata/单次结果不裸信,靠独立复现和端到端验收
++- [零 finding 不是 proof](fact_zero_finding_is_not_proof.md) — 审查只能证有问题; 闭合靠独立对拍/fuzz/proof/多轮计数
++- [强制函数优先](fact_forcing_function_required.md) — 复发行为/漂移靠 hook/test/gate/stamp,规则只做 fallback
++- [会话状态局部](fact_conversation_state_is_window_local.md) — 新会话不带隐式记忆; 新任务隔离与 opsec 都按显式材料算
++
+ ## 当前状态 / 交接
+ 
+ - [交接 Windows + 过夜审查循环 ACTIVE (单一 living 现状源)](handoff_windows_ninth_review_pending.md) — **当前 phase/状态权威源, 现状只信这条** (读法: 正文 stamp 编号最大的块 = 最新现状; 逐面轮次史以台账 cc_context/review/p1_2_closure_evidence.md 为准, 本行不手抄易漂数值);V50 手动 owner-count gate 不变。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_conversation_state_is_window_local.md zmd_patch_work/cc_context/memory/fact_conversation_state_is_window_local.md
+--- zmd_patch_orig/cc_context/memory/fact_conversation_state_is_window_local.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_conversation_state_is_window_local.md	2026-06-14 15:24:48.609433792 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-conversation-state-is-window-local
++description: "抽象事实: GPT/LLM 会话状态只活在当前窗口/线程/项目材料与显式附件里; 跨新会话不携带隐式记忆,所以新任务隔离和 opsec 威胁面都必须按窗口局部状态推导。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++外发 GPT/LLM 的可用状态是窗口局部的：当前会话上下文、Project 来源区/附件、显式 prompt、该工具实际可见的文件。新会话不会继承旧窗口的隐式记忆或口头背景；跨窗口能共享的只有被明确放进 Project/附件/文件系统/记忆树的东西。
++
++这个事实同时推出两个方向：新任务默认开新会话可以减少旧上下文污染；opsec 的真实威胁面也应按「哪些材料被显式放进这个窗口/Project」来算，不能凭空假设模型跨窗口记得或不记得某个仓库外信息。
++
++## 首批投影
++
++- [[no-gpt-send-settings]] — 新任务默认新会话,Project 来源区显式给材料。
++- [[no-workflow-use-chrome-gpt-review]] — 审查外发 GPT Pro 时靠包/prompt 明示上下文。
++- [[agent-vs-workflow-dispatch]] — 外发任务的窗口/Project/包是显式状态边界。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_decision_boundary_is_ability.md zmd_patch_work/cc_context/memory/fact_decision_boundary_is_ability.md
+--- zmd_patch_orig/cc_context/memory/fact_decision_boundary_is_ability.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_decision_boundary_is_ability.md	2026-06-14 15:24:48.608289838 +0000
+@@ -0,0 +1,22 @@
++---
++name: fact-decision-boundary-is-ability
++description: "抽象事实: 能不能问 owner 的判据是我能不能自己定/做,不是措辞; 已给目标/先例/放开的开关=站着授权; 真 owner-only 只剩外部状态、不可推偏好、不可逆高风险。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++「该不该问 owner」的唯一判据是：这件事我能不能在当前授权和可取得信息下自己定、自己做。判据不看句式："由你定 / 你的 call / 等你裁决 / 发吗 / 我现在去做 X" 都可能是同一个踢回控制权的病。
++
++已给出的目标、既有先例、已明确放开的额度/并发/风控/节奏，是站着的授权。目标下面的下一步、节奏、是否继续、发几个，默认答案已经是「做」。不能用「小批 / 稳一点 / 保险起见」把 owner 已经归零的旋钮又偷偷拧回来。
++
++真正只剩 owner 能定的只限三类：仓库/系统外且只有 owner 维护的状态；owner 的偏好/优先级/节奏且我无法从已有信息推出；不可逆且高风险的大决策。交上去时也只交那一点残余，不能把整摊推回。
++
++## 首批投影
++
++- [[root-cause-over-symptom]] — 把能推荐的整摊挂 owner 是卸责反射。
++- [[lazy-mode]] / [[no-reply-means-agree]] — 无谓盖章浪费 owner 心智成本。
++- [[workflow-approval-not-avoidance]] / [[subagent-for-closed-loop-tasks]] — 已授权或无需中途决策的闭环活直接推进。
++- [[no-gpt-concurrency-field]] — owner 放开的并发/额度由字段控制,不再自设软上限。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_evidence_before_story.md zmd_patch_work/cc_context/memory/fact_evidence_before_story.md
+--- zmd_patch_orig/cc_context/memory/fact_evidence_before_story.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_evidence_before_story.md	2026-06-14 15:24:48.608802251 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-evidence-before-story
++description: "抽象事实: 干净叙事不是证据; N=1 不能定因,可观测终态不能证明走过某路径,明确数字/规则优先于我编出的来源故事。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++一个现象出现了，不等于我知道它为什么出现。N=1、单次修复成功、一次重试后变好、终态出现，都不能排除随机/噪声/另一路径。因果需要对照重复，路径声明需要该路径独有证据。
++
++当我的直觉和明确数字/规则冲突时，明确值优先。不能捏造「来源」「历史原因」「过时理由」来让叙事自洽。拿不准只能标成不确定，并说明需要怎样验证。
++
++## 首批投影
++
++- [[no-causal-claim-from-n1]] — N=1 不下因果断言。
++- [[verify-solver-param-claims]] — solver/CP-SAT 参数收益先核源码或原始依据。
++- [[verification-independent-backstop]] — 子代理报的根因/数字 main 也要复核。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_forcing_function_required.md zmd_patch_work/cc_context/memory/fact_forcing_function_required.md
+--- zmd_patch_orig/cc_context/memory/fact_forcing_function_required.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_forcing_function_required.md	2026-06-14 15:24:48.609224758 +0000
+@@ -0,0 +1,20 @@
++---
++name: fact-forcing-function-required
++description: "抽象事实: 反复复发的行为/状态漂移不能靠再写一条更强规则根治; 需要 hook、test、gate、stamp、生成器等 forcing function,规则只做 fallback。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++对反复复发的动作漏做、状态漏更、投影漂移、数字散抄，"再记一条更强规则"通常治不住。被动文本只在被召回且被正确执行时才生效；压力一来，旧病会换措辞复发。
++
++根治要把正确动作做成 forcing function：hook 拦截、pytest/gate 报红、stamp 自动生成、单一来源生成投影、pre-push 物理挡、schema/check 让漂移无法静默进入仓库。规则仍要写，但它是解释和 fallback，不是主刹车。
++
++## 首批投影
++
++- [[authoritative-numbers-single-source]] — 数字 core-node + projection + gate 的既有经验。
++- [[memory-tree-structural-health]] — link/MEMORY/live mirror/INSTANCE 这些结构病要机器查。
++- [[memory-currency-protocol]] — living 现状靠 subject/projection/stamp,不是散文自觉。
++- [[zmd-env-ci-gate]] / [[zmd-env-prepush-gate]] — push 前后都让漏做自动变红。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_self_report_is_not_evidence.md zmd_patch_work/cc_context/memory/fact_self_report_is_not_evidence.md
+--- zmd_patch_orig/cc_context/memory/fact_self_report_is_not_evidence.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_self_report_is_not_evidence.md	2026-06-14 15:24:48.608949496 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-self-report-is-not-evidence
++description: "抽象事实: 外部模型/工具/我自己的自验摘要、明面元数据、单次结果都不是最终证据; 可信度来自独立复现、对拍、端到端验收和可判别 probe。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++自称验过、明面 metadata、model slug、thinking marker、单个 targeted test、一次 agent verdict，都只是线索，不是最终证据。尤其外发 GPT Pro 的交付：找洞能力强不等于补丁可信；自验摘要和明面模型字段都可能骗我。
++
++可信的闭合来自我能独立复现的判别链：原始 finding 可复现，probe 能区分 patched/unpatched，补丁打上后端到端测试和 preflight 通过，必要时用独立 oracle/fuzz/proof 对拍。GPT Pro 降级这类通道问题，当前唯一可靠信号是生成耗时，而不是明面字段。
++
++## 首批投影
++
++- [[verification-independent-backstop]] — 验证类任务不能只信 main 或子代理转述。
++- [[no-gpt-downgrade-evidence]] — 明面字段撒谎,降级以 elapsed_s 判。
++- [[agent-vs-workflow-dispatch]] — 外发是获取候选/审查,不是橡皮图章。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_understand_before_output.md zmd_patch_work/cc_context/memory/fact_understand_before_output.md
+--- zmd_patch_orig/cc_context/memory/fact_understand_before_output.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_understand_before_output.md	2026-06-14 15:24:48.608615296 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-understand-before-output
++description: "抽象事实: LLM 默认会把「收到消息→立刻产出可见反应」当捷径,从而跳过真正读懂意图和根因; 正确顺序是先理解/找因,再行动或回答。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++我的危险默认不是「不够努力」，而是「收到消息 → 立刻产出一个可见反应」。答案、状态汇报、反问、计划、道歉都可能成为这种可见反应。理解意图和找根因慢且不可见，所以压力下容易被跳过。
++
++因此遇到问题、指令、纠正、极简回复时，第一步不是抢一个输出，而是先弄清「owner 到底要什么」「这个现象为什么发生」「我是否把症状当成了原因」。没懂就动，会把后续所有规则都带歪。
++
++## 首批投影
++
++- [[root-cause-over-symptom]] — 该事实的主投影。
++- [[directly-state-core-finding]] — 直接给核心定位,不是用 menu 反应填充。
++- [[memory-value-yardstick]] — 判断该不该记时先停一拍,不要按"重要"反射下手。
+diff -ruN zmd_patch_orig/cc_context/memory/fact_zero_finding_is_not_proof.md zmd_patch_work/cc_context/memory/fact_zero_finding_is_not_proof.md
+--- zmd_patch_orig/cc_context/memory/fact_zero_finding_is_not_proof.md	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory/fact_zero_finding_is_not_proof.md	2026-06-14 15:24:48.609094065 +0000
+@@ -0,0 +1,19 @@
++---
++name: fact-zero-finding-is-not-proof
++description: "抽象事实: 审查零 finding 只能说明该审查没找到问题,不能证明没有问题; 终结需要独立性可保证的对拍/fuzz/proof,或多轮独立零 finding 加外部计数闭合。"
++metadata:
++  node_type: memory
++  type: fact
++---
++
++## 抽象事实
++
++审查只能证明「发现了问题」；零 finding 不能证明「没有问题」。零 finding 与 reviewer 到达能力上限在结果上不可区分。尤其长上下文/外发模型/多轮审查，负结果必须按能力边界解释。
++
++真正能推进到闭合的东西是独立性更强的证据：本地差分对拍、fuzz、独立 oracle、proof-carrying verifier、fresh full re-audit、以及 owner 仓库外维护的连续独立零 finding 计数。零 finding 可以计数，不能单次封神。
++
++## 首批投影
++
++- [[verification-independent-backstop]] — re-audit 不能降 scope/rigor,必须 fresh full。
++- [[memory-currency-protocol]] — living 计数/状态不能散文手抄。
++- [[authoritative-numbers-single-source]] — 计数走单一来源和 gate。
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_agent_vs_workflow_dispatch.md zmd_patch_work/cc_context/memory/feedback_agent_vs_workflow_dispatch.md
+--- zmd_patch_orig/cc_context/memory/feedback_agent_vs_workflow_dispatch.md	2026-06-14 15:19:21.695393822 +0000
++++ zmd_patch_work/cc_context/memory/feedback_agent_vs_workflow_dispatch.md	2026-06-14 15:24:48.617994665 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-self-report-is-not-evidence]] [[fact-conversation-state-is-window-local]]
++
+ > **GPT Pro 外发审查/委托的完整规则(核心裁决 / 四条发送设置 / 打包 `build_v80_single_win.py` / dispatch 通道 + 两层托底链 / 降级判据 / 并发 / scope 厘清)见 [[no-workflow-use-chrome-gpt-review]] 子树,本节不复述以防双处漂移**(议会 redundancy 收口 2026-06-14:同话题别抄副本、用 wikilink)。
+ > **不变的要点(读全规则去子树)**: ① 非必要不用 Workflow 做 **soundness 审查这个动作**、审查/外审/委托实现外发 GPT Pro;② 但 Workflow 本身**已放开**(`approval_required=false`,见 [[workflow-approval-not-avoidance]]),别把"非必要不用 Workflow"误读成"默认单 Agent";③ 本裁决**只管「判 soundness 的动作」**,准备/调研/编排可 workflow fan-out(判据看任务实质,见 [[no-workflow-scope-clarification]])。
+ 
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_lazy_mode.md zmd_patch_work/cc_context/memory/feedback_lazy_mode.md
+--- zmd_patch_orig/cc_context/memory/feedback_lazy_mode.md	2026-06-14 15:19:21.700266683 +0000
++++ zmd_patch_work/cc_context/memory/feedback_lazy_mode.md	2026-06-14 15:24:48.611111839 +0000
+@@ -4,6 +4,9 @@
+ type: feedback
+ originSessionId: 01f265d2-940b-4fbc-a7a1-80c190c6f625
+ ---
++
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ ## 用户的真实痛点 (不是偏好, 是合作可持续性的变量)
+ 
+ 用户跟我合作的价值是**让他少花脑子**. 每次我问 "要不要 X?"——如果 X 我心
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_memory_currency_protocol.md zmd_patch_work/cc_context/memory/feedback_memory_currency_protocol.md
+--- zmd_patch_orig/cc_context/memory/feedback_memory_currency_protocol.md	2026-06-14 15:19:21.701232333 +0000
++++ zmd_patch_work/cc_context/memory/feedback_memory_currency_protocol.md	2026-06-14 15:24:48.620013567 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ 记忆树更新长期滞后于项目 phase 转换 → 现状类 memory 反复过时 (2026-06-01 staleness 审计抓出 3 个 HIGH: 项目身份根 memory 仍把 Phase 3B tuning 当现状 + 06_current_status 仍说 Phase 1.1 GO + F3 oracle 闭环口径错)。**补 (2026-06-01)**: 同类 drift 还有 `CLAUDE.md` "Current Phase: 3B Optimization" 旧编号 (实际已转 cut-family LBBD / P1.3A), 本 session 已改正 —— staleness sweep 要把 **CLAUDE.md 自身**也纳入扫描对象, 不只 memory。本协议是这类 drift 的治本规则。
+ 
+ **Why**: phase close / milestone / paradigm shift 频繁, 但「现状」散写在多条 memory 里, 每次转换只更新一两条, 其余变 stale。下次 session 接手按 stale memory 误判项目所处阶段 / 找已废弃的路径。根因不是某条写错, 是**没有单一权威现状源 + 没有转换时的更新仪式**。
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_memory_tree_structural_health.md zmd_patch_work/cc_context/memory/feedback_memory_tree_structural_health.md
+--- zmd_patch_orig/cc_context/memory/feedback_memory_tree_structural_health.md	2026-06-14 15:19:21.701829736 +0000
++++ zmd_patch_work/cc_context/memory/feedback_memory_tree_structural_health.md	2026-06-14 15:24:48.619308202 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ 记忆树会"结构性"坏掉 —— 这是跟 [[memory-currency-protocol]] (内容过时轴) **不同的失效轴**, 内容再新, link 断了 / 尾部被截一样废。2026-06-01 梳理时治的就是这层。
+ 
+ ## 两个硬机制
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_no_causal_claim_from_n1.md zmd_patch_work/cc_context/memory/feedback_no_causal_claim_from_n1.md
+--- zmd_patch_orig/cc_context/memory/feedback_no_causal_claim_from_n1.md	2026-06-14 15:19:21.702490340 +0000
++++ zmd_patch_work/cc_context/memory/feedback_no_causal_claim_from_n1.md	2026-06-14 15:24:48.614415095 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-evidence-before-story]]
++
+ 我有个**反复发作**的毛病: 看到一个现象, 立刻给它配一个**听起来干净的因果解释**, 并以"已确定/实测"的口气说出来 —— 但其实只有**一次**有效观测, 没做对照实验, 没排除"就是随机/噪声"这个 null hypothesis。用户多次戳穿。
+ 
+ ## 两个已发生的实例 (同一个病)
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_no_reply_means_agree.md zmd_patch_work/cc_context/memory/feedback_no_reply_means_agree.md
+--- zmd_patch_orig/cc_context/memory/feedback_no_reply_means_agree.md	2026-06-14 15:19:21.702911632 +0000
++++ zmd_patch_work/cc_context/memory/feedback_no_reply_means_agree.md	2026-06-14 15:24:48.611889282 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ 2026-05-24 用户原话: "以后记一下不回复就是默认同意你的倾向"
+ 
+ ## 规则
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_subagent_for_closed_loop_tasks.md zmd_patch_work/cc_context/memory/feedback_subagent_for_closed_loop_tasks.md
+--- zmd_patch_orig/cc_context/memory/feedback_subagent_for_closed_loop_tasks.md	2026-06-14 15:19:21.706652556 +0000
++++ zmd_patch_work/cc_context/memory/feedback_subagent_for_closed_loop_tasks.md	2026-06-14 15:24:48.613186116 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 8ce2a10d-50a6-4d5c-82bf-3c4414cb623f
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ ## 规则
+ 
+ 当任务符合**三个条件全满足**时, 直接 spawn sub-agent (模型按 [[subagent-model-by-weight]] 重量定),
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_verification_independent_backstop.md zmd_patch_work/cc_context/memory/feedback_verification_independent_backstop.md
+--- zmd_patch_orig/cc_context/memory/feedback_verification_independent_backstop.md	2026-06-14 15:19:21.707688838 +0000
++++ zmd_patch_work/cc_context/memory/feedback_verification_independent_backstop.md	2026-06-14 15:24:48.616661885 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-self-report-is-not-evidence]] [[fact-zero-finding-is-not-proof]] [[fact-evidence-before-story]]
++
+ 2026-06-01 用户原话: "llm 的注意力机制现在在长上下文下很容易出现漏看的问题, 至少让 workflow 或者多个子代理去作为补充和托底"; 紧接着纠正 "你让它确认的主体是记忆树, 但我想让它检查的主体却是当前的这个 session …… 你把检查的主体弄错了"。
+ 
+ ## 规则
+diff -ruN zmd_patch_orig/cc_context/memory/feedback_verify_solver_param_claims.md zmd_patch_work/cc_context/memory/feedback_verify_solver_param_claims.md
+--- zmd_patch_orig/cc_context/memory/feedback_verify_solver_param_claims.md	2026-06-14 15:19:21.708180804 +0000
++++ zmd_patch_work/cc_context/memory/feedback_verify_solver_param_claims.md	2026-06-14 15:24:48.615641306 +0000
+@@ -5,6 +5,8 @@
+ originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
+ ---
+ 
++> 事实依据: [[fact-evidence-before-story]]
++
+ agent 调研产出的"求解器内部参数级金矿"（如 `shared_tree_num_workers`、`linearization_level`、`presolve_*` 类参数）进入路线图 P0/P1 **之前**，必须用一个 follow-up agent 直接读官方源码（GitHub `ortools/sat/*.cc`、`sat_parameters.proto`、issue tracker）核实参数的实际数学行为。**不能只信"agent 引用了某 benchmark 说 +N%"**。
+ 
+ **Why:** 用户 2026-05-08 让我开 follow-up agent 查 `shared_tree_num_workers` 的官方公式（P0 #1 实施前的"数学依据查证"）。结果**直接推翻了 R5 那个 🥇🥇 双金金矿**：
+diff -ruN zmd_patch_orig/cc_context/memory/no-gpt-concurrency-field.md zmd_patch_work/cc_context/memory/no-gpt-concurrency-field.md
+--- zmd_patch_orig/cc_context/memory/no-gpt-concurrency-field.md	2026-06-14 15:19:21.724283380 +0000
++++ zmd_patch_work/cc_context/memory/no-gpt-concurrency-field.md	2026-06-14 15:24:48.613801534 +0000
+@@ -6,4 +6,6 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ **并发上限已字段化 (2026-06-14 owner 放开)**: GPT 外发"一次最多 2 条在途"的旧软上限 owner 裁决去掉——需要发多少条就发多少条。现由字段控制: `C:\Users\22957\cc_watchdog\gpt_dispatch_concurrency.json` 的 `max_in_flight` (null=不限=当前默认; 整数 N=最多 N 条同时在途未收完)。CC 每次发新外发请求前读此字段决定并发度。dispatch 脚本本身无硬并发限制 (代码里没有 max_in_flight gate, grep 确认), 旧上限纯是 CC 操作软规则, 现移到字段。**Why**: 一刀切写死"最多 2"在记忆里, 风控冷却后也没人改回来, owner 要的是可调旋钮; 风控复发时把 max_in_flight 设回整数即可临时收紧, 而非永久卡死。**仍成立的护栏 (与并发数无关, 别一起去掉)**: 在途单未收完别清旧快照包 (传新包加 --keep-old-snapshots, sha 唯一名防并发覆盖)、每单 dispatch 只挂一个后台 shell 当唤醒源、包走 Project 文件区模式。
+diff -ruN zmd_patch_orig/cc_context/memory/no-gpt-downgrade-evidence.md zmd_patch_work/cc_context/memory/no-gpt-downgrade-evidence.md
+--- zmd_patch_orig/cc_context/memory/no-gpt-downgrade-evidence.md	2026-06-14 15:19:21.725547978 +0000
++++ zmd_patch_work/cc_context/memory/no-gpt-downgrade-evidence.md	2026-06-14 15:24:48.617283289 +0000
+@@ -6,4 +6,6 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-self-report-is-not-evidence]]
++
+ **降级机理 + 通道实证(2026-06-11 夜, 24 次交付数据)**: 脚本发送白天 21h / 20+ 次全真 Pro(elapsed_s 21-44min), 直到一次 4 路并发触发 Sentinel(~22:16)→ 此后**脚本特征发送被降到 40-70s, 但手动发送(Edge 或 App)仍吃真 Pro**(22:42 手动 R2 = 43min, 轻量手动测试秒回健康)。**唯一可靠降级信号 = elapsed_s**: `model_slug` 全程 `gpt-5-5-pro`、`thinking_marker` 全程 `none`(连真 Pro 也 none), 明面字段全撒谎。**App = 独立手动通道**, Edge 脚本被 flag 时 App 仍能正常手动发; 但裸开 App 无 CDP 9224 → `--resume` 盯不了, 手动收交付到 `C:\22957\download`。**"HAR 里有 sentinel 请求" 不算证据**(sentinel 是所有 ChatGPT 会话通用的请求门, 人人都有, 客服一看就知道); 找客服的唯一真证据是时长对比(同 Project / slug, 手动 43min vs 脚本 40-70s)。
+diff -ruN zmd_patch_orig/cc_context/memory/no-gpt-send-settings.md zmd_patch_work/cc_context/memory/no-gpt-send-settings.md
+--- zmd_patch_orig/cc_context/memory/no-gpt-send-settings.md	2026-06-14 15:19:21.727334073 +0000
++++ zmd_patch_work/cc_context/memory/no-gpt-send-settings.md	2026-06-14 15:24:48.621654698 +0000
+@@ -6,6 +6,8 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-conversation-state-is-window-local]]
++
+ **发送设置(用户指定):**
+ 1. 模型选 **Pro·进阶**(= GPT Pro 扩展模式;中文 UI「进阶专业」就是它,不用另找开关)
+ 2. 发在 ChatGPT 的**「终末地」Project** 里面
+diff -ruN zmd_patch_orig/cc_context/memory/no-workflow-use-chrome-gpt-review.md zmd_patch_work/cc_context/memory/no-workflow-use-chrome-gpt-review.md
+--- zmd_patch_orig/cc_context/memory/no-workflow-use-chrome-gpt-review.md	2026-06-14 15:19:21.727905471 +0000
++++ zmd_patch_work/cc_context/memory/no-workflow-use-chrome-gpt-review.md	2026-06-14 15:24:48.622224394 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
+ ---
+ 
++> 事实依据: [[fact-conversation-state-is-window-local]]
++
+ 「非必要不用 Workflow,审查/委托实现外发 GPT Pro」这套规则的索引节点(原 15KB 巨型节点已按事实拆分,提高召回)。按需读对应子节点:
+ 
+ - [[no-gpt-pro-outsource-core]] — 核心裁决:非必要不用 Workflow 多代理;审查/外审/委托实现外发 GPT Pro;Why + How to apply(交付物验收 preflight gate)
+diff -ruN zmd_patch_orig/cc_context/memory/project_authoritative_numbers_single_source.md zmd_patch_work/cc_context/memory/project_authoritative_numbers_single_source.md
+--- zmd_patch_orig/cc_context/memory/project_authoritative_numbers_single_source.md	2026-06-14 15:19:21.728389939 +0000
++++ zmd_patch_work/cc_context/memory/project_authoritative_numbers_single_source.md	2026-06-14 15:24:48.618604883 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]] [[fact-zero-finding-is-not-proof]]
++
+ 用户 2026-06-04 要求把"主体为核心节点、其余是它的投影"这套架构 (本就给 memory 用, 见 [[memory-currency-protocol]] rule1/2 + stamp_living_status) **也套到项目文档/数字上**。两件事 (Design A + B) 落地, 都用 **core-node + projection + forcing-function**。**诚实现状 (v28 外审 catch)**: **forcing 半边真落地, projection 半边仍是未接线契约** —— 见各 Design 的诚实边界段, 别 over-read 成"全部数字都被守住"。
+ 
+ ## Design A — 数字单一来源 (doc-currency 治本)
+diff -ruN zmd_patch_orig/cc_context/memory/root-cause-over-symptom.md zmd_patch_work/cc_context/memory/root-cause-over-symptom.md
+--- zmd_patch_orig/cc_context/memory/root-cause-over-symptom.md	2026-06-14 15:19:21.736402459 +0000
++++ zmd_patch_work/cc_context/memory/root-cause-over-symptom.md	2026-06-14 15:24:48.610135589 +0000
+@@ -6,6 +6,8 @@
+   type: feedback
+ ---
+ 
++> 事实依据: [[fact-understand-before-output]] [[fact-decision-boundary-is-ability]]
++
+ **owner 2026-06-14 立的通则(严重级, owner 原话"问题不是重点,重点是产生问题的原因")**: 遇到任何问题,**问题本身 / 症状不是重点,产生它的"原因"才是重点**。停在"这问题是什么、怎么绕过"= 治标;必须往上一层问"**为什么会出现它**",改原因。对**我自己反复犯的行为错**同样适用——别只描述"我又 X 了 / 我错在 X",要挖"**为什么我会 X**"。
+ 
+ **这次逼出的根因(我那一长串症状的共同上游)**: 我的默认行为是「**收到消息 → 立刻产出一个反应**(答案 / 动作 / 反问)」,把「**先真正读懂意图 + 搞清当下根因**」这步跳过了。产出快且可见,理解慢且不可见,我在"赶紧给点东西"的惯性下默认走浅路。于是下游全是症状:
+diff -ruN zmd_patch_orig/cc_context/memory/workflow-approval-not-avoidance.md zmd_patch_work/cc_context/memory/workflow-approval-not-avoidance.md
+--- zmd_patch_orig/cc_context/memory/workflow-approval-not-avoidance.md	2026-06-14 15:19:21.736896819 +0000
++++ zmd_patch_work/cc_context/memory/workflow-approval-not-avoidance.md	2026-06-14 15:24:48.612508222 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 20690dc4-0860-4f42-a5a5-e1cccbd7b8d7
+ ---
+ 
++> 事实依据: [[fact-decision-boundary-is-ability]]
++
+ owner 2026-06-13 纠正: 我把"用 Workflow 前要申请"误读成了**回避理由** —— 逻辑变成"因为要申请所以干脆别用 wf", 导致 wf 使用频率大幅下降。owner 的本意是**报备**: "我要用 wf 了 → 用前打个招呼说一声 (跑什么 / 几个 agent / 预估 token)", 这是说明不是障碍。
+ 
+ **当前状态**: `C:\Users\22957\cc_watchdog\workflow_approval.json` 的 `approval_required = false` (owner 放开, 类比 owner_sleep 离线开关)。该用 Workflow 就直接用, 用前报备一句即可, 不阻塞不等同意。
+diff -ruN zmd_patch_orig/cc_context/memory/zmd-env-ci-gate.md zmd_patch_work/cc_context/memory/zmd-env-ci-gate.md
+--- zmd_patch_orig/cc_context/memory/zmd-env-ci-gate.md	2026-06-14 15:19:21.738207544 +0000
++++ zmd_patch_work/cc_context/memory/zmd-env-ci-gate.md	2026-06-14 15:24:48.620615076 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 01ce64d2-c550-4722-ba4f-1042a3935678
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ - **CI = GitHub Actions `project-foundation` gate**:每次 push(main/project-foundation 分支)跑 `python scripts/preflight_gate.py --ci`(17 项),失败给 owner 发邮件——push 频繁时红一次就是邮件轰炸(V80 落地实测几十封)。**任何落地(尤其外发委托交付)commit 前必须本地跑同款命令全绿**;pytest 盖不到其中三类:frozen-artifact hash(`preflight_gate.py::FROZEN_ARTIFACTS`,改 canonical_rules 必须同批推进 sha256)、LF 行尾政策(`data/line_ending_policy.json`)、记忆树死链(删 memory 节点必须同时清全树 wikilink 引用)。
+ 
+ 相关:[[zmd-checkout-env]] [[zmd-env-email-bomb]] [[zmd-env-prepush-gate]]
+diff -ruN zmd_patch_orig/cc_context/memory/zmd-env-prepush-gate.md zmd_patch_work/cc_context/memory/zmd-env-prepush-gate.md
+--- zmd_patch_orig/cc_context/memory/zmd-env-prepush-gate.md	2026-06-14 15:19:21.740163472 +0000
++++ zmd_patch_work/cc_context/memory/zmd-env-prepush-gate.md	2026-06-14 15:24:48.621162540 +0000
+@@ -7,6 +7,8 @@
+   originSessionId: 01ce64d2-c550-4722-ba4f-1042a3935678
+ ---
+ 
++> 事实依据: [[fact-forcing-function-required]]
++
+ - **机械门禁已装 (2026-06-12, 一劳永逸层, owner 问"怎么保证不再犯"的答案)**: `.git/hooks/pre-push` (机器专属不入库) 强制跑 `preflight_gate.py --hook` (20 项 ≈20s), 任一 BLOCK 就物理挡掉 push (commit 留本地, 修好重推自动补齐); 逃生口 `ZMD_SKIP_PUSH_GATE=1 git push origin HEAD` (紧急用)。同时 post-commit auto-push 改成失败时控制台大声报 + tail `auto-push.log` (原版 `2>&1` 全吞进 log = 可见性黑洞本洞)。**装机坑**: hook 里注入 `PYTEST_ADDOPTS` 隔离 basetemp 时, Windows 反斜杠路径会被 pytest 的 shlex 解析当转义符吃掉 (实测 71 errors), 必须 `tr '\\' '/'` 转正斜杠。**残余敞口(诚实边界)**: ① 检的是工作树近似, 不是被推 commit 的快照——双线程共用 checkout 时另一线程脏 WIP 可能误挡 (误挡是响的, 无害); ② `--hook` 与 CI `--ci` 的 diff-range 类检查可能有范围差; ③ 换机/重 clone 后 hook 不在, 按本条手动重装。`gh run list -L 1` push 后回看降级为兜底纪律。
+ 
+ 相关:[[zmd-checkout-env]] [[zmd-env-ci-gate]] [[zmd-env-auto-push]]
+diff -ruN zmd_patch_orig/cc_context/memory_fact_projection_exemptions.txt zmd_patch_work/cc_context/memory_fact_projection_exemptions.txt
+--- zmd_patch_orig/cc_context/memory_fact_projection_exemptions.txt	1970-01-01 00:00:00.000000000 +0000
++++ zmd_patch_work/cc_context/memory_fact_projection_exemptions.txt	2026-06-14 15:24:48.651074500 +0000
+@@ -0,0 +1,43 @@
++# Grandfathered projection nodes that predate the fact layer.
++# New feedback/rule nodes must add at least one [[fact-*]] link instead of extending this list.
++# Remove a name here in the same commit that adds its fact refs.
++archive-research-transcripts
++autonomous-loop-workflow
++autopilot-with-review-gate
++avoid-micro-optimization-spiral
++clarity-over-brevity
++cleanup-preserve-clarify
++code-comments-plain
++design-phase-n-parallel-agents
++directly-state-core-finding
++dont-project-my-project-visibility-onto-user
++effort-matches-stakes
++full-pytest-after-vendor-refresh
++gemini-better-at-natural-tone
++long-op-background-mode
++main-merger-scope-creep-bias
++memory-edit-confirmation
++memory-value-yardstick
++multiprocess-hang-inspect-all
++no-giveup-options
++no-gpt-channel-architecture
++no-gpt-dispatch-command-and-downgrade
++no-gpt-dispatch-rewrite-0614
++no-gpt-dispatch-vs-manual-riskctrl
++no-gpt-packaging-rules
++no-gpt-plugin-clipboard-upload
++no-gpt-pro-outsource-core
++no-rest-suggestions
++no-role-priming-for-reasoning-models
++no-rust-rewrite-correctness-not-safety
++no-sleep-loop-for-goal-hook
++no-workflow-scope-clarification
++optimization-strategy
++paradigm-phase0-cheap-gate
++plan-doc-strategic-layers
++proof-object-lifecycle
++record-tool-entry-points
++research-roi-metric
++shell-wrapper-pgrep-self-match
++subagent-model-by-weight
++work-time-estimates
+diff -ruN zmd_patch_orig/cc_context/tools/sync_memory_to_harness.py zmd_patch_work/cc_context/tools/sync_memory_to_harness.py
+--- zmd_patch_orig/cc_context/tools/sync_memory_to_harness.py	2026-06-14 15:19:22.317818307 +0000
++++ zmd_patch_work/cc_context/tools/sync_memory_to_harness.py	2026-06-14 15:25:41.879903923 +0000
+@@ -38,10 +38,16 @@
+ from pathlib import Path
+ 
+ # 投影类前缀(snake 文件名);handoff_ 不投影全文,保留 harness stub
+-COPY_PREFIXES = ("feedback_", "project_", "reference_", "user_")
++COPY_PREFIXES = ("fact_", "feedback_", "project_", "reference_", "user_")
+ # 索引父节点分组:(父节点 name, 文件名前缀正则匹配的 tuple, type, description)
+ INDEX_GROUPS = [
+     (
++        "abstract-facts-index",
++        ("fact_",),
++        "fact",
++        "抽象事实层索引 — situation-independent facts; 投影规则只回指事实, 不把事实复刻成原子",
++    ),
++    (
+         "collaboration-rules-index",
+         ("feedback_",),
+         "feedback",
+@@ -136,6 +142,63 @@
+     return "\n".join(header + items) + "\n"
+ 
+ 
++FACT_MEMORY_BLOCK_START = "<!-- ABSTRACT_FACTS_INDEX_START -->"
++FACT_MEMORY_BLOCK_END = "<!-- ABSTRACT_FACTS_INDEX_END -->"
++
++
++def build_fact_memory_block(repo_dir: Path) -> str:
++    """Build the tiny direct-coverage block for fact nodes in harness MEMORY.md.
++
++    Coverage is intentionally direct, not transitive through abstract-facts-index,
++    because scripts/check_memory_tree.py only counts links that appear in MEMORY.md
++    itself. Keeping this block machine-generated prevents the known pitfall where
++    a new fact is reachable from a harness-only parent but missing from the repo
++    index coverage set.
++    """
++    items: list[str] = []
++    for p in sorted(repo_dir.glob("fact_*.md")):
++        txt = p.read_text(encoding="utf-8")
++        nm = frontmatter_field(txt, "name")
++        if not nm:
++            continue
++        label = nm.removeprefix("fact-").replace("-", " ")
++        items.append(f"- [{label}]({nm}.md) — {shorten(frontmatter_field(txt, 'description') or '', 88)}")
++    if not items:
++        return ""
++    lines = [
++        FACT_MEMORY_BLOCK_START,
++        "## 抽象事实层 (normalize: fact → projection)",
++        "",
++        "> 机器生成的 fact 直连覆盖块; 不要只把 fact 挂到 harness-only 父索引, 否则 repo MEMORY coverage gate 会漏。",
++        *items,
++        FACT_MEMORY_BLOCK_END,
++        "",
++    ]
++    return "\n".join(lines)
++
++
++def upsert_fact_memory_block(memory_text: str, block: str) -> str:
++    if not block:
++        return memory_text
++    start = memory_text.find(FACT_MEMORY_BLOCK_START)
++    end = memory_text.find(FACT_MEMORY_BLOCK_END)
++    if start != -1 and end != -1 and end > start:
++        end += len(FACT_MEMORY_BLOCK_END)
++        # Preserve exactly one blank line after the managed block.
++        return memory_text[:start].rstrip() + "\n\n" + block.rstrip() + "\n\n" + memory_text[end:].lstrip()
++    marker = "## 当前状态 / 交接"
++    idx = memory_text.find(marker)
++    if idx != -1:
++        return memory_text[:idx].rstrip() + "\n\n" + block.rstrip() + "\n\n" + memory_text[idx:]
++    title = "# Memory Index"
++    idx = memory_text.find(title)
++    if idx != -1:
++        line_end = memory_text.find("\n", idx)
++        if line_end != -1:
++            return memory_text[:line_end + 1].rstrip() + "\n\n" + block.rstrip() + "\n\n" + memory_text[line_end + 1:].lstrip()
++    return block.rstrip() + "\n\n" + memory_text.lstrip()
++
++
+ def main() -> int:
+     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+     ap.add_argument("--apply", action="store_true", help="实际写入(缺省=dry-run 仅报告)")
+@@ -186,14 +249,27 @@
+             dpath.write_text(body, encoding="utf-8")
+         print(f"已写入 {len(missing) + len(drifted)} 个节点 + {len(index_stale)} 个索引父节点")
+ 
+-    # MEMORY.md 体积守护
++    # harness MEMORY.md fact 直连覆盖块: direct coverage, not transitive parent index.
++    memory_block_stale = False
+     mem_md = harness_dir / "MEMORY.md"
++    desired_fact_block = build_fact_memory_block(repo_dir)
++    if mem_md.exists() and desired_fact_block:
++        current_memory = mem_md.read_text(encoding="utf-8")
++        desired_memory = upsert_fact_memory_block(current_memory, desired_fact_block)
++        if current_memory != desired_memory:
++            memory_block_stale = True
++            print("  漂移 -> MEMORY.md 抽象事实直连覆盖块")
++            if args.apply:
++                mem_md.write_text(desired_memory, encoding="utf-8")
++                print("已更新 MEMORY.md 抽象事实直连覆盖块")
++
++    # MEMORY.md 体积守护
+     if mem_md.exists():
+         size = len(mem_md.read_bytes())
+         flag = "  ⚠️ 超 24KB 截断线!" if size > MEMORY_MD_LIMIT else ""
+         print(f"MEMORY.md: {size} 字节 / 上限 {MEMORY_MD_LIMIT}{flag}")
+ 
+-    has_drift = bool(missing or drifted or index_stale)
++    has_drift = bool(missing or drifted or index_stale or memory_block_stale)
+     if args.check and has_drift:
+         print("DRIFT: repo 有节点未同步到 harness 召回树, 跑 --apply 修复", file=sys.stderr)
+         return 1
+diff -ruN zmd_patch_orig/scripts/check_memory_tree.py zmd_patch_work/scripts/check_memory_tree.py
+--- zmd_patch_orig/scripts/check_memory_tree.py	2026-06-14 15:19:23.656090027 +0000
++++ zmd_patch_work/scripts/check_memory_tree.py	2026-06-14 15:24:48.624378137 +0000
+@@ -27,6 +27,8 @@
+ LINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
+ MD_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+\.md)\)")
+ NAME_RE = re.compile(r"(?m)^name:\s*(.+?)\s*$")
++FACT_NAME_PREFIX = "fact-"
++FACT_EXEMPTIONS = PROJECT_ROOT / "cc_context" / "memory_fact_projection_exemptions.txt"
+ INSTANCE_OPEN_RE = re.compile(r"<!-- INSTANCE:[a-z0-9_]+ -->")
+ INSTANCE_SLOT_RE = re.compile(
+     r"<!-- INSTANCE:([a-z0-9_]+) -->(?:(?!<!-- /?INSTANCE:).)*?<!-- /INSTANCE:\1 -->",
+@@ -78,6 +80,143 @@
+     return name_to_path, path_to_name, errors
+ 
+ 
++
++
++def _frontmatter_block(text: str) -> str:
++    if not text.startswith("---"):
++        return ""
++    try:
++        return text.split("---", 2)[1]
++    except IndexError:
++        return ""
++
++
++def _is_fact_node(path: Path, text: str, name: str | None = None) -> bool:
++    nm = (name or _frontmatter_name(path, text) or "").lower()
++    block = _frontmatter_block(text)
++    return path.name.startswith("fact_") or nm.startswith(FACT_NAME_PREFIX) or bool(
++        re.search(r"(?m)^\s*type:\s*fact\s*$", block)
++    )
++
++
++def _is_projection_candidate(path: Path, text: str) -> bool:
++    """Projection nodes that must eventually point at at least one fact.
++
++    The first rollout is incremental: existing unmatched feedback nodes live in a
++    checked-in exemption file that should only shrink. New feedback/rule nodes not
++    in that baseline must connect to fact layer immediately.
++    """
++    if path.name == "MEMORY.md" or _is_fact_node(path, text):
++        return False
++    block = _frontmatter_block(text)
++    if path.name.startswith("feedback_"):
++        return True
++    return bool(re.search(r"(?m)^\s*type:\s*feedback\s*$", block))
++
++
++def _load_fact_exemptions() -> set[str]:
++    if not FACT_EXEMPTIONS.exists():
++        return set()
++    out: set[str] = set()
++    for raw in FACT_EXEMPTIONS.read_text(encoding="utf-8").splitlines():
++        line = raw.split("#", 1)[0].strip().lower()
++        if line:
++            out.add(line)
++    return out
++
++
++def _fact_links_in(text: str, facts: set[str]) -> set[str]:
++    return {m.group(1).strip().lower() for m in LINK_RE.finditer(text) if m.group(1).strip().lower() in facts}
++
++
++def _check_fact_projection_contract(memory_dir: Path, name_to_path: dict[str, Path]) -> list[str]:
++    """Hard gate for the normalized fact → projection layer.
++
++    Checks the mechanical shape, not semantic truth: facts must be first-class
++    nodes; every fact must have at least one projection backlink; new feedback
++    projections must reference facts unless deliberately grandfathered.
++    """
++    errors: list[str] = []
++    facts: set[str] = set()
++    texts: dict[str, str] = {}
++    paths_by_name: dict[str, Path] = {}
++    for name, path in name_to_path.items():
++        text = _read(path)
++        texts[name] = text
++        paths_by_name[name] = path
++        if _is_fact_node(path, text, name):
++            facts.add(name)
++    if not facts:
++        print("memory facts: none declared (fact contract skipped)")
++        return []
++
++    exemptions = _load_fact_exemptions()
++    incoming: dict[str, list[str]] = {fact: [] for fact in facts}
++    missing_refs: list[str] = []
++    stale_exemptions: list[str] = []
++    unknown_exemptions = sorted(exemptions - set(name_to_path))
++
++    for name, path in paths_by_name.items():
++        text = texts[name]
++        if name in facts:
++            continue
++        refs = _fact_links_in(text, facts)
++        for fact in refs:
++            incoming[fact].append(name)
++        if _is_projection_candidate(path, text):
++            if refs:
++                if name in exemptions:
++                    stale_exemptions.append(name)
++            elif name not in exemptions:
++                missing_refs.append(name)
++
++    orphan_facts = sorted(fact for fact, srcs in incoming.items() if not srcs)
++    if orphan_facts:
++        errors.append("fact nodes without projection backlinks: " + ", ".join(orphan_facts[:20]))
++    if missing_refs:
++        errors.append(
++            "projection nodes missing fact refs (add [[fact-*]] or baseline only for legacy): "
++            + ", ".join(sorted(missing_refs)[:20])
++        )
++    if unknown_exemptions:
++        errors.append("unknown names in memory_fact_projection_exemptions.txt: " + ", ".join(unknown_exemptions[:20]))
++    if stale_exemptions:
++        errors.append(
++            "baseline exemptions now have fact refs; remove them from memory_fact_projection_exemptions.txt: "
++            + ", ".join(sorted(stale_exemptions)[:20])
++        )
++
++    edges = sum(len(srcs) for srcs in incoming.values())
++    print(f"memory facts: facts={len(facts)}, projection_edges={edges}, baseline_exemptions={len(exemptions)}")
++    return errors
++
++
++def _check_harness_projection_sync(memory_dir: Path) -> list[str]:
++    """If local harness exists, require repo→harness projection sync to be current.
++
++    CI has no harness, so absence skips. On the owner machine this turns fact-node
++    and projection drift into a local preflight blocker instead of a silent recall
++    split-brain.
++    """
++    script = PROJECT_ROOT / "cc_context" / "tools" / "sync_memory_to_harness.py"
++    harness_dir = Path.home() / ".claude" / "projects" / "C--claude-pj-zmd-pj" / "memory"
++    if not script.exists() or not harness_dir.is_dir():
++        return []
++    result = subprocess.run(
++        [sys.executable, str(script), "--check", "--repo-dir", str(memory_dir), "--harness-dir", str(harness_dir)],
++        cwd=PROJECT_ROOT,
++        capture_output=True,
++        text=True,
++        timeout=20,
++    )
++    if result.returncode == 0:
++        line = (result.stdout or "").strip().splitlines()
++        if line:
++            print(line[-1])
++        return []
++    details = (result.stdout + result.stderr).strip().splitlines()
++    return ["repo→harness memory projection drift: " + (details[0] if details else "non-zero exit")]
++
+ def _check_links(memory_dir: Path, name_to_path: dict[str, Path], path_to_name: dict[str, str]) -> list[str]:
+     errors: list[str] = []
+     known = set(name_to_path)
+@@ -309,10 +448,12 @@
+     name_to_path, path_to_name, load_errors = _load_memory(memory_dir)
+     errors.extend(load_errors)
+     errors.extend(_check_links(memory_dir, name_to_path, path_to_name))
++    errors.extend(_check_fact_projection_contract(memory_dir, name_to_path))
+     errors.extend(_check_instance_slots(memory_dir))
+     errors.extend(_check_stamp_engine(memory_dir))
+     errors.extend(_check_memory_index_size(memory_dir, args.max_memory_index_bytes))
+     errors.extend(_check_live_mirror(memory_dir, args.live_mirror.resolve(), require=args.require_live_mirror))
++    errors.extend(_check_harness_projection_sync(memory_dir))
+     warnings.extend(_check_harness_mirror(memory_dir))
+     warnings.extend(_check_archived_dangling(memory_dir, set(name_to_path)))
+ 

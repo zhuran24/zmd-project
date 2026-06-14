@@ -7,6 +7,8 @@ metadata:
   originSessionId: ca5783d1-e3be-4591-8cfd-4ede5ed83635
 ---
 
+> 事实依据: [[fact-forcing-function-required]]
+
 记忆树更新长期滞后于项目 phase 转换 → 现状类 memory 反复过时 (2026-06-01 staleness 审计抓出 3 个 HIGH: 项目身份根 memory 仍把 Phase 3B tuning 当现状 + 06_current_status 仍说 Phase 1.1 GO + F3 oracle 闭环口径错)。**补 (2026-06-01)**: 同类 drift 还有 `CLAUDE.md` "Current Phase: 3B Optimization" 旧编号 (实际已转 cut-family LBBD / P1.3A), 本 session 已改正 —— staleness sweep 要把 **CLAUDE.md 自身**也纳入扫描对象, 不只 memory。本协议是这类 drift 的治本规则。
 
 **Why**: phase close / milestone / paradigm shift 频繁, 但「现状」散写在多条 memory 里, 每次转换只更新一两条, 其余变 stale。下次 session 接手按 stale memory 误判项目所处阶段 / 找已废弃的路径。根因不是某条写错, 是**没有单一权威现状源 + 没有转换时的更新仪式**。

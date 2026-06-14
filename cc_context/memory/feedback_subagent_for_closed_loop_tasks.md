@@ -7,6 +7,8 @@ metadata:
   originSessionId: 8ce2a10d-50a6-4d5c-82bf-3c4414cb623f
 ---
 
+> 事实依据: [[fact-decision-boundary-is-ability]]
+
 ## 规则
 
 当任务符合**三个条件全满足**时, 直接 spawn sub-agent (模型按 [[subagent-model-by-weight]] 重量定),

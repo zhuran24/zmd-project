@@ -7,6 +7,8 @@ metadata:
   originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9
 ---
 
+> 事实依据: [[fact-decision-boundary-is-ability]]
+
 2026-05-24 用户原话: "以后记一下不回复就是默认同意你的倾向"
 
 ## 规则

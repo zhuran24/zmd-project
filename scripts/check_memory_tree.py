@@ -27,6 +27,8 @@ MAX_MEMORY_INDEX_BYTES = 24_576
 LINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
 MD_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+\.md)\)")
 NAME_RE = re.compile(r"(?m)^name:\s*(.+?)\s*$")
+FACT_NAME_PREFIX = "fact-"
+FACT_EXEMPTIONS = PROJECT_ROOT / "cc_context" / "memory_fact_projection_exemptions.txt"
 INSTANCE_OPEN_RE = re.compile(r"<!-- INSTANCE:[a-z0-9_]+ -->")
 INSTANCE_SLOT_RE = re.compile(
     r"<!-- INSTANCE:([a-z0-9_]+) -->(?:(?!<!-- /?INSTANCE:).)*?<!-- /INSTANCE:\1 -->",
@@ -77,6 +79,143 @@ def _load_memory(memory_dir: Path) -> tuple[dict[str, Path], dict[str, str], lis
             name_to_path[key] = paths[0]
     return name_to_path, path_to_name, errors
 
+
+
+
+def _frontmatter_block(text: str) -> str:
+    if not text.startswith("---"):
+        return ""
+    try:
+        return text.split("---", 2)[1]
+    except IndexError:
+        return ""
+
+
+def _is_fact_node(path: Path, text: str, name: str | None = None) -> bool:
+    nm = (name or _frontmatter_name(path, text) or "").lower()
+    block = _frontmatter_block(text)
+    return path.name.startswith("fact_") or nm.startswith(FACT_NAME_PREFIX) or bool(
+        re.search(r"(?m)^\s*type:\s*fact\s*$", block)
+    )
+
+
+def _is_projection_candidate(path: Path, text: str) -> bool:
+    """Projection nodes that must eventually point at at least one fact.
+
+    The first rollout is incremental: existing unmatched feedback nodes live in a
+    checked-in exemption file that should only shrink. New feedback/rule nodes not
+    in that baseline must connect to fact layer immediately.
+    """
+    if path.name == "MEMORY.md" or _is_fact_node(path, text):
+        return False
+    block = _frontmatter_block(text)
+    if path.name.startswith("feedback_"):
+        return True
+    return bool(re.search(r"(?m)^\s*type:\s*feedback\s*$", block))
+
+
+def _load_fact_exemptions() -> set[str]:
+    if not FACT_EXEMPTIONS.exists():
+        return set()
+    out: set[str] = set()
+    for raw in FACT_EXEMPTIONS.read_text(encoding="utf-8").splitlines():
+        line = raw.split("#", 1)[0].strip().lower()
+        if line:
+            out.add(line)
+    return out
+
+
+def _fact_links_in(text: str, facts: set[str]) -> set[str]:
+    return {m.group(1).strip().lower() for m in LINK_RE.finditer(text) if m.group(1).strip().lower() in facts}
+
+
+def _check_fact_projection_contract(memory_dir: Path, name_to_path: dict[str, Path]) -> list[str]:
+    """Hard gate for the normalized fact → projection layer.
+
+    Checks the mechanical shape, not semantic truth: facts must be first-class
+    nodes; every fact must have at least one projection backlink; new feedback
+    projections must reference facts unless deliberately grandfathered.
+    """
+    errors: list[str] = []
+    facts: set[str] = set()
+    texts: dict[str, str] = {}
+    paths_by_name: dict[str, Path] = {}
+    for name, path in name_to_path.items():
+        text = _read(path)
+        texts[name] = text
+        paths_by_name[name] = path
+        if _is_fact_node(path, text, name):
+            facts.add(name)
+    if not facts:
+        print("memory facts: none declared (fact contract skipped)")
+        return []
+
+    exemptions = _load_fact_exemptions()
+    incoming: dict[str, list[str]] = {fact: [] for fact in facts}
+    missing_refs: list[str] = []
+    stale_exemptions: list[str] = []
+    unknown_exemptions = sorted(exemptions - set(name_to_path))
+
+    for name, path in paths_by_name.items():
+        text = texts[name]
+        if name in facts:
+            continue
+        refs = _fact_links_in(text, facts)
+        for fact in refs:
+            incoming[fact].append(name)
+        if _is_projection_candidate(path, text):
+            if refs:
+                if name in exemptions:
+                    stale_exemptions.append(name)
+            elif name not in exemptions:
+                missing_refs.append(name)
+
+    orphan_facts = sorted(fact for fact, srcs in incoming.items() if not srcs)
+    if orphan_facts:
+        errors.append("fact nodes without projection backlinks: " + ", ".join(orphan_facts[:20]))
+    if missing_refs:
+        errors.append(
+            "projection nodes missing fact refs (add [[fact-*]] or baseline only for legacy): "
+            + ", ".join(sorted(missing_refs)[:20])
+        )
+    if unknown_exemptions:
+        errors.append("unknown names in memory_fact_projection_exemptions.txt: " + ", ".join(unknown_exemptions[:20]))
+    if stale_exemptions:
+        errors.append(
+            "baseline exemptions now have fact refs; remove them from memory_fact_projection_exemptions.txt: "
+            + ", ".join(sorted(stale_exemptions)[:20])
+        )
+
+    edges = sum(len(srcs) for srcs in incoming.values())
+    print(f"memory facts: facts={len(facts)}, projection_edges={edges}, baseline_exemptions={len(exemptions)}")
+    return errors
+
+
+def _check_harness_projection_sync(memory_dir: Path) -> list[str]:
+    """If local harness exists, require repo→harness projection sync to be current.
+
+    CI has no harness, so absence skips. On the owner machine this turns fact-node
+    and projection drift into a local preflight blocker instead of a silent recall
+    split-brain.
+    """
+    script = PROJECT_ROOT / "cc_context" / "tools" / "sync_memory_to_harness.py"
+    harness_dir = Path.home() / ".claude" / "projects" / "C--claude-pj-zmd-pj" / "memory"
+    if not script.exists() or not harness_dir.is_dir():
+        return []
+    result = subprocess.run(
+        [sys.executable, str(script), "--check", "--repo-dir", str(memory_dir), "--harness-dir", str(harness_dir)],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+    if result.returncode == 0:
+        line = (result.stdout or "").strip().splitlines()
+        if line:
+            print(line[-1])
+        return []
+    details = (result.stdout + result.stderr).strip().splitlines()
+    return ["repo→harness memory projection drift: " + (details[0] if details else "non-zero exit")]
 
 def _check_links(memory_dir: Path, name_to_path: dict[str, Path], path_to_name: dict[str, str]) -> list[str]:
     errors: list[str] = []
@@ -309,10 +448,16 @@ def main() -> int:
     name_to_path, path_to_name, load_errors = _load_memory(memory_dir)
     errors.extend(load_errors)
     errors.extend(_check_links(memory_dir, name_to_path, path_to_name))
+    errors.extend(_check_fact_projection_contract(memory_dir, name_to_path))
     errors.extend(_check_instance_slots(memory_dir))
     errors.extend(_check_stamp_engine(memory_dir))
     errors.extend(_check_memory_index_size(memory_dir, args.max_memory_index_bytes))
     errors.extend(_check_live_mirror(memory_dir, args.live_mirror.resolve(), require=args.require_live_mirror))
+    # Finding 2 (owner 2026-06-15): harness 投影同步降为 warning, 不进 errors —— 与既有
+    # _check_harness_mirror 一致。harness 不进自动 gate (CI 无 harness 本就 skip); 不让
+    # harness 存量 drift 物理挡 owner 本机 pre-push。漏同步靠此 warning + 落地 runbook 的
+    # sync --apply 步兜。
+    warnings.extend(_check_harness_projection_sync(memory_dir))
     warnings.extend(_check_harness_mirror(memory_dir))
     warnings.extend(_check_archived_dangling(memory_dir, set(name_to_path)))
 
