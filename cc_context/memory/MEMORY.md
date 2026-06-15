@@ -125,4 +125,4 @@
 - [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK (批量删/移挪到 Bash 工具做) / here-string 展开 $env 坏脚本 / 控制台中文乱码≠文件坏.
 - [graphify 代码语义地图 (query before grep)](reference_graphify_codegraph.md) — src→确定性代码结构图 + Claude 补语义层, 新窗口先查图再 grep; .mcp.json 注册 mcp__graphify__*; graph.json gitignore 需刷新; 只读导航辅助不进 certified 证明路径.
 
-- [Round2+dispatch-fix 会话快照](zmd-round2-dispatch-fix-state.md) — P1.2 Round2 已结: master_geometry 真 reachable false-CERTIFIED→连续干净计数清零到0(已修推送382d764/LOCK F-GM-BS-R2-01); 重启R3/4/5三连干净 + dispatch 4故障 team修复 + owner离线全自主
+- [Round2-4 闭合状态](zmd-round2-dispatch-fix-state.md) — P1.2: Round2(master_geometry)+Round3(scheduler)各1真reachable false-CERTIFIED reset(已修382d764/3bc08b0,LOCK F-GM-BS-R2-01/F-SCHED-BS-R3-01);Round4=重启streak第1轮进行中,已收4/8面全CLEAN/不重置(benders HARDENING+master_geometry/binding/campaign零finding),待cuts/preprocess/routing/scheduler;计数仍0需R4/5/6三连干净;GPT硬化补丁可破soundness门(V81)须跑全量回归非仅targeted
