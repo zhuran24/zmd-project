@@ -30,6 +30,7 @@ metadata:
 - **别自设派发限制(2026-06-15 owner「只发一个请求吗?」纠正)**:gpt_dispatch_concurrency.json `max_in_flight=null`=不限,授权台账写明「该几个发几个、不得自我设限」。我之前 R5 顺序单条派发 = 把放开的额度装回去的病。**并发派发现可行**:0614 dispatch raw-CDP per-tab 重写修了 Round2 的 /project 漂移,8 面并发实测全真 Pro 零降级(只需轻量错开发送避 setup-race + Sentinel burst,8 面全在飞)。
 - **切换派发策略时别 resume 半途会话**:--resume 一个原 waiter 已被杀、但 server 端还在生成(且可能 stuck)的会话 → 关 tab 后 "unhandled" exit 3。直接 fresh 重发更稳。
 
+- **R6 派发踩坑: 上传后立即 8 并发派发 → sources_verify 误判 FATAL(假空)(2026-06-15)**: 我上传新快照后立即并发派发 8 面, 每面 dispatch 的 sources_verify 读 `in_sources:[]` 假空 → exit 3(不是骤死)。根因两叠加: ① 上传后来源区页没稳定(连 upload 自己的 verify 都读成 entries=1 flaky), 立即派发读到 loading/空; ② 8 并发各开 owns_tab tab 撞 Edge, sources 页渲染不全。`--list`(无并发, 上传后几分钟)证实 3 文件都在(新快照+旧残留+wheels), **无损坏, wheels 安全**。**R6 fresh 重派纪律**: (a) 上传后先 `--list` 轮询到来源区稳定(3 文件齐)再派; (b) 降并发(≤4, 记忆 "≤4 没暴露这么重")或顺序错开发送(每面 navigate+verify+send ~30s, 错开 ≥45s 让 sources 页不撞); (c) dispatch 用 run_in_background 直接跑这次没骤死(exit 3=sources_verify, 非 58/255), 但仍建议 Start-Process detached 更稳。round6/ 失败面目录可清后重派。
 ## 本会话验证方法(有效, 沿用)
 - **并发派发**(2026-06-15 起):8 面各独立后台 shell(护栏每单一个 shell),错开 35-245s 发送,8 面全在飞;降级面 dispatch 快 exit 5→重发,真 Pro 20-66min;reply_chars 早期低位慢爬正常。
 - **逐面对抗 reachability 核**:每 finding 独立判 canonical-reachable(reset)vs unreachable(需 monkeypatch solve 逻辑/hand-built/malformed/未接线子系统 = hardening),判据 PROJECT_LOCK:160-166,不裸信 GPT severity。零 finding 面也独立核「使任何残留问题不可达的载荷主张」是否真成立。
