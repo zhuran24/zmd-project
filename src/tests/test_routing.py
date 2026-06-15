@@ -297,6 +297,67 @@ def test_same_commodity_disconnected_source_sink_islands_are_routable(project_ro
     assert routing.build_stats["last_solve"]["connectivity"]["failure_count"] == 0
 
 
+def test_unverified_domain_analysis_status_fails_closed_unknown(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.routing_subproblem import RoutingGrid, RoutingSubproblem
+
+    allowed = {(1, 0), (2, 0), (3, 0)}
+    occupied = {
+        (x, y)
+        for x in range(70)
+        for y in range(70)
+        if (x, y) not in allowed
+    }
+    port_specs = [
+        {"instance_id": "src", "x": 0, "y": 0, "dir": "E", "type": "out", "commodity": "ore"},
+        {"instance_id": "sink", "x": 4, "y": 0, "dir": "W", "type": "in", "commodity": "ore"},
+    ]
+    feasible_domain = _tiny_domain_analysis({"ore": allowed})
+
+    baseline = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["ore"],
+        domain_analysis=feasible_domain,
+    )
+    baseline.build()
+    assert baseline.solve(time_limit=5.0) == "FEASIBLE"
+
+    unverified_domain = dict(feasible_domain)
+    unverified_domain["status"] = "TIMEOUT"
+    routing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["ore"],
+        domain_analysis=unverified_domain,
+    )
+    routing.build()
+
+    assert routing.build_stats["domain_status_contract_violation"] == {
+        "status": "TIMEOUT",
+        "action": "fail_closed_unknown",
+    }
+    assert routing.solve(time_limit=5.0) == "TIMEOUT"
+    assert routing.build_stats["last_solve"]["status"] == (
+        "ROUTING_DOMAIN_STATUS_CONTRACT_VIOLATION"
+    )
+    assert routing.extract_routes() == []
+
+    missing_status_domain = dict(feasible_domain)
+    missing_status_domain.pop("status")
+    routing_missing = RoutingSubproblem(
+        RoutingGrid(occupied, port_specs),
+        ["ore"],
+        domain_analysis=missing_status_domain,
+    )
+    routing_missing.build()
+
+    assert routing_missing.solve(time_limit=5.0) == "TIMEOUT"
+    assert routing_missing.build_stats["last_solve"]["domain_analysis_status"] == (
+        "MISSING_STATUS"
+    )
+
+
 def test_duplicate_terminal_front_keys_fail_closed(project_root):
     """External port_specs must not collapse two physical ports into one exact-one key."""
     import sys

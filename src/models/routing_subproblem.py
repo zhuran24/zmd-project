@@ -29,6 +29,12 @@ DIR_OPP = {"N": "S", "S": "N", "E": "W", "W": "E"}
 LAYERS = [0, 1]
 GROUND_LAYER = 0
 ELEVATED_LAYER = 1
+ROUTING_DOMAIN_STATUS_FEASIBLE = "feasible"
+ROUTING_DOMAIN_PROOF_REJECT_STATUSES = {"front_blocked", "relaxed_disconnected"}
+ROUTING_DOMAIN_VERIFIED_STATUSES = (
+    {ROUTING_DOMAIN_STATUS_FEASIBLE} | ROUTING_DOMAIN_PROOF_REJECT_STATUSES
+)
+ROUTING_DOMAIN_MISSING_STATUS = "MISSING_STATUS"
 
 
 RouteStateKey = Tuple[int, int, int, Tuple[str, ...], Tuple[str, ...], str]
@@ -747,6 +753,7 @@ class RoutingSubproblem:
         self._solver: Optional[cp_model.CpSolver] = None
         self._status = None
         self._connectivity_guard_accepted = False
+        self._domain_status_contract_violation: Optional[str] = None
         self.build_stats: Dict[str, Any] = {}
 
         self._domain_analysis: Optional[Mapping[str, Any]] = dict(domain_analysis) if domain_analysis else None
@@ -809,7 +816,18 @@ class RoutingSubproblem:
                 placement_core=self._placement_core,
             )
         )
-        self._bind_domain_analysis(analysis)
+        analysis_status = self._domain_analysis_status(analysis)
+        self._bind_domain_analysis(analysis, analysis_status=analysis_status)
+
+        if analysis_status not in ROUTING_DOMAIN_VERIFIED_STATUSES:
+            self._domain_status_contract_violation = analysis_status
+            self.build_stats["domain_status_contract_violation"] = {
+                "status": analysis_status,
+                "action": "fail_closed_unknown",
+            }
+            elapsed = time.time() - t0
+            print(f"[Routing Model] build {elapsed:.1f}s")
+            return
 
         if self._duplicate_terminal_front_keys:
             self.model.Add(0 == 1)
@@ -818,7 +836,7 @@ class RoutingSubproblem:
             print(f"[Routing Model] build {elapsed:.1f}s")
             return
 
-        if str(analysis.get("status", "feasible")) != "feasible":
+        if analysis_status != ROUTING_DOMAIN_STATUS_FEASIBLE:
             self.model.Add(0 == 1)
             self._record_state_space_stats(defaultdict(int), local_pattern_pruned_states=0)
             self._add_gap_rule()
@@ -838,7 +856,17 @@ class RoutingSubproblem:
         elapsed = time.time() - t0
         print(f"[Routing Model] build {elapsed:.1f}s")
 
-    def _bind_domain_analysis(self, analysis: Mapping[str, Any]) -> None:
+    def _domain_analysis_status(self, analysis: Mapping[str, Any]) -> str:
+        if "status" not in analysis:
+            return ROUTING_DOMAIN_MISSING_STATUS
+        return str(analysis["status"])
+
+    def _bind_domain_analysis(
+        self,
+        analysis: Mapping[str, Any],
+        *,
+        analysis_status: Optional[str] = None,
+    ) -> None:
         self._domain_analysis = dict(analysis)
         self._domain_stats = dict(analysis.get("domain_stats", {}))
 
@@ -859,7 +887,11 @@ class RoutingSubproblem:
             self._commodity_active_cells[commodity] = active_cells
 
         self.build_stats["domain_analysis"] = {
-            "status": str(analysis.get("status", "feasible")),
+            "status": str(
+                analysis_status
+                if analysis_status is not None
+                else self._domain_analysis_status(analysis)
+            ),
             "domain_stats": dict(self._domain_stats),
             "used_placement_core_reuse": bool(self._placement_core),
         }
@@ -1733,6 +1765,22 @@ class RoutingSubproblem:
         cuts_added = 0
         cut_sizes: List[int] = []
         fallback_nogoods: List[Dict[str, Any]] = []
+
+        if self._domain_status_contract_violation is not None:
+            self._solver = None
+            self._status = cp_model.UNKNOWN
+            self.build_stats["last_solve"] = {
+                "status": "ROUTING_DOMAIN_STATUS_CONTRACT_VIOLATION",
+                "domain_analysis_status": str(self._domain_status_contract_violation),
+                "connectivity_guard": self._connectivity_guard_telemetry(
+                    attempts=attempts,
+                    rejected_incumbents=rejected_incumbents,
+                    cuts_added=cuts_added,
+                    cut_sizes=cut_sizes,
+                    fallback_nogoods=fallback_nogoods,
+                ),
+            }
+            return "TIMEOUT"
 
         while True:
             remaining = deadline - time.perf_counter()
