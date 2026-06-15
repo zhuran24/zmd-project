@@ -2,7 +2,7 @@
 
 ## 任务性质 (新会话, 完全独立, 零历史先验)
 
-项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_snapshot_8a44d536.zip`, sha256 `8a44d5368d6fa57959769874588fccad0744345d94a0f277a82f3a85037f8c1b`, 对应干净 git 树 HEAD `6be75f5`。**只认这个文件名, 文件区其它快照包一律无视; 开工前先校验 sha256, 对不上停下来报告, 不要在错包上工作**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包)。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
+项目快照包在本 Project **文件区 (来源/Sources)**: `zmd_snapshot_f15063e6.zip`, sha256 `f15063e6c436668b35f43e9b0bc8c90c116376b06b2d532707d24fffb66a246f`, 对应干净 git 树 HEAD `989a5f9`。**只认这个文件名, 文件区其它快照包一律无视; 开工前先校验 sha256, 对不上停下来报告, 不要在错包上工作**。zip 内 `project/` 为仓库根 (ZIP_LZMA, `python -m zipfile -e <zip> .` 解包)。依赖 wheels 同在文件区 (`zmd_py313_linux_x86_64.zip`), 沙盒 Python 3.13, 离线安装。
 
 `data/preprocessed/candidate_placements.json` (45,773,799 bytes, sha256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`) 已随包内置并校验, 不需要再生; 若校验对不上, 报告, 不要伪造或重写它。
 
