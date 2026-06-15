@@ -397,24 +397,35 @@ class ExactParallelWorkerPool:
                 break
         return messages
 
-    def _respawn_all_workers(self) -> None:
-        for process in self._processes:
+    def _respawn_all_workers(
+        self,
+        *,
+        fail_on_worker_shutdown_failure: bool = False,
+    ) -> Optional[str]:
+        old_processes = list(self._processes)
+        for process in old_processes:
             if process.is_alive():
                 try:
                     self._task_queue.put_nowait(None)
                 except Exception:
                     pass
-        for process in self._processes:
+        for process in old_processes:
             process.join(timeout=3.0)
             if process.is_alive():
                 process.terminate()
                 process.join(timeout=5.0)
+        if fail_on_worker_shutdown_failure:
+            failed_processes = _failed_worker_processes(old_processes)
+            if failed_processes:
+                self._processes = list(old_processes)
+                return _worker_process_failed_reason(failed_processes)
         self._task_queue = self._ctx.Queue()
         self._result_queue = self._ctx.Queue()
         self._processes = []
         self._started = False
         self._closed = False
         self.start()
+        return None
 
     def start(self) -> None:
         if self._started:
@@ -629,7 +640,12 @@ class ExactParallelWorkerPool:
         if failure_reason is not None:
             self.terminate()
         else:
-            self._respawn_all_workers()
+            shutdown_failure_reason = self._respawn_all_workers(
+                fail_on_worker_shutdown_failure=True
+            )
+            if shutdown_failure_reason is not None:
+                failure_reason = shutdown_failure_reason
+                self.terminate()
 
         if discard_results_due_to_worker_result_failure:
             results_by_seq.clear()

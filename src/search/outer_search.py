@@ -2327,6 +2327,20 @@ def run_outer_search(
                         () if discard_wave_results else wave_execution.results,
                         key=lambda result: int(result.dispatch_seq),
                     )
+                    # A wave that is not effective-completed (worker_process_failed /
+                    # worker_crash_respawn_limit / identity failure / incomplete) is
+                    # untrustworthy as a whole: the envelope carries no worker pid, so the
+                    # coordinator cannot attribute which RESULT came from a crashed worker
+                    # (see exact_parallel_scheduler result-envelope comment).  Such a wave
+                    # must NOT persist a sticky strong INFEASIBLE: a crash-tainted INFEASIBLE
+                    # persisted sticky survives the UNKNOWN stop below, is never re-solved on
+                    # resume, poisons the resumed frontier projection, and prunes a true
+                    # maximal rectangle -> false-CERTIFIED of optimality on the watchdog
+                    # resume (F-SCHED-BS-R5-02).  Only INFEASIBLE is gated: CERTIFIED carries
+                    # a solution witness re-validated at terminal export and does not prune,
+                    # and UNKNOWN/UNPROVEN are non-strong (re-solvable) — both are harmless.
+                    # The result is still recorded into wave telemetry below for observability.
+                    persist_strong_results = bool(effective_wave_completed)
 
                     if exact_campaign is not None:
                         terminal_status: Optional[str] = None
@@ -2388,6 +2402,15 @@ def run_outer_search(
                                         "generated_exact_safe_cut_count"
                                     ],
                                 )
+                            elif (
+                                worker_result.status == RUN_STATUS_INFEASIBLE
+                                and not persist_strong_results
+                            ):
+                                # F-SCHED-BS-R5-02: skip — see persist_strong_results note.
+                                # A crash-tainted INFEASIBLE must not become a sticky strong
+                                # record; the candidate stays RUNNING and re-solves on the
+                                # watchdog resume.  Still recorded into wave telemetry below.
+                                pass
                             elif worker_result.status in {
                                 RUN_STATUS_INFEASIBLE,
                                 RUN_STATUS_UNKNOWN,

@@ -720,7 +720,7 @@ def test_parallel_worker_pool_reruns_all_tasks_after_mid_wave_crash_respawn() ->
     pool.terminate = lambda: None
     pool._sum_process_tree_rss = lambda: 0
 
-    def _respawn_all_workers() -> None:
+    def _respawn_all_workers(**_kwargs: object) -> None:
         pool._processes = []
         pool._result_queue = _SyntheticResultQueue([])
         task_queue.after_respawn = True
@@ -814,6 +814,69 @@ def test_parallel_worker_pool_reports_worker_crash_after_all_results_arrive() ->
 
     assert wave.completed is False
     assert wave.failure_reason == "worker_process_failed:pid=12345:exitcode=1"
+    assert wave.results == (result,)
+
+
+def test_parallel_worker_pool_reports_worker_crash_during_successful_wave_shutdown() -> None:
+    task = WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple())
+    result = WorkerResult(
+        dispatch_seq=0,
+        attempt_index=1,
+        candidate=(9, 3, 3),
+        status=RUN_STATUS_INFEASIBLE,
+        solution=None,
+        proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+        worker_wall_seconds=0.01,
+        peak_rss_bytes=1,
+        error=None,
+    )
+
+    class _ShutdownCrashProcess:
+        pid = 23456
+
+        def __init__(self) -> None:
+            self.exitcode = None
+
+        def is_alive(self) -> bool:
+            return self.exitcode is None
+
+        def join(self, timeout: float | None = None) -> None:
+            del timeout
+            self.exitcode = 1
+
+        def terminate(self) -> None:
+            self.exitcode = -15
+
+    class _RespawnCtx:
+        def Queue(self) -> _SyntheticResultQueue:
+            return _SyntheticResultQueue([])
+
+    class _ShutdownTaskQueue(_SyntheticTaskQueue):
+        def put_nowait(self, item: object) -> None:
+            del item
+
+    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
+    pool._closed = False
+    pool._started = True
+    pool._processes = [_ShutdownCrashProcess()]
+    pool._task_queue = _ShutdownTaskQueue()
+    pool._result_queue = _SyntheticResultQueue(
+        [{"message_type": "RESULT", "result": result}]
+    )
+    pool._ctx = _RespawnCtx()
+    pool.rss_sample_interval_seconds = 0.01
+    pool._total_crash_respawns = 0
+    pool.start = lambda: None
+    pool.terminate = lambda: None
+    pool._sum_process_tree_rss = lambda: 0
+
+    wave = ExactParallelWorkerPool.run_wave(pool, [task])
+
+    assert wave.completed is False
+    assert wave.failure_reason == "worker_process_failed:pid=23456:exitcode=1"
     assert wave.results == (result,)
 
 
@@ -1272,7 +1335,7 @@ def test_outer_search_discards_worker_failure_prefix_collision_results(
     assert telemetry["waves"][0]["candidate_results"] == []
 
 
-def test_worker_failure_preserves_completed_progress_and_keeps_campaign_readable(
+def test_worker_failure_does_not_persist_crashed_wave_infeasible_as_sticky(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -1328,11 +1391,19 @@ def test_worker_failure_preserves_completed_progress_and_keeps_campaign_readable
 
     state = _read_campaign_state(project_root)
     statuses = {key: record["status"] for key, record in state["candidates"].items()}
-    assert RUN_STATUS_INFEASIBLE in statuses.values()
-    assert "RUNNING" in statuses.values()
+    # F-SCHED-BS-R5-02: a worker_process_failed wave is untrustworthy as a whole
+    # (no per-result pid attribution).  Its INFEASIBLE must NOT be persisted as a
+    # sticky strong candidate record — that record would survive the UNKNOWN stop,
+    # never re-solve on resume, and poison the resumed frontier projection (prune a
+    # true maximal rectangle -> false-CERTIFIED of optimality).  The crashed wave's
+    # candidate therefore stays RUNNING and re-solves on the watchdog resume.
+    assert RUN_STATUS_INFEASIBLE not in statuses.values()
+    assert set(statuses.values()) == {"RUNNING"}
     assert state["last_stop_reason"]["reason"] == "worker_process_failed"
     telemetry = _read_campaign_telemetry(project_root)
     assert telemetry["aggregate"]["wave_count"] == 1
+    # Observability is preserved: the crashed wave's result is still recorded into
+    # wave telemetry (only the sticky strong candidate persistence is gated).
     assert telemetry["aggregate"]["outcome_counts"]["master_infeasible"] == 1
     assert telemetry["aggregate"]["outcome_counts"]["worker_process_failed"] == 1
     assert telemetry["aggregate"]["selection_reason_counts"] == {"objective_head": 1}
