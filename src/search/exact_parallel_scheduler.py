@@ -498,6 +498,14 @@ class ExactParallelWorkerPool:
             except queue.Empty:
                 any_crashed = bool(_failed_worker_processes(self._processes))
                 if any_crashed:
+                    # Validate any already-queued RESULT envelopes before deciding
+                    # whether the wave can be retried.  A validation failure is a
+                    # protocol failure and must fail closed, but a valid RESULT from
+                    # a process generation that experienced a non-zero worker exit
+                    # is not safe to merge with a later respawn generation: the
+                    # envelope does not carry a worker pid/index, so the coordinator
+                    # cannot prove which RESULT, if any, came from the dead worker.
+                    validated_results_by_seq = dict(results_by_seq)
                     for msg in self._drain_result_queue():
                         msg_type = str(msg.get("message_type", ""))
                         if msg_type == "HEARTBEAT":
@@ -508,7 +516,7 @@ class ExactParallelWorkerPool:
                             r = msg.get("result")
                             if isinstance(r, WorkerResult):
                                 result_reason = _record_worker_result(
-                                    results_by_seq,
+                                    validated_results_by_seq,
                                     r,
                                     tasks_by_seq=tasks_by_seq,
                                 )
@@ -523,9 +531,15 @@ class ExactParallelWorkerPool:
                                 results_by_seq.clear()
                     if failure_reason is not None:
                         break
-                    pending = [t for t in tasks if t.dispatch_seq not in results_by_seq]
+                    pending = [
+                        t
+                        for t in tasks
+                        if int(t.dispatch_seq) not in validated_results_by_seq
+                    ]
                     if not pending:
+                        results_by_seq = validated_results_by_seq
                         break
+                    results_by_seq.clear()
                     if wave_crash_respawns >= max_crash_respawns:
                         failure_reason = (
                             f"worker_crash_respawn_limit:{wave_crash_respawns}:"
@@ -535,9 +549,11 @@ class ExactParallelWorkerPool:
                                 if p.exitcode not in (None, 0)
                             )
                         )
+                        discard_results_due_to_worker_result_failure = True
+                        results_by_seq.clear()
                         break
                     self._respawn_all_workers()
-                    for task in pending:
+                    for task in tasks:
                         self._task_queue.put(task)
                     wave_crash_respawns += 1
                     self._total_crash_respawns += 1

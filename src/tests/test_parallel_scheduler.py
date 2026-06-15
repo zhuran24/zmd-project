@@ -665,6 +665,120 @@ def test_parallel_worker_pool_drops_errored_strong_result() -> None:
     assert wave.results == ()
 
 
+def test_parallel_worker_pool_reruns_all_tasks_after_mid_wave_crash_respawn() -> None:
+    tasks = [
+        WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
+        WorkerTask(1, 2, (4, 2, 2), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
+    ]
+
+    def _result_for(task: WorkerTask, origin: str) -> WorkerResult:
+        return WorkerResult(
+            dispatch_seq=task.dispatch_seq,
+            attempt_index=task.attempt_index,
+            candidate=task.candidate,
+            status=RUN_STATUS_INFEASIBLE,
+            solution=None,
+            proof_summary={"master_status": RUN_STATUS_INFEASIBLE, "origin": origin},
+            exact_safe_cuts=[],
+            loaded_exact_safe_cut_count=0,
+            generated_exact_safe_cut_count=0,
+            worker_wall_seconds=0.01,
+            peak_rss_bytes=1,
+            error=None,
+        )
+
+    class _RespawnTaskQueue:
+        def __init__(self) -> None:
+            self.after_respawn = False
+            self.respawn_dispatches: list[int] = []
+
+        def put(self, item: object) -> None:
+            if not self.after_respawn or not isinstance(item, WorkerTask):
+                return
+            self.respawn_dispatches.append(int(item.dispatch_seq))
+            pool._result_queue._messages.append(  # type: ignore[attr-defined]
+                {"message_type": "RESULT", "result": _result_for(item, "respawn")}
+            )
+
+    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
+    task_queue = _RespawnTaskQueue()
+    pool._closed = False
+    pool._started = True
+    pool._processes = [_SyntheticCrashedProcess()]
+    pool._task_queue = task_queue
+    pool._result_queue = _SyntheticResultQueue(
+        [
+            {
+                "message_type": "RESULT",
+                "result": _result_for(tasks[0], "pre_crash_generation"),
+            }
+        ]
+    )
+    pool.rss_sample_interval_seconds = 0.01
+    pool._total_crash_respawns = 0
+    pool.start = lambda: None
+    pool.terminate = lambda: None
+    pool._sum_process_tree_rss = lambda: 0
+
+    def _respawn_all_workers() -> None:
+        pool._processes = []
+        pool._result_queue = _SyntheticResultQueue([])
+        task_queue.after_respawn = True
+
+    pool._respawn_all_workers = _respawn_all_workers
+
+    wave = ExactParallelWorkerPool.run_wave(pool, tasks)
+
+    assert wave.completed is True
+    assert wave.failure_reason is None
+    assert task_queue.respawn_dispatches == [0, 1]
+    assert [result.proof_summary["origin"] for result in wave.results] == [
+        "respawn",
+        "respawn",
+    ]
+
+
+def test_parallel_worker_pool_crash_respawn_limit_discards_tainted_prefix_results() -> None:
+    tasks = [
+        WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
+        WorkerTask(1, 2, (4, 2, 2), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),
+    ]
+    first_result = WorkerResult(
+        dispatch_seq=0,
+        attempt_index=1,
+        candidate=(9, 3, 3),
+        status=RUN_STATUS_INFEASIBLE,
+        solution=None,
+        proof_summary={"master_status": RUN_STATUS_INFEASIBLE},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+        worker_wall_seconds=0.01,
+        peak_rss_bytes=1,
+        error=None,
+    )
+    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
+    pool._closed = False
+    pool._started = True
+    pool._processes = [_SyntheticCrashedProcess()]
+    pool._task_queue = _SyntheticTaskQueue()
+    pool._result_queue = _SyntheticResultQueue(
+        [{"message_type": "RESULT", "result": first_result}]
+    )
+    pool.rss_sample_interval_seconds = 0.01
+    pool._total_crash_respawns = 0
+    pool.start = lambda: None
+    pool._respawn_all_workers = lambda: None
+    pool.terminate = lambda: None
+    pool._sum_process_tree_rss = lambda: 0
+
+    wave = ExactParallelWorkerPool.run_wave(pool, tasks, max_crash_respawns=0)
+
+    assert wave.completed is False
+    assert wave.failure_reason == "worker_crash_respawn_limit:0:pid=12345:exit=1"
+    assert wave.results == ()
+
+
 def test_parallel_worker_pool_reports_worker_crash_after_all_results_arrive() -> None:
     task = WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple())
     result = WorkerResult(
