@@ -101,7 +101,7 @@
 
 ## 项目主线
 
-- [记忆树重构 harvest-only (进行中)](project_memtree_restructure.md) — 记忆树重构(2026-06-15起,进行中): harvest-only 四层模型; repo 侧 P0-P3 已落地(5 工具+index_summary 单源+lockfile/freshness 双 gate); harness 侧 recall 待做; 未提交; 详见 cc_context/review/memtree_landing_review_20260615.md
+- [记忆树重构 harvest-only (进行中)](project_memtree_restructure.md) — 记忆树工作 2026-06-16 大转向(GPT 外审 6a303556 点破): owner 真意图是 fact-entry 依赖图(改 fact 只反查依赖它的 entry 重写、不全扫),我/团队却做成 harvest-only「Markdown 治理」(同步/gate/索引)=做偏了、错的层; 真下一步=typed-graph MVP(frontmatter depends_on+edges.jsonl+impact query); 会话全文 inspect_6a303556/conversation_full.md; 全部未提交
 - [Endfield 求解器项目 (身份根)](project_endfield_solver.md) — 终末地 70×70 工业规划器精确求解器身份根 (稳定身份+PROJECT_LOCK+依赖). 现状见交接条. 范式 = cut-family LBBD.
 - [certified 红线召回锚点 (PROJECT_LOCK §1+§3)](project_certified_redlines.md) — 要动 certified/proof/schema/cut 前先读 lock; 5 条 forbidden + 易撞 invariant + 3 真 P0 反面教材; 召回锚点非 proof 源, 不拓宽 proof 语义.
 - [用户画像](user_profile.md) — 终末地玩家+开发者, 中文沟通, 偏好自动化.

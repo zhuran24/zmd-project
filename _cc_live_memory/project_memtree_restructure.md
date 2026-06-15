@@ -1,48 +1,40 @@
 ---
 name: memtree-restructure
-index_summary: "记忆树重构(2026-06-15起,进行中): harvest-only 四层模型; repo 侧 P0-P3 已落地(5 工具+index_summary 单源+lockfile/freshness 双 gate); harness 侧 recall 待做; 未提交; 详见 cc_context/review/memtree_landing_review_20260615.md"
-description: "记忆树重构(2026-06-15 起, owner 发起, 进行中): 旧痛点=读写分家(AI 召回读 harness、owner 维护 repo cc_context/memory, 单向手动 sync 漏跑 AI 就读不到)+ MEMORY.md 24KB 红线 + 同步无总闸 + 失效链全 fail-soft + 现状值无强制函数。2C+2codex 团队讨论 + GPT Pro 外审收敛到 **harvest-only 四层模型**, repo 侧 P0-P3 已落地但**全部未提交**, harness 侧(recall 真受益那半)待做。新增 5 工具在 cc_context/tools/。完整讨论+落地审计见 cc_context/review/memtree_landing_review_20260615.md。"
+index_summary: "记忆树工作 2026-06-16 大转向(GPT 外审 6a303556 点破): owner 真意图是 fact-entry 依赖图(改 fact 只反查依赖它的 entry 重写、不全扫),我/团队却做成 harvest-only「Markdown 治理」(同步/gate/索引)=做偏了、错的层; 真下一步=typed-graph MVP(frontmatter depends_on+edges.jsonl+impact query); 会话全文 inspect_6a303556/conversation_full.md; 全部未提交"
+description: "记忆树重构(2026-06-15 起)。**2026-06-16 GPT Pro 外审(会话 6a303556)点破做偏了**: owner 第 1 轮原始意图是 fact-entry 依赖图记忆系统 —— 条目↔事实多对多,改一个 fact 系统只反查 DEPENDS_ON 它的 entry 去重写,不全库扫/不靠人 grep。我和团队却把任务框成「同步/投影」,做出 harvest-only 四层 + 一堆 gate/sync/索引生成 = 一个「Markdown 记忆树治理系统」,解决的是发布/同步/门禁、不是依赖传播,是错误的层(GPT:先别再堆同步脚本了)。根因=没回到 owner 真意图就开干。真正该做的=GPT 给的 typed-graph:事实当一等对象(版本+时效+状态)+ 带类型依赖边(DEPENDS_ON 硬线触发更新 vs RELATED_TO 软线只召回)+ change-txn + impact query;MVP 不用数据库:frontmatter depends_on/related_to → edges.jsonl → 图检查 → impact query。会话全文存 补丁包/gpt_deliveries/inspect_6a303556/conversation_full.md。下一步方向待 owner 拍板。全部未提交。"
 metadata:
   node_type: memory
   type: project
 ---
 
-# 记忆树重构 — harvest-only(2026-06-15 起, 进行中)
+# 记忆树工作 — 2026-06-16 大转向
 
-## 起因 / 痛点
-一棵逻辑树多物理投影。**读写分家**最核心: AI auto-memory 召回真正读 harness 树(`~/.claude/projects/<slug>/memory/`, 按节点 frontmatter `description` 语义注入、不读 wikilink、MEMORY.md ~24576B 上限), owner 维护 repo `cc_context/memory/`(+ `_cc_live_memory/` 字节镜像), 单向手动 `sync_memory_to_harness.py` 漏跑→AI 读不到。另: MEMORY.md 顶 24KB 红线、同步工具碎片化无总闸、失效链全 fail-soft、现状值无强制函数。
+## ⚠️ 重大转向(2026-06-16, GPT 外审点破): 做偏了
+**owner 原始意图**(会话 `6a303556` 第 1 轮): 一个 **fact-entry 依赖图记忆系统** —— 条目和事实多对多,改一个事实,系统**只反查依赖它的条目去重写**,不全库扫、不靠人记得 grep。
 
-## 收敛模型 = harvest-only 四层(团队 + GPT Pro 外审)
-- **L1 live harness** = 运行时工作副本 + AI 写入口(它有原生写入, 是并列写入源不是部署目标)。
-- **L2 repo harvest ledger** = 可审计账本(CI 可见)。**铁律: repo 永不自动反写 active harness**(harvest-only) —— 红队证明对一个别进程正读写的目录自动写=天生 race, 红队不出来, 只能 harvest(只读 live→repo)。
-- **L3 curated memory** = cc_context/memory + _cc_live(发布/索引/长期整理)。
-- **L4 generated index** = MEMORY.md 从单源生成。
-落地顺序: P0 冻结观测 → P1 无副作用总闸 → P2 harvest → P3 generated MEMORY → P4 schema/命名。
+**我/团队实际做的**(2C+2codex 讨论 + harvest-only + 这一晚的 gate/sync/索引生成): 一个 **「Markdown 记忆树治理系统」** —— 多副本同步、MEMORY.md 不超 24KB、索引生成、wikilink 不断、repo↔harness 对账。**= 错误的层**(发布/同步/门禁,不是依赖传播)。GPT 原话:「先别再往这个方向堆同步脚本了。」
 
-## owner 三裁决(已确认)
-① 写入入口收敛(常态 harness/会话, 冲突检测兜底)② MEMORY.md 自动生成(渐进, owner 看 diff 再切)③ 采纳 harvest-only。**scope=极简**(effort-matches-stakes: 个人 KB 不上搜索引擎级 5 字段系统; 树涨大/预算长期溢出/recall-miss 反复才升级)。
+**根因**: 团队一开始把任务框成「怎么重构记忆树(同步/投影)」就开干,**没回到 owner 第 1 轮那个真意图**(fact 依赖传播)。又一次 [[root-cause-over-symptom]] / [[fact-understand-before-output]]。
 
-## 已落地(repo 侧, 5 个新工具, 全绿但未提交)
-`cc_context/tools/`:
-- `memory_harvest.py` —— P0 对账(按 name 比 repo↔harness, **语义** body+desc hash 抓同名 drift, 区分有意 stub)+ P2 `--harvest`(只读收割 live→repo ledger `cc_context/harness_memory_harvest/{new,updates,quarantine}`, **实证不写 harness**)。
-- `sync_knowledge.py --check` —— P1 单入口总闸, 串 9 检查, 两级 BLOCK/warn, 不写任何文件。
-- `gen_memory_index.py` —— P3: 从节点 `index_summary` 生成 MEMORY.md(`--check`=lockfile gate, `--apply`=写正本+_cc_live 镜像); 硬 24KB cap 不静默裁。**边界(GPT 指出)**: 只重写摘要、不重建标题/结构(取自现有 MEMORY.md 模板)→ 改标题不被抓, 是"摘要刷新器"非完整 lockfile。
-- `check_description_freshness.py` —— body-sha gate: 节点正文变了但 index_summary/description 没跟上→报红(基线 `cc_context/knowledge/description_review.json`)。
-- `seed_index_summary.py` —— 一次性回种(已跑)。
+**GPT 给的正确架构**(全文存 `补丁包/gpt_deliveries/inspect_6a303556/conversation_full.md`,gitignored 本地): 五层 = 原始事件 / 实体 / **事实(槽位+版本+状态 active/superseded/disputed+时效+来源+置信度)** / 条目(给 agent 读的视图) / **带类型依赖边**。边分硬软: `DEPENDS_ON`/`DERIVED_FROM` 硬线(事实变→沿边找受影响条目重写)、`RELATED_TO` 软线(只召回不传播)、`SUPERSEDES`/`CONTRADICTS`/`SAME_AS`。写入走 change-txn(agent 只提 change proposal,死板 validator 盖章,不直接改正文)。已有最接近的=Graphiti/Zep temporal KG + 老 AI 的 truth-maintenance + DB 的 provenance / incremental-view-maintenance。一句话:**事实是骨架,条目是皮肤,事件是出生证明,依赖边是神经。**
 
-**方案 A(P3 实际做法)**: 实测"截断 description 当索引行"质量倒退(丢 actionable 尾巴+加冗余前缀), 改为**把现有好的手写摘要回种进各节点 frontmatter `index_summary` 当单一来源**, gen 从它生成 MEMORY.md(零质量损失, 逐字节==现状)+ lockfile/freshness 两 gate 设 **BLOCK**(repo P3)。
+**MVP(不用上数据库, 叠在现有 Markdown 上)**: frontmatter 显式 `depends_on`/`related_to`(不从正文 wikilink 猜)→ 生成 `edges.jsonl` → 图检查 → impact query(改 fact 反查依赖它的 entry)→ change-proposal 列受影响条目。通了才从「记忆目录管理器」变「活的记忆系统」。
 
-## GPT 审计落地(2026-06-16, 已收回)
-框架符合; 3 偏离已修: ①钦点 stale 样本 zmd-round2 没真修(我把 stale 摘要原样种进 index_summary+--seed 接受为基线)→已对齐(另一会话也同步更新了该节点)②两 gate 降 warn→改 BLOCK ③gen 非真 lockfile+静默回退→加 validate 硬失败+文档改正。审计原文+讨论全程在 `cc_context/review/memtree_landing_review_20260615.md`。
+**下一步方向待 owner 拍板**(直接搭 MVP / 先写计划再外审 / 别的走法)。
 
-## 待办(下阶段)
-- **harness 侧 A**(recall 真受益的另一半): 传 index_summary 到 harness 节点 + harness MEMORY.md 也从 index_summary 单源生成(要处理 harness 153 节点 24KB 预算 + 双通道: MEMORY.md=无条件注入小集 / 每节点 description=按 query 召回)。**当前只做了 repo 侧, recall 侧未解。**
-- P1/P2 风险项: check_description_freshness 新节点不 fail、memory_harvest 同名静默覆盖、slug resolver 4 处硬编码不统一、gen 完整 lockfile(skeleton-hash)。
-- **全部未提交**(owner 说先不提交)。当前 repo 节点有 index_summary、harness 没有 → check_memory_tree 报 71 投影+32 共维护 drift warn(半迁移态预期, 非问题)。
+## 已建的「Markdown 治理层」(= 上面说的错的层, 留作历史)
+harvest-only 四层(L1 live harness=写入口 / L2 repo harvest 账本永不自动反写 harness / L3 cc_context/memory+_cc_live / L4 MEMORY.md 从 index_summary 生成)。repo 侧 P0-P3 落地 5 工具(memory_harvest / sync_knowledge 总闸 / gen_memory_index / check_description_freshness / seed_index_summary),方案 A=把手写摘要回种 index_summary 当单源。完整讨论+落地见 `cc_context/review/memtree_landing_review_20260615.md`。**全部未提交。**
 
-## 关键教训
-- 截断完整 description 当通道① 索引行 = 质量倒退(description 为通道② 召回写、长+带分类前缀)→ 索引行需专门精炼短文本(=index_summary 单源, 不是第三副本)。
-- gate 接进总闸但设 warn = 复刻原问题(工具 exit 1 被吃成 WARN), repo P3 gate 必须 BLOCK。
-- 并发会话碰撞活在同一节点(zmd-round2): 两会话同时编辑, block gate 正确拦下; 确认对方停了再干净收尾(见 concurrent-claude-sessions-repo-collision 记忆)。
+## 真 bug(GPT 验证过 + 我已独立复核为真; 若保留 Markdown 层要修)
+- `check_description_freshness` 两个洞: ① 新节点 rc 仍 0(不阻断); ② 更深=一次 body+summary 同改后基线没更新,之后 body-only 改会拿当前 hash 比**最老** baseline(idx/desc 也都不同)→ 永不报=一次性门锁。正解: `body_sha != baseline` 一律 DIRTY(除非显式 accept),别用「idx 是否也变过」判断。
+- `gen_memory_index` 默认模式仍 fail-soft(缺 index_summary 照写截断 description 旁路 + rc 0);`--check/--apply` 已修。
+- `sync_memory_to_harness --apply` 还能写 live harness,与 harvest-only 文档自相矛盾(要么封存、要么改名 deploy_harness_cache 加 CAS 规则)。
+- harness 路径 4-5 处硬编码 →「检查的不是同一棵树 / Linux 上优雅 skip」; 该建唯一 resolver(显式 override → 最近 jsonl 验 cwd → .claude.json → 弱 fallback)。
+- `handoff_windows_ninth_review_pending.md` ~220KB = living 黑洞,该拆成 fact 槽位 + 生成视图。
+- #1「验证修复」交付给了 patch(`zmd_memtree_repair_audit_patch_0fcea`),**未 apply**(GPT patch 有前科:上轮 benders 补丁误拒合法 type-1 被否)。
 
-相关: [[zmd-project-entry]] [[memory-currency-protocol]] [[project-knowledge-tree-architecture]]
+## 本会话工具变更(未提交)
+- `dispatch_gpt_task.py` 加 `--message-attach`: sources 通道下额外把文件附到聊天消息(复用 upload_files,3 处增量改)。聊天框=md 附件 + 提示词(= round-2 模式,owner「附件记得带上、跟上次一样」)。
+- `dump_conversation.py`(新): 复用后端 JSON 直读(`_BACKEND_CONV_JS`)导出**整条**会话全部消息(非只最后一条 `collect`);`inspect_conv.py` 已坏(依赖被移除的 SEL 字典)。
+
+相关: [[zmd-project-entry]] [[memory-currency-protocol]] [[project-knowledge-tree-architecture]] [[root-cause-over-symptom]] [[fact-understand-before-output]] [[minimal-open-prompts]]
