@@ -1280,7 +1280,24 @@ def verify_prompt_packages_in_sources(prompt_text: str, args, rep: Reporter,
     mentioned = sorted(set(re.findall(r"[\w.\-]+\.zip", prompt_text)))
     if not mentioned:
         return True
-    names = list_sources(args, rep, out_dir, page=page)
+    # Flaky Sources-page rendering can return an empty/partial source list on a
+    # transient read (2026-06-15: a dispatch-tab --list read [] while a fresh --list
+    # read all 3 packages, and the upload self-verify once read 1 of 3).  A transient
+    # empty/partial read must NOT fail-closed a dispatch when the package is actually
+    # present, so re-enumerate a few times before declaring a package missing.
+    names: "list[str] | None" = None
+    missing = list(mentioned)
+    for attempt in range(4):
+        names = list_sources(args, rep, out_dir, page=page)
+        if names is not None:
+            missing = [n for n in mentioned if n not in names]
+            if not missing:
+                break
+        if attempt < 3:
+            rep.log("sources_verify", "retry", attempt=attempt,
+                    in_sources=(names if names is not None else "list_failed"),
+                    still_missing=missing)
+            time.sleep(6)
     if names is None:
         if just_uploaded:
             rep.log("sources_verify", "WARN_list_failed",
@@ -1288,7 +1305,6 @@ def verify_prompt_packages_in_sources(prompt_text: str, args, rep: Reporter,
             return True
         rep.log("sources_verify", "FATAL", error="cannot enumerate Sources to verify prompt packages")
         return False
-    missing = [n for n in mentioned if n not in names]
     rep.log("sources_verify", "ok" if not missing else "FATAL",
             mentioned=mentioned, in_sources=names, missing=missing)
     return not missing
