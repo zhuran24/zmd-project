@@ -305,6 +305,23 @@ FEED_INPUT_JS = (
 )
 
 
+# 2026-06-15 实测: 点「添加源」弹模态框 (role=dialog: 拖放区 + 上传/文本输入/Google/Slack),
+# 模态内恰好 1 个 input[type=file] = 上传目标。直接给它打 data-cc-upload-target 标记,
+# 不依赖点「上传」按钮去触发 input.click (新 UI 下点击不再可靠驱动 guard)。
+TAG_DIALOG_INPUT_JS = (
+    "(() => {"
+    "  document.querySelectorAll('[data-cc-upload-target]')"
+    "    .forEach(e => e.removeAttribute('data-cc-upload-target'));"
+    "  const dlgs = [...document.querySelectorAll('[role=dialog]')];"
+    "  for (const d of dlgs) {"
+    "    const i = d.querySelector('input[type=file]');"
+    "    if (i) { i.setAttribute('data-cc-upload-target', '1'); return 'tagged'; }"
+    "  }"
+    "  return 'no-dialog-input';"
+    "})()"
+)
+
+
 def count_list_entries_js(filename: str) -> str:
     """数「来源列表」里该文件名条目数 — 排除模态框/对话框 (role=dialog) 内的文本,
     否则「文件已存在」对话框里的同名文本会污染计数 (实测假阳性根因)。"""
@@ -645,22 +662,31 @@ async def run(args, pkg: Path | None, out_dir: Path) -> int:
 
             await cdp.js(GUARD_JS)
             await find_and_click(cdp, ADD_SOURCE_TEXTS, "add_source", out_dir)
-            await asyncio.sleep(1.5)  # 等「添加源」面板 / 隐藏 file input 就绪
-            # 现行 UI (2026-06-14 实测): 点「添加源」直接驱动相邻隐藏 input[type=file],
-            # 已无第二级「上传」按钮。先看 guard 是否已被点中; 没有再退回旧的两级
-            # 「上传」按钮流 (老版本兼容)。
+            # 2026-06-15 实测: 点「添加源」弹模态框 (role=dialog), 模态内 1 个 input[type=file]
+            # 即上传目标。等模态渲染出该 input, 直接打标记 (不依赖点「上传」触发 input.click)。
+            tagged = "no-dialog-input"
+            for _ in range(20):  # ~6s 等模态渲染
+                tagged = await cdp.js(TAG_DIALOG_INPUT_JS)
+                if tagged == "tagged":
+                    break
+                await asyncio.sleep(0.3)
             guard_clicks = await cdp.js("window.__ccUploadGuard.clicks")
-            if not guard_clicks:
-                spot = await cdp.js(FIND_BUTTON_JS.format(texts=json.dumps(UPLOAD_BTN_TEXTS)))
-                if spot:
-                    await cdp.click_xy(spot["x"], spot["y"])
-                    log("upload", "upload_button_clicked", text=spot["text"])
-                    await asyncio.sleep(0.8)
-                    guard_clicks = await cdp.js("window.__ccUploadGuard.clicks")
-            if not guard_clicks:
-                await cdp.screenshot(out_dir / "attention_no_input_click.png")
-                log("upload", "FATAL", error="add_source did not drive a file input; no upload button (UI changed?)")
-                return 3
+            if tagged == "tagged":
+                log("upload", "dialog_input_tagged")
+            else:
+                # 退回旧路径 (老版本兼容): 添加源 直接驱动 input (guard 捕获), 或点「上传」按钮
+                if not guard_clicks:
+                    spot = await cdp.js(FIND_BUTTON_JS.format(texts=json.dumps(UPLOAD_BTN_TEXTS)))
+                    if spot:
+                        await cdp.click_xy(spot["x"], spot["y"])
+                        log("upload", "upload_button_clicked", text=spot["text"])
+                        await asyncio.sleep(0.8)
+                        tagged = await cdp.js(TAG_DIALOG_INPUT_JS)
+                        guard_clicks = await cdp.js("window.__ccUploadGuard.clicks")
+                if tagged != "tagged" and not guard_clicks:
+                    await cdp.screenshot(out_dir / "attention_no_input_click.png")
+                    log("upload", "FATAL", error="add_source dialog file input not found (UI changed?)")
+                    return 3
 
             # 喂文件前清空事件缓冲 — 此后的网络事件全归上传管道观测
             cdp.events.clear()
