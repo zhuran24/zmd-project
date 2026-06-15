@@ -39,5 +39,4 @@ proof-object-lifecycle
 record-tool-entry-points
 research-roi-metric
 shell-wrapper-pgrep-self-match
-subagent-model-by-weight
 work-time-estimates
