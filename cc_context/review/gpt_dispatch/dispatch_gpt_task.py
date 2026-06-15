@@ -370,6 +370,31 @@ _STOP_VISIBLE_JS = (
     "})()"
 )
 
+# 进行中的「思考/推理」指示器 (Pro 扩展模式专治). 关键洞 (2026-06-15):
+# Pro 扩展是多轮——每条进度消息各自「结束一个 turn」, 停止按钮随之短暂消失、
+# 文本暂稳, 但 "Pro 思考中" 指示器仍在 (模型马上开下一轮推理)。只看停止按钮 →
+# wait_done 在这个窗口误判 done, 收走进度 note 而非最终 REVIEW。
+# 判别关键 = 「中 / Thinking / Reasoning」(进行中) vs 「思考用时 N / Thought for N」
+# (已折叠的完成标记, 不算 busy)。fail-safe 方向: 拿不准当 busy (多等无害, 误判 done 才是 bug)。
+_THINKING_BUSY_JS = (
+    "(() => {"
+    "  const DONE = /(思考[用耗]时|思考了|已思考|Thought for|Reasoned for|Worked for)/;"
+    # 锚定在文本开头 (可选 Pro 前缀): 指示器 pill 文本就是指示器本身, 而 review 散文
+    # 不会以「思考中/Thinking」开头 → 不误把含「思考中」的短段落当 busy。
+    "  const BUSY = /^(pro\\s*)?(思考中|正在思考|推理中|分析中|生成中|thinking|reasoning|working)/i;"
+    # 含 div: pill 可能是 div 叶子. 锚定正则 + 叶子 + 短文本 三重约束下加 div 不会误报 review 段落。
+    "  const els = document.querySelectorAll('button, span, p, div, h1, h2, h3');"
+    "  for (const el of els) {"
+    "    if (el.children.length) continue;"          # 只看叶子文本元素 (UI pill), 避开长 review 段落
+    "    const t = (el.textContent || '').trim();"
+    "    if (!t || t.length > 24) continue;"
+    "    if (DONE.test(t)) continue;"
+    "    if (BUSY.test(t)) return true;"
+    "  }"
+    "  return false;"
+    "})()"
+)
+
 _LAST_ASSISTANT_JS = (
     "(() => {"
     "  const msgs = document.querySelectorAll('div[data-message-author-role=\"assistant\"]');"
@@ -769,6 +794,55 @@ async def _revive_page(page: PageCdp, last_url: str, rep: Reporter, reason: str)
     return page
 
 
+class RateLimited(Exception):
+    """GPT 限流 (HTTP 429 / 会话读被阻断). 抛它让上层停下来报清楚, 不盲目重试。"""
+
+
+_RATE_LIMIT_PROBE_JS = (
+    "(async () => {"
+    "  let status=0, api=false;"
+    "  try {"
+    "    const sess = await fetch('/api/auth/session',{credentials:'include'})"
+    "      .then(r=>r.json()).catch(()=>({}));"
+    "    const hdrs = (sess&&sess.accessToken)?{Authorization:'Bearer '+sess.accessToken}:{};"
+    "    const r = await fetch('__URL__',{credentials:'include',headers:hdrs});"
+    "    status = r.status;"
+    "    let body=''; try { body=(await r.text()).slice(0,400); } catch(e){}"
+    "    api = status===429 || /too many requests|sent too many|rate_limit_exceeded/i.test(body);"
+    "  } catch(e) {}"
+    # DOM 可见限流提示 (send 被限流时弹的 UI 消息, 如「太多访问」). 只扫短叶子可见元素 —
+    # feature-flag 配置里的 'rate limit' 字符串在 <script> 里, 不被 div/span/p/button 命中, 故不误报。
+    "  let dom=false, hit='';"
+    "  try {"
+    "    const RL = /(太多访问|请求(过多|过于频繁|太频繁)|消息.{0,6}(上限|限制)|您已达到|达到.{0,6}上限|"
+    "too many (requests|messages)|reached your (usage )?limit|usage limit reached|you've hit your)/i;"
+    "    for (const el of document.querySelectorAll('div, span, p, button')) {"
+    "      if (el.children.length) continue;"
+    "      const t=(el.textContent||'').trim();"
+    "      if (!t || t.length>120) continue;"
+    "      if (RL.test(t)) { dom=true; hit=t.slice(0,80); break; }"
+    "    }"
+    "  } catch(e) {}"
+    "  return JSON.stringify({status, rate_limited: api||dom, api_429:api, dom_msg:dom, hit});"
+    "})()"
+)
+
+
+async def probe_rate_limited(page: "PageCdp", conv_id: str = "") -> dict:
+    """页面内 fetch 一个 backend 端点, 看是否 HTTP 429 / rate-limit body。
+    可靠信号是 429, 不是 DOM 文本——页面 feature-flag 配置里到处是 'rate limit' 字符串会误报,
+    drift 到 /project 只是症状。优先探指定会话端点 (会话读被限流时返 429), 无 id 则探 /backend-api/me。"""
+    cid = conv_id or ""
+    if "/c/" in cid:
+        cid = cid.split("/c/")[-1].split("?")[0].strip("/")
+    url = f"/backend-api/conversation/{cid}" if cid else "/backend-api/me"
+    try:
+        res = await page.js(_RATE_LIMIT_PROBE_JS.replace("__URL__", url), timeout=15)
+        return json.loads(res) if res else {"status": 0, "rate_limited": False}
+    except Exception as e:
+        return {"status": 0, "rate_limited": False, "error": str(e)[:80]}
+
+
 async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
                     min_assistant_count: int = 1, conv_url: str = "",
                     project_url: str = PROJECT_URL):
@@ -815,6 +889,10 @@ async def wait_done(page: PageCdp, rep: Reporter, timeout_hours: float,
             return "attention", page
         try:
             generating = bool(await page.js(_STOP_VISIBLE_JS, timeout=10))
+            if not generating:
+                # 停止按钮不在 ≠ 完成: Pro 扩展多轮思考间隙仍 busy. 看「思考中」指示器,
+                # 不让进度 note 的暂稳窗口被误判 done (2026-06-15 routing 184-node 事故根因)。
+                generating = bool(await page.js(_THINKING_BUSY_JS, timeout=10))
         except Exception:
             generating = False
         info = await _last_assistant(page)
@@ -1081,7 +1159,8 @@ async def _download_via_fetch(page: PageCdp, href: str, name: str, out_dir: Path
         return None
 
 
-async def collect(page: PageCdp, out_dir: Path, rep: Reporter, expect_model: str = "pro"):
+async def collect(page: PageCdp, out_dir: Path, rep: Reporter, expect_model: str = "pro",
+                  conv_id: str = ""):
     """收回复。第三个返回值 model_mismatch=True 表示回复的 model-slug 不含期望模型
     (收到的实际模型不对/疑似降级) —— 调用方据此并入 suspected_downgrade 走 exit 5
     (与生成时长降级判据互补: 发送时 verify_model 校验选择器, 这里复核实际出稿模型)。"""
@@ -1097,6 +1176,13 @@ async def collect(page: PageCdp, out_dir: Path, rep: Reporter, expect_model: str
                             f"reply model slug '{slug}' does not contain '{expect_model}' — "
                             "Pro may have been silently downgraded; review the deliverable critically")
     if info["count"] == 0:
+        # 找不到回复可能是限流 (会话读被阻断, 页面 drift 到 /project)。先探 429 坐实,
+        # 是限流就抛 RateLimited 让上层停下来报清楚, 不再当成"空会话"盲目重试。
+        rl = await probe_rate_limited(page, conv_id)
+        if rl.get("rate_limited"):
+            rep.log("collect", "RATE_LIMITED", http_status=rl.get("status"),
+                    note="GPT 限流 — 停止采集, 等限流解除再来, 勿盲目重试")
+            raise RateLimited(f"rate limited (http {rl.get('status')}) at collect")
         await rep.attention(page, "collect", "no assistant message found")
         return 0, 0, model_mismatch
 
@@ -1428,7 +1514,7 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                                     f"still finishing in {gen_elapsed}s after {args.downgrade_retries} "
                                     "retries — suspected silent Pro limit; "
                                     "FALLBACK: clipboard handoff for owner manual send")
-        got, found, model_mismatch = await collect(page, out_dir, rep)
+        got, found, model_mismatch = await collect(page, out_dir, rep, conv_id=conv_url)
         if model_mismatch and args.min_gen_seconds:
             suspected_downgrade = True
             rep.log("downgrade", "model_slug_mismatch_escalated",
@@ -1449,7 +1535,7 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                                            project_url=args.project_url)
             if status != "done":
                 return 4 if status == "timeout" else 3
-            got, found, model_mismatch = await collect(page, out_dir, rep)
+            got, found, model_mismatch = await collect(page, out_dir, rep, conv_id=conv_url)
             if model_mismatch and args.min_gen_seconds:
                 suspected_downgrade = True
         if page.owns_tab:
@@ -1525,7 +1611,13 @@ def main() -> int:
     rep = Reporter(out_dir)
     rep.log("init", "start", mode="resume" if args.resume else "dispatch",
             out_dir=str(out_dir), engine="raw-page-cdp")
-    return asyncio.run(run_dispatch(args, rep, out_dir, repo_root))
+    try:
+        return asyncio.run(run_dispatch(args, rep, out_dir, repo_root))
+    except RateLimited as e:
+        # exit 6 = GPT 限流 (区别于 3 异常 / 4 超时 / 5 降级). 上层据此停下来等, 不盲目重试。
+        rep.log("init", "RATE_LIMITED", note=str(e),
+                advice="GPT 限流 — 停止, 等限流解除再重跑, 勿盲目重试")
+        return 6
 
 
 if __name__ == "__main__":
