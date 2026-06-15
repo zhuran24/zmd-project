@@ -1,5 +1,6 @@
 ---
 name: no-gpt-dispatch-rewrite-0614
+index_summary: "commit 51e5c47/9465731:复用页+不关页(--reuse-tab-id/--no-close)+模型自检自修(verify_model 真开『智能水平』菜单点 Pro 扩展,Radix 要 CDP click_xy)+接收侧 model 复核 exit 5;cargo-cult 铁律=改前理清因果链别凭猜加 workaround"
 description: "dispatch 大改(2026-06-14 owner 裁决,commit 51e5c47/9465731):复用页+不关页(upload_project_file.py 加 --reuse-tab-id/--no-close,一页到底零 churn)+模型自检自修(verify_model 真打开『智能水平』菜单点 Pro 扩展,Radix 要 CDP click_xy)+接收侧 model 复核(collect 复核 slug 含 pro 不符并入 suspected_downgrade→exit 5);cargo-cult 方法论铁律=改前先理清严谨因果链别凭猜加 workaround"
 metadata:
   node_type: memory

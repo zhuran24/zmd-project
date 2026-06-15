@@ -1,5 +1,6 @@
 ---
 name: dont-project-my-project-visibility-onto-user
+index_summary: "讲理由前先从零搭共同词汇."
 description: "讲理由/解释技术决定时别把我(天天泡仓库的 coding LLM)对大项目的全局背景默认成用户也具备; 用户作为人类只看到重型项目极小一片, 我常把内部词汇当共享前提省掉地基, 导致理由全成黑话看不懂. 先从零搭共同词汇再讲."
 metadata: 
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: no-giveup-options
+index_summary: "除非 formal proof 证明不行."
 description: "列下一步选项时不准把 \"放弃 / 接受 verdict / 项目改方向\" 作为可选项呈现; 除非已经数学层 / 物理层 formal proof 证明不行才提"
 metadata: 
   node_type: memory

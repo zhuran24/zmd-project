@@ -1,5 +1,6 @@
 ---
 name: no-gpt-channel-architecture
+index_summary: "2026-06-12 全链路脚本化:dispatch 浏览器层重写 raw page 级 CDP(弃 Playwright fab40a7);upload 铁律只打网页端 Edge 9222 绝不对 App;App 9224 自动 fallback;跑法纪律 Start-Process detached+单后台 bash"
 description: "GPT 外发通道架构终态(2026-06-12 全链路脚本化打通):dispatch 浏览器层重写 raw page 级 CDP(弃 Playwright,commit fab40a7);upload_project_file.py 铁律只打网页端 Edge 9222 绝不对 App;App 9224=自动 fallback;跑法纪律=Start-Process detached+单后台 bash 盯 run_log,Monitor/tail-f 已退役,stdout 别接 head 管道;Edge 三防节流旗标后并发可用"
 metadata:
   node_type: memory

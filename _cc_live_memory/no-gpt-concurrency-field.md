@@ -1,5 +1,6 @@
 ---
 name: no-gpt-concurrency-field
+index_summary: "2026-06-14 owner 放开:旧\"最多 2 条在途\"软上限去掉,改由 gpt_dispatch_concurrency.json 的 max_in_flight 控制(null=不限);仍成立护栏=在途未收完别清旧快照、每单一个后台 shell、包走文件区"
 description: "GPT 外发并发上限已字段化(2026-06-14 owner 放开):旧软上限「最多 2 条在途」去掉,改由 C:\\Users\\22957\\cc_watchdog\\gpt_dispatch_concurrency.json 的 max_in_flight 控制(null=不限默认;整数 N=最多 N 条在途未收完);CC 每次发新外发前读此字段定并发度;dispatch 脚本本身无硬并发 gate;仍成立护栏=在途未收完别清旧快照、每单只挂一个后台 shell、包走文件区"
 metadata:
   node_type: memory

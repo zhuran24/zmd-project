@@ -1,5 +1,6 @@
 ---
 name: windows-handoff-env
+index_summary: "2026-05-30 初次 Linux→Windows 接手记录;路径/venv/slug 均失效, **当前 Windows 环境现状看 zmd-checkout-env**;仅\"prod-scale 回 Linux 主机\"能力边界仍有效。"
 description: "**(历史快照, 2026-05-30 初次 Linux→Windows 接手; 路径/venv/slug/基线均已 superseded, 当前 Windows 环境现状见 zmd-checkout-env)** 2026-05-30 接手到 Windows 机器. 仓库 clone 到 D:\\追光\\zmd, venv 用 .venv\\Scripts\\python.exe (Windows 布局, Python 3.13.13 + ortools 9.15.6755 精确锁版), 414 cut 测试全过 (3.93s). prod-scale (266 inst/~280K pose/30-47GB RAM/168h campaign) 这台跑不了, 要回原 Linux CachyOS 主机. CC memory canonical slug 见正文."
 metadata:
   node_type: memory

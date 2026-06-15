@@ -1,5 +1,6 @@
 ---
 name: root-cause-over-symptom
+index_summary: "owner 铁律:遇事找产生问题的原因别停在症状;我反复会错意/请示/不长记性的根因=默认「收到消息就赶产出反应」跳过「先理解意图+根因」"
 description: owner 铁律(严重级):问题/症状不是重点,产生问题的"原因"才是重点;我反复会错意/请示/不长记性的根因=默认"收到消息就赶产出反应"跳过"先理解意图+根因"
 metadata:
   node_type: memory

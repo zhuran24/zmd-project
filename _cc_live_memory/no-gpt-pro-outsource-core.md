@@ -1,5 +1,6 @@
 ---
 name: no-gpt-pro-outsource-core
+index_summary: "2026-06-10:非必要不用 Workflow 多代理;审查/外审/委托实现外发 GPT Pro;GPT Pro 沙盒能解包/装离线 wheels/跑 pytest 自验"
 description: "用户裁决(2026-06-10):非必要不用 Workflow 多代理编排;审查/外审/委托实现类任务用 Claude in Chrome 插件发到 chatgpt.com 让 GPT Pro 做;GPT Pro 沙盒能解包/装离线 wheels/跑 pytest 自验"
 metadata:
   node_type: memory

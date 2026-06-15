@@ -1,5 +1,6 @@
 ---
 name: cachyos-paste-and-nm
+index_summary: "wl-clipboard; NM 探测换 qualcomm.cn; NOPASSWD sudo."
 description: (CachyOS + KDE Wayland **Linux 主机**配置；**当前 Windows checkout 不适用**，留作回 Linux 主机时参考) wl-clipboard 让 cc Ctrl+V 贴图；NM 探测 URL 改国内端点防"受限"误报；zhuran24 全局 NOPASSWD sudo
 type: reference
 originSessionId: aa49aecd-27de-4e55-bc9c-eabf1ea214a9

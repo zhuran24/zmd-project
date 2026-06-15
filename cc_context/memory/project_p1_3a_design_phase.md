@@ -1,5 +1,6 @@
 ---
 name: p1-3a-design-phase
+index_summary: "设计记录: LBBD loop 已存在只缺 step_8 桥; F1-only; cut 强形式 vs nogood 头号决策; 等 owner phase-boundary 决策."
 description: "2026-05-30 接手后首个 design phase — P1.3A 主体 (真 PoseBoolExactMaster + cut framework step_8 集成) 走 N=8 并行 opus 设计 + main merger. 关键: LBBD loop/桥/nogood 通道/replay 已落地在跑, P1.3A 只缺 src/cuts/lifecycle.py 的 step_8 桥; 收敛是几何/paradigm 性质只能 Linux multi-anchor falsify; P1.3A 在 Windows 只 close soundness/termination/不-stall + 安全机制; 范围收窄 F1-only, 别 fold 9-family 收敛. 设计产物 docs/research/p1_3a_master_integration_design_20260530/ (DESIGN_BRIEF + 8 slant + P1_3A_MERGED_DESIGN + step0) **untracked, Windows 仓库已丢, 结论仅存本 memory 文本** (见正文顶部警告)."
 metadata: 
   node_type: memory

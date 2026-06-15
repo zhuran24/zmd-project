@@ -1,5 +1,6 @@
 ---
 name: no-gpt-downgrade-evidence
+index_summary: "24 次交付数据:4 路并发触发 Sentinel 后脚本特征发送降到 40-70s,手动(Edge/App)仍真 Pro;唯一可靠信号=elapsed_s(model_slug/thinking_marker 全撒谎);找客服真证据=时长对比非 HAR sentinel 请求"
 description: "GPT Pro 降级机理+通道实证(2026-06-11 夜 24 次交付数据):4 路并发触发 Sentinel 后脚本特征发送被降到 40-70s,手动发送(Edge 或 App)仍吃真 Pro;唯一可靠降级信号=elapsed_s(model_slug/thinking_marker 明面字段全撒谎,连真 Pro 也 none);App=独立手动通道;找客服真证据=时长对比(手动 43min vs 脚本 40-70s),HAR 里 sentinel 请求不算证据"
 metadata:
   node_type: memory

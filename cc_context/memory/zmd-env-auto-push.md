@@ -1,5 +1,6 @@
 ---
 name: zmd-env-auto-push
+index_summary: "post-commit hook 自动 push GitHub(commit ≈ 发布到远程),提交前想清楚;推送历史在 .git/auto-push.log"
 description: zmd post-commit hook 自动 push GitHub——commit ≈ 发布到远程, 提交前要想清楚;推送历史在 .git/auto-push.log
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: no-gpt-send-settings
+index_summary: "模型 Pro·进阶 + 终末地 Project + 新会话默认 + 包走 Project 文件页(来源区)不随消息发附件;删旧快照保留依赖包,prompt 指认文件名+sha256"
 description: "外发 GPT 的四条发送设置:模型选 Pro·进阶(进阶专业)、发在「终末地」Project、新任务默认开新会话、包走 Project 文件页(来源区)不随消息发附件(2026-06-12 owner 裁决,删旧快照保留依赖包,prompt 指认文件名+sha256)"
 metadata:
   node_type: memory

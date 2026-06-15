@@ -1,5 +1,6 @@
 ---
 name: fact-self-report-is-not-evidence
+index_summary: "自验摘要/metadata/单次结果不裸信,靠独立复现和端到端验收"
 description: "抽象事实: 外部模型/工具/我自己的自验摘要、明面元数据、单次结果都不是最终证据; 可信度来自独立复现、对拍、端到端验收和可判别 probe。"
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: zmd-env-candidate-placements
+index_summary: "certified exact 必需输入已就位且随时可再生(本地 45,773,799B sha adcc2a6e,.gitignore 防误推);丢了用 placement_generator.py 现场再生 ~3s;旧版/zmd.7z 老归档带病不可作恢复源"
 description: zmd candidate_placements.json(certified exact 必需输入)已就位且随时可再生——本地 45,773,799B sha adcc2a6e…, 被 .gitignore 防误推 45MB;丢了用 placement_generator.py 现场再生 ~3s;旧 53.6MB/d5e3911f 已 superseded, zmd.7z 老归档带病不可作恢复源
 metadata:
   node_type: memory

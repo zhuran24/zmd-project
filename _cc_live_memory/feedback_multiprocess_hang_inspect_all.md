@@ -1,5 +1,6 @@
 ---
 name: multiprocess-hang-inspect-all
+index_summary: "只看 main 不看 worker 会误判."
 description: 多进程 hang debug 时, py-spy 必须 dump 所有 worker 进程 stack, 不能只看 main; 只看 main 会误判 "IPC bug" 而实际 worker 自己 hang
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

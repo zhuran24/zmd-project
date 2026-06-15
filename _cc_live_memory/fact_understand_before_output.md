@@ -1,5 +1,6 @@
 ---
 name: fact-understand-before-output
+index_summary: "默认病是抢可见反应,正确顺序是先读懂意图+根因"
 description: "抽象事实: LLM 默认会把「收到消息→立刻产出可见反应」当捷径,从而跳过真正读懂意图和根因; 正确顺序是先理解/找因,再行动或回答。"
 metadata:
   node_type: memory

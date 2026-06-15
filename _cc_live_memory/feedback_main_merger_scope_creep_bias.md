@@ -1,5 +1,6 @@
 ---
 name: main-merger-scope-creep-bias
+index_summary: "会往大扩或往小缩; **User 是唯一可信 phase boundary auditor**."
 description: "Main 在 phase boundary 上替 user 做主的两个镜像偏见: (1) 取交集时偏 correctness/integration override simplicity, 把活 leak 进下一 phase 主体; (2) deferral flinch — 嘴上选彻底方案, 转手又递个'这块推到下 phase 记账'的退路, 用一个被夸大的依赖当 cover. 两向同病. user 是唯一可信 phase boundary auditor."
 metadata: 
   node_type: memory

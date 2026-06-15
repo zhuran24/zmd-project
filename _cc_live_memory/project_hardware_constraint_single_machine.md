@@ -1,5 +1,6 @@
 ---
 name: hardware-constraint-single-machine
+index_summary: "主机+1远程 (WAN), 分布式仅 WAN-适配模式."
 description: 项目硬件升级，加了第 2 台电脑（家中远程），分布式方向解锁——但 WAN 延迟约束仍排除细粒度同步原语
 type: project
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

@@ -1,5 +1,6 @@
 ---
 name: memory-currency-protocol
+index_summary: "身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 仓库相对路径."
 description: 现状类 memory 防过时的治本协议 — 身份vs现状分离 + 单一 living 现状源 + phase 转换更新仪式 + transient 断言带日期 + 周期 staleness sweep + 仓库相对路径 + **现状变更当下主动传播到所有嵌旧值的 memory (非等 sweep 反应式; 触发器=变更事件本身)**. 治 3 个 HIGH 过时问题 (记忆更新滞后于 phase 转换) 的 root cause.
 metadata: 
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: directly-state-core-finding
+index_summary: "第一句给结论+真问题定位. 不准先列 A/B/C 选项让用户选."
 description: 报告状态/问题/分析时, 直接讲核心定位 + 数据, 不要先列 menu 选项让用户提问"再用人话讲一遍"——浪费 turn + 用户挫败
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

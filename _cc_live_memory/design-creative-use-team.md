@@ -1,5 +1,6 @@
 ---
 name: design-creative-use-team
+index_summary: "设计/创造/开放式任务用 Agents Team 讨论收敛, 不单干也不用纯确定性 Workflow 顶替; 确定性 fan-out/对抗验证才用 Workflow (2026-06-14 owner)"
 description: 设计类/创造性/开放式任务用 Agents Team 讨论收敛, 不是单干也不是纯确定性 Workflow; deterministic fan-out/对抗验证才用 Workflow。
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: zmd-checkout-env
+index_summary: "当前 Windows checkout 环境事实索引;无 venv/Python/auto-push/pytest/CI/记忆同步等子主题见各子节点"
 description: zmd 当前 Windows checkout 环境事实索引——无 venv/Python/auto-push/pytest/CI/记忆同步等子主题, 见各子节点
 metadata:
   node_type: memory

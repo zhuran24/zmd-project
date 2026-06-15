@@ -1,5 +1,6 @@
 ---
 name: fact-conversation-state-is-window-local
+index_summary: "新会话不带隐式记忆; 新任务隔离与 opsec 都按显式材料算"
 description: "抽象事实: GPT/LLM 会话状态只活在当前窗口/线程/项目材料与显式附件里; 跨新会话不携带隐式记忆,所以新任务隔离和 opsec 威胁面都必须按窗口局部状态推导。"
 metadata:
   node_type: memory

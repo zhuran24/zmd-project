@@ -1,5 +1,6 @@
 ---
 name: zmd-env-checkout-location
+index_summary: "C:\\claude pj\\zmd_pj 是轻量 GitHub checkout(zhuran24/zmd,分支 project-foundation);旧 D:\\追光\\zmd 已不存在,记忆里 D 盘路径全失效"
 description: zmd 工作区路径——C:\claude pj\zmd_pj 是轻量 GitHub checkout(zhuran24/zmd, 分支 project-foundation);旧 D:\追光\zmd 已不存在, 记忆里的 D 盘路径全失效
 metadata:
   node_type: memory

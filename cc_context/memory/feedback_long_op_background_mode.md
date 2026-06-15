@@ -1,5 +1,6 @@
 ---
 name: long-op-background-mode
+index_summary: "长跑默认 run_in_background:true."
 description: spawn Agent / Bash 长跑（> 1 min）默认 run_in_background:true，让主对话持续 active 续 cache TTL
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

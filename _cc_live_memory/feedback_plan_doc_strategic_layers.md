@@ -1,5 +1,6 @@
 ---
 name: plan-doc-strategic-layers
+index_summary: "plan doc 必含战略/数学原理/paradigm/历史/GO 标准/依赖图/风险/回滚."
 description: 计划书 ≠ 执行书. plan doc 必含 战略/上下文/数学原理/设计哲学/paradigm 决策/历史回顾/GO 标准/依赖图/风险 mitigation, 不只列 commit-level TODO. 用户原话验证.
 metadata:
   node_type: memory

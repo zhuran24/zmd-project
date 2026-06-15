@@ -1,5 +1,6 @@
 ---
 name: f9-area-only-not-density
+index_summary: "F9 generator 只接受 area_capacity_overflow. 严格 > 才 cut."
 description: 2026-05-23 PROJECT_LOCK §3A 锁: F9 density_envelope 只接受 area_capacity_overflow witness, 拒绝 routing/binding/pcr_cut overflow. Evaluator 必 area-based sum(|pose_cells ∩ W|), 不是 instance count. Gemini math review meta-audit invariant.
 metadata:
   node_type: memory

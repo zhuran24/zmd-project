@@ -1,5 +1,6 @@
 ---
 name: fact-zero-finding-is-not-proof
+index_summary: "审查只能证有问题; 闭合靠独立对拍/fuzz/proof/多轮计数"
 description: "抽象事实: 审查零 finding 只能说明该审查没找到问题,不能证明没有问题; 终结需要独立性可保证的对拍/fuzz/proof,或多轮独立零 finding 加外部计数闭合。"
 metadata:
   node_type: memory

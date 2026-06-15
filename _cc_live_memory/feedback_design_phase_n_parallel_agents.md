@@ -1,5 +1,6 @@
 ---
 name: design-phase-n-parallel-agents
+index_summary: "代码设计阶段 N 路子代理各带不同 slant, main 当 merger; 补 RLHF bias. (Workflow 裁决后仅\"确实必要\"时用)"
 description: "实时推进代码设计阶段 (新 family kickoff / 复杂 algorithm 抉择 / 接口决策), 启 N=2-8 parallel opus 子代理各带不同 slant, main 当 merger. audit 链 (Gemini per-commit + GPT pro 大节点) 是事后, 此 protocol 是事前补 main 同种 RLHF bias. 2026-05-24 user 提议, 2026-05-25 user 加严 N=8. 含 agents team 变体(成员互相挑战、维度从对话涌现、contrarian 反趋同 — 区别于互不通信的 fan-out; team 是重武器、用力匹配 stakes, 2026-06-14 审记忆树首次实操且用力过猛)."
 metadata: 
   node_type: memory

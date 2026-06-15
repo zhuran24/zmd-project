@@ -53,6 +53,7 @@
 - [workflow vs no-workflow 厘清](no-workflow-scope-clarification.md) — 2026-06-14 owner 纠正:no-workflow 只管「审查/判 soundness 动作本身」外发,不等于所有任务默认单 Agent;准备/调研/编排可 workflow 并行 fan-out;判据看任务实质
 - [Workflow 申请≠回避理由](workflow-approval-not-avoidance.md) — 报备=用前说一声不是别用;approval_required=false 该用就用;别因"要申请"退回单代理/手动 (owner 06-13 纠正)
 - [GPT prompt 不要催眠前缀](feedback_no_role_priming_for_reasoning_models.md) — "你是 X 专家" role-priming 对推理模型反作用; 直接讲任务 + format + 约束.
+- [极简开放提示词·别裹脚手架](feedback_minimal_open_prompts.md) — 给 GPT Pro/推理模型的提示词要极简开放: 开放问题+材料就够, 别裹脚手架(替它解释代码/列清单/定格式)、也别漏自己脑子里的框架词/自言自语(例「独立看看」的「独立」对 GPT 无意义)=都是噪声+偏置; 每个词从读者视角有用, 「有用」=别废话不是「信息全」
 - [Gemini 3.1 pro 数学 consultant](reference_gemini_math_consultant.md) — 数学 second opinion;key 不进 repo/memory, 只读 `GEMINI_API_KEY`。
 - [Gemini 自然口吻写作更靠谱](feedback_gemini_better_at_natural_tone.md) — 给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修.
 
@@ -100,6 +101,7 @@
 
 ## 项目主线
 
+- [记忆树重构 harvest-only (进行中)](project_memtree_restructure.md) — 记忆树重构(2026-06-15起,进行中): harvest-only 四层模型; repo 侧 P0-P3 已落地(5 工具+index_summary 单源+lockfile/freshness 双 gate); harness 侧 recall 待做; 未提交; 详见 cc_context/review/memtree_landing_review_20260615.md
 - [Endfield 求解器项目 (身份根)](project_endfield_solver.md) — 终末地 70×70 工业规划器精确求解器身份根 (稳定身份+PROJECT_LOCK+依赖). 现状见交接条. 范式 = cut-family LBBD.
 - [certified 红线召回锚点 (PROJECT_LOCK §1+§3)](project_certified_redlines.md) — 要动 certified/proof/schema/cut 前先读 lock; 5 条 forbidden + 易撞 invariant + 3 真 P0 反面教材; 召回锚点非 proof 源, 不拓宽 proof 语义.
 - [用户画像](user_profile.md) — 终末地玩家+开发者, 中文沟通, 偏好自动化.
@@ -125,4 +127,4 @@
 - [Windows/PowerShell/harness 踩坑](reference_windows_powershell_harness_pitfalls.md) — Remove-Item -Recurse 被护栏 BLOCK (批量删/移挪到 Bash 工具做) / here-string 展开 $env 坏脚本 / 控制台中文乱码≠文件坏.
 - [graphify 代码语义地图 (query before grep)](reference_graphify_codegraph.md) — src→确定性代码结构图 + Claude 补语义层, 新窗口先查图再 grep; .mcp.json 注册 mcp__graphify__*; graph.json gitignore 需刷新; 只读导航辅助不进 certified 证明路径.
 
-- [Round2-5 闭合状态](zmd-round2-dispatch-fix-state.md) — P1.2: Round2(master_geometry)/Round3(scheduler end-of-wave)/Round4(scheduler mid-wave)各1真reachable false-CERTIFIED reset,均已修(382d764/3bc08b0/f8a0333,F-GM-BS-R2-01/F-SCHED-BS-R3-01/F-SCHED-BS-R4-01);计数维持0;Round5=重启第1轮2026-06-15进行中(8面并发派发,纠正自设顺序单条的病,max_in_flight=null);教训:修一个timing≠修一类bug、GPT补丁红→绿对≠安全须全量回归、Critical用3-opus对抗workflow判reachability、并发派发现可行(0614 raw-CDP重写修Round2 /project漂移)
+- [Round2-5 闭合状态](zmd-round2-dispatch-fix-state.md) — P1.2: R2(master_geometry)/R3(scheduler end-of-wave)/R4(scheduler mid-wave)各1真reachable false-CERTIFIED reset均已修;R5=RESET(scheduler 两正交 reachable reset R5-01 GPT TOCTOU + R5-02 CC独立审计 persist 毒化,修 d2f2d50);**R6=第1个干净轮(8/8零reset,streak 0→1;benders HARDENING+补丁因type-1 over-reject否决,scheduler+campaign独立确认R5-01/R5-02守住),距闭合还需R7+R8两轮**;教训:封标志≠封类、零finding面≠无洞须CC独立全链审、修一timing≠修一类bug、GPT补丁红→绿≠安全须全量回归、别自设派发限制、拿派生/单点信号当结论(完成检测看ground truth+限流看429/可见消息,修于0c4832c)

@@ -1,5 +1,6 @@
 ---
 name: project-knowledge-tree-architecture
+index_summary: "逻辑单树/物理双树: docs=稳定项目表达, memory=协作连续性; living claim 走 subject/projection。"
 description: "项目知识树架构:一棵逻辑树两个物理投影(docs/ 稳定文档 + cc_context/memory/ 协作连续性),都不许变成独立第二真相源;living claim 走 subject 字段+projection 传播,evidence/归档节点保持带日期不被改写成现在时;新窗口先读 subject/front-door 文档再读 memory"
 metadata:
   node_type: memory

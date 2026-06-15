@@ -1,5 +1,6 @@
 ---
 name: user-profile
+index_summary: "终末地玩家+开发者, 中文沟通, 偏好自动化."
 description: 用户背景：游戏玩家+开发者，有Codex/GPT使用经验，偏好自动化和高效协作，中文大白话沟通
 type: user
 originSessionId: 732c4476-d6e3-489a-9d77-f2a9ed5b0e92

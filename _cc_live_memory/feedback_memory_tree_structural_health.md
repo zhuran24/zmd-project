@@ -1,5 +1,6 @@
 ---
 name: memory-tree-structural-health
+index_summary: "wikilink 命名统一才解析 + MEMORY.md ~24576B 超了尾部静默截断 + harness 重写 frontmatter 保 name."
 description: "记忆树**结构**健康轴(区别于 [[memory-currency-protocol]] 内容现状轴),六条:① wikilink 命名口径统一否则断链;② MEMORY.md ~24576B 自动加载上限、超了尾部静默截断;③ harness 重写 frontmatter 但保 name 字段→rename 耐久;④ 第三轴 同话题散多条没跨链=改不全+召不全(治法 grep 全树一起改 + 互相 wikilink + 共同话题词);⑤ 第四轴 泛化不足(规则锁死首次语境)→记前问'只适用眼前还是更通用';⑥ 实例/transclusion 模型(可推导值升 INSTANCE 槽、stamp 引擎自动 transclude)单一真相源根治 drift。细节见正文。"
 metadata: 
   node_type: memory

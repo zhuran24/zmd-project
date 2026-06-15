@@ -1421,6 +1421,11 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
                 if not pkg.is_file():
                     rep.log("init", "FATAL", error=f"package not found: {pkg}")
                     return 1
+            message_attach = [Path(x).resolve() for x in args.message_attach]
+            for mpath in message_attach:
+                if not mpath.is_file():
+                    rep.log("init", "FATAL", error=f"message-attach file not found: {mpath}")
+                    return 1
             if args.pack:
                 packages.insert(0, pack_repo(repo_root, rep,
                                              unique_name=args.package_channel == "sources"))
@@ -1443,8 +1448,12 @@ async def run_dispatch(args, rep: Reporter, out_dir: Path, repo_root: Path) -> i
             if not await assert_logged_in(page, rep):
                 return 3
             await verify_model(page, rep)
+            attach_paths: list[Path] = []
             if args.package_channel == "attachment" and packages:
-                await upload_files(page, packages, rep)
+                attach_paths += packages
+            attach_paths += message_attach
+            if attach_paths:
+                await upload_files(page, attach_paths, rep)
             conv_url = await fill_and_send(page, prompt_text, rep)
 
         gen_start = time.time()
@@ -1571,6 +1580,9 @@ def main() -> int:
     ap.add_argument("--keep-old-snapshots", action="store_true",
                     help="sources 通道默认会先按白名单清掉来源区旧快照包 (保留依赖包); 加本旗标关闭清理")
     ap.add_argument("--prompt-file", help="markdown file with the prompt text")
+    ap.add_argument("--message-attach", action="append", default=[],
+                    help="额外把文件附到聊天消息 (composer 附件, 与包通道无关; 可重复)。"
+                         "sources 通道下包仍走文件区, 这里的文件 (如讨论/修复过程 md) 随消息一起发")
     ap.add_argument("--resume", help="existing conversation URL: skip upload/send, just wait+collect")
     ap.add_argument("--out-dir", help="default: 补丁包/gpt_deliveries/<timestamp>")
     ap.add_argument("--project-url", default=PROJECT_URL)

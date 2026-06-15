@@ -1,5 +1,6 @@
 ---
 name: autopilot-with-review-gate
+index_summary: "autopilot 升级到 src 改动+commit 级别; 每次必须走审查闭环 (preflight + pytest + 自审)."
 description: 用户明确授权 autopilot 升级到 src 改动级别 + 自动 commit；前提是每次必须有审查兜底（preflight + pytest + 自审）
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

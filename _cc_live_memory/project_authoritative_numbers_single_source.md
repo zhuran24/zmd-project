@@ -1,5 +1,6 @@
 ---
 name: authoritative-numbers-single-source
+index_summary: "项目数字 + cut-family SoT 的主体/投影/强制函数经验;教训: 强制函数 > 规则。"
 description: "评审包/文档反复出现的权威数字 (cuts 计数 / sizing / F3 / remap) 与 cut-family canonical SoT 校验, 都落成\"核心节点(主体)+ 投影 + 强制函数\"架构 (用户 2026-06-04 指定, 同 memory-currency-protocol 给 handoff 的做法)。治反复 reset 审查的 doc-currency 长尾 + SoT 私有副本发散。"
 metadata: 
   node_type: memory

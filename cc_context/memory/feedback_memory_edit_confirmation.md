@@ -1,5 +1,6 @@
 ---
 name: memory-edit-confirmation
+index_summary: "机械安全小改直接做; 结构性大改先给用户确认."
 description: "改记忆树前先把方案给用户过: 纯机械/安全的小改 (补索引/修死 link/同步快照) 直接做; 结构性大改 (新增或删条目/重组分类/改 living 现状源语义/MEMORY.md slim 重排) 先给用户确认。"
 metadata: 
   node_type: memory

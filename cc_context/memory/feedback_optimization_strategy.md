@@ -1,5 +1,6 @@
 ---
 name: optimization-strategy
+index_summary: "不按 ROI 单选, 全上是唯一选择."
 description: 给求解器选优化方向时不能按 ROI 单选，要 stack 所有选项
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

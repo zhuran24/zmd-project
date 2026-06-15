@@ -1,5 +1,6 @@
 ---
 name: paradigm-phase0-cheap-gate
+index_summary: "新 paradigm 实施前必走 Phase 0 (≤1h cheap gate) 验前提, GO 后再投 Phase 1."
 description: "paradigm 实施 workflow — Phase 0 必是 cheap gate (≤ 1h) 验证 paradigm 前提, GO 后再投资 Phase 1 真 implement. 避免大投资后才发现 paradigm 前提不满足"
 metadata: 
   node_type: memory

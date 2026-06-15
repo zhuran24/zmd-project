@@ -34,7 +34,9 @@ CHECKS: list[tuple[str, list[str], bool]] = [
     ("living-status slots", [str(TOOLS / "stamp_living_status.py"), "--check"], False),
     ("harness link health", [str(TOOLS / "check_harness_links.py")], False),
     ("repo<->harness drift", [str(TOOLS / "memory_harvest.py"), "--check"], False),
-    ("description freshness", [str(TOOLS / "check_description_freshness.py")], False),
+    # repo P3 gate: 必须 BLOCK (不是 warn) —— 否则工具 exit 1 被总闸吃成 WARN, 复刻原问题
+    ("description freshness", [str(TOOLS / "check_description_freshness.py")], True),
+    ("MEMORY.md == index_summary (lockfile)", [str(TOOLS / "gen_memory_index.py"), "--check"], True),
 ]
 
 

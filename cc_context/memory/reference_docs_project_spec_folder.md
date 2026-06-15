@@ -1,5 +1,6 @@
 ---
 name: docs-project-spec-folder
+index_summary: "拆顶层 21 sub-doc + README 索引 + 受众分流."
 description: 2026-05-23 plan + math 拆 docs/项目说明/ 21 sub-doc, 项目顶层. README 索引 + 受众分流. 旧 plan + math 留 redirect stub.
 metadata:
   node_type: memory

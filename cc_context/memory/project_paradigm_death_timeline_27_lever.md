@@ -1,5 +1,6 @@
 ---
 name: paradigm-death-timeline-27-lever
+index_summary: "27 lever 合并: 5 类死法 + 4 共同 root cause. **新方案 cross-check 前必带**; 各 lever 单条已归档."
 description: "27 lever consolidated death timeline (Day 16c-2 补做 prep 清单项 2). 5 类死法分类 + 4 共同 root cause + B 设计 5 unsolved issue + F5 反例不撞已死 paradigm 评估. Phase 0 Gemini/GPT cross-check 必带."
 metadata:
   node_type: memory

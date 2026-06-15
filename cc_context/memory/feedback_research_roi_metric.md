@@ -1,5 +1,6 @@
 ---
 name: research-roi-metric
+index_summary: "节约时间÷调研时间."
 description: 判断调研是否还值得继续，关键不是"调研当下有没有 land 代码"，而是"实施带宽是否能消化未来的金矿"
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

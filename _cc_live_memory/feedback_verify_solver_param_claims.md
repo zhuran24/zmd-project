@@ -1,5 +1,6 @@
 ---
 name: verify-solver-param-claims
+index_summary: "进 P0/P1 前读 .cc/.proto/paper 否则负 ROI (11/11 翻盘)."
 description: agent 调研出的 CP-SAT/SAT/MIP 参数 "+N% 收益" 类 claim，进 P0/P1 之前必须读官方源码或 proto 验证数学行为，否则可能负 ROI
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

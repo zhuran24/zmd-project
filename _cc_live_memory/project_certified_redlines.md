@@ -1,5 +1,6 @@
 ---
 name: certified-redlines
+index_summary: "要动 certified/proof/schema/cut 前先读 lock; 5 条 forbidden + 易撞 invariant + 3 真 P0 反面教材; 召回锚点非 proof 源, 不拓宽 proof 语义."
 description: "certified_exact 不可碰红线(PROJECT_LOCK §1+§3)的召回锚点:certified vs exploratory 严格隔离、max_lex(area,min_side)、min_side≥6 是 admissibility 非 tie-break、无 50桩+10箱 hard cap、globally-pooled 不可硬绑 per-line、ghost rectangle 不要求 exterior path、EXACT_* deny-unknown。要动 certified 边界/proof/schema/cut 前先读 PROJECT_LOCK。撞了=false-CERTIFIED/false-INFEASIBLE。"
 metadata:
   node_type: memory

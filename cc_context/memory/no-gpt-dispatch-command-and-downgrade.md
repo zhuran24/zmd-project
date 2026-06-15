@@ -1,5 +1,6 @@
 ---
 name: no-gpt-dispatch-command-and-downgrade
+index_summary: "首选 dispatch_gpt_task.py --pack --prompt-file;前置 start 脚本 attach 日常 Edge(无端口温和重启 Edge,重启后端口丢需重跑 start);Pro 降级唯一判据=生成耗时(5min 内极大概率降级);托底两层=插件/App 9224"
 description: "GPT 外发首选通道=零 token 自动化脚本 dispatch_gpt_task.py --pack --prompt-file;前置 start_gpt_automation_chrome.ps1 默认 attach 用户日常 Edge 主实例(无端口时会温和重启 Edge,重启后端口丢需重跑 start);Pro 静默降级唯一判据=生成耗时(5min 内极大概率降级,脚本默认 300s),托底两层=插件通道手动/ChatGPT 桌面 App 通道(CDP 9224)"
 metadata:
   node_type: memory

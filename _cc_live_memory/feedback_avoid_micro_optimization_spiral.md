@@ -1,5 +1,6 @@
 ---
 name: avoid-micro-optimization-spiral
+index_summary: "占比 <5% 就停手换方向."
 description: 优化时先确认目标 phase 占总耗时的百分比，<5% 就停手换方向
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

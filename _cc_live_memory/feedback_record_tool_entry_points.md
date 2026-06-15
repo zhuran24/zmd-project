@@ -1,5 +1,6 @@
 ---
 name: record-tool-entry-points
+index_summary: "refresh/sync 脚本写完立刻在 CLAUDE.md 加 runbook 段."
 description: 自己写的运维脚本要在 CLAUDE.md 加 runbook 段，不然下次会忘
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

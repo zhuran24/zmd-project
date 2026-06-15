@@ -1,5 +1,6 @@
 ---
 name: claude-config-backup
+index_summary: "⚠️ 不要 `echo '{}' > ~/.claude.json`; 外盘备份位置 + 恢复命令."
 description: "**(旧 Linux/CachyOS 主机 reference; 当前 CC 在 Windows 跑, 下述 systemd/外盘路径不适用)** ~/.claude.json daily 自动备份到外盘 (systemd timer, 2026-05-20 装). 防 ENOSPC / 覆盖事故. 含恢复命令 + 不要重蹈覆辙的硬警告."
 metadata: 
   node_type: memory

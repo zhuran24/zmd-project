@@ -1,5 +1,6 @@
 ---
 name: windows-ninth-review-pending
+index_summary: "**当前 phase/状态权威源, 现状只信这条** (读法: 正文 stamp 编号最大的块 = 最新现状; 逐面轮次史以台账 cc_context/review/p1_2_closure_evidence.md 为准, 本行不手抄易漂数值);V50 手动 owner-count gate 不变。"
 description: "单一 living 当前交接/现状源。读法: 正文 stamp 编号最大的块 = 最新现状 (顶部 06-11 过夜循环协议块与其余 stamp 为层叠历史); 逐面轮次史以台账 cc_context/review/p1_2_closure_evidence.md 为准。V50 手动 owner-count gate 不变, 计数权在 owner (仓库外)。"
 metadata: 
   node_type: memory

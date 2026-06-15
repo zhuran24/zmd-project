@@ -1,5 +1,6 @@
 ---
 name: subagent-model-by-weight
+index_summary: "轻活 sonnet / 重活 opus / 特别重要 fable; 按具体难度不按任务类别; 取代旧\"默认 opus\"."
 description: "子代理模型按任务具体难度/重量派 (2026-06-11 用户裁决): 轻活 sonnet / 重活 opus / 特别重要 fable; 不按任务类别套公式。取代旧'子代理默认 opus'规则。"
 metadata: 
   node_type: memory

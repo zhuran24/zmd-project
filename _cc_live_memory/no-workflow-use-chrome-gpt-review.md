@@ -1,5 +1,6 @@
 ---
 name: no-workflow-use-chrome-gpt-review
+index_summary: "GPT Pro 外发审查/委托主题索引(原巨型节点已拆);具体设置/通道/风控/降级/并发见各子节点"
 description: "GPT Pro 外发审查/委托主题索引(原巨型节点已拆);非必要不用 Workflow、审查外发 GPT Pro 这套规则的总入口,具体设置/通道/风控/降级/并发见子节点"
 metadata:
   node_type: memory

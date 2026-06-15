@@ -1,5 +1,6 @@
 ---
 name: no-role-priming-for-reasoning-models
+index_summary: "\"你是 X 专家\" role-priming 对推理模型反作用; 直接讲任务 + format + 约束."
 description: "给推理模型 (GPT-5.5 Pro / o1 / o3 / Claude reasoning) 的 prompt 不要 \"你是 X 专家\" 这种 role-priming 催眠前缀; 直接任务 + format + 约束"
 metadata: 
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: zmd-env-python
+index_summary: "无 .venv;主环境=C:\\Program Files\\Python313\\ 的 python.org 3.13.14(`python`);依赖 --no-deps 克隆(litellm 钉 jsonschema 必须 --no-deps);商店版 python3.13 备份"
 description: zmd 用哪个 Python 跑——无 .venv;主环境=C:\Program Files\Python313\ 的 python.org 3.13.14(`python`);依赖 --no-deps 克隆(litellm 钉 jsonschema 必须 --no-deps);商店版 python3.13 是备份
 metadata:
   node_type: memory

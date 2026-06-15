@@ -1,5 +1,6 @@
 ---
 name: fact-evidence-before-story
+index_summary: "N=1/终态/重试不定因; 明确数字/规则优先"
 description: "抽象事实: 干净叙事不是证据; N=1 不能定因,可观测终态不能证明走过某路径,明确数字/规则优先于我编出的来源故事。"
 metadata:
   node_type: memory

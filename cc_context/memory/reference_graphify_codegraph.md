@@ -1,5 +1,6 @@
 ---
 name: graphify-codegraph
+index_summary: "src→确定性代码结构图 + Claude 补语义层, 新窗口先查图再 grep; .mcp.json 注册 mcp__graphify__*; graph.json gitignore 需刷新; 只读导航辅助不进 certified 证明路径."
 description: "代码语义地图 / 跨窗口代码导航工具 graphify——把 src 跑成确定性代码结构图(知识图谱)+ Claude 补语义层,新窗口 'query before grep' 先查图再 grep。已注册 MCP server(mcp__graphify__*)。只读导航辅助,不进 certified 证明路径。"
 metadata:
   node_type: memory

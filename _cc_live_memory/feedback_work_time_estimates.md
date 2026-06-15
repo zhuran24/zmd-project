@@ -1,5 +1,6 @@
 ---
 name: work-time-estimates
+index_summary: "不按人类工程师\"安全 buffer\"打底, 多数任务分钟级."
 description: 给"小修改/中修改"工时估算时除以 5-10，不要按人类工程师节奏
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

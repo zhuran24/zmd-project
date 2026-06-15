@@ -1,5 +1,6 @@
 ---
 name: gemini-math-consultant
+index_summary: "数学 second opinion;key 不进 repo/memory, 只读 `GEMINI_API_KEY`。"
 description: "Gemini 3.1 pro 数学 second opinion 子代理。API key 不再进 repo/memory; 运行脚本只读 GEMINI_API_KEY 环境变量。已暴露旧 key 建议轮换。"
 metadata: 
   node_type: memory

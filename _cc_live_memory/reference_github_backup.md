@@ -1,5 +1,6 @@
 ---
 name: github-backup
+index_summary: "发布目标 zhuran24/zmd;memory 改后必须保持 `cc_context/memory/` 与 `_cc_live_memory/` 镜像一致."
 description: "2026-06-01 起项目+CC上下文实时备份到私有 GitHub；当前 repo_url 由 INSTANCE 槽从 git remote 推导。 本机 post-commit hook 当前每 commit 自动 push (commit≈push, 2026-06-12 重申); 仓库层面发布契约不依赖该 hook (也可显式 push/CI), 但本机实配就是提交即推送, 提交敏感物前按"即将公开"对待。 memory GitHub 发布面在 cc_context/memory, 当前观察点另有 _cc_live_memory 字节镜像, 改 memory 后两边要同步. 含 gh 认证/credential re-setup 踩坑点 (换机重装必看)."
 metadata: 
   node_type: memory

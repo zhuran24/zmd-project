@@ -1,5 +1,6 @@
 ---
 name: zmd-project-entry
+index_summary: "项目记忆体系在哪/接手读文件顺序/双写规矩;指向 _cc_live_memory/handoff 为单一现状源"
 description: zmd 项目(终末地 70x70 精确求解器)的入口指针——每个新会话先读哪些文件、记忆体系在哪
 metadata: 
   node_type: memory

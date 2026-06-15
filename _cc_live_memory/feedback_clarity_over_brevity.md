@@ -1,5 +1,6 @@
 ---
 name: clarity-over-brevity
+index_summary: "用人话 = 展开术语+场景+why+代价, 不是缩短."
 description: "用人话讲技术 = 把每个术语展开成场景描述, 不省略逻辑链. 这个项目里清晰是最重要的"
 metadata:
   type: feedback

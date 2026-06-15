@@ -1,5 +1,6 @@
 ---
 name: ip-v2-blueprint-lp-modeling
+index_summary: "外部源只有矿石 (硬白名单); 采种机 1→2 倍增."
 description: IP v2 蓝图稳态产量 LP 的外部源建模规则 + 已验证蓝图状态
 metadata: 
   node_type: memory

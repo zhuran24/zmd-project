@@ -1,5 +1,6 @@
 ---
 name: no-rest-suggestions
+index_summary: "用户自己知道何时该休息."
 description: 列方案时不要把"今晚不搞了/休息/睡吧"作为选项之一. 用户知道自己什么时候该休息, 不需要我主动提醒.
 type: feedback
 originSessionId: 0f0d34ec-a4e4-4255-b47a-8f5c13395540

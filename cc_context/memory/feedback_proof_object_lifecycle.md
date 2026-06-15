@@ -1,5 +1,6 @@
 ---
 name: proof-object-lifecycle
+index_summary: "generate→…→replay→regression; schema landed ≠ runtime correct."
 description: "任何 persisted exact-safe proof object 必须 6 步生命周期闭环, 缺一不可 (GPT v4 audit lesson)"
 metadata: 
   node_type: memory

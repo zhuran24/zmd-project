@@ -1,5 +1,6 @@
 ---
 name: no-gpt-packaging-rules
+index_summary: "除缓存全打(build_v80_single_win.py);r7 纪律=git worktree 干净树打+复制成 sha 前缀唯一名防并发覆盖+交付前 Get-FileHash 核对;老审查打包规范已全废"
 description: "外发 GPT 的打包规则:除缓存文件外全项目打(build_v80_single_win.py);r7 纪律=用 git worktree 干净树打+复制成 sha 前缀唯一名防并发覆盖+交付前 Get-FileHash 核对;老审查打包规范(no-priming/7-section/armor/7z)已全废"
 metadata:
   node_type: memory

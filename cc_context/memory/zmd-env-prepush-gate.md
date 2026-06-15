@@ -1,5 +1,6 @@
 ---
 name: zmd-env-prepush-gate
+index_summary: ".git/hooks/pre-push(机器专属不入库)强制跑 preflight_gate.py --hook(20 项 ≈20s)BLOCK 就物理挡 push,逃生口 ZMD_SKIP_PUSH_GATE=1;装机坑 PYTEST_ADDOPTS 反斜杠被 shlex 吃掉必 tr 转正斜杠"
 description: zmd 机械门禁——.git/hooks/pre-push(机器专属不入库)强制跑 preflight_gate.py --hook(20 项 ≈20s)BLOCK 就物理挡 push, 逃生口 ZMD_SKIP_PUSH_GATE=1;装机坑 PYTEST_ADDOPTS 反斜杠被 shlex 吃掉必 tr 转正斜杠;残余敞口=查工作树近似/换机要手动重装
 metadata:
   node_type: memory

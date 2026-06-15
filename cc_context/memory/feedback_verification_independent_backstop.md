@@ -1,5 +1,6 @@
 ---
 name: verification-independent-backstop
+index_summary: "验证/核对/查全类不只信 main 自审; 独立子代理直接查被验对象本身, re-audit 不降 scope."
 description: "长上下文下 LLM 注意力会漏看 → 验证/确认/核对类任务不能只信 main 自己回忆或自审, 必须派独立 backstop (workflow/子代理); 且 backstop 主体必须是「被验证对象本身」不能换 proxy/不切片/不限范围; 子代理报告的根因/数字 main 要自己核实; re-audit 闭环必须跟原审计同 scope/rigor (别降级换个更窄的检查给自己背书)。"
 metadata: 
   node_type: memory

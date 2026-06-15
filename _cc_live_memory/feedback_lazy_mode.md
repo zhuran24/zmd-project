@@ -1,5 +1,6 @@
 ---
 name: lazy-mode
+index_summary: "认同\"无谓盖章=浪费用户\"; 想替他省事自然不问."
 description: 用户希望 Claude 认同"无谓盖章=浪费用户"的判断 (理解 why), 而不是死守"禁止 turn 末尾问要不要"的禁词. reason: rules 改 surface, 理解改 generation 内在倾向.
 type: feedback
 originSessionId: 01f265d2-940b-4fbc-a7a1-80c190c6f625

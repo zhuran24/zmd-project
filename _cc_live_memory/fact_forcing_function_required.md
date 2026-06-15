@@ -1,5 +1,6 @@
 ---
 name: fact-forcing-function-required
+index_summary: "复发行为/漂移靠 hook/test/gate/stamp,规则只做 fallback"
 description: "抽象事实: 反复复发的行为/状态漂移不能靠再写一条更强规则根治; 需要 hook、test、gate、stamp、生成器等 forcing function,规则只做 fallback。"
 metadata:
   node_type: memory

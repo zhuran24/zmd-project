@@ -1,5 +1,6 @@
 ---
 name: gemini-better-at-natural-tone
+index_summary: "给外部 reader 的长 narrative 默认 Gemini fat-context 写, Claude review 细节修."
 description: "Claude 默认 register 偏端着/工程化 (RLHF bias), Gemini 在'自然口吻 / 不端着 / 像跟同事聊'类型写作任务上更靠谱. 类似任务 default route to Gemini"
 metadata: 
   node_type: memory

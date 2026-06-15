@@ -1,5 +1,6 @@
 ---
 name: effort-matches-stakes
+index_summary: "多代理/对抗/穷尽/backstop 的力度匹配「做错代价×不确定性×规模」不默认拉满; \"能更彻底\"≠\"该更彻底\"; 与\"别过度保守\"是一对(都=匹配实质); Ultracode 是工具非默认; 调节 optimization-stack/verification-backstop 别脱 scope 泛化."
 description: "用力过猛的解药:用力程度(多代理编排/对抗核验/穷尽stack/独立backstop/外审的强度)要匹配任务实质——做错代价 × 不确定性 × 规模——不是默认拉满。记忆树里那些'穷尽/对抗/必派backstop/多代理'规则各自只针对高stakes场景,不是无差别默认;撞到低风险简单任务(审个人记忆树/改几个description)就该轻量(主会话直接做/单Agent)。'能更彻底'≠'该更彻底'。治用力过猛,与'别过度保守'是一对。"
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: workload-latency-bound-not-bandwidth
+index_summary: "BCP 指针追逐 + 280K pose L3 spill. **别再提带宽/多通道**."
 description: "项目 CP-SAT workload 绝对是 latency-bound 不是 bandwidth-bound. Claude 之前判断带宽错了, GPT/Gemini 两轮独立 verdict 都推 latency. 未来 hardware 调优 prioritize DDR5 timings / Single Rank / Ring Bus, 不是 channel 数 / bandwidth"
 metadata: 
   node_type: memory

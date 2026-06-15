@@ -1,5 +1,6 @@
 ---
 name: windows-powershell-harness-pitfalls
+index_summary: "Remove-Item -Recurse 被护栏 BLOCK (批量删/移挪到 Bash 工具做) / here-string 展开 $env 坏脚本 / 控制台中文乱码≠文件坏."
 description: "本 Windows + CC harness 环境反复踩的实操坑 (assistant 侧产, 跨 session 高复发): Remove-Item -Recurse 被护栏 BLOCK / here-string 展开 $env 坏脚本 / 同卷 Move-Item=rename / 进程 cwd 锁目录 / 控制台中文乱码≠文件坏 / 后台 Agent 本机不稳 / 临时产物反复落 repo 根 (被 SessionEnd hook 误提交 / 被 build 打进交付包) / SendUserFile 手机端有时无下载按钮 (硬信号=回执缺 file_uuid; 真因未验证, 真阈值未测—别把 29MB 当安全线, workaround=拆小+干净短名+逐件核能不能下、不能再拆)。配 [[windows-handoff-env]] 环境落点看。"
 metadata: 
   node_type: memory

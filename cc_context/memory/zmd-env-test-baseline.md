@@ -1,5 +1,6 @@
 ---
 name: zmd-env-test-baseline
+index_summary: "全量测试基线=全绿(2026-06-12 wireless 修复 fbb0466 起项目史上首次)0 failed/74 skipped;passed 数以台账 p1_2_closure_evidence.md+handoff stamp 为准;旧 20 个环境失败清单作废,今后任何 failed 都是真问题无豁免"
 description: zmd 全量测试基线=全绿(2026-06-12 wireless 修复 fbb0466 起项目史上首次)0 failed/74 skipped;passed 数滚动上涨, 精确值以台账 p1_2_closure_evidence.md 头部与 handoff stamp 为准;旧20个环境失败清单作废, 今后任何 failed 都是真问题无豁免
 metadata:
   node_type: memory

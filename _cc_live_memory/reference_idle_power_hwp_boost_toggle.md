@@ -1,5 +1,6 @@
 ---
 name: idle-power-hwp-boost-toggle
+index_summary: "idle 100W 真凶 = cmdline; 全 revert 工序 + 正式前 re-enable 命令."
 description: "host-level perf 调优 idle 时全 revert 默认 + 正式/试生产前恢复. 待机 100+W 真凶是 idle=poll + max_cstate=0 (cmdline), HWP boost 跟 PPD performance 次要."
 metadata: 
   node_type: memory

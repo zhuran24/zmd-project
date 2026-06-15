@@ -1,5 +1,6 @@
 ---
 name: agent-vs-workflow-dispatch
+index_summary: "**非必要不用 Workflow**; 审查/实现类任务经 Chrome 插件发 chatgpt.com「终末地」Project, 模型 Pro·进阶 (=GPT Pro 扩展模式); **非必要不用老窗口** (默认新会话); **打包 = 除缓存文件外全项目打** (build 脚本 cc_context/review/build_v80_*.py); 包走 Project 文件页(来源区), 上传/发送已全脚本化 (详见 no-workflow 条目与 CLAUDE.md runbook)。"
 description: "派遣方式选型: 非必要不用 Workflow; 外发 GPT Pro 首选 gpt_dispatch 自动化脚本 (2026-06-11 验收, 零 token), 插件通道 (Edge) 托底; 旧的形状二选一/三选一指导仅在'确实必要'时参考。"
 metadata: 
   node_type: memory

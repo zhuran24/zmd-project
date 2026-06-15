@@ -1,5 +1,6 @@
 ---
 name: archive-research-transcripts
+index_summary: "≥3 agent 跑完立刻 cp Temp→docs/research/ + 同步 INDEX.md."
 description: 每轮 agent 调研完，原 JSONL 转录要从 Temp 复制到项目 docs/，否则会话结束就丢
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

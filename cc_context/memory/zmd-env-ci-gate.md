@@ -1,5 +1,6 @@
 ---
 name: zmd-env-ci-gate
+index_summary: "CI=GitHub Actions project-foundation gate,每次 push 跑 preflight_gate.py --ci(17 项)失败给 owner 发邮件;落地前必本地跑同款全绿;pytest 盖不到三类:frozen-artifact hash/LF 行尾政策/记忆树死链"
 description: zmd CI=GitHub Actions project-foundation gate, 每次 push 跑 preflight_gate.py --ci(17 项)失败给 owner 发邮件(频繁 push 红一次=邮件轰炸);落地前必本地跑同款全绿;pytest 盖不到三类:frozen-artifact hash/LF 行尾政策/记忆树死链
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: zmd-env-store-python-alias-pitfall
+index_summary: "商店 Store Python 半夜自动升级弄坏 `python` alias(静默失败 exit 49/9009 会话中途挂),python3.13.exe 是好的;alias 坏时 pre-commit 误报 STALE 先用 python3.13 复核"
 description: zmd 坑——商店 Store Python 半夜自动升级会弄坏 `python` alias(静默失败 exit 49/9009 会话中途挂), `python3.13.exe` 是好的;别用真身 exe+PYTHONPATH;alias 坏时 pre-commit 误报 STALE 先用 python3.13 复核
 metadata:
   node_type: memory

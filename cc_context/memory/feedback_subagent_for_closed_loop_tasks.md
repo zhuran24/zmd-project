@@ -1,5 +1,6 @@
 ---
 name: subagent-for-closed-loop-tasks
+index_summary: "独立闭环 + 不需中途决策 + 可验证的中等粒度活直接 spawn background, 不问 user."
 description: "独立闭环 + 不需用户中途决策 + done 可验证的中等粒度活 (≥3 step + read/edit/verify) 直接 spawn sub-agent, 不在主对话做. 不再问 user 该不该."
 metadata: 
   node_type: memory

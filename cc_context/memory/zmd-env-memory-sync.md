@@ -1,5 +1,6 @@
 ---
 name: zmd-env-memory-sync
+index_summary: "pre-commit memory sync 只 auto-stamp handoff INSTANCE 槽,整目录镜像覆盖块已移除别加回(会用 harness 十几条覆盖 cc_context 几十条=删数据);共维护文件改动靠手动双写三处"
 description: zmd 记忆三处同步现状——AI auto-memory 真正召回读 harness 不是 cc_context;repo→harness 投影靠 sync_memory_to_harness.py(snake 投影类自动);pre-commit 只 auto-stamp handoff INSTANCE 槽;kebab 共维护节点双写三处 + check_memory_tree warn 兜底
 metadata:
   node_type: memory

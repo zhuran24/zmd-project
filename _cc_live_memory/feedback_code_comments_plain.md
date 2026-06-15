@@ -1,5 +1,6 @@
 ---
 name: code-comments-plain
+index_summary: "只在 why 非显然处留一句人话."
 description: "进项目写代码/注释不要切到\"严谨工程化语气\"; 注释要写人话, 不长篇不堆术语不年代戳"
 metadata: 
   node_type: memory

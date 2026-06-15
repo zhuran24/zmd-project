@@ -1,5 +1,6 @@
 ---
 name: no-workflow-scope-clarification
+index_summary: "2026-06-14 owner 纠正:no-workflow 只管「审查/判 soundness 动作本身」外发,不等于所有任务默认单 Agent;准备/调研/编排可 workflow 并行 fan-out;判据看任务实质"
 description: "workflow vs no-workflow 厘清(2026-06-14 owner 纠正,别再误读):no-workflow 裁决只管「审查/判 soundness 这个动作本身」外发 GPT Pro、不开本地多代理审查 workflow;它不等于「所有任务都默认单 Agent」;准备/调研/编排(不跑 pytest 不判 soundness)完全可以 workflow 并行 fan-out;判据看任务实质不看是不是外审相关"
 metadata:
   node_type: memory

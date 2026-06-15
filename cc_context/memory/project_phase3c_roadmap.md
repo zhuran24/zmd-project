@@ -1,5 +1,6 @@
 ---
 name: phase3c-roadmap
+index_summary: "22 个 P0/P1/P2 项 + 12 个 Excluded, 按 ROI 分级."
 description: 10 轮调研后的落地路线图，按 ROI 分 P0/P1/P2/P3 + Excluded
 type: project
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

@@ -1,5 +1,6 @@
 ---
 name: zmd-env-email-bomb
+index_summary: "归档 GPT 审查 probe 带 ruff error 入库→连续 push 连红每红一封;三层教训:gate ruff 扫全仓含 cc_context 入库前必 ruff check、纯文档/归档 commit 不豁免 preflight、push 后 gh run list -L 1 回看"
 description: zmd owner 邮件轰炸根因复盘——归档 GPT 审查 probe(cc_context/review/*_probe.py)带 ruff error 入库→连续 push 连红每红一封;三层教训:gate ruff 扫全仓含 cc_context 入库前必 ruff check、纯文档/归档 commit 不豁免 preflight、push 后 gh run list -L 1 回看
 metadata:
   node_type: memory

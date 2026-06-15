@@ -1,5 +1,6 @@
 ---
 name: autonomous-loop-workflow
+index_summary: "心跳 hook 已移除; 仅用户明确再下\"设 1min 心跳\"才适用."
 description: 用户离开前下指令"做完所有能做的，做完自己删 cron"时的标准工作流
 type: feedback
 originSessionId: 7db7f276-a2bf-4762-b9b8-bb35f8cf3fb9

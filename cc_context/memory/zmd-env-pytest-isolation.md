@@ -1,5 +1,6 @@
 ---
 name: zmd-env-pytest-isolation
+index_summary: "全量 pytest 必须独占(pytest.ini --basetemp=.pytest_tmp 在仓库根,多进程并发互删→Windows 随机 FileExistsError);加速跑法 xdist 8 worker -n8+独立 basetemp ~85s"
 description: zmd 全量 pytest 必须独占跑——pytest.ini 的 --basetemp=.pytest_tmp 在仓库根, 多 pytest 进程并发会互删临时目录→Windows 随机 FileExistsError/setup ERROR;加速跑法 xdist 8 worker -n8 + 独立 basetemp ~85s
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: shell-wrapper-pgrep-self-match
+index_summary: "用 wait $PID / pgrep -x / grep -v $$ 防."
 description: "shell wait wrapper 用 pgrep -f \"pattern\" 时, wrapper 自己的 cmdline 含 pattern 会永远匹配自己导致 until 死循环; 用 PID wait / 更精确 pattern / -v $$ 排除"
 metadata: 
   node_type: memory

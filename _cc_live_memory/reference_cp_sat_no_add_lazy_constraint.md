@@ -1,5 +1,6 @@
 ---
 name: cp-sat-no-add-lazy-constraint
+index_summary: "OR-Tools 9.15 Python 无此 API. 必走 LBBD 外循环."
 description: 2026-05-23 OR-Tools 9.15 CP-SAT Python 不支持 model.AddLazyConstraint. Phase 1.3 必走 LBBD 外循环 (solve → verify → generate cut → rebuild/resolve), 不在 Python callback heavy separation. Gemini math review meta-audit verdict.
 metadata:
   node_type: memory

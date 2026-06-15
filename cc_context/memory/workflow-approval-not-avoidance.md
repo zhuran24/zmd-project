@@ -1,5 +1,6 @@
 ---
 name: workflow-approval-not-avoidance
+index_summary: "报备=用前说一声不是别用;approval_required=false 该用就用;别因\"要申请\"退回单代理/手动 (owner 06-13 纠正)"
 description: Workflow 申请≠回避理由; 报备的本意是用前说一声不是别用; 当前 approval_required=false 该用就用
 metadata: 
   node_type: memory

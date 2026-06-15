@@ -1,5 +1,6 @@
 ---
 name: endfield-solver
+index_summary: "终末地 70×70 工业规划器精确求解器身份根 (稳定身份+PROJECT_LOCK+依赖). 现状见交接条. 范式 = cut-family LBBD."
 description: 明日方舟终末地70x70工业规划器精确求解器项目身份根 (稳定身份 + PROJECT_LOCK + 依赖)，从Codex(GPT)迁移到Claude Code。现状/phase 不在本条，见 handoff-windows-ninth-review-pending。范式演进史: Phase 3B tuning → 27 lever 全死 → B1 → B-design v2 cut-family LBBD (当前 phase/是否闭合一律见 living 源, 不在本条)。
 type: project
 originSessionId: 8ac66da5-49ee-4b7b-85e4-523f02bbc9e3

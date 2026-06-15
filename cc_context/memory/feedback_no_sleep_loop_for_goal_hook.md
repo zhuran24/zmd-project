@@ -1,5 +1,6 @@
 ---
 name: no-sleep-loop-for-goal-hook
+index_summary: "每 turn 做一件 real action 或 honest status."
 description: "/goal stop hook 持续 fire 时, 不用 foreground sleep loop 当心跳; 用户嫌烦"
 metadata: 
   node_type: memory

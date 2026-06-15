@@ -1,5 +1,6 @@
 ---
 name: no-gpt-dispatch-vs-manual-riskctrl
+index_summary: "单发默认 dispatch 脚本,多路并行/额度紧改手动;疑似风控=无自动托底停一切落盘等 owner;手动发走 clip_send.ps1;dispatch 后台骤死(exit 58)用 --resume 重连"
 description: "GPT 外发的发送分工与风控处置:单发默认 CC dispatch 脚本自动发,多路并行/额度紧时改 owner 手动;疑似风控(脚本连续降级/App 卡顿)=无自动托底,停一切自动外发落盘等 owner;owner 手动发走 clip_send.ps1 剪贴板交付;dispatch wait/collect 后台必骤死(exit 58)用 --resume 重连"
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: no-reply-means-agree
+index_summary: "提了 stated preference 的问题 user 不回 → 默认同意直接推进. 不可逆/高 stakes 例外."
 description: "2026-05-24 用户原话: 以后记一下不回复就是默认同意你的倾向. 不要在 main loop 里 await user confirm 我已 stated 的倾向; 直接推进."
 metadata: 
   node_type: memory

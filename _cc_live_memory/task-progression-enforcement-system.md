@@ -1,5 +1,6 @@
 ---
 name: task-progression-enforcement-system
+index_summary: "注入hook+授权台账+fact层+forcing gate 取代靠自觉的规则;各件位置/设计留档见此 (2026-06-15 落地 35548cc)"
 description: 「任务推进方式」根治系统(2026-06-15 落地, commit 35548cc): 注入式 hook + 授权台账 + fact 层 + forcing gate 取代靠自觉的文字规则; 要维护这套看这里。
 metadata:
   node_type: memory

@@ -1,5 +1,6 @@
 ---
 name: fact-decision-boundary-is-ability
+index_summary: "能不能问 owner 看我能不能自己做/定; 目标/先例/放开开关=授权"
 description: "抽象事实: 能不能问 owner 的判据是我能不能自己定/做,不是措辞; 已给目标/先例/放开的开关=站着授权; 真 owner-only 只剩外部状态、不可推偏好、不可逆高风险。"
 metadata:
   node_type: memory

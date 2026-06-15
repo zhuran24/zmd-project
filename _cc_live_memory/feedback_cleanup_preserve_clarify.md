@@ -1,5 +1,6 @@
 ---
 name: cleanup-preserve-clarify
+index_summary: "重组/加文档/加索引 OK, **删任何文件不 OK** (归档=移动不是删). 每动一个 commit 一次."
 description: "项目整理原则: 不丢东西 + 清晰. 历史 PoC / experiment / archive 都保留, 但要让物理结构 + 命名 + 文档帮人一眼看懂核心 vs 实验"
 metadata:
   type: feedback

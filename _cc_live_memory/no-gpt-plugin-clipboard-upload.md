@@ -1,5 +1,6 @@
 ---
 name: no-gpt-plugin-clipboard-upload
+index_summary: "插件 file_upload 10MB 上限且拒主机路径别用;改走 clip_send.ps1 -Files(必须 DataObject+SetDataObject copy:=true)聚焦输入框 Ctrl+V;长 prompt 同理;sandbox 附件几分钟 404 完成立即收"
 description: "托底通道手动上传姿势:插件 file_upload 工具 10MB 上限且拒收主机路径别用;改走 Windows 剪贴板 clip_send.ps1 -Files(必须 DataObject+SetDataObject copy:=true 冲刷,别裸调 SetFileDropList)聚焦 ChatGPT 输入框 Ctrl+V;长 prompt 同理 Set-Clipboard -Value;LZMA zip 让对方用 python -m zipfile -e 解;sandbox 附件几分钟回收 404 完成立即收"
 metadata:
   node_type: memory

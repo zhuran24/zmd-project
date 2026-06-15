@@ -1,5 +1,6 @@
 ---
 name: zmd-env-exit-code-falsepass
+index_summary: "PowerShell `& venv\\python xxx; Write-Host exit:$LASTEXITCODE` venv 不存在时 & 失败但 Write-Host 把整条洗成 exit 0;判断脚本通过必须看脚本自身输出不能只看 exit code"
 description: zmd 坑——PowerShell 里 `& ".venv\Scripts\python.exe" xxx; Write-Host "exit: $LASTEXITCODE"` venv 不存在时 & 失败但 Write-Host 把整条洗成 exit 0;判断脚本通过必须看脚本自身输出, 不能只看 exit code
 metadata:
   node_type: memory
