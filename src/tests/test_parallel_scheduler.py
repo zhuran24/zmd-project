@@ -665,6 +665,44 @@ def test_parallel_worker_pool_drops_errored_strong_result() -> None:
     assert wave.results == ()
 
 
+def test_parallel_worker_pool_reports_worker_crash_after_all_results_arrive() -> None:
+    task = WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple())
+    result = WorkerResult(
+        dispatch_seq=0,
+        attempt_index=1,
+        candidate=(9, 3, 3),
+        status=RUN_STATUS_CERTIFIED,
+        solution={"ghost_pick": {"anchor": {"x": 0, "y": 0}}},
+        proof_summary={"master_status": RUN_STATUS_CERTIFIED},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+        worker_wall_seconds=0.01,
+        peak_rss_bytes=1,
+        error=None,
+    )
+    pool = ExactParallelWorkerPool.__new__(ExactParallelWorkerPool)
+    pool._closed = False
+    pool._started = True
+    pool._processes = [_SyntheticCrashedProcess()]
+    pool._task_queue = _SyntheticTaskQueue()
+    pool._result_queue = _SyntheticResultQueue(
+        [{"message_type": "RESULT", "result": result}]
+    )
+    pool.rss_sample_interval_seconds = 0.01
+    pool._total_crash_respawns = 0
+    pool.start = lambda: None
+    pool._respawn_all_workers = lambda: None
+    pool.terminate = lambda: None
+    pool._sum_process_tree_rss = lambda: 0
+
+    wave = ExactParallelWorkerPool.run_wave(pool, [task])
+
+    assert wave.completed is False
+    assert wave.failure_reason == "worker_process_failed:pid=12345:exitcode=1"
+    assert wave.results == (result,)
+
+
 def test_parallel_worker_pool_discards_results_after_main_loop_invalid_message() -> None:
     tasks = [
         WorkerTask(0, 1, (9, 3, 3), 1.0, 1.0, 1.0, 1.0, 1, False, tuple()),

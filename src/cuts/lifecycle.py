@@ -179,6 +179,12 @@ class CutScope:
     oracle_abstraction_version: str = ""
     active_assumptions: Tuple[Assumption, ...] = ()
 
+    def __post_init__(self) -> None:
+        # Scope data is proof-bearing evidence captured at cut generation time.
+        # Callers commonly pass ``state.artifact_hashes``; keep a private snapshot
+        # so later BState mutations cannot silently rewrite the cut's replay scope.
+        object.__setattr__(self, "artifact_hashes", dict(self.artifact_hashes))
+
 
 @dataclass(frozen=True)
 class OracleCert:

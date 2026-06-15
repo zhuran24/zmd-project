@@ -190,6 +190,18 @@ def _rss_bytes(process: psutil.Process) -> int:
         return 0
 
 
+def _failed_worker_processes(processes: Sequence[mp.Process]) -> List[mp.Process]:
+    return [process for process in processes if process.exitcode not in (None, 0)]
+
+
+def _worker_process_failed_reason(processes: Sequence[mp.Process]) -> str:
+    failed_processes = _failed_worker_processes(processes)
+    return "worker_process_failed:" + ":".join(
+        f"pid={process.pid}:exitcode={process.exitcode}"
+        for process in failed_processes
+    )
+
+
 def _worker_entry(
     *,
     worker_index: int,
@@ -484,9 +496,7 @@ class ExactParallelWorkerPool:
             try:
                 message = self._result_queue.get(timeout=self.rss_sample_interval_seconds)
             except queue.Empty:
-                any_crashed = any(
-                    p.exitcode not in (None, 0) for p in self._processes
-                )
+                any_crashed = bool(_failed_worker_processes(self._processes))
                 if any_crashed:
                     for msg in self._drain_result_queue():
                         msg_type = str(msg.get("message_type", ""))
@@ -589,6 +599,16 @@ class ExactParallelWorkerPool:
                     failure_reason = "worker_result_invalid"
                 discard_results_due_to_worker_result_failure = True
                 results_by_seq.clear()
+
+        if failure_reason is None and _failed_worker_processes(self._processes):
+            # A worker can die after its final RESULT has been queued.  The main
+            # loop exits as soon as all dispatch sequences are present, so without
+            # this end-of-wave seal check that late process failure would be
+            # reported as a completed wave and could let the outer campaign treat
+            # the wave as proof-complete.  Identity-valid results are preserved;
+            # the consumer's worker_process_failed whitelist records them while
+            # stopping the campaign UNKNOWN.
+            failure_reason = _worker_process_failed_reason(self._processes)
 
         if failure_reason is not None:
             self.terminate()

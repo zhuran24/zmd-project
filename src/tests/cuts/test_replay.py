@@ -21,6 +21,7 @@ from src.cuts.lifecycle import (
     Cut,
     GroupState,
     OracleCert,
+    step_6_attach_scope_check,
 )
 from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
 from src.cuts.replay import regression_sweep, replay_cut
@@ -80,6 +81,25 @@ def _make_state(extra_block: bool = False) -> BState:
             "facility_pools": {"boundary_storage_port": poses},
         },
     )
+
+
+def test_cut_scope_artifact_hashes_snapshot_not_state_alias():
+    """Artifact scope must be generation-time evidence, not a live BState dict.
+
+    If a cut keeps an alias to ``state.artifact_hashes``, source/artifact rotation
+    mutates the stored proof scope too.  Step 6 then sees the forged "new" hash on
+    both sides and returns ATTACH instead of QUARANTINE.
+    """
+    state = _make_state()
+    cut = generate_region_capacity_cuts(state, CANONICAL_RULES)[0]
+
+    assert cut.scope.artifact_hashes == {"canonical_rules.json": "h1"}
+    assert cut.scope.artifact_hashes is not state.artifact_hashes
+
+    state.artifact_hashes["canonical_rules.json"] = "h2"
+
+    assert cut.scope.artifact_hashes == {"canonical_rules.json": "h1"}
+    assert step_6_attach_scope_check(cut, state) == "QUARANTINE"
 
 
 def test_add_cut_illegal_initial_state_no_partial_mutation():
