@@ -1,23 +1,25 @@
 ---
 name: subagent-model-by-weight
-index_summary: "wf 子代理默认 codex(省 Claude 额度, 2026-06-16 owner); 非 wf 按难度派 sonnet 轻/opus 重/fable 关键, 不按类别."
-description: "子代理模型选择。**2026-06-16 owner 裁决: workflow 子代理默认用 codex (走 ChatGPT 订阅, 不烧 Claude 额度)**, 触发自 Claude 额度紧张; 原话『wf 都用 codex 子代理』。其余 (Agent 工具单发 / codex 不胜任时) 仍按 2026-06-11 规则按任务具体难度派: 轻活 sonnet / 重活 opus / 特别重要 fable, 按难度不按类别。"
+index_summary: "wf/子代理默认 codex(owner 2026-06-16 裁决, 为质量多开 wf + codex 独立额度池); 非 wf 按难度派 sonnet 轻/opus 重/fable 关键, 不按类别. 额度纠正见正文(我之前在此写的 opus 额度那套是臆想、已删)."
+description: "子代理模型选择。2026-06-16 owner 裁决: workflow 子代理默认用 codex(原话『wf 都用 codex 子代理』『以后就先一直用 codex』), 动机=为质量多开 wf(对抗验证/多视角)+ codex 走独立订阅额度池。其余(Agent 工具单发/codex 不胜任时)按 2026-06-11 规则按任务具体难度派: 轻活 sonnet/重活 opus/特别重要 fable, 按难度不按类别。⚠️ 我 2026-06-16 曾在本节写进一堆没核实的额度臆想(opus 额度紧/sonnet-opus 分池/5h opus 窗口/周五刷新/主会话省 opus), 被 owner 逐条否定、已删, 教训见 [[assumption-as-fact-then-backfill]]。"
 metadata: 
   node_type: memory
   type: feedback
 ---
 
-## 2026-06-16 修订 (owner): wf 子代理默认 codex
+## 2026-06-16 修订 (owner): wf/子代理默认 codex
 
-owner 当时 Claude 额度紧张, 裁决 **workflow 内的子代理 (`agent()` / `agentType`) 默认用 codex** —— codex 走 ChatGPT 订阅, 不消耗 Claude 额度。原话: "wf 都用 codex 子代理"。
+owner 裁决 **workflow 子代理(`agent()`/`agentType`)默认用 codex**, 续『以后就先一直用 codex』—— 不限 wf, 子代理一律优先 codex。原话『wf 都用 codex 子代理』。动机: **为质量多开 wf**(Workflow 多智能体对抗验证/多视角)+ codex 走独立订阅额度池、不占 Claude。codex 可信度已被双模型对照校准证实(见 [[memtree-restructure]]: codex 审查核心 finding 被 Claude opus 独立印证、且有独有发现)。
 
-**同日升级 (额度硬约束 + codex 已被校准为可信)**: owner 续『以后就先一直用 codex』—— **不限 wf, 子代理一律优先 codex**。背景(2026-06-16, 含 owner 事后澄清): 当时一度以为 Claude **周**额度只剩 ~20%/周五刷新 —— **后查明那是 5 小时滚动窗口额度到顶(较快自恢复), 周额度其实没问题**。所以 opus **不必极省**, 只需避免单个 5h 窗口被一连串重 opus 调用打爆; 但重活下放 codex 仍划算(走 ChatGPT 订阅、不占 Claude opus 的 5h 窗口)。codex 可信度已被双模型对照校准证实(见 [[memtree-restructure]]: codex 审查核心 finding 被 Claude opus 独立印证、且有独有发现), 是验证过的默认主力。
+**额度事实(2026-06-16 owner 逐条纠正; 我之前在本节写的 opus 额度那套全是臆想、已删)**:
+- **codex** 走 ChatGPT 订阅、独立额度池, 但**有 5 小时滚动额度**、会耗尽会恢复、周额度没问题(实测一连开几个 codex wf 后撞 codex `usage limit`、约数小时重置)。所以『一直用 codex』≠ 无限, 别一次性堆太多并发 codex wf、排着用。
+- **Claude** 订阅额度是**整体一个池、所有模型共用**(不分 opus/sonnet 池)。owner 那句『这周额度剩 20%』是 Claude 这周整体额度紧(背景: 我起了个 opus 对照 wf 烧了 Claude)。
+- **wf 里 codex agent 外层有一个 Claude sonnet 中介壳**(实测 `model=claude-sonnet-4-6`, 调 `mcp__codex__codex` 转发), 它烧 Claude 额度(token 小但非零); 重活(codex/gpt-5 读改审)那部分走 ChatGPT 订阅、不烧 Claude。
+- **⚠️ 我删掉的臆想**(全是没核实当事实写进来的): 『opus 额度紧 / sonnet 和 opus 分额度池 / 5h opus 窗口 / 周五刷新 / 主会话 opus 要省』—— owner 明确否定『opus 额度我从没说有问题、你怎么转到 opus 上去』。教训 = [[assumption-as-fact-then-backfill]] / [[fact-self-report-is-not-evidence]]。
 
-**为质量多开 wf (owner 2026-06-16) + 一处事实澄清**: owner 倾向『为质量以后多开 wf』(Workflow 多智能体编排做对抗验证/多视角), codex 额度充足不心疼。**澄清 owner 当时一处口误前提**: 这些审查/修复 CC 开的**就是 wf**(Workflow 工具 + `agentType:'codex'`); owner 一度说『你开的不是 wf』是记混了。所以 wf 成本真相仍适用、不能当『独立额度』盲信: 每个 codex agent 外层有一个 **Claude sonnet 中介壳**(实测 `model=claude-sonnet-4-6`, 活是调 `mcp__codex__codex` 转发), 它**烧 Claude 额度**(token 小但非零)。它烧的是否 owner 紧张的那个池, 取决于订阅 sonnet/opus 是否分额度池。**owner 2026-06-16 已确认 = 分池**: sonnet 中介壳烧 sonnet 池、不动 opus 紧张池 → **多开 wf 放心开、不吃那 20% opus 额度**。(注: 主会话 CC 自己是 opus、仍吃 opus 池, 所以主会话照样要省、重活下放 wf/codex。)重活(codex/gpt-5 读改审)走 ChatGPT 订阅那部分确实不烧 Claude。**但 codex 额度本身也有限、会耗尽**(2026-06-16 实测: 一连开几个 codex wf 后撞 codex usage limit『hit your usage limit』、约数小时重置) —— owner『codex 额度多的是』偏乐观, 『一直用 codex』≠ 无限, 别一次性堆太多并发 codex wf, 排着用、留意 usage limit。[[fact-self-report-is-not-evidence]]: 不盲记一个可能不准的额度认知。
-
-- **适用面**: workflow 编排里的子代理优先 codex。Agent 工具单发的子代理 owner 这次没点名, 但同样动机 (省 Claude 额度) 下也优先 codex; 拿不准就 codex (除非 codex 不胜任该活)。
-- **与下面 by-weight 的关系**: by-weight (sonnet/opus/fable) 是"用 Claude 子代理时按重量选档"; 默认换 codex 后, by-weight 退为 **codex 不适用时的回退** (codex 跑不动 / 需 Claude 特定能力 / 明确要 Claude 对照)。
-- **Why**: codex = 独立模型 (gpt-5.x) + 不烧 Claude 额度, 既省额度又给对抗审查天然的模型多样性。机制见 harness 记忆「codex-cli-as-subagent」(repo 无此镜像)。
+- **适用面**: 子代理一律优先 codex; 拿不准就 codex(除非 codex 不胜任该活)。
+- **与下面 by-weight 的关系**: by-weight(sonnet/opus/fable) 是"用 Claude 子代理时按重量选档"; 默认换 codex 后, by-weight 退为 **codex 不适用时的回退**(codex 跑不动/需 Claude 特定能力/明确要 Claude 对照)。
+- **Why**: codex = 独立模型(gpt-5.x)+ 走独立额度池 + 给对抗审查天然的模型多样性。机制见 harness 记忆「codex-cli-as-subagent」(repo 无此镜像)。
 
 ---
 

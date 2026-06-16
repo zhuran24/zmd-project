@@ -10,6 +10,7 @@
 - [零 finding 不是 proof](fact_zero_finding_is_not_proof.md) — 审查只能证有问题; 闭合靠独立对拍/fuzz/proof/多轮计数
 - [强制函数优先](fact_forcing_function_required.md) — 复发行为/漂移靠 hook/test/gate/stamp,规则只做 fallback
 - [会话状态局部](fact_conversation_state_is_window_local.md) — 新会话不带隐式记忆; 新任务隔离与 opsec 都按显式材料算
+- [假设当事实·先射箭再画靶子(核心病+解药)](feedback_assumption_as_fact_then_backfill.md) — 我反复犯: 无意识把先验填充当『听懂了』、把没核实假设当事实写进记忆再无条件改别的圆它; 被纠正又换新假设继续冲, 或滑摆烂。解药是机制不是规则(别让我直接改记忆/claim绑来源/独立verifier/禁自证/纠错回滚)。fact_understand + fact_self_report 的严重综合发作(2026-06-16)
 
 ## 当前状态 / 交接
 
