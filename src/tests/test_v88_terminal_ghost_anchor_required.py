@@ -180,7 +180,12 @@ def test_terminal_solution_match_ignores_candidate_record_ghost_marker(tmp_path:
     certified_record = state["candidates"]["3x2"]
     certified_record["solution"] = {
         **state["final_result"]["placement_solution"],
-        "ghost_pick": {"anchor": {"x": 0, "y": 1}},
+        "ghost_pick": {
+            "facility_type": "ghost_rect",
+            "pose_idx": 1,
+            "pose_id": "ghost_anchor::0,1",
+            "anchor": {"x": 0, "y": 1},
+        },
     }
     candidate_generation = dict(state["terminal_frontier_evidence"]["candidate_generation"])
     candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))

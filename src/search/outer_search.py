@@ -1774,7 +1774,7 @@ def run_outer_search(
             if isinstance(existing_telemetry, Mapping):
                 telemetry_wave_index = int(len(list(existing_telemetry.get("waves", []))))
 
-    exact_instances, _pools, rules = load_project_data(project_root, solve_mode="certified_exact")
+    exact_instances, facility_pools, rules = load_project_data(project_root, solve_mode="certified_exact")
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
     wireless_sink_generic_input_slots = None
     if generic_io_requirements.get("required_generic_inputs", {}):
@@ -1800,6 +1800,7 @@ def run_outer_search(
         rules,
         generic_io_requirements,
         wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+        facility_pools=facility_pools,
     )
     if area_upper_bound is None:
         area_upper_bound = safe_area_upper_bound
@@ -1911,7 +1912,7 @@ def run_outer_search(
                             _save_final_result(
                                 project_root,
                                 result,
-                                facility_pools=_pools,
+                                facility_pools=facility_pools,
                             )
                             if exact_campaign is not None:
                                 _refresh_certified_delivery_manifest_if_any(
@@ -1944,7 +1945,7 @@ def run_outer_search(
                         _refresh_certified_delivery_outputs(
                             project_root=project_root,
                             exact_campaign=exact_campaign,
-                            facility_pools=_pools,
+                            facility_pools=facility_pools,
                         )
                     return RUN_STATUS_INFEASIBLE, None
 
@@ -1957,7 +1958,7 @@ def run_outer_search(
                     _refresh_certified_delivery_outputs(
                         project_root=project_root,
                         exact_campaign=exact_campaign,
-                        facility_pools=_pools,
+                        facility_pools=facility_pools,
                     )
                     return RUN_STATUS_UNKNOWN, None
 
@@ -2089,7 +2090,7 @@ def run_outer_search(
                         _refresh_certified_delivery_outputs(
                             project_root=project_root,
                             exact_campaign=exact_campaign,
-                            facility_pools=_pools,
+                            facility_pools=facility_pools,
                         )
                     return RUN_STATUS_UNKNOWN, None
 
@@ -2115,7 +2116,7 @@ def run_outer_search(
                             _refresh_certified_delivery_outputs(
                                 project_root=project_root,
                                 exact_campaign=exact_campaign,
-                                facility_pools=_pools,
+                                facility_pools=facility_pools,
                             )
                         return RUN_STATUS_UNKNOWN, None
 
@@ -2332,13 +2333,11 @@ def run_outer_search(
                     # untrustworthy as a whole: the envelope carries no worker pid, so the
                     # coordinator cannot attribute which RESULT came from a crashed worker
                     # (see exact_parallel_scheduler result-envelope comment).  Such a wave
-                    # must NOT persist a sticky strong INFEASIBLE: a crash-tainted INFEASIBLE
-                    # persisted sticky survives the UNKNOWN stop below, is never re-solved on
-                    # resume, poisons the resumed frontier projection, and prunes a true
-                    # maximal rectangle -> false-CERTIFIED of optimality on the watchdog
-                    # resume (F-SCHED-BS-R5-02).  Only INFEASIBLE is gated: CERTIFIED carries
-                    # a solution witness re-validated at terminal export and does not prune,
-                    # and UNKNOWN/UNPROVEN are non-strong (re-solvable) — both are harmless.
+                    # must NOT persist any sticky strong status.  A crash-tainted INFEASIBLE
+                    # would poison the resumed frontier projection; a crash-tainted
+                    # CERTIFIED would survive the UNKNOWN stop as an incumbent/pruner, while
+                    # the terminal frontier evidence does not replay that worker proof.
+                    # UNKNOWN/UNPROVEN are non-strong (re-solvable) and remain safe to keep.
                     # The result is still recorded into wave telemetry below for observability.
                     persist_strong_results = bool(effective_wave_completed)
 
@@ -2385,6 +2384,16 @@ def run_outer_search(
                                 frontier_probe_mode=frontier_probe_mode_for_entry,
                             )
                             if (
+                                worker_result.status
+                                in {RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE}
+                                and not persist_strong_results
+                            ):
+                                # Skip — see persist_strong_results note.  A crash-tainted
+                                # strong result must not become sticky; the candidate stays
+                                # RUNNING and re-solves on the watchdog resume.  Still recorded
+                                # into wave telemetry below.
+                                pass
+                            elif (
                                 worker_result.status == RUN_STATUS_CERTIFIED
                                 and worker_result.solution is not None
                             ):
@@ -2402,15 +2411,6 @@ def run_outer_search(
                                         "generated_exact_safe_cut_count"
                                     ],
                                 )
-                            elif (
-                                worker_result.status == RUN_STATUS_INFEASIBLE
-                                and not persist_strong_results
-                            ):
-                                # F-SCHED-BS-R5-02: skip — see persist_strong_results note.
-                                # A crash-tainted INFEASIBLE must not become a sticky strong
-                                # record; the candidate stays RUNNING and re-solves on the
-                                # watchdog resume.  Still recorded into wave telemetry below.
-                                pass
                             elif worker_result.status in {
                                 RUN_STATUS_INFEASIBLE,
                                 RUN_STATUS_UNKNOWN,
@@ -2513,7 +2513,7 @@ def run_outer_search(
                             _refresh_certified_delivery_outputs(
                                 project_root=project_root,
                                 exact_campaign=exact_campaign,
-                                facility_pools=_pools,
+                                facility_pools=facility_pools,
                             )
                             return RUN_STATUS_UNKNOWN, None
 
@@ -2526,7 +2526,7 @@ def run_outer_search(
                             _refresh_certified_delivery_outputs(
                                 project_root=project_root,
                                 exact_campaign=exact_campaign,
-                                facility_pools=_pools,
+                                facility_pools=facility_pools,
                             )
                             return terminal_status, None
                     continue
@@ -2721,7 +2721,7 @@ def run_outer_search(
                             _refresh_certified_delivery_outputs(
                                 project_root=project_root,
                                 exact_campaign=exact_campaign,
-                                facility_pools=_pools,
+                                facility_pools=facility_pools,
                             )
                     if _skip_unknown_env:
                         continue
@@ -2759,7 +2759,7 @@ def run_outer_search(
                         _refresh_certified_delivery_outputs(
                             project_root=project_root,
                             exact_campaign=exact_campaign,
-                            facility_pools=_pools,
+                            facility_pools=facility_pools,
                         )
                     return RUN_STATUS_UNPROVEN, None
         exploratory_attempts = 0

@@ -91,7 +91,7 @@ from src.models.master_model import (
     EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT_ENV,
     ExactMasterCore,
     MasterPlacementModel,
-    infer_certified_optional_lower_bounds,
+    infer_certified_optional_lower_bounds_for_instances,
     load_generic_io_requirements_artifact,
     load_project_data,
 )
@@ -198,12 +198,403 @@ def _normalize_solve_mode(
     return solve_mode
 
 
+def _pre_master_contract_int(value: Any) -> Optional[int]:
+    """Return an exact integer field value, rejecting bool/string drift."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return int(value)
+    return None
+
+
+def _pre_master_contract_nonempty_string(value: Any) -> Optional[str]:
+    if not isinstance(value, str):
+        return None
+    stripped = value.strip()
+    return stripped or None
+
+
+def _pre_master_contract_count(
+    payload: Mapping[str, Any],
+    field: str,
+) -> Optional[int]:
+    return _pre_master_contract_int(payload.get(str(field)))
+
+
+def _pre_master_contract_counts_match(
+    lhs: Mapping[str, Any],
+    rhs: Mapping[str, Any],
+    fields: Sequence[str],
+) -> bool:
+    for field in fields:
+        lhs_value = _pre_master_contract_count(lhs, field)
+        rhs_value = _pre_master_contract_count(rhs, field)
+        if lhs_value is None or rhs_value is None or lhs_value != rhs_value:
+            return False
+    return True
+
+
+def _pre_master_contract_all_anchors_screened_infeasible(
+    payload: Mapping[str, Any],
+) -> bool:
+    considered = _pre_master_contract_count(payload, "considered_anchor_count")
+    screened = _pre_master_contract_count(payload, "screened_infeasible_anchor_count")
+    passing = _pre_master_contract_count(payload, "screen_pass_anchor_count")
+    unsupported = _pre_master_contract_count(payload, "unsupported_anchor_count")
+    if (
+        considered is None
+        or screened is None
+        or passing is None
+        or unsupported is None
+    ):
+        return False
+    return (
+        int(considered) > 0
+        and int(screened) == int(considered)
+        and int(passing) == 0
+        and int(unsupported) == 0
+    )
+
+
+def _pre_master_contract_candidate_all_anchors_screened_infeasible(
+    master_candidate_precheck: Mapping[str, Any],
+) -> bool:
+    considered = _pre_master_contract_count(
+        master_candidate_precheck,
+        "considered_anchor_count",
+    )
+    screened = _pre_master_contract_count(
+        master_candidate_precheck,
+        "screened_infeasible_anchor_count",
+    )
+    passing = _pre_master_contract_count(
+        master_candidate_precheck,
+        "screen_pass_anchor_count",
+    )
+    if considered is None or screened is None or passing is None:
+        return False
+    return int(considered) > 0 and int(screened) == int(considered) and int(passing) == 0
+
+
+def _pre_master_contract_valid_boundary_port_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    boundary_payload = proof_summary.get("master_boundary_port_feasibility")
+    if not isinstance(boundary_payload, Mapping):
+        return False
+    required_count = _pre_master_contract_count(boundary_payload, "required_count")
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if required_count is None or int(required_count) <= 0:
+        return False
+    if boundary_payload.get("supported") is not True:
+        return False
+    if not _pre_master_contract_candidate_all_anchors_screened_infeasible(
+        master_candidate_precheck
+    ):
+        return False
+    if not _pre_master_contract_all_anchors_screened_infeasible(boundary_payload):
+        return False
+    if not _pre_master_contract_counts_match(
+        master_candidate_precheck,
+        boundary_payload,
+        (
+            "considered_anchor_count",
+            "screened_infeasible_anchor_count",
+            "screen_pass_anchor_count",
+        ),
+    ):
+        return False
+    return boundary_payload.get("first_infeasible_anchor_idx") is not None
+
+
+def _pre_master_contract_matching_mandatory_group(
+    *,
+    master_candidate_precheck: Mapping[str, Any],
+    mandatory_group_prechecks: Mapping[str, Any],
+) -> Optional[Mapping[str, Any]]:
+    triggered_group_id = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_id")
+    )
+    triggered_facility_type = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_facility_type")
+    )
+    triggered_operation_type = master_candidate_precheck.get(
+        "triggered_group_operation_type"
+    )
+    triggered_required_count = _pre_master_contract_count(
+        master_candidate_precheck,
+        "triggered_group_required_count",
+    )
+    if (
+        triggered_group_id is None
+        or triggered_facility_type is None
+        or triggered_required_count is None
+        or int(triggered_required_count) <= 0
+    ):
+        return None
+    groups = mandatory_group_prechecks.get("groups")
+    if not isinstance(groups, list):
+        return None
+    for entry in groups:
+        if not isinstance(entry, Mapping):
+            continue
+        if str(entry.get("group_id", "")) != triggered_group_id:
+            continue
+        if str(entry.get("facility_type", "")) != triggered_facility_type:
+            continue
+        if triggered_operation_type is not None and str(
+            entry.get("operation_type", "")
+        ) != str(triggered_operation_type):
+            continue
+        required_count = _pre_master_contract_count(entry, "required_count")
+        if required_count is None or int(required_count) != int(triggered_required_count):
+            continue
+        return entry
+    return None
+
+
+def _pre_master_contract_valid_mandatory_rectangle_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if not _pre_master_contract_candidate_all_anchors_screened_infeasible(
+        master_candidate_precheck
+    ):
+        return False
+    mandatory_group_prechecks = proof_summary.get("master_mandatory_group_prechecks")
+    if not isinstance(mandatory_group_prechecks, Mapping):
+        return False
+    if mandatory_group_prechecks.get("evaluated") is not True:
+        return False
+    if mandatory_group_prechecks.get("skipped_due_to_upstream_precheck") is True:
+        return False
+    group = _pre_master_contract_matching_mandatory_group(
+        master_candidate_precheck=master_candidate_precheck,
+        mandatory_group_prechecks=mandatory_group_prechecks,
+    )
+    if group is None:
+        return False
+    if group.get("supported") is not True:
+        return False
+    if bool(group.get("partial_due_to_time_budget", False)):
+        return False
+    if not _pre_master_contract_all_anchors_screened_infeasible(group):
+        return False
+    if not _pre_master_contract_counts_match(
+        master_candidate_precheck,
+        group,
+        (
+            "considered_anchor_count",
+            "screened_infeasible_anchor_count",
+            "screen_pass_anchor_count",
+        ),
+    ):
+        return False
+    return group.get("first_infeasible_anchor_idx") is not None
+
+
+def _pre_master_contract_valid_coordinate_validation_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    coordinate_payload = proof_summary.get("coordinate_validation_precheck")
+    if not isinstance(coordinate_payload, Mapping):
+        return False
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if coordinate_payload.get("evaluated") is not True:
+        return False
+    if coordinate_payload.get("triggered") is not True:
+        return False
+    if coordinate_payload.get("skipped_due_to_anchor_limit") is True:
+        return False
+    considered = _pre_master_contract_count(coordinate_payload, "considered_anchor_count")
+    evaluated = _pre_master_contract_count(coordinate_payload, "evaluated_anchor_count")
+    infeasible = _pre_master_contract_count(coordinate_payload, "infeasible_anchor_count")
+    accepted = _pre_master_contract_count(coordinate_payload, "accepted_anchor_count")
+    unknown = _pre_master_contract_count(coordinate_payload, "unknown_anchor_count")
+    skipped = _pre_master_contract_count(coordinate_payload, "skipped_anchor_count")
+    if (
+        considered is None
+        or evaluated is None
+        or infeasible is None
+        or accepted is None
+        or unknown is None
+        or skipped is None
+    ):
+        return False
+    if not (
+        int(considered) > 0
+        and int(evaluated) == int(considered)
+        and int(infeasible) == int(considered)
+        and int(accepted) == 0
+        and int(unknown) == 0
+        and int(skipped) == 0
+    ):
+        return False
+    if coordinate_payload.get("short_circuited_after_non_triggering_anchor") is True:
+        return False
+    rejected_anchors = coordinate_payload.get("rejected_anchors")
+    non_triggering_anchors = coordinate_payload.get("non_triggering_anchors")
+    if not isinstance(rejected_anchors, list) or not isinstance(
+        non_triggering_anchors,
+        list,
+    ):
+        return False
+    if non_triggering_anchors:
+        return False
+    if len(rejected_anchors) != int(considered):
+        return False
+    for entry in rejected_anchors:
+        if not isinstance(entry, Mapping):
+            return False
+        anchor_idx = _pre_master_contract_int(entry.get("anchor_idx"))
+        if anchor_idx is None or str(entry.get("status", "")) != "INFEASIBLE":
+            return False
+    status_counts = coordinate_payload.get("status_counts")
+    if not isinstance(status_counts, Mapping):
+        return False
+    infeasible_status_count = _pre_master_contract_int(status_counts.get("INFEASIBLE"))
+    if infeasible_status_count is None or int(infeasible_status_count) != int(considered):
+        return False
+    if not _pre_master_contract_counts_match(
+        master_candidate_precheck,
+        {
+            "considered_anchor_count": considered,
+            "screened_infeasible_anchor_count": infeasible,
+            "screen_pass_anchor_count": int(accepted) + int(unknown) + int(skipped),
+        },
+        (
+            "considered_anchor_count",
+            "screened_infeasible_anchor_count",
+            "screen_pass_anchor_count",
+        ),
+    ):
+        return False
+    return master_candidate_precheck.get("first_infeasible_anchor_idx") == rejected_anchors[
+        0
+    ].get("anchor_idx")
+
+
+def _pre_master_contract_valid_empty_pool_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    if master_candidate_precheck.get("supported") is not False:
+        return False
+    for field in (
+        "considered_anchor_count",
+        "screened_infeasible_anchor_count",
+        "screen_pass_anchor_count",
+    ):
+        value = _pre_master_contract_count(master_candidate_precheck, field)
+        if value is None or int(value) != 0:
+            return False
+    triggered_group_id = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_id")
+    )
+    triggered_facility_type = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_facility_type")
+    )
+    triggered_operation_type = master_candidate_precheck.get(
+        "triggered_group_operation_type"
+    )
+    triggered_required_count = _pre_master_contract_count(
+        master_candidate_precheck,
+        "triggered_group_required_count",
+    )
+    if (
+        triggered_group_id is None
+        or triggered_facility_type is None
+        or triggered_required_count is None
+        or int(triggered_required_count) <= 0
+    ):
+        return False
+    diagnostics = proof_summary.get("master_mandatory_support_diagnostics")
+    if not isinstance(diagnostics, Mapping):
+        return False
+    empty_group_count = _pre_master_contract_count(
+        diagnostics,
+        "empty_candidate_pool_group_count",
+    )
+    if empty_group_count is None or int(empty_group_count) <= 0:
+        return False
+    groups = diagnostics.get("groups")
+    if not isinstance(groups, list):
+        return False
+    for entry in groups:
+        if not isinstance(entry, Mapping):
+            continue
+        if str(entry.get("unsupported_reason", "")) != "empty_candidate_pool":
+            continue
+        if str(entry.get("group_id", "")) != triggered_group_id:
+            continue
+        if str(entry.get("facility_type", "")) != triggered_facility_type:
+            continue
+        if triggered_operation_type is not None and str(
+            entry.get("operation_type", "")
+        ) != str(triggered_operation_type):
+            continue
+        required_count = _pre_master_contract_count(entry, "required_count")
+        pool_count = _pre_master_contract_count(entry, "candidate_pool_count")
+        if (
+            required_count is not None
+            and int(required_count) == int(triggered_required_count)
+            and pool_count is not None
+            and int(pool_count) == 0
+        ):
+            return True
+    return False
+
+
+def _pre_master_contract_valid_anchor119_runtime_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    _ = proof_summary
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if not _pre_master_contract_candidate_all_anchors_screened_infeasible(
+        master_candidate_precheck
+    ):
+        return False
+    considered = _pre_master_contract_count(
+        master_candidate_precheck,
+        "considered_anchor_count",
+    )
+    if considered != 1:
+        return False
+    first_anchor = _pre_master_contract_int(
+        master_candidate_precheck.get("first_infeasible_anchor_idx")
+    )
+    if first_anchor != int(PHASE3B_ANCHOR119_ANCHOR_IDX):
+        return False
+    advisory = master_candidate_precheck.get("anchor119_row_domain_guard_advisory")
+    if not isinstance(advisory, Mapping):
+        return False
+    runtime_decision = advisory.get("runtime_decision")
+    if not isinstance(runtime_decision, Mapping):
+        return False
+    return (
+        advisory.get("enabled") is True
+        and advisory.get("would_trigger") is True
+        and advisory.get("triggered") is True
+        and runtime_decision.get("apply_runtime_elimination") is True
+    )
+
+
 def is_valid_pre_master_precheck_elimination(precheck_outcome: Any) -> bool:
     """Return whether a pre-master precheck result may skip the master solve.
 
     This is the shared campaign/write and solver-entry contract: a truthy
     ``triggered`` flag alone is not enough to convert a candidate into a strong
-    INFEASIBLE result.
+    INFEASIBLE result.  Each certified pre-master reason also needs its
+    reason-specific proof payload to line up with the compact summary that will
+    be persisted into the exact-campaign frontier.
     """
     if not isinstance(precheck_outcome, Mapping):
         return False
@@ -223,10 +614,32 @@ def is_valid_pre_master_precheck_elimination(precheck_outcome: Any) -> bool:
         return False
     if master_candidate_precheck.get("master_solve_skipped") is not True:
         return False
-    precheck_reason = master_candidate_precheck.get("precheck_reason")
-    if not isinstance(precheck_reason, str) or not precheck_reason.strip():
+    precheck_reason = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("precheck_reason")
+    )
+    if precheck_reason is None:
         return False
-    return True
+    validators = {
+        "boundary_port_all_anchors_infeasible": (
+            _pre_master_contract_valid_boundary_port_elimination
+        ),
+        "mandatory_rect_group_all_anchors_infeasible": (
+            _pre_master_contract_valid_mandatory_rectangle_elimination
+        ),
+        "coordinate_validation_infeasible": (
+            _pre_master_contract_valid_coordinate_validation_elimination
+        ),
+        "mandatory_group_empty_candidate_pool": (
+            _pre_master_contract_valid_empty_pool_elimination
+        ),
+        "anchor119_row_domain_runtime_guard": (
+            _pre_master_contract_valid_anchor119_runtime_elimination
+        ),
+    }
+    validator = validators.get(precheck_reason)
+    if validator is None:
+        return False
+    return bool(validator(master_candidate_precheck, proof_summary))
 
 
 def _maybe_attach_anchor119_row_domain_guard_advisory(
@@ -1411,7 +1824,7 @@ def compute_mandatory_area_lower_bound(
     instances: Sequence[Mapping[str, Any]],
     rules: Mapping[str, Any],
 ) -> int:
-    """Compute the exact-safe static occupied-area lower bound from mandatory exact instances."""
+    """Compute the legacy template-area lower bound for mandatory exact instances."""
 
     templates = dict(rules.get("facility_templates", {}))
     total = 0
@@ -1428,24 +1841,162 @@ def compute_mandatory_area_lower_bound(
     return total
 
 
+def _template_area_for_facility_type(
+    rules: Mapping[str, Any],
+    facility_type: str,
+) -> int:
+    templates = dict(rules.get("facility_templates", {}))
+    template = dict(templates[str(facility_type)])
+    dims = dict(template["dimensions"])
+    return int(dims["w"]) * int(dims["h"])
+
+
+def _optional_grid_dimensions_from_rules(
+    rules: Mapping[str, Any],
+) -> Optional[Tuple[int, int]]:
+    globals_payload = rules.get("globals")
+    if not isinstance(globals_payload, Mapping):
+        return None
+    grid = globals_payload.get("grid")
+    if not isinstance(grid, Mapping):
+        return None
+    try:
+        raw_grid_w = grid.get("width")
+        raw_grid_h = grid.get("height")
+        if raw_grid_w is None or raw_grid_h is None:
+            return None
+        grid_w = int(raw_grid_w)
+        grid_h = int(raw_grid_h)
+    except Exception:
+        return None
+    if grid_w <= 0 or grid_h <= 0:
+        return None
+    return grid_w, grid_h
+
+
+def _pose_pool_min_occupied_cell_count(
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    facility_type: str,
+    *,
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+) -> int:
+    raw_pool = facility_pools.get(str(facility_type))
+    if (
+        isinstance(raw_pool, (str, bytes))
+        or not isinstance(raw_pool, Sequence)
+        or not raw_pool
+    ):
+        raise KeyError(f"candidate placement pool missing for {facility_type!r}")
+
+    best: Optional[int] = None
+    for pose_idx, raw_pose in enumerate(raw_pool):
+        if not isinstance(raw_pose, Mapping):
+            raise ValueError(
+                f"candidate_placements.{facility_type}[{pose_idx}] must be a JSON object"
+            )
+        raw_cells = raw_pose.get("occupied_cells")
+        if isinstance(raw_cells, (str, bytes)) or not isinstance(raw_cells, Sequence):
+            raise ValueError(
+                f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells must be a JSON array"
+            )
+        cells: Set[Tuple[int, int]] = set()
+        for cell_idx, raw_cell in enumerate(raw_cells):
+            if (
+                isinstance(raw_cell, (str, bytes))
+                or not isinstance(raw_cell, Sequence)
+                or len(raw_cell) != 2
+            ):
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] must be [x,y]"
+                )
+            raw_x, raw_y = raw_cell[0], raw_cell[1]
+            if isinstance(raw_x, bool) or isinstance(raw_y, bool):
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] must contain strict ints"
+                )
+            try:
+                x = int(raw_x)
+                y = int(raw_y)
+            except Exception as exc:
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] must contain ints"
+                ) from exc
+            if grid_dimensions is not None:
+                grid_w, grid_h = grid_dimensions
+                if x < 0 or y < 0 or x >= int(grid_w) or y >= int(grid_h):
+                    raise ValueError(
+                        f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] out of grid"
+                    )
+            cells.add((x, y))
+        pose_area = len(cells)
+        if best is None or pose_area < best:
+            best = pose_area
+
+    if best is None:
+        raise KeyError(f"candidate placement pool missing for {facility_type!r}")
+    return int(best)
+
+
+def _facility_type_static_area_lower_bound(
+    *,
+    facility_type: str,
+    rules: Mapping[str, Any],
+    facility_pools: Optional[Mapping[str, Sequence[Mapping[str, Any]]]],
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+) -> int:
+    if facility_pools is None:
+        return _template_area_for_facility_type(rules, facility_type)
+    return _pose_pool_min_occupied_cell_count(
+        facility_pools,
+        facility_type,
+        grid_dimensions=grid_dimensions,
+    )
+
+
 def compute_exact_static_area_lower_bound(
     instances: Sequence[Mapping[str, Any]],
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
     wireless_sink_generic_input_slots: Optional[int] = None,
+    facility_pools: Optional[Mapping[str, Sequence[Mapping[str, Any]]]] = None,
 ) -> int:
-    total = compute_mandatory_area_lower_bound(instances, rules)
-    templates = dict(rules.get("facility_templates", {}))
-    optional_lower_bounds = infer_certified_optional_lower_bounds(
+    """Return a safe lower bound on cells occupied by forced exact facilities.
+
+    When candidate placement pools are available, the bound is based on the
+    minimum distinct ``occupied_cells`` count in the actual pose domain.  This is
+    the only safe source for the certified outer-domain area cap: template
+    dimensions can be stale or intentionally conservative, and over-counting
+    forced occupied area would make the outer search skip feasible larger empty
+    rectangles.
+    """
+
+    grid_dimensions = _optional_grid_dimensions_from_rules(rules)
+    total = 0
+    for instance in instances:
+        if not bool(instance.get("is_mandatory")):
+            continue
+        if str(instance.get("bound_type", "exact")) != "exact":
+            continue
+        total += _facility_type_static_area_lower_bound(
+            facility_type=str(instance["facility_type"]),
+            rules=rules,
+            facility_pools=facility_pools,
+            grid_dimensions=grid_dimensions,
+        )
+    optional_lower_bounds = infer_certified_optional_lower_bounds_for_instances(
+        instances,
         rules,
         generic_io_requirements,
         wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     )
     for facility_type, count in optional_lower_bounds.items():
-        template = dict(templates[str(facility_type)])
-        dims = dict(template["dimensions"])
-        total += int(count) * int(dims["w"]) * int(dims["h"])
+        total += int(count) * _facility_type_static_area_lower_bound(
+            facility_type=str(facility_type),
+            rules=rules,
+            facility_pools=facility_pools,
+            grid_dimensions=grid_dimensions,
+        )
     return total
 
 
@@ -7126,6 +7677,7 @@ def run_benders_for_ghost_rect(
             rules,
             exact_session.core.generic_io_requirements,
             wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
+            facility_pools=facility_pools,
         )
     if static_area_lower_bound + int(ghost_w) * int(ghost_h) > grid_area:
         _publish_last_run_metadata(
@@ -7218,15 +7770,16 @@ def run_benders_for_ghost_rect(
             # 所以 session.core 那个 = empty dict. 走 PoseBool delegate 需要 inferred
             # counts 才能正确 build protocol_storage_box ro_vars. 不修这条 binding 会
             # 系统性 INFEASIBLE (master 不出 storage box).
-            from src.models.master_model import infer_exact_required_pose_optional_counts
-            _inferred_counts = infer_exact_required_pose_optional_counts(
+            from src.models.master_model import infer_exact_required_pose_optional_counts_for_instances
+            _inferred_counts = infer_exact_required_pose_optional_counts_for_instances(
+                exact_session.core.source_instances,
                 exact_session.core.rules,
                 exact_session.core.generic_io_requirements,
                 wireless_sink_generic_input_slots=exact_session.core.wireless_sink_generic_input_slots,
             )
             master = MasterPlacementModel(
                 list(exact_session.core.source_instances),
-                cast("Mapping[str, List[Dict[str, Any]]]", exact_session.core.facility_pools),
+                cast("Mapping[str, List[Dict[str, Any]]]", facility_pools),
                 exact_session.core.rules,
                 ghost_rect=(int(ghost_w), int(ghost_h)),
                 skip_power_coverage=bool(exact_session.core.skip_power_coverage),

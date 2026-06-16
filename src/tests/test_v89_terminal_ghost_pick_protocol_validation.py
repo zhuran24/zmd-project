@@ -138,6 +138,23 @@ def test_terminal_project_validator_rejects_missing_candidate_ghost_pick(tmp_pat
     )
 
 
+def test_terminal_project_validator_rejects_untyped_candidate_ghost_pick_marker(
+    tmp_path: Path,
+) -> None:
+    state = _terminal_state(
+        tmp_path,
+        {
+            "solid_001": {"facility_type": "solid", "pose_idx": 0},
+            "ghost_pick": {"anchor": {"x": 1, "y": 0}},
+        },
+    )
+
+    assert (
+        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        == "terminal_certified_candidate_solution_ghost_pick_invalid"
+    )
+
+
 def test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anchor(
     tmp_path: Path,
 ) -> None:
@@ -145,7 +162,12 @@ def test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anch
         tmp_path,
         {
             "solid_001": {"facility_type": "solid", "pose_idx": 0},
-            "ghost_pick": {"anchor": {"x": 0, "y": 0}},
+            "ghost_pick": {
+                "facility_type": "ghost_rect",
+                "pose_idx": 0,
+                "pose_id": "ghost_anchor::0,0",
+                "anchor": {"x": 0, "y": 0},
+            },
         },
     )
 
@@ -162,7 +184,12 @@ def test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor(
         tmp_path,
         {
             "solid_001": {"facility_type": "solid", "pose_idx": 0},
-            "ghost_pick": {"anchor": {"x": 1, "y": 0}},
+            "ghost_pick": {
+                "facility_type": "ghost_rect",
+                "pose_idx": 1,
+                "pose_id": "ghost_anchor::1,0",
+                "anchor": {"x": 1, "y": 0},
+            },
         },
     )
 

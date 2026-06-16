@@ -32,7 +32,7 @@ from src.tests.certified_frontier_helpers import attach_terminal_frontier_eviden
 # final_result placement_solution strips it by protocol.
 _V89_GHOST_PICK = {
     "ghost_pick": {
-        "pose_idx": 0,
+        "pose_idx": 1,
         "pose_id": "ghost_anchor::1,0",
         "anchor": {"x": 1, "y": 0},
         "facility_type": "ghost_rect",
@@ -103,7 +103,7 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
         1,
         RUN_STATUS_CERTIFIED,
         solution={
-            "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
+            "ghost_pick": {"pose_idx": 1, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
             "tiny_001": {
                 "pose_idx": 0,
                 "pose_id": "tiny_pose_0",
@@ -183,7 +183,7 @@ def test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent
         1,
         RUN_STATUS_CERTIFIED,
         solution={
-            "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
+            "ghost_pick": {"pose_idx": 1, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
             "tiny_001": {
                 "pose_idx": 0,
                 "pose_id": "tiny_pose_0",

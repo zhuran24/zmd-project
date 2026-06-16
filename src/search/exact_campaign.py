@@ -25,7 +25,7 @@ from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 from src.models.master_model import (
     POSE_LEVEL_OPTIONAL_OPERATIONS,
     POSE_LEVEL_OPTIONAL_TEMPLATES,
-    infer_certified_optional_lower_bounds,
+    infer_certified_optional_lower_bounds_for_instances,
     load_generic_io_requirements_artifact,
 )
 from src.search.certified_frontier import (
@@ -205,6 +205,24 @@ OPTIONAL_EXACT_HASH_FILES = {
     "preprocess_plan": "rules/preprocess_plan.json",
 }
 MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
+CERTIFIED_EXACT_SOURCE_DIGEST_KEY = "certified_exact_source_tree"
+CERTIFIED_EXACT_SOURCE_HASH_FILES = (
+    "src/io/delivery_manifest.py",
+    "src/io/output_schema.py",
+    "src/io/serializer.py",
+    "src/models/binding_subproblem.py",
+    "src/models/cut_manager.py",
+    "src/models/exact_coordinate_master.py",
+    "src/models/flow_subproblem.py",
+    "src/models/master_model.py",
+    "src/models/pose_bool_exact_master.py",
+    "src/models/routing_subproblem.py",
+    "src/search/benders_loop.py",
+    "src/search/certified_frontier.py",
+    "src/search/certified_surface.py",
+    "src/search/exact_campaign.py",
+    "src/search/outer_search.py",
+)
 
 
 def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:
@@ -274,6 +292,20 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def compute_certified_exact_source_digest() -> str:
+    """Digest the exact proof kernel source that gives candidate records meaning."""
+
+    source_root = Path(__file__).resolve().parent.parent.parent
+    digest = hashlib.sha256()
+    for relative_path in CERTIFIED_EXACT_SOURCE_HASH_FILES:
+        path = source_root / relative_path
+        digest.update(str(relative_path).encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(sha256_file(path).encode("ascii"))
+        digest.update(b"\n")
+    return digest.hexdigest()
+
+
 def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
     hashes: Dict[str, str] = {}
     for key, relative_path in EXACT_HASH_FILES.items():
@@ -284,7 +316,18 @@ def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
             hashes[key] = sha256_file(artifact_path)
         else:
             hashes[key] = MISSING_OPTIONAL_EXACT_ARTIFACT_HASH
+    hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] = compute_certified_exact_source_digest()
     return hashes
+
+
+def _canonical_digest(payload: Any) -> str:
+    raw = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def _strict_resume_int(value: Any, field: str) -> int:
@@ -444,6 +487,7 @@ def _terminal_candidate_ghost_pick_binding_violation(
     state: Mapping[str, Any],
     *,
     final_result: Mapping[str, Any],
+    grid_dimensions: Optional[Tuple[int, int]] = None,
 ) -> Optional[str]:
     """Return a reason when terminal candidate evidence is not bound to its ghost anchor.
 
@@ -493,6 +537,33 @@ def _terminal_candidate_ghost_pick_binding_violation(
     ghost_pick = record_solution.get("ghost_pick")
     if not isinstance(ghost_pick, Mapping):
         return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    if str(ghost_pick.get("facility_type", "")) != "ghost_rect":
+        return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    try:
+        pose_idx = _strict_resume_int(
+            ghost_pick.get("pose_idx"),
+            "candidate.solution.ghost_pick.pose_idx",
+        )
+    except Exception:
+        return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    if int(pose_idx) < 0:
+        return "terminal_certified_candidate_solution_ghost_pick_invalid"
+    if grid_dimensions is not None:
+        try:
+            grid_w = _strict_resume_int(grid_dimensions[0], "project.grid.width")
+            grid_h = _strict_resume_int(grid_dimensions[1], "project.grid.height")
+        except Exception:
+            return "terminal_certified_candidate_solution_ghost_pick_invalid"
+        expected_pose_idx = _expected_unfiltered_ghost_anchor_index(
+            grid_w=int(grid_w),
+            grid_h=int(grid_h),
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+            anchor_x=int(anchor_x),
+            anchor_y=int(anchor_y),
+        )
+        if expected_pose_idx is None or int(pose_idx) != int(expected_pose_idx):
+            return "terminal_certified_candidate_solution_ghost_pick_mismatch"
     anchor = ghost_pick.get("anchor")
     if not isinstance(anchor, Mapping):
         return "terminal_certified_candidate_solution_ghost_pick_invalid"
@@ -646,6 +717,46 @@ def _pose_occupied_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[i
         y = _strict_resume_int(raw_cell[1], f"{field}.occupied_cells[{index}][1]")
         cells.append((int(x), int(y)))
     return cells
+
+
+def _pose_pool_min_occupied_cell_count(
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    facility_type: str,
+    *,
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+) -> int:
+    raw_pool = facility_pools.get(str(facility_type))
+    if not isinstance(raw_pool, list) or not raw_pool:
+        raise ValueError(f"candidate_placements.facility_pools.{facility_type} must be a non-empty array")
+
+    best: Optional[int] = None
+    for pose_idx, pose in enumerate(raw_pool):
+        if not isinstance(pose, Mapping):
+            raise ValueError(
+                f"candidate_placements.{facility_type}[{pose_idx}] must be a JSON object"
+            )
+        cells = set(
+            _pose_occupied_cells(
+                pose,
+                field=f"candidate_placements.{facility_type}[{pose_idx}]",
+            )
+        )
+        if grid_dimensions is not None:
+            grid_w, grid_h = grid_dimensions
+            if any(
+                x < 0 or y < 0 or x >= int(grid_w) or y >= int(grid_h)
+                for x, y in cells
+            ):
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells out of grid"
+                )
+        pose_area = len(cells)
+        if best is None or pose_area < best:
+            best = pose_area
+
+    if best is None:
+        raise ValueError(f"candidate_placements.facility_pools.{facility_type} must be non-empty")
+    return int(best)
 
 
 def _pose_power_coverage_cells(pose: Mapping[str, Any], *, field: str) -> list[tuple[int, int]]:
@@ -1040,15 +1151,10 @@ def _validate_terminal_solution_against_project(
     ):
         return "terminal_certified_final_result_empty_rect_not_witnessed"
 
-    # The better-empty-rect optimality scan only has discriminating power when
-    # mandatory facilities constrain the layout. With no mandatory instances,
-    # every candidate is trivially feasible on the empty grid and any
-    # non-full-grid claim would be "improvable" — that shape exists only in
-    # synthetic test projects; the production mandatory set (266 instances) is
-    # non-empty and pinned by the frozen-artifact hashes. The witness-existence
-    # check above still applies unconditionally.
-    if not mandatory_instances:
-        return None
+    # Recompute the layout-level optimum unconditionally.  Even an empty
+    # mandatory set has a well-defined optimum (the full grid under the
+    # admissibility floor), and accepting a smaller terminal witness would make
+    # the public CERTIFIED surface depend on production-only assumptions.
     try:
         admissible_min_side = 1 if min_side_admissibility is None else _strict_resume_int(
             min_side_admissibility,
@@ -1160,6 +1266,7 @@ def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, 
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+    instances = _load_validated_mandatory_exact_instances(project_root)
     if not isinstance(rules, Mapping):
         raise ValueError("canonical_rules must be a JSON object")
     if not isinstance(generic_io_requirements, Mapping):
@@ -1172,7 +1279,8 @@ def _load_exact_required_optional_lower_bounds(project_root: Path) -> Dict[str, 
             project_root=project_root
         )
     lower_bounds: Dict[str, int] = {}
-    for facility_type, count in infer_certified_optional_lower_bounds(
+    for facility_type, count in infer_certified_optional_lower_bounds_for_instances(
+        instances,
         rules,
         generic_io_requirements,
         wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
@@ -1189,19 +1297,21 @@ def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[
     rules_path = project_root / EXACT_HASH_FILES["canonical_rules"]
     rules = _loads_strict_json_object(rules_path.read_text(encoding="utf-8"))
     instances = _load_validated_mandatory_exact_instances(project_root)
+    facility_pools = _load_exact_facility_pools(project_root)
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
     if not isinstance(rules, Mapping):
         raise ValueError("canonical_rules must be a JSON object")
     if not isinstance(generic_io_requirements, Mapping):
         raise ValueError("generic_io_requirements must be a JSON object")
     grid_w, grid_h = _load_exact_grid_dimensions(project_root) or (0, 0)
-    templates = dict(rules.get("facility_templates", {}))
     lower_bound = 0
     for instance in instances:
         facility_type = str(instance.get("facility_type"))
-        template = templates[facility_type]
-        dims = dict(template["dimensions"])
-        lower_bound += int(dims["w"]) * int(dims["h"])
+        lower_bound += _pose_pool_min_occupied_cell_count(
+            facility_pools,
+            facility_type,
+            grid_dimensions=(int(grid_w), int(grid_h)),
+        )
     wireless_sink_generic_input_slots = None
     if generic_io_requirements.get("required_generic_inputs", {}):
         from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
@@ -1209,14 +1319,17 @@ def _load_exact_safe_area_upper_bound(project_root: Optional[Path]) -> Optional[
         wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
             project_root=project_root
         )
-    for facility_type, count in infer_certified_optional_lower_bounds(
+    for facility_type, count in infer_certified_optional_lower_bounds_for_instances(
+        instances,
         rules,
         generic_io_requirements,
         wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
     ).items():
-        template = dict(templates[str(facility_type)])
-        dims = dict(template["dimensions"])
-        lower_bound += int(count) * int(dims["w"]) * int(dims["h"])
+        lower_bound += int(count) * _pose_pool_min_occupied_cell_count(
+            facility_pools,
+            str(facility_type),
+            grid_dimensions=(int(grid_w), int(grid_h)),
+        )
     return max(0, int(grid_w) * int(grid_h) - int(lower_bound))
 
 
@@ -1409,6 +1522,82 @@ def _build_initial_state(
         "declare_mode": "strict",
         "candidates": {},
     }
+
+
+_RESUME_INFEASIBLE_REPLAY_REASON = (
+    "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"
+)
+
+
+def _sanitize_resume_state_for_untrusted_infeasible_evidence(
+    state: Dict[str, Any],
+) -> bool:
+    """Drop candidate-wide INFEASIBLE conclusions loaded from a checkpoint.
+
+    A CERTIFIED candidate carries a placement witness that the terminal project
+    validator can replay.  A candidate-wide INFEASIBLE conclusion, however, is a
+    solver proof obligation, not a local witness.  Once it crosses the mutable
+    JSON checkpoint boundary it must be treated as a performance cache entry, not
+    as proof evidence.  Otherwise a stale or edited checkpoint can turn an
+    unresolved/better candidate into a monotone-pruning certificate and make a
+    resumed run publish a false terminal CERTIFIED result.
+    """
+
+    candidates = state.get("candidates")
+    if not isinstance(candidates, Mapping):
+        return False
+
+    timestamp = now_iso()
+    sanitized_keys: list[str] = []
+    for raw_key, raw_record in list(dict(candidates).items()):
+        if not isinstance(raw_record, Mapping):
+            continue
+        if str(raw_record.get("status", "")) != "INFEASIBLE":
+            continue
+        key = str(raw_key)
+        record = dict(raw_record)
+        prior_proof_summary = record.get("proof_summary")
+        record["status"] = "UNKNOWN"
+        record["updated_at"] = timestamp
+        # Keep finished_at populated: the resume-state schema treats every
+        # non-RUNNING status, including UNKNOWN, as a completed attempt record.
+        if record.get("finished_at") is None:
+            record["finished_at"] = timestamp
+        record["proof_summary"] = {
+            "resume_sanitized_from_status": "INFEASIBLE",
+            "resume_sanitized_reason": _RESUME_INFEASIBLE_REPLAY_REASON,
+            "prior_proof_summary_digest": _canonical_digest(prior_proof_summary),
+        }
+        record["exact_safe_cuts"] = []
+        record["loaded_exact_safe_cut_count"] = 0
+        record["generated_exact_safe_cut_count"] = 0
+        record.pop("solution", None)
+        candidates[key] = record
+        sanitized_keys.append(key)
+
+    if not sanitized_keys:
+        return False
+
+    # Any terminal full-frontier evidence that relied on checkpoint-loaded
+    # INFEASIBLE statuses is no longer authoritative.  The outer search may still
+    # reuse local CERTIFIED witnesses, but it must re-establish every infeasible
+    # frontier exclusion in the current process before publishing CERTIFIED.
+    state["final_result"] = None
+    state["final_status"] = None
+    state["last_stop_reason"] = None
+    state["terminal_frontier_evidence"] = None
+    audit_log = state.setdefault("audit_log", [])
+    if isinstance(audit_log, list):
+        audit_log.append(
+            {
+                "ts": timestamp,
+                "event": "RESUME_INFEASIBLE_EVIDENCE_REPLAY_REQUIRED",
+                "candidate_keys": sorted(sanitized_keys),
+                "reason": _RESUME_INFEASIBLE_REPLAY_REASON,
+            }
+        )
+    state["updated_at"] = timestamp
+    return True
 
 
 def _validate_candidate_record(
@@ -1618,6 +1807,7 @@ def _validate_resume_state(
             ghost_pick_reason = _terminal_candidate_ghost_pick_binding_violation(
                 state,
                 final_result=final_result_for_project,
+                grid_dimensions=grid_dimensions,
             )
             if ghost_pick_reason is not None:
                 return ghost_pick_reason
@@ -1813,6 +2003,7 @@ def terminal_certified_final_result_violation_for_project(
         return _terminal_candidate_ghost_pick_binding_violation(
             state,
             final_result=final_result,
+            grid_dimensions=grid_dimensions,
         )
     return None
 
@@ -1903,6 +2094,7 @@ class ExactCampaign:
                         ):
                             state["last_stop_reason"] = None
                             state["final_status"] = None
+                        _sanitize_resume_state_for_untrusted_infeasible_evidence(state)
                         return cls(
                             project_root=project_root,
                             path=path,
