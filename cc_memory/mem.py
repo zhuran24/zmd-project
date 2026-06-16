@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
+import os
 import re
 import sqlite3
 from collections import defaultdict, deque
@@ -27,6 +28,43 @@ MAX_EXPORT_BYTES = 24_576
 
 def now() -> str:
     return _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def session_id_for(args: argparse.Namespace) -> str:
+    """Session identity: explicit --session, else Claude Code's per-session id, else anonymous."""
+    sid = (getattr(args, "session", None) or os.environ.get("CLAUDE_CODE_SESSION_ID") or "").strip()
+    return sid or "anonymous"
+
+
+def record_mutation(con: sqlite3.Connection, session_id: str, op: str, target_type: str, target_id: str) -> None:
+    con.execute(
+        "INSERT INTO mutations(session_id,created_at,op,target_type,target_id) VALUES(?,?,?,?,?)",
+        (session_id, now(), op, target_type, target_id),
+    )
+
+
+def session_delta(con: sqlite3.Connection, session_id: str) -> list[sqlite3.Row] | None:
+    """Mutations by OTHER sessions since this session's last boot.
+
+    Returns None when the session has no watermark yet — treat as a fresh session:
+    it loaded the latest memory, so no change report is needed (per owner design)."""
+    row = con.execute("SELECT last_seen_mutation_id FROM read_watermarks WHERE session_id=?", (session_id,)).fetchone()
+    if row is None:
+        return None
+    return list(con.execute(
+        "SELECT * FROM mutations WHERE id > ? AND session_id <> ? ORDER BY id",
+        (row["last_seen_mutation_id"], session_id),
+    ))
+
+
+def touch_watermark(con: sqlite3.Connection, session_id: str) -> None:
+    """Mark this session as caught up to the latest mutation."""
+    mid = int(con.execute("SELECT COALESCE(MAX(id), 0) AS m FROM mutations").fetchone()["m"])
+    con.execute(
+        "INSERT INTO read_watermarks(session_id,last_seen_mutation_id,last_query_at) VALUES(?,?,?) "
+        "ON CONFLICT(session_id) DO UPDATE SET last_seen_mutation_id=excluded.last_seen_mutation_id, last_query_at=excluded.last_query_at",
+        (session_id, mid, now()),
+    )
 
 
 def norm(value: str) -> str:
@@ -142,6 +180,19 @@ def init_schema(con: sqlite3.Connection, *, reset: bool = False) -> None:
             affected_json TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'proposal',
             FOREIGN KEY(event_id) REFERENCES events(id)
+        );
+        CREATE TABLE IF NOT EXISTS mutations(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            op TEXT NOT NULL,
+            target_type TEXT,
+            target_id TEXT
+        );
+        CREATE TABLE IF NOT EXISTS read_watermarks(
+            session_id TEXT PRIMARY KEY,
+            last_seen_mutation_id INTEGER NOT NULL DEFAULT 0,
+            last_query_at TEXT NOT NULL
         );
         """
     )
@@ -419,6 +470,21 @@ def cmd_boot(args: argparse.Namespace) -> int:
     print(f"status: {'OK' if rc == 0 else 'FAIL'}")
     print(" ".join(f"{k}={v}" for k, v in counts.items()))
     print("")
+    sid = session_id_for(args)
+    delta = session_delta(con, sid)
+    print("## Session")
+    print(f"- session: {sid}")
+    if delta is None:
+        print("- new session: no prior visit recorded — loaded latest memory, no change report needed")
+    elif not delta:
+        print("- no changes by other sessions since your last boot")
+    else:
+        print(f"- {len(delta)} change(s) by OTHER sessions since your last boot:")
+        for m in delta[:30]:
+            print(f"  - [{(m['session_id'] or '')[:8]}] {m['op']} {m['target_type']}:{m['target_id']}  ({m['created_at']})")
+        if len(delta) > 30:
+            print(f"  - ... {len(delta) - 30} more")
+    print("")
     pinned = list(con.execute("SELECT * FROM entries WHERE pinned=1 AND status='active' ORDER BY id LIMIT ?", (args.limit,)))
     print("## Read first")
     if not pinned:
@@ -437,6 +503,8 @@ def cmd_boot(args: argparse.Namespace) -> int:
     if rc:
         print("## Check failures")
         print("\n".join(check_lines))
+    touch_watermark(con, sid)
+    con.commit()
     return rc
 
 
@@ -523,6 +591,7 @@ def cmd_add_event(args: argparse.Namespace) -> int:
     init_schema(con)
     eid = args.id or f"evt-{_dt.datetime.now(_dt.timezone.utc).strftime('%Y%m%d%H%M%S')}"
     add_event_row(con, eid, args.source_type, args.summary or short(args.text, 100), args.text, {"manual": True})
+    record_mutation(con, session_id_for(args), "add-event", "event", eid)
     con.commit()
     print(eid)
     return 0
@@ -537,6 +606,7 @@ def cmd_set_fact(args: argparse.Namespace) -> int:
     if con.execute("SELECT 1 FROM facts WHERE id=?", (fact_id,)).fetchone() and not args.force:
         raise SystemExit(f"fact '{fact_id}' already exists; pass --force to overwrite or use a different --id")
     add_fact_row(con, fact_id, args.subject, args.predicate, args.value, status=args.status, confidence=args.confidence, source_event_id=args.event, metadata={"manual": True})
+    record_mutation(con, session_id_for(args), "set-fact", "fact", fact_id)
     con.commit()
     print(f"fact:{fact_id}")
     return 0
@@ -560,6 +630,7 @@ def cmd_add_entry(args: argparse.Namespace) -> int:
             raise SystemExit(f"unknown dependency: {dep}")
         ttyp, tid = resolved
         add_edge_row(con, "entry", entry_id, "DEPENDS_ON", ttyp, tid, reason="add-entry --depends-on")
+    record_mutation(con, session_id_for(args), "add-entry", "entry", entry_id)
     con.commit()
     print(f"entry:{entry_id}")
     return 0
@@ -574,6 +645,7 @@ def cmd_link(args: argparse.Namespace) -> int:
     if not tgt:
         raise SystemExit(f"unknown target: {args.target}")
     add_edge_row(con, src[0], src[1], args.type, tgt[0], tgt[1], reason=args.reason or "manual link")
+    record_mutation(con, session_id_for(args), "link", "edge", f"{src[1]}->{tgt[1]}")
     con.commit()
     print(f"{src[0]}:{src[1]} --{args.type.upper()}--> {tgt[0]}:{tgt[1]}")
     return 0
@@ -621,6 +693,7 @@ def make_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Slim SQLite memory system")
     p.add_argument("--db", type=Path, default=DEFAULT_DB)
     p.add_argument("--export", type=Path, default=DEFAULT_EXPORT)
+    p.add_argument("--session", default=None, help="session id (defaults to $CLAUDE_CODE_SESSION_ID, else 'anonymous')")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     sp = sub.add_parser("init")
