@@ -468,43 +468,6 @@ def check_research_audit_coverage(gate: GateResult) -> None:
     )
 
 
-def check_doc_subject_projections(gate: GateResult) -> None:
-    """[7/17] 文档/记忆主体投影同步检查.
-
-    项目知识树采用 subject/projection 架构: docs/subjects/*.md 是抽象主体,
-    cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json 登记 docs + memory projection slots.
-    这个 gate 只检查同步状态, 不自动写文件; 主体改动后运行
-    `python scripts/sync_doc_subjects.py --sync`, 投影改动后运行 `--absorb`.
-    """
-    print("\n[7/17] 文档/记忆主体投影同步检查")
-    script = PROJECT_ROOT / "scripts" / "sync_doc_subjects.py"
-    registry = PROJECT_ROOT / "cc_context" / "knowledge" / "PROJECT_SUBJECT_PROJECTIONS.json"
-    if not script.exists() or not registry.exists():
-        gate.warn("文档主体/投影同步脚本或 registry 不存在 — 跳过")
-        return
-    try:
-        result = subprocess.run(
-            [sys.executable, str(script), "--check"],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.block("doc subject projection check 超时 (>30s)")
-        return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 doc subject projection check")
-        return
-
-    out = (result.stdout or "").strip()
-    err = (result.stderr or "").strip()
-    if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "doc subject projection check passed")
-        return
-    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"doc subject projection check: {summary}")
-    for line in (out.splitlines() + err.splitlines())[:12]:
-        print(f"         {line}")
-
-
 def _run_script_check(gate: GateResult, *, title: str, script_name: str, ok_prefix: str, timeout: int = 30, args: list[str] | None = None) -> None:
     script = PROJECT_ROOT / "scripts" / script_name
     if not script.exists():
@@ -599,39 +562,6 @@ def check_publish_secret_scan(gate: GateResult) -> None:
         print(f"         {line}")
 
 
-def check_memory_tree_health(gate: GateResult) -> None:
-    """[11/17] 记忆树结构/currentness 检查."""
-    print("\n[11/17] 记忆树结构/currentness 检查")
-    script = PROJECT_ROOT / "scripts" / "check_memory_tree.py"
-    if not script.exists():
-        gate.block("memory tree check 脚本不存在: scripts/check_memory_tree.py")
-        return
-    try:
-        args = []
-        if (PROJECT_ROOT / "_cc_live_memory").exists() or (PROJECT_ROOT.parent / "_cc_live_memory").exists():
-            args.append("--require-live-mirror")
-        result = subprocess.run(
-            [sys.executable, str(script), *args],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.block("memory tree check 超时 (>30s)")
-        return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 memory tree check")
-        return
-
-    out = (result.stdout or "").strip()
-    err = (result.stderr or "").strip()
-    if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "memory tree check passed")
-        return
-    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"memory tree check: {summary}")
-    for line in (out.splitlines() + err.splitlines())[:16]:
-        print(f"         {line}")
-
-
 MYPY_STRICT_TARGETS = [
     # GPT v4 follow-up G2/G3/G4: cut lifecycle + 求解核心两个大文件都进 strict gate.
     # 历史类型错全清 (master_model 69 错, benders_loop 8 错), 由 _Any annotation
@@ -641,45 +571,6 @@ MYPY_STRICT_TARGETS = [
     "src/models/master_model.py",
     "src/search/benders_loop.py",
 ]
-
-
-def check_doc_tree_completeness(gate: GateResult) -> None:
-    """[8/17] 文档树完整收尾检查.
-
-    这层不是语义 NLP 审查, 而是 structural closeout gate: docs surface
-    manifest、subject/projection registry、无未登记 projection block、所有 subject
-    field 至少有一个 concrete projection。
-    """
-    print("\n[8/17] 文档树完整收尾检查")
-    script = PROJECT_ROOT / "scripts" / "check_doc_tree_completeness.py"
-    manifest = PROJECT_ROOT / "docs" / "DOC_TREE_COMPLETENESS.json"
-    if not script.exists() or not manifest.exists():
-        gate.warn("文档树完整收尾脚本或 manifest 不存在 — 跳过")
-        return
-    try:
-        args = []
-        if (PROJECT_ROOT / "_cc_live_memory").exists() or (PROJECT_ROOT.parent / "_cc_live_memory").exists():
-            args.append("--require-live-mirror")
-        result = subprocess.run(
-            [sys.executable, str(script), *args],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
-        gate.block("doc tree completeness check 超时 (>30s)")
-        return
-    except FileNotFoundError:
-        gate.warn("python 不可用 — 跳过 doc tree completeness check")
-        return
-
-    out = (result.stdout or "").strip()
-    err = (result.stderr or "").strip()
-    if result.returncode == 0:
-        gate.ok(out.splitlines()[-1] if out else "doc tree completeness check passed")
-        return
-    summary = out.splitlines()[0] if out else (err.splitlines()[0] if err else "non-zero exit")
-    gate.block(f"doc tree completeness check: {summary}")
-    for line in (out.splitlines() + err.splitlines())[:12]:
-        print(f"         {line}")
 
 
 def check_mypy(gate: GateResult) -> None:
@@ -837,11 +728,8 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_r
     check_ai_safety_contract(gate)
     check_exact_exploratory_isolation(gate)
     check_research_audit_coverage(gate)
-    check_doc_subject_projections(gate)
-    check_doc_tree_completeness(gate)
     check_line_ending_policy(gate)
     check_publish_secret_scan(gate)
-    check_memory_tree_health(gate)
     check_artifact_boundaries(gate)
     check_phase_review_gate(gate)
     check_p1_2_proof_obligations(gate)

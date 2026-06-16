@@ -4,9 +4,6 @@
   "required_lf_globs": [
     ".gitattributes",
     ".github/workflows/*.yml",
-    ".githooks/*",
-    "cc_context/knowledge/*.json",
-    "cc_context/knowledge/*.md",
     "data/external_artifacts.json",
     "data/line_ending_policy.json",
     "data/artifact_boundaries.json",
@@ -26,7 +23,6 @@
   "allowed_crlf_historical_globs": [
     "BORROWED_COMPONENTS.md",
     "CHANGELOG.md",
-    "RESTORE.md",
     ".artifacts/**"
   ]
 }

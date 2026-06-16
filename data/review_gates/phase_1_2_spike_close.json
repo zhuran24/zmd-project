@@ -382,16 +382,8 @@
       "contains": "owner manual decision"
     },
     {
-      "path": "CLAUDE.md",
-      "contains": "owner-maintained outside the repo"
-    },
-    {
       "path": "README.md",
       "contains": "owner-maintained outside the repo"
-    },
-    {
-      "path": "cc_context/review/receipts/README.md",
-      "contains": "informational"
     }
   ],
   "source_boundaries": [
