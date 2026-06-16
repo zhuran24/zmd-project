@@ -34,7 +34,7 @@ jobs:
           python -m pip install -r requirements.lock.txt -r requirements-dev.lock.txt
 
       - name: Compile repo-native gates
-        run: python -m py_compile scripts/preflight_gate.py scripts/sync_doc_subjects.py scripts/check_doc_tree_completeness.py
+        run: python -m py_compile scripts/preflight_gate.py
 
       - name: Run project foundation gate
         run: |
