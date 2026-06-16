@@ -12,6 +12,7 @@ node_modules / .venv / .upstream_clones / *.pyc / 本系列输出 zip / GPT prom
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -39,25 +40,27 @@ EXCLUDED_DIR_NAMES = {
     # 外发产物堆放区: 历史 snapshot 包 (sha 唯一名副本) + GPT 交付目录。
     # 入包 = 自引用套娃, 2026-06-12 实测包从 54MB 指数膨胀到 818MB。
     "补丁包",
-    # CC/协作/外审工件区: 审查 finding 历史 (algoaudit_*.md) + 八面台账
-    # (p1_2_closure_evidence.md) + 记忆树 (cc_context/memory) + graphify 地图。
-    # 入包 = 把"我们审过什么 / 分了哪几个面 / 找到过哪些 bug / 连零计到几"
-    # 全泄露给外审 GPT, 破坏白板审前提与外审独立性。
-    # 2026-06-16 实证: 旧包 4646 文件里 cc_context 占 2164 (含 72 份 algoaudit
-    # finding 详表)。外审只需项目源 (main.py / src / rules / specs / data)。
-    # 要给 GPT 导航地图须单独显式加 (剥掉 god_nodes 风险提示等引导成分)。
-    "cc_context",
 }
 EXCLUDED_FILE_SUFFIXES = {".pyc"}
 
+# 白板 / 干净审查模式 (--clean) 额外排除: cc_context 是 CC 协作 / 外审工件区
+# (审查 finding 历史 algoaudit_*.md + 八面台账 p1_2_closure_evidence.md +
+# 记忆树 cc_context/memory + graphify 地图)。常规外发默认全打 (除缓存); 但白板 /
+# 干净审查要排除它, 否则 "我们审过什么 / 分了哪几个面 / 找到过哪些 bug / 连零计到
+# 几" 会随包泄露给外审 GPT, 破坏白板审的独立性。
+CLEAN_EXTRA_EXCLUDED_DIR_NAMES = {"cc_context"}
 
-def iter_package_files() -> list[Path]:
+
+def iter_package_files(exclude_cc_context: bool = False) -> list[Path]:
     files: list[Path] = []
+    excluded_dirs = EXCLUDED_DIR_NAMES | (
+        CLEAN_EXTRA_EXCLUDED_DIR_NAMES if exclude_cc_context else set()
+    )
     for path in sorted(REPO_ROOT.rglob("*")):
         if not path.is_file():
             continue
         rel = path.relative_to(REPO_ROOT)
-        if any(part in EXCLUDED_DIR_NAMES for part in rel.parts):
+        if any(part in excluded_dirs for part in rel.parts):
             continue
         if path.suffix in EXCLUDED_FILE_SUFFIXES:
             continue
@@ -82,7 +85,15 @@ def git_head() -> str:
         return "unknown"
 
 
-def build_info_payload(file_count: int) -> str:
+def build_info_payload(file_count: int, exclude_cc_context: bool = False) -> str:
+    excluded_dirs = EXCLUDED_DIR_NAMES | (
+        CLEAN_EXTRA_EXCLUDED_DIR_NAMES if exclude_cc_context else set()
+    )
+    rule = (
+        "clean review (full project except caches AND cc_context)"
+        if exclude_cc_context
+        else "full project except caches (owner ruling 2026-06-10)"
+    )
     return json.dumps(
         {
             "package": f"{OUT_STEM}_single.zip",
@@ -90,8 +101,9 @@ def build_info_payload(file_count: int) -> str:
             "built_on": date.today().isoformat(),
             "git_head": git_head(),
             "file_count": file_count,
-            "packaging_rule": "full project except caches (owner ruling 2026-06-10)",
-            "excluded_dir_names": sorted(EXCLUDED_DIR_NAMES),
+            "clean_review_mode": exclude_cc_context,
+            "packaging_rule": rule,
+            "excluded_dir_names": sorted(excluded_dirs),
             "known_absent_artifact": "data/preprocessed/candidate_placements.json (53.6MB, externalized; causes ~20 known environmental test failures)",
             "build_script": "cc_context/review/build_v80_single_win.py",
         },
@@ -101,7 +113,16 @@ def build_info_payload(file_count: int) -> str:
 
 
 def main() -> int:
-    files = iter_package_files()
+    ap = argparse.ArgumentParser(description="打 GPT 外发单包 (默认: 除缓存全打)。")
+    ap.add_argument(
+        "--clean",
+        action="store_true",
+        help="白板 / 干净审查模式: 额外排除 cc_context (协作 / 审查工件区), "
+        "避免审查史 / 八面台账 / finding 泄露给外审 GPT。默认关 = 除缓存全打。",
+    )
+    args = ap.parse_args()
+
+    files = iter_package_files(exclude_cc_context=args.clean)
     OUT_DIR.mkdir(exist_ok=True)
     out = OUT_DIR / (OUT_STEM + "_single.zip")
     if out.exists():
@@ -109,9 +130,13 @@ def main() -> int:
     with zipfile.ZipFile(out, "w", zipfile.ZIP_LZMA) as zf:
         for p in files:
             zf.write(p, "project/" + p.relative_to(REPO_ROOT).as_posix())
-        zf.writestr("PACKAGE_BUILD_INFO.json", build_info_payload(len(files)))
+        zf.writestr(
+            "PACKAGE_BUILD_INFO.json",
+            build_info_payload(len(files), exclude_cc_context=args.clean),
+        )
     print(f"package: {out}")
     print(f"files: {len(files)}")
+    print(f"clean_mode: {args.clean}")
     print(f"zip_mb: {out.stat().st_size / 1024 / 1024:.1f}")
     print(f"sha256: {hashlib.sha256(out.read_bytes()).hexdigest()}")
     return 0

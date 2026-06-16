@@ -28,5 +28,6 @@ zmd 仓库有一套 **graphify 代码语义地图**子系统(2026-06-14 落地),
 ## 给 GPT 外审 / 白板审时(2026-06-16)
 - **owner 定位:graphify 是专门配给我(Claude)当代码地图的**——理解结构 / 定位 / 判 finding 可达性时**该主动"先查图再 grep"**,别埋头 grep 或忘了它在(2026-06-16 实测 god_nodes 全是本项目承重墙:`MasterPlacementModel` / `Cut` / `CoordinateExactMasterDelegate` / `RoutingSubproblem` / `run_outer_search`;11684 节点 / 27377 边 / 588 社区)。
 - **GPT 沙盒里没有 graphify MCP**:它只有随包的文件。地图成品 `SEMANTIC_MAP.md` + `community_semantics.json` 进 git,`graph.json` 本体 gitignore + graphify.exe 在仓库外。
-- **默认不进外审包**:graphify 随 `cc_context/` 整体被 build 排除(见 [[no-gpt-packaging-rules]] 的 cc_context 污染修复)。它是**我方**工具(收 GPT finding 后判可达性 / 定位 / 看 god_nodes 风险中心),**不塞进给 GPT 的白板 prompt**——喂 god_nodes = 告诉它"哪里重要" = 引导,破坏白板。
-- 要给 GPT "找路",须**单独显式**做一个**纯导航版**(代码在哪 / 入口 / 调用骨架),剥掉 god_nodes 等"哪里重要"的引导成分,再加进包。白板审默认不给(让它自己发现结构)。
+- **graphify 是我方工具,不塞进给 GPT 的 prompt**:它帮我(收 GPT finding 后判可达性 / 定位 / 看 god_nodes 风险中心),**喂 god_nodes 给 GPT = 告诉它"哪里重要" = 引导,破坏白板**。
+- **在不在外审包里 = 看打包模式**:常规外发**除缓存全打**(默认),地图成品随 `cc_context/` 在包里没问题;**白板 / 干净审查**用 `build_v80_single_win.py --clean` 打干净包,会排除整个 `cc_context/`(含 graphify 地图 + 审查史),正好不给 GPT 喂结构(见 [[no-gpt-packaging-rules]])。
+- 要主动给 GPT "找路",须**单独显式**做一个**纯导航版**(代码在哪 / 入口 / 调用骨架),剥掉 god_nodes 等"哪里重要"的引导成分,再加进包。白板审默认不给(让它自己发现结构)。
