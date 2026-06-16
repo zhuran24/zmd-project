@@ -1,0 +1,827 @@
+{
+  "summary": {
+    "anchors_run": 8,
+    "anchor_infeasible_count": 7,
+    "anchor_status_summary": {
+      "interior_22_28": "INFEASIBLE,INFEASIBLE,INFEASIBLE",
+      "interior_10_10": "INFEASIBLE,INFEASIBLE,INFEASIBLE",
+      "interior_44_30": "INFEASIBLE,INFEASIBLE,INFEASIBLE",
+      "interior_15_40": "INFEASIBLE,INFEASIBLE,INFEASIBLE",
+      "corner_0_0_NEGATIVE": "NO_PATCH",
+      "small_10x10": "INFEASIBLE,INFEASIBLE,INFEASIBLE",
+      "small_15x10": "INFEASIBLE,INFEASIBLE,INFEASIBLE",
+      "small_15x15": "INFEASIBLE,INFEASIBLE,INFEASIBLE"
+    },
+    "solve_wall_p95_s": 2.538,
+    "var_count_p95": 34758,
+    "constraint_count_p95": 118283,
+    "solve_wall_max_s": 2.939,
+    "var_count_max": 42060,
+    "constraint_count_max": 148455,
+    "patches_total": 21
+  },
+  "results": [
+    {
+      "label": "interior_22_28",
+      "anchor": [
+        22,
+        28
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 87.31479466200108,
+      "patches": [
+        {
+          "patch_id": "cluster_7_r8",
+          "kind": "cluster",
+          "bbox": [
+            0,
+            41,
+            41,
+            58
+          ],
+          "cells": 756,
+          "patch_ports": 119,
+          "assumptions": 64,
+          "build_wall_s": 1.358,
+          "solve_wall_s": 2.538,
+          "var_count": 34758,
+          "constraint_count": 118283,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 9,
+              "unconditional_links": 0,
+              "blocked_ports": 110,
+              "patch_ports": 119
+            },
+            "wall_build_s": 1.358,
+            "var_count": 34758,
+            "constraint_count": 118283,
+            "wall_solve_s": 2.538,
+            "solver_status": "INFEASIBLE",
+            "branches": 4438,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_H_56_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            0,
+            51,
+            69,
+            61
+          ],
+          "cells": 770,
+          "patch_ports": 107,
+          "assumptions": 56,
+          "build_wall_s": 0.334,
+          "solve_wall_s": 1.858,
+          "var_count": 22552,
+          "constraint_count": 74775,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 7,
+              "unconditional_links": 0,
+              "blocked_ports": 100,
+              "patch_ports": 107
+            },
+            "wall_build_s": 0.334,
+            "var_count": 22552,
+            "constraint_count": 74775,
+            "wall_solve_s": 1.858,
+            "solver_status": "INFEASIBLE",
+            "branches": 4274,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_H_56_r3",
+          "kind": "separator_strip",
+          "bbox": [
+            0,
+            53,
+            69,
+            59
+          ],
+          "cells": 490,
+          "patch_ports": 63,
+          "assumptions": 42,
+          "build_wall_s": 0.083,
+          "solve_wall_s": 1.012,
+          "var_count": 6122,
+          "constraint_count": 16774,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 3,
+              "unconditional_links": 0,
+              "blocked_ports": 60,
+              "patch_ports": 63
+            },
+            "wall_build_s": 0.083,
+            "var_count": 6122,
+            "constraint_count": 16774,
+            "wall_solve_s": 1.012,
+            "solver_status": "INFEASIBLE",
+            "branches": 10340,
+            "conflicts": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "interior_10_10",
+      "anchor": [
+        10,
+        10
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 89.46894835398416,
+      "patches": [
+        {
+          "patch_id": "strip_V_41_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            36,
+            0,
+            46,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 81,
+          "assumptions": 32,
+          "build_wall_s": 0.067,
+          "solve_wall_s": 0.562,
+          "var_count": 4744,
+          "constraint_count": 12674,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 0,
+              "unconditional_links": 0,
+              "blocked_ports": 81,
+              "patch_ports": 81
+            },
+            "wall_build_s": 0.067,
+            "var_count": 4744,
+            "constraint_count": 12674,
+            "wall_solve_s": 0.562,
+            "solver_status": "INFEASIBLE",
+            "branches": 8208,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_40_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            35,
+            0,
+            45,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 71,
+          "assumptions": 28,
+          "build_wall_s": 0.251,
+          "solve_wall_s": 1.573,
+          "var_count": 17204,
+          "constraint_count": 57853,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 0,
+              "unconditional_links": 0,
+              "blocked_ports": 71,
+              "patch_ports": 71
+            },
+            "wall_build_s": 0.251,
+            "var_count": 17204,
+            "constraint_count": 57853,
+            "wall_solve_s": 1.573,
+            "solver_status": "INFEASIBLE",
+            "branches": 4424,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_39_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            34,
+            0,
+            44,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 71,
+          "assumptions": 29,
+          "build_wall_s": 0.48,
+          "solve_wall_s": 2.322,
+          "var_count": 29669,
+          "constraint_count": 103196,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 0,
+              "unconditional_links": 0,
+              "blocked_ports": 71,
+              "patch_ports": 71
+            },
+            "wall_build_s": 0.48,
+            "var_count": 29669,
+            "constraint_count": 103196,
+            "wall_solve_s": 2.322,
+            "solver_status": "INFEASIBLE",
+            "branches": 3464,
+            "conflicts": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "interior_44_30",
+      "anchor": [
+        44,
+        30
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 89.7229297440208,
+      "patches": [
+        {
+          "patch_id": "strip_V_35_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            30,
+            0,
+            40,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 75,
+          "assumptions": 27,
+          "build_wall_s": 0.028,
+          "solve_wall_s": 0.002,
+          "var_count": 1016,
+          "constraint_count": 1847,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 2,
+              "unconditional_links": 0,
+              "blocked_ports": 73,
+              "patch_ports": 75
+            },
+            "wall_build_s": 0.028,
+            "var_count": 1016,
+            "constraint_count": 1847,
+            "wall_solve_s": 0.002,
+            "solver_status": "INFEASIBLE",
+            "branches": 228,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_38_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            33,
+            0,
+            43,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 92,
+          "assumptions": 29,
+          "build_wall_s": 0.088,
+          "solve_wall_s": 0.576,
+          "var_count": 5730,
+          "constraint_count": 15279,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 2,
+              "unconditional_links": 0,
+              "blocked_ports": 90,
+              "patch_ports": 92
+            },
+            "wall_build_s": 0.088,
+            "var_count": 5730,
+            "constraint_count": 15279,
+            "wall_solve_s": 0.576,
+            "solver_status": "INFEASIBLE",
+            "branches": 8512,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_38_r3",
+          "kind": "separator_strip",
+          "bbox": [
+            35,
+            0,
+            41,
+            69
+          ],
+          "cells": 490,
+          "patch_ports": 61,
+          "assumptions": 26,
+          "build_wall_s": 0.007,
+          "solve_wall_s": 0.001,
+          "var_count": 141,
+          "constraint_count": 63,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 1,
+              "unconditional_links": 0,
+              "blocked_ports": 60,
+              "patch_ports": 61
+            },
+            "wall_build_s": 0.007,
+            "var_count": 141,
+            "constraint_count": 63,
+            "wall_solve_s": 0.001,
+            "solver_status": "INFEASIBLE",
+            "branches": 228,
+            "conflicts": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "interior_15_40",
+      "anchor": [
+        15,
+        40
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 88.68565724600921,
+      "patches": [
+        {
+          "patch_id": "strip_H_59_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            0,
+            54,
+            69,
+            64
+          ],
+          "cells": 770,
+          "patch_ports": 112,
+          "assumptions": 50,
+          "build_wall_s": 0.501,
+          "solve_wall_s": 1.968,
+          "var_count": 29883,
+          "constraint_count": 92144,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 13,
+              "unconditional_links": 0,
+              "blocked_ports": 99,
+              "patch_ports": 112
+            },
+            "wall_build_s": 0.501,
+            "var_count": 29883,
+            "constraint_count": 92144,
+            "wall_solve_s": 1.968,
+            "solver_status": "INFEASIBLE",
+            "branches": 5118,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_H_59_r3",
+          "kind": "separator_strip",
+          "bbox": [
+            0,
+            56,
+            69,
+            62
+          ],
+          "cells": 490,
+          "patch_ports": 63,
+          "assumptions": 32,
+          "build_wall_s": 0.996,
+          "solve_wall_s": 0.789,
+          "var_count": 6874,
+          "constraint_count": 17792,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 4,
+              "unconditional_links": 0,
+              "blocked_ports": 59,
+              "patch_ports": 63
+            },
+            "wall_build_s": 0.996,
+            "var_count": 6874,
+            "constraint_count": 17792,
+            "wall_solve_s": 0.789,
+            "solver_status": "INFEASIBLE",
+            "branches": 8360,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_H_60_r3",
+          "kind": "separator_strip",
+          "bbox": [
+            0,
+            57,
+            69,
+            63
+          ],
+          "cells": 490,
+          "patch_ports": 63,
+          "assumptions": 31,
+          "build_wall_s": 0.097,
+          "solve_wall_s": 0.066,
+          "var_count": 5316,
+          "constraint_count": 12100,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 5,
+              "unconditional_links": 0,
+              "blocked_ports": 58,
+              "patch_ports": 63
+            },
+            "wall_build_s": 0.097,
+            "var_count": 5316,
+            "constraint_count": 12100,
+            "wall_solve_s": 0.066,
+            "solver_status": "INFEASIBLE",
+            "branches": 2510,
+            "conflicts": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "corner_0_0_NEGATIVE",
+      "anchor": [
+        0,
+        0
+      ],
+      "outer_status": "INFEASIBLE",
+      "elapsed_s": 55.47525112199946,
+      "patches": [],
+      "note": "no binding capture"
+    },
+    {
+      "label": "small_10x10",
+      "anchor": [
+        25,
+        25
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 98.48064917899319,
+      "patches": [
+        {
+          "patch_id": "strip_V_16_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            11,
+            0,
+            21,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 119,
+          "assumptions": 65,
+          "build_wall_s": 0.018,
+          "solve_wall_s": 0.001,
+          "var_count": 751,
+          "constraint_count": 1278,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 2,
+              "unconditional_links": 0,
+              "blocked_ports": 117,
+              "patch_ports": 119
+            },
+            "wall_build_s": 0.018,
+            "var_count": 751,
+            "constraint_count": 1278,
+            "wall_solve_s": 0.001,
+            "solver_status": "INFEASIBLE",
+            "branches": 228,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_18_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            13,
+            0,
+            23,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 109,
+          "assumptions": 57,
+          "build_wall_s": 0.026,
+          "solve_wall_s": 0.002,
+          "var_count": 1084,
+          "constraint_count": 1959,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 1,
+              "unconditional_links": 0,
+              "blocked_ports": 108,
+              "patch_ports": 109
+            },
+            "wall_build_s": 0.026,
+            "var_count": 1084,
+            "constraint_count": 1959,
+            "wall_solve_s": 0.002,
+            "solver_status": "INFEASIBLE",
+            "branches": 228,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_17_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            12,
+            0,
+            22,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 110,
+          "assumptions": 57,
+          "build_wall_s": 0.024,
+          "solve_wall_s": 0.001,
+          "var_count": 1009,
+          "constraint_count": 1885,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 2,
+              "unconditional_links": 0,
+              "blocked_ports": 108,
+              "patch_ports": 110
+            },
+            "wall_build_s": 0.024,
+            "var_count": 1009,
+            "constraint_count": 1885,
+            "wall_solve_s": 0.001,
+            "solver_status": "INFEASIBLE",
+            "branches": 152,
+            "conflicts": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "small_15x10",
+      "anchor": [
+        22,
+        28
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 94.99171649300843,
+      "patches": [
+        {
+          "patch_id": "cluster_7_r8",
+          "kind": "cluster",
+          "bbox": [
+            0,
+            46,
+            41,
+            64
+          ],
+          "cells": 798,
+          "patch_ports": 124,
+          "assumptions": 71,
+          "build_wall_s": 0.011,
+          "solve_wall_s": 0.001,
+          "var_count": 339,
+          "constraint_count": 590,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 2,
+              "unconditional_links": 0,
+              "blocked_ports": 122,
+              "patch_ports": 124
+            },
+            "wall_build_s": 0.01,
+            "var_count": 339,
+            "constraint_count": 590,
+            "wall_solve_s": 0.001,
+            "solver_status": "INFEASIBLE",
+            "branches": 76,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "cluster_6_r8",
+          "kind": "cluster",
+          "bbox": [
+            0,
+            35,
+            46,
+            52
+          ],
+          "cells": 846,
+          "patch_ports": 133,
+          "assumptions": 69,
+          "build_wall_s": 0.532,
+          "solve_wall_s": 2.519,
+          "var_count": 31458,
+          "constraint_count": 109658,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 6,
+              "unconditional_links": 0,
+              "blocked_ports": 127,
+              "patch_ports": 133
+            },
+            "wall_build_s": 0.532,
+            "var_count": 31458,
+            "constraint_count": 109658,
+            "wall_solve_s": 2.519,
+            "solver_status": "INFEASIBLE",
+            "branches": 3540,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_H_42_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            0,
+            37,
+            69,
+            47
+          ],
+          "cells": 770,
+          "patch_ports": 95,
+          "assumptions": 56,
+          "build_wall_s": 0.083,
+          "solve_wall_s": 0.618,
+          "var_count": 5491,
+          "constraint_count": 14297,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 3,
+              "unconditional_links": 0,
+              "blocked_ports": 92,
+              "patch_ports": 95
+            },
+            "wall_build_s": 0.083,
+            "var_count": 5491,
+            "constraint_count": 14297,
+            "wall_solve_s": 0.618,
+            "solver_status": "INFEASIBLE",
+            "branches": 8892,
+            "conflicts": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "small_15x15",
+      "anchor": [
+        22,
+        28
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 91.61867793501006,
+      "patches": [
+        {
+          "patch_id": "strip_V_41_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            36,
+            0,
+            46,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 94,
+          "assumptions": 30,
+          "build_wall_s": 0.075,
+          "solve_wall_s": 0.563,
+          "var_count": 4783,
+          "constraint_count": 12539,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 3,
+              "unconditional_links": 0,
+              "blocked_ports": 91,
+              "patch_ports": 94
+            },
+            "wall_build_s": 0.075,
+            "var_count": 4783,
+            "constraint_count": 12539,
+            "wall_solve_s": 0.563,
+            "solver_status": "INFEASIBLE",
+            "branches": 8436,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_38_r5",
+          "kind": "separator_strip",
+          "bbox": [
+            33,
+            0,
+            43,
+            69
+          ],
+          "cells": 770,
+          "patch_ports": 78,
+          "assumptions": 31,
+          "build_wall_s": 0.732,
+          "solve_wall_s": 2.939,
+          "var_count": 42060,
+          "constraint_count": 148455,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 2,
+              "unconditional_links": 0,
+              "blocked_ports": 76,
+              "patch_ports": 78
+            },
+            "wall_build_s": 0.732,
+            "var_count": 42060,
+            "constraint_count": 148455,
+            "wall_solve_s": 2.939,
+            "solver_status": "INFEASIBLE",
+            "branches": 2982,
+            "conflicts": 0
+          }
+        },
+        {
+          "patch_id": "strip_V_38_r3",
+          "kind": "separator_strip",
+          "bbox": [
+            35,
+            0,
+            41,
+            69
+          ],
+          "cells": 490,
+          "patch_ports": 45,
+          "assumptions": 18,
+          "build_wall_s": 0.263,
+          "solve_wall_s": 1.591,
+          "var_count": 17081,
+          "constraint_count": 57675,
+          "status": "INFEASIBLE",
+          "core_size": 1,
+          "stats": {
+            "port_adherence": {
+              "exact_links": 1,
+              "unconditional_links": 0,
+              "blocked_ports": 44,
+              "patch_ports": 45
+            },
+            "wall_build_s": 0.263,
+            "var_count": 17081,
+            "constraint_count": 57675,
+            "wall_solve_s": 1.591,
+            "solver_status": "INFEASIBLE",
+            "branches": 4424,
+            "conflicts": 0
+          }
+        }
+      ]
+    }
+  ]
+}

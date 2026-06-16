@@ -1,0 +1,27 @@
+# Line-ending policy: LF everywhere, in the repo AND the working tree.
+#
+# This repo pins SHA256 hashes of frozen artifacts (scripts/preflight_gate.py)
+# and enforces LF via scripts/check_line_endings.py + data/line_ending_policy.json.
+# Both read WORKING-TREE bytes, so any CRLF conversion on checkout (the Windows
+# core.autocrlf=true default) would change those bytes and break the pinned
+# hashes / the line-ending gate. `eol=lf` forces git to keep LF on checkout,
+# overriding core.autocrlf, so working-tree bytes stay stable on every platform.
+* text=auto eol=lf
+
+# Binary assets — never apply text/eol normalization.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.7z    binary
+*.zip   binary
+*.gz    binary
+*.tar   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+*.npy   binary
+*.bin   binary

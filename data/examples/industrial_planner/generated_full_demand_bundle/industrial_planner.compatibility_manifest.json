@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "target": "industrial_planner",
+    "export_mode": "one_way_lossy",
+    "generated_at": "2026-03-30T16:23:14Z",
+    "source_blueprint_version": "1.0.0",
+    "extensions": {
+      "source_facility_count": 273,
+      "source_routing_cell_count": 0,
+      "target_device_count": 279,
+      "exported_auxiliary_device_count": 6,
+      "base_id": "valley4_protocol_core",
+      "export_id": "ExactExport-4c3bc6df05c3",
+      "precise_resolution_count": 219,
+      "generic_fallback_count": 0,
+      "unresolved_facility_count": 0,
+      "commodity_translation_miss_count": 0,
+      "has_commodity_translation_miss": false,
+      "validation_is_import_compatible": true,
+      "validation_is_layout_healthy": true,
+      "clean_export": true
+    }
+  },
+  "target_capabilities": {
+    "supports_power_overlay": true,
+    "supports_exact_proof_metadata": false,
+    "supports_dual_layer_routing": "partial",
+    "supports_active_ports": true,
+    "supports_layout_editing": true,
+    "supports_persistence": true,
+    "supports_share_links": true,
+    "notes": [
+      "IndustrialPlanner is treated as a viewer/editor target, not as a certified proof sink.",
+      "The current exporter is one-way and may be lossy for generic facilities, dual-layer routing, and exact-only metadata."
+    ]
+  },
+  "direct_mappings": [
+    {
+      "classification": "direct",
+      "source_path": "facilities[].anchor",
+      "target_path": "devices[].origin",
+      "reason": "facility anchors are forwarded as device origins"
+    },
+    {
+      "classification": "direct",
+      "source_path": "facilities[].orientation",
+      "target_path": "devices[].rotation",
+      "reason": "canonical orientation is translated into IndustrialPlanner quarter-turn rotations"
+    },
+    {
+      "classification": "direct",
+      "source_path": "metadata.export_timestamp",
+      "target_path": "createdAt",
+      "reason": "canonical export timestamp is preserved in the target blueprint root"
+    }
+  ],
+  "lossy_mappings": [
+    {
+      "classification": "lossy",
+      "source_path": "facilities[].facility_type",
+      "target_path": "devices[].typeId",
+      "reason": "unresolved generic canonical facility templates fall back to representative IndustrialPlanner device ids with explicit warnings",
+      "target_value": {
+        "exported_facility_count": 273,
+        "generic_fallback_count": 0,
+        "unresolved_facility_count": 0
+      }
+    }
+  ],
+  "dropped_fields": [
+    {
+      "classification": "dropped",
+      "source_path": "metadata.benders_iterations",
+      "reason": "viewer/editor target does not carry exact-proof iteration metadata"
+    },
+    {
+      "classification": "dropped",
+      "source_path": "metadata.solve_time_seconds",
+      "reason": "viewer/editor target has no certified solve-time field"
+    },
+    {
+      "classification": "dropped",
+      "source_path": "objective_achieved.empty_rect",
+      "reason": "IndustrialPlanner blueprints do not model the certified empty-rectangle objective payload"
+    }
+  ],
+  "derived_mappings": [
+    {
+      "classification": "derived",
+      "source_path": "(export option)",
+      "target_path": "baseId",
+      "reason": "target blueprint baseId is chosen from exporter options instead of a canonical facility record"
+    },
+    {
+      "classification": "derived",
+      "source_path": "facilities[].active_ports[].commodity",
+      "target_path": "devices[].typeId",
+      "reason": "mapped canonical commodities are translated into upstream recipe evidence so semantically resolvable facilities can emit precise IndustrialPlanner machine families",
+      "target_value": {
+        "precise_resolution_count": 219
+      }
+    },
+    {
+      "classification": "derived",
+      "source_path": "facilities[boundary_storage_port].active_ports[].commodity",
+      "target_path": "devices[].config.*.itemId",
+      "reason": "boundary port config item ids are translated into the IndustrialPlanner / upstream namespace before serialization",
+      "target_value": {
+        "commodity_translation_miss_count": 0
+      }
+    },
+    {
+      "classification": "derived",
+      "source_path": "routing_network",
+      "target_path": "devices[]",
+      "reason": "routing cells are flattened into target-side logistics devices",
+      "target_value": {
+        "exported_routing_device_count": 0
+      }
+    }
+  ],
+  "warnings": []
+}

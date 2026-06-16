@@ -1,0 +1,2976 @@
+你是 power network / connectivity cut / geometric soundness / Liang-Barsky / BFS reachability / assumption verifier dispatch 审查员。Endfield Phase 1.2 P1.2B-F8 **Round 5** cross-check (commit `3b9c8b3`).
+
+# 任务背景 (最小)
+
+70×70 LBBD certified-exact, F8 拦 "facility 的 CoverSet 非空但 pole-jump BFS 从 protocol_core 不可达 → INFEASIBLE". 跟 F7 互斥 (F7 = CoverSet 空).
+
+# R4 → R5 diff (这次 review 的核心)
+
+R1 (4be1b60) NOT_GO → R2 base b9ab24a → R3 NOT_GO → R4 base 29b64d0 → R4 NOT_GO → **R5 base 3b9c8b3**.
+
+R4 base 修法 (must verify) — R4 4 finding 全 land:
+
+| R4 Finding | 类型 | R4 漏洞 | R5 修法 |
+|---|---|---|---|
+| #1 | CRITICAL | evaluator 漏 spec §6 protocol_core 位置 check, master 移走 pc 后 cut 仍 fire | evaluator 加 `_eval_check_protocol_core_position` helper: 检查 cert.protocol_core_cell 9×9 footprint 仍 owned by facility_type=protocol_core in state.cell_owner. Phase 1.2 fixture/早 phase (cell_owner 空) accept bounds-only |
+| #2 | CRITICAL | validator 用 cert.pole_jump_radius + cert.protocol_core_cell 直接 build graph, 没 cross-check canonical_rules. 恶意 cert (R=0.001) 可伪造 disconnect | 新 validator phase `_validate_source_of_truth_scalars`: cross-check pole_jump_radius == canonical power_coverage_radius + (when cell_owner 存) cross-check pc anchor footprint owned by protocol_core. 分 `_validate_pole_radius_sot` + `_validate_pc_anchor_sot` helper |
+| #3 | HIGH | `verify_protocol_core_position` cell_owner 空时盲目接受 bounds-only (early phase 攻击面) | acknowledge Phase 1.2 limitation: production state always 有 cell_owner (master place pc 早). 攻击面 zero under generator default-disabled gate. Phase 1.5+ wiring 严化 |
+| #4 | HIGH | `_parse_protocol_core_cell` 边界检查 `0 <= x + size <= 70` 漏负数 (x=-1, size=9 → 8 ∈ [0, 70]) | 加 explicit `x < 0 or y < 0 → ValueError` 在 upper bound 检查前 |
+
+Refactor (radon hygiene): evaluator D(27)→B(10), SoT C(15)→A(2), 加 8 helper. avg B(5.92) max C(14).
+
+验证状态 (commit 3b9c8b3):
+- 71 F8 + helper + verifier pytest (was 68, +3 R4 regression: protocol_core moved evaluator / forged radius validator / negative pc coord parse)
+- 2632 full pytest pass (was 2629, +3)
+- mypy strict 5 module 0 error
+- radon avg B(5.92), max C(14) (`_parse_facility_cells` / `_validate_scalars` / `validate_power_grid_reach` 都是 pre-existing C)
+- F8 共 4 round NOT_GO; R5 评估是否 close
+
+# Round 5 任务
+
+**主线 (verify R4 fix)** — 全文 cite file:line:
+1. `src/cuts/families/power_grid_reach.py:evaluate_geometric_power_grid_reach` + `_eval_check_protocol_core_position` — protocol_core move 后真 reject 吗? Hot path O(81) 接受吗?
+2. `src/cuts/families/power_grid_reach.py:_validate_source_of_truth_scalars` — 真 catch R=0.001 + 错 anchor? canonical_rules 缺时正确 fail-closed?
+3. `src/cuts/families/power_grid_reach.py:_parse_protocol_core_cell` 负数 reject 真生效? 边界 (x=0 / x=61 / x=62 / x=-1 / x=70) 都 correct?
+4. evaluator + validator + verifier 三层 (evaluator hot path, validator deep recompute, verifier attach-scope step 6) 是 defense-in-depth 还是 redundancy 浪费? 设计 sound?
+
+**R5 hidden bug hunt** — 极致 hostile, 最后机会:
+- R1-R4 累积 11 finding (4+4+3+4) — 是否有 finding 之间 interaction 漏 (e.g., R1 + R3 + R4 修法 stacked, 某 path 没全 cover)?
+- F8 cert 进 cut_store rotation, ghost 变 (master 重选), 现 attach 的 cut 怎么处理 (attach-scope 应 step 1-6 re-verify)?
+- canonical_rules 真数据没有 pole→pole jump radius 字段, R5 修法用 `power_coverage_radius` (pole→facility=5) 当 pole→pole jump radius (Phase 1.2 spec §1c 简化). 这个 simplification 是否真符合游戏物理? 实测玩家社区如何理解 pole-to-pole?
+- F8 是否真应该在 Phase 1.2 closeable? 4 round NOT_GO 是否暗示设计 fundamental 问题 (e.g., F8 应推迟 Phase 1.5+)?
+
+## Armor 规则
+
+- 不接受 vague hyperbole / GO ritual / 必 cite file:line
+- GO verdict 必先列 3 死法 + disprove (cite file:line)
+- 找不到 critical 必列 3 high-risk hypothesis disproved
+- **R5 特别**: 如果 R5 verdict 仍 NOT_GO, 必须明确指出"为什么 R4 没 catch" + 是否系统性 problem
+
+## R5 我预察到的 NEW gap
+
+R5-Gap N (4 round 后仍可能漏): F8 跟 F2/F4/F6/F7 3-round 收敛对比, F8 已 4 round. R5 还有 finding 意味着 design 复杂度高 (geometric / multi-cell footprint / cross-check chain) 还是有系统性盲点?
+
+R5-Gap O (canonical pole→pole vs pole→facility simplification): spec §1c 简化 "pole-to-pole = pole-to-facility radius" 是否真理? 5×5 pole→pole 看起来跟 power 网游戏物理一致, 但 caller-supplied + verifier 用 canonical pole→facility R 校验, 这是 implicit constraint, 应文档化.
+
+R5-Gap P (Phase 1.2 close criteria): F8 Phase 1.2 single-case scope 是否已经满足 "cell_owner != null, master_solution wired" 等 prerequisite? 若 production state 跟 fixture 不一致, 哪些 corner case 还会暴露?
+
+## Format
+
+```
+## Round 5 Verdict
+GO | GO_WITH_MINOR | CONCERN | NOT_GO (一行)
+
+## R4 fix verification (Finding #1/#2/#3/#4)
+- Finding #1 fix (evaluator protocol_core position check): LANDED / PARTIAL / REGRESSION — cite file:line
+- Finding #2 fix (validator SoT cross-check): LANDED / PARTIAL / REGRESSION — cite file:line
+- Finding #3 defer (Phase 1.2 bounds-only): ACCEPTED / DISPUTED — 详释
+- Finding #4 fix (negative coord parse): LANDED / PARTIAL / REGRESSION — cite file:line
+
+## R5 NEW Gap N/O/P
+- R5-Gap N (4-round 收敛慢): CONFIRMED / PARTIAL / REJECTED + 系统性 problem 判断
+- R5-Gap O (canonical pole→pole simplification): CONFIRMED / PARTIAL / REJECTED
+- R5-Gap P (Phase 1.2 close criteria): CONFIRMED / PARTIAL / REJECTED
+
+## Round 5 New findings (≥0; 没新 finding 也明确说)
+
+(if any)
+### Finding 1: [SEVERITY] file:line — title
+
+## Sanity (GO verdict 必 ≥3 disproved hypothesis 含 file:line)
+
+## 终结建议
+- close at this round (Phase 1.2 final)
+- 还需 R6
+- Phase 1.5+ defer items
+```
+
+# F8 spec (cut_family_specs/08_power_grid_reach.md v1.1)
+
+# Cut Family 8 — power_grid_reach (完整 spec, v3 新 family, F5 反例 owner)
+
+> **Status**: Day 17e v1.1 (2026-05-21) — Gemini round 16 finding B1 修
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3.2 + `../red_fixtures/F5_power_grid_disconnect.md` + `../cross_check/gemini_round_14` (F5 反例提出) + `../cross_check/gemini_round_15` (独立 family verdict) + `../cross_check/gemini_round_16` (B1 算法 unsound finding)
+> **Mode**: geometric (_FAMILY_MODE_MAP)
+> **Family_version**: v1.1 (ghost_blocks_line 改严格 line-segment AABB intersection)
+> **来源**: Gemini round 14 F5 反例 + round 15 Family 8 独立 family 推荐
+
+## 0. Changelog
+
+- **v1.0** (Day 17b, commit 1c757ff): F5 全局电力孤岛反例 owner.
+- **v1.1** (Day 17e/f): 修 2 round bug:
+  - 17e (Gemini round 16 B1): §5a `ghost_blocks_line` 算法简化版 "ghost 中心
+    点 ∩ line(p1, p2)" 绝对 unsound (线段可切 ghost 边角不过中心点 → False
+    Negative). 改严格 line-segment to AABB intersection (Liang-Barsky 裁剪).
+  - 17f (Gemini round 17 B1): §8 watcher v1.0 by_cell 只 carry candidate_pole_cells
+    (生成时 CoverSet). cell_owner 占的 cell 释放后变新 pole 候选时 watcher
+    不 trigger → False Positive 误剪. v1.1 改监听 `PoolPole ∩
+    BoundingBox(facility, R_conn)` 内所有合法 grid cell.
+
+## 1. 数学定义
+
+### 1a. Power network 连通性
+
+Power network 不是 belt 那种连续 free_cell graph, 是**离散 pole 跃迁 graph**:
+
+- Pole pose `q1`, `q2` 互联 iff geometric distance ≤ `R_conn` (e.g. R_conn=10)
+- protocol_core (全局电力枢纽) 是 source, 必须连到所有 powered facility 的
+  candidate pole
+- Power network = Graph G_power = (V_pole, E_jump), V_pole = candidate pole
+  poses + protocol_core, E_jump = pole 对 within R_conn (允许 placement)
+
+### 1b. Cut 形式
+
+Family 8 cut 表达:
+
+```
+∃ facility A with CoverSet(A) ⊆ V_pole_subset, V_pole_subset 不连到 protocol_core
+                                in G_power constrained by ghost
+            ⇒ INFEASIBLE (A 永远无法供电)
+```
+
+跟 Family 7 power_hitting_set 区别 (key!):
+- **Family 7**: A 的 CoverSet **空** (没 pole 候选, local 问题)
+- **Family 8**: A 的 CoverSet **非空** 但 candidate poles 跟 protocol_core
+  跨 ghost **不可达** (global connectivity 问题)
+
+### 1c. F5 反例 (Gemini round 14)
+
+- ghost 纵切宽 15 把 grid 切 Left/Right
+- protocol_core 在 Left (10, 10), crusher_A 在 Right (60, 60)
+- pole R_conn = 10, ghost 宽 15 → 任何 Left 的 pole 跟 Right 的 pole 距离 >
+  15 > 10, **不可跃迁**
+- Family 7 局部 CoverSet(crusher_A) 非空 (Right 区 pole 多) → Family 7 静默
+- Family 4 component_reach 看 **belt** graph, F5 belt 内部闭环 (crusher_A
+  + shop_B 内部连接) → Family 4 静默
+- Family 8 应拦: crusher_A 的 candidate pole 在 power graph 上不连到
+  protocol_core → INFEASIBLE
+
+### 1d. 跟 Family 4 component_reach 区别 (Gemini round 15 verdict)
+
+|  | Family 4 belt | Family 8 power |
+|---|---|---|
+| Graph V | free_cells | candidate pole poses + protocol_core |
+| Graph E | 相邻 free_cell | within R_conn distance |
+| Connectivity 判定 | BFS on free_cells | BFS on pole jump graph |
+| Capacity | binary reachability | binary reachability |
+| Schema 字段 | src_cell / sink_cell / separator_cells | source_pole_set / target_protocol_core / jump_radius / blocked_pole_cells |
+
+Gemini round 15 强烈支持独立 Family 8: 强行 generalize Family 4 会让 Schema
+变 union type, Validator 逻辑充满 `if-else`. **独立 family**.
+
+## 2. Soundness proof
+
+### 2a. Connectivity monotonicity
+
+state.free_cells 单调缩 (placement 加 cell_owner). pole candidate set 跟
+free_cells 一致单调缩 → power network connectivity 单调减弱. 若 ghost-bound
+state 下 BFS disconnect, 后续 state 仍 disconnect (单调保持).
+
+### 2b. F5 反例数学
+
+- ghost width = 15, pole R_conn = 10 → 任何 pole pair p1 ∈ Left, p2 ∈ Right
+  距离 ≥ ghost width = 15 > R_conn → E_jump(p1, p2) = False
+- Right 区 pole 集 P_R, Left 区 pole 集 P_L (含 protocol_core)
+- BFS from protocol_core ⊆ P_L, 终点不在 P_R → P_R 上的 facility 不可供电
+  → 任 A ∈ Right 区的 powered facility INFEASIBLE
+
+### 2c. Scope 限定
+
+connectivity 依赖:
+- ghost_rect (key, 切 power network 的根因)
+- canonical_rules `power_pole_radius` R_conn (source-of-truth)
+- protocol_core 位置 (master 端选, 通常固定)
+
+scope: ghost_rect_id 必非 GHOST_AGNOSTIC + active_assumption
+`power_pole_radius=R=10` + `protocol_core_position=(10,10)` (后者 state-conditioned
+或 source-of-truth, Day 18 决定).
+
+## 3. Cert payload schema
+
+```python
+@dataclass(frozen=True)
+class PowerGridReachCert:
+    """cert_kind = "power_pole_bfs_disconnect_witness"."""
+    facility_pose: Tuple[GroupId, PoseId]
+                                            # 受影响的 powered facility
+    facility_cells: Tuple[Tuple[int, int], ...]
+
+    # power network 描述
+    pole_radius: float                      # R_conn
+    protocol_core_cell: Tuple[int, int]     # 全局电力源
+    candidate_pole_poses: Tuple[int, ...]   # CoverSet(facility_pose) — 非空但孤立
+    candidate_pole_cells: Tuple[Tuple[int, int], ...]
+                                            # candidate pole 的 cell 位置 (替代 pose id)
+
+    # disconnect witness
+    source_component_pole_set: Tuple[int, ...]  # protocol_core 所在 power graph component
+    target_component_pole_set: Tuple[int, ...]  # facility candidate 所在 component
+    disconnect_witness_kind: Literal["ghost_blocks_jump", "exterior_blocks_jump"]
+    blocking_ghost_cells: Tuple[Tuple[int, int], ...]
+                                            # ghost 内挡住跃迁的 cells
+
+    # F8 specific: full power graph snapshot (canonical bytes, replay 重建)
+    power_graph_b64: str                    # 编码 (V_pole, E_jump) graph
+
+    # ghost 信息 (跟 scope.ghost_rect_id 一致, replay 二保)
+    ghost_rect_repr: Tuple[int, int, int, int]
+```
+
+## 4. Cut object 构造
+
+geometric mode, ghost-bound scope:
+
+```python
+cut = Cut(
+    family="power_grid_reach", literals=None,
+    geometric_payload=canonical_bytes(PowerGridReachCert.asdict()),
+    scope=CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),  # 必非 AGNOSTIC
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        source_digest=...,
+        artifact_hashes={...},
+        oracle_abstraction_version="power_grid_reach_v1",
+        active_assumptions=(
+            Assumption("power_pole_radius", value=f"R={pole_radius}"),
+            Assumption("protocol_core_position", value=f"({pc[0]},{pc[1]})"),
+        ),
+    ),
+    cert=OracleCert(cert_kind="power_pole_bfs_disconnect_witness", ...),
+)
+```
+
+## 5. Generator
+
+### 5a. Power network 构建
+
+```python
+def build_power_network(state: BState, pole_radius: float) -> "PowerGraph":
+    """V_pole = candidate pole poses 在 state.free_cells 上 + protocol_core.
+       E_jump = pole 对 distance ≤ pole_radius, 且 jump 路径不被 ghost block.
+
+    v1.1 (Gemini round 16 finding B1 critical sound bug 修):
+    ghost_blocks_line 必须用严格 line-segment to AABB intersection (Liang-Barsky
+    裁剪), 不能用 v1.0 简化版 "ghost 中心点 ∩ line(p1, p2)" — 后者漏判线段
+    切 ghost 边角不过中心点的 case (False Negative 漏发 cut).
+    """
+    candidate_poles = enumerate_candidate_poles(state.free_cells)
+    pc_cell = state.protocol_core_cell  # state field 或 canonical_rules constant
+    V = candidate_poles | {pc_cell}
+    E = set()
+    for p1 in V:
+        for p2 in V:
+            if p1 != p2 and euclidean_distance(p1, p2) <= pole_radius:
+                # v1.1 严格 AABB intersection: line-segment (p1, p2) 跟
+                # ghost rectangle 任意 intersection 都阻断 jump
+                if not line_segment_intersects_aabb(p1, p2, state.ghost_rect):
+                    E.add((p1, p2))
+    return PowerGraph(V, E)
+
+
+def line_segment_intersects_aabb(
+    p1: Tuple[float, float],
+    p2: Tuple[float, float],
+    rect: Tuple[int, int, int, int],  # (x, y, h, w)
+) -> bool:
+    """Liang-Barsky line clipping. 返 True iff line segment p1→p2 intersects
+    AABB rectangle (含边).
+
+    经典计算几何, sound: 任何切 ghost 边角的线段都被识别.
+    """
+    x_min, y_min = rect[0], rect[1]
+    x_max, y_max = rect[0] + rect[2], rect[1] + rect[3]
+
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+    t0, t1 = 0.0, 1.0
+
+    # 4 边 inside-test via parametric form
+    for p, q in [(-dx, p1[0] - x_min),
+                  ( dx, x_max - p1[0]),
+                  (-dy, p1[1] - y_min),
+                  ( dy, y_max - p1[1])]:
+        if p == 0:
+            if q < 0:
+                return False  # 平行边外
+        else:
+            r = q / p
+            if p < 0:
+                if r > t1:
+                    return False
+                if r > t0:
+                    t0 = r
+            else:
+                if r < t0:
+                    return False
+                if r < t1:
+                    t1 = r
+    return t0 <= t1  # 有交点 → block jump
+
+
+# (PoC scope: ghost_cells 离散版若仍需要, 可走 cell-by-cell DDA line raster
+# 化, 但严格 AABB intersection 已 sound 不需要 cell 版.)
+```
+
+### 5b. Disconnect detection
+
+```python
+class PowerGridReachOracle:
+    name = "power_grid_reach_v1"
+
+    def generate(self, state, master_solution) -> List[Cut]:
+        cuts = []
+        pole_radius = canonical_rules["power_pole"]["radius"]
+        power_graph = build_power_network(state, pole_radius)
+        pc_component = bfs_component(power_graph, state.protocol_core_cell)
+
+        for placed in master_solution.placed_facility_poses:
+            if not requires_power(placed.facility_group):
+                continue
+            # CoverSet(placed) — Family 7 已检查空集 case
+            cover_set = compute_cover_set(placed, state.ghost_rect, state.free_cells)
+            if not cover_set:
+                continue  # Family 7 handles, F8 skip
+
+            # F8 trigger: CoverSet 非空但全在不连 protocol_core 的 component
+            target_component = bfs_component(power_graph,
+                                              next(iter(cover_set)))  # 任 1 pole 的 component
+            if target_component != pc_component:
+                # Disconnect detected!
+                cert = PowerGridReachCert(
+                    facility_pose=(placed.facility_group, placed.pose_id),
+                    facility_cells=tuple(placed.cells),
+                    pole_radius=pole_radius,
+                    protocol_core_cell=state.protocol_core_cell,
+                    candidate_pole_poses=tuple(cover_set),
+                    candidate_pole_cells=tuple(pole_id_to_cell(p) for p in cover_set),
+                    source_component_pole_set=tuple(sorted(pc_component)),
+                    target_component_pole_set=tuple(sorted(target_component)),
+                    disconnect_witness_kind="ghost_blocks_jump",
+                    blocking_ghost_cells=tuple(sorted(state.ghost_cells)),
+                    power_graph_b64=encode_power_graph(power_graph),
+                    ghost_rect_repr=tuple(state.ghost_rect),
+                )
+                cuts.append(construct_power_grid_reach_cut(state, cert))
+        return cuts
+```
+
+### 5c. Minimize (Step 2)
+
+F8 v1.0 cut 已 minimal — facility_pose + ghost. ghost-witness 不需要 QuickXplain
+shrink (整 ghost 是 cause).
+
+v1.1 generalize 后 (cell_owner 挤压 power network): 走 QuickXplain on
+master_solution.placed_facility_poses subset.
+
+## 6. evaluate_geometric
+
+```python
+def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
+    """重算当前 power network 上 facility's CoverSet 是否仍跟 protocol_core
+    disconnect.
+
+    跟 Family 4 component_reach evaluate 同 pattern: 必须 hot path 重算
+    (state.free_cells / ghost 变可能 reconnect).
+    """
+    cert = decode_power_grid_reach_cert(cut.geometric_payload)
+    pole_radius = cert.pole_radius
+    pc_cell = cert.protocol_core_cell
+
+    # 重算 power network on current state
+    power_graph = build_power_network(state, pole_radius)
+    pc_component = bfs_component(power_graph, pc_cell)
+
+    # facility CoverSet 仍在不连 protocol_core 的 component?
+    facility_group, facility_pose_id = cert.facility_pose
+    if (facility_group, facility_pose_id) not in [
+        (g, p) for g, slots in state.groups.items() for _, p in slots.selected_poses
+    ]:
+        # facility 不再 selected, cut 不 trigger
+        return False
+
+    current_cover_set = compute_cover_set(
+        cert.facility_pose, state.ghost_rect, state.free_cells
+    )
+    if not current_cover_set:
+        return False  # Family 7 takes over
+
+    target_component = bfs_component(power_graph, next(iter(current_cover_set)))
+    return target_component != pc_component
+```
+
+## 7. Validator
+
+```python
+class PowerGridReachValidator(CutValidator):
+    family = "power_grid_reach"
+    validator_version = "v1.0"
+
+    def validate(self, cut, state) -> ValidationResult:
+        cert = decode_power_grid_reach_cert(cut.cert.cert_payload)
+        # 1. 验 pole_radius 跟 canonical_rules 一致 (source rotated 检查)
+        if cert.pole_radius != canonical_rules["power_pole"]["radius"]:
+            return ValidationResult("unsound", ..., "pole_radius mismatch")
+        # 2. 验 ghost_rect_repr 跟当前 state 一致
+        if cert.ghost_rect_repr != tuple(state.ghost_rect):
+            return ValidationResult("unsound", ..., "ghost_rect mismatch")
+        # 3. 独立重建 power network on cur state
+        recomputed_power_graph = build_power_network(state, cert.pole_radius)
+        pc_component_recomputed = bfs_component(recomputed_power_graph,
+                                                  cert.protocol_core_cell)
+        if frozenset(pc_component_recomputed) != frozenset(cert.source_component_pole_set):
+            return ValidationResult("unsound", ..., "pc_component reconnected/changed")
+        # 4. 验 candidate_pole_poses 仍在 target_component
+        cover_recomputed = compute_cover_set(cert.facility_pose, state.ghost_rect, state.free_cells)
+        if not cover_recomputed:
+            return ValidationResult("unsound", ..., "Family 8 cert but CoverSet empty (Family 7 case)")
+        target_component_recomputed = bfs_component(recomputed_power_graph,
+                                                     next(iter(cover_recomputed)))
+        if pc_component_recomputed == target_component_recomputed:
+            return ValidationResult("unsound", ..., "F8 witness fail: power reconnected")
+        return ValidationResult("ok", ...)
+
+    def evaluate_geometric(self, cut, state):
+        return evaluate_geometric_power_grid_reach(cut, state)
+```
+
+## 8. Replay + watcher (v1.1 修 Gemini round 17 B1)
+
+按 v3.1 §4 6 步 verify. watcher:
+- by_cell_watcher: **v1.1 改** — 不止 `candidate_pole_cells` (生成时 CoverSet),
+  必须监听 `PoolPole ∩ BoundingBox(facility_pose, R_conn)` 内**所有**合法 grid
+  cell. 原因 (Gemini round 17 B1): cell_owner 占的 cell 当前不在
+  candidate_pole_cells, master 移走后那 cell 释放成新 pole 候选 →
+  power network reconnect. v1.0 watcher 不监听此 cell → False Positive 误剪.
+- by_pose_watcher (facility_pose)
+- by_ghost_watcher (Day 17d 加, ghost 变直接 invalidate)
+- 不需 by_group_watcher (F8 单 facility, 不跨 group)
+
+```python
+def add_watchers_power_grid_reach(store: CutStore, cut: Cut) -> None:
+    cert = decode_power_grid_reach_cert(cut.geometric_payload)
+
+    # facility cells
+    for cell in cert.facility_cells:
+        store.by_cell_watcher[cell].add(cut.cut_id)
+
+    # v1.1: 监听 BoundingBox(facility, R_conn) ∩ PoolPole 全合法 grid cell
+    # (不止 candidate_pole_cells, 防 cell_owner 释放后 reconnect 误剪)
+    bb = compute_bounding_box(cert.facility_cells, cert.pole_radius)
+    for cell in iter_cells_in_box(bb):
+        if is_legal_pole_candidate_cell(cell):  # PoolPole 内
+            store.by_cell_watcher[cell].add(cut.cut_id)
+
+    # 其他维 (pose, ghost) 不变
+    store.by_pose_watcher[cert.facility_pose].add(cut.cut_id)
+    store.by_ghost_watcher[cut.scope.ghost_rect_id].add(cut.cut_id)
+```
+
+## 9. 跟 Family 7 power_hitting_set 协调 (cut store dedup)
+
+Family 7 拦 CoverSet **空** (local), Family 8 拦 CoverSet **非空但跟 protocol_core
+disconnect** (global). 应该**互斥** trigger:
+
+```python
+# Oracle 顺序: Family 7 → Family 8
+if cover_set_empty:
+    emit_family_7_cut(...)
+else:
+    if not connected_to_protocol_core:
+        emit_family_8_cut(...)
+```
+
+cut store dedup: 同 (facility_group, facility_pose_id, ghost_rect_id) 不应同时
+有 F7 + F8 cut.
+
+## 10. Open questions
+
+1. **Ghost-block-jump 算法**: cur §5a 简化 ghost 中心点 ∩ line(p1, p2). 真实
+   pole-pole 跃迁应是 line-segment intersect ghost rectangle. Phase 1 真算法.
+2. **v1.1 cell_owner 挤压 power network**: cur v1.0 单 cause = ghost. cell_owner
+   挤压 (相邻 pole 候选被 facility 占) 也可 disconnect. Phase 1 加 causation
+   split sub_kind (类 F7).
+3. **Multi-facility shared disconnect**: 多 facility 都在 target_component, 1
+   cut 拦 1 facility. cut store 累积 N facility 的 N cut → 是否合并 region-cut.
+4. **Protocol_core 多个 case**: 现 spec 假设 protocol_core 唯一 source. canonical_rules
+   有 1 个 protocol_core 但游戏未来扩展可能多源. Phase 2 generalize.
+5. **跟 belt routing 配合**: belt 经过 ghost 的 case 跟 power 不一样 (belt 连续
+   free_cells, power 跨 cell pole jump). cut 应分发到 Family 4 vs Family 8.
+
+## 11. Implementation pre-decision
+
+- `PowerGridReachValidator` 实现: `src/cuts/families/power_grid_reach.py` (Phase 1)
+- `build_power_network` helper: `src/cuts/helpers/power_network.py` (Phase 1, 新)
+- `bfs_component`: 复用 `src/search/d2_separator.py:compute_bfs_components` 但
+  on pole jump graph (graph kind 传参化)
+- 测试 fixture: `src/tests/cuts/test_family_8_power_grid_reach.py` (Phase 1)
+- F5 fixture (Day 17d) 验 cert/validator round-trip
+- A/B 测试: Family 7 + 8 协作避免 cut store 冗余
+
+## 12. 验收
+
+- ✅ 数学定义 (power network jump graph + BFS disconnect)
+- ✅ Soundness proof (connectivity monotonicity + F5 反例数学)
+- ✅ Cert schema (PowerGridReachCert 含 pole_radius / protocol_core / candidate
+  pole + ghost 信息 + power graph snapshot)
+- ✅ Cut 构造 (geometric, ghost-bound)
+- ✅ Generator (build_power_network + bfs_component + disconnect detection)
+- ✅ evaluate_geometric (hot path 重算, 跟 Family 4 同 pattern)
+- ✅ Validator 4 步 (pole_radius / ghost / power graph / target_component)
+- ✅ Replay + watcher (6 维 by_ghost Day 17d 加)
+- ✅ Family 7 协调 dedup 政策
+- ⚠️ 5 open question (ghost-line algorithm / v1.1 cell_owner causation /
+  multi-facility merge / multi-protocol_core / belt-power 分发)
+- ⏸ Phase 1 实施 + F5 fixture round-trip 测试
+
+
+# DOC_PATHS: 真数据 schema inline (v4 协议硬要求)
+
+## rules/canonical_rules.json — facility_templates (full)
+```json
+{
+  "manufacturing_3x3": {
+    "dimensions": {
+      "w": 3,
+      "h": 3
+    },
+    "rotatable": true,
+    "needs_power": true,
+    "is_solid_z": true,
+    "port_rule": "opposite_parallel_sides"
+  },
+  "manufacturing_5x5": {
+    "dimensions": {
+      "w": 5,
+      "h": 5
+    },
+    "rotatable": true,
+    "needs_power": true,
+    "is_solid_z": true,
+    "port_rule": "opposite_parallel_sides"
+  },
+  "manufacturing_6x4": {
+    "dimensions": {
+      "w": 6,
+      "h": 4
+    },
+    "rotatable": true,
+    "needs_power": true,
+    "is_solid_z": true,
+    "port_rule": "long_sides"
+  },
+  "protocol_core": {
+    "dimensions": {
+      "w": 9,
+      "h": 9
+    },
+    "rotatable": true,
+    "needs_power": false,
+    "is_solid_z": true,
+    "port_rule": "core_specific",
+    "core_limits": {
+      "max_outputs": 6,
+      "max_inputs": 14
+    }
+  },
+  "protocol_storage_box": {
+    "dimensions": {
+      "w": 3,
+      "h": 3
+    },
+    "rotatable": true,
+    "needs_power": true,
+    "is_solid_z": true,
+    "port_rule": "omni_wireless"
+  },
+  "power_pole": {
+    "dimensions": {
+      "w": 2,
+      "h": 2
+    },
+    "rotatable": false,
+    "needs_power": false,
+    "is_solid_z": true,
+    "port_rule": "none",
+    "power_coverage_radius": 5
+  },
+  "boundary_storage_port": {
+    "dimensions": {
+      "w": 1,
+      "h": 3
+    },
+    "rotatable": true,
+    "needs_power": false,
+    "is_solid_z": true,
+    "port_rule": "inward_facing",
+    "placement_rule": "left_or_bottom_boundary"
+  }
+}
+```
+
+## rules/canonical_rules.json — top-level keys (audit: 是否有 pole_jump_radius 字段)
+```
+$schema
+commodity_metadata
+facility_templates
+globals
+metadata
+production_targets
+recipes
+routing_rules
+```
+
+## data/preprocessed/mandatory_exact_instances.json — group counts
+Total 266 instance entries. Powered counts:
+- manufacturing_3x3: 132 instances
+- manufacturing_5x5: 49 instances
+- manufacturing_6x4: 38 instances
+- protocol_storage_box: 0 instances
+- protocol_core: 1 instances (9×9)
+
+## data/preprocessed/candidate_placements.json — pool sizes (audit: protocol_core pose 选择空间)
+```
+boundary_storage_port: 134 poses
+manufacturing_3x3: 17952 poses
+manufacturing_5x5: 16896 poses
+manufacturing_6x4: 16900 poses
+power_pole: 4761 poses
+protocol_core: 7200 poses
+protocol_storage_box: 17952 poses
+```
+
+## protocol_core pool sample entry (first item)
+```json
+{
+  "pose_id": "p_x01_y01_o0_m_core_LR_out",
+  "anchor": {
+    "x": 1,
+    "y": 1
+  },
+  "pose_params": {
+    "orientation": 0,
+    "port_mode": "core_LR_out"
+  },
+  "occupied_cells": [
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      1,
+      5
+    ],
+    [
+      1,
+      6
+    ],
+    [
+      1,
+      7
+    ],
+    [
+      1,
+      8
+    ],
+    [
+      1,
+      9
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      2,
+      7
+    ],
+    [
+      2,
+      8
+    ],
+    [
+      2,
+      9
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      3,
+      7
+    ],
+    [
+      3,
+      8
+    ],
+    [
+      3,
+      9
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      4,
+      4
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      4,
+      6
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      4,
+      9
+    ],
+    [
+      5,
+      1
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      5,
+      5
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      5,
+      7
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      6,
+      2
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      6,
+      4
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      6,
+      6
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      6,
+      8
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      7,
+      1
+    ],
+    [
+      7,
+      2
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      5
+    ],
+    [
+      7,
+      6
+    ],
+    [
+      7,
+      7
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      2
+    ],
+    [
+      8,
+      3
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      8,
+      6
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      8,
+      8
+    ],
+    [
+      8,
+      9
+    ],
+    [
+      9,
+      1
+    ],
+    [
+      9,
+      2
+    ],
+    [
+      9,
+      3
+    ],
+    [
+      9,
+      4
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      9,
+      8
+    ],
+    [
+      9,
+      9
+    ]
+  ],
+  "input_port_cells": [
+    {
+      "x": 2,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "dir": "S"
+    },
+    {
+      "x": 2,
+      "y": 10,
+      "dir": "N"
+    },
+    {
+      "x": 3,
+      "y": 10,
+      "dir": "N"
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "dir": "N"
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "dir": "N"
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "dir": "N"
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "dir": "N"
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "dir": "N"
+    }
+  ],
+  "output_port_cells": [
+    {
+      "x": 0,
+      "y": 2,
+      "dir": "W"
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "dir": "W"
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "dir": "W"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "dir": "E"
+    },
+    {
+      "x": 10,
+      "y": 5,
+      "dir": "E"
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "dir": "E"
+    }
+  ],
+  "power_coverage_cells": null
+}
+```
+
+## BState fields F8 reads
+- state.ghost_rect / state.ghost_cells / state.exterior_blocks
+- state.cell_owner: Dict[Cell, OwnerId]
+- state.groups[gid]: GroupState (group_id, demand, pose_domain, selected_poses)
+- state.instance_to_facility_type: Dict[GroupId, str]
+- state.facility_templates: Dict[str, Dict] (alias canonical_rules.facility_templates)
+- state.candidate_placements: Dict (mirrors data/preprocessed/candidate_placements.json)
+
+# F8 src (full content inline)
+
+### FILE: src/cuts/helpers/power_cover.py
+```python
+"""F7 power_hitting_set CoverSet helper.
+
+Computes ``CoverSet(facility_pose, state)``: the set of pole anchor cells that
+(a) host a 2×2 pole entirely within ``free_cells`` and (b) place at least one
+of the pole's cells within ``pole_radius`` of at least one facility cell.
+
+Two variants:
+- ``compute_cover_set(...)``: pole anchors against the FULL free-cell mask
+  (ghost ∪ exterior ∪ cell_owner ∪ facility_cells blocked). Empty → facility
+  has no power. Callers build the mask explicitly so the
+  ``facility_cells`` exclusion (Gemini F7 round 1 BLOCKER #1 fix) is visible
+  at each call site (validator phase 6/7 + oracle generator).
+
+Per ``canonical_rules.facility_templates.power_pole``: dimensions w=2, h=2.
+``power_coverage_radius`` carries the Euclidean radius (cell units; no
+explicit metric label in the schema, project consensus: Euclidean).
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md v1.1
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F7
+"""
+from __future__ import annotations
+
+import math
+from typing import FrozenSet, Iterable, Tuple
+
+
+Cell = Tuple[int, int]
+
+
+_DEFAULT_GRID_SIZE: int = 70
+_POLE_SIZE: int = 2  # canonical_rules.facility_templates.power_pole.dimensions.{w,h}
+
+
+def _pole_cells(anchor: Cell, pole_size: int = _POLE_SIZE) -> Tuple[Cell, ...]:
+    px, py = anchor
+    return tuple((px + dx, py + dy) for dx in range(pole_size) for dy in range(pole_size))
+
+
+def _min_cell_distance(facility_cell: Cell, anchor: Cell, pole_size: int = _POLE_SIZE) -> float:
+    """Min Euclidean distance from one facility cell to any cell of a pole.
+
+    A 2×2 pole at ``anchor`` occupies (anchor + (0..1, 0..1)). Coverage is
+    computed cell-to-cell (cell centers are integer coordinates).
+    """
+    fx, fy = facility_cell
+    px, py = anchor
+    min_sq = (fx - px) ** 2 + (fy - py) ** 2
+    for dx in range(pole_size):
+        for dy in range(pole_size):
+            sq = (fx - (px + dx)) ** 2 + (fy - (py + dy)) ** 2
+            if sq < min_sq:
+                min_sq = sq
+    return math.sqrt(min_sq)
+
+
+def _covers_any_facility_cell(
+    anchor: Cell,
+    facility_cells: Iterable[Cell],
+    pole_radius: float,
+    pole_size: int = _POLE_SIZE,
+) -> bool:
+    for fc in facility_cells:
+        if _min_cell_distance(fc, anchor, pole_size) <= pole_radius:
+            return True
+    return False
+
+
+def _enumerate_valid_pole_anchors(
+    free_cells: FrozenSet[Cell],
+    grid_size: int = _DEFAULT_GRID_SIZE,
+    pole_size: int = _POLE_SIZE,
+) -> Iterable[Cell]:
+    """Iterate anchors whose 2×2 footprint lies entirely in ``free_cells``."""
+    for px in range(grid_size - pole_size + 1):
+        for py in range(grid_size - pole_size + 1):
+            cells = _pole_cells((px, py), pole_size)
+            if all(c in free_cells for c in cells):
+                yield (px, py)
+
+
+def enumerate_valid_pole_anchors(
+    free_cells: FrozenSet[Cell],
+    *,
+    grid_size: int = _DEFAULT_GRID_SIZE,
+    pole_size: int = _POLE_SIZE,
+) -> FrozenSet[Cell]:
+    """Public: all pole anchors whose 2×2 footprint lies in ``free_cells``.
+
+    F8 needs this to build the *full* power network (not just the CoverSet
+    near a single facility) — Gemini F8 round 1 Finding #1.
+    """
+    return frozenset(_enumerate_valid_pole_anchors(free_cells, grid_size, pole_size))
+
+
+def compute_cover_set(
+    facility_cells: Iterable[Cell],
+    free_cells: FrozenSet[Cell],
+    pole_radius: float,
+    *,
+    grid_size: int = _DEFAULT_GRID_SIZE,
+    pole_size: int = _POLE_SIZE,
+) -> FrozenSet[Cell]:
+    """Return pole anchor cells covering ``facility_cells`` within ``pole_radius``.
+
+    ``free_cells`` is the full mask (grid minus ghost, exterior, cell_owner).
+    Empty result ⇒ facility cannot be powered in the current state.
+    """
+    facility_list = list(facility_cells)
+    if not facility_list:
+        return frozenset()
+    if pole_radius <= 0.0:
+        return frozenset()
+    out: set[Cell] = set()
+    for anchor in _enumerate_valid_pole_anchors(free_cells, grid_size, pole_size):
+        if _covers_any_facility_cell(anchor, facility_list, pole_radius, pole_size):
+            out.add(anchor)
+    return frozenset(out)
+
+
+# NOTE: ``compute_cover_set_ghost_only`` was retired Round 2 (Gemini F7
+# round 2 LOW #3). Callers now inline the ghost-only mask construction
+# (validator phase 7 + oracle generator) to make the "facility_cells must
+# also be excluded" R1 fix explicit at the call site. The helper had no
+# remaining callers and was removed to keep the module surface tight.
+
+```
+
+### FILE: src/cuts/helpers/power_network.py
+```python
+"""Family 8 power_grid_reach helpers — power network construction + BFS component.
+
+Per cut_family_specs/08_power_grid_reach.md v1.1 §5a:
+- ``build_power_network(poles, pole_radius, *, pc_cells, ghost_rect)`` →
+  ``PowerGraph(V, E)`` where E_jump connects poles within radius and not
+  blocked by ghost AABB (Liang-Barsky strict intersection — v1.0 中心点
+  shortcut critical FN bug 已修). ``pc_cells`` is the protocol_core multi-cell
+  footprint (Gemini F8 round 1 Finding #2: 9×9 facility, not a single point).
+  Internal pc_cell pairs are auto-connected (one building).
+- ``bfs_component(graph, start)`` → set of pole cells reachable from start.
+
+Phase 1.0 P1.4 scope:
+- Pure data-structure helper (no oracle wiring — Phase 1.2 P1.14 接 Family 8
+  validator + ``compute_cover_set`` for full F8 cut generation).
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md v1.1
+- src/cuts/helpers/ghost_geometry.py (Liang-Barsky)
+"""
+from __future__ import annotations
+
+import math
+from collections import deque
+from dataclasses import dataclass, field
+from typing import FrozenSet, Iterable, Optional, Set, Tuple
+
+from src.cuts.helpers.ghost_geometry import (
+    cell_aabb_from_rect,
+    segment_intersects_aabb,
+)
+
+
+Pole = Tuple[int, int]
+Edge = Tuple[Pole, Pole]
+
+
+@dataclass(frozen=True)
+class PowerGraph:
+    """Undirected graph of pole-pole jumps + protocol_core anchor.
+
+    ``vertices`` includes the protocol_core cell (if provided) — F8 uses it as
+    the reach origin for connectivity check.
+    ``edges`` is an undirected set; ``(p1, p2)`` and ``(p2, p1)`` stored as
+    canonicalized tuple (smaller first) to dedupe.
+    """
+    vertices: FrozenSet[Pole] = field(default_factory=frozenset)
+    edges: FrozenSet[Edge] = field(default_factory=frozenset)
+
+
+def _canonical_edge(p1: Pole, p2: Pole) -> Edge:
+    return (p1, p2) if p1 <= p2 else (p2, p1)
+
+
+def _euclidean(p1: Pole, p2: Pole) -> float:
+    return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
+
+
+# canonical_rules.facility_templates.power_pole.dimensions.{w,h} = 2.
+_POLE_SIZE: int = 2
+
+
+def _footprint_cells(anchor: Pole, size: int) -> Tuple[Pole, ...]:
+    """Cells occupied by a square footprint anchored at ``anchor``."""
+    return tuple(
+        (anchor[0] + dx, anchor[1] + dy) for dx in range(size) for dy in range(size)
+    )
+
+
+def _can_jump_via_cells(
+    cells1: Tuple[Pole, ...],
+    cells2: Tuple[Pole, ...],
+    pole_radius: float,
+    ghost_aabb: Optional[Tuple[float, float, float, float]],
+) -> bool:
+    """Jump iff ANY cell pair (c1 ∈ cells1, c2 ∈ cells2) satisfies BOTH
+    (a) euclidean distance ≤ ``pole_radius`` AND (b) the segment between
+    cell centers does not intersect the ghost AABB.
+
+    Gemini F8 round 2 Finding #1: distance must be cell-to-cell min (not
+    anchor-to-anchor) to stay consistent with ``compute_cover_set``.
+    Gemini F8 round 2 Finding #2: segment endpoints must be cell centers
+    (anchor + 0.5), not raw anchor coords.
+
+    Gemini F8 round 3 Finding #1 (CRITICAL): scanning ONLY the closest
+    pair drops legitimate edges when the closest pair's segment crosses
+    the ghost but another in-range pair has unblocked line-of-sight.
+    Power can physically jump along *any* viable cell-pair path, so this
+    function must scan all in-range pairs and accept the first unblocked
+    one. This is still bounded — 2×2 vs 1×1 footprints yield at most 16
+    pairs per call, and the outer ``_pole_*_edges`` early-reject filters
+    far pairs before reaching this function.
+    """
+    r_sq = pole_radius * pole_radius
+    for c1 in cells1:
+        for c2 in cells2:
+            dx = c1[0] - c2[0]
+            dy = c1[1] - c2[1]
+            d_sq = dx * dx + dy * dy
+            if d_sq > r_sq:
+                continue
+            if ghost_aabb is None:
+                return True
+            if not segment_intersects_aabb(
+                (float(c1[0]) + 0.5, float(c1[1]) + 0.5),
+                (float(c2[0]) + 0.5, float(c2[1]) + 0.5),
+                ghost_aabb,
+            ):
+                return True
+    return False
+
+
+def _pole_pole_edges(
+    pole_list: list[Pole],
+    pole_radius: float,
+    ghost_aabb: Optional[Tuple[float, float, float, float]],
+) -> Iterable[Edge]:
+    """Pole-pole edges with anchor-distance early reject for hot-path speed.
+
+    Bound: min cell-to-cell ≥ anchor_dist - 2·√2 (each anchor at most √2
+    from any cell of its 2×2 footprint), so anchor_dist > pole_radius +
+    2·√2 ⇒ no cell pair can be within pole_radius. This rejects ~99% of
+    far pairs on a 70×70 grid with R=5 (cutoff ≈ 7.83), dropping
+    ``build_power_network`` from minutes to seconds (R2-Gap E).
+    """
+    n = len(pole_list)
+    if n == 0:
+        return
+    footprints = [_footprint_cells(p, _POLE_SIZE) for p in pole_list]
+    cutoff_sq = (pole_radius + 2.0 * math.sqrt(2.0)) ** 2
+    for i in range(n):
+        ax, ay = pole_list[i]
+        for j in range(i + 1, n):
+            bx, by = pole_list[j]
+            dsq = (ax - bx) ** 2 + (ay - by) ** 2
+            if dsq > cutoff_sq:
+                continue
+            if _can_jump_via_cells(
+                footprints[i], footprints[j], pole_radius, ghost_aabb
+            ):
+                yield _canonical_edge(pole_list[i], pole_list[j])
+
+
+def _pc_internal_edges(pc_list: list[Pole]) -> Iterable[Edge]:
+    """protocol_core internal: all pc cells form a single supernode.
+
+    Always mutually connected — ghost cannot pass through the core's
+    footprint since master_solution disallows ghost overlap with placed
+    facilities.
+    """
+    m = len(pc_list)
+    for i in range(m):
+        for j in range(i + 1, m):
+            yield _canonical_edge(pc_list[i], pc_list[j])
+
+
+def _pole_pc_edges(
+    pole_list: list[Pole],
+    pc_list: list[Pole],
+    pole_radius: float,
+    ghost_aabb: Optional[Tuple[float, float, float, float]],
+) -> Iterable[Edge]:
+    """Pole↔pc edges with anchor-distance early reject.
+
+    Bound: min cell-to-cell ≥ anchor_dist - √2 (pole footprint at most √2
+    away from its anchor; pc cell is 1×1). Cutoff: anchor_dist ≤ R + √2.
+    Same R2-Gap E optimization rationale as ``_pole_pole_edges``.
+    """
+    if not pole_list or not pc_list:
+        return
+    pole_footprints = [_footprint_cells(p, _POLE_SIZE) for p in pole_list]
+    cutoff_sq = (pole_radius + math.sqrt(2.0)) ** 2
+    for p, cells_p in zip(pole_list, pole_footprints):
+        px, py = p
+        for c in pc_list:
+            cx, cy = c
+            dsq = (px - cx) ** 2 + (py - cy) ** 2
+            if dsq > cutoff_sq:
+                continue
+            if _can_jump_via_cells(cells_p, (c,), pole_radius, ghost_aabb):
+                yield _canonical_edge(p, c)
+
+
+def build_power_network(
+    poles: Iterable[Pole],
+    pole_radius: float,
+    *,
+    pc_cells: Optional[Iterable[Pole]] = None,
+    ghost_rect: Optional[Tuple[int, int, int, int]] = None,
+) -> PowerGraph:
+    """Build undirected jump graph among poles + protocol_core footprint.
+
+    ``poles`` are the candidate pole anchor cells on the current free mask
+    (Gemini F8 round 1 Finding #1: callers must enumerate the full free-mask
+    anchor set — passing only ``CoverSet`` produces 100% false positives
+    because the graph then lacks the intermediate poles that span the grid).
+
+    ``pc_cells`` is the protocol_core's full footprint (Gemini F8 round 1
+    Finding #2: protocol_core is a 9×9 facility, not a single point — using
+    only the lex anchor makes pole-to-core distance overshoot the radius for
+    poles near the far side of the core). The footprint cells are added as
+    graph vertices, pairwise zero-distance auto-connected (core is one
+    building), and the pole↔core edge fires when *any* pole-to-pc_cell pair
+    satisfies (distance ≤ ``pole_radius``) AND (segment does not intersect
+    ghost AABB).
+
+    Edge (p1, p2) for two poles:
+    - euclidean_distance(p1, p2) ≤ pole_radius (jump range), AND
+    - line segment p1→p2 not intersecting ghost_rect AABB (Liang-Barsky)
+      — ghost None means no obstacle, all in-range pairs connected.
+    """
+    pole_set = set(poles)
+    pc_set: Set[Pole] = set(pc_cells) if pc_cells is not None else set()
+    # Gemini F8 round 2 Finding #3: comment said "pc cells take priority,
+    # drop overlapping pole copy" but the prior ``pc_set -= pole_set`` did
+    # the opposite. The pc footprint is a placed facility, so the pole-as-
+    # placeable interpretation is the spurious one — drop overlaps from
+    # ``pole_set``. In practice ``free_cells`` excludes pc cells so overlap
+    # never occurs, but the API contract now matches the comment.
+    pole_set -= pc_set
+    vertices = frozenset(pole_set | pc_set)
+    pole_list = sorted(pole_set)
+    pc_list = sorted(pc_set)
+
+    ghost_aabb = cell_aabb_from_rect(ghost_rect) if ghost_rect is not None else None
+
+    edges: Set[Edge] = set()
+    edges.update(_pole_pole_edges(pole_list, pole_radius, ghost_aabb))
+    edges.update(_pc_internal_edges(pc_list))
+    edges.update(_pole_pc_edges(pole_list, pc_list, pole_radius, ghost_aabb))
+    return PowerGraph(vertices=vertices, edges=frozenset(edges))
+
+
+def bfs_component(graph: PowerGraph, start: Pole) -> Set[Pole]:
+    """Return set of poles reachable from ``start`` via graph edges.
+
+    Returns empty set if ``start`` not in graph.vertices.
+    """
+    if start not in graph.vertices:
+        return set()
+
+    adj: dict[Pole, Set[Pole]] = {v: set() for v in graph.vertices}
+    for p1, p2 in graph.edges:
+        adj[p1].add(p2)
+        adj[p2].add(p1)
+
+    visited: Set[Pole] = {start}
+    q: deque[Pole] = deque([start])
+    while q:
+        u = q.popleft()
+        for v in adj[u]:
+            if v not in visited:
+                visited.add(v)
+                q.append(v)
+    return visited
+
+```
+
+### FILE: src/cuts/helpers/ghost_geometry.py
+```python
+"""Liang-Barsky line-AABB intersection for Family 8 power_grid_reach.
+
+Family 8 power_grid_reach (cut_family_specs/08_power_grid_reach.md v1.1) tests
+whether a candidate pole→facility line segment is blocked by the ghost rect.
+Liang-Barsky AABB clip is the standard algorithm — robust, O(1), no FP edge
+cases when carefully implemented.
+
+Phase 1.0 P1.4 scope:
+- ``segment_intersects_aabb(p0, p1, aabb)`` → bool
+- ``segment_aabb_intersection_t(p0, p1, aabb)`` → Optional[(t_enter, t_exit)]
+  in [0, 1] parametric on segment (None if no intersection)
+
+Edge cases handled:
+- Degenerate segment (p0 == p1): treat as point-in-AABB test
+- Segment touching AABB boundary (t_enter == t_exit): True (touch counts)
+- Axis-aligned segment along AABB edge: True
+- Both endpoints inside AABB: True (full enclosure)
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md v1.1
+- https://en.wikipedia.org/wiki/Liang%E2%80%93Barsky_algorithm
+"""
+from __future__ import annotations
+
+from typing import Optional, Tuple
+
+
+# Cell grid coordinates (matches src.cuts.lifecycle.Cell).
+Point = Tuple[float, float]
+AABB = Tuple[float, float, float, float]  # (xmin, ymin, xmax, ymax)
+
+
+def _aabb_well_formed(aabb: AABB) -> bool:
+    xmin, ymin, xmax, ymax = aabb
+    return xmin <= xmax and ymin <= ymax
+
+
+def segment_aabb_intersection_t(
+    p0: Point, p1: Point, aabb: AABB
+) -> Optional[Tuple[float, float]]:
+    """Liang-Barsky 参数化 line-AABB clip.
+
+    Returns (t_enter, t_exit) ∈ [0, 1] such that segment param t in
+    [t_enter, t_exit] lies inside the AABB; None if no intersection.
+
+    For touch (t_enter == t_exit) returns the touching t — caller decides
+    whether tangent counts as intersection.
+    """
+    if not _aabb_well_formed(aabb):
+        raise ValueError(f"AABB ill-formed: {aabb}")
+
+    x0, y0 = p0
+    x1, y1 = p1
+    xmin, ymin, xmax, ymax = aabb
+    dx = x1 - x0
+    dy = y1 - y0
+
+    # Degenerate segment: point-in-AABB
+    if dx == 0 and dy == 0:
+        if xmin <= x0 <= xmax and ymin <= y0 <= ymax:
+            return (0.0, 0.0)
+        return None
+
+    t_enter = 0.0
+    t_exit = 1.0
+
+    # 4 boundary planes: p * t + q == 0 form; p = -dx (or +dx) etc.
+    p = (-dx, dx, -dy, dy)
+    q = (x0 - xmin, xmax - x0, y0 - ymin, ymax - y0)
+
+    for i in range(4):
+        pi = p[i]
+        qi = q[i]
+        if pi == 0:
+            # Parallel to this boundary; reject only if outside the AABB strip
+            if qi < 0:
+                return None
+            # else: this constraint is inactive, continue
+            continue
+
+        t = qi / pi
+        if pi < 0:
+            # Entering boundary
+            if t > t_exit:
+                return None
+            if t > t_enter:
+                t_enter = t
+        else:
+            # pi > 0, exiting boundary
+            if t < t_enter:
+                return None
+            if t < t_exit:
+                t_exit = t
+
+    if t_enter > t_exit:
+        return None
+    return (t_enter, t_exit)
+
+
+def segment_intersects_aabb(p0: Point, p1: Point, aabb: AABB) -> bool:
+    """True iff segment p0→p1 intersects (含相切) AABB.
+
+    Standard wrapper over segment_aabb_intersection_t.
+    """
+    return segment_aabb_intersection_t(p0, p1, aabb) is not None
+
+
+def cell_aabb_from_rect(rect: Tuple[int, int, int, int]) -> AABB:
+    """Convert ghost_rect (x, y, h, w) — top-left + size — to AABB float bounds.
+
+    Spec uses cell grid (integer coords); AABB extends to (x+h, y+w) inclusive
+    edge. Liang-Barsky compares float t so we add 1.0 for inclusive max edge
+    iff the spec treats cells as unit squares — see callers in F8 validator.
+    """
+    x, y, h, w = rect
+    return (float(x), float(y), float(x + h), float(y + w))
+
+```
+
+### FILE: src/cuts/families/power_grid_reach.py
+```python
+"""Family 8 power_grid_reach — empty BFS-disconnect validator + watcher (P1.2B-F8).
+
+PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
+- **Single cert_kind**: only ``"power_pole_bfs_disconnect_ghost"``. The
+  ``cell_owner``-causes case (``"power_pole_bfs_disconnect_cell_owner"``)
+  and ``"exterior_blocks_jump"`` variant deferred to Phase 1.5+.
+- **Ghost-bound**: ``cut.scope.ghost_rect_id == GHOST_AGNOSTIC`` rejected;
+  the pole-jump graph topology depends on ghost AABB occlusion.
+- **F7 ↔ F8 mutual exclusion**: F7 fires when CoverSet is empty (no pole
+  candidate within radius). F8 fires when CoverSet is non-empty but the
+  pole-jump BFS from protocol_core does not reach any candidate. Oracle
+  pipeline runs F7 first; F8 only when F7 returns nothing.
+- **Real canonical data**: pole shape is **2×2 rigid** (canonical_rules
+  ``power_pole.dimensions``); pole-to-pole jump radius is supplied by the
+  caller because canonical_rules schema currently exposes only
+  ``power_coverage_radius`` (pole→facility, semantically distinct from
+  pole→pole jump). Phase 1.5+ will land a dedicated canonical field; for
+  now the generator + validator both treat the radius as authoritative
+  via cert and the active_assumptions audit trail.
+- **needs_power gate**: validator rejects facilities whose
+  ``facility_templates[ft].needs_power`` is not True (mirror F7).
+- **Cert holds NO graph snapshot**: validator independently rebuilds the
+  power graph + BFS from ``state``; ``cert.power_graph_b64`` deprecated
+  per Gemini F8 design merger (4 MB/cut otherwise; validator recompute
+  is the soundness source).
+
+Cert payload schema (canonical JSON, sorted keys, no Optionals):
+    cert_kind: "power_pole_bfs_disconnect_ghost"
+    facility_group: non-empty str ∈ state.groups
+    facility_pose_id: non-empty str ∈ state.groups[facility_group].pose_domain
+    facility_cells: list of [int, int] (sorted lex, dedup, in-grid)
+    pole_jump_radius: float (> 0)
+    pole_shape_canonical: "2x2_rigid"
+    protocol_core_cell: [int, int] (anchor cell, in-grid)
+    ghost_rect_repr: [x, y, h, w] (4 strict int, byte-equal state.ghost_rect)
+    exterior_blocks_digest: sha256 hex of sorted exterior_blocks canonical
+
+Evaluator: F8 is **geometric** mode (``_FAMILY_MODE_MAP``); cert in
+``geometric_payload`` (``cut.literals`` MUST be None). The
+``evaluate_geometric_power_grid_reach`` hot path is O(1): under the scope
+binding (ghost + exterior), the pole-jump BFS disconnect is monotonically
+preserved by ``free_cells`` shrinking (cell_owner only adds blockers), so
+the validator's heavy BFS recompute is unnecessary on each evaluation.
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F8
+- docs/研究/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md v1.1
+"""
+from __future__ import annotations
+
+import json
+import re
+import time
+from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
+
+from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
+from src.cuts.helpers.power_network import build_power_network, bfs_component
+from src.cuts.lifecycle import (
+    GHOST_AGNOSTIC,
+    BState,
+    Cell,
+    Cut,
+    ValidationResult,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+)
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+_POLE_SHAPE_PATTERN: re.Pattern[str] = re.compile(r"^\d+x\d+_rigid$")
+_GRID_SIZE: int = 70
+_PROTOCOL_CORE_SIZE: int = 9  # canonical_rules.facility_templates.protocol_core.dimensions
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_strict_float(value: object) -> bool:
+    if isinstance(value, bool):
+        return False
+    return isinstance(value, (int, float))
+
+
+def _is_non_empty_str(value: object) -> bool:
+    return isinstance(value, str) and value != ""
+
+
+def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
+    if not isinstance(cert_payload, bytes):
+        raise ValueError("cert_payload must be bytes")
+    try:
+        loaded = json.loads(cert_payload)
+    except Exception as e:
+        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
+    if not isinstance(loaded, dict):
+        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
+    return cast(Dict[str, Any], loaded)
+
+
+def _parse_facility_cells(value: object) -> Tuple[Tuple[int, int], ...]:
+    if not isinstance(value, list) or not value:
+        raise ValueError("facility_cells must be a non-empty list")
+    out: List[Tuple[int, int]] = []
+    seen: set[Tuple[int, int]] = set()
+    prev: Optional[Tuple[int, int]] = None
+    for idx, entry in enumerate(value):
+        if not isinstance(entry, list) or len(entry) != 2:
+            raise ValueError(f"facility_cells[{idx}] must be 2-element list")
+        x_raw, y_raw = entry
+        if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
+            raise ValueError(f"facility_cells[{idx}] must contain strict ints, got {entry!r}")
+        x = cast(int, x_raw)
+        y = cast(int, y_raw)
+        if not (0 <= x < _GRID_SIZE and 0 <= y < _GRID_SIZE):
+            raise ValueError(f"facility_cells[{idx}] out of grid: {(x, y)!r}")
+        if (x, y) in seen:
+            raise ValueError(f"facility_cells[{idx}] duplicate cell {(x, y)!r}")
+        seen.add((x, y))
+        if prev is not None and (x, y) <= prev:
+            raise ValueError(
+                f"facility_cells not sorted ascending at {idx}: {prev!r} >= {(x, y)!r}"
+            )
+        prev = (x, y)
+        out.append((x, y))
+    return tuple(out)
+
+
+def _parse_protocol_core_cell(value: object) -> Tuple[int, int]:
+    if not isinstance(value, list) or len(value) != 2:
+        raise ValueError(f"protocol_core_cell must be 2-element list, got {value!r}")
+    x_raw, y_raw = value
+    if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
+        raise ValueError(f"protocol_core_cell must contain strict ints, got {value!r}")
+    x = cast(int, x_raw)
+    y = cast(int, y_raw)
+    # Gemini F8 round 4 Finding #4 (HIGH): explicit lower-bound check —
+    # the prior `0 <= x + size <= GRID_SIZE` form silently accepted x=-1
+    # (size 9 → 8, in [0, 70]).
+    if x < 0 or y < 0:
+        raise ValueError(f"protocol_core_cell must be non-negative, got {(x, y)!r}")
+    if x + _PROTOCOL_CORE_SIZE > _GRID_SIZE:
+        raise ValueError(
+            f"protocol_core_cell x={x} + size {_PROTOCOL_CORE_SIZE} exceeds grid {_GRID_SIZE}"
+        )
+    if y + _PROTOCOL_CORE_SIZE > _GRID_SIZE:
+        raise ValueError(
+            f"protocol_core_cell y={y} + size {_PROTOCOL_CORE_SIZE} exceeds grid {_GRID_SIZE}"
+        )
+    return (x, y)
+
+
+def _protocol_core_cells(anchor: Tuple[int, int]) -> FrozenSet[Cell]:
+    ax, ay = anchor
+    return frozenset(
+        (ax + dx, ay + dy)
+        for dx in range(_PROTOCOL_CORE_SIZE)
+        for dy in range(_PROTOCOL_CORE_SIZE)
+    )
+
+
+def _validate_cert_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    kind = cert_dict.get("cert_kind")
+    if kind != "power_pole_bfs_disconnect_ghost":
+        return _vr(
+            "schema_err",
+            t0,
+            f"cert_kind must be 'power_pole_bfs_disconnect_ghost' (Phase 1.2 single-case), got {kind!r}",
+        )
+    return None
+
+
+def _validate_scalars(
+    cert_dict: Dict[str, Any], t0: float
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[Tuple[int, int], ...]], Optional[Tuple[int, int]]]:
+    fg = cert_dict.get("facility_group")
+    if not _is_non_empty_str(fg):
+        return _vr("schema_err", t0, f"facility_group must be non-empty str, got {fg!r}"), None, None
+    fp = cert_dict.get("facility_pose_id")
+    if not _is_non_empty_str(fp):
+        return _vr("schema_err", t0, f"facility_pose_id must be non-empty str, got {fp!r}"), None, None
+    pjr = cert_dict.get("pole_jump_radius")
+    if not _is_strict_float(pjr) or cast(float, pjr) <= 0.0:
+        return _vr("schema_err", t0, f"pole_jump_radius must be float > 0, got {pjr!r}"), None, None
+    psc = cert_dict.get("pole_shape_canonical")
+    if not _is_non_empty_str(psc) or not _POLE_SHAPE_PATTERN.match(cast(str, psc)):
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                f"pole_shape_canonical must match r'^\\d+x\\d+_rigid$', got {psc!r}",
+            ),
+            None,
+            None,
+        )
+    if cast(str, psc) != "2x2_rigid":
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                f"pole_shape_canonical locked to '2x2_rigid' Phase 1.2 (canonical_rules truth), got {psc!r}",
+            ),
+            None,
+            None,
+        )
+    eb = cert_dict.get("exterior_blocks_digest")
+    if not _is_non_empty_str(eb):
+        return (
+            _vr("schema_err", t0, f"exterior_blocks_digest must be non-empty str, got {eb!r}"),
+            None,
+            None,
+        )
+    try:
+        cells = _parse_facility_cells(cert_dict.get("facility_cells"))
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e)), None, None
+    try:
+        pc_cell = _parse_protocol_core_cell(cert_dict.get("protocol_core_cell"))
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e)), None, None
+    return None, cells, pc_cell
+
+
+def _validate_ghost_scope_binding(
+    cut: Cut, cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Optional[ValidationResult]:
+    if cut.scope is None:
+        return _vr("schema_err", t0, "cut.scope must be non-None for F8")
+    if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr(
+            "unsound",
+            t0,
+            "F8 power_grid_reach does not allow GHOST_AGNOSTIC scope "
+            "(power-graph topology depends on ghost AABB occlusion)",
+        )
+    if state.ghost_rect is None:
+        return _vr(
+            "unsound",
+            t0,
+            "F8 cert is ghost-bound but state.ghost_rect is None — drift",
+        )
+    cert_ghost = cert_dict.get("ghost_rect_repr")
+    if not isinstance(cert_ghost, list) or len(cert_ghost) != 4:
+        return _vr(
+            "schema_err",
+            t0,
+            f"ghost_rect_repr must be 4-element list, got {cert_ghost!r}",
+        )
+    for idx, value in enumerate(cert_ghost):
+        if not _is_strict_int(value):
+            return _vr(
+                "schema_err",
+                t0,
+                f"ghost_rect_repr[{idx}] must be strict int, got {value!r}",
+            )
+    if tuple(cast(List[int], cert_ghost)) != tuple(state.ghost_rect):
+        return _vr(
+            "unsound",
+            t0,
+            f"ghost_rect_repr drift: cert={tuple(cert_ghost)}, state={tuple(state.ghost_rect)}",
+        )
+    cert_exterior = cast(str, cert_dict["exterior_blocks_digest"])
+    actual_digest = compute_exterior_blocks_hash(state)
+    if cert_exterior != actual_digest:
+        return _vr(
+            "unsound",
+            t0,
+            f"exterior_blocks_digest drift: cert={cert_exterior!r}, state={actual_digest!r}",
+        )
+    return None
+
+
+def _validate_group_and_template(
+    cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Optional[ValidationResult]:
+    gid = cast(str, cert_dict["facility_group"])
+    pose_id = cast(str, cert_dict["facility_pose_id"])
+    if gid not in state.groups:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_group {gid!r} not in state.groups (registry rotated or fake gid)",
+        )
+    if pose_id not in state.groups[gid].pose_domain:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_pose_id {pose_id!r} not in state.groups[{gid!r}].pose_domain",
+        )
+    if state.instance_to_facility_type is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.instance_to_facility_type missing — F8 cannot verify needs_power "
+            "without source-of-truth (fail-closed)",
+        )
+    facility_type = state.instance_to_facility_type.get(gid)
+    if facility_type is None:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_group {gid!r} has no facility_type mapping",
+        )
+    if state.facility_templates is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.facility_templates missing — F8 cannot verify needs_power "
+            "without source-of-truth (fail-closed)",
+        )
+    tpl = state.facility_templates.get(facility_type)
+    if not isinstance(tpl, dict):
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_templates[{facility_type!r}] missing or not a dict",
+        )
+    if tpl.get("needs_power") is not True:
+        return _vr(
+            "unsound",
+            t0,
+            f"facility_group {gid!r} (facility_type {facility_type!r}) needs_power is not True "
+            f"— F8 cut against non-powered facility is bogus",
+        )
+    return None
+
+
+def _build_full_free_mask(
+    state: BState, facility_cells: Tuple[Tuple[int, int], ...], pc_anchor: Tuple[int, int]
+) -> FrozenSet[Cell]:
+    """Free-cell mask = grid - ghost - exterior - cell_owner - facility - protocol_core.
+
+    Per Gemini F7/F8 design (same pattern as F7 round 1 fix): the protected
+    facility and protocol_core both occupy their footprint, so pole anchors
+    cannot live there.
+    """
+    facility_set = frozenset(facility_cells)
+    pc_cells = _protocol_core_cells(pc_anchor)
+    blocked = (
+        frozenset(state.ghost_cells)
+        | frozenset(state.exterior_blocks)
+        | frozenset(state.cell_owner.keys())
+        | facility_set
+        | pc_cells
+    )
+    return frozenset(
+        (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE) if (x, y) not in blocked
+    )
+
+
+def _validate_disconnect_witness(
+    facility_cells: Tuple[Tuple[int, int], ...],
+    pc_anchor: Tuple[int, int],
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Phase 6/7: independently rebuild power graph and verify disconnect.
+
+    Gemini F8 round 1 Finding #1 + #2:
+    - poles fed to ``build_power_network`` MUST be the full free-mask anchor
+      set, not just CoverSet — otherwise the graph lacks the spanning
+      intermediate poles and BFS reports a false disconnect.
+    - protocol_core is 9×9; pass the full footprint as ``pc_cells`` so that
+      pole↔core edges fire when any core cell is within radius.
+
+    1. Full free mask excludes ghost ∪ exterior ∪ cell_owner ∪ facility ∪ pc footprint
+    2. CoverSet (facility) must be non-empty (else this is F7 territory)
+    3. Build power graph over the full pole-anchor set ∪ pc footprint
+    4. BFS from any pc cell must NOT reach any CoverSet pole
+    """
+    pole_radius = float(cast(float, cert_dict["pole_jump_radius"]))
+    free_cells = _build_full_free_mask(state, facility_cells, pc_anchor)
+    cover_set = compute_cover_set(facility_cells, free_cells, pole_radius)
+    if not cover_set:
+        return _vr(
+            "unsound",
+            t0,
+            "F8 cert claims disconnect but CoverSet is empty — should be F7 case",
+        )
+    all_poles = enumerate_valid_pole_anchors(free_cells)
+    pc_cells = _protocol_core_cells(pc_anchor)
+    graph = build_power_network(
+        list(all_poles),
+        pole_radius=pole_radius,
+        pc_cells=pc_cells,
+        ghost_rect=state.ghost_rect,
+    )
+    pc_component = bfs_component(graph, pc_anchor)
+    overlap = cover_set & pc_component
+    if overlap:
+        return _vr(
+            "unsound",
+            t0,
+            f"F8 cert claims disconnect but BFS recompute connects "
+            f"{len(overlap)}/{len(cover_set)} CoverSet poles to protocol_core",
+        )
+    return None
+
+
+def _validate_ghost_only_disconnect(
+    facility_cells: Tuple[Tuple[int, int], ...],
+    pc_anchor: Tuple[int, int],
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Phase 8: ensure the ghost is the SOLE cause (not cell_owner).
+
+    Drop cell_owner from the mask. If the resulting CoverSet has at least
+    one pole that reaches pc_anchor via the ghost-only power graph, then
+    cell_owner is what actually disconnected the network → single-cause
+    "ghost" cert is unsound (Phase 1.5+ multi-cause cut).
+    """
+    pole_radius = float(cast(float, cert_dict["pole_jump_radius"]))
+    facility_set = frozenset(facility_cells)
+    pc_cells = _protocol_core_cells(pc_anchor)
+    blocked = (
+        frozenset(state.ghost_cells)
+        | frozenset(state.exterior_blocks)
+        | facility_set
+        | pc_cells
+    )
+    ghost_only_free = frozenset(
+        (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE) if (x, y) not in blocked
+    )
+    cover_ghost = compute_cover_set(facility_cells, ghost_only_free, pole_radius)
+    if not cover_ghost:
+        # Ghost+exterior alone already empty the CoverSet → F7 territory,
+        # not F8 — but phase 6/7 already caught that. Here we only need to
+        # confirm that the disconnect persists ignoring cell_owner.
+        return _vr(
+            "unsound",
+            t0,
+            "F8 cert claims ghost cause but ghost+exterior alone leave CoverSet empty "
+            "— belongs to F7 (empty-CoverSet) family",
+        )
+    # Gemini F8 round 1 Finding #1 + #2: pass FULL anchor set + multi-cell pc
+    all_poles_ghost = enumerate_valid_pole_anchors(ghost_only_free)
+    graph = build_power_network(
+        list(all_poles_ghost),
+        pole_radius=pole_radius,
+        pc_cells=pc_cells,
+        ghost_rect=state.ghost_rect,
+    )
+    pc_component = bfs_component(graph, pc_anchor)
+    if cover_ghost & pc_component:
+        return _vr(
+            "unsound",
+            t0,
+            "F8 cert claims ghost cause but ghost-only power graph reconnects "
+            "CoverSet to protocol_core — cell_owner is the true cause "
+            "(Phase 1.5+ multi-literal handles this)",
+        )
+    return None
+
+
+def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
+    """Read source-of-truth pole radius from state.canonical_rules.
+
+    Returns None on any missing layer / non-numeric value — caller maps
+    None to a schema_err / unsound ValidationResult.
+    """
+    rules = state.canonical_rules
+    if not isinstance(rules, dict):
+        return None
+    templates = rules.get("facility_templates")
+    if not isinstance(templates, dict):
+        return None
+    pole_tpl = templates.get("power_pole")
+    if not isinstance(pole_tpl, dict):
+        return None
+    canonical_radius = pole_tpl.get("power_coverage_radius")
+    if isinstance(canonical_radius, bool):
+        return None
+    if not isinstance(canonical_radius, (int, float)):
+        return None
+    return float(canonical_radius)
+
+
+def _validate_pole_radius_sot(
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Cross-check cert.pole_jump_radius against canonical power_pole radius."""
+    cert_radius_raw = cert_dict.get("pole_jump_radius")
+    if not _is_strict_float(cert_radius_raw):
+        return _vr("schema_err", t0, "pole_jump_radius missing or not numeric")
+    cert_radius = float(cast(float, cert_radius_raw))
+    canonical_radius = _lookup_canonical_pole_radius(state)
+    if canonical_radius is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.canonical_rules.facility_templates.power_pole.power_coverage_radius "
+            "missing — cannot verify pole_jump_radius against source-of-truth (fail-closed)",
+        )
+    if canonical_radius != cert_radius:
+        return _vr(
+            "unsound",
+            t0,
+            f"cert.pole_jump_radius={cert_radius} != canonical "
+            f"power_coverage_radius={canonical_radius} — possibly forged",
+        )
+    return None
+
+
+def _validate_pc_anchor_sot(
+    pc_anchor: Tuple[int, int],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Cross-check protocol_core anchor footprint vs state.cell_owner.
+
+    Phase 1.2: when state.cell_owner is empty (fixture / early phase),
+    accept bounds-only (already validated upstream by _parse_protocol_core_cell).
+    """
+    if state.instance_to_facility_type is None or not state.cell_owner:
+        return None
+    ax, ay = pc_anchor
+    for dx in range(_PROTOCOL_CORE_SIZE):
+        for dy in range(_PROTOCOL_CORE_SIZE):
+            owner = state.cell_owner.get((ax + dx, ay + dy))
+            if owner is None:
+                return _vr(
+                    "unsound",
+                    t0,
+                    f"protocol_core_cell {pc_anchor}: footprint cell "
+                    f"({ax + dx}, {ay + dy}) has no cell_owner — not a master placement",
+                )
+            gid = owner[0] if isinstance(owner, tuple) else owner
+            if state.instance_to_facility_type.get(gid) != "protocol_core":
+                return _vr(
+                    "unsound",
+                    t0,
+                    f"protocol_core_cell {pc_anchor}: footprint cell "
+                    f"({ax + dx}, {ay + dy}) owned by group {gid!r} "
+                    f"which is not facility_type=protocol_core",
+                )
+    return None
+
+
+def _validate_source_of_truth_scalars(
+    pc_anchor: Tuple[int, int],
+    cert_dict: Dict[str, Any],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    """Gemini F8 round 4 Finding #2 (CRITICAL): validator must independently
+    cross-check the cert's ``pole_jump_radius`` and ``protocol_core_cell``
+    against source-of-truth (canonical_rules + state.cell_owner). Without
+    this check, an attacker can supply ``cert.pole_jump_radius = 0.001`` to
+    fake a BFS disconnect, even when the matching active_assumption is set
+    correctly to ``R=5`` (attach-scope passes, validator's recompute uses
+    the malicious 0.001).
+    """
+    err = _validate_pole_radius_sot(cert_dict, state, t0)
+    if err is not None:
+        return err
+    return _validate_pc_anchor_sot(pc_anchor, state, t0)
+
+
+def validate_power_grid_reach(
+    cut: Cut,
+    state: BState,
+    canonical_rules: Dict[str, Any],
+) -> ValidationResult:
+    """9-phase F8 validator (Phase 1.2 single-case scope).
+
+    Phases (fail-closed, first error returns):
+    1. cert + payload non-None + JSON parse
+    2. cert_kind == "power_pole_bfs_disconnect_ghost"
+    3. scalar schema (group / pose / pole_jump_radius / shape_canonical /
+       facility_cells / protocol_core_cell) — geometric mode, literals=None
+    4. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr + exterior digest)
+    5. Group source-of-truth (group ∈ state.groups, pose ∈ pose_domain,
+       facility_template lookup + needs_power == True)
+    6. Cert↔source-of-truth scalar cross-check (Gemini F8 round 4 Finding #2):
+       cert.pole_jump_radius == canonical_rules.power_pole.power_coverage_radius;
+       cert.protocol_core_cell footprint owned by protocol_core in state
+       (when cell_owner populated)
+    7. Full disconnect recompute (CoverSet non-empty + BFS disjoint from pc)
+    8. Ghost-only cause check (cell_owner is NOT the true cause)
+    """
+    t0 = time.monotonic()
+    del canonical_rules
+
+    if cut.cert is None or cut.geometric_payload is None:
+        return _vr(
+            "schema_err",
+            t0,
+            "F8 is geometric mode; cut.cert and cut.geometric_payload must be non-None",
+        )
+    if cut.literals is not None:
+        return _vr(
+            "schema_err",
+            t0,
+            "F8 is geometric mode; cut.literals must be None (got non-None)",
+        )
+
+    try:
+        cert_dict = _parse_cert_payload(cut.cert.cert_payload)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+
+    err = _validate_cert_kind(cert_dict, t0)
+    if err is not None:
+        return err
+
+    scalar_err, facility_cells, pc_anchor = _validate_scalars(cert_dict, t0)
+    if scalar_err is not None:
+        return scalar_err
+    if facility_cells is None or pc_anchor is None:
+        return _vr("schema_err", t0, "scalar parse returned None unexpectedly")
+
+    for error in (
+        _validate_ghost_scope_binding(cut, cert_dict, state, t0),
+        _validate_group_and_template(cert_dict, state, t0),
+        _validate_source_of_truth_scalars(pc_anchor, cert_dict, state, t0),
+        _validate_disconnect_witness(facility_cells, pc_anchor, cert_dict, state, t0),
+        _validate_ghost_only_disconnect(facility_cells, pc_anchor, cert_dict, state, t0),
+    ):
+        if error is not None:
+            return error
+
+    return _vr("ok", t0)
+
+
+def _eval_check_facility_placed(cert_dict: Dict[str, Any], state: BState) -> bool:
+    """Gemini F8 round 1 Finding #3: facility must still be in selected_poses."""
+    gid_raw = cert_dict.get("facility_group")
+    pose_raw = cert_dict.get("facility_pose_id")
+    if not isinstance(gid_raw, str) or not gid_raw:
+        return False
+    if not isinstance(pose_raw, str) or not pose_raw:
+        return False
+    group_state = state.groups.get(gid_raw)
+    if group_state is None:
+        return False
+    return pose_raw in group_state.selected_poses
+
+
+def _parse_pc_anchor_int_pair(pc_raw: object) -> Optional[Tuple[int, int]]:
+    """Strict [int, int] parse; None on any malformed value."""
+    if not isinstance(pc_raw, list) or len(pc_raw) != 2:
+        return None
+    x_raw, y_raw = pc_raw
+    if isinstance(x_raw, bool) or isinstance(y_raw, bool):
+        return None
+    if not isinstance(x_raw, int) or not isinstance(y_raw, int):
+        return None
+    return (x_raw, y_raw)
+
+
+def _footprint_owned_by_protocol_core(
+    anchor: Tuple[int, int], state: BState
+) -> bool:
+    """All 9×9 cells at ``anchor`` owned by facility_type=protocol_core."""
+    if state.instance_to_facility_type is None:
+        return True
+    for dx in range(_PROTOCOL_CORE_SIZE):
+        for dy in range(_PROTOCOL_CORE_SIZE):
+            owner = state.cell_owner.get((anchor[0] + dx, anchor[1] + dy))
+            if owner is None:
+                return False
+            gid = owner[0] if isinstance(owner, tuple) else owner
+            if state.instance_to_facility_type.get(gid) != "protocol_core":
+                return False
+    return True
+
+
+def _eval_check_protocol_core_position(
+    cert_dict: Dict[str, Any], state: BState
+) -> bool:
+    """Gemini F8 round 4 Finding #1: if master moves protocol_core away from
+    the cert anchor, the disconnect may no longer hold. Hot-path O(81)
+    check. Phase 1.2: bounds-only when state.cell_owner is empty.
+    """
+    anchor = _parse_pc_anchor_int_pair(cert_dict.get("protocol_core_cell"))
+    if anchor is None:
+        return False
+    if not state.cell_owner:
+        return True  # Phase 1.2 fixture/early-phase: bounds-only via validator scalars
+    return _footprint_owned_by_protocol_core(anchor, state)
+
+
+def evaluate_geometric_power_grid_reach(cut: Cut, state: BState) -> bool:
+    """Hot-path evaluator. True iff F8 disconnect still holds.
+
+    Per the F6/F7 pattern: under the scope binding (ghost + exterior), the
+    BFS disconnect is monotonically preserved by ``free_cells`` shrinking
+    (cell_owner only adds blockers). O(1) scope-drift guard suffices —
+    re-running the heavy BFS recompute on every evaluation is wasted work.
+
+    Gemini F8 round 1 Finding #3 (CRITICAL): spec §6 requires checking that
+    the cert's (facility_group, facility_pose_id) is still in
+    ``state.groups[gid].selected_poses``. Without this, ``literals=None``
+    means the cut fires forever once active — even if the master moves the
+    facility off the offending pose, the ghost-only scope is unchanged so
+    the cut would poison the entire ghost AABB. Adding the placement check
+    here keeps the evaluator O(1) (dict lookup + list-in) and preserves
+    soundness while restoring correctness.
+
+    Fail-safe: malformed payload / scope drift returns False.
+    """
+    if cut.geometric_payload is None or cut.scope is None:
+        return False
+    try:
+        cert_dict = json.loads(cut.geometric_payload)
+        if not isinstance(cert_dict, dict):
+            return False
+        if cert_dict.get("cert_kind") != "power_pole_bfs_disconnect_ghost":
+            return False
+        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        if cut.scope.exterior_blocks_hash != compute_exterior_blocks_hash(state):
+            return False
+        if not _eval_check_facility_placed(cert_dict, state):
+            return False
+        if not _eval_check_protocol_core_position(cert_dict, state):
+            return False
+        return True
+    except Exception:  # noqa: BLE001 — fail-safe
+        return False
+
+
+def watcher_keys_power_grid_reach(cut: Cut) -> Dict[str, List[Any]]:
+    """Return watcher keys for CutStore.add_cut.
+
+    F8 watches: facility_group (by_group) + (facility_group, facility_pose_id)
+    (by_pose) + facility_cells (by_cell). by_ghost_watcher is auto-added by
+    store from cut.scope.ghost_rect_id.
+
+    Note: Phase 1.5+ may add a wider by_cell watcher covering the full pole
+    anchor enumeration neighborhood (BoundingBox(facility, R_jump + pc_size))
+    so cell_owner releases that reconnect the power graph re-trigger replay;
+    Phase 1.2 keeps the watcher tight per F7's spec §8 v1.1 simplification.
+    """
+    if cut.geometric_payload is None:
+        return {"group_keys": [], "pose_keys": [], "cell_keys": []}
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        gid = cert_dict.get("facility_group")
+        pose_id = cert_dict.get("facility_pose_id")
+        if not _is_non_empty_str(gid) or not _is_non_empty_str(pose_id):
+            return {"group_keys": [], "pose_keys": [], "cell_keys": []}
+        cells_raw = cert_dict.get("facility_cells")
+        if not isinstance(cells_raw, list):
+            return {"group_keys": [], "pose_keys": [], "cell_keys": []}
+        cells: List[Tuple[int, int]] = []
+        for entry in cells_raw:
+            if not isinstance(entry, list) or len(entry) != 2:
+                return {"group_keys": [], "pose_keys": [], "cell_keys": []}
+            cells.append((int(entry[0]), int(entry[1])))
+        return {
+            "group_keys": [cast(str, gid)],
+            "pose_keys": [(cast(str, gid), cast(str, pose_id))],
+            "cell_keys": cells,
+        }
+    except Exception:  # noqa: BLE001 — fail-safe
+        return {"group_keys": [], "pose_keys": [], "cell_keys": []}
+
+```
+
+### FILE: src/cuts/oracles/power_grid_reach_oracle.py
+```python
+"""F8 power_grid_reach generator (Phase 1.2 P1.2B-F8, default-disabled).
+
+Phase 1.2 generator default-disabled (matches F6/F7 pattern). Phase 1.5+
+wiring in ``benders_loop._run_power_placement_subproblem`` will run the
+F7+F8 pipeline in order: F7 fires when ``CoverSet`` is empty; F8 fires
+only when ``CoverSet`` is non-empty but the pole-jump BFS from
+``protocol_core`` does not reach any pole that covers the facility.
+
+Phase 1.2 single-case scope:
+- cert_kind = "power_pole_bfs_disconnect_ghost" (ghost is the sole cause)
+- Skip facilities where ``cell_owner`` is the true cause (the ghost-only
+  power graph would reconnect); Phase 1.5+ multi-literal handles those.
+
+Fail-closed contract:
+- env disabled → []
+- state.ghost_rect None → [] (F8 ghost-bound)
+- pole_jump_radius missing → [] (caller responsibility, Phase 1.5+ wires
+  from a canonical_rules field that does not yet exist)
+- protocol_core anchor unknown / not in state.cell_owner → []
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F8
+- docs/研究/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md v1.1
+"""
+from __future__ import annotations
+
+import hashlib
+import os
+from typing import Any, Dict, FrozenSet, List, Optional, Tuple, cast
+
+from src.cuts.helpers.power_cover import compute_cover_set, enumerate_valid_pole_anchors
+from src.cuts.helpers.power_network import build_power_network, bfs_component
+from src.cuts.lifecycle import (
+    Assumption,
+    BState,
+    Cell,
+    Cut,
+    CutScope,
+    GroupId,
+    OracleCert,
+    PoseId,
+    canonical_bytes_for_cert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+    compute_source_digest,
+)
+
+
+ORACLE_NAME: str = "power_grid_reach_v1"
+FAMILY_VERSION: str = "v1.0"
+VALIDATOR_VERSION: str = "v1.0"
+CERT_KIND: str = "power_pole_bfs_disconnect_ghost"
+_POLE_SHAPE_CANONICAL: str = "2x2_rigid"
+_GRID_SIZE: int = 70
+_PROTOCOL_CORE_SIZE: int = 9
+
+
+_GRID_CELLS: FrozenSet[Cell] = frozenset(
+    (x, y) for x in range(_GRID_SIZE) for y in range(_GRID_SIZE)
+)
+
+
+def _env_enabled() -> bool:
+    return os.environ.get("EXACT_F8_GENERATOR_ENABLED", "0").strip().lower() in {
+        "1",
+        "true",
+        "on",
+    }
+
+
+def _protocol_core_cells(anchor: Tuple[int, int]) -> FrozenSet[Cell]:
+    ax, ay = anchor
+    return frozenset(
+        (ax + dx, ay + dy)
+        for dx in range(_PROTOCOL_CORE_SIZE)
+        for dy in range(_PROTOCOL_CORE_SIZE)
+    )
+
+
+def _facility_template_needs_power(state: BState, group_id: GroupId) -> Optional[str]:
+    if state.instance_to_facility_type is None or state.facility_templates is None:
+        return None
+    facility_type = state.instance_to_facility_type.get(group_id)
+    if facility_type is None:
+        return None
+    tpl = state.facility_templates.get(facility_type)
+    if not isinstance(tpl, dict):
+        return None
+    if tpl.get("needs_power") is not True:
+        return None
+    return facility_type
+
+
+def _pose_cells_from_canonical(
+    state: BState, group_id: GroupId, pose_id: PoseId
+) -> Optional[Tuple[Cell, ...]]:
+    placements = state.candidate_placements
+    if not isinstance(placements, dict):
+        return None
+    if state.instance_to_facility_type is None:
+        return None
+    facility_type_raw = state.instance_to_facility_type.get(group_id)
+    if facility_type_raw is None:
+        return None
+    pools = placements.get("facility_pools")
+    if not isinstance(pools, dict):
+        return None
+    pool = pools.get(facility_type_raw)
+    if not isinstance(pool, list):
+        return None
+    for entry in pool:
+        if not isinstance(entry, dict):
+            continue
+        if entry.get("pose_id") != pose_id:
+            continue
+        occupied = entry.get("occupied_cells")
+        if not isinstance(occupied, list):
+            return None
+        out: List[Cell] = []
+        for raw in occupied:
+            if not isinstance(raw, list) or len(raw) != 2:
+                return None
+            x, y = raw
+            if not (isinstance(x, int) and not isinstance(x, bool)):
+                return None
+            if not (isinstance(y, int) and not isinstance(y, bool)):
+                return None
+            out.append((x, y))
+        return tuple(sorted(out))
+    return None
+
+
+def _build_full_free_mask(
+    state: BState, facility_cells: Tuple[Cell, ...], pc_anchor: Tuple[int, int]
+) -> FrozenSet[Cell]:
+    blocked = (
+        frozenset(state.ghost_cells)
+        | frozenset(state.exterior_blocks)
+        | frozenset(state.cell_owner.keys())
+        | frozenset(facility_cells)
+        | _protocol_core_cells(pc_anchor)
+    )
+    return frozenset(c for c in _GRID_CELLS if c not in blocked)
+
+
+def _build_ghost_only_free_mask(
+    state: BState, facility_cells: Tuple[Cell, ...], pc_anchor: Tuple[int, int]
+) -> FrozenSet[Cell]:
+    blocked = (
+        frozenset(state.ghost_cells)
+        | frozenset(state.exterior_blocks)
+        | frozenset(facility_cells)
+        | _protocol_core_cells(pc_anchor)
+    )
+    return frozenset(c for c in _GRID_CELLS if c not in blocked)
+
+
+def generate_power_grid_reach_cuts(
+    state: BState,
+    *,
+    target_poses: Optional[List[Tuple[GroupId, PoseId]]] = None,
+    protocol_core_anchor: Optional[Tuple[int, int]] = None,
+    pole_jump_radius: Optional[float] = None,
+    iter_index: int = -1,
+) -> List[Cut]:
+    """Emit F8 cuts for facilities disconnected from protocol_core via pole jumps.
+
+    Args:
+        state: BState with ghost_rect / cell_owner / candidate_placements /
+            facility_templates / instance_to_facility_type.
+        target_poses: explicit ``(group_id, pose_id)`` pairs to evaluate.
+            Phase 1.5+ wiring derives these from ``master_solution``.
+        protocol_core_anchor: ``(x, y)`` of the 9×9 protocol_core anchor cell.
+            Phase 1.5+ wiring derives from master_solution.placements.
+            Phase 1.2 callers / fixtures pass explicitly.
+        pole_jump_radius: float pole-to-pole jump radius. canonical_rules does
+            not currently expose a separate field for this (Phase 1.5+ work);
+            callers must pass explicitly.
+        iter_index: outer-loop iteration tag for cut_id provenance.
+    """
+    if not _env_enabled():
+        return []
+    if state.ghost_rect is None:
+        return []
+    if target_poses is None or protocol_core_anchor is None or pole_jump_radius is None:
+        return []
+    if pole_jump_radius <= 0.0:
+        return []
+
+    cuts: List[Cut] = []
+    for group_id, pose_id in target_poses:
+        if group_id not in state.groups:
+            continue
+        if pose_id not in state.groups[group_id].pose_domain:
+            continue
+        facility_type = _facility_template_needs_power(state, group_id)
+        if facility_type is None:
+            continue
+        facility_cells = _pose_cells_from_canonical(state, group_id, pose_id)
+        if facility_cells is None:
+            continue
+
+        full_free = _build_full_free_mask(state, facility_cells, protocol_core_anchor)
+        cover_set = compute_cover_set(facility_cells, full_free, pole_jump_radius)
+        if not cover_set:
+            continue  # F7 territory (empty CoverSet)
+
+        # Gemini F8 round 1 Finding #1 + #2: enumerate the FULL pole-anchor
+        # set on the current free mask (not just CoverSet) and pass the
+        # protocol_core 9×9 footprint as ``pc_cells`` (not a single anchor).
+        all_poles = enumerate_valid_pole_anchors(full_free)
+        pc_cells = _protocol_core_cells(protocol_core_anchor)
+        graph = build_power_network(
+            list(all_poles),
+            pole_radius=pole_jump_radius,
+            pc_cells=pc_cells,
+            ghost_rect=state.ghost_rect,
+        )
+        pc_component = bfs_component(graph, protocol_core_anchor)
+        if cover_set & pc_component:
+            continue  # connected — no cut
+
+        # Verify the disconnect persists when cell_owner is ignored; otherwise
+        # cell_owner is the true cause and Phase 1.5+ multi-literal handles it.
+        ghost_only_free = _build_ghost_only_free_mask(
+            state, facility_cells, protocol_core_anchor
+        )
+        cover_ghost = compute_cover_set(
+            facility_cells, ghost_only_free, pole_jump_radius
+        )
+        if not cover_ghost:
+            continue  # F7 territory ghost-only
+        all_poles_ghost = enumerate_valid_pole_anchors(ghost_only_free)
+        graph_ghost = build_power_network(
+            list(all_poles_ghost),
+            pole_radius=pole_jump_radius,
+            pc_cells=pc_cells,
+            ghost_rect=state.ghost_rect,
+        )
+        if cover_ghost & bfs_component(graph_ghost, protocol_core_anchor):
+            # cell_owner is the true cause — Phase 1.5+ multi-literal
+            continue
+
+        cut = _build_cut(
+            state=state,
+            group_id=group_id,
+            pose_id=pose_id,
+            facility_cells=facility_cells,
+            pole_jump_radius=pole_jump_radius,
+            protocol_core_anchor=protocol_core_anchor,
+            iter_index=iter_index,
+        )
+        cuts.append(cut)
+    return cuts
+
+
+def _build_cut(
+    *,
+    state: BState,
+    group_id: GroupId,
+    pose_id: PoseId,
+    facility_cells: Tuple[Cell, ...],
+    pole_jump_radius: float,
+    protocol_core_anchor: Tuple[int, int],
+    iter_index: int,
+) -> Cut:
+    ghost_rect_repr = list(cast(Tuple[int, int, int, int], state.ghost_rect))
+    exterior_digest = compute_exterior_blocks_hash(state)
+
+    cert_payload_dict: Dict[str, Any] = {
+        "cert_kind": CERT_KIND,
+        "facility_group": group_id,
+        "facility_pose_id": pose_id,
+        "facility_cells": [[c[0], c[1]] for c in facility_cells],
+        "pole_jump_radius": float(pole_jump_radius),
+        "pole_shape_canonical": _POLE_SHAPE_CANONICAL,
+        "protocol_core_cell": [protocol_core_anchor[0], protocol_core_anchor[1]],
+        "ghost_rect_repr": ghost_rect_repr,
+        "exterior_blocks_digest": exterior_digest,
+    }
+    cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+    cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+
+    source_digest = state.source_digest or compute_source_digest(state)
+
+    # Gemini F8 round 3 Finding #3 (HIGH): spec §4 requires active_assumptions
+    # to bind pole_jump_radius and protocol_core_cell to source-of-truth. The
+    # assumption_holds dispatch (lifecycle §step6) cross-checks each assumption
+    # via verifiers.py at attach-scope, so a malicious cert with forged radius
+    # (e.g., R=0.001 to fake disconnect) or off-master protocol_core fails the
+    # gate and never attaches.
+    pole_radius_value = f"R={float(pole_jump_radius):g}"
+    pc_position_value = f"({protocol_core_anchor[0]},{protocol_core_anchor[1]})"
+    scope = CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=exterior_digest,
+        source_digest=source_digest,
+        oracle_abstraction_version=ORACLE_NAME,
+        artifact_hashes=dict(state.artifact_hashes),
+        active_assumptions=(
+            Assumption(key="power_pole_jump_radius", value=pole_radius_value),
+            Assumption(key="protocol_core_position", value=pc_position_value),
+        ),
+    )
+
+    return Cut(
+        cut_id=f"f8_{iter_index}_{cert_hash[:12]}",
+        family="power_grid_reach",
+        literals=None,
+        geometric_payload=cert_payload_bytes,
+        scope=scope,
+        cert=OracleCert(
+            cert_kind=CERT_KIND,
+            cert_payload=cert_payload_bytes,
+            cert_hash=cert_hash,
+        ),
+        family_version=FAMILY_VERSION,
+        validator_version=VALIDATOR_VERSION,
+        oracle_name=ORACLE_NAME,
+        oracle_cert_hash=cert_hash,
+        minimization_audit={
+            "size_before": 1,
+            "size_after": 1,
+            "calls": 0,
+        },
+        iter_index=iter_index,
+    )
+
+```
+
+### FILE: src/cuts/assumptions/verifiers.py
+```python
+"""Production assumption verifier dispatch (cut_lifecycle_v2 v3.2.2 §4 Gap 5).
+
+Phase 1.0 P1.4 (per Gemini round 27 B1 finding): ASSUMPTION_VERIFIERS 必须真
+读 ``state.canonical_rules`` (parsed rules/canonical_rules.json readonly ref)
+比对 cert 内 source-of-truth assumption 值. 否则 stub return True 让 cut
+silent attach 即便 source rotated — 违 PROJECT_LOCK §4 fail-closed 原则.
+
+API:
+- ``lookup_verifier(key)`` → Optional[Callable] (lifecycle.assumption_holds 调)
+- ``register_verifier(key, fn)`` — Phase 1.1+ family validator 加新 key 时调
+
+Phase 1.0 P1.4 wired:
+- ``placement_rule``: F1/F3/F6/F8/... — group=rule format, 验跟 canonical_rules 一致
+- ``left_or_bottom_boundary_saturation``: F1 — boundary saturation static invariant
+
+Phase 1.1+ extends (per cut_family_specs/*):
+- ``boundary_pose_shape`` (F2)
+- ``boundary_region`` (F2)
+- ``power_pole_radius`` (F3/F7)
+- ``power_pole_shape`` (F3/F7)
+- ``g1_blocks_AB_path`` (F4 state-conditioned)
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md v3.2.2 §4 Gap 5
+- PROJECT_LOCK.md §3A invariant 4 (HOLD vs Quarantine)
+"""
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Callable, Dict, Optional
+
+if TYPE_CHECKING:
+    from src.cuts.lifecycle import BState
+
+Verifier = Callable[["BState", str], bool]
+
+
+def _parse_kv_pair(value: str) -> Optional[tuple[str, str]]:
+    """Parse "key=val" string. Returns None on malformed input."""
+    parts = value.split("=", 1)
+    if len(parts) != 2:
+        return None
+    k, v = parts[0].strip(), parts[1].strip()
+    if not k or not v:
+        return None
+    return (k, v)
+
+
+def verify_placement_rule(state: "BState", value: str) -> bool:
+    """Assumption "placement_rule": value = "{group}={rule}".
+
+    Gap 8 (Gemini round 30) 修: placement_rule lookup 经
+    ``helpers.canonical_rules.placement_rule_for_group(state, group)``,
+    **不**直接 query state.canonical_rules.get(group). gid 是 operation_type
+    (e.g. "boundary_io"), 不是 canonical_rules 顶层 key.
+
+    Fail-closed: state.facility_templates / instance_to_facility_type None
+    → helper 返 "unknown" → verifier False. canonical_rules None 同理.
+    """
+    kv = _parse_kv_pair(value)
+    if kv is None:
+        return False
+    group, expected_rule = kv
+
+    # Lazy import 避 circular (assumptions ← lifecycle ← helpers ← assumptions)
+    from src.cuts.helpers.canonical_rules import placement_rule_for_group
+    actual_rule = placement_rule_for_group(state, group)
+    if actual_rule == "unknown":
+        return False
+    return actual_rule == expected_rule
+
+
+def verify_boundary_saturation(state: "BState", value: str) -> bool:
+    """Assumption "left_or_bottom_boundary_saturation": source-of-truth invariant.
+
+    value 是 "left_baseline=23,bottom_baseline=23,demand=46,cells=138" — 表示
+    canonical_rules 决定 boundary 上限. Phase 1.0 P1.4 仅校验 state.canonical_rules
+    非空 (source 存在) — 真正 saturation 数字校验 P1.21 source_digest 实施时加.
+
+    Fail-closed: canonical_rules None → False (无 source 不可信).
+    """
+    rules = getattr(state, "canonical_rules", None)
+    if rules is None:
+        return False
+    return True
+
+
+def _parse_radius_value(value: str) -> Optional[float]:
+    """Parse "R=<float>" assumption value. Returns None on malformed / non-positive."""
+    kv = _parse_kv_pair(value)
+    if kv is None:
+        return None
+    key, rhs = kv
+    if key != "R":
+        return None
+    try:
+        radius = float(rhs)
+    except ValueError:
+        return None
+    if radius <= 0.0:
+        return None
+    return radius
+
+
+def _lookup_canonical_pole_radius(state: "BState") -> Optional[float]:
+    """Read state.canonical_rules.facility_templates.power_pole.power_coverage_radius.
+
+    Returns None on any missing layer / non-numeric / bool — fail-closed.
+    """
+    rules = getattr(state, "canonical_rules", None)
+    if not isinstance(rules, dict):
+        return None
+    templates = rules.get("facility_templates")
+    if not isinstance(templates, dict):
+        return None
+    pole_tpl = templates.get("power_pole")
+    if not isinstance(pole_tpl, dict):
+        return None
+    canonical_radius = pole_tpl.get("power_coverage_radius")
+    if isinstance(canonical_radius, bool):
+        return None
+    if not isinstance(canonical_radius, (int, float)):
+        return None
+    return float(canonical_radius)
+
+
+def verify_power_pole_jump_radius(state: "BState", value: str) -> bool:
+    """Assumption "power_pole_jump_radius": F8 source-of-truth binding.
+
+    value format: "R=<float>". Gemini F8 round 3 Finding #2 (CRITICAL):
+    validator cannot trust caller-supplied ``pole_jump_radius`` from the
+    cert payload — a malicious prover could forge R=0.001 to fake a BFS
+    disconnect. The active_assumption check (attach-scope step 6) re-reads
+    canonical_rules and rejects any cert whose radius doesn't match.
+
+    Phase 1.2 single-case: canonical_rules.facility_templates.power_pole
+    exposes ``power_coverage_radius`` (pole→facility, 5.0 in real data).
+    Phase 1.5+ will introduce a dedicated pole-to-pole jump radius field;
+    until then, the simplification "pole-to-pole = power_coverage_radius"
+    is documented in spec §1c, and this verifier enforces that link.
+
+    Fail-closed: malformed value / canonical layers missing / mismatch.
+    """
+    cert_radius = _parse_radius_value(value)
+    if cert_radius is None:
+        return False
+    canonical_radius = _lookup_canonical_pole_radius(state)
+    if canonical_radius is None:
+        return False
+    return canonical_radius == cert_radius
+
+
+def _parse_position_value(value: str) -> Optional[tuple[int, int]]:
+    """Parse "(x,y)" assumption value as (int, int). None on malformed."""
+    if not (value.startswith("(") and value.endswith(")")):
+        return None
+    inner = value[1:-1]
+    parts = inner.split(",", 1)
+    if len(parts) != 2:
+        return None
+    try:
+        ax = int(parts[0].strip())
+        ay = int(parts[1].strip())
+    except ValueError:
+        return None
+    return (ax, ay)
+
+
+def _protocol_core_footprint_owned(
+    state: "BState", anchor: tuple[int, int], pc_size: int
+) -> bool:
+    """True iff every cell in the 9×9 footprint at ``anchor`` is owned by a
+    group mapped to facility_type=protocol_core in state.cell_owner."""
+    instance_to_facility_type = state.instance_to_facility_type
+    cell_owner = state.cell_owner
+    if instance_to_facility_type is None or not cell_owner:
+        return False
+    for dx in range(pc_size):
+        for dy in range(pc_size):
+            owner = cell_owner.get((anchor[0] + dx, anchor[1] + dy))
+            if owner is None:
+                return False
+            gid = owner[0] if isinstance(owner, tuple) else owner
+            if instance_to_facility_type.get(gid) != "protocol_core":
+                return False
+    return True
+
+
+def verify_protocol_core_position(state: "BState", value: str) -> bool:
+    """Assumption "protocol_core_position": F8 anchor binding.
+
+    value format: "(<x>,<y>)". Gemini F8 round 3 Finding #2 (CRITICAL):
+    cert's ``protocol_core_cell`` must match master_solution. A forged
+    anchor (e.g., off-grid corner) can produce an artificially disconnected
+    BFS without reflecting any real placement.
+
+    Phase 1.2 single-case (fail-closed):
+    - parse "(x,y)" — fail on malformed format
+    - bounds: 0 ≤ x, y AND x + 9 ≤ 70 AND y + 9 ≤ 70 (protocol_core is 9×9
+      and must fit in the 70×70 grid)
+    - cross-check with state: if the canonical 9×9 footprint at (x, y) has
+      every cell in ``state.cell_owner`` mapped to (group_id, _) where the
+      ``state.instance_to_facility_type[group_id] == "protocol_core"``, the
+      anchor is verified. If no such mapping is available (fixture/test
+      state without cell_owner), accept the bounds-only check.
+
+    Phase 1.5+: full master-state cross-check unconditional.
+    """
+    parsed = _parse_position_value(value)
+    if parsed is None:
+        return False
+    ax, ay = parsed
+    grid_size = 70
+    pc_size = 9
+    if ax < 0 or ay < 0 or ax + pc_size > grid_size or ay + pc_size > grid_size:
+        return False
+    # If no master placement info, bounds-only is the Phase 1.2 contract.
+    if state.instance_to_facility_type is None or not state.cell_owner:
+        return True
+    return _protocol_core_footprint_owned(state, (ax, ay), pc_size)
+
+
+_VERIFIERS: Dict[str, Verifier] = {
+    "placement_rule": verify_placement_rule,
+    "left_or_bottom_boundary_saturation": verify_boundary_saturation,
+    "power_pole_jump_radius": verify_power_pole_jump_radius,
+    "protocol_core_position": verify_protocol_core_position,
+}
+
+
+def lookup_verifier(key: str) -> Optional[Verifier]:
+    """Returns verifier function for assumption key, or None if not registered.
+
+    None → assumption_holds returns False (fail-closed per PROJECT_LOCK §4).
+    """
+    return _VERIFIERS.get(key)
+
+
+def register_verifier(key: str, fn: Verifier, *, overwrite: bool = False) -> None:
+    """Register a production verifier. Phase 1.1+ family validator 加 key 时调.
+
+    fn 不允许 None — 注册必非空.
+
+    Gemini round 28 finding #2: 拒 silent overwrite — 防 P1.5+ 不同 family
+    碰巧注册同名 key (e.g. F2 + F4 都用 boundary_shape) 静默替换. 显式
+    ``overwrite=True`` 走覆盖路径 (mock 测试 / spec 迭代时用).
+    """
+    if fn is None:
+        raise ValueError(f"verifier for key={key!r} 不能为 None")
+    if key in _VERIFIERS and not overwrite:
+        raise ValueError(
+            f"verifier for key={key!r} 已 registered; "
+            f"pass overwrite=True 显式 (Gemini round 28 finding #2 fail-closed)"
+        )
+    _VERIFIERS[key] = fn
+
+```
+
+
+
+# 完. 严格 format, 不 think-out-loud.

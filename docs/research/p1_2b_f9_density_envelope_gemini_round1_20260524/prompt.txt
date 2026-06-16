@@ -1,0 +1,1571 @@
+
+# Gemini 3 Pro — F9 density_envelope ROUND 1 cross-check
+
+You are the project's independent math/code reviewer. The project is a 70x70 grid exact maximum empty rectangle solver for Arknights: Endfield (CP-SAT + Benders/LBBD with cuts). This is a **Logic-Based Benders Decomposition (LBBD)** setup: an outer master enumerates ghost rectangles + placements, and each iteration the master proposes a candidate solution; sub-problems check feasibility; if infeasible, the sub-problem returns a **witness** that the cut **family** translates into a **cut** added back to the master.
+
+I'm landing the 9th cut family: **F9 density_envelope** (commit f2d8f31). This is a LBBD **area cut**: given a sub-window W of the 70×70 grid and a single group g, if any feasible assignment of g's instances would put more cells into W than allowed, the cut forbids that overflow on subsequent master solutions. F5 (the prior family) just passed three rounds of Gemini cross-check (round 1 caught ~14 findings). I need round 1 on F9 with the **same intensity** — do not give a GO_WITH_MINOR rubber-stamp.
+
+---
+## SECTION 1 — F9 spec (locked invariants)
+
+PROJECT_LOCK §3A:
+
+1. **area-only invariant**: generator only accepts `witness_kind == "area_capacity_overflow"`. `routing_overflow`, `binding_overflow`, `pcr_cut_overflow` MUST be rejected. (Cross-family witnesses would couple F9 to non-area effects, which would weaken the mathematical statement: an area cut is only sound when the witness is an area-capacity overrun.)
+2. **strict inequality**: equality does NOT cut. Cut fires iff `sum > max_allowed_area`, never `>=`.
+3. **safe upper bound recompute**: validator independently recomputes `safe_ub = |W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|`. The cert's `max_allowed_area` must be `<= safe_ub`. ("`cell_owner_other`" = cells owned by groups OTHER than `cert.group_id` — the cells of `cert.group_id` are excluded because *those* cells are exactly the witness assignment we're proving overflows.)
+4. **ghost-bound**: `scope.ghost_rect_id != GHOST_AGNOSTIC` AND `cert.ghost_rect_repr` byte-equal to `state.ghost_rect`. F9 is intrinsically ghost-coupled (the safe_ub depends on ghost cells), so a ghost-agnostic cut is unsound by construction.
+5. **mode = geometric**: `cut.geometric_payload == cert.cert_payload` byte-equal (R3 byte-equal invariant).
+6. **evaluator**: `sum_{cell ∈ cell_owner with group == cert.group_id} 1[cell ∈ W] > cert.max_allowed_area`. NOT instance count. NOT origin-in-window. NOT "all-in-window".
+
+**Cert payload schema** (canonical JSON, sorted keys, 6 fields):
+- `cert_kind: "density_envelope_v1"`
+- `witness_kind: "area_capacity_overflow"` (closed-set)
+- `window_rect: [x, y, h, w]` (4 strict int, 70×70 grid bound)
+- `group_id: non-empty str ∈ state.groups`
+- `max_allowed_area: strict int, 0 ≤ value ≤ |W|, ≤ safe_ub`
+- `oracle_assignment_witness: list of [group_id, pose_id]` (all group_id == cert.group_id, pose_id ∈ state.groups[group_id].pose_domain, multiset count per pose ≤ state.groups[g].demand)
+- `ghost_rect_repr: [x, y, h, w]` byte-equal state.ghost_rect
+
+**4 P0 red fixtures** (must pass):
+- F9-reject-routing-overflow — witness_kind != "area_capacity_overflow" rejected
+- F9-any-overlap-overcount — "any overlap → whole facility" historical FP rejected (must use real per-pose-cell intersection)
+- F9-origin-in-window — pose anchor ∈ W but body mostly outside → must count only `|cells ∩ W|` not "anchor-in-W → whole facility"
+- F9-all-in-window-FN — partial-overlap poses must contribute their partial cells, not 0
+
+**Mathematical lift derivation** (this is the meta-justification for the area cut):
+
+Claim: For any feasible assignment of g (each instance = one pose from `pose_domain`, multiplicity ≤ demand), summing |pose.occupied_cells ∩ W| ≤ safe_ub. So if a candidate violates this, the cut `sum_{instances of g placed in W} 1 > max_allowed_area` (parameterized by W, g, max_allowed_area) is sound and excludes the violating layout from subsequent master solves.
+
+Lift: although a specific *witness* drove the cut, the cut is **universally quantified** over **all** placements of g (not just the witness's). This is sound only if `max_allowed_area = safe_ub` (or any value ≥ safe_ub forbidden by the strict-inequality + safe_ub-bound rules). The evaluator (`step_7_evaluate_cut`) checks the cut on the master's full assignment, not the witness's.
+
+---
+## SECTION 2 — F5 round-1 findings history (avoid same traps in F9)
+
+Gemini round 1 on F5 (pattern_nogood) caught:
+- **BLOCKER**: cert_payload contained a non-deterministic field → broke cross-worker reproducibility
+- **HIGH**: oracle_cb deadline_seconds leaked / accumulated
+- **HIGH**: validator deadline < generator budget → race condition
+- **MEDIUM**: duplicate triple call wasted oracle budget
+- **MEDIUM**: `size_after` vs minimized-pattern length cross-check missing
+- **MEDIUM**: multiset order violated anonymity (literals sorted as tuples vs as multisets)
+- **MEDIUM**: `stopped_reason` closed-set enforcement loose
+- **LOW**: stale comment / Protocol witness Optional[bytes]
+
+F9 is a different shape (geometric, no minimizer, no deadlines), but **same root failure modes** should be probed:
+1. **Determinism**: any field that varies between equivalent witnesses (set iteration order, dict key order, time, random)?
+2. **Cross-check completeness**: the validator says "9-phase" but does each phase actually re-derive vs the cert (independent)?
+3. **Closed-set drift**: `ACCEPTED_WITNESS_KIND = frozenset({"area_capacity_overflow"})` — is this the only choke point? Are there bypass paths (e.g. evaluator never checks witness_kind)?
+4. **Anonymity / canonical form**: `oracle_assignment_witness` is a list of `[g, p]` — is multiset-order significant for `cert_hash`? Two equivalent witnesses with permuted entries → different hash → different cut_id → cache miss / duplicate cut?
+5. **Trust boundary**: validator trusts what? oracle's raw fields, or recomputes?
+6. **Boundary conditions**: 0 / 1 / |W| / overflow-by-one / safe_ub-edge
+
+---
+## SECTION 3 — F9 source code
+
+### 3.1 `src/cuts/families/density_envelope.py` (validator + evaluator + watcher)
+```python
+"""Family 9 density_envelope — area-only validator + evaluator (Phase 1.2 P1.2B-F9).
+
+PROJECT_LOCK §3A locked invariants (per docs/项目说明/04_design_invariants.md §18):
+- **area-only**: generator only accepts ``area_capacity_overflow`` witness;
+  ``routing_overflow`` / ``binding_overflow`` / ``pcr_cut_overflow`` rejected.
+- Evaluator: ``sum_{cell ∈ cell_owner with group == cert.group_id} 1[cell ∈ W]
+  > cert.max_allowed_area`` (NOT instance count, NOT origin-in-window,
+  NOT all-in-window).
+- **strict inequality**: equality does not cut.
+- ``max_allowed_area`` must be a safe upper bound (validator independently
+  recomputes via ``|W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|``).
+- F9 is ghost-bound; ``cut.scope.ghost_rect_id == GHOST_AGNOSTIC`` rejected.
+
+Cert payload schema (canonical JSON, sorted keys):
+    cert_kind: "density_envelope_v1"
+    witness_kind: "area_capacity_overflow"  (closed-set)
+    window_rect: [x, y, h, w] (4 strict int, 70×70 grid bound)
+    group_id: non-empty str ∈ state.groups
+    max_allowed_area: strict int >= 0, <= |W|, <= validator-recomputed safe_ub
+    oracle_assignment_witness: list of [group_id, pose_id]; all group_id ==
+        cert.group_id; pose_id ∈ state.groups[group_id].pose_domain;
+        multiset count per pose ≤ state.groups[g].demand
+    ghost_rect_repr: [x, y, h, w] byte-equal state.ghost_rect
+
+Evaluator dispatches via ``lifecycle.step_7_evaluate_cut``.
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F9
+- docs/项目说明/12_go_criteria.md §8.1.x acceptance B
+- docs/项目说明/02_mathematical_foundations.md §3.9
+- docs/项目说明/04_design_invariants.md §18
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/09_density_envelope.md
+"""
+from __future__ import annotations
+
+import json
+import time
+from collections import Counter
+from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
+
+from src.cuts.lifecycle import (
+    GHOST_AGNOSTIC,
+    BState,
+    Cell,
+    Cut,
+    GroupId,
+    PoseId,
+    ValidationResult,
+)
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+# Closed-set witness kind whitelist. F9 area-only invariant (PROJECT_LOCK §3A).
+ACCEPTED_WITNESS_KIND: frozenset[str] = frozenset({"area_capacity_overflow"})
+
+# F1 / F9 are complementary families (cell-based vs area-based). The capacity
+# helpers are intentionally NOT shared: F1 cap_R is static (cell_owner-free
+# for cross-ghost replay), F9 safe_ub is dynamic (cell_owner-aware because F9
+# is always ghost-bound). Do not refactor into a shared helper.
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(
+        kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None
+    )
+
+
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_non_empty_str(value: object) -> bool:
+    return isinstance(value, str) and value != ""
+
+
+def _parse_window_rect(value: object) -> Tuple[int, int, int, int]:
+    """Parse [x, y, h, w] with strict int + 70×70 grid bound + h/w > 0."""
+    if not isinstance(value, list) or len(value) != 4:
+        raise ValueError(f"window_rect must be 4-element list, got {value!r}")
+    coords = []
+    for i, v in enumerate(value):
+        if not _is_strict_int(v):
+            raise ValueError(f"window_rect[{i}] must be strict int, got {v!r}")
+        coords.append(cast(int, v))
+    x, y, h, w = coords
+    if h < 1 or w < 1:
+        raise ValueError(f"window_rect h/w must be >= 1, got h={h} w={w}")
+    if x < 0 or y < 0:
+        raise ValueError(f"window_rect x/y must be >= 0, got x={x} y={y}")
+    if x + h > 70 or y + w > 70:
+        raise ValueError(
+            f"window_rect out of 70×70 grid: x+h={x + h}, y+w={y + w}"
+        )
+    return (x, y, h, w)
+
+
+def _window_cells(window_rect: Tuple[int, int, int, int]) -> FrozenSet[Cell]:
+    x, y, h, w = window_rect
+    return frozenset((x + i, y + j) for i in range(h) for j in range(w))
+
+
+def _parse_ghost_rect_repr(value: object) -> Tuple[int, int, int, int]:
+    if not isinstance(value, list) or len(value) != 4:
+        raise ValueError(f"ghost_rect_repr must be 4-element list, got {value!r}")
+    coords = []
+    for i, v in enumerate(value):
+        if not _is_strict_int(v):
+            raise ValueError(f"ghost_rect_repr[{i}] must be strict int, got {v!r}")
+        coords.append(cast(int, v))
+    return (coords[0], coords[1], coords[2], coords[3])
+
+
+def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
+    if not isinstance(cert_payload, bytes):
+        raise ValueError("cert_payload must be bytes")
+    try:
+        loaded = json.loads(cert_payload)
+    except Exception as e:
+        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
+    if not isinstance(loaded, dict):
+        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
+    return cast(Dict[str, Any], loaded)
+
+
+def _validate_cert_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    if cert_dict.get("cert_kind") != "density_envelope_v1":
+        return _vr(
+            "schema_err",
+            t0,
+            f"cert_kind must be 'density_envelope_v1', got {cert_dict.get('cert_kind')!r}",
+        )
+    return None
+
+
+def _validate_witness_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    wk = cert_dict.get("witness_kind")
+    if wk not in ACCEPTED_WITNESS_KIND:
+        return _vr(
+            "schema_err",
+            t0,
+            f"witness_kind {wk!r} not in {sorted(ACCEPTED_WITNESS_KIND)} "
+            f"(F9 area-only invariant, PROJECT_LOCK §3A)",
+        )
+    return None
+
+
+def _validate_window_rect(
+    cert_dict: Dict[str, Any], t0: float
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[int, int, int, int]]]:
+    try:
+        rect = _parse_window_rect(cert_dict.get("window_rect"))
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e)), None
+    return None, rect
+
+
+def _validate_group(
+    cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Tuple[Optional[ValidationResult], Optional[GroupId]]:
+    gid = cert_dict.get("group_id")
+    if not _is_non_empty_str(gid):
+        return _vr("schema_err", t0, f"group_id must be non-empty str, got {gid!r}"), None
+    gid_str = cast(GroupId, gid)
+    if gid_str not in state.groups:
+        return _vr("unsound", t0, f"group_id {gid_str!r} not in state.groups"), None
+    return None, gid_str
+
+
+def _validate_assignment_witness(
+    cert_dict: Dict[str, Any],
+    state: BState,
+    cert_group_id: GroupId,
+    t0: float,
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[Tuple[GroupId, PoseId], ...]]]:
+    raw = cert_dict.get("oracle_assignment_witness")
+    if not isinstance(raw, list) or not raw:
+        return (
+            _vr("schema_err", t0, "oracle_assignment_witness must be non-empty list"),
+            None,
+        )
+    pairs: List[Tuple[GroupId, PoseId]] = []
+    for idx, entry in enumerate(raw):
+        if not isinstance(entry, list) or len(entry) != 2:
+            return (
+                _vr("schema_err", t0, f"oracle_assignment_witness[{idx}] must be 2-element list"),
+                None,
+            )
+        g, p = entry
+        if not _is_non_empty_str(g):
+            return (
+                _vr("schema_err", t0, f"oracle_assignment_witness[{idx}].group_id must be non-empty str"),
+                None,
+            )
+        if not _is_non_empty_str(p):
+            return (
+                _vr("schema_err", t0, f"oracle_assignment_witness[{idx}].pose_id must be non-empty str"),
+                None,
+            )
+        if g != cert_group_id:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"oracle_assignment_witness[{idx}] group {g!r} != cert.group_id {cert_group_id!r} "
+                    f"(F9 single-group invariant)",
+                ),
+                None,
+            )
+        group_state = state.groups[cert_group_id]
+        if p not in group_state.pose_domain:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"oracle_assignment_witness[{idx}] pose {p!r} not in group {cert_group_id!r} pose_domain",
+                ),
+                None,
+            )
+        pairs.append((cast(GroupId, g), cast(PoseId, p)))
+    # Multiset count per pose ≤ group.demand
+    counts = Counter(pairs)
+    group_demand = state.groups[cert_group_id].demand
+    for (g_p, count) in counts.items():
+        if count > group_demand:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"oracle_assignment_witness pose {g_p[1]!r} count {count} > group demand {group_demand}",
+                ),
+                None,
+            )
+    return None, tuple(pairs)
+
+
+def _validate_ghost_scope(
+    cert_dict: Dict[str, Any], cut: Cut, state: BState, t0: float
+) -> Optional[ValidationResult]:
+    if cut.scope is None or cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr(
+            "unsound",
+            t0,
+            "F9 scope.ghost_rect_id == GHOST_AGNOSTIC rejected (F9 must be ghost-bound)",
+        )
+    try:
+        cert_ghost = _parse_ghost_rect_repr(cert_dict.get("ghost_rect_repr"))
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+    state_ghost = state.ghost_rect
+    if state_ghost is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.ghost_rect is None but F9 is ghost-bound (state drift)",
+        )
+    if cert_ghost != tuple(state_ghost):
+        return _vr(
+            "unsound",
+            t0,
+            f"cert.ghost_rect_repr {cert_ghost} != state.ghost_rect {tuple(state_ghost)} (scope drift)",
+        )
+    return None
+
+
+def _compute_safe_max_allowed_area(
+    window_cells: FrozenSet[Cell],
+    cert_group_id: GroupId,
+    state: BState,
+) -> int:
+    """Recompute the safe upper bound for F9 max_allowed_area.
+
+    Mathematical basis: |W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|.
+    cell_owner_other = cells owned by other groups (cert.group_id excluded
+    because those cells are part of the witness assignment under consideration).
+
+    See module-level note: this helper is intentionally NOT shared with F1's
+    compute_static_capacity. F1 cap_R is static (no cell_owner); F9 safe_ub
+    is dynamic (cell_owner-aware). Sharing would silently break F1's
+    cross-ghost-replay invariant.
+    """
+    blocked_other: set[Cell] = set(state.ghost_cells) | set(state.exterior_blocks)
+    for cell, (owner_g, _slot) in state.cell_owner.items():
+        if owner_g != cert_group_id:
+            blocked_other.add(cell)
+    return len(window_cells) - len(blocked_other & window_cells)
+
+
+def _validate_max_allowed_area(
+    cert_dict: Dict[str, Any],
+    window_cells: FrozenSet[Cell],
+    cert_group_id: GroupId,
+    state: BState,
+    t0: float,
+) -> Tuple[Optional[ValidationResult], int, int]:
+    """Returns (error_or_None, cert_max_allowed_area, safe_ub)."""
+    raw = cert_dict.get("max_allowed_area")
+    if not _is_strict_int(raw):
+        return (
+            _vr("schema_err", t0, f"max_allowed_area must be strict int, got {raw!r}"),
+            -1,
+            -1,
+        )
+    cert_max = cast(int, raw)
+    if cert_max < 0:
+        return _vr("schema_err", t0, f"max_allowed_area must be >= 0, got {cert_max}"), -1, -1
+    if cert_max > len(window_cells):
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                f"max_allowed_area {cert_max} > |W| {len(window_cells)} (cannot exceed window area)",
+            ),
+            -1,
+            -1,
+        )
+    safe_ub = _compute_safe_max_allowed_area(window_cells, cert_group_id, state)
+    if cert_max > safe_ub:
+        return (
+            _vr(
+                "unsound",
+                t0,
+                f"max_allowed_area {cert_max} > safe upper bound {safe_ub} "
+                f"(cert claims a looser bound than the static geometry allows)",
+            ),
+            cert_max,
+            safe_ub,
+        )
+    return None, cert_max, safe_ub
+
+
+def _recompute_assignment_area_overlap(
+    witness_pairs: Tuple[Tuple[GroupId, PoseId], ...],
+    window_cells: FrozenSet[Cell],
+    state: BState,
+) -> int:
+    """Sum |occupied_cells(pose) ∩ W| for each (group, pose) in witness.
+
+    Uses state.candidate_placements when available (real source-of-truth).
+    Returns -1 if any pose lookup fails (validator treats as unsound).
+    """
+    from src.cuts.helpers.candidate_placements import find_pose
+
+    total = 0
+    for (g, p) in witness_pairs:
+        pose = find_pose(state, g, p)
+        if pose is None:
+            return -1
+        occupied = pose.get("occupied_cells", [])
+        for raw_cell in occupied:
+            if not isinstance(raw_cell, (list, tuple)) or len(raw_cell) != 2:
+                continue
+            cell = (int(raw_cell[0]), int(raw_cell[1]))
+            if cell in window_cells:
+                total += 1
+    return total
+
+
+def _validate_witness_overflow(
+    witness_pairs: Tuple[Tuple[GroupId, PoseId], ...],
+    window_cells: FrozenSet[Cell],
+    cert_max_allowed_area: int,
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    recomputed_sum = _recompute_assignment_area_overlap(witness_pairs, window_cells, state)
+    if recomputed_sum < 0:
+        return _vr(
+            "unsound",
+            t0,
+            "oracle_assignment_witness references pose not findable in state.candidate_placements",
+        )
+    if recomputed_sum <= cert_max_allowed_area:
+        return _vr(
+            "unsound",
+            t0,
+            f"recomputed witness area overlap {recomputed_sum} <= max_allowed_area "
+            f"{cert_max_allowed_area} (strict overflow required, equality does not cut)",
+        )
+    return None
+
+
+def validate_density_envelope(
+    cut: Cut,
+    state: BState,
+    canonical_rules: Dict[str, Any],
+) -> ValidationResult:
+    """Re-validate F9 density_envelope cut. Trust boundary: oracle untrusted.
+
+    7-phase validation:
+    1. cert payload JSON parse
+    2. cert_kind == 'density_envelope_v1'
+    3. witness_kind ∈ ACCEPTED_WITNESS_KIND (area-only invariant)
+    4. window_rect schema + 70×70 grid bound
+    5. group_id ∈ state.groups
+    6. oracle_assignment_witness: 1-tuple per (g, p), g == cert.group_id,
+       p ∈ pose_domain, multiset count ≤ group.demand
+    7. ghost scope: scope.ghost_rect_id != GHOST_AGNOSTIC + cert.ghost_rect_repr
+       byte-equal state.ghost_rect
+    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, ≤ safe upper bound
+       (validator independently recomputed)
+    9. Witness overflow: sum |pose_cells ∩ W| > max_allowed_area (strict)
+    """
+    t0 = time.monotonic()
+    del canonical_rules
+
+    if cut.cert is None or cut.geometric_payload is None:
+        return _vr(
+            "schema_err",
+            t0,
+            "F9 requires non-empty cert + geometric_payload (geometric mode)",
+        )
+
+    try:
+        cert_dict = _parse_cert_payload(cut.cert.cert_payload)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+
+    for error in (
+        _validate_cert_kind(cert_dict, t0),
+        _validate_witness_kind(cert_dict, t0),
+    ):
+        if error is not None:
+            return error
+
+    win_err, window_rect = _validate_window_rect(cert_dict, t0)
+    if win_err is not None:
+        return win_err
+    if window_rect is None:
+        return _vr("schema_err", t0, "window_rect parse returned None")
+    window_cells = _window_cells(window_rect)
+
+    group_err, cert_group_id = _validate_group(cert_dict, state, t0)
+    if group_err is not None:
+        return group_err
+    if cert_group_id is None:
+        return _vr("schema_err", t0, "group_id parse returned None")
+
+    witness_err, witness_pairs = _validate_assignment_witness(cert_dict, state, cert_group_id, t0)
+    if witness_err is not None:
+        return witness_err
+    if witness_pairs is None:
+        return _vr("schema_err", t0, "oracle_assignment_witness parse returned None")
+
+    ghost_err = _validate_ghost_scope(cert_dict, cut, state, t0)
+    if ghost_err is not None:
+        return ghost_err
+
+    area_err, cert_max, _safe_ub = _validate_max_allowed_area(
+        cert_dict, window_cells, cert_group_id, state, t0
+    )
+    if area_err is not None:
+        return area_err
+
+    overflow_err = _validate_witness_overflow(
+        witness_pairs, window_cells, cert_max, state, t0
+    )
+    if overflow_err is not None:
+        return overflow_err
+
+    return _vr("ok", t0)
+
+
+def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
+    """Evaluator: sum(|cells_of_cert_group ∈ cell_owner ∩ W|) > max_allowed_area.
+
+    Strict inequality per PROJECT_LOCK §3A — equality does not cut.
+    Fail-safe: returns False on any malformed payload.
+    """
+    if cut.geometric_payload is None:
+        return False
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        if cert_dict.get("cert_kind") != "density_envelope_v1":
+            return False
+        window_rect = _parse_window_rect(cert_dict.get("window_rect"))
+        group_id = cert_dict.get("group_id")
+        max_allowed = cert_dict.get("max_allowed_area")
+        if not _is_non_empty_str(group_id) or not _is_strict_int(max_allowed):
+            return False
+        wx, wy, wh, ww = window_rect
+        occupied = 0
+        for cell, (owner_g, _slot) in state.cell_owner.items():
+            if owner_g != group_id:
+                continue
+            cx, cy = cell
+            if wx <= cx < wx + wh and wy <= cy < wy + ww:
+                occupied += 1
+        return occupied > cast(int, max_allowed)
+    except Exception:  # noqa: BLE001 — fail-safe
+        return False
+
+
+def watcher_keys_density_envelope(cut: Cut) -> Dict[str, List[Any]]:
+    """Return watcher keys for CutStore.add_cut.
+
+    F9 watches: cells inside window (by_cell_watcher) + cert.group_id
+    (by_group_watcher) + window region id (by_region_watcher).
+    by_ghost_watcher is auto-added by store from cut.scope.ghost_rect_id.
+    """
+    if cut.geometric_payload is None:
+        return {"cell_keys": [], "group_keys": [], "region_keys": []}
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        rect = _parse_window_rect(cert_dict.get("window_rect"))
+        group_id = cert_dict.get("group_id")
+        if not _is_non_empty_str(group_id):
+            return {"cell_keys": [], "group_keys": [], "region_keys": []}
+        x, y, h, w = rect
+        cells = [(x + i, y + j) for i in range(h) for j in range(w)]
+        region_id = f"density_envelope:{x},{y},{h},{w}"
+        return {
+            "cell_keys": cells,
+            "group_keys": [cast(str, group_id)],
+            "region_keys": [region_id],
+        }
+    except Exception:  # noqa: BLE001 — fail-safe
+        return {"cell_keys": [], "group_keys": [], "region_keys": []}
+
+```
+
+### 3.2 `src/cuts/oracles/density_envelope_oracle.py` (generator)
+```python
+"""F9 density_envelope generator (Phase 1.2 P1.2B-F9).
+
+Generator accepts only ``area_capacity_overflow`` witness (PROJECT_LOCK §3A
+F9 area-only invariant). Other witness kinds (routing/binding/pcr_cut_overflow)
+return [] — caller should fall back to F5 pattern_nogood.
+
+Fail-closed contract:
+- witness_kind != "area_capacity_overflow" → []
+- group_id not in state.groups → []
+- window_rect out of 70x70 grid or invalid → []
+- state.ghost_rect is None → [] (F9 is ghost-bound)
+- max_allowed_area > recomputed safe_ub → [] (oracle's claimed bound is unsound)
+- recomputed sum_area_overlap <= max_allowed_area → [] (strict overflow required)
+- Phase 1.5+ caller (benders_loop) is responsible for producing the witness
+  payload; Phase 1.2 oracle is a stub-friendly entry point.
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F9
+- docs/项目说明/12_go_criteria.md §8.1.x acceptance B
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/09_density_envelope.md
+"""
+from __future__ import annotations
+
+import hashlib
+from typing import Any, Dict, List, Tuple
+
+from src.cuts.families.density_envelope import (
+    ACCEPTED_WITNESS_KIND,
+    _compute_safe_max_allowed_area,
+    _recompute_assignment_area_overlap,
+    _window_cells,
+)
+from src.cuts.lifecycle import (
+    BState,
+    Cut,
+    CutScope,
+    GroupId,
+    OracleCert,
+    PoseId,
+    canonical_bytes_for_cert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+    compute_source_digest,
+)
+
+
+ORACLE_NAME: str = "density_envelope_v1"
+FAMILY_VERSION: str = "v1.0"
+VALIDATOR_VERSION: str = "v1.0"
+CERT_KIND: str = "density_envelope_v1"
+
+
+def generate_density_envelope_cuts(
+    state: BState,
+    *,
+    witness_kind: str,
+    group_id: GroupId,
+    window_rect: Tuple[int, int, int, int],
+    max_allowed_area: int,
+    assignment_witness: Tuple[Tuple[GroupId, PoseId], ...],
+    iter_index: int = -1,
+) -> List[Cut]:
+    """Produce 0 or 1 F9 cut from an area_capacity_overflow witness.
+
+    All fail-closed paths return ``[]``.
+    """
+    if witness_kind not in ACCEPTED_WITNESS_KIND:
+        return []
+    if group_id not in state.groups:
+        return []
+    if state.ghost_rect is None:
+        return []
+    if not assignment_witness:
+        return []
+
+    # Schema sanity on window_rect
+    if (
+        not isinstance(window_rect, tuple)
+        or len(window_rect) != 4
+        or not all(isinstance(v, int) and not isinstance(v, bool) for v in window_rect)
+    ):
+        return []
+    x, y, h, w = window_rect
+    if h < 1 or w < 1 or x < 0 or y < 0 or x + h > 70 or y + w > 70:
+        return []
+
+    if not isinstance(max_allowed_area, int) or isinstance(max_allowed_area, bool):
+        return []
+    if max_allowed_area < 0:
+        return []
+
+    window_cells = _window_cells(window_rect)
+    if max_allowed_area > len(window_cells):
+        return []
+
+    # All witness entries must be (cert.group_id, pose) pairs
+    for (g, _p) in assignment_witness:
+        if g != group_id:
+            return []
+
+    # Oracle-side sanity: recompute safe upper bound and witness overflow.
+    # Validator will independently re-verify; this oracle-side check just
+    # avoids emitting a guaranteed-unsound cut.
+    try:
+        safe_ub = _compute_safe_max_allowed_area(window_cells, group_id, state)
+        if max_allowed_area > safe_ub:
+            return []
+        recomputed_sum = _recompute_assignment_area_overlap(
+            assignment_witness, window_cells, state
+        )
+        if recomputed_sum < 0:
+            return []
+        if recomputed_sum <= max_allowed_area:
+            return []
+    except Exception:  # noqa: BLE001 — fail-closed
+        return []
+
+    try:
+        cut = _build_density_envelope_cut(
+            state=state,
+            group_id=group_id,
+            window_rect=window_rect,
+            max_allowed_area=max_allowed_area,
+            assignment_witness=assignment_witness,
+            iter_index=iter_index,
+        )
+    except Exception:  # noqa: BLE001 — fail-closed
+        return []
+    return [cut]
+
+
+def _build_density_envelope_cut(
+    *,
+    state: BState,
+    group_id: GroupId,
+    window_rect: Tuple[int, int, int, int],
+    max_allowed_area: int,
+    assignment_witness: Tuple[Tuple[GroupId, PoseId], ...],
+    iter_index: int,
+) -> Cut:
+    """Construct F9 Cut object. Caller has already validated soundness."""
+    if state.ghost_rect is None:
+        raise ValueError("F9 generator called without state.ghost_rect")
+
+    ghost_rect_repr = list(state.ghost_rect)
+
+    cert_payload_dict: Dict[str, Any] = {
+        "cert_kind": CERT_KIND,
+        "witness_kind": "area_capacity_overflow",
+        "window_rect": list(window_rect),
+        "group_id": group_id,
+        "max_allowed_area": int(max_allowed_area),
+        "oracle_assignment_witness": [[g, p] for (g, p) in assignment_witness],
+        "ghost_rect_repr": ghost_rect_repr,
+    }
+    cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+    cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+
+    source_digest = state.source_digest or compute_source_digest(state)
+
+    scope = CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=compute_exterior_blocks_hash(state),
+        source_digest=source_digest,
+        oracle_abstraction_version=ORACLE_NAME,
+        artifact_hashes=dict(state.artifact_hashes),
+    )
+
+    cut = Cut(
+        cut_id=f"f9_{iter_index}_{cert_hash[:12]}",
+        family="density_envelope",
+        literals=None,
+        geometric_payload=cert_payload_bytes,
+        scope=scope,
+        cert=OracleCert(
+            cert_kind=CERT_KIND,
+            cert_payload=cert_payload_bytes,
+            cert_hash=cert_hash,
+        ),
+        family_version=FAMILY_VERSION,
+        validator_version=VALIDATOR_VERSION,
+        oracle_name=ORACLE_NAME,
+        oracle_cert_hash=cert_hash,  # R3 invariant: == cert.cert_hash
+        minimization_audit={
+            "size_before": len(assignment_witness),
+            "size_after": len(assignment_witness),
+            "calls": 0,
+        },
+        iter_index=iter_index,
+    )
+    return cut
+
+```
+
+### 3.3 `src/tests/cuts/test_family_density_envelope.py`
+```python
+"""Tests for Family 9 density_envelope (P1.2B-F9).
+
+Coverage:
+- Generator: empty witness / non-area_capacity_overflow witness rejected /
+  group_id unknown / ghost None / max_allowed_area > safe_ub / no strict
+  overflow / happy path.
+- Validator: 9-phase (cert_kind / witness_kind / window_rect / group /
+  assignment_witness / ghost scope / max_allowed_area / safe_ub / strict overflow).
+- Red fixtures: F9-reject-routing-overflow / F9-any-overlap-overcount /
+  F9-origin-in-window / F9-all-in-window-FN.
+- R3+R4+R5 schema regression (bool!=int, grid bound, strict inequality).
+- Evaluator: area-based counting, fail-safe.
+- Watcher keys.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+from typing import Dict, List, Tuple
+
+import pytest
+
+from src.cuts.families.density_envelope import (
+    ACCEPTED_WITNESS_KIND,
+    evaluate_geometric_density_envelope,
+    validate_density_envelope,
+    watcher_keys_density_envelope,
+)
+from src.cuts.lifecycle import (
+    GHOST_AGNOSTIC,
+    BState,
+    Cut,
+    CutScope,
+    GroupState,
+    OracleCert,
+    canonical_bytes_for_cert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+)
+from src.cuts.oracles.density_envelope_oracle import (
+    generate_density_envelope_cuts,
+)
+
+
+# ---- fixtures --------------------------------------------------------------
+
+
+def _make_pose(pose_id: str, anchor: Tuple[int, int], h: int, w: int) -> Dict:
+    """Build a pose with occupied_cells = h × w rectangle anchored at (anchor)."""
+    x, y = anchor
+    return {
+        "pose_id": pose_id,
+        "anchor": [x, y],
+        "occupied_cells": [[x + i, y + j] for i in range(h) for j in range(w)],
+        "input_port_cells": [],
+        "output_port_cells": [],
+    }
+
+
+def _make_state(
+    *,
+    groups: Dict[str, GroupState] | None = None,
+    candidate_placements: Dict | None = None,
+    ghost_rect: Tuple[int, int, int, int] | None = (0, 0, 10, 10),
+    cell_owner: Dict | None = None,
+) -> BState:
+    if groups is None:
+        groups = {
+            "g1": GroupState(
+                group_id="g1",
+                demand=4,
+                pose_domain=frozenset({"p_3x3_a", "p_3x3_b", "p_3x3_c", "p_3x3_d"}),
+                selected_poses=[],
+            ),
+            "g_other": GroupState(
+                group_id="g_other",
+                demand=2,
+                pose_domain=frozenset({"p_other_a"}),
+                selected_poses=[],
+            ),
+        }
+    if candidate_placements is None:
+        # Default: 4 manufacturing_3x3-like poses at 4 corners of window (0,0,10,10).
+        # Each pose occupies a 3x3 block. Anchored at (0,0), (0,3), (3,0), (3,3).
+        candidate_placements = {
+            "facility_pools": {
+                "manufacturing_3x3": [
+                    _make_pose("p_3x3_a", (0, 0), 3, 3),
+                    _make_pose("p_3x3_b", (0, 3), 3, 3),
+                    _make_pose("p_3x3_c", (3, 0), 3, 3),
+                    _make_pose("p_3x3_d", (3, 3), 3, 3),
+                ],
+                "other_facility": [
+                    _make_pose("p_other_a", (50, 50), 2, 2),
+                ],
+            },
+        }
+    state = BState(
+        groups=groups,
+        ghost_rect=ghost_rect,
+        ghost_cells=frozenset(),
+        exterior_blocks=frozenset(),
+        cell_owner=cell_owner or {},
+        candidate_placements=candidate_placements,
+        instance_to_facility_type={"g1": "manufacturing_3x3", "g_other": "other_facility"},
+        source_digest="test-source-digest",
+    )
+    return state
+
+
+def _make_density_envelope_cert(
+    *,
+    cert_kind: str = "density_envelope_v1",
+    witness_kind: str = "area_capacity_overflow",
+    window_rect: List[int] | Tuple = [0, 0, 10, 10],
+    group_id: str = "g1",
+    max_allowed_area: int = 10,
+    assignment_witness: List | None = None,
+    ghost_rect_repr: List[int] | Tuple = [0, 0, 10, 10],
+) -> bytes:
+    if assignment_witness is None:
+        # 4 poses × 9 cells each = 36 cells; all inside window (0,0,10,10) → sum = 36
+        assignment_witness = [
+            ["g1", "p_3x3_a"],
+            ["g1", "p_3x3_b"],
+            ["g1", "p_3x3_c"],
+            ["g1", "p_3x3_d"],
+        ]
+    cert_dict = {
+        "cert_kind": cert_kind,
+        "witness_kind": witness_kind,
+        "window_rect": list(window_rect),
+        "group_id": group_id,
+        "max_allowed_area": max_allowed_area,
+        "oracle_assignment_witness": assignment_witness,
+        "ghost_rect_repr": list(ghost_rect_repr),
+    }
+    return canonical_bytes_for_cert(cert_dict)
+
+
+def _make_density_envelope_cut(
+    cert_payload: bytes,
+    *,
+    ghost_rect: Tuple[int, int, int, int] | None = (0, 0, 10, 10),
+    scope_ghost_id: str | None = None,
+) -> Cut:
+    if scope_ghost_id is None:
+        scope_ghost_id = compute_ghost_rect_id(ghost_rect)
+    cert_hash = hashlib.sha256(cert_payload).hexdigest()
+    state = BState(
+        groups={},
+        ghost_rect=ghost_rect,
+        ghost_cells=frozenset(),
+        exterior_blocks=frozenset(),
+    )
+    scope = CutScope(
+        ghost_rect_id=scope_ghost_id,
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=compute_exterior_blocks_hash(state),
+        source_digest="test-source-digest",
+        oracle_abstraction_version="density_envelope_v1",
+    )
+    return Cut(
+        cut_id=f"f9_test_{cert_hash[:8]}",
+        family="density_envelope",
+        literals=None,
+        geometric_payload=cert_payload,
+        scope=scope,
+        cert=OracleCert(
+            cert_kind="density_envelope_v1",
+            cert_payload=cert_payload,
+            cert_hash=cert_hash,
+        ),
+        family_version="v1.0",
+        validator_version="v1.0",
+        oracle_name="density_envelope_v1",
+        oracle_cert_hash=cert_hash,
+    )
+
+
+def _tamper_cert(cut: Cut, mutate) -> Cut:
+    """Modify cert payload dict + re-hash, preserving R3 integrity."""
+    cert_dict = json.loads(cut.cert.cert_payload)
+    mutate(cert_dict)
+    new_payload = canonical_bytes_for_cert(cert_dict)
+    new_hash = hashlib.sha256(new_payload).hexdigest()
+    return Cut(
+        cut_id=cut.cut_id,
+        family=cut.family,
+        literals=cut.literals,
+        geometric_payload=new_payload,
+        scope=cut.scope,
+        cert=OracleCert(
+            cert_kind=cut.cert.cert_kind,
+            cert_payload=new_payload,
+            cert_hash=new_hash,
+        ),
+        family_version=cut.family_version,
+        validator_version=cut.validator_version,
+        oracle_name=cut.oracle_name,
+        oracle_cert_hash=new_hash,
+        minimization_audit=dict(cut.minimization_audit),
+        iter_index=cut.iter_index,
+    )
+
+
+# ---- validator happy + schema --------------------------------------------
+
+
+def test_validate_ok_full_overflow():
+    state = _make_state()
+    # 4 poses × 9 cells = 36 cells, max_allowed_area = 10 → strict overflow
+    cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+
+
+def test_validate_schema_err_cert_kind_wrong():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(cert_kind="evil_kind")
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "cert_kind" in (vr.detail or "")
+
+
+def test_F9_reject_routing_overflow():
+    """Red fixture #1: witness_kind != 'area_capacity_overflow' must be rejected.
+
+    PROJECT_LOCK §3A F9 area-only invariant.
+    """
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(witness_kind="routing_overflow")
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "witness_kind" in (vr.detail or "")
+
+
+def test_validate_schema_err_binding_overflow_rejected():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(witness_kind="binding_overflow")
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+
+
+def test_validate_schema_err_pcr_cut_overflow_rejected():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(witness_kind="pcr_cut_overflow")
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+
+
+def test_validate_schema_err_window_out_of_grid():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(window_rect=[65, 0, 10, 10])  # x+h=75 > 70
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+
+
+def test_validate_schema_err_window_zero_size():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(window_rect=[0, 0, 0, 5])
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+
+
+def test_validate_schema_err_bool_max_allowed_area():
+    """R4 catch: bool!=int strict."""
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(max_allowed_area=True)  # type: ignore[arg-type]
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+
+
+def test_validate_schema_err_max_allowed_area_exceeds_window():
+    state = _make_state()
+    # Window is 10×10 = 100 cells; cert claims 1000
+    cert_payload = _make_density_envelope_cert(max_allowed_area=1000)
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "schema_err"
+    assert "exceed" in (vr.detail or "").lower() or "|W|" in (vr.detail or "")
+
+
+def test_validate_unsound_max_allowed_area_exceeds_safe_ub():
+    """cert claims max_allowed_area > safe upper bound recomputed by validator."""
+    state = _make_state(
+        cell_owner={(5, 5): ("g_other", 0)},  # 1 cell occupied by other group
+    )
+    # safe_ub = 100 - 1 (other_group cell) = 99; cert claims 100 → unsound
+    cert_payload = _make_density_envelope_cert(max_allowed_area=100)
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "safe upper bound" in (vr.detail or "")
+
+
+def test_validate_unsound_unknown_group():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(
+        group_id="ghost_group_id",
+        assignment_witness=[["ghost_group_id", "p_3x3_a"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "not in state.groups" in (vr.detail or "")
+
+
+def test_validate_unsound_pose_not_in_domain():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(
+        assignment_witness=[["g1", "pose_not_in_domain"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "pose_domain" in (vr.detail or "")
+
+
+def test_validate_unsound_cross_group_witness():
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(
+        assignment_witness=[["g_other", "p_other_a"]],  # cert.group_id=g1
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "single-group" in (vr.detail or "")
+
+
+def test_validate_unsound_witness_multiset_overflow_demand():
+    state = _make_state(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=1,  # only 1 instance allowed
+                pose_domain=frozenset({"p_3x3_a"}),
+                selected_poses=[],
+            ),
+        },
+    )
+    cert_payload = _make_density_envelope_cert(
+        assignment_witness=[
+            ["g1", "p_3x3_a"],
+            ["g1", "p_3x3_a"],  # 2 copies, but demand = 1
+        ],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "demand" in (vr.detail or "")
+
+
+def test_validate_unsound_ghost_agnostic_rejected():
+    """F9 is ghost-bound; scope == GHOST_AGNOSTIC must reject."""
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert()
+    cut = _make_density_envelope_cut(cert_payload, scope_ghost_id=GHOST_AGNOSTIC)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "GHOST_AGNOSTIC" in (vr.detail or "")
+
+
+def test_validate_unsound_ghost_mismatch():
+    """cert.ghost_rect_repr must byte-equal state.ghost_rect."""
+    state = _make_state(ghost_rect=(0, 0, 10, 10))
+    cert_payload = _make_density_envelope_cert(ghost_rect_repr=[5, 5, 10, 10])
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "ghost_rect" in (vr.detail or "")
+
+
+def test_validate_unsound_state_ghost_none():
+    """F9 cut with ghost-bound scope but state.ghost_rect is None."""
+    state = _make_state(ghost_rect=None)
+    cert_payload = _make_density_envelope_cert()
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+
+
+def test_validate_unsound_witness_area_le_max_allowed():
+    """Strict inequality: equality does not cut, must be > (PROJECT_LOCK §3A)."""
+    state = _make_state()
+    # 4 poses × 9 cells = 36; set max_allowed_area = 36 (equal, not strict overflow)
+    cert_payload = _make_density_envelope_cert(max_allowed_area=36)
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+    assert "strict overflow" in (vr.detail or "")
+
+
+def test_validate_strict_inequality_just_above():
+    """Just below total overflow (sum=36 > max=35) → ok."""
+    state = _make_state()
+    cert_payload = _make_density_envelope_cert(max_allowed_area=35)
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "ok"
+
+
+# ---- 3 remaining red fixtures (evaluator-side) ----------------------------
+
+
+def test_F9_any_overlap_overcount_FP_rejected():
+    """Red fixture #2: 'any overlap → whole facility' is the historical FP.
+
+    1 pose with 1 cell inside W (others outside). Naive 'any-overlap' would
+    count the whole facility (9 cells); correct area-based counts 1 cell.
+
+    The validator uses real per-pose-occupied-cells lookup, so a cert that
+    claims max_allowed_area=4 with witness sum=1 actual → unsound (not
+    strictly overflowing).
+    """
+    # Pose 'p_corner' has anchor (-2, -2) — only cell (0,0) is in window (0,0,10,10);
+    # but we can't have negative anchor; use anchor (8, 8) with 3x3, cells
+    # (8,8),(8,9),(8,10*),(9,8),(9,9),... — but 10 is out of grid 0..9 of W.
+    # Actually window is (0,0,10,10) so cells y=0..9. Pose at (8, 8) has cells
+    # (8,8),(8,9),(8,10),(9,8),(9,9),(9,10),(10,8),(10,9),(10,10) — within
+    # window: (8,8),(8,9),(9,8),(9,9) = 4 cells in W (not 1, my arithmetic).
+    # For a cleaner case, use anchor (9, 9) → cells (9,9),(9,10),(9,11),
+    # (10,9),(10,10),(10,11),(11,9),(11,10),(11,11). Only (9,9) is in
+    # window (0,0,10,10) (since W covers x in [0,9], y in [0,9]).
+    poses_corner = [_make_pose("p_corner", (9, 9), 3, 3)]
+    cp = {
+        "facility_pools": {
+            "manufacturing_3x3": poses_corner,
+        },
+    }
+    state = _make_state(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=4,
+                pose_domain=frozenset({"p_corner"}),
+                selected_poses=[],
+            ),
+        },
+        candidate_placements=cp,
+    )
+    # Only 1 cell ∈ W, so sum_area_overlap = 1.
+    # Set max_allowed_area = 4. cert claims strict overflow but actual sum=1 ≤ 4 → unsound.
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=4,
+        assignment_witness=[["g1", "p_corner"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    # Validator correctly does area-based recompute and finds no overflow
+    assert vr.kind == "unsound"
+    assert "strict overflow" in (vr.detail or "")
+
+
+def test_F9_origin_in_window_FP_rejected():
+    """Red fixture #3: pose anchor ∈ W but body mostly outside.
+
+    Same family as overcount: validator must count only |cells ∩ W|, not
+    'pose has anchor in W → whole facility'.
+    """
+    # Pose anchored at (9, 0) — anchor in W (0,0,10,10), but body extends to
+    # (9..11, 0..2): cells (9,0),(9,1),(9,2),(10,0),(10,1),(10,2),(11,0),(11,1),(11,2)
+    # In window (x∈[0,9], y∈[0,9]): only (9,0),(9,1),(9,2) = 3 cells.
+    poses_anchored = [_make_pose("p_anchor_edge", (9, 0), 3, 3)]
+    cp = {
+        "facility_pools": {
+            "manufacturing_3x3": poses_anchored,
+        },
+    }
+    state = _make_state(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=4,
+                pose_domain=frozenset({"p_anchor_edge"}),
+                selected_poses=[],
+            ),
+        },
+        candidate_placements=cp,
+    )
+    # 3 cells in W; max_allowed_area = 5; cert claims overflow but sum=3 ≤ 5 → unsound
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=5,
+        assignment_witness=[["g1", "p_anchor_edge"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    assert vr.kind == "unsound"
+
+
+def test_F9_all_in_window_FN_caught():
+    """Red fixture #4: 'all in window only' historical FN.
+
+    Edge pose with partial overlap (5 cells in W of 9 total) should
+    contribute its 5 cells, not 0 ('all-in-window' rule would skip it).
+
+    Verify that with multiple edge poses contributing partial cells, the
+    validator correctly sums partial overlaps and finds strict overflow.
+    """
+    # Pose at (8, 0): cells (8,0),(8,1),(8,2),(9,0),(9,1),(9,2),(10,0),(10,1),(10,2)
+    #   In W (x∈[0,9], y∈[0,9]): (8,0),(8,1),(8,2),(9,0),(9,1),(9,2) = 6 cells
+    # Pose at (8, 7): cells (8,7),(8,8),(8,9),(9,7),(9,8),(9,9),(10,7),(10,8),(10,9)
+    #   In W: (8,7),(8,8),(8,9),(9,7),(9,8),(9,9) = 6 cells
+    # Sum = 12 cells; max_allowed_area = 10 → 12 > 10 strict overflow → ok
+    poses = [
+        _make_pose("p_edge_a", (8, 0), 3, 3),
+        _make_pose("p_edge_b", (8, 7), 3, 3),
+    ]
+    cp = {
+        "facility_pools": {
+            "manufacturing_3x3": poses,
+        },
+    }
+    state = _make_state(
+        groups={
+            "g1": GroupState(
+                group_id="g1",
+                demand=4,
+                pose_domain=frozenset({"p_edge_a", "p_edge_b"}),
+                selected_poses=[],
+            ),
+        },
+        candidate_placements=cp,
+    )
+    cert_payload = _make_density_envelope_cert(
+        max_allowed_area=10,
+        assignment_witness=[["g1", "p_edge_a"], ["g1", "p_edge_b"]],
+    )
+    cut = _make_density_envelope_cut(cert_payload)
+    vr = validate_density_envelope(cut, state, canonical_rules={})
+    # FN check: 12 > 10 strict, validator must accept
+    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
+
+
+# ---- evaluator -------------------------------------------------------------
+
+
+def test_evaluator_returns_false_when_no_owner_in_window():
+    """Empty cell_owner → 0 cells in window → False (not overflow)."""
+    state = _make_state(cell_owner={})
+    cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+    cut = _make_density_envelope_cut(cert_payload)
+    assert evaluate_geometric_density_envelope(cut, state) is False
+
+
+def test_evaluator_returns_true_when_owner_overflow():
+    """11 cells owned by g1 in W (max=10) → strict overflow → True."""
+    cell_owner = {(i, 0): ("g1", 0) for i in range(7)}  # 7 cells in column y=0
+    cell_owner.update({(i, 1): ("g1", 1) for i in range(4)})  # 4 more in y=1
+    # Total 11 cells in W (0,0,10,10) owned by g1; max=10 → strict overflow
+    state = _make_state(cell_owner=cell_owner)
+    cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+    cut = _make_density_envelope_cut(cert_payload)
+    assert evaluate_geometric_density_envelope(cut, state) is True
+
+
+def test_evaluator_strict_inequality_at_equality_returns_false():
+    """Equality (occupied == max_allowed) is not strict overflow → False."""
+    cell_owner = {(i, 0): ("g1", 0) for i in range(10)}  # 10 cells in column y=0
+    state = _make_state(cell_owner=cell_owner)
+    cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+    cut = _make_density_envelope_cut(cert_payload)
+    assert evaluate_geometric_density_envelope(cut, state) is False
+
+
+def test_evaluator_other_group_cells_ignored():
+    """Cells owned by other groups don't count toward cert.group_id area."""
+    cell_owner = {(i, j): ("g_other", 0) for i in range(10) for j in range(10)}
+    # Entire window filled by g_other; g1 has 0 cells → False
+    state = _make_state(cell_owner=cell_owner)
+    cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+    cut = _make_density_envelope_cut(cert_payload)
+    assert evaluate_geometric_density_envelope(cut, state) is False
+
+
+def test_evaluator_fail_safe_on_malformed_payload():
+    """Malformed cert payload → False (fail-safe per F1/F2 pattern)."""
+    state = _make_state()
+    cert_payload = b'{"cert_kind": "wrong"}'
+    cut = _make_density_envelope_cut(cert_payload)
+    assert evaluate_geometric_density_envelope(cut, state) is False
+
+
+# ---- generator -------------------------------------------------------------
+
+
+def test_generate_routing_overflow_witness_rejected():
+    """Generator end of PROJECT_LOCK §3A double-defense."""
+    state = _make_state()
+    cuts = generate_density_envelope_cuts(
+        state,
+        witness_kind="routing_overflow",
+        group_id="g1",
+        window_rect=(0, 0, 10, 10),
+        max_allowed_area=10,
+        assignment_witness=(("g1", "p_3x3_a"),),
+    )
+    assert cuts == []
+
+
+def test_generate_happy_path_emits_cut():
+    state = _make_state()
+    cuts = generate_density_envelope_cuts(
+        state,
+        witness_kind="area_capacity_overflow",
+        group_id="g1",
+        window_rect=(0, 0, 10, 10),
+        max_allowed_area=10,
+        assignment_witness=(
+            ("g1", "p_3x3_a"),
+            ("g1", "p_3x3_b"),
+            ("g1", "p_3x3_c"),
+            ("g1", "p_3x3_d"),
+        ),
+    )
+    assert len(cuts) == 1
+    assert cuts[0].family == "density_envelope"
+    assert cuts[0].oracle_cert_hash == cuts[0].cert.cert_hash  # R3 invariant
+
+
+def test_generate_unknown_group_returns_empty():
+    state = _make_state()
+    cuts = generate_density_envelope_cuts(
+        state,
+        witness_kind="area_capacity_overflow",
+        group_id="ghost_group",
+        window_rect=(0, 0, 10, 10),
+        max_allowed_area=10,
+        assignment_witness=(("ghost_group", "p_x"),),
+    )
+    assert cuts == []
+
+
+def test_generate_ghost_none_returns_empty():
+    state = _make_state(ghost_rect=None)
+    cuts = generate_density_envelope_cuts(
+        state,
+        witness_kind="area_capacity_overflow",
+        group_id="g1",
+        window_rect=(0, 0, 10, 10),
+        max_allowed_area=10,
+        assignment_witness=(("g1", "p_3x3_a"),),
+    )
+    assert cuts == []
+
+
+def test_generate_equality_no_cut():
+    """Witness sum == max_allowed → no overflow → []."""
+    state = _make_state()
+    cuts = generate_density_envelope_cuts(
+        state,
+        witness_kind="area_capacity_overflow",
+        group_id="g1",
+        window_rect=(0, 0, 10, 10),
+        max_allowed_area=36,  # = total witness sum (4 poses × 9 cells)
+        assignment_witness=(
+            ("g1", "p_3x3_a"),
+            ("g1", "p_3x3_b"),
+            ("g1", "p_3x3_c"),
+            ("g1", "p_3x3_d"),
+        ),
+    )
+    assert cuts == []
+
+
+# ---- watcher_keys ---------------------------------------------------------
+
+
+def test_watcher_keys_pattern():
+    cert_payload = _make_density_envelope_cert(window_rect=[2, 3, 4, 5])
+    cut = _make_density_envelope_cut(cert_payload)
+    keys = watcher_keys_density_envelope(cut)
+    assert keys["group_keys"] == ["g1"]
+    expected_cells = [(2 + i, 3 + j) for i in range(4) for j in range(5)]
+    assert sorted(keys["cell_keys"]) == sorted(expected_cells)
+    assert keys["region_keys"] == ["density_envelope:2,3,4,5"]
+
+```
+
+---
+## SECTION 4 — Specific attack surfaces to probe
+
+I want you to **specifically** look at these (not just generic code review):
+
+1. **`_compute_safe_max_allowed_area`** (family.py ~L267):
+   - Does `state.cell_owner` map `cell -> (group, slot)` get consumed correctly? The loop iterates `state.cell_owner.items()` — what if `cell_owner` is empty? What if some cells aren't covered? Is `blocked_other & window_cells` set algebra correct?
+   - **Subtle**: is the meaning of "cell_owner_other" actually correct? In the LBBD setting, when this cut is being validated, has the master already *placed* `cert.group_id`'s instances (so those cells are in `cell_owner` with owner = cert.group_id, and excluding them from `blocked_other` is correct), or are they *not yet placed* (so the cells appear in some other state)? Check carefully — if master->cut validation order is wrong, this assumption breaks.
+
+2. **`_recompute_assignment_area_overlap`** (family.py ~L333):
+   - Uses `find_pose(state, g, p)` — what if `state.candidate_placements` has different structure than the test fixture assumes (`facility_pools[facility_type][pose_index]`)?
+   - The loop skips malformed `raw_cell` silently (`continue`) — is this a soundness hole? If a pose has a malformed cell, the validator silently undercounts → cut accepted when it shouldn't be?
+   - Conversion `int(raw_cell[0])` — what if `raw_cell[0]` is `True`? bool is int — `int(True) == 1`. Is that exploitable?
+
+3. **`oracle_assignment_witness` multiset**:
+   - The cert stores witness as a **list of [g, p] pairs**. Two equivalent witnesses with permuted entries → different canonical_bytes → different cert_hash → different cut_id. Is this intended? F5 round-1 caught the inverse (multiset order violated anonymity). For F9, is permutation-order-invariance even required, or is the order semantically significant (e.g. instance 1 vs instance 2 of same group)?
+   - Look at `Counter(pairs)` in `_validate_assignment_witness` — counts by tuple `(g, p)`. If `demand=4` and witness has `[[g,p_a], [g,p_a], [g,p_a], [g,p_a]]`, count=4 ≤ demand=4 → passes. But should `pose_domain` enforce uniqueness per slot? **Subtle**: if multiple instances of g use the *same* pose (overlapping cells), does the area-recompute double-count those cells? Look at the recompute logic — does it sum |pose ∩ W| for each (g, p) entry, even if duplicate?
+   - **This is a potential blocker**: if witness has [[g,p_a], [g,p_a]] both contributing 9 cells, recompute returns 18, but in the actual placement only 9 distinct cells are occupied. Possibly the cut is unsound because `max_allowed_area=15` would falsely trigger when actual sum is 9 ≤ 15.
+
+4. **`_validate_ghost_scope`** (family.py ~L238):
+   - `cut.scope.ghost_rect_id == GHOST_AGNOSTIC` — string compare? What's the actual constant? Is there a way to forge `ghost_rect_id` so this check passes but `cert.ghost_rect_repr != state.ghost_rect`?
+   - `cert_ghost != tuple(state_ghost)` — `state.ghost_rect` might already be a tuple. What if it's a list? `tuple([1,2,3,4]) == (1,2,3,4)` → True, but if `state_ghost` is `None`-but-something-truthy, weird path.
+
+5. **`evaluate_geometric_density_envelope`** (family.py ~L465):
+   - This is the runtime evaluator (master.solve checks cut against current candidate). It iterates `state.cell_owner.items()`. **Critical**: this does NOT call the validator. It only re-parses `cert_dict` and checks `occupied > max_allowed`.
+   - **Question**: when `evaluate_geometric_density_envelope` returns True, the cut fires. Has the cert been **validated** at this point? If a cert is in cut_store but never validated (or validation was bypassed by a code path), evaluator might fire on an unsound cert. → Is there an invariant that cuts in store are validated before evaluation?
+   - **Also**: `if not _is_non_empty_str(group_id) or not _is_strict_int(max_allowed)`. The evaluator silently returns False on malformed payloads ("fail-safe"). But the *generator* should never produce malformed payloads. Is there a way malformed payloads could enter the store and just silently never fire?
+
+6. **`_build_density_envelope_cut`** (oracle.py ~L133):
+   - `minimization_audit={"size_before": len(assignment_witness), "size_after": len(assignment_witness), "calls": 0}`. F9 has no minimizer. But what if `assignment_witness` was filtered/processed before reaching the build function — would size_after still match? (For F9 the current pipeline doesn't filter, but the field semantics should be reviewed.)
+   - `cert_payload_dict["oracle_assignment_witness"] = [[g, p] for (g, p) in assignment_witness]`. If `assignment_witness` is a tuple of tuples, this iterates fine. But if it's not pre-sorted, the bytes are sensitive to input order. **Compare with F5 finding "multiset order violated anonymity"** — does F9 inherit the same issue?
+
+7. **Generator vs validator sync** (oracle.py L102-117 vs family.py L267-330):
+   - Both compute `safe_ub` via `_compute_safe_max_allowed_area`. Both compute `recomputed_sum` via `_recompute_assignment_area_overlap`. Generator returns `[]` if `recomputed_sum <= max_allowed_area`. Validator returns `unsound`. So generator's bar is "≤" (no cut produced) vs validator's "≤" (cut rejected). **Same bar**. But: between generator and validator, can `state` change (cell_owner update during the same iteration)? If so, generator produced cut at iter T, validator runs at iter T+1, and now `safe_ub` is different. **Reproducibility concern**: cut_id depends on cert_hash which depends on `max_allowed_area` (no state in hash). If `max_allowed_area` was within safe_ub at iter T but exceeds it at iter T+1, validator rejects the previously-accepted cut. Is that handled correctly elsewhere?
+
+8. **Scope hash determinism**:
+   - `compute_blocked_cells_hash(state)`, `compute_exterior_blocks_hash(state)`. These should be deterministic — but I'm only seeing the construction site. Are these hashes order-invariant (sorted bytes) or do they depend on iteration order? If `state.ghost_cells` is a frozenset, iteration order is insertion-order in CPython 3.7+ but **not guaranteed across implementations or hash randomization**. Is `compute_blocked_cells_hash` robust?
+
+9. **70×70 grid bound** (family.py L92):
+   - `if x + h > 70 or y + w > 70:`. The grid is `[0, 69] × [0, 69]` (zero-indexed, 70 cells per side). So `x + h <= 70` means the rectangle [x..x+h-1] is in [0, 69]. Correct. **But**: what if someone passes `x=69, h=1` — that should be valid (cell (69, y)). `x + h = 70`, `<= 70` → passes. ✓ What if `x=0, h=70`? `x+h=70 <= 70` → passes, covers x in [0, 69], correct. ✓
+   - What about `x=70, h=0`? h must be ≥ 1 (checked). ✓
+   - What about `x=-1`? Checked `x < 0`. ✓
+   - Are these bounds checks symmetric with how `state.ghost_rect` and `state.cell_owner` are bounded? If `state` has cells outside 70x70 (bug elsewhere), evaluator would never see them (loop scope), but if `window_rect` accepts up to 70, `cell_owner` should never have x ≥ 70.
+
+10. **Test fixture issues**:
+    - `test_F9_all_in_window_FN_caught` claims poses at (8, 0) → cells (8,0)..(10,2), window (0,0,10,10). Window covers x in [0,9], y in [0,9]. From cells (8,0)..(10,2), only cells with x ≤ 9 are in W: (8,0),(8,1),(8,2),(9,0),(9,1),(9,2) = 6 cells. Comment says "6 cells in W" ✓. Same for (8,7): (8,7),(8,8),(8,9),(9,7),(9,8),(9,9) = 6 cells. Sum = 12. Cert max = 10. 12 > 10 → strict overflow. ✓ But verify: is the `find_pose` helper actually finding these poses in `state.candidate_placements` correctly? Path: `state.candidate_placements["facility_pools"]["manufacturing_3x3"]` — yes, but the fixture changes `instance_to_facility_type={"g1": "manufacturing_3x3", ...}`. Is `find_pose` actually using `instance_to_facility_type`? Let's check (you don't have the source, but verify logically): if `find_pose(state, "g1", "p_edge_a")` does `facility_type = state.instance_to_facility_type["g1"]`, then `pool = state.candidate_placements["facility_pools"][facility_type]`, then `for pose in pool: if pose["pose_id"] == "p_edge_a": return pose`. Plausible. If `find_pose` doesn't follow this contract, the validator-side recompute breaks silently. **Recommend: probe `find_pose` from the test layer with a state that has multiple facility types and ensure the lookup is robust.**
+
+11. **Evaluator vs validator divergence**:
+    - Validator uses `_recompute_assignment_area_overlap` (per-pose `find_pose` lookup) to verify the *witness* sums to overflow.
+    - Evaluator uses `cell_owner` to check the *current master assignment*'s `g`-cells in W exceed `max_allowed_area`.
+    - These are different computations. If the witness assignment is feasible (e.g. 36 cells claimed but only 34 actually owned in current master), evaluator returns False even though cut was validated. **Is this OK?** Yes, in LBBD the cut fires only when current master matches/exceeds; the witness is just proof of *some* feasible assignment that overflows. But: this means a master that places fewer g-cells in W than the witness *won't* trigger the cut, even though the cut is *globally* correct (any feasible placement of all g instances does overflow). Is that semantically OK?
+    - **Subtle**: if the master's current assignment has the same g instances but in different poses (placing 5 cells in W instead of 36), the cut doesn't fire. But the cut *should* fire because the *master's incumbent solution* is one of the feasible placements being constrained. Re-examine: the cut text is "sum of g-cells in W > max_allowed". Master places g instances; some cells fall in W; if `sum > max`, cut fires. Master will avoid placements with `sum > max`. So a master placing only 5 cells in W (sum=5, max=10) is fine — cut doesn't fire — that's intended. ✓ But is this **really** an area cut, or is it actually a per-master-placement cut that just happens to be parameterized by area? Verify the lift logic.
+
+12. **`Counter(pairs)` (family.py L223)**:
+    - `pairs` is `List[Tuple[GroupId, PoseId]]`. `Counter` on this counts tuple occurrences. `group_demand = state.groups[cert_group_id].demand`. Check: `count > group_demand` → unsound. So at most `demand` instances of any single pose. But the cert might have multiple distinct poses (3 of pose_a, 3 of pose_b) where total instances = 6 > demand=4. This check doesn't catch that — it only caps per-pose multiplicity. **Hole**: total number of instances should also be ≤ demand. `len(pairs) > group_demand` is not checked. This may be intentional (a cut may want to use any sub-multiset of feasible assignments) but it's worth noting.
+
+13. **Watcher keys** (family.py L495):
+    - `region_id = f"density_envelope:{x},{y},{h},{w}"`. Two cuts with same window → same region_id → potential conflict / dedup? Or is that fine?
+    - `cell_keys = [(x+i, y+j) for i in range(h) for j in range(w)]`. The watcher reacts when cells change owner. **Is this the right invalidation trigger**? F9 cut is invalidated when ghost changes or cell_owner changes in W. Should also include exterior_blocks for the safe_ub recompute (when exterior_blocks shrinks within W, the safe_ub increases, so the cut might become unsound). Is there a `by_exterior_watcher` registered elsewhere?
+    - **Wait — F9 safe_ub depends on (ghost, exterior, cell_owner_other). If exterior_blocks changes within W, safe_ub changes. If safe_ub decreases below max_allowed_area, cut becomes unsound retroactively. Is there a way to re-validate cached cuts when exterior_blocks change?** This could be a soundness issue across LBBD iterations.
+
+14. **`compute_ghost_rect_id` deterministic?**
+    - You don't have its source. Verify that `compute_ghost_rect_id(state.ghost_rect)` returns a hash that's stable across processes. If it uses Python's `hash()` (which is randomized for strings in Python 3.3+ unless PYTHONHASHSEED is set), then `cut.scope.ghost_rect_id` varies across workers → cuts are not deduplicated correctly.
+
+---
+## SECTION 5 — Output format
+
+**Round 1 — no rubber-stamp. Find problems.**
+
+Format:
+```
+## Verdict
+GO | GO_WITH_MINOR | CONCERN | NOT_GO
+
+## Findings (severity-sorted)
+1. [BLOCKER|HIGH|MEDIUM|LOW] <file:line> — <problem statement>
+   - Reproduce: <concrete attack / failing input / test that would catch this>
+   - Suggested fix: <terse>
+2. ...
+
+## Sanity arguments
+- <bullet list of attack surfaces you explicitly confirmed are sound>
+
+## Gemini self-summary (one paragraph)
+```
+
+**Rules**:
+- **List findings, not summary**. If you have no findings, say so explicitly **after** going through every numbered item in Section 4 with a one-line judgement.
+- Do not pad with generic comments ("the code looks well-structured"). Findings need concrete file:line refs and reproducer or attack vector.
+- F5 round 1 caught 14 findings. F9 having 0 round-1 findings would be surprising.
+- If you're tempted to say "GO with no minor findings", first re-read Section 4 attack #3 (multiset double-count) and #13 (exterior_blocks watcher) — those are the most likely real holes.
+- This is **round 1** of a 3-round protocol. Round 2 is a re-check after I fix round 1. Don't save findings for "later rounds" — surface them now.
+
+End of prompt.
+

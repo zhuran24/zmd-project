@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "reference_source": "current_repository_rules",
+    "candidate_source": "JamboChen/endfield-calc TypeScript source (semantic alignment: current_repository_rules)"
+  },
+  "items": {
+    "reference_count": 19,
+    "candidate_count": 19,
+    "shared_count": 19,
+    "shared_exact_count": 19,
+    "shared_mismatched_count": 0,
+    "shared_mismatched": [],
+    "only_in_reference": [],
+    "only_in_candidate": []
+  },
+  "recipes": {
+    "reference_count": 17,
+    "candidate_count": 17,
+    "shared_count": 17,
+    "shared_exact_count": 17,
+    "shared_mismatched_count": 0,
+    "shared_mismatched": [],
+    "only_in_reference": [],
+    "only_in_candidate": []
+  },
+  "facilities": {
+    "reference_count": 7,
+    "candidate_count": 3,
+    "shared_count": 3,
+    "shared_exact_count": 3,
+    "shared_mismatched_count": 0,
+    "shared_mismatched": [],
+    "only_in_reference": [
+      "boundary_storage_port",
+      "power_pole",
+      "protocol_core",
+      "protocol_storage_box"
+    ],
+    "only_in_candidate": []
+  },
+  "power": {
+    "reference_count": 0,
+    "candidate_count": 0,
+    "shared_count": 0,
+    "only_in_reference": [],
+    "only_in_candidate": []
+  }
+}

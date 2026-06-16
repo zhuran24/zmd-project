@@ -1,0 +1,197 @@
+{
+  "total_sac_negative_slack": 129,
+  "total_blocked_cells": 1141,
+  "candidate_count": 41,
+  "analysis_wall_s": 0.171,
+  "top3_patches": [
+    {
+      "patch_id": "cluster_7_r8",
+      "cell_count": 756,
+      "bbox": [
+        0,
+        41,
+        41,
+        58
+      ],
+      "kind": "cluster",
+      "sac_slack_covered": 126,
+      "blocked_ports_covered": 206,
+      "commodities_touched_count": 0
+    },
+    {
+      "patch_id": "strip_H_56_r5",
+      "cell_count": 770,
+      "bbox": [
+        0,
+        51,
+        69,
+        61
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 119,
+      "blocked_ports_covered": 237,
+      "commodities_touched_count": 13
+    },
+    {
+      "patch_id": "strip_H_56_r3",
+      "cell_count": 490,
+      "bbox": [
+        0,
+        53,
+        69,
+        59
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 116,
+      "blocked_ports_covered": 166,
+      "commodities_touched_count": 13
+    }
+  ],
+  "top3_sac_slack_coverage": 361,
+  "top3_blocked_coverage": 609,
+  "top3_sac_coverage_frac": 2.798,
+  "top3_blocked_coverage_frac": 0.534,
+  "top3_cells_max": 770,
+  "all_top10_candidates": [
+    {
+      "patch_id": "cluster_7_r8",
+      "cell_count": 756,
+      "bbox": [
+        0,
+        41,
+        41,
+        58
+      ],
+      "kind": "cluster",
+      "sac_slack_covered": 126,
+      "blocked_ports_covered": 206,
+      "commodities_touched_count": 0
+    },
+    {
+      "patch_id": "strip_H_56_r5",
+      "cell_count": 770,
+      "bbox": [
+        0,
+        51,
+        69,
+        61
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 119,
+      "blocked_ports_covered": 237,
+      "commodities_touched_count": 13
+    },
+    {
+      "patch_id": "strip_H_56_r3",
+      "cell_count": 490,
+      "bbox": [
+        0,
+        53,
+        69,
+        59
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 116,
+      "blocked_ports_covered": 166,
+      "commodities_touched_count": 13
+    },
+    {
+      "patch_id": "cluster_5_r12",
+      "cell_count": 828,
+      "bbox": [
+        0,
+        52,
+        45,
+        69
+      ],
+      "kind": "cluster",
+      "sac_slack_covered": 116,
+      "blocked_ports_covered": 238,
+      "commodities_touched_count": 0
+    },
+    {
+      "patch_id": "cluster_8_r8",
+      "cell_count": 714,
+      "bbox": [
+        0,
+        53,
+        41,
+        69
+      ],
+      "kind": "cluster",
+      "sac_slack_covered": 116,
+      "blocked_ports_covered": 218,
+      "commodities_touched_count": 0
+    },
+    {
+      "patch_id": "strip_V_13_r5",
+      "cell_count": 770,
+      "bbox": [
+        8,
+        0,
+        18,
+        69
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 114,
+      "blocked_ports_covered": 258,
+      "commodities_touched_count": 10
+    },
+    {
+      "patch_id": "strip_V_14_r5",
+      "cell_count": 770,
+      "bbox": [
+        9,
+        0,
+        19,
+        69
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 114,
+      "blocked_ports_covered": 242,
+      "commodities_touched_count": 10
+    },
+    {
+      "patch_id": "strip_V_15_r5",
+      "cell_count": 770,
+      "bbox": [
+        10,
+        0,
+        20,
+        69
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 114,
+      "blocked_ports_covered": 229,
+      "commodities_touched_count": 10
+    },
+    {
+      "patch_id": "cluster_5_r8",
+      "cell_count": 588,
+      "bbox": [
+        0,
+        56,
+        41,
+        69
+      ],
+      "kind": "cluster",
+      "sac_slack_covered": 111,
+      "blocked_ports_covered": 182,
+      "commodities_touched_count": 0
+    },
+    {
+      "patch_id": "strip_V_12_r5",
+      "cell_count": 770,
+      "bbox": [
+        7,
+        0,
+        17,
+        69
+      ],
+      "kind": "separator_strip",
+      "sac_slack_covered": 107,
+      "blocked_ports_covered": 256,
+      "commodities_touched_count": 10
+    }
+  ]
+}

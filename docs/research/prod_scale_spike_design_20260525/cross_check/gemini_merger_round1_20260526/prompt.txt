@@ -1,0 +1,270 @@
+你是一个独立的算法/数学/paradigm 层 cross-check reviewer. 任务: 审视一份"merger 决策文档" (合并 8 路 parallel 子代理设计出 spike 规格), 验证其数学 / paradigm / 工程逻辑层面 sound. 你看不到本地文件, 所以所有 context 在本 prompt 内完整给出.
+
+严格要求 (不可商榷):
+1. 不接受 "I believe / intuitively / experience suggests / common sense" 这类 vague claim
+2. 每条 finding 必含: severity (BLOCKER / HIGH / MEDIUM / LOW), 问题陈述 (≤3 句), 数学或 paradigm 论证 (复杂度估算 / 文献 / 实测数据 / 反例构造 任一), suggested fix
+3. push back 某决策必须引用具体数据 / 文献 / 复杂度论证 / 反例构造, 不能只 "intuition"
+4. 末尾 overall verdict: GO / GO_WITH_MINOR / NOT_GO + 1 句话理由
+5. audit 模式: 找问题, 不要被夸傻不要给 ritual GO
+
+================================================================================
+SECTION A. 项目背景 (Gemini 看不到本地文件, 这里完整给)
+================================================================================
+
+A.1 项目身份
+
+终末地 (Arknights Endfield) IndustrialPlanner 70×70 网格 certified-exact 最大空矩形求解器. 目标 `max_lex(area, min_side)` — 最大化 area, area 相同时最大化最短边. 266 mandatory facility instance, OR-Tools CP-SAT, Benders decomposition (master -> binding -> routing -> flow). 单机 i9-13900KS + 48 GB RAM, 168h 计算预算.
+
+PROJECT_LOCK 关键约束:
+- certified_exact path 必须 sound (不接受 heuristic / UNKNOWN 当 cert)
+- 不接受 exploratory 路径 cross-pollinate 进 certified path
+- max_lex 在 outer search 拆解 (按 candidate area 降序枚举); 内层 LBBD 做 feasibility 决策 (此 candidate ghost rect 是否 admissible)
+
+A.2 当前架构 (两层结构)
+
+外层 (Outer):
+- `src/search/outer_search.py` 枚举 candidate ghost rectangle (按 area 降序, area 同则按 min_side 降序)
+- 每个 candidate 调内层 LBBD 验 feasibility
+- 第一个 feasible candidate 即 max_lex 最优解
+
+内层 (LBBD, Benders Decomposition):
+- `src/search/benders_loop.py` 跑 master -> sub-problem 循环
+- `src/models/master_model.py` (coordinate-based, legacy) / `src/models/pose_bool_exact_master.py` (B1 paradigm, 当前 production default per env `EXACT_USE_POSE_BOOL_MASTER=1`)
+- `src/models/binding_subproblem.py` (port binding 子问题)
+- `src/models/routing_subproblem.py` (grid routing 子问题)
+- `src/models/flow_subproblem.py` (multi-commodity flow, 诊断用)
+
+Cut framework (Phase 1.1 / 1.2 land):
+- `src/cuts/lifecycle.py` 定义 9 step lifecycle: 1 generate / 2 minimize / 3 serialize / 4 deserialize / 5 validate / 6 attach-scope check / 7 evaluate / 8 apply-to-master / 9 regression sweep
+- `src/cuts/store.py` 持久化 cut + ghost watcher
+- `src/cuts/oracles/*.py` 各 family oracle 真 emit cert
+- `src/cuts/families/*.py` 9 family generator + validator (F1 region_capacity / F2 cutset / F3 port_exposure / F4 component_reach / F5 pattern_nogood / F6 shape_packing_hall / F7 power_hitting_set / F8 power_grid_reach / F9 density_envelope)
+- `src/cuts/replay.py` FAMILY_VALIDATORS dispatch
+- **当前状态**: `lifecycle.py:1005 step_8_apply_to_master` 仍 NotImplementedError — Phase 1.3A 主要 deliverable 是填这个
+
+A.3 关键 scale 数据
+
+| 项 | 值 | 来源 |
+|---|---|---|
+| Mandatory instance 数 | 266 | `data/preprocessed/mandatory_exact_instances.json` |
+| Pose registry total | 81,795 (~280K with rotation/port mode) | `data/preprocessed/candidate_placements.json` (53 MB) |
+| Facility pool 数 | 7 | 同上 |
+| Largest pool | manufacturing_3x3, 17,952 pose | 同上 |
+| Grid | 70×70 = 4,900 cell | PROJECT_LOCK |
+| Master variable count | 81,795 pose-bool (B1 paradigm) | per Phase 3B production land |
+| Single machine RAM | 48 GB usable | i9-13900KS + 64 GB - OS overhead |
+
+A.4 历史 paradigm 死法 (27 lever 死, 直接相关的几条)
+
+| Lever | 死因 | 跟本 spike 相关性 |
+|---|---|---|
+| L1 baseline coordinate master | 60 min UNKNOWN | spike 必须证 cut framework 真 prune 优于 60 min UNKNOWN baseline |
+| L12 v8 anchor slicing | build wall -92% 真实但单 anchor 5 min UNKNOWN, 关注 build 没量 solve | **本 spike 头号 risk**. mini Step 8 spike 验 verdict "10K cuts build 114ms" 跟 v8 build -92% 同模式 |
+| L13 v10 witness preflight | paradigm 数学 sound 但前提 hidden assumption 错 (community blueprint 缺 41 mandatory) | spike 设计需显式 enumerate hidden assumption |
+| L14 weighted occupancy | interior LP=1.000 永不可 cert. paradigm 类不够强 | cut framework 数学 power 已 close Phase 1.0/1.1/1.2, spike 不重验数学只验工程 scale |
+| L15 set-packing prover | minimum set-packing CP-SAT 几秒搞定, 真瓶颈在 port/power/connector 约束组合 | spike 不能只 stress test "master 加 N cuts 编译", 必测有真 sub-problem 反馈 |
+| L16 lazy power cut | master PASS (81.8s) 但 cut 不收敛 | spike 必测 multi-iter LBBD 收敛性, 单 iter 测不出 |
+| L24 augmented master | 30 GB RSS, 603.9s UNKNOWN. pose-bool master scale-only 死法 | spike RSS abort threshold 必须设, 撞 30 GB 就 abort |
+| B1 path-1/2 | per-pose port_active 2.3M vars UNPROVEN / lazy demand cut 778s 10 iter 不收敛 | spike 多 iter LBBD 收敛性是 must-test |
+| PCR-CUT Phase 5 | 0/8 CERTIFIED multi-anchor | sub-problem 真反馈 spike 不测可能漏类似不收敛 |
+
+A.5 Phase 1.1 / 1.2 状态 (本 spike 来源)
+
+Phase 1.1: cut framework F1-F4 4 family land + 5 轮 deliverable (172 → 189 cuts pass), GPT pro audit 11 round 后 R5 verdict "1.1 gate 正式通过".
+
+Phase 1.2: 7 family + mini Step 8 spike GO → GPT pro Phase 1.2 audit 6 finding:
+- Finding 1 (BLOCKER): F7 power_hitting_set validator 不验 facility_cells ↔ candidate_placements
+- Finding 2 (BLOCKER): F8 power_grid_reach validator 同样不验
+- Finding 3 (HIGH): 7 oracle source_digest fallback drop (stale digest 不 invalidate)
+- Finding 4 (MEDIUM): F8 perf MED (defer)
+- Finding 5 (HIGH, 本 spike 来源): mini Step 8 spike 是 50 BoolVar toy + synthetic random cuts + INFEASIBLE 早停, 不足以作为 Phase 1.3A integration close gate
+- Finding 6 (LOW): doc 小问题
+
+Finding 1/2/3 已 3 commit patch land (`68fa7f0` / `a3414ee` / `035bd21`). Finding 5 触发本 spike 设计.
+
+Mini Step 8 spike 已跑数据 (作为 "什么是不够" 的 baseline reference):
+- 10 group × 5 pose = 50 BoolVar toy master
+- 5 distinct CP-SAT 形 cover 6 family
+- 10K cuts build 114ms + solve 2ms (INFEASIBLE 早停)
+- verdict 估 prod-scale build ~5-6s = 50× toy = hand-wave 50× (实际 ratio 1,635× pose, 26.6× group)
+
+================================================================================
+SECTION B. MERGER.md 核心摘要 (本审查对象)
+================================================================================
+
+B.1 8 路 parallel slant 的核心立场 (各 1-2 句)
+
+| Slant | 核心立场 |
+|---|---|
+| correctness-paranoid | spike 必真 prod scale (81,795 BoolVar) + 真 9-step lifecycle, 0 mock. sound 必 hold + cost cap 两轴. 工时 12-22h Claude. |
+| throughput | 5 类 perf metric (build/solve/RSS/proto/LLC miss) + scale ramp 10K/50K/100K + 3 filter ablation. 工时 10h Claude + 3h wall. |
+| adversarial | 15 risk inventory, 主 R3 (INFEASIBLE 早停 — IP v2 blueprint hint 造 feasible + 4 metric 验真 solve), R8 (50 bad / 9950 good cert 混 inject 100% quarantine). 工时 14-22h. |
+| integration | 9 step 全真 invoke (0 mock), 真 PoseBoolExactMaster (B1) + 3 candidate × 5 iter pseudo-LBBD, 6-dim watcher 全注册, step 8 是主交付. 工时 17-26h. |
+| simplicity | 单文件 ~500-700 LOC + 50 inst subset master + 5K cert oracle replay + feasible smoke fixture, 3 metric / 4 NG, 不接 LBBD 外循环. 工时 2-3 day (~10-16h). |
+| rollback-safety | branch-isolated `spike/prod_scale_master_integration_20260526`, 7-10 commit checkpoint, 7-day wall cap, 10 abort criteria, spike GO ≠ prod GO (2 PR 不 cherry-pick). |
+| observability | JSON lines 12 类 event + 1Hz RSS thread + py-spy --rate 100 --native, 10 问 post-mortem GO criteria, dark matter telemetry 硬闸. 工时 20-30h. |
+| historical-paradigm | L12 v8 anchor slicing 是最危险 analog (build improve 真 solve 没量), 预测 cut framework 8 类内部死法 (N1-N8), spike 跑完 GPT pro 预测仍 catch ≥1 Layer 2 finding. 工时 12-18h. |
+
+B.2 Merger 共识取交集 (≥6 路同意, 全入 final spec)
+
+- 真 prod scale 81K BoolVar 是主路径
+- 真 9-step lifecycle 全 invoke, 0 mock
+- Feasible case 必含 (避 INFEASIBLE 早停掩盖)
+- Multi-iter LBBD ≥ 5 iter
+- Step 8 apply_to_master 是 spike 主交付物
+- F1/F2/F3 patch 在 scale 下 still hold (adversarial inject verify)
+- RSS sample 1 Hz psutil
+- 量化 abort criteria + wall cap
+- spike GO ≠ paradigm GO ≠ prod GO
+
+B.3 Merger Disagreement resolve (7 项)
+
+D1 Scale: 全量 81K BoolVar (6 路) vs 50 inst subset (simplicity)
+→ Resolve: 主路径 81K 全量 (consensus). simplicity 50 inst 作 **failfast probe fixture** (spike 启动前 5-10 min run 验 harness 自身无 bug). 工时 +1h.
+
+D2 Observability: 12 event class (observability) vs 3-5 metric (simplicity)
+→ Resolve: 取 **4 必 event** (RSS sample / cut_add / replay_verdict / dark_matter_emit) 各 ≥1, 其它 8 类 defer P1.3A 主体. 工时削 ~4h.
+
+D3 Multi-iter LBBD: 5 iter × 3 candidate (3 路) vs 不接 LBBD (simplicity)
+→ Resolve: spike **真接 LBBD 外循环但严守边界** — 5 iter × 3 candidate = 15 master.solve, benders_loop 接 **deterministic sub-problem stub** (binding/routing 不真跑, 返 fixed verdict). 既测多 iter 收敛, 又不变 P1.3A 完整.
+
+D4 C++ propagator sub-route 2: 测 vs defer
+→ Resolve: defer P1.3B, spike 主测 sub-route 1 (solve-rebuild), sub-route 3 (hard-constraint rebuild) 1-iter trial 验接口兼容.
+
+D5 Cut count ramp: 10K/50K/100K (throughput) vs 1K/10K/50K (correctness)
+→ Resolve: 取 **1K / 10K / 50K**. 100K 砍 — spike 是 "可以开始 P1.3A 吗" 不是 "找 break point" (per simplicity).
+
+D6 工时 estimate
+→ Final 估 **15-22h Claude + 3-6h wall** (中位数).
+
+D7 Spike branch 策略: long-lived feature branch vs master
+→ 全接 rollback 立场. `spike/prod_scale_master_integration_20260526` branch, 7-10 commit, 失败 delete, GO 后 2 PR 流程 (doc-only verdict PR + 重写实施 PR, **不 cherry-pick spike code**).
+
+B.4 Final spike spec 量化 GO criteria (15 项, 全 hold 才 GO)
+
+Build cost:
+- G1: 81K BoolVar + 0 cut build wall ≤ 10s
+- G2: 81K + 1K cut build wall ≤ 20s
+- G3: 81K + 10K cut build wall ≤ 60s
+- G4: 81K + 50K cut build wall ≤ 300s
+
+Solve cost (feasibility only):
+- G5: 0 cut feasibility wall ≤ 30s
+- G6: 1K cut feasibility wall ≤ 60s
+- G7: 10K cut feasibility wall ≤ 180s, status OPTIMAL or FEASIBLE (不能 INFEASIBLE 早停)
+
+Resource:
+- G8: RSS peak ≤ 20 GB single worker
+- G9: proto.ByteSize() ≤ 500 MB
+
+Lifecycle correctness:
+- G10: 9 step 全 invoke, 0 NotImplementedError, 0 fail-closed assert violation
+- G11: ≥45 cert 真 step 5 validate, 全 sound
+- G12: 6-dim watcher 全注册, store.stats() 6 dim 各 ≥1
+
+Adversarial:
+- G13: 50 bad cert 100% quarantine, store active count = 9950
+- G14: 3 forged-cert case (F1/F2/F3 each 1) 必 quarantine, 0 漏
+
+Multi-iter convergence:
+- G15: 5 iter × 3 candidate = 15 master.solve, search tree node count 单调减 ≥30% per iter OR iter 5 prune ratio vs iter 1 ≥ 2x
+
+B.5 量化 NOT GO criteria (12 项, 任一触发 → abort + reflect)
+
+- N1: G1-G4 任一 build wall 超阈值 ×2
+- N2: G7 INFEASIBLE 早停, 即便加 blueprint hint
+- N3: G8 RSS > 30 GB (撞 L24 augmented master 死法)
+- N4: G9 proto > 2 GB
+- N5: G10 9 step 任一 raise / assert violation
+- N6: G11 oracle real-emit cert unsound
+- N7: G13/G14 adversarial inject 漏 ≥1
+- N8: G15 search tree node 单调增 OR prune ratio 不收敛 (撞 L16/B1 path-2 死法)
+- N9: Reproducibility variance > 30%
+- N10: 7-day wall clock 用完仍未 cover 主路径
+- N11: spike 跑后 jsonl 4 必 event 任一 = 0
+- N12: Off-limits file 8 项任一 diff non-zero
+
+B.6 Merger 自评 blind spot (作者自己列的)
+
+1. 取交集偏 correctness + integration 立场, 可能 under-weight throughput / observability perf-only 视角
+2. D6 工时估中位数 — 没真碰过 prod 81K scale, 实际可能 off by 1.5-2x
+3. D3 LBBD sub-problem stub 自身可能引入新 risk (stub return value 不能反映真 binding/routing 行为). Mitigation: G15 看 search tree node 趋势不看具体 verdict, 减少对 stub 依赖
+4. 没真懂 OR-Tools 9.15 CP-SAT internals — presolve/propagator/search 路径黑盒
+5. 8 路 sibling slant 自承的 blind spot fold 不进 final 的可能
+
+================================================================================
+SECTION C. 审查问题列 (你需要回答的)
+================================================================================
+
+请逐条审查以下 7 个决策, 给出 finding (severity + 数学/paradigm 论证 + suggested fix), 然后整体 verdict:
+
+**C1**. 决策 1 — scale 主路径 81K BoolVar 全量, simplicity 的 50 inst subset 作 failfast probe (D1 resolve).
+   - paradigm 层 sound 吗? 50 inst probe 能 catch 的 bug 类型 vs 81K 全量能 catch 的 bug 类型有没有 overlap gap?
+   - 81K BoolVar build CP-SAT 模型本身有没有已知的 sub-linear / super-linear scaling 文献支撑? (你需要从 OR-Tools CP-SAT 实现细节论证, 不要 vague)
+   - probe 5-10 min wall cap 合理吗? 如果 probe pass 但全量 fail, 我们浪费多少时间发现?
+
+**C2**. 决策 2 — Multi-iter LBBD 5 iter × 3 candidate, sub-problem 接 deterministic stub (D3 resolve).
+   - stub 数学上能 valid 反映 P1.3A 真路径吗? 如果 stub 返 fixed verdict, G15 (search tree node 单调减 ≥30%) 是否真能信号收敛?
+   - 反例构造: 设计一个 stub 行为, 让它在 spike 通过 G15 但 P1.3A 真 binding/routing sub-problem 接进去就死. 这个反例的概率有多大?
+   - 5 iter 数量来源 (L16 死于不收敛, B1 path-2 死于 10 iter UNPROVEN) 是否充分? 是否应该 ≥10 iter?
+
+**C3**. 决策 3 — Cut count ramp 1K / 10K / 50K (砍 100K break point) (D5 resolve).
+   - break point 不测 OK 吗? 如果 50K 通过但 51K 不通过, 我们对 P1.3A 主体的 cut budget 决策有何影响?
+   - cut store 在 LBBD 累积 cut 数没建模 (throughput slant 已 flag): 真 168h 跑会不会达到 100K+ cuts? 如果会, 不测 100K = spike 假 GO?
+   - 1K → 10K → 50K 三档间隔合理吗? 还是应该 1K / 5K / 20K / 50K 更细?
+
+**C4**. 决策 4 — 15 GO criteria 量化阈值合理性.
+   - G1 build wall ≤ 10s @ 0 cut: 81K BoolVar 纯 build (无 cut) 是否真能 ≤ 10s? 你从 OR-Tools CP-SAT 模型构造算法复杂度论证.
+   - G3 build wall ≤ 60s @ 10K cut: 跟 mini Step 8 verdict (10K cut build 114ms @ 50 BoolVar) 外推, 假设 build cost 线性 = 50× = 5.7s, 60s 多 10× margin 是否过于宽松 (放水) 还是合理 (cover 超线性 scaling)?
+   - G8 RSS ≤ 20 GB: 跟 L24 augmented master 30 GB 死法只 10 GB margin, 是否过紧? 是否应该 ≤ 25 GB?
+   - G15 search tree node 单调减 ≥30% per iter: 这个阈值数学上有 OR-Tools / Benders 文献支撑吗? CP-SAT branch tree 在 LBBD 加 cut 后真会单调减吗 (反例: cut 触发 presolve 后 search tree 重新 layout, node count 可能不单调)?
+
+**C5**. 决策 5 — spike GO ≠ paradigm GO (2 PR 流程, 不 cherry-pick spike code) (D7 resolve).
+   - rollback-safety 立场合理吗? 2 PR 重写实施增加多少工时? 真有人会在 P1.3A 阶段 sunk-cost 拖 spike code 进主线吗 (历史有先例 — 27 lever 哪一次 spike code 不小心进了主线)?
+   - 反向 risk: 如果 spike GO 但 2 PR 重写时引入新 bug (因为重写 ≠ 复刻), spike verdict 还可信吗? 重写应该用什么 mechanism 保证 fidelity?
+
+**C6**. 8 路 sibling 没 cover 但 paradigm 层重要的 risk.
+   - 你能列出至少 3 个 8 路 sibling 都没主动 trigger 的 risk 吗? (例: cross-iter cut staleness, ghost watcher race condition, source_digest 在 multi-candidate enumeration 下 invalidation 错乱, 等)
+   - 这些 risk 是 spike scope 内必加, 还是 defer P1.3A 合理?
+
+**C7**. spike 跑通后 P1.3A 还 open 的 risk.
+   - spike 15 GO 全 hold 后, P1.3A 主体实施还有哪些 risk 没 close? (例: 真 binding/routing sub-problem 接进去 stub → real 的 fidelity gap, 168h 累积 cut 数到 100K+ 的 spike 没覆盖区间, 等)
+   - 这些 residual risk 是否会在 P1.3A 实施时再次需要类似 N=8 parallel spike, 还是直接进 P1.3A 实施可以接受?
+   - 是否需要在 spike GO criteria 内加 "明确 P1.3A 入口前的 risk register"?
+
+================================================================================
+SECTION D. 输出格式要求
+================================================================================
+
+请按以下 markdown 格式输出:
+
+```
+## Overall verdict
+[GO | GO_WITH_MINOR | NOT_GO]
+理由: [1 句话]
+
+## Findings
+
+### Finding 1: [简短标题]
+- **Severity**: BLOCKER / HIGH / MEDIUM / LOW
+- **决策**: C1 / C2 / ... / C7 (or "cross-cutting")
+- **问题**: [≤3 句]
+- **论证**: [数学 / 复杂度 / 文献 cite / 反例构造 / 实测数据 — 必须 specific]
+- **建议 fix**: [具体, actionable]
+
+### Finding 2: ...
+
+(以此类推, 每个 decision 至少 1 finding, 即便 finding 是 "GO_NO_ISSUE")
+
+## C6 missing-risk inventory (列你自己想到的)
+1. [risk 描述 + 为啥 8 路没 cover + spike scope 内必加 or defer P1.3A 合理]
+2. ...
+
+## C7 residual P1.3A risk (列你自己想到的)
+1. ...
+
+## Closing
+[整体 1 段话评价 merger 的 epistemic posture (是否过度自信 / 合理谨慎 / 过度保守)]
+```
+
+请开始审查.

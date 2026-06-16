@@ -1,0 +1,1024 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "source": "JamboChen/endfield-calc TypeScript source (semantic alignment: current_repository_rules)",
+    "generated_at": "2026-03-27T02:01:59Z",
+    "source_version": "0.5.2",
+    "source_license": "MIT",
+    "notes": [
+      "Parsed from upstream TypeScript data files without adding a runtime dependency.",
+      "Accepted input layouts: flat fixture directory, extracted repository root, or zip archive.",
+      "Field naming stays source-shaped until the neutral normalized catalog pass runs.",
+      "Partial semantic alignment projected the verified overlapping endfield-calc production slice into current_repository_rules IDs.",
+      "The aligned catalog intentionally keeps only the mapped 17-recipe slice; unmatched upstream entities remain available in the raw normalized catalog."
+    ],
+    "extensions": {
+      "upstream_repository": "https://github.com/JamboChen/endfield-calc",
+      "tick_interval_seconds": 1.0,
+      "source_layout": "zip_archive_repository",
+      "package_name": "endfield-calcs",
+      "semantic_target": "current_repository_rules",
+      "semantic_projection_version": "1.0",
+      "semantic_raw_item_count": 130,
+      "semantic_raw_recipe_count": 172,
+      "semantic_raw_facility_count": 14,
+      "semantic_mapped_item_count": 19,
+      "semantic_mapped_recipe_count": 17,
+      "semantic_mapped_facility_count": 3,
+      "semantic_partial_projection": true,
+      "semantic_coverage_scope": "current_repository_rules_frozen_slice",
+      "semantic_ambiguity_notes": [
+        "The capsule branch selects moss_1 / bottled_rec_hp_3 over the structurally identical moss_2 / bottled_food_3 branch because the canonical end-product is medicinal."
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "blue_iron_block",
+      "name": "blue_iron_block",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_nugget"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_nugget",
+        "semantic_mapping_reason": "Exact intermediate between ore/powder and the enriched iron chain.",
+        "semantic_source_metadata": {
+          "tier": 2
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "blue_iron_ore",
+      "name": "blue_iron_ore",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_ore"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_ore",
+        "semantic_mapping_reason": "Raw iron ore is the exact single-input precursor of the iron nugget chain.",
+        "semantic_source_metadata": {
+          "tier": 1
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "blue_iron_powder",
+      "name": "blue_iron_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_powder"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_powder",
+        "semantic_mapping_reason": "Exact powder stage of the iron chain.",
+        "semantic_source_metadata": {
+          "tier": 2
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "buckwheat",
+      "name": "buckwheat",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_1"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_1",
+        "semantic_mapping_reason": "Selected the moss_1 agricultural line because it feeds the healing capsule branch exactly.",
+        "semantic_alternates": [
+          "item_plant_moss_2"
+        ],
+        "semantic_source_metadata": {
+          "tier": 1
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "buckwheat_powder",
+      "name": "buckwheat_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_powder_1"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_powder_1",
+        "semantic_mapping_reason": "Selected the moss_1 powder line because it feeds the healing capsule branch exactly.",
+        "semantic_alternates": [
+          "item_plant_moss_powder_2"
+        ],
+        "semantic_source_metadata": {
+          "tier": 2
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "buckwheat_seed",
+      "name": "buckwheat_seed",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_seed_1"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_seed_1",
+        "semantic_mapping_reason": "Selected the moss_1 seed loop because it feeds the healing capsule branch exactly.",
+        "semantic_alternates": [
+          "item_plant_moss_seed_2"
+        ],
+        "semantic_source_metadata": {
+          "tier": 1
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "dense_blue_iron_powder",
+      "name": "dense_blue_iron_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_enr_powder"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_enr_powder",
+        "semantic_mapping_reason": "Exact enriched powder stage of the iron chain.",
+        "semantic_source_metadata": {
+          "tier": 3
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "dense_source_powder",
+      "name": "dense_source_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_originium_enr_powder"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_originium_enr_powder",
+        "semantic_mapping_reason": "Exact enriched powder stage of the originium chain.",
+        "semantic_source_metadata": {
+          "tier": 3
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "fine_buckwheat_powder",
+      "name": "fine_buckwheat_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_enr_powder_1"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_enr_powder_1",
+        "semantic_mapping_reason": "Selected the medicinal enriched powder because it participates in the exact restorative capsule recipe.",
+        "semantic_alternates": [
+          "item_plant_moss_enr_powder_2"
+        ],
+        "semantic_source_metadata": {
+          "tier": 3
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "qiaoyu_capsule",
+      "name": "qiaoyu_capsule",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_bottled_rec_hp_3"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_bottled_rec_hp_3",
+        "semantic_mapping_reason": "Selected the restorative bottled_rec_hp_3 line because it is the exact 10-bottle + 10-enriched-powder capsule recipe.",
+        "semantic_alternates": [
+          "item_bottled_food_3"
+        ],
+        "semantic_source_metadata": {
+          "tier": 4
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "sandleaf",
+      "name": "sandleaf",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_3"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_3",
+        "semantic_mapping_reason": "Exact catalyst agricultural line consumed by every thickener in the mapped slice.",
+        "semantic_source_metadata": {
+          "tier": 1
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "sandleaf_powder",
+      "name": "sandleaf_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_powder_3"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_powder_3",
+        "semantic_mapping_reason": "Exact catalyst powder consumed by every thickener in the mapped slice.",
+        "semantic_source_metadata": {
+          "tier": 2
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "sandleaf_seed",
+      "name": "sandleaf_seed",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_plant_moss_seed_3"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_plant_moss_seed_3",
+        "semantic_mapping_reason": "Exact catalyst agricultural seed loop for the thickener catalyst chain.",
+        "semantic_source_metadata": {
+          "tier": 1
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "source_ore",
+      "name": "source_ore",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_originium_ore"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_originium_ore",
+        "semantic_mapping_reason": "Exact raw ore for the originium powder chain.",
+        "semantic_source_metadata": {
+          "tier": 1
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "source_powder",
+      "name": "source_powder",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_originium_powder"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_originium_powder",
+        "semantic_mapping_reason": "Exact powder stage of the originium chain.",
+        "semantic_source_metadata": {
+          "tier": 2
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "steel_block",
+      "name": "steel_block",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_enr"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_enr",
+        "semantic_mapping_reason": "Exact forged block stage immediately after enriched iron powder.",
+        "semantic_source_metadata": {
+          "tier": 3
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "steel_bottle",
+      "name": "steel_bottle",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_enr_bottle"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_enr_bottle",
+        "semantic_mapping_reason": "Exact bottle output built from two enriched iron blocks.",
+        "semantic_source_metadata": {
+          "tier": 3
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "steel_part",
+      "name": "steel_part",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_iron_enr_cmpt"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_iron_enr_cmpt",
+        "semantic_mapping_reason": "Exact component output built from one enriched iron block.",
+        "semantic_source_metadata": {
+          "tier": 3
+        },
+        "semantic_source_category": "unknown"
+      }
+    },
+    {
+      "id": "valley_battery",
+      "name": "valley_battery",
+      "category": "recipe_commodity",
+      "unit": "item",
+      "aliases": [
+        "item_proc_battery_3"
+      ],
+      "metadata": {
+        "semantic_source_id": "item_proc_battery_3",
+        "semantic_mapping_reason": "Exact enriched iron + enriched originium battery recipe.",
+        "semantic_source_metadata": {
+          "tier": 4
+        },
+        "semantic_source_category": "unknown"
+      }
+    }
+  ],
+  "recipes": [
+    {
+      "id": "crusher_blue_iron",
+      "name": "crusher_blue_iron",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "blue_iron_block",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "blue_iron_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "grinder_iron_powder_1",
+        "semantic_source_facility_id": "item_port_grinder_1",
+        "semantic_mapping_reason": "Exact 1 -> 1 powder conversion inside the iron chain."
+      }
+    },
+    {
+      "id": "crusher_buckwheat",
+      "name": "crusher_buckwheat",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "buckwheat",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "buckwheat_powder",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "grinder_plant_moss_powder_1_1",
+        "semantic_source_facility_id": "item_port_grinder_1",
+        "semantic_mapping_reason": "Exact 1 -> 2 plant-to-powder conversion for the mapped capsule feedstock.",
+        "semantic_alternates": [
+          "grinder_plant_moss_powder_2_1"
+        ]
+      }
+    },
+    {
+      "id": "crusher_sandleaf",
+      "name": "crusher_sandleaf",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "sandleaf",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "sandleaf_powder",
+          "amount": 3.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "grinder_plant_moss_powder_3_1",
+        "semantic_source_facility_id": "item_port_grinder_1",
+        "semantic_mapping_reason": "Exact 1 -> 3 catalyst plant-to-powder conversion."
+      }
+    },
+    {
+      "id": "crusher_source",
+      "name": "crusher_source",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "source_ore",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "source_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "grinder_originium_powder_1",
+        "semantic_source_facility_id": "item_port_grinder_1",
+        "semantic_mapping_reason": "Exact 1 -> 1 ore-to-powder conversion for the originium chain."
+      }
+    },
+    {
+      "id": "filling_capsule",
+      "name": "filling_capsule",
+      "facility_type": "manufacturing_6x4",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "fine_buckwheat_powder",
+          "amount": 10.0
+        },
+        {
+          "item_id": "steel_bottle",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "qiaoyu_capsule",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "filling_bottled_rec_hp_3_1",
+        "semantic_source_facility_id": "item_port_filling_pd_mc_1",
+        "semantic_mapping_reason": "Exact 10 bottle + 10 enriched medicinal powder restorative line.",
+        "semantic_alternates": [
+          "filling_bottled_food_3_1"
+        ]
+      }
+    },
+    {
+      "id": "grinder_dense_blue_iron",
+      "name": "grinder_dense_blue_iron",
+      "facility_type": "manufacturing_6x4",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "blue_iron_powder",
+          "amount": 2.0
+        },
+        {
+          "item_id": "sandleaf_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "dense_blue_iron_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "thickener_iron_enr_powder_1",
+        "semantic_source_facility_id": "item_port_thickener_1",
+        "semantic_mapping_reason": "Exact 2 powder + 1 catalyst -> 1 enriched powder conversion in the iron chain."
+      }
+    },
+    {
+      "id": "grinder_dense_source",
+      "name": "grinder_dense_source",
+      "facility_type": "manufacturing_6x4",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "sandleaf_powder",
+          "amount": 1.0
+        },
+        {
+          "item_id": "source_powder",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "dense_source_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "thickener_originium_enr_powder_1",
+        "semantic_source_facility_id": "item_port_thickener_1",
+        "semantic_mapping_reason": "Exact 2 powder + 1 catalyst -> 1 enriched powder conversion in the originium chain."
+      }
+    },
+    {
+      "id": "grinder_fine_buckwheat",
+      "name": "grinder_fine_buckwheat",
+      "facility_type": "manufacturing_6x4",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "buckwheat_powder",
+          "amount": 2.0
+        },
+        {
+          "item_id": "sandleaf_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "fine_buckwheat_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "thickener_plant_moss_enr_powder_1_1",
+        "semantic_source_facility_id": "item_port_thickener_1",
+        "semantic_mapping_reason": "Exact 2 powder + 1 catalyst -> 1 enriched medicinal powder conversion.",
+        "semantic_alternates": [
+          "thickener_plant_moss_enr_powder_2_1"
+        ]
+      }
+    },
+    {
+      "id": "molding_bottle",
+      "name": "molding_bottle",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "steel_block",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "steel_bottle",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "shaper_iron_enr_bottle_1",
+        "semantic_source_facility_id": "item_port_shaper_1",
+        "semantic_mapping_reason": "Exact 2 enriched iron blocks -> 1 bottle conversion."
+      }
+    },
+    {
+      "id": "packaging_battery",
+      "name": "packaging_battery",
+      "facility_type": "manufacturing_6x4",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "dense_source_powder",
+          "amount": 15.0
+        },
+        {
+          "item_id": "steel_part",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "valley_battery",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "tools_proc_battery_3_1",
+        "semantic_source_facility_id": "item_port_tools_asm_mc_1",
+        "semantic_mapping_reason": "Exact 10 enriched components + 15 enriched originium powder battery line."
+      }
+    },
+    {
+      "id": "parts_maker",
+      "name": "parts_maker",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "steel_block",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "steel_part",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "component_iron_enr_cmpt_1",
+        "semantic_source_facility_id": "item_port_cmpt_mc_1",
+        "semantic_mapping_reason": "Exact 1 enriched iron block -> 1 component conversion."
+      }
+    },
+    {
+      "id": "planter_buckwheat",
+      "name": "planter_buckwheat",
+      "facility_type": "manufacturing_5x5",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "buckwheat_seed",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "buckwheat",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "planter_plant_moss_1_1",
+        "semantic_source_facility_id": "item_port_planter_1",
+        "semantic_mapping_reason": "Exact 1 seed -> 1 crop agricultural loop for the mapped capsule feedstock.",
+        "semantic_alternates": [
+          "planter_plant_moss_2_1"
+        ]
+      }
+    },
+    {
+      "id": "planter_sandleaf",
+      "name": "planter_sandleaf",
+      "facility_type": "manufacturing_5x5",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "sandleaf_seed",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "sandleaf",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "planter_plant_moss_3_1",
+        "semantic_source_facility_id": "item_port_planter_1",
+        "semantic_mapping_reason": "Exact 1 seed -> 1 catalyst crop agricultural loop."
+      }
+    },
+    {
+      "id": "refinery_blue_iron",
+      "name": "refinery_blue_iron",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "blue_iron_ore",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "blue_iron_block",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "furnance_iron_nugget_1",
+        "semantic_source_facility_id": "item_port_furnance_1",
+        "semantic_mapping_reason": "Exact 1 ore -> 1 forged block conversion in the iron chain."
+      }
+    },
+    {
+      "id": "refinery_steel",
+      "name": "refinery_steel",
+      "facility_type": "manufacturing_3x3",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "dense_blue_iron_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "steel_block",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "furnance_iron_enr_1",
+        "semantic_source_facility_id": "item_port_furnance_1",
+        "semantic_mapping_reason": "Exact 1 enriched powder -> 1 enriched iron block conversion."
+      }
+    },
+    {
+      "id": "seed_collector_buckwheat",
+      "name": "seed_collector_buckwheat",
+      "facility_type": "manufacturing_5x5",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "buckwheat",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "buckwheat_seed",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "seedcollector_plant_moss_1_1",
+        "semantic_source_facility_id": "item_port_seedcol_1",
+        "semantic_mapping_reason": "Exact 1 crop -> 2 seeds agricultural loop for the mapped capsule feedstock.",
+        "semantic_alternates": [
+          "seedcollector_plant_moss_2_1"
+        ]
+      }
+    },
+    {
+      "id": "seed_collector_sandleaf",
+      "name": "seed_collector_sandleaf",
+      "facility_type": "manufacturing_5x5",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "sandleaf",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "sandleaf_seed",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {
+        "semantic_source_id": "seedcollector_plant_moss_3_1",
+        "semantic_source_facility_id": "item_port_seedcol_1",
+        "semantic_mapping_reason": "Exact 1 crop -> 2 seeds agricultural loop for the catalyst chain."
+      }
+    }
+  ],
+  "facilities": [
+    {
+      "id": "manufacturing_3x3",
+      "name": "manufacturing_3x3",
+      "footprint": {
+        "w": 3,
+        "h": 3
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "opposite_parallel_sides",
+      "metadata": {
+        "semantic_source_ids": [
+          "item_port_cmpt_mc_1",
+          "item_port_furnance_1",
+          "item_port_grinder_1",
+          "item_port_shaper_1"
+        ],
+        "semantic_mapping_reason": "Mapped exact 3x3 processor slice used by the canonical 3x3 manufacturing recipes.",
+        "semantic_source_power_profiles": [
+          {
+            "facility_id": "item_port_cmpt_mc_1",
+            "consumption_kw": 20.0,
+            "generation_kw": 0.0
+          },
+          {
+            "facility_id": "item_port_furnance_1",
+            "consumption_kw": 5.0,
+            "generation_kw": 0.0
+          },
+          {
+            "facility_id": "item_port_grinder_1",
+            "consumption_kw": 5.0,
+            "generation_kw": 0.0
+          },
+          {
+            "facility_id": "item_port_shaper_1",
+            "consumption_kw": 10.0,
+            "generation_kw": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "manufacturing_5x5",
+      "name": "manufacturing_5x5",
+      "footprint": {
+        "w": 5,
+        "h": 5
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "opposite_parallel_sides",
+      "metadata": {
+        "semantic_source_ids": [
+          "item_port_planter_1",
+          "item_port_seedcol_1"
+        ],
+        "semantic_mapping_reason": "Mapped exact agricultural planter / seed-collector slice used by the canonical 5x5 recipes.",
+        "semantic_source_power_profiles": [
+          {
+            "facility_id": "item_port_planter_1",
+            "consumption_kw": 20.0,
+            "generation_kw": 0.0
+          },
+          {
+            "facility_id": "item_port_seedcol_1",
+            "consumption_kw": 10.0,
+            "generation_kw": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "manufacturing_6x4",
+      "name": "manufacturing_6x4",
+      "footprint": {
+        "w": 6,
+        "h": 4
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "long_sides",
+      "metadata": {
+        "semantic_source_ids": [
+          "item_port_filling_pd_mc_1",
+          "item_port_thickener_1",
+          "item_port_tools_asm_mc_1"
+        ],
+        "semantic_mapping_reason": "Mapped exact thickener / filler / tool-assembler slice used by the canonical 6x4 recipes.",
+        "semantic_source_power_profiles": [
+          {
+            "facility_id": "item_port_filling_pd_mc_1",
+            "consumption_kw": 20.0,
+            "generation_kw": 0.0
+          },
+          {
+            "facility_id": "item_port_thickener_1",
+            "consumption_kw": 50.0,
+            "generation_kw": 0.0
+          },
+          {
+            "facility_id": "item_port_tools_asm_mc_1",
+            "consumption_kw": 20.0,
+            "generation_kw": 0.0
+          }
+        ]
+      }
+    }
+  ],
+  "power": [],
+  "port_rules": [
+    {
+      "id": "long_sides",
+      "description": "long_sides",
+      "input_sides": [
+        "N",
+        "S"
+      ],
+      "output_sides": [
+        "N",
+        "S"
+      ],
+      "restrictions": {},
+      "metadata": {}
+    },
+    {
+      "id": "opposite_parallel_sides",
+      "description": "opposite_parallel_sides",
+      "input_sides": [
+        "N",
+        "S"
+      ],
+      "output_sides": [
+        "N",
+        "S"
+      ],
+      "restrictions": {},
+      "metadata": {}
+    }
+  ]
+}

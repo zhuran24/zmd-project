@@ -1,0 +1,95 @@
+=== Phase 0 probe ===
+candidate: 27x15
+anchor: (22,28)
+master_seconds=180.0, completion_seconds=10.0
+EXACT_LAZY_POWER_COMPLETION=1
+
+[load] project data ...
+[load] 0.5s
+[build] master exact core (EXACT_LAZY_POWER_COMPLETION on) ...
+[build] 13.6s, vars=54616, cons=126411
+[build] power_coverage stats: {'representation': 'lazy_power_completion_v1', 'master_constraints': 0, 'master_witness_vars': 0, 'power_pole_slots_materialized': True}
+
+[solve] master.solve(time_limit=180.0) ...
+[solve] 81.8s, status=OPTIMAL
+
+[extract] solution entries: 282
+[extract] non-power entries: 267
+[extract] master-selected power_pole entries (dropped): 15
+[ghost] cells=405
+
+[completion] PowerPlacementSubproblem build ...
+[completion] build 0.01s, candidate_poles=1204, powered_instances=220
+[completion] solve(time_limit=10.0) ...
+[completion] solve 0.00s, status=INFEASIBLE
+[completion] stats={'candidate_pole_count': 1204, 'powered_instance_count': 220, 'uncovered_instance_count': 134, 'ghost_cell_count': 405}
+
+[cut iter 2] add nogood, |conflict_set|=220 ...
+[cut iter 2] added=True, +1.40s
+[solve iter 2] master.solve ...
+[solve iter 2] 91.5s, status=OPTIMAL
+[iter 2] completion 0.00s, status=INFEASIBLE, uncovered=134
+
+[cut iter 3] add nogood, |conflict_set|=220 ...
+[cut iter 3] added=True, +1.40s
+[solve iter 3] master.solve ...
+[solve iter 3] 87.0s, status=OPTIMAL
+[iter 3] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 4] add nogood, |conflict_set|=220 ...
+[cut iter 4] added=True, +1.44s
+[solve iter 4] master.solve ...
+[solve iter 4] 88.5s, status=OPTIMAL
+[iter 4] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 5] add nogood, |conflict_set|=220 ...
+[cut iter 5] added=True, +1.41s
+[solve iter 5] master.solve ...
+[solve iter 5] 90.8s, status=OPTIMAL
+[iter 5] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 6] add nogood, |conflict_set|=220 ...
+[cut iter 6] added=True, +1.41s
+[solve iter 6] master.solve ...
+[solve iter 6] 88.7s, status=OPTIMAL
+[iter 6] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 7] add nogood, |conflict_set|=220 ...
+[cut iter 7] added=True, +1.64s
+[solve iter 7] master.solve ...
+[solve iter 7] 92.0s, status=OPTIMAL
+[iter 7] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 8] add nogood, |conflict_set|=220 ...
+[cut iter 8] added=True, +1.50s
+[solve iter 8] master.solve ...
+[solve iter 8] 91.6s, status=OPTIMAL
+[iter 8] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 9] add nogood, |conflict_set|=220 ...
+[cut iter 9] added=True, +1.49s
+[solve iter 9] master.solve ...
+[solve iter 9] 94.5s, status=OPTIMAL
+[iter 9] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+[cut iter 10] add nogood, |conflict_set|=220 ...
+[cut iter 10] added=True, +1.50s
+[solve iter 10] master.solve ...
+[solve iter 10] 94.2s, status=OPTIMAL
+[iter 10] completion 0.00s, status=INFEASIBLE, uncovered=133
+
+=== Phase 0 gate verdict ===
+Master gate: PASS
+  vars=54616 (≤26000)
+  constraints=126411 (≤75000)
+  first_solve=81.8s (≤90)
+  status=OPTIMAL
+Completion gate: NO-GO
+  build=0.01s (≤2)
+  solve=0.00s (≤10)
+  status=INFEASIBLE
+  validator={'ok': False, 'reason': 'completion_INFEASIBLE'}
+
+→ Overall: NO-GO
+
+[output] docs/research/phase0_lazy_power_completion_20260517/probe_27x15_anchor22_28_cutloop.json

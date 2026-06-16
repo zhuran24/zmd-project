@@ -1,0 +1,198 @@
+--- a/src/cuts/families/density_envelope.py	2026-06-03 17:28:03.400850867 +0000
++++ b/src/cuts/families/density_envelope.py	2026-06-03 17:28:08.376808235 +0000
+@@ -7,8 +7,11 @@
+   > cert.max_allowed_area`` (NOT instance count, NOT origin-in-window,
+   NOT all-in-window).
+ - **strict inequality**: equality does not cut.
+-- ``max_allowed_area`` must be a safe upper bound (validator independently
+-  recomputes via ``|W| - |(ghost ∪ exterior ∪ cell_owner_other) ∩ W|``).
++- ``max_allowed_area`` must be a *verified* safe upper bound. In the Phase 1.2
++  cert-only validator there is no replayable tight-K proof, so any value below
++  the static geometry upper bound is rejected fail-closed rather than trusted
++  from the cert. Future tight F9 cuts must add a replayable proof/oracle verifier
++  before accepting ``max_allowed_area < safe_ub``.
+ - F9 is ghost-bound; ``cut.scope.ghost_rect_id == GHOST_AGNOSTIC`` rejected.
+ 
+ Cert payload schema (canonical JSON, sorted keys):
+@@ -16,7 +19,8 @@
+     witness_kind: "area_capacity_overflow"  (closed-set)
+     window_rect: [x, y, h, w] (4 strict int, 70×70 grid bound)
+     group_id: non-empty str ∈ state.groups
+-    max_allowed_area: strict int >= 0, <= |W|, <= validator-recomputed safe_ub
++    max_allowed_area: strict int >= 0, <= |W|, == validator-recomputed safe_ub
++        unless a future replayable tight-bound proof is added
+     oracle_assignment_witness: list of [group_id, pose_id]; all group_id ==
+         cert.group_id; pose_id ∈ state.groups[group_id].pose_domain;
+         multiset count per pose ≤ state.groups[g].demand
+@@ -328,14 +332,13 @@
+     cert_max = cast(int, raw)
+     if cert_max < 0:
+         return _vr("schema_err", t0, f"max_allowed_area must be >= 0, got {cert_max}"), -1, -1
+-    # Note: cert_max == 0 is allowed (exclusion-zone cut: "group g forbidden in W").
+-    # Evaluator only counts cells inside W, so cert_max=0 fires only when master
+-    # places g inside W (sound prune if oracle's K=0 is correct). When W is
+-    # fully covered by static obstacles, safe_ub=0 forces cert_max=0 as the
+-    # only valid value. Per Gemini F9 round 4 review: revert R3 BLOCKER #1
+-    # patch — the original "tautologically fires" framing was incorrect.
+-    # Tight-K verification requires NP-hard sub-problem replay (Phase 1.5+
+-    # defer, same trade-off as F5 v1.0 trusting oracle INFEASIBLE).
++    # Note: cert_max == 0 is allowed only when the static geometry safe_ub is
++    # also 0. A smaller-than-safe_ub value is a *tight* capacity claim, not a
++    # source-of-truth value. Accepting it from the cert would let an attacker
++    # forge exclusion zones (e.g. K=0 inside an otherwise free window).
++    # Future implementations may accept cert_max < safe_ub only after adding a
++    # replayable verifier for the tight upper-bound proof (for example, a
++    # sub-oracle adapter analogous to F5's re-query path).
+     if cert_max > len(window_cells):
+         return (
+             _vr(
+@@ -358,6 +361,18 @@
+             cert_max,
+             safe_ub,
+         )
++    if cert_max != safe_ub:
++        return (
++            _vr(
++                "unsound",
++                t0,
++                f"max_allowed_area {cert_max} is a tight bound below static safe_ub {safe_ub}; "
++                "F9 v1 certs do not carry a replayable tight-bound proof, so the "
++                "validator rejects this fail-closed",
++            ),
++            cert_max,
++            safe_ub,
++        )
+     return None, cert_max, safe_ub
+ 
+ 
+@@ -443,8 +458,8 @@
+        p ∈ pose_domain, multiset count ≤ group.demand
+     7. ghost scope: scope.ghost_rect_id != GHOST_AGNOSTIC + cert.ghost_rect_repr
+        byte-equal state.ghost_rect
+-    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, ≤ safe upper bound
+-       (validator independently recomputed)
++    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, equal to the static
++       safe upper bound unless a future replayable tight-bound proof is added
+     9. Witness overflow: sum |pose_cells ∩ W| > max_allowed_area (strict)
+     """
+     t0 = time.monotonic()
+--- a/src/tests/cuts/test_family_density_envelope.py	2026-06-03 17:28:03.681189873 +0000
++++ b/src/tests/cuts/test_family_density_envelope.py	2026-06-03 17:28:08.378618108 +0000
+@@ -208,13 +208,18 @@
+ # ---- validator happy + schema --------------------------------------------
+ 
+ 
+-def test_validate_ok_full_overflow():
++def test_validate_rejects_tight_max_without_replayable_proof():
++    """Forged tight max_allowed_area must fail-closed.
++
++    The witness proves only that this assignment exceeds K; it does not prove
++    that every legal assignment with group occupancy >K in W is infeasible.
++    """
+     state = _make_state()
+-    # 4 poses × 9 cells = 36 cells, max_allowed_area = 10 → strict overflow
+     cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
++    assert vr.kind == "unsound"
++    assert "tight bound" in (vr.detail or "")
+ 
+ 
+ def test_validate_schema_err_cert_kind_wrong():
+@@ -410,16 +415,17 @@
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or "")
++    assert ("strict overflow" in (vr.detail or "")) or ("tight bound" in (vr.detail or ""))
+ 
+ 
+-def test_validate_strict_inequality_just_above():
+-    """Just below total overflow (sum=36 > max=35) → ok."""
++def test_validate_strict_inequality_just_above_rejected_without_bound_proof():
++    """sum=36 > max=35 is a witness overflow, but not a proof that K=35 is safe."""
+     state = _make_state()
+     cert_payload = _make_density_envelope_cert(max_allowed_area=35)
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    assert vr.kind == "ok"
++    assert vr.kind == "unsound"
++    assert "tight bound" in (vr.detail or "")
+ 
+ 
+ # ---- 3 remaining red fixtures (evaluator-side) ----------------------------
+@@ -471,7 +477,7 @@
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     # Validator correctly does area-based recompute and finds no overflow
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or "")
++    assert ("strict overflow" in (vr.detail or "")) or ("tight bound" in (vr.detail or ""))
+ 
+ 
+ def test_F9_origin_in_window_FP_rejected():
+@@ -550,8 +556,10 @@
+     )
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    # FN check: 12 > 10 strict, validator must accept
+-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
++    # The area-overlap arithmetic is still recomputed, but the v1 cert has no
++    # replayable proof that K=10 is a globally safe upper bound.
++    assert vr.kind == "unsound"
++    assert "tight bound" in (vr.detail or "")
+ 
+ 
+ # ---- evaluator -------------------------------------------------------------
+@@ -688,28 +696,17 @@
+ # ---- watcher_keys ---------------------------------------------------------
+ 
+ 
+-def test_validate_ok_cert_max_zero_exclusion_zone():
+-    """Gemini F9 round 4: cert_max=0 is a legitimate exclusion-zone cut.
+-
+-    Original Gemini round 3 BLOCKER #1 framing ("tautologically fires") was
+-    incorrect — evaluator only counts cells INSIDE W, so cert_max=0 fires
+-    only when master places g inside W (sound prune iff oracle's K=0 is
+-    correct). When W is fully covered by static obstacles, safe_ub=0
+-    forces cert_max=0 as the only valid value. The R3 patch outlawed both
+-    cases; round 4 reverts it.
+-
+-    Tight-K verification (whether oracle's K=0 is mathematically correct)
+-    requires NP-hard sub-problem replay — Phase 1.5+ defer, same trade-off
+-    as F5 v1.0 trusting oracle's INFEASIBLE response.
+-    """
++def test_validate_rejects_cert_max_zero_without_exclusion_proof():
++    """cert_max=0 is an exclusion-zone claim and needs replayable proof."""
+     state = _make_state()
+     cert_payload = _make_density_envelope_cert(
+         max_allowed_area=0,
+-        assignment_witness=[["g1", "p_3x3_a"]],  # witness sum=9 > 0 (strict overflow)
++        assignment_witness=[["g1", "p_3x3_a"]],
+     )
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
++    assert vr.kind == "unsound"
++    assert "tight bound" in (vr.detail or "")
+ 
+ 
+ def test_evaluator_cert_max_zero_only_fires_when_g_inside_window():
+@@ -804,7 +801,7 @@
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or ""), (
++    assert ("strict overflow" in (vr.detail or "")) or ("tight bound" in (vr.detail or "")), (
+         f"Validator counted ghost cells in union (HIGH bug); vr.detail={vr.detail!r}"
+     )
+ 
+@@ -847,7 +844,7 @@
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or ""), (
++    assert ("strict overflow" in (vr.detail or "")) or ("tight bound" in (vr.detail or "")), (
+         f"Validator used SUM not UNION: union=14 should not be strict overflow "
+         f"over max_allowed_area=14; got vr.detail={vr.detail!r}"
+     )

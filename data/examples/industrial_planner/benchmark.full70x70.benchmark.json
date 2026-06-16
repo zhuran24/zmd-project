@@ -1,0 +1,31 @@
+{
+  "benchmark_name": "industrial_planner_validator",
+  "fixture_path": "data/examples/industrial_planner/benchmark.full70x70.blueprint.json",
+  "generated_at_utc": "2026-03-29T00:32:18.643701+00:00",
+  "iterations": 7,
+  "warmup": 2,
+  "device_count": 3508,
+  "base_id": "valley4_protocol_core",
+  "python_version": "3.13.5",
+  "python_implementation": "CPython",
+  "platform": "Linux-4.4.0-x86_64-with-glibc2.41",
+  "validation_is_import_compatible": true,
+  "validation_is_layout_healthy": true,
+  "validation_is_clean": true,
+  "validation_port_warning_count": 0,
+  "validation_port_mismatch_count": 0,
+  "min_seconds": 0.11545465699998658,
+  "mean_seconds": 0.12474682314285294,
+  "median_seconds": 0.12251330099999791,
+  "p95_seconds": 0.13850089999999113,
+  "max_seconds": 0.13960067299998968,
+  "raw_seconds": [
+    0.11545465699998658,
+    0.13960067299998968,
+    0.12251330099999791,
+    0.11949396899998987,
+    0.13593476299999452,
+    0.11631068700000924,
+    0.12391971200000285
+  ]
+}

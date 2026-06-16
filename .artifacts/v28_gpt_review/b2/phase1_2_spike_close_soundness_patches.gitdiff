@@ -1,0 +1,823 @@
+diff --git a/src/cuts/families/density_envelope.py b/src/cuts/families/density_envelope.py
+index 34c377c..d36171d 100644
+--- a/src/cuts/families/density_envelope.py
++++ b/src/cuts/families/density_envelope.py
+@@ -328,14 +328,13 @@ def _validate_max_allowed_area(
+     cert_max = cast(int, raw)
+     if cert_max < 0:
+         return _vr("schema_err", t0, f"max_allowed_area must be >= 0, got {cert_max}"), -1, -1
+-    # Note: cert_max == 0 is allowed (exclusion-zone cut: "group g forbidden in W").
+-    # Evaluator only counts cells inside W, so cert_max=0 fires only when master
+-    # places g inside W (sound prune if oracle's K=0 is correct). When W is
+-    # fully covered by static obstacles, safe_ub=0 forces cert_max=0 as the
+-    # only valid value. Per Gemini F9 round 4 review: revert R3 BLOCKER #1
+-    # patch — the original "tautologically fires" framing was incorrect.
+-    # Tight-K verification requires NP-hard sub-problem replay (Phase 1.5+
+-    # defer, same trade-off as F5 v1.0 trusting oracle INFEASIBLE).
++    # A smaller K is a STRONGER cut.  The static formula below proves only
++    # ``true_max_area(W,g) <= safe_ub``.  It does not prove
++    # ``true_max_area(W,g) <= cert_max`` for any cert_max < safe_ub.  Phase 1.2
++    # has no proof-carrying F9 sub-oracle replay wired into this validator, so
++    # non-trivial K must fail closed instead of trusting an oracle-supplied
++    # scalar.  This deliberately quarantines meaningful F9 cuts until the cert
++    # schema carries a replayable area-capacity proof.
+     if cert_max > len(window_cells):
+         return (
+             _vr(
+@@ -358,6 +357,18 @@ def _validate_max_allowed_area(
+             cert_max,
+             safe_ub,
+         )
++    if cert_max < safe_ub:
++        return (
++            _vr(
++                "unsound",
++                t0,
++                f"max_allowed_area {cert_max} < static safe upper bound {safe_ub}; "
++                "Phase 1.2 F9 has no replayable proof that this tighter K is valid "
++                "(fail-closed until an area-capacity oracle cert is verified)",
++            ),
++            cert_max,
++            safe_ub,
++        )
+     return None, cert_max, safe_ub
+ 
+ 
+@@ -443,8 +454,9 @@ def validate_density_envelope(
+        p ∈ pose_domain, multiset count ≤ group.demand
+     7. ghost scope: scope.ghost_rect_id != GHOST_AGNOSTIC + cert.ghost_rect_repr
+        byte-equal state.ghost_rect
+-    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, ≤ safe upper bound
+-       (validator independently recomputed)
++    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, and equal to the
++       only Phase-1.2-proven static upper bound unless a future replayable
++       F9 area-capacity oracle proof is added
+     9. Witness overflow: sum |pose_cells ∩ W| > max_allowed_area (strict)
+     """
+     t0 = time.monotonic()
+diff --git a/src/cuts/families/pattern_nogood.py b/src/cuts/families/pattern_nogood.py
+index 18bb1fe..0031f48 100644
+--- a/src/cuts/families/pattern_nogood.py
++++ b/src/cuts/families/pattern_nogood.py
+@@ -200,6 +200,8 @@ def _validate_forbidden_pose_pattern(
+         )
+     triples: List[Tuple[str, int, str]] = []
+     seen: set[Tuple[str, int, str]] = set()
++    seen_slots: set[Tuple[str, int]] = set()
++    per_group_count: Dict[str, int] = {}
+     for idx, entry in enumerate(raw):
+         if not isinstance(entry, list) or len(entry) != 3:
+             return (
+@@ -232,8 +234,6 @@ def _validate_forbidden_pose_pattern(
+                 _vr("schema_err", t0, f"forbidden_pose_pattern duplicate triple {triple!r}"),
+                 None,
+             )
+-        seen.add(triple)
+-        triples.append(triple)
+         # pose ∈ state.groups[g].pose_domain check (defense-in-depth)
+         group_state = state.groups.get(triple[0])
+         if group_state is None:
+@@ -245,6 +245,44 @@ def _validate_forbidden_pose_pattern(
+                 ),
+                 None,
+             )
++        # Slot ids are anonymous but still denote distinct instances inside one
++        # group.  The oracle re-query may treat duplicate slot assignments as
++        # trivially UNSAT (one slot cannot take two poses), while the generic
++        # evaluator intentionally drops slot ids and checks only a (group, pose)
++        # multiset.  Therefore every cert literal must bind a real, unique slot.
++        if triple[1] >= group_state.demand:
++            return (
++                _vr(
++                    "unsound",
++                    t0,
++                    f"forbidden_pose_pattern[{idx}] slot_index {triple[1]} >= "
++                    f"group {triple[0]!r} demand {group_state.demand}",
++                ),
++                None,
++            )
++        slot_key = (triple[0], triple[1])
++        if slot_key in seen_slots:
++            return (
++                _vr(
++                    "unsound",
++                    t0,
++                    f"forbidden_pose_pattern[{idx}] reuses slot {slot_key!r}; "
++                    "slot-colliding cores are oracle-trivial but evaluator lifts them to a stronger multiset cut",
++                ),
++                None,
++            )
++        seen_slots.add(slot_key)
++        per_group_count[triple[0]] = per_group_count.get(triple[0], 0) + 1
++        if per_group_count[triple[0]] > group_state.demand:
++            return (
++                _vr(
++                    "unsound",
++                    t0,
++                    f"forbidden_pose_pattern contains {per_group_count[triple[0]]} literals "
++                    f"for group {triple[0]!r} with demand {group_state.demand}",
++                ),
++                None,
++            )
+         if triple[2] not in group_state.pose_domain:
+             return (
+                 _vr(
+@@ -254,6 +292,8 @@ def _validate_forbidden_pose_pattern(
+                 ),
+                 None,
+             )
++        seen.add(triple)
++        triples.append(triple)
+     return None, tuple(triples)
+ 
+ 
+diff --git a/src/cuts/families/power_grid_reach.py b/src/cuts/families/power_grid_reach.py
+index b01121f..108462a 100644
+--- a/src/cuts/families/power_grid_reach.py
++++ b/src/cuts/families/power_grid_reach.py
+@@ -11,12 +11,11 @@ PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
+   pole-jump BFS from protocol_core does not reach any candidate. Oracle
+   pipeline runs F7 first; F8 only when F7 returns nothing.
+ - **Real canonical data**: pole shape is **2×2 rigid** (canonical_rules
+-  ``power_pole.dimensions``); pole-to-pole jump radius is supplied by the
+-  caller because canonical_rules schema currently exposes only
+-  ``power_coverage_radius`` (pole→facility, semantically distinct from
+-  pole→pole jump). Phase 1.5+ will land a dedicated canonical field; for
+-  now the generator + validator both treat the radius as authoritative
+-  via cert and the active_assumptions audit trail.
++  ``power_pole.dimensions``), protocol_core footprint is **9×9**
++  (canonical_rules ``protocol_core.dimensions``), and ``pole_jump_radius``
++  must equal ``canonical_rules.facility_templates.power_pole.power_coverage_radius``
++  in Phase 1.2. Dedicated pole→pole jump-radius schema can supersede this
++  only with an explicit lock/spec/test update.
+ - **needs_power gate**: validator rejects facilities whose
+   ``facility_templates[ft].needs_power`` is not True (mirror F7).
+ - **Cert holds NO graph snapshot**: validator independently rebuilds the
+@@ -560,6 +559,64 @@ def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
+     return float(canonical_radius)
+ 
+ 
++
++def _lookup_canonical_template_dims(state: BState, template_id: str) -> Optional[Tuple[int, int]]:
++    rules = state.canonical_rules
++    if not isinstance(rules, dict):
++        return None
++    templates = rules.get("facility_templates")
++    if not isinstance(templates, dict):
++        return None
++    tpl = templates.get(template_id)
++    if not isinstance(tpl, dict):
++        return None
++    dims = tpl.get("dimensions")
++    if not isinstance(dims, dict):
++        return None
++    w_raw = dims.get("w")
++    h_raw = dims.get("h")
++    if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
++        return None
++    return (cast(int, w_raw), cast(int, h_raw))
++
++
++def _validate_power_pole_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
++    dims = _lookup_canonical_template_dims(state, "power_pole")
++    if dims is None:
++        return _vr(
++            "unsound",
++            t0,
++            "state.canonical_rules.facility_templates.power_pole.dimensions missing "
++            "— cannot verify pole_shape_canonical against source-of-truth (fail-closed)",
++        )
++    if dims != (2, 2):
++        return _vr(
++            "unsound",
++            t0,
++            f"canonical power_pole dimensions {dims[0]}x{dims[1]} != cert/helper locked 2x2",
++        )
++    return None
++
++
++def _validate_protocol_core_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
++    dims = _lookup_canonical_template_dims(state, "protocol_core")
++    if dims is None:
++        return _vr(
++            "unsound",
++            t0,
++            "state.canonical_rules.facility_templates.protocol_core.dimensions missing "
++            "— cannot verify protocol_core_cell footprint against source-of-truth (fail-closed)",
++        )
++    if dims != (_PROTOCOL_CORE_SIZE, _PROTOCOL_CORE_SIZE):
++        return _vr(
++            "unsound",
++            t0,
++            f"canonical protocol_core dimensions {dims[0]}x{dims[1]} != "
++            f"validator locked {_PROTOCOL_CORE_SIZE}x{_PROTOCOL_CORE_SIZE}",
++        )
++    return None
++
++
+ def _validate_pole_radius_sot(
+     cert_dict: Dict[str, Any],
+     state: BState,
+@@ -638,6 +695,12 @@ def _validate_source_of_truth_scalars(
+     the malicious 0.001).
+     """
+     err = _validate_pole_radius_sot(cert_dict, state, t0)
++    if err is not None:
++        return err
++    err = _validate_power_pole_template_sot(state, t0)
++    if err is not None:
++        return err
++    err = _validate_protocol_core_template_sot(state, t0)
+     if err is not None:
+         return err
+     return _validate_pc_anchor_sot(pc_anchor, state, t0)
+@@ -660,6 +723,7 @@ def validate_power_grid_reach(
+        facility_template lookup + needs_power == True)
+     6. Cert↔source-of-truth scalar cross-check (Gemini F8 round 4 Finding #2):
+        cert.pole_jump_radius == canonical_rules.power_pole.power_coverage_radius;
++       power_pole/protocol_core dimensions match canonical_rules;
+        cert.protocol_core_cell footprint owned by protocol_core in state
+        (when cell_owner populated)
+     7. Full disconnect recompute (CoverSet non-empty + BFS disjoint from pc)
+diff --git a/src/cuts/families/power_hitting_set.py b/src/cuts/families/power_hitting_set.py
+index 29d738e..6ee3d69 100644
+--- a/src/cuts/families/power_hitting_set.py
++++ b/src/cuts/families/power_hitting_set.py
+@@ -453,6 +453,46 @@ def _lookup_canonical_pole_radius(state: BState) -> Optional[float]:
+     return float(canonical_radius)
+ 
+ 
++
++def _lookup_canonical_template_dims(state: BState, template_id: str) -> Optional[Tuple[int, int]]:
++    rules = state.canonical_rules
++    if not isinstance(rules, dict):
++        return None
++    templates = rules.get("facility_templates")
++    if not isinstance(templates, dict):
++        return None
++    tpl = templates.get(template_id)
++    if not isinstance(tpl, dict):
++        return None
++    dims = tpl.get("dimensions")
++    if not isinstance(dims, dict):
++        return None
++    w_raw = dims.get("w")
++    h_raw = dims.get("h")
++    if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
++        return None
++    return (cast(int, w_raw), cast(int, h_raw))
++
++
++def _validate_power_pole_template_sot(state: BState, t0: float) -> Optional[ValidationResult]:
++    """Cross-check hard-coded 2x2 pole footprint against canonical_rules."""
++    dims = _lookup_canonical_template_dims(state, "power_pole")
++    if dims is None:
++        return _vr(
++            "unsound",
++            t0,
++            "state.canonical_rules.facility_templates.power_pole.dimensions missing "
++            "— cannot verify pole_shape_canonical against source-of-truth (fail-closed)",
++        )
++    if dims != (2, 2):
++        return _vr(
++            "unsound",
++            t0,
++            f"canonical power_pole dimensions {dims[0]}x{dims[1]} != cert/helper locked 2x2",
++        )
++    return None
++
++
+ def _validate_pole_radius_sot(
+     cert_dict: Dict[str, Any],
+     state: BState,
+@@ -504,7 +544,8 @@ def validate_power_hitting_set(
+     5. Group source-of-truth (group ∈ state.groups, pose ∈ pose_domain,
+        facility_template lookup + needs_power == True)
+     6. Full CoverSet recompute (must be ∅)
+-    7. Ghost-only CoverSet recompute (must be ∅ — cell_owner not the true cause)
++    7. Power-pole dimensions/radius source-of-truth checks
++    8. Ghost-only CoverSet recompute (must be ∅ — cell_owner not the true cause)
+     """
+     t0 = time.monotonic()
+     del canonical_rules
+@@ -563,6 +604,7 @@ def validate_power_hitting_set(
+         # Forged-radius source-of-truth gate (mirror F8): phases 6/7 recompute the
+         # CoverSet trusting cert.pole_radius; verify it equals canonical R first.
+         _validate_pole_radius_sot(cert_dict, state, t0),
++        _validate_power_pole_template_sot(state, t0),
+         _validate_facility_cells_match_pose_registry(facility_cells, cert_dict, state, t0),
+         _validate_coverset_empty(facility_cells, cert_dict, state, t0),
+         _validate_coverset_ghost_only_empty(facility_cells, cert_dict, state, t0),
+diff --git a/src/cuts/families/shape_packing_hall.py b/src/cuts/families/shape_packing_hall.py
+index b7071d0..ae1ce31 100644
+--- a/src/cuts/families/shape_packing_hall.py
++++ b/src/cuts/families/shape_packing_hall.py
+@@ -314,6 +314,54 @@ def _validate_group_source_of_truth(
+     return None
+ 
+ 
++def _opposite_region_kind(region_kind: str) -> RegionKind:
++    if region_kind == "left_baseline":
++        return "bottom_baseline"
++    if region_kind == "bottom_baseline":
++        return "left_baseline"
++    raise ValueError(f"unsupported region_kind={region_kind!r}")
++
++
++def _baseline_packable_capacity(region_kind: RegionKind, state: BState, pose_length: int) -> int:
++    lens, _offsets = compute_baseline_partition_lens(region_kind, state)
++    return sum(L // pose_length for L in lens)
++
++
++def _validate_region_demand_lower_bound(
++    cert_dict: Dict[str, Any], state: BState, t0: float
++) -> Optional[ValidationResult]:
++    """Verify cert.region_demand is independently implied by source-of-truth.
++
++    For Phase 1.2 left_or_bottom_boundary groups, a single-side Hall cut is
++    valid only for a count that must appear on that side regardless of the
++    master's chosen split.  If total demand is D and the other baseline can
++    host at most C_other poses, then at least max(0, D - C_other) poses must
++    be on this baseline.  A larger per-side count may be true for one master
++    incumbent, but it is not a reusable geometric cut unless the cert carries
++    a separate proof of that incumbent-side assignment.
++    """
++    region_kind = cast(str, cert_dict["region_kind"])
++    try:
++        other_region = _opposite_region_kind(region_kind)
++    except ValueError as e:
++        return _vr("schema_err", t0, str(e))
++    pose_length = cast(int, cert_dict["pose_length"])
++    group_demand = cast(int, cert_dict["group_demand"])
++    region_demand = cast(int, cert_dict["region_demand"])
++    other_capacity = _baseline_packable_capacity(other_region, state, pose_length)
++    proven_lower_bound = max(0, group_demand - other_capacity)
++    if region_demand > proven_lower_bound:
++        return _vr(
++            "unsound",
++            t0,
++            f"region_demand {region_demand} exceeds source-of-truth lower bound "
++            f"{proven_lower_bound} for {region_kind} "
++            f"(group_demand={group_demand}, other_region={other_region}, "
++            f"other_capacity={other_capacity}); cert lacks an incumbent-side proof",
++        )
++    return None
++
++
+ def _validate_facility_template_match(
+     cert_dict: Dict[str, Any], state: BState, t0: float
+ ) -> Optional[ValidationResult]:
+@@ -357,6 +405,15 @@ def _validate_facility_template_match(
+             t0,
+             f"facility_templates[{facility_type!r}] missing or not a dict",
+         )
++    placement_rule = tpl.get("placement_rule")
++    if placement_rule != "left_or_bottom_boundary":
++        return _vr(
++            "unsound",
++            t0,
++            f"contributing_group {gid!r} facility_type {facility_type!r} placement_rule "
++            f"{placement_rule!r} is not 'left_or_bottom_boundary'; F6 Phase 1.2 cannot prove "
++            "single-baseline demand for this template",
++        )
+     dims = tpl.get("dimensions")
+     if not isinstance(dims, dict):
+         return _vr(
+@@ -505,12 +562,13 @@ def validate_shape_packing_hall(
+     6. Hall witness strict (cert-internal total_packable < region_demand)
+     7. Group source-of-truth (contributing_group ∈ state.groups,
+        group_demand == state.groups[gid].demand, region_demand bounds)
+-    8. Facility template match (pose_length × dimensions via
++    8. Facility template match (pose_length × dimensions + placement_rule via
+        instance_to_facility_type → facility_templates)
+-    9. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr byte-equal +
++    9. region_demand source-of-truth lower-bound proof
++    10. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr byte-equal +
+        exterior_blocks_digest byte-equal)
+-    10. Partition recompute byte-equal (lens + offsets)
+-    11. Recomputed max_packable / total_packable / Hall strict
++    11. Partition recompute byte-equal (lens + offsets)
++    12. Recomputed max_packable / total_packable / Hall strict
+     """
+     t0 = time.monotonic()
+     del canonical_rules  # state.canonical_rules carried inside state
+@@ -547,6 +605,7 @@ def validate_shape_packing_hall(
+         _validate_hall_witness_strict(cert_dict, t0),
+         _validate_group_source_of_truth(cert_dict, state, t0),
+         _validate_facility_template_match(cert_dict, state, t0),
++        _validate_region_demand_lower_bound(cert_dict, state, t0),
+         _validate_ghost_scope_binding(cut, cert_dict, state, t0),
+         _validate_partition_recompute(cert_dict, parsed, state, t0),
+     ):
+diff --git a/src/cuts/oracles/density_envelope_oracle.py b/src/cuts/oracles/density_envelope_oracle.py
+index 05b55dd..55ff249 100644
+--- a/src/cuts/oracles/density_envelope_oracle.py
++++ b/src/cuts/oracles/density_envelope_oracle.py
+@@ -90,7 +90,7 @@ def _has_strict_area_overflow(
+ ) -> bool:
+     """Oracle-side sanity check; the validator re-verifies independently."""
+     safe_ub = _compute_safe_max_allowed_area(window_cells, group_id, state)
+-    if max_allowed_area > safe_ub:
++    if max_allowed_area != safe_ub:
+         return False
+     recomputed_sum = _recompute_assignment_area_overlap(
+         assignment_witness, window_cells, state
+diff --git a/src/cuts/oracles/shape_packing_hall_oracle.py b/src/cuts/oracles/shape_packing_hall_oracle.py
+index fe6f730..4ddb61e 100644
+--- a/src/cuts/oracles/shape_packing_hall_oracle.py
++++ b/src/cuts/oracles/shape_packing_hall_oracle.py
+@@ -91,6 +91,27 @@ def _facility_template_length(state: BState, group_id: GroupId) -> Optional[int]
+     return max(w_raw, h_raw)
+ 
+ 
++def _opposite_region_kind(region_kind: RegionKind) -> RegionKind:
++    if region_kind == "left_baseline":
++        return "bottom_baseline"
++    if region_kind == "bottom_baseline":
++        return "left_baseline"
++    raise ValueError(f"unsupported region_kind={region_kind!r}")
++
++
++def _baseline_packable_capacity(region_kind: RegionKind, state: BState, pose_length: int) -> int:
++    lens, _offsets = compute_baseline_partition_lens(region_kind, state)
++    return sum(L // pose_length for L in lens)
++
++
++def _proven_region_demand_lower_bound(
++    state: BState, region_kind: RegionKind, group_demand: int, pose_length: int
++) -> int:
++    other_region = _opposite_region_kind(region_kind)
++    other_capacity = _baseline_packable_capacity(other_region, state, pose_length)
++    return max(0, group_demand - other_capacity)
++
++
+ def generate_shape_packing_hall_cuts(
+     state: BState,
+     *,
+@@ -109,8 +130,10 @@ def generate_shape_packing_hall_cuts(
+             "left_or_bottom_boundary"``. Phase 1.2 fixture tests pass
+             explicit lists; Phase 1.5+ wiring auto-detects.
+         region_kinds: regions to scan. Default (left, bottom).
+-        region_demand_overrides: Phase 1.5+ master_solution per-region count.
+-            Phase 1.2 default uses ``min(group.demand, region capacity)``.
++        region_demand_overrides: Optional proof-carrying per-region lower bound.
++            Phase 1.2 default is disabled; an override may be emitted only
++            when it is no larger than the source-of-truth lower bound
++            ``max(0, group_demand - capacity(other_baseline))``.
+         iter_index: outer-loop iteration for cut_id provenance.
+     """
+     if state.ghost_rect is None:
+@@ -152,6 +175,14 @@ def generate_shape_packing_hall_cuts(
+                 # Override exceeded sane bound — skip rather than emit a
+                 # cert that validator phase 7 would reject as unsound.
+                 continue
++            if region_demand > _proven_region_demand_lower_bound(
++                state, region_kind, group_demand, pose_length
++            ):
++                # A larger side count may hold for a particular incumbent, but
++                # Phase 1.2 certs do not carry an incumbent-side proof; emitting
++                # it would create a reusable geometric cut stronger than the
++                # source-of-truth lower bound.
++                continue
+             cut = _try_build_cut(
+                 state=state,
+                 region_kind=region_kind,
+diff --git a/src/tests/cuts/test_family_density_envelope.py b/src/tests/cuts/test_family_density_envelope.py
+index 873e2d4..b654c4b 100644
+--- a/src/tests/cuts/test_family_density_envelope.py
++++ b/src/tests/cuts/test_family_density_envelope.py
+@@ -208,13 +208,15 @@ def _tamper_cert(cut: Cut, mutate) -> Cut:
+ # ---- validator happy + schema --------------------------------------------
+ 
+ 
+-def test_validate_ok_full_overflow():
++def test_validate_rejects_unproved_tight_max_allowed_area():
+     state = _make_state()
+-    # 4 poses × 9 cells = 36 cells, max_allowed_area = 10 → strict overflow
++    # 4 poses × 9 cells = 36 cells, but max_allowed_area=10 is tighter than
++    # the static safe_ub=100. Phase 1.2 has no replayable proof for that K.
+     cert_payload = _make_density_envelope_cert(max_allowed_area=10)
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
++    assert vr.kind == "unsound"
++    assert "no replayable proof" in (vr.detail or "")
+ 
+ 
+ def test_validate_schema_err_cert_kind_wrong():
+@@ -410,16 +412,17 @@ def test_validate_unsound_witness_area_le_max_allowed():
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or "")
++    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or ""))
+ 
+ 
+ def test_validate_strict_inequality_just_above():
+-    """Just below total overflow (sum=36 > max=35) → ok."""
++    """Just below total overflow is still rejected without replayable K proof."""
+     state = _make_state()
+     cert_payload = _make_density_envelope_cert(max_allowed_area=35)
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    assert vr.kind == "ok"
++    assert vr.kind == "unsound"
++    assert "no replayable proof" in (vr.detail or "")
+ 
+ 
+ # ---- 3 remaining red fixtures (evaluator-side) ----------------------------
+@@ -471,7 +474,7 @@ def test_F9_any_overlap_overcount_FP_rejected():
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     # Validator correctly does area-based recompute and finds no overflow
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or "")
++    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or ""))
+ 
+ 
+ def test_F9_origin_in_window_FP_rejected():
+@@ -550,8 +553,10 @@ def test_F9_all_in_window_FN_caught():
+     )
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    # FN check: 12 > 10 strict, validator must accept
+-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
++    # The partial-overlap arithmetic is no longer reachable for an unproved
++    # tight K in Phase 1.2; fail-closed before accepting the cut.
++    assert vr.kind == "unsound"
++    assert "no replayable proof" in (vr.detail or "")
+ 
+ 
+ # ---- evaluator -------------------------------------------------------------
+@@ -620,7 +625,7 @@ def test_generate_routing_overflow_witness_rejected():
+     assert cuts == []
+ 
+ 
+-def test_generate_happy_path_emits_cut():
++def test_generate_unproved_tight_k_returns_empty():
+     state = _make_state()
+     cuts = generate_density_envelope_cuts(
+         state,
+@@ -635,9 +640,7 @@ def test_generate_happy_path_emits_cut():
+             ("g1", "p_3x3_d"),
+         ),
+     )
+-    assert len(cuts) == 1
+-    assert cuts[0].family == "density_envelope"
+-    assert cuts[0].oracle_cert_hash == cuts[0].cert.cert_hash  # R3 invariant
++    assert cuts == []
+ 
+ 
+ def test_generate_unknown_group_returns_empty():
+@@ -688,28 +691,17 @@ def test_generate_equality_no_cut():
+ # ---- watcher_keys ---------------------------------------------------------
+ 
+ 
+-def test_validate_ok_cert_max_zero_exclusion_zone():
+-    """Gemini F9 round 4: cert_max=0 is a legitimate exclusion-zone cut.
+-
+-    Original Gemini round 3 BLOCKER #1 framing ("tautologically fires") was
+-    incorrect — evaluator only counts cells INSIDE W, so cert_max=0 fires
+-    only when master places g inside W (sound prune iff oracle's K=0 is
+-    correct). When W is fully covered by static obstacles, safe_ub=0
+-    forces cert_max=0 as the only valid value. The R3 patch outlawed both
+-    cases; round 4 reverts it.
+-
+-    Tight-K verification (whether oracle's K=0 is mathematically correct)
+-    requires NP-hard sub-problem replay — Phase 1.5+ defer, same trade-off
+-    as F5 v1.0 trusting oracle's INFEASIBLE response.
+-    """
++def test_validate_rejects_cert_max_zero_without_replayable_proof():
++    """cert_max=0 is a tight K and must carry proof; Phase 1.2 quarantines it."""
+     state = _make_state()
+     cert_payload = _make_density_envelope_cert(
+         max_allowed_area=0,
+-        assignment_witness=[["g1", "p_3x3_a"]],  # witness sum=9 > 0 (strict overflow)
++        assignment_witness=[["g1", "p_3x3_a"]],
+     )
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+-    assert vr.kind == "ok", f"got {vr.kind}: {vr.detail}"
++    assert vr.kind == "unsound"
++    assert "no replayable proof" in (vr.detail or "")
+ 
+ 
+ def test_evaluator_cert_max_zero_only_fires_when_g_inside_window():
+@@ -804,8 +796,8 @@ def test_validator_union_excludes_ghost_cells():
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or ""), (
+-        f"Validator counted ghost cells in union (HIGH bug); vr.detail={vr.detail!r}"
++    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or "")), (
++        f"Validator counted ghost cells in union or accepted an unproved K; vr.detail={vr.detail!r}"
+     )
+ 
+ 
+@@ -847,9 +839,8 @@ def test_validator_overlap_witness_union_not_sum():
+     cut = _make_density_envelope_cut(cert_payload)
+     vr = validate_density_envelope(cut, state, canonical_rules={})
+     assert vr.kind == "unsound"
+-    assert "strict overflow" in (vr.detail or ""), (
+-        f"Validator used SUM not UNION: union=14 should not be strict overflow "
+-        f"over max_allowed_area=14; got vr.detail={vr.detail!r}"
++    assert ("strict overflow" in (vr.detail or "") or "no replayable proof" in (vr.detail or "")), (
++        f"Validator used SUM not UNION or accepted an unproved K; vr.detail={vr.detail!r}"
+     )
+ 
+ 
+@@ -910,12 +901,11 @@ def test_generator_witness_canonical_order_independent_cert_hash():
+         assignment_witness=(("g1", "p_3x3_b"), ("g1", "p_3x3_a")),
+         **args,
+     )
+-    assert len(cuts_forward) == 1 and len(cuts_reversed) == 1
+-    assert cuts_forward[0].cert.cert_hash == cuts_reversed[0].cert.cert_hash, (
+-        "Permuted witness produced different cert_hash — generator does not "
+-        "canonicalize witness order; CutStore dedup is broken."
+-    )
+-    assert cuts_forward[0].cert.cert_payload == cuts_reversed[0].cert.cert_payload
++    # Phase 1.2 now quarantines all non-trivial F9 K values that lack a
++    # replayable area-capacity proof, so no cert is emitted to hash.  The
++    # important invariant here is order-independent fail-closed behavior.
++    assert cuts_forward == []
++    assert cuts_reversed == []
+ 
+ 
+ def test_watcher_keys_pattern():
+diff --git a/src/tests/cuts/test_family_pattern_nogood.py b/src/tests/cuts/test_family_pattern_nogood.py
+index f968245..6acfd51 100644
+--- a/src/tests/cuts/test_family_pattern_nogood.py
++++ b/src/tests/cuts/test_family_pattern_nogood.py
+@@ -659,3 +659,33 @@ def test_register_bad_version_raises():
+ 
+ def test_lookup_unregistered_returns_none():
+     assert lookup_sub_problem_oracle("nonexistent_v9") is None
++
++
++def test_validate_unsound_forbidden_pose_pattern_slot_index_out_of_group_demand():
++    """slot_index must be a real anonymous slot: 0 <= slot < group.demand."""
++    state = _make_state()
++    cut, _ = _build_happy_cut(state)
++
++    def _alter(d):
++        d["forbidden_pose_pattern"][0][1] = state.groups["g1"].demand
++
++    tampered = _tamper_cert(cut, _alter)
++    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
++    assert vr.kind == "unsound"
++    assert "slot_index" in (vr.detail or "")
++    assert "demand" in (vr.detail or "")
++
++
++def test_validate_unsound_forbidden_pose_pattern_reuses_same_slot_for_different_poses():
++    """Reject oracle-trivial core (same slot forced to two poses) before evaluator lifts it."""
++    state = _make_state()
++    cut, _ = _build_happy_cut(state)
++
++    def _alter(d):
++        d["forbidden_pose_pattern"] = [["g1", 0, "pA"], ["g1", 0, "pB"]]
++        d["core_minimization"]["size_after"] = 2
++
++    tampered = _tamper_cert(cut, _alter)
++    vr = validate_pattern_nogood(tampered, state, canonical_rules={})
++    assert vr.kind == "unsound"
++    assert "reuses slot" in (vr.detail or "")
+diff --git a/src/tests/cuts/test_family_power_grid_reach.py b/src/tests/cuts/test_family_power_grid_reach.py
+index d686cf9..a743266 100644
+--- a/src/tests/cuts/test_family_power_grid_reach.py
++++ b/src/tests/cuts/test_family_power_grid_reach.py
+@@ -622,3 +622,45 @@ def test_validator_unsound_when_pose_registry_has_duplicate_pose_id() -> None:
+     result = validate_power_grid_reach(cut, state, canonical_rules={})
+     assert result.kind == "unsound"
+     assert "not unique" in (result.detail or "")
++
++# ---- adversarial source-of-truth template hardening -----------------------
++
++
++def test_validator_rejects_power_pole_dimension_drift() -> None:
++    """F8: pole-jump geometry must not use a stale hard-coded 2x2 pole."""
++    state = _f5_fixture_state(
++        facility_templates={
++            "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}, "needs_power": True},
++            "power_pole": {
++                "dimensions": {"w": 1, "h": 1},
++                "needs_power": False,
++                "power_coverage_radius": 5,
++            },
++            "protocol_core": {"dimensions": {"w": 9, "h": 9}, "needs_power": False},
++        },
++    )
++    cert_payload = _make_cert(state)
++    cut = _make_cut(cert_payload, state)
++    result = validate_power_grid_reach(cut, state, canonical_rules={})
++    assert result.kind == "unsound"
++    assert "power_pole dimensions" in (result.detail or "") or "2x2" in (result.detail or "")
++
++
++def test_validator_rejects_protocol_core_dimension_drift() -> None:
++    """F8: protocol_core_cell footprint must match canonical 9x9 dimensions."""
++    state = _f5_fixture_state(
++        facility_templates={
++            "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}, "needs_power": True},
++            "power_pole": {
++                "dimensions": {"w": 2, "h": 2},
++                "needs_power": False,
++                "power_coverage_radius": 5,
++            },
++            "protocol_core": {"dimensions": {"w": 8, "h": 9}, "needs_power": False},
++        },
++    )
++    cert_payload = _make_cert(state)
++    cut = _make_cut(cert_payload, state)
++    result = validate_power_grid_reach(cut, state, canonical_rules={})
++    assert result.kind == "unsound"
++    assert "protocol_core dimensions" in (result.detail or "") or "9x9" in (result.detail or "")
+diff --git a/src/tests/cuts/test_family_power_hitting_set.py b/src/tests/cuts/test_family_power_hitting_set.py
+index 6aeaa29..e56e438 100644
+--- a/src/tests/cuts/test_family_power_hitting_set.py
++++ b/src/tests/cuts/test_family_power_hitting_set.py
+@@ -629,3 +629,24 @@ def test_validator_unsound_when_pose_registry_has_duplicate_pose_id() -> None:
+     result = validate_power_hitting_set(cut, state, canonical_rules={})
+     assert result.kind == "unsound"
+     assert "not unique" in (result.detail or "")
++
++# ---- adversarial source-of-truth template hardening -----------------------
++
++
++def test_validator_rejects_power_pole_dimension_drift() -> None:
++    """F7: helper/cert 2x2 pole footprint must match canonical_rules."""
++    state = _make_state(
++        facility_templates={
++            "manufacturing_3x3": {"dimensions": {"w": 3, "h": 3}, "needs_power": True},
++            "power_pole": {
++                "dimensions": {"w": 1, "h": 1},
++                "needs_power": False,
++                "power_coverage_radius": 5,
++            },
++        },
++    )
++    cert_payload = _make_cert(state)
++    cut = _make_cut(cert_payload, state)
++    result = validate_power_hitting_set(cut, state, canonical_rules={})
++    assert result.kind == "unsound"
++    assert "power_pole dimensions" in (result.detail or "") or "2x2" in (result.detail or "")
+diff --git a/src/tests/cuts/test_family_shape_packing_hall.py b/src/tests/cuts/test_family_shape_packing_hall.py
+index 9d00290..970f6cd 100644
+--- a/src/tests/cuts/test_family_shape_packing_hall.py
++++ b/src/tests/cuts/test_family_shape_packing_hall.py
+@@ -645,3 +645,56 @@ def test_watcher_keys_failsafe_on_malformed() -> None:
+     )
+     keys = watcher_keys_shape_packing_hall(garbled)
+     assert keys == {"group_keys": [], "region_keys": []}
++
++# ---- adversarial source-of-truth lower-bound hardening --------------------
++
++
++def test_generator_rejects_override_exceeding_source_of_truth_lower_bound() -> None:
++    """F6: region_demand override must not exceed the split lower bound.
++
++    With D=30 and 1x3 boundary poses, the opposite baseline can host 23,
++    so at most 7 poses are source-of-truth-forced onto left_baseline.
++    A forged override of 23 used to pass the generator prechecks.
++    """
++    groups = {
++        "boundary_storage_port": GroupState(
++            group_id="boundary_storage_port",
++            demand=30,
++            pose_domain=frozenset({"p0"}),
++            selected_poses=[],
++        ),
++    }
++    state = _make_state(groups=groups)
++    cuts = generate_shape_packing_hall_cuts(
++        state,
++        boundary_groups=["boundary_storage_port"],
++        region_kinds=("left_baseline",),
++        region_demand_overrides={("boundary_storage_port", "left_baseline"): 23},
++    )
++    assert cuts == []
++
++
++def test_validator_unsound_region_demand_exceeds_source_of_truth_lower_bound() -> None:
++    """F6: forged per-side demand above max(0, D-C_other) is not reusable."""
++    groups = {
++        "boundary_storage_port": GroupState(
++            group_id="boundary_storage_port",
++            demand=30,
++            pose_domain=frozenset({"p0"}),
++            selected_poses=[],
++        ),
++    }
++    state = _make_state(groups=groups)
++    cert_payload = _make_cert(
++        state,
++        partition_lens=[10],
++        partition_offsets=[0],
++        max_packable=[3],
++        total_packable=3,
++        group_demand=30,
++        region_demand=23,
++    )
++    cut = _make_cut(cert_payload, state)
++    result = validate_shape_packing_hall(cut, state, canonical_rules={})
++    assert result.kind == "unsound"
++    assert "lower bound" in (result.detail or "")

@@ -1,0 +1,5705 @@
+{
+  "plan_version": "0.2.0",
+  "planning_status": "planned_outer_deployment",
+  "base_id": "valley4_protocol_core",
+  "base_lot_size": 70,
+  "canonical_contract_size": 70,
+  "inner_island_origin": {
+    "x": 0,
+    "y": 0
+  },
+  "inner_island_size": 70,
+  "moat_thickness_by_edge": {
+    "top": 0,
+    "right": 0,
+    "bottom": 0,
+    "left": 0
+  },
+  "foundation_bus_edges": [
+    "left",
+    "top"
+  ],
+  "boundary_demand_summary": {
+    "required_boundary_output_slots": 52,
+    "required_boundary_input_slots": 2,
+    "output_commodity_counts": {
+      "blue_iron_ore": 34,
+      "source_ore": 18
+    },
+    "input_commodity_counts": {
+      "qiaoyu_capsule": 1,
+      "valley_battery": 1
+    }
+  },
+  "boundary_assignment_summary_by_edge": {
+    "bottom": {
+      "total": 12,
+      "outputs": 12,
+      "inputs": 0
+    },
+    "left": {
+      "total": 20,
+      "outputs": 20,
+      "inputs": 0
+    },
+    "right": {
+      "total": 2,
+      "outputs": 2,
+      "inputs": 0
+    },
+    "top": {
+      "total": 20,
+      "outputs": 18,
+      "inputs": 2
+    }
+  },
+  "boundary_assignments": [
+    {
+      "canonical_instance_id": "boundary_required_input_qiaoyu_capsule_001",
+      "commodity_id": "qiaoyu_capsule",
+      "direction": "required_input",
+      "true_edge": "top",
+      "true_edge_position": 63,
+      "canonical_anchor": {
+        "x": 63,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 63,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 63,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_input_valley_battery_001",
+      "commodity_id": "valley_battery",
+      "direction": "required_input",
+      "true_edge": "top",
+      "true_edge_position": 66,
+      "canonical_anchor": {
+        "x": 66,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 66,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 66,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_001",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 9,
+      "canonical_anchor": {
+        "x": 9,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 9,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 9,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_002",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 12,
+      "canonical_anchor": {
+        "x": 12,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 12,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 12,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_003",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 15,
+      "canonical_anchor": {
+        "x": 15,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 15,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 15,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_004",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 18,
+      "canonical_anchor": {
+        "x": 18,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 18,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 18,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_005",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 21,
+      "canonical_anchor": {
+        "x": 21,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 21,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 21,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_006",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 24,
+      "canonical_anchor": {
+        "x": 24,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 24,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 24,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_007",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 27,
+      "canonical_anchor": {
+        "x": 27,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 27,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 27,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_008",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 30,
+      "canonical_anchor": {
+        "x": 30,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 30,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 30,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_009",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 33,
+      "canonical_anchor": {
+        "x": 33,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 33,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 33,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_010",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 36,
+      "canonical_anchor": {
+        "x": 36,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 36,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 36,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_011",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 39,
+      "canonical_anchor": {
+        "x": 39,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 39,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 39,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_012",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 42,
+      "canonical_anchor": {
+        "x": 42,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 42,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 42,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_013",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 45,
+      "canonical_anchor": {
+        "x": 45,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 45,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 45,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_014",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 48,
+      "canonical_anchor": {
+        "x": 48,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 48,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 48,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_015",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 51,
+      "canonical_anchor": {
+        "x": 51,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 51,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 51,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_016",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 54,
+      "canonical_anchor": {
+        "x": 54,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 54,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 54,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_017",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 57,
+      "canonical_anchor": {
+        "x": 57,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 57,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 57,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_018",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "top",
+      "true_edge_position": 60,
+      "canonical_anchor": {
+        "x": 60,
+        "y": 0
+      },
+      "handoff_anchor": {
+        "x": 60,
+        "y": 0
+      },
+      "exported_anchor": {
+        "x": 60,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_019",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 10,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 10
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 10
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_020",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 13,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 13
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 13
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 13
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_021",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 16,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 16
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 16
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 16
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_022",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 19,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 19
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 19
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 19
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_023",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 22,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 22
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 22
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_024",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 25,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 25
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 25
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 25
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_025",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 28,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 28
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 28
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 28
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_026",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 31,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 31
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 31
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 31
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_027",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 34,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 34
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 34
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 34
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_028",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 37,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 37
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 37
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 37
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_029",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 40,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 40
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 40
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 40
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_030",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 43,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 43
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 43
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 43
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_031",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 46,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 46
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 46
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 46
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_032",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 49,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 49
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 49
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 49
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_033",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 52,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 52
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 52
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 52
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_034",
+      "commodity_id": "blue_iron_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 55,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 55
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 55
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_001",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 58,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 58
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 58
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 58
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_002",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 61,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 61
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 61
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 61
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_003",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 64,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 64
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_004",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "left",
+      "true_edge_position": 67,
+      "canonical_anchor": {
+        "x": 0,
+        "y": 67
+      },
+      "handoff_anchor": {
+        "x": 0,
+        "y": 67
+      },
+      "exported_anchor": {
+        "x": 0,
+        "y": 67
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_005",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 31,
+      "canonical_anchor": {
+        "x": 31,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 31,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 31,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_006",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 34,
+      "canonical_anchor": {
+        "x": 34,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 34,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 34,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_007",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 37,
+      "canonical_anchor": {
+        "x": 37,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 37,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 37,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_008",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 40,
+      "canonical_anchor": {
+        "x": 40,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 40,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 40,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_009",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 43,
+      "canonical_anchor": {
+        "x": 43,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 43,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 43,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_010",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 46,
+      "canonical_anchor": {
+        "x": 46,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 46,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 46,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_011",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 49,
+      "canonical_anchor": {
+        "x": 49,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 49,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 49,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_012",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 52,
+      "canonical_anchor": {
+        "x": 52,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 52,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 52,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_013",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 55,
+      "canonical_anchor": {
+        "x": 55,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 55,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 55,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_014",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 58,
+      "canonical_anchor": {
+        "x": 58,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 58,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 58,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_015",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 61,
+      "canonical_anchor": {
+        "x": 61,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 61,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 61,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_016",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "bottom",
+      "true_edge_position": 64,
+      "canonical_anchor": {
+        "x": 64,
+        "y": 69
+      },
+      "handoff_anchor": {
+        "x": 64,
+        "y": 69
+      },
+      "exported_anchor": {
+        "x": 64,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_017",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "right",
+      "true_edge_position": 43,
+      "canonical_anchor": {
+        "x": 69,
+        "y": 43
+      },
+      "handoff_anchor": {
+        "x": 69,
+        "y": 43
+      },
+      "exported_anchor": {
+        "x": 69,
+        "y": 43
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_018",
+      "commodity_id": "source_ore",
+      "direction": "required_output",
+      "true_edge": "right",
+      "true_edge_position": 46,
+      "canonical_anchor": {
+        "x": 69,
+        "y": 46
+      },
+      "handoff_anchor": {
+        "x": 69,
+        "y": 46
+      },
+      "exported_anchor": {
+        "x": 69,
+        "y": 46
+      },
+      "exported_rotation": 0,
+      "notes": [],
+      "warnings": []
+    }
+  ],
+  "connector_summary_by_edge": {},
+  "connector_reservations": [],
+  "witness_summary_by_purpose": {
+    "boundary_input_admission": 2,
+    "boundary_output_bus": 52
+  },
+  "witness_reservations": [
+    {
+      "reservation_id": "witness_admission_boundary_required_input_qiaoyu_capsule_001",
+      "witness_type_id": "item_log_admission",
+      "purpose": "boundary_input_admission",
+      "commodity_id": "qiaoyu_capsule",
+      "required_for_instance_id": "boundary_required_input_qiaoyu_capsule_001",
+      "origin": {
+        "x": 64,
+        "y": 1
+      },
+      "rotation": 270,
+      "reserved_cells": [
+        {
+          "x": 64,
+          "y": 1
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_admission_boundary_required_input_valley_battery_001",
+      "witness_type_id": "item_log_admission",
+      "purpose": "boundary_input_admission",
+      "commodity_id": "valley_battery",
+      "required_for_instance_id": "boundary_required_input_valley_battery_001",
+      "origin": {
+        "x": 67,
+        "y": 1
+      },
+      "rotation": 270,
+      "reserved_cells": [
+        {
+          "x": 67,
+          "y": 1
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_001",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_001",
+      "origin": {
+        "x": 9,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 9,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_001 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_002",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_002",
+      "origin": {
+        "x": 12,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 12,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_002 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_003",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_003",
+      "origin": {
+        "x": 15,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 15,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_003 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_004",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_004",
+      "origin": {
+        "x": 18,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 18,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_004 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_005",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_005",
+      "origin": {
+        "x": 21,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 21,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_005 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_006",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_006",
+      "origin": {
+        "x": 24,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 24,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_006 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_007",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_007",
+      "origin": {
+        "x": 27,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 27,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_007 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_008",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_008",
+      "origin": {
+        "x": 30,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 30,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_008 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_009",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_009",
+      "origin": {
+        "x": 33,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 33,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_009 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_010",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_010",
+      "origin": {
+        "x": 36,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 36,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_010 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_011",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_011",
+      "origin": {
+        "x": 39,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 39,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_011 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_012",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_012",
+      "origin": {
+        "x": 42,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 42,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_012 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_013",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_013",
+      "origin": {
+        "x": 45,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 45,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_013 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_014",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_014",
+      "origin": {
+        "x": 48,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 48,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_014 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_015",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_015",
+      "origin": {
+        "x": 51,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 51,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_015 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_016",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_016",
+      "origin": {
+        "x": 54,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 54,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_016 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_017",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_017",
+      "origin": {
+        "x": 57,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 57,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_017 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_018",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_018",
+      "origin": {
+        "x": 60,
+        "y": -1
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 60,
+          "y": -1
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_018 has no in-lot target cell on the required N-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_019",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_019",
+      "origin": {
+        "x": -1,
+        "y": 10
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 10
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_019 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_020",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_020",
+      "origin": {
+        "x": -1,
+        "y": 13
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 13
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_020 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_021",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_021",
+      "origin": {
+        "x": -1,
+        "y": 16
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 16
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_021 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_022",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_022",
+      "origin": {
+        "x": -1,
+        "y": 19
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 19
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_022 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_023",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_023",
+      "origin": {
+        "x": -1,
+        "y": 22
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 22
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_023 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_024",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_024",
+      "origin": {
+        "x": -1,
+        "y": 25
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 25
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_024 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_025",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_025",
+      "origin": {
+        "x": -1,
+        "y": 28
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 28
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_025 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_026",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_026",
+      "origin": {
+        "x": -1,
+        "y": 31
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 31
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_026 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_027",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_027",
+      "origin": {
+        "x": -1,
+        "y": 34
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 34
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_027 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_028",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_028",
+      "origin": {
+        "x": -1,
+        "y": 37
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 37
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_028 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_029",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_029",
+      "origin": {
+        "x": -1,
+        "y": 40
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 40
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_029 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_030",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_030",
+      "origin": {
+        "x": -1,
+        "y": 43
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 43
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_030 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_031",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_031",
+      "origin": {
+        "x": -1,
+        "y": 46
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 46
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_031 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_032",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_032",
+      "origin": {
+        "x": -1,
+        "y": 49
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 49
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_032 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_033",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_033",
+      "origin": {
+        "x": -1,
+        "y": 52
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 52
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_033 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_blue_iron_ore_034",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "blue_iron_ore",
+      "required_for_instance_id": "boundary_required_output_blue_iron_ore_034",
+      "origin": {
+        "x": -1,
+        "y": 55
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 55
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_blue_iron_ore_034 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_001",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_001",
+      "origin": {
+        "x": -1,
+        "y": 58
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 58
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_source_ore_001 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_002",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_002",
+      "origin": {
+        "x": -1,
+        "y": 61
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 61
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_source_ore_002 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_003",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_003",
+      "origin": {
+        "x": -1,
+        "y": 64
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 64
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_source_ore_003 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_004",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_004",
+      "origin": {
+        "x": -1,
+        "y": 67
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": -1,
+          "y": 67
+        }
+      ],
+      "notes": [],
+      "warnings": [
+        "output bus witness for boundary_required_output_source_ore_004 has no in-lot target cell on the required W-side face"
+      ]
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_005",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_005",
+      "origin": {
+        "x": 31,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 31,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_006",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_006",
+      "origin": {
+        "x": 34,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 34,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_007",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_007",
+      "origin": {
+        "x": 37,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 37,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_008",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_008",
+      "origin": {
+        "x": 40,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 40,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_009",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_009",
+      "origin": {
+        "x": 43,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 43,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_010",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_010",
+      "origin": {
+        "x": 46,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 46,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_011",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_011",
+      "origin": {
+        "x": 49,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 49,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_012",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_012",
+      "origin": {
+        "x": 52,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 52,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_013",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_013",
+      "origin": {
+        "x": 55,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 55,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_014",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_014",
+      "origin": {
+        "x": 58,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 58,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_015",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_015",
+      "origin": {
+        "x": 61,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 61,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_016",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_016",
+      "origin": {
+        "x": 64,
+        "y": 68
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 64,
+          "y": 68
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_017",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_017",
+      "origin": {
+        "x": 68,
+        "y": 43
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 68,
+          "y": 43
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "reservation_id": "witness_bus_boundary_required_output_source_ore_018",
+      "witness_type_id": "item_port_log_hongs_bus",
+      "purpose": "boundary_output_bus",
+      "commodity_id": "source_ore",
+      "required_for_instance_id": "boundary_required_output_source_ore_018",
+      "origin": {
+        "x": 68,
+        "y": 46
+      },
+      "rotation": 90,
+      "reserved_cells": [
+        {
+          "x": 68,
+          "y": 46
+        }
+      ],
+      "notes": [],
+      "warnings": []
+    }
+  ],
+  "export_mapping_summary_by_mode": {
+    "identity": 273
+  },
+  "export_mappings": [
+    {
+      "canonical_instance_id": "boundary_required_input_qiaoyu_capsule_001",
+      "exported_type_id": "item_port_loader_1",
+      "exported_origin": {
+        "x": 63,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_input_valley_battery_001",
+      "exported_type_id": "item_port_loader_1",
+      "exported_origin": {
+        "x": 66,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_001",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 9,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_002",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 12,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_003",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 15,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_004",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 18,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_005",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_006",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 24,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_007",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 27,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_008",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 30,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_009",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 33,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_010",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_011",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 39,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_012",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 42,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_013",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 45,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_014",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 48,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_015",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 51,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_016",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 54,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_017",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 57,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_018",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 60,
+        "y": 0
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_019",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_020",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 13
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_021",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 16
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_022",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 19
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_023",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_024",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 25
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_025",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 28
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_026",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 31
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_027",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 34
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_028",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 37
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_029",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 40
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_030",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 43
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_031",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 46
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_032",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 49
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_033",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 52
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_blue_iron_ore_034",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_001",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 58
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_002",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 61
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_003",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 64
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_004",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 0,
+        "y": 67
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_005",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_006",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 34,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_007",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_008",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 40,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_009",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_010",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_011",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_012",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 52,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_013",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_014",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 58,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_015",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_016",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 64,
+        "y": 69
+      },
+      "exported_rotation": 1,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_017",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 69,
+        "y": 43
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "boundary_required_output_source_ore_018",
+      "exported_type_id": "item_port_unloader_1",
+      "exported_origin": {
+        "x": 69,
+        "y": 46
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_001",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 9,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_002",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 12,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_003",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 15,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_004",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 18,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_005",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_006",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 24,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_007",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 27,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_008",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 30,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_009",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 33,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_010",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_011",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 39,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_012",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 42,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_013",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 45,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_014",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 48,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_015",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 51,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_016",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 54,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_017",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 57,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_018",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 60,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_019",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 63,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_020",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 66,
+        "y": 2
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_021",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 9,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_022",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 12,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_023",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 15,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_024",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 18,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_025",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_026",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 24,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_027",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 27,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_028",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 30,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_029",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 33,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_030",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_031",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 39,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_032",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 42,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_033",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 45,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_blue_iron_034",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 48,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_buckwheat_001",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 51,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_buckwheat_002",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 54,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_buckwheat_003",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 57,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_buckwheat_004",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 60,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_buckwheat_005",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 63,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_buckwheat_006",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 66,
+        "y": 6
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_001",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_002",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 4,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_003",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_004",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 10,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_005",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_006",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_007",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_008",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 22,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_009",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_010",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 28,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_sandleaf_011",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_001",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 34,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_002",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_003",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 40,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_004",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_005",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_006",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_007",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 52,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_008",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_009",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 58,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_010",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_011",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 64,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_012",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 67,
+        "y": 10
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_013",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_014",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 4,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_015",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_016",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 10,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_017",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_crusher_source_018",
+      "exported_type_id": "item_port_grinder_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_filling_capsule_001",
+      "exported_type_id": "item_port_filling_pd_mc_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_filling_capsule_002",
+      "exported_type_id": "item_port_filling_pd_mc_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_filling_capsule_003",
+      "exported_type_id": "item_port_filling_pd_mc_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_001",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_002",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_003",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_004",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_005",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_006",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_007",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_008",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 50
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_009",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_010",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_011",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_012",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_013",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_014",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_015",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_016",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_blue_iron_017",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_001",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_002",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 55
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_003",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_004",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_005",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_006",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_007",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_008",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_dense_source_009",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_fine_buckwheat_001",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_fine_buckwheat_002",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_fine_buckwheat_003",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_fine_buckwheat_004",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 60
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_fine_buckwheat_005",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 65
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_grinder_fine_buckwheat_006",
+      "exported_type_id": "item_port_thickener_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 65
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_molding_bottle_001",
+      "exported_type_id": "item_port_shaper_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_molding_bottle_002",
+      "exported_type_id": "item_port_shaper_1",
+      "exported_origin": {
+        "x": 22,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_molding_bottle_003",
+      "exported_type_id": "item_port_shaper_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_molding_bottle_004",
+      "exported_type_id": "item_port_shaper_1",
+      "exported_origin": {
+        "x": 28,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_molding_bottle_005",
+      "exported_type_id": "item_port_shaper_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_molding_bottle_006",
+      "exported_type_id": "item_port_shaper_1",
+      "exported_origin": {
+        "x": 34,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_packaging_battery_001",
+      "exported_type_id": "item_port_tools_asm_mc_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 65
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_packaging_battery_002",
+      "exported_type_id": "item_port_tools_asm_mc_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 65
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_packaging_battery_003",
+      "exported_type_id": "item_port_tools_asm_mc_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 65
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_parts_maker_001",
+      "exported_type_id": "item_port_cmpt_mc_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_parts_maker_002",
+      "exported_type_id": "item_port_cmpt_mc_1",
+      "exported_origin": {
+        "x": 40,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_parts_maker_003",
+      "exported_type_id": "item_port_cmpt_mc_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_parts_maker_004",
+      "exported_type_id": "item_port_cmpt_mc_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_parts_maker_005",
+      "exported_type_id": "item_port_cmpt_mc_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_parts_maker_006",
+      "exported_type_id": "item_port_cmpt_mc_1",
+      "exported_origin": {
+        "x": 52,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_001",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_002",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 6,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_003",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 11,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_004",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_005",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_006",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 26,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_007",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_008",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_009",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 41,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_010",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_buckwheat_011",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 51,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_001",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 56,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_002",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 26
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_003",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_004",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 6,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_005",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 11,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_006",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_007",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_008",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 26,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_009",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_010",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_011",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 41,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_012",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_013",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 51,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_014",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 56,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_015",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 32
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_016",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_017",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 6,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_018",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 11,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_019",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_020",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_planter_sandleaf_021",
+      "exported_type_id": "item_port_planter_1",
+      "exported_origin": {
+        "x": 26,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_001",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_002",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 58,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_003",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_004",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 64,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_005",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 67,
+        "y": 14
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_006",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_007",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 4,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_008",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_009",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 10,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_010",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_011",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_012",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_013",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 22,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_014",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_015",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 28,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_016",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_017",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 34,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_018",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_019",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 40,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_020",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_021",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_022",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_023",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 52,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_024",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_025",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 58,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_026",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_027",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 64,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_028",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 67,
+        "y": 18
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_029",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_030",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 4,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_031",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 7,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_032",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 10,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_033",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 13,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_blue_iron_034",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_001",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 19,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_002",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 22,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_003",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 25,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_004",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 28,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_005",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_006",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 34,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_007",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 37,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_008",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 40,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_009",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 43,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_010",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_011",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 49,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_012",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 52,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_013",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 55,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_014",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 58,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_015",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_016",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 64,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_refinery_steel_017",
+      "exported_type_id": "item_port_furnance_1",
+      "exported_origin": {
+        "x": 67,
+        "y": 22
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_buckwheat_001",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_buckwheat_002",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_buckwheat_003",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 41,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_buckwheat_004",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_buckwheat_005",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 51,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_buckwheat_006",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 56,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_001",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 61,
+        "y": 38
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_002",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 1,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_003",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 6,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_004",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 11,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_005",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 16,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_006",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 21,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_007",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 26,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_008",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 31,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_009",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 36,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_010",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 41,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    },
+    {
+      "canonical_instance_id": "mfg_seed_collector_sandleaf_011",
+      "exported_type_id": "item_port_seedcol_1",
+      "exported_origin": {
+        "x": 46,
+        "y": 44
+      },
+      "exported_rotation": 0,
+      "mapping_mode": "identity",
+      "notes": [],
+      "warnings": []
+    }
+  ],
+  "diagnostics": {
+    "exporter_status": "not_run",
+    "validator_import_compatible": null,
+    "validator_layout_healthy": null,
+    "throughput_status": null,
+    "validation_probe_count": 0,
+    "warnings": []
+  },
+  "notes": [
+    "outer deployment plan is adapter-side only; it does not widen the canonical blueprint schema or the certified_exact evidence boundary",
+    "selected the degenerate zero-offset inner-island origin because the base already matches the canonical 70×70 contract",
+    "selected base inherits foundation bus edges at left, top"
+  ],
+  "warnings": []
+}

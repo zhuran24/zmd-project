@@ -1,0 +1,74 @@
+{
+  "schema_version": 3,
+  "solve_mode": "certified_exact",
+  "campaign_hours": 1.2,
+  "created_at": "2026-05-16T00:03:35Z",
+  "updated_at": "2026-05-16T00:04:44Z",
+  "artifact_hashes": {
+    "mandatory_exact_instances": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
+    "candidate_placements": "d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f",
+    "canonical_rules": "8ac667a1bce67ff9084701d18892f370e19d68cc9b5ace44bd63c68b20d3d6ea",
+    "generic_io_requirements": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e"
+  },
+  "proof_summary_schema_version": 1,
+  "reset_reason": null,
+  "final_result": null,
+  "final_status": null,
+  "last_stop_reason": null,
+  "declare_mode": "best_effort",
+  "candidates": {
+    "27x15": {
+      "ghost_rect": {
+        "w": 27,
+        "h": 15,
+        "area": 405
+      },
+      "attempts": 1,
+      "started_at": "2026-05-16T00:03:50Z",
+      "updated_at": "2026-05-16T00:04:44Z",
+      "finished_at": null,
+      "status": "RUNNING",
+      "proof_summary": {
+        "campaign_heartbeat": {
+          "schema_version": 1,
+          "candidate_key": "27x15",
+          "ghost_rect": {
+            "w": 27,
+            "h": 15,
+            "area": 405
+          },
+          "updated_at": "2026-05-16T00:04:44Z",
+          "stage": "master_solve",
+          "event": "start",
+          "benders_max_iter": 30,
+          "master_seconds": 3600.0,
+          "binding_seconds": 1800.0,
+          "routing_seconds": 1800.0,
+          "flow_seconds": 60.0,
+          "iteration": 1,
+          "master_search_profile": "exact_coordinate_guided_branching_v4"
+        }
+      },
+      "exact_safe_cuts": [],
+      "loaded_exact_safe_cut_count": 0,
+      "generated_exact_safe_cut_count": 0,
+      "bound_state": {
+        "lb": null,
+        "ub": null,
+        "gap": null,
+        "epsilon_target": null,
+        "prover": null,
+        "observed_at": null,
+        "model_hash": null
+      }
+    }
+  },
+  "frontier_probe": {
+    "mode": "off",
+    "executed_candidate_keys": [],
+    "execution_count": 0,
+    "last_candidate_key": null,
+    "last_probe_prune_gain": 0,
+    "last_probe_resume_pending": false
+  }
+}

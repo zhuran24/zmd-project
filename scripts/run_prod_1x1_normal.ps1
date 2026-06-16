@@ -1,0 +1,25 @@
+param(
+    [double]$CampaignHours = 168.0,
+    [switch]$ResumeCampaign,
+    [switch]$DryRun
+)
+
+. "$PSScriptRoot\_exact_runner_common.ps1"
+
+$arguments = @(
+    "main.py",
+    "--mode", "certified_exact",
+    "--campaign-hours", ([string]$CampaignHours),
+    "--parallel-processes", "1",
+    "--process-priority", "normal",
+    "--frontier-probe-mode", "auto"
+)
+
+if ($ResumeCampaign) {
+    $arguments += "--resume-campaign"
+}
+
+Invoke-ExactRepoPython `
+    -Arguments $arguments `
+    -EnvOverrides @{ "EXACT_CP_SAT_WORKERS" = "1" } `
+    -DryRun:$DryRun

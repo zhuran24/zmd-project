@@ -1,0 +1,107 @@
+=== Phase 0 probe ===
+candidate: 27x15
+anchor: (22,28)
+master_seconds=180.0, completion_seconds=10.0
+EXACT_LAZY_POWER_COMPLETION=1
+
+[load] project data ...
+[load] 0.5s
+[build] master exact core (EXACT_LAZY_POWER_COMPLETION on) ...
+[build] 13.4s, vars=54616, cons=126411
+[build] power_coverage stats: {'representation': 'lazy_power_completion_v1', 'master_constraints': 0, 'master_witness_vars': 0, 'power_pole_slots_materialized': True}
+
+[solve] master.solve(time_limit=180.0) ...
+[solve] 80.7s, status=OPTIMAL
+
+[extract] solution entries: 282
+[extract] non-power entries: 267
+[extract] master-selected power_pole entries (dropped): 15
+[ghost] cells=405
+
+[completion] PowerPlacementSubproblem build ...
+[completion] build 0.01s, candidate_poles=1204, powered_instances=220
+[completion] solve(time_limit=10.0) ...
+[completion] solve 0.00s, status=INFEASIBLE
+[completion] stats={'candidate_pole_count': 1204, 'powered_instance_count': 220, 'uncovered_instance_count': 134, 'ghost_cell_count': 405}
+
+[cut iter 2] core minimizer ...
+[minimize] start S size=267 powered=220
+  [1] del boundary_port_001: INFEASIBLE, S size=266, +0.00s
+  [2] del boundary_port_002: INFEASIBLE, S size=265, +0.00s
+  [3] del boundary_port_003: INFEASIBLE, S size=264, +0.00s
+  [4] del boundary_port_004: INFEASIBLE, S size=263, +0.00s
+  [5] del boundary_port_005: INFEASIBLE, S size=262, +0.00s
+  [6] del boundary_port_006: INFEASIBLE, S size=261, +0.00s
+  [7] del boundary_port_007: INFEASIBLE, S size=260, +0.00s
+  [8] del boundary_port_008: INFEASIBLE, S size=259, +0.00s
+  [9] del boundary_port_009: INFEASIBLE, S size=258, +0.00s
+  [10] del boundary_port_010: INFEASIBLE, S size=257, +0.00s
+  [11] del boundary_port_011: INFEASIBLE, S size=256, +0.00s
+  [12] del boundary_port_012: INFEASIBLE, S size=255, +0.00s
+  [13] del boundary_port_013: INFEASIBLE, S size=254, +0.00s
+  [14] del boundary_port_014: INFEASIBLE, S size=253, +0.00s
+  [15] del boundary_port_015: INFEASIBLE, S size=252, +0.00s
+  [16] del boundary_port_016: INFEASIBLE, S size=251, +0.00s
+  [17] del boundary_port_017: INFEASIBLE, S size=250, +0.00s
+  [18] del boundary_port_018: INFEASIBLE, S size=249, +0.00s
+  [19] del boundary_port_019: INFEASIBLE, S size=248, +0.00s
+  [20] del boundary_port_020: INFEASIBLE, S size=247, +0.00s
+  [21] del boundary_port_021: INFEASIBLE, S size=246, +0.00s
+  [22] del boundary_port_022: INFEASIBLE, S size=245, +0.00s
+  [23] del boundary_port_023: INFEASIBLE, S size=244, +0.00s
+  [24] del boundary_port_024: INFEASIBLE, S size=243, +0.00s
+  [25] del boundary_port_025: INFEASIBLE, S size=242, +0.00s
+  [26] del boundary_port_026: INFEASIBLE, S size=241, +0.00s
+  [27] del boundary_port_027: INFEASIBLE, S size=240, +0.00s
+  [28] del boundary_port_028: INFEASIBLE, S size=239, +0.00s
+  [29] del boundary_port_029: INFEASIBLE, S size=238, +0.00s
+  [30] del boundary_port_030: INFEASIBLE, S size=237, +0.00s
+  [31] del boundary_port_031: INFEASIBLE, S size=236, +0.00s
+  [32] del boundary_port_032: INFEASIBLE, S size=235, +0.00s
+[cut iter 2] minimizer done 0.4s, core size 267→235, oracle_calls=32, abort=max_oracle_calls
+
+[cut iter 2] add nogood, |conflict_set|=235 ...
+[cut iter 2] added=True, +1.41s
+[solve iter 2] master.solve ...
+[solve iter 2] 84.7s, status=OPTIMAL
+[iter 2] completion 0.00s, status=INFEASIBLE, uncovered=134
+
+[cut iter 3] core minimizer ...
+[minimize] start S size=267 powered=220
+  [1] del boundary_port_001: INFEASIBLE, S size=266, +0.00s
+  [2] del boundary_port_002: INFEASIBLE, S size=265, +0.00s
+  [3] del boundary_port_003: INFEASIBLE, S size=264, +0.00s
+  [4] del boundary_port_004: INFEASIBLE, S size=263, +0.00s
+  [5] del boundary_port_005: INFEASIBLE, S size=262, +0.00s
+  [6] del boundary_port_006: INFEASIBLE, S size=261, +0.00s
+  [7] del boundary_port_007: INFEASIBLE, S size=260, +0.00s
+  [8] del boundary_port_008: INFEASIBLE, S size=259, +0.00s
+  [9] del boundary_port_009: INFEASIBLE, S size=258, +0.00s
+  [10] del boundary_port_010: INFEASIBLE, S size=257, +0.00s
+  [11] del boundary_port_011: INFEASIBLE, S size=256, +0.00s
+  [12] del boundary_port_012: INFEASIBLE, S size=255, +0.00s
+  [13] del boundary_port_013: INFEASIBLE, S size=254, +0.00s
+  [14] del boundary_port_014: INFEASIBLE, S size=253, +0.00s
+  [15] del boundary_port_015: INFEASIBLE, S size=252, +0.00s
+  [16] del boundary_port_016: INFEASIBLE, S size=251, +0.00s
+  [17] del boundary_port_017: INFEASIBLE, S size=250, +0.00s
+  [18] del boundary_port_018: INFEASIBLE, S size=249, +0.00s
+  [19] del boundary_port_019: INFEASIBLE, S size=248, +0.00s
+  [20] del boundary_port_020: INFEASIBLE, S size=247, +0.00s
+  [21] del boundary_port_021: INFEASIBLE, S size=246, +0.00s
+  [22] del boundary_port_022: INFEASIBLE, S size=245, +0.00s
+  [23] del boundary_port_023: INFEASIBLE, S size=244, +0.00s
+  [24] del boundary_port_024: INFEASIBLE, S size=243, +0.00s
+  [25] del boundary_port_025: INFEASIBLE, S size=242, +0.00s
+  [26] del boundary_port_026: INFEASIBLE, S size=241, +0.00s
+  [27] del boundary_port_027: INFEASIBLE, S size=240, +0.00s
+  [28] del boundary_port_028: INFEASIBLE, S size=239, +0.00s
+  [29] del boundary_port_029: INFEASIBLE, S size=238, +0.00s
+  [30] del boundary_port_030: INFEASIBLE, S size=237, +0.00s
+  [31] del boundary_port_031: INFEASIBLE, S size=236, +0.00s
+  [32] del boundary_port_032: INFEASIBLE, S size=235, +0.00s
+[cut iter 3] minimizer done 0.4s, core size 267→235, oracle_calls=32, abort=max_oracle_calls
+
+[cut iter 3] add nogood, |conflict_set|=235 ...
+[cut iter 3] added=True, +1.42s
+[solve iter 3] master.solve ...

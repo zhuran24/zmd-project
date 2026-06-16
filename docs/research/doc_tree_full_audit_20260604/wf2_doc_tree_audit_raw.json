@@ -1,0 +1,1068 @@
+{
+  "summary": "整个 live 文档树全量 fresh-eyes 审查 (currency/overclaim/一致性/staleness) + 每条 finding 对抗式核验",
+  "agentCount": 73,
+  "logs": [
+    "文档树全审完: 65 条 raw → confirmed 60 / refuted 5"
+  ],
+  "result": {
+    "total_raw": 65,
+    "confirmed_count": 60,
+    "refuted_count": 5,
+    "by_kind": {
+      "currency": 4,
+      "broken-ref": 5,
+      "inconsistency": 18,
+      "staleness": 26,
+      "cross-doc": 3,
+      "overclaim": 3,
+      "other": 1
+    },
+    "by_severity": {
+      "med": 25,
+      "low": 22,
+      "high": 13
+    },
+    "confirmed": [
+      {
+        "id": "A-1",
+        "doc_path": "CLAUDE.md:127",
+        "kind": "currency",
+        "severity": "med",
+        "claim": "current_claims 无消费者, build_v28 仍硬编码 418 vs 核心节点 441",
+        "problem": "手写数字漂移。核心节点 docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json 的 cuts_tests_total.value 实际是 442（已用 .venv\\Scripts\\python.exe -m pytest --collect-only -q src/tests/cuts 实测 = 442 tests collected, 且 gen_authoritative_numbers.py --check = 'core node up to date'）。CLAUDE.md 这句把核心节点值手抄成 441，已 stale by 1。这正是项目反复犯的『provenance 里手敲的数没回填』高产 bug：核心节点被 bump（441→442，疑似 d4ae058 在 certified attach-scope 路径加 F7 radius 回归测试时）后，CLAUDE.md 散文里的对照数字没跟着改。注意 build_v28 的 418 本身在 cc_context/（非 live 文档，不报），但引用它对照的核心节点值在 live 文档 CLAUDE.md 里且写错了。",
+        "suggested_fix": "把 CLAUDE.md:127 的『vs 核心节点 441』改为『vs 核心节点 442』。更稳妥：此处别再硬抄核心节点的绝对值（它会随 cut 测试增减漂），改成『vs 核心节点当前值（见 authoritative_numbers.json cuts_tests_total）』，从根上消除这个手抄点。",
+        "unit_id": "A",
+        "verdict": {
+          "id": "A-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读 CLAUDE.md:127 原文确认逐字: \"build_v28 仍硬编码 418 vs 核心节点 441\" —— 这是 live 项目指令文档 (root CLAUDE.md), 且是现在时态的 \"vs 核心节点\" 对照断言, 非 CHANGELOG/历史引值。读核心节点 docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json: numbers.cuts_tests_total.value = 442 (441 甚至不在其 stale 列表 [413,414,416,418,425,437] 里)。跑 .venv/Scripts/python.exe scripts/gen_authoritative_numbers.py --check = \"core node up to date\" exit 0; pytest --collect-only src/tests/cuts = 442 tests collected。故 SoT 当前真值 = 442, CLAUDE.md 散文手抄成 441, stale by 1, 是典型 \"provenance 手敲数没回填\" drift。finding 方向与数字 (441 vs 442) 完全对得上。注: finding 里 d4ae058 致因属未核实推测, 不影响核心 claim 成立。",
+          "corrected_note": ""
+        }
+      },
+      {
+        "id": "A-2",
+        "doc_path": "CLAUDE.md:224 (Community blueprint hint 注入段)",
+        "kind": "broken-ref",
+        "severity": "med",
+        "claim": "production wrappers (run_campaign_p2_workers1.sh / workers2.sh) default 自动注入",
+        "problem": "broken/错误 script 引用。scripts/ 下实际只有 run_campaign_p2_workers1.sh 和 run_campaign_workers2.sh（无 p2 前缀），不存在 run_campaign_p2_workers2.sh。本段以 'p2_workers1.sh / workers2.sh' 并列书写，强烈暗示第二个文件名是 run_campaign_p2_workers2.sh，但该文件不存在；真实第二个 wrapper 是 run_campaign_workers2.sh，命名 pattern 跟前者不一致。读者若按 p2_workers2.sh 去找会找不到。（已用 ls scripts/ 确认: 存在 run_campaign_p2_workers1.sh 和 run_campaign_workers2.sh）",
+        "suggested_fix": "把 'workers2.sh' 写全为正确文件名 run_campaign_workers2.sh，并确认该 wrapper 确实 default 自动注入 EXACT_COMMUNITY_BLUEPRINT_HINT_PATH（命名不对称本身也值得在脚本侧统一，但文档至少先指对真实文件名）。",
+        "unit_id": "A",
+        "verdict": {
+          "id": "A-2",
+          "is_real": true,
+          "confidence": "medium",
+          "evidence": "读了 CLAUDE.md:224 原文确认 claim 存在: \"production wrappers (run_campaign_p2_workers1.sh / workers2.sh) default 自动注入\"。Glob scripts/run_campaign*.sh 只返回 3 个: run_campaign_linux.sh / run_campaign_p2_workers1.sh / run_campaign_workers2.sh —— 不存在 run_campaign_p2_workers2.sh。两个 wrapper 都确实 default-inject EXACT_COMMUNITY_BLUEPRINT_HINT_PATH (p2_workers1.sh:38-39, workers2.sh:28-29), 故 \"default 自动注入\" 的实质 claim 为真。命名不对称真实存在: 第一个文件有 p2 前缀, 第二个无, 文档用并列简写 \"p2_workers1.sh / workers2.sh\" 确实可能误导读者去找 p2_workers2.sh。",
+          "corrected_note": "finding 的 \"broken-ref\" 框定略重——文档并未字面写出不存在的 run_campaign_p2_workers2.sh, 而是用简写 \"workers2.sh\"。准确描述: 这是命名不对称导致的歧义简写 (第一个 wrapper 带 p2 前缀, 第二个 run_campaign_workers2.sh 不带), 并列书写易使读者误推第二个文件名为 run_campaign_p2_workers2.sh。修复方向正确: 在文档把 \"workers2.sh\" 写全为真实文件名 run_campaign_workers2.sh。注意 doc_path 行号 224 准确。"
+        }
+      },
+      {
+        "id": "A-3",
+        "doc_path": "PROJECT_LOCK.md:64 (§2A IndustrialPlanner Active Scope)",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "The other known IndustrialPlanner bases (`valley4_infra_outpost`, `valley4_rebuilt_command`, `valley4_refugee_shelter`, `wuling_tianwangping_aid`, and `wuling_protocol_core`) are preserved as `future_scope`",
+        "problem": "future_scope base 列表 stale/漏一项（镜像漂移）。vendored 快照 third_party_snapshots/industrial_planner/bases/bases.json 实际含 7 个 base：wuling_protocol_core / wuling_tianwangping_aid / wuling_heart_repair_station / valley4_protocol_core / valley4_refugee_shelter / valley4_infra_outpost / valley4_rebuilt_command（SOURCE_METADATA observed_counts.bases=7）。PROJECT_LOCK 只列了 1 active(valley4_protocol_core) + 5 future = 6 个，漏了 wuling_heart_repair_station。疑似某次 refresh_industrial_planner_bases.py 让 base 数增到 7 时，PROJECT_LOCK 这份手写枚举没回填。这是『同一事实多处复制、改一处漏其余』高产 bug 的典型。",
+        "suggested_fix": "把 wuling_heart_repair_station 加进 §2A 的 future_scope base 枚举（即列出全部 6 个 future_scope base），使其与 bases.json / SOURCE_METADATA 的 7-base 集合一致。或改为非穷举措辞并指向 bases.json 作单一来源。",
+        "unit_id": "A",
+        "verdict": {
+          "id": "A-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read PROJECT_LOCK.md §2A line 63-64: active=valley4_protocol_core (1), future_scope enumerates exactly 5 (valley4_infra_outpost, valley4_rebuilt_command, valley4_refugee_shelter, wuling_tianwangping_aid, wuling_protocol_core) = 6 total. The phrasing is exhaustive (\"The other known IndustrialPlanner bases (...) are preserved as future_scope\"), not \"such as\". Grepped third_party_snapshots/industrial_planner/bases/bases.json: 7 base ids present — wuling_protocol_core, wuling_tianwangping_aid, wuling_heart_repair_station, valley4_protocol_core, valley4_refugee_shelter, valley4_infra_outpost, valley4_rebuilt_command. SOURCE_METADATA.json observed_counts.bases=7. PROJECT_LOCK omits wuling_heart_repair_station, matching the finding exactly. This is a stale hand-written enumeration vs the SoT snapshot (mirror drift); refresh_industrial_planner_bases.py updates bases.json/SOURCE_METADATA but not PROJECT_LOCK's prose. Inconsistency confirmed."
+        }
+      },
+      {
+        "id": "A-4",
+        "doc_path": "PROJECT_LOCK.md:4 (header Updated 字段)",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "**Updated**: 2026-05-22 (B Design v2 Phase 0 close)",
+        "problem": "header 的 Updated 日期 stale。文件正文已含两块明确日期戳为 2026-06-04 的新增锁条（line 110 '(2026-06-04 v28 GPT pro 外审) Cut-family validator SoT gate'、line 146 '(2026-06-04 v28) F9 tight-K quarantine'、以及 line 142 '(2026-06-04 fresh-pass 补)'），而 header 仍停在 2026-05-22。header 元数据与正文最新修订日期不一致，读者会低估文件 currency。",
+        "suggested_fix": "把 Updated 改为 2026-06-04（并在括注里点一句 v28 外审 SoT gate + F9 tight-K quarantine），与正文最新锁条日期对齐。",
+        "unit_id": "A",
+        "verdict": {
+          "id": "A-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read PROJECT_LOCK.md: line 4 header is verbatim '**Updated**: 2026-05-22 (B Design v2 Phase 0 close)'. Grep for '2026-06-04' returns lines 110 ('(2026-06-04 v28 GPT pro 外审) Cut-family validator ... source-of-truth gate'), 137 ('(2026-06-04 fresh-pass 补)'), 146 ('(2026-06-04 v28) F9 tight-K quarantine') — all matching the claimed quotes. These are live lock-condition additions, not CHANGELOG/historical citations (the file says history lives in CHANGELOG.md; these are active Forbidden-Change/validator-gate clauses). git log -- PROJECT_LOCK.md shows three commits dated 2026-06-04 (d4ae058 'fix(review-r3): 33-agent fresh pass ... 证书路径第 4 个 radius 副本', 9375420, 6c616b2), all after 2026-05-22, confirming the body was genuinely modified on 2026-06-04 while the header metadata still reads 2026-05-22. Real low-severity staleness.",
+          "corrected_note": "Finding is valid; one minor imprecision: the '(2026-06-04 fresh-pass 补)' stamp is on line 137, not line 142 (line 142 holds a different clause). The substance — header Updated=2026-05-22 lags body's 2026-06-04 lock-condition additions — is correct."
+        }
+      },
+      {
+        "id": "A-5",
+        "doc_path": "PROJECT_LOCK.md:141-142 (§3 v28 validator SoT gate 待办块)",
+        "kind": "broken-ref",
+        "severity": "low",
+        "claim": "`oracles/power_cover_oracle.py` 是 generator 侧读 canonical ... `assumptions/verifiers.py` 的 `verify_power_pole_jump_radius`",
+        "problem": "路径写成相对 src/cuts/ 的简写（oracles/... 与 assumptions/verifiers.py），但 repo 内真实路径是 src/cuts/oracles/power_cover_oracle.py 和 src/cuts/assumptions/verifiers.py。同段更早处（line 130-135）引用文件用的是带 src/ 前缀的全路径（如 src/cuts/helpers/canonical_sot.py、src/tests/cuts/test_canonical_sot_coverage.py），同一锁条内路径前缀风格不一致，且这两条裸写 oracles/ / assumptions/ 在 repo 根下并不存在，纯按字面 grep 会落空。内容判断（第4个逐字副本已委托 canonical_sot、verify_protocol_core_position 仍是 F8 _validate_pc_anchor_sot 近似副本未 consolidate）经核对 src/cuts/assumptions/verifiers.py 与 src/cuts/families/power_grid_reach.py 均属实，仅路径前缀缺失。",
+        "suggested_fix": "统一补 src/cuts/ 前缀：oracles/power_cover_oracle.py → src/cuts/oracles/power_cover_oracle.py；assumptions/verifiers.py → src/cuts/assumptions/verifiers.py，与同段其余全路径一致。",
+        "unit_id": "A",
+        "verdict": {
+          "id": "A-5",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 PROJECT_LOCK.md:120-159。原文逐字核对: line 137 `assumptions/verifiers.py 的 verify_power_pole_jump_radius`、line 141-142 `verifiers.py verify_protocol_core_position 是 F8 _validate_pc_anchor_sot 的近似副本 ... oracles/power_cover_oracle.py 是 generator 侧读 canonical (产 cert 非验, 不在 scan 范围)` — claim 措辞/行号全对得上。文件系统核实: `src/cuts/oracles/power_cover_oracle.py` (10920B) 与 `src/cuts/assumptions/verifiers.py` (9929B) 存在; repo 根下 `oracles/` 与 `assumptions/` 均 No such file (ls 报 cannot access) → 裸写路径字面 grep 在根下落空成立。同段更早 line 129-130 用全前缀 `src/cuts/helpers/canonical_sot.py`、`src/tests/cuts/test_canonical_sot_coverage.py`,line 137/141-142 改用 `assumptions/`、`oracles/` 裸相对形 → 同一锁条内前缀风格不一致成立。内容判断也属实: grep 确认 verifiers.py:180 有 `verify_protocol_core_position`、:118 有已委托 canonical_sot 的 `verify_power_pole_jump_radius` (line 113 `from src.cuts.helpers.canonical_sot import lookup_canonical_pole_radius`),power_grid_reach.py:585 有 F8 `_validate_pc_anchor_sot`。finding 全部断言可复现。",
+          "corrected_note": "finding 描述准确, 无需修正。仅补一点定性: 这是低危的文档书写风格瑕疵 (段内 src/cuts/ 相对简写 vs 全路径混用), 上下文语义清晰 (整段都在讲 src/cuts/ 文件), 不影响代码/证明正确性; suggested_fix (统一补 src/cuts/ 前缀) 合理且无副作用。"
+        }
+      },
+      {
+        "id": "B-1",
+        "doc_path": "README.md:3-9 (顶部「项目状态地图」表)",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "> **项目状态地图 (2026-05-16)** ... | **3B** full-scale exact proof | ▶ 进行中 | 70×70 max_lex(area, min_side) 严格证明; 当前 0 FEASIBLE, 主线 lever 已 verify 9 条死路 (见 `docs/lever_verdicts.md`) | ... | **3C** 加速 / 路线优化 | 📋 规划 + 实测 |",
+        "problem": "README 把当前 phase 钉在「Phase 3B 进行中 / 3C 规划」, 日期标 2026-05-16。但项目早已转入 cut-family LBBD 重设计, 当前 phase = Phase 1.2 spike close → P1.3A (见 CLAUDE.md「Current Phase」+ memory living 现状源 handoff_windows_ninth_review_pending)。CLAUDE.md 明确「历史 Phase 3B (tuning paradigm) 已被取代」。git HEAD (2026-06-04, 0c55126) 全是 Design A+B / 数字单一来源 / 九审外审工作, README 顶部状态图完全没反映。README 是 repo 第一入口, 把已被取代的旧 phase 当成「当前进行中主线」= 最严重的现状过时。",
+        "suggested_fix": "重写状态地图: 当前 phase = Phase 1.2 spike close (cut-family LBBD F1-F9 重设计) → P1.3A 真 master 集成。把 Phase 3A 交付 / Phase 3B tuning paradigm 明确标为 SUPERSEDED/历史。living 现状源指针指向 memory handoff_windows_ninth_review_pending (现状只信那条)。日期更新到 2026-06。",
+        "unit_id": "B",
+        "verdict": {
+          "id": "B-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读 README.md:3-9 确认 claim 原文逐字对得上: 「项目状态地图 (2026-05-16)」表头 + 「3B full-scale exact proof | ▶ 进行中 | ... 主线 lever 已 verify 9 条死路」+ 「3C 加速 / 路线优化 | 📋 规划 + 实测」。Grep README.md 全文对 Phase 1.2/cut-family/spike close/P1.3A/SUPERSEDED/已被取代/2026-06 全部 No matches — README 完全没反映当前 paradigm。对照三处 SoT 确认旧 phase 已被取代: (1) CLAUDE.md「Current Phase: Phase 1.2 spike close (cut-family validator soundness 闭关 → P1.3A)」且明文「历史 Phase 3B (tuning paradigm, release r20260416 后) 已被取代」; (2) memory living 现状源 handoff_windows_ninth_review_pending.md AUTO-STATUS 槽「CLAUDE.md Current Phase: 1.2 spike close (cut-family validator soundness 闭关 → P1.3A)」, 最新状态 2026-06-04 全是 v28 外审 + Design A/B 工装, 纯 cut-family LBBD; (3) git HEAD 0c55126 (2026-06-04) 为 doc/memory 工作, 无 Phase 3B 活动。README 作为 repo 第一入口把已被取代的 Phase 3B 当「当前进行中主线」+ 日期 2026-05-16, 是 high-severity 现状过时, 描述准确。",
+          "corrected_note": ""
+        }
+      },
+      {
+        "id": "B-2",
+        "doc_path": "README.md:8 (状态图 3B 行) + docs/lever_verdicts.md 自身计数",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "「主线 lever 已 verify 9 条死路 (见 `docs/lever_verdicts.md`)」",
+        "problem": "数字与其自己 cite 的来源对不上, 且远低于真实计数。docs/lever_verdicts.md 实际收录 L1-L16 共 16 条 lever (约 12 条 ❌死路 + 2 条 🟡 + 2 条 ✅ GO), 不是 9 条; lever_verdicts.md 自身 header 已是 2026-05-18 (止于 B1 paradigm 全死)。而 memory paradigm-death-timeline 追踪的是 27 条 lever 死路。「9 条」既不匹配引用的 doc, 也不匹配项目真实 lever 总账 → 手写数字漂移 + 跨 doc 不一致。",
+        "suggested_fix": "若保留状态图, 把死路计数对齐真源 (lever_verdicts.md 已扩到 L16; 完整 27-lever 总账在 memory paradigm-death-timeline)。更稳妥做法是删掉这个具体计数, 改为指向 lever_verdicts.md 让 reader 自查, 避免手抄数再漂。",
+        "unit_id": "B",
+        "verdict": {
+          "id": "B-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 D:/追光/zmd/README.md 和 D:/追光/zmd/docs/lever_verdicts.md 两个真源。README.md:8 (Phase 3B 行, 状态 ▶ 进行中) 原文逐字确认: \"当前 0 FEASIBLE, 主线 lever 已 verify 9 条死路 (见 `docs/lever_verdicts.md`)\"。这是 live 状态行的当前声明, 非 changelog/历史段。其 cite 的 docs/lever_verdicts.md 实际收录 L1-L16 (含 B1 sub-phases), 且该 doc 自身 summary line 567 明确写 \"已 verify 排除的 lever: L1/L2/L3/L4/L5/L7/L8/L9/L10/L12/L13/L14/L15/L16/B1 Phase 6 path-1/path-2 共 16 条死路\" —— 不是 9。grep `**Verdict**` 计 14 个 ❌ + 2 个 🟡 (L6/L11) + 2 个 ✅ (B1 GO, 后在当前状态段被全推翻为死)。日期错位也属实: README 状态图标 2026-05-16 (line 3), 而 lever_verdicts.md 最后更新 2026-05-18 (止于 B1 paradigm 全死)。\"9\" 既不匹配引用 doc 现状 (16), README 数字也从未跟随 doc 增长更新 → 手抄数漂移 + 跨 doc 不一致, 确认成立。",
+          "corrected_note": "核心不一致 (9 ≠ 引用源的 16) 完全成立。两处细节微调: (1) finding 说 \"约 12 条 ❌死路\" 偏低 —— doc 自身 summary 算的是 16 条死路 (L6 是 🟡 搁置、L11 🟡 未试, B1 早期 ✅ GO 在\"当前状态\"段被全部推翻为死); 按 `**Verdict**` 标记纯 ❌ 计为 14。(2) memory paradigm-death-timeline 的 27-lever 是更广的独立总账, 跟此 doc 的 16 是两个口径, 不应混为\"真实计数远低于\"的同一基准。但这些都不动 finding 的主结论: README 的 \"9\" 与其 cite 的 lever_verdicts.md (16) 直接冲突。建议按 suggested_fix: 删掉具体计数改为指向 lever_verdicts.md 自查, 避免手抄数再漂。"
+        }
+      },
+      {
+        "id": "B-3",
+        "doc_path": "README.md:22-80 (整个正文 + 入口段)",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "「This repository currently has one active user-facing IndustrialPlanner line: valley4_protocol_core on the 70×70 base. The quickest checked-in entry points are: ... index.html — repo-front current entry page ...」(全文围绕 IndustrialPlanner delivery surface / viewer / landing / frontdoor / current_surface_health 展开)",
+        "problem": "README 正文 100% 是 Phase 3A 的「productization / delivery 消费面」叙事 (browse-first/download-first 入口、ZIP alias、surface health 审计), 完全没有提及项目当前真正的活动主线 cut-family LBBD (src/cuts/, F1-F9, authoritative_numbers 核心节点, Phase 1.2 spike close)。一个 fresh reader 打开 repo 第一文件会以为这是个交付 IndustrialPlanner 蓝图的产品, 而非 70×70 精确求解器的 cut-family 闭关阶段。delivery surface 是 r20260416 冻结后的 postprocess 工件 (CLAUDE.md 说 r20260416 已冻结但 README 第一屏还推它, memory project_phase3a_ip_delivery_readme_cleanup 早记了这个 TODO)。",
+        "suggested_fix": "README 顶部先讲项目真身份 (70×70 certified-exact 求解器, cut-family LBBD 当前 phase), 指向 CLAUDE.md / PROJECT_LOCK / handoff 现状源; delivery surface 入口降级到「已冻结交付物 (r20260416)」子段, 不占第一屏。",
+        "unit_id": "B",
+        "verdict": {
+          "id": "B-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read D:/追光/zmd/README.md (81 lines). Lines 22-80 match the claim verbatim: \"This repository currently has one active user-facing IndustrialPlanner line: valley4_protocol_core on the 70×70 base. The quickest checked-in entry points are: ... index.html — repo-front current entry page...\". The whole body is IndustrialPlanner delivery-surface narrative (viewer/landing/frontdoor/ZIP aliases/current_surface_health/surface_alignment audit). Confirmed staleness: Grep of README.md for cut-family|LBBD|F1-F9|authoritative_numbers|spike close|Phase 1.2|P1.3A returned ZERO matches. The actual active main line is verified real: src/cuts/ exists with all F1-F9 family files (power_hitting_set.py, density_envelope.py, shape_packing_hall.py, power_grid_reach.py, etc.); authoritative_numbers.json core node exists; the single living status source (handoff_windows_ninth_review_pending) and CLAUDE.md Current Phase both state \"Phase 1.2 spike close (cut-family validator soundness 闭关 → P1.3A)\". README's own top status map is dated 2026-05-16 (pre-cut-family repositioning) and only mentions phases 3A/3B/3C. The delivery surface it pushes is the frozen r20260416 release; memory project_phase3a_ip_delivery_readme_cleanup already records this exact TODO (\"README 第一屏还推它\"). Finding direction, scope, severity, and suggested fix all hold.",
+          "corrected_note": "细节小偏差 (不影响成立): finding 的 claim 引文写作「index.html — repo-front current entry page」, README 实际行是「`data/examples/industrial_planner/index.html` — repo-front current entry page with explicit browse-first/download-first paths and helper links...」—— finding 缩写了完整路径并截断了行尾, 实质一致。"
+        }
+      },
+      {
+        "id": "B-4",
+        "doc_path": "FILE_STATUS.md:1-201 (整篇台账, 尤其 Updated 行 + 缺失行)",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "**Status**: CURRENT_INVENTORY / **Updated**: 2026-04-17 / **Purpose**: Inventory of runtime roles and trust status for the current repository.",
+        "problem": "号称「CURRENT_INVENTORY / current repository」但 Updated 停在 2026-04-17, 早于 cut-family LBBD 范式 (Phase 1.2)。台账完全没有收录项目当前活动主线: src/cuts/ (实测存在, grep FILE_STATUS 命中 0 次)、9 个 F1-F9 cut family、src/cuts/lifecycle.py、docs/research/p1_2_spike_sizing_gate_*/ 核心节点、authoritative_numbers.json、src/tests/cuts/ (442 测试) 全部缺席。grep「cut family|lbbd|cut_lifecycle|authoritative_numbers」在 FILE_STATUS 命中 0。一个声称是『当前仓库运行时角色/信任状态清单』的台账漏掉整个当前 paradigm = 严重 staleness, 违反 CLAUDE.md「现状类应单一 living 源 + 周期 staleness sweep」。",
+        "suggested_fix": "刷新 Updated 日期到 2026-06; 新增 cut-family LBBD 主线分区 (src/cuts/* + src/tests/cuts/* + docs/research/p1_2_spike_*/authoritative_numbers.json + 核心节点/强制函数 test 的信任状态)。或在顶部明确标注本台账只覆盖 delivery/adapter 面, 现状/主线进度去 CLAUDE.md + handoff 现状源。",
+        "unit_id": "B",
+        "verdict": {
+          "id": "B-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 D:/追光/zmd/FILE_STATUS.md 全文 (201 行)。claim 原文逐字命中: 行3 `**Status**: CURRENT_INVENTORY`, 行4 `**Updated**: 2026-04-17`, 行5 `**Purpose**: Inventory of runtime roles and trust status for the current repository.` 全对。台账无任何 top-level disclaimer 把自己 scope 到 delivery/adapter only —— header 明确声称是「current repository」运行时角色清单。Glob 确认 src/cuts/ 实测存在 (37 个 .py: lifecycle.py + families/{component_reach,cutset,port_exposure,region_capacity,pattern_nogood,density_envelope,shape_packing_hall,power_grid_reach,power_hitting_set}=9 family + oracles/ + store.py + replay.py + helpers/canonical_sot.py),src/tests/cuts/ 存在 (22 测试文件)。Grep `src/cuts|cut.family|lbbd|cut_lifecycle|authoritative_numbers|spike_sizing` 等于 FILE_STATUS.md 命中 0 (确认)。核心节点 docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json 实测存在 (FILE_STATUS 未收录),其内 cuts_tests_total.value=442 与 finding 的「442 测试」一致。CLAUDE.md 项目指令明确: 「Current Phase: 1.2 spike close (cut-family ...)」「范式已从早期 tuning/Phase-3B 转为 cut-family LBBD 重设计 (9 个 F1–F9 cut family)」—— 即整个当前活动主线晚于 2026-04-17 的 header 日期且完全缺席台账。git log 进一步佐证: FILE_STATUS.md 最后实际编辑 2026-05-10 但内部 Updated header 未同步 bump (停在 04-17),src/cuts/ 最近 commit d4ae058 为近期 v28 审查工作。所有子claim (措辞/文件存在/grep 0 命中/442/范式时序) 全部坐实, 属真 staleness。",
+          "corrected_note": "finding 描述准确, 仅一处可微调措辞: FILE_STATUS.md 内部 Updated header 停在 2026-04-17, 但文件实际最后 git 编辑是 2026-05-10 (header 未随编辑同步), 即「Updated 日期 vs 实际编辑日期」本身也漂; 不影响结论 (2026-05-10 仍早于当前 cut-family LBBD 主线的活跃期, 且台账内容确实零收录该主线)。"
+        }
+      },
+      {
+        "id": "B-5",
+        "doc_path": "FILE_STATUS.md:4 vs FILE_STATUS.md:162",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "顶部 `**Updated**: 2026-04-17`, 但第 162 行 third_party_snapshots 行写「vendored endfield-calc ... refreshed 2026-05-08 ... (178 items / 260 recipes / 16 facilities) ... commit c494c5ae (7 bases)」",
+        "problem": "文档自报最后更新日 2026-04-17, 却含一条引用 2026-05-08 refresh 的内容 (内容本身正确, 与 SOURCE_METADATA.json 的 178/260/16 + commit 49be16e1 + 7 bases c494c5ae 全对得上)。说明 FILE_STATUS 在 04-17 之后被改过但顶部 Updated 戳没回填 → 内部日期不一致 (镜像漏改 root: 改内容没同步改头部戳)。",
+        "suggested_fix": "把顶部 Updated 戳更新为最近一次实际修改日期 (≥2026-05-08), 或下次结构性刷新时一并校正。",
+        "unit_id": "B",
+        "verdict": {
+          "id": "B-5",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 FILE_STATUS.md: 第4行确为 `**Updated**: 2026-04-17`; 第162行 third_party_snapshots 行确含「vendored endfield-calc ... refreshed 2026-05-08 to package 0.6.2 master commit 49be16e1 (178 items / 260 recipes / 16 facilities); IndustrialPlanner BASES ... branch v2 commit c494c5ae (7 bases)」, 措辞/数字与 finding 引文逐字对得上。内容正确性核对: third_party_snapshots/endfield_calc/.../SOURCE_METADATA.json = observed_at 2026-05-08 + source_commit 49be16e1.. + version 0.6.2 + counts 178/260/16, 全对; bases/SOURCE_METADATA.json = source_commit c494c5ae.. + branch v2 + bases 7, 全对。git log 显示 FILE_STATUS.md 最后修改在 commit 9353eb9 (2026-05-10 vendor refresh); git show 9353eb9 的 diff 证明: 第162行在该 commit 被改成含 2026-05-08 refresh 内容, 而顶部 `**Updated**: 2026-04-17` 的 -/+ 对值保持不变 (未回填)。即文件在 04-17 之后 (实际 05-10) 被改但头部戳没同步 → 真·内部日期不一致, 镜像漏改 root 成立。",
+          "corrected_note": "细节微调: finding 说「commit 49be16e1 (7 bases)」处易误读 — 实际是 endfield-calc commit 49be16e1 (178/260/16), 7 bases 对应的是 IndustrialPlanner commit c494c5ae; finding claim 字段本身已正确分开二者, 无误。实际最后修改日期是 2026-05-10 (commit 日), 引用内容日是 2026-05-08 (endfield-calc refresh) / 2026-05-07 (bases observed); suggested_fix「≥2026-05-08」方向正确, 更精确应回填为实际修改日 2026-05-10。severity low 合理 (内容正确, 仅头部戳过时)。"
+        }
+      },
+      {
+        "id": "B-6",
+        "doc_path": "README.md:13-18 + 78-80 (入口指针段)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "「已试过的所有 master 加速 lever + 实测 verdict: `docs/lever_verdicts.md`」+「Phase 3B 详细 endgame plan: `docs/phase3b_exact_endgame_execution_plan.md`」+「For the remaining solver-side closeout ... see docs/phase3b_exact_endgame_execution_plan.md」",
+        "problem": "README 把 docs/lever_verdicts.md (止于 2026-05-18 B1 paradigm 全死, 不含 PCR-CUT 及之后所有 paradigm) 和 docs/phase3b_exact_endgame_execution_plan.md (FILE_STATUS 标 ACCEPTED_DRAFT, Phase 3B tuning paradigm 路线, 已被 cut-family 取代) 作为指导 reader 找『当前主线/剩余收尾计划』的权威入口。两文件都存在 (非 broken-ref), 但作为『当前』指引已 stale — 真正的当前主线计划在 docs/research/p1_2_spike_sizing_gate_* + memory P1.3A design phase, README 没指向它们。",
+        "suggested_fix": "把这些指针标注为「历史 lever 总账 (止于 B1, 后续见 memory paradigm-death-timeline)」「Phase 3B 历史计划 (已被 cut-family LBBD 取代)」; 新增指向当前 cut-family 主线文档 (p1_2 spike gate / authoritative_numbers / P1.3A design) 的入口。",
+        "unit_id": "B",
+        "verdict": {
+          "id": "B-6",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 README.md (claim 原文逐字命中: L15 lever_verdicts 指针, L17 Phase 3B endgame plan 指针, L78-80 \"remaining solver-side closeout\" 指针)。读 docs/lever_verdicts.md: header「最后更新 2026-05-18 (B1 paradigm 全死)」+「当前状态」段止于 16 lever 死路 (终于 B1 Phase 6); Grep PCR-CUT/cut-family/F1/P1.3A/p1_2_spike/authoritative_numbers 在该文件全无相关命中 (唯一 F1-F5 命中是无关的 v4 follow-up 表行) → 确实不含 PCR-CUT 及之后 cut-family 全部 paradigm。读 docs/phase3b_exact_endgame_execution_plan.md: frontmatter status=ACCEPTED_DRAFT, last_updated 2026-04-17, Phase 3B exact-endgame 路线; FILE_STATUS.md:129 标 ACCEPTED_DRAFT「roadmap only, not runtime truth」; CLAUDE.md 明示 cut-family LBBD 已取代早期 tuning/Phase-3B paradigm。当前主线 doc 确实存在 (docs/research/p1_2_spike_sizing_gate_20260601/ 含 RESULTS.md+authoritative_numbers.json+sizing_gate.py; docs/research/pcr_cut_patch_routing_conflict_20260519/) 但 Grep README 对 p1_2_spike/authoritative_numbers/P1.3A/cut-family/PCR-CUT/research/ 零命中 → README 确实没指向它们。两文件均存在 (非 broken-ref) 但作为「当前」指引 stale。git: README 末次提交 2026-05-16 (顶部自标 2026-05-16), lever_verdicts 末次 2026-05-18。finding 方向与细节全部坐实。",
+          "corrected_note": ""
+        }
+      },
+      {
+        "id": "C-2",
+        "doc_path": "docs/项目说明/02_mathematical_foundations.md:511 (§3.9) vs :524 (§3.10 表)",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "§3.9: 『F9 跟 F1 数学关系: F9 area-based (sum pose ∩ W), F1 cap_R cell-based (整 region 容量). 不是 F1 的 scope 扩展, 是**互补 family** (area vs count semantics)』 — 但 §3.10 跨 family 表写『F1 ↔ F9 | F9 是 F1 scope 扩展 (允许更弱 envelope bound)』",
+        "problem": "同一篇文档内部直接自相矛盾:§3.9 明确说 F9『不是 F1 的 scope 扩展,是互补 family』,§3.10 的关系总结表却说『F9 是 F1 scope 扩展』。这不是措辞差异,是相反断言。",
+        "suggested_fix": "统一为一种表述。按 §3.9 详述(互补 family, area vs count)更贴近 PROJECT_LOCK 的 F9 area-only paradigm,应把 §3.10 表中『F9 是 F1 scope 扩展』改为『F9 是 F1 的互补 family (area vs count semantics)』。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read D:/追光/zmd/docs/项目说明/02_mathematical_foundations.md. 两处原文逐字核对一致: 行 511 (§3.9, 段头在行 456 '### 3.9 F9 density_envelope ... area-only') 写『F9 跟 F1 数学关系: F9 area-based (sum pose ∩ W), F1 cap_R cell-based (整 region 容量). 不是 F1 的 scope 扩展, 是**互补 family** (area vs count semantics)』; 行 524 (§3.10 跨 family 表, 表头在行 519) 写『F1 ↔ F9 | F9 是 F1 scope 扩展 (允许更弱 envelope bound)』。同一文档内对同一命题的直接否定: §3.9 用『不是 F1 的 scope 扩展』, §3.10 用『F9 是 F1 scope 扩展』。这是相反断言而非措辞差异。§3.9 的『互补 family / area-only』表述与该节段头 (area-only) 及 PROJECT_LOCK F9 area-only invariant (行 466-473) 一致; §3.10 表项是离群项。suggested_fix 方向 (改 §3.10 表为互补 family) 正确。"
+        }
+      },
+      {
+        "id": "C-3",
+        "doc_path": "docs/项目说明/05_open_questions.md:286 (Q F9-F1) + 02_mathematical_foundations.md:524",
+        "kind": "cross-doc",
+        "severity": "med",
+        "claim": "05 Q『F9 — 跟 F1 数学独立性』当前 understanding: 『spec 09 表态: F9 是 F1 scope **扩展** (允许更弱 envelope bound), 不是 stronger cut』",
+        "problem": "跟 C-2 同根的跨文档不一致:05 与 02 §3.10 都把 F9 说成『F1 scope 扩展』,而 02 §3.9 详述说『不是 scope 扩展、是互补 family』。三处对同一数学关系不一致(2 处『scope 扩展』vs 1 处『互补 / 不是 scope 扩展』)。镜像漏改典型:同一断言复制进多处,改一处漏其余。",
+        "suggested_fix": "三处对齐到同一结论(建议统一为互补 family / area-vs-count,与 F9 area-only invariant 一致),并在 05 与 02 §3.10 同步改。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "三处原文全部核到, 行号措辞精确对上。(1) docs/项目说明/05_open_questions.md:286 「spec 09 表态: F9 是 F1 scope **扩展** (允许更弱 envelope bound), 不是 stronger cut」。(2) 02_mathematical_foundations.md:524 (§3.10 跨 family 关系 summary 表 F1↔F9 行)「F9 是 F1 scope 扩展 (允许更弱 envelope bound)」。(3) 02_mathematical_foundations.md:511 (§3.9 详述)「F9 跟 F1 数学关系: F9 area-based... F1 cap_R cell-based... 不是 F1 的 scope 扩展, 是**互补 family** (area vs count semantics)」。三处明确都讲同一 F1↔F9 关系, 确实 2 处『scope 扩展』vs 1 处『互补 / 不是 scope 扩展』, 计数与 finding 完全一致。最强证据是 02 一个文件内自相矛盾: §3.9 prose (511) 说\"不是 scope 扩展\", 而 §3.10 summary 表 (524) 说\"是 scope 扩展\", 而 524 本就是 519 标题\"跨 family 数学关系 summary\"对 §3.9 的归纳——归纳与被归纳的正文直接打架。核到 PROJECT_LOCK §3A 锁定的 F9 area-only invariant (memory reference_f9_area_only_not_density: 「F9 evaluator 必 area-based sum(|pose_cells ∩ W|), 不是 instance count」), 与 §3.9『互补 family / area vs count』口径一致, 故 finding 建议的统一方向 (互补 family) 是正确的 canonical 侧。镜像漏改判断成立。"
+        }
+      },
+      {
+        "id": "C-4",
+        "doc_path": "docs/项目说明/README.md:9-17 (文档地图 line 列) + :31 (合计 ~2766 line)",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "文档地图表声明各 sub-doc 行数: 01=158 / 02=495 / 03=210 / 04=103 / 05=544 / 06=35 / 07=116 / 08=134 / 09=46 ... 合计 ~2766 line",
+        "problem": "README 手抄的行数与真实文件大面积漂移(实测:01=111, 02=373, 03=144, 04=84, 05=370, 06=82, 07=121, 08=97, 09=58)。我这一单元 9 篇里 8 篇行数对不上,且方向不一(多数变短、06 反而变长 35→82)。文档被反复编辑但 README 的行数表与合计~2766 没回填。手抄数字漂移的典型。",
+        "suggested_fix": "要么去掉 line 列(行数本就不该手抄、易漂),要么改成脚本生成。若保留,至少重算这 9 篇并更新合计。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "README 原文核对通过: docs/项目说明/README.md:9-17 文档地图表确实声明 01=158/02=495/03=210/04=103/05=544/06=35/07=116/08=134/09=46, line 31 确实写\"合计 ~2766 line\"。用 `wc -l` (与 Get-Content.Count / CRLF-split 三法交叉一致) 测真实行数: 01=158, 02=535, 03=210, 04=108, 05=556, 06=97, 07=159, 08=129, 09=75。结论层成立——line 表确实 stale: 9 篇里 7 篇行数对不上(只有 01=158、03=210 精确吻合), 且 21 篇真实合计=3095 line ≠ README 声称的 ~2766。手抄行数漂移属实, suggested_fix(去掉 line 列 / 脚本生成)合理。但 finding 的\"实测\"证据全错: 它报的 01=111/02=373/03=144/04=84/05=370/06=82/07=121/08=97/09=58 是用了一个对 CRLF 文件误算的计数器(实测复现 PowerShell `Measure-Object -Line` 会给出几乎一致的错值)。所有这些文件都是纯 CRLF 行尾, 正确计数应等于 wc -l。",
+          "corrected_note": "README line 表确实 stale, 但 finding 的具体数字方向均错(基于一个误算 CRLF 的行计数工具)。准确版: README 声明 vs 真实(wc -l) = 01:158→158(吻合) / 02:495→535(+40) / 03:210→210(吻合) / 04:103→108(+5) / 05:544→556(+12) / 06:35→97(+62) / 07:116→159(+43) / 08:134→129(-5) / 09:46→75(+29)。即 9 篇里 7 篇漂移(非 finding 说的 8 篇), 且方向几乎全是\"文档变长\"(02/04/05/06/07/09 都增长), 不存在 finding 所称\"多数变短\"; 06 是 35→97(非 35→82)。全 21 篇真实合计=3095 line, README 的 ~2766 也已 stale。修复方向(去掉 line 列或改脚本生成)正确, 但应基于真实 wc -l 值。"
+        }
+      },
+      {
+        "id": "C-5",
+        "doc_path": "docs/项目说明/README.md:14 (文档地图 06 行)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "| [06_current_status.md] | 现状细则 (commit `c8fb7ef` 起算) | 35 | plan §6 |",
+        "problem": "README 对 06 的描述『现状细则 (commit c8fb7ef 起算)』已过时。c8fb7ef 是 Step O (Phase 1.1) 的 commit;06 文件现在的现状是 2026-05-27 起的 Phase 1.2 close + F3 done(P1.3A 主体设计中),早已不是『c8fb7ef 起算』。README 索引行没跟 06 的现状迁移同步。",
+        "suggested_fix": "把 06 的索引描述改为反映当前 Phase 1.2 close / P1.3A 设计的现状,去掉 stale 的『commit c8fb7ef 起算』锚点(或改为指向 living 现状源 memory)。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-5",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 D:/追光/zmd/docs/项目说明/README.md:14, claim 原文逐字对得上: `| [06_current_status.md] | 现状细则 (commit c8fb7ef 起算) | 35 | plan §6 |`。git show 确认 c8fb7ef = 2026-05-23 \"Step O: 修 GPT pro v6 两轮 audit ghost lifecycle 3 P0\" — 即 Phase 1.1 era 提交; 07_historical_review.md §5.10 也写 \"Step O (c8fb7ef)\" 是 Phase 1.1 闭环里程碑 (172 cuts, 8 invariant close, pre-exit-hardening)。而 06_current_status.md 本身 (line 1 标题 + line 1-5 当前状态块) 已迁移到 \"Phase 1.2 close GO_WITH_MINOR + F3 done, 当前 P1.3A 主体设计\", 标 2026-05-27 起, 并指向 living 源 memory [[phase-1-2-progress]]; Phase 1.1 内容已显式标 \"(历史里程碑)\"。06 全文无任何 \"c8fb7ef 起算\" 字样。grep 全 docs 也证实 README:14 是唯一把 06 描述成 c8fb7ef 锚点的地方。故 README 索引行确实没跟 06 的现状迁移同步, staleness 真实成立, severity med 合理, suggested_fix (改指 living 源/去掉 stale commit 锚) 也符合项目 memory-currency-protocol 惯例。"
+        }
+      },
+      {
+        "id": "C-6",
+        "doc_path": "docs/项目说明/08_phase_1_2_plan.md:3 (preamble) vs 02/03/05/11/16/17/21 中的 P1.11/P1.21",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "08 preamble: 『2026-05-23 v2 命名更新: 原 plan 把 `P1.11` 同时用作\"入门 7 项\"跟\"F5 pattern_nogood\", 误导. v2 拆: P1.2A 入门 + P1.2B-F{5,6,7,8,9} 各 family.』 — 但 02:367/05(多处)/03:168/11:48-50/16:32/21:28 仍用旧 P1.11 / P1.12-P1.15 命名指各 family",
+        "problem": "08 声明已把误导性的 P1.11 命名废弃改为 P1.2A/P1.2B-F5..F9,但同一 doc 树其余文档仍大量沿用 P1.11(F5)/P1.12(F6)/P1.13(F7)/P1.14(F8)/P1.15(F9) 的旧命名(05 单篇就出现 ~15 次)。重命名半边落地、半边漏改,正是『改一处漏其余』的镜像漏改。读者在 05/02 看到 P1.11 与 08 的 P1.2B-F5 对不上。",
+        "suggested_fix": "全 doc 树统一到 v2 命名:F5..F9 用 P1.2B-F5..F9(或保留 P1.1x 但补一行映射注解)。至少在 05/02/03/11/16/21 把裸 P1.11/P1.12.../P1.15 替换或加 P1.2B-Fx 别名。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-6",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 08_phase_1_2_plan.md:3 — preamble 原文逐字命中: \"2026-05-23 v2 命名更新: 原 plan 把 P1.11 同时用作\\\"入门 7 项\\\"跟\\\"F5 pattern_nogood\\\", 误导. v2 拆: P1.2A 入门 + P1.2B-F{5,6,7,8,9} 各 family.\" grep P1\\.1[1-5] 全 docs/项目说明: 33 处旧命名仍在用 (排除 08 自己 preamble 那一行)。逐处核实: 02:182/192/367(P1.11=F5 minimize step)、02:393(P1.12=F6)、02:425(P1.13=F7 set cover)、02:450(P1.14=F8 Liang-Barsky); 03:168(P1.11 实施=F5 pattern_nogood); 05 共 22 处(157/168/189/191/202/213/235/257/279/290/478/503-512/530-537)用 P1.11(F5)/P1.12(F6)/P1.13(F7)/P1.14(F8)/P1.15(F9); 11:48(P1.11 入门 7 项)+11:50(P1.11-P1.15=F5-F9); 16:32(P1.11-P1.15); 21:28(P1.11=F5)。finding 给的 mapping(P1.11=F5...P1.15=F9)与各 doc 内文字注解一致。最尖锐的: 11:48 \"P1.11 入门 (7 factual fix)\" 与 11:50 \"P1.11-P1.15 (F5-F9)\" 并存,正是 08 声明要废弃的「P1.11 同时指入门+F5」双义歧义。这是真实的半边落地半边漏改 cross-doc 不一致。",
+          "corrected_note": "细节小偏: finding 说 \"05 单篇出现 ~15 次\", 实测 05 是 22 次 (低估非高估, 不削弱 finding)。全 doc 树旧命名总计 33 处 (排除 08 preamble 自身)。其余 line 号 (02:367 / 03:168 / 11:48-50 / 16:32 / 21:28) 全部精确命中。"
+        }
+      },
+      {
+        "id": "C-7",
+        "doc_path": "docs/项目说明/09_phase_1_3_plan.md:33 vs 02:187/04:44/05(P1.21 多处)/11:53/12:105/14:53/17:24",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "09: 『## P1.3B — master integration (原 P1.21, spike GO 后进)』 — 但 02:187『defer Phase 1.3 P1.21』/04:44/05 表/11:53/12:105/17:24 仍称该步为 P1.21",
+        "problem": "09 把 master integration 重命名为 P1.3B 并注『原 P1.21』,但全 doc 树其余处仍称 Phase 1.3 P1.21,未跟进 P1.3B。同 C-6 同类的半边重命名残留。",
+        "suggested_fix": "统一称 P1.3B(或保留 P1.21 但加映射)。把 02/04/05/11/12/14/17 的裸 P1.21 改为 P1.3B 或加别名注。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-7",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/09_phase_1_3_plan.md:33 确认原文 verbatim = `## P1.3B — master integration (原 P1.21, spike GO 后进)`; doc 09 line1/25 + 06:27 + 15:120 也用新名 P1.3B (共 3-4 文件)。同时 Grep 全 docs/项目说明 树扫 P1.21: 01:142、02:187(`defer Phase 1.3 P1.21`)、03:207、04:44、05(246/303/314/325/432/513/514/515/533/537 共多处)、11:53、12:105、14:53、17:24、21:28 仍用裸 P1.21 指同一个 master-integration step。finding 列的 02/04/05/11/12/14/17 每一处 grep 行号/措辞都对得上 (14:53 用 `§13 P1.21`,17:24 用 `(P1.21 实施时)`)。这是真实的半边重命名残留: 同一 step (step_8 apply-to-master) 在 09/06 改名 P1.3B 而其余 ~9 个文档仍称 P1.21,未跟进。non-currency 类的纯命名 cross-doc 不一致,severity low 判得对。CLAUDE.md 自身也记了这个『命名错位注意』(doc-P1.3A/P1.3B vs memory 口径)。属同 C-6 同类残留。"
+        }
+      },
+      {
+        "id": "C-8",
+        "doc_path": "docs/项目说明/06_current_status.md (全篇) + 02/08 多处称 F9『主力几何 lift / 主解』",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "08:23『F9 才是主力几何 lift』; 08:115『F9 density_envelope ... area-only, 上界必安全』(enable matrix 列为可用); 06 现状段未提 F9 任何停用。02 §3.9 描述 F9 为可正常产 cut 的 family。",
+        "problem": "PROJECT_LOCK.md §3A 2026-06-04 v28 更新已写明:F9 tight-K quarantine 后『F9 只剩 K==safe_ub 的平凡 cut ... → F9 实质停用』(supersedes Gemini round-4 oracle-trust deferral)。但本单元的现状文档 06 与 plan 文档 02/08 全部把 F9 当作可用、甚至『主力几何 lift / 主解』,无一处反映 F9 当前被 quarantine 实质停用。这是现状漂移:lock 已记录的关键状态变更没传导到现状/plan 文档,且与『F5 ratio>50%=stop-ship 因为 F9 才是主解』的论证直接冲突(F9 停用了,主解论证不再成立)。",
+        "suggested_fix": "在 06 现状文档加一条 F9 tight-K quarantine 当前状态(引用 PROJECT_LOCK §3A v28 + memory),并在 02 §3.9 / 08 对『F9 是主力几何 lift / 主解』的措辞降温或加『当前 tight-K quarantine、仅剩平凡 cut』的现状注。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-8",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "逐条核到原文。PROJECT_LOCK.md §3A lines 146-158 (Updated stamp 顶部 + 行内标 \"2026-06-04 v28\") 明写 F9 tight-K quarantine: \"density_envelope validator 对 max_allowed_area = K < safe_ub fail-closed 拒 ... F9 只剩 K==safe_ub 的平凡 cut ... → F9 实质停用\", 并 \"反转 Gemini round 4 信任 oracle K ... defer P1.5+ 的判断\"。单一 living 现状源 memory handoff_windows_ninth_review_pending.md (2026-06-04 晚段, line 28) 一致: \"F9 = quarantine (validator fail-closed 拒 K<safe_ub ... F9 整族实质停用; 反转 Gemini round-4 刻意 oracle-trust deferral)\"。\n\n反观 finding 指控的三文档全未传导此变更:\n- 08_phase_1_2_plan.md line 24 (finding 写 08:23, off-by-one): \"F9 才是主力几何 lift\"; line 121: \"P1.2B-F9 (主力几何 lift, 防 F5 ratio 超 50%)\"; line 116 (finding 写 08:115) enable matrix F9 行 \"after P1.2B-F9 | shadow first | guarded | area-only, 上界必安全\" —— 当作可推进/可用 family, 无 quarantine 注。\n- 02_mathematical_foundations.md §3.9 (lines 456-518) 整段把 F9 描述为可正常产 cut 的 family, Phase status 仅 \"defer Phase 1.2 P1.2B-F9\", 无停用。\n- 06_current_status.md 现状段 line 5 主动列 \"Phase 1.2 7/7 cut family close (F5/F9/... 全 Gemini GO)\", line 73 还依赖 \"F9 envelope 不能 trivial\" 作收敛前提; 全篇无 F9 quarantine/停用任何提及。\n\n冲突点成立: 08 line 24 的 \"F5 ratio>50%=stop-ship ... F9 才是主力几何 lift\" 论证, 在 F9 被 quarantine 只剩平凡 cut (K==safe_ub strict > 不可满足) 后不再成立。PROJECT_LOCK 顶部 \"this file wins\" + §6 Update Rule (改 exact boundary 须同步 spec) 进一步坐实这是该传导而未传导的真 drift。属 lock 已记录关键状态变更未传导到现状/plan 文档, 非 CHANGELOG/历史段引旧值的正常情形。",
+          "corrected_note": "finding 主体准确, 仅两处细节需修: (1) 行号轻微偏移 —— \"08:23\" 实为 08:24, \"08:115\" 实为 08:116 (内容对得上)。(2) finding 说 enable matrix 把 F9 \"列为可用\"; 精确说 matrix line 116 把 F9 P1.3 true-attach 列标 \"guarded\" (非无条件 ON), 但仍呈现为可推进的 active family 且无 quarantine 注, 不影响结论。核心 (lock v28 F9 quarantine 未传导到 06/02/08 + 与 F5/F9 stop-ship 论证冲突) 成立。"
+        }
+      },
+      {
+        "id": "C-9",
+        "doc_path": "docs/项目说明/01_overview.md:101 (header) vs :155 (同篇)",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "line 101 小标题: 『### 24+ 个 paradigm 死路告诉我们 master 自身不能 fix』; 同篇 line 155: 『但 27 lever 死路告诉我们没 cut framework 就只能撞硬件墙』",
+        "problem": "01 同一篇内死路计数不一致:标题写『24+ 个』,正文尾写『27 lever』。02/03/README/20 全用 27(与 memory death-timeline-27-lever 一致),只有 01 标题的 24+ 是落后口径。",
+        "suggested_fix": "把 01:101 的『24+ 个 paradigm 死路』改为『27 lever 死路』与全树及 memory 对齐。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-9",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 D:/追光/zmd/docs/项目说明/01_overview.md。逐字核对: line 101 header 确为『### 24+ 个 paradigm 死路告诉我们 master 自身不能 fix』, line 155 确为『...但 27 lever 死路告诉我们没 cut framework 就只能撞硬件墙.』—— 措辞/数字/行号全对得上。Grep 全 docs/项目说明 确认跨文一致用 27: 02:7『27 个其他 paradigm 死路』、03:179/114/145/3『27 lever』、README:11/45/69『27 lever』、16:149『27 lever 死路』、20:9『27 lever 死路』; 唯一例外是 01:101 的『24+ 个』。且 01 同篇内部也自相矛盾: line 103 直接引文件名 paradigm_death_timeline_27_lever.md (含 27)、line 155 用 27。memory 索引 [[paradigm-death-timeline-27-lever]] 也是 27 口径。inconsistency 真实成立, intra-doc + cross-doc 双重不一致, severity low 合理, suggested_fix 与全树及 memory 对齐。"
+        }
+      },
+      {
+        "id": "C-10",
+        "doc_path": "docs/项目说明/07_historical_review.md:18 (P1.5-P1.8) + 02:178-188 lifecycle 表 (Phase 1.1 闭环口径)",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "02 lifecycle 表把 step 3 minimize / step 6 validate / step 7 evaluate 标为『Phase 1.1 闭环, 4 family』『defer Phase 1.2 P1.11』等;§3.1-§3.8 多处『Phase status: Phase 1.1 闭环 (Step ... 全 close)』并把 F5-F9 标 defer。06 顶部已声明 Phase 1.2 7/7 family close。",
+        "problem": "02 通篇 Phase status 仍停在 Phase 1.1 口径(F5/F6/F7/F8/F9 全标 defer Phase 1.2),与 06 顶部+memory phase-1-2-progress 记录的『Phase 1.2 7/7 cut family close,F5/F9/F2-F4/F6/F7/F8 validator+generator 全已 land』矛盾。02 是 reviewer 主战场文档,把已落地的 F5-F9 仍写成 defer 会误导外审以为这些 family 未实现。注意:这是文档现状未随 phase 迁移更新(02 是 math foundations,可能有意保留 paradigm 层而非实现状态,但 Phase status 字段明确是实现状态口径,应更新)。",
+        "suggested_fix": "把 02 各 family 的 Phase status 从『defer Phase 1.2 Pxxx』更新为 Phase 1.2 已 close(引用 memory phase-1-2-progress / 07 应补的 Phase 1.2 段),或明确标注 Phase status 列为『paradigm 设计期口径,实现进度见 06』。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-10",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了真文件 (注意真文件名是 docs/项目说明/02_mathematical_foundations.md, finding doc_path 写的 \"02_math_foundations\" 文件不存在, 但 \"02\" 指向明确)。确认 claim 核心成立: (1) 02 lifecycle 表 178-188 行原文核对 — step1/4/5/6/9 标 \"Phase 1.1 闭环\", step3 minimize 标 \"**defer Phase 1.2 P1.11**\", step6/7 标 \"Phase 1.1 闭环, 4 family\"。(2) 各 family \"Phase status\" 字段: F5(367 行)/F6(393)/F7(425)/F8(450)/F9(513) 全标 \"**defer Phase 1.2 PXXX**\", 而 F1-F4(231/265/299/335) 标 \"Phase 1.1 闭环\"。(3) 跨文档矛盾确认: 06_current_status.md 顶部 1-5 行明确声明 \"Phase 1.2 **7/7 cut family close** (F5/F9/F2-F4/F6/F7/F8 全 Gemini GO)\"。memory project_phase_1_2_progress 同口径 (各 family 有具体 close commit: F5 9cd676a / F9 0bed978 / F2F4 d5e653d / F6 97388a0 / F7 9b14ed4 / F8 4721c04)。ls 确认 src/cuts/families/ 与 src/cuts/oracles/ 下 9 family validator+oracle 全部落地 (pattern_nogood/shape_packing_hall/power_hitting_set/power_grid_reach/density_envelope 文件均在盘上)。(4) 02 顶部 1-30 行无任何 disclaimer 说 Phase status 是 \"paradigm 设计期口径\"; 字段措辞明确是实现状态 (如 231 行 \"Phase 1.1 production validator + oracle + evaluator 闭环\")。故 02 (reviewer 主战场 math foundations 文档) 把已 land 的 F5-F9 仍写成 defer = 真 staleness, 会误导外审。",
+          "corrected_note": "方向与核心准确, 细节需修正三点: (1) doc_path 文件名应为 02_mathematical_foundations.md (非 02_math_foundations.md)。(2) 07 的引用不准: \"07:18 (P1.5-P1.8)\" 中 18 行实为 \"Phase 1.0 framework migration\" 标题, P1.5-P1.8 在 24 行 §5.3; 且 07 本身并未写 \"defer\" stale claim, 它只是停在 Phase 1.1 GO verdict (138 行) 缺一个 Phase 1.2 完成段 —— 这正是 suggested_fix 提的 \"07 应补 Phase 1.2 段\", 所以 07 是「待补」而非「写错」, 真 stale 主体是 02。(3) finding 说 step6 validate/step7 evaluate \"标为 Phase 1.1 闭环 4 family\" 属实但 step6/7 是「历史正确、现 framework 已支持 9 family 故口径偏窄」, 危害弱于 F5-F9 family-level \"defer\" (后者是直接的实现状态错报)。severity=low 合理。"
+        }
+      },
+      {
+        "id": "C-11",
+        "doc_path": "docs/项目说明/07_historical_review.md (止于 §5.13 Phase 1.1 exit hardening / Gemini meta-audit)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "07 历史回顾覆盖到 §5.12 Phase 1.1 exit hardening + §5.13 Gemini math review meta-audit (2026-05-23),最后 verdict 『Phase 1.1 GO. 进 Phase 1.2 必先做 P1.2A entry ... → P1.2B-F5/.../F9』",
+        "problem": "07 是『历史回顾』文档,但停在 2026-05-23,完全没有 Phase 1.2 的历史(F5/F9/F2-F4/F6/F7/F8 各轮 Gemini cross-check、GPT pro v14→v22 八轮外审、F3 special-case phase c768806、Phase 1.2 close GO_WITH_MINOR)。这些都已发生(见 memory phase-1-2-progress)且 06 顶部已引用,但 07 历史文档没补。历史回顾文档落后整整一个 phase。",
+        "suggested_fix": "在 07 补 §5.14+ Phase 1.2 历史段(7 family close + 8 轮外审 + F3 special-case phase),或在 07 顶部明确标注『本文止于 Phase 1.1,Phase 1.2 历史见 memory phase-1-2-progress』。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-11",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/07_historical_review.md 全文 (160 行): 文档标题 \"历史回顾 (Phase 0 → Step O)\", 最后两个编号段是 §5.12 \"Phase 1.1 exit hardening (2026-05-23)\" (line 115-138) 和 §5.13 \"Gemini math review meta-audit (2026-05-23)\" (line 140-156), 之后 line 158 一个 `---` 即结束。line 138 verdict 原文与 claim 完全对得上: \"**Verdict**: Phase 1.1 GO. 进 Phase 1.2 必先做 P1.2A entry (已大部分完成) → P1.2B-F5/F6/F7/F8/F9\". grep 07 里所有 \"Phase 1.2/F5/F9/F7/F8/spike/v14/v22/c768806/GO_WITH_MINOR\" 命中全是 §5.12/§5.13 里**前瞻性**的计划引用 (Phase 1.2 将做什么), 没有任何 Phase 1.2 **已执行**的历史记录 — 无 §5.14, 无 7 family close 各轮 Gemini, 无 GPT pro v14→v22 八轮外审, 无 F3 special-case phase commit c768806, 无 GO_WITH_MINOR verdict。这些历史确已发生: memory phase-1-2-progress 2026-05-27 终态段完整记载 (F5/F9/F2-F4/F6/F7/F8 全 close + v14→v22 八轮 + F3 c768806 + GO_WITH_MINOR)。且 06_current_status.md 顶部 (line 1-5) 已明确引用 \"Phase 1.2 close GO_WITH_MINOR + F3 done (c768806) + GPT pro v14→v22 八轮 + 当前 P1.3A\" — 证明 06 已补 Phase 1.2 而 07 没补。07 顶部 (line 1-6) 也无 \"本文止于 Phase 1.1\" 之类的边界标注 (Step O 属 Phase 1.1)。finding 的 \"历史回顾文档落后整整一个 phase\" 描述准确。"
+        }
+      },
+      {
+        "id": "C-12",
+        "doc_path": "docs/项目说明/06_current_status.md:5 + 09_phase_1_3_plan.md:6 (P1.3A 命名)",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "06:5『下一步进 **P1.3A** 主体 (real `PoseBoolExactMaster` 接 LBBD + 多轮收敛)』; 09:6『## P1.3A — CP-SAT attach spike (NEW, 必先验)』 + 09:33『## P1.3B — master integration (原 P1.21, spike GO 后进)』",
+        "problem": "doc-P1.3A 与 memory-P1.3A 命名错位(CLAUDE.md 已明确警示此错位):09 文档里 P1.3A = attach spike(CLAUDE.md 说已 done),P1.3B = 真 master 集成;而 06(及 memory)的『P1.3A 主体』指的是真 master 集成(= 09 的 P1.3B)。结果 06 说『下一步进 P1.3A 主体 (real PoseBoolExactMaster 接 LBBD)』,但 09 的 P1.3A 是 attach spike、真 master 集成在 P1.3B。两文档同名 P1.3A 指不同东西,读者会被误导『下一步是 attach spike』。",
+        "suggested_fix": "在 06 把『P1.3A 主体』明确为 doc 口径的 P1.3B(真 master integration),或加一行映射注:『此处 P1.3A 主体 = 09 文档的 P1.3B / attach spike(09 P1.3A)已 done』。最好统一两文档的 P1.3A/B 定义。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-12",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了三处原文逐字核对均成立: (1) 06_current_status.md:5 = 「下一步进 **P1.3A** 主体 (real `PoseBoolExactMaster` 接 LBBD + 多轮收敛, 走 N=8 parallel design)」; (2) 09_phase_1_3_plan.md:6 = 「## P1.3A — CP-SAT attach spike (NEW, 必先验)」; (3) 09_phase_1_3_plan.md:33 = 「## P1.3B — master integration (原 P1.21, spike GO 后进)」。三段措辞/行号全对得上。命名冲突真实: 09 里 P1.3A=attach spike、P1.3B=真 master 集成; 而 06:5(及标题「当前 P1.3A 主体设计」)用「P1.3A 主体」指真 master 集成(即 09 的 P1.3B)。同名 P1.3A 跨文档指不同东西。CLAUDE.md:58 明确警示此错位(「docs/项目说明/06 的 doc-P1.3A = attach spike、doc-P1.3B = 真 master 集成 (= memory 口径的「P1.3A 主体」)」), 进一步坐实这是已知 hazard。",
+          "corrected_note": "finding 方向与细节均准确, 但漏报一处更强的不一致: 06 文档**自身内部**也矛盾 —— 06:5 与标题(:1「当前 P1.3A 主体设计」)用「P1.3A 主体」指真 master 集成, 但同文件 06:27 却写「Step 8 apply-to-master defer Phase 1.3 **P1.3B** (CP-SAT 真集成, **P1.3A spike** 先验)」, 即 06:27 采用了 09/doc 口径(P1.3B=真集成、P1.3A=spike)。所以不只是 06↔09 跨文档冲突, 06 内部 line5/标题 vs line27 已自相矛盾。建议的修复(统一定义或加映射注)同样适用, 且更应优先统一 06 内部口径。"
+        }
+      },
+      {
+        "id": "C-14",
+        "doc_path": "docs/项目说明/05_open_questions.md:519 (Q13 行) + 02:111 / 06:40-43 / 04:99",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "05 Q13『source_digest hash 算法』状态标 CLOSED in Phase 1.1 exit hardening(『使用 sha256』);02:111『当前 Phase 1.1 已落地 sha256 content hash』;04:99『source_digest 锁 data version (✅ Phase 1.1 exit hardening 真 sha256 落地)』;但 04:71-73 invariant#7 仍写『当前为 sha256 content hash，Phase 1.2 切真 hash; 锁定后 cross-session cert 才可信』",
+        "problem": "04_design_invariants.md 内部对 source_digest 自相矛盾:§2.3 invariant#7(line 71-73)说『当前为 sha256 content hash,Phase 1.2 切真 hash』(暗示当前还不是真 hash、要 Phase 1.2 才切),但同篇 §18(line 99)与 05 Q13/02/06 都说 sha256 在 Phase 1.1 exit hardening 已真落地(CLOSED)。invariant#7 的『Phase 1.2 切真 hash』是 Phase 1.1 落地前的旧措辞残留。",
+        "suggested_fix": "把 04 §2.3 invariant#7 的『当前为 sha256 content hash，Phase 1.2 切真 hash』改为与 §18/05 Q13 一致的『Phase 1.1 exit hardening 已真 sha256 落地(CLOSED)』。",
+        "unit_id": "C",
+        "verdict": {
+          "id": "C-14",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 04_design_invariants.md / 05_open_questions.md / 02_mathematical_foundations.md / 06_current_status.md 原文, 各处措辞与行号核对一致。04:71-73 invariant#7 原文逐字: 「source_digest 锁 data version — 当前为 sha256 content hash，Phase 1.2 切真 hash; 锁定后 cross-session cert 才可信」。同篇 04:99 §18 写 「source_digest 锁 data version (✅ Phase 1.1 exit hardening 真 sha256 落地)」。05 Q13 (line 519 表 + line 377/379 正文) = CLOSED in Phase 1.1 exit hardening, 「使用 sha256」。02:111 = 「当前 Phase 1.1 已落地 sha256 content hash」。06:39 = 「source_digest 真 hash (sha256, exit hardening 2.2)」。07:121 / 08:11 / 12:10 全部一致说 sha256 真 hash 已在 Phase 1.1 落地。唯独 04:71-73 invariant#7 的「Phase 1.2 切真 hash」分句与全文档其它所有位置(及同篇 §18)冲突 —— 它暗示当前 sha256 还不算「真 hash」、要等 Phase 1.2 才切, 而事实是 Phase 1.1 exit hardening 已落地真 sha256 (Q13 CLOSED)。这是 Phase 1.1 落地前的旧措辞残留, finding 方向与定位准确。注意: 06 实际文件名是 06_current_status.md 不是 finding 写的 06:40-43, sha256 内容在 06:39-42, 不影响结论。",
+          "corrected_note": "finding 的 problem 段把 04:71-73 转述成「暗示当前还不是真 hash」略有偏差: 该行前半句「当前为 sha256 content hash」其实已说当前是 sha256(与其它处一致), 真正矛盾的只是后半句「Phase 1.2 切真 hash」—— 它把 sha256 当成临时占位、要 Phase 1.2 才换真 hash, 这与 Phase 1.1 已 CLOSED 的事实冲突。修复建议正确: 将「当前为 sha256 content hash，Phase 1.2 切真 hash」改为与 §18/05 Q13 一致的「Phase 1.1 exit hardening 已真 sha256 落地 (CLOSED)」。"
+        }
+      },
+      {
+        "id": "D-1",
+        "doc_path": "docs/项目说明/15_workflow_testing.md:3",
+        "kind": "currency",
+        "severity": "high",
+        "claim": "当前 189 cuts test 不是平铺, 按目标分 4 层.",
+        "problem": "把 189 当作 **当前** cuts test 计数。真源 authoritative_numbers.json 的 cuts_tests_total=442 (实时 `pytest --collect-only src/tests/cuts` = 442 tests collected, 已亲自跑过确认), 且 189 在 stale 数组的前身链 (413/414/416/418/425/437) 之前。189 是 Phase 1.1/P1.2A 历史 gate 值, 不是当前。这是 'staleness 把旧 phase 数字当现状' + 手写数字漂移, 跟 §21.5 自己写的 81795 production pose (与核心节点一致) 自相矛盾地新旧并存。",
+        "suggested_fix": "改为 '当前 cuts test (collect-only=442, 见 authoritative_numbers.json) 不是平铺...'; 或措辞改为版本中立 '当前全部 cuts test', 不硬编码计数 (本节末行已正确写 '具体 count 以 collect-only 为准', 与开头 189 矛盾)。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读 D:/追光/zmd/docs/项目说明/15_workflow_testing.md:3 原文确为 \"当前 189 cuts test 不是平铺, 按目标分 4 层.\" — 行号/数字/\"当前\"措辞全对得上。跑 .venv/Scripts/python.exe -m pytest --collect-only -q src/tests/cuts = \"442 tests collected\"。核心节点 authoritative_numbers.json 的 cuts_tests_total.value=442, stale 数组=[413,414,416,418,425,437], 189 比整个 stale 链还旧 (Phase 1.1/P1.2A gate 值)。该行用\"当前\"声称现状, 与 SoT 实时值 442 直接冲突, 属真 staleness drift (非 CHANGELOG/历史段引旧值)。文档内部自相矛盾佐证: 同文件 §21.5(line 71)写 \"production ~81795 pose\" 与核心节点 type_pool_total_poses.value=81795 一致 (新值), 与 line 3 的 189 旧值并存; 且 line 14 已写 \"具体 count 以 pytest --collect-only ... 为准\", 与 line 3 硬编码 189 矛盾。finding 描述方向与细节均准确。"
+        }
+      },
+      {
+        "id": "D-2",
+        "doc_path": "docs/项目说明/12_go_criteria.md:99",
+        "kind": "currency",
+        "severity": "high",
+        "claim": "总 cuts test ~240-265+（当前 189 gate + 5 family × 10-15 each；具体以 collect-only 为准）",
+        "problem": "两处错: (1) '当前 189 gate' 把 189 当现状, 实际现状 442 (collect-only 实测); (2) 验收估算 '~240-265+' 远低于真实 442 — F5-F9 family 落地后远超此估, 这个 GO 验收上限会误导 implementer 以为还没到 240。是 staleness + 手写数字漂移。",
+        "suggested_fix": "删除硬编码 '当前 189 gate' 与过时区间 '~240-265+'; 改为引用 authoritative_numbers.json cuts_tests_total (442) 或纯粹 'collect-only 为准' 不给具体数。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/12_go_criteria.md:99, 原文逐字对得上: \"总 cuts test ~240-265+（当前 189 gate + 5 family × 10-15 each；具体以 collect-only 为准）\"。行号/措辞/数字全匹配。核 SoT: 跑 .venv/Scripts/python.exe -m pytest --collect-only -q src/tests/cuts = \"442 tests collected\"; authoritative_numbers.json cuts_tests_total.value=442 (stale 列 413/414/416/418/425/437 — 注意 189 比这些都旧, 是 F3-F9 落地前的基线)。两处错都成立: (1) 行 99 (以及行 18-19/75-76) 用 \"当前 189 gate\" 把 189 当现状, 真实现状 442; (2) 验收估算 \"~240-265+\" 是基于 189 基线的前瞻投影, 而当前 442 已远超此带, 会误导 implementer 以为还没到验收门槛。这是真 staleness + 手写数字漂移, 非 CHANGELOG 历史引用 (它明说\"当前\")。",
+          "corrected_note": "方向与细节基本准确, 唯一需补的语境: 行 99 处于 §8.2 \"F5-F9 实施 GO 验收\" 章, 是前瞻性验收公式 (189 基线 + 5 family×10-15)。\"当前 189 gate\" 在该公式写成时是合法的基线快照, 但因 F3 等已先行落地把计数推到 442, 现已 stale 且 \"当前\" 二字使其成为真现状漂移。建议修复同 suggested_fix: 删硬编码 \"当前 189 gate\" 与过时区间 \"~240-265+\", 改引 authoritative_numbers.json cuts_tests_total 或纯 \"具体以 collect-only 为准\" 不给死数。注: 行 18-19/75-76 也含同源 189 stale, 修时应一并处理。"
+        }
+      },
+      {
+        "id": "D-3",
+        "doc_path": "docs/项目说明/06_current_status.md:5",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "spike close gate = **GO_WITH_MINOR** (GPT pro v14→v22 八轮外审收口, G6a SOFT 进 P1.3A risk register)。",
+        "problem": "'v14→v22 八轮外审收口' 是冻结快照, 已被取代。git 历史显示外审继续到 v25/v26/v27/v28, 且 v28 commit (e8c4643 'v28 GPT pro 外审 4 洞修复 + F9 quarantine')、9375420 ('v28 Design A+B 架构审查 finding 修复') 证明 v22 之后仍持续 catch 问题、并未'收口'。本文件顶部自称指向 living 现状, 却内嵌了过时的 '八轮收口' 计数。按 CLAUDE.md/memory 现 close 标准='连续≥3 次独立审查零问题', 而 v25-v28 每轮都有新 finding, spike 尚未达 close — '收口' 措辞 overclaim。",
+        "suggested_fix": "把外审轮次描述改为版本中立 (e.g. '多轮 GPT pro 外审进行中, 最新 v28 仍在修 finding') 或直接引 living 源 memory phase-1-2-progress, 不在本文件硬编码 'v22 八轮收口'; 并去掉暗示已收口的措辞, 明确 spike 尚未满足'连续≥3 次零问题'close 门禁。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/06_current_status.md:5 — claim 原文一字不差 (\"spike close gate = GO_WITH_MINOR (GPT pro v14→v22 八轮外审收口, G6a SOFT 进 P1.3A risk register)\")。git log 证实外审远超 v22: v23(7 finding + bitset bug)、v24(7)、v25(3+7)、v26(并集 6)、v27(多 R 轮+7 patch)、v28 — commit e8c4643 \"v28 GPT pro 外审 4 洞修复 + F9 quarantine\"、9375420 \"v28 Design A+B 架构审查 finding 修复\" 坐实 v22 后持续 catch 真问题。living 源 memory handoff_windows_ninth_review_pending.md 顶块 (2026-06-04 最新) 明写 v28 外审找到 4 个 confirmed_real soundness 洞 (A1/F5 CRITICAL slot-collision、A2/F9 CRITICAL 量词倒置、A3/F6 HIGH、A4 MED), 且 \"consecutive-clean 计数器**重置**\", spike 远未 close。close 门禁在 MEMORY.md:13 确认 = \"连续≥3 次独立审查零问题\"; v25-v28 每轮都有新 finding → 未达门禁。doc 第 3 行自称指向 living 源却在第 5 行硬编码过时 \"v22 八轮收口\"。\"收口\" 措辞确为 overclaim (v28 刚捅出 4 个洞)。finding 描述准确, severity high 合理。"
+        }
+      },
+      {
+        "id": "D-4",
+        "doc_path": "docs/项目说明/12_go_criteria.md:88-103 (§8.2) 与 16_workflow_review.md:54,62-66 (§22.2/22.3)",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "§8.2 验收: '大节点 GPT pro batch audit 通过 (整 Phase 1.2 vs 单 family)'; §22.2 '正常 1-3 round'; §22.3 GO 准则 '0 P0 / ≤3 P1'.",
+        "problem": "GO/审查文档把'大节点过 audit'定义为单次 GPT pro batch audit 通过 (1-3 round / 0 P0 ≤3 P1), 但项目当前真 close 标准 (CLAUDE.md '须连续独立外审零问题才 close'; memory big-milestone-gpt-pro-review 'close 门禁=连续≥3 次独立审查零问题') 要求**连续≥3 次独立审查零问题**。文档未反映这个更严的现 close 门禁 → reviewer/implementer 会按旧的'单次通过即 GO'操作。这正是 brief 点名要查的 'go_criteria 是否反映 ≥3 连续独立审查零问题'。",
+        "suggested_fix": "在 12_go_criteria §8.2/§8.4 大节点 GO 与 16_workflow_review §22.3 GO 准则补一条: 大节点 close 需'连续≥3 次独立外审零 (P0/P1) 问题', 单次 GO_WITH_MINOR 不构成 close; 引 [[big-milestone-gpt-pro-review]]。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 4 个源核实。(1) 12_go_criteria.md:100 §8.2 验收逐字含 \"大节点 GPT pro batch audit 通过 (整 Phase 1.2 vs 单 family)\" — 单次 audit 通过即列为验收项。(2) 16_workflow_review.md:54 §22.2 \"1 大节点 ~ 1-2 round ... 正常 1-3 round\" 逐字匹配。(3) 16_workflow_review.md:62-65 §22.3 GO 准则 \"0 P0 / ≤3 P1 / P2-3 不卡 GO\" 逐字匹配, 定义单次 audit 即可 GO。(4) 真 close 门禁来自 CLAUDE.md:57 \"须连续独立外审零问题才 close\" + memory feedback_big_milestone_gpt_pro_review.md 的明确 dated 硬标准 (2026-06-04 用户立): \"大节点 close = 至少连续 ≥3 次独立审查零问题才行; 任一轮出 finding 就修 + 重置计数器\", 标明适用所有未来大节点且 override 单次 pre-bless 倾向。Grep 全 docs/项目说明/ 搜 连续/三次/计数器/零问题/重置 → 12 和 16 里无任何陈述该 ≥3-连续-零 规则; 两 doc 只在 16:36 / 19:5 引 [[big-milestone-gpt-pro-review]] 用于打包 mode, 不用于 close 准则。故 §8.2/§22.3 仍呈现更松的 \"单次 audit GO (1-3 round, 0 P0 ≤3 P1)\" 当 close bar, 与当前权威 close 门禁不一致。此非 CHANGELOG/历史段引旧值 (该 close 标准是今日 2026-06-04 dated 且声明对未来生效), 是真 current inconsistency。finding 的 claim 原文、severity(med)、suggested_fix 均准确。",
+          "corrected_note": "细节微校准 (不影响 is_real): §22.3 的 GO/NOT-GO 是定义\"单轮 audit\"的 verdict (单轮仍可 GO, 这本身没错); 缺口精确在于 close 决策层缺\"≥3 连续零 finding\"要求, 应补在 §8.2/§8.4 (大节点 close/验收) 与 §22.3 之上一层。finding 已用\"单次 GO_WITH_MINOR 不构成 close\"如此表述, 框定正确。"
+        }
+      },
+      {
+        "id": "D-5",
+        "doc_path": "docs/项目说明/README.md:14 与文档地图 line 列",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "| [06_current_status.md](06_current_status.md) | 现状细则 (commit `c8fb7ef` 起算) | 35 | plan §6 |",
+        "problem": "两处过时: (1) 描述 '现状细则 (commit c8fb7ef 起算)' — c8fb7ef = 'Step O' (Phase 1.1 时代旧 commit), 但 06 已于 2026-05-27 重写为 'Phase 1.2 close GO_WITH_MINOR + F3 done, 当前 P1.3A 主体设计', 描述与文件实际标题/内容不符; (2) line 列写 35, 实际 06 现为 97 行 (重写后增长), README 未回填。镜像漏改: 06 更新了但 README 文档地图没跟。",
+        "suggested_fix": "README 06 行描述改为 'Phase 1.2 close + P1.3A 主体设计现状' (去掉 c8fb7ef 起算或更新为当前口径), line 35→97。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-5",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read D:/追光/zmd/docs/项目说明/README.md line 14: 原文确实是 `| [06_current_status.md](06_current_status.md) | 现状细则 (commit \\`c8fb7ef\\` 起算) | 35 | plan §6 |` — 措辞/数字逐字对上。(1) `git show c8fb7ef` 确认 = \"Step O: 修 GPT pro v6 两轮 audit ghost lifecycle 3 P0\" (2026-05-23, Phase 1.1 时代旧 commit), finding 对 c8fb7ef 的判定准确。Read 06_current_status.md: 当前标题 (line 1) = \"现状细则 (Phase 1.2 close GO_WITH_MINOR + F3 done, 当前 P1.3A 主体设计)\", 正文 line 5 = \"当前状态 (2026-05-27 起): Phase 1.2 7/7 cut family close + F3 special-case phase 已完成…下一步进 P1.3A 主体\" — 跟 README 的 \"现状细则 (commit c8fb7ef 起算)\" 描述不符, 文件早已重写脱离 Step O 口径。(2) `wc -l` 确认 06 实际 97 行, README 写 35 — 明显漂移。交叉验证 README line 列是真实约定 (01=158/13=17/20=15 都对得上), 故 35→97 是真 drift 不是软估。镜像漏改成立: 06 已重写但 README 文档地图描述+行数都没跟。",
+          "corrected_note": "finding 主体成立, 仅一处时间细节不准: finding 说 06 \"于 2026-05-27 重写\"。git log 显示 06 文件实际 commit 日期是 2026-05-24 (sound≠converge) 和 2026-06-01 (记忆树同步), 文件正文标注的是 \"当前状态 (2026-05-27 起)\" (内容起算日, 非 commit 日)。不影响核心结论。修复建议正确: README 06 行描述应更新为 \"Phase 1.2 close GO_WITH_MINOR + F3 done, 当前 P1.3A 主体设计\" 口径 (去掉 c8fb7ef 起算), line 35→97。"
+        }
+      },
+      {
+        "id": "D-6",
+        "doc_path": "docs/项目说明/README.md:9-29 (line 列)",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "文档地图 line 列: 02=495 / 04=103 / 05=544 / 07=116 / 08=134 / 12=76 (等)",
+        "problem": "多个 sub-doc 行数声明与实际不符 (实测: 02 实=535 vs 声=495, 04 实=108 vs 103, 05 实=556 vs 544, 07 实=159 vs 116, 08 实=129 vs 134, 12 实=141 vs 76)。文档增删后 README 表的 line 计数未维护。低危 cosmetic, 但 12 (76→141) 偏差大、且 README 表自称是文档地图 SoT。",
+        "suggested_fix": "回填 README 文档地图 line 列为实际行数, 或干脆删掉易漂的 line 列 (它不承载 SoT 价值, 维护成本>收益)。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-6",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读 D:/追光/zmd/docs/项目说明/README.md (line 7 表头列名确为 \"line\", line 3 自称项目 SoT) 拿到 README 文档地图声明值, 再用 [System.IO.File]::ReadAllText 数每个 sub-doc 的真实 newline 数 (= 编辑器行号; 所有文件均以换行结尾, 故 newline 数即可见行数)。逐项核对 finding 的 6 个具体偏差全部精确命中: 02 声=495 实=535(+40)、04 声=103 实=108(+5)、05 声=544 实=556(+12)、07 声=116 实=159(+43)、08 声=134 实=129(-5)、12 声=76 实=141(+65)。这些是 README 表当前自称的文档地图(非 CHANGELOG/历史引用), 故确属 stale drift。注: 首次用 Measure-Object -Line 得到不同(偏低)的值是因为该 cmdlet 不按 newline 计数, 已用 ReadAllText+newline 法纠正为权威值。",
+          "corrected_note": "Finding 描述与方向均准确, 偏差数字逐一对得上。补充: 实际 stale 的行不止 finding 列的 6 个 (finding 用 \"等\" 已声明非穷尽), 还包括 06 (声 35 实 97)、09 (声 46 实 75)、10 (声 63 实 87)、15 (声 94 实 123)、17 (声 85 实 110); 共 11/21 行漂移, 仅 01/03/11/13/14/16/18/19/20/21 共 10 行仍准。建议 fix (回填或删 line 列) 成立, 因为该列确实易漂且不承载 SoT 价值。"
+        }
+      },
+      {
+        "id": "D-7",
+        "doc_path": "docs/项目说明/18_workflow_env_config.md:5-9 (§19.1) 与 48 (§19.4)",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "§19.1 'cut framework 自身 env (现状)' 表只列 EXACT_FAMILY_VALIDATOR_STRICT; §19.4 'implementer 加新 env 时必在 spec / plan 19.1 表加一行 (避免散落)'。",
+        "problem": "`EXACT_F3_GENERATOR_ENABLED` 是真实已落地 env (src/cuts/oracles/port_exposure_oracle.py + test_family_port_exposure_generator.py 都用它, default-disabled), 06_current_status.md 与 10_phase_1_5_plan.md 都把它当**当前** F3 gating env 引用, 但 18 的 '现状' env 表漏列它 → 违反本文件 §19.4 自定的 '新 env 必入 19.1 表'规则。env 清单 SoT 不完整。",
+        "suggested_fix": "§19.1 表加一行 EXACT_F3_GENERATOR_ENABLED (当前默认 off / 用途: F3 special-case generator gate), 与 06/10 对齐。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-7",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/18_workflow_env_config.md (全文 52 行): §19.1 \"cut framework 自身 env (现状)\" 表 (行 7-9) 确实只列 EXACT_FAMILY_VALIDATOR_STRICT 一行; §19.4 (行 48) 确有 \"implementer 加新 env 时必在 spec / plan 19.1 表加一行 (避免散落)\" 规则。Grep 整个 doc 18 对 F3/GENERATOR 零命中, 确认未列。EXACT_F3_GENERATOR_ENABLED 是真实落地 env: src/cuts/oracles/port_exposure_oracle.py:69 `os.environ.get(\"EXACT_F3_GENERATOR_ENABLED\", \"0\")` default \"0\" (disabled), docstring (行 1-4) 明确这是 \"Family 3 port_exposure generator\" gate; test_family_port_exposure_generator.py 多处用它。doc 06_current_status.md:21 把它当**现**状 (\"现 EXACT_F3_GENERATOR_ENABLED gated default-disabled\") 引用, doc 10_phase_1_5_plan.md:68 在活跃 Phase 1.5 plan 里引用 (default-off)。该 oracle 位于 src/cuts/ 下且直接读 env, 属 §19.1 \"cut framework 自身 env\" 范畴 (非 §19.3 \"不直接读\"), §19.2 是未实施 EXACT_CUT_STORE_* placeholder (\"当前未实施\") 不覆盖它。所以确属违反 §19.4 自定规则, SoT 不完整, claim/problem/suggested_fix 都成立。",
+          "corrected_note": "finding 方向与细节均准确, 仅 scope 偏窄: §19.1 表实际漏列的不止 F3。同样的 default-disabled 直读 cut-framework 生成器 env 还有 EXACT_F7_GENERATOR_ENABLED (src/cuts/oracles/power_cover_oracle.py:60) 和 EXACT_F8_GENERATOR_ENABLED (src/cuts/oracles/power_grid_reach_oracle.py:65), 二者同属 cut framework 自身 env 且均缺席 §19.1。修复时建议三行 (F3/F7/F8) 一并补入, 而非仅 F3。"
+        }
+      },
+      {
+        "id": "D-8",
+        "doc_path": "docs/项目说明/10_phase_1_5_plan.md:58",
+        "kind": "broken-ref",
+        "severity": "low",
+        "claim": "当前 Phase 1.2 F3 generator stage 1 写 `active_port_witness_b64=None` (src/cuts/oracles/port_exposure_oracle.py:283)",
+        "problem": "行号过时: 该 None 写实际在 port_exposure_oracle.py:296 (文件已增长到 344 行, grep 确认 'active_port_witness_b64: None' 在 296 行)。硬编码源码行号随文件变动漂移。",
+        "suggested_fix": "行号 283→296, 或去掉具体行号只留文件名 (行号易漂、低维护价值)。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-8",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/10_phase_1_5_plan.md:58 (确实写 \"src/cuts/oracles/port_exposure_oracle.py:283\") 和真源文件。grep 确认 `\"active_port_witness_b64\": None,` 实际在 296 行 (注释行 294-295, 写在 296); 283 行其实是函数参数 `iter_index: int,`。wc -l 确认文件 344 行。所以 doc 引用的 :283 行号已漂, 真实位置 296。finding 描述的措辞/行号/文件长度全部对得上。",
+          "corrected_note": ""
+        }
+      },
+      {
+        "id": "D-9",
+        "doc_path": "docs/项目说明/10_phase_1_5_plan.md:64",
+        "kind": "broken-ref",
+        "severity": "low",
+        "claim": "历史 dead path `B1_phase5_cell_cut/README.md:40-41` + `lever_verdicts.md:446,571` 已证过强 cut 会误剪",
+        "problem": "`B1_phase5_cell_cut/README.md` 这个裸路径从 docs/项目说明/ 无法解析 — 实际文件在 docs/research/paradigm_search_review_v12_with_code_20260520/dead_paths/B1_phase5_cell_cut/README.md。README §跨 dir cite 约定要求用 relative path, 此处给了不可解析的 bare path。(lever_verdicts.md 能解析到 docs/lever_verdicts.md, OK)。",
+        "suggested_fix": "补全为可解析相对路径 ../research/paradigm_search_review_v12_with_code_20260520/dead_paths/B1_phase5_cell_cut/README.md。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-9",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read docs/项目说明/10_phase_1_5_plan.md:64 — claim text confirmed verbatim, bare path `B1_phase5_cell_cut/README.md:40-41` present. Glob confirms the actual file is at docs/research/paradigm_search_review_v12_with_code_20260520/dead_paths/B1_phase5_cell_cut/README.md (exactly as finding states); no docs/项目说明/B1_phase5_cell_cut/ exists, so the bare path is unresolvable from docs/项目说明/. The cross-dir cite convention is real: docs/项目说明/README.md:105 says \"跨 dir cite 用 relative path.\" Cited content at README.md:40-41 genuinely supports the surrounding over-strong-cut claim, so only the link is broken. Suggested fix (../research/.../B1_phase5_cell_cut/README.md) is correct.",
+          "corrected_note": "Core finding is real, but its parenthetical \"(lever_verdicts.md 能解析到 docs/lever_verdicts.md, OK)\" is imprecise: from docs/项目说明/, the bare `lever_verdicts.md` ALSO does not resolve as a relative path — docs/项目说明/lever_verdicts.md does not exist (Glob confirmed); the real file is docs/lever_verdicts.md one dir up, needing ../lever_verdicts.md. So BOTH bare paths on line 64 violate the relative-path convention, not just the README one. Fix should add ../ to both."
+        }
+      },
+      {
+        "id": "D-10",
+        "doc_path": "docs/项目说明/14_risk_rollout.md:54 (§14.3) 与 09_phase_1_3_plan.md:34-37 / 12_go_criteria.md:107 / 11_dependency_graph.md:55",
+        "kind": "cross-doc",
+        "severity": "med",
+        "claim": "14_risk_rollout §14.3: '§13 P1.21 step_8 apply_to_master 真集成'; 11_dependency_graph §9.2: 'Phase 1.3 P1.21 (CP-SAT propagator 集成)'; 但 09_phase_1_3 已把它重命名为 P1.3B (line 33 '## P1.3B — master integration (原 P1.21...)')。",
+        "problem": "phase/step 命名不一致: 09 已采用 P1.3A(spike)/P1.3B(integration) 新命名并标注 '原 P1.21', 但 14_risk_rollout (§14.3 line 54 '§13 P1.21'), 11_dependency_graph (§9.2 'P1.21'), 12_go_criteria (§8.3 line 105 'P1.21') 仍用旧 'P1.21' 且 12/14 指向 '§13' 而 master integration 实际已挪到 09 (Phase 1.3) — 镜像漏改, P1.21 重命名只改了 09 没同步其余。叠加 CLAUDE.md 已知的 doc-P1.3A vs memory-P1.3A 命名错位, 这里又多一层 P1.21/P1.3B 不一致。",
+        "suggested_fix": "全 dir 把 'P1.21' 统一为 'P1.3B (原 P1.21)'; 12_go_criteria §8.3 / 14_risk_rollout §14.3 把 '§13' 指向改为 09_phase_1_3_plan; 11_dependency_graph §9.2 同步 P1.3A/P1.3B 命名。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-10",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了全部 4 文件 + grep 全 dir。核心不一致成立: 09_phase_1_3_plan.md:33 标题 '## P1.3B — master integration (原 P1.21, spike GO 后进)' 确实把 P1.21 重命名为 P1.3B; 而 11_dependency_graph.md:53 (§9.2) 'Phase 1.3 P1.21 (CP-SAT propagator 集成)'、12_go_criteria.md:105 (§8.3 标题) 'Phase 1.3 P1.21 (...) GO'、14_risk_rollout.md:53 (§14.3) '- 切换点: §13 P1.21 step_8 apply_to_master 真集成' 全仍用旧 'P1.21'。grep 证实 'P1.21' 在 01/02/03/04/05/11/12/14/17/21 共 10+ 文件残留, 重命名只动了 06/09。镜像漏改属实。但 finding 三处细节有误: (1) doc_path 写 14:54, 实际在 line 53 (off-by-one, line 54 是 '渐进 ramp:'); (2) doc_path 写 12:107, 实际 §8.3 的 P1.21 在标题 line 105 (problem 字段里写的 105 是对的, doc_path 不一致); (3) **关键错误**: claim '12/14 指向 §13', 但 grep 12_go_criteria 全文无 '§13' 任何匹配 — 只有 14_risk_rollout:53 引 '§13'。所以 '12...指向 §13' 不成立, 只 14 一处。",
+          "corrected_note": "P1.21→P1.3B 重命名只在 09 (及 06) 落地, 其余 10+ 文件 (01/02/03/04/05/11/12/14/17/21) 仍用旧 'P1.21' — 镜像漏改属实, 应全 dir 统一为 'P1.3B (原 P1.21)'。但: (a) '§13' 错指只发生在 14_risk_rollout §14.3 line 53 一处, 12_go_criteria §8.3 全文不含 '§13' (该处只在标题用 P1.21, 无 §13 cross-ref); (b) 行号修正: 14 的 P1.21 在 line 53 非 54; 12 的 P1.21 在 §8.3 标题 line 105 非 107。修复 §13 指向只需改 14_risk_rollout 一处指向 09_phase_1_3_plan。"
+        }
+      },
+      {
+        "id": "D-11",
+        "doc_path": "docs/项目说明/14_risk_rollout.md:54 (§14.3) 与 09_phase_1_3_plan.md:34-35",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "§14.3 Phase 1.2→1.3 切换: '§13 P1.21 step_8 apply_to_master 真集成 master.AddLinear 时, env-gated 默认 OFF'。env 写 `EXACT_USE_POSE_BOOL_MASTER`... 实际 09 §12.1 用 `EXACT_B_DESIGN_V2=1`。",
+        "problem": "step_8 集成的 env flag 不一致: 09_phase_1_3 §12.1 line 36 与 12_go_criteria §8.3 line 107 都说集成 env flag 是 `EXACT_B_DESIGN_V2=1`, 但 18_workflow_env_config §19.2 提议的总开关是 `EXACT_CUT_STORE_ENABLE` (line 17), 三处对 Phase 1.3 集成开关命名各异 (EXACT_B_DESIGN_V2 vs EXACT_CUT_STORE_ENABLE)。env 命名 SoT 不统一 → implementer 不知该加哪个。",
+        "suggested_fix": "统一 Phase 1.3 集成开关命名 (在 18 §19.2 与 09 §12.1 / 12 §8.3 间取一致), 或在 18 §19.2 显式注明 EXACT_B_DESIGN_V2 与 EXACT_CUT_STORE_ENABLE 的关系 (谁是总开关)。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-11",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了全部四处。核心 problem 真实成立: Phase 1.3 step_8 master 集成的总开关在三份文档命名不一致 — 09_phase_1_3_plan.md:37 (§12.1) 与 12_go_criteria.md:107 (§8.3) 都写 `EXACT_B_DESIGN_V2=1`，而 18_workflow_env_config.md:17 (§19.2) 把同一总开关命名为 `EXACT_CUT_STORE_ENABLE`（默认 \"0\"，注 \"命名前缀按项目惯例 EXACT_CUT_STORE_*\"）。grep src/ 确认两个 env 名在源码里都不存在（step_8_apply_to_master 仍 NotImplementedError），所以没有 source SoT，文档就是唯一定义且互相矛盾。§19.2 line 13/23 虽指向 §12/§13 并标自己为 placeholder（\"最终名以 §13 实施时 commit 为准\"），但并未显式说明 EXACT_B_DESIGN_V2 与 EXACT_CUT_STORE_ENABLE 的关系，implementer 读 09/12 会加 EXACT_B_DESIGN_V2、读 18 会加 EXACT_CUT_STORE_ENABLE。EXACT_B_DESIGN_V2 在 docs 共出现 6 次（含 2 篇 research design），是主流命名。所有引用行号核对正确。",
+          "corrected_note": "finding 的 claim 字段有事实错引，但 problem 字段准确，问题本身成立。具体: (1) 14_risk_rollout.md:53 (§14.3) 原文只写 \"env-gated 默认 OFF\"，并未提任何 env 名，更没有写 `EXACT_USE_POSE_BOOL_MASTER` —— claim 把 §14.3 描述成 \"env 写 EXACT_USE_POSE_BOOL_MASTER\" 是错的。(2) EXACT_USE_POSE_BOOL_MASTER 实际是 18 §19.3 line 29 记录的 B1 pose-bool master paradigm flag，文档明确说它跟 cut framework 正交 (OFF/ON 均工作)，并非 step_8 集成开关。真正的不一致是 EXACT_B_DESIGN_V2 (09/12) vs EXACT_CUT_STORE_ENABLE (18 §19.2) 两者命名 SoT 不统一。修复建议正确: 在 18 §19.2 与 09 §12.1 / 12 §8.3 间统一命名，或在 §19.2 显式注明二者关系/谁是总开关。"
+        }
+      },
+      {
+        "id": "D-14",
+        "doc_path": "docs/项目说明/16_workflow_review.md:20 (§22.1)",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "Gemini round number 在 archive 文件名连号 (当前 r35, 下个 r36...)",
+        "problem": "'当前 r35' 是冻结快照。06_current_status.md line 94 已记录 cross_check 到 'gemini_round_{14..35}', 且后续有 p1_2b_f3_gemini_round1/round2_20260526 等更多轮 (find 确认存在), Phase 1.2 close 期间 Gemini 轮次已远超 r35。'当前 r35' 把旧计数当现状。",
+        "suggested_fix": "去掉硬编码 '当前 r35', 改为 'archive 文件名连号递增'; 或引用实际最新轮次目录, 不在散文里钉 transient 计数。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-14",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/项目说明/16_workflow_review.md:20 (§22.1), 原文逐字命中: \"- Gemini round number 在 archive 文件名连号 (当前 r35, 下个 r36...)\"。git blame 显示该行 2026-05-23 写入, 处于 active 工作流描述段 (非 CHANGELOG/历史段), 以现在时陈述\"当前 r35\"。核对真实 archive: Glob docs/research/**/gemini_round_*.md 显示同一 cross_check/ 目录已有 gemini_round_36_f5_round2_fix_verify_NOT_GO.md (即\"下个 r36\"早已发生)。06_current_status.md:94 记 gemini_round_{14..35} (22 轮)。更关键: Phase 1.2 期间 Gemini 轮次远超 r35 且不再连号 — 存在 p1_2b_f2_f4_gemini_round{1,2,3}, p1_2b_f3_gemini_round{1,2}_20260526 (finding 点名的文件确实存在), p1_2b_f6/f7/f8(到 round5)/f9 各自的 round1.. 系列, 以及 prod_scale_spike merger_round{1,2}。这些 per-family 重置 round1 的命名既证明\"当前 r35\"是冻结快照, 也部分破坏了\"连号\"前提。属真 staleness, severity low 合理 (示例性括注, 非 load-bearing 数字)。",
+          "corrected_note": "核心 staleness claim 成立 (当前 r35 是冻结快照, r36 已存在且 Phase 1.2 轮次远超)。一处可补充: finding 说\"archive 文件名连号\"是文档原话的复述; 实际 Phase 1.2 起 Gemini 轮次已不再单一连号 (改为 per-family round1/round2 子目录如 p1_2b_f8_..._round5), 所以\"连号\"这一结构性前提本身也已部分过时, 不止是数字过时。suggested_fix (去掉硬编码 r35, 改为描述性表述或引用实际最新目录) 仍恰当。"
+        }
+      },
+      {
+        "id": "D-15",
+        "doc_path": "docs/项目说明/21_glossary.md:147",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "*Last updated*: 2026-05-23 (initial version, synced with plan doc 高中 gap fill)",
+        "problem": "glossary 末尾 Last updated 仍是 2026-05-23 初版, 但 glossary 内容已含 2026-05-24 之后的更新口径 (e.g. strict gate 默认 ON 的最终态、F3/F8 mode 锁等与 06/08 v1.2/v1.3 changelog 同步的内容)。'高中 gap fill' 疑似 typo (应为 '高层' 或具体 gap 描述), 且 Last updated 日期未随后续同步更新 → staleness 标记本身过时。",
+        "suggested_fix": "更新 Last updated 到最近实际同步日期, 修 '高中' typo; 或删掉单文件 Last updated 戳 (改由 README changelog 统一管)。",
+        "unit_id": "D",
+        "verdict": {
+          "id": "D-15",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read docs/项目说明/21_glossary.md:147 — claim text exact match. git log/show confirms staleness is real: file's \"Last updated: 2026-05-23 (initial version)\" stamp was never bumped, but commit db8d9cd (2026-05-24 \"Phase 1.1 final delivery overlay\") edited two glossary entries to final state — strict gate \"Phase 1.2 default ON\" → \"当前默认已 ON\", and source_digest placeholder → final sha256/BState wording. So content is 2026-05-24 final-state while stamp still says 2026-05-23 initial version → genuine staleness (correctly rated low). HOWEVER the finding's \"高中 typo (应为 高层)\" sub-claim is FALSE: \"高中\" is established project shorthand for 高优先级+中优先级 (high+medium priority), referencing commit af83885 whose own message reads \"plan doc 补高中 7 项 gap\" and which the refactor plan (PHASE_POST_1_1_REFACTOR_PLAN.md:48) records as \"高中 7 项 gap 补完\". The stamp wording accurately cites that commit, not a typo.",
+          "corrected_note": "真问题: glossary 末尾 Last updated 戳仍是 \"2026-05-23 (initial version)\", 但文件内容已被 2026-05-24 的 db8d9cd (Phase 1.1 final delivery overlay) 改成最终态 (strict gate 默认 ON 落地、source_digest 去 placeholder), 戳未随同步更新 → staleness 标记本身过时。修复: bump Last updated 到 2026-05-24 (或删单文件戳改由 README changelog 统管)。注意: finding 里 \"'高中' 疑似 typo (应为 高层)\" 是误判 —— \"高中\" 是项目既有简写 = 高优先级+中优先级, 准确指向 commit af83885 (\"plan doc 补高中 7 项 gap\"), 不要改。"
+        }
+      },
+      {
+        "id": "E-1",
+        "doc_path": "specs/10_benders_decomposition_and_cut_design.md (整篇; §10.2-10.5, frontmatter source_of_truth)",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "frontmatter: 'source_of_truth: src/models/cut_manager.py, src/search/benders_loop.py'; §10.3 'Type-I: 宏观拓扑瓶颈切'; §10.4 'Type-II: 微观精确死结切'; 全文只描述两类 no-good cut ($\\sum z_{i,p_i^*} \\le |C|-1$) + §10.5 lifting '[竣工图] 尚未实现'。",
+        "problem": "这篇 cut-design 规格停留在被取代的旧 cut_manager.py 两类 no-good-cut 范式。项目当前主线 (CLAUDE.md '范式已转 cut-family LBBD 重设计 9 个 F1-F9 cut family' + PROJECT_LOCK §2B '9 cut family 完整 spec') 已落地 9 个 cut family (src/cuts/families/: region_capacity / cutset / port_exposure / component_reach / pattern_nogood / shape_packing_hall / power_hitting_set / power_grid_reach / density_envelope — 全部已确认存在)。spec 10 既不提 9-family，也不提 src/cuts/，仍把 cut_manager.py (旧 ACCEPTED_DRAFT) 列为真源。这是 certified 路径形式规格里最严重的 staleness：'10_benders cut design 跟真实 9 family 实现对不上'。",
+        "suggested_fix": "把 spec 10 重写/补充指向 src/cuts/ 9-family LBBD 范式 + PROJECT_LOCK §2B / docs/research/p3_b_design_v2_20260521/cut_family_specs/{01-09}，或在顶部加显式 superseded 标注 (旧两类 no-good = 历史设计，当前 cut design 见 9-family spec)。至少 frontmatter source_of_truth 应纳入 src/cuts/。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 specs/10_benders_decomposition_and_cut_design.md 全文: frontmatter (line 2-3, 88-89) 确为 status:ACCEPTED_DRAFT / source_of_truth: src/models/cut_manager.py, src/search/benders_loop.py / last_verified_against:2026-03-23; §10.3 \"Type-I:宏观拓扑瓶颈切\"(line40)、§10.4 \"Type-II:微观精确死结切\"(line53)、两类 no-good cut ∑z_{i,p*}≤|Ω|-1 (line49,59)、§10.5 lifting \"[竣工图]...在代码中尚未实现\"(line74) 全部逐字命中。Glob 确认 src/cuts/families/ 下 9 个 family 全存在 (region_capacity/cutset/port_exposure/component_reach/pattern_nogood/shape_packing_hall/power_hitting_set/power_grid_reach/density_envelope)。PROJECT_LOCK.md §2B (line40-50) 确写 \"9 cut family 完整 spec\" + cut_family_specs/{01-09}, 且 docs/research/p3_b_design_v2_20260521/cut_family_specs/01-09.md 全存在。CLAUDE.md line56 确写 \"范式已从早期 tuning/Phase-3B 转为 cut-family LBBD 重设计 (9 个 F1–F9 cut family)\"。对 spec 10 Grep superseded/src/cuts/9-family 仅命中 Type-I/Type-II 标题本身——即 spec 10 既无 9-family 引用也无 superseded 标注。staleness 成立。",
+          "corrected_note": "finding 描述准确, 但补一个细节防止误导修复: cut_manager.py 并非已死代码——benders_loop.py 仍 import 并使用 CutManager (line63-65,3571,5321,5579,5705), register_structured_cut 是 9-family 结构化 cut 也走的入口。所以 frontmatter 把 cut_manager.py 列为 SoT 本身不算错(它仍是 live 接线), 真正 stale 的是 §10.3/§10.4 的 cut 分类学(只两类 Type-I/II no-good)与 SoT 指针集没纳入 src/cuts/ 与 cut_family_specs——即 cut-design 内容停留旧两类范式而非反映 PROJECT_LOCK §2B 的 9-family。§10.2 状态机骨架与 §10.6 累积切面+重解仍大体吻合现实。severity:high 对 certified-path 形式规格合理。建议修复取 suggested_fix 的\"顶部加 superseded 标注 + frontmatter source_of_truth 纳入 src/cuts/\"即可, 不必全文重写。"
+        }
+      },
+      {
+        "id": "E-2",
+        "doc_path": "specs/07_master_placement_model.md §7.2 / §7.4.1; specs/02_global_notation_and_units.md §2.6.1 (表行 I_opt)",
+        "kind": "inconsistency",
+        "severity": "high",
+        "claim": "07 §7.2: '$\\mathcal{I}_{opt}$：可选实例集合（$N=60$，包含 50个供电桩、10个协议箱）'；§7.4.1 对这 60 个写硬 assignment 约束 '$\\sum_p z_{i,p}=x_i \\ \\forall i\\in\\mathcal{I}_{opt}$'。02 §2.6.1 表: '$\\mathcal{I}_{opt}$ 可选备用刚体实例集合 (供电桩50+协议箱10) | 60'。",
+        "problem": "PROJECT_LOCK §1 + spec 01 §5 + spec 05 §5.4 + spec 11 §7 都明确: exact 模式没有硬 50 poles + 10 boxes cap，50/10 只是 exploratory-only guidance (spec 05 §5.4 把它们写进 exploratory_optional_caps.json，明确 '不是 certified exact 的硬约束'，协议箱数量按 spec 03 §3.4.4 是无上限)。但 spec 07/02 把这 60 个当成 exact master 的可选实例域并写死 assignment 约束 = 等于在 exact 主模型里把供电桩硬 cap 在 50、协议箱硬 cap 在 10。这与 PROJECT_LOCK '若该数字出现即 exploratory-only' 直接冲突，也跟同一仓库的 spec 01/05/11 自相矛盾。",
+        "suggested_fix": "在 spec 07 §7.2/§7.4.1 与 02 §2.6.1 给 I_opt 加澄清: certified exact 主模型不以 50/10 为硬上界 (协议箱无上限)，这里的 60 仅是 exploratory/compatibility 全集口径; 或改为 exact 模式用动态/无界 optional 域，把 50/10 标为 exploratory-only。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "逐一核实全部引用文件, claim 原文与行号全部对得上, problem 半边的每处交叉引用都成立:\n\n(1) specs/07_master_placement_model.md §7.2 line 24: \"$\\mathcal{I}_{opt}$：可选实例集合（$N=60$，包含 50个供电桩、10个协议箱）\" — 原文一字不差。§7.4.1 line 51: \"$\\sum_{p\\in\\mathcal{P}_i} z_{i,p} = x_i \\quad \\forall i\\in\\mathcal{I}_{opt}$\" — 在 exact master 的 Hard Constraints 节, 对这恰好 60 个实例写死 assignment 约束。\n\n(2) specs/02_global_notation_and_units.md §2.6.1 line 104 表行: \"$\\mathcal{I}_{opt}$ | 可选备用刚体实例集合 (供电桩50+协议箱10) | 60\" — 匹配, line 105 $\\mathcal{I}$=326。\n\n(3) PROJECT_LOCK.md §1 line 15: \"Exact mode has no hard `50 power poles + 10 protocol storage boxes` cap. If that number appears anywhere, it is exploratory-only guidance.\" — 成立。\n\n(4) specs/01_problem_statement.md §5 line 78: \"`power_pole = 50` 与 `protocol_storage_box = 10` ... 它们**不是** `certified_exact` 的硬上界。\" — 成立。\n\n(5) specs/05_facility_instance_definition.md §5.4 (line 74-99): 把 50/10 明确写进 `exploratory_optional_caps.json`, 称 \"探索模式候选池上界，而不是 certified exact 的硬约束\"; §5.6 line 128-132 说 326/60 只是\"探索兼容全集\"规模, 不是 certified exact 实例池。— 成立。\n\n(6) specs/11_pipeline_orchestration.md §7 line 98-99: \"If `50 power poles + 10 protocol storage boxes` is mentioned anywhere, it is exploratory-only guidance and not an exact-mode hard cap.\" — 成立。\n\n(7) specs/03_rule_canonicalization.md §3.4.4 line 167: \"数量上限：无上限\"; line 459/599 重申\"协议储存箱数量无上限\"。— finding 引用的\"协议箱无上限\"成立。\n\n结论: spec 07/02 把这 60 个 (poles cap 50 + boxes cap 10) 当成 exact master 的可选实例域并对其写死 assignment 硬约束, 等价于在 certified exact 主模型里硬 cap 供电桩=50、协议箱=10, 与 PROJECT_LOCK + spec 01/05/11 (50/10 仅 exploratory) 以及 spec 03 (协议箱无上限) 自相矛盾。severity high 合理。",
+          "corrected_note": "finding 本身准确, 仅补一个不影响结论的语境: spec 07 头部 frontmatter 标 source_of_truth=src/models/master_model.py 且带 [竣工图] 注, 即 07/02 的 60-实例域可能反映当前代码 master 实际枚举的 optional 域, 而 PROJECT_LOCK/01/05/11 表达的是 exact constitution 的*意图*。因此这是 doc(竣工图)↔doc(constitution) 的不一致——既可能是文档过时, 也可能暗示代码本身在 exact 路径硬 cap 了 50/10 (那是更严重的 src-level 违反 PROJECT_LOCK)。无论哪种, 07/02 缺少把 60-域与 exploratory-only 50/10 cap 区分开的澄清注, finding 的描述与 suggested_fix 仍然成立; 修复时建议同时核一下 master_model.py 实际 optional 域以判定是纯文档问题还是代码问题。"
+        }
+      },
+      {
+        "id": "E-3",
+        "doc_path": "specs/04_recipe_and_demand_expansion.md §4.8 (DEPRECATED 段, 行 190-224)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "§4.8 顶部 [DEPRECATED] '本节内容仅保留作为历史参考，后续章节绝不得引用此处的变体分类'，§4.8 标题被删除线。但 §4.3.1 / §8.3.1 / §9.4.1 多处仍写 '依据 04 章 4.8 节给定的实例化拓扑度数矩阵'。",
+        "problem": "spec 08 §8.3.1 ('依据 04 章 4.8 节给定的实例化拓扑度数矩阵') 与 spec 09 §9.4.1 ('04 章 4.8 节下达的机器度数矩阵必须被绝对执行') 仍把已 DEPRECATED 的 §4.8 当成度数真源引用，而 §4.8 自己声明 '后续章节绝不得引用此处的变体分类'。下游 spec 对一个废弃章节的活引用 = 孤儿/过时交叉引用 (broken intra-doc ref)。",
+        "suggested_fix": "把 spec 08 §8.3.1 / 09 §9.4.1 对 '04 章 4.8 节' 的引用改指向当前度数真源 (generic_io_requirements.json + operation_profiles.py 的 port_topology)，或更新 §4.8 deprecation 措辞说明度数信息已迁移到何处。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 specs/04 全文: §4.8 确实 DEPRECATED — 标题删除线 \"## 4.8 ~~离散端口度数与实例化拓扑配置~~ [DEPRECATED]\" (行 190), CAUTION 块 (行 184-188) + 行 188 明文 \"本节内容仅保留作为历史参考，后续章节绝不得引用此处的变体分类。\" 下游活引用核实成立: specs/08 §8.3.1 行 45 逐字 \"依据 04 章 4.8 节给定的实例化拓扑度数矩阵\"; specs/09 §9.4.1 行 70 逐字 \"04 章 4.8 节下达的机器度数矩阵必须被绝对执行\"。即下游仍把已 DEPRECATED 的 §4.8 当度数真源, 与 §4.8 自身禁令冲突 = 真·活引用废弃章节。suggested_fix 指向的真源已核: data/preprocessed/generic_io_requirements.json 存在 (CLAUDE.md 列为 SoT), src/preprocess/operation_profiles.py 存在且是 discrete port-slot/度数活源 (build_operation_port_profiles / OperationPortProfile / aggregate_port_slots)。问题真实且可复现。",
+          "corrected_note": "finding 主体成立但两处细节需修正: (1) 误把引用归到 spec 04 §4.3.1 — 实际 spec 04 §4.3.1 (行 53-61, 第一级需求) 完全没有引用 4.8; \"依据 04 章 4.8 节给定的实例化拓扑度数矩阵\" 这句逐字只出现在 spec 08 §8.3.1 (行 45)。finding 把 §4.3.1 和 §8.3.1 搞混了。(2) finding 遗漏了第三处活引用: spec 02 §line 126 \"...为绝对整数常量（由 04 章 4.8 节矩阵给定）\" 同样是对废弃 §4.8 的活引用, 修复时应一并处理。准确版: 对废弃 §4.8 的活引用共 3 处 = spec 02 行 126 / spec 08 §8.3.1 行 45 / spec 09 §9.4.1 行 70。"
+        }
+      },
+      {
+        "id": "E-4",
+        "doc_path": "specs/10_benders_decomposition_and_cut_design.md §10.6 (行 78-86); specs/08 §8.4 [竣工图] (行 83-84); specs/07 §7.7 (行 103-104)",
+        "kind": "overclaim",
+        "severity": "low",
+        "claim": "§10.6 标题 '惰性回调与热启动'，正文 '本工程强制采用 惰性约束注入架构 (Lazy Constraint Callback / Hot-Start)'，'每次 Benders 迭代重新求解时间从数十秒坍缩至几百毫秒'。",
+        "problem": "§10.6 正文用确定性语气声称已 '强制采用惰性约束回调' + 给出具体性能数字 (数十秒→几百毫秒)，但紧随其后的 [竣工图] note 自己承认 'CP-SAT 不支持真正的惰性约束回调…用累积切面+重新求解模式替代…每轮有模型重建开销'。memory reference_cp_sat_no_add_lazy_constraint 也确认 OR-Tools 9.15 无 AddLazyConstraint。正文的'坍缩至几百毫秒'是无 provenance 的乐观数字，与 [竣工图] 描述的 '每轮模型重建开销' 相矛盾，属轻度 overclaim/内部不一致。",
+        "suggested_fix": "把 §10.6 正文从确定式改为设计意图式，删除或标注 '数十秒坍缩至几百毫秒' 为未验证设计目标; 与 [竣工图] 的 '累积切面+重求解' 现实对齐。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 specs/10_benders_decomposition_and_cut_design.md §10.6 (行 78-86)：标题 \"代码落地：惰性回调与热启动 (Lazy Callbacks & Hot-Start)\"；正文行 80 \"本工程强制采用 惰性约束注入架构 (Lazy Constraint Callback / Hot-Start)\"，行 83 \"每次 Benders 迭代重新求解时间从数十秒坍缩至几百毫秒\" — 均与 claim 逐字一致。紧随其后行 85-86 的 [竣工图] note 自承认 \"CP-SAT 不支持真正的惰性约束回调…代码中使用「累积切面 + 重新求解」的模式替代…效果等价但每轮有模型重建开销\"。两者直接矛盾：正文用确定式声称已\"强制采用 Lazy Constraint Callback\"并给无 provenance 的 \"数十秒→几百毫秒\" 数字，[竣工图] 却说该 callback 不存在且有每轮重建开销。memory reference_cp_sat_no_add_lazy_constraint 确认 OR-Tools 9.15.6755 CpModel 无 AddLazyConstraint API (hasattr==False)。finding 实质成立 (overclaim/内部不一致, severity low)。",
+          "corrected_note": "finding 核心 (§10.6 正文确定式声称 lazy callback + 无 provenance 性能数字, 与同文件 [竣工图] note 矛盾) 真实成立。但 doc_path 里对 specs/08 §8.4 [竣工图] 和 specs/07 §7.7 的交叉引用归因不准：(1) 真实文件名是 specs/08_topological_flow_subproblem.md 和 specs/07_master_placement_model.md (finding 写的 08_constraints_and_validation / 07_solver_strategy_and_parameters 文件不存在)；(2) 这两处的 [竣工图] note 内容是 Farkas 射线提取未实现 (08 行 84) 和供电覆盖辅助变量 (07 行 67/79)，与 CP-SAT lazy-constraint 矛盾无关。实际的内部矛盾完全位于 spec 10 自身 (§10.6 正文 vs 其紧随的 [竣工图] note 行 85-86)，不依赖 07/08。修复建议方向 (把正文改设计意图式 + 删/标注未验证性能数字 + 与\"累积切面+重求解\"现实对齐) 正确。"
+        }
+      },
+      {
+        "id": "E-5",
+        "doc_path": "specs/04_recipe_and_demand_expansion.md §4.6.1 (行 167)",
+        "kind": "other",
+        "severity": "low",
+        "claim": "'(审计附注：219 台主机净占地面积达到令人窒息的 3325 格，已占 70x70 全图可用面积的 67.8%。)'",
+        "problem": "3325/4900 = 67.857%，四舍五入应为 67.9% (spec 07 §7.6 用的 3325 与下界 ceil(3325/144)=24 都核对正确)。spec 04 写 67.8% 是小数舍入笔误 (截断而非四舍五入)。低严重度但属数字精度瑕疵，且 67.9% 才与四舍五入约定一致。",
+        "suggested_fix": "改为 67.9% (或写 ~67.86%) 以与 3325/4900 的标准四舍五入一致。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-5",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 specs/04_recipe_and_demand_expansion.md 行 167，claim 原文逐字对得上（\"...3325 格，已占 70x70 全图可用面积的 67.8%...\"），行号、措辞、数字全准。算术核对 (python): 3325/4900 = 67.85714...%，round-half-up 到 1 位小数 = 67.9%，截断 = 67.8%（spec 写的就是截断值）。3325 自身内部自洽 (大 38×24=912 + 中 49×25=1225 + 小 132×9=1188 = 3325)，与 spec 07 §7.6 行 88-89 的 3325 及 ceil(3325/144)=24 完全一致。所以这是一个真实存在的数字精度瑕疵：显示值 67.8% 是对 67.857% 的截断而非标准四舍五入。",
+          "corrected_note": "finding 方向与算术准确，但措辞需放宽两点: (1) 这条是审计附注里的 flavor 散文 (\"令人窒息的\"/\"极限排布运筹挑战\")，非 load-bearing 计算值——真正下游使用的 3325 和 ceil=24 都不受影响; (2) 该章节明文约定的取整规则是机器台数的 math.ceil 向上取整 (行 138)，并没有声明百分比必须 round-half-up；所以\"67.9% 才与四舍五入约定一致\"严格说不算项目硬约定，只是标准四舍五入习惯。结论仍是 true：67.8% 确为截断笔误，改 67.9%（或 ~67.86%）即可，severity low 判得对。"
+        }
+      },
+      {
+        "id": "E-6",
+        "doc_path": "specs/08_topological_flow_subproblem.md (frontmatter status vs 内嵌 NOTE, 行 1-8)",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "frontmatter 'status: HISTORICAL_DRAFT'，但正文第一块 NOTE (行 8) 写 'ACCEPTED_DRAFT — 本文件已与 src/models/flow_subproblem.py 对齐'。",
+        "problem": "同一文件顶部两处状态标记自相矛盾: YAML frontmatter 说 HISTORICAL_DRAFT，正文 NOTE 说 ACCEPTED_DRAFT。读者无法判断该 flow 子问题规格到底是历史归档还是与代码对齐的活规格 (尤其 §8.4 [竣工图] 已承认 Farkas 提取 'extract_bottleneck_cells() 返回空集' 未实现，倾向 HISTORICAL)。",
+        "suggested_fix": "统一两处状态; 若 flow subproblem 是诊断/历史层 (PROJECT_LOCK 把 flow 列为 diagnostic)，frontmatter 与 NOTE 都改 HISTORICAL_DRAFT 并删除/改写 'ACCEPTED_DRAFT 已对齐' 的 NOTE。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-6",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 specs/08_topological_flow_subproblem.md。三处原文全核对一致: 行 2 YAML frontmatter `status: HISTORICAL_DRAFT`; 行 7-8 内嵌 `> [!NOTE]` + `> **ACCEPTED_DRAFT — 本文件已与 src/models/flow_subproblem.py 对齐。[竣工图] 标注反映代码实际状态。**`; 行 84 §8.4 `[竣工图]` 承认 `Farkas 对偶不可行射线提取在代码中尚未实现（extract_bottleneck_cells() 返回空集）`，退化为整解 no-good 切面。frontmatter (HISTORICAL_DRAFT) 与正文 NOTE (ACCEPTED_DRAFT 已对齐) 两处状态标记确实自相矛盾，读者无法判断该 spec 是历史归档还是活规格。CLAUDE.md/PROJECT_LOCK 把 flow subproblem 列为 diagnostic-only，且 §8.4 自承 Farkas 提取未实现，倾向 HISTORICAL 一侧，但文件顶部两标记不一致这一事实成立。finding 措辞、行号 (NOTE 在行 8)、severity=low 均准确。"
+        }
+      },
+      {
+        "id": "E-7",
+        "doc_path": "specs/06_candidate_placement_enumeration.md §6.1 / §6.2 (行 13, 22); specs/07 §7.1 (行 13)",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "06 §6.1 '直接令求解器在连续坐标系内寻找 326 个刚体'; §6.2 '绝对禁止为 326 个具体实例…分别独立生成位置字典'; 07 §7.1 '为 326 个候选刚体以及幽灵空地寻找…合法坐标组合'。",
+        "problem": "06/07 用 326 (= 266 mandatory + 60 optional, 含 50 poles+10 boxes) 当 master 处理的刚体实例总数。这与 E-2 同根: 326 全集口径只在 exploratory/compatibility 成立 (all_facility_instances.json 实测 326)，而 certified exact 主线按 spec 05 §5.6 只读 266 mandatory + 动态/无界 optional。把 '326 个刚体' 当 exact master 的固定实例集再次隐含了 50/10 硬 cap，与 PROJECT_LOCK 不一致。属 cross-doc 一致性问题 (06/07 用全集口径，05/01/11 用 266+exploratory 分层口径)。",
+        "suggested_fix": "06/07 涉及 '326 个刚体' 处加注: 266 为 exact mandatory，其余 60 为 exploratory optional 池上界、非 exact 硬约束 (与 spec 05 §5.6 对齐)。",
+        "unit_id": "E",
+        "verdict": {
+          "id": "E-7",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 4 个真文件 + 数据工件核实。(1) claim 原文准确: specs/06_candidate_placement_enumeration.md §6.1 行13 \"直接令求解器在连续坐标系内寻找 326 个刚体\"、§6.2 行20 \"绝对禁止为 326 个具体实例…分别独立生成位置字典\"、specs/07 §7.1 行13 \"为 326 个候选刚体以及'幽灵空地'寻找…合法坐标组合\" 全部对得上 (doc_path 把 07 文件名写成 07_constraint_modeling.md 是错的, 真文件是 07_master_placement_model.md, 但 section/行号/内容全 match)。(2) 07 §7.2 行24 把 I_opt 钉死为 N=60 (50供电桩+10协议箱), §7.6 行91 对供电桩池硬约束 — 即把 exploratory 50/10 当 exact master 的固定实例集。(3) 这与多处明确冲突: 05 §5.6 \"326 只能表示探索兼容全集规模, 不能表示 certified exact 主线实例池\"; 05 §5.4 50/10 是 exploratory cap 非 exact 硬约束; 01 行78、11 行96-98 均说 50/10 是 exploratory-only 非 certified_exact 硬上界; PROJECT_LOCK/CLAUDE.md 明禁 exact 模式 50+10 硬 cap。(4) 强佐证: 真 master 代码 src/models/master_model.py 行7-9 明写 certified path 用 pose-level optional variables \"不再把 50/10 之类经验上限写成正式约束\" — 故 06/07 的 \"326 固定刚体\" 既相对现代代码也相对 05/01/11 stale。(5) 数据核实: mandatory_exact_instances.json=266, all_facility_instances.json=326, exploratory_optional_caps.json 中 power_pole cap=50 / protocol_storage_box cap=10 均 bound_type=provisional 标\"仅探索模式使用\"。是真 cross-doc 一致性问题, severity=low 合适。",
+          "corrected_note": "方向对、结论成立, 但 \"再次隐含了 50/10 硬 cap\" 这句略不精确, 需细化: spec 07 §7.4.1 (行50-51) 对 optional 用激活变量 x_i 建模 (可不激活, 故不是\"必建 50+10\"的强制下界式硬 cap), §7.6 (行91) 只对供电桩强制了\"下界 ≥24\" 而非上界。真正的问题是: 把 optional 实例池**固定为恰好 50/10 当作 exact master 的实例身份集 (= 隐含上界封顶在 50/10)** + \"326 个总刚体\" 的口径, 仍把 exploratory 50/10 数字当成了 exact 实例集, 与 05 §5.6 / 01 / 11 的分层口径 (266 exact + optional 视为 exploratory 池上界、非 exact 硬约束) 及真 master 代码 header 冲突。suggested_fix 方向正确 (06/07 涉 326 处加注 266 exact + 60 exploratory optional 池上界), 与 spec 05 §5.6 对齐即可。"
+        }
+      },
+      {
+        "id": "F-1",
+        "doc_path": "specs/13_ecosystem_borrowing_and_compatibility_plan.md (§Phase 2 deferments, lines 30-35) + specs/15_target_export_and_compatibility_manifest.md (§Phase 1 note, lines 29-32)",
+        "kind": "cross-doc",
+        "severity": "high",
+        "claim": "Spec 13: 'Phase 2 deferments — IndustrialPlanner one-way exporter / compatibility sidecar bundles per target / preprocess regeneration from NormalizedCatalog'. Spec 15: 'Phase 1 lands the contract and tests only. Real target exporters remain deferred until compatibility-first work begins.'",
+        "problem": "Both specs (dated 2026-03-25) frame the IndustrialPlanner exporter and compatibility sidecar bundles as DEFERRED / not-yet-done. But specs 16 (status CURRENT_CODE_ALIGNED, 'Phase-2 exporter'), 22 (CURRENT_CODE_ALIGNED, 'two delivered parts' Part A precise export + Part B validator, AC-A/AC-B implemented), and 23 (current_code_aligned, delivered outer-base planning) all describe these exact deliverables as ALREADY implemented with real files (export_blueprint.py, export_industrial_planner_bundle.py, blueprint_validator.py — all verified to exist on disk). So 13/15 are stale: the work they list as deferred is delivered. Classic same-fact-in-N-docs drift where the downstream specs advanced but the planning specs were never reconciled.",
+        "suggested_fix": "Update spec 13 §Phase 2 deferments and spec 15 §Phase 1 note to mark the IndustrialPlanner one-way exporter + compatibility sidecar bundles as DELIVERED (cross-reference specs 16/22/23), leaving only genuinely-deferred items (e.g. switching certified runtime to read NormalizedCatalog, per spec 19 §6) in the deferred list.",
+        "unit_id": "F",
+        "verdict": {
+          "id": "F-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read all five specs on disk. Spec 13 (specs/13_ecosystem_borrowing_and_compatibility_plan.md, Status ACCEPTED_DRAFT, Updated 2026-03-25): §Phase 2 deferments lines 30-35 verbatim lists \"IndustrialPlanner one-way exporter\", \"compatibility sidecar bundles per target\", \"preprocess regeneration from NormalizedCatalog\" as deferred. Spec 15 (specs/15_target_export_and_compatibility_manifest.md, Status CURRENT_CODE_ALIGNED, Updated 2026-03-25): §Phase 1 note lines 31-32 verbatim \"Phase 1 lands the contract and tests only. Real target exporters remain deferred until compatibility-first work begins.\" Both quoted passages match exactly. Contradicting downstream specs confirmed: spec 16_industrial_planner_export_contract.md (CURRENT_CODE_ALIGNED) describes \"the additive Phase-2 exporter\" with bundle layout (industrial_planner.blueprint.json + compatibility_manifest.json) and real files; spec 22_industrial_planner_precision_export_and_validator_spec.md (CURRENT_CODE_ALIGNED) line 14 \"Spec 22 has two delivered parts\" Part A precise export + Part B validator, §7 AC-A/AC-B implemented; spec 23_industrial_planner_outer_base_planning_representation.md (current_code_aligned) delivered outer-base planning sidecars. Implementation files verified on disk: src/adapters/industrial_planner/export_blueprint.py (40115 bytes), blueprint_validator.py (39330 bytes), scripts/export_industrial_planner_bundle.py (3082 bytes). This is genuine cross-doc same-fact drift: planning specs 13/15 list as deferred what specs 16/22/23 + real code deliver.",
+          "corrected_note": "Finding substance is correct. Minor citation inaccuracy: it referenced \"specs 16\" and \"22\" with approximate filenames (16_industrial_planner_export.md, 22_precise_target_export_and_validation.md); actual files are 16_industrial_planner_export_contract.md and 22_industrial_planner_precision_export_and_validator_spec.md. Spec numbers, statuses, and quoted content are all accurate. The suggested fix correctly distinguishes the genuinely-still-deferred \"preprocess regeneration from NormalizedCatalog\" (spec 13 line 34, per spec 19) from the delivered exporter/sidecar items — that distinction is sound and should be preserved when reconciling."
+        }
+      },
+      {
+        "id": "F-2",
+        "doc_path": "specs/23_industrial_planner_outer_base_planning_representation.md (§4, lines ~143-154, final checked-artifact-suite paragraph)",
+        "kind": "overclaim",
+        "severity": "med",
+        "claim": "'A higher-level audit_industrial_planner_checked_artifact_suite.py gate now reads a checked-in checked_artifact_family_inventory.json registry and runs every listed family-specific no-drift leg together, so CI can fail closed when either the strict / additive decision reports or any checked-in translated outer example drifts away from current code...'",
+        "problem": "The 'or any checked-in translated outer example' part is no longer true. data/examples/industrial_planner/checked_artifact_family_inventory.json moves the outer_base_bundle_suite family into 'deactivated_entries' with status:'future_scope' and reason 'excluded from the active CI gate'; only the full_demand_support_suite family is in active 'entries'. The companion outer_base_bundle_inventory.json is also marked inventory_status:'future_scope'. So the active checked-artifact gate does NOT fail-closed on outer-example (wuling 80×80 / valley4 identity bundle) drift — those are preserved as metadata only. Spec 23 §4 overstates the gate's live coverage.",
+        "suggested_fix": "Reword spec 23 §4 to say the active checked-artifact gate currently covers only the full_demand_support_suite (single-base 70×70) family, and that the outer-deployment bundle family is preserved as future_scope/deactivated metadata (not gated). Cross-reference the 'deactivated_entries' / 'future_scope' status in the two inventory JSONs.",
+        "unit_id": "F",
+        "verdict": {
+          "id": "F-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read all four artifacts. (1) specs/23_...md §4 lines 143-148 verbatim matches the quoted claim: \"...runs every listed family-specific no-drift leg together, so CI can fail closed when either the strict / additive decision reports OR ANY CHECKED-IN TRANSLATED OUTER EXAMPLE drifts away from current code...\". (2) data/examples/industrial_planner/checked_artifact_family_inventory.json: active \"entries\" contains ONLY family_id \"full_demand_support_suite\"; the \"outer_base_bundle_suite\" family is under \"deactivated_entries\" with status:\"future_scope\" and reason \"excluded from the active CI gate\". Top-level scope_note confirms the gate is \"intentionally narrowed to the single support-suite family\". (3) data/examples/industrial_planner/outer_base_bundle_inventory.json has inventory_status:\"future_scope\" + scope_note \"excluded from the active single-base 70×70 CI gate\". (4) Confirmed in code: scripts/audit_industrial_planner_checked_artifact_suite.py load_checked_artifact_family_inventory() (line 351) reads only payload.get(\"entries\") and never touches deactivated_entries, so the active gate genuinely never iterates the outer-bundle family. A Grep of spec 23 for deactivated/future_scope/narrowed/excluded found NO caveat in the prose (only frontmatter line 4 and the still-active-sounding line 128) — so the spec is uncaveated and overstates live coverage. Finding is accurate.",
+          "corrected_note": "Finding is accurate as written. Minor amplification: the overclaim is broader than just the final paragraph — spec 23 §4 lines 126-141 also describe the outer_base_bundle_inventory and its two shapes (wuling 80×80 + valley4 identity) as if they are an active gated leg, with no future_scope/deactivated caveat anywhere in the doc. The suggested_fix should also touch those upstream lines, not only the final checked-artifact-suite paragraph."
+        }
+      },
+      {
+        "id": "F-3",
+        "doc_path": "specs/23_industrial_planner_outer_base_planning_representation.md (header source_of_truth line 4) + §4 prose dependent on the workflow",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "source_of_truth header lists '.github/workflows/industrial_planner_checked_artifacts.yml'; §4 says 'the checked-in GitHub Actions workflow ... uses those sidecars after running focused IndustrialPlanner regressions on relevant changes'.",
+        "problem": "The referenced workflow's push trigger is `push: branches: [main]`, but this repo's canonical/default branch is `master` (git shows active branch master, origin only has origin/master; CLAUDE.md states 'Main branch (you will usually use this for PRs): master'). A local 'main' branch exists but is not the integration branch and is not on origin. Therefore push-to-master events never trigger this gate; only PRs and manual workflow_dispatch do. This partially undercuts spec 23 §4's 'CI can fail closed' framing for the normal push path.",
+        "suggested_fix": "Either fix the workflow to trigger on `branches: [master]` (separate code change), or soften spec 23 §4 to note the gate fires on PRs / workflow_dispatch (not on direct master pushes given the current branch trigger). Flag the branch-name mismatch to the maintainer.",
+        "unit_id": "F",
+        "verdict": {
+          "id": "F-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read all three real files. (1) specs/23_...md line 4: source_of_truth header does list '.github/workflows/industrial_planner_checked_artifacts.yml'. (2) §4 lines 149-154 contain the exact quoted sentence; the 'CI can fail closed' framing is at lines 143-148 (same §4 section, same workflow). (3) The workflow file lines 43-45 have `push: branches: - main` (only main, not master). (4) Branch facts: `git branch` shows `* master` active with local `main` present; `git branch -r` shows only origin/master + a spike branch, no origin/main; `git ls-remote --heads origin main` returns empty (main not on origin); CLAUDE.md/env both state canonical branch = master. (5) `git rev-list --left-right --count main...master` = `0 368` — local main has 0 commits master lacks and master is 368 ahead; main's last commit bfe4e17 is 2026-05-10, confirming main is stale and NOT the integration branch. Therefore push-to-master never triggers this gate; only pull_request + workflow_dispatch do. The finding's mechanism is exactly correct.",
+          "corrected_note": "Finding is accurate; two minor sharpenings: (a) the 'CI can fail closed' phrase sits at lines 143-148, not literally inside the line-149-154 sentence the finding quotes, though it's the same §4 paragraph and same workflow, so the link holds. (b) The identical `push: branches: [main]` mismatch also exists in the sibling workflow industrial_planner_single_base_delivery_surfaces.yml (line 19) — out of F-3's stated scope but shows this is a repo-wide trigger pattern, which strengthens rather than weakens the finding. Severity 'low' is correct: this is a postprocess-only adapter CI gate, not the certified_exact path."
+        }
+      },
+      {
+        "id": "F-4",
+        "doc_path": "specs/17_endfield_calc_ingest_contract.md (header: '**Updated**: 2026-03-27')",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "Status: CURRENT_CODE_ALIGNED; Updated: 2026-03-27 — describing the JamboChen/endfield-calc TypeScript ingest adapter.",
+        "problem": "The vendored snapshot was refreshed on 2026-05-08 to source_version 0.6.2 (per third_party_snapshots/.../SOURCE_METADATA.json: items 130->178, recipes 172->260, facilities 14->16), which postdates this spec's 2026-03-27 verification date. The spec carries no concrete counts and its described behavior (two input modes, --source-format/--emit-snapshot-dir/--compare-rules, SNAPSHOT_METADATA.json for JSON mode) was verified still accurate against the current code, so this is date-staleness only — but a CURRENT_CODE_ALIGNED spec whose last_verified date predates the most recent upstream refresh should be re-stamped. (Verified separately: the 17-recipe semantic-alignment slice IDs in specs/ecosystem_notes/endfield_calc_current_repository_semantic_alignment.md all still resolve in the v0.6.2 snapshot, so no ID drift.)",
+        "suggested_fix": "Re-verify spec 17 against the v0.6.2 snapshot and bump its 'Updated' date (or add a 'last_verified_against: 2026-05-08 snapshot v0.6.2' note) so the CURRENT_CODE_ALIGNED status reflects the post-refresh state.",
+        "unit_id": "F",
+        "verdict": {
+          "id": "F-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read specs/17_endfield_calc_ingest_contract.md: header is exactly `**Status**: CURRENT_CODE_ALIGNED` (line 3) and `**Updated**: 2026-03-27` (line 4); body describes two input modes, --source-format/--emit-snapshot-dir/--compare-rules, SNAPSHOT_METADATA.json (lines 13-49) and carries NO concrete counts. Read third_party_snapshots/endfield_calc/upstream_repository_fixture/SOURCE_METADATA.json: source_version 0.6.2, observed_at 2026-05-08, observed_counts items 178 / recipes 260 / facilities 16, previous_observed_at 2026-03-27, previous_source_version 0.5.2, previous_observed_counts items 130 / recipes 172 / facilities 14 — exactly matching the finding's 130->178, 172->260, 14->16 and confirming the refresh (2026-05-08) postdates the spec's Updated date (2026-03-27, identical to previous_observed_at). Cross-check of the 17-recipe alignment slice: Grep on upstream recipes.ts confirmed 9 spot-checked slice IDs (uppercased enum form, e.g. TOOLS_PROC_BATTERY_3_1, FILLING_BOTTLED_REC_HP_3_1, THICKENER_ORIGINIUM_ENR_POWDER_1, FURNANCE_IRON_ENR_1, GRINDER_ORIGINIUM_POWDER_1, SEEDCOLLECTOR_PLANT_MOSS_3_1, PLANTER_PLANT_MOSS_1_1, GRINDER_PLANT_MOSS_POWDER_3_1, FURNANCE_IRON_NUGGET_1) all still resolve in the v0.6.2 snapshot (RecipeId enum constants; doc lowercases them) — so no ID drift, as the finding states. This is genuine low-severity date-staleness: a CURRENT_CODE_ALIGNED spec whose last-verified date predates the most recent upstream refresh, behavior still accurate, content not drifted.",
+          "corrected_note": "Finding is accurate as written. Two minor framing notes (do not change is_real): (1) This staleness is NOT covered by any enforced live gate — the project's forcing functions only assert cuts_tests_total (and sizing/F3/remap in the core node), none touch spec-17 dates, so this would only be caught by manual doc-currency review, not by pytest. The finding never claims otherwise (it is filed as low-severity date-staleness, not a SoT conflict), so this is consistent. (2) The spec references scripts/snapshot_endfield_calc.py (the ingest adapter), while the refresh itself ran via scripts/refresh_endfield_calc_snapshot.py (per metadata note) — these are correctly distinct; the finding attributes them properly."
+        }
+      },
+      {
+        "id": "G-1",
+        "doc_path": "docs/phase3b_module_index.md:7 (also 14, 21, 295-310)",
+        "kind": "inconsistency",
+        "severity": "high",
+        "claim": "**重要**: 这些文件**没有物理重组**到子目录, 因为 import 路径变动 risk 太大. 索引只是逻辑分类. 真要找文件还是 `grep` / `ls scripts/build_phase3b_*` / `find src/search -name 'phase3b_*'`.",
+        "problem": "直接与 docs/cleanup_session_20260516.md 动作 8 (commit e4bad28) 矛盾, 后者记录了 866 files changed 的真·物理重组 (`git mv` 670 文件到 cluster 子目录)。实测验证: `ls src/search/phase3b_*.py` = 0 个文件; 文件全在 `src/search/phase3b/<cluster>/<short_name>.py` (phase3b_ 前缀已剥离, 如 `src/search/phase3b/operating_profile/operating_profile.py`)。整篇 module index 仍按旧 flat 布局写 (代表文件名如 `phase3b_coordinate_validation_assumption_core.py` 已不存在于该路径), 文末 'find src/search -name phase3b_*' 查找指引 broken。这是历史高产 bug '同事实多处不一致, 改一处 (cleanup doc) 漏其余 (module index)' 的实例。",
+        "suggested_fix": "重写 phase3b_module_index.md: 标明文件已物理重组到 `src/search/phase3b/<cluster>/`、`src/tests/phase3b/<cluster>/`、`scripts/phase3b/<cluster>/` (per e4bad28), 更新所有代表文件路径为新 cluster 路径, 修查找指引为 `find src/search/phase3b -name '*.py'`。或在顶部加 superseded banner 指向 cleanup_session_20260516.md。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/phase3b_module_index.md (claim 原文在 line 7 逐字命中: \"没有物理重组到子目录...真要找文件还是 grep / ls scripts/build_phase3b_* / find src/search -name 'phase3b_*'\"; 旧 flat 布局也写在 line 14/21/295-310, 代表文件名如 phase3b_coordinate_validation_assumption_core.py)。读了 docs/cleanup_session_20260516.md 动作 8: 记录 commit e4bad28 真·物理重组 670 git mv 到 cluster 子目录 + 改 import。git show e4bad28 确认存在, 标题 \"phase3b 670 文件物理重组: 平铺前缀 → cluster 子目录\", 867 files changed。实测文件系统: Glob src/search/phase3b_*.py = 0 个; Glob scripts/build_phase3b_*.py = 0 个; 文件实际在 src/search/phase3b/<cluster>/<short>.py (phase3b_ 前缀已剥离) + scripts/phase3b/<cluster>/build_*.py。代表文件 src/search/phase3b/operating_profile/operating_profile.py 与 src/search/phase3b/coordinate_validation/assumption_core.py 均存在, 而旧 flat 路径全不存在。module index line 7 与 295-310 的 ls/find/grep 查找指引全 broken。这正是 cross-doc 同事实多处不一致 (改 cleanup doc 漏 module index) 的实例。finding 成立。",
+          "corrected_note": "细节一处偏差 (不影响结论): finding 与 cleanup doc 均写 \"866 files changed\", 但实测 git show e4bad28 = 867 files changed。同一 commit、同一重组, 数字差 1 immaterial。其余所有断言 (claim 原文、矛盾对象 commit、文件系统实证、代表文件路径、broken 查找指引) 均精确成立。"
+        }
+      },
+      {
+        "id": "G-2",
+        "doc_path": "docs/lever_verdicts.md:1-3, 567, 587",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "最后更新: 2026-05-18 (B1 Phase 6 path-2 实测 ❌ ...). ... **已 verify 排除的 lever**: ... 共 **16** 条死路 ... 16 条 lever 全 verdict 死.",
+        "problem": "lever_verdicts.md 停在 2026-05-18 的 16 条 lever, 但 memory MEMORY.md 的权威死路台账 [[paradigm-death-timeline-27-lever]] 已到 27 lever, 且包含本 doc 完全没有的 post-5-18 死路: PCR-CUT (5-19, Phase 5 0/8 CERTIFIED)、SAC-hull separator、PGW-UB Phase 0 ❌、GOC-C2 Phase 0 ❌、D2 Path 17、Path 18 layout-invariant cert ❌、Lever 24 augmented master ❌、Lever 25 IHS ❌、Lever 26 Benders symmetry ❌。CLAUDE.md 也说范式已转 cut-family LBBD (远超此 doc 的 master-加速-lever 视角)。读者把 lever_verdicts.md 当 'all dead paths' 权威源会漏掉 11 条。",
+        "suggested_fix": "在顶部加 'superseded — 完整死路台账见 memory paradigm-death-timeline-27-lever / 当前范式 cut-family LBBD 见 CLAUDE.md'; 或补齐 17-27 lever (PCR-CUT/SAC-hull/PGW-UB/GOC-C2/Path17/Path18/Lever24-26) 并更新 '16 条' 计数。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/lever_verdicts.md 全文 (611 行) + 权威台账 memory project_paradigm_death_timeline_27_lever.md + CLAUDE.md。三处 claim 原文逐字核对全中: line 3 \"最后更新: 2026-05-18 (B1 Phase 6 path-2 实测 ❌ ...)\"; line 567 \"已 verify 排除的 lever: L1/L2/L3/L4/L5/L7/L8/L9/L10/L12/L13/L14/L15/L16/B1 Phase 6 path-1/path-2 共 16 条死路\"; line 587 \"16 条 lever 全 verdict 死\". 全文 (含 Memory 引用段 605-612) 完全无 PCR-CUT / SAC-Hull / PGW-UB / GOC-C2 / D2 Path 17 / Path 18 LIC / Lever 24/25/26 / cut-family LBBD 任一字样, 且无 superseded banner。权威台账 (paradigm-death-timeline-27-lever) 明确到 27 lever 且分类 catalog 了这些 post-5-18 paradigm (Path 13/14, D2 Path 17, Path 18, Lever 24/25/26, PGW-UB, GOC-C2)。CLAUDE.md line 56 确认 \"范式已从早期 tuning / Phase-3B 转为 cut-family LBBD 重设计\", 远超此 doc 的 master-加速-lever 视角。故 staleness 真实成立, 16 计数与 27-lever SoT 冲突。",
+          "corrected_note": "核心方向与计数判断准确 (16 vs 27, doc 停在 5-18 无 superseded)。细节微瑕: finding 把 \"SAC-hull separator (Path 13)\" 和 \"PCR-CUT (5-19)\" 列为 post-5-18 死路 — 二者实属 5-18→19 同期 session, 在 doc cutoff 当日/紧随其后, 但确实 doc 全无、且 post-date doc 内容, 不影响实质。修复建议 (顶部加 superseded banner 指向 memory 27-lever 台账 + CLAUDE.md cut-family LBBD, 或补齐 17-27 并更新 16 计数) 成立。"
+        }
+      },
+      {
+        "id": "G-3",
+        "doc_path": "docs/env_variable_index.md:5 (header) + 全文",
+        "kind": "staleness",
+        "severity": "high",
+        "claim": "**最后更新**: 2026-05-16 ... **项目所有 `EXACT_*` / `PHASE3B_*` env 变量的集中索引**. 改任何 env 之前查这里, 不用 grep.",
+        "problem": "声称是 'all EXACT_* env 的集中索引', 但实测 (grep src/scripts/*.py) 漏掉了整个 cut-family + B1 paradigm + Design A/B 时代的 env, 包括: EXACT_USE_POSE_BOOL_MASTER (B1 核心切换 flag, CLAUDE.md 大量用)、全部 EXACT_B1_* (EXACT_B1_PATCH_ROUTING_CORE 及 6 个子参数 / EXACT_B1_LAZY_DEMAND_CUT / EXACT_B1_PORT_CLEARANCE_HARD / EXACT_B1_SEPARATOR_HULL* / EXACT_B1_ROUTING_AWARE_BINDING / EXACT_B1_D2_COMMODITY_FLOW / EXACT_B1_BYPASS_ROUTING_PRECHECK / EXACT_B1_DELETION_CORE_CUT / EXACT_B1_ITER_ON_ROUTING_INFEASIBLE / EXACT_B1_BINDING_ALT_CAP / EXACT_B1_ABSTRACT_ROUTING_*)、cut-family env (EXACT_F3_GENERATOR_ENABLED / EXACT_F7_GENERATOR_ENABLED / EXACT_F8_GENERATOR_ENABLED / EXACT_FAMILY_VALIDATOR_STRICT / EXACT_GHOST_CONDITIONED_FAMILY_BOUNDS_ENABLED 及变体)、EXACT_LAZY_POWER_COMPLETION、EXACT_SMT_MT_OUTER_PRUNING、EXACT_USE_PORT_ACTIVE、EXACT_D2_CP_SAT_WORKERS、EXACT_PATCH_ROUTING_CP_SAT_WORKERS。'不用 grep' 的承诺对这些 env 不成立。",
+        "suggested_fix": "补全 cut-family / B1 / PCR-CUT / Design A-B 时代的 env (CLAUDE.md runbook 已列大部分), 更新 last-updated 日期; 或在顶部诚实标注 '本索引截止 2026-05-16, 之后 paradigm 的 EXACT_B1_*/EXACT_F*_GENERATOR_*/EXACT_USE_POSE_BOOL_MASTER 等未收录, 见 CLAUDE.md runbook'。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-3",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/env_variable_index.md 全文: 第3行原文确认 \"项目所有 EXACT_*/PHASE3B_* env 变量的集中索引...不用 grep\", 第5行 \"最后更新: 2026-05-16\"。措辞/日期与 claim 完全对得上。文档列了 A-K 约70条 env, 但 grep docs/env_variable_index.md 对 POSE_BOOL/EXACT_B1_/GENERATOR_ENABLED/SMT_MT/LAZY_POWER/PATCH_ROUTING/FAMILY_VALIDATOR/GHOST_CONDITIONED 全部 \"No matches found\" — 即文档确实一个都没收录。同时 grep src/ 证实这些都是 live 活跃 env: EXACT_USE_POSE_BOOL_MASTER (master_model.py:2407, benders_loop.py:4564), EXACT_B1_PATCH_ROUTING_CORE 及 TOP_K/SECONDS/PER_PATCH_SECONDS/QX_CAP/MAX_CELLS 子参数 (benders_loop.py:4678-4779), EXACT_B1_LAZY_DEMAND_CUT (4804), EXACT_B1_BYPASS_ROUTING_PRECHECK (4659), EXACT_F3/F7/F8_GENERATOR_ENABLED (cuts/oracles/*.py), EXACT_SMT_MT_OUTER_PRUNING (smt_mt_outer_pruning.py:63), EXACT_LAZY_POWER_COMPLETION (exact_coordinate_master.py:2142), EXACT_USE_PORT_ACTIVE (pose_bool_exact_master.py:262), EXACT_D2_CP_SAT_WORKERS (d2_commodity_flow_core.py:238), EXACT_PATCH_ROUTING_CP_SAT_WORKERS (patch_routing_core.py:632), EXACT_FAMILY_VALIDATOR_STRICT (cuts/replay.py:152), EXACT_GHOST_CONDITIONED_FAMILY_BOUNDS_ENABLED (test_ablation_patch_spec.py)。这些 paradigm (B1/pose-bool, PCR-CUT 2026-05-19, cut-family F3/F7/F8 + Design A/B 2026-05-25+) 全部在 2026-05-16 文档冻结日期之后落地, CLAUDE.md runbook 大量引用它们。所以 \"不用 grep\" 的承诺对这一整代 env 实质性失效。staleness/overclaim 成立。"
+        }
+      },
+      {
+        "id": "G-4",
+        "doc_path": "docs/phase3b_exact_endgame_execution_plan.md:1-13 (frontmatter + §0)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "status: ACCEPTED_DRAFT ... last_updated: 2026-04-17 ... 这份文件只覆盖**当前项目剩余主线里最重要的那一段**: valley4_protocol_core 70×70 的 **Phase 3B**",
+        "problem": "以 'ACCEPTED_DRAFT / 当前主线最重要的一段' 自我定位, 未标 historical/superseded。但 CLAUDE.md 明确 'historical Phase 3B (tuning paradigm) 已被 cut-family LBBD 取代; 当前 Phase 1.2 spike close'。此 doc (2026-04-17) 描述的 Phase 3B endgame 路线 (B2/B5/B7 等) 已非现状, 却没有任何 superseded banner — 读者会误把它当当前执行计划。review 任务明确要求核 phase3b 文档是否清楚标 historical。",
+        "suggested_fix": "顶部加 superseded/historical banner: '范式已转 cut-family LBBD (见 CLAUDE.md '当前 Phase'), 本 endgame plan 是 tuning-paradigm 时期历史记录, 不代表现状'。frontmatter status 改为 HISTORICAL/SUPERSEDED。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读 D:/追光/zmd/docs/phase3b_exact_endgame_execution_plan.md: frontmatter line 2 `status: ACCEPTED_DRAFT`、line 4 `last_updated: 2026-04-17`、§0 line 12-14 \"这份文件只覆盖**当前项目剩余主线里最重要的那一段**: valley4_protocol_core 70×70 的 **Phase 3B**\" 均与 claim 原文逐字对得上。Grep superseded|historical|历史|已被取代|cut-family|Phase 1.2|spike|⚠ 等模式: 文件顶部/全文无任何 historical/superseded banner, 也无指向当前 Phase 的指针 (两处 superseded/过时 命中在 line 467 'current disposition (... superseded)' 和 line 720 '治理文件不再保留过时的 open 说法', 均与文档级现状标记无关)。CLAUDE.md line 54 'Current Phase: 1.2 spike close'、line 56 '范式已从早期 tuning / Phase-3B 转为 cut-family LBBD 重设计'、line 59 '历史 Phase 3B (tuning paradigm, release r20260416 后) 已被取代' 明确判该 doc 描述的范式已被取代。文档 §4 line 219-227 列 B0-B8 endgame 路线 (含 B2 lower-bounds/dominance、B5 first certified anchor、B7 回灌 release) 即 finding 所指已非现状的 tuning-paradigm endgame。文档以 ACCEPTED_DRAFT + '当前主线最重要的一段' 自我定位却零 historical 标记, 读者会误当现状执行计划, finding 成立。",
+          "corrected_note": ""
+        }
+      },
+      {
+        "id": "G-5",
+        "doc_path": "docs/phase3b_operating_profile.md:1-6",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "This document records the current Phase 3B operating profile lock. It is an operations contract only ... The default production profile is `prod_4x4_normal` ...",
+        "problem": "用 'the current Phase 3B operating profile lock' 现在时自述为当前运营契约, 无 historical 标注。但生产启动现已走 CLAUDE.md 的 `scripts/run_campaign_p2_workers1.sh` (workers=1, RSS gib=14) 而非此 doc 的 prod_4x4_normal (workers=4) profile, 且整个 Phase 3B tuning paradigm 已被取代。同 G-4: phase3b 文档伪装现状。",
+        "suggested_fix": "加 historical/superseded banner 指向 CLAUDE.md 当前生产 wrapper (run_campaign_p2_workers1.sh) 与当前 Phase 1.2; 或明确这是 tuning-paradigm 历史 profile。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-5",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/phase3b_operating_profile.md 全文 (117 行)。claim 原文逐字匹配: 第3-4行 \"This document records the current Phase 3B operating profile lock. It is an operations contract only...\"; 第9行 \"The default production profile is `prod_4x4_normal`\", 第11-12行 parallel_processes=4 + EXACT_CP_SAT_WORKERS=4。全文无任何 historical/superseded banner, 整篇以现在时自述为\"当前运营契约\"。CLAUDE.md 第56行确认 \"范式已从早期 tuning / Phase-3B 转为 cut-family LBBD 重设计\", 第59行 \"历史 Phase 3B (tuning paradigm, release r20260416 后) 已被取代\", 当前 phase = 1.2 spike close。读了 scripts/run_campaign_p2_workers1.sh 确认它是 CLAUDE.md (第213/224行) 文档化的当前 production wrapper, 用 EXACT_MASTER_CP_SAT_WORKERS=1 (第27行) + EXACT_GATE_WORKER_PEAK_RSS_GIB=14 (第28行) + 默认 -p 2 (第52行), 与 doc 的 prod_4x4_normal (workers=4/parallel=4) 直接冲突。staleness 成立: 现在时伪装当前状态 + 生产路径已迁移 + 整个 paradigm 被取代, 三点全核实。",
+          "corrected_note": "finding 描述准确。仅一处细节补充: doc 确实带有自限性 caveat (第4-5行 \"it does not claim full-scale exact close\"), 但这些 caveat 均未承认 Phase 3B paradigm 整体已被 cut-family LBBD 取代, 也未提生产 wrapper 已换成 run_campaign_p2_workers1.sh, 故 staleness 不被现有 caveat 抵消。finding 引用的 run_campaign_p2_workers1.sh 是 bash 脚本 (.sh, Linux 主机路径), 当前 Windows 环境用 .venv\\Scripts\\python.exe; 但这不影响 finding——它指出的是文档化生产入口的迁移事实。"
+        }
+      },
+      {
+        "id": "G-6",
+        "doc_path": "docs/exact_campaign_operations.md:1-10 (frontmatter)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "status: CURRENT_CODE_ALIGNED ... last_verified_against: 2026-04-17 ... owner: phase3b-exact-endgame ... 这份文档覆盖 Phase 3B 的 B1 操作面",
+        "problem": "frontmatter 声称 status: CURRENT_CODE_ALIGNED 且 last_verified_against: 2026-04-17 (一个半月前, 早于 cut-family LBBD / B1 pose-bool / PCR-CUT / Design A-B 全部演进)。'CURRENT_CODE_ALIGNED' 是一个会漂的硬声明, 自 2026-04-17 起没再核过, 但代码 (benders_loop / outer_search / exact_campaign) 经历了大量改动。'phase3b B1 操作面' 的 B1 命名还与后来的 B1 pose-bool master paradigm 撞名 (此处 B1 指 Phase3B 阶段 B1, 非 pose-bool)。",
+        "suggested_fix": "更新 last_verified_against 到近期并真核 (campaign resume/reset/telemetry 字段名是否仍匹配 src), 或把 status 降为 NEEDS_REVERIFY; 注明此 'B1' 是 Phase3B 阶段编号, 区别于 pose-bool master B1。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-6",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read docs/exact_campaign_operations.md:1-11 — frontmatter is verbatim as claimed: status: CURRENT_CODE_ALIGNED, last_verified_against: 2026-04-17, owner: phase3b-exact-endgame; line 10 \"这份文档覆盖 Phase 3B 的 B1 操作面\". Staleness confirmed via git: the doc has exactly ONE commit (270bb2d, initial migration, 2026-05-06) and was never re-touched, yet the referenced sources DID change afterward — src/search/exact_campaign.py last edited 2026-05-11 (P2 #14 binding schema v2), scripts/inspect_exact_campaign_state.py 2026-05-14 (G1/G2 lifecycle). Today=2026-06-04 → date is ~1.5 months stale, and cut-family LBBD / B1 pose-bool / PCR-CUT / Design A-B all landed after 2026-04-17 (commits 9375420..6937285 on 2026-06-04). So \"CURRENT_CODE_ALIGNED\" is a drifting hard self-cert never re-verified. B1 naming collision is real (Phase-3B stage B1 vs pose-bool master B1). Caveat: the doc's referenced data paths/ops (exact_campaign_state.json, telemetry.json, resume/reset/stop_reason, inspector output phase3b_exact_campaign_inspector/inspection_summary) still exist in current src, so the doc isn't broken — the defect is purely the stale frontmatter overclaim. Med severity appropriate.",
+          "corrected_note": "Finding is accurate; one detail understated: last_verified_against: 2026-04-17 doesn't just predate recent evolutions — it predates the entire repo's git history (earliest commit is 2026-05-06). So the date could never have been verified against THIS codebase, making the CURRENT_CODE_ALIGNED self-cert even less credible than \"a month and a half stale\" implies. Fix should set a real verification date (or status: NEEDS_REVERIFY) and disambiguate the Phase-3B \"B1\" stage label from the pose-bool master B1 paradigm."
+        }
+      },
+      {
+        "id": "G-7",
+        "doc_path": "docs/phase3c_optimization_roadmap_v1.md:3-9",
+        "kind": "inconsistency",
+        "severity": "med",
+        "claim": "**Status**: Active — supersedes prior research-mode planning ... **Status**: research is iterating, not closed.",
+        "problem": "frontmatter 有两行 `**Status**:` (line 3 与 line 7), 第二行覆盖/冲突第一行 (Active vs 'research is iterating, not closed')。且声称 'Active' (2026-05-08), 但项目早已越过 Phase 3C roadmap 进入 cut-family LBBD / Phase 1.2 (CLAUDE.md)。无 historical 标注。README 状态地图也把 3C 标 '规划+实测' — 整套 3A/3B/3C 框架已被新范式取代。",
+        "suggested_fix": "合并两行 Status 为一行; 加 superseded banner 指向当前 cut-family LBBD 范式; 或明确这是 2026-05-08 历史 roadmap 快照。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-7",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read docs/phase3c_optimization_roadmap_v1.md lines 1-30: line 4 `**Status**: Active — supersedes prior research-mode planning` and line 7 `**Status**: research is iterating, not closed.` both present — confirmed dual `**Status**:` key in frontmatter, exact wording matches. Doc dated 2026-05-08 (line 3), no historical/superseded banner. README.md line 9 confirmed: `**3C** 加速 / 路线优化 | 📋 规划 + 实测 | ... 见 docs/phase3c_optimization_roadmap_v1.md`, and the status map is stamped 2026-05-16 (README line 3). CLAUDE.md confirms the paradigm has moved on: '范式已从早期 tuning / Phase-3B 转为 cut-family LBBD 重设计' and 'Current Phase: 1.2 spike close' — so the 3A/3B/3C framing and the 'Active' 3C roadmap are stale relative to the current cut-family LBBD / Phase 1.2 line. All load-bearing specifics (line numbers, wording, README cross-ref, staleness) verified.",
+          "corrected_note": "细节基本准确; 一处措辞需校正: 两行 `**Status**:` 并非严格逻辑矛盾——line 4 是文档生命周期状态 (本 roadmap 取代旧 research-mode planning), line 7 是研究内容的认知状态 (尚在迭代, 每个 solver-param +N% 项 land 前须源码审计)。两者语义不同, 谈不上\"第二行覆盖/冲突第一行\"。真实缺陷是: (a) frontmatter 出现两个同名 `**Status**:` 键 (结构 lint 问题, reader 易困惑), (b) 整个 3A/3B/3C 框架 + 'Active' 已被 cut-family LBBD / Phase 1.2 范式取代却无 superseded 标注 (doc-currency 问题)。severity 偏 low-med。"
+        }
+      },
+      {
+        "id": "G-8",
+        "doc_path": "docs/env_variable_index.md:96",
+        "kind": "currency",
+        "severity": "med",
+        "claim": "| `EXACT_MASTER_GHOST_ANCHOR_FILTER` | bool/int | 0 | exact_coordinate_master.py | A 方案 ghost_anchor_filter, env-gated, -80% search space |",
+        "problem": "三处不准: (1) Reader 错 — 实际 reader 是 `src/search/benders_loop.py:417/427` (_parse 函数), `exact_coordinate_master.py` 里 grep GHOST_ANCHOR_FILTER 零匹配。(2) Type 错 — 不是 bool/int, 是字符串 ''x,y' pairs separated by ';''  (benders_loop.py:435-440, 解析成 frozenset[(int,int)] 坐标对; CLAUDE.md 实用 `=22,28`)。(3) Default '0' 错 — 默认 raw='' → 返回 None (无 filter)。",
+        "suggested_fix": "改 Reader=benders_loop.py; Type=str (coordinate pairs 'x,y;x,y'); Default=(empty → no filter); 作用补充 '锁定 ghost anchor 到指定坐标对集合'。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-8",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读 docs/env_variable_index.md:96 原文确认 claim 字面对得上 (Type=bool/int, Default=0, Reader=exact_coordinate_master.py, 作用=A 方案 ghost_anchor_filter -80%)。三处不准全部坐实: (1) Reader 错 — Grep GHOST_ANCHOR_FILTER 在 src/models/exact_coordinate_master.py 零匹配; 真 reader 是 src/search/benders_loop.py:417 (常量) / :427 (_resolve_ghost_anchor_filter_from_env 读 env)。(2) Type 错 — benders_loop.py:423/439 明确 'x,y' pairs separated by ';', :430-448 解析成 frozenset[(int,int)] 坐标对, 非 bool/int; CLAUDE.md PCR-CUT 段实用 EXACT_MASTER_GHOST_ANCHOR_FILTER=22,28。(3) Default 错 — benders_loop.py:427 os.environ.get(..., \"\") 默认空串, :428-429 not raw.strip() → return None (无 filter), 非 '0'。suggested_fix 方向正确。"
+        }
+      },
+      {
+        "id": "G-9",
+        "doc_path": "docs/env_variable_index.md (Reader 列, 多行: 41,42,127-131,176-180 等)",
+        "kind": "broken-ref",
+        "severity": "low",
+        "claim": "Reader 列引用如 `phase3b_coordinate_validation_*.py` / `phase3b_pose_order_validation_probe.py` / `phase3b same X capacity anchor sweep` / `phase3b boundary port precheck`",
+        "problem": "这些 Reader 文件指针在 2026-05-16 cleanup 动作 8 (e4bad28) 物理重组后已失效: phase3b 文件已从 `src/search/phase3b_*.py` 移到 `src/search/phase3b/<cluster>/<short_name>.py` 且剥离 phase3b_ 前缀 (实测 `ls src/search/phase3b_*.py`=0)。Reader 列作为 'grep 入口' 指针现指向不存在的旧路径。低 sev 因这些多是内部 advisory env。",
+        "suggested_fix": "更新 Reader 列为新 cluster 路径 (如 src/search/phase3b/coordinate_validation/*), 或在文档顶部统一注明 'phase3b reader 路径已重组到 src/search/phase3b/<cluster>/, 见 phase3b_module_index 更新版'。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-9",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/env_variable_index.md 原文: claim 引用的 Reader 指针逐一对上 — 行41 `phase3b_coordinate_validation_*.py`, 行42 `phase3b_pose_order_validation_probe.py`, 行176/177 `phase3b_coordinate_validation_direct_equality_core.py`, 行178 `phase3b_full_forced_hint_field_family_delta.py`, 行179 `phase3b same X capacity anchor sweep`, 行120 `phase3b boundary port precheck`, 行127-131 `phase3b probe/coordinate validation`。文件系统核实: `ls src/search/phase3b_*.py` 真实匹配数=0 (之前 wc 显示的 1 是错误信息行); 三个被引旧路径 (phase3b_coordinate_validation_direct_equality_core.py / phase3b_pose_order_validation_probe.py / phase3b_full_forced_hint_field_family_delta.py) 全 MISSING, 对应新路径 src/search/phase3b/<cluster>/<short>.py 全 EXISTS。git 确认 e4bad28 \"phase3b 670 文件物理重组: 平铺前缀 → cluster 子目录\" (2026-05-16 10:42), 而 env_variable_index.md 最后提交 1a280dd 在 2026-05-16 09:17 (重组前约 1.5h), e4bad28 未触碰该文档 → Reader 列指针确实指向不存在的旧路径, stale 成立。severity=low 合理 (多为内部 advisory env)。",
+          "corrected_note": "claim 方向与细节均准确。补充精度: (1) `phase3b boundary port precheck` (行120 EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS) 在新结构里无单独 boundary cluster 目录, 该指针本就是模糊散文式而非精确文件路径; (2) Reader 列含两种形态 — 带 .py 后缀的旧文件路径 (行41/42/176-178, 明确失效) 和散文式描述 (行120/179/127-131 如 \"phase3b probe\"/\"phase3b same X capacity anchor sweep\", 本就非可 grep 的精确路径, 重组后更对不上)。建议 fix 按这两类分别处理: 前者改成 src/search/phase3b/<cluster>/<short>.py, 后者也指到对应 cluster 目录。"
+        }
+      },
+      {
+        "id": "G-10",
+        "doc_path": "docs/phase3b_module_index.md:276-291 (真正常用的 active 主线)",
+        "kind": "overclaim",
+        "severity": "med",
+        "claim": "670 个文件里大部分是 **历史 spike / audit 产物**, 但少数是 **active 主线**, 每天可能用 ... | `phase3b_b5a_localized_evidence_validator.py` | active | B5a 当前 sprint validator | ... `phase3b_forced_anchor_proto_reduction.py` | active (大文件 3314 行) | 锚点空间降维 |",
+        "problem": "把多个 phase3b 文件标为 'active 主线, 每天可能用' / 'B5a 当前 sprint', 但 CLAUDE.md 明确 Phase 3B tuning paradigm 已整体被 cut-family LBBD 取代, B5a sprint 不再是当前 sprint (当前是 Phase 1.2 spike close + Design A/B + cut-family F1-F9)。'当前 sprint validator' / '每天可能用' 是夸大的现状声明。'phase3b_long_run_preflight.py active' 也存疑 (现生产走 production_readiness_gate.py + run_campaign_p2_workers1.sh)。",
+        "suggested_fix": "把 'active 主线/当前 sprint/每天用' 措辞降级为 'Phase3B 时期相对常用 (历史)', 注明当前范式已转 cut-family LBBD, 这些不再是 daily active。",
+        "unit_id": "G",
+        "verdict": {
+          "id": "G-10",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/phase3b_module_index.md。claim 原文逐字对得上: 行 276 标题 \"真正常用的 Phase 3B 主线 (active 维护)\", 行 278 \"670 个文件里大部分是历史 spike/audit/sprint 产物, 但少数是 active 主线, 每天可能用:\", 行 282 \"phase3b_long_run_preflight.py | active | 168h campaign 启动前 preflight\", 行 286 \"phase3b_b5a_localized_evidence_validator.py | active | B5a 当前 sprint validator\", 行 287-289 三个大文件标 active。文件顶部行 3 \"最后更新: 2026-05-16\" 证明这份索引是 5-16 快照, 此后范式已变。CLAUDE.md \"Current Phase\" 段明确: 当前 phase = \"Phase 1.2 spike close → P1.3A\"; \"范式已从早期 tuning / Phase-3B 转为 cut-family LBBD 重设计 (F1-F9)\"; \"历史 Phase 3B (tuning paradigm) 已被取代\"。所以把 B5a 标为 \"当前 sprint\" 与现状权威源 (CLAUDE.md + memory handoff_windows_ninth_review_pending) 直接冲突——B5a 不是当前 sprint。production 走 production_readiness_gate.py (CLAUDE.md:173) + run_campaign_p2_workers1.sh wrapper (CLAUDE.md:213,224), 文档没把 phase3b_long_run_preflight.py 列进 168h 启动 runbook, 所以 \"active / 每天可能用\" 对 preflight 也存疑。文件物理存在 (src/search/phase3b/b5a/localized_evidence/validator.py 等), 但\"active 主线/每天用/当前 sprint\"是夸大的现状声明, overclaim 成立。",
+          "corrected_note": "finding 方向与细节均准确。一个小补正: 文档实际把这些文件归在 \"phase3b_*\" 旧 flat 命名下, 而仓库现已重组为 src/search/phase3b/b5a/... 子包路径 (validator.py 等), 索引文档的文件名也已 stale (额外佐证该索引是历史快照)。建议修复措辞同 suggested_fix: 把 \"active 主线/当前 sprint/每天用\" 降级为 \"Phase 3B 时期相对常用 (历史)\", 并在文档顶部加一句 \"当前范式已转 cut-family LBBD (Phase 1.2 spike close → P1.3A), 本索引为 2026-05-16 历史快照, 下列文件不再是 daily active\"。"
+        }
+      },
+      {
+        "id": "H-1",
+        "doc_path": "docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json:5,9 (_meta.rule + _meta.projection_status)",
+        "kind": "staleness",
+        "severity": "med",
+        "claim": "_meta.rule: \"README 漂移 (如 v28 包 418 vs 此处) 不自动报红\"; 同一比较隐含核心节点 cuts_tests_total = 441。但 numbers.cuts_tests_total.value 实际已是 442 (line 13), 经 live pytest --collect-only src/tests/cuts 核实 = 442。",
+        "problem": "手写 provenance/散文滞后于值的 bump。cuts_tests_total 经历 437→441→442 (git -p 确认)。bump 到 442 时: (a) _meta 两处散文里 \"此处\" 仍指 441 (v28 包 418 vs 核心节点的对比是核心节点=441 时写的, 现核心节点=442), (b) stale 数组 [413,414,416,418,425,437] 没把 441 加进去。强制函数只断言 value==live_count (442==442 通过, 故 --check 不报), 不扫散文也不扫 stale 数组 → 正是 CLAUDE.md 警告的 \"散文/stale 静默漂\" 高产 bug, 也是任务点名的 \"手敲数字没回填\"。注意这不影响 force gate 的正确性, 但 _meta 散文现在传达了一个错误的核心节点值。",
+        "suggested_fix": "把 441 追加进 cuts_tests_total.stale 数组; 把 _meta.rule / _meta.projection_status 里 \"v28 包 418 vs 此处\" 的对比要么去掉具体数 (改成相对措辞), 要么把 v28 包当时的字面量 + 当时核心节点值都标成历史快照并带日期, 避免随每次 cuts test bump 再漂。",
+        "unit_id": "H",
+        "verdict": {
+          "id": "H-1",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "读了 docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json 全文: line 13 value=442; stale 数组 (line 16-23) = [413,414,416,418,425,437], 确实缺 441; _meta.rule (line 5) 含 \"README 漂移 (如 v28 包 418 vs 此处) 不自动报红\"。Live: `.venv pytest --collect-only -q src/tests/cuts` = 442 tests collected, 与 value 一致。git -p 确认值轨迹 425→437→441→442: 441→442 的 commit d4ae058 只改了 value 行 (-441/+442), 既没把 441 加进 stale 数组, 也没动 _meta.rule 那行散文; \"418 vs 此处\" 散文是 commit 9375420 在 value=441 时写的, 故其隐含 \"此处\" 值=441 现已 stale (此处实为 442)。v28 包字面量 418 确认 (cc_context/review/build_v28_win.py line 80: \"cuts tests = **418**\")。强制函数 src/tests/test_authoritative_numbers_currency.py line 40 只断言 value==count_cuts_tests() (注释明说 deliberately does NOT scan prose), 442==442 通过故 --check 不报红 —— 正是 finding 说的散文/stale 静默漂, 不影响 force gate 正确性。",
+          "corrected_note": "Finding 描述准确。补一点精度: stale 数组里 418 本就在 (它既是 v28 包字面量也是历史核心节点值之一), finding 没说要删它, 只说该把 441 补进 stale —— 这是对的。真正的两处 gap: (a) 441 (442 之前的 immediate-prior 值) 漏进 stale 数组; (b) _meta.rule/_meta.projection_status 的 \"v28 包 418 vs 此处\" 对比是 value=441 时写的, \"此处\" 未带日期/未冻成快照, 每次 cuts test bump 都会让这个隐含对比值再漂。严重度 med 合理: 不破坏 soundness force gate, 只是 _meta 散文现在传达了一个已过时的核心节点值 (441 而非现行 442)。"
+        }
+      },
+      {
+        "id": "H-2",
+        "doc_path": "docs/research/p1_2_spike_sizing_gate_20260601/RESULTS.md:24 (active v6 summary 表)",
+        "kind": "inconsistency",
+        "severity": "low",
+        "claim": "| F9 group-all stress proxy | 12,845 | (顶部 active v6/v27 summary 表的一行)",
+        "problem": "12,845 (F9 group-all stress proxy, = sizing_gate group-all 列, 含 power_pole 等非 mfg 类型) 出现在 RESULTS.md active summary 但**不在核心节点 authoritative_numbers.json**里 (核心节点只有 f9_all_manufacturing_proxy_max=11644, 无 group-all)。RESULTS.md 是核心节点声明的 projection_target (projection_targets 列了它), 按架构其权威数字应来自核心节点; 12,845 是一个无 SOT 背书的手写数。因 spike fixture 在 master 缺席 (data/cuts/spike/ 不存在), 本机无法重算核实它对不对。它跟 11,644 不矛盾 (是不同列), 故仅 low: 是一个 SOT 覆盖缺口 + 不可在 master 复核的手写数, 不是确定错误。",
+        "suggested_fix": "要么把 f9_group_all_max=12845 也纳入核心节点 numbers (并在 sizing_gate.compute_sizing_numbers 返回), 让它有 SOT 背书 + spike 上下文可重算; 要么在 RESULTS.md 该行标注它不在 SOT 跟踪范围 (是额外 stress proxy), 避免被当成权威投影数。",
+        "unit_id": "H",
+        "verdict": {
+          "id": "H-2",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "RESULTS.md:24 原文逐字确认 = `| F9 group-all stress proxy | 12,845 |` (active v6/v27 summary 表, 行号对). 核心节点 authoritative_numbers.json 的 numbers 块只有 6 个 sizing int (type_pool_total_poses, concrete_master_var_upper_proxy, f9_single_group_max=784, f9_same_template_proxy_max=4608, f9_all_manufacturing_proxy_max=11644, f4_component_reach_group_expanded_max=20157) —— 无 f9_group_all/12845, 确认缺位. sizing_gate.py compute_sizing_numbers() (line 289-336, 喂 SoT 的函数) 的 return dict 恰好就是那 6 个 key, 且对 F9 只算 f9_single/f9_same_template/f9_mfg_group(=11644), 根本不算 group-all; 12,845 只出现在 main() 打印路径 (line 400-445, f9_group_all = concrete_count 无 fts 过滤 → 含 power_pole 等全 facility 类型, 对比 line 321 的 mfg-filtered 11644) —— 故 12,845 确为 SoT 管线之外的手写数. RESULTS.md 确在 projection_targets 列表 (JSON line 93). _meta 确认 sizing 输入 fixture 在 data/cuts/spike/ (master 缺席), 本机不可重算. 12,845 与 11,644 是不同列 (group-all 含全类型 vs all-mfg 仅制造类), 不矛盾, low 严重度判定正确.",
+          "corrected_note": ""
+        }
+      },
+      {
+        "id": "H-4",
+        "doc_path": "docs/research/INDEX.md (整篇) vs docs/research/ 下 ~25 个 phase-1.2 子目录",
+        "kind": "staleness",
+        "severity": "low",
+        "claim": "INDEX.md: \"This is the master index for the multi-round optimization research kicked off 2026-05-07 / 2026-05-08\" — 仅覆盖 Round 1-13 (2026-05-07/08) 的 Phase 3C 优化调研 transcript。",
+        "problem": "docs/research/ 下大量更晚的研究子目录 (p1_2b_f*_gemini_round*_20260524/25/26, phase1_2_gpt_pro_audit_20260525, prod_scale_spike_design_20260525, p1_2_spike_sizing_gate_20260601, literature_review_papers_20260524 等 ~25 个) 完全不在 INDEX.md 里 (grep 确认 NOT in INDEX)。这些是 \"该进 INDEX 没进\" 的孤儿。缓解情形: INDEX 自我限定为 \"Phase 3C optimization research transcript index\", 这些后续 dir 属不同性质研究 (gemini cross-check / GPT audit / spike design), 故是定位/范围问题非错误声明; 标 low。风险是新读者把 INDEX 当 docs/research 全量目录, 找不到这些 live/近期工件。",
+        "suggested_fix": "在 INDEX.md 顶部加一句明确范围 (\"本 index 仅覆盖 2026-05-07/08 Phase 3C 优化调研 transcript; 之后的 phase-1.2 cut-family gemini/GPT 审查 + spike design + sizing gate 子目录见各自 README\"), 或加一个简短的 \"其他研究归档\" 区块列出后续 dir 名+一句话, 防孤儿。",
+        "unit_id": "H",
+        "verdict": {
+          "id": "H-4",
+          "is_real": true,
+          "confidence": "high",
+          "evidence": "Read D:/追光/zmd/docs/research/INDEX.md: line 1 title = \"# Phase 3C Optimization Research — Agent Transcript Index\"; lines 3-5 contain verbatim \"This is the master index for the multi-round optimization research kicked off 2026-05-07 / 2026-05-08.\" INDEX covers only Rounds 1-13 (all 2026-05-07/08, R13 refresh 2026-05-10). PowerShell Get-ChildItem confirms 45 non-transcript subdirs under docs/research/ (excluding agent_transcripts + profiles); 24 are dated 2026-05-24 onward (p1_2b_f*_gemini_round*, phase1_2_gpt_pro_audit_20260525, prod_scale_spike_design_20260525, p1_2_spike_sizing_gate_20260601, literature_review_papers_20260524), plus ~20 earlier May-16-21 paradigm-search dirs (b1_*, cand_c_*, smt_mt_*, pcr_cut_*, etc.). Grep over INDEX.md for all these subdir-name patterns = \"No matches found\", confirming they are genuine orphans never referenced. Finding's quote, orphan list, and low-severity self-classification (scope/navigation gap, not false claim, since INDEX self-titles as Phase 3C transcript index) all hold up.",
+          "corrected_note": "Count is understated/imprecise: not \"~25\" orphans but 45 total non-transcript subdirs absent from INDEX — of which 24 are the post-2026-05-24 phase-1.2 cut-family era (gemini/GPT audit/spike/sizing) the finding lists, plus ~20 earlier May-16-21 paradigm-search dirs (b1_pose_bool, cand_c_column, smt_mt_outer, pcr_cut, l14/v8/v10, etc.) that are equally orphaned. Substance unchanged: INDEX is scoped to Rounds 1-13 transcripts only and no later subdir is linked. Severity low is correct (no false claim; INDEX self-limits via its title)."
+        }
+      }
+    ],
+    "refuted_summary": [
+      {
+        "id": "C-1",
+        "unit": "C",
+        "claim": "### 测试 / 静态 gate 状态 (2026-05-24 复查后) - pytest: **189 cuts test pass** (普通模式 + `python -O`; v11 为 188，本次新增 F3 out-of-grid cell regression) ... radon: average A, no D",
+        "why_refuted": "读了 D:/追光/zmd/docs/项目说明/06_current_status.md 全文。finding 的字面引用准确: line 57 确有 \"189 cuts test pass (普通模式 + python -O; v11 为 188...)\"。核心节点 docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json cuts_tests_total=442 (189 甚至不在 stale 列, stale 从 413 起)。但 finding 的 staleness 结论错: line 56-62 那个 ### 子段并非现状段, 它嵌在全文唯一的 ## 标题下 (line 9: \"## (历史里程碑) Phase 1.1 GO, 2026-05-24 final polish 后\", grep ^## 确认只有这一个 ##)。line 11 明文免责: \"以下为 Phase 1.1 闭环时的现状细则, 保留作历史记录。当前状态见上方。\" 真·当前状态在顶部 (line 1 标题 + line 5) 已正确写明 Phase 1.2 7/7 family close + F3 done + GO_WITH_MINOR + 下一步 P1.3A。子段标题自身带日期 (2026-05-24 复查后) 锚定 Phase 1.1 时代。189/188 仅出现在该历史段 (line 57) 和 Audit archive 列报告处 (line 88-89, 全是 dated Phase 1.1 audit 报告引用)。按 CLAUDE.md 引的 memory-currency-protocol: \"历史段引旧值是正常的, 不算 drift; 只有'声称当前'却跟 SoT 冲突才算真\"。189 正是\"历史段引旧值\"情形, 不是 drift。finding 把一个被显式标注 (历史里程碑) 的历史子段误当成\"现状段(currency 风险最高)\"了。"
+      },
+      {
+        "id": "C-13",
+        "unit": "C",
+        "claim": "| [05_open_questions.md] | 待定 mathematical questions (33 + 6 Q) | 544 | math §5 + plan §17 |",
+        "why_refuted": "读了 README.md:13 (claim 原文逐字命中: `| [05_open_questions.md] | 待定 mathematical questions (33 + 6 Q) | 544 | math §5 + plan §17 |`) 和整份 05_open_questions.md。核 \"33+6\": (1) \"+6\" 精确对应 §17 段的 6 条编号项 (awk grep '^[0-9].' lines 542-555 = 6, 且 README 来源列写 \"plan §17\" 完全吻合) — 准确。(2) \"33\" 对应 §5: §5.9 summary 表实测 36 行 (awk grep '^| ' lines 489-525 = 36, 即 Q1-Q19 共 19 编号 Q + F1-LP/F1-int/.../F9-F1 共 17 family 行)。其中 Q5 (frozen/死)、Q10 (VERDICT)、Q13 (CLOSED) 已 resolved → 36-3=33 真·open。\"33 open §5 Q + 6 plan §17 Q\" 是内部自洽且大致准确的描述。finding 自身计数有误: 它称 \"约 19 family 行\" 实为 17 行。finding 又把文末 \"8 个 P0\" (line 537, 按 severity 取的子集计数) 跟总数 \"33+6\" 当作不一致来证 staleness, 这是 category error (P0 是 open Q 按级别的子集, 本就不该等于 33)。唯一真漂的是行数 544 (实测 wc -l=556), 但那是 C-4 的 scope, finding 自己也注明 \"见 C-4\"。C-13 specific 主张的 \"33+6 是手抄计数 staleness\" 不成立。"
+      },
+      {
+        "id": "D-12",
+        "unit": "D",
+        "claim": "15 §21.3: red_fixtures '5 个 known-infeasibility 反例'; README line 70 'F1-F5*.md'; glossary line 83 'red fixture ... 5 个 F1-F5'。但 15 §21.7 line 113: '跟现有 5 red fixture ... 加成 16 fixture' (5+11)。",
+        "why_refuted": "读了 4 处真文件。确认: 15_workflow_testing.md:31 §21.3 确有 \"5 个 known-infeasibility 反例\"; line 113 §21.7 确有 \"跟现有 5 red fixture (...F1-F5*.md) 加成 16 fixture\"; 21_glossary.md:83 确有 \"red fixture ... 5 个 F1-F5\"。文件系统核实 red_fixtures/ 恰好 5 个 .md (F1_-F5_) + README.md，与\"现有 5\"一致；11 个 P0 matrix fixture 确为未 land 计划。但 finding 的证据链有事实错误: 声称 \"README line 70 'F1-F5*.md'\" —— 对 README.md 全文 grep (F1-F5/red fixture/red_fixtures/known-infeasibility) 返回 0 匹配; README line 70 实为一条 audit 脚本 bash 命令, 全文无任何 red fixture 引用。finding 把 glossary line 125 的 `F1-F5*.md` 误归给了 README。除此之外, 5 vs 16 不构成真矛盾 (5=磁盘现有实现文件, 16=现有+计划), §21.7 已明确把 11 个标为 \"Phase 1.2 P0 ... 待 land\" 并给出 per-family land 顺序; glossary 已指向 §21.3, §21.3 与 §21.7 同在 doc 15, reviewer 顺读即见。按项目约定 plan/计划性引不同计数属正常非 drift。severity low 且仅为补交叉引用的建议, 非真不一致, 叠加 README 误指, 判不成立。"
+      },
+      {
+        "id": "D-13",
+        "unit": "D",
+        "claim": "power_pole — 50 个 (exploratory cap 旧值, certified_exact 无 hard cap) 电力柱 facility",
+        "why_refuted": "读了 docs/项目说明/21_glossary.md。claim 原文在第 59 行 (finding header 标 :60, 差一行) 逐字匹配: \"power_pole — 50 个 (exploratory cap 旧值, certified_exact 无 hard cap) 电力柱 facility\"。关键: 该定义已内联显式标注 \"exploratory cap 旧值, certified_exact 无 hard cap\", 直接否定了把 50 当 certified bound 的读法 —— finding 自己也承认 \"措辞本身正确...这点 OK\"。kind=overclaim 但根本不存在 overclaim: 文本未声称 50 是 certified 约束, 反而主动负向标注。跨文档核实一致无矛盾: 01_overview.md:49 \"历史 cap (e.g. 50 power_pole + 10 storage_box) 是 exploratory 用, 不进 certified_exact\"; glossary §A.7 第 96 行 \"exploratory 的 50 power pole + 10 storage box cap 不进 certified_exact\" —— 03/04 doc 无任何把 50 当 exact bound 的表述 (03/04 只在 F8 mode geometric 上下文提 power pole, 无 50)。SoT 核对: data/preprocessed/mandatory_exact_instances.json 全 266 mandatory 中无 power_pole 条目 (132 mfg_3x3 / 49 mfg_5x5 / 46 BSP / 38 mfg_6x4 / 1 protocol_core), 证实 50 确是 exploratory 时代数字、非 certified 计数, 与 PROJECT_LOCK \"exact 模式无 50 pole hard cap\" 一致。finding 是自述 \"预防性低危提示, 非硬错\"; suggested_fix 仅把同一句话内容换序 (定义主体 vs 括注), 信息完全等价, 无实际错误可修。属假阳 (把风格偏好包装成 finding)。"
+      },
+      {
+        "id": "H-3",
+        "unit": "H",
+        "claim": "# P1.2 spike — 真 cut body sizing cheap gate 结果 (active v6 / v27)",
+        "why_refuted": "逐项核实: (1) RESULTS.md line 1 标题原文确为 \"# P1.2 spike — 真 cut body sizing cheap gate 结果 (active v6 / v27)\" — 措辞/行号对得上。(2) `git log -- RESULTS.md` 确认最后一次 patch = beadc3b \"v27 外审 R1/R3 doc patches\"，文件在 v27→v28 间未再被改动。(3) cc_context/review/build_v28_win.py 确实存在; 核心节点 authoritative_numbers.json _meta 确实多处引用 \"v28 包\"。所以 finding 的**事实**全部成立。但判 is_real=false 因为它把一个正确的标记当成 defect: \"v6/v27\" 里 v6=内容语义版本, v27=last-patched/last-reviewed-at 轮号; 而该文件**确实**是在 v27 轮最后被 patch 的 (v28 只改 projection 接线/build 脚本, 没碰 RESULTS.md sizing 内容)。一个忠实记录\"上次被改是哪轮\"的 marker 不是 stale —— 它准确反映了最后改动轮次。项目自身协议明确把这类 review 轮号标记排除在强制函数之外 (CLAUDE.md: \"review 轮号每轮都漂\"; 核心节点 _meta projection_status/enforcement_tiers: 强制函数\"不扫散文也不扫 projection_targets\", 此类 marker 是\"provenance 供人读、非自动 gate\")。finding 自己也承认 low 危且\"不误导 sizing 结论\"。综合: 在把它当 review-round 标记时它是准确的, finding 是在把项目明确容忍的预期行为标成缺陷, 属假阳。"
+      }
+    ]
+  }
+}

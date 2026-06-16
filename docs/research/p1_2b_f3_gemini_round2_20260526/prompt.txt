@@ -1,0 +1,141 @@
+# F3 port_exposure generator — Gemini round 2 cross-check (fix verify)
+
+## Round 1 verdict 回顾
+
+你 (Gemini) round 1 verdict: **PASS (with completeness warnings)**. 5/6
+finding PASS, 1 WARNING (silent skip paths 缺 observability):
+
+> Action: It is highly recommended to inject `logging.warning` or
+> `logging.debug` on these `return []` / `continue` paths before merging.
+> If A3 real-emit fails to reach 45 certs, without logs, proving whether
+> the cause was geometry (no actual blockages) vs. generator bug (silent
+> misses) becomes a mathematically undecidable state observation problem
+> without recompilation.
+
+## Round 2 fix (commit b5860bc)
+
+加 `_logger.debug` 到 7 处 bug-risk silent skip path. 区分 **bug-risk path**
+(加 log — state 不一致 / canonical data quality 问题) 跟 **spec § explicit
+skip** (不加 log — spec §1/§6/§9 数学语义).
+
+### Bug-risk path (加 log)
+
+```python
+# 1. candidate_placements None (state 应 always 有)
+if state.candidate_placements is None:
+    _logger.debug("F3 generator skip: state.candidate_placements is None")
+    return []
+
+# 2. instance_to_facility_type None
+if state.instance_to_facility_type is None:
+    _logger.debug("F3 generator skip: state.instance_to_facility_type is None")
+    return []
+
+# 3. targets empty (含 cell_owner_size 上下文)
+if not targets:
+    _logger.debug(
+        "F3 generator skip: empty targets (target_poses=%s, cell_owner_size=%d)",
+        "explicit" if target_poses is not None else "derived",
+        len(state.cell_owner),
+    )
+    return []
+
+# 4. pose_ports lookup miss per facility (facility 应有 ports)
+ports = pose_ports(state, facility_group, facility_pose_id)
+if ports is None:
+    _logger.debug(
+        "F3 generator skip facility: pose_ports lookup miss group=%s pose=%s",
+        facility_group, facility_pose_id,
+    )
+    continue
+
+# 5/6/7. port_entry x/y/dir malformed (canonical data quality)
+if not isinstance(port_x, int) or isinstance(port_x, bool):
+    _logger.debug("F3 skip port: malformed x=%r in port_entry=%r", port_x, port_entry)
+    return None
+# (相同 pattern for y, dir)
+
+# 8. direction_offset ValueError
+try:
+    dx, dy = direction_offset(port_dir)
+except ValueError:
+    _logger.debug("F3 skip port: bad direction=%r port_cell=%r", port_dir, port_cell)
+    return None
+
+# 9. blocking_gstate None (state.groups/cell_owner inconsistency)
+if blocking_gstate is None:
+    _logger.debug(
+        "F3 skip port: blocking_gstate None for group=%s slot=%d (state.groups/cell_owner inconsistency)",
+        blocking_group, blocking_slot,
+    )
+    return None
+
+# 10. blocking_slot out of range
+if blocking_slot < 0 or blocking_slot >= len(blocking_gstate.selected_poses):
+    _logger.debug(
+        "F3 skip port: blocking_slot=%d out of range for group=%s (len selected_poses=%d)",
+        blocking_slot, blocking_group, len(blocking_gstate.selected_poses),
+    )
+    return None
+```
+
+### Spec § explicit skip (不加 log, 是数学语义不是 bug)
+
+```python
+# Spec §6 + §9 OQ#2: ghost-occluded / out-of-grid front skip (not bugs)
+if not _in_grid(front_cell):
+    return None
+if front_cell in state.ghost_cells:
+    return None
+if front_cell in state.exterior_blocks:
+    return None
+
+# Spec §1 free front (not a bug, 不需要 cut)
+if blocking_entry is None:
+    return None  # front is free — no cut needed (not a bug)
+
+# Explicit dedup (not a bug)
+if sig in seen_cuts:
+    return None
+seen_cuts.add(sig)
+```
+
+### Verify (round 2 commit b5860bc)
+
+- pytest src/tests/cuts/ -q: 413 passed (unchanged from round 1)
+- mypy --strict --explicit-package-bases src/cuts/: 0 errors
+- ruff check src/cuts/ src/tests/cuts/: clean
+- preflight gate: 8/8 PASS
+
+## Cross-check 重点 (round 2)
+
+1. Round 1 finding 6 WARNING 是否 close? logging.debug 选择 (vs warning /
+   info) OK?
+   - Rationale: A3 oracle real-emit 跑时若 DEBUG_LEVEL log enabled 能 dump
+     所有 skip 原因; 否则 silent. .debug 不污染 production INFO log. 但
+     完全可被 disabled (Python logging default level=WARNING).
+   - 替代: .warning 更显眼但 A3 fixture 跑时若有 50+ port malformed 会
+     spam log. .info 中间. 当前选 .debug.
+
+2. Bug-risk vs spec § explicit skip 分类是否正确? 即:
+   - "ghost-occluded / exterior-blocked / out-of-grid / free front" 不加 log
+     合理吗 (这些是 spec § 数学语义 skip, 不是 bug)?
+   - "blocking_gstate None / blocking_slot out of range" 算 bug-risk 合理吗
+     (这些应该 state.groups 跟 cell_owner consistent 时不发生)?
+
+3. 是否有 round 1 没 catch 的新 silent skip 漏掉 logging? grep `return None`
+   / `return []` / `continue` 应该都 covered.
+
+4. Log message 含 context (e.g. group/pose/cell_owner_size) 是否够 diagnose?
+   A3 fixture 跑完后 < 45 cert 时, 这些 log 能 reconstruct 出 generator 走
+   过哪些 skip path 吗?
+
+## 不可达性论证要求
+
+若 finding 暗示某 logging 选择 "做不到 / 必须 X" 必须给形式化证明 (复杂度 /
+proof system / 资源不等式 / 引文献). 不接受 "I believe" / "通常这样".
+
+## 任务
+
+按 round 2 重点 1-4 验. 末尾 1-2 句 overall verdict (PASS / NEED_FIX /
+NOT_SURE).

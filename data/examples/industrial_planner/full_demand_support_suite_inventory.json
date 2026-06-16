@@ -1,0 +1,27 @@
+{
+  "inventory_version": 1,
+  "scope_note": "The active checked-in support-suite inventory is intentionally narrowed to the single 70×70 valley4_protocol_core contract. Dormant future-scope report sets are preserved separately below and are excluded from the active CI gate.",
+  "entries": [
+    {
+      "report_set_id": "default_full_demand_support_suite",
+      "blueprint_path": "data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json",
+      "output_dir": "data/examples/industrial_planner",
+      "notes": [
+        "active single-base 70×70 support report set for valley4_protocol_core only"
+      ]
+    }
+  ],
+  "deactivated_entries": [
+    {
+      "report_set_id": "protocol_core_transition_support_suite",
+      "blueprint_path": "data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json",
+      "output_dir": "data/examples/industrial_planner/protocol_core_transition_support_suite",
+      "base_ids": [
+        "valley4_protocol_core",
+        "wuling_protocol_core"
+      ],
+      "status": "future_scope",
+      "reason": "Focused valley4/wuling transition slice is preserved for later reactivation but is outside the active single-base contract."
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+# Phase 1.2 close gate
+
+Current gate state: BLOCKED by default.
+
+Phase 1.2 spike close is deliberately not treated as complete yet.  V50 changed
+the gate model: the **three clean full reviews** rule remains a project-owner
+standard, but the repository no longer tries to prove or count those reviews
+from receipts, Markdown reports, package metadata, source-tree manifests, or
+package-internal Git authority.
+
+The previous automatic counter became its own attack surface during V47-V50.
+Those rounds found receipt/state-machine false-ready paths rather than new
+cut-family algorithmic bugs.  The safer model is now:
+
+- the owner keeps the clean-review count outside the repo;
+- review receipts are optional/informational audit records;
+- the repo stays fail-closed until an explicit owner manual decision opens
+  P1.3B;
+- `next_phase_entry.allowed` must remain false without that decision.
+
+## Current review anchor
+
+After V57-V98, lifecycle-evidence consolidation, certified-surface verifier
+centralization, authority-boundary hardening, replayable terminal frontier
+evidence sealing, project-bound terminal-evidence hardening, direct
+manifest-writer disk-authority hardening, canonical certified-manifest
+publication hardening, terminal candidate-domain axis sealing, deny-unknown
+certified-surface hardening, partial-precheck/release-claim sealing, and
+oriented-domain/persisted-cut-replay sealing, the current review anchor is:
+
+```text
+v98_b5a_symlink_authority_sealing
+```
+
+Those rounds did not reopen the old automatic receipt/counter gate.  They found
+a real certified solver safety surface: certified lifecycle evidence must stay
+faithful from exact-safe cut replay through master-domain construction, outer
+frontier termination, and certified export surfaces.  V73 made the public
+CERTIFIED decision a single central verifier shared by the inspector, delivery
+manifest path, and B5A anchor publication.  V74 hardened that verifier so disk
+artifacts, recomputed exact hashes, strict JSON, and regular-file boundaries are
+authoritative over caller memory payloads.  V75 then closes the remaining
+terminal-proof seam beneath the verifier: full-frontier exhaustion is now a
+replayable, digest-sealed candidate-domain projection with an authoritative
+safe-area bound, not just a stop-reason string plus an incumbent.  V76 then
+confirmed the central public-verifier architecture and tightened the
+pre-publication helper path: in-memory terminal evidence must replay against the
+current project grid and authoritative safe-area bound before it may seed a
+`best_certified_result` or delivery-manifest payload.  V77 leaves the central
+public architecture intact and closes the direct manifest-writer seam: any
+manifest payload that carries `best_certified_result` must now prove that the
+caller-supplied campaign state matches the regular in-project disk checkpoint
+selected by `campaign_path`.  V78 closes the remaining writer-publication seam:
+`best_certified_result` can only be persisted by the canonical export writer to
+the regular in-project `data/solutions/certified_delivery_manifest.json`; raw
+writer calls and side output paths are not certified publication authority.
+V79 seals the remaining candidate-domain slicing axes inside the V75 terminal
+evidence contract: an exhausted `max_aspect_ratio`-sliced domain or an
+above-admissibility `min_side` (>6) domain is rejected exactly like a
+`start_area` slice, and the delivery-manifest deep validation fails closed on
+non-instance-shaped terminal placement solutions instead of skipping the
+blueprint reverse-lookup.  V80 closes the residual below that seal: the
+canonical project schema now carries the empty-rectangle admissibility floor,
+terminal-frontier evidence schema v2 rejects unknown `candidate_generation`
+keys and sub-admissible terminal final results, and `certified_exact` env
+handling is a closed allowlist where future/unclassified `EXACT_*` names fail
+closed.  V81 (the first independent external review after the V80 flip) seals
+two further seams: a mandatory-rectangle precheck group interrupted by the time
+budget (`partial_due_to_time_budget`) is no longer consumed as a complete
+all-anchors-infeasible candidate proof, and the single-base delivery release
+path fails closed on a run summary that self-claims
+`exact_full_scale_certified` CERTIFIED instead of propagating it into
+release/pointer artifacts.  V82 seals two further soundness seams found by the
+second independent review: the candidate domain is now fully oriented (the old
+`h <= w` canonicalization let full-frontier proofs cover half the real domain
+while master feasibility is orientation-sensitive; the domain authority is
+bumped to `outer_search_static_area_bound_oriented_v2`), and persisted
+`exact_safe_cuts` are telemetry only — `certified_exact` never replays
+checkpoint/IPC cut payloads into the master, because shape-level validation
+cannot rebuild the family-specific proof obligation.  V83 (third overnight
+independent review) seals three further seams: terminal certified final
+results now require project-bound geometric evidence (mandatory coverage,
+pose reverse-lookup, occupancy, and a real empty-rectangle witness scan, with
+the `ghost_pick` marker excluded from occupancy); whole-layout
+binding/routing nogoods keep the LBBD loop running instead of escalating to
+candidate INFEASIBLE; and the certified `mandatory_exact_instances` loader is
+deny-unknown instead of silently filtering malformed records.  V84 (fourth
+overnight independent review) seals three adversarial deepenings of that
+geometric re-verification: the terminal witness must be the layout's lex-best
+empty rectangle, not merely an existing one (scoped to projects with a
+non-empty mandatory set); exact artifact hashing rejects symlinked and
+non-regular files; and unknown extra placement instances fail closed instead
+of polluting the occupancy witness.  V85 (fifth overnight independent review)
+binds the inferred required pose-level optional lower bounds into the same
+terminal validator: a placement solution that omits the
+generic-io-required protocol storage boxes fails closed instead of publishing
+an empty rectangle that cannot coexist with them.  V86 (sixth overnight
+independent review) replays the power-coverage witness in the same
+validator: powered facilities without a selected covering pole fail closed
+instead of publishing a result the exact master proves infeasible.  V87
+(seventh overnight independent review) seals two further deepenings:
+unforced surplus power poles are rejected as occupancy blockers, and the
+published ghost anchor coordinates are replayed for emptiness.  V88
+(eighth overnight independent review) makes the anchor protocol-required
+end to end: omitting anchor fields no longer bypasses that replay, and
+the blueprint serializer refuses anchorless certified rectangles.  V89
+(ninth overnight independent review) replays the candidate ghost_pick
+provenance against the published anchor, so omitting or tampering the
+marker fails closed.  V90 (tenth overnight independent review) closes
+the deny-unknown loop on the final_result top level: only the four
+allowlisted fields may appear, so unbound payloads such as a forged
+routing_solution can no longer reach public artifacts.  V91 (eleventh
+overnight independent review) closes the nested shapes inside those
+allowlisted fields: unknown ghost_rect/search_stats keys and
+contradictory mandatory placement metadata fail closed.  V92 (twelfth
+overnight independent review) turns the release-status guard into a
+deny-unknown allowlist so embedded CERTIFIED tokens cannot reach the
+release, pointer, or Markdown surfaces.  V93 (thirteenth overnight
+independent review) seals the free-text note and the placement-entry
+shapes: certified prose cannot ride in the exact-status note, and
+public placement entries (including a rejected public ghost_pick
+marker) are closed shapes.  V94 (fourteenth overnight independent
+review) bounds the storage boxes from above as well: surplus entries
+beyond the inferred requirement are rejected as occupancy blockers.  V95
+(fifteenth overnight independent review) closes optional-entry public
+metadata and the last_stop_reason shape, completing closed-contract
+coverage of every public payload component.  V96 (sixteenth overnight
+independent review) extends the symlink rejection to every path
+component, closing the symlinked-ancestor escape from the artifact
+authority boundary.  V97 (seventeenth overnight independent review) pins
+the publishing authority to the canonical in-project checkpoint and
+removes a resolve-then-trust symlink gap in the inspector.  V98 (eighteenth overnight independent
+review) closes the same pre-resolve in the B5A anchor-sprint wrapper, so
+no public surface launders a symlink alias before the central authority
+check.  The
+obligations remain split into four compartments:
+
+- `PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS` for strict payloads, condition/domain
+  replay, all-or-nothing member resolution, one-to-one master literal encoding,
+  and apply-before-register atomicity;
+- `PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS` for the full unfiltered
+  master-domain and canonical power-witness representation contract, including
+  unsafe env fail-closed behavior before session/precheck/project-load side
+  effects;
+- `PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE` for strict full-frontier exhaustion
+  evidence, including replayable candidate generation, status digests, safe-area-bound authority, and canonical min-side admissibility, rather than
+  candidate-level or best-effort incumbents;
+- `PO-CERTIFIED-EXPORT-SURFACE` for `final_result`, `final_solution`, delivery
+  manifest, inspector/report, and wrapper export surfaces.
+
+See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
+`docs/research/p1_2_v64_power_witness_representation_env_guard.md`,
+`docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md`,
+`docs/research/p1_2_v73_certified_surface_verifier_consolidation.md`,
+`docs/research/p1_2_v74_certified_surface_authority_hardening.md`,
+`docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md`,
+`docs/research/p1_2_v76_project_bound_terminal_evidence.md`,
+`docs/research/p1_2_v77_delivery_manifest_writer_authority.md`,
+`docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md`,
+`docs/research/p1_2_v79_terminal_domain_axis_sealing.md`,
+`docs/research/p1_2_v80_deny_unknown_certified_surface.md`,
+`docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md`,
+`docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md`,
+`docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md`,
+`docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md`,
+`docs/research/p1_2_v85_required_optional_terminal_sealing.md`,
+`docs/research/p1_2_v86_power_witness_terminal_sealing.md`,
+`docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md`,
+`docs/research/p1_2_v88_ghost_anchor_required_sealing.md`,
+`docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md`,
+`docs/research/p1_2_v90_final_result_field_allowlist_sealing.md`,
+`docs/research/p1_2_v91_nested_public_field_sealing.md`,
+`docs/research/p1_2_v92_release_status_allowlist_sealing.md`,
+`docs/research/p1_2_v93_note_and_solution_entry_sealing.md`,
+`docs/research/p1_2_v94_protocol_storage_surplus_sealing.md`,
+`docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md`,
+`docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md`,
+`docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md`, and
+`docs/research/p1_2_v98_b5a_symlink_authority_sealing.md`.
+
+Daily consistency check:
+
+```bash
+python scripts/check_phase_review_gate.py
+```
+
+Entry check for P1.3B:
+
+```bash
+python scripts/check_phase_review_gate.py --require-ready phase_1_2_spike_close
+```
+
+At the current baseline this command is expected to fail because the owner has
+not manually opened P1.3B.  That failure is correct: the script is no longer a
+3-clean counter, and it cannot prove owner review judgment.
+
+The gate also keeps `src/cuts/lifecycle.py::step_8_apply_to_master` fail-closed
+while P1.3B is not manually allowed.  P1.3B master integration must not land
+while this close gate is blocked.

@@ -1,0 +1,462 @@
+from __future__ import annotations
+
+import copy
+import json
+from fractions import Fraction
+from pathlib import Path
+
+import pytest
+from jsonschema import ValidationError as JsonSchemaValidationError
+
+from src.interchange.preprocess_context import (
+    CommodityRole,
+    PreprocessRecipe,
+    ProductionTarget,
+    build_preprocess_context_from_rules_and_plan,
+    validate_preprocess_context,
+    load_default_preprocess_context,
+    load_preprocess_context_from_paths,
+)
+from src.preprocess.demand_solver import (
+    generate_ceil_machine_counts,
+    generate_generic_io_requirements,
+    generate_port_budget,
+    normalize_json_numbers,
+    solve_demands,
+    solve_demands_exact,
+)
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+RULES_JSON_PATH = PROJECT_ROOT / "rules" / "canonical_rules.json"
+PLAN_JSON_PATH = PROJECT_ROOT / "rules" / "preprocess_plan.json"
+DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
+
+
+def _canonicalize(value):
+    value = normalize_json_numbers(value)
+    if isinstance(value, dict):
+        return {
+            str(key): _canonicalize(subvalue)
+            for key, subvalue in sorted(value.items(), key=lambda item: str(item[0]))
+        }
+    if isinstance(value, list):
+        return [_canonicalize(item) for item in value]
+    return value
+
+
+@pytest.fixture(scope="module")
+def raw_rules_dict() -> dict:
+    return json.loads(RULES_JSON_PATH.read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def raw_plan_dict() -> dict:
+    return json.loads(PLAN_JSON_PATH.read_text(encoding="utf-8"))
+
+
+def test_default_preprocess_context_loads_expected_counts() -> None:
+    context = load_default_preprocess_context()
+
+    assert context.metadata["source_rules_version"] == "1.1.0"
+    assert context.metadata["source_plan_version"] == "0.2.0"
+    assert context.metadata["recipe_source"] == "canonical_rules"
+    assert float(context.tick_interval_seconds) == 2.0
+    assert float(context.belt_capacity_per_tick) == 1.0
+    assert len(context.recipes) == 17
+    assert len(context.targets) == 2
+    assert len(context.cycle_groups) == 2
+    assert len(context.utility_operations) == 4
+    assert context.recipes["packaging_battery"].template == "manufacturing_6x4"
+    assert context.targets["valley_battery"].final_recipe_id == "packaging_battery"
+
+
+
+def test_preprocess_context_path_loader_rejects_duplicate_json_keys(tmp_path: Path) -> None:
+    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
+        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
+        '"value": 3.0,\n      "value": 999.0,\n      "final_recipe_id": "packaging_battery"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="duplicate JSON key: value"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_nonfinite_json_constants(tmp_path: Path) -> None:
+    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
+        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
+        '"value": NaN,\n      "final_recipe_id": "packaging_battery"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_overflow_json_numbers(tmp_path: Path) -> None:
+    rules_text = RULES_JSON_PATH.read_text(encoding="utf-8").replace(
+        '"value": 3.0,\n      "final_recipe_id": "packaging_battery"',
+        '"value": 1e309,\n      "final_recipe_id": "packaging_battery"',
+        1,
+    )
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(rules_text, encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="non-finite JSON number: 1e309"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_schema_missing_required_rule_field(tmp_path: Path) -> None:
+    rules_payload = json.loads(RULES_JSON_PATH.read_text(encoding="utf-8"))
+    del rules_payload["globals"]["time"]["tick_interval_seconds"]
+
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(json.dumps(rules_payload), encoding="utf-8")
+    plan_path.write_text(PLAN_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(JsonSchemaValidationError, match="tick_interval_seconds"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_path_loader_rejects_schema_missing_required_plan_field(tmp_path: Path) -> None:
+    plan_payload = json.loads(PLAN_JSON_PATH.read_text(encoding="utf-8"))
+    del plan_payload["utility_operations"]["wireless_sink"]["generic_input_slots"]
+
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    plan_path.write_text(json.dumps(plan_payload), encoding="utf-8")
+
+    with pytest.raises(JsonSchemaValidationError, match="generic_input_slots"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_report_writer_rejects_nonfinite_numbers(tmp_path: Path) -> None:
+    from scripts.build_current_preprocess_context import _atomic_write_json_strict
+
+    output_path = tmp_path / "context.json"
+    with pytest.raises(ValueError, match="Out of range float values"):
+        _atomic_write_json_strict(output_path, {"bad": float("nan")})
+
+    assert not output_path.exists()
+
+
+def test_preprocess_context_plan_rejects_duplicate_slot_keys(tmp_path: Path) -> None:
+    rules_path = tmp_path / "canonical_rules.json"
+    plan_path = tmp_path / "preprocess_plan.json"
+    rules_path.write_text(RULES_JSON_PATH.read_text(encoding="utf-8"), encoding="utf-8")
+    plan_path.write_text(
+        '{"utility_operations":{"wireless_sink":{'
+        '"facility_type":"protocol_storage_box",'
+        '"generic_input_slots":3,'
+        '"generic_input_slots":0}}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="duplicate JSON key"):
+        load_preprocess_context_from_paths(rules_path=rules_path, plan_path=plan_path)
+
+
+def test_preprocess_context_rejects_loose_utility_slot_counts(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_plan["utility_operations"]["wireless_sink"]["generic_input_slots"] = "3"
+
+    with pytest.raises(TypeError, match="generic_input_slots"):
+        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
+
+def test_preprocess_context_accepts_overlay_only_plan(raw_rules_dict, raw_plan_dict) -> None:
+    minimal_overlay = {
+        "$schema": raw_plan_dict.get("$schema"),
+        "metadata": raw_plan_dict["metadata"],
+        "cycle_groups": raw_plan_dict["cycle_groups"],
+        "utility_operations": raw_plan_dict["utility_operations"],
+    }
+
+    context = build_preprocess_context_from_rules_and_plan(raw_rules_dict, minimal_overlay)
+    assert len(context.recipes) == 17
+    assert len(context.targets) == 2
+    assert context.commodity_roles["source_ore"].source_kind == "external_boundary"
+
+
+@pytest.mark.parametrize("overlay_key", ["recipes", "production_targets", "commodity_roles"])
+def test_preprocess_context_rejects_canonical_metadata_overrides(
+    raw_rules_dict,
+    raw_plan_dict,
+    overlay_key,
+) -> None:
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_plan[overlay_key] = {}
+
+    with pytest.raises(ValueError, match="additive-only"):
+        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
+
+
+def test_preprocess_context_rejects_utility_operation_recipe_shadow(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_plan["utility_operations"]["packaging_battery"] = {
+        "facility_type": "protocol_core",
+        "generic_input_slots": 0,
+        "generic_output_slots": 0,
+    }
+
+    with pytest.raises(ValueError, match="must not shadow recipe operation profiles"):
+        build_preprocess_context_from_rules_and_plan(raw_rules_dict, mutated_plan)
+
+
+def test_preprocess_context_rejects_multiple_non_cycle_producers(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["duplicate_battery"] = {
+        "template": "manufacturing_6x4",
+        "ticks_per_cycle": 5,
+        "inputs": {"dense_source_powder": 1},
+        "outputs": {"valley_battery": 1},
+    }
+
+    with pytest.raises(ValueError, match="multiple producer recipes"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_multi_output_recipe(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["packaging_battery"]["outputs"]["bonus_battery"] = 1
+    mutated_rules["production_targets"]["bonus_battery"] = {
+        "mode": "equivalent_full_speed_lines",
+        "value": 1.0,
+        "final_recipe_id": "packaging_battery",
+    }
+    mutated_rules["commodity_metadata"]["bonus_battery"] = {
+        "source_kind": "internal_only",
+        "sink_kind": "generic_input",
+        "cycle_group": None,
+    }
+
+    with pytest.raises(ValueError, match="exactly one output commodity"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_validates_target_final_recipe(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["production_targets"]["valley_battery"]["final_recipe_id"] = "parts_maker"
+
+    with pytest.raises(ValueError, match="is not produced by its final recipe"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_negative_cycle_solution(raw_rules_dict, raw_plan_dict) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["seed_collector_buckwheat"]["outputs"]["buckwheat_seed"] = 0.5
+
+    with pytest.raises(ValueError, match="negative run rate"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_cycle_internal_commodity_missing_from_group_internal_commodities(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["commodity_metadata"]["ghost_spore"] = {
+        "source_kind": "cycle_internal",
+        "sink_kind": "none",
+        "cycle_group": "buckwheat_cycle",
+    }
+
+    with pytest.raises(ValueError, match="internal_commodities"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_cycle_recipe_io_outside_group_internal_commodities(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["planter_buckwheat"]["inputs"]["source_ore"] = 1
+
+    with pytest.raises(ValueError, match="outside commodities: planter_buckwheat: source_ore"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_external_boundary_commodity_with_producer(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["commodity_metadata"]["steel_part"]["source_kind"] = "external_boundary"
+
+    with pytest.raises(ValueError, match="external_boundary commodity 'steel_part'.*parts_maker"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_direct_role_key_identity_mismatch_before_external_boundary_short_circuit() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.commodity_roles["steel_part"] = CommodityRole(
+        commodity_id="not_steel_part",
+        source_kind="external_boundary",
+        sink_kind="none",
+        cycle_group=None,
+    )
+
+    with pytest.raises(ValueError, match=r"commodity_roles key 'steel_part'.*role\.commodity_id 'not_steel_part'"):
+        validate_preprocess_context(context)
+    with pytest.raises(ValueError, match=r"commodity_roles key 'steel_part'.*role\.commodity_id 'not_steel_part'"):
+        solve_demands_exact(context=context)
+
+
+def test_preprocess_context_rejects_missing_role_for_recipe_referenced_commodity() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    del context.commodity_roles["steel_part"]
+
+    with pytest.raises(ValueError, match="commodity_roles is missing entries.*steel_part"):
+        validate_preprocess_context(context)
+    with pytest.raises(ValueError, match="commodity_roles is missing entries.*steel_part"):
+        solve_demands_exact(context=context)
+
+
+def test_preprocess_context_rejects_non_group_recipe_outputting_cycle_internal_commodity(
+    raw_rules_dict,
+    raw_plan_dict,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_plan = copy.deepcopy(raw_plan_dict)
+    mutated_rules["recipes"]["orb_cycle_generator"] = {
+        "template": "manufacturing_3x3",
+        "ticks_per_cycle": 1,
+        "inputs": {},
+        "outputs": {"orb": 1},
+    }
+    mutated_rules["recipes"]["synthetic_orb"] = {
+        "template": "manufacturing_6x4",
+        "ticks_per_cycle": 5,
+        "inputs": {"source_ore": 1},
+        "outputs": {"orb": 1},
+    }
+    mutated_rules["commodity_metadata"]["orb"] = {
+        "source_kind": "cycle_internal",
+        "sink_kind": "generic_input",
+        "cycle_group": "orb_cycle",
+    }
+    mutated_rules["production_targets"]["orb"] = {
+        "mode": "equivalent_full_speed_lines",
+        "value": 1.0,
+        "final_recipe_id": "synthetic_orb",
+    }
+    mutated_plan["cycle_groups"]["orb_cycle"] = {
+        "recipes": ["orb_cycle_generator"],
+        "internal_commodities": ["orb"],
+        "net_export_commodities": ["orb"],
+    }
+
+    with pytest.raises(ValueError, match="synthetic_orb.*outside cycle group 'orb_cycle'"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, mutated_plan)
+
+
+def test_solve_demands_exact_revalidates_direct_context_multi_output_recipe() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["packaging_battery"].outputs["bonus_battery"] = Fraction(1)
+    context.targets["bonus_battery"] = ProductionTarget(
+        commodity_id="bonus_battery",
+        mode="equivalent_full_speed_lines",
+        value=Fraction(1),
+        final_recipe_id="packaging_battery",
+    )
+    context.commodity_roles["bonus_battery"] = CommodityRole(
+        commodity_id="bonus_battery",
+        source_kind="internal_only",
+        sink_kind="generic_input",
+        cycle_group=None,
+    )
+
+    with pytest.raises(ValueError, match="exactly one output commodity"):
+        solve_demands_exact(context=context)
+
+
+def test_solve_demands_exact_revalidates_direct_context_cycle_internal_outside_producer() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["synthetic_buckwheat"] = PreprocessRecipe(
+        recipe_id="synthetic_buckwheat",
+        template="manufacturing_3x3",
+        ticks_per_cycle=1,
+        inputs={"source_ore": Fraction(1)},
+        outputs={"buckwheat": Fraction(1)},
+    )
+
+    with pytest.raises(ValueError, match="synthetic_buckwheat.*outside cycle group 'buckwheat_cycle'"):
+        solve_demands_exact(context=context)
+
+
+def test_preprocess_context_rejects_direct_recipe_nonpositive_output_amount() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["packaging_battery"].outputs["valley_battery"] = Fraction(0)
+
+    with pytest.raises(ValueError, match="packaging_battery.*output amount.*valley_battery.*must be > 0"):
+        validate_preprocess_context(context)
+    with pytest.raises(ValueError, match="packaging_battery.*output amount.*valley_battery.*must be > 0"):
+        solve_demands_exact(context=context)
+
+
+def test_preprocess_context_rejects_direct_recipe_nonpositive_input_amount() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.recipes["packaging_battery"].inputs["steel_part"] = Fraction(-1)
+
+    with pytest.raises(ValueError, match="packaging_battery.*input amount.*steel_part.*must be > 0"):
+        validate_preprocess_context(context)
+
+
+@pytest.mark.parametrize("bad_ticks", [True, 1.5, "1"])
+def test_preprocess_context_rejects_direct_builder_loose_recipe_ticks_per_cycle(
+    raw_rules_dict,
+    raw_plan_dict,
+    bad_ticks,
+) -> None:
+    mutated_rules = copy.deepcopy(raw_rules_dict)
+    mutated_rules["recipes"]["parts_maker"]["ticks_per_cycle"] = bad_ticks
+
+    with pytest.raises(TypeError, match="recipes.parts_maker.ticks_per_cycle must be an integer"):
+        build_preprocess_context_from_rules_and_plan(mutated_rules, raw_plan_dict)
+
+
+def test_preprocess_context_rejects_direct_nonstring_facility_template_key() -> None:
+    context = copy.deepcopy(load_default_preprocess_context())
+    context.facility_templates[123] = context.facility_templates["manufacturing_3x3"]
+
+    with pytest.raises(ValueError, match="facility_templates key must be a string identifier"):
+        validate_preprocess_context(context)
+
+
+def test_ceil_machine_count_uses_exact_rational_ceiling_above_integer_band() -> None:
+    fractional_above_integer = Fraction(2_000_000_001, 1_000_000_000)
+
+    assert generate_ceil_machine_counts({"near_integer_machine": fractional_above_integer}) == {
+        "near_integer_machine": 3
+    }
+
+
+def test_context_driven_pipeline_matches_current_frozen_preprocess_artifacts() -> None:
+    context = load_default_preprocess_context()
+    flows, fractional = solve_demands_exact(context=context)
+    counts = generate_ceil_machine_counts(fractional)
+    budget = generate_port_budget(flows, context=context)
+    generic_io = generate_generic_io_requirements(flows, budget, context=context)
+
+    assert _canonicalize(flows) == _canonicalize(json.loads((DATA_DIR / "commodity_demands.json").read_text(encoding="utf-8")))
+    assert _canonicalize(counts) == _canonicalize(json.loads((DATA_DIR / "machine_counts.json").read_text(encoding="utf-8")))
+    assert _canonicalize(budget) == _canonicalize(json.loads((DATA_DIR / "port_budget.json").read_text(encoding="utf-8")))
+    assert _canonicalize(generic_io) == _canonicalize(json.loads((DATA_DIR / "generic_io_requirements.json").read_text(encoding="utf-8")))

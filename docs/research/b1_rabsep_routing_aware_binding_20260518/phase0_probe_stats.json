@@ -1,0 +1,1949 @@
+{
+  "free_cells": 1231,
+  "component_count": 27,
+  "component_sizes": [
+    508,
+    471,
+    42,
+    38,
+    37,
+    33,
+    23,
+    11,
+    11,
+    6
+  ],
+  "total_owners": 248,
+  "skipped_owners": 48,
+  "owners_with_empty_filtered": [
+    "crusher_blue_iron_001",
+    "crusher_blue_iron_002",
+    "crusher_blue_iron_003",
+    "crusher_blue_iron_004",
+    "crusher_blue_iron_005",
+    "crusher_blue_iron_006",
+    "crusher_blue_iron_007",
+    "crusher_blue_iron_008",
+    "crusher_blue_iron_009",
+    "crusher_blue_iron_010",
+    "crusher_blue_iron_011",
+    "crusher_blue_iron_012",
+    "crusher_blue_iron_013",
+    "crusher_blue_iron_014",
+    "crusher_blue_iron_015",
+    "crusher_blue_iron_016",
+    "crusher_blue_iron_017",
+    "crusher_blue_iron_018",
+    "crusher_blue_iron_019",
+    "crusher_blue_iron_020",
+    "crusher_blue_iron_021",
+    "crusher_blue_iron_022",
+    "crusher_blue_iron_023",
+    "crusher_blue_iron_024",
+    "crusher_blue_iron_025",
+    "crusher_blue_iron_026",
+    "crusher_blue_iron_027",
+    "crusher_blue_iron_028",
+    "crusher_blue_iron_029",
+    "crusher_blue_iron_030",
+    "crusher_blue_iron_031",
+    "crusher_blue_iron_032",
+    "crusher_blue_iron_033",
+    "crusher_blue_iron_034",
+    "crusher_buckwheat_001",
+    "crusher_buckwheat_002",
+    "crusher_buckwheat_003",
+    "crusher_buckwheat_004",
+    "crusher_buckwheat_005",
+    "crusher_buckwheat_006",
+    "crusher_sandleaf_001",
+    "crusher_sandleaf_002",
+    "crusher_sandleaf_003",
+    "crusher_sandleaf_004",
+    "crusher_sandleaf_005",
+    "crusher_sandleaf_006",
+    "crusher_sandleaf_007",
+    "crusher_sandleaf_008",
+    "crusher_sandleaf_009",
+    "crusher_sandleaf_010",
+    "crusher_sandleaf_011",
+    "crusher_source_001",
+    "crusher_source_002",
+    "crusher_source_003",
+    "crusher_source_004",
+    "crusher_source_005",
+    "crusher_source_006",
+    "crusher_source_007",
+    "crusher_source_008",
+    "crusher_source_009",
+    "crusher_source_010",
+    "crusher_source_011",
+    "crusher_source_012",
+    "crusher_source_013",
+    "crusher_source_014",
+    "crusher_source_015",
+    "crusher_source_016",
+    "crusher_source_017",
+    "crusher_source_018",
+    "molding_bottle_001",
+    "molding_bottle_002",
+    "molding_bottle_003",
+    "molding_bottle_004",
+    "molding_bottle_005",
+    "molding_bottle_006",
+    "parts_maker_001",
+    "parts_maker_002",
+    "parts_maker_003",
+    "parts_maker_004",
+    "parts_maker_005",
+    "parts_maker_006",
+    "refinery_blue_iron_001",
+    "refinery_blue_iron_002",
+    "refinery_blue_iron_003",
+    "refinery_blue_iron_004",
+    "refinery_blue_iron_005",
+    "refinery_blue_iron_006",
+    "refinery_blue_iron_007",
+    "refinery_blue_iron_008",
+    "refinery_blue_iron_009",
+    "refinery_blue_iron_010",
+    "refinery_blue_iron_011",
+    "refinery_blue_iron_012",
+    "refinery_blue_iron_013",
+    "refinery_blue_iron_014",
+    "refinery_blue_iron_015",
+    "refinery_blue_iron_016",
+    "refinery_blue_iron_017",
+    "refinery_blue_iron_018",
+    "refinery_blue_iron_019",
+    "refinery_blue_iron_020",
+    "refinery_blue_iron_021",
+    "refinery_blue_iron_022",
+    "refinery_blue_iron_023",
+    "refinery_blue_iron_024",
+    "refinery_blue_iron_025",
+    "refinery_blue_iron_026",
+    "refinery_blue_iron_027",
+    "refinery_blue_iron_028",
+    "refinery_blue_iron_029",
+    "refinery_blue_iron_030",
+    "refinery_blue_iron_031",
+    "refinery_blue_iron_032",
+    "refinery_blue_iron_033",
+    "refinery_blue_iron_034",
+    "refinery_steel_001",
+    "refinery_steel_002",
+    "refinery_steel_003",
+    "refinery_steel_004",
+    "refinery_steel_005",
+    "refinery_steel_006",
+    "refinery_steel_007",
+    "refinery_steel_008",
+    "refinery_steel_009",
+    "refinery_steel_010",
+    "refinery_steel_011",
+    "refinery_steel_012",
+    "refinery_steel_013",
+    "refinery_steel_014",
+    "refinery_steel_015",
+    "refinery_steel_016",
+    "refinery_steel_017",
+    "planter_buckwheat_001",
+    "planter_buckwheat_002",
+    "planter_buckwheat_003",
+    "planter_buckwheat_004",
+    "planter_buckwheat_005",
+    "planter_buckwheat_006",
+    "planter_buckwheat_007",
+    "planter_buckwheat_008",
+    "planter_buckwheat_009",
+    "planter_buckwheat_010",
+    "planter_buckwheat_011",
+    "planter_sandleaf_001",
+    "planter_sandleaf_002",
+    "planter_sandleaf_003",
+    "planter_sandleaf_004",
+    "planter_sandleaf_005",
+    "planter_sandleaf_006",
+    "planter_sandleaf_007",
+    "planter_sandleaf_008",
+    "planter_sandleaf_009",
+    "planter_sandleaf_010",
+    "planter_sandleaf_012",
+    "planter_sandleaf_013",
+    "planter_sandleaf_014",
+    "planter_sandleaf_015",
+    "planter_sandleaf_017",
+    "planter_sandleaf_019",
+    "planter_sandleaf_020",
+    "planter_sandleaf_021",
+    "seed_collector_buckwheat_001",
+    "seed_collector_buckwheat_002",
+    "seed_collector_buckwheat_003",
+    "seed_collector_buckwheat_004",
+    "seed_collector_buckwheat_005",
+    "seed_collector_buckwheat_006",
+    "seed_collector_sandleaf_002",
+    "seed_collector_sandleaf_003",
+    "seed_collector_sandleaf_004",
+    "seed_collector_sandleaf_005",
+    "seed_collector_sandleaf_006",
+    "seed_collector_sandleaf_007",
+    "seed_collector_sandleaf_008",
+    "seed_collector_sandleaf_009",
+    "seed_collector_sandleaf_010",
+    "seed_collector_sandleaf_011",
+    "filling_capsule_001",
+    "filling_capsule_002",
+    "filling_capsule_003",
+    "grinder_dense_blue_iron_001",
+    "grinder_dense_blue_iron_002",
+    "grinder_dense_blue_iron_003",
+    "grinder_dense_blue_iron_004",
+    "grinder_dense_blue_iron_005",
+    "grinder_dense_blue_iron_006",
+    "grinder_dense_blue_iron_007",
+    "grinder_dense_blue_iron_009",
+    "grinder_dense_blue_iron_010",
+    "grinder_dense_blue_iron_011",
+    "grinder_dense_blue_iron_012",
+    "grinder_dense_blue_iron_013",
+    "grinder_dense_blue_iron_014",
+    "grinder_dense_blue_iron_015",
+    "grinder_dense_blue_iron_016",
+    "grinder_dense_blue_iron_017",
+    "grinder_dense_source_001",
+    "grinder_dense_source_002",
+    "grinder_dense_source_003",
+    "grinder_dense_source_004",
+    "grinder_dense_source_005",
+    "grinder_dense_source_006",
+    "grinder_dense_source_007",
+    "grinder_dense_source_008",
+    "grinder_dense_source_009",
+    "grinder_fine_buckwheat_001",
+    "grinder_fine_buckwheat_002",
+    "grinder_fine_buckwheat_003",
+    "grinder_fine_buckwheat_004",
+    "grinder_fine_buckwheat_006",
+    "packaging_battery_001",
+    "packaging_battery_002",
+    "packaging_battery_003"
+  ],
+  "raw_patterns_total": 17021,
+  "filtered_patterns_total": 310,
+  "owners": [
+    {
+      "instance_id": "crusher_blue_iron_001",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_002",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_003",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_004",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_005",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_006",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_007",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_008",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_009",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_010",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_011",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_012",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_013",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_014",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_015",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_016",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_017",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_018",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_019",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_020",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_021",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_022",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_023",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_024",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_025",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_026",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_027",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_028",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_029",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_030",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_031",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_032",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_033",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_blue_iron_034",
+      "operation_type": "crusher_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_buckwheat_001",
+      "operation_type": "crusher_buckwheat",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_buckwheat_002",
+      "operation_type": "crusher_buckwheat",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_buckwheat_003",
+      "operation_type": "crusher_buckwheat",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_buckwheat_004",
+      "operation_type": "crusher_buckwheat",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_buckwheat_005",
+      "operation_type": "crusher_buckwheat",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_buckwheat_006",
+      "operation_type": "crusher_buckwheat",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_001",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_002",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_003",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_004",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_005",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_006",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_007",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_008",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_009",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_010",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_sandleaf_011",
+      "operation_type": "crusher_sandleaf",
+      "raw_patterns": 3,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_001",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_002",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_003",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_004",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_005",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_006",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_007",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_008",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_009",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_010",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_011",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_012",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_013",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_014",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_015",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_016",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_017",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "crusher_source_018",
+      "operation_type": "crusher_source",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "molding_bottle_001",
+      "operation_type": "molding_bottle",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "molding_bottle_002",
+      "operation_type": "molding_bottle",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "molding_bottle_003",
+      "operation_type": "molding_bottle",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "molding_bottle_004",
+      "operation_type": "molding_bottle",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "molding_bottle_005",
+      "operation_type": "molding_bottle",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "molding_bottle_006",
+      "operation_type": "molding_bottle",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "parts_maker_001",
+      "operation_type": "parts_maker",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "parts_maker_002",
+      "operation_type": "parts_maker",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "parts_maker_003",
+      "operation_type": "parts_maker",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "parts_maker_004",
+      "operation_type": "parts_maker",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "parts_maker_005",
+      "operation_type": "parts_maker",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "parts_maker_006",
+      "operation_type": "parts_maker",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_001",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_002",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_003",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_004",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_005",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_006",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_007",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_008",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_009",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_010",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_011",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_012",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_013",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_014",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_015",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_016",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_017",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_018",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_019",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_020",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_021",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_022",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_023",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_024",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_025",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_026",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_027",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_028",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_029",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_030",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_031",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_032",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_033",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_blue_iron_034",
+      "operation_type": "refinery_blue_iron",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_001",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_002",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_003",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_004",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_005",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_006",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_007",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_008",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_009",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_010",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_011",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_012",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_013",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_014",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_015",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_016",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "refinery_steel_017",
+      "operation_type": "refinery_steel",
+      "raw_patterns": 9,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_001",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_002",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_003",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_004",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_005",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_006",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_007",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_008",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_009",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_010",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_buckwheat_011",
+      "operation_type": "planter_buckwheat",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_001",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_002",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_003",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_004",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_005",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_006",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_007",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_008",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_009",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_010",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_011",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 15
+    },
+    {
+      "instance_id": "planter_sandleaf_012",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_013",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_014",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_015",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_016",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "planter_sandleaf_017",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_018",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 12
+    },
+    {
+      "instance_id": "planter_sandleaf_019",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_020",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "planter_sandleaf_021",
+      "operation_type": "planter_sandleaf",
+      "raw_patterns": 25,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_buckwheat_001",
+      "operation_type": "seed_collector_buckwheat",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_buckwheat_002",
+      "operation_type": "seed_collector_buckwheat",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_buckwheat_003",
+      "operation_type": "seed_collector_buckwheat",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_buckwheat_004",
+      "operation_type": "seed_collector_buckwheat",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_buckwheat_005",
+      "operation_type": "seed_collector_buckwheat",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_buckwheat_006",
+      "operation_type": "seed_collector_buckwheat",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_001",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 10
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_002",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_003",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_004",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_005",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_006",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_007",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_008",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_009",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_010",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "seed_collector_sandleaf_011",
+      "operation_type": "seed_collector_sandleaf",
+      "raw_patterns": 50,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "filling_capsule_001",
+      "operation_type": "filling_capsule",
+      "raw_patterns": 540,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "filling_capsule_002",
+      "operation_type": "filling_capsule",
+      "raw_patterns": 540,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "filling_capsule_003",
+      "operation_type": "filling_capsule",
+      "raw_patterns": 540,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_001",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_002",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_003",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_004",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_005",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_006",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_007",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_008",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 3
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_009",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_010",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_011",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_012",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_013",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_014",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_015",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_016",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_blue_iron_017",
+      "operation_type": "grinder_dense_blue_iron",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_001",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_002",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_003",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_004",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_005",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_006",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_007",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_008",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_dense_source_009",
+      "operation_type": "grinder_dense_source",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_fine_buckwheat_001",
+      "operation_type": "grinder_fine_buckwheat",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_fine_buckwheat_002",
+      "operation_type": "grinder_fine_buckwheat",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_fine_buckwheat_003",
+      "operation_type": "grinder_fine_buckwheat",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_fine_buckwheat_004",
+      "operation_type": "grinder_fine_buckwheat",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "grinder_fine_buckwheat_005",
+      "operation_type": "grinder_fine_buckwheat",
+      "raw_patterns": 360,
+      "filtered_patterns": 240
+    },
+    {
+      "instance_id": "grinder_fine_buckwheat_006",
+      "operation_type": "grinder_fine_buckwheat",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "packaging_battery_001",
+      "operation_type": "packaging_battery",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "packaging_battery_002",
+      "operation_type": "packaging_battery",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "packaging_battery_003",
+      "operation_type": "packaging_battery",
+      "raw_patterns": 360,
+      "filtered_patterns": 0
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x07_y68_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x08_y08_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x08_y23_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x08_y38_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x08_y53_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x16_y65_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x20_y08_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x20_y16_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x20_y32_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x20_y41_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x20_y56_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x26_y11_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x32_y68_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x35_y58_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x36_y45_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x37_y09_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x38_y21_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x45_y14_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x47_y06_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x47_y61_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x48_y26_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x52_y41_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x55_y45_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x57_y49_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x63_y21_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x65_y37_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x65_y67_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x66_y04_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    },
+    {
+      "instance_id": "pose_optional::power_pole::p_x68_y43_o0_m_omni",
+      "operation_type": "power_supply",
+      "raw_patterns": 1,
+      "filtered_patterns": 1
+    }
+  ],
+  "blocker_instances": [
+    "crusher_blue_iron_002",
+    "crusher_blue_iron_003",
+    "crusher_blue_iron_004",
+    "crusher_blue_iron_005",
+    "crusher_blue_iron_006",
+    "crusher_blue_iron_007",
+    "crusher_blue_iron_008",
+    "crusher_blue_iron_009",
+    "crusher_blue_iron_010",
+    "crusher_blue_iron_011",
+    "crusher_blue_iron_012",
+    "crusher_blue_iron_013",
+    "crusher_blue_iron_014",
+    "crusher_blue_iron_015",
+    "crusher_blue_iron_016",
+    "crusher_blue_iron_017",
+    "crusher_blue_iron_018",
+    "crusher_blue_iron_019",
+    "crusher_blue_iron_020",
+    "crusher_blue_iron_021",
+    "crusher_blue_iron_022",
+    "crusher_blue_iron_023",
+    "crusher_blue_iron_025",
+    "crusher_blue_iron_026",
+    "crusher_blue_iron_027",
+    "crusher_blue_iron_028",
+    "crusher_blue_iron_029",
+    "crusher_blue_iron_030",
+    "crusher_blue_iron_031",
+    "crusher_blue_iron_032",
+    "crusher_blue_iron_033",
+    "crusher_blue_iron_034",
+    "crusher_buckwheat_001",
+    "crusher_buckwheat_002",
+    "crusher_buckwheat_003",
+    "crusher_buckwheat_004",
+    "crusher_buckwheat_005",
+    "crusher_buckwheat_006",
+    "crusher_sandleaf_001",
+    "crusher_sandleaf_002",
+    "crusher_sandleaf_003",
+    "crusher_sandleaf_004",
+    "crusher_sandleaf_005",
+    "crusher_sandleaf_006",
+    "crusher_sandleaf_007",
+    "crusher_sandleaf_008",
+    "crusher_sandleaf_010",
+    "crusher_sandleaf_011",
+    "crusher_source_001",
+    "crusher_source_003",
+    "crusher_source_004",
+    "crusher_source_005",
+    "crusher_source_007",
+    "crusher_source_008",
+    "crusher_source_009",
+    "crusher_source_011",
+    "crusher_source_012",
+    "crusher_source_013",
+    "crusher_source_014",
+    "crusher_source_016",
+    "crusher_source_017",
+    "crusher_source_018",
+    "filling_capsule_002",
+    "grinder_dense_blue_iron_001",
+    "grinder_dense_blue_iron_002",
+    "grinder_dense_blue_iron_003",
+    "grinder_dense_blue_iron_004",
+    "grinder_dense_blue_iron_005",
+    "grinder_dense_blue_iron_006",
+    "grinder_dense_blue_iron_008",
+    "grinder_dense_blue_iron_009",
+    "grinder_dense_blue_iron_010",
+    "grinder_dense_blue_iron_012",
+    "grinder_dense_blue_iron_013",
+    "grinder_dense_blue_iron_014",
+    "grinder_dense_blue_iron_015",
+    "grinder_dense_blue_iron_016",
+    "grinder_dense_blue_iron_017",
+    "grinder_dense_source_001",
+    "grinder_dense_source_002",
+    "grinder_dense_source_003",
+    "grinder_dense_source_004",
+    "grinder_dense_source_005",
+    "grinder_dense_source_006",
+    "grinder_dense_source_007",
+    "grinder_dense_source_008",
+    "grinder_dense_source_009",
+    "grinder_fine_buckwheat_002",
+    "grinder_fine_buckwheat_003",
+    "grinder_fine_buckwheat_004",
+    "grinder_fine_buckwheat_006",
+    "molding_bottle_001",
+    "molding_bottle_002",
+    "molding_bottle_003",
+    "molding_bottle_004",
+    "molding_bottle_005",
+    "molding_bottle_006",
+    "packaging_battery_001",
+    "packaging_battery_002",
+    "packaging_battery_003",
+    "parts_maker_001",
+    "parts_maker_002",
+    "parts_maker_003",
+    "parts_maker_004",
+    "parts_maker_005",
+    "parts_maker_006",
+    "planter_buckwheat_001",
+    "planter_buckwheat_002",
+    "planter_buckwheat_003",
+    "planter_buckwheat_004",
+    "planter_buckwheat_005",
+    "planter_buckwheat_006",
+    "planter_buckwheat_007",
+    "planter_buckwheat_008",
+    "planter_buckwheat_009",
+    "planter_buckwheat_010",
+    "planter_buckwheat_011",
+    "planter_sandleaf_001",
+    "planter_sandleaf_002",
+    "planter_sandleaf_004",
+    "planter_sandleaf_005",
+    "planter_sandleaf_006",
+    "planter_sandleaf_007",
+    "planter_sandleaf_008",
+    "planter_sandleaf_009",
+    "planter_sandleaf_011",
+    "planter_sandleaf_013",
+    "planter_sandleaf_014",
+    "planter_sandleaf_015",
+    "planter_sandleaf_016",
+    "planter_sandleaf_017",
+    "planter_sandleaf_018",
+    "planter_sandleaf_020",
+    "pose_optional::power_pole::p_x07_y68_o0_m_omni",
+    "pose_optional::power_pole::p_x08_y08_o0_m_omni",
+    "pose_optional::power_pole::p_x08_y23_o0_m_omni",
+    "pose_optional::power_pole::p_x08_y38_o0_m_omni",
+    "pose_optional::power_pole::p_x08_y53_o0_m_omni",
+    "pose_optional::power_pole::p_x16_y65_o0_m_omni",
+    "pose_optional::power_pole::p_x20_y56_o0_m_omni",
+    "pose_optional::power_pole::p_x26_y11_o0_m_omni",
+    "pose_optional::power_pole::p_x32_y68_o0_m_omni",
+    "pose_optional::power_pole::p_x35_y58_o0_m_omni",
+    "pose_optional::power_pole::p_x37_y09_o0_m_omni",
+    "pose_optional::power_pole::p_x38_y21_o0_m_omni",
+    "pose_optional::power_pole::p_x47_y06_o0_m_omni",
+    "pose_optional::power_pole::p_x47_y61_o0_m_omni",
+    "pose_optional::power_pole::p_x48_y26_o0_m_omni",
+    "pose_optional::power_pole::p_x52_y41_o0_m_omni",
+    "pose_optional::power_pole::p_x55_y45_o0_m_omni",
+    "pose_optional::power_pole::p_x57_y49_o0_m_omni",
+    "pose_optional::power_pole::p_x66_y04_o0_m_omni",
+    "protocol_core_001",
+    "refinery_blue_iron_001",
+    "refinery_blue_iron_002",
+    "refinery_blue_iron_003",
+    "refinery_blue_iron_004",
+    "refinery_blue_iron_005",
+    "refinery_blue_iron_006",
+    "refinery_blue_iron_007",
+    "refinery_blue_iron_009",
+    "refinery_blue_iron_010",
+    "refinery_blue_iron_011",
+    "refinery_blue_iron_012",
+    "refinery_blue_iron_013",
+    "refinery_blue_iron_014",
+    "refinery_blue_iron_015",
+    "refinery_blue_iron_016",
+    "refinery_blue_iron_017",
+    "refinery_blue_iron_018",
+    "refinery_blue_iron_019",
+    "refinery_blue_iron_020",
+    "refinery_blue_iron_021",
+    "refinery_blue_iron_022",
+    "refinery_blue_iron_023",
+    "refinery_blue_iron_024",
+    "refinery_blue_iron_025",
+    "refinery_blue_iron_026",
+    "refinery_blue_iron_027",
+    "refinery_blue_iron_028",
+    "refinery_blue_iron_029",
+    "refinery_blue_iron_030",
+    "refinery_blue_iron_032",
+    "refinery_blue_iron_033",
+    "refinery_blue_iron_034",
+    "refinery_steel_001",
+    "refinery_steel_002",
+    "refinery_steel_003",
+    "refinery_steel_004",
+    "refinery_steel_005",
+    "refinery_steel_006",
+    "refinery_steel_007",
+    "refinery_steel_008",
+    "refinery_steel_009",
+    "refinery_steel_010",
+    "refinery_steel_011",
+    "refinery_steel_012",
+    "refinery_steel_013",
+    "refinery_steel_014",
+    "refinery_steel_015",
+    "refinery_steel_016",
+    "refinery_steel_017",
+    "seed_collector_buckwheat_001",
+    "seed_collector_buckwheat_002",
+    "seed_collector_buckwheat_003",
+    "seed_collector_buckwheat_004",
+    "seed_collector_buckwheat_005",
+    "seed_collector_buckwheat_006",
+    "seed_collector_sandleaf_001",
+    "seed_collector_sandleaf_002",
+    "seed_collector_sandleaf_003",
+    "seed_collector_sandleaf_004",
+    "seed_collector_sandleaf_005",
+    "seed_collector_sandleaf_006",
+    "seed_collector_sandleaf_007",
+    "seed_collector_sandleaf_008",
+    "seed_collector_sandleaf_009"
+  ],
+  "active_port_blocked": 16625,
+  "active_port_out_of_grid": 86,
+  "active_port_free": 10875,
+  "filter_keep_rate": 0.0182,
+  "probe_wall_seconds": 0.02
+}

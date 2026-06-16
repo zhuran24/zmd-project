@@ -1,0 +1,23 @@
+=== layer isolation PoC ===
+candidate: 27x15
+anchor: 22,28
+master_seconds: 300.0
+SKIP_POWER_COVERAGE: True
+
+[load] project data ...
+[load] 0.5s
+[core build] skip_power=True ...
+[core build] 5.0s
+[core stats] vars=24824, cons=69910
+
+[solve] run_benders_for_ghost_rect ghost=27x15 ...
+
+--- [LBBD Exact Loop] Iteration 1/2 ---
+  > Solving Master Problem...
+
+--- [LBBD Exact Loop] Iteration 2/2 ---
+  > Solving Master Problem...
+
+=== verdict ===
+wall: 65.9s
+status: UNPROVEN

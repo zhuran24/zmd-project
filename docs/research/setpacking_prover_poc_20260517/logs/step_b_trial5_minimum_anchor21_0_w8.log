@@ -1,0 +1,20 @@
+=== minimum set-packing PoC ===
+candidate 27x15 anchor (21,0)
+time_limit=120.0s workers=8
+[load] project data ...
+[load] 0.6s
+[build] master exact core ...
+[build] 59.9s, 19 groups, total demand=266
+[ghost] forbidden cells=405
+[filter] 272397 total feasible poses across 19 groups
+[cpsat] building model ...
+[cpsat] built in 1.2s, 272397 bool vars, 4493 cells with overlap
+[cpsat] solving (time=120.0s, workers=8) ...
+
+=== verdict ===
+status: INFEASIBLE
+elapsed: 2.3s
+branches: 0
+conflicts: 0
+objective_value: n/a
+best_obj_bound: 0.0

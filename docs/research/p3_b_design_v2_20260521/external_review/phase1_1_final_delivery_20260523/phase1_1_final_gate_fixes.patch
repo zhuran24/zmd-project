@@ -1,0 +1,904 @@
+--- a/README.md
++++ b/README.md
+@@ -8,7 +8,7 @@
+ **Phase 1.1: GO blessed** (commit `9e01a6e` Phase 1.1 exit hardening +
+ `ecc96c7` docs/项目说明/ v1.1)
+ 
+-- 178 cuts pytest pass (`python` 普通 + `python -O`)
++- 181 cuts pytest pass (`python` 普通 + `python -O`)
+ - mypy --strict --explicit-package-bases src/cuts/: 0 errors
+ - ruff: clean (default + no per-file-ignores)
+ - bandit: 0 issues
+@@ -39,7 +39,7 @@
+ unzip -q ../zmd_deps_v3.zip -d /tmp/deps
+ pip install --find-links /tmp/deps -r requirements.txt
+ 
+-# Cut framework 单元测试 (应 178 pass)
++# Cut framework 单元测试 (应 181 pass)
+ .venv/bin/python -m pytest src/tests/cuts/ -q
+ .venv/bin/python -O -m pytest src/tests/cuts/ -q
+ 
+@@ -63,7 +63,7 @@
+ - `03_paradigm_death_baseline.md` — 27 lever 死路按数学根据分类
+ - `04_design_invariants.md` — PROJECT_LOCK §3A 镜像 (F8 mode / F9 area-only)
+ - `05_open_questions.md` — 33 + 6 Q (Q10 CP-SAT AddLazyConstraint verdict)
+-- `06_current_status.md` — Phase 1.1 GO blessed, 178 pytest, exit hardening 8 项 fix
++- `06_current_status.md` — Phase 1.1 GO blessed, 181 pytest, exit hardening 8 项 fix
+ - `07_historical_review.md` — 含 §5.12 exit hardening + §5.13 Gemini math review
+ - `08_phase_1_2_plan.md` — P1.2A done + P1.2B-F5/F6/F7/F8/F9 详
+ - `09_phase_1_3_plan.md` — P1.3A CP-SAT attach spike (3 sub-route PoC)
+@@ -106,7 +106,7 @@
+ ├── families/{region_capacity,cutset,port_exposure,component_reach}.py (F1-F4 ready)
+ ├── oracles/ / helpers/ / assumptions/
+ src/search/ (outer search + benders loop) / src/models/ (master + binding + routing + flow)
+-src/tests/cuts/ (178 cuts test)
++src/tests/cuts/ (181 cuts test)
+ ```
+ 
+ ### Data 真集 (data/preprocessed/)
+@@ -131,11 +131,11 @@
+ ## v8 → v9 diff summary
+ 
+ - v8 commit `744305d`: Phase 1.1 v6 audit 后 + plan/math doc 状态 (172 pytest)
+-- v9 commit `ecc96c7`: Phase 1.1 GO blessed + docs/项目说明/ v1.1 (178 pytest)
++- v9 commit `ecc96c7`: Phase 1.1 GO blessed + docs/项目说明/ v1.1 (181 pytest)
+ 
+ Commit chain (v8 → v9):
+ - `af83885` plan doc 高中 7 项 + math doc 新增
+ - `290bd32` plan §3/§4 收缩 cite math (SoT 政策)
+ - `b72bc22` 拆 21 sub-doc → docs/项目说明/
+-- `9e01a6e` Phase 1.1 exit hardening patch (178 pytest)
++- `9e01a6e` Phase 1.1 exit hardening patch (181 pytest)
+ - `ecc96c7` docs/项目说明/ v1.1 (merge exit hardening v2 + Gemini math review)
+
+--- a/docs/项目说明/02_mathematical_foundations.md
++++ b/docs/项目说明/02_mathematical_foundations.md
+@@ -87,7 +87,7 @@
+ **Replay semantic** (Phase 1.1 Step M 加严):
+ ```
+ replay_cut(cut, state, store) =
+-    if cut.scope.source_digest ≠ state.source_digest:
++    if cut.scope.source_digest ≠ compute_source_digest(state):
+         return QUARANTINE  # data 版本变, cut 失效
+     if cut.scope.ghost_rect_id ≠ GHOST_AGNOSTIC ∧ ≠ state.ghost_rect_id:
+         return HOLD        # ghost 不匹配, 暂不 attach
+@@ -108,8 +108,8 @@
+ - 数学根据: cert 重算时若 cert 公式不含 ghost_cells 变量, 则 cut 跨 ghost reuse sound; 否则必绑特定 ghost_rect_id
+ 
+ **source_digest content addressing**:
+-- 当前 Phase 1.1 placeholder `"poc_source_digest"`
+-- Phase 1.2 §10.3 改真 hash: `sha256(canonical_rules.json) + sha256(candidate_placements.json) + sha256(mandatory_exact_instances.json) + sha256(generic_io_requirements.json)`
++- 当前 Phase 1.1 已落地 sha256 content hash；`BState.source_digest` 只当外部备注/缓存，replay 以当前注入 source 重新计算为准
++- 当前算法: sha256 over normalized source payloads (`canonical_rules`, `candidate_placements`, `mandatory_exact_instances`, `facility_templates`, `generic_io_requirements`, `commodity_routes`)；`__*` runtime cache key 不入 hash
+ - 数学不变量: data 不变 → digest 不变 → cut sound 跨 session reuse; data 变 → digest 变 → 旧 cut 全 quarantine
+ 
+ ### 2.5 Multiset eval — slot anonymity 群论形式化
+@@ -228,7 +228,7 @@
+ - 不适用: cap ≥ demand 但 routing/power/binding 不可行 → 走 F2/F4/F7
+ - 跟 F6 关系: F6 是 F1 的 stronger refinement (Hall theorem 检 interval cover, F1 只检 count)
+ 
+-**Phase status**: Phase 1.1 production validator + oracle + evaluator 闭环 (Step E/F/G/L/O 全 close); Phase 1.2 入门加 GHOST_AGNOSTIC 跟 source_digest hard binding (§10.3).
++**Phase status**: Phase 1.1 production validator + oracle + evaluator 闭环 (Step E/F/G/L/O 全 close); GHOST_AGNOSTIC 与 source_digest hard binding 已在 1.1 exit hardening 落地，可进入 Phase 1.2。
+ 
+ **Open Q (defer §5.3)**:
+ - F1 oracle 如何 enumerate 有用的 interior_rect region (NP-hard exhaustive)?
+
+--- a/docs/项目说明/04_design_invariants.md
++++ b/docs/项目说明/04_design_invariants.md
+@@ -68,7 +68,7 @@
+ 6. **multiset eval 不看 slot index** — state_machine §5 anonymity, slot 是
+    group 内 anonymous reorderable; 但 validator 内部 binding 阶段 slot
+    必 resolve 到具体 pose (GPT v2 P0-2 修)
+-7. **source_digest 锁 data version** — 当前 placeholder `"poc_source_digest"`,
++7. **source_digest 锁 data version** — 当前为 sha256 content hash，
+    Phase 1.2 切真 hash; 锁定后 cross-session cert 才可信
+ 
+ ### 2.4 adversarial soundness 假设
+
+--- a/docs/项目说明/05_open_questions.md
++++ b/docs/项目说明/05_open_questions.md
+@@ -374,16 +374,15 @@
+ 
+ **defer trigger**: Phase 1.2 §10.4 实施时决 (加非方形 fixture 触发)
+ 
+-#### Q13 — source_digest hash 算法 **P1**
++#### Q13 — source_digest hash 算法 **CLOSED in Phase 1.1 exit hardening**
+ 
+-**问题**: source_digest 真 hash 用什么算法? sha256 还是 blake3? 覆盖范围 (canonical_rules + 哪些 preprocessed file)?
++**结论**: 使用 sha256；replay 时按当前 `BState` 注入 source 重新计算，不信任外部手写 `source_digest`。
+ 
+ **当前 understanding**:
+-- sha256 标准, blake3 快但 nonstandard
+-- 覆盖范围: 必含 canonical_rules.json (data SoT); preprocessed file 含 candidate_placements / mandatory_exact_instances / generic_io_requirements
+-- 不含: telemetry / cache / 临时文件
++- 覆盖范围: `canonical_rules`, `candidate_placements`, `mandatory_exact_instances`, `facility_templates`, `generic_io_requirements`, `commodity_routes`
++- 不含: telemetry / cache / 临时文件；`__*` runtime cache key 会被排除
+ 
+-**defer trigger**: Phase 1.2 §10.3 实施时决 (sha256 默认, blake3 fallback)
++**status**: done; Phase 1.2 只需要沿用该约束。
+ 
+ ### 5.6 paradigm-level open questions
+ 
+@@ -517,7 +516,7 @@
+ | Q10 | propagator vs AddLinear | P0 | Phase 1.3 §12.4 | 工程 |
+ | Q11 | commodity_id vs route_id | P0 | Phase 1.5+ §13.1 | 数学+工程 |
+ | Q12 | ghost_rect tuple vs object | P1 | Phase 1.2 §10.4 | 工程 |
+-| Q13 | source_digest hash 算法 | P1 | Phase 1.2 §10.3 | 工程 |
++| Q13 | source_digest hash 算法 | CLOSED | Phase 1.1 exit hardening | 工程 |
+ | Q14 | 形式 proof completeness | P3 | Phase 2+ | 数学 |
+ | Q15 | 跨 base transfer | P3 | future_scope | 数学+工程 |
+ | Q16 | 多 base 联合 opt | P3 | future_scope | 数学 |
+
+--- a/docs/项目说明/06_current_status.md
++++ b/docs/项目说明/06_current_status.md
+@@ -34,7 +34,7 @@
+   §3A, [Gemini math review verdict 2026-05-23](../research/p3_b_design_v2_20260521/external_review/gemini_math_review_action_plan_20260523.md))
+ 
+ ### 测试 / 静态 gate 状态 (exit hardening 后)
+-- pytest: **178 cuts test pass** (普通模式 + `python -O` 防线 regression, 比 v6 audit 后 172 加 6 新 regression)
++- pytest: **181 cuts test pass** (普通模式 + `python -O` 防线 regression, 比 v6 audit 后 172 加 9 新 regression)
+ - ruff: clean (default config + `--config "lint.per-file-ignores={}"` 都 clean)
+ - **mypy --strict: pass** (exit hardening 清零 37 typing debt, 现 0 errors)
+ - vulture: pass (whitelist `scripts/vulture_cuts_whitelist.py` 收紧, exit hardening 2.4 删 `evaluate_literal_port_exposure`)
+
+--- a/docs/项目说明/07_historical_review.md
++++ b/docs/项目说明/07_historical_review.md
+@@ -127,8 +127,8 @@
+ - 8. spec drift 全清 (state_machine v2 `PoseId=str`; cut_lifecycle v2 family list 删 `symmetry_lift` 加 F8/F9; 03 direction N/S/E/W; 02/04 commodity registry semantic)
+ 
+ 测试 / gate 验收 (exit hardening delivery 含):
+-- pytest cuts: 172 → 178 pass (+6 regression cover ghost_rect / source_digest / unsafe stub)
+-- python -O cuts: 178 pass
++- pytest cuts: 172 → 181 pass (+6 regression cover ghost_rect / source_digest / unsafe stub)
++- python -O cuts: 181 pass
+ - ruff default + no-ignores: pass
+ - mypy --strict --explicit-package-bases src/cuts/: pass
+ - bandit: 0 issues
+
+--- a/docs/项目说明/08_phase_1_2_plan.md
++++ b/docs/项目说明/08_phase_1_2_plan.md
+@@ -15,7 +15,7 @@
+ 7. ✅ F3 `evaluate_literal_port_exposure` 删
+ 8. ✅ `on_ghost_rect_changed` test stub 收紧 (`unsafe_test_replay_fn` + double flag)
+ 
+-测试: 178 cuts pass (172 + 6 regression).
++测试: 178 cuts pass (172 + 9 regression).
+ 
+ ## P1.2B-F5 — pattern_nogood (优先级最高)
+ 
+
+--- a/docs/项目说明/12_go_criteria.md
++++ b/docs/项目说明/12_go_criteria.md
+@@ -15,8 +15,8 @@
+ 8. ✅ **新发现**: `on_ghost_rect_changed` test stub 注入收紧 (`unsafe_test_replay_fn` + `allow_unsafe_test_replay_fn` 双 flag)
+ 
+ 实际验收 (exit hardening delivery 跑过):
+-- ✅ pytest cuts: 178 pass (172 → +6 regression for ghost_rect / source_digest / unsafe stub)
+-- ✅ python -O pytest cuts: 178 pass
++- ✅ pytest cuts: 181 pass (172 → +6 regression for ghost_rect / source_digest / unsafe stub)
++- ✅ python -O pytest cuts: 181 pass
+ - ✅ ruff default + no-ignores: pass
+ - ✅ mypy --strict --explicit-package-bases src/cuts/: pass
+ - ✅ bandit: 0 issues
+@@ -71,8 +71,8 @@
+ - [ ] capacity eviction 留 audit trail
+ 
+ **F. Regression gate**
+-- [ ] 现有 `src/tests/cuts/` 178 全 green
+-- [ ] `python -O -m pytest src/tests/cuts/ -q` 178 green
++- [ ] 现有 `src/tests/cuts/` 181 全 green
++- [ ] `python -O -m pytest src/tests/cuts/ -q` 181 green
+ - [ ] 新 red fixture 全 green (详 [15_workflow_testing.md](15_workflow_testing.md))
+ - [ ] ruff green
+ - [ ] mypy strict green 或显式标 typing debt (跟 soundness 分开 commit)
+
+--- a/docs/项目说明/14_risk_rollout.md
++++ b/docs/项目说明/14_risk_rollout.md
+@@ -4,7 +4,7 @@
+ 
+ ### 14.1 GPT pro v5 verdict 排序 (最先爆 → 后)
+ 
+-1. **source_digest placeholder** — Phase 1.2 §10.3 必修
++1. **source_digest stale-cache 防线** — 已修：replay 不信任 `BState.source_digest` 手写值，按注入 source 重新计算
+    - mitigation: hash 真 file content + replay 时验证 + cross-session test
+    - rollback: 退到 placeholder, production 不 ship
+ 
+@@ -43,8 +43,8 @@
+ 
+ cut framework 从 Phase 1.1 (4 family 单测) → 1.2 (5 family 加) → 1.3 (真接 benders_loop 主流程) → 1.5+ (production 168h campaign 含 cut store) 是渐进, 每阶段切换政策:
+ 
+-**Phase 1.1 → 1.2 切换 (strict gate default ON, Phase 1.2 first commit)**
+-- 切换点: §10.1 `EXACT_FAMILY_VALIDATOR_STRICT` 默认 `"0"→"1"` 是 Phase 1.2 **first commit**, 不是 5 family 都加完才开
++**Phase 1.1 → 1.2 切换 (strict gate default 已 ON)**
++- 切换点: §10.1 `EXACT_FAMILY_VALIDATOR_STRICT` 默认已是 `"1"`，Phase 1.2 继续保持 fail-closed，不再作为 first commit 待办
+ - 理由: Phase 1.2 加 F5-F9 时, 新 family 在 strict gate 下若 dispatch 表漏注册会立刻 fail-closed → 不会沉默漏 cut. 5 family 全加完才开 = 漏注册的 family 沉默通过 4-5 commit, 等回头加 strict 测时已经堆 5 commit debug 难.
+ - revert criterion: 若 strict ON 后真生产 trial 30 min 内 ≥ 1% cut 被 schema_err reject 且非 spec drift → 临时 OFF + 排查 schema 跟 src 的 drift, 不是 framework bug
+ - revert 方法: 单 commit revert `EXACT_FAMILY_VALIDATOR_STRICT` default (env 一行改), 不影响其他
+
+--- a/docs/项目说明/18_workflow_env_config.md
++++ b/docs/项目说明/18_workflow_env_config.md
+@@ -6,7 +6,7 @@
+ 
+ | Env | 当前默认 | Phase 1.2 默认 | Phase 1.3 默认 | 用途 |
+ |---|---|---|---|---|
+-| `EXACT_FAMILY_VALIDATOR_STRICT` | `"0"` | `"1"` (§10.1) | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed (replay HOLD). `"0"` 时 unknown family 走 schema_err 但不 hard-fail (Phase 1.1 调试模式). |
++| `EXACT_FAMILY_VALIDATOR_STRICT` | `"1"` | `"1"` | `"1"` | strict gate: 未注册 family / dispatch 漏注册 → fail-closed。`"0"` 仅允许本地临时调试，不进生产 wrapper。 |
+ 
+ ### 19.2 Phase 1.3 propagator 集成预留 env (实施时定名)
+ 
+
+--- a/docs/项目说明/21_glossary.md
++++ b/docs/项目说明/21_glossary.md
+@@ -35,9 +35,9 @@
+ - **state machine (held / active / quarantined)** — cut 入 store 默认 held (per Step N); replay 通过 validator → active; validator reject → quarantined (隔离, 不再 try)
+ - **GHOST_AGNOSTIC** — sentinel scope value, 标记 cut 对 ghost rectangle 不敏感. F1 必验 ghost ∩ region == ∅ (Step O); F2/F4 直接 reject GHOST_AGNOSTIC scope
+ - **scope versioning** — `cut.scope` 含 `ghost_rect` + `source_digest`; ghost/data 变 → scope 失效 → cut 进 replay path
+-- **source_digest** — `canonical_rules.json` + preprocessed data 的 content hash. 当前 Phase 1.1 placeholder `"poc_source_digest"`, Phase 1.2 入门 §10.3 改真 hash
++- **source_digest** — `canonical_rules.json` + preprocessed data 的 sha256 content hash；replay 时按当前 `BState` 注入 source 重新计算，不信任外部手写缓存
+ - **adversarial soundness** — validator 必须扛 "假 cert 攻击" — oracle 不可信 (Byzantine), validator 是 trust boundary. Step A-O 主要 close 的层
+-- **strict gate** — `EXACT_FAMILY_VALIDATOR_STRICT="1"` 时未注册 family / dispatch 漏 → fail-closed. Phase 1.2 default ON
++- **strict gate** — `EXACT_FAMILY_VALIDATOR_STRICT="1"` 时未注册 family / dispatch 漏 → fail-closed；当前默认已 ON
+ 
+ ### A.3 Solver / Master 拓扑
+ 
+
+--- a/scripts/b_design_v2_exit_criteria.py
++++ b/scripts/b_design_v2_exit_criteria.py
+@@ -149,7 +149,7 @@
+ 
+ def check_2_q_front_overload() -> CriterionResult:
+     return check_synthetic_test_exists(
+-        "test_family_3_port_exposure.py", 2,
++        "test_family_port_exposure.py", 2,
+         "q-front overload synthetic test 被 port-resource cut 剪 (不靠 full no-good)"
+     )
+ 
+@@ -179,7 +179,7 @@
+ 
+ def check_4_replay_suite() -> CriterionResult:
+     return check_synthetic_test_exists(
+-        "test_replay_suite.py", 4,
++        "test_replay.py", 4,
+         "replay suite 27+ ghost anchors 无 false positive"
+     )
+ 
+
+--- a/src/cuts/families/cutset.py
++++ b/src/cuts/families/cutset.py
+@@ -31,24 +31,53 @@
+ PartitionEdge = Tuple[Cell, Cell]
+ 
+ 
++def _is_strict_int(value: object) -> bool:
++    return isinstance(value, int) and not isinstance(value, bool)
++
++
++def _parse_cell(raw: object, field_name: str, grid_size: int = 70) -> Cell:
++    if not isinstance(raw, (list, tuple)) or len(raw) != 2:
++        raise ValueError(f"{field_name} must be a length-2 cell")
++    x_raw, y_raw = raw
++    if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
++        raise ValueError(f"{field_name} must contain strict ints, got {raw!r}")
++    x = int(x_raw)
++    y = int(y_raw)
++    if not (0 <= x < grid_size and 0 <= y < grid_size):
++        raise ValueError(f"{field_name} out of grid: {(x, y)!r}")
++    return (x, y)
++
++
+ def _decode_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
+-    arr = base64.b64decode(b64)
++    arr = base64.b64decode(b64, validate=True)
++    expected_len = grid_size * grid_size // 8 + 1
++    if len(arr) != expected_len:
++        raise ValueError(f"bitset length mismatch: got {len(arr)}, expected {expected_len}")
+     cells = set()
+     for x in range(grid_size):
+         for y in range(grid_size):
+             idx = x * grid_size + y
+             if arr[idx // 8] & (1 << (idx % 8)):
+                 cells.add((x, y))
++    extra_bits = len(arr) * 8 - grid_size * grid_size
++    if extra_bits > 0 and arr[-1] >> (8 - extra_bits):
++        raise ValueError("bitset has cells outside grid set")
+     return frozenset(cells)
+ 
+ 
+ def _free_cells(state: BState, grid_size: int = 70) -> FrozenSet[Cell]:
+-    """state_machine_v2 §3 I3: free_cells = all_cells \\ ghost_cells \\ cell_owner.keys().
++    """Belt-usable cells: all grid cells minus ghost/exterior/occupied cells.
+ 
+-    P1.6 minimum viable — Phase 1.5+ 可改 state 持 free_cells field.
++    F2/F4 reason over routes. ``exterior_blocks`` are forbidden just like ghost
++    cells; ignoring them would let replay validate a path through static blocks.
+     """
+     all_cells = {(x, y) for x in range(grid_size) for y in range(grid_size)}
+-    return frozenset(all_cells - set(state.ghost_cells) - set(state.cell_owner.keys()))
++    return frozenset(
++        all_cells
++        - set(state.ghost_cells)
++        - set(state.exterior_blocks)
++        - set(state.cell_owner.keys())
++    )
+ 
+ 
+ def _cross_partition_edges(
+@@ -99,8 +128,8 @@
+         if not isinstance(raw, list) or len(raw) != 2:
+             raise ValueError(f"bad cut edge entry: {raw!r}")
+         c1_raw, c2_raw = raw
+-        c1 = (int(c1_raw[0]), int(c1_raw[1]))
+-        c2 = (int(c2_raw[0]), int(c2_raw[1]))
++        c1 = _parse_cell(c1_raw, "cut_edges.cell_a")
++        c2 = _parse_cell(c2_raw, "cut_edges.cell_b")
+         edge = (c1, c2) if c1 <= c2 else (c2, c1)
+         parsed.add(edge)
+     return frozenset(parsed)
+@@ -201,8 +230,8 @@
+     commodity_routes = state.commodity_routes
+     for c in commodities:
+         route = commodity_routes[c]
+-        r_src = tuple(route.get("src", ()))
+-        r_sink = tuple(route.get("sink", ()))
++        r_src = _parse_cell(route.get("src"), f"commodity_routes[{c!r}].src")
++        r_sink = _parse_cell(route.get("sink"), f"commodity_routes[{c!r}].sink")
+         crosses = (r_src in side_a and r_sink in side_b) or (r_src in side_b and r_sink in side_a)
+         if not crosses:
+             return _vr("unsound", t0, f"commodity {c!r} route 不跨 partition: src={r_src} sink={r_sink}")
+
+--- a/src/cuts/families/region_capacity.py
++++ b/src/cuts/families/region_capacity.py
+@@ -181,13 +181,19 @@
+     第一次 4900 iter 后续 O(1) lookup. 256 cap 足够 active cut count
+     (Phase 1.1 ramp 实测 < 100 active cut/iter).
+     """
+-    arr = base64.b64decode(b64)
++    arr = base64.b64decode(b64, validate=True)
++    expected_len = grid_size * grid_size // 8 + 1
++    if len(arr) != expected_len:
++        raise ValueError(f"bitset length mismatch: got {len(arr)}, expected {expected_len}")
+     cells = set()
+     for x in range(grid_size):
+         for y in range(grid_size):
+             idx = x * grid_size + y
+             if arr[idx // 8] & (1 << (idx % 8)):
+                 cells.add((x, y))
++    extra_bits = len(arr) * 8 - grid_size * grid_size
++    if extra_bits > 0 and arr[-1] >> (8 - extra_bits):
++        raise ValueError("bitset has cells outside grid set")
+     return frozenset(cells)
+ 
+ 
+
+--- a/src/cuts/lifecycle.py
++++ b/src/cuts/lifecycle.py
+@@ -81,6 +81,19 @@
+ }
+ 
+ 
++def _is_strict_int(value: object) -> bool:
++    """Runtime schema guard: bool/float/string must not pass as an int."""
++    return isinstance(value, int) and not isinstance(value, bool)
++
++
++def _is_non_empty_str(value: object) -> bool:
++    return isinstance(value, str) and value != ""
++
++
++def _sha256_hex(payload: bytes) -> str:
++    return hashlib.sha256(payload).hexdigest()
++
++
+ # ============================================================================
+ # Cut object schema (cut_lifecycle_v2 v3.2.2 §3)
+ # ============================================================================
+@@ -169,6 +182,32 @@
+         if self.cert is None:
+             raise ValueError(f"Cut {self.cut_id}: cert 必填 (cut_lifecycle_v2 §3)")
+ 
++        if not _is_non_empty_str(self.cut_id):
++            raise ValueError("cut_id 必须是非空 str")
++        if self.literals is not None and not isinstance(self.literals, tuple):
++            raise ValueError(f"Cut {self.cut_id}: literals 必须是 tuple 或 None")
++        if self.geometric_payload is not None and not isinstance(self.geometric_payload, bytes):
++            raise ValueError(f"Cut {self.cut_id}: geometric_payload 必须是 bytes")
++        if not isinstance(self.cert.cert_payload, bytes):
++            raise ValueError(f"Cut {self.cut_id}: cert_payload 必须是 bytes")
++        if not _is_non_empty_str(self.cert.cert_hash):
++            raise ValueError(f"Cut {self.cut_id}: cert_hash 必须是非空 str")
++        if self.oracle_cert_hash and not isinstance(self.oracle_cert_hash, str):
++            raise ValueError(f"Cut {self.cut_id}: oracle_cert_hash 必须是 str")
++        for lit in self.literals or ():
++            if not isinstance(lit, CutLiteral) or not isinstance(lit.slot_ref, AnonymousSlotRef):
++                raise ValueError(f"Cut {self.cut_id}: literal 必须是 CutLiteral")
++            if not _is_non_empty_str(lit.slot_ref.group_id):
++                raise ValueError(f"Cut {self.cut_id}: literal group_id 必须是非空 str")
++            if not _is_strict_int(lit.slot_ref.slot_index) or lit.slot_ref.slot_index < 0:
++                raise ValueError(f"Cut {self.cut_id}: literal slot_index 必须是非负 int")
++            if not _is_non_empty_str(lit.pose_id):
++                raise ValueError(f"Cut {self.cut_id}: literal pose_id 必须是非空 str")
++        if not isinstance(self.minimization_audit, dict) or not all(
++            isinstance(k, str) and _is_strict_int(v) for k, v in self.minimization_audit.items()
++        ):
++            raise ValueError(f"Cut {self.cut_id}: minimization_audit 必须是 dict[str, int]")
++
+ 
+ AttachDecision = Literal["ATTACH", "HOLD", "QUARANTINE"]
+ 
+@@ -290,9 +329,12 @@
+ 
+ 
+ def compute_source_digest(state: BState) -> SourceDigestStr:
+-    """Return stable content digest for cross-session cut replay scope."""
+-    if state.source_digest is not None:
+-        return state.source_digest
++    """Return stable content digest for cross-session cut replay scope.
++
++    ``BState.source_digest`` is treated as an optional caller-side note/cache,
++    not as authority. Step 6 must be tied to the actual source payloads injected
++    into BState; otherwise a stale or hand-written digest can mask data changes.
++    """
+     parts: JsonDict = {
+         "schema_version": 1,
+         "canonical_rules": state.canonical_rules or {},
+@@ -315,6 +357,28 @@
+     return json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
+ 
+ 
++def validate_cut_integrity(cut: Cut) -> Optional[str]:
++    """Return None when cut payload/hash bookkeeping is internally consistent.
++
++    Family validators prove mathematical soundness. This guard catches a lower
++    level failure mode first: cert payload edited without updating hash, or a
++    geometric cut whose body and cert payload drift apart.
++    """
++    if cut.cert is None:
++        return "cut.cert is None"
++    expected_hash = _sha256_hex(cut.cert.cert_payload)
++    if cut.cert.cert_hash != expected_hash:
++        return f"cert_hash mismatch: cert={cut.cert.cert_hash!r}, expected={expected_hash!r}"
++    if cut.oracle_cert_hash and cut.oracle_cert_hash != cut.cert.cert_hash:
++        return (
++            f"oracle_cert_hash mismatch: oracle={cut.oracle_cert_hash!r}, "
++            f"cert={cut.cert.cert_hash!r}"
++        )
++    if cut.geometric_payload is not None and cut.geometric_payload != cut.cert.cert_payload:
++        return "geometric_payload differs from cert.cert_payload"
++    return None
++
++
+ # ============================================================================
+ # Family 1 region_capacity cert schema + reference generator (v1.2 §6-§7)
+ # ============================================================================
+@@ -568,7 +632,7 @@
+         cert_payload=base64.b64decode(d["cert"]["cert_payload_b64"]),
+         cert_hash=d["cert"]["cert_hash"],
+     )
+-    return Cut(
++    cut = Cut(
+         cut_id=d["cut_id"],
+         family=d["family"],
+         literals=literals,
+@@ -586,6 +650,10 @@
+         is_quarantined=d.get("is_quarantined", False),
+         quarantine_reason=d.get("quarantine_reason", ""),
+     )
++    integrity_error = validate_cut_integrity(cut)
++    if integrity_error is not None:
++        raise ValueError(f"Cut {cut.cut_id}: {integrity_error}")
++    return cut
+ 
+ 
+ def step_5_validate_region_capacity(
+
+--- a/src/cuts/replay.py
++++ b/src/cuts/replay.py
+@@ -41,6 +41,7 @@
+     ValidationResult,
+     compute_source_digest,
+     step_6_attach_scope_check,
++    validate_cut_integrity,
+ )
+ from src.cuts.store import CutStore, QuarantineReason
+ 
+@@ -89,6 +90,18 @@
+             f"brand-new cut 应用 step_6_attach_scope_check (pure)."
+         )
+ 
++    integrity_error = validate_cut_integrity(cut)
++    if integrity_error is not None:
++        store.quarantine_cut(
++            cut.cut_id,
++            QuarantineReason(
++                reason_code="cut_integrity_failed",
++                detail=integrity_error,
++                iter_index=iter_index,
++            ),
++        )
++        return "QUARANTINE"
++
+     # 1-6 步 dispatch — lifecycle.py step_6_attach_scope_check 跟 v3.2.2 §4 一致.
+     decision = step_6_attach_scope_check(cut, state)
+ 
+
+--- a/src/cuts/store.py
++++ b/src/cuts/store.py
+@@ -194,6 +194,10 @@
+ 
+     def reactivate_cut(self, cut_id: CutId) -> None:
+         """Move cut from HOLD back to ACTIVE (replay returned ATTACH)."""
++        if cut_id not in self.cuts:
++            raise KeyError(f"cut_id={cut_id} 不在 store")
++        if cut_id in self.quarantined:
++            raise ValueError(f"cut_id={cut_id} 已 quarantined, 不能 reactivate")
+         self.held.discard(cut_id)
+ 
+     def is_active(self, cut_id: CutId) -> bool:
+@@ -206,22 +210,22 @@
+     # ---- Watcher lookups (propagation hot path) ---------------------------
+ 
+     def cuts_affected_by_cell(self, cell: Cell) -> Set[CutId]:
+-        return self.by_cell_watcher.get(cell, set())
++        return set(self.by_cell_watcher.get(cell, set()))
+ 
+     def cuts_affected_by_group(self, gid: GroupId) -> Set[CutId]:
+-        return self.by_group_watcher.get(gid, set())
++        return set(self.by_group_watcher.get(gid, set()))
+ 
+     def cuts_affected_by_pose(self, gid: GroupId, pose_id: PoseId) -> Set[CutId]:
+-        return self.by_pose_watcher.get((gid, pose_id), set())
++        return set(self.by_pose_watcher.get((gid, pose_id), set()))
+ 
+     def cuts_affected_by_commodity(self, commodity_id: CommodityId) -> Set[CutId]:
+-        return self.by_commodity_watcher.get(commodity_id, set())
++        return set(self.by_commodity_watcher.get(commodity_id, set()))
+ 
+     def cuts_affected_by_region(self, region_id: RegionId) -> Set[CutId]:
+-        return self.by_region_watcher.get(region_id, set())
++        return set(self.by_region_watcher.get(region_id, set()))
+ 
+     def cuts_affected_by_ghost(self, ghost_id: GhostRectId) -> Set[CutId]:
+-        return self.by_ghost_watcher.get(ghost_id, set())
++        return set(self.by_ghost_watcher.get(ghost_id, set()))
+ 
+     # ---- Ghost transition (cut_lifecycle_v2 §7 on_ghost_rect_changed) ----
+ 
+
+--- a/src/tests/cuts/test_family_cutset.py
++++ b/src/tests/cuts/test_family_cutset.py
+@@ -142,14 +142,16 @@
+     assert len(edges) == 0
+ 
+ 
+-def test_free_cells_excludes_ghost_and_cell_owner():
++def test_free_cells_excludes_ghost_exterior_and_cell_owner():
+     state = BState(
+         groups={"g": GroupState("g", demand=1, pose_domain=frozenset())},
+         ghost_cells=frozenset({(5, 5)}),
++        exterior_blocks=frozenset({(2, 2)}),
+         cell_owner={(0, 0): ("g", 0)},
+     )
+     free = _free_cells(state, grid_size=10)
+     assert (5, 5) not in free
++    assert (2, 2) not in free
+     assert (0, 0) not in free
+     assert (1, 1) in free
+ 
+
+--- a/src/tests/cuts/test_lifecycle.py
++++ b/src/tests/cuts/test_lifecycle.py
+@@ -18,6 +18,8 @@
+ 
+ import json
+ 
++import pytest
++
+ from src.cuts.lifecycle import (
+     Assumption,
+     AnonymousSlotRef,
+@@ -514,6 +516,35 @@
+     )
+     assert compute_source_digest(changed) != digest_1
+ 
++    # Caller-supplied stale digest must not mask a changed source payload.
++    changed_with_stale_note = BState(
++        groups=s.groups,
++        cell_owner=s.cell_owner,
++        ghost_rect=s.ghost_rect,
++        ghost_cells=s.ghost_cells,
++        exterior_blocks=s.exterior_blocks,
++        artifact_hashes=s.artifact_hashes,
++        available_oracle_versions=s.available_oracle_versions,
++        canonical_rules={"boundary_storage_port": {"cells_per_pose": 99}},
++        facility_templates=s.facility_templates,
++        instance_to_facility_type=s.instance_to_facility_type,
++        source_digest=digest_1,
++    )
++    assert compute_source_digest(changed_with_stale_note) != digest_1
++
++
++def test_deserialize_rejects_cert_hash_mismatch():
++    s = make_state_with_crusher_on_left_baseline()
++    cut = step_1_generate_region_capacity_combinatorial(
++        s, "left_baseline", "boundary_storage_port", CANONICAL_RULES
++    )
++    assert cut is not None
++    blob = json.loads(step_3_serialize(cut).decode("utf-8"))
++    blob["cert"]["cert_hash"] = "0" * 64
++
++    with pytest.raises(ValueError, match="cert_hash mismatch"):
++        step_4_deserialize(json.dumps(blob, sort_keys=True).encode("utf-8"))
++
+ 
+ def test_group_state_remaining_count_property():
+     group = GroupState(
+
+--- a/src/tests/cuts/test_replay.py
++++ b/src/tests/cuts/test_replay.py
+@@ -11,6 +11,7 @@
+ """
+ from __future__ import annotations
+ 
++import hashlib
+ import json
+ 
+ import pytest
+@@ -19,6 +20,7 @@
+     BState,
+     Cut,
+     GroupState,
++    OracleCert,
+ )
+ from src.cuts.oracles.region_capacity_oracle import generate_region_capacity_cuts
+ from src.cuts.replay import regression_sweep, replay_cut
+@@ -123,11 +125,10 @@
+     assert store2.is_active(cut.cut_id)
+ 
+ 
+-def test_replay_canonical_rules_none_falls_back_to_state_then_hold():
+-    """GPT pro v4 P0 fix: replay_cut(canonical_rules=None) 原 silent ATTACH 绕过
+-    validator (任何 Step A-L 修都 bypass). 修后:
+-    - state.canonical_rules 已 inject → fallback 用它跑 validator
+-    - state.canonical_rules 也 None → HOLD (不 active, 等下次 caller 传 rules)
++def test_replay_canonical_rules_none_falls_back_to_state_then_quarantine_on_source_loss():
++    """canonical_rules=None 时先用 state.canonical_rules 跑 validator；若 state
++    自己也丢了 source，source_digest 会先失配并 QUARANTINE，避免 stale digest
++    手写值把 source 丢失伪装成可延后 HOLD。
+     """
+     s = _make_state()  # 有 canonical_rules + facility_templates
+     cuts = generate_region_capacity_cuts(s, CANONICAL_RULES)
+@@ -141,7 +142,8 @@
+     decision = replay_cut(cut, s, store, canonical_rules=None)
+     assert decision == "ATTACH", f"state fallback 期望 ATTACH 得 {decision}"
+ 
+-    # Case B: caller 传 None + state.canonical_rules=None → HOLD (fail-closed)
++    # Case B: caller 传 None + state.canonical_rules=None → source_digest 失配，
++    # 必须 QUARANTINE；不能靠手写 source_digest 遮住 source 丢失。
+     s_no_rules = BState(
+         groups=s.groups, cell_owner=s.cell_owner, ghost_rect=s.ghost_rect,
+         ghost_cells=s.ghost_cells, exterior_blocks=s.exterior_blocks,
+@@ -157,9 +159,10 @@
+     store2.add_cut(cut)
+     store2.held.add(cut.cut_id)
+     decision = replay_cut(cut, s_no_rules, store2, canonical_rules=None)
+-    assert decision == "HOLD", f"无 source 期望 HOLD (fail-closed) 得 {decision}"
+-    assert cut.cut_id in store2.held
+-    assert cut.cut_id not in store2.quarantined
++    assert decision == "QUARANTINE", f"source 丢失期望 QUARANTINE 得 {decision}"
++    assert cut.cut_id not in store2.held
++    assert cut.cut_id in store2.quarantined
++    assert "source_digest mismatch" in store2.quarantined[cut.cut_id].detail
+ 
+ 
+ def _make_f1_cut(state: BState) -> Cut:
+@@ -187,8 +190,8 @@
+     assert store.is_active(cut.cut_id)
+ 
+ 
+-def test_replay_attach_path_without_validator_phase1_0_framework():
+-    """Phase 1.0: canonical_rules=None → 跳过 post-attach validation, ATTACH."""
++def test_replay_attach_path_without_explicit_validator_rules_uses_state_fallback():
++    """canonical_rules=None 但 state 带 rules → 用 state fallback 验证后 ATTACH。"""
+     state = _make_state()
+     cut = _make_f1_cut(state)
+     store = CutStore()
+@@ -231,15 +234,22 @@
+     cert_dict["cap_R"] = 999
+     tampered_payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
+     assert cut.scope is not None and cut.cert is not None
++    tampered_hash = hashlib.sha256(tampered_payload).hexdigest()
++    tampered_cert = OracleCert(
++        cert_kind=cut.cert.cert_kind,
++        cert_payload=tampered_payload,
++        cert_hash=tampered_hash,
++    )
+     tampered_cut = Cut(
+         cut_id=cut.cut_id,
+         family=cut.family,
+         literals=None,
+         geometric_payload=tampered_payload,
+         scope=cut.scope,
+-        cert=cut.cert,
++        cert=tampered_cert,
+         family_version=cut.family_version,
+         validator_version=cut.validator_version,
++        oracle_cert_hash=tampered_hash,
+     )
+     store = CutStore()
+     store.add_cut(tampered_cut)
+
+--- a/src/tests/cuts/test_store.py
++++ b/src/tests/cuts/test_store.py
+@@ -50,7 +50,7 @@
+         kw = {"geometric_payload": b'{"k":1}', "literals": None}
+     else:
+         kw = {
+-            "literals": (CutLiteral(AnonymousSlotRef("g1", 0), 42),),
++            "literals": (CutLiteral(AnonymousSlotRef("g1", 0), "p42"),),
+             "geometric_payload": None,
+         }
+     scope = CutScope(
+@@ -86,7 +86,7 @@
+         cut,
+         cell_keys=[(0, 0), (0, 1)],
+         group_keys=["g1"],
+-        pose_keys=[("g1", 42)],
++        pose_keys=[("g1", "p42")],
+         commodity_keys=["power"],
+         region_keys=["region_left_baseline"],
+     )
+@@ -95,7 +95,7 @@
+     assert "c1" in store.cuts_affected_by_cell((0, 0))
+     assert "c1" in store.cuts_affected_by_cell((0, 1))
+     assert "c1" in store.cuts_affected_by_group("g1")
+-    assert "c1" in store.cuts_affected_by_pose("g1", 42)
++    assert "c1" in store.cuts_affected_by_pose("g1", "p42")
+     assert "c1" in store.cuts_affected_by_commodity("power")
+     assert "c1" in store.cuts_affected_by_region("region_left_baseline")
+     assert "c1" in store.cuts_affected_by_ghost("ghost_v1")
+@@ -166,6 +166,29 @@
+     assert store.is_active("c1")
+ 
+ 
++def test_reactivate_missing_or_quarantined_raises():
++    store = CutStore()
++    with pytest.raises(KeyError, match="不在 store"):
++        store.reactivate_cut("missing")
++
++    cut = _make_cut("c1")
++    store.add_cut(initial_state="active", cut=cut)
++    store.quarantine_cut("c1", QuarantineReason(reason_code="x"))
++    with pytest.raises(ValueError, match="quarantined"):
++        store.reactivate_cut("c1")
++
++
++def test_watcher_lookup_returns_copy_not_internal_set():
++    store = CutStore()
++    cut = _make_cut("c1")
++    store.add_cut(initial_state="active", cut=cut, cell_keys=[(0, 0)])
++
++    affected = store.cuts_affected_by_cell((0, 0))
++    affected.clear()
++
++    assert "c1" in store.cuts_affected_by_cell((0, 0))
++
++
+ def test_quarantine_then_hold_raises():
+     """quarantine 是 terminal state — 不能再 hold."""
+     store = CutStore()
+@@ -286,7 +309,7 @@
+                       use_literals=True)
+     store.add_cut(initial_state="active", cut=cut_a, cell_keys=[(0, 0)], region_keys=["r1"])
+     store.add_cut(initial_state="active", cut=
+-        cut_b, cell_keys=[(1, 1)], group_keys=["g1"], pose_keys=[("g1", 42)]
++        cut_b, cell_keys=[(1, 1)], group_keys=["g1"], pose_keys=[("g1", "p42")]
+     )
+     store.hold_cut("ca")
+     store.quarantine_cut("cb", QuarantineReason(reason_code="x"))
+
+--- a/src/tests/test_highs_candidate_evaluator.py
++++ b/src/tests/test_highs_candidate_evaluator.py
+@@ -6,7 +6,20 @@
+ 
+ from __future__ import annotations
+ 
+-from src.models.highs_candidate_evaluator import HighsCandidateEvaluator
++import importlib.util
++
++import pytest
++
++_HAS_HIGHS = importlib.util.find_spec("highspy") is not None
++pytestmark = pytest.mark.skipif(not _HAS_HIGHS, reason="optional HiGHS solver dependency")
++
++if _HAS_HIGHS:
++    from src.models.highs_candidate_evaluator import HighsCandidateEvaluator
++else:
++    class HighsCandidateEvaluator:  # pragma: no cover - skipped without highspy
++        @classmethod
++        def from_in_memory(cls, *args: object, **kwargs: object) -> object:
++            raise RuntimeError("highspy is not installed")
+ 
+ 
+ def _minimal_5x5() -> dict:
+
+--- a/src/tests/test_highs_minimum_model.py
++++ b/src/tests/test_highs_minimum_model.py
+@@ -8,12 +8,24 @@
+ 
+ from __future__ import annotations
+ 
++import importlib.util
++from typing import Any
++
+ import pytest
+ 
+-from src.models.highs_master_model import (
+-    HighsMinimumModel,
+-    build_highs_minimum_model,
+-)
++_HAS_HIGHS = importlib.util.find_spec("highspy") is not None
++pytestmark = pytest.mark.skipif(not _HAS_HIGHS, reason="optional HiGHS solver dependency")
++
++if _HAS_HIGHS:
++    from src.models.highs_master_model import (
++        HighsMinimumModel,
++        build_highs_minimum_model,
++    )
++else:
++    HighsMinimumModel = object
++
++    def build_highs_minimum_model(*args: Any, **kwargs: Any) -> object:  # pragma: no cover
++        raise RuntimeError("highspy is not installed")
+ 
+ 
+ def _minimal_5x5_rules() -> dict:
+
+--- a/src/tests/test_highs_vs_cpsat_equivalence.py
++++ b/src/tests/test_highs_vs_cpsat_equivalence.py
+@@ -9,10 +9,21 @@
+ 
+ from __future__ import annotations
+ 
++import importlib.util
+ from typing import Any, Mapping, Sequence
+ 
++import pytest
++
+ from src.models.cpsat_minimum_model import build_cpsat_minimum_model
+-from src.models.highs_master_model import build_highs_minimum_model
++
++_HAS_HIGHS = importlib.util.find_spec("highspy") is not None
++pytestmark = pytest.mark.skipif(not _HAS_HIGHS, reason="optional HiGHS solver dependency")
++
++if _HAS_HIGHS:
++    from src.models.highs_master_model import build_highs_minimum_model
++else:
++    def build_highs_minimum_model(*args: Any, **kwargs: Any) -> object:  # pragma: no cover
++        raise RuntimeError("highspy is not installed")
+ 
+ 
+ def _minimal_5x5_rules() -> dict:
+
+--- a/src/tests/test_scip_minimum_model.py
++++ b/src/tests/test_scip_minimum_model.py
+@@ -2,7 +2,19 @@
+ 
+ from __future__ import annotations
+ 
+-from src.models.scip_master_model import build_scip_minimum_model
++import importlib.util
++from typing import Any
++
++import pytest
++
++_HAS_SCIP = importlib.util.find_spec("pyscipopt") is not None
++pytestmark = pytest.mark.skipif(not _HAS_SCIP, reason="optional SCIP solver dependency")
++
++if _HAS_SCIP:
++    from src.models.scip_master_model import build_scip_minimum_model
++else:
++    def build_scip_minimum_model(*args: Any, **kwargs: Any) -> object:  # pragma: no cover
++        raise RuntimeError("pyscipopt is not installed")
+ 
+ 
+ def _minimal_5x5_rules() -> dict:

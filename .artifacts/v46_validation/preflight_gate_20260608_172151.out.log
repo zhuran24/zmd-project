@@ -1,0 +1,64 @@
+============================================================
+Preflight Gate — 提交前门禁检查
+============================================================
+模式: staged
+变更范围: staged
+
+[1/17] 冻结/外部制品 hash 校验
+  OK     rules/canonical_rules.json
+  OK     data/preprocessed/mandatory_exact_instances.json
+  OK     data/preprocessed/generic_io_requirements.json
+  OK     data/preprocessed/candidate_placements.json 外部大制品未入轻量 checkout (expected sha256=d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f, size=53594995; see START_HERE.md)
+
+[2/17] 外部大制品 contract 检查
+  OK     external artifact check passed: data/preprocessed/candidate_placements.json missing by lightweight-checkout policy
+
+[3/17] 禁止路径写入检查
+  OK     无 staged 文件（或不在 git 仓库中）
+
+[4/17] AI 安全合同检查
+  OK     已扫描 4 个 AI 模块文件，无禁止引用
+
+[5/17] 精确/探索边界隔离检查
+  OK     无 staged 文件
+
+[6/17] 调研产物 audit 覆盖检查
+  OK     本次提交未修改路线图 / INDEX
+
+[7/17] 文档/记忆主体投影同步检查
+  OK     doc subject projection check passed: 6 subjects, 19 fields, 30 projections
+
+[8/17] 文档树完整收尾检查
+  OK     doc tree completeness check passed: 12 structural checks, 30 docs top-level files, 22 project-book docs, 48 research archive dirs
+
+[9/17] 行尾策略检查
+  OK     line-ending policy check passed: 38 files checked
+
+[10/17] 发布安全 secret scan
+  OK     repo secret scan passed: 2584 candidate text paths checked
+
+[11/17] 记忆树结构/currentness 检查
+  OK     memory tree check passed: 133 nodes, index within cap, graph/currency healthy
+
+[12/17] 历史证据/生成制品边界检查
+  OK     artifact boundary check passed: 36 tracked .artifacts files declared
+
+[13/17] Phase review close-gate 状态一致性检查
+  OK     phase review gate check passed: phase_1_2_spike_close: status=blocked_pending_clean_reviews, clean=0/3, next_allowed=False
+
+[14/17] P1.2 proof obligation consolidation 检查
+  OK     P1.2 proof obligation check passed: 4 obligations anchored
+
+[15/17] mypy 静态类型 (core lifecycle)
+  OK     mypy: Success: no issues found in 4 source files
+
+[16/17] ruff 静态检查
+  OK     ruff: All checks passed!
+
+[17/17] 测试门禁（核心门禁）
+  OK     pytest (核心门禁): 661 passed, 3 warnings in 18.42s
+
+============================================================
+结果: PASSED
+统计: 20 passed
+============================================================
