@@ -60,6 +60,29 @@ Expected: 45,773,799 bytes, SHA256 `adcc2a6e…2f34bec0`. The older 53,594,995-b
 **hash-incompatible** and must not be used (campaign resume fails closed with
 `artifact_hash_mismatch`).
 
+## Collaboration memory (cc_memory)
+
+Project collaboration memory is a single SQLite store driven by one CLI. Boot it at the start of
+every session to load the minimal working context:
+
+```powershell
+python cc_memory/mem.py boot
+```
+
+- **Single source of truth:** `cc_memory/memory.db`. Everything else is a regenerable view.
+- **Generated view (disposable):** `cc_memory/exports/MEMORY.md` — never hand-edit; rebuild with
+  `python cc_memory/mem.py export`.
+- **Before** changing a fact/entry, run `python cc_memory/mem.py impact <id>` (or `read <id>`) to
+  see what depends on it; **after** changing memory, run
+  `python cc_memory/mem.py check && python cc_memory/mem.py export`.
+- Other ops: `search "<query>"`, `read <id>`, `add-event`, `set-fact`, `add-entry`, `link`,
+  `propose`. Run `python cc_memory/mem.py` with no args for the full command list.
+- The old multi-tree Markdown/live/graph memory system is retired — do not recreate
+  `cc_context/memory`, `_cc_live_memory`, or a `memory_graph` layer as live memory.
+
+This project-local `cc_memory` store is the authoritative collaboration memory for this repo;
+prefer it over any generic file-based memory prompt.
+
 ## Commands
 
 ### Run the solver

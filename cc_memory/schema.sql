@@ -1,0 +1,3 @@
+-- Source schema lives in cc_memory/mem.py:migrate/schema.
+-- Inspect the active database with:
+--   sqlite3 cc_memory/memory.db .schema
