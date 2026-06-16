@@ -1,0 +1,6101 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "source": "JamboChen/endfield-calc TypeScript source",
+    "generated_at": "2026-03-27T02:01:59Z",
+    "source_version": "0.5.2",
+    "source_license": "MIT",
+    "notes": [
+      "Parsed from upstream TypeScript data files without adding a runtime dependency.",
+      "Accepted input layouts: flat fixture directory, extracted repository root, or zip archive.",
+      "Field naming stays source-shaped until the neutral normalized catalog pass runs."
+    ],
+    "extensions": {
+      "upstream_repository": "https://github.com/JamboChen/endfield-calc",
+      "tick_interval_seconds": 1.0,
+      "source_layout": "zip_archive_repository",
+      "package_name": "endfield-calcs"
+    }
+  },
+  "items": [
+    {
+      "id": "item_bottled_food_1",
+      "name": "item_bottled_food_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_bottled_food_2",
+      "name": "item_bottled_food_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_bottled_food_3",
+      "name": "item_bottled_food_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_bottled_food_4",
+      "name": "item_bottled_food_4",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_bottled_food_5",
+      "name": "item_bottled_food_5",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_bottled_rec_hp_1",
+      "name": "item_bottled_rec_hp_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_bottled_rec_hp_2",
+      "name": "item_bottled_rec_hp_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_bottled_rec_hp_3",
+      "name": "item_bottled_rec_hp_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_bottled_rec_hp_4",
+      "name": "item_bottled_rec_hp_4",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_bottled_rec_hp_5",
+      "name": "item_bottled_rec_hp_5",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_carbon_enr",
+      "name": "item_carbon_enr",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_carbon_enr_powder",
+      "name": "item_carbon_enr_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_carbon_mtl",
+      "name": "item_carbon_mtl",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_carbon_powder",
+      "name": "item_carbon_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_copper_bottle",
+      "name": "item_copper_bottle",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_copper_cmpt",
+      "name": "item_copper_cmpt",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_copper_nugget",
+      "name": "item_copper_nugget",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_copper_ore",
+      "name": "item_copper_ore",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_copper_powder",
+      "name": "item_copper_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_crystal_enr",
+      "name": "item_crystal_enr",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_crystal_enr_powder",
+      "name": "item_crystal_enr_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_crystal_powder",
+      "name": "item_crystal_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_crystal_shell",
+      "name": "item_crystal_shell",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_equip_script_1",
+      "name": "item_equip_script_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_equip_script_2",
+      "name": "item_equip_script_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_equip_script_3",
+      "name": "item_equip_script_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_equip_script_4",
+      "name": "item_equip_script_4",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_equip_script_4_1",
+      "name": "item_equip_script_4_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_fbottle_copper_grass_1",
+      "name": "item_fbottle_copper_grass_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_copper_grass_2",
+      "name": "item_fbottle_copper_grass_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_copper_sewage",
+      "name": "item_fbottle_copper_sewage",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_copper_water",
+      "name": "item_fbottle_copper_water",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_copper_xiranite",
+      "name": "item_fbottle_copper_xiranite",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_copper_xiranite_lowpoly",
+      "name": "item_fbottle_copper_xiranite_lowpoly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_copper_xiranite_poly",
+      "name": "item_fbottle_copper_xiranite_poly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_grass_1",
+      "name": "item_fbottle_glass_grass_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_grass_2",
+      "name": "item_fbottle_glass_grass_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_sewage",
+      "name": "item_fbottle_glass_sewage",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_water",
+      "name": "item_fbottle_glass_water",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_xiranite",
+      "name": "item_fbottle_glass_xiranite",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_xiranite_lowpoly",
+      "name": "item_fbottle_glass_xiranite_lowpoly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glass_xiranite_poly",
+      "name": "item_fbottle_glass_xiranite_poly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_grass_1",
+      "name": "item_fbottle_glassenr_grass_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_grass_2",
+      "name": "item_fbottle_glassenr_grass_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_sewage",
+      "name": "item_fbottle_glassenr_sewage",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_water",
+      "name": "item_fbottle_glassenr_water",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_xiranite",
+      "name": "item_fbottle_glassenr_xiranite",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_xiranite_lowpoly",
+      "name": "item_fbottle_glassenr_xiranite_lowpoly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_glassenr_xiranite_poly",
+      "name": "item_fbottle_glassenr_xiranite_poly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_grass_1",
+      "name": "item_fbottle_iron_grass_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_grass_2",
+      "name": "item_fbottle_iron_grass_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_sewage",
+      "name": "item_fbottle_iron_sewage",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_water",
+      "name": "item_fbottle_iron_water",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_xiranite",
+      "name": "item_fbottle_iron_xiranite",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_xiranite_lowpoly",
+      "name": "item_fbottle_iron_xiranite_lowpoly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_iron_xiranite_poly",
+      "name": "item_fbottle_iron_xiranite_poly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_grass_1",
+      "name": "item_fbottle_ironenr_grass_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_grass_2",
+      "name": "item_fbottle_ironenr_grass_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_sewage",
+      "name": "item_fbottle_ironenr_sewage",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_water",
+      "name": "item_fbottle_ironenr_water",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_xiranite",
+      "name": "item_fbottle_ironenr_xiranite",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_xiranite_lowpoly",
+      "name": "item_fbottle_ironenr_xiranite_lowpoly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_fbottle_ironenr_xiranite_poly",
+      "name": "item_fbottle_ironenr_xiranite_poly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "asTarget": false
+      }
+    },
+    {
+      "id": "item_glass_bottle",
+      "name": "item_glass_bottle",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_glass_cmpt",
+      "name": "item_glass_cmpt",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_glass_enr_bottle",
+      "name": "item_glass_enr_bottle",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_glass_enr_cmpt",
+      "name": "item_glass_enr_cmpt",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_iron_bottle",
+      "name": "item_iron_bottle",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_iron_cmpt",
+      "name": "item_iron_cmpt",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_iron_enr",
+      "name": "item_iron_enr",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_iron_enr_bottle",
+      "name": "item_iron_enr_bottle",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_iron_enr_cmpt",
+      "name": "item_iron_enr_cmpt",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_iron_enr_powder",
+      "name": "item_iron_enr_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_iron_nugget",
+      "name": "item_iron_nugget",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_iron_ore",
+      "name": "item_iron_ore",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_iron_powder",
+      "name": "item_iron_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_liquid_plant_grass_1",
+      "name": "item_liquid_plant_grass_1",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_liquid_plant_grass_2",
+      "name": "item_liquid_plant_grass_2",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_liquid_sewage",
+      "name": "item_liquid_sewage",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_liquid_water",
+      "name": "item_liquid_water",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_liquid_xiranite",
+      "name": "item_liquid_xiranite",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_liquid_xiranite_lowpoly",
+      "name": "item_liquid_xiranite_lowpoly",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_liquid_xiranite_poly",
+      "name": "item_liquid_xiranite_poly",
+      "category": "liquid",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3,
+        "isLiquid": true
+      }
+    },
+    {
+      "id": "item_muck_feces_1",
+      "name": "item_muck_feces_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_muck_xiranite_1",
+      "name": "item_muck_xiranite_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_originium_enr_powder",
+      "name": "item_originium_enr_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_originium_ore",
+      "name": "item_originium_ore",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_originium_powder",
+      "name": "item_originium_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_bbflower_1",
+      "name": "item_plant_bbflower_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_bbflower_powder_1",
+      "name": "item_plant_bbflower_powder_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_bbflower_seed_1",
+      "name": "item_plant_bbflower_seed_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_grass_1",
+      "name": "item_plant_grass_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_grass_2",
+      "name": "item_plant_grass_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_grass_powder_1",
+      "name": "item_plant_grass_powder_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_grass_powder_2",
+      "name": "item_plant_grass_powder_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_grass_seed_1",
+      "name": "item_plant_grass_seed_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_grass_seed_2",
+      "name": "item_plant_grass_seed_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_moss_1",
+      "name": "item_plant_moss_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_moss_2",
+      "name": "item_plant_moss_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_moss_3",
+      "name": "item_plant_moss_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_moss_enr_powder_1",
+      "name": "item_plant_moss_enr_powder_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_plant_moss_enr_powder_2",
+      "name": "item_plant_moss_enr_powder_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_plant_moss_powder_1",
+      "name": "item_plant_moss_powder_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_moss_powder_2",
+      "name": "item_plant_moss_powder_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_moss_powder_3",
+      "name": "item_plant_moss_powder_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_moss_seed_1",
+      "name": "item_plant_moss_seed_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_moss_seed_2",
+      "name": "item_plant_moss_seed_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_moss_seed_3",
+      "name": "item_plant_moss_seed_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_plant_sp_1",
+      "name": "item_plant_sp_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_2",
+      "name": "item_plant_sp_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_3",
+      "name": "item_plant_sp_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_4",
+      "name": "item_plant_sp_4",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_seed_1",
+      "name": "item_plant_sp_seed_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_seed_2",
+      "name": "item_plant_sp_seed_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_seed_3",
+      "name": "item_plant_sp_seed_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_sp_seed_4",
+      "name": "item_plant_sp_seed_4",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_plant_tundra_wood",
+      "name": "item_plant_tundra_wood",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_proc_battery_1",
+      "name": "item_proc_battery_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_proc_battery_2",
+      "name": "item_proc_battery_2",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_proc_battery_3",
+      "name": "item_proc_battery_3",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_proc_battery_4",
+      "name": "item_proc_battery_4",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_proc_battery_5",
+      "name": "item_proc_battery_5",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 4
+      }
+    },
+    {
+      "id": "item_proc_bomb_1",
+      "name": "item_proc_bomb_1",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_quartz_enr",
+      "name": "item_quartz_enr",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_quartz_enr_powder",
+      "name": "item_quartz_enr_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_quartz_glass",
+      "name": "item_quartz_glass",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_quartz_powder",
+      "name": "item_quartz_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    },
+    {
+      "id": "item_quartz_sand",
+      "name": "item_quartz_sand",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 1
+      }
+    },
+    {
+      "id": "item_xiranite_poly",
+      "name": "item_xiranite_poly",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 3
+      }
+    },
+    {
+      "id": "item_xiranite_powder",
+      "name": "item_xiranite_powder",
+      "category": "unknown",
+      "unit": "item",
+      "aliases": [],
+      "metadata": {
+        "tier": 2
+      }
+    }
+  ],
+  "recipes": [
+    {
+      "id": "component_copper_cmpt_1",
+      "name": "component_copper_cmpt_1",
+      "facility_type": "item_port_cmpt_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_nugget",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_cmpt",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "component_glass_cmpt_1",
+      "name": "component_glass_cmpt_1",
+      "facility_type": "item_port_cmpt_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_glass",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_cmpt",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "component_glass_enr_cmpt_1",
+      "name": "component_glass_enr_cmpt_1",
+      "facility_type": "item_port_cmpt_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_enr",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_cmpt",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "component_iron_cmpt_1",
+      "name": "component_iron_cmpt_1",
+      "facility_type": "item_port_cmpt_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_nugget",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_cmpt",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "component_iron_enr_cmpt_1",
+      "name": "component_iron_enr_cmpt_1",
+      "facility_type": "item_port_cmpt_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_cmpt",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_grass_1_1",
+      "name": "dismantler_copper_grass_1_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_grass_2_1",
+      "name": "dismantler_copper_grass_2_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_sewage_1",
+      "name": "dismantler_copper_sewage_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_water_1",
+      "name": "dismantler_copper_water_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_xiranite_1",
+      "name": "dismantler_copper_xiranite_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_xiranite_lowpoly_1",
+      "name": "dismantler_copper_xiranite_lowpoly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_copper_xiranite_poly_1",
+      "name": "dismantler_copper_xiranite_poly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_copper_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_grass_1_1",
+      "name": "dismantler_glass_grass_1_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_grass_2_1",
+      "name": "dismantler_glass_grass_2_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_sewage_1",
+      "name": "dismantler_glass_sewage_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_water_1",
+      "name": "dismantler_glass_water_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_xiranite_1",
+      "name": "dismantler_glass_xiranite_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_xiranite_lowpoly_1",
+      "name": "dismantler_glass_xiranite_lowpoly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glass_xiranite_poly_1",
+      "name": "dismantler_glass_xiranite_poly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glass_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_grass_1_1",
+      "name": "dismantler_glassenr_grass_1_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_grass_2_1",
+      "name": "dismantler_glassenr_grass_2_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_sewage_1",
+      "name": "dismantler_glassenr_sewage_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_water_1",
+      "name": "dismantler_glassenr_water_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_xiranite_1",
+      "name": "dismantler_glassenr_xiranite_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_xiranite_lowpoly_1",
+      "name": "dismantler_glassenr_xiranite_lowpoly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_glassenr_xiranite_poly_1",
+      "name": "dismantler_glassenr_xiranite_poly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_glassenr_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_grass_1_1",
+      "name": "dismantler_iron_grass_1_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_grass_2_1",
+      "name": "dismantler_iron_grass_2_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_sewage_1",
+      "name": "dismantler_iron_sewage_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_water_1",
+      "name": "dismantler_iron_water_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_xiranite_1",
+      "name": "dismantler_iron_xiranite_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_xiranite_lowpoly_1",
+      "name": "dismantler_iron_xiranite_lowpoly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_iron_xiranite_poly_1",
+      "name": "dismantler_iron_xiranite_poly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_grass_1_1",
+      "name": "dismantler_ironenr_grass_1_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_grass_2_1",
+      "name": "dismantler_ironenr_grass_2_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_sewage_1",
+      "name": "dismantler_ironenr_sewage_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_water_1",
+      "name": "dismantler_ironenr_water_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_xiranite_1",
+      "name": "dismantler_ironenr_xiranite_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_xiranite_lowpoly_1",
+      "name": "dismantler_ironenr_xiranite_lowpoly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "dismantler_ironenr_xiranite_poly_1",
+      "name": "dismantler_ironenr_xiranite_poly_1",
+      "facility_type": "item_port_dismantler_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_ironenr_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_grass_1",
+      "name": "filling_bottled_copper_grass_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_grass_2",
+      "name": "filling_bottled_copper_grass_2",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_sewage",
+      "name": "filling_bottled_copper_sewage",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_water",
+      "name": "filling_bottled_copper_water",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_xiranite",
+      "name": "filling_bottled_copper_xiranite",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_xiranite_lowpoly",
+      "name": "filling_bottled_copper_xiranite_lowpoly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_copper_xiranite_poly",
+      "name": "filling_bottled_copper_xiranite_poly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_copper_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_food_1_1",
+      "name": "filling_bottled_food_1_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_2",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_food_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_food_2_1",
+      "name": "filling_bottled_food_2_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_2",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_food_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_food_3_1",
+      "name": "filling_bottled_food_3_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_plant_moss_enr_powder_2",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_food_3",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_grass_1",
+      "name": "filling_bottled_glass_grass_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_grass_2",
+      "name": "filling_bottled_glass_grass_2",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_sewage",
+      "name": "filling_bottled_glass_sewage",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_water",
+      "name": "filling_bottled_glass_water",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_xiranite",
+      "name": "filling_bottled_glass_xiranite",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_xiranite_lowpoly",
+      "name": "filling_bottled_glass_xiranite_lowpoly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glass_xiranite_poly",
+      "name": "filling_bottled_glass_xiranite_poly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glass_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_grass_1",
+      "name": "filling_bottled_glassenr_grass_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_grass_2",
+      "name": "filling_bottled_glassenr_grass_2",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_sewage",
+      "name": "filling_bottled_glassenr_sewage",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_water",
+      "name": "filling_bottled_glassenr_water",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_xiranite",
+      "name": "filling_bottled_glassenr_xiranite",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_xiranite_lowpoly",
+      "name": "filling_bottled_glassenr_xiranite_lowpoly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_glassenr_xiranite_poly",
+      "name": "filling_bottled_glassenr_xiranite_poly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_glassenr_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_grass_1",
+      "name": "filling_bottled_iron_grass_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_grass_2",
+      "name": "filling_bottled_iron_grass_2",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_sewage",
+      "name": "filling_bottled_iron_sewage",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_water",
+      "name": "filling_bottled_iron_water",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_xiranite",
+      "name": "filling_bottled_iron_xiranite",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_xiranite_lowpoly",
+      "name": "filling_bottled_iron_xiranite_lowpoly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_iron_xiranite_poly",
+      "name": "filling_bottled_iron_xiranite_poly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_iron_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_grass_1",
+      "name": "filling_bottled_ironenr_grass_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_grass_2",
+      "name": "filling_bottled_ironenr_grass_2",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_sewage",
+      "name": "filling_bottled_ironenr_sewage",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_water",
+      "name": "filling_bottled_ironenr_water",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_water",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_xiranite",
+      "name": "filling_bottled_ironenr_xiranite",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_xiranite_lowpoly",
+      "name": "filling_bottled_ironenr_xiranite_lowpoly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_ironenr_xiranite_poly",
+      "name": "filling_bottled_ironenr_xiranite_poly",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_fbottle_ironenr_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_rec_hp_1_1",
+      "name": "filling_bottled_rec_hp_1_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_1",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_rec_hp_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_rec_hp_2_1",
+      "name": "filling_bottled_rec_hp_2_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_1",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_rec_hp_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "filling_bottled_rec_hp_3_1",
+      "name": "filling_bottled_rec_hp_3_1",
+      "facility_type": "item_port_filling_pd_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_plant_moss_enr_powder_1",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_rec_hp_3",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "fluid_consume_liquid_cleaner_1_item_liquid_sewage",
+      "name": "fluid_consume_liquid_cleaner_1_item_liquid_sewage",
+      "facility_type": "item_port_liquid_cleaner_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "fluid_consume_liquid_cleaner_1_item_liquid_xiranite_lowpoly",
+      "name": "fluid_consume_liquid_cleaner_1_item_liquid_xiranite_lowpoly",
+      "facility_type": "item_port_liquid_cleaner_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "fluid_consume_liquid_cleaner_1_item_liquid_xiranite_poly",
+      "name": "fluid_consume_liquid_cleaner_1_item_liquid_xiranite_poly",
+      "facility_type": "item_port_liquid_cleaner_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_enr_1",
+      "name": "furnance_carbon_enr_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_carbon_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_enr",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_enr_powder_1",
+      "name": "furnance_carbon_enr_powder_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_enr_powder_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_enr_powder_2",
+      "name": "furnance_carbon_enr_powder_2",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_enr_powder_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_material_1",
+      "name": "furnance_carbon_material_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_material_2",
+      "name": "furnance_carbon_material_2",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_material_3",
+      "name": "furnance_carbon_material_3",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_material_4",
+      "name": "furnance_carbon_material_4",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_tundra_wood",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_material_5",
+      "name": "furnance_carbon_material_5",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_material_6",
+      "name": "furnance_carbon_material_6",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_powder_1",
+      "name": "furnance_carbon_powder_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_powder_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_powder_2",
+      "name": "furnance_carbon_powder_2",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_powder_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_powder_3",
+      "name": "furnance_carbon_powder_3",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 3.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_powder_4",
+      "name": "furnance_carbon_powder_4",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_powder_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_carbon_powder_5",
+      "name": "furnance_carbon_powder_5",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_powder_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_copper_nugget_1",
+      "name": "furnance_copper_nugget_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_ore",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_nugget",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_crystal_enr_1",
+      "name": "furnance_crystal_enr_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_enr",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_crystal_enr_powder_1",
+      "name": "furnance_crystal_enr_powder_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_crystal_powder_1",
+      "name": "furnance_crystal_powder_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_crystal_shell_1",
+      "name": "furnance_crystal_shell_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_ore",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_shell",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_crystal_shell_2",
+      "name": "furnance_crystal_shell_2",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_shell",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_iron_enr_1",
+      "name": "furnance_iron_enr_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_iron_nugget_1",
+      "name": "furnance_iron_nugget_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_ore",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_nugget",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_iron_nugget_2",
+      "name": "furnance_iron_nugget_2",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_nugget",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_quartz_enr_1",
+      "name": "furnance_quartz_enr_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_quartz_enr",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_quartz_glass_1",
+      "name": "furnance_quartz_glass_1",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_sand",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_quartz_glass",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "furnance_quartz_glass_2",
+      "name": "furnance_quartz_glass_2",
+      "facility_type": "item_port_furnance_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_quartz_glass",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_carbon_powder_1",
+      "name": "grinder_carbon_powder_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_carbon_mtl",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_copper_powder_1",
+      "name": "grinder_copper_powder_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_nugget",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_crystal_powder_1",
+      "name": "grinder_crystal_powder_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_shell",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_iron_powder_1",
+      "name": "grinder_iron_powder_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_nugget",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_originium_powder_1",
+      "name": "grinder_originium_powder_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_ore",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_originium_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_plant_bbflower_powder_1_1",
+      "name": "grinder_plant_bbflower_powder_1_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_bbflower_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_bbflower_powder_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_plant_grass_powder_1_1",
+      "name": "grinder_plant_grass_powder_1_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_grass_powder_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_plant_grass_powder_2_1",
+      "name": "grinder_plant_grass_powder_2_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_grass_powder_2",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_plant_moss_powder_1_1",
+      "name": "grinder_plant_moss_powder_1_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_powder_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_plant_moss_powder_2_1",
+      "name": "grinder_plant_moss_powder_2_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_powder_2",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_plant_moss_powder_3_1",
+      "name": "grinder_plant_moss_powder_3_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 3.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "grinder_quartz_powder_1",
+      "name": "grinder_quartz_powder_1",
+      "facility_type": "item_port_grinder_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_glass",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_quartz_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "planter_plant_bbflower_1",
+      "name": "planter_plant_bbflower_1",
+      "facility_type": "item_port_planter_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_bbflower_seed_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_bbflower_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "planter_plant_grass_1_1",
+      "name": "planter_plant_grass_1_1",
+      "facility_type": "item_port_planter_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_plant_grass_seed_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_grass_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "planter_plant_grass_2_1",
+      "name": "planter_plant_grass_2_1",
+      "facility_type": "item_port_planter_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_plant_grass_seed_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_grass_2",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "planter_plant_moss_1_1",
+      "name": "planter_plant_moss_1_1",
+      "facility_type": "item_port_planter_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_seed_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "planter_plant_moss_2_1",
+      "name": "planter_plant_moss_2_1",
+      "facility_type": "item_port_planter_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_seed_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "planter_plant_moss_3_1",
+      "name": "planter_plant_moss_3_1",
+      "facility_type": "item_port_planter_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_seed_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_3",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "pool_liquid_liquid_xiranite_1",
+      "name": "pool_liquid_liquid_xiranite_1",
+      "facility_type": "item_port_mix_pool_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_xiranite_powder",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "pool_liquid_plant_grass_1_1",
+      "name": "pool_liquid_plant_grass_1_1",
+      "facility_type": "item_port_mix_pool_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_plant_grass_powder_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_liquid_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "pool_liquid_plant_grass_2_1",
+      "name": "pool_liquid_plant_grass_2_1",
+      "facility_type": "item_port_mix_pool_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_plant_grass_powder_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_liquid_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "pool_liquid_xiranite_poly_1",
+      "name": "pool_liquid_xiranite_poly_1",
+      "facility_type": "item_port_mix_pool_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_liquid_xiranite_lowpoly",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "pool_xiranite_poly_1",
+      "name": "pool_xiranite_poly_1",
+      "facility_type": "item_port_mix_pool_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_powder",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_liquid_xiranite_poly",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_liquid_sewage",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_xiranite_poly",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_bbflower_1",
+      "name": "seedcollector_plant_bbflower_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_bbflower_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_bbflower_seed_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_grass_1_1",
+      "name": "seedcollector_plant_grass_1_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_grass_seed_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_grass_2_1",
+      "name": "seedcollector_plant_grass_2_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_grass_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_grass_seed_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_moss_1_1",
+      "name": "seedcollector_plant_moss_1_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_seed_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_moss_2_1",
+      "name": "seedcollector_plant_moss_2_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_seed_2",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_moss_3_1",
+      "name": "seedcollector_plant_moss_3_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_seed_3",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_sp_1",
+      "name": "seedcollector_plant_sp_1",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_sp_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_sp_seed_1",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_sp_2",
+      "name": "seedcollector_plant_sp_2",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_sp_2",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_sp_seed_2",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_sp_3",
+      "name": "seedcollector_plant_sp_3",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_sp_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_sp_seed_3",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "seedcollector_plant_sp_4",
+      "name": "seedcollector_plant_sp_4",
+      "facility_type": "item_port_seedcol_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_sp_4",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_sp_seed_4",
+          "amount": 2.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "shaper_copper_bottle_1",
+      "name": "shaper_copper_bottle_1",
+      "facility_type": "item_port_shaper_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_nugget",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_copper_bottle",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "shaper_glass_bottle_1",
+      "name": "shaper_glass_bottle_1",
+      "facility_type": "item_port_shaper_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_glass",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_bottle",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "shaper_glass_enr_bottle_1",
+      "name": "shaper_glass_enr_bottle_1",
+      "facility_type": "item_port_shaper_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_quartz_enr",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_glass_enr_bottle",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "shaper_iron_bottle_1",
+      "name": "shaper_iron_bottle_1",
+      "facility_type": "item_port_shaper_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_nugget",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_bottle",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "shaper_iron_enr_bottle_1",
+      "name": "shaper_iron_enr_bottle_1",
+      "facility_type": "item_port_shaper_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_bottle",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_carbon_enr_powder_1",
+      "name": "thickener_carbon_enr_powder_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_carbon_powder",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_carbon_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_crystal_enr_powder_1",
+      "name": "thickener_crystal_enr_powder_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_powder",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_crystal_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_iron_enr_powder_1",
+      "name": "thickener_iron_enr_powder_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_powder",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_iron_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_originium_enr_powder_1",
+      "name": "thickener_originium_enr_powder_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_powder",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_originium_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_plant_moss_enr_powder_1_1",
+      "name": "thickener_plant_moss_enr_powder_1_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_powder_1",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_enr_powder_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_plant_moss_enr_powder_2_1",
+      "name": "thickener_plant_moss_enr_powder_2_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_powder_2",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_plant_moss_enr_powder_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "thickener_quartz_enr_powder_1",
+      "name": "thickener_quartz_enr_powder_1",
+      "facility_type": "item_port_thickener_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_plant_moss_powder_3",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_quartz_powder",
+          "amount": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_quartz_enr_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_battery_1_1",
+      "name": "tools_proc_battery_1_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_cmpt",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_originium_powder",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_proc_battery_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_battery_2_1",
+      "name": "tools_proc_battery_2_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_cmpt",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_originium_powder",
+          "amount": 15.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_proc_battery_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_battery_3_1",
+      "name": "tools_proc_battery_3_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_iron_enr_cmpt",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_originium_enr_powder",
+          "amount": 15.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_proc_battery_3",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_battery_4_1",
+      "name": "tools_proc_battery_4_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_enr_powder",
+          "amount": 15.0
+        },
+        {
+          "item_id": "item_xiranite_powder",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_proc_battery_4",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_battery_5_1",
+      "name": "tools_proc_battery_5_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_originium_enr_powder",
+          "amount": 20.0
+        },
+        {
+          "item_id": "item_xiranite_poly",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_proc_battery_5",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_bomb_1_1",
+      "name": "tools_proc_bomb_1_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_glass_cmpt",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_plant_bbflower_powder_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_proc_bomb_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_food_4_1",
+      "name": "tools_proc_food_4_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_grass_1",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_iron_cmpt",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_food_4",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_food_5_1",
+      "name": "tools_proc_food_5_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_cmpt",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_fbottle_copper_grass_1",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_food_5",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_rec_hp_4_1",
+      "name": "tools_proc_rec_hp_4_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_fbottle_iron_grass_2",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_iron_cmpt",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_rec_hp_4",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "tools_proc_rec_hp_5_1",
+      "name": "tools_proc_rec_hp_5_1",
+      "facility_type": "item_port_tools_asm_mc_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_cmpt",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_fbottle_copper_grass_2",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_bottled_rec_hp_5",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "winder_equip_script_1",
+      "name": "winder_equip_script_1",
+      "facility_type": "item_port_winder_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_shell",
+          "amount": 5.0
+        },
+        {
+          "item_id": "item_quartz_glass",
+          "amount": 5.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_equip_script_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "winder_equip_script_2",
+      "name": "winder_equip_script_2",
+      "facility_type": "item_port_winder_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_shell",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_iron_nugget",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_equip_script_2",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "winder_equip_script_3",
+      "name": "winder_equip_script_3",
+      "facility_type": "item_port_winder_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_enr",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_quartz_enr",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_equip_script_3",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "winder_equip_script_4",
+      "name": "winder_equip_script_4",
+      "facility_type": "item_port_winder_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_crystal_enr",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_xiranite_powder",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_equip_script_4",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "winder_equip_script_4_1",
+      "name": "winder_equip_script_4_1",
+      "facility_type": "item_port_winder_1",
+      "cycle_seconds": 10.0,
+      "inputs": [
+        {
+          "item_id": "item_copper_cmpt",
+          "amount": 10.0
+        },
+        {
+          "item_id": "item_xiranite_powder",
+          "amount": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_equip_script_4_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "xiranite_oven_muck_xiranite_1",
+      "name": "xiranite_oven_muck_xiranite_1",
+      "facility_type": "item_port_xiranite_oven_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_liquid_xiranite",
+          "amount": 1.0
+        },
+        {
+          "item_id": "item_muck_feces_1",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_muck_xiranite_1",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    },
+    {
+      "id": "xiranite_oven_xiranite_powder_1",
+      "name": "xiranite_oven_xiranite_powder_1",
+      "facility_type": "item_port_xiranite_oven_1",
+      "cycle_seconds": 2.0,
+      "inputs": [
+        {
+          "item_id": "item_carbon_enr",
+          "amount": 2.0
+        },
+        {
+          "item_id": "item_liquid_water",
+          "amount": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "item_id": "item_xiranite_powder",
+          "amount": 1.0
+        }
+      ],
+      "power": {
+        "consumption_kw": 0.0,
+        "generation_kw": 0.0
+      },
+      "metadata": {}
+    }
+  ],
+  "facilities": [
+    {
+      "id": "item_port_cmpt_mc_1",
+      "name": "item_port_cmpt_mc_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 20.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_dismantler_1",
+      "name": "item_port_dismantler_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 20.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_filling_pd_mc_1",
+      "name": "item_port_filling_pd_mc_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 20.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_furnance_1",
+      "name": "item_port_furnance_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 5.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_grinder_1",
+      "name": "item_port_grinder_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 5.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_liquid_cleaner_1",
+      "name": "item_port_liquid_cleaner_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 50.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_mix_pool_1",
+      "name": "item_port_mix_pool_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 50.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_planter_1",
+      "name": "item_port_planter_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 20.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_seedcol_1",
+      "name": "item_port_seedcol_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 10.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_shaper_1",
+      "name": "item_port_shaper_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 10.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_thickener_1",
+      "name": "item_port_thickener_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 50.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_tools_asm_mc_1",
+      "name": "item_port_tools_asm_mc_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 20.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_winder_1",
+      "name": "item_port_winder_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 10.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    },
+    {
+      "id": "item_port_xiranite_oven_1",
+      "name": "item_port_xiranite_oven_1",
+      "footprint": {
+        "w": 1,
+        "h": 1
+      },
+      "rotatable": true,
+      "needs_power": true,
+      "power": {
+        "consumption_kw": 50.0,
+        "generation_kw": 0.0
+      },
+      "port_rule": "none",
+      "metadata": {}
+    }
+  ],
+  "power": [
+    {
+      "facility_id": "item_port_cmpt_mc_1",
+      "mode": "consume",
+      "value_kw": 20.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_dismantler_1",
+      "mode": "consume",
+      "value_kw": 20.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_filling_pd_mc_1",
+      "mode": "consume",
+      "value_kw": 20.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_furnance_1",
+      "mode": "consume",
+      "value_kw": 5.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_grinder_1",
+      "mode": "consume",
+      "value_kw": 5.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_liquid_cleaner_1",
+      "mode": "consume",
+      "value_kw": 50.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_mix_pool_1",
+      "mode": "consume",
+      "value_kw": 50.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_planter_1",
+      "mode": "consume",
+      "value_kw": 20.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_seedcol_1",
+      "mode": "consume",
+      "value_kw": 10.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_shaper_1",
+      "mode": "consume",
+      "value_kw": 10.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_thickener_1",
+      "mode": "consume",
+      "value_kw": 50.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_tools_asm_mc_1",
+      "mode": "consume",
+      "value_kw": 20.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_winder_1",
+      "mode": "consume",
+      "value_kw": 10.0,
+      "metadata": {
+        "source": "facility"
+      }
+    },
+    {
+      "facility_id": "item_port_xiranite_oven_1",
+      "mode": "consume",
+      "value_kw": 50.0,
+      "metadata": {
+        "source": "facility"
+      }
+    }
+  ],
+  "port_rules": [
+    {
+      "id": "none",
+      "description": "none",
+      "input_sides": [],
+      "output_sides": [],
+      "restrictions": {},
+      "metadata": {}
+    }
+  ]
+}

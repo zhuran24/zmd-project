@@ -1,0 +1,95 @@
+{
+  "summary": {
+    "total_base_count": 2,
+    "audited_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "proven_equivalent_base_count": 1,
+    "proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "infeasible_base_count": 0,
+    "infeasible_base_ids": [],
+    "unsupported_by_canonical_contract_base_count": 1,
+    "unsupported_by_canonical_contract_base_ids": [
+      "wuling_protocol_core"
+    ],
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 1,
+    "blocking_classification_counts": {
+      "canonical_contract_ceiling": 1
+    }
+  },
+  "decision_signals": [
+    "1 known base already reaches `proven_equivalent` under the current 70×70 canonical contract.",
+    "`wuling_protocol_core` is currently the only known base blocked purely by the canonical 70×70 edge contract on this strict matrix; additive outer-deployment status is tracked separately in `full_demand_deployment_path_matrix`."
+  ],
+  "entries": [
+    {
+      "base_id": "valley4_protocol_core",
+      "planner_status": "proven_equivalent",
+      "size_relation_to_canonical": "equal_to_canonical_contract",
+      "selected_base_placeable_size": 70,
+      "lot_area_cells": 4900,
+      "canonical_grid_size": 70,
+      "foundation_bus_edges": [
+        "left",
+        "top"
+      ],
+      "required_recipe_facility_count": 219,
+      "required_recipe_area_cells": 3325,
+      "manufacturing_area_headroom_cells": 1575,
+      "required_boundary_output_slots": 52,
+      "required_boundary_input_slots": 2,
+      "throughput_status": "proven_equivalent",
+      "validator_import_compatible": true,
+      "validator_layout_healthy": true,
+      "selected_input_slots": [
+        63,
+        66
+      ],
+      "selected_output_edge_counts": {
+        "top": 18,
+        "left": 20,
+        "bottom": 12,
+        "right": 2
+      },
+      "validation_probe_count": 78,
+      "blocking_classification": null,
+      "error_message": null,
+      "notes": [
+        "boundary slot selection is derived from the current generic I/O artifact plus exporter+validator feedback",
+        "the deterministic manufacturing row packing is still the checked-in 70x70 full-demand slice"
+      ],
+      "warnings": []
+    },
+    {
+      "base_id": "wuling_protocol_core",
+      "planner_status": "unsupported_by_canonical_contract",
+      "size_relation_to_canonical": "larger_than_canonical_contract",
+      "selected_base_placeable_size": 80,
+      "lot_area_cells": 6400,
+      "canonical_grid_size": 70,
+      "foundation_bus_edges": [],
+      "required_recipe_facility_count": 219,
+      "required_recipe_area_cells": 3325,
+      "manufacturing_area_headroom_cells": 3075,
+      "required_boundary_output_slots": 52,
+      "required_boundary_input_slots": 2,
+      "throughput_status": null,
+      "validator_import_compatible": null,
+      "validator_layout_healthy": null,
+      "selected_input_slots": [],
+      "selected_output_edge_counts": {},
+      "validation_probe_count": 0,
+      "blocking_classification": "canonical_contract_ceiling",
+      "error_message": "selected base 'wuling_protocol_core' uses placeableSize=80, but the canonical blueprint contract is capped at 70×70; the planner refuses to fake boundary ports away from the true lot edge",
+      "notes": [
+        "this is an adapter-side fixture planner only; it does not widen the canonical blueprint schema"
+      ],
+      "warnings": []
+    }
+  ]
+}

@@ -1,0 +1,564 @@
+[
+  {
+    "id": "item_originium_ore",
+    "tier": 1
+  },
+  {
+    "id": "item_quartz_sand",
+    "tier": 1
+  },
+  {
+    "id": "item_iron_ore",
+    "tier": 1
+  },
+  {
+    "id": "item_copper_ore",
+    "tier": 1
+  },
+  {
+    "id": "item_liquid_water",
+    "tier": 1,
+    "isLiquid": true
+  },
+  {
+    "id": "item_plant_moss_1",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_moss_seed_1",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_moss_2",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_moss_seed_2",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_moss_3",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_moss_seed_3",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_bbflower_1",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_bbflower_seed_1",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_grass_1",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_grass_seed_1",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_grass_2",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_grass_seed_2",
+    "tier": 1
+  },
+  {
+    "id": "item_plant_sp_1",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_2",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_3",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_4",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_seed_1",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_seed_2",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_seed_3",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_sp_seed_4",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_tundra_wood",
+    "tier": 1
+  },
+  {
+    "id": "item_carbon_mtl",
+    "tier": 2
+  },
+  {
+    "id": "item_crystal_shell",
+    "tier": 2
+  },
+  {
+    "id": "item_quartz_glass",
+    "tier": 2
+  },
+  {
+    "id": "item_iron_nugget",
+    "tier": 2
+  },
+  {
+    "id": "item_copper_nugget",
+    "tier": 2
+  },
+  {
+    "id": "item_originium_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_carbon_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_crystal_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_quartz_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_iron_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_copper_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_moss_powder_3",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_bbflower_powder_1",
+    "tier": 2
+  },
+  {
+    "id": "item_originium_enr_powder",
+    "tier": 3
+  },
+  {
+    "id": "item_carbon_enr_powder",
+    "tier": 3
+  },
+  {
+    "id": "item_crystal_enr_powder",
+    "tier": 3
+  },
+  {
+    "id": "item_quartz_enr_powder",
+    "tier": 3
+  },
+  {
+    "id": "item_iron_enr_powder",
+    "tier": 3
+  },
+  {
+    "id": "item_plant_moss_enr_powder_1",
+    "tier": 3
+  },
+  {
+    "id": "item_plant_moss_enr_powder_2",
+    "tier": 3
+  },
+  {
+    "id": "item_carbon_enr",
+    "tier": 3
+  },
+  {
+    "id": "item_crystal_enr",
+    "tier": 3
+  },
+  {
+    "id": "item_quartz_enr",
+    "tier": 3
+  },
+  {
+    "id": "item_iron_enr",
+    "tier": 3
+  },
+  {
+    "id": "item_muck_xiranite_1",
+    "tier": 3
+  },
+  {
+    "id": "item_fbottle_glass_grass_1",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glass_grass_2",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glass_sewage",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glass_water",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glass_xiranite",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glass_xiranite_lowpoly",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glass_xiranite_poly",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_glass_bottle",
+    "tier": 2
+  },
+  {
+    "id": "item_fbottle_glassenr_grass_1",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glassenr_grass_2",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glassenr_sewage",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glassenr_water",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glassenr_xiranite",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glassenr_xiranite_lowpoly",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_glassenr_xiranite_poly",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_glass_enr_bottle",
+    "tier": 3
+  },
+  {
+    "id": "item_fbottle_iron_grass_1",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_iron_grass_2",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_iron_sewage",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_iron_water",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_iron_xiranite",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_iron_xiranite_lowpoly",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_iron_xiranite_poly",
+    "tier": 2,
+    "asTarget": false
+  },
+  {
+    "id": "item_iron_bottle",
+    "tier": 2
+  },
+  {
+    "id": "item_fbottle_ironenr_grass_1",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_ironenr_grass_2",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_ironenr_sewage",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_ironenr_water",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_ironenr_xiranite",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_ironenr_xiranite_lowpoly",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_ironenr_xiranite_poly",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_iron_enr_bottle",
+    "tier": 3
+  },
+  {
+    "id": "item_copper_bottle",
+    "tier": 3
+  },
+  {
+    "id": "item_fbottle_copper_grass_1",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_copper_grass_2",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_copper_sewage",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_copper_water",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_copper_xiranite",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_copper_xiranite_lowpoly",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_fbottle_copper_xiranite_poly",
+    "tier": 3,
+    "asTarget": false
+  },
+  {
+    "id": "item_xiranite_powder",
+    "tier": 2
+  },
+  {
+    "id": "item_xiranite_poly",
+    "tier": 3
+  },
+  {
+    "id": "item_proc_battery_1",
+    "tier": 3
+  },
+  {
+    "id": "item_proc_battery_2",
+    "tier": 3
+  },
+  {
+    "id": "item_proc_battery_3",
+    "tier": 4
+  },
+  {
+    "id": "item_proc_battery_4",
+    "tier": 4
+  },
+  {
+    "id": "item_proc_battery_5",
+    "tier": 4
+  },
+  {
+    "id": "item_glass_cmpt",
+    "tier": 2
+  },
+  {
+    "id": "item_glass_enr_cmpt",
+    "tier": 3
+  },
+  {
+    "id": "item_iron_cmpt",
+    "tier": 2
+  },
+  {
+    "id": "item_iron_enr_cmpt",
+    "tier": 3
+  },
+  {
+    "id": "item_copper_cmpt",
+    "tier": 3
+  },
+  {
+    "id": "item_equip_script_1",
+    "tier": 2
+  },
+  {
+    "id": "item_equip_script_2",
+    "tier": 2
+  },
+  {
+    "id": "item_equip_script_3",
+    "tier": 3
+  },
+  {
+    "id": "item_equip_script_4",
+    "tier": 4
+  },
+  {
+    "id": "item_equip_script_4_1",
+    "tier": 4
+  },
+  {
+    "id": "item_liquid_sewage",
+    "tier": 3,
+    "isLiquid": true
+  },
+  {
+    "id": "item_liquid_plant_grass_1",
+    "tier": 3,
+    "isLiquid": true
+  },
+  {
+    "id": "item_liquid_plant_grass_2",
+    "tier": 3,
+    "isLiquid": true
+  },
+  {
+    "id": "item_liquid_xiranite",
+    "tier": 3,
+    "isLiquid": true
+  },
+  {
+    "id": "item_liquid_xiranite_poly",
+    "tier": 3,
+    "isLiquid": true
+  },
+  {
+    "id": "item_liquid_xiranite_lowpoly",
+    "tier": 3,
+    "isLiquid": true
+  },
+  {
+    "id": "item_bottled_food_1",
+    "tier": 3
+  },
+  {
+    "id": "item_bottled_food_2",
+    "tier": 3
+  },
+  {
+    "id": "item_bottled_food_3",
+    "tier": 4
+  },
+  {
+    "id": "item_bottled_food_4",
+    "tier": 3
+  },
+  {
+    "id": "item_bottled_food_5",
+    "tier": 4
+  },
+  {
+    "id": "item_bottled_rec_hp_1",
+    "tier": 3
+  },
+  {
+    "id": "item_bottled_rec_hp_2",
+    "tier": 3
+  },
+  {
+    "id": "item_bottled_rec_hp_3",
+    "tier": 4
+  },
+  {
+    "id": "item_bottled_rec_hp_4",
+    "tier": 3
+  },
+  {
+    "id": "item_bottled_rec_hp_5",
+    "tier": 4
+  },
+  {
+    "id": "item_plant_moss_powder_1",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_moss_powder_2",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_grass_powder_1",
+    "tier": 2
+  },
+  {
+    "id": "item_plant_grass_powder_2",
+    "tier": 2
+  },
+  {
+    "id": "item_proc_bomb_1",
+    "tier": 3
+  },
+  {
+    "id": "item_muck_feces_1",
+    "tier": 1
+  }
+]

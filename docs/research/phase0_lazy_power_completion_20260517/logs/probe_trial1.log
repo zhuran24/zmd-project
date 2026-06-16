@@ -1,0 +1,41 @@
+=== Phase 0 probe ===
+candidate: 27x15
+anchor: (22,28)
+master_seconds=180.0, completion_seconds=10.0
+EXACT_LAZY_POWER_COMPLETION=1
+
+[load] project data ...
+[load] 0.5s
+[build] master exact core (EXACT_LAZY_POWER_COMPLETION on) ...
+[build] 13.5s, vars=54616, cons=126411
+[build] power_coverage stats: {'representation': 'lazy_power_completion_v1', 'master_constraints': 0, 'master_witness_vars': 0, 'power_pole_slots_materialized': True}
+
+[solve] master.solve(time_limit=180.0) ...
+[solve] 81.3s, status=OPTIMAL
+
+[extract] solution entries: 282
+[extract] non-power entries: 267
+[extract] master-selected power_pole entries (dropped): 15
+[ghost] cells=405
+
+[completion] PowerPlacementSubproblem build ...
+[completion] build 0.01s, candidate_poles=1204, powered_instances=220
+[completion] solve(time_limit=10.0) ...
+[completion] solve 0.00s, status=INFEASIBLE
+[completion] stats={'candidate_pole_count': 1204, 'powered_instance_count': 220, 'uncovered_instance_count': 134, 'ghost_cell_count': 405}
+
+=== Phase 0 gate verdict ===
+Master gate: NO-GO
+  vars=54616 (≤26000)
+  constraints=126411 (≤75000)
+  first_solve=81.3s (≤90)
+  status=OPTIMAL
+Completion gate: NO-GO
+  build=0.01s (≤2)
+  solve=0.00s (≤10)
+  status=INFEASIBLE
+  validator={'ok': False, 'reason': 'completion_INFEASIBLE'}
+
+→ Overall: NO-GO
+
+[output] docs/research/phase0_lazy_power_completion_20260517/probe_27x15_anchor22_28.json

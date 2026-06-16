@@ -1,0 +1,506 @@
+{
+  "metadata": {
+    "source": "IndustrialPlanner static registry snapshot",
+    "source_root_name": "IndustrialPlanner-2",
+    "generated_at": "2026-03-28T14:35:28.541Z",
+    "base_count": 6
+  },
+  "bases": [
+    {
+      "id": "valley4_infra_outpost",
+      "name": "基建前站",
+      "placeableSize": 40,
+      "outerRing": {
+        "top": 4,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "tags": [
+        "四号谷地"
+      ],
+      "foundationBuildings": [
+        {
+          "instanceId": "base_valley4_infra_hub_1",
+          "typeId": "item_port_sp_hub_1",
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": true
+        },
+        {
+          "instanceId": "base_valley4_infra_top_1",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_infra_top_2",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_infra_top_3",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_infra_top_4",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_infra_top_5",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        }
+      ]
+    },
+    {
+      "id": "valley4_protocol_core",
+      "name": "协议核心区",
+      "placeableSize": 70,
+      "outerRing": {
+        "top": 4,
+        "right": 2,
+        "bottom": 2,
+        "left": 4
+      },
+      "tags": [
+        "四号谷地"
+      ],
+      "foundationBuildings": [
+        {
+          "instanceId": "base_valley4_protocol_hub_1",
+          "typeId": "item_port_sp_hub_1",
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": true
+        },
+        {
+          "instanceId": "base_valley4_bus_source_1",
+          "typeId": "item_port_log_hongs_bus_source",
+          "origin": {
+            "x": -4,
+            "y": -4
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_1",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_2",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_3",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_4",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_5",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_6",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 40,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_7",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 48,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_8",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 56,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_right_9",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 64,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_1",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_2",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 8
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_3",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 16
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_4",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 24
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_5",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 32
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_6",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 40
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_7",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 48
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_8",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 56
+          },
+          "rotation": 0,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_bus_down_9",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": -4,
+            "y": 64
+          },
+          "rotation": 0,
+          "movable": false
+        }
+      ]
+    },
+    {
+      "id": "valley4_rebuilt_command",
+      "name": "重建指挥部",
+      "placeableSize": 40,
+      "outerRing": {
+        "top": 4,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "tags": [
+        "四号谷地"
+      ],
+      "foundationBuildings": [
+        {
+          "instanceId": "base_valley4_rebuild_hub_1",
+          "typeId": "item_port_sp_hub_1",
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": true
+        },
+        {
+          "instanceId": "base_valley4_rebuild_top_1",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_rebuild_top_2",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_rebuild_top_3",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_rebuild_top_4",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_rebuild_top_5",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        }
+      ]
+    },
+    {
+      "id": "valley4_refugee_shelter",
+      "name": "难民暂居处",
+      "placeableSize": 40,
+      "outerRing": {
+        "top": 4,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "tags": [
+        "四号谷地"
+      ],
+      "foundationBuildings": [
+        {
+          "instanceId": "base_valley4_refugee_hub_1",
+          "typeId": "item_port_sp_hub_1",
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": true
+        },
+        {
+          "instanceId": "base_valley4_refugee_top_1",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 0,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_refugee_top_2",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 8,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_refugee_top_3",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 16,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_refugee_top_4",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 24,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        },
+        {
+          "instanceId": "base_valley4_refugee_top_5",
+          "typeId": "item_port_log_hongs_bus",
+          "origin": {
+            "x": 32,
+            "y": -4
+          },
+          "rotation": 90,
+          "movable": false
+        }
+      ]
+    },
+    {
+      "id": "wuling_protocol_core",
+      "name": "协议核心区",
+      "placeableSize": 80,
+      "outerRing": {
+        "top": 4,
+        "right": 4,
+        "bottom": 4,
+        "left": 4
+      },
+      "tags": [
+        "武陵"
+      ],
+      "foundationBuildings": [
+        {
+          "instanceId": "base_wuling_protocol_hub_1",
+          "typeId": "item_port_sp_hub_1",
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": true
+        }
+      ]
+    },
+    {
+      "id": "wuling_tianwangping_aid",
+      "name": "天王坪援建点",
+      "placeableSize": 50,
+      "outerRing": {
+        "top": 4,
+        "right": 4,
+        "bottom": 4,
+        "left": 4
+      },
+      "tags": [
+        "武陵"
+      ],
+      "foundationBuildings": [
+        {
+          "instanceId": "base_wuling_tianwangping_hub_1",
+          "typeId": "item_port_sp_hub_1",
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "movable": true
+        }
+      ]
+    }
+  ]
+}

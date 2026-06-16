@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "poc": "P2 #14 AlphaEvolve cut-evolution",
+  "date": "2026-05-10",
+  "proposer_agent": "ada46d235d22806ab",
+  "approach": "Claude Code Agent tool 子代理消耗 Max 订阅 quota, 绕开 OpenEvolve + API key",
+  "evaluator": "启发式 6 维度评分 (代码合规 / safety / 注释 / def / binding context / 新颖)",
+  "max_score": 11,
+  "variants": [
+    {
+      "id": 1,
+      "name": "hint_input_slot_commodity_diversity_within_box",
+      "direction": "box 内多 slot 选不同 commodity",
+      "score": 10.5,
+      "notes": [
+        "uses model.AddHint API (soft) - 3pt",
+        "no AddBoolOr / hard nogood - 2pt",
+        "中文 docstring + 注释 - 1pt",
+        "完整 def 函数 - 1pt",
+        "binding context: storage_box / slot / commodity - 2pt",
+        "新颖度: box 内 vs hint 2 box 间, 部分新 - 1.5pt"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "hint_output_slot_prefer_high_demand_commodity",
+      "direction": "按需求量排序 output slot 优先级 (新方向)",
+      "score": 11,
+      "notes": [
+        "全维度满分",
+        "新颖: 用 generic_io_requirements 全局信息, hint 1/2 没用过"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "hint_collocated_io_pair_same_commodity",
+      "direction": "邻近 in/out slot 同 commodity (Manhattan ≤ 3, 用 master placement 几何)",
+      "score": 11,
+      "notes": [
+        "全维度满分",
+        "新颖: 跟 routing 层 hint 1 (bridge_hop_le_2) 互补, 在 binding 层用几何"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "hint_unused_slot_for_oversupply_box",
+      "direction": "oversupply slot 推 __unused__ (capacity-vs-demand 全局)",
+      "score": 11,
+      "notes": [
+        "全维度满分",
+        "新颖: 全新 capacity-vs-demand 启发, 子代理标'最看好'之一",
+        "最安全: AddExactlyOne 已保证 slot 必选, hint 错也不破坏 cert"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "hint_facility_template_port_priority",
+      "direction": "pose-level binding 域大小启发 (大域先 fix idx=0)",
+      "score": 11,
+      "notes": [
+        "全维度满分",
+        "新颖: 在 binding_vars 维度操作, hint 1/2 都在 commodity 选择维度",
+        "风险: idx=0 没'好'语义, 子代理标'放最后做 A/B'"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "hint_balanced_commodity_load_per_box",
+      "direction": "box 间 commodity 负载均衡",
+      "score": 11,
+      "notes": [
+        "全维度满分",
+        "新颖: pro-balance 跟 hint 2 anti-overload 互补思路",
+        "风险: 多 commodity hint 互相冲突, per_box_target 估算粗糙, 子代理标'实验性变体'"
+      ]
+    }
+  ],
+  "verdict": "GO production (Anthropic 直接 / Gemini 已独立验证, 见 evaluator_results_gemini.json)",
+  "verdict_rationale": "子代理一次 spawn 出 5/6 满分 + 1/6 接近满分变体, 全部符合 AI Safety Contract, 5 个新颖维度. 按 R10 go/no-go gate 'LLM 提议 cut 评分能否显著超过手写 baseline' 通过. Anthropic 路径直接外推 (proposer 同 Opus 4.7 family). Gemini 路径用 gemini-3.1-pro-preview 独立 PoC 验证: 平均 10.17/11 (-6.9% vs Opus), 也 GO.",
+  "proposer_model": "Opus 4.7 (claude-opus-4-7, via Agent tool subagent on Max 20x subscription)",
+  "gemini_followup": "evaluator_results_gemini.json — 平均 10.17/11, GO",
+  "caveats": [
+    "启发式评分只验证'代码合规 + 有项目 context', 不验证 cut 求解时间真降",
+    "production 跑 OpenEvolve 真 500 iter 才能知哪个变体真有用",
+    "production 推迟到 168h 真长跑跑出 baseline 后做 (按真 binding solve 时间分布选潜力最大变体)",
+    "Opus 4.7 PoC 通过 ≠ Gemini 3.1 Pro / 2.5 Pro 通过 (不同 model family, 代码 + 项目 context 把握差距未量化)"
+  ],
+  "best_picks_by_proposer": ["hint_unused_slot_for_oversupply_box (最安全 + 收益直接)", "hint_collocated_io_pair_same_commodity (跟 hint 1 形成 routing/binding 互补对)"],
+  "high_risk_variants": ["hint_facility_template_port_priority (idx=0 无质量语义)", "hint_balanced_commodity_load_per_box (多 commodity hint 冲突)"]
+}

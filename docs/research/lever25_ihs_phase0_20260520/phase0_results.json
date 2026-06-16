@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "probe": "lever25_ihs_phase0",
+  "anchor": "22,28",
+  "ghost_size": "27x15",
+  "args": {
+    "max_iter": 10,
+    "master_seconds": 120.0,
+    "routing_seconds": 60.0,
+    "binding_seconds": 30.0
+  },
+  "verdict": {
+    "final_verdict": "NO-GO",
+    "reason": "stage1_no_go",
+    "stage1": {
+      "verdict": "NO-GO",
+      "summary": {
+        "n": 10,
+        "p50": 1.0,
+        "pct_eq_1": 1.0,
+        "pct_gt_1": 0.0,
+        "distribution": {
+          "1": 10
+        }
+      }
+    },
+    "stage2": {
+      "eligible": false,
+      "pass": false,
+      "reason": "",
+      "hs_offline": {
+        "status": "OPTIMAL",
+        "hs_size": 10,
+        "union_size": 10,
+        "compression": 1.0,
+        "wall_s": 0.0002,
+        "hitting_set": [
+          [
+            "crusher_blue_iron_001",
+            134
+          ],
+          [
+            "crusher_blue_iron_003",
+            158
+          ],
+          [
+            "crusher_blue_iron_003",
+            159
+          ],
+          [
+            "crusher_blue_iron_004",
+            170
+          ],
+          [
+            "crusher_blue_iron_014",
+            290
+          ],
+          [
+            "crusher_blue_iron_015",
+            302
+          ],
+          [
+            "crusher_blue_iron_015",
+            303
+          ],
+          [
+            "crusher_sandleaf_007",
+            1742
+          ],
+          [
+            "crusher_source_014",
+            2006
+          ],
+          [
+            "refinery_blue_iron_006",
+            3350
+          ]
+        ]
+      }
+    },
+    "lbbd_final_status": "UNPROVEN",
+    "total_iters_observed": 10,
+    "total_cores": 10,
+    "elapsed_s": 593.27
+  },
+  "per_iter_cores": {
+    "1": [
+      {
+        "iter": 1,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_014",
+            290
+          ]
+        ]
+      }
+    ],
+    "2": [
+      {
+        "iter": 2,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_015",
+            302
+          ]
+        ]
+      }
+    ],
+    "3": [
+      {
+        "iter": 3,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_015",
+            303
+          ]
+        ]
+      }
+    ],
+    "4": [
+      {
+        "iter": 4,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_001",
+            134
+          ]
+        ]
+      }
+    ],
+    "5": [
+      {
+        "iter": 5,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_004",
+            170
+          ]
+        ]
+      }
+    ],
+    "6": [
+      {
+        "iter": 6,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_003",
+            158
+          ]
+        ]
+      }
+    ],
+    "7": [
+      {
+        "iter": 7,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "refinery_blue_iron_006",
+            3350
+          ]
+        ]
+      }
+    ],
+    "8": [
+      {
+        "iter": 8,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_blue_iron_003",
+            159
+          ]
+        ]
+      }
+    ],
+    "9": [
+      {
+        "iter": 9,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_source_014",
+            2006
+          ]
+        ]
+      }
+    ],
+    "10": [
+      {
+        "iter": 10,
+        "source": "add_patch_routing_core_cut",
+        "core_size": 1,
+        "literals": [
+          [
+            "crusher_sandleaf_007",
+            1742
+          ]
+        ]
+      }
+    ]
+  },
+  "all_cores_count_by_source": {
+    "add_patch_routing_core_cut": 10
+  },
+  "lbbd_status": "UNPROVEN",
+  "lbbd_exception": null
+}

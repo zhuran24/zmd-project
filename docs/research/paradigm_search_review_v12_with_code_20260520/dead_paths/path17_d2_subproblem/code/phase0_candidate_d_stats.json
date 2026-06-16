@@ -1,0 +1,272 @@
+{
+  "phase": "Candidate D (Path 17) Phase 0 cheap gate — D1 simplification (u vars only, no e/arc, no layer)",
+  "scope_note": "Phase 0 only validates D1 cheap version (cell × commodity occupancy + cell capacity + port-front adherence). Phase 1+ would add e[k,arc] directed arcs + connectivity/flow conservation per GPT v7 plan Candidate D 完整描述.",
+  "wall_budget_seconds": 600.0,
+  "anchors_run": 8,
+  "pre_eligible_anchors": 7,
+  "pre1_infeasible_count": 2,
+  "pre1_feasible_count": 5,
+  "pre1_unknown_count": 0,
+  "pre2_all_ok_count": 0,
+  "results": [
+    {
+      "label": "interior_22_28",
+      "anchor": [
+        22,
+        28
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 88.4,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 296,
+      "free_cells_count": 1231,
+      "commodities_count": 19,
+      "u_vars_count": 23389,
+      "constraints_count": 1312,
+      "build_wall_s": 0.05,
+      "solve_wall_s": 0.01,
+      "solve_status": "INFEASIBLE",
+      "blocked_port_count": 547,
+      "forced_port_count": 81,
+      "rss_pre_mb": 13098.4,
+      "rss_post_mb": 13098.4,
+      "pre1_infeasible_in_budget": true,
+      "pre1_feasible": false,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    },
+    {
+      "label": "interior_10_10",
+      "anchor": [
+        10,
+        10
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 93.0,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 443,
+      "free_cells_count": 643,
+      "commodities_count": 19,
+      "u_vars_count": 12217,
+      "constraints_count": 666,
+      "build_wall_s": 0.03,
+      "solve_wall_s": 0.03,
+      "solve_status": "OPTIMAL/SAT",
+      "blocked_port_count": 605,
+      "forced_port_count": 23,
+      "rss_pre_mb": 15469.5,
+      "rss_post_mb": 15469.5,
+      "pre1_infeasible_in_budget": false,
+      "pre1_feasible": true,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    },
+    {
+      "label": "interior_44_30",
+      "anchor": [
+        44,
+        30
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 89.9,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 443,
+      "free_cells_count": 643,
+      "commodities_count": 19,
+      "u_vars_count": 12217,
+      "constraints_count": 661,
+      "build_wall_s": 0.03,
+      "solve_wall_s": 0.04,
+      "solve_status": "OPTIMAL/SAT",
+      "blocked_port_count": 610,
+      "forced_port_count": 18,
+      "rss_pre_mb": 16288.6,
+      "rss_post_mb": 16288.6,
+      "pre1_infeasible_in_budget": false,
+      "pre1_feasible": true,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    },
+    {
+      "label": "interior_15_40",
+      "anchor": [
+        15,
+        40
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 90.5,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 306,
+      "free_cells_count": 1191,
+      "commodities_count": 19,
+      "u_vars_count": 22629,
+      "constraints_count": 1311,
+      "build_wall_s": 0.05,
+      "solve_wall_s": 0.04,
+      "solve_status": "INFEASIBLE",
+      "blocked_port_count": 508,
+      "forced_port_count": 120,
+      "rss_pre_mb": 16993.7,
+      "rss_post_mb": 16993.7,
+      "pre1_infeasible_in_budget": true,
+      "pre1_feasible": false,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    },
+    {
+      "label": "corner_0_0_NEGATIVE",
+      "anchor": [
+        0,
+        0
+      ],
+      "ghost_size": [
+        27,
+        15
+      ],
+      "outer_status": "INFEASIBLE",
+      "elapsed_s": 55.5,
+      "captured": false
+    },
+    {
+      "label": "small_10x10",
+      "anchor": [
+        25,
+        25
+      ],
+      "ghost_size": [
+        10,
+        10
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 101.7,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 494,
+      "free_cells_count": 439,
+      "commodities_count": 19,
+      "u_vars_count": 8341,
+      "constraints_count": 458,
+      "build_wall_s": 0.02,
+      "solve_wall_s": 0.13,
+      "solve_status": "OPTIMAL/SAT",
+      "blocked_port_count": 609,
+      "forced_port_count": 19,
+      "rss_pre_mb": 19273.6,
+      "rss_post_mb": 19273.6,
+      "pre1_infeasible_in_budget": false,
+      "pre1_feasible": true,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    },
+    {
+      "label": "small_15x10",
+      "anchor": [
+        22,
+        28
+      ],
+      "ghost_size": [
+        15,
+        10
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 95.4,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 503,
+      "free_cells_count": 403,
+      "commodities_count": 19,
+      "u_vars_count": 7657,
+      "constraints_count": 420,
+      "build_wall_s": 0.02,
+      "solve_wall_s": 0.07,
+      "solve_status": "OPTIMAL/SAT",
+      "blocked_port_count": 611,
+      "forced_port_count": 17,
+      "rss_pre_mb": 19273.6,
+      "rss_post_mb": 19273.6,
+      "pre1_infeasible_in_budget": false,
+      "pre1_feasible": true,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    },
+    {
+      "label": "small_15x15",
+      "anchor": [
+        22,
+        28
+      ],
+      "ghost_size": [
+        15,
+        15
+      ],
+      "outer_status": "UNPROVEN",
+      "elapsed_s": 94.2,
+      "captured": true,
+      "binding_status": "FEASIBLE",
+      "port_spec_count": 628,
+      "owners_count": 475,
+      "free_cells_count": 515,
+      "commodities_count": 19,
+      "u_vars_count": 9785,
+      "constraints_count": 533,
+      "build_wall_s": 0.02,
+      "solve_wall_s": 0.06,
+      "solve_status": "OPTIMAL/SAT",
+      "blocked_port_count": 610,
+      "forced_port_count": 18,
+      "rss_pre_mb": 19273.6,
+      "rss_post_mb": 19273.6,
+      "pre1_infeasible_in_budget": false,
+      "pre1_feasible": true,
+      "pre1_unknown_timeout": false,
+      "pre2_vars_ok": true,
+      "pre2_cstr_ok": true,
+      "pre2_rss_ok": false,
+      "pre2_all_ok": false
+    }
+  ]
+}

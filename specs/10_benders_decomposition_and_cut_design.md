@@ -1,0 +1,119 @@
+---
+status: ACCEPTED_DRAFT
+source_of_truth: src/cuts/families/ (F1–F9 当前 cut-family 范式) + src/cuts/lifecycle.py + src/models/cut_manager.py (早期 no-good 范式) + src/search/benders_loop.py + exact-contract regressions
+last_verified_against: 2026-06-11 (P0 binding-local routing-precheck cut ladder修订)
+owner: cut-manager
+---
+> [!NOTE]
+> **ACCEPTED_DRAFT — 本章 Type-I/II no-good cut 设计与 `src/models/cut_manager.py`（**早期** cut 范式，见下方 2026-06-04 范式更新）对齐；当前主线 cut 体系已转 F1–F9 cut-family。`[竣工图]` 标注反映代码实际状态。**
+
+# 10 逻辑型 Benders 分解与切平面通信协议 (Logic-based Benders Decomposition & Cut Design)
+
+> ⚠️ **范式更新 (2026-06-04)**：本章的 Type-I / Type-II **组合 no-good cut** 设计 + `src/models/cut_manager.py` 是**早期** cut 范式。项目当前主线已转 **cut-family LBBD 重设计**：9 个 cut family **F1–F9**（`src/cuts/families/`：region_capacity / cutset / port_exposure / component_reach / pattern_nogood / shape_packing_hall / power_hitting_set / power_grid_reach / density_envelope）当 Benders cut 收紧 master，每个 family = generator + validator（validator 是 **FP=0 信任边界**），proof lifecycle 在 `src/cuts/lifecycle.py`（`step_8_apply_to_master` 真 master 集成属 P1.3B 待接）。权威见 `PROJECT_LOCK.md` §2B + `CLAUDE.md`。**下方 §10.2 的 LBBD 主从循环结构仍成立**（master→flow→routing→cut→resolve），但 cut 的生成 / 校验已由 F1–F9 family 体系承担，不再是 §10.3 / §10.4 的两类裸 no-good cut；§10.3–10.5 作 cut-design 概念基础与历史读。
+
+## 10.1 文档目的与架构定位
+
+本文档是《明日方舟：终末地》极值排布工程的**中央调度与反馈通信协议**。
+在确立了主摆放模型 (07 章)、宏观拓扑流预筛子问题 (08 章) 与微观精确路由子问题 (09 章) 后，必须构建一套能够让这三个模型自动协同、自我纠错的算法架构。本章定义了**逻辑型 Benders 分解 (LBBD)** 的执行闭环，以及当子问题判定布线失败时，如何向主问题生成极具剪枝威力的**组合互斥切平面 (Combinatorial No-Good Cuts)**。
+
+---
+
+## 10.2 LBBD 主从协同状态机 (The Master-Subproblem Loop)
+
+针对外层搜索（01 章）传入的每一个确定的空地尺寸目标 $(w, h)$，系统内部执行以下 LBBD 状态机循环：
+
+*   **Step 1: 主问题求解 (Master Placement)**
+    调用 07 章 CP-SAT 模型求解当前约束下的摆放方案。
+    *   *若返回 `INFEASIBLE`*：终止当前 $(w, h)$ 的探索。
+    *   *若返回 `FEASIBLE`*：提取 $\mathbf{z}^*$，进入 Step 2。
+
+*   **Step 2: 一级子问题验证 (Macro-Topological Flow)**
+    将 $\mathbf{z}^*$ 冻结为静态网格障碍物，传入 08 章连续 LP 流体模型。
+    *   *若返回 `INFEASIBLE`*：执行 10.3 宏观瓶颈切平面提取。**回退至 Step 1**。
+    *   *若返回 `FEASIBLE`*：进入 Step 3。
+
+*   **Step 3: 二级子问题验证 (Micro-Exact Routing)**
+    将 $\mathbf{z}^*$ 传入 09 章离散 SAT 路由模型。
+    *   *若返回 `INFEASIBLE`*：执行 10.4 微观死结切平面提取。**回退至 Step 1**。
+    *   *若返回 `FEASIBLE`*：**【系统最高胜利】** 输出终极蓝图！
+
+---
+
+## 10.3 Type-I: 宏观拓扑瓶颈切 (Topological Bottleneck Cuts)
+
+### 10.3.1 最小割溯源 (Min-Cut Extraction)
+当 LP 模型无解时，依据 Farkas 引理提取对偶不可行射线，对应"最小割面障碍界限"。
+
+### 10.3.2 肇事刚体集锁定 (Conflict Set Identification)
+收集紧贴"最小割面"的实体刚体，构成**拓扑肇事集合 $\Omega_{\text{topo}} \subset \mathcal{I}$**。
+
+### 10.3.3 切平面方程 (The Benders Cut)
+$$ \sum_{i \in \Omega_{\text{topo}}} z_{i, p_i^*} \le |\Omega_{\text{topo}}| - 1 $$
+
+---
+
+## 10.4 Type-II: 微观精确死结切 (Micro-Routing Deadlock Cuts)
+
+### 10.4.1 极小不可满足核提取 (MUC Extraction)
+调用 `FindUnsatisfiableCore()` 提取最少冲突子句集，映射回**微观肇事集合 $\Omega_{\text{micro}}$**。
+
+### 10.4.2 微观排斥方程 (Micro No-Good Cut)
+$$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| - 1 $$
+
+---
+
+## 10.5 工业级切平面强化技术 (Industrial Cut Lifting)
+
+### 10.5.1 空间平移不变性提拉 (Spatial Translation Lifting)
+对 $\Omega_{\text{micro}}$ 中每台机器定义局部邻域 $\Delta(p_i^*)$，注入强化切平面：
+$$ \sum_{i \in \Omega_{\text{micro}}} \left( \sum_{q \in \Delta(p_i^*)} z_{i, q} \right) \le |\Omega_{\text{micro}}| - 1 $$
+
+### 10.5.2 模板级对称性拉黑 (Template-Level Symmetry Breaking)
+将基于实例 ID 的切平面升维为模板级聚合变量 $Z_{T(i), p}$：
+$$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conflict}}| - 1 $$
+
+> [!NOTE]
+> **[竣工图]** 空间平移提拉 (§10.5.1) 和模板级对称性拉黑 (§10.5.2) 在代码中尚未实现。[TBD] 待路由子问题完成后，根据实际切面效果决定是否需要这些强化技术。
+
+---
+
+## 10.6 代码落地：惰性回调与热启动 (Lazy Callbacks & Hot-Start)
+
+本工程采用 **「累积切面 + 重新求解」+ 热启动 (Hot-Start)** 模式（CP-SAT **不支持**真正的惰性约束回调 Lazy Constraint Callback，故非真 lazy；见下方 [竣工图]）：
+1. 主模型收到切平面（累积注入后重新 `Solve()`）。
+2. 将上一次合法摆放解中（未惹事的机器位置）作为 **Solution Hint** 喂给主模型。
+3. 求解器瞬间意识到只需微调惹事机器，每次 Benders 迭代重新求解时间从数十秒坍缩至几百毫秒。
+
+> [!NOTE]
+> **[竣工图]** CP-SAT 不支持真正的惰性约束回调 (Lazy Constraint Callback)。代码中使用「累积切面 + 重新求解」的模式替代：每轮将新切面注入模型后重新调用 `model.Solve()`，通过 `model.AddHint()` 提供上一轮解作为热启动。效果等价但每轮有模型重建开销。
+
+
+---
+
+## 10.7 [2026-06-11 P0 Soundness Addendum] Binding-local precheck evidence ladder
+
+Routing precheck 的 `binding_selection_safe_reject=True` 只说明当前 binding selection 不可接受，不自动证明当前 placement pose combination 不可路由。尤其是 `front_blocked`：端口前格是否被占用取决于 `binding_idx` 选出的具体端口/方向；同一 pose 换另一个 binding 可能打开前格。
+
+因此 LBBD loop 对 `front_blocked` 与 `relaxed_disconnected` 使用同一 proof ladder：只要 binding model 仍有可枚举替代，先写 binding-level nogood (`binding_model.add_nogood_cut(selection)`) 并重解 binding。只有所有 binding 替代已穷尽，或另有独立 exact proof 表明该 placement 下任意 binding 都必然失败，才允许投影为 master placement-level nogood。若无法建立 exact placement-level proof，certified path 必须返回 `UNKNOWN` 而不是误剪 placement。
+
+## 10.8 [2026-06-12 cuts R2 Addendum] Cell-pattern cut 的必然激活端口前提 (F-CUT-R2-01)
+
+env 门控的 pose-bool cell cut（`add_routing_port_blocking_cell_cut`，形状 `sum(在 (cell,dir) 有端口的 pose) + sum(占 front cell 的 pose) <= 1`）是 master 级 cut，对 pose 变量量化，构造时不知道未来 binding 子问题会选哪个 alternative。其隐含定理"port pose + blocker pose 同选必然 front_blocked"需要一个关键前提：**该物理端口在 pose 被选中时必然 active 且 routing-visible**。
+
+因此 raw per-cell 端口只在该 side 的 visible demand 覆盖该 side 全部物理端口时才允许登记进 routing-visible 索引（`_mandatory_port_side_is_cell_pattern_exact()`——input 侧：concrete routing-visible `input_demand >= 物理端口数`；output 侧：visible output 非零、等于 total output、且 `>= 物理端口数`）。Generic 槽还要额外按物理可见性收窄：generic-input 槽是虚拟无线容量，不计入物理 front demand；generic-output 槽在 binding 里是容量，不是逐端口必选需求，只有 required generic-output 数量等于已知 mandatory generic-output 总容量时，`__unused__` 才被精确计数约束压成 0，物理输出槽才能当作 necessarily-active。否则被挡的端口可能只是一个 binding 可不选的 slot：binding 换另一个槽后 placement 仍可行，cut 会误剪（最小反例：双输入口、demand=1 的机器 + 占第一口 front cell 的 blocker——binding 选第二口即合法；对偶反例是双 generic output 物理口、demand=1、第一口 front 被挡而第二口可用）。混合 visible + routing-free 的输出侧继续交给更弱但 exact 的 lazy-demand/count cut；residual-optional pose 没有 operation binding identity，不登记 raw per-cell 索引。
+
+CUT-R4-H1 补充：上述饱和只推出“非 `__unused__`”，不自动推出“routing-visible”。若某个正数 required generic-output commodity 同时属于 routing-free generic-input sink 集，binding 可把被挡的物理输出槽赋给该无线终品；`extract_port_specs()` 会丢弃它，routing 不要求该 front 可达。因此 pose-bool 的 per-pose visible demand 只有在所有正数 required generic-output commodity 都不在 routing-free sink 集时，才允许把 saturated generic-output 槽计为 visible。混合 routed + routing-free generic-output 需求目前 fail-closed 为不登记，等待 binding-aware/global count proof。
+
+另一同源前提：candidate pose data 是 global 坐标（同 `_build_global_pose_cache` 的注释），端口/格子 lookup cache 不得再叠加 anchor 偏移——double-anchor 会把 candidate alias 到幻影格，轻则漏 cut、重则把无关 pose 带进 cut。该 hook 在公开 certified 路径被 `pose_bool_master_not_certified` env guard 阻断；本前提约束任何未来把 pose-bool/cell cut 提升为 certified 的决定。
+
+## 10.9 [2026-06-13 cuts R8 Addendum] Separator cut 不得窄于其模型编译进的 layout context (CUT-R8-H1)
+
+任何 separator（D2 commodity-flow、未来同构通道）若把当前 layout 状态编译为模型**常量**（selected footprints 构成的 occupied grid、helper terminal 的当前端口位置），其 CP-SAT assumption core 只覆盖 assumption literals，常量部分是不受保护的 proof context。只按 raw core 写 master no-good，等于把"该 terminal 子集在当前障碍上下文下不可行"升级成"这些 pose 在任意 layout 下不可行"——over-cut（PCR-R5-H3 constant-support 义务在另一通道的复发；最小反例：单行走廊 + 墙挡中点，core 只含 source，移墙后同一对 source/sink pose 可行）。
+
+义务：master conflict tuple 必须在 raw core 之外并入**所有贡献了编译常量的 selected pose**（全部 occupancy contributors + 全部当前 port owners，`ghost_pick` 除外）。并入只会弱化 cut，使被禁集合不超出 D2 实际证明范围。`EXACT_B1_D2_COMMODITY_FLOW` rung 曾违反一次（raw terminal core cut，而整个 layout footprint 都是模型常量），修复为 support-augmented conflict set（`_build_d2_supported_conflict_set`），回归 `src/tests/test_d2_separator_support_context.py` 固定 toy 反例。
+
+## 10.10 [2026-06-13 cuts R9 Addendum] 非证明 relaxation 的 separator 模型不是 master-cut proof source (CUT-R9-H1)
+
+CUT-R8-H1 修复 support 完备性之后还剩更底层的根前提：**D2 模型本身不是 production routing 的 relaxation**。至少两处编码比 production 更严——per-cell `AddAtMostOne` 是 2D 的，表达不了两条 commodity 在同一格跨层（bridge）通过；单位流守恒表达不了 splitter/merger 一源多汇拓扑。production 可行的 layout 因此可能 D2-INFEASIBLE（两个最小反例都有 probe 回归：两层 crossing 与 splitter，production precheck=feasible + RoutingSubproblem=FEASIBLE + raw D2=INFEASIBLE），即使 support 全并入，cut 仍会禁掉可行解——独立于 CUT-R8-H1 的第二种 over-cut。
+
+义务：separator 模型未按 PCR-R5 义务族端到端证明为 relaxation 前，其 INFEASIBLE 只能用于 telemetry / core 收缩，**不能独立作为 master cut 的 proof source**。master cut 必须挂在一个独立的 production 侧不可行证明上：D2 rung 现要求 production routing precheck 对**同一** occupied grid + port specs 判 `front_blocked`/`relaxed_disconnected`（其余一切状态 deny-unknown 拒绝，返回 `MODEL_INVALID` 不建模不写 cut）。两个配套口径义务：① separator 侧 occupied 编译保持 ≤ production 口径（`ghost_pick` 显式跳过），使 blocked/disconnected 判定沿障碍单调方向安全（separator 障碍更少时仍判 blocked ⇒ production 上下文也 blocked）；② 该 gate 的 proof ladder 位置依赖 caller——benders_loop 的 front_blocked branch 只在 `binding_selection_safe_reject=False` 或 binding alternatives 穷尽后到达（§10.7 ladder），D2 cut 与 fallback selected nogood 同位置同保护，cut 范围（support tuple 全集）⊇ fallback tuple = 只弱化。

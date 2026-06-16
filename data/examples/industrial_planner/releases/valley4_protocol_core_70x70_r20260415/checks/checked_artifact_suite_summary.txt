@@ -1,0 +1,1 @@
+IndustrialPlanner checked artifact suite is in sync via /mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/checked_artifact_family_inventory.json (1 families, 6 files checked)

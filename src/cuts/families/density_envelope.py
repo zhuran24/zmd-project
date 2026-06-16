@@ -1,0 +1,603 @@
+"""Family 9 density_envelope — area-only validator + evaluator (Phase 1.2 P1.2B-F9).
+
+PROJECT_LOCK §3A locked invariants (per docs/项目说明/04_design_invariants.md §18):
+- **area-only**: generator only accepts ``area_capacity_overflow`` witness;
+  ``routing_overflow`` / ``binding_overflow`` / ``pcr_cut_overflow`` rejected.
+- Evaluator: ``sum_{cell ∈ cell_owner with group == cert.group_id} 1[cell ∈ W]
+  > cert.max_allowed_area`` (NOT instance count, NOT origin-in-window,
+  NOT all-in-window).
+- **strict inequality**: equality does not cut.
+- ``max_allowed_area`` must be the validator-recomputed static safe upper
+  bound ``|W| - |(ghost ∪ exterior) ∩ W|``. Tighter / dynamic bounds require
+  a replayable proof not present in Phase 1.2 and are quarantined.
+- F9 is ghost-bound; ``cut.scope.ghost_rect_id == GHOST_AGNOSTIC`` rejected.
+
+Cert payload schema (canonical JSON, sorted keys):
+    cert_kind: "density_envelope_v1"
+    witness_kind: "area_capacity_overflow"  (closed-set)
+    window_rect: [x, y, h, w] (4 strict int, 70×70 grid bound)
+    group_id: non-empty str ∈ state.groups
+    max_allowed_area: strict int >= 0, <= |W|, <= validator-recomputed safe_ub
+    oracle_assignment_witness: list of [group_id, pose_id]; all group_id ==
+        cert.group_id; pose_id ∈ state.groups[group_id].pose_domain;
+        multiset count per pose ≤ state.groups[g].demand
+    ghost_rect_repr: [x, y, h, w] byte-equal state.ghost_rect
+
+Evaluator dispatches via ``lifecycle.step_7_evaluate_cut``.
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F9
+- docs/项目说明/12_go_criteria.md §8.1.x acceptance B
+- docs/项目说明/02_mathematical_foundations.md §3.9
+- docs/项目说明/04_design_invariants.md §18
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/09_density_envelope.md
+"""
+from __future__ import annotations
+
+import json
+import time
+from collections import Counter
+from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
+
+from src.cuts.lifecycle import (
+    GHOST_AGNOSTIC,
+    BState,
+    Cell,
+    Cut,
+    GroupId,
+    PoseId,
+    ValidationResult,
+    compute_blocked_cells_hash,
+    compute_ghost_rect_id,
+)
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+# Closed-set witness kind whitelist. F9 area-only invariant (PROJECT_LOCK §3A).
+ACCEPTED_WITNESS_KIND: frozenset[str] = frozenset({"area_capacity_overflow"})
+
+# F1 / F9 are complementary families (cell-based vs area-based). The capacity
+# helpers are intentionally NOT shared: F1 cap_R serves region-capacity proofs;
+# F9 safe_ub is static and cell_owner-free in Phase 1.2. Any tighter bound
+# would need an explicit replayable proof, so the validator quarantines it.
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(
+        kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None
+    )
+
+
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_non_empty_str(value: object) -> bool:
+    return isinstance(value, str) and value != ""
+
+
+def _parse_window_rect(value: object) -> Tuple[int, int, int, int]:
+    """Parse [x, y, h, w] with strict int + 70×70 grid bound + h/w > 0."""
+    if not isinstance(value, list) or len(value) != 4:
+        raise ValueError(f"window_rect must be 4-element list, got {value!r}")
+    coords = []
+    for i, v in enumerate(value):
+        if not _is_strict_int(v):
+            raise ValueError(f"window_rect[{i}] must be strict int, got {v!r}")
+        coords.append(cast(int, v))
+    x, y, h, w = coords
+    if h < 1 or w < 1:
+        raise ValueError(f"window_rect h/w must be >= 1, got h={h} w={w}")
+    if x < 0 or y < 0:
+        raise ValueError(f"window_rect x/y must be >= 0, got x={x} y={y}")
+    if x + h > 70 or y + w > 70:
+        raise ValueError(
+            f"window_rect out of 70×70 grid: x+h={x + h}, y+w={y + w}"
+        )
+    return (x, y, h, w)
+
+
+def _window_cells(window_rect: Tuple[int, int, int, int]) -> FrozenSet[Cell]:
+    x, y, h, w = window_rect
+    return frozenset((x + i, y + j) for i in range(h) for j in range(w))
+
+
+def _parse_ghost_rect_repr(value: object) -> Tuple[int, int, int, int]:
+    if not isinstance(value, list) or len(value) != 4:
+        raise ValueError(f"ghost_rect_repr must be 4-element list, got {value!r}")
+    coords = []
+    for i, v in enumerate(value):
+        if not _is_strict_int(v):
+            raise ValueError(f"ghost_rect_repr[{i}] must be strict int, got {v!r}")
+        coords.append(cast(int, v))
+    return (coords[0], coords[1], coords[2], coords[3])
+
+
+def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
+    if not isinstance(cert_payload, bytes):
+        raise ValueError("cert_payload must be bytes")
+    try:
+        loaded = json.loads(cert_payload)
+    except Exception as e:
+        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
+    if not isinstance(loaded, dict):
+        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
+    return cast(Dict[str, Any], loaded)
+
+
+def _validate_cert_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    if cert_dict.get("cert_kind") != "density_envelope_v1":
+        return _vr(
+            "schema_err",
+            t0,
+            f"cert_kind must be 'density_envelope_v1', got {cert_dict.get('cert_kind')!r}",
+        )
+    return None
+
+
+def _validate_witness_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    wk = cert_dict.get("witness_kind")
+    if wk not in ACCEPTED_WITNESS_KIND:
+        return _vr(
+            "schema_err",
+            t0,
+            f"witness_kind {wk!r} not in {sorted(ACCEPTED_WITNESS_KIND)} "
+            f"(F9 area-only invariant, PROJECT_LOCK §3A)",
+        )
+    return None
+
+
+def _validate_window_rect(
+    cert_dict: Dict[str, Any], t0: float
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[int, int, int, int]]]:
+    try:
+        rect = _parse_window_rect(cert_dict.get("window_rect"))
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e)), None
+    return None, rect
+
+
+def _validate_group(
+    cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Tuple[Optional[ValidationResult], Optional[GroupId]]:
+    gid = cert_dict.get("group_id")
+    if not _is_non_empty_str(gid):
+        return _vr("schema_err", t0, f"group_id must be non-empty str, got {gid!r}"), None
+    gid_str = cast(GroupId, gid)
+    if gid_str not in state.groups:
+        return _vr("unsound", t0, f"group_id {gid_str!r} not in state.groups"), None
+    return None, gid_str
+
+
+def _validate_assignment_witness(
+    cert_dict: Dict[str, Any],
+    state: BState,
+    cert_group_id: GroupId,
+    t0: float,
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[Tuple[GroupId, PoseId], ...]]]:
+    raw = cert_dict.get("oracle_assignment_witness")
+    if not isinstance(raw, list) or not raw:
+        return (
+            _vr("schema_err", t0, "oracle_assignment_witness must be non-empty list"),
+            None,
+        )
+    pairs: List[Tuple[GroupId, PoseId]] = []
+    for idx, entry in enumerate(raw):
+        if not isinstance(entry, list) or len(entry) != 2:
+            return (
+                _vr("schema_err", t0, f"oracle_assignment_witness[{idx}] must be 2-element list"),
+                None,
+            )
+        g, p = entry
+        if not _is_non_empty_str(g):
+            return (
+                _vr("schema_err", t0, f"oracle_assignment_witness[{idx}].group_id must be non-empty str"),
+                None,
+            )
+        if not _is_non_empty_str(p):
+            return (
+                _vr("schema_err", t0, f"oracle_assignment_witness[{idx}].pose_id must be non-empty str"),
+                None,
+            )
+        if g != cert_group_id:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"oracle_assignment_witness[{idx}] group {g!r} != cert.group_id {cert_group_id!r} "
+                    f"(F9 single-group invariant)",
+                ),
+                None,
+            )
+        group_state = state.groups[cert_group_id]
+        if p not in group_state.pose_domain:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"oracle_assignment_witness[{idx}] pose {p!r} not in group {cert_group_id!r} pose_domain",
+                ),
+                None,
+            )
+        pairs.append((cast(GroupId, g), cast(PoseId, p)))
+    group_demand = state.groups[cert_group_id].demand
+    # Per Gemini F9 round 1 review #2 HIGH: total instance count must also
+    # be ≤ group.demand. Per-pose multiset cap alone allowed an attacker to
+    # claim demand+1 *different* poses, inflating witness area beyond what
+    # the master can physically place.
+    if len(pairs) > group_demand:
+        return (
+            _vr(
+                "unsound",
+                t0,
+                f"oracle_assignment_witness total instances {len(pairs)} > group demand {group_demand}",
+            ),
+            None,
+        )
+    # Per-pose multiset count ≤ group.demand
+    counts = Counter(pairs)
+    for (g_p, count) in counts.items():
+        if count > group_demand:
+            return (
+                _vr(
+                    "unsound",
+                    t0,
+                    f"oracle_assignment_witness pose {g_p[1]!r} count {count} > group demand {group_demand}",
+                ),
+                None,
+            )
+    return None, tuple(pairs)
+
+
+def _validate_ghost_scope(
+    cert_dict: Dict[str, Any], cut: Cut, state: BState, t0: float
+) -> Optional[ValidationResult]:
+    if cut.scope is None or cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr(
+            "unsound",
+            t0,
+            "F9 scope.ghost_rect_id == GHOST_AGNOSTIC rejected (F9 must be ghost-bound)",
+        )
+    try:
+        cert_ghost = _parse_ghost_rect_repr(cert_dict.get("ghost_rect_repr"))
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+    state_ghost = state.ghost_rect
+    if state_ghost is None:
+        return _vr(
+            "unsound",
+            t0,
+            "state.ghost_rect is None but F9 is ghost-bound (state drift)",
+        )
+    if cert_ghost != tuple(state_ghost):
+        return _vr(
+            "unsound",
+            t0,
+            f"cert.ghost_rect_repr {cert_ghost} != state.ghost_rect {tuple(state_ghost)} (scope drift)",
+        )
+    return None
+
+
+def _compute_safe_max_allowed_area(
+    window_cells: FrozenSet[Cell],
+    cert_group_id: GroupId,
+    state: BState,
+) -> int:
+    """Recompute the safe upper bound for F9 max_allowed_area (STATIC formula).
+
+    Per Gemini F9 round 2 BLOCKER fix: ``cell_owner_other`` (other groups'
+    occupancy) is **excluded** from the bound. It is transient master state;
+    folding it into a static cert.max_allowed_area caused a TOCTOU bug —
+    when those cells later vacated, real capacity grew but cert's cap
+    stayed frozen, and the cut pruned legal (possibly optimal) solutions.
+
+    Mathematical basis: ``|W| - |(ghost ∪ exterior) ∩ W|``.
+
+    This bound is **looser** than a dynamic version (ignores other-group
+    occupancy). Soundness preserved: a looser bound only weakens the cut
+    (potential FN, never FP). When a stronger bound is needed the oracle
+    should emit a new F9 cut after the dynamic landscape changes (do not
+    encode dynamics into a single static cert).
+
+    ``cert_group_id`` kept in the signature for API stability + future
+    use; under the static formula it is unused.
+
+    See module-level note: this helper is intentionally NOT shared with F1's
+    compute_static_capacity (different semantics + cross-ghost-replay
+    invariants differ — sharing would silently break F1).
+    """
+    del cert_group_id  # unused under static formula; signature preserved
+    static_blocked: set[Cell] = set(state.ghost_cells) | set(state.exterior_blocks)
+    return len(window_cells) - len(static_blocked & window_cells)
+
+
+def _validate_max_allowed_area(
+    cert_dict: Dict[str, Any],
+    window_cells: FrozenSet[Cell],
+    cert_group_id: GroupId,
+    state: BState,
+    t0: float,
+) -> Tuple[Optional[ValidationResult], int, int]:
+    """Returns (error_or_None, cert_max_allowed_area, safe_ub)."""
+    raw = cert_dict.get("max_allowed_area")
+    if not _is_strict_int(raw):
+        return (
+            _vr("schema_err", t0, f"max_allowed_area must be strict int, got {raw!r}"),
+            -1,
+            -1,
+        )
+    cert_max = cast(int, raw)
+    if cert_max < 0:
+        return _vr("schema_err", t0, f"max_allowed_area must be >= 0, got {cert_max}"), -1, -1
+    # A smaller K is a STRONGER cut.  The static formula below proves only
+    # ``true_max_area(W,g) <= safe_ub``.  It does not prove
+    # ``true_max_area(W,g) <= cert_max`` for any cert_max < safe_ub.  Phase 1.2
+    # has no proof-carrying F9 sub-oracle replay wired into this validator, so
+    # non-trivial K must fail closed instead of trusting an oracle-supplied
+    # scalar.  This deliberately quarantines meaningful F9 cuts until the cert
+    # schema carries a replayable area-capacity proof.
+    if cert_max > len(window_cells):
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                f"max_allowed_area {cert_max} > |W| {len(window_cells)} (cannot exceed window area)",
+            ),
+            -1,
+            -1,
+        )
+    safe_ub = _compute_safe_max_allowed_area(window_cells, cert_group_id, state)
+    if cert_max > safe_ub:
+        return (
+            _vr(
+                "unsound",
+                t0,
+                f"max_allowed_area {cert_max} > safe upper bound {safe_ub} "
+                f"(cert claims a looser bound than the static geometry allows)",
+            ),
+            cert_max,
+            safe_ub,
+        )
+    if cert_max < safe_ub:
+        return (
+            _vr(
+                "unsound",
+                t0,
+                f"max_allowed_area {cert_max} < static safe upper bound {safe_ub}; "
+                "Phase 1.2 F9 has no replayable proof that this tighter K is valid "
+                "(fail-closed until an area-capacity oracle cert is verified)",
+            ),
+            cert_max,
+            safe_ub,
+        )
+    return None, cert_max, safe_ub
+
+
+def _recompute_assignment_area_overlap(
+    witness_pairs: Tuple[Tuple[GroupId, PoseId], ...],
+    window_cells: FrozenSet[Cell],
+    state: BState,
+) -> int:
+    """Return |Union(occupied_cells(p) for p in witness) ∩ W|.
+
+    Per Gemini F9 round 1 BLOCKER fix: validator must use UNION semantics
+    matching the evaluator (which iterates ``state.cell_owner`` keyed by
+    cell, naturally deduplicated). Summation across poses double-counts any
+    cell shared by two pose footprints, allowing the validator to accept a
+    cut on inflated area while the evaluator never sees overflow on the
+    same witness — LBBD would loop on identical solutions.
+
+    Returns -1 if any pose lookup fails (validator treats as unsound).
+    """
+    from src.cuts.helpers.candidate_placements import find_pose
+
+    # Per Gemini F9 round 2 HIGH fix: also exclude ghost/exterior cells from
+    # the union. ``candidate_placements`` is the un-filtered pose pool (master
+    # filters at use-time via ghost_anchor_filter), so a pose can claim
+    # ``occupied_cells`` crossing ghost. The evaluator iterates
+    # ``state.cell_owner`` which never contains ghost/exterior entries —
+    # validator must match that semantic.
+    blocked_static: frozenset[Cell] = (
+        frozenset(state.ghost_cells) | frozenset(state.exterior_blocks)
+    )
+    occupied_cells: set[Cell] = set()
+    for (g, p) in witness_pairs:
+        pose = find_pose(state, g, p)
+        if pose is None:
+            return -1
+        for raw_cell in pose.get("occupied_cells", []):
+            if not isinstance(raw_cell, (list, tuple)) or len(raw_cell) != 2:
+                continue
+            cell = (int(raw_cell[0]), int(raw_cell[1]))
+            if cell in window_cells and cell not in blocked_static:
+                occupied_cells.add(cell)
+    return len(occupied_cells)
+
+
+def _validate_witness_overflow(
+    witness_pairs: Tuple[Tuple[GroupId, PoseId], ...],
+    window_cells: FrozenSet[Cell],
+    cert_max_allowed_area: int,
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    recomputed_sum = _recompute_assignment_area_overlap(witness_pairs, window_cells, state)
+    if recomputed_sum < 0:
+        return _vr(
+            "unsound",
+            t0,
+            "oracle_assignment_witness references pose not findable in state.candidate_placements",
+        )
+    if recomputed_sum <= cert_max_allowed_area:
+        return _vr(
+            "unsound",
+            t0,
+            f"recomputed witness area overlap {recomputed_sum} <= max_allowed_area "
+            f"{cert_max_allowed_area} (strict overflow required, equality does not cut)",
+        )
+    return None
+
+
+def validate_density_envelope(
+    cut: Cut,
+    state: BState,
+    canonical_rules: Dict[str, Any],
+) -> ValidationResult:
+    """Re-validate F9 density_envelope cut. Trust boundary: oracle untrusted.
+
+    7-phase validation:
+    1. cert payload JSON parse
+    2. cert_kind == 'density_envelope_v1'
+    3. witness_kind ∈ ACCEPTED_WITNESS_KIND (area-only invariant)
+    4. window_rect schema + 70×70 grid bound
+    5. group_id ∈ state.groups
+    6. oracle_assignment_witness: 1-tuple per (g, p), g == cert.group_id,
+       p ∈ pose_domain, multiset count ≤ group.demand
+    7. ghost scope: scope.ghost_rect_id != GHOST_AGNOSTIC + cert.ghost_rect_repr
+       byte-equal state.ghost_rect
+    8. max_allowed_area: strict int, 0 ≤ value ≤ |W|, and equal to the
+       only Phase-1.2-proven static upper bound unless a future replayable
+       F9 area-capacity oracle proof is added
+    9. Witness overflow: sum |pose_cells ∩ W| > max_allowed_area (strict)
+    """
+    t0 = time.monotonic()
+    del canonical_rules
+
+    if cut.cert is None or cut.geometric_payload is None:
+        return _vr(
+            "schema_err",
+            t0,
+            "F9 requires non-empty cert + geometric_payload (geometric mode)",
+        )
+
+    try:
+        cert_dict = _parse_cert_payload(cut.cert.cert_payload)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+
+    for error in (
+        _validate_cert_kind(cert_dict, t0),
+        _validate_witness_kind(cert_dict, t0),
+    ):
+        if error is not None:
+            return error
+
+    win_err, window_rect = _validate_window_rect(cert_dict, t0)
+    if win_err is not None:
+        return win_err
+    if window_rect is None:
+        return _vr("schema_err", t0, "window_rect parse returned None")
+    window_cells = _window_cells(window_rect)
+
+    group_err, cert_group_id = _validate_group(cert_dict, state, t0)
+    if group_err is not None:
+        return group_err
+    if cert_group_id is None:
+        return _vr("schema_err", t0, "group_id parse returned None")
+
+    witness_err, witness_pairs = _validate_assignment_witness(cert_dict, state, cert_group_id, t0)
+    if witness_err is not None:
+        return witness_err
+    if witness_pairs is None:
+        return _vr("schema_err", t0, "oracle_assignment_witness parse returned None")
+
+    ghost_err = _validate_ghost_scope(cert_dict, cut, state, t0)
+    if ghost_err is not None:
+        return ghost_err
+
+    area_err, cert_max, _safe_ub = _validate_max_allowed_area(
+        cert_dict, window_cells, cert_group_id, state, t0
+    )
+    if area_err is not None:
+        return area_err
+
+    overflow_err = _validate_witness_overflow(
+        witness_pairs, window_cells, cert_max, state, t0
+    )
+    if overflow_err is not None:
+        return overflow_err
+
+    return _vr("ok", t0)
+
+
+def evaluate_geometric_density_envelope(cut: Cut, state: BState) -> bool:
+    """Evaluator: sum(|cells_of_cert_group ∈ cell_owner ∩ W|) > max_allowed_area.
+
+    Strict inequality per PROJECT_LOCK §3A — equality does not cut.
+
+    Phase 1.2 quarantine invariant: the only replayable F9 bound is the
+    validator-recomputed static safe upper bound.  Tighter oracle-supplied K
+    values have no proof in this phase, so the hot-path evaluator must fail
+    closed even if a caller bypasses ``validate_density_envelope``/replay.
+
+    Fail-safe: returns False on malformed payload, scope drift, or an
+    unproved ``max_allowed_area``.
+    """
+    if cut.geometric_payload is None or cut.scope is None:
+        return False
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        if cert_dict.get("cert_kind") != "density_envelope_v1":
+            return False
+        if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+            return False
+        if cut.scope.ghost_rect_id != compute_ghost_rect_id(state.ghost_rect):
+            return False
+        if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
+            return False
+        window_rect = _parse_window_rect(cert_dict.get("window_rect"))
+        group_id = cert_dict.get("group_id")
+        max_allowed = cert_dict.get("max_allowed_area")
+        if not _is_non_empty_str(group_id) or not _is_strict_int(max_allowed):
+            return False
+        if cast(str, group_id) not in state.groups:
+            return False
+        window_cells = _window_cells(window_rect)
+        safe_ub = _compute_safe_max_allowed_area(
+            window_cells, cast(GroupId, group_id), state
+        )
+        if cast(int, max_allowed) != safe_ub:
+            return False
+        wx, wy, wh, ww = window_rect
+        occupied = 0
+        for cell, owner in state.cell_owner.items():
+            if not isinstance(owner, tuple) or len(owner) < 1:
+                return False
+            owner_g = owner[0]
+            if owner_g != group_id:
+                continue
+            cx, cy = cell
+            if wx <= cx < wx + wh and wy <= cy < wy + ww:
+                occupied += 1
+        return occupied > cast(int, max_allowed)
+    except Exception:  # noqa: BLE001 — fail-safe
+        return False
+
+
+def watcher_keys_density_envelope(cut: Cut) -> Dict[str, List[Any]]:
+    """Return watcher keys for CutStore.add_cut.
+
+    F9 watches: cells inside window (by_cell_watcher) + cert.group_id
+    (by_group_watcher) + window region id (by_region_watcher).
+    by_ghost_watcher is auto-added by store from cut.scope.ghost_rect_id.
+    """
+    if cut.geometric_payload is None:
+        return {"cell_keys": [], "group_keys": [], "region_keys": []}
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        rect = _parse_window_rect(cert_dict.get("window_rect"))
+        group_id = cert_dict.get("group_id")
+        if not _is_non_empty_str(group_id):
+            return {"cell_keys": [], "group_keys": [], "region_keys": []}
+        x, y, h, w = rect
+        cells = [(x + i, y + j) for i in range(h) for j in range(w)]
+        region_id = f"density_envelope:{x},{y},{h},{w}"
+        return {
+            "cell_keys": cells,
+            "group_keys": [cast(str, group_id)],
+            "region_keys": [region_id],
+        }
+    except Exception:  # noqa: BLE001 — fail-safe
+        return {"cell_keys": [], "group_keys": [], "region_keys": []}

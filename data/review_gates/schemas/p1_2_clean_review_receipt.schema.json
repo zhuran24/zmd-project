@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "schema_id": "p1_2_clean_review_receipt",
+  "description": "Optional informational receipt for Phase 1.2 review auditing. Receipts no longer grant clean-review credit and cannot open P1.3B; the owner maintains the clean-review count outside the repo.",
+  "status": "informational_only",
+  "required_keys_for_optional_records": [
+    "schema_version",
+    "receipt_type",
+    "gate_id",
+    "review_package",
+    "archive_name",
+    "archive_sha256",
+    "archive_size_bytes",
+    "source_tree_identity",
+    "reviewer_id",
+    "review_run_id",
+    "review_result",
+    "major_or_soundness_findings",
+    "finding_domains_reviewed",
+    "report_path",
+    "report_sha256",
+    "target_anchor"
+  ],
+  "policy": {
+    "receipt_type": "p1_2_clean_review_receipt",
+    "receipt_role": "informational_record_only",
+    "can_open_p1_3b": false,
+    "clean_review_counting_authority": "owner_manual_count_outside_repo",
+    "forbidden_machine_authorities": [
+      "Markdown report metadata",
+      "HTML/XML/SVG/MathML report metadata",
+      "package-internal .git source_head authority",
+      "repo-derived receipt counting"
+    ]
+  }
+}

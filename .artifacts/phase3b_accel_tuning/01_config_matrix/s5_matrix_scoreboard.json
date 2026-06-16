@@ -1,0 +1,172 @@
+{
+  "schema": "phase3b_s5_config_matrix_scoreboard_v1",
+  "generated": "2026-05-07",
+  "hardware": {
+    "cpu": "i9-13900KS HT-off 24 threads (8P+16E)",
+    "ram_gb": 48,
+    "ram_type": "DDR5-7600 dual-channel",
+    "page_file_gb": 64,
+    "page_file_drive": "D:"
+  },
+  "test_parameters": {
+    "campaign_hours": 0.083,
+    "timeout_seconds": 360,
+    "mode": "certified_exact",
+    "frontier_probe_mode": "auto"
+  },
+  "runs": [
+    {
+      "profile": "baseline_4x4_normal_300s",
+      "label": "4 proc x 8/8/4/8 workers (built-in defaults, no env override)",
+      "parallel_processes": 4,
+      "cpsat_workers_env": null,
+      "effective_workers": "8/8/4/8",
+      "duration_s": 287,
+      "peak_rss_gib": 23.28,
+      "peak_private_gib": 68.10,
+      "peak_cpu_pct": 1634.5,
+      "cpu_utilization": 0.681,
+      "peak_threads": 162,
+      "status": "OK",
+      "note": "First baseline — env not set, used built-in defaults"
+    },
+    {
+      "profile": "baseline_4x4_normal_300s",
+      "label": "4 proc x 4 workers (production config)",
+      "parallel_processes": 4,
+      "cpsat_workers_env": "4",
+      "effective_workers": "4/4/4/4",
+      "duration_s": 294,
+      "peak_rss_gib": 27.58,
+      "peak_private_gib": 66.05,
+      "peak_cpu_pct": 1270.6,
+      "cpu_utilization": 0.529,
+      "peak_threads": 162,
+      "status": "OK",
+      "note": "Production config — worker crash 0xC0000409 in one subprocess"
+    },
+    {
+      "profile": "matrix_3x4_300s",
+      "label": "3 proc x 4 workers",
+      "parallel_processes": 3,
+      "cpsat_workers_env": "4",
+      "effective_workers": "4/4/4/4",
+      "duration_s": 276,
+      "peak_rss_gib": 32.40,
+      "peak_private_gib": 50.16,
+      "peak_cpu_pct": 894.7,
+      "cpu_utilization": 0.373,
+      "peak_threads": 129,
+      "status": "OK",
+      "note": "Lowest CPU utilization of matrix configs"
+    },
+    {
+      "profile": "matrix_3x8_300s",
+      "label": "3 proc x 8 workers",
+      "parallel_processes": 3,
+      "cpsat_workers_env": "8",
+      "effective_workers": "8/8/4/8",
+      "duration_s": 265,
+      "peak_rss_gib": 36.82,
+      "peak_private_gib": 49.60,
+      "peak_cpu_pct": 997.1,
+      "cpu_utilization": 0.415,
+      "peak_threads": 132,
+      "status": "OK",
+      "note": "3 proc with 8 workers — moderate utilization"
+    },
+    {
+      "profile": "matrix_2x12_300s",
+      "label": "2 proc x 12 workers",
+      "parallel_processes": 2,
+      "cpsat_workers_env": "12",
+      "effective_workers": "12/12/4/12",
+      "duration_s": 268,
+      "peak_rss_gib": 39.24,
+      "peak_private_gib": 49.31,
+      "peak_cpu_pct": 1277.8,
+      "cpu_utilization": 0.532,
+      "peak_threads": 99,
+      "status": "OK",
+      "note": "Good CPU utilization with fewer processes — less context switch overhead"
+    },
+    {
+      "profile": "matrix_1x16_300s",
+      "label": "1 proc x 16 workers",
+      "parallel_processes": 1,
+      "cpsat_workers_env": "16",
+      "effective_workers": "16/16/4/16",
+      "duration_s": 230,
+      "peak_rss_gib": 37.39,
+      "peak_private_gib": 47.88,
+      "peak_cpu_pct": 1596.0,
+      "cpu_utilization": 0.665,
+      "peak_threads": 41,
+      "status": "CRASH_0xC0000409",
+      "note": "Stack buffer overrun in CP-SAT — 16 workers per process not viable"
+    },
+    {
+      "profile": "matrix_4x8_300s",
+      "label": "4 proc x 8 workers",
+      "parallel_processes": 4,
+      "cpsat_workers_env": "8",
+      "effective_workers": "8/8/4/8",
+      "duration_s": 262,
+      "peak_rss_gib": 39.96,
+      "peak_private_gib": 49.82,
+      "peak_cpu_pct": 1188.4,
+      "cpu_utilization": 0.495,
+      "peak_threads": 163,
+      "status": "OK",
+      "note": "Highest RSS — 4 processes with 8 workers each pushes memory hard"
+    }
+  ],
+  "analysis": {
+    "best_cpu_utilization": {
+      "config": "baseline_4x4 (built-in 8/8/4/8)",
+      "utilization": 0.681,
+      "note": "Built-in defaults achieve highest utilization but RSS is paradoxically lower"
+    },
+    "best_stable_new_config": {
+      "config": "matrix_2x12 (2 proc x 12 workers)",
+      "utilization": 0.532,
+      "rss_gib": 39.24,
+      "note": "Highest utilization among new stable configs, fewer processes = less overhead"
+    },
+    "memory_ceiling": {
+      "peak_rss_gib": 39.96,
+      "config": "matrix_4x8",
+      "headroom_gib": 8.04,
+      "note": "40 GiB RSS from 48 GiB RAM — only 8 GiB headroom, page file essential"
+    },
+    "crash_boundary": {
+      "config": "matrix_1x16",
+      "note": "16 workers per CP-SAT process triggers stack buffer overrun — hard limit"
+    },
+    "private_bytes_plateau": {
+      "range_gib": "47.88-50.16",
+      "note": "All matrix configs cluster around 48-50 GiB private bytes regardless of worker count — suggests a virtual memory commit ceiling per CP-SAT"
+    }
+  },
+  "recommendations": {
+    "production_candidate": "2x12 or 3x8",
+    "reasoning": [
+      "2x12: best CPU utilization (53.2%) among new configs, fewer processes = less IPC overhead",
+      "3x8: moderate utilization (41.5%) but 3 processes gives more candidate parallelism",
+      "4x8 baseline (built-in defaults) still wins on raw utilization (68.1%) — investigate why",
+      "Avoid 1x16 — crashes. Avoid 4x8 with env override — RSS too high",
+      "All configs near 50 GiB private bytes — page file critical for stability"
+    ],
+    "next_steps": [
+      "Run longer (1h) comparison of 2x12 vs 3x8 vs baseline to measure candidate throughput",
+      "Investigate why built-in defaults (8/8/4/8) outperform explicit env overrides",
+      "Profile per-stage worker allocation separately (master vs routing vs binding)"
+    ]
+  },
+  "safety": {
+    "execution_allowed": false,
+    "final_168h_authorized": false,
+    "proof_source_mutated": false,
+    "checkpoint_only_transient": true
+  }
+}

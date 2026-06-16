@@ -1,0 +1,31 @@
+# Original package checks
+sha256sum /mnt/data/phase1_2_spike_review_v28.zip
+# c00a957c73f1a05b532de73451aff8676fc0e3303dfc453bd62630e4b06e5253
+
+python -m pytest src/tests/cuts -q
+# 418 passed
+
+python -O -m pytest src/tests/cuts -q
+# 418 passed
+
+cd project/code_context && sha256sum -c SHA256SUMS.spike_code.txt
+# 11/11 OK
+
+# Sizing gate key observed values
+# type-pool total poses = 81,795
+# concrete/group-expanded proxy = 325,747
+# F9 single-group max = 784
+# F9 same-template proxy max = 4,608
+# F9 all-manufacturing stress max = 11,644
+# F4 group-expanded max = 20,157
+# linear bytes/term ≈ 4.03
+# BoolOr bytes/term ≈ 10.01
+
+# Patch application
+patch -p1 < patches/0001-f9-reject-unverified-tight-max-allowed-area.diff
+patch -p1 < patches/0002-f6-verify-region-demand-source-of-truth.diff
+patch -p1 < patches/0003-doc-currency-and-spike-manifest.diff
+python -m pytest src/tests/cuts -q
+# 419 passed
+cd code_context && sha256sum -c SHA256SUMS.spike_code.txt
+# 11/11 OK

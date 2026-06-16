@@ -1,0 +1,97 @@
+{
+  "schema": "industrial-planner-blueprint",
+  "id": "ExactExport-8fb80d63d66f",
+  "version": "1.0",
+  "name": "Exact Export 2026-03-25T00:00:00Z",
+  "createdAt": "2026-03-25T00:00:00Z",
+  "baseId": "valley4_protocol_core",
+  "devices": [
+    {
+      "typeId": "item_port_unloader_1",
+      "rotation": 90,
+      "origin": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "pickupItemId": "item_iron_ore",
+        "pickupIgnoreInventory": true,
+        "protocolHubOutputs": [
+          {
+            "portId": "p_out_mid",
+            "itemId": "item_iron_ore",
+            "ignoreInventory": true
+          }
+        ]
+      }
+    },
+    {
+      "typeId": "belt_straight_1x1",
+      "rotation": 0,
+      "origin": {
+        "x": 1,
+        "y": 0
+      }
+    },
+    {
+      "typeId": "belt_turn_ccw_1x1",
+      "rotation": 270,
+      "origin": {
+        "x": 2,
+        "y": 0
+      }
+    },
+    {
+      "typeId": "item_port_storager_1",
+      "rotation": 90,
+      "origin": {
+        "x": 2,
+        "y": 3
+      },
+      "config": {
+        "submitToWarehouse": false
+      }
+    },
+    {
+      "typeId": "item_log_splitter",
+      "rotation": 0,
+      "origin": {
+        "x": 3,
+        "y": 0
+      }
+    },
+    {
+      "typeId": "pipe_straight_1x1",
+      "rotation": 0,
+      "origin": {
+        "x": 4,
+        "y": 0
+      }
+    },
+    {
+      "typeId": "belt_straight_1x1",
+      "rotation": 0,
+      "origin": {
+        "x": 5,
+        "y": 0
+      }
+    },
+    {
+      "typeId": "item_port_power_diffuser_1",
+      "rotation": 0,
+      "origin": {
+        "x": 6,
+        "y": 3
+      }
+    },
+    {
+      "typeId": "item_port_grinder_1",
+      "rotation": 180,
+      "origin": {
+        "x": 10,
+        "y": 4
+      }
+    }
+  ],
+  "blueprintVersion": "1"
+}

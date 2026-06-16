@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "artifact_type": "preprocess_context_diff_report",
+    "generated_by": "scripts/build_current_preprocess_context.py"
+  },
+  "summary": {
+    "all_match": true,
+    "matched_count": 6,
+    "total_count": 6,
+    "mandatory_exact_instance_count": 266,
+    "all_instance_count": 326,
+    "generic_output_slots": 52,
+    "generic_input_slots": 0
+  },
+  "comparisons": [
+    {
+      "name": "commodity_demands.json",
+      "matches_frozen": true
+    },
+    {
+      "name": "machine_counts.json",
+      "matches_frozen": true
+    },
+    {
+      "name": "port_budget.json",
+      "matches_frozen": true
+    },
+    {
+      "name": "generic_io_requirements.json",
+      "matches_frozen": true
+    },
+    {
+      "name": "mandatory_exact_instances.json",
+      "matches_frozen": true
+    },
+    {
+      "name": "all_facility_instances.json",
+      "matches_frozen": true
+    }
+  ]
+}

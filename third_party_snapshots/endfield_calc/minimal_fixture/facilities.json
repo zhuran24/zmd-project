@@ -1,0 +1,25 @@
+[
+  {
+    "id": "manufacturing_3x3",
+    "name": "Manufacturing 3x3",
+    "footprint": {
+      "w": 3,
+      "h": 3
+    },
+    "rotatable": true,
+    "needsPower": true,
+    "portRule": "opposite_parallel_sides"
+  },
+  {
+    "id": "power_pole",
+    "name": "Power Pole",
+    "footprint": {
+      "w": 2,
+      "h": 2
+    },
+    "rotatable": true,
+    "needsPower": false,
+    "portRule": "omni_wireless",
+    "powerGeneration": 0
+  }
+]

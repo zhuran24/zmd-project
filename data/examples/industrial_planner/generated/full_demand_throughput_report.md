@@ -1,0 +1,323 @@
+# IndustrialPlanner Throughput Audit Report
+
+## Overview
+- Overall status: `proven_equivalent`
+- Required recipes: 17
+- Exact recipe matches: 17
+- Recipe rollups proven / partial / insufficient: 17 / 0 / 0
+- Boundary commodities proven / partial / insufficient: 4 / 0 / 0
+
+## Recipe-equivalence matches
+- `crusher_blue_iron`: `exact_match` — target recipe `r_crusher_iron_powder_from_iron_nugget_basic`, machine `item_port_grinder_1`, cycle `2`
+- `crusher_buckwheat`: `exact_match` — target recipe `r_crusher_moss_powder_1_from_moss_1_basic`, machine `item_port_grinder_1`, cycle `2`
+- `crusher_sandleaf`: `exact_match` — target recipe `r_crusher_moss_powder_from_moss_basic`, machine `item_port_grinder_1`, cycle `2`
+- `crusher_source`: `exact_match` — target recipe `r_crusher_originium_powder_basic`, machine `item_port_grinder_1`, cycle `2`
+- `filling_capsule`: `exact_match` — target recipe `r_filling_bottled_rec_hp_3_from_iron_enr_bottle_and_moss_enr_powder_1_basic`, machine `item_port_filling_pd_mc_1`, cycle `10`
+- `grinder_dense_blue_iron`: `exact_match` — target recipe `r_thickener_iron_enr_powder_from_iron_and_moss_powder_basic`, machine `item_port_thickener_1`, cycle `2`
+- `grinder_dense_source`: `exact_match` — target recipe `r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic`, machine `item_port_thickener_1`, cycle `2`
+- `grinder_fine_buckwheat`: `exact_match` — target recipe `r_thickener_moss_enr_powder_1_from_moss_powder_1_and_moss_powder_basic`, machine `item_port_thickener_1`, cycle `2`
+- `molding_bottle`: `exact_match` — target recipe `r_shaper_iron_enr_bottle_from_iron_enr_basic`, machine `item_port_shaper_1`, cycle `2`
+- `packaging_battery`: `exact_match` — target recipe `r_packaging_battery_from_iron_cmpt_and_originium_enr_powder_basic`, machine `item_port_tools_asm_mc_1`, cycle `10`
+- `parts_maker`: `exact_match` — target recipe `r_component_iron_enr_cmpt_from_iron_enr_basic`, machine `item_port_cmpt_mc_1`, cycle `2`
+- `planter_buckwheat`: `exact_match` — target recipe `r_planter_moss_1_from_moss_seed_1_basic`, machine `item_port_planter_1`, cycle `2`
+- `planter_sandleaf`: `exact_match` — target recipe `r_planter_moss_from_moss_seed_basic`, machine `item_port_planter_1`, cycle `2`
+- `refinery_blue_iron`: `exact_match` — target recipe `r_furnace_iron_nugget_from_iron_ore_basic`, machine `item_port_furnance_1`, cycle `2`
+- `refinery_steel`: `exact_match` — target recipe `r_furnace_iron_enr_from_iron_enr_powder_basic`, machine `item_port_furnance_1`, cycle `2`
+- `seed_collector_buckwheat`: `exact_match` — target recipe `r_seedcol_moss_seed_1_from_moss_1_basic`, machine `item_port_seedcol_1`, cycle `2`
+- `seed_collector_sandleaf`: `exact_match` — target recipe `r_seedcol_moss_seed_from_moss_basic`, machine `item_port_seedcol_1`, cycle `2`
+
+## Recipe capacity rollup
+- `crusher_blue_iron`: required `34` run(s), proven capacity units `34`, status `proven_equivalent`
+  - expected machine: `item_port_grinder_1`
+  - exact target recipe: `r_crusher_iron_powder_from_iron_nugget_basic`
+- `crusher_buckwheat`: required `11/2` run(s), proven capacity units `6`, status `proven_equivalent`
+  - expected machine: `item_port_grinder_1`
+  - exact target recipe: `r_crusher_moss_powder_1_from_moss_1_basic`
+- `crusher_sandleaf`: required `21/2` run(s), proven capacity units `11`, status `proven_equivalent`
+  - expected machine: `item_port_grinder_1`
+  - exact target recipe: `r_crusher_moss_powder_from_moss_basic`
+- `crusher_source`: required `18` run(s), proven capacity units `18`, status `proven_equivalent`
+  - expected machine: `item_port_grinder_1`
+  - exact target recipe: `r_crusher_originium_powder_basic`
+- `filling_capsule`: required `11/4` run(s), proven capacity units `3`, status `proven_equivalent`
+  - expected machine: `item_port_filling_pd_mc_1`
+  - exact target recipe: `r_filling_bottled_rec_hp_3_from_iron_enr_bottle_and_moss_enr_powder_1_basic`
+- `grinder_dense_blue_iron`: required `17` run(s), proven capacity units `17`, status `proven_equivalent`
+  - expected machine: `item_port_thickener_1`
+  - exact target recipe: `r_thickener_iron_enr_powder_from_iron_and_moss_powder_basic`
+- `grinder_dense_source`: required `9` run(s), proven capacity units `9`, status `proven_equivalent`
+  - expected machine: `item_port_thickener_1`
+  - exact target recipe: `r_thickener_originium_enr_powder_from_originium_and_moss_powder_basic`
+- `grinder_fine_buckwheat`: required `11/2` run(s), proven capacity units `6`, status `proven_equivalent`
+  - expected machine: `item_port_thickener_1`
+  - exact target recipe: `r_thickener_moss_enr_powder_1_from_moss_powder_1_and_moss_powder_basic`
+- `molding_bottle`: required `11/2` run(s), proven capacity units `6`, status `proven_equivalent`
+  - expected machine: `item_port_shaper_1`
+  - exact target recipe: `r_shaper_iron_enr_bottle_from_iron_enr_basic`
+- `packaging_battery`: required `3` run(s), proven capacity units `3`, status `proven_equivalent`
+  - expected machine: `item_port_tools_asm_mc_1`
+  - exact target recipe: `r_packaging_battery_from_iron_cmpt_and_originium_enr_powder_basic`
+- `parts_maker`: required `6` run(s), proven capacity units `6`, status `proven_equivalent`
+  - expected machine: `item_port_cmpt_mc_1`
+  - exact target recipe: `r_component_iron_enr_cmpt_from_iron_enr_basic`
+- `planter_buckwheat`: required `11` run(s), proven capacity units `11`, status `proven_equivalent`
+  - expected machine: `item_port_planter_1`
+  - exact target recipe: `r_planter_moss_1_from_moss_seed_1_basic`
+- `planter_sandleaf`: required `21` run(s), proven capacity units `21`, status `proven_equivalent`
+  - expected machine: `item_port_planter_1`
+  - exact target recipe: `r_planter_moss_from_moss_seed_basic`
+- `refinery_blue_iron`: required `34` run(s), proven capacity units `34`, status `proven_equivalent`
+  - expected machine: `item_port_furnance_1`
+  - exact target recipe: `r_furnace_iron_nugget_from_iron_ore_basic`
+- `refinery_steel`: required `17` run(s), proven capacity units `17`, status `proven_equivalent`
+  - expected machine: `item_port_furnance_1`
+  - exact target recipe: `r_furnace_iron_enr_from_iron_enr_powder_basic`
+- `seed_collector_buckwheat`: required `11/2` run(s), proven capacity units `6`, status `proven_equivalent`
+  - expected machine: `item_port_seedcol_1`
+  - exact target recipe: `r_seedcol_moss_seed_1_from_moss_1_basic`
+- `seed_collector_sandleaf`: required `21/2` run(s), proven capacity units `11`, status `proven_equivalent`
+  - expected machine: `item_port_seedcol_1`
+  - exact target recipe: `r_seedcol_moss_seed_from_moss_basic`
+
+## Boundary I/O audit
+- `blue_iron_ore` (required_output): required slots `34`, required flow/tick `34`, proven slots `34`, status `proven_equivalent`
+- `qiaoyu_capsule` (required_input): required slots `1`, required flow/tick `11/20`, proven slots `1`, status `proven_equivalent`
+- `source_ore` (required_output): required slots `18`, required flow/tick `18`, proven slots `18`, status `proven_equivalent`
+- `valley_battery` (required_input): required slots `1`, required flow/tick `3/5`, proven slots `1`, status `proven_equivalent`
+
+## Validator diagnostics
+- Import compatible: yes
+- Layout healthy: yes
+- Diagnostic warning: validator reported 52 port warning(s)
+
+## Facility evidence
+- `mfg_crusher_blue_iron_001` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_002` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_003` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_004` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_005` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_006` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_007` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_008` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_009` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_010` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_011` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_012` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_013` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_014` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_015` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_016` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_017` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_018` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_019` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_020` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_021` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_022` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_023` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_024` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_025` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_026` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_027` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_028` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_029` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_030` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_031` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_032` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_033` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_blue_iron_034` (manufacturing_3x3): recipe `crusher_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_buckwheat_001` (manufacturing_3x3): recipe `crusher_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_buckwheat_002` (manufacturing_3x3): recipe `crusher_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_buckwheat_003` (manufacturing_3x3): recipe `crusher_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_buckwheat_004` (manufacturing_3x3): recipe `crusher_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_buckwheat_005` (manufacturing_3x3): recipe `crusher_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_buckwheat_006` (manufacturing_3x3): recipe `crusher_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_001` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_002` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_003` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_004` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_005` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_006` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_007` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_008` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_009` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_010` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_sandleaf_011` (manufacturing_3x3): recipe `crusher_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_001` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_002` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_003` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_004` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_005` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_006` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_007` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_008` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_009` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_010` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_011` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_012` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_013` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_014` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_015` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_016` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_017` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_crusher_source_018` (manufacturing_3x3): recipe `crusher_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_grinder_1`, proof `proven`
+- `mfg_filling_capsule_001` (manufacturing_6x4): recipe `filling_capsule`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_filling_pd_mc_1`, proof `proven`
+- `mfg_filling_capsule_002` (manufacturing_6x4): recipe `filling_capsule`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_filling_pd_mc_1`, proof `proven`
+- `mfg_filling_capsule_003` (manufacturing_6x4): recipe `filling_capsule`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_filling_pd_mc_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_001` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_002` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_003` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_004` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_005` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_006` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_007` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_008` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_009` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_010` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_011` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_012` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_013` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_014` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_015` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_016` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_blue_iron_017` (manufacturing_6x4): recipe `grinder_dense_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_001` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_002` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_003` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_004` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_005` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_006` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_007` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_008` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_dense_source_009` (manufacturing_6x4): recipe `grinder_dense_source`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_fine_buckwheat_001` (manufacturing_6x4): recipe `grinder_fine_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_fine_buckwheat_002` (manufacturing_6x4): recipe `grinder_fine_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_fine_buckwheat_003` (manufacturing_6x4): recipe `grinder_fine_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_fine_buckwheat_004` (manufacturing_6x4): recipe `grinder_fine_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_fine_buckwheat_005` (manufacturing_6x4): recipe `grinder_fine_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_grinder_fine_buckwheat_006` (manufacturing_6x4): recipe `grinder_fine_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_thickener_1`, proof `proven`
+- `mfg_molding_bottle_001` (manufacturing_3x3): recipe `molding_bottle`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_shaper_1`, proof `proven`
+- `mfg_molding_bottle_002` (manufacturing_3x3): recipe `molding_bottle`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_shaper_1`, proof `proven`
+- `mfg_molding_bottle_003` (manufacturing_3x3): recipe `molding_bottle`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_shaper_1`, proof `proven`
+- `mfg_molding_bottle_004` (manufacturing_3x3): recipe `molding_bottle`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_shaper_1`, proof `proven`
+- `mfg_molding_bottle_005` (manufacturing_3x3): recipe `molding_bottle`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_shaper_1`, proof `proven`
+- `mfg_molding_bottle_006` (manufacturing_3x3): recipe `molding_bottle`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_shaper_1`, proof `proven`
+- `mfg_packaging_battery_001` (manufacturing_6x4): recipe `packaging_battery`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_tools_asm_mc_1`, proof `proven`
+- `mfg_packaging_battery_002` (manufacturing_6x4): recipe `packaging_battery`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_tools_asm_mc_1`, proof `proven`
+- `mfg_packaging_battery_003` (manufacturing_6x4): recipe `packaging_battery`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_tools_asm_mc_1`, proof `proven`
+- `mfg_parts_maker_001` (manufacturing_3x3): recipe `parts_maker`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_cmpt_mc_1`, proof `proven`
+- `mfg_parts_maker_002` (manufacturing_3x3): recipe `parts_maker`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_cmpt_mc_1`, proof `proven`
+- `mfg_parts_maker_003` (manufacturing_3x3): recipe `parts_maker`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_cmpt_mc_1`, proof `proven`
+- `mfg_parts_maker_004` (manufacturing_3x3): recipe `parts_maker`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_cmpt_mc_1`, proof `proven`
+- `mfg_parts_maker_005` (manufacturing_3x3): recipe `parts_maker`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_cmpt_mc_1`, proof `proven`
+- `mfg_parts_maker_006` (manufacturing_3x3): recipe `parts_maker`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_cmpt_mc_1`, proof `proven`
+- `mfg_planter_buckwheat_001` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_002` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_003` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_004` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_005` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_006` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_007` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_008` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_009` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_010` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_buckwheat_011` (manufacturing_5x5): recipe `planter_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_001` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_002` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_003` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_004` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_005` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_006` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_007` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_008` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_009` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_010` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_011` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_012` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_013` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_014` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_015` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_016` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_017` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_018` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_019` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_020` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_planter_sandleaf_021` (manufacturing_5x5): recipe `planter_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_planter_1`, proof `proven`
+- `mfg_refinery_blue_iron_001` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_002` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_003` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_004` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_005` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_006` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_007` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_008` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_009` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_010` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_011` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_012` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_013` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_014` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_015` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_016` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_017` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_018` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_019` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_020` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_021` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_022` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_023` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_024` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_025` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_026` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_027` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_028` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_029` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_030` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_031` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_032` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_033` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_blue_iron_034` (manufacturing_3x3): recipe `refinery_blue_iron`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_001` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_002` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_003` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_004` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_005` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_006` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_007` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_008` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_009` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_010` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_011` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_012` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_013` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_014` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_015` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_016` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_refinery_steel_017` (manufacturing_3x3): recipe `refinery_steel`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_furnance_1`, proof `proven`
+- `mfg_seed_collector_buckwheat_001` (manufacturing_5x5): recipe `seed_collector_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_buckwheat_002` (manufacturing_5x5): recipe `seed_collector_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_buckwheat_003` (manufacturing_5x5): recipe `seed_collector_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_buckwheat_004` (manufacturing_5x5): recipe `seed_collector_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_buckwheat_005` (manufacturing_5x5): recipe `seed_collector_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_buckwheat_006` (manufacturing_5x5): recipe `seed_collector_buckwheat`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_001` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_002` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_003` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_004` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_005` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_006` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_007` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_008` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_009` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_010` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+- `mfg_seed_collector_sandleaf_011` (manufacturing_5x5): recipe `seed_collector_sandleaf`, recovery `resolved_recipe_id`, resolution `precise`, exported type `item_port_seedcol_1`, proof `proven`
+
+## Limitations / not proven
+- This audit is static recipe/capacity conformance only.
+- It does not prove runtime flow balance or steady-state behavior.
+- It does not simulate splitter, buffer, warm-up, or deadlock behavior.
+- It does not simulate liquid pressure or other fluid-runtime behavior.
+- Protocol-core implicit capacity is not counted unless it is explicitly represented in the export.
+- Generic or fallback facilities do not count as proven recipe capacity.
+
+## Global warnings
+- validator reported 52 port warning(s)

@@ -1,0 +1,54 @@
+{
+  "boundary_in": {
+    "typeId": "item_port_loader_1",
+    "resolution_mode": "direct"
+  },
+  "boundary_mixed": {
+    "typeId": "item_port_storager_1",
+    "resolution_mode": "fallback"
+  },
+  "boundary_out": {
+    "typeId": "item_port_unloader_1",
+    "resolution_mode": "direct"
+  },
+  "mfg_crusher_blue_iron": {
+    "typeId": "item_port_grinder_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_filling_capsule": {
+    "typeId": "item_port_filling_pd_mc_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_molding_bottle": {
+    "typeId": "item_port_shaper_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_packaging_battery": {
+    "typeId": "item_port_tools_asm_mc_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_parts_maker": {
+    "typeId": "item_port_cmpt_mc_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_planter_buckwheat": {
+    "typeId": "item_port_planter_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_refinery_blue_iron": {
+    "typeId": "item_port_furnance_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_seed_collector": {
+    "typeId": "item_port_seedcol_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_thickener_dense_blue_iron": {
+    "typeId": "item_port_thickener_1",
+    "resolution_mode": "precise"
+  },
+  "mfg_unresolved": {
+    "typeId": "item_port_grinder_1",
+    "resolution_mode": "fallback"
+  }
+}

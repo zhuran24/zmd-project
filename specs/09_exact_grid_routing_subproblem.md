@@ -1,0 +1,130 @@
+---
+status: CURRENT_CODE_ALIGNED
+source_of_truth: src/models/routing_subproblem.py and routing-focused regression tests; splitter/merger support is current-code aligned
+last_verified_against: 2026-06-11 (P0-1 lazy source-side connectivity cuts修订)
+owner: exact-routing
+---
+> [!NOTE]
+> **CURRENT_CODE_ALIGNED — 本文件已与 `src/models/routing_subproblem.py` 对齐（与 frontmatter status 一致）。变量体系已简化为 CP-SAT BoolVar 编码。MUC 提取接口已预留但返回 None ([TBD])。**
+
+# 09 逐格精确路由子问题 (Exact Grid Routing Subproblem)
+
+## 9.1 文档目的与模型边界
+
+本文档确立了逻辑型 Benders 分解 (LBBD) 架构中的**第二级验证子问题 (Second-Stage Exact Subproblem)**，即最终的微观物理布线阶段。
+
+当主摆放模型 (07 章) 给定实体布局 $\mathbf{z}^*$，且该布局通过了宏观拓扑流 (08 章) 的可行性粗筛后，本模型将接管全场的离散网格。本模型的任务是：在真实游戏物理规则下，为所有激活的物理端口铺设一条或多条离散的、有向的、不相撞的、满足容量与桥接规则的 $1 \times 1$ 物流组件（传送带、分流器、汇流器、物流桥）网络。
+
+**【模型边界声明】**：
+*   **包含域**：单向带方向连续性、多商品微观不相交路径 (Disjoint Paths)、真三维高架桥连续跨越、制造单位出入口至少 1 格缓冲强制规则、公共资源池的端到端精确定位。
+*   **不包含域**：**绝对不再更改任何刚体实体的位置！** 机器、供电桩、边界口、空地禁区在本模型中已被视作具有无穷高 Z 轴属性的绝对刚体障碍物。
+
+---
+
+## 9.2 真 3D 离散路由张量域 (3D Routing Tensor Space)
+
+### 9.2.1 物理路由层级 ($\mathcal{L}$)
+依据 02 章定义，路由空间为 $\mathcal{C} \times \mathcal{L}$，其中 $\mathcal{C}$ 为 $70 \times 70$ 网格，层级 $L \in \{0, 1\}$：
+*   $L = 0$：地面层 (Ground Level)。承载普通传送带、分流器、汇流器、准入口。
+*   $L = 1$：高架层 (Elevated Level)。仅承载连续拼接的物流桥。
+
+### 9.2.2 离散路由决策变量 (Routing Variables)
+对于每一个网格点 $c \in \mathcal{C}$，层级 $L \in \{0,1\}$，方向 $d \in \{N, S, E, W\}$，商品类别 $k \in \mathcal{K}$，引入极其纯粹的离散 0-1 变量：
+$$ r_{c, L, d_{\text{in}}, d_{\text{out}}}^k \in \{0, 1\} $$
+**语义**：当且仅当在格子 $c$ 的层级 $L$ 上，放置了一个物流设施，使得商品 $k$ 从方向 $d_{\text{in}}$ 流入，并从方向 $d_{\text{out}}$ 流出时，该变量为 1。
+*(约束：传送带必须有明确的进出，强制 $d_{\text{in}} \neq d_{\text{out}}$，天然涵盖了 4 种直带和 8 种弯带。起终点接入机器时，允许 $d_{\text{in}}$ 或 $d_{\text{out}}$ 为空 $\emptyset$。)*
+
+---
+
+## 9.3 核心微观物理法则约束 (Micro-Physics Hard Constraints)
+
+本模型采用极度严苛的布尔可满足性 (SAT) 约束，一比一复刻游戏内部的建造限制。
+
+### 9.3.1 实体刚体绝对排斥规则 (Solid Obstacle Exclusion)
+设 $\Omega_{\text{solid}}$ 为 07 章主模型 $\mathbf{z}^*$ 确定的所有刚体占据的绝对坐标集合。对于 $\forall c \in \Omega_{\text{solid}}$，该坐标的地面与高架层**全部锁死**：
+$$ \sum_{L \in \{0,1\}} \sum_{k \in \mathcal{K}} \sum_{d_{\text{in}}, d_{\text{out}}} r_{c, L, d_{\text{in}}, d_{\text{out}}}^k = 0 \quad \forall c \in \Omega_{\text{solid}} $$
+
+### 9.3.2 离散信道单占与防撞约束 (Capacity & Collision-Free)
+每一层级的每一个独立格子，最多只能铺设一种方向组合、运送一种商品的一条带子：
+$$ \sum_{k \in \mathcal{K}} \sum_{d_{\text{in}} \neq d_{\text{out}}} r_{c, L, d_{\text{in}}, d_{\text{out}}}^k \le 1 \quad \forall c \notin \Omega_{\text{solid}}, \forall L \in \{0, 1\} $$
+
+### 9.3.3 真 3D 物流桥高架规则 (Elevated Bridge Mechanics)
+物流桥可以在 $L=1$ 层连续拼接，但必须遵守其对 $L=0$ 层的投影依赖关系：
+1. **直线强制律**：高架层 $L=1$ 的路由变量仅允许 $d_{\text{in}}$ 与 $d_{\text{out}}$ 相对的形态（如南北直行、东西直行）。**物流桥严禁转弯。**
+2. **高架悬空合法性**：若某格子 $L=1$ 层有桥，则其正下方 $L=0$ 层要么为空，要么只能是一条**直线传送带 (Straight Belt)**。
+3. **无缝起降合法性**：物流桥的两端必须能与 $L=0$ 层的非实体格子发生无缝层级接驳，无需占用额外的起降坡道格子。
+
+### 9.3.4 微观流体方向连续性定律 (Directional Continuity)
+对于除了物理端口之外的所有自由物流格子，必须满足方向匹配的基尔霍夫定律：
+如果格子 $c$ 在 $L$ 层向 $d_{\text{out}}$ 方向输出物料 $k$，则相邻格 $c'$ 在接驳层级 $L'$ 必须存在一个接收该物料、且流入方向 $d_{\text{in}} = \text{Opp}(d_{\text{out}})$ 的组件。
+
+### 9.3.5 机器出入口至少相隔1格规则 (The 1-Cell Minimum Gap Rule)
+依据 03 章 3.6.3 节规则，制造单位的出口与任何单位的入口不可实现"零距离"面对面硬连：
+所有的管线，从机器物理边界离开后，必须至少踩中 1 个属于 $\mathcal{V}_{\text{free}}$ 的物流格子，才能再次进入下一台机器的物理边界。
+
+---
+
+## 9.4 端口度数履行与公共资源池寻路 (Port Adherence & Pooling)
+
+### 9.4.1 端口度数强制履行 (Degree Adherence)
+机器端口度数 / 拓扑必须被绝对执行（**当前权威源** = `rules/canonical_rules.json` 的 `operation_type` + `port_topology`，见 04 章 §4.7；04 章 §4.8 的变体度数字典已 **[DEPRECATED]**，仅作历史参考、勿引为真源）：
+若 07 章规定实例 $i$ 的某条输出边分配了 $N$ 个出口，则该边上的物理边缘节点向外发射的路由变量总和必须**精确等于** $N$。
+
+### 9.4.2 全局资源软连接 (Global Pooling Soft-Matching)
+在本路由子问题中，彻底兑现 03 章关于"不硬绑定专线"的承诺。
+**路由引擎的终极任务**：在 $\mathcal{C} \times \mathcal{L}$ 的张量网格中，为所有物流带找到无交集、无方向冲突的连通子图。求解器自动计算出最顺畅的连接拓扑。
+
+---
+
+## 9.5 失败提取与微观组合切平面 (MUC & Benders Cuts)
+
+### 9.5.1 极小不可满足核 (MUC / IIS) 提取
+现代 SAT 求解器在返回 UNSAT 时，能够回溯推导并提取出导致无解的 **极小不可满足核心 (Minimal Unsatisfiable Core, MUC)**。
+
+### 9.5.2 微观几何冲突切平面 (Micro-Geometric No-Good Cut)
+锁定构成 MUC 的具体实体实例集合 $\Omega_{\text{micro}} \subset \mathcal{I}$ 及其在当前失败解中的位姿 $p_i^*$。
+路由子问题向主摆放模型发回一条最高优先级的永久排斥切平面：
+$$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| - 1 $$
+
+---
+
+## 9.6 终极验收与蓝图生成 (Ultimate Acceptance)
+
+如果本模型返回 **SATISFIABLE (YES)**，系统将提取全量 0-1 决策变量，输出包含以下信息的**终极蓝图**：
+1.  **全体刚体的绝对位姿与朝向**（266 必选 + 被激活的可选实例；源自 07 章主问题。注：早先写的"326"是 exploratory 参考全集，certified-exact 可选数为变量 / demand 驱动、无硬 50/10/60 cap，见 07 章 §7.4.1 后 [PROJECT_LOCK 对齐] 注）。
+2.  **$70 \times 70 \times 2$ 空间内每一个物流组件的类型、坐标、朝向、承载物料**（源自本章微观解）。
+
+
+---
+
+## 9.7 [2026-06-11 P0 Soundness Addendum] Incumbent-level source→sink reachability
+
+`_add_continuity_constraints` 的局部 predecessor/successor 支撑只证明每个被选 route-state 在邻域中有局部接续；它不单独证明某个 commodity 的源 front 与汇 front 处于同一个有向连通分量。Certified acceptance 因此不得把 CP-SAT `FEASIBLE` 直接等同于 routable。
+
+`RoutingSubproblem.solve()` 在接受 incumbent 前必须重建选中 route-state 的有向图：按 commodity 从所有 source front 对应的 selected state 出发，沿 `flow_out` 到邻格 `flow_in` 遍历，要求每个 source front 至少到达一个 sink front，并要求每个 sink front 被某个 source front 到达。失败 incumbent 必须先尝试 self-checked lazy source-side connectivity cut；若 cut 证书失败则回退加 selected-route nogood，然后继续求解。若 CP-SAT 证明所有这类 incumbent 不可行，则返回 `INFEASIBLE`；若时间/预算耗尽或无法形成 connected incumbent，则返回 `TIMEOUT`/`UNKNOWN`，不得生成 false `CERTIFIED`。
+
+长期方向仍是把 per-commodity reachability/flow 一等编码进 routing CP-SAT；当前 guard 是 certified-safe 的 fail-closed boundary。
+
+## 9.8 [2026-06-11 P0-1] Lazy source-side connectivity cuts
+
+The §9.7 guard remains the certified acceptance boundary.  The lazy cut described here is only a convergence accelerator inside the guard rejection loop; it never allows a CP-SAT incumbent to bypass the final selected-graph reachability validation.
+
+For a rejected commodity $k$, rebuild the selected route-state graph with the exact same directed arc semantics used by the guard: a selected state $u=(x,y,L,d_{in},d_{out},k)$ has an arc to a selected state $v$ when some $d \in d_{out}$ points to the adjacent cell and $v$ has $\mathrm{Opp}(d)$ in its `flow_in`; terminal sink-front outputs are not expanded.  Let $W$ be the closure reachable from all selected source-front states of commodity $k$ in that selected graph.  For the rejected incumbent considered by this cut, no sink-front state may lie in $W$.
+
+The lazy cut set $X$ is a vertex cut over **candidate** route-states, not merely selected route-states.  It contains every candidate state outside $W$ that could be the first route-state reached after leaving the selected source-side closure: (1) every non-$W$ candidate state that can receive directly from a commodity-$k$ source front, and (2) every non-$W$ candidate state reached by a potential guard-isomorphic arc from a state in $W$.  The attached inequality is:
+
+$$
+\sum_{s \in X} r_s^k \ge 1.
+$$
+
+Validity: any physical routing that connects a commodity-$k$ source front to a sink front induces a directed candidate-state path from a source-front state to a sink-front state.  If that path starts with a source-front state outside the incumbent closure $W$, its first state is in $X$.  Otherwise the path starts inside $W$; since no sink front is in $W$, the path has a first state outside $W$, and that first outside state is reached by a guard-isomorphic arc from a state in $W$, so it is also in $X$.  Therefore every feasible connected routing selects at least one state in $X$, and the inequality cannot remove a true routing solution.  This is stronger than a selected-positive nogood because the rejected incumbent selects zero states in $X$, so the cut removes that incumbent and every other incumbent with the same source-side reachable closure, instead of only one exact selected set.
+
+Every lazy cut must pass an independent fail-closed certificate check before it is added to the CP-SAT model:
+
+1. Recompute $W$ from the incumbent selected graph and confirm that every source front has a selected source-front state in $W$ and that no sink-front candidate state is in $W$.
+2. Rebuild the full potential candidate-state graph for commodity $k$, remove $X$, and run a fresh BFS from all source-front candidate states.  No sink-front candidate state may remain reachable.  This proves $X$ is a complete crossing boundary for the modeled arc semantics.
+3. Confirm the incumbent selected route-state set is disjoint from $X$, so the newly attached inequality actually separates the rejected incumbent.
+
+If any certificate check fails, the solver must attach the pre-existing selected-positive nogood for the rejected incumbent and record the fallback reason in `build_stats["last_solve"]["connectivity_guard"]`.  Multiple failing commodities in the same incumbent are handled independently: each commodity attempts its own source-side cut, and each failed certificate contributes a telemetry fallback record.  `cuts_added`, `cut_sizes`, and `fallback_nogoods` are diagnostic telemetry only; certified soundness continues to come from the final §9.7 guard.
+
+No environment knob controls this behavior.  It is enabled by default because it only adds self-certified valid inequalities or falls back to the previous fail-closed nogood path.  The long-term P1.3B direction remains to encode per-commodity flow/connectivity directly in CP-SAT; this lazy-cut graph machinery is deliberately reusable for that future first-class encoding, but it is not that encoding.

@@ -1,0 +1,202 @@
+{
+  "summary": {
+    "total_base_count": 2,
+    "audited_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "canonical_path_proven_equivalent_base_count": 1,
+    "canonical_path_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "best_available_proven_equivalent_base_count": 2,
+    "best_available_proven_equivalent_base_ids": [
+      "valley4_protocol_core",
+      "wuling_protocol_core"
+    ],
+    "additional_bases_unlocked_by_outer_path_base_count": 1,
+    "additional_bases_unlocked_by_outer_path_base_ids": [
+      "wuling_protocol_core"
+    ],
+    "best_available_canonical_contract_ceiling_base_count": 0,
+    "best_available_canonical_contract_ceiling_base_ids": [],
+    "outer_path_attempted_base_count": 2,
+    "outer_path_not_applicable_base_count": 0,
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 1,
+    "manufacturing_area_shortfall_base_count": 0,
+    "best_available_path_counts": {
+      "canonical_contract": 1,
+      "outer_deployment": 1
+    },
+    "best_available_blocking_classification_counts": {}
+  },
+  "decision_signals": [
+    "2 known bases now reach `proven_equivalent` under checked-in repo paths: 1 under the strict 70×70 canonical contract and 1 additional base via the adapter-side outer deployment path.",
+    "`wuling_protocol_core` is still unsupported on the canonical-only matrix, but the best available checked-in path is now `outer_deployment` with validator-clean translated `proven_equivalent`.",
+    "0 known bases remain blocked by manufacturing-area shortfall before boundary representation is even considered, so outer deployment does not change their current full-demand status.",
+    "The canonical-only full-demand base-support matrix remains the strict 70×70 contract view; this deployment-path report is additive decision support only and does not widen canonical truth or certified evidence."
+  ],
+  "entries": [
+    {
+      "base_id": "valley4_protocol_core",
+      "size_relation_to_canonical": "equal_to_canonical_contract",
+      "selected_base_placeable_size": 70,
+      "lot_area_cells": 4900,
+      "canonical_grid_size": 70,
+      "foundation_bus_edges": [
+        "left",
+        "top"
+      ],
+      "required_recipe_facility_count": 219,
+      "required_recipe_area_cells": 3325,
+      "manufacturing_area_headroom_cells": 1575,
+      "required_boundary_output_slots": 52,
+      "required_boundary_input_slots": 2,
+      "canonical_path": {
+        "base_id": "valley4_protocol_core",
+        "planner_status": "proven_equivalent",
+        "size_relation_to_canonical": "equal_to_canonical_contract",
+        "selected_base_placeable_size": 70,
+        "lot_area_cells": 4900,
+        "canonical_grid_size": 70,
+        "foundation_bus_edges": [
+          "left",
+          "top"
+        ],
+        "required_recipe_facility_count": 219,
+        "required_recipe_area_cells": 3325,
+        "manufacturing_area_headroom_cells": 1575,
+        "required_boundary_output_slots": 52,
+        "required_boundary_input_slots": 2,
+        "throughput_status": "proven_equivalent",
+        "validator_import_compatible": true,
+        "validator_layout_healthy": true,
+        "selected_input_slots": [
+          63,
+          66
+        ],
+        "selected_output_edge_counts": {
+          "top": 18,
+          "left": 20,
+          "bottom": 12,
+          "right": 2
+        },
+        "validation_probe_count": 78,
+        "blocking_classification": null,
+        "error_message": null,
+        "notes": [
+          "boundary slot selection is derived from the current generic I/O artifact plus exporter+validator feedback",
+          "the deterministic manufacturing row packing is still the checked-in 70x70 full-demand slice"
+        ],
+        "warnings": []
+      },
+      "outer_path": {
+        "applicable": true,
+        "path_status": "proven_equivalent",
+        "applicability_reason": null,
+        "planning_status": "planned_outer_deployment",
+        "probe_status": "validator_clean_outer_export",
+        "throughput_status": "proven_equivalent",
+        "validator_import_compatible": true,
+        "validator_layout_healthy": true,
+        "blocking_classification": null,
+        "error_message": null,
+        "inner_island_origin": {
+          "x": 0,
+          "y": 0
+        },
+        "boundary_assignment_count": 54,
+        "connector_reservation_count": 0,
+        "witness_reservation_count": 54,
+        "export_mapping_count": 273,
+        "notes": [
+          "outer deployment plan is adapter-side only; it does not widen the canonical blueprint schema or the certified_exact evidence boundary",
+          "selected the degenerate zero-offset inner-island origin because the base already matches the canonical 70×70 contract",
+          "selected base inherits foundation bus edges at left, top"
+        ],
+        "warnings": []
+      },
+      "best_available_path_id": "canonical_contract",
+      "best_available_status": "proven_equivalent",
+      "best_available_throughput_status": "proven_equivalent",
+      "best_available_validator_import_compatible": true,
+      "best_available_validator_layout_healthy": true,
+      "best_available_blocking_classification": null,
+      "unlocked_by_outer_path": false
+    },
+    {
+      "base_id": "wuling_protocol_core",
+      "size_relation_to_canonical": "larger_than_canonical_contract",
+      "selected_base_placeable_size": 80,
+      "lot_area_cells": 6400,
+      "canonical_grid_size": 70,
+      "foundation_bus_edges": [],
+      "required_recipe_facility_count": 219,
+      "required_recipe_area_cells": 3325,
+      "manufacturing_area_headroom_cells": 3075,
+      "required_boundary_output_slots": 52,
+      "required_boundary_input_slots": 2,
+      "canonical_path": {
+        "base_id": "wuling_protocol_core",
+        "planner_status": "unsupported_by_canonical_contract",
+        "size_relation_to_canonical": "larger_than_canonical_contract",
+        "selected_base_placeable_size": 80,
+        "lot_area_cells": 6400,
+        "canonical_grid_size": 70,
+        "foundation_bus_edges": [],
+        "required_recipe_facility_count": 219,
+        "required_recipe_area_cells": 3325,
+        "manufacturing_area_headroom_cells": 3075,
+        "required_boundary_output_slots": 52,
+        "required_boundary_input_slots": 2,
+        "throughput_status": null,
+        "validator_import_compatible": null,
+        "validator_layout_healthy": null,
+        "selected_input_slots": [],
+        "selected_output_edge_counts": {},
+        "validation_probe_count": 0,
+        "blocking_classification": "canonical_contract_ceiling",
+        "error_message": "selected base 'wuling_protocol_core' uses placeableSize=80, but the canonical blueprint contract is capped at 70×70; the planner refuses to fake boundary ports away from the true lot edge",
+        "notes": [
+          "this is an adapter-side fixture planner only; it does not widen the canonical blueprint schema"
+        ],
+        "warnings": []
+      },
+      "outer_path": {
+        "applicable": true,
+        "path_status": "proven_equivalent",
+        "applicability_reason": null,
+        "planning_status": "planned_outer_deployment",
+        "probe_status": "validator_clean_outer_export",
+        "throughput_status": "proven_equivalent",
+        "validator_import_compatible": true,
+        "validator_layout_healthy": true,
+        "blocking_classification": null,
+        "error_message": null,
+        "inner_island_origin": {
+          "x": 5,
+          "y": 5
+        },
+        "boundary_assignment_count": 54,
+        "connector_reservation_count": 52,
+        "witness_reservation_count": 56,
+        "export_mapping_count": 273,
+        "notes": [
+          "outer deployment plan is adapter-side only; it does not widen the canonical blueprint schema or the certified_exact evidence boundary",
+          "selected deterministic centered inner-island origin (5, 5) inside a 80×80 base",
+          "selected base exposes no foundation bus edges; pure-output witness reservations remain explicit on every true edge"
+        ],
+        "warnings": []
+      },
+      "best_available_path_id": "outer_deployment",
+      "best_available_status": "proven_equivalent",
+      "best_available_throughput_status": "proven_equivalent",
+      "best_available_validator_import_compatible": true,
+      "best_available_validator_layout_healthy": true,
+      "best_available_blocking_classification": null,
+      "unlocked_by_outer_path": true
+    }
+  ]
+}

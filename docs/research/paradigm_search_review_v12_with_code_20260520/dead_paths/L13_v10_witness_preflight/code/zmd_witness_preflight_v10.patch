@@ -1,0 +1,1013 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 32ba03a..52b08ad 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -5,6 +5,13 @@ split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
+ 
+ ## 2026-05-16
+ 
++### Phase 3C: witness preflight reducer for v9 mandatory-placement bottleneck
++
++- Added `MasterPlacementModel.candidate_witness_compatible_ghost_anchors()` to scan a complete mandatory witness hint and return compatible ghost anchors without changing parent candidate proof semantics. [src/models/master_model.py]
++- Extended `_validate_coordinate_forced_hint(..., install_solution=True)` so a feasible cloned forced-hint solve can install its solver and extracted solution as a normal master FEASIBLE incumbent. [src/models/master_model.py]
++- Added `EXACT_MASTER_WITNESS_PREFLIGHT`, `EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS`, and `EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS`.  The LBBD exact loop now optionally tries this positive-certificate lane inside the existing `master_seconds` budget before falling back to the normal master solve. [src/search/benders_loop.py]
++- Documented the v8 anchor slicing failure mode and the new fail-closed witness-only contract. [docs/phase3c_witness_preflight_20260516.md]
++
+ ### D step 2: Community blueprint hint 注入 (master.solve hint integration)
+ 
+ - Added `scripts/blueprint_to_master_hint.py` — convert IP v2 blueprint JSON (用户手调验证版 `BP-2026-05-13 08_35_36.blueprint(1).json`) to `Dict[instance_id, pose_idx]` for `master.solve(solution_hint=...)`. 226 facility devices → 225 mapped (1 hub miss due to anchor range geometry). [scripts/]
+diff --git a/docs/env_variable_index.md b/docs/env_variable_index.md
+index 15024d5..511d124 100644
+--- a/docs/env_variable_index.md
++++ b/docs/env_variable_index.md
+@@ -79,6 +79,9 @@
+ | `EXACT_COMMUNITY_BLUEPRINT_HINT_PATH` | path | (empty) | benders_loop.py:3565 | **2026-05-16 land**. JSON 路径, 内容 `Dict[instance_id, pose_idx]`. 整链 merge greedy hint, master.solve 用. wrapper 自动 default 指 `data/hints/blueprint_2026_05_13_master_hint.json` |
+ | `EXACT_MASTER_HINT_CONFLICT_LIMIT` | int | (内部 default) | master_model.py | hint conflict 时的尝试限制 |
+ | `EXACT_MASTER_HINT_PERSISTENCE` | bool | False | master_model.py | hint 跨 Benders iter 持久化 |
++| `EXACT_MASTER_WITNESS_PREFLIGHT` | bool | 0 | benders_loop.py | v10 witness-only lane: 用完整 mandatory hint 固定坐标克隆求解, 只接收 FEASIBLE witness |
++| `EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS` | float | 30 | benders_loop.py | witness preflight 在原 master_seconds 内最多使用的秒数, 0 表示可用完整 master budget |
++| `EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS` | int | 16 | benders_loop.py | witness preflight 最多尝试的 compatible ghost anchors, 0 表示不截断 |
+ | `EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT` | int | (内部 default) | master_model.py | failed warm-start anchor sample 上限 |
+ 
+ ---
+diff --git a/docs/phase3c_witness_preflight_20260516.md b/docs/phase3c_witness_preflight_20260516.md
+new file mode 100644
+index 0000000..cb9ea65
+--- /dev/null
++++ b/docs/phase3c_witness_preflight_20260516.md
+@@ -0,0 +1,66 @@
++# Phase 3C witness preflight reducer (2026-05-16)
++
++## Why v8 anchor slicing was not enough
++
++The v9 smoke evidence shows that ghost anchor slicing reduced build cost, but it did not reduce the dominant solve tree.  A single 27x15 anchor slice still carried 3,853,132 mandatory pose literals and stayed UNKNOWN after five minutes.  The bottleneck is therefore mandatory facility placement, not the first ghost-anchor choice.
++
++## New reducer
++
++`EXACT_MASTER_WITNESS_PREFLIGHT=1` enables a witness-only preflight lane inside the existing master time budget.  It uses the full mandatory placement hint that already exists after greedy plus community blueprint merge, computes ghost anchors whose cells do not overlap that mandatory witness, and solves a cloned CP-SAT model with these fields forced:
++
++- mandatory slot `x`
++- mandatory slot `y`
++- mandatory slot `mode`
++- one compatible ghost anchor literal
++
++Residual optional facilities remain free.  Existing Benders cuts are present because the lane clones the current master model at the current iteration.
++
++## Exactness contract
++
++The lane is positive-certificate only.
++
++- If the forced clone is FEASIBLE or OPTIMAL and a solution can be extracted, the parent master may use that solution as an ordinary FEASIBLE incumbent and continue through diagnostic flow, exact binding, and exact routing.
++- If the forced clone is INFEASIBLE, UNKNOWN, incomplete, timed out, or cannot extract a solution, the parent candidate is not marked INFEASIBLE.  The controller falls back to the normal master solve with the remaining master budget.
++- If the lane consumes the whole master budget without a witness, the parent result is UNKNOWN, never INFEASIBLE.
++
++This differs from hard-fixing a blueprint as a proof of optimality.  It can certify a concrete witness, but it cannot rule out all other placements.
++
++## Env variables
++
++```bash
++EXACT_MASTER_WITNESS_PREFLIGHT=1
++EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS=30
++EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS=16
++```
++
++`EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS=0` means the preflight may use the full per-candidate master budget.  This is exact but usually too aggressive for exploration.
++
++## Recommended smoke command
++
++```bash
++EXACT_COMMUNITY_BLUEPRINT_HINT_PATH=data/hints/blueprint_2026_05_13_master_hint.json \
++EXACT_MASTER_WITNESS_PREFLIGHT=1 \
++EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS=30 \
++EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS=32 \
++python -m src.search.outer_search ...
++```
++
++## Telemetry
++
++Proof summaries now include:
++
++```json
++"master_witness_preflight": {
++  "enabled": true,
++  "attempted": true,
++  "accepted": true,
++  "status": "FEASIBLE",
++  "reason": "forced_witness_accepted",
++  "candidate_anchor_count": 2464,
++  "compatible_anchor_count": 123,
++  "anchor_attempt_count": 1,
++  "accepted_anchor_idx": 42
++}
++```
++
++`master_last_solve.forced_witness_preflight=true` indicates that the installed master solution came from the cloned forced-witness validation solve.
+diff --git a/src/models/master_model.py b/src/models/master_model.py
+index 7465453..29598b0 100644
+--- a/src/models/master_model.py
++++ b/src/models/master_model.py
+@@ -7663,6 +7663,166 @@ class MasterPlacementModel:
+             return {}
+         return {"y_then_x": y_then_x_orders}
+ 
++    def candidate_witness_compatible_ghost_anchors(
++        self,
++        solution_hint: Mapping[str, int],
++        *,
++        max_anchors: int = 0,
++    ) -> Dict[str, Any]:
++        """Find ghost anchors compatible with a complete mandatory witness hint.
++
++        This is a cheap witness-only reducer for the v9 bottleneck: when a full
++        mandatory placement witness is already available, the expensive
++        mandatory placement search tree can be collapsed to fixed equalities in
++        a cloned validation solve.  The payload intentionally never proves a
++        parent candidate infeasible; it only supplies candidate ghost anchors for
++        a later positive-certificate preflight.
++        """
++
++        if not self._built:
++            self.build()
++
++        anchor_limit = max(0, int(max_anchors))
++        payload: Dict[str, Any] = {
++            "supported": False,
++            "complete_hint": False,
++            "reason": "not_evaluated",
++            "mandatory_hint_pose_count": 0,
++            "mandatory_hint_occupied_cell_count": 0,
++            "missing_hint_count": 0,
++            "missing_pose_tuple_count": 0,
++            "extra_mandatory_hint_count": 0,
++            "unknown_hint_count": 0,
++            "optional_hint_count": 0,
++            "ghost_anchor_total_count": int(len(self.u_vars)),
++            "compatible_anchor_count": 0,
++            "compatible_anchor_indices": [],
++            "compatible_anchor_indices_truncated": False,
++            "first_compatible_ghost_anchor_idx": None,
++        }
++        if not self.exact_mode or self._coordinate_delegate is None:
++            payload["reason"] = "coordinate_delegate_unavailable"
++            self.build_stats["candidate_witness_compatible_ghost_anchors"] = dict(
++                payload
++            )
++            return payload
++        if not self.ghost_rect or not self._ghost_domains or not self.u_vars:
++            payload["reason"] = "ghost_rect_unavailable"
++            self.build_stats["candidate_witness_compatible_ghost_anchors"] = dict(
++                payload
++            )
++            return payload
++
++        delegate = self._coordinate_delegate
++        grouped_hints: DefaultDict[str, List[int]] = defaultdict(list)
++        optional_hint_count = 0
++        unknown_hint_count = 0
++        for raw_solution_id, raw_pose_idx in dict(solution_hint or {}).items():
++            solution_id = str(raw_solution_id)
++            try:
++                pose_idx = int(raw_pose_idx)
++            except (TypeError, ValueError):
++                unknown_hint_count += 1
++                continue
++            if solution_id in self._group_id_by_instance:
++                grouped_hints[str(self._group_id_by_instance[solution_id])].append(
++                    pose_idx
++                )
++                continue
++            if self._infer_optional_template_from_solution_id(solution_id) is not None:
++                optional_hint_count += 1
++                continue
++            unknown_hint_count += 1
++
++        mandatory_hint_pose_count = 0
++        missing_hint_count = 0
++        missing_pose_tuple_count = 0
++        extra_mandatory_hint_count = 0
++        occupied_cells: Set[Tuple[int, int]] = set()
++        for group in self._mandatory_groups:
++            group_id = str(group["group_id"])
++            tpl = str(group["facility_type"])
++            required_count = int(len(delegate.mandatory_slots.get(group_id, [])))
++            if required_count <= 0:
++                required_count = int(len(list(group.get("instance_ids", []))))
++            pose_indices = sorted(
++                grouped_hints.get(group_id, []),
++                key=lambda pose_idx: self._pose_sort_key(tpl, int(pose_idx)),
++            )
++            if len(pose_indices) < required_count:
++                missing_hint_count += int(required_count - len(pose_indices))
++            if len(pose_indices) > required_count:
++                extra_mandatory_hint_count += int(len(pose_indices) - required_count)
++            for pose_idx in pose_indices[:required_count]:
++                pose_tuple = delegate._template_pose_tuple_by_idx.get(tpl, {}).get(
++                    int(pose_idx)
++                )
++                if pose_tuple is None:
++                    missing_pose_tuple_count += 1
++                    continue
++                mandatory_hint_pose_count += 1
++                occupied_cells.update(self._pose_cells(tpl, int(pose_idx)))
++
++        complete_hint = bool(
++            missing_hint_count == 0
++            and missing_pose_tuple_count == 0
++            and mandatory_hint_pose_count
++        )
++        payload.update(
++            {
++                "supported": True,
++                "complete_hint": bool(complete_hint),
++                "reason": "complete" if complete_hint else "incomplete_hint",
++                "mandatory_hint_pose_count": int(mandatory_hint_pose_count),
++                "mandatory_hint_occupied_cell_count": int(len(occupied_cells)),
++                "missing_hint_count": int(missing_hint_count),
++                "missing_pose_tuple_count": int(missing_pose_tuple_count),
++                "extra_mandatory_hint_count": int(extra_mandatory_hint_count),
++                "unknown_hint_count": int(unknown_hint_count),
++                "optional_hint_count": int(optional_hint_count),
++            }
++        )
++        if not complete_hint:
++            self.build_stats["candidate_witness_compatible_ghost_anchors"] = dict(
++                payload
++            )
++            return payload
++
++        compatible_anchor_indices: List[int] = []
++        compatible_anchor_count = 0
++        first_compatible_anchor_idx: Optional[int] = None
++        for rect_idx in self._ordered_ghost_anchor_indices():
++            domain = self._ghost_domains[int(rect_idx)]
++            ghost_cells = {
++                (int(cell[0]), int(cell[1]))
++                for cell in list(domain.get("cells", []))
++            }
++            if ghost_cells & occupied_cells:
++                continue
++            compatible_anchor_count += 1
++            if first_compatible_anchor_idx is None:
++                first_compatible_anchor_idx = int(rect_idx)
++            if anchor_limit <= 0 or len(compatible_anchor_indices) < anchor_limit:
++                compatible_anchor_indices.append(int(rect_idx))
++
++        payload.update(
++            {
++                "compatible_anchor_count": int(compatible_anchor_count),
++                "compatible_anchor_indices": list(compatible_anchor_indices),
++                "compatible_anchor_indices_truncated": bool(
++                    anchor_limit > 0 and compatible_anchor_count > anchor_limit
++                ),
++                "first_compatible_ghost_anchor_idx": first_compatible_anchor_idx,
++                "reason": "complete"
++                if compatible_anchor_count > 0
++                else "no_compatible_ghost_anchor",
++            }
++        )
++        self.build_stats["candidate_witness_compatible_ghost_anchors"] = dict(
++            payload
++        )
++        return payload
++
+     def _validate_coordinate_forced_hint(
+         self,
+         *,
+@@ -7675,6 +7835,7 @@ class MasterPlacementModel:
+         use_assumptions: bool = False,
+         force_equality_keys: Optional[Collection[str]] = None,
+         collect_force_equality_labels: bool = False,
++        install_solution: bool = False,
+     ) -> Dict[str, Any]:
+         forced_fields = _normalize_coordinate_force_fields(force_fields)
+         selected_force_equality_keys = (
+@@ -8226,44 +8387,49 @@ class MasterPlacementModel:
+                     core_status = "empty"
+             else:
+                 core_status = "not_infeasible"
+-        return {
++
++        user_time = float(
++            _extract_solver_numeric_stat(
++                solver,
++                "UserTime",
++                "user_time",
++                default=0.0,
++            )
++        )
++        deterministic_time = float(
++            _extract_solver_numeric_stat(
++                solver,
++                "deterministic_time",
++                default=0.0,
++            )
++        )
++        binary_propagations = int(
++            _extract_solver_numeric_stat(
++                solver,
++                "num_binary_propagations",
++                default=0,
++            )
++        )
++        integer_propagations = int(
++            _extract_solver_numeric_stat(
++                solver,
++                "num_integer_propagations",
++                default=0,
++            )
++        )
++        result: Dict[str, Any] = {
+             "attempted": True,
+             "attempted_solver": True,
+             "status": str(status_name),
+             "accepted": bool(accepted),
+             "reason": "accepted" if accepted else str(status_name).lower(),
+             "wall_time": float(solver.WallTime()),
+-            "user_time": float(
+-                _extract_solver_numeric_stat(
+-                    solver,
+-                    "UserTime",
+-                    "user_time",
+-                    default=0.0,
+-                )
+-            ),
+-            "deterministic_time": float(
+-                _extract_solver_numeric_stat(
+-                    solver,
+-                    "deterministic_time",
+-                    default=0.0,
+-                )
+-            ),
++            "user_time": user_time,
++            "deterministic_time": deterministic_time,
+             "branches": int(solver.NumBranches()),
+             "conflicts": int(solver.NumConflicts()),
+-            "binary_propagations": int(
+-                _extract_solver_numeric_stat(
+-                    solver,
+-                    "num_binary_propagations",
+-                    default=0,
+-                )
+-            ),
+-            "integer_propagations": int(
+-                _extract_solver_numeric_stat(
+-                    solver,
+-                    "num_integer_propagations",
+-                    default=0,
+-                )
+-            ),
++            "binary_propagations": int(binary_propagations),
++            "integer_propagations": int(integer_propagations),
+             "solver_parameters": solver_parameters,
+             "response_stats": solver.ResponseStats(),
+             "missing_hint_count": int(missing_hint_count),
+@@ -8285,7 +8451,79 @@ class MasterPlacementModel:
+             ),
+             "ghost_y_overlap_precheck": dict(ghost_y_overlap_precheck),
+             "signature_monotonic_precheck": dict(signature_monotonic_precheck),
++            "install_solution": bool(install_solution),
++            "solution_extraction_status": "not_attempted",
++            "solution_instance_count": 0,
+         }
++        if bool(install_solution):
++            if not bool(accepted):
++                result["solution_extraction_status"] = "not_feasible"
++            else:
++                old_solver = self._solver
++                old_status = self._status
++                old_solution = self._last_solution
++                self._solver = solver
++                self._status = status
++                self._last_solution = None
++                try:
++                    extracted_solution = dict(self.extract_solution())
++                except Exception as exc:
++                    extracted_solution = {}
++                    result["accepted"] = False
++                    result["reason"] = "solution_extraction_failed"
++                    result["solution_extraction_status"] = str(
++                        f"exception:{type(exc).__name__}"
++                    )
++                    self._solver = old_solver
++                    self._status = old_status
++                    self._last_solution = old_solution
++                else:
++                    if not extracted_solution:
++                        result["accepted"] = False
++                        result["reason"] = "empty_solution_after_forced_validation"
++                        result["solution_extraction_status"] = "empty_solution"
++                        self._solver = old_solver
++                        self._status = old_status
++                        self._last_solution = old_solution
++                    else:
++                        self._last_solution = dict(extracted_solution)
++                        result["solution_extraction_status"] = "ok"
++                        result["solution_instance_count"] = int(
++                            len(extracted_solution)
++                        )
++                        self.build_stats["last_solve"] = {
++                            "status": str(status_name),
++                            "wall_time": float(solver.WallTime()),
++                            "user_time": float(user_time),
++                            "deterministic_time": float(deterministic_time),
++                            "branches": int(solver.NumBranches()),
++                            "conflicts": int(solver.NumConflicts()),
++                            "binary_propagations": int(binary_propagations),
++                            "integer_propagations": int(integer_propagations),
++                            "hinted_literals": int(forced_slot_field_count),
++                            "known_feasible_hint": True,
++                            "search_profile": str(
++                                self.build_stats.get("search_guidance", {}).get(
++                                    "profile",
++                                    "default_automatic",
++                                )
++                            ),
++                            "search_branching": str(
++                                solver_parameters.get("search_branching", "")
++                            ),
++                            "requested_search_branching": "forced_witness_clone",
++                            "solver_parameters": dict(solver_parameters),
++                            "response_stats": solver.ResponseStats(),
++                            "ghost_anchor_hint_applied": ghost_anchor_hint_idx is not None,
++                            "ghost_anchor_hint_idx": ghost_anchor_hint_idx,
++                            "residual_optional_zero_hinting_enabled": False,
++                            "residual_optional_zero_hints": 0,
++                            "forced_witness_preflight": True,
++                            "forced_slot_field_count": int(forced_slot_field_count),
++                            "solution_extraction_status": "ok",
++                            "solution_instance_count": int(len(extracted_solution)),
++                        }
++        return result
+ 
+     def _attempt_mandatory_local_repair(
+         self,
+diff --git a/src/search/benders_loop.py b/src/search/benders_loop.py
+index 9421773..57eb8f2 100644
+--- a/src/search/benders_loop.py
++++ b/src/search/benders_loop.py
+@@ -124,6 +124,13 @@ EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES_ENV = (
+ EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS_ENV = (
+     "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS"
+ )
++EXACT_MASTER_WITNESS_PREFLIGHT_ENV = "EXACT_MASTER_WITNESS_PREFLIGHT"
++EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS_ENV = (
++    "EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS"
++)
++EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS_ENV = (
++    "EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS"
++)
+ 
+ 
+ def _normalize_solve_mode(
+@@ -388,6 +395,53 @@ def _warm_start_failed_anchor_sample_limit() -> int:
+         ) from None
+ 
+ 
++def _env_bool_enabled(name: str, *, default: bool = False) -> bool:
++    raw_value = os.environ.get(name)
++    if raw_value is None or str(raw_value).strip() == "":
++        return bool(default)
++    normalized = str(raw_value).strip().lower()
++    if normalized in {"1", "true", "on", "yes", "y"}:
++        return True
++    if normalized in {"0", "false", "off", "no", "n"}:
++        return False
++    raise ValueError(
++        f"Unsupported {name}: {raw_value!r}; expected a boolean token."
++    )
++
++
++def _master_witness_preflight_enabled() -> bool:
++    return _env_bool_enabled(EXACT_MASTER_WITNESS_PREFLIGHT_ENV, default=False)
++
++
++def _master_witness_preflight_seconds(master_seconds: float) -> float:
++    raw_value = os.environ.get(EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS_ENV)
++    if raw_value is None or str(raw_value).strip() == "":
++        return max(0.0, min(float(master_seconds), 30.0))
++    try:
++        value = max(0.0, float(str(raw_value).strip()))
++    except ValueError:
++        raise ValueError(
++            f"Unsupported {EXACT_MASTER_WITNESS_PREFLIGHT_SECONDS_ENV}: "
++            f"{raw_value!r}; expected a non-negative number."
++        ) from None
++    if value <= 0.0:
++        return max(0.0, float(master_seconds))
++    return max(0.0, min(float(master_seconds), value))
++
++
++def _master_witness_preflight_max_anchors() -> int:
++    raw_value = os.environ.get(EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS_ENV)
++    if raw_value is None or str(raw_value).strip() == "":
++        return 16
++    try:
++        return max(0, int(str(raw_value).strip()))
++    except ValueError:
++        raise ValueError(
++            f"Unsupported {EXACT_MASTER_WITNESS_PREFLIGHT_MAX_ANCHORS_ENV}: "
++            f"{raw_value!r}; expected a non-negative integer."
++        ) from None
++
++
+ def _master_cp_sat_log_heartbeat_line_limit() -> int:
+     raw_value = os.environ.get(EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES_ENV)
+     if raw_value is None or str(raw_value).strip() == "":
+@@ -2000,6 +2054,20 @@ class LBBDController:
+         self._ghost_anchor_hint_status = "not_used"
+         self._residual_optional_zero_hinting_enabled = True
+         self._residual_optional_zero_hints = 0
++        self._master_witness_preflight: Dict[str, Any] = {
++            "enabled": False,
++            "attempted": False,
++            "accepted": False,
++            "status": "not_used",
++            "reason": "disabled",
++            "anchor_attempt_count": 0,
++            "accepted_anchor_idx": None,
++            "candidate_anchor_count": 0,
++            "compatible_anchor_count": 0,
++            "time_budget_seconds": 0.0,
++            "elapsed_seconds": 0.0,
++            "validation_samples": [],
++        }
+         self._master_start_feasibility: Dict[str, Any] = {
+             "ghost_anchor_hint_applied": False,
+             "ghost_anchor_hint_idx": None,
+@@ -3065,6 +3133,7 @@ class LBBDController:
+                 )
+             ),
+             "master_last_solve": master_last_solve,
++            "master_witness_preflight": dict(self._master_witness_preflight),
+             "master_domain_tightening": {
+                 "ghost_power_capacity_screen_enabled": bool(
+                     ghost_domain_tightening.get("enabled", False)
+@@ -3395,6 +3464,200 @@ class LBBDController:
+             ),
+         }
+ 
++    def _run_master_witness_preflight(
++        self,
++        *,
++        solution_hint: Optional[Mapping[str, int]],
++        iteration: int,
++        master_deadline: float,
++    ) -> Optional[int]:
++        enabled = _master_witness_preflight_enabled()
++        summary: Dict[str, Any] = {
++            "enabled": bool(enabled),
++            "attempted": False,
++            "accepted": False,
++            "status": "disabled" if not enabled else "not_attempted",
++            "reason": "disabled" if not enabled else "not_attempted",
++            "anchor_attempt_count": 0,
++            "accepted_anchor_idx": None,
++            "candidate_anchor_count": 0,
++            "compatible_anchor_count": 0,
++            "compatible_anchor_indices_truncated": False,
++            "first_compatible_ghost_anchor_idx": None,
++            "mandatory_hint_pose_count": 0,
++            "mandatory_hint_occupied_cell_count": 0,
++            "missing_hint_count": 0,
++            "missing_pose_tuple_count": 0,
++            "time_budget_seconds": 0.0,
++            "elapsed_seconds": 0.0,
++            "validation_samples": [],
++        }
++        self._master_witness_preflight = summary
++        if not enabled:
++            return None
++        if self.solve_mode != "certified_exact":
++            summary["status"] = "skipped"
++            summary["reason"] = "non_certified_mode"
++            return None
++        if self._master_warm_start_disabled:
++            summary["status"] = "skipped"
++            summary["reason"] = "warm_start_disabled"
++            return None
++        if not solution_hint:
++            summary["status"] = "skipped"
++            summary["reason"] = "empty_solution_hint"
++            return None
++        if not hasattr(self.master, "candidate_witness_compatible_ghost_anchors"):
++            summary["status"] = "skipped"
++            summary["reason"] = "master_api_unavailable"
++            return None
++
++        started = time.perf_counter()
++        remaining_master = max(0.0, float(master_deadline) - started)
++        time_budget = min(
++            remaining_master,
++            _master_witness_preflight_seconds(float(self.master_seconds)),
++        )
++        summary["time_budget_seconds"] = float(time_budget)
++        if time_budget <= 0.0:
++            summary["status"] = "skipped"
++            summary["reason"] = "no_time_remaining"
++            return None
++
++        max_anchors = _master_witness_preflight_max_anchors()
++        compatibility = self.master.candidate_witness_compatible_ghost_anchors(
++            solution_hint,
++            max_anchors=max_anchors,
++        )
++        anchor_indices = [
++            int(anchor_idx)
++            for anchor_idx in list(compatibility.get("compatible_anchor_indices", []))
++        ]
++        summary.update(
++            {
++                "attempted": True,
++                "candidate_anchor_count": int(
++                    compatibility.get("ghost_anchor_total_count", 0)
++                ),
++                "compatible_anchor_count": int(
++                    compatibility.get("compatible_anchor_count", 0)
++                ),
++                "compatible_anchor_indices_truncated": bool(
++                    compatibility.get("compatible_anchor_indices_truncated", False)
++                ),
++                "first_compatible_ghost_anchor_idx": compatibility.get(
++                    "first_compatible_ghost_anchor_idx"
++                ),
++                "mandatory_hint_pose_count": int(
++                    compatibility.get("mandatory_hint_pose_count", 0)
++                ),
++                "mandatory_hint_occupied_cell_count": int(
++                    compatibility.get("mandatory_hint_occupied_cell_count", 0)
++                ),
++                "missing_hint_count": int(
++                    compatibility.get("missing_hint_count", 0)
++                ),
++                "missing_pose_tuple_count": int(
++                    compatibility.get("missing_pose_tuple_count", 0)
++                ),
++                "reason": str(compatibility.get("reason", "not_evaluated")),
++            }
++        )
++        if not bool(compatibility.get("complete_hint", False)):
++            summary["status"] = "skipped"
++            summary["reason"] = "incomplete_mandatory_hint"
++            return None
++        if not anchor_indices:
++            summary["status"] = "skipped"
++            summary["reason"] = "no_compatible_ghost_anchor"
++            return None
++
++        preflight_deadline = min(float(master_deadline), started + float(time_budget))
++        validation_samples: List[Dict[str, Any]] = []
++        for anchor_idx in anchor_indices:
++            remaining = max(0.0, preflight_deadline - time.perf_counter())
++            if remaining <= 0.0:
++                summary["status"] = "timeout"
++                summary["reason"] = "time_budget_exhausted"
++                break
++            summary["anchor_attempt_count"] = int(summary["anchor_attempt_count"]) + 1
++            validation = self.master._validate_coordinate_forced_hint(
++                solution_hint=solution_hint,
++                ghost_anchor_hint_idx=int(anchor_idx),
++                time_limit_seconds=float(remaining),
++                require_complete=True,
++                solver_parameter_profile={
++                    "profile_id": "witness_preflight_forced_clone",
++                    "search_branching": "fixed",
++                    "worker_count": 1,
++                    "cp_model_presolve": True,
++                    "cp_model_probing_level": 3,
++                    "symmetry_level": 3,
++                    "hint_conflict_limit": 0,
++                },
++                install_solution=True,
++            )
++            sample = {
++                "anchor_idx": int(anchor_idx),
++                "status": str(validation.get("status", "")),
++                "accepted": bool(validation.get("accepted", False)),
++                "reason": str(validation.get("reason", "")),
++                "wall_time": float(validation.get("wall_time", 0.0)),
++                "branches": int(validation.get("branches", 0)),
++                "conflicts": int(validation.get("conflicts", 0)),
++                "solution_extraction_status": str(
++                    validation.get("solution_extraction_status", "")
++                ),
++            }
++            if len(validation_samples) < 8:
++                validation_samples.append(sample)
++            if bool(validation.get("accepted", False)):
++                elapsed = max(0.0, time.perf_counter() - started)
++                summary.update(
++                    {
++                        "accepted": True,
++                        "status": "FEASIBLE",
++                        "reason": "forced_witness_accepted",
++                        "accepted_anchor_idx": int(anchor_idx),
++                        "elapsed_seconds": float(elapsed),
++                        "validation_samples": list(validation_samples),
++                    }
++                )
++                self._ghost_anchor_hint_applied = True
++                self._ghost_anchor_hint_idx = int(anchor_idx)
++                self._ghost_anchor_hint_status = "forced_witness_preflight"
++                self._master_start_feasibility["ghost_anchor_hint_applied"] = True
++                self._master_start_feasibility["ghost_anchor_hint_idx"] = int(anchor_idx)
++                self._master_start_feasibility["ghost_anchor_hint_status"] = (
++                    "forced_witness_preflight"
++                )
++                self._master_start_feasibility["ghost_anchor_total_count"] = int(
++                    compatibility.get("ghost_anchor_total_count", 0)
++                )
++                self._master_start_feasibility["ghost_anchor_compatible_count"] = int(
++                    compatibility.get("compatible_anchor_count", 0)
++                )
++                self._emit_heartbeat(
++                    stage="master_witness_preflight",
++                    event="accepted",
++                    iteration=iteration,
++                    extra={
++                        "anchor_idx": int(anchor_idx),
++                        "elapsed_seconds": float(elapsed),
++                    },
++                )
++                return cp_model.FEASIBLE
++        summary["elapsed_seconds"] = max(0.0, time.perf_counter() - started)
++        summary["validation_samples"] = list(validation_samples)
++        if not bool(summary.get("status")) or summary.get("status") in {
++            "not_attempted",
++            "disabled",
++        }:
++            summary["status"] = "NOT_ACCEPTED"
++        if summary.get("reason") in {"complete", "not_attempted"}:
++            summary["reason"] = "no_forced_witness_accepted"
++        return None
++
+     def _exact_cut_ladder_summary(self) -> Dict[str, Any]:
+         return {
+             "fine_grained_exact_safe_cut_count": int(self._fine_grained_exact_safe_cut_count),
+@@ -3875,16 +4138,64 @@ class LBBDController:
+                     },
+                 )
+ 
+-            master_status = self.master.solve(
+-                time_limit_seconds=self.master_seconds,
+-                solution_hint=solve_hint,
+-                known_feasible_hint=False,
+-                ghost_anchor_hint_idx=solve_ghost_anchor_hint_idx,
+-                hint_inactive_residual_optionals=solve_hint_inactive_residual_optionals,
+-                diagnostic_log_callback=_emit_master_solve_log
+-                if master_log_limit > 0
+-                else None,
++            master_deadline = time.perf_counter() + float(self.master_seconds)
++            preflight_hint = solve_hint
++            if preflight_hint is None and not self._master_warm_start_disabled:
++                preflight_hint = self._greedy_hint or None
++            preflight_status = self._run_master_witness_preflight(
++                solution_hint=preflight_hint,
++                iteration=iteration,
++                master_deadline=master_deadline,
+             )
++            if preflight_status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
++                master_status = preflight_status
++            else:
++                remaining_master_seconds = max(0.0, master_deadline - time.perf_counter())
++                if remaining_master_seconds <= 0.0:
++                    elapsed = float(self._master_witness_preflight.get("elapsed_seconds", 0.0))
++                    self.master.build_stats["last_solve"] = {
++                        "status": "UNKNOWN",
++                        "wall_time": elapsed,
++                        "user_time": 0.0,
++                        "deterministic_time": 0.0,
++                        "branches": 0,
++                        "conflicts": 0,
++                        "binary_propagations": 0,
++                        "integer_propagations": 0,
++                        "hinted_literals": 0,
++                        "known_feasible_hint": False,
++                        "search_profile": str(
++                            self.master.build_stats.get("search_guidance", {}).get(
++                                "profile",
++                                "default_automatic",
++                            )
++                        ),
++                        "search_branching": "witness_preflight_only",
++                        "requested_search_branching": "witness_preflight_timeout",
++                        "solver_parameters": {
++                            "max_time_in_seconds": 0.0,
++                            "num_search_workers": 0,
++                        },
++                        "response_stats": "witness preflight consumed the master budget",
++                        "ghost_anchor_hint_applied": False,
++                        "ghost_anchor_hint_idx": None,
++                        "residual_optional_zero_hinting_enabled": bool(
++                            solve_hint_inactive_residual_optionals
++                        ),
++                        "residual_optional_zero_hints": 0,
++                    }
++                    master_status = cp_model.UNKNOWN
++                else:
++                    master_status = self.master.solve(
++                        time_limit_seconds=float(remaining_master_seconds),
++                        solution_hint=solve_hint,
++                        known_feasible_hint=False,
++                        ghost_anchor_hint_idx=solve_ghost_anchor_hint_idx,
++                        hint_inactive_residual_optionals=solve_hint_inactive_residual_optionals,
++                        diagnostic_log_callback=_emit_master_solve_log
++                        if master_log_limit > 0
++                        else None,
++                    )
+             if iteration == 1:
+                 last_solve = dict(self.master.build_stats.get("last_solve", {}))
+                 self._master_hinted_literals = int(last_solve.get("hinted_literals", 0))
+diff --git a/src/tests/test_master.py b/src/tests/test_master.py
+index f882b04..43186e7 100644
+--- a/src/tests/test_master.py
++++ b/src/tests/test_master.py
+@@ -2045,6 +2045,62 @@ def test_exact_candidate_warm_start_can_rebuild_mandatory_hint_for_first_ghost_a
+     )
+ 
+ 
++def test_candidate_witness_compatible_ghost_anchors_reports_complete_hint() -> None:
++    model = _build_exact_ghost_rebuild_warm_start_model()
++    model.build()
++
++    payload = model.candidate_witness_compatible_ghost_anchors(
++        {"miner_a_001": 1, "miner_b_001": 0},
++        max_anchors=1,
++    )
++
++    assert payload["supported"] is True
++    assert payload["complete_hint"] is True
++    assert payload["mandatory_hint_pose_count"] == 2
++    assert payload["mandatory_hint_occupied_cell_count"] == 2
++    assert payload["compatible_anchor_count"] == 2
++    assert payload["compatible_anchor_indices"] == [0]
++    assert payload["compatible_anchor_indices_truncated"] is True
++    assert payload["first_compatible_ghost_anchor_idx"] == 0
++
++
++def test_candidate_witness_compatible_ghost_anchors_rejects_incomplete_hint() -> None:
++    model = _build_exact_ghost_rebuild_warm_start_model()
++    model.build()
++
++    payload = model.candidate_witness_compatible_ghost_anchors(
++        {"miner_a_001": 1},
++        max_anchors=4,
++    )
++
++    assert payload["supported"] is True
++    assert payload["complete_hint"] is False
++    assert payload["reason"] == "incomplete_hint"
++    assert payload["missing_hint_count"] == 1
++    assert payload["compatible_anchor_count"] == 0
++
++
++def test_coordinate_forced_hint_can_install_solution_from_clone() -> None:
++    model = _build_exact_ghost_rebuild_warm_start_model()
++    model.build()
++
++    validation = model._validate_coordinate_forced_hint(
++        solution_hint={"miner_a_001": 1, "miner_b_001": 0},
++        ghost_anchor_hint_idx=0,
++        time_limit_seconds=1.0,
++        require_complete=True,
++        install_solution=True,
++    )
++
++    assert validation["accepted"] is True
++    assert validation["solution_extraction_status"] == "ok"
++    assert validation["solution_instance_count"] >= 2
++    solution = model.extract_solution()
++    assert solution["miner_a_001"]["pose_idx"] == 1
++    assert solution["miner_b_001"]["pose_idx"] == 0
++    assert model.build_stats["last_solve"]["forced_witness_preflight"] is True
++
++
+ def test_exact_candidate_warm_start_rejects_coordinate_invalid_rebuild_hint(
+     monkeypatch,
+ ) -> None:
+diff --git a/src/tests/test_witness_preflight.py b/src/tests/test_witness_preflight.py
+new file mode 100644
+index 0000000..ba5cb2c
+--- /dev/null
++++ b/src/tests/test_witness_preflight.py
+@@ -0,0 +1,121 @@
++"""Regression tests for the witness-only master preflight lane."""
++
++from __future__ import annotations
++
++import time
++from pathlib import Path
++from typing import Any, Mapping, Optional
++
++from ortools.sat.python import cp_model
++
++from src.models.cut_manager import CutManager
++from src.search.benders_loop import LBBDController
++
++
++class _FakeWitnessMaster:
++    def __init__(self, *, accepted: bool) -> None:
++        self.accepted = bool(accepted)
++        self.build_stats: dict[str, Any] = {"search_guidance": {"profile": "fake"}}
++        self.validation_calls: list[dict[str, Any]] = []
++
++    def candidate_witness_compatible_ghost_anchors(
++        self,
++        solution_hint: Mapping[str, int],
++        *,
++        max_anchors: int = 0,
++    ) -> dict[str, Any]:
++        return {
++            "supported": True,
++            "complete_hint": True,
++            "reason": "complete",
++            "ghost_anchor_total_count": 3,
++            "compatible_anchor_count": 1,
++            "compatible_anchor_indices": [7],
++            "compatible_anchor_indices_truncated": False,
++            "first_compatible_ghost_anchor_idx": 7,
++            "mandatory_hint_pose_count": len(solution_hint),
++            "mandatory_hint_occupied_cell_count": len(solution_hint),
++            "missing_hint_count": 0,
++            "missing_pose_tuple_count": 0,
++        }
++
++    def _validate_coordinate_forced_hint(
++        self,
++        *,
++        solution_hint: Mapping[str, int],
++        ghost_anchor_hint_idx: Optional[int],
++        time_limit_seconds: float,
++        require_complete: bool,
++        solver_parameter_profile: Mapping[str, Any],
++        install_solution: bool,
++    ) -> dict[str, Any]:
++        self.validation_calls.append(
++            {
++                "solution_hint": dict(solution_hint),
++                "ghost_anchor_hint_idx": ghost_anchor_hint_idx,
++                "time_limit_seconds": float(time_limit_seconds),
++                "require_complete": bool(require_complete),
++                "solver_parameter_profile": dict(solver_parameter_profile),
++                "install_solution": bool(install_solution),
++            }
++        )
++        return {
++            "attempted": True,
++            "status": "FEASIBLE" if self.accepted else "INFEASIBLE",
++            "accepted": self.accepted,
++            "reason": "accepted" if self.accepted else "infeasible",
++            "wall_time": 0.01,
++            "branches": 0,
++            "conflicts": 0,
++            "solution_extraction_status": "ok" if self.accepted else "not_feasible",
++        }
++
++
++def _controller(tmp_path: Path, master: _FakeWitnessMaster) -> LBBDController:
++    return LBBDController(
++        master,  # type: ignore[arg-type]
++        CutManager(tmp_path / "cuts", solve_mode="certified_exact"),
++        tmp_path,
++        "certified_exact",
++        master_seconds=10.0,
++    )
++
++
++def test_witness_preflight_accepts_only_positive_certificate(
++    monkeypatch,
++    tmp_path,
++) -> None:
++    monkeypatch.setenv("EXACT_MASTER_WITNESS_PREFLIGHT", "1")
++    master = _FakeWitnessMaster(accepted=True)
++    controller = _controller(tmp_path, master)
++
++    status = controller._run_master_witness_preflight(
++        solution_hint={"mandatory_a": 1},
++        iteration=1,
++        master_deadline=time.perf_counter() + 10.0,
++    )
++
++    assert status == cp_model.FEASIBLE
++    assert master.validation_calls[0]["install_solution"] is True
++    assert controller._master_witness_preflight["accepted"] is True
++    assert controller._master_witness_preflight["accepted_anchor_idx"] == 7
++
++
++def test_witness_preflight_fail_closed_when_forced_clone_rejects(
++    monkeypatch,
++    tmp_path,
++) -> None:
++    monkeypatch.setenv("EXACT_MASTER_WITNESS_PREFLIGHT", "1")
++    master = _FakeWitnessMaster(accepted=False)
++    controller = _controller(tmp_path, master)
++
++    status = controller._run_master_witness_preflight(
++        solution_hint={"mandatory_a": 1},
++        iteration=1,
++        master_deadline=time.perf_counter() + 10.0,
++    )
++
++    assert status is None
++    assert controller._master_witness_preflight["accepted"] is False
++    assert controller._master_witness_preflight["status"] != "INFEASIBLE"
++    assert master.validation_calls[0]["install_solution"] is True

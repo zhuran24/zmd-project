@@ -1,0 +1,38 @@
+{
+  "schema": "phase3b_ai_feature_schema_v0",
+  "sample_schema": "phase3b_ai_candidate_run_sample_v0",
+  "safety_contract": {
+    "shadow_only": true,
+    "proof_source": false,
+    "scheduler_integration": false,
+    "candidate_universe_changed": false,
+    "model_trained": false,
+    "checkpoint_written": false,
+    "final_solution_written": false,
+    "release_viewer_frontdoor_promoted": false
+  },
+  "required_top_level_fields": [
+    "schema",
+    "sample_id",
+    "candidate_key",
+    "run_id",
+    "profile_id",
+    "parallel_processes",
+    "worker_profile",
+    "selection_reason",
+    "frontier_candidate_metrics",
+    "precheck",
+    "terminal",
+    "solver_metrics",
+    "resource_metrics",
+    "labels"
+  ],
+  "field_notes": {
+    "frontier_candidate_metrics": "Copied from exact telemetry; feature only, not proof.",
+    "precheck": "Describes existing precheck telemetry; extractor does not run prechecks.",
+    "terminal": "Observed terminal status/outcome from existing evidence replay.",
+    "solver_metrics": "Copied from master_last_solve when present; null when absent.",
+    "resource_metrics": "Run/window resource observations from existing benchmark evidence.",
+    "labels": "Derived weak labels for future offline replay, not certified truth."
+  }
+}

@@ -1,0 +1,1 @@
+full-demand support suite inventory is in sync via /mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/full_demand_support_suite_inventory.json (1 report sets, 6 files checked)

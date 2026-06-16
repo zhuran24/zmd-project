@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "poc": "P2 #14 AlphaEvolve cut-evolution — Gemini follow-up",
+  "date": "2026-05-10",
+  "proposer_model": "gemini-3.1-pro-preview (Google AI Studio)",
+  "prompt_source": "同 Opus 子代理 (ada46d235d22806ab) — 2523 bytes",
+  "evaluator": "启发式 6 维度评分 (代码合规 / safety / 注释 / def / binding context / 新颖)",
+  "max_score": 11,
+  "token_usage": {
+    "promptTokenCount": 775,
+    "candidatesTokenCount": 2371,
+    "thoughtsTokenCount": 1963,
+    "totalTokenCount": 5109
+  },
+  "variants": [
+    {
+      "id": 1,
+      "name": "hint_adjacent_direct_insertion",
+      "direction": "几何相邻直塞 (master placement 紧贴端口同 commodity)",
+      "score": 9,
+      "notes": [
+        "AddHint API ✅ - 3pt",
+        "no hard cut ✅ - 2pt",
+        "中文 docstring ✅ - 1pt",
+        "用了未定义辅助函数 get_common_commodities + adj_port_pairs 外部依赖 - 0.5pt",
+        "binding context ✅ - 2pt",
+        "vs Opus 变体 3 (hint_collocated_io_pair_same_commodity) 几乎重叠 - 0.5pt"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "hint_single_commodity_output_homogeneity",
+      "direction": "多输出端口都绑主产 commodity (单一产品强迫症)",
+      "score": 10,
+      "notes": [
+        "全前 5 维满分",
+        "vs Opus 变体 2 (output_prefer_high_demand) 视角差: Opus 用全局 demand, Gemini 用设施 yield - 1pt"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "hint_index_based_port_packing",
+      "direction": "index >= 2 高位端口推 unused (对称破缺)",
+      "score": 10,
+      "notes": [
+        "全前 5 维满分",
+        "vs Opus 变体 4 (unused_slot_oversupply) 推 unused 思路重叠, 但理由不同 (Opus capacity-demand, Gemini index 对称) - 1pt"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "hint_recipe_proportional_input",
+      "direction": "按消耗速率排序 input slot 优先级",
+      "score": 10.5,
+      "notes": [
+        "全前 5 维满分",
+        "新颖: input slot + 需求率排序, 是 Opus 变体 2 (output 按需求量) 的镜像对, Opus 没产 - 1.5pt"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "hint_pure_storage_box",
+      "direction": "storage box clustering 单 commodity (跟 hint 2 separation 反向)",
+      "score": 11,
+      "notes": [
+        "全维度满分",
+        "**完全新颖**: hint 2 baseline 是 separation (禁混装), Gemini 这是 clustering (强单一), 反向思路, Opus 6 变体里也没"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "hint_central_port_high_volume",
+      "direction": "高通量 commodity 绑设施几何中心端口",
+      "score": 10.5,
+      "notes": [
+        "全前 5 维满分",
+        "新颖: 设施内部微几何 + 通量结合, Opus 变体 5 (pose-level binding) 也碰内部位置但维度不同 - 1.5pt"
+      ]
+    }
+  ],
+  "stats": {
+    "total_score": 61.0,
+    "max_total": 66,
+    "mean_score": 10.17,
+    "vs_opus_mean": 10.92,
+    "delta_pct": -6.9
+  },
+  "verdict": "GO (Gemini 路径质量略低 Opus 但可行)",
+  "verdict_rationale": "Gemini 3.1 Pro Preview 6 变体平均 10.17/11 vs Opus 4.7 10.92/11 (-6.9%). 全部符合 AI Safety Contract, 全部涉及 binding context, 2 个完全新颖 (变体 4 input 镜像 + 变体 5 storage clustering). 2 个跟 Opus 强重叠 (变体 1 ≈ Opus 变体 3, 变体 3 ≈ Opus 变体 4). production 用 Gemini 跑 OpenEvolve 可行, 质量打 93% 折扣换 pricing 优势. R10 audit go/no-go gate 通过.",
+  "model_extrapolation_status": "Gemini 路径已独立 PoC, 不再 GATED",
+  "caveats": [
+    "Gemini 变体 1 用了未定义 helper (get_common_commodities, adj_port_pairs) 落地成本略高",
+    "启发式评分仍只验代码合规 + 项目 context, 不验真求解时间",
+    "production 跑 OpenEvolve 真 500 iter 才能知 cut 实际效果",
+    "production 推迟到 168h baseline 后做"
+  ],
+  "best_picks": [
+    "变体 5 hint_pure_storage_box (完全新颖, 满分, 跟 hint 2 反向思路)",
+    "变体 4 hint_recipe_proportional_input (input 维度新颖, 镜像 Opus output 思路)"
+  ],
+  "weakest_picks": [
+    "变体 1 hint_adjacent_direct_insertion (几乎完全 = Opus 变体 3, 还多依赖外部 helper)"
+  ]
+}
