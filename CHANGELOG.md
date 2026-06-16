@@ -3,6 +3,10 @@
 This file is the canonical home for dated engineering history that used to be
 split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
 
+## 2026-06-16
+
+- Added a certified-exact source-tree digest to campaign `artifact_hashes`. This intentionally breaks resume compatibility for older checkpoints: states without the new `certified_exact_source_tree` key fail with `artifact_hash_mismatch`, so campaigns must be restarted instead of resumed across this proof-kernel binding change. [src/search/exact_campaign.py]
+
 ## 2026-05-16
 
 ### D step 2: Community blueprint hint 注入 (master.solve hint integration)

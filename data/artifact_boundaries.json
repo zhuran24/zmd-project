@@ -17,6 +17,10 @@
     {
       "path_prefix": ".artifacts/_v28_",
       "reason": "One-off v28 review hygiene helper scripts kept as evidence helpers."
+    },
+    {
+      "path_prefix": ".artifacts/v46_validation/",
+      "reason": "Preserved preflight validation logs from the v46 historical review gate."
     }
   ],
   "ignored_runtime_artifact_prefixes": [

@@ -74,6 +74,72 @@ def _build_empty_frontier_project(
     return project_root
 
 
+def _build_origin_blocked_frontier_project(
+    project_root: Path,
+    *,
+    width: int = 6,
+    height: int = 6,
+) -> Path:
+    _build_empty_frontier_project(project_root, width=width, height=height)
+    _write_json(
+        project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+        [
+            {
+                "instance_id": "blocker",
+                "facility_type": "synthetic",
+                "operation_type": "op",
+                "is_mandatory": True,
+                "bound_type": "exact",
+                "solve_modes": ["certified_exact"],
+            }
+        ],
+    )
+    return project_root
+
+
+def _empty_anchor_with_origin_blocker(
+    ghost_w: int,
+    ghost_h: int,
+    *,
+    width: int,
+    height: int,
+) -> dict[str, int]:
+    if int(ghost_w) == int(width) and int(ghost_h) < int(height):
+        return {"x": 0, "y": 1}
+    if int(ghost_h) == int(height) and int(ghost_w) < int(width):
+        return {"x": 1, "y": 0}
+    if int(ghost_w) < int(width) and int(ghost_h) < int(height):
+        return {"x": 1, "y": 1}
+    return {"x": 0, "y": 0}
+
+
+def _origin_blocked_solution_for_candidate(
+    *,
+    ghost_w: int,
+    ghost_h: int,
+    width: int,
+    height: int,
+) -> dict[str, object]:
+    ghost_anchor = _empty_anchor_with_origin_blocker(
+        int(ghost_w),
+        int(ghost_h),
+        width=width,
+        height=height,
+    )
+    ghost_pose_idx = int(ghost_anchor["x"]) * (int(height) - int(ghost_h) + 1) + int(
+        ghost_anchor["y"]
+    )
+    return {
+        "blocker": {"facility_type": "synthetic", "pose_idx": 0},
+        "ghost_pick": {
+            "pose_idx": ghost_pose_idx,
+            "pose_id": f"ghost_anchor::{int(ghost_anchor['x'])},{int(ghost_anchor['y'])}",
+            "facility_type": "ghost_rect",
+            "anchor": ghost_anchor,
+        },
+    }
+
+
 def _read_campaign_state(project_root: Path) -> dict:
     return json.loads(
         (project_root / "data" / "checkpoints" / "exact_campaign_state.json").read_text(
@@ -1563,12 +1629,12 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    serial_root = _build_empty_frontier_project(tmp_path / "serial_match", width=2, height=2)
-    parallel_root = _build_empty_frontier_project(tmp_path / "parallel_match", width=2, height=2)
+    serial_root = _build_origin_blocked_frontier_project(tmp_path / "serial_match", width=2, height=2)
+    parallel_root = _build_origin_blocked_frontier_project(tmp_path / "parallel_match", width=2, height=2)
 
     def fake_serial_benders(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         del session, kwargs
-        if (int(ghost_w), int(ghost_h)) != (1, 1):
+        if (int(ghost_w), int(ghost_h)) != (2, 1):
             fake_serial_benders.last_run_metadata = {
                 "proof_summary": {"master_status": RUN_STATUS_INFEASIBLE},
                 "exact_safe_cuts": [],
@@ -1582,14 +1648,12 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
             "loaded_exact_safe_cut_count": 0,
             "generated_exact_safe_cut_count": 0,
         }
-        return RUN_STATUS_CERTIFIED, {
-            "ghost_pick": {
-                "pose_idx": 0,
-                "pose_id": "synthetic_pose_0",
-                "anchor": {"x": 0, "y": 0},
-                "facility_type": "synthetic",
-            }
-        }
+        return RUN_STATUS_CERTIFIED, _origin_blocked_solution_for_candidate(
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+            width=2,
+            height=2,
+        )
 
     fake_serial_benders.last_run_metadata = {
         "proof_summary": {},
@@ -1602,7 +1666,7 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
         del pool
         results = []
         for task in reversed(tasks):
-            if (int(task.candidate[1]), int(task.candidate[2])) != (1, 1):
+            if (int(task.candidate[1]), int(task.candidate[2])) != (2, 1):
                 results.append(
                     WorkerResult(
                         dispatch_seq=task.dispatch_seq,
@@ -1626,14 +1690,12 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
                         attempt_index=task.attempt_index,
                         candidate=task.candidate,
                         status=RUN_STATUS_CERTIFIED,
-                        solution={
-                            "ghost_pick": {
-                                "pose_idx": 0,
-                                "pose_id": "synthetic_pose_0",
-                                "anchor": {"x": 0, "y": 0},
-                                "facility_type": "synthetic",
-                            }
-                        },
+                        solution=_origin_blocked_solution_for_candidate(
+                            ghost_w=int(task.candidate[1]),
+                            ghost_h=int(task.candidate[2]),
+                            width=2,
+                            height=2,
+                        ),
                         proof_summary={"master_status": RUN_STATUS_CERTIFIED},
                         exact_safe_cuts=[],
                         loaded_exact_safe_cut_count=0,
@@ -1692,19 +1754,18 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
 
     assert serial_status == parallel_status == RUN_STATUS_CERTIFIED
     assert serial_result is not None and parallel_result is not None
-    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0}
+    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1}
 
     serial_state = _read_campaign_state(serial_root)
     parallel_state = _read_campaign_state(parallel_root)
     assert serial_state["candidates"]["2x1"]["status"] == parallel_state["candidates"]["2x1"]["status"]
-    assert serial_state["candidates"]["1x1"]["status"] == parallel_state["candidates"]["1x1"]["status"]
 
 
 def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    project_root = _build_empty_frontier_project(tmp_path / "parallel_best_certified", width=6, height=6)
+    project_root = _build_origin_blocked_frontier_project(tmp_path / "parallel_best_certified", width=6, height=6)
     expected_best: dict[str, dict[str, int]] = {}
 
     def fake_wave_executor(*, pool, tasks):
@@ -1747,12 +1808,18 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
         )
         big_task = sorted_tasks[0]
         small_task = sorted_tasks[-1]
+        best_anchor = _empty_anchor_with_origin_blocker(
+            int(big_task.candidate[1]),
+            int(big_task.candidate[2]),
+            width=6,
+            height=6,
+        )
         expected_best["ghost_rect"] = {
             "w": int(big_task.candidate[1]),
             "h": int(big_task.candidate[2]),
             "area": int(big_task.candidate[0]),
-            "anchor_x": 0,
-            "anchor_y": 0,
+            "anchor_x": int(best_anchor["x"]),
+            "anchor_y": int(best_anchor["y"]),
         }
         return ParallelWaveExecution(
             completed=True,
@@ -1763,16 +1830,12 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                     attempt_index=small_task.attempt_index,
                     candidate=small_task.candidate,
                     status=RUN_STATUS_CERTIFIED,
-                    solution={
-                        # V84: terminal placement solutions may only carry
-                        # mandatory instances and the ghost_pick marker.
-                        "ghost_pick": {
-                            "pose_idx": 0,
-                            "pose_id": "synthetic_pose_0",
-                            "facility_type": "synthetic",
-                            "anchor": {"x": 0, "y": 0},
-                        }
-                    },
+                    solution=_origin_blocked_solution_for_candidate(
+                        ghost_w=int(small_task.candidate[1]),
+                        ghost_h=int(small_task.candidate[2]),
+                        width=6,
+                        height=6,
+                    ),
                     proof_summary={"master_status": RUN_STATUS_CERTIFIED},
                     exact_safe_cuts=[],
                     loaded_exact_safe_cut_count=0,
@@ -1786,14 +1849,12 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
                     attempt_index=big_task.attempt_index,
                     candidate=big_task.candidate,
                     status=RUN_STATUS_CERTIFIED,
-                    solution={
-                        "ghost_pick": {
-                            "pose_idx": 0,
-                            "pose_id": "synthetic_pose_0",
-                            "facility_type": "synthetic",
-                            "anchor": {"x": 0, "y": 0},
-                        }
-                    },
+                    solution=_origin_blocked_solution_for_candidate(
+                        ghost_w=int(big_task.candidate[1]),
+                        ghost_h=int(big_task.candidate[2]),
+                        width=6,
+                        height=6,
+                    ),
                     proof_summary={"master_status": RUN_STATUS_CERTIFIED},
                     exact_safe_cuts=[],
                     loaded_exact_safe_cut_count=0,
@@ -1836,7 +1897,7 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
     assert sum(1 for record in state["candidates"].values() if record["status"] == RUN_STATUS_CERTIFIED) >= 2
 
 
-def test_worker_failure_preserves_certified_candidate_records_without_terminal_export(
+def test_worker_failure_does_not_persist_certified_candidate_records_from_failed_wave(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
@@ -1864,7 +1925,7 @@ def test_worker_failure_preserves_certified_candidate_records_without_terminal_e
                     candidate=big_task.candidate,
                     status=RUN_STATUS_CERTIFIED,
                     solution={
-                        "big_pick": {
+                        "ghost_pick": {
                             "pose_idx": 0,
                             "pose_id": f"ghost_{int(big_task.candidate[1])}x{int(big_task.candidate[2])}",
                             "facility_type": "synthetic",
@@ -1915,5 +1976,6 @@ def test_worker_failure_preserves_certified_candidate_records_without_terminal_e
     assert resumed.resumed is True
     assert resumed.compatible_hashes is True
     candidate_key = f"{expected_best['ghost_rect']['w']}x{expected_best['ghost_rect']['h']}"
-    assert state["candidates"][candidate_key]["status"] == RUN_STATUS_CERTIFIED
+    assert state["candidates"][candidate_key]["status"] != RUN_STATUS_CERTIFIED
+    assert state["candidates"][candidate_key]["status"] == "RUNNING"
     assert resumed.best_certified_result() is None

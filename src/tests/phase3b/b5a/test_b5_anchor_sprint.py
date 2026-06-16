@@ -91,7 +91,7 @@ def _certified_solution() -> dict[str, object]:
     # V89: candidate records carry the ghost_pick provenance marker.
     return {
         "tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0},
-        "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
+        "ghost_pick": {"pose_idx": 1, "pose_id": "ghost_anchor::1,0", "anchor": {"x": 1, "y": 0}, "facility_type": "ghost_rect"},
     }
 
 
@@ -756,7 +756,12 @@ def test_campaign_repair_marks_campaign_stopped_without_running_candidate(
     assert result["campaign_marked_stopped"] is True
     assert repaired.state["final_status"] == RUN_STATUS_UNKNOWN
     assert repaired.state["last_stop_reason"]["reason"] == "b5a_wall_timeout"
-    assert repaired.state["candidates"]["3x1"]["status"] == RUN_STATUS_INFEASIBLE
+    record = repaired.state["candidates"]["3x1"]
+    assert record["status"] == RUN_STATUS_UNKNOWN
+    assert (
+        record["proof_summary"]["resume_sanitized_reason"]
+        == "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"
+    )
 
 
 def test_b5a_summary_cli_writes_and_no_write_skips_output(tmp_path: Path) -> None:
@@ -829,4 +834,3 @@ def test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result(
 
     assert summary["status"]["anchor_found"] is False
     assert summary["anchor"] is None
-

@@ -227,7 +227,7 @@ def select_checkpoint_free_wave_entries(
     wave_candidate_keys: Sequence[str] = (),
     exclude_wave_candidate_keys: Sequence[str] = (),
 ) -> list[dict[str, Any]]:
-    exact_instances, _pools, rules = load_project_data(project_root, solve_mode="certified_exact")
+    exact_instances, facility_pools, rules = load_project_data(project_root, solve_mode="certified_exact")
     generic_io_requirements = load_generic_io_requirements_artifact(project_root)
     grid = dict(rules["globals"]["grid"])
     grid_w = int(grid["width"])
@@ -236,6 +236,7 @@ def select_checkpoint_free_wave_entries(
         exact_instances,
         rules,
         generic_io_requirements,
+        facility_pools=facility_pools,
     )
     candidates = generate_candidate_sizes(
         max_w=grid_w,

@@ -47,13 +47,21 @@ from src.models.master_model import MasterPlacementModel, load_project_data
 import src.search.benders_loop as benders_loop_module
 import src.search.exact_campaign as exact_campaign_module
 import src.search.outer_search as outer_search_module
-from src.search.benders_loop import collect_certification_blockers, run_benders_for_ghost_rect
+from src.search.benders_loop import (
+    collect_certification_blockers,
+    compute_exact_static_area_lower_bound,
+    run_benders_for_ghost_rect,
+)
 from src.search.campaign_telemetry import (
     build_wave_summary,
     campaign_telemetry_output_path,
     classify_candidate_outcome,
 )
-from src.search.exact_campaign import ExactCampaign
+from src.search.exact_campaign import (
+    CERTIFIED_EXACT_SOURCE_DIGEST_KEY,
+    ExactCampaign,
+    compute_certified_exact_source_digest,
+)
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
 
 
@@ -242,6 +250,46 @@ def test_certified_binding_kwargs_require_wireless_slot_snapshot_for_generic_inp
         controller._binding_generic_requirements_kwargs()
 
 
+def test_certified_static_area_bound_uses_candidate_pose_cells_when_available() -> None:
+    rules = {
+        "facility_templates": {
+            "oversized_template": {"dimensions": {"w": 3, "h": 3}},
+            "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}},
+        }
+    }
+    instances = [
+        {
+            "instance_id": "must_place",
+            "facility_type": "oversized_template",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    facility_pools = {
+        "oversized_template": [
+            {"pose_id": "one_cell", "occupied_cells": [[0, 0]]},
+        ],
+        "protocol_storage_box": [
+            {"pose_id": "two_cells", "occupied_cells": [[1, 0], [1, 1]]},
+        ],
+    }
+    generic_io_requirements = {
+        "required_generic_outputs": {},
+        "required_generic_inputs": {"valley_battery": 4},
+    }
+
+    assert (
+        benders_loop_module.compute_exact_static_area_lower_bound(
+            instances,
+            rules,
+            generic_io_requirements,
+            wireless_sink_generic_input_slots=4,
+            facility_pools=facility_pools,
+        )
+        == 3
+    )
+
+
 def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> None:
     rules = {
         "facility_templates": {
@@ -265,6 +313,46 @@ def test_certified_static_lower_bound_uses_project_wireless_slot_snapshot() -> N
     assert (
         benders_loop_module.compute_exact_static_area_lower_bound(
             [],
+            rules,
+            generic_io_requirements,
+            wireless_sink_generic_input_slots=2,
+        )
+        == 18
+    )
+
+
+def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity() -> None:
+    rules = {
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}}
+        }
+    }
+    mandatory_wireless_sink = [
+        {
+            "instance_id": "mandatory_sink",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": True,
+            "bound_type": "exact",
+        }
+    ]
+    generic_io_requirements = {
+        "required_generic_outputs": {},
+        "required_generic_inputs": {"valley_battery": 4},
+    }
+
+    assert (
+        compute_exact_static_area_lower_bound(
+            mandatory_wireless_sink,
+            rules,
+            generic_io_requirements,
+            wireless_sink_generic_input_slots=4,
+        )
+        == 9
+    )
+    assert (
+        compute_exact_static_area_lower_bound(
+            mandatory_wireless_sink,
             rules,
             generic_io_requirements,
             wireless_sink_generic_input_slots=2,
@@ -357,6 +445,43 @@ def test_certified_campaign_optional_bounds_delegate_generic_io_loader(tmp_path:
         exact_campaign_module._load_exact_required_optional_lower_bounds(project_root)
 
 
+def test_certified_campaign_optional_bounds_credit_mandatory_wireless_sink(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_required_protocol_box_project(
+        tmp_path / "campaign_mandatory_wireless_sink_credit"
+    )
+    mandatory_wireless_sink = [
+        {
+            "instance_id": "mandatory_sink",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": True,
+            "bound_type": "exact",
+            "solve_modes": ["certified_exact"],
+        }
+    ]
+    _write_json(
+        project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+        mandatory_wireless_sink,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "all_facility_instances.json",
+        mandatory_wireless_sink,
+    )
+
+    assert exact_campaign_module._load_exact_required_optional_lower_bounds(project_root) == {}
+    assert exact_campaign_module._load_exact_safe_area_upper_bound(project_root) == 3
+
+
+def test_certified_campaign_hashes_bind_exact_source_tree(tmp_path: Path) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "source_tree_hash_contract")
+
+    hashes = exact_campaign_module.compute_exact_artifact_hashes(project_root)
+
+    assert hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] == compute_certified_exact_source_digest()
+
+
 def _build_multi_pose_exact_project(
     project_root: Path,
     *,
@@ -435,9 +560,67 @@ def _build_frontier_project(
     width: int = 6,
     height: int = 6,
     min_side_admissibility: int = 1,
+    mandatory_blocker_count: int = 0,
 ) -> Path:
     data_dir = project_root / "data" / "preprocessed"
     rules_dir = project_root / "rules"
+    facility_templates = {
+        "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+    }
+    facility_pools: dict[str, list[dict[str, object]]] = {
+        "synthetic": [
+            {
+                "pose_id": "synthetic_pose_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [[0, 0]],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+                "pose_params": {"orientation": 0, "port_mode": "default"},
+            }
+        ]
+    }
+    mandatory_instances: list[dict[str, object]] = []
+    if int(mandatory_blocker_count) > 0:
+        facility_templates["blocker"] = {
+            "dimensions": {"w": 1, "h": 1},
+            "needs_power": False,
+        }
+        blocker_pool: list[dict[str, object]] = [
+            {
+                "pose_id": "blocker_empty",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [],
+                "input_port_cells": [],
+                "output_port_cells": [],
+                "power_coverage_cells": None,
+                "pose_params": {"orientation": 0, "port_mode": "default"},
+            }
+        ]
+        for y in range(int(height)):
+            for x in range(int(width)):
+                blocker_pool.append(
+                    {
+                        "pose_id": f"blocker_{x}_{y}",
+                        "anchor": {"x": x, "y": y},
+                        "occupied_cells": [[x, y]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": None,
+                        "pose_params": {"orientation": 0, "port_mode": "default"},
+                    }
+                )
+        facility_pools["blocker"] = blocker_pool
+        mandatory_instances = [
+            {
+                "instance_id": f"blocker_{index:03d}",
+                "facility_type": "blocker",
+                "is_mandatory": True,
+                "bound_type": "exact",
+                "solve_modes": ["certified_exact"],
+            }
+            for index in range(int(mandatory_blocker_count))
+        ]
 
     _write_json(
         rules_dir / "canonical_rules.json",
@@ -449,33 +632,17 @@ def _build_frontier_project(
                     "min_side_admissibility": min_side_admissibility,
                 },
             },
-            "facility_templates": {
-                "synthetic": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
-            },
+            "facility_templates": facility_templates,
         },
     )
     # 单个真实 pose 让 terminal CERTIFIED 场景能走通 blueprint 导出/反查校验链
     # (V73+ 的 manifest 校验会把 blueprint facility 反查回 facility_pools)。
     _write_json(
         data_dir / "candidate_placements.json",
-        {
-            "facility_pools": {
-                "synthetic": [
-                    {
-                        "pose_id": "synthetic_pose_0",
-                        "anchor": {"x": 0, "y": 0},
-                        "occupied_cells": [[0, 0]],
-                        "input_port_cells": [],
-                        "output_port_cells": [],
-                        "power_coverage_cells": None,
-                        "pose_params": {"orientation": 0, "port_mode": "default"},
-                    }
-                ]
-            }
-        },
+        {"facility_pools": facility_pools},
     )
-    _write_json(data_dir / "mandatory_exact_instances.json", [])
-    _write_json(data_dir / "all_facility_instances.json", [])
+    _write_json(data_dir / "mandatory_exact_instances.json", mandatory_instances)
+    _write_json(data_dir / "all_facility_instances.json", mandatory_instances)
     _write_json(
         data_dir / "generic_io_requirements.json",
         {
@@ -484,6 +651,48 @@ def _build_frontier_project(
         },
     )
     return project_root
+
+
+def _frontier_terminal_blocker_count(width: int, height: int, ghost_w: int, ghost_h: int) -> int:
+    return int(width) * int(height) - int(ghost_w) * int(ghost_h)
+
+
+def _frontier_mock_certified_solution(
+    *,
+    width: int,
+    height: int,
+    ghost_w: int,
+    ghost_h: int,
+    blocker_count: int,
+) -> dict[str, object]:
+    blocker_cells = [
+        (x, y)
+        for y in range(int(height))
+        for x in range(int(width))
+        if not (0 <= x < int(ghost_w) and 0 <= y < int(ghost_h))
+    ]
+    assert len(blocker_cells) == int(blocker_count)
+    solution: dict[str, object] = {
+        "ghost_pick": {
+            "pose_idx": 0,
+            "pose_id": f"ghost_rect_{int(ghost_w)}x{int(ghost_h)}_0_0",
+            "anchor": {"x": 0, "y": 0},
+            "facility_type": "ghost_rect",
+        }
+    }
+    for index, (x, y) in enumerate(blocker_cells):
+        instance_id = f"blocker_{index:03d}"
+        solution[instance_id] = {
+            "instance_id": instance_id,
+            "facility_type": "blocker",
+            "pose_idx": 1 + int(y) * int(width) + int(x),
+            "pose_id": f"blocker_{x}_{y}",
+            "anchor": {"x": x, "y": y},
+            "is_mandatory": True,
+            "bound_type": "exact",
+            "solve_mode": "certified_exact",
+        }
+    return solution
 
 
 def _read_campaign_state(project_root: Path) -> dict:
@@ -2469,7 +2678,14 @@ def test_campaign_resume_keeps_valid_candidates(tmp_path: Path) -> None:
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     assert resumed.resumed is True
     assert resumed.compatible_hashes is True
-    assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_INFEASIBLE
+    # Candidate-wide INFEASIBLE conclusions are solver proof obligations, not
+    # locally replayable witnesses.  After crossing the mutable JSON checkpoint
+    # boundary they must be re-solved before terminal CERTIFIED can rely on them.
+    assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_UNKNOWN
+    assert (
+        resumed.get_candidate_record(1, 1)["proof_summary"]["resume_sanitized_reason"]
+        == "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"
+    )
     assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_CERTIFIED
     assert resumed.get_candidate_record(2, 1)["solution"]["tiny_001"]["pose_id"] == "tiny_left"
     assert resumed.best_certified_result() is None
@@ -2497,7 +2713,7 @@ def test_campaign_save_is_atomic_and_resumeable(tmp_path: Path) -> None:
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     assert resumed.resumed is True
     assert resumed.compatible_hashes is True
-    assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_INFEASIBLE
+    assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_UNKNOWN
 
 
 def test_campaign_keeps_certified_candidate_records_without_terminal_final_result(
@@ -7969,7 +8185,20 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    project_root = _build_frontier_project(tmp_path / "frontier_bruteforce", width=6, height=6)
+    width, height = 6, 6
+    terminal_ghost_w, terminal_ghost_h = 4, 3
+    blocker_count = _frontier_terminal_blocker_count(
+        width,
+        height,
+        terminal_ghost_w,
+        terminal_ghost_h,
+    )
+    project_root = _build_frontier_project(
+        tmp_path / "frontier_bruteforce",
+        width=width,
+        height=height,
+        mandatory_blocker_count=blocker_count,
+    )
     calls: list[tuple[int, int, bool]] = []
 
     def _is_feasible(ghost_w: int, ghost_h: int) -> bool:
@@ -7987,14 +8216,13 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
             "generated_exact_safe_cut_count": 0,
         }
         if _is_feasible(ghost_w, ghost_h):
-            return RUN_STATUS_CERTIFIED, {
-                "ghost_pick": {
-                    "pose_idx": 0,
-                    "pose_id": "synthetic_pose_0",
-                    "anchor": {"x": 0, "y": 0},
-                    "facility_type": "synthetic",
-                }
-            }
+            return RUN_STATUS_CERTIFIED, _frontier_mock_certified_solution(
+                width=width,
+                height=height,
+                ghost_w=ghost_w,
+                ghost_h=ghost_h,
+                blocker_count=blocker_count,
+            )
         return RUN_STATUS_INFEASIBLE, None
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {
@@ -8077,7 +8305,20 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    project_root = _build_frontier_project(tmp_path / "frontier_unknown_resume", width=2, height=2)
+    width, height = 2, 2
+    terminal_ghost_w, terminal_ghost_h = 2, 1
+    blocker_count = _frontier_terminal_blocker_count(
+        width,
+        height,
+        terminal_ghost_w,
+        terminal_ghost_h,
+    )
+    project_root = _build_frontier_project(
+        tmp_path / "frontier_unknown_resume",
+        width=width,
+        height=height,
+        mandatory_blocker_count=blocker_count,
+    )
     call_counts: dict[tuple[int, int], int] = {}
 
     def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
@@ -8107,14 +8348,13 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
             "loaded_exact_safe_cut_count": 0,
             "generated_exact_safe_cut_count": 0,
         }
-        return RUN_STATUS_CERTIFIED, {
-            "ghost_pick": {
-                "pose_idx": 0,
-                "pose_id": "synthetic_pose_0",
-                "anchor": {"x": 0, "y": 0},
-                "facility_type": "synthetic",
-            }
-        }
+        return RUN_STATUS_CERTIFIED, _frontier_mock_certified_solution(
+            width=width,
+            height=height,
+            ghost_w=ghost_w,
+            ghost_h=ghost_h,
+            blocker_count=blocker_count,
+        )
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {
         "proof_summary": {},
@@ -8171,7 +8411,20 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    project_root = _build_frontier_project(tmp_path / "frontier_prune_first_resume", width=6, height=6)
+    width, height = 6, 6
+    terminal_ghost_w, terminal_ghost_h = 6, 1
+    blocker_count = _frontier_terminal_blocker_count(
+        width,
+        height,
+        terminal_ghost_w,
+        terminal_ghost_h,
+    )
+    project_root = _build_frontier_project(
+        tmp_path / "frontier_prune_first_resume",
+        width=width,
+        height=height,
+        mandatory_blocker_count=blocker_count,
+    )
     calls: list[tuple[int, int]] = []
 
     def _is_feasible(ghost_w: int, ghost_h: int) -> bool:
@@ -8189,14 +8442,13 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
             "generated_exact_safe_cut_count": 0,
         }
         if _is_feasible(ghost_w, ghost_h):
-            return RUN_STATUS_CERTIFIED, {
-                "ghost_pick": {
-                    "pose_idx": 0,
-                    "pose_id": "synthetic_pose_0",
-                    "anchor": {"x": 0, "y": 0},
-                    "facility_type": "synthetic",
-                }
-            }
+            return RUN_STATUS_CERTIFIED, _frontier_mock_certified_solution(
+                width=width,
+                height=height,
+                ghost_w=ghost_w,
+                ghost_h=ghost_h,
+                blocker_count=blocker_count,
+            )
         return RUN_STATUS_INFEASIBLE, None
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {
