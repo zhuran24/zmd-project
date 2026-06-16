@@ -52,6 +52,32 @@ class SlimMemoryTests(unittest.TestCase):
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertTrue(p.stdout.strip())
 
+    def test_suggest_returns_candidates(self) -> None:
+        # querying terms that overlap existing memory should surface relation candidates
+        p = self.run_mem('suggest', '--title', 'codex workflow', '--body', 'workflow 派子代理用 codex')
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn('relation suggestions', p.stdout)
+
+    def test_add_entry_triggers_review_gate(self) -> None:
+        # add-entry auto-creates pending relation suggestions; check must then FAIL (option-A gate)
+        add = self.run_mem('--session', 'test-sess', 'add-entry', '--id', 'gate-test-entry',
+                            '--title', 'gate test', '--body', '记忆系统 memory.db impact 影响面 codex workflow')
+        self.assertEqual(add.returncode, 0, add.stdout + add.stderr)
+        self.assertIn('relation suggestions stored', add.stdout)
+        chk = self.run_mem('check')
+        self.assertNotEqual(chk.returncode, 0, 'check must FAIL while high-score suggestions are pending')
+        self.assertIn('need review', chk.stdout + chk.stderr)
+
+    def test_watermark_reports_other_session_changes(self) -> None:
+        # session A boots (sets watermark), session B mutates, session A re-boots and sees B's change
+        self.assertEqual(self.run_mem('--session', 'sess-A', 'boot').returncode, 0)
+        b = self.run_mem('--session', 'sess-B', 'set-fact', '--id', 'wm-test-fact',
+                         '--subject', 'x', '--predicate', 'y', '--value', 'z')
+        self.assertEqual(b.returncode, 0, b.stdout + b.stderr)
+        a2 = self.run_mem('--session', 'sess-A', 'boot')
+        self.assertEqual(a2.returncode, 0, a2.stdout + a2.stderr)
+        self.assertIn('sess-B', a2.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()
