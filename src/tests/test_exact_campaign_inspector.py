@@ -93,7 +93,7 @@ def _certified_solution() -> dict[str, object]:
     # V89: candidate records carry the ghost_pick provenance marker.
     return {
         "tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0},
-        "ghost_pick": {"pose_idx": 0, "pose_id": "ghost_anchor::0,1", "anchor": {"x": 0, "y": 1}, "facility_type": "ghost_rect"},
+        "ghost_pick": {"pose_idx": 1, "pose_id": "ghost_anchor::0,1", "anchor": {"x": 0, "y": 1}, "facility_type": "ghost_rect"},
     }
 
 

@@ -133,7 +133,12 @@ def _write_power_project(root: Path, *, include_selected_covering_pole: bool) ->
         if status == "CERTIFIED":
             record["solution"] = {
                 **placement_solution,
-                "ghost_pick": {"anchor": {"x": 2, "y": 0}},
+                "ghost_pick": {
+                    "facility_type": "ghost_rect",
+                    "pose_idx": 2,
+                    "pose_id": "ghost_anchor::2,0",
+                    "anchor": {"x": 2, "y": 0},
+                },
             }
         candidate_records[f"{ghost_w}x{ghost_h}"] = record
 

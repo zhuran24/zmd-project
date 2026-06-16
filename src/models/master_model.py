@@ -2056,15 +2056,91 @@ def infer_certified_optional_lower_bounds(
     return required_counts
 
 
+def _mandatory_wireless_sink_count_for_optional_lower_bounds(
+    instances: Sequence[Mapping[str, Any]],
+) -> int:
+    """Count mandatory protocol storage boxes that already provide sink slots."""
+
+    count = 0
+    for instance in instances:
+        if not bool(instance.get("is_mandatory")):
+            continue
+        if str(instance.get("bound_type", "exact")) != "exact":
+            continue
+        if str(instance.get("facility_type", "")) != "protocol_storage_box":
+            continue
+        if str(instance.get("operation_type", "")) != POSE_LEVEL_OPTIONAL_OPERATIONS[
+            "protocol_storage_box"
+        ]:
+            continue
+        count += 1
+    return int(count)
+
+
+def infer_certified_optional_lower_bounds_for_instances(
+    instances: Sequence[Mapping[str, Any]],
+    rules: Mapping[str, Any],
+    generic_io_requirements: Optional[Mapping[str, Any]] = None,
+    *,
+    wireless_sink_generic_input_slots: Optional[int] = None,
+) -> Dict[str, int]:
+    """Infer residual pose-optionals after crediting mandatory exact utilities.
+
+    ``infer_certified_optional_lower_bounds`` computes the gross number of
+    protocol storage boxes required by the generic-input slot demand. Certified
+    exact projects may also pin protocol storage boxes as mandatory facilities;
+    those boxes are part of the public placement witness and provide the same
+    ``wireless_sink`` capacity as pose-optionals. The residual optional lower
+    bound therefore charges only boxes not already forced by the mandatory
+    artifact.
+    """
+
+    required_counts = infer_certified_optional_lower_bounds(
+        rules,
+        generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+    )
+    required_protocol_boxes = int(required_counts.get("protocol_storage_box", 0))
+    if required_protocol_boxes <= 0:
+        return required_counts
+
+    mandatory_wireless_sinks = _mandatory_wireless_sink_count_for_optional_lower_bounds(
+        instances
+    )
+    residual_protocol_boxes = max(0, required_protocol_boxes - mandatory_wireless_sinks)
+    if residual_protocol_boxes > 0:
+        required_counts["protocol_storage_box"] = int(residual_protocol_boxes)
+    else:
+        required_counts.pop("protocol_storage_box", None)
+    return required_counts
+
+
 def infer_exact_required_pose_optional_counts(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
     wireless_sink_generic_input_slots: Optional[int] = None,
 ) -> Dict[str, int]:
-    """Backward-compatible alias for certified-exact lower-bound inference."""
+    """Backward-compatible gross lower-bound alias for legacy callers."""
 
     return infer_certified_optional_lower_bounds(
+        rules,
+        generic_io_requirements,
+        wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
+    )
+
+
+def infer_exact_required_pose_optional_counts_for_instances(
+    instances: Sequence[Mapping[str, Any]],
+    rules: Mapping[str, Any],
+    generic_io_requirements: Optional[Mapping[str, Any]] = None,
+    *,
+    wireless_sink_generic_input_slots: Optional[int] = None,
+) -> Dict[str, int]:
+    """Instance-aware lower-bound alias for exact pose-optional overlays."""
+
+    return infer_certified_optional_lower_bounds_for_instances(
+        instances,
         rules,
         generic_io_requirements,
         wireless_sink_generic_input_slots=wireless_sink_generic_input_slots,
@@ -2273,7 +2349,8 @@ class MasterPlacementModel:
             if int(v) > 0
         }
         self._certified_optional_lower_bounds = (
-            infer_certified_optional_lower_bounds(
+            infer_certified_optional_lower_bounds_for_instances(
+                self.instances,
                 self.rules,
                 self.generic_io_requirements,
                 wireless_sink_generic_input_slots=self.wireless_sink_generic_input_slots,
@@ -2689,10 +2766,13 @@ class MasterPlacementModel:
             str(core.master_representation).startswith("pose_bool_exact_v")
             and not dict(exact_required_pose_optional_counts_for_overlay)
         ):
-            exact_required_pose_optional_counts_for_overlay = infer_exact_required_pose_optional_counts(
-                core.rules,
-                core.generic_io_requirements,
-                wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
+            exact_required_pose_optional_counts_for_overlay = (
+                infer_exact_required_pose_optional_counts_for_instances(
+                    core.source_instances,
+                    core.rules,
+                    core.generic_io_requirements,
+                    wireless_sink_generic_input_slots=core.wireless_sink_generic_input_slots,
+                )
             )
 
         model = cls(
