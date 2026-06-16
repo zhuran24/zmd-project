@@ -39,6 +39,14 @@ EXCLUDED_DIR_NAMES = {
     # 外发产物堆放区: 历史 snapshot 包 (sha 唯一名副本) + GPT 交付目录。
     # 入包 = 自引用套娃, 2026-06-12 实测包从 54MB 指数膨胀到 818MB。
     "补丁包",
+    # CC/协作/外审工件区: 审查 finding 历史 (algoaudit_*.md) + 八面台账
+    # (p1_2_closure_evidence.md) + 记忆树 (cc_context/memory) + graphify 地图。
+    # 入包 = 把"我们审过什么 / 分了哪几个面 / 找到过哪些 bug / 连零计到几"
+    # 全泄露给外审 GPT, 破坏白板审前提与外审独立性。
+    # 2026-06-16 实证: 旧包 4646 文件里 cc_context 占 2164 (含 72 份 algoaudit
+    # finding 详表)。外审只需项目源 (main.py / src / rules / specs / data)。
+    # 要给 GPT 导航地图须单独显式加 (剥掉 god_nodes 风险提示等引导成分)。
+    "cc_context",
 }
 EXCLUDED_FILE_SUFFIXES = {".pyc"}
 

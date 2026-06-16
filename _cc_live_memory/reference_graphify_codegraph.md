@@ -24,3 +24,9 @@ zmd 仓库有一套 **graphify 代码语义地图**子系统(2026-06-14 落地),
 
 ## 定位(重要)
 **只读导航辅助,不进 certified 证明路径**。社区划分是启发式,整图只是"帮你先知道去哪找",**不是真相源**——真相源仍是 `rules/canonical_rules.json` + proof 工件 + 测试。别拿它当依据。项目架构 / 求解器全貌见身份根 [[endfield-solver]];记录工具入口的约定见 [[record-tool-entry-points]]。
+
+## 给 GPT 外审 / 白板审时(2026-06-16)
+- **owner 定位:graphify 是专门配给我(Claude)当代码地图的**——理解结构 / 定位 / 判 finding 可达性时**该主动"先查图再 grep"**,别埋头 grep 或忘了它在(2026-06-16 实测 god_nodes 全是本项目承重墙:`MasterPlacementModel` / `Cut` / `CoordinateExactMasterDelegate` / `RoutingSubproblem` / `run_outer_search`;11684 节点 / 27377 边 / 588 社区)。
+- **GPT 沙盒里没有 graphify MCP**:它只有随包的文件。地图成品 `SEMANTIC_MAP.md` + `community_semantics.json` 进 git,`graph.json` 本体 gitignore + graphify.exe 在仓库外。
+- **默认不进外审包**:graphify 随 `cc_context/` 整体被 build 排除(见 [[no-gpt-packaging-rules]] 的 cc_context 污染修复)。它是**我方**工具(收 GPT finding 后判可达性 / 定位 / 看 god_nodes 风险中心),**不塞进给 GPT 的白板 prompt**——喂 god_nodes = 告诉它"哪里重要" = 引导,破坏白板。
+- 要给 GPT "找路",须**单独显式**做一个**纯导航版**(代码在哪 / 入口 / 调用骨架),剥掉 god_nodes 等"哪里重要"的引导成分,再加进包。白板审默认不给(让它自己发现结构)。
