@@ -31,4 +31,4 @@ owner 说「这周额度剩 20%」——真实所指是他 **Claude 这周整体
 ## 这跟 owner/GPT 要的记忆系统是同一个东西
 GPT Pro 外审(会话 `6a303556`)给的 typed-graph 架构里**本就有 change-txn**(agent 只提 change proposal、死板 validator 盖章、**不直接改正文**)。我落地的 memgraph 已实现 fact 依赖图 + impact,但 **change-txn 只落成一个 advisory 的 `propose-change` 壳**(记 proposal + 算影响面,**不验来源、不拦直接改、无 reject**——证据 `cc_context/memory_system/cli.py:139` cmd_propose_change),那道真正能卡住我的「写入硬门」**从没被实现**。所以解药不是问 codex 要新东西,是**把我仓库里这道有名无实的门补成真门并强制走它**。见 [[memtree-restructure]]。
 
-链: [[fact-understand-before-output]] [[fact-self-report-is-not-evidence]] [[root-cause-over-symptom]] [[hallucination-fabricated-rationale-to-override-rule]] [[memtree-restructure]] [[verify-before-claiming]]
+链: [[fact-understand-before-output]] [[fact-self-report-is-not-evidence]] [[root-cause-over-symptom]] [[memtree-restructure]]; 另见 harness 记忆「hallucination-fabricated-rationale-to-override-rule」「verify-before-claiming」(repo 无镜像)
