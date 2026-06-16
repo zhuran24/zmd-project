@@ -10,7 +10,7 @@ python cc_memory/mem.py boot
 
 ## Stats
 
-- facts: 8
+- facts: 9
 - entries: 8
 - hard edges: 5
 - pending relation suggestions: 1
@@ -21,6 +21,7 @@ python cc_memory/mem.py boot
 
 ## Active Facts
 
+- `codex-subagent-has-web-access` — ONLINE: codex 子代理(本机 MCP)同时有 web.run(search/open/fetch)和带网络出口的 shell_command…
 - `fact-generated-memory-md-is-view` — cc_memory/exports/MEMORY.md 由 memory.db 生成, 可删可重建, 禁止手改当真相源。
 - `fact-hard-edge-soft-link-separation` — DEPENDS_ON/DERIVED_FROM/SUPERSEDES/CONTRADICTS 是硬边触发传播; MENTIONS/RELATED_TO/SUPPORTS 只帮助检索和阅读。
 - `fact-impact-before-memory-change` — 改 fact 或 entry 前先跑 impact/read, 只重写硬依赖影响面。
