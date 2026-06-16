@@ -43,7 +43,11 @@ from src.models.cut_manager import (
     RUN_STATUS_UNKNOWN,
     RUN_STATUS_UNPROVEN,
 )
-from src.models.master_model import MasterPlacementModel, load_project_data
+from src.models.master_model import (
+    MasterPlacementModel,
+    infer_certified_optional_lower_bounds_for_instances,
+    load_project_data,
+)
 import src.search.benders_loop as benders_loop_module
 import src.search.exact_campaign as exact_campaign_module
 import src.search.outer_search as outer_search_module
@@ -361,6 +365,89 @@ def test_certified_static_lower_bound_credits_mandatory_wireless_sink_capacity()
     )
 
 
+@pytest.mark.parametrize(
+    ("instance", "expected_static_area_lower_bound"),
+    [
+        (
+            {
+                "instance_id": "not_wireless_sink",
+                "facility_type": "protocol_storage_box",
+                "operation_type": "wireless_source",
+                "is_mandatory": True,
+                "bound_type": "exact",
+            },
+            18,
+        ),
+        (
+            {
+                "instance_id": "not_mandatory",
+                "facility_type": "protocol_storage_box",
+                "operation_type": "wireless_sink",
+                "is_mandatory": False,
+                "bound_type": "exact",
+            },
+            9,
+        ),
+        (
+            {
+                "instance_id": "not_exact_bound",
+                "facility_type": "protocol_storage_box",
+                "operation_type": "wireless_sink",
+                "is_mandatory": True,
+                "bound_type": "lower",
+            },
+            9,
+        ),
+        (
+            {
+                "instance_id": "not_protocol_storage_box",
+                "facility_type": "power_pole",
+                "operation_type": "wireless_sink",
+                "is_mandatory": True,
+                "bound_type": "exact",
+            },
+            10,
+        ),
+    ],
+    ids=[
+        "operation_type_not_wireless_sink",
+        "is_mandatory_false",
+        "bound_type_not_exact",
+        "facility_type_not_protocol_storage_box",
+    ],
+)
+def test_certified_static_lower_bound_does_not_credit_non_matching_wireless_sink(
+    instance: dict[str, object],
+    expected_static_area_lower_bound: int,
+) -> None:
+    rules = {
+        "facility_templates": {
+            "protocol_storage_box": {"dimensions": {"w": 3, "h": 3}},
+            "power_pole": {"dimensions": {"w": 1, "h": 1}},
+        }
+    }
+    generic_io_requirements = {
+        "required_generic_outputs": {},
+        "required_generic_inputs": {"valley_battery": 4},
+    }
+
+    assert infer_certified_optional_lower_bounds_for_instances(
+        [instance],
+        rules,
+        generic_io_requirements,
+        wireless_sink_generic_input_slots=4,
+    ) == {"protocol_storage_box": 1}
+    assert (
+        compute_exact_static_area_lower_bound(
+            [instance],
+            rules,
+            generic_io_requirements,
+            wireless_sink_generic_input_slots=4,
+        )
+        == expected_static_area_lower_bound
+    )
+
+
 def _build_required_protocol_box_project(project_root: Path) -> Path:
     data_dir = project_root / "data" / "preprocessed"
     rules_dir = project_root / "rules"
@@ -472,6 +559,49 @@ def test_certified_campaign_optional_bounds_credit_mandatory_wireless_sink(
 
     assert exact_campaign_module._load_exact_required_optional_lower_bounds(project_root) == {}
     assert exact_campaign_module._load_exact_safe_area_upper_bound(project_root) == 3
+
+
+@pytest.mark.parametrize(
+    "instance_patch",
+    [
+        {"operation_type": "wireless_source"},
+        {"facility_type": "power_pole"},
+    ],
+    ids=[
+        "operation_type_not_wireless_sink",
+        "facility_type_not_protocol_storage_box",
+    ],
+)
+def test_certified_campaign_optional_bounds_do_not_credit_non_matching_wireless_sink(
+    tmp_path: Path,
+    instance_patch: dict[str, object],
+) -> None:
+    project_root = _build_required_protocol_box_project(
+        tmp_path / "campaign_mandatory_wireless_sink_no_credit"
+    )
+    instance = {
+        "instance_id": "mandatory_sink",
+        "facility_type": "protocol_storage_box",
+        "operation_type": "wireless_sink",
+        "is_mandatory": True,
+        "bound_type": "exact",
+        "solve_modes": ["certified_exact"],
+    }
+    instance.update(instance_patch)
+    instances = [instance]
+    _write_json(
+        project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+        instances,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "all_facility_instances.json",
+        instances,
+    )
+
+    assert exact_campaign_module._load_exact_required_optional_lower_bounds(
+        project_root
+    ) == {"protocol_storage_box": 1}
+    assert exact_campaign_module._load_exact_safe_area_upper_bound(project_root) == 2
 
 
 def test_certified_campaign_hashes_bind_exact_source_tree(tmp_path: Path) -> None:
