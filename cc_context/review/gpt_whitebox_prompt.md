@@ -4,4 +4,4 @@
 
 看一下项目里有没有任何会让它的 CERTIFIED 结论变成假话的正确性(soundness)问题——它报 CERTIFIED 的解,要么其实不可行,要么其实存在一个被它漏掉的、面积更大的可行矩形。
 
-包在本 Project 文件区:`{{PACKAGE_FILENAME}}` / sha256 `{{PACKAGE_SHA256}}`。包根有一张代码导航图 `NAV_MAP.md`。
+包在本 Project 文件区:`zmd_v80_impl_full_20260616_single.zip` / sha256 `f85fe62eb36d17aafcf5dfafaaaa47637fbf7bbb8589c9815bf9da87ec91ddc6`。包根有一张代码导航图 `NAV_MAP.md`。

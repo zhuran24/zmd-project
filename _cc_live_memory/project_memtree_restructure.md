@@ -28,6 +28,17 @@ owner 拍板采纳 GPT 的 typed-graph 重写, 走我推荐的 **「收核心、
 ## v3 (2026-06-16 晚, 下载夹四文件)
 GPT 又出 v3: 回应 owner 问的『新会话怎么零学习上手』, 加 `memgraph bootstrap` 子命令 + `bootstrap.py` + `MEMORY_AGENT_GUIDE.md` + `agent_protocol.json`(新会话启动卡)。**但 graph.py/freshness.py 与 v2 字节完全相同 → 一个 soundness bug 都没修**(上面待硬化清单对 v3 核心一样有效)。v3 **高危**: overlay 打进了 `CLAUDE.md`(31KB 项目宪法)+ `START_HERE.md` 改写, GPT 称『移除旧 harness runbook 入口』 → **绝不盲目覆盖, 要先 diff 人工拍**。bootstrap 入口能力可增量收; 其余覆盖式快照同 v2 拒收。**v3 未落地**。
 
+## v4 fleshout (2026-06-16, 又一覆盖式快照 + GPT 全认账)
+GPT 第三次迭代「fleshout」(下载夹真实路径 `C:\22957\download`, 4 文件: report / validation / gpt回复 / 33.7MB 包)。**它干的**: 加 `memgraph.py bootstrap` 自助入口 + 操作协议节点 + 3 条 fact(self-bootstrapping / memory-change-needs-impact / hard-edge-soft-link-separation)+ 文档(OPERATING_MANUAL/SCHEMA/AGENT_GUIDE)+ 硬化 freshness/index 闸 + **锁死 harness 写入**。
+**核实结论(亲眼读码 + codex 对抗审计 wf, 不信 GPT 自述)**:
+- **又是覆盖式快照**: sha256 全树差分 → 整包落地会删本会话的 [[assumption-as-fact-then-backfill]] 教训节点、还原我清理过的 [[subagent-model-by-weight]] / 本节、冲掉并发会话的 zmd-round2。**只能 cherry-pick, 不能整包**(同 v2/v3)。
+- **change-txn 写入硬门还是空壳**: cli.py/graph.py/memgraph.py/frontmatter.py 与仓库 **SHA256 完全一致**; propose-change 实测无来源 / 传假 event_id 都返回成功 status=proposal。bootstrap/agent_protocol 只是软约束文档。**治 assumption-as-fact 病的强制机制 = 还没建**(早就该做的真 #1)。
+- **harness 投影被砍且无替代**: `sync_memory_to_harness.py --apply` 改成 `return 2` 停用; `deploy_harness_cache` 全库零实现; resolver 多候选判 ambiguous → 下游静默 skip 吞掉真实漂移; CLAUDE.md 删了那条「规则不投影进 harness 就召回不到」警示。
+- **要点(差点踩坑, 已亲手复核)**: 当前**仓库↔harness = 0 漂移**(`sync --check` 实测 74 synced / 0 drift)。codex 报的「4 缺失/4 漂移」是 **v4 旧快照 vs harness**, 不是 current vs harness — 别误读成「harness 现在漂了」。当前 --apply 是好的、指对路径、无 resolver bug。
+**问 GPT「为什么这么改」→ 四点全认账**(原话「安全性过度刹车」「落地顺序错了」「靠不了, v4 没给闭环」「未实现关键件, 不是已完成能力」)。给了修复路线(P0 复原 CLAUDE.md 警示 + resolver ambiguous→rc=2 + 临时 legacy deploy; P1 deploy_harness_cache CAS/managed-block; P1/P2 change-txn 状态机 add-event→propose-change→validate→apply)。
+**推荐 + 待 owner 拍**: v4 不落地; harness 维持现状(那几条 P0 是修 v4 自己的回归 = 不落 v4 就 moot); 真正要做 = **建 change-txn 写入硬门**(按「wf 用 codex」: codex 实现 + 我对抗验), 这是全程 #1 也是本会话栽跟头的根治。**owner 尚未拍是否开干**。codex 审计 task woscgtxsp; 追问全文存 `C:\Users\22957\zmd_gpt_followup_v4_why.txt`。
+**工具 caveat**: `dispatch_gpt_task.py --resume` 只「等+收」、无「向已有会话发追问」CLI; 要追问走 Claude-in-Chrome 插件(list_connected_browsers→AskUserQuestion→select_browser→在已开 tab 发)或 owner 手发(剪贴板 clip)。owner 本次选了自己手发。
+
 ## 背景: 前期「做偏了」(GPT 外审点破)
 **fact-entry 依赖图**(改 fact 只反查依赖它的 entry 重写, 不全扫/不靠人 grep)是 **GPT Pro 外审(会话 6a303556)提出的重构方案**。⚠️ 之前(含本节早先表述)把它说成『owner 第 1 轮原始/真意图』是**没有 owner 原话依据的归因**(owner 2026-06-16 点破『这是 gpt pro 提出来的重构方案吗』)——是否真对应 owner 最初意图无原话佐证、不当确证(教训 [[assumption-as-fact-then-backfill]])。前期把任务做成 **「Markdown 记忆树治理系统」**(同步/MEMORY.md 24KB cap/索引/wikilink/repo↔harness 对账)= 错误的层。根因 = 没回到 owner 真意图就开干 ([[root-cause-over-symptom]] / [[fact-understand-before-output]])。GPT 正确架构(全文 `补丁包/gpt_deliveries/inspect_6a303556/conversation_full.md`): 五层 = 事件/实体/**事实(槽位+版本+状态+时效+来源+置信度)**/条目(视图)/**带类型依赖边**(DEPENDS_ON 硬线触发更新 vs RELATED_TO 软线只召回), 写入走 change-txn。本次落地的是它的 MVP。
 
