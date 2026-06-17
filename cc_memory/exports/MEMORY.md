@@ -10,7 +10,7 @@ python cc_memory/mem.py boot
 
 ## Stats
 
-- facts: 13
+- facts: 14
 - entries: 14
 - hard edges: 7
 - pending relation suggestions: 10
@@ -28,6 +28,7 @@ python cc_memory/mem.py boot
 - `fact-relation-discovery-is-system-job` — 新增/修改记忆时系统主动生成候选相关 fact/entry 和候选边;使用者只负责审阅,不负责凭记忆发现完整相关集合;有高分 pending relation_suggestions 未处理时 check 必须 FAIL(A 方案强制闸)
 - `fact-single-source-memory-db` — cc_memory/memory.db 是唯一活记忆真相; Markdown exports 和 archive 都不是源状态。
 - `fact-workflow-subagents-default-codex` — 开 workflow 时, workflow 内 agent() 派子代理默认用 codex (agentType=codex), 省 Claude 额度; owner 指示
+- `hf-model-download-via-isolated-jp-20260617` — 更正 codex-skills-and-download-route 的 HF 下载法。实测(2026-06-17 下 Qwen3-Reranker-0.6B)…
 - `semantic-engine-ab-on-own-data-20260617` — 2026-06-17 在本机真实 cc_memory 节点(21 节点/16 条换词中文查询)做嵌入模型 A/B。决定性语义测试 Eval B:harrier-oss-v1-0.6b 最强(MRR 0.969、recall@3/@5 满分、最快 1.1s)…
 - `semantic-engine-picks-hf-verified-20260617` — 2026-06-17 用 HF API(createdAt+license)硬核验证 10 候选:Qwen3-Embedding-0.6B/4B、Qwen3-Reranker-0.6B(2025, Apache…
 
