@@ -197,6 +197,10 @@ was intended and reviewed.
 - `exact_campaign.py` owns resume validity. Campaign state is hash-bound and must
   fail closed on schema, artifact, source digest, timestamp, terminal evidence, or
   candidate-record inconsistency.
+- `exact_campaign_inspector.py` is a public surface, not a raw debug dump. When
+  `certified_surface.publishable` is false, candidate-level proof-bearing
+  `CERTIFIED` / `INFEASIBLE` statuses and nested proof hints must be redacted or
+  downgraded; do not let secondary fields bypass the central publishability gate.
 - `exact_parallel_scheduler.py` owns worker identity and crash handling. A malformed
   or crash-tainted wave must not persist sticky proof-bearing `INFEASIBLE` records.
 - `benders_loop.py` owns exact/exploratory dispatch, exact session construction,

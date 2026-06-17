@@ -144,9 +144,14 @@ def test_inspector_summarizes_valid_resume_state(tmp_path: Path) -> None:
     assert inspection["campaign"]["resume_validation_reason"] is None
     assert inspection["campaign"]["candidate_count"] == 2
     assert inspection["campaign"]["candidate_status_counts"] == {
-        "CERTIFIED": 1,
-        "INFEASIBLE": 1,
+        "UNKNOWN": 2,
     }
+    assert inspection["campaign"]["proof_bearing_candidate_statuses_redacted"] is True
+    assert {row["status"] for row in inspection["campaign"]["top_candidates"]} == {"UNKNOWN"}
+    assert all(
+        not (row.get("last_stop_hint") or {}).get("master_status")
+        for row in inspection["campaign"]["top_candidates"]
+    )
     assert inspection["campaign"]["terminal_full_frontier_certified"] is False
     assert inspection["campaign"]["best_certified_result"] is None
 

@@ -644,7 +644,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "d559167cfe9adb9eb8fc63c5f0a02682d8045895f16c6703fc0c129dddc013f0",
+        "source_sha256": "41656c6e1899bec062e98c95a39740e93a10dcb8dfd977f531bd29c115fb1b31",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1263,7 +1263,7 @@
           "CERTIFIED",
           "INFEASIBLE"
         ],
-        "source_sha256": "b50bf8675156ba4e356b70077fc8e79dd98430bbbae2b890a5c5eb20d2c30567",
+        "source_sha256": "ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

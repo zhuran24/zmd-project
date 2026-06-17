@@ -22,6 +22,7 @@ from src.search.exact_campaign import (
 
 INSPECTION_SCHEMA_SOURCE = "phase3b_exact_campaign_inspector_v1"
 _CANDIDATE_STATUS_ORDER = ("RUNNING", "CERTIFIED", "INFEASIBLE", "UNKNOWN", "UNPROVEN")
+_PROOF_BEARING_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
 
 
 def build_exact_campaign_inspection(
@@ -224,6 +225,7 @@ def _campaign_summary(
             "candidate_count": 0,
             "candidate_status_counts": {},
             "top_candidates": [],
+            "proof_bearing_candidate_statuses_redacted": False,
             "best_certified_result": None,
             "artifact_hashes": {},
             "current_exact_artifact_hashes": dict(current_hashes),
@@ -237,7 +239,12 @@ def _campaign_summary(
     status_counts: Counter[str] = Counter()
     for record in candidates.values():
         if isinstance(record, Mapping):
-            status_counts[str(record.get("status", ""))] += 1
+            status_counts[
+                _candidate_status_for_public_surface(
+                    record.get("status", ""),
+                    surface=certified_surface,
+                )
+            ] += 1
 
     terminal_certified = bool(certified_surface.publishable)
     return {
@@ -256,7 +263,15 @@ def _campaign_summary(
         "reset_reason": state.get("reset_reason"),
         "candidate_count": int(len(candidates)),
         "candidate_status_counts": _ordered_counter(status_counts),
-        "top_candidates": _top_candidates(candidates),
+        "top_candidates": _top_candidates(candidates, surface=certified_surface),
+        "proof_bearing_candidate_statuses_redacted": bool(
+            not certified_surface.publishable
+            and any(
+                isinstance(record, Mapping)
+                and str(record.get("status", "")) in _PROOF_BEARING_CANDIDATE_STATUSES
+                for record in candidates.values()
+            )
+        ),
         "best_certified_result": _best_certified_summary(certified_surface.best_certified_result)
         if terminal_certified
         else None,
@@ -357,20 +372,45 @@ def _best_certified_summary(raw_result: Any) -> Optional[Dict[str, Any]]:
     }
 
 
-def _top_candidates(candidates: Mapping[str, Any], limit: int = 10) -> list[Dict[str, Any]]:
+def _candidate_status_for_public_surface(
+    raw_status: Any,
+    *,
+    surface: CertifiedSurfaceVerification,
+) -> str:
+    status = str(raw_status)
+    if surface.publishable:
+        return status
+    if status in _PROOF_BEARING_CANDIDATE_STATUSES:
+        return "UNKNOWN"
+    return status
+
+
+def _top_candidates(
+    candidates: Mapping[str, Any],
+    *,
+    surface: CertifiedSurfaceVerification,
+    limit: int = 10,
+) -> list[Dict[str, Any]]:
     rows: list[Dict[str, Any]] = []
     for key, raw_record in candidates.items():
         if not isinstance(raw_record, Mapping):
             continue
         ghost_rect = raw_record.get("ghost_rect")
         objective = _objective_from_rect(ghost_rect) if isinstance(ghost_rect, Mapping) else None
+        public_status = _candidate_status_for_public_surface(
+            raw_record.get("status", ""),
+            surface=surface,
+        )
         rows.append(
             {
                 "candidate_key": str(key),
-                "status": str(raw_record.get("status", "")),
+                "status": public_status,
                 "attempts": _optional_int(raw_record.get("attempts")) or 0,
                 "objective": objective,
-                "last_stop_hint": _last_stop_hint(raw_record.get("proof_summary")),
+                "last_stop_hint": _last_stop_hint(
+                    raw_record.get("proof_summary"),
+                    surface=surface,
+                ),
             }
         )
     rows.sort(
@@ -391,7 +431,11 @@ def _objective_from_rect(ghost_rect: Mapping[str, Any]) -> Dict[str, int]:
     return {"area": int(area), "min_side": int(min(w, h))}
 
 
-def _last_stop_hint(proof_summary: Any) -> Optional[Dict[str, Any]]:
+def _last_stop_hint(
+    proof_summary: Any,
+    *,
+    surface: CertifiedSurfaceVerification,
+) -> Optional[Dict[str, Any]]:
     if not isinstance(proof_summary, Mapping):
         return None
     keys = (
@@ -401,7 +445,17 @@ def _last_stop_hint(proof_summary: Any) -> Optional[Dict[str, Any]]:
         "diagnostic_flow_status",
         "selection_reason",
     )
-    payload = {key: proof_summary.get(key) for key in keys if proof_summary.get(key) is not None}
+    payload: Dict[str, Any] = {}
+    for key in keys:
+        value = proof_summary.get(key)
+        if value is None:
+            continue
+        if (
+            not surface.publishable
+            and str(value) in _PROOF_BEARING_CANDIDATE_STATUSES
+        ):
+            continue
+        payload[key] = value
     return payload or None
 
 
