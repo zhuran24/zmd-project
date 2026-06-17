@@ -20,13 +20,13 @@ def _write_minimal_exact_campaign_artifacts(project_root: Path) -> None:
         "[]", encoding="utf-8"
     )
     (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
-        "{}", encoding="utf-8"
+        '{"facility_pools": {}}', encoding="utf-8"
     )
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
         '{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8"
     )
     (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
 
@@ -464,10 +464,10 @@ def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) 
     (project_root / "data" / "preprocessed").mkdir(parents=True)
     (project_root / "rules").mkdir(parents=True)
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text('{"facility_pools": {}}', encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text('{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8")
     (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
 
@@ -510,10 +510,10 @@ def test_exact_campaign_resume_rejects_bool_conflict_pose_index(tmp_path: Path) 
     (project_root / "data" / "preprocessed").mkdir(parents=True)
     (project_root / "rules").mkdir(parents=True)
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text('{"facility_pools": {}}', encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text('{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8")
     (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
 
@@ -561,13 +561,13 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_without_cond
         "[]", encoding="utf-8"
     )
     (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text(
-        "{}", encoding="utf-8"
+        '{"facility_pools": {}}', encoding="utf-8"
     )
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text(
         '{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8"
     )
     (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
 
@@ -852,10 +852,10 @@ def test_exact_campaign_resume_rejects_duplicate_json_key(tmp_path: Path) -> Non
     (project_root / "data" / "preprocessed").mkdir(parents=True)
     (project_root / "rules").mkdir(parents=True)
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text('{"facility_pools": {}}', encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text('{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8")
     (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
 
@@ -905,10 +905,10 @@ def test_exact_campaign_resume_rejects_json_nan_constant(tmp_path: Path) -> None
     (project_root / "data" / "preprocessed").mkdir(parents=True)
     (project_root / "rules").mkdir(parents=True)
     (project_root / "data" / "preprocessed" / "mandatory_exact_instances.json").write_text("[]", encoding="utf-8")
-    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text("{}", encoding="utf-8")
+    (project_root / "data" / "preprocessed" / "candidate_placements.json").write_text('{"facility_pools": {}}', encoding="utf-8")
     (project_root / "data" / "preprocessed" / "generic_io_requirements.json").write_text('{"required_generic_outputs": {}, "required_generic_inputs": {}}', encoding="utf-8")
     (project_root / "rules" / "canonical_rules.json").write_text(
-        json.dumps({"globals": {"grid": {"width": 2, "height": 1}}}),
+        json.dumps({"globals": {"grid": {"width": 2, "height": 1}, "empty_rectangle": {"objective": "max_lex_area_min_side", "min_side_admissibility": 1}}}),
         encoding="utf-8",
     )
 
