@@ -423,9 +423,9 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
         return RUN_STATUS_CERTIFIED, {
             "ghost_pick": {
                 "pose_idx": 0,
-                "pose_id": "synthetic_pose_0",
+                "pose_id": "ghost_rect_1x1_0_0",
                 "anchor": {"x": 0, "y": 0},
-                "facility_type": "synthetic",
+                "facility_type": "ghost_rect",
             }
         }
 

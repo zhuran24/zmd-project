@@ -1492,6 +1492,153 @@ CLOSE_KERNEL_ALLOWED_CLASSIFICATIONS = frozenset(
 )
 
 
+
+CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR = "v99_p1_2_close_kernel_sealing"
+CLOSE_KERNEL_V99_REQUIRED_PROOF_BEARING_TOKENS = frozenset(
+    {
+        "CERTIFIED",
+        "INFEASIBLE",
+        "RUN_STATUS_CERTIFIED",
+        "RUN_STATUS_INFEASIBLE",
+        "terminal_frontier_evidence",
+        "best_certified_result",
+        "certified_surface",
+        "proof_source",
+        "certified_delivery_manifest.json",
+        "final_solution.json",
+        "optimal_blueprint.json",
+        "proof-bearing",
+        "proof_bearing",
+    }
+)
+CLOSE_KERNEL_V99_REQUIRED_SCAN_ROOTS = frozenset(
+    {
+        "src",
+        "scripts/check_p1_2_proof_obligations.py",
+        "scripts/build_industrial_planner_single_base_delivery_release.py",
+    }
+)
+CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
+    'scripts/build_industrial_planner_single_base_delivery_release.py': 'p1_2_public_surface',
+    'scripts/check_p1_2_proof_obligations.py': 'p1_2_close_kernel',
+    'src/adapters/industrial_planner/export_blueprint.py': 'non_authoritative_projection',
+    'src/adapters/industrial_planner/mapping_registry.py': 'non_authoritative_projection',
+    'src/cuts/families/pattern_nogood.py': 'p1_2_certified_path',
+    'src/cuts/helpers/bounded_core_minimizer.py': 'p1_2_certified_path',
+    'src/cuts/lifecycle.py': 'p1_2_certified_path',
+    'src/cuts/oracles/pattern_nogood_oracle.py': 'p1_2_certified_path',
+    'src/cuts/oracles/power_cover_oracle.py': 'p1_2_certified_path',
+    'src/cuts/oracles/region_capacity_oracle.py': 'p1_2_certified_path',
+    'src/cuts/oracles/shape_packing_hall_oracle.py': 'p1_2_certified_path',
+    'src/io/delivery_manifest.py': 'p1_2_public_surface',
+    'src/io/output_schema.py': 'p1_2_public_surface',
+    'src/io/serializer.py': 'p1_2_public_surface',
+    'src/models/abstract_routing_layer.py': 'p1_2_certified_path',
+    'src/models/binding_subproblem.py': 'p1_2_certified_path',
+    'src/models/cpsat_minimum_model.py': 'p1_2_certified_path',
+    'src/models/cut_manager.py': 'p1_2_certified_path',
+    'src/models/d2_commodity_flow_core.py': 'p1_2_certified_path',
+    'src/models/exact_coordinate_master.py': 'p1_2_certified_path',
+    'src/models/flow_subproblem.py': 'p1_2_certified_path',
+    'src/models/highs_candidate_evaluator.py': 'p1_2_certified_path',
+    'src/models/highs_master_model.py': 'p1_2_certified_path',
+    'src/models/master_model.py': 'p1_2_certified_path',
+    'src/models/patch_routing_core.py': 'p1_2_certified_path',
+    'src/models/power_placement_subproblem.py': 'p1_2_certified_path',
+    'src/models/routing_subproblem.py': 'p1_2_certified_path',
+    'src/models/scip_master_model.py': 'p1_2_certified_path',
+    'src/render/industrial_planner_exact_status.py': 'non_authoritative_projection',
+    'src/render/industrial_planner_single_base_delivery_entrypoints.py': 'non_authoritative_projection',
+    'src/render/industrial_planner_single_base_delivery_frontdoor.py': 'non_authoritative_projection',
+    'src/render/industrial_planner_single_base_delivery_landing.py': 'non_authoritative_projection',
+    'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'non_authoritative_projection',
+    'src/render/industrial_planner_single_base_delivery_surface_health.py': 'non_authoritative_projection',
+    'src/render/industrial_planner_single_base_delivery_viewer.py': 'non_authoritative_projection',
+    'src/render/report_builder.py': 'non_authoritative_projection',
+    'src/render/serve.py': 'non_authoritative_projection',
+    'src/search/benders_loop.py': 'p1_2_certified_path',
+    'src/search/campaign_telemetry.py': 'diagnostic_or_telemetry_non_authority',
+    'src/search/campaign_triage.py': 'diagnostic_or_telemetry_non_authority',
+    'src/search/certified_frontier.py': 'p1_2_certified_path',
+    'src/search/certified_surface.py': 'p1_2_public_surface',
+    'src/search/d2_separator.py': 'p1_2_certified_path',
+    'src/search/exact_campaign.py': 'p1_2_certified_path',
+    'src/search/exact_campaign_inspector.py': 'p1_2_public_surface',
+    'src/search/exact_parallel_scheduler.py': 'p1_2_certified_path',
+    'src/search/heuristic_feasible_finder.py': 'exploratory_or_heuristic_non_authority',
+    'src/search/outer_search.py': 'p1_2_certified_path',
+    'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
+    'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
+}
+CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS = frozenset(CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH)
+CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
+    {
+        "scripts/check_p1_2_proof_obligations.py",
+        "data/proof_obligations/p1_2_proof_obligations.json",
+        "src/search/certified_surface.py",
+        "src/io/delivery_manifest.py",
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/search/outer_search.py",
+        "src/search/exact_parallel_scheduler.py",
+        "src/search/benders_loop.py",
+        "src/render/industrial_planner_exact_status.py",
+        "scripts/build_industrial_planner_single_base_delivery_release.py",
+    }
+)
+CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
+    'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
+    'src/adapters/industrial_planner/export_blueprint.py': '9a5410b559a0e4c91fd1cf4bee8263f8d4f212560c9c29a59e85a08a34a4217d',
+    'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
+    'src/cuts/families/pattern_nogood.py': 'c65eb8296c9c370631efe7167ddea73192723e8253aeb6b6c17694966d68fb90',
+    'src/cuts/helpers/bounded_core_minimizer.py': 'da3184e860ea49fa88a45da2db09c7b09fd742fc7eb10b6f7018eb1e5b98985b',
+    'src/cuts/lifecycle.py': '3b63cb3d18d5d0bad20e017ad6ad93b0b7773ea5b5165ead79e91750cd3043ba',
+    'src/cuts/oracles/pattern_nogood_oracle.py': '019d808d18619c9fc3e3692d476040cad3c8b360b5671bce54c6b8ac9003ef37',
+    'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
+    'src/cuts/oracles/region_capacity_oracle.py': '95b65c40a02dea298bb51067a8c50edecff4868946050d5db41ca5a456421de1',
+    'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
+    'src/io/delivery_manifest.py': 'dbaf33755a7e1d17d6fa5a08d596ee3fdfdd5bbed1164fd147a8f9d9f77e4d98',
+    'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
+    'src/io/serializer.py': 'b0186ce5582e5695c69eaed7f72318e4d3e683ee6a35c85e9b5efaaf55cad95f',
+    'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
+    'src/models/binding_subproblem.py': 'ea5e277879efea9b3a48f2782f98ff3203b684e7c186c4b05fa61a4b81e42929',
+    'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
+    'src/models/cut_manager.py': 'ebf8663111571c458e16c4290c8aa527e73187fed67acc35198df095a0a66905',
+    'src/models/d2_commodity_flow_core.py': '55aee97d9162541efd0014c5f4682c1d4d60c1fb0ef9246a657dfbb3ff17775e',
+    'src/models/exact_coordinate_master.py': '8d4d9f1c09f8f2d2e16b4507f0f42444e327b737764a76d64124e6c32abaca9f',
+    'src/models/flow_subproblem.py': '1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d',
+    'src/models/highs_candidate_evaluator.py': '1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419',
+    'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',
+    'src/models/master_model.py': '437dcf94703fff826a5f17e68a0da707231bd5a03e0679b957b6625c915f6169',
+    'src/models/patch_routing_core.py': '371cdf69c6d30a1499dbd596750dfc1802eb4e1aa652e3042c044c3136c17b98',
+    'src/models/power_placement_subproblem.py': '88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597',
+    'src/models/routing_subproblem.py': '25c56e1f5f383f8696f93d876282f1cd5c26a37e610e6bc7d6ca8ffcd737ba49',
+    'src/models/scip_master_model.py': 'd3590b07088e4e67c5b714aca78e39acddd0da8b59a7b96a68ae7b4b270f2bea',
+    'src/render/industrial_planner_exact_status.py': '22875159909302a5d5dde77bd832539be1b01a10e40606d8d459996714c56183',
+    'src/render/industrial_planner_single_base_delivery_entrypoints.py': 'e80cc8d6c4badadad9c23a2c6c8c645e653425b2b0002879baadb29c3dd6759c',
+    'src/render/industrial_planner_single_base_delivery_frontdoor.py': '5e530baaa4e49e149755c96452521daa93ece7a3c29b6e05545fcd5819530fdb',
+    'src/render/industrial_planner_single_base_delivery_landing.py': '085212ba166c2211a12a590c12d07a6a8cf6f38429d49a4d97b79633296b8da9',
+    'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c',
+    'src/render/industrial_planner_single_base_delivery_surface_health.py': '788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf',
+    'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
+    'src/render/report_builder.py': 'c92f43fc9e305f8e60868d9cfc5bd9daf146373afb9a22310dd2fefa2e951531',
+    'src/render/serve.py': '038160a4155b2f7ad2da94bdccd7870bec61e043daa0346b41a88c6bfcb200ff',
+    'src/search/benders_loop.py': '0205ffe8e33674af8aae70bb83b0392948aa83f33218def0dc15806e1280e4b7',
+    'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
+    'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
+    'src/search/certified_frontier.py': '3ead765526029de3df7e843c2bbed03d2e413918bd603950bdcc53a29e0f505e',
+    'src/search/certified_surface.py': 'ca66ebacf68791c0448dda410558591c699bdbe1650a1c7f8d8ae4cde6ce23f0',
+    'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
+    'src/search/exact_campaign.py': '2dea863944da6ee72e070fba98a737d41e992a50bf2bf6414f7d573a143d53b5',
+    'src/search/exact_campaign_inspector.py': 'b50bf8675156ba4e356b70077fc8e79dd98430bbbae2b890a5c5eb20d2c30567',
+    'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
+    'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
+    'src/search/outer_search.py': '2db84f7294742fd5859a7efd883865c89c630e3ceaa6408437e13a44e2aaf8bc',
+    'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
+    'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
+}
+CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
+
 def _sha256_file(path: Path) -> str:
     hasher = hashlib.sha256()
     with path.open("rb") as handle:
@@ -1537,6 +1684,80 @@ def _scan_close_kernel_token_files(
     return found
 
 
+
+
+def _check_close_kernel_v99_static_floor(
+    *,
+    tokens: Sequence[str],
+    scan_roots: Sequence[str],
+    excluded_subpaths: Sequence[str],
+    critical_gate_files: Sequence[str],
+    registered: dict[str, dict[str, Any]],
+    project_root: Path,
+) -> list[str]:
+    """Enforce the non-self-authored v99 close-kernel floor.
+
+    The manifest may describe extra roots/sinks, but the v99 close claim must not
+    be able to shrink its own authority surface or reseal source drift by editing
+    only ``p1_2_proof_obligations.json``.  This is still a structural gate, not a
+    theorem prover; changing the checker itself remains part of the close-kernel
+    TCB and reopens review.
+    """
+    errors: list[str] = []
+    declared_tokens = set(tokens)
+    missing_tokens = CLOSE_KERNEL_V99_REQUIRED_PROOF_BEARING_TOKENS - declared_tokens
+    for token in sorted(missing_tokens):
+        errors.append(f"close_kernel_contract.proof_bearing_tokens missing v99 sealed token: {token}")
+
+    declared_scan_roots = set(scan_roots)
+    missing_scan_roots = CLOSE_KERNEL_V99_REQUIRED_SCAN_ROOTS - declared_scan_roots
+    for rel_path in sorted(missing_scan_roots):
+        errors.append(f"close_kernel_contract.scan_roots missing v99 sealed scan root: {rel_path}")
+
+    for rel_path in sorted(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS):
+        if _is_excluded_path(rel_path, excluded_subpaths):
+            errors.append(f"close_kernel_contract.excluded_subpaths must not exclude v99 sealed sink: {rel_path}")
+
+    registered_paths = set(registered)
+    if len(registered_paths) < CLOSE_KERNEL_V99_MIN_SINK_COUNT:
+        errors.append(
+            "close_kernel_contract.sink_files shrank below the v99 sealed floor: "
+            f"{len(registered_paths)} < {CLOSE_KERNEL_V99_MIN_SINK_COUNT}"
+        )
+    missing_sinks = CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS - registered_paths
+    for rel_path in sorted(missing_sinks):
+        errors.append(f"close_kernel_contract missing v99 sealed sink path: {rel_path}")
+
+    for rel_path, expected_classification in sorted(CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH.items()):
+        entry = registered.get(rel_path)
+        if entry is None:
+            continue
+        actual_classification = entry.get("classification")
+        if actual_classification != expected_classification:
+            errors.append(
+                f"{rel_path} v99 classification changed from {expected_classification!r} "
+                f"to {actual_classification!r}"
+            )
+
+    declared_critical_gate_files = set(critical_gate_files)
+    missing_critical_gate_files = CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES - declared_critical_gate_files
+    for rel_path in sorted(missing_critical_gate_files):
+        errors.append(f"close_kernel_contract.critical_gate_files missing v99 sealed gate file: {rel_path}")
+
+    for rel_path, expected_sha256 in sorted(CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH.items()):
+        entry = registered.get(rel_path)
+        if entry is None:
+            continue
+        declared_sha256 = entry.get("source_sha256")
+        if declared_sha256 != expected_sha256:
+            errors.append(
+                f"{rel_path} v99 source_sha256 changed without checker-floor reseal"
+            )
+        path = project_root / rel_path
+        if path.exists() and _sha256_file(path) != expected_sha256:
+            errors.append(f"{rel_path} current source hash drifted from the v99 sealed floor")
+    return errors
+
 def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path = PROJECT_ROOT) -> list[str]:
     """Check the P1.2 close-kernel contract.
 
@@ -1555,7 +1776,9 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
     schema_version = _require_int(contract.get("schema_version"), "close_kernel_contract.schema_version")
     if schema_version != 1:
         errors.append("close_kernel_contract.schema_version must be 1")
-    if contract.get("review_anchor") != manifest.get("review_anchor"):
+    contract_review_anchor = _require_str(contract.get("review_anchor"), "close_kernel_contract.review_anchor")
+    manifest_review_anchor = _require_str(manifest.get("review_anchor"), "review_anchor")
+    if contract_review_anchor != manifest_review_anchor:
         errors.append("close_kernel_contract.review_anchor must match manifest.review_anchor")
 
     tcb = _require_list(contract.get("trusted_computing_base"), "close_kernel_contract.trusted_computing_base")
@@ -1638,6 +1861,30 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
             if guard_token not in text:
                 errors.append(f"registered close-kernel sink missing guard token {guard_token!r}: {rel_path}")
 
+    critical_files = [
+        _require_str(value, "close_kernel_contract.critical_gate_files[]")
+        for value in _require_list(contract.get("critical_gate_files"), "close_kernel_contract.critical_gate_files")
+    ]
+    for rel_path in critical_files:
+        if not (project_root / rel_path).exists():
+            errors.append(f"close-kernel critical gate file missing: {rel_path}")
+
+    if (
+        contract_review_anchor == CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR
+        or manifest_review_anchor == CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR
+        or manifest.get("phase_gate_required_anchor") == CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR
+    ):
+        errors.extend(
+            _check_close_kernel_v99_static_floor(
+                tokens=tokens,
+                scan_roots=scan_roots,
+                excluded_subpaths=excluded_subpaths,
+                critical_gate_files=critical_files,
+                registered=registered,
+                project_root=project_root,
+            )
+        )
+
     found = _scan_close_kernel_token_files(
         project_root=project_root,
         scan_roots=scan_roots,
@@ -1651,23 +1898,7 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
     for rel_path in sorted(stale):
         errors.append(f"registered close-kernel sink no longer appears in scanned proof-bearing surface: {rel_path}")
 
-    critical_files = [
-        _require_str(value, "close_kernel_contract.critical_gate_files[]")
-        for value in _require_list(contract.get("critical_gate_files"), "close_kernel_contract.critical_gate_files")
-    ]
-    for rel_path in critical_files:
-        if not (project_root / rel_path).exists():
-            errors.append(f"close-kernel critical gate file missing: {rel_path}")
-    for rel_path in (
-        "scripts/check_p1_2_proof_obligations.py",
-        "data/proof_obligations/p1_2_proof_obligations.json",
-        "src/search/certified_surface.py",
-        "src/io/delivery_manifest.py",
-        "src/search/certified_frontier.py",
-        "src/search/exact_campaign.py",
-        "src/search/outer_search.py",
-        "src/search/exact_parallel_scheduler.py",
-    ):
+    for rel_path in sorted(CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES):
         if rel_path not in critical_files:
             errors.append(f"close-kernel critical gate file not declared: {rel_path}")
     return errors
@@ -1679,6 +1910,9 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
         manifest.get("phase_gate_required_anchor"),
         "phase_gate_required_anchor",
     )
+    manifest_anchor = _require_str(manifest.get("review_anchor"), "review_anchor")
+    if manifest_anchor != required_anchor:
+        errors.append("manifest.review_anchor must match phase_gate_required_anchor")
     phase_gate = _load_json(PHASE_GATE_PATH)
     current_anchor = phase_gate.get("current_review_anchor")
     owner_state = phase_gate.get("owner_manual_state")
