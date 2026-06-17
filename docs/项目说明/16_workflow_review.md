@@ -33,6 +33,15 @@ Phase 1.1 经验: Gemini 11 round Day 15/16a/16b 堆到 round 14 才 cross-check
 - Phase 1.3 propagator land + 24h shadow trial — next³
 - Phase 1.5+ production integration — final pre-168h
 
+**P1.2 batch audit scope (2026-06-17 口径)**:
+P1.2 的 GPT pro batch audit 应聚焦当前默认 `certified_exact` 证明链的 soundness：
+是否可能产生、持久化、resume、或导出 proof-bearing `false-CERTIFIED` / `false-INFEASIBLE`。
+历史 review faces、模块分面、proof obligation compartment 都只是搜索脚手架；finding 分级必须回到
+"会不会污染 certified optimality / frontier / terminal evidence"。owner clean-review 计数、review
+receipt 是否算 clean、close gate provenance、P1.3B 是否开门、以及 `step_8_apply_to_master`
+production integration 不作为 P1.2 技术职责本体审查；这些分别属于 close gate / governance 或 P1.3B。
+详 [08_phase_1_2_plan.md](08_phase_1_2_plan.md) 的 P1.2 职责边界。
+
 **模式 (per [[big-milestone-gpt-pro-review]] + [[review-pkg-no-prompt-inside]])**
 - 打包 7z + zip 壳 + ship 7za binary (per `[[review-pkg-7z-strategy]]`, ~5-7 MB 全项目)
 - prompt 不放包里, 通过 chat message 单独给 ([[review-pkg-no-prompt-inside]])
@@ -64,6 +73,8 @@ GPT pro 主要 catch (3+4+5) — Gemini 倾向 catch (1+2) schema 层. 实施 fa
 - ≤ 3 P1 (high, soundness 减弱 / 非生产路径 bug), 各有 mitigation 计划
 - P2/P3 (medium/low, cosmetic / cleanliness / nice-to-have) 不卡 GO, 进 followup queue (#239)
 - **⚠️ (2026-06-04) 大节点正式 close（如 spike close）门禁已提高 = 连续 ≥3 次独立审查零问题**——不是单次 batch 0-P0 即过；任一轮再现 finding 则连续计数**重置**。上面的单-round GO 准则用于判"是否推进下一步"，**正式 close** 用 ≥3 连续清零。见 memory big-milestone-gpt-pro-review。
+  这是 close gate / owner 放行机制，不定义 P1.2 的技术职责；P1.2 finding 仍按上方
+  `certified_exact` soundness scope 分级。
 
 **NOT GO 准则 (不推下一 phase)**
 - ≥ 1 P0 → 必 close (Step A-O 模式) 才下一 round

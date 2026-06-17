@@ -4,6 +4,38 @@
 
 > ⚠️ **(2026-06-04 现状)** 本 plan 的 P1.2B-F5..F9 **已落地**（Phase 1.2 spike close 闭关中，各 family generator+validator + 多轮 Gemini/外审；见 [06](06_current_status.md) + [07 §5.14](07_historical_review.md)）。下方 forward-looking 措辞（"待实施 / 为啥重要 / 实施顺序"）多为**历史 plan / 参考**。**且 F9 已 tight-K quarantine 实质停用**（PROJECT_LOCK §3A）—— 故下文"F9 主力几何 lift / 防 F5 ratio 超 50%"的论证**当前不成立**（F9 这条 remedy 暂不可用，相关 stop-ship 逻辑待 F9 解封）。测试计数以核心节点 `authoritative_numbers.json` 为准（当前 **442**，非 189）。
 
+## 2026-06-17 — P1.2 职责边界（后续审查口径）
+
+P1.2 当前要闭的是 **default `certified_exact` 证明链的 soundness**，不是 owner
+门禁治理本身，也不是把 cut family 真接进 master 的 P1.3B 集成。审查员可以按模块、
+按 proof surface、按历史 "review faces" 搜索问题，但那些只是找问题的脚手架，**不是
+P1.2 范围定义**；最终分类看问题是否会污染当前默认 certified 证明链。
+
+**P1.2 管的东西**:
+- `false-CERTIFIED`: 把未被证明的、错误的、或证据不完整的结果说成 CERTIFIED。
+- proof-bearing `false-INFEASIBLE`: 把本来可能合法、且可能优于当前解的候选剪掉，并且这个
+  `INFEASIBLE` 会被 campaign/frontier/resume/terminal/export 等证明链消费。简单说：
+  如果一个假阴性能让真最大矩形被排除，最后还支撑 "当前最优已认证"，它就是 P1.2
+  soundness 问题，严重度不低于 `false-CERTIFIED`。
+- 会被默认 certified path 消费的强状态、证据、哈希、payload、resume 记录、并行 wave
+  结果、precheck elimination、terminal frontier evidence、certified export surface。
+- 未来/条件路径只有在能进入 certified 证明链时才升级为 P1.2 soundness；否则标成
+  conditional hardening、availability/completeness 或 future-integration residual。
+
+**P1.2 不直接管的东西**:
+- owner 手动 clean-review 计数、review receipt 是否算 clean、P1.3B 是否放行。这是
+  close gate / governance，不是 P1.2 技术职责本身。
+- `src/cuts/lifecycle.py::step_8_apply_to_master` 真 master 集成、PoseBoolExactMaster LBBD
+  master integration、cut family 在 master 上的 production attach。这些属于 P1.3B 或更后。
+- 只导致 `UNKNOWN` / `TIMEOUT` / 性能变慢 / proof 产不出来的纯 availability 或
+  completeness 问题；除非它们被误消费成 proof-bearing `INFEASIBLE` / `CERTIFIED`。
+- exploratory / AI / heuristic / sidecar 的效果判断；除非它们的输出越界进入 certified
+  evidence。
+
+给 GPT Pro / 外部 reviewer 的最短提示：**请审当前默认 `certified_exact` 是否可能产生或
+持久化错误的 proof-bearing 强结论；不要把 owner 门禁、三次 clean 计数、P1.3B 开门、
+或 Step 8 production integration 当作 P1.2 职责来审。**
+
 ## P1.2A — entry hardening ✅ DONE (2026-05-23 exit hardening + 2026-05-24 final polish)
 
 8 项 (7 原 plan + 1 新发现) 落地, 详 [06_current_status.md](06_current_status.md) + [07_historical_review.md §5.12](07_historical_review.md):
