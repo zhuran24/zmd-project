@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path, PurePosixPath
 
 from src.search.exact_campaign import CERTIFIED_EXACT_SOURCE_HASH_FILES
@@ -41,4 +42,33 @@ def test_certified_exact_source_hash_files_cover_package_init_execution_surface(
         "Certified-exact source files sit below package __init__.py files that "
         "are not in CERTIFIED_EXACT_SOURCE_HASH_FILES:\n"
         + "\n".join(f"  - {path}" for path in sorted(unprotected_init_files))
+    )
+
+
+def test_certified_exact_source_hash_files_cover_registered_p1_2_proof_bearing_sinks():
+    manifest_path = REPO_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    protected_sources = set(CERTIFIED_EXACT_SOURCE_HASH_FILES)
+    proof_bearing_classifications = {
+        "p1_2_certified_path",
+        "p1_2_public_surface",
+        "p1_2_close_kernel",
+    }
+
+    missing_sources = []
+    for entry in manifest["close_kernel_contract"]["sink_files"]:
+        rel_path = str(entry.get("path", ""))
+        classification = str(entry.get("classification", ""))
+        if (
+            classification in proof_bearing_classifications
+            and rel_path.endswith(".py")
+            and rel_path not in protected_sources
+        ):
+            missing_sources.append(rel_path)
+
+    assert not missing_sources, (
+        "P1.2 proof-bearing close-kernel sinks are missing from "
+        "CERTIFIED_EXACT_SOURCE_HASH_FILES, so source drift would not invalidate "
+        "certified_exact checkpoints:\n"
+        + "\n".join(f"  - {path}" for path in sorted(missing_sources))
     )

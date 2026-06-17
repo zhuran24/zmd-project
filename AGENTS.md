@@ -116,8 +116,11 @@ the current default certified path are registered in
 `scripts/check_p1_2_proof_obligations.py`. Adding a new `CERTIFIED` / proof-bearing
 `INFEASIBLE` surface, drifting a sealed sink hash, or removing required guard tokens reopens
 the P1.2 close claim until reviewed. The current local seal includes the follow-up
-F-CAM-R8-02 durable resume-sanitization fix; do not replace it with the earlier package
-snapshot without re-sealing `src/search/exact_campaign.py` and `src/search/outer_search.py`.
+F-CAM-R8-02 durable resume-sanitization fix, the proof-bearing sink source-digest
+coverage guard, and the current-process freshness gate for terminal proof-bearing
+candidate evidence; do not replace it with an earlier package snapshot without
+re-sealing `src/search/exact_campaign.py`, `src/search/outer_search.py`, and the
+close-kernel checker floor.
 The V99 close-kernel floor is checker-owned: required proof-bearing tokens, scan roots,
 sink paths, sink classifications, non-checker source hashes, and critical gate files
 must not be shrinkable or resealable by editing the manifest alone.
@@ -268,6 +271,40 @@ caches or temp outputs.
 When packaging this project for handoff, keep archive filenames concise. Prefer
 `zmd_<short-tag>_<YYYYMMDD_HHMM>.7z` or similar; put detailed purpose, commit,
 hash, and verification notes in the message or manifest, not in the filename.
+
+## GPT Pro Review Loop
+
+For recurring P1.2 adversarial soundness review packages, use the ChatGPT project
+`终末地` Sources tab as the upload authority. Upload project packages from
+`project?tab=sources` via `添加源` / `Choose File`; do not upload these packages
+through the chat composer attachment button. Send the review prompt in the boxed
+project chat composer shown at the top of the project page.
+
+Before uploading a new project review package, delete older project packages from
+the ChatGPT project Sources list so GPT cannot pick the wrong archive as the
+current review target. Do not delete dependency/runtime packages, such as the
+Python dependency bundle, unless the user explicitly asks.
+This cleanup is part of the authorized review loop and does not require a
+separate confirmation when the target is clearly an older project package.
+
+Before every prompt send, verify the selected model/control is the boxed
+`Pro 扩展` option in the composer. For each uploaded package, send exactly three
+review requests using the agreed P1.2 adversarial soundness prompt, then wait for
+responses. On heartbeat wakeups for this loop, only check whether GPT has replied
+and then continue the local verification/apply loop if a response or package is
+available.
+
+Recycle unused browser pages during this loop. Keep only active review conversations
+that may still produce replies and the current Sources page when it is needed for
+upload/download verification; close or release stale project pages, duplicate source
+tabs, blank tabs, failed upload attempts, and completed intermediate pages.
+If reading a GPT review tab times out, close that tab and reopen the same URL in a
+fresh tab before the next status check. A stale browser tab is not evidence that
+the review is still running; refresh the tab identity rather than repeatedly
+timing out on the same page object.
+If the tab loads but the conversation content is missing or only the generic
+ChatGPT shell appears, treat it the same as a read timeout: close that tab and
+reopen the identical conversation URL before checking again.
 
 Generated proof outputs, checkpoints, blueprints, and certified delivery manifests
 are intentionally guarded by preflight. Do not commit forbidden generated paths such

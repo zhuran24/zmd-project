@@ -644,7 +644,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "f76a36236eca151aee203f122b131e8ae2f0ab4e2c5c3d9b47e601958725796b",
+        "source_sha256": "d559167cfe9adb9eb8fc63c5f0a02682d8045895f16c6703fc0c129dddc013f0",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -780,7 +780,7 @@
           "validate_delivery_artifacts_match_campaign",
           "write_certified_delivery_manifest"
         ],
-        "source_sha256": "dbaf33755a7e1d17d6fa5a08d596ee3fdfdd5bbed1164fd147a8f9d9f77e4d98",
+        "source_sha256": "0492b1693f2461e9e160dbe6f9663560b2ffa46591a8ccbed655498d688d873e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1209,7 +1209,7 @@
           "verify_certified_delivery_surface",
           "evaluate_certified_delivery_surface"
         ],
-        "source_sha256": "ca66ebacf68791c0448dda410558591c699bdbe1650a1c7f8d8ae4cde6ce23f0",
+        "source_sha256": "ea24dc498a551f002076a4a9b41046697d9dcc08550bf8eb76430ed75e7f4337",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1244,7 +1244,7 @@
           "terminal_frontier_evidence",
           "best_certified_result"
         ],
-        "source_sha256": "2dea863944da6ee72e070fba98a737d41e992a50bf2bf6414f7d573a143d53b5",
+        "source_sha256": "5c58ab5eee45573e0fb9bd436108e90beef2169dd432f661598dd09588acd4bf",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

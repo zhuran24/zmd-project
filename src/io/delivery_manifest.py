@@ -26,6 +26,7 @@ from src.search.exact_campaign import (
     has_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
     terminal_certified_final_result_violation_for_project,
+    terminal_proof_bearing_candidate_freshness_violation,
     now_iso,
     validate_exact_campaign_resume_state,
 )
@@ -704,6 +705,12 @@ def _build_best_certified_result_payload(
         project_root=project_root,
     ):
         return None
+    freshness_violation = terminal_proof_bearing_candidate_freshness_violation(campaign_state)
+    if freshness_violation is not None:
+        raise ValueError(
+            "certified delivery manifest requires current-process proof-bearing "
+            f"candidate evidence: {freshness_violation}"
+        )
     final_result = campaign_state.get("final_result")
     if not isinstance(final_result, Mapping):
         return None
