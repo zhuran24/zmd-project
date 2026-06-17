@@ -40,7 +40,12 @@ DEFAULT_RERANK_PYTHON = Path(os.environ.get("CC_MEMORY_RERANK_PYTHON", r"C:\User
 DEFAULT_RERANK_MODEL = os.environ.get("CC_MEMORY_RERANK_MODEL", "Qwen/Qwen3-Reranker-0.6B")
 RERANK_HELPER = MEM_DIR / "rerank_helper.py"
 RERANK_CANDIDATE_LIMIT = 20
-RERANK_SCORE_FLOOR = 0.50
+# Cross-encoder relevance below this is pruned. Calibrated on own-data dogfood:
+# Qwen3-Reranker is decisive for SPECIFIC queries (true ~1.0 / noise ~0), but for
+# BROAD/topical drafts genuinely-related nodes cluster ~0.40-0.49, which 0.50 wrongly
+# pruned. 0.40 keeps those while still cutting clear noise (<0.2). High-score pruned
+# candidates emit a WARN so over-pruning stays observable.
+RERANK_SCORE_FLOOR = 0.40
 SEMANTIC_DENSE_LIMIT = 80
 # Dense cosine -> suggestion score via a shifted-linear: only the part of the cosine
 # ABOVE the floor counts, so a weak dense-only hit cannot flood the review queue or

@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 14
-- entries: 14
-- hard edges: 7
+- entries: 17
+- hard edges: 10
 - pending relation suggestions: 10
 
 ## Start Here
@@ -34,14 +34,17 @@ python cc_memory/mem.py boot
 
 ## Entries
 
-- `arch-layering-plan-proof-vs-ops` — owner 拍板的长期重构：解耦 process_priority/telemetry/audit 出 proof 核心→可移出 digest 白名单；代价含 P1.2 应重审
+- `arch-layering-plan-proof-vs-ops` — 核实+GPT外审:三候选模块当前架构 locally 不可缩短(pre-gate import 即 TCB);原解耦移出白名单前提证伪;衍生 __init__.py 边界债;采纳 A-prime 不动核心
+- `boundary-debt-pregate-init-py` — runtime/__init__.py(51B)+phase3b+anchor119(0B)pre-gate 执行面不在白名单;interchange 已收=覆盖不一致;方向1删除不失效checkpoint(推荐)
 - `cc-memory-gpu-retrieval-upgrade-plan` — 下一步给 cc_memory 加 GPU 语义检索，补当前词法引擎"逮不到同义/抽象关系"的短板。计划书: C:\22957\download\GPU_RETRIEVAL_ENHANCEMENT_PLAN.md…
 - `cc-memory-p1-semantic-live-20260617` — P1 语义层上线(harrier-0.6b,d8f6c85/9ea493d);坑:跑前须 HF_HOME=E:\hf_cache;标定:相关余弦~0.42-0.48 故 dense 仅 advisory;残留 minor#2/#3
+- `cc-memory-p2-reranker-live-20260617` — P2 reranker 上线(Qwen3-Reranker-0.6B,bf50387);实测果断:具体query真目标~1.0/噪声~0、0.50阈值好,泛query返空(可接受);剪高词法假阳性、真目标顶#1;WARN 可观测;缓存统一
 - `codex-executes-claude-orchestrates` — 默认分工:具体工作/实现默认交给 codex 执行（它全权限、听指令，按提示词干活）；claude（我）负责周边任务——任务分配/编排、审阅、对抗式验证、最终验收等。即 codex = 执行体，claude = 协调与把关。owner 2026-06-17 定。
 - `codex-needs-explicit-read-memory` — 本项目里 codex agent / 子代理不会主动读 CLAUDE.md 或 cc_memory 记忆系统。每次调用 codex（Agent 工具 agentType:codex / Workflow 内 agentType…
 - `codex-skills-and-download-route` — codex skill 都在 ~/.codex/skills(CLI/桌面共用一份,子代理需显式调用);本机下模型走 hf-mirror.com 直连、单个海外大文件用 fast-dl-via-jp.ps1(隔离JP节点)、HF缓存在 E:\caches\huggingface
 - `commit-session-id-hook` — 本 checkout 装了本地钩子 .git/hooks/prepare-commit-msg（git interpret-trailers 实现），每次 commit 自动追加 trailer CC-Session-Id（取 $CLAUDE_CODE_SESSION_ID）…
 - `followup-h50-g-neg-and-publish-20260617` — 采补丁收尾：H/G followup (770270b) + 发布到远程私有库 zhuran24/zmd_pj；白名单收窄 wf 进行中
+- `insight-digest-whitelist-protects-pregate-tcb` — 白名单保护 certified 进程可信执行面;三层 TCB(proof-semantics/pre-gate-executable/integrity-guard);pre-gate import 即必须入白名单,哪怕返回值只是 telemetry
 - `owner-rejected-rigid-authorization-ledger` — owner 2026-06-17 明确否决了 standing-authorizations.json 那套"17 条要不要问 owner"的僵硬授权台账治理(太僵硬)…
 - `p1-2-closegate-obligation-mechanism` — P1.2 是 owner 手动 fail-closed 门禁；8 obligation 名称级锚定非 digest；改 proof 核心机制上不强制重审但 owner 应重新攒 clean-review
 - `semantic-engine-selection-2026-06` — bge 默认已过时;本规模改用 Qwen3-Embedding-0.6B + Qwen3-Reranker-0.6B,新货 Harrier/jina 待独立核
