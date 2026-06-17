@@ -36,6 +36,11 @@ DEFAULT_EMBED_MODEL = os.environ.get("CC_MEMORY_EMBED_MODEL", "microsoft/harrier
 EMBED_HELPER = MEM_DIR / "embed_helper.py"
 EMBED_PROVIDER = "sentence-transformers"
 EMBED_NORMALIZE = 1
+DEFAULT_RERANK_PYTHON = Path(os.environ.get("CC_MEMORY_RERANK_PYTHON", r"C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe"))
+DEFAULT_RERANK_MODEL = os.environ.get("CC_MEMORY_RERANK_MODEL", "Qwen/Qwen3-Reranker-0.6B")
+RERANK_HELPER = MEM_DIR / "rerank_helper.py"
+RERANK_CANDIDATE_LIMIT = 20
+RERANK_SCORE_FLOOR = 0.50
 SEMANTIC_DENSE_LIMIT = 80
 # Dense cosine -> suggestion score via a shifted-linear: only the part of the cosine
 # ABOVE the floor counts, so a weak dense-only hit cannot flood the review queue or
@@ -458,6 +463,16 @@ def node_text_for_relation(row: sqlite3.Row, typ: str) -> str:
     return "\n".join([row["id"], row["title"], meta.get("index_summary", ""), meta.get("description", ""), row["body"], row["metadata_json"] or ""])
 
 
+def node_text_by_id(con: sqlite3.Connection, typ: str, node_id: str) -> str | None:
+    if typ == "fact":
+        row = con.execute("SELECT * FROM facts WHERE id=? AND status='active'", (node_id,)).fetchone()
+    else:
+        row = con.execute("SELECT * FROM entries WHERE id=? AND status='active'", (node_id,)).fetchone()
+    if not row:
+        return None
+    return node_text_for_relation(row, typ)
+
+
 def all_active_nodes(con: sqlite3.Connection) -> list[tuple[str, sqlite3.Row]]:
     nodes: list[tuple[str, sqlite3.Row]] = []
     nodes.extend(("fact", r) for r in con.execute("SELECT * FROM facts WHERE status='active' ORDER BY id"))
@@ -467,6 +482,10 @@ def all_active_nodes(con: sqlite3.Connection) -> list[tuple[str, sqlite3.Row]]:
 
 class EmbeddingUnavailable(RuntimeError):
     """Optional semantic backend is unavailable; lexical behavior should continue."""
+
+
+class RerankUnavailable(RuntimeError):
+    """Optional rerank backend is unavailable; pre-rerank behavior should continue."""
 
 
 def embedding_python() -> Path:
@@ -482,6 +501,25 @@ def embedding_model_id(model: str) -> str:
 
 
 def embedding_env() -> dict[str, str]:
+    env = os.environ.copy()
+    hf_home = env.get("HF_HOME") or r"E:\caches\huggingface"
+    env["HF_HOME"] = hf_home
+    env.setdefault("HF_HUB_OFFLINE", "1")
+    env.setdefault("TRANSFORMERS_OFFLINE", "1")
+    env.setdefault("HF_HUB_CACHE", str(Path(hf_home) / "hub"))
+    env.setdefault("HF_XET_CACHE", str(Path(hf_home) / "xet"))
+    return env
+
+
+def rerank_python() -> Path:
+    return Path(os.environ.get("CC_MEMORY_RERANK_PYTHON", str(DEFAULT_RERANK_PYTHON)))
+
+
+def rerank_model_name(model: str | None = None) -> str:
+    return model or os.environ.get("CC_MEMORY_RERANK_MODEL", DEFAULT_RERANK_MODEL)
+
+
+def rerank_env() -> dict[str, str]:
     env = os.environ.copy()
     hf_home = env.get("HF_HOME") or r"E:\caches\huggingface"
     env["HF_HOME"] = hf_home
@@ -545,6 +583,58 @@ def call_embed_helper(
     if out.get("status") != "ok":
         raise EmbeddingUnavailable(str(out.get("error") or "embedding helper did not report ok"))
     return out
+
+
+def call_rerank_helper(
+    query: str,
+    docs: list[str],
+    *,
+    model: str | None = None,
+    batch_size: int = 8,
+    timeout: int = 600,
+) -> list[float]:
+    if not docs:
+        return []
+    py = rerank_python()
+    if not py.exists():
+        raise RerankUnavailable(f"rerank python not found: {py}")
+    if not RERANK_HELPER.exists():
+        raise RerankUnavailable(f"rerank helper not found: {RERANK_HELPER}")
+    payload = {
+        "query": query,
+        "docs": docs,
+        "model": rerank_model_name(model),
+        "batch_size": batch_size,
+    }
+    try:
+        proc = subprocess.run(
+            [str(py), str(RERANK_HELPER)],
+            input=json.dumps(payload, ensure_ascii=False),
+            text=True,
+            capture_output=True,
+            cwd=ROOT,
+            env=rerank_env(),
+            timeout=timeout,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise RerankUnavailable(f"rerank helper could not run: {exc}") from exc
+    if proc.returncode != 0:
+        detail = short((proc.stderr or proc.stdout or "").strip(), 1000)
+        raise RerankUnavailable(f"rerank helper failed with exit {proc.returncode}: {detail}")
+    try:
+        out = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        detail = short(proc.stdout.strip(), 1000)
+        raise RerankUnavailable(f"rerank helper returned invalid JSON: {detail}") from exc
+    scores = out.get("scores")
+    if not isinstance(scores, list):
+        raise RerankUnavailable("rerank helper returned no scores list")
+    if len(scores) != len(docs):
+        raise RerankUnavailable(f"rerank helper returned {len(scores)} scores for {len(docs)} docs")
+    try:
+        return [float(score) for score in scores]
+    except (TypeError, ValueError) as exc:
+        raise RerankUnavailable("rerank helper returned non-numeric scores") from exc
 
 
 def node_content_hash(typ: str, node_id: str, text: str) -> str:
@@ -788,6 +878,58 @@ def relation_suggestions(
         })
     out.sort(key=lambda x: (-float(x["score"]), x["type"], x["id"]))
     return out[:limit]
+
+
+def rerank_relation_suggestions(
+    con: sqlite3.Connection,
+    suggestions: list[dict[str, Any]],
+    *,
+    query_text: str,
+    model: str | None = None,
+    limit: int = RERANK_CANDIDATE_LIMIT,
+    floor: float = RERANK_SCORE_FLOOR,
+    warnings: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Use a cross-encoder only to prune and order top candidates.
+
+    Rerank scores are intentionally not folded into suggestion["score"], because
+    the existing lexical/semantic score remains the only store/review gate.
+    """
+    if not suggestions:
+        return suggestions
+    head = suggestions[: max(0, limit)]
+    if not head:
+        return []
+
+    docs: list[str] = []
+    for suggestion in head:
+        text = node_text_by_id(con, suggestion["type"], suggestion["id"])
+        if text is None and warnings is not None:
+            warnings.append(f"rerank: no full text for {suggestion['type']}:{suggestion['id']}, scoring on summary")
+        docs.append(text if text is not None else suggestion.get("summary", ""))
+    try:
+        scores = call_rerank_helper(query_text, docs, model=model)
+    except RerankUnavailable as exc:
+        if warnings is not None:
+            warnings.append(f"rerank suggestions unavailable: {exc}")
+        return suggestions
+
+    kept: list[dict[str, Any]] = []
+    for suggestion, rerank_score in zip(head, scores, strict=True):
+        updated = dict(suggestion)
+        updated["signals"] = list(updated.get("signals") or [])
+        updated["rerank_score"] = round(float(rerank_score), 4)
+        updated["signals"].append(f"rerank relevance: {float(rerank_score):.4f}")
+        if float(rerank_score) >= floor:
+            kept.append(updated)
+        elif warnings is not None and float(suggestion["score"]) >= SUGGESTION_REVIEW_SCORE:
+            warnings.append(
+                f"rerank pruned a high-score candidate {suggestion['type']}:{suggestion['id']} "
+                f"(score={float(suggestion['score']):.1f}, rerank={float(rerank_score):.3f}<{floor}); "
+                f"check RERANK_SCORE_FLOOR if unexpected"
+            )
+    kept.sort(key=lambda x: (-float(x.get("rerank_score", 0.0)), -float(x["score"]), x["type"], x["id"]))
+    return kept
 
 
 def store_relation_suggestions(
@@ -1129,6 +1271,14 @@ def cmd_suggest(args: argparse.Namespace) -> int:
         semantic_limit=args.semantic_limit,
         warnings=warnings,
     )
+    if args.rerank:
+        suggestions = rerank_relation_suggestions(
+            con,
+            suggestions,
+            query_text="\n".join([args.title or "", body]),
+            model=args.rerank_model,
+            warnings=warnings,
+        )
     if args.json:
         for warning in warnings:
             print(f"WARN {warning}", file=sys.stderr)
@@ -1231,7 +1381,7 @@ def cmd_set_fact(args: argparse.Namespace) -> int:
     suggestions: list[dict[str, Any]] = []
     stored = 0
     warnings: list[str] = []
-    if args.semantic:
+    if args.semantic or args.rerank:
         suggestions = relation_suggestions(
             con,
             title=f"{args.subject} {args.predicate}",
@@ -1240,17 +1390,25 @@ def cmd_set_fact(args: argparse.Namespace) -> int:
             source_id=fact_id,
             limit=args.suggest_limit,
             min_score=args.suggest_min_score,
-            semantic=True,
+            semantic=args.semantic,
             semantic_model=args.model,
             semantic_limit=args.semantic_limit,
             warnings=warnings,
         )
+        if args.rerank:
+            suggestions = rerank_relation_suggestions(
+                con,
+                suggestions,
+                query_text="\n".join([f"{args.subject} {args.predicate}", args.value]),
+                model=args.rerank_model,
+                warnings=warnings,
+            )
         stored = store_relation_suggestions(con, "fact", fact_id, suggestions)
     con.commit()
     print(f"fact:{fact_id}")
     for warning in warnings:
         print(f"WARN {warning}", file=sys.stderr)
-    if args.semantic:
+    if args.semantic or args.rerank:
         print(f"relation suggestions stored: {stored}")
         for line in _suggestion_lines(suggestions, limit=min(args.suggest_limit, 12)):
             print(line)
@@ -1295,6 +1453,14 @@ def cmd_add_entry(args: argparse.Namespace) -> int:
             semantic_limit=args.semantic_limit,
             warnings=warnings,
         )
+        if args.rerank:
+            suggestions = rerank_relation_suggestions(
+                con,
+                suggestions,
+                query_text="\n".join([args.title, body]),
+                model=args.rerank_model,
+                warnings=warnings,
+            )
         stored = store_relation_suggestions(con, "entry", entry_id, suggestions)
     con.commit()
     print(f"entry:{entry_id}")
@@ -1505,6 +1671,8 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--semantic", action="store_true", help="merge optional dense semantic candidates from node_embeddings")
     sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
     sp.add_argument("--semantic-limit", type=int, default=SEMANTIC_DENSE_LIMIT)
+    sp.add_argument("--rerank", action="store_true", help="prune and reorder top relation candidates with the optional reranker")
+    sp.add_argument("--rerank-model", default=None, help=f"rerank model (default: {DEFAULT_RERANK_MODEL})")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_suggest)
 
@@ -1541,6 +1709,8 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--semantic", action="store_true", help="store relation suggestions using lexical plus dense semantic candidates")
     sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
     sp.add_argument("--semantic-limit", type=int, default=SEMANTIC_DENSE_LIMIT)
+    sp.add_argument("--rerank", action="store_true", help="prune and reorder top relation candidates with the optional reranker")
+    sp.add_argument("--rerank-model", default=None, help=f"rerank model (default: {DEFAULT_RERANK_MODEL})")
     sp.add_argument("--suggest-limit", type=int, default=20)
     sp.add_argument("--suggest-min-score", type=float, default=6.0)
     sp.set_defaults(func=cmd_set_fact)
@@ -1561,6 +1731,8 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--semantic", action="store_true", help="merge optional dense semantic candidates into relation suggestions")
     sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
     sp.add_argument("--semantic-limit", type=int, default=SEMANTIC_DENSE_LIMIT)
+    sp.add_argument("--rerank", action="store_true", help="prune and reorder top relation candidates with the optional reranker")
+    sp.add_argument("--rerank-model", default=None, help=f"rerank model (default: {DEFAULT_RERANK_MODEL})")
     sp.set_defaults(func=cmd_add_entry)
 
     sp = sub.add_parser("link")

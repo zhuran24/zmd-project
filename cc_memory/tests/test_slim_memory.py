@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import shutil
+import json
 import os
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -11,8 +12,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MEM = ROOT / 'cc_memory' / 'mem.py'
+RERANK_HELPER = ROOT / 'cc_memory' / 'rerank_helper.py'
 REAL_DB = ROOT / 'cc_memory' / 'memory.db'
 EMBED_PY = Path(r'C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe')
+RERANK_PY = Path(os.environ.get('CC_MEMORY_RERANK_PYTHON', r'C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe'))
+RERANK_MODEL = 'Qwen/Qwen3-Reranker-0.6B'
 
 
 @unittest.skipUnless(REAL_DB.exists(), 'no cc_memory/memory.db to copy')
@@ -89,6 +93,77 @@ cuda = _Cuda()
             'HF_HUB_OFFLINE': '1',
             'TRANSFORMERS_OFFLINE': '1',
         }
+
+    def fake_rerank_env(self) -> dict[str, str]:
+        fake_root = self.tmp / 'fake_rerank_runtime'
+        fake_st = fake_root / 'sentence_transformers'
+        fake_st.mkdir(parents=True)
+        fake_st.joinpath('__init__.py').write_text(
+            """
+class CrossEncoder:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def predict(self, pairs, **kwargs):
+        scores = []
+        for _query, doc in pairs:
+            text = doc.lower()
+            if 'rerank-keep-alpha' in text:
+                scores.append(0.95)
+            else:
+                scores.append(0.05)
+        return scores
+""".lstrip(),
+            encoding='utf-8',
+        )
+        fake_root.joinpath('torch.py').write_text(
+            """
+class _Cuda:
+    def is_available(self):
+        return False
+
+    def empty_cache(self):
+        pass
+
+
+class _Sigmoid:
+    def __call__(self, value):
+        return value
+
+
+class _NN:
+    Sigmoid = _Sigmoid
+
+
+cuda = _Cuda()
+nn = _NN()
+""".lstrip(),
+            encoding='utf-8',
+        )
+        python_path = str(fake_root)
+        if os.environ.get('PYTHONPATH'):
+            python_path += os.pathsep + os.environ['PYTHONPATH']
+        return {
+            'CC_MEMORY_RERANK_PYTHON': sys.executable,
+            'PYTHONPATH': python_path,
+            'HF_HOME': str(self.tmp / 'hf_cache'),
+            'HF_HUB_OFFLINE': '1',
+            'TRANSFORMERS_OFFLINE': '1',
+        }
+
+    def add_rerank_fixture_facts(self) -> None:
+        keep = self.run_mem(
+            'set-fact', '--force', '--id', 'rerank-keep-alpha',
+            '--subject', 'rerank', '--predicate', 'keep',
+            '--value', 'rerank-keep-alpha marker for a high relevance relation candidate',
+        )
+        self.assertEqual(keep.returncode, 0, keep.stdout + keep.stderr)
+        drop = self.run_mem(
+            'set-fact', '--force', '--id', 'rerank-drop-alpha',
+            '--subject', 'rerank', '--predicate', 'drop',
+            '--value', 'rerank-drop-alpha marker for a lexical false positive relation candidate',
+        )
+        self.assertEqual(drop.returncode, 0, drop.stdout + drop.stderr)
 
     def test_boot(self) -> None:
         p = self.run_mem('boot')
@@ -184,6 +259,52 @@ cuda = _Cuda()
         self.assertNotEqual(chk.returncode, 0, 'check must FAIL while semantic suggestions are pending')
         self.assertIn('need review', chk.stdout + chk.stderr)
 
+    def test_rerank_suggest_prunes_low_candidate_and_keeps_high(self) -> None:
+        self.add_rerank_fixture_facts()
+        env = self.fake_rerank_env()
+        p = self.run_mem(
+            'suggest',
+            '--title', 'rerank-keep-alpha rerank-drop-alpha',
+            '--body', 'candidate relation discovery',
+            '--rerank',
+            '--json',
+            env=env,
+        )
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        suggestions = json.loads(p.stdout)
+        ids = [s['id'] for s in suggestions]
+        self.assertIn('rerank-keep-alpha', ids)
+        self.assertNotIn('rerank-drop-alpha', ids)
+        kept = next(s for s in suggestions if s['id'] == 'rerank-keep-alpha')
+        self.assertEqual(kept['rerank_score'], 0.95)
+        self.assertGreaterEqual(kept['score'], 12.0)
+
+    def test_add_entry_rerank_prunes_before_store_and_gate_still_fails(self) -> None:
+        self.add_rerank_fixture_facts()
+        env = self.fake_rerank_env()
+        add = self.run_mem(
+            '--session', 'rerank-test',
+            'add-entry', '--id', 'rerank-gate-entry',
+            '--title', 'rerank-keep-alpha rerank-drop-alpha',
+            '--body', 'candidate relation discovery',
+            '--rerank',
+            env=env,
+        )
+        self.assertEqual(add.returncode, 0, add.stdout + add.stderr)
+        self.assertIn('relation suggestions stored: 1', add.stdout)
+        rows = self.run_mem('relations', '--all', '--json')
+        self.assertEqual(rows.returncode, 0, rows.stdout + rows.stderr)
+        stored_for_entry = [
+            row for row in json.loads(rows.stdout)
+            if row['source_type'] == 'entry' and row['source_id'] == 'rerank-gate-entry'
+        ]
+        targets = {row['target_id'] for row in stored_for_entry}
+        self.assertIn('rerank-keep-alpha', targets)
+        self.assertNotIn('rerank-drop-alpha', targets)
+        chk = self.run_mem('check')
+        self.assertNotEqual(chk.returncode, 0, 'check must FAIL while reranked high-score suggestions are pending')
+        self.assertIn('need review', chk.stdout + chk.stderr)
+
     def test_existing_commands_work_when_embedding_backend_absent(self) -> None:
         env = {'CC_MEMORY_EMBED_PYTHON': str(self.tmp / 'missing-python.exe')}
         search = self.run_mem('search', 'memory', env=env)
@@ -198,6 +319,41 @@ cuda = _Cuda()
         self.assertEqual(semantic.returncode, 0, semantic.stdout + semantic.stderr)
         self.assertIn('relation suggestions', semantic.stdout)
         self.assertIn('semantic suggestions unavailable', semantic.stderr)
+
+    def test_rerank_backend_absent_keeps_suggest_stdout_unchanged(self) -> None:
+        self.add_rerank_fixture_facts()
+        args = (
+            'suggest',
+            '--title', 'rerank-keep-alpha rerank-drop-alpha',
+            '--body', 'candidate relation discovery',
+        )
+        baseline = self.run_mem(*args)
+        self.assertEqual(baseline.returncode, 0, baseline.stdout + baseline.stderr)
+        env = {'CC_MEMORY_RERANK_PYTHON': str(self.tmp / 'missing-rerank-python.exe')}
+        degraded = self.run_mem(*args, '--rerank', env=env)
+        self.assertEqual(degraded.returncode, 0, degraded.stdout + degraded.stderr)
+        self.assertEqual(degraded.stdout, baseline.stdout)
+        self.assertIn('rerank suggestions unavailable', degraded.stderr)
+
+    def test_set_fact_rerank_does_not_trigger_semantic_backend(self) -> None:
+        # regression: set-fact --rerank (no --semantic) must NOT silently activate the P1 embed backend.
+        env = {
+            'CC_MEMORY_EMBED_PYTHON': str(self.tmp / 'missing-embed-python.exe'),
+            'CC_MEMORY_RERANK_PYTHON': str(self.tmp / 'missing-rerank-python.exe'),
+        }
+        p = self.run_mem(
+            '--session', 'rerank-only', 'set-fact', '--id', 'rerank-only-fact',
+            '--subject', 'rerank', '--predicate', 'only',
+            '--value', '记忆系统 memory.db codex workflow rerank only marker',
+            '--rerank', env=env,
+        )
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        err = p.stdout + p.stderr
+        self.assertNotIn(
+            'semantic suggestions unavailable', err,
+            'set-fact --rerank must not probe the embed backend when --semantic is absent',
+        )
+        self.assertIn('rerank suggestions unavailable', err)
 
     def test_add_entry_triggers_review_gate(self) -> None:
         # add-entry auto-creates pending relation suggestions; check must then FAIL (option-A gate)
@@ -218,6 +374,43 @@ cuda = _Cuda()
         a2 = self.run_mem('--session', 'sess-A', 'boot')
         self.assertEqual(a2.returncode, 0, a2.stdout + a2.stderr)
         self.assertIn('sess-B', a2.stdout)
+
+    def test_real_qwen_rerank_helper_smoke_when_cached(self) -> None:
+        hf_home = Path(os.environ.get('HF_HOME', r'E:\caches\huggingface'))
+        model_cache = hf_home / 'hub' / 'models--Qwen--Qwen3-Reranker-0.6B'
+        if not RERANK_PY.exists():
+            self.skipTest('rerank venv python is absent')
+        if not model_cache.exists():
+            self.skipTest('Qwen reranker cache is absent')
+        env = os.environ.copy()
+        env.update({
+            'HF_HOME': str(hf_home),
+            'HF_HUB_CACHE': str(hf_home / 'hub'),
+            'HF_XET_CACHE': str(hf_home / 'xet'),
+            'HF_HUB_OFFLINE': '1',
+            'TRANSFORMERS_OFFLINE': '1',
+        })
+        payload = {
+            'query': 'What is the capital of China?',
+            'docs': [
+                'The capital of China is Beijing.',
+                'A bicycle wheel uses spokes and a tire.',
+            ],
+            'model': RERANK_MODEL,
+        }
+        p = subprocess.run(
+            [str(RERANK_PY), str(RERANK_HELPER)],
+            input=json.dumps(payload, ensure_ascii=False),
+            text=True,
+            capture_output=True,
+            timeout=600,
+            cwd=ROOT,
+            env=env,
+        )
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        scores = json.loads(p.stdout)['scores']
+        self.assertEqual(len(scores), 2)
+        self.assertGreater(scores[0], scores[1])
 
 
 if __name__ == '__main__':
