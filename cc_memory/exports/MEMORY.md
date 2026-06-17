@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 13
-- entries: 13
-- hard edges: 6
+- entries: 14
+- hard edges: 7
 - pending relation suggestions: 10
 
 ## Start Here
@@ -35,6 +35,7 @@ python cc_memory/mem.py boot
 
 - `arch-layering-plan-proof-vs-ops` — owner 拍板的长期重构：解耦 process_priority/telemetry/audit 出 proof 核心→可移出 digest 白名单；代价含 P1.2 应重审
 - `cc-memory-gpu-retrieval-upgrade-plan` — 下一步给 cc_memory 加 GPU 语义检索，补当前词法引擎"逮不到同义/抽象关系"的短板。计划书: C:\22957\download\GPU_RETRIEVAL_ENHANCEMENT_PLAN.md…
+- `cc-memory-p1-semantic-live-20260617` — P1 语义层上线(harrier-0.6b,d8f6c85/9ea493d);坑:跑前须 HF_HOME=E:\hf_cache;标定:相关余弦~0.42-0.48 故 dense 仅 advisory;残留 minor#2/#3
 - `codex-executes-claude-orchestrates` — 默认分工:具体工作/实现默认交给 codex 执行（它全权限、听指令，按提示词干活）；claude（我）负责周边任务——任务分配/编排、审阅、对抗式验证、最终验收等。即 codex = 执行体，claude = 协调与把关。owner 2026-06-17 定。
 - `codex-needs-explicit-read-memory` — 本项目里 codex agent / 子代理不会主动读 CLAUDE.md 或 cc_memory 记忆系统。每次调用 codex（Agent 工具 agentType:codex / Workflow 内 agentType…
 - `codex-skills-and-download-route` — codex skill 都在 ~/.codex/skills(CLI/桌面共用一份,子代理需显式调用);本机下模型走 hf-mirror.com 直连、单个海外大文件用 fast-dl-via-jp.ps1(隔离JP节点)、HF缓存在 E:\caches\huggingface
