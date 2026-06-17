@@ -50,6 +50,99 @@ VALID_CANDIDATE_STATUSES = {
     "EPSILON_CERTIFIED",
 }
 STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
+FreshCandidateRecord = tuple[int, str, str]
+_FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID: dict[
+    int, tuple[int, dict[str, FreshCandidateRecord]]
+] = {}
+
+
+def _candidate_freshness_bucket(
+    state: Mapping[str, Any],
+) -> dict[str, FreshCandidateRecord]:
+    candidates = state.get("candidates")
+    candidates_id = id(candidates) if isinstance(candidates, Mapping) else 0
+    state_id = id(state)
+    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(state_id)
+    if bucket is None or bucket[0] != candidates_id:
+        fresh_records: dict[str, FreshCandidateRecord] = {}
+        _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID[state_id] = (
+            candidates_id,
+            fresh_records,
+        )
+        return fresh_records
+    return bucket[1]
+
+
+def _candidate_record_freshness_token(
+    state: Mapping[str, Any],
+    key: str,
+    status: str,
+) -> Optional[FreshCandidateRecord]:
+    candidates = state.get("candidates")
+    if not isinstance(candidates, Mapping):
+        return None
+    record = candidates.get(key)
+    if not isinstance(record, Mapping):
+        return None
+    return id(record), str(status), _canonical_digest(record)
+
+
+def _mark_candidate_status_fresh_for_current_process(
+    state: Mapping[str, Any],
+    key: str,
+    status: str,
+) -> None:
+    fresh_records = _candidate_freshness_bucket(state)
+    key = str(key)
+    if status in STRONG_CANDIDATE_STATUSES:
+        record_token = _candidate_record_freshness_token(state, key, status)
+        if record_token is None:
+            fresh_records.pop(key, None)
+        else:
+            fresh_records[key] = record_token
+    else:
+        fresh_records.pop(key, None)
+
+
+def _clear_candidate_status_freshness_for_state(state: Mapping[str, Any]) -> None:
+    _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.pop(id(state), None)
+
+
+def terminal_proof_bearing_candidate_freshness_violation(
+    state: Mapping[str, Any],
+) -> Optional[str]:
+    """Return why terminal proof-bearing candidate statuses are not fresh.
+
+    Candidate-wide CERTIFIED / INFEASIBLE conclusions become proof-bearing only
+    when they are produced through the current campaign process.  A JSON mapping
+    loaded or fabricated outside that process may still be structurally valid,
+    but it is not allowed to mint a public terminal certificate.
+    """
+
+    if not has_terminal_full_frontier_certified_evidence(state):
+        return None
+    candidates = state.get("candidates")
+    if not isinstance(candidates, Mapping):
+        return "terminal_candidate_records_missing"
+    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(id(state))
+    fresh_records: Mapping[str, FreshCandidateRecord]
+    if bucket is not None and bucket[0] == id(candidates):
+        fresh_records = bucket[1]
+    else:
+        fresh_records = {}
+    for raw_key, raw_record in sorted(candidates.items(), key=lambda item: str(item[0])):
+        if not isinstance(raw_record, Mapping):
+            continue
+        status = str(raw_record.get("status", ""))
+        if status not in STRONG_CANDIDATE_STATUSES:
+            continue
+        key = str(raw_key)
+        expected = fresh_records.get(key)
+        current_token = (id(raw_record), status, _canonical_digest(raw_record))
+        if expected != current_token:
+            return f"terminal_candidate_status_not_current_process_fresh:{key}"
+    return None
+
 
 # A terminal public final_result is a projection of the certified candidate
 # placement witness, not an extensible proof envelope.  Extra top-level fields can
@@ -206,7 +299,23 @@ OPTIONAL_EXACT_HASH_FILES = {
 }
 MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
 CERTIFIED_EXACT_SOURCE_DIGEST_KEY = "certified_exact_source_tree"
+# Keep runtime checkpoint currentness aligned with the P1.2 close-kernel seal:
+# every registered certified/public proof-bearing sink, plus its package import
+# surface, must drift the certified_exact source digest.
 CERTIFIED_EXACT_SOURCE_HASH_FILES = (
+    "scripts/build_industrial_planner_single_base_delivery_release.py",
+    "scripts/check_p1_2_proof_obligations.py",
+    "src/cuts/__init__.py",
+    "src/cuts/families/__init__.py",
+    "src/cuts/families/pattern_nogood.py",
+    "src/cuts/helpers/__init__.py",
+    "src/cuts/helpers/bounded_core_minimizer.py",
+    "src/cuts/lifecycle.py",
+    "src/cuts/oracles/__init__.py",
+    "src/cuts/oracles/pattern_nogood_oracle.py",
+    "src/cuts/oracles/power_cover_oracle.py",
+    "src/cuts/oracles/region_capacity_oracle.py",
+    "src/cuts/oracles/shape_packing_hall_oracle.py",
     "src/interchange/__init__.py",
     "src/interchange/compatibility_manifest.py",
     "src/interchange/export_registry.py",
@@ -221,10 +330,13 @@ CERTIFIED_EXACT_SOURCE_HASH_FILES = (
     "src/models/abstract_routing_layer.py",
     "src/models/binding_subproblem.py",
     "src/models/cp_sat_worker_config.py",
+    "src/models/cpsat_minimum_model.py",
     "src/models/cut_manager.py",
     "src/models/d2_commodity_flow_core.py",
     "src/models/exact_coordinate_master.py",
     "src/models/flow_subproblem.py",
+    "src/models/highs_candidate_evaluator.py",
+    "src/models/highs_master_model.py",
     "src/models/master_model.py",
     "src/models/patch_routing_core.py",
     "src/models/port_binding.py",
@@ -232,6 +344,7 @@ CERTIFIED_EXACT_SOURCE_HASH_FILES = (
     "src/models/power_placement_subproblem.py",
     "src/models/routing_binding_context.py",
     "src/models/routing_subproblem.py",
+    "src/models/scip_master_model.py",
     "src/models/separator_capacity_hull.py",
     "src/models/solution_hint_parser.py",
     "src/preprocess/operation_profiles.py",
@@ -247,6 +360,7 @@ CERTIFIED_EXACT_SOURCE_HASH_FILES = (
     "src/search/commodity_throughput.py",
     "src/search/d2_separator.py",
     "src/search/exact_campaign.py",
+    "src/search/exact_campaign_inspector.py",
     "src/search/exact_parallel_scheduler.py",
     "src/search/master_hint_persistence.py",
     "src/search/outer_search.py",
@@ -1633,6 +1747,8 @@ def _sanitize_resume_state_for_untrusted_candidate_evidence(
     if not sanitized_keys:
         return False
 
+    _clear_candidate_status_freshness_for_state(state)
+
     # Any terminal full-frontier evidence that relied on checkpoint-loaded
     # proof-bearing candidate statuses is no longer authoritative.  The outer
     # search must re-establish every frontier exclusion and positive witness in
@@ -2358,6 +2474,7 @@ class ExactCampaign:
         record.pop("solution", None)
 
         candidates[key] = record
+        _mark_candidate_status_fresh_for_current_process(self.state, key, "RUNNING")
         self.state["last_stop_reason"] = None
         if self.state.get("final_result") is None:
             self.state["final_status"] = None
@@ -2470,6 +2587,11 @@ class ExactCampaign:
             record.pop("solution", None)
 
         candidates[key] = record
+        _mark_candidate_status_fresh_for_current_process(
+            self.state,
+            key,
+            normalized_status,
+        )
         self.state["updated_at"] = timestamp
 
     def update_candidate_running_proof_summary(
@@ -2519,6 +2641,8 @@ class ExactCampaign:
             self.state,
             project_root=self.project_root,
         ):
+            return None
+        if terminal_proof_bearing_candidate_freshness_violation(self.state) is not None:
             return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):
