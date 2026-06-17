@@ -1630,7 +1630,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/certified_surface.py': 'ea24dc498a551f002076a4a9b41046697d9dcc08550bf8eb76430ed75e7f4337',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
     'src/search/exact_campaign.py': '5c58ab5eee45573e0fb9bd436108e90beef2169dd432f661598dd09588acd4bf',
-    'src/search/exact_campaign_inspector.py': 'b50bf8675156ba4e356b70077fc8e79dd98430bbbae2b890a5c5eb20d2c30567',
+    'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/outer_search.py': '2db84f7294742fd5859a7efd883865c89c630e3ceaa6408437e13a44e2aaf8bc',
