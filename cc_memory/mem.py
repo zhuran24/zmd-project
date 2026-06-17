@@ -483,7 +483,7 @@ def embedding_model_id(model: str) -> str:
 
 def embedding_env() -> dict[str, str]:
     env = os.environ.copy()
-    hf_home = env.get("HF_HOME") or r"E:\hf_cache"
+    hf_home = env.get("HF_HOME") or r"E:\caches\huggingface"
     env["HF_HOME"] = hf_home
     env.setdefault("HF_HUB_OFFLINE", "1")
     env.setdefault("TRANSFORMERS_OFFLINE", "1")

@@ -13,7 +13,7 @@ import sys
 import traceback
 from typing import Any
 
-os.environ.setdefault("HF_HOME", r"E:\hf_cache")
+os.environ.setdefault("HF_HOME", r"E:\caches\huggingface")
 os.environ.setdefault("HF_HUB_CACHE", os.path.join(os.environ["HF_HOME"], "hub"))
 os.environ.setdefault("HF_XET_CACHE", os.path.join(os.environ["HF_HOME"], "xet"))
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
@@ -74,11 +74,12 @@ def normalize(array: Any) -> Any:
 
 
 def encode_texts(model: Any, texts: list[str], *, mode: str, model_name: str, batch_size: int) -> Any:
+    # Normalization is applied once by normalize() on the result (with zero-vector
+    # protection); do not also ask the encoder to normalize.
     encode_kwargs = {
         "batch_size": batch_size,
         "convert_to_numpy": True,
         "show_progress_bar": False,
-        "normalize_embeddings": True,
     }
     prompt_name = query_prompt_for(model_name) if mode == "query" else None
     if prompt_name:
@@ -87,7 +88,14 @@ def encode_texts(model: Any, texts: list[str], *, mode: str, model_name: str, ba
                 return model.encode_query(texts, prompt_name=prompt_name, **encode_kwargs)
             except TypeError:
                 pass
-        return model.encode(texts, prompt_name=prompt_name, **encode_kwargs)
+        try:
+            return model.encode(texts, prompt_name=prompt_name, **encode_kwargs)
+        except (KeyError, ValueError) as exc:
+            print(
+                f"PROMPT_FALLBACK prompt_name={prompt_name!r} unavailable ({exc}); encoding without prompt",
+                file=sys.stderr,
+                flush=True,
+            )
     return model.encode(texts, **encode_kwargs)
 
 
