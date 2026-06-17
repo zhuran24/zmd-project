@@ -36,7 +36,7 @@ python cc_memory/mem.py boot
 ## Entries
 
 - `arch-layering-plan-proof-vs-ops` — 核实+GPT外审:三候选模块当前架构 locally 不可缩短(pre-gate import 即 TCB);原解耦移出白名单前提证伪;衍生 __init__.py 边界债;采纳 A-prime 不动核心
-- `boundary-debt-pregate-init-py` — runtime/__init__.py(51B)+phase3b+anchor119(0B)pre-gate 执行面不在白名单;interchange 已收=覆盖不一致;方向1删除不失效checkpoint(推荐)
+- `boundary-debt-pregate-init-py` — 3 个 pre-gate __init__.py(runtime/phase3b/anchor119)删除变 namespace package 消除执行面;不动白名单故不失效 checkpoint;加 import-boundary 静态测试防重现;commit bfea3b9 已 push。CLOSED
 - `cc-memory-gpu-retrieval-upgrade-plan` — 下一步给 cc_memory 加 GPU 语义检索，补当前词法引擎"逮不到同义/抽象关系"的短板。计划书: C:\22957\download\GPU_RETRIEVAL_ENHANCEMENT_PLAN.md…
 - `cc-memory-p1-semantic-live-20260617` — P1 语义层上线(harrier-0.6b,d8f6c85/9ea493d);坑:跑前须 HF_HOME=E:\hf_cache;标定:相关余弦~0.42-0.48 故 dense 仅 advisory;残留 minor#2/#3
 - `cc-memory-p2-reranker-live-20260617` — P2 reranker 上线(Qwen3-Reranker-0.6B,bf50387);实测果断:具体query真目标~1.0/噪声~0、0.50阈值好,泛query返空(可接受);剪高词法假阳性、真目标顶#1;WARN 可观测;缓存统一
