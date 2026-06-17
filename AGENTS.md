@@ -110,6 +110,15 @@ This is the Endfield IndustrialPlanner certified-exact maximum empty-rectangle
 solver. The default path is `certified_exact`; `exploratory` is a separate heuristic
 or diagnostic path.
 
+P1.2 close-kernel sealing (2026-06-17): proof-bearing strong-status source sinks on
+the current default certified path are registered in
+`data/proof_obligations/p1_2_proof_obligations.json::close_kernel_contract` and checked by
+`scripts/check_p1_2_proof_obligations.py`. Adding a new `CERTIFIED` / proof-bearing
+`INFEASIBLE` surface, drifting a sealed sink hash, or removing required guard tokens reopens
+the P1.2 close claim until reviewed. The current local seal includes the follow-up
+F-CAM-R8-02 durable resume-sanitization fix; do not replace it with the earlier package
+snapshot without re-sealing `src/search/exact_campaign.py` and `src/search/outer_search.py`.
+
 Main call chain:
 
 ```text
@@ -252,6 +261,10 @@ check mounted drives before disk-heavy work; keep small irreplaceable state in t
 workspace; route large regenerable downloads, caches, extracted packages, model
 files, and build artifacts away from `C:` when appropriate. Do not use `G:` for local
 caches or temp outputs.
+
+When packaging this project for handoff, keep archive filenames concise. Prefer
+`zmd_<short-tag>_<YYYYMMDD_HHMM>.7z` or similar; put detailed purpose, commit,
+hash, and verification notes in the message or manifest, not in the filename.
 
 Generated proof outputs, checkpoints, blueprints, and certified delivery manifests
 are intentionally guarded by preflight. Do not commit forbidden generated paths such

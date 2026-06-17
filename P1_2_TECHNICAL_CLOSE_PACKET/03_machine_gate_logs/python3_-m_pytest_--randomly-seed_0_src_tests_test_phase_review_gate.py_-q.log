@@ -1,0 +1,4 @@
+=== python3 -m pytest --randomly-seed=0 src/tests/test_phase_review_gate.py -q ===
+...........                                                              [100%]
+11 passed in 8.36s
+exit_code=0

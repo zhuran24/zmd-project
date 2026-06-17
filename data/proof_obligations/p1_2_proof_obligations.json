@@ -2,10 +2,10 @@
   "schema_version": 1,
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
-  "updated_at": "2026-06-11",
-  "review_anchor": "v98_b5a_symlink_authority_sealing",
-  "summary": "P1.2 remains fail-closed. V98 closes the B5A sibling of V97: the anchor-sprint wrapper no longer pre-resolves the campaign path, so a caller-supplied symlink alias reaches and is rejected by the central verifier instead of looking publishable on the phase-gate surface.",
-  "phase_gate_required_anchor": "v98_b5a_symlink_authority_sealing",
+  "updated_at": "2026-06-17",
+  "review_anchor": "v99_p1_2_close_kernel_sealing",
+  "summary": "P1.2 remains fail-closed. V99 lands a small close-kernel contract: every proof-bearing CERTIFIED / INFEASIBLE status surface in the current default certified_exact scan roots must be registered, source-hash sealed, bound to a proof obligation, and guarded; any new or drifted strong-status sink reopens the close claim.",
+  "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
     "canonical_transition_function": "step_6_attach_scope_check",
@@ -459,6 +459,27 @@
         "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ],
       "policy": "The repo no longer proves or counts clean reviews. P1.3B opens only by owner_manual_decision; receipts are informational records."
+    },
+    {
+      "id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+      "title": "Close-kernel seals proof-bearing sink inventory and treats the gate as an attack surface",
+      "v_findings": [
+        "v99_p1_2_close_kernel_sealing"
+      ],
+      "required_tests": [
+        "test_p1_2_close_kernel_rejects_unregistered_certified_sink",
+        "test_p1_2_close_kernel_rejects_guard_token_removal",
+        "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
+        "test_p1_2_close_kernel_manifest_is_strict_json",
+        "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v99_close_kernel_sealing.md",
+        "data/proof_obligations/p1_2_proof_obligations.json",
+        "scripts/check_p1_2_proof_obligations.py",
+        "src/tests/test_p1_2_proof_obligations.py"
+      ],
+      "policy": "All current proof-bearing strong-status source surfaces in the close-kernel scan roots are sealed by path, source_sha256, proof obligation, and guard tokens; new, unregistered, or drifted CERTIFIED / proof-bearing INFEASIBLE sinks fail closed until reviewed."
     }
   ],
   "certified_cut_replay_contract": {
@@ -507,5 +528,813 @@
       "Direct certified delivery manifest writes must verify that best_certified_result comes from the regular in-project disk checkpoint, not a caller-only memory campaign, and must publish it only through the canonical regular in-project certified_delivery_manifest.json surface."
     ],
     "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, non-strict declare_mode, candidate-subset, non-terminal incumbent, unsafe pre-session master-domain override, or post-hoc registered cut/result is not replay-safe and must not prune or certify search. Memory-only manifest authority is not a certified export source. Canonical manifest output, not an arbitrary output_path or low-level writer call, is the only certified delivery-manifest publication surface."
+  },
+  "close_kernel_contract": {
+    "schema_version": 1,
+    "review_anchor": "v99_p1_2_close_kernel_sealing",
+    "policy": "Small structural close kernel, not a theorem prover. It prevents the close proof from becoming a new dark hallway by sealing proof-bearing strong-status sinks and central guard tokens.",
+    "trusted_computing_base": [
+      "Python runtime executing scripts/check_p1_2_proof_obligations.py",
+      "current Git/source tree supplied to the checker",
+      "filesystem path and regular-file semantics used by the checker",
+      "pytest/CI exit status reporting faithfully when invoked",
+      "human reviewer interpretation of the 2026-06-17 P1.2 boundary files"
+    ],
+    "not_claimed": [
+      "all software bugs are impossible",
+      "future P1.3B production master integration is safe",
+      "owner clean-review counting or P1.3B opening is automated here",
+      "Python, OS, filesystem, CI, reviewers, or this checker are mathematically infallible"
+    ],
+    "attack_categories": [
+      "direct_writer_bypass",
+      "status_synonym_or_free_text_claim",
+      "stale_checkpoint_or_manifest_authority",
+      "path_symlink_or_shadow_authority",
+      "malformed_json_or_weak_typing",
+      "unsafe_env_or_config_semantics",
+      "parallel_resume_or_crash_partial_authority",
+      "gate_or_obligation_mutation"
+    ],
+    "proof_bearing_tokens": [
+      "CERTIFIED",
+      "INFEASIBLE",
+      "RUN_STATUS_CERTIFIED",
+      "RUN_STATUS_INFEASIBLE",
+      "terminal_frontier_evidence",
+      "best_certified_result",
+      "certified_surface",
+      "proof_source",
+      "certified_delivery_manifest.json",
+      "final_solution.json",
+      "optimal_blueprint.json",
+      "proof-bearing",
+      "proof_bearing"
+    ],
+    "scan_roots": [
+      "src",
+      "scripts/check_p1_2_proof_obligations.py",
+      "scripts/build_industrial_planner_single_base_delivery_release.py"
+    ],
+    "excluded_subpaths": [
+      "src/tests",
+      "src/search/phase3b",
+      "src/ai_accel",
+      "src/runtime",
+      "src/preprocess",
+      ".artifacts",
+      ".pytest_tmp",
+      "cc_memory"
+    ],
+    "critical_gate_files": [
+      "scripts/check_p1_2_proof_obligations.py",
+      "data/proof_obligations/p1_2_proof_obligations.json",
+      "src/search/certified_surface.py",
+      "src/io/delivery_manifest.py",
+      "src/search/certified_frontier.py",
+      "src/search/exact_campaign.py",
+      "src/search/outer_search.py",
+      "src/search/exact_parallel_scheduler.py",
+      "src/search/benders_loop.py",
+      "src/render/industrial_planner_exact_status.py",
+      "scripts/build_industrial_planner_single_base_delivery_release.py"
+    ],
+    "sink_files": [
+      {
+        "path": "scripts/build_industrial_planner_single_base_delivery_release.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "certified_surface",
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "normalize_non_authoritative_exact_status",
+          "normalize_non_authoritative_exact_note",
+          "may not claim"
+        ],
+        "source_sha256": "6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "scripts/check_p1_2_proof_obligations.py",
+        "classification": "p1_2_close_kernel",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "best_certified_result",
+          "certified_surface",
+          "final_solution.json",
+          "proof-bearing",
+          "proof_bearing"
+        ],
+        "required_guard_tokens": [
+          "close_kernel_contract",
+          "_check_close_kernel_contract",
+          "source_sha256_drift_reopens_p1_2_close_claim"
+        ],
+        "source_sha256": "c125eab7d1e5628fc31b997e14eccecdff5fc1f7f26dc69ecf9bf18dea2460ed",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/adapters/industrial_planner/export_blueprint.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "9a5410b559a0e4c91fd1cf4bee8263f8d4f212560c9c29a59e85a08a34a4217d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/adapters/industrial_planner/mapping_registry.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/families/pattern_nogood.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "c65eb8296c9c370631efe7167ddea73192723e8253aeb6b6c17694966d68fb90",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/helpers/bounded_core_minimizer.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "da3184e860ea49fa88a45da2db09c7b09fd742fc7eb10b6f7018eb1e5b98985b",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/lifecycle.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-STEP7-ATTACH-MIRROR",
+        "terms": [
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "proof-bearing"
+        ],
+        "source_sha256": "3b63cb3d18d5d0bad20e017ad6ad93b0b7773ea5b5165ead79e91750cd3043ba",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/pattern_nogood_oracle.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "019d808d18619c9fc3e3692d476040cad3c8b360b5671bce54c6b8ac9003ef37",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/power_cover_oracle.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/region_capacity_oracle.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "95b65c40a02dea298bb51067a8c50edecff4868946050d5db41ca5a456421de1",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/shape_packing_hall_oracle.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/io/delivery_manifest.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "best_certified_result",
+          "certified_surface",
+          "certified_delivery_manifest.json",
+          "final_solution.json"
+        ],
+        "required_guard_tokens": [
+          "validate_certified_delivery_manifest_matches_campaign",
+          "validate_delivery_artifacts_match_campaign",
+          "write_certified_delivery_manifest"
+        ],
+        "source_sha256": "dbaf33755a7e1d17d6fa5a08d596ee3fdfdd5bbed1164fd147a8f9d9f77e4d98",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/io/output_schema.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/io/serializer.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "b0186ce5582e5695c69eaed7f72318e4d3e683ee6a35c85e9b5efaaf55cad95f",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/abstract_routing_layer.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/binding_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "ea5e277879efea9b3a48f2782f98ff3203b684e7c186c4b05fa61a4b81e42929",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/cpsat_minimum_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/cut_manager.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "ebf8663111571c458e16c4290c8aa527e73187fed67acc35198df095a0a66905",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/d2_commodity_flow_core.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "55aee97d9162541efd0014c5f4682c1d4d60c1fb0ef9246a657dfbb3ff17775e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/exact_coordinate_master.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "8d4d9f1c09f8f2d2e16b4507f0f42444e327b737764a76d64124e6c32abaca9f",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/flow_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/highs_candidate_evaluator.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/highs_master_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/master_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "437dcf94703fff826a5f17e68a0da707231bd5a03e0679b957b6625c915f6169",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/patch_routing_core.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "371cdf69c6d30a1499dbd596750dfc1802eb4e1aa652e3042c044c3136c17b98",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/power_placement_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/routing_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "25c56e1f5f383f8696f93d876282f1cd5c26a37e610e6bc7d6ca8ffcd737ba49",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/scip_master_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "d3590b07088e4e67c5b714aca78e39acddd0da8b59a7b96a68ae7b4b270f2bea",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_exact_status.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "certified_surface"
+        ],
+        "required_guard_tokens": [
+          "normalize_non_authoritative_exact_status",
+          "_RESERVED_CERTIFIED_TOKEN",
+          "normalize_non_authoritative_exact_note"
+        ],
+        "source_sha256": "22875159909302a5d5dde77bd832539be1b01a10e40606d8d459996714c56183",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_entrypoints.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "e80cc8d6c4badadad9c23a2c6c8c645e653425b2b0002879baadb29c3dd6759c",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_frontdoor.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "5e530baaa4e49e149755c96452521daa93ece7a3c29b6e05545fcd5819530fdb",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_landing.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "085212ba166c2211a12a590c12d07a6a8cf6f38429d49a4d97b79633296b8da9",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_surface_alignment.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_surface_health.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_viewer.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/report_builder.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "c92f43fc9e305f8e60868d9cfc5bd9daf146373afb9a22310dd2fefa2e951531",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/serve.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "038160a4155b2f7ad2da94bdccd7870bec61e043daa0346b41a88c6bfcb200ff",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/benders_loop.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "partial_due_to_time_budget",
+          "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
+          "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
+        ],
+        "source_sha256": "0205ffe8e33674af8aae70bb83b0392948aa83f33218def0dc15806e1280e4b7",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/campaign_telemetry.py",
+        "classification": "diagnostic_or_telemetry_non_authority",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE",
+          "proof_source"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/campaign_triage.py",
+        "classification": "diagnostic_or_telemetry_non_authority",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "INFEASIBLE",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "source_sha256": "0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/certified_frontier.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE",
+          "terminal_frontier_evidence"
+        ],
+        "required_guard_tokens": [
+          "build_terminal_frontier_evidence",
+          "terminal_frontier_evidence_violation",
+          "TERMINAL_FRONTIER_EVIDENCE_SOURCE"
+        ],
+        "source_sha256": "3ead765526029de3df7e843c2bbed03d2e413918bd603950bdcc53a29e0f505e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/certified_surface.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "best_certified_result",
+          "certified_surface",
+          "certified_delivery_manifest.json",
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "verify_certified_delivery_surface",
+          "evaluate_certified_delivery_surface"
+        ],
+        "source_sha256": "ca66ebacf68791c0448dda410558591c699bdbe1650a1c7f8d8ae4cde6ce23f0",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/d2_separator.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/exact_campaign.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "best_certified_result",
+          "certified_surface",
+          "final_solution.json",
+          "optimal_blueprint.json",
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "validate_exact_campaign_resume_state",
+          "terminal_frontier_evidence",
+          "best_certified_result"
+        ],
+        "source_sha256": "2dea863944da6ee72e070fba98a737d41e992a50bf2bf6414f7d573a143d53b5",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/exact_campaign_inspector.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "best_certified_result",
+          "certified_surface",
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "b50bf8675156ba4e356b70077fc8e79dd98430bbbae2b890a5c5eb20d2c30567",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/exact_parallel_scheduler.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "worker"
+        ],
+        "source_sha256": "e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/heuristic_feasible_finder.py",
+        "classification": "exploratory_or_heuristic_non_authority",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/outer_search.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE",
+          "terminal_frontier_evidence",
+          "best_certified_result",
+          "certified_surface"
+        ],
+        "required_guard_tokens": [
+          "build_terminal_frontier_evidence",
+          "_parallel_wave_result_identity_failure",
+          "_parallel_wave_failure_discards_results"
+        ],
+        "source_sha256": "2db84f7294742fd5859a7efd883865c89c630e3ceaa6408437e13a44e2aaf8bc",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/patch_conflict_separator.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/smt_mt_outer_pruning.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      }
+    ]
   }
 }

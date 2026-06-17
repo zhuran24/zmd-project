@@ -41,6 +41,9 @@ P1.2 的 GPT pro batch audit 应聚焦当前默认 `certified_exact` 证明链�
 receipt 是否算 clean、close gate provenance、P1.3B 是否开门、以及 `step_8_apply_to_master`
 production integration 不作为 P1.2 技术职责本体审查；这些分别属于 close gate / governance 或 P1.3B。
 详 [08_phase_1_2_plan.md](08_phase_1_2_plan.md) 的 P1.2 职责边界。
+V99 起，batch audit 还应把 close kernel 本身当攻击面：新增或漂移的 proof-bearing sink、
+绕过 central certified surface 的 writer、以及修改 proof-obligation gate / manifest / critical authority file，
+都会重开 P1.2 close claim，而不是作为 clean review 的普通小改动处理。
 
 **模式 (per [[big-milestone-gpt-pro-review]] + [[review-pkg-no-prompt-inside]])**
 - 打包 7z + zip 壳 + ship 7za binary (per `[[review-pkg-7z-strategy]]`, ~5-7 MB 全项目)

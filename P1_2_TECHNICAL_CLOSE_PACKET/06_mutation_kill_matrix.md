@@ -1,0 +1,16 @@
+# Step 6 mutation kill matrix
+
+| mutation_id | bad_change | expected_failure | actual_failure | killed_by | result |
+|---|---|---|---|---|---|
+| M1 | added src/search/rogue_certified_sink.py with CERTIFIED status | unregistered proof-bearing close-kernel sink | P1.2 proof obligation check failed: 1 issue(s) \|   - unregistered proof-bearing close-kernel sink: src/search/rogue_certified_sink.py | proof_obligation_gate | PASS |
+| M2 | removed verify_certified_delivery_surface guard alias in certified_surface.py | missing guard token / alias drift in certified_surface | P1.2 proof obligation check failed: 1 issue(s) \|   - registered close-kernel sink hash drift reopens P1.2 close claim: src/search/certified_surface.py | proof_obligation_gate | PASS |
+| M3 | appended comment to registered delivery_manifest.py without updating source_sha256 | source_sha256 drift on delivery_manifest | P1.2 proof obligation check failed: 1 issue(s) \|   - registered close-kernel sink hash drift reopens P1.2 close claim: src/io/delivery_manifest.py | proof_obligation_gate | PASS |
+| M4 | introduced allow-style certified payload flag near write_certified_delivery_manifest | source_sha256 drift / unsafe allow payload mutation caught | P1.2 proof obligation check failed: 1 issue(s) \|   - registered close-kernel sink hash drift reopens P1.2 close claim: src/io/delivery_manifest.py | proof_obligation_gate | PASS |
+| M5 | added direct public release CERTIFIED constant to release builder | source_sha256 drift on public release surface | P1.2 proof obligation check failed: 1 issue(s) \|   - registered close-kernel sink hash drift reopens P1.2 close claim: scripts/build_industrial_planner_single_base_delivery_release.py | proof_obligation_gate | PASS |
+| M6 | removed required phase-gate doc marker phrase from docs/PHASE_1_2_CLOSE_GATE.md | phase gate required doc marker missing | phase_1_2_spike_close: status=blocked_manual_review_count, anchor=v99_p1_2_close_kernel_sealing, next_allowed=False, counting_authority=owner_manual_count_outside_repo \| phase review gate check failed for data/review_gates/phase_1_2_spike_close.json: 1 issue(s) \|   - required marker not found in docs/PHASE_1_2_CLOSE_GATE.md: 'owner manual decision' | phase_review_gate | PASS |
+| M7 | set next_phase_entry.allowed and owner p1_3b_entry_allowed to true without owner decision | phase gate must remain blocked/manual owner decision required | P1.2 proof obligation check failed: 1 issue(s) \|   - phase gate must remain blocked unless owner manual decision opens P1.3B | proof_obligation_gate | PASS |
+| M8 | removed _check_close_kernel_contract call from proof-obligation checker main | checker self-binding rejects removed close-kernel call | P1.2 proof obligation check failed: 1 issue(s) \|   - proof-obligation checker main must call _check_close_kernel_contract | proof_obligation_gate | PASS |
+
+Result: all eight required negative controls were killed. M8 was first observed as an un-killed mutation against the incoming tree; the final candidate includes a checker self-binding guard plus a regression test so the same mutation now fails in the proof-obligation gate.
+
+Detailed per-mutation logs are in `06_mutation_logs/`.

@@ -24,7 +24,8 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "P1.2 proof obligation check passed: 8 obligations anchored" in result.stdout
+    assert "P1.2 proof obligation check passed: 9 obligations anchored" in result.stdout
+    assert "proof-bearing sink files sealed" in result.stdout
 
 
 def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
@@ -33,7 +34,8 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
-    assert manifest["phase_gate_required_anchor"] == "v98_b5a_symlink_authority_sealing"
+    assert manifest["phase_gate_required_anchor"] == "v99_p1_2_close_kernel_sealing"
+    assert "close_kernel_contract" in manifest
 
 
 def test_p1_2_proof_obligation_gate_rejects_boolean_schema_version() -> None:
@@ -130,3 +132,127 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v91_rejects_search_stats_fake_certified_claim" in export_tests
     assert "test_v91_rejects_contradictory_mandatory_solution_metadata" in export_tests
     assert "test_v91_rejects_mandatory_operation_type_metadata_mismatch" in export_tests
+
+
+def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[str, object]]) -> dict[str, object]:
+    return {
+        "review_anchor": "unit_close_kernel_anchor",
+        "obligations": [
+            {
+                "id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+                "required_tests": [],
+                "evidence_paths": [],
+            }
+        ],
+        "close_kernel_contract": {
+            "schema_version": 1,
+            "review_anchor": "unit_close_kernel_anchor",
+            "trusted_computing_base": ["python", "source", "filesystem", "pytest", "reviewer"],
+            "not_claimed": ["all bugs impossible", "future safe", "owner automated", "runtime infallible"],
+            "attack_categories": sorted(check_p1_2_proof_obligations.CLOSE_KERNEL_REQUIRED_ATTACK_CATEGORIES),
+            "proof_bearing_tokens": ["CERTIFIED", "INFEASIBLE"],
+            "scan_roots": ["src"],
+            "excluded_subpaths": [],
+            "critical_gate_files": [
+                "scripts/check_p1_2_proof_obligations.py",
+                "data/proof_obligations/p1_2_proof_obligations.json",
+                "src/search/certified_surface.py",
+                "src/io/delivery_manifest.py",
+                "src/search/certified_frontier.py",
+                "src/search/exact_campaign.py",
+                "src/search/outer_search.py",
+                "src/search/exact_parallel_scheduler.py",
+            ],
+            "sink_files": sink_entries,
+        },
+    }
+
+
+def test_p1_2_close_kernel_rejects_unregistered_certified_sink(tmp_path: Path) -> None:
+    rogue = tmp_path / "src" / "search" / "rogue_certified_sink.py"
+    rogue.parent.mkdir(parents=True)
+    rogue.write_text('def publish():\n    return {"status": "CERTIFIED"}\n', encoding="utf-8")
+    manifest = _minimal_close_kernel_manifest(tmp_path, sink_entries=[])
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest, project_root=tmp_path)
+
+    assert "unregistered proof-bearing close-kernel sink: src/search/rogue_certified_sink.py" in errors
+
+
+def test_p1_2_close_kernel_rejects_guard_token_removal(tmp_path: Path) -> None:
+    sink = tmp_path / "src" / "search" / "registered_sink.py"
+    sink.parent.mkdir(parents=True)
+    sink.write_text('def publish():\n    return {"status": "CERTIFIED"}\n', encoding="utf-8")
+    manifest = _minimal_close_kernel_manifest(
+        tmp_path,
+        sink_entries=[
+            {
+                "path": "src/search/registered_sink.py",
+                "classification": "p1_2_close_kernel",
+                "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+                "terms": ["CERTIFIED"],
+                "required_guard_tokens": ["MISSING_CLOSE_GUARD_TOKEN"],
+                "source_sha256": check_p1_2_proof_obligations._sha256_file(sink),
+                "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim",
+            }
+        ],
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest, project_root=tmp_path)
+
+    assert any("missing guard token 'MISSING_CLOSE_GUARD_TOKEN'" in error for error in errors)
+
+
+def test_p1_2_close_kernel_rejects_registered_sink_hash_drift(tmp_path: Path) -> None:
+    sink = tmp_path / "src" / "search" / "registered_sink.py"
+    sink.parent.mkdir(parents=True)
+    sink.write_text('def publish():\n    return {"status": "CERTIFIED"}\n', encoding="utf-8")
+    source_hash = check_p1_2_proof_obligations._sha256_file(sink)
+    sink.write_text('def publish():\n    return {"status": "CERTIFIED", "changed": True}\n', encoding="utf-8")
+    manifest = _minimal_close_kernel_manifest(
+        tmp_path,
+        sink_entries=[
+            {
+                "path": "src/search/registered_sink.py",
+                "classification": "p1_2_close_kernel",
+                "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+                "terms": ["CERTIFIED"],
+                "required_guard_tokens": ["CERTIFIED"],
+                "source_sha256": source_hash,
+                "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim",
+            }
+        ],
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest, project_root=tmp_path)
+
+    assert any("hash drift reopens P1.2 close claim" in error for error in errors)
+
+
+def test_p1_2_close_kernel_manifest_is_strict_json(tmp_path: Path) -> None:
+    duplicate_key_manifest = tmp_path / "duplicate_close_kernel.json"
+    duplicate_key_manifest.write_text(
+        '{"close_kernel_contract": {}, "close_kernel_contract": {}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(check_p1_2_proof_obligations.CheckError, match="duplicate JSON object key"):
+        check_p1_2_proof_obligations._load_json(duplicate_key_manifest)
+
+
+def test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call(tmp_path: Path) -> None:
+    checker_path = tmp_path / "check_p1_2_proof_obligations.py"
+    source = (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(encoding="utf-8")
+    checker_path.write_text(
+        source.replace(
+            "        errors.extend(_check_close_kernel_contract(manifest))",
+            "        # mutation: removed close-kernel contract call",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path
+    )
+
+    assert "proof-obligation checker main must call _check_close_kernel_contract" in errors
