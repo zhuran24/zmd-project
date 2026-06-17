@@ -1,6 +1,7 @@
 """Tests for the P1.2 proof-obligation consolidation gate."""
 from __future__ import annotations
 
+import copy
 import json
 import subprocess
 import sys
@@ -238,6 +239,100 @@ def test_p1_2_close_kernel_manifest_is_strict_json(tmp_path: Path) -> None:
 
     with pytest.raises(check_p1_2_proof_obligations.CheckError, match="duplicate JSON object key"):
         check_p1_2_proof_obligations._load_json(duplicate_key_manifest)
+
+
+
+
+def test_p1_2_close_kernel_rejects_v99_manifest_scan_root_shrink() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    manifest["close_kernel_contract"]["scan_roots"] = [
+        "scripts/check_p1_2_proof_obligations.py"
+    ]
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest)
+
+    assert "close_kernel_contract.scan_roots missing v99 sealed scan root: src" in errors
+    assert (
+        "close_kernel_contract.scan_roots missing v99 sealed scan root: "
+        "scripts/build_industrial_planner_single_base_delivery_release.py"
+    ) in errors
+
+
+def test_p1_2_close_kernel_rejects_v99_manifest_sink_floor_shrink() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    contract = manifest["close_kernel_contract"]
+    contract["sink_files"] = [
+        entry
+        for entry in contract["sink_files"]
+        if entry["path"] == "scripts/check_p1_2_proof_obligations.py"
+    ]
+    contract["scan_roots"] = ["scripts/check_p1_2_proof_obligations.py"]
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest)
+
+    assert any("sink_files shrank below the v99 sealed floor" in error for error in errors)
+    assert "close_kernel_contract missing v99 sealed sink path: src/search/certified_surface.py" in errors
+    assert "close_kernel_contract missing v99 sealed sink path: src/search/outer_search.py" in errors
+
+
+def test_p1_2_close_kernel_rejects_v99_source_sha_manifest_reseal_without_checker_floor() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    entry = next(
+        item
+        for item in manifest["close_kernel_contract"]["sink_files"]
+        if item["path"] == "src/search/certified_surface.py"
+    )
+    entry["source_sha256"] = "0" * 64
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest)
+
+    assert "src/search/certified_surface.py v99 source_sha256 changed without checker-floor reseal" in errors
+
+
+def test_p1_2_close_kernel_rejects_v99_manifest_token_floor_shrink() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    contract = manifest["close_kernel_contract"]
+    contract["proof_bearing_tokens"] = [
+        token for token in contract["proof_bearing_tokens"] if token != "proof_bearing"
+    ]
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest)
+
+    assert "close_kernel_contract.proof_bearing_tokens missing v99 sealed token: proof_bearing" in errors
+
+
+def test_p1_2_close_kernel_rejects_v99_manifest_required_sink_exclusion() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    victim = "src/search/outer_search.py"
+    contract = manifest["close_kernel_contract"]
+    contract["excluded_subpaths"] = list(contract.get("excluded_subpaths", [])) + [victim]
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest)
+
+    assert f"close_kernel_contract.excluded_subpaths must not exclude v99 sealed sink: {victim}" in errors
+
+
+def test_p1_2_close_kernel_rejects_v99_manifest_critical_gate_floor_shrink() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    victim = "src/search/benders_loop.py"
+    contract = manifest["close_kernel_contract"]
+    contract["critical_gate_files"] = [
+        rel_path for rel_path in contract["critical_gate_files"] if rel_path != victim
+    ]
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_contract(manifest)
+
+    assert f"close_kernel_contract.critical_gate_files missing v99 sealed gate file: {victim}" in errors
+
+
+def test_p1_2_proof_obligation_review_anchor_matches_phase_anchor() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    manifest["review_anchor"] = "unit_fake_anchor"
+    manifest["close_kernel_contract"]["review_anchor"] = "unit_fake_anchor"
+
+    errors = check_p1_2_proof_obligations._check_phase_anchor(manifest)
+
+    assert "manifest.review_anchor must match phase_gate_required_anchor" in errors
 
 
 def test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call(tmp_path: Path) -> None:

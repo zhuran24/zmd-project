@@ -471,7 +471,14 @@
         "test_p1_2_close_kernel_rejects_guard_token_removal",
         "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
         "test_p1_2_close_kernel_manifest_is_strict_json",
-        "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call"
+        "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+        "test_p1_2_close_kernel_rejects_v99_manifest_scan_root_shrink",
+        "test_p1_2_close_kernel_rejects_v99_manifest_sink_floor_shrink",
+        "test_p1_2_close_kernel_rejects_v99_source_sha_manifest_reseal_without_checker_floor",
+        "test_p1_2_close_kernel_rejects_v99_manifest_token_floor_shrink",
+        "test_p1_2_close_kernel_rejects_v99_manifest_required_sink_exclusion",
+        "test_p1_2_close_kernel_rejects_v99_manifest_critical_gate_floor_shrink",
+        "test_p1_2_proof_obligation_review_anchor_matches_phase_anchor"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v99_close_kernel_sealing.md",
@@ -637,7 +644,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "c125eab7d1e5628fc31b997e14eccecdff5fc1f7f26dc69ecf9bf18dea2460ed",
+        "source_sha256": "f76a36236eca151aee203f122b131e8ae2f0ab4e2c5c3d9b47e601958725796b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

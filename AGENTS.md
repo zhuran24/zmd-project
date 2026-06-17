@@ -118,6 +118,9 @@ the current default certified path are registered in
 the P1.2 close claim until reviewed. The current local seal includes the follow-up
 F-CAM-R8-02 durable resume-sanitization fix; do not replace it with the earlier package
 snapshot without re-sealing `src/search/exact_campaign.py` and `src/search/outer_search.py`.
+The V99 close-kernel floor is checker-owned: required proof-bearing tokens, scan roots,
+sink paths, sink classifications, non-checker source hashes, and critical gate files
+must not be shrinkable or resealable by editing the manifest alone.
 
 Main call chain:
 
