@@ -1158,6 +1158,12 @@ def cmd_boot(args: argparse.Namespace) -> int:
     print("- `python cc_memory/mem.py propose --operation update_fact --touches <id> --reason \"...\"`")
     print("- `python cc_memory/mem.py check && python cc_memory/mem.py export`")
     print("")
+    print("## Semantic + rerank retrieval (optional GPU layer)")
+    print("- relation discovery has an optional dense-embedding + cross-encoder reranker layer (P1/P2).")
+    print("- add `--semantic --rerank` to `suggest`/`add-entry`/`set-fact` for synonym-aware candidates with lexical false-positives pruned, e.g. `add-entry --title \"...\" --body \"...\" --semantic --rerank`.")
+    print("- run `python cc_memory/mem.py rebuild-embeddings` after adding nodes so `--semantic` can retrieve them (incremental by content hash).")
+    print("- candidates still pass the review gate; it loads GPU models (slower than lexical) and silently falls back to lexical-only if the GPU venv is absent.")
+    print("")
     if rc:
         print("## Check failures")
         print("\n".join(check_lines))
