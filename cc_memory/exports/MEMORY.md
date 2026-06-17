@@ -10,7 +10,7 @@ python cc_memory/mem.py boot
 
 ## Stats
 
-- facts: 14
+- facts: 15
 - entries: 17
 - hard edges: 10
 - pending relation suggestions: 10
@@ -22,6 +22,7 @@ python cc_memory/mem.py boot
 ## Active Facts
 
 - `codex-subagent-has-web-access` — ONLINE: codex 子代理(本机 MCP)同时有 web.run(search/open/fetch)和带网络出口的 shell_command…
+- `concurrent-session-shared-index-hazard-20260617` — 本 repo 常有并发 cc 会话共用同一工作区 + 同一 .git/index。另一会话 git add/rm 的改动会进共享 index;若你 git commit -m(无 pathspec)会把别人在改的文件(如 src/ 核心)一起扫进你的提交…
 - `fact-generated-memory-md-is-view` — cc_memory/exports/MEMORY.md 由 memory.db 生成, 可删可重建, 禁止手改当真相源。
 - `fact-hard-edge-soft-link-separation` — DEPENDS_ON/DERIVED_FROM/SUPERSEDES/CONTRADICTS 是硬边触发传播; MENTIONS/RELATED_TO/SUPPORTS 只帮助检索和阅读。
 - `fact-impact-before-memory-change` — 改 fact 或 entry 前先跑 impact/read, 只重写硬依赖影响面。
