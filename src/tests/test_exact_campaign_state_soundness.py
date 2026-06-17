@@ -475,3 +475,81 @@ def test_resume_drops_infeasible_statuses_before_terminal_certified_reuse(
 
     assert status == RUN_STATUS_UNKNOWN
     assert result is None
+
+
+def test_resume_drops_certified_statuses_before_terminal_certified_reuse(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project_certified_replay"
+    _write_three_cell_project(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    solution = {
+        "solid_001": {
+            "facility_type": "solid",
+            "pose_idx": 2,
+            "pose_id": "solid_2",
+            "anchor": {"x": 2, "y": 0},
+            "orientation": 0,
+            "port_mode": "default",
+        },
+        "ghost_pick": {
+            "facility_type": "ghost_rect",
+            "pose_idx": 0,
+            "pose_id": "ghost_anchor::0,0",
+            "anchor": {"x": 0, "y": 0},
+        },
+    }
+
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": "FEASIBLE", "routing_status": "FEASIBLE"},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    final_result = {
+        "search_status": "CERTIFIED",
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0},
+        "placement_solution": {"solid_001": dict(solution["solid_001"])},
+        "search_stats": {"campaign_resumed": True, "solve_mode": "certified_exact"},
+    }
+    campaign.state["final_result"] = final_result
+    campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        status=RUN_STATUS_CERTIFIED,
+    )
+    candidate_generation = {
+        "max_w": 3,
+        "max_h": 1,
+        "min_side": 1,
+        "max_aspect_ratio": None,
+        "area_upper_bound": 2,
+        "start_area": None,
+        "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
+        "safe_area_upper_bound": 2,
+        "min_side_admissibility": 1,
+    }
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
+    campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=campaign.state["candidates"],
+        final_result=final_result,
+        candidate_generation=candidate_generation,
+    )
+    campaign.save()
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in resumed.get_candidate_record(2, 1)
+    assert resumed.state["final_status"] is None
+    assert resumed.state["final_result"] is None
+    assert resumed.state["terminal_frontier_evidence"] is None
+    assert any(
+        entry.get("event") == "RESUME_CERTIFIED_EVIDENCE_REPLAY_REQUIRED"
+        for entry in resumed.get_audit_log()
+    )
