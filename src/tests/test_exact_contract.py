@@ -2779,7 +2779,9 @@ def test_campaign_resume_resets_on_schema_mismatch(tmp_path: Path) -> None:
     assert resumed.reset_reason == "schema_version_mismatch"
 
 
-def test_campaign_resume_keeps_valid_candidates(tmp_path: Path) -> None:
+def test_campaign_resume_requires_fresh_replay_for_proof_bearing_candidates(
+    tmp_path: Path,
+) -> None:
     project_root = _build_toy_exact_project(tmp_path / "campaign_keep_valid")
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(1, 1)
@@ -2816,8 +2818,12 @@ def test_campaign_resume_keeps_valid_candidates(tmp_path: Path) -> None:
         resumed.get_candidate_record(1, 1)["proof_summary"]["resume_sanitized_reason"]
         == "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"
     )
-    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_CERTIFIED
-    assert resumed.get_candidate_record(2, 1)["solution"]["tiny_001"]["pose_id"] == "tiny_left"
+    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in resumed.get_candidate_record(2, 1)
+    assert (
+        resumed.get_candidate_record(2, 1)["proof_summary"]["resume_sanitized_reason"]
+        == "certified_candidate_requires_fresh_replay_after_checkpoint_resume"
+    )
     assert resumed.best_certified_result() is None
 
 
@@ -2846,7 +2852,7 @@ def test_campaign_save_is_atomic_and_resumeable(tmp_path: Path) -> None:
     assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_UNKNOWN
 
 
-def test_campaign_keeps_certified_candidate_records_without_terminal_final_result(
+def test_campaign_resume_drops_certified_candidate_records_without_terminal_final_result(
     tmp_path: Path,
 ) -> None:
     project_root = _build_toy_exact_project(tmp_path / "campaign_best_certified_monotone")
@@ -2896,8 +2902,10 @@ def test_campaign_keeps_certified_candidate_records_without_terminal_final_resul
     assert resumed.state["final_status"] is None
     assert resumed.state.get("final_result") is None
     assert resumed.best_certified_result() is None
-    assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_CERTIFIED
-    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_CERTIFIED
+    assert resumed.get_candidate_record(1, 1)["status"] == RUN_STATUS_UNKNOWN
+    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in resumed.get_candidate_record(1, 1)
+    assert "solution" not in resumed.get_candidate_record(2, 1)
 
 
 def test_campaign_does_not_export_certified_result_when_later_terminal_status_is_unknown(

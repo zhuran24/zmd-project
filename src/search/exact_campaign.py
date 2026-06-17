@@ -1562,20 +1562,36 @@ def _build_initial_state(
 _RESUME_INFEASIBLE_REPLAY_REASON = (
     "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"
 )
+_RESUME_CERTIFIED_REPLAY_REASON = (
+    "certified_candidate_requires_fresh_replay_after_checkpoint_resume"
+)
 
 
-def _sanitize_resume_state_for_untrusted_infeasible_evidence(
+def _resume_strong_status_replay_reason(status: str) -> Optional[str]:
+    if status == "INFEASIBLE":
+        return _RESUME_INFEASIBLE_REPLAY_REASON
+    if status == "CERTIFIED":
+        return _RESUME_CERTIFIED_REPLAY_REASON
+    return None
+
+
+def _sanitize_resume_state_for_untrusted_candidate_evidence(
     state: Dict[str, Any],
 ) -> bool:
-    """Drop candidate-wide INFEASIBLE conclusions loaded from a checkpoint.
+    """Drop proof-bearing candidate conclusions loaded from a checkpoint.
 
-    A CERTIFIED candidate carries a placement witness that the terminal project
-    validator can replay.  A candidate-wide INFEASIBLE conclusion, however, is a
-    solver proof obligation, not a local witness.  Once it crosses the mutable
-    JSON checkpoint boundary it must be treated as a performance cache entry, not
-    as proof evidence.  Otherwise a stale or edited checkpoint can turn an
-    unresolved/better candidate into a monotone-pruning certificate and make a
-    resumed run publish a false terminal CERTIFIED result.
+    Candidate-wide INFEASIBLE and CERTIFIED conclusions are solver proof
+    obligations.  Once they cross the mutable JSON checkpoint boundary they must
+    be treated as performance cache entries, not as terminal proof evidence.
+
+    INFEASIBLE evidence can prune an unresolved/better candidate.  CERTIFIED
+    evidence can become the positive witness selected by terminal full-frontier
+    export.  The public terminal validator can replay geometry / mandatory
+    placement / power / empty-rectangle facts from the stored placement payload,
+    but it does not replay the binding-routing solver proof that originally made
+    the candidate CERTIFIED.  A resumed campaign therefore has to re-establish
+    every proof-bearing candidate status in the current process before any
+    terminal certified surface may rely on it.
     """
 
     candidates = state.get("candidates")
@@ -1584,10 +1600,13 @@ def _sanitize_resume_state_for_untrusted_infeasible_evidence(
 
     timestamp = now_iso()
     sanitized_keys: list[str] = []
+    sanitized_by_status: dict[str, list[str]] = {}
     for raw_key, raw_record in list(dict(candidates).items()):
         if not isinstance(raw_record, Mapping):
             continue
-        if str(raw_record.get("status", "")) != "INFEASIBLE":
+        prior_status = str(raw_record.get("status", ""))
+        replay_reason = _resume_strong_status_replay_reason(prior_status)
+        if replay_reason is None:
             continue
         key = str(raw_key)
         record = dict(raw_record)
@@ -1599,8 +1618,8 @@ def _sanitize_resume_state_for_untrusted_infeasible_evidence(
         if record.get("finished_at") is None:
             record["finished_at"] = timestamp
         record["proof_summary"] = {
-            "resume_sanitized_from_status": "INFEASIBLE",
-            "resume_sanitized_reason": _RESUME_INFEASIBLE_REPLAY_REASON,
+            "resume_sanitized_from_status": prior_status,
+            "resume_sanitized_reason": replay_reason,
             "prior_proof_summary_digest": _canonical_digest(prior_proof_summary),
         }
         record["exact_safe_cuts"] = []
@@ -1609,26 +1628,48 @@ def _sanitize_resume_state_for_untrusted_infeasible_evidence(
         record.pop("solution", None)
         candidates[key] = record
         sanitized_keys.append(key)
+        sanitized_by_status.setdefault(prior_status, []).append(key)
 
     if not sanitized_keys:
         return False
 
     # Any terminal full-frontier evidence that relied on checkpoint-loaded
-    # INFEASIBLE statuses is no longer authoritative.  The outer search may still
-    # reuse local CERTIFIED witnesses, but it must re-establish every infeasible
-    # frontier exclusion in the current process before publishing CERTIFIED.
-    state["final_result"] = None
-    state["final_status"] = None
-    state["last_stop_reason"] = None
+    # proof-bearing candidate statuses is no longer authoritative.  The outer
+    # search must re-establish every frontier exclusion and positive witness in
+    # the current process before publishing CERTIFIED.  A non-terminal UNKNOWN
+    # stop is not proof-bearing, so keep it visible for diagnostics.
+    certified_surface_present = has_certified_export_surface(state)
+    if certified_surface_present:
+        state["final_result"] = None
+        state["final_status"] = None
+        state["last_stop_reason"] = None
     state["terminal_frontier_evidence"] = None
     audit_log = state.setdefault("audit_log", [])
     if isinstance(audit_log, list):
+        if sanitized_by_status.get("INFEASIBLE"):
+            audit_log.append(
+                {
+                    "ts": timestamp,
+                    "event": "RESUME_INFEASIBLE_EVIDENCE_REPLAY_REQUIRED",
+                    "candidate_keys": sorted(sanitized_by_status["INFEASIBLE"]),
+                    "reason": _RESUME_INFEASIBLE_REPLAY_REASON,
+                }
+            )
+        if sanitized_by_status.get("CERTIFIED"):
+            audit_log.append(
+                {
+                    "ts": timestamp,
+                    "event": "RESUME_CERTIFIED_EVIDENCE_REPLAY_REQUIRED",
+                    "candidate_keys": sorted(sanitized_by_status["CERTIFIED"]),
+                    "reason": _RESUME_CERTIFIED_REPLAY_REASON,
+                }
+            )
         audit_log.append(
             {
                 "ts": timestamp,
-                "event": "RESUME_INFEASIBLE_EVIDENCE_REPLAY_REQUIRED",
+                "event": "RESUME_PROOF_BEARING_CANDIDATE_EVIDENCE_REPLAY_REQUIRED",
                 "candidate_keys": sorted(sanitized_keys),
-                "reason": _RESUME_INFEASIBLE_REPLAY_REASON,
+                "sanitized_statuses": sorted(sanitized_by_status.keys()),
             }
         )
     state["updated_at"] = timestamp
@@ -2129,7 +2170,7 @@ class ExactCampaign:
                         ):
                             state["last_stop_reason"] = None
                             state["final_status"] = None
-                        _sanitize_resume_state_for_untrusted_infeasible_evidence(state)
+                        _sanitize_resume_state_for_untrusted_candidate_evidence(state)
                         return cls(
                             project_root=project_root,
                             path=path,
