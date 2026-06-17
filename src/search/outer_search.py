@@ -927,6 +927,24 @@ def _persist_best_certified_result_if_any(
     return best_result
 
 
+def _seal_resumed_nonterminal_certified_surface(
+    *,
+    project_root: Path,
+    exact_campaign: Optional[ExactCampaign],
+) -> None:
+    """Persist replay-demoted resume state before any public CERTIFIED surface survives."""
+
+    if exact_campaign is None or not exact_campaign.resumed:
+        return
+    if has_valid_terminal_full_frontier_certified_evidence_for_project(
+        exact_campaign.state,
+        project_root=project_root,
+    ):
+        return
+    exact_campaign.save()
+    _clear_certified_delivery_solution_artifacts(project_root)
+
+
 def _refresh_certified_delivery_manifest_if_any(
     *,
     project_root: Path,
@@ -1756,6 +1774,10 @@ def run_outer_search(
         probe_state = _load_frontier_probe_state(exact_campaign)
         probe_state["mode"] = frontier_probe_mode
         _persist_frontier_probe_state(exact_campaign, probe_state)
+        _seal_resumed_nonterminal_certified_surface(
+            project_root=project_root,
+            exact_campaign=exact_campaign,
+        )
     telemetry_wave_index = 0
     reset_campaign_telemetry = bool(exact_campaign is not None and not exact_campaign.resumed)
     run_outer_search.last_run_telemetry = None

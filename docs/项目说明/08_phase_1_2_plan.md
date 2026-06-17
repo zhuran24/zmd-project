@@ -36,6 +36,13 @@ P1.2 范围定义**；最终分类看问题是否会污染当前默认 certified
 持久化错误的 proof-bearing 强结论；不要把 owner 门禁、三次 clean 计数、P1.3B 开门、
 或 Step 8 production integration 当作 P1.2 职责来审。**
 
+**2026-06-17 V99 close-kernel sealing**: P1.2 技术 close 现在还有一个机器封口：
+`scripts/check_p1_2_proof_obligations.py` 会扫描当前默认 `certified_exact` 相关源树中的
+proof-bearing strong-status sink；新增未登记 `CERTIFIED` / proof-bearing `INFEASIBLE` 词面、
+已登记 sink 的 `source_sha256` 漂移、或 required guard token 缺失，均使 close claim fail-closed。
+这不是 owner clean 计数，也不打开 P1.3B；它只把“门卫是否被绕过”压缩成显式 TCB +
+close-kernel contract。
+
 ## P1.2A — entry hardening ✅ DONE (2026-05-23 exit hardening + 2026-05-24 final polish)
 
 8 项 (7 原 plan + 1 新发现) 落地, 详 [06_current_status.md](06_current_status.md) + [07_historical_review.md §5.12](07_historical_review.md):

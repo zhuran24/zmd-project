@@ -9,10 +9,11 @@ local, duplicated proof checks.
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, NoReturn, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
@@ -47,6 +48,7 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "PO-CERTIFIED-EXPORT-SURFACE",
         "PO-PHASE-GATE-PROVENANCE",
+        "PO-P1-2-CLOSE-KERNEL-SEALING",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
@@ -226,6 +228,15 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_manual_gate_requires_step_8_fail_closed_when_blocked",
             "test_manual_gate_accepts_owner_decision_authority_fixture",
             "test_manual_gate_receipts_are_informational_only",
+        }
+    ),
+    "PO-P1-2-CLOSE-KERNEL-SEALING": frozenset(
+        {
+            "test_p1_2_close_kernel_rejects_unregistered_certified_sink",
+            "test_p1_2_close_kernel_rejects_guard_token_removal",
+            "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
+            "test_p1_2_close_kernel_manifest_is_strict_json",
+            "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
         }
     ),
 }
@@ -612,6 +623,27 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
         missing_tests = required_tests - listed_tests_by_obligation.get(obligation_id, set())
         for test_name in sorted(missing_tests):
             errors.append(f"{obligation_id} omits required regression test: {test_name}")
+    return errors
+
+
+def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file__).resolve()) -> list[str]:
+    """Fail closed if the proof-obligation checker stops invoking its close-kernel.
+
+    The checker source is itself a registered proof-bearing sink.  This
+    lightweight AST guard catches the specific mutation where a later edit
+    removes the close-kernel or phase-anchor call before that same call would
+    have a chance to notice source hash drift.
+    """
+    errors: list[str] = []
+    tree = _parse_python(checker_path)
+    main_fn = _function_def(tree, "main", path=checker_path)
+    for required_call in (
+        "_check_close_kernel_contract",
+        "_check_phase_gate_provenance_contract",
+        "_check_phase_anchor",
+    ):
+        if not _calls_function(main_fn, required_call):
+            errors.append(f"proof-obligation checker main must call {required_call}")
     return errors
 
 
@@ -1435,6 +1467,212 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     return errors
 
 
+CLOSE_KERNEL_REQUIRED_ATTACK_CATEGORIES = frozenset(
+    {
+        "direct_writer_bypass",
+        "status_synonym_or_free_text_claim",
+        "stale_checkpoint_or_manifest_authority",
+        "path_symlink_or_shadow_authority",
+        "malformed_json_or_weak_typing",
+        "unsafe_env_or_config_semantics",
+        "parallel_resume_or_crash_partial_authority",
+        "gate_or_obligation_mutation",
+    }
+)
+CLOSE_KERNEL_ALLOWED_CLASSIFICATIONS = frozenset(
+    {
+        "p1_2_certified_path",
+        "p1_2_public_surface",
+        "p1_2_close_kernel",
+        "out_of_scope_future_phase3b",
+        "non_authoritative_projection",
+        "diagnostic_or_telemetry_non_authority",
+        "exploratory_or_heuristic_non_authority",
+    }
+)
+
+
+def _sha256_file(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def _is_excluded_path(rel_path: str, excluded_subpaths: Sequence[str]) -> bool:
+    normalized = rel_path.replace("\\", "/").strip("/")
+    for raw_excluded in excluded_subpaths:
+        excluded = raw_excluded.replace("\\", "/").strip("/")
+        if not excluded:
+            continue
+        if normalized == excluded or normalized.startswith(excluded + "/"):
+            return True
+    return False
+
+
+def _scan_close_kernel_token_files(
+    *,
+    project_root: Path,
+    scan_roots: Sequence[str],
+    tokens: Sequence[str],
+    excluded_subpaths: Sequence[str],
+) -> set[str]:
+    found: set[str] = set()
+    for raw_root in scan_roots:
+        root_rel = _require_str(raw_root, "close_kernel_contract.scan_roots[]")
+        root = project_root / root_rel
+        if not root.exists():
+            continue
+        paths = [root] if root.is_file() else root.rglob("*.py")
+        for path in paths:
+            if path.is_dir() or path.suffix != ".py":
+                continue
+            rel_path = path.relative_to(project_root).as_posix()
+            if _is_excluded_path(rel_path, excluded_subpaths):
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            if any(token in text for token in tokens):
+                found.add(rel_path)
+    return found
+
+
+def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path = PROJECT_ROOT) -> list[str]:
+    """Check the P1.2 close-kernel contract.
+
+    This deliberately remains a small structural gate.  It does not certify a
+    candidate and it does not reason about geometry.  It seals the proof-bearing
+    authority surface: every current source file that speaks strong status
+    language must be registered, hash-bound, assigned to a proof obligation, and
+    guarded by local tokens that make bypass/removal show up as a gate failure.
+    """
+
+    errors: list[str] = []
+    contract = manifest.get("close_kernel_contract")
+    if not isinstance(contract, dict):
+        return ["close_kernel_contract must be an object"]
+
+    schema_version = _require_int(contract.get("schema_version"), "close_kernel_contract.schema_version")
+    if schema_version != 1:
+        errors.append("close_kernel_contract.schema_version must be 1")
+    if contract.get("review_anchor") != manifest.get("review_anchor"):
+        errors.append("close_kernel_contract.review_anchor must match manifest.review_anchor")
+
+    tcb = _require_list(contract.get("trusted_computing_base"), "close_kernel_contract.trusted_computing_base")
+    if len(tcb) < 5:
+        errors.append("close_kernel_contract.trusted_computing_base must explicitly list the close-kernel TCB")
+    not_claimed = _require_list(contract.get("not_claimed"), "close_kernel_contract.not_claimed")
+    if len(not_claimed) < 4:
+        errors.append("close_kernel_contract.not_claimed must explicitly narrow the close claim")
+
+    attack_categories = {
+        _require_str(value, "close_kernel_contract.attack_categories[]")
+        for value in _require_list(contract.get("attack_categories"), "close_kernel_contract.attack_categories")
+    }
+    for missing in sorted(CLOSE_KERNEL_REQUIRED_ATTACK_CATEGORIES - attack_categories):
+        errors.append(f"close_kernel_contract missing attack category: {missing}")
+
+    tokens = [
+        _require_str(value, "close_kernel_contract.proof_bearing_tokens[]")
+        for value in _require_list(contract.get("proof_bearing_tokens"), "close_kernel_contract.proof_bearing_tokens")
+    ]
+    scan_roots = [
+        _require_str(value, "close_kernel_contract.scan_roots[]")
+        for value in _require_list(contract.get("scan_roots"), "close_kernel_contract.scan_roots")
+    ]
+    excluded_subpaths = [
+        _require_str(value, "close_kernel_contract.excluded_subpaths[]")
+        for value in _require_list(contract.get("excluded_subpaths", []), "close_kernel_contract.excluded_subpaths")
+    ]
+    sink_entries = _require_list(contract.get("sink_files"), "close_kernel_contract.sink_files")
+    if not sink_entries:
+        errors.append("close_kernel_contract.sink_files must not be empty")
+
+    obligation_ids = {
+        _require_str(item.get("id"), "obligations[].id")
+        for item in _require_list(manifest.get("obligations"), "obligations")
+        if isinstance(item, dict)
+    }
+    registered: dict[str, dict[str, Any]] = {}
+    for index, raw_entry in enumerate(sink_entries):
+        if not isinstance(raw_entry, dict):
+            errors.append(f"close_kernel_contract.sink_files[{index}] must be an object")
+            continue
+        rel_path = _require_str(raw_entry.get("path"), f"close_kernel_contract.sink_files[{index}].path")
+        if rel_path in registered:
+            errors.append(f"close_kernel_contract duplicate sink path: {rel_path}")
+        registered[rel_path] = raw_entry
+
+        classification = _require_str(raw_entry.get("classification"), f"{rel_path}.classification")
+        if classification not in CLOSE_KERNEL_ALLOWED_CLASSIFICATIONS:
+            errors.append(f"{rel_path} has unknown close-kernel classification: {classification}")
+        obligation_id = _require_str(raw_entry.get("obligation_id"), f"{rel_path}.obligation_id")
+        if obligation_id not in obligation_ids:
+            errors.append(f"{rel_path} references unknown proof obligation: {obligation_id}")
+        mutation_policy = _require_str(raw_entry.get("mutation_policy"), f"{rel_path}.mutation_policy")
+        if mutation_policy != "source_sha256_drift_reopens_p1_2_close_claim":
+            errors.append(f"{rel_path} must use source_sha256_drift_reopens_p1_2_close_claim")
+
+        path = project_root / rel_path
+        if not path.exists():
+            errors.append(f"registered close-kernel sink missing: {rel_path}")
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        source_sha256 = _require_str(raw_entry.get("source_sha256"), f"{rel_path}.source_sha256")
+        current_sha256 = _sha256_file(path)
+        if source_sha256 != current_sha256:
+            errors.append(f"registered close-kernel sink hash drift reopens P1.2 close claim: {rel_path}")
+        terms = [
+            _require_str(value, f"{rel_path}.terms[]")
+            for value in _require_list(raw_entry.get("terms"), f"{rel_path}.terms")
+        ]
+        if not terms or not any(term in text for term in terms):
+            errors.append(f"registered close-kernel sink no longer contains its declared proof-bearing terms: {rel_path}")
+        guard_tokens = [
+            _require_str(value, f"{rel_path}.required_guard_tokens[]")
+            for value in _require_list(raw_entry.get("required_guard_tokens"), f"{rel_path}.required_guard_tokens")
+        ]
+        if not guard_tokens:
+            errors.append(f"registered close-kernel sink has no guard tokens: {rel_path}")
+        for guard_token in guard_tokens:
+            if guard_token not in text:
+                errors.append(f"registered close-kernel sink missing guard token {guard_token!r}: {rel_path}")
+
+    found = _scan_close_kernel_token_files(
+        project_root=project_root,
+        scan_roots=scan_roots,
+        tokens=tokens,
+        excluded_subpaths=excluded_subpaths,
+    )
+    unregistered = found - set(registered)
+    for rel_path in sorted(unregistered):
+        errors.append(f"unregistered proof-bearing close-kernel sink: {rel_path}")
+    stale = set(registered) - found
+    for rel_path in sorted(stale):
+        errors.append(f"registered close-kernel sink no longer appears in scanned proof-bearing surface: {rel_path}")
+
+    critical_files = [
+        _require_str(value, "close_kernel_contract.critical_gate_files[]")
+        for value in _require_list(contract.get("critical_gate_files"), "close_kernel_contract.critical_gate_files")
+    ]
+    for rel_path in critical_files:
+        if not (project_root / rel_path).exists():
+            errors.append(f"close-kernel critical gate file missing: {rel_path}")
+    for rel_path in (
+        "scripts/check_p1_2_proof_obligations.py",
+        "data/proof_obligations/p1_2_proof_obligations.json",
+        "src/search/certified_surface.py",
+        "src/io/delivery_manifest.py",
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/search/outer_search.py",
+        "src/search/exact_parallel_scheduler.py",
+    ):
+        if rel_path not in critical_files:
+            errors.append(f"close-kernel critical gate file not declared: {rel_path}")
+    return errors
+
+
 def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     required_anchor = _require_str(
@@ -1480,6 +1718,8 @@ def main() -> int:
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_certified_cut_replay_contract(manifest))
         errors.extend(_check_evidence_and_tests(manifest))
+        errors.extend(_check_close_kernel_checker_self_binding())
+        errors.extend(_check_close_kernel_contract(manifest))
         errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))
     except CheckError as exc:
@@ -1495,7 +1735,12 @@ def main() -> int:
         return 1
 
     obligations = len(manifest.get("obligations", []))
-    print(f"P1.2 proof obligation check passed: {obligations} obligations anchored")
+    close_kernel = manifest.get("close_kernel_contract")
+    sink_count = len(close_kernel.get("sink_files", [])) if isinstance(close_kernel, dict) else 0
+    if sink_count:
+        print(f"P1.2 proof obligation check passed: {obligations} obligations anchored; {sink_count} proof-bearing sink files sealed")
+    else:
+        print(f"P1.2 proof obligation check passed: {obligations} obligations anchored")
     return 0
 
 

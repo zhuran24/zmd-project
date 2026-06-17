@@ -106,6 +106,11 @@ The current cut-test total is not a freehand prose value. Use the `cuts_tests_to
   技术验收看默认 `certified_exact` 证明链是否还有 proof-bearing `false-CERTIFIED` 或可进入
   certified optimality 的 `false-INFEASIBLE`；review receipt、clean 计数、P1.3B 是否开门不应
   被外部 reviewer 当作 P1.2 soundness finding 本体。
+- **2026-06-17 V99 技术封口补充**: `scripts/check_p1_2_proof_obligations.py` 内置
+  close-kernel contract；当前 scan roots 中 proof-bearing strong-status sink 必须登记、绑定
+  source_sha256、归属 proof obligation，并保留 required guard token。新增未登记 sink、已登记
+  sink 漂移、或 gate/authority 文件修改，均使 P1.2 close claim fail-closed；该机制不改变
+  owner clean-review 计数或 P1.3B 放行。
 - production smoke 真数据 F5-F9 oracle 跑通 (各 oracle 真 emit cut 或合理
   fail-closed)
 - 跟 PROJECT_LOCK §3A 不冲突 (family list 仍 9 个, mode 不变)

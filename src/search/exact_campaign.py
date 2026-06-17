@@ -2170,7 +2170,16 @@ class ExactCampaign:
                         ):
                             state["last_stop_reason"] = None
                             state["final_status"] = None
-                        _sanitize_resume_state_for_untrusted_candidate_evidence(state)
+                        sanitized_resume_evidence = (
+                            _sanitize_resume_state_for_untrusted_candidate_evidence(state)
+                        )
+                        if sanitized_resume_evidence:
+                            # The resume boundary deliberately treats persisted strong
+                            # candidate conclusions as untrusted caches.  Make that
+                            # downgrade durable before returning so a crash, exception,
+                            # or concurrent public-surface read cannot observe the stale
+                            # proof-bearing checkpoint.
+                            atomic_write_json(path, state)
                         return cls(
                             project_root=project_root,
                             path=path,

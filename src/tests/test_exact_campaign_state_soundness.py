@@ -16,6 +16,8 @@ from src.search.certified_frontier import (
     candidate_generation_kwargs,
     generate_candidate_sizes,
 )
+from src.search import outer_search as outer_search_module
+from src.search.certified_surface import certified_delivery_surface_artifact_paths
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
@@ -450,8 +452,13 @@ def test_resume_drops_infeasible_statuses_before_terminal_certified_reuse(
     campaign.save()
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    persisted_state = json.loads(resumed.path.read_text(encoding="utf-8"))
 
     assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
+    assert persisted_state["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert persisted_state["final_status"] is None
+    assert persisted_state["final_result"] is None
+    assert persisted_state["terminal_frontier_evidence"] is None
     assert resumed.state["final_status"] is None
     assert resumed.state["final_result"] is None
     assert resumed.state["terminal_frontier_evidence"] is None
@@ -543,9 +550,15 @@ def test_resume_drops_certified_statuses_before_terminal_certified_reuse(
     campaign.save()
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    persisted_state = json.loads(resumed.path.read_text(encoding="utf-8"))
 
     assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
     assert "solution" not in resumed.get_candidate_record(2, 1)
+    assert persisted_state["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in persisted_state["candidates"]["2x1"]
+    assert persisted_state["final_status"] is None
+    assert persisted_state["final_result"] is None
+    assert persisted_state["terminal_frontier_evidence"] is None
     assert resumed.state["final_status"] is None
     assert resumed.state["final_result"] is None
     assert resumed.state["terminal_frontier_evidence"] is None
@@ -553,3 +566,144 @@ def test_resume_drops_certified_statuses_before_terminal_certified_reuse(
         entry.get("event") == "RESUME_CERTIFIED_EVIDENCE_REPLAY_REQUIRED"
         for entry in resumed.get_audit_log()
     )
+
+
+def test_resume_persists_demoted_state_and_clears_stale_delivery_surface_before_next_solve(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    project_root = tmp_path / "project_resume_stale_surface"
+    _write_three_cell_project(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    solution = {
+        "solid_001": {
+            "facility_type": "solid",
+            "pose_idx": 2,
+            "pose_id": "solid_2",
+            "anchor": {"x": 2, "y": 0},
+            "orientation": 0,
+            "port_mode": "default",
+        },
+        "ghost_pick": {
+            "facility_type": "ghost_rect",
+            "pose_idx": 0,
+            "pose_id": "ghost_anchor::0,0",
+            "anchor": {"x": 0, "y": 0},
+        },
+    }
+    campaign.mark_candidate_started(2, 1)
+    campaign.mark_candidate_result(
+        2,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=solution,
+        proof_summary={"master_status": "FEASIBLE", "routing_status": "FEASIBLE"},
+        exact_safe_cuts=[],
+        loaded_exact_safe_cut_count=0,
+        generated_exact_safe_cut_count=0,
+    )
+    final_result = {
+        "search_status": "CERTIFIED",
+        "ghost_rect": {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0},
+        "placement_solution": {"solid_001": dict(solution["solid_001"])},
+        "search_stats": {"campaign_resumed": True, "solve_mode": "certified_exact"},
+    }
+    campaign.state["final_result"] = final_result
+    campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        status=RUN_STATUS_CERTIFIED,
+    )
+    candidate_generation = {
+        "max_w": 3,
+        "max_h": 1,
+        "min_side": 1,
+        "max_aspect_ratio": None,
+        "area_upper_bound": 2,
+        "start_area": None,
+        "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
+        "safe_area_upper_bound": 2,
+        "min_side_admissibility": 1,
+    }
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
+    campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=campaign.state["candidates"],
+        final_result=final_result,
+        candidate_generation=candidate_generation,
+    )
+    campaign.save()
+
+    stale_surface_paths = certified_delivery_surface_artifact_paths(project_root)
+    for artifact_path in stale_surface_paths:
+        artifact_path.parent.mkdir(parents=True, exist_ok=True)
+        artifact_path.write_text(json.dumps({"stale": True}), encoding="utf-8")
+
+    class _DummyExactSession:
+        artifact_hashes = dict(campaign.artifact_hashes)
+
+    monkeypatch.setattr(
+        outer_search_module,
+        "_ensure_exact_session",
+        lambda *args, **kwargs: _DummyExactSession(),
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_validate_certified_outer_domain_snapshot_matches_session",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "_evaluate_pre_master_precheck_best_effort",
+        lambda *args, **kwargs: {"triggered": False, "status": None, "proof_summary": {}},
+    )
+
+    def _fake_run_benders_for_ghost_rect(*args: object, **kwargs: object) -> tuple[str, None]:
+        assert all(not artifact_path.exists() for artifact_path in stale_surface_paths)
+        _fake_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {"master_status": RUN_STATUS_UNKNOWN},
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        return RUN_STATUS_UNKNOWN, None
+
+    _fake_run_benders_for_ghost_rect.last_run_metadata = {}
+    monkeypatch.setattr(
+        outer_search_module,
+        "run_benders_for_ghost_rect",
+        _fake_run_benders_for_ghost_rect,
+    )
+
+    status, result = outer_search_module.run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        min_side=1,
+        resume_campaign=True,
+        max_attempts=1,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+    )
+
+    assert status == RUN_STATUS_UNKNOWN
+    assert result is None
+    final_solution_path, optimal_blueprint_path, manifest_path = stale_surface_paths
+    assert not final_solution_path.exists()
+    assert not optimal_blueprint_path.exists()
+    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest_payload["best_certified_result"] is None
+    assert manifest_payload["campaign"]["final_status"] == RUN_STATUS_UNKNOWN
+    assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
+    assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is False
+    resumed_state = json.loads(
+        (project_root / "data" / "checkpoints" / "exact_campaign_state.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert resumed_state["final_status"] == RUN_STATUS_UNKNOWN
+    assert resumed_state["final_result"] is None
+    assert resumed_state["terminal_frontier_evidence"] is None
+    assert resumed_state["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in resumed_state["candidates"]["2x1"]
