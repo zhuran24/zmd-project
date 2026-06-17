@@ -4,6 +4,15 @@
 
 **当前状态 (2026-06-11)**: **Phase 1.2 spike close 闭关中**（cut-family / certified lifecycle evidence soundness 审查）。P1.2 仍未正式收口；V50 已将 phase close gate 简化为人工计数模型，三次连续 clean full review 仍是 owner 标准，但 clean 计数由 owner 在 repo 外维护，仓库不再从 JSON receipt、Markdown/HTML/XML 报告 metadata、source-tree manifest、package metadata 或包内 Git authority 自动推导 P1.3B ready。V57-V98 之后，当前审查锚点是 `v98_b5a_symlink_authority_sealing`：certified lifecycle evidence 现在拆成 proof obligation compartments，覆盖 exact-safe cut replay（persisted exact_safe_cuts 只是 telemetry，certified 不消费为 proof object）、certified master-domain / power-witness representation（time-budget 打断的 partial precheck group 不得当完整 infeasibility 证明消费）、replayable full-frontier terminal evidence（candidate 域全有向枚举 (w,h)/(h,w)、candidate-domain 切片轴封闭、canonical min_side admissibility 绑定、unknown evidence key 拒绝）、delivery-manifest writer disk authority、canonical certified manifest publication、certified export surface（single-base release 路径拒绝 run summary 自称 CERTIFIED），以及 certified `EXACT_*` env allowlist。当前 repo 默认 fail-closed；只有显式 owner manual decision 才能打开 **P1.3B PoseBoolExactMaster LBBD master integration**。其中 **F9 = tight-K quarantine（实质停用，见下方 F9 条 + PROJECT_LOCK §3A）**。
 
+**P1.2 职责读法 (2026-06-17 补充)**: P1.2 的技术对象是当前默认
+`certified_exact` 证明链的 soundness，而不是 close gate 的 owner 计数或 P1.3B 放行流程。
+`false-CERTIFIED` 一律属 P1.2 soundness；`false-INFEASIBLE` 默认可先按
+availability/completeness/hardening 分类，但只要它能剪掉可能优于当前解的合法候选，并进入
+certified optimality / frontier / resume / terminal 证明链，就升级为 P1.2 soundness，严重度不低于
+`false-CERTIFIED`。反过来，纯 `UNKNOWN`、timeout、性能退化、review receipt 归属、owner
+三次 clean 计数、以及 `step_8_apply_to_master` 真 master 集成，不是 P1.2 技术职责本身。
+详 [08_phase_1_2_plan.md](08_phase_1_2_plan.md) 的 "P1.2 职责边界"。
+
 ---
 
 ## (历史里程碑) Phase 1.1 GO, 2026-05-24 final polish 后

@@ -102,6 +102,10 @@ The current cut-test total is not a freehand prose value. Use the `cuts_tests_to
 验收:
 - 总 cuts test 以 `collect-only` / 核心节点 `authoritative_numbers.json` 为准（当前值见核心节点；F5-F9 落地后远超早先 ~240-265 估；189 是 Phase 1.1 旧值）
 - 大节点审查通过——**现 close 门禁 = 大节点 ≥3 次连续独立审查零问题**（非单次 batch；见 §下文 + 16_workflow_review §22 + memory big-milestone-gpt-pro-review）
+- 上一条是 **phase close gate / owner 放行机制**，不是 P1.2 技术职责定义。P1.2
+  技术验收看默认 `certified_exact` 证明链是否还有 proof-bearing `false-CERTIFIED` 或可进入
+  certified optimality 的 `false-INFEASIBLE`；review receipt、clean 计数、P1.3B 是否开门不应
+  被外部 reviewer 当作 P1.2 soundness finding 本体。
 - production smoke 真数据 F5-F9 oracle 跑通 (各 oracle 真 emit cut 或合理
   fail-closed)
 - 跟 PROJECT_LOCK §3A 不冲突 (family list 仍 9 个, mode 不变)
@@ -142,4 +146,3 @@ The current cut-test total is not a freehand prose value. Use the `cuts_tests_to
 - 跟 Phase 3A delivery (r20260416) 衔接验证
 
 ---
-
