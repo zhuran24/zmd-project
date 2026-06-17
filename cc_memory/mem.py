@@ -7,12 +7,16 @@ Generated Markdown under cc_memory/exports/ is disposable view output.
 from __future__ import annotations
 
 import argparse
+import array
 import datetime as _dt
+import hashlib
 import json
 import math
 import os
 import re
 import sqlite3
+import subprocess
+import sys
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Any
@@ -21,12 +25,25 @@ ROOT = Path(__file__).resolve().parents[1]
 MEM_DIR = Path(__file__).resolve().parent
 DEFAULT_DB = MEM_DIR / "memory.db"
 DEFAULT_EXPORT = MEM_DIR / "exports" / "MEMORY.md"
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 HARD_EDGE_TYPES = {"DEPENDS_ON", "DERIVED_FROM", "SUPERSEDES", "CONTRADICTS"}
 ALL_EDGE_TYPES = HARD_EDGE_TYPES | {"MENTIONS", "RELATED_TO", "SUPPORTS", "PROJECTS_TO"}
 MAX_EXPORT_BYTES = 24_576
 SUGGESTION_REVIEW_SCORE = 12.0
 SUGGESTION_STORE_SCORE = 8.0
+DEFAULT_EMBED_PYTHON = Path(os.environ.get("CC_MEMORY_EMBED_PYTHON", r"C:\Users\22957\zmd_embed_ab\venv\Scripts\python.exe"))
+DEFAULT_EMBED_MODEL = os.environ.get("CC_MEMORY_EMBED_MODEL", "microsoft/harrier-oss-v1-0.6b")
+EMBED_HELPER = MEM_DIR / "embed_helper.py"
+EMBED_PROVIDER = "sentence-transformers"
+EMBED_NORMALIZE = 1
+SEMANTIC_DENSE_LIMIT = 80
+# Dense cosine -> suggestion score via a shifted-linear: only the part of the cosine
+# ABOVE the floor counts, so a weak dense-only hit cannot flood the review queue or
+# trip the option-A gate alone. cosine>=~0.6 reaches the 12.0 review gate; 0.5..0.6
+# stores as advisory; <0.5 only nudges a lexically/graph-corroborated candidate.
+# Conservative initial values — recalibrate on a real corpus cosine distribution (P3).
+SEMANTIC_SCORE_SCALE = 40.0
+SEMANTIC_COSINE_FLOOR = 0.30
 
 
 def now() -> str:
@@ -95,6 +112,7 @@ def connect(db: Path = DEFAULT_DB) -> sqlite3.Connection:
     con = sqlite3.connect(db)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
+    con.execute("PRAGMA busy_timeout = 5000")
     return con
 
 
@@ -114,6 +132,8 @@ def jload(value: str | None, default: Any) -> Any:
 def init_schema(con: sqlite3.Connection, *, reset: bool = False) -> None:
     if reset:
         for table in [
+            "node_embeddings",
+            "embedding_models",
             "relation_suggestions",
             "read_watermarks",
             "mutations",
@@ -221,6 +241,28 @@ def init_schema(con: sqlite3.Connection, *, reset: bool = False) -> None:
             created_at TEXT NOT NULL,
             reviewed_at TEXT,
             UNIQUE(source_type, source_id, target_type, target_id)
+        );
+        CREATE TABLE IF NOT EXISTS embedding_models(
+            id TEXT PRIMARY KEY,
+            provider TEXT NOT NULL,
+            model_name TEXT NOT NULL,
+            dim INTEGER NOT NULL,
+            normalize INTEGER NOT NULL,
+            device TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            metadata_json TEXT NOT NULL DEFAULT '{}'
+        );
+        CREATE TABLE IF NOT EXISTS node_embeddings(
+            node_type TEXT NOT NULL CHECK(node_type IN ('fact','entry')),
+            node_id TEXT NOT NULL,
+            model_id TEXT NOT NULL,
+            content_hash TEXT NOT NULL,
+            dim INTEGER NOT NULL,
+            dtype TEXT NOT NULL,
+            vector_blob BLOB NOT NULL,
+            created_at TEXT NOT NULL,
+            PRIMARY KEY(node_type, node_id, model_id),
+            FOREIGN KEY(model_id) REFERENCES embedding_models(id)
         );
         """
     )
@@ -423,6 +465,198 @@ def all_active_nodes(con: sqlite3.Connection) -> list[tuple[str, sqlite3.Row]]:
     return nodes
 
 
+class EmbeddingUnavailable(RuntimeError):
+    """Optional semantic backend is unavailable; lexical behavior should continue."""
+
+
+def embedding_python() -> Path:
+    return Path(os.environ.get("CC_MEMORY_EMBED_PYTHON", str(DEFAULT_EMBED_PYTHON)))
+
+
+def embedding_model_name(model: str | None = None) -> str:
+    return model or os.environ.get("CC_MEMORY_EMBED_MODEL", DEFAULT_EMBED_MODEL)
+
+
+def embedding_model_id(model: str) -> str:
+    return f"{EMBED_PROVIDER}:{model}"
+
+
+def embedding_env() -> dict[str, str]:
+    env = os.environ.copy()
+    hf_home = env.get("HF_HOME") or r"E:\hf_cache"
+    env["HF_HOME"] = hf_home
+    env.setdefault("HF_HUB_OFFLINE", "1")
+    env.setdefault("TRANSFORMERS_OFFLINE", "1")
+    env.setdefault("HF_HUB_CACHE", str(Path(hf_home) / "hub"))
+    env.setdefault("HF_XET_CACHE", str(Path(hf_home) / "xet"))
+    return env
+
+
+def call_embed_helper(
+    texts: list[str],
+    *,
+    mode: str,
+    model: str | None = None,
+    batch_size: int = 8,
+    timeout: int = 600,
+) -> dict[str, Any]:
+    if mode not in {"doc", "query"}:
+        raise ValueError(f"unknown embedding mode: {mode}")
+    if not texts:
+        return {
+            "model": embedding_model_name(model),
+            "vectors": [],
+            "dim": 0,
+            "dtype": "float32",
+            "normalize": EMBED_NORMALIZE,
+            "device": "unknown",
+        }
+    py = embedding_python()
+    if not py.exists():
+        raise EmbeddingUnavailable(f"embedding python not found: {py}")
+    if not EMBED_HELPER.exists():
+        raise EmbeddingUnavailable(f"embedding helper not found: {EMBED_HELPER}")
+    payload = {
+        "texts": texts,
+        "mode": mode,
+        "model": embedding_model_name(model),
+        "batch_size": batch_size,
+    }
+    try:
+        proc = subprocess.run(
+            [str(py), str(EMBED_HELPER)],
+            input=json.dumps(payload, ensure_ascii=False),
+            text=True,
+            capture_output=True,
+            cwd=ROOT,
+            env=embedding_env(),
+            timeout=timeout,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise EmbeddingUnavailable(f"embedding helper could not run: {exc}") from exc
+    if proc.returncode != 0:
+        detail = short((proc.stderr or proc.stdout or "").strip(), 1000)
+        raise EmbeddingUnavailable(f"embedding helper failed with exit {proc.returncode}: {detail}")
+    try:
+        out = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        detail = short(proc.stdout.strip(), 1000)
+        raise EmbeddingUnavailable(f"embedding helper returned invalid JSON: {detail}") from exc
+    if out.get("status") != "ok":
+        raise EmbeddingUnavailable(str(out.get("error") or "embedding helper did not report ok"))
+    return out
+
+
+def node_content_hash(typ: str, node_id: str, text: str) -> str:
+    h = hashlib.sha256()
+    h.update(typ.encode("utf-8"))
+    h.update(b"\0")
+    h.update(node_id.encode("utf-8"))
+    h.update(b"\0")
+    h.update(text.encode("utf-8"))
+    return h.hexdigest()
+
+
+def vector_to_blob(vector: list[float]) -> bytes:
+    return array.array("f", (float(x) for x in vector)).tobytes()
+
+
+def active_node_embedding_rows(con: sqlite3.Connection, model_id: str) -> list[sqlite3.Row]:
+    return list(
+        con.execute(
+            """
+            SELECT ne.node_type, ne.node_id, ne.dim, ne.dtype, ne.vector_blob
+            FROM node_embeddings ne
+            JOIN facts f ON ne.node_type='fact' AND ne.node_id=f.id
+            WHERE ne.model_id=? AND f.status='active'
+            UNION ALL
+            SELECT ne.node_type, ne.node_id, ne.dim, ne.dtype, ne.vector_blob
+            FROM node_embeddings ne
+            JOIN entries e ON ne.node_type='entry' AND ne.node_id=e.id
+            WHERE ne.model_id=? AND e.status='active'
+            """,
+            (model_id, model_id),
+        )
+    )
+
+
+def semantic_relation_candidates(
+    con: sqlite3.Connection,
+    *,
+    query_text: str,
+    source_type: str | None = None,
+    source_id: str | None = None,
+    model: str | None = None,
+    limit: int = SEMANTIC_DENSE_LIMIT,
+    warnings: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    model_name = embedding_model_name(model)
+    model_id = embedding_model_id(model_name)
+    rows = active_node_embedding_rows(con, model_id)
+    if source_type and source_id:
+        rows = [r for r in rows if not (r["node_type"] == source_type and r["node_id"] == source_id)]
+    if not rows:
+        if warnings is not None:
+            warnings.append(f"semantic suggestions unavailable: no active embeddings for model {model_name}")
+        return []
+    try:
+        import numpy as np
+    except ImportError:
+        if warnings is not None:
+            warnings.append("semantic suggestions unavailable: numpy is not installed in this Python")
+        return []
+    try:
+        payload = call_embed_helper([query_text], mode="query", model=model_name)
+    except EmbeddingUnavailable as exc:
+        if warnings is not None:
+            warnings.append(f"semantic suggestions unavailable: {exc}")
+        return []
+    vectors = payload.get("vectors") or []
+    if not vectors:
+        return []
+    query_vec = np.asarray(vectors[0], dtype=np.float32)
+    query_norm = float(np.linalg.norm(query_vec))
+    if query_norm == 0.0:
+        return []
+    query_vec = query_vec / query_norm
+
+    kept: list[sqlite3.Row] = []
+    doc_vectors: list[Any] = []
+    for row in rows:
+        if row["dtype"] != "float32":
+            continue
+        vec = np.frombuffer(row["vector_blob"], dtype=np.float32)
+        if vec.shape[0] != query_vec.shape[0]:
+            continue
+        norm_v = float(np.linalg.norm(vec))
+        if norm_v == 0.0:
+            continue
+        doc_vectors.append(vec / norm_v)
+        kept.append(row)
+    if not kept:
+        return []
+    matrix = np.vstack(doc_vectors)
+    scores = matrix @ query_vec
+    ranked = np.argsort(-scores)[:limit]
+    out: list[dict[str, Any]] = []
+    for idx in ranked:
+        cosine = float(scores[int(idx)])
+        weighted = max(0.0, cosine - SEMANTIC_COSINE_FLOOR) * SEMANTIC_SCORE_SCALE
+        if weighted <= 0.0:
+            continue
+        row = kept[int(idx)]
+        out.append(
+            {
+                "type": row["node_type"],
+                "id": row["node_id"],
+                "cosine": cosine,
+                "score": round(weighted, 2),
+                "signal": f"dense semantic cosine: {cosine:.4f}",
+            }
+        )
+    return out
+
+
 def relation_suggestions(
     con: sqlite3.Connection,
     *,
@@ -432,6 +666,10 @@ def relation_suggestions(
     source_id: str | None = None,
     limit: int = 20,
     min_score: float = 6.0,
+    semantic: bool = False,
+    semantic_model: str | None = None,
+    semantic_limit: int = SEMANTIC_DENSE_LIMIT,
+    warnings: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Find related facts/entries deterministically.
 
@@ -490,6 +728,20 @@ def relation_suggestions(
             if hook_shared:
                 scores[key] += 10.0 + 4.0 * len(hook_shared)
                 signals[key].append("fact slot hook: " + ", ".join(sorted(hook_shared)[:5]))
+
+    if semantic:
+        for candidate in semantic_relation_candidates(
+            con,
+            query_text=draft_text,
+            source_type=source_type,
+            source_id=source_id,
+            model=semantic_model,
+            limit=semantic_limit,
+            warnings=warnings,
+        ):
+            key = (candidate["type"], candidate["id"])
+            scores[key] += float(candidate["score"])
+            signals[key].append(candidate["signal"])
 
     # Graph propagation: matching a fact should surface entries that depend on it; matching an
     # entry should surface its hard dependencies. This helps the system find clusters, not just
@@ -865,16 +1117,25 @@ def cmd_suggest(args: argparse.Namespace) -> int:
     body = args.body or ""
     if args.body_file:
         body = args.body_file.read_text(encoding="utf-8")
+    warnings: list[str] = []
     suggestions = relation_suggestions(
         con,
         title=args.title or "",
         body=body,
         limit=args.limit,
         min_score=args.min_score,
+        semantic=args.semantic,
+        semantic_model=args.model,
+        semantic_limit=args.semantic_limit,
+        warnings=warnings,
     )
     if args.json:
+        for warning in warnings:
+            print(f"WARN {warning}", file=sys.stderr)
         print(json.dumps(suggestions, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
+    for warning in warnings:
+        print(f"WARN {warning}", file=sys.stderr)
     print(f"relation suggestions: {len(suggestions)}")
     for line in _suggestion_lines(suggestions, limit=args.limit):
         print(line)
@@ -967,8 +1228,34 @@ def cmd_set_fact(args: argparse.Namespace) -> int:
         raise SystemExit(f"fact '{fact_id}' already exists; pass --force to overwrite or use a different --id")
     add_fact_row(con, fact_id, args.subject, args.predicate, args.value, status=args.status, confidence=args.confidence, source_event_id=args.event, metadata={"manual": True})
     record_mutation(con, session_id_for(args), "set-fact", "fact", fact_id)
+    suggestions: list[dict[str, Any]] = []
+    stored = 0
+    warnings: list[str] = []
+    if args.semantic:
+        suggestions = relation_suggestions(
+            con,
+            title=f"{args.subject} {args.predicate}",
+            body=args.value,
+            source_type="fact",
+            source_id=fact_id,
+            limit=args.suggest_limit,
+            min_score=args.suggest_min_score,
+            semantic=True,
+            semantic_model=args.model,
+            semantic_limit=args.semantic_limit,
+            warnings=warnings,
+        )
+        stored = store_relation_suggestions(con, "fact", fact_id, suggestions)
     con.commit()
     print(f"fact:{fact_id}")
+    for warning in warnings:
+        print(f"WARN {warning}", file=sys.stderr)
+    if args.semantic:
+        print(f"relation suggestions stored: {stored}")
+        for line in _suggestion_lines(suggestions, limit=min(args.suggest_limit, 12)):
+            print(line)
+        if stored:
+            print("review required: run `python cc_memory/mem.py relations` and accept/reject suggestions before final `check`")
     return 0
 
 
@@ -993,6 +1280,7 @@ def cmd_add_entry(args: argparse.Namespace) -> int:
     record_mutation(con, session_id_for(args), "add-entry", "entry", entry_id)
     suggestions: list[dict[str, Any]] = []
     stored = 0
+    warnings: list[str] = []
     if not args.no_suggest:
         suggestions = relation_suggestions(
             con,
@@ -1002,10 +1290,16 @@ def cmd_add_entry(args: argparse.Namespace) -> int:
             source_id=entry_id,
             limit=args.suggest_limit,
             min_score=args.suggest_min_score,
+            semantic=args.semantic,
+            semantic_model=args.model,
+            semantic_limit=args.semantic_limit,
+            warnings=warnings,
         )
         stored = store_relation_suggestions(con, "entry", entry_id, suggestions)
     con.commit()
     print(f"entry:{entry_id}")
+    for warning in warnings:
+        print(f"WARN {warning}", file=sys.stderr)
     if not args.no_suggest:
         print(f"relation suggestions stored: {stored}")
         for line in _suggestion_lines(suggestions, limit=min(args.suggest_limit, 12)):
@@ -1051,6 +1345,105 @@ def cmd_propose(args: argparse.Namespace) -> int:
     )
     con.commit()
     print(json.dumps({"id": cid, "operation": args.operation, "touches": touches, "affected": affected}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_rebuild_embeddings(args: argparse.Namespace) -> int:
+    con = connect(args.db)
+    init_schema(con)
+    model_name = embedding_model_name(args.model)
+    model_id = embedding_model_id(model_name)
+    nodes: list[tuple[str, str, str, str]] = []
+    for typ, row in all_active_nodes(con):
+        text = node_text_for_relation(row, typ)
+        content_hash = node_content_hash(typ, row["id"], text)
+        existing = con.execute(
+            "SELECT content_hash FROM node_embeddings WHERE node_type=? AND node_id=? AND model_id=?",
+            (typ, row["id"], model_id),
+        ).fetchone()
+        if existing and existing["content_hash"] == content_hash:
+            continue
+        nodes.append((typ, row["id"], text, content_hash))
+
+    total = len(all_active_nodes(con))
+    skipped = total - len(nodes)
+    if not nodes:
+        print(f"embedding model: {model_name}")
+        print(f"nodes: total={total} embedded=0 skipped={skipped}")
+        return 0
+
+    embedded = 0
+    last_dim = 0
+    last_device = "unknown"
+    try:
+        for start in range(0, len(nodes), args.batch_size):
+            batch = nodes[start : start + args.batch_size]
+            payload = call_embed_helper(
+                [text for _, _, text, _ in batch],
+                mode="doc",
+                model=model_name,
+                batch_size=args.batch_size,
+                timeout=args.timeout,
+            )
+            vectors = payload.get("vectors") or []
+            if len(vectors) != len(batch):
+                raise EmbeddingUnavailable(f"embedding helper returned {len(vectors)} vectors for {len(batch)} texts")
+            dim = int(payload.get("dim") or (len(vectors[0]) if vectors else 0))
+            dtype = str(payload.get("dtype") or "float32")
+            device = str(payload.get("device") or "unknown")
+            last_dim = dim
+            last_device = device
+            con.execute(
+                """INSERT INTO embedding_models(id,provider,model_name,dim,normalize,device,created_at,metadata_json)
+                   VALUES(?,?,?,?,?,?,?,?)
+                   ON CONFLICT(id) DO UPDATE SET
+                     provider=excluded.provider,
+                     model_name=excluded.model_name,
+                     dim=excluded.dim,
+                     normalize=excluded.normalize,
+                     device=excluded.device,
+                     metadata_json=excluded.metadata_json""",
+                (
+                    model_id,
+                    EMBED_PROVIDER,
+                    model_name,
+                    dim,
+                    int(payload.get("normalize", EMBED_NORMALIZE)),
+                    device,
+                    now(),
+                    jdump(
+                        {
+                            "helper": str(EMBED_HELPER),
+                            "python": str(embedding_python()),
+                            "dtype": dtype,
+                        }
+                    ),
+                ),
+            )
+            for (typ, node_id, _text, content_hash), vector in zip(batch, vectors, strict=True):
+                if len(vector) != dim:
+                    raise EmbeddingUnavailable(f"vector dim mismatch for {typ}:{node_id}: {len(vector)} != {dim}")
+                con.execute(
+                    """INSERT INTO node_embeddings(node_type,node_id,model_id,content_hash,dim,dtype,vector_blob,created_at)
+                       VALUES(?,?,?,?,?,?,?,?)
+                       ON CONFLICT(node_type,node_id,model_id) DO UPDATE SET
+                         content_hash=excluded.content_hash,
+                         dim=excluded.dim,
+                         dtype=excluded.dtype,
+                         vector_blob=excluded.vector_blob,
+                         created_at=excluded.created_at""",
+                    (typ, node_id, model_id, content_hash, dim, "float32", vector_to_blob(vector), now()),
+                )
+                embedded += 1
+            con.commit()
+    except EmbeddingUnavailable as exc:
+        print(f"rebuild-embeddings unavailable: {exc}", file=sys.stderr)
+        return 2
+
+    print(f"embedding model: {model_name}")
+    print(f"model_id: {model_id}")
+    print(f"nodes: total={total} embedded={embedded} skipped={skipped}")
+    print(f"vector: dim={last_dim} dtype=float32 normalize={EMBED_NORMALIZE} device={last_device}")
     return 0
 
 
@@ -1109,6 +1502,9 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--body-file", type=Path)
     sp.add_argument("--limit", type=int, default=20)
     sp.add_argument("--min-score", type=float, default=6.0)
+    sp.add_argument("--semantic", action="store_true", help="merge optional dense semantic candidates from node_embeddings")
+    sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
+    sp.add_argument("--semantic-limit", type=int, default=SEMANTIC_DENSE_LIMIT)
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_suggest)
 
@@ -1142,6 +1538,11 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--confidence", default="medium")
     sp.add_argument("--event")
     sp.add_argument("--force", action="store_true")
+    sp.add_argument("--semantic", action="store_true", help="store relation suggestions using lexical plus dense semantic candidates")
+    sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
+    sp.add_argument("--semantic-limit", type=int, default=SEMANTIC_DENSE_LIMIT)
+    sp.add_argument("--suggest-limit", type=int, default=20)
+    sp.add_argument("--suggest-min-score", type=float, default=6.0)
     sp.set_defaults(func=cmd_set_fact)
 
     sp = sub.add_parser("add-entry")
@@ -1157,6 +1558,9 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--no-suggest", action="store_true", help="disable automatic relation suggestion queue")
     sp.add_argument("--suggest-limit", type=int, default=20)
     sp.add_argument("--suggest-min-score", type=float, default=6.0)
+    sp.add_argument("--semantic", action="store_true", help="merge optional dense semantic candidates into relation suggestions")
+    sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
+    sp.add_argument("--semantic-limit", type=int, default=SEMANTIC_DENSE_LIMIT)
     sp.set_defaults(func=cmd_add_entry)
 
     sp = sub.add_parser("link")
@@ -1173,6 +1577,12 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--event")
     sp.add_argument("--id")
     sp.set_defaults(func=cmd_propose)
+
+    sp = sub.add_parser("rebuild-embeddings")
+    sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
+    sp.add_argument("--batch-size", type=int, default=8)
+    sp.add_argument("--timeout", type=int, default=600)
+    sp.set_defaults(func=cmd_rebuild_embeddings)
 
     sp = sub.add_parser("check")
     sp.set_defaults(func=cmd_check)
