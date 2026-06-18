@@ -77,14 +77,16 @@ python cc_memory/mem.py boot
   `python cc_memory/mem.py check && python cc_memory/mem.py export`.
 - Other ops: `search "<query>"`, `read <id>`, `add-event`, `set-fact`, `add-entry`, `link`,
   `propose`. Run `python cc_memory/mem.py` with no args for the full command list.
-- **Optional GPU semantic+rerank retrieval (P1/P2):** add `--semantic --rerank` to
-  `suggest`/`add-entry`/`set-fact` for dense, synonym-aware relation candidates with a cross-encoder
-  pruning lexical false-positives; run `rebuild-embeddings` after adding nodes to refresh the dense
-  index (incremental by content hash). It runs in an isolated GPU venv
-  (`CC_MEMORY_EMBED_PYTHON` / `CC_MEMORY_RERANK_PYTHON`, defaulted on this host) and **loads GPU
-  models — slower than lexical, so use it when relation-discovery quality matters**; an absent
-  backend silently degrades to lexical-only. Surfaced candidates still pass the review gate. `boot`
-  prints the same reminder.
+- **Optional GPU semantic+rerank retrieval (P1/P2):** `--semantic` (on
+  `suggest`/`add-entry`/`set-fact`) adds dense recall — finds concept/synonym matches lexical
+  misses; this is the **reliable** win, prefer it. `--rerank` adds a cross-encoder that prunes
+  false-positives, but Qwen3-Reranker is **strict/conservative**: excellent for specific,
+  content-rich drafts, yet it over-prunes **short/abstract queries** (can return nothing) — add it
+  only when the draft is specific, not for vague one-line queries. Run `rebuild-embeddings` after
+  adding nodes to refresh the dense index (incremental by content hash). Runs in an isolated GPU
+  venv (`CC_MEMORY_EMBED_PYTHON` / `CC_MEMORY_RERANK_PYTHON`, defaulted on this host); loads GPU
+  models (slower), absent backend silently degrades to lexical-only. Candidates still pass the
+  review gate. `boot` prints the same reminder.
 - The old multi-tree Markdown/live/graph memory system is retired — do not recreate
   `cc_context/memory`, `_cc_live_memory`, or a `memory_graph` layer as live memory.
 
