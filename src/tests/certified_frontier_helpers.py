@@ -13,7 +13,9 @@ from src.search.certified_frontier import (
 )
 from src.search.exact_campaign import (
     ExactCampaign,
+    STRONG_CANDIDATE_STATUSES,
     _load_exact_grid_dimensions,
+    _mark_candidate_status_fresh_for_current_process,
     _load_exact_min_side_admissibility,
     _load_exact_safe_area_upper_bound,
 )
@@ -83,6 +85,22 @@ def attach_terminal_frontier_evidence(
         campaign.state["last_stop_reason"] = terminal_stop_reason
         campaign.state["final_status"] = terminal_final_status
         campaign.state["final_result"] = terminal_final_result
+
+    # Test fixtures often construct already-verified candidate records directly so
+    # they can exercise downstream terminal/manifest validation without invoking a
+    # real solver.  Seal those records explicitly through the private TCB primitive;
+    # production callers must use outer_search's verified producer path instead.
+    for raw_key, raw_record in campaign.state.get("candidates", {}).items():
+        if not isinstance(raw_record, dict):
+            continue
+        status = str(raw_record.get("status", ""))
+        if status in STRONG_CANDIDATE_STATUSES:
+            _mark_candidate_status_fresh_for_current_process(
+                campaign,
+                str(raw_key),
+                status,
+            )
+
     campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
         candidates=candidates,
         candidate_records=campaign.state.get("candidates", {}),

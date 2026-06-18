@@ -130,10 +130,12 @@ the current default certified path are registered in
 `INFEASIBLE` surface, drifting a sealed sink hash, or removing required guard tokens reopens
 the P1.2 close claim until reviewed. The current local seal includes the follow-up
 F-CAM-R8-02 durable resume-sanitization fix, the proof-bearing sink source-digest
-coverage guard, and the current-process freshness gate for terminal proof-bearing
-candidate evidence; do not replace it with an earlier package snapshot without
-re-sealing `src/search/exact_campaign.py`, `src/search/outer_search.py`, and the
-close-kernel checker floor.
+coverage guard, root entrypoint `main.py` source-digest coverage, the current-process
+freshness gate for terminal proof-bearing candidate evidence, and the rule that the
+public `ExactCampaign.mark_candidate_result()` state writer cannot self-authorize
+proof-bearing `CERTIFIED` / `INFEASIBLE` freshness; do not replace it with an
+earlier package snapshot without re-sealing `src/search/exact_campaign.py`,
+`src/search/outer_search.py`, and the close-kernel checker floor.
 The V99 close-kernel floor is checker-owned: required proof-bearing tokens, scan roots,
 sink paths, sink classifications, non-checker source hashes, and critical gate files
 must not be shrinkable or resealable by editing the manifest alone.

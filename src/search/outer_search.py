@@ -1567,7 +1567,7 @@ def _record_precheck_elimination(
         frontier_probe_mode=frontier_probe_mode,
     )
     if exact_campaign is not None:
-        exact_campaign.mark_candidate_result(
+        exact_campaign._mark_candidate_result_from_verified_producer(
             int(ghost_w),
             int(ghost_h),
             RUN_STATUS_INFEASIBLE,
@@ -2426,7 +2426,7 @@ def run_outer_search(
                                 worker_result.status == RUN_STATUS_CERTIFIED
                                 and worker_result.solution is not None
                             ):
-                                exact_campaign.mark_candidate_result(
+                                exact_campaign._mark_candidate_result_from_verified_producer(
                                     ghost_w,
                                     ghost_h,
                                     RUN_STATUS_CERTIFIED,
@@ -2445,7 +2445,12 @@ def run_outer_search(
                                 RUN_STATUS_UNKNOWN,
                                 RUN_STATUS_UNPROVEN,
                             }:
-                                exact_campaign.mark_candidate_result(
+                                candidate_result_writer = (
+                                    exact_campaign._mark_candidate_result_from_verified_producer
+                                    if worker_result.status == RUN_STATUS_INFEASIBLE
+                                    else exact_campaign.mark_candidate_result
+                                )
+                                candidate_result_writer(
                                     ghost_w,
                                     ghost_h,
                                     worker_result.status,
@@ -2653,7 +2658,7 @@ def run_outer_search(
 
                 if status == RUN_STATUS_CERTIFIED and solution is not None:
                     if exact_campaign is not None:
-                        exact_campaign.mark_candidate_result(
+                        exact_campaign._mark_candidate_result_from_verified_producer(
                             ghost_w,
                             ghost_h,
                             RUN_STATUS_CERTIFIED,
@@ -2682,7 +2687,7 @@ def run_outer_search(
 
                 if status == RUN_STATUS_INFEASIBLE:
                     if exact_campaign is not None:
-                        exact_campaign.mark_candidate_result(
+                        exact_campaign._mark_candidate_result_from_verified_producer(
                             ghost_w,
                             ghost_h,
                             RUN_STATUS_INFEASIBLE,

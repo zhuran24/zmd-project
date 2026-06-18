@@ -26,6 +26,20 @@ manifest to the resulting source hashes.
 | `src/search/exact_campaign.py` | `5c58ab5eee45573e0fb9bd436108e90beef2169dd432f661598dd09588acd4bf` |
 | `src/search/outer_search.py` | `2db84f7294742fd5859a7efd883865c89c630e3ceaa6408437e13a44e2aaf8bc` |
 
+## 2026-06-18 no-close review follow-up reseal
+
+The no-close-kernel adversarial review found two P1.2-scope gaps: public
+candidate-result writes could self-mint proof-bearing strong-status freshness, and
+the root entrypoint `main.py` was absent from the certified exact source digest.
+The local merge keeps the fixes and rebinds the close-kernel manifest/checker floor
+to the resulting source hashes.
+
+| path | local source_sha256 |
+|---|---|
+| `src/search/exact_campaign.py` | `5f7fa05ec350f8e11c9dadf7f8a29d4a2e91cab03c9d216add043b8c176eeec2` |
+| `src/search/outer_search.py` | `cedfeda25ebbaba3430e7a67721d8bc9d18fe097b24f860f6b05be80c91b0013` |
+| `scripts/check_p1_2_proof_obligations.py` | `faff29ca767c1f2cd3beb30a338d750cef87d700be76f61cfd9658c5ef2e6cdb` |
+
 ## Local verification
 
 ```text
@@ -37,6 +51,12 @@ phase_1_2_spike_close: status=blocked_manual_review_count, anchor=v99_p1_2_close
 
 $ python -m pytest -q -p no:randomly src/tests/test_p1_2_proof_obligations.py src/tests/test_phase_review_gate.py src/tests/test_delivery_manifest.py src/tests/test_exact_campaign_state_soundness.py src/tests/test_v100_public_surface_current_process_freshness.py
 62 passed
+
+$ python -m pytest -q src/tests/test_certified_exact_source_digest_surface.py src/tests/test_v100_public_surface_current_process_freshness.py src/tests/test_v102_candidate_result_producer_authority.py
+10 passed
+
+$ python -m pytest -q src/tests/test_exact_campaign_state_soundness.py src/tests/test_delivery_manifest.py src/tests/test_v63_terminal_evidence_contract.py src/tests/test_parallel_scheduler.py src/tests/test_v62_candidate_frontier_contract.py -p no:randomly --basetemp=.pytest_tmp_seq_campaign
+92 passed
 ```
 
 ## Current claim boundary
@@ -44,6 +64,7 @@ $ python -m pytest -q -p no:randomly src/tests/test_p1_2_proof_obligations.py sr
 This reseal does not change the V99 non-claims: it does not open P1.3B, satisfy
 owner manual clean-review count, prove full-project bug absence, or claim future
 production integration safety. It only records that the current local P1.2
-technical close-kernel includes the follow-up resume-sanitization and
-current-process freshness content-binding fixes and still fails closed under the
-V99 gate.
+technical close-kernel includes the follow-up resume-sanitization,
+current-process freshness content-binding, verified strong-status producer
+authority, and root-entrypoint source-digest fixes and still fails closed under
+the V99 gate.

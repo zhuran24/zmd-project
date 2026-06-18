@@ -202,6 +202,34 @@ def _mark_candidate_status_fresh_for_current_process(
         fresh_records.pop(key, None)
 
 
+def _invalidate_candidate_status_freshness_for_current_process(
+    campaign: "ExactCampaign",
+    key: str,
+) -> None:
+    """Remove proof authority without creating a new freshness bucket.
+
+    ``mark_candidate_result`` is a general state mutation API.  A caller writing
+    a syntactically strong status through that API has not demonstrated that the
+    certified solver or a sound precheck produced it.  Such writes may remain in
+    diagnostic state, but they must invalidate any prior process-local proof
+    authority for the candidate.
+    """
+
+    state = campaign.state
+    candidates = state.get("candidates")
+    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(id(state))
+    if bucket is None:
+        return
+    owner = bucket.owner_ref()
+    if (
+        owner is campaign
+        and owner.state is state
+        and bucket.state is state
+        and bucket.candidates is candidates
+    ):
+        bucket.records.pop(str(key), None)
+
+
 def _clear_candidate_status_freshness_for_state(state: Mapping[str, Any]) -> None:
     _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.pop(id(state), None)
 
@@ -437,7 +465,11 @@ def _discover_certified_exact_source_hash_files() -> tuple[str, ...]:
     """
 
     source_root = Path(__file__).resolve().parent.parent.parent
-    relative_paths: set[str] = set()
+    relative_paths: set[str] = {
+        path.relative_to(source_root).as_posix()
+        for path in source_root.glob("*.py")
+        if path.is_file()
+    }
     for path in (source_root / "src").rglob("*.py"):
         relative_path = path.relative_to(source_root).as_posix()
         if relative_path.startswith("src/tests/"):
@@ -2319,13 +2351,15 @@ def has_valid_terminal_full_frontier_certified_evidence_for_project(
 
     if not has_terminal_full_frontier_certified_evidence(state):
         return False
-    return (
+    if (
         terminal_certified_final_result_violation_for_project(
             state,
             project_root=project_root,
         )
-        is None
-    )
+        is not None
+    ):
+        return False
+    return terminal_proof_bearing_candidate_freshness_violation(state) is None
 
 
 def certified_terminal_evidence_violation(
@@ -2697,12 +2731,61 @@ class ExactCampaign:
             record.pop("solution", None)
 
         candidates[key] = record
+        if normalized_status in STRONG_CANDIDATE_STATUSES:
+            # General callers may persist a status for diagnostics or migration,
+            # but only the certified producer path below may make that status
+            # proof-bearing.  In particular, this public setter must not turn its
+            # own unverified input into current-process freshness.
+            _invalidate_candidate_status_freshness_for_current_process(self, key)
+        else:
+            _mark_candidate_status_fresh_for_current_process(
+                self,
+                key,
+                normalized_status,
+            )
+        self.state["updated_at"] = timestamp
+
+    def _mark_candidate_result_from_verified_producer(
+        self,
+        ghost_w: int,
+        ghost_h: int,
+        status: str,
+        *,
+        exact_safe_cuts: Optional[list[Mapping[str, Any]]] = None,
+        solution: Optional[Mapping[str, Any]] = None,
+        proof_summary: Optional[Mapping[str, Any]] = None,
+        loaded_exact_safe_cut_count: Optional[int] = None,
+        generated_exact_safe_cut_count: Optional[int] = None,
+    ) -> None:
+        """Persist a solver/precheck strong result and grant proof freshness.
+
+        This is an internal TCB entry point.  The certified outer controller may
+        call it only after validating the producer result (including completed
+        worker-wave identity for parallel results).  Keeping it separate from
+        ``mark_candidate_result`` prevents arbitrary state-writing callers from
+        self-authorizing ``CERTIFIED`` or ``INFEASIBLE`` evidence.
+        """
+
+        normalized_status = str(status)
+        if normalized_status not in STRONG_CANDIDATE_STATUSES:
+            raise ValueError(
+                "verified candidate producer path only accepts proof-bearing statuses"
+            )
+        self.mark_candidate_result(
+            ghost_w,
+            ghost_h,
+            normalized_status,
+            exact_safe_cuts=exact_safe_cuts,
+            solution=solution,
+            proof_summary=proof_summary,
+            loaded_exact_safe_cut_count=loaded_exact_safe_cut_count,
+            generated_exact_safe_cut_count=generated_exact_safe_cut_count,
+        )
         _mark_candidate_status_fresh_for_current_process(
             self,
-            key,
+            candidate_key(ghost_w, ghost_h),
             normalized_status,
         )
-        self.state["updated_at"] = timestamp
 
     def update_candidate_running_proof_summary(
         self,
