@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+import src.search.exact_campaign as exact_campaign_module
 from src.io.delivery_manifest import export_certified_delivery_manifest
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
@@ -21,6 +22,8 @@ from src.search.certified_surface import (
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
+    _grant_candidate_status_freshness_from_verified_producer,
+    _mark_candidate_status_fresh_for_current_process,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
 )
 
@@ -194,3 +197,57 @@ def test_public_candidate_writer_cannot_publish_forged_strong_frontier(
         campaign_path=campaign.path,
     )
     assert surface.publishable is False
+
+
+def test_private_verified_producer_writer_rejects_caller_minted_authority(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "forged_private_writer"
+    _build_toy_project(root)
+    campaign = ExactCampaign.load_or_create(root, campaign_hours=1.0, resume=False)
+    campaign.mark_candidate_started(3, 2)
+
+    with pytest.raises(
+        PermissionError,
+        match="verified_candidate_producer_caller_not_run_outer_search",
+    ):
+        campaign._mark_candidate_result_from_verified_producer(
+            3,
+            2,
+            "INFEASIBLE",
+            proof_summary={"producer": "attacker-direct-private-method"},
+        )
+
+    assert campaign.state["candidates"]["3x2"]["status"] == "RUNNING"
+
+    campaign.mark_candidate_result(
+        3,
+        2,
+        "INFEASIBLE",
+        proof_summary={"producer": "attacker-public-writer"},
+    )
+    with pytest.raises(
+        PermissionError,
+        match="verified_candidate_freshness_grant_caller_not_verified_writer",
+    ):
+        _grant_candidate_status_freshness_from_verified_producer(
+            campaign,
+            "3x2",
+            "INFEASIBLE",
+        )
+
+    with pytest.raises(PermissionError, match="direct candidate freshness sealing"):
+        _mark_candidate_status_fresh_for_current_process(
+            campaign,
+            "3x2",
+            "INFEASIBLE",
+        )
+
+
+def test_freshness_registry_is_not_exposed_as_mutable_module_state() -> None:
+    assert not hasattr(
+        exact_campaign_module,
+        "_FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID",
+    )
+    assert not hasattr(exact_campaign_module, "_candidate_freshness_bucket")
+    assert not hasattr(exact_campaign_module, "_candidate_record_freshness_token")

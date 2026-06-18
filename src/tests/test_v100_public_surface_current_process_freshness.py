@@ -20,9 +20,9 @@ from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
     compute_exact_artifact_hashes,
-    _mark_candidate_status_fresh_for_current_process,
     terminal_proof_bearing_candidate_freshness_violation,
 )
+from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -255,7 +255,7 @@ def test_v100_current_process_freshness_rejects_in_place_candidate_record_mutati
         "INFEASIBLE",
         proof_summary={"producer": "current-process-regression"},
     )
-    _mark_candidate_status_fresh_for_current_process(campaign, "6x6", "INFEASIBLE")
+    seal_test_candidate_status(campaign, "6x6", "INFEASIBLE")
     state["final_status"] = "CERTIFIED"
     state["final_result"] = {
         "ghost_rect": {"w": 6, "h": 6, "area": 36},
@@ -317,7 +317,7 @@ def test_v100_current_process_freshness_is_bound_to_campaign_proof_context(
         "INFEASIBLE",
         proof_summary={"producer": "donor-project"},
     )
-    _mark_candidate_status_fresh_for_current_process(campaign, "6x6", "INFEASIBLE")
+    seal_test_candidate_status(campaign, "6x6", "INFEASIBLE")
     state["final_status"] = "CERTIFIED"
     state["final_result"] = {
         "ghost_rect": {"w": 6, "h": 6, "area": 36},
@@ -380,7 +380,7 @@ def test_v100_current_process_freshness_does_not_transfer_after_identity_reuse(
         "INFEASIBLE",
         proof_summary={"producer": "identity-reuse-donor"},
     )
-    _mark_candidate_status_fresh_for_current_process(campaign, "6x6", "INFEASIBLE")
+    seal_test_candidate_status(campaign, "6x6", "INFEASIBLE")
     state["final_status"] = "CERTIFIED"
     state["final_result"] = {
         "ghost_rect": {"w": 6, "h": 6, "area": 36},
