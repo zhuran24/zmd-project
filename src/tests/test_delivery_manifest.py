@@ -246,7 +246,7 @@ def test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent
     assert verdict.blocked_reason == "delivery_artifacts_not_current:ValueError"
 
 
-def test_delivery_manifest_allows_terminal_campaign_without_best_certified_result(
+def test_delivery_manifest_rejects_terminal_infeasible_without_replayable_evidence(
     tmp_path: Path,
 ) -> None:
     project_root, _facility_pools = _build_manifest_project(tmp_path / "delivery_manifest_no_best")
@@ -254,20 +254,14 @@ def test_delivery_manifest_allows_terminal_campaign_without_best_certified_resul
     campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_INFEASIBLE)
     campaign.save()
 
-    output_path, payload = export_certified_delivery_manifest(
-        project_root=project_root,
-        campaign_state=campaign.state,
-        campaign_path=campaign.path,
-    )
+    with pytest.raises(ValueError, match="exhausted strict candidate frontier"):
+        export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=campaign.state,
+            campaign_path=campaign.path,
+        )
 
-    assert output_path == delivery_manifest_output_path(project_root)
-    assert payload["campaign"]["final_status"] == RUN_STATUS_INFEASIBLE
-    assert payload["campaign"]["last_stop_reason"]["reason"] == "search_exhausted_all_candidates"
-    assert payload["best_certified_result"] is None
-    assert payload["artifacts"]["campaign_state"]["exists"] is True
-    assert payload["artifacts"]["candidate_placements"]["exists"] is True
-    assert payload["artifacts"]["final_solution"]["exists"] is False
-    assert payload["artifacts"]["optimal_blueprint"]["exists"] is False
+    assert not delivery_manifest_output_path(project_root).exists()
 
 
 def test_delivery_manifest_rejects_best_effort_final_result(tmp_path: Path) -> None:

@@ -25,6 +25,7 @@ from src.io.output_schema import blueprint_output_path
 from src.io.serializer import export_certified_blueprint
 from src.search.exact_campaign import (
     DEFAULT_CAMPAIGN_FILENAME,
+    PROOF_BEARING_TERMINAL_STATUSES,
     _path_has_symlink_component,
     atomic_write_json,
     compute_exact_artifact_hashes,
@@ -497,7 +498,7 @@ def export_and_verify_certified_delivery_manifest(
 
 
 def redact_certified_status(value: Any, *, surface: CertifiedSurfaceVerdict) -> Any:
-    if str(value) == "CERTIFIED" and not surface.publishable:
+    if str(value) in PROOF_BEARING_TERMINAL_STATUSES and not surface.publishable:
         return None
     return value
 
@@ -508,7 +509,11 @@ def redact_certified_stop_reason(
     surface: CertifiedSurfaceVerdict,
 ) -> Optional[Dict[str, Any]]:
     payload = _mapping_or_none(value)
-    if payload is not None and str(payload.get("status")) == "CERTIFIED" and not surface.publishable:
+    if (
+        payload is not None
+        and str(payload.get("status")) in PROOF_BEARING_TERMINAL_STATUSES
+        and not surface.publishable
+    ):
         payload = dict(payload)
         payload["status"] = None
         payload["certified_surface_blocked_reason"] = surface.blocked_reason or (
