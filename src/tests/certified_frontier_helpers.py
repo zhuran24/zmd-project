@@ -15,10 +15,10 @@ from src.search.exact_campaign import (
     ExactCampaign,
     STRONG_CANDIDATE_STATUSES,
     _load_exact_grid_dimensions,
-    _mark_candidate_status_fresh_for_current_process,
     _load_exact_min_side_admissibility,
     _load_exact_safe_area_upper_bound,
 )
+from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
 def attach_terminal_frontier_evidence(
@@ -95,7 +95,7 @@ def attach_terminal_frontier_evidence(
             continue
         status = str(raw_record.get("status", ""))
         if status in STRONG_CANDIDATE_STATUSES:
-            _mark_candidate_status_fresh_for_current_process(
+            seal_test_candidate_status(
                 campaign,
                 str(raw_key),
                 status,

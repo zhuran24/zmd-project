@@ -644,7 +644,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "faff29ca767c1f2cd3beb30a338d750cef87d700be76f61cfd9658c5ef2e6cdb",
+        "source_sha256": "f348bd2d020483d87b38aefbf56f52feef15eb2ca16131602d12364b5ca68a21",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1242,9 +1242,14 @@
         "required_guard_tokens": [
           "validate_exact_campaign_resume_state",
           "terminal_frontier_evidence",
-          "best_certified_result"
+          "best_certified_result",
+          "_verified_producer_writer_caller_violation",
+          "_grant_candidate_status_freshness_from_verified_producer",
+          "_build_candidate_freshness_runtime",
+          "records_by_state_id",
+          "direct candidate freshness sealing"
         ],
-        "source_sha256": "5f7fa05ec350f8e11c9dadf7f8a29d4a2e91cab03c9d216add043b8c176eeec2",
+        "source_sha256": "e503cbd09d5e01e3b4488d37964989b91586196e519e83bc6c4ca413b941d6b4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1311,9 +1316,11 @@
         "required_guard_tokens": [
           "build_terminal_frontier_evidence",
           "_parallel_wave_result_identity_failure",
-          "_parallel_wave_failure_discards_results"
+          "_parallel_wave_failure_discards_results",
+          "run_outer_search",
+          "_mark_candidate_result_from_verified_producer"
         ],
-        "source_sha256": "cedfeda25ebbaba3430e7a67721d8bc9d18fe097b24f860f6b05be80c91b0013",
+        "source_sha256": "b321e3986a32c29186f08c18f02482576f12218c522a355e7cded1fa114a3fce",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

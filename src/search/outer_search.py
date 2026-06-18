@@ -1542,9 +1542,8 @@ def _record_precheck_elimination(
     proof_summary: Mapping[str, Any],
     frontier_candidate_metrics: Mapping[str, Any],
     frontier_probe_mode: str,
-    exact_campaign: Optional[ExactCampaign],
     precheck_lookahead: Optional[Mapping[str, Any]] = None,
-) -> Dict[str, Any]:
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     _area, ghost_w, ghost_h = selected_candidate
     normalized_proof_summary = dict(proof_summary)
     if precheck_lookahead is not None:
@@ -1566,19 +1565,7 @@ def _record_precheck_elimination(
         frontier_candidate_metrics=frontier_candidate_metrics,
         frontier_probe_mode=frontier_probe_mode,
     )
-    if exact_campaign is not None:
-        exact_campaign._mark_candidate_result_from_verified_producer(
-            int(ghost_w),
-            int(ghost_h),
-            RUN_STATUS_INFEASIBLE,
-            exact_safe_cuts=campaign_payload["exact_safe_cuts"],
-            proof_summary=campaign_payload["proof_summary"],
-            loaded_exact_safe_cut_count=campaign_payload["loaded_exact_safe_cut_count"],
-            generated_exact_safe_cut_count=campaign_payload[
-                "generated_exact_safe_cut_count"
-            ],
-        )
-    return _candidate_result_entry(
+    candidate_result = _candidate_result_entry(
         candidate=selected_candidate,
         dispatch_seq=int(dispatch_seq),
         attempt_index=attempt_index,
@@ -1596,6 +1583,7 @@ def _record_precheck_elimination(
             frontier_probe_mode=frontier_probe_mode,
         ),
     )
+    return candidate_result, campaign_payload
 
 
 def _campaign_payload_from_worker_result(
@@ -2043,38 +2031,49 @@ def run_outer_search(
                                     ),
                                 )
                             evaluation_attempts += 1
-                            precheck_round_results.append(
-                                _record_precheck_elimination(
-                                    selected_candidate=candidate,
-                                    attempt_index=evaluation_attempts,
-                                    selection_reason=str(entry["selection_reason"]),
-                                    wave_slot_index=int(entry["wave_slot_index"]),
-                                    dispatch_seq=len(precheck_round_results),
-                                    proof_summary=dict(
-                                        precheck_outcome.get("proof_summary", {})
-                                    ),
-                                    frontier_candidate_metrics=dict(
-                                        entry.get("frontier_candidate_metrics", {})
-                                    ),
-                                    frontier_probe_mode=str(
-                                        entry.get(
+                            precheck_result, precheck_payload = _record_precheck_elimination(
+                                selected_candidate=candidate,
+                                attempt_index=evaluation_attempts,
+                                selection_reason=str(entry["selection_reason"]),
+                                wave_slot_index=int(entry["wave_slot_index"]),
+                                dispatch_seq=len(precheck_round_results),
+                                proof_summary=dict(
+                                    precheck_outcome.get("proof_summary", {})
+                                ),
+                                frontier_candidate_metrics=dict(
+                                    entry.get("frontier_candidate_metrics", {})
+                                ),
+                                frontier_probe_mode=str(
+                                    entry.get(
+                                        "frontier_probe_mode",
+                                        frontier_state.get(
                                             "frontier_probe_mode",
-                                            frontier_state.get(
-                                                "frontier_probe_mode",
-                                                FRONTIER_PROBE_MODE_OFF,
-                                            ),
-                                        )
-                                    ),
-                                    precheck_lookahead={
-                                        "enabled": True,
-                                        "slot_index": int(entry["wave_slot_index"]),
-                                        "limit": _PRE_MASTER_PRECHECK_LOOKAHEAD_LIMIT,
-                                        "is_selected_head": int(entry["wave_slot_index"])
-                                        == 0,
-                                    },
-                                    exact_campaign=exact_campaign,
-                                )
+                                            FRONTIER_PROBE_MODE_OFF,
+                                        ),
+                                    )
+                                ),
+                                precheck_lookahead={
+                                    "enabled": True,
+                                    "slot_index": int(entry["wave_slot_index"]),
+                                    "limit": _PRE_MASTER_PRECHECK_LOOKAHEAD_LIMIT,
+                                    "is_selected_head": int(entry["wave_slot_index"]) == 0,
+                                },
                             )
+                            if exact_campaign is not None:
+                                exact_campaign._mark_candidate_result_from_verified_producer(
+                                    int(candidate[1]),
+                                    int(candidate[2]),
+                                    RUN_STATUS_INFEASIBLE,
+                                    exact_safe_cuts=precheck_payload["exact_safe_cuts"],
+                                    proof_summary=precheck_payload["proof_summary"],
+                                    loaded_exact_safe_cut_count=precheck_payload[
+                                        "loaded_exact_safe_cut_count"
+                                    ],
+                                    generated_exact_safe_cut_count=precheck_payload[
+                                        "generated_exact_safe_cut_count"
+                                    ],
+                                )
+                            precheck_round_results.append(precheck_result)
                             # SMT-MT shadow telemetry: precheck-eliminated
                             # candidate is INFEASIBLE per proof, propagate.
                             _smt_mt_record_infeasible(int(candidate[1]), int(candidate[2]))
@@ -2203,39 +2202,50 @@ def run_outer_search(
                         if _is_valid_pre_master_precheck_elimination(
                             precheck_outcome
                         ):
-                            coordinator_precheck_results.append(
-                                _record_precheck_elimination(
-                                    selected_candidate=candidate,
-                                    attempt_index=evaluation_attempts,
-                                    selection_reason=str(entry["selection_reason"]),
-                                    wave_slot_index=int(entry["wave_slot_index"]),
-                                    dispatch_seq=int(entry["wave_slot_index"]),
-                                    proof_summary=dict(
-                                        precheck_outcome.get("proof_summary", {})
-                                    ),
-                                    frontier_candidate_metrics=wave_metrics_by_key.get(
-                                        candidate_key,
-                                        {},
-                                    ),
-                                    frontier_probe_mode=str(
-                                        entry.get(
+                            precheck_result, precheck_payload = _record_precheck_elimination(
+                                selected_candidate=candidate,
+                                attempt_index=evaluation_attempts,
+                                selection_reason=str(entry["selection_reason"]),
+                                wave_slot_index=int(entry["wave_slot_index"]),
+                                dispatch_seq=int(entry["wave_slot_index"]),
+                                proof_summary=dict(
+                                    precheck_outcome.get("proof_summary", {})
+                                ),
+                                frontier_candidate_metrics=wave_metrics_by_key.get(
+                                    candidate_key,
+                                    {},
+                                ),
+                                frontier_probe_mode=str(
+                                    entry.get(
+                                        "frontier_probe_mode",
+                                        frontier_state.get(
                                             "frontier_probe_mode",
-                                            frontier_state.get(
-                                                "frontier_probe_mode",
-                                                FRONTIER_PROBE_MODE_OFF,
-                                            ),
-                                        )
-                                    ),
-                                    precheck_lookahead={
-                                        "enabled": False,
-                                        "slot_index": int(entry["wave_slot_index"]),
-                                        "limit": 0,
-                                        "is_selected_head": int(entry["wave_slot_index"])
-                                        == 0,
-                                    },
-                                    exact_campaign=exact_campaign,
-                                )
+                                            FRONTIER_PROBE_MODE_OFF,
+                                        ),
+                                    )
+                                ),
+                                precheck_lookahead={
+                                    "enabled": False,
+                                    "slot_index": int(entry["wave_slot_index"]),
+                                    "limit": 0,
+                                    "is_selected_head": int(entry["wave_slot_index"]) == 0,
+                                },
                             )
+                            if exact_campaign is not None:
+                                exact_campaign._mark_candidate_result_from_verified_producer(
+                                    int(candidate[1]),
+                                    int(candidate[2]),
+                                    RUN_STATUS_INFEASIBLE,
+                                    exact_safe_cuts=precheck_payload["exact_safe_cuts"],
+                                    proof_summary=precheck_payload["proof_summary"],
+                                    loaded_exact_safe_cut_count=precheck_payload[
+                                        "loaded_exact_safe_cut_count"
+                                    ],
+                                    generated_exact_safe_cut_count=precheck_payload[
+                                        "generated_exact_safe_cut_count"
+                                    ],
+                                )
+                            coordinator_precheck_results.append(precheck_result)
                             # SMT-MT shadow telemetry: precheck-eliminated INFEASIBLE.
                             _smt_mt_record_infeasible(int(candidate[1]), int(candidate[2]))
                             continue

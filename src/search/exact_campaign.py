@@ -15,12 +15,13 @@ import hashlib
 import json
 import math
 import os
+import sys
 import tempfile
 import time
 import weakref
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 from src.models.master_model import (
@@ -77,11 +78,6 @@ class _FreshProofBearingCandidateBucket:
     records: dict[str, FreshCandidateRecord]
 
 
-_FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID: dict[
-    int, _FreshProofBearingCandidateBucket
-] = {}
-
-
 _FRESH_PROOF_CONTEXT_STATE_FIELDS = (
     "schema_version",
     "solve_mode",
@@ -119,25 +115,157 @@ def _campaign_proof_context_digest(campaign: "ExactCampaign") -> str:
     )
 
 
-def _release_candidate_freshness_bucket(
-    state_id: int,
-    owner_ref: weakref.ReferenceType[Any],
-) -> None:
-    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(int(state_id))
-    if bucket is not None and bucket.owner_ref is owner_ref:
-        _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.pop(int(state_id), None)
+def _verified_producer_writer_caller_violation(caller: Any) -> Optional[str]:
+    """Require the real outer-search controller as the immediate strong writer."""
+
+    outer_module = sys.modules.get("src.search.outer_search")
+    outer_entry = (
+        None if outer_module is None else getattr(outer_module, "run_outer_search", None)
+    )
+    if (
+        caller is None
+        or outer_entry is None
+        or caller.f_code is not getattr(outer_entry, "__code__", None)
+        or caller.f_globals is not getattr(outer_entry, "__globals__", None)
+    ):
+        return "verified_candidate_producer_caller_not_run_outer_search"
+    return None
 
 
-def _candidate_freshness_bucket(
-    campaign: "ExactCampaign",
-) -> dict[str, FreshCandidateRecord]:
-    state = campaign.state
-    candidates = state.get("candidates")
-    if not isinstance(candidates, Mapping):
-        candidates = {}
-    state_id = id(state)
-    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(state_id)
-    if bucket is not None:
+def _verified_producer_grant_caller_violation(caller: Any) -> Optional[str]:
+    """Require the exact campaign writer as the immediate freshness grantor."""
+
+    campaign_type = globals().get("ExactCampaign")
+    writer = (
+        None
+        if campaign_type is None
+        else getattr(campaign_type, "_mark_candidate_result_from_verified_producer", None)
+    )
+    if (
+        caller is None
+        or writer is None
+        or caller.f_code is not getattr(writer, "__code__", None)
+        or caller.f_globals is not getattr(writer, "__globals__", None)
+    ):
+        return "verified_candidate_freshness_grant_caller_not_verified_writer"
+    return None
+
+
+def _build_candidate_freshness_runtime() -> tuple[
+    Callable[["ExactCampaign", str, str], None],
+    Callable[["ExactCampaign", str, str], None],
+    Callable[["ExactCampaign", str], None],
+    Callable[[Mapping[str, Any]], None],
+    Callable[[Mapping[str, Any]], Optional[str]],
+]:
+    """Keep proof freshness authority behind a non-importable closure boundary."""
+
+    records_by_state_id: dict[int, _FreshProofBearingCandidateBucket] = {}
+
+    def release_bucket(
+        state_id: int,
+        owner_ref: weakref.ReferenceType[Any],
+    ) -> None:
+        bucket = records_by_state_id.get(int(state_id))
+        if bucket is not None and bucket.owner_ref is owner_ref:
+            records_by_state_id.pop(int(state_id), None)
+
+    def bucket_for(campaign: "ExactCampaign") -> dict[str, FreshCandidateRecord]:
+        state = campaign.state
+        candidates = state.get("candidates")
+        if not isinstance(candidates, Mapping):
+            candidates = {}
+        state_id = id(state)
+        bucket = records_by_state_id.get(state_id)
+        if bucket is not None:
+            owner = bucket.owner_ref()
+            if (
+                owner is campaign
+                and owner.state is state
+                and bucket.state is state
+                and bucket.candidates is candidates
+            ):
+                # Keep the first proof-context snapshot even if the mutable campaign
+                # object is later retargeted.  Re-registering under the new context
+                # would turn an invalidation into a proof transfer.
+                return bucket.records
+
+        def release_owner(ref: weakref.ReferenceType[Any]) -> None:
+            release_bucket(state_id, ref)
+
+        owner_ref = weakref.ref(campaign, release_owner)
+        fresh_records: dict[str, FreshCandidateRecord] = {}
+        records_by_state_id[state_id] = _FreshProofBearingCandidateBucket(
+            owner_ref=owner_ref,
+            state=state,
+            candidates=candidates,
+            proof_context_digest=_campaign_proof_context_digest(campaign),
+            records=fresh_records,
+        )
+        return fresh_records
+
+    def record_token(
+        state: Mapping[str, Any],
+        key: str,
+        status: str,
+    ) -> Optional[FreshCandidateRecord]:
+        candidates = state.get("candidates")
+        if not isinstance(candidates, Mapping):
+            return None
+        record = candidates.get(key)
+        if not isinstance(record, Mapping):
+            return None
+        return record, str(status), _canonical_digest(record)
+
+    def grant_from_verified_producer(
+        campaign: "ExactCampaign",
+        key: str,
+        status: str,
+    ) -> None:
+        try:
+            caller = sys._getframe(1)
+        except (AttributeError, ValueError):
+            caller = None
+        violation = _verified_producer_grant_caller_violation(caller)
+        if violation is not None:
+            raise PermissionError(violation)
+
+        normalized_status = str(status)
+        if normalized_status not in STRONG_CANDIDATE_STATUSES:
+            raise ValueError("only proof-bearing statuses may receive producer freshness")
+        state = campaign.state
+        fresh_records = bucket_for(campaign)
+        normalized_key = str(key)
+        fresh_token = record_token(
+            state,
+            normalized_key,
+            normalized_status,
+        )
+        if fresh_token is None:
+            fresh_records.pop(normalized_key, None)
+        else:
+            fresh_records[normalized_key] = fresh_token
+
+    def raw_current_process_sealer(
+        campaign: "ExactCampaign",
+        key: str,
+        status: str,
+    ) -> None:
+        """Removed raw sealer retained only as a fail-closed compatibility trap."""
+
+        del campaign, key, status
+        raise PermissionError(
+            "direct candidate freshness sealing is forbidden; use the verified producer path"
+        )
+
+    def invalidate(campaign: "ExactCampaign", key: str) -> None:
+        """Remove proof authority without creating a new freshness bucket."""
+
+        state = campaign.state
+        candidates = state.get("candidates")
+        bucket = records_by_state_id.get(id(state))
+        if bucket is None:
+            return
         owner = bucket.owner_ref()
         if (
             owner is campaign
@@ -145,151 +273,86 @@ def _candidate_freshness_bucket(
             and bucket.state is state
             and bucket.candidates is candidates
         ):
-            # Keep the first proof-context snapshot even if the mutable campaign
-            # object is later retargeted.  Re-registering under the new context
-            # would turn an invalidation into a proof transfer.
-            return bucket.records
+            bucket.records.pop(str(key), None)
 
-    owner_ref = weakref.ref(
-        campaign,
-        lambda ref, registered_state_id=state_id: _release_candidate_freshness_bucket(
-            registered_state_id,
-            ref,
-        ),
-    )
-    fresh_records: dict[str, FreshCandidateRecord] = {}
-    _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID[state_id] = (
-        _FreshProofBearingCandidateBucket(
-            owner_ref=owner_ref,
-            state=state,
-            candidates=candidates,
-            proof_context_digest=_campaign_proof_context_digest(campaign),
-            records=fresh_records,
-        )
-    )
-    return fresh_records
+    def clear(state: Mapping[str, Any]) -> None:
+        records_by_state_id.pop(id(state), None)
 
+    def terminal_violation(state: Mapping[str, Any]) -> Optional[str]:
+        """Return why terminal proof-bearing candidate statuses are not fresh.
 
-def _candidate_record_freshness_token(
-    state: Mapping[str, Any],
-    key: str,
-    status: str,
-) -> Optional[FreshCandidateRecord]:
-    candidates = state.get("candidates")
-    if not isinstance(candidates, Mapping):
-        return None
-    record = candidates.get(key)
-    if not isinstance(record, Mapping):
-        return None
-    return record, str(status), _canonical_digest(record)
+        Candidate-wide CERTIFIED / INFEASIBLE conclusions become proof-bearing
+        only when they are produced through the current campaign process.  A JSON
+        mapping loaded or fabricated outside that process may still be
+        structurally valid, but it is not allowed to mint a public terminal
+        certificate.
+        """
 
-
-def _mark_candidate_status_fresh_for_current_process(
-    campaign: "ExactCampaign",
-    key: str,
-    status: str,
-) -> None:
-    state = campaign.state
-    fresh_records = _candidate_freshness_bucket(campaign)
-    key = str(key)
-    if status in STRONG_CANDIDATE_STATUSES:
-        record_token = _candidate_record_freshness_token(state, key, status)
-        if record_token is None:
-            fresh_records.pop(key, None)
-        else:
-            fresh_records[key] = record_token
-    else:
-        fresh_records.pop(key, None)
-
-
-def _invalidate_candidate_status_freshness_for_current_process(
-    campaign: "ExactCampaign",
-    key: str,
-) -> None:
-    """Remove proof authority without creating a new freshness bucket.
-
-    ``mark_candidate_result`` is a general state mutation API.  A caller writing
-    a syntactically strong status through that API has not demonstrated that the
-    certified solver or a sound precheck produced it.  Such writes may remain in
-    diagnostic state, but they must invalidate any prior process-local proof
-    authority for the candidate.
-    """
-
-    state = campaign.state
-    candidates = state.get("candidates")
-    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(id(state))
-    if bucket is None:
-        return
-    owner = bucket.owner_ref()
-    if (
-        owner is campaign
-        and owner.state is state
-        and bucket.state is state
-        and bucket.candidates is candidates
-    ):
-        bucket.records.pop(str(key), None)
-
-
-def _clear_candidate_status_freshness_for_state(state: Mapping[str, Any]) -> None:
-    _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.pop(id(state), None)
-
-
-def terminal_proof_bearing_candidate_freshness_violation(
-    state: Mapping[str, Any],
-) -> Optional[str]:
-    """Return why terminal proof-bearing candidate statuses are not fresh.
-
-    Candidate-wide CERTIFIED / INFEASIBLE conclusions become proof-bearing only
-    when they are produced through the current campaign process.  A JSON mapping
-    loaded or fabricated outside that process may still be structurally valid,
-    but it is not allowed to mint a public terminal certificate.
-    """
-
-    if not has_terminal_full_frontier_certified_evidence(state):
-        return None
-    candidates = state.get("candidates")
-    if not isinstance(candidates, Mapping):
-        return "terminal_candidate_records_missing"
-    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(id(state))
-    fresh_records: Mapping[str, FreshCandidateRecord]
-    owner = None if bucket is None else bucket.owner_ref()
-    context_matches = False
-    if bucket is not None and owner is not None:
-        try:
-            context_matches = (
-                bucket.proof_context_digest == _campaign_proof_context_digest(owner)
-            )
-        except Exception:
-            context_matches = False
-    if (
-        bucket is not None
-        and owner is not None
-        and owner.state is state
-        and bucket.state is state
-        and bucket.candidates is candidates
-        and context_matches
-    ):
-        fresh_records = bucket.records
-    else:
-        fresh_records = {}
-    for raw_key, raw_record in sorted(candidates.items(), key=lambda item: str(item[0])):
-        if not isinstance(raw_record, Mapping):
-            continue
-        status = str(raw_record.get("status", ""))
-        if status not in STRONG_CANDIDATE_STATUSES:
-            continue
-        key = str(raw_key)
-        expected = fresh_records.get(key)
-        if expected is None:
-            return f"terminal_candidate_status_not_current_process_fresh:{key}"
-        expected_record, expected_status, expected_digest = expected
+        if not has_terminal_full_frontier_certified_evidence(state):
+            return None
+        candidates = state.get("candidates")
+        if not isinstance(candidates, Mapping):
+            return "terminal_candidate_records_missing"
+        bucket = records_by_state_id.get(id(state))
+        fresh_records: Mapping[str, FreshCandidateRecord]
+        owner = None if bucket is None else bucket.owner_ref()
+        context_matches = False
+        if bucket is not None and owner is not None:
+            try:
+                context_matches = (
+                    bucket.proof_context_digest == _campaign_proof_context_digest(owner)
+                )
+            except Exception:
+                context_matches = False
         if (
-            expected_record is not raw_record
-            or expected_status != status
-            or expected_digest != _canonical_digest(raw_record)
+            bucket is not None
+            and owner is not None
+            and owner.state is state
+            and bucket.state is state
+            and bucket.candidates is candidates
+            and context_matches
         ):
-            return f"terminal_candidate_status_not_current_process_fresh:{key}"
-    return None
+            fresh_records = bucket.records
+        else:
+            fresh_records = {}
+        for raw_key, raw_record in sorted(
+            candidates.items(), key=lambda item: str(item[0])
+        ):
+            if not isinstance(raw_record, Mapping):
+                continue
+            status = str(raw_record.get("status", ""))
+            if status not in STRONG_CANDIDATE_STATUSES:
+                continue
+            key = str(raw_key)
+            expected = fresh_records.get(key)
+            if expected is None:
+                return f"terminal_candidate_status_not_current_process_fresh:{key}"
+            expected_record, expected_status, expected_digest = expected
+            if (
+                expected_record is not raw_record
+                or expected_status != status
+                or expected_digest != _canonical_digest(raw_record)
+            ):
+                return f"terminal_candidate_status_not_current_process_fresh:{key}"
+        return None
+
+    return (
+        grant_from_verified_producer,
+        raw_current_process_sealer,
+        invalidate,
+        clear,
+        terminal_violation,
+    )
+
+
+(
+    _grant_candidate_status_freshness_from_verified_producer,
+    _mark_candidate_status_fresh_for_current_process,
+    _invalidate_candidate_status_freshness_for_current_process,
+    _clear_candidate_status_freshness_for_state,
+    terminal_proof_bearing_candidate_freshness_violation,
+) = _build_candidate_freshness_runtime()
+del _build_candidate_freshness_runtime
 
 
 # A terminal public final_result is a projection of the certified candidate
@@ -2618,7 +2681,7 @@ class ExactCampaign:
         record.pop("solution", None)
 
         candidates[key] = record
-        _mark_candidate_status_fresh_for_current_process(self, key, "RUNNING")
+        _invalidate_candidate_status_freshness_for_current_process(self, key)
         self.state["last_stop_reason"] = None
         if self.state.get("final_result") is None:
             self.state["final_status"] = None
@@ -2731,18 +2794,10 @@ class ExactCampaign:
             record.pop("solution", None)
 
         candidates[key] = record
-        if normalized_status in STRONG_CANDIDATE_STATUSES:
-            # General callers may persist a status for diagnostics or migration,
-            # but only the certified producer path below may make that status
-            # proof-bearing.  In particular, this public setter must not turn its
-            # own unverified input into current-process freshness.
-            _invalidate_candidate_status_freshness_for_current_process(self, key)
-        else:
-            _mark_candidate_status_fresh_for_current_process(
-                self,
-                key,
-                normalized_status,
-            )
+        # General callers may persist a status for diagnostics or migration, but
+        # only the controller-authorized producer path below may make a strong
+        # status proof-bearing.  Every public rewrite invalidates prior authority.
+        _invalidate_candidate_status_freshness_for_current_process(self, key)
         self.state["updated_at"] = timestamp
 
     def _mark_candidate_result_from_verified_producer(
@@ -2766,6 +2821,14 @@ class ExactCampaign:
         self-authorizing ``CERTIFIED`` or ``INFEASIBLE`` evidence.
         """
 
+        try:
+            caller = sys._getframe(1)
+        except (AttributeError, ValueError):
+            caller = None
+        caller_violation = _verified_producer_writer_caller_violation(caller)
+        if caller_violation is not None:
+            raise PermissionError(caller_violation)
+
         normalized_status = str(status)
         if normalized_status not in STRONG_CANDIDATE_STATUSES:
             raise ValueError(
@@ -2781,7 +2844,7 @@ class ExactCampaign:
             loaded_exact_safe_cut_count=loaded_exact_safe_cut_count,
             generated_exact_safe_cut_count=generated_exact_safe_cut_count,
         )
-        _mark_candidate_status_fresh_for_current_process(
+        _grant_candidate_status_freshness_from_verified_producer(
             self,
             candidate_key(ghost_w, ghost_h),
             normalized_status,

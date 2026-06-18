@@ -1629,11 +1629,11 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/certified_frontier.py': '3ead765526029de3df7e843c2bbed03d2e413918bd603950bdcc53a29e0f505e',
     'src/search/certified_surface.py': '4ceea0003c98847b39dd15220d5331cf9ffe639b338039f706c9eace218470c2',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '5f7fa05ec350f8e11c9dadf7f8a29d4a2e91cab03c9d216add043b8c176eeec2',
+    'src/search/exact_campaign.py': 'e503cbd09d5e01e3b4488d37964989b91586196e519e83bc6c4ca413b941d6b4',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
-    'src/search/outer_search.py': 'cedfeda25ebbaba3430e7a67721d8bc9d18fe097b24f860f6b05be80c91b0013',
+    'src/search/outer_search.py': 'b321e3986a32c29186f08c18f02482576f12218c522a355e7cded1fa114a3fce',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
 }
