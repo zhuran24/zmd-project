@@ -60,6 +60,12 @@ def test_build_single_base_delivery_viewer_bundle_materializes_current_release(
         for item in viewer_manifest["quick_downloads"]
     )
 
+    recovered_final_solution = json.loads(
+        (output_dir / "final_solution.json").read_text(encoding="utf-8")
+    )
+    assert recovered_final_solution["search_status"] == "UNKNOWN"
+    assert recovered_final_solution["search_status"] != "CERTIFIED"
+
     blueprint_payload = json.loads((output_dir / "optimal_blueprint.json").read_text(encoding="utf-8"))
     facility_types = {str(facility["facility_type"]) for facility in blueprint_payload["facilities"]}
     viewer_pools_payload = json.loads((output_dir / "candidate_placements.json").read_text(encoding="utf-8"))

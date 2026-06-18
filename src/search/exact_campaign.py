@@ -29,6 +29,10 @@ from src.models.master_model import (
     infer_certified_optional_lower_bounds_for_instances,
     load_generic_io_requirements_artifact,
 )
+from src.search.certified_artifact_contract import (
+    LOCKED_EXACT_ARTIFACT_PATHS,
+    validate_locked_exact_artifact_contract,
+)
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
     terminal_frontier_evidence_violation,
@@ -402,92 +406,60 @@ REQUIRED_CANDIDATE_FIELDS = {
 }
 
 EXACT_HASH_FILES = {
-    "mandatory_exact_instances": "data/preprocessed/mandatory_exact_instances.json",
-    "candidate_placements": "data/preprocessed/candidate_placements.json",
-    "canonical_rules": "rules/canonical_rules.json",
-    "generic_io_requirements": "data/preprocessed/generic_io_requirements.json",
+    key: LOCKED_EXACT_ARTIFACT_PATHS[key]
+    for key in (
+        "mandatory_exact_instances",
+        "candidate_placements",
+        "canonical_rules",
+        "generic_io_requirements",
+    )
 }
 OPTIONAL_EXACT_HASH_FILES = {
     # Runtime preprocess profiles still consume utility/cycle-group declarations
     # from preprocess_plan.json.  Bind it to checkpoints when present so a plan
     # edit cannot ride on stale exact artifacts.
-    "preprocess_plan": "rules/preprocess_plan.json",
+    "preprocess_plan": LOCKED_EXACT_ARTIFACT_PATHS["preprocess_plan"],
 }
 MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
 CERTIFIED_EXACT_SOURCE_DIGEST_KEY = "certified_exact_source_tree"
-# Keep runtime checkpoint currentness aligned with the P1.2 close-kernel seal:
-# every registered certified/public proof-bearing sink, plus its package import
-# surface, must drift the certified_exact source digest.
-CERTIFIED_EXACT_SOURCE_HASH_FILES = (
-    "scripts/build_industrial_planner_single_base_delivery_release.py",
-    "scripts/check_p1_2_proof_obligations.py",
-    "src/cuts/__init__.py",
-    "src/cuts/families/__init__.py",
-    "src/cuts/families/pattern_nogood.py",
-    "src/cuts/helpers/__init__.py",
-    "src/cuts/helpers/bounded_core_minimizer.py",
-    "src/cuts/lifecycle.py",
-    "src/cuts/oracles/__init__.py",
-    "src/cuts/oracles/pattern_nogood_oracle.py",
-    "src/cuts/oracles/power_cover_oracle.py",
-    "src/cuts/oracles/region_capacity_oracle.py",
-    "src/cuts/oracles/shape_packing_hall_oracle.py",
-    "src/interchange/__init__.py",
-    "src/interchange/compatibility_manifest.py",
-    "src/interchange/export_registry.py",
-    "src/interchange/normalized_catalog.py",
-    "src/interchange/preprocess_context.py",
-    "src/interchange/target_capabilities.py",
-    "src/io/delivery_manifest.py",
-    "src/io/output_schema.py",
-    "src/io/serializer.py",
-    "src/io/strict_json.py",
-    "src/models/_cpsat_compat.py",
-    "src/models/abstract_routing_layer.py",
-    "src/models/binding_subproblem.py",
-    "src/models/cp_sat_worker_config.py",
-    "src/models/cpsat_minimum_model.py",
-    "src/models/cut_manager.py",
-    "src/models/d2_commodity_flow_core.py",
-    "src/models/exact_coordinate_master.py",
-    "src/models/flow_subproblem.py",
-    "src/models/highs_candidate_evaluator.py",
-    "src/models/highs_master_model.py",
-    "src/models/master_model.py",
-    "src/models/patch_routing_core.py",
-    "src/models/port_binding.py",
-    "src/models/pose_bool_exact_master.py",
-    "src/models/power_placement_subproblem.py",
-    "src/models/routing_binding_context.py",
-    "src/models/routing_subproblem.py",
-    "src/models/scip_master_model.py",
-    "src/models/separator_capacity_hull.py",
-    "src/models/solution_hint_parser.py",
-    "src/preprocess/operation_profiles.py",
-    "src/runtime/checkpoint_free_evaluator.py",
-    "src/runtime/process_priority.py",
-    "src/runtime/process_tree_telemetry.py",
-    "src/runtime/sensitive_path_audit.py",
-    "src/runtime/subproblem_invocation_counter.py",
-    "src/search/benders_loop.py",
-    "src/search/campaign_telemetry.py",
-    "src/search/certified_frontier.py",
-    "src/search/certified_surface.py",
-    "src/search/commodity_throughput.py",
-    "src/search/d2_separator.py",
-    "src/search/exact_campaign.py",
-    "src/search/exact_campaign_inspector.py",
-    "src/search/exact_parallel_scheduler.py",
-    "src/search/master_hint_persistence.py",
-    "src/search/outer_search.py",
-    "src/search/patch_conflict_separator.py",
-    "src/search/phase3b/anchor119/guard_controls.py",
-    "src/search/phase3b/anchor119/guarded_precheck_runtime.py",
-    "src/search/phase3b/anchor119/guarded_precheck_spec.py",
-    "src/search/routing_deletion_core_minimizer.py",
-    "src/search/separator_capacity_separator.py",
-    "src/search/smt_mt_outer_pruning.py",
-)
+
+
+def _discover_certified_exact_source_hash_files() -> tuple[str, ...]:
+    """Return the conservative production source surface bound to checkpoints.
+
+    A hand-maintained import list is not a sound source authority: a proof-bearing
+    sink can move behavior behind a newly imported module without changing the
+    digest.  Bind every production Python module and script instead.  Tests are
+    deliberately excluded because they do not execute on the certified runtime
+    path.  Experiment descriptors are included when present so the no-close
+    ablation identity is also checkpoint-bound without requiring intentionally
+    removed close-kernel files.
+    """
+
+    source_root = Path(__file__).resolve().parent.parent.parent
+    relative_paths: set[str] = set()
+    for path in (source_root / "src").rglob("*.py"):
+        relative_path = path.relative_to(source_root).as_posix()
+        if relative_path.startswith("src/tests/"):
+            continue
+        relative_paths.add(relative_path)
+    scripts_root = source_root / "scripts"
+    if scripts_root.exists():
+        for path in scripts_root.rglob("*.py"):
+            relative_paths.add(path.relative_to(source_root).as_posix())
+    for relative_path in (
+        "NO_CLOSE_KERNEL_EXPERIMENT.md",
+        "NO_CLOSE_KERNEL_EXPERIMENT.json",
+    ):
+        if (source_root / relative_path).is_file():
+            relative_paths.add(relative_path)
+    return tuple(sorted(relative_paths))
+
+
+# Every production source file that can be imported or invoked by the exact
+# campaign is bound conservatively.  This closes transitive-import blind spots
+# on public/release helpers and automatically covers future production modules.
+CERTIFIED_EXACT_SOURCE_HASH_FILES = _discover_certified_exact_source_hash_files()
 
 
 def _reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> Dict[str, Any]:
@@ -572,15 +544,28 @@ def compute_certified_exact_source_digest() -> str:
 
 
 def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
+    project_root = Path(project_root)
     hashes: Dict[str, str] = {}
+    artifact_sizes: Dict[str, int] = {}
     for key, relative_path in EXACT_HASH_FILES.items():
-        hashes[key] = sha256_file(project_root / relative_path)
+        artifact_path = project_root / relative_path
+        hashes[key] = sha256_file(artifact_path)
+        artifact_sizes[key] = int(artifact_path.stat().st_size)
     for key, relative_path in OPTIONAL_EXACT_HASH_FILES.items():
         artifact_path = project_root / relative_path
         if artifact_path.exists() or _path_has_symlink_component(artifact_path):
             hashes[key] = sha256_file(artifact_path)
+            artifact_sizes[key] = int(artifact_path.stat().st_size)
         else:
             hashes[key] = MISSING_OPTIONAL_EXACT_ARTIFACT_HASH
+    # A campaign hash is a continuity check, not authority to choose the theorem
+    # on first launch. Validate the frozen input contract before recording any
+    # process-local source digest or creating checkpoint/export surfaces.
+    validate_locked_exact_artifact_contract(
+        project_root=project_root,
+        artifact_hashes=hashes,
+        artifact_sizes=artifact_sizes,
+    )
     hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] = compute_certified_exact_source_digest()
     return hashes
 

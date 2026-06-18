@@ -38,6 +38,8 @@ env/
 .pytest_cache/
 # pytest.ini sets addopts = --basetemp=.pytest_tmp -> root basetemp on first run
 .pytest_tmp/
+# CodeGraph local code index (regenerable SQLite/cache; never proof/source truth)
+.codegraph/
 
 # ----------------------------------------------------------------------------
 # cc_memory — memory.db (the SQLite source of truth) IS tracked: owner wants the

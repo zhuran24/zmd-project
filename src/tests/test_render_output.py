@@ -78,6 +78,7 @@ def test_blueprint_recovery_uniquely_resolves_pose() -> None:
     assert legacy_payload["placement_solution"]["smelter_001"]["pose_id"] == "smelter_pose_0"
     assert legacy_payload["ghost_rect"]["anchor_x"] == 8
     assert legacy_payload["ghost_rect"]["anchor_y"] == 9
+    assert legacy_payload["search_status"] == "UNKNOWN"
 
 
 def test_blueprint_recovery_raises_on_missing_pose_match() -> None:
