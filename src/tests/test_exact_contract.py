@@ -3048,7 +3048,7 @@ def test_outer_search_safe_area_upper_bound_accounts_for_fixed_required_protocol
         resume_campaign=False,
     )
 
-    assert status == RUN_STATUS_INFEASIBLE
+    assert status == RUN_STATUS_UNPROVEN
     assert result is None
     assert (2, 2) not in calls
     assert all((ghost_w * ghost_h) <= 3 for ghost_w, ghost_h in calls)
@@ -7314,9 +7314,11 @@ def test_serial_precheck_lookahead_can_exhaust_domain_without_solving(
     state = _read_campaign_state(project_root)
     telemetry = _read_campaign_telemetry(project_root)
 
-    assert status == RUN_STATUS_INFEASIBLE
+    assert status == RUN_STATUS_UNPROVEN
     assert result is None
-    assert state["last_stop_reason"]["reason"] == "search_exhausted_all_candidates"
+    assert state["last_stop_reason"]["reason"] == (
+        "search_exhausted_without_replayable_infeasible_evidence"
+    )
     assert sorted(state["candidates"]) == ["2x1", "3x1", "4x1"]
     assert all(record["attempts"] == 0 for record in state["candidates"].values())
     assert telemetry["aggregate"]["candidate_result_count"] == 3
@@ -7636,7 +7638,7 @@ def test_parallel_coordinator_does_not_enable_mandatory_rectangle_precheck(
 
     telemetry = _read_campaign_telemetry(project_root)
 
-    assert status == RUN_STATUS_INFEASIBLE
+    assert status == RUN_STATUS_UNPROVEN
     assert result is None
     assert include_flags == [False, False]
     assert dispatched_candidate_keys == ["4x1", "3x1"]
@@ -7788,7 +7790,7 @@ def test_parallel_coordinator_sweeps_precheck_candidates_before_worker_dispatch(
     state = _read_campaign_state(project_root)
     telemetry = _read_campaign_telemetry(project_root)
 
-    assert status == RUN_STATUS_INFEASIBLE
+    assert status == RUN_STATUS_UNPROVEN
     assert result is None
     assert dispatched_candidate_keys == ["4x1", "2x1"]
     assert state["candidates"]["4x1"]["attempts"] == 1
@@ -7937,7 +7939,7 @@ def test_parallel_precheck_triggered_non_infeasible_is_dispatched_to_worker(
     state = _read_campaign_state(project_root)
     telemetry = _read_campaign_telemetry(project_root)
 
-    assert status == RUN_STATUS_INFEASIBLE
+    assert status == RUN_STATUS_UNPROVEN
     assert result is None
     assert dispatched_candidate_keys == ["4x1", "3x1"]
     assert state["candidates"]["4x1"]["attempts"] == 1

@@ -1960,8 +1960,8 @@ def run_outer_search(
 
                     if exact_campaign is not None:
                         exact_campaign.mark_campaign_stopped(
-                            "search_exhausted_all_candidates",
-                            status=RUN_STATUS_INFEASIBLE,
+                            "search_exhausted_without_replayable_infeasible_evidence",
+                            status=RUN_STATUS_UNPROVEN,
                         )
                         exact_campaign.save()
                         _refresh_certified_delivery_outputs(
@@ -1969,7 +1969,14 @@ def run_outer_search(
                             exact_campaign=exact_campaign,
                             facility_pools=facility_pools,
                         )
-                    return RUN_STATUS_INFEASIBLE, None
+                    # Candidate-level INFEASIBLE records remain valid current-process
+                    # pruning evidence.  A terminal INFEASIBLE claim is stronger: it
+                    # closes the entire authoritative domain and must survive
+                    # checkpoint, manifest, inspector, and resume replay.  The current
+                    # terminal-frontier evidence schema only supports a positive
+                    # CERTIFIED final result, so fail closed until an equivalent
+                    # replayable no-solution evidence contract exists.
+                    return RUN_STATUS_UNPROVEN, None
 
                 if exact_campaign is not None and exact_campaign.remaining_seconds() <= 0:
                     exact_campaign.mark_campaign_stopped(

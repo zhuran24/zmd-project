@@ -17,6 +17,7 @@ import math
 import os
 import tempfile
 import time
+import weakref
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
@@ -50,27 +51,119 @@ VALID_CANDIDATE_STATUSES = {
     "EPSILON_CERTIFIED",
 }
 STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
-FreshCandidateRecord = tuple[int, str, str]
+PROOF_BEARING_TERMINAL_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
+FreshCandidateRecord = tuple[Mapping[str, Any], str, str]
+
+
+@dataclass
+class _FreshProofBearingCandidateBucket:
+    """Process-local ownership for proof-bearing candidate records.
+
+    The state and candidates mappings are held strongly while their owning
+    ``ExactCampaign`` is alive.  The owner itself is weakly referenced so a
+    completed campaign does not leak its checkpoint graph.  Keeping the exact
+    mapping objects here is essential: CPython may reuse ``id(dict)`` values
+    after deallocation, so integer identities alone are not proof provenance.
+    """
+
+    owner_ref: weakref.ReferenceType[Any]
+    state: Mapping[str, Any]
+    candidates: Mapping[str, Any]
+    proof_context_digest: str
+    records: dict[str, FreshCandidateRecord]
+
+
 _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID: dict[
-    int, tuple[int, dict[str, FreshCandidateRecord]]
+    int, _FreshProofBearingCandidateBucket
 ] = {}
 
 
+_FRESH_PROOF_CONTEXT_STATE_FIELDS = (
+    "schema_version",
+    "solve_mode",
+    "artifact_hashes",
+    "master_domain_contract",
+    "proof_summary_schema_version",
+    "declare_mode",
+)
+
+
+def _campaign_proof_context_digest(campaign: "ExactCampaign") -> str:
+    """Bind process-local strong statuses to the project proof universe.
+
+    Candidate status records are not portable merely because their JSON shape is
+    unchanged.  Their meaning depends on the exact artifacts, certified mode,
+    master-domain contract, and campaign authority under which the solver
+    produced them.  Snapshot that context when the freshness bucket is first
+    created and reject later retargeting of the same live state.
+    """
+
+    project_root = Path(campaign.project_root).resolve()
+    raw_campaign_path = Path(campaign.path)
+    if not raw_campaign_path.is_absolute():
+        raw_campaign_path = project_root / raw_campaign_path
+    campaign_path = raw_campaign_path.resolve()
+    state_context = {
+        field: campaign.state.get(field) for field in _FRESH_PROOF_CONTEXT_STATE_FIELDS
+    }
+    return _canonical_digest(
+        {
+            "project_root": str(project_root),
+            "campaign_path": str(campaign_path),
+            "state_context": state_context,
+        }
+    )
+
+
+def _release_candidate_freshness_bucket(
+    state_id: int,
+    owner_ref: weakref.ReferenceType[Any],
+) -> None:
+    bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(int(state_id))
+    if bucket is not None and bucket.owner_ref is owner_ref:
+        _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.pop(int(state_id), None)
+
+
 def _candidate_freshness_bucket(
-    state: Mapping[str, Any],
+    campaign: "ExactCampaign",
 ) -> dict[str, FreshCandidateRecord]:
+    state = campaign.state
     candidates = state.get("candidates")
-    candidates_id = id(candidates) if isinstance(candidates, Mapping) else 0
+    if not isinstance(candidates, Mapping):
+        candidates = {}
     state_id = id(state)
     bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(state_id)
-    if bucket is None or bucket[0] != candidates_id:
-        fresh_records: dict[str, FreshCandidateRecord] = {}
-        _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID[state_id] = (
-            candidates_id,
-            fresh_records,
+    if bucket is not None:
+        owner = bucket.owner_ref()
+        if (
+            owner is campaign
+            and owner.state is state
+            and bucket.state is state
+            and bucket.candidates is candidates
+        ):
+            # Keep the first proof-context snapshot even if the mutable campaign
+            # object is later retargeted.  Re-registering under the new context
+            # would turn an invalidation into a proof transfer.
+            return bucket.records
+
+    owner_ref = weakref.ref(
+        campaign,
+        lambda ref, registered_state_id=state_id: _release_candidate_freshness_bucket(
+            registered_state_id,
+            ref,
+        ),
+    )
+    fresh_records: dict[str, FreshCandidateRecord] = {}
+    _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID[state_id] = (
+        _FreshProofBearingCandidateBucket(
+            owner_ref=owner_ref,
+            state=state,
+            candidates=candidates,
+            proof_context_digest=_campaign_proof_context_digest(campaign),
+            records=fresh_records,
         )
-        return fresh_records
-    return bucket[1]
+    )
+    return fresh_records
 
 
 def _candidate_record_freshness_token(
@@ -84,15 +177,16 @@ def _candidate_record_freshness_token(
     record = candidates.get(key)
     if not isinstance(record, Mapping):
         return None
-    return id(record), str(status), _canonical_digest(record)
+    return record, str(status), _canonical_digest(record)
 
 
 def _mark_candidate_status_fresh_for_current_process(
-    state: Mapping[str, Any],
+    campaign: "ExactCampaign",
     key: str,
     status: str,
 ) -> None:
-    fresh_records = _candidate_freshness_bucket(state)
+    state = campaign.state
+    fresh_records = _candidate_freshness_bucket(campaign)
     key = str(key)
     if status in STRONG_CANDIDATE_STATUSES:
         record_token = _candidate_record_freshness_token(state, key, status)
@@ -126,8 +220,24 @@ def terminal_proof_bearing_candidate_freshness_violation(
         return "terminal_candidate_records_missing"
     bucket = _FRESH_PROOF_BEARING_CANDIDATE_RECORDS_BY_STATE_ID.get(id(state))
     fresh_records: Mapping[str, FreshCandidateRecord]
-    if bucket is not None and bucket[0] == id(candidates):
-        fresh_records = bucket[1]
+    owner = None if bucket is None else bucket.owner_ref()
+    context_matches = False
+    if bucket is not None and owner is not None:
+        try:
+            context_matches = (
+                bucket.proof_context_digest == _campaign_proof_context_digest(owner)
+            )
+        except Exception:
+            context_matches = False
+    if (
+        bucket is not None
+        and owner is not None
+        and owner.state is state
+        and bucket.state is state
+        and bucket.candidates is candidates
+        and context_matches
+    ):
+        fresh_records = bucket.records
     else:
         fresh_records = {}
     for raw_key, raw_record in sorted(candidates.items(), key=lambda item: str(item[0])):
@@ -138,8 +248,14 @@ def terminal_proof_bearing_candidate_freshness_violation(
             continue
         key = str(raw_key)
         expected = fresh_records.get(key)
-        current_token = (id(raw_record), status, _canonical_digest(raw_record))
-        if expected != current_token:
+        if expected is None:
+            return f"terminal_candidate_status_not_current_process_fresh:{key}"
+        expected_record, expected_status, expected_digest = expected
+        if (
+            expected_record is not raw_record
+            or expected_status != status
+            or expected_digest != _canonical_digest(raw_record)
+        ):
             return f"terminal_candidate_status_not_current_process_fresh:{key}"
     return None
 
@@ -2020,14 +2136,23 @@ def validate_exact_campaign_resume_state(
 
 
 def has_certified_export_surface(state: Mapping[str, Any]) -> bool:
-    """Return True when a state carries any terminal/certified-looking export claim."""
+    """Return True when a state carries any proof-bearing terminal/export claim.
 
-    if str(state.get("final_status")) == "CERTIFIED":
+    Terminal INFEASIBLE is just as proof-bearing as terminal CERTIFIED: either one
+    can close the authoritative candidate domain.  Treat both as protected public
+    surfaces even though the current replayable terminal-evidence schema only
+    supports the positive CERTIFIED result case.
+    """
+
+    if str(state.get("final_status")) in PROOF_BEARING_TERMINAL_STATUSES:
         return True
     if isinstance(state.get("final_result"), Mapping):
         return True
     stop_record = state.get("last_stop_reason")
-    return isinstance(stop_record, Mapping) and str(stop_record.get("status")) == "CERTIFIED"
+    return (
+        isinstance(stop_record, Mapping)
+        and str(stop_record.get("status")) in PROOF_BEARING_TERMINAL_STATUSES
+    )
 
 
 def has_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]) -> bool:
@@ -2474,7 +2599,7 @@ class ExactCampaign:
         record.pop("solution", None)
 
         candidates[key] = record
-        _mark_candidate_status_fresh_for_current_process(self.state, key, "RUNNING")
+        _mark_candidate_status_fresh_for_current_process(self, key, "RUNNING")
         self.state["last_stop_reason"] = None
         if self.state.get("final_result") is None:
             self.state["final_status"] = None
@@ -2588,7 +2713,7 @@ class ExactCampaign:
 
         candidates[key] = record
         _mark_candidate_status_fresh_for_current_process(
-            self.state,
+            self,
             key,
             normalized_status,
         )

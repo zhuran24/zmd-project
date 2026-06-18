@@ -959,15 +959,16 @@ def test_parallel_and_serial_preserve_same_best_certified_result(
     assert parallel_manifest["artifacts"]["optimal_blueprint"]["exists"] is False
 
 
-def test_infeasible_terminal_delivery_manifest_does_not_forge_certified_result(
+def test_exhausted_search_without_terminal_infeasible_evidence_fails_closed_unproven(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
     project_root = _build_empty_frontier_project(tmp_path / "manifest_infeasible_terminal")
 
     # min_side=6 在 6x6 grid 的权威全域里只留 (6,6) 一个候选; mock 把它判
-    # INFEASIBLE 后整个域被穷尽, 走 search_exhausted_all_candidates 的
-    # terminal INFEASIBLE 路径 — manifest 不得伪造任何 certified 结果。
+    # INFEASIBLE 后整个域被穷尽。当前没有可跨 checkpoint / manifest / resume
+    # 重放的 terminal-INFEASIBLE evidence contract，因此必须 fail-closed 为
+    # UNPROVEN，且 manifest 不得伪造任何 certified 结果。
     def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         fake_run_benders_for_ghost_rect.last_run_metadata = {
             "proof_summary": {
@@ -1012,9 +1013,12 @@ def test_infeasible_terminal_delivery_manifest_does_not_forge_certified_result(
         delivery_manifest_output_path(project_root).read_text(encoding="utf-8")
     )
 
-    assert status == "INFEASIBLE"
+    assert status == "UNPROVEN"
     assert result is None
-    assert manifest_payload["campaign"]["final_status"] == "INFEASIBLE"
+    assert manifest_payload["campaign"]["final_status"] == "UNPROVEN"
+    assert manifest_payload["campaign"]["last_stop_reason"]["reason"] == (
+        "search_exhausted_without_replayable_infeasible_evidence"
+    )
     assert manifest_payload["best_certified_result"] is None
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
     assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is False
@@ -1112,13 +1116,13 @@ def test_min_side_exceeding_grid_fails_closed_with_value_error(tmp_path: Path) -
     assert not delivery_manifest_output_path(project_root).exists()
 
 
-def test_static_lower_bound_empty_domain_terminates_infeasible_without_solver_calls(
+def test_static_lower_bound_empty_domain_fails_closed_unproven_without_solver_calls(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
     # 权威全域下空候选域仍可达: mandatory 静态面积下界把 safe_area_upper_bound
     # 压到 min_side^2 以下 (33 格 mandatory → safe=3 < 36)。该路径必须零 solver
-    # 调用直接 terminal INFEASIBLE, 且 manifest 不伪造 certified 结果。
+    # 调用，但在 terminal-INFEASIBLE evidence contract 尚不存在时只能 UNPROVEN。
     project_root = _build_empty_frontier_project(tmp_path / "empty_domain_infeasible")
     _write_json(
         project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
@@ -1171,10 +1175,13 @@ def test_static_lower_bound_empty_domain_terminates_infeasible_without_solver_ca
         delivery_manifest_output_path(project_root).read_text(encoding="utf-8")
     )
 
-    assert status == "INFEASIBLE"
+    assert status == "UNPROVEN"
     assert result is None
     assert calls == []
-    assert manifest_payload["campaign"]["final_status"] == "INFEASIBLE"
+    assert manifest_payload["campaign"]["final_status"] == "UNPROVEN"
+    assert manifest_payload["campaign"]["last_stop_reason"]["reason"] == (
+        "search_exhausted_without_replayable_infeasible_evidence"
+    )
     assert manifest_payload["best_certified_result"] is None
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
     assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is False

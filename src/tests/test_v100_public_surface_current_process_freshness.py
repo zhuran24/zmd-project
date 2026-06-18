@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gc
 import json
 from pathlib import Path
 
@@ -234,5 +235,141 @@ def test_v100_current_process_freshness_rejects_in_place_candidate_record_mutati
     record["proof_summary"] = {"producer": "post-mark-in-place-mutation"}
 
     assert terminal_proof_bearing_candidate_freshness_violation(state) == (
+        "terminal_candidate_status_not_current_process_fresh:6x6"
+    )
+
+
+def test_v100_current_process_freshness_is_bound_to_campaign_proof_context(
+    tmp_path: Path,
+) -> None:
+    donor_root = tmp_path / "donor"
+    target_root = tmp_path / "target"
+    state = {
+        "schema_version": CAMPAIGN_SCHEMA_VERSION,
+        "solve_mode": "certified_exact",
+        "artifact_hashes": {"candidate_placements": "donor-hash"},
+        "master_domain_contract": {
+            "schema_version": 1,
+            "ghost_anchor_domain": "full_unfiltered",
+            "ghost_anchor_filter": None,
+        },
+        "proof_summary_schema_version": PROOF_SUMMARY_SCHEMA_VERSION,
+        "candidates": {},
+        "declare_mode": "strict",
+        "final_status": None,
+        "final_result": None,
+        "last_stop_reason": None,
+    }
+    campaign = ExactCampaign(
+        project_root=donor_root,
+        path=donor_root / "data" / "checkpoints" / "exact_campaign_state.json",
+        state=state,
+        resumed=False,
+        compatible_hashes=True,
+    )
+
+    campaign.mark_candidate_result(
+        6,
+        6,
+        "INFEASIBLE",
+        proof_summary={"producer": "donor-project"},
+    )
+    state["final_status"] = "CERTIFIED"
+    state["final_result"] = {
+        "ghost_rect": {"w": 6, "h": 6, "area": 36},
+        "placement_solution": {},
+        "search_status": "CERTIFIED",
+    }
+    state["last_stop_reason"] = {
+        "status": "CERTIFIED",
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    }
+
+    assert terminal_proof_bearing_candidate_freshness_violation(state) is None
+
+    # The record was genuinely produced in this process, but only for the donor
+    # artifact universe.  Repointing the same live state at another project's
+    # hashes must not preserve its proof-bearing status.
+    state["artifact_hashes"] = {"candidate_placements": "target-hash"}
+    assert terminal_proof_bearing_candidate_freshness_violation(state) == (
+        "terminal_candidate_status_not_current_process_fresh:6x6"
+    )
+
+    state["artifact_hashes"] = {"candidate_placements": "donor-hash"}
+    campaign.project_root = target_root
+    campaign.path = target_root / "data" / "checkpoints" / "exact_campaign_state.json"
+    assert terminal_proof_bearing_candidate_freshness_violation(state) == (
+        "terminal_candidate_status_not_current_process_fresh:6x6"
+    )
+
+
+def test_v100_current_process_freshness_does_not_transfer_after_identity_reuse(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Stale integer identities must not act as reusable proof provenance."""
+
+    import src.search.exact_campaign as exact_campaign_module
+
+    # Deterministically model allocator address reuse.  The original registry
+    # stored only integer id(...) values, so equal integers plus equal JSON
+    # digests transferred freshness to unrelated mappings after the donor died.
+    monkeypatch.setattr(exact_campaign_module, "id", lambda _value: 7, raising=False)
+
+    state = {
+        "candidates": {},
+        "declare_mode": "strict",
+        "final_status": None,
+        "final_result": None,
+        "last_stop_reason": None,
+    }
+    campaign = ExactCampaign(
+        project_root=tmp_path,
+        path=tmp_path / "data" / "checkpoints" / "exact_campaign_state.json",
+        state=state,
+        resumed=False,
+        compatible_hashes=True,
+    )
+    campaign.mark_candidate_result(
+        6,
+        6,
+        "INFEASIBLE",
+        proof_summary={"producer": "identity-reuse-donor"},
+    )
+    state["final_status"] = "CERTIFIED"
+    state["final_result"] = {
+        "ghost_rect": {"w": 6, "h": 6, "area": 36},
+        "placement_solution": {},
+        "search_status": "CERTIFIED",
+    }
+    state["last_stop_reason"] = {
+        "status": "CERTIFIED",
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    }
+
+    assert terminal_proof_bearing_candidate_freshness_violation(state) is None
+    record_json = json.dumps(state["candidates"]["6x6"])
+
+    del campaign
+    del state
+    gc.collect()
+
+    forged_record = json.loads(record_json)
+    forged_state = {
+        "candidates": {"6x6": forged_record},
+        "declare_mode": "strict",
+        "final_status": "CERTIFIED",
+        "final_result": {
+            "ghost_rect": {"w": 6, "h": 6, "area": 36},
+            "placement_solution": {},
+            "search_status": "CERTIFIED",
+        },
+        "last_stop_reason": {
+            "status": "CERTIFIED",
+            "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        },
+    }
+
+    assert terminal_proof_bearing_candidate_freshness_violation(forged_state) == (
         "terminal_candidate_status_not_current_process_fresh:6x6"
     )

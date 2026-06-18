@@ -644,7 +644,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "41656c6e1899bec062e98c95a39740e93a10dcb8dfd977f531bd29c115fb1b31",
+        "source_sha256": "f5e011ed722260b352bec2db8b35387ae2eed3ead77cdaa7c2fd7fef5ff7a2ac",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1209,7 +1209,7 @@
           "verify_certified_delivery_surface",
           "evaluate_certified_delivery_surface"
         ],
-        "source_sha256": "ea24dc498a551f002076a4a9b41046697d9dcc08550bf8eb76430ed75e7f4337",
+        "source_sha256": "4ceea0003c98847b39dd15220d5331cf9ffe639b338039f706c9eace218470c2",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1244,7 +1244,7 @@
           "terminal_frontier_evidence",
           "best_certified_result"
         ],
-        "source_sha256": "5c58ab5eee45573e0fb9bd436108e90beef2169dd432f661598dd09588acd4bf",
+        "source_sha256": "37b6127eab328298b908d192065ae144ae2eb36b49b9dd6f187ff4d859fef31a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1313,7 +1313,7 @@
           "_parallel_wave_result_identity_failure",
           "_parallel_wave_failure_discards_results"
         ],
-        "source_sha256": "2db84f7294742fd5859a7efd883865c89c630e3ceaa6408437e13a44e2aaf8bc",
+        "source_sha256": "7f72803f0ded1a1c68987533041576a64407758fcd26e5de8ffc6da537477c05",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
