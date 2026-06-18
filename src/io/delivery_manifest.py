@@ -13,6 +13,7 @@ from src.io.serializer import (
     build_blueprint_payload_from_certified_result,
     load_candidate_placements,
     load_canonical_blueprint,
+    load_json_mapping,
     recover_legacy_render_payload_from_blueprint,
 )
 from src.search.exact_campaign import (
@@ -789,6 +790,16 @@ def build_compatibility_exports_payload(project_root: Path) -> Dict[str, Any]:
         validation_report_markdown_path = target_dir / "validation_report.md"
         throughput_report_path = target_dir / "throughput_report.json"
         throughput_report_markdown_path = target_dir / "throughput_report.md"
+        _validate_compatibility_export_bundle_matches_canonical_blueprint(
+            project_root=project_root,
+            target_dir=target_dir,
+            blueprint_path=blueprint_path,
+            manifest_path=manifest_path,
+            validation_report_path=validation_report_path,
+            validation_report_markdown_path=validation_report_markdown_path,
+            throughput_report_path=throughput_report_path,
+            throughput_report_markdown_path=throughput_report_markdown_path,
+        )
         payload[target_dir.name] = {
             "blueprint": _artifact_entry(project_root, blueprint_path),
             "compatibility_manifest": _artifact_entry(project_root, manifest_path),
@@ -798,3 +809,113 @@ def build_compatibility_exports_payload(project_root: Path) -> Dict[str, Any]:
             "throughput_report_markdown": _artifact_entry(project_root, throughput_report_markdown_path),
         }
     return payload
+
+
+def _validate_compatibility_export_bundle_matches_canonical_blueprint(
+    *,
+    project_root: Path,
+    target_dir: Path,
+    blueprint_path: Path,
+    manifest_path: Path,
+    validation_report_path: Path,
+    validation_report_markdown_path: Path,
+    throughput_report_path: Path,
+    throughput_report_markdown_path: Path,
+) -> None:
+    """Fail closed unless a compatibility bundle is a canonical derivation.
+
+    Hashing an arbitrary file only proves which bytes were inventoried.  It does
+    not prove that those bytes came from ``optimal_blueprint.json``.  Rebuild the
+    supported target bundle from the canonical blueprint and compare every
+    public artifact before admitting it to a certified manifest.
+    """
+
+    if target_dir.name != "industrial_planner":
+        raise ValueError(
+            f"unsupported compatibility export target on certified surface: {target_dir.name}"
+        )
+
+    artifact_paths = {
+        "blueprint": blueprint_path,
+        "compatibility_manifest": manifest_path,
+        "validation_report": validation_report_path,
+        "validation_report_markdown": validation_report_markdown_path,
+        "throughput_report": throughput_report_path,
+        "throughput_report_markdown": throughput_report_markdown_path,
+    }
+    missing_or_unsafe = [
+        name for name, path in artifact_paths.items() if not _is_regular_file(path)
+    ]
+    if missing_or_unsafe:
+        raise ValueError(
+            "certified compatibility export requires a complete regular-file bundle: "
+            + ",".join(sorted(missing_or_unsafe))
+        )
+
+    canonical_blueprint_path = blueprint_output_path(project_root)
+    if not _is_regular_file(canonical_blueprint_path):
+        raise ValueError(
+            "certified compatibility export requires canonical optimal_blueprint.json"
+        )
+
+    actual_blueprint = load_json_mapping(blueprint_path)
+    actual_manifest = load_json_mapping(manifest_path)
+    manifest_metadata = actual_manifest.get("metadata")
+    manifest_extensions = (
+        manifest_metadata.get("extensions")
+        if isinstance(manifest_metadata, Mapping)
+        else None
+    )
+    if not isinstance(manifest_extensions, Mapping):
+        raise ValueError(
+            "certified compatibility export requires manifest metadata.extensions"
+        )
+    if manifest_extensions.get("has_outer_deployment_plan") is not False:
+        raise ValueError(
+            "certified compatibility export with outer deployment requires replayable provenance"
+        )
+
+    export_name = actual_blueprint.get("name")
+    base_id = actual_blueprint.get("baseId")
+    if not isinstance(export_name, str) or not export_name.strip():
+        raise ValueError("certified compatibility export blueprint name is invalid")
+    if not isinstance(base_id, str) or not base_id.strip():
+        raise ValueError("certified compatibility export blueprint baseId is invalid")
+    if str(manifest_extensions.get("base_id", "")) != base_id:
+        raise ValueError("certified compatibility export baseId provenance mismatch")
+
+    # Imported lazily to keep the canonical serializer/manifest modules free of
+    # an import cycle through the adapter package.
+    from src.adapters.industrial_planner import build_industrial_planner_export_bundle
+
+    expected_bundle = build_industrial_planner_export_bundle(
+        blueprint_payload=load_canonical_blueprint(canonical_blueprint_path),
+        export_name=export_name,
+        base_id=base_id,
+        include_blueprint_version="blueprintVersion" in actual_blueprint,
+    )
+    actual_json_artifacts = {
+        "blueprint": actual_blueprint,
+        "compatibility_manifest": actual_manifest,
+        "validation_report": load_json_mapping(validation_report_path),
+        "throughput_report": load_json_mapping(throughput_report_path),
+    }
+    for name, actual_payload in actual_json_artifacts.items():
+        if not _json_equivalent(actual_payload, expected_bundle[name]):
+            raise ValueError(
+                f"certified compatibility export is not derived from canonical blueprint: {name}"
+            )
+
+    actual_markdown_artifacts = {
+        "validation_report_markdown": validation_report_markdown_path.read_text(
+            encoding="utf-8"
+        ),
+        "throughput_report_markdown": throughput_report_markdown_path.read_text(
+            encoding="utf-8"
+        ),
+    }
+    for name, actual_text in actual_markdown_artifacts.items():
+        if actual_text != str(expected_bundle[name]):
+            raise ValueError(
+                f"certified compatibility export is not derived from canonical blueprint: {name}"
+            )

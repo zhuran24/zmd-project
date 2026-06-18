@@ -104,6 +104,19 @@ the live collaboration memory. Some documentation still mentions retired
 exist before relying on those instructions. Do not resurrect missing old tooling just
 because an older projection document names it.
 
+## CodeGraph Entry
+
+CodeGraph is the local code-structure index for this repo. Use it to navigate
+symbols, call chains, callers/callees, and change impact when `.codegraph/`
+exists, especially before broad grep/read sweeps. Treat it as a regenerable
+navigation aid only: it is not project memory, not proof evidence, and not a
+replacement for source reads, `PROJECT_LOCK.md`, tests, or preflight gates.
+
+If the MCP tools are not visible in a fresh Codex session, restart the agent and
+check that the global CodeGraph MCP entry is loaded. The repo index can be
+refreshed with `codegraph sync .` or rebuilt with `codegraph init .`; `.codegraph/`
+is intentionally ignored by git.
+
 ## Project Shape
 
 This is the Endfield IndustrialPlanner certified-exact maximum empty-rectangle
@@ -288,8 +301,11 @@ Before uploading a new project review package, delete older project packages fro
 the ChatGPT project Sources list so GPT cannot pick the wrong archive as the
 current review target. Do not delete dependency/runtime packages, such as the
 Python dependency bundle, unless the user explicitly asks.
-This cleanup is part of the authorized review loop and does not require a
-separate confirmation when the target is clearly an older project package.
+This section is the durable standing authorization for the GPT Pro Review Loop.
+Within this loop, stale project review package cleanup is authorized when the
+target is clearly an older project package. Do not pause solely to reconfirm this
+scoped cleanup when the filename and package role are clear. Dependency/runtime
+packages remain out of scope unless the user explicitly says otherwise.
 
 Before every prompt send, verify the selected model/control is the boxed
 `Pro 扩展` option in the composer. For each uploaded package, send exactly three

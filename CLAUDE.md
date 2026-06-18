@@ -91,6 +91,28 @@ python cc_memory/mem.py boot
 This project-local `cc_memory` store is the authoritative collaboration memory for this repo;
 prefer it over any generic file-based memory prompt.
 
+## CodeGraph code index
+
+CodeGraph is installed as the local code-structure index for this checkout. Use it for
+symbol lookup, call-chain navigation, caller/callee inspection, and impact scouting before
+wide grep/read sweeps when the `.codegraph/` index is present.
+
+Important boundary: CodeGraph is only a regenerable navigation cache. It is not the live
+collaboration memory (`cc_memory/memory.db` is), not proof evidence, and not authoritative for
+certified/exactness claims. For proof-sensitive changes, use CodeGraph to find the relevant
+files, then verify against source, `PROJECT_LOCK.md`, targeted tests, and the relevant gate.
+
+Operational notes:
+
+```powershell
+codegraph status .
+codegraph sync .
+codegraph init .
+```
+
+The `.codegraph/` directory is ignored by git. If Codex cannot see CodeGraph MCP tools after
+startup, restart the agent and confirm the global CodeGraph MCP entry is loaded.
+
 ## Commands
 
 ### Run the solver

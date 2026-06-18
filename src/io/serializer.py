@@ -219,7 +219,9 @@ def recover_legacy_render_payload_from_blueprint(
             "anchor_y": int(empty_rect["anchor_y"]),
         },
         "placement_solution": placement_solution,
-        "search_status": "CERTIFIED",
+        # Blueprint recovery is a render-compatibility projection, not a proof
+        # replay.  It must never mint a proof-bearing exact status on its own.
+        "search_status": "UNKNOWN",
         "search_stats": {
             "output_contract_source": "optimal_blueprint.json",
             "blueprint_version": str(normalized_blueprint["metadata"]["version"]),

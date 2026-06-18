@@ -644,7 +644,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "f5e011ed722260b352bec2db8b35387ae2eed3ead77cdaa7c2fd7fef5ff7a2ac",
+        "source_sha256": "60b7f1bd5894ee9e8d315f6b3f2b773eb4a1f1a06b04dbb5cf6ac1a1e3a5ce4e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -780,7 +780,7 @@
           "validate_delivery_artifacts_match_campaign",
           "write_certified_delivery_manifest"
         ],
-        "source_sha256": "0492b1693f2461e9e160dbe6f9663560b2ffa46591a8ccbed655498d688d873e",
+        "source_sha256": "a4cf4f7feaba74e79dbed2e95772cabc94cb99c3a2d638112eb85e3248b4ccef",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -801,14 +801,14 @@
         "classification": "p1_2_public_surface",
         "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
         "terms": [
-          "CERTIFIED",
+          "UNKNOWN",
           "optimal_blueprint.json"
         ],
         "required_guard_tokens": [
-          "CERTIFIED",
+          "UNKNOWN",
           "optimal_blueprint.json"
         ],
-        "source_sha256": "b0186ce5582e5695c69eaed7f72318e4d3e683ee6a35c85e9b5efaaf55cad95f",
+        "source_sha256": "09cdfbe2a8da477eacf8a826a4d5ebc8636028a091e4577c93024bafe0eb0286",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1244,7 +1244,7 @@
           "terminal_frontier_evidence",
           "best_certified_result"
         ],
-        "source_sha256": "37b6127eab328298b908d192065ae144ae2eb36b49b9dd6f187ff4d859fef31a",
+        "source_sha256": "91a3ca82e9981b80625d6e9bb6f7be7637cab7e739eb6b06f3dd699759744f31",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

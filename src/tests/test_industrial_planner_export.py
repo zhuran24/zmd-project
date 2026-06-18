@@ -18,6 +18,8 @@ from src.adapters.industrial_planner.export_blueprint import (
     write_industrial_planner_export_bundle,
 )
 from src.io.delivery_manifest import build_compatibility_exports_payload
+from src.io.output_schema import blueprint_output_path
+from src.io.serializer import write_blueprint_payload
 from src.render.blueprint_exporter import export_target_blueprint
 
 _FIXTURE_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "examples" / "industrial_planner"
@@ -341,11 +343,14 @@ def test_unfixable_outside_bus_requirements_are_reported_explicitly() -> None:
     )
 
 def test_write_industrial_planner_bundle_and_delivery_manifest_scan(tmp_path: Path) -> None:
+    project_root = tmp_path / "project"
+    canonical_blueprint = _sample_blueprint_payload()
+    write_blueprint_payload(blueprint_output_path(project_root), canonical_blueprint)
     written = write_industrial_planner_export_bundle(
-        output_dir=tmp_path / "project" / "data" / "exports" / "industrial_planner",
-        blueprint_payload=_sample_blueprint_payload(),
+        output_dir=project_root / "data" / "exports" / "industrial_planner",
+        blueprint_payload=canonical_blueprint,
     )
-    exports_payload = build_compatibility_exports_payload(tmp_path / "project")
+    exports_payload = build_compatibility_exports_payload(project_root)
 
     assert written.blueprint_path.name == INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME
     assert written.compatibility_manifest_path.name == INDUSTRIAL_PLANNER_MANIFEST_FILENAME
