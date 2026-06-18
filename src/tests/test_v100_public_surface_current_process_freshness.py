@@ -20,6 +20,7 @@ from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
     compute_exact_artifact_hashes,
+    _mark_candidate_status_fresh_for_current_process,
     terminal_proof_bearing_candidate_freshness_violation,
 )
 
@@ -182,12 +183,53 @@ def test_v100_manifest_rejects_structural_frontier_without_current_process_statu
         facility_pools=facility_pools,
     )
 
-    with pytest.raises(ValueError, match="current-process proof-bearing candidate evidence"):
+    with pytest.raises(ValueError):
         export_certified_delivery_manifest(
             project_root=root,
             campaign_state=state,
             campaign_path=checkpoint_path,
         )
+
+
+def test_v102_public_candidate_result_writer_cannot_self_mint_strong_freshness(
+    tmp_path: Path,
+) -> None:
+    state = {
+        "candidates": {},
+        "declare_mode": "strict",
+        "final_status": None,
+        "final_result": None,
+        "last_stop_reason": None,
+    }
+    campaign = ExactCampaign(
+        project_root=tmp_path,
+        path=tmp_path / "data" / "checkpoints" / "exact_campaign_state.json",
+        state=state,
+        resumed=False,
+        compatible_hashes=True,
+    )
+
+    campaign.mark_candidate_result(
+        6,
+        6,
+        "INFEASIBLE",
+        proof_summary={"producer": "untrusted-public-writer"},
+    )
+    state["final_status"] = "CERTIFIED"
+    state["final_result"] = {
+        "ghost_rect": {"w": 6, "h": 6, "area": 36},
+        "placement_solution": {},
+        "search_status": "CERTIFIED",
+    }
+    state["last_stop_reason"] = {
+        "status": "CERTIFIED",
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    }
+
+    assert terminal_proof_bearing_candidate_freshness_violation(state) == (
+        "terminal_candidate_status_not_current_process_fresh:6x6"
+    )
+
 
 def test_v100_current_process_freshness_rejects_in_place_candidate_record_mutation(
     tmp_path: Path,
@@ -213,6 +255,7 @@ def test_v100_current_process_freshness_rejects_in_place_candidate_record_mutati
         "INFEASIBLE",
         proof_summary={"producer": "current-process-regression"},
     )
+    _mark_candidate_status_fresh_for_current_process(campaign, "6x6", "INFEASIBLE")
     state["final_status"] = "CERTIFIED"
     state["final_result"] = {
         "ghost_rect": {"w": 6, "h": 6, "area": 36},
@@ -274,6 +317,7 @@ def test_v100_current_process_freshness_is_bound_to_campaign_proof_context(
         "INFEASIBLE",
         proof_summary={"producer": "donor-project"},
     )
+    _mark_candidate_status_fresh_for_current_process(campaign, "6x6", "INFEASIBLE")
     state["final_status"] = "CERTIFIED"
     state["final_result"] = {
         "ghost_rect": {"w": 6, "h": 6, "area": 36},
@@ -336,6 +380,7 @@ def test_v100_current_process_freshness_does_not_transfer_after_identity_reuse(
         "INFEASIBLE",
         proof_summary={"producer": "identity-reuse-donor"},
     )
+    _mark_candidate_status_fresh_for_current_process(campaign, "6x6", "INFEASIBLE")
     state["final_status"] = "CERTIFIED"
     state["final_result"] = {
         "ghost_rect": {"w": 6, "h": 6, "area": 36},

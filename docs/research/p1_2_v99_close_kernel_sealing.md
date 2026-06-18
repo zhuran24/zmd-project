@@ -16,9 +16,9 @@ The kernel is not a theorem prover and does not certify geometry. It seals the a
 - guard-token removal fails the gate;
 - the existing manual phase gate remains blocked until owner manual decision.
 
-## Local reseal after F-CAM-R8-02
+## Local reseal after F-CAM-R8-02 and no-close review
 
-The local repository seal includes the follow-up F-CAM-R8-02 durable resume-sanitization fix. The original V99 package was generated before that fix; this repository keeps the fix and rebinds the close-kernel source hashes for `src/search/exact_campaign.py` and `src/search/outer_search.py`. The root close packet records the local merge in `P1_2_TECHNICAL_CLOSE_PACKET/10_local_merge_reseal.md`.
+The local repository seal includes the follow-up F-CAM-R8-02 durable resume-sanitization fix and the 2026-06-18 no-close-kernel review follow-up: public `ExactCampaign.mark_candidate_result()` cannot self-authorize proof-bearing strong-status freshness, verified strong producers use the internal producer path, and root entrypoint `main.py` is covered by the certified exact source digest. The original V99 package was generated before these local fixes; this repository keeps them and rebinds the close-kernel source hashes for `src/search/exact_campaign.py`, `src/search/outer_search.py`, and the checker manifest entry. The root close packet records the local merge in `P1_2_TECHNICAL_CLOSE_PACKET/10_local_merge_reseal.md`.
 
 ## Reviewer attack model
 
