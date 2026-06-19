@@ -33,7 +33,7 @@ import time
 from functools import lru_cache
 from typing import Any, Dict, FrozenSet, List, Literal, Tuple, cast
 
-from src.cuts.lifecycle import BState, Cell, Cut, GroupId, ValidationResult
+from src.cuts.lifecycle import BState, Cell, Cut, GroupId, ValidationResult, validate_cert_payload
 
 
 RegionKind = Literal[
@@ -372,7 +372,7 @@ def validate_region_capacity(
     if cut.geometric_payload is None:
         return _validation_result("schema_err", t0, "cut.geometric_payload is None (F1 schema invariant violated)")
     try:
-        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
+        cert_dict = validate_cert_payload("region_capacity", cut.geometric_payload)
         region_kind = _parse_region_kind(cert_dict.get("region_kind"))
         region_cells_b64 = _parse_non_empty_str(cert_dict.get("region_cells_bitset_b64"), "region_cells_bitset_b64")
         region_cells = _decode_region_bitset(region_cells_b64)

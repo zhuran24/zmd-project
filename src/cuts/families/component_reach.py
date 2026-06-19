@@ -28,7 +28,7 @@ from collections import deque
 from typing import Any, Dict, FrozenSet, Literal, Set
 
 from src.cuts.families.cutset import _decode_bitset, _free_cells, _parse_cell
-from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
+from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult, validate_cert_payload
 
 
 def _bfs_component(start: Cell, free_cells: FrozenSet[Cell]) -> Set[Cell]:
@@ -165,11 +165,14 @@ def validate_component_reach(
     del canonical_rules
     if cut.geometric_payload is None:
         return _vr("schema_err", t0, "cut.geometric_payload is None (F4 schema invariant violated)")
+    try:
+        cert_dict = validate_cert_payload("component_reach", cut.geometric_payload)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
     scope_error = _validate_component_scope(cut, t0)
     if scope_error is not None:
         return scope_error
     try:
-        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
         src_cell = _parse_cell(cert_dict.get("src_cell"), "src_cell")
         sink_cell = _parse_cell(cert_dict.get("sink_cell"), "sink_cell")
         src_comp = _decode_bitset(cert_dict["src_component_bitset_b64"])

@@ -86,10 +86,9 @@ def attach_terminal_frontier_evidence(
         campaign.state["final_status"] = terminal_final_status
         campaign.state["final_result"] = terminal_final_result
 
-    # Test fixtures often construct already-verified candidate records directly so
-    # they can exercise downstream terminal/manifest validation without invoking a
-    # real solver.  Seal those records explicitly through the private TCB primitive;
-    # production callers must use outer_search's verified producer path instead.
+    # Attach data-only replay requests to synthetic strong records.  This helper
+    # grants no authority: every frontier/terminal/manifest/public sink still runs
+    # the isolated certified solver before accepting a status.
     for raw_key, raw_record in campaign.state.get("candidates", {}).items():
         if not isinstance(raw_record, dict):
             continue

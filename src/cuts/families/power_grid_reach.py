@@ -64,6 +64,7 @@ from src.cuts.lifecycle import (
     compute_blocked_cells_hash,
     compute_exterior_blocks_hash,
     compute_ghost_rect_id,
+    validate_cert_payload,
 )
 
 
@@ -94,15 +95,7 @@ def _is_non_empty_str(value: object) -> bool:
 
 
 def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
-    if not isinstance(cert_payload, bytes):
-        raise ValueError("cert_payload must be bytes")
-    try:
-        loaded = json.loads(cert_payload)
-    except Exception as e:
-        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
-    if not isinstance(loaded, dict):
-        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
-    return cast(Dict[str, Any], loaded)
+    return validate_cert_payload("power_grid_reach", cert_payload)
 
 
 def _parse_facility_cells(value: object) -> Tuple[Tuple[int, int], ...]:

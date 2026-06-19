@@ -35,14 +35,13 @@ Refs:
 """
 from __future__ import annotations
 
-import json
 import time
 from typing import Any, Dict, List, Literal, Optional, Tuple, cast
 
 from src.cuts.helpers.bounded_core_minimizer import (
     VALID_STOPPED_REASONS,
 )
-from src.cuts.lifecycle import BState, Cut, ValidationResult
+from src.cuts.lifecycle import BState, Cut, ValidationResult, validate_cert_payload
 from src.cuts.oracles.pattern_nogood_oracle import (
     SubProblemOracleAdapter,
     lookup_sub_problem_oracle,
@@ -76,15 +75,7 @@ def _is_non_empty_str(value: object) -> bool:
 
 def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
     """Parse cert payload JSON. Raises ValueError on malformed input."""
-    if not isinstance(cert_payload, bytes):
-        raise ValueError("cert_payload must be bytes")
-    try:
-        loaded = json.loads(cert_payload)
-    except Exception as e:
-        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
-    if not isinstance(loaded, dict):
-        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
-    return cast(Dict[str, Any], loaded)
+    return validate_cert_payload("pattern_nogood", cert_payload)
 
 
 def _validate_cert_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
@@ -467,5 +458,4 @@ def watcher_keys_pattern_nogood(cut: Cut) -> Dict[str, List[Any]]:
     group_keys = sorted({lit.slot_ref.group_id for lit in cut.literals})
     pose_keys = sorted({(lit.slot_ref.group_id, lit.pose_id) for lit in cut.literals})
     return {"group_keys": group_keys, "pose_keys": pose_keys}
-
 

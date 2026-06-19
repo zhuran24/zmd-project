@@ -64,9 +64,15 @@ def _sha256(path: Path) -> str:
 
 def test_v102_locked_fresh_campaign_rejects_self_pinned_weakened_theorem(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     root = tmp_path / "locked_weakened_project"
     _write_weakened_exact_project(root, locked=True)
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "validate_locked_p1_2_close_kernel",
+        lambda _project_root: None,
+    )
 
     with pytest.raises(
         LockedExactArtifactContractError,

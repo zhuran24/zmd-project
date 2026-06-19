@@ -49,6 +49,7 @@ from src.models.master_model import (
     load_project_data,
 )
 import src.search.benders_loop as benders_loop_module
+import src.search.certified_frontier as certified_frontier_module
 import src.search.exact_campaign as exact_campaign_module
 import src.search.outer_search as outer_search_module
 from src.search.benders_loop import (
@@ -1235,25 +1236,28 @@ def test_binding_recognizes_pose_optional_protocol_storage_box() -> None:
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1},
-        required_generic_inputs={"valley_battery": 1},
+        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
     )
     model.build()
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
 
     selection = model.extract_selection()
-    assert (
-        selection["generic_inputs"][
-            "pose_optional::protocol_storage_box::box_pose_0:in:0"
-        ]
-        == "valley_battery"
-    )
+    box_inputs = {
+        commodity
+        for slot_id, commodity in selection["generic_inputs"].items()
+        if slot_id.startswith("pose_optional::protocol_storage_box::box_pose_0:in:")
+        and commodity != "__unused__"
+    }
+    assert box_inputs == {"valley_battery", "qiaoyu_capsule"}
 
     specs = model.extract_port_specs()
     assert not any(
         spec["instance_id"] == "pose_optional::protocol_storage_box::box_pose_0"
         for spec in specs
     )
-    assert not any(spec["commodity"] == "valley_battery" for spec in specs)
+    assert not any(
+        spec["commodity"] in {"valley_battery", "qiaoyu_capsule"} for spec in specs
+    )
 
 
 
@@ -3048,7 +3052,10 @@ def test_outer_search_safe_area_upper_bound_accounts_for_fixed_required_protocol
         resume_campaign=False,
     )
 
-    assert status == RUN_STATUS_UNPROVEN
+    # The parent-process fake INFEASIBLE outcomes still exercise the bounded
+    # candidate generation, but no longer carry proof authority.  Sink replay
+    # rejects them, so the certified controller fails closed as UNKNOWN.
+    assert status == RUN_STATUS_UNKNOWN
     assert result is None
     assert (2, 2) not in calls
     assert all((ghost_w * ghost_h) <= 3 for ghost_w, ghost_h in calls)
@@ -8321,6 +8328,24 @@ def test_campaign_candidate_records_keep_area_then_min_side_incumbents_non_termi
     assert campaign.get_candidate_record(20, 20)["solution"]["square_best"]["pose_id"] == "ghost_20x20"
 
 
+def _patch_frontier_sink_replay_accepts_mock_records(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep frontier harness tests focused on traversal while bypassing child-process replay."""
+
+    def fake_project_candidate_records_for_sink(**kwargs):
+        return dict(kwargs["state"].get("candidates", {})), {}
+
+    monkeypatch.setattr(
+        certified_frontier_module,
+        "project_candidate_records_for_sink",
+        fake_project_candidate_records_for_sink,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "project_candidate_records_for_sink",
+        fake_project_candidate_records_for_sink,
+    )
+
+
 def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
     monkeypatch,
     tmp_path: Path,
@@ -8378,6 +8403,7 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
         "create",
         staticmethod(lambda project_root, solve_mode="certified_exact": object()),
     )
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
 
     explicit_candidates = generate_candidate_sizes(
         max_w=6,
@@ -8509,6 +8535,7 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
         "create",
         staticmethod(lambda project_root, solve_mode="certified_exact": object()),
     )
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -8604,6 +8631,7 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
         "create",
         staticmethod(lambda project_root, solve_mode="certified_exact": object()),
     )
+    _patch_frontier_sink_replay_accepts_mock_records(monkeypatch)
 
     status, result = run_outer_search(
         project_root=project_root,

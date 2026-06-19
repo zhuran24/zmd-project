@@ -26,6 +26,7 @@ EXACT_CAMPAIGN_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaign.py"
 EXACT_CAMPAIGN_INSPECTOR_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaign_inspector.py"
 CERTIFIED_FRONTIER_PATH = PROJECT_ROOT / "src" / "search" / "certified_frontier.py"
 CERTIFIED_SURFACE_PATH = PROJECT_ROOT / "src" / "search" / "certified_surface.py"
+CANDIDATE_PROOF_REPLAY_PATH = PROJECT_ROOT / "src" / "search" / "candidate_proof_replay.py"
 OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
 DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
@@ -37,6 +38,7 @@ SINGLE_BASE_RELEASE_BUILDER_PATH = (
     PROJECT_ROOT / "scripts" / "build_industrial_planner_single_base_delivery_release.py"
 )
 TEST_ROOT = PROJECT_ROOT / "src" / "tests"
+VERIFIED_PRODUCER_TEST_SUPPORT_PATH = TEST_ROOT / "verified_producer_test_support.py"
 
 REQUIRED_OBLIGATION_IDS = frozenset(
     {
@@ -49,9 +51,22 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-CERTIFIED-EXPORT-SURFACE",
         "PO-PHASE-GATE-PROVENANCE",
         "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
+    "PO-CANDIDATE-SINK-REPLAY-AUTHORITY": frozenset(
+        {
+            "test_p1_2_mutating_verified_writer_closure_cell_cannot_publish_false_certified",
+            "test_p1_2_forged_proof_bearing_infeasible_cannot_prune_better_feasible_candidate",
+            "test_p1_2_forged_certified_cannot_enter_terminal_manifest_or_public_surface",
+            "test_p1_2_module_rebinding_monkeypatch_and_test_helper_do_not_grant_authority",
+            "test_p1_2_strong_status_without_sink_replayable_proof_fails_closed",
+            "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays",
+            "test_p1_2_checker_rejects_candidate_replay_isolation_removal",
+            "test_p1_2_checker_rejects_frontier_sink_replay_bypass",
+        }
+    ),
     "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS": frozenset(
         {
             "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
@@ -335,6 +350,35 @@ def _calls_function(node: ast.AST, name: str) -> bool:
         if isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name:
             return True
     return False
+
+
+def _calls_function_with_keyword_constant(
+    node: ast.AST,
+    function_name: str,
+    keyword_name: str,
+    expected_value: object,
+) -> bool:
+    """Return True only for one direct call with the exact literal keyword.
+
+    Source-token checks can be satisfied by comments or dead strings.  The
+    candidate replay boundary is proof-authoritative, so its witness-binding
+    mode is checked in the AST of the actual call instead.
+    """
+
+    calls = [
+        child
+        for child in ast.walk(node)
+        if isinstance(child, ast.Call)
+        and isinstance(child.func, ast.Name)
+        and child.func.id == function_name
+    ]
+    if len(calls) != 1:
+        return False
+    keywords = [keyword for keyword in calls[0].keywords if keyword.arg == keyword_name]
+    if len(keywords) != 1:
+        return False
+    value = keywords[0].value
+    return isinstance(value, ast.Constant) and value.value is expected_value
 
 
 def _calls_attr(node: ast.AST, attr: str) -> bool:
@@ -638,6 +682,7 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
     tree = _parse_python(checker_path)
     main_fn = _function_def(tree, "main", path=checker_path)
     for required_call in (
+        "_check_candidate_sink_replay_contract",
         "_check_close_kernel_contract",
         "_check_phase_gate_provenance_contract",
         "_check_phase_anchor",
@@ -646,6 +691,341 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
             errors.append(f"proof-obligation checker main must call {required_call}")
     return errors
 
+
+
+def _check_candidate_sink_replay_contract(
+    *,
+    candidate_replay_path: Path = CANDIDATE_PROOF_REPLAY_PATH,
+    exact_campaign_path: Path = EXACT_CAMPAIGN_PATH,
+    certified_frontier_path: Path = CERTIFIED_FRONTIER_PATH,
+    outer_search_path: Path = OUTER_SEARCH_PATH,
+    delivery_manifest_path: Path = DELIVERY_MANIFEST_PATH,
+    certified_surface_path: Path = CERTIFIED_SURFACE_PATH,
+    test_support_path: Path = VERIFIED_PRODUCER_TEST_SUPPORT_PATH,
+) -> list[str]:
+    """Seal the P1.2 strong-status authority at sink-side isolated replay.
+
+    Source hashes detect drift, but hashes alone do not prove that the authority
+    boundary still exists.  These AST/source guards require each certified sink
+    to consume data-only replay requests through a fresh ``python -I`` child that
+    recomputes project/source artifacts and runs the certified_exact solver.  No
+    writer identity, closure, module symbol, test helper, or process-local
+    freshness registry is accepted as proof authority.
+    """
+
+    errors: list[str] = []
+    replay_tree = _parse_python(candidate_replay_path)
+    replay_source = candidate_replay_path.read_text(encoding="utf-8")
+    for function_name in (
+        "build_candidate_replay_proof",
+        "candidate_proof_shape_violation",
+        "verify_candidate_records_at_sink",
+        "project_candidate_records_for_sink",
+        "_invoke_isolated_replay",
+        "_replay_response_violation",
+        "_validate_child_proof",
+        "_replay_one_proof",
+        "_materialize_replay_snapshot",
+        "_execute_isolated_replay_request",
+        "isolated_replay_main",
+    ):
+        _function_def(replay_tree, function_name, path=candidate_replay_path)
+
+    for token in (
+        "CANDIDATE_PROOF_AUTHORITY",
+        "certified_exact_isolated_solver_replay_v1",
+        "candidate_sink_replay_proof_missing",
+        "candidate_sink_replay_status_mismatch",
+        "candidate_sink_replay_invocation_failed",
+        "candidate_sink_replay_artifact_binding_mismatch",
+        "candidate_sink_replay_source_binding_mismatch",
+        "candidate_sink_replay_project_binding_mismatch",
+        "candidate_sink_replay_campaign_binding_mismatch",
+        "campaign_context_digest",
+        "solution_digest",
+        "request_digest",
+    ):
+        if token not in replay_source:
+            errors.append(f"candidate replay authority is missing fail-closed token: {token}")
+
+    invoke_fn = _function_def(replay_tree, "_invoke_isolated_replay", path=candidate_replay_path)
+    invoke_source = _source_text(candidate_replay_path, invoke_fn)
+    if not _calls_attr(invoke_fn, "run"):
+        errors.append("candidate replay must launch an external subprocess")
+    for token in (
+        '"-I"',
+        "_ISOLATED_REPLAY_BOOTSTRAP",
+        "nonce",
+        "expected_proofs",
+        '"PATH"',
+        "os.defpath",
+        "check=False",
+    ):
+        if token not in invoke_source:
+            errors.append(f"candidate replay subprocess boundary missing: {token}")
+    if "shell=True" in invoke_source:
+        errors.append("candidate replay subprocess must never use shell=True")
+    if "os.environ" in invoke_source:
+        errors.append("candidate replay subprocess must not inherit producer environment state")
+    for inherited_loader_state in ("PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP"):
+        if inherited_loader_state in invoke_source:
+            errors.append(
+                "candidate replay subprocess must not inherit Python loader state: "
+                f"{inherited_loader_state}"
+            )
+
+    verify_fn = _function_def(
+        replay_tree,
+        "verify_candidate_records_at_sink",
+        path=candidate_replay_path,
+    )
+    for required_call in (
+        "candidate_proof_shape_violation",
+        "_invoke_isolated_replay",
+        "_replay_response_violation",
+    ):
+        if not _calls_function(verify_fn, required_call):
+            errors.append(f"sink candidate verifier must call {required_call}")
+    verify_source = _source_text(candidate_replay_path, verify_fn)
+    for token in ("replay_status != claimed_status", "candidate_sink_replay_status_mismatch"):
+        if token not in verify_source:
+            errors.append(f"sink candidate verifier must compare replayed strong status: {token}")
+
+    project_fn = _function_def(
+        replay_tree,
+        "project_candidate_records_for_sink",
+        path=candidate_replay_path,
+    )
+    project_source = _source_text(candidate_replay_path, project_fn)
+    if not _calls_function(project_fn, "verify_candidate_records_at_sink"):
+        errors.append("sink projection must call verify_candidate_records_at_sink")
+    for token in (
+        'record["status"] = "UNPROVEN"',
+        'record.pop("solution", None)',
+        "record.pop(CANDIDATE_PROOF_FIELD, None)",
+    ):
+        if token not in project_source:
+            errors.append(f"sink projection must demote rejected strong claims: {token}")
+
+    snapshot_fn = _function_def(
+        replay_tree,
+        "_materialize_replay_snapshot",
+        path=candidate_replay_path,
+    )
+    snapshot_source = _source_text(candidate_replay_path, snapshot_fn)
+    if not _calls_attr(snapshot_fn, "copyfile"):
+        errors.append("isolated replay must copy hash-bound project inputs into a snapshot")
+    if not _calls_function(snapshot_fn, "compute_exact_artifact_hashes"):
+        errors.append("isolated replay snapshot must recompute exact artifact hashes")
+    for token in (
+        "follow_symlinks=False",
+        "normalized_replay_hashes != normalized_current_hashes",
+        "replay snapshot artifact binding mismatch",
+    ):
+        if token not in snapshot_source:
+            errors.append(f"isolated replay snapshot binding is missing: {token}")
+
+    child_request_fn = _function_def(
+        replay_tree,
+        "_execute_isolated_replay_request",
+        path=candidate_replay_path,
+    )
+    child_request_source = _source_text(candidate_replay_path, child_request_fn)
+    for token in (
+        "compute_exact_artifact_hashes",
+        "create_exact_search_session",
+        'solve_mode="certified_exact"',
+        "current_artifact_hashes",
+        "TemporaryDirectory",
+        "_materialize_replay_snapshot",
+        "replay_project_root",
+    ):
+        if token not in child_request_source:
+            errors.append(f"isolated child must recompute exact proof context: {token}")
+
+    replay_one_fn = _function_def(replay_tree, "_replay_one_proof", path=candidate_replay_path)
+    replay_one_source = _source_text(candidate_replay_path, replay_one_fn)
+    if not _calls_function(replay_one_fn, "run_benders_for_ghost_rect"):
+        errors.append("isolated child must replay via run_benders_for_ghost_rect")
+    for token in (
+        'solve_mode="certified_exact"',
+        "campaign=None",
+        "preloaded_exact_safe_cuts=[]",
+        "disable_master_warm_start=True",
+    ):
+        if token not in replay_one_source:
+            errors.append(f"isolated solver replay is missing fixed certified configuration: {token}")
+
+    child_proof_fn = _function_def(
+        replay_tree,
+        "_validate_child_proof",
+        path=candidate_replay_path,
+    )
+    child_proof_source = _source_text(candidate_replay_path, child_proof_fn)
+    for token in (
+        "project_binding",
+        "artifact_hashes",
+        "source_digest",
+        "campaign_context",
+        "campaign_context_digest",
+        "solution_digest",
+        "replay_config",
+    ):
+        if token not in child_proof_source:
+            errors.append(f"isolated child proof validator is missing binding: {token}")
+
+    exact_tree = _parse_python(exact_campaign_path)
+    exact_source = exact_campaign_path.read_text(encoding="utf-8")
+    terminal_fn = _function_def(
+        exact_tree,
+        "terminal_certified_final_result_violation_for_project",
+        path=exact_campaign_path,
+    )
+    terminal_source = _source_text(exact_campaign_path, terminal_fn)
+    if not _calls_function(terminal_fn, "project_candidate_records_for_sink"):
+        errors.append("terminal project validator must execute candidate sink replay")
+    if not _calls_function_with_keyword_constant(
+        terminal_fn,
+        "project_candidate_records_for_sink",
+        "require_record_solution_match",
+        True,
+    ):
+        errors.append(
+            "terminal project validator must preserve the digest-bound stored witness after status replay"
+        )
+    for token in (
+        "terminal_candidate_sink_replay_failed",
+        "candidate_records_override=replayed_records",
+    ):
+        if token not in terminal_source:
+            errors.append(f"terminal project validator is missing replay guard: {token}")
+    exact_class = _class_def(exact_tree, "ExactCampaign", path=exact_campaign_path)
+    writer_fn = _method_def(
+        exact_class,
+        "_mark_candidate_result_from_verified_producer",
+        path=exact_campaign_path,
+    )
+    if not _calls_attr(writer_fn, "mark_candidate_result"):
+        errors.append("compatibility candidate writer must only delegate to mark_candidate_result")
+    writer_source = _source_text(exact_campaign_path, writer_fn)
+    if "sys._getframe" in writer_source or "__closure__" in writer_source:
+        errors.append("candidate writer must not derive authority from caller/function identity")
+    for forbidden in (
+        "FreshProofBearingCandidateRecord",
+        "_grant_candidate_status_freshness_from_verified_producer",
+        "_build_candidate_freshness_runtime",
+        "_bind_verified_candidate_producer",
+        "_bind_verified_candidate_writer",
+        "proof_bearing_candidate_status_freshness_violation",
+        "terminal_proof_bearing_candidate_freshness_violation",
+    ):
+        if forbidden in exact_source:
+            errors.append(f"process-local writer/freshness authority must remain absent: {forbidden}")
+
+    frontier_tree = _parse_python(certified_frontier_path)
+    frontier_replay_modes = {
+        "compute_sink_verified_terminal_frontier_projection": False,
+        "build_sink_verified_terminal_frontier_evidence": True,
+    }
+    for function_name, preserve_stored_witness in frontier_replay_modes.items():
+        function = _function_def(frontier_tree, function_name, path=certified_frontier_path)
+        if not _calls_function(function, "project_candidate_records_for_sink"):
+            errors.append(f"{function_name} must execute project_candidate_records_for_sink")
+        if not _calls_function_with_keyword_constant(
+            function,
+            "project_candidate_records_for_sink",
+            "require_record_solution_match",
+            preserve_stored_witness,
+        ):
+            errors.append(
+                f"{function_name} has the wrong replay witness policy: "
+                f"require_record_solution_match={preserve_stored_witness}"
+            )
+
+    outer_tree = _parse_python(outer_search_path)
+    frontier_state_fn = _function_def(outer_tree, "_compute_exact_frontier_state", path=outer_search_path)
+    if not _calls_function(frontier_state_fn, "compute_sink_verified_terminal_frontier_projection"):
+        errors.append("frontier pruning must use sink-verified candidate projection")
+    frontier_state_source = _source_text(outer_search_path, frontier_state_fn)
+    if 'campaign.state["candidates"] = candidate_records' not in frontier_state_source:
+        errors.append(
+            "frontier must adopt replay demotions/rebindings before candidate lifecycle decisions"
+        )
+    run_outer_fn = _function_def(outer_tree, "run_outer_search", path=outer_search_path)
+    if not _calls_function(run_outer_fn, "build_candidate_replay_proof"):
+        errors.append("certified outer search must call build_candidate_replay_proof")
+    for call in (node for node in ast.walk(run_outer_fn) if isinstance(node, ast.Call)):
+        is_verified_writer = (
+            isinstance(call.func, ast.Attribute)
+            and call.func.attr == "_mark_candidate_result_from_verified_producer"
+        )
+        is_selected_writer = isinstance(call.func, ast.Name) and call.func.id == "candidate_result_writer"
+        if (is_verified_writer or is_selected_writer) and not any(
+            keyword.arg == "candidate_proof" for keyword in call.keywords
+        ):
+            errors.append(
+                "every certified outer-search strong-status writer must carry a data-only candidate_proof request"
+            )
+    commit_fn = _function_def(
+        outer_tree,
+        "_commit_terminal_full_frontier_certified_result",
+        path=outer_search_path,
+    )
+    commit_source = _source_text(outer_search_path, commit_fn)
+    if not _calls_function(commit_fn, "build_sink_verified_terminal_frontier_evidence"):
+        errors.append(
+            "terminal commit must call build_sink_verified_terminal_frontier_evidence"
+        )
+    if not _calls_function(run_outer_fn, "_commit_terminal_full_frontier_certified_result"):
+        errors.append("certified outer search must use the sink-verified terminal commit")
+    for token in ("sink_replay_violations", "terminal candidate sink replay failed"):
+        if token not in commit_source:
+            errors.append(f"certified terminal commit must fail closed on replay rejection: {token}")
+
+    delivery_tree = _parse_python(delivery_manifest_path)
+    delivery_build_fn = _function_def(
+        delivery_tree,
+        "build_certified_delivery_manifest",
+        path=delivery_manifest_path,
+    )
+    best_payload_fn = _function_def(
+        delivery_tree,
+        "_build_best_certified_result_payload",
+        path=delivery_manifest_path,
+    )
+    if not _calls_function(delivery_build_fn, "terminal_certified_final_result_violation_for_project"):
+        errors.append("delivery manifest must call project-bound terminal replay validator")
+    if not _calls_function(best_payload_fn, "has_valid_terminal_full_frontier_certified_evidence_for_project"):
+        errors.append("delivery manifest best result must call project-bound terminal replay validator")
+    for function in (delivery_build_fn, best_payload_fn):
+        if "campaign_path=" not in _source_text(delivery_manifest_path, function):
+            errors.append("delivery manifest replay validation must bind campaign_path")
+
+    surface_tree = _parse_python(certified_surface_path)
+    surface_fn = _function_def(
+        surface_tree,
+        "evaluate_certified_delivery_surface",
+        path=certified_surface_path,
+    )
+    surface_source = _source_text(certified_surface_path, surface_fn)
+    if not _calls_function(surface_fn, "has_valid_terminal_full_frontier_certified_evidence_for_project"):
+        errors.append("public certified surface must call project-bound terminal replay validator")
+    if "campaign_path=resolved_campaign_path" not in surface_source:
+        errors.append("public certified surface replay validation must bind canonical campaign_path")
+
+    helper_source = test_support_path.read_text(encoding="utf-8")
+    if "build_candidate_replay_proof" not in helper_source:
+        errors.append("test candidate helper must only attach replay-request data")
+    for forbidden in (
+        "monkeypatch",
+        "setattr(",
+        "_grant_candidate_status_freshness_from_verified_producer",
+        "_bind_verified_candidate_producer",
+        "_bind_verified_candidate_writer",
+    ):
+        if forbidden in helper_source:
+            errors.append(f"test candidate helper must not grant production authority: {forbidden}")
+    return errors
 
 def _check_phase_gate_provenance_contract() -> list[str]:
     """Check that the phase gate is now a small manual fail-closed gate.
@@ -1142,7 +1522,9 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         "candidate_objective",
         "candidate_sort_key",
         "compute_terminal_frontier_projection",
+        "compute_sink_verified_terminal_frontier_projection",
         "build_terminal_frontier_evidence",
+        "build_sink_verified_terminal_frontier_evidence",
         "terminal_frontier_evidence_violation",
         "_candidate_status_digest",
     ):
@@ -1181,7 +1563,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
 
     outer_source_text = OUTER_SEARCH_PATH.read_text(encoding="utf-8")
     for needle in (
-        "build_terminal_frontier_evidence",
+        "build_sink_verified_terminal_frontier_evidence",
+        "compute_sink_verified_terminal_frontier_projection",
         "candidate_generation",
         "candidate_generation_kwargs",
         "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
@@ -1477,6 +1860,10 @@ CLOSE_KERNEL_REQUIRED_ATTACK_CATEGORIES = frozenset(
         "unsafe_env_or_config_semantics",
         "parallel_resume_or_crash_partial_authority",
         "gate_or_obligation_mutation",
+        "same_process_function_or_closure_authority",
+        "producer_monkeypatch_or_module_rebinding",
+        "missing_or_unreplayable_candidate_proof",
+        "sink_replay_bypass_or_binding_drift",
     }
 )
 CLOSE_KERNEL_ALLOWED_CLASSIFICATIONS = frozenset(
@@ -1509,6 +1896,9 @@ CLOSE_KERNEL_V99_REQUIRED_PROOF_BEARING_TOKENS = frozenset(
         "optimal_blueprint.json",
         "proof-bearing",
         "proof_bearing",
+        "candidate_proof",
+        "candidate_sink_replay",
+        "certified_exact_isolated_solver_replay_v1",
     }
 )
 CLOSE_KERNEL_V99_REQUIRED_SCAN_ROOTS = frozenset(
@@ -1523,6 +1913,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'scripts/check_p1_2_proof_obligations.py': 'p1_2_close_kernel',
     'src/adapters/industrial_planner/export_blueprint.py': 'non_authoritative_projection',
     'src/adapters/industrial_planner/mapping_registry.py': 'non_authoritative_projection',
+    'src/cuts/cert_schema.py': 'p1_2_certified_path',
     'src/cuts/families/pattern_nogood.py': 'p1_2_certified_path',
     'src/cuts/helpers/bounded_core_minimizer.py': 'p1_2_certified_path',
     'src/cuts/lifecycle.py': 'p1_2_certified_path',
@@ -1559,6 +1950,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/benders_loop.py': 'p1_2_certified_path',
     'src/search/campaign_telemetry.py': 'diagnostic_or_telemetry_non_authority',
     'src/search/campaign_triage.py': 'diagnostic_or_telemetry_non_authority',
+    'src/search/candidate_proof_replay.py': 'p1_2_certified_path',
     'src/search/certified_frontier.py': 'p1_2_certified_path',
     'src/search/certified_surface.py': 'p1_2_public_surface',
     'src/search/d2_separator.py': 'p1_2_certified_path',
@@ -1576,7 +1968,9 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "scripts/check_p1_2_proof_obligations.py",
         "data/proof_obligations/p1_2_proof_obligations.json",
         "src/search/certified_surface.py",
+        "src/search/certified_artifact_contract.py",
         "src/io/delivery_manifest.py",
+        "src/search/candidate_proof_replay.py",
         "src/search/certified_frontier.py",
         "src/search/exact_campaign.py",
         "src/search/outer_search.py",
@@ -1590,20 +1984,21 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
     'src/adapters/industrial_planner/export_blueprint.py': '9a5410b559a0e4c91fd1cf4bee8263f8d4f212560c9c29a59e85a08a34a4217d',
     'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
-    'src/cuts/families/pattern_nogood.py': 'c65eb8296c9c370631efe7167ddea73192723e8253aeb6b6c17694966d68fb90',
+    'src/cuts/cert_schema.py': 'e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e',
+    'src/cuts/families/pattern_nogood.py': '3083df0a2eaa71d0f2823a60ad9156bcc6bc744e4ff4bc26f9544d7dabe6230b',
     'src/cuts/helpers/bounded_core_minimizer.py': 'da3184e860ea49fa88a45da2db09c7b09fd742fc7eb10b6f7018eb1e5b98985b',
-    'src/cuts/lifecycle.py': '3b63cb3d18d5d0bad20e017ad6ad93b0b7773ea5b5165ead79e91750cd3043ba',
+    'src/cuts/lifecycle.py': '430bf565af94490972b92599a0c85de18ea7ea94a3cad87463019be3f908d29d',
     'src/cuts/oracles/pattern_nogood_oracle.py': '019d808d18619c9fc3e3692d476040cad3c8b360b5671bce54c6b8ac9003ef37',
     'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
-    'src/cuts/oracles/region_capacity_oracle.py': '95b65c40a02dea298bb51067a8c50edecff4868946050d5db41ca5a456421de1',
+    'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
-    'src/io/delivery_manifest.py': 'a4cf4f7feaba74e79dbed2e95772cabc94cb99c3a2d638112eb85e3248b4ccef',
+    'src/io/delivery_manifest.py': '4f2fba58383b2f64bc1c9bec17787dee92d03b6a001cf8811bf1bf6aef5bedbf',
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
     'src/io/serializer.py': '09cdfbe2a8da477eacf8a826a4d5ebc8636028a091e4577c93024bafe0eb0286',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
-    'src/models/binding_subproblem.py': 'ea5e277879efea9b3a48f2782f98ff3203b684e7c186c4b05fa61a4b81e42929',
+    'src/models/binding_subproblem.py': '1f487ad5cb068f264396788267a5df3152d664f485f9ec10bff1821bd802543a',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
-    'src/models/cut_manager.py': 'ebf8663111571c458e16c4290c8aa527e73187fed67acc35198df095a0a66905',
+    'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
     'src/models/d2_commodity_flow_core.py': '55aee97d9162541efd0014c5f4682c1d4d60c1fb0ef9246a657dfbb3ff17775e',
     'src/models/exact_coordinate_master.py': '8d4d9f1c09f8f2d2e16b4507f0f42444e327b737764a76d64124e6c32abaca9f',
     'src/models/flow_subproblem.py': '1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d',
@@ -1626,14 +2021,15 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/benders_loop.py': '0205ffe8e33674af8aae70bb83b0392948aa83f33218def0dc15806e1280e4b7',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
-    'src/search/certified_frontier.py': '3ead765526029de3df7e843c2bbed03d2e413918bd603950bdcc53a29e0f505e',
-    'src/search/certified_surface.py': '4ceea0003c98847b39dd15220d5331cf9ffe639b338039f706c9eace218470c2',
+    'src/search/candidate_proof_replay.py': 'c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75',
+    'src/search/certified_frontier.py': '2e84acd8f0fc09a889637258c4d3d9df0a07ca768d80809350921438604e299a',
+    'src/search/certified_surface.py': '601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': 'e503cbd09d5e01e3b4488d37964989b91586196e519e83bc6c4ca413b941d6b4',
+    'src/search/exact_campaign.py': '7772b89e0aec8c0cc88614e4e26dfd1c50da0bbbaeac10499b6969d1985a4df7',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
-    'src/search/outer_search.py': 'b321e3986a32c29186f08c18f02482576f12218c522a355e7cded1fa114a3fce',
+    'src/search/outer_search.py': 'a65cbfb9d5d9117f58ba4fb67a21eb9b4ac4c1789315936f0b7ab1dbcac762c3',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
 }
@@ -1746,13 +2142,12 @@ def _check_close_kernel_v99_static_floor(
 
     for rel_path, expected_sha256 in sorted(CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH.items()):
         entry = registered.get(rel_path)
-        if entry is None:
-            continue
-        declared_sha256 = entry.get("source_sha256")
-        if declared_sha256 != expected_sha256:
-            errors.append(
-                f"{rel_path} v99 source_sha256 changed without checker-floor reseal"
-            )
+        if entry is not None:
+            declared_sha256 = entry.get("source_sha256")
+            if declared_sha256 != expected_sha256:
+                errors.append(
+                    f"{rel_path} v99 source_sha256 changed without checker-floor reseal"
+                )
         path = project_root / rel_path
         if path.exists() and _sha256_file(path) != expected_sha256:
             errors.append(f"{rel_path} current source hash drifted from the v99 sealed floor")
@@ -1951,6 +2346,7 @@ def main() -> int:
         errors.extend(_check_source_digest_uses_contract(lifecycle_tree))
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_certified_cut_replay_contract(manifest))
+        errors.extend(_check_candidate_sink_replay_contract())
         errors.extend(_check_evidence_and_tests(manifest))
         errors.extend(_check_close_kernel_checker_self_binding())
         errors.extend(_check_close_kernel_contract(manifest))

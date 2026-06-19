@@ -63,6 +63,54 @@ source hashes.
 | `src/search/outer_search.py` | `b321e3986a32c29186f08c18f02482576f12218c522a355e7cded1fa114a3fce` |
 | `scripts/check_p1_2_proof_obligations.py` | `f348bd2d020483d87b38aefbf56f52feef15eb2ca16131602d12364b5ca68a21` |
 
+## 2026-06-18 source self-seal containment reseal
+
+The next no-close-kernel adversarial review found that a locked project package
+with the V99 manifest/checker removed could still mint a fresh campaign source
+digest from the current tree. That made the source digest continuity evidence act
+like a first-use self-seal instead of an authority check.
+
+The local fix makes `compute_exact_artifact_hashes()` fail closed in locked
+projects unless the V99 close-kernel manifest/checker pair exists as regular
+non-symlinked files and the checker exits successfully. The guard lives in
+`src/search/certified_artifact_contract.py`; that file is now a close-kernel
+critical gate file and is pinned by the checker floor, while `exact_campaign.py`
+is resealed as the proof-bearing campaign entrypoint that invokes the guard.
+
+| path | local source_sha256 |
+|---|---|
+| `src/search/certified_artifact_contract.py` | `f3579bd9431c1d33b2a7820db39d8af523c484cc45146419150a25ec101a7b26` |
+| `src/search/exact_campaign.py` | `d89dac1f403ef3a9dc2dffc3ed77eb9b7848c91e0c2ea2645145f89b361d910a` |
+| `scripts/check_p1_2_proof_obligations.py` | `3fe91cc5eadb7b0f3ef62868c3f1930f3c37762b3df7fd9ed4a303caa9973f2f` |
+
+## 2026-06-18 interim authority hardening reseal
+
+The next adversarial review reproduced four concrete runtime authority paths:
+mutable current-symbol producer identity, closure-extracted mutable freshness
+registry, a shipped test helper patching the production grant guard, and frontier
+pruning that used strong-looking candidate statuses before checking freshness.
+
+The local interim hardening pins producer/writer authority at module definition
+time, replaces the mutable freshness registry with live proof-bearing record
+stamps, validates candidate freshness before frontier skip/prune use, and changes
+the test helper to use a pytest-only adapter instead of patching production
+freshness authority. This blocks the four concrete repros, but it is not a clean
+P1.2 close: the review package also demonstrated that same-process closure-cell
+mutation of the verified writer can still bypass the interim guard.
+
+| path | local source_sha256 |
+|---|---|
+| `src/search/exact_campaign.py` | `5d86aa106abf827183850bec14ec63f2bba89c1b92bb0e8e593737994cdd6891` |
+| `src/search/outer_search.py` | `495b78db6aeb4998de6880bdc817e355d8ece04879be2363752a50b127f58c0b` |
+| `scripts/check_p1_2_proof_obligations.py` | `868c458f46f06481526e7ca7d41d63ef2e799572cd1e64ccc78349e4f534de29` |
+
+Known residual:
+
+```text
+$ PYTHONPATH=. python <downloaded-review-package>/repro/zmd_closure_cell_attack.py <tmp-project>
+surface_publishable=true, terminal_valid=true
+```
+
 ## Local verification
 
 ```text
@@ -102,5 +150,8 @@ production integration safety. It only records that the current local P1.2
 technical close-kernel includes the follow-up resume-sanitization,
 current-process freshness content-binding, controller-bound verified strong-status
 producer authority, hidden freshness-registry authority, raw-sealer fail-closed
-behavior, and root-entrypoint source-digest fixes and still fails closed under the
-V99 gate.
+behavior, root-entrypoint source-digest fixes, source self-seal containment, and
+the interim authority hardening above. It also records the known same-process
+closure-cell residual; therefore checker success after this reseal must not be
+used as a clean P1.2 close claim until that residual is resolved or explicitly
+removed from scope.

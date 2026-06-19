@@ -2,9 +2,9 @@
   "schema_version": 1,
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
-  "updated_at": "2026-06-17",
+  "updated_at": "2026-06-19",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "summary": "P1.2 remains fail-closed. V99 lands a small close-kernel contract: every proof-bearing CERTIFIED / INFEASIBLE status surface in the current default certified_exact scan roots must be registered, source-hash sealed, bound to a proof obligation, and guarded; any new or drifted strong-status sink reopens the close claim.",
+  "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
@@ -487,6 +487,36 @@
         "src/tests/test_p1_2_proof_obligations.py"
       ],
       "policy": "All current proof-bearing strong-status source surfaces in the close-kernel scan roots are sealed by path, source_sha256, proof obligation, and guard tokens; new, unregistered, or drifted CERTIFIED / proof-bearing INFEASIBLE sinks fail closed until reviewed."
+    },
+    {
+      "id": "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+      "title": "Proof-bearing candidate status authority is established only by independent sink-side certified_exact replay",
+      "v_findings": [
+        "same_process_closure_cell_mutation_residual_20260619",
+        "p1_2_sink_side_replay_authority_20260619"
+      ],
+      "required_tests": [
+        "test_p1_2_mutating_verified_writer_closure_cell_cannot_publish_false_certified",
+        "test_p1_2_forged_proof_bearing_infeasible_cannot_prune_better_feasible_candidate",
+        "test_p1_2_forged_certified_cannot_enter_terminal_manifest_or_public_surface",
+        "test_p1_2_module_rebinding_monkeypatch_and_test_helper_do_not_grant_authority",
+        "test_p1_2_strong_status_without_sink_replayable_proof_fails_closed",
+        "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays",
+        "test_p1_2_checker_rejects_candidate_replay_isolation_removal",
+        "test_p1_2_checker_rejects_frontier_sink_replay_bypass"
+      ],
+      "evidence_paths": [
+        "src/search/candidate_proof_replay.py",
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/search/outer_search.py",
+        "src/io/delivery_manifest.py",
+        "src/search/certified_surface.py",
+        "src/tests/test_p1_2_sink_replay_authority.py",
+        "src/tests/test_p1_2_proof_obligations.py",
+        "scripts/check_p1_2_proof_obligations.py"
+      ],
+      "policy": "Candidate records and candidate_proof payloads are untrusted data. A strong status may prune certified frontier state or enter terminal, manifest, or public evidence only after a fresh python -I child recomputes current artifact/source bindings and replays that candidate through certified_exact. Missing, malformed, mismatched, failed, or non-strong replay results are demoted to UNPROVEN or rejected. No writer identity, caller, closure cell, module binding, mutable registry, freshness stamp, or test helper grants proof authority."
     }
   ],
   "certified_cut_replay_contract": {
@@ -495,6 +525,7 @@
       "src/models/cut_manager.py",
       "src/search/exact_campaign.py",
       "src/search/benders_loop.py",
+      "src/search/candidate_proof_replay.py",
       "src/search/outer_search.py",
       "src/io/delivery_manifest.py",
       "src/models/master_model.py",
@@ -505,6 +536,7 @@
       "src/search/exact_campaign.py::_validate_candidate_record",
       "src/search/benders_loop.py::run_benders_for_ghost_rect",
       "src/search/benders_loop.py::LBBDController._add_exact_persisted_nogood",
+      "src/search/candidate_proof_replay.py::_replay_one_proof",
       "src/models/cut_manager.py::BendersCut.from_dict",
       "src/models/cut_manager.py::CutManager.load",
       "src/models/exact_coordinate_master.py::CoordinateExactMasterDelegate.add_benders_cut",
@@ -532,26 +564,31 @@
       "Non-strict or best_effort resume states must fail closed before writing final_solution, final_result, or any other certified-looking terminal artifact.",
       "Fail-closed certified outer blockers must remove stale final_solution and optimal_blueprint artifacts and refresh the certified delivery manifest before returning UNPROVEN.",
       "Terminal certified state committed before export must be rolled back to UNPROVEN and partial artifacts purged if final_solution, optimal_blueprint, or manifest export fails.",
-      "Direct certified delivery manifest writes must verify that best_certified_result comes from the regular in-project disk checkpoint, not a caller-only memory campaign, and must publish it only through the canonical regular in-project certified_delivery_manifest.json surface."
+      "Direct certified delivery manifest writes must verify that best_certified_result comes from the regular in-project disk checkpoint, not a caller-only memory campaign, and must publish it only through the canonical regular in-project certified_delivery_manifest.json surface.",
+      "Proof-bearing candidate outcomes are untrusted until sink-side isolated replay recomputes current source/artifact bindings and reproduces the claimed strong status."
     ],
-    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, non-strict declare_mode, candidate-subset, non-terminal incumbent, unsafe pre-session master-domain override, or post-hoc registered cut/result is not replay-safe and must not prune or certify search. Memory-only manifest authority is not a certified export source. Canonical manifest output, not an arbitrary output_path or low-level writer call, is the only certified delivery-manifest publication surface."
+    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, non-strict declare_mode, candidate-subset, non-terminal incumbent, unsafe pre-session master-domain override, or post-hoc registered cut/result is not replay-safe and must not prune or certify search. Memory-only manifest authority is not a certified export source. Canonical manifest output, not an arbitrary output_path or low-level writer call, is the only certified delivery-manifest publication surface. Candidate writer identity and current-process freshness are non-authoritative; frontier and publication sinks require independent isolated replay."
   },
   "close_kernel_contract": {
     "schema_version": 1,
     "review_anchor": "v99_p1_2_close_kernel_sealing",
-    "policy": "Small structural close kernel, not a theorem prover. It prevents the close proof from becoming a new dark hallway by sealing proof-bearing strong-status sinks and central guard tokens.",
+    "policy": "Small structural close kernel, not a theorem prover. It seals both the inventory of proof-bearing strong-status sinks and the sink-side isolated replay boundary that supplies their authority; source hashes alone are not treated as proof that replay remains mandatory.",
     "trusted_computing_base": [
-      "Python runtime executing scripts/check_p1_2_proof_obligations.py",
-      "current Git/source tree supplied to the checker",
-      "filesystem path and regular-file semantics used by the checker",
-      "pytest/CI exit status reporting faithfully when invoked",
-      "human reviewer interpretation of the 2026-06-17 P1.2 boundary files"
+      "Python runtime executing scripts/check_p1_2_proof_obligations.py and certified sinks",
+      "fresh isolated Python interpreter launched with -I for candidate replay",
+      "on-disk production source tree bound by certified_exact_source_tree",
+      "canonical project artifacts bound by compute_exact_artifact_hashes",
+      "certified_exact solver and project-bound terminal witness validators",
+      "OS subprocess, pipe, nonce, timeout, and exit-status semantics",
+      "filesystem path, regular-file, and source-byte semantics",
+      "pytest/CI exit status and human review of this P1.2 boundary"
     ],
     "not_claimed": [
       "all software bugs are impossible",
+      "runtime mutation of the sink verifier or operating-system TCB is harmless",
       "future P1.3B production master integration is safe",
       "owner clean-review counting or P1.3B opening is automated here",
-      "Python, OS, filesystem, CI, reviewers, or this checker are mathematically infallible"
+      "performance, UX, or future production integration is addressed by this patch"
     ],
     "attack_categories": [
       "direct_writer_bypass",
@@ -561,7 +598,11 @@
       "malformed_json_or_weak_typing",
       "unsafe_env_or_config_semantics",
       "parallel_resume_or_crash_partial_authority",
-      "gate_or_obligation_mutation"
+      "gate_or_obligation_mutation",
+      "same_process_function_or_closure_authority",
+      "producer_monkeypatch_or_module_rebinding",
+      "missing_or_unreplayable_candidate_proof",
+      "sink_replay_bypass_or_binding_drift"
     ],
     "proof_bearing_tokens": [
       "CERTIFIED",
@@ -576,7 +617,10 @@
       "final_solution.json",
       "optimal_blueprint.json",
       "proof-bearing",
-      "proof_bearing"
+      "proof_bearing",
+      "candidate_proof",
+      "candidate_sink_replay",
+      "certified_exact_isolated_solver_replay_v1"
     ],
     "scan_roots": [
       "src",
@@ -597,7 +641,9 @@
       "scripts/check_p1_2_proof_obligations.py",
       "data/proof_obligations/p1_2_proof_obligations.json",
       "src/search/certified_surface.py",
+      "src/search/certified_artifact_contract.py",
       "src/io/delivery_manifest.py",
+      "src/search/candidate_proof_replay.py",
       "src/search/certified_frontier.py",
       "src/search/exact_campaign.py",
       "src/search/outer_search.py",
@@ -641,10 +687,12 @@
         ],
         "required_guard_tokens": [
           "close_kernel_contract",
+          "_check_candidate_sink_replay_contract",
+          "CANDIDATE_PROOF_REPLAY_PATH",
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "f348bd2d020483d87b38aefbf56f52feef15eb2ca16131602d12364b5ca68a21",
+        "source_sha256": "b970d8bc082ee33ef4b71ee1df90b573a33fc9395ebebcd6a715a1b9953cc538",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -674,6 +722,26 @@
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
+        "path": "src/cuts/cert_schema.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "source_sha256": "e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim",
+        "terms": [
+          "proof-bearing",
+          "cert_payload",
+          "cert_kind"
+        ],
+        "required_guard_tokens": [
+          "loads_strict_json",
+          "CERT_PAYLOAD_CERT_KIND_BY_FAMILY",
+          "CERT_PAYLOAD_ALLOWED_FIELDS",
+          "CERT_PAYLOAD_REQUIRED_FIELDS",
+          "unknown field",
+          "missing required field"
+        ]
+      },
+      {
         "path": "src/cuts/families/pattern_nogood.py",
         "classification": "p1_2_certified_path",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
@@ -683,7 +751,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "c65eb8296c9c370631efe7167ddea73192723e8253aeb6b6c17694966d68fb90",
+        "source_sha256": "3083df0a2eaa71d0f2823a60ad9156bcc6bc744e4ff4bc26f9544d7dabe6230b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -709,7 +777,7 @@
         "required_guard_tokens": [
           "proof-bearing"
         ],
-        "source_sha256": "3b63cb3d18d5d0bad20e017ad6ad93b0b7773ea5b5165ead79e91750cd3043ba",
+        "source_sha256": "430bf565af94490972b92599a0c85de18ea7ea94a3cad87463019be3f908d29d",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -748,7 +816,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "95b65c40a02dea298bb51067a8c50edecff4868946050d5db41ca5a456421de1",
+        "source_sha256": "52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -776,11 +844,13 @@
           "final_solution.json"
         ],
         "required_guard_tokens": [
+          "terminal_certified_final_result_violation_for_project",
+          "has_valid_terminal_full_frontier_certified_evidence_for_project",
+          "campaign_path=resolved_campaign_path",
           "validate_certified_delivery_manifest_matches_campaign",
-          "validate_delivery_artifacts_match_campaign",
           "write_certified_delivery_manifest"
         ],
-        "source_sha256": "a4cf4f7feaba74e79dbed2e95772cabc94cb99c3a2d638112eb85e3248b4ccef",
+        "source_sha256": "4f2fba58383b2f64bc1c9bec17787dee92d03b6a001cf8811bf1bf6aef5bedbf",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -834,7 +904,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "ea5e277879efea9b3a48f2782f98ff3203b684e7c186c4b05fa61a4b81e42929",
+        "source_sha256": "1f487ad5cb068f264396788267a5df3152d664f485f9ec10bff1821bd802543a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -864,7 +934,7 @@
           "CERTIFIED",
           "INFEASIBLE"
         ],
-        "source_sha256": "ebf8663111571c458e16c4290c8aa527e73187fed67acc35198df095a0a66905",
+        "source_sha256": "50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1175,6 +1245,31 @@
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
+        "path": "src/search/candidate_proof_replay.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "candidate_proof",
+          "candidate_sink_replay",
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "CANDIDATE_PROOF_AUTHORITY",
+          "certified_exact_isolated_solver_replay_v1",
+          "_invoke_isolated_replay",
+          "\"-I\"",
+          "compute_exact_artifact_hashes",
+          "run_benders_for_ghost_rect",
+          "project_candidate_records_for_sink",
+          "record[\"status\"] = \"UNPROVEN\"",
+          "candidate_sink_replay_status_mismatch"
+        ],
+        "source_sha256": "c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
         "path": "src/search/certified_frontier.py",
         "classification": "p1_2_certified_path",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
@@ -1186,11 +1281,14 @@
           "terminal_frontier_evidence"
         ],
         "required_guard_tokens": [
-          "build_terminal_frontier_evidence",
-          "terminal_frontier_evidence_violation",
-          "TERMINAL_FRONTIER_EVIDENCE_SOURCE"
+          "project_candidate_records_for_sink",
+          "compute_sink_verified_terminal_frontier_projection",
+          "build_sink_verified_terminal_frontier_evidence",
+          "require_record_solution_match=False",
+          "require_record_solution_match=True",
+          "terminal_frontier_evidence_violation"
         ],
-        "source_sha256": "3ead765526029de3df7e843c2bbed03d2e413918bd603950bdcc53a29e0f505e",
+        "source_sha256": "2e84acd8f0fc09a889637258c4d3d9df0a07ca768d80809350921438604e299a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1206,10 +1304,12 @@
           "optimal_blueprint.json"
         ],
         "required_guard_tokens": [
-          "verify_certified_delivery_surface",
-          "evaluate_certified_delivery_surface"
+          "evaluate_certified_delivery_surface",
+          "has_valid_terminal_full_frontier_certified_evidence_for_project",
+          "campaign_path=resolved_campaign_path",
+          "sink-side isolated replay"
         ],
-        "source_sha256": "4ceea0003c98847b39dd15220d5331cf9ffe639b338039f706c9eace218470c2",
+        "source_sha256": "601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1240,16 +1340,17 @@
           "proof-bearing"
         ],
         "required_guard_tokens": [
-          "validate_exact_campaign_resume_state",
-          "terminal_frontier_evidence",
-          "best_certified_result",
-          "_verified_producer_writer_caller_violation",
-          "_grant_candidate_status_freshness_from_verified_producer",
-          "_build_candidate_freshness_runtime",
-          "records_by_state_id",
-          "direct candidate freshness sealing"
+          "project_candidate_records_for_sink",
+          "require_record_solution_match=True",
+          "terminal_candidate_sink_replay_failed",
+          "candidate_records_override=replayed_records",
+          "CANDIDATE_PROOF_FIELD",
+          "candidate_proof is a replay request",
+          "_mark_candidate_result_from_verified_producer",
+          "self.mark_candidate_result",
+          "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "e503cbd09d5e01e3b4488d37964989b91586196e519e83bc6c4ca413b941d6b4",
+        "source_sha256": "7772b89e0aec8c0cc88614e4e26dfd1c50da0bbbaeac10499b6969d1985a4df7",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1314,13 +1415,16 @@
           "certified_surface"
         ],
         "required_guard_tokens": [
-          "build_terminal_frontier_evidence",
+          "compute_sink_verified_terminal_frontier_projection",
+          "build_sink_verified_terminal_frontier_evidence",
+          "build_candidate_replay_proof",
+          "sink_replay_violations",
+          "terminal candidate sink replay failed",
           "_parallel_wave_result_identity_failure",
           "_parallel_wave_failure_discards_results",
-          "run_outer_search",
           "_mark_candidate_result_from_verified_producer"
         ],
-        "source_sha256": "b321e3986a32c29186f08c18f02482576f12218c522a355e7cded1fa114a3fce",
+        "source_sha256": "a65cbfb9d5d9117f58ba4fb67a21eb9b4ac4c1789315936f0b7ab1dbcac762c3",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

@@ -23,6 +23,9 @@ def facility_pools(project_root):
     return data["facility_pools"]
 
 
+CANONICAL_GENERIC_INPUTS = {"valley_battery": 1, "qiaoyu_capsule": 1}
+
+
 def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools):
     import sys
 
@@ -42,6 +45,12 @@ def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools
             "operation_type": "boundary_io",
             "is_mandatory": True,
         },
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
     ]
     placement_solution = {
         "packaging_battery_001": {
@@ -56,6 +65,12 @@ def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools
             "anchor": facility_pools["boundary_storage_port"][0]["anchor"],
             "facility_type": "boundary_storage_port",
         },
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
     }
 
     model = PortBindingModel(
@@ -63,18 +78,18 @@ def test_binding_model_extracts_concrete_port_specs(project_root, facility_pools
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 0, "qiaoyu_capsule": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
 
     port_specs = model.extract_port_specs()
-    assert len(port_specs) == 7
+    assert len(port_specs) == 6
     assert sum(1 for p in port_specs if p["type"] == "in") == 5
-    assert sum(1 for p in port_specs if p["type"] == "out") == 2
+    assert sum(1 for p in port_specs if p["type"] == "out") == 1
     assert sum(1 for p in port_specs if p["commodity"] == "dense_source_powder") == 3
     assert sum(1 for p in port_specs if p["commodity"] == "steel_part") == 2
-    assert sum(1 for p in port_specs if p["commodity"] == "valley_battery") == 1
+    assert sum(1 for p in port_specs if p["commodity"] == "valley_battery") == 0
     assert sum(1 for p in port_specs if p["commodity"] == "source_ore") == 1
 
 
@@ -97,6 +112,12 @@ def test_binding_model_nogood_cut_forces_new_selection(project_root, facility_po
             "operation_type": "boundary_io",
             "is_mandatory": True,
         },
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
     ]
     placement_solution = {
         "packaging_battery_001": {
@@ -111,6 +132,12 @@ def test_binding_model_nogood_cut_forces_new_selection(project_root, facility_po
             "anchor": facility_pools["boundary_storage_port"][0]["anchor"],
             "facility_type": "boundary_storage_port",
         },
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
     }
 
     model = PortBindingModel(
@@ -118,7 +145,7 @@ def test_binding_model_nogood_cut_forces_new_selection(project_root, facility_po
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 0, "qiaoyu_capsule": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
@@ -159,7 +186,7 @@ def test_binding_model_assigns_generic_wireless_sink_inputs(project_root, facili
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
@@ -351,7 +378,7 @@ def test_binding_model_overload_separation_default_off(project_root, facility_po
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
         project_root=project_root,
     )
     model.build()
@@ -395,7 +422,7 @@ def test_binding_model_overload_separation_when_enabled_records_summary(
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 1},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
         project_root=project_root,
     )
     model.build()
@@ -688,8 +715,8 @@ def test_binding_model_reports_pose_binding_domain_cache_reuse(project_root, fac
         placement_solution,
         facility_pools,
         instances,
-        required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 0, "qiaoyu_capsule": 0},
+        required_generic_outputs={},
+        required_generic_inputs={},
     )
     model.build()
     summary = model.extract_conflict_summary()
@@ -715,6 +742,12 @@ def test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache(proj
             "operation_type": "boundary_io",
             "is_mandatory": True,
         },
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
     ]
     placement_solution = {
         "boundary_port_001": {
@@ -723,6 +756,12 @@ def test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache(proj
             "anchor": facility_pools["boundary_storage_port"][0]["anchor"],
             "facility_type": "boundary_storage_port",
         },
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
     }
 
     model = PortBindingModel(
@@ -730,7 +769,7 @@ def test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache(proj
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 0, "qiaoyu_capsule": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     summary = model.extract_conflict_summary()
@@ -759,6 +798,12 @@ def test_binding_model_keeps_generic_outputs_globally_pooled(project_root, facil
             "operation_type": "boundary_io",
             "is_mandatory": True,
         },
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
     ]
     placement_solution = {
         "boundary_port_001": {
@@ -773,6 +818,12 @@ def test_binding_model_keeps_generic_outputs_globally_pooled(project_root, facil
             "anchor": facility_pools["boundary_storage_port"][1]["anchor"],
             "facility_type": "boundary_storage_port",
         },
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
     }
 
     model = PortBindingModel(
@@ -780,7 +831,7 @@ def test_binding_model_keeps_generic_outputs_globally_pooled(project_root, facil
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1, "blue_iron_ore": 1},
-        required_generic_inputs={"valley_battery": 0, "qiaoyu_capsule": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     summary = model.extract_conflict_summary()
@@ -823,6 +874,12 @@ def test_binding_model_reports_exact_search_guidance(project_root, facility_pool
             "operation_type": "boundary_io",
             "is_mandatory": True,
         },
+        {
+            "instance_id": "protocol_box_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
     ]
     placement_solution = {
         "packaging_battery_001": {
@@ -837,6 +894,12 @@ def test_binding_model_reports_exact_search_guidance(project_root, facility_pool
             "anchor": facility_pools["boundary_storage_port"][0]["anchor"],
             "facility_type": "boundary_storage_port",
         },
+        "protocol_box_001": {
+            "pose_idx": 0,
+            "pose_id": facility_pools["protocol_storage_box"][0]["pose_id"],
+            "anchor": facility_pools["protocol_storage_box"][0]["anchor"],
+            "facility_type": "protocol_storage_box",
+        },
     }
 
     model = PortBindingModel(
@@ -844,7 +907,7 @@ def test_binding_model_reports_exact_search_guidance(project_root, facility_pool
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 0, "qiaoyu_capsule": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     summary = model.extract_conflict_summary()
@@ -894,7 +957,7 @@ def test_binding_solver_worker_override_changes_only_solver_parameter(
         facility_pools,
         instances,
         required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
-        required_generic_inputs={"valley_battery": 1, "qiaoyu_capsule": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
     )
     model.build()
     assert model.solve(time_limit_seconds=10.0) == "FEASIBLE"
@@ -902,7 +965,7 @@ def test_binding_solver_worker_override_changes_only_solver_parameter(
     assert int(model._solver.parameters.num_workers) == 2
 
 
-def test_binding_model_allows_unused_generic_output_slots():
+def test_binding_model_allows_unused_generic_output_slots(tmp_path):
     import sys
 
     project_root = Path(__file__).resolve().parent.parent.parent
@@ -935,6 +998,18 @@ def test_binding_model_allows_unused_generic_output_slots():
             "facility_type": "protocol_core",
         }
     }
+    rules_dir = tmp_path / "rules"
+    rules_dir.mkdir(parents=True)
+    (rules_dir / "canonical_rules.json").write_text(
+        json.dumps(
+            {
+                "commodity_metadata": {
+                    "source_ore": {"source_kind": "external_boundary"},
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
 
     model = PortBindingModel(
         placement_solution,
@@ -942,6 +1017,7 @@ def test_binding_model_allows_unused_generic_output_slots():
         instances,
         required_generic_outputs={"source_ore": 1},
         required_generic_inputs={},
+        project_root=tmp_path,
     )
     model.build()
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
@@ -952,6 +1028,98 @@ def test_binding_model_allows_unused_generic_output_slots():
     port_specs = model.extract_port_specs()
     assert len(port_specs) == 1
     assert port_specs[0]["commodity"] == "source_ore"
+
+
+def test_binding_explicit_kwargs_reject_unknown_generic_output(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    with pytest.raises(KeyError, match="mystery_ore"):
+        PortBindingModel(
+            {},
+            {},
+            [],
+            required_generic_outputs={"mystery_ore": 1},
+            required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+            project_root=project_root,
+        )
+
+
+def test_binding_explicit_kwargs_reject_wrong_generic_output_source_kind(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    with pytest.raises(ValueError, match="external_boundary"):
+        PortBindingModel(
+            {},
+            {},
+            [],
+            required_generic_outputs={"valley_battery": 1},
+            required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+            project_root=project_root,
+        )
+
+
+def test_binding_explicit_kwargs_reject_wrong_generic_input_sink_kind(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    with pytest.raises(ValueError, match="generic_input"):
+        PortBindingModel(
+            {},
+            {},
+            [],
+            required_generic_outputs={},
+            required_generic_inputs={
+                "source_ore": 1,
+                "valley_battery": 1,
+                "qiaoyu_capsule": 1,
+            },
+            project_root=project_root,
+        )
+
+
+def test_binding_explicit_kwargs_reject_missing_canonical_generic_input(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    with pytest.raises(ValueError, match="missing=qiaoyu_capsule"):
+        PortBindingModel(
+            {},
+            {},
+            [],
+            required_generic_outputs={},
+            required_generic_inputs={"valley_battery": 1},
+            project_root=project_root,
+        )
+
+
+def test_binding_explicit_kwargs_accept_canonical_roles(project_root):
+    import sys
+
+    sys.path.insert(0, str(project_root))
+    from src.models.binding_subproblem import PortBindingModel
+
+    model = PortBindingModel(
+        {},
+        {},
+        [],
+        required_generic_outputs={"source_ore": 0, "blue_iron_ore": 0},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+        project_root=project_root,
+    )
+
+    assert model.required_generic_outputs == {"source_ore": 0, "blue_iron_ore": 0}
+    assert model.required_generic_inputs == CANONICAL_GENERIC_INPUTS
+    assert model.routing_free_sink_commodities == {"valley_battery", "qiaoyu_capsule"}
 
 
 def test_load_generic_io_requirements_rejects_missing_sections(tmp_path):
@@ -1229,6 +1397,19 @@ def test_binding_uses_injected_wireless_slot_snapshot_over_project_root_plan(tmp
 
     rules_dir = tmp_path / "rules"
     rules_dir.mkdir(parents=True)
+    (rules_dir / "canonical_rules.json").write_text(
+        json.dumps(
+            {
+                "commodity_metadata": {
+                    "valley_battery": {
+                        "source_kind": "internal_only",
+                        "sink_kind": "generic_input",
+                    },
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
     (rules_dir / "preprocess_plan.json").write_text(
         json.dumps(
             {
