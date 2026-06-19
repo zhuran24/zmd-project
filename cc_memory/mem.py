@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import array
+import contextlib
 import datetime as _dt
 import hashlib
 import json
@@ -17,6 +18,7 @@ import re
 import sqlite3
 import subprocess
 import sys
+import time
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Any
@@ -54,6 +56,16 @@ SEMANTIC_DENSE_LIMIT = 80
 # Conservative initial values — recalibrate on a real corpus cosine distribution (P3).
 SEMANTIC_SCORE_SCALE = 40.0
 SEMANTIC_COSINE_FLOOR = 0.30
+
+# finalize (single收口本体): one drain at a time via a file lease; concurrent hook
+# triggers no-op and let the holder pick up the latest mutations.
+FINALIZE_LEASE = MEM_DIR / ".finalize.lock"
+FINALIZE_LEASE_STALE = 900  # seconds; a finalize older than this is presumed stuck -> steal
+FINALIZE_MAX_DRAIN = 4      # bounded re-run if new mutations land mid-finalize
+# check_db emits this exact substring for the "high-score pending need review" error;
+# that is normal workflow state (not corruption), so finalize must not treat it as a
+# structural failure / async-wake trigger.
+REVIEW_MARK = "pending relation suggestions need review"
 
 
 def now() -> str:
@@ -97,6 +109,22 @@ def touch_watermark(con: sqlite3.Connection, session_id: str) -> None:
     )
 
 
+def get_meta(con: sqlite3.Connection, key: str, default: str = "") -> str:
+    row = con.execute("SELECT value FROM meta WHERE key=?", (key,)).fetchone()
+    return row["value"] if row else default
+
+
+def set_meta(con: sqlite3.Connection, key: str, value: Any) -> None:
+    con.execute(
+        "INSERT INTO meta(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+        (key, str(value)),
+    )
+
+
+def max_mutation_id(con: sqlite3.Connection) -> int:
+    return int(con.execute("SELECT COALESCE(MAX(id), 0) AS m FROM mutations").fetchone()["m"])
+
+
 def norm(value: str) -> str:
     value = value.strip().strip('"\'')
     value = value.replace("_", "-")
@@ -122,7 +150,13 @@ def connect(db: Path = DEFAULT_DB) -> sqlite3.Connection:
     con = sqlite3.connect(db)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
-    con.execute("PRAGMA busy_timeout = 5000")
+    # WAL lets a read-only session (boot/readfirst hook) and a writer (a finalize
+    # drain) coexist without "database is locked"; agent-teams run concurrent
+    # sessions. -wal/-shm are .gitignored; pre-commit truncates the WAL so the
+    # committed memory.db stays self-contained. busy_timeout absorbs the brief
+    # contention window during a drain. memory.db lives on C: (local) — WAL-safe.
+    con.execute("PRAGMA journal_mode = WAL")
+    con.execute("PRAGMA busy_timeout = 30000")
     return con
 
 
@@ -277,7 +311,10 @@ def init_schema(con: sqlite3.Connection, *, reset: bool = False) -> None:
         """
     )
     con.execute(
-        "INSERT INTO meta(key,value) VALUES('schema_version', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+        # Write only when absent: an existing-but-different value is real schema DRIFT
+        # that check_db must catch — never silently auto-upgrade it. (Also makes
+        # init_schema side-effect-free on an existing db, so `check` doesn't write.)
+        "INSERT OR IGNORE INTO meta(key,value) VALUES('schema_version', ?)",
         (str(SCHEMA_VERSION),),
     )
     con.commit()
@@ -965,7 +1002,7 @@ def store_relation_suggestions(
                    suggested_edge_type=excluded.suggested_edge_type,
                    score=excluded.score,
                    signals_json=excluded.signals_json,
-                   status=CASE WHEN relation_suggestions.status='accepted' THEN 'accepted' ELSE 'pending' END,
+                   status=CASE WHEN relation_suggestions.status IN ('accepted','rejected') THEN relation_suggestions.status ELSE 'pending' END,
                    created_at=excluded.created_at""",
             (source_type, source_id, s["type"], s["id"], s["suggested_edge_type"], float(s["score"]), jdump(s["signals"]), "pending", now()),
         )
@@ -1101,6 +1138,248 @@ def check_db(con: sqlite3.Connection, *, export_path: Path = DEFAULT_EXPORT) -> 
     return (0 if not errors else 1), lines
 
 
+def gpu_embedding_available() -> bool:
+    """Cheap check (no model load): is the embedding venv python present?"""
+    try:
+        return embedding_python().exists()
+    except OSError:
+        return False
+
+
+def embeddings_stale_count(con: sqlite3.Connection, model: str | None = None) -> int:
+    """Active nodes whose current content has no up-to-date embedding for the model.
+
+    Same staleness test cmd_rebuild_embeddings uses to decide what to re-embed, so a
+    non-zero count means `--semantic` would miss those nodes until a rebuild."""
+    model_id = embedding_model_id(embedding_model_name(model))
+    stale = 0
+    for typ, row in all_active_nodes(con):
+        text = node_text_for_relation(row, typ)
+        content_hash = node_content_hash(typ, row["id"], text)
+        existing = con.execute(
+            "SELECT content_hash FROM node_embeddings WHERE node_type=? AND node_id=? AND model_id=?",
+            (typ, row["id"], model_id),
+        ).fetchone()
+        if not existing or existing["content_hash"] != content_hash:
+            stale += 1
+    return stale
+
+
+def maintenance_report(con: sqlite3.Connection, model: str | None = None) -> dict[str, Any]:
+    """Backstop state surfaced at boot / Stop hook: is memory dirty (mutated since the
+    last finalize), how did the last finalize go, how many suggestions await review,
+    how many embeddings are stale, is the GPU embed env even present."""
+    mx = max_mutation_id(con)
+    last_fin = int(get_meta(con, "last_finalized_mutation_id", "0") or 0)
+    return {
+        "dirty": mx > last_fin,
+        "max_mutation_id": mx,
+        "last_finalized_mutation_id": last_fin,
+        "last_finalized_at": get_meta(con, "last_finalized_at", ""),
+        "last_finalize_status": get_meta(con, "last_finalize_status", ""),
+        "last_finalize_error": get_meta(con, "last_finalize_error", ""),
+        "pending_suggestions": len(pending_relation_suggestions(con)),
+        "stale_embeddings": embeddings_stale_count(con, model),
+        "gpu_available": gpu_embedding_available(),
+    }
+
+
+class _LeaseBusy(RuntimeError):
+    """Another finalize holds the drain lease."""
+
+
+@contextlib.contextmanager
+def finalize_lease(path: Path = FINALIZE_LEASE, stale_seconds: int = FINALIZE_LEASE_STALE) -> Any:
+    """Single-holder file lease so concurrent hook-triggered finalizes don't stack GPU
+    rebuilds / writers.
+
+    Each holder writes a unique PID+nonce token. A lease whose mtime is older than
+    stale_seconds is presumed stuck and stolen — so a *live* holder must `renew()`
+    (yielded) within that window to keep ownership. Release only deletes the lock if it
+    still carries OUR token, so a holder that was stolen-from never deletes the thief's
+    fresh lock (which would otherwise let a third writer in)."""
+    token = f"{os.getpid()}-{time.time_ns()}".encode()
+
+    def _create() -> None:
+        fd = os.open(str(path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        try:
+            os.write(fd, token)
+        finally:
+            os.close(fd)
+
+    acquired = False
+    try:
+        try:
+            _create()
+        except FileExistsError:
+            try:
+                age = time.time() - path.stat().st_mtime
+            except OSError:
+                age = 0.0
+            if age <= stale_seconds:
+                raise _LeaseBusy()
+            with contextlib.suppress(OSError):  # steal only a demonstrably-stale lock
+                path.unlink()
+            try:
+                _create()
+            except FileExistsError:
+                raise _LeaseBusy()
+        acquired = True
+
+        def renew() -> None:
+            with contextlib.suppress(OSError):
+                os.utime(path, None)
+
+        yield renew
+    finally:
+        if acquired:
+            with contextlib.suppress(OSError):
+                if path.read_bytes() == token:  # only delete a lock we still own
+                    path.unlink()
+
+
+def _finalize_rebuild(args: argparse.Namespace) -> str:
+    """Run rebuild-embeddings in an ISOLATED subprocess so a GPU/driver crash can't take
+    down the finalize itself. Returns a short status, never raises."""
+    cmd = [sys.executable, str(Path(__file__).resolve()), "--db", str(args.db), "rebuild-embeddings"]
+    if getattr(args, "model", None):
+        cmd += ["--model", args.model]
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=args.gpu_timeout)
+    except subprocess.TimeoutExpired:
+        return "timeout"
+    except OSError as exc:
+        return f"spawn_error:{exc}"
+    if proc.returncode == 0:
+        return "ok"
+    if proc.returncode == 2:
+        return "unavailable"  # EmbeddingUnavailable -> GPU venv/model missing
+    return f"error_rc{proc.returncode}"
+
+
+def _checkpoint_wal(db: Path) -> str:
+    """Fold the WAL back into memory.db so the on-disk file is self-contained for
+    `git add` (memory.db is git-tracked; -wal/-shm are .gitignored).
+
+    wal_checkpoint(TRUNCATE) reports BUSY via its RETURN ROW (busy, log_frames,
+    checkpointed_frames) — NOT via an exception — when another connection holds a read
+    lock. We pace retries ourselves with a SHORT busy_timeout (not connect()'s 30s, which
+    would make each attempt block up to 30s under contention); return 'busy' if it never
+    fully drains, so the caller can surface that committed rows may still sit in -wal."""
+    try:
+        con = sqlite3.connect(str(db))
+    except sqlite3.Error:
+        return "busy"
+    try:
+        con.execute("PRAGMA busy_timeout = 200")  # fail fast; the retry loop sets the cadence
+        for _ in range(20):
+            row = con.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()
+            con.commit()
+            if row is not None and int(row[0]) == 0 and int(row[1]) == int(row[2]):
+                return "ok"
+            time.sleep(0.12)
+        return "busy"
+    except sqlite3.Error:
+        return "busy"
+    finally:
+        with contextlib.suppress(sqlite3.Error):
+            con.close()
+
+
+def _run_finalize(args: argparse.Namespace, renew: Any = None) -> int:
+    status = "ok"
+    gpu_status = "skipped"
+    rc = 0
+    check_lines: list[str] = []
+    structural: list[str] = []
+    iterations = 0
+    final_max = 0
+    while iterations < FINALIZE_MAX_DRAIN:
+        iterations += 1
+        if renew is not None:
+            renew()  # keep our lease fresh so a long drain isn't seen as stale & stolen
+        con = connect(args.db)
+        init_schema(con)
+        snapshot = max_mutation_id(con)
+        con.close()  # hold no db handle across the GPU subprocess
+
+        if not args.no_gpu:
+            gpu_status = _finalize_rebuild(args)
+
+        con = connect(args.db)
+        try:
+            rc, check_lines = check_db(con, export_path=args.export)  # also writes the export
+        except Exception as exc:  # disk full / export perm error / unexpected sqlite -> not a GPU degrade
+            status = "finalize_error"
+            check_lines = [f"ERROR finalize check/export failed: {exc}"]
+            structural = list(check_lines)
+            with contextlib.suppress(sqlite3.Error):
+                set_meta(con, "last_finalize_status", status)
+                set_meta(con, "last_finalize_error", check_lines[0][:500])
+                con.commit()
+            con.close()
+            break
+        structural = [ln for ln in check_lines if ln.startswith("ERROR") and REVIEW_MARK not in ln]
+        if structural:
+            status = "check_fail"
+        elif rc != 0:
+            status = "pending_review"
+        elif not args.no_gpu and gpu_status != "ok":
+            status = "degraded:" + gpu_status
+        else:
+            status = "ok"
+        # Advance the finalized-watermark only when the store is healthy; on a structural
+        # failure leave it behind so boot/Stop keep flagging 'dirty', not just the status.
+        if status != "check_fail":
+            set_meta(con, "last_finalized_mutation_id", snapshot)
+        set_meta(con, "last_finalized_at", now())
+        set_meta(con, "last_finalize_status", status)
+        set_meta(con, "last_finalize_error", " ".join(structural)[:500])
+        con.commit()
+        final_max = max_mutation_id(con)
+        con.close()
+        if final_max <= snapshot:
+            break
+
+    wal = _checkpoint_wal(args.db)
+    if wal == "busy":
+        # data is safe in -wal, but the on-disk file isn't self-contained yet
+        if status in ("ok", "pending_review"):
+            status = "wal_busy"
+        with contextlib.suppress(sqlite3.Error):
+            con = connect(args.db)
+            set_meta(con, "last_finalize_status", status)
+            set_meta(
+                con,
+                "last_finalize_error",
+                "wal_checkpoint busy: committed rows may still be in cc_memory/memory.db-wal; "
+                "rerun finalize when other sessions are idle before committing memory.db",
+            )
+            con.commit()
+            con.close()
+
+    print(f"finalize: iterations={iterations} gpu={gpu_status} wal={wal} mutation_id={final_max} status={status}")
+    print("\n".join(check_lines))
+    # Exit policy (tuned for asyncRewake on PostToolUse):
+    #   structural corruption / finalize crash -> exit 2 (wake the model; must be fixed)
+    #   GPU degraded / WAL not folded            -> exit 1 (logged + surfaced at boot)
+    #   pending review / ok                       -> exit 0 (Stop hook nags about pending)
+    if status in ("check_fail", "finalize_error"):
+        return 2
+    if status.startswith("degraded") or status == "wal_busy":
+        return 1
+    return 0
+
+
+def cmd_finalize(args: argparse.Namespace) -> int:
+    try:
+        with finalize_lease() as renew:
+            return _run_finalize(args, renew)
+    except _LeaseBusy:
+        print("finalize: another run holds the lease; skipping (it will pick up the latest mutations)")
+        return 0
+
+
 def cmd_init(args: argparse.Namespace) -> int:
     con = connect(args.db)
     init_schema(con, reset=args.reset)
@@ -1141,6 +1420,28 @@ def cmd_boot(args: argparse.Namespace) -> int:
             print(f"  - [{(m['session_id'] or '')[:8]}] {m['op']} {m['target_type']}:{m['target_id']}  ({m['created_at']})")
         if len(delta) > 30:
             print(f"  - ... {len(delta) - 30} more")
+    print("")
+    rep = maintenance_report(con)
+    print("## Maintenance (hook backstop)")
+    if rep["dirty"]:
+        print(
+            f"- dirty: YES — memory mutated since last finalize "
+            f"(mutations {rep['last_finalized_mutation_id']}→{rep['max_mutation_id']}); "
+            f"run `python cc_memory/mem.py finalize`"
+        )
+    else:
+        print("- dirty: no (finalized through latest mutation)")
+    last_at = f" @ {rep['last_finalized_at']}" if rep["last_finalized_at"] else ""
+    print(f"- last finalize: {rep['last_finalize_status'] or 'never'}{last_at}")
+    if rep["last_finalize_error"]:
+        print(f"  - last error: {short(rep['last_finalize_error'], 160)}")
+    print(f"- pending suggestions to review: {rep['pending_suggestions']}")
+    stale_note = f"- stale embeddings: {rep['stale_embeddings']}"
+    if not rep["gpu_available"]:
+        stale_note += "  [GPU embed python MISSING — `--semantic` recall degraded until restored]"
+    elif rep["stale_embeddings"]:
+        stale_note += "  (run `python cc_memory/mem.py rebuild-embeddings`)"
+    print(stale_note)
     print("")
     pinned = list(con.execute("SELECT * FROM entries WHERE pinned=1 AND status='active' ORDER BY id LIMIT ?", (args.limit,)))
     print("## Read first")
@@ -1772,6 +2073,15 @@ def make_parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("export")
     sp.set_defaults(func=cmd_export)
+
+    sp = sub.add_parser(
+        "finalize",
+        help="single收口本体: (GPU rebuild) -> check -> export -> record state, under a drain lease",
+    )
+    sp.add_argument("--no-gpu", action="store_true", help="skip GPU embedding rebuild (pre-commit / CI gate use)")
+    sp.add_argument("--model", default=None, help=f"embedding model (default: {DEFAULT_EMBED_MODEL})")
+    sp.add_argument("--gpu-timeout", type=int, default=700, help="seconds before the GPU rebuild subprocess is killed")
+    sp.set_defaults(func=cmd_finalize)
 
     return p
 
