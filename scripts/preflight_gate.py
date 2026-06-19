@@ -528,6 +528,28 @@ def check_p1_2_proof_obligations(gate: GateResult) -> None:
     )
 
 
+def check_cc_memory_consistency(gate: GateResult) -> None:
+    """cc_memory 协作记忆一致性硬闸 (layer-3 of the hook backstop).
+
+    Scope-gated: only runs when this change touches cc_memory/. When it does, the
+    committed memory.db must pass `mem.py check` (schema/edges/cycle/no unreviewed
+    high-score suggestions) and exports/MEMORY.md must be in sync with it. Pure SQLite,
+    no GPU — CI-safe.
+    """
+    print("\n[cc_memory] 协作记忆一致性检查")
+    touched = [f for f in get_staged_files() if f.startswith("cc_memory/")]
+    if not touched:
+        gate.ok("cc_memory 未在本次变更范围内 — 跳过")
+        return
+    _run_script_check(
+        gate,
+        title="cc_memory consistency",
+        script_name="check_cc_memory_consistency.py",
+        ok_prefix="cc_memory consistency check",
+        timeout=180,
+    )
+
+
 def check_publish_secret_scan(gate: GateResult) -> None:
     """[10/17] 发布安全 secret scan.
 
@@ -733,6 +755,7 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_r
     check_artifact_boundaries(gate)
     check_phase_review_gate(gate)
     check_p1_2_proof_obligations(gate)
+    check_cc_memory_consistency(gate)
     check_mypy(gate)
     check_ruff(gate)
 

@@ -50,6 +50,7 @@ env/
 /cc_memory/memory.db-shm
 /cc_memory/memory.db-journal
 /cc_memory/*.bak
+/cc_memory/.finalize.lock
 
 # ----------------------------------------------------------------------------
 # OS / editor cruft

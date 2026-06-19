@@ -1,0 +1,47 @@
+#!/bin/sh
+# cc_memory consistency near-end gate — layer-3 of the hook backstop (2026-06-19,
+# entry cc-memory-hook-4-a-i-gpu-posttooluse-async). This is the TRACKED source; install
+# it locally with `python scripts/install_hooks.py`. The authoritative hard gate is CI
+# (scripts/preflight_gate.py runs check_cc_memory_consistency in change scope); this local
+# hook is convenience and is bypassable with `git commit --no-verify`.
+#
+# Scoped: only acts when a cc_memory source/view is staged, so it never blocks an
+# unrelated commit. If python is unavailable it skips (CI still gates), never blocking.
+
+changed=$(git diff --cached --name-only | grep -E '^cc_memory/(memory\.db|exports/MEMORY\.md)$')
+[ -z "$changed" ] && exit 0
+
+# 1. A non-empty WAL means committed rows are still in the .gitignored -wal sidecar, so the
+#    staged memory.db blob would be incomplete (silent loss). `mem.py finalize` folds the
+#    WAL back via wal_checkpoint(TRUNCATE); refuse to commit until it has drained.
+if [ -s cc_memory/memory.db-wal ]; then
+  echo "pre-commit: cc_memory/memory.db-wal is non-empty — committed rows are still in the WAL." >&2
+  echo "  run: python cc_memory/mem.py finalize   (folds the WAL into memory.db) then re-add memory.db." >&2
+  exit 1
+fi
+
+# 2. Partial-stage guard: the consistency check reads the WORKING TREE, so if memory.db or
+#    MEMORY.md has unstaged changes the staged pair might not match what is verified.
+unstaged=$(git diff --name-only -- cc_memory/memory.db cc_memory/exports/MEMORY.md)
+if [ -n "$unstaged" ]; then
+  echo "pre-commit: these cc_memory files have unstaged changes — stage the whole pair before committing:" >&2
+  echo "$unstaged" | sed 's/^/  - /' >&2
+  echo "  run: git add cc_memory/memory.db cc_memory/exports/MEMORY.md" >&2
+  exit 1
+fi
+
+py=python
+command -v "$py" >/dev/null 2>&1 || py=python3
+if ! command -v "$py" >/dev/null 2>&1; then
+  echo "pre-commit: python not found — skipping cc_memory check (CI still gates it)." >&2
+  exit 0
+fi
+
+if ! "$py" scripts/check_cc_memory_consistency.py; then
+  echo "" >&2
+  echo "pre-commit: cc_memory 一致性检查未通过(memory.db 与 MEMORY.md / check 不一致)。" >&2
+  echo "  修复:  python cc_memory/mem.py finalize   再 git add cc_memory/memory.db cc_memory/exports/MEMORY.md" >&2
+  echo "  或:    git commit --no-verify  跳过本地闸(CI 仍会拦)。" >&2
+  exit 1
+fi
+exit 0
