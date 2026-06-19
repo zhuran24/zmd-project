@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from src.models.binding_subproblem import PortBindingModel
 from src.models.routing_binding_context import build_routing_binding_context
 from src.models.flow_subproblem import FlowSubproblem, build_flow_network
@@ -18,6 +20,7 @@ from src.search.exact_campaign import ExactCampaign
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CANONICAL_GENERIC_INPUTS = {"valley_battery": 1, "qiaoyu_capsule": 1}
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -112,7 +115,7 @@ def test_wireless_sink_virtual_slots_bind_positive_required_inputs() -> None:
 
 
 def test_wireless_sink_virtual_slots_do_not_emit_routing_port_specs() -> None:
-    model = _wireless_binding_model(required_inputs={"valley_battery": 1})
+    model = _wireless_binding_model(required_inputs=CANONICAL_GENERIC_INPUTS)
     model.build()
 
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
@@ -120,24 +123,21 @@ def test_wireless_sink_virtual_slots_do_not_emit_routing_port_specs() -> None:
 
     assert port_specs == []
     assert model.extract_selection()["generic_inputs"]
-    assert all(spec.get("commodity") != "valley_battery" for spec in port_specs)
+    assert all(
+        spec.get("commodity") not in CANONICAL_GENERIC_INPUTS for spec in port_specs
+    )
 
 
-def test_wireless_sink_required_zero_uses_unused_sentinel() -> None:
-    model = _wireless_binding_model(required_inputs={"valley_battery": 0})
-    model.build()
-
-    assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
-    selection = model.extract_selection()["generic_inputs"]
-
-    assert len(selection) == 3
-    assert set(selection.values()) == {"__unused__"}
-    assert model.extract_port_specs() == []
+def test_wireless_sink_required_zero_is_rejected_by_canonical_role_guard() -> None:
+    with pytest.raises(ValueError, match="non_positive=valley_battery"):
+        _wireless_binding_model(
+            required_inputs={"valley_battery": 0, "qiaoyu_capsule": 1}
+        )
 
 
 def test_wireless_sink_routing_has_no_sink_front_and_needs_no_belt_to_box() -> None:
     pose = _wireless_box_pose()
-    model = _wireless_binding_model(required_inputs={"demo_wireless_item": 1})
+    model = _wireless_binding_model(required_inputs=CANONICAL_GENERIC_INPUTS)
     model.build()
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
 
@@ -181,7 +181,11 @@ def test_wireless_sink_routing_has_no_sink_front_and_needs_no_belt_to_box() -> N
         solve_mode="certified_exact",
     )
     assert flow.build_and_solve(time_limit_ms=1000) == "FEASIBLE"
-    assert not any("demo_wireless_item" in node for node in flow_network.nodes)
+    assert not any(
+        commodity in str(node)
+        for node in flow_network.nodes
+        for commodity in CANONICAL_GENERIC_INPUTS
+    )
 
 
 def test_wireless_sink_commodity_does_not_reenter_routing_from_producer_output() -> None:
@@ -222,7 +226,7 @@ def test_wireless_sink_commodity_does_not_reenter_routing_from_producer_output()
             }
         ],
         required_generic_outputs={},
-        required_generic_inputs={"qiaoyu_capsule": 1},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
         project_root=PROJECT_ROOT,
     )
     model.build()
@@ -231,8 +235,10 @@ def test_wireless_sink_commodity_does_not_reenter_routing_from_producer_output()
     selection = model.extract_selection()
     port_specs = model.extract_port_specs()
 
-    assert "qiaoyu_capsule" in selection["generic_inputs"].values()
-    assert all(spec["commodity"] != "qiaoyu_capsule" for spec in port_specs)
+    assert {"qiaoyu_capsule", "valley_battery"} <= set(
+        selection["generic_inputs"].values()
+    )
+    assert all(spec["commodity"] not in CANONICAL_GENERIC_INPUTS for spec in port_specs)
     assert any(spec["commodity"] == "fine_buckwheat_powder" for spec in port_specs)
     assert any(spec["commodity"] == "steel_bottle" for spec in port_specs)
 
@@ -249,6 +255,7 @@ def test_wireless_sink_commodity_does_not_reenter_routing_from_producer_output()
 
     assert precheck["status"] == "feasible"
     assert "qiaoyu_capsule" not in precheck["_analysis"]["commodity_front_metadata"]
+    assert "valley_battery" not in precheck["_analysis"]["commodity_front_metadata"]
 
 
 def test_routing_aware_filter_ignores_blocked_wireless_producer_output_fronts() -> None:
@@ -307,7 +314,7 @@ def test_routing_aware_filter_ignores_blocked_wireless_producer_output_fronts() 
             }
         ],
         required_generic_outputs={},
-        required_generic_inputs={"qiaoyu_capsule": 1},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
         project_root=PROJECT_ROOT,
         routing_context=routing_context,
     )
@@ -318,7 +325,10 @@ def test_routing_aware_filter_ignores_blocked_wireless_producer_output_fronts() 
     assert model.routing_aware_filter_stats["front_blocked_patterns_pruned"] == 0
     assert model.extract_routing_aware_certificates() == []
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
-    assert all(spec["commodity"] != "qiaoyu_capsule" for spec in model.extract_port_specs())
+    assert all(
+        spec["commodity"] not in CANONICAL_GENERIC_INPUTS
+        for spec in model.extract_port_specs()
+    )
 
 
 def test_campaign_resume_rejects_stale_candidate_placement_hash(tmp_path: Path) -> None:

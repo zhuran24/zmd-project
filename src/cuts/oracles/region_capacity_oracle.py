@@ -138,6 +138,7 @@ def _build_cut(
         for gid, _ in contributing_groups
     }
     cert_dict = {
+        "cert_kind": _CERT_KIND_COMBINATORIAL,
         "region_kind": region_kind,
         "region_cells_bitset_b64": _encode_region_bitset(region_cells),
         "cap_R": cap_R,

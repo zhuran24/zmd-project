@@ -18,6 +18,9 @@ def _project_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
+CANONICAL_GENERIC_INPUTS = {"valley_battery": 1, "qiaoyu_capsule": 1}
+
+
 def test_preprocess_context_rejects_dual_role_generic_input_overlay() -> None:
     root = _project_root()
     rules = json.loads((root / "rules" / "canonical_rules.json").read_text(encoding="utf-8"))
@@ -346,7 +349,7 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             self.grid_h = 5
             self.generic_io_requirements = {
                 "required_generic_outputs": {"source_ore": 1},
-                "required_generic_inputs": {},
+                "required_generic_inputs": CANONICAL_GENERIC_INPUTS,
             }
             self.build_stats = {}
             self._last_solution = None
@@ -368,6 +371,15 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
                         "pose_id": "block_first_output_front",
                         "anchor": {"x": 0, "y": 0},
                         "occupied_cells": [(0, 2)],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                    }
+                ],
+                "protocol_storage_box": [
+                    {
+                        "pose_id": "sink_capacity",
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [(4, 4)],
                         "input_port_cells": [],
                         "output_port_cells": [],
                     }
@@ -398,6 +410,11 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             "operation_type": "power_supply",
             "pose_idx": 0,
         },
+        "sink_001": {
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "pose_idx": 0,
+        },
     }
     instances = [
         {
@@ -412,6 +429,12 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
             "operation_type": "power_supply",
             "is_mandatory": True,
         },
+        {
+            "instance_id": "sink_001",
+            "facility_type": "protocol_storage_box",
+            "operation_type": "wireless_sink",
+            "is_mandatory": False,
+        },
     ]
     routing_context = build_routing_binding_context(
         placement_solution,
@@ -424,7 +447,7 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
         owner.facility_pools,
         instances,
         required_generic_outputs={"source_ore": 1},
-        required_generic_inputs={},
+        required_generic_inputs=CANONICAL_GENERIC_INPUTS,
         routing_context=routing_context,
     )
     binding_model.build()
@@ -565,12 +588,12 @@ def test_pose_bool_cell_pattern_cut_refuses_unknowable_generic_output_capacity()
 
 
 def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut() -> None:
-    """Saturation removes ``__unused__`` but does not make routing-free commodities routed."""
+    """Saturation removes ``__unused__`` without routing wireless final outputs."""
 
     from src.models.binding_subproblem import PortBindingModel
 
-    required_outputs = {"wireless_ore": 2}
-    required_inputs = {"wireless_ore": 1}
+    required_outputs = {"source_ore": 2}
+    required_inputs = CANONICAL_GENERIC_INPUTS
     facility_pools = {
         "boundary_storage_port": [
             {
@@ -578,15 +601,24 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
                 "anchor": {"x": 0, "y": 0},
                 "occupied_cells": [(0, 0)],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 0, "y": 1, "dir": "N"}],
+                "output_port_cells": [{"x": 5, "y": 1, "dir": "N"}],
             },
             {
                 "pose_id": "bsp_b",
                 "anchor": {"x": 0, "y": 0},
                 "occupied_cells": [(2, 0)],
                 "input_port_cells": [],
-                "output_port_cells": [{"x": 2, "y": 1, "dir": "N"}],
+                "output_port_cells": [{"x": 6, "y": 1, "dir": "N"}],
             },
+        ],
+        "manufacturing_6x4": [
+            {
+                "pose_id": "capsule_maker",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [(0, 0)],
+                "input_port_cells": [],
+                "output_port_cells": [{"x": 0, "y": 1, "dir": "N"}],
+            }
         ],
         "protocol_storage_box": [
             {
@@ -662,7 +694,24 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
     binding_model.build()
 
     assert binding_model.solve(time_limit_seconds=5.0) == "FEASIBLE"
-    assert binding_model.extract_port_specs() == []
+    assert binding_model.extract_port_specs() == [
+        {
+            "instance_id": "b1",
+            "x": 5,
+            "y": 1,
+            "dir": "N",
+            "type": "out",
+            "commodity": "source_ore",
+        },
+        {
+            "instance_id": "b2",
+            "x": 6,
+            "y": 1,
+            "dir": "N",
+            "type": "out",
+            "commodity": "source_ore",
+        },
+    ]
 
     class Owner:
         def __init__(self) -> None:
@@ -685,6 +734,13 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
                     "instance_ids": ["b1", "b2"],
                 },
                 {
+                    "group_id": "g_maker",
+                    "facility_type": "manufacturing_6x4",
+                    "operation_type": "filling_capsule",
+                    "count": 1,
+                    "instance_ids": ["maker1"],
+                },
+                {
                     "group_id": "g_blocker",
                     "facility_type": "blocker",
                     "operation_type": "power_supply",
@@ -697,22 +753,29 @@ def test_pose_bool_saturated_generic_output_refuses_routing_free_overlap_overcut
     delegate = PoseBoolExactMasterDelegate(owner)
     b1_var = owner.model.NewBoolVar("b1_pose")
     b2_var = owner.model.NewBoolVar("b2_pose")
+    maker_var = owner.model.NewBoolVar("maker_pose")
     blocker_var = owner.model.NewBoolVar("blocker_pose")
     delegate.x_vars[("g_boundary", 0)] = b1_var
     delegate.x_vars[("g_boundary", 1)] = b2_var
+    delegate.x_vars[("g_maker", 0)] = maker_var
     delegate.x_vars[("g_blocker", 0)] = blocker_var
     delegate._mandatory_template_by_group["g_boundary"] = "boundary_storage_port"
     delegate._mandatory_operation_by_group["g_boundary"] = "boundary_io"
     delegate._instance_ids_by_group["g_boundary"] = ["b1", "b2"]
+    delegate._mandatory_template_by_group["g_maker"] = "manufacturing_6x4"
+    delegate._mandatory_operation_by_group["g_maker"] = "filling_capsule"
+    delegate._instance_ids_by_group["g_maker"] = ["maker1"]
     delegate._mandatory_template_by_group["g_blocker"] = "blocker"
     delegate._mandatory_operation_by_group["g_blocker"] = "power_supply"
     delegate._instance_ids_by_group["g_blocker"] = ["blk"]
     owner.model.Add(b1_var == 1)
     owner.model.Add(b2_var == 1)
+    owner.model.Add(maker_var == 1)
     owner.model.Add(blocker_var == 1)
 
     assert delegate._generic_output_slots_are_globally_saturated() is True
-    assert delegate._routing_visible_profile_demands("boundary_io") == (0, 0)
+    assert delegate._routing_visible_profile_demands("boundary_io") == (0, 1)
+    assert delegate._routing_visible_profile_demands("filling_capsule") == (4, 0)
     assert delegate.add_routing_port_blocking_cell_cut(
         port_cell=(0, 1),
         direction="N",

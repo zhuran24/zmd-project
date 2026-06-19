@@ -25,7 +25,7 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "P1.2 proof obligation check passed: 9 obligations anchored" in result.stdout
+    assert "P1.2 proof obligation check passed: 10 obligations anchored" in result.stdout
     assert "proof-bearing sink files sealed" in result.stdout
 
 
@@ -35,6 +35,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
 
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
+    assert "PO-CANDIDATE-SINK-REPLAY-AUTHORITY" in obligation_ids
     assert manifest["phase_gate_required_anchor"] == "v99_p1_2_close_kernel_sealing"
     assert "close_kernel_contract" in manifest
 
@@ -55,6 +56,16 @@ def test_p1_2_proof_obligation_manifest_is_strict_json(tmp_path: Path) -> None:
 def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartment() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     obligations = {item["id"]: set(item["required_tests"]) for item in manifest["obligations"]}
+
+    sink_replay_tests = obligations["PO-CANDIDATE-SINK-REPLAY-AUTHORITY"]
+    assert "test_p1_2_mutating_verified_writer_closure_cell_cannot_publish_false_certified" in sink_replay_tests
+    assert "test_p1_2_forged_proof_bearing_infeasible_cannot_prune_better_feasible_candidate" in sink_replay_tests
+    assert "test_p1_2_forged_certified_cannot_enter_terminal_manifest_or_public_surface" in sink_replay_tests
+    assert "test_p1_2_module_rebinding_monkeypatch_and_test_helper_do_not_grant_authority" in sink_replay_tests
+    assert "test_p1_2_strong_status_without_sink_replayable_proof_fails_closed" in sink_replay_tests
+    assert "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays" in sink_replay_tests
+    assert "test_p1_2_checker_rejects_candidate_replay_isolation_removal" in sink_replay_tests
+    assert "test_p1_2_checker_rejects_frontier_sink_replay_bypass" in sink_replay_tests
 
     replay_tests = obligations["PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS"]
     assert "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member" in replay_tests
@@ -351,3 +362,123 @@ def test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call(tmp_pa
     )
 
     assert "proof-obligation checker main must call _check_close_kernel_contract" in errors
+
+
+def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path) -> None:
+    replay_path = tmp_path / "candidate_proof_replay.py"
+    source = check_p1_2_proof_obligations.CANDIDATE_PROOF_REPLAY_PATH.read_text(
+        encoding="utf-8"
+    )
+    replay_path.write_text(
+        source.replace('            "-I",', '            "-s",', 1),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+        candidate_replay_path=replay_path
+    )
+
+    assert 'candidate replay subprocess boundary missing: "-I"' in errors
+
+    snapshot_path = tmp_path / "candidate_proof_replay_snapshot_bypass.py"
+    snapshot_path.write_text(
+        source.replace(
+            "normalized_replay_hashes != normalized_current_hashes",
+            "False",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    snapshot_errors = (
+        check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+            candidate_replay_path=snapshot_path
+        )
+    )
+    assert (
+        "isolated replay snapshot binding is missing: "
+        "normalized_replay_hashes != normalized_current_hashes"
+    ) in snapshot_errors
+
+
+def test_p1_2_checker_rejects_frontier_sink_replay_bypass(tmp_path: Path) -> None:
+    source = check_p1_2_proof_obligations.CERTIFIED_FRONTIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    frontier_path = tmp_path / "certified_frontier_bypass.py"
+    frontier_path.write_text(
+        source.replace(
+            "project_candidate_records_for_sink(",
+            "unchecked_candidate_records(",
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+        certified_frontier_path=frontier_path
+    )
+
+    assert (
+        "compute_sink_verified_terminal_frontier_projection must execute "
+        "project_candidate_records_for_sink"
+    ) in errors
+    assert (
+        "build_sink_verified_terminal_frontier_evidence must execute "
+        "project_candidate_records_for_sink"
+    ) in errors
+
+    weakened_path = tmp_path / "certified_frontier_weakened.py"
+    weakened_path.write_text(
+        source.replace(
+            "require_record_solution_match=False,",
+            "require_record_solution_match=True,",
+        ),
+        encoding="utf-8",
+    )
+
+    weakened_errors = check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+        certified_frontier_path=weakened_path
+    )
+
+    assert (
+        "compute_sink_verified_terminal_frontier_projection has the wrong replay "
+        "witness policy: require_record_solution_match=False"
+    ) in weakened_errors
+
+    weakened_terminal_path = tmp_path / "certified_frontier_terminal_weakened.py"
+    weakened_terminal_path.write_text(
+        source.replace(
+            "require_record_solution_match=True,",
+            "require_record_solution_match=False,",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    weakened_terminal_errors = (
+        check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+            certified_frontier_path=weakened_terminal_path
+        )
+    )
+    assert (
+        "build_sink_verified_terminal_frontier_evidence has the wrong replay "
+        "witness policy: require_record_solution_match=True"
+    ) in weakened_terminal_errors
+
+    outer_source = check_p1_2_proof_obligations.OUTER_SEARCH_PATH.read_text(
+        encoding="utf-8"
+    )
+    outer_path = tmp_path / "outer_search_projection_not_adopted.py"
+    outer_path.write_text(
+        outer_source.replace(
+            '        campaign.state["candidates"] = candidate_records\n',
+            "",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    outer_errors = check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+        outer_search_path=outer_path
+    )
+    assert (
+        "frontier must adopt replay demotions/rebindings before candidate lifecycle "
+        "decisions"
+    ) in outer_errors

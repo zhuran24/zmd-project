@@ -15,13 +15,11 @@ import hashlib
 import json
 import math
 import os
-import sys
 import tempfile
 import time
-import weakref
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
 from src.models.master_model import (
@@ -33,10 +31,15 @@ from src.models.master_model import (
 from src.search.certified_artifact_contract import (
     LOCKED_EXACT_ARTIFACT_PATHS,
     validate_locked_exact_artifact_contract,
+    validate_locked_p1_2_close_kernel,
 )
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
     terminal_frontier_evidence_violation,
+)
+from src.search.candidate_proof_replay import (
+    CANDIDATE_PROOF_FIELD,
+    project_candidate_records_for_sink,
 )
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
@@ -57,303 +60,10 @@ VALID_CANDIDATE_STATUSES = {
 }
 STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
 PROOF_BEARING_TERMINAL_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
-FreshCandidateRecord = tuple[Mapping[str, Any], str, str]
-
-
-@dataclass
-class _FreshProofBearingCandidateBucket:
-    """Process-local ownership for proof-bearing candidate records.
-
-    The state and candidates mappings are held strongly while their owning
-    ``ExactCampaign`` is alive.  The owner itself is weakly referenced so a
-    completed campaign does not leak its checkpoint graph.  Keeping the exact
-    mapping objects here is essential: CPython may reuse ``id(dict)`` values
-    after deallocation, so integer identities alone are not proof provenance.
-    """
-
-    owner_ref: weakref.ReferenceType[Any]
-    state: Mapping[str, Any]
-    candidates: Mapping[str, Any]
-    proof_context_digest: str
-    records: dict[str, FreshCandidateRecord]
-
-
-_FRESH_PROOF_CONTEXT_STATE_FIELDS = (
-    "schema_version",
-    "solve_mode",
-    "artifact_hashes",
-    "master_domain_contract",
-    "proof_summary_schema_version",
-    "declare_mode",
-)
-
-
-def _campaign_proof_context_digest(campaign: "ExactCampaign") -> str:
-    """Bind process-local strong statuses to the project proof universe.
-
-    Candidate status records are not portable merely because their JSON shape is
-    unchanged.  Their meaning depends on the exact artifacts, certified mode,
-    master-domain contract, and campaign authority under which the solver
-    produced them.  Snapshot that context when the freshness bucket is first
-    created and reject later retargeting of the same live state.
-    """
-
-    project_root = Path(campaign.project_root).resolve()
-    raw_campaign_path = Path(campaign.path)
-    if not raw_campaign_path.is_absolute():
-        raw_campaign_path = project_root / raw_campaign_path
-    campaign_path = raw_campaign_path.resolve()
-    state_context = {
-        field: campaign.state.get(field) for field in _FRESH_PROOF_CONTEXT_STATE_FIELDS
-    }
-    return _canonical_digest(
-        {
-            "project_root": str(project_root),
-            "campaign_path": str(campaign_path),
-            "state_context": state_context,
-        }
-    )
-
-
-def _verified_producer_writer_caller_violation(caller: Any) -> Optional[str]:
-    """Require the real outer-search controller as the immediate strong writer."""
-
-    outer_module = sys.modules.get("src.search.outer_search")
-    outer_entry = (
-        None if outer_module is None else getattr(outer_module, "run_outer_search", None)
-    )
-    if (
-        caller is None
-        or outer_entry is None
-        or caller.f_code is not getattr(outer_entry, "__code__", None)
-        or caller.f_globals is not getattr(outer_entry, "__globals__", None)
-    ):
-        return "verified_candidate_producer_caller_not_run_outer_search"
-    return None
-
-
-def _verified_producer_grant_caller_violation(caller: Any) -> Optional[str]:
-    """Require the exact campaign writer as the immediate freshness grantor."""
-
-    campaign_type = globals().get("ExactCampaign")
-    writer = (
-        None
-        if campaign_type is None
-        else getattr(campaign_type, "_mark_candidate_result_from_verified_producer", None)
-    )
-    if (
-        caller is None
-        or writer is None
-        or caller.f_code is not getattr(writer, "__code__", None)
-        or caller.f_globals is not getattr(writer, "__globals__", None)
-    ):
-        return "verified_candidate_freshness_grant_caller_not_verified_writer"
-    return None
-
-
-def _build_candidate_freshness_runtime() -> tuple[
-    Callable[["ExactCampaign", str, str], None],
-    Callable[["ExactCampaign", str, str], None],
-    Callable[["ExactCampaign", str], None],
-    Callable[[Mapping[str, Any]], None],
-    Callable[[Mapping[str, Any]], Optional[str]],
-]:
-    """Keep proof freshness authority behind a non-importable closure boundary."""
-
-    records_by_state_id: dict[int, _FreshProofBearingCandidateBucket] = {}
-
-    def release_bucket(
-        state_id: int,
-        owner_ref: weakref.ReferenceType[Any],
-    ) -> None:
-        bucket = records_by_state_id.get(int(state_id))
-        if bucket is not None and bucket.owner_ref is owner_ref:
-            records_by_state_id.pop(int(state_id), None)
-
-    def bucket_for(campaign: "ExactCampaign") -> dict[str, FreshCandidateRecord]:
-        state = campaign.state
-        candidates = state.get("candidates")
-        if not isinstance(candidates, Mapping):
-            candidates = {}
-        state_id = id(state)
-        bucket = records_by_state_id.get(state_id)
-        if bucket is not None:
-            owner = bucket.owner_ref()
-            if (
-                owner is campaign
-                and owner.state is state
-                and bucket.state is state
-                and bucket.candidates is candidates
-            ):
-                # Keep the first proof-context snapshot even if the mutable campaign
-                # object is later retargeted.  Re-registering under the new context
-                # would turn an invalidation into a proof transfer.
-                return bucket.records
-
-        def release_owner(ref: weakref.ReferenceType[Any]) -> None:
-            release_bucket(state_id, ref)
-
-        owner_ref = weakref.ref(campaign, release_owner)
-        fresh_records: dict[str, FreshCandidateRecord] = {}
-        records_by_state_id[state_id] = _FreshProofBearingCandidateBucket(
-            owner_ref=owner_ref,
-            state=state,
-            candidates=candidates,
-            proof_context_digest=_campaign_proof_context_digest(campaign),
-            records=fresh_records,
-        )
-        return fresh_records
-
-    def record_token(
-        state: Mapping[str, Any],
-        key: str,
-        status: str,
-    ) -> Optional[FreshCandidateRecord]:
-        candidates = state.get("candidates")
-        if not isinstance(candidates, Mapping):
-            return None
-        record = candidates.get(key)
-        if not isinstance(record, Mapping):
-            return None
-        return record, str(status), _canonical_digest(record)
-
-    def grant_from_verified_producer(
-        campaign: "ExactCampaign",
-        key: str,
-        status: str,
-    ) -> None:
-        try:
-            caller = sys._getframe(1)
-        except (AttributeError, ValueError):
-            caller = None
-        violation = _verified_producer_grant_caller_violation(caller)
-        if violation is not None:
-            raise PermissionError(violation)
-
-        normalized_status = str(status)
-        if normalized_status not in STRONG_CANDIDATE_STATUSES:
-            raise ValueError("only proof-bearing statuses may receive producer freshness")
-        state = campaign.state
-        fresh_records = bucket_for(campaign)
-        normalized_key = str(key)
-        fresh_token = record_token(
-            state,
-            normalized_key,
-            normalized_status,
-        )
-        if fresh_token is None:
-            fresh_records.pop(normalized_key, None)
-        else:
-            fresh_records[normalized_key] = fresh_token
-
-    def raw_current_process_sealer(
-        campaign: "ExactCampaign",
-        key: str,
-        status: str,
-    ) -> None:
-        """Removed raw sealer retained only as a fail-closed compatibility trap."""
-
-        del campaign, key, status
-        raise PermissionError(
-            "direct candidate freshness sealing is forbidden; use the verified producer path"
-        )
-
-    def invalidate(campaign: "ExactCampaign", key: str) -> None:
-        """Remove proof authority without creating a new freshness bucket."""
-
-        state = campaign.state
-        candidates = state.get("candidates")
-        bucket = records_by_state_id.get(id(state))
-        if bucket is None:
-            return
-        owner = bucket.owner_ref()
-        if (
-            owner is campaign
-            and owner.state is state
-            and bucket.state is state
-            and bucket.candidates is candidates
-        ):
-            bucket.records.pop(str(key), None)
-
-    def clear(state: Mapping[str, Any]) -> None:
-        records_by_state_id.pop(id(state), None)
-
-    def terminal_violation(state: Mapping[str, Any]) -> Optional[str]:
-        """Return why terminal proof-bearing candidate statuses are not fresh.
-
-        Candidate-wide CERTIFIED / INFEASIBLE conclusions become proof-bearing
-        only when they are produced through the current campaign process.  A JSON
-        mapping loaded or fabricated outside that process may still be
-        structurally valid, but it is not allowed to mint a public terminal
-        certificate.
-        """
-
-        if not has_terminal_full_frontier_certified_evidence(state):
-            return None
-        candidates = state.get("candidates")
-        if not isinstance(candidates, Mapping):
-            return "terminal_candidate_records_missing"
-        bucket = records_by_state_id.get(id(state))
-        fresh_records: Mapping[str, FreshCandidateRecord]
-        owner = None if bucket is None else bucket.owner_ref()
-        context_matches = False
-        if bucket is not None and owner is not None:
-            try:
-                context_matches = (
-                    bucket.proof_context_digest == _campaign_proof_context_digest(owner)
-                )
-            except Exception:
-                context_matches = False
-        if (
-            bucket is not None
-            and owner is not None
-            and owner.state is state
-            and bucket.state is state
-            and bucket.candidates is candidates
-            and context_matches
-        ):
-            fresh_records = bucket.records
-        else:
-            fresh_records = {}
-        for raw_key, raw_record in sorted(
-            candidates.items(), key=lambda item: str(item[0])
-        ):
-            if not isinstance(raw_record, Mapping):
-                continue
-            status = str(raw_record.get("status", ""))
-            if status not in STRONG_CANDIDATE_STATUSES:
-                continue
-            key = str(raw_key)
-            expected = fresh_records.get(key)
-            if expected is None:
-                return f"terminal_candidate_status_not_current_process_fresh:{key}"
-            expected_record, expected_status, expected_digest = expected
-            if (
-                expected_record is not raw_record
-                or expected_status != status
-                or expected_digest != _canonical_digest(raw_record)
-            ):
-                return f"terminal_candidate_status_not_current_process_fresh:{key}"
-        return None
-
-    return (
-        grant_from_verified_producer,
-        raw_current_process_sealer,
-        invalidate,
-        clear,
-        terminal_violation,
-    )
-
-
-(
-    _grant_candidate_status_freshness_from_verified_producer,
-    _mark_candidate_status_fresh_for_current_process,
-    _invalidate_candidate_status_freshness_for_current_process,
-    _clear_candidate_status_freshness_for_state,
-    terminal_proof_bearing_candidate_freshness_violation,
-) = _build_candidate_freshness_runtime()
-del _build_candidate_freshness_runtime
-
+# Strong candidate strings are untrusted claims until a certified sink replays
+# their data-only candidate_proof in an isolated interpreter.  No Python object,
+# function identity, closure cell, globals mapping, or process-local freshness
+# marker grants proof authority.
 
 # A terminal public final_result is a projection of the certified candidate
 # placement witness, not an extensible proof envelope.  Extra top-level fields can
@@ -510,6 +220,9 @@ OPTIONAL_EXACT_HASH_FILES = {
     # from preprocess_plan.json.  Bind it to checkpoints when present so a plan
     # edit cannot ride on stale exact artifacts.
     "preprocess_plan": LOCKED_EXACT_ARTIFACT_PATHS["preprocess_plan"],
+    # The exact flow verifier reads this file directly when present.  Treat its
+    # absence as an explicit artifact state and bind its bytes whenever present.
+    "commodity_demands": "data/preprocessed/commodity_demands.json",
 }
 MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"
 CERTIFIED_EXACT_SOURCE_DIGEST_KEY = "certified_exact_source_tree"
@@ -640,6 +353,7 @@ def compute_certified_exact_source_digest() -> str:
 
 def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
     project_root = Path(project_root)
+    validate_locked_p1_2_close_kernel(project_root)
     hashes: Dict[str, str] = {}
     artifact_sizes: Dict[str, int] = {}
     for key, relative_path in EXACT_HASH_FILES.items():
@@ -1891,16 +1605,17 @@ def _sanitize_resume_state_for_untrusted_candidate_evidence(
     """Drop proof-bearing candidate conclusions loaded from a checkpoint.
 
     Candidate-wide INFEASIBLE and CERTIFIED conclusions are solver proof
-    obligations.  Once they cross the mutable JSON checkpoint boundary they must
-    be treated as performance cache entries, not as terminal proof evidence.
+    obligations.  Once they cross the mutable JSON checkpoint boundary this
+    lifecycle loader treats them as performance cache entries, not as terminal
+    proof evidence.  Certified sinks establish authority separately by isolated
+    replay; the loader itself never promotes a persisted status string.
 
     INFEASIBLE evidence can prune an unresolved/better candidate.  CERTIFIED
     evidence can become the positive witness selected by terminal full-frontier
     export.  The public terminal validator can replay geometry / mandatory
-    placement / power / empty-rectangle facts from the stored placement payload,
-    but it does not replay the binding-routing solver proof that originally made
-    the candidate CERTIFIED.  A resumed campaign therefore has to re-establish
-    every proof-bearing candidate status in the current process before any
+    placement / power / empty-rectangle facts from the stored placement payload.
+    This conservative resume path discards prior strong claims and their replay
+    requests, so the outer search must re-establish every candidate before a
     terminal certified surface may rely on it.
     """
 
@@ -1936,6 +1651,7 @@ def _sanitize_resume_state_for_untrusted_candidate_evidence(
         record["loaded_exact_safe_cut_count"] = 0
         record["generated_exact_safe_cut_count"] = 0
         record.pop("solution", None)
+        record.pop(CANDIDATE_PROOF_FIELD, None)
         candidates[key] = record
         sanitized_keys.append(key)
         sanitized_by_status.setdefault(prior_status, []).append(key)
@@ -1943,13 +1659,11 @@ def _sanitize_resume_state_for_untrusted_candidate_evidence(
     if not sanitized_keys:
         return False
 
-    _clear_candidate_status_freshness_for_state(state)
-
     # Any terminal full-frontier evidence that relied on checkpoint-loaded
-    # proof-bearing candidate statuses is no longer authoritative.  The outer
-    # search must re-establish every frontier exclusion and positive witness in
-    # the current process before publishing CERTIFIED.  A non-terminal UNKNOWN
-    # stop is not proof-bearing, so keep it visible for diagnostics.
+    # candidate claims is no longer authoritative.  The outer search must
+    # re-establish every frontier exclusion and positive witness before
+    # publishing CERTIFIED.  A non-terminal UNKNOWN stop is not proof-bearing,
+    # so keep it visible for diagnostics.
     certified_surface_present = has_certified_export_surface(state)
     if certified_surface_present:
         state["final_result"] = None
@@ -2259,6 +1973,7 @@ def terminal_certified_final_result_violation(
     grid_dimensions: Optional[Tuple[int, int]] = None,
     safe_area_upper_bound: Optional[int] = None,
     min_side_admissibility: Optional[int] = None,
+    candidate_records_override: Optional[Mapping[str, Any]] = None,
 ) -> Optional[str]:
     """Return a fail-closed reason for malformed terminal CERTIFIED result evidence."""
 
@@ -2306,7 +2021,11 @@ def terminal_certified_final_result_violation(
     if not isinstance(placement_solution, Mapping):
         return "terminal_certified_final_result_solution_missing"
 
-    candidates = state.get("candidates")
+    candidates = (
+        candidate_records_override
+        if candidate_records_override is not None
+        else state.get("candidates")
+    )
     if not isinstance(candidates, Mapping):
         return "terminal_certified_candidate_record_missing"
     key = candidate_key(ghost_w, ghost_h)
@@ -2362,15 +2081,21 @@ def has_valid_terminal_full_frontier_certified_evidence(state: Mapping[str, Any]
     )
 
 
-def terminal_certified_final_result_violation_for_project(
+def terminal_certified_final_result_project_precheck_violation(
     state: Mapping[str, Any],
     *,
     project_root: Path,
 ) -> Optional[str]:
-    """Return a fail-closed terminal-evidence reason bound to the project domain."""
+    """Return local project/witness errors without granting proof authority.
+
+    This precheck exists only to preserve precise fail-closed diagnostics before
+    disk-currentness and isolated replay.  A ``None`` result is never sufficient
+    for certification; every accepting caller must still execute the sink replay
+    validator below.
+    """
 
     try:
-        resolved_project_root = Path(project_root)
+        resolved_project_root = Path(project_root).resolve()
         grid_dimensions = _load_exact_grid_dimensions(resolved_project_root)
         safe_area_upper_bound = _load_exact_safe_area_upper_bound(resolved_project_root)
     except Exception:
@@ -2379,6 +2104,7 @@ def terminal_certified_final_result_violation_for_project(
         min_side_admissibility = _load_exact_min_side_admissibility(resolved_project_root)
     except Exception:
         return "canonical_min_side_admissibility_invalid"
+
     reason = terminal_certified_final_result_violation(
         state,
         grid_dimensions=grid_dimensions,
@@ -2405,24 +2131,74 @@ def terminal_certified_final_result_violation_for_project(
     return None
 
 
+def terminal_certified_final_result_violation_for_project(
+    state: Mapping[str, Any],
+    *,
+    project_root: Path,
+    campaign_path: Optional[Path] = None,
+) -> Optional[str]:
+    """Validate terminal evidence only after independent sink-side replay."""
+
+    precheck_reason = terminal_certified_final_result_project_precheck_violation(
+        state,
+        project_root=project_root,
+    )
+    if precheck_reason is not None:
+        return precheck_reason
+
+    try:
+        resolved_project_root = Path(project_root).resolve()
+        grid_dimensions = _load_exact_grid_dimensions(resolved_project_root)
+        safe_area_upper_bound = _load_exact_safe_area_upper_bound(resolved_project_root)
+    except Exception:
+        return "canonical_grid_invalid"
+    try:
+        min_side_admissibility = _load_exact_min_side_admissibility(resolved_project_root)
+    except Exception:
+        return "canonical_min_side_admissibility_invalid"
+
+    replayed_records, replay_violations = project_candidate_records_for_sink(
+        state=state,
+        project_root=resolved_project_root,
+        campaign_path=campaign_path,
+        require_record_solution_match=True,
+    )
+    if replay_violations:
+        first_key = sorted(replay_violations)[0]
+        return (
+            "terminal_candidate_sink_replay_failed:"
+            f"{replay_violations[first_key]}"
+        )
+
+    replayed_state = dict(state)
+    replayed_state["candidates"] = replayed_records
+    return terminal_certified_final_result_violation(
+        replayed_state,
+        grid_dimensions=grid_dimensions,
+        safe_area_upper_bound=safe_area_upper_bound,
+        min_side_admissibility=min_side_admissibility,
+        candidate_records_override=replayed_records,
+    )
+
+
 def has_valid_terminal_full_frontier_certified_evidence_for_project(
     state: Mapping[str, Any],
     *,
     project_root: Path,
+    campaign_path: Optional[Path] = None,
 ) -> bool:
-    """Return True only when terminal evidence is replayable on the current project domain."""
+    """Return True only when the project-bound isolated replay accepts the proof."""
 
     if not has_terminal_full_frontier_certified_evidence(state):
         return False
-    if (
+    return (
         terminal_certified_final_result_violation_for_project(
             state,
             project_root=project_root,
+            campaign_path=campaign_path,
         )
-        is not None
-    ):
-        return False
-    return terminal_proof_bearing_candidate_freshness_violation(state) is None
+        is None
+    )
 
 
 def certified_terminal_evidence_violation(
@@ -2663,10 +2439,9 @@ class ExactCampaign:
             isinstance(existing, Mapping)
             and str(existing.get("status", "")) in STRONG_CANDIDATE_STATUSES
         ):
-            # A same-artifact CERTIFIED / INFEASIBLE conclusion is monotone
-            # evidence.  A later rerun attempt must not erase it by first
-            # downgrading the record to RUNNING; mark_candidate_result will either
-            # refresh the same terminal status or reject a contradiction.
+            # The frontier sink writes its verified projection back before a
+            # candidate can be selected.  Therefore a strong record still here
+            # has already survived isolated replay and remains monotone.
             return
         record = _candidate_defaults(ghost_w, ghost_h)
         if isinstance(existing, Mapping):
@@ -2679,9 +2454,9 @@ class ExactCampaign:
         record["updated_at"] = timestamp
         record["finished_at"] = None
         record.pop("solution", None)
+        record.pop(CANDIDATE_PROOF_FIELD, None)
 
         candidates[key] = record
-        _invalidate_candidate_status_freshness_for_current_process(self, key)
         self.state["last_stop_reason"] = None
         if self.state.get("final_result") is None:
             self.state["final_status"] = None
@@ -2698,6 +2473,7 @@ class ExactCampaign:
         proof_summary: Optional[Mapping[str, Any]] = None,
         loaded_exact_safe_cut_count: Optional[int] = None,
         generated_exact_safe_cut_count: Optional[int] = None,
+        candidate_proof: Optional[Mapping[str, Any]] = None,
     ) -> None:
         normalized_status = str(status)
         if normalized_status not in VALID_CANDIDATE_STATUSES:
@@ -2706,6 +2482,8 @@ class ExactCampaign:
             raise ValueError("CERTIFIED candidate result requires a fresh solution mapping")
         if normalized_status != "CERTIFIED" and solution is not None:
             raise ValueError("non-CERTIFIED candidate result must not carry a solution")
+        if candidate_proof is not None and not isinstance(candidate_proof, Mapping):
+            raise ValueError("candidate_proof must be a mapping")
 
         key = candidate_key(ghost_w, ghost_h)
         candidates = self.state.setdefault("candidates", {})
@@ -2779,11 +2557,6 @@ class ExactCampaign:
             )
 
         if normalized_status == "CERTIFIED":
-            # Candidate-level CERTIFIED evidence is only an incumbent until the
-            # outer frontier has been exhausted.  Do not promote it to
-            # state["final_result"] here: UNKNOWN/time-budget/worker-failure stops
-            # must remain non-terminal and must not export best-effort evidence as
-            # a full-frontier certificate.
             record["solution"] = dict(solution)
             if str(self.state.get("declare_mode")) != "strict":
                 record["proof_summary"] = dict(record.get("proof_summary", {}))
@@ -2793,11 +2566,23 @@ class ExactCampaign:
         else:
             record.pop("solution", None)
 
+        # candidate_proof is a replay request, never a writer-issued grant.  A
+        # strong status without it remains a diagnostic claim and every sink will
+        # demote or reject it.
+        if normalized_status in STRONG_CANDIDATE_STATUSES and candidate_proof is not None:
+            record[CANDIDATE_PROOF_FIELD] = json.loads(
+                json.dumps(
+                    candidate_proof,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    ensure_ascii=False,
+                    allow_nan=False,
+                )
+            )
+        else:
+            record.pop(CANDIDATE_PROOF_FIELD, None)
+
         candidates[key] = record
-        # General callers may persist a status for diagnostics or migration, but
-        # only the controller-authorized producer path below may make a strong
-        # status proof-bearing.  Every public rewrite invalidates prior authority.
-        _invalidate_candidate_status_freshness_for_current_process(self, key)
         self.state["updated_at"] = timestamp
 
     def _mark_candidate_result_from_verified_producer(
@@ -2805,50 +2590,11 @@ class ExactCampaign:
         ghost_w: int,
         ghost_h: int,
         status: str,
-        *,
-        exact_safe_cuts: Optional[list[Mapping[str, Any]]] = None,
-        solution: Optional[Mapping[str, Any]] = None,
-        proof_summary: Optional[Mapping[str, Any]] = None,
-        loaded_exact_safe_cut_count: Optional[int] = None,
-        generated_exact_safe_cut_count: Optional[int] = None,
+        **kwargs: Any,
     ) -> None:
-        """Persist a solver/precheck strong result and grant proof freshness.
+        """Compatibility writer that carries no proof authority of its own."""
 
-        This is an internal TCB entry point.  The certified outer controller may
-        call it only after validating the producer result (including completed
-        worker-wave identity for parallel results).  Keeping it separate from
-        ``mark_candidate_result`` prevents arbitrary state-writing callers from
-        self-authorizing ``CERTIFIED`` or ``INFEASIBLE`` evidence.
-        """
-
-        try:
-            caller = sys._getframe(1)
-        except (AttributeError, ValueError):
-            caller = None
-        caller_violation = _verified_producer_writer_caller_violation(caller)
-        if caller_violation is not None:
-            raise PermissionError(caller_violation)
-
-        normalized_status = str(status)
-        if normalized_status not in STRONG_CANDIDATE_STATUSES:
-            raise ValueError(
-                "verified candidate producer path only accepts proof-bearing statuses"
-            )
-        self.mark_candidate_result(
-            ghost_w,
-            ghost_h,
-            normalized_status,
-            exact_safe_cuts=exact_safe_cuts,
-            solution=solution,
-            proof_summary=proof_summary,
-            loaded_exact_safe_cut_count=loaded_exact_safe_cut_count,
-            generated_exact_safe_cut_count=generated_exact_safe_cut_count,
-        )
-        _grant_candidate_status_freshness_from_verified_producer(
-            self,
-            candidate_key(ghost_w, ghost_h),
-            normalized_status,
-        )
+        self.mark_candidate_result(ghost_w, ghost_h, status, **kwargs)
 
     def update_candidate_running_proof_summary(
         self,
@@ -2896,9 +2642,8 @@ class ExactCampaign:
         if not has_valid_terminal_full_frontier_certified_evidence_for_project(
             self.state,
             project_root=self.project_root,
+            campaign_path=self.path,
         ):
-            return None
-        if terminal_proof_bearing_candidate_freshness_violation(self.state) is not None:
             return None
         result = self.state.get("final_result")
         if not isinstance(result, dict):

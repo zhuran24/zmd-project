@@ -247,7 +247,7 @@ def get_staged_files() -> list[str]:
 
 
 def check_frozen_artifacts(gate: GateResult) -> None:
-    print("\n[1/17] 冻结/外部制品 hash 校验")
+    print("\n[1/18] 冻结/外部制品 hash 校验")
     for rel_path, expected_hash in FROZEN_ARTIFACTS.items():
         full_path = PROJECT_ROOT / rel_path
         if not full_path.exists():
@@ -288,7 +288,7 @@ def check_frozen_artifacts(gate: GateResult) -> None:
 
 
 def check_forbidden_paths(gate: GateResult) -> None:
-    print("\n[3/17] 禁止路径写入检查")
+    print("\n[3/18] 禁止路径写入检查")
     staged = get_staged_files()
     if not staged:
         gate.ok(f"无 {CHANGE_SCOPE_LABEL} 文件（或不在 git 仓库中）")
@@ -309,7 +309,7 @@ def check_forbidden_paths(gate: GateResult) -> None:
 
 
 def check_ai_safety_contract(gate: GateResult) -> None:
-    print("\n[4/17] AI 安全合同检查")
+    print("\n[4/18] AI 安全合同检查")
     ai_dir = PROJECT_ROOT / AI_MODULE_ROOT
     if not ai_dir.exists():
         gate.ok("ai_accel 目录不存在，跳过")
@@ -339,7 +339,7 @@ def check_ai_safety_contract(gate: GateResult) -> None:
 
 
 def check_exact_exploratory_isolation(gate: GateResult) -> None:
-    print("\n[5/17] 精确/探索边界隔离检查")
+    print("\n[5/18] 精确/探索边界隔离检查")
     staged = get_staged_files()
     if not staged:
         gate.ok(f"无 {CHANGE_SCOPE_LABEL} 文件")
@@ -417,13 +417,13 @@ _AUDIT_REF_PATTERN = re.compile(r"\baudit\b[^`\n]{0,15}`([0-9a-f]{16,})`", re.IG
 
 
 def check_research_audit_coverage(gate: GateResult) -> None:
-    """[6/17] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
+    """[6/18] 调研产物 audit 覆盖检查 (memory feedback_research_roi_metric v2)。
 
     R13 教训: 调研 agent 报告即使引用 URL 也常出错 (5/5 历史 audit 翻盘)。
     路线图 / INDEX 改动如新增 R-N 调研引用，必须配套有 audit (agent ID) 引用。
     [W] warning 不阻塞 — audit 可能在另一 commit, 但提醒一下避免漏审。
     """
-    print("\n[6/17] 调研产物 audit 覆盖检查")
+    print("\n[6/18] 调研产物 audit 覆盖检查")
     staged = get_staged_files()
     touched = [f for f in staged if f.replace("\\", "/") in RESEARCH_TRACKED_FILES]
     if not touched:
@@ -499,27 +499,27 @@ def _run_script_check(gate: GateResult, *, title: str, script_name: str, ok_pref
 
 
 def check_external_artifact_manifest(gate: GateResult) -> None:
-    print("\n[2/17] 外部大制品 contract 检查")
+    print("\n[2/18] 外部大制品 contract 检查")
     _run_script_check(gate, title="external artifacts", script_name="check_external_artifacts.py", ok_prefix="external artifact check")
 
 
 def check_line_ending_policy(gate: GateResult) -> None:
-    print("\n[9/17] 行尾策略检查")
+    print("\n[9/18] 行尾策略检查")
     _run_script_check(gate, title="line endings", script_name="check_line_endings.py", ok_prefix="line-ending policy check")
 
 
 def check_artifact_boundaries(gate: GateResult) -> None:
-    print("\n[12/17] 历史证据/生成制品边界检查")
+    print("\n[12/18] 历史证据/生成制品边界检查")
     _run_script_check(gate, title="artifact boundaries", script_name="check_artifact_boundaries.py", ok_prefix="artifact boundary check")
 
 
 def check_phase_review_gate(gate: GateResult) -> None:
-    print("\n[13/17] Phase review close-gate 状态一致性检查")
+    print("\n[13/18] Phase review close-gate 状态一致性检查")
     _run_script_check(gate, title="phase review gate", script_name="check_phase_review_gate.py", ok_prefix="phase review gate check")
 
 
 def check_p1_2_proof_obligations(gate: GateResult) -> None:
-    print("\n[14/17] P1.2 proof obligation consolidation 检查")
+    print("\n[14/18] P1.2 proof obligation consolidation 检查")
     _run_script_check(
         gate,
         title="P1.2 proof obligations",
@@ -550,13 +550,23 @@ def check_cc_memory_consistency(gate: GateResult) -> None:
     )
 
 
+def check_strong_status_write_allowlist(gate: GateResult) -> None:
+    print("\n[15/18] P1.2 strong-status write allowlist 检查")
+    _run_script_check(
+        gate,
+        title="P1.2 strong-status write allowlist",
+        script_name="check_strong_status_write_allowlist.py",
+        ok_prefix="P1.2 strong-status write allowlist check",
+    )
+
+
 def check_publish_secret_scan(gate: GateResult) -> None:
-    """[10/17] 发布安全 secret scan.
+    """[10/18] 发布安全 secret scan.
 
     这层扫描当前 tracked/untracked 工作区文本, 防止 API key / token / private key
     重新进入当前树。它不宣称清理 Git 历史; 已暴露 credential 仍需 owner 侧轮换。
     """
-    print("\n[10/17] 发布安全 secret scan")
+    print("\n[10/18] 发布安全 secret scan")
     script = PROJECT_ROOT / "scripts" / "check_repo_secrets.py"
     if not script.exists():
         gate.block("secret scan 脚本不存在: scripts/check_repo_secrets.py")
@@ -601,7 +611,7 @@ def check_mypy(gate: GateResult) -> None:
     锁 BendersCut + CutManager + PowerPlacementSubproblem 不让类型生命周期破洞
     再次发生 (lifecycle bug 根因是 schema 字段落了但 runtime resolver 没跟上).
     """
-    print("\n[15/17] mypy 静态类型 (core lifecycle)")
+    print("\n[16/18] mypy 静态类型 (core lifecycle)")
     existing = [t for t in MYPY_STRICT_TARGETS if (PROJECT_ROOT / t).exists()]
     if not existing:
         gate.warn("mypy gate 目标文件不存在 — 跳过")
@@ -648,7 +658,7 @@ def check_ruff(gate: GateResult) -> None:
     跑全仓; 任何 warning 一律 BLOCK — 没有 "scripts 没事核心严格" 的二级容忍,
     因为 ruff.toml 已经把噪音吸收掉了.
     """
-    print("\n[16/17] ruff 静态检查")
+    print("\n[17/18] ruff 静态检查")
     try:
         result = subprocess.run(
             [sys.executable, "-m", "ruff", "check", "."],
@@ -683,7 +693,7 @@ def check_ruff(gate: GateResult) -> None:
 
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = "全量" if full else "核心门禁"
-    print(f"\n[17/17] 测试门禁（{label}）")
+    print(f"\n[18/18] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
     timeout = 600 if full else 120
@@ -756,6 +766,7 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_r
     check_phase_review_gate(gate)
     check_p1_2_proof_obligations(gate)
     check_cc_memory_consistency(gate)
+    check_strong_status_write_allowlist(gate)
     check_mypy(gate)
     check_ruff(gate)
 

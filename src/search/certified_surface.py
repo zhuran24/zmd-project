@@ -31,9 +31,7 @@ from src.search.exact_campaign import (
     compute_exact_artifact_hashes,
     has_certified_export_surface,
     has_terminal_full_frontier_certified_evidence,
-    has_valid_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
-    terminal_proof_bearing_candidate_freshness_violation,
     validate_exact_campaign_resume_state,
 )
 
@@ -176,26 +174,24 @@ def evaluate_certified_delivery_surface(
             if summary_state is not None
             else False
         )
-        campaign_terminal_valid = bool(
-            has_valid_terminal_full_frontier_certified_evidence(summary_state)
-            if summary_state is not None
-            else False
-        )
         return _blocked(
             campaign_error,
             campaign_present=campaign_payload is not None,
             campaign_resume_compatible=False,
             campaign_resume_validation_reason=campaign_error,
             campaign_terminal_full_frontier_claimed=campaign_terminal_claimed,
-            campaign_terminal_full_frontier_valid=campaign_terminal_valid,
+            # A missing, mismatched, non-canonical, or non-regular checkpoint is
+            # never valid terminal evidence.  Structural self-consistency is not
+            # a substitute for the project-bound sink replay below.
+            campaign_terminal_full_frontier_valid=False,
             delivery_manifest_present=manifest_present,
             delivery_manifest_regular_file=manifest_regular_file,
             delivery_manifest_load_error=manifest_error,
             delivery_manifest_payload=manifest_payload,
         )
-    # Keep the caller's in-memory state as the proof authority after the disk
-    # payload has been proven JSON-equivalent.  The disk JSON is a currentness
-    # witness, not current-process proof-bearing evidence.
+    # Memory and disk are both untrusted representations.  JSON equivalence only
+    # establishes currentness; sink-side isolated replay establishes proof
+    # authority below.
     if _mapping_or_none(provided_campaign_state) is not None:
         campaign_state = provided_campaign_state
     else:
@@ -211,9 +207,14 @@ def evaluate_certified_delivery_surface(
     )
     resume_current = resolved_resume_reason is None
     campaign_terminal_claimed = has_terminal_full_frontier_certified_evidence(campaign_state)
+    resolved_campaign_path = _resolve_campaign_path(
+        project_root=project_root,
+        campaign_path=campaign_path,
+    )
     campaign_terminal_valid = has_valid_terminal_full_frontier_certified_evidence_for_project(
         campaign_state,
         project_root=project_root,
+        campaign_path=resolved_campaign_path,
     )
 
     if not resume_current:
@@ -234,22 +235,6 @@ def evaluate_certified_delivery_surface(
     if not campaign_terminal_valid:
         return _blocked(
             "campaign_terminal_full_frontier_evidence_invalid",
-            campaign_present=True,
-            campaign_resume_compatible=True,
-            campaign_resume_validation_reason=None,
-            campaign_terminal_full_frontier_claimed=campaign_terminal_claimed,
-            campaign_terminal_full_frontier_valid=False,
-            delivery_manifest_present=manifest_present,
-            delivery_manifest_regular_file=manifest_regular_file,
-            delivery_manifest_load_error=manifest_error,
-            best_certified_result=best_certified_result,
-            delivery_manifest_payload=manifest_payload,
-        )
-
-    freshness_violation = terminal_proof_bearing_candidate_freshness_violation(campaign_state)
-    if freshness_violation is not None:
-        return _blocked(
-            f"campaign_terminal_full_frontier_evidence_not_fresh:{freshness_violation}",
             campaign_present=True,
             campaign_resume_compatible=True,
             campaign_resume_validation_reason=None,

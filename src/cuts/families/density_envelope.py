@@ -34,7 +34,6 @@ Refs:
 """
 from __future__ import annotations
 
-import json
 import time
 from collections import Counter
 from typing import Any, Dict, FrozenSet, List, Literal, Optional, Tuple, cast
@@ -49,6 +48,7 @@ from src.cuts.lifecycle import (
     ValidationResult,
     compute_blocked_cells_hash,
     compute_ghost_rect_id,
+    validate_cert_payload,
 )
 
 
@@ -116,15 +116,7 @@ def _parse_ghost_rect_repr(value: object) -> Tuple[int, int, int, int]:
 
 
 def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
-    if not isinstance(cert_payload, bytes):
-        raise ValueError("cert_payload must be bytes")
-    try:
-        loaded = json.loads(cert_payload)
-    except Exception as e:
-        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
-    if not isinstance(loaded, dict):
-        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
-    return cast(Dict[str, Any], loaded)
+    return validate_cert_payload("density_envelope", cert_payload)
 
 
 def _validate_cert_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:

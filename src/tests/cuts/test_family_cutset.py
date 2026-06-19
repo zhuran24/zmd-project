@@ -86,15 +86,13 @@ def _make_cutset_cut(
                     e = [list(a), list(b)] if a <= b else [list(b), list(a)]
                     cut_edges.append(e)
     cert_dict = {
+        "cert_kind": "menger_min_cut",
         "side_a_bitset_b64": _encode_bitset(side_a),
         "side_b_bitset_b64": _encode_bitset(side_b),
         "cut_edges": cut_edges,
         "cut_size": cut_size,
         "commodity_demand": commodity_demand,
-        "gap": commodity_demand - cut_size,
         "contributing_commodities": ["c1"],
-        "menger_witness_kind": "max_flow_LP",
-        "witness_blob_b64": None,
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     scope = CutScope(
@@ -275,12 +273,12 @@ def test_validate_cutset_schema_err_missing_cut_edges():
     """cert 缺 cut_edges field → schema_err."""
     state = _make_enclosed_state(patch={(0, 0), (0, 1)})
     cert_dict = {
+        "cert_kind": "menger_min_cut",
         "side_a_bitset_b64": _encode_bitset({(0, 0)}),
         "side_b_bitset_b64": _encode_bitset({(0, 1)}),
         # cut_edges missing
         "cut_size": 1,
         "commodity_demand": 2,
-        "gap": 1,
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     scope = CutScope(
@@ -383,15 +381,13 @@ def test_validate_cutset_unsound_fake_commodity_id():
     state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=2)
     side_a, side_b = {(0, 0)}, {(0, 1)}
     cert_dict = {
+        "cert_kind": "menger_min_cut",
         "side_a_bitset_b64": _encode_bitset(side_a),
         "side_b_bitset_b64": _encode_bitset(side_b),
         "cut_edges": [[list((0, 0)), list((0, 1))]],
         "cut_size": 1,
         "commodity_demand": 2,
-        "gap": 1,
         "contributing_commodities": ["FAKE_NOT_IN_REGISTRY"],
-        "menger_witness_kind": "max_flow_LP",
-        "witness_blob_b64": None,
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     cut = Cut(
@@ -424,13 +420,12 @@ def test_validate_cutset_unsound_ghost_agnostic_scope():
     state = _make_enclosed_state(patch={(0, 0), (0, 1)}, commodity_demand=2)
     side_a, side_b = {(0, 0)}, {(0, 1)}
     cert_dict = {
+        "cert_kind": "menger_min_cut",
         "side_a_bitset_b64": _encode_bitset(side_a),
         "side_b_bitset_b64": _encode_bitset(side_b),
         "cut_edges": [[list((0, 0)), list((0, 1))]],
-        "cut_size": 1, "commodity_demand": 2, "gap": 1,
+        "cut_size": 1, "commodity_demand": 2,
         "contributing_commodities": ["c1"],
-        "menger_witness_kind": "max_flow_LP",
-        "witness_blob_b64": None,
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     cut = Cut(
@@ -475,13 +470,12 @@ def test_validate_cutset_unsound_duplicate_contributing_commodity():
     side_a, side_b = {(0, 0)}, {(0, 1)}
     # cert 写 ["c1","c1"] + demand=2, registry "c1"=1 — double-count 假证
     cert_dict = {
+        "cert_kind": "menger_min_cut",
         "side_a_bitset_b64": _encode_bitset(side_a),
         "side_b_bitset_b64": _encode_bitset(side_b),
         "cut_edges": [[list((0, 0)), list((0, 1))]],
-        "cut_size": 1, "commodity_demand": 2, "gap": 1,
+        "cut_size": 1, "commodity_demand": 2,
         "contributing_commodities": ["c1", "c1"],
-        "menger_witness_kind": "max_flow_LP",
-        "witness_blob_b64": None,
     }
     payload = json.dumps(cert_dict, sort_keys=True).encode("utf-8")
     cut = Cut(

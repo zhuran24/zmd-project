@@ -26,8 +26,8 @@ from src.search.exact_campaign import (
     has_certified_export_surface,
     has_terminal_full_frontier_certified_evidence,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
+    terminal_certified_final_result_project_precheck_violation,
     terminal_certified_final_result_violation_for_project,
-    terminal_proof_bearing_candidate_freshness_violation,
     now_iso,
     validate_exact_campaign_resume_state,
 )
@@ -69,11 +69,43 @@ def build_certified_delivery_manifest(
                 "certified delivery manifest requires exhausted strict candidate frontier"
             )
         terminal_violation = certified_terminal_evidence_violation(campaign_state)
-        if terminal_violation is None:
-            terminal_violation = terminal_certified_final_result_violation_for_project(
-                campaign_state,
-                project_root=project_root,
+        if terminal_violation is not None:
+            raise ValueError(
+                "certified delivery manifest requires valid project-bound "
+                "terminal final_result evidence: "
+                f"{terminal_violation}"
             )
+        # Reject malformed stored witnesses before currentness checks so callers
+        # retain precise diagnostics.  This precheck grants no authority: a
+        # successful path still has to pass disk binding and isolated replay.
+        terminal_violation = terminal_certified_final_result_project_precheck_violation(
+            campaign_state,
+            project_root=project_root,
+        )
+        if terminal_violation is not None:
+            raise ValueError(
+                "certified delivery manifest requires valid project-bound "
+                "terminal final_result evidence: "
+                f"{terminal_violation}"
+            )
+        # Current disk authority and exact-input bindings are checked before the
+        # isolated replay sink.  Besides preserving the established diagnostic
+        # contract, this prevents stale or noncanonical checkpoints from
+        # selecting which source/artifact set the replay verifier should trust.
+        _validate_campaign_state_matches_disk_authority(
+            project_root=project_root,
+            campaign_state=campaign_state,
+            campaign_path=campaign_path,
+        )
+        _validate_campaign_resume_compatible_with_current_artifacts(
+            project_root=project_root,
+            campaign_state=campaign_state,
+        )
+        terminal_violation = terminal_certified_final_result_violation_for_project(
+            campaign_state,
+            project_root=project_root,
+            campaign_path=resolved_campaign_path,
+        )
         if terminal_violation is not None:
             raise ValueError(
                 "certified delivery manifest requires valid project-bound "
@@ -83,6 +115,8 @@ def build_certified_delivery_manifest(
     best_result = _build_best_certified_result_payload(
         project_root=project_root,
         campaign_state=campaign_state,
+        campaign_path=resolved_campaign_path,
+        terminal_evidence_already_validated=has_certified_surface,
     )
     if has_certified_surface and best_result is None:
         raise ValueError("certified delivery manifest requires terminal final_result evidence")
@@ -105,17 +139,6 @@ def build_certified_delivery_manifest(
             final_solution_path=final_solution_path,
             optimal_blueprint_path=optimal_blueprint_path,
         )
-    if best_result is not None:
-        _validate_campaign_state_matches_disk_authority(
-            project_root=project_root,
-            campaign_state=campaign_state,
-            campaign_path=campaign_path,
-        )
-        _validate_campaign_resume_compatible_with_current_artifacts(
-            project_root=project_root,
-            campaign_state=campaign_state,
-        )
-
     payload = {
         "metadata": _manifest_metadata_payload(),
         "campaign": _campaign_manifest_payload(campaign_state),
@@ -698,20 +721,20 @@ def _build_best_certified_result_payload(
     *,
     project_root: Path,
     campaign_state: Mapping[str, Any],
+    campaign_path: Optional[Path] = None,
+    terminal_evidence_already_validated: bool = False,
 ) -> Optional[Dict[str, Any]]:
     if str(campaign_state.get("declare_mode", "strict")) != "strict":
         return None
-    if not has_valid_terminal_full_frontier_certified_evidence_for_project(
-        campaign_state,
-        project_root=project_root,
+    if (
+        not terminal_evidence_already_validated
+        and not has_valid_terminal_full_frontier_certified_evidence_for_project(
+            campaign_state,
+            project_root=project_root,
+            campaign_path=campaign_path,
+        )
     ):
         return None
-    freshness_violation = terminal_proof_bearing_candidate_freshness_violation(campaign_state)
-    if freshness_violation is not None:
-        raise ValueError(
-            "certified delivery manifest requires current-process proof-bearing "
-            f"candidate evidence: {freshness_violation}"
-        )
     final_result = campaign_state.get("final_result")
     if not isinstance(final_result, Mapping):
         return None

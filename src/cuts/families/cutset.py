@@ -24,7 +24,7 @@ import json
 import time
 from typing import Any, Dict, FrozenSet, Literal, Tuple, cast
 
-from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
+from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult, validate_cert_payload
 
 
 # Cross-partition edge between two adjacent cells (Manhattan 4-neighborhood).
@@ -283,11 +283,14 @@ def validate_cutset(
     del canonical_rules
     if cut.geometric_payload is None:
         return _vr("schema_err", t0, "cut.geometric_payload is None (F2 schema invariant violated)")
+    try:
+        cert_dict = validate_cert_payload("cutset", cut.geometric_payload)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
     scope_error = _validate_cutset_scope(cut, t0)
     if scope_error is not None:
         return scope_error
     try:
-        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
         side_a = _decode_bitset(cert_dict["side_a_bitset_b64"])
         side_b = _decode_bitset(cert_dict["side_b_bitset_b64"])
         free_cells = _free_cells(state)

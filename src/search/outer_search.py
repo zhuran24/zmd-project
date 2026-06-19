@@ -44,7 +44,8 @@ from src.search.campaign_telemetry import (
 )
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
-    build_terminal_frontier_evidence,
+    build_sink_verified_terminal_frontier_evidence,
+    compute_sink_verified_terminal_frontier_projection,
     candidate_generation_kwargs,
     candidate_key as certified_frontier_candidate_key,
     candidate_objective as certified_frontier_candidate_objective,
@@ -56,6 +57,7 @@ from src.search.certified_surface import (
     export_and_verify_certified_delivery_manifest,
     save_certified_final_solution_and_blueprint,
 )
+from src.search.candidate_proof_replay import build_candidate_replay_proof
 from src.search.exact_campaign import (
     ExactCampaign,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
@@ -630,11 +632,22 @@ def _compute_exact_frontier_state(
     frontier_probe_mode: str = FRONTIER_PROBE_MODE_OFF,
 ) -> Dict[str, Any]:
     frontier_probe_mode = _normalize_frontier_probe_mode(frontier_probe_mode)
-    candidate_records = {}
+    candidate_records: Mapping[str, Any] = {}
+    sink_replay_violations: Mapping[str, str] = {}
     if campaign is not None:
-        raw_candidates = campaign.state.get("candidates", {})
-        if isinstance(raw_candidates, dict):
-            candidate_records = raw_candidates
+        sink_projection = compute_sink_verified_terminal_frontier_projection(
+            candidates=candidates,
+            campaign_state=campaign.state,
+            project_root=campaign.project_root,
+            campaign_path=campaign.path,
+        )
+        candidate_records = dict(sink_projection.get("candidate_records", {}))
+        sink_replay_violations = dict(sink_projection.get("sink_replay_violations", {}))
+        # The sink projection is the lifecycle state from this point onward.
+        # Persisting its demotions prevents an unverified strong-looking string
+        # from locking a candidate against a real solve; accepted CERTIFIED
+        # records are rebound to the isolated child witness before incumbency.
+        campaign.state["candidates"] = candidate_records
     probe_state = _load_frontier_probe_state(campaign)
     probe_state["mode"] = frontier_probe_mode
 
@@ -671,8 +684,10 @@ def _compute_exact_frontier_state(
     for candidate in candidates:
         _area, ghost_w, ghost_h = candidate
         record = candidate_records.get(f"{ghost_w}x{ghost_h}")
-        status = None if not isinstance(record, dict) else str(record.get("status", ""))
-        if status in _frontier_skip_statuses:
+        record_status: Optional[str] = (
+            None if not isinstance(record, dict) else str(record.get("status", ""))
+        )
+        if record_status in _frontier_skip_statuses:
             continue
 
         if any(ghost_w <= cert_w and ghost_h <= cert_h for _a, cert_w, cert_h in explicit_certified):
@@ -796,6 +811,7 @@ def _compute_exact_frontier_state(
         "selected_candidate_reason": selected_candidate_reason,
         "frontier_metrics_by_key": frontier_metrics_by_key,
         "frontier_probe_mode": frontier_probe_mode,
+        "sink_replay_violations": dict(sink_replay_violations),
         "probe_round_active": probe_candidate is not None,
         "probe_candidate": probe_candidate,
         "probe_candidate_source": probe_candidate_source,
@@ -878,15 +894,31 @@ def _commit_terminal_full_frontier_certified_result(
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
         status=RUN_STATUS_CERTIFIED,
     )
-    exact_campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+    sink_bundle = build_sink_verified_terminal_frontier_evidence(
         candidates=candidates,
-        candidate_records=exact_campaign.state.get("candidates", {}),
+        campaign_state=exact_campaign.state,
+        project_root=exact_campaign.project_root,
+        campaign_path=exact_campaign.path,
         final_result=result,
         candidate_generation=candidate_generation,
+    )
+    sink_replay_violations = dict(sink_bundle.get("sink_replay_violations", {}))
+    if sink_replay_violations:
+        first_key = sorted(sink_replay_violations)[0]
+        raise RuntimeError(
+            "terminal candidate sink replay failed: "
+            f"{sink_replay_violations[first_key]}"
+        )
+    exact_campaign.state["candidates"] = dict(
+        sink_bundle.get("candidate_records", {})
+    )
+    exact_campaign.state["terminal_frontier_evidence"] = dict(
+        sink_bundle.get("evidence", {})
     )
     if not has_valid_terminal_full_frontier_certified_evidence_for_project(
         exact_campaign.state,
         project_root=exact_campaign.project_root,
+        campaign_path=exact_campaign.path,
     ):
         raise RuntimeError(
             "terminal certified_exact export attempted before project-bound full-frontier evidence was committed"
@@ -939,6 +971,7 @@ def _seal_resumed_nonterminal_certified_surface(
     if has_valid_terminal_full_frontier_certified_evidence_for_project(
         exact_campaign.state,
         project_root=project_root,
+        campaign_path=exact_campaign.path,
     ):
         return
     exact_campaign.save()
@@ -2064,6 +2097,12 @@ def run_outer_search(
                                     int(candidate[1]),
                                     int(candidate[2]),
                                     RUN_STATUS_INFEASIBLE,
+                                    candidate_proof=build_candidate_replay_proof(
+                                        exact_campaign,
+                                        int(candidate[1]),
+                                        int(candidate[2]),
+                                        RUN_STATUS_INFEASIBLE,
+                                    ),
                                     exact_safe_cuts=precheck_payload["exact_safe_cuts"],
                                     proof_summary=precheck_payload["proof_summary"],
                                     loaded_exact_safe_cut_count=precheck_payload[
@@ -2236,6 +2275,12 @@ def run_outer_search(
                                     int(candidate[1]),
                                     int(candidate[2]),
                                     RUN_STATUS_INFEASIBLE,
+                                    candidate_proof=build_candidate_replay_proof(
+                                        exact_campaign,
+                                        int(candidate[1]),
+                                        int(candidate[2]),
+                                        RUN_STATUS_INFEASIBLE,
+                                    ),
                                     exact_safe_cuts=precheck_payload["exact_safe_cuts"],
                                     proof_summary=precheck_payload["proof_summary"],
                                     loaded_exact_safe_cut_count=precheck_payload[
@@ -2440,6 +2485,13 @@ def run_outer_search(
                                     ghost_w,
                                     ghost_h,
                                     RUN_STATUS_CERTIFIED,
+                                    candidate_proof=build_candidate_replay_proof(
+                                        exact_campaign,
+                                        ghost_w,
+                                        ghost_h,
+                                        RUN_STATUS_CERTIFIED,
+                                        solution=worker_result.solution,
+                                    ),
                                     exact_safe_cuts=payload["exact_safe_cuts"],
                                     solution=worker_result.solution,
                                     proof_summary=payload["proof_summary"],
@@ -2464,6 +2516,16 @@ def run_outer_search(
                                     ghost_w,
                                     ghost_h,
                                     worker_result.status,
+                                    candidate_proof=(
+                                        build_candidate_replay_proof(
+                                            exact_campaign,
+                                            ghost_w,
+                                            ghost_h,
+                                            RUN_STATUS_INFEASIBLE,
+                                        )
+                                        if worker_result.status == RUN_STATUS_INFEASIBLE
+                                        else None
+                                    ),
                                     exact_safe_cuts=payload["exact_safe_cuts"],
                                     proof_summary=payload["proof_summary"],
                                     loaded_exact_safe_cut_count=payload[
@@ -2672,6 +2734,13 @@ def run_outer_search(
                             ghost_w,
                             ghost_h,
                             RUN_STATUS_CERTIFIED,
+                            candidate_proof=build_candidate_replay_proof(
+                                exact_campaign,
+                                ghost_w,
+                                ghost_h,
+                                RUN_STATUS_CERTIFIED,
+                                solution=solution,
+                            ),
                             exact_safe_cuts=campaign_payload["exact_safe_cuts"],
                             solution=solution,
                             proof_summary=campaign_payload["proof_summary"],
@@ -2701,6 +2770,12 @@ def run_outer_search(
                             ghost_w,
                             ghost_h,
                             RUN_STATUS_INFEASIBLE,
+                            candidate_proof=build_candidate_replay_proof(
+                                exact_campaign,
+                                ghost_w,
+                                ghost_h,
+                                RUN_STATUS_INFEASIBLE,
+                            ),
                             exact_safe_cuts=campaign_payload["exact_safe_cuts"],
                             proof_summary=campaign_payload["proof_summary"],
                             loaded_exact_safe_cut_count=campaign_payload["loaded_exact_safe_cut_count"],

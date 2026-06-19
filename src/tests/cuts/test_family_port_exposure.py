@@ -107,6 +107,7 @@ def _make_port_exposure_cert(
     blocking_pose_id: str = "p3",
 ) -> bytes:
     cert_dict = {
+        "cert_kind": "port_exposure_blocked",
         "facility_group": facility_group,
         "facility_pose_id": facility_pose_id,
         "port_cell": list(port_cell),

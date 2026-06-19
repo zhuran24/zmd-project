@@ -12,10 +12,17 @@ contract applies to the source checkout itself and to project roots that carry
 
 from __future__ import annotations
 
+import subprocess
+import sys
 from pathlib import Path
 from typing import Mapping, Optional
 
 LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"
+
+LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
+    "data/proof_obligations/p1_2_proof_obligations.json",
+    "scripts/check_p1_2_proof_obligations.py",
+)
 
 LOCKED_EXACT_ARTIFACT_PATHS = {
     "mandatory_exact_instances": "data/preprocessed/mandatory_exact_instances.json",
@@ -61,6 +68,87 @@ def certified_project_uses_locked_artifact_contract(project_root: Path) -> bool:
         return True
     marker = root / LOCKED_EXACT_PROJECT_MARKER
     return marker.exists() or marker.is_symlink()
+
+
+def _path_has_symlink_component(path: Path) -> bool:
+    candidate = Path(path)
+    if not candidate.parts:
+        return False
+    current = Path(candidate.anchor) if candidate.is_absolute() else Path()
+    parts = candidate.parts[1:] if candidate.is_absolute() else candidate.parts
+    for part in parts:
+        current = current / part
+        try:
+            if current.is_symlink():
+                return True
+        except OSError:
+            return True
+    return False
+
+
+def locked_p1_2_close_kernel_violation(
+    project_root: Path,
+    *,
+    checker_timeout_seconds: float = 30.0,
+) -> Optional[str]:
+    """Return why the canonical V99 close-kernel authority is unavailable.
+
+    Campaign source digests are continuity evidence. In locked projects, they
+    must not become first-use trust anchors after the close-kernel authority is
+    removed or redirected.
+    """
+
+    if not certified_project_uses_locked_artifact_contract(project_root):
+        return None
+
+    root = Path(project_root)
+    for relative_path in LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS:
+        path = root / relative_path
+        if not path.exists():
+            return f"locked_p1_2_close_kernel_missing:{relative_path}"
+        if _path_has_symlink_component(path) or not path.is_file():
+            return f"locked_p1_2_close_kernel_not_regular:{relative_path}"
+
+    checker_relative_path = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS[1]
+    checker_path = root / checker_relative_path
+    try:
+        invoked_path = Path(sys.argv[0]).resolve()
+    except OSError:
+        invoked_path = Path()
+    if invoked_path == checker_path.resolve():
+        return None
+
+    try:
+        result = subprocess.run(
+            [sys.executable, str(checker_path)],
+            cwd=str(root),
+            capture_output=True,
+            text=True,
+            timeout=float(checker_timeout_seconds),
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return "locked_p1_2_close_kernel_checker_timeout"
+    except OSError as exc:
+        return f"locked_p1_2_close_kernel_checker_error:{type(exc).__name__}"
+    if result.returncode != 0:
+        return f"locked_p1_2_close_kernel_checker_rejected:{result.returncode}"
+    return None
+
+
+def validate_locked_p1_2_close_kernel(project_root: Path) -> None:
+    """Fail closed before a locked project can self-seal a fresh campaign."""
+
+    reason = locked_p1_2_close_kernel_violation(project_root)
+    if reason is None:
+        return
+    raise LockedExactArtifactContractError(
+        reason,
+        (
+            f"project_root={Path(project_root).resolve()}; restore the authoritative "
+            "V99 close-kernel package instead of resealing the current tree"
+        ),
+    )
 
 
 def locked_exact_artifact_contract_violation(

@@ -12,9 +12,11 @@ import hashlib
 import json
 import math
 from collections import Counter
+from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
+from src.search.candidate_proof_replay import project_candidate_records_for_sink
 
 TERMINAL_FRONTIER_EVIDENCE_SCHEMA_VERSION = 2
 TERMINAL_FRONTIER_EVIDENCE_SOURCE = "certified_terminal_frontier_evidence_v2"
@@ -243,6 +245,64 @@ def compute_terminal_frontier_projection(
         "derived_pruned_candidates": int(derived_pruned_candidates),
         "best_certified_candidate": best_certified_candidate,
         "best_certified_record": best_certified_record,
+    }
+
+
+def compute_sink_verified_terminal_frontier_projection(
+    *,
+    candidates: Sequence[Candidate],
+    campaign_state: Mapping[str, Any],
+    project_root: Path,
+    campaign_path: Optional[Path] = None,
+) -> Dict[str, Any]:
+    """Compute pruning state only from records accepted by sink-side replay."""
+
+    replayed_records, replay_violations = project_candidate_records_for_sink(
+        state=campaign_state,
+        project_root=project_root,
+        campaign_path=campaign_path,
+        require_record_solution_match=False,
+    )
+    projection = compute_terminal_frontier_projection(
+        candidates=candidates,
+        candidate_records=replayed_records,
+    )
+    projection["candidate_records"] = replayed_records
+    projection["sink_replay_violations"] = replay_violations
+    return projection
+
+
+def build_sink_verified_terminal_frontier_evidence(
+    *,
+    candidates: Sequence[Candidate],
+    campaign_state: Mapping[str, Any],
+    project_root: Path,
+    campaign_path: Optional[Path],
+    final_result: Mapping[str, Any],
+    candidate_generation: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Build terminal evidence from replayed records, never raw strong strings."""
+
+    replayed_records, replay_violations = project_candidate_records_for_sink(
+        state=campaign_state,
+        project_root=project_root,
+        campaign_path=campaign_path,
+        # Re-establish every strong status in the isolated child, while keeping
+        # the already digest-bound stored witness.  The project-bound terminal
+        # validator independently validates that witness; two exact runs need not
+        # choose byte-identical feasible placements.
+        require_record_solution_match=True,
+    )
+    evidence = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=replayed_records,
+        final_result=final_result,
+        candidate_generation=candidate_generation,
+    )
+    return {
+        "evidence": evidence,
+        "candidate_records": replayed_records,
+        "sink_replay_violations": replay_violations,
     }
 
 

@@ -392,6 +392,7 @@ class PortBindingModel:
             io_requirements = load_generic_io_requirements(
                 project_root=self.project_root,
                 path=self.io_requirements_path,
+                validate_against_canonical=False,
             )
         else:
             io_requirements = {
@@ -414,6 +415,13 @@ class PortBindingModel:
                 else io_requirements["required_generic_inputs"]
             ),
             "required_generic_inputs",
+        )
+        _validate_generic_io_requirement_roles(
+            {
+                "required_generic_outputs": self.required_generic_outputs,
+                "required_generic_inputs": self.required_generic_inputs,
+            },
+            project_root=self.project_root,
         )
         self.routing_free_sink_commodities = {
             str(commodity)

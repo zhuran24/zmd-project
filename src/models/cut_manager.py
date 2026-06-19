@@ -12,7 +12,7 @@ import json
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Set, Tuple
+from typing import Any, ClassVar, Dict, FrozenSet, Iterable, List, Mapping, Optional, Set, Tuple
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -213,6 +213,24 @@ def _validate_certified_condition_requirement(
 class BendersCut:
     """Structured cut record for exact-contract compatibility."""
 
+    ALLOWED_TOP_LEVEL_FIELDS: ClassVar[FrozenSet[str]] = frozenset({
+        "schema_version",
+        "cut_type",
+        "conflict_set",
+        "iteration",
+        "metadata",
+        "source_mode",
+        "exact_safe",
+        "artifact_hashes",
+        "proof_stage",
+        "binding_exhausted",
+        "routing_exhausted",
+        "proof_summary",
+        "created_at",
+        "epsilon_stage",
+        "condition_set",
+    })
+
     cut_type: str
     conflict_set: Dict[str, Any]
     iteration: int
@@ -271,8 +289,15 @@ class BendersCut:
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "BendersCut":
         source_mode = str(payload.get("source_mode", "exploratory"))
-        cut_type = str(payload["cut_type"])
         exact_safe = _strict_bool(payload.get("exact_safe", False), "exact_safe")
+        if source_mode == "certified_exact" and exact_safe is True:
+            extra_keys = frozenset(str(key) for key in payload) - cls.ALLOWED_TOP_LEVEL_FIELDS
+            if extra_keys:
+                raise ValueError(
+                    "proof-bearing BendersCut payload has unknown top-level field(s): "
+                    f"{sorted(extra_keys)!r}"
+                )
+        cut_type = str(payload["cut_type"])
         metadata = _strict_dict(payload.get("metadata", {}), "metadata")
         if source_mode == "certified_exact":
             conflict_set = _strict_int_mapping(payload.get("conflict_set", {}), "conflict_set")

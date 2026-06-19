@@ -278,7 +278,7 @@ def test_validator_schema_err_missing_cells_per_pose():
     )
     vr = validate_region_capacity(bad_cut, state, CANONICAL_RULES)
     assert vr.kind == "schema_err"
-    assert "cells_per_pose missing" in vr.detail
+    assert "cells_per_pose" in vr.detail
 
 
 def test_validator_unsound_when_facility_templates_not_injected():

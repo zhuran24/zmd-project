@@ -34,6 +34,8 @@ from collections import Counter  # noqa: F401  (state_machine_v2 后续用)
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, FrozenSet, List, Literal, Optional, Protocol, Tuple
 
+from src.cuts.cert_schema import validate_cert_payload as _validate_cert_payload
+
 
 # ============================================================================
 # Identifier types (cut_lifecycle_v2 v3.2.2 §3)
@@ -53,6 +55,12 @@ SourceDigestStr = str
 JsonDict = Dict[str, Any]
 
 GHOST_AGNOSTIC: GhostRectId = "__ghost_agnostic__"
+
+
+def validate_cert_payload(family: str, raw_bytes: bytes) -> JsonDict:
+    """Strict schema envelope check for proof-bearing cut cert payload bytes."""
+
+    return _validate_cert_payload(family, raw_bytes)
 
 CutFamily = Literal[
     "region_capacity",       # F1 (geometric)
@@ -663,6 +671,7 @@ def step_1_generate_region_capacity_combinatorial(
         return None
 
     cert_dict = {
+        "cert_kind": "region_capacity_combinatorial",
         "region_kind": region_kind,
         "region_cells_bitset_b64": _encode_region_bitset(region_cells),
         "cap_R": cap_R,

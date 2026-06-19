@@ -123,25 +123,34 @@ This is the Endfield IndustrialPlanner certified-exact maximum empty-rectangle
 solver. The default path is `certified_exact`; `exploratory` is a separate heuristic
 or diagnostic path.
 
-P1.2 close-kernel sealing (2026-06-17): proof-bearing strong-status source sinks on
-the current default certified path are registered in
+P1.2 close-kernel sealing (updated 2026-06-19): proof-bearing strong-status
+source sinks on the current default certified path are registered in
 `data/proof_obligations/p1_2_proof_obligations.json::close_kernel_contract` and checked by
 `scripts/check_p1_2_proof_obligations.py`. Adding a new `CERTIFIED` / proof-bearing
 `INFEASIBLE` surface, drifting a sealed sink hash, or removing required guard tokens reopens
-the P1.2 close claim until reviewed. The current local seal includes the follow-up
-F-CAM-R8-02 durable resume-sanitization fix, the proof-bearing sink source-digest
-coverage guard, root entrypoint `main.py` source-digest coverage, the current-process
-freshness gate for terminal proof-bearing candidate evidence, and the rule that the
-public `ExactCampaign.mark_candidate_result()` state writer cannot self-authorize
-proof-bearing `CERTIFIED` / `INFEASIBLE` freshness, plus the controller-bound
-verified-producer authority fix that keeps raw freshness sealing fail-closed and
-hides the mutable freshness registry from importable module state; do not replace
-it with an earlier package snapshot without re-sealing
-`src/search/exact_campaign.py`, `src/search/outer_search.py`, and the close-kernel
-checker floor.
-The V99 close-kernel floor is checker-owned: required proof-bearing tokens, scan roots,
-sink paths, sink classifications, non-checker source hashes, and critical gate files
-must not be shrinkable or resealable by editing the manifest alone.
+the P1.2 close claim until reviewed. Candidate records now carry only a data-only replay
+request; no Python function identity, closure, mutable registry, writer identity, or
+current-process freshness stamp grants proof authority. Before a strong status may prune
+the certified frontier or enter terminal evidence, the delivery manifest, or the public
+certified surface, the sink launches an isolated `python -I` verifier, snapshots and
+rehashes the bound exact inputs, checks project/source/artifact/campaign/candidate bindings,
+and independently replays the fixed `certified_exact` solve. Missing or rejected replay
+material is demoted to `UNPROVEN` at the frontier and rejected by downstream publication
+sinks. Test support may construct replay requests but has no production grant path. The
+seal also retains the durable resume-sanitization and no-close-kernel source self-seal
+containment guards: locked projects must retain and pass the V99 manifest/checker before
+`compute_exact_artifact_hashes()` can mint a fresh campaign source digest. The on-disk
+replay verifier and protected source, Python interpreter, and operating-system process/file
+isolation are part of this boundary's TCB; arbitrary mutation of the sink verifier itself
+is not claimed away. A passing checker is therefore a structural boundary check, not by
+itself a soundness conclusion; the adversarial replay regressions must pass as well. Do not
+replace this code with an earlier package snapshot without re-sealing
+`src/search/candidate_proof_replay.py`, `src/search/exact_campaign.py`,
+`src/search/outer_search.py`, `src/search/certified_frontier.py`, the publication sinks,
+and the close-kernel checker floor. The V99 close-kernel floor is checker-owned: required
+proof-bearing tokens, scan roots, sink paths, sink classifications, non-checker source
+hashes, and critical gate files must not be shrinkable or resealable by editing the
+manifest alone.
 
 Main call chain:
 
@@ -319,17 +328,31 @@ responses. On heartbeat wakeups for this loop, only check whether GPT has replie
 and then continue the local verification/apply loop if a response or package is
 available.
 
+Treat GPT Pro rate-limit / risk-control shaped replies as invalid review results.
+A normal `Pro 扩展` review has substantive progress/status text above the
+`已思考 ...` marker and the final report below it. If a reply has no substantive
+text above the `已思考 ...` marker and only has the lower final text, classify it
+as throttled/abnormal; do not count it as one of the three valid review replies,
+do not treat its "no issue" claim as clean evidence, and retry later after the
+rate-limit pressure eases.
+Desktop ChatGPT and iPad ChatGPT can be rate-limited separately. If desktop-side
+reviews show the throttled/abnormal shape while the user is available, stop the
+loop and notify the user instead of sending more desktop requests; the user may
+resend the three review requests from iPad. If the user is offline/unresponsive
+and has not already provided valid replacement reviews, stop the loop by turning
+off the heartbeat rather than burning more review attempts.
+
 Recycle unused browser pages during this loop. Keep only active review conversations
 that may still produce replies and the current Sources page when it is needed for
 upload/download verification; close or release stale project pages, duplicate source
 tabs, blank tabs, failed upload attempts, and completed intermediate pages.
-If reading a GPT review tab times out, close that tab and reopen the same URL in a
-fresh tab before the next status check. A stale browser tab is not evidence that
-the review is still running; refresh the tab identity rather than repeatedly
-timing out on the same page object.
-If the tab loads but the conversation content is missing or only the generic
-ChatGPT shell appears, treat it the same as a read timeout: close that tab and
-reopen the identical conversation URL before checking again.
+For webpage-side network, loading, timeout, or missing-content problems during
+this loop, use one recovery method: close the affected tab and reopen the
+identical URL in a fresh tab before checking again. This includes read timeouts,
+generic ChatGPT shells, missing conversation content, stalled pages, and ChatGPT
+network-error stopped responses. Do not click `重试` / retry, do not keep
+probing the same stale page object, and do not count a partial network-error
+answer as a valid review result.
 
 Generated proof outputs, checkpoints, blueprints, and certified delivery manifests
 are intentionally guarded by preflight. Do not commit forbidden generated paths such

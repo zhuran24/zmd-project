@@ -96,13 +96,13 @@ def _make_component_reach_cut(
         else:
             sink_comp = {sink_cell}
     cert_dict = {
+        "cert_kind": "bfs_disconnect_witness",
         "src_cell": list(src_cell),
         "sink_cell": list(sink_cell),
         "src_component_bitset_b64": _encode_bitset(src_comp),
         "sink_component_bitset_b64": _encode_bitset(sink_comp),
         "separator_cells": [],
         "blocking_facilities": [],
-        "witness_path_attempt": None,
     }
     if commodity_id is not None:
         cert_dict["commodity_id"] = commodity_id

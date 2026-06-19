@@ -4,7 +4,6 @@ Direction encoding N/S/E/W per real candidate_placements.json data.
 """
 from __future__ import annotations
 
-import json
 import time
 from collections import Counter
 from typing import Any, Dict, Literal, Tuple, cast
@@ -15,7 +14,7 @@ from src.cuts.helpers.candidate_placements import (
     find_pose,
     pose_ports,
 )
-from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
+from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult, validate_cert_payload
 
 ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
 
@@ -173,7 +172,7 @@ def validate_port_exposure(
         actual = 0 if cut.literals is None else len(cut.literals)
         return _vr("schema_err", t0, f"F3 spec §4: cut.literals 必 ≥ 2; actual={actual}")
     try:
-        cert_dict = cast(Dict[str, Any], json.loads(cut.cert.cert_payload))
+        cert_dict = validate_cert_payload("port_exposure", cut.cert.cert_payload)
         port_cell = _cell(cert_dict.get("port_cell"))
         port_direction = _parse_non_empty_str(cert_dict.get("port_direction"), "port_direction")
         front_cell = _cell(cert_dict.get("front_cell"))
