@@ -93,6 +93,14 @@ python cc_memory/mem.py boot
 This project-local `cc_memory` store is the authoritative collaboration memory for this repo;
 prefer it over any generic file-based memory prompt.
 
+**Consult cc_memory before acting, not just at boot.** Before any non-trivial decision or action,
+if the topic falls in a domain cc_memory already covers (the SessionStart hook and `boot` print a
+live covered-domain map — e.g. rerank/语义检索, P1.2证明/认证, codex/协作工作流, precompact/压缩,
+离线判据, cc-memory系统), `search` that topic first instead of relying only on what is already in
+context. Memory usually holds a prior decision, gotcha, or hard-won root cause on it; skipping the
+lookup silently re-litigates settled work. The covered-domain map is the entry point — seeing a
+relevant domain there is the trigger to go look.
+
 ## CodeGraph code index
 
 CodeGraph is installed as the local code-structure index for this checkout. Use it for

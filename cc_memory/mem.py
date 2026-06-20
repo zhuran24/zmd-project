@@ -109,6 +109,28 @@ def touch_watermark(con: sqlite3.Connection, session_id: str) -> None:
     )
 
 
+def cross_session_preamble(con: sqlite3.Connection, session_id: str) -> None:
+    """Print unread changes by OTHER sessions since this session's watermark,
+    WITHOUT advancing it (design B: only `boot` marks them read). Query commands
+    call this so ANY lookup surfaces concurrent writes. Best-effort — a notice
+    must never break the host command."""
+    try:
+        delta = session_delta(con, session_id)
+    except Exception:
+        return
+    if not delta:  # None (fresh, no baseline) or [] (caught up) -> stay quiet
+        return
+    print(
+        f"## Heads-up — {len(delta)} unread change(s) by OTHER sessions since your "
+        f"last boot (run `boot` to review + mark read):"
+    )
+    for m in delta[:20]:
+        print(f"  - [{(m['session_id'] or '')[:8]}] {m['op']} {m['target_type']}:{m['target_id']}  ({m['created_at']})")
+    if len(delta) > 20:
+        print(f"  - ... {len(delta) - 20} more")
+    print("")
+
+
 def get_meta(con: sqlite3.Connection, key: str, default: str = "") -> str:
     row = con.execute("SELECT value FROM meta WHERE key=?", (key,)).fetchone()
     return row["value"] if row else default
@@ -1475,6 +1497,7 @@ def cmd_boot(args: argparse.Namespace) -> int:
 
 def cmd_search(args: argparse.Namespace) -> int:
     con = connect(args.db)
+    cross_session_preamble(con, session_id_for(args))
     q = f"%{args.query}%"
     rows: list[tuple[str, str, str]] = []
     for r in con.execute("SELECT id,value FROM facts WHERE id LIKE ? OR value LIKE ? OR subject LIKE ? OR predicate LIKE ? ORDER BY id LIMIT ?", (q, q, q, q, args.limit)):
@@ -1492,6 +1515,7 @@ def cmd_search(args: argparse.Namespace) -> int:
 
 def cmd_read(args: argparse.Namespace) -> int:
     con = connect(args.db)
+    cross_session_preamble(con, session_id_for(args))
     resolved = resolve_node(con, args.node)
     if not resolved:
         print(f"unknown node: {args.node}")
@@ -1536,6 +1560,7 @@ def cmd_read(args: argparse.Namespace) -> int:
 
 def cmd_impact(args: argparse.Namespace) -> int:
     con = connect(args.db)
+    cross_session_preamble(con, session_id_for(args))
     resolved = resolve_node(con, args.node)
     if not resolved:
         print(f"unknown node: {args.node}")
@@ -1568,6 +1593,7 @@ def _suggestion_lines(suggestions: list[dict[str, Any]], *, limit: int = 12) -> 
 def cmd_suggest(args: argparse.Namespace) -> int:
     con = connect(args.db)
     init_schema(con)
+    cross_session_preamble(con, session_id_for(args))
     body = args.body or ""
     if args.body_file:
         body = args.body_file.read_text(encoding="utf-8")

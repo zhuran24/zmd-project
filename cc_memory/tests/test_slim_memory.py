@@ -41,6 +41,38 @@ class SlimMemoryTests(unittest.TestCase):
             cwd=ROOT, text=True, capture_output=True, timeout=timeout, env=full_env,
         )
 
+    def test_cross_session_preamble_on_query(self) -> None:
+        # design B: query commands surface unread cross-session changes WITHOUT
+        # advancing the watermark; only boot marks them read.
+        # fresh session (no watermark) -> silent, there is no baseline to delta against.
+        r = self.run_mem('search', '记忆', env={'CLAUDE_CODE_SESSION_ID': 'TESTfresh-no-watermark'})
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertNotIn('Heads-up', r.stdout)
+
+        test_sid = 'TESTbehind-watermark'
+        with sqlite3.connect(self.db) as con:
+            maxid = con.execute('SELECT COALESCE(MAX(id),0) FROM mutations').fetchone()[0]
+            if maxid == 0:
+                self.skipTest('temp db has no mutations to delta against')
+            con.execute(
+                'INSERT INTO read_watermarks(session_id,last_seen_mutation_id,last_query_at) VALUES(?,?,?)',
+                (test_sid, 0, '2026-01-01T00:00:00Z'),
+            )
+            con.commit()
+
+        behind = {'CLAUDE_CODE_SESSION_ID': test_sid}
+        r2 = self.run_mem('search', '记忆', env=behind)
+        self.assertEqual(r2.returncode, 0, r2.stderr)
+        self.assertIn('Heads-up', r2.stdout)
+        self.assertIn('unread change', r2.stdout)
+
+        # design B core: a query command must NOT advance the watermark.
+        with sqlite3.connect(self.db) as con:
+            wm = con.execute(
+                'SELECT last_seen_mutation_id FROM read_watermarks WHERE session_id=?', (test_sid,)
+            ).fetchone()[0]
+        self.assertEqual(wm, 0, 'query command must not advance the watermark (design B)')
+
     def fake_embedding_env(self) -> dict[str, str]:
         fake_root = self.tmp / 'fake_embed_runtime'
         fake_st = fake_root / 'sentence_transformers'
