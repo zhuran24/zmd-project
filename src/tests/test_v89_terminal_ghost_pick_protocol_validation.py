@@ -11,8 +11,10 @@ from src.search.certified_frontier import (
 )
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
+from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -59,7 +61,7 @@ def _write_project(root: Path) -> None:
             {
                 "instance_id": "solid_001",
                 "facility_type": "solid",
-                "operation_type": "solid_op",
+                "operation_type": "",
                 "is_mandatory": True,
                 "bound_type": "exact",
                 "solve_modes": ["certified_exact"],
@@ -180,6 +182,11 @@ def test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anch
 def test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor(
     tmp_path: Path,
 ) -> None:
+    # ④b sink replay: a CERTIFIED candidate is only a claim until an isolated
+    # solver re-derives it.  The bound ghost-pick anchor still has to be accepted,
+    # so build a truly solvable toy project (grid 3x3, single 1x1 mandatory),
+    # attach the data-only replay request, and let the isolated replay reproduce
+    # the 2x3 CERTIFIED conclusion before the validator accepts it.
     state = _terminal_state(
         tmp_path,
         {
@@ -192,5 +199,26 @@ def test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor(
             },
         },
     )
+    campaign = ExactCampaign.load_or_create(tmp_path, campaign_hours=1.0, resume=False)
+    # Merge the hand-built terminal evidence into the campaign-bound state so the
+    # replay proof binds to the campaign context the validator independently
+    # reconstructs.
+    for field in (
+        "final_result",
+        "final_status",
+        "last_stop_reason",
+        "candidates",
+        "terminal_frontier_evidence",
+        "declare_mode",
+    ):
+        campaign.state[field] = state[field]
+    seal_test_candidate_status(campaign, "2x3", "CERTIFIED")
 
-    assert terminal_certified_final_result_violation_for_project(state, project_root=tmp_path) is None
+    assert (
+        terminal_certified_final_result_violation_for_project(
+            campaign.state,
+            project_root=tmp_path,
+            campaign_path=campaign.path,
+        )
+        is None
+    )
