@@ -1,7 +1,16 @@
 # 04. Proof-bearing sink inventory audit
 
 review_anchor: `v99_p1_2_close_kernel_sealing`
-sink_count: `50`
+sink_count: `52`
+
+> Updated 2026-06-20 for the C1 cut-island reclassification. The headline
+> classification/obligation counts below reflect the current 52-sink manifest.
+> The eight `src/cuts/*` sinks moved from `p1_2_certified_path` to
+> `out_of_scope_future_phase3b`; obligation_ids are unchanged, so the obligation
+> counts are unchanged. The detailed per-sink listing further down predates later
+> hardening reseals and is a point-in-time snapshot (its `sha256 prefix` column is
+> stale and `src/cuts/cert_schema.py` is not yet enumerated there); the
+> authoritative live inventory is `data/proof_obligations/p1_2_proof_obligations.json`.
 
 ## Scan contract
 
@@ -18,7 +27,8 @@ Excluded paths are limited to test/non-authority or out-of-scope trees. Core sou
 | diagnostic_or_telemetry_non_authority | 2 |
 | exploratory_or_heuristic_non_authority | 1 |
 | non_authoritative_projection | 11 |
-| p1_2_certified_path | 29 |
+| out_of_scope_future_phase3b | 8 |
+| p1_2_certified_path | 23 |
 | p1_2_close_kernel | 1 |
 | p1_2_public_surface | 6 |
 
@@ -26,7 +36,8 @@ Excluded paths are limited to test/non-authority or out-of-scope trees. Core sou
 
 | obligation | count |
 |---|---|
-| PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS | 20 |
+| PO-CANDIDATE-SINK-REPLAY-AUTHORITY | 1 |
+| PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS | 21 |
 | PO-CERTIFIED-EXPORT-SURFACE | 17 |
 | PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE | 4 |
 | PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS | 4 |

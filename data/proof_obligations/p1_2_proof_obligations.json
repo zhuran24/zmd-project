@@ -692,7 +692,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "b970d8bc082ee33ef4b71ee1df90b573a33fc9395ebebcd6a715a1b9953cc538",
+        "source_sha256": "a0849188ad6571dba5422495a3092a4eceb071081725b708f772627de005be66",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -723,7 +723,7 @@
       },
       {
         "path": "src/cuts/cert_schema.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "source_sha256": "e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim",
@@ -743,7 +743,7 @@
       },
       {
         "path": "src/cuts/families/pattern_nogood.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "terms": [
           "INFEASIBLE"
@@ -756,7 +756,7 @@
       },
       {
         "path": "src/cuts/helpers/bounded_core_minimizer.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "terms": [
           "INFEASIBLE"
@@ -769,7 +769,7 @@
       },
       {
         "path": "src/cuts/lifecycle.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-STEP7-ATTACH-MIRROR",
         "terms": [
           "proof-bearing"
@@ -782,7 +782,7 @@
       },
       {
         "path": "src/cuts/oracles/pattern_nogood_oracle.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "terms": [
           "INFEASIBLE"
@@ -795,7 +795,7 @@
       },
       {
         "path": "src/cuts/oracles/power_cover_oracle.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "terms": [
           "INFEASIBLE"
@@ -808,7 +808,7 @@
       },
       {
         "path": "src/cuts/oracles/region_capacity_oracle.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "terms": [
           "INFEASIBLE"
@@ -821,7 +821,7 @@
       },
       {
         "path": "src/cuts/oracles/shape_packing_hall_oracle.py",
-        "classification": "p1_2_certified_path",
+        "classification": "out_of_scope_future_phase3b",
         "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
         "terms": [
           "INFEASIBLE"
