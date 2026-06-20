@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 19
-- entries: 48
+- entries: 49
 - hard edges: 16
 - pending relation suggestions: 29
 
@@ -54,6 +54,7 @@ python cc_memory/mem.py boot
 - `cc-memory-search-is-substring-like-20260620` — cc_memory 的 search(cmd_search)不是FTS、不分词,是 LIKE %整个查询串% 纯子串匹配。单个词中英都正常命中(实测 search '离线'/'标记文件' OK),多词查询会被当成一整个带空格字面串而落空(英文也一样)→用法问题非中文问题…
 - `clipboard-relay-deliverables-to-owner` — owner 2026-06-20偏好:产出需owner手动relay的交付物(典型=给GPT Pro网页端的快照文件+任务书)时直接Set-Clipboard塞进剪贴板——文件类放路径文本、提示词/文章类放全文;owner剪贴板有历史(Win+V)可连着放多个、从历史翻找。省去owner开文件复制
 - `close-kernel-necessity-verdict-20260619` — 会议裁决建议(待 owner):V99 close-kernel ≈ 被 frame 成闭合系统的 sink hash-pin lint;④a核心+三自保字段真必要该CI化,闭合/技术封口叙事该砍;最危险=虚假安全感(绿灯掩盖算法层);当前子串扫描连对抗漂移都没兑现,先升AST+建consumer map
+- `codex-claude-codex-claude-4-1-high` — owner 2026-06-21 当场纠正 + 实证。规矩(承 [[feedback-default-codex-desktop-mcp]]):**实现工作交 Codex(`mcp__codex_desktop__codex`)…
 - `codex-executes-claude-orchestrates` — 默认分工:具体工作/实现默认交给 codex 执行（它全权限、听指令，按提示词干活）；claude（我）负责周边任务——任务分配/编排、审阅、对抗式验证、最终验收等。即 codex = 执行体，claude = 协调与把关。owner 2026-06-17 定。
 - `codex-needs-explicit-read-memory` — 本项目里 codex agent / 子代理不会主动读 CLAUDE.md 或 cc_memory 记忆系统。每次调用 codex（Agent 工具 agentType:codex / Workflow 内 agentType…
 - `codex-pj-dual-repo-state` — 2026-06-20:claude pj canonical已push origin/main=91476ae(边界a5ff5aa+C1 91476ae);codex pj留备份(owner定留到C3做完)停895dee5缺C1+cc_memory基础设施…
