@@ -16,11 +16,13 @@ from src.search.exact_campaign import (
     CAMPAIGN_SCHEMA_VERSION,
     PROOF_SUMMARY_SCHEMA_VERSION,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    ExactCampaign,
     _default_master_domain_contract,
     compute_exact_artifact_hashes,
     terminal_certified_final_result_violation_for_project,
 )
 from src.search.outer_search import _build_certified_result
+from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -57,7 +59,7 @@ def _terminal_state_without_ghost_anchor(project_root: Path) -> tuple[dict, dict
         {
             "instance_id": "solid_001",
             "facility_type": "solid",
-            "operation_type": "solid_op",
+            "operation_type": "",
             "is_mandatory": True,
             "bound_type": "exact",
             "solve_modes": ["certified_exact"],
@@ -175,25 +177,88 @@ def test_outer_search_certified_result_carries_ghost_anchor() -> None:
 
 
 def test_terminal_solution_match_ignores_candidate_record_ghost_marker(tmp_path: Path) -> None:
+    # ④b sink replay: the CERTIFIED 3x2 candidate must be re-derived by an
+    # isolated solver before the validator accepts it.  The test's point is that
+    # the candidate record's stored ghost_pick marker is ignored by the terminal
+    # solution-match comparison; that must still hold once the claim survives a
+    # real replay.  On this toy 3x3 project both 3x2 and 2x3 are genuinely
+    # CERTIFIED (tied objective); the generation order makes 3x2 the best, which
+    # matches final_result.
     state, _facility_pools = _terminal_state_without_ghost_anchor(tmp_path)
-    state["final_result"]["ghost_rect"] = {"w": 3, "h": 2, "area": 6, "anchor_x": 0, "anchor_y": 1}
-    certified_record = state["candidates"]["3x2"]
-    certified_record["solution"] = {
-        **state["final_result"]["placement_solution"],
-        "ghost_pick": {
-            "facility_type": "ghost_rect",
-            "pose_idx": 1,
-            "pose_id": "ghost_anchor::0,1",
-            "anchor": {"x": 0, "y": 1},
-        },
+    placement_solution = state["final_result"]["placement_solution"]
+    final_result = {
+        "search_status": "CERTIFIED",
+        "ghost_rect": {"w": 3, "h": 2, "area": 6, "anchor_x": 0, "anchor_y": 1},
+        "placement_solution": placement_solution,
+        "search_stats": {},
     }
     candidate_generation = dict(state["terminal_frontier_evidence"]["candidate_generation"])
     candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
-    state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+    # Replay-consistent candidate set: keep only the genuinely-CERTIFIED tied
+    # rectangles.  The 3x2 record carries an extra ghost_pick marker that the
+    # terminal solution-match comparison must strip/ignore.
+    candidate_records = {
+        "3x2": {
+            "ghost_rect": {"w": 3, "h": 2, "area": 6},
+            "attempts": 1,
+            "started_at": "2026-06-10T00:00:00Z",
+            "updated_at": "2026-06-10T00:00:01Z",
+            "finished_at": "2026-06-10T00:00:01Z",
+            "status": "CERTIFIED",
+            "solution": {
+                **placement_solution,
+                "ghost_pick": {
+                    "facility_type": "ghost_rect",
+                    "pose_idx": 1,
+                    "pose_id": "ghost_anchor::0,1",
+                    "anchor": {"x": 0, "y": 1},
+                },
+            },
+            "proof_summary": {"test": "v88_ignore_ghost_marker"},
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        },
+        "2x3": {
+            "ghost_rect": {"w": 2, "h": 3, "area": 6},
+            "attempts": 1,
+            "started_at": "2026-06-10T00:00:00Z",
+            "updated_at": "2026-06-10T00:00:01Z",
+            "finished_at": "2026-06-10T00:00:01Z",
+            "status": "CERTIFIED",
+            "solution": dict(placement_solution),
+            "proof_summary": {"test": "v88_ignore_ghost_marker"},
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        },
+    }
+    terminal_frontier_evidence = build_terminal_frontier_evidence(
         candidates=candidates,
-        candidate_records=state["candidates"],
-        final_result=state["final_result"],
+        candidate_records=candidate_records,
+        final_result=final_result,
         candidate_generation=candidate_generation,
     )
 
-    assert terminal_certified_final_result_violation_for_project(state, project_root=tmp_path) is None
+    campaign = ExactCampaign.load_or_create(tmp_path, campaign_hours=1.0, resume=False)
+    campaign.state["final_result"] = final_result
+    campaign.state["final_status"] = "CERTIFIED"
+    campaign.state["last_stop_reason"] = {
+        "status": "CERTIFIED",
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "updated_at": "2026-06-10T00:00:02Z",
+    }
+    campaign.state["terminal_frontier_evidence"] = terminal_frontier_evidence
+    campaign.state["declare_mode"] = "strict"
+    campaign.state["candidates"] = candidate_records
+    seal_test_candidate_status(campaign, "3x2", "CERTIFIED")
+    seal_test_candidate_status(campaign, "2x3", "CERTIFIED")
+
+    assert (
+        terminal_certified_final_result_violation_for_project(
+            campaign.state,
+            project_root=tmp_path,
+            campaign_path=campaign.path,
+        )
+        is None
+    )

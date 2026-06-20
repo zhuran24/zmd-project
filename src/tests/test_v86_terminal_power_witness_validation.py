@@ -11,8 +11,10 @@ from src.search.certified_frontier import (
 )
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
+from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -71,7 +73,7 @@ def _write_power_project(root: Path, *, include_selected_covering_pole: bool) ->
         {
             "instance_id": "sink_001",
             "facility_type": "powered_sink",
-            "operation_type": "sink_op",
+            "operation_type": "",
             "is_mandatory": True,
             "bound_type": "exact",
             "solve_modes": ["certified_exact"],
@@ -174,6 +176,32 @@ def test_terminal_project_validator_rejects_powered_facility_without_selected_po
 def test_terminal_project_validator_accepts_selected_power_coverer(
     tmp_path: Path,
 ) -> None:
+    # ④b sink replay: the CERTIFIED 1x1 witness (which selects the covering power
+    # pole) must be independently re-derived by an isolated solver before the
+    # validator accepts it.  The acceptance of a selected power coverer must still
+    # hold under that replay.  On this toy 3x1 project 1x1 is genuinely CERTIFIED
+    # (anchor 2,0) and 2x1 is genuinely INFEASIBLE, so every strong record is
+    # replay-consistent.
     state = _write_power_project(tmp_path, include_selected_covering_pole=True)
 
-    assert terminal_certified_final_result_violation_for_project(state, project_root=tmp_path) is None
+    campaign = ExactCampaign.load_or_create(tmp_path, campaign_hours=1.0, resume=False)
+    for field in (
+        "final_result",
+        "final_status",
+        "last_stop_reason",
+        "candidates",
+        "terminal_frontier_evidence",
+        "declare_mode",
+    ):
+        campaign.state[field] = state[field]
+    for key, record in campaign.state["candidates"].items():
+        seal_test_candidate_status(campaign, key, str(record["status"]))
+
+    assert (
+        terminal_certified_final_result_violation_for_project(
+            campaign.state,
+            project_root=tmp_path,
+            campaign_path=campaign.path,
+        )
+        is None
+    )

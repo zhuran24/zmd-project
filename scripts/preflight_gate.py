@@ -692,13 +692,19 @@ def check_ruff(gate: GateResult) -> None:
 
 
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
-    label = "全量" if full else "核心门禁"
+    label = ("全量" if full else "核心门禁") + " · 跳过 @slow"
     print(f"\n[18/18] 测试门禁（{label}）")
     test_target = "src/tests/" if full else None
     test_files = None if full else CORE_TEST_FILES
-    timeout = 600 if full else 120
+    timeout = 1200 if full else 120
 
     cmd = [sys.executable, "-m", "pytest", "-q", "--tb=short", "--no-header"]
+    # 慢测试(@pytest.mark.slow)由专用慢 lane (preflight_gate.py --slow-tests) 用长超时真跑;
+    # 快 gate 用 -m "not slow" 跳过它们, 否则慢集成测试会撑爆 120s/600s 超时、把失败掩盖掉
+    # —— 这正是让 ④b-stale 测试藏住的 C5 done-condition 盲区根因。
+    # -n auto: 剔掉慢测试后快 lane 全是隔离单元测试, pytest-xdist 跨核并行(实测 CORE
+    # 92s→23s, ~4x), 用满硬件 + 给 120s 留足余量。慢 lane 刻意不并行(见 check_slow_tests)。
+    cmd += ["-m", "not slow", "-n", "auto"]
     if test_files:
         existing = [f for f in test_files if (PROJECT_ROOT / f).exists()]
         if not existing:
@@ -741,41 +747,87 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
         gate.warn("pytest 不可用，跳过测试")
 
 
-def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_ref: str | None = None, changed_files_from: Path | None = None) -> int:
+def check_slow_tests(gate: GateResult) -> None:
+    # 专用慢 soundness lane: 跑 @pytest.mark.slow 的重型集成测试, 用长超时真跑到完成。
+    # 堵住「快 gate 超时吞掉慢 soundness 测试失败」的 C5 盲区 —— CI / 阶段收口前必须跑、
+    # 且必须看它的 pass/fail。刻意不并行(-n): 这些测试自身会 spawn 子进程(parallel
+    # scheduler / ④b 隔离 `python -I` replay), xdist 叠加会过度订阅 CPU/内存、放大 ④b
+    # replay 的偶发降级(harness flaky, 见 task #13)。提速到 xdist 需先根因那个 flaky。
+    print("\n[slow] 慢 soundness 测试 lane（-m slow, 长超时, 串行)")
+    timeout = 2400
+    cmd = [
+        sys.executable, "-m", "pytest", "-q", "--tb=short", "--no-header",
+        "-m", "slow", "src/tests",
+    ]
+    pytest_env = os.environ.copy()
+    for runtime_env in (
+        "EXACT_OUTER_SKIP_UNKNOWN",
+        "EXACT_BINDING_DUMP_STATE",
+        "EXACT_MASTER_HINT_PERSISTENCE",
+        "EXACT_BINDING_USE_OVERLOAD_SEPARATION",
+    ):
+        pytest_env.pop(runtime_env, None)
+    try:
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT),
+            timeout=timeout, env=pytest_env,
+        )
+        last_lines = [line for line in result.stdout.splitlines() if line.strip()][-3:]
+        summary_line = last_lines[-1] if last_lines else ""
+        if result.returncode == 0:
+            gate.ok(f"pytest (slow): {summary_line}")
+        elif result.returncode == 5:
+            gate.warn("pytest (slow): 未收集到 @slow 测试 — 标记缺失? (慢 lane 形同虚设)")
+        else:
+            gate.block(f"pytest (slow) 失败 (exit={result.returncode}): {summary_line}")
+            if result.stdout:
+                for line in result.stdout.splitlines()[-15:]:
+                    print(f"         {line}")
+    except subprocess.TimeoutExpired:
+        gate.block(f"pytest (slow) 超时 (>{timeout}s)")
+    except FileNotFoundError:
+        gate.warn("pytest 不可用，跳过慢测试")
+
+
+def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, slow_tests: bool = False, base_ref: str | None = None, changed_files_from: Path | None = None) -> int:
     print("=" * 60)
     print("Preflight Gate — 提交前门禁检查")
     print("=" * 60)
     global STRICT_TOOL_TIMEOUTS
     STRICT_TOOL_TIMEOUTS = ci
     configure_change_scope(ci=ci, base_ref=base_ref, changed_files_from=changed_files_from)
-    mode = "full" if full else ("ci" if ci else ("hook" if hook else "staged"))
+    mode = "slow-tests" if slow_tests else ("full" if full else ("ci" if ci else ("hook" if hook else "staged")))
     print(f"模式: {mode}")
     print(f"变更范围: {CHANGE_SCOPE_LABEL}")
 
     gate = GateResult()
 
-    check_frozen_artifacts(gate)
-    check_external_artifact_manifest(gate)
-    check_forbidden_paths(gate)
-    check_ai_safety_contract(gate)
-    check_exact_exploratory_isolation(gate)
-    check_research_audit_coverage(gate)
-    check_line_ending_policy(gate)
-    check_publish_secret_scan(gate)
-    check_artifact_boundaries(gate)
-    check_phase_review_gate(gate)
-    check_p1_2_proof_obligations(gate)
-    check_cc_memory_consistency(gate)
-    check_strong_status_write_allowlist(gate)
-    check_mypy(gate)
-    check_ruff(gate)
-
-    if full:
-        check_tests(gate, full=True)
-    elif hook:
-        check_tests(gate, full=False)
+    if slow_tests:
+        # 专用慢 soundness lane (CI / 阶段收口前): 只跑 @slow 重型测试, 长超时真跑到完成。
+        check_slow_tests(gate)
     else:
-        check_tests(gate, full=False)
+        check_frozen_artifacts(gate)
+        check_external_artifact_manifest(gate)
+        check_forbidden_paths(gate)
+        check_ai_safety_contract(gate)
+        check_exact_exploratory_isolation(gate)
+        check_research_audit_coverage(gate)
+        check_line_ending_policy(gate)
+        check_publish_secret_scan(gate)
+        check_artifact_boundaries(gate)
+        check_phase_review_gate(gate)
+        check_p1_2_proof_obligations(gate)
+        check_cc_memory_consistency(gate)
+        check_strong_status_write_allowlist(gate)
+        check_mypy(gate)
+        check_ruff(gate)
+
+        if full:
+            check_tests(gate, full=True)
+        elif hook:
+            check_tests(gate, full=False)
+        else:
+            check_tests(gate, full=False)
 
     print("\n" + "=" * 60)
     verdict = "BLOCKED" if gate.blockers else ("PASSED (with warnings)" if gate.warnings else "PASSED")
@@ -790,13 +842,14 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, base_r
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Preflight gate — 提交前门禁检查")
-    parser.add_argument("--full", action="store_true", help="全量检查（含 pytest）")
+    parser.add_argument("--full", action="store_true", help="全量检查（含 pytest, -m 'not slow'）")
     parser.add_argument("--hook", action="store_true", help="作为 git pre-commit hook 运行（快速模式）")
     parser.add_argument("--ci", action="store_true", help="按 base...HEAD diff 运行 PR/CI 变更范围检查")
+    parser.add_argument("--slow-tests", action="store_true", help="只跑专用慢 soundness 测试 lane（-m slow, 长超时, 串行；CI/阶段收口前必跑）")
     parser.add_argument("--base-ref", default=None, help="CI diff base ref/SHA，默认 origin/main")
     parser.add_argument("--changed-files-from", type=Path, default=None, help="从文件读取变更路径列表，每行一个 repo-relative path")
     args = parser.parse_args()
-    sys.exit(run_gate(full=args.full, hook=args.hook, ci=args.ci, base_ref=args.base_ref, changed_files_from=args.changed_files_from))
+    sys.exit(run_gate(full=args.full, hook=args.hook, ci=args.ci, slow_tests=args.slow_tests, base_ref=args.base_ref, changed_files_from=args.changed_files_from))
 
 
 if __name__ == "__main__":
