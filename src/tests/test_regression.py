@@ -517,6 +517,16 @@ def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -
     assert exact_core_profile["proto_constraints"] < 280631
 
 
+@pytest.mark.xfail(
+    reason=(
+        "PREMISE-OBSOLETE under P1.2 ④b sink-replay. 本测试断言 resume 不重调 solver "
+        "(calls == []), 但 ④b 故意在 resume 时用隔离子进程重验候选强状态。正确的 ④b 契约 "
+        "(resume 先 drop 再经 fresh replay 重建) 已由 test_exact_campaign_state_soundness::"
+        "test_campaign_resume_requires_fresh_replay_for_proof_bearing_candidates 与 "
+        "::test_resume_drops_certified_statuses_before_terminal_certified_reuse 覆盖。"
+        "待 owner 拍: remove-as-superseded vs rewrite。见 task #13 / cc_memory。"
+    ),
+)
 def test_campaign_resume_reconstructs_frontier_without_reinvoking_solver(
     monkeypatch,
     tmp_path: Path,
@@ -840,6 +850,18 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
     assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
 
 
+@pytest.mark.xfail(
+    reason=(
+        "PREMISE-OBSOLETE under P1.2 ④b sink-replay. 并行半边断言 CERTIFIED 候选能熬过一次 "
+        "resume-load, 但 ④b 的 resume 把落盘强状态 sanitize 成 UNKNOWN "
+        "(_sanitize_resume_state_for_untrusted_candidate_evidence)。该 sanitize 契约已由 "
+        "test_exact_campaign_state_soundness::test_resume_drops_certified_statuses_before_"
+        "terminal_certified_reuse 覆盖。另: 真·fixture 重写时还暴露一个 ④b 健壮性疑点 — "
+        "隔离 replay 单跑能复现 CERTIFIED 但在 pytest harness 下偶发降级 (SAFE: 只降 UNKNOWN、"
+        "绝不假 CERTIFIED)。待 owner 拍: remove-as-superseded vs rewrite + 根因那个 harness "
+        "flaky。见 task #13 / cc_memory。"
+    ),
+)
 def test_parallel_and_serial_preserve_same_best_certified_result(
     monkeypatch,
     tmp_path: Path,
