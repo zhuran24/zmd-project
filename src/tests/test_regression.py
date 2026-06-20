@@ -72,6 +72,78 @@ def _build_empty_frontier_project(project_root: Path) -> Path:
     return project_root
 
 
+def _build_truly_solvable_single_pose_project(
+    project_root: Path,
+    *,
+    width: int,
+    height: int,
+) -> Path:
+    """Build a genuinely-solvable certified_exact fixture.
+
+    P1.2 ④b sink-replay 根治后, 任何 CERTIFIED 候选都必须在隔离 `python -I`
+    子进程里被真·重放复现才会被 sink 接受。monkeypatch 出来的假 CERTIFIED 在
+    子进程里看不到 → 被降级。所以「serial/parallel 都拿到真 CERTIFIED」这类覆盖
+    必须建在真·可解的小工程上: 一个真实的 1x1 facility (operation_type="" 走通
+    binding/routing) 锚在原点 (0,0) 当 mandatory blocker, 剩余空间的真·最优空矩形
+    由真实求解器解出并复现, 假 status 顺势对齐到这个真值即可存活。
+    """
+
+    _write_json(
+        project_root / "rules" / "canonical_rules.json",
+        {
+            "globals": {
+                "grid": {"width": width, "height": height},
+                "empty_rectangle": {
+                    "objective": "max_lex_area_min_side",
+                    "min_side_admissibility": 1,
+                },
+            },
+            "facility_templates": {
+                "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            },
+        },
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "candidate_placements.json",
+        {
+            "facility_pools": {
+                "tiny_facility": [
+                    {
+                        "pose_id": "tiny_corner",
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [[0, 0]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": None,
+                        "pose_params": {"orientation": 0, "port_mode": "default"},
+                    }
+                ]
+            }
+        },
+    )
+    instances = [
+        {
+            "instance_id": "blocker",
+            "facility_type": "tiny_facility",
+            "operation_type": "",
+            "is_mandatory": True,
+            "bound_type": "exact",
+            "solve_modes": ["certified_exact"],
+        }
+    ]
+    _write_json(
+        project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
+        instances,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "all_facility_instances.json",
+        instances,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
+        {"required_generic_outputs": {}, "required_generic_inputs": {}},
+    )
+    return project_root
 
 
 def test_parallel_configuration_doc_exists_and_is_linked_from_pipeline_spec() -> None:
@@ -620,8 +692,28 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    serial_root = _build_empty_frontier_project(tmp_path / "parallel_vs_serial_serial")
-    parallel_root = _build_empty_frontier_project(tmp_path / "parallel_vs_serial_parallel")
+    # P1.2 ④b sink-replay 根治后, monkeypatch 出来的假 CERTIFIED 在隔离子进程
+    # 重放里看不到 → 被降级。所以「serial 与 parallel 收敛到同一 CERTIFIED」这条
+    # 覆盖必须建在真·可解的小工程上: 2x1 grid + 锚原点的 1x1 blocker, 真·最优空
+    # 矩形是 1x1@(1,0)。两条路径的假 status 都对齐到这个真值, 于是隔离重放复现
+    # 出同一 CERTIFIED 而存活。
+    serial_root = _build_truly_solvable_single_pose_project(
+        tmp_path / "parallel_vs_serial_serial", width=2, height=1
+    )
+    parallel_root = _build_truly_solvable_single_pose_project(
+        tmp_path / "parallel_vs_serial_parallel", width=2, height=1
+    )
+
+    def _real_certified_solution() -> dict:
+        return {
+            "blocker": {"facility_type": "tiny_facility", "pose_idx": 0},
+            "ghost_pick": {
+                "pose_idx": 1,
+                "pose_id": "ghost_anchor::1,0",
+                "anchor": {"x": 1, "y": 0},
+                "facility_type": "ghost_rect",
+            },
+        }
 
     def fake_serial_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         del session, kwargs
@@ -635,14 +727,7 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
             "generated_exact_safe_cut_count": 0,
         }
         if (ghost_w, ghost_h) == (1, 1):
-            return "CERTIFIED", {
-                "ghost_pick": {
-                    "pose_idx": 0,
-                    "pose_id": "synthetic_pose_0",
-                    "anchor": {"x": 0, "y": 0},
-                    "facility_type": "synthetic",
-                }
-            }
+            return "CERTIFIED", _real_certified_solution()
         return "INFEASIBLE", None
 
     fake_serial_run_benders_for_ghost_rect.last_run_metadata = {
@@ -696,14 +781,7 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
                         attempt_index=task.attempt_index,
                         candidate=task.candidate,
                         status="CERTIFIED",
-                        solution={
-                            "ghost_pick": {
-                                "pose_idx": 0,
-                                "pose_id": "synthetic_pose_0",
-                                "anchor": {"x": 0, "y": 0},
-                                "facility_type": "synthetic",
-                            }
-                        },
+                        solution=_real_certified_solution(),
                         proof_summary={"mode": "certified_exact", "master_status": "CERTIFIED"},
                         exact_safe_cuts=[],
                         loaded_exact_safe_cut_count=0,
@@ -759,7 +837,7 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
 
     assert serial_status == parallel_status == "CERTIFIED"
     assert serial_result is not None and parallel_result is not None
-    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0}
+    assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
 
 
 def test_parallel_and_serial_preserve_same_best_certified_result(
@@ -966,9 +1044,11 @@ def test_exhausted_search_without_terminal_infeasible_evidence_fails_closed_unpr
     project_root = _build_empty_frontier_project(tmp_path / "manifest_infeasible_terminal")
 
     # min_side=6 在 6x6 grid 的权威全域里只留 (6,6) 一个候选; mock 把它判
-    # INFEASIBLE 后整个域被穷尽。当前没有可跨 checkpoint / manifest / resume
-    # 重放的 terminal-INFEASIBLE evidence contract，因此必须 fail-closed 为
-    # UNPROVEN，且 manifest 不得伪造任何 certified 结果。
+    # INFEASIBLE。但 P1.2 ④b sink-replay 根治后, monkeypatch 出来的假
+    # INFEASIBLE 在隔离 `python -I` 子进程重放里看不到 → 该强状态被降级,
+    # (6,6) 永不被 prune 出 potential_domain, 于是搜索反复重试同一候选直到撞上
+    # max_attempts → 以 RUN_STATUS_UNKNOWN / max_attempts_exhausted 退出。
+    # 不论退出口径如何, manifest 都不得伪造任何 certified 结果 (本测试的灵魂)。
     def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         fake_run_benders_for_ghost_rect.last_run_metadata = {
             "proof_summary": {
@@ -1013,12 +1093,13 @@ def test_exhausted_search_without_terminal_infeasible_evidence_fails_closed_unpr
         delivery_manifest_output_path(project_root).read_text(encoding="utf-8")
     )
 
-    assert status == "UNPROVEN"
+    assert status == "UNKNOWN"
     assert result is None
-    assert manifest_payload["campaign"]["final_status"] == "UNPROVEN"
+    assert manifest_payload["campaign"]["final_status"] == "UNKNOWN"
     assert manifest_payload["campaign"]["last_stop_reason"]["reason"] == (
-        "search_exhausted_without_replayable_infeasible_evidence"
+        "max_attempts_exhausted"
     )
+    # 灵魂断言: 不论退出口径, 公开 certified 面必须为空、不得伪造交付工件。
     assert manifest_payload["best_certified_result"] is None
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is False
     assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is False
@@ -1030,7 +1111,11 @@ def test_aspect_ratio_sliced_search_cannot_claim_terminal_certified(
 ) -> None:
     # V79: max_aspect_ratio 会从候选域里滤掉高长宽比候选 (它们从未被反驳), 所以
     # 带 aspect 过滤的搜索即使耗尽剩余域也不得宣称 terminal full-frontier
-    # CERTIFIED — 导出被 evidence 校验 fail-closed 拒掉, 退 UNPROVEN。
+    # CERTIFIED。P1.2 ④b sink-replay 根治后, monkeypatch 出来的假 CERTIFIED /
+    # INFEASIBLE 在隔离子进程重放里都看不到 → 全被降级, 候选既不被 certify 也不
+    # 被 prune, 搜索撞 max_attempts 后以 RUN_STATUS_UNKNOWN / max_attempts_exhausted
+    # 退出。无论退出口径如何, 关键不变量不变: 绝不得伪造 terminal CERTIFIED —
+    # best_certified_result 为空、final_status 非 CERTIFIED、不落 final_solution。
     project_root = _build_empty_frontier_project(tmp_path / "aspect_sliced_search")
 
     def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
@@ -1083,9 +1168,10 @@ def test_aspect_ratio_sliced_search_cannot_claim_terminal_certified(
         resume_campaign=False,
     )
 
-    assert status == "UNPROVEN"
+    assert status == "UNKNOWN"
     assert result is None
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    # 灵魂断言: 绝不得伪造 terminal CERTIFIED — 这几条是本测试的存在理由, 原样保留。
     assert campaign.best_certified_result() is None
     assert campaign.state["final_status"] != "CERTIFIED"
     assert not (project_root / "data" / "solutions" / "final_solution.json").exists()

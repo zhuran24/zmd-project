@@ -80,19 +80,66 @@ def _build_origin_blocked_frontier_project(
     width: int = 6,
     height: int = 6,
 ) -> Path:
-    _build_empty_frontier_project(project_root, width=width, height=height)
+    # P1.2 ④b sink-replay 根治后, 任何 CERTIFIED 候选都必须在隔离 `python -I`
+    # 子进程里被真·重放复现, 才会被 sink 接受。所以这个 fixture 必须是「真·可解」
+    # 的: 用真实的 1x1 facility (operation_type="" 走通 binding/routing) + 单个
+    # 锚在原点 (0,0) 的 mandatory 实例, 让真实求解器真的能把它解出来。原来的
+    # 合成 facility (operation_type="op") 在真实求解里会 KeyError 崩溃, 子进程
+    # 重放失败 → 强状态被降级, 测试拿不到真 CERTIFIED。
+    _write_json(
+        project_root / "rules" / "canonical_rules.json",
+        {
+            "globals": {
+                "grid": {"width": width, "height": height},
+                "empty_rectangle": {
+                    "objective": "max_lex_area_min_side",
+                    "min_side_admissibility": 1,
+                },
+            },
+            "facility_templates": {
+                "tiny_facility": {"dimensions": {"w": 1, "h": 1}, "needs_power": False},
+            },
+        },
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "candidate_placements.json",
+        {
+            "facility_pools": {
+                "tiny_facility": [
+                    {
+                        "pose_id": "tiny_corner",
+                        "anchor": {"x": 0, "y": 0},
+                        "occupied_cells": [[0, 0]],
+                        "input_port_cells": [],
+                        "output_port_cells": [],
+                        "power_coverage_cells": None,
+                        "pose_params": {"orientation": 0, "port_mode": "default"},
+                    }
+                ]
+            }
+        },
+    )
+    instances = [
+        {
+            "instance_id": "blocker",
+            "facility_type": "tiny_facility",
+            "operation_type": "",
+            "is_mandatory": True,
+            "bound_type": "exact",
+            "solve_modes": ["certified_exact"],
+        }
+    ]
     _write_json(
         project_root / "data" / "preprocessed" / "mandatory_exact_instances.json",
-        [
-            {
-                "instance_id": "blocker",
-                "facility_type": "synthetic",
-                "operation_type": "op",
-                "is_mandatory": True,
-                "bound_type": "exact",
-                "solve_modes": ["certified_exact"],
-            }
-        ],
+        instances,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "all_facility_instances.json",
+        instances,
+    )
+    _write_json(
+        project_root / "data" / "preprocessed" / "generic_io_requirements.json",
+        {"required_generic_outputs": {}, "required_generic_inputs": {}},
     )
     return project_root
 
@@ -130,7 +177,7 @@ def _origin_blocked_solution_for_candidate(
         ghost_anchor["y"]
     )
     return {
-        "blocker": {"facility_type": "synthetic", "pose_idx": 0},
+        "blocker": {"facility_type": "tiny_facility", "pose_idx": 0},
         "ghost_pick": {
             "pose_idx": ghost_pose_idx,
             "pose_id": f"ghost_anchor::{int(ghost_anchor['x'])},{int(ghost_anchor['y'])}",
