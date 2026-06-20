@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 19
-- entries: 47
+- entries: 48
 - hard edges: 16
 - pending relation suggestions: 29
 
@@ -75,6 +75,7 @@ python cc_memory/mem.py boot
 - `p1-2-closegate-obligation-mechanism` — P1.2 是 owner 手动 fail-closed 门禁；8 obligation 名称级锚定非 digest；改 proof 核心机制上不强制重审但 owner 应重新攒 clean-review
 - `p1-2-closure-path-verdict-20260619` — 会议裁决建议(待owner):P1.2 原理可终结(CERTIFIED被算错信息流信道先验有界A/B/C+D腿2,全史零反例,最强反方codex认账非发散);入口门控层可机器闭(deny-by-default+AST allowlist),语义正确性层永久TCB残留(=模板×3类根集);当前未闭(缺口已定位)…
 - `p1-2-consumer-map-proof-freshness-stamp` — 2026-06-19 workflow wy3ymwhtw(10 子代理:5 字段组 enum claude/codex 混 + 异源 adversary,只读 codex pj working tree)产出…
+- `p1-2-p-b-7-mock-stale-5-2xfail-premise-obsolete-gate-c5-harness-flaky` — 2026-06-20 命题 P 落地后连带发现 + 处置(C3→P 之后的尾巴）。 ## ④b 根治广泛改了「mock 强状态被信任」这个测试前提 P1.2 ④b sink-replay 根治(a5ff5aa）让候选强状态(CERTIFIED/INFEASIBLE）不可信…
 - `p1-2-scope-verdict-council-20260619` — [已被 p1-2-close-kernel-sink-write-chokepoint-runtime 取代] council 早期粗版(越界2个)→ 最终修正为内部拆/纯整出0个;裁决建议待 owner 落地、改动在 codex pj 侧
 - `precompact-skill-owner-skill` — 本 skill=先做专门记忆更新回合再 /compact。★铁律:/compact 只由记忆更新回合那个专门回合注入,注入前必须先发送过『记忆更新回合』提示词,绝不跳过、绝不在触发回合直接压。三情形:①离线CC自触发→注入记忆回合→那回合更新→再压;②在线owner没调→啥都不做;③在线owner调→同①…
 - `pref-creative-tasks-use-discussion-not-workflow` — 开放判断/需观点碰撞→agents team 互辩(我主持),成员默认一半 codex 一半 claude 防趋同;Workflow 只留给确定性可分解任务
