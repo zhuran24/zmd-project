@@ -35,8 +35,9 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import re
+import importlib.util
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -691,6 +692,10 @@ def check_ruff(gate: GateResult) -> None:
         print(f"         {line}")
 
 
+def _pytest_xdist_available() -> bool:
+    return importlib.util.find_spec("xdist") is not None
+
+
 def check_tests(gate: GateResult, *, full: bool = False) -> None:
     label = ("全量" if full else "核心门禁") + " · 跳过 @slow"
     print(f"\n[18/18] 测试门禁（{label}）")
@@ -704,7 +709,12 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
     # —— 这正是让 ④b-stale 测试藏住的 C5 done-condition 盲区根因。
     # -n auto: 剔掉慢测试后快 lane 全是隔离单元测试, pytest-xdist 跨核并行(实测 CORE
     # 92s→23s, ~4x), 用满硬件 + 给 120s 留足余量。慢 lane 刻意不并行(见 check_slow_tests)。
-    cmd += ["-m", "not slow", "-n", "auto"]
+    # xdist 是提速, 不是语义前提: 插件不可用时退回串行, 避免 CI 因未知 -n 参数假失败。
+    cmd += ["-m", "not slow"]
+    if _pytest_xdist_available():
+        cmd += ["-n", "auto"]
+    else:
+        print("  NOTE   pytest-xdist 不可用, 快 lane 退回串行 pytest")
     if test_files:
         existing = [f for f in test_files if (PROJECT_ROOT / f).exists()]
         if not existing:

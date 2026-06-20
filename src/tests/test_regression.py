@@ -521,9 +521,10 @@ def test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts() -
     reason=(
         "PREMISE-OBSOLETE under P1.2 ④b sink-replay. 本测试断言 resume 不重调 solver "
         "(calls == []), 但 ④b 故意在 resume 时用隔离子进程重验候选强状态。正确的 ④b 契约 "
-        "(resume 先 drop 再经 fresh replay 重建) 已由 test_exact_campaign_state_soundness::"
+        "(resume 先 drop 再经 fresh replay 重建) 已由 test_exact_contract::"
         "test_campaign_resume_requires_fresh_replay_for_proof_bearing_candidates 与 "
-        "::test_resume_drops_certified_statuses_before_terminal_certified_reuse 覆盖。"
+        "test_exact_campaign_state_soundness::"
+        "test_resume_drops_certified_statuses_before_terminal_certified_reuse 覆盖。"
         "待 owner 拍: remove-as-superseded vs rewrite。见 task #13 / cc_memory。"
     ),
 )
@@ -850,13 +851,226 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
     assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
 
 
+def test_serial_unknown_head_fails_closed_without_certified_public_surface(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    # Split from the obsolete serial+parallel resume test below. The old "strong
+    # CERTIFIED survives resume" premise is invalid after P1.2 ④b, but this
+    # serial fail-closed contract remains live: certified mode must stop at the
+    # first UNKNOWN candidate, must not keep probing toward a best-effort
+    # CERTIFIED, and must not publish any certified delivery surface.
+    serial_root = _build_empty_frontier_project(tmp_path / "serial_unknown_no_publish")
+
+    def fake_serial_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
+        del session, kwargs
+        status = "CERTIFIED" if (ghost_w, ghost_h) == (6, 4) else "UNKNOWN"
+        fake_serial_run_benders_for_ghost_rect.last_run_metadata = {
+            "proof_summary": {
+                "mode": "certified_exact",
+                "master_status": status,
+            },
+            "exact_safe_cuts": [],
+            "loaded_exact_safe_cut_count": 0,
+            "generated_exact_safe_cut_count": 0,
+        }
+        if status == "CERTIFIED":
+            return "CERTIFIED", {
+                "big_pick": {
+                    "pose_idx": 0,
+                    "pose_id": "synthetic_pose_0",
+                    "anchor": {"x": 0, "y": 0},
+                    "facility_type": "synthetic",
+                }
+            }
+        return "UNKNOWN", None
+
+    fake_serial_run_benders_for_ghost_rect.last_run_metadata = {
+        "proof_summary": {},
+        "exact_safe_cuts": [],
+        "loaded_exact_safe_cut_count": 0,
+        "generated_exact_safe_cut_count": 0,
+    }
+
+    monkeypatch.setattr(
+        outer_search_module.ExactSearchSession,
+        "create",
+        staticmethod(lambda project_root, solve_mode="certified_exact": object()),
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "run_benders_for_ghost_rect",
+        fake_serial_run_benders_for_ghost_rect,
+    )
+
+    serial_status, serial_result = run_outer_search(
+        project_root=serial_root,
+        solve_mode="certified_exact",
+        max_attempts=64,
+        min_side=1,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+        resume_campaign=False,
+        parallel_processes=1,
+    )
+
+    serial_campaign = ExactCampaign.load_or_create(serial_root, campaign_hours=1.0, resume=True)
+    serial_manifest = json.loads(
+        delivery_manifest_output_path(serial_root).read_text(encoding="utf-8")
+    )
+
+    assert serial_status == "UNKNOWN"
+    assert serial_result is None
+    assert serial_campaign.state["last_stop_reason"]["reason"] == "candidate_returned_unknown"
+    assert all(
+        record["status"] != "CERTIFIED"
+        for record in serial_campaign.state["candidates"].values()
+    )
+    assert serial_campaign.best_certified_result() is None
+    assert serial_campaign.state["final_status"] == "UNKNOWN"
+    assert serial_manifest["campaign"]["final_status"] == "UNKNOWN"
+    assert serial_manifest["best_certified_result"] is None
+    assert serial_manifest["artifacts"]["final_solution"]["exists"] is False
+    assert serial_manifest["artifacts"]["optimal_blueprint"]["exists"] is False
+
+
+def test_parallel_replayable_certified_record_without_terminal_frontier_does_not_publish(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    # Parallel waves may persist a replayable CERTIFIED candidate record before
+    # the frontier is terminal. That checkpoint-local record must not leak into
+    # the public certified surface while another same-wave candidate is UNKNOWN.
+    parallel_root = _build_truly_solvable_single_pose_project(
+        tmp_path / "parallel_replayable_certified_no_publish", width=2, height=2
+    )
+
+    def _real_certified_solution_for(ghost_w: int, ghost_h: int) -> dict:
+        if (ghost_w, ghost_h) == (2, 1):
+            anchor = {"x": 0, "y": 1}
+        elif (ghost_w, ghost_h) == (1, 2):
+            anchor = {"x": 1, "y": 0}
+        else:
+            raise AssertionError(f"unexpected certified candidate: {(ghost_w, ghost_h)}")
+        return {
+            "blocker": {"facility_type": "tiny_facility", "pose_idx": 0},
+            "ghost_pick": {
+                "pose_idx": 1,
+                "pose_id": f"ghost_anchor::{anchor['x']},{anchor['y']}",
+                "anchor": anchor,
+                "facility_type": "ghost_rect",
+            },
+        }
+
+    class _DummyParallelWorkerPool:
+        def __init__(self, *args, **kwargs) -> None:
+            self.args = args
+            self.kwargs = kwargs
+
+        def close(self) -> None:
+            return None
+
+    wave_phase = {"certified_emitted": False, "certified_key": None}
+
+    def fake_parallel_wave(*, pool, tasks):
+        assert isinstance(pool, _DummyParallelWorkerPool)
+        true_certified_candidates = {(2, 1), (1, 2)}
+        results = []
+        for task in reversed(tasks):
+            candidate_wh = (int(task.candidate[1]), int(task.candidate[2]))
+            if (
+                candidate_wh in true_certified_candidates
+                and not wave_phase["certified_emitted"]
+            ):
+                status = "CERTIFIED"
+                solution = _real_certified_solution_for(*candidate_wh)
+                wave_phase["certified_emitted"] = True
+                wave_phase["certified_key"] = task.candidate_key
+            else:
+                status = "UNKNOWN"
+                solution = None
+            results.append(
+                WorkerResult(
+                    dispatch_seq=task.dispatch_seq,
+                    attempt_index=task.attempt_index,
+                    candidate=task.candidate,
+                    status=status,
+                    solution=solution,
+                    proof_summary={"mode": "certified_exact", "master_status": status},
+                    exact_safe_cuts=[],
+                    loaded_exact_safe_cut_count=0,
+                    generated_exact_safe_cut_count=0,
+                    worker_wall_seconds=0.01,
+                    peak_rss_bytes=1,
+                    error=None,
+                )
+            )
+        return ParallelWaveExecution(
+            completed=True,
+            failure_reason=None,
+            results=tuple(results),
+            dispatched_candidate_keys=tuple(str(task.candidate_key) for task in tasks),
+            elapsed_seconds=0.02,
+            peak_rss_bytes_external_total=2,
+            peak_rss_bytes_internal_max_single_process=1,
+        )
+
+    monkeypatch.setattr(
+        outer_search_module.ExactSearchSession,
+        "create",
+        staticmethod(lambda project_root, solve_mode="certified_exact": object()),
+    )
+    monkeypatch.setattr(outer_search_module, "ExactParallelWorkerPool", _DummyParallelWorkerPool)
+    monkeypatch.setattr(outer_search_module, "run_parallel_exact_campaign_wave", fake_parallel_wave)
+
+    parallel_status, parallel_result = run_outer_search(
+        project_root=parallel_root,
+        solve_mode="certified_exact",
+        max_attempts=64,
+        min_side=1,
+        master_seconds=0.01,
+        binding_seconds=0.01,
+        routing_seconds=0.01,
+        benders_max_iter=1,
+        campaign_hours=1.0,
+        resume_campaign=False,
+        parallel_processes=2,
+    )
+
+    checkpoint_state = json.loads(
+        (parallel_root / "data" / "checkpoints" / "exact_campaign_state.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    parallel_manifest = json.loads(
+        delivery_manifest_output_path(parallel_root).read_text(encoding="utf-8")
+    )
+
+    certified_key = wave_phase["certified_key"]
+    assert certified_key is not None
+    assert parallel_status == "UNKNOWN"
+    assert parallel_result is None
+    assert checkpoint_state["candidates"][certified_key]["status"] == "CERTIFIED"
+    assert checkpoint_state["final_result"] is None
+    assert checkpoint_state["final_status"] == "UNKNOWN"
+    assert parallel_manifest["campaign"]["final_status"] == "UNKNOWN"
+    assert parallel_manifest["best_certified_result"] is None
+    assert parallel_manifest["artifacts"]["final_solution"]["exists"] is False
+    assert parallel_manifest["artifacts"]["optimal_blueprint"]["exists"] is False
+
+
 @pytest.mark.xfail(
     reason=(
         "PREMISE-OBSOLETE under P1.2 ④b sink-replay. 并行半边断言 CERTIFIED 候选能熬过一次 "
         "resume-load, 但 ④b 的 resume 把落盘强状态 sanitize 成 UNKNOWN "
         "(_sanitize_resume_state_for_untrusted_candidate_evidence)。该 sanitize 契约已由 "
         "test_exact_campaign_state_soundness::test_resume_drops_certified_statuses_before_"
-        "terminal_certified_reuse 覆盖。另: 真·fixture 重写时还暴露一个 ④b 健壮性疑点 — "
+        "terminal_certified_reuse 覆盖。仍有效的 serial UNKNOWN fail-closed / no-publish "
+        "断言已拆到 "
+        "test_serial_unknown_head_fails_closed_without_certified_public_surface。另: 真·fixture 重写时还暴露一个 ④b 健壮性疑点 — "
         "隔离 replay 单跑能复现 CERTIFIED 但在 pytest harness 下偶发降级 (SAFE: 只降 UNKNOWN、"
         "绝不假 CERTIFIED)。待 owner 拍: remove-as-superseded vs rewrite + 根因那个 harness "
         "flaky。见 task #13 / cc_memory。"
