@@ -16,6 +16,91 @@
 - Exact mode has no hard `50 power poles + 10 protocol storage boxes` cap. If that number appears anywhere, it is exploratory-only guidance.
   - (2026-06-04) specs 02 §2.6.1 / 06 §6.1 / 07 §7.2·§7.4.1 早先把 `I_opt=60 (50桩+10箱)` / 总集 326 当 exact 固定枚举, 已对齐为: 供电桩 residual-optional (激活数为决策变量、coverage 下界、候选池上界)、协议箱 required-optional (demand 驱动); 60/326 仅标 exploratory illustrative 参考。真实 master (`pose_bool_exact_master` / `exact_coordinate_master`) 实证无此 cap (源码 residual/required-optional 建模, 非固定 60)。
 
+## 1A. Certified Theorem Scope (命题 P)
+
+> **Reference, do not diverge.** 下面 6 谓词的**外延**与 soundness 短语 reproduce 自
+> `docs/项目说明/01_overview.md` §1.1（谓词 1–6）与 §1.3（soundness 定义），那两节仍是 canonical
+> 谓词权威（镜像 §1 引 `canonical_rules.json` 作 admissibility 权威）。本节在**不改变谓词外延**的
+> 前提下附加 scope-precision 注解；若与 `01_overview` §1.1/§1.3 的谓词外延冲突，以那两节为准、本节
+> 须 re-sync。
+
+当 certified_exact 对候选输出 `(R*, π*)` 报 `CERTIFIED` 时，它**恰好且仅仅**证明 A 块命题；B 块那些
+**不在**证明范围、**不得**被当作 certified 证据冒充（违反即触发 §4 "Treating … diagnostic flow
+checks as certified proof"）。
+
+### A. CERTIFIED PROVES
+
+π* 满足下列全部 **gating 谓词**（任一 INFEASIBLE 阻止 CERTIFIED），且 `(R*, π*)` 在
+`max_lex(area, min_side)` 下 **lex-最优**：
+
+- **(1) ghost 内无 facility** `all_cells(π) ∩ R = ∅` — ghost optional interval 并入与全部 facility
+  interval 同一 `AddNoOverlap2D`（`exact_coordinate_master.py:3744` 恰选一 ghost rect、`:3745-3748`
+  ghost+core 合一）。master 硬几何约束、非诊断。
+- **(2) instance 两两不重叠** `∀ i≠j, occupied_cells(π(i)) ∩ occupied_cells(π(j)) = ∅` — core
+  intervals 的 `AddNoOverlap2D`（`:3444`），与谓词(1) 的合一约束并列、同属 NoOverlap2D 约束族（非字面
+  同一条）。
+- **(3) per-instance placement_rule** — 双闸：生成器在 pose 枚举期对每 template 硬绑 placement_rule
+  （`placement_generator.py:267-271` 模板级一致性 fail-closed，不符即 `ValueError`，违规几何不 emit 进
+  `P(i)`）+ master 域限制（`exact_coordinate_master.py:1557-1620` ModeRectDomain、`:2717-2721` region
+  约束、`:2796 AddExactlyOne(all_region_lits)`）。
+- **(4) port_binding feasible（含端口级 exact-count）** — `binding_subproblem.py` 真 gate 子问题：每
+  instance 恰一 binding（`:930`）；每 generic output / input slot 恰一 commodity（`:976` / `:1022`）；
+  每被需求 commodity 已绑端口槽数**精确等于**其 `required`（output `:1048` / input `:1035`；工件
+  `generic_io_requirements.json` 当前 output 侧 `blue_iron_ore:34 + source_ore:18 = 52`，源码无字面量、
+  由工件驱动）。binding INFEASIBLE → `benders_loop.py:5989`（routing 穷尽同走 `:7117`）落 nogood、不
+  certify。**精度边界**：证「端口槽『个数』= 需求声明『个数』」（0/1 计数等式），**不证**每口离散吞吐
+  速率（见 B）。
+- **(5) routing feasible = belts 能连（连通可行，NOT 吞吐）** — `benders_loop.py:6927
+  routing_status=="FEASIBLE"` → `:6944 RUN_STATUS_CERTIFIED` 是**唯一**抬 CERTIFIED 的判定、只看
+  FEASIBLE、**不读任何吞吐/容量量**（`:6934 diagnostic_flow_status` 仅记录字段）。证的精确语义 =
+  **离散有向连通（global source→sink reachability）**：每 commodity 每 source front 存在到 sink front
+  的有向 route-state 路径、每 sink front 被喂到，经 `routing_subproblem.py:1623-1719
+  _validate_selected_route_connectivity` 全局复验、拒 local-only incumbent。此连通复验已由 §130 列为
+  活路径 certified 硬契约（区别于 §131 acceleration-only 的 lazy connectivity cut）。routing 的
+  `capacity`（`:1058-1061 AddAtMostOne`）仅「一格一层至多一条 route-state」的**静态空间互斥、无时序
+  维度、非吞吐容量**。**红线（防 overclaim）**：**routing FEASIBLE ≠ 吞吐可行**；给的是「belt 路径
+  **存在**、port 对连通」级保证，不是「每单位时间扛得住 required 离散吞吐/带宽」级保证；「belts 能连」
+  字面即连通、不得读成「带宽达标」。
+- **(6) power_coverage feasible（最强谓词：master 强制 + 独立 terminal 复验）** — (A) master 硬约束
+  `exact_coordinate_master.py:5827`：每 powered slot 的 cover-choice witness 强制被选塔覆盖矩形几何
+  包含 slot footprint（`.OnlyEnforceIf(active)`，`:5275-5352`）+ 被选塔 `active` 守卫（`:5470-5499`）
+  + 无塔时 powered slot `active==0`（`:5845-5848`）。(B) terminal 独立 replay
+  `exact_campaign.py:1131-1157`：从冻结 artifact 原始 pose 字节**独立重算**覆盖格 cell 级匹配 + 无冗余
+  塔，missing / unforced 一律 fail-closed（**不信 solver 内部变量**——routing/binding 无此第二道）。
+  附注：聚合容量下界 `:6336 power_capacity_lower_bound` 属 `_add_global_valid_inequalities` 的 **sound
+  冗余有效不等式**（几何覆盖已 imply、`skip_power_coverage` 时 `:6284` 跳过），**非主 gating**。**精度
+  边界**：证「几何半径覆盖 + 塔实存」（`covered`），**不证**电网功率吞吐/容量配平（`covered ≠
+  throughput-balanced`）。
+- **lex 最优性** — 任一 lex 更大的 `(R', π')`（即 `lex(area(R'), min_side(R')) > lex(area*,
+  min_side*)`）必 infeasible（`01_overview` §1.3 soundness 定义；`min_side >= 6` 是 admissibility、
+  非 tie-break）。
+
+> 6 谓词全 gating；其中 **power_coverage(谓词6) 额外携带一道独立 terminal witness 复核**，强度高于只在
+> in-loop 求解的 routing(5) 与 binding(4)。
+
+### B. EXPLICITLY OUT-OF-SCOPE（certified 不证、不得冒充）
+
+- **(B-1) 物料离散吞吐 / belt 带宽容量未证** — 谓词(5) 只到连通；唯一带 demand 量纲的 flow 子问题被
+  锁成 **diagnostic-only、绝不 gate**（`flow_subproblem.py:4-9` docstring / `:149 CreateSolver("GLOP")`
+  连续 LP / `:159 NumVar(0.0, infinity)` 连续无界，运行后只存 `benders_loop.py:5191
+  diagnostic_flow_status`、从不门控）。`test_exact_contract.py:3532
+  test_exact_mode_uses_flow_only_as_diagnostic` monkeypatch flow→INFEASIBLE 仍断言 CERTIFIED + 零
+  exact_safe cut——**刻意锁死的契约**、非疏漏。
+- **(B-2) capacity / 连通 (ii)(iii)（98% 密度离散流墙，研究级）** — open research problem；F1–F9 cut
+  family（region_capacity / density_envelope 等）是**面积/空间密度 packing cut、非吞吐 cut**，且
+  `src/cuts/` 尚未集成进生产 master（`lifecycle.py step_8_apply_to_master` 仍 `NotImplementedError`），
+  无 cut family 表达「离散容量流够不够」。进 certified 需**新范式**（改 6 谓词定义 + 新增离散容量
+  子问题），**非「关现有 gap」**。
+- **(B-3)「资源数量够」三种精度、证明地位完全不同、不得混成一句**：① 端口级 exact-count（谓词4，binding
+  `sum == required`，**已 certified**）；② 电力**覆盖**充分性（谓词6，几何覆盖 + 塔实存 + terminal 独立
+  replay，**已 certified**；**非**电力吞吐配平）；③ 物料离散吞吐充分性（台数·产率 ≥ 流 demand，**未
+  certified**，诚实边界 / 待接 cheap win）。
+
+**已知 soundness gap 登记**：本 scope 下的 open gap 以三态（principle / impl / red-test）跟踪于
+`docs/项目说明/soundness_gap_roadmap.md`。当前唯一实现侧、活路径、可立即排期的 gap = **I1**
+（whole-layout INFEASIBLE nogood 落 cut 前无独立异构 ⊆-infeasible 复验，§4 §280-283 三条之外的**第四条**
+distinct gap，§4 已登记）→ 排 P1.3B 带 fail-closed 红测。
+
 ## 2. Certified Source of Truth
 
 The certified path is grounded in:
@@ -283,6 +368,20 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   - **Feasible-path pole alternatives**: 未实现 witness-complete cut. 现 stop-gap: `_add_exact_whole_layout_nogood` 在 flag on 且 solution 含 synthetic power_pole entry 时 fail-closed skip cut, caller 升 `UNKNOWN`. 真正解锁 feature 需要 enumeration / 多 witness 增量排除.
   
   The production readiness gate and `scripts/run_campaign_linux.sh` both still block when the env var is set; do not bypass them until pole alternatives is implemented and re-audited.
+
+- **(2026-06-20) Whole-layout nogood 独立复验 gap 登记（I1，§280-283 三条之外的第四条已知 soundness
+  gap）**: 活路径 `benders_loop.py:7452 _add_exact_whole_layout_nogood`（调用点 `:5989` binding /
+  `:7117` routing 穷尽）在落 `master.add_benders_cut` 前，仅信任**产出 INFEASIBLE 的同一子问题 solver**、
+  **无独立异构 ⊆-infeasible 复验**，且 `_build_whole_layout_conflict :7368-7378` 的 conflict subset
+  未 minimize（整层 pose_idx 直拷）。§130（routing 连通复验）/ §138 F-BIND-R8-01（binding nogood
+  ordering）/ §140（status 契约）保证「子问题 INFEASIBLE 本身成立」，但**未独立重证**「被禁的
+  whole-layout 冲突子集真不可行 / cut 不过强」——可造 proof-bearing false-INFEASIBLE（over-constrained
+  子问题误剪真可行布局 → 抹真最优 → CERTIFIED 次优）。④b sink-replay 是 terminal + 同源重放、共享
+  encoder，抓不到此类确定性语义错。三态：principle ⚠️（部分覆盖）/ impl ❌ / red-test ❌。真正闭合 =
+  独立异构 ⊆-infeasible 复验器（释放 support 外变量 + 第二编码/assumption-core 隔离重建，fail-closed
+  升 `UNKNOWN` 不落 cut）+ 先红后绿验收测试，排 **P1.3B**。详见 §1A 与
+  `docs/项目说明/soundness_gap_roadmap.md`。在该复验器落地并配红测前，不得宣称 whole-layout nogood
+  路径的 ⊆-infeasible soundness 已闭（文档化 ≠ 已闭）。
 
 - Bypassing **exact-safe proof object lifecycle**. Any persisted artifact carrying solver-side semantics (e.g. `BendersCut.condition_set`, `BendersCut.metadata`) must have all six steps wired before being trusted in certified mode: generate → serialize → deserialize → validate → resolve runtime literals → replay → behavioral regression test. Landing a new schema field without the runtime resolver + regression coverage is treated as a Forbidden Change, regardless of how harmless the "feature gate currently off" feels.
 - **(2026-05-22) Bypassing B Design v2 cut lifecycle**: new B Design v2
