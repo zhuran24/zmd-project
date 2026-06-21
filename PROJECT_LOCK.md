@@ -144,10 +144,13 @@ P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P
   surface 必须继续走 central certified surface verifier，不允许 side-channel 自称 certified。
 - proof-bearing `CERTIFIED` / `INFEASIBLE` 强状态必须走 sink-replay 权威；producer、writer、函数对象、
   closure、registry、当前进程 freshness stamp 均不能授予证明权。
-- 发布 witness 身份（F1）：公开 `CERTIFIED` 的 `(R*,π*)` 中 `π*` 必须是隔离 replay 实际证过 binding/routing
-  的那套 witness，**不得**发布 writer 提供的 stored witness 而仅以「同尺寸存在某可行布局」间接代证。stopgap
-  已 rebind 到 replay witness（零误拒）；durable fixed-witness verifier（钉住 `π*` 对其本身重跑 binding+routing）
-  落地前，此谓词仅由 stopgap 满足、不视作完整闭合。
+- 发布 witness 身份（F1/WS）：公开 `CERTIFIED` 的 `(R*,π*)` 中 `π*` 必须是隔离 replay 实际证过 binding/routing
+  的那套 witness，**不得**发布 writer 提供的 stored witness 而仅以「同尺寸存在某可行布局」间接代证。**当前 HEAD
+  无 stopgap（rebind 试过破坏合法交付已撤回），此谓词当前不满足**；P1.3B fixed-witness verifier（钉住 `π*` 对其
+  本身重跑 binding+routing）落地前不得宣称满足。
+- 验证器执行身份（PYC-EXEC-DIGEST，round-3 新登记）：source digest 仅哈希 `.py`，隔离 replay 执行的 `.pyc`
+  字节码未绑定 → 恶意 `.pyc` 可在 `.py`/digest 不变时伪造 replay 权威。闭合须把验证器执行从不可变 capsule
+  （源码字节码+输入+依赖 hash-pin）发起，或显式纳入命名 TCB。
 - close-kernel gate 无盲点：`data/proof_obligations/p1_2_proof_obligations.json` sink inventory、
   source hash、guard token、checker 自绑定必须通过；慢 soundness lane 在 close/CI 语境下不得因
   “未收集到 @slow 测试”而 warning-pass。
