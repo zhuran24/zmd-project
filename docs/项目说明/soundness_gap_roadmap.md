@@ -20,6 +20,7 @@
 
 | Gap | Principle in lock | Impl exists | Red/green test | 三态判定 | 说明 / 反例（什么时候会咬人） |
 |---|---|---|---|---|---|
+| **WS** — 终端/发布 **witness 身份**：发布 `(R*,π*)` 的 `π*` **未被复验 binding/routing**（隔离 replay 只证「同尺寸存在某可行布局」、终端 validator 只查几何/供电/空矩形最优） | ⚠️（§1A.C done-condition 要「无 false-`CERTIFIED` 公开面」+ 谓词(4)(5) binding/routing；但**发布 witness 身份**未被这些机器条件覆盖） | ❌（无 fixed-witness binding/routing verifier） | ❌ | **BLOCK 级 GAP / OPEN → P1.3B（最强、先于 I1）** | 2026-06-21 GPT Pro 三方独立外审 + Codex/Claude 对源确认。`candidate_proof_replay.py:_replay_one_proof`(`:889-904`) 按 ghost_w/h **自由重解**（只证存在某可行布局）；终端 sink `require_record_solution_match=True`(`:525-535`) 保留 stored witness、不比 stored↔replay、不重跑 binding/routing；终端 validator `_validate_terminal_solution_against_project`(`exact_campaign.py:987-1235`) 只查几何/不重叠/供电/ghost空/空矩形最优。→ 一个 `active_ports=[]`/binding-INFEASIBLE 的 stored pose 可发成公开 CERTIFIED（`certified_surface` + `delivery_manifest` 同链）。**reachable = tamper-only（+ resume/迁移/并发写 benign drift），非 live**：正常 in-process 解只在 binding+routing 通过后才返 CERTIFIED；但 sink+validator 存在前提即「stored witness 不可信」，故 tamper/drift 可达即真 soundness 缺陷。**推翻下文「零 live 分歧」的隐含强断言（窄断言关于正常运行仍成立）、强于 I1**（I1 只过切=CERTIFIED-suboptimal，本条直接 mint 假 CERTIFIED）。**修复史**：2026-06-21 试 rebind-to-replay stopgap → 全量 preflight 证其**破坏合法认证交付**（终端证据 `candidate_status_digest` 内嵌 witness 指纹、build/verify 两端不一致、12 测试含 happy-path 挂）→ 撤回。owner 决定 **诚实 open + proper fix 进 P1.3B**。**P1.3B 红测须**：构造 binding-INFEASIBLE 的 stored witness、断言公开 CERTIFIED 面 fail-closed 拒发；durable = fixed-witness verifier（钉住 `π*` 原地重跑 binding+routing，不可行升 UNPROVEN）。 |
 | **I1** — 活路径 whole-layout INFEASIBLE nogood 落 cut 前**无独立异构 ⊆-infeasible 复验** | ⚠️（§130/§138/§140 保证「子问题 INFEASIBLE 本身成立」；但 whole-layout 冲突子集的**独立异构重导**未登记） | ❌ | ❌ | **GAP / OPEN → 排 P1.3B（带红测）** | 发射点 `benders_loop.py:5989`(binding)/`:7117`(routing) → `_add_exact_whole_layout_nogood :7452` → `_build_whole_layout_conflict :7368-7378`（仅把整层 pose_idx 拷进 conflict_set、**未 minimize**）→ master `add_benders_cut`（`exact_coordinate_master.py:7044-7096` 只把 `sum(present_lits) <= N-1` 编进 CP-SAT、**从不重解/重证**）。落 cut 唯一 guard 是 synthetic-pole fail-closed skip（`:7471-7489`，仅 exploratory `EXACT_POWER_PLACEMENT_SUBPROBLEM` 路径）。cut 信任**产出 INFEASIBLE 的同一个子问题 solver**，无第二/异构 verifier 独立重导 ⊆-infeasible。**关键区分**：「子问题 status 可信」（§130 routing 连通复验 + §138 F-BIND-R8-01 binding ordering + §140 status 契约都覆盖）vs「whole-layout 冲突子集是否过强、是否真 minimal——未独立重证」（真 gap）。lock §4 §280-283 那三条已知 gap **未登记**此条——它是**第四条 distinct gap**（已在 §1A / §4 登记）。**P1.3B 红测须**：构造「子问题报 INFEASIBLE 但其 ⊆-子集其实可行 / cut 过强」的情形，断言独立 verifier 拦下、缺证据则升 UNKNOWN 不落 cut。 |
 | **I2** — master 域编码语义等价 + `occupied_cells == bbox` fail-closed | ✅ §137 | ✅ | ⚠️ | **PARTIAL（divergence 路径在冻结数据上 latent）** | impl 真实：`exact_coordinate_master.py` 以 occupied_cells footprint 为键（`_pose_footprint_key :993`、`_pose_has_template_rect_footprint :1043-1070` actual==expected bbox、`_pose_rectangular_footprint_bounds :1072-1091` 非矩形返回 None 走保守 over-approx 不 under-approx）；powered pose 缺 footprint 证据 → `ValueError('Missing occupied_cells…')` fail-closed。测试存在（`test_p0_certified_soundness_fixes.py:511/571/633`）。**但**冻结生产数据全是实心矩形 ⇒ `occupied_cells == bbox` 恒成立、非矩形 over-approx/语义分叉分支**永不命中**——guard 在场但 latent。反例需一份非矩形 footprint 的 artifact 才触发。 |
 | **I3** — ④b 关掉 forged/stale/cross-process 污染；但**同源确定性语义编码错误**仍复现 | ✅ §307-312 / §287 | ✅（对外部污染） | ⚠️ | **PARTIAL（同根 I1）** | provenance/④b guard 真实且对**外部**污染有效：§307-312 source_digest 不匹配→quarantine（无 auto-migrate/无 silent fix）、未知 `ASSUMPTION_VERIFIERS` key→fail-closed HOLD；§287 六步 lifecycle + artifact_hashes 快照。**但**一个确定性语义编码错误（同 source 字节、同 encoder、同 solver）在 replay 时**完全相同地复现**——replay 是对反序列化 cert 用**同一个 validator** 做自洽校验、**不是独立重导**，与 encoder 共享。若 I1 发射点把「INFEASIBLE-but-deeper-context」编成过强/错误 cut，④b 与 replay 都抓不到。**同根 I1：缺异构独立 verifier。** |
@@ -60,6 +61,12 @@ I5（F7/F8 电力欧氏覆盖）与 I7（F3 N/S 端口朝向）这两类 tier-1 
   `src/adapters/*` 是 postprocess/delivery surface，不得成为 solver source-of-truth
   （`CLAUDE.md:222-228`）。
 
+> **2026-06-21 补充修正（GPT Pro 外审）**：上面「零 live 认证分歧」是**本次 shadow 扫雷的范围结论**——它扫的是
+> `src/cuts` 影子割里的几何/度量分歧，结论在该范围内成立（活认证路径内部对这 7 个量自洽）。但它**不覆盖终端
+> witness 身份路径**。GPT Pro 三方外审后发现 **WS（witness-split）**：发布 witness 未被复验 binding/routing，
+> tamper/drift 可达即可 mint 公开 false-`CERTIFIED`。故「零 live 分歧」**不得被读成「认证器不可能产假
+> CERTIFIED」**——后者已被 WS 推翻（正常运行仍不产、但威胁模型内可达）。见 Gap 表 **WS** 行。
+
 ## 几何分歧根治原则
 
 I5/I7 暴露的是同一类系统问题：活路径与 cut 家族各自重算“canonical 规则 → 几何”时，会在覆盖形状、
@@ -75,7 +82,8 @@ owner 确认的 canonical→geometry 规格事实伪装成 P1.2 已由代码证�
 
 ## 优先级线索
 
-当前实现侧必须排 P1.3B 的 open 项是 **I1** 与 **I4**；**I5/I7** 是 tier-1 latent landmine，任何 F7/F8
+当前实现侧必须排 P1.3B 的 open 项,**最强是 WS（witness-split，BLOCK 级、先于 I1）**——它能 mint
+tamper/drift 可达的公开 false-`CERTIFIED`,durable 修法 = fixed-witness verifier；其次是 **I1** 与 **I4**；**I5/I7** 是 tier-1 latent landmine，任何 F7/F8
 供电割或 F3 port_exposure 接入认证前，必须先统一到共享 canonical 原语并加红测；**I6** 是命名规格 TCB，
 不能写成代码已证。I2/I3 是 PARTIAL（latent / 同根 I1），可随 I1 一并加固。吞吐/capacity 是**研究级
 scope exclusion**、不进硬证据线。活路径 power_coverage 方形覆盖 + terminal witness 仍是已闭 sound

@@ -113,14 +113,29 @@ checks as certified proof"）。
   `sum == required`，**已 certified**）；② 电力**覆盖**充分性（谓词6，几何覆盖 + 塔实存 + terminal 独立
   replay，**已 certified**；**非**电力吞吐配平）；③ 物料离散吞吐充分性（台数·产率 ≥ 流 demand，**未
   certified**，诚实边界 / 待接 cheap win）。
+- **(B-4) 机器间物理间隔（`machine_min_clearance_cells`）非命题 P 谓词** — canonical
+  `globals.logistics.machine_min_clearance_cells=1`（`rules/canonical_rules.json`）仅被 `src/rules/models.py`
+  解析、认证路径**无消费者**（master `_add_port_clearance_constraints` 在 exact_mode 提前 return；routing
+  `_add_gap_rule` 仅 telemetry）。**owner 2026-06-21 规格澄清**：该字段管的是**端口（输入/输出口）连接格须空、否则接口接不起来**；**机器身体之间贴着合法、无身-身间隔要求**。故「贴着布局被认证」非 soundness 违规（同吞吐：命题 P 只证 6 谓词）。端口连接需求中，端口 front 格须空已由 routing 强制（`routing_subproblem.py:430-440`）；**connector 格被设施 body 占却未校验**（`_annotate_port_connector_owners` setdefault 静默容忍）= 真需求缺口、篡改/畸形输入可达，登记 P1.3B（roadmap F3 / 连接格）。
 
 **已知 soundness gap 登记**：本 scope 下的 open gap 以三态（principle / impl / red-test）跟踪于
-`docs/项目说明/soundness_gap_roadmap.md`。当前不得把 C4 文档化误读成 soundness 全闭：I1
+`docs/项目说明/soundness_gap_roadmap.md`。当前不得把 C4 文档化误读成 soundness 全闭。**2026-06-21 新登记
+BLOCK 级 gap：F1 witness-split / 终端 witness 身份** —— 发布 `(R*,π*)` 的 `π*` 原先未被复验
+binding/routing（隔离 replay 只证「同尺寸存在某可行布局」、终端 validator 仅查几何/供电/空矩形最优），
+篡改/漂移可达即可 mint 公开 false-`CERTIFIED`，**推翻 C4「零 live 分歧」(Z4) 的隐含强断言、强于 I1**。
+**P1.2 据此 REOPEN**（`p1_2_proof_obligations.json.status = reopened_witness_split_stopgap_open`）：已落
+**stopgap = 终端/发布改用隔离 replay 已证 binding/routing 的 witness 作发布 witness**
+（`candidate_proof_replay.py:516-544` rebind + `rebind_terminal_final_result_to_replayed_record`，零误拒；
+checker 同步反转为强制该策略），**durable = fixed-witness binding/routing verifier 排 P1.3B**。其余已登记：I1
 whole-layout INFEASIBLE nogood 独立异构 ⊆-infeasible 复验缺口、边界落位 solve-time 独立复验缺口、
-F7/F8 欧氏覆盖 helper 与活路径 12×12 方形覆盖分歧 landmine、以及 canonical 规则 → 几何映射的命名
-人确认 TCB 均已登记；真闭合排 **P1.3B** 带 fail-closed 红测 / 规格-TCB 决策。
+F7/F8 欧氏覆盖 helper 与活路径 12×12 方形覆盖分歧 landmine、F3 connector 格占用、canonical 规则 → 几何映射
+的命名人确认 TCB 均已登记；真闭合排 **P1.3B** 带 fail-closed 红测 / 规格-TCB 决策。
 
 ### C. P1.2 done-condition (C5)
+
+> **当前状态（2026-06-21）：P1.2 REOPENED**（F1 witness-split，见 §B「已知 soundness gap 登记」）。
+> witness-split stopgap 已落、durable fixed-witness binding/routing verifier 待 P1.3B；在此之前**不满足**下列
+> 闭合条件、**不得宣称 closed**。
 
 P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P 的机器边界 + owner 手动闸”满足，
 不是完整 soundness 定理、不是吞吐定理、也不自动打开 P1.3B。
@@ -132,6 +147,10 @@ P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P
   surface 必须继续走 central certified surface verifier，不允许 side-channel 自称 certified。
 - proof-bearing `CERTIFIED` / `INFEASIBLE` 强状态必须走 sink-replay 权威；producer、writer、函数对象、
   closure、registry、当前进程 freshness stamp 均不能授予证明权。
+- 发布 witness 身份（F1）：公开 `CERTIFIED` 的 `(R*,π*)` 中 `π*` 必须是隔离 replay 实际证过 binding/routing
+  的那套 witness，**不得**发布 writer 提供的 stored witness 而仅以「同尺寸存在某可行布局」间接代证。stopgap
+  已 rebind 到 replay witness（零误拒）；durable fixed-witness verifier（钉住 `π*` 对其本身重跑 binding+routing）
+  落地前，此谓词仅由 stopgap 满足、不视作完整闭合。
 - close-kernel gate 无盲点：`data/proof_obligations/p1_2_proof_obligations.json` sink inventory、
   source hash、guard token、checker 自绑定必须通过；慢 soundness lane 在 close/CI 语境下不得因
   “未收集到 @slow 测试”而 warning-pass。
@@ -142,8 +161,8 @@ owner 手动条件：
 - `data/review_gates/phase_1_2_spike_close.json` 只能由 owner 的显式 `owner_manual_decision` 打开；
   仓库不得从 receipt、Markdown/HTML/XML 报告、package metadata、source-tree manifest、clean-count
   字段或其它自动推导宣布 P1.2 closed / P1.3B allowed。
-- I1 与 C4 新登记的几何 gaps 是 P1.3B scope；在独立复验器、红测或明确 TCB 决策落地前，不得
-  把它们改写成“已闭”。
+- I1、F1 witness-split（durable fixed-witness verifier 落地前）与 C4 新登记的几何 gaps 是 P1.3B scope；在
+  独立复验器、红测或明确 TCB 决策落地前，不得把它们改写成“已闭”。
 
 ## 2. Certified Source of Truth
 
