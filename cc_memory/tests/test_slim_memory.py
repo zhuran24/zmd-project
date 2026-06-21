@@ -47,7 +47,8 @@ class SlimMemoryTests(unittest.TestCase):
         # fresh session (no watermark) -> silent, there is no baseline to delta against.
         r = self.run_mem('search', '记忆', env={'CLAUDE_CODE_SESSION_ID': 'TESTfresh-no-watermark'})
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertNotIn('Heads-up', r.stdout)
+        # match the preamble's distinctive phrase, not bare 'Heads-up' (which can appear in node content)
+        self.assertNotIn('unread change(s) by OTHER sessions', r.stdout)
 
         test_sid = 'TESTbehind-watermark'
         with sqlite3.connect(self.db) as con:
@@ -72,6 +73,58 @@ class SlimMemoryTests(unittest.TestCase):
                 'SELECT last_seen_mutation_id FROM read_watermarks WHERE session_id=?', (test_sid,)
             ).fetchone()[0]
         self.assertEqual(wm, 0, 'query command must not advance the watermark (design B)')
+
+    def test_supersede_archives_old_and_links(self) -> None:
+        # ids are normalized to lowercase by norm(), so query with the stored (lowercase) form.
+        self.run_mem('add-entry', '--id', 'zzz-old-belief', '--title', 'old',
+                     '--body', 'old belief zzzunique', '--no-suggest')
+        self.run_mem('add-entry', '--id', 'zzz-new-belief', '--title', 'new',
+                     '--body', 'new belief zzzunique', '--no-suggest')
+        r = self.run_mem('supersede', 'zzz-new-belief', 'zzz-old-belief', '--reason', 'belief changed')
+        self.assertEqual(r.returncode, 0, r.stderr)
+        with sqlite3.connect(self.db) as con:
+            con.row_factory = sqlite3.Row
+            old = con.execute("SELECT status FROM entries WHERE id='zzz-old-belief'").fetchone()
+            self.assertIsNotNone(old, 'old entry must exist')
+            self.assertEqual(old['status'], 'superseded')
+            edge = con.execute(
+                "SELECT hard FROM edges WHERE source_id='zzz-new-belief' AND "
+                "target_id='zzz-old-belief' AND edge_type='SUPERSEDES'"
+            ).fetchone()
+            self.assertIsNotNone(edge, 'SUPERSEDES edge must exist')
+            self.assertEqual(edge['hard'], 1, 'SUPERSEDES must be a hard edge')
+        # superseded node is hidden from active-filtered views but still found by search
+        rs = self.run_mem('search', 'zzzunique')
+        self.assertIn('zzz-old-belief', rs.stdout, 'superseded node must still be searchable')
+
+    def test_hard_archive_moves_out_and_unarchive_restores(self) -> None:
+        self.run_mem('add-entry', '--id', 'zzz-arch-node', '--title', 't',
+                     '--body', 'zzzarchbody', '--no-suggest')
+        self.run_mem('add-entry', '--id', 'zzz-arch-other', '--title', 'o',
+                     '--body', 'other', '--no-suggest')
+        self.run_mem('link', 'zzz-arch-node', 'zzz-arch-other', '--type', 'RELATED_TO')
+        arc = Path(self.db).with_name('memory_archive.db')
+
+        r = self.run_mem('archive', 'zzz-arch-node')
+        self.assertEqual(r.returncode, 0, r.stderr)
+        # hard-archived node is GONE from the main db (and therefore from search)
+        with sqlite3.connect(self.db) as con:
+            self.assertIsNone(con.execute("SELECT 1 FROM entries WHERE id='zzz-arch-node'").fetchone())
+            self.assertIsNone(con.execute("SELECT 1 FROM edges WHERE source_id='zzz-arch-node'").fetchone())
+        self.assertNotIn('zzz-arch-node', self.run_mem('search', 'zzzarchbody').stdout)
+        # but preserved (node + edge) in the side archive db
+        self.assertTrue(arc.exists(), 'archive db must be created')
+        with sqlite3.connect(arc) as ac:
+            self.assertIsNotNone(ac.execute("SELECT 1 FROM entries WHERE id='zzz-arch-node'").fetchone())
+            self.assertIsNotNone(ac.execute("SELECT 1 FROM edges WHERE source_id='zzz-arch-node'").fetchone())
+
+        r2 = self.run_mem('unarchive', 'zzz-arch-node')
+        self.assertEqual(r2.returncode, 0, r2.stderr)
+        with sqlite3.connect(self.db) as con:
+            self.assertIsNotNone(con.execute("SELECT 1 FROM entries WHERE id='zzz-arch-node'").fetchone())
+            self.assertIsNotNone(con.execute("SELECT 1 FROM edges WHERE source_id='zzz-arch-node'").fetchone())
+        with sqlite3.connect(arc) as ac:
+            self.assertIsNone(ac.execute("SELECT 1 FROM entries WHERE id='zzz-arch-node'").fetchone())
 
     def fake_embedding_env(self) -> dict[str, str]:
         fake_root = self.tmp / 'fake_embed_runtime'

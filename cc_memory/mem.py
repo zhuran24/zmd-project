@@ -1593,7 +1593,9 @@ def _suggestion_lines(suggestions: list[dict[str, Any]], *, limit: int = 12) -> 
 def cmd_suggest(args: argparse.Namespace) -> int:
     con = connect(args.db)
     init_schema(con)
-    cross_session_preamble(con, session_id_for(args))
+    # NOTE: no cross_session_preamble here — suggest emits machine-readable JSON on stdout,
+    # and a text preamble would corrupt JSON consumers. The cross-session notice rides only
+    # on the human-readable query commands (search / read / impact).
     body = args.body or ""
     if args.body_file:
         body = args.body_file.read_text(encoding="utf-8")
@@ -1825,6 +1827,136 @@ def cmd_link(args: argparse.Namespace) -> int:
     record_mutation(con, session_id_for(args), "link", "edge", f"{src[1]}->{tgt[1]}")
     con.commit()
     print(f"{src[0]}:{src[1]} --{args.type.upper()}--> {tgt[0]}:{tgt[1]}")
+    return 0
+
+
+def cmd_supersede(args: argparse.Namespace) -> int:
+    """Mark <old> superseded by <new>: archive the old node (status='superseded' -> hidden
+    from active-filtered views like boot/semantic/relation-discovery, but still found by
+    search/read) and record a hard SUPERSEDES edge new->old. One command for the genuine
+    "a belief changed, replace it" case — incl. entries, which `add-entry` cannot archive
+    (no --status). For a mere correction/refinement of the SAME fact, use `--force` instead."""
+    con = connect(args.db)
+    new = resolve_node(con, args.new)
+    old = resolve_node(con, args.old)
+    if not new:
+        raise SystemExit(f"unknown new node: {args.new}")
+    if not old:
+        raise SystemExit(f"unknown old node: {args.old}")
+    if new == old:
+        raise SystemExit("new and old must differ")
+    new_type, new_id = new
+    old_type, old_id = old
+    table = "facts" if old_type == "fact" else "entries"
+    con.execute(f"UPDATE {table} SET status='superseded', updated_at=? WHERE id=?", (now(), old_id))
+    add_edge_row(con, new_type, new_id, "SUPERSEDES", old_type, old_id, reason=args.reason or "supersede")
+    record_mutation(con, session_id_for(args), "supersede", old_type, old_id)
+    con.commit()
+    print(f"superseded: {new_type}:{new_id} --SUPERSEDES--> {old_type}:{old_id} (old status=superseded; still searchable, hidden from boot/semantic)")
+    return 0
+
+
+def archive_db_path(main_db: Path) -> Path:
+    return Path(main_db).with_name("memory_archive.db")
+
+
+def _ensure_archive_schema(main_con: sqlite3.Connection, arc_con: sqlite3.Connection) -> None:
+    """Create facts/entries/edges in the archive db by copying the live schema DDL
+    (idempotent, no seed). The archive connection runs with foreign_keys OFF so a moved
+    node's source_event_id (whose event stays in the main db) does not trip an FK check."""
+    for table in ("facts", "entries", "edges"):
+        row = main_con.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone()
+        if row and row["sql"]:
+            arc_con.execute(row["sql"].replace("CREATE TABLE ", "CREATE TABLE IF NOT EXISTS ", 1))
+    arc_con.commit()
+
+
+def _node_edge_rows(con: sqlite3.Connection, typ: str, nid: str) -> list[sqlite3.Row]:
+    return con.execute(
+        "SELECT * FROM edges WHERE (source_type=? AND source_id=?) OR (target_type=? AND target_id=?)",
+        (typ, nid, typ, nid),
+    ).fetchall()
+
+
+def _insert_row(con: sqlite3.Connection, table: str, row: sqlite3.Row, *, skip: tuple[str, ...] = (), conflict: str = "OR REPLACE") -> None:
+    cols = [c for c in row.keys() if c not in skip]
+    con.execute(
+        f"INSERT {conflict} INTO {table}({','.join(cols)}) VALUES ({','.join('?' * len(cols))})",
+        tuple(row[c] for c in cols),
+    )
+
+
+def cmd_archive(args: argparse.Namespace) -> int:
+    """HARD-archive: MOVE a node (+ its edges) out of memory.db into a side
+    memory_archive.db, then delete it from the main db. Unlike soft archive
+    (status='archived', which stays searchable and clutters the main db), the node is
+    gone from every main-db query incl. `search` — but preserved and restorable via
+    `unarchive`. Copy-then-delete order => no data loss if interrupted. The embedding is
+    dropped (regenerable on restore via finalize)."""
+    con = connect(args.db)
+    node = resolve_node(con, args.id)
+    if not node:
+        raise SystemExit(f"unknown node: {args.id}")
+    typ, nid = node
+    table = "facts" if typ == "fact" else "entries"
+    node_row = con.execute(f"SELECT * FROM {table} WHERE id=?", (nid,)).fetchone()
+    edges = _node_edge_rows(con, typ, nid)
+
+    arc_path = archive_db_path(args.db)
+    arc = sqlite3.connect(arc_path)
+    arc.row_factory = sqlite3.Row
+    arc.execute("PRAGMA foreign_keys = OFF")
+    try:
+        _ensure_archive_schema(con, arc)
+        _insert_row(arc, table, node_row)  # copy node first
+        for e in edges:
+            _insert_row(arc, "edges", e, skip=("id",), conflict="OR IGNORE")
+        arc.commit()
+    finally:
+        arc.close()
+
+    con.execute(f"DELETE FROM {table} WHERE id=?", (nid,))
+    con.execute("DELETE FROM edges WHERE (source_type=? AND source_id=?) OR (target_type=? AND target_id=?)", (typ, nid, typ, nid))
+    con.execute("DELETE FROM node_embeddings WHERE node_type=? AND node_id=?", (typ, nid))
+    con.execute("DELETE FROM relation_suggestions WHERE (source_type=? AND source_id=?) OR (target_type=? AND target_id=?)", (typ, nid, typ, nid))
+    record_mutation(con, session_id_for(args), "hard-archive", typ, nid)
+    con.commit()
+    print(f"hard-archived: {typ}:{nid} -> {arc_path.name} ({len(edges)} edge(s)); gone from main db (incl. search). restore: `unarchive {nid}`")
+    return 0
+
+
+def cmd_unarchive(args: argparse.Namespace) -> int:
+    """Restore a hard-archived node (+ its edges) from memory_archive.db back into
+    memory.db. Run `finalize` afterwards to re-embed it for --semantic."""
+    con = connect(args.db)
+    arc_path = archive_db_path(args.db)
+    if not arc_path.exists():
+        raise SystemExit(f"no archive db at {arc_path}")
+    arc = sqlite3.connect(arc_path)
+    arc.row_factory = sqlite3.Row
+    arc.execute("PRAGMA foreign_keys = OFF")
+    nid = norm(args.id)
+    found: tuple[str, str, sqlite3.Row] | None = None
+    for typ, table in (("fact", "facts"), ("entry", "entries")):
+        row = arc.execute(f"SELECT * FROM {table} WHERE id=?", (nid,)).fetchone()
+        if row:
+            found = (typ, table, row)
+            break
+    if not found:
+        arc.close()
+        raise SystemExit(f"not in archive: {args.id}")
+    typ, table, node_row = found
+    edges = _node_edge_rows(arc, typ, nid)
+    _insert_row(con, table, node_row)  # restore into main (FK ON; its event stayed in main)
+    for e in edges:
+        _insert_row(con, "edges", e, skip=("id",), conflict="OR IGNORE")
+    record_mutation(con, session_id_for(args), "unarchive", typ, nid)
+    con.commit()
+    arc.execute(f"DELETE FROM {table} WHERE id=?", (nid,))
+    arc.execute("DELETE FROM edges WHERE (source_type=? AND source_id=?) OR (target_type=? AND target_id=?)", (typ, nid, typ, nid))
+    arc.commit()
+    arc.close()
+    print(f"unarchived: {typ}:{nid} restored to main db ({len(edges)} edge(s)). run `finalize` to re-embed for --semantic.")
     return 0
 
 
@@ -2079,6 +2211,20 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--type", default="DEPENDS_ON")
     sp.add_argument("--reason")
     sp.set_defaults(func=cmd_link)
+
+    sp = sub.add_parser("supersede", help="archive <old> (status=superseded) + record new --SUPERSEDES--> old; for genuine belief replacement, not in-place correction")
+    sp.add_argument("new", help="the already-created replacement node id")
+    sp.add_argument("old", help="the node id being superseded (gets archived)")
+    sp.add_argument("--reason")
+    sp.set_defaults(func=cmd_supersede)
+
+    sp = sub.add_parser("archive", help="HARD-archive: move a node (+edges) out of memory.db into memory_archive.db (gone from main incl. search; restorable with unarchive)")
+    sp.add_argument("id")
+    sp.set_defaults(func=cmd_archive)
+
+    sp = sub.add_parser("unarchive", help="restore a hard-archived node from memory_archive.db back into memory.db (then run finalize)")
+    sp.add_argument("id")
+    sp.set_defaults(func=cmd_unarchive)
 
     sp = sub.add_parser("propose")
     sp.add_argument("--operation", required=True)

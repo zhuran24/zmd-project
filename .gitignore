@@ -42,13 +42,18 @@ env/
 .codegraph/
 
 # ----------------------------------------------------------------------------
-# cc_memory — memory.db (the SQLite source of truth) IS tracked: owner wants the
-# whole memory system versioned in git for persistence/backup (accept binary
-# churn). Only transient SQLite sidecars and local backups stay ignored.
+# cc_memory — memory.db (the SQLite source of truth) AND memory_archive.db (the
+# hard-archive side store: nodes moved out of memory.db by `mem.py archive`) ARE
+# tracked: owner wants the whole memory system versioned in git for persistence/
+# backup (accept binary churn). Only transient SQLite sidecars and local backups
+# stay ignored.
 # ----------------------------------------------------------------------------
 /cc_memory/memory.db-wal
 /cc_memory/memory.db-shm
 /cc_memory/memory.db-journal
+/cc_memory/memory_archive.db-wal
+/cc_memory/memory_archive.db-shm
+/cc_memory/memory_archive.db-journal
 /cc_memory/*.bak
 /cc_memory/.finalize.lock
 
