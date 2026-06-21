@@ -757,7 +757,7 @@ def check_tests(gate: GateResult, *, full: bool = False) -> None:
         gate.warn("pytest 不可用，跳过测试")
 
 
-def check_slow_tests(gate: GateResult) -> None:
+def check_slow_tests(gate: GateResult, *, require_collection: bool = False) -> None:
     # 专用慢 soundness lane: 跑 @pytest.mark.slow 的重型集成测试, 用长超时真跑到完成。
     # 堵住「快 gate 超时吞掉慢 soundness 测试失败」的 C5 盲区 —— CI / 阶段收口前必须跑、
     # 且必须看它的 pass/fail。刻意不并行(-n): 这些测试自身会 spawn 子进程(parallel
@@ -787,7 +787,11 @@ def check_slow_tests(gate: GateResult) -> None:
         if result.returncode == 0:
             gate.ok(f"pytest (slow): {summary_line}")
         elif result.returncode == 5:
-            gate.warn("pytest (slow): 未收集到 @slow 测试 — 标记缺失? (慢 lane 形同虚设)")
+            msg = "pytest (slow): 未收集到 @slow 测试 — 标记缺失? (慢 lane 形同虚设)"
+            if require_collection:
+                gate.block(msg)
+            else:
+                gate.warn(msg)
         else:
             gate.block(f"pytest (slow) 失败 (exit={result.returncode}): {summary_line}")
             if result.stdout:
@@ -796,7 +800,11 @@ def check_slow_tests(gate: GateResult) -> None:
     except subprocess.TimeoutExpired:
         gate.block(f"pytest (slow) 超时 (>{timeout}s)")
     except FileNotFoundError:
-        gate.warn("pytest 不可用，跳过慢测试")
+        msg = "pytest 不可用，跳过慢测试"
+        if require_collection:
+            gate.block(msg)
+        else:
+            gate.warn(msg)
 
 
 def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, slow_tests: bool = False, base_ref: str | None = None, changed_files_from: Path | None = None) -> int:
@@ -814,7 +822,7 @@ def run_gate(*, full: bool = False, hook: bool = False, ci: bool = False, slow_t
 
     if slow_tests:
         # 专用慢 soundness lane (CI / 阶段收口前): 只跑 @slow 重型测试, 长超时真跑到完成。
-        check_slow_tests(gate)
+        check_slow_tests(gate, require_collection=True)
     else:
         check_frozen_artifacts(gate)
         check_external_artifact_manifest(gate)

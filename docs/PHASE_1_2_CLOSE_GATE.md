@@ -20,16 +20,17 @@ cut-family algorithmic bugs.  The safer model is now:
 
 ## Current review anchor
 
-After V57-V98, lifecycle-evidence consolidation, certified-surface verifier
+After V57-V99, lifecycle-evidence consolidation, certified-surface verifier
 centralization, authority-boundary hardening, replayable terminal frontier
 evidence sealing, project-bound terminal-evidence hardening, direct
 manifest-writer disk-authority hardening, canonical certified-manifest
 publication hardening, terminal candidate-domain axis sealing, deny-unknown
 certified-surface hardening, partial-precheck/release-claim sealing, and
-oriented-domain/persisted-cut-replay sealing, the current review anchor is:
+oriented-domain/persisted-cut-replay / close-kernel sealing, the current review
+anchor is:
 
 ```text
-v98_b5a_symlink_authority_sealing
+v99_p1_2_close_kernel_sealing
 ```
 
 Those rounds did not reopen the old automatic receipt/counter gate.  They found
@@ -176,7 +177,8 @@ See `docs/research/p1_2_v56_certified_cut_replay_consolidation.md`,
 `docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md`,
 `docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md`,
 `docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md`, and
-`docs/research/p1_2_v98_b5a_symlink_authority_sealing.md`.
+`docs/research/p1_2_v98_b5a_symlink_authority_sealing.md`, and
+`docs/research/p1_2_v99_close_kernel_sealing.md`.
 
 Daily consistency check:
 

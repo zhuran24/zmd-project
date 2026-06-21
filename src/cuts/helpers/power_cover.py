@@ -12,8 +12,13 @@ Two variants:
   at each call site (validator phase 6/7 + oracle generator).
 
 Per ``canonical_rules.facility_templates.power_pole``: dimensions w=2, h=2.
-``power_coverage_radius`` carries the Euclidean radius (cell units; no
-explicit metric label in the schema, project consensus: Euclidean).
+This helper uses the older F7/F8 Euclidean cell-distance model for
+``power_coverage_radius``.  The active certified path and frozen candidate
+geometry use the owner-confirmed 12x12 square coverage stencil instead
+(``placement_generator.gen_power_pole`` and
+``ExactCoordinateMaster._supports_rectangular_power_coverage``).  F7/F8 remain
+non-certified / not applied to the master until P1.3B reconciles this landmine;
+do not treat this helper as the canonical live coverage semantics.
 
 Refs:
 - docs/research/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md v1.1
