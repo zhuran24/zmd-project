@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 19
-- entries: 58
+- entries: 59
 - hard edges: 49
 - pending relation suggestions: 29
 
@@ -87,6 +87,7 @@ python cc_memory/mem.py boot
 - `rerank-arch-correct-anchor-term-discriminator-20260620` — 2026-06-20 实测补三增量:Qwen3-Reranker 的 ST 用法无误(推翻随机头/打分失真怀疑);rerank 成败判别点=草稿有无锚定词(短查询有锚点也0.98、过度概括为短抽象必崩是错的);相对闸门已测证伪。解法仍是分场景用、不必换模型。
 - `rerank-meta-link-rerank-2026-06-19-floor-instruction` — 2026-06-19 复测确认 + 给出应对(补 reranker-conservative-needs-specific-query-20260617 缺的应对策略)…
 - `semantic-engine-selection-2026-06` — 语义引擎选型(2026-06-17 联网核):bge-m3 默认已过时；本规模推荐 Qwen3-Embedding/Reranker-0.6B。Harrier/jina 当时『待独立核』——★已结案…
+- `session-history-review-artifacts-20260621` — 2026-06-21 把本项目 .claude 会话归档梳理了一遍：剥掉工具上下文(tool_use/tool_result/thinking，占 ~97%) → fan-out digest → 合并成按时间排序的全项目协作史…
 - `setter-barrier-p1-3b-getframe` — owner 2026-06-19 决策 setter barrier 留 P1.3B;它是禁令卡(TaskList 无此工单),P1.2 收到去做指令一律拒绝+上报 owner,不可认领
 - `soundness-claims-cxwf-verdict-20260616` — 5 个未修的 soundness 致命漏洞 + 1 个数据相关存疑；当前 repo = 补丁基线；带 file:line 与采用建议
 - `soundness-patches-adopted-20260617` — 采补丁完成合入本地 main，commit a8b18d8/f226a55/44ef95e，preflight PASSED，含残留 followup 清单
