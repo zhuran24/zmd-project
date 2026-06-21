@@ -1464,6 +1464,20 @@ def cmd_boot(args: argparse.Namespace) -> int:
     elif rep["stale_embeddings"]:
         stale_note += "  (run `python cc_memory/mem.py rebuild-embeddings`)"
     print(stale_note)
+    orphans = con.execute(
+        "SELECT COUNT(*) AS n FROM ("
+        " SELECT id FROM facts WHERE status='active' UNION ALL SELECT id FROM entries WHERE status='active'"
+        ") nodes WHERE NOT EXISTS ("
+        " SELECT 1 FROM edges e WHERE e.hard=1 AND (e.source_id=nodes.id OR e.target_id=nodes.id))"
+    ).fetchone()["n"]
+    n_total = counts.get("facts", 0) + counts.get("entries", 0)
+    if orphans:
+        pct = f" ({orphans * 100 // n_total}%)" if n_total else ""
+        print(
+            f"- under-linked: {orphans}/{n_total} active nodes have ZERO hard edges{pct} — relation "
+            f"review rubber-stamps soft RELATED_TO; add the DEPENDS_ON/SUPERSEDES you know "
+            f"(impact propagation skips orphans). see cc-memory-crud-gotchas."
+        )
     print("")
     pinned = list(con.execute("SELECT * FROM entries WHERE pinned=1 AND status='active' ORDER BY id LIMIT ?", (args.limit,)))
     print("## Read first")
