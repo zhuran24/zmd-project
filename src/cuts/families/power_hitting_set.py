@@ -17,10 +17,13 @@ PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
   ``rules/canonical_rules.json → facility_templates.power_pole.dimensions``
   (NOT 1×1 as the v1.1 spec text reads). ``pole_shape_canonical`` cert field
   is locked to ``"2x2_rigid"``. ``pole_radius`` cert field is the float carried
-  from ``canonical_rules.facility_templates.power_pole.power_coverage_radius``
-  (Euclidean cell-to-cell, per project consensus — schema lacks an explicit
-  metric label, so cert + validator + helper share a single ``compute_cover_set``
-  implementation as source of truth).
+  from ``canonical_rules.facility_templates.power_pole.power_coverage_radius``.
+  This F7 validator/helper stack currently interprets that value through the
+  older Euclidean ``compute_cover_set`` model, while the active certified path
+  and frozen pose geometry use the owner-confirmed 12x12 square coverage
+  stencil.  F7/F8 are not certified master inputs until P1.3B reconciles that
+  semantic split; this docstring must not be read as making Euclidean coverage
+  the project authority.
 - **needs_power gate**: validator rejects facilities whose
   ``facility_templates[ft].needs_power`` is not True (Gemini F7 adversarial
   audit catch — a F7 cert against a non-powered facility is bogus).

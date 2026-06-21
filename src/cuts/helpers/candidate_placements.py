@@ -55,6 +55,7 @@ from src.cuts.lifecycle import BState, GroupId, PoseId
 
 # Direction encoding (N/S/E/W) → (dx, dy) cell offset.
 # Gap 11 修 (round 31): 真数据实测 — y is row, x is col.
+# Roadmap I7 latent landmine: N/S oppose canonical DIR_DELTA; no cert before shared primitives.
 DIRECTION_OFFSETS = {
     "N": (0, -1),
     "S": (0, 1),
@@ -237,5 +238,4 @@ def all_poses_in_region(
             if tuple(cell) not in region_cells:
                 return False  # 反例: pose 占 R 外 cell
     return True
-
 

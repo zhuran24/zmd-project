@@ -77,6 +77,24 @@ checks as certified proof"）。
 
 > 6 谓词全 gating；其中 **power_coverage(谓词6) 额外携带一道独立 terminal witness 复核**，强度高于只在
 > in-loop 求解的 routing(5) 与 binding(4)。
+>
+> **几何信任边界 / C4**：关系层的认证硬锚点仍成立：NoOverlap2D 覆盖 ghost/facility
+> 不相交（`exact_coordinate_master.py:3444` / `:3744-3748`）、binding 端口槽 exact-count
+> 等式（`binding_subproblem.py:930` / `:976` / `:1022` / `:1035` / `:1048`）、routing
+> FEASIBLE 后的全局 source→sink 连通复验（`routing_subproblem.py:1623-1719` / `:1821-1837`）、
+> power terminal 覆盖相交 + 无冗余塔复验（`exact_campaign.py:1131-1157`）均是活认证路径约束 /
+> 复验，不依赖 cut-family shadow 路径。几何层只有两类 solve-time 独立重导已存在且可声明：
+> (a) master 对实心矩形 footprint 从 pose anchor + template dims 重算
+> `occupied_cells == bbox`（`exact_coordinate_master.py:1043-1070`）；(b) 对矩形受电
+> footprint，master 重算 power-pole 的 radius-5 / 2×2 pole 诱导 12×12 方形
+> `power_coverage_cells`（`exact_coordinate_master.py:5141-5175`，游戏规则确认为 12×12 方形）。
+> 其余 candidate geometry 字节是命名 TCB：冻结 `candidate_placements.json` 内每个 pose 的
+> `occupied_cells` / `power_coverage_cells` / port 坐标被采信，前提是 generation-time
+> `placement_generator._validate_template_geometry_contract` fail-closed
+> (`placement_generator.py:161-168`, `:252-257`, `:267-271`) 且 artifact hash-pin 锁住字节。
+> canonical 规则 → 几何字节的映射（例如 `power_coverage_radius=5` 对应 12×12 方形覆盖，
+> `placement_generator.py:400-415`）是 owner 确认的规格事实和命名 TCB；它不是 P1.2 已由代码
+> 自动证明的定理。
 
 ### B. EXPLICITLY OUT-OF-SCOPE（certified 不证、不得冒充）
 
@@ -97,9 +115,35 @@ checks as certified proof"）。
   certified**，诚实边界 / 待接 cheap win）。
 
 **已知 soundness gap 登记**：本 scope 下的 open gap 以三态（principle / impl / red-test）跟踪于
-`docs/项目说明/soundness_gap_roadmap.md`。当前唯一实现侧、活路径、可立即排期的 gap = **I1**
-（whole-layout INFEASIBLE nogood 落 cut 前无独立异构 ⊆-infeasible 复验，§4 §280-283 三条之外的**第四条**
-distinct gap，§4 已登记）→ 排 P1.3B 带 fail-closed 红测。
+`docs/项目说明/soundness_gap_roadmap.md`。当前不得把 C4 文档化误读成 soundness 全闭：I1
+whole-layout INFEASIBLE nogood 独立异构 ⊆-infeasible 复验缺口、边界落位 solve-time 独立复验缺口、
+F7/F8 欧氏覆盖 helper 与活路径 12×12 方形覆盖分歧 landmine、以及 canonical 规则 → 几何映射的命名
+人确认 TCB 均已登记；真闭合排 **P1.3B** 带 fail-closed 红测 / 规格-TCB 决策。
+
+### C. P1.2 done-condition (C5)
+
+P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P 的机器边界 + owner 手动闸”满足，
+不是完整 soundness 定理、不是吞吐定理、也不自动打开 P1.3B。
+
+机器可查条件（任一失败即不得宣称 P1.2 closed）：
+
+- 命题 P scope 锁死：6 gating 谓词外延不扩大；吞吐 / belt 带宽 / 离散容量流仍明确 OUT-OF-SCOPE。
+- 无 false-`CERTIFIED` 公开面：terminal frontier evidence、delivery manifest、inspector / B5A / release
+  surface 必须继续走 central certified surface verifier，不允许 side-channel 自称 certified。
+- proof-bearing `CERTIFIED` / `INFEASIBLE` 强状态必须走 sink-replay 权威；producer、writer、函数对象、
+  closure、registry、当前进程 freshness stamp 均不能授予证明权。
+- close-kernel gate 无盲点：`data/proof_obligations/p1_2_proof_obligations.json` sink inventory、
+  source hash、guard token、checker 自绑定必须通过；慢 soundness lane 在 close/CI 语境下不得因
+  “未收集到 @slow 测试”而 warning-pass。
+- `EXACT_*` 在 `certified_exact` 继续 deny-unknown；未知或 proof-semantics knob fail-closed。
+
+owner 手动条件：
+
+- `data/review_gates/phase_1_2_spike_close.json` 只能由 owner 的显式 `owner_manual_decision` 打开；
+  仓库不得从 receipt、Markdown/HTML/XML 报告、package metadata、source-tree manifest、clean-count
+  字段或其它自动推导宣布 P1.2 closed / P1.3B allowed。
+- I1 与 C4 新登记的几何 gaps 是 P1.3B scope；在独立复验器、红测或明确 TCB 决策落地前，不得
+  把它们改写成“已闭”。
 
 ## 2. Certified Source of Truth
 
