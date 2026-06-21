@@ -123,10 +123,7 @@ checks as certified proof"）。
 BLOCK 级 gap：F1 witness-split / 终端 witness 身份** —— 发布 `(R*,π*)` 的 `π*` 原先未被复验
 binding/routing（隔离 replay 只证「同尺寸存在某可行布局」、终端 validator 仅查几何/供电/空矩形最优），
 篡改/漂移可达即可 mint 公开 false-`CERTIFIED`，**推翻 C4「零 live 分歧」(Z4) 的隐含强断言、强于 I1**。
-**P1.2 据此 REOPEN**（`p1_2_proof_obligations.json.status = reopened_witness_split_stopgap_open`）：已落
-**stopgap = 终端/发布改用隔离 replay 已证 binding/routing 的 witness 作发布 witness**
-（`candidate_proof_replay.py:516-544` rebind + `rebind_terminal_final_result_to_replayed_record`，零误拒；
-checker 同步反转为强制该策略），**durable = fixed-witness binding/routing verifier 排 P1.3B**。其余已登记：I1
+**P1.2 据此 REOPEN**（本节 + roadmap WS 行为权威登记）。**stopgap 状态订正（2026-06-21 第二轮外审纠 LOCK-CHECKER-DRIFT）**：rebind-to-replay stopgap 试过、全量 preflight 证其破坏合法认证交付（终端证据摘要 build/verify 两端不一致）已**撤回**；**当前 HEAD 无任何 stopgap、代码与 checker 仍是 stored-witness 旧策略**（漏洞在、诚实登记为 open BLOCK；机器层 `p1_2_proof_obligations.json` 仍是 HEAD 的 active 契约、未编码 reopen）。**durable = fixed-witness binding/routing verifier 排 P1.3B**。**另（OPEN-GATE，第二轮新发现）：「诚实 open 即止血」当前是运营纪律、非机器闸**——`certified_surface.evaluate_certified_delivery_surface` 的 publishable 条件不读 P1.2 reopen/`exact_full_scale_status=open`，open 期间仍可 `publishable=true`；P1.3B 须与 fixed-witness verifier 同批补 fail-closed 发布闸。其余已登记：I1
 whole-layout INFEASIBLE nogood 独立异构 ⊆-infeasible 复验缺口、边界落位 solve-time 独立复验缺口、
 F7/F8 欧氏覆盖 helper 与活路径 12×12 方形覆盖分歧 landmine、F3 connector 格占用、canonical 规则 → 几何映射
 的命名人确认 TCB 均已登记；真闭合排 **P1.3B** 带 fail-closed 红测 / 规格-TCB 决策。
@@ -134,8 +131,8 @@ F7/F8 欧氏覆盖 helper 与活路径 12×12 方形覆盖分歧 landmine、F3 c
 ### C. P1.2 done-condition (C5)
 
 > **当前状态（2026-06-21）：P1.2 REOPENED**（F1 witness-split，见 §B「已知 soundness gap 登记」）。
-> witness-split stopgap 已落、durable fixed-witness binding/routing verifier 待 P1.3B；在此之前**不满足**下列
-> 闭合条件、**不得宣称 closed**。
+> witness-split 的 rebind stopgap 试过已撤回（破坏合法交付）、**当前 HEAD 无 stopgap**；durable fixed-witness
+> verifier + 机器发布闸（OPEN-GATE）待 P1.3B；在此之前**不满足**下列闭合条件、**不得宣称 closed**。
 
 P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P 的机器边界 + owner 手动闸”满足，
 不是完整 soundness 定理、不是吞吐定理、也不自动打开 P1.3B。

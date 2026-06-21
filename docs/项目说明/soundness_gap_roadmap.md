@@ -80,12 +80,34 @@ generator/master/routing 与 F1-F9 cut family 必须 import 复用这些原语�
 方形”的窄修法：窄修治标，共享原语治本。I6 的几何 TCB 边界仍保留：共享原语只能消除代码分歧，不能把
 owner 确认的 canonical→geometry 规格事实伪装成 P1.2 已由代码证明。
 
-## 优先级线索
+## 第二轮外审新登记 gap（2026-06-21 round-2，已 Codex→Claude 对源核）
 
-当前实现侧必须排 P1.3B 的 open 项,**最强是 WS（witness-split，BLOCK 级、先于 I1）**——它能 mint
-tamper/drift 可达的公开 false-`CERTIFIED`,durable 修法 = fixed-witness verifier；其次是 **I1** 与 **I4**；**I5/I7** 是 tier-1 latent landmine，任何 F7/F8
-供电割或 F3 port_exposure 接入认证前，必须先统一到共享 canonical 原语并加红测；**I6** 是命名规格 TCB，
-不能写成代码已证。I2/I3 是 PARTIAL（latent / 同根 I1），可随 I1 一并加固。吞吐/capacity 是**研究级
-scope exclusion**、不进硬证据线。活路径 power_coverage 方形覆盖 + terminal witness 仍是已闭 sound
-锚点；不要把 F7/F8 shadow helper 的欧氏 landmine 或 F3 shadow helper 的 N/S landmine 误读成当前 live
-certified 缺口。
+- **OPEN-GATE（BLOCK）**：公开发布面 `certified_surface.evaluate_certified_delivery_surface` 的 publishable 条件**不读 P1.2 reopen / `exact_full_scale_status=open`** → open 期间仍 `publishable=true`（repro: published witness binding=INFEASIBLE）。即「诚实 open 即止血」是**运营纪律、非机器闸**。
+- **TOCTOU（BLOCK / drift）**：`benders_loop.py:2197-2215` 先 `load_project_data`+generic_io/wireless-slot 载入、再 `compute_exact_artifact_hashes`(:2206)、再用 **pre-hash 内存对象** build；`build_exact_core` 不重读盘、`sha256_file` 另开句柄、无等值校验把 recorded hash 绑到实际 build 字节 → load↔hash 之间被换文件即得到「记录 hash 不 attest 实际求解字节」的 session。正常单进程两读一致，故 drift（并发写/篡改）可达、非 live。
+- **PHASE-GATE-STRUCTURE（BLOCK / latent）**：`check_phase_review_gate.check_gate` 只验 JSON-shape/status/authority/doc-marker + 两个 acknowledgement bool,**对 witness-split/fixed-witness 零绑定**;`_check_step_8_boundary` 在 next_allowed=true 时立即返 [] 跳过唯一代码级 fail-closed。当前另有 `check_p1_2_proof_obligations.py:2323` 通用「必须保持 blocked」锚硬挡 next_allowed=true（故 latent 非 live）,但它无 witness 谓词、真闭合时被抬掉后无人重新施加 fixed-witness 要求。
+- **CUSTOM-ROOT-PROFILE（CONCERN / latent，BLOCK 已被复审驳回）**：port-slot profile 来自源树 module-global `OPERATION_PORT_PROFILES`(`operation_profiles.py:18,113`)、binding 不调已存在的 root-参数化 `load_preprocess_context_from_paths`;但 `certified_artifact_contract` 的 locked 层对源 checkout 及任何带 PROJECT_LOCK.md 的 root 把 canonical_rules.json/preprocess_plan.json hash-pin 到全局表所读的同一字节、binding 前强制 → 任何 **certified** root 分歧即 SHA fail-closed,只非 locked TOY root（设计上非认证）暴露。剩纵深弱点。
+- **LOCK-CHECKER-DRIFT（已修）**：PROJECT_LOCK 曾声称 rebind 已落而 code/checker 在 HEAD stored-witness → 文档↔代码漂移；已订正。根治见 P1.3B-7。
+
+## P1.3 修复计划（分层 + 单一 done 判据；防止"发现都堆进 P1.3"）
+
+**单一 done 判据**：每条认证发布谓词都在**确切发布物**（序列化字节、非仅 pre-write 对象）上被**独立复验**，且在**机器强制的 owner 发布闸**之后，带 fail-closed 红测。新发现落在此判据内 = 已被计划覆盖的**实例**（非新票）；落在外才算新 scope——以此**钉住球门**。
+
+**根因合并（按根因修、不按实例打补丁）**：多数发现是同一结构病的不同脸——「权威闸没对它实际发布/信任的确切东西做独立复验/强制」：WS、OPEN-GATE、PHASE-GATE-STRUCTURE、F3 同族；I1、TOCTOU 是「信任未独立复验」的另两面。
+
+**收敛标尺**：盯"还在冒新 BLOCK，还是只剩 CONCERN/latent"。round1=WS(BLOCK)、round2=OPEN-GATE(新 BLOCK) → **未收敛**；某轮只剩 CONCERN/latent = BLOCK 类收敛、可停审进修。
+
+### Tier 1 — 挡"诚实发布"的 BLOCK（必须先修）
+- **P1.3B-1 fixed-witness 终端 verifier（WS/F1，并吞 F3）**：钉完整 (R*,π*) 非仅 pose；binding+routing 共享同一 witness/assignment；routing 用 R* 确切 ghost origin/extent；含 connector/body 排除；**序列化字节 round-trip 复验**；timeout/UNKNOWN→UNPROVEN，绝不→INFEASIBLE；证据绑 stored solution digest、无 witness 替换。红测:binding/routing witness 不一致→FAIL；非-R* origin→FAIL；UNKNOWN→UNPROVEN；写后字节被篡→FAIL。
+- **P1.3B-2 OPEN-GATE 机器发布闸**：certified surface / delivery manifest / inspector / adapters 一律读 reopen/`exact_full_scale_status`，open 期间 `publishable=false` fail-closed（单一机器闸、所有面共用）。红测:status=open ⇒ 各面拒发。
+- **P1.3B-3 phase-gate 绑 fixed-witness 条件**：`check_phase_review_gate` 不得只凭 shape+acknowledgement 接受 closed/next_allowed=true；须硬断言 P1.3B-1 verifier 在场+过红测；next_allowed=true 不得跳过 step_8 fail-closed；把 `check_p1_2_proof_obligations.py:2323` 通用锚换成 witness-bound close 条件。
+- **P1.3B-4 I1 独立 fixed-layout 不可行复验**：落 whole-layout nogood 前用解耦第二复验，不能独立确认 INFEASIBLE（含 timeout）就不落 cut（视作 UNPROVEN）。
+- **P1.3B-5 TOCTOU 原子快照**：消除 `benders_loop.py:2197-2215` 的 load→hash 窗口（先 hash 再从同字节 build，或 read-once→hash 同 buffer→喂 build）；recorded hash 须 attest 实际 build 字节。
+
+### Tier 2 — CONCERN / 纵深
+- **P1.3B-6 custom-root profile 本地化（CONCERN/latent）**：binding 走已存在的 `load_preprocess_context_from_paths`，让 port-slot profile 与 hash-bound root 同源（当前 locked-hash 契约已兜、无 certified 路径可坏，修纵深 + 关 TOY-root 暴露）。
+
+### 一致性
+- **P1.3B-7 doc↔code 漂移修复 + 红测**：PROJECT_LOCK / proof-obligation / checker 对齐到「发布 π* == replay 已证 witness」单一 canonical 谓词；加红测:PROJECT_LOCK 声称已修而 code/checker 仍在 stopgap 即 FAIL（防 LOCK-CHECKER-DRIFT 复发）。
+
+### 不变的既有项（详见上方 Gap 表）
+I5/I7 几何 landmine（接认证前收敛到共享 canonical 原语）、I6 命名规格 TCB（不写成代码已证）、I2/I3（latent / 同根 I1，随 I1 加固）、I4 边界落位 solve-time 复验、吞吐/capacity 研究级 scope-exclusion。活路径 power_coverage 方形覆盖 + terminal witness 仍是已闭 sound 锚点；勿把 shadow helper 的欧氏/N-S landmine 误读成 live certified 缺口。
