@@ -88,6 +88,22 @@ owner 确认的 canonical→geometry 规格事实伪装成 P1.2 已由代码证�
 - **CUSTOM-ROOT-PROFILE（CONCERN / latent，BLOCK 已被复审驳回）**：port-slot profile 来自源树 module-global `OPERATION_PORT_PROFILES`(`operation_profiles.py:18,113`)、binding 不调已存在的 root-参数化 `load_preprocess_context_from_paths`;但 `certified_artifact_contract` 的 locked 层对源 checkout 及任何带 PROJECT_LOCK.md 的 root 把 canonical_rules.json/preprocess_plan.json hash-pin 到全局表所读的同一字节、binding 前强制 → 任何 **certified** root 分歧即 SHA fail-closed,只非 locked TOY root（设计上非认证）暴露。剩纵深弱点。
 - **LOCK-CHECKER-DRIFT（已修）**：PROJECT_LOCK 曾声称 rebind 已落而 code/checker 在 HEAD stored-witness → 文档↔代码漂移；已订正。根治见 P1.3B-7。
 
+## 第三轮（round-3）新发现 + 为什么"总能审出问题"
+
+- **PYC-EXEC-DIGEST（BLOCK）**：`compute_certified_exact_source_digest`（`exact_campaign.py:340-378`）**只哈希 `.py`**，隔离 replay 子进程 import 时执行的是 `.pyc` 字节码、未绑定。PoC（两家独立复现）：伪造时间戳合法的恶意 `.pyc`，`.py` 字节 + source digest 全不变，子进程却执行假逻辑、把真可行候选伪造成权威 `INFEASIBLE`（同构可伪造 `CERTIFIED`，并经 `certified_frontier.py:215-217` 污染全局剪枝）。= **验证器自身执行身份未绑定**；与 TOCTOU/custom-root 同族（「所执行/所消费 ≠ 所哈希」）。
+- **LOCK-CHECKER-DRIFT 复发（已补修）**：round-3 发现 PROJECT_LOCK §C 残留「stopgap 已 rebind…此谓词仅由 stopgap 满足」与 §B「已撤回」矛盾——已补修为「HEAD 无 stopgap、此谓词当前不满足」。这恰证明 **P1.3B-7 的 doc↔code 漂移红测必须自动化**（人手反复漏修）。
+
+### "总能审出问题"是真的——结构原因 + 收敛策略
+
+对抗式外审**永远能再剥一层信任洋葱**：R1=witness(WS) → R2=发布闸/artifact 载入(OPEN-GATE/TOCTOU) → R3=验证器执行字节码(.pyc) → 再下去是解释器/OS/硬件。**"审到零发现"不可能、也不是收敛判据。** 真收敛 =：
+1. **显式划定并冻结 TCB 线**：声明信任什么（如「验证器从不可变 hash-pin capsule 执行：源码+字节码+输入+依赖一体；解释器/OS 以下为命名 TCB」）。.pyc 这条说明执行身份当前在线**上**却没绑 → 必须绑（capsule / 哈希字节码 / `-B`），不能留在线上不管。
+2. **修线以上全部**（= 下方 Tier-1 架构）。
+3. **然后判 done**：此后新发现要么落 TCB 线**以下**（已声明信任、非 gap）、要么是 done 判据的**实例**（已覆盖）——这才是停审转建的判据。
+
+**扩展 done 判据**：原「发布谓词在确切字节上独立复验 + 机器发布闸 + 红测」**再加**「验证器从不可变 capsule 执行（绑源码字节码+输入+依赖）+ 命名 TCB 声明」——把 PYC/TOCTOU/custom-root 收进 capsule 这一个根因。
+
+**建议：三轮已够，停审进修。** 第四轮大概率继续往 TCB 下剥，边际是更深 latent 而非新决策。
+
 ## P1.3 修复计划（分层 + 单一 done 判据；防止"发现都堆进 P1.3"）
 
 **单一 done 判据**：每条认证发布谓词都在**确切发布物**（序列化字节、非仅 pre-write 对象）上被**独立复验**，且在**机器强制的 owner 发布闸**之后，带 fail-closed 红测。新发现落在此判据内 = 已被计划覆盖的**实例**（非新票）；落在外才算新 scope——以此**钉住球门**。
