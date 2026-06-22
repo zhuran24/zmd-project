@@ -37,6 +37,9 @@ from src.search.exact_campaign import (
 
 CERTIFIED_SURFACE_VERIFIER_SOURCE = "certified_surface_verifier_v1"
 CERTIFIED_SURFACE_BLOCKED_REASON = "certified_delivery_surface_not_current"
+P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX = "p1_2_publish_open_gate_open"
+P1_2_PUBLISH_GATE_ID = "phase_1_2_spike_close"
+P1_2_PUBLISH_GATE_CLOSED_STATUS = "closed_manual_owner_decision"
 
 
 @dataclass(frozen=True)
@@ -60,6 +63,8 @@ class CertifiedSurfaceVerdict:
     delivery_manifest_error: Optional[str]
     best_certified_result: Optional[Dict[str, Any]]
     delivery_manifest_payload: Optional[Dict[str, Any]]
+    publish_open_gate_open: bool = False
+    publish_open_gate_reason: Optional[str] = None
 
     @property
     def reason(self) -> Optional[str]:
@@ -109,6 +114,8 @@ class CertifiedSurfaceVerdict:
             "delivery_manifest_current": bool(self.delivery_manifest_current),
             "delivery_manifest_error": self.delivery_manifest_error,
             "best_certified_result_present": self.best_certified_result is not None,
+            "publish_open_gate_open": bool(self.publish_open_gate_open),
+            "publish_open_gate_reason": self.publish_open_gate_reason,
         }
 
     def as_dict(self) -> Dict[str, Any]:
@@ -386,6 +393,32 @@ def evaluate_certified_delivery_surface(
             delivery_manifest_payload=manifest_payload,
         )
 
+    publish_open_gate_open, publish_open_gate_reason = resolve_p1_2_publish_open_gate(
+        project_root=project_root,
+    )
+    if publish_open_gate_open:
+        blocked_reason = publish_open_gate_reason or _publish_open_gate_reason("unknown")
+        return _blocked(
+            blocked_reason,
+            campaign_present=True,
+            campaign_resume_compatible=True,
+            campaign_resume_validation_reason=None,
+            campaign_terminal_full_frontier_claimed=True,
+            campaign_terminal_full_frontier_valid=True,
+            final_delivery_artifacts_current=True,
+            final_delivery_artifacts_error=None,
+            delivery_manifest_present=True,
+            delivery_manifest_regular_file=True,
+            delivery_manifest_load_error=None,
+            delivery_manifest_terminal_full_frontier_claimed=True,
+            delivery_manifest_current=True,
+            delivery_manifest_error=None,
+            best_certified_result=best_certified_result,
+            delivery_manifest_payload=manifest_payload,
+            publish_open_gate_open=True,
+            publish_open_gate_reason=blocked_reason,
+        )
+
     return CertifiedSurfaceVerdict(
         publishable=True,
         blocked_reason=None,
@@ -404,11 +437,65 @@ def evaluate_certified_delivery_surface(
         delivery_manifest_error=None,
         best_certified_result=best_certified_result,
         delivery_manifest_payload=manifest_payload,
+        publish_open_gate_open=False,
+        publish_open_gate_reason=None,
     )
 
 
 # Backward-compatible alias for earlier in-flight patch attempts.
 verify_certified_delivery_surface = evaluate_certified_delivery_surface
+
+
+def resolve_p1_2_publish_open_gate(
+    *,
+    project_root: Path,
+) -> tuple[bool, Optional[str]]:
+    """Return whether the manual P1.2 publish gate is open and blocks publication.
+
+    The gate path is NOT a caller-supplied parameter: the public verifier always
+    binds to the single authoritative repo file
+    ``<project_root>/data/review_gates/phase_1_2_spike_close.json`` so no caller
+    can point the publish decision at a forged closed gate.  The only
+    publish-allowing state is that authoritative file in the explicit owner-closed
+    shape; every missing, malformed, stale, symlinked, contradictory, or
+    unexpected shape is treated as open and blocks public CERTIFIED publication.
+    """
+
+    try:
+        root = Path(project_root).resolve()
+        raw_gate_path = root / "data" / "review_gates" / "phase_1_2_spike_close.json"
+        if not raw_gate_path.exists():
+            return True, _publish_open_gate_reason("missing")
+        if not raw_gate_path.is_file() or _path_has_symlink_component(raw_gate_path):
+            return True, _publish_open_gate_reason("not_regular_file")
+
+        try:
+            gate = _load_strict_json_mapping(raw_gate_path)
+        except Exception:  # noqa: BLE001 - strict JSON failures block publication.
+            return True, _publish_open_gate_reason("json_error")
+        if gate.get("gate_id") != P1_2_PUBLISH_GATE_ID:
+            return True, _publish_open_gate_reason("gate_id_mismatch")
+
+        status = gate.get("status")
+        if status != P1_2_PUBLISH_GATE_CLOSED_STATUS:
+            return True, _publish_open_gate_reason(f"status_{_gate_reason_token(status)}")
+
+        next_phase_entry = gate.get("next_phase_entry")
+        next_allowed = (
+            next_phase_entry.get("allowed") if isinstance(next_phase_entry, Mapping) else None
+        )
+        if next_allowed is not True:
+            return True, _publish_open_gate_reason("next_phase_not_allowed")
+
+        owner_decision = gate.get("owner_manual_decision")
+        if not isinstance(owner_decision, Mapping):
+            return True, _publish_open_gate_reason("decision_missing")
+        if owner_decision.get("p1_3b_entry_allowed") is not True:
+            return True, _publish_open_gate_reason("decision_not_allowed")
+
+        return False, None
+    except Exception:  # noqa: BLE001 - publication governance must fail closed.
+        return True, _publish_open_gate_reason("exception")
 
 
 def certified_delivery_surface_artifact_paths(project_root: Path) -> tuple[Path, Path, Path]:
@@ -634,6 +721,18 @@ def _load_strict_json_mapping(path: Path) -> Dict[str, Any]:
     return dict(payload)
 
 
+def _publish_open_gate_reason(reason: str) -> str:
+    return f"{P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX}:{reason}"
+
+
+def _gate_reason_token(value: Any) -> str:
+    if isinstance(value, str) and value:
+        return value
+    if value is None:
+        return "missing"
+    return type(value).__name__
+
+
 def _json_equivalent(left: Mapping[str, Any], right: Mapping[str, Any]) -> bool:
     return json.dumps(left, sort_keys=True, separators=(",", ":"), ensure_ascii=False) == json.dumps(
         right,
@@ -707,6 +806,8 @@ def _blocked(
     delivery_manifest_error: Optional[str] = None,
     best_certified_result: Optional[Dict[str, Any]] = None,
     delivery_manifest_payload: Optional[Dict[str, Any]] = None,
+    publish_open_gate_open: bool = False,
+    publish_open_gate_reason: Optional[str] = None,
 ) -> CertifiedSurfaceVerdict:
     return CertifiedSurfaceVerdict(
         publishable=False,
@@ -728,6 +829,8 @@ def _blocked(
         delivery_manifest_error=delivery_manifest_error,
         best_certified_result=best_certified_result,
         delivery_manifest_payload=delivery_manifest_payload,
+        publish_open_gate_open=bool(publish_open_gate_open),
+        publish_open_gate_reason=publish_open_gate_reason,
     )
 
 

@@ -23,6 +23,7 @@ from src.search.exact_parallel_scheduler import (
 )
 from src.search.campaign_telemetry import campaign_telemetry_output_path
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -1678,6 +1679,8 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
 ) -> None:
     serial_root = _build_origin_blocked_frontier_project(tmp_path / "serial_match", width=2, height=2)
     parallel_root = _build_origin_blocked_frontier_project(tmp_path / "parallel_match", width=2, height=2)
+    write_closed_phase_review_gate(serial_root)
+    write_closed_phase_review_gate(parallel_root)
 
     def fake_serial_benders(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
         del session, kwargs
@@ -1813,6 +1816,7 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
     tmp_path: Path,
 ) -> None:
     project_root = _build_origin_blocked_frontier_project(tmp_path / "parallel_best_certified", width=6, height=6)
+    write_closed_phase_review_gate(project_root)
     expected_best: dict[str, dict[str, int]] = {}
 
     def fake_wave_executor(*, pool, tasks):

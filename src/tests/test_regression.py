@@ -26,6 +26,7 @@ from src.search.exact_campaign import ExactCampaign
 from src.search.exact_parallel_scheduler import ParallelWaveExecution, WorkerResult
 import src.search.outer_search as outer_search_module
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -620,6 +621,8 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
     parallel_root = _build_truly_solvable_single_pose_project(
         tmp_path / "parallel_vs_serial_parallel", width=2, height=1
     )
+    write_closed_phase_review_gate(serial_root)
+    write_closed_phase_review_gate(parallel_root)
 
     def _real_certified_solution() -> dict:
         return {

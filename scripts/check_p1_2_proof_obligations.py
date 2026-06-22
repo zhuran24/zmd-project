@@ -212,6 +212,13 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint",
             "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier",
             "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier",
+            "test_p1_2_publish_open_gate_blocks_open_statuses",
+            "test_p1_2_publish_open_gate_missing_file_fails_closed",
+            "test_p1_2_publish_open_gate_rejects_malformed_gate_files",
+            "test_p1_2_publish_open_gate_closed_manual_decision_allows_publishable_surface",
+            "test_p1_2_publish_open_gate_rejects_contradictory_closed_gate",
+            "test_p1_2_publish_open_gate_inherited_public_surfaces_fail_closed",
+            "test_resolve_p1_2_publish_open_gate_fail_closed_branches",
             "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
             "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
             "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
@@ -1010,6 +1017,8 @@ def _check_candidate_sink_replay_contract(
     surface_source = _source_text(certified_surface_path, surface_fn)
     if not _calls_function(surface_fn, "has_valid_terminal_full_frontier_certified_evidence_for_project"):
         errors.append("public certified surface must call project-bound terminal replay validator")
+    if not _calls_function(surface_fn, "resolve_p1_2_publish_open_gate"):
+        errors.append("public certified surface must consult P1.2 publish open-gate")
     if "campaign_path=resolved_campaign_path" not in surface_source:
         errors.append("public certified surface replay validation must bind canonical campaign_path")
 
@@ -2024,7 +2033,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': 'c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75',
     'src/search/certified_frontier.py': '008a20b57a80114da8494f18ed28ebd3b24ba158d3845105f539e908999c6898',
-    'src/search/certified_surface.py': '601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5',
+    'src/search/certified_surface.py': '87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
     'src/search/exact_campaign.py': '7356e3f1ab3b5f75c82afca042fdda21340f8997df8ea87edb1a71fb4bb367aa',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',

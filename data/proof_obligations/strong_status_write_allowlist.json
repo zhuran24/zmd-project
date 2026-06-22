@@ -43,36 +43,36 @@
       "callee": "atomic_write_json"
     },
     {
-      "id": "src_search_certified_surface_py_save_certified_final_solution_and_blueprint_artifact_write_448",
+      "id": "src_search_certified_surface_py_save_certified_final_solution_and_blueprint_artifact_write_540",
       "pattern": "artifact_write",
       "module": "src/search/certified_surface.py",
       "qualname": "save_certified_final_solution_and_blueprint",
-      "line": 448,
+      "line": 535,
       "justification": "Central certified-surface writer emits final_solution/blueprint only from registered callers that already require terminal sink evidence.",
-      "source_sha256": "601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5",
+      "source_sha256": "87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101",
       "keys": [
         "final_solution.json"
       ],
       "callee": "atomic_write_json"
     },
     {
-      "id": "src_search_certified_surface_py_save_certified_final_solution_and_blueprint_artifact_write_449",
+      "id": "src_search_certified_surface_py_save_certified_final_solution_and_blueprint_artifact_write_541",
       "pattern": "artifact_write",
       "module": "src/search/certified_surface.py",
       "qualname": "save_certified_final_solution_and_blueprint",
-      "line": 449,
+      "line": 536,
       "justification": "Central certified-surface writer emits final_solution/blueprint only from registered callers that already require terminal sink evidence.",
-      "source_sha256": "601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5",
+      "source_sha256": "87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101",
       "callee": "export_certified_blueprint"
     },
     {
-      "id": "src_search_certified_surface_py_export_and_verify_certified_delivery_manifest_artifact_write_466",
+      "id": "src_search_certified_surface_py_export_and_verify_certified_delivery_manifest_artifact_write_558",
       "pattern": "artifact_write",
       "module": "src/search/certified_surface.py",
       "qualname": "export_and_verify_certified_delivery_manifest",
-      "line": 466,
+      "line": 553,
       "justification": "Manifest export immediately verifies the central certified delivery surface and rejects non-publishable best_certified_result payloads.",
-      "source_sha256": "601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5",
+      "source_sha256": "87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101",
       "callee": "export_certified_delivery_manifest"
     },
     {

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Optional
 
@@ -19,6 +20,28 @@ from src.search.exact_campaign import (
     _load_exact_safe_area_upper_bound,
 )
 from src.tests.verified_producer_test_support import seal_test_candidate_status
+
+
+def write_closed_phase_review_gate(project_root: Path) -> Path:
+    gate_path = Path(project_root) / "data" / "review_gates" / "phase_1_2_spike_close.json"
+    gate_path.parent.mkdir(parents=True, exist_ok=True)
+    # Clear any prior file/symlink so a shared project root never leaves a symlink
+    # in place (writing through a symlink would keep the path non-regular).
+    if gate_path.is_symlink() or gate_path.exists():
+        gate_path.unlink()
+    payload = {
+        "schema_version": 2,
+        "gate_id": "phase_1_2_spike_close",
+        "status": "closed_manual_owner_decision",
+        "next_phase_entry": {"allowed": True},
+        "owner_manual_decision": {"p1_3b_entry_allowed": True},
+    }
+    gate_path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    return gate_path
 
 
 def attach_terminal_frontier_evidence(

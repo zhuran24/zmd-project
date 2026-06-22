@@ -34,6 +34,7 @@ from src.search.exact_campaign import (
     ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
@@ -379,6 +380,7 @@ def test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays(
     tmp_path: Path,
 ) -> None:
     root = _build_single_pose_project(tmp_path / "legitimate")
+    write_closed_phase_review_gate(root)
     status, result = outer_search_module.run_outer_search(
         project_root=root,
         solve_mode="certified_exact",

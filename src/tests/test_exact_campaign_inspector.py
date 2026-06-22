@@ -26,7 +26,10 @@ from src.search.certified_surface import verify_certified_delivery_surface
 from src.search.exact_campaign import ExactCampaign, compute_exact_artifact_hashes
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
-from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
+from src.tests.certified_frontier_helpers import (
+    attach_terminal_frontier_evidence,
+    write_closed_phase_review_gate,
+)
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -160,6 +163,7 @@ def test_inspector_summarizes_terminal_full_frontier_certified_result(
     tmp_path: Path,
 ) -> None:
     project_root = _build_exact_project(tmp_path / "project")
+    write_closed_phase_review_gate(project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(2, 1)
     campaign.mark_candidate_result(
@@ -720,6 +724,7 @@ def _export_current_certified_surface(project_root: Path) -> ExactCampaign:
     if project_root.exists():
         shutil.rmtree(project_root)
     project_root = _build_exact_project(project_root)
+    write_closed_phase_review_gate(project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(2, 1)
     campaign.mark_candidate_result(
