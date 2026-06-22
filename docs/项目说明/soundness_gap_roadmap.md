@@ -117,6 +117,21 @@ owner 确认的 canonical→geometry 规格事实伪装成 P1.2 已由代码证�
 
 **收敛标尺**：盯"还在冒新 BLOCK，还是只剩 CONCERN/latent"。round1=WS(BLOCK)、round2=OPEN-GATE(新 BLOCK) → **未收敛**；某轮只剩 CONCERN/latent = BLOCK 类收敛、可停审进修。
 
+### 第4轮外审推翻 FIX-1/3 → capsule 根治闭合（2026-06-23，提交 `f492690`）
+
+第4轮外审（3 个独立 GPT Pro reviewer，blind A-G）判 **FIX-2 真闭；FIX-1 + FIX-3 未闭、REOPEN**（`228f266` 之前的实现不够）：
+- **FIX-1 2 BLOCK**：可伪造 in-process verdict（`TerminalFixedWitnessVerdict._fresh_run_marker` 是公开构造器默认字段，同进程构造即过、不跑 binding/routing，**LIVE**）+ F3 own-body（`_connector_body_exclusion_violation` 只拒 other-body、放过自己 body 占 connector）。
+- **FIX-3 3 BLOCK**：stub 即过（只验文件+2 函数名）+ `_calls_function` shadow（同名 local/nested/param shadow）+ mutable-anchor 自重封（改 3 review anchor 跳过 v99 floor → manifest 自报 hash 自盖章）。
+
+根因=**信任机制本身可伪造**（in-process verdict 对象 / name-based AST guard / self-resealable hash）→ owner 拍板上 **capsule 根治**（= done-criterion 早钉的「验证器从不可变 capsule 执行 + nonce 不可伪造 + 命名 TCB」）：
+- **FIX-1 闭**：新 `src/search/terminal_fixed_witness_capsule.py` —— fixed-witness 在隔离 `python -I` 子进程执行（仿 `candidate_proof_replay`）、返回 nonce-bound response，父进程只信校验过 response、不信 in-process verdict 对象；删 `_fresh_run_marker` 权威；旧公开入口强制 fail-close。F3 任意 in-grid connector `owner!=None` 都拒。
+- **FIX-3 闭**：v99 static floor **永远跑** + 5 处 review anchor 强制==硬编码 `CLOSE_KERNEL_APPROVED_REVIEW_ANCHOR`（unknown fail-closed）+ guard 验执行行为（`_reachable_direct_call` 死分支折叠认 Name-guard/三元/BoolOp/post-return·raise）+ capsule 进 v99 floor 四套结构 + 新 `CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS` 机器闸（结构 gate 文件⟹必在 floor）+ 命名 checker-source TCB。
+- **FIX-5 顺带闭**（create-window load↔hash + canonical 子窗口 TOCTOU）。
+
+流程=Codex 实现 / Opus 子代理三轮对抗审全清（逮到 capsule-未进-floor + 死分支可达性两个同族新洞、已返工修）/ 我终审 `--full` preflight 20/20·pytest 3277·`next_allowed=False` 止血保持·12 obligations·54 sinks·allowlist 45/45。**残留（非 live、跟进）**：可达性扫描器漏认 `assert False`/`range(0)`/`match` 无 catch-all 等"假不可达"——被 v99 floor hash 钉 + STRUCTURAL_GATE 机器闸兜死，要利用必须改 checker 源码（=git/人审 TCB 边界）。详 cc_memory `p1-2-capsule-f492690-fix-1-3-fix-5`、外审原文 `C:\22957\download\新建文件夹\{1,2,3}\回复.txt`。
+
+**收敛标尺更新**：round4 仍冒新 BLOCK（FIX-1/3 reopen + capsule 内 2 个同族新洞）但都已闭，Opus 三轮后只剩 floor-兜死的 CONCERN = **BLOCK 类收敛**。剩 Tier-1 **FIX-4**（I1）+ Tier-2 FIX-6 + 一致性 FIX-7。
+
 ### Tier 1 — 挡"诚实发布"的 BLOCK（必须先修）
 - **P1.2-FIX-1 fixed-witness 终端 verifier（WS/F1，并吞 F3）**：钉完整 (R*,π*) 非仅 pose；binding+routing 共享同一 witness/assignment；routing 用 R* 确切 ghost origin/extent；含 connector/body 排除；**序列化字节 round-trip 复验**；timeout/UNKNOWN→UNPROVEN，绝不→INFEASIBLE；证据绑 stored solution digest、无 witness 替换。红测:binding/routing witness 不一致→FAIL；非-R* origin→FAIL；UNKNOWN→UNPROVEN；写后字节被篡→FAIL。
 - **P1.2-FIX-2 OPEN-GATE 机器发布闸**：certified surface / delivery manifest / inspector / adapters 一律读 reopen/`exact_full_scale_status`，open 期间 `publishable=false` fail-closed（单一机器闸、所有面共用）。红测:status=open ⇒ 各面拒发。
