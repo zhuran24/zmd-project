@@ -77,6 +77,28 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
+_MINIMAL_CERTIFIED_BINDING_RULES = {
+    "commodity_metadata": {
+        "source_ore": {
+            "source_kind": "external_boundary",
+            "sink_kind": "none",
+        },
+        "valley_battery": {
+            "source_kind": "none",
+            "sink_kind": "generic_input",
+        },
+        "ore": {
+            "source_kind": "none",
+            "sink_kind": "none",
+        },
+    },
+}
+
+
+class _CertifiedBindingMasterRulesMixin:
+    rules = _MINIMAL_CERTIFIED_BINDING_RULES
+
+
 
 def _build_toy_exact_project(project_root: Path) -> Path:
     data_dir = project_root / "data" / "preprocessed"
@@ -176,6 +198,18 @@ def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
             "required_generic_inputs": {"valley_battery": 2},
         },
         wireless_sink_generic_input_slots=3,
+        rules={
+            "commodity_metadata": {
+                "source_ore": {
+                    "source_kind": "external_boundary",
+                    "sink_kind": "none",
+                },
+                "valley_battery": {
+                    "source_kind": "none",
+                    "sink_kind": "generic_input",
+                },
+            },
+        },
     )
 
     assert controller._binding_generic_requirements_kwargs() == {
@@ -226,6 +260,18 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
             "required_generic_inputs": {"valley_battery": 2},
         },
         wireless_sink_generic_input_slots=3,
+        rules={
+            "commodity_metadata": {
+                "source_ore": {
+                    "source_kind": "external_boundary",
+                    "sink_kind": "none",
+                },
+                "valley_battery": {
+                    "source_kind": "none",
+                    "sink_kind": "generic_input",
+                },
+            },
+        },
     )
 
     _model, status = benders_loop_module.LBBDController._retry_binding_without_overload_separation(
@@ -3706,7 +3752,7 @@ def test_binding_alt_cap_returns_unknown_without_whole_layout_cut(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -3828,7 +3874,7 @@ def test_unexpected_initial_binding_status_returns_unknown_without_exact_safe_cu
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -3913,7 +3959,7 @@ def test_binding_missing_instance_metadata_returns_unknown_before_routing(
     )["facility_pools"]
     pose = facility_pools["manufacturing_6x4"][0]
 
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         source_instances: list[dict] = []
         grid_w = 70
         grid_h = 70
@@ -3985,7 +4031,7 @@ def test_unexpected_binding_resolve_status_returns_unknown_without_exhaustion_cu
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -4312,7 +4358,7 @@ def test_unexpected_routing_precheck_status_returns_unknown_without_routing_cut(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -4441,7 +4487,7 @@ def test_missing_routing_precheck_status_returns_unknown_without_routing_build(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -4565,7 +4611,7 @@ def test_routing_precheck_summary_analysis_mismatch_fails_closed_before_build(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -4694,7 +4740,7 @@ def test_front_blocked_precheck_bypass_does_not_consume_build_contradiction(
     monkeypatch.setenv("EXACT_USE_POSE_BOOL_MASTER", "1")
     monkeypatch.setenv("EXACT_B1_BYPASS_ROUTING_PRECHECK", "1")
 
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -4836,7 +4882,7 @@ def test_duplicate_terminal_front_keys_at_routing_build_fail_closed_before_cut(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -4983,7 +5029,7 @@ def test_feasible_routing_build_port_adherence_blocked_ports_fail_closed_before_
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -5109,7 +5155,7 @@ def test_routing_build_port_adherence_blocked_ports_rejects_fractional_count(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -5247,7 +5293,7 @@ def test_front_blocked_precheck_without_analysis_fails_closed_before_cut(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -5380,7 +5426,7 @@ def test_reject_precheck_status_requires_true_safe_reject_before_cut(
     analysis_safe_reject,
     expected_violation: str,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -5570,7 +5616,7 @@ def test_front_blocked_precheck_blocked_ports_must_be_analysis_backed_before_cut
     summary_blocked_ports,
     analysis_blocked_ports,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": []}]}
         source_instances = []
         grid_w = 4
@@ -5688,7 +5734,7 @@ def test_front_blocked_precheck_unresolved_conflict_id_fails_closed_before_cut(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class MasterStub:
+    class MasterStub(_CertifiedBindingMasterRulesMixin):
         facility_pools = {"tiny_facility": [{"occupied_cells": [[0, 0]]}]}
         source_instances = []
         grid_w = 4

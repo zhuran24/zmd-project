@@ -43,7 +43,6 @@ TERMINAL_FIXED_WITNESS_REJECTED_REASON_FIELD = (
     "terminal_fixed_witness_rejected_reason"
 )
 
-_FRESH_RUN_MARKER = object()
 _PROJECTED_CERTIFIED = "CERTIFIED"
 _PROJECTED_UNPROVEN = "UNPROVEN"
 _BINDING_SECONDS = 600.0
@@ -86,11 +85,6 @@ class TerminalFixedWitnessVerdict:
     routing_status: Optional[str] = None
     reason: Optional[str] = None
     details: Mapping[str, Any] = field(default_factory=dict)
-    _fresh_run_marker: Any = field(
-        default=_FRESH_RUN_MARKER,
-        repr=False,
-        compare=False,
-    )
 
     def to_dict(self) -> Dict[str, Any]:
         payload = {
@@ -353,12 +347,47 @@ def project_terminal_fixed_witness_records_for_sink(
     final_result: Mapping[str, Any],
     verdict: TerminalFixedWitnessVerdict | None,
 ) -> TerminalFixedWitnessProjection:
-    """Project terminal records through a fresh fixed-witness verifier result.
+    """Fail-closed public compatibility wrapper.
 
-    The supplied mapping is treated as a public projection target.  Stored
-    ``proof_summary`` fields never grant authority; only the current verdict
-    object can keep the terminal record public-CERTIFIED.
+    A process-local ``TerminalFixedWitnessVerdict`` is diagnostic data only.  The
+    public proof path must call the isolated capsule sink, which invokes the
+    private verified projection helper only after nonce/source/artifact/identity
+    checks have accepted the child response.
     """
+
+    return _project_terminal_fixed_witness_records_for_unverified_verdict(
+        candidate_records=candidate_records,
+        final_result=final_result,
+        verdict=verdict,
+    )
+
+
+def _project_terminal_fixed_witness_records_for_unverified_verdict(
+    *,
+    candidate_records: MutableMapping[str, dict[str, Any]],
+    final_result: Mapping[str, Any],
+    verdict: TerminalFixedWitnessVerdict | None,
+) -> TerminalFixedWitnessProjection:
+    return _project_terminal_fixed_witness_records_from_capsule(
+        candidate_records=candidate_records,
+        final_result=final_result,
+        verdict=verdict,
+        forced_rejected_reason=(
+            "terminal_fixed_witness_capsule_required"
+            if verdict is not None
+            else "terminal_fixed_witness_fresh_verdict_missing"
+        ),
+    )
+
+
+def _project_terminal_fixed_witness_records_from_capsule(
+    *,
+    candidate_records: MutableMapping[str, dict[str, Any]],
+    final_result: Mapping[str, Any],
+    verdict: TerminalFixedWitnessVerdict | None,
+    forced_rejected_reason: str | None = None,
+) -> TerminalFixedWitnessProjection:
+    """Project terminal records after a parent-validated capsule response."""
 
     try:
         projected = _copy_candidate_records(candidate_records)
@@ -385,7 +414,7 @@ def project_terminal_fixed_witness_records_for_sink(
             rejected_reason=f"terminal_fixed_witness_projection_identity_invalid:{type(exc).__name__}",
         )
 
-    reason = _projection_rejected_reason(identity, verdict)
+    reason = forced_rejected_reason or _projection_rejected_reason(identity, verdict)
     publishable = reason is None
     projected_status = _PROJECTED_CERTIFIED if publishable else _PROJECTED_UNPROVEN
     record = projected.get(candidate_key)
@@ -658,8 +687,6 @@ def _projection_rejected_reason(
         return "terminal_fixed_witness_fresh_verdict_missing"
     if not isinstance(verdict, TerminalFixedWitnessVerdict):
         return "terminal_fixed_witness_fresh_verdict_invalid"
-    if getattr(verdict, "_fresh_run_marker", None) is not _FRESH_RUN_MARKER:
-        return "terminal_fixed_witness_fresh_verdict_marker_invalid"
     if str(verdict.authority) != TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY:
         return "terminal_fixed_witness_authority_invalid"
     if int(verdict.schema_version) != TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION:
@@ -680,6 +707,10 @@ def _projection_rejected_reason(
         return str(verdict.reason or "terminal_fixed_witness_not_publishable")
     if str(verdict.projected_status) != _PROJECTED_CERTIFIED:
         return "terminal_fixed_witness_projected_status_invalid"
+    if str(verdict.binding_status) != "FEASIBLE":
+        return "terminal_fixed_witness_binding_status_invalid"
+    if str(verdict.routing_status) != "FEASIBLE":
+        return "terminal_fixed_witness_routing_status_invalid"
     return None
 
 
@@ -830,7 +861,7 @@ def _connector_body_exclusion_violation(
         if x < 0 or y < 0 or x >= grid_w or y >= grid_h:
             continue
         owner = occupied_owner_by_cell.get(connector_cell)
-        if owner is not None and owner != str(port_spec.get("instance_id", "")):
+        if owner is not None:
             return "terminal_fixed_witness_connector_cell_occupied_by_other_body"
     return None
 

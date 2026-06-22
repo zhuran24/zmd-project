@@ -437,7 +437,35 @@ def _make_lbbd_controller_stub(project_root):
     via the unbound function on LBBDController so we don't need to construct a
     real controller (which requires master / cut_manager / ...)."""
     stub = type("LBBDControllerStub", (), {})()
-    stub.master = type("MasterStub", (), {"facility_pools": {}, "source_instances": []})()
+    stub.master = type(
+        "MasterStub",
+        (),
+        {
+            "facility_pools": {},
+            "source_instances": [],
+            # P1.2-FIX-5 canonical: certified binding reads the master canonical_rules
+            # snapshot.  Provide a minimal one; it is used only by the certified replay
+            # scenario, while the non-certified env tests ignore it via the solve_mode
+            # guard in _binding_canonical_rules_kwargs.
+            "rules": {
+                "commodity_metadata": {
+                    "source_ore": {"source_kind": "external_boundary", "sink_kind": "none"},
+                    "valley_battery": {"source_kind": "none", "sink_kind": "generic_input"},
+                    "ore": {"source_kind": "none", "sink_kind": "none"},
+                }
+            },
+        },
+    )()
+    # P1.2-FIX-5 canonical: _binding_snapshot_kwargs reads these controller helpers.
+    # Bind the real methods so a certified scenario packages the real master snapshot
+    # kwargs and a non-certified scenario returns {} via the solve_mode guard.
+    from src.search.benders_loop import LBBDController as _LBBDController
+    stub._binding_generic_requirements_kwargs = (
+        _LBBDController._binding_generic_requirements_kwargs.__get__(stub)
+    )
+    stub._binding_canonical_rules_kwargs = (
+        _LBBDController._binding_canonical_rules_kwargs.__get__(stub)
+    )
     stub.project_root = project_root
     stub.binding_seconds = 1.0
     stub._heartbeat_callback = None
@@ -651,6 +679,12 @@ def test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion
     stub.master.source_instances = instances
     stub.master.generic_io_requirements = generic_io_requirements
     stub.master.wireless_sink_generic_input_slots = 3
+    # P1.2-FIX-5 canonical: certified binding role-validates generic IO commodities
+    # against the master canonical_rules snapshot; use the real project rules so every
+    # commodity in generic_io_requirements is registered (matches production).
+    stub.master.rules = json.loads(
+        (project_root / "rules" / "canonical_rules.json").read_text(encoding="utf-8")
+    )
 
     retry_model, retry_status = bl.LBBDController._retry_binding_without_overload_separation(
         stub,

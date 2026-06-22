@@ -455,7 +455,12 @@
         "test_p1_2_fix_3_phase_gate_requires_fixed_witness_verifier_present",
         "test_p1_2_fix_3_phase_gate_witness_bound_close_condition_stays_blocked",
         "test_p1_2_fix_3_publish_binding_detects_unwired_verifier",
-        "test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding"
+        "test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding",
+        "test_fix_3_phase_checker_rejects_two_empty_function_verifier_stub",
+        "test_fix_3_phase_checker_rejects_fake_capsule_projection",
+        "test_fix_3_publish_wiring_rejects_required_symbol_shadowing",
+        "test_fix_3_publish_wiring_rejects_dead_branch_capsule_call",
+        "test_fix_3_current_phase_gate_stays_blocked"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
@@ -483,6 +488,10 @@
         "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
         "test_p1_2_close_kernel_manifest_is_strict_json",
         "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+        "test_fix_3_unknown_review_anchor_fails_closed",
+        "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
+        "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
+        "test_fix_3_capsule_name_guard_dead_branch_manifest_reseal_is_rejected",
         "test_p1_2_close_kernel_rejects_v99_manifest_scan_root_shrink",
         "test_p1_2_close_kernel_rejects_v99_manifest_sink_floor_shrink",
         "test_p1_2_close_kernel_rejects_v99_source_sha_manifest_reseal_without_checker_floor",
@@ -563,6 +572,31 @@
         "scripts/check_phase_review_gate.py"
       ],
       "policy": "The public certified surface projects every terminal witness (R*, pi*) through terminal_fixed_witness_verifier, which reruns binding and routing on the exact stored solution bytes. Non-FEASIBLE binding/routing (INFEASIBLE, TIMEOUT, or any exception) demotes the public projection to UNPROVEN and never to proof-bearing INFEASIBLE. The verifier is verify-not-rewrite (durable witness and candidate_proof digest are never replaced). P1.2-FIX-3 makes this verifier's presence and publish-path wiring a precondition of the phase gate's witness-bound close condition, so the gate cannot be closed while the verifier is removed or unwired."
+    },
+    {
+      "id": "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT",
+      "title": "The certified session attests the solved bytes: frozen artifacts are snapshotted once and built from the hashed bytes",
+      "v_findings": [
+        "p1_2_toctou_block_2026_06_21",
+        "p1_2_fix_5_atomic_snapshot"
+      ],
+      "required_tests": [
+        "test_fix5_snapshot_hash_attests_returned_text_bytes",
+        "test_fix5_snapshot_hashes_match_compute_exact_artifact_hashes",
+        "test_fix5_text_loaders_are_faithful_to_path_loaders",
+        "test_fix5_read_once_regular_file_bytes_rejects_non_regular",
+        "test_fix5_create_uses_atomic_snapshot_not_second_read"
+      ],
+      "evidence_paths": [
+        "src/search/benders_loop.py",
+        "src/search/exact_campaign.py",
+        "src/models/master_model.py",
+        "src/models/binding_subproblem.py",
+        "src/tests/test_p1_2_fix_5_toctou_atomic_snapshot.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "docs/项目说明/soundness_gap_roadmap.md"
+      ],
+      "policy": "ExactSearchSession.create reads each frozen exact artifact's bytes exactly once, records the hash of those bytes, and parses/builds the master core from the same bytes. There is no second independent disk read between the recorded hash and the build, so a swap/drift of any frozen artifact between load and hash cannot produce a session whose artifact_hashes fail to attest the solved bytes (closes the load->hash TOCTOU window). The checker fails closed if create stops snapshotting atomically or recomputes hashes from a second disk read."
     }
   ],
   "certified_cut_replay_contract": {
@@ -695,6 +729,7 @@
       "src/search/outer_search.py",
       "src/search/exact_parallel_scheduler.py",
       "src/search/benders_loop.py",
+      "src/search/terminal_fixed_witness_capsule.py",
       "src/render/industrial_planner_exact_status.py",
       "scripts/build_industrial_planner_single_base_delivery_release.py"
     ],
@@ -738,7 +773,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "5cb02b66ace210bd68644035aabf2fdea0dbc048773fc336137cc73432df38e2",
+        "source_sha256": "a176aad0c6d77abe4d476e344e9ab359bfb307b652e67e6728548553b9a640d4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -950,7 +985,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "1f487ad5cb068f264396788267a5df3152d664f485f9ec10bff1821bd802543a",
+        "source_sha256": "9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1060,7 +1095,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "437dcf94703fff826a5f17e68a0da707231bd5a03e0679b957b6625c915f6169",
+        "source_sha256": "1c72cc6e5b042900975cc18b8284c75531f01d3ca4f46ef553dcbea49b61710f",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1254,7 +1289,7 @@
           "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
           "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
         ],
-        "source_sha256": "0205ffe8e33674af8aae70bb83b0392948aa83f33218def0dc15806e1280e4b7",
+        "source_sha256": "45f5690a418bf446bc3acbe8eb0c8c1cb72351ee7bcd8dcf46bb57b3d9ab5aa8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1334,7 +1369,7 @@
           "require_record_solution_match=True",
           "terminal_frontier_evidence_violation"
         ],
-        "source_sha256": "008a20b57a80114da8494f18ed28ebd3b24ba158d3845105f539e908999c6898",
+        "source_sha256": "621681a1a089868458dcd803cf29a293a4b4ff285acc23e2d890432eb93774e7",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1358,7 +1393,28 @@
           "RoutingSubproblem",
           "terminal_fixed_witness_binding_routing_v1"
         ],
-        "source_sha256": "d56d5407a3b40aca8719caa70a94f59007f4db06b4beb7dd4fee0d32d6a2d541",
+        "source_sha256": "f39ceb13c9e40f4fdeeaf36d181169726fce138b0ec441a388aee8ec39dc9c14",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/terminal_fixed_witness_capsule.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "UNPROVEN",
+          "terminal_fixed_witness",
+          "publishable",
+          "nonce"
+        ],
+        "required_guard_tokens": [
+          "build_terminal_fixed_witness_projection_at_sink",
+          "_invoke_isolated_capsule",
+          "_capsule_response_violation",
+          "_execute_isolated_capsule_request",
+          "nonce"
+        ],
+        "source_sha256": "b0d71cb98f03f600712359364e81546cd8a3243c80211f2dd33bd897e2bee7bc",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1421,7 +1477,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "7356e3f1ab3b5f75c82afca042fdda21340f8997df8ea87edb1a71fb4bb367aa",
+        "source_sha256": "fce253d2063e00c402c94bc285e6ca2a78e05dd1e1c4fdda1c54240a038fe450",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

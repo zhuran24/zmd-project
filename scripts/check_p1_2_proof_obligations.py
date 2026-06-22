@@ -13,7 +13,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Any, NoReturn, Sequence
+from typing import Any, Callable, NoReturn, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
@@ -27,6 +27,9 @@ EXACT_CAMPAIGN_INSPECTOR_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaig
 CERTIFIED_FRONTIER_PATH = PROJECT_ROOT / "src" / "search" / "certified_frontier.py"
 CERTIFIED_SURFACE_PATH = PROJECT_ROOT / "src" / "search" / "certified_surface.py"
 CANDIDATE_PROOF_REPLAY_PATH = PROJECT_ROOT / "src" / "search" / "candidate_proof_replay.py"
+TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
+    PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
+)
 OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
 DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
@@ -53,6 +56,7 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-P1-2-CLOSE-KERNEL-SEALING",
         "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
         "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
+        "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
@@ -255,6 +259,11 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_fix_3_phase_gate_witness_bound_close_condition_stays_blocked",
             "test_p1_2_fix_3_publish_binding_detects_unwired_verifier",
             "test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding",
+            "test_fix_3_phase_checker_rejects_two_empty_function_verifier_stub",
+            "test_fix_3_phase_checker_rejects_fake_capsule_projection",
+            "test_fix_3_publish_wiring_rejects_required_symbol_shadowing",
+            "test_fix_3_publish_wiring_rejects_dead_branch_capsule_call",
+            "test_fix_3_current_phase_gate_stays_blocked",
         }
     ),
     "PO-TERMINAL-FIXED-WITNESS-VERIFIER": frozenset(
@@ -275,6 +284,15 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_fixed_witness_unproven_durable_record_keeps_solution_bytes",
         }
     ),
+    "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT": frozenset(
+        {
+            "test_fix5_snapshot_hash_attests_returned_text_bytes",
+            "test_fix5_snapshot_hashes_match_compute_exact_artifact_hashes",
+            "test_fix5_text_loaders_are_faithful_to_path_loaders",
+            "test_fix5_read_once_regular_file_bytes_rejects_non_regular",
+            "test_fix5_create_uses_atomic_snapshot_not_second_read",
+        }
+    ),
     "PO-P1-2-CLOSE-KERNEL-SEALING": frozenset(
         {
             "test_p1_2_close_kernel_rejects_unregistered_certified_sink",
@@ -282,6 +300,10 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
             "test_p1_2_close_kernel_manifest_is_strict_json",
             "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+            "test_fix_3_unknown_review_anchor_fails_closed",
+            "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
+            "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
+            "test_fix_3_capsule_name_guard_dead_branch_manifest_reseal_is_rejected",
         }
     ),
 }
@@ -345,9 +367,13 @@ def _require_int(value: Any, label: str) -> int:
 
 def _parse_python(path: Path) -> ast.Module:
     try:
-        return ast.parse(path.read_text(encoding="utf-8"))
+        tree = ast.parse(path.read_text(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
         raise CheckError(f"cannot parse {_rel(path)}: {exc}") from exc
+    for parent in ast.walk(tree):
+        for child in ast.iter_child_nodes(parent):
+            setattr(child, "_p1_2_parent", parent)
+    return tree
 
 
 def _parse_lifecycle() -> ast.Module:
@@ -409,6 +435,541 @@ def _calls_function_with_keyword_constant(
         return False
     value = keywords[0].value
     return isinstance(value, ast.Constant) and value.value is expected_value
+
+
+def _top_level_imports_exact_name(tree: ast.Module, *, module: str, name: str) -> bool:
+    for node in tree.body:
+        if not isinstance(node, ast.ImportFrom) or node.level != 0 or node.module != module:
+            continue
+        for alias in node.names:
+            if alias.name == name and alias.asname is None:
+                return True
+    return False
+
+
+def _function_imports_exact_name(node: ast.AST, *, module: str, name: str) -> bool:
+    found = False
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_ImportFrom(self, child: ast.ImportFrom) -> None:
+            nonlocal found
+            if child.level == 0 and child.module == module:
+                for alias in child.names:
+                    if alias.name == name and alias.asname is None:
+                        found = True
+
+    Visitor().visit(node)
+    return found
+
+
+def _ast_root(node: ast.AST) -> ast.AST:
+    root = node
+    while True:
+        parent = getattr(root, "_p1_2_parent", None)
+        if parent is None:
+            return root
+        root = parent
+
+
+def _store_target_names(target: ast.AST) -> set[str]:
+    names: set[str] = set()
+    for child in ast.walk(target):
+        if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Store):
+            names.add(child.id)
+    return names
+
+
+def _assign_targets(node: ast.AST) -> set[str]:
+    if isinstance(node, ast.Assign):
+        targets = node.targets
+    elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+        targets = [node.target]
+    else:
+        return set()
+    names: set[str] = set()
+    for target in targets:
+        names.update(_store_target_names(target))
+    return names
+
+
+def _constant_bool_value(
+    value: ast.AST | None,
+    false_names: set[str] | None = None,
+    true_names: set[str] | None = None,
+) -> bool | None:
+    if isinstance(value, ast.Constant):
+        return bool(value.value)
+    if isinstance(value, ast.Name):
+        if value.id == "TYPE_CHECKING" or value.id in (false_names or set()):
+            return False
+        if value.id in (true_names or set()):
+            return True
+    if isinstance(value, ast.UnaryOp) and isinstance(value.op, ast.Not):
+        operand_value = _constant_bool_value(value.operand, false_names, true_names)
+        if operand_value is not None:
+            return not operand_value
+    if isinstance(value, ast.BoolOp):
+        if isinstance(value.op, ast.And):
+            for operand in value.values:
+                operand_value = _constant_bool_value(operand, false_names, true_names)
+                if operand_value is False:
+                    return False
+                if operand_value is None:
+                    return None
+            return True
+        if isinstance(value.op, ast.Or):
+            for operand in value.values:
+                operand_value = _constant_bool_value(operand, false_names, true_names)
+                if operand_value is True:
+                    return True
+                if operand_value is None:
+                    return None
+            return False
+    return None
+
+
+def _is_constant_false(value: ast.AST | None) -> bool:
+    return _constant_bool_value(value) is False
+
+
+def _module_constant_bool_names(node: ast.AST) -> tuple[set[str], set[str]]:
+    root = _ast_root(node)
+    if not isinstance(root, ast.Module):
+        return set(), set()
+    false_names: set[str] = set()
+    true_names: set[str] = set()
+    for statement in root.body:
+        targets = _assign_targets(statement)
+        if not targets:
+            continue
+        value = None
+        if isinstance(statement, (ast.Assign, ast.AnnAssign)):
+            value = _constant_bool_value(statement.value, false_names, true_names)
+        if value is False:
+            false_names.update(targets)
+            true_names.difference_update(targets)
+        elif value is True:
+            true_names.update(targets)
+            false_names.difference_update(targets)
+        else:
+            false_names.difference_update(targets)
+            true_names.difference_update(targets)
+    return false_names, true_names
+
+
+def _module_constant_false_names(node: ast.AST) -> set[str]:
+    false_names, _true_names = _module_constant_bool_names(node)
+    return false_names
+
+
+def _function_scope_binding_names(node: ast.AST) -> set[str]:
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return set()
+    names = {
+        argument.arg
+        for argument in (
+            list(node.args.posonlyargs)
+            + list(node.args.args)
+            + list(node.args.kwonlyargs)
+        )
+    }
+    if node.args.vararg is not None:
+        names.add(node.args.vararg.arg)
+    if node.args.kwarg is not None:
+        names.add(node.args.kwarg.arg)
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+            else:
+                names.add(child.name)
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+            else:
+                names.add(child.name)
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            names.add(child.name)
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_Assign(self, child: ast.Assign) -> None:
+            names.update(_assign_targets(child))
+            self.visit(child.value)
+
+        def visit_AnnAssign(self, child: ast.AnnAssign) -> None:
+            names.update(_assign_targets(child))
+            if child.value is not None:
+                self.visit(child.value)
+
+        def visit_AugAssign(self, child: ast.AugAssign) -> None:
+            names.update(_assign_targets(child))
+            self.visit(child.value)
+
+        def visit_For(self, child: ast.For) -> None:
+            names.update(_store_target_names(child.target))
+            self.generic_visit(child)
+
+        def visit_AsyncFor(self, child: ast.AsyncFor) -> None:
+            names.update(_store_target_names(child.target))
+            self.generic_visit(child)
+
+        def visit_With(self, child: ast.With) -> None:
+            for item in child.items:
+                if item.optional_vars is not None:
+                    names.update(_store_target_names(item.optional_vars))
+            self.generic_visit(child)
+
+        def visit_AsyncWith(self, child: ast.AsyncWith) -> None:
+            for item in child.items:
+                if item.optional_vars is not None:
+                    names.update(_store_target_names(item.optional_vars))
+            self.generic_visit(child)
+
+        def visit_ExceptHandler(self, child: ast.ExceptHandler) -> None:
+            if child.name is not None:
+                names.add(child.name)
+            self.generic_visit(child)
+
+        def visit_Import(self, child: ast.Import) -> None:
+            for alias in child.names:
+                names.add(alias.asname or alias.name.split(".")[0])
+
+        def visit_ImportFrom(self, child: ast.ImportFrom) -> None:
+            for alias in child.names:
+                names.add(alias.asname or alias.name)
+
+    Visitor().visit(node)
+    return names
+
+
+def _constant_guard_value(
+    test: ast.AST,
+    false_names: set[str],
+    true_names: set[str],
+) -> bool | None:
+    return _constant_bool_value(test, false_names, true_names)
+
+
+def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool]) -> bool:
+    found = False
+    module_false_names, module_true_names = _module_constant_bool_names(node)
+    function_bindings = _function_scope_binding_names(node)
+    false_names = module_false_names - function_bindings
+    true_names = module_true_names - function_bindings
+
+    class Visitor(ast.NodeVisitor):
+        def __init__(self) -> None:
+            self.false_names = set(false_names)
+            self.true_names = set(true_names)
+
+        def visit_statements(self, statements: Sequence[ast.stmt]) -> None:
+            for statement in statements:
+                self.visit(statement)
+                if isinstance(statement, (ast.Return, ast.Raise, ast.Continue, ast.Break)):
+                    break
+
+        def _record_assignment(self, targets: set[str], value: bool | None) -> None:
+            if value is False:
+                self.false_names.update(targets)
+                self.true_names.difference_update(targets)
+            elif value is True:
+                self.true_names.update(targets)
+                self.false_names.difference_update(targets)
+            else:
+                self.false_names.difference_update(targets)
+                self.true_names.difference_update(targets)
+
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            if child is node:
+                self.visit_statements(child.body)
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            if child is node:
+                self.visit_statements(child.body)
+
+        def visit_Module(self, child: ast.Module) -> None:
+            if child is node:
+                self.visit_statements(child.body)
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_Assign(self, child: ast.Assign) -> None:
+            self.visit(child.value)
+            targets = _assign_targets(child)
+            value = _constant_bool_value(child.value, self.false_names, self.true_names)
+            self._record_assignment(targets, value)
+
+        def visit_AnnAssign(self, child: ast.AnnAssign) -> None:
+            if child.value is not None:
+                self.visit(child.value)
+            targets = _assign_targets(child)
+            value = _constant_bool_value(child.value, self.false_names, self.true_names)
+            self._record_assignment(targets, value)
+
+        def visit_AugAssign(self, child: ast.AugAssign) -> None:
+            self.visit(child.value)
+            targets = _assign_targets(child)
+            self.false_names.difference_update(targets)
+            self.true_names.difference_update(targets)
+
+        def visit_If(self, child: ast.If) -> None:
+            guard_value = _constant_guard_value(child.test, self.false_names, self.true_names)
+            if guard_value is False:
+                self.visit_statements(child.orelse)
+                return
+            if guard_value is True:
+                self.visit_statements(child.body)
+                return
+            self.visit(child.test)
+            saved_false = set(self.false_names)
+            saved_true = set(self.true_names)
+            self.visit_statements(child.body)
+            self.false_names = set(saved_false)
+            self.true_names = set(saved_true)
+            self.visit_statements(child.orelse)
+            self.false_names = saved_false
+            self.true_names = saved_true
+
+        def visit_While(self, child: ast.While) -> None:
+            guard_value = _constant_guard_value(child.test, self.false_names, self.true_names)
+            if guard_value is False:
+                self.visit_statements(child.orelse)
+                return
+            self.visit(child.test)
+            saved_false = set(self.false_names)
+            saved_true = set(self.true_names)
+            self.visit_statements(child.body)
+            self.false_names = set(saved_false)
+            self.true_names = set(saved_true)
+            self.visit_statements(child.orelse)
+            self.false_names = saved_false
+            self.true_names = saved_true
+
+        def visit_IfExp(self, child: ast.IfExp) -> None:
+            guard_value = _constant_guard_value(child.test, self.false_names, self.true_names)
+            if guard_value is False:
+                self.visit(child.orelse)
+                return
+            if guard_value is True:
+                self.visit(child.body)
+                return
+            self.visit(child.test)
+            self.visit(child.body)
+            self.visit(child.orelse)
+
+        def visit_BoolOp(self, child: ast.BoolOp) -> None:
+            if isinstance(child.op, ast.And):
+                for operand in child.values:
+                    self.visit(operand)
+                    operand_value = _constant_bool_value(operand, self.false_names, self.true_names)
+                    if operand_value is False:
+                        break
+                return
+            if isinstance(child.op, ast.Or):
+                for operand in child.values:
+                    self.visit(operand)
+                    operand_value = _constant_bool_value(operand, self.false_names, self.true_names)
+                    if operand_value is True:
+                        break
+                return
+            self.generic_visit(child)
+
+        def visit_Import(self, child: ast.Import) -> None:
+            for alias in child.names:
+                name = alias.asname or alias.name.split(".")[0]
+                self.false_names.discard(name)
+                self.true_names.discard(name)
+
+        def visit_ImportFrom(self, child: ast.ImportFrom) -> None:
+            for alias in child.names:
+                name = alias.asname or alias.name
+                self.false_names.discard(name)
+                self.true_names.discard(name)
+
+        def visit_For(self, child: ast.For) -> None:
+            targets = _store_target_names(child.target)
+            self.false_names.difference_update(targets)
+            self.true_names.difference_update(targets)
+            self.visit(child.iter)
+            self.visit_statements(child.body)
+            self.visit_statements(child.orelse)
+
+        def visit_AsyncFor(self, child: ast.AsyncFor) -> None:
+            targets = _store_target_names(child.target)
+            self.false_names.difference_update(targets)
+            self.true_names.difference_update(targets)
+            self.visit(child.iter)
+            self.visit_statements(child.body)
+            self.visit_statements(child.orelse)
+
+        def visit_With(self, child: ast.With) -> None:
+            for item in child.items:
+                self.visit(item.context_expr)
+                if item.optional_vars is not None:
+                    targets = _store_target_names(item.optional_vars)
+                    self.false_names.difference_update(targets)
+                    self.true_names.difference_update(targets)
+            self.visit_statements(child.body)
+
+        def visit_AsyncWith(self, child: ast.AsyncWith) -> None:
+            for item in child.items:
+                self.visit(item.context_expr)
+                if item.optional_vars is not None:
+                    targets = _store_target_names(item.optional_vars)
+                    self.false_names.difference_update(targets)
+                    self.true_names.difference_update(targets)
+            self.visit_statements(child.body)
+
+        def visit_Try(self, child: ast.Try) -> None:
+            self.visit_statements(child.body)
+            for handler in child.handlers:
+                self.visit(handler)
+            self.visit_statements(child.orelse)
+            self.visit_statements(child.finalbody)
+
+        def visit_ExceptHandler(self, child: ast.ExceptHandler) -> None:
+            if child.name is not None:
+                self.false_names.discard(child.name)
+                self.true_names.discard(child.name)
+            if child.type is not None:
+                self.visit(child.type)
+            self.visit_statements(child.body)
+
+        def visit_Call(self, child: ast.Call) -> None:
+            nonlocal found
+            if predicate(child):
+                found = True
+            self.generic_visit(child)
+
+    Visitor().visit(node)
+    return found
+
+
+def _direct_calls_name(node: ast.AST, name: str) -> bool:
+    return _reachable_direct_call(
+        node,
+        lambda child: isinstance(child.func, ast.Name) and child.func.id == name,
+    )
+
+
+def _direct_calls_attr(node: ast.AST, attr: str) -> bool:
+    return _reachable_direct_call(
+        node,
+        lambda child: isinstance(child.func, ast.Attribute) and child.func.attr == attr,
+    )
+
+
+def _function_shadows_name(
+    node: ast.FunctionDef,
+    name: str,
+    *,
+    allowed_import_module: str | None = None,
+) -> bool:
+    arguments = (
+        list(node.args.posonlyargs)
+        + list(node.args.args)
+        + list(node.args.kwonlyargs)
+    )
+    if node.args.vararg is not None:
+        arguments.append(node.args.vararg)
+    if node.args.kwarg is not None:
+        arguments.append(node.args.kwarg)
+    if any(argument.arg == name for argument in arguments):
+        return True
+
+    for child in ast.walk(node):
+        if child is node:
+            continue
+        if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and child.name == name:
+            return True
+        if isinstance(child, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+            targets: list[ast.AST] = []
+            if isinstance(child, ast.Assign):
+                targets.extend(child.targets)
+            else:
+                targets.append(child.target)
+            if any(name in _store_target_names(target) for target in targets):
+                return True
+        if isinstance(child, (ast.For, ast.AsyncFor, ast.With, ast.AsyncWith)):
+            targets = []
+            if isinstance(child, (ast.For, ast.AsyncFor)):
+                targets.append(child.target)
+            else:
+                targets.extend(item.optional_vars for item in child.items if item.optional_vars is not None)
+            if any(name in _store_target_names(target) for target in targets):
+                return True
+        if isinstance(child, ast.ExceptHandler) and child.name == name:
+            return True
+        if isinstance(child, ast.Import):
+            for alias in child.names:
+                bound = alias.asname or alias.name.split(".")[0]
+                if bound == name:
+                    return True
+        if isinstance(child, ast.ImportFrom):
+            for alias in child.names:
+                bound = alias.asname or alias.name
+                if bound != name:
+                    continue
+                if (
+                    allowed_import_module is not None
+                    and child.level == 0
+                    and child.module == allowed_import_module
+                    and alias.name == name
+                    and alias.asname is None
+                ):
+                    continue
+                return True
+    return False
+
+
+def _imported_direct_call_errors(
+    *,
+    tree: ast.Module,
+    function: ast.FunctionDef,
+    path: Path,
+    function_label: str,
+    module: str,
+    name: str,
+    allow_local_import: bool = False,
+) -> list[str]:
+    errors: list[str] = []
+    has_top_level_import = _top_level_imports_exact_name(tree, module=module, name=name)
+    has_local_import = allow_local_import and _function_imports_exact_name(function, module=module, name=name)
+    if not has_top_level_import and not has_local_import:
+        errors.append(
+            f"{function_label} must import {name} from {module} without aliasing"
+        )
+    allowed_module = module if allow_local_import else None
+    if _function_shadows_name(function, name, allowed_import_module=allowed_module):
+        errors.append(
+            f"{function_label} shadows imported fixed-witness capsule symbol {name}"
+        )
+    if not _direct_calls_name(function, name):
+        errors.append(
+            f"{function_label} must call imported fixed-witness capsule symbol {name} "
+            f"on the reachable main path in {_rel(path)}"
+        )
+    return errors
 
 
 def _calls_attr(node: ast.AST, attr: str) -> bool:
@@ -716,6 +1277,7 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
         "_check_close_kernel_contract",
         "_check_phase_gate_provenance_contract",
         "_check_phase_anchor",
+        "_check_exact_session_atomic_snapshot_contract",
     ):
         if not _calls_function(main_fn, required_call):
             errors.append(f"proof-obligation checker main must call {required_call}")
@@ -1079,6 +1641,8 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         "_check_step_8_boundary",
         "_check_fixed_witness_close_binding",
         "_fixed_witness_verifier_functions_present",
+        "_fixed_witness_verifier_semantics_errors",
+        "_fixed_witness_capsule_semantics_errors",
         "check_gate",
     ):
         _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
@@ -1108,6 +1672,18 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         errors.append(
             "fixed-witness verifier presence check must read FIXED_WITNESS_VERIFIER_PATH"
         )
+    if not _uses_name(presence_fn, "FIXED_WITNESS_CAPSULE_PATH"):
+        errors.append(
+            "fixed-witness verifier presence check must read FIXED_WITNESS_CAPSULE_PATH"
+        )
+    for required_call in (
+        "_fixed_witness_verifier_semantics_errors",
+        "_fixed_witness_capsule_semantics_errors",
+    ):
+        if not _calls_function(presence_fn, required_call):
+            errors.append(f"fixed-witness close binding must call {required_call}")
+    if not _uses_name(check_gate_fn, "APPROVED_REVIEW_ANCHOR"):
+        errors.append("manual phase gate check_gate must require the approved review anchor")
 
     manual_standard_fn = _function_def(tree, "_check_manual_review_standard", path=PHASE_GATE_SCRIPT_PATH)
     if not (_uses_constant(manual_standard_fn, "owner_manual_count_outside_repo") or _uses_name(manual_standard_fn, "COUNTING_AUTHORITY")):
@@ -1928,9 +2504,14 @@ CLOSE_KERNEL_ALLOWED_CLASSIFICATIONS = frozenset(
     }
 )
 
-
-
-CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR = "v99_p1_2_close_kernel_sealing"
+# Named TCB boundary: this checker source owns the approved review anchor and
+# the V99 static source-hash / required-file floor below, including the
+# terminal fixed-witness capsule.  The checker cannot recursively prove its own
+# source integrity; git history and human review are the trust boundary.  A
+# legitimate floor reseal must therefore change this checker code, not only
+# mutable manifest/gate data.
+CLOSE_KERNEL_APPROVED_REVIEW_ANCHOR = "v99_p1_2_close_kernel_sealing"
+CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR = CLOSE_KERNEL_APPROVED_REVIEW_ANCHOR
 CLOSE_KERNEL_V99_REQUIRED_PROOF_BEARING_TOKENS = frozenset(
     {
         "CERTIFIED",
@@ -2011,6 +2592,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
     'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
+    'src/search/terminal_fixed_witness_capsule.py': 'p1_2_public_surface',
     'src/search/terminal_fixed_witness_verifier.py': 'p1_2_certified_path',
 }
 CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS = frozenset(CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH)
@@ -2027,10 +2609,26 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "src/search/outer_search.py",
         "src/search/exact_parallel_scheduler.py",
         "src/search/benders_loop.py",
+        "src/search/terminal_fixed_witness_capsule.py",
         "src/render/industrial_planner_exact_status.py",
         "scripts/build_industrial_planner_single_base_delivery_release.py",
     }
 )
+
+# Checker-owned human-review surface for AST structural gates.  These files are
+# inspected by the publish-wiring guard and the phase-gate verifier/capsule
+# checks.  The reachability scanner is a redundant second layer; the primary
+# anti-drift defense is that every structurally checked source is also pinned by
+# the V99 source-hash floor below.
+CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
+    {
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/search/terminal_fixed_witness_capsule.py",
+        "src/search/terminal_fixed_witness_verifier.py",
+    }
+)
+
 CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
     'src/adapters/industrial_planner/export_blueprint.py': '9a5410b559a0e4c91fd1cf4bee8263f8d4f212560c9c29a59e85a08a34a4217d',
@@ -2047,7 +2645,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
     'src/io/serializer.py': '09cdfbe2a8da477eacf8a826a4d5ebc8636028a091e4577c93024bafe0eb0286',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
-    'src/models/binding_subproblem.py': '1f487ad5cb068f264396788267a5df3152d664f485f9ec10bff1821bd802543a',
+    'src/models/binding_subproblem.py': '9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
     'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
     'src/models/d2_commodity_flow_core.py': '55aee97d9162541efd0014c5f4682c1d4d60c1fb0ef9246a657dfbb3ff17775e',
@@ -2055,7 +2653,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/models/flow_subproblem.py': '1d3d0f174e23feb6df01858941cb713af6f8f676315bba7568211b9d45f9e94d',
     'src/models/highs_candidate_evaluator.py': '1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419',
     'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',
-    'src/models/master_model.py': '437dcf94703fff826a5f17e68a0da707231bd5a03e0679b957b6625c915f6169',
+    'src/models/master_model.py': '1c72cc6e5b042900975cc18b8284c75531f01d3ca4f46ef553dcbea49b61710f',
     'src/models/patch_routing_core.py': '371cdf69c6d30a1499dbd596750dfc1802eb4e1aa652e3042c044c3136c17b98',
     'src/models/power_placement_subproblem.py': '88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597',
     'src/models/routing_subproblem.py': '25c56e1f5f383f8696f93d876282f1cd5c26a37e610e6bc7d6ca8ffcd737ba49',
@@ -2069,21 +2667,22 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
     'src/render/report_builder.py': 'c92f43fc9e305f8e60868d9cfc5bd9daf146373afb9a22310dd2fefa2e951531',
     'src/render/serve.py': '038160a4155b2f7ad2da94bdccd7870bec61e043daa0346b41a88c6bfcb200ff',
-    'src/search/benders_loop.py': '0205ffe8e33674af8aae70bb83b0392948aa83f33218def0dc15806e1280e4b7',
+    'src/search/benders_loop.py': '45f5690a418bf446bc3acbe8eb0c8c1cb72351ee7bcd8dcf46bb57b3d9ab5aa8',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': 'c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75',
-    'src/search/certified_frontier.py': '008a20b57a80114da8494f18ed28ebd3b24ba158d3845105f539e908999c6898',
+    'src/search/certified_frontier.py': '621681a1a089868458dcd803cf29a293a4b4ff285acc23e2d890432eb93774e7',
     'src/search/certified_surface.py': '87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '7356e3f1ab3b5f75c82afca042fdda21340f8997df8ea87edb1a71fb4bb367aa',
+    'src/search/exact_campaign.py': 'fce253d2063e00c402c94bc285e6ca2a78e05dd1e1c4fdda1c54240a038fe450',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/outer_search.py': 'cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
-    'src/search/terminal_fixed_witness_verifier.py': 'd56d5407a3b40aca8719caa70a94f59007f4db06b4beb7dd4fee0d32d6a2d541',
+    'src/search/terminal_fixed_witness_capsule.py': 'b0d71cb98f03f600712359364e81546cd8a3243c80211f2dd33bd897e2bee7bc',
+    'src/search/terminal_fixed_witness_verifier.py': 'f39ceb13c9e40f4fdeeaf36d181169726fce138b0ec441a388aee8ec39dc9c14',
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 
@@ -2132,6 +2731,14 @@ def _scan_close_kernel_token_files(
     return found
 
 
+def _approved_review_anchor_error(label: str, value: str) -> str | None:
+    if value == CLOSE_KERNEL_APPROVED_REVIEW_ANCHOR:
+        return None
+    return (
+        f"{label} must equal approved checker anchor "
+        f"{CLOSE_KERNEL_APPROVED_REVIEW_ANCHOR!r}; got {value!r}"
+    )
+
 
 
 def _check_close_kernel_v99_static_floor(
@@ -2148,8 +2755,8 @@ def _check_close_kernel_v99_static_floor(
     The manifest may describe extra roots/sinks, but the v99 close claim must not
     be able to shrink its own authority surface or reseal source drift by editing
     only ``p1_2_proof_obligations.json``.  This is still a structural gate, not a
-    theorem prover; changing the checker itself remains part of the close-kernel
-    TCB and reopens review.
+    theorem prover.  The checker source that contains the approved anchor and
+    floor hashes is the named close-kernel TCB; changing it reopens review.
     """
     errors: list[str] = []
     declared_tokens = set(tokens)
@@ -2192,6 +2799,13 @@ def _check_close_kernel_v99_static_floor(
     for rel_path in sorted(missing_critical_gate_files):
         errors.append(f"close_kernel_contract.critical_gate_files missing v99 sealed gate file: {rel_path}")
 
+    for rel_path in sorted(CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS):
+        if rel_path not in CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH:
+            errors.append(
+                f"{rel_path} is structurally checked by P1.2 gates but missing from "
+                "the v99 source-hash floor"
+            )
+
     for rel_path, expected_sha256 in sorted(CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH.items()):
         entry = registered.get(rel_path)
         if entry is not None:
@@ -2227,6 +2841,15 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
     manifest_review_anchor = _require_str(manifest.get("review_anchor"), "review_anchor")
     if contract_review_anchor != manifest_review_anchor:
         errors.append("close_kernel_contract.review_anchor must match manifest.review_anchor")
+    phase_required_anchor = _require_str(manifest.get("phase_gate_required_anchor"), "phase_gate_required_anchor")
+    for label, value in (
+        ("review_anchor", manifest_review_anchor),
+        ("phase_gate_required_anchor", phase_required_anchor),
+        ("close_kernel_contract.review_anchor", contract_review_anchor),
+    ):
+        error = _approved_review_anchor_error(label, value)
+        if error is not None:
+            errors.append(error)
 
     tcb = _require_list(contract.get("trusted_computing_base"), "close_kernel_contract.trusted_computing_base")
     if len(tcb) < 5:
@@ -2316,21 +2939,16 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
         if not (project_root / rel_path).exists():
             errors.append(f"close-kernel critical gate file missing: {rel_path}")
 
-    if (
-        contract_review_anchor == CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR
-        or manifest_review_anchor == CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR
-        or manifest.get("phase_gate_required_anchor") == CLOSE_KERNEL_V99_STATIC_REVIEW_ANCHOR
-    ):
-        errors.extend(
-            _check_close_kernel_v99_static_floor(
-                tokens=tokens,
-                scan_roots=scan_roots,
-                excluded_subpaths=excluded_subpaths,
-                critical_gate_files=critical_files,
-                registered=registered,
-                project_root=project_root,
-            )
+    errors.extend(
+        _check_close_kernel_v99_static_floor(
+            tokens=tokens,
+            scan_roots=scan_roots,
+            excluded_subpaths=excluded_subpaths,
+            critical_gate_files=critical_files,
+            registered=registered,
+            project_root=project_root,
         )
+    )
 
     found = _scan_close_kernel_token_files(
         project_root=project_root,
@@ -2355,41 +2973,138 @@ def _fixed_witness_publish_binding_errors(
     *,
     certified_frontier_path: Path = CERTIFIED_FRONTIER_PATH,
     exact_campaign_path: Path = EXACT_CAMPAIGN_PATH,
+    capsule_path: Path = TERMINAL_FIXED_WITNESS_CAPSULE_PATH,
 ) -> list[str]:
-    """Require the certified publish path to call the FIX-1 fixed-witness verifier.
+    """Require the certified publish path to call the isolated fixed-witness capsule.
 
-    P1.2-FIX-1 added ``terminal_fixed_witness_verifier`` and wired it into the
-    sink-verified terminal frontier evidence and the project-bound terminal
-    validator.  P1.2-FIX-3 makes that wiring a hard proof obligation: the phase
-    gate's witness-bound close condition cannot be satisfied while the verifier is
-    present but unwired (a closed gate would otherwise re-enable publication
-    through a publish path that never reruns binding/routing on ``(R*, pi*)``).
+    Phase A moves public authority from the in-process diagnostic verifier to
+    ``terminal_fixed_witness_capsule.build_terminal_fixed_witness_projection_at_sink``.
+    P1.2-FIX-3 makes that exact capsule wiring a hard proof obligation: the
+    phase gate's witness-bound close condition cannot be satisfied by a local
+    same-name function, an alias, a dead branch, or a path that ignores the
+    capsule projection when publishing terminal records.
     """
     errors: list[str] = []
+    errors.extend(_fixed_witness_capsule_wiring_errors(capsule_path=capsule_path))
     frontier_tree = _parse_python(certified_frontier_path)
     build_fn = _function_def(
         frontier_tree,
         "build_sink_verified_terminal_frontier_evidence",
         path=certified_frontier_path,
     )
-    for required_call in (
-        "verify_terminal_fixed_witness",
-        "project_terminal_fixed_witness_records_for_sink",
+    errors.extend(
+        _imported_direct_call_errors(
+            tree=frontier_tree,
+            function=build_fn,
+            path=certified_frontier_path,
+            function_label="sink-verified terminal frontier evidence",
+            module="src.search.terminal_fixed_witness_capsule",
+            name="build_terminal_fixed_witness_projection_at_sink",
+        )
+    )
+    frontier_source = _source_text(certified_frontier_path, build_fn)
+    for token in (
+        "fixed_witness_projection.durable_candidate_records",
+        "fixed_witness_projection.candidate_records",
+        "fixed_witness_projection.verdict.to_dict()",
+        "fixed_witness_projection.publishable",
     ):
-        if not _calls_function(build_fn, required_call):
-            errors.append(
-                f"sink-verified terminal frontier evidence must call {required_call}"
-            )
+        if token not in frontier_source:
+            errors.append(f"sink-verified terminal frontier evidence must publish capsule field: {token}")
     campaign_tree = _parse_python(exact_campaign_path)
     violation_fn = _function_def(
         campaign_tree,
         "terminal_certified_final_result_violation_for_project",
         path=exact_campaign_path,
     )
-    if not _calls_function(violation_fn, "verify_terminal_fixed_witness"):
-        errors.append(
-            "project-bound terminal validator must call verify_terminal_fixed_witness"
+    errors.extend(
+        _imported_direct_call_errors(
+            tree=campaign_tree,
+            function=violation_fn,
+            path=exact_campaign_path,
+            function_label="project-bound terminal validator",
+            module="src.search.terminal_fixed_witness_capsule",
+            name="build_terminal_fixed_witness_projection_at_sink",
         )
+    )
+    violation_source = _source_text(exact_campaign_path, violation_fn)
+    for token in (
+        "fixed_witness_projection.candidate_records",
+        "candidate_records_override=replayed_records",
+        "terminal_certified_final_result_violation(",
+    ):
+        if token not in violation_source:
+            errors.append(f"project-bound terminal validator must gate on capsule field: {token}")
+    return errors
+
+
+def _fixed_witness_capsule_wiring_errors(
+    *,
+    capsule_path: Path = TERMINAL_FIXED_WITNESS_CAPSULE_PATH,
+) -> list[str]:
+    errors: list[str] = []
+    capsule_tree = _parse_python(capsule_path)
+    build_fn = _function_def(
+        capsule_tree,
+        "build_terminal_fixed_witness_projection_at_sink",
+        path=capsule_path,
+    )
+    for required_call in (
+        "_invoke_isolated_capsule",
+        "_verdict_from_capsule_response",
+        "_capsule_response_violation",
+        "_project_terminal_fixed_witness_records_from_capsule",
+    ):
+        if not _direct_calls_name(build_fn, required_call):
+            errors.append(f"fixed-witness capsule must call {required_call}")
+
+    invoke_fn = _function_def(capsule_tree, "_invoke_isolated_capsule", path=capsule_path)
+    invoke_source = _source_text(capsule_path, invoke_fn)
+    if not _direct_calls_attr(invoke_fn, "run"):
+        errors.append("fixed-witness capsule must launch an external subprocess")
+    for token in ('"-I"', "nonce", "check=False", "shell=True"):
+        if token == "shell=True":
+            if token in invoke_source:
+                errors.append("fixed-witness capsule subprocess must never use shell=True")
+            continue
+        if token not in invoke_source:
+            errors.append(f"fixed-witness capsule subprocess boundary missing: {token}")
+
+    execute_fn = _function_def(
+        capsule_tree,
+        "_execute_isolated_capsule_request",
+        path=capsule_path,
+    )
+    errors.extend(
+        _imported_direct_call_errors(
+            tree=capsule_tree,
+            function=execute_fn,
+            path=capsule_path,
+            function_label="fixed-witness capsule child executor",
+            module="src.search.terminal_fixed_witness_verifier",
+            name="verify_terminal_fixed_witness",
+            allow_local_import=True,
+        )
+    )
+    execute_source = _source_text(capsule_path, execute_fn)
+    for token in (
+        "compute_exact_artifact_hashes",
+        "_materialize_replay_snapshot",
+        "canonical_state_bytes_for_fixed_witness",
+    ):
+        if token not in execute_source:
+            errors.append(f"fixed-witness capsule child executor missing binding token: {token}")
+
+    response_fn = _function_def(capsule_tree, "_capsule_response_violation", path=capsule_path)
+    response_source = _source_text(capsule_path, response_fn)
+    for token in (
+        "verdict.publishable",
+        "verdict.binding_status",
+        "verdict.routing_status",
+        '"FEASIBLE"',
+    ):
+        if token not in response_source:
+            errors.append(f"fixed-witness capsule response gate missing: {token}")
     return errors
 
 
@@ -2425,6 +3140,15 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     manifest_anchor = _require_str(manifest.get("review_anchor"), "review_anchor")
     if manifest_anchor != required_anchor:
         errors.append("manifest.review_anchor must match phase_gate_required_anchor")
+    close_kernel = manifest.get("close_kernel_contract")
+    close_kernel_anchor = None
+    if isinstance(close_kernel, dict):
+        close_kernel_anchor = _require_str(
+            close_kernel.get("review_anchor"),
+            "close_kernel_contract.review_anchor",
+        )
+        if close_kernel_anchor != required_anchor:
+            errors.append("close_kernel_contract.review_anchor must match phase_gate_required_anchor")
     phase_gate = _load_json(PHASE_GATE_PATH)
     current_anchor = phase_gate.get("current_review_anchor")
     owner_state = phase_gate.get("owner_manual_state")
@@ -2433,6 +3157,22 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     next_allowed = next_phase_entry.get("allowed") if isinstance(next_phase_entry, dict) else None
     receipt_policy = phase_gate.get("receipt_policy")
     receipt_can_open = receipt_policy.get("can_open_p1_3b") if isinstance(receipt_policy, dict) else None
+    for label, value in (
+        ("review_anchor", manifest_anchor),
+        ("phase_gate_required_anchor", required_anchor),
+        ("close_kernel_contract.review_anchor", close_kernel_anchor),
+        ("phase gate current_review_anchor", current_anchor),
+        ("phase gate owner_manual_state.current_review_anchor", owner_anchor),
+    ):
+        if isinstance(value, str):
+            error = _approved_review_anchor_error(label, value)
+        else:
+            error = (
+                f"{label} must equal approved checker anchor "
+                f"{CLOSE_KERNEL_APPROVED_REVIEW_ANCHOR!r}; got {value!r}"
+            )
+        if error is not None:
+            errors.append(error)
     if current_anchor != required_anchor:
         errors.append(f"phase gate current_review_anchor {current_anchor!r} != required {required_anchor!r}")
     if owner_anchor != required_anchor:
@@ -2440,6 +3180,41 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     errors.extend(_check_phase_gate_fixed_witness_close_binding(next_allowed=next_allowed))
     if receipt_can_open is not False:
         errors.append("phase gate receipt_policy.can_open_p1_3b must remain false")
+    return errors
+
+
+def _check_exact_session_atomic_snapshot_contract(
+    *,
+    benders_loop_path: Path = BENDERS_LOOP_PATH,
+) -> list[str]:
+    """Anchor the P1.2-FIX-5 atomic-snapshot contract.
+
+    ExactSearchSession.create must snapshot the frozen artifacts once
+    (read_once_exact_artifact_snapshot) and build from those bytes; it must not
+    recompute artifact hashes from a second, independent disk read
+    (compute_exact_artifact_hashes), which would re-open the load->hash TOCTOU window
+    where the recorded hash no longer attests the bytes the master core is built from.
+    """
+
+    errors: list[str] = []
+    tree = _parse_python(benders_loop_path)
+    session_class = _class_def(tree, "ExactSearchSession", path=benders_loop_path)
+    create_fn = _method_def(session_class, "create", path=benders_loop_path)
+    if not _calls_function(create_fn, "read_once_exact_artifact_snapshot"):
+        errors.append(
+            "ExactSearchSession.create must snapshot frozen artifacts atomically via "
+            "read_once_exact_artifact_snapshot"
+        )
+    if not _calls_function(create_fn, "load_project_data_from_texts"):
+        errors.append(
+            "ExactSearchSession.create must parse project data from the snapshotted texts "
+            "(load_project_data_from_texts)"
+        )
+    if _calls_function(create_fn, "compute_exact_artifact_hashes"):
+        errors.append(
+            "ExactSearchSession.create must not recompute artifact hashes from a second "
+            "disk read (TOCTOU)"
+        )
     return errors
 
 
@@ -2468,6 +3243,7 @@ def main() -> int:
         errors.extend(_check_close_kernel_contract(manifest))
         errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))
+        errors.extend(_check_exact_session_atomic_snapshot_contract())
     except CheckError as exc:
         print(f"P1.2 proof obligation check failed: {exc}", file=sys.stderr)
         return 2

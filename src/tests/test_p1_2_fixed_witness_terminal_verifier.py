@@ -10,6 +10,7 @@ import pytest
 
 import src.search.certified_frontier as certified_frontier_module
 import src.search.exact_campaign as exact_campaign_module
+import src.search.terminal_fixed_witness_capsule as fixed_witness_capsule_module
 import src.search.terminal_fixed_witness_verifier as fixed_witness_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
 from src.search.candidate_proof_replay import CANDIDATE_PROOF_FIELD, canonical_digest
@@ -22,8 +23,14 @@ from src.search.certified_frontier import (
 )
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    compute_exact_artifact_hashes,
     terminal_certified_final_result_project_precheck_violation,
     terminal_certified_final_result_violation_for_project,
+)
+from src.search.terminal_fixed_witness_capsule import (
+    TERMINAL_FIXED_WITNESS_CAPSULE_AUTHORITY,
+    TERMINAL_FIXED_WITNESS_CAPSULE_RESPONSE_SCHEMA_VERSION,
+    build_terminal_fixed_witness_projection_at_sink,
 )
 from src.search.terminal_fixed_witness_verifier import (
     canonical_state_bytes_for_fixed_witness,
@@ -253,6 +260,42 @@ def _patch_sink_replay(monkeypatch: pytest.MonkeyPatch) -> None:
         certified_frontier_module,
         "project_candidate_records_for_sink",
         fake_project_candidate_records_for_sink,
+    )
+
+
+def _patch_capsule_response(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    root: Path,
+    state: Mapping[str, Any],
+    verdict: Any,
+) -> None:
+    def fake_invoke(
+        *,
+        project_root: Path,
+        authority_state: Mapping[str, Any],
+        expected_artifact_hashes: Mapping[str, str],
+        expected_source_digest: str,
+        nonce: str,
+    ) -> Mapping[str, Any]:
+        assert project_root == root.resolve()
+        assert authority_state["final_result"] == state["final_result"]
+        assert expected_artifact_hashes == state["artifact_hashes"]
+        assert expected_source_digest == state["artifact_hashes"]["certified_exact_source_tree"]
+        return {
+            "schema_version": TERMINAL_FIXED_WITNESS_CAPSULE_RESPONSE_SCHEMA_VERSION,
+            "authority": TERMINAL_FIXED_WITNESS_CAPSULE_AUTHORITY,
+            "nonce": nonce,
+            "project_root": str(root.resolve()),
+            "artifact_hashes": dict(state["artifact_hashes"]),
+            "source_digest": state["artifact_hashes"]["certified_exact_source_tree"],
+            "verdict": verdict.to_dict(),
+        }
+
+    monkeypatch.setattr(
+        fixed_witness_capsule_module,
+        "_invoke_isolated_capsule",
+        fake_invoke,
     )
 
 
@@ -538,6 +581,7 @@ def test_fixed_witness_accepts_valid_r_star_pi_star(
 ) -> None:
     root = _build_tiny_project(tmp_path / "project")
     state = _state()
+    state["artifact_hashes"] = compute_exact_artifact_hashes(root)
     _patch_sink_replay(monkeypatch)
 
     verdict = verify_terminal_fixed_witness(
@@ -545,10 +589,11 @@ def test_fixed_witness_accepts_valid_r_star_pi_star(
         project_root=root,
         serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state),
     )
-    projection = project_terminal_fixed_witness_records_for_sink(
+    projection = build_terminal_fixed_witness_projection_at_sink(
+        state=state,
+        project_root=root,
         candidate_records=_json_copy(state["candidates"]),
         final_result=state["final_result"],
-        verdict=verdict,
     )
     reason = terminal_certified_final_result_violation_for_project(
         state,
@@ -651,6 +696,7 @@ def test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict(
 ) -> None:
     root = _build_tiny_project(tmp_path / "project")
     state = _state()
+    state["artifact_hashes"] = compute_exact_artifact_hashes(root)
     state["candidates"]["1x1"]["proof_summary"].update(
         {
             "terminal_fixed_witness_publishable": True,
@@ -659,11 +705,7 @@ def test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict(
     )
     _patch_sink_replay(monkeypatch)
     failure_verdict = _fresh_failure_verdict(state, root, "forced_verify_time_failure")
-    monkeypatch.setattr(
-        exact_campaign_module,
-        "verify_terminal_fixed_witness",
-        lambda **_kwargs: failure_verdict,
-    )
+    _patch_capsule_response(monkeypatch, root=root, state=state, verdict=failure_verdict)
 
     reason = terminal_certified_final_result_violation_for_project(
         state,
@@ -680,6 +722,7 @@ def test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch(
 ) -> None:
     root = _build_tiny_project(tmp_path / "project")
     state = _state()
+    state["artifact_hashes"] = compute_exact_artifact_hashes(root)
     _patch_sink_replay(monkeypatch)
     candidate_generation = _candidate_generation()
     candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
@@ -711,17 +754,14 @@ def test_fixed_witness_unproven_durable_record_keeps_solution_bytes(
 ) -> None:
     root = _build_tiny_project(tmp_path / "project")
     state = _state()
+    state["artifact_hashes"] = compute_exact_artifact_hashes(root)
     _patch_sink_replay(monkeypatch)
     candidate_generation = _candidate_generation()
     candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))
     before_solution = _json_copy(state["candidates"]["1x1"]["solution"])
     before_digest = canonical_digest(before_solution)
     failure_verdict = _fresh_failure_verdict(state, root, "forced_build_time_failure")
-    monkeypatch.setattr(
-        certified_frontier_module,
-        "verify_terminal_fixed_witness",
-        lambda **_kwargs: failure_verdict,
-    )
+    _patch_capsule_response(monkeypatch, root=root, state=state, verdict=failure_verdict)
 
     bundle = build_sink_verified_terminal_frontier_evidence(
         candidates=candidates,

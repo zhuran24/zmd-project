@@ -44,8 +44,9 @@ from src.search.candidate_proof_replay import (
 )
 from src.search.terminal_fixed_witness_verifier import (
     canonical_state_bytes_for_fixed_witness,
-    project_terminal_fixed_witness_records_for_sink,
-    verify_terminal_fixed_witness,
+)
+from src.search.terminal_fixed_witness_capsule import (
+    build_terminal_fixed_witness_projection_at_sink,
 )
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
@@ -383,6 +384,61 @@ def compute_exact_artifact_hashes(project_root: Path) -> Dict[str, str]:
     )
     hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] = compute_certified_exact_source_digest()
     return hashes
+
+
+def _read_once_regular_file_bytes(path: Path) -> bytes:
+    """Read a frozen artifact's bytes in a single open() with the same regular-file
+    and symlink guards sha256_file enforces.  The returned bytes are both hashed and
+    parsed by the caller so the recorded hash provably attests the bytes that build
+    consumes (closes the load->hash TOCTOU window in ExactSearchSession.create)."""
+    if not path.exists():
+        raise FileNotFoundError(path)
+    if _path_has_symlink_component(path) or not path.is_file():
+        raise ValueError(f"exact artifact must be a regular file with no symlink components: {path}")
+    with path.open("rb") as fh:
+        return fh.read()
+
+
+def read_once_exact_artifact_snapshot(
+    project_root: Path,
+) -> Tuple[Dict[str, str], Dict[str, str]]:
+    """Atomically snapshot the frozen exact artifacts.
+
+    Each artifact is read exactly once into memory; the recorded hash is computed
+    from those same bytes and the decoded text is returned alongside.  A caller that
+    parses and builds from the returned texts gets a session whose ``artifact_hashes``
+    provably attest the solved bytes -- there is no second disk read between the hash
+    and the build for a swap to slip through.  Equivalent to
+    ``compute_exact_artifact_hashes`` on the hash side (same keys, same locked-contract
+    validation, same source digest), but it returns the build-consumed texts too.
+    """
+
+    project_root = Path(project_root)
+    validate_locked_p1_2_close_kernel(project_root)
+    hashes: Dict[str, str] = {}
+    artifact_sizes: Dict[str, int] = {}
+    texts: Dict[str, str] = {}
+    for key, relative_path in EXACT_HASH_FILES.items():
+        raw = _read_once_regular_file_bytes(project_root / relative_path)
+        hashes[key] = hashlib.sha256(raw).hexdigest()
+        artifact_sizes[key] = len(raw)
+        texts[key] = raw.decode("utf-8")
+    for key, relative_path in OPTIONAL_EXACT_HASH_FILES.items():
+        artifact_path = project_root / relative_path
+        if artifact_path.exists() or _path_has_symlink_component(artifact_path):
+            raw = _read_once_regular_file_bytes(artifact_path)
+            hashes[key] = hashlib.sha256(raw).hexdigest()
+            artifact_sizes[key] = len(raw)
+            texts[key] = raw.decode("utf-8")
+        else:
+            hashes[key] = MISSING_OPTIONAL_EXACT_ARTIFACT_HASH
+    validate_locked_exact_artifact_contract(
+        project_root=project_root,
+        artifact_hashes=hashes,
+        artifact_sizes=artifact_sizes,
+    )
+    hashes[CERTIFIED_EXACT_SOURCE_DIGEST_KEY] = compute_certified_exact_source_digest()
+    return hashes, texts
 
 
 def _canonical_digest(payload: Any) -> str:
@@ -2205,24 +2261,25 @@ def terminal_certified_final_result_violation_for_project(
             f"{replay_violations[first_key]}"
         )
 
-    fixed_witness_verdict = verify_terminal_fixed_witness(
-        state=authority_state,
-        project_root=resolved_project_root,
-        campaign_path=campaign_path,
-        serialized_state_bytes=None if campaign_path is not None else authority_bytes,
-        candidate_records_override=replayed_records,
-    )
     final_result = authority_state.get("final_result")
     if not isinstance(final_result, Mapping):
         return "terminal_certified_final_result_invalid"
-    fixed_witness_projection = project_terminal_fixed_witness_records_for_sink(
+    capsule_authority_state = dict(authority_state)
+    capsule_authority_state["candidates"] = replayed_records
+    capsule_authority_state["final_result"] = dict(final_result)
+    fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(
+        state=authority_state,
+        project_root=resolved_project_root,
+        campaign_path=campaign_path,
         candidate_records={
             str(key): dict(value)
             for key, value in replayed_records.items()
             if isinstance(value, Mapping)
         },
         final_result=final_result,
-        verdict=fixed_witness_verdict,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(
+            capsule_authority_state
+        ),
     )
     replayed_records = fixed_witness_projection.candidate_records
     replayed_state = dict(authority_state)

@@ -29,6 +29,24 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
 
 
+_MINIMAL_CERTIFIED_BINDING_RULES = {
+    "commodity_metadata": {
+        "source_ore": {
+            "source_kind": "external_boundary",
+            "sink_kind": "none",
+        },
+        "valley_battery": {
+            "source_kind": "none",
+            "sink_kind": "generic_input",
+        },
+        "ore": {
+            "source_kind": "none",
+            "sink_kind": "none",
+        },
+    },
+}
+
+
 def test_v83_binding_whole_layout_nogood_continues_lbbd(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.delenv("EXACT_USE_POSE_BOOL_MASTER", raising=False)
 
@@ -58,6 +76,7 @@ def test_v83_binding_whole_layout_nogood_continues_lbbd(monkeypatch: pytest.Monk
             "required_generic_outputs": {},
             "required_generic_inputs": {},
         },
+        rules=_MINIMAL_CERTIFIED_BINDING_RULES,
     )
     controller = bl.LBBDController(
         master=master,
