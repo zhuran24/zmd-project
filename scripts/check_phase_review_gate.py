@@ -16,7 +16,7 @@ import ast
 import json
 import sys
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, Callable, NoReturn, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
@@ -24,11 +24,13 @@ LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
 FIXED_WITNESS_VERIFIER_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_verifier.py"
 )
+FIXED_WITNESS_CAPSULE_PATH = PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 REQUIRED_FIXED_WITNESS_VERIFIER_FUNCTIONS = (
     "verify_terminal_fixed_witness",
     "project_terminal_fixed_witness_records_for_sink",
 )
 
+APPROVED_REVIEW_ANCHOR = "v99_p1_2_close_kernel_sealing"
 BLOCKED_STATUSES = {"blocked_manual_review_count", "blocked", "open"}
 CLOSED_STATUS = "closed_manual_owner_decision"
 COUNTING_AUTHORITY = "owner_manual_count_outside_repo"
@@ -40,7 +42,10 @@ class GateError(RuntimeError):
 
 
 def rel(path: Path) -> str:
-    return path.relative_to(PROJECT_ROOT).as_posix()
+    try:
+        return path.resolve().relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def _json_object_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -175,8 +180,14 @@ def _check_owner_manual_state(state: dict[str, Any], *, current_anchor: str) -> 
     errors: list[str] = []
     if require_str(state.get("counting_authority"), "owner_manual_state.counting_authority") != COUNTING_AUTHORITY:
         errors.append("owner_manual_state.counting_authority must match manual review standard")
-    if require_str(state.get("current_review_anchor"), "owner_manual_state.current_review_anchor") != current_anchor:
+    owner_anchor = require_str(state.get("current_review_anchor"), "owner_manual_state.current_review_anchor")
+    if owner_anchor != current_anchor:
         errors.append("owner_manual_state.current_review_anchor must match current_review_anchor")
+    if owner_anchor != APPROVED_REVIEW_ANCHOR:
+        errors.append(
+            "owner_manual_state.current_review_anchor must equal approved checker anchor "
+            f"{APPROVED_REVIEW_ANCHOR!r}"
+        )
     if require_bool(
         state.get("repo_derives_clean_count_from_receipts"),
         "owner_manual_state.repo_derives_clean_count_from_receipts",
@@ -251,6 +262,571 @@ def _check_step_8_boundary(*, next_allowed: bool) -> list[str]:
     return ["P1.3B is not manually allowed, so step_8_apply_to_master must remain fail-closed"]
 
 
+def _parse_python(path: Path) -> ast.Module:
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        raise GateError(f"cannot parse {rel(path)}: {exc}") from exc
+    for parent in ast.walk(tree):
+        for child in ast.iter_child_nodes(parent):
+            setattr(child, "_p1_2_parent", parent)
+    return tree
+
+
+def _function_def(tree: ast.Module, name: str, *, path: Path) -> ast.FunctionDef:
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name == name:
+            return node
+    raise GateError(f"function not found in {rel(path)}: {name}")
+
+
+def _source_text(path: Path, node: ast.AST) -> str:
+    source = path.read_text(encoding="utf-8")
+    return ast.get_source_segment(source, node) or ""
+
+
+def _ast_root(node: ast.AST) -> ast.AST:
+    root = node
+    while True:
+        parent = getattr(root, "_p1_2_parent", None)
+        if parent is None:
+            return root
+        root = parent
+
+
+def _store_target_names(target: ast.AST) -> set[str]:
+    names: set[str] = set()
+    for child in ast.walk(target):
+        if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Store):
+            names.add(child.id)
+    return names
+
+
+def _assign_targets(node: ast.AST) -> set[str]:
+    if isinstance(node, ast.Assign):
+        targets = node.targets
+    elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+        targets = [node.target]
+    else:
+        return set()
+    names: set[str] = set()
+    for target in targets:
+        names.update(_store_target_names(target))
+    return names
+
+
+def _constant_bool_value(
+    value: ast.AST | None,
+    false_names: set[str] | None = None,
+    true_names: set[str] | None = None,
+) -> bool | None:
+    if isinstance(value, ast.Constant):
+        return bool(value.value)
+    if isinstance(value, ast.Name):
+        if value.id == "TYPE_CHECKING" or value.id in (false_names or set()):
+            return False
+        if value.id in (true_names or set()):
+            return True
+    if isinstance(value, ast.UnaryOp) and isinstance(value.op, ast.Not):
+        operand_value = _constant_bool_value(value.operand, false_names, true_names)
+        if operand_value is not None:
+            return not operand_value
+    if isinstance(value, ast.BoolOp):
+        if isinstance(value.op, ast.And):
+            for operand in value.values:
+                operand_value = _constant_bool_value(operand, false_names, true_names)
+                if operand_value is False:
+                    return False
+                if operand_value is None:
+                    return None
+            return True
+        if isinstance(value.op, ast.Or):
+            for operand in value.values:
+                operand_value = _constant_bool_value(operand, false_names, true_names)
+                if operand_value is True:
+                    return True
+                if operand_value is None:
+                    return None
+            return False
+    return None
+
+
+def _is_constant_false(value: ast.AST | None) -> bool:
+    return _constant_bool_value(value) is False
+
+
+def _module_constant_bool_names(node: ast.AST) -> tuple[set[str], set[str]]:
+    root = _ast_root(node)
+    if not isinstance(root, ast.Module):
+        return set(), set()
+    false_names: set[str] = set()
+    true_names: set[str] = set()
+    for statement in root.body:
+        targets = _assign_targets(statement)
+        if not targets:
+            continue
+        value = None
+        if isinstance(statement, (ast.Assign, ast.AnnAssign)):
+            value = _constant_bool_value(statement.value, false_names, true_names)
+        if value is False:
+            false_names.update(targets)
+            true_names.difference_update(targets)
+        elif value is True:
+            true_names.update(targets)
+            false_names.difference_update(targets)
+        else:
+            false_names.difference_update(targets)
+            true_names.difference_update(targets)
+    return false_names, true_names
+
+
+def _module_constant_false_names(node: ast.AST) -> set[str]:
+    false_names, _true_names = _module_constant_bool_names(node)
+    return false_names
+
+
+def _function_scope_binding_names(node: ast.AST) -> set[str]:
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return set()
+    names = {
+        argument.arg
+        for argument in (
+            list(node.args.posonlyargs)
+            + list(node.args.args)
+            + list(node.args.kwonlyargs)
+        )
+    }
+    if node.args.vararg is not None:
+        names.add(node.args.vararg.arg)
+    if node.args.kwarg is not None:
+        names.add(node.args.kwarg.arg)
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+            else:
+                names.add(child.name)
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+            else:
+                names.add(child.name)
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            names.add(child.name)
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_Assign(self, child: ast.Assign) -> None:
+            names.update(_assign_targets(child))
+            self.visit(child.value)
+
+        def visit_AnnAssign(self, child: ast.AnnAssign) -> None:
+            names.update(_assign_targets(child))
+            if child.value is not None:
+                self.visit(child.value)
+
+        def visit_AugAssign(self, child: ast.AugAssign) -> None:
+            names.update(_assign_targets(child))
+            self.visit(child.value)
+
+        def visit_For(self, child: ast.For) -> None:
+            names.update(_store_target_names(child.target))
+            self.generic_visit(child)
+
+        def visit_AsyncFor(self, child: ast.AsyncFor) -> None:
+            names.update(_store_target_names(child.target))
+            self.generic_visit(child)
+
+        def visit_With(self, child: ast.With) -> None:
+            for item in child.items:
+                if item.optional_vars is not None:
+                    names.update(_store_target_names(item.optional_vars))
+            self.generic_visit(child)
+
+        def visit_AsyncWith(self, child: ast.AsyncWith) -> None:
+            for item in child.items:
+                if item.optional_vars is not None:
+                    names.update(_store_target_names(item.optional_vars))
+            self.generic_visit(child)
+
+        def visit_ExceptHandler(self, child: ast.ExceptHandler) -> None:
+            if child.name is not None:
+                names.add(child.name)
+            self.generic_visit(child)
+
+        def visit_Import(self, child: ast.Import) -> None:
+            for alias in child.names:
+                names.add(alias.asname or alias.name.split(".")[0])
+
+        def visit_ImportFrom(self, child: ast.ImportFrom) -> None:
+            for alias in child.names:
+                names.add(alias.asname or alias.name)
+
+    Visitor().visit(node)
+    return names
+
+
+def _constant_guard_value(
+    test: ast.AST,
+    false_names: set[str],
+    true_names: set[str],
+) -> bool | None:
+    return _constant_bool_value(test, false_names, true_names)
+
+
+def _reachable_direct_call(node: ast.AST, predicate: Callable[[ast.Call], bool]) -> bool:
+    found = False
+    module_false_names, module_true_names = _module_constant_bool_names(node)
+    function_bindings = _function_scope_binding_names(node)
+    false_names = module_false_names - function_bindings
+    true_names = module_true_names - function_bindings
+
+    class Visitor(ast.NodeVisitor):
+        def __init__(self) -> None:
+            self.false_names = set(false_names)
+            self.true_names = set(true_names)
+
+        def visit_statements(self, statements: Sequence[ast.stmt]) -> None:
+            for statement in statements:
+                self.visit(statement)
+                if isinstance(statement, (ast.Return, ast.Raise, ast.Continue, ast.Break)):
+                    break
+
+        def _record_assignment(self, targets: set[str], value: bool | None) -> None:
+            if value is False:
+                self.false_names.update(targets)
+                self.true_names.difference_update(targets)
+            elif value is True:
+                self.true_names.update(targets)
+                self.false_names.difference_update(targets)
+            else:
+                self.false_names.difference_update(targets)
+                self.true_names.difference_update(targets)
+
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            if child is node:
+                self.visit_statements(child.body)
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            if child is node:
+                self.visit_statements(child.body)
+
+        def visit_Module(self, child: ast.Module) -> None:
+            if child is node:
+                self.visit_statements(child.body)
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            return
+
+        def visit_Assign(self, child: ast.Assign) -> None:
+            self.visit(child.value)
+            targets = _assign_targets(child)
+            value = _constant_bool_value(child.value, self.false_names, self.true_names)
+            self._record_assignment(targets, value)
+
+        def visit_AnnAssign(self, child: ast.AnnAssign) -> None:
+            if child.value is not None:
+                self.visit(child.value)
+            targets = _assign_targets(child)
+            value = _constant_bool_value(child.value, self.false_names, self.true_names)
+            self._record_assignment(targets, value)
+
+        def visit_AugAssign(self, child: ast.AugAssign) -> None:
+            self.visit(child.value)
+            targets = _assign_targets(child)
+            self.false_names.difference_update(targets)
+            self.true_names.difference_update(targets)
+
+        def visit_If(self, child: ast.If) -> None:
+            guard_value = _constant_guard_value(child.test, self.false_names, self.true_names)
+            if guard_value is False:
+                self.visit_statements(child.orelse)
+                return
+            if guard_value is True:
+                self.visit_statements(child.body)
+                return
+            self.visit(child.test)
+            saved_false = set(self.false_names)
+            saved_true = set(self.true_names)
+            self.visit_statements(child.body)
+            self.false_names = set(saved_false)
+            self.true_names = set(saved_true)
+            self.visit_statements(child.orelse)
+            self.false_names = saved_false
+            self.true_names = saved_true
+
+        def visit_While(self, child: ast.While) -> None:
+            guard_value = _constant_guard_value(child.test, self.false_names, self.true_names)
+            if guard_value is False:
+                self.visit_statements(child.orelse)
+                return
+            self.visit(child.test)
+            saved_false = set(self.false_names)
+            saved_true = set(self.true_names)
+            self.visit_statements(child.body)
+            self.false_names = set(saved_false)
+            self.true_names = set(saved_true)
+            self.visit_statements(child.orelse)
+            self.false_names = saved_false
+            self.true_names = saved_true
+
+        def visit_IfExp(self, child: ast.IfExp) -> None:
+            guard_value = _constant_guard_value(child.test, self.false_names, self.true_names)
+            if guard_value is False:
+                self.visit(child.orelse)
+                return
+            if guard_value is True:
+                self.visit(child.body)
+                return
+            self.visit(child.test)
+            self.visit(child.body)
+            self.visit(child.orelse)
+
+        def visit_BoolOp(self, child: ast.BoolOp) -> None:
+            if isinstance(child.op, ast.And):
+                for operand in child.values:
+                    self.visit(operand)
+                    operand_value = _constant_bool_value(operand, self.false_names, self.true_names)
+                    if operand_value is False:
+                        break
+                return
+            if isinstance(child.op, ast.Or):
+                for operand in child.values:
+                    self.visit(operand)
+                    operand_value = _constant_bool_value(operand, self.false_names, self.true_names)
+                    if operand_value is True:
+                        break
+                return
+            self.generic_visit(child)
+
+        def visit_Import(self, child: ast.Import) -> None:
+            for alias in child.names:
+                name = alias.asname or alias.name.split(".")[0]
+                self.false_names.discard(name)
+                self.true_names.discard(name)
+
+        def visit_ImportFrom(self, child: ast.ImportFrom) -> None:
+            for alias in child.names:
+                name = alias.asname or alias.name
+                self.false_names.discard(name)
+                self.true_names.discard(name)
+
+        def visit_For(self, child: ast.For) -> None:
+            targets = _store_target_names(child.target)
+            self.false_names.difference_update(targets)
+            self.true_names.difference_update(targets)
+            self.visit(child.iter)
+            self.visit_statements(child.body)
+            self.visit_statements(child.orelse)
+
+        def visit_AsyncFor(self, child: ast.AsyncFor) -> None:
+            targets = _store_target_names(child.target)
+            self.false_names.difference_update(targets)
+            self.true_names.difference_update(targets)
+            self.visit(child.iter)
+            self.visit_statements(child.body)
+            self.visit_statements(child.orelse)
+
+        def visit_With(self, child: ast.With) -> None:
+            for item in child.items:
+                self.visit(item.context_expr)
+                if item.optional_vars is not None:
+                    targets = _store_target_names(item.optional_vars)
+                    self.false_names.difference_update(targets)
+                    self.true_names.difference_update(targets)
+            self.visit_statements(child.body)
+
+        def visit_AsyncWith(self, child: ast.AsyncWith) -> None:
+            for item in child.items:
+                self.visit(item.context_expr)
+                if item.optional_vars is not None:
+                    targets = _store_target_names(item.optional_vars)
+                    self.false_names.difference_update(targets)
+                    self.true_names.difference_update(targets)
+            self.visit_statements(child.body)
+
+        def visit_Try(self, child: ast.Try) -> None:
+            self.visit_statements(child.body)
+            for handler in child.handlers:
+                self.visit(handler)
+            self.visit_statements(child.orelse)
+            self.visit_statements(child.finalbody)
+
+        def visit_ExceptHandler(self, child: ast.ExceptHandler) -> None:
+            if child.name is not None:
+                self.false_names.discard(child.name)
+                self.true_names.discard(child.name)
+            if child.type is not None:
+                self.visit(child.type)
+            self.visit_statements(child.body)
+
+        def visit_Call(self, child: ast.Call) -> None:
+            nonlocal found
+            if predicate(child):
+                found = True
+            self.generic_visit(child)
+
+    Visitor().visit(node)
+    return found
+
+
+def _direct_calls_name(node: ast.AST, name: str) -> bool:
+    return _reachable_direct_call(
+        node,
+        lambda child: isinstance(child.func, ast.Name) and child.func.id == name,
+    )
+
+
+def _direct_calls_attr(node: ast.AST, attr: str) -> bool:
+    return _reachable_direct_call(
+        node,
+        lambda child: isinstance(child.func, ast.Attribute) and child.func.attr == attr,
+    )
+
+
+def _function_imports_exact_name(node: ast.AST, *, module: str, name: str) -> bool:
+    found = False
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            if child is node:
+                self.generic_visit(child)
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_ImportFrom(self, child: ast.ImportFrom) -> None:
+            nonlocal found
+            if child.level == 0 and child.module == module:
+                for alias in child.names:
+                    if alias.name == name and alias.asname is None:
+                        found = True
+
+    Visitor().visit(node)
+    return found
+
+
+def _fixed_witness_verifier_semantics_errors(*, tree: ast.Module, path: Path) -> list[str]:
+    errors: list[str] = []
+    verify_fn = _function_def(tree, "verify_terminal_fixed_witness", path=path)
+    verify_source = _source_text(path, verify_fn)
+    if not (
+        _direct_calls_name(verify_fn, "PortBindingModel")
+        and _direct_calls_attr(verify_fn, "from_placement_core")
+        and 'binding_status != "FEASIBLE"' in verify_source
+        and 'routing_status != "FEASIBLE"' in verify_source
+        and "_connector_body_exclusion_violation" in verify_source
+    ):
+        errors.append(
+            "verify_terminal_fixed_witness must rerun binding and routing through "
+            "PortBindingModel and RoutingSubproblem"
+        )
+    if "_accept(" not in verify_source or "_reject(" not in verify_source:
+        errors.append("verify_terminal_fixed_witness must return explicit accept/reject verdicts")
+
+    project_fn = _function_def(tree, "project_terminal_fixed_witness_records_for_sink", path=path)
+    if not _direct_calls_name(project_fn, "_project_terminal_fixed_witness_records_for_unverified_verdict"):
+        errors.append("public fixed-witness projection wrapper must reject unverified in-process verdicts")
+    try:
+        projection_fn = _function_def(tree, "_project_terminal_fixed_witness_records_from_capsule", path=path)
+    except GateError:
+        errors.append("fixed-witness projection must demote rejected terminal records")
+    else:
+        projection_source = _source_text(path, projection_fn)
+        for token in (
+            'record["status"] = _PROJECTED_UNPROVEN',
+            'record.pop("solution", None)',
+            "record.pop(CANDIDATE_PROOF_FIELD, None)",
+            "publishable = reason is None",
+        ):
+            if token not in projection_source:
+                errors.append(
+                    "fixed-witness projection must demote rejected terminal records"
+                )
+                break
+    return errors
+
+
+def _fixed_witness_capsule_semantics_errors(*, path: Path) -> list[str]:
+    if not path.exists():
+        return [f"fixed-witness capsule missing: {rel(path)}"]
+    tree = _parse_python(path)
+    errors: list[str] = []
+    build_fn = _function_def(tree, "build_terminal_fixed_witness_projection_at_sink", path=path)
+    if not _direct_calls_name(build_fn, "_invoke_isolated_capsule"):
+        errors.append("fixed-witness capsule must invoke isolated replay")
+    for required_call in (
+        "_verdict_from_capsule_response",
+        "_capsule_response_violation",
+        "_project_terminal_fixed_witness_records_from_capsule",
+    ):
+        if not _direct_calls_name(build_fn, required_call):
+            errors.append(f"fixed-witness capsule build path must call {required_call}")
+
+    try:
+        invoke_fn = _function_def(tree, "_invoke_isolated_capsule", path=path)
+    except GateError:
+        errors.append("fixed-witness capsule isolated replay must launch python -I with a nonce")
+        errors.append("fixed-witness capsule subprocess boundary must remain explicit and non-shell")
+    else:
+        invoke_source = _source_text(path, invoke_fn)
+        if not _direct_calls_attr(invoke_fn, "run") or '"-I"' not in invoke_source or "nonce" not in invoke_source:
+            errors.append("fixed-witness capsule isolated replay must launch python -I with a nonce")
+        if "check=False" not in invoke_source or "shell=True" in invoke_source:
+            errors.append("fixed-witness capsule subprocess boundary must remain explicit and non-shell")
+
+    try:
+        execute_fn = _function_def(tree, "_execute_isolated_capsule_request", path=path)
+    except GateError:
+        errors.append("fixed-witness capsule must import verify_terminal_fixed_witness from the real verifier module")
+        errors.append("fixed-witness capsule must execute verify_terminal_fixed_witness")
+    else:
+        execute_source = _source_text(path, execute_fn)
+        if not _function_imports_exact_name(
+            execute_fn,
+            module="src.search.terminal_fixed_witness_verifier",
+            name="verify_terminal_fixed_witness",
+        ):
+            errors.append("fixed-witness capsule must import verify_terminal_fixed_witness from the real verifier module")
+        if not _direct_calls_name(execute_fn, "verify_terminal_fixed_witness"):
+            errors.append("fixed-witness capsule must execute verify_terminal_fixed_witness")
+        for token in (
+            "compute_exact_artifact_hashes",
+            "_materialize_replay_snapshot",
+            "canonical_state_bytes_for_fixed_witness",
+        ):
+            if token not in execute_source:
+                errors.append(f"fixed-witness capsule execution path missing binding token: {token}")
+
+    try:
+        response_fn = _function_def(tree, "_capsule_response_violation", path=path)
+    except GateError:
+        errors.append("fixed-witness capsule response must gate publishable verdicts")
+    else:
+        response_source = _source_text(path, response_fn)
+        for token in (
+            "verdict.publishable",
+            "verdict.binding_status",
+            "verdict.routing_status",
+            '"FEASIBLE"',
+        ):
+            if token not in response_source:
+                errors.append("fixed-witness capsule response must gate publishable verdicts")
+                break
+    return errors
+
+
 def _fixed_witness_verifier_functions_present() -> list[str]:
     """Require the P1.2-FIX-1 fixed-witness terminal verifier to remain present.
 
@@ -265,8 +841,8 @@ def _fixed_witness_verifier_functions_present() -> list[str]:
     if not FIXED_WITNESS_VERIFIER_PATH.exists():
         return [f"fixed-witness terminal verifier missing: {rel(FIXED_WITNESS_VERIFIER_PATH)}"]
     try:
-        tree = ast.parse(FIXED_WITNESS_VERIFIER_PATH.read_text(encoding="utf-8"))
-    except Exception as exc:  # noqa: BLE001
+        tree = _parse_python(FIXED_WITNESS_VERIFIER_PATH)
+    except GateError as exc:
         return [f"cannot parse {rel(FIXED_WITNESS_VERIFIER_PATH)}: {exc}"]
     defined = {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
     errors: list[str] = []
@@ -276,6 +852,19 @@ def _fixed_witness_verifier_functions_present() -> list[str]:
                 f"fixed-witness terminal verifier must define {required} "
                 f"(P1.2-FIX-1 publish-path binding)"
             )
+    try:
+        errors.extend(
+            _fixed_witness_verifier_semantics_errors(
+                tree=tree,
+                path=FIXED_WITNESS_VERIFIER_PATH,
+            )
+        )
+    except GateError as exc:
+        errors.append(str(exc))
+    try:
+        errors.extend(_fixed_witness_capsule_semantics_errors(path=FIXED_WITNESS_CAPSULE_PATH))
+    except GateError as exc:
+        errors.append(str(exc))
     return errors
 
 
@@ -342,6 +931,11 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     if status not in BLOCKED_STATUSES | {CLOSED_STATUS}:
         errors.append(f"unsupported manual phase gate status: {status}")
     current_anchor = require_str(gate.get("current_review_anchor"), "current_review_anchor")
+    if current_anchor != APPROVED_REVIEW_ANCHOR:
+        errors.append(
+            "current_review_anchor must equal approved checker anchor "
+            f"{APPROVED_REVIEW_ANCHOR!r}"
+        )
 
     standard = require_mapping(gate.get("manual_review_standard"), "manual_review_standard")
     errors.extend(_check_manual_review_standard(standard))

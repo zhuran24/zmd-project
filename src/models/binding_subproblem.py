@@ -163,6 +163,43 @@ def load_wireless_sink_generic_input_slots(
         field="wireless_sink.generic_input_slots",
     )
 
+
+def load_wireless_sink_generic_input_slots_from_text(*, text: str) -> int:
+    """Atomic-snapshot variant of load_wireless_sink_generic_input_slots (P1.2-FIX-5).
+
+    Parses the preprocess_plan slot count from a pre-snapshotted artifact text so the
+    bytes build consumes are the bytes the session hashed (no second disk read).
+    """
+
+    payload = _loads_strict_json(text)
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "preprocess_plan must be a JSON object "
+            "（预处理计划工件顶层必须是对象）"
+        )
+    utility_operations = payload.get("utility_operations")
+    if not isinstance(utility_operations, Mapping):
+        raise KeyError(
+            "preprocess_plan.utility_operations is required for wireless sink binding "
+            "（预处理计划缺少 utility_operations）"
+        )
+    wireless_sink = utility_operations.get("wireless_sink")
+    if not isinstance(wireless_sink, Mapping):
+        raise KeyError(
+            "preprocess_plan.utility_operations.wireless_sink is required for "
+            "wireless sink binding（预处理计划缺少 wireless_sink）"
+        )
+    if "generic_input_slots" not in wireless_sink:
+        raise KeyError(
+            "preprocess_plan utility_operations.wireless_sink.generic_input_slots "
+            "is required for wireless sink binding（无线消费槽位数缺失）"
+        )
+    return _normalize_wireless_sink_generic_input_slots(
+        wireless_sink["generic_input_slots"],
+        field="wireless_sink.generic_input_slots",
+    )
+
+
 def load_generic_io_requirements(
     *,
     project_root: Optional[Path] = None,
@@ -208,6 +245,56 @@ def load_generic_io_requirements(
         _validate_generic_io_requirement_roles(
             requirements,
             project_root=project_root or PROJECT_ROOT,
+        )
+    return requirements
+
+
+def load_generic_io_requirements_from_text(
+    *,
+    text: str,
+    project_root: Optional[Path] = None,
+    canonical_rules_text: Optional[str] = None,
+    canonical_rules_payload: Optional[Mapping[str, Any]] = None,
+    canonical_commodity_metadata: Optional[Mapping[str, Any]] = None,
+    validate_against_canonical: bool = True,
+) -> Dict[str, Dict[str, int]]:
+    """Atomic-snapshot variant of load_generic_io_requirements (P1.2-FIX-5).
+
+    Parses the generic IO requirements from a pre-snapshotted artifact text so the
+    bytes build consumes are the bytes the session hashed (no second disk read).
+    Certified callers must pass the matching snapshot canonical_rules payload/text
+    so role validation consumes the same canonical bytes as the master build.
+    """
+
+    payload = _loads_strict_json(text)
+    if not isinstance(payload, Mapping):
+        raise TypeError(
+            "generic_io_requirements must be a JSON object "
+            "（通用 I/O 需求工件顶层必须是对象）"
+        )
+    requirements = {
+        "required_generic_outputs": _load_generic_io_requirement_section(
+            payload,
+            "required_generic_outputs",
+        ),
+        "required_generic_inputs": _load_generic_io_requirement_section(
+            payload,
+            "required_generic_inputs",
+        ),
+    }
+    if validate_against_canonical:
+        if canonical_rules_payload is None and canonical_rules_text is not None:
+            loaded_canonical = _loads_strict_json(canonical_rules_text)
+            if not isinstance(loaded_canonical, Mapping):
+                raise TypeError(
+                    "canonical_rules must be a JSON object for generic I/O validation"
+                )
+            canonical_rules_payload = loaded_canonical
+        _validate_generic_io_requirement_roles(
+            requirements,
+            project_root=project_root or PROJECT_ROOT,
+            canonical_rules_payload=canonical_rules_payload,
+            canonical_commodity_metadata=canonical_commodity_metadata,
         )
     return requirements
 
@@ -261,24 +348,35 @@ def _normalize_generic_io_requirement_mapping(
 def _validate_generic_io_requirement_roles(
     requirements: Mapping[str, Mapping[str, int]],
     *,
-    project_root: Path,
+    project_root: Optional[Path] = None,
+    canonical_rules_payload: Optional[Mapping[str, Any]] = None,
+    canonical_commodity_metadata: Optional[Mapping[str, Any]] = None,
 ) -> None:
     output_commodities = tuple(requirements.get("required_generic_outputs", {}))
     input_commodities = tuple(requirements.get("required_generic_inputs", {}))
     if not output_commodities and not input_commodities:
         return
 
-    canonical_path = project_root / "rules" / "canonical_rules.json"
-    if not canonical_path.exists():
-        raise FileNotFoundError(
-            f"Missing canonical_rules artifact for generic I/O validation "
-            f"（缺少 canonical_rules 以校验通用 I/O）: {canonical_path}"
-        )
+    if canonical_commodity_metadata is not None:
+        commodity_metadata = canonical_commodity_metadata
+    else:
+        if canonical_rules_payload is None:
+            root = project_root or PROJECT_ROOT
+            canonical_path = root / "rules" / "canonical_rules.json"
+            if not canonical_path.exists():
+                raise FileNotFoundError(
+                    f"Missing canonical_rules artifact for generic I/O validation "
+                    f"（缺少 canonical_rules 以校验通用 I/O）: {canonical_path}"
+                )
 
-    canonical = _load_strict_json(canonical_path)
-    if not isinstance(canonical, Mapping):
-        raise TypeError("canonical_rules must be a JSON object for generic I/O validation")
-    commodity_metadata = canonical.get("commodity_metadata")
+            canonical = _load_strict_json(canonical_path)
+        else:
+            canonical = canonical_rules_payload
+        if not isinstance(canonical, Mapping):
+            raise TypeError(
+                "canonical_rules must be a JSON object for generic I/O validation"
+            )
+        commodity_metadata = canonical.get("commodity_metadata")
     if not isinstance(commodity_metadata, Mapping):
         raise KeyError(
             "canonical_rules.commodity_metadata is required for generic I/O validation "
@@ -367,9 +465,23 @@ class PortBindingModel:
         io_requirements_path: Optional[Path] = None,
         wireless_sink_generic_input_slots: Optional[int] = None,
         routing_context: Optional[Any] = None,  # RAB-SEP Phase 1: routing-aware filter
+        canonical_rules_payload: Optional[Mapping[str, Any]] = None,
+        canonical_commodity_metadata: Optional[Mapping[str, Any]] = None,
     ):
         self.project_root = project_root or PROJECT_ROOT
         self.io_requirements_path = io_requirements_path
+        if canonical_rules_payload is not None and not isinstance(
+            canonical_rules_payload,
+            Mapping,
+        ):
+            raise TypeError("canonical_rules_payload must be a mapping")
+        if canonical_commodity_metadata is not None and not isinstance(
+            canonical_commodity_metadata,
+            Mapping,
+        ):
+            raise TypeError("canonical_commodity_metadata must be a mapping")
+        self._canonical_rules_payload = canonical_rules_payload
+        self._canonical_commodity_metadata = canonical_commodity_metadata
         self._wireless_sink_generic_input_slots: Optional[int] = (
             None
             if wireless_sink_generic_input_slots is None
@@ -422,6 +534,8 @@ class PortBindingModel:
                 "required_generic_inputs": self.required_generic_inputs,
             },
             project_root=self.project_root,
+            canonical_rules_payload=self._canonical_rules_payload,
+            canonical_commodity_metadata=self._canonical_commodity_metadata,
         )
         self.routing_free_sink_commodities = {
             str(commodity)
@@ -702,15 +816,18 @@ class PortBindingModel:
             self._conflict_summary["overload_nogoods_added"] = 0
 
     def _load_overload_classification(self) -> Dict[str, str]:
-        """Lazy-load commodity classification. Reads canonical_rules.json
-        from project_root and computes per-commodity production / consumption
-        rates over self.instances_by_id, then classifies each commodity as
-        high_prod_low_demand / low_prod_high_demand / balanced.
+        """Lazy-load commodity classification. Uses the caller-provided
+        canonical snapshot when present, otherwise reads canonical_rules.json from
+        project_root, then classifies each commodity as high_prod_low_demand /
+        low_prod_high_demand / balanced.
         """
         if getattr(self, "_overload_classification_cache", None) is not None:
             return self._overload_classification_cache
-        rules_path = self.project_root / "rules" / "canonical_rules.json"
-        rules = json.loads(rules_path.read_text(encoding="utf-8"))
+        if self._canonical_rules_payload is not None:
+            rules = self._canonical_rules_payload
+        else:
+            rules_path = self.project_root / "rules" / "canonical_rules.json"
+            rules = json.loads(rules_path.read_text(encoding="utf-8"))
         instances = list(self.instances_by_id.values())
         throughput = compute_commodity_throughput(rules, instances)
         self._overload_classification_cache = classify_commodity_flow(

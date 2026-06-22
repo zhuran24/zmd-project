@@ -92,8 +92,8 @@ from src.models.master_model import (
     ExactMasterCore,
     MasterPlacementModel,
     infer_certified_optional_lower_bounds_for_instances,
-    load_generic_io_requirements_artifact,
     load_project_data,
+    load_project_data_from_texts,
 )
 from src.models.routing_subproblem import (
     RoutingGrid,
@@ -109,7 +109,11 @@ from src.search.phase3b.anchor119.guard_controls import (
 from src.search.phase3b.anchor119.guarded_precheck_runtime import (
     evaluate_phase3b_anchor119_guarded_precheck_advisory,
 )
-from src.search.exact_campaign import ExactCampaign, compute_exact_artifact_hashes, now_iso
+from src.search.exact_campaign import (
+    ExactCampaign,
+    now_iso,
+    read_once_exact_artifact_snapshot,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 EXACT_REQUIRED_ARTIFACTS = {
@@ -2194,16 +2198,40 @@ class ExactSearchSession:
                 f"ExactSearchSession construction: {blocker_summary}"
             )
 
-        instances, facility_pools, rules = load_project_data(project_root, solve_mode=solve_mode)
-        generic_io_requirements = load_generic_io_requirements_artifact(project_root)
+        # P1.2-FIX-5: snapshot the frozen artifacts once, then parse and build from
+        # those exact bytes so the recorded artifact_hashes provably attest the bytes
+        # the master core is built from -- there is no second disk read between hash
+        # and build for a swap/drift to slip through (closes the load->hash TOCTOU
+        # window).
+        artifact_hashes, artifact_texts = read_once_exact_artifact_snapshot(project_root)
+        instances, facility_pools, rules = load_project_data_from_texts(
+            instances_text=artifact_texts["mandatory_exact_instances"],
+            placements_text=artifact_texts["candidate_placements"],
+            rules_text=artifact_texts["canonical_rules"],
+            solve_mode=solve_mode,
+        )
+        from src.models.binding_subproblem import load_generic_io_requirements_from_text
+
+        generic_io_requirements = load_generic_io_requirements_from_text(
+            text=artifact_texts["generic_io_requirements"],
+            project_root=project_root,
+            canonical_rules_payload=rules,
+        )
         wireless_sink_generic_input_slots = None
         if generic_io_requirements.get("required_generic_inputs", {}):
-            from src.models.binding_subproblem import load_wireless_sink_generic_input_slots
-
-            wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots(
-                project_root=project_root
+            from src.models.binding_subproblem import (
+                load_wireless_sink_generic_input_slots_from_text,
             )
-        artifact_hashes = compute_exact_artifact_hashes(project_root)
+
+            preprocess_plan_text = artifact_texts.get("preprocess_plan")
+            if preprocess_plan_text is None:
+                raise FileNotFoundError(
+                    "Missing preprocess_plan artifact for wireless sink binding "
+                    "（缺少 preprocess_plan，无法绑定无线消费槽位）"
+                )
+            wireless_sink_generic_input_slots = load_wireless_sink_generic_input_slots_from_text(
+                text=preprocess_plan_text
+            )
         core_started = time.perf_counter()
         core = MasterPlacementModel.build_exact_core(
             instances,
@@ -5745,6 +5773,20 @@ class LBBDController:
             )
         return kwargs
 
+    def _binding_canonical_rules_kwargs(self) -> Dict[str, Any]:
+        if getattr(self, "solve_mode", None) != "certified_exact":
+            return {}
+        canonical_rules = getattr(self.master, "rules", None)
+        if not isinstance(canonical_rules, Mapping):
+            raise RuntimeError(
+                "certified binding requires the master canonical_rules snapshot"
+            )
+        return {"canonical_rules_payload": canonical_rules}
+
+    def _binding_snapshot_kwargs(self) -> Dict[str, Any]:
+        kwargs = self._binding_generic_requirements_kwargs()
+        kwargs.update(self._binding_canonical_rules_kwargs())
+        return kwargs
 
     def _run_exact_binding_and_routing(
         self,
@@ -5780,7 +5822,7 @@ class LBBDController:
             self.master.source_instances,
             project_root=self.project_root,
             routing_context=_rab_sep_routing_context,
-            **LBBDController._binding_generic_requirements_kwargs(self),
+            **LBBDController._binding_snapshot_kwargs(self),
         )
         binding_model.build()
         self._used_routing_core_reuse = False
@@ -7179,7 +7221,7 @@ class LBBDController:
                 self.master.source_instances,
                 project_root=self.project_root,
                 routing_context=routing_context,
-                **LBBDController._binding_generic_requirements_kwargs(self),
+                **LBBDController._binding_snapshot_kwargs(self),
             )
             retry_model.build()
             for rejected_selection in rejected_selections or ():

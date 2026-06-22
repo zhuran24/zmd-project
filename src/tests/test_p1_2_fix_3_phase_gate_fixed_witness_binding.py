@@ -80,7 +80,7 @@ def test_p1_2_fix_3_publish_binding_detects_unwired_verifier(tmp_path: Path) -> 
     # Real publish path is wired -> no errors.
     assert check_p1_2_proof_obligations._fixed_witness_publish_binding_errors() == []
 
-    # A publish path that no longer calls the verifier fails closed.
+    # A publish path that no longer calls the fixed-witness capsule fails closed.
     unwired_frontier = _write(
         tmp_path / "certified_frontier.py",
         "def build_sink_verified_terminal_frontier_evidence(**kwargs):\n    return {}\n",
@@ -95,9 +95,9 @@ def test_p1_2_fix_3_publish_binding_detects_unwired_verifier(tmp_path: Path) -> 
         exact_campaign_path=unwired_campaign,
     )
     joined = "\n".join(errors)
-    assert "must call verify_terminal_fixed_witness" in joined
-    assert "must call project_terminal_fixed_witness_records_for_sink" in joined
-    assert "project-bound terminal validator must call verify_terminal_fixed_witness" in joined
+    assert "must import build_terminal_fixed_witness_projection_at_sink" in joined
+    assert "must call imported fixed-witness capsule symbol" in joined
+    assert "project-bound terminal validator must gate on capsule field" in joined
 
 
 def test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding(

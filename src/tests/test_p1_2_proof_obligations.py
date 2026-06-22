@@ -25,7 +25,7 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "P1.2 proof obligation check passed: 11 obligations anchored" in result.stdout
+    assert "P1.2 proof obligation check passed: 12 obligations anchored" in result.stdout
     assert "proof-bearing sink files sealed" in result.stdout
 
 
@@ -147,8 +147,10 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
 
 
 def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[str, object]]) -> dict[str, object]:
+    anchor = "v99_p1_2_close_kernel_sealing"
     return {
-        "review_anchor": "unit_close_kernel_anchor",
+        "review_anchor": anchor,
+        "phase_gate_required_anchor": anchor,
         "obligations": [
             {
                 "id": "PO-P1-2-CLOSE-KERNEL-SEALING",
@@ -158,7 +160,7 @@ def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[st
         ],
         "close_kernel_contract": {
             "schema_version": 1,
-            "review_anchor": "unit_close_kernel_anchor",
+            "review_anchor": anchor,
             "trusted_computing_base": ["python", "source", "filesystem", "pytest", "reviewer"],
             "not_claimed": ["all bugs impossible", "future safe", "owner automated", "runtime infallible"],
             "attack_categories": sorted(check_p1_2_proof_obligations.CLOSE_KERNEL_REQUIRED_ATTACK_CATEGORIES),

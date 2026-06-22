@@ -2259,6 +2259,41 @@ def load_project_data(
     return instances, facility_pools, rules
 
 
+def load_project_data_from_texts(
+    *,
+    instances_text: str,
+    placements_text: str,
+    rules_text: str,
+    solve_mode: str = "certified_exact",
+) -> Tuple[List[Dict[str, Any]], Dict[str, List[Dict[str, Any]]], Dict[str, Any]]:
+    """Atomic-snapshot variant of load_project_data (P1.2-FIX-5).
+
+    Parses the certified project data from already-snapshotted artifact texts so the
+    bytes build consumes are exactly the bytes the caller hashed -- no second disk
+    read between hash and build.  certified_exact only: the exploratory
+    all_facility_instances path is not snapshot-bound and keeps using load_project_data.
+    """
+
+    solve_mode = _normalize_solve_mode(solve_mode)
+    if solve_mode != "certified_exact":
+        raise ValueError("load_project_data_from_texts only supports certified_exact")
+    instances = _validate_mandatory_exact_instances_payload(_loads_strict_json(instances_text))
+    placements_payload = _loads_strict_json(placements_text)
+    facility_pools = dict(placements_payload["facility_pools"])
+    rules = dict(_loads_strict_json(rules_text))
+    return instances, facility_pools, rules
+
+
+def _snapshot_commodity_metadata(rules: Mapping[str, Any]) -> Dict[str, Any]:
+    raw_metadata = rules.get("commodity_metadata")
+    if not isinstance(raw_metadata, Mapping):
+        return {}
+    return {
+        str(commodity): dict(metadata) if isinstance(metadata, Mapping) else metadata
+        for commodity, metadata in raw_metadata.items()
+    }
+
+
 @dataclass
 class ExactMasterCore:
     """Candidate-independent exact master core that can be cloned per ghost rectangle."""
@@ -2277,6 +2312,7 @@ class ExactMasterCore:
     group_id_by_instance: Mapping[str, str]
     skip_power_coverage: bool
     enable_symmetry_breaking: bool
+    canonical_commodity_metadata: Mapping[str, Any] = field(default_factory=dict)
     master_representation: str = "pose_bool_v1"
     coordinate_binding: Mapping[str, Any] = field(default_factory=dict)
     candidate_precheck_artifacts: Mapping[str, Any] = field(default_factory=dict)
@@ -2336,6 +2372,7 @@ class MasterPlacementModel:
         ]
         self.facility_pools = {tpl: list(pool) for tpl, pool in facility_pools.items()}
         self.rules = dict(rules)
+        self.canonical_commodity_metadata = _snapshot_commodity_metadata(self.rules)
         self.templates = dict(self.rules["facility_templates"])
         self.generic_io_requirements = _normalize_generic_io_requirements_payload(
             generic_io_requirements
@@ -2653,6 +2690,7 @@ class MasterPlacementModel:
             "source_instances_snapshot_mode": "owned_model_reference",
             "facility_pools_snapshot_mode": "owned_model_reference",
             "rules_snapshot_mode": "owned_model_reference",
+            "canonical_commodity_metadata_snapshot_mode": "copied_dict",
             "generic_io_requirements_snapshot_mode": "owned_model_reference",
             "build_stats_snapshot_mode": "owned_model_reference",
             "mandatory_groups_snapshot_mode": "owned_model_reference",
@@ -2684,6 +2722,7 @@ class MasterPlacementModel:
             group_id_by_instance=dict(model._group_id_by_instance),
             skip_power_coverage=bool(model.skip_power_coverage),
             enable_symmetry_breaking=bool(model.enable_symmetry_breaking),
+            canonical_commodity_metadata=dict(model.canonical_commodity_metadata),
             master_representation=str(model.build_stats.get("master_representation", "pose_bool_v1")),
             coordinate_binding=coordinate_binding,
             candidate_precheck_artifacts=copy.deepcopy(candidate_precheck_artifacts),
