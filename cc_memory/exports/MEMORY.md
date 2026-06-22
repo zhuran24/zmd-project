@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 19
-- entries: 76
-- hard edges: 72
+- entries: 77
+- hard edges: 73
 - pending relation suggestions: 38
 
 ## Start Here
@@ -83,6 +83,7 @@ python cc_memory/mem.py boot
 - `p1-2-c1-landed-reseal-mechanism-20260620` — 2026-06-20 C1落地(commit 91476ae push):8个src/cuts孤岛sink p1_2_certified_path→out_of_scope_future_phase3b…
 - `p1-2-c3-kernel-audit-3source-20260620` — 2026-06-20三源(claude+codex+GPT Pro网页relay数学面)C3内核审:I1活路径nogood缺独立⊆-infeasible复验=GAP三源一致(工程量→P1.3B带红测)+吞吐=独立false-CERTIFIED(flow只诊断、研究级、OUT)+I2/I3…
 - `p1-2-c4-c5-2026-06-21-3-latent-false-infeasible-f7-f8-f3-cuts-live-canonical-p1-3b-tcb` — C4(validator不信generator)+C5(done-condition)已落地(PROJECT_LOCK §1A几何信任边界 + §C done-condition + roadmap I4/I5/I6),工作区未提交…
+- `p1-2-capsule-f492690-fix-1-3-fix-5` — P1.2 capsule 根治 bundle 已提交 f492690(FIX-1+FIX-3+FIX-5 一并)。闭第4轮外审推翻的 FIX-1/FIX-3 + 顺带 FIX-5 TOCTOU…
 - `p1-2-close-kernel-sink-write-chokepoint-runtime` — P1.2 soundness 范围: ④ 三分, runtime 活体锁(guard token/closure-cell)是路A残留该剥离, sink登记+write-capability chokepoint 留; 三判据=量词∃/∀ + TCB资格 + 覆盖/安全
 - `p1-2-closegate-obligation-mechanism` — P1.2 是 owner 手动 fail-closed 门禁；8 obligation 名称级锚定非 digest；改 proof 核心机制上不强制重审但 owner 应重新攒 clean-review
 - `p1-2-closure-path-verdict-20260619` — 会议裁决建议(待owner):P1.2 原理可终结(CERTIFIED被算错信息流信道先验有界A/B/C+D腿2,全史零反例,最强反方codex认账非发散);入口门控层可机器闭(deny-by-default+AST allowlist),语义正确性层永久TCB残留(=模板×3类根集);当前未闭(缺口已定位)…
