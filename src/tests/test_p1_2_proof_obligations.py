@@ -25,7 +25,7 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "P1.2 proof obligation check passed: 10 obligations anchored" in result.stdout
+    assert "P1.2 proof obligation check passed: 11 obligations anchored" in result.stdout
     assert "proof-bearing sink files sealed" in result.stdout
 
 

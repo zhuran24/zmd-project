@@ -52,6 +52,7 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-PHASE-GATE-PROVENANCE",
         "PO-P1-2-CLOSE-KERNEL-SEALING",
         "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+        "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
@@ -250,6 +251,28 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_manual_gate_requires_step_8_fail_closed_when_blocked",
             "test_manual_gate_accepts_owner_decision_authority_fixture",
             "test_manual_gate_receipts_are_informational_only",
+            "test_p1_2_fix_3_phase_gate_requires_fixed_witness_verifier_present",
+            "test_p1_2_fix_3_phase_gate_witness_bound_close_condition_stays_blocked",
+            "test_p1_2_fix_3_publish_binding_detects_unwired_verifier",
+            "test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding",
+        }
+    ),
+    "PO-TERMINAL-FIXED-WITNESS-VERIFIER": frozenset(
+        {
+            "test_fixed_witness_rejects_binding_routing_witness_split",
+            "test_fixed_witness_rejects_non_r_star_ghost_origin",
+            "test_fixed_witness_timeout_unknown_demotes_unproven",
+            "test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible",
+            "test_fixed_witness_rejects_consistent_tamper_after_precheck_accepts",
+            "test_fixed_witness_round_trip_rejects_post_write_tampered_witness_bytes",
+            "test_fixed_witness_projection_copy_failure_demotes_unproven",
+            "test_fixed_witness_does_not_mutate_record_solution_or_solution_digest",
+            "test_fixed_witness_accepts_valid_r_star_pi_star",
+            "test_fixed_witness_rejects_connector_cell_occupied_by_other_body",
+            "test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witness",
+            "test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict",
+            "test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch",
+            "test_fixed_witness_unproven_durable_record_keeps_solution_bytes",
         }
     ),
     "PO-P1-2-CLOSE-KERNEL-SEALING": frozenset(
@@ -1054,6 +1077,8 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         "_check_owner_manual_decision",
         "_step_8_apply_to_master_is_fail_closed",
         "_check_step_8_boundary",
+        "_check_fixed_witness_close_binding",
+        "_fixed_witness_verifier_functions_present",
         "check_gate",
     ):
         _function_def(tree, required_symbol, path=PHASE_GATE_SCRIPT_PATH)
@@ -1064,9 +1089,25 @@ def _check_phase_gate_provenance_contract() -> list[str]:
         "_check_owner_manual_state",
         "_check_owner_manual_decision",
         "_check_step_8_boundary",
+        "_check_fixed_witness_close_binding",
     ):
         if not _calls_function(check_gate_fn, required_call):
             errors.append(f"manual phase gate check_gate must call {required_call}")
+
+    fixed_witness_binding_fn = _function_def(
+        tree, "_check_fixed_witness_close_binding", path=PHASE_GATE_SCRIPT_PATH
+    )
+    if not _calls_function(fixed_witness_binding_fn, "_fixed_witness_verifier_functions_present"):
+        errors.append(
+            "manual phase gate close binding must consult the fixed-witness verifier presence check"
+        )
+    presence_fn = _function_def(
+        tree, "_fixed_witness_verifier_functions_present", path=PHASE_GATE_SCRIPT_PATH
+    )
+    if not _uses_name(presence_fn, "FIXED_WITNESS_VERIFIER_PATH"):
+        errors.append(
+            "fixed-witness verifier presence check must read FIXED_WITNESS_VERIFIER_PATH"
+        )
 
     manual_standard_fn = _function_def(tree, "_check_manual_review_standard", path=PHASE_GATE_SCRIPT_PATH)
     if not (_uses_constant(manual_standard_fn, "owner_manual_count_outside_repo") or _uses_name(manual_standard_fn, "COUNTING_AUTHORITY")):
@@ -2310,6 +2351,71 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
     return errors
 
 
+def _fixed_witness_publish_binding_errors(
+    *,
+    certified_frontier_path: Path = CERTIFIED_FRONTIER_PATH,
+    exact_campaign_path: Path = EXACT_CAMPAIGN_PATH,
+) -> list[str]:
+    """Require the certified publish path to call the FIX-1 fixed-witness verifier.
+
+    P1.2-FIX-1 added ``terminal_fixed_witness_verifier`` and wired it into the
+    sink-verified terminal frontier evidence and the project-bound terminal
+    validator.  P1.2-FIX-3 makes that wiring a hard proof obligation: the phase
+    gate's witness-bound close condition cannot be satisfied while the verifier is
+    present but unwired (a closed gate would otherwise re-enable publication
+    through a publish path that never reruns binding/routing on ``(R*, pi*)``).
+    """
+    errors: list[str] = []
+    frontier_tree = _parse_python(certified_frontier_path)
+    build_fn = _function_def(
+        frontier_tree,
+        "build_sink_verified_terminal_frontier_evidence",
+        path=certified_frontier_path,
+    )
+    for required_call in (
+        "verify_terminal_fixed_witness",
+        "project_terminal_fixed_witness_records_for_sink",
+    ):
+        if not _calls_function(build_fn, required_call):
+            errors.append(
+                f"sink-verified terminal frontier evidence must call {required_call}"
+            )
+    campaign_tree = _parse_python(exact_campaign_path)
+    violation_fn = _function_def(
+        campaign_tree,
+        "terminal_certified_final_result_violation_for_project",
+        path=exact_campaign_path,
+    )
+    if not _calls_function(violation_fn, "verify_terminal_fixed_witness"):
+        errors.append(
+            "project-bound terminal validator must call verify_terminal_fixed_witness"
+        )
+    return errors
+
+
+def _check_phase_gate_fixed_witness_close_binding(*, next_allowed: Any) -> list[str]:
+    """Witness-bound close condition for the manual phase gate (P1.2-FIX-3).
+
+    Replaces the prior generic ``next_allowed must stay False`` anchor.  Two
+    parts, deliberately separated:
+
+    * The fixed-witness publish binding is enforced **unconditionally** so that
+      lifting the stay-blocked sentinel below never silently removes it.  This is
+      the durable witness predicate the generic anchor lacked.
+    * The stay-blocked sentinel keeps the gate fail-closed while the P1.2
+      soundness reopen is unresolved.  When the owner eventually opens P1.3B, the
+      witness binding above remains enforced rather than reverting to a shape +
+      acknowledgement-only close.
+    """
+    errors = _fixed_witness_publish_binding_errors()
+    if next_allowed is not False:
+        errors.append(
+            "phase gate must remain blocked while P1.2 soundness reopen is unresolved; "
+            "opening P1.3B requires the fixed-witness verifier wired into the publish path"
+        )
+    return errors
+
+
 def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     required_anchor = _require_str(
@@ -2331,8 +2437,7 @@ def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:
         errors.append(f"phase gate current_review_anchor {current_anchor!r} != required {required_anchor!r}")
     if owner_anchor != required_anchor:
         errors.append(f"phase gate owner_manual_state.current_review_anchor {owner_anchor!r} != required {required_anchor!r}")
-    if next_allowed is not False:
-        errors.append("phase gate must remain blocked unless owner manual decision opens P1.3B")
+    errors.extend(_check_phase_gate_fixed_witness_close_binding(next_allowed=next_allowed))
     if receipt_can_open is not False:
         errors.append("phase gate receipt_policy.can_open_p1_3b must remain false")
     return errors

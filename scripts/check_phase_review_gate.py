@@ -21,6 +21,13 @@ from typing import Any, NoReturn
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GATE_DIR = PROJECT_ROOT / "data" / "review_gates"
 LIFECYCLE_PATH = PROJECT_ROOT / "src" / "cuts" / "lifecycle.py"
+FIXED_WITNESS_VERIFIER_PATH = (
+    PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_verifier.py"
+)
+REQUIRED_FIXED_WITNESS_VERIFIER_FUNCTIONS = (
+    "verify_terminal_fixed_witness",
+    "project_terminal_fixed_witness_records_for_sink",
+)
 
 BLOCKED_STATUSES = {"blocked_manual_review_count", "blocked", "open"}
 CLOSED_STATUS = "closed_manual_owner_decision"
@@ -244,6 +251,44 @@ def _check_step_8_boundary(*, next_allowed: bool) -> list[str]:
     return ["P1.3B is not manually allowed, so step_8_apply_to_master must remain fail-closed"]
 
 
+def _fixed_witness_verifier_functions_present() -> list[str]:
+    """Require the P1.2-FIX-1 fixed-witness terminal verifier to remain present.
+
+    The certified publish path projects every terminal witness ``(R*, pi*)``
+    through this verifier; a closed phase gate re-enables publication through the
+    P1.2-FIX-2 open-gate, so the gate must fail closed if the verifier module or
+    its public entry points are removed.  This is checked for every gate state so
+    that opening P1.3B never silently drops the requirement (the prior generic
+    "stay blocked" anchor carried no witness predicate, so lifting it lost the
+    binding entirely).
+    """
+    if not FIXED_WITNESS_VERIFIER_PATH.exists():
+        return [f"fixed-witness terminal verifier missing: {rel(FIXED_WITNESS_VERIFIER_PATH)}"]
+    try:
+        tree = ast.parse(FIXED_WITNESS_VERIFIER_PATH.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return [f"cannot parse {rel(FIXED_WITNESS_VERIFIER_PATH)}: {exc}"]
+    defined = {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+    errors: list[str] = []
+    for required in REQUIRED_FIXED_WITNESS_VERIFIER_FUNCTIONS:
+        if required not in defined:
+            errors.append(
+                f"fixed-witness terminal verifier must define {required} "
+                f"(P1.2-FIX-1 publish-path binding)"
+            )
+    return errors
+
+
+def _check_fixed_witness_close_binding() -> list[str]:
+    """Bind the manual phase gate to the FIX-1 fixed-witness verifier (P1.2-FIX-3).
+
+    Enforced for every gate state.  A blocked gate keeps the verifier in the
+    publish path; an owner-opened gate inherits the same requirement instead of
+    falling back to a shape + acknowledgement-only close.
+    """
+    return _fixed_witness_verifier_functions_present()
+
+
 def _check_doc_markers(markers: list[Any]) -> list[str]:
     errors: list[str] = []
     for index, raw_marker in enumerate(markers):
@@ -321,6 +366,7 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     except GateError as exc:
         errors.append(str(exc))
     errors.extend(_check_step_8_boundary(next_allowed=next_allowed))
+    errors.extend(_check_fixed_witness_close_binding())
     try:
         errors.extend(_check_informational_history(require_list(gate.get("informational_history", []), "informational_history")))
         errors.extend(_check_doc_markers(require_list(gate.get("required_doc_markers", []), "required_doc_markers")))

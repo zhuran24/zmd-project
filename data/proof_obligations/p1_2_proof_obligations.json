@@ -451,7 +451,11 @@
         "test_manual_gate_rejects_closed_status_without_owner_decision",
         "test_manual_gate_requires_step_8_fail_closed_when_blocked",
         "test_manual_gate_accepts_owner_decision_authority_fixture",
-        "test_manual_gate_receipts_are_informational_only"
+        "test_manual_gate_receipts_are_informational_only",
+        "test_p1_2_fix_3_phase_gate_requires_fixed_witness_verifier_present",
+        "test_p1_2_fix_3_phase_gate_witness_bound_close_condition_stays_blocked",
+        "test_p1_2_fix_3_publish_binding_detects_unwired_verifier",
+        "test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v31_candidate_review_reset.md",
@@ -465,7 +469,7 @@
         "docs/research/p1_2_v50_manual_phase_gate_simplification.md",
         "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
       ],
-      "policy": "The repo no longer proves or counts clean reviews. P1.3B opens only by owner_manual_decision; receipts are informational records."
+      "policy": "The repo no longer proves or counts clean reviews. P1.3B opens only by owner_manual_decision; receipts are informational records. P1.2-FIX-3 binds the gate's witness-bound close condition to the FIX-1 fixed-witness verifier wired into the publish path."
     },
     {
       "id": "PO-P1-2-CLOSE-KERNEL-SEALING",
@@ -524,6 +528,41 @@
         "scripts/check_p1_2_proof_obligations.py"
       ],
       "policy": "Candidate records and candidate_proof payloads are untrusted data. A strong status may prune certified frontier state or enter terminal, manifest, or public evidence only after a fresh python -I child recomputes current artifact/source bindings and replays that candidate through certified_exact. Missing, malformed, mismatched, failed, or non-strong replay results are demoted to UNPROVEN or rejected. No writer identity, caller, closure cell, module binding, mutable registry, freshness stamp, or test helper grants proof authority."
+    },
+    {
+      "id": "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
+      "title": "Public certified evidence rechecks the exact stored terminal witness (R*, pi*) by rerunning binding and routing",
+      "v_findings": [
+        "p1_2_witness_split_block_2026_06_21",
+        "p1_2_fix_1_fixed_witness_terminal_verifier",
+        "p1_2_fix_3_phase_gate_fixed_witness_binding"
+      ],
+      "required_tests": [
+        "test_fixed_witness_rejects_binding_routing_witness_split",
+        "test_fixed_witness_rejects_non_r_star_ghost_origin",
+        "test_fixed_witness_timeout_unknown_demotes_unproven",
+        "test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible",
+        "test_fixed_witness_rejects_consistent_tamper_after_precheck_accepts",
+        "test_fixed_witness_round_trip_rejects_post_write_tampered_witness_bytes",
+        "test_fixed_witness_projection_copy_failure_demotes_unproven",
+        "test_fixed_witness_does_not_mutate_record_solution_or_solution_digest",
+        "test_fixed_witness_accepts_valid_r_star_pi_star",
+        "test_fixed_witness_rejects_connector_cell_occupied_by_other_body",
+        "test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witness",
+        "test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict",
+        "test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch",
+        "test_fixed_witness_unproven_durable_record_keeps_solution_bytes"
+      ],
+      "evidence_paths": [
+        "src/search/terminal_fixed_witness_verifier.py",
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/tests/test_p1_2_fixed_witness_terminal_verifier.py",
+        "src/tests/test_p1_2_fix_3_phase_gate_fixed_witness_binding.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "scripts/check_phase_review_gate.py"
+      ],
+      "policy": "The public certified surface projects every terminal witness (R*, pi*) through terminal_fixed_witness_verifier, which reruns binding and routing on the exact stored solution bytes. Non-FEASIBLE binding/routing (INFEASIBLE, TIMEOUT, or any exception) demotes the public projection to UNPROVEN and never to proof-bearing INFEASIBLE. The verifier is verify-not-rewrite (durable witness and candidate_proof digest are never replaced). P1.2-FIX-3 makes this verifier's presence and publish-path wiring a precondition of the phase gate's witness-bound close condition, so the gate cannot be closed while the verifier is removed or unwired."
     }
   ],
   "certified_cut_replay_contract": {
@@ -699,7 +738,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "c8f296d7d428eb9f817367e704c67c4b6d0b56ab0e877318e4830aba4090995e",
+        "source_sha256": "5cb02b66ace210bd68644035aabf2fdea0dbc048773fc336137cc73432df38e2",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
