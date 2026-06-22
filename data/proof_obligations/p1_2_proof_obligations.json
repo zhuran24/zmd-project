@@ -692,7 +692,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "a0849188ad6571dba5422495a3092a4eceb071081725b708f772627de005be66",
+        "source_sha256": "b7b37c2c4dc1e07424a8c549032add4063a7d49de4709e0700599c44e6677951",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1288,7 +1288,31 @@
           "require_record_solution_match=True",
           "terminal_frontier_evidence_violation"
         ],
-        "source_sha256": "2e84acd8f0fc09a889637258c4d3d9df0a07ca768d80809350921438604e299a",
+        "source_sha256": "008a20b57a80114da8494f18ed28ebd3b24ba158d3845105f539e908999c6898",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/terminal_fixed_witness_verifier.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "UNPROVEN",
+          "terminal_fixed_witness",
+          "PortBindingModel",
+          "RoutingSubproblem"
+        ],
+        "required_guard_tokens": [
+          "verify_terminal_fixed_witness",
+          "project_terminal_fixed_witness_records_for_sink",
+          "record[\"status\"] = _PROJECTED_UNPROVEN",
+          "record.pop(\"solution\", None)",
+          "loads_strict_json",
+          "PortBindingModel",
+          "RoutingSubproblem",
+          "terminal_fixed_witness_binding_routing_v1"
+        ],
+        "source_sha256": "d56d5407a3b40aca8719caa70a94f59007f4db06b4beb7dd4fee0d32d6a2d541",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1350,7 +1374,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "7772b89e0aec8c0cc88614e4e26dfd1c50da0bbbaeac10499b6969d1985a4df7",
+        "source_sha256": "7356e3f1ab3b5f75c82afca042fdda21340f8997df8ea87edb1a71fb4bb367aa",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1424,7 +1448,7 @@
           "_parallel_wave_failure_discards_results",
           "_mark_candidate_result_from_verified_producer"
         ],
-        "source_sha256": "a65cbfb9d5d9117f58ba4fb67a21eb9b4ac4c1789315936f0b7ab1dbcac762c3",
+        "source_sha256": "cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

@@ -912,13 +912,20 @@ def _commit_terminal_full_frontier_certified_result(
     exact_campaign.state["candidates"] = dict(
         sink_bundle.get("candidate_records", {})
     )
+    fixed_witness_violations = dict(sink_bundle.get("fixed_witness_violations", {}))
+    if fixed_witness_violations or not bool(sink_bundle.get("fixed_witness_publishable", False)):
+        first_key = sorted(fixed_witness_violations or {"*": "terminal_fixed_witness_rejected"})[0]
+        raise RuntimeError(
+            "terminal fixed witness verifier failed: "
+            f"{fixed_witness_violations.get(first_key, 'terminal_fixed_witness_rejected')}"
+        )
     exact_campaign.state["terminal_frontier_evidence"] = dict(
         sink_bundle.get("evidence", {})
     )
     if not has_valid_terminal_full_frontier_certified_evidence_for_project(
         exact_campaign.state,
         project_root=exact_campaign.project_root,
-        campaign_path=exact_campaign.path,
+        campaign_path=None,
     ):
         raise RuntimeError(
             "terminal certified_exact export attempted before project-bound full-frontier evidence was committed"

@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import BendersCut, _parse_ghost_anchor_condition_key
+from src.io.strict_json import loads_strict_json
 from src.models.master_model import (
     POSE_LEVEL_OPTIONAL_OPERATIONS,
     POSE_LEVEL_OPTIONAL_TEMPLATES,
@@ -40,6 +41,11 @@ from src.search.certified_frontier import (
 from src.search.candidate_proof_replay import (
     CANDIDATE_PROOF_FIELD,
     project_candidate_records_for_sink,
+)
+from src.search.terminal_fixed_witness_verifier import (
+    canonical_state_bytes_for_fixed_witness,
+    project_terminal_fixed_witness_records_for_sink,
+    verify_terminal_fixed_witness,
 )
 
 DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"
@@ -2131,6 +2137,14 @@ def terminal_certified_final_result_project_precheck_violation(
     return None
 
 
+def _terminal_certified_proof_surface_digest(state: Mapping[str, Any]) -> str:
+    surface = {
+        "final_result": state.get("final_result"),
+        "candidates": state.get("candidates"),
+    }
+    return hashlib.sha256(canonical_state_bytes_for_fixed_witness(surface)).hexdigest()
+
+
 def terminal_certified_final_result_violation_for_project(
     state: Mapping[str, Any],
     *,
@@ -2139,8 +2153,29 @@ def terminal_certified_final_result_violation_for_project(
 ) -> Optional[str]:
     """Validate terminal evidence only after independent sink-side replay."""
 
+    try:
+        path_exists = campaign_path is not None and Path(campaign_path).exists()
+        if path_exists:
+            authority_bytes = Path(campaign_path).read_bytes()
+        else:
+            authority_bytes = canonical_state_bytes_for_fixed_witness(state)
+        authority_state = loads_strict_json(authority_bytes.decode("utf-8"))
+        if not isinstance(authority_state, Mapping):
+            return "terminal_certified_authority_state_invalid"
+    except Exception:
+        return "terminal_certified_authority_state_invalid"
+
+    if path_exists:
+        try:
+            memory_surface_digest = _terminal_certified_proof_surface_digest(state)
+            disk_surface_digest = _terminal_certified_proof_surface_digest(authority_state)
+            if memory_surface_digest != disk_surface_digest:
+                return "terminal_certified_in_memory_disk_divergence"
+        except Exception:
+            return "terminal_certified_in_memory_disk_divergence"
+
     precheck_reason = terminal_certified_final_result_project_precheck_violation(
-        state,
+        authority_state,
         project_root=project_root,
     )
     if precheck_reason is not None:
@@ -2158,7 +2193,7 @@ def terminal_certified_final_result_violation_for_project(
         return "canonical_min_side_admissibility_invalid"
 
     replayed_records, replay_violations = project_candidate_records_for_sink(
-        state=state,
+        state=authority_state,
         project_root=resolved_project_root,
         campaign_path=campaign_path,
         require_record_solution_match=True,
@@ -2170,7 +2205,27 @@ def terminal_certified_final_result_violation_for_project(
             f"{replay_violations[first_key]}"
         )
 
-    replayed_state = dict(state)
+    fixed_witness_verdict = verify_terminal_fixed_witness(
+        state=authority_state,
+        project_root=resolved_project_root,
+        campaign_path=campaign_path,
+        serialized_state_bytes=None if campaign_path is not None else authority_bytes,
+        candidate_records_override=replayed_records,
+    )
+    final_result = authority_state.get("final_result")
+    if not isinstance(final_result, Mapping):
+        return "terminal_certified_final_result_invalid"
+    fixed_witness_projection = project_terminal_fixed_witness_records_for_sink(
+        candidate_records={
+            str(key): dict(value)
+            for key, value in replayed_records.items()
+            if isinstance(value, Mapping)
+        },
+        final_result=final_result,
+        verdict=fixed_witness_verdict,
+    )
+    replayed_records = fixed_witness_projection.candidate_records
+    replayed_state = dict(authority_state)
     replayed_state["candidates"] = replayed_records
     return terminal_certified_final_result_violation(
         replayed_state,
