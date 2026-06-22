@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 19
-- entries: 75
-- hard edges: 71
+- entries: 76
+- hard edges: 72
 - pending relation suggestions: 38
 
 ## Start Here
@@ -41,6 +41,7 @@ python cc_memory/mem.py boot
 
 ## Entries
 
+- `4-fix-1-3-reopen-capsule` — 第 4 轮外审(3 个独立 GPT Pro reviewer，blind A-G，2026-06-23)裁了 FIX-1/2/3。报告原文:C:\22957\download\新建文件夹\{1,2,3}\回复.txt…
 - `agents-team-open-task-in-process` — 2026-06-19 开 hook-coverage-council 4人会议(2c2c)踩到两个运维坑。 坑1【团队成员认领主会话 open task】…
 - `arch-layering-plan-proof-vs-ops` — 核实+GPT外审:三候选模块当前架构 locally 不可缩短(pre-gate import 即 TCB);原解耦移出白名单前提证伪;衍生 __init__.py 边界债;采纳 A-prime 不动核心
 - `boundary-debt-pregate-init-py` — 3 个 pre-gate __init__.py(runtime/phase3b/anchor119)删除变 namespace package 消除执行面;不动白名单故不失效 checkpoint;加 import-boundary 静态测试防重现;commit bfea3b9 已 push。CLOSED
