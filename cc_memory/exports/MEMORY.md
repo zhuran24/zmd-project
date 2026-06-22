@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 19
-- entries: 77
-- hard edges: 73
+- entries: 78
+- hard edges: 74
 - pending relation suggestions: 38
 
 ## Start Here
@@ -45,6 +45,7 @@ python cc_memory/mem.py boot
 - `agents-team-open-task-in-process` — 2026-06-19 开 hook-coverage-council 4人会议(2c2c)踩到两个运维坑。 坑1【团队成员认领主会话 open task】…
 - `arch-layering-plan-proof-vs-ops` — 核实+GPT外审:三候选模块当前架构 locally 不可缩短(pre-gate import 即 TCB);原解耦移出白名单前提证伪;衍生 __init__.py 边界债;采纳 A-prime 不动核心
 - `boundary-debt-pregate-init-py` — 3 个 pre-gate __init__.py(runtime/phase3b/anchor119)删除变 namespace package 消除执行面;不动白名单故不失效 checkpoint;加 import-boundary 静态测试防重现;commit bfea3b9 已 push。CLOSED
+- `capsule-opus-canonical-binding-mock` — FIX-5 canonical 闭合在 benders_loop.py 加了 `_binding_snapshot_kwargs`(→`_binding_generic_requirements_kwargs`/`_binding_canonical_rules_kwargs`)…
 - `cc-memory-crud-gotchas` — mem.py CRUD静默坑(check不报)。仍真:--force丢SUPERSEDES、孤儿漏impact/关系审橡皮图章化(66%零硬边)、propose死路、search不走语义、语义降级fail-open、entry软归档不对称、加新节点不回填旧节点致内容漂移(系统从不产SUPERSEDES/CONTRADI…
 - `cc-memory-crud-operations` — cc_memory CRUD 完整命令参考。查:boot/search(单词LIKE)/read --body/--semantic。增:set-fact/add-entry --body-file/link(自指meta加--no-suggest+手动link)。改:订正用--force、真取代用supersede…
 - `cc-memory-gpu-retrieval-upgrade-plan` — GPU 语义检索升级(历史路线图档):P0-P3(embedding/reranker/gated)已落地(见 p1/p2-semantic-live)、P4(FAISS-GPU)deferred；按低采用结论进一步投入暂停。原计划默认 bge-m3、P1 实选 harrier。
