@@ -68,6 +68,7 @@ from src.search.exact_campaign import (
     compute_certified_exact_source_digest,
 )
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 
 
 
@@ -2961,6 +2962,7 @@ def test_campaign_does_not_export_certified_result_when_later_terminal_status_is
 
 def test_toy_project_can_be_truly_certified(tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_certified")
+    write_closed_phase_review_gate(project_root)
     status, result = run_outer_search(
         project_root=project_root,
         solve_mode="certified_exact",
@@ -7956,6 +7958,7 @@ def test_parallel_precheck_triggered_non_infeasible_is_dispatched_to_worker(
 
 def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_blueprint_export")
+    write_closed_phase_review_gate(project_root)
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -8364,6 +8367,7 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
         height=height,
         mandatory_blocker_count=blocker_count,
     )
+    write_closed_phase_review_gate(project_root)
     calls: list[tuple[int, int, bool]] = []
 
     def _is_feasible(ghost_w: int, ghost_h: int) -> bool:
@@ -8485,6 +8489,7 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
         height=height,
         mandatory_blocker_count=blocker_count,
     )
+    write_closed_phase_review_gate(project_root)
     call_counts: dict[tuple[int, int], int] = {}
 
     def fake_run_benders_for_ghost_rect(*, ghost_w: int, ghost_h: int, session=None, **kwargs):
@@ -8592,6 +8597,7 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
         height=height,
         mandatory_blocker_count=blocker_count,
     )
+    write_closed_phase_review_gate(project_root)
     calls: list[tuple[int, int]] = []
 
     def _is_feasible(ghost_w: int, ghost_h: int) -> bool:

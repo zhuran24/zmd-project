@@ -7,6 +7,7 @@ from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
 from src.search.benders_loop import run_benders_for_ghost_rect
 from src.search.certified_frontier import candidate_key, generate_candidate_sizes
 from src.search.outer_search import run_outer_search
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -70,6 +71,7 @@ def _build_oriented_gap_project(project_root: Path) -> Path:
 
 def test_full_frontier_candidate_domain_keeps_oriented_dimensions(tmp_path: Path) -> None:
     project_root = _build_oriented_gap_project(tmp_path / "oriented_gap")
+    write_closed_phase_review_gate(project_root)
 
     candidate_keys = {
         candidate_key(candidate)

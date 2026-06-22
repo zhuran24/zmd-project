@@ -379,7 +379,14 @@
         "test_v97_certified_surface_rejects_certified_shadow_campaign_checkpoint",
         "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint",
         "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier",
-        "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier"
+        "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier",
+        "test_p1_2_publish_open_gate_blocks_open_statuses",
+        "test_p1_2_publish_open_gate_missing_file_fails_closed",
+        "test_p1_2_publish_open_gate_rejects_malformed_gate_files",
+        "test_p1_2_publish_open_gate_closed_manual_decision_allows_publishable_surface",
+        "test_p1_2_publish_open_gate_rejects_contradictory_closed_gate",
+        "test_p1_2_publish_open_gate_inherited_public_surfaces_fail_closed",
+        "test_resolve_p1_2_publish_open_gate_fail_closed_branches"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -692,7 +699,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "b7b37c2c4dc1e07424a8c549032add4063a7d49de4709e0700599c44e6677951",
+        "source_sha256": "c8f296d7d428eb9f817367e704c67c4b6d0b56ab0e877318e4830aba4090995e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1330,10 +1337,11 @@
         "required_guard_tokens": [
           "evaluate_certified_delivery_surface",
           "has_valid_terminal_full_frontier_certified_evidence_for_project",
+          "resolve_p1_2_publish_open_gate",
           "campaign_path=resolved_campaign_path",
           "sink-side isolated replay"
         ],
-        "source_sha256": "601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5",
+        "source_sha256": "87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

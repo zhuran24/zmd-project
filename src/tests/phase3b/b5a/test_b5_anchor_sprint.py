@@ -17,7 +17,10 @@ from src.search.exact_campaign import ExactCampaign
 from src.search.phase3b.campaign.repair import (
     mark_running_exact_campaign_candidates_interrupted,
 )
-from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
+from src.tests.certified_frontier_helpers import (
+    attach_terminal_frontier_evidence,
+    write_closed_phase_review_gate,
+)
 from src.search.phase3b.b5a.b5_anchor_sprint import (
     build_phase3b_b5_anchor_sprint_summary,
     render_phase3b_b5_anchor_sprint_markdown,
@@ -352,6 +355,7 @@ def test_b5a_summary_reports_source_provenance_and_precheck_support(
 
 def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path) -> None:
     project_root = _build_exact_project(tmp_path / "certified_anchor")
+    write_closed_phase_review_gate(project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.mark_candidate_started(4, 1)
     campaign.mark_candidate_result(

@@ -13,6 +13,7 @@ from src.io.output_schema import blueprint_output_path
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_UNKNOWN, RUN_STATUS_UNPROVEN
 from src.search.exact_campaign import ExactCampaign, has_terminal_full_frontier_certified_evidence
 from src.search.outer_search import run_outer_search
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 from src.tests.test_exact_contract import _build_frontier_project
 
 
@@ -407,6 +408,7 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
     monkeypatch,
 ) -> None:
     project_root = _build_frontier_project(tmp_path / "project", width=1, height=1)
+    write_closed_phase_review_gate(project_root)
 
     def fake_run_benders_for_ghost_rect(**kwargs):
         fake_run_benders_for_ghost_rect.last_run_metadata = {

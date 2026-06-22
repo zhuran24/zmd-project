@@ -10,7 +10,10 @@ from src.models.cut_manager import RUN_STATUS_CERTIFIED
 from src.search.certified_surface import verify_certified_delivery_surface
 from src.search.exact_campaign import DEFAULT_CAMPAIGN_FILENAME, ExactCampaign
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
-from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
+from src.tests.certified_frontier_helpers import (
+    attach_terminal_frontier_evidence,
+    write_closed_phase_review_gate,
+)
 from src.tests.test_delivery_manifest import _V89_GHOST_PICK, _build_manifest_project, _write_json
 
 
@@ -20,6 +23,7 @@ def _build_certified_manifest_toy(
     campaign_filename: str = DEFAULT_CAMPAIGN_FILENAME,
 ) -> tuple[Path, ExactCampaign]:
     project_root, facility_pools = _build_manifest_project(project_root)
+    write_closed_phase_review_gate(project_root)
     campaign = ExactCampaign.load_or_create(
         project_root,
         campaign_hours=2.0,
