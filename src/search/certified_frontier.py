@@ -17,6 +17,12 @@ from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
 from src.search.candidate_proof_replay import project_candidate_records_for_sink
+from src.search.terminal_fixed_witness_verifier import (
+    attach_terminal_fixed_witness_audit_fields,
+    canonical_state_bytes_for_fixed_witness,
+    project_terminal_fixed_witness_records_for_sink,
+    verify_terminal_fixed_witness,
+)
 
 TERMINAL_FRONTIER_EVIDENCE_SCHEMA_VERSION = 2
 TERMINAL_FRONTIER_EVIDENCE_SOURCE = "certified_terminal_frontier_evidence_v2"
@@ -293,16 +299,59 @@ def build_sink_verified_terminal_frontier_evidence(
         # choose byte-identical feasible placements.
         require_record_solution_match=True,
     )
+    authority_state = dict(campaign_state)
+    authority_state["candidates"] = replayed_records
+    authority_state["final_result"] = dict(final_result)
+    serialized_state_bytes = canonical_state_bytes_for_fixed_witness(authority_state)
+    fixed_witness_verdict = verify_terminal_fixed_witness(
+        state=authority_state,
+        project_root=project_root,
+        campaign_path=None,
+        serialized_state_bytes=serialized_state_bytes,
+        candidate_records_override=replayed_records,
+    )
+    try:
+        attach_terminal_fixed_witness_audit_fields(
+            candidate_records=replayed_records,
+            final_result=final_result,
+            verdict=fixed_witness_verdict,
+        )
+    except (KeyError, TypeError, ValueError):
+        # A malformed terminal record is already represented by the verifier
+        # verdict and will fail closed in the public projection below.
+        pass
+    public_projection = project_terminal_fixed_witness_records_for_sink(
+        candidate_records={
+            str(key): dict(value)
+            for key, value in replayed_records.items()
+            if isinstance(value, Mapping)
+        },
+        final_result=final_result,
+        verdict=fixed_witness_verdict,
+    )
     evidence = build_terminal_frontier_evidence(
         candidates=candidates,
-        candidate_records=replayed_records,
+        candidate_records=public_projection.candidate_records,
         final_result=final_result,
         candidate_generation=candidate_generation,
     )
     return {
         "evidence": evidence,
         "candidate_records": replayed_records,
+        "public_candidate_records": public_projection.candidate_records,
         "sink_replay_violations": replay_violations,
+        "fixed_witness_verdict": fixed_witness_verdict.to_dict(),
+        "fixed_witness_publishable": bool(public_projection.publishable),
+        "fixed_witness_violations": (
+            {}
+            if public_projection.publishable
+            else {
+                str(public_projection.candidate_key or "*"): str(
+                    public_projection.rejected_reason
+                    or "terminal_fixed_witness_rejected"
+                )
+            }
+        ),
     }
 
 

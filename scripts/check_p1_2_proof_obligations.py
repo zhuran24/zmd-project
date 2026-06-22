@@ -1961,6 +1961,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
     'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
+    'src/search/terminal_fixed_witness_verifier.py': 'p1_2_certified_path',
 }
 CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS = frozenset(CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH)
 CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
@@ -2022,16 +2023,17 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': 'c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75',
-    'src/search/certified_frontier.py': '2e84acd8f0fc09a889637258c4d3d9df0a07ca768d80809350921438604e299a',
+    'src/search/certified_frontier.py': '008a20b57a80114da8494f18ed28ebd3b24ba158d3845105f539e908999c6898',
     'src/search/certified_surface.py': '601713fe3d24f7a4e35b312652bc71b92bb0a7254e5b9ebcb2250c0a1e6b74c5',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '7772b89e0aec8c0cc88614e4e26dfd1c50da0bbbaeac10499b6969d1985a4df7',
+    'src/search/exact_campaign.py': '7356e3f1ab3b5f75c82afca042fdda21340f8997df8ea87edb1a71fb4bb367aa',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
-    'src/search/outer_search.py': 'a65cbfb9d5d9117f58ba4fb67a21eb9b4ac4c1789315936f0b7ab1dbcac762c3',
+    'src/search/outer_search.py': 'cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
+    'src/search/terminal_fixed_witness_verifier.py': 'd56d5407a3b40aca8719caa70a94f59007f4db06b4beb7dd4fee0d32d6a2d541',
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 
