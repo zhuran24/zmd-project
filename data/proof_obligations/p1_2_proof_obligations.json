@@ -597,6 +597,32 @@
         "docs/项目说明/soundness_gap_roadmap.md"
       ],
       "policy": "ExactSearchSession.create reads each frozen exact artifact's bytes exactly once, records the hash of those bytes, and parses/builds the master core from the same bytes. There is no second independent disk read between the recorded hash and the build, so a swap/drift of any frozen artifact between load and hash cannot produce a session whose artifact_hashes fail to attest the solved bytes (closes the load->hash TOCTOU window). The checker fails closed if create stops snapshotting atomically or recomputes hashes from a second disk read."
+    },
+    {
+      "id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+      "title": "Whole-layout INFEASIBLE nogoods require independent fail-closed re-verification before minting",
+      "v_findings": [
+        "p1_2_i1_whole_layout_nogood_reverify_gap",
+        "p1_2_fix_4_phase_1_independent_infeasibility_reverify"
+      ],
+      "required_tests": [
+        "test_independent_infeasibility_reverify_confirms_binding_infeasible_allows_cut",
+        "test_independent_infeasibility_reverify_divergent_feasible_blocks_cut_unknown",
+        "test_independent_infeasibility_reverify_timeout_blocks_cut_unknown",
+        "test_independent_infeasibility_reverify_exception_blocks_cut_unknown",
+        "test_independent_infeasibility_reverify_routing_exhaustion_without_binding_confirmation_unknown",
+        "test_p1_2_checker_rejects_whole_layout_reverify_gate_removal",
+        "test_p1_2_checker_rejects_inflight_cache_read_in_infeasibility_reverifier",
+        "test_p1_2_checker_rejects_env_reader_in_infeasibility_reverifier"
+      ],
+      "evidence_paths": [
+        "src/search/independent_infeasibility_reverifier.py",
+        "src/search/benders_loop.py",
+        "src/tests/test_p1_2_independent_infeasibility_reverifier.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "docs/项目说明/soundness_gap_roadmap.md"
+      ],
+      "policy": "Before _add_exact_whole_layout_nogood may mint a proof-bearing whole-layout cut, the certified path must call independent_infeasibility_reverifier. Binding-INFEASIBLE is confirmed only by a freshly constructed binding feasibility model solved by an independent heterogeneous CP-SAT solver. Independent FEASIBLE, TIMEOUT, exception, malformed input, or unsupported routing-exhaustion proof returns fail-closed UNKNOWN and emits no cut. Phase 1 intentionally treats routing ALL-INFEASIBLE conservatively: without a full independent exhaustion proof, the cut is skipped even when the original routing exhaustion may be legitimate."
     }
   ],
   "certified_cut_replay_contract": {
@@ -773,7 +799,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "a176aad0c6d77abe4d476e344e9ab359bfb307b652e67e6728548553b9a640d4",
+        "source_sha256": "ff5f54fc621fffa59ea14793fb128f1afd519e58400c67b5c69a6bf39bfe59a2",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1289,7 +1315,7 @@
           "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
           "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE"
         ],
-        "source_sha256": "45f5690a418bf446bc3acbe8eb0c8c1cb72351ee7bcd8dcf46bb57b3d9ab5aa8",
+        "source_sha256": "67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1526,6 +1552,25 @@
           "INFEASIBLE"
         ],
         "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_infeasibility_reverifier.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "INFEASIBLE",
+          "CONFIRMED_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "reverify_whole_layout_infeasibility",
+          "REVERIFY_STATUS_CONFIRMED_INFEASIBLE",
+          "REVERIFY_STATUS_DIVERGED_FEASIBLE",
+          "routing_exhaustion_phase1_conservative_unknown",
+          "_solve_with_independent_cp_sat",
+          "PORTFOLIO_SEARCH"
+        ],
+        "source_sha256": "18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

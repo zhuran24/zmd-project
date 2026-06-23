@@ -114,6 +114,10 @@ from src.search.exact_campaign import (
     now_iso,
     read_once_exact_artifact_snapshot,
 )
+from src.search.independent_infeasibility_reverifier import (
+    REVERIFY_STATUS_DIVERGED_FEASIBLE,
+    reverify_whole_layout_infeasibility,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 EXACT_REQUIRED_ARTIFACTS = {
@@ -7530,12 +7534,64 @@ class LBBDController:
             )
             return False
         conflict_set = self._build_whole_layout_conflict(solution)
+        try:
+            reverify_verdict = reverify_whole_layout_infeasibility(
+                solution=solution,
+                facility_pools=self.master.facility_pools,
+                instances=self.master.source_instances,
+                project_root=self.project_root,
+                proof_stage=proof_stage,
+                binding_exhausted=binding_exhausted,
+                routing_exhausted=routing_exhausted,
+                binding_kwargs=LBBDController._binding_snapshot_kwargs(self),
+                time_limit_seconds=self.binding_seconds,
+            )
+        except Exception as exc:  # noqa: BLE001
+            reverify_payload = {
+                "confirmed": False,
+                "status": "EXCEPTION",
+                "reason": "independent_infeasibility_reverify_uncaught_exception",
+                "exception_type": type(exc).__name__,
+                "message": str(exc),
+            }
+        else:
+            reverify_payload = reverify_verdict.to_dict()
+
+        proof_summary_for_cut = dict(proof_summary)
+        proof_summary_for_cut["independent_infeasibility_reverifier"] = dict(
+            reverify_payload
+        )
+        if isinstance(proof_summary, dict):
+            proof_summary["independent_infeasibility_reverifier"] = dict(
+                reverify_payload
+            )
+        if not bool(reverify_payload.get("confirmed", False)):
+            proof_summary_for_cut["master_follow_up"] = "fail_closed_unknown"
+            if isinstance(proof_summary, dict):
+                proof_summary["master_follow_up"] = "fail_closed_unknown"
+            reverify_status = str(reverify_payload.get("status", "UNKNOWN"))
+            self._emit_heartbeat(
+                stage=proof_stage,
+                event=(
+                    "whole_layout_nogood_independent_reverify_divergence"
+                    if reverify_status == REVERIFY_STATUS_DIVERGED_FEASIBLE
+                    else "whole_layout_nogood_independent_reverify_unknown"
+                ),
+                iteration=iteration,
+                extra={
+                    "cut_type": cut_type,
+                    "reverify_status": reverify_status,
+                    "reverify_reason": str(reverify_payload.get("reason", "")),
+                    "independent_status": reverify_payload.get("independent_status"),
+                },
+            )
+            return False
         return self._add_exact_persisted_nogood(
             conflict_set=conflict_set,
             iteration=iteration,
             cut_type=cut_type,
             proof_stage=proof_stage,
-            proof_summary=proof_summary,
+            proof_summary=proof_summary_for_cut,
             metadata={"kind": "whole_layout_nogood"},
             binding_exhausted=binding_exhausted,
             routing_exhausted=routing_exhausted,
