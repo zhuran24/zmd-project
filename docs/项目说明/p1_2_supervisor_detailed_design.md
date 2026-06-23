@@ -90,7 +90,7 @@ L0 spawn child 时喂一个 meta-path importer，**child 只从 L0 已核的内�
 
 ## 8. 工作量 + 落地顺序（feasibility 终估）
 约 **850-1060 行**有效改动、**55-75 个测试** 改/新增、**2-4 周**。拆 2 PR：
-- **PR1（地基,不依赖 L0,独立可测）**：`exact_campaign.supervisor_seal()` + `CANDIDATE_PROPOSED` 态 + `:1920` resume 语义 + `outer_search` 剥发布权 + capsule:274-275 BLOCK-D 改 + proposal_ready marker + 同步红测。
+- **PR1（地基,不依赖 L0,独立可测）**：`exact_campaign.supervisor_seal()`（**mint 前调 `build_sink_verified_terminal_frontier_evidence` sink-replay 复验 + fail-closed**;「CERTIFIED 前必复验」义务从 outer_search 迁锚至此 mint 点、PR2 移 L0 隔离运行——切勿在搬 mint 时丢掉复验）+ `CANDIDATE_PROPOSED` 态 + `:1920` resume 语义 + `outer_search` 剥发布权 + capsule:274-275 BLOCK-D 改 + proposal_ready marker + 同步红测。
 - **⚠️ PR1 落完 ≠ 接近收敛、仍 REOPEN**:PR1 只剥 producer 发布权 + 落 BLOCK-D 的 producer 侧;**L0 亲读字节、B2 三条件、B4、受控 loader / 两段式自举全在 PR2**。发 CERTIFIED 资格要 **PR1+PR2 全过 + 再一轮外审** 才到「收敛候选」,gate 全程 `next_allowed=false`。**别让 PR1 绿了产生「快了」错觉**——那正是 round-5 推翻「收敛点」的同一个坑(窄洞闭合 ≠ 架构收敛)。
 - **PR2（L0/L1 + 入口）**：L0 micro-verifier-core（受控 loader / 两段式自举 / B4 / 两路 spawn / digest 链 / gate 5 道 / 原子写）+ L1 orchestrator + certify 入口 + preflight AST 两闸 + `run_campaign_linux.sh`/`main.py` 入口。
 

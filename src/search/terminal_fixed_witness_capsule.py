@@ -134,6 +134,7 @@ def build_terminal_fixed_witness_projection_at_sink(
             state=state,
             candidate_records=candidate_records,
             final_result=final_result,
+            campaign_path=campaign_path,
             serialized_state_bytes=serialized_state_bytes,
         )
     except Exception as exc:  # noqa: BLE001
@@ -262,17 +263,32 @@ def _authority_state_for_capsule(
     state: Mapping[str, Any],
     candidate_records: Mapping[str, Any],
     final_result: Mapping[str, Any],
+    campaign_path: Path | None,
     serialized_state_bytes: bytes | None,
 ) -> Dict[str, Any]:
     if serialized_state_bytes is None:
-        authority_state = _json_copy(state)
+        if campaign_path is not None and Path(campaign_path).exists():
+            loaded = loads_strict_json(Path(campaign_path).read_text(encoding="utf-8"))
+            if not isinstance(loaded, Mapping):
+                raise ValueError("checkpoint authority state must be a mapping")
+            authority_state = _json_copy(loaded)
+        else:
+            authority_state = _json_copy(state)
     else:
         loaded = loads_strict_json(bytes(serialized_state_bytes).decode("utf-8"))
         if not isinstance(loaded, Mapping):
             raise ValueError("serialized authority state must be a mapping")
         authority_state = _json_copy(loaded)
-    authority_state["candidates"] = _copy_candidate_records(candidate_records)
-    authority_state["final_result"] = _json_copy(final_result)
+    authority_records = authority_state.get("candidates")
+    authority_final_result = authority_state.get("final_result")
+    if not isinstance(authority_records, Mapping):
+        raise ValueError("authority state candidates must be a mapping")
+    if not isinstance(authority_final_result, Mapping):
+        raise ValueError("authority state final_result must be a mapping")
+    if _copy_candidate_records(candidate_records) != _copy_candidate_records(authority_records):
+        raise ValueError("caller candidate_records do not match authority state")
+    if _json_copy(final_result) != _json_copy(authority_final_result):
+        raise ValueError("caller final_result does not match authority state")
     return authority_state
 
 

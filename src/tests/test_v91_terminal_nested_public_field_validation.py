@@ -11,7 +11,10 @@ from src.search.exact_campaign import (
     ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
-from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
+from src.tests.certified_frontier_helpers import (
+    attach_terminal_frontier_evidence,
+    forge_legacy_terminal_certified_stop,
+)
 from src.tests.test_delivery_manifest import _V89_GHOST_PICK, _build_manifest_project
 
 
@@ -66,7 +69,7 @@ def _terminal_campaign_with_public_payload(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": search_stats,
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
     return campaign

@@ -11,9 +11,18 @@ import src.search.outer_search as outer_search_module
 from src.io.delivery_manifest import delivery_manifest_output_path
 from src.io.output_schema import blueprint_output_path
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_UNKNOWN, RUN_STATUS_UNPROVEN
-from src.search.exact_campaign import ExactCampaign, has_terminal_full_frontier_certified_evidence
+from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
+    ExactCampaign,
+    SUPERVISOR_PROPOSAL_STATE_KEY,
+    has_terminal_full_frontier_certified_evidence,
+    load_proposal_ready_marker,
+)
 from src.search.outer_search import run_outer_search
-from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
+from src.tests.certified_frontier_helpers import (
+    forge_legacy_terminal_certified_stop,
+    write_closed_phase_review_gate,
+)
 from src.tests.test_exact_contract import _build_frontier_project
 
 
@@ -322,10 +331,7 @@ def test_v65_unsafe_env_block_clears_resumed_terminal_final_result(
         "search_stats": {},
     }
     campaign.state["final_result"] = dict(terminal_result)
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    forge_legacy_terminal_certified_stop(campaign)
     campaign.save()
     assert has_terminal_full_frontier_certified_evidence(campaign.state)
 
@@ -433,19 +439,11 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {}
 
-    observed_terminal_state_before_export: list[bool] = []
-    real_save_final_result = outer_search_module._save_final_result
+    final_solution_export_calls: list[bool] = []
 
-    def assert_terminal_state_before_export(project_root_arg, result, *, facility_pools):
-        observed_terminal_state_before_export.append(
-            has_terminal_full_frontier_certified_evidence(_read_state(project_root_arg))
-        )
-        assert observed_terminal_state_before_export[-1]
-        return real_save_final_result(
-            project_root_arg,
-            result,
-            facility_pools=facility_pools,
-        )
+    def forbidden_final_solution_export(*_args, **_kwargs):
+        final_solution_export_calls.append(True)
+        raise AssertionError("producer must not export final_solution for proposal")
 
     monkeypatch.setattr(
         outer_search_module,
@@ -465,7 +463,7 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
     monkeypatch.setattr(
         outer_search_module,
         "_save_final_result",
-        assert_terminal_state_before_export,
+        forbidden_final_solution_export,
     )
 
     status, result = run_outer_search(
@@ -480,9 +478,23 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert observed_terminal_state_before_export == [True]
-    assert has_terminal_full_frontier_certified_evidence(_read_state(project_root))
-    assert (project_root / "data" / "solutions" / "final_solution.json").exists()
+    assert final_solution_export_calls == []
+    state = _read_state(project_root)
+    assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert state["last_stop_reason"]["status"] == CANDIDATE_PROPOSED_STATUS
+    assert state.get("terminal_frontier_evidence") is not None
+    assert not has_terminal_full_frontier_certified_evidence(state)
+    run_id = state[SUPERVISOR_PROPOSAL_STATE_KEY]["run_id"]
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    marker, violation = load_proposal_ready_marker(
+        campaign.proposal_ready_marker_path,
+        checkpoint_path=campaign.path,
+        expected_run_id=run_id,
+    )
+    assert violation is None
+    assert marker is not None
+    assert marker["exit_code"] == 0
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
 
 
 def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
@@ -514,7 +526,10 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {}
 
+    final_solution_export_calls: list[bool] = []
+
     def fail_after_partial_export(project_root_arg, result, *, facility_pools):
+        final_solution_export_calls.append(True)
         final_solution_path.parent.mkdir(parents=True, exist_ok=True)
         blueprint_path.parent.mkdir(parents=True, exist_ok=True)
         final_solution_path.write_text(
@@ -561,14 +576,15 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
     state = _read_state(project_root)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     stop = state.get("last_stop_reason", {})
-    assert status == RUN_STATUS_UNPROVEN
-    assert result is None
-    assert stop.get("reason") == "terminal_certified_export_failed"
-    assert state.get("final_result") is None
-    assert state.get("final_status") == RUN_STATUS_UNPROVEN
+    assert status == RUN_STATUS_CERTIFIED
+    assert result is not None
+    assert final_solution_export_calls == []
+    assert stop.get("reason") == "search_exhausted_all_candidates"
+    assert state.get("final_result") is not None
+    assert state.get("final_status") == CANDIDATE_PROPOSED_STATUS
     assert not has_terminal_full_frontier_certified_evidence(state)
     assert manifest.get("best_certified_result") is None
-    assert manifest.get("campaign", {}).get("final_status") == RUN_STATUS_UNPROVEN
+    assert manifest.get("campaign", {}).get("final_status") == CANDIDATE_PROPOSED_STATUS
     assert manifest.get("artifacts", {}).get("final_solution", {}).get("exists") is False
     assert manifest.get("artifacts", {}).get("optimal_blueprint", {}).get("exists") is False
     assert not final_solution_path.exists()
@@ -810,7 +826,7 @@ def test_v72_blocked_campaign_cleanup_runs_even_when_checkpoint_save_fails(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     campaign.save()
     final_solution_path.parent.mkdir(parents=True, exist_ok=True)
     blueprint_path.parent.mkdir(parents=True, exist_ok=True)

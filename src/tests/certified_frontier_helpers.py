@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from src.models.cut_manager import RUN_STATUS_INFEASIBLE
+from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
     build_terminal_frontier_evidence,
@@ -42,6 +42,15 @@ def write_closed_phase_review_gate(project_root: Path) -> Path:
         newline="\n",
     )
     return gate_path
+
+
+def forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
+    campaign.state["last_stop_reason"] = {
+        "reason": "search_exhausted_all_candidates",
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-03-16T00:00:00Z",
+    }
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
 
 
 def attach_terminal_frontier_evidence(

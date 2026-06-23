@@ -28,6 +28,7 @@ from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
+    forge_legacy_terminal_certified_stop,
     write_closed_phase_review_gate,
 )
 
@@ -178,7 +179,7 @@ def test_inspector_summarizes_terminal_full_frontier_certified_result(
         "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,
@@ -515,7 +516,7 @@ def test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,
@@ -574,7 +575,7 @@ def test_v70_inspector_and_b5a_reject_stale_terminal_after_artifact_hash_mismatc
         "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,
@@ -619,7 +620,7 @@ def test_v70_inspector_and_b5a_reject_terminal_manifest_without_current_delivery
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,
@@ -677,7 +678,7 @@ def test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,
@@ -742,7 +743,7 @@ def _export_current_certified_surface(project_root: Path) -> ExactCampaign:
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,

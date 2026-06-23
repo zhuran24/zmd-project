@@ -6,6 +6,7 @@ from dataclasses import fields
 from pathlib import Path
 
 import src.search.certified_frontier as certified_frontier_module
+import src.search.exact_campaign as exact_campaign_module
 import src.search.outer_search as outer_search_module
 from src.models.cut_manager import (
     RUN_STATUS_CERTIFIED,
@@ -13,7 +14,12 @@ from src.models.cut_manager import (
     RUN_STATUS_UNKNOWN,
     RUN_STATUS_UNPROVEN,
 )
-from src.search.exact_campaign import ExactCampaign
+from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
+    ExactCampaign,
+    SUPERVISOR_PROPOSAL_STATE_KEY,
+    load_proposal_ready_marker,
+)
 from src.search.exact_parallel_scheduler import (
     ExactParallelWorkerPool,
     ParallelWaveExecution,
@@ -201,6 +207,63 @@ def _read_campaign_telemetry(project_root: Path) -> dict:
         project_root / "data" / "checkpoints" / "exact_campaign_state.json"
     )
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _seal_campaign_proposal_with_accepting_replay(
+    monkeypatch,
+    project_root: Path,
+    state: dict,
+) -> ExactCampaign:
+    def accept_sink_replay_bundle(**kwargs):
+        campaign_state = kwargs["campaign_state"]
+        assert kwargs["project_root"] == project_root
+        assert campaign_state["final_status"] == RUN_STATUS_CERTIFIED
+        return {
+            "evidence": dict(campaign_state["terminal_frontier_evidence"]),
+            "candidate_records": {
+                str(key): dict(value)
+                for key, value in campaign_state.get("candidates", {}).items()
+            },
+            "sink_replay_violations": {},
+            "fixed_witness_publishable": True,
+            "fixed_witness_violations": {},
+        }
+
+    def accept_terminal_evidence_for_certified_state(
+        state,
+        *,
+        project_root: Path,
+        campaign_path: Path | None = None,
+    ) -> bool:
+        del project_root, campaign_path
+        return (
+            state.get("final_status") == RUN_STATUS_CERTIFIED
+            and state.get("final_result") is not None
+            and state.get("terminal_frontier_evidence") is not None
+        )
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "build_sink_verified_terminal_frontier_evidence",
+        accept_sink_replay_bundle,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "has_valid_terminal_full_frontier_certified_evidence_for_project",
+        accept_terminal_evidence_for_certified_state,
+    )
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    campaign.supervisor_seal(
+        final_result=state["final_result"],
+        terminal_frontier_evidence=state["terminal_frontier_evidence"],
+        candidate_records=state["candidates"],
+    )
+    campaign.save()
+    assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
+    assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
+    assert SUPERVISOR_PROPOSAL_STATE_KEY not in campaign.state
+    assert not campaign.proposal_ready_marker_path.exists()
+    return campaign
 
 
 class _DummyParallelWorkerPool:
@@ -1943,9 +2006,29 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
     assert result["ghost_rect"] == expected_best["ghost_rect"]
-    assert state["final_status"] == RUN_STATUS_CERTIFIED
+    assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert state["last_stop_reason"]["status"] == CANDIDATE_PROPOSED_STATUS
     assert state["final_result"]["ghost_rect"] == expected_best["ghost_rect"]
+    assert state.get("terminal_frontier_evidence") is not None
+    assert exact_campaign_module.has_terminal_full_frontier_certified_evidence(state) is False
+    run_id = state[SUPERVISOR_PROPOSAL_STATE_KEY]["run_id"]
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    marker, violation = load_proposal_ready_marker(
+        campaign.proposal_ready_marker_path,
+        checkpoint_path=campaign.path,
+        expected_run_id=run_id,
+    )
+    assert violation is None
+    assert marker is not None
+    assert marker["exit_code"] == 0
     assert sum(1 for record in state["candidates"].values() if record["status"] == RUN_STATUS_CERTIFIED) >= 2
+
+    sealed_campaign = _seal_campaign_proposal_with_accepting_replay(
+        monkeypatch,
+        project_root,
+        state,
+    )
+    assert sealed_campaign.state["final_result"]["ghost_rect"] == expected_best["ghost_rect"]
 
 
 def test_worker_failure_does_not_persist_certified_candidate_records_from_failed_wave(

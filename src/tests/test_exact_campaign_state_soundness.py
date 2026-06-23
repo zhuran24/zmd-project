@@ -39,6 +39,15 @@ def _certified_solution() -> dict[str, object]:
     }
 
 
+def _forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
+    campaign.state["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-03-16T00:00:00Z",
+    }
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+
+
 def test_candidate_strong_result_survives_rerun_and_requires_fresh_solution(
     tmp_path: Path,
 ) -> None:
@@ -427,10 +436,7 @@ def test_resume_drops_infeasible_statuses_before_terminal_certified_reuse(
         "search_stats": {"campaign_resumed": True, "solve_mode": "certified_exact"},
     }
     campaign.state["final_result"] = final_result
-    campaign.mark_campaign_stopped(
-        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     candidate_generation = {
         "max_w": 3,
         "max_h": 1,
@@ -525,10 +531,7 @@ def test_resume_drops_certified_statuses_before_terminal_certified_reuse(
         "search_stats": {"campaign_resumed": True, "solve_mode": "certified_exact"},
     }
     campaign.state["final_result"] = final_result
-    campaign.mark_campaign_stopped(
-        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     candidate_generation = {
         "max_w": 3,
         "max_h": 1,
@@ -609,10 +612,7 @@ def test_resume_persists_demoted_state_and_clears_stale_delivery_surface_before_
         "search_stats": {"campaign_resumed": True, "solve_mode": "certified_exact"},
     }
     campaign.state["final_result"] = final_result
-    campaign.mark_campaign_stopped(
-        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     candidate_generation = {
         "max_w": 3,
         "max_h": 1,

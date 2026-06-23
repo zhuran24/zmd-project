@@ -823,7 +823,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "e3024a2923df4a05051306703eed6f17e9af921a68c46f1ac2cc5f8e03fc0173",
+        "source_sha256": "15045dba9b2a8f694980e354e1850fe940b2663a48addd5c45bbcc1beca9e98f",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1464,7 +1464,7 @@
           "_execute_isolated_capsule_request",
           "nonce"
         ],
-        "source_sha256": "d67d2ae28f74c1f2900262ece66e57fb50bc98e64ddef33ca2e8c76ec090edba",
+        "source_sha256": "eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1517,8 +1517,11 @@
           "proof-bearing"
         ],
         "required_guard_tokens": [
+          "build_sink_verified_terminal_frontier_evidence",
           "project_candidate_records_for_sink",
           "require_record_solution_match=True",
+          "sink_replay_violations",
+          "terminal candidate sink replay failed",
           "terminal_candidate_sink_replay_failed",
           "candidate_records_override=replayed_records",
           "CANDIDATE_PROOF_FIELD",
@@ -1527,7 +1530,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "fce253d2063e00c402c94bc285e6ca2a78e05dd1e1c4fdda1c54240a038fe450",
+        "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1612,7 +1615,6 @@
         ],
         "required_guard_tokens": [
           "compute_sink_verified_terminal_frontier_projection",
-          "build_sink_verified_terminal_frontier_evidence",
           "build_candidate_replay_proof",
           "sink_replay_violations",
           "terminal candidate sink replay failed",
@@ -1620,7 +1622,7 @@
           "_parallel_wave_failure_discards_results",
           "_mark_candidate_result_from_verified_producer"
         ],
-        "source_sha256": "cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8",
+        "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

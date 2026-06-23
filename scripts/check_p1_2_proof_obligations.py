@@ -1785,15 +1785,25 @@ def _check_candidate_sink_replay_contract(
         path=outer_search_path,
     )
     commit_source = _source_text(outer_search_path, commit_fn)
-    if not _calls_function(commit_fn, "build_sink_verified_terminal_frontier_evidence"):
+    seal_fn = _method_def(exact_class, "supervisor_seal", path=exact_campaign_path)
+    seal_source = _source_text(exact_campaign_path, seal_fn)
+    if not _calls_function(seal_fn, "build_sink_verified_terminal_frontier_evidence"):
         errors.append(
-            "terminal commit must call build_sink_verified_terminal_frontier_evidence"
+            "supervisor_seal must call build_sink_verified_terminal_frontier_evidence before minting CERTIFIED"
         )
     if not _calls_function(run_outer_fn, "_commit_terminal_full_frontier_certified_result"):
-        errors.append("certified outer search must use the sink-verified terminal commit")
-    for token in ("sink_replay_violations", "terminal candidate sink replay failed"):
+        errors.append("certified outer search must use the terminal proposal commit")
+    for token in (
+        "CANDIDATE_PROPOSED_STATUS",
+        "set_supervisor_proposal_run_id",
+        "write_proposal_ready_marker",
+        "terminal_frontier_evidence",
+    ):
         if token not in commit_source:
-            errors.append(f"certified terminal commit must fail closed on replay rejection: {token}")
+            errors.append(f"terminal proposal commit must preserve supervisor handoff: {token}")
+    for token in ("sink_replay_violations", "terminal candidate sink replay failed"):
+        if token not in seal_source:
+            errors.append(f"supervisor_seal must fail closed on replay rejection: {token}")
 
     delivery_tree = _parse_python(delivery_manifest_path)
     delivery_build_fn = _function_def(
@@ -2456,7 +2466,6 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
 
     outer_source_text = OUTER_SEARCH_PATH.read_text(encoding="utf-8")
     for needle in (
-        "build_sink_verified_terminal_frontier_evidence",
         "compute_sink_verified_terminal_frontier_projection",
         "candidate_generation",
         "candidate_generation_kwargs",
@@ -2468,6 +2477,18 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
         if needle not in outer_source_text:
             errors.append(
                 "outer search must commit replayable full-domain terminal frontier evidence before CERTIFIED export: "
+                f"{needle}"
+            )
+    for needle in (
+        "build_sink_verified_terminal_frontier_evidence",
+        "candidate_generation_kwargs",
+        "generate_candidate_sizes",
+        "sink_replay_violations",
+        "terminal candidate sink replay failed",
+    ):
+        if needle not in exact_campaign_source:
+            errors.append(
+                "supervisor_seal must replay terminal frontier evidence before CERTIFIED mint: "
                 f"{needle}"
             )
 
@@ -2942,15 +2963,15 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/certified_frontier.py': '621681a1a089868458dcd803cf29a293a4b4ff285acc23e2d890432eb93774e7',
     'src/search/certified_surface.py': '87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': 'fce253d2063e00c402c94bc285e6ca2a78e05dd1e1c4fdda1c54240a038fe450',
+    'src/search/exact_campaign.py': '00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
-    'src/search/outer_search.py': 'cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8',
+    'src/search/outer_search.py': '069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
-    'src/search/terminal_fixed_witness_capsule.py': 'd67d2ae28f74c1f2900262ece66e57fb50bc98e64ddef33ca2e8c76ec090edba',
+    'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
     'src/search/terminal_fixed_witness_verifier.py': 'f39ceb13c9e40f4fdeeaf36d181169726fce138b0ec441a388aee8ec39dc9c14',
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)

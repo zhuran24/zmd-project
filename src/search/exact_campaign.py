@@ -15,8 +15,10 @@ import hashlib
 import json
 import math
 import os
+import string
 import tempfile
 import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
@@ -36,6 +38,9 @@ from src.search.certified_artifact_contract import (
 )
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
+    build_sink_verified_terminal_frontier_evidence,
+    candidate_generation_kwargs,
+    generate_candidate_sizes,
     terminal_frontier_evidence_violation,
 )
 from src.search.candidate_proof_replay import (
@@ -54,6 +59,21 @@ CAMPAIGN_SCHEMA_VERSION = 5
 MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION = 1
 PROOF_SUMMARY_SCHEMA_VERSION = 1
 TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"
+CANDIDATE_PROPOSED_STATUS = "CANDIDATE_PROPOSED"
+SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION = 1
+PROPOSAL_READY_MARKER_SCHEMA_VERSION = 1
+PROPOSAL_READY_MARKER_AUTHORITY = "certified_exact_producer_proposal_ready_v1"
+PROPOSAL_READY_MARKER_SUFFIX = ".proposal_ready.json"
+SUPERVISOR_PROPOSAL_STATE_KEY = "supervisor_proposal"
+_PROPOSAL_RUN_ID_ALLOWED_CHARS = frozenset(
+    string.ascii_letters + string.digits + "._:-"
+)
+_SUPERVISOR_PROPOSAL_STATE_KEYS = frozenset(
+    {"schema_version", "authority", "run_id"}
+)
+_PROPOSAL_READY_MARKER_KEYS = frozenset(
+    {"schema_version", "authority", "run_id", "exit_code", "checkpoint_sha256"}
+)
 VALID_CANDIDATE_STATUSES = {
     "RUNNING",
     "CERTIFIED",
@@ -67,6 +87,17 @@ VALID_CANDIDATE_STATUSES = {
 }
 STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
 PROOF_BEARING_TERMINAL_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})
+VALID_FINAL_STATUSES = frozenset(
+    {
+        "CERTIFIED",
+        "INFEASIBLE",
+        "UNKNOWN",
+        "UNPROVEN",
+        "EPSILON_CERTIFIED",
+        CANDIDATE_PROPOSED_STATUS,
+    }
+)
+_SUPERVISOR_SEAL_TOKEN = object()
 # Strong candidate strings are untrusted claims until a certified sink replays
 # their data-only candidate_proof in an isolated interpreter.  No Python object,
 # function identity, closure cell, globals mapping, or process-local freshness
@@ -1578,6 +1609,129 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
                 pass
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def proposal_ready_marker_path_for_campaign(campaign_path: Path) -> Path:
+    path = Path(campaign_path)
+    return path.with_name(f"{path.stem}{PROPOSAL_READY_MARKER_SUFFIX}")
+
+
+def new_supervisor_proposal_run_id() -> str:
+    return uuid.uuid4().hex
+
+
+def _valid_supervisor_proposal_run_id(value: Any) -> bool:
+    if not isinstance(value, str) or not value or len(value) > 128:
+        return False
+    return all(character in _PROPOSAL_RUN_ID_ALLOWED_CHARS for character in value)
+
+
+def _strict_proposal_exit_code(value: Any) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError("proposal_ready exit_code must be an integer")
+    if value < 0:
+        raise ValueError("proposal_ready exit_code must be non-negative")
+    return int(value)
+
+
+def _is_lower_sha256(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
+def _proposal_state_violation(value: Any) -> Optional[str]:
+    if not isinstance(value, Mapping):
+        return "supervisor_proposal_invalid"
+    if set(value.keys()) != _SUPERVISOR_PROPOSAL_STATE_KEYS:
+        return "supervisor_proposal_fields_invalid"
+    try:
+        schema_version = _strict_resume_int(
+            value.get("schema_version"),
+            "supervisor_proposal.schema_version",
+        )
+    except Exception:
+        return "supervisor_proposal_schema_invalid"
+    if schema_version != SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION:
+        return "supervisor_proposal_schema_invalid"
+    if str(value.get("authority", "")) != PROPOSAL_READY_MARKER_AUTHORITY:
+        return "supervisor_proposal_authority_invalid"
+    if not _valid_supervisor_proposal_run_id(value.get("run_id")):
+        return "supervisor_proposal_run_id_invalid"
+    return None
+
+
+def proposal_ready_marker_violation(
+    marker: Any,
+    *,
+    checkpoint_path: Path,
+    expected_run_id: Optional[str] = None,
+) -> Optional[str]:
+    if not isinstance(marker, Mapping):
+        return "proposal_ready_marker_invalid"
+    if set(marker.keys()) != _PROPOSAL_READY_MARKER_KEYS:
+        return "proposal_ready_marker_fields_invalid"
+    try:
+        schema_version = _strict_resume_int(
+            marker.get("schema_version"),
+            "proposal_ready.schema_version",
+        )
+    except Exception:
+        return "proposal_ready_marker_schema_invalid"
+    if schema_version != PROPOSAL_READY_MARKER_SCHEMA_VERSION:
+        return "proposal_ready_marker_schema_invalid"
+    if str(marker.get("authority", "")) != PROPOSAL_READY_MARKER_AUTHORITY:
+        return "proposal_ready_marker_authority_invalid"
+    run_id = marker.get("run_id")
+    if not _valid_supervisor_proposal_run_id(run_id):
+        return "proposal_ready_marker_run_id_invalid"
+    if expected_run_id is not None and str(run_id) != str(expected_run_id):
+        return "proposal_ready_marker_run_id_mismatch"
+    try:
+        _strict_proposal_exit_code(marker.get("exit_code"))
+    except Exception:
+        return "proposal_ready_marker_exit_code_invalid"
+    checkpoint_sha256 = marker.get("checkpoint_sha256")
+    if not _is_lower_sha256(checkpoint_sha256):
+        return "proposal_ready_marker_checkpoint_sha256_invalid"
+    try:
+        actual_sha256 = _sha256_file(Path(checkpoint_path))
+    except Exception:
+        return "proposal_ready_marker_checkpoint_missing"
+    if str(checkpoint_sha256) != actual_sha256:
+        return "proposal_ready_marker_checkpoint_sha256_mismatch"
+    return None
+
+
+def load_proposal_ready_marker(
+    marker_path: Path,
+    *,
+    checkpoint_path: Path,
+    expected_run_id: Optional[str] = None,
+) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    try:
+        payload = loads_strict_json(Path(marker_path).read_text(encoding="utf-8"))
+    except Exception:
+        return None, "proposal_ready_marker_unreadable"
+    violation = proposal_ready_marker_violation(
+        payload,
+        checkpoint_path=checkpoint_path,
+        expected_run_id=expected_run_id,
+    )
+    if violation is not None:
+        return None, violation
+    assert isinstance(payload, Mapping)
+    return dict(payload), None
+
+
 def _bound_state_defaults() -> Dict[str, Any]:
     """P1 #7a prep: optional bound_state block per candidate.
 
@@ -1680,6 +1834,12 @@ def _sanitize_resume_state_for_untrusted_candidate_evidence(
     requests, so the outer search must re-establish every candidate before a
     terminal certified surface may rely on it.
     """
+
+    if str(state.get("final_status")) == CANDIDATE_PROPOSED_STATUS:
+        # A proposal checkpoint is not a public certified surface.  Preserve its
+        # data-only payload for supervisor_seal; that seal must still replay and
+        # validate before minting terminal CERTIFIED.
+        return False
 
     candidates = state.get("candidates")
     if not isinstance(candidates, Mapping):
@@ -1917,8 +2077,23 @@ def _validate_resume_state(
         return "final_result_invalid"
     if final_status is not None and not isinstance(final_status, str):
         return "final_status_invalid"
-    if final_result is not None and final_status != "CERTIFIED":
+    if final_status is not None and final_status not in VALID_FINAL_STATUSES:
+        return "final_status_invalid"
+    if (
+        final_result is not None
+        and final_status not in {"CERTIFIED", CANDIDATE_PROPOSED_STATUS}
+    ):
         return "final_status_mismatch"
+    if final_status == CANDIDATE_PROPOSED_STATUS:
+        if final_result is None:
+            return "candidate_proposed_final_result_missing"
+        if terminal_frontier_evidence_value is None:
+            return "candidate_proposed_terminal_frontier_evidence_missing"
+        proposal_violation = _proposal_state_violation(
+            state.get(SUPERVISOR_PROPOSAL_STATE_KEY)
+        )
+        if proposal_violation is not None:
+            return proposal_violation
     declare_mode = state.get("declare_mode")
     if not isinstance(declare_mode, str) or declare_mode not in {"strict", "best_effort"}:
         return "declare_mode_invalid"
@@ -2000,9 +2175,13 @@ def has_certified_export_surface(state: Mapping[str, Any]) -> bool:
     supports the positive CERTIFIED result case.
     """
 
-    if str(state.get("final_status")) in PROOF_BEARING_TERMINAL_STATUSES:
+    final_status = str(state.get("final_status"))
+    if final_status in PROOF_BEARING_TERMINAL_STATUSES:
         return True
-    if isinstance(state.get("final_result"), Mapping):
+    if (
+        final_status != CANDIDATE_PROPOSED_STATUS
+        and isinstance(state.get("final_result"), Mapping)
+    ):
         return True
     stop_record = state.get("last_stop_reason")
     return (
@@ -2733,19 +2912,232 @@ class ExactCampaign:
         candidates[key] = record
         self.state["updated_at"] = timestamp
 
-    def mark_campaign_stopped(self, reason: str, status: Optional[str] = None) -> None:
+    @property
+    def proposal_ready_marker_path(self) -> Path:
+        return proposal_ready_marker_path_for_campaign(self.path)
+
+    def set_supervisor_proposal_run_id(self, run_id: Optional[str] = None) -> str:
+        normalized_run_id = str(run_id) if run_id is not None else new_supervisor_proposal_run_id()
+        if not _valid_supervisor_proposal_run_id(normalized_run_id):
+            raise ValueError("supervisor proposal run_id is invalid")
+        self.state[SUPERVISOR_PROPOSAL_STATE_KEY] = {
+            "schema_version": SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+            "authority": PROPOSAL_READY_MARKER_AUTHORITY,
+            "run_id": normalized_run_id,
+        }
+        self.state["updated_at"] = now_iso()
+        return normalized_run_id
+
+    def clear_proposal_ready_marker(self) -> None:
+        marker_path = self.proposal_ready_marker_path
+        try:
+            marker_path.unlink()
+        except FileNotFoundError:
+            return
+
+    def write_proposal_ready_marker(
+        self,
+        *,
+        run_id: str,
+        exit_code: int,
+    ) -> Dict[str, Any]:
+        if str(self.state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:
+            raise RuntimeError("proposal_ready marker requires CANDIDATE_PROPOSED state")
+        proposal_violation = _proposal_state_violation(
+            self.state.get(SUPERVISOR_PROPOSAL_STATE_KEY)
+        )
+        if proposal_violation is not None:
+            raise RuntimeError(proposal_violation)
+        proposal_state = self.state[SUPERVISOR_PROPOSAL_STATE_KEY]
+        if str(proposal_state.get("run_id")) != str(run_id):
+            raise RuntimeError("proposal_ready marker run_id does not match campaign state")
+        if not self.path.exists():
+            raise RuntimeError("proposal_ready marker requires saved checkpoint")
+        marker = {
+            "schema_version": PROPOSAL_READY_MARKER_SCHEMA_VERSION,
+            "authority": PROPOSAL_READY_MARKER_AUTHORITY,
+            "run_id": str(run_id),
+            "exit_code": _strict_proposal_exit_code(exit_code),
+            "checkpoint_sha256": _sha256_file(self.path),
+        }
+        violation = proposal_ready_marker_violation(
+            marker,
+            checkpoint_path=self.path,
+            expected_run_id=run_id,
+        )
+        if violation is not None:
+            raise RuntimeError(violation)
+        atomic_write_json(self.proposal_ready_marker_path, marker)
+        return dict(marker)
+
+    def supervisor_seal(
+        self,
+        *,
+        final_result: Mapping[str, Any],
+        terminal_frontier_evidence: Mapping[str, Any],
+        candidate_records: Mapping[str, Any],
+        reason: str = TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    ) -> None:
+        """Mint terminal CERTIFIED after supervisor-owned evidence validation."""
+
+        if str(reason) != TERMINAL_FULL_FRONTIER_CERTIFIED_REASON:
+            raise ValueError("supervisor_seal only supports terminal full-frontier certification")
+        if not isinstance(final_result, Mapping):
+            raise ValueError("supervisor_seal final_result must be a mapping")
+        if not isinstance(terminal_frontier_evidence, Mapping):
+            raise ValueError("supervisor_seal terminal_frontier_evidence must be a mapping")
+        if not isinstance(candidate_records, Mapping):
+            raise ValueError("supervisor_seal candidate_records must be a mapping")
+
+        final_result_copy = dict(final_result)
+        terminal_frontier_evidence_copy = dict(terminal_frontier_evidence)
+        candidate_records_copy: Dict[str, Any] = {}
+        for raw_key, raw_record in candidate_records.items():
+            if not isinstance(raw_record, Mapping):
+                raise ValueError("supervisor_seal candidate_records must map to mappings")
+            candidate_records_copy[str(raw_key)] = dict(raw_record)
+        raw_candidate_generation = terminal_frontier_evidence_copy.get("candidate_generation")
+        if not isinstance(raw_candidate_generation, Mapping):
+            raise RuntimeError(
+                "supervisor_seal terminal_frontier_evidence missing candidate_generation"
+            )
+        candidate_generation = dict(raw_candidate_generation)
+        try:
+            candidates = generate_candidate_sizes(
+                **candidate_generation_kwargs(candidate_generation)
+            )
+        except Exception as exc:  # noqa: BLE001
+            raise RuntimeError(
+                "supervisor_seal terminal candidate generation invalid"
+            ) from exc
+
+        timestamp = now_iso()
+        scratch_state = dict(self.state)
+        scratch_state["final_result"] = final_result_copy
+        scratch_state["final_status"] = "CERTIFIED"
+        scratch_state["last_stop_reason"] = {
+            "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+            "status": "CERTIFIED",
+            "updated_at": timestamp,
+        }
+        scratch_state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+        scratch_state["terminal_frontier_evidence"] = terminal_frontier_evidence_copy
+        scratch_state["candidates"] = candidate_records_copy
+
+        sink_bundle = build_sink_verified_terminal_frontier_evidence(
+            candidates=candidates,
+            campaign_state=scratch_state,
+            project_root=self.project_root,
+            campaign_path=self.path,
+            final_result=final_result_copy,
+            candidate_generation=candidate_generation,
+        )
+        if not isinstance(sink_bundle, Mapping):
+            raise RuntimeError("supervisor_seal sink replay bundle invalid")
+        raw_sink_replay_violations = sink_bundle.get("sink_replay_violations", {})
+        sink_replay_violations = (
+            dict(raw_sink_replay_violations)
+            if isinstance(raw_sink_replay_violations, Mapping)
+            else {"*": "sink_replay_violations_invalid"}
+        )
+        if sink_replay_violations:
+            first_key = sorted(sink_replay_violations)[0]
+            raise RuntimeError(
+                "terminal candidate sink replay failed: "
+                f"{sink_replay_violations[first_key]}"
+            )
+        raw_fixed_witness_violations = sink_bundle.get("fixed_witness_violations", {})
+        fixed_witness_violations = (
+            dict(raw_fixed_witness_violations)
+            if isinstance(raw_fixed_witness_violations, Mapping)
+            else {"*": "terminal_fixed_witness_rejected"}
+        )
+        if fixed_witness_violations or not bool(
+            sink_bundle.get("fixed_witness_publishable", False)
+        ):
+            first_key = sorted(
+                fixed_witness_violations or {"*": "terminal_fixed_witness_rejected"}
+            )[0]
+            raise RuntimeError(
+                "terminal fixed witness verifier failed: "
+                f"{fixed_witness_violations.get(first_key, 'terminal_fixed_witness_rejected')}"
+            )
+        verified_terminal_frontier_evidence = sink_bundle.get("evidence")
+        if not isinstance(verified_terminal_frontier_evidence, Mapping):
+            raise RuntimeError("supervisor_seal sink replay evidence invalid")
+        if dict(verified_terminal_frontier_evidence) != terminal_frontier_evidence_copy:
+            raise RuntimeError(
+                "supervisor_seal terminal_frontier_evidence mismatch after sink replay"
+            )
+        verified_candidate_records = sink_bundle.get("candidate_records")
+        if not isinstance(verified_candidate_records, Mapping):
+            raise RuntimeError("supervisor_seal sink replay candidate_records invalid")
+        verified_candidate_records_copy: Dict[str, Any] = {}
+        for raw_key, raw_record in verified_candidate_records.items():
+            if not isinstance(raw_record, Mapping):
+                raise RuntimeError(
+                    "supervisor_seal sink replay candidate_records invalid"
+                )
+            verified_candidate_records_copy[str(raw_key)] = dict(raw_record)
+        scratch_state["terminal_frontier_evidence"] = dict(
+            verified_terminal_frontier_evidence
+        )
+        scratch_state["candidates"] = verified_candidate_records_copy
+
+        if not has_valid_terminal_full_frontier_certified_evidence_for_project(
+            scratch_state,
+            project_root=self.project_root,
+            campaign_path=None,
+        ):
+            raise RuntimeError("supervisor_seal rejected terminal CERTIFIED evidence")
+
+        self.state["final_result"] = final_result_copy
+        self.state["terminal_frontier_evidence"] = dict(
+            verified_terminal_frontier_evidence
+        )
+        self.state["candidates"] = verified_candidate_records_copy
+        self.state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+        self.mark_campaign_stopped(
+            TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+            status="CERTIFIED",
+            _supervisor_seal_token=_SUPERVISOR_SEAL_TOKEN,
+        )
+        self.state["final_status"] = "CERTIFIED"
+        self.clear_proposal_ready_marker()
+
+    def mark_campaign_stopped(
+        self,
+        reason: str,
+        status: Optional[str] = None,
+        *,
+        _supervisor_seal_token: object = None,
+    ) -> None:
+        normalized_status = None if status is None else str(status)
+        if normalized_status == "CERTIFIED":
+            supervisor_authorized = _supervisor_seal_token is _SUPERVISOR_SEAL_TOKEN
+            if not supervisor_authorized:
+                raise RuntimeError("CERTIFIED campaign stop must be minted by supervisor_seal")
+            assert supervisor_authorized
         timestamp = now_iso()
         stop_record = {
             "reason": str(reason),
-            "status": None if status is None else str(status),
+            "status": normalized_status,
             "updated_at": timestamp,
         }
         self.state["last_stop_reason"] = stop_record
-        if status is not None:
-            self.state["final_status"] = str(status)
-        if (
-            str(stop_record.get("status")) != "CERTIFIED"
-            or str(stop_record.get("reason")) != TERMINAL_FULL_FRONTIER_CERTIFIED_REASON
+        if normalized_status is not None and normalized_status != "CERTIFIED":
+            self.state["final_status"] = normalized_status
+        terminal_proposal_or_certified = (
+            str(stop_record.get("reason")) == TERMINAL_FULL_FRONTIER_CERTIFIED_REASON
+            and str(stop_record.get("status"))
+            in {"CERTIFIED", CANDIDATE_PROPOSED_STATUS}
+        )
+        if not terminal_proposal_or_certified:
+            self.state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+            self.clear_proposal_ready_marker()
+        if not (
+            str(stop_record.get("status")) == "CERTIFIED"
+            or terminal_proposal_or_certified
         ):
             self.state["terminal_frontier_evidence"] = None
         self.state["updated_at"] = timestamp

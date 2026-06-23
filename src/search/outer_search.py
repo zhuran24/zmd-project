@@ -44,7 +44,7 @@ from src.search.campaign_telemetry import (
 )
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
-    build_sink_verified_terminal_frontier_evidence,
+    build_terminal_frontier_evidence,
     compute_sink_verified_terminal_frontier_projection,
     candidate_generation_kwargs,
     candidate_key as certified_frontier_candidate_key,
@@ -57,12 +57,19 @@ from src.search.certified_surface import (
     export_and_verify_certified_delivery_manifest,
     save_certified_final_solution_and_blueprint,
 )
-from src.search.candidate_proof_replay import build_candidate_replay_proof
+from src.search.candidate_proof_replay import (
+    build_candidate_replay_proof,
+    project_candidate_records_for_sink,
+)
 from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
     ExactCampaign,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     _load_exact_min_side_admissibility,
     has_valid_terminal_full_frontier_certified_evidence_for_project,
+)
+from src.search.terminal_fixed_witness_capsule import (
+    build_terminal_fixed_witness_projection_at_sink,
 )
 from src.search.exact_parallel_scheduler import (
     ExactParallelWorkerPool,
@@ -888,49 +895,64 @@ def _commit_terminal_full_frontier_certified_result(
     candidates: Sequence[Tuple[int, int, int]],
     candidate_generation: Mapping[str, Any],
 ) -> None:
+    proposal_run_id = exact_campaign.set_supervisor_proposal_run_id()
     exact_campaign.state["final_result"] = dict(result)
-    exact_campaign.state["final_status"] = RUN_STATUS_CERTIFIED
     exact_campaign.mark_campaign_stopped(
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-        status=RUN_STATUS_CERTIFIED,
+        status=CANDIDATE_PROPOSED_STATUS,
     )
-    sink_bundle = build_sink_verified_terminal_frontier_evidence(
-        candidates=candidates,
-        campaign_state=exact_campaign.state,
+    replayed_records, sink_replay_violations = project_candidate_records_for_sink(
+        state=exact_campaign.state,
         project_root=exact_campaign.project_root,
         campaign_path=exact_campaign.path,
-        final_result=result,
-        candidate_generation=candidate_generation,
+        require_record_solution_match=True,
     )
-    sink_replay_violations = dict(sink_bundle.get("sink_replay_violations", {}))
     if sink_replay_violations:
         first_key = sorted(sink_replay_violations)[0]
         raise RuntimeError(
             "terminal candidate sink replay failed: "
             f"{sink_replay_violations[first_key]}"
         )
-    exact_campaign.state["candidates"] = dict(
-        sink_bundle.get("candidate_records", {})
+    exact_campaign.state["candidates"] = {
+        str(key): dict(value)
+        for key, value in replayed_records.items()
+        if isinstance(value, Mapping)
+    }
+    exact_campaign.save()
+    fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(
+        state=exact_campaign.state,
+        project_root=exact_campaign.project_root,
+        campaign_path=exact_campaign.path,
+        candidate_records={
+            str(key): dict(value)
+            for key, value in replayed_records.items()
+            if isinstance(value, Mapping)
+        },
+        final_result=result,
     )
-    fixed_witness_violations = dict(sink_bundle.get("fixed_witness_violations", {}))
-    if fixed_witness_violations or not bool(sink_bundle.get("fixed_witness_publishable", False)):
-        first_key = sorted(fixed_witness_violations or {"*": "terminal_fixed_witness_rejected"})[0]
+    if not bool(fixed_witness_projection.publishable):
         raise RuntimeError(
             "terminal fixed witness verifier failed: "
-            f"{fixed_witness_violations.get(first_key, 'terminal_fixed_witness_rejected')}"
+            f"{fixed_witness_projection.rejected_reason or 'terminal_fixed_witness_rejected'}"
         )
-    exact_campaign.state["terminal_frontier_evidence"] = dict(
-        sink_bundle.get("evidence", {})
+    terminal_frontier_evidence = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=fixed_witness_projection.candidate_records,
+        final_result=result,
+        candidate_generation=candidate_generation,
     )
-    if not has_valid_terminal_full_frontier_certified_evidence_for_project(
-        exact_campaign.state,
-        project_root=exact_campaign.project_root,
-        campaign_path=None,
-    ):
-        raise RuntimeError(
-            "terminal certified_exact export attempted before project-bound full-frontier evidence was committed"
-        )
+    exact_campaign.state["candidates"] = {
+        str(key): dict(value)
+        for key, value in fixed_witness_projection.durable_candidate_records.items()
+        if isinstance(value, Mapping)
+    }
+    exact_campaign.state["terminal_frontier_evidence"] = dict(terminal_frontier_evidence)
+    exact_campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        status=CANDIDATE_PROPOSED_STATUS,
+    )
     exact_campaign.save()
+    exact_campaign.write_proposal_ready_marker(run_id=proposal_run_id, exit_code=0)
 
 
 def _save_final_result(
@@ -1959,15 +1981,11 @@ def run_outer_search(
                                     candidates=candidates,
                                     candidate_generation=candidate_generation,
                                 )
-                            _save_final_result(
-                                project_root,
-                                result,
-                                facility_pools=facility_pools,
-                            )
                             if exact_campaign is not None:
-                                _refresh_certified_delivery_manifest_if_any(
+                                _refresh_certified_delivery_outputs(
                                     project_root=project_root,
                                     exact_campaign=exact_campaign,
+                                    facility_pools=facility_pools,
                                 )
                         except Exception as exc:  # noqa: BLE001
                             if exact_campaign is None:
