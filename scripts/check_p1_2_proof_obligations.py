@@ -30,6 +30,9 @@ CANDIDATE_PROOF_REPLAY_PATH = PROJECT_ROOT / "src" / "search" / "candidate_proof
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 )
+INDEPENDENT_INFEASIBILITY_REVERIFIER_PATH = (
+    PROJECT_ROOT / "src" / "search" / "independent_infeasibility_reverifier.py"
+)
 OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
 DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
@@ -57,9 +60,22 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
         "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
         "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT",
+        "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
     }
 )
 REQUIRED_TESTS_BY_OBLIGATION_ID = {
+    "PO-INDEPENDENT-INFEASIBILITY-REVERIFY": frozenset(
+        {
+            "test_independent_infeasibility_reverify_confirms_binding_infeasible_allows_cut",
+            "test_independent_infeasibility_reverify_divergent_feasible_blocks_cut_unknown",
+            "test_independent_infeasibility_reverify_timeout_blocks_cut_unknown",
+            "test_independent_infeasibility_reverify_exception_blocks_cut_unknown",
+            "test_independent_infeasibility_reverify_routing_exhaustion_without_binding_confirmation_unknown",
+            "test_p1_2_checker_rejects_whole_layout_reverify_gate_removal",
+            "test_p1_2_checker_rejects_inflight_cache_read_in_infeasibility_reverifier",
+            "test_p1_2_checker_rejects_env_reader_in_infeasibility_reverifier",
+        }
+    ),
     "PO-CANDIDATE-SINK-REPLAY-AUTHORITY": frozenset(
         {
             "test_p1_2_mutating_verified_writer_closure_cell_cannot_publish_false_certified",
@@ -1278,6 +1294,7 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
         "_check_phase_gate_provenance_contract",
         "_check_phase_anchor",
         "_check_exact_session_atomic_snapshot_contract",
+        "_check_independent_infeasibility_reverifier_contract",
     ):
         if not _calls_function(main_fn, required_call):
             errors.append(f"proof-obligation checker main must call {required_call}")
@@ -2589,6 +2606,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/exact_campaign_inspector.py': 'p1_2_public_surface',
     'src/search/exact_parallel_scheduler.py': 'p1_2_certified_path',
     'src/search/heuristic_feasible_finder.py': 'exploratory_or_heuristic_non_authority',
+    'src/search/independent_infeasibility_reverifier.py': 'p1_2_certified_path',
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
     'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
@@ -2667,7 +2685,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
     'src/render/report_builder.py': 'c92f43fc9e305f8e60868d9cfc5bd9daf146373afb9a22310dd2fefa2e951531',
     'src/render/serve.py': '038160a4155b2f7ad2da94bdccd7870bec61e043daa0346b41a88c6bfcb200ff',
-    'src/search/benders_loop.py': '45f5690a418bf446bc3acbe8eb0c8c1cb72351ee7bcd8dcf46bb57b3d9ab5aa8',
+    'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': 'c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75',
@@ -2678,6 +2696,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
+    'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
     'src/search/outer_search.py': 'cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
@@ -3038,6 +3057,113 @@ def _fixed_witness_publish_binding_errors(
     return errors
 
 
+def _check_independent_infeasibility_reverifier_contract(
+    *,
+    benders_loop_path: Path = BENDERS_LOOP_PATH,
+    reverifier_path: Path = INDEPENDENT_INFEASIBILITY_REVERIFIER_PATH,
+) -> list[str]:
+    """Require whole-layout nogoods to pass independent ∀ re-verification first."""
+
+    errors: list[str] = []
+    benders_tree = _parse_python(benders_loop_path)
+    if not _top_level_imports_exact_name(
+        benders_tree,
+        module="src.search.independent_infeasibility_reverifier",
+        name="reverify_whole_layout_infeasibility",
+    ):
+        errors.append(
+            "whole-layout nogood funnel must import reverify_whole_layout_infeasibility "
+            "from src.search.independent_infeasibility_reverifier without aliasing"
+        )
+    controller_class = _class_def(benders_tree, "LBBDController", path=benders_loop_path)
+    funnel_fn = _method_def(
+        controller_class,
+        "_add_exact_whole_layout_nogood",
+        path=benders_loop_path,
+    )
+    if _function_shadows_name(funnel_fn, "reverify_whole_layout_infeasibility"):
+        errors.append("whole-layout nogood funnel shadows the independent reverifier")
+    funnel_source = _source_text(benders_loop_path, funnel_fn)
+    reverify_pos = funnel_source.find("reverify_whole_layout_infeasibility(")
+    mint_pos = funnel_source.find("self._add_exact_persisted_nogood(")
+    if reverify_pos < 0:
+        errors.append(
+            "whole-layout nogood funnel must call independent infeasibility reverifier"
+        )
+    if mint_pos < 0:
+        errors.append("whole-layout nogood funnel no longer calls persisted nogood mint")
+    if reverify_pos >= 0 and mint_pos >= 0 and reverify_pos > mint_pos:
+        errors.append(
+            "whole-layout nogood funnel must call independent reverifier before "
+            "_add_exact_persisted_nogood"
+        )
+    for token in (
+        "independent_infeasibility_reverifier",
+        "whole_layout_nogood_independent_reverify_divergence",
+        "whole_layout_nogood_independent_reverify_unknown",
+        "fail_closed_unknown",
+    ):
+        if token not in funnel_source:
+            errors.append(f"whole-layout nogood reverify gate missing token: {token}")
+
+    reverifier_tree = _parse_python(reverifier_path)
+    reverifier_source = reverifier_path.read_text(encoding="utf-8")
+    for function_name in (
+        "reverify_whole_layout_infeasibility",
+        "_reverify_binding_infeasible",
+        "_solve_with_independent_cp_sat",
+    ):
+        _function_def(reverifier_tree, function_name, path=reverifier_path)
+    for token in (
+        "NAMED-TCB",
+        "∀ = INFEASIBLE",
+        "PortBindingModel(",
+        "cp_model.CpSolver()",
+        "cp_model.PORTFOLIO_SEARCH",
+        "random_seed",
+        "randomize_search",
+        "num_search_workers",
+        "routing_exhaustion_phase1_conservative_unknown",
+    ):
+        if token not in reverifier_source:
+            errors.append(f"independent infeasibility reverifier missing token: {token}")
+    if ".solve(" in reverifier_source:
+        errors.append(
+            "independent infeasibility reverifier must not call subproblem solve(); "
+            "it must use its own heterogeneous CpSolver"
+        )
+    for child in ast.walk(reverifier_tree):
+        if isinstance(child, ast.Import):
+            for alias in child.names:
+                if alias.name == "os":
+                    errors.append(
+                        "independent infeasibility reverifier must not import os or "
+                        "read EXACT_* env"
+                    )
+        if isinstance(child, ast.ImportFrom) and child.module == "os":
+            errors.append(
+                "independent infeasibility reverifier must not import os env helpers"
+            )
+        if (
+            isinstance(child, ast.Attribute)
+            and isinstance(child.value, ast.Name)
+            and child.value.id == "os"
+            and child.attr in {"environ", "getenv"}
+        ):
+            errors.append("independent infeasibility reverifier must not read EXACT_* env")
+        if (
+            isinstance(child, ast.Attribute)
+            and child.attr in {"master", "_solver"}
+            and isinstance(child.value, ast.Name)
+            and child.value.id == "self"
+        ):
+            errors.append(
+                "independent infeasibility reverifier must not read in-flight "
+                f"cache authority: self.{child.attr}"
+            )
+    return errors
+
+
 def _fixed_witness_capsule_wiring_errors(
     *,
     capsule_path: Path = TERMINAL_FIXED_WITNESS_CAPSULE_PATH,
@@ -3244,6 +3370,7 @@ def main() -> int:
         errors.extend(_check_phase_gate_provenance_contract())
         errors.extend(_check_phase_anchor(manifest))
         errors.extend(_check_exact_session_atomic_snapshot_contract())
+        errors.extend(_check_independent_infeasibility_reverifier_contract())
     except CheckError as exc:
         print(f"P1.2 proof obligation check failed: {exc}", file=sys.stderr)
         return 2

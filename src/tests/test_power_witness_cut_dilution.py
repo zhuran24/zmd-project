@@ -178,10 +178,53 @@ def test_whole_layout_nogood_fails_closed_when_flag_on_with_synthetic_pole():
     )
 
 
+def _force_confirmed_reverify(**kwargs):
+    """FIX-4: stub the independent whole-layout reverify gate to a CONFIRMED verdict
+    so this contract test keeps exercising the controller cut-minting wiring."""
+
+    class _ConfirmedVerdict:
+        def to_dict(self) -> dict:
+            return {
+                "confirmed": True,
+                "status": "CONFIRMED_INFEASIBLE",
+                "stage": str(kwargs.get("proof_stage", "binding")),
+                "reason": "test_forced_confirmed_reverify",
+                "independent_status": "INFEASIBLE",
+            }
+
+    return _ConfirmedVerdict()
+
+
+def _force_declined_reverify(**kwargs):
+    """FIX-4: stub the independent whole-layout reverify gate to a NON-confirmed
+    (UNKNOWN) verdict, modelling the fail-closed case where the independent solver
+    does not reconfirm INFEASIBLE."""
+
+    class _DeclinedVerdict:
+        def to_dict(self) -> dict:
+            return {
+                "confirmed": False,
+                "status": "UNKNOWN",
+                "stage": str(kwargs.get("proof_stage", "binding")),
+                "reason": "test_forced_declined_reverify",
+                "independent_status": None,
+            }
+
+    return _DeclinedVerdict()
+
+
 def test_whole_layout_nogood_normal_path_flag_off():
-    """flag off (default) 时, _add_exact_whole_layout_nogood 应正常产 cut → True."""
+    """flag off (default) 时, _add_exact_whole_layout_nogood 应正常产 cut → True.
+
+    FIX-4: the cut now passes through the independent reverify gate; stub it to a
+    CONFIRMED verdict so this test exercises the normal cut-minting wiring."""
     instances, pools, rules = _fixture_one_powered_one_pole()
-    with mock.patch.dict(os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": ""}):
+    with mock.patch.dict(
+        os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": ""}
+    ), mock.patch(
+        "src.search.benders_loop.reverify_whole_layout_infeasibility",
+        _force_confirmed_reverify,
+    ):
         core = MasterPlacementModel.build_exact_core(
             instances, pools, rules, skip_power_coverage=True,
         )
@@ -205,6 +248,43 @@ def test_whole_layout_nogood_normal_path_flag_off():
             proof_summary={"mode": "certified_exact"},
         )
     assert applied is True
+
+
+def test_whole_layout_nogood_declined_when_reverify_unconfirmed():
+    """FIX-4: when the independent reverify gate does NOT confirm INFEASIBLE, the
+    whole-layout nogood is fail-closed (declined), not applied to the master."""
+    instances, pools, rules = _fixture_one_powered_one_pole()
+    with mock.patch.dict(
+        os.environ, {"EXACT_POWER_PLACEMENT_SUBPROBLEM": ""}
+    ), mock.patch(
+        "src.search.benders_loop.reverify_whole_layout_infeasibility",
+        _force_declined_reverify,
+    ):
+        core = MasterPlacementModel.build_exact_core(
+            instances, pools, rules, skip_power_coverage=True,
+        )
+        master = MasterPlacementModel.from_exact_core(core, ghost_rect=(1, 1))
+        master.solve(time_limit_seconds=5.0)
+        controller = _build_controller(master)
+        fake_solution = {
+            "powered_001": {
+                "instance_id": "powered_001",
+                "facility_type": "powered_widget",
+                "pose_idx": 0,
+            },
+        }
+        applied = controller._add_exact_whole_layout_nogood(
+            solution=fake_solution,
+            iteration=1,
+            cut_type="binding_infeasible_nogood",
+            proof_stage="binding",
+            binding_exhausted=True,
+            routing_exhausted=False,
+            proof_summary={"mode": "certified_exact"},
+        )
+    assert applied is False, (
+        "reverify 未确认 INFEASIBLE 时 whole-layout cut 必须 fail-closed 不应用"
+    )
 
 
 def test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member():

@@ -3608,6 +3608,28 @@ def test_exact_mode_uses_flow_only_as_diagnostic(monkeypatch, tmp_path: Path) ->
     assert metadata["diagnostic_flow_status"] == "INFEASIBLE"
 
 
+def _force_confirmed_reverify(**kwargs):
+    """FIX-4: stub the independent whole-layout reverify gate to a CONFIRMED
+    verdict so the benders contract tests below keep exercising the cut-minting
+    wiring. The reverifier's own confirm/diverge/timeout/exception soundness is
+    covered in test_p1_2_independent_infeasibility_reverifier.py; the benders
+    declined->UNKNOWN wiring is covered by
+    test_whole_layout_nogood_declined_when_reverify_unconfirmed
+    (test_power_witness_cut_dilution.py)."""
+
+    class _ConfirmedVerdict:
+        def to_dict(self) -> dict:
+            return {
+                "confirmed": True,
+                "status": "CONFIRMED_INFEASIBLE",
+                "stage": str(kwargs.get("proof_stage", "binding")),
+                "reason": "test_forced_confirmed_reverify",
+                "independent_status": "INFEASIBLE",
+            }
+
+    return _ConfirmedVerdict()
+
+
 def test_binding_infeasible_generates_exact_safe_whole_layout_cut(monkeypatch, tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_binding_infeasible")
 
@@ -3625,6 +3647,11 @@ def test_binding_infeasible_generates_exact_safe_whole_layout_cut(monkeypatch, t
             return dict(self._summary)
 
     monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "reverify_whole_layout_infeasibility",
+        _force_confirmed_reverify,
+    )
 
     status, result = run_benders_for_ghost_rect(
         ghost_w=1,
@@ -3717,6 +3744,11 @@ def test_routing_exhaustion_generates_exact_safe_whole_layout_cut(monkeypatch, t
     monkeypatch.setattr(benders_loop_module, "PortBindingModel", FakeBindingModel)
     monkeypatch.setattr(benders_loop_module, "RoutingGrid", FakeRoutingGrid)
     monkeypatch.setattr(benders_loop_module, "RoutingSubproblem", FakeRoutingSubproblem)
+    monkeypatch.setattr(
+        benders_loop_module,
+        "reverify_whole_layout_infeasibility",
+        _force_confirmed_reverify,
+    )
 
     status, result = run_benders_for_ghost_rect(
         ghost_w=1,
