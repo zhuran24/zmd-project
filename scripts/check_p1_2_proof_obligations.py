@@ -58,6 +58,7 @@ REQUIRED_OBLIGATION_IDS = frozenset(
         "PO-PHASE-GATE-PROVENANCE",
         "PO-P1-2-CLOSE-KERNEL-SEALING",
         "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+        "PO-ISOLATED-EXEC-BYTECODE-BINDING",
         "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
         "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT",
         "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
@@ -86,6 +87,14 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays",
             "test_p1_2_checker_rejects_candidate_replay_isolation_removal",
             "test_p1_2_checker_rejects_frontier_sink_replay_bypass",
+        }
+    ),
+    "PO-ISOLATED-EXEC-BYTECODE-BINDING": frozenset(
+        {
+            "test_candidate_replay_isolated_subprocess_uses_fresh_pycache_prefix",
+            "test_fixed_witness_capsule_isolated_subprocess_uses_fresh_pycache_prefix",
+            "test_isolated_replay_ignores_repo_pycache_bytecode_injection",
+            "test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal",
         }
     ),
     "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS": frozenset(
@@ -1024,6 +1033,201 @@ def _uses_constant(node: ast.AST, value: str) -> bool:
     return any(isinstance(child, ast.Constant) and child.value == value for child in ast.walk(node))
 
 
+def _argv_string_marker(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        return node.value
+    if isinstance(node, ast.JoinedStr):
+        return "".join(value.value for value in node.values if isinstance(value, ast.Constant) and isinstance(value.value, str))
+    return None
+
+
+def _subprocess_run_argv_nodes(node: ast.AST) -> list[list[ast.AST]]:
+    argv_nodes: list[list[ast.AST]] = []
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Call):
+            continue
+        if not (
+            isinstance(child.func, ast.Attribute)
+            and child.func.attr == "run"
+            and child.args
+            and isinstance(child.args[0], ast.List)
+        ):
+            continue
+        argv_nodes.append(list(child.args[0].elts))
+    return argv_nodes
+
+
+def _argv_index(markers: Sequence[str | None], value: str) -> int:
+    try:
+        return list(markers).index(value)
+    except ValueError:
+        return -1
+
+
+def _contains_sys_executable(node: ast.AST) -> bool:
+    return any(
+        isinstance(child, ast.Attribute)
+        and child.attr == "executable"
+        and isinstance(child.value, ast.Name)
+        and child.value.id == "sys"
+        for child in ast.walk(node)
+    )
+
+
+def _assigned_sys_executable_names(function: ast.FunctionDef) -> set[str]:
+    names: set[str] = set()
+    for child in ast.walk(function):
+        if not isinstance(child, (ast.Assign, ast.AnnAssign)):
+            continue
+        value = child.value
+        if value is None or not _contains_sys_executable(value):
+            continue
+        targets = child.targets if isinstance(child, ast.Assign) else [child.target]
+        for target in targets:
+            if isinstance(target, ast.Name):
+                names.add(target.id)
+    return names
+
+
+def _uses_name_in_expr(node: ast.AST, names: set[str]) -> bool:
+    return any(isinstance(child, ast.Name) and child.id in names for child in ast.walk(node))
+
+
+def _mkdtemp_target_names(function: ast.FunctionDef, *, label: str, errors: list[str]) -> set[str]:
+    names: set[str] = set()
+    for child in ast.walk(function):
+        if not isinstance(child, (ast.Assign, ast.AnnAssign)):
+            continue
+        value = child.value
+        if not (
+            isinstance(value, ast.Call)
+            and isinstance(value.func, ast.Attribute)
+            and value.func.attr == "mkdtemp"
+            and isinstance(value.func.value, ast.Name)
+            and value.func.value.id == "tempfile"
+        ):
+            continue
+        if any(keyword.arg == "dir" for keyword in value.keywords):
+            errors.append(f"{label} pycache prefix tempfile must not be rooted in the repository")
+        targets = child.targets if isinstance(child, ast.Assign) else [child.target]
+        for target in targets:
+            if isinstance(target, ast.Name):
+                names.add(target.id)
+    return names
+
+
+def _joined_str_has_pycache_prefix_from_name(node: ast.AST, names: set[str]) -> bool:
+    if not isinstance(node, ast.JoinedStr):
+        return False
+    has_prefix = any(
+        isinstance(value, ast.Constant)
+        and isinstance(value.value, str)
+        and "pycache_prefix=" in value.value
+        for value in node.values
+    )
+    has_temp_name = any(
+        isinstance(value, ast.FormattedValue)
+        and isinstance(value.value, ast.Name)
+        and value.value.id in names
+        for value in node.values
+    )
+    return has_prefix and has_temp_name
+
+
+def _has_rmtree_cleanup_for_name(function: ast.FunctionDef, names: set[str]) -> bool:
+    for child in ast.walk(function):
+        if not (
+            isinstance(child, ast.Call)
+            and isinstance(child.func, ast.Attribute)
+            and child.func.attr == "rmtree"
+            and isinstance(child.func.value, ast.Name)
+            and child.func.value.id == "shutil"
+            and child.args
+            and isinstance(child.args[0], ast.Name)
+            and child.args[0].id in names
+        ):
+            continue
+        if any(
+            keyword.arg == "ignore_errors"
+            and isinstance(keyword.value, ast.Constant)
+            and keyword.value.value is True
+            for keyword in child.keywords
+        ):
+            return True
+    return False
+
+
+def _check_isolated_pycache_hardened_argv(
+    *,
+    function: ast.FunctionDef,
+    path: Path,
+    label: str,
+) -> list[str]:
+    errors: list[str] = []
+    source = _source_text(path, function)
+    required_tokens = (
+        '"-I"',
+        '"-B"',
+        '"-X"',
+        "pycache_prefix=",
+        "tempfile.mkdtemp",
+        "shutil.rmtree",
+        "ignore_errors=True",
+    )
+    for token in required_tokens:
+        if token not in source:
+            errors.append(f"{label} isolated subprocess missing PYC-EXEC-DIGEST hardening token: {token}")
+    forbidden_env_prefix_forms = (
+        'env["PYTHONPYCACHEPREFIX"]',
+        "env['PYTHONPYCACHEPREFIX']",
+        '"PYTHONPYCACHEPREFIX":',
+        "'PYTHONPYCACHEPREFIX':",
+        "os.environ",
+    )
+    if any(form in source for form in forbidden_env_prefix_forms):
+        errors.append(f"{label} isolated subprocess must not rely on PYTHONPYCACHEPREFIX under -I")
+    if "dir=source_root" in source or "dir=project_root" in source:
+        errors.append(f"{label} pycache prefix must be a per-run tempfile, not a repository path")
+
+    argv_nodes = _subprocess_run_argv_nodes(function)
+    if len(argv_nodes) != 1:
+        errors.append(f"{label} must have exactly one direct subprocess.run argv list")
+        return errors
+    sys_executable_names = _assigned_sys_executable_names(function)
+    if not (
+        _contains_sys_executable(argv_nodes[0][0])
+        or _uses_name_in_expr(argv_nodes[0][0], sys_executable_names)
+    ):
+        errors.append(f"{label} argv executable must be derived from sys.executable")
+    mkdtemp_names = _mkdtemp_target_names(function, label=label, errors=errors)
+    if not mkdtemp_names:
+        errors.append(f"{label} pycache prefix must come from tempfile.mkdtemp")
+    elif not _has_rmtree_cleanup_for_name(function, mkdtemp_names):
+        errors.append(f"{label} pycache prefix tempfile must be cleaned with shutil.rmtree(ignore_errors=True)")
+    markers = [_argv_string_marker(element) for element in argv_nodes[0]]
+    isolated_index = _argv_index(markers, "-I")
+    no_bytecode_index = _argv_index(markers, "-B")
+    x_index = _argv_index(markers, "-X")
+    pycache_index = next(
+        (
+            index
+            for index, marker in enumerate(markers)
+            if isinstance(marker, str) and marker.startswith("pycache_prefix=")
+        ),
+        -1,
+    )
+    if min(isolated_index, no_bytecode_index, x_index, pycache_index) < 0:
+        errors.append(f"{label} argv must contain -I, -B, -X, and pycache_prefix=<dir>")
+    elif not (
+        isolated_index < no_bytecode_index < x_index
+        and pycache_index == x_index + 1
+    ):
+        errors.append(f"{label} argv must order hardening as -I -B -X pycache_prefix=<dir>")
+    elif mkdtemp_names and not _joined_str_has_pycache_prefix_from_name(argv_nodes[0][pycache_index], mkdtemp_names):
+        errors.append(f"{label} pycache_prefix argv must use the tempfile.mkdtemp directory")
+    return errors
+
+
 def _imports_lifecycle_constants() -> tuple[int, tuple[str, ...], tuple[str, ...], dict[str, tuple[str, ...]]]:
     sys.path.insert(0, str(PROJECT_ROOT))
     from src.cuts.lifecycle import (  # pylint: disable=import-outside-toplevel
@@ -1637,6 +1841,52 @@ def _check_candidate_sink_replay_contract(
         if forbidden in helper_source:
             errors.append(f"test candidate helper must not grant production authority: {forbidden}")
     return errors
+
+
+def _check_isolated_exec_bytecode_binding_contract(
+    *,
+    candidate_replay_path: Path = CANDIDATE_PROOF_REPLAY_PATH,
+    terminal_capsule_path: Path = TERMINAL_FIXED_WITNESS_CAPSULE_PATH,
+) -> list[str]:
+    """Require certified isolated replay children to execute source-derived bytecode.
+
+    ``python -I`` removes PYTHON* environment influence but still reads valid
+    repository ``__pycache__`` files.  PYC-EXEC-DIGEST closes that by adding
+    ``-B`` and command-line ``-X pycache_prefix=<per-run tempfile>`` to every
+    certified authority child so bytecode lookup misses repo caches and compiles
+    from the ``.py`` source already covered by the certified source digest.
+    """
+
+    errors: list[str] = []
+    replay_tree = _parse_python(candidate_replay_path)
+    replay_invoke = _function_def(
+        replay_tree,
+        "_invoke_isolated_replay",
+        path=candidate_replay_path,
+    )
+    errors.extend(
+        _check_isolated_pycache_hardened_argv(
+            function=replay_invoke,
+            path=candidate_replay_path,
+            label="candidate replay",
+        )
+    )
+
+    capsule_tree = _parse_python(terminal_capsule_path)
+    capsule_invoke = _function_def(
+        capsule_tree,
+        "_invoke_isolated_capsule",
+        path=terminal_capsule_path,
+    )
+    errors.extend(
+        _check_isolated_pycache_hardened_argv(
+            function=capsule_invoke,
+            path=terminal_capsule_path,
+            label="fixed-witness capsule",
+        )
+    )
+    return errors
+
 
 def _check_phase_gate_provenance_contract() -> list[str]:
     """Check that the phase gate is now a small manual fail-closed gate.
@@ -2688,7 +2938,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
-    'src/search/candidate_proof_replay.py': 'c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75',
+    'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
     'src/search/certified_frontier.py': '621681a1a089868458dcd803cf29a293a4b4ff285acc23e2d890432eb93774e7',
     'src/search/certified_surface.py': '87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
@@ -2700,7 +2950,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/outer_search.py': 'cac9f0f7761142ca572dfe5cdea709f8dc8efe4858bdc5d0160a104e88d41eb8',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
-    'src/search/terminal_fixed_witness_capsule.py': 'b0d71cb98f03f600712359364e81546cd8a3243c80211f2dd33bd897e2bee7bc',
+    'src/search/terminal_fixed_witness_capsule.py': 'd67d2ae28f74c1f2900262ece66e57fb50bc98e64ddef33ca2e8c76ec090edba',
     'src/search/terminal_fixed_witness_verifier.py': 'f39ceb13c9e40f4fdeeaf36d181169726fce138b0ec441a388aee8ec39dc9c14',
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
@@ -3364,6 +3614,7 @@ def main() -> int:
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_certified_cut_replay_contract(manifest))
         errors.extend(_check_candidate_sink_replay_contract())
+        errors.extend(_check_isolated_exec_bytecode_binding_contract())
         errors.extend(_check_evidence_and_tests(manifest))
         errors.extend(_check_close_kernel_checker_self_binding())
         errors.extend(_check_close_kernel_contract(manifest))

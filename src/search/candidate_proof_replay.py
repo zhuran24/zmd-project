@@ -5,6 +5,14 @@ its closure cells, its globals, nor process-local freshness metadata is proof
 authority.  Every certified sink replays strong claims in a fresh isolated
 interpreter from the on-disk source tree and current project artifacts before it
 may use them for pruning or publication.
+
+The isolated child is launched with ``-I -B -X pycache_prefix=<fresh empty dir>``
+so repository ``__pycache__`` bytecode is never read.  The executed Python
+bytecode is therefore compiled from the ``.py`` source covered by
+``compute_certified_exact_source_digest``.  The remaining named TCB is the
+interpreter named by ``sys.executable``, the standard library, and native
+extensions such as OR-Tools ``.pyd``/``.so`` modules; this boundary does not
+claim to hash or replace those lower layers.
 """
 
 from __future__ import annotations
@@ -656,22 +664,32 @@ def _invoke_isolated_replay(
     env["EXACT_MASTER_RANDOM_SEED"] = "0"
     env["EXACT_MASTER_RANDOM_SEED_BASE"] = "0"
     executable = Path(os.path.abspath(sys.executable))
-    completed = subprocess.run(
-        [
-            str(executable),
-            "-I",
-            "-c",
-            _ISOLATED_REPLAY_BOOTSTRAP,
-            str(source_root),
-        ],
-        input=json.dumps(request, sort_keys=True, separators=(",", ":"), allow_nan=False),
-        text=True,
-        capture_output=True,
-        env=env,
-        cwd=str(source_root),
-        timeout=max(900.0, 300.0 * len(expected_proofs)),
-        check=False,
-    )
+    pycache_prefix_dir = tempfile.mkdtemp(prefix="zmd_candidate_replay_pycache_")
+    try:
+        # -I implies -E, so PYTHONPYCACHEPREFIX would be ignored.  The CLI
+        # -X pycache_prefix flag redirects bytecode lookup to this fresh empty
+        # directory; -B keeps it empty, forcing execution from hashed .py source.
+        completed = subprocess.run(
+            [
+                str(executable),
+                "-I",
+                "-B",
+                "-X",
+                f"pycache_prefix={pycache_prefix_dir}",
+                "-c",
+                _ISOLATED_REPLAY_BOOTSTRAP,
+                str(source_root),
+            ],
+            input=json.dumps(request, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            text=True,
+            capture_output=True,
+            env=env,
+            cwd=str(source_root),
+            timeout=max(900.0, 300.0 * len(expected_proofs)),
+            check=False,
+        )
+    finally:
+        shutil.rmtree(pycache_prefix_dir, ignore_errors=True)
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout or "").strip()[-2000:]
         raise RuntimeError(f"isolated replay exited {completed.returncode}: {detail}")

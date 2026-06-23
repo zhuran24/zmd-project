@@ -100,13 +100,13 @@
       ]
     },
     {
-      "id": "src_search_terminal_fixed_witness_capsule_py__authority_state_for_capsule_state_key_write_266",
+      "id": "src_search_terminal_fixed_witness_capsule_py__authority_state_for_capsule_state_key_write_275",
       "pattern": "state_key_write",
       "module": "src/search/terminal_fixed_witness_capsule.py",
       "qualname": "_authority_state_for_capsule",
-      "line": 266,
+      "line": 275,
       "justification": "Builds a local authority_state copy for the isolated capsule replay from strict-parsed serialized bytes; durable candidate records and solution digests are not rewritten and capsule authority remains the sink-side replay.",
-      "source_sha256": "b0d71cb98f03f600712359364e81546cd8a3243c80211f2dd33bd897e2bee7bc",
+      "source_sha256": "d67d2ae28f74c1f2900262ece66e57fb50bc98e64ddef33ca2e8c76ec090edba",
       "keys": [
         "final_result"
       ]
