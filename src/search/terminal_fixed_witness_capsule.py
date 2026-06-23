@@ -5,6 +5,14 @@ publication authority comes only from this sink-side capsule: the parent builds
 a nonce-bound request, a fresh ``python -I`` child replays the stored terminal
 ``(R*, pi*)`` from a hash-bound artifact snapshot, and the parent rechecks the
 response envelope before projecting records.
+
+The capsule child also runs with ``-B`` and a command-line
+``-X pycache_prefix=<fresh empty dir>`` after ``-I``.  That prevents repository
+``__pycache__`` bytecode from being read, so executed Python bytecode is compiled
+from the ``.py`` source covered by ``compute_certified_exact_source_digest``.
+The remaining named TCB is the ``sys.executable`` interpreter, standard library,
+and native extensions such as OR-Tools ``.pyd``/``.so`` modules; those lower
+layers are trusted rather than covered by this PYC-EXEC-DIGEST fix.
 """
 
 from __future__ import annotations
@@ -14,6 +22,7 @@ import json
 import os
 from pathlib import Path
 import secrets
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -416,22 +425,32 @@ def _invoke_isolated_capsule(
         "EXACT_MASTER_RANDOM_SEED": "0",
         "EXACT_MASTER_RANDOM_SEED_BASE": "0",
     }
-    completed = subprocess.run(
-        [
-            str(Path(os.path.abspath(sys.executable))),
-            "-I",
-            "-c",
-            _ISOLATED_CAPSULE_BOOTSTRAP,
-            str(source_root),
-        ],
-        input=json.dumps(request, sort_keys=True, separators=(",", ":"), allow_nan=False),
-        text=True,
-        capture_output=True,
-        env=env,
-        cwd=str(source_root),
-        timeout=1500.0,
-        check=False,
-    )
+    pycache_prefix_dir = tempfile.mkdtemp(prefix="zmd_fixed_witness_capsule_pycache_")
+    try:
+        # -I ignores PYTHON* env, including PYTHONPYCACHEPREFIX.  Use the CLI
+        # -X pycache_prefix flag and -B so this authority process misses repo
+        # __pycache__ entries and executes bytecode compiled from hashed source.
+        completed = subprocess.run(
+            [
+                str(Path(os.path.abspath(sys.executable))),
+                "-I",
+                "-B",
+                "-X",
+                f"pycache_prefix={pycache_prefix_dir}",
+                "-c",
+                _ISOLATED_CAPSULE_BOOTSTRAP,
+                str(source_root),
+            ],
+            input=json.dumps(request, sort_keys=True, separators=(",", ":"), allow_nan=False),
+            text=True,
+            capture_output=True,
+            env=env,
+            cwd=str(source_root),
+            timeout=1500.0,
+            check=False,
+        )
+    finally:
+        shutil.rmtree(pycache_prefix_dir, ignore_errors=True)
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout or "").strip()[-2000:]
         raise RuntimeError(f"isolated fixed-witness capsule exited {completed.returncode}: {detail}")

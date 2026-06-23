@@ -2,9 +2,9 @@
   "schema_version": 1,
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
-  "updated_at": "2026-06-19",
+  "updated_at": "2026-06-23",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
+  "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
     "decision_function": "step_7_evaluation_attach_decision",
@@ -539,6 +539,27 @@
       "policy": "Candidate records and candidate_proof payloads are untrusted data. A strong status may prune certified frontier state or enter terminal, manifest, or public evidence only after a fresh python -I child recomputes current artifact/source bindings and replays that candidate through certified_exact. Missing, malformed, mismatched, failed, or non-strong replay results are demoted to UNPROVEN or rejected. No writer identity, caller, closure cell, module binding, mutable registry, freshness stamp, or test helper grants proof authority."
     },
     {
+      "id": "PO-ISOLATED-EXEC-BYTECODE-BINDING",
+      "title": "Certified isolated replay executes bytecode compiled from source covered by the certified source digest",
+      "v_findings": [
+        "p1_2_pyc_exec_digest_round_3"
+      ],
+      "required_tests": [
+        "test_candidate_replay_isolated_subprocess_uses_fresh_pycache_prefix",
+        "test_fixed_witness_capsule_isolated_subprocess_uses_fresh_pycache_prefix",
+        "test_isolated_replay_ignores_repo_pycache_bytecode_injection",
+        "test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal"
+      ],
+      "evidence_paths": [
+        "src/search/candidate_proof_replay.py",
+        "src/search/terminal_fixed_witness_capsule.py",
+        "src/tests/test_p1_2_isolated_exec_bytecode_binding.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "PROJECT_LOCK.md"
+      ],
+      "policy": "Every certified authority subprocess that runs sink replay or the fixed-witness capsule must launch the current sys.executable as python -I -B -X pycache_prefix=<fresh per-run tempfile> before the bootstrap. -I ignores PYTHON* environment variables, so PYTHONPYCACHEPREFIX is not an authority mechanism. The fresh empty prefix redirects bytecode lookup away from repository __pycache__ files and -B prevents writing new bytecode, forcing execution from .py source covered by compute_certified_exact_source_digest. The remaining named TCB is the Python interpreter, standard library, and native extension modules such as OR-Tools .pyd/.so files; this obligation does not claim to hash those lower layers."
+    },
+    {
       "id": "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
       "title": "Public certified evidence rechecks the exact stored terminal witness (R*, pi*) by rerunning binding and routing",
       "v_findings": [
@@ -681,10 +702,11 @@
     "policy": "Small structural close kernel, not a theorem prover. It seals both the inventory of proof-bearing strong-status sinks and the sink-side isolated replay boundary that supplies their authority; source hashes alone are not treated as proof that replay remains mandatory.",
     "trusted_computing_base": [
       "Python runtime executing scripts/check_p1_2_proof_obligations.py and certified sinks",
-      "fresh isolated Python interpreter launched with -I for candidate replay",
+      "fresh isolated Python interpreter launched with -I -B -X pycache_prefix=<fresh empty dir> for candidate replay and terminal fixed-witness capsule execution",
       "on-disk production source tree bound by certified_exact_source_tree",
       "canonical project artifacts bound by compute_exact_artifact_hashes",
       "certified_exact solver and project-bound terminal witness validators",
+      "Python standard library and native extension modules such as OR-Tools .pyd/.so files",
       "OS subprocess, pipe, nonce, timeout, and exit-status semantics",
       "filesystem path, regular-file, and source-byte semantics",
       "pytest/CI exit status and human review of this P1.2 boundary"
@@ -692,6 +714,7 @@
     "not_claimed": [
       "all software bugs are impossible",
       "runtime mutation of the sink verifier or operating-system TCB is harmless",
+      "Python interpreter, standard library, or native extension bytecode/machine-code mutation is covered by source_digest",
       "future P1.3B production master integration is safe",
       "owner clean-review counting or P1.3B opening is automated here",
       "performance, UX, or future production integration is addressed by this patch"
@@ -708,7 +731,8 @@
       "same_process_function_or_closure_authority",
       "producer_monkeypatch_or_module_rebinding",
       "missing_or_unreplayable_candidate_proof",
-      "sink_replay_bypass_or_binding_drift"
+      "sink_replay_bypass_or_binding_drift",
+      "repo_pyc_bytecode_injection"
     ],
     "proof_bearing_tokens": [
       "CERTIFIED",
@@ -799,7 +823,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "ff5f54fc621fffa59ea14793fb128f1afd519e58400c67b5c69a6bf39bfe59a2",
+        "source_sha256": "e3024a2923df4a05051306703eed6f17e9af921a68c46f1ac2cc5f8e03fc0173",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1373,7 +1397,7 @@
           "record[\"status\"] = \"UNPROVEN\"",
           "candidate_sink_replay_status_mismatch"
         ],
-        "source_sha256": "c8e60b28b2cc154efff1a20bbbcab4188bb92351dc8730cb790099f484749a75",
+        "source_sha256": "841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1440,7 +1464,7 @@
           "_execute_isolated_capsule_request",
           "nonce"
         ],
-        "source_sha256": "b0d71cb98f03f600712359364e81546cd8a3243c80211f2dd33bd897e2bee7bc",
+        "source_sha256": "d67d2ae28f74c1f2900262ece66e57fb50bc98e64ddef33ca2e8c76ec090edba",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

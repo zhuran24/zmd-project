@@ -25,7 +25,7 @@ def test_p1_2_proof_obligation_gate_passes() -> None:
         timeout=30,
     )
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "P1.2 proof obligation check passed: 13 obligations anchored" in result.stdout
+    assert "P1.2 proof obligation check passed: 14 obligations anchored" in result.stdout
     assert "proof-bearing sink files sealed" in result.stdout
 
 
@@ -36,6 +36,7 @@ def test_p1_2_proof_obligation_manifest_has_required_ids() -> None:
     assert check_p1_2_proof_obligations.REQUIRED_OBLIGATION_IDS <= obligation_ids
     assert "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS" in obligation_ids
     assert "PO-CANDIDATE-SINK-REPLAY-AUTHORITY" in obligation_ids
+    assert "PO-ISOLATED-EXEC-BYTECODE-BINDING" in obligation_ids
     assert manifest["phase_gate_required_anchor"] == "v99_p1_2_close_kernel_sealing"
     assert "close_kernel_contract" in manifest
 
