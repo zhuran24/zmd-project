@@ -148,9 +148,18 @@ P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P
   的那套 witness，**不得**发布 writer 提供的 stored witness 而仅以「同尺寸存在某可行布局」间接代证。**当前 HEAD
   无 stopgap（rebind 试过破坏合法交付已撤回），此谓词当前不满足**；P1.3B fixed-witness verifier（钉住 `π*` 对其
   本身重跑 binding+routing）落地前不得宣称满足。
-- 验证器执行身份（PYC-EXEC-DIGEST，round-3 新登记）：source digest 仅哈希 `.py`，隔离 replay 执行的 `.pyc`
-  字节码未绑定 → 恶意 `.pyc` 可在 `.py`/digest 不变时伪造 replay 权威。闭合须把验证器执行从不可变 capsule
-  （源码字节码+输入+依赖 hash-pin）发起，或显式纳入命名 TCB。
+- 验证器执行身份（PYC-EXEC-DIGEST，round-3 登记 → **已闭，提交 `88b2d32`**）：source digest 仅哈希 `.py`，
+  隔离 replay/capsule 子进程（`python -I`，`-I` 只隔离 env）此前可从 repo `__pycache__` 加载恶意 `.pyc` 在
+  `.py`/digest 不变时伪造 replay 权威。**闭合**：两处认证隔离子进程启动（`candidate_proof_replay._invoke_isolated_replay`
+  + `terminal_fixed_witness_capsule._invoke_isolated_capsule`）argv 加 `-B -X pycache_prefix=<per-run
+  tempfile.mkdtemp 空目录>`，逼子进程从已哈希 `.py` 源编译、绕开 repo `__pycache__` → 执行字节码 ⟸ 已哈希源
+  （`-I` 隐含 `-E` 忽略 PYTHON* env，故用 CLI `-X` 非 `PYTHONPYCACHEPREFIX`）；obligation
+  `PO-ISOLATED-EXEC-BYTECODE-BINDING` 机器闸 + 真 `__pycache__` 注入 E2E 红测。
+  **剩余命名 TCB（信任洋葱线下、声明信任、非 live gap，round-4/Opus 对抗审登记）**：① Python 解释器
+  （`sys.executable`）+ stdlib + ortools C 扩展（`.pyd/.so`，非 `.pyc`、本修不覆盖）；② 启动隔离子进程的
+  **父/relay 进程自身字节码**（架构上父进程不产判决、只 relay 隔离 child 的 nonce-bound 应答，与 checker-source
+  同属命名 TCB）；③ `certified_artifact_contract.py` 跑 close-kernel checker 的子进程 `.pyc`（是 gate、非
+  replay/capsule 判决权威，属 checker-source TCB 邻域）。
 - close-kernel gate 无盲点：`data/proof_obligations/p1_2_proof_obligations.json` sink inventory、
   source hash、guard token、checker 自绑定必须通过；慢 soundness lane 在 close/CI 语境下不得因
   “未收集到 @slow 测试”而 warning-pass。
