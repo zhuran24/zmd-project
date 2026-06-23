@@ -18,6 +18,15 @@ from src.tests.certified_frontier_helpers import attach_terminal_frontier_eviden
 from src.tests.test_exact_contract import _build_frontier_project
 
 
+def _forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
+    campaign.state["last_stop_reason"] = {
+        "reason": "search_exhausted_all_candidates",
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-03-16T00:00:00Z",
+    }
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+
+
 def test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence(
     tmp_path: Path,
 ) -> None:
@@ -77,10 +86,7 @@ def test_v75_resume_rejects_terminal_certified_without_replayable_frontier_evide
         "placement_solution": {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     campaign.save()
 
     reason = validate_exact_campaign_resume_state(
@@ -117,10 +123,7 @@ def test_v75_resume_rejects_terminal_evidence_with_unexhausted_frontier(
         "placement_solution": {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -158,10 +161,7 @@ def test_v75_resume_rejects_terminal_evidence_from_start_area_slice(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.state["terminal_frontier_evidence"]["candidate_generation"]["start_area"] = 1
     campaign.save()
@@ -198,10 +198,7 @@ def test_v79_resume_rejects_terminal_evidence_from_aspect_ratio_slice(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root, max_aspect_ratio=3.0)
     campaign.save()
 
@@ -237,10 +234,7 @@ def test_v79_resume_rejects_terminal_evidence_from_min_side_slice(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root, min_side=7)
     campaign.save()
 
@@ -264,10 +258,7 @@ def test_v67_resume_inspector_and_b5a_reject_terminal_final_result_without_candi
         "placement_solution": {"tiny_001": {"facility_type": "tiny_facility", "pose_idx": 0}},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     campaign.save()
 
     reason = validate_exact_campaign_resume_state(
@@ -362,10 +353,7 @@ def test_v69_resume_inspector_and_b5a_reject_terminal_final_result_not_best_cand
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     campaign.save()
 
     reason = validate_exact_campaign_resume_state(
@@ -416,10 +404,7 @@ def test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_projec
         "placement_solution": solution,
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
         candidates=[(1, 1, 1)],
         candidate_records=campaign.state["candidates"],
@@ -469,10 +454,7 @@ def test_v80_resume_rejects_terminal_evidence_unknown_candidate_generation_key(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.state["terminal_frontier_evidence"]["candidate_generation"][
         "future_candidate_axis"
@@ -508,10 +490,7 @@ def test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.state["terminal_frontier_evidence"]["candidate_generation"][
         "min_side_admissibility"
@@ -547,10 +526,7 @@ def test_v80_resume_rejects_v1_terminal_frontier_evidence_schema(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.state["terminal_frontier_evidence"]["schema_version"] = 1
     campaign.state["terminal_frontier_evidence"]["source"] = (
@@ -592,10 +568,7 @@ def test_v80_resume_rejects_terminal_final_result_below_project_admissibility(
         "placement_solution": {},
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root, min_side=1)
 
     reason = validate_exact_campaign_resume_state(

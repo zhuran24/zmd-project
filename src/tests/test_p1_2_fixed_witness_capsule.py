@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import subprocess
 from pathlib import Path
 from typing import Any, Mapping
@@ -286,6 +287,85 @@ def test_child_source_or_artifact_hash_mismatch_fails_closed(
         "terminal_fixed_witness_capsule_response_artifact_binding_mismatch"
     )
     assert projection.candidate_records["1x1"]["status"] == "UNPROVEN"
+
+
+def test_caller_candidate_records_cannot_override_serialized_authority_bytes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    authority_state = _prepare_state(root)
+    caller_records = _json_copy(authority_state["candidates"])
+    caller_records["1x1"]["solution"]["tiny_001"]["anchor"] = {"x": 1, "y": 0}
+
+    def forbidden_invoke(**_kwargs: Any) -> Mapping[str, Any]:
+        raise AssertionError("authority mismatch must fail before child launch")
+
+    monkeypatch.setattr(capsule_module, "_invoke_isolated_capsule", forbidden_invoke)
+
+    projection = build_terminal_fixed_witness_projection_at_sink(
+        state=authority_state,
+        project_root=root,
+        candidate_records=caller_records,
+        final_result=authority_state["final_result"],
+        serialized_state_bytes=(
+            fixed_witness_module.canonical_state_bytes_for_fixed_witness(authority_state)
+        ),
+    )
+
+    assert projection.publishable is False
+    assert projection.rejected_reason == (
+        "terminal_fixed_witness_capsule_authority_state_invalid:ValueError"
+    )
+    assert projection.candidate_records["1x1"]["status"] == "UNPROVEN"
+
+
+def test_capsule_uses_checkpoint_bytes_when_serialized_state_absent(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = _build_tiny_project(tmp_path / "project")
+    authority_state = _prepare_state(root)
+    campaign_path = root / "data" / "checkpoints" / "exact_campaign_state.json"
+    campaign_path.parent.mkdir(parents=True, exist_ok=True)
+    campaign_path.write_text(
+        json.dumps(authority_state, sort_keys=True, separators=(",", ":"), ensure_ascii=False),
+        encoding="utf-8",
+    )
+    tampered_parent_state = _json_copy(authority_state)
+    tampered_parent_state["artifact_hashes"] = dict(tampered_parent_state["artifact_hashes"])
+    tampered_parent_state["artifact_hashes"]["canonical_rules"] = "0" * 64
+    captured_authority_states: list[Mapping[str, Any]] = []
+
+    def fake_invoke(
+        *,
+        project_root: Path,
+        authority_state: Mapping[str, Any],
+        expected_artifact_hashes: Mapping[str, str],
+        expected_source_digest: str,
+        nonce: str,
+    ) -> Mapping[str, Any]:
+        del project_root, expected_artifact_hashes, expected_source_digest
+        captured_authority_states.append(_json_copy(authority_state))
+        return _capsule_response(
+            root=root,
+            state=authority_state,
+            verdict=_failure_verdict(authority_state, "forced_child_failure"),
+            nonce=nonce,
+        )
+
+    monkeypatch.setattr(capsule_module, "_invoke_isolated_capsule", fake_invoke)
+
+    projection = build_terminal_fixed_witness_projection_at_sink(
+        state=tampered_parent_state,
+        project_root=root,
+        campaign_path=campaign_path,
+        candidate_records=_json_copy(authority_state["candidates"]),
+        final_result=authority_state["final_result"],
+    )
+
+    assert projection.publishable is False
+    assert captured_authority_states == [authority_state]
 
 
 def test_child_timeout_or_exception_demotes_unproven_not_infeasible(

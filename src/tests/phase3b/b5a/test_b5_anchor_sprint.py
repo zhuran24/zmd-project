@@ -19,6 +19,7 @@ from src.search.phase3b.campaign.repair import (
 )
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
+    forge_legacy_terminal_certified_stop,
     write_closed_phase_review_gate,
 )
 from src.search.phase3b.b5a.b5_anchor_sprint import (
@@ -370,7 +371,7 @@ def test_b5a_summary_reports_certified_anchor_and_telemetry(tmp_path: Path) -> N
         "placement_solution": _certified_placement(),
         "search_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(
         campaign,
         project_root,

@@ -45,6 +45,15 @@ def _write_json(path: Path, payload: object) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
+def _forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
+    campaign.state["last_stop_reason"] = {
+        "reason": "search_exhausted_all_candidates",
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-03-16T00:00:00Z",
+    }
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+
+
 def _build_manifest_project(project_root: Path) -> tuple[Path, dict[str, list[dict[str, object]]]]:
     data_dir = project_root / "data" / "preprocessed"
     rules_dir = project_root / "rules"
@@ -128,7 +137,7 @@ def test_delivery_manifest_exports_best_certified_result_and_repo_relative_artif
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -206,7 +215,7 @@ def test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -300,7 +309,7 @@ def test_delivery_manifest_rejects_certified_status_without_terminal_frontier_ev
         tmp_path / "delivery_manifest_missing_final_result"
     )
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     campaign.save()
 
     with pytest.raises(ValueError, match="terminal final_result evidence"):
@@ -372,7 +381,7 @@ def test_v79_delivery_manifest_rejects_non_instance_placement_solution(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -422,7 +431,7 @@ def test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -465,7 +474,7 @@ def test_v69_delivery_manifest_rejects_stale_final_solution_artifact(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -525,7 +534,7 @@ def test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -584,7 +593,7 @@ def test_v70_delivery_manifest_accepts_master_solution_metadata_not_in_blueprint
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -637,7 +646,7 @@ def test_v70_delivery_manifest_rejects_non_integer_blueprint_score(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -690,7 +699,7 @@ def test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_res
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -748,7 +757,7 @@ def test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -804,7 +813,7 @@ def test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -859,7 +868,7 @@ def test_v72_manifest_currentness_rejects_extra_metadata_fields(tmp_path: Path) 
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -928,7 +937,7 @@ def test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_soluti
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -983,7 +992,7 @@ def test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
     best_result = campaign.best_certified_result()
@@ -1052,10 +1061,7 @@ def test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoi
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    memory_campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(memory_campaign)
     attach_terminal_frontier_evidence(memory_campaign, project_root)
 
     best_result = memory_campaign.best_certified_result()
@@ -1107,10 +1113,7 @@ def test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_be
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -1165,10 +1168,7 @@ def test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanoni
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 
@@ -1241,10 +1241,7 @@ def test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped(
-        "search_exhausted_all_candidates",
-        status=RUN_STATUS_CERTIFIED,
-    )
+    _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 

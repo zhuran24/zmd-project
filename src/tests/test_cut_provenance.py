@@ -9,6 +9,7 @@ from typing import Mapping
 from src.models.cut_manager import BendersCut, CutManager
 from src.search.benders_loop import collect_certification_blockers
 from src.search.exact_campaign import ExactCampaign
+from src.tests.certified_frontier_helpers import forge_legacy_terminal_certified_stop
 
 import pytest
 
@@ -978,7 +979,7 @@ def test_exact_campaign_resume_rejects_best_effort_final_result(
         "placement_solution": {"tiny_001": {"pose_idx": 0}},
         "search_status": "CERTIFIED",
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status="CERTIFIED")
+    forge_legacy_terminal_certified_stop(campaign)
     campaign.state["declare_mode"] = "best_effort"
     campaign.save()
 

@@ -34,6 +34,7 @@ from types import SimpleNamespace
 import pytest
 from ortools.sat.python import cp_model
 
+import src.io.delivery_manifest as delivery_manifest_module
 from src.io.delivery_manifest import delivery_manifest_output_path
 from src.io.output_schema import normalize_blueprint_payload
 from src.models.binding_subproblem import PortBindingModel
@@ -50,6 +51,7 @@ from src.models.master_model import (
 )
 import src.search.benders_loop as benders_loop_module
 import src.search.certified_frontier as certified_frontier_module
+import src.search.certified_surface as certified_surface_module
 import src.search.exact_campaign as exact_campaign_module
 import src.search.outer_search as outer_search_module
 from src.search.benders_loop import (
@@ -63,9 +65,12 @@ from src.search.campaign_telemetry import (
     classify_candidate_outcome,
 )
 from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
     CERTIFIED_EXACT_SOURCE_DIGEST_KEY,
     ExactCampaign,
+    SUPERVISOR_PROPOSAL_STATE_KEY,
     compute_certified_exact_source_digest,
+    load_proposal_ready_marker,
 )
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
 from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
@@ -886,6 +891,100 @@ def _read_campaign_telemetry(project_root: Path) -> dict:
         project_root / "data" / "checkpoints" / "exact_campaign_state.json"
     )
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _assert_producer_left_certified_proposal(
+    project_root: Path,
+    *,
+    expected_ghost_rect: dict[str, int],
+) -> dict:
+    state = _read_campaign_state(project_root)
+    assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert state["last_stop_reason"]["status"] == CANDIDATE_PROPOSED_STATUS
+    assert state["final_result"]["ghost_rect"] == expected_ghost_rect
+    assert state.get("terminal_frontier_evidence") is not None
+    assert exact_campaign_module.has_terminal_full_frontier_certified_evidence(state) is False
+    run_id = state[SUPERVISOR_PROPOSAL_STATE_KEY]["run_id"]
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    marker, violation = load_proposal_ready_marker(
+        campaign.proposal_ready_marker_path,
+        checkpoint_path=campaign.path,
+        expected_run_id=run_id,
+    )
+    assert violation is None
+    assert marker is not None
+    assert marker["exit_code"] == 0
+    return state
+
+
+def _install_accepting_supervisor_seal_replay(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    project_root: Path,
+) -> None:
+    def accept_sink_replay_bundle(**kwargs):
+        campaign_state = kwargs["campaign_state"]
+        assert kwargs["project_root"] == project_root
+        assert campaign_state["final_status"] == RUN_STATUS_CERTIFIED
+        return {
+            "evidence": dict(campaign_state["terminal_frontier_evidence"]),
+            "candidate_records": {
+                str(key): dict(value)
+                for key, value in campaign_state.get("candidates", {}).items()
+            },
+            "sink_replay_violations": {},
+            "fixed_witness_publishable": True,
+            "fixed_witness_violations": {},
+        }
+
+    def accept_terminal_evidence_for_certified_state(
+        state,
+        *,
+        project_root: Path,
+        campaign_path: Path | None = None,
+    ) -> bool:
+        del project_root, campaign_path
+        return (
+            state.get("final_status") == RUN_STATUS_CERTIFIED
+            and state.get("final_result") is not None
+            and state.get("terminal_frontier_evidence") is not None
+        )
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "build_sink_verified_terminal_frontier_evidence",
+        accept_sink_replay_bundle,
+    )
+    for module in (
+        exact_campaign_module,
+        delivery_manifest_module,
+        certified_surface_module,
+    ):
+        monkeypatch.setattr(
+            module,
+            "has_valid_terminal_full_frontier_certified_evidence_for_project",
+            accept_terminal_evidence_for_certified_state,
+        )
+
+
+def _seal_campaign_proposal_with_accepting_replay(
+    monkeypatch: pytest.MonkeyPatch,
+    project_root: Path,
+    state: dict,
+) -> ExactCampaign:
+    _install_accepting_supervisor_seal_replay(monkeypatch, project_root=project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    campaign.supervisor_seal(
+        final_result=state["final_result"],
+        terminal_frontier_evidence=state["terminal_frontier_evidence"],
+        candidate_records=state["candidates"],
+    )
+    campaign.save()
+    assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
+    assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
+    assert SUPERVISOR_PROPOSAL_STATE_KEY not in campaign.state
+    assert not campaign.proposal_ready_marker_path.exists()
+    return campaign
 
 
 def _mock_precheck_proof_summary(
@@ -3006,7 +3105,10 @@ def test_campaign_does_not_export_certified_result_when_later_terminal_status_is
 
 
 
-def test_toy_project_can_be_truly_certified(tmp_path: Path) -> None:
+def test_toy_project_can_be_truly_certified(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_certified")
     write_closed_phase_review_gate(project_root)
     status, result = run_outer_search(
@@ -3024,12 +3126,25 @@ def test_toy_project_can_be_truly_certified(tmp_path: Path) -> None:
     )
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
-    state = _read_campaign_state(project_root)
+    expected_ghost_rect = {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
+    assert result["ghost_rect"] == expected_ghost_rect
+    state = _assert_producer_left_certified_proposal(
+        project_root,
+        expected_ghost_rect=expected_ghost_rect,
+    )
     candidate = state["candidates"]["1x1"]
-    assert state["final_status"] == RUN_STATUS_CERTIFIED
     assert candidate["status"] == RUN_STATUS_CERTIFIED
     assert candidate["finished_at"] is not None
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+
+    sealed_campaign = _seal_campaign_proposal_with_accepting_replay(
+        monkeypatch,
+        project_root,
+        state,
+    )
+    sealed_result = sealed_campaign.best_certified_result()
+    assert sealed_result is not None
+    assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
 def test_area_precheck_accounts_for_fixed_required_protocol_storage_box(
@@ -8034,7 +8149,10 @@ def test_parallel_precheck_triggered_non_infeasible_is_dispatched_to_worker(
     assert telemetry["aggregate"]["precheck_elimination_count"] == 0
 
 
-def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> None:
+def test_certified_result_writes_canonical_optimal_blueprint(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
     project_root = _build_toy_exact_project(tmp_path / "toy_blueprint_export")
     write_closed_phase_review_gate(project_root)
 
@@ -8058,6 +8176,32 @@ def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> 
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
+    expected_ghost_rect = {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
+    assert result["ghost_rect"] == expected_ghost_rect
+    proposal_state = _assert_producer_left_certified_proposal(
+        project_root,
+        expected_ghost_rect=expected_ghost_rect,
+    )
+    proposal_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert proposal_manifest["campaign"]["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert proposal_manifest["best_certified_result"] is None
+    assert proposal_manifest["artifacts"]["final_solution"]["exists"] is False
+    assert proposal_manifest["artifacts"]["optimal_blueprint"]["exists"] is False
+    assert not final_solution_path.exists()
+    assert not blueprint_path.exists()
+
+    sealed_campaign = _seal_campaign_proposal_with_accepting_replay(
+        monkeypatch,
+        project_root,
+        proposal_state,
+    )
+    _instances, facility_pools, _rules = load_project_data(project_root)
+    outer_search_module._refresh_certified_delivery_outputs(
+        project_root=project_root,
+        exact_campaign=sealed_campaign,
+        facility_pools=facility_pools,
+    )
+
     assert final_solution_path.exists()
     assert blueprint_path.exists()
     assert manifest_path.exists()
@@ -8068,7 +8212,7 @@ def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> 
     )
     manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
 
-    assert final_solution_payload["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
+    assert final_solution_payload["ghost_rect"] == expected_ghost_rect
     assert blueprint_payload["objective_achieved"]["empty_rect"]["w"] == 1
     assert blueprint_payload["objective_achieved"]["empty_rect"]["h"] == 1
     assert blueprint_payload["facilities"][0]["instance_id"] == "tiny_001"
@@ -8076,9 +8220,16 @@ def test_certified_result_writes_canonical_optimal_blueprint(tmp_path: Path) -> 
     assert blueprint_payload["facilities"][0]["port_mode"] == "default"
     assert blueprint_payload["routing_network"] == {"L0_ground": {}, "L1_elevated": {}}
     assert manifest_payload["campaign"]["final_status"] == RUN_STATUS_CERTIFIED
-    assert manifest_payload["best_certified_result"]["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
+    assert manifest_payload["best_certified_result"]["ghost_rect"] == expected_ghost_rect
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is True
     assert manifest_payload["artifacts"]["optimal_blueprint"]["exists"] is True
+    verdict = certified_surface_module.evaluate_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=sealed_campaign.state,
+        campaign_path=sealed_campaign.path,
+        delivery_manifest=manifest_payload,
+    )
+    assert verdict.publishable is True
 
 
 def test_exact_path_publishes_core_reuse_metadata(tmp_path: Path) -> None:
@@ -8415,6 +8566,21 @@ def _patch_frontier_sink_replay_accepts_mock_records(monkeypatch: pytest.MonkeyP
     def fake_project_candidate_records_for_sink(**kwargs):
         return dict(kwargs["state"].get("candidates", {})), {}
 
+    def fake_build_terminal_fixed_witness_projection_at_sink(**kwargs):
+        candidate_records = {
+            str(key): dict(value)
+            for key, value in kwargs["candidate_records"].items()
+        }
+        return SimpleNamespace(
+            candidate_records=candidate_records,
+            durable_candidate_records={
+                str(key): dict(value)
+                for key, value in candidate_records.items()
+            },
+            publishable=True,
+            rejected_reason=None,
+        )
+
     monkeypatch.setattr(
         certified_frontier_module,
         "project_candidate_records_for_sink",
@@ -8424,6 +8590,16 @@ def _patch_frontier_sink_replay_accepts_mock_records(monkeypatch: pytest.MonkeyP
         exact_campaign_module,
         "project_candidate_records_for_sink",
         fake_project_candidate_records_for_sink,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "project_candidate_records_for_sink",
+        fake_project_candidate_records_for_sink,
+    )
+    monkeypatch.setattr(
+        outer_search_module,
+        "build_terminal_fixed_witness_projection_at_sink",
+        fake_build_terminal_fixed_witness_projection_at_sink,
     )
 
 
@@ -8520,13 +8696,14 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
     assert result is not None
     # V88: the published ghost_rect carries the proven anchor; the mock pick
     # always anchors at (0,0).
-    assert result["ghost_rect"] == {
+    expected_ghost_rect = {
         "w": expected[1],
         "h": expected[2],
         "area": expected[0],
         "anchor_x": 0,
         "anchor_y": 0,
     }
+    assert result["ghost_rect"] == expected_ghost_rect
     assert calls[0][:2] == (
         frontier_state["selected_candidate"][1],
         frontier_state["selected_candidate"][2],
@@ -8540,13 +8717,24 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
     assert result["search_stats"]["frontier_candidate_metrics"]
     assert all(item[2] is True for item in calls)
 
-    state = _read_campaign_state(project_root)
+    state = _assert_producer_left_certified_proposal(
+        project_root,
+        expected_ghost_rect=expected_ghost_rect,
+    )
     first_candidate_key = f"{calls[0][0]}x{calls[0][1]}"
     assert (
         state["candidates"][first_candidate_key]["proof_summary"]["frontier_selection_policy"]
         == outer_search_module.FRONTIER_SELECTION_POLICY
     )
     assert state["candidates"][first_candidate_key]["proof_summary"]["frontier_candidate_metrics"]
+    sealed_campaign = _seal_campaign_proposal_with_accepting_replay(
+        monkeypatch,
+        project_root,
+        state,
+    )
+    sealed_result = sealed_campaign.best_certified_result()
+    assert sealed_result is not None
+    assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
 def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
@@ -8653,8 +8841,21 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0}
+    expected_ghost_rect = {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0}
+    assert result["ghost_rect"] == expected_ghost_rect
     assert call_counts[(2, 2)] == 2
+    state = _assert_producer_left_certified_proposal(
+        project_root,
+        expected_ghost_rect=expected_ghost_rect,
+    )
+    sealed_campaign = _seal_campaign_proposal_with_accepting_replay(
+        monkeypatch,
+        project_root,
+        state,
+    )
+    sealed_result = sealed_campaign.best_certified_result()
+    assert sealed_result is not None
+    assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
 def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
@@ -8758,7 +8959,20 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
 
     assert status == RUN_STATUS_CERTIFIED
     assert result is not None
-    assert result["ghost_rect"] == {"w": 6, "h": 1, "area": 6, "anchor_x": 0, "anchor_y": 0}
+    expected_ghost_rect = {"w": 6, "h": 1, "area": 6, "anchor_x": 0, "anchor_y": 0}
+    assert result["ghost_rect"] == expected_ghost_rect
+    state = _assert_producer_left_certified_proposal(
+        project_root,
+        expected_ghost_rect=expected_ghost_rect,
+    )
+    sealed_campaign = _seal_campaign_proposal_with_accepting_replay(
+        monkeypatch,
+        project_root,
+        state,
+    )
+    sealed_result = sealed_campaign.best_certified_result()
+    assert sealed_result is not None
+    assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
 def _clear_exact_env_for_v80_guard(monkeypatch) -> None:

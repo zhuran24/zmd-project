@@ -30,11 +30,17 @@ from src.search.certified_frontier import (
 )
 from src.search.certified_surface import evaluate_certified_delivery_surface
 from src.search.exact_campaign import (
-    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    CANDIDATE_PROPOSED_STATUS,
     ExactCampaign,
+    SUPERVISOR_PROPOSAL_STATE_KEY,
+    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    load_proposal_ready_marker,
     terminal_certified_final_result_violation_for_project,
 )
-from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
+from src.tests.certified_frontier_helpers import (
+    forge_legacy_terminal_certified_stop,
+    write_closed_phase_review_gate,
+)
 from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
@@ -186,11 +192,7 @@ def _install_false_terminal_claim(campaign: ExactCampaign) -> dict[str, Any]:
         **candidate_generation_kwargs(candidate_generation)
     )
     campaign.state["final_result"] = final_result
-    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
-    campaign.mark_campaign_stopped(
-        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-        status=RUN_STATUS_CERTIFIED,
-    )
+    forge_legacy_terminal_certified_stop(campaign)
     campaign.state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
         candidates=candidates,
         candidate_records=campaign.state["candidates"],
@@ -401,6 +403,7 @@ def test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays(
 
     campaign_path = root / "data" / "checkpoints" / "exact_campaign_state.json"
     state = json.loads(campaign_path.read_text(encoding="utf-8"))
+    assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
     assert state["candidates"]["1x1"]["status"] == RUN_STATUS_CERTIFIED
     assert CANDIDATE_PROOF_FIELD in state["candidates"]["1x1"]
     assert (
@@ -418,11 +421,20 @@ def test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays(
         campaign_path=campaign_path,
     )
     assert manifest_path.exists()
-    assert manifest["best_certified_result"]["search_status"] == RUN_STATUS_CERTIFIED
+    assert manifest["best_certified_result"] is None
+    run_id = state[SUPERVISOR_PROPOSAL_STATE_KEY]["run_id"]
+    marker, marker_violation = load_proposal_ready_marker(
+        campaign_path.with_name(f"{campaign_path.stem}.proposal_ready.json"),
+        checkpoint_path=campaign_path,
+        expected_run_id=run_id,
+    )
+    assert marker_violation is None
+    assert marker is not None
+    assert marker["exit_code"] == 0
     verdict = evaluate_certified_delivery_surface(
         project_root=root,
         campaign_state=state,
         campaign_path=campaign_path,
         delivery_manifest=manifest,
     )
-    assert verdict.publishable is True
+    assert verdict.publishable is False

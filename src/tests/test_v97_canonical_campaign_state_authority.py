@@ -12,6 +12,7 @@ from src.search.exact_campaign import DEFAULT_CAMPAIGN_FILENAME, ExactCampaign
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
+    forge_legacy_terminal_certified_stop,
     write_closed_phase_review_gate,
 )
 from src.tests.test_delivery_manifest import _V89_GHOST_PICK, _build_manifest_project, _write_json
@@ -54,7 +55,7 @@ def _build_certified_manifest_toy(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
 

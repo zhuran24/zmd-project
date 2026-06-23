@@ -11,7 +11,10 @@ from src.search.exact_campaign import (
     ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
-from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
+from src.tests.certified_frontier_helpers import (
+    attach_terminal_frontier_evidence,
+    forge_legacy_terminal_certified_stop,
+)
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -154,7 +157,7 @@ def _terminal_campaign_with_optional_extra(
         "search_status": RUN_STATUS_CERTIFIED,
         "search_stats": {"campaign_resumed": False},
     }
-    campaign.mark_campaign_stopped("search_exhausted_all_candidates", status=RUN_STATUS_CERTIFIED)
+    forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
     return campaign
