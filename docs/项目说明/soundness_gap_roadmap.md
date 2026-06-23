@@ -132,6 +132,12 @@ owner 确认的 canonical→geometry 规格事实伪装成 P1.2 已由代码证�
 
 **收敛标尺更新**：round4 仍冒新 BLOCK（FIX-1/3 reopen + capsule 内 2 个同族新洞）但都已闭，Opus 三轮后只剩 floor-兜死的 CONCERN = **BLOCK 类收敛**。剩 Tier-1 **FIX-4**（I1）+ Tier-2 FIX-6 + 一致性 FIX-7。
 
+**[2026-06-23 续] FIX-4 + PYC-EXEC-DIGEST 已闭 → 收敛点达成。**
+- **FIX-4（I1）闭，提交 `44089a3`**：新 `src/search/independent_infeasibility_reverifier.py` 独立异构 CP-SAT（自建模型 + PORTFOLIO/seed/不读 in-flight）复验 whole-layout nogood，独立确认 INFEASIBLE 才落 cut、分歧/超时/异常 fail-closed 转 UNKNOWN（绝不 mint 假 INFEASIBLE）；routing-穷尽 phase-1 保守→UNKNOWN。obligation `PO-INDEPENDENT-INFEASIBILITY-REVERIFY`。Opus A-G CLEAN；我 `--full` preflight 20/20·pytest 3286。
+- **PYC-EXEC-DIGEST 闭，提交 `88b2d32`**：两处认证隔离子进程 argv 加 `-B -X pycache_prefix=<per-run fresh>`，执行字节码 ⟸ 已哈希 `.py` 源（绕开 repo `__pycache__`）。obligation `PO-ISOLATED-EXEC-BYTECODE-BINDING` + 真注入 E2E 红测。Opus A-G CLEAN·实测 CPython 字节码语义；14 obligations·pytest 3290。
+- **判定**：所有已知 **LIVE BLOCK 修完**——剩仅命名 TCB（解释器/stdlib/ortools C 扩展/父-relay 进程字节码/`certified_artifact_contract` 跑 checker 的子进程，见 PROJECT_LOCK §soundness 登记）+ floor-兜死的扫描器 CONCERN + FIX-6/7 纵深。按收敛判据「修线以上全做完、新发现落 TCB 线下或是 done 判据实例」**= 收敛**。
+- **next**：外审确认零新 BLOCK（5th round 已打包待 owner relay）→ owner 仓外三轮 clean → 才解 REOPEN。`next_allowed=False` 止血保持不变；P1.2 仍 REOPEN。详 cc_memory `p1-2-fix-4-landed-44089a3`、`p1-2-pyc-exec-digest-landed-88b2d32`。
+
 ### Tier 1 — 挡"诚实发布"的 BLOCK（必须先修）
 - **P1.2-FIX-1 fixed-witness 终端 verifier（WS/F1，并吞 F3）**：钉完整 (R*,π*) 非仅 pose；binding+routing 共享同一 witness/assignment；routing 用 R* 确切 ghost origin/extent；含 connector/body 排除；**序列化字节 round-trip 复验**；timeout/UNKNOWN→UNPROVEN，绝不→INFEASIBLE；证据绑 stored solution digest、无 witness 替换。红测:binding/routing witness 不一致→FAIL；非-R* origin→FAIL；UNKNOWN→UNPROVEN；写后字节被篡→FAIL。
 - **P1.2-FIX-2 OPEN-GATE 机器发布闸**：certified surface / delivery manifest / inspector / adapters 一律读 reopen/`exact_full_scale_status`，open 期间 `publishable=false` fail-closed（单一机器闸、所有面共用）。红测:status=open ⇒ 各面拒发。
