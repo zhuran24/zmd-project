@@ -106,3 +106,26 @@ owner 原选 (b),经 team 四方技术分析（一致倾向 (a)）后 **2026-06-
 - (a)：producer 跑完落候选退出 → certify 命令调起 L0 → L0 one-shot 验证发布。L0=跑完即退的纯函数式进程,无 IPC/无常驻=最小核理想形态;jemalloc/taskset 在 (a) 下 producer 仍由现有 runner 起、原样继承。
 - (b)：L0 顶层 spawn producer——是**同一个 L0 换个 wiring**,可作后续加固后补;但 spawn 不保证继承 `LD_PRELOAD`(jemalloc)、重构 main 入口回归面大。
 → **已定:一期落 (a);(b) 后补。**
+
+## 12. 外审 21a9dda 三审交叉核对(2026-06-23,3 独立 reviewer)
+三份独立外审(审 commit `21a9dda` = 含全部 FIX+capsule+PYC 的 HEAD,各带 PoC/逐行证据,在 `C:\22957\download\新建文件夹\{1,2,3}`)去重后 **5 条 LIVE/tamper BLOCK**,逐条对本设计核对:
+
+| # | BLOCK(三审去重) | 关键 file:line | 本设计纳入 |
+|---|---|---|---|
+| 1 | TOCTOU 执行源≠事后 digest(capsule import-before-hash L18<L73 / candidate replay hash-before-import / `-B` 不禁读 .pyc) | `terminal_fixed_witness_verifier.py:18/73`、capsule/replay launcher | ✅ 一期 §3 受控 loader(child 只从 L0 已核字节经 fd 编译执行) |
+| 2 | `-I` 缺 `-S` → system-site `.pth`/`sitecustomize` 先于 verifier 执行 | 两处认证 launcher | ✅ 一期 §4 B4 已写「-I -S -B,-S 必须」 |
+| 3 | v99 floor 非执行闭包:活语义依赖未封(改之 checker 仍绿) | `src/models/port_binding.py`(binding 10→0)、`src/preprocess/operation_profiles.py`(端口槽归零) | ⚠️ 机制一期(§3 受控 loader 物理 fail-closed 表外模块 + §1 机器推导 closure),但**下列具体文件 + contract 内容 digest 此前未显式点名 → 本节补登记**;完整 child 侧覆盖验证 = 二期 B7 |
+| 4 | **`sys.argv[0]` 伪造 checker 身份跳过 close-kernel**(命中即不启 checker,配 gate 数据篡改放行 open-gate)= LIVE tamper-assisted | `certified_artifact_contract.py:112-119/:115` | ❌ **此前是 GAP**(L0 接管裁决原则上覆盖、但设计没显式列)→ 本节升为**一期必闭**显式项 |
+| 5 | phase-gate AST guard 被最终同名重绑定骗过(`main = lambda: 0`,原定义仍满足 `_reachable_direct_call`,CLI 已换绑) | `check_phase_review_gate.py` `__main__` sink | ⚠️ §5 已述 AST 局限(证定义体非 CLI 最终对象),但「gate 脚本进 checker-owned 硬 digest + 真实负向 CLI 锚点」此前未显式列 → 本节补登记 |
+
+**本节补登记的必闭项(此前设计没显式写、外审逮到):**
+- **B-ARGV0(一期必闭)**:L0 自己做 artifact-contract 校验(read-once 读 artifact 字节、自算 sha256 比 LOCKED 常量),**绝不调用 producer 进程内任何用 `sys.argv[0]`/env/文件标志判「已在 checker 内」并短路的逻辑**;删除该身份豁免;公共校验路径无条件执行下层纯校验。L0 不信 producer 的任何「checker 已跑过」自证 —— 这本就是「L0 = 唯一发布者」范式的直接推论,**必须显式钉死、不靠「架构应该盖住了」**(正是 round-5 同款坑)。
+- **B-CONTRACT-DIGEST(一期,补强 §3/§4)**:`certified_artifact_contract.py`(及其 `LOCKED_*` 常量)进 L0 floor 的 **checker-owned 内容 digest**(不止存在性);whole-tree digest 只证「树前后一致」≠「树等于获批树」,L0 必须对 contract 本体有内容锚。
+- **port_binding.py / operation_profiles.py 显式进 L0 机器推导 floor 闭包**:二者是被认证 binding/routing 真实 import 的活语义依赖,受控 loader 下若不在已核闭包则 child 物理 ImportError fail-closed —— 但闭包推导必须实际覆盖到它们(作为机器推导 authority-transitive closure 的验收用例)。
+- **B-PHASEGATE-REBIND(二期 B9 升格为显式必闭)**:`check_phase_review_gate.py` 进 checker-owned 硬编码内容 digest + preflight 跑**真实负向 CLI 锚点**(断言 false gate CLI 返回非零),不再仅靠 AST。
+
+**非 LIVE(一并记):**
+- 当前 HEAD(21a9dda)`check_p1_2_proof_obligations.py` 在未改包上**直接红**(缺 2 条 evidence path,指向 `docs/项目说明/soundness_gap_roadmap.md`)= 当前包 close-kernel 未全绿、需核实补(不铸假、非 LIVE,但不能当兜底)。
+- `PROJECT_LOCK.md:126-150` 仍描述 FIX-1/OPEN-GATE 未落地、与源码漂移(CONCERN)→ 并入 §9 修订一并清。
+
+**对 PR1 的影响**:无冲突。PR1 第一块(mint 收敛:把发布裁决移出 producer)正是 B-ARGV0 的根除方向;argv[0] 豁免删除 + contract 内容 digest + phase-gate 硬 digest 落 **PR2**(L0 接管 + floor 闭包)。三审确认真闭的(FIX-2/FIX-5/FIX-4 核心判定 + 父不信 in-process verdict + nonce + F3)进 §10 不回退。
