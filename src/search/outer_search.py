@@ -55,7 +55,6 @@ from src.search.certified_frontier import (
 from src.search.certified_surface import (
     clear_certified_delivery_surface_artifacts,
     export_and_verify_certified_delivery_manifest,
-    save_certified_final_solution_and_blueprint,
 )
 from src.search.candidate_proof_replay import (
     build_candidate_replay_proof,
@@ -955,39 +954,6 @@ def _commit_terminal_full_frontier_certified_result(
     exact_campaign.write_proposal_ready_marker(run_id=proposal_run_id, exit_code=0)
 
 
-def _save_final_result(
-    project_root: Path,
-    result: Dict[str, Any],
-    *,
-    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
-) -> Path:
-    return save_certified_final_solution_and_blueprint(
-        project_root=project_root,
-        result=result,
-        facility_pools=facility_pools,
-    )
-
-
-def _persist_best_certified_result_if_any(
-    *,
-    project_root: Path,
-    exact_campaign: Optional[ExactCampaign],
-    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
-) -> Optional[Dict[str, Any]]:
-    if exact_campaign is None:
-        return None
-    best_result = exact_campaign.best_certified_result()
-    if best_result is None:
-        _clear_certified_delivery_solution_artifacts(project_root)
-        return None
-    _save_final_result(
-        project_root,
-        best_result,
-        facility_pools=facility_pools,
-    )
-    return best_result
-
-
 def _seal_resumed_nonterminal_certified_surface(
     *,
     project_root: Path,
@@ -1026,11 +992,9 @@ def _refresh_certified_delivery_outputs(
     exact_campaign: Optional[ExactCampaign],
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
 ) -> None:
-    _persist_best_certified_result_if_any(
-        project_root=project_root,
-        exact_campaign=exact_campaign,
-        facility_pools=facility_pools,
-    )
+    _clear_certified_delivery_solution_artifacts(project_root)
+    if exact_campaign is not None and exact_campaign.best_certified_result() is not None:
+        return
     _refresh_certified_delivery_manifest_if_any(
         project_root=project_root,
         exact_campaign=exact_campaign,
@@ -2926,20 +2890,23 @@ def run_outer_search(
                 disable_master_warm_start=bool(disable_master_warm_start),
             )
             if status == RUN_STATUS_CERTIFIED and solution is not None:
-                return (
-                    RUN_STATUS_CERTIFIED,
-                    _build_certified_result(
-                        candidate=(area, ghost_w, ghost_h),
-                        solution=solution,
-                        attempts=exploratory_attempts,
-                        solve_mode=solve_mode,
-                        campaign_resumed=False,
-                        frontier_peak_size=0,
-                        derived_pruned_candidates=0,
-                        frontier_selection_policy=FRONTIER_SELECTION_POLICY,
-                        frontier_candidate_metrics={},
-                    ),
+                exploratory_result = _build_certified_result(
+                    candidate=(area, ghost_w, ghost_h),
+                    solution=solution,
+                    attempts=exploratory_attempts,
+                    solve_mode=solve_mode,
+                    campaign_resumed=False,
+                    frontier_peak_size=0,
+                    derived_pruned_candidates=0,
+                    frontier_selection_policy=FRONTIER_SELECTION_POLICY,
+                    frontier_candidate_metrics={},
                 )
+                exploratory_result["search_status"] = RUN_STATUS_UNPROVEN
+                search_stats = dict(exploratory_result.get("search_stats", {}))
+                search_stats["exploratory_candidate_found"] = True
+                exploratory_result["search_stats"] = search_stats
+                exploratory_result["diagnostic_status"] = "exploratory_candidate_found"
+                return RUN_STATUS_UNPROVEN, exploratory_result
             if status == RUN_STATUS_INFEASIBLE:
                 continue
             if status == RUN_STATUS_UNKNOWN:

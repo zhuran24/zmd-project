@@ -240,7 +240,8 @@ def _seal_campaign_proposal_with_accepting_replay(
     ) -> bool:
         del project_root
         assert campaign_path is not None
-        assert serialized_state_bytes is not None
+        assert serialized_state_bytes is None
+        assert Path(campaign_path).exists()
         return (
             state.get("final_status") == RUN_STATUS_CERTIFIED
             and state.get("final_result") is not None
@@ -259,7 +260,6 @@ def _seal_campaign_proposal_with_accepting_replay(
     )
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     campaign.supervisor_seal()
-    campaign.save()
     assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
     assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
     assert SUPERVISOR_PROPOSAL_STATE_KEY not in campaign.state

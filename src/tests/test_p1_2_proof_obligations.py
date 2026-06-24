@@ -1,6 +1,7 @@
 """Tests for the P1.2 proof-obligation consolidation gate."""
 from __future__ import annotations
 
+import ast
 import copy
 import json
 import subprocess
@@ -67,6 +68,14 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays" in sink_replay_tests
     assert "test_p1_2_checker_rejects_candidate_replay_isolation_removal" in sink_replay_tests
     assert "test_p1_2_checker_rejects_frontier_sink_replay_bypass" in sink_replay_tests
+    assert "test_save_rejects_caller_memory_terminal_certified_checkpoint" in sink_replay_tests
+    assert "test_checkpoint_write_lock_fails_closed_when_already_held" in sink_replay_tests
+    assert "test_resume_false_invalidates_old_proposal_marker" in sink_replay_tests
+    assert "test_supervisor_seal_rejects_marker_campaign_instance_id_mismatch" in sink_replay_tests
+    assert (
+        "test_supervisor_seal_rechecks_marker_before_mint_and_preserves_concurrent_proposal"
+        in sink_replay_tests
+    )
 
     replay_tests = obligations["PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS"]
     assert "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member" in replay_tests
@@ -126,6 +135,14 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint" in export_tests
     assert "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier" in export_tests
     assert "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier" in export_tests
+    assert (
+        "test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_copies"
+        in export_tests
+    )
+    assert (
+        "test_report_builder_rejects_forged_canonical_outputs_without_publishable_surface"
+        in export_tests
+    )
     assert "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness" in export_tests
     assert "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle" in export_tests
     assert "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance" in export_tests
@@ -145,6 +162,9 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v91_rejects_search_stats_fake_certified_claim" in export_tests
     assert "test_v91_rejects_contradictory_mandatory_solution_metadata" in export_tests
     assert "test_v91_rejects_mandatory_operation_type_metadata_mismatch" in export_tests
+
+    close_kernel_tests = obligations["PO-P1-2-CLOSE-KERNEL-SEALING"]
+    assert "test_p1_2_checker_detects_multiline_public_certified_return" in close_kernel_tests
 
 
 def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[str, object]]) -> dict[str, object]:
@@ -365,6 +385,29 @@ def test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call(tmp_pa
     )
 
     assert "proof-obligation checker main must call _check_close_kernel_contract" in errors
+
+
+def test_p1_2_checker_detects_multiline_public_certified_return() -> None:
+    tree = ast.parse(
+        """
+def run_outer_search():
+    return (
+        RUN_STATUS_CERTIFIED,
+        {"search_status": RUN_STATUS_CERTIFIED},
+    )
+"""
+    )
+    function = tree.body[0]
+    assert isinstance(function, ast.FunctionDef)
+
+    assert check_p1_2_proof_obligations._function_returns_status_tuple(
+        function,
+        "RUN_STATUS_CERTIFIED",
+    )
+    assert not check_p1_2_proof_obligations._function_returns_status_tuple(
+        function,
+        "CANDIDATE_PROPOSED_STATUS",
+    )
 
 
 def test_p1_2_checker_rejects_candidate_replay_isolation_removal(tmp_path: Path) -> None:

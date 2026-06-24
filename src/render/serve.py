@@ -15,6 +15,22 @@ from src.render.report_builder import (
     build_viewer_report_from_project_root,
     write_viewer_report,
 )
+from src.search.certified_surface import evaluate_certified_delivery_surface
+
+
+_VIEWER_CERTIFIED_OUTPUTS = (
+    "final_solution.json",
+    "optimal_blueprint.json",
+    VIEWER_REPORT_FILENAME,
+)
+
+
+def _remove_stale_viewer_outputs(viewer_dir: Path) -> None:
+    for filename in _VIEWER_CERTIFIED_OUTPUTS:
+        try:
+            (viewer_dir / filename).unlink()
+        except FileNotFoundError:
+            continue
 
 
 def serve_viewer(
@@ -33,6 +49,19 @@ def serve_viewer(
     solution_path = project_root / "data" / "solutions" / "final_solution.json"
     blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
     pools_path = project_root / "data" / "preprocessed" / "candidate_placements.json"
+    campaign_path = project_root / "data" / "checkpoints" / "exact_campaign_state.json"
+
+    surface = evaluate_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=None,
+        campaign_path=campaign_path,
+    )
+    if not surface.publishable:
+        _remove_stale_viewer_outputs(viewer_dir)
+        raise RuntimeError(
+            "certified viewer surface is not publishable: "
+            f"{surface.blocked_reason or surface.reason or 'unknown'}"
+        )
 
     if solution_path.exists():
         shutil.copy2(solution_path, viewer_dir / "final_solution.json")

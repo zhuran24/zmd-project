@@ -34,6 +34,11 @@ def _read_state(project_root: Path) -> dict:
     )
 
 
+def _write_raw_campaign_state(campaign: ExactCampaign) -> None:
+    campaign.path.parent.mkdir(parents=True, exist_ok=True)
+    campaign.path.write_text(json.dumps(campaign.state, sort_keys=True), encoding="utf-8")
+
+
 def test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified(
     tmp_path: Path,
     monkeypatch,
@@ -332,7 +337,7 @@ def test_v65_unsafe_env_block_clears_resumed_terminal_final_result(
     }
     campaign.state["final_result"] = dict(terminal_result)
     forge_legacy_terminal_certified_stop(campaign)
-    campaign.save()
+    _write_raw_campaign_state(campaign)
     assert has_terminal_full_frontier_certified_evidence(campaign.state)
 
     monkeypatch.setenv("EXACT_POWER_COVERAGE_WITNESS_ENCODING", "block_element")
@@ -439,12 +444,6 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {}
 
-    final_solution_export_calls: list[bool] = []
-
-    def forbidden_final_solution_export(*_args, **_kwargs):
-        final_solution_export_calls.append(True)
-        raise AssertionError("producer must not export final_solution for proposal")
-
     monkeypatch.setattr(
         outer_search_module,
         "create_exact_search_session",
@@ -460,11 +459,7 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
         "run_benders_for_ghost_rect",
         fake_run_benders_for_ghost_rect,
     )
-    monkeypatch.setattr(
-        outer_search_module,
-        "_save_final_result",
-        forbidden_final_solution_export,
-    )
+    assert not hasattr(outer_search_module, "_save_final_result")
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -479,7 +474,6 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
     assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
     assert result["search_status"] == CANDIDATE_PROPOSED_STATUS
-    assert final_solution_export_calls == []
     state = _read_state(project_root)
     assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
     assert state["last_stop_reason"]["status"] == CANDIDATE_PROPOSED_STATUS
@@ -527,21 +521,16 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
 
     fake_run_benders_for_ghost_rect.last_run_metadata = {}
 
-    final_solution_export_calls: list[bool] = []
-
-    def fail_after_partial_export(project_root_arg, result, *, facility_pools):
-        final_solution_export_calls.append(True)
-        final_solution_path.parent.mkdir(parents=True, exist_ok=True)
-        blueprint_path.parent.mkdir(parents=True, exist_ok=True)
-        final_solution_path.write_text(
-            json.dumps({"stale": "partial final solution"}),
-            encoding="utf-8",
-        )
-        blueprint_path.write_text(
-            json.dumps({"stale": "partial blueprint"}),
-            encoding="utf-8",
-        )
-        raise RuntimeError("simulated final artifact export failure")
+    final_solution_path.parent.mkdir(parents=True, exist_ok=True)
+    blueprint_path.parent.mkdir(parents=True, exist_ok=True)
+    final_solution_path.write_text(
+        json.dumps({"stale": "partial final solution"}),
+        encoding="utf-8",
+    )
+    blueprint_path.write_text(
+        json.dumps({"stale": "partial blueprint"}),
+        encoding="utf-8",
+    )
 
     monkeypatch.setattr(
         outer_search_module,
@@ -558,11 +547,7 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
         "run_benders_for_ghost_rect",
         fake_run_benders_for_ghost_rect,
     )
-    monkeypatch.setattr(
-        outer_search_module,
-        "_save_final_result",
-        fail_after_partial_export,
-    )
+    assert not hasattr(outer_search_module, "_save_final_result")
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -580,7 +565,6 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
     assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
     assert result["search_status"] == CANDIDATE_PROPOSED_STATUS
-    assert final_solution_export_calls == []
     assert stop.get("reason") == "search_exhausted_all_candidates"
     assert state.get("final_result") is not None
     assert state.get("final_status") == CANDIDATE_PROPOSED_STATUS
@@ -829,7 +813,7 @@ def test_v72_blocked_campaign_cleanup_runs_even_when_checkpoint_save_fails(
         "search_status": RUN_STATUS_CERTIFIED,
     }
     forge_legacy_terminal_certified_stop(campaign)
-    campaign.save()
+    _write_raw_campaign_state(campaign)
     final_solution_path.parent.mkdir(parents=True, exist_ok=True)
     blueprint_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.parent.mkdir(parents=True, exist_ok=True)

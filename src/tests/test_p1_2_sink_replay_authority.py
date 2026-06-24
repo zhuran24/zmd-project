@@ -199,7 +199,7 @@ def _install_false_terminal_claim(campaign: ExactCampaign) -> dict[str, Any]:
         final_result=final_result,
         candidate_generation=candidate_generation,
     )
-    campaign.save()
+    _write_json(campaign.path, campaign.state)
     return final_result
 
 
