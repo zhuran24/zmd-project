@@ -200,7 +200,14 @@ def test_v83_publishable_surface_rejects_certified_result_without_empty_rect_wit
     }
     checkpoint_path = checkpoint_dir / "exact_campaign_state.json"
     _write_json(checkpoint_path, state)
-    save_certified_final_solution_and_blueprint(project_root=root, result=final_result, facility_pools=facility_pools)
+    with pytest.raises(TypeError):
+        save_certified_final_solution_and_blueprint(
+            project_root=root,
+            result=final_result,
+            facility_pools=facility_pools,
+        )
+    assert not (root / "data" / "solutions" / "final_solution.json").exists()
+    assert not (root / "data" / "blueprints" / "optimal_blueprint.json").exists()
 
     with pytest.raises(ValueError, match="terminal_certified_final_result_ghost_rect_anchor_occupied"):
         export_certified_delivery_manifest(project_root=root, campaign_state=state, campaign_path=checkpoint_path)

@@ -386,7 +386,9 @@
         "test_p1_2_publish_open_gate_closed_manual_decision_allows_publishable_surface",
         "test_p1_2_publish_open_gate_rejects_contradictory_closed_gate",
         "test_p1_2_publish_open_gate_inherited_public_surfaces_fail_closed",
-        "test_resolve_p1_2_publish_open_gate_fail_closed_branches"
+        "test_resolve_p1_2_publish_open_gate_fail_closed_branches",
+        "test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_copies",
+        "test_report_builder_rejects_forged_canonical_outputs_without_publishable_surface"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -498,7 +500,8 @@
         "test_p1_2_close_kernel_rejects_v99_manifest_token_floor_shrink",
         "test_p1_2_close_kernel_rejects_v99_manifest_required_sink_exclusion",
         "test_p1_2_close_kernel_rejects_v99_manifest_critical_gate_floor_shrink",
-        "test_p1_2_proof_obligation_review_anchor_matches_phase_anchor"
+        "test_p1_2_proof_obligation_review_anchor_matches_phase_anchor",
+        "test_p1_2_checker_detects_multiline_public_certified_return"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v99_close_kernel_sealing.md",
@@ -523,7 +526,12 @@
         "test_p1_2_strong_status_without_sink_replayable_proof_fails_closed",
         "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays",
         "test_p1_2_checker_rejects_candidate_replay_isolation_removal",
-        "test_p1_2_checker_rejects_frontier_sink_replay_bypass"
+        "test_p1_2_checker_rejects_frontier_sink_replay_bypass",
+        "test_save_rejects_caller_memory_terminal_certified_checkpoint",
+        "test_resume_false_invalidates_old_proposal_marker",
+        "test_supervisor_seal_rejects_marker_campaign_instance_id_mismatch",
+        "test_supervisor_seal_rechecks_marker_before_mint_and_preserves_concurrent_proposal",
+        "test_checkpoint_write_lock_fails_closed_when_already_held"
       ],
       "evidence_paths": [
         "src/search/candidate_proof_replay.py",
@@ -823,7 +831,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "2080f625639797ff6651c51edf53110cf06b5d92ff590fbd14aa5ee3cd419fc7",
+        "source_sha256": "56a7617841ff5a5b0e8fe82b5cb951df4889a8373b3905a21389ef8b776152c6",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1306,7 +1314,7 @@
         "required_guard_tokens": [
           "optimal_blueprint.json"
         ],
-        "source_sha256": "c92f43fc9e305f8e60868d9cfc5bd9daf146373afb9a22310dd2fefa2e951531",
+        "source_sha256": "a5071a8df92368aff0d29fd84de94f65f8a8c184522b8e3b2b4cd2aa5ce68dfa",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1321,7 +1329,7 @@
           "final_solution.json",
           "optimal_blueprint.json"
         ],
-        "source_sha256": "038160a4155b2f7ad2da94bdccd7870bec61e043daa0346b41a88c6bfcb200ff",
+        "source_sha256": "3c0892a192581246c71de8a061e29e9ff91b428c2e33639e484c5876f72b4464",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1486,7 +1494,7 @@
           "campaign_path=resolved_campaign_path",
           "sink-side isolated replay"
         ],
-        "source_sha256": "87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101",
+        "source_sha256": "10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1530,7 +1538,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
+        "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1622,7 +1630,7 @@
           "_parallel_wave_failure_discards_results",
           "_mark_candidate_result_from_verified_producer"
         ],
-        "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
+        "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

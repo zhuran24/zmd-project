@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from src.io.serializer import build_canonical_blueprint_payload
 from src.render.report_builder import build_viewer_report_from_blueprint_payload
@@ -122,6 +123,14 @@ def test_serve_viewer_generates_viewer_report_when_blueprint_is_valid(
 
     monkeypatch.setattr("src.render.serve.socketserver.TCPServer", DummyServer)
     monkeypatch.setattr("src.render.serve.webbrowser.open", lambda url: opened_urls.append(url))
+    monkeypatch.setattr(
+        "src.render.serve.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+    )
+    monkeypatch.setattr(
+        "src.render.report_builder.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+    )
 
     serve_viewer(port=9998, project_root=project_root, viewer_dir=viewer_dir)
 

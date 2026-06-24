@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
 
 from src.io.serializer import (
     build_canonical_blueprint_payload,
@@ -11,6 +14,7 @@ from src.io.serializer import (
 )
 from src.render import ascii_renderer, image_renderer
 from src.render import grid_visualizer
+from src.render.report_builder import build_viewer_report_from_project_root
 from src.render.serve import serve_viewer
 
 
@@ -219,6 +223,14 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
 
     monkeypatch.setattr("src.render.serve.socketserver.TCPServer", DummyServer)
     monkeypatch.setattr("src.render.serve.webbrowser.open", lambda url: opened_urls.append(url))
+    monkeypatch.setattr(
+        "src.render.serve.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+    )
+    monkeypatch.setattr(
+        "src.render.report_builder.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+    )
 
     serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
 
@@ -226,6 +238,38 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
     assert (viewer_dir / "optimal_blueprint.json").exists()
     assert (viewer_dir / "candidate_placements.json").exists()
     assert opened_urls == ["http://localhost:9999"]
+
+
+def test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_copies(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    viewer_dir = tmp_path / "viewer"
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", {"search_status": "CERTIFIED"})
+    _write_json(project_root / "data" / "blueprints" / "optimal_blueprint.json", {"schema": "forged"})
+    _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", _sample_pools_payload())
+    _write_json(viewer_dir / "final_solution.json", {"stale": "viewer-final"})
+    _write_json(viewer_dir / "optimal_blueprint.json", {"stale": "viewer-blueprint"})
+    _write_json(viewer_dir / "viewer_report.json", {"stale": "viewer-report"})
+
+    with pytest.raises(RuntimeError, match=r"certified .* surface is not publishable"):
+        serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
+
+    assert not (viewer_dir / "final_solution.json").exists()
+    assert not (viewer_dir / "optimal_blueprint.json").exists()
+    assert not (viewer_dir / "viewer_report.json").exists()
+
+
+def test_report_builder_rejects_forged_canonical_outputs_without_publishable_surface(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", {"search_status": "CERTIFIED"})
+    _write_json(project_root / "data" / "blueprints" / "optimal_blueprint.json", _sample_blueprint_payload())
+    _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", _sample_pools_payload())
+
+    with pytest.raises(RuntimeError, match=r"certified .* surface is not publishable"):
+        build_viewer_report_from_project_root(project_root)
 
 
 def test_web_viewer_prefers_blueprint_with_legacy_fallback() -> None:

@@ -12,6 +12,7 @@ from src.search import exact_campaign as exact_campaign_module
 from src.search import outer_search as outer_search_module
 from src.search.exact_campaign import (
     CANDIDATE_PROPOSED_STATUS,
+    CAMPAIGN_INSTANCE_ID_KEY,
     ExactCampaign,
     SUPERVISOR_PROPOSAL_STATE_KEY,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
@@ -125,6 +126,38 @@ def test_reflected_supervisor_token_cannot_bypass_supervisor_seal(tmp_path: Path
     assert campaign.state["final_status"] is None
 
 
+def test_save_rejects_caller_memory_terminal_certified_checkpoint(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "save_rejects_memory_certified")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["final_result"] = dict(_proposal_final_result(), search_status=RUN_STATUS_CERTIFIED)
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+    campaign.state["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-06-24T00:00:00Z",
+    }
+
+    with pytest.raises(RuntimeError, match="supervisor_seal"):
+        campaign.save()
+
+    assert not campaign.path.exists()
+
+
+def test_checkpoint_write_lock_fails_closed_when_already_held(tmp_path: Path) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "checkpoint_write_lock")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+
+    with exact_campaign_module._checkpoint_write_lock(campaign.path):
+        with pytest.raises(RuntimeError, match="checkpoint write lock unavailable"):
+            with exact_campaign_module._checkpoint_write_lock(
+                campaign.path,
+                timeout_seconds=0.0,
+            ):
+                raise AssertionError("nested checkpoint lock must not be acquired")
+
+
 def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -169,12 +202,14 @@ def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
         serialized_state_bytes: bytes | None = None,
     ) -> bool:
         assert project_root == resumed.project_root
-        assert campaign_path == resumed.path
-        assert serialized_state_bytes is not None
-        serialized_state = json.loads(serialized_state_bytes.decode("utf-8"))
+        assert campaign_path is not None
+        assert campaign_path.exists()
+        assert serialized_state_bytes is None
+        serialized_state = json.loads(Path(campaign_path).read_text(encoding="utf-8"))
         return (
             state.get("final_status") == RUN_STATUS_CERTIFIED
             and serialized_state.get("final_status") == RUN_STATUS_CERTIFIED
+            and isinstance(serialized_state.get("supervisor_seal"), dict)
         )
 
     replay_calls: list[dict[str, Any]] = []
@@ -203,6 +238,11 @@ def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
     )
     monkeypatch.setattr(
         exact_campaign_module,
+        "terminal_certified_final_result_project_precheck_violation",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
         "has_valid_terminal_full_frontier_certified_evidence_for_project",
         accept_supervisor_scratch_state,
     )
@@ -214,6 +254,23 @@ def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
     assert resumed.state["final_result"]["search_status"] == RUN_STATUS_CERTIFIED
     assert SUPERVISOR_PROPOSAL_STATE_KEY not in resumed.state
     assert len(replay_calls) == 1
+
+
+def test_resume_false_invalidates_old_proposal_marker(tmp_path: Path) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "resume_false_invalidates_marker")
+    old_campaign, _final_result, _terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="old-proposal-run",
+    )
+    old_campaign_instance_id = old_campaign.state[CAMPAIGN_INSTANCE_ID_KEY]
+    assert old_campaign.proposal_ready_marker_path.exists()
+
+    fresh = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+
+    assert fresh.state[CAMPAIGN_INSTANCE_ID_KEY] != old_campaign_instance_id
+    assert not fresh.proposal_ready_marker_path.exists()
+    with pytest.raises(RuntimeError, match="proposal_ready_marker_unreadable"):
+        fresh.supervisor_seal()
 
 
 def test_supervisor_seal_requires_proposal_ready_marker(tmp_path: Path) -> None:
@@ -279,6 +336,24 @@ def test_supervisor_seal_rejects_marker_run_id_mismatch(tmp_path: Path) -> None:
     _assert_supervisor_failure_kept_proposal(campaign)
 
 
+def test_supervisor_seal_rejects_marker_campaign_instance_id_mismatch(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "supervisor_marker_instance_mismatch")
+    campaign, _final_result, _terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="proposal-run",
+    )
+    marker = json.loads(campaign.proposal_ready_marker_path.read_text(encoding="utf-8"))
+    marker[CAMPAIGN_INSTANCE_ID_KEY] = "0" * 32
+    campaign.proposal_ready_marker_path.write_text(json.dumps(marker), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="proposal_ready_marker_campaign_instance_id_mismatch"):
+        campaign.supervisor_seal()
+
+    _assert_supervisor_failure_kept_proposal(campaign)
+
+
 def test_memory_certified_disk_proposal_does_not_publish_best_result(
     tmp_path: Path,
 ) -> None:
@@ -295,6 +370,88 @@ def test_memory_certified_disk_proposal_does_not_publish_best_result(
     }
 
     assert campaign.best_certified_result() is None
+
+
+def test_supervisor_seal_rechecks_marker_before_mint_and_preserves_concurrent_proposal(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "supervisor_marker_race")
+    campaign, _final_result, terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="proposal-p-run",
+    )
+    _install_supervisor_candidate_generation(monkeypatch)
+
+    def accept_sink_replay_bundle(**_kwargs: Any) -> dict[str, Any]:
+        return {
+            "evidence": terminal_frontier_evidence,
+            "candidate_records": {},
+            "sink_replay_violations": {},
+            "fixed_witness_publishable": True,
+            "fixed_witness_violations": {},
+        }
+
+    def accept_terminal_evidence(
+        state: Mapping[str, Any],
+        *,
+        project_root: Path,
+        campaign_path: Path | None = None,
+        serialized_state_bytes: bytes | None = None,
+    ) -> bool:
+        del project_root, serialized_state_bytes
+        assert state["final_status"] == RUN_STATUS_CERTIFIED
+        assert campaign_path is not None
+        return True
+
+    def write_concurrent_proposal(_scratch_state: Mapping[str, Any]) -> None:
+        campaign.set_supervisor_proposal_run_id("proposal-q-run")
+        campaign.state["final_result"] = dict(
+            _proposal_final_result(),
+            diagnostic_status="concurrent-q",
+        )
+        campaign.mark_campaign_stopped(
+            TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+            status=CANDIDATE_PROPOSED_STATUS,
+        )
+        campaign.state["terminal_frontier_evidence"] = terminal_frontier_evidence
+        campaign.save()
+        campaign.write_proposal_ready_marker(run_id="proposal-q-run", exit_code=0)
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "build_sink_verified_terminal_frontier_evidence",
+        accept_sink_replay_bundle,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "terminal_certified_final_result_project_precheck_violation",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "has_valid_terminal_full_frontier_certified_evidence_for_project",
+        accept_terminal_evidence,
+    )
+    monkeypatch.setattr(
+        campaign,
+        "_validate_supervisor_certified_state_before_commit",
+        write_concurrent_proposal,
+    )
+
+    with pytest.raises(RuntimeError, match="proposal authority changed before mint"):
+        campaign.supervisor_seal()
+
+    persisted = json.loads(campaign.path.read_text(encoding="utf-8"))
+    marker, violation = load_proposal_ready_marker(
+        campaign.proposal_ready_marker_path,
+        checkpoint_path=campaign.path,
+        expected_run_id="proposal-q-run",
+    )
+    assert violation is None
+    assert marker is not None
+    assert persisted["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert persisted["final_result"]["diagnostic_status"] == "concurrent-q"
 
 
 def test_supervisor_seal_rejects_sink_replay_violations_without_mint(
@@ -459,15 +616,15 @@ def test_supervisor_seal_rejects_has_valid_false_without_mint(
         campaign_path: Path | None = None,
         serialized_state_bytes: bytes | None = None,
     ) -> bool:
-        assert serialized_state_bytes is not None
+        assert serialized_state_bytes is None
+        assert campaign_path is not None
+        serialized_state = json.loads(Path(campaign_path).read_text(encoding="utf-8"))
         validity_calls.append(
             {
                 "final_status": state.get("final_status"),
                 "project_root": project_root,
                 "campaign_path": campaign_path,
-                "serialized_final_status": json.loads(
-                    serialized_state_bytes.decode("utf-8")
-                ).get("final_status"),
+                "serialized_final_status": serialized_state.get("final_status"),
             }
         )
         return False
@@ -476,6 +633,11 @@ def test_supervisor_seal_rejects_has_valid_false_without_mint(
         exact_campaign_module,
         "build_sink_verified_terminal_frontier_evidence",
         accept_sink_replay_bundle,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "terminal_certified_final_result_project_precheck_violation",
+        lambda *_args, **_kwargs: None,
     )
     monkeypatch.setattr(
         exact_campaign_module,
@@ -490,7 +652,7 @@ def test_supervisor_seal_rejects_has_valid_false_without_mint(
         {
             "final_status": RUN_STATUS_CERTIFIED,
             "project_root": project_root,
-            "campaign_path": campaign.path,
+            "campaign_path": validity_calls[0]["campaign_path"],
             "serialized_final_status": RUN_STATUS_CERTIFIED,
         }
     ]

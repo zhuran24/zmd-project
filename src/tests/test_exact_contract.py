@@ -984,7 +984,6 @@ def _seal_campaign_proposal_with_accepting_replay(
     _install_accepting_supervisor_seal_replay(monkeypatch, project_root=project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     campaign.supervisor_seal()
-    campaign.save()
     assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
     assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
     assert SUPERVISOR_PROPOSAL_STATE_KEY not in campaign.state
@@ -8203,11 +8202,13 @@ def test_certified_result_writes_canonical_optimal_blueprint(
         proposal_state,
     )
     _instances, facility_pools, _rules = load_project_data(project_root)
-    outer_search_module._refresh_certified_delivery_outputs(
+    published_surface = certified_surface_module.publish_verified_certified_delivery_surface(
         project_root=project_root,
-        exact_campaign=sealed_campaign,
+        campaign_path=sealed_campaign.path,
+        campaign_state=sealed_campaign.state,
         facility_pools=facility_pools,
     )
+    assert published_surface.publishable is True
 
     assert final_solution_path.exists()
     assert blueprint_path.exists()

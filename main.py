@@ -142,6 +142,19 @@ def _resolve_visualization_payload(
     result: Optional[Dict[str, Any]],
 ) -> Optional[Dict[str, Any]]:
     from src.io.serializer import recover_legacy_render_payload_from_blueprint
+    from src.search.certified_surface import evaluate_certified_delivery_surface
+
+    surface = evaluate_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=None,
+        campaign_path=project_root / "data" / "checkpoints" / "exact_campaign_state.json",
+    )
+    if not surface.publishable:
+        print(
+            "⚠️ VIS certified surface（认证输出面） not publishable（不可发布），"
+            f"跳过可视化: {surface.blocked_reason or 'unknown'}"
+        )
+        return None
 
     blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
     if pools and blueprint_path.exists():
@@ -157,7 +170,7 @@ def _resolve_visualization_payload(
                 f"fallback to final_solution.json: {exc}"
             )
 
-    if result is not None:
+    if result is not None and str(result.get("search_status")) == "CERTIFIED":
         return {
             "placement_solution": dict(result.get("placement_solution", {})),
             "ghost_rect": result.get("ghost_rect"),

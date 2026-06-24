@@ -13,6 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.adapters.industrial_planner import DEFAULT_BASE_ID, write_industrial_planner_export_bundle
 from src.io.serializer import load_canonical_blueprint
+from src.search.certified_surface import evaluate_certified_delivery_surface
 
 
 def main() -> None:
@@ -54,7 +55,24 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    blueprint_payload = load_canonical_blueprint(Path(args.blueprint_path))
+    blueprint_path = Path(args.blueprint_path)
+    if not blueprint_path.is_absolute():
+        blueprint_path = PROJECT_ROOT / blueprint_path
+    canonical_blueprint_path = PROJECT_ROOT / "data" / "blueprints" / "optimal_blueprint.json"
+    if blueprint_path.resolve() != canonical_blueprint_path.resolve():
+        raise SystemExit("industrial planner export requires the canonical certified blueprint path")
+    surface = evaluate_certified_delivery_surface(
+        project_root=PROJECT_ROOT,
+        campaign_state=None,
+        campaign_path=PROJECT_ROOT / "data" / "checkpoints" / "exact_campaign_state.json",
+    )
+    if not surface.publishable:
+        raise SystemExit(
+            "industrial planner export requires a publishable certified surface: "
+            f"{surface.blocked_reason or 'unknown'}"
+        )
+
+    blueprint_payload = load_canonical_blueprint(blueprint_path)
     deployment_plan = (
         json.loads(Path(args.deployment_plan).read_text(encoding="utf-8"))
         if args.deployment_plan

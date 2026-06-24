@@ -18,6 +18,7 @@ from src.io.serializer import (
     load_json_mapping,
 )
 from src.search.exact_campaign import atomic_write_json
+from src.search.certified_surface import evaluate_certified_delivery_surface
 
 VIEWER_REPORT_FILENAME = "viewer_report.json"
 VIEWER_REPORT_VERSION = "0.1.0"
@@ -50,6 +51,16 @@ def build_viewer_report_from_blueprint_payload(
 
 def build_viewer_report_from_project_root(project_root: Path) -> dict[str, Any]:
     project_root = Path(project_root)
+    surface = evaluate_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=None,
+        campaign_path=project_root / "data" / "checkpoints" / "exact_campaign_state.json",
+    )
+    if not surface.publishable:
+        raise RuntimeError(
+            "certified viewer report surface is not publishable: "
+            f"{surface.blocked_reason or 'unknown'}"
+        )
     blueprint_payload = load_canonical_blueprint(project_root / "data" / "blueprints" / "optimal_blueprint.json")
     facility_pools = load_candidate_placements(project_root / "data" / "preprocessed" / "candidate_placements.json")
     rules_path = project_root / "rules" / "canonical_rules.json"

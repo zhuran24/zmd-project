@@ -165,7 +165,9 @@ def evaluate_certified_delivery_surface(
         campaign_state=campaign_state,
         campaign_path=campaign_path,
     )
-    if campaign_state is None:
+    if campaign_state is None and campaign_payload is not None and campaign_error is None:
+        campaign_state = campaign_payload
+    elif campaign_state is None:
         return _blocked(
             campaign_error or "campaign_state_missing",
             campaign_present=False,
@@ -520,13 +522,13 @@ def clear_certified_delivery_surface_artifacts(project_root: Path) -> None:
             continue
 
 
-def save_certified_final_solution_and_blueprint(
+def _write_certified_final_solution_and_blueprint_unchecked(
     *,
     project_root: Path,
     result: Mapping[str, Any],
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
 ) -> Path:
-    """Persist final_solution and optimal_blueprint as one certified surface member."""
+    """Persist canonical projections after caller has verified sealed authority."""
 
     project_root = Path(project_root).resolve()
     output_dir = project_root / "data" / "solutions"
@@ -539,6 +541,100 @@ def save_certified_final_solution_and_blueprint(
         facility_pools=facility_pools,
     )
     return output_path
+
+
+def publish_verified_certified_delivery_surface(
+    *,
+    project_root: Path,
+    campaign_path: Path,
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    campaign_state: Optional[Mapping[str, Any]] = None,
+) -> CertifiedSurfaceVerdict:
+    """Publish public artifacts only from a sealed, disk-current campaign checkpoint."""
+
+    project_root = Path(project_root).resolve()
+    resolved_campaign_path = _resolve_campaign_path(
+        project_root=project_root,
+        campaign_path=campaign_path,
+    )
+    try:
+        state = (
+            _mapping_or_none(campaign_state)
+            if campaign_state is not None
+            else _load_strict_json_mapping(resolved_campaign_path)
+        )
+    except Exception as exc:  # noqa: BLE001 - publication must fail closed.
+        clear_certified_delivery_surface_artifacts(project_root)
+        raise RuntimeError(
+            f"certified delivery surface publication rejected: campaign_state_unreadable:{type(exc).__name__}"
+        ) from exc
+    if state is None:
+        clear_certified_delivery_surface_artifacts(project_root)
+        raise RuntimeError("certified delivery surface publication rejected: campaign_state_missing")
+    if not has_valid_terminal_full_frontier_certified_evidence_for_project(
+        state,
+        project_root=project_root,
+        campaign_path=resolved_campaign_path,
+    ):
+        clear_certified_delivery_surface_artifacts(project_root)
+        raise RuntimeError(
+            "certified delivery surface publication rejected: "
+            "campaign_terminal_full_frontier_evidence_invalid"
+        )
+    result = _mapping_or_none(state.get("final_result"))
+    if result is None:
+        clear_certified_delivery_surface_artifacts(project_root)
+        raise RuntimeError("certified delivery surface publication rejected: campaign_final_result_missing")
+    result["search_status"] = "CERTIFIED"
+    _write_certified_final_solution_and_blueprint_unchecked(
+        project_root=project_root,
+        result=result,
+        facility_pools=facility_pools,
+    )
+    _manifest_path, manifest_payload = export_certified_delivery_manifest(
+        project_root=project_root,
+        campaign_state=state,
+        campaign_path=resolved_campaign_path,
+    )
+    surface = verify_certified_delivery_surface(
+        project_root=project_root,
+        campaign_state=state,
+        campaign_path=resolved_campaign_path,
+        delivery_manifest=manifest_payload,
+    )
+    if not surface.publishable:
+        clear_certified_delivery_surface_artifacts(project_root)
+        raise RuntimeError(
+            "certified delivery surface publication rejected: "
+            f"{surface.blocked_reason or CERTIFIED_SURFACE_BLOCKED_REASON}"
+        )
+    return surface
+
+
+def save_certified_final_solution_and_blueprint(
+    *,
+    project_root: Path,
+    campaign_path: Path,
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    campaign_state: Optional[Mapping[str, Any]] = None,
+) -> Path:
+    """Compatibility wrapper for the verified publisher.
+
+    The old public API accepted an arbitrary result object.  That would let
+    producer-side code publish a caller-memory ``CERTIFIED`` value.  The wrapper
+    now accepts only campaign authority and delegates to the verifier-backed
+    publisher above.
+    """
+
+    surface = publish_verified_certified_delivery_surface(
+        project_root=project_root,
+        campaign_path=campaign_path,
+        facility_pools=facility_pools,
+        campaign_state=campaign_state,
+    )
+    if not surface.publishable:
+        raise RuntimeError("certified delivery surface publication rejected")
+    return Path(project_root).resolve() / "data" / "solutions" / "final_solution.json"
 
 
 def export_and_verify_certified_delivery_manifest(
@@ -643,8 +739,6 @@ def _resolve_campaign_state_payload(
         state_path.relative_to(project_root)
     except ValueError:
         return provided_payload, "campaign_state_path_outside_project"
-    if campaign_state is None:
-        return None, "campaign_state_missing"
     if not raw_state_path.exists():
         return provided_payload, "campaign_state_file_missing"
     if not raw_state_path.is_file() or _path_has_symlink_component(raw_state_path):
@@ -656,6 +750,8 @@ def _resolve_campaign_state_payload(
             provided_payload,
             f"campaign_state_json_load_error:{type(exc).__name__}:{exc}",
         )
+    if campaign_state is None:
+        return disk_payload, None
     if provided_payload is None:
         return disk_payload, "campaign_state_payload_not_object"
     if has_certified_export_surface(provided_payload):

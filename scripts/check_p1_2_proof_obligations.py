@@ -11,6 +11,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Callable, NoReturn, Sequence
@@ -1055,6 +1056,18 @@ def _uses_name(node: ast.AST, name: str) -> bool:
     return any(isinstance(child, ast.Name) and child.id == name for child in ast.walk(node))
 
 
+def _function_returns_status_tuple(node: ast.FunctionDef, status_name: str) -> bool:
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Return) or not isinstance(child.value, ast.Tuple):
+            continue
+        if not child.value.elts:
+            continue
+        status_expr = child.value.elts[0]
+        if isinstance(status_expr, ast.Name) and status_expr.id == status_name:
+            return True
+    return False
+
+
 def _uses_constant(node: ast.AST, value: str) -> bool:
     return any(isinstance(child, ast.Constant) and child.value == value for child in ast.walk(node))
 
@@ -1520,6 +1533,7 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
     main_fn = _function_def(tree, "main", path=checker_path)
     for required_call in (
         "_check_candidate_sink_replay_contract",
+        "_check_strong_status_write_allowlist_gate",
         "_check_close_kernel_contract",
         "_check_phase_gate_provenance_contract",
         "_check_phase_anchor",
@@ -1529,6 +1543,26 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
         if not _calls_function(main_fn, required_call):
             errors.append(f"proof-obligation checker main must call {required_call}")
     return errors
+
+
+def _check_strong_status_write_allowlist_gate() -> list[str]:
+    script_path = PROJECT_ROOT / "scripts" / "check_strong_status_write_allowlist.py"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(script_path), "--root", str(PROJECT_ROOT)],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except Exception as exc:  # noqa: BLE001
+        return [f"strong-status write allowlist checker failed to run: {type(exc).__name__}: {exc}"]
+    if result.returncode != 0:
+        detail = (result.stdout + result.stderr).strip()
+        if len(detail) > 1000:
+            detail = detail[:1000] + "..."
+        return [f"strong-status write allowlist checker failed: {detail}"]
+    return []
 
 
 
@@ -1863,10 +1897,9 @@ def _check_candidate_sink_replay_contract(
         errors.append("supervisor_seal must not validate terminal evidence with campaign_path=None")
     if not _calls_function(run_outer_fn, "_commit_terminal_full_frontier_certified_result"):
         errors.append("certified outer search must use the terminal proposal commit")
-    run_outer_source = _source_text(outer_search_path, run_outer_fn)
-    if "return RUN_STATUS_CERTIFIED, result" in run_outer_source:
+    if _function_returns_status_tuple(run_outer_fn, "RUN_STATUS_CERTIFIED"):
         errors.append("certified outer search producer must not return public CERTIFIED terminal status")
-    if "return CANDIDATE_PROPOSED_STATUS, result" not in run_outer_source:
+    if not _function_returns_status_tuple(run_outer_fn, "CANDIDATE_PROPOSED_STATUS"):
         errors.append("certified outer search producer must return CANDIDATE_PROPOSED terminal status")
     for token in (
         "CANDIDATE_PROPOSED_STATUS",
@@ -3029,21 +3062,21 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c',
     'src/render/industrial_planner_single_base_delivery_surface_health.py': '788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf',
     'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
-    'src/render/report_builder.py': 'c92f43fc9e305f8e60868d9cfc5bd9daf146373afb9a22310dd2fefa2e951531',
-    'src/render/serve.py': '038160a4155b2f7ad2da94bdccd7870bec61e043daa0346b41a88c6bfcb200ff',
+    'src/render/report_builder.py': 'a5071a8df92368aff0d29fd84de94f65f8a8c184522b8e3b2b4cd2aa5ce68dfa',
+    'src/render/serve.py': '3c0892a192581246c71de8a061e29e9ff91b428c2e33639e484c5876f72b4464',
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
-    'src/search/certified_surface.py': '87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101',
+    'src/search/certified_surface.py': '10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69',
+    'src/search/exact_campaign.py': '715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
-    'src/search/outer_search.py': '71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9',
+    'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
@@ -3418,7 +3451,7 @@ def _fixed_witness_publish_binding_errors(
         violation_fn,
         "build_terminal_fixed_witness_projection_at_sink",
         "serialized_state_bytes",
-        "canonical_state_bytes_for_fixed_witness(capsule_authority_state)",
+        "authority_bytes",
     ):
         errors.append("project-bound terminal validator must bind fixed-witness capsule authority bytes")
     for token in (
@@ -3738,6 +3771,7 @@ def main() -> int:
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_certified_cut_replay_contract(manifest))
         errors.extend(_check_candidate_sink_replay_contract())
+        errors.extend(_check_strong_status_write_allowlist_gate())
         errors.extend(_check_isolated_exec_bytecode_binding_contract())
         errors.extend(_check_evidence_and_tests(manifest))
         errors.extend(_check_close_kernel_checker_self_binding())
