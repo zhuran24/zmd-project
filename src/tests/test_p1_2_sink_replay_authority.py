@@ -398,8 +398,9 @@ def test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays(
         parallel_processes=1,
         disable_master_warm_start=True,
     )
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert isinstance(result, Mapping)
+    assert result.get("search_status") == CANDIDATE_PROPOSED_STATUS
 
     campaign_path = root / "data" / "checkpoints" / "exact_campaign_state.json"
     state = json.loads(campaign_path.read_text(encoding="utf-8"))
@@ -412,7 +413,7 @@ def test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays(
             project_root=root,
             campaign_path=campaign_path,
         )
-        is None
+        == "terminal_certified_disk_authority_not_certified"
     )
 
     manifest_path, manifest = export_certified_delivery_manifest(

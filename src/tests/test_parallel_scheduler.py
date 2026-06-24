@@ -217,7 +217,9 @@ def _seal_campaign_proposal_with_accepting_replay(
     def accept_sink_replay_bundle(**kwargs):
         campaign_state = kwargs["campaign_state"]
         assert kwargs["project_root"] == project_root
-        assert campaign_state["final_status"] == RUN_STATUS_CERTIFIED
+        assert campaign_state["final_status"] == CANDIDATE_PROPOSED_STATUS
+        assert kwargs["campaign_path"] is not None
+        assert kwargs["serialized_state_bytes"] == Path(kwargs["campaign_path"]).read_bytes()
         return {
             "evidence": dict(campaign_state["terminal_frontier_evidence"]),
             "candidate_records": {
@@ -234,8 +236,11 @@ def _seal_campaign_proposal_with_accepting_replay(
         *,
         project_root: Path,
         campaign_path: Path | None = None,
+        serialized_state_bytes: bytes | None = None,
     ) -> bool:
-        del project_root, campaign_path
+        del project_root
+        assert campaign_path is not None
+        assert serialized_state_bytes is not None
         return (
             state.get("final_status") == RUN_STATUS_CERTIFIED
             and state.get("final_result") is not None
@@ -253,11 +258,7 @@ def _seal_campaign_proposal_with_accepting_replay(
         accept_terminal_evidence_for_certified_state,
     )
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
-    campaign.supervisor_seal(
-        final_result=state["final_result"],
-        terminal_frontier_evidence=state["terminal_frontier_evidence"],
-        candidate_records=state["candidates"],
-    )
+    campaign.supervisor_seal()
     campaign.save()
     assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
     assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
@@ -1865,8 +1866,9 @@ def test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier(
         parallel_processes=2,
     )
 
-    assert serial_status == parallel_status == RUN_STATUS_CERTIFIED
+    assert serial_status == parallel_status == CANDIDATE_PROPOSED_STATUS
     assert serial_result is not None and parallel_result is not None
+    assert serial_result["search_status"] == parallel_result["search_status"] == CANDIDATE_PROPOSED_STATUS
     assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 1}
 
     serial_state = _read_campaign_state(serial_root)
@@ -2003,8 +2005,9 @@ def test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion
 
     state = _read_campaign_state(project_root)
 
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result["search_status"] == CANDIDATE_PROPOSED_STATUS
     assert result["ghost_rect"] == expected_best["ghost_rect"]
     assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
     assert state["last_stop_reason"]["status"] == CANDIDATE_PROPOSED_STATUS

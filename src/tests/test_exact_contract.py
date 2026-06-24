@@ -925,7 +925,9 @@ def _install_accepting_supervisor_seal_replay(
     def accept_sink_replay_bundle(**kwargs):
         campaign_state = kwargs["campaign_state"]
         assert kwargs["project_root"] == project_root
-        assert campaign_state["final_status"] == RUN_STATUS_CERTIFIED
+        assert campaign_state["final_status"] == CANDIDATE_PROPOSED_STATUS
+        assert kwargs["campaign_path"] is not None
+        assert kwargs["serialized_state_bytes"] == Path(kwargs["campaign_path"]).read_bytes()
         return {
             "evidence": dict(campaign_state["terminal_frontier_evidence"]),
             "candidate_records": {
@@ -942,8 +944,15 @@ def _install_accepting_supervisor_seal_replay(
         *,
         project_root: Path,
         campaign_path: Path | None = None,
+        serialized_state_bytes: bytes | None = None,
     ) -> bool:
-        del project_root, campaign_path
+        del project_root
+        assert campaign_path is not None
+        if serialized_state_bytes is None:
+            assert Path(campaign_path).exists()
+        else:
+            decoded = json.loads(serialized_state_bytes.decode("utf-8"))
+            assert decoded.get("final_status") == RUN_STATUS_CERTIFIED
         return (
             state.get("final_status") == RUN_STATUS_CERTIFIED
             and state.get("final_result") is not None
@@ -974,11 +983,7 @@ def _seal_campaign_proposal_with_accepting_replay(
 ) -> ExactCampaign:
     _install_accepting_supervisor_seal_replay(monkeypatch, project_root=project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
-    campaign.supervisor_seal(
-        final_result=state["final_result"],
-        terminal_frontier_evidence=state["terminal_frontier_evidence"],
-        candidate_records=state["candidates"],
-    )
+    campaign.supervisor_seal()
     campaign.save()
     assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
     assert campaign.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
@@ -3124,8 +3129,9 @@ def test_toy_project_can_be_truly_certified(
         campaign_hours=1.0,
         resume_campaign=False,
     )
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result.get("search_status") == CANDIDATE_PROPOSED_STATUS
     expected_ghost_rect = {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
     assert result["ghost_rect"] == expected_ghost_rect
     state = _assert_producer_left_certified_proposal(
@@ -8174,8 +8180,9 @@ def test_certified_result_writes_canonical_optimal_blueprint(
     blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
     manifest_path = delivery_manifest_output_path(project_root)
 
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result.get("search_status") == CANDIDATE_PROPOSED_STATUS
     expected_ghost_rect = {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
     assert result["ghost_rect"] == expected_ghost_rect
     proposal_state = _assert_producer_left_certified_proposal(
@@ -8692,8 +8699,9 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
         resume_campaign=False,
     )
 
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result.get("search_status") == CANDIDATE_PROPOSED_STATUS
     # V88: the published ghost_rect carries the proven anchor; the mock pick
     # always anchors at (0,0).
     expected_ghost_rect = {
@@ -8839,8 +8847,9 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
         resume_campaign=True,
     )
 
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result.get("search_status") == CANDIDATE_PROPOSED_STATUS
     expected_ghost_rect = {"w": 2, "h": 1, "area": 2, "anchor_x": 0, "anchor_y": 0}
     assert result["ghost_rect"] == expected_ghost_rect
     assert call_counts[(2, 2)] == 2
@@ -8957,8 +8966,9 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
         resume_campaign=True,
     )
 
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result.get("search_status") == CANDIDATE_PROPOSED_STATUS
     expected_ghost_rect = {"w": 6, "h": 1, "area": 6, "anchor_x": 0, "anchor_y": 0}
     assert result["ghost_rect"] == expected_ghost_rect
     state = _assert_producer_left_certified_proposal(

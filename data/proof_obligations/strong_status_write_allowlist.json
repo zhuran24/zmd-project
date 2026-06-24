@@ -82,7 +82,7 @@
       "qualname": "build_sink_verified_terminal_frontier_evidence",
       "line": 301,
       "justification": "Copies final_result into a local authority-state snapshot for fixed-witness validation and public projection; durable candidate records and solution digests are not rewritten.",
-      "source_sha256": "621681a1a089868458dcd803cf29a293a4b4ff285acc23e2d890432eb93774e7",
+      "source_sha256": "80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74",
       "keys": [
         "final_result"
       ]
@@ -94,7 +94,7 @@
       "qualname": "terminal_certified_final_result_violation_for_project",
       "line": 2448,
       "justification": "Copies final_result into a local capsule_authority_state snapshot whose bytes feed the fixed-witness projection; the durable campaign state and candidate records are not rewritten and authority remains the sink-side capsule replay.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "final_result"
       ]
@@ -106,7 +106,7 @@
       "qualname": "ExactCampaign.mark_candidate_started",
       "line": 2739,
       "justification": "Candidate start copies existing data before a RUNNING rewrite; strong records short-circuit after sink projection, and no writer identity is proof authority.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "status"
       ]
@@ -118,7 +118,7 @@
       "qualname": "ExactCampaign.mark_candidate_result",
       "line": 2813,
       "justification": "Result persistence copies existing candidate data before the explicit status write; the record remains data-only until a sink replays candidate_proof.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "status"
       ]
@@ -130,7 +130,7 @@
       "qualname": "ExactCampaign.mark_candidate_result",
       "line": 2816,
       "justification": "Public candidate status persistence may store CERTIFIED/INFEASIBLE as untrusted data plus a replay request; frontier and publication authority remains sink replay.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "status"
       ]
@@ -142,7 +142,7 @@
       "qualname": "ExactCampaign.update_candidate_running_proof_summary",
       "line": 2901,
       "justification": "Running proof-summary updates preserve and write back only RUNNING records; they do not mint a proof-bearing status.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "status"
       ]
@@ -154,7 +154,7 @@
       "qualname": "ExactCampaign.set_supervisor_proposal_run_id",
       "line": 2923,
       "justification": "Records supervisor proposal authority metadata under a dynamic campaign-state key for the proposal_ready handoff; it does not mint CERTIFIED proof authority.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937"
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69"
     },
     {
       "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3016",
@@ -162,8 +162,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3016,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "final_result"
       ]
@@ -174,8 +174,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3017,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "final_status"
       ]
@@ -186,8 +186,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3024,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "terminal_frontier_evidence"
       ]
@@ -198,8 +198,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3082,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "terminal_frontier_evidence"
       ]
@@ -210,8 +210,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3094,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "final_result"
       ]
@@ -222,8 +222,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3095,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "terminal_frontier_evidence"
       ]
@@ -234,8 +234,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3100,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -244,8 +244,8 @@
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
       "line": 3105,
-      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after validating sink-replayed terminal full-frontier evidence; proof authority remains sink replay and the supervisor seal token.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "justification": "Supervisor seal stages and adopts terminal CERTIFIED state only after loading the proposal_ready marker, hashing the checkpoint authority bytes, and validating sink-replayed terminal full-frontier evidence; the token is not proof authority.",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "final_status"
       ]
@@ -257,7 +257,7 @@
       "qualname": "ExactCampaign.mark_campaign_stopped",
       "line": 3129,
       "justification": "Central final_status sink for campaign stops; terminal CERTIFIED/public uses are separately registered and non-certified stops clear terminal frontier evidence.",
-      "source_sha256": "00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937",
+      "source_sha256": "1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69",
       "keys": [
         "final_status"
       ]
@@ -319,7 +319,7 @@
       "qualname": "_mark_certified_campaign_blocked",
       "line": 199,
       "justification": "Blocked certified-surface path records non-proof UNPROVEN after purging stale publishable artifacts.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -329,7 +329,7 @@
       "qualname": "_commit_terminal_full_frontier_certified_result",
       "line": 899,
       "justification": "Terminal full-frontier proposal writes final_result as proposed payload; supervisor_seal remains the only CERTIFIED mint and publication still requires sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "keys": [
         "final_result"
       ]
@@ -341,7 +341,7 @@
       "qualname": "_commit_terminal_full_frontier_certified_result",
       "line": 900,
       "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -351,7 +351,7 @@
       "qualname": "_commit_terminal_full_frontier_certified_result",
       "line": 949,
       "justification": "Terminal full-frontier proposal stages terminal_frontier_evidence after candidate sink replay and fixed-witness projection; supervisor_seal remains the only CERTIFIED mint.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "keys": [
         "terminal_frontier_evidence"
       ]
@@ -363,7 +363,7 @@
       "qualname": "_commit_terminal_full_frontier_certified_result",
       "line": 950,
       "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -373,7 +373,7 @@
       "qualname": "_save_final_result",
       "line": 964,
       "justification": "Local bridge to the central certified final_solution/blueprint writer; callers are separately registered.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "save_certified_final_solution_and_blueprint"
     },
     {
@@ -383,7 +383,7 @@
       "qualname": "_persist_best_certified_result_if_any",
       "line": 983,
       "justification": "Persists only exact_campaign.best_certified_result(), which is gated by valid terminal full-frontier sink evidence.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_save_final_result"
     },
     {
@@ -393,7 +393,7 @@
       "qualname": "run_outer_search",
       "line": 1956,
       "justification": "Certified path builds a public result only for the terminal full-frontier commit, before sink-verified commit/export gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_build_certified_result"
     },
     {
@@ -403,7 +403,7 @@
       "qualname": "run_outer_search",
       "line": 2008,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -413,7 +413,7 @@
       "qualname": "run_outer_search",
       "line": 2028,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -423,7 +423,7 @@
       "qualname": "run_outer_search",
       "line": 2121,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
@@ -433,7 +433,7 @@
       "qualname": "run_outer_search",
       "line": 2177,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -443,7 +443,7 @@
       "qualname": "run_outer_search",
       "line": 2203,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -453,7 +453,7 @@
       "qualname": "run_outer_search",
       "line": 2299,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
@@ -463,7 +463,7 @@
       "qualname": "run_outer_search",
       "line": 2509,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
@@ -473,7 +473,7 @@
       "qualname": "run_outer_search",
       "line": 2536,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
@@ -483,7 +483,7 @@
       "qualname": "run_outer_search",
       "line": 2540,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "candidate_result_writer"
     },
     {
@@ -493,7 +493,7 @@
       "qualname": "run_outer_search",
       "line": 2639,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -503,7 +503,7 @@
       "qualname": "run_outer_search",
       "line": 2652,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -513,7 +513,7 @@
       "qualname": "run_outer_search",
       "line": 2758,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
@@ -523,7 +523,7 @@
       "qualname": "run_outer_search",
       "line": 2794,
       "justification": "Compatibility writer reference is registered as a data-only strong-status path; every certified use must carry candidate_proof and authority remains sink replay.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
@@ -533,7 +533,7 @@
       "qualname": "run_outer_search",
       "line": 2847,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -543,7 +543,7 @@
       "qualname": "run_outer_search",
       "line": 2886,
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "mark_campaign_stopped"
     },
     {
@@ -553,7 +553,7 @@
       "qualname": "run_outer_search",
       "line": 2931,
       "justification": "Exploratory return value is isolated from certified campaign state and delivery artifacts.",
-      "source_sha256": "069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3",
+      "source_sha256": "71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9",
       "callee": "_build_certified_result"
     },
     {

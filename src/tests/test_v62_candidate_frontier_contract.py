@@ -476,8 +476,9 @@ def test_v65_terminal_result_is_committed_before_final_solution_export(
         resume_campaign=False,
     )
 
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result["search_status"] == CANDIDATE_PROPOSED_STATUS
     assert final_solution_export_calls == []
     state = _read_state(project_root)
     assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
@@ -576,8 +577,9 @@ def test_v66_terminal_export_failure_clears_terminal_state_and_artifacts(
     state = _read_state(project_root)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     stop = state.get("last_stop_reason", {})
-    assert status == RUN_STATUS_CERTIFIED
+    assert status == CANDIDATE_PROPOSED_STATUS
     assert result is not None
+    assert result["search_status"] == CANDIDATE_PROPOSED_STATUS
     assert final_solution_export_calls == []
     assert stop.get("reason") == "search_exhausted_all_candidates"
     assert state.get("final_result") is not None

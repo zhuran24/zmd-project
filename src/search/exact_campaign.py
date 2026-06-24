@@ -2385,12 +2385,15 @@ def terminal_certified_final_result_violation_for_project(
     *,
     project_root: Path,
     campaign_path: Optional[Path] = None,
+    serialized_state_bytes: Optional[bytes] = None,
 ) -> Optional[str]:
     """Validate terminal evidence only after independent sink-side replay."""
 
     try:
         path_exists = campaign_path is not None and Path(campaign_path).exists()
-        if path_exists:
+        if serialized_state_bytes is not None:
+            authority_bytes = bytes(serialized_state_bytes)
+        elif path_exists:
             authority_bytes = Path(campaign_path).read_bytes()
         else:
             authority_bytes = canonical_state_bytes_for_fixed_witness(state)
@@ -2400,7 +2403,7 @@ def terminal_certified_final_result_violation_for_project(
     except Exception:
         return "terminal_certified_authority_state_invalid"
 
-    if path_exists:
+    if serialized_state_bytes is None and path_exists:
         try:
             memory_surface_digest = _terminal_certified_proof_surface_digest(state)
             disk_surface_digest = _terminal_certified_proof_surface_digest(authority_state)
@@ -2408,6 +2411,8 @@ def terminal_certified_final_result_violation_for_project(
                 return "terminal_certified_in_memory_disk_divergence"
         except Exception:
             return "terminal_certified_in_memory_disk_divergence"
+        if not has_terminal_full_frontier_certified_evidence(authority_state):
+            return "terminal_certified_disk_authority_not_certified"
 
     precheck_reason = terminal_certified_final_result_project_precheck_violation(
         authority_state,
@@ -2477,6 +2482,7 @@ def has_valid_terminal_full_frontier_certified_evidence_for_project(
     *,
     project_root: Path,
     campaign_path: Optional[Path] = None,
+    serialized_state_bytes: Optional[bytes] = None,
 ) -> bool:
     """Return True only when the project-bound isolated replay accepts the proof."""
 
@@ -2487,6 +2493,7 @@ def has_valid_terminal_full_frontier_certified_evidence_for_project(
             state,
             project_root=project_root,
             campaign_path=campaign_path,
+            serialized_state_bytes=serialized_state_bytes,
         )
         is None
     )
@@ -2970,36 +2977,70 @@ class ExactCampaign:
         atomic_write_json(self.proposal_ready_marker_path, marker)
         return dict(marker)
 
+    def _load_supervisor_proposal_authority(self) -> Tuple[Dict[str, Any], bytes, Dict[str, Any]]:
+        marker, marker_violation = load_proposal_ready_marker(
+            self.proposal_ready_marker_path,
+            checkpoint_path=self.path,
+        )
+        if marker_violation is not None or marker is None:
+            raise RuntimeError(f"supervisor_seal {marker_violation or 'proposal_ready_marker_missing'}")
+        try:
+            authority_bytes = self.path.read_bytes()
+        except Exception as exc:  # noqa: BLE001
+            raise RuntimeError("supervisor_seal proposal checkpoint unreadable") from exc
+        if hashlib.sha256(authority_bytes).hexdigest() != str(marker["checkpoint_sha256"]):
+            raise RuntimeError("supervisor_seal proposal checkpoint changed after marker validation")
+        try:
+            authority_state = loads_strict_json(authority_bytes.decode("utf-8"))
+        except Exception as exc:  # noqa: BLE001
+            raise RuntimeError("supervisor_seal proposal checkpoint invalid") from exc
+        if not isinstance(authority_state, Mapping):
+            raise RuntimeError("supervisor_seal proposal checkpoint invalid")
+        if str(authority_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:
+            raise RuntimeError("supervisor_seal requires CANDIDATE_PROPOSED proposal")
+        proposal_violation = _proposal_state_violation(
+            authority_state.get(SUPERVISOR_PROPOSAL_STATE_KEY)
+        )
+        if proposal_violation is not None:
+            raise RuntimeError(f"supervisor_seal {proposal_violation}")
+        proposal_state = authority_state[SUPERVISOR_PROPOSAL_STATE_KEY]
+        if str(proposal_state.get("run_id")) != str(marker.get("run_id")):
+            raise RuntimeError("supervisor_seal proposal_ready_marker_run_id_mismatch")
+        return dict(authority_state), authority_bytes, dict(marker)
+
     def supervisor_seal(
         self,
         *,
-        final_result: Mapping[str, Any],
-        terminal_frontier_evidence: Mapping[str, Any],
-        candidate_records: Mapping[str, Any],
         reason: str = TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ) -> None:
-        """Mint terminal CERTIFIED after supervisor-owned evidence validation."""
+        """Mint terminal CERTIFIED from the committed proposal checkpoint bytes."""
 
         if str(reason) != TERMINAL_FULL_FRONTIER_CERTIFIED_REASON:
             raise ValueError("supervisor_seal only supports terminal full-frontier certification")
-        if not isinstance(final_result, Mapping):
-            raise ValueError("supervisor_seal final_result must be a mapping")
-        if not isinstance(terminal_frontier_evidence, Mapping):
-            raise ValueError("supervisor_seal terminal_frontier_evidence must be a mapping")
-        if not isinstance(candidate_records, Mapping):
-            raise ValueError("supervisor_seal candidate_records must be a mapping")
 
-        final_result_copy = dict(final_result)
-        terminal_frontier_evidence_copy = dict(terminal_frontier_evidence)
+        authority_state, authority_bytes, _marker = self._load_supervisor_proposal_authority()
+        raw_final_result = authority_state.get("final_result")
+        if not isinstance(raw_final_result, Mapping):
+            raise RuntimeError("supervisor_seal proposal final_result invalid")
+        proposal_final_result = dict(raw_final_result)
+        final_result_copy = dict(proposal_final_result)
+        final_result_copy["search_status"] = "CERTIFIED"
+        raw_terminal_frontier_evidence = authority_state.get("terminal_frontier_evidence")
+        if not isinstance(raw_terminal_frontier_evidence, Mapping):
+            raise RuntimeError("supervisor_seal proposal terminal_frontier_evidence invalid")
+        terminal_frontier_evidence_copy = dict(raw_terminal_frontier_evidence)
+        raw_candidate_records = authority_state.get("candidates")
+        if not isinstance(raw_candidate_records, Mapping):
+            raise RuntimeError("supervisor_seal proposal candidate_records invalid")
         candidate_records_copy: Dict[str, Any] = {}
-        for raw_key, raw_record in candidate_records.items():
+        for raw_key, raw_record in raw_candidate_records.items():
             if not isinstance(raw_record, Mapping):
-                raise ValueError("supervisor_seal candidate_records must map to mappings")
+                raise RuntimeError("supervisor_seal proposal candidate_records invalid")
             candidate_records_copy[str(raw_key)] = dict(raw_record)
         raw_candidate_generation = terminal_frontier_evidence_copy.get("candidate_generation")
         if not isinstance(raw_candidate_generation, Mapping):
             raise RuntimeError(
-                "supervisor_seal terminal_frontier_evidence missing candidate_generation"
+                "supervisor_seal proposal terminal_frontier_evidence missing candidate_generation"
             )
         candidate_generation = dict(raw_candidate_generation)
         try:
@@ -3008,11 +3049,11 @@ class ExactCampaign:
             )
         except Exception as exc:  # noqa: BLE001
             raise RuntimeError(
-                "supervisor_seal terminal candidate generation invalid"
+                "supervisor_seal proposal terminal candidate generation invalid"
             ) from exc
 
         timestamp = now_iso()
-        scratch_state = dict(self.state)
+        scratch_state = dict(authority_state)
         scratch_state["final_result"] = final_result_copy
         scratch_state["final_status"] = "CERTIFIED"
         scratch_state["last_stop_reason"] = {
@@ -3026,10 +3067,11 @@ class ExactCampaign:
 
         sink_bundle = build_sink_verified_terminal_frontier_evidence(
             candidates=candidates,
-            campaign_state=scratch_state,
+            campaign_state=authority_state,
             project_root=self.project_root,
             campaign_path=self.path,
-            final_result=final_result_copy,
+            serialized_state_bytes=authority_bytes,
+            final_result=proposal_final_result,
             candidate_generation=candidate_generation,
         )
         if not isinstance(sink_bundle, Mapping):
@@ -3087,22 +3129,25 @@ class ExactCampaign:
         if not has_valid_terminal_full_frontier_certified_evidence_for_project(
             scratch_state,
             project_root=self.project_root,
-            campaign_path=None,
+            campaign_path=self.path,
+            serialized_state_bytes=canonical_state_bytes_for_fixed_witness(scratch_state),
         ):
             raise RuntimeError("supervisor_seal rejected terminal CERTIFIED evidence")
 
+        self.state = dict(authority_state)
         self.state["final_result"] = final_result_copy
         self.state["terminal_frontier_evidence"] = dict(
             verified_terminal_frontier_evidence
         )
         self.state["candidates"] = verified_candidate_records_copy
         self.state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
-        self.mark_campaign_stopped(
-            TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-            status="CERTIFIED",
-            _supervisor_seal_token=_SUPERVISOR_SEAL_TOKEN,
-        )
+        self.state["last_stop_reason"] = {
+            "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+            "status": "CERTIFIED",
+            "updated_at": now_iso(),
+        }
         self.state["final_status"] = "CERTIFIED"
+        self.state["updated_at"] = now_iso()
         self.clear_proposal_ready_marker()
 
     def mark_campaign_stopped(
@@ -3114,10 +3159,7 @@ class ExactCampaign:
     ) -> None:
         normalized_status = None if status is None else str(status)
         if normalized_status == "CERTIFIED":
-            supervisor_authorized = _supervisor_seal_token is _SUPERVISOR_SEAL_TOKEN
-            if not supervisor_authorized:
-                raise RuntimeError("CERTIFIED campaign stop must be minted by supervisor_seal")
-            assert supervisor_authorized
+            raise RuntimeError("CERTIFIED campaign stop must be minted by supervisor_seal")
         timestamp = now_iso()
         stop_record = {
             "reason": str(reason),

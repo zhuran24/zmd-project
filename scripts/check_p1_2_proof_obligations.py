@@ -462,6 +462,32 @@ def _calls_function_with_keyword_constant(
     return isinstance(value, ast.Constant) and value.value is expected_value
 
 
+def _calls_function_with_keyword_expr(
+    node: ast.AST,
+    function_name: str,
+    keyword_name: str,
+    expected_expr: str,
+) -> bool:
+    """Return True when a direct call binds a keyword to the exact expression."""
+
+    for child in ast.walk(node):
+        if not (
+            isinstance(child, ast.Call)
+            and isinstance(child.func, ast.Name)
+            and child.func.id == function_name
+        ):
+            continue
+        for keyword in child.keywords:
+            if keyword.arg != keyword_name:
+                continue
+            try:
+                if ast.unparse(keyword.value) == expected_expr:
+                    return True
+            except Exception:
+                return False
+    return False
+
+
 def _top_level_imports_exact_name(tree: ast.Module, *, module: str, name: str) -> bool:
     for node in tree.body:
         if not isinstance(node, ast.ImportFrom) or node.level != 0 or node.module != module:
@@ -1785,14 +1811,63 @@ def _check_candidate_sink_replay_contract(
         path=outer_search_path,
     )
     commit_source = _source_text(outer_search_path, commit_fn)
+    load_proposal_fn = _method_def(
+        exact_class,
+        "_load_supervisor_proposal_authority",
+        path=exact_campaign_path,
+    )
+    load_proposal_source = _source_text(exact_campaign_path, load_proposal_fn)
+    if not _calls_function(load_proposal_fn, "load_proposal_ready_marker"):
+        errors.append("supervisor seal authority loader must read proposal_ready marker")
+    for token in (
+        "self.path.read_bytes()",
+        "checkpoint_sha256",
+        "CANDIDATE_PROPOSED_STATUS",
+        "_proposal_state_violation",
+        "run_id",
+    ):
+        if token not in load_proposal_source:
+            errors.append(f"supervisor seal authority loader must bind checkpoint bytes: {token}")
     seal_fn = _method_def(exact_class, "supervisor_seal", path=exact_campaign_path)
     seal_source = _source_text(exact_campaign_path, seal_fn)
+    forbidden_seal_authority_args = {
+        "final_result",
+        "terminal_frontier_evidence",
+        "candidate_records",
+    }
+    seal_arg_names = {
+        arg.arg
+        for arg in [*seal_fn.args.args, *seal_fn.args.kwonlyargs]
+    }
+    for forbidden_arg in sorted(forbidden_seal_authority_args & seal_arg_names):
+        errors.append(f"supervisor_seal must not accept caller authority argument: {forbidden_arg}")
     if not _calls_function(seal_fn, "build_sink_verified_terminal_frontier_evidence"):
         errors.append(
             "supervisor_seal must call build_sink_verified_terminal_frontier_evidence before minting CERTIFIED"
         )
+    if not _calls_function_with_keyword_expr(
+        seal_fn,
+        "build_sink_verified_terminal_frontier_evidence",
+        "campaign_path",
+        "self.path",
+    ):
+        errors.append("supervisor_seal sink replay must bind the proposal checkpoint path")
+    if not _calls_function_with_keyword_expr(
+        seal_fn,
+        "build_sink_verified_terminal_frontier_evidence",
+        "serialized_state_bytes",
+        "authority_bytes",
+    ):
+        errors.append("supervisor_seal sink replay must consume proposal authority bytes")
+    if "campaign_path=None" in seal_source:
+        errors.append("supervisor_seal must not validate terminal evidence with campaign_path=None")
     if not _calls_function(run_outer_fn, "_commit_terminal_full_frontier_certified_result"):
         errors.append("certified outer search must use the terminal proposal commit")
+    run_outer_source = _source_text(outer_search_path, run_outer_fn)
+    if "return RUN_STATUS_CERTIFIED, result" in run_outer_source:
+        errors.append("certified outer search producer must not return public CERTIFIED terminal status")
+    if "return CANDIDATE_PROPOSED_STATUS, result" not in run_outer_source:
+        errors.append("certified outer search producer must return CANDIDATE_PROPOSED terminal status")
     for token in (
         "CANDIDATE_PROPOSED_STATUS",
         "set_supervisor_proposal_run_id",
@@ -2960,15 +3035,15 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
-    'src/search/certified_frontier.py': '621681a1a089868458dcd803cf29a293a4b4ff285acc23e2d890432eb93774e7',
+    'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': '87547de1bf1559b633a54de3d3a93cc0aba32ebd01a5d98b2ee4d82f93c9e101',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '00f7d915a97002d1f93570cf233abe5bf1c706fda73bfec975e8c7f03a363937',
+    'src/search/exact_campaign.py': '1c165735d1078abba94ae23d545f681d58736b49108e4c7015a39f9e2c3b3d69',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
-    'src/search/outer_search.py': '069338ca952a53e74879dcaf751a106bf90dd4509d9cb1816f2e9610095725b3',
+    'src/search/outer_search.py': '71ddb09e88fc003ed790d43d371123bf4ef45896f9af46d7eb3faf26731513f9',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
@@ -3293,6 +3368,20 @@ def _fixed_witness_publish_binding_errors(
         )
     )
     frontier_source = _source_text(certified_frontier_path, build_fn)
+    for keyword_name, expected_expr in (
+        ("campaign_path", "campaign_path"),
+        ("serialized_state_bytes", "serialized_state_bytes"),
+    ):
+        if not _calls_function_with_keyword_expr(
+            build_fn,
+            "build_terminal_fixed_witness_projection_at_sink",
+            keyword_name,
+            expected_expr,
+        ):
+            errors.append(
+                "sink-verified terminal frontier evidence must bind fixed-witness capsule authority: "
+                f"{keyword_name}={expected_expr}"
+            )
     for token in (
         "fixed_witness_projection.durable_candidate_records",
         "fixed_witness_projection.candidate_records",
@@ -3318,6 +3407,20 @@ def _fixed_witness_publish_binding_errors(
         )
     )
     violation_source = _source_text(exact_campaign_path, violation_fn)
+    if not _calls_function_with_keyword_expr(
+        violation_fn,
+        "build_terminal_fixed_witness_projection_at_sink",
+        "campaign_path",
+        "campaign_path",
+    ):
+        errors.append("project-bound terminal validator must bind fixed-witness capsule campaign_path")
+    if not _calls_function_with_keyword_expr(
+        violation_fn,
+        "build_terminal_fixed_witness_projection_at_sink",
+        "serialized_state_bytes",
+        "canonical_state_bytes_for_fixed_witness(capsule_authority_state)",
+    ):
+        errors.append("project-bound terminal validator must bind fixed-witness capsule authority bytes")
     for token in (
         "fixed_witness_projection.candidate_records",
         "candidate_records_override=replayed_records",

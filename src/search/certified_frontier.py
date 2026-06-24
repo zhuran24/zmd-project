@@ -283,6 +283,7 @@ def build_sink_verified_terminal_frontier_evidence(
     campaign_path: Optional[Path],
     final_result: Mapping[str, Any],
     candidate_generation: Mapping[str, Any],
+    serialized_state_bytes: Optional[bytes] = None,
 ) -> Dict[str, Any]:
     """Build terminal evidence from replayed records, never raw strong strings."""
 
@@ -302,12 +303,14 @@ def build_sink_verified_terminal_frontier_evidence(
     fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(
         state=authority_state,
         project_root=project_root,
+        campaign_path=campaign_path,
         candidate_records={
             str(key): dict(value)
             for key, value in replayed_records.items()
             if isinstance(value, Mapping)
         },
         final_result=final_result,
+        serialized_state_bytes=serialized_state_bytes,
     )
     replayed_records = fixed_witness_projection.durable_candidate_records
     evidence = build_terminal_frontier_evidence(
