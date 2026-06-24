@@ -17,6 +17,26 @@
   ],
   "allowlist": [
     {
+      "id": "src_io_serializer_py_export_certified_blueprint_artifact_write_156",
+      "pattern": "artifact_write",
+      "module": "src/io/serializer.py",
+      "qualname": "export_certified_blueprint",
+      "line": 156,
+      "justification": "Public blueprint exporter writes via write_blueprint_payload, but canonical CERTIFIED writes are guarded and rejected unless the verified publisher is used.",
+      "source_sha256": "d38021784758faf589a0bb8a039d22f953f7d952915a7706abc7d05a67fe1cf7",
+      "callee": "write_blueprint_payload"
+    },
+    {
+      "id": "src_render_blueprint_exporter_py_export_blueprint_artifact_write_34",
+      "pattern": "artifact_write",
+      "module": "src/render/blueprint_exporter.py",
+      "qualname": "export_blueprint",
+      "line": 34,
+      "justification": "Generic render blueprint exporter writes caller-selected output paths; it is not a certified publication authority.",
+      "source_sha256": "f3bbd13dc77f8edde27d4613b21635299a745499cc189e67cb0771aee897956d",
+      "callee": "write_blueprint_payload"
+    },
+    {
       "id": "src_render_industrial_planner_single_base_delivery_viewer_py_build_single_base_delivery_viewer_bundle_artifact_write_225",
       "pattern": "artifact_write",
       "module": "src/render/industrial_planner_single_base_delivery_viewer.py",
@@ -43,6 +63,32 @@
       "callee": "atomic_write_json"
     },
     {
+      "id": "src_render_serve_py_serve_viewer_artifact_write_71",
+      "pattern": "artifact_write",
+      "module": "src/render/serve.py",
+      "qualname": "serve_viewer",
+      "line": 71,
+      "justification": "Viewer writes noncanonical display copies from the verified surface snapshot under viewer_dir after publishable gate succeeds.",
+      "source_sha256": "ccbe4682cd61b648895d6cb9d7ee1d212cd5342eb0d8a252e2f9c37d64b88f4b",
+      "keys": [
+        "final_solution.json"
+      ],
+      "callee": "atomic_write_json"
+    },
+    {
+      "id": "src_render_serve_py_serve_viewer_artifact_write_72",
+      "pattern": "artifact_write",
+      "module": "src/render/serve.py",
+      "qualname": "serve_viewer",
+      "line": 72,
+      "justification": "Viewer writes noncanonical display copies from the verified surface snapshot under viewer_dir after publishable gate succeeds.",
+      "source_sha256": "ccbe4682cd61b648895d6cb9d7ee1d212cd5342eb0d8a252e2f9c37d64b88f4b",
+      "keys": [
+        "optimal_blueprint.json"
+      ],
+      "callee": "atomic_write_json"
+    },
+    {
       "id": "src_search_certified_frontier_py_build_sink_verified_terminal_frontier_evidence_state_key_write_302",
       "pattern": "state_key_write",
       "module": "src/search/certified_frontier.py",
@@ -55,164 +101,240 @@
       ]
     },
     {
-      "id": "src_search_certified_surface_py_write_certified_final_solution_and_blueprint_unchecked_artifact_write_537",
+      "id": "src_search_certified_surface_py__write_certified_final_solution_and_blueprint_unchecked_artifact_write_570",
       "pattern": "artifact_write",
       "module": "src/search/certified_surface.py",
       "qualname": "_write_certified_final_solution_and_blueprint_unchecked",
-      "line": 537,
+      "line": 570,
       "justification": "Private canonical projection writer; only the verified publisher calls it after sealed checkpoint authority and project-bound terminal evidence are accepted.",
-      "source_sha256": "10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09",
+      "source_sha256": "e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc",
       "keys": [
         "final_solution.json"
       ],
       "callee": "atomic_write_json"
     },
     {
-      "id": "src_search_certified_surface_py_write_certified_final_solution_and_blueprint_unchecked_artifact_write_538",
+      "id": "src_search_certified_surface_py__write_certified_final_solution_and_blueprint_unchecked_artifact_write_575",
       "pattern": "artifact_write",
       "module": "src/search/certified_surface.py",
       "qualname": "_write_certified_final_solution_and_blueprint_unchecked",
-      "line": 538,
-      "justification": "Private canonical projection writer; only the verified publisher calls it after sealed checkpoint authority and project-bound terminal evidence are accepted.",
-      "source_sha256": "10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09",
-      "callee": "export_certified_blueprint"
+      "line": 575,
+      "justification": "Private canonical blueprint projection writer; only the verified publisher calls it after sealed checkpoint authority and terminal replay pass.",
+      "source_sha256": "e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc",
+      "callee": "write_blueprint_payload"
     },
     {
-      "id": "src_search_certified_surface_py_publish_verified_certified_delivery_surface_artifact_write_594",
-      "pattern": "artifact_write",
-      "module": "src/search/certified_surface.py",
-      "qualname": "publish_verified_certified_delivery_surface",
-      "line": 594,
-      "justification": "Verified publisher loads/compares sealed campaign authority, verifies project-bound terminal evidence, writes canonical projections, exports the manifest, then rechecks the central certified surface.",
-      "source_sha256": "10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09",
-      "callee": "export_certified_delivery_manifest"
-    },
-    {
-      "id": "src_search_certified_surface_py_export_and_verify_certified_delivery_manifest_artifact_write_649",
+      "id": "src_search_certified_surface_py_export_and_verify_certified_delivery_manifest_artifact_write_674",
       "pattern": "artifact_write",
       "module": "src/search/certified_surface.py",
       "qualname": "export_and_verify_certified_delivery_manifest",
-      "line": 649,
+      "line": 674,
       "justification": "Manifest export immediately verifies the central certified delivery surface and rejects non-publishable best_certified_result payloads.",
-      "source_sha256": "10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09",
+      "source_sha256": "e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc",
       "callee": "export_certified_delivery_manifest"
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_mark_candidate_started_candidate_status_update_dynamic_2868",
-      "pattern": "candidate_status_update_dynamic",
+      "id": "src_search_certified_surface_py_publish_verified_certified_delivery_surface_artifact_write_617",
+      "pattern": "artifact_write",
+      "module": "src/search/certified_surface.py",
+      "qualname": "publish_verified_certified_delivery_surface",
+      "line": 617,
+      "justification": "Verified publisher loads/compares sealed campaign authority, verifies project-bound terminal evidence, writes canonical projections, exports the manifest, then rechecks the central certified surface.",
+      "source_sha256": "e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc",
+      "callee": "export_certified_delivery_manifest"
+    },
+    {
+      "id": "src_search_exact_campaign_py_exactcampaign_mark_campaign_stopped_state_key_write_3590",
+      "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
-      "qualname": "ExactCampaign.mark_candidate_started",
-      "line": 2904,
-      "justification": "Candidate start copies existing data before a RUNNING rewrite; strong records short-circuit after sink projection, and no writer identity is proof authority.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "qualname": "ExactCampaign.mark_campaign_stopped",
+      "line": 3590,
+      "justification": "Campaign stop writer records non-CERTIFIED terminal/nonterminal statuses only; CERTIFIED stops fail closed and must be minted by supervisor_seal.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
-        "status"
+        "final_status"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_mark_candidate_result_candidate_status_update_dynamic_2942",
-      "pattern": "candidate_status_update_dynamic",
-      "module": "src/search/exact_campaign.py",
-      "qualname": "ExactCampaign.mark_candidate_result",
-      "line": 2978,
-      "justification": "Result persistence copies existing candidate data before the explicit status write; the record remains data-only until a sink replays candidate_proof.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
-      "keys": [
-        "status"
-      ]
-    },
-    {
-      "id": "src_search_exact_campaign_py_exactcampaign_mark_candidate_result_candidate_status_2945",
+      "id": "src_search_exact_campaign_py_exactcampaign_mark_candidate_result_candidate_status_3111",
       "pattern": "candidate_status",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.mark_candidate_result",
-      "line": 2981,
+      "line": 3111,
       "justification": "Public candidate status persistence may store CERTIFIED/INFEASIBLE as untrusted data plus a replay request; frontier and publication authority remains sink replay.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "status"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_update_candidate_running_proof_summary_candidate_status_update_dynamic_3030",
+      "id": "src_search_exact_campaign_py_exactcampaign_mark_candidate_result_candidate_status_update_dynamic_3108",
       "pattern": "candidate_status_update_dynamic",
       "module": "src/search/exact_campaign.py",
-      "qualname": "ExactCampaign.update_candidate_running_proof_summary",
-      "line": 3066,
-      "justification": "Running proof-summary updates preserve and write back only RUNNING records; they do not mint a proof-bearing status.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "qualname": "ExactCampaign.mark_candidate_result",
+      "line": 3108,
+      "justification": "Result persistence copies existing candidate data before the explicit status write; the record remains data-only until a sink replays candidate_proof.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "status"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_set_supervisor_proposal_run_id_state_key_write_dynamic_3055",
+      "id": "src_search_exact_campaign_py_exactcampaign_mark_candidate_started_candidate_status_update_dynamic_3034",
+      "pattern": "candidate_status_update_dynamic",
+      "module": "src/search/exact_campaign.py",
+      "qualname": "ExactCampaign.mark_candidate_started",
+      "line": 3034,
+      "justification": "Candidate start copies existing data before a RUNNING rewrite; strong records short-circuit after sink projection, and no writer identity is proof authority.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
+      "keys": [
+        "status"
+      ]
+    },
+    {
+      "id": "src_search_exact_campaign_py_exactcampaign_set_supervisor_proposal_run_id_state_key_write_dynamic_3221",
       "pattern": "state_key_write_dynamic",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.set_supervisor_proposal_run_id",
-      "line": 3091,
+      "line": 3221,
       "justification": "Records supervisor proposal authority metadata under a dynamic campaign-state key for the proposal_ready handoff; it does not mint CERTIFIED proof authority.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078"
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a"
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3266",
+      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3422",
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
-      "line": 3307,
+      "line": 3422,
       "justification": "Supervisor seal stages terminal CERTIFIED only from the proposal_ready marker, matching campaign_instance_id, checkpoint digest, proposal authority bytes, sink replay, and temp-checkpoint validation before its private checkpoint commit.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "final_result"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3267",
+      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3423",
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
-      "line": 3308,
+      "line": 3423,
       "justification": "Supervisor seal stages terminal CERTIFIED only from the proposal_ready marker, matching campaign_instance_id, checkpoint digest, proposal authority bytes, sink replay, and temp-checkpoint validation before its private checkpoint commit.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "final_status"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3274",
+      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3430",
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
-      "line": 3315,
+      "line": 3430,
       "justification": "Supervisor seal stages terminal CERTIFIED only from the proposal_ready marker, matching campaign_instance_id, checkpoint digest, proposal authority bytes, sink replay, and temp-checkpoint validation before its private checkpoint commit.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "terminal_frontier_evidence"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3333",
+      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3430",
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
       "qualname": "ExactCampaign.supervisor_seal",
-      "line": 3374,
+      "line": 3430,
       "justification": "Supervisor seal stages terminal CERTIFIED only from the proposal_ready marker, matching campaign_instance_id, checkpoint digest, proposal authority bytes, sink replay, and temp-checkpoint validation before its private checkpoint commit.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "terminal_frontier_evidence"
       ]
     },
     {
-      "id": "src_search_exact_campaign_py_exactcampaign_mark_campaign_stopped_state_key_write_3392",
+      "id": "src_search_exact_campaign_py_exactcampaign_supervisor_seal_state_key_write_3493",
       "pattern": "state_key_write",
       "module": "src/search/exact_campaign.py",
-      "qualname": "ExactCampaign.mark_campaign_stopped",
-      "line": 3433,
-      "justification": "Campaign stop writer records non-CERTIFIED terminal/nonterminal statuses only; CERTIFIED stops fail closed and must be minted by supervisor_seal.",
-      "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+      "qualname": "ExactCampaign.supervisor_seal",
+      "line": 3493,
+      "justification": "Supervisor seal stages terminal CERTIFIED only from the proposal_ready marker, matching campaign_instance_id, checkpoint digest, proposal authority bytes, sink replay, and temp-checkpoint validation before its private checkpoint commit.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
+      "keys": [
+        "terminal_frontier_evidence"
+      ]
+    },
+    {
+      "id": "src_search_exact_campaign_py_exactcampaign_update_candidate_running_proof_summary_candidate_status_update_dynamic_3196",
+      "pattern": "candidate_status_update_dynamic",
+      "module": "src/search/exact_campaign.py",
+      "qualname": "ExactCampaign.update_candidate_running_proof_summary",
+      "line": 3196,
+      "justification": "Running proof-summary updates preserve and write back only RUNNING records; they do not mint a proof-bearing status.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
+      "keys": [
+        "status"
+      ]
+    },
+    {
+      "id": "src_search_exact_campaign_py__supervisor_certified_transition_violation_state_key_write_1823",
+      "pattern": "state_key_write",
+      "module": "src/search/exact_campaign.py",
+      "qualname": "_supervisor_certified_transition_violation",
+      "line": 1823,
+      "justification": "Builds an expected certified-state clone solely to compare the allowed P-to-Q transition against sealed authority bytes; it does not persist or publish.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
       "keys": [
         "final_status"
       ]
+    },
+    {
+      "id": "src_search_exact_campaign_py__supervisor_certified_transition_violation_state_key_write_1829",
+      "pattern": "state_key_write",
+      "module": "src/search/exact_campaign.py",
+      "qualname": "_supervisor_certified_transition_violation",
+      "line": 1829,
+      "justification": "Builds an expected certified-state clone solely to compare the allowed P-to-Q transition against sealed authority bytes; it does not persist or publish.",
+      "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
+      "keys": [
+        "final_result"
+      ]
+    },
+    {
+      "id": "src_search_heuristic_feasible_finder_py_find_feasible_for_candidate_heuristic_status_295",
+      "pattern": "heuristic_status",
+      "module": "src/search/heuristic_feasible_finder.py",
+      "qualname": "find_feasible_for_candidate",
+      "line": 295,
+      "justification": "Best-effort heuristic status is exploratory-isolated and must not flow to certified campaign state.",
+      "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+      "callee": "HeuristicFinderResult"
+    },
+    {
+      "id": "src_search_heuristic_feasible_finder_py_find_feasible_for_candidate_heuristic_status_295",
+      "pattern": "heuristic_status",
+      "module": "src/search/heuristic_feasible_finder.py",
+      "qualname": "find_feasible_for_candidate",
+      "line": 295,
+      "justification": "Best-effort heuristic status is exploratory-isolated and must not flow to certified campaign state.",
+      "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+      "callee": "HeuristicFinderResult"
+    },
+    {
+      "id": "src_search_heuristic_feasible_finder_py_find_feasible_for_candidate_heuristic_status_295",
+      "pattern": "heuristic_status",
+      "module": "src/search/heuristic_feasible_finder.py",
+      "qualname": "find_feasible_for_candidate",
+      "line": 295,
+      "justification": "Best-effort heuristic status is exploratory-isolated and must not flow to certified campaign state.",
+      "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+      "callee": "HeuristicFinderResult"
+    },
+    {
+      "id": "src_search_heuristic_feasible_finder_py_find_feasible_for_candidate_heuristic_status_295",
+      "pattern": "heuristic_status",
+      "module": "src/search/heuristic_feasible_finder.py",
+      "qualname": "find_feasible_for_candidate",
+      "line": 295,
+      "justification": "Best-effort heuristic status is exploratory-isolated and must not flow to certified campaign state.",
+      "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+      "callee": "HeuristicFinderResult"
     },
     {
       "id": "src_search_heuristic_feasible_finder_py_find_feasible_for_candidate_heuristic_status_295",
@@ -265,17 +387,37 @@
       "callee": "HeuristicFinderResult"
     },
     {
-      "id": "src_search_outer_search_py_mark_certified_campaign_blocked_mark_campaign_stopped_198",
+      "id": "src_search_outer_search_py__commit_terminal_full_frontier_certified_result_mark_campaign_stopped_899",
       "pattern": "mark_campaign_stopped",
       "module": "src/search/outer_search.py",
-      "qualname": "_mark_certified_campaign_blocked",
-      "line": 198,
-      "justification": "Blocked certified-surface path records non-proof UNPROVEN after purging stale publishable artifacts.",
+      "qualname": "_commit_terminal_full_frontier_certified_result",
+      "line": 899,
+      "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
       "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
       "callee": "mark_campaign_stopped"
     },
     {
-      "id": "src_search_outer_search_py_commit_terminal_full_frontier_certified_result_state_key_write_898",
+      "id": "src_search_outer_search_py__commit_terminal_full_frontier_certified_result_mark_campaign_stopped_899",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "_commit_terminal_full_frontier_certified_result",
+      "line": 899,
+      "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py__commit_terminal_full_frontier_certified_result_mark_campaign_stopped_949",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "_commit_terminal_full_frontier_certified_result",
+      "line": 949,
+      "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py__commit_terminal_full_frontier_certified_result_state_key_write_898",
       "pattern": "state_key_write",
       "module": "src/search/outer_search.py",
       "qualname": "_commit_terminal_full_frontier_certified_result",
@@ -287,17 +429,7 @@
       ]
     },
     {
-      "id": "src_search_outer_search_py_commit_terminal_full_frontier_certified_result_mark_campaign_stopped_899",
-      "pattern": "mark_campaign_stopped",
-      "module": "src/search/outer_search.py",
-      "qualname": "_commit_terminal_full_frontier_certified_result",
-      "line": 899,
-      "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "mark_campaign_stopped"
-    },
-    {
-      "id": "src_search_outer_search_py_commit_terminal_full_frontier_certified_result_state_key_write_948",
+      "id": "src_search_outer_search_py__commit_terminal_full_frontier_certified_result_state_key_write_948",
       "pattern": "state_key_write",
       "module": "src/search/outer_search.py",
       "qualname": "_commit_terminal_full_frontier_certified_result",
@@ -309,12 +441,12 @@
       ]
     },
     {
-      "id": "src_search_outer_search_py_commit_terminal_full_frontier_certified_result_mark_campaign_stopped_949",
+      "id": "src_search_outer_search_py__mark_certified_campaign_blocked_mark_campaign_stopped_198",
       "pattern": "mark_campaign_stopped",
       "module": "src/search/outer_search.py",
-      "qualname": "_commit_terminal_full_frontier_certified_result",
-      "line": 949,
-      "justification": "Terminal full-frontier proposal records CANDIDATE_PROPOSED through the campaign stop path; supervisor_seal remains the only CERTIFIED mint.",
+      "qualname": "_mark_certified_campaign_blocked",
+      "line": 198,
+      "justification": "Blocked certified-surface path records non-proof UNPROVEN after purging stale publishable artifacts.",
       "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
       "callee": "mark_campaign_stopped"
     },
@@ -327,6 +459,96 @@
       "justification": "Exploratory return value is isolated from certified campaign state and delivery artifacts.",
       "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
       "callee": "_build_certified_result"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_build_certified_result_1920",
+      "pattern": "build_certified_result",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1920,
+      "justification": "Exploratory return value is isolated from certified campaign state and delivery artifacts.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_build_certified_result"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_build_certified_result_2893",
+      "pattern": "build_certified_result",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2893,
+      "justification": "Exploratory return value is isolated from certified campaign state and delivery artifacts.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_build_certified_result"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 1972,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
     },
     {
       "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_1972",
@@ -349,16 +571,6 @@
       "callee": "mark_campaign_stopped"
     },
     {
-      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
-      "pattern": "verified_producer_reference",
-      "module": "src/search/outer_search.py",
-      "qualname": "run_outer_search",
-      "line": 2085,
-      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "_mark_candidate_result_from_verified_producer"
-    },
-    {
       "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2141",
       "pattern": "mark_campaign_stopped",
       "module": "src/search/outer_search.py",
@@ -377,6 +589,106 @@
       "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
       "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
       "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2603",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2603,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2616",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2616,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2811",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2811,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2850",
+      "pattern": "mark_campaign_stopped",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2850,
+      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "mark_campaign_stopped"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
+      "pattern": "verified_producer_reference",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2085,
+      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_mark_candidate_result_from_verified_producer"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
+      "pattern": "verified_producer_reference",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2085,
+      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_mark_candidate_result_from_verified_producer"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
+      "pattern": "verified_producer_reference",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2085,
+      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_mark_candidate_result_from_verified_producer"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
+      "pattern": "verified_producer_reference",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2085,
+      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_mark_candidate_result_from_verified_producer"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
+      "pattern": "verified_producer_reference",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2085,
+      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_mark_candidate_result_from_verified_producer"
+    },
+    {
+      "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2085",
+      "pattern": "verified_producer_reference",
+      "module": "src/search/outer_search.py",
+      "qualname": "run_outer_search",
+      "line": 2085,
+      "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
+      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
+      "callee": "_mark_candidate_result_from_verified_producer"
     },
     {
       "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2263",
@@ -419,26 +731,6 @@
       "callee": "candidate_result_writer"
     },
     {
-      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2603",
-      "pattern": "mark_campaign_stopped",
-      "module": "src/search/outer_search.py",
-      "qualname": "run_outer_search",
-      "line": 2603,
-      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "mark_campaign_stopped"
-    },
-    {
-      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2616",
-      "pattern": "mark_campaign_stopped",
-      "module": "src/search/outer_search.py",
-      "qualname": "run_outer_search",
-      "line": 2616,
-      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "mark_campaign_stopped"
-    },
-    {
       "id": "src_search_outer_search_py_run_outer_search_verified_producer_reference_2722",
       "pattern": "verified_producer_reference",
       "module": "src/search/outer_search.py",
@@ -457,36 +749,6 @@
       "justification": "Producer candidate writer reference is a data-only candidate status path; every strong candidate record still requires candidate_proof and sink replay before frontier or publication authority.",
       "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
       "callee": "_mark_candidate_result_from_verified_producer"
-    },
-    {
-      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2811",
-      "pattern": "mark_campaign_stopped",
-      "module": "src/search/outer_search.py",
-      "qualname": "run_outer_search",
-      "line": 2811,
-      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "mark_campaign_stopped"
-    },
-    {
-      "id": "src_search_outer_search_py_run_outer_search_mark_campaign_stopped_2850",
-      "pattern": "mark_campaign_stopped",
-      "module": "src/search/outer_search.py",
-      "qualname": "run_outer_search",
-      "line": 2850,
-      "justification": "Certified loop stop path records a terminal/non-terminal status; publication still requires separate sink replay and terminal evidence gates.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "mark_campaign_stopped"
-    },
-    {
-      "id": "src_search_outer_search_py_run_outer_search_build_certified_result_2893",
-      "pattern": "build_certified_result",
-      "module": "src/search/outer_search.py",
-      "qualname": "run_outer_search",
-      "line": 2893,
-      "justification": "Exploratory return value is isolated from certified campaign state and delivery artifacts.",
-      "source_sha256": "0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b",
-      "callee": "_build_certified_result"
     },
     {
       "id": "src_search_phase3b_anchor119_guarded_precheck_runtime_py_evaluate_phase3b_anchor119_guarded_precheck_advisory_candidate_status_157",

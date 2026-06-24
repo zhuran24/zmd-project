@@ -125,11 +125,20 @@ def test_serve_viewer_generates_viewer_report_when_blueprint_is_valid(
     monkeypatch.setattr("src.render.serve.webbrowser.open", lambda url: opened_urls.append(url))
     monkeypatch.setattr(
         "src.render.serve.evaluate_certified_delivery_surface",
-        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            final_solution_payload={"legacy": True},
+            optimal_blueprint_payload=_sample_blueprint_payload(),
+        ),
     )
     monkeypatch.setattr(
         "src.render.report_builder.evaluate_certified_delivery_surface",
-        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            optimal_blueprint_payload=_sample_blueprint_payload(),
+        ),
     )
 
     serve_viewer(port=9998, project_root=project_root, viewer_dir=viewer_dir)

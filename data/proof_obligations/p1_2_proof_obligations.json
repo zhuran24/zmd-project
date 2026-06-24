@@ -831,7 +831,7 @@
           "_check_close_kernel_contract",
           "source_sha256_drift_reopens_p1_2_close_claim"
         ],
-        "source_sha256": "56a7617841ff5a5b0e8fe82b5cb951df4889a8373b3905a21389ef8b776152c6",
+        "source_sha256": "348bf5f26da945ed77c9993a540a8818d9ab602cf90e044cb4b0f767bdc42177",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -989,7 +989,7 @@
           "validate_certified_delivery_manifest_matches_campaign",
           "write_certified_delivery_manifest"
         ],
-        "source_sha256": "4f2fba58383b2f64bc1c9bec17787dee92d03b6a001cf8811bf1bf6aef5bedbf",
+        "source_sha256": "e3cb1a30df850d319ad7faa04eeafd828501037ffdcb5e46c57be0bf7d2c55db",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1017,7 +1017,7 @@
           "UNKNOWN",
           "optimal_blueprint.json"
         ],
-        "source_sha256": "09cdfbe2a8da477eacf8a826a4d5ebc8636028a091e4577c93024bafe0eb0286",
+        "source_sha256": "d38021784758faf589a0bb8a039d22f953f7d952915a7706abc7d05a67fe1cf7",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1309,12 +1309,12 @@
         "classification": "non_authoritative_projection",
         "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
         "terms": [
-          "optimal_blueprint.json"
+          "optimal_blueprint_payload"
         ],
         "required_guard_tokens": [
-          "optimal_blueprint.json"
+          "optimal_blueprint_payload"
         ],
-        "source_sha256": "a5071a8df92368aff0d29fd84de94f65f8a8c184522b8e3b2b4cd2aa5ce68dfa",
+        "source_sha256": "1068a1fe18aa4fb16eeb3c96ad0b78ebf74184f6638808e8b2e773dc920a1a2b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1329,7 +1329,7 @@
           "final_solution.json",
           "optimal_blueprint.json"
         ],
-        "source_sha256": "3c0892a192581246c71de8a061e29e9ff91b428c2e33639e484c5876f72b4464",
+        "source_sha256": "ccbe4682cd61b648895d6cb9d7ee1d212cd5342eb0d8a252e2f9c37d64b88f4b",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1492,9 +1492,10 @@
           "has_valid_terminal_full_frontier_certified_evidence_for_project",
           "resolve_p1_2_publish_open_gate",
           "campaign_path=resolved_campaign_path",
-          "sink-side isolated replay"
+          "publish_verified_certified_delivery_surface",
+          "_load_verified_surface_snapshot"
         ],
-        "source_sha256": "10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09",
+        "source_sha256": "e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1538,7 +1539,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078",
+        "source_sha256": "e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

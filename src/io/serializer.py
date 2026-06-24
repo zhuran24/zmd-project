@@ -141,6 +141,13 @@ def export_certified_blueprint(
     output_path: Optional[Path] = None,
 ) -> Tuple[Path, Dict[str, Any]]:
     target_path = output_path or blueprint_output_path(project_root)
+    if (
+        Path(target_path).resolve() == blueprint_output_path(Path(project_root)).resolve()
+        and str(result.get("search_status")) == "CERTIFIED"
+    ):
+        raise ValueError(
+            "canonical certified blueprint writes must use the verified publisher"
+        )
     payload = build_blueprint_payload_from_certified_result(
         result=result,
         facility_pools=facility_pools,

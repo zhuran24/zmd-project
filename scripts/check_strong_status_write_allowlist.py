@@ -19,6 +19,7 @@ ARTIFACT_CALLEES = {
     "_save_final_result",
     "export_certified_blueprint",
     "export_certified_delivery_manifest",
+    "write_blueprint_payload",
 }
 ARTIFACT_FILENAMES = {
     "final_solution.json",

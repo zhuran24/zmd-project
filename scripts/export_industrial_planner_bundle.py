@@ -12,7 +12,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.adapters.industrial_planner import DEFAULT_BASE_ID, write_industrial_planner_export_bundle
-from src.io.serializer import load_canonical_blueprint
 from src.search.certified_surface import evaluate_certified_delivery_surface
 
 
@@ -72,7 +71,9 @@ def main() -> None:
             f"{surface.blocked_reason or 'unknown'}"
         )
 
-    blueprint_payload = load_canonical_blueprint(blueprint_path)
+    if surface.optimal_blueprint_payload is None:
+        raise SystemExit("industrial planner export requires a certified blueprint snapshot")
+    blueprint_payload = surface.optimal_blueprint_payload
     deployment_plan = (
         json.loads(Path(args.deployment_plan).read_text(encoding="utf-8"))
         if args.deployment_plan

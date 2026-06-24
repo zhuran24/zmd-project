@@ -9,6 +9,7 @@ into one fail-closed currentness contract.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 from dataclasses import dataclass
@@ -22,7 +23,10 @@ from src.io.delivery_manifest import (
     validate_delivery_artifacts_match_campaign,
 )
 from src.io.output_schema import blueprint_output_path
-from src.io.serializer import export_certified_blueprint
+from src.io.serializer import (
+    build_blueprint_payload_from_certified_result,
+    write_blueprint_payload,
+)
 from src.search.exact_campaign import (
     DEFAULT_CAMPAIGN_FILENAME,
     PROOF_BEARING_TERMINAL_STATUSES,
@@ -63,6 +67,8 @@ class CertifiedSurfaceVerdict:
     delivery_manifest_error: Optional[str]
     best_certified_result: Optional[Dict[str, Any]]
     delivery_manifest_payload: Optional[Dict[str, Any]]
+    final_solution_payload: Optional[Dict[str, Any]] = None
+    optimal_blueprint_payload: Optional[Dict[str, Any]] = None
     publish_open_gate_open: bool = False
     publish_open_gate_reason: Optional[str] = None
 
@@ -114,6 +120,8 @@ class CertifiedSurfaceVerdict:
             "delivery_manifest_current": bool(self.delivery_manifest_current),
             "delivery_manifest_error": self.delivery_manifest_error,
             "best_certified_result_present": self.best_certified_result is not None,
+            "final_solution_snapshot_present": self.final_solution_payload is not None,
+            "optimal_blueprint_snapshot_present": self.optimal_blueprint_payload is not None,
             "publish_open_gate_open": bool(self.publish_open_gate_open),
             "publish_open_gate_reason": self.publish_open_gate_reason,
         }
@@ -198,13 +206,10 @@ def evaluate_certified_delivery_surface(
             delivery_manifest_load_error=manifest_error,
             delivery_manifest_payload=manifest_payload,
         )
-    # Memory and disk are both untrusted representations.  JSON equivalence only
-    # establishes currentness; sink-side isolated replay establishes proof
-    # authority below.
-    if _mapping_or_none(provided_campaign_state) is not None:
-        campaign_state = provided_campaign_state
-    else:
-        campaign_state = campaign_payload if campaign_payload is not None else campaign_state
+    # Memory and disk are both untrusted representations.  Caller payloads are
+    # accepted only as currentness witnesses above; all authority below is the
+    # strict plain dict loaded from the canonical checkpoint bytes.
+    campaign_state = campaign_payload if campaign_payload is not None else campaign_state
 
     resolved_resume_reason = _resolve_resume_validation_reason(
         project_root=project_root,
@@ -421,6 +426,32 @@ def evaluate_certified_delivery_surface(
             publish_open_gate_reason=blocked_reason,
         )
 
+    snapshot_payloads, snapshot_error = _load_verified_surface_snapshot(
+        project_root=project_root,
+        delivery_manifest=manifest_payload,
+    )
+    if snapshot_error is not None or snapshot_payloads is None:
+        final_artifacts_error = snapshot_error or "delivery_artifact_snapshot_missing"
+        return _blocked(
+            final_artifacts_error,
+            campaign_present=True,
+            campaign_resume_compatible=True,
+            campaign_resume_validation_reason=None,
+            campaign_terminal_full_frontier_claimed=True,
+            campaign_terminal_full_frontier_valid=True,
+            final_delivery_artifacts_current=False,
+            final_delivery_artifacts_error=final_artifacts_error,
+            delivery_manifest_present=True,
+            delivery_manifest_regular_file=True,
+            delivery_manifest_load_error=None,
+            delivery_manifest_terminal_full_frontier_claimed=True,
+            delivery_manifest_current=True,
+            delivery_manifest_error=None,
+            best_certified_result=best_certified_result,
+            delivery_manifest_payload=manifest_payload,
+        )
+    final_solution_payload, optimal_blueprint_payload = snapshot_payloads
+
     return CertifiedSurfaceVerdict(
         publishable=True,
         blocked_reason=None,
@@ -439,6 +470,8 @@ def evaluate_certified_delivery_surface(
         delivery_manifest_error=None,
         best_certified_result=best_certified_result,
         delivery_manifest_payload=manifest_payload,
+        final_solution_payload=final_solution_payload,
+        optimal_blueprint_payload=optimal_blueprint_payload,
         publish_open_gate_open=False,
         publish_open_gate_reason=None,
     )
@@ -535,11 +568,11 @@ def _write_certified_final_solution_and_blueprint_unchecked(
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "final_solution.json"
     atomic_write_json(output_path, dict(result))
-    export_certified_blueprint(
-        project_root=project_root,
+    blueprint_payload = build_blueprint_payload_from_certified_result(
         result=dict(result),
         facility_pools=facility_pools,
     )
+    write_blueprint_payload(blueprint_output_path(project_root), blueprint_payload)
     return output_path
 
 
@@ -557,57 +590,49 @@ def publish_verified_certified_delivery_surface(
         project_root=project_root,
         campaign_path=campaign_path,
     )
+    clear_certified_delivery_surface_artifacts(project_root)
     try:
-        state = (
-            _mapping_or_none(campaign_state)
-            if campaign_state is not None
-            else _load_strict_json_mapping(resolved_campaign_path)
+        state = _load_strict_json_mapping(resolved_campaign_path)
+        if campaign_state is not None:
+            provided_state = _mapping_or_none(campaign_state)
+            if provided_state is None:
+                raise RuntimeError("campaign_state_missing")
+            if not _json_equivalent(provided_state, state):
+                raise RuntimeError("campaign_state_payload_mismatch")
+        if not has_valid_terminal_full_frontier_certified_evidence_for_project(
+            state,
+            project_root=project_root,
+            campaign_path=resolved_campaign_path,
+        ):
+            raise RuntimeError("campaign_terminal_full_frontier_evidence_invalid")
+        result = _mapping_or_none(state.get("final_result"))
+        if result is None:
+            raise RuntimeError("campaign_final_result_missing")
+        result["search_status"] = "CERTIFIED"
+        _write_certified_final_solution_and_blueprint_unchecked(
+            project_root=project_root,
+            result=result,
+            facility_pools=facility_pools,
         )
+        _manifest_path, manifest_payload = export_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=state,
+            campaign_path=resolved_campaign_path,
+        )
+        surface = verify_certified_delivery_surface(
+            project_root=project_root,
+            campaign_state=state,
+            campaign_path=resolved_campaign_path,
+            delivery_manifest=manifest_payload,
+        )
+        if not surface.publishable:
+            raise RuntimeError(surface.blocked_reason or CERTIFIED_SURFACE_BLOCKED_REASON)
     except Exception as exc:  # noqa: BLE001 - publication must fail closed.
         clear_certified_delivery_surface_artifacts(project_root)
         raise RuntimeError(
-            f"certified delivery surface publication rejected: campaign_state_unreadable:{type(exc).__name__}"
+            "certified delivery surface publication rejected: "
+            f"{exc}"
         ) from exc
-    if state is None:
-        clear_certified_delivery_surface_artifacts(project_root)
-        raise RuntimeError("certified delivery surface publication rejected: campaign_state_missing")
-    if not has_valid_terminal_full_frontier_certified_evidence_for_project(
-        state,
-        project_root=project_root,
-        campaign_path=resolved_campaign_path,
-    ):
-        clear_certified_delivery_surface_artifacts(project_root)
-        raise RuntimeError(
-            "certified delivery surface publication rejected: "
-            "campaign_terminal_full_frontier_evidence_invalid"
-        )
-    result = _mapping_or_none(state.get("final_result"))
-    if result is None:
-        clear_certified_delivery_surface_artifacts(project_root)
-        raise RuntimeError("certified delivery surface publication rejected: campaign_final_result_missing")
-    result["search_status"] = "CERTIFIED"
-    _write_certified_final_solution_and_blueprint_unchecked(
-        project_root=project_root,
-        result=result,
-        facility_pools=facility_pools,
-    )
-    _manifest_path, manifest_payload = export_certified_delivery_manifest(
-        project_root=project_root,
-        campaign_state=state,
-        campaign_path=resolved_campaign_path,
-    )
-    surface = verify_certified_delivery_surface(
-        project_root=project_root,
-        campaign_state=state,
-        campaign_path=resolved_campaign_path,
-        delivery_manifest=manifest_payload,
-    )
-    if not surface.publishable:
-        clear_certified_delivery_surface_artifacts(project_root)
-        raise RuntimeError(
-            "certified delivery surface publication rejected: "
-            f"{surface.blocked_reason or CERTIFIED_SURFACE_BLOCKED_REASON}"
-        )
     return surface
 
 
@@ -836,6 +861,68 @@ def _json_equivalent(left: Mapping[str, Any], right: Mapping[str, Any]) -> bool:
         separators=(",", ":"),
         ensure_ascii=False,
     )
+
+
+def _artifact_sha_from_manifest(
+    delivery_manifest: Mapping[str, Any],
+    artifact_name: str,
+) -> Optional[str]:
+    artifacts = delivery_manifest.get("artifacts")
+    if not isinstance(artifacts, Mapping):
+        return None
+    artifact = artifacts.get(artifact_name)
+    if not isinstance(artifact, Mapping):
+        return None
+    value = artifact.get("sha256")
+    return str(value) if isinstance(value, str) else None
+
+
+def _load_snapshot_payload(
+    path: Path,
+    *,
+    expected_sha256: Optional[str],
+) -> tuple[Optional[Dict[str, Any]], Optional[str]]:
+    try:
+        raw_bytes = Path(path).read_bytes()
+    except Exception as exc:  # noqa: BLE001
+        return None, f"snapshot_read_error:{type(exc).__name__}"
+    if expected_sha256 is None:
+        return None, "snapshot_manifest_sha256_missing"
+    if hashlib.sha256(raw_bytes).hexdigest() != expected_sha256:
+        return None, "snapshot_sha256_mismatch"
+    try:
+        payload = json.loads(
+            raw_bytes.decode("utf-8"),
+            object_pairs_hook=_reject_duplicate_json_keys,
+            parse_constant=_reject_json_constant,
+        )
+    except Exception as exc:  # noqa: BLE001
+        return None, f"snapshot_json_load_error:{type(exc).__name__}"
+    if not isinstance(payload, Mapping):
+        return None, "snapshot_payload_not_object"
+    return dict(payload), None
+
+
+def _load_verified_surface_snapshot(
+    *,
+    project_root: Path,
+    delivery_manifest: Mapping[str, Any],
+) -> tuple[Optional[tuple[Dict[str, Any], Dict[str, Any]]], Optional[str]]:
+    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+    optimal_blueprint_path = blueprint_output_path(project_root)
+    final_solution_payload, final_error = _load_snapshot_payload(
+        final_solution_path,
+        expected_sha256=_artifact_sha_from_manifest(delivery_manifest, "final_solution"),
+    )
+    if final_error is not None or final_solution_payload is None:
+        return None, f"final_solution_{final_error or 'snapshot_missing'}"
+    optimal_blueprint_payload, blueprint_error = _load_snapshot_payload(
+        optimal_blueprint_path,
+        expected_sha256=_artifact_sha_from_manifest(delivery_manifest, "optimal_blueprint"),
+    )
+    if blueprint_error is not None or optimal_blueprint_payload is None:
+        return None, f"optimal_blueprint_{blueprint_error or 'snapshot_missing'}"
+    return (final_solution_payload, optimal_blueprint_payload), None
 
 
 def _resolve_resume_validation_reason(
