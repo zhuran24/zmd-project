@@ -874,7 +874,7 @@ def _build_certified_result(
     return {
         "ghost_rect": ghost_rect,
         "placement_solution": _placement_solution_without_ghost_marker(solution),
-        "search_status": RUN_STATUS_CERTIFIED,
+        "search_status": CANDIDATE_PROPOSED_STATUS,
         "search_stats": {
             "attempts": attempts,
             "explicit_candidate_solves": attempts,
@@ -1982,10 +1982,10 @@ def run_outer_search(
                                     candidate_generation=candidate_generation,
                                 )
                             if exact_campaign is not None:
-                                _refresh_certified_delivery_outputs(
+                                _clear_certified_delivery_solution_artifacts(project_root)
+                                _refresh_certified_delivery_manifest_if_any(
                                     project_root=project_root,
                                     exact_campaign=exact_campaign,
-                                    facility_pools=facility_pools,
                                 )
                         except Exception as exc:  # noqa: BLE001
                             if exact_campaign is None:
@@ -2002,7 +2002,7 @@ def run_outer_search(
                                 ],
                             )
                             return RUN_STATUS_UNPROVEN, None
-                        return RUN_STATUS_CERTIFIED, result
+                        return CANDIDATE_PROPOSED_STATUS, result
 
                     if exact_campaign is not None:
                         exact_campaign.mark_campaign_stopped(
