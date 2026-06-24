@@ -225,11 +225,20 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
     monkeypatch.setattr("src.render.serve.webbrowser.open", lambda url: opened_urls.append(url))
     monkeypatch.setattr(
         "src.render.serve.evaluate_certified_delivery_surface",
-        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            final_solution_payload={"snapshot": "final"},
+            optimal_blueprint_payload={"snapshot": "blueprint"},
+        ),
     )
     monkeypatch.setattr(
         "src.render.report_builder.evaluate_certified_delivery_surface",
-        lambda **_kwargs: SimpleNamespace(publishable=True, blocked_reason=None),
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            optimal_blueprint_payload={"snapshot": "blueprint"},
+        ),
     )
 
     serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
@@ -237,7 +246,64 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
     assert (viewer_dir / "final_solution.json").exists()
     assert (viewer_dir / "optimal_blueprint.json").exists()
     assert (viewer_dir / "candidate_placements.json").exists()
+    assert json.loads((viewer_dir / "final_solution.json").read_text(encoding="utf-8")) == {
+        "snapshot": "final"
+    }
+    assert json.loads((viewer_dir / "optimal_blueprint.json").read_text(encoding="utf-8")) == {
+        "snapshot": "blueprint"
+    }
     assert opened_urls == ["http://localhost:9999"]
+
+
+def test_serve_viewer_removes_stale_report_when_report_generation_fails(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    viewer_dir = tmp_path / "viewer"
+    viewer_dir.mkdir(parents=True, exist_ok=True)
+    _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", _sample_pools_payload())
+    _write_json(viewer_dir / "viewer_report.json", {"stale": "viewer-report"})
+
+    class DummyServer:
+        def __init__(self, *args, **kwargs) -> None:
+            self.args = args
+            self.kwargs = kwargs
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb) -> None:
+            return None
+
+        def serve_forever(self) -> None:
+            return None
+
+    monkeypatch.setattr("src.render.serve.socketserver.TCPServer", DummyServer)
+    monkeypatch.setattr("src.render.serve.webbrowser.open", lambda _url: None)
+    monkeypatch.setattr(
+        "src.render.serve.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            final_solution_payload={"snapshot": "final"},
+            optimal_blueprint_payload={"snapshot": "blueprint"},
+        ),
+    )
+    monkeypatch.setattr(
+        "src.render.serve.build_viewer_report_from_project_root",
+        lambda _project_root: (_ for _ in ()).throw(RuntimeError("report failed")),
+    )
+
+    serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
+
+    assert json.loads((viewer_dir / "final_solution.json").read_text(encoding="utf-8")) == {
+        "snapshot": "final"
+    }
+    assert json.loads((viewer_dir / "optimal_blueprint.json").read_text(encoding="utf-8")) == {
+        "snapshot": "blueprint"
+    }
+    assert not (viewer_dir / "viewer_report.json").exists()
 
 
 def test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_copies(

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -212,6 +214,22 @@ def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
             and isinstance(serialized_state.get("supervisor_seal"), dict)
         )
 
+    def accept_precommit_authority(
+        state: Mapping[str, Any],
+        *,
+        project_root: Path,
+        campaign_path: Path,
+        authority_state: Mapping[str, Any],
+        authority_bytes: bytes,
+    ) -> None:
+        assert project_root == resumed.project_root
+        assert campaign_path == resumed.path
+        assert state.get("final_status") == RUN_STATUS_CERTIFIED
+        decoded = json.loads(authority_bytes.decode("utf-8"))
+        assert decoded.get("final_status") == RUN_STATUS_CERTIFIED
+        assert authority_state.get("final_status") == RUN_STATUS_CERTIFIED
+        return None
+
     replay_calls: list[dict[str, Any]] = []
 
     def accept_sink_replay_bundle(**kwargs: Any) -> dict[str, Any]:
@@ -246,13 +264,66 @@ def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
         "has_valid_terminal_full_frontier_certified_evidence_for_project",
         accept_supervisor_scratch_state,
     )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "_terminal_certified_final_result_violation_for_project_authority",
+        accept_precommit_authority,
+    )
 
+    proposal_bytes = resumed.path.read_bytes()
+    proposal_sha256 = hashlib.sha256(proposal_bytes).hexdigest()
     resumed.supervisor_seal()
 
     assert resumed.state["final_status"] == RUN_STATUS_CERTIFIED
     assert resumed.state["last_stop_reason"]["status"] == RUN_STATUS_CERTIFIED
     assert resumed.state["final_result"]["search_status"] == RUN_STATUS_CERTIFIED
     assert SUPERVISOR_PROPOSAL_STATE_KEY not in resumed.state
+    seal_record = resumed.state["supervisor_seal"]
+    assert seal_record["transition"] == "proposal_to_certified_v1"
+    assert seal_record["proposal_run_id"] == proposal_run_id
+    assert seal_record["proposal_checkpoint_sha256"] == proposal_sha256
+    assert base64.b64decode(
+        seal_record["proposal_authority_b64"].encode("ascii"),
+        validate=True,
+    ) == proposal_bytes
+    decoded_proposal = json.loads(
+        base64.b64decode(seal_record["proposal_authority_b64"]).decode("utf-8")
+    )
+    assert decoded_proposal["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert (
+        exact_campaign_module._supervisor_seal_state_violation(
+            seal_record,
+            state=resumed.state,
+        )
+        is None
+    )
+    all_zero_sha_seal = dict(seal_record)
+    all_zero_sha_seal["proposal_checkpoint_sha256"] = "0" * 64
+    assert (
+        exact_campaign_module._supervisor_seal_state_violation(
+            all_zero_sha_seal,
+            state=resumed.state,
+        )
+        == "supervisor_seal_proposal_authority_sha256_mismatch"
+    )
+    fake_run_seal = dict(seal_record)
+    fake_run_seal["proposal_run_id"] = "fake-run"
+    assert (
+        exact_campaign_module._supervisor_seal_state_violation(
+            fake_run_seal,
+            state=resumed.state,
+        )
+        == "supervisor_seal_proposal_run_id_mismatch"
+    )
+    diverged_state = json.loads(json.dumps(resumed.state))
+    diverged_state["final_result"]["ghost_rect"]["w"] = 2
+    assert (
+        exact_campaign_module._supervisor_seal_state_violation(
+            seal_record,
+            state=diverged_state,
+        )
+        == "supervisor_seal_transition_mismatch"
+    )
     assert len(replay_calls) == 1
 
 
@@ -354,6 +425,22 @@ def test_supervisor_seal_rejects_marker_campaign_instance_id_mismatch(
     _assert_supervisor_failure_kept_proposal(campaign)
 
 
+def test_supervisor_seal_rejects_nonzero_marker_exit_code(tmp_path: Path) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "supervisor_marker_exit_code")
+    campaign, _final_result, _terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="proposal-run",
+    )
+    marker = json.loads(campaign.proposal_ready_marker_path.read_text(encoding="utf-8"))
+    marker["exit_code"] = 1
+    campaign.proposal_ready_marker_path.write_text(json.dumps(marker), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="proposal_ready_marker_exit_code_invalid"):
+        campaign.supervisor_seal()
+
+    _assert_supervisor_failure_kept_proposal(campaign)
+
+
 def test_memory_certified_disk_proposal_does_not_publish_best_result(
     tmp_path: Path,
 ) -> None:
@@ -404,7 +491,12 @@ def test_supervisor_seal_rechecks_marker_before_mint_and_preserves_concurrent_pr
         assert campaign_path is not None
         return True
 
-    def write_concurrent_proposal(_scratch_state: Mapping[str, Any]) -> None:
+    def write_concurrent_proposal(
+        _scratch_state: Mapping[str, Any],
+        *,
+        authority_bytes: bytes,
+    ) -> None:
+        assert json.loads(authority_bytes.decode("utf-8"))["final_status"] == RUN_STATUS_CERTIFIED
         campaign.set_supervisor_proposal_run_id("proposal-q-run")
         campaign.state["final_result"] = dict(
             _proposal_final_result(),
@@ -643,6 +735,11 @@ def test_supervisor_seal_rejects_has_valid_false_without_mint(
         exact_campaign_module,
         "has_valid_terminal_full_frontier_certified_evidence_for_project",
         reject_terminal_evidence,
+    )
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "_terminal_certified_final_result_violation_for_project_authority",
+        lambda *_args, **_kwargs: None,
     )
 
     with pytest.raises(RuntimeError, match="supervisor_seal rejected terminal CERTIFIED evidence"):

@@ -156,10 +156,9 @@ def _resolve_visualization_payload(
         )
         return None
 
-    blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
-    if pools and blueprint_path.exists():
+    blueprint_payload = surface.optimal_blueprint_payload
+    if pools and blueprint_payload is not None:
         try:
-            blueprint_payload = json.loads(blueprint_path.read_text(encoding="utf-8"))
             return recover_legacy_render_payload_from_blueprint(
                 blueprint_payload=blueprint_payload,
                 facility_pools=pools,
@@ -170,16 +169,8 @@ def _resolve_visualization_payload(
                 f"fallback to final_solution.json: {exc}"
             )
 
-    if result is not None and str(result.get("search_status")) == "CERTIFIED":
-        return {
-            "placement_solution": dict(result.get("placement_solution", {})),
-            "ghost_rect": result.get("ghost_rect"),
-        }
-
-    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
-    if not final_solution_path.exists():
-        return None
-    return json.loads(final_solution_path.read_text(encoding="utf-8"))
+    final_solution_payload = surface.final_solution_payload
+    return dict(final_solution_payload) if final_solution_payload is not None else None
 
 
 

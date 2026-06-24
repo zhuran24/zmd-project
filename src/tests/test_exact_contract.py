@@ -991,6 +991,24 @@ def _seal_campaign_proposal_with_accepting_replay(
     return campaign
 
 
+def _publish_and_read_best_certified_result(
+    project_root: Path,
+    sealed_campaign: ExactCampaign,
+) -> dict:
+    assert sealed_campaign.best_certified_result() is None
+    _instances, facility_pools, _rules = load_project_data(project_root)
+    published_surface = certified_surface_module.publish_verified_certified_delivery_surface(
+        project_root=project_root,
+        campaign_path=sealed_campaign.path,
+        campaign_state=sealed_campaign.state,
+        facility_pools=facility_pools,
+    )
+    assert published_surface.publishable is True
+    best_result = sealed_campaign.best_certified_result()
+    assert best_result is not None
+    return best_result
+
+
 def _mock_precheck_proof_summary(
     *,
     precheck_reason: str,
@@ -3147,8 +3165,7 @@ def test_toy_project_can_be_truly_certified(
         project_root,
         state,
     )
-    sealed_result = sealed_campaign.best_certified_result()
-    assert sealed_result is not None
+    sealed_result = _publish_and_read_best_certified_result(project_root, sealed_campaign)
     assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
@@ -8227,6 +8244,8 @@ def test_certified_result_writes_canonical_optimal_blueprint(
     assert blueprint_payload["facilities"][0]["orientation"] == 0
     assert blueprint_payload["facilities"][0]["port_mode"] == "default"
     assert blueprint_payload["routing_network"] == {"L0_ground": {}, "L1_elevated": {}}
+    assert published_surface.final_solution_payload == final_solution_payload
+    assert normalize_blueprint_payload(published_surface.optimal_blueprint_payload) == blueprint_payload
     assert manifest_payload["campaign"]["final_status"] == RUN_STATUS_CERTIFIED
     assert manifest_payload["best_certified_result"]["ghost_rect"] == expected_ghost_rect
     assert manifest_payload["artifacts"]["final_solution"]["exists"] is True
@@ -8238,6 +8257,26 @@ def test_certified_result_writes_canonical_optimal_blueprint(
         delivery_manifest=manifest_payload,
     )
     assert verdict.publishable is True
+
+    def fail_manifest_export(**_kwargs: Any) -> tuple[Path, dict[str, Any]]:
+        raise RuntimeError("manifest writer exploded after projections")
+
+    monkeypatch.setattr(
+        certified_surface_module,
+        "export_certified_delivery_manifest",
+        fail_manifest_export,
+    )
+    with pytest.raises(RuntimeError, match="certified delivery surface publication rejected"):
+        certified_surface_module.publish_verified_certified_delivery_surface(
+            project_root=project_root,
+            campaign_path=sealed_campaign.path,
+            campaign_state=sealed_campaign.state,
+            facility_pools=facility_pools,
+        )
+
+    assert not final_solution_path.exists()
+    assert not blueprint_path.exists()
+    assert not manifest_path.exists()
 
 
 def test_exact_path_publishes_core_reuse_metadata(tmp_path: Path) -> None:
@@ -8741,8 +8780,7 @@ def test_antichain_frontier_matches_bruteforce_and_preserves_tiebreak(
         project_root,
         state,
     )
-    sealed_result = sealed_campaign.best_certified_result()
-    assert sealed_result is not None
+    sealed_result = _publish_and_read_best_certified_result(project_root, sealed_campaign)
     assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
@@ -8863,8 +8901,7 @@ def test_unknown_candidate_is_retried_on_resume_without_monotone_prune(
         project_root,
         state,
     )
-    sealed_result = sealed_campaign.best_certified_result()
-    assert sealed_result is not None
+    sealed_result = _publish_and_read_best_certified_result(project_root, sealed_campaign)
     assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 
@@ -8981,8 +9018,7 @@ def test_prune_first_partial_run_can_deviate_from_objective_prefix_and_resume(
         project_root,
         state,
     )
-    sealed_result = sealed_campaign.best_certified_result()
-    assert sealed_result is not None
+    sealed_result = _publish_and_read_best_certified_result(project_root, sealed_campaign)
     assert sealed_result["ghost_rect"] == expected_ghost_rect
 
 

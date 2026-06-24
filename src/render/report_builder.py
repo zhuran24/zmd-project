@@ -12,11 +12,7 @@ from src.adapters.dige.result_view_models import (
     build_result_warnings,
     build_viewer_defaults,
 )
-from src.io.serializer import (
-    load_canonical_blueprint,
-    load_candidate_placements,
-    load_json_mapping,
-)
+from src.io.serializer import load_candidate_placements, load_json_mapping
 from src.search.exact_campaign import atomic_write_json
 from src.search.certified_surface import evaluate_certified_delivery_surface
 
@@ -61,7 +57,9 @@ def build_viewer_report_from_project_root(project_root: Path) -> dict[str, Any]:
             "certified viewer report surface is not publishable: "
             f"{surface.blocked_reason or 'unknown'}"
         )
-    blueprint_payload = load_canonical_blueprint(project_root / "data" / "blueprints" / "optimal_blueprint.json")
+    if surface.optimal_blueprint_payload is None:
+        raise RuntimeError("certified viewer report surface snapshot is missing optimal_blueprint")
+    blueprint_payload = surface.optimal_blueprint_payload
     facility_pools = load_candidate_placements(project_root / "data" / "preprocessed" / "candidate_placements.json")
     rules_path = project_root / "rules" / "canonical_rules.json"
     rules_payload = load_json_mapping(rules_path) if rules_path.exists() else {}

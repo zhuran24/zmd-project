@@ -11,6 +11,7 @@ Exact campaign state manager（精确战役状态管理器）.
 from __future__ import annotations
 
 import calendar
+import base64
 import hashlib
 import json
 import math
@@ -68,7 +69,7 @@ PROPOSAL_READY_MARKER_SUFFIX = ".proposal_ready.json"
 CHECKPOINT_WRITE_LOCK_TIMEOUT_SECONDS = 30.0
 SUPERVISOR_PROPOSAL_STATE_KEY = "supervisor_proposal"
 SUPERVISOR_SEAL_STATE_KEY = "supervisor_seal"
-SUPERVISOR_SEAL_SCHEMA_VERSION = 1
+SUPERVISOR_SEAL_SCHEMA_VERSION = 2
 SUPERVISOR_SEAL_AUTHORITY = "certified_exact_supervisor_seal_v1"
 CAMPAIGN_INSTANCE_ID_KEY = "campaign_instance_id"
 _PROPOSAL_RUN_ID_ALLOWED_CHARS = frozenset(
@@ -91,8 +92,10 @@ _SUPERVISOR_SEAL_STATE_KEYS = frozenset(
     {
         "schema_version",
         "authority",
+        "transition",
         "proposal_run_id",
         "proposal_checkpoint_sha256",
+        "proposal_authority_b64",
         CAMPAIGN_INSTANCE_ID_KEY,
         "certified_state_sha256",
         "sealed_at",
@@ -1611,6 +1614,10 @@ def _fsync_directory(path: Path) -> None:
         os.close(dir_fd)
 
 
+def _atomic_json_bytes(payload: Mapping[str, Any]) -> bytes:
+    return json.dumps(payload, indent=2, ensure_ascii=False).encode("utf-8")
+
+
 def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, raw_tmp_path = tempfile.mkstemp(
@@ -1620,8 +1627,8 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
     )
     tmp_path = Path(raw_tmp_path)
     try:
-        with os.fdopen(fd, "w", encoding="utf-8") as handle:
-            json.dump(payload, handle, indent=2, ensure_ascii=False)
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(_atomic_json_bytes(payload))
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(str(tmp_path), str(path))
@@ -1705,8 +1712,8 @@ def _valid_campaign_instance_id(value: Any) -> bool:
 def _strict_proposal_exit_code(value: Any) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise ValueError("proposal_ready exit_code must be an integer")
-    if value < 0:
-        raise ValueError("proposal_ready exit_code must be non-negative")
+    if value != 0:
+        raise ValueError("proposal_ready exit_code must be zero")
     return int(value)
 
 
@@ -1757,6 +1764,100 @@ def _certified_state_payload_sha256(state: Mapping[str, Any]) -> str:
     return hashlib.sha256(canonical_state_bytes_for_fixed_witness(payload)).hexdigest()
 
 
+def _load_sealed_proposal_authority(value: Mapping[str, Any]) -> Tuple[Dict[str, Any], bytes, Optional[str]]:
+    raw_authority = value.get("proposal_authority_b64")
+    if not isinstance(raw_authority, str) or not raw_authority:
+        return {}, b"", "supervisor_seal_proposal_authority_missing"
+    try:
+        authority_bytes = base64.b64decode(raw_authority.encode("ascii"), validate=True)
+    except Exception:
+        return {}, b"", "supervisor_seal_proposal_authority_invalid"
+    if hashlib.sha256(authority_bytes).hexdigest() != str(value.get("proposal_checkpoint_sha256")):
+        return {}, b"", "supervisor_seal_proposal_authority_sha256_mismatch"
+    try:
+        authority_state = loads_strict_json(authority_bytes.decode("utf-8"))
+    except Exception:
+        return {}, b"", "supervisor_seal_proposal_authority_state_invalid"
+    if not isinstance(authority_state, Mapping):
+        return {}, b"", "supervisor_seal_proposal_authority_state_invalid"
+    return dict(authority_state), authority_bytes, None
+
+
+def _final_result_certified_transition(
+    final_result: Any,
+) -> Optional[Dict[str, Any]]:
+    if not isinstance(final_result, Mapping):
+        return None
+    result = dict(final_result)
+    result["search_status"] = "CERTIFIED"
+    return result
+
+
+def _supervisor_certified_transition_violation(
+    *,
+    proposal_state: Mapping[str, Any],
+    certified_state: Mapping[str, Any],
+    seal_record: Mapping[str, Any],
+) -> Optional[str]:
+    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:
+        return "supervisor_seal_proposal_status_invalid"
+    if SUPERVISOR_SEAL_STATE_KEY in proposal_state:
+        return "supervisor_seal_proposal_already_sealed"
+    proposal_record = proposal_state.get(SUPERVISOR_PROPOSAL_STATE_KEY)
+    proposal_violation = _proposal_state_violation(
+        proposal_record,
+        expected_campaign_instance_id=str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY)),
+    )
+    if proposal_violation is not None:
+        return f"supervisor_seal_{proposal_violation}"
+    if not isinstance(proposal_record, Mapping):
+        return "supervisor_seal_supervisor_proposal_invalid"
+    if str(proposal_record.get("run_id")) != str(seal_record.get("proposal_run_id")):
+        return "supervisor_seal_proposal_run_id_mismatch"
+    if str(proposal_state.get(CAMPAIGN_INSTANCE_ID_KEY)) != str(
+        seal_record.get(CAMPAIGN_INSTANCE_ID_KEY)
+    ):
+        return "supervisor_seal_proposal_campaign_instance_id_mismatch"
+
+    expected = dict(proposal_state)
+    expected["final_status"] = "CERTIFIED"
+    expected_final_result = _final_result_certified_transition(
+        proposal_state.get("final_result")
+    )
+    if expected_final_result is None:
+        return "supervisor_seal_proposal_final_result_invalid"
+    expected["final_result"] = expected_final_result
+    expected.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+    expected[SUPERVISOR_SEAL_STATE_KEY] = dict(seal_record)
+
+    certified_stop = certified_state.get("last_stop_reason")
+    if not isinstance(certified_stop, Mapping):
+        return "supervisor_seal_certified_stop_invalid"
+    certified_stop_timestamp = certified_stop.get("updated_at")
+    try:
+        _strict_resume_timestamp(certified_stop_timestamp, "last_stop_reason.updated_at")
+    except Exception:
+        return "supervisor_seal_certified_stop_timestamp_invalid"
+    expected["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": "CERTIFIED",
+        "updated_at": str(certified_stop_timestamp),
+    }
+    certified_updated_at = certified_state.get("updated_at")
+    try:
+        _strict_resume_timestamp(certified_updated_at, "updated_at")
+    except Exception:
+        return "supervisor_seal_certified_updated_at_invalid"
+    expected["updated_at"] = str(certified_updated_at)
+
+    try:
+        if canonical_state_bytes_for_fixed_witness(expected) != canonical_state_bytes_for_fixed_witness(certified_state):
+            return "supervisor_seal_transition_mismatch"
+    except Exception:
+        return "supervisor_seal_transition_invalid"
+    return None
+
+
 def _supervisor_seal_state_violation(value: Any, *, state: Mapping[str, Any]) -> Optional[str]:
     if not isinstance(value, Mapping):
         return "supervisor_seal_invalid"
@@ -1773,6 +1874,8 @@ def _supervisor_seal_state_violation(value: Any, *, state: Mapping[str, Any]) ->
         return "supervisor_seal_schema_invalid"
     if str(value.get("authority", "")) != SUPERVISOR_SEAL_AUTHORITY:
         return "supervisor_seal_authority_invalid"
+    if str(value.get("transition", "")) != "proposal_to_certified_v1":
+        return "supervisor_seal_transition_invalid"
     proposal_run_id = value.get("proposal_run_id")
     if not _valid_supervisor_proposal_run_id(proposal_run_id):
         return "supervisor_seal_proposal_run_id_invalid"
@@ -1784,6 +1887,16 @@ def _supervisor_seal_state_violation(value: Any, *, state: Mapping[str, Any]) ->
         return "supervisor_seal_campaign_instance_id_invalid"
     if str(campaign_instance_id) != str(state.get(CAMPAIGN_INSTANCE_ID_KEY)):
         return "supervisor_seal_campaign_instance_id_mismatch"
+    proposal_state, _proposal_bytes, proposal_reason = _load_sealed_proposal_authority(value)
+    if proposal_reason is not None:
+        return proposal_reason
+    transition_reason = _supervisor_certified_transition_violation(
+        proposal_state=proposal_state,
+        certified_state=state,
+        seal_record=value,
+    )
+    if transition_reason is not None:
+        return transition_reason
     certified_state_sha256 = value.get("certified_state_sha256")
     if not _is_lower_sha256(certified_state_sha256):
         return "supervisor_seal_certified_state_sha256_invalid"
@@ -2556,6 +2669,23 @@ def terminal_certified_final_result_violation_for_project(
     except Exception:
         return "terminal_certified_authority_state_invalid"
 
+    return _terminal_certified_final_result_violation_for_project_authority(
+        state,
+        project_root=project_root,
+        campaign_path=campaign_path,
+        authority_state=authority_state,
+        authority_bytes=authority_bytes,
+    )
+
+
+def _terminal_certified_final_result_violation_for_project_authority(
+    state: Mapping[str, Any],
+    *,
+    project_root: Path,
+    campaign_path: Path,
+    authority_state: Mapping[str, Any],
+    authority_bytes: bytes,
+) -> Optional[str]:
     try:
         memory_surface_digest = _terminal_certified_proof_surface_digest(state)
         disk_surface_digest = _terminal_certified_proof_surface_digest(authority_state)
@@ -3218,45 +3348,30 @@ class ExactCampaign:
                 except FileNotFoundError:
                     return
 
-    def _save_supervisor_certified_state(
-        self,
-        state: Mapping[str, Any],
-        *,
-        proposal_checkpoint_sha256: str,
-        marker: Mapping[str, Any],
-    ) -> None:
-        with _checkpoint_write_lock(self.path):
-            self._assert_proposal_marker_still_current(marker)
-            if not _is_lower_sha256(proposal_checkpoint_sha256):
-                raise RuntimeError("supervisor_seal proposal checkpoint digest invalid")
-            try:
-                current_checkpoint_sha256 = _sha256_file(self.path)
-            except Exception as exc:  # noqa: BLE001
-                raise RuntimeError("supervisor_seal proposal checkpoint missing before mint") from exc
-            if current_checkpoint_sha256 != str(proposal_checkpoint_sha256):
-                raise RuntimeError("supervisor_seal proposal checkpoint changed before mint")
-            atomic_write_json(self.path, dict(state))
-
     def _validate_supervisor_certified_state_before_commit(
         self,
         state: Mapping[str, Any],
+        *,
+        authority_bytes: bytes,
     ) -> None:
-        temp_path = self.path.with_name(
-            f".{self.path.name}.{uuid.uuid4().hex}.supervisor_seal.tmp"
-        )
         try:
-            atomic_write_json(temp_path, dict(state))
-            if not has_valid_terminal_full_frontier_certified_evidence_for_project(
-                state,
-                project_root=self.project_root,
-                campaign_path=temp_path,
-            ):
-                raise RuntimeError("supervisor_seal rejected terminal CERTIFIED evidence")
-        finally:
-            try:
-                temp_path.unlink()
-            except FileNotFoundError:
-                pass
+            authority_state = loads_strict_json(bytes(authority_bytes).decode("utf-8"))
+        except Exception as exc:  # noqa: BLE001
+            raise RuntimeError("supervisor_seal pending certified bytes invalid") from exc
+        if not isinstance(authority_state, Mapping):
+            raise RuntimeError("supervisor_seal pending certified state invalid")
+        reason = _terminal_certified_final_result_violation_for_project_authority(
+            state,
+            project_root=self.project_root,
+            campaign_path=self.path,
+            authority_state=authority_state,
+            authority_bytes=bytes(authority_bytes),
+        )
+        if reason is not None:
+            raise RuntimeError(
+                "supervisor_seal rejected terminal CERTIFIED evidence: "
+                f"{reason}"
+            )
 
     def supervisor_seal(
         self,
@@ -3371,6 +3486,10 @@ class ExactCampaign:
                     "supervisor_seal sink replay candidate_records invalid"
                 )
             verified_candidate_records_copy[str(raw_key)] = dict(raw_record)
+        if verified_candidate_records_copy != candidate_records_copy:
+            raise RuntimeError(
+                "supervisor_seal candidate_records mismatch after sink replay"
+            )
         scratch_state["terminal_frontier_evidence"] = dict(
             verified_terminal_frontier_evidence
         )
@@ -3389,8 +3508,10 @@ class ExactCampaign:
         seal_record = {
             "schema_version": SUPERVISOR_SEAL_SCHEMA_VERSION,
             "authority": SUPERVISOR_SEAL_AUTHORITY,
+            "transition": "proposal_to_certified_v1",
             "proposal_run_id": str(marker["run_id"]),
             "proposal_checkpoint_sha256": proposal_checkpoint_sha256,
+            "proposal_authority_b64": base64.b64encode(authority_bytes).decode("ascii"),
             CAMPAIGN_INSTANCE_ID_KEY: str(marker[CAMPAIGN_INSTANCE_ID_KEY]),
             "certified_state_sha256": _certified_state_payload_sha256(scratch_state),
             "sealed_at": commit_timestamp,
@@ -3403,14 +3524,50 @@ class ExactCampaign:
         if seal_violation is not None:
             raise RuntimeError(f"supervisor_seal {seal_violation}")
 
-        self._validate_supervisor_certified_state_before_commit(scratch_state)
-        self._save_supervisor_certified_state(
+        pending_state_bytes = _atomic_json_bytes(scratch_state)
+        self._validate_supervisor_certified_state_before_commit(
             scratch_state,
-            proposal_checkpoint_sha256=proposal_checkpoint_sha256,
-            marker=marker,
+            authority_bytes=pending_state_bytes,
         )
-        self.state = dict(scratch_state)
-        self._clear_proposal_ready_marker_if_unchanged(marker)
+        with _checkpoint_write_lock(self.path):
+            self._assert_proposal_marker_still_current(marker)
+            try:
+                current_checkpoint_sha256 = _sha256_file(self.path)
+            except Exception as exc:  # noqa: BLE001
+                raise RuntimeError("supervisor_seal proposal checkpoint missing before mint") from exc
+            if current_checkpoint_sha256 != proposal_checkpoint_sha256:
+                raise RuntimeError("supervisor_seal proposal checkpoint changed before mint")
+            atomic_write_json(self.path, scratch_state)
+            try:
+                disk_bytes = self.path.read_bytes()
+                if disk_bytes != pending_state_bytes:
+                    raise RuntimeError("supervisor_seal certified checkpoint bytes mismatch")
+                disk_state = loads_strict_json(disk_bytes.decode("utf-8"))
+                if not isinstance(disk_state, Mapping):
+                    raise RuntimeError("supervisor_seal certified checkpoint invalid")
+                if not has_valid_terminal_full_frontier_certified_evidence_for_project(
+                    disk_state,
+                    project_root=self.project_root,
+                    campaign_path=self.path,
+                ):
+                    raise RuntimeError(
+                        "supervisor_seal rejected terminal CERTIFIED evidence: "
+                        "disk certified validation failed"
+                    )
+            except Exception:
+                atomic_write_json(self.path, authority_state)
+                raise
+            marker_path = self.proposal_ready_marker_path
+            try:
+                current_payload = loads_strict_json(marker_path.read_text(encoding="utf-8"))
+            except Exception:
+                current_payload = None
+            if isinstance(current_payload, Mapping) and dict(current_payload) == dict(marker):
+                try:
+                    marker_path.unlink()
+                except FileNotFoundError:
+                    pass
+        self.state = dict(disk_state)
 
     def mark_campaign_stopped(
         self,
@@ -3447,14 +3604,17 @@ class ExactCampaign:
         self.state["updated_at"] = timestamp
 
     def best_certified_result(self) -> Optional[Dict[str, Any]]:
-        if not has_valid_terminal_full_frontier_certified_evidence_for_project(
-            self.state,
+        from src.search.certified_surface import evaluate_certified_delivery_surface
+
+        surface = evaluate_certified_delivery_surface(
             project_root=self.project_root,
+            campaign_state=None,
             campaign_path=self.path,
-        ):
+        )
+        if not surface.publishable:
             return None
-        result = self.state.get("final_result")
-        if not isinstance(result, dict):
+        result = surface.best_certified_result
+        if not isinstance(result, Mapping):
             return None
         result_copy = dict(result)
         result_copy["search_status"] = "CERTIFIED"

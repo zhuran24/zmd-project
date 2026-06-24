@@ -92,11 +92,12 @@ def build_certified_delivery_manifest(
         # isolated replay sink.  Besides preserving the established diagnostic
         # contract, this prevents stale or noncanonical checkpoints from
         # selecting which source/artifact set the replay verifier should trust.
-        _validate_campaign_state_matches_disk_authority(
+        campaign_state = _validate_campaign_state_matches_disk_authority(
             project_root=project_root,
             campaign_state=campaign_state,
             campaign_path=campaign_path,
         )
+        final_result = campaign_state.get("final_result")
         _validate_campaign_resume_compatible_with_current_artifacts(
             project_root=project_root,
             campaign_state=campaign_state,
@@ -353,7 +354,7 @@ def _validate_campaign_state_matches_disk_authority(
     project_root: Path,
     campaign_state: Mapping[str, Any],
     campaign_path: Optional[Path],
-) -> None:
+) -> Dict[str, Any]:
     """Require certified manifest payloads to use the disk checkpoint as authority."""
 
     if not isinstance(campaign_state, Mapping):
@@ -392,6 +393,7 @@ def _validate_campaign_state_matches_disk_authority(
         raise ValueError(
             "certified delivery manifest requires campaign_state to match disk checkpoint authority"
         )
+    return dict(disk_payload)
 
 
 def _validate_certified_manifest_output_path(

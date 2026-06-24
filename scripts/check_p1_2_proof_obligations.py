@@ -1749,9 +1749,23 @@ def _check_candidate_sink_replay_contract(
 
     exact_tree = _parse_python(exact_campaign_path)
     exact_source = exact_campaign_path.read_text(encoding="utf-8")
-    terminal_fn = _function_def(
+    terminal_wrapper_fn = _function_def(
         exact_tree,
         "terminal_certified_final_result_violation_for_project",
+        path=exact_campaign_path,
+    )
+    terminal_wrapper_source = _source_text(exact_campaign_path, terminal_wrapper_fn)
+    for token in (
+        "authority_bytes = authority_path.read_bytes()",
+        "bytes(serialized_state_bytes) != authority_bytes",
+        "loads_strict_json",
+        "_terminal_certified_final_result_violation_for_project_authority",
+    ):
+        if token not in terminal_wrapper_source:
+            errors.append(f"terminal project validator wrapper is missing disk authority guard: {token}")
+    terminal_fn = _function_def(
+        exact_tree,
+        "_terminal_certified_final_result_violation_for_project_authority",
         path=exact_campaign_path,
     )
     terminal_source = _source_text(exact_campaign_path, terminal_fn)
@@ -1769,6 +1783,9 @@ def _check_candidate_sink_replay_contract(
     for token in (
         "terminal_candidate_sink_replay_failed",
         "candidate_records_override=replayed_records",
+        "authority_state",
+        "authority_bytes",
+        "_supervisor_seal_state_violation",
     ):
         if token not in terminal_source:
             errors.append(f"terminal project validator is missing replay guard: {token}")
@@ -1895,6 +1912,119 @@ def _check_candidate_sink_replay_contract(
         errors.append("supervisor_seal sink replay must consume proposal authority bytes")
     if "campaign_path=None" in seal_source:
         errors.append("supervisor_seal must not validate terminal evidence with campaign_path=None")
+    if "_save_supervisor_certified_state" in exact_source:
+        errors.append("supervisor certified checkpoint writer must not be exposed as a method/helper")
+    for token in (
+        '"proposal_authority_b64"',
+        "base64.b64encode(authority_bytes)",
+        '"transition": "proposal_to_certified_v1"',
+        "_assert_proposal_marker_still_current(marker)",
+        "_sha256_file(self.path)",
+        "pending_state_bytes",
+        "authority_bytes=pending_state_bytes",
+        "has_valid_terminal_full_frontier_certified_evidence_for_project",
+        "atomic_write_json(self.path, authority_state)",
+    ):
+        if token not in seal_source:
+            errors.append(f"supervisor_seal must bind and atomically validate P->Q authority: {token}")
+    seal_state_fn = _function_def(
+        exact_tree,
+        "_supervisor_seal_state_violation",
+        path=exact_campaign_path,
+    )
+    seal_state_source = _source_text(exact_campaign_path, seal_state_fn)
+    for token in (
+        "_load_sealed_proposal_authority",
+        "_supervisor_certified_transition_violation",
+        "proposal_to_certified_v1",
+    ):
+        if token not in seal_state_source:
+            errors.append(f"supervisor seal validator must recheck proposal authority bytes: {token}")
+    load_sealed_fn = _function_def(
+        exact_tree,
+        "_load_sealed_proposal_authority",
+        path=exact_campaign_path,
+    )
+    load_sealed_source = _source_text(exact_campaign_path, load_sealed_fn)
+    for token in (
+        "proposal_authority_b64",
+        "base64.b64decode",
+        "proposal_checkpoint_sha256",
+        "loads_strict_json",
+    ):
+        if token not in load_sealed_source:
+            errors.append(f"supervisor seal proposal authority decoder missing token: {token}")
+    transition_fn = _function_def(
+        exact_tree,
+        "_supervisor_certified_transition_violation",
+        path=exact_campaign_path,
+    )
+    transition_source = _source_text(exact_campaign_path, transition_fn)
+    for token in (
+        "CANDIDATE_PROPOSED_STATUS",
+        "_final_result_certified_transition",
+        "canonical_state_bytes_for_fixed_witness(expected)",
+        "SUPERVISOR_PROPOSAL_STATE_KEY",
+    ):
+        if token not in transition_source:
+            errors.append(f"supervisor P->Q transition gate missing token: {token}")
+    precommit_fn = _method_def(
+        exact_class,
+        "_validate_supervisor_certified_state_before_commit",
+        path=exact_campaign_path,
+    )
+    precommit_source = _source_text(exact_campaign_path, precommit_fn)
+    for forbidden in ("TemporaryDirectory", "NamedTemporaryFile", "tempfile"):
+        if forbidden in precommit_source:
+            errors.append("supervisor precommit validator must not bind final validation to temp checkpoint paths")
+    for token in (
+        "loads_strict_json(bytes(authority_bytes).decode",
+        "campaign_path=self.path",
+        "authority_bytes=bytes(authority_bytes)",
+    ):
+        if token not in precommit_source:
+            errors.append(f"supervisor precommit validator must use canonical campaign path and pending bytes: {token}")
+    best_fn = _method_def(exact_class, "best_certified_result", path=exact_campaign_path)
+    best_source = _source_text(exact_campaign_path, best_fn)
+    for token in (
+        "evaluate_certified_delivery_surface",
+        "campaign_state=None",
+        "if not surface.publishable",
+    ):
+        if token not in best_source:
+            errors.append(f"best_certified_result must require central publishable disk surface: {token}")
+
+    surface_tree = _parse_python(certified_surface_path)
+    evaluate_surface_fn = _function_def(
+        surface_tree,
+        "evaluate_certified_delivery_surface",
+        path=certified_surface_path,
+    )
+    evaluate_surface_source = _source_text(certified_surface_path, evaluate_surface_fn)
+    for token in (
+        "_load_verified_surface_snapshot",
+        "final_solution_payload",
+        "optimal_blueprint_payload",
+    ):
+        if token not in evaluate_surface_source:
+            errors.append(f"certified surface must return verified snapshot payloads: {token}")
+    publisher_fn = _function_def(
+        surface_tree,
+        "publish_verified_certified_delivery_surface",
+        path=certified_surface_path,
+    )
+    publisher_source = _source_text(certified_surface_path, publisher_fn)
+    if publisher_source.count("clear_certified_delivery_surface_artifacts(project_root)") < 2:
+        errors.append("verified publisher must clear stale artifacts before publish and on rollback")
+    for token in (
+        "_load_strict_json_mapping(resolved_campaign_path)",
+        "campaign_state_payload_mismatch",
+        "except Exception",
+        "export_certified_delivery_manifest",
+        "verify_certified_delivery_surface",
+    ):
+        if token not in publisher_source:
+            errors.append(f"verified publisher must use disk authority and rollback gate: {token}")
     if not _calls_function(run_outer_fn, "_commit_terminal_full_frontier_certified_result"):
         errors.append("certified outer search must use the terminal proposal commit")
     if _function_returns_status_tuple(run_outer_fn, "RUN_STATUS_CERTIFIED"):
@@ -3038,9 +3168,9 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
-    'src/io/delivery_manifest.py': '4f2fba58383b2f64bc1c9bec17787dee92d03b6a001cf8811bf1bf6aef5bedbf',
+    'src/io/delivery_manifest.py': 'e3cb1a30df850d319ad7faa04eeafd828501037ffdcb5e46c57be0bf7d2c55db',
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
-    'src/io/serializer.py': '09cdfbe2a8da477eacf8a826a4d5ebc8636028a091e4577c93024bafe0eb0286',
+    'src/io/serializer.py': 'd38021784758faf589a0bb8a039d22f953f7d952915a7706abc7d05a67fe1cf7',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
     'src/models/binding_subproblem.py': '9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
@@ -3062,16 +3192,16 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c',
     'src/render/industrial_planner_single_base_delivery_surface_health.py': '788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf',
     'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
-    'src/render/report_builder.py': 'a5071a8df92368aff0d29fd84de94f65f8a8c184522b8e3b2b4cd2aa5ce68dfa',
-    'src/render/serve.py': '3c0892a192581246c71de8a061e29e9ff91b428c2e33639e484c5876f72b4464',
+    'src/render/report_builder.py': '1068a1fe18aa4fb16eeb3c96ad0b78ebf74184f6638808e8b2e773dc920a1a2b',
+    'src/render/serve.py': 'ccbe4682cd61b648895d6cb9d7ee1d212cd5342eb0d8a252e2f9c37d64b88f4b',
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
-    'src/search/certified_surface.py': '10dc7c399b463c6eeb5c777d46d0bfad550e1160753dcfac4ec445e523d4fc09',
+    'src/search/certified_surface.py': 'e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '715fd17d26135891ee8a19451234fca837e8ab326b0ffbdb4b8ecfed982b9078',
+    'src/search/exact_campaign.py': 'e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
@@ -3424,9 +3554,17 @@ def _fixed_witness_publish_binding_errors(
         if token not in frontier_source:
             errors.append(f"sink-verified terminal frontier evidence must publish capsule field: {token}")
     campaign_tree = _parse_python(exact_campaign_path)
-    violation_fn = _function_def(
+    wrapper_fn = _function_def(
         campaign_tree,
         "terminal_certified_final_result_violation_for_project",
+        path=exact_campaign_path,
+    )
+    wrapper_source = _source_text(exact_campaign_path, wrapper_fn)
+    if "_terminal_certified_final_result_violation_for_project_authority" not in wrapper_source:
+        errors.append("project-bound terminal validator must delegate to disk authority helper")
+    violation_fn = _function_def(
+        campaign_tree,
+        "_terminal_certified_final_result_violation_for_project_authority",
         path=exact_campaign_path,
     )
     errors.extend(

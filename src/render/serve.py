@@ -10,6 +10,7 @@ import socketserver
 from typing import Optional
 import webbrowser
 
+from src.search.exact_campaign import atomic_write_json
 from src.render.report_builder import (
     VIEWER_REPORT_FILENAME,
     build_viewer_report_from_project_root,
@@ -46,8 +47,6 @@ def serve_viewer(
         viewer_dir = Path(__file__).parent / "web_viewer"
     viewer_dir.mkdir(parents=True, exist_ok=True)
 
-    solution_path = project_root / "data" / "solutions" / "final_solution.json"
-    blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
     pools_path = project_root / "data" / "preprocessed" / "candidate_placements.json"
     campaign_path = project_root / "data" / "checkpoints" / "exact_campaign_state.json"
 
@@ -63,14 +62,22 @@ def serve_viewer(
             f"{surface.blocked_reason or surface.reason or 'unknown'}"
         )
 
-    if solution_path.exists():
-        shutil.copy2(solution_path, viewer_dir / "final_solution.json")
-    if blueprint_path.exists():
-        shutil.copy2(blueprint_path, viewer_dir / "optimal_blueprint.json")
+    final_solution_payload = getattr(surface, "final_solution_payload", None)
+    optimal_blueprint_payload = getattr(surface, "optimal_blueprint_payload", None)
+    if final_solution_payload is None or optimal_blueprint_payload is None:
+        _remove_stale_viewer_outputs(viewer_dir)
+        raise RuntimeError("certified viewer surface snapshot is missing canonical payloads")
+
+    atomic_write_json(viewer_dir / "final_solution.json", final_solution_payload)
+    atomic_write_json(viewer_dir / "optimal_blueprint.json", optimal_blueprint_payload)
+    try:
+        (viewer_dir / VIEWER_REPORT_FILENAME).unlink()
+    except FileNotFoundError:
+        pass
     if pools_path.exists():
         shutil.copy2(pools_path, viewer_dir / "candidate_placements.json")
 
-    if blueprint_path.exists() and pools_path.exists():
+    if pools_path.exists():
         try:
             viewer_report = build_viewer_report_from_project_root(project_root)
             write_viewer_report(viewer_dir / VIEWER_REPORT_FILENAME, viewer_report)
