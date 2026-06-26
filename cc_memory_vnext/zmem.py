@@ -12,7 +12,6 @@ import argparse
 import fnmatch
 import hashlib
 import json
-import math
 import re
 import sys
 from collections import defaultdict
