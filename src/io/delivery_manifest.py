@@ -41,6 +41,49 @@ def delivery_manifest_output_path(project_root: Path) -> Path:
     return project_root / "data" / "solutions" / DELIVERY_MANIFEST_FILENAME
 
 
+def _snapshot_manifest_campaign_state(campaign_state: Mapping[str, Any]) -> Dict[str, Any]:
+    if not isinstance(campaign_state, Mapping):
+        raise ValueError("certified delivery manifest requires campaign_state mapping payload")
+    try:
+        snapshot_bytes = json.dumps(
+            dict(campaign_state),
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+            allow_nan=False,
+        )
+        snapshot = _loads_strict_json_object(snapshot_bytes)
+    except Exception as exc:  # noqa: BLE001 - caller state is not authority.
+        raise ValueError("certified delivery manifest requires stable JSON campaign_state") from exc
+    if not isinstance(snapshot, Mapping):
+        raise ValueError("certified delivery manifest requires campaign_state JSON object")
+    return dict(snapshot)
+
+
+def _canonical_disk_campaign_state_if_regular(
+    *,
+    project_root: Path,
+    campaign_path: Optional[Path],
+) -> Optional[Dict[str, Any]]:
+    raw_state_path = _campaign_path_for_regular_file_check(
+        project_root=project_root,
+        campaign_path=campaign_path,
+    )
+    try:
+        state_path = raw_state_path.resolve()
+        canonical_state_path = (
+            Path(project_root).resolve() / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
+        ).resolve()
+    except Exception:
+        return None
+    if state_path != canonical_state_path or not _is_regular_file(raw_state_path):
+        return None
+    try:
+        return _load_json_mapping(raw_state_path, "campaign_state")
+    except Exception:
+        return None
+
+
 def build_certified_delivery_manifest(
     *,
     project_root: Path,
@@ -48,6 +91,7 @@ def build_certified_delivery_manifest(
     campaign_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     project_root = Path(project_root).resolve()
+    campaign_state = _snapshot_manifest_campaign_state(campaign_state)
     if str(campaign_state.get("solve_mode")) != "certified_exact":
         raise ValueError("delivery manifest only supports certified_exact campaign state")
 
@@ -55,6 +99,25 @@ def build_certified_delivery_manifest(
         project_root=project_root,
         campaign_path=campaign_path,
     )
+    declare_mode = str(campaign_state.get("declare_mode", "strict"))
+    final_result = campaign_state.get("final_result")
+    final_status = _optional_string(campaign_state.get("final_status"))
+    snapshot_has_certified_surface = has_certified_export_surface(campaign_state)
+    if snapshot_has_certified_surface and declare_mode != "strict":
+        raise ValueError("certified delivery manifest requires strict declare_mode")
+    disk_campaign_state = _canonical_disk_campaign_state_if_regular(
+        project_root=project_root,
+        campaign_path=campaign_path,
+    )
+    if snapshot_has_certified_surface or (
+        disk_campaign_state is not None
+        and has_certified_export_surface(disk_campaign_state)
+    ):
+        campaign_state = _validate_campaign_state_matches_disk_authority(
+            project_root=project_root,
+            campaign_state=campaign_state,
+            campaign_path=campaign_path,
+        )
     declare_mode = str(campaign_state.get("declare_mode", "strict"))
     final_result = campaign_state.get("final_result")
     final_status = _optional_string(campaign_state.get("final_status"))
@@ -88,15 +151,6 @@ def build_certified_delivery_manifest(
                 "terminal final_result evidence: "
                 f"{terminal_violation}"
             )
-        # Current disk authority and exact-input bindings are checked before the
-        # isolated replay sink.  Besides preserving the established diagnostic
-        # contract, this prevents stale or noncanonical checkpoints from
-        # selecting which source/artifact set the replay verifier should trust.
-        campaign_state = _validate_campaign_state_matches_disk_authority(
-            project_root=project_root,
-            campaign_state=campaign_state,
-            campaign_path=campaign_path,
-        )
         final_result = campaign_state.get("final_result")
         _validate_campaign_resume_compatible_with_current_artifacts(
             project_root=project_root,
@@ -165,7 +219,7 @@ def write_certified_delivery_manifest(
     if normalized.get("best_certified_result") is not None:
         raise ValueError(
             "direct certified delivery manifest writes must use "
-            "export_certified_delivery_manifest canonical writer"
+            "publish_verified_certified_delivery_surface"
         )
     atomic_write_json(output_path, normalized)
     return normalized
@@ -197,6 +251,11 @@ def export_certified_delivery_manifest(
         payload=payload,
     )
     normalized = dict(payload)
+    if normalized.get("best_certified_result") is not None:
+        raise ValueError(
+            "canonical certified delivery manifest writes must use "
+            "publish_verified_certified_delivery_surface"
+        )
     atomic_write_json(target_path, normalized)
     return target_path, normalized
 

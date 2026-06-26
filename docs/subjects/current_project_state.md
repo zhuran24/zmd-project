@@ -1,19 +1,9 @@
-# Subject: current project state
+# 当前项目状态
 
-This subject is the context-independent living status layer for the project. It is deliberately not tied to one surface such as `README.md`, `CLAUDE.md`, `FILE_STATUS.md`, or `docs/项目说明/06_current_status.md`; those documents are projections of this subject when they need current-state text.
+更新时间：2026-06-26。
 
-The current project stage is cut-family LBBD soundness closure. The solver is no longer in the old Phase 3B tuning paradigm. Phase naming has a historical mismatch: project-book naming calls the true PoseBoolExactMaster integration `P1.3B`, while CC memory often calls that same body of work `P1.3A 主体`.
+P1.2 仍未闭合，owner 手动 phase gate 为 `blocked_manual_review_count`，`p1_3b_entry_allowed=false`。V99 close-kernel、fixed-witness、P1.2 open gate、whole-layout independent reverify 和 PR1 producer/supervisor mint split 已在当前工作树落地。未提交工作树还收拢了 viewer、report、IndustrialPlanner 和 generic writer 的外围发布面。
 
-The exact certified path remains governed by `PROJECT_LOCK.md`, `CLAUDE.md`, the frozen preprocessing artifacts, and the cut-family lifecycle implementation. Any statement about current phase should point back to this subject or to the named living memory source rather than copying an isolated phase snapshot.
+当前 authority API 链是：producer 提交 `CANDIDATE_PROPOSED`，`ExactCampaign.supervisor_seal()` 可铸造磁盘持久化终端 `CERTIFIED`，`publish_verified_certified_delivery_surface()` 可事务式发布 canonical artifacts。当前没有 production supervisor CLI/launcher，所以普通 solver run 只到 proposal，不能称为端到端发布链已打通。
 
-<!-- SUBJECT-FIELD:frontdoor_snapshot START -->
-Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V98, the current review anchor is `v98_b5a_symlink_authority_sealing`: certified lifecycle evidence is now split into explicit proof obligations for exact-safe cut replay (persisted exact_safe_cuts are telemetry, never proof objects), certified master-domain and power-witness representation faithfulness (including time-budget-partial precheck groups never standing in for complete infeasibility proofs), replayable strict full-frontier terminal evidence over the fully oriented candidate domain with sealed candidate-domain axes, canonical project-level min-side admissibility, deny-unknown evidence keys, disk-authoritative delivery-manifest writing, canonical certified manifest publication, and certified export-surface consistency including the single-base release path rejecting self-claimed CERTIFIED run summaries. P1.3B remains blocked by default; review receipts are informational records only.
-<!-- SUBJECT-FIELD:frontdoor_snapshot END -->
-
-<!-- SUBJECT-FIELD:claude_phase_contract START -->
-Current phase: **Phase 1.2 spike close is not formally closed** — the V50 manual owner-count gate remains in force, and V82 anchors certified lifecycle evidence after V57-V98 found sibling findings across condition/domain replay (persisted exact_safe_cuts are now telemetry, never proof objects), master-domain and power-witness representation (including time-budget-partial precheck groups misread as complete infeasibility proofs), replayable full-frontier terminal evidence (the candidate domain is now fully oriented — both (w,h) and (h,w) — with slicing axes sealed plus canonical admissibility and deny-unknown evidence keys), disk-authoritative delivery-manifest writing, canonical certified manifest publication, certified export surfaces (including the single-base release path rejecting self-claimed CERTIFIED run summaries), and closed allowlist `EXACT_*` env handling. The standard remains **3 consecutive independent full reviews with zero algorithmic/soundness findings**, with the count **owner-maintained outside the repo**; the repository no longer grants clean credit from receipts or report metadata. Until an explicit owner manual decision opens P1.3B, do not start the true `PoseBoolExactMaster` LBBD master integration. Naming warning: project-book `P1.3B` is the same implementation body that older CC memory calls `P1.3A 主体`; `src/cuts/lifecycle.py` still keeps `step_8_apply_to_master` as the explicit not-yet-integrated boundary.
-<!-- SUBJECT-FIELD:claude_phase_contract END -->
-
-<!-- SUBJECT-FIELD:file_status_notice START -->
-This file is an inventory projection, not the living status authority. Current phase and cut-family status are governed by `docs/subjects/current_project_state.md`, `CLAUDE.md`, and `PROJECT_LOCK.md`. Older `CURRENT_CODE_ALIGNED` labels should be read with their recorded dates instead of as fresh audit claims.
-<!-- SUBJECT-FIELD:file_status_notice END -->
+仍未闭的是 PR2 的最小可信 L0/L1 supervisor、受控 loader/read-once/import closure，review package 的默认测试覆盖与 treeish/archive policy 问题，以及 owner 手动 close gate。面向人的下一阶段统一称 P1.3；JSON 和旧测试中的 `p1_3b_*` 仅保留为兼容机器标识。

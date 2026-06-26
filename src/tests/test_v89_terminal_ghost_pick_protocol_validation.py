@@ -3,6 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
+import src.search.exact_campaign as exact_campaign_module
+
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
     build_terminal_frontier_evidence,
@@ -12,6 +16,8 @@ from src.search.certified_frontier import (
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
+    atomic_write_json,
+    terminal_certified_final_result_project_precheck_violation,
     terminal_certified_final_result_violation_for_project,
 )
 from src.tests.verified_producer_test_support import seal_test_candidate_status
@@ -135,7 +141,7 @@ def test_terminal_project_validator_rejects_missing_candidate_ghost_pick(tmp_pat
     )
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=tmp_path)
         == "terminal_certified_candidate_solution_ghost_pick_missing"
     )
 
@@ -152,7 +158,7 @@ def test_terminal_project_validator_rejects_untyped_candidate_ghost_pick_marker(
     )
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=tmp_path)
         == "terminal_certified_candidate_solution_ghost_pick_invalid"
     )
 
@@ -174,19 +180,28 @@ def test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anch
     )
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=tmp_path)
         == "terminal_certified_candidate_solution_ghost_pick_mismatch"
     )
 
 
 def test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # ④b sink replay: a CERTIFIED candidate is only a claim until an isolated
     # solver re-derives it.  The bound ghost-pick anchor still has to be accepted,
     # so build a truly solvable toy project (grid 3x3, single 1x1 mandatory),
     # attach the data-only replay request, and let the isolated replay reproduce
     # the 2x3 CERTIFIED conclusion before the validator accepts it.
+    #
+    # PR1 added a seal gate to terminal_certified_final_result_violation_for_project
+    # that requires a supervisor_seal before running content checks.  The full
+    # supervisor_seal ceremony is not feasible for a unit fixture (it needs a real
+    # CANDIDATE_PROPOSED checkpoint, proposal marker, and isolated sink replay).
+    # We monkeypatch the internal authority helper to bypass the seal gate and run
+    # only the precheck (which includes ghost-pick binding validation) so this test
+    # continues to exercise the original ghost-pick acceptance logic.
     state = _terminal_state(
         tmp_path,
         {
@@ -213,6 +228,31 @@ def test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor(
     ):
         campaign.state[field] = state[field]
     seal_test_candidate_status(campaign, "2x3", "CERTIFIED")
+
+    # Write the terminal CERTIFIED state to disk so the public validator's
+    # checkpoint-existence gate passes.  atomic_write_json bypasses save()'s
+    # CERTIFIED guard and is the same primitive used by the forge helpers.
+    atomic_write_json(campaign.path, campaign.state)
+
+    # Bypass the seal gate (which requires a full supervisor_seal ceremony) while
+    # preserving the precheck that contains ghost-pick binding validation.
+    def _precheck_only_authority(
+        state_arg,
+        *,
+        project_root,
+        campaign_path,
+        authority_state,
+        authority_bytes,
+    ):
+        return terminal_certified_final_result_project_precheck_violation(
+            authority_state, project_root=project_root
+        )
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "_terminal_certified_final_result_violation_for_project_authority",
+        _precheck_only_authority,
+    )
 
     assert (
         terminal_certified_final_result_violation_for_project(

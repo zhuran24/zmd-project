@@ -1,70 +1,91 @@
-# Endfield IndustrialPlanner — 70×70 certified-exact 求解器
+# Endfield IndustrialPlanner certified-exact 求解器
 
-《明日方舟：终末地》基地排布的**精确最大空矩形求解器**：在 70×70 网格、266 个强制设施实例约束下，求 `max_lex(area, min_side)`（先最大化面积、再最大化短边）的**可证明最优**空地矩形。OR-Tools CP-SAT + Benders/LBBD 分解（master → binding → routing → flow）。
+本仓库研究并实现《明日方舟：终末地》70×70 基地排布的精确空矩形搜索。目标是 `max_lex(area, min_side)`，也就是先最大化空矩形面积，再最大化短边。代码包含 CP-SAT master、binding、routing、campaign 持久化、终端证据复验和发布面校验。
 
-## 当前主线（subject projection）
+“求解器支持认证路径”不等于“当前项目已经获得认证”。只有在完整候选域耗尽、终端固定 witness 复验、supervisor seal、发布闸和人工 phase gate 全部通过后，公开面才有资格携带 proof-bearing `CERTIFIED`。截至 2026-06-26，P1.2 仍未闭合，P1.3 主集成仍被阻塞。
 
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot START sha256:31a09210f602c39d36b0875f4b07e3903db6fdb14c6d16d5e161fbc9aba4e223 -->
-Current working state: **Phase 1.2 spike close is not formally closed**. The V50 manual phase gate still applies: the **three clean full reviews** standard is owner-maintained outside the repo, and only an explicit owner manual decision may open P1.3B. After V57-V98, the current review anchor is `v98_b5a_symlink_authority_sealing`: certified lifecycle evidence is now split into explicit proof obligations for exact-safe cut replay (persisted exact_safe_cuts are telemetry, never proof objects), certified master-domain and power-witness representation faithfulness (including time-budget-partial precheck groups never standing in for complete infeasibility proofs), replayable strict full-frontier terminal evidence over the fully oriented candidate domain with sealed candidate-domain axes, canonical project-level min-side admissibility, deny-unknown evidence keys, disk-authoritative delivery-manifest writing, canonical certified manifest publication, and certified export-surface consistency including the single-base release path rejecting self-claimed CERTIFIED run summaries. P1.3B remains blocked by default; review receipts are informational records only.
-<!-- DOC-SUBJECT:current_project_state FIELD:frontdoor_snapshot END -->
+## 当前发布链状态
 
-## 精确性边界（subject projection）
+当前工作树以未提交的 PR1 发布面 soundness 修复为准，核心控制流是：
 
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract START sha256:e8bdd52bb4ea38068e1e59d599ae362f8c66cb83423d851eee1748fd078ce8dd -->
-Certified exact mode is separate from exploratory tooling. The exact objective is `max_lex(area, min_side)`, and exploratory caps or sidecar hints must never become certified feasibility bounds. The frozen source-of-truth inputs are `rules/canonical_rules.json`, required external artifact `data/preprocessed/candidate_placements.json`, checked-in `data/preprocessed/mandatory_exact_instances.json`, and checked-in `data/preprocessed/generic_io_requirements.json`.
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:frontdoor_contract END -->
-
-## 文档树入口（subject projection）
-
-<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary START sha256:e99ba762ef5fb654e50fe091103cde7cff8cee13657021cc04d593d5bb9d3954 -->
-The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs and memory nodes carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
-<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary END -->
-
-## GitHub checkout 导航
-
-先读 [`START_HERE.md`](START_HERE.md)。当前 GitHub `main` 是 lightweight
-checkout：源码、规格、文档和小型 certified inputs 留在树里，大型 review 包和
-production `data/preprocessed/candidate_placements.json` 不放在当前工作区；需要跑
-certified exact 前先按 `START_HERE.md` 恢复 artifact。
-
-## 跑求解器
-
-```powershell
-# certified_exact 模式（默认）
-python main.py --campaign-hours 168.0 --parallel-processes 4
-# 测试
-python -m pytest src/tests/ -q
-# 可视化
-python main.py --vis
+```text
+outer_search producer
+  -> 写入 CANDIDATE_PROPOSED 提案和 proposal-ready marker
+  -> [当前仓库没有生产 supervisor CLI/launcher]
+  -> ExactCampaign.supervisor_seal() 由独立 supervisor 显式调用后，才可从 checkpoint 字节铸造终端 CERTIFIED
+  -> certified_surface.publish_verified_certified_delivery_surface()
+     从 supervisor-sealed、磁盘当前的 campaign authority 发布 canonical artifacts
 ```
 
-（Linux 生产启动须用 wrapper，单跑 `python main.py` 会丢调优；见 `CLAUDE.md` 的 Commands / Maintenance scripts 段。）
+已经落地的边界包括：
 
-## 精确性边界补充摘要（权威见 `PROJECT_LOCK.md`）
+- producer 不再直接铸造终端 `CERTIFIED`；`outer_search` 的终端结果先写成 `CANDIDATE_PROPOSED`。
+- `ExactCampaign.supervisor_seal()` 是持久化终端 `CERTIFIED` 的唯一 mint 点，并在提交前后复核磁盘 authority；但当前工作树没有生产入口调度它，`main.py` 只返回 `CANDIDATE_PROPOSED`。
+- fixed-witness binding/routing verifier 已接入 supervisor seal。
+- `certified_surface.resolve_p1_2_publish_open_gate()` 已把 P1.2 发布闸接入公开面，open 时 fail-closed。
+- canonical `final_solution.json`、`optimal_blueprint.json`、`certified_delivery_manifest.json` 只允许由中央 verified publisher 事务式发布；失败时清理整套公开工件。
+- whole-layout nogood 已接独立 infeasibility reverify；无法独立确认时不落 proof-bearing cut。
 
-- `certified_exact` 与 `exploratory` 是**严格分离**的两条路径，绝不混用。
-- exact 目标 = `max_lex(area, min_side)`；`min_side >= 6` 是候选 admissibility，不是 tie-break。
-- exact 模式**无**硬 `50 供电桩 + 10 协议箱` cap —— 该数字仅 exploratory-only guidance（供电桩 residual-optional / 协议箱 demand 驱动）。
-- 全 70×70 exact `CERTIFIED` 仍诚实标 `open`（spike close 阶段）。
+仍然开放的边界包括：
 
-## IndustrialPlanner 交付面（postprocess / adapter 线，release `r20260416` 冻结）
+- 生产 supervisor 调度入口尚未实现；目前只有类方法和测试调用，不能把一次普通 `main.py` 运行描述为“已 supervisor-sealed”。
+- PR2 设计中的 L0/L1 最小可信 supervisor、受控 loader、child read-once 和完整 import-closure/TCB 收敛尚未实现。
+- review package 默认测试覆盖仍不完整，treeish materialization 仍有可变引用 TOCTOU，归档内容策略仍未覆盖全部外审要求。
+- `data/review_gates/phase_1_2_spike_close.json` 仍为 `blocked_manual_review_count`，`p1_3b_entry_allowed=false`。历史机器标识保留 `p1_3b_*`，面向人的当前阶段名称统一写作 P1.3。
+- 三次 clean-review 的人工计数是 **owner-maintained outside the repo**；仓库内 receipt 和历史 review 路径只供信息审计，不能自行打开 P1.3。
 
-> **注**：本节是 **postprocess-only** 的产品化 / 交付线（把求解产物导出成 IndustrialPlanner 蓝图 + 消费面），**不是当前活动主线**，也**不重定义任何 solve schema**（见 `PROJECT_LOCK.md` 的 Source of Truth）。当前主线是上面的 cut-family LBBD。
+详见 `PROJECT_LOCK.md`、`docs/certified_proof_chain_analysis.md`、`docs/项目说明/06_current_status.md` 和 `docs/项目说明/soundness_gap_roadmap.md`。
 
-当前唯一 active 的 IndustrialPlanner 线 = `valley4_protocol_core`（70×70）；其余 base 与 outer-deployment 均保留为 `future_scope`、不在默认 active gate。checked-in 入口与详细 artifact map / release pointers / 再生成命令见：
+## 精确性边界
 
-- `data/examples/industrial_planner/README.md` — 交付面 artifact map + release pointers + regeneration commands（交付面的权威索引）
-- `data/examples/industrial_planner/index.html` — 交付面入口页（browse-first / download-first）
-- `data/examples/industrial_planner/active_single_base_delivery_entrypoints.json` — 聚合 machine-readable entrypoints manifest（含 surface health 快照）
+- `certified_exact` 与 `exploratory` 严格分离，探索性结果不得升级为认证证据。
+- exact 目标为 `max_lex(area, min_side)`；`min_side >= 6` 是候选 admissibility，不是 tie-break。
+- exact 模式没有硬编码的“50 供电桩 + 10 协议箱”上限。
+- binding 和 routing 是命题 P 的 gating 子问题。`src/models/flow_subproblem.py` 仅用于诊断，不门控 certified 结果，也不生成 proof-bearing cut。
+- 当前发布链修复只收窄“谁能铸证、谁能发布”的边界，不证明吞吐、带宽或其它 `PROJECT_LOCK.md` 明确排除的性质。
 
-单基地端到端 / 交付面 promotion / no-drift audit / health snapshot 等脚本：
+## 冻结输入
+
+当前工作树已包含 `data/preprocessed/candidate_placements.json`：
+
+- size: `45,773,799` bytes
+- SHA256: `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`
+
+它仍是冻结 source-of-truth 工件。其它发行包可以省略该大文件，但 certified exact 运行前必须恢复完全相同的字节，不能使用旧 hash 工件替代。
+
+## 文档入口
+
+- `PROJECT_LOCK.md`: 当前 exactness、发布权和 forbidden-change 契约。
+- `docs/README.md`: 文档树及权威边界。
+- `docs/项目说明/README.md`: 项目说明书目录。
+- `docs/certified_proof_chain_analysis.md`: 当前代码的认证发布链审计。
+- `NAV_MAP.md`: 按实际调用和 authority 角色找代码。
+- `CLAUDE.md`、`AGENTS.md`: 仓库操作与协作记忆规则。
+
+`docs/subjects/` 和 `DOC-SUBJECT` 注释是历史遗留的人工维护文本。仓库中不存在 `scripts/sync_doc_subjects.py`、`scripts/check_doc_tree_completeness.py` 或 `cc_context/`，preflight 也不执行这些旧投影工具。
+
+## 常用命令
 
 ```bash
-# 单基地 e2e
-python scripts/run_industrial_planner_single_base_e2e.py \
-  --run-dir .artifacts/industrial_planner_single_base_e2e
-# 交付面 release promotion（刷新 release/viewer/landing/bundle/frontdoor + no-drift audit）
-python scripts/build_industrial_planner_single_base_delivery_release.py --help
+# Linux 生产入口，带 readiness gate 和运行时调优
+bash scripts/run_campaign_linux.sh --campaign-hours 168.0 --parallel-processes 4
+
+# 开发运行
+python main.py --campaign-hours 168.0 --parallel-processes 4
+
+# 测试收集
+python -m pytest --collect-only -q src/tests
+
+# 全测试
+python -m pytest src/tests -q
+
+# P1.2 机器义务
+python scripts/check_p1_2_proof_obligations.py
+python scripts/check_strong_status_write_allowlist.py
 ```
 
-其余交付面脚本（standalone no-drift audit / health snapshot 等）见 `data/examples/industrial_planner/README.md` 与 `CLAUDE.md`。
+截至 2026-06-26，本工作树可收集 425 个测试文件、3450 个测试。这个数字是 collect-only inventory，不是本次审计对完整测试套件通过状态的声明。
+
+## IndustrialPlanner 交付面
+
+IndustrialPlanner viewer、adapter、report 和 bundle 属 postprocess/delivery surface。它们不得重定义 solve schema，也不得从 caller-memory、自报状态或旧工件生成公开 `CERTIFIED`。活动单基地仍为 `valley4_protocol_core`；其它 base 或 outer-deployment 维持 `future_scope`。交付面索引见 `data/examples/industrial_planner/README.md`。

@@ -1,5 +1,7 @@
 # IndustrialPlanner single-base active entrypoints manifest
 
+> **Boundary (2026-06-26):** This document describes the frozen IndustrialPlanner postprocess/adapter surface from the April 2026 delivery line, not the current P1.2 solver or authenticated release state. Here, “current” means current within that delivery surface. Nothing in this workflow may mint, infer, or publish proof-bearing `CERTIFIED`.
+
 This guide covers the small checked-in aggregate manifest that summarizes the
 **current active single-base consumer entry surface** for IndustrialPlanner.
 

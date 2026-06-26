@@ -1,4 +1,7 @@
-# 09 — Phase 1.3 plan (P1.3A attach spike + P1.3B master integration)
+# 09 — Phase 1.3 plan（attach spike + master integration）
+
+> **未来计划**：面向人的阶段名统一为 **P1.3**。本文旧的 P1.3A/P1.3B 子标签仅用于追溯，不表示 owner gate 已打开，也不表示 Step 8 已接入当前 default certified path。
+
 
 F5-F9 落地后, evaluator 才进真 hot path (10K calls/sec). 这阶段 perf opt
 必要. GO 标准见 §8.3.
@@ -22,7 +25,7 @@ catch — 当前 OR-Tools 9.15 CP-SAT Python 模型 **不支持** `model.AddLazy
    兼容性最好但 build cost 大.
 
 **Spike GO 标准**: 至少一条路径在 prod-scale (266 instance + ~10K cut) 跑通端到端
-master cycle, wall-clock 退化 < 50%. **GO 后才进 P1.3B**.
+master cycle, wall-clock 退化 < 50%. **GO 后才进入 production master integration**.
 
 **Spike NOT GO 路径**:
 - 如果 1+3 都不工作 → paradigm 走回头 (e.g. solver 替换, 但 [03 paradigm death](03_paradigm_death_baseline.md) 已 verdict 死)
@@ -30,7 +33,7 @@ master cycle, wall-clock 退化 < 50%. **GO 后才进 P1.3B**.
 
 cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_bundle_20260523/notes/CP_SAT_INTEGRATION_NOTES.md`
 
-## P1.3B — master integration (原 P1.21, spike GO 后进)
+## P1.3 production master integration（旧子标签 P1.3B；原 P1.21）
 
 ### 12.1 step_8_apply_to_master 实施
 

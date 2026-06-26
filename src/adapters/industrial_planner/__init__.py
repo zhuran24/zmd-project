@@ -19,6 +19,7 @@ __all__ = [
     "INDUSTRIAL_PLANNER_TARGET",
     "build_industrial_planner_export_bundle",
     "build_industrial_planner_throughput_audit",
+    "clear_industrial_planner_export_bundle",
     "industrial_planner_target_capabilities",
     "register_industrial_planner_exporter",
     "write_industrial_planner_export_bundle",
@@ -33,6 +34,7 @@ _EXPORT_BLUEPRINT_EXPORTS = {
     "INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME",
     "INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME",
     "build_industrial_planner_export_bundle",
+    "clear_industrial_planner_export_bundle",
     "register_industrial_planner_exporter",
     "write_industrial_planner_export_bundle",
 }

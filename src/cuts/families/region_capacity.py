@@ -10,10 +10,11 @@ Phase 1.1 P1.5 scope:
   in scope, watcher 在 ghost change 时 invalidate).
 - Helper functions (region cells / capacity / demand / placement rule mapping).
 
-Deferred to Phase 1.5+ (per spec §10 open question #1):
-- LP dual / Farkas algebraic check (cand C ``farkas_certificate.py`` 集成).
-- Multi-region cut (cluster from LP dual ray).
-- interior_rect generator enumeration heuristic.
+Not implemented in the current worktree:
+- LP-dual/Farkas algebraic certificates; no ``farkas_certificate.py`` exists here.
+- Multi-region cuts derived from a dual ray.
+- An ``interior_rect`` generator/enumeration policy.
+These are future design options, not part of the P1.2 certified path.
 
 This module is consumed by:
 - ``src/cuts/oracles/region_capacity_oracle.py`` (generator)
@@ -55,7 +56,7 @@ RegionKind = Literal[
 # demand 应升但 single-side cert demand_R static 不知道).
 _PLACEMENT_RULE_REGIONS: Dict[str, FrozenSet[str]] = {
     "left_or_bottom_boundary": frozenset({"left_or_bottom_union"}),
-    # Phase 1.5+ 可能加 single-side rules (实际项目 canonical_rules.json
+    # Future code may add single-side rules (当前 canonical_rules.json
     # **只** "left_or_bottom_boundary" 一种 placement_rule, 其他 free)
     "free": frozenset(),
 }
@@ -120,8 +121,8 @@ def compute_region_cells(
 ) -> FrozenSet[Cell]:
     """Compute region cell set per region_kind.
 
-    interior_rect / ghost_complement: 需要 state.ghost_rect (Phase 1.5+ 加
-    generator enumeration; P1.5 仅 validator decode cert 用).
+    interior_rect / ghost_complement: 需要 state.ghost_rect。当前代码没有
+    interior_rect generator；validator 只能复验证书中携带的 bitset。
     """
     if region_kind == "left_baseline":
         return frozenset((x, 0) for x in range(grid_size))
@@ -185,7 +186,7 @@ def _group_falls_in_region(
 ) -> bool:
     """Verify group's placement_rule maps to region_kind (active_assumption 对齐).
 
-    Phase 1.1 P1.5+ (Gap 8) 修: 经 helper, 不直接查 canonical_rules[gid].
+    Current validator (Gap 8 fix): 经 helper, 不直接查 canonical_rules[gid].
     For "free" placement rule (e.g. crusher), group not region-specific
     contributor. Spec §2b: only groups requiring P(g) ⊆ R count toward demand_R.
 

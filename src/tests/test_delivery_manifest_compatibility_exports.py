@@ -9,8 +9,8 @@ import pytest
 
 from src.adapters.industrial_planner import write_industrial_planner_export_bundle
 from src.io.delivery_manifest import build_certified_delivery_manifest
-from src.io.output_schema import blueprint_output_path
-from src.io.serializer import build_canonical_blueprint_payload, write_blueprint_payload
+from src.io.serializer import build_canonical_blueprint_payload
+from src.tests.certified_frontier_helpers import persist_canonical_blueprint_for_test
 
 
 def _write_canonical_industrial_planner_bundle(project_root: Path) -> None:
@@ -20,7 +20,7 @@ def _write_canonical_industrial_planner_bundle(project_root: Path) -> None:
         ghost_rect={"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0},
         export_timestamp="2026-03-25T00:00:00Z",
     )
-    write_blueprint_payload(blueprint_output_path(project_root), blueprint)
+    persist_canonical_blueprint_for_test(project_root, blueprint)
     write_industrial_planner_export_bundle(
         output_dir=project_root / "data" / "exports" / "industrial_planner",
         blueprint_payload=blueprint,

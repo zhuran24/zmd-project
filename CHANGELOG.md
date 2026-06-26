@@ -1,7 +1,17 @@
 # CHANGELOG.md
 
 This file is the canonical home for dated engineering history that used to be
-split between `PROJECT_LOCK.md` and `FILE_STATUS.md`.
+split between `PROJECT_LOCK.md` and `FILE_STATUS.md`. Date-stamped test counts and
+status claims below are historical snapshots, not assertions about the current worktree.
+
+## 2026-06-26
+
+- Reconciled all living release-boundary documentation with the uncommitted PR1 worktree: the outer-search producer now commits `CANDIDATE_PROPOSED`, `ExactCampaign.supervisor_seal()` is the sole durable terminal `CERTIFIED` mint, and `publish_verified_certified_delivery_surface()` is the sole public certified publisher.
+- Recorded the remaining operational gap: `main.py` and current launchers do not invoke `supervisor_seal()`, so the worktree has authority methods but not a supported end-to-end supervisor command.
+- Recorded the landed fixed-witness capsule/verifier, fail-closed P1.2 OPEN-GATE, connector/body terminal check, isolated-source bytecode binding, and independent whole-layout infeasibility reverifier without converting those safeguards into a P1.2 closure claim.
+- Kept P1.2 OPEN/BLOCKED: the owner gate remains `blocked_manual_review_count`, PR2's smaller/read-once/controlled-loader TCB is unfinished, and review snapshot immutability/archive-policy work remains open.
+- Corrected artifact and test inventory: `candidate_placements.json` is present at 45,773,799 bytes with the pinned SHA256; pytest collection is 425 files / 3450 tests, with no full-suite pass claim from this audit.
+- Retired stale documentation-projection instructions, aligned specs/runbooks/comments/docstrings/allowlist/obligations, and updated active cc_memory nodes, facts, and edges through the memory CLI.
 
 ## 2026-06-16
 

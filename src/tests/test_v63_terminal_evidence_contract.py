@@ -14,7 +14,10 @@ from src.search.exact_campaign import (
 )
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
-from src.tests.certified_frontier_helpers import attach_terminal_frontier_evidence
+from src.tests.certified_frontier_helpers import (
+    attach_terminal_frontier_evidence,
+    persist_forged_terminal_certified_state,
+)
 from src.tests.test_exact_contract import _build_frontier_project
 
 
@@ -50,7 +53,7 @@ def test_exact_campaign_resume_rejects_certified_final_result_without_terminal_f
     }
     campaign.mark_campaign_stopped("candidate_returned_unknown", status=RUN_STATUS_UNKNOWN)
     campaign.state["final_status"] = RUN_STATUS_CERTIFIED
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -87,7 +90,7 @@ def test_v75_resume_rejects_terminal_certified_without_replayable_frontier_evide
         "search_status": RUN_STATUS_CERTIFIED,
     }
     _forge_legacy_terminal_certified_stop(campaign)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -125,7 +128,7 @@ def test_v75_resume_rejects_terminal_evidence_with_unexhausted_frontier(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -164,7 +167,7 @@ def test_v75_resume_rejects_terminal_evidence_from_start_area_slice(
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.state["terminal_frontier_evidence"]["candidate_generation"]["start_area"] = 1
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -200,7 +203,7 @@ def test_v79_resume_rejects_terminal_evidence_from_aspect_ratio_slice(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root, max_aspect_ratio=3.0)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -236,7 +239,7 @@ def test_v79_resume_rejects_terminal_evidence_from_min_side_slice(
     }
     _forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root, min_side=7)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -259,7 +262,7 @@ def test_v67_resume_inspector_and_b5a_reject_terminal_final_result_without_candi
         "search_status": RUN_STATUS_CERTIFIED,
     }
     _forge_legacy_terminal_certified_stop(campaign)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -278,10 +281,11 @@ def test_v67_resume_inspector_and_b5a_reject_terminal_final_result_without_candi
     assert resumed.resumed is False
     assert resumed.compatible_hashes is False
     assert resumed.state["reset_reason"] == "terminal_certified_candidate_record_missing"
-    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is False
-    assert inspection["campaign"]["resume_validation_reason"] == (
-        "terminal_certified_candidate_record_missing"
-    )
+    # C2 durable writeback(PROJECT_LOCK 251 F-CAM-R8-02):resume reject 时立即把 sanitized
+    # checkpoint 写回 disk + 清三件套,inspection 读到的是已清除 forged 的干净 checkpoint,
+    # 故 resume 兼容、无 validation reason。forged 不被认证由下面两条断言守住。
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is True
+    assert inspection["campaign"]["resume_validation_reason"] is None
     assert inspection["campaign"]["terminal_full_frontier_certified"] is False
     assert inspection["campaign"]["best_certified_result"] is None
     assert b5a_summary["status"]["anchor_found"] is False
@@ -301,7 +305,7 @@ def test_v68_resume_rejects_certified_candidate_without_solution(
         "mode": "certified_exact",
         "master_status": RUN_STATUS_CERTIFIED,
     }
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -354,7 +358,7 @@ def test_v69_resume_inspector_and_b5a_reject_terminal_final_result_not_best_cand
         "search_stats": {"campaign_resumed": False},
     }
     _forge_legacy_terminal_certified_stop(campaign)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     reason = validate_exact_campaign_resume_state(
         campaign.state,
@@ -373,10 +377,11 @@ def test_v69_resume_inspector_and_b5a_reject_terminal_final_result_not_best_cand
     assert resumed.resumed is False
     assert resumed.compatible_hashes is False
     assert resumed.state["reset_reason"] == "terminal_certified_final_result_not_best_candidate"
-    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is False
-    assert inspection["campaign"]["resume_validation_reason"] == (
-        "terminal_certified_final_result_not_best_candidate"
-    )
+    # C2 durable writeback(PROJECT_LOCK 251 F-CAM-R8-02):reset 立即写回 sanitized checkpoint
+    # + 清三件套,inspection 读到已清除 forged 的干净 checkpoint → resume 兼容、无 reason。
+    # forged 不被认证由下面两条断言守住。
+    assert inspection["campaign"]["resume_compatible_with_current_hashes"] is True
+    assert inspection["campaign"]["resume_validation_reason"] is None
     assert inspection["campaign"]["terminal_full_frontier_certified"] is False
     assert inspection["campaign"]["best_certified_result"] is None
     assert b5a_summary["status"]["anchor_found"] is False

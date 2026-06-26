@@ -708,18 +708,72 @@ function fetchOptionalJson(path) {
   }).catch(() => null);
 }
 
+async function fetchTextArtifact(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`${path} -> HTTP ${response.status}`);
+  }
+  const text = await response.text();
+  return { path, text, json: JSON.parse(text), sha256: await sha256Text(text) };
+}
+
+async function fetchOptionalTextArtifact(path) {
+  try {
+    return await fetchTextArtifact(path);
+  } catch (_error) {
+    return null;
+  }
+}
+
+async function sha256Text(text) {
+  if (!window.crypto || !window.crypto.subtle || !window.TextEncoder) {
+    return null;
+  }
+  const encoded = new TextEncoder().encode(text);
+  const digest = await window.crypto.subtle.digest('SHA-256', encoded);
+  return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function assertViewerGenerationArtifact(manifest, artifact, required) {
+  if (!manifest) return;
+  const name = typeof artifact === 'string' ? artifact : artifact.path;
+  const expected = manifest.artifacts && manifest.artifacts[name] && manifest.artifacts[name].sha256;
+  if (!expected && !required) return;
+  if (!expected) throw new Error(`viewer_generation_manifest.json missing hash for ${name}`);
+  if (typeof artifact === 'string') throw new Error(`viewer generation missing required artifact ${name}`);
+  if (!artifact.sha256) throw new Error(`viewer generation hash checker unavailable for ${name}`);
+  if (artifact.sha256 !== expected) throw new Error(`viewer generation hash mismatch for ${name}`);
+}
+
 async function loadData() {
   try {
-    pools = await fetchJson('candidate_placements.json');
-    viewerReport = await fetchOptionalJson('viewer_report.json');
+    const generationManifest = await fetchOptionalJson('viewer_generation_manifest.json');
+    const poolsArtifact = await fetchTextArtifact('candidate_placements.json');
+    assertViewerGenerationArtifact(generationManifest, poolsArtifact, true);
+    pools = poolsArtifact.json;
+    const reportArtifact = await fetchOptionalTextArtifact('viewer_report.json');
+    if (reportArtifact) {
+      assertViewerGenerationArtifact(generationManifest, reportArtifact, false);
+      viewerReport = reportArtifact.json;
+    } else {
+      assertViewerGenerationArtifact(generationManifest, 'viewer_report.json', false);
+      viewerReport = null;
+    }
     releaseViewerManifest = await fetchOptionalJson('release_viewer_manifest.json');
     let blueprintError = null;
     try {
-      blueprintPayload = await fetchJson('optimal_blueprint.json');
+      const blueprintArtifact = await fetchTextArtifact('optimal_blueprint.json');
+      assertViewerGenerationArtifact(generationManifest, blueprintArtifact, true);
+      blueprintPayload = blueprintArtifact.json;
       data = recoverLegacyDataFromBlueprint(blueprintPayload, pools);
     } catch (error) {
       blueprintError = error;
-      const legacy = await fetchJson('final_solution.json');
+      if (generationManifest) {
+        throw blueprintError;
+      }
+      const finalArtifact = await fetchTextArtifact('final_solution.json');
+      assertViewerGenerationArtifact(generationManifest, finalArtifact, true);
+      const legacy = finalArtifact.json;
       data = { ...legacy, _source: 'final_solution.json' };
       blueprintPayload = null;
       console.warn('Blueprint load failed, falling back to final_solution.json:', blueprintError);

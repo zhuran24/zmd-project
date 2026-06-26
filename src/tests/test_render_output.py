@@ -8,12 +8,14 @@ from types import SimpleNamespace
 
 import pytest
 
+import main as main_module
 from src.io.serializer import (
     build_canonical_blueprint_payload,
     recover_legacy_render_payload_from_blueprint,
 )
 from src.render import ascii_renderer, image_renderer
 from src.render import grid_visualizer
+import src.render.report_builder as report_builder_module
 from src.render.report_builder import build_viewer_report_from_project_root
 from src.render.serve import serve_viewer
 
@@ -229,15 +231,7 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
             publishable=True,
             blocked_reason=None,
             final_solution_payload={"snapshot": "final"},
-            optimal_blueprint_payload={"snapshot": "blueprint"},
-        ),
-    )
-    monkeypatch.setattr(
-        "src.render.report_builder.evaluate_certified_delivery_surface",
-        lambda **_kwargs: SimpleNamespace(
-            publishable=True,
-            blocked_reason=None,
-            optimal_blueprint_payload={"snapshot": "blueprint"},
+            optimal_blueprint_payload=_sample_blueprint_payload(),
         ),
     )
 
@@ -249,9 +243,9 @@ def test_serve_viewer_copies_blueprint_and_keeps_legacy_fallback(
     assert json.loads((viewer_dir / "final_solution.json").read_text(encoding="utf-8")) == {
         "snapshot": "final"
     }
-    assert json.loads((viewer_dir / "optimal_blueprint.json").read_text(encoding="utf-8")) == {
-        "snapshot": "blueprint"
-    }
+    assert json.loads((viewer_dir / "optimal_blueprint.json").read_text(encoding="utf-8"))[
+        "metadata"
+    ]["version"] == "1.0.0"
     assert opened_urls == ["http://localhost:9999"]
 
 
@@ -291,19 +285,18 @@ def test_serve_viewer_removes_stale_report_when_report_generation_fails(
         ),
     )
     monkeypatch.setattr(
-        "src.render.serve.build_viewer_report_from_project_root",
-        lambda _project_root: (_ for _ in ()).throw(RuntimeError("report failed")),
+        "src.render.serve.build_viewer_report_from_surface_snapshot",
+        lambda **_kwargs: (_ for _ in ()).throw(RuntimeError("report failed")),
     )
 
-    serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
+    with pytest.raises(RuntimeError, match="report failed"):
+        serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
 
-    assert json.loads((viewer_dir / "final_solution.json").read_text(encoding="utf-8")) == {
-        "snapshot": "final"
-    }
-    assert json.loads((viewer_dir / "optimal_blueprint.json").read_text(encoding="utf-8")) == {
-        "snapshot": "blueprint"
-    }
+    assert not (viewer_dir / "final_solution.json").exists()
+    assert not (viewer_dir / "optimal_blueprint.json").exists()
+    assert not (viewer_dir / "candidate_placements.json").exists()
     assert not (viewer_dir / "viewer_report.json").exists()
+    assert not (viewer_dir / "viewer_generation_manifest.json").exists()
 
 
 def test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_copies(
@@ -316,14 +309,100 @@ def test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_
     _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", _sample_pools_payload())
     _write_json(viewer_dir / "final_solution.json", {"stale": "viewer-final"})
     _write_json(viewer_dir / "optimal_blueprint.json", {"stale": "viewer-blueprint"})
+    _write_json(viewer_dir / "candidate_placements.json", {"stale": "viewer-pools"})
     _write_json(viewer_dir / "viewer_report.json", {"stale": "viewer-report"})
+    _write_json(viewer_dir / "viewer_generation_manifest.json", {"stale": "viewer-generation"})
 
     with pytest.raises(RuntimeError, match=r"certified .* surface is not publishable"):
         serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
 
     assert not (viewer_dir / "final_solution.json").exists()
     assert not (viewer_dir / "optimal_blueprint.json").exists()
+    assert not (viewer_dir / "candidate_placements.json").exists()
     assert not (viewer_dir / "viewer_report.json").exists()
+    assert not (viewer_dir / "viewer_generation_manifest.json").exists()
+
+
+def test_serve_viewer_partial_generation_commit_clears_all_public_outputs(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    viewer_dir = tmp_path / "viewer"
+    viewer_dir.mkdir(parents=True, exist_ok=True)
+    _write_json(project_root / "data" / "preprocessed" / "candidate_placements.json", _sample_pools_payload())
+    for filename in (
+        "final_solution.json",
+        "optimal_blueprint.json",
+        "candidate_placements.json",
+        "viewer_report.json",
+        "viewer_generation_manifest.json",
+    ):
+        _write_json(viewer_dir / filename, {"generation": "stale"})
+
+    monkeypatch.setattr(
+        "src.render.serve.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            final_solution_payload={"snapshot": "final"},
+            optimal_blueprint_payload=_sample_blueprint_payload(),
+        ),
+    )
+
+    def fail_after_first_replace(*, staging_dir: Path, viewer_dir: Path) -> None:
+        (staging_dir / "final_solution.json").replace(viewer_dir / "final_solution.json")
+        raise OSError("simulated viewer commit failure")
+
+    monkeypatch.setattr("src.render.serve._commit_viewer_generation", fail_after_first_replace)
+
+    with pytest.raises(OSError, match="simulated viewer commit failure"):
+        serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
+
+    for filename in (
+        "final_solution.json",
+        "optimal_blueprint.json",
+        "candidate_placements.json",
+        "viewer_report.json",
+        "viewer_generation_manifest.json",
+    ):
+        assert not (viewer_dir / filename).exists()
+
+
+def test_serve_viewer_requires_current_candidate_placements_and_clears_stale_copy(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    viewer_dir = tmp_path / "viewer"
+    viewer_dir.mkdir(parents=True, exist_ok=True)
+    _write_json(viewer_dir / "candidate_placements.json", {"generation": "stale-pools"})
+    _write_json(viewer_dir / "final_solution.json", {"generation": "stale-final"})
+    _write_json(viewer_dir / "optimal_blueprint.json", {"generation": "stale-blueprint"})
+    _write_json(viewer_dir / "viewer_report.json", {"generation": "stale-report"})
+    _write_json(viewer_dir / "viewer_generation_manifest.json", {"generation": "stale-manifest"})
+
+    monkeypatch.setattr(
+        "src.render.serve.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            final_solution_payload={"snapshot": "final"},
+            optimal_blueprint_payload=_sample_blueprint_payload(),
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="candidate_placements.json"):
+        serve_viewer(port=9999, project_root=project_root, viewer_dir=viewer_dir)
+
+    for filename in (
+        "final_solution.json",
+        "optimal_blueprint.json",
+        "candidate_placements.json",
+        "viewer_report.json",
+        "viewer_generation_manifest.json",
+    ):
+        assert not (viewer_dir / filename).exists()
 
 
 def test_report_builder_rejects_forged_canonical_outputs_without_publishable_surface(
@@ -338,6 +417,36 @@ def test_report_builder_rejects_forged_canonical_outputs_without_publishable_sur
         build_viewer_report_from_project_root(project_root)
 
 
+def test_publish_viewer_report_clears_stale_output_when_build_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    output_path = tmp_path / "viewer_report.json"
+    _write_json(output_path, {"generation": "stale-report"})
+
+    monkeypatch.setattr(
+        report_builder_module,
+        "build_viewer_report_from_project_root",
+        lambda _project_root: (_ for _ in ()).throw(RuntimeError("report gate closed")),
+    )
+
+    with pytest.raises(RuntimeError, match="report gate closed"):
+        report_builder_module.publish_viewer_report_from_project_root(
+            project_root=tmp_path / "project",
+            output_path=output_path,
+        )
+
+    assert not output_path.exists()
+
+
+def test_write_viewer_report_rejects_canonical_public_path(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="canonical viewer_report.json writes"):
+        report_builder_module.write_viewer_report(
+            report_builder_module.CANONICAL_VIEWER_REPORT_PATH,
+            {"generation": "forged"},
+        )
+
+
 def test_web_viewer_prefers_blueprint_with_legacy_fallback() -> None:
     html = (
         Path(__file__).resolve().parent.parent / "render" / "web_viewer" / "index.html"
@@ -347,6 +456,7 @@ def test_web_viewer_prefers_blueprint_with_legacy_fallback() -> None:
     assert "final_solution.json" in html
     assert "candidate_placements.json" in html
     assert "viewer_report.json" in html
+    assert "viewer_generation_manifest.json" in html
     assert "release_viewer_manifest.json" in html
     assert "release-section" in html
     assert "downloads-section" in html
@@ -362,6 +472,65 @@ def test_main_visualization_prefers_blueprint_with_legacy_fallback() -> None:
     assert "optimal_blueprint.json" in source
     assert "final_solution.json" in source
     assert "recover_legacy_render_payload_from_blueprint" in source
+
+
+def test_main_visualization_clears_stale_png_when_surface_not_publishable(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    output_dir = project_root / "data" / "solutions"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "heatmap.png").write_text("stale heatmap", encoding="utf-8")
+    (output_dir / "flow_topology.png").write_text("stale flow", encoding="utf-8")
+
+    monkeypatch.setattr(main_module, "PROJECT_ROOT", project_root)
+    monkeypatch.setattr(
+        "src.search.certified_surface.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(publishable=False, blocked_reason="gate_closed"),
+    )
+
+    main_module.run_visualization()
+
+    assert not (output_dir / "heatmap.png").exists()
+    assert not (output_dir / "flow_topology.png").exists()
+
+
+def test_main_visualization_renderer_failure_clears_all_png_outputs(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    output_dir = project_root / "data" / "solutions"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "heatmap.png").write_text("stale heatmap", encoding="utf-8")
+    (output_dir / "flow_topology.png").write_text("stale flow", encoding="utf-8")
+
+    monkeypatch.setattr(main_module, "PROJECT_ROOT", project_root)
+    monkeypatch.setattr(
+        "src.search.certified_surface.evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            optimal_blueprint_payload=None,
+            final_solution_payload={"placement_solution": {}, "ghost_rect": {"w": 1, "h": 1}},
+        ),
+    )
+
+    def write_heatmap(_solution, _pools, *, ghost_rect=None, output_path=None, **_kwargs):
+        Path(output_path).write_text("new heatmap", encoding="utf-8")
+        return output_path
+
+    def fail_topology(_occupied, *, output_path=None, **_kwargs):
+        raise OSError("topology renderer failed")
+
+    monkeypatch.setattr("src.render.grid_visualizer.render_placement_heatmap", write_heatmap)
+    monkeypatch.setattr("src.render.lbbd_animator.render_flow_topology", fail_topology)
+
+    main_module.run_visualization()
+
+    assert not (output_dir / "heatmap.png").exists()
+    assert not (output_dir / "flow_topology.png").exists()
 
 
 def test_ascii_renderer_supports_legacy_payload(tmp_path: Path) -> None:

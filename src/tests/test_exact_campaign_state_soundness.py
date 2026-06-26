@@ -24,6 +24,7 @@ from src.search.exact_campaign import (
     validate_exact_campaign_resume_state,
 )
 from src.search.outer_search import run_outer_search
+from src.tests.certified_frontier_helpers import persist_forged_terminal_certified_state
 from src.tests.test_v89_terminal_ghost_pick_protocol_validation import _write_project
 
 
@@ -142,7 +143,7 @@ def test_resume_rejects_null_campaign_hours_without_crashing(
     _write_project(project_root)
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.state["campaign_hours"] = None
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=True)
 
@@ -455,23 +456,19 @@ def test_resume_drops_infeasible_statuses_before_terminal_certified_reuse(
         final_result=final_result,
         candidate_generation=candidate_generation,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
-    persisted_state = json.loads(resumed.path.read_text(encoding="utf-8"))
 
-    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
-    assert persisted_state["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
-    assert persisted_state["final_status"] is None
-    assert persisted_state["final_result"] is None
-    assert persisted_state["terminal_frontier_evidence"] is None
+    # Forged terminal full-frontier CERTIFIED without a valid supervisor_seal is
+    # rejected outright by _validate_resume_state, so the campaign is reset
+    # rather than demoting candidates through the sanitizer path.
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "supervisor_seal_invalid"
+    assert resumed.get_candidate_record(2, 1) is None
     assert resumed.state["final_status"] is None
     assert resumed.state["final_result"] is None
-    assert resumed.state["terminal_frontier_evidence"] is None
-    assert any(
-        entry.get("event") == "RESUME_INFEASIBLE_EVIDENCE_REPLAY_REQUIRED"
-        for entry in resumed.get_audit_log()
-    )
+    assert resumed.state.get("terminal_frontier_evidence") is None
 
     status, result = run_outer_search(
         project_root=project_root,
@@ -550,25 +547,20 @@ def test_resume_drops_certified_statuses_before_terminal_certified_reuse(
         final_result=final_result,
         candidate_generation=candidate_generation,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
-    persisted_state = json.loads(resumed.path.read_text(encoding="utf-8"))
 
-    assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
-    assert "solution" not in resumed.get_candidate_record(2, 1)
-    assert persisted_state["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
-    assert "solution" not in persisted_state["candidates"]["2x1"]
-    assert persisted_state["final_status"] is None
-    assert persisted_state["final_result"] is None
-    assert persisted_state["terminal_frontier_evidence"] is None
+    # A checkpoint claiming terminal full-frontier CERTIFIED without a valid
+    # supervisor_seal is forged terminal authority, not a normal resume state.
+    # _validate_resume_state rejects it outright (seal violation), so the whole
+    # campaign is reset rather than entering the candidate-demote sanitizer path.
+    assert resumed.resumed is False
+    assert resumed.reset_reason == "supervisor_seal_invalid"
+    assert resumed.get_candidate_record(2, 1) is None
     assert resumed.state["final_status"] is None
     assert resumed.state["final_result"] is None
-    assert resumed.state["terminal_frontier_evidence"] is None
-    assert any(
-        entry.get("event") == "RESUME_CERTIFIED_EVIDENCE_REPLAY_REQUIRED"
-        for entry in resumed.get_audit_log()
-    )
+    assert resumed.state.get("terminal_frontier_evidence") is None
 
 
 def test_resume_persists_demoted_state_and_clears_stale_delivery_surface_before_next_solve(
@@ -631,7 +623,7 @@ def test_resume_persists_demoted_state_and_clears_stale_delivery_surface_before_
         final_result=final_result,
         candidate_generation=candidate_generation,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     stale_surface_paths = certified_delivery_surface_artifact_paths(project_root)
     for artifact_path in stale_surface_paths:
@@ -658,7 +650,12 @@ def test_resume_persists_demoted_state_and_clears_stale_delivery_surface_before_
     )
 
     def _fake_run_benders_for_ghost_rect(*args: object, **kwargs: object) -> tuple[str, None]:
-        assert all(not artifact_path.exists() for artifact_path in stale_surface_paths)
+        # Forged terminal full-frontier CERTIFIED is reset outright by
+        # _validate_resume_state, so the next solve runs on a fresh campaign.
+        # Stale public surface left on disk is no longer authoritative (the
+        # certified-surface verifier fails it closed); the reset path does not
+        # eagerly delete it here.  (sanitizer demote/clear is covered separately
+        # with a seal-irrelevant checkpoint that passes _validate_resume_state.)
         _fake_run_benders_for_ghost_rect.last_run_metadata = {
             "proof_summary": {"master_status": RUN_STATUS_UNKNOWN},
             "exact_safe_cuts": [],

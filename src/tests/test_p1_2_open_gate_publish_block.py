@@ -3,29 +3,34 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any, Optional
+from unittest.mock import patch
 
 import pytest
 
-from src.io.serializer import export_certified_blueprint
-from src.io.delivery_manifest import export_certified_delivery_manifest
+from src.io import delivery_manifest as delivery_manifest_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
+from src.search import certified_surface as certified_surface_module
+from src.search import exact_campaign as exact_campaign_module
 from src.search.certified_surface import (
     P1_2_PUBLISH_OPEN_GATE_REASON_PREFIX,
     evaluate_certified_delivery_surface,
     export_and_verify_certified_delivery_manifest,
+    publish_verified_certified_delivery_surface,
     resolve_p1_2_publish_open_gate,
 )
-from src.search.exact_campaign import ExactCampaign
+from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
+    ExactCampaign,
+    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+)
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
-    forge_legacy_terminal_certified_stop,
     write_closed_phase_review_gate,
 )
 from src.tests.test_delivery_manifest import (
     _V89_GHOST_PICK,
     _build_manifest_project,
-    _write_json,
 )
 
 # Design note (test isolation + speed):
@@ -92,8 +97,10 @@ def _clear_gate(project_root: Path) -> None:
 def _build_publishable_surface(
     project_root: Path,
 ) -> tuple[Path, ExactCampaign, Optional[dict[str, Any]]]:
+    # PR1: best_certified_result() now reads the disk publish surface and requires a
+    # real supervisor_seal.  The fixture must transition the campaign through
+    # CANDIDATE_PROPOSED → supervisor_seal() → publish instead of the legacy forge path.
     project_root, facility_pools = _build_manifest_project(project_root)
-    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
     solution = {
         "tiny_001": {
             "pose_idx": 0,
@@ -102,6 +109,9 @@ def _build_publishable_surface(
             "facility_type": "tiny_facility",
         }
     }
+
+    # 1. Set up campaign state in CANDIDATE_PROPOSED status with ghost-pick evidence.
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=False)
     campaign.mark_candidate_started(1, 1)
     campaign.mark_candidate_result(
         1,
@@ -115,26 +125,98 @@ def _build_publishable_surface(
     campaign.state["final_result"] = {
         "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0},
         "placement_solution": solution,
-        "search_status": RUN_STATUS_CERTIFIED,
+        "search_status": CANDIDATE_PROPOSED_STATUS,
         "search_stats": {"campaign_resumed": False},
     }
-    forge_legacy_terminal_certified_stop(campaign)
+    run_id = campaign.set_supervisor_proposal_run_id()
+    campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        status=CANDIDATE_PROPOSED_STATUS,
+    )
     attach_terminal_frontier_evidence(campaign, project_root)
     campaign.save()
+    campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
 
-    best_result = campaign.best_certified_result()
-    assert best_result is not None
-    _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
-    export_certified_blueprint(
-        project_root=project_root,
-        result=best_result,
-        facility_pools=facility_pools,
-    )
-    _path, manifest = export_certified_delivery_manifest(
-        project_root=project_root,
-        campaign_state=campaign.state,
-        campaign_path=campaign.path,
-    )
+    # 2. Accepting mock helpers used during the seal-only window.
+    #    Post-fixture evaluation in each test runs the real validator (including the
+    #    real isolated subprocess replay), matching the pre-PR1 behaviour.
+
+    def _accept_sink_replay(**kwargs: Any) -> dict[str, Any]:
+        cs = kwargs["campaign_state"]
+        return {
+            "evidence": dict(cs["terminal_frontier_evidence"]),
+            "candidate_records": {
+                str(k): dict(v) for k, v in cs.get("candidates", {}).items()
+            },
+            "sink_replay_violations": {},
+            "fixed_witness_publishable": True,
+            "fixed_witness_violations": {},
+        }
+
+    def _accept_terminal_evidence(
+        state: Any,
+        *,
+        project_root: Any,
+        campaign_path: Any = None,
+        serialized_state_bytes: Any = None,
+    ) -> bool:
+        return (
+            state.get("final_status") == RUN_STATUS_CERTIFIED
+            and state.get("final_result") is not None
+            and state.get("terminal_frontier_evidence") is not None
+        )
+
+    def _accept_authority_violation(*args: Any, **kwargs: Any) -> None:
+        # Bypass the pre-commit isolated subprocess replay during fixture sealing.
+        return None
+
+    # 3. Seal with mocked replay, then publish all delivery artifacts.
+    with (
+        patch.object(
+            exact_campaign_module,
+            "build_sink_verified_terminal_frontier_evidence",
+            _accept_sink_replay,
+        ),
+        patch.object(
+            exact_campaign_module,
+            "_terminal_certified_final_result_violation_for_project_authority",
+            _accept_authority_violation,
+        ),
+        patch.object(
+            exact_campaign_module,
+            "has_valid_terminal_full_frontier_certified_evidence_for_project",
+            _accept_terminal_evidence,
+        ),
+        patch.object(
+            delivery_manifest_module,
+            "has_valid_terminal_full_frontier_certified_evidence_for_project",
+            _accept_terminal_evidence,
+        ),
+        patch.object(
+            certified_surface_module,
+            "has_valid_terminal_full_frontier_certified_evidence_for_project",
+            _accept_terminal_evidence,
+        ),
+    ):
+        campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=True)
+        campaign.supervisor_seal()
+        assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED
+
+        # The publisher checks the open gate.  Write a valid closed gate so the
+        # fixture produces a properly sealed + gate-passed surface for tests to
+        # interrogate (individual tests that probe gate rejection do their own
+        # gate manipulation afterwards).
+        write_closed_phase_review_gate(project_root)
+
+        surface = publish_verified_certified_delivery_surface(
+            project_root=project_root,
+            campaign_path=campaign.path,
+            facility_pools=facility_pools,
+            campaign_state=campaign.state,
+        )
+
+    assert surface.publishable
+    manifest = surface.delivery_manifest_payload
     return project_root, campaign, manifest
 
 

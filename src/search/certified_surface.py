@@ -17,15 +17,14 @@ from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
 
 from src.io.delivery_manifest import (
+    build_certified_delivery_manifest,
     delivery_manifest_output_path,
-    export_certified_delivery_manifest,
     validate_certified_delivery_manifest_matches_campaign,
     validate_delivery_artifacts_match_campaign,
 )
 from src.io.output_schema import blueprint_output_path
 from src.io.serializer import (
     build_blueprint_payload_from_certified_result,
-    write_blueprint_payload,
 )
 from src.search.exact_campaign import (
     DEFAULT_CAMPAIGN_FILENAME,
@@ -157,7 +156,6 @@ def evaluate_certified_delivery_surface(
     contradictory members all fail closed.
     """
 
-    provided_campaign_state = campaign_state
     project_root = Path(project_root).resolve()
     manifest_path = delivery_manifest_output_path(project_root)
     manifest_load_error = delivery_manifest_load_error or delivery_manifest_error
@@ -545,6 +543,7 @@ def certified_delivery_surface_artifact_paths(project_root: Path) -> tuple[Path,
 def clear_certified_delivery_surface_artifacts(project_root: Path) -> None:
     """Remove all files that can advertise a stale certified delivery surface."""
 
+    cleanup_errors: list[str] = []
     for artifact_path in certified_delivery_surface_artifact_paths(project_root):
         try:
             if artifact_path.is_dir() and not artifact_path.is_symlink():
@@ -553,27 +552,12 @@ def clear_certified_delivery_surface_artifacts(project_root: Path) -> None:
                 artifact_path.unlink()
         except FileNotFoundError:
             continue
-
-
-def _write_certified_final_solution_and_blueprint_unchecked(
-    *,
-    project_root: Path,
-    result: Mapping[str, Any],
-    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
-) -> Path:
-    """Persist canonical projections after caller has verified sealed authority."""
-
-    project_root = Path(project_root).resolve()
-    output_dir = project_root / "data" / "solutions"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / "final_solution.json"
-    atomic_write_json(output_path, dict(result))
-    blueprint_payload = build_blueprint_payload_from_certified_result(
-        result=dict(result),
-        facility_pools=facility_pools,
-    )
-    write_blueprint_payload(blueprint_output_path(project_root), blueprint_payload)
-    return output_path
+        except Exception as exc:  # noqa: BLE001 - cleanup must try every artifact.
+            cleanup_errors.append(f"{artifact_path}:{type(exc).__name__}:{exc}")
+    if cleanup_errors:
+        raise RuntimeError(
+            "certified delivery surface cleanup failed: " + ";".join(cleanup_errors)
+        )
 
 
 def publish_verified_certified_delivery_surface(
@@ -590,8 +574,8 @@ def publish_verified_certified_delivery_surface(
         project_root=project_root,
         campaign_path=campaign_path,
     )
-    clear_certified_delivery_surface_artifacts(project_root)
     try:
+        clear_certified_delivery_surface_artifacts(project_root)
         state = _load_strict_json_mapping(resolved_campaign_path)
         if campaign_state is not None:
             provided_state = _mapping_or_none(campaign_state)
@@ -609,16 +593,43 @@ def publish_verified_certified_delivery_surface(
         if result is None:
             raise RuntimeError("campaign_final_result_missing")
         result["search_status"] = "CERTIFIED"
-        _write_certified_final_solution_and_blueprint_unchecked(
+        publish_open_gate_open, publish_open_gate_reason = resolve_p1_2_publish_open_gate(
             project_root=project_root,
+        )
+        if publish_open_gate_open:
+            raise RuntimeError(
+                publish_open_gate_reason or _publish_open_gate_reason("unknown")
+            )
+
+        final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+        blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
+        manifest_path = (
+            project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+        )
+        if blueprint_path.resolve() != blueprint_output_path(project_root).resolve():
+            raise RuntimeError("canonical blueprint output path mismatch")
+        if manifest_path.resolve() != delivery_manifest_output_path(project_root).resolve():
+            raise RuntimeError("canonical delivery manifest output path mismatch")
+
+        atomic_write_json(final_solution_path, result)
+        blueprint_payload = build_blueprint_payload_from_certified_result(
             result=result,
             facility_pools=facility_pools,
         )
-        _manifest_path, manifest_payload = export_certified_delivery_manifest(
+        atomic_write_json(blueprint_path, blueprint_payload)
+
+        manifest_payload = build_certified_delivery_manifest(
             project_root=project_root,
             campaign_state=state,
             campaign_path=resolved_campaign_path,
         )
+        validate_certified_delivery_manifest_matches_campaign(
+            project_root=project_root,
+            delivery_manifest=manifest_payload,
+            campaign_state=state,
+            campaign_path=resolved_campaign_path,
+        )
+        atomic_write_json(manifest_path, manifest_payload)
         surface = verify_certified_delivery_surface(
             project_root=project_root,
             campaign_state=state,
@@ -628,7 +639,13 @@ def publish_verified_certified_delivery_surface(
         if not surface.publishable:
             raise RuntimeError(surface.blocked_reason or CERTIFIED_SURFACE_BLOCKED_REASON)
     except Exception as exc:  # noqa: BLE001 - publication must fail closed.
-        clear_certified_delivery_surface_artifacts(project_root)
+        try:
+            clear_certified_delivery_surface_artifacts(project_root)
+        except Exception as cleanup_exc:  # noqa: BLE001
+            raise RuntimeError(
+                "certified delivery surface publication rejected and cleanup failed: "
+                f"{exc}; cleanup={cleanup_exc}"
+            ) from exc
         raise RuntimeError(
             "certified delivery surface publication rejected: "
             f"{exc}"
@@ -671,11 +688,18 @@ def export_and_verify_certified_delivery_manifest(
 
     if exact_campaign is None:
         return None
-    _path, payload = export_certified_delivery_manifest(
+    payload = build_certified_delivery_manifest(
         project_root=project_root,
         campaign_state=exact_campaign.state,
         campaign_path=exact_campaign.path,
     )
+    if payload.get("best_certified_result") is not None:
+        raise RuntimeError(
+            "publishable certified delivery manifests must use "
+            "publish_verified_certified_delivery_surface"
+        )
+    manifest_path = delivery_manifest_output_path(Path(project_root).resolve())
+    atomic_write_json(manifest_path, payload)
     surface = verify_certified_delivery_surface(
         project_root=project_root,
         campaign_state=exact_campaign.state,

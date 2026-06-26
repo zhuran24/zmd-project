@@ -1,46 +1,43 @@
-# docs/ — documentation subject/projection front door
+# 文档树与权威边界
 
-<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary START sha256:e99ba762ef5fb654e50fe091103cde7cff8cee13657021cc04d593d5bb9d3954 -->
-The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs and memory nodes carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
-<!-- DOC-SUBJECT:doc_tree_architecture FIELD:docs_readme_summary END -->
+本目录同时包含现行说明、规格、运行手册和按日期保存的研究证据。阅读时先判断文件属于哪一层，不要把历史快照里的状态句直接当成当前工作树状态。
 
-## High-level routes
+## 当前权威顺序
 
-- `docs/subjects/` — abstract subject layer; edit these when the context-independent truth changes.
-- `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json` — repo-wide subject-to-projection registry for docs and memory.
-- `docs/SUBJECT_TREE.md` — architecture and maintenance runbook.
-- `docs/DOC_TREE_COMPLETENESS.md` — explicit done criteria for documentation-tree closeout.
-- `docs/项目说明/` — living project book.
-- `docs/research/` — research, review, and historical archive.
-- `specs/` — formal certified-path specifications.
+1. `PROJECT_LOCK.md`: exactness、命题 P、发布边界、Accepted Invariants 和 Forbidden Changes。
+2. `data/proof_obligations/p1_2_proof_obligations.json`: P1.2 机器义务、proof-bearing sink inventory 和 source/hash floor。
+3. `data/review_gates/phase_1_2_spike_close.json`: owner 手动 phase gate。当前仍为 blocked，不能由测试、receipt 或 Markdown 自动打开。
+4. `docs/项目说明/06_current_status.md` 与 `docs/项目说明/soundness_gap_roadmap.md`: 当前实现状态和未闭边界。
+5. 其它 `docs/`、`specs/` 和 runbook: 在上述边界内解释具体组件。
 
+## 现行发布链
 
-## Documentation vs memory
+producer 只提交 `CANDIDATE_PROPOSED`。`ExactCampaign.supervisor_seal()` 从已提交 checkpoint 字节复验并铸造持久化终端 `CERTIFIED`，但当前仓库没有生产 CLI/launcher 调用该方法，普通 `main.py` 运行不会 seal。`publish_verified_certified_delivery_surface()` 只能再从 supervisor-sealed、磁盘当前的 campaign authority 事务式发布 canonical solution、blueprint 和 manifest。fixed-witness verifier 与 P1.2 open gate 已落地，但 supervisor 调度入口、PR2 的 L0/L1 受控 loader/read-once/TCB 收敛、review package 剩余问题和 owner 手动 gate 仍未闭。
 
-<!-- DOC-SUBJECT:project_knowledge_tree FIELD:docs_role START sha256:33a68fa34851c05416e51ad86e69e80c86595e6cf05b70a8d248bac6bb916c63 -->
-The documentation tree is the stable project surface. It answers: what the project is, what the current contract is, how it is verified, how it is delivered, and where historical material lives. It should be publishable, reviewable, and low-noise.
-<!-- DOC-SUBJECT:project_knowledge_tree FIELD:docs_role END -->
+## 历史 subject/projection 文本
 
-The companion memory projection lives under `cc_context/memory/`; see `cc_context/memory/project_knowledge_tree_architecture.md` for the GPT handoff side of the same subject.
+`docs/subjects/` 和各文件中的 `<!-- DOC-SUBJECT:... -->` 注释是历史遗留的人工维护文本，不是自动同步系统。当前仓库中不存在：
 
-## Frozen artifact warning
+- `scripts/sync_doc_subjects.py`
+- `scripts/check_doc_tree_completeness.py`
+- `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json`
+- `cc_context/memory/`
 
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract START sha256:9672e73f0a6845e84f28608483f9cefb3948ef374022d72110cbcc117b826a5e -->
-Frozen source-of-truth JSON files are byte-hash gated by `scripts/preflight_gate.py` when present. In the lightweight GitHub checkout, `data/preprocessed/candidate_placements.json` is an external large artifact: expected size `45,773,799` bytes, expected SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`, regenerated with `python src/placement/placement_generator.py` or restored from a clean archive containing the 2026-06-12 preprocess F-01/F-02 repair. The previous size `53,594,995` bytes / SHA256 `d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` artifact is superseded and hash-incompatible. If a hash-gated JSON appears modified only because of CRLF/LF conversion, restore LF bytes rather than updating the expected hash. Semantic changes to those artifacts are `PROJECT_LOCK.md`-level decisions.
-<!-- DOC-SUBJECT:certified_exact_contract FIELD:sot_contract END -->
+preflight 也没有执行上述工具。修改现行文本时直接编辑目标文件，并用代码、测试和机器 gate 交叉核对。`docs/DOC_TREE_COMPLETENESS.json` 只是信息性 inventory，不是 executable gate。
 
-## Completeness gate
+## 历史研究档案
 
-<!-- DOC-SUBJECT:doc_tree_completeness FIELD:preflight_contract START sha256:f5599b3201fb6b031d765fe0c39f369525e6cd7f9c47155849058fc9c75de39f -->
-Preflight treats documentation-tree completeness as a hard gate: run `python scripts/check_doc_tree_completeness.py` after adding, moving, or deleting documentation surfaces, and update the manifest only when the new surface has a declared role and authority boundary.
-<!-- DOC-SUBJECT:doc_tree_completeness FIELD:preflight_contract END -->
+`docs/research/` 下的目录名通常带日期或版本。其内容保存当时的观察、外审输入输出、实验结果和已被后续修复替代的计划。历史文件可以保留当时的“当前”“已闭”“待办”措辞，但这些措辞只对文件记录的时间点成立。当前状态必须回到本页上方的权威链确认。
 
-## Maintenance commands
+## 冻结输入提示
 
-```bash
-python scripts/sync_doc_subjects.py --check
-python scripts/sync_doc_subjects.py --sync
-python scripts/sync_doc_subjects.py --absorb
-```
+当前工作树包含 `data/preprocessed/candidate_placements.json`，大小 `45,773,799` bytes，SHA256 `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。其它轻量发行包可以省略它，但 certified exact 运行前必须恢复同一字节。旧 hash 工件不能作为当前 campaign authority。
 
-Use `--sync` after editing a subject field. Use `--absorb` only when a projection block was intentionally edited and should update the subject.
+## 主要入口
+
+- `docs/项目说明/README.md`: 项目说明书导航。
+- `docs/certified_proof_chain_analysis.md`: 当前认证发布链审计。
+- `docs/exact_campaign_operations.md`: campaign 操作与恢复边界。
+- `docs/PHASE_1_2_CLOSE_GATE.md`: phase gate 的机器/人工职责。
+- `docs/specs_index.md`: `specs/` 索引。
+- `docs/research/README.md`: 历史研究档案边界。

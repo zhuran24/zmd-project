@@ -1,100 +1,55 @@
 # Parallel Configuration Guide
 
-This document explains how the current certified-exact launcher knobs interact
-with CPU threads and memory.
+This document describes runtime resource knobs only. It does not change the objective, candidate
+proof contract, supervisor authority or public publish gate.
 
-## 1. Current defaults
+## Defaults and precedence
 
-Runtime source of truth: `src/models/cp_sat_worker_config.py`
+Runtime source of truth is `src/models/cp_sat_worker_config.py`. Current built-in per-stage defaults
+are:
 
-Default per-stage CP-SAT workers:
+- master: 8;
+- local capacity: 8;
+- binding: 4;
+- routing: 8.
 
-- `master = 8`
-- `local_capacity = 8`
-- `binding = 4`
-- `routing = 8`
+Precedence is stage-specific `EXACT_*_CP_SAT_WORKERS`, then `EXACT_CP_SAT_WORKERS`, then the built-in
+default. Launcher scripts are wrappers around this resolution and must not be treated as proof
+sources.
 
-Environment precedence:
+## Process multiplication
 
-1. stage-specific env
-   - `EXACT_MASTER_CP_SAT_WORKERS`
-   - `EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS`
-   - `EXACT_BINDING_CP_SAT_WORKERS`
-   - `EXACT_ROUTING_CP_SAT_WORKERS`
-2. global env
-   - `EXACT_CP_SAT_WORKERS`
-3. built-in defaults
+Approximate runnable CP-SAT worker pressure is the number of parallel candidate processes multiplied
+by each stage's worker count. Memory use is not linear or guaranteed by this arithmetic, so measure
+RSS on the actual host. A worker/process setting that avoids OOM does not establish solver
+completeness or certification.
 
-`main.py` prints the resolved worker profile at startup.
+## 48GB baseline guidance
 
-## 2. Why memory scales with parallel workers
+These concrete guardrails apply to a 48GB host (project benchmark notes); they are operational
+guidance only, not a soundness or certification claim:
 
-The production parallel path uses separate worker processes.
-On the current platform, that means `spawn` semantics rather than implicit large-object sharing.
-Each worker independently loads large preprocess artifacts such as `candidate_placements.json`
-and constructs its own `ExactMasterCore`-side data.
-In the current lightweight GitHub checkout, restore that artifact before running
-certified parallel workers.
+- `4` parallel workers: generally safe; prefer `parallel_processes <= 4` on 48GB.
+- `5` parallel workers: possible only after confirming the candidate domain and checkpoint set are
+  stable.
+- `6+` parallel workers: likely swap / severe slowdown; treat as unsafe on 48GB unless you have
+  profiled real RSS on the exact same artifact set.
 
-So memory scales roughly with:
+A conservative 48GB profile is `parallel_processes=4`, `master=4`, `local_capacity=4`, `binding=2`.
 
-`parallel_processes × per-process exact data footprint`
+## Current artifact prerequisite
 
-It is not safe to assume that adding more processes is “free” just because CPU utilization looks low.
+`data/preprocessed/candidate_placements.json` is present in the audited working tree. Before a
+certified run, verify size 45,773,799 bytes and SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`.
+A lightweight distribution is permitted to omit it, but that distribution policy is not a runtime
+waiver.
 
-## 3. 48GB baseline guidance
+## Operational guidance
 
-From the current project benchmark notes, a 48GB machine should treat these as the practical guardrails:
+Start with the project wrapper/profile selected in `CLAUDE.md`, then reduce process count or CP-SAT
+workers when measured memory headroom is insufficient. Do not change exact/exploratory boundary env
+variables merely to fit memory. The certified path's deny-unknown/unsafe-env checks remain in force.
 
-- `4` parallel workers: generally safe
-- `5` parallel workers: possible, but headroom is noticeably tighter
-- `6` parallel workers: likely to enter swap / severe slowdown territory
-- `7+` parallel workers: treat as unsafe on 48GB unless you have measured a lower-memory build path
-
-A good rule of thumb is:
-
-- prefer `parallel_processes <= 4` on 48GB
-- only go to `5` after confirming the current candidate domain and checkpoint set are stable
-- avoid `6+` unless you have profiled real RSS on the exact same artifact set
-
-## 4. How to trade processes vs per-process workers
-
-When `parallel_processes > 1`, do not keep every stage at the largest worker count.
-A smaller per-process worker profile often gives better total throughput because it avoids memory pressure and thread oversubscription.
-
-Reasonable starting points:
-
-### Conservative 48GB profile
-
-- `parallel_processes = 4`
-- `master = 4`
-- `local_capacity = 4`
-- `binding = 2`
-- `routing = 4`
-
-### Single-process deep search profile
-
-- `parallel_processes = 1`
-- keep defaults, or raise only after verifying the solver benefits on the current candidate
-
-## 5. Which knob to lower first
-
-If the machine is slowing down, paging, or becoming unstable:
-
-1. lower `parallel_processes` first if RSS is the problem
-2. lower per-process CP-SAT workers next if CPU oversubscription is the problem
-3. avoid changing both aggressively at once unless you are running a clean benchmark sweep
-
-In short:
-
-- **memory pressure** -> reduce `parallel_processes`
-- **CPU thrash / oversubscription** -> reduce stage worker counts
-
-## 6. Launcher-script reminder
-
-The PowerShell wrappers under `scripts/*.ps1` do not redefine precedence.
-They only pass arguments and environment overrides through to `main.py`.
-
-If a run behaves unexpectedly, the first thing to inspect is the startup line printed by:
-
-`resolved_cp_sat_worker_profile: ...`
+A worker crash, timeout or partial wave is not frontier exhaustion. Resume only when the campaign
+inspector reports compatibility with current artifacts and proof-bearing source closure.

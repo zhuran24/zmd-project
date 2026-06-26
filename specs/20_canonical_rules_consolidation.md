@@ -36,7 +36,7 @@ The goal of consolidation is to reduce duplicate truth without immediately widen
 This consolidation does **not** make `PreprocessContext` or `canonical_rules.json` the immediate runtime replacement for the frozen preprocess artifacts.
 Certified exact runtime still consumes:
 
-- `data/preprocessed/candidate_placements.json` (required external large artifact in current lightweight GitHub checkout)
+- `data/preprocessed/candidate_placements.json` (current hash-bound working-tree artifact)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 

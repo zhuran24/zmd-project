@@ -1,94 +1,80 @@
 ---
-status: ACCEPTED_DRAFT
-source_of_truth: src/cuts/families/ (F1–F9 当前 cut-family 范式) + src/cuts/lifecycle.py + src/models/cut_manager.py (早期 no-good 范式) + src/search/benders_loop.py + exact-contract regressions
-last_verified_against: 2026-06-11 (P0 binding-local routing-precheck cut ladder修订)
+status: CURRENT_WITH_HISTORICAL_DESIGN_SECTIONS
+source_of_truth: src/search/benders_loop.py + src/models/cut_manager.py + src/cuts/lifecycle.py
+last_verified_against: 2026-06-26 working tree
 owner: cut-manager
 ---
-> [!NOTE]
-> **ACCEPTED_DRAFT — 本章 Type-I/II no-good cut 设计与 `src/models/cut_manager.py`（**早期** cut 范式，见下方 2026-06-04 范式更新）对齐；当前主线 cut 体系已转 F1–F9 cut-family。`[竣工图]` 标注反映代码实际状态。**
 
-# 10 逻辑型 Benders 分解与切平面通信协议 (Logic-based Benders Decomposition & Cut Design)
+# 10 逻辑型 Benders 循环与 cut 通信边界
 
-> ⚠️ **范式更新 (2026-06-04)**：本章的 Type-I / Type-II **组合 no-good cut** 设计 + `src/models/cut_manager.py` 是**早期** cut 范式。项目当前主线已转 **cut-family LBBD 重设计**：9 个 cut family **F1–F9**（`src/cuts/families/`：region_capacity / cutset / port_exposure / component_reach / pattern_nogood / shape_packing_hall / power_hitting_set / power_grid_reach / density_envelope）当 Benders cut 收紧 master，每个 family = generator + validator（validator 是 **FP=0 信任边界**），proof lifecycle 在 `src/cuts/lifecycle.py`（`step_8_apply_to_master` 真 master 集成属 P1.3B 待接）。权威见 `PROJECT_LOCK.md` §2B + `CLAUDE.md`。**下方 §10.2 的 LBBD 主从循环结构仍成立**（master→flow→routing→cut→resolve），但 cut 的生成 / 校验已由 F1–F9 family 体系承担，不再是 §10.3 / §10.4 的两类裸 no-good cut；§10.3–10.5 作 cut-design 概念基础与历史读。
+> **当前实现边界。** `src/search/benders_loop.py` 的 certified 路径使用现役 master、binding、routing
+> 和登记的 exact-safe cut ladder。`src/models/flow_subproblem.py` 只生成诊断状态，不能门控
+> certified verdict，也不产生 Farkas ray 或 proof-bearing cut。`src/cuts/families/` 的 F1–F9
+> generator/validator framework 已存在，但 `src/cuts/lifecycle.py:1121-1126` 的
+> `step_8_apply_to_master()` 仍抛 `NotImplementedError`，所以它们尚未接入 production master。
+> 面向人的后续阶段名为 P1.3；旧 `p1_3b_*` 仅是机器兼容字段。
 
-## 10.1 文档目的与架构定位
+## 10.1 当前 certified 路径
 
-本文档是《明日方舟：终末地》极值排布工程的**中央调度与反馈通信协议**。
-在确立了主摆放模型 (07 章)、宏观拓扑流预筛子问题 (08 章) 与微观精确路由子问题 (09 章) 后，必须构建一套能够让这三个模型自动协同、自我纠错的算法架构。本章定义了**逻辑型 Benders 分解 (LBBD)** 的执行闭环，以及当子问题判定布线失败时，如何向主问题生成极具剪枝威力的**组合互斥切平面 (Combinatorial No-Good Cuts)**。
+对一个固定 ghost candidate，当前调用链是：
 
----
+1. master 求一个 placement；master `UNKNOWN`/timeout 必须 fail-closed；
+2. 连续 flow LP 可以运行并写入 `diagnostic_flow_status`，但其 `FEASIBLE`、`INFEASIBLE` 或
+   `TIMEOUT` 都不决定 certified acceptance；
+3. binding 子问题枚举并校验端口绑定；
+4. routing 子问题在已选 binding 上建立离散路由，`FEASIBLE` 才可返回内部
+   `RUN_STATUS_CERTIFIED` candidate verdict；
+5. routing/binding 的不可行结论只有经过对应 exact-safe proof ladder 才能形成 cut。whole-layout
+   nogood 还必须先经 `independent_infeasibility_reverifier`；不确认、分歧、超时或异常返回
+   `UNKNOWN`/no-cut；
+6. 这个内部 candidate verdict 仍不是 durable/public `CERTIFIED`。outer producer 只能提交
+   `CANDIDATE_PROPOSED`，之后还要经过 supervisor seal、fixed-witness 复验、owner publish gate 与
+   canonical publisher。
 
-## 10.2 LBBD 主从协同状态机 (The Master-Subproblem Loop)
+代码证据：`benders_loop.py:5188-5369`、`:5694-5732`、`:5795+`、`:6973-6990`、
+`:7538-7585`；终端发布链见 `outer_search.py:855-954`、`exact_campaign.py:3399-3593` 与
+`certified_surface.py:563-680`。
 
-针对外层搜索（01 章）传入的每一个确定的空地尺寸目标 $(w, h)$，系统内部执行以下 LBBD 状态机循环：
+## 10.2 exploratory 路径与历史 flow-loop
 
-*   **Step 1: 主问题求解 (Master Placement)**
-    调用 07 章 CP-SAT 模型求解当前约束下的摆放方案。
-    *   *若返回 `INFEASIBLE`*：终止当前 $(w, h)$ 的探索。
-    *   *若返回 `FEASIBLE`*：提取 $\mathbf{z}^*$，进入 Step 2。
+`_run_exploratory()` 仍保留 master → flow diagnostic → exploratory result/cut 的旧式循环。该路径
+可以返回内部状态常量 `RUN_STATUS_CERTIFIED`，但它属于 exploratory/best-effort 语义，不能进入
+certified campaign authority、supervisor seal 或公共认证发布面。文档、报告和 adapter 不得把这个
+内部枚举值渲染成项目已认证。
 
-*   **Step 2: 一级子问题验证 (Macro-Topological Flow)**
-    将 $\mathbf{z}^*$ 冻结为静态网格障碍物，传入 08 章连续 LP 流体模型。
-    *   *若返回 `INFEASIBLE`*：执行 10.3 宏观瓶颈切平面提取。**回退至 Step 1**。
-    *   *若返回 `FEASIBLE`*：进入 Step 3。
+## 10.3 现役 exact-safe cut ladder
 
-*   **Step 3: 二级子问题验证 (Micro-Exact Routing)**
-    将 $\mathbf{z}^*$ 传入 09 章离散 SAT 路由模型。
-    *   *若返回 `INFEASIBLE`*：执行 10.4 微观死结切平面提取。**回退至 Step 1**。
-    *   *若返回 `FEASIBLE`*：**【系统最高胜利】** 输出终极蓝图！
+现役 certified loop 的 cut 不是“LP Farkas ray 自动回灌”。它由具体 binding/routing 证据路径生成、
+序列化、解析并在 master 上重放，且必须满足 `PROJECT_LOCK.md` 的 lifecycle、scope、condition 与
+独立复验约束。关键原则是：
 
----
+- 当前 binding selection 不可行，不自动证明 placement 对所有 binding 都不可行；
+- routing precheck 的局部拒绝只有在量词和 scope 足够时才可提升为 master cut；
+- persisted cut 的 conflict members、condition literals、artifact/source scope 必须完整解析，任何
+  missing/unknown/aliasing 都 fail-closed；
+- whole-layout `INFEASIBLE` 不能由原求解路径自证，必须经登记的 independent re-verifier；
+- 预算耗尽、solver `UNKNOWN`、unsupported proof stage 或不完整冲突集不得被包装成
+  `INFEASIBLE`。
 
-## 10.3 Type-I: 宏观拓扑瓶颈切 (Topological Bottleneck Cuts)
+## 10.4 F1–F9 cut-family framework 的真实进度
 
-### 10.3.1 最小割溯源 (Min-Cut Extraction)
-当 LP 模型无解时，依据 Farkas 引理提取对偶不可行射线，对应"最小割面障碍界限"。
+`src/cuts/families/`、validators/oracles 和 `src/cuts/lifecycle.py` 是下一阶段 cut-family 框架及其
+proof lifecycle。其 canonicalize/generate/minimize/serialize/deserialize/validate/scope/resolve/evaluate
+等步骤已有大量实现和测试，但 production attach 尚未完成。特别是：
 
-### 10.3.2 肇事刚体集锁定 (Conflict Set Identification)
-收集紧贴"最小割面"的实体刚体，构成**拓扑肇事集合 $\Omega_{\text{topo}} \subset \mathcal{I}$**。
+- `step_8_apply_to_master()` 仍是明确的 future integration placeholder；
+- family validator 的通过不等于该 cut 已影响当前 production master；
+- family 单测或 lifecycle replay 通过不等于 P1.2 closed，也不能打开 P1.3；
+- 真接入前必须复核每个 family 的 theorem、constant support、scope、runtime literal resolution、
+  master encoding 与 red tests。
 
-### 10.3.3 切平面方程 (The Benders Cut)
-$$ \sum_{i \in \Omega_{\text{topo}}} z_{i, p_i^*} \le |\Omega_{\text{topo}}| - 1 $$
+## 10.5 历史 Type-I/Type-II 设计
 
----
-
-## 10.4 Type-II: 微观精确死结切 (Micro-Routing Deadlock Cuts)
-
-### 10.4.1 极小不可满足核提取 (MUC Extraction)
-调用 `FindUnsatisfiableCore()` 提取最少冲突子句集，映射回**微观肇事集合 $\Omega_{\text{micro}}$**。
-
-### 10.4.2 微观排斥方程 (Micro No-Good Cut)
-$$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| - 1 $$
-
----
-
-## 10.5 工业级切平面强化技术 (Industrial Cut Lifting)
-
-### 10.5.1 空间平移不变性提拉 (Spatial Translation Lifting)
-对 $\Omega_{\text{micro}}$ 中每台机器定义局部邻域 $\Delta(p_i^*)$，注入强化切平面：
-$$ \sum_{i \in \Omega_{\text{micro}}} \left( \sum_{q \in \Delta(p_i^*)} z_{i, q} \right) \le |\Omega_{\text{micro}}| - 1 $$
-
-### 10.5.2 模板级对称性拉黑 (Template-Level Symmetry Breaking)
-将基于实例 ID 的切平面升维为模板级聚合变量 $Z_{T(i), p}$：
-$$ \sum_{i \in \Omega_{\text{conflict}}} Z_{T(i), p_i^*} \le |\Omega_{\text{conflict}}| - 1 $$
-
-> [!NOTE]
-> **[竣工图]** 空间平移提拉 (§10.5.1) 和模板级对称性拉黑 (§10.5.2) 在代码中尚未实现。[TBD] 待路由子问题完成后，根据实际切面效果决定是否需要这些强化技术。
-
----
-
-## 10.6 代码落地：惰性回调与热启动 (Lazy Callbacks & Hot-Start)
-
-本工程采用 **「累积切面 + 重新求解」+ 热启动 (Hot-Start)** 模式（CP-SAT **不支持**真正的惰性约束回调 Lazy Constraint Callback，故非真 lazy；见下方 [竣工图]）：
-1. 主模型收到切平面（累积注入后重新 `Solve()`）。
-2. 将上一次合法摆放解中（未惹事的机器位置）作为 **Solution Hint** 喂给主模型。
-3. 求解器瞬间意识到只需微调惹事机器，每次 Benders 迭代重新求解时间从数十秒坍缩至几百毫秒。
-
-> [!NOTE]
-> **[竣工图]** CP-SAT 不支持真正的惰性约束回调 (Lazy Constraint Callback)。代码中使用「累积切面 + 重新求解」的模式替代：每轮将新切面注入模型后重新调用 `model.Solve()`，通过 `model.AddHint()` 提供上一轮解作为热启动。效果等价但每轮有模型重建开销。
-
-
----
+早期文档把 flow LP `INFEASIBLE` 描述为可经 Farkas ray 生成“宏观拓扑瓶颈 cut”，并把 routing
+失败描述为可直接提取 MUC 后写 placement no-good。当前代码没有实现该 Farkas-ray 管线，也不能把
+任一 routing 局部冲突无条件提升为 placement-level theorem。以下 2026-06-11 之后的 addenda 记录
+已经落入代码或仍约束未来集成的具体 soundness 条件；更早的 Type-I/II 方程仅保留为设计历史，不是
+当前行为说明。
 
 ## 10.7 [2026-06-11 P0 Soundness Addendum] Binding-local precheck evidence ladder
 

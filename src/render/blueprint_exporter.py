@@ -22,7 +22,11 @@ def export_blueprint(
     facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
     output_path: Path,
 ) -> Dict[str, Any]:
-    """Export the canonical blueprint delivery artifact."""
+    """Export a blueprint artifact through serializer guards.
+
+    Canonical optimal_blueprint.json publication is reserved for the verified certified publisher.
+    write_blueprint_payload rejects that path here.
+    """
     payload = build_canonical_blueprint_payload(
         placement_solution=placement_solution,
         routing_solution=routing_solution,
@@ -51,6 +55,13 @@ def export_target_blueprint(
     """Export the canonical blueprint into an additive downstream target bundle."""
     target = str(target).strip()
     if target == "industrial_planner":
+        project_root = Path(__file__).resolve().parent.parent.parent
+        canonical_export_dir = project_root / "data" / "exports" / "industrial_planner"
+        if Path(output_dir).resolve() == canonical_export_dir.resolve():
+            raise ValueError(
+                "canonical industrial planner exports must use "
+                "scripts/export_industrial_planner_bundle.py"
+            )
         written = write_industrial_planner_export_bundle(
             output_dir=output_dir,
             blueprint_payload=blueprint_payload,

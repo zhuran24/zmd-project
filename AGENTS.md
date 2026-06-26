@@ -98,11 +98,11 @@ Important memory entries to look up when relevant:
 - `followup-h50-g-neg-and-publish-20260617`
 - `arch-layering-plan-proof-vs-ops`
 
-`docs/subjects/` and `DOC-SUBJECT` projection blocks are documentation surfaces, not
-the live collaboration memory. Some documentation still mentions retired
-`cc_context/...` projection tooling; verify that the referenced scripts and registry
-exist before relying on those instructions. Do not resurrect missing old tooling just
-because an older projection document names it.
+`docs/subjects/` and any remaining `DOC-SUBJECT` markers are ordinary documentation
+and provenance metadata, not the live collaboration memory. The old `cc_context/...`
+projection registry and `scripts/sync_doc_subjects.py` workflow are retired and are not
+present in this worktree. Do not treat a marker as a generated or preflight-enforced
+projection, and do not recreate the retired tooling from historical instructions.
 
 ## CodeGraph Entry
 
@@ -123,48 +123,54 @@ This is the Endfield IndustrialPlanner certified-exact maximum empty-rectangle
 solver. The default path is `certified_exact`; `exploratory` is a separate heuristic
 or diagnostic path.
 
-P1.2 close-kernel sealing (updated 2026-06-19): proof-bearing strong-status
-source sinks on the current default certified path are registered in
-`data/proof_obligations/p1_2_proof_obligations.json::close_kernel_contract` and checked by
-`scripts/check_p1_2_proof_obligations.py`. Adding a new `CERTIFIED` / proof-bearing
-`INFEASIBLE` surface, drifting a sealed sink hash, or removing required guard tokens reopens
-the P1.2 close claim until reviewed. Candidate records now carry only a data-only replay
-request; no Python function identity, closure, mutable registry, writer identity, or
-current-process freshness stamp grants proof authority. Before a strong status may prune
-the certified frontier or enter terminal evidence, the delivery manifest, or the public
-certified surface, the sink launches an isolated `python -I` verifier, snapshots and
-rehashes the bound exact inputs, checks project/source/artifact/campaign/candidate bindings,
-and independently replays the fixed `certified_exact` solve. Missing or rejected replay
-material is demoted to `UNPROVEN` at the frontier and rejected by downstream publication
-sinks. Test support may construct replay requests but has no production grant path. The
-seal also retains the durable resume-sanitization and no-close-kernel source self-seal
-containment guards: locked projects must retain and pass the V99 manifest/checker before
-`compute_exact_artifact_hashes()` can mint a fresh campaign source digest. The on-disk
-replay verifier and protected source, Python interpreter, and operating-system process/file
-isolation are part of this boundary's TCB; arbitrary mutation of the sink verifier itself
-is not claimed away. A passing checker is therefore a structural boundary check, not by
-itself a soundness conclusion; the adversarial replay regressions must pass as well. Do not
-replace this code with an earlier package snapshot without re-sealing
-`src/search/candidate_proof_replay.py`, `src/search/exact_campaign.py`,
-`src/search/outer_search.py`, `src/search/certified_frontier.py`, the publication sinks,
-and the close-kernel checker floor. The V99 close-kernel floor is checker-owned: required
-proof-bearing tokens, scan roots, sink paths, sink classifications, non-checker source
-hashes, and critical gate files must not be shrinkable or resealable by editing the
-manifest alone.
+P1.2 publication-chain state (current worktree, 2026-06-26): the producer
+path in `outer_search.py` may commit only a `CANDIDATE_PROPOSED` record plus bound
+replay/fixed-witness material. `ExactCampaign.supervisor_seal()` is the sole durable
+terminal `CERTIFIED` mint and re-reads the committed proposal, validates its bindings,
+runs the sink replay and terminal fixed-witness verification, then validates the disk
+state before and after the write. The repository currently has no production CLI or
+launcher that calls it; `main.py` stops at `CANDIDATE_PROPOSED`. Public solution,
+blueprint, and delivery-manifest
+files are emitted only by `publish_verified_certified_delivery_surface()` from a
+sealed, disk-current campaign; generic serializers and compatibility exporters are not
+certification authorities.
 
-Main call chain:
+The close-kernel manifest and checker in
+`data/proof_obligations/p1_2_proof_obligations.json` and
+`scripts/check_p1_2_proof_obligations.py` structurally seal proof-bearing sinks. The
+current worktree also contains the fixed-witness capsule/verifier, the fail-closed P1.2
+OPEN-GATE resolver, and an independent whole-layout infeasibility reverifier. These are
+implemented safeguards, not a claim that P1.2 is closed. The manual review gate remains
+blocked, PR2's smaller/read-once verification TCB is not implemented, and the review
+snapshot packager still needs immutable commit materialization and broader policy
+coverage. A passing structural checker or targeted regression set is therefore not a
+soundness or release conclusion.
+
+Candidate records carry data-only replay requests. No Python function identity,
+closure, mutable registry, writer identity, or current-process freshness stamp grants
+proof authority. The isolated replay verifier, protected source and interpreter, and
+operating-system process/file isolation remain in the trusted computing base. Adding a
+strong-status sink, drifting a sealed hash, changing a required guard, or weakening a
+publication denial must reopen review rather than be locally resealed away.
+
+Main solve and publication chain:
 
 ```text
 main.py
-  -> src/search/outer_search.py
+  -> src/search/outer_search.py                 producer; CANDIDATE_PROPOSED only
      -> src/search/benders_loop.py
         -> src/models/master_model.py
         -> src/models/exact_coordinate_master.py
         -> src/models/binding_subproblem.py
         -> src/models/routing_subproblem.py
-        -> src/models/flow_subproblem.py
+        -> src/search/independent_infeasibility_reverifier.py
+        -> src/models/flow_subproblem.py        diagnostic only; never proof authority
      -> src/search/exact_campaign.py
+        -> [OPEN: production supervisor CLI/launcher]
+        -> ExactCampaign.supervisor_seal()      sole durable terminal CERTIFIED mint
      -> src/search/exact_parallel_scheduler.py
+  -> src/search/certified_surface.py
+     -> publish_verified_certified_delivery_surface()  sole public certified publisher
 ```
 
 High-signal directories:
@@ -194,8 +200,9 @@ Core invariants:
 - The exact objective is `max_lex(area, min_side)`.
 - `min_side >= 6` is candidate admissibility, not an objective replacement.
 - Exact mode has no hard `50 power poles + 10 protocol storage boxes` cap.
-- Phase 1.2 spike close is not formally closed; P1.3B remains blocked unless the
-  owner explicitly opens it.
+- Phase 1.2 is not formally closed; the human-facing next phase is P1.3 and remains
+  blocked unless the owner explicitly opens it. Existing `p1_3b_*` machine identifiers
+  are retained only for compatibility with historical gate data.
 - `EXACT_*` env knobs are deny-unknown in certified mode. Unknown or proof-semantics
   knobs must fail closed, not silently alter certified behavior.
 - `EXACT_POWER_PLACEMENT_SUBPROBLEM=1` is exploratory/forensic only and must not be
@@ -209,7 +216,7 @@ Frozen source-of-truth inputs:
 - `rules/preprocess_plan.json`
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
-- external large artifact `data/preprocessed/candidate_placements.json`
+- `data/preprocessed/candidate_placements.json` (present in this worktree; some distributions may externalize it)
 
 Editing any frozen artifact is a freeze-ritual change: update the relevant hash
 contract, regenerate dependent artifacts, and run the gate. Do not "fix" a hash
@@ -218,12 +225,16 @@ was intended and reviewed.
 
 ## Code-Specific Guardrails
 
-- `outer_search.py` owns the certified frontier and terminal full-frontier claim.
-  UNKNOWN handling, `declare_mode`, frontier probe mode, and parallel-wave result
-  persistence are proof-sensitive.
-- `exact_campaign.py` owns resume validity. Campaign state is hash-bound and must
-  fail closed on schema, artifact, source digest, timestamp, terminal evidence, or
-  candidate-record inconsistency.
+- `outer_search.py` owns candidate enumeration and the producer-side frontier. It may
+  commit only proposal state; UNKNOWN handling, `declare_mode`, frontier probe mode,
+  and parallel-wave result persistence are proof-sensitive.
+- `exact_campaign.py` owns resume validity and the supervisor seal. Campaign state is
+  hash-bound and must fail closed on schema, artifact, source digest, timestamp,
+  proposal/terminal evidence, fixed-witness, or candidate-record inconsistency. Do not
+  create another durable terminal `CERTIFIED` writer.
+- `certified_surface.py` owns the fail-closed OPEN-GATE evaluation and the sole public
+  certified publisher. Compatibility exports may format data, but may not bypass the
+  sealed-campaign and current-disk checks or become alternate publication authorities.
 - `exact_campaign_inspector.py` is a public surface, not a raw debug dump. When
   `certified_surface.publishable` is false, candidate-level proof-bearing
   `CERTIFIED` / `INFEASIBLE` statuses and nested proof hints must be redacted or

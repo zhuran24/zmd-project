@@ -88,7 +88,7 @@ def test_manual_gate_rejects_closed_status_without_owner_decision(tmp_path: Path
     payload["status"] = "closed_manual_owner_decision"
     path = _write_gate(tmp_path, payload)
     _summary, errors = check_phase_review_gate.check_gate(path)
-    assert any("closed manual gate should allow P1.3B" in error for error in errors)
+    assert any("closed manual gate should allow P1.3 (machine field p1_3b_entry_allowed)" in error for error in errors)
 
 
 def test_manual_gate_accepts_owner_decision_authority_fixture(tmp_path: Path) -> None:

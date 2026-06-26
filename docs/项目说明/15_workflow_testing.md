@@ -1,5 +1,8 @@
 # 15 — 测试 strategy + fixture 清单
 
+> **测试方法文档**：示例计数是历史或规模估计。当前 collect-only 为 425 文件 / 3450 tests；只有带命令、工作树与退出码的结果才能写成 passed。
+
+
 <!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer START sha256:cea93a49cee8af7c4d149443925f0b834a63001939d7048e126a97cfbbb758d2 -->
 The current cut-test total is not a freehand prose value. Use the `cuts_tests_total` entry in `docs/research/p1_2_spike_sizing_gate_20260601/authoritative_numbers.json`; regenerate/check it with `python scripts/gen_authoritative_numbers.py --check`.
 <!-- DOC-SUBJECT:authoritative_numbers FIELD:cuts_count_pointer END -->
@@ -121,7 +124,7 @@ review pkg 默认 ship 全集 (45.8 MB), README 提醒 reviewer 反例数字 vs 
 - P1.2B-F9 实施时 land 4 个 F9 fixture (+1 boundary fixture)
 - P1.2B-F2 / F4 实施时 land 2 个 F2/F4 fixture
 - P1.3A spike 时 land CP-SAT-no-lazy fixture
-- P1.3B 集成时 land DarkMatter fixture
+- P1.3 集成时 land DarkMatter fixture
 
 ---
 

@@ -52,11 +52,11 @@ Round 16 also tightens the raw cycle solver entry (F-PRE-R16-02): direct `solve_
 `PreprocessContext` is **not** the certified runtime placement input, but it is no longer a regeneration-only concern: `src/preprocess/operation_profiles.py` derives the runtime `OPERATION_PORT_PROFILES` from `load_default_preprocess_context()` at import time, and the binding subproblem reads utility slot declarations from `rules/preprocess_plan.json` at runtime. The plan is therefore bound into the exact campaign hash closure (`exact_campaign.OPTIONAL_EXACT_HASH_FILES`, with a missing-file sentinel for synthetic test projects) and the preflight frozen-artifact registry — a plan edit can never ride on otherwise-stale exact artifacts.
 The certified exact path still consumes frozen artifacts under `data/preprocessed/*`, especially:
 
-- `candidate_placements.json` (required external large artifact in current lightweight GitHub checkout)
+- `candidate_placements.json`（当前工作树已包含；其 bytes/hash 进入 campaign resume contract）
 - `mandatory_exact_instances.json`
 - `generic_io_requirements.json`
 
-`PreprocessContext` only governs how those preprocess artifacts can be regenerated and audited. The lightweight GitHub checkout does not carry the production `candidate_placements.json` working-tree file; restore it before certified runtime checks.
+`PreprocessContext` only governs how those preprocess artifacts can be regenerated and audited. The current working tree carries the production `candidate_placements.json`; certified runtime checks must still verify its current size/hash and reject resume across byte drift.
 
 ## 4. Contract contents
 

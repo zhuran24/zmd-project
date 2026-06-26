@@ -18,7 +18,10 @@ from src.search.exact_campaign import (
     _load_exact_grid_dimensions,
     _load_exact_min_side_admissibility,
     _load_exact_safe_area_upper_bound,
+    atomic_write_json,
+    now_iso,
 )
+from src.io.output_schema import blueprint_output_path, normalize_blueprint_payload
 from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
@@ -51,6 +54,29 @@ def forge_legacy_terminal_certified_stop(campaign: ExactCampaign) -> None:
         "updated_at": "2026-03-16T00:00:00Z",
     }
     campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+
+
+def persist_forged_terminal_certified_state(campaign: ExactCampaign) -> None:
+    """Test-only: persist ``campaign.state`` to its checkpoint, bypassing
+    ``ExactCampaign.save()``'s terminal-CERTIFIED guard.
+
+    Negative/positive fixtures build a terminal CERTIFIED checkpoint directly
+    (``forge_legacy_terminal_certified_stop`` + ``attach_terminal_frontier_evidence``)
+    to exercise the disk-reading manifest / certified-surface / resume validators.
+    Production ``save()`` now refuses to persist terminal CERTIFIED (only
+    ``supervisor_seal`` mints it), so these fixtures write the raw checkpoint here.
+    This grants no authority: every disk-reading validator still runs the full
+    isolated sink replay before accepting the status.
+    """
+
+    campaign.state["updated_at"] = now_iso()
+    atomic_write_json(campaign.path, campaign.state)
+
+
+def persist_canonical_blueprint_for_test(project_root: Path, payload: dict) -> None:
+    """Test-only canonical blueprint write below the verified publisher boundary."""
+
+    atomic_write_json(blueprint_output_path(project_root), normalize_blueprint_payload(payload))
 
 
 def attach_terminal_frontier_evidence(

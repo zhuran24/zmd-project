@@ -22,6 +22,13 @@ from src.search.exact_campaign import (
     proposal_ready_marker_violation,
     validate_exact_campaign_resume_state,
 )
+from src.search.terminal_fixed_witness_capsule import (
+    build_terminal_fixed_witness_projection_at_sink,
+)
+from src.search.terminal_fixed_witness_verifier import (
+    TERMINAL_FIXED_WITNESS_AUDIT_FIELD,
+)
+from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 from src.tests.test_exact_contract import _build_toy_exact_project
 
 
@@ -45,6 +52,38 @@ def _proposal_final_result() -> dict[str, Any]:
 
 def _proposal_terminal_frontier_evidence() -> dict[str, Any]:
     return {"candidate_generation": {"domain_authority": "test_supervisor_replay"}}
+
+
+def _write_json(path: Path, payload: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def _run_toy_candidate_proposal(project_root: Path) -> dict[str, Any]:
+    write_closed_phase_review_gate(project_root)
+    status, result = outer_search_module.run_outer_search(
+        project_root=project_root,
+        solve_mode="certified_exact",
+        max_attempts=1,
+        min_side=1,
+        area_upper_bound=1,
+        master_seconds=5.0,
+        binding_seconds=5.0,
+        routing_seconds=5.0,
+        benders_max_iter=5,
+        campaign_hours=1.0,
+        resume_campaign=False,
+    )
+    assert status == CANDIDATE_PROPOSED_STATUS
+    assert isinstance(result, Mapping)
+    state = json.loads(
+        (
+            project_root / "data" / "checkpoints" / "exact_campaign_state.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert state["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert state["final_result"]["search_status"] == CANDIDATE_PROPOSED_STATUS
+    return state
 
 
 def _install_supervisor_candidate_generation(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -144,7 +183,39 @@ def test_save_rejects_caller_memory_terminal_certified_checkpoint(
     with pytest.raises(RuntimeError, match="supervisor_seal"):
         campaign.save()
 
-    assert not campaign.path.exists()
+    persisted = json.loads(campaign.path.read_text(encoding="utf-8"))
+    assert persisted["final_status"] is None
+    assert persisted["final_result"] is None
+
+
+def test_save_rejects_dict_subclass_that_mutates_after_guard(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "save_rejects_mutating_dict")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+
+    class CertifyingState(dict):
+        def __setitem__(self, key: object, value: object) -> None:
+            super().__setitem__(key, value)
+            if key == "updated_at":
+                super().__setitem__("final_status", RUN_STATUS_CERTIFIED)
+                super().__setitem__(
+                    "last_stop_reason",
+                    {
+                        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+                        "status": RUN_STATUS_CERTIFIED,
+                        "updated_at": "2026-06-24T00:00:00Z",
+                    },
+                )
+
+    campaign.state = CertifyingState(campaign.state)
+
+    with pytest.raises(RuntimeError, match="plain dict"):
+        campaign.save()
+
+    persisted = json.loads(campaign.path.read_text(encoding="utf-8"))
+    assert persisted["final_status"] is None
+    assert persisted["final_result"] is None
 
 
 def test_checkpoint_write_lock_fails_closed_when_already_held(tmp_path: Path) -> None:
@@ -327,6 +398,98 @@ def test_candidate_proposed_resume_is_nonterminal_until_supervisor_seal(
     assert len(replay_calls) == 1
 
 
+def test_supervisor_seal_accepts_true_fixed_witness_replay_with_volatile_token_and_resume_preserves_q(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "true_replay_seal_resume")
+    proposal_state = _run_toy_candidate_proposal(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    proposal_bytes = campaign.path.read_bytes()
+
+    first_projection = build_terminal_fixed_witness_projection_at_sink(
+        state=proposal_state,
+        project_root=project_root,
+        campaign_path=campaign.path,
+        candidate_records=json.loads(json.dumps(proposal_state["candidates"])),
+        final_result=proposal_state["final_result"],
+        serialized_state_bytes=proposal_bytes,
+    )
+    second_projection = build_terminal_fixed_witness_projection_at_sink(
+        state=proposal_state,
+        project_root=project_root,
+        campaign_path=campaign.path,
+        candidate_records=json.loads(json.dumps(proposal_state["candidates"])),
+        final_result=proposal_state["final_result"],
+        serialized_state_bytes=proposal_bytes,
+    )
+
+    assert first_projection.publishable is True
+    assert second_projection.publishable is True
+    assert first_projection.verdict.fresh_run_token
+    assert second_projection.verdict.fresh_run_token
+    assert first_projection.verdict.fresh_run_token != second_projection.verdict.fresh_run_token
+    assert first_projection.durable_candidate_records == second_projection.durable_candidate_records
+    durable_audit = first_projection.durable_candidate_records["1x1"]["proof_summary"][
+        TERMINAL_FIXED_WITNESS_AUDIT_FIELD
+    ]
+    assert "fresh_run_token" not in durable_audit
+
+    campaign.supervisor_seal()
+    sealed_bytes = campaign.path.read_bytes()
+    sealed_state = json.loads(sealed_bytes.decode("utf-8"))
+    sealed_audit = sealed_state["candidates"]["1x1"]["proof_summary"][
+        TERMINAL_FIXED_WITNESS_AUDIT_FIELD
+    ]
+    assert "fresh_run_token" not in sealed_audit
+    assert sealed_state["supervisor_seal"]["certified_state_sha256"]
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=99.0, resume=True)
+
+    assert resumed.resumed is True
+    assert resumed.state == sealed_state
+    assert resumed.path.read_bytes() == sealed_bytes
+    assert (
+        resumed.state["supervisor_seal"]["certified_state_sha256"]
+        == sealed_state["supervisor_seal"]["certified_state_sha256"]
+    )
+
+
+def test_supervisor_seal_rejects_stable_fixed_witness_digest_tamper(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "stable_digest_tamper")
+    _run_toy_candidate_proposal(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    run_id = campaign.state[SUPERVISOR_PROPOSAL_STATE_KEY]["run_id"]
+    audit = campaign.state["candidates"]["1x1"]["proof_summary"][
+        TERMINAL_FIXED_WITNESS_AUDIT_FIELD
+    ]
+    audit["solution_digest"] = "0" * 64
+    exact_campaign_module.atomic_write_json(campaign.path, campaign.state)
+    campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
+
+    with pytest.raises(RuntimeError, match="candidate_records mismatch after sink replay"):
+        campaign.supervisor_seal()
+
+
+def test_supervisor_seal_rejects_unknown_fixed_witness_audit_field(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "unknown_fixed_witness_field")
+    _run_toy_candidate_proposal(project_root)
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+    run_id = campaign.state[SUPERVISOR_PROPOSAL_STATE_KEY]["run_id"]
+    audit = campaign.state["candidates"]["1x1"]["proof_summary"][
+        TERMINAL_FIXED_WITNESS_AUDIT_FIELD
+    ]
+    audit["future_unclassified_field"] = "must-fail-closed"
+    exact_campaign_module.atomic_write_json(campaign.path, campaign.state)
+    campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
+
+    with pytest.raises(RuntimeError, match="verdict projection invalid"):
+        campaign.supervisor_seal()
+
+
 def test_resume_false_invalidates_old_proposal_marker(tmp_path: Path) -> None:
     project_root = _build_toy_exact_project(tmp_path / "resume_false_invalidates_marker")
     old_campaign, _final_result, _terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
@@ -334,14 +497,86 @@ def test_resume_false_invalidates_old_proposal_marker(tmp_path: Path) -> None:
         run_id="old-proposal-run",
     )
     old_campaign_instance_id = old_campaign.state[CAMPAIGN_INSTANCE_ID_KEY]
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", {"stale": True})
+    _write_json(project_root / "data" / "blueprints" / "optimal_blueprint.json", {"stale": True})
+    _write_json(
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json",
+        {"stale": True},
+    )
     assert old_campaign.proposal_ready_marker_path.exists()
 
     fresh = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
 
     assert fresh.state[CAMPAIGN_INSTANCE_ID_KEY] != old_campaign_instance_id
     assert not fresh.proposal_ready_marker_path.exists()
+    assert fresh.path.exists()
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+    assert not (project_root / "data" / "blueprints" / "optimal_blueprint.json").exists()
+    assert not (
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    ).exists()
     with pytest.raises(RuntimeError, match="proposal_ready_marker_unreadable"):
         fresh.supervisor_seal()
+
+
+def test_resume_forged_terminal_checkpoint_resets_and_clears_stale_surface(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "forged_terminal_resume_clear")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["final_result"] = dict(_proposal_final_result(), search_status=RUN_STATUS_CERTIFIED)
+    campaign.state["final_status"] = RUN_STATUS_CERTIFIED
+    campaign.state["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-06-24T00:00:00Z",
+    }
+    exact_campaign_module.atomic_write_json(campaign.path, campaign.state)
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", {"stale": True})
+    _write_json(project_root / "data" / "blueprints" / "optimal_blueprint.json", {"stale": True})
+    _write_json(
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json",
+        {"stale": True},
+    )
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is False
+    assert resumed.compatible_hashes is False
+    assert resumed.state["final_status"] is None
+    assert resumed.state["final_result"] is None
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+    assert not (project_root / "data" / "blueprints" / "optimal_blueprint.json").exists()
+    assert not (
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    ).exists()
+    persisted = json.loads(resumed.path.read_text(encoding="utf-8"))
+    assert persisted["final_status"] is None
+    assert persisted["final_result"] is None
+
+
+def test_resume_reset_cleanup_failure_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "resume_cleanup_failure")
+    old_campaign, _final_result, _terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="cleanup-failure-run",
+    )
+    assert old_campaign.proposal_ready_marker_path.exists()
+
+    def fail_cleanup(_project_root: Path) -> None:
+        raise RuntimeError("cleanup failed")
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "_clear_certified_delivery_surface_artifacts_for_campaign_resume",
+        fail_cleanup,
+    )
+
+    with pytest.raises(RuntimeError, match="cleanup failed"):
+        ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
 
 
 def test_supervisor_seal_requires_proposal_ready_marker(tmp_path: Path) -> None:

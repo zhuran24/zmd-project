@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
 from src.io.delivery_manifest import export_certified_delivery_manifest
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
@@ -12,7 +13,6 @@ from src.search.certified_frontier import (
     candidate_generation_kwargs,
     generate_candidate_sizes,
 )
-from src.search.certified_surface import save_certified_final_solution_and_blueprint
 from src.search.exact_campaign import (
     CAMPAIGN_SCHEMA_VERSION,
     PROOF_SUMMARY_SCHEMA_VERSION,
@@ -129,7 +129,7 @@ def test_v84_terminal_project_validation_rejects_nonmaximal_empty_grid_layout(
     }
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=root)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=root)
         == "terminal_certified_final_result_layout_has_better_empty_rect"
     )
 
@@ -250,11 +250,6 @@ def test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectan
     }
     checkpoint_path = checkpoint_dir / "exact_campaign_state.json"
     _write_json(checkpoint_path, state)
-    save_certified_final_solution_and_blueprint(
-        project_root=root,
-        result=final_result,
-        facility_pools=facility_pools,
-    )
 
     with pytest.raises(
         ValueError,
@@ -370,7 +365,7 @@ def test_v84_terminal_project_validation_rejects_nonmaximal_empty_layout_without
     }
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=root)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=root)
         == "terminal_certified_final_result_layout_has_better_empty_rect"
     )
 
@@ -610,11 +605,6 @@ def test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance(
     }
     checkpoint_path = checkpoint_dir / "exact_campaign_state.json"
     _write_json(checkpoint_path, state)
-    save_certified_final_solution_and_blueprint(
-        project_root=root,
-        result=final_result,
-        facility_pools=facility_pools,
-    )
 
     with pytest.raises(
         ValueError,

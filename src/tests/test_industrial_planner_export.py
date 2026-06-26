@@ -4,23 +4,27 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
+import scripts.export_industrial_planner_bundle as export_bundle_script
+import src.adapters.industrial_planner.export_blueprint as export_blueprint_module
 from src.adapters.industrial_planner.export_blueprint import (
     INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME,
+    INDUSTRIAL_PLANNER_BUNDLE_FILENAMES,
     INDUSTRIAL_PLANNER_MANIFEST_FILENAME,
     INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_FILENAME,
     INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_MARKDOWN_FILENAME,
     INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME,
     INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME,
     build_industrial_planner_export_bundle,
+    clear_industrial_planner_export_bundle,
     write_industrial_planner_export_bundle,
 )
 from src.io.delivery_manifest import build_compatibility_exports_payload
-from src.io.output_schema import blueprint_output_path
-from src.io.serializer import write_blueprint_payload
 from src.render.blueprint_exporter import export_target_blueprint
+from src.tests.certified_frontier_helpers import persist_canonical_blueprint_for_test
 
 _FIXTURE_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "examples" / "industrial_planner"
 
@@ -345,7 +349,7 @@ def test_unfixable_outside_bus_requirements_are_reported_explicitly() -> None:
 def test_write_industrial_planner_bundle_and_delivery_manifest_scan(tmp_path: Path) -> None:
     project_root = tmp_path / "project"
     canonical_blueprint = _sample_blueprint_payload()
-    write_blueprint_payload(blueprint_output_path(project_root), canonical_blueprint)
+    persist_canonical_blueprint_for_test(project_root, canonical_blueprint)
     written = write_industrial_planner_export_bundle(
         output_dir=project_root / "data" / "exports" / "industrial_planner",
         blueprint_payload=canonical_blueprint,
@@ -372,6 +376,63 @@ def test_write_industrial_planner_bundle_and_delivery_manifest_scan(tmp_path: Pa
     assert exports_payload["industrial_planner"]["throughput_report_markdown"]["exists"] is True
 
 
+def test_write_industrial_planner_bundle_partial_commit_clears_all_outputs(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    output_dir = tmp_path / "exports" / "industrial_planner"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+        (output_dir / filename).write_text('{"generation":"stale"}\n', encoding="utf-8")
+
+    def fail_after_two_files(*, staging_dir: Path, output_dir: Path) -> None:
+        for filename in (
+            INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME,
+            INDUSTRIAL_PLANNER_MANIFEST_FILENAME,
+        ):
+            (staging_dir / filename).replace(output_dir / filename)
+        raise OSError("simulated industrial bundle commit failure")
+
+    monkeypatch.setattr(
+        export_blueprint_module,
+        "_commit_industrial_planner_bundle",
+        fail_after_two_files,
+    )
+
+    with pytest.raises(OSError, match="simulated industrial bundle commit failure"):
+        write_industrial_planner_export_bundle(
+            output_dir=output_dir,
+            blueprint_payload=_sample_blueprint_payload(),
+        )
+
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+        assert not (output_dir / filename).exists()
+
+
+def test_clear_industrial_planner_export_bundle_attempts_all_files_after_failure(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    output_dir = tmp_path / "exports" / "industrial_planner"
+    first_path = output_dir / INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME
+    first_path.mkdir(parents=True)
+    (first_path / "locked.txt").write_text("locked", encoding="utf-8")
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES[1:]:
+        (output_dir / filename).write_text('{"generation":"stale"}\n', encoding="utf-8")
+
+    def fail_rmtree(path: Path) -> None:
+        raise PermissionError(f"cannot remove {path}")
+
+    monkeypatch.setattr(export_blueprint_module.shutil, "rmtree", fail_rmtree)
+
+    with pytest.raises(RuntimeError, match="industrial planner bundle cleanup failed"):
+        clear_industrial_planner_export_bundle(output_dir)
+
+    assert first_path.exists()
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES[1:]:
+        assert not (output_dir / filename).exists()
+
+
 def test_render_blueprint_export_wrapper_writes_target_bundle(tmp_path: Path) -> None:
     result = export_target_blueprint(
         blueprint_payload=_sample_blueprint_payload(),
@@ -386,6 +447,88 @@ def test_render_blueprint_export_wrapper_writes_target_bundle(tmp_path: Path) ->
     assert Path(result["throughput_report_path"]).exists()
     assert Path(result["throughput_report_markdown_path"]).exists()
     assert json.loads(Path(result["blueprint_path"]).read_text(encoding="utf-8"))["schema"] == "industrial-planner-blueprint"
+
+
+def test_render_blueprint_export_wrapper_rejects_repo_canonical_export_dir() -> None:
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    with pytest.raises(ValueError, match="canonical industrial planner exports"):
+        export_target_blueprint(
+            blueprint_payload=_sample_blueprint_payload(),
+            target="industrial_planner",
+            output_dir=repo_root / "data" / "exports" / "industrial_planner",
+        )
+
+
+def test_industrial_export_frontdoor_gate_block_clears_stale_bundle(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    output_dir = project_root / "data" / "exports" / "industrial_planner"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+        (output_dir / filename).write_text('{"generation":"stale"}\n', encoding="utf-8")
+
+    monkeypatch.setattr(export_bundle_script, "PROJECT_ROOT", project_root)
+    monkeypatch.setattr(
+        export_bundle_script,
+        "evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(publishable=False, blocked_reason="gate_closed"),
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "export_industrial_planner_bundle.py",
+            "data/blueprints/optimal_blueprint.json",
+            "--output-dir",
+            "data/exports/industrial_planner",
+        ],
+    )
+
+    with pytest.raises(SystemExit, match="publishable certified surface"):
+        export_bundle_script.main()
+
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+        assert not (output_dir / filename).exists()
+
+
+def test_industrial_export_frontdoor_refresh_failure_clears_written_bundle(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    output_dir = project_root / "data" / "exports" / "industrial_planner"
+    monkeypatch.setattr(export_bundle_script, "PROJECT_ROOT", project_root)
+    monkeypatch.setattr(
+        export_bundle_script,
+        "evaluate_certified_delivery_surface",
+        lambda **_kwargs: SimpleNamespace(
+            publishable=True,
+            blocked_reason=None,
+            optimal_blueprint_payload=_sample_blueprint_payload(),
+        ),
+    )
+    monkeypatch.setattr(export_bundle_script, "load_candidate_placements", lambda _path: {})
+    monkeypatch.setattr(
+        export_bundle_script,
+        "publish_verified_certified_delivery_surface",
+        lambda **_kwargs: (_ for _ in ()).throw(RuntimeError("manifest refresh failed")),
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "export_industrial_planner_bundle.py",
+            "data/blueprints/optimal_blueprint.json",
+            "--output-dir",
+            "data/exports/industrial_planner",
+        ],
+    )
+
+    with pytest.raises(SystemExit, match="invalidated certified manifest currentness"):
+        export_bundle_script.main()
+
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+        assert not (output_dir / filename).exists()
 
 
 def test_old_minimal_example_is_no_longer_the_success_oracle() -> None:

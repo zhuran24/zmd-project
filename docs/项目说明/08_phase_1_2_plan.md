@@ -1,13 +1,16 @@
 # 08 — Phase 1.2 plan (P1.2A entry ✅ done + P1.2B-F5/F6/F7/F8/F9)
 
+> **历史计划与现行 scope 混合文档**：F5–F9 的计划段保留作设计来源；当前 P1.2 状态以 `06_current_status.md` 与 `soundness_gap_roadmap.md` 为准。V99 及其测试/封存数字绑定旧 source hashes，后续 PR1 工作树修改已要求重新封存。
+
+
 > **2026-05-23 v2 命名更新**: 原 plan 把 `P1.11` 同时用作 "入门 7 项" 跟 "F5 pattern_nogood", 误导. v2 拆: **P1.2A** 入门 (entry hardening, 已落地) + **P1.2B-F{5,6,7,8,9}** 各 family.
 
-> ⚠️ **(2026-06-04 现状)** 本 plan 的 P1.2B-F5..F9 **已落地**（Phase 1.2 spike close 闭关中，各 family generator+validator + 多轮 Gemini/外审；见 [06](06_current_status.md) + [07 §5.14](07_historical_review.md)）。下方 forward-looking 措辞（"待实施 / 为啥重要 / 实施顺序"）多为**历史 plan / 参考**。**且 F9 已 tight-K quarantine 实质停用**（PROJECT_LOCK §3A）—— 故下文"F9 主力几何 lift / 防 F5 ratio 超 50%"的论证**当前不成立**（F9 这条 remedy 暂不可用，相关 stop-ship 逻辑待 F9 解封）。测试计数以核心节点 `authoritative_numbers.json` 为准（当前 **442**，非 189）。
+> ⚠️ **(2026-06-04 现状)** 本 plan 的 P1.2B-F5..F9 **已落地**（Phase 1.2 spike close 闭关中，各 family generator+validator + 多轮 Gemini/外审；见 [06](06_current_status.md) + [07 §5.14](07_historical_review.md)）。下方 forward-looking 措辞（"待实施 / 为啥重要 / 实施顺序"）多为**历史 plan / 参考**。**且 F9 已 tight-K quarantine 实质停用**（PROJECT_LOCK §3A）—— 故下文"F9 主力几何 lift / 防 F5 ratio 超 50%"的论证**当前不成立**（F9 这条 remedy 暂不可用，相关 stop-ship 逻辑待 F9 解封）。其中 442 是当时 cuts 子集的历史 collect 节点，不是当前通过数；2026-06-26 全仓 collect-only 为 425 文件 / 3450 tests。
 
 ## 2026-06-17 — P1.2 职责边界（后续审查口径）
 
 P1.2 当前要闭的是 **default `certified_exact` 证明链的 soundness**，不是 owner
-门禁治理本身，也不是把 cut family 真接进 master 的 P1.3B 集成。审查员可以按模块、
+门禁治理本身，也不是把 cut family 真接进 master 的后续 P1.3 集成。审查员可以按模块、
 按 proof surface、按历史 "review faces" 搜索问题，但那些只是找问题的脚手架，**不是
 P1.2 范围定义**；最终分类看问题是否会污染当前默认 certified 证明链。
 
@@ -23,24 +26,24 @@ P1.2 范围定义**；最终分类看问题是否会污染当前默认 certified
   conditional hardening、availability/completeness 或 future-integration residual。
 
 **P1.2 不直接管的东西**:
-- owner 手动 clean-review 计数、review receipt 是否算 clean、P1.3B 是否放行。这是
+- owner 手动 clean-review 计数、review receipt 是否算 clean、后续 P1.3 是否放行。这是
   close gate / governance，不是 P1.2 技术职责本身。
 - `src/cuts/lifecycle.py::step_8_apply_to_master` 真 master 集成、PoseBoolExactMaster LBBD
-  master integration、cut family 在 master 上的 production attach。这些属于 P1.3B 或更后。
+  master integration、cut family 在 master 上的 production attach。这些属于后续 P1.3 或更后。
 - 只导致 `UNKNOWN` / `TIMEOUT` / 性能变慢 / proof 产不出来的纯 availability 或
   completeness 问题；除非它们被误消费成 proof-bearing `INFEASIBLE` / `CERTIFIED`。
 - exploratory / AI / heuristic / sidecar 的效果判断；除非它们的输出越界进入 certified
   evidence。
 
 给 GPT Pro / 外部 reviewer 的最短提示：**请审当前默认 `certified_exact` 是否可能产生或
-持久化错误的 proof-bearing 强结论；不要把 owner 门禁、三次 clean 计数、P1.3B 开门、
+持久化错误的 proof-bearing 强结论；不要把 owner 门禁、三次 clean 计数、P1.3 开门（机器字段仍为 `p1_3b_*`）、
 或 Step 8 production integration 当作 P1.2 职责来审。**
 
-**2026-06-17 V99 close-kernel sealing**: P1.2 技术 close 现在还有一个机器封口：
+**2026-06-17 V99 historical close-kernel seal**：该封存只对当时 source hashes 有效；后续 PR1 修改已重开并要求重新封存。现行机器封口仍由：
 `scripts/check_p1_2_proof_obligations.py` 会扫描当前默认 `certified_exact` 相关源树中的
 proof-bearing strong-status sink；新增未登记 `CERTIFIED` / proof-bearing `INFEASIBLE` 词面、
 已登记 sink 的 `source_sha256` 漂移、或 required guard token 缺失，均使 close claim fail-closed。
-这不是 owner clean 计数，也不打开 P1.3B；它只把“门卫是否被绕过”压缩成显式 TCB +
+这不是 owner clean 计数，也不打开 P1.3（机器字段仍为 `p1_3b_*`）；它只把“门卫是否被绕过”压缩成显式 TCB +
 close-kernel contract。
 
 ## P1.2A — entry hardening ✅ DONE (2026-05-23 exit hardening + 2026-05-24 final polish)
@@ -56,7 +59,7 @@ close-kernel contract。
 7. ✅ F3 `evaluate_literal_port_exposure` 删
 8. ✅ `on_ghost_rect_changed` test stub 收紧 (`unsafe_test_replay_fn` + double flag)
 
-测试: **189 cuts pass**（Phase 1.1/P1.2A 时口径；178/181/188 是更早中间值）。**现 cuts 计数以核心节点 `authoritative_numbers.json` 为准 = 442（F5-F9 落地后）**，189 是旧值。
+测试: **189 cuts pass**（Phase 1.1/P1.2A 时口径；178/181/188 是更早中间值）。**442 是当时 cuts 子集的历史 collect 值；当前全仓 collect-only 为 3450**，189 是旧值。
 
 ## P1.2B-F5 — pattern_nogood (优先级最高)
 

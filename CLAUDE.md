@@ -4,12 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this project is
 
-Endfield IndustrialPlanner — a **certified-exact maximum empty-rectangle solver** for
-《明日方舟：终末地》(Arknights: Endfield) base layouts. On a 70×70 grid constrained by 266
-mandatory facility instances, it finds the *provably optimal* empty rectangle under
-`max_lex(area, min_side)` (maximize area first, then the shorter side). The engine is
-OR-Tools CP-SAT wrapped in a Benders/LBBD decomposition: `master → binding → routing → flow`,
-with infeasible subproblems generating cuts that tighten the master.
+Endfield IndustrialPlanner is a certified-exact maximum empty-rectangle solver for
+《明日方舟：终末地》(Arknights: Endfield) base layouts. On a 70×70 grid constrained by
+266 mandatory facility instances, the certified path targets `max_lex(area, min_side)`.
+The current worktree contains a proposal/supervisor/publication chain and several
+fail-closed verification layers, but P1.2 remains blocked and no public result may be
+described as certified merely because the solver found a candidate or a targeted test
+passed. The main decomposition is placement master → binding → routing; the flow model
+is diagnostic only and cannot mint pruning or publication proof.
 
 Python 3.13. Entry point is `main.py`.
 
@@ -17,15 +19,19 @@ Python 3.13. Entry point is `main.py`.
 
 There are **two strictly separated solve paths** and they must never cross:
 
-- `certified_exact` (the default `--mode`) produces provable-optimal evidence.
+- `certified_exact` (the default `--mode`) is the only path eligible to produce
+  proof material. Its producer commits proposals; only the supervisor seal may mint a
+  durable terminal status, and only the central publisher may expose it publicly.
 - `exploratory` is heuristic tooling for guidance/probing only.
 
 Exploratory outputs (caps, hints, probe results, sidecars) must **never** be promoted into
 certified evidence. The objective is `max_lex(area, min_side)`; `min_side >= 6` is a candidate
 *admissibility* rule, **not** an objective tie-break. There is **no** hard "50 power poles + 10
 protocol boxes" cap in exact mode — that number is exploratory-only guidance (poles are
-residual-optional, boxes are demand-driven). Even a full 70×70 exact run honestly reports
-`open`, not `CERTIFIED`, while in the spike-close phase.
+residual-optional, boxes are demand-driven). P1.2 remains release-blocked by the manual gate and unfinished PR2/package
+hardening. The seal method exists, but no production CLI/launcher calls it; `main.py` stops at
+`CANDIDATE_PROPOSED`. Do not confuse method availability or a test invocation with an
+owner-approved release closure.
 
 **`PROJECT_LOCK.md` is the authoritative source of truth** for exactness boundaries, accepted
 invariants, source-of-truth inputs, and forbidden changes. It is large (~106 KB) and dense with
@@ -45,20 +51,12 @@ preflight gate (`scripts/preflight_gate.py::FROZEN_ARTIFACTS`):
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 
-The large `data/preprocessed/candidate_placements.json` (~45.8 MB) is **intentionally omitted**
-from the lightweight GitHub checkout but is still part of the certified contract. Restore or
-regenerate it before any certified run:
-
-```powershell
-# Regenerate from canonical templates
-python src/placement/placement_generator.py
-# OR restore from a clean archive (verifies SHA256 against data/external_artifacts.json)
-python scripts/restore_external_artifacts.py candidate_placements --source <file-or-dir>
-```
-
-Expected: 45,773,799 bytes, SHA256 `adcc2a6e…2f34bec0`. The older 53,594,995-byte artifact is
-**hash-incompatible** and must not be used (campaign resume fails closed with
-`artifact_hash_mismatch`).
+`data/preprocessed/candidate_placements.json` is present in this worktree and remains part
+of the certified contract. Its expected size is 45,773,799 bytes and its SHA256 is
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. Some lightweight
+distributions may externalize it; only in such a distribution should it be regenerated
+or restored with `scripts/restore_external_artifacts.py`. The older 53,594,995-byte
+artifact is hash-incompatible and campaign resume must reject it.
 
 ## Collaboration memory (cc_memory)
 
@@ -147,7 +145,7 @@ the tuning:
 - Windows production runners: `scripts/run_prod_*.ps1` (e.g. `run_prod_4x4_high.ps1`), built on
   `scripts/_exact_runner_common.ps1`.
 
-### Tests (pytest, ~403 test files)
+### Tests (pytest; 425 files / 3450 tests collected on 2026-06-26)
 
 ```powershell
 python -m pytest src/tests/ -q                              # full suite
@@ -163,9 +161,11 @@ reproduce with `-p randomly --randomly-seed=<n>` or disable with `-p no:randomly
 
 ### Preflight / CI gate
 
-`scripts/preflight_gate.py` is the repo-native gate (frozen-artifact hashes, forbidden-path
-writes, exact/exploratory isolation, doc-subject sync, secret scan, mypy on the cut-lifecycle
-core, full-repo ruff, pytest). Exit codes: `0` pass, `1` hard block, `2` pass-with-warnings.
+`scripts/preflight_gate.py` is the repo-native gate for frozen-artifact hashes,
+forbidden-path writes, exact/exploratory isolation, secret scanning, selected mypy and
+ruff checks, and optionally pytest. It does not run or enforce the retired documentation
+subject/projection synchronizer. Exit codes are `0` pass, `1` hard block, and `2`
+pass-with-warnings.
 
 ```powershell
 python scripts/preflight_gate.py            # staged changes
@@ -193,17 +193,22 @@ Call order (structure, not a guarantee of what each layer proves — see `NAV_MA
 
 ```
 main.py
- └ src/search/outer_search.py            outer candidate-rectangle loop; seals the artifact snapshot
-    └ src/search/benders_loop.py         Benders/LBBD main loop
-       ├ src/models/master_model.py             placement master (CP-SAT)
-       ├ src/models/exact_coordinate_master.py  ghost-rectangle coordinate master (default backend)
-       ├ src/models/pose_bool_exact_master.py   alt pose-bool master (EXACT_USE_POSE_BOOL_MASTER, NOT certified)
-       ├ src/models/binding_subproblem.py       port-binding subproblem
-       ├ src/models/routing_subproblem.py       grid routing subproblem
-       ├ src/models/flow_subproblem.py          multi-commodity flow subproblem
-       └ src/cuts/lifecycle.py                  infeasible subproblem → cut → tighten master
-    └ src/search/exact_campaign.py            campaign persistence / resume (artifact-hash bound)
-    └ src/search/exact_parallel_scheduler.py  coordinator-only writer, disjoint candidate waves
+ └ src/search/outer_search.py                 producer; commits CANDIDATE_PROPOSED only
+    └ src/search/benders_loop.py              Benders/LBBD main loop
+       ├ src/models/master_model.py                 placement master (CP-SAT)
+       ├ src/models/exact_coordinate_master.py      default exact coordinate backend
+       ├ src/models/pose_bool_exact_master.py       env-gated alternative, not public certified backend
+       ├ src/models/binding_subproblem.py           port-binding subproblem
+       ├ src/models/routing_subproblem.py           grid-routing subproblem
+       ├ src/search/independent_infeasibility_reverifier.py  whole-layout rejection recheck
+       ├ src/models/flow_subproblem.py              diagnostic only; never proof authority
+       └ src/cuts/lifecycle.py                      infeasible subproblem → validated cut
+    ├ src/search/exact_campaign.py
+    │  ├ [OPEN] production supervisor invocation surface
+    │  └ ExactCampaign.supervisor_seal()       sole durable terminal CERTIFIED mint
+    └ src/search/exact_parallel_scheduler.py   coordinator-only writer, disjoint waves
+ └ src/search/certified_surface.py
+    └ publish_verified_certified_delivery_surface()  sole public certified publisher
 ```
 
 `src/` top-level map:
@@ -244,15 +249,16 @@ build/audit scripts live under `scripts/` (e.g. `run_industrial_planner_single_b
   committed.
 - **`src/ai_accel`** (feature extraction / replay scheduling) must never touch proof paths — the
   preflight AI-safety contract enforces this.
-- **Docs use a subject/projection system.** Subjects live in `docs/subjects/`; concrete docs and
-  memory nodes carry registered projection blocks synced by `scripts/sync_doc_subjects.py`. Don't
-  hand-edit the `<!-- DOC-SUBJECT:… START/END -->` blocks (e.g. in `README.md`); edit the subject
-  and re-sync. Preflight checks projection sync.
+- **Documentation subjects are ordinary maintained documents.** `docs/subjects/` is a
+  navigation layer, and remaining `DOC-SUBJECT` markers record provenance only. The old
+  `cc_context` registry and `scripts/sync_doc_subjects.py` workflow are retired and are not
+  enforced by preflight.
 - **All proof-relevant JSON parsing is strict** (`src/io/strict_json.py`): duplicate keys and
   `NaN`/`Infinity` are rejected, and writers emit `allow_nan=False`. Use the shared strict entry,
   not bare `json.loads`, on any path feeding binding/master/preprocess proof inputs.
 - Editing a frozen artifact (canonical rules, preprocess plan, the preprocessed JSONs) is a
   **freeze-ritual change**: update the hash in `scripts/preflight_gate.py`, regenerate dependent
   artifacts, and re-run the gate. It is not a free overlay edit.
-- Windows is the dev/test host here (this checkout is at `C:\claude pj\zmd_pj`); certified
-  production runs target Linux/CachyOS via the wrapper. Use the PowerShell tool for commands.
+- Development and testing may run on Windows or Linux. Use commands appropriate for the
+  current host; production-class Linux/CachyOS launches still go through the repository
+  wrapper rather than a bare `python main.py` invocation.

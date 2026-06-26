@@ -1,5 +1,8 @@
 # 18 — 环境变量 / 配置清单
 
+> **未来配置草案**：未落地的 env 名称不是当前接口。任何开关都不得绕过 supervisor、public publisher 或 owner gate。
+
+
 cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其他 EXACT_* env 一致, 避免新 config schema). 本节列当前 cut framework 自己 + 跟主流程 cut 相关 env 的 interaction.
 
 ### 19.1 cut framework 自身 env (现状)
@@ -12,7 +15,7 @@ cut framework 用 env 做 phase/feature toggle, 不用 config file (跟项目其
 
 ### 19.2 Phase 1.3 propagator 集成预留 env (实施时定名)
 
-下面 env 在 §12 / §13 实施时加, 当前未实施. 命名前缀按项目惯例 `EXACT_CUT_STORE_*`（**⚠️ 2026-06-04: P1.3B 集成总开关命名未最终统一** —— `09_phase_1_3_plan` / `12_go_criteria` 处写作 `EXACT_B_DESIGN_V2`，此处拟 `EXACT_CUT_STORE_ENABLE`，待 P1.3B 实施时定名收口）:
+下面 env 在 §12 / §13 实施时加, 当前未实施. 命名前缀按项目惯例 `EXACT_CUT_STORE_*`（**⚠️ 2026-06-04: P1.3 集成总开关命名未最终统一** —— `09_phase_1_3_plan` / `12_go_criteria` 处写作 `EXACT_B_DESIGN_V2`，此处拟 `EXACT_CUT_STORE_ENABLE`，待 P1.3 实施时定名收口）:
 
 | Env (拟) | 默认 | 用途 |
 |---|---|---|

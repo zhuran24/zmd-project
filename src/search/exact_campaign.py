@@ -50,7 +50,9 @@ from src.search.candidate_proof_replay import (
     project_candidate_records_for_sink,
 )
 from src.search.terminal_fixed_witness_verifier import (
+    TERMINAL_FIXED_WITNESS_AUDIT_FIELD,
     canonical_state_bytes_for_fixed_witness,
+    stable_terminal_fixed_witness_verdict_payload,
 )
 from src.search.terminal_fixed_witness_capsule import (
     build_terminal_fixed_witness_projection_at_sink,
@@ -1618,7 +1620,7 @@ def _atomic_json_bytes(payload: Mapping[str, Any]) -> bytes:
     return json.dumps(payload, indent=2, ensure_ascii=False).encode("utf-8")
 
 
-def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
+def _atomic_write_json_bytes(path: Path, payload_bytes: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, raw_tmp_path = tempfile.mkstemp(
         prefix=f".{path.name}.tmp-",
@@ -1628,7 +1630,7 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
     tmp_path = Path(raw_tmp_path)
     try:
         with os.fdopen(fd, "wb") as handle:
-            handle.write(_atomic_json_bytes(payload))
+            handle.write(bytes(payload_bytes))
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(str(tmp_path), str(path))
@@ -1639,6 +1641,29 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
                 tmp_path.unlink()
             except Exception:
                 pass
+
+
+def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
+    _atomic_write_json_bytes(path, _atomic_json_bytes(payload))
+
+
+def _snapshot_campaign_state_for_nonterminal_save(
+    state: Mapping[str, Any],
+    *,
+    updated_at: str,
+) -> tuple[Dict[str, Any], bytes]:
+    if type(state) is not dict:
+        raise RuntimeError("campaign checkpoint state must be a plain dict before save")
+    snapshot = dict(state)
+    snapshot["updated_at"] = str(updated_at)
+    try:
+        checked_state = loads_strict_json(_atomic_json_bytes(snapshot).decode("utf-8"))
+    except Exception as exc:  # noqa: BLE001 - checkpoint writes must fail closed.
+        raise RuntimeError("campaign checkpoint state must be strict JSON serializable") from exc
+    if not isinstance(checked_state, Mapping):
+        raise RuntimeError("campaign checkpoint state must serialize to a JSON object")
+    checked_snapshot = dict(checked_state)
+    return checked_snapshot, _atomic_json_bytes(checked_snapshot)
 
 
 @contextmanager
@@ -1762,6 +1787,41 @@ def _certified_state_payload_sha256(state: Mapping[str, Any]) -> str:
     payload = dict(state)
     payload.pop(SUPERVISOR_SEAL_STATE_KEY, None)
     return hashlib.sha256(canonical_state_bytes_for_fixed_witness(payload)).hexdigest()
+
+
+def _stable_fixed_witness_candidate_records_for_supervisor_compare(
+    records: Mapping[str, Any],
+) -> Dict[str, Any]:
+    projected: Dict[str, Any] = {}
+    for raw_key, raw_record in records.items():
+        if not isinstance(raw_record, Mapping):
+            raise RuntimeError("terminal fixed witness candidate record invalid")
+        record = dict(raw_record)
+        proof_summary = record.get("proof_summary")
+        if isinstance(proof_summary, Mapping) and TERMINAL_FIXED_WITNESS_AUDIT_FIELD in proof_summary:
+            summary = dict(proof_summary)
+            raw_verdict = summary.get(TERMINAL_FIXED_WITNESS_AUDIT_FIELD)
+            if not isinstance(raw_verdict, Mapping):
+                raise RuntimeError("terminal fixed witness verdict projection invalid")
+            try:
+                summary[TERMINAL_FIXED_WITNESS_AUDIT_FIELD] = (
+                    stable_terminal_fixed_witness_verdict_payload(raw_verdict)
+                )
+            except Exception as exc:  # noqa: BLE001
+                raise RuntimeError(
+                    "terminal fixed witness verdict projection invalid"
+                ) from exc
+            record["proof_summary"] = summary
+        projected[str(raw_key)] = record
+    return projected
+
+
+def _clear_certified_delivery_surface_artifacts_for_campaign_resume(
+    project_root: Path,
+) -> None:
+    from src.search.certified_surface import clear_certified_delivery_surface_artifacts
+
+    clear_certified_delivery_surface_artifacts(project_root)
 
 
 def _load_sealed_proposal_authority(value: Mapping[str, Any]) -> Tuple[Dict[str, Any], bytes, Optional[str]]:
@@ -2782,6 +2842,29 @@ def has_valid_terminal_full_frontier_certified_evidence_for_project(
     )
 
 
+def _resume_verified_sealed_terminal_state_violation(
+    state: Mapping[str, Any],
+    *,
+    project_root: Path,
+    campaign_path: Path,
+    serialized_state_bytes: bytes,
+) -> Optional[str]:
+    if not has_terminal_full_frontier_certified_evidence(state):
+        return "resume_state_not_terminal_certified"
+    seal_reason = _supervisor_seal_state_violation(
+        state.get(SUPERVISOR_SEAL_STATE_KEY),
+        state=state,
+    )
+    if seal_reason is not None:
+        return seal_reason
+    return terminal_certified_final_result_violation_for_project(
+        state,
+        project_root=project_root,
+        campaign_path=campaign_path,
+        serialized_state_bytes=serialized_state_bytes,
+    )
+
+
 def certified_terminal_evidence_violation(
     state: Mapping[str, Any],
     *,
@@ -2825,7 +2908,8 @@ class ExactCampaign:
         reset_reason: Optional[str] = None
         if resume and path.exists():
             try:
-                loaded_state = _loads_strict_json_object(path.read_text(encoding="utf-8"))
+                loaded_bytes = path.read_bytes()
+                loaded_state = _loads_strict_json_object(loaded_bytes.decode("utf-8"))
             except Exception:
                 reset_reason = "state_json_invalid"
             else:
@@ -2837,6 +2921,23 @@ class ExactCampaign:
                     )
                     if reset_reason is None:
                         state = dict(loaded_state)
+                        if has_terminal_full_frontier_certified_evidence(state):
+                            terminal_resume_violation = (
+                                _resume_verified_sealed_terminal_state_violation(
+                                    state,
+                                    project_root=project_root,
+                                    campaign_path=path,
+                                    serialized_state_bytes=loaded_bytes,
+                                )
+                            )
+                            if terminal_resume_violation is None:
+                                return cls(
+                                    project_root=project_root,
+                                    path=path,
+                                    state=state,
+                                    resumed=True,
+                                    compatible_hashes=True,
+                                )
                         state["updated_at"] = now_iso()
                         state["reset_reason"] = None
                         # Allow extending campaign budget on resume
@@ -2854,12 +2955,17 @@ class ExactCampaign:
                             _sanitize_resume_state_for_untrusted_candidate_evidence(state)
                         )
                         if sanitized_resume_evidence:
+                            state.pop(SUPERVISOR_SEAL_STATE_KEY, None)
+                            state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
                             # The resume boundary deliberately treats persisted strong
                             # candidate conclusions as untrusted caches.  Make that
                             # downgrade durable before returning so a crash, exception,
                             # or concurrent public-surface read cannot observe the stale
                             # proof-bearing checkpoint.
                             atomic_write_json(path, state)
+                            _clear_certified_delivery_surface_artifacts_for_campaign_resume(
+                                project_root
+                            )
                         return cls(
                             project_root=project_root,
                             path=path,
@@ -2880,6 +2986,8 @@ class ExactCampaign:
                 proposal_ready_marker_path_for_campaign(path).unlink()
             except FileNotFoundError:
                 pass
+            atomic_write_json(path, state)
+        _clear_certified_delivery_surface_artifacts_for_campaign_resume(project_root)
         return cls(
             project_root=project_root,
             path=path,
@@ -3402,6 +3510,11 @@ class ExactCampaign:
             if not isinstance(raw_record, Mapping):
                 raise RuntimeError("supervisor_seal proposal candidate_records invalid")
             candidate_records_copy[str(raw_key)] = dict(raw_record)
+        candidate_records_comparison = (
+            _stable_fixed_witness_candidate_records_for_supervisor_compare(
+                candidate_records_copy
+            )
+        )
         raw_candidate_generation = terminal_frontier_evidence_copy.get("candidate_generation")
         if not isinstance(raw_candidate_generation, Mapping):
             raise RuntimeError(
@@ -3486,14 +3599,19 @@ class ExactCampaign:
                     "supervisor_seal sink replay candidate_records invalid"
                 )
             verified_candidate_records_copy[str(raw_key)] = dict(raw_record)
-        if verified_candidate_records_copy != candidate_records_copy:
+        verified_candidate_records_comparison = (
+            _stable_fixed_witness_candidate_records_for_supervisor_compare(
+                verified_candidate_records_copy
+            )
+        )
+        if verified_candidate_records_comparison != candidate_records_comparison:
             raise RuntimeError(
                 "supervisor_seal candidate_records mismatch after sink replay"
             )
         scratch_state["terminal_frontier_evidence"] = dict(
             verified_terminal_frontier_evidence
         )
-        scratch_state["candidates"] = verified_candidate_records_copy
+        scratch_state["candidates"] = verified_candidate_records_comparison
 
         precheck_reason = terminal_certified_final_result_project_precheck_violation(
             scratch_state,
@@ -3622,10 +3740,16 @@ class ExactCampaign:
 
     def save(self) -> None:
         with _checkpoint_write_lock(self.path):
+            checked_state, state_bytes = _snapshot_campaign_state_for_nonterminal_save(
+                self.state,
+                updated_at=now_iso(),
+            )
             if (
-                str(self.state.get("final_status")) == "CERTIFIED"
-                or has_terminal_full_frontier_certified_evidence(self.state)
+                str(checked_state.get("final_status")) == "CERTIFIED"
+                or has_terminal_full_frontier_certified_evidence(checked_state)
             ):
                 raise RuntimeError("terminal CERTIFIED checkpoints must be written by supervisor_seal")
-            self.state["updated_at"] = now_iso()
-            atomic_write_json(self.path, self.state)
+            _atomic_write_json_bytes(self.path, state_bytes)
+            if self.path.read_bytes() != state_bytes:
+                raise RuntimeError("campaign checkpoint bytes mismatch after save")
+            self.state = checked_state

@@ -1,15 +1,11 @@
-# Subject: documentation tree completeness
+# 文档树清单语义
 
-This subject defines what **complete closeout** means for the documentation tree. It is intentionally narrower than a claim that every historical sentence in the archive is semantically fresh. The archive remains historical evidence. Completeness means the living documentation surface has an explicit subject/projection architecture, a manifest of owned surfaces, and a preflight-enforced checker that detects unregistered growth and projection drift.
+`docs/DOC_TREE_COMPLETENESS.json` 是一次性生成的路径 inventory，目的只是帮助人工审计文档面。它不验证内容、不注册 projection，也不参与 preflight。
 
-<!-- SUBJECT-FIELD:definition START -->
-A documentation-tree closeout is complete when the living surface is governed by explicit subjects, every concrete projection is registered and synchronized, every top-level documentation surface is classified, and the closure criteria are enforced by `scripts/check_doc_tree_completeness.py` plus preflight. It does **not** mean that historical archives are rewritten into present-tense prose.
-<!-- SUBJECT-FIELD:definition END -->
+“清单完整”只能表示所列路径与生成时的工作树相符，不能表示：
 
-<!-- SUBJECT-FIELD:done_criteria START -->
-Done criteria: subject/projection sync is clean; no unregistered projection blocks exist; every subject field has at least one projection; `docs/` top-level files/directories, `docs/项目说明/` chapters, `docs/research/` first-level archive directories, and `specs/*.md` are all listed in `docs/DOC_TREE_COMPLETENESS.json`; required front-door projection slots exist; and `python scripts/check_doc_tree_completeness.py` passes.
-<!-- SUBJECT-FIELD:done_criteria END -->
-
-<!-- SUBJECT-FIELD:preflight_contract START -->
-Preflight treats documentation-tree completeness as a hard gate: run `python scripts/check_doc_tree_completeness.py` after adding, moving, or deleting documentation surfaces, and update the manifest only when the new surface has a declared role and authority boundary.
-<!-- SUBJECT-FIELD:preflight_contract END -->
+- soundness 已闭；
+- phase gate 已打开；
+- subject 文本已同步；
+- cc_memory 已同步；
+- 历史研究结论仍适用于当前代码。

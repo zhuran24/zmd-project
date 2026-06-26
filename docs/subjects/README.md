@@ -1,33 +1,14 @@
-# Documentation subjects
+# Subjects
 
-This directory is the abstract subject layer of the documentation tree.
+这里保存按主题组织的人工维护说明，便于复用概念和审计状态。它们不是自动同步源，也不拥有高于 `PROJECT_LOCK.md`、机器义务或 phase gate 的 authority。
 
-A **subject** is the context-independent source for a fact, contract, or governance rule that appears in more than one concrete document. Concrete documents should not hand-copy those facts. They should carry a registered projection block that is synchronized by `scripts/sync_doc_subjects.py`.
+当前文件：
 
-The subject/projection rules are:
+- `current_project_state.md`: 当前阶段与发布链状态。
+- `certified_exact_contract.md`: certified/exploratory 和冻结输入边界。
+- `doc_tree_architecture.md`: 文档系统的实际维护方式。
+- `doc_tree_completeness.md`: 信息性 inventory 的含义。
+- `project_knowledge_tree.md`: 文档与 cc_memory 的职责分离。
+- `authoritative_numbers.md`: 数字引用的时间戳和来源纪律。
 
-1. Edit a subject field when the abstract fact changes, then run `python scripts/sync_doc_subjects.py --sync`.
-2. Edit a projection block only when you intentionally want the concrete document to propose a subject change, then run `python scripts/sync_doc_subjects.py --absorb`.
-3. Run `python scripts/sync_doc_subjects.py --check` before committing. Preflight runs the same check.
-4. Do not copy current phase, current counts, frozen source-of-truth claims, or documentation governance text outside registered projection blocks unless the text is explicitly historical.
-
-Projection blocks use this marker format:
-
-```md
-<!-- DOC-SUBJECT:<subject_id> FIELD:<field_id> START sha256:<hash> -->
-...
-<!-- DOC-SUBJECT:<subject_id> FIELD:<field_id> END -->
-```
-
-Subject fields use this marker format inside `docs/subjects/*.md`:
-
-```md
-<!-- SUBJECT-FIELD:<field_id> START -->
-...
-<!-- SUBJECT-FIELD:<field_id> END -->
-```
-
-The checksum in each projection marker is the hash of the subject field that last generated the projection. That lets the sync tool distinguish two cases that look similar in a diff:
-
-- subject changed, projection is stale: run `--sync`;
-- projection was intentionally edited while its marker still matches the subject: run `--absorb` to update the subject, then fan the change back out to all projections.
+`DOC-SUBJECT` 注释是历史 provenance marker。仓库没有同步脚本、projection registry 或 `cc_context` 目录。

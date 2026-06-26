@@ -1,5 +1,8 @@
 # 05 — 待定 mathematical questions (open problems)
 
+> **问题清单边界**：本文件混合历史问题与未来 P1.3 设计项。已落地/未落地状态必须回查 `06_current_status.md` 和 `soundness_gap_roadmap.md`；旧 `P1.3B` 人类名称统一解释为 P1.3。
+
+
 本节列**当前没答案**的数学问题. 按级别标:
 
 - **P0 (critical)** — 数学层 paradigm 决定性问题, 不解 Phase 1.2/1.3/1.5 推不动
@@ -110,11 +113,11 @@
 **问题**: F1 region_capacity 是 LP relax valid inequality, 可通过 Farkas dual ray identify ([cite spec 01 §1c]). 实施 Farkas 自动触发是否值得?
 
 **当前 understanding**:
-- 项目复用 cand C `farkas_certificate.py` (代码已 land)
-- 但当前 F1 oracle 是启发式枚举 region, 不调用 Farkas
+- 当前仓库没有 `farkas_certificate.py`，也没有可发布的 dual-ray/Farkas 证书链
+- 当前 F1 oracle 是组合枚举 region，不调用 Farkas；F1-F9 Step 8 也尚未接入 production master
 - Farkas 自动触发 → oracle 不需手写 region 列表, 但 LP relax solve 也要 cost
 
-**defer trigger**: Phase 1.3 propagator 集成时 verify Farkas 是否有 dual ray 跟 F1 oracle 重合
+**defer trigger**: 未来 cut-family 集成时，先定义证书格式、独立 verifier 和 replay 义务，再评估 dual-ray 路径是否值得实现
 
 #### F1 — interior_rect 枚举策略 **P1**
 
@@ -243,7 +246,7 @@
 - 数学上 F7 sound = master 在该 cut 后必 INFEASIBLE
 - 但实施上: F7 cut 加进 master 后是 redundant (master 已经会拒) 还是 amplify (master propagation 提前 cut)?
 
-**defer trigger**: Phase 1.3 P1.3B propagator 集成时验
+**defer trigger**: 后续 P1.3 propagator 集成时验
 
 #### F8 — Liang-Barsky 退化 case **P1**
 
@@ -293,14 +296,14 @@
 
 #### Q7 — attach point 选择 **P0**
 
-**问题**: cut framework Phase 1.3 接 benders_loop 时, cut 在哪 attach master? 当前 PCR-CUT (Path 14) 只在 front_blocked routing precheck branch attach. 其他 INFEASIBLE 来源 (binding / flow / power) wire 进 cut framework 怎么 sound?
+**问题**: cut framework Phase 1.3 接 benders_loop 时, cut 在哪 attach master? 当前 PCR-CUT (Path 14) 只在 front_blocked routing precheck branch attach. 其他受 theorem 接纳的 INFEASIBLE 来源（binding / routing / power / independently reverified whole-layout；flow diagnostic 不在其列） wire 进 cut framework 怎么 sound?
 
 **当前 understanding**:
 - LBBD 经典: 每 sub-problem INFEASIBLE 出 nogood → master 加 lazy
 - cut framework 是 nogood 的累积层, 每 sub-problem 触发 attach 点不同 (binding INFEASIBLE 触发 F3/F5/F7; routing INFEASIBLE 触发 F2/F4; power INFEASIBLE 触发 F7/F8)
 - 每 attach 点必 sound 确认 (cert ↔ sub-problem reject 数据)
 
-**defer trigger**: Phase 1.3 P1.3B propagator 集成时设计 (cite plan §12.1)
+**defer trigger**: 后续 P1.3 propagator 集成时设计 (cite plan §12.1)
 
 #### Q8 — lazy attach vs eager attach **P1**
 
@@ -311,7 +314,7 @@
 - eager attach: cut 立即影响 propagation, master 立即缩 search; lazy attach: cut 仅在 master solve 时触发, 不影响 propagation
 - 项目 cut 数预期 ~thousands per candidate, eager 可能撞 propagation cost; lazy 可能 cut 不触发 (master 没 hit cut.scope)
 
-**defer trigger**: Phase 1.3 P1.3B 实施时 ab test eager vs lazy
+**defer trigger**: 后续 P1.3 实施时 ab test eager vs lazy
 
 #### Q9 — master OPTIMAL vs INFEASIBLE 触发路径 **P1**
 
@@ -322,7 +325,7 @@
 - master UNPROVEN time-out: 没 best 答案, 不能产 sound cut (因为没确认 INFEASIBLE)
 - master INFEASIBLE: 已经 ⊥, cut 没必要 (但 cut framework 累积 cut 可减后续 master.solve 时间)
 
-**defer trigger**: Phase 1.3 P1.3B 实施时设计
+**defer trigger**: 后续 P1.3 实施时设计
 
 #### Q10 — cp_sat propagator vs master.AddLinear ✅ **VERDICT (2026-05-23)**
 
@@ -429,7 +432,7 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 - 工程上 propagation cost ~ cut 数 × literal 数, 项目 thousands cut 可能 master.solve wall +20%
 - Phase 1.3 telemetry §20.2 看 cut_redundancy_rate + step_7_latency 决
 
-**defer trigger**: Phase 1.3 P1.3B 实施 + 24h shadow trial 后定 cut 上限策略 (LRU evict / cut score threshold)
+**defer trigger**: 后续 P1.3 实施 + 24h shadow trial 后定 cut 上限策略 (LRU evict / cut score threshold)
 
 #### Q18 — cut quality metric 形式定义 **P2**
 
@@ -510,9 +513,9 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 | F8-ind | power/belt 独立性 | P2 | Phase 1.5+ telemetry | 数学 |
 | F9-base | envelope baseline 紧度 | P0 | Phase 1.2 P1.2B-F9 | 数学 |
 | F9-F1 | 跟 F1 数学独立性 | P1 | Phase 1.2 P1.2B-F9 spec | 数学 |
-| Q7 | attach point 选择 | P0 | Phase 1.3 P1.3B | 工程 |
-| Q8 | lazy vs eager attach | P1 | Phase 1.3 P1.3B ab test | 工程 |
-| Q9 | OPTIMAL vs INFEASIBLE 路径 | P1 | Phase 1.3 P1.3B | 工程 |
+| Q7 | attach point 选择 | P0 | 后续 P1.3 | 工程 |
+| Q8 | lazy vs eager attach | P1 | 后续 P1.3 ab test | 工程 |
+| Q9 | OPTIMAL vs INFEASIBLE 路径 | P1 | 后续 P1.3 | 工程 |
 | Q10 | propagator vs AddLinear | P0 | Phase 1.3 §12.4 | 工程 |
 | Q11 | commodity_id vs route_id | P0 | Phase 1.5+ §13.1 | 数学+工程 |
 | Q12 | ghost_rect tuple vs object | P1 | Phase 1.2 §10.4 | 工程 |
@@ -530,11 +533,11 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 - F5-mfg (132! permutation — Phase 1.2 P1.2B-F5 必同步 orbit-aware lift)
 - F5-QX (QuickXplain budget — Phase 1.2 P1.2B-F5)
 - F9-base (envelope baseline 紧度 — Phase 1.2 P1.2B-F9)
-- Q7 (attach point — Phase 1.3 P1.3B)
+- Q7 (attach point — 后续 P1.3)
 - Q10 (propagator vs AddLinear — Phase 1.3 §12.4)
 - Q11 (commodity_id vs route_id — Phase 1.5+ §13.1)
 
-8 个 P0, 主要集中 Phase 1.2 P1.2B-F5 (F5 实施) 跟 Phase 1.3 P1.3B (propagator 集成) 两个 milestone.
+8 个 P0, 主要集中 Phase 1.2 P1.2B-F5 (F5 实施) 跟 后续 P1.3 (propagator 集成) 两个 milestone.
 
 ---
 

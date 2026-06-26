@@ -1,132 +1,120 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: code-first; main.py, src/search/outer_search.py, src/search/exact_campaign.py, src/search/exact_parallel_scheduler.py, src/models/cp_sat_worker_config.py
-last_verified_against: 2026-03-26
+source_of_truth: main.py, src/search/outer_search.py, src/search/exact_campaign.py, src/search/certified_surface.py, src/search/exact_parallel_scheduler.py
+last_verified_against: 2026-06-26
 owner: search-runtime
 ---
 
 # 11 Pipeline Orchestration
 
-## 1. Purpose
+## 1. Scope and release state
 
-This spec records the current production orchestration contract for `certified_exact`.
-If runtime behavior diverges, code is the immediate source of truth and this file
-must be updated in the same change.
+This specification describes the current `certified_exact` orchestration in the working tree.
+It does not declare P1.2 closed. The owner gate in
+`data/review_gates/phase_1_2_spike_close.json` is still fail-closed, so no public
+`CERTIFIED` delivery may be published from this tree unless that authoritative gate is explicitly
+closed by its owner.
 
-## 2. Required Inputs
+## 2. Inputs and campaign identity
 
-The certified path consumes these frozen preprocess artifacts:
+The exact path consumes and hash-binds, among other project inputs:
 
-- `rules/canonical_rules.json`
-- `data/preprocessed/candidate_placements.json` (required external large artifact in current lightweight GitHub checkout)
-- `data/preprocessed/mandatory_exact_instances.json`
-- `data/preprocessed/generic_io_requirements.json`
+- `rules/canonical_rules.json`;
+- `rules/preprocess_plan.json`;
+- `data/preprocessed/candidate_placements.json`;
+- `data/preprocessed/mandatory_exact_instances.json`;
+- `data/preprocessed/generic_io_requirements.json`;
+- proof-bearing source and obligation material named by the campaign contract.
 
-Artifact hashes are part of the campaign resume contract. Before a certified run
-from lightweight GitHub `main`, restore `candidate_placements.json` and verify
-the expected SHA256 recorded in `START_HERE.md` / `PROJECT_LOCK.md`.
+`candidate_placements.json` is present in this working tree. Its expected current artifact is
+45,773,799 bytes with SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`.
+A different byte set reopens resume compatibility; old campaign evidence must not be reused across
+an artifact-hash mismatch.
 
-## 3. Exact Objective and Candidate Domain
+## 3. Objective and candidate domain
 
-The exact empty-rectangle goal is:
+The exact objective is `max_lex(area, min_side)`. The default certified domain also enforces the
+project admissibility rule `min_side >= 6`; that lower bound is not a replacement objective.
+Exploratory caps, hints, probes and compatibility exports do not become formal evidence.
 
-`max_lex(area, min_side)`
+## 4. Three authority layers
 
-Notes:
+### 4.1 Producer
 
-- `min_side >= 6` is an admissibility rule for the default certified candidate domain.
-- `min_side >= 6` is not part of the lexicographic objective.
-- `Phi(w, h)` is not the certified objective.
-- `(area, width, height)` is not the certified source-of-truth comparator.
+`src/search/outer_search.py` evaluates candidates and may reach the internal per-candidate verdict
+`RUN_STATUS_CERTIFIED`. When the strict frontier is exhausted, the producer commits a
+`CANDIDATE_PROPOSED` record plus replay, frontier, sink and fixed-witness material. It does not mint
+a durable terminal `CERTIFIED` state and does not publish canonical delivery files.
 
-## 4. Campaign Behavior
+### 4.2 Supervisor mint
 
-`ExactCampaign` is the persistent state owner for:
+`ExactCampaign.supervisor_seal()` is the sole durable terminal mint. It reopens canonical campaign
+bytes from disk, checks proposal identity and current hashes, replays terminal evidence, verifies the
+fixed-witness capsule and rechecks disk state before and after the transition. Ordinary
+`mark_campaign_stopped(..., "CERTIFIED")` calls are rejected.
 
-- candidate status
-- artifact hashes
-- exact-safe cuts
-- best certified result
-- final stop reason and terminal status
+The sealed campaign checkpoint is proof authority, but it is not by itself a public delivery
+surface. The current repository has no production supervisor CLI/launcher: `main.py` ends after
+writing `CANDIDATE_PROPOSED`, and repository callers of `supervisor_seal()` are tests. An operator
+must not infer a seal from a successful solve process.
 
-Best certified result is monotonic:
+### 4.3 Verified public publisher
 
-- a worse certified candidate cannot replace a better certified result
-- `UNKNOWN`, `UNPROVEN`, `INFEASIBLE`, or worker failure cannot erase an existing best certified result
+`publish_verified_certified_delivery_surface()` is the sole canonical publisher. It requires a
+supervisor-sealed, disk-current campaign, valid terminal evidence, current exact artifacts and a
+closed P1.2 publish gate. It then transactionally writes and revalidates:
 
-## 5. Parallel Scheduler
+- `data/solutions/final_solution.json`;
+- `data/blueprints/optimal_blueprint.json`;
+- `data/solutions/certified_delivery_manifest.json`.
 
-The production parallel path is coordinator-owned and wave-based:
+Publication failure clears the canonical set rather than leaving a partial or stale public surface.
+Generic serializers, report/viewer builders, adapters and compatibility exporters may write
+non-authoritative copies only; they cannot mint or preserve public `CERTIFIED` authority.
 
-- coordinator is the single writer for campaign state and final result artifacts
-- workers only execute candidate evaluation
-- candidates dispatched within the same wave are disjoint
-- frontier is recomputed only after the wave is merged
+## 5. Candidate solve topology
 
-This changes runtime scheduling only. It does not change the exact mathematical semantics.
+For the current theorem, placement is followed by binding and exact routing checks. Power and
+terminal whole-layout checks are part of the accepted evidence path. The continuous
+`src/models/flow_subproblem.py` model is diagnostic-only: its verdict neither gates certified
+acceptance nor creates a proof-bearing cut.
 
-## 6. Worker Configuration
+`src/search/benders_loop.py` may return internal `RUN_STATUS_CERTIFIED` for one candidate. That
+value is not the same thing as campaign terminal certification or public publication.
 
-Runtime source of truth: `src/models/cp_sat_worker_config.py`
+## 6. Persistent state and monotonicity
 
-Default CP-SAT worker counts:
+`ExactCampaign` owns proposal/candidate records, artifact hashes, exact-safe evidence, terminal
+frontier material, fixed-witness material and final stop state. A worse candidate cannot replace a
+better accepted candidate. `UNKNOWN`, `UNPROVEN`, worker failure or budget exhaustion cannot be
+rewritten as frontier exhaustion.
 
-- `master = 8`
-- `local_capacity = 8`
-- `binding = 4`
-- `routing = 8`
+After PR1, producer-side “best” data remains proposal material until supervisor sealing succeeds.
+Documentation and telemetry must not call it public certified output before that transition.
 
-Environment-variable precedence:
+## 7. Parallel scheduler and workers
 
-1. stage-specific env
-   - `EXACT_MASTER_CP_SAT_WORKERS`
-   - `EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS`
-   - `EXACT_BINDING_CP_SAT_WORKERS`
-   - `EXACT_ROUTING_CP_SAT_WORKERS`
-2. global env
-   - `EXACT_CP_SAT_WORKERS`
-3. built-in defaults
+The parallel path is coordinator-owned and wave-based. Workers evaluate candidates; the
+coordinator merges wave results and is the campaign-state writer. Candidate identity and wave
+membership are rechecked before evidence is accepted. A worker failure does not authorize partial
+frontier completion.
 
-`main.py` prints the resolved worker profile once at startup. The launcher scripts in
-`scripts/*.ps1` are wrappers around these knobs; they do not redefine precedence.
+Worker-count precedence remains stage-specific environment variable, then `EXACT_CP_SAT_WORKERS`,
+then built-in defaults in `src/models/cp_sat_worker_config.py`. For host-sizing guidance and
+worker/process trade-offs, see `docs/parallel_configuration.md`.
 
-For memory envelopes, recommended `parallel_processes × workers` combinations, and the
-48GB baseline guidance, see `docs/parallel_configuration.md`.
+## 8. Probes and telemetry
 
-## 7. Certified vs Exploratory Boundary
+`--frontier-probe-mode off|auto` changes scheduling only. Probe outcomes and telemetry are
+non-authoritative diagnostics. They do not alter the objective, frontier exhaustion rule,
+supervisor checks or publish gate. For the frontier-probe workflow and the `selection_reason`
+taxonomy, see `docs/frontier_probe_strategy.md`.
 
-`certified_exact` must not use exploratory-only caps or artifacts as formal evidence.
+## 9. Open release work
 
-If `50 power poles + 10 protocol storage boxes` is mentioned anywhere, it is exploratory-only
-guidance and not an exact-mode hard cap.
-
-## 8. Outputs
-
-The current certified delivery artifacts are derived from the same best certified result:
-
-- `data/solutions/final_solution.json`
-- `data/blueprints/optimal_blueprint.json`
-- `data/solutions/certified_delivery_manifest.json`
-
-If no certified result exists, delivery metadata may still be emitted, but certified payloads
-must not be fabricated.
-
-## 9. Optional Frontier Probe Mode
-
-`main.py` also exposes an exact-safe scheduling toggle:
-
-- `--frontier-probe-mode off|auto`
-
-Current behavior:
-
-- `off` keeps the historical frontier-only schedule.
-- `auto` may insert one medium-area non-frontier probe before the normal frontier sweep.
-
-Probe mode is scheduling-only. It does not change the exact objective, the proof contract,
-or the campaign termination conditions. For operator guidance and the manual two-step probe
-workflow, see `docs/frontier_probe_strategy.md`.
-
-## 10. Telemetry
-
-Campaign telemetry records selection reasons and probe activity additively.
-Probe-specific fields are runtime diagnostics only and do not redefine certified semantics.
+The working tree contains the PR1 producer/supervisor split, fixed-witness terminal verification,
+whole-layout independent infeasibility reverify, publish-open gate and central publisher. P1.2 still
+has open work, including a supported production supervisor invocation surface, PR2 TCB reduction,
+immutable package materialization and review-policy coverage, plus the blocked owner gate. These
+open items must remain visible in release documents.

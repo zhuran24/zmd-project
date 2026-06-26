@@ -1,5 +1,8 @@
 # 02 — 核心数学原理 (9 family + sound deduction + scope/replay/multiset/adversarial)
 
+> **阅读边界（2026-06-26）**：本文保留 cut-family 的数学背景与历史设计。当前默认 certified 路径、发布 authority 和 phase 状态以 `01_overview.md`、`06_current_status.md`、`11_dependency_graph.md` 与 `PROJECT_LOCK.md` 为准；“family 已实现”不等于“已接入 production master”或“P1.2 已关闭”。
+
+
 ### 2.1 paradigm 选择 — LBBD + cut framework 累积外部知识
 
 **为啥选这个 paradigm**:
@@ -14,7 +17,7 @@ paradigm 选择落点: **不改 master, 在 master 外累积 sound 知识层**. 
 
 **LBBD topology** (paper: Hooker 2003, Logic-Based Methods for Optimization):
 - master 出主决策, sub-problem 验, 失败 → 出 nogood → master 加 lazy
-- 项目 4 层 sub-problem (binding / routing / flow / power) 跟 master 隔离, 各层 INFEASIBLE 独立 → cut framework 各 family 对应一类 nogood pattern
+- 当前候选证明主链以 placement / binding / routing / power 与终端复验为准；`flow_subproblem.py` 仅诊断，不能把其 INFEASIBLE 独立提升为 proof-bearing cut
 
 **Cut framework** 不是 LBBD 的发明 — 是 LBBD nogood 的工程抽象层. 类比 SAT solver CDCL (Conflict-Driven Clause Learning) 学到的 clause 全程累积, 项目 cut framework 让 LBBD sub-problem 学的 nogood 跨 candidate / 跨 ghost 累积 (within-instance scope).
 
@@ -185,12 +188,12 @@ cut 从产到 attach master 经 lifecycle [cite lifecycle §2]。**编号 0-inde
 | 5 | validate | validator 重算 cert, 决定 sound/unsound | Phase 1.1 闭环, 4 family |
 | 6 | attach-scope check | scope.matches(state) (source_digest/ghost/blocked/artifact/oracle/assumption) | Phase 1.1 dispatch |
 | 7 | evaluate | body 重算当前 state 是否仍 violate (family dispatch) | Phase 1.1 4 family evaluator |
-| 8 | apply-to-master | cut.body → master.AddLinear（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| **defer Phase 1.3 P1.3B**（原名 P1.21；`step_8_apply_to_master` 仍 NotImplementedError）|
+| 8 | apply-to-master | cut.body → master.AddLinear（**CP-SAT 无真 lazy callback**，累积切面+重新求解）| **defer 后续 P1.3**（原名 P1.21；`step_8_apply_to_master` 仍 NotImplementedError）|
 | 9 | replay/regression (on ghost/state change) | re-validate active/held cut, decide ATTACH/HOLD/QUARANTINE | Phase 1.1 闭环 (Step M fail-closed) |
 
 **Step 8 missing 当前是为啥 cut framework 跑 unit test 但**没真接进 master** — Phase 1.3 实施.
 
-> **(2026-06-04 现状提示)** 上表的 "Phase 1.1 闭环 / defer Phase 1.2" 是 Phase 1.1 时代口径。此后 **Phase 1.2 已闭关 F5–F9** cut family（generator+validator，含 F3 special-case；F9 后被 tight-K **quarantine** 实质停用）。Step 8 真 master 集成仍属 **P1.3B**（待接）。当前现状以 `06_current_status.md` + `CLAUDE.md` + PROJECT_LOCK 为准。
+> **(2026-06-26 现状提示)** 上表的 "Phase 1.1 闭环 / defer Phase 1.2" 是 Phase 1.1 时代口径。当前工作树已经实现并审计 F5–F9 的 generator/validator（含 F3 special-case；F9 后被 tight-K **quarantine** 实质停用），但这不表示 Phase 1.2 已闭合。`step_8_apply_to_master()` 仍抛出 `NotImplementedError`，真实 master 集成属于 **P1.3** 未完成项。当前状态以 `06_current_status.md`、`soundness_gap_roadmap.md`、`CLAUDE.md` 和 `PROJECT_LOCK.md` 为准。
 
 **Step 2 (minimize) missing 影响**: F5 deletion 当前不能产 minimal unsat core, F5 实施 (Phase 1.2 **P1.2B-F5**, 原误名 P1.11) 时同步落 step 2 (minimize, 0-indexed)。
 
@@ -219,7 +222,7 @@ demand_R = ∑_{g : P(g) ⊆ R} g.demand × cells_per_pose(g)  (region 内 manda
 
 **Ghost dependency**: cap_R 含 `|ghost ∩ R|` 项 → 跨 ghost 不 invariant. GHOST_AGNOSTIC 只在 `ghost ∩ R == ∅` 时合法 (Step O Gemini round 18 finding B1 + GPT pro v6 P0 close). 否则 generator 必绑 compute_ghost_rect_id.
 
-**LP relaxation 关系** [cite spec 01 §1c]: F1 是 master LP relaxation 的 valid inequality, 通过 Farkas dual ray 可**自动**被 identified (复用 cand C `farkas_certificate.py`). 这意味着 F1 oracle 不仅是启发式产 cert, 还有 LP dual 数学根据.
+**LP relaxation 关系（设计层）** [cite spec 01 §1c]: F1 可被解释为 master LP relaxation 的 valid inequality；理论上可由 dual/Farkas 证据识别。当前工作树没有 `farkas_certificate.py`、dual-ray generator 或 algebraic verifier，现役 F1 oracle 仍是组合枚举，且 F1-F9 Step 8 尚未接入 production master。
 
 **P(g) ⊆ R 验证** (GPT pro v3 P0-1 真 bug):
 - `demand_R` 定义要求 facility group `g` 的**所有** candidate pose 必 ⊆ R
@@ -235,7 +238,7 @@ demand_R = ∑_{g : P(g) ⊆ R} g.demand × cells_per_pose(g)  (region 内 manda
 
 **Open Q (defer §5.3)**:
 - F1 oracle 如何 enumerate 有用的 interior_rect region (NP-hard exhaustive)?
-- LP dual Farkas certificate 是否可以**自动**触发 F1 cut 不需 oracle?
+- 未来是否值得实现独立可复验的 LP-dual/Farkas 证书来触发 F1 cut？当前答案仍是“未实现”。
 
 ### 3.2 F2 cutset — Menger min-cut max-flow theorem
 
@@ -317,7 +320,7 @@ cert:
 - sink_component (bitset, BFS from sink)
 - separator_cells (cell 集, ghost / exterior / cell_owner 内, 隔断 src 跟 sink)
 
-**触发条件**: oracle 在 flow_diagnostic / routing 子问题 detect src/sink 不连通时.
+**触发条件**: oracle 从可独立验证的 routing/geometry witness 检出 src/sink 不连通时；flow diagnostic verdict 本身不构成证书.
 
 **Soundness 关键** (Step D `5c06dff` + Step K close):
 - cert.src_component **真**等于 BFS(free_cells, src) 重算 (validator 不信 oracle)
@@ -345,7 +348,7 @@ cert:
 
 **数学根据**: minimal unsatisfiable subset (MUS) — 给定 unsat conjunction `C = c1 ∧ c2 ∧ ... ∧ cn`, MUS 是 C 的最小子集 `M ⊆ C` 仍 unsat. Computing MUS 是 NP-complete (Liffiton-Sakallah 2008). QuickXplain (Junker 2004) 是 divide-and-conquer minimization, O(k log(n/k)) oracle 调用 where k = |MUS|.
 
-**Cut 形式** [cite spec 05 §1]: 最一般的 cut form. 给定 facility pose 组合 `π_partial = {(i₁, p₁), (i₂, p₂), ..., (iₖ, pₖ)}`, 若 sub-problem (binding / routing / flow / power) reject `π_partial` → cut `not(x[i₁, p₁] ∧ x[i₂, p₂] ∧ ... ∧ x[iₖ, pₖ])`.
+**Cut 形式** [cite spec 05 §1]: 最一般的 cut form. 给定 facility pose 组合 `π_partial = {(i₁, p₁), (i₂, p₂), ..., (iₖ, pₖ)}`, 若受当前 theorem 接纳且可独立复验的 binding / routing / power 或 whole-layout 路径 reject `π_partial` → cut `not(x[i₁, p₁] ∧ x[i₂, p₂] ∧ ... ∧ x[iₖ, pₖ])`.
 
 QuickXplain minimize: 找最小 `π_partial' ⊆ π_partial` 仍被 reject.
 
@@ -393,7 +396,7 @@ QuickXplain minimize: 找最小 `π_partial' ⊆ π_partial` 仍被 reject.
 - 不适用: length = 1 (单 cell facility) → 走 F1 (F6 退化成 F1 count)
 - F6 是 F1 的 stronger refinement: F1 检 total cell count, F6 检 interval-level cover
 
-**Phase status**: **defer Phase 1.2 P1.2B-F6** — Hall theorem check + interval graph cover algorithm.
+**Current status**: F6 implementation exists in `src/cuts/`, but production Step 8 integration remains future P1.3 work — Hall theorem check + interval graph cover algorithm.
 
 **Open Q (defer §5.3)**:
 - F6 是否扩展到 2D (interior facility group 占多 row/col)?
@@ -513,7 +516,7 @@ cite: `docs/research/p3_b_design_v2_20260521/external_review/gemini_math_review_
 - 不适用: routing / binding / power 死锁 → 走 F2 / F4 / F7 / F5
 - F9 跟 F1 数学关系: F9 area-based (sum pose ∩ W), F1 cap_R cell-based (整 region 容量). 不是 F1 的 scope 扩展, 是**互补 family** (area vs count semantics)
 
-**Phase status**: **defer Phase 1.2 P1.2B-F9** — area-based evaluator + area_capacity_overflow witness only + morphology helper. 历史 L14 weighted occupancy 死路 (interior LP=1.0 永不可 cert) 教训已 freeze 到 area-only invariant.
+**Current status**: F9 implementation exists but tight-K remains quarantined; it is not current production proof authority — area-based evaluator + area_capacity_overflow witness only + morphology helper. 历史 L14 weighted occupancy 死路 (interior LP=1.0 永不可 cert) 教训已 freeze 到 area-only invariant.
 
 **Open Q (defer §5.3)**:
 - F9 area-based vs F1 cell-based 哪些 INFEASIBLE 二者都拦? 哪些只有一个能拦?

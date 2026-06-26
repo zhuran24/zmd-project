@@ -1,5 +1,7 @@
 # 2026-05-16 Cleanup Session Summary
 
+> **HISTORICAL SNAPSHOT, NOT CURRENT VALIDATION (2026-06-26).** 本文只记录 2026-05-16 当次整理会话。文中的“全套 pytest”、测试数量、旧文件路径、阶段名和主线判断均为当时结果，不能用来证明当前工作树通过，也不能替代 `PROJECT_LOCK.md`、`docs/项目说明/06_current_status.md` 或现行 gate。
+
 整个 session 完成的项目整理工作汇总. 记录每个动作的范围 + commit + 验证状态.
 
 **原则** (per memory `feedback_cleanup_preserve_clarify`):

@@ -2,7 +2,7 @@
 
 **最后更新**: 2026-05-18 (B1 Phase 6 path-2 实测 ❌ — lazy demand cut UNPROVEN 10 iter 不收敛, B1 paradigm 全死)
 
-> ⚠️ **(2026-06-04) 本文件止于 2026-05-18 的前 16 条 lever，不是全部死路。** 之后又有 ~11 条范式/路线被实测否决（PCR-CUT Phase 5 multi-anchor 0/8 CERTIFIED、PGW-UB Phase 0 ❌、GOC-C2 Phase 0 ❌、D2 Path 17、Path 18 layout-invariant cert ❌、Lever 24 augmented master ❌、Lever 25 IHS ❌、Lever 26 Benders symmetry ❌ 等），死路总计已到 **27 条**。完整死路 timeline 的 living 权威源在 CC memory `paradigm-death-timeline-27-lever`（仓库外）；且项目主线此后已转 **cut-family LBBD**（见 `CLAUDE.md`），不再是本文件的 "提升 master FEASIBLE 率 lever" 视角。本文件的 16 条按历史读。
+> ⚠️ **(2026-06-04) 本文件止于 2026-05-18 的前 16 条 lever，不是全部死路。** 之后又有 ~11 条范式/路线被实测否决（PCR-CUT Phase 5 multi-anchor 0/8 CERTIFIED、PGW-UB Phase 0 ❌、GOC-C2 Phase 0 ❌、D2 Path 17、Path 18 layout-invariant cert ❌、Lever 24 augmented master ❌、Lever 25 IHS ❌、Lever 26 Benders symmetry ❌ 等），死路总计已到 **27 条**。完整死路 timeline 的 后续时间线记录在仓内 `cc_memory` 的 `paradigm-death-timeline-27-lever` 节点中；该记忆仍须按 active 状态与代码证据读取；且项目主线此后已转 **cut-family LBBD**（见 `CLAUDE.md`），不再是本文件的 "提升 master FEASIBLE 率 lever" 视角。本文件的 16 条按历史读。
 
 主线问题: 70×70 grid + 266 mandatory facility + ghost rect 几何约束的 `max_lex(area, min_side)` 严格证明.
 
