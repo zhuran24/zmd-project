@@ -76,6 +76,17 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Fail closed unless the checked-in frontdoor and aggregate entrypoints visibly surface the current_surface_health JSON/Markdown/TXT trio.",
     )
     parser.add_argument(
+        "--require-surface-alignment-visibility",
+        action="store_true",
+        help=(
+            "Fail closed unless the surface-alignment JSON/Markdown/console summaries already exist as "
+            "checked-in outputs. OFF by default: this audit GENERATES those summaries fresh each run "
+            "(written to --json/--markdown/--console-output and uploaded as CI artifacts), so requiring "
+            "its own not-yet-written output to pre-exist would be a self-contradiction. Pass this flag "
+            "only in a separate verification context where the summaries are already committed."
+        ),
+    )
+    parser.add_argument(
         "--json-output",
         type=Path,
         default=_DEFAULT_OUTPUT_JSON,
@@ -111,6 +122,7 @@ def main(argv: list[str] | None = None) -> int:
             current_surface_health_markdown_path=args.current_surface_health_markdown,
             current_surface_health_console_path=args.current_surface_health_console,
             require_surface_health_visibility=args.require_surface_health_visibility,
+            require_surface_alignment_visibility=args.require_surface_alignment_visibility,
         )
         outputs = write_single_base_delivery_surface_alignment_outputs(
             result,
