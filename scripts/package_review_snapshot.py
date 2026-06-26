@@ -70,6 +70,13 @@ PROMPT_CONTENT_MARKERS = (
     "boxed project chat composer",
     "你是子代理",
 )
+# Prompt/instruction content-sniffing applies only to PROSE/DATA document formats. Source code
+# (.py/.ps1) is the artifact being reviewed and legitimately contains words like "review"/"prompt"
+# and even marker strings as test fixtures (e.g. src/tests/test_package_review_snapshot.py exercises
+# the prompt markers themselves) — content-sniffing source would wrongly drop the reviewed code from
+# the snapshot. Actual prompt/instruction documents are caught by basename/exact-name/path rules and
+# the .artifacts/ prefix; named prompt files use .md/.txt/.json. So .py/.ps1 are intentionally NOT
+# content-sniff candidates.
 TEXT_SNIFF_SUFFIXES = frozenset(
     {
         ".adoc",
@@ -79,8 +86,6 @@ TEXT_SNIFF_SUFFIXES = frozenset(
         ".json",
         ".jsonl",
         ".md",
-        ".ps1",
-        ".py",
         ".rst",
         ".toml",
         ".txt",

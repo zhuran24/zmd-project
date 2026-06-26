@@ -64,6 +64,17 @@ def test_package_review_snapshot_excludes_agent_memory_and_review_packets() -> N
         "src/render/review_status.py",
         b"REVIEW_ANCHOR = 'not a prompt transcript'",
     ) is None
+    # regression: a legit source .py with review/packet in its path must NOT be content-sniffed as a
+    # prompt, even when it embeds marker strings as test data. The package's own test was wrongly
+    # excluded this way, dropping obligation-required symbols from the snapshot and failing the build.
+    assert package_review_snapshot._package_exclusion_reason(
+        "src/tests/test_package_review_snapshot.py",
+        b"assert 'Package SHA256' in body  # exercises the 'review request' prompt marker",
+    ) is None
+    assert package_review_snapshot._package_exclusion_reason(
+        "scripts/phase3b/b5a/build_review_packet.py",
+        b"def build():  # source module that builds a phase3b review packet",
+    ) is None
 
 
 def test_package_review_snapshot_binds_commit_tree_and_dirty_state(tmp_path: Path) -> None:
