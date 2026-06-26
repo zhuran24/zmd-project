@@ -22,7 +22,7 @@ from src.search.benders_loop import (
 from src.models.cut_manager import RUN_STATUS_INFEASIBLE, RUN_STATUS_UNKNOWN
 from src.search.benders_loop import run_benders_for_ghost_rect
 from src.search.campaign_telemetry import append_campaign_wave_summary, build_wave_summary
-from src.search.exact_campaign import ExactCampaign
+from src.search.exact_campaign import CANDIDATE_PROPOSED_STATUS, ExactCampaign
 from src.search.exact_parallel_scheduler import ParallelWaveExecution, WorkerResult
 import src.search.outer_search as outer_search_module
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
@@ -755,8 +755,13 @@ def test_parallel_outer_search_matches_serial_on_controlled_small_frontier(
         parallel_processes=2,
     )
 
-    assert serial_status == parallel_status == "CERTIFIED"
+    assert serial_status == parallel_status == CANDIDATE_PROPOSED_STATUS
     assert serial_result is not None and parallel_result is not None
+    assert (
+        serial_result["search_status"]
+        == parallel_result["search_status"]
+        == CANDIDATE_PROPOSED_STATUS
+    )
     assert serial_result["ghost_rect"] == parallel_result["ghost_rect"] == {"w": 1, "h": 1, "area": 1, "anchor_x": 1, "anchor_y": 0}
 
 

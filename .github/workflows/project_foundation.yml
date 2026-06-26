@@ -8,6 +8,17 @@ on:
       - main
       - project-foundation
 
+# Least-privilege: these gates only read the repo (checkout); they never push commits, comment, or
+# mutate the repo. upload-artifact / pip cache use the Actions runtime token, not contents scope.
+permissions:
+  contents: read
+
+# Cancel a superseded in-progress run when a newer commit lands on the same ref (saves CI minutes;
+# the latest pushed state is always what gets the full gate).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   project-foundation-gate:
     runs-on: ubuntu-latest

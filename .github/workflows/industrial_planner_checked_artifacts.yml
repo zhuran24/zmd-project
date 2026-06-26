@@ -81,6 +81,13 @@ on:
       - 'src/tests/test_industrial_planner_full_demand_support_suite.py'
       - 'src/tests/test_industrial_planner_full_demand_support_suite_inventory.py'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   checked-artifact-gate:
     runs-on: ubuntu-latest

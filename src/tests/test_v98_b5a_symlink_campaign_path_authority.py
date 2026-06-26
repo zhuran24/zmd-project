@@ -2,19 +2,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.io.delivery_manifest import export_certified_delivery_manifest
 from src.search.phase3b.b5a.b5_anchor_sprint import build_phase3b_b5_anchor_sprint_summary
-from src.tests.test_v97_canonical_campaign_state_authority import _build_certified_manifest_toy
+from src.tests.test_p1_2_open_gate_publish_block import _build_publishable_surface
 
 
 def test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier(
     tmp_path: Path,
 ) -> None:
-    project_root, campaign = _build_certified_manifest_toy(tmp_path / "b5a_symlink_alias")
-    export_certified_delivery_manifest(
-        project_root=project_root,
-        campaign_state=campaign.state,
-        campaign_path=campaign.path,
+    project_root, campaign, _manifest = _build_publishable_surface(
+        tmp_path / "b5a_symlink_alias"
     )
     alias_path = project_root / "data" / "checkpoints" / "alias_exact_campaign_state.json"
     alias_path.symlink_to(campaign.path.name)
