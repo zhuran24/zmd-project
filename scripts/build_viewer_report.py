@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.render.report_builder import build_viewer_report_from_project_root, write_viewer_report
+from src.render.report_builder import publish_viewer_report_from_project_root
 
 
 def main() -> None:
@@ -20,9 +20,14 @@ def main() -> None:
     args = parser.parse_args()
 
     project_root = Path(args.project_root).resolve()
-    payload = build_viewer_report_from_project_root(project_root)
-    write_viewer_report(Path(args.output), payload)
-    print(f"viewer report written: {args.output}")
+    output_path = Path(args.output)
+    if not output_path.is_absolute():
+        output_path = project_root / output_path
+    publish_viewer_report_from_project_root(
+        project_root=project_root,
+        output_path=output_path,
+    )
+    print(f"viewer report written: {output_path}")
 
 
 if __name__ == "__main__":

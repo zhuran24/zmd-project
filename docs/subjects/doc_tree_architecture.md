@@ -1,23 +1,11 @@
-# Subject: documentation tree architecture
+# 文档树架构
 
-This subject defines the documentation tree as a graph of abstract subjects and concrete projections.
+当前文档树采用“多文件、显式 authority、人工同步”的简单模型：
 
-The central unit is not a file path. A file path is only a projection surface. The central unit is a subject: a context-independent source for a fact, rule, status, or governance pattern. Concrete documents are allowed to branch that subject into audience-specific front doors, runbooks, inventories, research archives, or project-book chapters, but registered projection blocks must remain synchronized with the subject.
+- `PROJECT_LOCK.md` 约束 exactness 与发布边界。
+- JSON 机器义务和 phase gate 约束可执行状态。
+- living docs 解释当前实现。
+- `docs/research/` 保存带日期的历史证据。
+- `cc_memory/memory.db` 保存协作记忆图，但不自动投影到文档。
 
-The first implementation layer is exact-field transclusion. Subject fields live in `docs/subjects/*.md`. Projection targets are declared in `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json`, because the registry covers both docs and memory projections. The sync tool can fan subject edits out to all projections, or absorb an intentional projection edit back into the subject when the projection's checksum proves it was edited from the latest subject state.
-
-<!-- SUBJECT-FIELD:docs_readme_summary START -->
-The documentation tree is organized around **subjects** and **projections**. Subjects live in `docs/subjects/` as context-independent sources; concrete docs and memory nodes carry registered projection blocks that are synchronized by `scripts/sync_doc_subjects.py`. This replaces copy-based current-status prose with a small transclusion graph.
-<!-- SUBJECT-FIELD:docs_readme_summary END -->
-
-<!-- SUBJECT-FIELD:project_book_entry START -->
-`docs/项目说明/` is the living project book: overview, math, lifecycle, phase plans, go criteria, risks, workflow, and glossary. Its current-state statements should be registered projections of `docs/subjects/current_project_state.md` rather than independent copies.
-<!-- SUBJECT-FIELD:project_book_entry END -->
-
-<!-- SUBJECT-FIELD:research_archive_entry START -->
-`docs/research/` is the research and review archive. Archive documents may preserve historical values, but any present-tense claim reused outside the archive should be promoted to a subject field and projected from there.
-<!-- SUBJECT-FIELD:research_archive_entry END -->
-
-<!-- SUBJECT-FIELD:governance_gate_summary START -->
-Preflight runs `python scripts/sync_doc_subjects.py --check` against `cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json`. A changed subject with stale projections, or an edited projection that has not been absorbed into its subject, blocks the gate instead of silently drifting.
-<!-- SUBJECT-FIELD:governance_gate_summary END -->
+历史上曾设计 subject/projection transclusion，并在若干文件中留下 `DOC-SUBJECT` 注释。当前仓库没有 registry、sync tool 或 preflight enforcement，所以这些注释不能被描述成自动一致性保证。任何状态变更都必须直接更新所有实际消费文档和相关 memory node/edge。

@@ -126,7 +126,20 @@ def serialize_blueprint_payload(payload: Mapping[str, Any]) -> str:
     return json.dumps(normalize_blueprint_payload(payload), indent=2, ensure_ascii=False) + "\n"
 
 
+def _is_canonical_blueprint_output_path(output_path: Path) -> bool:
+    parts = Path(output_path).resolve().parts
+    return len(parts) >= 3 and parts[-3:] == (
+        "data",
+        "blueprints",
+        "optimal_blueprint.json",
+    )
+
+
 def write_blueprint_payload(output_path: Path, payload: Mapping[str, Any]) -> Dict[str, Any]:
+    if _is_canonical_blueprint_output_path(output_path):
+        raise ValueError(
+            "canonical optimal_blueprint.json writes must use the verified certified publisher"
+        )
     normalized = normalize_blueprint_payload(payload)
     atomic_write_json(output_path, normalized)
     return normalized
@@ -141,10 +154,7 @@ def export_certified_blueprint(
     output_path: Optional[Path] = None,
 ) -> Tuple[Path, Dict[str, Any]]:
     target_path = output_path or blueprint_output_path(project_root)
-    if (
-        Path(target_path).resolve() == blueprint_output_path(Path(project_root)).resolve()
-        and str(result.get("search_status")) == "CERTIFIED"
-    ):
+    if Path(target_path).resolve() == blueprint_output_path(Path(project_root)).resolve():
         raise ValueError(
             "canonical certified blueprint writes must use the verified publisher"
         )

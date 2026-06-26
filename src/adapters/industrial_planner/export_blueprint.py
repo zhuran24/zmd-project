@@ -6,12 +6,13 @@ from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
+import shutil
+import tempfile
 from typing import Any, Iterable, Mapping, Sequence
 
 from src.adapters.industrial_planner.blueprint_validator import (
     load_static_registries,
     validate_industrial_planner_blueprint,
-    write_validation_reports,
 )
 from src.adapters.base_planner.outer_deployment_plan import OuterBaseDeploymentPlan
 from src.adapters.industrial_planner.deployment_transform import (
@@ -46,6 +47,14 @@ INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME = "validation_report.json"
 INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME = "validation_report.md"
 INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_FILENAME = "throughput_report.json"
 INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_MARKDOWN_FILENAME = "throughput_report.md"
+INDUSTRIAL_PLANNER_BUNDLE_FILENAMES = (
+    INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME,
+    INDUSTRIAL_PLANNER_MANIFEST_FILENAME,
+    INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME,
+    INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME,
+    INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_FILENAME,
+    INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_MARKDOWN_FILENAME,
+)
 
 _BOUNDARY_OUTPUT_BUS_WITNESS_TYPE_ID = "item_port_log_hongs_bus"
 _BOUNDARY_OUTPUT_BUS_WITNESS_ROTATION = 90
@@ -340,29 +349,37 @@ def write_industrial_planner_export_bundle(
     deployment_plan: OuterBaseDeploymentPlan | Mapping[str, Any] | None = None,
 ) -> IndustrialPlannerWrittenBundle:
     output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        bundle = build_industrial_planner_export_bundle(
+            blueprint_payload=blueprint_payload,
+            export_name=export_name,
+            base_id=base_id,
+            deployment_plan=deployment_plan,
+        )
+        with tempfile.TemporaryDirectory(
+            prefix=".industrial-planner-generation-",
+            dir=str(output_dir),
+        ) as tmp:
+            staging_dir = Path(tmp)
+            _write_industrial_planner_bundle_files(staging_dir, bundle)
+            _commit_industrial_planner_bundle(staging_dir=staging_dir, output_dir=output_dir)
+    except Exception as exc:
+        try:
+            clear_industrial_planner_export_bundle(output_dir)
+        except Exception as cleanup_exc:
+            raise RuntimeError(
+                "industrial planner bundle generation failed and cleanup failed: "
+                f"{cleanup_exc}"
+            ) from exc
+        raise
 
-    bundle = build_industrial_planner_export_bundle(
-        blueprint_payload=blueprint_payload,
-        export_name=export_name,
-        base_id=base_id,
-        deployment_plan=deployment_plan,
-    )
     blueprint_path = output_dir / INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME
     manifest_path = output_dir / INDUSTRIAL_PLANNER_MANIFEST_FILENAME
     validation_report_path = output_dir / INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME
     validation_report_markdown_path = output_dir / INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME
     throughput_report_path = output_dir / INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_FILENAME
     throughput_report_markdown_path = output_dir / INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_MARKDOWN_FILENAME
-    atomic_write_json(blueprint_path, bundle["blueprint"])
-    atomic_write_json(manifest_path, bundle["compatibility_manifest"])
-    write_validation_reports(
-        validate_industrial_planner_blueprint(bundle["blueprint"]),
-        json_output_path=validation_report_path,
-        markdown_output_path=validation_report_markdown_path,
-    )
-    atomic_write_json(throughput_report_path, bundle["throughput_report"])
-    throughput_report_markdown_path.write_text(str(bundle["throughput_report_markdown"]), encoding="utf-8")
 
     return IndustrialPlannerWrittenBundle(
         blueprint_path=blueprint_path,
@@ -379,6 +396,70 @@ def write_industrial_planner_export_bundle(
         throughput_report_markdown=str(bundle["throughput_report_markdown"]),
         warnings=tuple(bundle["warnings"]),
     )
+
+
+def clear_industrial_planner_export_bundle(output_dir: Path) -> None:
+    output_dir = Path(output_dir)
+    cleanup_errors: list[str] = []
+    for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+        artifact_path = output_dir / filename
+        try:
+            if artifact_path.is_dir() and not artifact_path.is_symlink():
+                shutil.rmtree(artifact_path)
+            else:
+                artifact_path.unlink()
+        except FileNotFoundError:
+            continue
+        except Exception as exc:  # noqa: BLE001 - cleanup must attempt every bundle file.
+            cleanup_errors.append(f"{artifact_path}:{type(exc).__name__}:{exc}")
+    if output_dir.exists():
+        for staging_dir in output_dir.glob(".industrial-planner-generation-*"):
+            if not staging_dir.is_dir():
+                continue
+            try:
+                shutil.rmtree(staging_dir)
+            except FileNotFoundError:
+                continue
+            except Exception as exc:  # noqa: BLE001
+                cleanup_errors.append(f"{staging_dir}:{type(exc).__name__}:{exc}")
+    if cleanup_errors:
+        raise RuntimeError("industrial planner bundle cleanup failed: " + ";".join(cleanup_errors))
+
+
+def _write_industrial_planner_bundle_files(
+    output_dir: Path,
+    bundle: Mapping[str, Any],
+) -> None:
+    atomic_write_json(output_dir / INDUSTRIAL_PLANNER_BLUEPRINT_FILENAME, bundle["blueprint"])
+    atomic_write_json(
+        output_dir / INDUSTRIAL_PLANNER_MANIFEST_FILENAME,
+        bundle["compatibility_manifest"],
+    )
+    atomic_write_json(
+        output_dir / INDUSTRIAL_PLANNER_VALIDATION_REPORT_FILENAME,
+        bundle["validation_report"],
+    )
+    (output_dir / INDUSTRIAL_PLANNER_VALIDATION_REPORT_MARKDOWN_FILENAME).write_text(
+        str(bundle["validation_report_markdown"]),
+        encoding="utf-8",
+    )
+    atomic_write_json(
+        output_dir / INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_FILENAME,
+        bundle["throughput_report"],
+    )
+    (output_dir / INDUSTRIAL_PLANNER_THROUGHPUT_REPORT_MARKDOWN_FILENAME).write_text(
+        str(bundle["throughput_report_markdown"]),
+        encoding="utf-8",
+    )
+
+
+def _commit_industrial_planner_bundle(*, staging_dir: Path, output_dir: Path) -> None:
+    try:
+        for filename in INDUSTRIAL_PLANNER_BUNDLE_FILENAMES:
+            (staging_dir / filename).replace(output_dir / filename)
+    except Exception:
+        clear_industrial_planner_export_bundle(output_dir)
+        raise
 
 
 def register_industrial_planner_exporter(registry: ExportRegistry) -> None:

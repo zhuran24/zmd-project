@@ -1,5 +1,8 @@
 # 04 — 设计哲学 + 核心 invariants (含 PROJECT_LOCK §3A 边界)
 
+> **适用边界（2026-06-26）**：本文的 cut-family invariants 约束未来 P1.3 集成；当前默认 certified path 尚未把 Step 8/F1–F9 production attach 作为证明前提。发布 authority 仍由 producer → supervisor → central publisher 链控制。
+
+
 cut framework 的数学基础 + 工程边界. 这些是 PROJECT_LOCK §3A 锁定的, 不是
 review 时谁不爽改一改就行.
 
@@ -41,7 +44,7 @@ Phase 1.2 实施 F5-F9, 不改这 9 个 list.
 5. validate         独立重算 cert (oracle 不可信, validator 是 trust boundary)
 6. attach-scope     6-step scope verify (source_digest / ghost / blocked / artifact / oracle / assumption)
 7. evaluate         family-dispatch 验当前 state 是否仍 violate
-8. apply-to-master  push 进 CP-SAT (Phase 1.3 P1.3B 实施; 原名 P1.21)
+8. apply-to-master  push 进 CP-SAT (后续 P1.3 实施; 原名 P1.21)
 9. regression       re-validate on new replay state (Step 5 re-entry)
 ```
 

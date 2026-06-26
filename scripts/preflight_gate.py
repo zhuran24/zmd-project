@@ -7,24 +7,13 @@ Preflight gate — 提交前自动门禁检查。
     python scripts/preflight_gate.py --hook       # 作为 git pre-commit hook 运行
     python scripts/preflight_gate.py --ci --base-ref origin/main
 
-检查项：
-    1. 冻结/外部制品 hash 校验（checked-in JSON + lightweight external artifacts）
-    2. 外部大制品 contract 检查
-    3. 禁止路径写入检查（checkpoint, proof, blueprint）
-    4. AI 安全合同检查（ai_accel 不碰 proof 路径）
-    5. 精确/探索边界隔离检查
-    6. 调研产物 audit 覆盖检查
-    7. 文档/记忆主体投影同步检查
-    8. 文档树完整收尾检查
-    9. 行尾策略检查
-    10. 发布安全 secret scan
-    11. 记忆树结构/currentness 检查
-    12. 历史证据/生成制品边界检查
-    13. Phase review close-gate 状态一致性检查
-    14. P1.2 proof obligation consolidation 检查
-    15. mypy 严格类型 (cut lifecycle 核心两文件)
-    16. ruff 全仓静态检查 (分层 ignore 在 ruff.toml)
-    17. pytest 测试（核心门禁 / 全量取决于模式）
+当前检查面：
+    冻结/外部制品、禁止路径、AI 与 exact/exploratory 隔离、调研覆盖、行尾、
+    secret、artifact boundary、Phase review gate、P1.2 obligations、按 scope 的 cc_memory、
+    strong-status allowlist、mypy、ruff 与 pytest lanes。
+
+    旧的文档主体投影/文档树脚本已退役，本 gate 不运行
+    scripts/sync_doc_subjects.py、scripts/check_doc_tree_completeness.py 或 cc_context workflow。
 
 退出码：
     0 = 通过
@@ -55,14 +44,13 @@ FROZEN_ARTIFACTS = {
 }
 
 EXTERNAL_FROZEN_ARTIFACTS = {
-    # The lightweight GitHub checkout intentionally omits this 45.8 MiB payload.
-    # If the file is restored into the working tree, preflight verifies its bytes;
-    # if it is absent, preflight records the external-artifact contract as OK and
-    # certified exact runs remain responsible for restoring it before solve time.
+    # Distribution policy permits a lightweight checkout to omit this 45.8 MiB payload.
+    # The current audited working tree includes it. Whenever present, preflight verifies
+    # exact bytes; when absent, a certified run must restore/verify it before solve time.
     "data/preprocessed/candidate_placements.json": {
         "sha256": "ADCC2A6E8A1DAAA9DEA6CAE68883301AD07CE123FA286B55DCBE79CA2F34BEC0",
         "size_bytes": 45_773_799,
-        "policy_doc": "START_HERE.md",
+        "policy_doc": "PROJECT_LOCK.md",
     },
 }
 
@@ -270,7 +258,7 @@ def check_frozen_artifacts(gate: GateResult) -> None:
         expected_size = int(info["size_bytes"])
         if not full_path.exists():
             gate.ok(
-                f"{rel_path} 外部大制品未入轻量 checkout "
+                f"{rel_path} 外部大制品在本 checkout 缺失（distribution policy permits omission） "
                 f"(expected sha256={expected_hash.lower()}, size={expected_size}; see {info['policy_doc']})"
             )
             continue

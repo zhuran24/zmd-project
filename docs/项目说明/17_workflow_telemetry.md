@@ -1,5 +1,8 @@
 # 17 — Observability / telemetry plan
 
+> **未来/诊断 telemetry 设计**：telemetry 不授予 proof authority，旧 P1.3B 名称按 P1.3 读取。
+
+
 cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只有单测 (`pytest src/tests/cuts/`) 验 sound, Phase 1.3 真接进 benders_loop 后必须有 runtime metric, 不能等 168h trial 结束才看. 本节定 metric / 落盘 / trigger.
 
 ### 20.1 现状 telemetry (已实施)
@@ -21,7 +24,7 @@ cut framework 跑起来后, 我们怎么知道在跑正常? Phase 1.1 当前只�
 ```
 单测里被 exit_criteria ramp report 用. Phase 1.3 接 benders_loop 后要在每 outer iter / benders 内 iter 后 snapshot.
 
-### 20.2 Phase 1.3 加的 metric (P1.3B 实施时)
+### 20.2 Phase 1.3 production integration metric（实施时）
 
 按 §22 review 实践拆 4 类 (cardinality / quality / latency / safety):
 

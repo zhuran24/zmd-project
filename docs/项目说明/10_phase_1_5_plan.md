@@ -1,5 +1,8 @@
 # 10 — Phase 1.5+ plan (production integration)
 
+> **未来计划**：本文不描述当前 release readiness。任何 production integration 必须先满足 P1.2 close 与后续 P1.3 gate。
+
+
 Phase 1.3 framework 跑通后接真生产 data + 真 oracle. GO 标准见 §8.4.
 
 ### 13.1 commodity registry production inject

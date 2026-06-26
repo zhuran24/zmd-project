@@ -1,6 +1,6 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and the frozen candidate_placements artifact (external in current lightweight GitHub checkout)
+source_of_truth: src/placement/placement_generator.py, src/placement/occupancy_masks.py, and data/preprocessed/candidate_placements.json
 last_verified_against: 2026-06-12 (preprocess F-01/F-02 geometry repair)
 owner: placement-preprocess
 ---
@@ -98,7 +98,7 @@ owner: placement-preprocess
 **`data/preprocessed/candidate_placements.json`**
 
 > 当前 GitHub `main` 是 lightweight checkout：production
-> `data/preprocessed/candidate_placements.json` 不在当前工作树里，但仍是 certified
+> `data/preprocessed/candidate_placements.json` 当前存在于工作树中，且仍是 certified
 > exact 必需输入。2026-06-12 F-01/F-02 修复后的恢复/再生成结果应匹配
 > size `45,773,799` bytes, SHA256
 > `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。旧 size `53,594,995` bytes / SHA256

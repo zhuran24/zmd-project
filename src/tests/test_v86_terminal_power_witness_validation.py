@@ -2,7 +2,14 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
+import pytest
+
+from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
+import src.io.delivery_manifest as delivery_manifest_module
+import src.search.certified_surface as certified_surface_module
+import src.search.exact_campaign as exact_campaign_module
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
     build_terminal_frontier_evidence,
@@ -10,6 +17,7 @@ from src.search.certified_frontier import (
     generate_candidate_sizes,
 )
 from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
     terminal_certified_final_result_violation_for_project,
@@ -168,13 +176,14 @@ def test_terminal_project_validator_rejects_powered_facility_without_selected_po
     state = _write_power_project(tmp_path, include_selected_covering_pole=False)
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=tmp_path)
         == "terminal_certified_final_result_solution_power_coverage_missing"
     )
 
 
 def test_terminal_project_validator_accepts_selected_power_coverer(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # ④b sink replay: the CERTIFIED 1x1 witness (which selects the covering power
     # pole) must be independently re-derived by an isolated solver before the
@@ -184,24 +193,102 @@ def test_terminal_project_validator_accepts_selected_power_coverer(
     # replay-consistent.
     state = _write_power_project(tmp_path, include_selected_covering_pole=True)
 
+    # Install accepting monkeypatch for build_sink_verified_terminal_frontier_evidence
+    # and has_valid_terminal_full_frontier_certified_evidence_for_project, mirroring
+    # _install_accepting_supervisor_seal_replay from test_exact_contract.py.  This
+    # bypasses the external sink-replay subprocess during supervisor_seal while still
+    # exercising the power-coverage precheck and the public terminal validator.
+    def accept_sink_replay_bundle(**kwargs: Any) -> dict[str, Any]:
+        campaign_state = kwargs["campaign_state"]
+        assert campaign_state["final_status"] == CANDIDATE_PROPOSED_STATUS
+        assert kwargs["campaign_path"] is not None
+        assert kwargs["serialized_state_bytes"] == Path(kwargs["campaign_path"]).read_bytes()
+        return {
+            "evidence": dict(campaign_state["terminal_frontier_evidence"]),
+            "candidate_records": {
+                str(key): dict(value)
+                for key, value in campaign_state.get("candidates", {}).items()
+            },
+            "sink_replay_violations": {},
+            "fixed_witness_publishable": True,
+            "fixed_witness_violations": {},
+        }
+
+    def accept_terminal_evidence(
+        s: dict[str, Any],
+        *,
+        project_root: Path,
+        campaign_path: Path | None = None,
+        serialized_state_bytes: bytes | None = None,
+    ) -> bool:
+        assert campaign_path is not None
+        if serialized_state_bytes is None:
+            assert Path(campaign_path).exists()
+        else:
+            decoded = json.loads(serialized_state_bytes.decode("utf-8"))
+            assert decoded.get("final_status") == "CERTIFIED"
+        return (
+            s.get("final_status") == "CERTIFIED"
+            and s.get("final_result") is not None
+            and s.get("terminal_frontier_evidence") is not None
+        )
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "build_sink_verified_terminal_frontier_evidence",
+        accept_sink_replay_bundle,
+    )
+    for mod in (exact_campaign_module, certified_surface_module, delivery_manifest_module):
+        monkeypatch.setattr(
+            mod,
+            "has_valid_terminal_full_frontier_certified_evidence_for_project",
+            accept_terminal_evidence,
+        )
+
+    # Also bypass the internal authority validator called from
+    # _validate_supervisor_certified_state_before_commit, which runs the full
+    # isolated-solver subprocess.  Precheck (power coverage) still fires before
+    # this point, so the power-coverage assertion is exercised.
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "_terminal_certified_final_result_violation_for_project_authority",
+        lambda *_args, **_kwargs: None,
+    )
+
+    # Build a CANDIDATE_PROPOSED checkpoint on disk following the same sequence
+    # used by _prepare_candidate_proposed_campaign in test_p1_2_supervisor_pr1.py.
+    proposal_final_result = dict(state["final_result"])
+    proposal_final_result["search_status"] = CANDIDATE_PROPOSED_STATUS
+
     campaign = ExactCampaign.load_or_create(tmp_path, campaign_hours=1.0, resume=False)
-    for field in (
-        "final_result",
-        "final_status",
-        "last_stop_reason",
-        "candidates",
-        "terminal_frontier_evidence",
-        "declare_mode",
-    ):
-        campaign.state[field] = state[field]
+    campaign.state["declare_mode"] = "strict"
+    campaign.state["candidates"] = state["candidates"]
+    campaign.state["final_result"] = proposal_final_result
+
+    run_id = campaign.set_supervisor_proposal_run_id()
+    campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, status=CANDIDATE_PROPOSED_STATUS
+    )
+    campaign.state["terminal_frontier_evidence"] = state["terminal_frontier_evidence"]
+
     for key, record in campaign.state["candidates"].items():
         seal_test_candidate_status(campaign, key, str(record["status"]))
 
+    campaign.save()
+    campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
+
+    # Load the proposal checkpoint and seal it.  supervisor_seal runs
+    # terminal_certified_final_result_project_precheck_violation (not patched),
+    # which exercises the power-coverage check on the placement_solution that
+    # includes the selected covering pole.
+    sealed_campaign = ExactCampaign.load_or_create(tmp_path, campaign_hours=1.0, resume=True)
+    sealed_campaign.supervisor_seal()
+
     assert (
         terminal_certified_final_result_violation_for_project(
-            campaign.state,
+            sealed_campaign.state,
             project_root=tmp_path,
-            campaign_path=campaign.path,
+            campaign_path=sealed_campaign.path,
         )
         is None
     )

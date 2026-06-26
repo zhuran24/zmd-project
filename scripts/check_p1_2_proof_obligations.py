@@ -38,6 +38,7 @@ OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
 DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
 SERIALIZER_PATH = PROJECT_ROOT / "src" / "io" / "serializer.py"
+BLUEPRINT_EXPORTER_PATH = PROJECT_ROOT / "src" / "render" / "blueprint_exporter.py"
 MASTER_MODEL_PATH = PROJECT_ROOT / "src" / "models" / "master_model.py"
 EXACT_COORDINATE_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "exact_coordinate_master.py"
 POSE_BOOL_EXACT_MASTER_PATH = PROJECT_ROOT / "src" / "models" / "pose_bool_exact_master.py"
@@ -182,6 +183,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
             "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
             "test_full_frontier_candidate_domain_keeps_oriented_dimensions",
+            "test_save_rejects_dict_subclass_that_mutates_after_guard",
         }
     ),
     "PO-CERTIFIED-EXPORT-SURFACE": frozenset(
@@ -243,6 +245,24 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint",
             "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier",
             "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier",
+            "test_unchecked_certified_surface_writer_is_not_module_importable",
+            "test_generic_blueprint_writer_rejects_canonical_certified_path",
+            "test_delivery_manifest_rejects_chameleon_mapping_that_skips_disk_authority",
+            "test_p1_2_checker_rejects_raw_canonical_writer_bypass",
+            "test_p1_2_checker_rejects_publisher_rollback_removal",
+            "test_p1_2_checker_rejects_manifest_mapping_snapshot_removal",
+            "test_clear_certified_delivery_surface_artifacts_attempts_all_after_unlink_failure",
+            "test_serve_viewer_partial_generation_commit_clears_all_public_outputs",
+            "test_serve_viewer_requires_current_candidate_placements_and_clears_stale_copy",
+            "test_publish_viewer_report_clears_stale_output_when_build_fails",
+            "test_write_viewer_report_rejects_canonical_public_path",
+            "test_main_visualization_clears_stale_png_when_surface_not_publishable",
+            "test_main_visualization_renderer_failure_clears_all_png_outputs",
+            "test_write_industrial_planner_bundle_partial_commit_clears_all_outputs",
+            "test_clear_industrial_planner_export_bundle_attempts_all_files_after_failure",
+            "test_render_blueprint_export_wrapper_rejects_repo_canonical_export_dir",
+            "test_industrial_export_frontdoor_gate_block_clears_stale_bundle",
+            "test_industrial_export_frontdoor_refresh_failure_clears_written_bundle",
             "test_p1_2_publish_open_gate_blocks_open_statuses",
             "test_p1_2_publish_open_gate_missing_file_fails_closed",
             "test_p1_2_publish_open_gate_rejects_malformed_gate_files",
@@ -330,6 +350,12 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
             "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
             "test_fix_3_capsule_name_guard_dead_branch_manifest_reseal_is_rejected",
+            "test_package_review_snapshot_default_targeted_tests_exist",
+            "test_package_review_snapshot_excludes_agent_memory_and_review_packets",
+            "test_package_review_snapshot_binds_commit_tree_and_dirty_state",
+            "test_package_review_snapshot_embedded_manifest_records_verification_receipt",
+            "test_package_review_snapshot_skip_tests_marker_is_embedded",
+            "test_package_review_snapshot_selftest_disables_pytest_plugin_autoload",
         }
     ),
 }
@@ -393,7 +419,7 @@ def _require_int(value: Any, label: str) -> int:
 
 def _parse_python(path: Path) -> ast.Module:
     try:
-        tree = ast.parse(path.read_text(encoding="utf-8"))
+        tree = ast.parse(path.read_text(encoding="utf-8-sig"))
     except Exception as exc:  # noqa: BLE001
         raise CheckError(f"cannot parse {_rel(path)}: {exc}") from exc
     for parent in ast.walk(tree):
@@ -1052,6 +1078,362 @@ def _source_text(path: Path, node: ast.AST) -> str:
     return ast.get_source_segment(source, node) or ""
 
 
+def _call_symbol(call: ast.Call) -> str | None:
+    if isinstance(call.func, ast.Name):
+        return call.func.id
+    if isinstance(call.func, ast.Attribute):
+        return call.func.attr
+    return None
+
+
+def _is_call_to(call: ast.Call, name: str) -> bool:
+    return _call_symbol(call) == name
+
+
+def _call_linenos(node: ast.AST, name: str) -> list[int]:
+    return sorted(
+        child.lineno
+        for child in ast.walk(node)
+        if isinstance(child, ast.Call)
+        and _is_call_to(child, name)
+        and hasattr(child, "lineno")
+    )
+
+
+def _first_call_lineno(node: ast.AST, name: str) -> int | None:
+    lines = _call_linenos(node, name)
+    return lines[0] if lines else None
+
+
+def _loads_name(node: ast.AST, name: str) -> bool:
+    return any(
+        isinstance(child, ast.Name)
+        and isinstance(child.ctx, ast.Load)
+        and child.id == name
+        for child in ast.walk(node)
+    )
+
+
+def _is_descendant_of(node: ast.AST, ancestor: ast.AST) -> bool:
+    current = node
+    while True:
+        parent = getattr(current, "_p1_2_parent", None)
+        if parent is None:
+            return False
+        if parent is ancestor:
+            return True
+        current = parent
+
+
+def _node_in_statement_sequence(node: ast.AST, statements: Sequence[ast.stmt]) -> bool:
+    return any(node is statement or _is_descendant_of(node, statement) for statement in statements)
+
+
+def _atomic_write_json_calls(node: ast.AST) -> list[ast.Call]:
+    return [
+        child
+        for child in ast.walk(node)
+        if isinstance(child, ast.Call) and _is_call_to(child, "atomic_write_json")
+    ]
+
+
+def _atomic_write_target_name(call: ast.Call) -> str | None:
+    if call.args and isinstance(call.args[0], ast.Name):
+        return call.args[0].id
+    return None
+
+
+def _handler_catches_all_exceptions(handler: ast.ExceptHandler) -> bool:
+    if handler.type is None:
+        return True
+    if isinstance(handler.type, ast.Name) and handler.type.id == "Exception":
+        return True
+    return isinstance(handler.type, ast.Attribute) and handler.type.attr == "Exception"
+
+
+def _handler_raises(handler: ast.ExceptHandler) -> bool:
+    return any(isinstance(child, ast.Raise) for child in ast.walk(handler))
+
+
+def _publisher_production_scan_paths(project_root: Path) -> list[Path]:
+    paths: list[Path] = []
+    for root_rel in ("src", "scripts"):
+        root = project_root / root_rel
+        if not root.exists():
+            continue
+        candidates = root.rglob("*.py") if root.is_dir() else [root]
+        for path in candidates:
+            rel_path = path.relative_to(project_root).as_posix()
+            if (
+                rel_path.startswith("src/tests/")
+                or "/__pycache__/" in rel_path
+                or rel_path.endswith("/__init__.py")
+            ):
+                continue
+            paths.append(path)
+    return paths
+
+
+def _enclosing_function_name(node: ast.AST) -> str:
+    current = node
+    function_name: str | None = None
+    class_name: str | None = None
+    while True:
+        parent = getattr(current, "_p1_2_parent", None)
+        if parent is None:
+            break
+        if isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef)) and function_name is None:
+            function_name = parent.name
+        elif isinstance(parent, ast.ClassDef) and class_name is None:
+            class_name = parent.name
+        current = parent
+    if function_name is None:
+        return "<module>"
+    if class_name is not None:
+        return f"{class_name}.{function_name}"
+    return function_name
+
+
+def _publisher_direct_call_sites(
+    *,
+    project_root: Path,
+    scan_paths: Sequence[Path] | None = None,
+) -> set[tuple[str, str]]:
+    call_sites: set[tuple[str, str]] = set()
+    for path in scan_paths or _publisher_production_scan_paths(project_root):
+        try:
+            tree = _parse_python(path)
+        except CheckError:
+            raise
+        for child in ast.walk(tree):
+            if isinstance(child, ast.Call) and _is_call_to(
+                child,
+                "publish_verified_certified_delivery_surface",
+            ):
+                call_sites.add((path.relative_to(project_root).as_posix(), _enclosing_function_name(child)))
+    return call_sites
+
+
+def _check_publisher_transaction_shape(
+    publisher_fn: ast.FunctionDef,
+    *,
+    path: Path,
+) -> list[str]:
+    errors: list[str] = []
+    top_level_tries = [statement for statement in publisher_fn.body if isinstance(statement, ast.Try)]
+    if len(top_level_tries) != 1:
+        errors.append("verified publisher must wrap canonical publication in one top-level try/except rollback block")
+        return errors
+    transaction_try = top_level_tries[0]
+    write_calls = _atomic_write_json_calls(publisher_fn)
+    if len(write_calls) != 3:
+        errors.append("verified publisher must perform exactly the three canonical artifact writes")
+    body_writes = [
+        call
+        for call in write_calls
+        if _node_in_statement_sequence(call, transaction_try.body)
+    ]
+    if len(body_writes) != len(write_calls):
+        errors.append("verified publisher canonical writes must all be inside the transaction try body")
+    target_to_line = {
+        _atomic_write_target_name(call): call.lineno
+        for call in body_writes
+        if hasattr(call, "lineno")
+    }
+    for target_name in ("final_solution_path", "blueprint_path", "manifest_path"):
+        if target_name not in target_to_line:
+            errors.append(f"verified publisher must directly write canonical target {target_name}")
+    if not target_to_line:
+        return errors
+    first_write_line = min(target_to_line.values())
+    for required_call in (
+        "clear_certified_delivery_surface_artifacts",
+        "_load_strict_json_mapping",
+        "_mapping_or_none",
+        "_json_equivalent",
+        "has_valid_terminal_full_frontier_certified_evidence_for_project",
+        "resolve_p1_2_publish_open_gate",
+        "blueprint_output_path",
+        "delivery_manifest_output_path",
+    ):
+        call_line = _first_call_lineno(transaction_try, required_call)
+        if call_line is None or call_line > first_write_line:
+            errors.append(
+                "verified publisher canonical writes must be dominated by gate/currentness call: "
+                f"{required_call}"
+            )
+    ordered_boundaries = [
+        ("final_solution_path", "build_blueprint_payload_from_certified_result", "blueprint_path"),
+        ("blueprint_path", "build_certified_delivery_manifest", "manifest_path"),
+        ("blueprint_path", "validate_certified_delivery_manifest_matches_campaign", "manifest_path"),
+        ("manifest_path", "verify_certified_delivery_surface", "surface verification"),
+    ]
+    for before_target, required_call, after_target in ordered_boundaries:
+        before_line = target_to_line.get(before_target)
+        required_line = _first_call_lineno(transaction_try, required_call)
+        after_line = target_to_line.get(after_target)
+        if before_line is None or required_line is None:
+            errors.append(f"verified publisher missing ordered transaction call: {required_call}")
+            continue
+        if after_line is None:
+            if required_line <= before_line:
+                errors.append(
+                    f"verified publisher must run {required_call} after {before_target} write"
+                )
+        elif not before_line < required_line < after_line:
+            errors.append(
+                f"verified publisher must run {required_call} between {before_target} and {after_target}"
+            )
+    rollback_handlers = [
+        handler for handler in transaction_try.handlers if _handler_catches_all_exceptions(handler)
+    ]
+    if not rollback_handlers:
+        errors.append("verified publisher rollback must catch Exception for the full publication block")
+    for handler in rollback_handlers:
+        if not _direct_calls_name(handler, "clear_certified_delivery_surface_artifacts"):
+            errors.append("verified publisher rollback handler must clear all certified delivery artifacts")
+        if not _handler_raises(handler):
+            errors.append("verified publisher rollback handler must re-raise a fail-closed exception")
+    if not _direct_calls_name(transaction_try, "clear_certified_delivery_surface_artifacts"):
+        errors.append("verified publisher transaction must clear stale artifacts before writing")
+    publisher_source = _source_text(path, publisher_fn)
+    if "surface.publishable" not in publisher_source:
+        errors.append("verified publisher must reject non-publishable post-write surface verification")
+    return errors
+
+
+def _check_manifest_mapping_snapshot_shape(
+    delivery_manifest_path: Path,
+) -> list[str]:
+    errors: list[str] = []
+    delivery_tree = _parse_python(delivery_manifest_path)
+    snapshot_fn = _function_def(
+        delivery_tree,
+        "_snapshot_manifest_campaign_state",
+        path=delivery_manifest_path,
+    )
+    snapshot_source = _source_text(delivery_manifest_path, snapshot_fn)
+    for token in (
+        "json.dumps",
+        "dict(campaign_state)",
+        "_loads_strict_json_object",
+        "return dict(snapshot)",
+    ):
+        if token not in snapshot_source:
+            errors.append(f"manifest Mapping snapshot helper must isolate caller payload: {token}")
+
+    build_fn = _function_def(
+        delivery_tree,
+        "build_certified_delivery_manifest",
+        path=delivery_manifest_path,
+    )
+    snapshot_statement_index: int | None = None
+    for index, statement in enumerate(build_fn.body):
+        if not isinstance(statement, ast.Assign):
+            continue
+        if len(statement.targets) != 1:
+            continue
+        target = statement.targets[0]
+        value = statement.value
+        if not (
+            isinstance(target, ast.Name)
+            and target.id == "campaign_state"
+            and isinstance(value, ast.Call)
+            and _is_call_to(value, "_snapshot_manifest_campaign_state")
+            and len(value.args) == 1
+            and isinstance(value.args[0], ast.Name)
+            and value.args[0].id == "campaign_state"
+        ):
+            continue
+        snapshot_statement_index = index
+        break
+    if snapshot_statement_index is None:
+        errors.append("certified delivery manifest must assign campaign_state from one snapshot call")
+        return errors
+    for statement in build_fn.body[:snapshot_statement_index]:
+        if _loads_name(statement, "campaign_state"):
+            errors.append("certified delivery manifest must not read caller campaign_state before snapshot")
+            break
+    snapshot_line = build_fn.body[snapshot_statement_index].lineno
+    best_line = _first_call_lineno(build_fn, "_build_best_certified_result_payload")
+    for required_call in (
+        "has_certified_export_surface",
+        "_canonical_disk_campaign_state_if_regular",
+        "_validate_campaign_state_matches_disk_authority",
+    ):
+        call_line = _first_call_lineno(build_fn, required_call)
+        if call_line is None or call_line <= snapshot_line:
+            errors.append(
+                "certified delivery manifest must snapshot caller Mapping before disk/certification gate: "
+                f"{required_call}"
+            )
+        if best_line is not None and call_line is not None and call_line >= best_line:
+            errors.append(
+                "certified delivery manifest must finish disk-authority gating before best-result build: "
+                f"{required_call}"
+            )
+    return errors
+
+
+def _check_certified_publication_boundary_contract(
+    *,
+    project_root: Path = PROJECT_ROOT,
+    certified_surface_path: Path = CERTIFIED_SURFACE_PATH,
+    delivery_manifest_path: Path = DELIVERY_MANIFEST_PATH,
+    publisher_scan_paths: Sequence[Path] | None = None,
+) -> list[str]:
+    """Check PR1 public publication reachability, rollback, and Mapping snapshot guards."""
+
+    errors: list[str] = []
+    surface_tree = _parse_python(certified_surface_path)
+    publisher_fn = _function_def(
+        surface_tree,
+        "publish_verified_certified_delivery_surface",
+        path=certified_surface_path,
+    )
+    errors.extend(_check_publisher_transaction_shape(publisher_fn, path=certified_surface_path))
+
+    allowed_writer_functions = {
+        "publish_verified_certified_delivery_surface",
+        "export_and_verify_certified_delivery_manifest",
+    }
+    for node in ast.walk(surface_tree):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        if node.name in allowed_writer_functions:
+            continue
+        if _atomic_write_json_calls(node):
+            errors.append(
+                "certified surface raw canonical writer bypass is not allowed outside "
+                f"the verified publisher: {node.name}"
+            )
+
+    allowed_call_sites = {
+        ("src/search/certified_surface.py", "save_certified_final_solution_and_blueprint"),
+        ("scripts/export_industrial_planner_bundle.py", "main"),
+    }
+    actual_call_sites = _publisher_direct_call_sites(
+        project_root=project_root,
+        scan_paths=publisher_scan_paths,
+    )
+    unexpected_call_sites = actual_call_sites - allowed_call_sites
+    for rel_path, function_name in sorted(unexpected_call_sites):
+        errors.append(
+            "publish_verified_certified_delivery_surface has an unsealed production caller: "
+            f"{rel_path}::{function_name}"
+        )
+    missing_call_sites = allowed_call_sites - actual_call_sites
+    for rel_path, function_name in sorted(missing_call_sites):
+        if (project_root / rel_path).exists():
+            errors.append(
+                "publish_verified_certified_delivery_surface lost sealed production caller: "
+                f"{rel_path}::{function_name}"
+            )
+
+    errors.extend(_check_manifest_mapping_snapshot_shape(delivery_manifest_path))
+    return errors
+
+
 def _uses_name(node: ast.AST, name: str) -> bool:
     return any(isinstance(child, ast.Name) and child.id == name for child in ast.walk(node))
 
@@ -1533,6 +1915,7 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
     main_fn = _function_def(tree, "main", path=checker_path)
     for required_call in (
         "_check_candidate_sink_replay_contract",
+        "_check_certified_publication_boundary_contract",
         "_check_strong_status_write_allowlist_gate",
         "_check_close_kernel_contract",
         "_check_phase_gate_provenance_contract",
@@ -1995,6 +2378,9 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"best_certified_result must require central publishable disk surface: {token}")
 
     surface_tree = _parse_python(certified_surface_path)
+    certified_surface_source_text = certified_surface_path.read_text(encoding="utf-8")
+    if "_write_certified_final_solution_and_blueprint_unchecked" in certified_surface_source_text:
+        errors.append("certified surface must not expose an importable unchecked canonical writer")
     evaluate_surface_fn = _function_def(
         surface_tree,
         "evaluate_certified_delivery_surface",
@@ -2020,11 +2406,39 @@ def _check_candidate_sink_replay_contract(
         "_load_strict_json_mapping(resolved_campaign_path)",
         "campaign_state_payload_mismatch",
         "except Exception",
-        "export_certified_delivery_manifest",
+        "build_blueprint_payload_from_certified_result",
+        "build_certified_delivery_manifest",
+        "validate_certified_delivery_manifest_matches_campaign",
+        "atomic_write_json(final_solution_path, result)",
+        "atomic_write_json(blueprint_path, blueprint_payload)",
+        "atomic_write_json(manifest_path, manifest_payload)",
         "verify_certified_delivery_surface",
+        "resolve_p1_2_publish_open_gate",
     ):
         if token not in publisher_source:
             errors.append(f"verified publisher must use disk authority and rollback gate: {token}")
+    for forbidden in (
+        "export_certified_delivery_manifest",
+        "write_blueprint_payload",
+    ):
+        if forbidden in publisher_source:
+            errors.append(f"verified publisher must own canonical writes directly, not delegate to {forbidden}")
+    manifest_export_fn = _function_def(
+        surface_tree,
+        "export_and_verify_certified_delivery_manifest",
+        path=certified_surface_path,
+    )
+    manifest_export_source = _source_text(certified_surface_path, manifest_export_fn)
+    for token in (
+        "build_certified_delivery_manifest",
+        "publishable certified delivery manifests must use",
+        "publish_verified_certified_delivery_surface",
+        "atomic_write_json(manifest_path, payload)",
+    ):
+        if token not in manifest_export_source:
+            errors.append(f"non-publisher manifest export must fail closed on publishable payloads: {token}")
+    if "export_certified_delivery_manifest" in manifest_export_source:
+        errors.append("non-publisher manifest export must not call the generic manifest writer")
     if not _calls_function(run_outer_fn, "_commit_terminal_full_frontier_certified_result"):
         errors.append("certified outer search must use the terminal proposal commit")
     if _function_returns_status_tuple(run_outer_fn, "RUN_STATUS_CERTIFIED"):
@@ -2498,6 +2912,11 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     for needle in (
         "_validate_campaign_state_matches_disk_authority",
         "_campaign_path_for_regular_file_check",
+        "_snapshot_manifest_campaign_state(campaign_state)",
+        "_canonical_disk_campaign_state_if_regular",
+        "snapshot_has_certified_surface",
+        "has_certified_export_surface(disk_campaign_state)",
+        "campaign_state = _validate_campaign_state_matches_disk_authority",
         "disk checkpoint authority",
         "_is_regular_file(raw_state_path)",
         "_load_json_mapping(raw_state_path",
@@ -2508,11 +2927,23 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
                 "certified delivery manifest writer must treat the regular disk checkpoint as "
                 f"authority before writing best_certified_result: {needle}"
             )
+    snapshot_pos = build_manifest_source.find(
+        "campaign_state = _snapshot_manifest_campaign_state(campaign_state)"
+    )
+    certified_surface_pos = build_manifest_source.find(
+        "snapshot_has_certified_surface = has_certified_export_surface(campaign_state)"
+    )
+    best_payload_pos = build_manifest_source.find("best_result = _build_best_certified_result_payload")
+    if snapshot_pos < 0 or certified_surface_pos < 0 or snapshot_pos > certified_surface_pos:
+        errors.append("certified delivery manifest must snapshot caller Mapping before certification checks")
+    if best_payload_pos >= 0 and certified_surface_pos >= 0 and best_payload_pos < certified_surface_pos:
+        errors.append("certified delivery manifest must finish disk-authority gating before best-result build")
     for needle in (
         "_validate_certified_manifest_output_path",
         "direct certified delivery manifest writes",
         "canonical output path for best_certified_result",
         "regular canonical delivery manifest output",
+        "publish_verified_certified_delivery_surface",
         "target_path.is_absolute()",
         "atomic_write_json(target_path, normalized)",
         "raw_output_path.parent.resolve().relative_to(project_root)",
@@ -2551,6 +2982,27 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
             errors.append(
                 "certified blueprint projection must fail closed on terminal routing results "
                 f"that cannot be projected into optimal_blueprint: {needle}"
+            )
+    for needle in (
+        "_is_canonical_blueprint_output_path",
+        "canonical optimal_blueprint.json writes must use the verified certified publisher",
+        "canonical certified blueprint writes must use the verified publisher",
+    ):
+        if needle not in serializer_source_text:
+            errors.append(
+                "generic blueprint writers must reject canonical optimal_blueprint.json writes: "
+                f"{needle}"
+            )
+    blueprint_exporter_source_text = BLUEPRINT_EXPORTER_PATH.read_text(encoding="utf-8")
+    for needle in (
+        "write_blueprint_payload",
+        "optimal_blueprint.json",
+        "verified certified publisher",
+    ):
+        if needle not in blueprint_exporter_source_text:
+            errors.append(
+                "blueprint exporter must remain guarded by the canonical serializer writer: "
+                f"{needle}"
             )
 
     for needle in (
@@ -3062,12 +3514,14 @@ CLOSE_KERNEL_V99_REQUIRED_SCAN_ROOTS = frozenset(
     {
         "src",
         "scripts/check_p1_2_proof_obligations.py",
+        "scripts/check_strong_status_write_allowlist.py",
         "scripts/build_industrial_planner_single_base_delivery_release.py",
     }
 )
 CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': 'p1_2_public_surface',
     'scripts/check_p1_2_proof_obligations.py': 'p1_2_close_kernel',
+    'scripts/check_strong_status_write_allowlist.py': 'p1_2_close_kernel',
     'src/adapters/industrial_planner/export_blueprint.py': 'non_authoritative_projection',
     'src/adapters/industrial_planner/mapping_registry.py': 'non_authoritative_projection',
     'src/cuts/cert_schema.py': 'out_of_scope_future_phase3b',
@@ -3102,6 +3556,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'non_authoritative_projection',
     'src/render/industrial_planner_single_base_delivery_surface_health.py': 'non_authoritative_projection',
     'src/render/industrial_planner_single_base_delivery_viewer.py': 'non_authoritative_projection',
+    'src/render/blueprint_exporter.py': 'non_authoritative_projection',
     'src/render/report_builder.py': 'non_authoritative_projection',
     'src/render/serve.py': 'non_authoritative_projection',
     'src/search/benders_loop.py': 'p1_2_certified_path',
@@ -3126,6 +3581,7 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS = frozenset(CLOSE_KERNEL_V99_REQUIRED_SINK_
 CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
     {
         "scripts/check_p1_2_proof_obligations.py",
+        "scripts/check_strong_status_write_allowlist.py",
         "data/proof_obligations/p1_2_proof_obligations.json",
         "src/search/certified_surface.py",
         "src/search/certified_artifact_contract.py",
@@ -3150,7 +3606,11 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
 CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
     {
         "src/search/certified_frontier.py",
+        "src/search/certified_surface.py",
         "src/search/exact_campaign.py",
+        "src/io/delivery_manifest.py",
+        "src/io/serializer.py",
+        "src/render/blueprint_exporter.py",
         "src/search/terminal_fixed_witness_capsule.py",
         "src/search/terminal_fixed_witness_verifier.py",
     }
@@ -3158,7 +3618,8 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
 
 CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
-    'src/adapters/industrial_planner/export_blueprint.py': '9a5410b559a0e4c91fd1cf4bee8263f8d4f212560c9c29a59e85a08a34a4217d',
+    'scripts/check_strong_status_write_allowlist.py': '1296e3836f5bad13486aa19800ca8f1a18403c991e337ab6a12cda1045caf8f2',
+    'src/adapters/industrial_planner/export_blueprint.py': '01afafc85b4e7f27c0bf8c0293845785b45bc71ad332da483936b753a7d9eb5e',
     'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
     'src/cuts/cert_schema.py': 'e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e',
     'src/cuts/families/pattern_nogood.py': '3083df0a2eaa71d0f2823a60ad9156bcc6bc744e4ff4bc26f9544d7dabe6230b',
@@ -3168,9 +3629,9 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
-    'src/io/delivery_manifest.py': 'e3cb1a30df850d319ad7faa04eeafd828501037ffdcb5e46c57be0bf7d2c55db',
+    'src/io/delivery_manifest.py': '100be25ecaa0634779ecd058e0551bae7b86758ef622705e55f61218dc7445c2',
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
-    'src/io/serializer.py': 'd38021784758faf589a0bb8a039d22f953f7d952915a7706abc7d05a67fe1cf7',
+    'src/io/serializer.py': 'f40ede9bacee8fbfd1526973eb5f9985184930b70f84d946bb8b8c80d9e4fa9d',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
     'src/models/binding_subproblem.py': '9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
@@ -3192,16 +3653,17 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c',
     'src/render/industrial_planner_single_base_delivery_surface_health.py': '788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf',
     'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
-    'src/render/report_builder.py': '1068a1fe18aa4fb16eeb3c96ad0b78ebf74184f6638808e8b2e773dc920a1a2b',
-    'src/render/serve.py': 'ccbe4682cd61b648895d6cb9d7ee1d212cd5342eb0d8a252e2f9c37d64b88f4b',
+    'src/render/blueprint_exporter.py': '8ee3b21bc137493fc930b08bd5ea368e23bcd1090ddf51a56bb7264d4d31a61f',
+    'src/render/report_builder.py': '860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6',
+    'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
-    'src/search/certified_surface.py': 'e329585224e822f0ddcfd50c45ff6bce6a730e7aaeaa3a917df95f1dbd4644fc',
+    'src/search/certified_surface.py': '655a0a30c594da121bafa0cb1fb2104630a09b112a1a8c19ae00ec41b725daf3',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': 'e10b55359016efe2a8788682d5228f76c5df4023a9d9a1369a7a8a197254064a',
+    'src/search/exact_campaign.py': '9bb85806c8595b29063d3b8caf8ac443015d9cf5b7ff4d7699244b746ee8edd3',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
@@ -3210,7 +3672,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
-    'src/search/terminal_fixed_witness_verifier.py': 'f39ceb13c9e40f4fdeeaf36d181169726fce138b0ec441a388aee8ec39dc9c14',
+    'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531',
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 
@@ -3909,6 +4371,7 @@ def main() -> int:
         errors.extend(_check_runtime_cache_policy(manifest, lifecycle_tree))
         errors.extend(_check_certified_cut_replay_contract(manifest))
         errors.extend(_check_candidate_sink_replay_contract())
+        errors.extend(_check_certified_publication_boundary_contract())
         errors.extend(_check_strong_status_write_allowlist_gate())
         errors.extend(_check_isolated_exec_bytecode_binding_contract())
         errors.extend(_check_evidence_and_tests(manifest))

@@ -30,6 +30,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from ortools.sat.python import cp_model
@@ -2978,6 +2979,12 @@ def test_campaign_resume_requires_fresh_replay_for_proof_bearing_candidates(
         generated_exact_safe_cut_count=0,
     )
     campaign.save()
+    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+    blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
+    manifest_path = delivery_manifest_output_path(project_root)
+    _write_json(final_solution_path, {"stale": "final"})
+    _write_json(blueprint_path, {"stale": "blueprint"})
+    _write_json(manifest_path, {"stale": "manifest"})
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
     assert resumed.resumed is True
@@ -2997,6 +3004,13 @@ def test_campaign_resume_requires_fresh_replay_for_proof_bearing_candidates(
         == "certified_candidate_requires_fresh_replay_after_checkpoint_resume"
     )
     assert resumed.best_certified_result() is None
+    persisted = _read_campaign_state(project_root)
+    assert persisted["candidates"]["1x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert persisted["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in persisted["candidates"]["2x1"]
+    assert not final_solution_path.exists()
+    assert not blueprint_path.exists()
+    assert not manifest_path.exists()
 
 
 def test_campaign_save_is_atomic_and_resumeable(tmp_path: Path) -> None:
@@ -3078,6 +3092,11 @@ def test_campaign_resume_drops_certified_candidate_records_without_terminal_fina
     assert resumed.get_candidate_record(2, 1)["status"] == RUN_STATUS_UNKNOWN
     assert "solution" not in resumed.get_candidate_record(1, 1)
     assert "solution" not in resumed.get_candidate_record(2, 1)
+    persisted = _read_campaign_state(project_root)
+    assert persisted["candidates"]["1x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert persisted["candidates"]["2x1"]["status"] == RUN_STATUS_UNKNOWN
+    assert "solution" not in persisted["candidates"]["1x1"]
+    assert "solution" not in persisted["candidates"]["2x1"]
 
 
 def test_campaign_does_not_export_certified_result_when_later_terminal_status_is_unknown(
@@ -8258,13 +8277,13 @@ def test_certified_result_writes_canonical_optimal_blueprint(
     )
     assert verdict.publishable is True
 
-    def fail_manifest_export(**_kwargs: Any) -> tuple[Path, dict[str, Any]]:
-        raise RuntimeError("manifest writer exploded after projections")
+    def fail_manifest_build(**_kwargs: Any) -> dict[str, Any]:
+        raise RuntimeError("manifest builder exploded after projections")
 
     monkeypatch.setattr(
         certified_surface_module,
-        "export_certified_delivery_manifest",
-        fail_manifest_export,
+        "build_certified_delivery_manifest",
+        fail_manifest_build,
     )
     with pytest.raises(RuntimeError, match="certified delivery surface publication rejected"):
         certified_surface_module.publish_verified_certified_delivery_surface(
@@ -8275,6 +8294,37 @@ def test_certified_result_writes_canonical_optimal_blueprint(
         )
 
     assert not final_solution_path.exists()
+    assert not blueprint_path.exists()
+    assert not manifest_path.exists()
+
+
+def test_clear_certified_delivery_surface_artifacts_attempts_all_after_unlink_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    project_root = tmp_path / "cleanup_attempts_all"
+    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+    blueprint_path = project_root / "data" / "blueprints" / "optimal_blueprint.json"
+    manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    final_solution_path.mkdir(parents=True)
+    (final_solution_path / "locked.txt").write_text("locked", encoding="utf-8")
+    blueprint_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    blueprint_path.write_text('{"stale":"blueprint"}\n', encoding="utf-8")
+    manifest_path.write_text('{"stale":"manifest"}\n', encoding="utf-8")
+    attempted_rmtree: list[Path] = []
+
+    def fail_rmtree(path: Path) -> None:
+        attempted_rmtree.append(Path(path))
+        raise PermissionError("simulated cleanup failure")
+
+    monkeypatch.setattr(certified_surface_module.shutil, "rmtree", fail_rmtree)
+
+    with pytest.raises(RuntimeError, match="certified delivery surface cleanup failed"):
+        certified_surface_module.clear_certified_delivery_surface_artifacts(project_root)
+
+    assert attempted_rmtree == [final_solution_path]
+    assert final_solution_path.exists()
     assert not blueprint_path.exists()
     assert not manifest_path.exists()
 

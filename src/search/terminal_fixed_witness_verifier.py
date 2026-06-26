@@ -42,6 +42,30 @@ TERMINAL_FIXED_WITNESS_PROJECTED_STATUS_FIELD = (
 TERMINAL_FIXED_WITNESS_REJECTED_REASON_FIELD = (
     "terminal_fixed_witness_rejected_reason"
 )
+TERMINAL_FIXED_WITNESS_VERDICT_STABLE_FIELD_ORDER = (
+    "schema_version",
+    "authority",
+    "publishable",
+    "projected_status",
+    "candidate_key",
+    "solution_digest",
+    "ghost_rect_digest",
+    "ghost_cells_digest",
+    "witness_input_digest",
+    "binding_assignment_digest",
+    "port_specs_digest",
+    "routing_occupancy_digest",
+    "binding_status",
+    "routing_status",
+    "reason",
+    "details",
+)
+TERMINAL_FIXED_WITNESS_VERDICT_STABLE_FIELDS = frozenset(
+    TERMINAL_FIXED_WITNESS_VERDICT_STABLE_FIELD_ORDER
+)
+TERMINAL_FIXED_WITNESS_VERDICT_VOLATILE_DROPPABLE_FIELDS = frozenset(
+    {"fresh_run_token"}
+)
 
 _PROJECTED_CERTIFIED = "CERTIFIED"
 _PROJECTED_UNPROVEN = "UNPROVEN"
@@ -107,6 +131,40 @@ class TerminalFixedWitnessVerdict:
             "details": dict(self.details),
         }
         return _strict_json_copy(payload)
+
+
+def stable_terminal_fixed_witness_verdict_payload(
+    payload: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Return the durable verdict projection or fail closed on unknown fields."""
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("terminal fixed witness verdict payload must be a mapping")
+    raw_fields = set(payload.keys())
+    if any(not isinstance(field, str) for field in raw_fields):
+        raise ValueError("terminal fixed witness verdict field must be a string")
+    missing = sorted(TERMINAL_FIXED_WITNESS_VERDICT_STABLE_FIELDS - raw_fields)
+    if missing:
+        raise ValueError(f"terminal fixed witness verdict missing stable field:{missing[0]}")
+    unexpected = sorted(
+        raw_fields
+        - TERMINAL_FIXED_WITNESS_VERDICT_STABLE_FIELDS
+        - TERMINAL_FIXED_WITNESS_VERDICT_VOLATILE_DROPPABLE_FIELDS
+    )
+    if unexpected:
+        raise ValueError(
+            f"terminal fixed witness verdict unknown durable field:{unexpected[0]}"
+        )
+    return {
+        field: _strict_json_copy(payload[field])
+        for field in TERMINAL_FIXED_WITNESS_VERDICT_STABLE_FIELD_ORDER
+    }
+
+
+def stable_terminal_fixed_witness_verdict(
+    verdict: TerminalFixedWitnessVerdict,
+) -> Dict[str, Any]:
+    return stable_terminal_fixed_witness_verdict_payload(verdict.to_dict())
 
 
 @dataclass(frozen=True)
@@ -725,7 +783,9 @@ def _apply_terminal_fixed_witness_audit_fields(
     proof_summary = record.get("proof_summary")
     summary = dict(proof_summary) if isinstance(proof_summary, Mapping) else {}
     if isinstance(verdict, TerminalFixedWitnessVerdict):
-        summary[TERMINAL_FIXED_WITNESS_AUDIT_FIELD] = verdict.to_dict()
+        summary[TERMINAL_FIXED_WITNESS_AUDIT_FIELD] = (
+            stable_terminal_fixed_witness_verdict(verdict)
+        )
     summary[TERMINAL_FIXED_WITNESS_PUBLISHABLE_FIELD] = bool(publishable)
     summary[TERMINAL_FIXED_WITNESS_PROJECTED_STATUS_FIELD] = str(projected_status)
     if publishable:

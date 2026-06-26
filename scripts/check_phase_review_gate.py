@@ -6,7 +6,7 @@ repo-derived proof protocol.  Earlier V37-V50 hardening tried to infer clean
 credit from review reports, receipts, package metadata, and Git authority; that
 created a large parser/state-machine attack surface.  This checker is therefore
 intentionally small: it validates that the repository remains fail-closed unless
-an explicit owner manual decision opens P1.3B.
+an explicit owner manual decision opens P1.3 (the JSON compatibility field remains p1_3b).
 """
 
 from __future__ import annotations
@@ -209,7 +209,7 @@ def _check_owner_manual_decision(raw_decision: Any, *, next_allowed: bool) -> li
             return errors
         decision = require_mapping(raw_decision, "owner_manual_decision")
         if decision.get("p1_3b_entry_allowed") is True:
-            errors.append("owner_manual_decision cannot allow P1.3B while next_phase_entry.allowed=false")
+            errors.append("owner_manual_decision cannot allow P1.3 while next_phase_entry.allowed=false (machine field p1_3b_entry_allowed)")
         return errors
 
     decision = require_mapping(raw_decision, "owner_manual_decision")
@@ -259,7 +259,7 @@ def _check_step_8_boundary(*, next_allowed: bool) -> list[str]:
         return []
     if _step_8_apply_to_master_is_fail_closed():
         return []
-    return ["P1.3B is not manually allowed, so step_8_apply_to_master must remain fail-closed"]
+    return ["P1.3 is not manually allowed (machine field p1_3b), so step_8_apply_to_master must remain fail-closed"]
 
 
 def _parse_python(path: Path) -> ast.Module:
@@ -834,7 +834,7 @@ def _fixed_witness_verifier_functions_present() -> list[str]:
     through this verifier; a closed phase gate re-enables publication through the
     P1.2-FIX-2 open-gate, so the gate must fail closed if the verifier module or
     its public entry points are removed.  This is checked for every gate state so
-    that opening P1.3B never silently drops the requirement (the prior generic
+    that opening P1.3 (machine compatibility field p1_3b) never silently drops the requirement (the prior generic
     "stay blocked" anchor carried no witness predicate, so lifting it lost the
     binding entirely).
     """
@@ -949,9 +949,9 @@ def check_gate(path: Path) -> tuple[str, list[str]]:
     if owner_state_allowed != next_allowed:
         errors.append("owner_manual_state.p1_3b_entry_allowed must match next_phase_entry.allowed")
     if status in BLOCKED_STATUSES and next_allowed:
-        errors.append("blocked/open manual gate must not allow P1.3B")
+        errors.append("blocked/open manual gate must not allow P1.3 (machine field p1_3b_entry_allowed)")
     if status == CLOSED_STATUS and not next_allowed:
-        errors.append("closed manual gate should allow P1.3B")
+        errors.append("closed manual gate should allow P1.3 (machine field p1_3b_entry_allowed)")
     if require_str(next_phase_entry.get("authority"), "next_phase_entry.authority") != "owner_manual_decision_only":
         errors.append("next_phase_entry.authority must be owner_manual_decision_only")
 

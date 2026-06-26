@@ -18,6 +18,7 @@ from src.search.certified_surface import evaluate_certified_delivery_surface
 
 VIEWER_REPORT_FILENAME = "viewer_report.json"
 VIEWER_REPORT_VERSION = "0.1.0"
+CANONICAL_VIEWER_REPORT_PATH = Path(__file__).resolve().parent / "web_viewer" / VIEWER_REPORT_FILENAME
 
 
 def build_viewer_report_from_blueprint_payload(
@@ -59,21 +60,66 @@ def build_viewer_report_from_project_root(project_root: Path) -> dict[str, Any]:
         )
     if surface.optimal_blueprint_payload is None:
         raise RuntimeError("certified viewer report surface snapshot is missing optimal_blueprint")
-    blueprint_payload = surface.optimal_blueprint_payload
     facility_pools = load_candidate_placements(project_root / "data" / "preprocessed" / "candidate_placements.json")
     rules_path = project_root / "rules" / "canonical_rules.json"
     rules_payload = load_json_mapping(rules_path) if rules_path.exists() else {}
-    return build_viewer_report_from_blueprint_payload(
-        blueprint_payload=blueprint_payload,
+    return build_viewer_report_from_surface_snapshot(
+        surface=surface,
         facility_pools=facility_pools,
         rules_payload=rules_payload,
     )
 
 
+def build_viewer_report_from_surface_snapshot(
+    *,
+    surface: Any,
+    facility_pools: Mapping[str, Any],
+    rules_payload: Mapping[str, Any] | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    if not getattr(surface, "publishable", False):
+        raise RuntimeError(
+            "certified viewer report surface is not publishable: "
+            f"{getattr(surface, 'blocked_reason', None) or 'unknown'}"
+        )
+    blueprint_payload = getattr(surface, "optimal_blueprint_payload", None)
+    if blueprint_payload is None:
+        raise RuntimeError("certified viewer report surface snapshot is missing optimal_blueprint")
+    return build_viewer_report_from_blueprint_payload(
+        blueprint_payload=blueprint_payload,
+        facility_pools=facility_pools,
+        rules_payload=rules_payload,
+        generated_at=generated_at,
+    )
+
+
 def write_viewer_report(output_path: Path, payload: Mapping[str, Any]) -> dict[str, Any]:
+    output_path = Path(output_path)
+    if output_path.resolve() == CANONICAL_VIEWER_REPORT_PATH.resolve():
+        raise ValueError(
+            "canonical viewer_report.json writes must use publish_viewer_report_from_project_root"
+        )
     normalized = dict(payload)
-    atomic_write_json(Path(output_path), normalized)
+    atomic_write_json(output_path, normalized)
     return normalized
+
+
+def publish_viewer_report_from_project_root(
+    *,
+    project_root: Path,
+    output_path: Path,
+) -> dict[str, Any]:
+    target_path = Path(output_path)
+    try:
+        payload = build_viewer_report_from_project_root(Path(project_root).resolve())
+        atomic_write_json(target_path, payload)
+        return payload
+    except Exception:
+        try:
+            target_path.unlink()
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def _now_iso() -> str:

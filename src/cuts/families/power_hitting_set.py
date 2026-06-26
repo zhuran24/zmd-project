@@ -21,7 +21,7 @@ PROJECT_LOCK §3A locked invariants (Phase 1.2 single-case scope):
   This F7 validator/helper stack currently interprets that value through the
   older Euclidean ``compute_cover_set`` model, while the active certified path
   and frozen pose geometry use the owner-confirmed 12x12 square coverage
-  stencil.  F7/F8 are not certified master inputs until P1.3B reconciles that
+  stencil.  F7/F8 are not certified master inputs until P1.3 reconciles that
   semantic split; this docstring must not be read as making Euclidean coverage
   the project authority.
 - **needs_power gate**: validator rejects facilities whose

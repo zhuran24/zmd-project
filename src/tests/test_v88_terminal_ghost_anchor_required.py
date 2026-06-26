@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
 
+from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
 from src.io.serializer import build_blueprint_payload_from_certified_result
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
@@ -13,15 +16,27 @@ from src.search.certified_frontier import (
     generate_candidate_sizes,
 )
 from src.search.exact_campaign import (
+    CAMPAIGN_INSTANCE_ID_KEY,
     CAMPAIGN_SCHEMA_VERSION,
+    CANDIDATE_PROPOSED_STATUS,
     PROOF_SUMMARY_SCHEMA_VERSION,
+    PROPOSAL_READY_MARKER_AUTHORITY,
+    SUPERVISOR_PROPOSAL_STATE_KEY,
+    SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+    SUPERVISOR_SEAL_AUTHORITY,
+    SUPERVISOR_SEAL_SCHEMA_VERSION,
+    SUPERVISOR_SEAL_STATE_KEY,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ExactCampaign,
     _default_master_domain_contract,
+    atomic_write_json,
     compute_exact_artifact_hashes,
+    new_campaign_instance_id,
+    new_supervisor_proposal_run_id,
     terminal_certified_final_result_violation_for_project,
 )
 from src.search.outer_search import _build_certified_result
+from src.search.terminal_fixed_witness_verifier import canonical_state_bytes_for_fixed_witness
 from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
@@ -141,7 +156,7 @@ def test_terminal_project_validator_requires_ghost_anchor(tmp_path: Path) -> Non
     state, _facility_pools = _terminal_state_without_ghost_anchor(tmp_path)
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=tmp_path)
         == "terminal_certified_final_result_ghost_rect_anchor_missing"
     )
 
@@ -254,9 +269,76 @@ def test_terminal_solution_match_ignores_candidate_record_ghost_marker(tmp_path:
     seal_test_candidate_status(campaign, "3x2", "CERTIFIED")
     seal_test_candidate_status(campaign, "2x3", "CERTIFIED")
 
+    # PR1 requires a valid supervisor_seal on disk.  Build one manually:
+    # the seal validates by constructing `expected` from the proposal snapshot
+    # and checking canonical_state_bytes_for_fixed_witness(expected) ==
+    # canonical_state_bytes_for_fixed_witness(authority_state_from_disk).
+    run_id = new_supervisor_proposal_run_id()
+    instance_id = new_campaign_instance_id()
+    seal_timestamp = "2026-06-10T00:00:03Z"
+
+    # CANDIDATE_PROPOSED snapshot — authority bytes embedded in the seal.
+    proposal_final_result = dict(final_result)
+    proposal_final_result["search_status"] = CANDIDATE_PROPOSED_STATUS
+
+    proposal_state: dict = dict(campaign.state)
+    proposal_state[CAMPAIGN_INSTANCE_ID_KEY] = instance_id
+    proposal_state["final_status"] = CANDIDATE_PROPOSED_STATUS
+    proposal_state["last_stop_reason"] = {
+        "status": CANDIDATE_PROPOSED_STATUS,
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "updated_at": "2026-06-10T00:00:02Z",
+    }
+    proposal_state["final_result"] = proposal_final_result
+    proposal_state[SUPERVISOR_PROPOSAL_STATE_KEY] = {
+        "schema_version": SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+        "authority": PROPOSAL_READY_MARKER_AUTHORITY,
+        "run_id": run_id,
+        CAMPAIGN_INSTANCE_ID_KEY: instance_id,
+    }
+
+    proposal_bytes = canonical_state_bytes_for_fixed_witness(proposal_state)
+    proposal_sha256 = hashlib.sha256(proposal_bytes).hexdigest()
+
+    # CERTIFIED snapshot without seal key (used to compute certified_state_sha256).
+    certified_final_result = dict(final_result)  # search_status already "CERTIFIED"
+    certified_state_no_seal: dict = dict(proposal_state)
+    certified_state_no_seal["final_status"] = "CERTIFIED"
+    certified_state_no_seal["final_result"] = certified_final_result
+    certified_state_no_seal["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": "CERTIFIED",
+        "updated_at": seal_timestamp,
+    }
+    certified_state_no_seal["updated_at"] = seal_timestamp
+    certified_state_no_seal.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+
+    certified_sha256 = hashlib.sha256(
+        canonical_state_bytes_for_fixed_witness(certified_state_no_seal)
+    ).hexdigest()
+
+    seal_record = {
+        "schema_version": SUPERVISOR_SEAL_SCHEMA_VERSION,
+        "authority": SUPERVISOR_SEAL_AUTHORITY,
+        "transition": "proposal_to_certified_v1",
+        "proposal_run_id": run_id,
+        "proposal_checkpoint_sha256": proposal_sha256,
+        "proposal_authority_b64": base64.b64encode(proposal_bytes).decode("ascii"),
+        CAMPAIGN_INSTANCE_ID_KEY: instance_id,
+        "certified_state_sha256": certified_sha256,
+        "sealed_at": seal_timestamp,
+    }
+
+    certified_state: dict = dict(certified_state_no_seal)
+    certified_state[SUPERVISOR_SEAL_STATE_KEY] = seal_record
+
+    # Write sealed certified state to the campaign checkpoint path so the
+    # authority-checkpoint validator can read it.
+    atomic_write_json(campaign.path, certified_state)
+
     assert (
         terminal_certified_final_result_violation_for_project(
-            campaign.state,
+            certified_state,
             project_root=tmp_path,
             campaign_path=campaign.path,
         )

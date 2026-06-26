@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
     build_terminal_frontier_evidence,
@@ -135,6 +136,6 @@ def test_terminal_project_validator_rejects_occupied_claimed_ghost_anchor(
     }
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=root)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=root)
         == "terminal_certified_final_result_ghost_rect_anchor_occupied"
     )

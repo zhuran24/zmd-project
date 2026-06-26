@@ -1,5 +1,8 @@
 # 13 — 排期估算 (Claude pace, 不按人类工程师)
 
+> **历史估算**：工期与阶段命名不是当前承诺或 gate 状态；以实际工作树和 owner gate 为准。
+
+
 per `[[work-time-estimates]]` Claude 节奏估:
 
 > **(2026-06-04 现状)** 下方 Phase 1.2 §11 的 5 family (F5-F9) 估时已成历史——F5-F9 **已落地**（Phase 1.2 spike close 闭关中，见 [06](06_current_status.md)）。本表作早期排期参考读，非当前待办。（另：本表的 `§10/§11/§12/§13` 等是**旧单体 plan 章节号**，对应本目录 sub-doc 见各 phase plan [08](08_phase_1_2_plan.md) / [09](09_phase_1_3_plan.md) / [10](10_phase_1_5_plan.md)。）

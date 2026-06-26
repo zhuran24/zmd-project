@@ -1,19 +1,19 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: src/models/routing_subproblem.py and routing-focused regression tests; splitter/merger support is current-code aligned
-last_verified_against: 2026-06-11 (P0-1 lazy source-side connectivity cuts修订)
+last_verified_against: 2026-06-26 working tree
 owner: exact-routing
 ---
 > [!NOTE]
-> **CURRENT_CODE_ALIGNED — 本文件已与 `src/models/routing_subproblem.py` 对齐（与 frontmatter status 一致）。变量体系已简化为 CP-SAT BoolVar 编码。MUC 提取接口已预留但返回 None ([TBD])。**
+> **CURRENT_CODE_ALIGNED:** 本文件已按 2026-06-26 工作树重新核对。变量体系使用 CP-SAT BoolVar 编码；当前模块没有通用 MUC 提取/发布接口，routing 失败也不能自动升级为永久 placement no-good。
 
 # 09 逐格精确路由子问题 (Exact Grid Routing Subproblem)
 
 ## 9.1 文档目的与模型边界
 
-本文档确立了逻辑型 Benders 分解 (LBBD) 架构中的**第二级验证子问题 (Second-Stage Exact Subproblem)**，即最终的微观物理布线阶段。
+本文档描述 certified candidate 检查中的离散 routing 子问题。它接收 master placement 和 binding 选出的物理端口，求一组满足当前 routing 模型的有向网格 route states。
 
-当主摆放模型 (07 章) 给定实体布局 $\mathbf{z}^*$，且该布局通过了宏观拓扑流 (08 章) 的可行性粗筛后，本模型将接管全场的离散网格。本模型的任务是：在真实游戏物理规则下，为所有激活的物理端口铺设一条或多条离散的、有向的、不相撞的、满足容量与桥接规则的 $1 \times 1$ 物流组件（传送带、分流器、汇流器、物流桥）网络。
+连续 flow 模型不是本模块的前置 gate。`benders_loop.py` 可以在进入 binding/routing 前运行 flow 诊断，但该诊断状态只写 telemetry；即使 flow 返回 `INFEASIBLE` 或 `TIMEOUT`，certified acceptance 仍由 binding/routing 及其 fail-closed guards 决定。本模块 `FEASIBLE` 也只支持当前 candidate 的内部 verdict，不能直接铸造 campaign terminal `CERTIFIED` 或公开蓝图。
 
 **【模型边界声明】**：
 *   **包含域**：单向带方向连续性、多商品微观不相交路径 (Disjoint Paths)、真三维高架桥连续跨越、制造单位出入口至少 1 格缓冲强制规则、公共资源池的端到端精确定位。
@@ -76,24 +76,30 @@ $$ \sum_{k \in \mathcal{K}} \sum_{d_{\text{in}} \neq d_{\text{out}}} r_{c, L, d_
 
 ---
 
-## 9.5 失败提取与微观组合切平面 (MUC & Benders Cuts)
+## 9.5 失败处理与 cut 边界
 
-### 9.5.1 极小不可满足核 (MUC / IIS) 提取
-现代 SAT 求解器在返回 UNSAT 时，能够回溯推导并提取出导致无解的 **极小不可满足核心 (Minimal Unsatisfiable Core, MUC)**。
+当前 `RoutingSubproblem` 没有一个可被文档概括为“任意 UNSAT 都提取 MUC，然后永久拉黑当前 placement”的通用接口。局部 precheck、binding alternative、lazy connectivity cut、selected-route nogood 和 placement-level cut 的量词不同，必须按 `benders_loop.py` 的 exact-safe proof ladder 处理：
 
-### 9.5.2 微观几何冲突切平面 (Micro-Geometric No-Good Cut)
-锁定构成 MUC 的具体实体实例集合 $\Omega_{\text{micro}} \subset \mathcal{I}$ 及其在当前失败解中的位姿 $p_i^*$。
-路由子问题向主摆放模型发回一条最高优先级的永久排斥切平面：
-$$ \sum_{i \in \Omega_{\text{micro}}} z_{i, p_i^*} \le |\Omega_{\text{micro}}| - 1 $$
+- 当前 binding 下 routing 不可行时，若仍有 binding alternatives，应先排除当前 binding 并重解；
+- lazy connectivity cut 只在独立 certificate check 通过后加入 routing model；
+- selected-route nogood 只排除一个被终端 guard 拒绝的 routing incumbent；
+- placement/whole-layout no-good 只有在完整 scope/proof 成立时才允许写入，whole-layout 路径还要经过 independent infeasibility re-verifier；
+- timeout、`UNKNOWN`、unsupported proof stage 或不完整冲突集不得提升为永久 `INFEASIBLE` cut。
+
+因此，早期的 MUC 方程只能作为设计动机，不能当作当前代码行为。
 
 ---
 
-## 9.6 终极验收与蓝图生成 (Ultimate Acceptance)
+## 9.6 candidate 输出与发布边界
 
-如果本模型返回 **SATISFIABLE (YES)**，系统将提取全量 0-1 决策变量，输出包含以下信息的**终极蓝图**：
-1.  **全体刚体的绝对位姿与朝向**（266 必选 + 被激活的可选实例；源自 07 章主问题。注：早先写的"326"是 exploratory 参考全集，certified-exact 可选数为变量 / demand 驱动、无硬 50/10/60 cap，见 07 章 §7.4.1 后 [PROJECT_LOCK 对齐] 注）。
-2.  **$70 \times 70 \times 2$ 空间内每一个物流组件的类型、坐标、朝向、承载物料**（源自本章微观解）。
+routing `FEASIBLE` 后，controller 可以提取当前 candidate 的 placement、binding 与 routing witness，并返回内部 `RUN_STATUS_CERTIFIED`。该状态不是项目终局：
 
+1. outer search 仍需完成完整 candidate frontier/optimality 过程；
+2. producer 只能把终端材料提交为 `CANDIDATE_PROPOSED`；
+3. supervisor 必须从已提交磁盘字节复验并 mint durable terminal `CERTIFIED`；
+4. fixed-witness、P1.2 owner gate 与中央 publisher 全部通过后，canonical solution/blueprint/manifest 才可公开。
+
+`RoutingSubproblem` 本身不写 `final_solution.json`、`optimal_blueprint.json` 或 delivery manifest，也不授予 release authority。
 
 ---
 
@@ -127,4 +133,4 @@ Every lazy cut must pass an independent fail-closed certificate check before it 
 
 If any certificate check fails, the solver must attach the pre-existing selected-positive nogood for the rejected incumbent and record the fallback reason in `build_stats["last_solve"]["connectivity_guard"]`.  Multiple failing commodities in the same incumbent are handled independently: each commodity attempts its own source-side cut, and each failed certificate contributes a telemetry fallback record.  `cuts_added`, `cut_sizes`, and `fallback_nogoods` are diagnostic telemetry only; certified soundness continues to come from the final §9.7 guard.
 
-No environment knob controls this behavior.  It is enabled by default because it only adds self-certified valid inequalities or falls back to the previous fail-closed nogood path.  The long-term P1.3B direction remains to encode per-commodity flow/connectivity directly in CP-SAT; this lazy-cut graph machinery is deliberately reusable for that future first-class encoding, but it is not that encoding.
+No environment knob controls this behavior.  It is enabled by default because it only adds self-certified valid inequalities or falls back to the previous fail-closed nogood path.  The long-term human-facing P1.3 direction remains to encode per-commodity flow/connectivity directly in CP-SAT; this lazy-cut graph machinery is deliberately reusable for that future first-class encoding, but it is not that encoding.

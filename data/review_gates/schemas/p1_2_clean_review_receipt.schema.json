@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "schema_id": "p1_2_clean_review_receipt",
-  "description": "Optional informational receipt for Phase 1.2 review auditing. Receipts no longer grant clean-review credit and cannot open P1.3B; the owner maintains the clean-review count outside the repo.",
+  "description": "Optional informational receipt for Phase 1.2 review auditing. Receipts no longer grant clean-review credit and cannot open P1.3 (machine compatibility field p1_3b); the owner maintains the clean-review count outside the repo.",
   "status": "informational_only",
   "required_keys_for_optional_records": [
     "schema_version",

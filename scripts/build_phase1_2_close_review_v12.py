@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""Build phase1_2_close_review_v12.zip — Phase 1.2 ALL CLOSED 大节点 GPT pro review.
+"""Build the historical ``phase1_2_close_review_v12.zip`` snapshot.
 
-v11 → v12 关键差异 (反映 Phase 1.2 全部 family land + close gate spike):
+The archive name and the original round notes used “ALL CLOSED” language. That
+was a point-in-time review label, not a current P1.2 close certificate, and this
+legacy builder is not publication authority for the present worktree.
+
+v11 → v12 当时记录的差异 (反映该轮 family land + close-gate spike):
 
 - Phase 1.1 → Phase 1.2 状态切换: 7 family (F2/F4/F5/F6/F7/F8/F9) 全 Gemini
   cross-check GO + mini Step 8 spike GO (CP-SAT translator close gate).
@@ -78,12 +82,16 @@ def should_skip(rel: Path) -> bool:
     return False
 
 
-README_V12 = """# 终末地工业规划器 — 项目快照
+README_V12 = """# 终末地工业规划器 - 历史项目快照
 
-终末地 (Arknights: Endfield) 70×70 工业规划器 certified-exact 最大空矩形求解器.
-目标 `max_lex(area, min_side)`. 266 mandatory facility, OR-Tools 9.15
-CP-SAT, LBBD 分解 (master → binding → routing → flow). 详
-`docs/项目说明/01_overview.md` + `02_mathematical_foundations.md`.
+> **HISTORICAL SNAPSHOT:** 此 README 只描述 commit `cb8e347` 的 v12 评审包。
+> “GO”“complete”和 pass 数均是当时的 family/spike 记录，不能证明当前 P1.2
+> 已闭合、owner gate 已打开、工作树已认证或公开发布链可用。
+
+终末地 (Arknights: Endfield) 70×70 工业规划器最大空矩形求解器。
+目标 `max_lex(area, min_side)`。当时的主线采用 CP-SAT/LBBD；连续 flow
+只可作诊断，certified acceptance 仍取决于 binding/routing 与独立复验链。详见
+`docs/项目说明/01_overview.md` 和 `02_mathematical_foundations.md`。
 
 全项目内容 (src + docs + rules + data + scripts + main.py + spec + audit archive).
 

@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
+from src.tests.certified_frontier_helpers import persist_forged_terminal_certified_state
 from src.io.delivery_manifest import export_certified_delivery_manifest
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
 from src.search.exact_campaign import (
@@ -159,7 +161,7 @@ def _terminal_campaign_with_optional_extra(
     }
     forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
     return campaign
 
 
@@ -180,10 +182,7 @@ def test_v95_rejects_contradictory_pose_optional_public_metadata(
         optional_extra=optional_extra,
     )
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_solution_metadata_mismatch"
     assert campaign.best_certified_result() is None
@@ -204,12 +203,9 @@ def test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field(
         optional_extra={},
     )
     campaign.state["last_stop_reason"]["note"] = "CERTIFIED_BY_FORGED_STOP_REASON_NOTE"
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_last_stop_reason_unknown_field:note"
     assert campaign.best_certified_result() is None

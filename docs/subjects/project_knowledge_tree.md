@@ -1,19 +1,10 @@
-# Subject: project knowledge tree
+# 项目知识面
 
-This subject defines the shared knowledge architecture across the formal documentation tree and the GPT collaboration memory tree. The two trees remain physically separate because they serve different readers, but they are projections of one logical subject graph.
+项目有两个相互引用但物理独立的知识面：
 
-<!-- SUBJECT-FIELD:shared_subject_layer START -->
-The project uses **one logical knowledge tree with two physical projections**. `docs/` is the stable documentation projection; `cc_context/memory/` is the collaboration-continuity projection. Neither tree is allowed to become a second independent truth source: volatile living claims should be promoted into a subject field and projected to every surface that needs them.
-<!-- SUBJECT-FIELD:shared_subject_layer END -->
+1. Git 工作树中的代码、锁文件、机器 JSON、规格和文档。
+2. `cc_memory/memory.db` 中的协作记忆节点、事实和边。
 
-<!-- SUBJECT-FIELD:docs_role START -->
-The documentation tree is the stable project surface. It answers: what the project is, what the current contract is, how it is verified, how it is delivered, and where historical material lives. It should be publishable, reviewable, and low-noise.
-<!-- SUBJECT-FIELD:docs_role END -->
+它们之间没有自动 projection。文档修改不会自动写入 memory，memory 修改也不会自动改文档。需要变更状态时，应分别按各自工具和约束更新，并保留 supersede/dependency 边，使旧判断与新判断的关系可追踪。
 
-<!-- SUBJECT-FIELD:memory_role START -->
-The memory tree is the collaboration-continuity surface. It answers: what the previous working window knew, which mistakes were already corrected, what user preferences or process constraints matter, which old statements must not be trusted blindly, and what the next window should read first.
-<!-- SUBJECT-FIELD:memory_role END -->
-
-<!-- SUBJECT-FIELD:projection_rule START -->
-Living/current claims should flow through subject fields and registered projection slots. Historical review notes, raw transcripts, dated decisions, and evidence archives should remain evidence nodes: they may link to subjects, but they should not be auto-rewritten into present-tense truth.
-<!-- SUBJECT-FIELD:projection_rule END -->
+禁止复活 `cc_context`、`_cc_live_memory` 或第二套 memory graph。

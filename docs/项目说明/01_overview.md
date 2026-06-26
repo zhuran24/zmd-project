@@ -1,157 +1,105 @@
-# 01 — 项目概览 (战略 + 数学问题陈述 + paradigm 选择)
+# 01 — 项目概览与认证命题
 
-### 1.1 形式定义
+> 本文描述当前工作树的求解与发布边界。发布状态以根目录
+> `PROJECT_LOCK.md` 和 `data/review_gates/phase_1_2_spike_close.json` 为准。
+> “支持 certified_exact”不等于“P1.2 已关闭”或“已有可公开 CERTIFIED 交付”。
 
-**问题**: 在 `G = {0, 1, ..., 69} × {0, 1, ..., 69}` 70×70 grid 上, 给定:
+## 1.1 形式问题
 
-- 266 个 mandatory facility instance, 每个 instance `i` 有 facility template `t(i)`, 占 `cells_per_pose(t)` cells
-- 每 instance `i` 有有限的 candidate pose 集 `P(i) ⊆ Poses` (pose = (位置, 方向, port_mode) 三元组)
-- canonical_rules: 17 recipe + facility templates + targets + commodity types
-- generic_io_requirements: commodity flow demand 表
-- mandatory_exact_instances: 必装 instance 列表 + per-instance placement_rule (e.g. boundary-only / power-zone-required)
+在 `G = {0, …, 69} × {0, …, 69}` 上，给定 266 个 mandatory facility instance、每个
+instance 的有限 candidate-pose 集、canonical rules、generic I/O requirements 和
+per-instance placement rule，寻找 `(R, π)`：
 
-**找**: 一个 (ghost rectangle, pose assignment) 二元组 `(R, π)` 使:
-
-```
-R 是 G 内的轴向 rectangle, π: instances → poses 满足 π(i) ∈ P(i)
-       all_cells(π) ∩ R = ∅                        (1) ghost 内无 facility
-       ∀ i ≠ j, occupied_cells(π(i)) ∩ occupied_cells(π(j)) = ∅   (2) 不重
-       ∀ i, placement_rule(i) holds for π(i)        (3) per-instance rule
-       port_binding(π) feasible                     (4) port 匹配可行
-       routing(π) feasible                          (5) belts 能连
-       power_coverage(π) feasible                   (6) 电力网覆盖
+```text
+R 是 G 内轴向矩形；π(i) 是 instance i 的候选 pose
+(1) all_cells(π) ∩ R = ∅
+(2) 任意两个 instance 的 occupied_cells 不重叠
+(3) 每个 instance 的 placement_rule 成立
+(4) port binding feasible，且 generic slot exact-count 成立
+(5) routing feasible，即每个 routed commodity 的 source/sink fronts 满足有向连通
+(6) power coverage feasible，即受电设施被真实存在的供电桩几何覆盖
 ```
 
-**objective**: `max_lex(area(R), min_side(R))` — 先大面积, 同 area 选 min_side 大的 (`min_side(R) ≥ 6` 是 admissibility 不是 tie-break).
+目标是 `max_lex(area(R), min_side(R))`。`min_side >= 6` 是 production 项目的候选
+admissibility floor，不是第二目标的替代品。toy project 可在自己的 canonical rules 中显式给出
+不同 floor。
 
-**输出**: `(R*, π*)` + **certified proof** (sound 数学证明, 见 §1.3 "certified" 定义).
+## 1.2 `CERTIFIED` 精确证明什么
 
-### 1.2 离散组合优化空间复杂度
+只有经过 sink replay、fixed-witness terminal verification、
+`ExactCampaign.supervisor_seal()`，并通过公开发布闸的结果，才有资格在 public delivery surface
+上携带 proof-bearing `CERTIFIED`。此时命题仅为：
 
-**Pose enumeration**: 当前 production artifact `candidate_placements.json` ~66,403 pose / 266 instance ≈ 平均约 250 pose/instance；GitHub `main` 是 lightweight checkout，跑 certified exact 前需要先恢复该大 artifact。
+1. 发布的确切 `(R*, π*)` 满足上述六个谓词；
+2. 完整 admissible candidate frontier 中不存在 lex 更优的可行解；
+3. solution、blueprint 和 delivery manifest 来自同一 disk-current supervisor seal。
 
-**Ghost rectangle 候选**: 70×70 grid 内 rectangle 数 = `C(71, 2)² ≈ 6.4 million`. 加 min_side ≥ 6 admissibility 后 ~3 million; outer search frontier 实际 reach ~1000-10000 candidate (Phase 3A frontier 设计).
+该命题不证明 belt 离散吞吐、单位时间产率、电网吞吐或任何未列入六谓词的游戏机制。
+`flow_subproblem.py` 是连续 LP 诊断器，不门控 certified verdict，也不能单独生成 proof-bearing cut。
 
-**Assignment 决策空间**: 266 instance × 平均 308 pose ≈ 8 × 10⁷ raw configuration, 含 placement_rule + port + routing + power 后 sound subspace 量级未定 (master.solve 解不动证).
+超时、预算耗尽、验证材料缺失或 verifier 返回 UNKNOWN 时，正确结论是 `UNKNOWN` / `UNPROVEN`，
+不是 `INFEASIBLE`，也不是 `CERTIFIED`。
 
-**Hardness**: max empty rectangle in general grid with constraints 是 NP-hard (reduce from rectangle packing + bin packing). 项目用 CP-SAT exact (not approximation), 通过 LBBD + cut framework 工程 prune 收敛.
+## 1.3 当前求解与发布链
 
-### 1.3 `certified_exact` 跟 `exploratory` 的形式区分
-
-**certified_exact (项目主路径, 本文档全 scope)**
-- **soundness**: 输出 `(R*, π*)` 必伴随 mathematical proof — π* 满足所有 constraint (1-6), 且对任何 R 更大的 `(R', π')` (即 lex(area(R'), min_side(R')) > lex(area*, min_side*)) 必 infeasible
-- **completeness (current scope)**: 不要求绝对 complete — 168h campaign 内 prove 当前 best 是 optimum 即 done; 超 168h timeout 时报 UNPROVEN (不是 wrong)
-- 输出 proof object 必包含: `(R*, π*)` + 各 instance assignment + binding + routing + power + 各 sub-problem certificate
-- proof object 必 replay-validatable (跨 session / 跨 hardware)
-
-**exploratory (历史路径, future_scope, 不在本文档)**
-- 启发式 / approximation, 无 sound proof
-- 历史 cap (e.g. 50 power_pole + 10 storage_box) 是 exploratory 用, 不进 certified_exact
-- exploratory artifact 不算 certified proof, 跨 path 不混 `[cite lock §3A]`
-
-**严格分离原则**: postprocess (adapter / render / export) 仅消费 certified proof, **不**重定义 solve schema. cut framework 完全在 certified_exact path 内.
-
-### 1.4 跟 LBBD 的关系
-
-项目核心 paradigm = **Logic-Based Benders Decomposition (LBBD)** + **cut framework**.
-
-**LBBD 4 层 sub-problem**:
-1. master — 找 `(R, π_placement)` (instance → pose), 含 ghost rectangle
-2. binding — 验 port binding 是否可行 (per-instance ports 怎么 connect)
-3. routing — 验 belt routing 是否可行 (grid path 连接所有 port 对)
-4. flow — multi-commodity flow diagnostic (诊断 routing INFEASIBLE 时 why)
-
-每层 INFEASIBLE → 出 nogood 信号 → master 加 lazy constraint → master re-solve.
-
-**Cut framework** 是 LBBD nogood 的**累积 sound 知识层** — 不替代 master, 在 master 外把 sub-problem 历史 nogood 抽象成 reusable cut (across candidate, across ghost), 防 master 反复学同一个 lesson.
-
-### 1.5 项目内 "sound" 的形式定义
-
-**Soundness (cut framework 内)**:
-> 一个 cut `c` 是 sound iff: 任何满足 cut.scope 条件的 master assignment, 加上 cut 后排除的 literal/geometry 都不可能延伸出 (1-6) 全部满足的 `(R, π)`.
-
-形式化: `c.scope(R, π) ⇒ (c.excludes(π) ⇒ ¬feasible(R, π))`
-
-**Soundness ≠ completeness**:
-- sound = "排除的都该排除" (no over-prune)
-- complete = "该排除的都排除了" (no under-prune)
-- cut framework 当前只 verify sound (validator 重算 cert), 不 verify complete (complete 是 §5.1 open Q)
-
-**Adversarial soundness** 加层: validator 不信 oracle (oracle 可 Byzantine 产假 cert), 必须独立从 BState + cert 重算 verify, 见 §2.6.
-
----
-
-
-## 1. 战略 / 上下文 — 为什么需要 cut framework
-
-终末地 (Arknights: Endfield) IndustrialPlanner 70×70 grid certified exact
-solver. 目标 max_lex(area, min_side), 266 mandatory facility instance, OR-Tools
-CP-SAT, Benders decomposition (master → binding → routing → flow). 跑 168h
-campaign 求 production-ready blueprint.
-
-### 真瓶颈不在硬件, 在 master.solve
-
-跑了 Phase 3A → 3B 才看清: i9-13900KS + 47 GB RAM + 168h wall-clock 也压不
-住 master.solve. 不是 CPU 慢, 不是内存不够, 不是磁盘 IO. CP-SAT BCP two-watched
-literal 在 280K pose registry 上做随机指针追逐, working set 跨 L3 spill, 这是
-**latency-bound** 工作负载 (`[[workload-latency-bound-not-bandwidth]]`). 换
-HiGHS 实测 42 GB > 30 GB (Phase 3B repair5), 换 LP relax B1 pose-bool master
-也死 — master.solve 解不动是 paradigm 层 inherent.
-
-### 27 个 paradigm 死路告诉我们 master 自身不能 fix
-
-`docs/research/p3_b_design_v2_20260521/paradigm_death_timeline.md`（27 lever；live 权威在 CC memory `paradigm-death-timeline-27-lever`）记录全部死法:
-- B1 pose-bool master (L11)
-- PCR-CUT patch routing (Phase 5 multi-anchor verdict NOT GO)
-- SAC-Hull separator capacity (necessary ≠ sufficient)
-- D2 commodity flow (Phase 2 verdict)
-- cand C column generation (5/20/40/80 ramp GO 但单 paradigm)
-- L01-L26 各 lever (cdcl warmstart / IHS / Benders symmetry / 各种 augmented master)
-
-死法共同模式: 试图改 master 内部 — 改 schema, 改 var encoding, 改 constraint
-表达. 都死. 因为 master.solve 解不动是 BCP+pose registry 这层 inherent, 不
-是表达问题.
-
-### cut framework 是另一个思路: master 外累积 sound 知识
-
-不动 master schema, 不动 mandatory_exact_instances. 在 master 跑过程中:
-
-1. 某状态 INFEASIBLE 时, oracle (subproblem solver) 产 cut: 证明这个状态
-   组合不可行
-2. cut 经 9-step lifecycle (generate → minimize → serialize → validate →
-   attach-scope check → evaluate → apply-to-master) 进 master 当 lazy constraint
-3. master 下次遇到同类组合直接跳过, search tree 不爆炸
-4. cut 跨 candidate 复用 (GHOST_AGNOSTIC sentinel + scope versioning)
-
-cut 是 **外部 sound 证据**, master 不知道它存在前就能跑; master 知道后剪
-search tree. 168h campaign 期望: cut 累积让 master 收敛, 不依赖硬件升级.
-
-### 跟 IndustrialPlanner 主流程的关系
-
-cut framework 不替代 master, 是 master 之外的 prune 层. Phase 3B repair5 是
-master oracle 改 30 GB → 47 GB (fits), cut framework 是接 repair5 之后的累积
-sound 知识层. 真 168h campaign 拓扑:
-
-```
-main.py campaign
-  └─ outer_search (Phase 3A delivery, 不动)
-       └─ benders_loop (Phase 3B repair5 master)
-              ├─ binding subproblem
-              ├─ routing subproblem
-              ├─ flow diagnostic
-              └─ [Phase 1.3 P1.3B land] cut store accumulate
-                  ├─ F1-F9 oracle on INFEASIBLE
-                  ├─ cut lifecycle 9 step
-                  └─ master 加 lazy constraint
+```text
+main.py
+  -> outer_search.py
+       枚举候选并运行 benders_loop
+       terminal success 只提交 CANDIDATE_PROPOSED + replay/fixed-witness material
+  -> exact_campaign.py
+       [当前无生产 supervisor CLI/launcher]
+       supervisor_seal() 需由独立 supervisor 显式调用，从磁盘重读提案并执行 sink replay、fixed-witness 与终端证据复验
+       唯一 durable terminal CERTIFIED mint
+  -> certified_surface.py
+       resolve_p1_2_publish_open_gate()
+       publish_verified_certified_delivery_surface()
+       唯一公开 certified publisher
 ```
 
-cut framework 在 benders_loop 内 (Phase 1.3 真集成 = P1.3B 待接), **当前 Phase 1.2 spike close 闭关中**（Phase 1.1 已完成）; cut framework 仍跑独立
-unit test (4900 cell grid + mock state), 真 master wire 属 P1.3B.
+`benders_loop.py` 内部的 `RUN_STATUS_CERTIFIED` 是单个候选的求解层 verdict，不是 durable campaign
+终态，更不是公开发布权。generic serializers、viewer/report builders、IndustrialPlanner adapters 和
+compatibility exports 都是派生面，不能自行把数据命名为 certified。
 
-### 期望收益
+当前 `main.py` 只到 `CANDIDATE_PROPOSED`，仓库没有生产 supervisor 调度入口。因此上图是已实现的
+authority API 顺序，不是当前已打通的一键发布流程。
 
-不是把 168h campaign 缩到 24h. 是让 168h 内真收敛 (vs Phase 3B repair5 之前
-168h 也跑不完). 具体不预测数字, 因为 master.solve 收敛跟 instance pattern
-强相关; 但 27 lever 死路告诉我们没 cut framework 就只能撞硬件墙.
+## 1.4 求解内核
 
----
+默认 certified decomposition 是 placement master → binding → routing。binding 与 routing 是命题 P
+的 gating subproblem。whole-layout nogood 在落 exact-safe cut 前还要经过
+`independent_infeasibility_reverifier.py`；独立复验不能确认时，不落 cut并返回 UNKNOWN。
+
+`src/cuts/` 中的 F1–F9 cut framework 是受生命周期约束的知识层。部分 family 已有 generator、
+validator 和 shadow tests，但 `step_8_apply_to_master` 仍不是当前 production certified integration。
+把 cut framework 真正接进主 master 属后续 P1.3，不能因 schema 或单元测试已存在而写成已上线。
+
+## 1.5 `certified_exact` 与 `exploratory`
+
+- `certified_exact` 是唯一有资格产生证明材料的路径，但仍受 supervisor、publish gate 和 owner gate
+  约束。
+- `exploratory` 只用于启发式、诊断、probe 和研究；历史的 “50 power poles + 10 storage boxes”
+  等 cap 不得进入 exact proof。
+- 两条路径的 status、cut、sidecar、hint 和 artifact 不得跨界提升。
+
+## 1.6 当前发布状态
+
+截至 2026-06-26，工作树已有 producer/supervisor split、fixed-witness capsule、fail-closed
+P1.2 OPEN-GATE、独立 whole-layout reverify 和中央公开发布器。P1.2 仍为 OPEN/BLOCKED，原因包括：
+
+- 没有受支持的 production supervisor CLI/launcher；普通 solve run 不会自动 seal；
+- owner manual gate 仍是 `blocked_manual_review_count`；
+- PR2 的 smaller/read-once/controlled-loader verification TCB 尚未完成；
+- review snapshot 仍需从 resolved immutable commit 物化，并补齐归档策略覆盖；
+- 其它 roadmap 中仍为 OPEN/PARTIAL 的规格与几何边界尚未全部关闭。
+
+现有机器字段 `p1_3b_*` 是历史兼容名。人类文档把后续 master integration 称为 P1.3。
+
+## 1.7 输入与规模
+
+`data/preprocessed/candidate_placements.json` 当前存在于工作树，大小 45,773,799 字节，SHA256 为
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`。某些轻量分发包可能将其
+externalize，但 certified contract 始终要求同一 pinned bytes。
+
+组合空间很大，exact campaign 依赖 candidate-frontier 枚举、CP-SAT、LBBD 和受验证 cut 来缩小搜索。
+性能瓶颈或 168h 预算不是证明捷径，跑得久也不会自动把 open/unknown 变成 certified。

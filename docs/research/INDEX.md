@@ -1,5 +1,8 @@
 # Phase 3C Optimization Research — Agent Transcript Index
 
+> **历史边界（2026-06-26 订正）**：本页是 2026-05-07/08 Phase 3C transcript 索引。以下 present-tense、LIVE、GO、latest 和测试数字只对当时记录成立，不是当前代码状态或 P1.2 close authority。当前状态见 `PROJECT_LOCK.md` 与 `docs/项目说明/06_current_status.md`。
+
+
 This index covers **only** the 2026-05-07 / 2026-05-08 Phase 3C optimization-research
 agent transcripts (multi-round) under `agent_transcripts/`. **它不是整个 `docs/research/` 的
 master index** —— `docs/research/` 下另有 ~46 个 dated 子目录（含 **LIVE 核心节点**

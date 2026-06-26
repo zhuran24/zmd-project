@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Mapping
 
+from src.tests.certified_frontier_helpers import persist_forged_terminal_certified_state
 from src.models.cut_manager import BendersCut, CutManager
 from src.search.benders_loop import collect_certification_blockers
 from src.search.exact_campaign import ExactCampaign
@@ -394,7 +395,7 @@ def test_exact_campaign_resume_rejects_filtered_master_domain_contract(
         "ghost_anchor_domain": "filtered",
         "ghost_anchor_filter": [[0, 0]],
     }
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -410,7 +411,7 @@ def test_exact_campaign_resume_rejects_float_state_schema_version(
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.state["schema_version"] = 4.0
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -426,7 +427,7 @@ def test_exact_campaign_resume_rejects_float_proof_summary_schema_version(
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.state["proof_summary_schema_version"] = 1.0
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -452,7 +453,7 @@ def test_exact_campaign_resume_rejects_bool_generated_cut_count(
         generated_exact_safe_cut_count=0,
     )
     campaign.state["candidates"]["1x1"]["generated_exact_safe_cut_count"] = True
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -498,7 +499,7 @@ def test_exact_campaign_resume_rejects_malformed_exact_safe_cut(tmp_path: Path) 
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -544,7 +545,7 @@ def test_exact_campaign_resume_rejects_bool_conflict_pose_index(tmp_path: Path) 
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -599,7 +600,7 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_without_cond
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -629,7 +630,7 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -664,7 +665,7 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mis
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -699,7 +700,7 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_rect_idx_not
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -734,7 +735,7 @@ def test_exact_campaign_resume_accepts_condition_required_power_cut_with_resolve
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -769,7 +770,7 @@ def test_exact_campaign_resume_rejects_condition_required_power_cut_anchor_outsi
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -886,7 +887,7 @@ def test_exact_campaign_resume_rejects_duplicate_json_key(tmp_path: Path) -> Non
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     path = campaign.path
     raw = path.read_text(encoding="utf-8")
@@ -939,7 +940,7 @@ def test_exact_campaign_resume_rejects_json_nan_constant(tmp_path: Path) -> None
         loaded_exact_safe_cut_count=0,
         generated_exact_safe_cut_count=1,
     )
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     path = campaign.path
     raw = path.read_text(encoding="utf-8")
@@ -981,7 +982,7 @@ def test_exact_campaign_resume_rejects_best_effort_final_result(
     }
     forge_legacy_terminal_certified_stop(campaign)
     campaign.state["declare_mode"] = "best_effort"
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 
@@ -997,7 +998,7 @@ def test_exact_campaign_resume_rejects_missing_declare_mode(
 
     campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
     campaign.state.pop("declare_mode")
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
     resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
 

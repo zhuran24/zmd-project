@@ -1,62 +1,48 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: code-first; src/search/exact_campaign.py, src/search/campaign_telemetry.py, scripts/inspect_exact_campaign_state.py
-last_verified_against: 2026-04-17
-owner: phase3b-exact-endgame
+source_of_truth: src/search/exact_campaign.py, src/search/outer_search.py, src/search/certified_surface.py, scripts/inspect_exact_campaign_state.py
+last_verified_against: 2026-06-26
+owner: certified-exact-operations
 ---
 
 # Exact Campaign Operations
 
-> ⚠️ **(2026-06-04)** frontmatter 的 `CURRENT_CODE_ALIGNED` / `last_verified_against: 2026-04-17` 是 Phase 3B 时代标注，自那以后未再复核（CP-SAT 长跑运营面在 cut-family LBBD / B1 pose-bool / Design A-B 演进后可能已漂）。当前现状权威源 = `CLAUDE.md` + `PROJECT_LOCK.md`；本文件的 campaign recovery/resume/reset/telemetry 操作面按其标注日期读、用前对照 `CLAUDE.md` runbook。
+## 1. Authority model
 
-这份文档覆盖 Phase 3B 的 B1 操作面：recovery、resume、reset、telemetry
-和 stop-reason 判读。它不改变 exact proof 语义，也不推进 B2/B5/B7。
+The campaign checkpoint is the persistent proof state, but three roles must remain separate:
 
-## 1. 基本原则
+1. `outer_search` is a producer. It records candidate outcomes and, after strict frontier exhaustion,
+   commits a `CANDIDATE_PROPOSED` terminal proposal with replay/fixed-witness material.
+2. `ExactCampaign.supervisor_seal()` is the sole durable terminal `CERTIFIED` mint. It rereads the
+   canonical checkpoint and independently revalidates the proposal before sealing.
+3. `publish_verified_certified_delivery_surface()` is the sole canonical public publisher. It also
+   requires the P1.2 publish-open gate to be owner-closed.
 
-- `data/checkpoints/exact_campaign_state.json` 是 campaign 状态入口。
-- `data/checkpoints/exact_campaign_telemetry.json` 是波次和诊断入口。
-- `data/solutions/certified_delivery_manifest.json` 是 delivery-side 汇总入口。
-- 中间调参和长跑应放在 workspace copy；repo 主路径只接受最终冻结证据。
-- `UNKNOWN` / `UNPROVEN` 不是成功终态，只是 triage 入口。
-- inspector 是只读操作工具，不是 proof source。
+A proposal, a candidate-level `RUN_STATUS_CERTIFIED`, or a schema-valid output file is not public
+certification. P1.2 is currently blocked by the manual owner gate.
 
-## 2. Inspection
-
-运行只读检查：
+## 2. Read-only inspection
 
 ```bash
 python scripts/inspect_exact_campaign_state.py --no-write
 ```
 
-写出当前 inspector report：
+The writable form emits an informational inspector report under `.artifacts/`. The inspector is a
+reader, not a proof source. Review at least:
 
-```bash
-python scripts/inspect_exact_campaign_state.py
-```
+- campaign presence and canonical path;
+- `final_status`, proposal state and stop reason;
+- resume compatibility with current artifact/source hashes;
+- terminal frontier and fixed-witness verification;
+- public certified-surface verdict and its blocked reason;
+- telemetry wave/outcome counts.
 
-默认输出：
+Do not infer public certification from checkpoint fields without the central certified-surface
+verdict.
 
-```text
-.artifacts/phase3b_exact_campaign_inspector/inspection_summary.json
-```
+## 3. Clean start
 
-检查时重点看：
-
-- `campaign.present`
-- `campaign.final_status`
-- `campaign.last_stop_reason`
-- `campaign.resume_compatible_with_current_hashes`
-- `campaign.resume_validation_reason`
-- `telemetry.wave_count`
-- `delivery_manifest.present`
-- `checks[]`
-
-## 3. Clean Start
-
-clean start 适用于没有可恢复 campaign，或已经明确接受 reset 的情况。
-
-典型命令：
+A typical bounded run is:
 
 ```bash
 python main.py \
@@ -70,22 +56,13 @@ python main.py \
   --benders-max-iter 15
 ```
 
-clean start 后立即运行 inspector，确认：
+After the run, inspect the checkpoint and telemetry. `UNKNOWN`, `UNPROVEN`, worker failure or budget
+exhaustion are triage states. None may be rewritten as frontier exhaustion.
 
-- campaign state 已出现
-- telemetry 已出现
-- stop reason 可读
-- 如果结果是 `UNKNOWN` / `UNPROVEN`，证据仍可被 inspector 汇总
+## 4. Resume
 
-## 4. Clean Resume
-
-clean resume 只在 `resume_compatible_with_current_hashes = true` 时使用。
-
-```bash
-python scripts/inspect_exact_campaign_state.py --no-write
-```
-
-若 inspector 显示兼容，再运行：
+Resume only when the inspector reports compatibility with current bytes and proof-bearing source
+closure:
 
 ```bash
 python main.py \
@@ -96,93 +73,73 @@ python main.py \
   --frontier-probe-mode auto
 ```
 
-resume 后确认：
+A resume must preserve monotonic candidate evidence and must not revive stale proposal/current-process
+markers. A supervisor seal always rereads canonical disk state rather than trusting caller memory.
 
-- best certified result 没有回退
-- telemetry wave count 继续增长
-- previous `UNKNOWN` / `UNPROVEN` 候选没有被误当作穷尽证明
+## 5. Artifact-hash mismatch
 
-## 5. Artifact-Hash Mismatch Reset
+The current `data/preprocessed/candidate_placements.json` is present and is expected to be exactly:
 
-只要下面任意 hash 真源变化，就必须接受 reset：
+- size: `45,773,799` bytes;
+- SHA256: `adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`.
 
-- `rules/canonical_rules.json`
-- `data/preprocessed/candidate_placements.json` (required external large artifact in the current lightweight GitHub checkout)
-- `data/preprocessed/mandatory_exact_instances.json`
-- `data/preprocessed/generic_io_requirements.json`
+Changes to canonical rules, preprocess plan, candidate placements, mandatory instances, generic I/O,
+or other campaign-bound sources require reset or a newly established proof chain. The superseded
+53,594,995-byte artifact must not be accepted as current.
 
-Before a certified campaign run from GitHub `main`, restore or regenerate
-`data/preprocessed/candidate_placements.json` and verify size `45,773,799`
-bytes with SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. The
-previous size `53,594,995` bytes / SHA256
-`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f` artifact is
-superseded and must trigger `artifact_hash_mismatch` on resume.
-
-reset 不是异常；它是证据链边界。记录时使用这个模板：
+Record resets explicitly:
 
 ```text
 reset_reason:
 changed_artifacts:
-invalidated_benchmark_baselines:
+invalidated_evidence:
 operator_note:
 ```
 
-如果 inspector 显示 `resume_validation_reason = artifact_hash_mismatch`，
-不要用旧 campaign 继续冒充同一条 proof chain。
+Hints and community blueprints are performance inputs only. Stale `pose_idx` values must be
+regenerated; hints never become soundness evidence.
 
-Community blueprint hints are advisory only. `data/hints/blueprint_2026_05_13_master_hint.json` was generated against the superseded candidate pool, so its stored `pose_idx` values are stale after the 2026-06-12 repair. Because the source community blueprint is not part of this package, regenerate the hint locally with `scripts/blueprint_to_master_hint.py` before using it for performance; stale hints must not be treated as proof evidence and do not affect soundness.
+## 6. Worker failure and time budget
 
-## 6. Worker Failure
+Worker failure must preserve completed, identity-checked evidence and leave the campaign readable.
+Budget exhaustion normally yields `UNKNOWN`. An existing candidate/proposal does not convert either
+condition into a terminal proof. Diagnose the failing stage before changing concurrency.
 
-并行 worker failure 的目标是保留已完成波次，并让 campaign 仍可读。
+## 7. Proposal and supervisor seal
 
-发生后检查：
+When the producer exhausts the strict frontier, inspect the proposal rather than publishing it.
+The supervisor seal must validate disk-current proposal identity, sink replay, fixed witness,
+terminal evidence and current hashes. Only a successful supervisor transition may create durable
+terminal `CERTIFIED` state.
 
-- `last_stop_reason.reason == worker_process_failed`
-- `telemetry.aggregate.outcome_counts.worker_process_failed`
-- 已存在的 `best_certified_result` 仍可见
-- inspector 能读取 campaign 和 telemetry
+There is no documentation shortcut that can substitute for calling the actual supervisor path.
+The current repository does not provide a production supervisor CLI or launcher, and `main.py`
+stops at `CANDIDATE_PROPOSED`. A proposal-ready marker therefore means “awaiting an external,
+explicit supervisor invocation”, not “sealed”.
 
-worker failure 后不要直接扩大并行度。先用低并发 profile 复查是否是配置、
-内存压力、worker startup 或候选个案问题。
+## 8. Public publication
 
-## 7. Time Budget Exhausted
+Canonical publication uses the verified publisher and is expected to fail while the current P1.2
+open gate remains blocked. Generic serializers, report/viewer builders and adapter exports may emit
+non-authoritative copies but must not write the canonical three-file surface or preserve
+proof-bearing language.
 
-时间预算耗尽应记录为：
+The canonical set is:
 
-```text
-last_stop_reason.reason == campaign_time_budget_exhausted
-final_status == UNKNOWN
-```
+- `data/solutions/final_solution.json`;
+- `data/blueprints/optimal_blueprint.json`;
+- `data/solutions/certified_delivery_manifest.json`.
 
-如果已有 best certified result，状态仍应保留 certified evidence，但这不等于
-global terminal proof。下一步通常是 resume 或回到 B3 triage。
+Publication is transactional and reverified. A failure should leave no partial canonical set.
 
-## 8. Candidate UNKNOWN / UNPROVEN
+## 9. Handoff checklist
 
-候选返回 `UNKNOWN` 或 `UNPROVEN` 时必须停下来保留证据。
+A campaign handoff should state, without collapsing the distinctions:
 
-常见 stop reason：
-
-- `candidate_returned_unknown`
-- `candidate_returned_unproven`
-
-检查重点：
-
-- 对应 candidate record 的 `proof_summary`
-- telemetry aggregate 的 master/binding/routing 分类
-- 是否为 recurring blocker
-- 是否需要建立最小复现 fixture
-
-不要把 unresolved candidate 跳过后宣称 `search_exhausted_all_candidates`。
-
-## 9. Handoff Checklist
-
-B1 操作面可交接时应满足：
-
-- inspector 可复跑
-- campaign state 缺失、有效、hash mismatch 都能清楚解释
-- telemetry 可被独立汇总
-- delivery manifest 是否存在可被独立判断
-- reset 规则和 stop-reason 处理有明确人工流程
+- exact artifact/source hashes and resume status;
+- candidate/proposal state;
+- whether supervisor sealing was attempted and its result;
+- public-surface verifier result and publish-gate state;
+- unresolved candidates, worker failures and budgets;
+- tests/checkers actually run in the same worktree;
+- known open P1.2 items, including PR2 and package-policy work.

@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 
 from src.io.delivery_manifest import export_certified_delivery_manifest
-from src.io.serializer import export_certified_blueprint
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
 from src.search.certified_surface import verify_certified_delivery_surface
 from src.search.exact_campaign import DEFAULT_CAMPAIGN_FILENAME, ExactCampaign
@@ -13,6 +12,7 @@ from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
     forge_legacy_terminal_certified_stop,
+    persist_forged_terminal_certified_state,
     write_closed_phase_review_gate,
 )
 from src.tests.test_delivery_manifest import _V89_GHOST_PICK, _build_manifest_project, _write_json
@@ -23,7 +23,7 @@ def _build_certified_manifest_toy(
     *,
     campaign_filename: str = DEFAULT_CAMPAIGN_FILENAME,
 ) -> tuple[Path, ExactCampaign]:
-    project_root, facility_pools = _build_manifest_project(project_root)
+    project_root, _ = _build_manifest_project(project_root)
     write_closed_phase_review_gate(project_root)
     campaign = ExactCampaign.load_or_create(
         project_root,
@@ -57,16 +57,11 @@ def _build_certified_manifest_toy(
     }
     forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
 
-    best_result = campaign.best_certified_result()
+    best_result = campaign.state["final_result"]
     assert best_result is not None
     _write_json(project_root / "data" / "solutions" / "final_solution.json", best_result)
-    export_certified_blueprint(
-        project_root=project_root,
-        result=best_result,
-        facility_pools=facility_pools,
-    )
     (project_root / "data" / "checkpoints" / "benders_cuts.jsonl").write_text(
         '{"schema_version": 2}\n',
         encoding="utf-8",
@@ -113,11 +108,6 @@ def test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkp
     tmp_path: Path,
 ) -> None:
     project_root, campaign = _build_certified_manifest_toy(tmp_path / "symlink_reader")
-    export_certified_delivery_manifest(
-        project_root=project_root,
-        campaign_state=campaign.state,
-        campaign_path=campaign.path,
-    )
     alias_path = project_root / "data" / "checkpoints" / "alias_exact_campaign_state.json"
     alias_path.symlink_to(campaign.path.name)
 
@@ -135,11 +125,6 @@ def test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier(
     tmp_path: Path,
 ) -> None:
     project_root, campaign = _build_certified_manifest_toy(tmp_path / "symlink_inspector")
-    export_certified_delivery_manifest(
-        project_root=project_root,
-        campaign_state=campaign.state,
-        campaign_path=campaign.path,
-    )
     alias_path = project_root / "data" / "checkpoints" / "alias_exact_campaign_state.json"
     alias_path.symlink_to(campaign.path.name)
 

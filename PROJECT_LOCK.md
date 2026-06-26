@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-06-12 (wireless routing-free chain F-01..F04-R4: geometry repair + omni_wireless binding semantics + every-consumer / every-loading-path exclusion contract)
+**Updated**: 2026-06-26 (PR1 producer/supervisor/publication split, fixed-witness verification, fail-closed P1.2 publish gate, independent whole-layout infeasibility reverify, and current release boundary)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins.
 
@@ -50,9 +50,10 @@ checks as certified proof"）。
   由工件驱动）。binding INFEASIBLE → `benders_loop.py:5989`（routing 穷尽同走 `:7117`）落 nogood、不
   certify。**精度边界**：证「端口槽『个数』= 需求声明『个数』」（0/1 计数等式），**不证**每口离散吞吐
   速率（见 B）。
-- **(5) routing feasible = belts 能连（连通可行，NOT 吞吐）** — `benders_loop.py:6927
-  routing_status=="FEASIBLE"` → `:6944 RUN_STATUS_CERTIFIED` 是**唯一**抬 CERTIFIED 的判定、只看
-  FEASIBLE、**不读任何吞吐/容量量**（`:6934 diagnostic_flow_status` 仅记录字段）。证的精确语义 =
+- **(5) routing feasible = belts 能连（连通可行，NOT 吞吐）** — `benders_loop.py:6973-6990`
+  在 routing `FEASIBLE` 后只产生求解层 `RUN_STATUS_CERTIFIED` 候选判决，且**不读任何吞吐/容量量**。
+  该判决不是 durable terminal/publication authority：`outer_search.py:855-954` 只能提交
+  `CANDIDATE_PROPOSED`，最终必须经 `ExactCampaign.supervisor_seal()` 和中央发布器。证的精确语义 =
   **离散有向连通（global source→sink reachability）**：每 commodity 每 source front 存在到 sink front
   的有向 route-state 路径、每 sink front 被喂到，经 `routing_subproblem.py:1623-1719
   _validate_selected_route_connectivity` 全局复验、拒 local-only incumbent。此连通复验已由 §130 列为
@@ -116,88 +117,95 @@ checks as certified proof"）。
 - **(B-4) 机器间物理间隔（`machine_min_clearance_cells`）非命题 P 谓词** — canonical
   `globals.logistics.machine_min_clearance_cells=1`（`rules/canonical_rules.json`）仅被 `src/rules/models.py`
   解析、认证路径**无消费者**（master `_add_port_clearance_constraints` 在 exact_mode 提前 return；routing
-  `_add_gap_rule` 仅 telemetry）。**owner 2026-06-21 规格澄清**：该字段管的是**端口（输入/输出口）连接格须空、否则接口接不起来**；**机器身体之间贴着合法、无身-身间隔要求**。故「贴着布局被认证」非 soundness 违规（同吞吐：命题 P 只证 6 谓词）。端口连接需求中，端口 front 格须空已由 routing 强制（`routing_subproblem.py:430-440`）；**connector 格被设施 body 占却未校验**（`_annotate_port_connector_owners` setdefault 静默容忍）= 真需求缺口、篡改/畸形输入可达，登记 P1.3B（roadmap F3 / 连接格）。
+  `_add_gap_rule` 仅 telemetry）。**owner 2026-06-21 规格澄清**：该字段管的是**端口（输入/输出口）连接格须空、否则接口接不起来**；**机器身体之间贴着合法、无身-身间隔要求**。故「贴着布局被认证」非 soundness 违规（同吞吐：命题 P 只证 6 谓词）。端口 front 格由 routing 强制；当前工作树的终端 fixed-witness 边界还会用实际 `port_specs` 对精确发布 witness 重建 body occupancy，并在 connector 格被任一 facility body 占用时拒绝（`terminal_fixed_witness_verifier.py:848-866`，capsule/terminal 回归覆盖）。solve-time 更早拒绝仍可作为纵深/性能增强，但该已知 public false-CERTIFIED 路径不再登记为开放 gap。
 
-**已知 soundness gap 登记**：本 scope 下的 open gap 以三态（principle / impl / red-test）跟踪于
-`docs/项目说明/soundness_gap_roadmap.md`。当前不得把 C4 文档化误读成 soundness 全闭。**2026-06-21 新登记
-BLOCK 级 gap：F1 witness-split / 终端 witness 身份** —— 发布 `(R*,π*)` 的 `π*` 原先未被复验
-binding/routing（隔离 replay 只证「同尺寸存在某可行布局」、终端 validator 仅查几何/供电/空矩形最优），
-篡改/漂移可达即可 mint 公开 false-`CERTIFIED`，**推翻 C4「零 live 分歧」(Z4) 的隐含强断言、强于 I1**。
-**P1.2 据此 REOPEN**（本节 + roadmap WS 行为权威登记）。**stopgap 状态订正（2026-06-21 第二轮外审纠 LOCK-CHECKER-DRIFT）**：rebind-to-replay stopgap 试过、全量 preflight 证其破坏合法认证交付（终端证据摘要 build/verify 两端不一致）已**撤回**；**当前 HEAD 无任何 stopgap、代码与 checker 仍是 stored-witness 旧策略**（漏洞在、诚实登记为 open BLOCK；机器层 `p1_2_proof_obligations.json` 仍是 HEAD 的 active 契约、未编码 reopen）。**durable = fixed-witness binding/routing verifier 排 P1.3B**。**另（OPEN-GATE，第二轮新发现）：「诚实 open 即止血」当前是运营纪律、非机器闸**——`certified_surface.evaluate_certified_delivery_surface` 的 publishable 条件不读 P1.2 reopen/`exact_full_scale_status=open`，open 期间仍可 `publishable=true`；P1.3B 须与 fixed-witness verifier 同批补 fail-closed 发布闸。其余已登记：I1
-whole-layout INFEASIBLE nogood 独立异构 ⊆-infeasible 复验缺口、边界落位 solve-time 独立复验缺口、
-F7/F8 欧氏覆盖 helper 与活路径 12×12 方形覆盖分歧 landmine、F3 connector 格占用、canonical 规则 → 几何映射
-的命名人确认 TCB 均已登记；真闭合排 **P1.3B** 带 fail-closed 红测 / 规格-TCB 决策。
+**已知 soundness gap / 修复状态登记（当前工作树，2026-06-26）**：三态矩阵仍以
+`docs/项目说明/soundness_gap_roadmap.md` 为行为索引，但本锁文件是发布边界权威。2026-06-21
+登记的 F1 witness-split、OPEN-GATE 和 I1 whole-layout nogood 独立复验已在当前工作树落地：
+`terminal_fixed_witness_capsule.py` / `terminal_fixed_witness_verifier.py` 钉住提案中的 `π*` 原地复验，
+`certified_surface.resolve_p1_2_publish_open_gate()` 在人工 phase gate 未打开时 fail-closed，
+`independent_infeasibility_reverifier.py` 在 whole-layout nogood 落 cut 前独立复验并在不确认时升
+`UNKNOWN`。这些修复关闭了相应已知实现缺口，但**不等于 P1.2 closed**。
+
+当前 P1.2 仍为 OPEN/BLOCKED：owner manual gate 仍是 `blocked_manual_review_count`；当前仓库没有
+生产 supervisor CLI/launcher 调用 `supervisor_seal()`，`main.py` 终点仍是 `CANDIDATE_PROPOSED`；PR2 的更小、
+read-once/controlled-loader verification TCB 尚未实现；review snapshot 打包器仍从原始 mutable
+`treeish` 物化而非已解析 commit，且归档策略覆盖仍不完整；roadmap 中其它 OPEN/PARTIAL 几何/规格
+边界仍需按 principle/implementation/red-test 状态处理。connector/body 的已知公开发布缺口已由终端
+fixed-witness 拒绝路径关闭，不应继续列作未实现项。人类文档称下一阶段为 **P1.3**；
+现有 `p1_3b_*` 字段仅为历史机器兼容标识。任何 checker PASS、局部回归 PASS 或内部 supervisor
+seal 都不得改写为 owner 已关闭 release gate。
 
 ### C. P1.2 done-condition (C5)
 
-> **当前状态（2026-06-21）：P1.2 REOPENED**（F1 witness-split，见 §B「已知 soundness gap 登记」）。
-> witness-split 的 rebind stopgap 试过已撤回（破坏合法交付）、**当前 HEAD 无 stopgap**；durable fixed-witness
-> verifier + 机器发布闸（OPEN-GATE）待 P1.3B；在此之前**不满足**下列闭合条件、**不得宣称 closed**。
+> **当前状态（2026-06-26）：OPEN / BLOCKED。** PR1 的 producer/supervisor mint split、fixed-witness
+> 终端复验、P1.2 fail-closed 发布闸和 I1 独立复验已实现；但生产 supervisor 调度入口不存在，owner
+> manual gate、PR2 TCB 收缩和发布包 immutability/policy 收口也尚未完成。不得因类方法或局部修复存在而宣称 P1.2 closed。
 
-P1.2 可被**诚实宣布闭合**仅表示“当前 `PROJECT_LOCK §1A` 命题 P 的机器边界 + owner 手动闸”满足，
-不是完整 soundness 定理、不是吞吐定理、也不自动打开 P1.3B。
+P1.2 可被诚实宣布闭合，仅表示当前 `PROJECT_LOCK §1A` 命题 P 的机器边界、发布链和 owner 手动闸
+同时满足。它不是吞吐定理，也不自动打开 P1.3。
 
 机器可查条件（任一失败即不得宣称 P1.2 closed）：
 
-- 命题 P scope 锁死：6 gating 谓词外延不扩大；吞吐 / belt 带宽 / 离散容量流仍明确 OUT-OF-SCOPE。
-- 无 false-`CERTIFIED` 公开面：terminal frontier evidence、delivery manifest、inspector / B5A / release
-  surface 必须继续走 central certified surface verifier，不允许 side-channel 自称 certified。
-- proof-bearing `CERTIFIED` / `INFEASIBLE` 强状态必须走 sink-replay 权威；producer、writer、函数对象、
-  closure、registry、当前进程 freshness stamp 均不能授予证明权。
-- 发布 witness 身份（F1/WS）：公开 `CERTIFIED` 的 `(R*,π*)` 中 `π*` 必须是隔离 replay 实际证过 binding/routing
-  的那套 witness，**不得**发布 writer 提供的 stored witness 而仅以「同尺寸存在某可行布局」间接代证。**当前 HEAD
-  无 stopgap（rebind 试过破坏合法交付已撤回），此谓词当前不满足**；P1.3B fixed-witness verifier（钉住 `π*` 对其
-  本身重跑 binding+routing）落地前不得宣称满足。
-- 验证器执行身份（PYC-EXEC-DIGEST，round-3 登记 → **已闭，提交 `88b2d32`**）：source digest 仅哈希 `.py`，
-  隔离 replay/capsule 子进程（`python -I`，`-I` 只隔离 env）此前可从 repo `__pycache__` 加载恶意 `.pyc` 在
-  `.py`/digest 不变时伪造 replay 权威。**闭合**：两处认证隔离子进程启动（`candidate_proof_replay._invoke_isolated_replay`
-  + `terminal_fixed_witness_capsule._invoke_isolated_capsule`）argv 加 `-B -X pycache_prefix=<per-run
-  tempfile.mkdtemp 空目录>`，逼子进程从已哈希 `.py` 源编译、绕开 repo `__pycache__` → 执行字节码 ⟸ 已哈希源
-  （`-I` 隐含 `-E` 忽略 PYTHON* env，故用 CLI `-X` 非 `PYTHONPYCACHEPREFIX`）；obligation
-  `PO-ISOLATED-EXEC-BYTECODE-BINDING` 机器闸 + 真 `__pycache__` 注入 E2E 红测。
-  **剩余命名 TCB（信任洋葱线下、声明信任、非 live gap，round-4/Opus 对抗审登记）**：① Python 解释器
-  （`sys.executable`）+ stdlib + ortools C 扩展（`.pyd/.so`，非 `.pyc`、本修不覆盖）；② 启动隔离子进程的
-  **父/relay 进程自身字节码**（架构上父进程不产判决、只 relay 隔离 child 的 nonce-bound 应答，与 checker-source
-  同属命名 TCB）；③ `certified_artifact_contract.py` 跑 close-kernel checker 的子进程 `.pyc`（是 gate、非
-  replay/capsule 判决权威，属 checker-source TCB 邻域）。
-- close-kernel gate 无盲点：`data/proof_obligations/p1_2_proof_obligations.json` sink inventory、
-  source hash、guard token、checker 自绑定必须通过；慢 soundness lane 在 close/CI 语境下不得因
-  “未收集到 @slow 测试”而 warning-pass。
-- `EXACT_*` 在 `certified_exact` 继续 deny-unknown；未知或 proof-semantics knob fail-closed。
+- 命题 P scope 锁死：6 个 gating 谓词外延不扩大；吞吐、belt 带宽和离散容量流仍明确 OUT-OF-SCOPE。
+- producer/mint 分权：`outer_search.py` 只能落 `CANDIDATE_PROPOSED`；唯一 durable terminal
+  `CERTIFIED` mint 是 `ExactCampaign.supervisor_seal()`，其它 `mark_campaign_stopped(...,
+  "CERTIFIED")` 调用必须被拒。
+- supervisor 可执行入口：受支持的生产命令/launcher 必须从 proposal-ready marker 驱动独立 supervisor；当前仓库尚无该入口，普通 `main.py` 完成不能被记成 seal 成功。
+- fixed-witness 身份绑定：supervisor 必须读取已提交提案字节，用固定 witness capsule/verifier 对提案的
+  `(R*, π*)` 本身复跑 binding/routing，而不是只证明同尺寸另有某个可行布局；复验拒绝或材料缺失必须
+  fail-closed。
+- 公共发布单入口：`publish_verified_certified_delivery_surface()` 必须从 disk-current、supervisor-sealed
+  campaign 原子地派生 `final_solution.json`、`optimal_blueprint.json` 与
+  `certified_delivery_manifest.json`；generic writer、viewer/report、adapter 和 compatibility exporter
+  不得成为替代认证发布器，失败后不得遗留部分公开面。
+- P1.2 OPEN-GATE：`resolve_p1_2_publish_open_gate()` 必须读取权威 review gate；缺失、畸形、open 或
+  非 owner-closed 形态一律使公开面不可发布。
+- proof-bearing candidate `CERTIFIED` / `INFEASIBLE` 在进入 frontier pruning、终端证据或 supervisor
+  seal 前继续走 sink replay；producer、writer、函数对象、closure、registry、当前进程 freshness stamp
+  均不能授予证明权。
+- whole-layout nogood 在落 exact-safe cut 前必须通过 independent infeasibility reverify；不确认、分歧或
+  异常均升 `UNKNOWN`，不得把原子问题自己的判决当独立证明。
+- 隔离验证器执行身份继续满足 `PO-ISOLATED-EXEC-BYTECODE-BINDING`：子进程使用 `-B -X
+  pycache_prefix=<fresh-dir>` 从受 source digest 保护的 `.py` 编译。Python/stdlib/OR-Tools native
+  extension、父 relay 和 OS process/file isolation 仍是命名 TCB，不得被写成“完全消除 TCB”。
+- close-kernel checker 的 sink inventory、source hash、guard token、checker 自绑定和强状态 allowlist
+  必须通过；修改受保护文本/docstring 导致 hash 漂移时必须按同一工作树重新封存，不能删 obligation
+  或缩 scan root 来“过闸”。
+- `EXACT_*` 在 `certified_exact` 中继续 deny-unknown；未知或 proof-semantics knob fail-closed。
+- release snapshot 必须从已解析 immutable commit 物化，并通过完整的归档排除/敏感面策略；仅把
+  treeish 解析成 metadata、随后仍物化 mutable 名称，不满足该条件。
 
 owner 手动条件：
 
-- `data/review_gates/phase_1_2_spike_close.json` 只能由 owner 的显式 `owner_manual_decision` 打开；
-  仓库不得从 receipt、Markdown/HTML/XML 报告、package metadata、source-tree manifest、clean-count
-  字段或其它自动推导宣布 P1.2 closed / P1.3B allowed。
-- I1、F1 witness-split（durable fixed-witness verifier 落地前）与 C4 新登记的几何 gaps 是 P1.3B scope；在
-  独立复验器、红测或明确 TCB 决策落地前，不得把它们改写成“已闭”。
+- `data/review_gates/phase_1_2_spike_close.json` 只能由 owner 的显式 `owner_manual_decision` 打开；仓库
+  不得从 receipt、报告、package metadata、source-tree manifest、clean-count 或内部 supervisor seal
+  自动推导 P1.2 closed / P1.3 allowed。
+- 当前 gate 为 `blocked_manual_review_count`，兼容字段 `p1_3b_entry_allowed=false`。在 owner 明确改闸且
+  机器条件全部满足前，公开发布与下一阶段入口都保持关闭。
+
 
 ## 2. Certified Source of Truth
 
 The certified path is grounded in:
 
 - `rules/canonical_rules.json` (now also carries consolidated preprocess recipe / target / commodity truth and empty-rectangle admissibility)
-- `data/preprocessed/candidate_placements.json` (required external large artifact in the current lightweight GitHub checkout)
+- `data/preprocessed/candidate_placements.json` (present in this worktree; distributions may externalize it, but certified runs require the pinned bytes)
 - `data/preprocessed/mandatory_exact_instances.json`
 - `data/preprocessed/generic_io_requirements.json`
 - artifact-hash-compatible campaign state
 - provenance-complete exact-safe cuts
 
-The current GitHub `main` branch intentionally omits the large
-`data/preprocessed/candidate_placements.json` working-tree file after the
-2026-06-06 backup cleanup. This does **not** remove it from the certified
-contract: certified exact runs must restore or regenerate the artifact first.
-Expected facts after the 2026-06-12 preprocess F-01/F-02 repair: size
-`45,773,799` bytes, SHA256
-`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. The
-former artifact (size `53,594,995` bytes, SHA256
-`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`) is
-superseded and must be treated as hash-incompatible evidence; campaign
-resume must fail closed with `artifact_hash_mismatch`. Regeneration source:
-`python src/placement/placement_generator.py`.
-Older archives such as `C:\22957\download\zmd.7z` may still contain the
-superseded bytes and are not valid restore sources for the current lock.
+The current worktree contains `data/preprocessed/candidate_placements.json`. Its required
+bytes are size `45,773,799` and SHA256
+`adcc2a6e8a1daaa9dea6cae68883301ad07ce123fa286b55dcbe79ca2f34bec0`. A lightweight
+distribution may externalize this file, but that packaging choice does not change the certified
+contract: the pinned bytes must be restored or regenerated before a certified run. The former
+artifact (size `53,594,995`, SHA256
+`d5e3911fc1bc7c0ab48d67b981d28e8090741b04884c475e78dc0e128ca4683f`) is superseded and
+must fail resume with `artifact_hash_mismatch`. Regeneration source is
+`python src/placement/placement_generator.py`; an archive is a valid restore source only after its
+bytes pass the pinned hash check.
 
 The following remain additive postprocess artifacts and must not redefine internal solve schemas:
 
@@ -241,8 +249,23 @@ Phase 0 close (`docs/research/p3_b_design_v2_20260521/PHASE_0_CLOSE.md`) 后,
 
 ## 3. Accepted Invariants
 
+- Producer proposal boundary (F-CAM-PR1-01): terminal solve completion in `outer_search.py`
+  persists `CANDIDATE_PROPOSED` plus bound proposal material only. It must not directly persist a
+  terminal campaign `CERTIFIED` state or publish public delivery artifacts.
+- Supervisor mint boundary (F-CAM-PR1-02): `ExactCampaign.supervisor_seal()` is the sole durable
+  terminal `CERTIFIED` mint. It reads the committed proposal from disk, revalidates proposal and
+  campaign bindings, executes sink replay and fixed-witness verification, and validates disk state
+  before and after the write. A caller-held in-memory mapping is not authority.
+- Public publication boundary (F-CAM-PR1-03):
+  `publish_verified_certified_delivery_surface()` is the sole certified public publisher. The
+  solution, blueprint, and manifest are one transaction over the same sealed result; a failed write
+  must clean up partial outputs. Generic serializers, report/viewer builders, adapters, and legacy
+  compatibility exports remain non-authoritative.
+- Phase-open denial (F-CAM-PR1-04): a valid internal supervisor seal is necessary but not sufficient
+  for release. The P1.2 owner gate must independently resolve to the explicit closed form; missing,
+  malformed, or open gate data blocks publication.
 - Best certified result is monotonic within the current campaign process/persistence epoch. Across a mutable JSON checkpoint resume boundary, proof-bearing candidate strong statuses must be re-established before they can support frontier pruning or terminal certified export.
-- `final_solution.json`, `optimal_blueprint.json`, and `certified_delivery_manifest.json` must be derived from the same best certified result when one exists.
+- `final_solution.json`, `optimal_blueprint.json`, and `certified_delivery_manifest.json` must be derived transactionally from the same disk-current supervisor-sealed result; their mere presence or internal `CERTIFIED` text is not proof of publishability.
 - Optional compatibility exports must be derived from the canonical blueprint and must not become the source of truth for solver/runtime consumers.
 - Postprocess manifest/export mappings used to bridge translated larger-base exports remain adapter-side evidence only and must not be promoted into certified proof.
 - Production parallel scheduling uses a coordinator-only writer with disjoint candidate waves.
@@ -441,19 +464,16 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   
   The production readiness gate and `scripts/run_campaign_linux.sh` both still block when the env var is set; do not bypass them until pole alternatives is implemented and re-audited.
 
-- **(2026-06-20) Whole-layout nogood 独立复验 gap 登记（I1，§280-283 三条之外的第四条已知 soundness
-  gap）**: 活路径 `benders_loop.py:7452 _add_exact_whole_layout_nogood`（调用点 `:5989` binding /
-  `:7117` routing 穷尽）在落 `master.add_benders_cut` 前，仅信任**产出 INFEASIBLE 的同一子问题 solver**、
-  **无独立异构 ⊆-infeasible 复验**，且 `_build_whole_layout_conflict :7368-7378` 的 conflict subset
-  未 minimize（整层 pose_idx 直拷）。§130（routing 连通复验）/ §138 F-BIND-R8-01（binding nogood
-  ordering）/ §140（status 契约）保证「子问题 INFEASIBLE 本身成立」，但**未独立重证**「被禁的
-  whole-layout 冲突子集真不可行 / cut 不过强」——可造 proof-bearing false-INFEASIBLE（over-constrained
-  子问题误剪真可行布局 → 抹真最优 → CERTIFIED 次优）。④b sink-replay 是 terminal + 同源重放、共享
-  encoder，抓不到此类确定性语义错。三态：principle ⚠️（部分覆盖）/ impl ❌ / red-test ❌。真正闭合 =
-  独立异构 ⊆-infeasible 复验器（释放 support 外变量 + 第二编码/assumption-core 隔离重建，fail-closed
-  升 `UNKNOWN` 不落 cut）+ 先红后绿验收测试，排 **P1.3B**。详见 §1A 与
-  `docs/项目说明/soundness_gap_roadmap.md`。在该复验器落地并配红测前，不得宣称 whole-layout nogood
-  路径的 ⊆-infeasible soundness 已闭（文档化 ≠ 已闭）。
+- **Whole-layout nogood independent reverify (I1, implemented in current worktree)**:
+  `benders_loop.py:7538-7585` calls
+  `independent_infeasibility_reverifier.reverify_whole_layout_infeasibility()` before a
+  proof-bearing whole-layout nogood may be added. The reverifier rebuilds the relevant binding or
+  routing question through its own entry point; `confirmed=false`, a feasible divergence, malformed
+  evidence, or an exception yields `UNKNOWN`/no cut. This closes the previously registered
+  “same solver attests its own whole-layout conflict” implementation gap and is sealed by
+  `PO-INDEPENDENT-INFEASIBILITY-REVERIFY`. It does not prove that every future cut family has an
+  independent checker, and it does not by itself close P1.2 or remove the verifier/solver stack from
+  the TCB.
 
 - Bypassing **exact-safe proof object lifecycle**. Any persisted artifact carrying solver-side semantics (e.g. `BendersCut.condition_set`, `BendersCut.metadata`) must have all six steps wired before being trusted in certified mode: generate → serialize → deserialize → validate → resolve runtime literals → replay → behavioral regression test. Landing a new schema field without the runtime resolver + regression coverage is treated as a Forbidden Change, regardless of how harmless the "feature gate currently off" feels.
 - **(2026-05-22) Bypassing B Design v2 cut lifecycle**: new B Design v2

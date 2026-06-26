@@ -88,6 +88,13 @@ def test_p1_2_fix_3_publish_binding_detects_unwired_verifier(tmp_path: Path) -> 
     unwired_campaign = _write(
         tmp_path / "exact_campaign.py",
         "def terminal_certified_final_result_violation_for_project(*args, **kwargs):\n"
+        "    return _terminal_certified_final_result_violation_for_project_authority(\n"
+        "        *args, **kwargs\n"
+        "    )\n"
+        "\n"
+        "def _terminal_certified_final_result_violation_for_project_authority(\n"
+        "    *args, **kwargs\n"
+        "):\n"
         "    return None\n",
     )
     errors = check_p1_2_proof_obligations._fixed_witness_publish_binding_errors(

@@ -1,5 +1,8 @@
 # 16 — 审查策略 (Gemini per-commit + GPT pro 大节点 + 数学层验证 workflow)
 
+> **审查方法文档**：review receipt、clean 次数或结构 checker PASS 都不会自动关闭 P1.2 owner gate；历史 verdict 不能复用于当前 bytes。
+
+
 Phase 1.1 经验: Gemini 11 round Day 15/16a/16b 堆到 round 14 才 cross-check, 找出 3 致命 bug + 2 schema 漏 — 单 spec single-step cross-check 防 cascade ([[gemini-review-algorithm-math]]). GPT pro 11 round v1-v6 audit catch 4 critical blocker (F1 demand P(g)⊆R / F2 partition / F3 cert↔literal / F4 commodity) Gemini 全 miss — 那是 adversarial soundness 层 ([[adversarial-soundness-audit]]). 两层分工互补, Phase 1.2 不可少.
 
 ### 22.1 Gemini per-commit cross-check (fast, narrow, schema layer)
@@ -38,8 +41,8 @@ P1.2 的 GPT pro batch audit 应聚焦当前默认 `certified_exact` 证明链�
 是否可能产生、持久化、resume、或导出 proof-bearing `false-CERTIFIED` / `false-INFEASIBLE`。
 历史 review faces、模块分面、proof obligation compartment 都只是搜索脚手架；finding 分级必须回到
 "会不会污染 certified optimality / frontier / terminal evidence"。owner clean-review 计数、review
-receipt 是否算 clean、close gate provenance、P1.3B 是否开门、以及 `step_8_apply_to_master`
-production integration 不作为 P1.2 技术职责本体审查；这些分别属于 close gate / governance 或 P1.3B。
+receipt 是否算 clean、close gate provenance、P1.3 是否开门、以及 `step_8_apply_to_master`
+production integration 不作为 P1.2 技术职责本体审查；这些分别属于 close gate / governance 或 P1.3。
 详 [08_phase_1_2_plan.md](08_phase_1_2_plan.md) 的 P1.2 职责边界。
 V99 起，batch audit 还应把 close kernel 本身当攻击面：新增或漂移的 proof-bearing sink、
 绕过 central certified surface 的 writer、以及修改 proof-obligation gate / manifest / critical authority file，

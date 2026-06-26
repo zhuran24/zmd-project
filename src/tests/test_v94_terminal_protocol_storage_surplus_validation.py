@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
+import uuid
 from pathlib import Path
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
@@ -11,9 +14,20 @@ from src.search.certified_frontier import (
     generate_candidate_sizes,
 )
 from src.search.exact_campaign import (
+    CAMPAIGN_INSTANCE_ID_KEY,
+    CANDIDATE_PROPOSED_STATUS,
+    DEFAULT_CAMPAIGN_FILENAME,
+    PROPOSAL_READY_MARKER_AUTHORITY,
+    SUPERVISOR_PROPOSAL_STATE_KEY,
+    SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+    SUPERVISOR_SEAL_AUTHORITY,
+    SUPERVISOR_SEAL_SCHEMA_VERSION,
+    SUPERVISOR_SEAL_STATE_KEY,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+    atomic_write_json,
     terminal_certified_final_result_violation_for_project,
 )
+from src.search.terminal_fixed_witness_verifier import canonical_state_bytes_for_fixed_witness
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -217,10 +231,126 @@ def _terminal_state(root: Path) -> dict[str, object]:
     }
 
 
+def _build_certified_state_with_forged_seal(
+    base_state: dict[str, object],
+    project_root: Path,
+) -> tuple[dict[str, object], Path]:
+    """
+    Build a structurally valid certified state with a hand-crafted supervisor_seal and
+    write it to the canonical checkpoint path.
+
+    The seal satisfies every structural gate in _supervisor_seal_state_violation so the
+    validator proceeds past it to the content-level checks (including the surplus
+    protocol-storage-box detection).  The seal carries no real proof authority; it is
+    constructed here only so the test can exercise the content validator.
+
+    Construction follows the inverse of the supervisor_seal() transition:
+      1. Derive a proposal_state from the certified state (reverse the transition).
+      2. Compute certified_state_sha256 over the certified payload (no seal block).
+      3. Assemble the seal record; embed the proposal as proposal_authority_b64.
+      4. Verify that _supervisor_certified_transition_violation(proposal, certified, seal)
+         would accept (by construction the expected dict == certified_state).
+    """
+    campaign_instance_id = uuid.uuid4().hex  # 32 hex chars, satisfies _valid_campaign_instance_id
+    run_id = "test-v94-surplus-seal"        # ASCII letters/digits, satisfies _valid_supervisor_proposal_run_id
+    stop_ts = "2026-06-11T00:00:01Z"
+    updated_at = "2026-06-11T00:00:02Z"
+    sealed_at = "2026-06-11T00:00:03Z"
+
+    # --- Certified state without seal ---
+    # Must have: campaign_instance_id, updated_at, last_stop_reason.updated_at (all required by
+    # _supervisor_certified_transition_violation timestamp checks).
+    certified_last_stop: dict[str, object] = {
+        "status": RUN_STATUS_CERTIFIED,
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "updated_at": stop_ts,
+    }
+    certified_final_result = dict(base_state["final_result"])  # type: ignore[arg-type]
+    # search_status is already "CERTIFIED" in base_state["final_result"]
+
+    certified_state_without_seal: dict[str, object] = {
+        "declare_mode": base_state["declare_mode"],
+        "final_status": base_state["final_status"],
+        "final_result": certified_final_result,
+        "candidates": base_state["candidates"],
+        "terminal_frontier_evidence": base_state["terminal_frontier_evidence"],
+        CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        "last_stop_reason": certified_last_stop,
+        "updated_at": updated_at,
+    }
+
+    # --- Proposal state (CANDIDATE_PROPOSED; the "before" side of the transition) ---
+    # The transition sets final_status→CERTIFIED and final_result.search_status→CERTIFIED,
+    # removes supervisor_proposal, adds supervisor_seal, last_stop_reason, updated_at.
+    # So the proposal state carries those same data fields with CANDIDATE_PROPOSED status.
+    proposal_final_result: dict[str, object] = {
+        **certified_final_result,
+        "search_status": CANDIDATE_PROPOSED_STATUS,
+    }
+    supervisor_proposal: dict[str, object] = {
+        "schema_version": SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+        "authority": PROPOSAL_READY_MARKER_AUTHORITY,
+        "run_id": run_id,
+        CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+    }
+    proposal_state: dict[str, object] = {
+        "declare_mode": "strict",
+        "final_status": CANDIDATE_PROPOSED_STATUS,
+        "final_result": proposal_final_result,
+        "candidates": base_state["candidates"],
+        "terminal_frontier_evidence": base_state["terminal_frontier_evidence"],
+        CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        SUPERVISOR_PROPOSAL_STATE_KEY: supervisor_proposal,
+    }
+
+    # Serialise proposal with the same canonical encoder the validator will decode with.
+    proposal_bytes = canonical_state_bytes_for_fixed_witness(proposal_state)
+    proposal_sha256 = hashlib.sha256(proposal_bytes).hexdigest()
+    proposal_b64 = base64.b64encode(proposal_bytes).decode("ascii")
+
+    # Hash of the certified payload without the seal block (mirrors _certified_state_payload_sha256).
+    certified_payload_sha256 = hashlib.sha256(
+        canonical_state_bytes_for_fixed_witness(certified_state_without_seal)
+    ).hexdigest()
+
+    # --- Seal record ---
+    seal_record: dict[str, object] = {
+        "schema_version": SUPERVISOR_SEAL_SCHEMA_VERSION,
+        "authority": SUPERVISOR_SEAL_AUTHORITY,
+        "transition": "proposal_to_certified_v1",
+        "proposal_run_id": run_id,
+        "proposal_checkpoint_sha256": proposal_sha256,
+        "proposal_authority_b64": proposal_b64,
+        CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        "certified_state_sha256": certified_payload_sha256,
+        "sealed_at": sealed_at,
+    }
+
+    # --- Full certified state ---
+    certified_state: dict[str, object] = {
+        **certified_state_without_seal,
+        SUPERVISOR_SEAL_STATE_KEY: seal_record,
+    }
+
+    # Write to canonical checkpoint path (atomic_write_json creates parent dirs).
+    checkpoint_path = project_root / "data" / "checkpoints" / DEFAULT_CAMPAIGN_FILENAME
+    atomic_write_json(checkpoint_path, certified_state)
+
+    return certified_state, checkpoint_path
+
+
 def test_terminal_project_validator_rejects_surplus_protocol_storage_box_blockers(tmp_path: Path) -> None:
     state = _terminal_state(tmp_path)
 
+    # PR1 added a supervisor_seal gate to terminal_certified_final_result_violation_for_project;
+    # the validator now requires a canonical checkpoint with a valid seal before it proceeds to
+    # content checks.  We build a structurally valid (but proof-free) seal so the gate is passed
+    # and the content-level surplus-box check is reached.
+    certified_state, checkpoint_path = _build_certified_state_with_forged_seal(state, tmp_path)
+
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=tmp_path)
+        terminal_certified_final_result_violation_for_project(
+            certified_state, project_root=tmp_path, campaign_path=checkpoint_path
+        )
         == "terminal_certified_final_result_solution_excess_protocol_storage_box_instance"
     )

@@ -22,6 +22,8 @@ from src.search.certified_frontier import (
     generate_candidate_sizes,
 )
 from src.search.exact_campaign import (
+    CANDIDATE_PROPOSED_STATUS,
+    ExactCampaign,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     compute_exact_artifact_hashes,
     terminal_certified_final_result_project_precheck_violation,
@@ -297,6 +299,64 @@ def _patch_capsule_response(
         "_invoke_isolated_capsule",
         fake_invoke,
     )
+
+
+def _setup_sealed_campaign(
+    monkeypatch: pytest.MonkeyPatch,
+    root: Path,
+    state: dict[str, Any],
+) -> ExactCampaign:
+    """Create a supervisor-sealed campaign from a CERTIFIED-ready state dict.
+
+    The state must have final_result, candidates, terminal_frontier_evidence, and
+    artifact_hashes already populated (as produced by _state() + compute_exact_artifact_hashes).
+    This function promotes the state to CANDIDATE_PROPOSED, writes it to disk as a proposal,
+    monkeypatches build_sink_verified_terminal_frontier_evidence to accept, then calls
+    supervisor_seal() to produce a real, checksum-validated seal record on disk.
+
+    The returned campaign has .state (the sealed CERTIFIED state) and .path (the checkpoint
+    path). Callers should pass both to terminal_certified_final_result_violation_for_project.
+    """
+    campaign = ExactCampaign.load_or_create(root, campaign_hours=1.0, resume=False)
+    # Inject the test evidence into the fresh campaign state
+    proposal_final_result = _json_copy(state.get("final_result") or {})
+    proposal_final_result["search_status"] = CANDIDATE_PROPOSED_STATUS
+    campaign.state["final_result"] = proposal_final_result
+    campaign.state["candidates"] = _json_copy(state.get("candidates", {}))
+    campaign.state["artifact_hashes"] = _json_copy(state.get("artifact_hashes", {}))
+    # Set supervisor proposal run id before marking stopped (preserves terminal evidence)
+    run_id = campaign.set_supervisor_proposal_run_id()
+    campaign.mark_campaign_stopped(
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, status=CANDIDATE_PROPOSED_STATUS
+    )
+    # Set terminal_frontier_evidence after mark_campaign_stopped (safe: terminal_proposal stays True)
+    campaign.state["terminal_frontier_evidence"] = _json_copy(
+        state.get("terminal_frontier_evidence")
+    )
+    campaign.save()
+    campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
+
+    # Monkeypatch supervisor sink bundle to accept the proposal state as-is
+    def _accept_sink_bundle(**kwargs: Any) -> dict[str, Any]:
+        cs = kwargs["campaign_state"]
+        return {
+            "evidence": dict(cs["terminal_frontier_evidence"]),
+            "candidate_records": {
+                str(k): dict(v) for k, v in cs.get("candidates", {}).items()
+            },
+            "sink_replay_violations": {},
+            "fixed_witness_publishable": True,
+            "fixed_witness_violations": {},
+        }
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "build_sink_verified_terminal_frontier_evidence",
+        _accept_sink_bundle,
+    )
+    # Seal: mints the supervisor_seal block, writes to disk, runs post-commit disk validation
+    campaign.supervisor_seal()
+    return campaign
 
 
 def test_fixed_witness_rejects_binding_routing_witness_split(
@@ -595,10 +655,12 @@ def test_fixed_witness_accepts_valid_r_star_pi_star(
         candidate_records=_json_copy(state["candidates"]),
         final_result=state["final_result"],
     )
+    # Validator now requires a checkpoint with a real supervisor_seal; set one up
+    sealed = _setup_sealed_campaign(monkeypatch, root, state)
     reason = terminal_certified_final_result_violation_for_project(
-        state,
+        sealed.state,
         project_root=root,
-        campaign_path=None,
+        campaign_path=sealed.path,
     )
 
     assert verdict.publishable is True
@@ -738,10 +800,12 @@ def test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch(
     state["candidates"] = bundle["candidate_records"]
     state["terminal_frontier_evidence"] = bundle["evidence"]
 
+    # Validator now requires a checkpoint with a real supervisor_seal; set one up
+    sealed = _setup_sealed_campaign(monkeypatch, root, state)
     reason = terminal_certified_final_result_violation_for_project(
-        state,
+        sealed.state,
         project_root=root,
-        campaign_path=None,
+        campaign_path=sealed.path,
     )
 
     assert bundle["fixed_witness_publishable"] is True

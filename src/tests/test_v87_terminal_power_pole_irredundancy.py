@@ -12,7 +12,7 @@ from src.search.certified_frontier import (
 )
 from src.search.exact_campaign import (
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-    terminal_certified_final_result_violation_for_project,
+    terminal_certified_final_result_project_precheck_violation,
 )
 
 
@@ -183,6 +183,6 @@ def test_terminal_project_validator_rejects_unforced_power_pole_blocker(
     }
 
     assert (
-        terminal_certified_final_result_violation_for_project(state, project_root=root)
+        terminal_certified_final_result_project_precheck_violation(state, project_root=root)
         == "terminal_certified_final_result_solution_unforced_power_pole_instance"
     )

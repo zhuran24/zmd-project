@@ -1,115 +1,95 @@
 ---
 status: CURRENT_CODE_ALIGNED
-source_of_truth: src/io/output_schema.py, src/io/serializer.py, and src/render/blueprint_exporter.py
-last_verified_against: 2026-03-23
+source_of_truth: src/io/output_schema.py, src/io/serializer.py, src/io/delivery_manifest.py, src/search/certified_surface.py
+last_verified_against: 2026-06-26
 owner: output-layer
 ---
-> [!NOTE]
-> **ACCEPTED_DRAFT — 本文件当前实现已与 `src/io/output_schema.py`、`src/io/serializer.py` 和 `src/render/blueprint_exporter.py` 对齐。**
 
-# 12 终极蓝图输出规范与数据契约 (Ultimate Blueprint Output Schema)
+# 12 蓝图输出结构与发布权限
 
-## 12.1 文档目的与适用范围
+## 12.1 两个不同问题
 
-本文档是《明日方舟：终末地》基地极值排布工程的**最终交付数据契约 (Data Contract)**。
-当全局流水线 (11 章) 宣告寻得全局最优解后，必须将内存中数以百万计的运筹学 0-1 决策变量，逆向解析并序列化为一份绝对标准化的 JSON 蓝图文件。
+本章同时记录 JSON 结构和写入 authority。结构合法不等于认证发布合法：任意调用者都可以
+在非 canonical 路径构造一个 schema-valid blueprint，但只有 verified publisher 从
+supervisor-sealed campaign 事务式写出的 canonical 三件套才具有 public certified 语义。
 
-本文档严格定义了该 JSON 文件的嵌套结构、字段命名与枚举空间。任何下游应用（如二维 ASCII 渲染器、三维游戏内自动建造 Mod、或者网页版布局规划器）均必须且只能依据本规范解析数据。
+canonical 路径为：
 
----
+- `data/solutions/final_solution.json`；
+- `data/blueprints/optimal_blueprint.json`；
+- `data/solutions/certified_delivery_manifest.json`。
 
-## 12.2 全局 JSON 骨架结构 (Global Skeleton)
+`src/io/serializer.write_blueprint_payload()` 和 `export_certified_blueprint()` 会拒绝普通调用者
+写 canonical `optimal_blueprint.json`。正式发布必须经过
+`src/search/certified_surface.py:publish_verified_certified_delivery_surface()`。
 
-输出文件强制命名为 `optimal_blueprint.json`，存储于 `data/blueprints/` 目录下。
-当前 canonical 输出链路为：
-- `src/io/output_schema.py`：contract + validation
-- `src/io/serializer.py`：canonical payload build + serialization
-- `src/render/blueprint_exporter.py`：thin export wrapper
+## 12.2 Blueprint 根结构
 
-其根节点必须包含四大核心域：
-
-```json
-{
-  "metadata": { },
-  "objective_achieved": { },
-  "facilities": [ ],
-  "routing_network": { }
-}
-```
-
----
-
-## 12.3 元数据与目标极值域 (Metadata & Objective)
-
-记录该极值蓝图的全局业务得分、求解耗时以及最核心的"幽灵空地"战果。
+`optimal_blueprint.json` 的 canonical 根对象包含：
 
 ```json
 {
-  "metadata": {
-    "version": "1.0.0",
-    "solve_time_seconds": 12450.5,
-    "benders_iterations": 84
-  },
-  "objective_achieved": {
-    "empty_rect": {
-      "w": 16,
-      "h": 10,
-      "anchor_x": 35,
-      "anchor_y": 40,
-      "score": 160.0
-    }
-  }
+  "metadata": {},
+  "objective_achieved": {},
+  "facilities": [],
+  "routing_network": {}
 }
 ```
 
----
+`normalize_blueprint_payload()` 会重建并规范化这四个域；未知根域不会成为 canonical 输出。
 
-## 12.4 绝对刚体花名册域 (Facilities Domain)
+## 12.3 Metadata 与目标
 
-包含所有被激活实体（266个必选机组 + 被 07 章主模型激活的供电桩/协议箱）的 Array。所有坐标均严格遵循 02 章的**旋转后包围盒左下角锚定法**。
+`metadata` 必含非空 `export_timestamp`，并规范化：
 
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `instance_id` | string | 全局唯一实例标识 |
-| `facility_type` | string | 设施模板名称 |
-| `anchor` | `{x, y}` | 旋转后包围盒左下角绝对坐标 |
-| `orientation` | int (0-3) | 旋转状态 |
-| `port_mode` | string | 端口分配模式 |
-| `active_ports` | array | 由 09 章微观路由决定的真正接管端口 |
+- `version`；
+- `solve_time_seconds`；
+- `benders_iterations`；
+- `export_timestamp`。
 
-每个 `active_ports` 元素：
+`objective_achieved.empty_rect` 包含 `w`、`h`、`anchor_x`、`anchor_y`、`score`。
+从 terminal result 构造 certified blueprint 时，anchor 必须存在且非负。`score` 当前由空矩形
+area 派生；认证目标仍以 campaign 的 `max_lex(area, min_side)` 证据为准，不能只看此展示字段。
 
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `type` | `"input"` / `"output"` | 端口方向 |
-| `x`, `y` | int | 端口绝对坐标 |
-| `dir` | `"N"/"S"/"E"/"W"` | 对外法向量 |
-| `commodity` | string | 承载物料名称 |
+## 12.4 Facilities
 
----
+每个 facility 规范化为：
 
-## 12.5 真三维物流路由网格域 (Routing Network Domain)
+- `instance_id`；
+- `facility_type`；
+- `anchor: {x, y}`；
+- `orientation`；
+- `port_mode`；
+- `active_ports`。
 
-由 09 章 SAT 求解器逐格铺设的离散物流骨架。分为地面层 (`L0_ground`) 与高架层 (`L1_elevated`)，采用以坐标字符串 `"x,y"` 为 Key 的 Hash Map 结构。
+active port 的 `type` 只能为 `input` / `output`，方向只能为 `N` / `S` / `E` / `W`，并带
+坐标与 commodity。serializer 从 terminal `placement_solution` 和当前 candidate pools 恢复
+facility 几何；找不到唯一可解释的 pose 时应失败，而不是猜测。
 
-每个路由格元素：
+## 12.5 Routing network
 
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `type` | `"belt"/"splitter"/"merger"/"bridge"` | 物流组件类型 |
-| `commodity` | string | 承载物料名称 |
-| `flow_in` | array of `"N"/"S"/"E"/"W"` | 物料流入本格的方向 |
-| `flow_out` | array of `"N"/"S"/"E"/"W"` | 物料流出本格的方向 |
+routing payload 被规范化为 ground/elevated 层的坐标映射。组件类型受
+`belt`、`splitter`、`merger`、`bridge` 集合约束，方向字段使用四向枚举。该 JSON 是离散 routing
+结果的投影，不是连续 flow diagnostic 的输出。
 
-> [!NOTE]
-> 高架层 `L1_elevated` 中 `type` 强制为 `"bridge"`，且 `flow_in` 与 `flow_out` 必为绝对反向（物流桥不可转弯）。
+## 12.6 Canonical publication contract
 
----
+中央 publisher 的顺序是：
 
-## 12.6 数据合法性后验断言 (Validation Postulates)
+1. 从 canonical campaign path 重读 supervisor-sealed state；
+2. 验证 resume/current-hash、terminal frontier、sink replay、fixed witness 与 publish-open gate；
+3. 从 verified terminal result 构造 `final_solution` 与 blueprint；
+4. 原子写入两份 payload；
+5. 构造并校验 delivery manifest，使其绑定同一 campaign 与文件哈希；
+6. 再运行 public-surface verifier；
+7. 任一步失败则清理 canonical 三件套。
 
-在最终序列化前，11 章的总控引擎必须执行三重断言：
+因此，下游不能仅因文件名是 `optimal_blueprint.json`、字段含 `CERTIFIED`、或 schema validator
+通过，就把文件当成 public certified artifact。必须以 `evaluate_certified_delivery_surface()`
+的 fail-closed verdict 为准。
 
-1. **左下角越界断言**：所有 `anchor` 的 `x` 与 `y` $\ge 0$。包围盒最远端 $\le 69$。
-2. **绝对防撞断言**：`facilities` 中所有实体占据格集合与 `empty_rect` 占据格集合，两两交集为空。
-3. **路由悬空断言**：`L1_elevated` 中任意坐标在 `L0_ground` 中必须为空或为直线传送带。
+## 12.7 非权威副本
+
+viewer bundles、IndustrialPlanner exports、reports、legacy render payloads 和 caller-selected
+output paths 都是派生/兼容面。它们可以复用 schema 或相同文件名，但目录、provenance 和状态
+必须明确为 non-authoritative，不能反向打开 campaign、phase gate 或 public publication。

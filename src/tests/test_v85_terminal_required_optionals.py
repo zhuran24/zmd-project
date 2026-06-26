@@ -12,7 +12,6 @@ from src.search.certified_frontier import (
     candidate_generation_kwargs,
     generate_candidate_sizes,
 )
-from src.search.certified_surface import save_certified_final_solution_and_blueprint
 from src.search.exact_campaign import (
     CAMPAIGN_SCHEMA_VERSION,
     PROOF_SUMMARY_SCHEMA_VERSION,
@@ -176,11 +175,6 @@ def test_v85_terminal_project_validation_rejects_missing_required_pose_optional(
     }
     checkpoint_path = checkpoint_dir / "exact_campaign_state.json"
     _write_json(checkpoint_path, state)
-    save_certified_final_solution_and_blueprint(
-        project_root=root,
-        result=final_result,
-        facility_pools=facility_pools,
-    )
 
     with pytest.raises(
         ValueError,

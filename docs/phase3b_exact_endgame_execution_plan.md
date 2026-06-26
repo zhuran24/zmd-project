@@ -1,6 +1,6 @@
 ---
-status: ACCEPTED_DRAFT
-source_of_truth: execution-plan; grounded in current repo/runtime contracts and the checked-in single-base delivery surface
+status: SUPERSEDED_HISTORICAL
+source_of_truth: historical execution-plan snapshot only; current state is governed by PROJECT_LOCK.md and docs/项目说明/06_current_status.md
 last_updated: 2026-04-17
 owner: phase3b-exact-endgame
 ---

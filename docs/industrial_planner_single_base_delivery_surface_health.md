@@ -1,5 +1,7 @@
 # IndustrialPlanner single-base current surface health
 
+> **Boundary (2026-06-26):** This document describes the frozen IndustrialPlanner postprocess/adapter surface from the April 2026 delivery line, not the current P1.2 solver or authenticated release state. Here, “current” means current within that delivery surface. Nothing in this workflow may mint, infer, or publish proof-bearing `CERTIFIED`.
+
 This note describes the smallest checked-in health snapshot for the active
 IndustrialPlanner single-base consumer surface.
 

@@ -10,12 +10,15 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+if "pytest" not in sys.modules:
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -37,6 +40,7 @@ from src.models.exact_coordinate_master import (
 # run, but day+ runs are the case we genuinely don't want to auto-trash by
 # accidentally skipping the gate.
 CAMPAIGN_GATE_THRESHOLD_HOURS = 24.0
+VISUALIZATION_OUTPUT_FILENAMES = ("heatmap.png", "flow_topology.png")
 
 
 
@@ -88,9 +92,14 @@ def run_solve(
 def run_visualization(result: Optional[Dict[str, Any]] = None) -> None:
     out_dir = PROJECT_ROOT / "data" / "solutions"
     out_dir.mkdir(parents=True, exist_ok=True)
-    pools = _load_visualization_pools(PROJECT_ROOT)
-    payload = _resolve_visualization_payload(PROJECT_ROOT, pools, result=result)
+    resolved = _resolve_visualization_payload(PROJECT_ROOT, result=result)
+    if resolved is None:
+        _clear_visualization_outputs(out_dir)
+        print("⚠️ No optimal_blueprint.json or final_solution.json（没有可用输出），跳过可视化。")
+        return
+    payload, pools = resolved
     if payload is None:
+        _clear_visualization_outputs(out_dir)
         print("⚠️ No optimal_blueprint.json or final_solution.json（没有可用输出），跳过可视化。")
         return
 
@@ -100,29 +109,41 @@ def run_visualization(result: Optional[Dict[str, Any]] = None) -> None:
     try:
         from src.render.grid_visualizer import render_placement_heatmap
 
-        render_placement_heatmap(
-            solution,
-            pools,
-            ghost_rect=ghost,
-            output_path=out_dir / "heatmap.png",
-        )
-    except Exception as exc:  # pragma: no cover - visualization is best-effort.
-        print(f"⚠️ VIS heatmap（热力图） failed（失败）: {exc}")
-
-    try:
         from src.render.lbbd_animator import render_flow_topology
 
-        occupied = set()
-        for sol in solution.values():
-            tpl = str(sol.get("facility_type", ""))
-            pose_idx = int(sol.get("pose_idx", 0))
-            pool = pools.get(tpl, [])
-            if 0 <= pose_idx < len(pool):
-                for cell in pool[pose_idx].get("occupied_cells", []):
-                    occupied.add((int(cell[0]), int(cell[1])))
-        render_flow_topology(occupied, output_path=out_dir / "flow_topology.png")
-    except Exception as exc:  # pragma: no cover - visualization is best-effort.
-        print(f"⚠️ VIS topology（拓扑图） failed（失败）: {exc}")
+        with tempfile.TemporaryDirectory(prefix=".vis-generation-", dir=str(out_dir)) as tmp:
+            staging_dir = Path(tmp)
+            render_placement_heatmap(
+                solution,
+                pools,
+                ghost_rect=ghost,
+                output_path=staging_dir / "heatmap.png",
+            )
+            occupied = set()
+            for sol in solution.values():
+                tpl = str(sol.get("facility_type", ""))
+                pose_idx = int(sol.get("pose_idx", 0))
+                pool = pools.get(tpl, [])
+                if 0 <= pose_idx < len(pool):
+                    for cell in pool[pose_idx].get("occupied_cells", []):
+                        occupied.add((int(cell[0]), int(cell[1])))
+            render_flow_topology(occupied, output_path=staging_dir / "flow_topology.png")
+            for filename in VISUALIZATION_OUTPUT_FILENAMES:
+                (staging_dir / filename).replace(out_dir / filename)
+    except Exception as exc:  # pragma: no cover - visualization depends on optional render backends.
+        _clear_visualization_outputs(out_dir)
+        print(f"⚠️ VIS generation（可视化生成） failed（失败）: {exc}")
+
+
+def _clear_visualization_outputs(out_dir: Path) -> None:
+    for filename in VISUALIZATION_OUTPUT_FILENAMES:
+        try:
+            (out_dir / filename).unlink()
+        except FileNotFoundError:
+            continue
+    for path in out_dir.glob(".vis-generation-*"):
+        if path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
 
 
 def _load_visualization_pools(project_root: Path) -> Dict[str, Any]:
@@ -137,10 +158,9 @@ def _load_visualization_pools(project_root: Path) -> Dict[str, Any]:
 
 def _resolve_visualization_payload(
     project_root: Path,
-    pools: Dict[str, Any],
     *,
     result: Optional[Dict[str, Any]],
-) -> Optional[Dict[str, Any]]:
+) -> Optional[Tuple[Dict[str, Any], Dict[str, Any]]]:
     from src.io.serializer import recover_legacy_render_payload_from_blueprint
     from src.search.certified_surface import evaluate_certified_delivery_surface
 
@@ -156,13 +176,15 @@ def _resolve_visualization_payload(
         )
         return None
 
+    pools = _load_visualization_pools(project_root)
     blueprint_payload = surface.optimal_blueprint_payload
     if pools and blueprint_payload is not None:
         try:
-            return recover_legacy_render_payload_from_blueprint(
+            payload = recover_legacy_render_payload_from_blueprint(
                 blueprint_payload=blueprint_payload,
                 facility_pools=pools,
             )
+            return payload, pools
         except Exception as exc:  # pragma: no cover - fallback path is covered separately.
             print(
                 "⚠️ VIS blueprint recover（蓝图恢复） failed（失败），"
@@ -170,7 +192,7 @@ def _resolve_visualization_payload(
             )
 
     final_solution_payload = surface.final_solution_payload
-    return dict(final_solution_payload) if final_solution_payload is not None else None
+    return (dict(final_solution_payload), pools) if final_solution_payload is not None else None
 
 
 

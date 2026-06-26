@@ -7,7 +7,7 @@ This note documents the exact-safe probe workflow for the certified outer search
 The certified frontier starts from the largest remaining rectangles.
 When the mandatory footprint already leaves very little free area, those top-layer
 frontier candidates are often overwhelmingly infeasible. A single medium-area
-`CERTIFIED` result can prune a much larger portion of the potential domain than a
+sink-replayed candidate result can prune a much larger portion of the potential domain than a
 long sequence of top-layer `INFEASIBLE` proofs.
 
 A probe is therefore a **scheduling-only** hint:
@@ -19,7 +19,7 @@ A probe is therefore a **scheduling-only** hint:
 
 ## 2. Manual workflow
 
-When you want a fast first `CERTIFIED` anchor before launching a long campaign,
+When you want a fast first replay-verified candidate anchor before launching a long campaign,
 run a short bounded search around the medium-area region and then resume the
 main campaign.
 
@@ -43,9 +43,11 @@ python main.py \
   --campaign-hours 168
 ```
 
-The first run tries only medium-area candidates. If it lands a `CERTIFIED`
-result, the resumed campaign prunes all objectively worse-or-equal candidates
-through the normal exact frontier logic.
+The first run tries only medium-area candidates. A per-candidate internal
+`RUN_STATUS_CERTIFIED` may become replay-verified frontier evidence. Full-frontier completion then
+writes only `CANDIDATE_PROPOSED`; this command does not call `supervisor_seal()` and does not publish.
+The resumed campaign may prune objectively worse-or-equal candidates only through the normal
+sink-replayed frontier logic.
 
 ## 3. Automatic mode
 
@@ -59,7 +61,7 @@ Current behavior:
 
 - `off` keeps the historical frontier-only schedule.
 - `auto` inserts at most one non-frontier medium-area probe when:
-  - the campaign has no certified result yet;
+  - the campaign has no sink-replayed candidate anchor yet;
   - the potential domain is still large;
   - no previous probe has already been executed for the campaign.
 

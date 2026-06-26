@@ -1,5 +1,7 @@
 # IndustrialPlanner 70×70 Single-Base Recipe / Capacity Audit
 
+> **Boundary (2026-06-26):** This document describes the frozen IndustrialPlanner postprocess/adapter surface from the April 2026 delivery line, not the current P1.2 solver or authenticated release state. Here, “current” means current within that delivery surface. Nothing in this workflow may mint, infer, or publish proof-bearing `CERTIFIED`.
+
 This document describes the checked-in static recipe / capacity audit surface
 for the **current active IndustrialPlanner contract**:
 `valley4_protocol_core` on the 70×70 base.

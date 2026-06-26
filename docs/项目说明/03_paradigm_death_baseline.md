@@ -1,5 +1,8 @@
 # 03 — 已 verify 不通的 paradigm (数学死路 baseline)
 
+> **历史基线**：本文记录当时实验与淘汰结论。文中的 pass 数、`CERTIFIED` 样本、Phase 3A/3B 和旧 `P1.3B` 名称只描述对应时间点，不是当前工作树状态或 release authority。
+
+
 本节按**数学根据 attempt** 分类 27 lever (paradigm_death_timeline.md 按时间 + 死因 axis 分 5 Class, 本节按"当时试什么数学方向"reorganize). 不重复 timeline 详, cite memory + timeline.
 
 ### 4.1 完整 master 重写 paradigm — pose-bool / augmented / GOC variant 全死
@@ -204,7 +207,7 @@ Issue 3 (manufacturing cluster trap) 是当前 cut framework 最弱点 — F5 pa
 
 Phase 3B repair5 (见 `docs/phase3b_repair5_acceleration_tuning_ai_plan.md`, 20260429 包) master oracle 30 GB → 47 GB 是 cut framework 跑前提 — master 跑不起来 cut 没意义.
 
-Phase 1.3 P1.3B 真集成时 cut framework wire 到 benders_loop 内 (`src/search/benders_loop.py`), env flag (§19) 切新框架. 不动 Phase 3A outer_search 跟 Phase 3B master/binding/routing/flow 架构.
+后续 P1.3 真集成时 cut framework wire 到 benders_loop 内 (`src/search/benders_loop.py`), env flag (§19) 切新框架. 不动 Phase 3A outer_search 跟 当前 placement/binding/routing 架构；flow 仅诊断.
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "External large artifacts that are required by some production/certified workflows but intentionally omitted from the lightweight GitHub source checkout.",
+  "description": "Manifest for large hash-bound artifacts that may be omitted from a lightweight distribution. The current audited working tree includes candidate_placements.json; optionality in a lightweight checkout never makes the artifact optional for workflows listed in required_for.",
   "artifacts": [
     {
       "id": "candidate_placements",

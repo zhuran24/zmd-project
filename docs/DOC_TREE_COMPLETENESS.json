@@ -1,329 +1,214 @@
 {
-  "schema_version": 1,
-  "description": "Executable manifest for documentation-tree closeout. The checker compares this file against the current tree to detect unclassified documentation growth.",
-  "closeout_definition": "Complete means manifest-classified documentation surfaces plus clean subject/projection sync, not semantic rewriting of every historical archive sentence.",
-  "required_paths": [
-    "README.md",
-    "CLAUDE.md",
-    "FILE_STATUS.md",
+  "authority_note": "This inventory is not a preflight, proof, publication, or phase gate. The retired subject/projection scripts and cc_context registry are absent from the current repository.",
+  "inventory": {
+    "docs_top_level": [
+      "docs/DOC_TREE_COMPLETENESS.json",
+      "docs/DOC_TREE_COMPLETENESS.md",
+      "docs/PHASE_1_2_CLOSE_GATE.md",
+      "docs/README.md",
+      "docs/SUBJECT_TREE.md",
+      "docs/certified_proof_chain_analysis.md",
+      "docs/cleanup_session_20260516.md",
+      "docs/compatibility_matrix.md",
+      "docs/env_variable_index.md",
+      "docs/exact_campaign_operations.md",
+      "docs/frontier_probe_strategy.md",
+      "docs/industrial_planner_recipe_capacity_audit.md",
+      "docs/industrial_planner_single_base_delivery_entrypoints.md",
+      "docs/industrial_planner_single_base_delivery_frontdoor.md",
+      "docs/industrial_planner_single_base_delivery_landing.md",
+      "docs/industrial_planner_single_base_delivery_release.md",
+      "docs/industrial_planner_single_base_delivery_surface_alignment.md",
+      "docs/industrial_planner_single_base_delivery_surface_health.md",
+      "docs/industrial_planner_single_base_delivery_viewer.md",
+      "docs/industrial_planner_single_base_runbook.md",
+      "docs/lever_verdicts.md",
+      "docs/parallel_configuration.md",
+      "docs/phase3b_exact_endgame_execution_plan.md",
+      "docs/phase3b_gpt54pro_help_request_20260422.md",
+      "docs/phase3b_module_index.md",
+      "docs/phase3b_operating_profile.md",
+      "docs/phase3b_repair5_acceleration_tuning_ai_plan.md",
+      "docs/phase3c_master_ram_findings_20260515.md",
+      "docs/phase3c_optimization_full_stack_roadmap_DRAFT_v0.md",
+      "docs/phase3c_optimization_roadmap_v1.md",
+      "docs/specs_index.md"
+    ],
+    "project_book": [
+      "docs/项目说明/01_overview.md",
+      "docs/项目说明/02_mathematical_foundations.md",
+      "docs/项目说明/03_paradigm_death_baseline.md",
+      "docs/项目说明/04_design_invariants.md",
+      "docs/项目说明/05_open_questions.md",
+      "docs/项目说明/06_current_status.md",
+      "docs/项目说明/07_historical_review.md",
+      "docs/项目说明/08_phase_1_2_plan.md",
+      "docs/项目说明/09_phase_1_3_plan.md",
+      "docs/项目说明/10_phase_1_5_plan.md",
+      "docs/项目说明/11_dependency_graph.md",
+      "docs/项目说明/12_go_criteria.md",
+      "docs/项目说明/13_schedule_estimate.md",
+      "docs/项目说明/14_risk_rollout.md",
+      "docs/项目说明/15_workflow_testing.md",
+      "docs/项目说明/16_workflow_review.md",
+      "docs/项目说明/17_workflow_telemetry.md",
+      "docs/项目说明/18_workflow_env_config.md",
+      "docs/项目说明/19_implementation_rhythm.md",
+      "docs/项目说明/20_skip_directions.md",
+      "docs/项目说明/21_glossary.md",
+      "docs/项目说明/README.md",
+      "docs/项目说明/p1_2_supervisor_detailed_design.md",
+      "docs/项目说明/p1_2_supervisor_redesign_draft.md",
+      "docs/项目说明/soundness_gap_roadmap.md"
+    ],
+    "research_first_level": [
+      "docs/research/INDEX.md",
+      "docs/research/README.md",
+      "docs/research/agent_transcripts",
+      "docs/research/b1_pose_bool_phase0_20260517",
+      "docs/research/b1_rabsep_routing_aware_binding_20260518",
+      "docs/research/benders_symmetry_phase0_20260520",
+      "docs/research/cand_c_column_generation_phase0_20260521",
+      "docs/research/cand_c_column_generation_phase1_20260521",
+      "docs/research/cand_c_column_generation_phase2_20260521",
+      "docs/research/d_step2_hint_trials_20260516",
+      "docs/research/doc_tree_full_audit_20260604",
+      "docs/research/gemini_cross_check_phase1_2_f5_round3_20260524",
+      "docs/research/l14_weighted_occupancy_poc_20260516",
+      "docs/research/layout_invariant_cert_phase0_20260520",
+      "docs/research/lever25_ihs_phase0_20260520",
+      "docs/research/literature_review_papers_20260524",
+      "docs/research/p1_2_spike_sizing_gate_20260601",
+      "docs/research/p1_2_v30_candidate_review_reset.md",
+      "docs/research/p1_2_v31_candidate_review_reset.md",
+      "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md",
+      "docs/research/p1_2_v31_v46_finding_taxonomy.md",
+      "docs/research/p1_2_v37_phase_gate_provenance_hardening.md",
+      "docs/research/p1_2_v38_phase_gate_package_identity.md",
+      "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md",
+      "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md",
+      "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md",
+      "docs/research/p1_2_v50_manual_phase_gate_simplification.md",
+      "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
+      "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+      "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+      "docs/research/p1_2_v60_master_domain_contract.md",
+      "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
+      "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+      "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+      "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
+      "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+      "docs/research/p1_2_v66_stale_delivery_artifact_guard.md",
+      "docs/research/p1_2_v73_certified_surface_verifier_consolidation.md",
+      "docs/research/p1_2_v74_certified_surface_authority_hardening.md",
+      "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
+      "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
+      "docs/research/p1_2_v77_delivery_manifest_writer_authority.md",
+      "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
+      "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+      "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+      "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+      "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md",
+      "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md",
+      "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
+      "docs/research/p1_2_v85_required_optional_terminal_sealing.md",
+      "docs/research/p1_2_v86_power_witness_terminal_sealing.md",
+      "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md",
+      "docs/research/p1_2_v88_ghost_anchor_required_sealing.md",
+      "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md",
+      "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md",
+      "docs/research/p1_2_v91_nested_public_field_sealing.md",
+      "docs/research/p1_2_v92_release_status_allowlist_sealing.md",
+      "docs/research/p1_2_v93_note_and_solution_entry_sealing.md",
+      "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md",
+      "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md",
+      "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md",
+      "docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md",
+      "docs/research/p1_2_v98_b5a_symlink_authority_sealing.md",
+      "docs/research/p1_2_v99_close_kernel_sealing.md",
+      "docs/research/p1_2b_f2_f4_gemini_round1_20260524",
+      "docs/research/p1_2b_f2_f4_gemini_round2_20260524",
+      "docs/research/p1_2b_f2_f4_gemini_round3_20260524",
+      "docs/research/p1_2b_f3_gemini_round1_20260526",
+      "docs/research/p1_2b_f3_gemini_round2_20260526",
+      "docs/research/p1_2b_f6_shape_packing_hall_gemini_round1_20260525",
+      "docs/research/p1_2b_f6_shape_packing_hall_gemini_round2_20260525",
+      "docs/research/p1_2b_f6_shape_packing_hall_gemini_round3_20260525",
+      "docs/research/p1_2b_f7_power_hitting_set_gemini_round1_20260525",
+      "docs/research/p1_2b_f7_power_hitting_set_gemini_round2_20260525",
+      "docs/research/p1_2b_f8_power_grid_reach_gemini_round1_20260525",
+      "docs/research/p1_2b_f8_power_grid_reach_gemini_round2_20260525",
+      "docs/research/p1_2b_f8_power_grid_reach_gemini_round3_20260525",
+      "docs/research/p1_2b_f8_power_grid_reach_gemini_round4_20260525",
+      "docs/research/p1_2b_f8_power_grid_reach_gemini_round5_20260525",
+      "docs/research/p1_2b_f9_density_envelope_gemini_round1_20260524",
+      "docs/research/p1_2b_f9_density_envelope_gemini_round2_20260524",
+      "docs/research/p1_2b_f9_density_envelope_gemini_round3_20260524",
+      "docs/research/p1_2b_mini_step_8_spike_20260525",
+      "docs/research/p3_b_design_review_v14_20260521",
+      "docs/research/p3_b_design_v2_20260521",
+      "docs/research/paradigm_search_review_v12_with_code_20260520",
+      "docs/research/pcr_cut_patch_routing_conflict_20260519",
+      "docs/research/phase0_lazy_power_completion_20260517",
+      "docs/research/phase1_2_gpt_pro_audit_20260525",
+      "docs/research/prod_scale_spike_design_20260525",
+      "docs/research/profiles",
+      "docs/research/sac_hull_separator_capacity_20260518",
+      "docs/research/setpacking_prover_poc_20260517",
+      "docs/research/smt_mt_outer_pruning_phase0_20260521",
+      "docs/research/smt_mt_outer_pruning_phase1_20260521",
+      "docs/research/v10_witness_preflight_smoke_20260516",
+      "docs/research/v8_anchor_slicing_smoke_20260516"
+    ],
+    "specs": [
+      "specs/01_problem_statement.md",
+      "specs/02_global_notation_and_units.md",
+      "specs/03_rule_canonicalization.md",
+      "specs/04_recipe_and_demand_expansion.md",
+      "specs/05_facility_instance_definition.md",
+      "specs/06_candidate_placement_enumeration.md",
+      "specs/07_master_placement_model.md",
+      "specs/08_topological_flow_subproblem.md",
+      "specs/09_exact_grid_routing_subproblem.md",
+      "specs/10_benders_decomposition_and_cut_design.md",
+      "specs/11_pipeline_orchestration.md",
+      "specs/12_output_blueprint_schema.md",
+      "specs/13_ecosystem_borrowing_and_compatibility_plan.md",
+      "specs/14_normalized_catalog_contract.md",
+      "specs/15_target_export_and_compatibility_manifest.md",
+      "specs/16_industrial_planner_export_contract.md",
+      "specs/17_endfield_calc_ingest_contract.md",
+      "specs/18_preprocess_context_contract.md",
+      "specs/19_phase3_frozen_compatible_preprocess_regeneration.md",
+      "specs/20_canonical_rules_consolidation.md",
+      "specs/21_frontier_probe_and_campaign_telemetry.md",
+      "specs/22_industrial_planner_precision_export_and_validator_spec.md",
+      "specs/23_industrial_planner_outer_base_planning_representation.md"
+    ],
+    "subjects": [
+      "docs/subjects/README.md",
+      "docs/subjects/authoritative_numbers.md",
+      "docs/subjects/certified_exact_contract.md",
+      "docs/subjects/current_project_state.md",
+      "docs/subjects/doc_tree_architecture.md",
+      "docs/subjects/doc_tree_completeness.md",
+      "docs/subjects/project_knowledge_tree.md"
+    ]
+  },
+  "living_authorities": [
     "PROJECT_LOCK.md",
-    "docs/README.md",
-    "docs/SUBJECT_TREE.md",
-    "docs/DOC_TREE_COMPLETENESS.md",
-    "docs/DOC_TREE_COMPLETENESS.json",
-    "docs/subjects/README.md",
-    "docs/research/README.md",
-    "docs/research/INDEX.md",
-    "docs/项目说明/README.md",
-    "docs/specs_index.md",
+    "data/proof_obligations/p1_2_proof_obligations.json",
+    "data/review_gates/phase_1_2_spike_close.json",
+    "docs/项目说明/06_current_status.md",
+    "docs/项目说明/soundness_gap_roadmap.md"
+  ],
+  "retired_nonexistent_tooling": [
     "scripts/sync_doc_subjects.py",
     "scripts/check_doc_tree_completeness.py",
-    "cc_context/knowledge/README.md",
     "cc_context/knowledge/PROJECT_SUBJECT_PROJECTIONS.json",
-    "docs/PHASE_1_2_CLOSE_GATE.md",
-    "scripts/check_phase_review_gate.py",
-    "data/review_gates/phase_1_2_spike_close.json"
+    "cc_context/memory/"
   ],
-  "top_level_files": {
-    "docs/DOC_TREE_COMPLETENESS.json": {
-      "role": "closeout-manifest"
-    },
-    "docs/DOC_TREE_COMPLETENESS.md": {
-      "role": "closeout-contract"
-    },
-    "docs/README.md": {
-      "role": "docs-frontdoor"
-    },
-    "docs/SUBJECT_TREE.md": {
-      "role": "subject-projection-runbook"
-    },
-    "docs/cleanup_session_20260516.md": {
-      "role": "historical-operations-note"
-    },
-    "docs/compatibility_matrix.md": {
-      "role": "compatibility-reference"
-    },
-    "docs/env_variable_index.md": {
-      "role": "operations-index"
-    },
-    "docs/exact_campaign_operations.md": {
-      "role": "operations-runbook"
-    },
-    "docs/frontier_probe_strategy.md": {
-      "role": "operations-strategy"
-    },
-    "docs/industrial_planner_recipe_capacity_audit.md": {
-      "role": "delivery-audit"
-    },
-    "docs/industrial_planner_single_base_delivery_entrypoints.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_delivery_frontdoor.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_delivery_landing.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_delivery_release.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_delivery_surface_alignment.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_delivery_surface_health.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_delivery_viewer.md": {
-      "role": "delivery-surface"
-    },
-    "docs/industrial_planner_single_base_runbook.md": {
-      "role": "delivery-runbook"
-    },
-    "docs/lever_verdicts.md": {
-      "role": "historical-paradigm-ledger"
-    },
-    "docs/parallel_configuration.md": {
-      "role": "operations-reference"
-    },
-    "docs/phase3b_exact_endgame_execution_plan.md": {
-      "role": "historical-phase3b-plan"
-    },
-    "docs/phase3b_gpt54pro_help_request_20260422.md": {
-      "role": "historical-phase3b-request"
-    },
-    "docs/phase3b_module_index.md": {
-      "role": "historical-phase3b-index"
-    },
-    "docs/phase3b_operating_profile.md": {
-      "role": "historical-phase3b-profile"
-    },
-    "docs/phase3b_repair5_acceleration_tuning_ai_plan.md": {
-      "role": "historical-phase3b-plan"
-    },
-    "docs/phase3c_master_ram_findings_20260515.md": {
-      "role": "historical-phase3c-finding"
-    },
-    "docs/phase3c_optimization_full_stack_roadmap_DRAFT_v0.md": {
-      "role": "historical-phase3c-roadmap"
-    },
-    "docs/phase3c_optimization_roadmap_v1.md": {
-      "role": "historical-phase3c-roadmap"
-    },
-    "docs/specs_index.md": {
-      "role": "specification-index"
-    },
-    "docs/PHASE_1_2_CLOSE_GATE.md": {
-      "role": "phase-close-gate"
-    }
-  },
-  "top_level_dirs": {
-    "docs/benchmarks": {
-      "role": "benchmark-reference"
-    },
-    "docs/research": {
-      "role": "research-and-review-archive"
-    },
-    "docs/subjects": {
-      "role": "abstract-subject-layer"
-    },
-    "docs/项目说明": {
-      "role": "living-project-book"
-    }
-  },
-  "project_book_docs": [
-    "docs/项目说明/01_overview.md",
-    "docs/项目说明/02_mathematical_foundations.md",
-    "docs/项目说明/03_paradigm_death_baseline.md",
-    "docs/项目说明/04_design_invariants.md",
-    "docs/项目说明/05_open_questions.md",
-    "docs/项目说明/06_current_status.md",
-    "docs/项目说明/07_historical_review.md",
-    "docs/项目说明/08_phase_1_2_plan.md",
-    "docs/项目说明/09_phase_1_3_plan.md",
-    "docs/项目说明/10_phase_1_5_plan.md",
-    "docs/项目说明/11_dependency_graph.md",
-    "docs/项目说明/12_go_criteria.md",
-    "docs/项目说明/13_schedule_estimate.md",
-    "docs/项目说明/14_risk_rollout.md",
-    "docs/项目说明/15_workflow_testing.md",
-    "docs/项目说明/16_workflow_review.md",
-    "docs/项目说明/17_workflow_telemetry.md",
-    "docs/项目说明/18_workflow_env_config.md",
-    "docs/项目说明/19_implementation_rhythm.md",
-    "docs/项目说明/20_skip_directions.md",
-    "docs/项目说明/21_glossary.md",
-    "docs/项目说明/README.md"
-  ],
-  "research_archive_dirs": [
-    "agent_transcripts",
-    "b1_pose_bool_phase0_20260517",
-    "b1_rabsep_routing_aware_binding_20260518",
-    "benders_symmetry_phase0_20260520",
-    "cand_c_column_generation_phase0_20260521",
-    "cand_c_column_generation_phase1_20260521",
-    "cand_c_column_generation_phase2_20260521",
-    "d_step2_hint_trials_20260516",
-    "doc_tree_full_audit_20260604",
-    "gemini_cross_check_phase1_2_f5_round3_20260524",
-    "l14_weighted_occupancy_poc_20260516",
-    "layout_invariant_cert_phase0_20260520",
-    "lever25_ihs_phase0_20260520",
-    "literature_review_papers_20260524",
-    "p1_2_spike_sizing_gate_20260601",
-    "p1_2b_f2_f4_gemini_round1_20260524",
-    "p1_2b_f2_f4_gemini_round2_20260524",
-    "p1_2b_f2_f4_gemini_round3_20260524",
-    "p1_2b_f3_gemini_round1_20260526",
-    "p1_2b_f3_gemini_round2_20260526",
-    "p1_2b_f6_shape_packing_hall_gemini_round1_20260525",
-    "p1_2b_f6_shape_packing_hall_gemini_round2_20260525",
-    "p1_2b_f6_shape_packing_hall_gemini_round3_20260525",
-    "p1_2b_f7_power_hitting_set_gemini_round1_20260525",
-    "p1_2b_f7_power_hitting_set_gemini_round2_20260525",
-    "p1_2b_f8_power_grid_reach_gemini_round1_20260525",
-    "p1_2b_f8_power_grid_reach_gemini_round2_20260525",
-    "p1_2b_f8_power_grid_reach_gemini_round3_20260525",
-    "p1_2b_f8_power_grid_reach_gemini_round4_20260525",
-    "p1_2b_f8_power_grid_reach_gemini_round5_20260525",
-    "p1_2b_f9_density_envelope_gemini_round1_20260524",
-    "p1_2b_f9_density_envelope_gemini_round2_20260524",
-    "p1_2b_f9_density_envelope_gemini_round3_20260524",
-    "p1_2b_mini_step_8_spike_20260525",
-    "p3_b_design_review_v14_20260521",
-    "p3_b_design_v2_20260521",
-    "paradigm_search_review_v12_with_code_20260520",
-    "pcr_cut_patch_routing_conflict_20260519",
-    "phase0_lazy_power_completion_20260517",
-    "phase1_2_gpt_pro_audit_20260525",
-    "prod_scale_spike_design_20260525",
-    "profiles",
-    "sac_hull_separator_capacity_20260518",
-    "setpacking_prover_poc_20260517",
-    "smt_mt_outer_pruning_phase0_20260521",
-    "smt_mt_outer_pruning_phase1_20260521",
-    "v10_witness_preflight_smoke_20260516",
-    "v8_anchor_slicing_smoke_20260516"
-  ],
-  "spec_files": [
-    "specs/01_problem_statement.md",
-    "specs/02_global_notation_and_units.md",
-    "specs/03_rule_canonicalization.md",
-    "specs/04_recipe_and_demand_expansion.md",
-    "specs/05_facility_instance_definition.md",
-    "specs/06_candidate_placement_enumeration.md",
-    "specs/07_master_placement_model.md",
-    "specs/08_topological_flow_subproblem.md",
-    "specs/09_exact_grid_routing_subproblem.md",
-    "specs/10_benders_decomposition_and_cut_design.md",
-    "specs/11_pipeline_orchestration.md",
-    "specs/12_output_blueprint_schema.md",
-    "specs/13_ecosystem_borrowing_and_compatibility_plan.md",
-    "specs/14_normalized_catalog_contract.md",
-    "specs/15_target_export_and_compatibility_manifest.md",
-    "specs/16_industrial_planner_export_contract.md",
-    "specs/17_endfield_calc_ingest_contract.md",
-    "specs/18_preprocess_context_contract.md",
-    "specs/19_phase3_frozen_compatible_preprocess_regeneration.md",
-    "specs/20_canonical_rules_consolidation.md",
-    "specs/21_frontier_probe_and_campaign_telemetry.md",
-    "specs/22_industrial_planner_precision_export_and_validator_spec.md",
-    "specs/23_industrial_planner_outer_base_planning_representation.md"
-  ],
-  "required_projection_slots": [
-    {
-      "path": "README.md",
-      "subject": "current_project_state",
-      "field": "frontdoor_snapshot"
-    },
-    {
-      "path": "README.md",
-      "subject": "certified_exact_contract",
-      "field": "frontdoor_contract"
-    },
-    {
-      "path": "README.md",
-      "subject": "doc_tree_architecture",
-      "field": "docs_readme_summary"
-    },
-    {
-      "path": "CLAUDE.md",
-      "subject": "current_project_state",
-      "field": "claude_phase_contract"
-    },
-    {
-      "path": "CLAUDE.md",
-      "subject": "authoritative_numbers",
-      "field": "runbook_summary"
-    },
-    {
-      "path": "FILE_STATUS.md",
-      "subject": "current_project_state",
-      "field": "file_status_notice"
-    },
-    {
-      "path": "docs/README.md",
-      "subject": "doc_tree_architecture",
-      "field": "docs_readme_summary"
-    },
-    {
-      "path": "docs/README.md",
-      "subject": "certified_exact_contract",
-      "field": "sot_contract"
-    },
-    {
-      "path": "docs/README.md",
-      "subject": "doc_tree_completeness",
-      "field": "preflight_contract"
-    },
-    {
-      "path": "docs/DOC_TREE_COMPLETENESS.md",
-      "subject": "doc_tree_completeness",
-      "field": "definition"
-    },
-    {
-      "path": "docs/DOC_TREE_COMPLETENESS.md",
-      "subject": "doc_tree_completeness",
-      "field": "done_criteria"
-    },
-    {
-      "path": "docs/DOC_TREE_COMPLETENESS.md",
-      "subject": "doc_tree_completeness",
-      "field": "preflight_contract"
-    },
-    {
-      "path": "docs/SUBJECT_TREE.md",
-      "subject": "doc_tree_architecture",
-      "field": "governance_gate_summary"
-    },
-    {
-      "path": "docs/SUBJECT_TREE.md",
-      "subject": "doc_tree_completeness",
-      "field": "done_criteria"
-    },
-    {
-      "path": "docs/项目说明/README.md",
-      "subject": "doc_tree_architecture",
-      "field": "project_book_entry"
-    },
-    {
-      "path": "docs/research/README.md",
-      "subject": "doc_tree_architecture",
-      "field": "research_archive_entry"
-    },
-    {
-      "path": "docs/项目说明/12_go_criteria.md",
-      "subject": "authoritative_numbers",
-      "field": "cuts_count_pointer"
-    },
-    {
-      "path": "docs/项目说明/15_workflow_testing.md",
-      "subject": "authoritative_numbers",
-      "field": "cuts_count_pointer"
-    },
-    {
-      "path": "docs/项目说明/09_phase_1_3_plan.md",
-      "subject": "certified_exact_contract",
-      "field": "cut_lifecycle_contract"
-    }
-  ]
+  "schema_version": 2,
+  "status": "informational_inventory_only",
+  "updated_at": "2026-06-26"
 }

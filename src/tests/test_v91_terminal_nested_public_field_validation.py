@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
+from src.tests.certified_frontier_helpers import persist_forged_terminal_certified_state
 from src.io.delivery_manifest import export_certified_delivery_manifest
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
 from src.search.exact_campaign import (
@@ -71,7 +73,7 @@ def _terminal_campaign_with_public_payload(
     }
     forge_legacy_terminal_certified_stop(campaign)
     attach_terminal_frontier_evidence(campaign, project_root)
-    campaign.save()
+    persist_forged_terminal_certified_state(campaign)
     return campaign
 
 
@@ -85,10 +87,7 @@ def test_v91_rejects_nested_ghost_rect_fake_certified_claim(tmp_path: Path) -> N
         },
     )
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_ghost_rect_unknown_field:proof_status"
     assert campaign.best_certified_result() is None
@@ -109,10 +108,7 @@ def test_v91_rejects_search_stats_fake_certified_claim(tmp_path: Path) -> None:
         },
     )
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_search_stats_unknown_field:proof_status"
     assert campaign.best_certified_result() is None
@@ -136,10 +132,7 @@ def test_v91_rejects_contradictory_mandatory_solution_metadata(tmp_path: Path) -
         },
     )
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_solution_metadata_mismatch"
     assert campaign.best_certified_result() is None
@@ -160,10 +153,7 @@ def test_v91_rejects_mandatory_operation_type_metadata_mismatch(tmp_path: Path) 
         },
     )
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_solution_metadata_mismatch"
     assert campaign.best_certified_result() is None
@@ -179,10 +169,7 @@ def test_v93_rejects_solution_entry_fake_certified_claim(tmp_path: Path) -> None
         },
     )
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_solution_unknown_field:tiny_001.proof_status"
     assert campaign.best_certified_result() is None
@@ -200,11 +187,11 @@ def test_v93_rejects_public_final_result_ghost_pick_marker(tmp_path: Path) -> No
     campaign.state["final_result"]["placement_solution"]["ghost_pick"] = {
         "proof_status": "CERTIFIED_BY_GHOST_PICK_PUBLIC",
     }
+    # A3 manifest builder 现在前置校验 caller state 与 disk checkpoint 等价;把带 ghost_pick
+    # 的 state 同步到 disk,让 disk-authority 闸通过,从而把拒绝交还给 manifest 层的 ghost_pick 检测。
+    persist_forged_terminal_certified_state(campaign)
 
-    reason = terminal_certified_final_result_violation_for_project(
-        campaign.state,
-        project_root=project_root,
-    )
+    reason = terminal_certified_final_result_project_precheck_violation(campaign.state, project_root=project_root)
 
     assert reason == "terminal_certified_final_result_solution_contains_ghost_pick_marker"
     assert campaign.best_certified_result() is None

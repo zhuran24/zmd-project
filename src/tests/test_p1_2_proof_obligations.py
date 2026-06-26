@@ -167,6 +167,68 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_checker_detects_multiline_public_certified_return" in close_kernel_tests
 
 
+def _publisher_scan_paths() -> list[Path]:
+    return [
+        check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH,
+        PROJECT_ROOT / "scripts" / "export_industrial_planner_bundle.py",
+    ]
+
+
+def test_p1_2_checker_rejects_raw_canonical_writer_bypass(tmp_path: Path) -> None:
+    surface_path = tmp_path / "certified_surface.py"
+    surface_path.write_text(
+        check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+        + "\n\ndef _rogue_canonical_writer(project_root):\n"
+        + "    final_solution_path = project_root / \"data\" / \"solutions\" / \"final_solution.json\"\n"
+        + "    atomic_write_json(final_solution_path, {\"search_status\": \"CERTIFIED\"})\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        certified_surface_path=surface_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("raw canonical writer bypass" in error for error in errors)
+
+
+def test_p1_2_checker_rejects_publisher_rollback_removal(tmp_path: Path) -> None:
+    surface_path = tmp_path / "certified_surface.py"
+    source = check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "except Exception as exc:  # noqa: BLE001 - publication must fail closed.",
+        "except ValueError as exc:  # noqa: BLE001 - publication must fail closed.",
+        1,
+    )
+    surface_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        certified_surface_path=surface_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("rollback must catch Exception" in error for error in errors)
+
+
+def test_p1_2_checker_rejects_manifest_mapping_snapshot_removal(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "delivery_manifest.py"
+    source = check_p1_2_proof_obligations.DELIVERY_MANIFEST_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "    campaign_state = _snapshot_manifest_campaign_state(campaign_state)\n",
+        "    # campaign_state snapshot intentionally removed by this negative fixture\n",
+        1,
+    )
+    manifest_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        delivery_manifest_path=manifest_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("must assign campaign_state from one snapshot call" in error for error in errors)
+
+
 def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[str, object]]) -> dict[str, object]:
     anchor = "v99_p1_2_close_kernel_sealing"
     return {

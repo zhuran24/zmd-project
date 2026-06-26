@@ -1,7 +1,7 @@
 ---
 status: CURRENT_CODE_ALIGNED
 source_of_truth: code-first; objective and admissibility must match src/search/outer_search.py and src/search/exact_campaign.py
-last_verified_against: 2026-03-24
+last_verified_against: 2026-06-26 working tree
 owner: exact-search
 ---
 
