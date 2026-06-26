@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 
-STATE_KEYS = {"final_result", "final_status", "terminal_frontier_evidence"}
+STATE_KEYS = {"final_result", "final_status", "last_stop_reason", "terminal_frontier_evidence"}
 STRONG_STATUS_STRINGS = {"CERTIFIED", "INFEASIBLE"}
 STRONG_STATUS_NAMES = {"RUN_STATUS_CERTIFIED", "RUN_STATUS_INFEASIBLE"}
 STATUS_NORMALIZER_NAMES = {"normalized_status"}
@@ -151,6 +151,10 @@ class StrongStatusVisitor(ast.NodeVisitor):
             self._add(node, "artifact_write", callee=callee)
         elif callee == "atomic_write_json":
             artifact_filename = self._artifact_filename_from_atomic_write(node)
+            if artifact_filename is not None:
+                self._add(node, "artifact_write", key=artifact_filename, callee=callee)
+        elif callee == "replace":
+            artifact_filename = self._artifact_filename_from_replace(node)
             if artifact_filename is not None:
                 self._add(node, "artifact_write", key=artifact_filename, callee=callee)
         elif callee == "_build_certified_result":
@@ -391,9 +395,22 @@ class StrongStatusVisitor(ast.NodeVisitor):
                 return part
         return None
 
+    def _artifact_filename_from_replace(self, node: ast.Call) -> str | None:
+        if not node.args:
+            return None
+        suffix = self._path_suffix(node.args[0])
+        if suffix is None:
+            return None
+        for part in reversed(suffix):
+            if part in ARTIFACT_FILENAMES:
+                return part
+        return None
+
     def _path_suffix(self, node: ast.AST) -> tuple[str, ...] | None:
         if isinstance(node, ast.Name) and self._path_alias_stack:
-            return self._path_alias_stack[-1].get(node.id)
+            return self._path_alias_stack[-1].get(node.id) or _path_suffix_from_symbol_hint(node.id)
+        if isinstance(node, ast.Attribute):
+            return _path_suffix_from_symbol_hint(node.attr)
         if isinstance(node, ast.Constant) and isinstance(node.value, str):
             return _path_segments(node.value)
         if isinstance(node, ast.Call) and _call_name(node.func) == "Path" and node.args:
@@ -564,6 +581,16 @@ def _path_segments(value: str) -> tuple[str, ...]:
     return tuple(part for part in value.replace("\\", "/").split("/") if part not in {"", "."})
 
 
+def _path_suffix_from_symbol_hint(name: str) -> tuple[str, ...] | None:
+    if name in {"final_solution_path", "staged_final_solution_path"}:
+        return ("final_solution.json",)
+    if name in {"blueprint_path", "optimal_blueprint_path", "staged_blueprint_path"}:
+        return ("optimal_blueprint.json",)
+    if name in {"manifest_path", "staged_manifest_path"}:
+        return ("certified_delivery_manifest.json",)
+    return None
+
+
 def _call_name(node: ast.AST) -> str | None:
     if isinstance(node, ast.Name):
         return node.id
@@ -674,6 +701,26 @@ def _unregistered_failures(
     return failures
 
 
+def _stale_allowlist_failures(
+    findings: list[Finding],
+    entries: list[AllowEntry],
+) -> list[str]:
+    failures: list[str] = []
+    for entry in entries:
+        if any(entry.matches(finding) for finding in findings):
+            continue
+        failures.append(
+            _format_failure(
+                entry.module,
+                str(entry.line) if entry.line is not None else "-",
+                entry.pattern,
+                entry.qualname,
+                "stale allowlist entry no longer matches an AST finding",
+            )
+        )
+    return failures
+
+
 def _format_failure(
     module: str,
     line: str,
@@ -719,6 +766,7 @@ def main(argv: list[str] | None = None) -> int:
 
     failures = _pin_failures(root, entries)
     failures.extend(_unregistered_failures(findings, entries))
+    failures.extend(_stale_allowlist_failures(findings, entries))
     if failures:
         for failure in failures:
             print(failure)

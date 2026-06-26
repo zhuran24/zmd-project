@@ -407,7 +407,12 @@
         "test_unchecked_certified_surface_writer_is_not_module_importable",
         "test_p1_2_checker_rejects_raw_canonical_writer_bypass",
         "test_p1_2_checker_rejects_publisher_rollback_removal",
-        "test_p1_2_checker_rejects_manifest_mapping_snapshot_removal"
+        "test_p1_2_checker_rejects_publisher_canonical_write_before_bundle_commit",
+        "test_p1_2_checker_rejects_publisher_bundle_commit_removal",
+        "test_p1_2_checker_rejects_publisher_staged_commit_removal",
+        "test_p1_2_checker_rejects_manifest_mapping_snapshot_removal",
+        "test_p1_2_checker_rejects_manifest_snapshot_token_comment_decoy",
+        "test_p1_2_checker_rejects_staged_manifest_artifact_binding_removal"
       ],
       "evidence_paths": [
         "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
@@ -524,6 +529,7 @@
         "test_package_review_snapshot_default_targeted_tests_exist",
         "test_package_review_snapshot_excludes_agent_memory_and_review_packets",
         "test_package_review_snapshot_binds_commit_tree_and_dirty_state",
+        "test_package_review_snapshot_records_renamed_dirty_paths",
         "test_package_review_snapshot_embedded_manifest_records_verification_receipt",
         "test_package_review_snapshot_skip_tests_marker_is_embedded",
         "test_package_review_snapshot_selftest_disables_pytest_plugin_autoload"
@@ -859,7 +865,7 @@
           "source_sha256_drift_reopens_p1_2_close_claim",
           "_check_certified_publication_boundary_contract"
         ],
-        "source_sha256": "e6233ccc0dc5fb8ddf42a4ee90eb4c55253f3718978039dfc8658a42ae953986",
+        "source_sha256": "a65669aeaab3b38e329346befcd0c309966286d47f8de042636243d193e81f35",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -879,7 +885,7 @@
           "_scan(root)",
           "strong-status write allowlist check passed"
         ],
-        "source_sha256": "1296e3836f5bad13486aa19800ca8f1a18403c991e337ab6a12cda1045caf8f2",
+        "source_sha256": "4964fcdea6f987d424013e25cc34355c1bc3371d2e2c8d9e68f96fa84cd1a9ff",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1037,7 +1043,7 @@
           "validate_certified_delivery_manifest_matches_campaign",
           "write_certified_delivery_manifest"
         ],
-        "source_sha256": "100be25ecaa0634779ecd058e0551bae7b86758ef622705e55f61218dc7445c2",
+        "source_sha256": "19d2bb353f4bfbc1a4473ec6a4aa2e214dd47083b94d516d4f70962e05e79a09",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1514,7 +1520,7 @@
           "publish_verified_certified_delivery_surface",
           "_load_verified_surface_snapshot"
         ],
-        "source_sha256": "655a0a30c594da121bafa0cb1fb2104630a09b112a1a8c19ae00ec41b725daf3",
+        "source_sha256": "d4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1558,7 +1564,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "9bb85806c8595b29063d3b8caf8ac443015d9cf5b7ff4d7699244b746ee8edd3",
+        "source_sha256": "1aa393fb964661e8d6ccd82bbd5815a600bb04a201d53fcdeb698efa9e479bff",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

@@ -211,6 +211,64 @@ def test_p1_2_checker_rejects_publisher_rollback_removal(tmp_path: Path) -> None
     assert any("rollback must catch Exception" in error for error in errors)
 
 
+def test_p1_2_checker_rejects_publisher_canonical_write_before_bundle_commit(tmp_path: Path) -> None:
+    surface_path = tmp_path / "certified_surface.py"
+    source = check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "        atomic_write_json(staged.final_solution_path, result)\n",
+        "        atomic_write_json(final_solution_path, result)\n",
+        1,
+    )
+    surface_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        certified_surface_path=surface_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("stage files through staged paths" in error for error in errors)
+
+
+def test_p1_2_checker_rejects_publisher_bundle_commit_removal(tmp_path: Path) -> None:
+    surface_path = tmp_path / "certified_surface.py"
+    source = check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "commit_backup = _commit_staged_certified_delivery_surface_artifacts(",
+        "commit_backup = _removed_staged_certified_delivery_surface_artifacts(",
+        1,
+    )
+    surface_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        certified_surface_path=surface_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any(
+        "transaction missing reachable call: _commit_staged_certified_delivery_surface_artifacts" in error
+        for error in errors
+    )
+    assert any("stage, atomically commit, then verify" in error for error in errors)
+
+
+def test_p1_2_checker_rejects_publisher_staged_commit_removal(tmp_path: Path) -> None:
+    surface_path = tmp_path / "certified_surface.py"
+    source = check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "        staged.manifest_path.replace(manifest_path)\n",
+        "",
+        1,
+    )
+    surface_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        certified_surface_path=surface_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("atomically replace manifest_path from staged bytes" in error for error in errors)
+
+
 def test_p1_2_checker_rejects_manifest_mapping_snapshot_removal(tmp_path: Path) -> None:
     manifest_path = tmp_path / "delivery_manifest.py"
     source = check_p1_2_proof_obligations.DELIVERY_MANIFEST_PATH.read_text(encoding="utf-8")
@@ -227,6 +285,49 @@ def test_p1_2_checker_rejects_manifest_mapping_snapshot_removal(tmp_path: Path) 
     )
 
     assert any("must assign campaign_state from one snapshot call" in error for error in errors)
+
+
+def test_p1_2_checker_rejects_manifest_snapshot_token_comment_decoy(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "delivery_manifest.py"
+    source = check_p1_2_proof_obligations.DELIVERY_MANIFEST_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "            dict(campaign_state),\n",
+        "            campaign_state,\n",
+        1,
+    )
+    source = source.replace(
+        "    if not isinstance(snapshot, Mapping):\n",
+        "    # decoy tokens: json.dumps dict(campaign_state) "
+        "_loads_strict_json_object return dict(snapshot)\n"
+        "    if not isinstance(snapshot, Mapping):\n",
+        1,
+    )
+    manifest_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        delivery_manifest_path=manifest_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("json.dumps(dict(campaign_state), allow_nan=False)" in error for error in errors)
+
+
+def test_p1_2_checker_rejects_staged_manifest_artifact_binding_removal(tmp_path: Path) -> None:
+    surface_path = tmp_path / "certified_surface.py"
+    source = check_p1_2_proof_obligations.CERTIFIED_SURFACE_PATH.read_text(encoding="utf-8")
+    source = source.replace(
+        "            final_solution_artifact_path=staged.final_solution_path,\n",
+        "",
+        1,
+    )
+    surface_path.write_text(source, encoding="utf-8", newline="\n")
+
+    errors = check_p1_2_proof_obligations._check_certified_publication_boundary_contract(
+        certified_surface_path=surface_path,
+        publisher_scan_paths=_publisher_scan_paths(),
+    )
+
+    assert any("staged artifact bytes" in error for error in errors)
 
 
 def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[str, object]]) -> dict[str, object]:

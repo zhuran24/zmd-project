@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
@@ -127,6 +128,20 @@ class CertifiedSurfaceVerdict:
 
     def as_dict(self) -> Dict[str, Any]:
         return self.as_summary()
+
+
+@dataclass(frozen=True)
+class _StagedCertifiedDeliverySurfaceArtifacts:
+    final_solution_path: Path
+    blueprint_path: Path
+    manifest_path: Path
+    stage_dirs: tuple[Path, ...]
+
+
+@dataclass(frozen=True)
+class _CertifiedDeliverySurfaceBackup:
+    target_to_backup: Dict[Path, Optional[Path]]
+    backup_dirs: tuple[Path, ...]
 
 
 # Backward-compatible alias for earlier in-flight patch attempts.
@@ -560,6 +575,186 @@ def clear_certified_delivery_surface_artifacts(project_root: Path) -> None:
         )
 
 
+def _remove_artifact_path(path: Path) -> None:
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+
+
+def _cleanup_certified_delivery_surface_temp_dirs(paths: Sequence[Path]) -> None:
+    for path in paths:
+        try:
+            if path.exists():
+                shutil.rmtree(path)
+        except Exception:
+            continue
+
+
+def _stage_path_for_target(target_path: Path) -> tuple[Path, Path]:
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    if _path_has_symlink_component(target_path.parent):
+        raise RuntimeError("canonical certified surface parent contains symlink")
+    stage_dir = Path(
+        tempfile.mkdtemp(
+            prefix=f".{target_path.name}.stage-",
+            dir=str(target_path.parent),
+        )
+    )
+    return stage_dir / target_path.name, stage_dir
+
+
+def _stage_verified_certified_delivery_surface_artifacts(
+    *,
+    project_root: Path,
+    resolved_campaign_path: Path,
+    state: Mapping[str, Any],
+    result: Mapping[str, Any],
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    final_solution_path: Path,
+    blueprint_path: Path,
+    manifest_path: Path,
+) -> _StagedCertifiedDeliverySurfaceArtifacts:
+    staged_final_solution_path, final_stage_dir = _stage_path_for_target(final_solution_path)
+    staged_blueprint_path, blueprint_stage_dir = _stage_path_for_target(blueprint_path)
+    staged_manifest_path, manifest_stage_dir = _stage_path_for_target(manifest_path)
+    staged = _StagedCertifiedDeliverySurfaceArtifacts(
+        final_solution_path=staged_final_solution_path,
+        blueprint_path=staged_blueprint_path,
+        manifest_path=staged_manifest_path,
+        stage_dirs=(final_stage_dir, blueprint_stage_dir, manifest_stage_dir),
+    )
+    try:
+        atomic_write_json(staged.final_solution_path, result)
+        blueprint_payload = build_blueprint_payload_from_certified_result(
+            result=result,
+            facility_pools=facility_pools,
+        )
+        atomic_write_json(staged.blueprint_path, blueprint_payload)
+        manifest_payload = build_certified_delivery_manifest(
+            project_root=project_root,
+            campaign_state=state,
+            campaign_path=resolved_campaign_path,
+            final_solution_artifact_path=staged.final_solution_path,
+            optimal_blueprint_artifact_path=staged.blueprint_path,
+        )
+        validate_certified_delivery_manifest_matches_campaign(
+            project_root=project_root,
+            delivery_manifest=manifest_payload,
+            campaign_state=state,
+            campaign_path=resolved_campaign_path,
+            final_solution_artifact_path=staged.final_solution_path,
+            optimal_blueprint_artifact_path=staged.blueprint_path,
+        )
+        atomic_write_json(staged.manifest_path, manifest_payload)
+    except Exception:
+        _cleanup_certified_delivery_surface_temp_dirs(staged.stage_dirs)
+        raise
+    return staged
+
+
+def _prepare_certified_delivery_surface_backup(
+    target_paths: Sequence[Path],
+) -> _CertifiedDeliverySurfaceBackup:
+    target_to_backup: Dict[Path, Optional[Path]] = {}
+    backup_dirs: list[Path] = []
+    for target_path in target_paths:
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        backup_dir = Path(
+            tempfile.mkdtemp(
+                prefix=f".{target_path.name}.backup-",
+                dir=str(target_path.parent),
+            )
+        )
+        backup_dirs.append(backup_dir)
+        backup_path = backup_dir / target_path.name
+        if target_path.is_dir() and not target_path.is_symlink():
+            shutil.copytree(target_path, backup_path)
+            target_to_backup[target_path] = backup_path
+        elif target_path.exists() or target_path.is_symlink():
+            shutil.copy2(target_path, backup_path, follow_symlinks=False)
+            target_to_backup[target_path] = backup_path
+        else:
+            target_to_backup[target_path] = None
+    return _CertifiedDeliverySurfaceBackup(
+        target_to_backup=target_to_backup,
+        backup_dirs=tuple(backup_dirs),
+    )
+
+
+def _restore_certified_delivery_surface_backup(
+    *,
+    project_root: Path,
+    backup: _CertifiedDeliverySurfaceBackup,
+) -> None:
+    restore_errors: list[str] = []
+    for target_path, backup_path in backup.target_to_backup.items():
+        try:
+            if target_path.exists() or target_path.is_symlink():
+                _remove_artifact_path(target_path)
+            if backup_path is None:
+                continue
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+            if backup_path.is_dir() and not backup_path.is_symlink():
+                shutil.copytree(backup_path, target_path)
+            else:
+                shutil.copy2(backup_path, target_path, follow_symlinks=False)
+        except Exception as exc:  # noqa: BLE001 - every artifact is restored or cleared.
+            restore_errors.append(f"{target_path}:{type(exc).__name__}:{exc}")
+    if restore_errors:
+        try:
+            clear_certified_delivery_surface_artifacts(project_root)
+        except Exception as cleanup_exc:  # noqa: BLE001
+            raise RuntimeError(
+                "certified delivery surface rollback failed and fail-closed cleanup failed: "
+                f"{';'.join(restore_errors)}; cleanup={cleanup_exc}"
+            ) from cleanup_exc
+        raise RuntimeError(
+            "certified delivery surface rollback failed; public artifacts cleared: "
+            + ";".join(restore_errors)
+        )
+
+
+def _discard_certified_delivery_surface_backup(
+    backup: Optional[_CertifiedDeliverySurfaceBackup],
+) -> None:
+    if backup is None:
+        return
+    _cleanup_certified_delivery_surface_temp_dirs(backup.backup_dirs)
+
+
+def _commit_staged_certified_delivery_surface_artifacts(
+    *,
+    project_root: Path,
+    staged: _StagedCertifiedDeliverySurfaceArtifacts,
+    final_solution_path: Path,
+    blueprint_path: Path,
+    manifest_path: Path,
+) -> _CertifiedDeliverySurfaceBackup:
+    target_paths = (final_solution_path, blueprint_path, manifest_path)
+    for target_path in target_paths:
+        if _path_has_symlink_component(target_path.parent):
+            raise RuntimeError("canonical certified surface parent contains symlink")
+    backup = _prepare_certified_delivery_surface_backup(target_paths)
+    try:
+        if final_solution_path.is_dir() and not final_solution_path.is_symlink():
+            shutil.rmtree(final_solution_path)
+        staged.final_solution_path.replace(final_solution_path)
+        if blueprint_path.is_dir() and not blueprint_path.is_symlink():
+            shutil.rmtree(blueprint_path)
+        staged.blueprint_path.replace(blueprint_path)
+        if manifest_path.is_dir() and not manifest_path.is_symlink():
+            shutil.rmtree(manifest_path)
+        staged.manifest_path.replace(manifest_path)
+    except Exception:
+        _restore_certified_delivery_surface_backup(
+            project_root=project_root,
+            backup=backup,
+        )
+        raise
+    return backup
+
+
 def publish_verified_certified_delivery_surface(
     *,
     project_root: Path,
@@ -574,8 +769,19 @@ def publish_verified_certified_delivery_surface(
         project_root=project_root,
         campaign_path=campaign_path,
     )
+    staged: Optional[_StagedCertifiedDeliverySurfaceArtifacts] = None
+    commit_backup: Optional[_CertifiedDeliverySurfaceBackup] = None
+    existing_surface_is_publishable = False
     try:
-        clear_certified_delivery_surface_artifacts(project_root)
+        existing_surface = evaluate_certified_delivery_surface(
+            project_root=project_root,
+            campaign_state=None,
+            campaign_path=resolved_campaign_path,
+        )
+        existing_surface_is_publishable = bool(existing_surface.publishable)
+        if not existing_surface_is_publishable:
+            clear_certified_delivery_surface_artifacts(project_root)
+
         state = _load_strict_json_mapping(resolved_campaign_path)
         if campaign_state is not None:
             provided_state = _mapping_or_none(campaign_state)
@@ -611,45 +817,64 @@ def publish_verified_certified_delivery_surface(
         if manifest_path.resolve() != delivery_manifest_output_path(project_root).resolve():
             raise RuntimeError("canonical delivery manifest output path mismatch")
 
-        atomic_write_json(final_solution_path, result)
-        blueprint_payload = build_blueprint_payload_from_certified_result(
+        staged = _stage_verified_certified_delivery_surface_artifacts(
+            project_root=project_root,
+            resolved_campaign_path=resolved_campaign_path,
+            state=state,
             result=result,
             facility_pools=facility_pools,
+            final_solution_path=final_solution_path,
+            blueprint_path=blueprint_path,
+            manifest_path=manifest_path,
         )
-        atomic_write_json(blueprint_path, blueprint_payload)
-
-        manifest_payload = build_certified_delivery_manifest(
+        latest_state = _load_strict_json_mapping(resolved_campaign_path)
+        if not _json_equivalent(latest_state, state):
+            raise RuntimeError("campaign_state_payload_changed_before_commit")
+        publish_open_gate_open, publish_open_gate_reason = resolve_p1_2_publish_open_gate(
             project_root=project_root,
-            campaign_state=state,
-            campaign_path=resolved_campaign_path,
         )
-        validate_certified_delivery_manifest_matches_campaign(
+        if publish_open_gate_open:
+            raise RuntimeError(
+                publish_open_gate_reason or _publish_open_gate_reason("unknown")
+            )
+        commit_backup = _commit_staged_certified_delivery_surface_artifacts(
             project_root=project_root,
-            delivery_manifest=manifest_payload,
-            campaign_state=state,
-            campaign_path=resolved_campaign_path,
+            staged=staged,
+            final_solution_path=final_solution_path,
+            blueprint_path=blueprint_path,
+            manifest_path=manifest_path,
         )
-        atomic_write_json(manifest_path, manifest_payload)
         surface = verify_certified_delivery_surface(
             project_root=project_root,
             campaign_state=state,
             campaign_path=resolved_campaign_path,
-            delivery_manifest=manifest_payload,
         )
         if not surface.publishable:
             raise RuntimeError(surface.blocked_reason or CERTIFIED_SURFACE_BLOCKED_REASON)
+        _discard_certified_delivery_surface_backup(commit_backup)
+        commit_backup = None
     except Exception as exc:  # noqa: BLE001 - publication must fail closed.
         try:
-            clear_certified_delivery_surface_artifacts(project_root)
-        except Exception as cleanup_exc:  # noqa: BLE001
+            if commit_backup is not None:
+                _restore_certified_delivery_surface_backup(
+                    project_root=project_root,
+                    backup=commit_backup,
+                )
+            elif not existing_surface_is_publishable:
+                clear_certified_delivery_surface_artifacts(project_root)
+        except Exception as rollback_exc:  # noqa: BLE001
             raise RuntimeError(
-                "certified delivery surface publication rejected and cleanup failed: "
-                f"{exc}; cleanup={cleanup_exc}"
+                "certified delivery surface publication rejected and rollback failed: "
+                f"{exc}; rollback={rollback_exc}"
             ) from exc
         raise RuntimeError(
             "certified delivery surface publication rejected: "
             f"{exc}"
         ) from exc
+    finally:
+        if staged is not None:
+            _cleanup_certified_delivery_surface_temp_dirs(staged.stage_dirs)
+        _discard_certified_delivery_surface_backup(commit_backup)
     return surface
 
 
@@ -698,6 +923,7 @@ def export_and_verify_certified_delivery_manifest(
             "publishable certified delivery manifests must use "
             "publish_verified_certified_delivery_surface"
         )
+    clear_certified_delivery_surface_artifacts(Path(project_root).resolve())
     manifest_path = delivery_manifest_output_path(Path(project_root).resolve())
     atomic_write_json(manifest_path, payload)
     surface = verify_certified_delivery_surface(

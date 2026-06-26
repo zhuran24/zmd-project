@@ -89,6 +89,8 @@ def build_certified_delivery_manifest(
     project_root: Path,
     campaign_state: Mapping[str, Any],
     campaign_path: Optional[Path] = None,
+    final_solution_artifact_path: Optional[Path] = None,
+    optimal_blueprint_artifact_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     project_root = Path(project_root).resolve()
     campaign_state = _snapshot_manifest_campaign_state(campaign_state)
@@ -175,8 +177,18 @@ def build_certified_delivery_manifest(
     )
     if has_certified_surface and best_result is None:
         raise ValueError("certified delivery manifest requires terminal final_result evidence")
-    final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
-    optimal_blueprint_path = blueprint_output_path(project_root)
+    canonical_final_solution_path = project_root / "data" / "solutions" / "final_solution.json"
+    canonical_optimal_blueprint_path = blueprint_output_path(project_root)
+    final_solution_path = (
+        Path(final_solution_artifact_path)
+        if final_solution_artifact_path is not None
+        else canonical_final_solution_path
+    )
+    optimal_blueprint_path = (
+        Path(optimal_blueprint_artifact_path)
+        if optimal_blueprint_artifact_path is not None
+        else canonical_optimal_blueprint_path
+    )
     if best_result is not None:
         missing_delivery_artifacts: list[str] = []
         if not _is_regular_file(final_solution_path):
@@ -203,6 +215,8 @@ def build_certified_delivery_manifest(
             campaign_path=resolved_campaign_path,
             final_solution_path=final_solution_path,
             optimal_blueprint_path=optimal_blueprint_path,
+            final_solution_logical_path=canonical_final_solution_path,
+            optimal_blueprint_logical_path=canonical_optimal_blueprint_path,
         ),
     }
     compatibility_exports = build_compatibility_exports_payload(project_root)
@@ -266,6 +280,8 @@ def validate_certified_delivery_manifest_matches_campaign(
     delivery_manifest: Mapping[str, Any],
     campaign_state: Mapping[str, Any],
     campaign_path: Optional[Path] = None,
+    final_solution_artifact_path: Optional[Path] = None,
+    optimal_blueprint_artifact_path: Optional[Path] = None,
 ) -> None:
     """Fail closed unless a manifest is the current campaign/artifact projection.
 
@@ -280,6 +296,8 @@ def validate_certified_delivery_manifest_matches_campaign(
         project_root=project_root,
         campaign_state=campaign_state,
         campaign_path=campaign_path,
+        final_solution_artifact_path=final_solution_artifact_path,
+        optimal_blueprint_artifact_path=optimal_blueprint_artifact_path,
     )
     if not _manifest_metadata_is_compatible(delivery_manifest.get("metadata")):
         raise ValueError("certified delivery manifest metadata does not match current contract")
@@ -345,14 +363,21 @@ def _manifest_artifacts_payload(
     campaign_path: Path,
     final_solution_path: Path,
     optimal_blueprint_path: Path,
+    final_solution_logical_path: Optional[Path] = None,
+    optimal_blueprint_logical_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     return {
         "campaign_state": _artifact_entry(project_root, campaign_path),
         "final_solution": _artifact_entry(
             project_root,
             final_solution_path,
+            logical_path=final_solution_logical_path,
         ),
-        "optimal_blueprint": _artifact_entry(project_root, optimal_blueprint_path),
+        "optimal_blueprint": _artifact_entry(
+            project_root,
+            optimal_blueprint_path,
+            logical_path=optimal_blueprint_logical_path,
+        ),
         "candidate_placements": _artifact_entry(
             project_root,
             project_root / "data" / "preprocessed" / "candidate_placements.json",
@@ -488,9 +513,15 @@ def _validate_certified_manifest_output_path(
         )
 
 
-def _artifact_entry(project_root: Path, path: Path) -> Dict[str, Any]:
+def _artifact_entry(
+    project_root: Path,
+    path: Path,
+    *,
+    logical_path: Optional[Path] = None,
+) -> Dict[str, Any]:
+    published_path = Path(logical_path) if logical_path is not None else path
     entry: Dict[str, Any] = {
-        "path": path.relative_to(project_root).as_posix(),
+        "path": published_path.relative_to(project_root).as_posix(),
         "exists": bool(path.exists()),
         "regular_file": bool(_is_regular_file(path)),
     }

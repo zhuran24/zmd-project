@@ -56,6 +56,26 @@ def test_unregistered_final_result_write_fails(tmp_path: Path) -> None:
     ) in result.stdout
 
 
+def test_unregistered_last_stop_reason_status_write_fails(tmp_path: Path) -> None:
+    src_file = tmp_path / "src" / "search" / "rogue_last_stop_reason.py"
+    src_file.parent.mkdir(parents=True)
+    src_file.write_text(
+        'def forge(state):\n'
+        '    state["last_stop_reason"] = {"status": "CERTIFIED"}\n',
+        encoding="utf-8",
+    )
+    allowlist = tmp_path / "allowlist.json"
+    _empty_allowlist(allowlist)
+
+    result = _run_checker("--root", str(tmp_path), "--allowlist", str(allowlist))
+
+    assert result.returncode != 0
+    assert (
+        '(src/search/rogue_last_stop_reason.py,2,state_key_write,forge,'
+        '"unregistered strong-status write")'
+    ) in result.stdout
+
+
 def test_unregistered_mark_campaign_stopped_certified_fails(tmp_path: Path) -> None:
     src_file = tmp_path / "src" / "search" / "rogue_stop.py"
     src_file.parent.mkdir(parents=True)

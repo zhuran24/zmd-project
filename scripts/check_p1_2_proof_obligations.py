@@ -14,7 +14,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Callable, NoReturn, Sequence
+from typing import Any, Callable, Mapping, NoReturn, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
@@ -250,7 +250,12 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_delivery_manifest_rejects_chameleon_mapping_that_skips_disk_authority",
             "test_p1_2_checker_rejects_raw_canonical_writer_bypass",
             "test_p1_2_checker_rejects_publisher_rollback_removal",
+            "test_p1_2_checker_rejects_publisher_canonical_write_before_bundle_commit",
+            "test_p1_2_checker_rejects_publisher_bundle_commit_removal",
+            "test_p1_2_checker_rejects_publisher_staged_commit_removal",
             "test_p1_2_checker_rejects_manifest_mapping_snapshot_removal",
+            "test_p1_2_checker_rejects_manifest_snapshot_token_comment_decoy",
+            "test_p1_2_checker_rejects_staged_manifest_artifact_binding_removal",
             "test_clear_certified_delivery_surface_artifacts_attempts_all_after_unlink_failure",
             "test_serve_viewer_partial_generation_commit_clears_all_public_outputs",
             "test_serve_viewer_requires_current_candidate_placements_and_clears_stale_copy",
@@ -353,6 +358,7 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_package_review_snapshot_default_targeted_tests_exist",
             "test_package_review_snapshot_excludes_agent_memory_and_review_packets",
             "test_package_review_snapshot_binds_commit_tree_and_dirty_state",
+            "test_package_review_snapshot_records_renamed_dirty_paths",
             "test_package_review_snapshot_embedded_manifest_records_verification_receipt",
             "test_package_review_snapshot_skip_tests_marker_is_embedded",
             "test_package_review_snapshot_selftest_disables_pytest_plugin_autoload",
@@ -1140,7 +1146,135 @@ def _atomic_write_json_calls(node: ast.AST) -> list[ast.Call]:
 def _atomic_write_target_name(call: ast.Call) -> str | None:
     if call.args and isinstance(call.args[0], ast.Name):
         return call.args[0].id
+    if call.args and isinstance(call.args[0], ast.Attribute):
+        return call.args[0].attr
     return None
+
+
+def _atomic_write_target_expr(call: ast.Call) -> str | None:
+    if not call.args:
+        return None
+    try:
+        return ast.unparse(call.args[0])
+    except Exception:
+        return _atomic_write_target_name(call)
+
+
+def _call_has_keyword_name(call: ast.Call, keyword_name: str, expected_name: str) -> bool:
+    for keyword in call.keywords:
+        if keyword.arg != keyword_name:
+            continue
+        try:
+            return ast.unparse(keyword.value) == expected_name
+        except Exception:
+            return isinstance(keyword.value, ast.Name) and keyword.value.id == expected_name
+    return False
+
+
+def _has_direct_call_with_keywords(
+    node: ast.AST,
+    function_name: str,
+    expected_keywords: Mapping[str, str],
+) -> bool:
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Call) or not _is_call_to(child, function_name):
+            continue
+        if all(
+            _call_has_keyword_name(child, keyword_name, expected_name)
+            for keyword_name, expected_name in expected_keywords.items()
+        ):
+            return True
+    return False
+
+
+def _has_staged_replace_call(
+    node: ast.AST,
+    *,
+    staged_attr: str,
+    target_name: str,
+) -> bool:
+    return _staged_replace_call_lineno(
+        node,
+        staged_attr=staged_attr,
+        target_name=target_name,
+    ) is not None
+
+
+def _staged_replace_call_lineno(
+    node: ast.AST,
+    *,
+    staged_attr: str,
+    target_name: str,
+) -> int | None:
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Call):
+            continue
+        func = child.func
+        if not (
+            isinstance(func, ast.Attribute)
+            and func.attr == "replace"
+            and isinstance(func.value, ast.Attribute)
+            and func.value.attr == staged_attr
+        ):
+            continue
+        if len(child.args) == 1 and isinstance(child.args[0], ast.Name) and child.args[0].id == target_name:
+            return child.lineno if hasattr(child, "lineno") else -1
+    return None
+
+
+def _is_name(node: ast.AST, name: str) -> bool:
+    return isinstance(node, ast.Name) and node.id == name
+
+
+def _is_call_to_name(node: ast.AST | None, name: str) -> bool:
+    return isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == name
+
+
+def _is_dict_campaign_state_call(node: ast.AST) -> bool:
+    return (
+        _is_call_to_name(node, "dict")
+        and len(node.args) == 1
+        and _is_name(node.args[0], "campaign_state")
+    )
+
+
+def _call_keyword_is_false(call: ast.Call, keyword_name: str) -> bool:
+    for keyword in call.keywords:
+        if keyword.arg == keyword_name:
+            return isinstance(keyword.value, ast.Constant) and keyword.value.value is False
+    return False
+
+
+def _snapshot_helper_uses_json_roundtrip(snapshot_fn: ast.FunctionDef) -> bool:
+    has_json_dump = False
+    has_strict_load = False
+    has_return_copy = False
+    for child in ast.walk(snapshot_fn):
+        if isinstance(child, ast.Call):
+            if (
+                isinstance(child.func, ast.Attribute)
+                and child.func.attr == "dumps"
+                and isinstance(child.func.value, ast.Name)
+                and child.func.value.id == "json"
+                and child.args
+                and _is_dict_campaign_state_call(child.args[0])
+                and _call_keyword_is_false(child, "allow_nan")
+            ):
+                has_json_dump = True
+            if (
+                _is_call_to(child, "_loads_strict_json_object")
+                and len(child.args) == 1
+                and _is_name(child.args[0], "snapshot_bytes")
+            ):
+                has_strict_load = True
+        if (
+            isinstance(child, ast.Return)
+            and _is_call_to_name(child.value, "dict")
+            and len(child.value.args) == 1
+            and _is_name(child.value.args[0], "snapshot")
+        ):
+            has_return_copy = True
+    return has_json_dump and has_strict_load and has_return_copy
 
 
 def _handler_catches_all_exceptions(handler: ast.ExceptHandler) -> bool:
@@ -1220,33 +1354,21 @@ def _check_publisher_transaction_shape(
     path: Path,
 ) -> list[str]:
     errors: list[str] = []
+    module_tree = _ast_root(publisher_fn)
+    if not isinstance(module_tree, ast.Module):
+        return ["verified publisher AST root is not a module"]
+
     top_level_tries = [statement for statement in publisher_fn.body if isinstance(statement, ast.Try)]
     if len(top_level_tries) != 1:
         errors.append("verified publisher must wrap canonical publication in one top-level try/except rollback block")
         return errors
     transaction_try = top_level_tries[0]
-    write_calls = _atomic_write_json_calls(publisher_fn)
-    if len(write_calls) != 3:
-        errors.append("verified publisher must perform exactly the three canonical artifact writes")
-    body_writes = [
-        call
-        for call in write_calls
-        if _node_in_statement_sequence(call, transaction_try.body)
-    ]
-    if len(body_writes) != len(write_calls):
-        errors.append("verified publisher canonical writes must all be inside the transaction try body")
-    target_to_line = {
-        _atomic_write_target_name(call): call.lineno
-        for call in body_writes
-        if hasattr(call, "lineno")
-    }
-    for target_name in ("final_solution_path", "blueprint_path", "manifest_path"):
-        if target_name not in target_to_line:
-            errors.append(f"verified publisher must directly write canonical target {target_name}")
-    if not target_to_line:
-        return errors
-    first_write_line = min(target_to_line.values())
+
+    if _atomic_write_json_calls(publisher_fn):
+        errors.append("verified publisher must not write canonical artifacts directly; writes must be staged")
+
     for required_call in (
+        "evaluate_certified_delivery_surface",
         "clear_certified_delivery_surface_artifacts",
         "_load_strict_json_mapping",
         "_mapping_or_none",
@@ -1255,47 +1377,123 @@ def _check_publisher_transaction_shape(
         "resolve_p1_2_publish_open_gate",
         "blueprint_output_path",
         "delivery_manifest_output_path",
+        "_stage_verified_certified_delivery_surface_artifacts",
+        "_commit_staged_certified_delivery_surface_artifacts",
+        "verify_certified_delivery_surface",
     ):
-        call_line = _first_call_lineno(transaction_try, required_call)
-        if call_line is None or call_line > first_write_line:
-            errors.append(
-                "verified publisher canonical writes must be dominated by gate/currentness call: "
-                f"{required_call}"
-            )
-    ordered_boundaries = [
-        ("final_solution_path", "build_blueprint_payload_from_certified_result", "blueprint_path"),
-        ("blueprint_path", "build_certified_delivery_manifest", "manifest_path"),
-        ("blueprint_path", "validate_certified_delivery_manifest_matches_campaign", "manifest_path"),
-        ("manifest_path", "verify_certified_delivery_surface", "surface verification"),
-    ]
-    for before_target, required_call, after_target in ordered_boundaries:
-        before_line = target_to_line.get(before_target)
-        required_line = _first_call_lineno(transaction_try, required_call)
-        after_line = target_to_line.get(after_target)
-        if before_line is None or required_line is None:
-            errors.append(f"verified publisher missing ordered transaction call: {required_call}")
-            continue
-        if after_line is None:
-            if required_line <= before_line:
-                errors.append(
-                    f"verified publisher must run {required_call} after {before_target} write"
-                )
-        elif not before_line < required_line < after_line:
-            errors.append(
-                f"verified publisher must run {required_call} between {before_target} and {after_target}"
-            )
+        if not _direct_calls_name(transaction_try, required_call):
+            errors.append(f"verified publisher transaction missing reachable call: {required_call}")
+
+    stage_line = _first_call_lineno(transaction_try, "_stage_verified_certified_delivery_surface_artifacts")
+    commit_line = _first_call_lineno(transaction_try, "_commit_staged_certified_delivery_surface_artifacts")
+    verify_line = _first_call_lineno(transaction_try, "verify_certified_delivery_surface")
+    if stage_line is None or commit_line is None or verify_line is None:
+        errors.append("verified publisher must stage, atomically commit, then verify the final surface")
+    elif not stage_line < commit_line < verify_line:
+        errors.append("verified publisher transaction order must be stage -> commit -> final verifier")
+
+    gate_lines = _call_linenos(transaction_try, "resolve_p1_2_publish_open_gate")
+    if len(gate_lines) < 2:
+        errors.append("verified publisher must check the publish-open gate before staging and before commit")
+    else:
+        if stage_line is not None and not any(line < stage_line for line in gate_lines):
+            errors.append("verified publisher must check the publish-open gate before staging")
+        if (
+            stage_line is not None
+            and commit_line is not None
+            and not any(stage_line < line < commit_line for line in gate_lines)
+        ):
+            errors.append("verified publisher must recheck the publish-open gate before commit")
+        if commit_line is not None and gate_lines[-1] > commit_line:
+            errors.append("verified publisher final publish-open gate check must dominate commit")
+
     rollback_handlers = [
         handler for handler in transaction_try.handlers if _handler_catches_all_exceptions(handler)
     ]
     if not rollback_handlers:
         errors.append("verified publisher rollback must catch Exception for the full publication block")
     for handler in rollback_handlers:
-        if not _direct_calls_name(handler, "clear_certified_delivery_surface_artifacts"):
-            errors.append("verified publisher rollback handler must clear all certified delivery artifacts")
+        if not (
+            _direct_calls_name(handler, "_restore_certified_delivery_surface_backup")
+            and _direct_calls_name(handler, "clear_certified_delivery_surface_artifacts")
+        ):
+            errors.append("verified publisher rollback handler must restore backed-up artifacts or clear stale artifacts")
         if not _handler_raises(handler):
             errors.append("verified publisher rollback handler must re-raise a fail-closed exception")
-    if not _direct_calls_name(transaction_try, "clear_certified_delivery_surface_artifacts"):
-        errors.append("verified publisher transaction must clear stale artifacts before writing")
+    if not _direct_calls_name(transaction_try, "_cleanup_certified_delivery_surface_temp_dirs"):
+        errors.append("verified publisher transaction must cleanup staging directories in finally")
+    if not _direct_calls_name(transaction_try, "_discard_certified_delivery_surface_backup"):
+        errors.append("verified publisher transaction must discard backups only after final verification")
+
+    stage_fn = _function_def(
+        module_tree,
+        "_stage_verified_certified_delivery_surface_artifacts",
+        path=path,
+    )
+    stage_writes = _atomic_write_json_calls(stage_fn)
+    stage_targets = {_atomic_write_target_expr(call) for call in stage_writes}
+    expected_stage_targets = {
+        "staged.final_solution_path",
+        "staged.blueprint_path",
+        "staged.manifest_path",
+    }
+    if len(stage_writes) != 3 or stage_targets != expected_stage_targets:
+        errors.append("staged publisher must write exactly final_solution, blueprint, and manifest stage files through staged paths")
+    for required_call in (
+        "build_blueprint_payload_from_certified_result",
+        "build_certified_delivery_manifest",
+        "validate_certified_delivery_manifest_matches_campaign",
+    ):
+        if not _direct_calls_name(stage_fn, required_call):
+            errors.append(f"staged publisher missing manifest/currentness call: {required_call}")
+    for function_name in (
+        "build_certified_delivery_manifest",
+        "validate_certified_delivery_manifest_matches_campaign",
+    ):
+        if not _has_direct_call_with_keywords(
+            stage_fn,
+            function_name,
+            {
+                "final_solution_artifact_path": "staged.final_solution_path",
+                "optimal_blueprint_artifact_path": "staged.blueprint_path",
+            },
+        ):
+            errors.append(
+                "staged publisher must bind manifest validation to staged artifact bytes: "
+                f"{function_name}"
+            )
+
+    commit_fn = _function_def(
+        module_tree,
+        "_commit_staged_certified_delivery_surface_artifacts",
+        path=path,
+    )
+    replace_lines: dict[str, int] = {}
+    for staged_attr, target_name in (
+        ("final_solution_path", "final_solution_path"),
+        ("blueprint_path", "blueprint_path"),
+        ("manifest_path", "manifest_path"),
+    ):
+        replace_line = _staged_replace_call_lineno(
+            commit_fn,
+            staged_attr=staged_attr,
+            target_name=target_name,
+        )
+        if replace_line is None:
+            errors.append(f"verified publisher commit must atomically replace {target_name} from staged bytes")
+        else:
+            replace_lines[target_name] = replace_line
+    manifest_replace_line = replace_lines.get("manifest_path")
+    if manifest_replace_line is not None and any(
+        replace_lines.get(target_name, manifest_replace_line) > manifest_replace_line
+        for target_name in ("final_solution_path", "blueprint_path")
+    ):
+        errors.append("verified publisher commit must replace the manifest last")
+    if not _direct_calls_name(commit_fn, "_prepare_certified_delivery_surface_backup"):
+        errors.append("verified publisher commit must prepare rollback backups before replace")
+    if not _direct_calls_name(commit_fn, "_restore_certified_delivery_surface_backup"):
+        errors.append("verified publisher commit must rollback staged replace failure")
+
     publisher_source = _source_text(path, publisher_fn)
     if "surface.publishable" not in publisher_source:
         errors.append("verified publisher must reject non-publishable post-write surface verification")
@@ -1312,15 +1510,12 @@ def _check_manifest_mapping_snapshot_shape(
         "_snapshot_manifest_campaign_state",
         path=delivery_manifest_path,
     )
-    snapshot_source = _source_text(delivery_manifest_path, snapshot_fn)
-    for token in (
-        "json.dumps",
-        "dict(campaign_state)",
-        "_loads_strict_json_object",
-        "return dict(snapshot)",
-    ):
-        if token not in snapshot_source:
-            errors.append(f"manifest Mapping snapshot helper must isolate caller payload: {token}")
+    if not _snapshot_helper_uses_json_roundtrip(snapshot_fn):
+        errors.append(
+            "manifest Mapping snapshot helper must isolate caller payload via "
+            "json.dumps(dict(campaign_state), allow_nan=False), "
+            "_loads_strict_json_object(snapshot_bytes), and return dict(snapshot)"
+        )
 
     build_fn = _function_def(
         delivery_tree,
@@ -1395,6 +1590,7 @@ def _check_certified_publication_boundary_contract(
 
     allowed_writer_functions = {
         "publish_verified_certified_delivery_surface",
+        "_stage_verified_certified_delivery_surface_artifacts",
         "export_and_verify_certified_delivery_manifest",
     }
     for node in ast.walk(surface_tree):
@@ -2399,30 +2595,11 @@ def _check_candidate_sink_replay_contract(
         "publish_verified_certified_delivery_surface",
         path=certified_surface_path,
     )
-    publisher_source = _source_text(certified_surface_path, publisher_fn)
-    if publisher_source.count("clear_certified_delivery_surface_artifacts(project_root)") < 2:
-        errors.append("verified publisher must clear stale artifacts before publish and on rollback")
-    for token in (
-        "_load_strict_json_mapping(resolved_campaign_path)",
-        "campaign_state_payload_mismatch",
-        "except Exception",
-        "build_blueprint_payload_from_certified_result",
-        "build_certified_delivery_manifest",
-        "validate_certified_delivery_manifest_matches_campaign",
-        "atomic_write_json(final_solution_path, result)",
-        "atomic_write_json(blueprint_path, blueprint_payload)",
-        "atomic_write_json(manifest_path, manifest_payload)",
-        "verify_certified_delivery_surface",
-        "resolve_p1_2_publish_open_gate",
-    ):
-        if token not in publisher_source:
-            errors.append(f"verified publisher must use disk authority and rollback gate: {token}")
-    for forbidden in (
-        "export_certified_delivery_manifest",
-        "write_blueprint_payload",
-    ):
-        if forbidden in publisher_source:
-            errors.append(f"verified publisher must own canonical writes directly, not delegate to {forbidden}")
+    errors.extend(_check_publisher_transaction_shape(publisher_fn, path=certified_surface_path))
+    if _direct_calls_name(publisher_fn, "export_certified_delivery_manifest"):
+        errors.append("verified publisher must own canonical writes directly, not delegate to export_certified_delivery_manifest")
+    if _direct_calls_name(publisher_fn, "write_blueprint_payload"):
+        errors.append("verified publisher must own canonical writes directly, not delegate to write_blueprint_payload")
     manifest_export_fn = _function_def(
         surface_tree,
         "export_and_verify_certified_delivery_manifest",
@@ -3618,7 +3795,7 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
 
 CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
-    'scripts/check_strong_status_write_allowlist.py': '1296e3836f5bad13486aa19800ca8f1a18403c991e337ab6a12cda1045caf8f2',
+    'scripts/check_strong_status_write_allowlist.py': '4964fcdea6f987d424013e25cc34355c1bc3371d2e2c8d9e68f96fa84cd1a9ff',
     'src/adapters/industrial_planner/export_blueprint.py': '01afafc85b4e7f27c0bf8c0293845785b45bc71ad332da483936b753a7d9eb5e',
     'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
     'src/cuts/cert_schema.py': 'e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e',
@@ -3629,7 +3806,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
-    'src/io/delivery_manifest.py': '100be25ecaa0634779ecd058e0551bae7b86758ef622705e55f61218dc7445c2',
+    'src/io/delivery_manifest.py': '19d2bb353f4bfbc1a4473ec6a4aa2e214dd47083b94d516d4f70962e05e79a09',
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
     'src/io/serializer.py': 'f40ede9bacee8fbfd1526973eb5f9985184930b70f84d946bb8b8c80d9e4fa9d',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
@@ -3661,9 +3838,9 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
-    'src/search/certified_surface.py': '655a0a30c594da121bafa0cb1fb2104630a09b112a1a8c19ae00ec41b725daf3',
+    'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '9bb85806c8595b29063d3b8caf8ac443015d9cf5b7ff4d7699244b746ee8edd3',
+    'src/search/exact_campaign.py': '1aa393fb964661e8d6ccd82bbd5815a600bb04a201d53fcdeb698efa9e479bff',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',

@@ -2130,6 +2130,55 @@ def _resume_strong_status_replay_reason(status: str) -> Optional[str]:
     return None
 
 
+def _candidate_proposed_resume_authority_violation(
+    state: Mapping[str, Any],
+    *,
+    checkpoint_path: Path,
+) -> Optional[str]:
+    if str(state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:
+        return None
+    proposal_state = state.get(SUPERVISOR_PROPOSAL_STATE_KEY)
+    proposal_violation = _proposal_state_violation(
+        proposal_state,
+        expected_campaign_instance_id=str(state.get(CAMPAIGN_INSTANCE_ID_KEY)),
+    )
+    if proposal_violation is not None:
+        return proposal_violation
+    if not isinstance(proposal_state, Mapping):
+        return "supervisor_proposal_invalid"
+    _marker, marker_violation = load_proposal_ready_marker(
+        proposal_ready_marker_path_for_campaign(checkpoint_path),
+        checkpoint_path=checkpoint_path,
+        expected_run_id=str(proposal_state.get("run_id")),
+        expected_campaign_instance_id=str(state.get(CAMPAIGN_INSTANCE_ID_KEY)),
+    )
+    return marker_violation
+
+
+def _demote_candidate_proposed_resume_state(
+    state: Dict[str, Any],
+    *,
+    reason: str,
+) -> None:
+    timestamp = now_iso()
+    state["final_result"] = None
+    state["final_status"] = None
+    state["last_stop_reason"] = None
+    state["terminal_frontier_evidence"] = None
+    state.pop(SUPERVISOR_SEAL_STATE_KEY, None)
+    state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+    audit_log = state.setdefault("audit_log", [])
+    if isinstance(audit_log, list):
+        audit_log.append(
+            {
+                "ts": timestamp,
+                "event": "RESUME_CANDIDATE_PROPOSED_AUTHORITY_REJECTED",
+                "reason": str(reason),
+            }
+        )
+    state["updated_at"] = timestamp
+
+
 def _sanitize_resume_state_for_untrusted_candidate_evidence(
     state: Dict[str, Any],
 ) -> bool:
@@ -2512,6 +2561,24 @@ def has_certified_export_surface(state: Mapping[str, Any]) -> bool:
     return (
         isinstance(stop_record, Mapping)
         and str(stop_record.get("status")) in PROOF_BEARING_TERMINAL_STATUSES
+    )
+
+
+def _has_unsupervised_certified_checkpoint_claim(state: Mapping[str, Any]) -> bool:
+    """Return True when a checkpoint tries to mint terminal CERTIFIED state."""
+
+    if str(state.get("final_status")) == "CERTIFIED":
+        return True
+    final_result = state.get("final_result")
+    if (
+        isinstance(final_result, Mapping)
+        and str(final_result.get("search_status")) == "CERTIFIED"
+    ):
+        return True
+    stop_record = state.get("last_stop_reason")
+    return (
+        isinstance(stop_record, Mapping)
+        and str(stop_record.get("status")) == "CERTIFIED"
     )
 
 
@@ -2951,18 +3018,36 @@ class ExactCampaign:
                         ):
                             state["last_stop_reason"] = None
                             state["final_status"] = None
+                        proposal_resume_violation = (
+                            _candidate_proposed_resume_authority_violation(
+                                state,
+                                checkpoint_path=path,
+                            )
+                        )
+                        proposal_resume_demoted = False
+                        if proposal_resume_violation is not None:
+                            _demote_candidate_proposed_resume_state(
+                                state,
+                                reason=proposal_resume_violation,
+                            )
+                            proposal_resume_demoted = True
                         sanitized_resume_evidence = (
                             _sanitize_resume_state_for_untrusted_candidate_evidence(state)
                         )
-                        if sanitized_resume_evidence:
+                        if sanitized_resume_evidence or proposal_resume_demoted:
                             state.pop(SUPERVISOR_SEAL_STATE_KEY, None)
                             state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
                             # The resume boundary deliberately treats persisted strong
-                            # candidate conclusions as untrusted caches.  Make that
-                            # downgrade durable before returning so a crash, exception,
-                            # or concurrent public-surface read cannot observe the stale
-                            # proof-bearing checkpoint.
-                            atomic_write_json(path, state)
+                            # candidate conclusions and naked/forged proposal checkpoints
+                            # as untrusted caches.  Make that downgrade durable before
+                            # returning so a crash, exception, or concurrent public-surface
+                            # read cannot observe stale proof-bearing state.
+                            with _checkpoint_write_lock(path):
+                                try:
+                                    proposal_ready_marker_path_for_campaign(path).unlink()
+                                except FileNotFoundError:
+                                    pass
+                                atomic_write_json(path, state)
                             _clear_certified_delivery_surface_artifacts_for_campaign_resume(
                                 project_root
                             )
@@ -3744,11 +3829,10 @@ class ExactCampaign:
                 self.state,
                 updated_at=now_iso(),
             )
-            if (
-                str(checked_state.get("final_status")) == "CERTIFIED"
-                or has_terminal_full_frontier_certified_evidence(checked_state)
-            ):
-                raise RuntimeError("terminal CERTIFIED checkpoints must be written by supervisor_seal")
+            if _has_unsupervised_certified_checkpoint_claim(checked_state):
+                raise RuntimeError(
+                    "proof-bearing terminal checkpoints must be written by supervisor_seal"
+                )
             _atomic_write_json_bytes(self.path, state_bytes)
             if self.path.read_bytes() != state_bytes:
                 raise RuntimeError("campaign checkpoint bytes mismatch after save")
