@@ -683,14 +683,26 @@ def compile_context(index: dict[str, Any], frame: dict[str, Any], dense_enabled:
             key=lambda item: (-float(item["score"]), str(item["id"])),
         )
         quota = L1_QUOTA.get(kind, 0)
-        for item in items[:quota]:
-            item["layer"] = "L1"
-            item["reason"] = f"quota:{kind}"
-            l1.append(item)
-        for item in items[quota:]:
-            item["layer"] = "L2"
-            item["reason"] = f"overflow:{kind}"
-            l2.append(item)
+        promoted = 0
+        for item in items:
+            features = item.get("features", {})
+            # Only a real trigger or scope signal earns the user-visible L1 slot.
+            # A bm25-only substring brush is too weak to surface a card here and
+            # would flood L1 with topically-adjacent noise; demote it to an L2
+            # pointer instead. (No gold-standard expected card is bm25-only.)
+            strong_signal = (
+                float(features.get("trigger_hit", 0.0)) > 0.0
+                or float(features.get("scope_match", 0.0)) > 0.0
+            )
+            if strong_signal and promoted < quota:
+                item["layer"] = "L1"
+                item["reason"] = f"quota:{kind}"
+                l1.append(item)
+                promoted += 1
+            else:
+                item["layer"] = "L2"
+                item["reason"] = "weak:bm25-only" if not strong_signal else f"overflow:{kind}"
+                l2.append(item)
 
     l0 = sorted(l0, key=lambda item: str(item["id"]))
     l1 = sorted(l1, key=lambda item: (str(item["kind"]), -float(item["score"]), str(item["id"])))
