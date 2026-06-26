@@ -22,6 +22,7 @@ from src.search.exact_campaign import (
     proposal_ready_marker_violation,
     validate_exact_campaign_resume_state,
 )
+from src.search.certified_surface import export_and_verify_certified_delivery_manifest
 from src.search.terminal_fixed_witness_capsule import (
     build_terminal_fixed_witness_projection_at_sink,
 )
@@ -186,6 +187,26 @@ def test_save_rejects_caller_memory_terminal_certified_checkpoint(
     persisted = json.loads(campaign.path.read_text(encoding="utf-8"))
     assert persisted["final_status"] is None
     assert persisted["final_result"] is None
+
+
+def test_save_rejects_stop_reason_certified_without_supervisor_seal(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "save_rejects_stop_reason_certified")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    campaign.state["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": RUN_STATUS_CERTIFIED,
+        "updated_at": "2026-06-24T00:00:00Z",
+    }
+
+    with pytest.raises(RuntimeError, match="supervisor_seal"):
+        campaign.save()
+
+    persisted = json.loads(campaign.path.read_text(encoding="utf-8"))
+    assert persisted["final_status"] is None
+    assert persisted["final_result"] is None
+    assert persisted["last_stop_reason"] is None
 
 
 def test_save_rejects_dict_subclass_that_mutates_after_guard(
@@ -553,6 +574,74 @@ def test_resume_forged_terminal_checkpoint_resets_and_clears_stale_surface(
     persisted = json.loads(resumed.path.read_text(encoding="utf-8"))
     assert persisted["final_status"] is None
     assert persisted["final_result"] is None
+
+
+def test_candidate_proposed_resume_without_marker_demotes_and_clears_stale_surface(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "candidate_proposed_resume_missing_marker")
+    campaign, _final_result, _terminal_frontier_evidence = _prepare_candidate_proposed_campaign(
+        project_root,
+        run_id="missing-marker-run",
+        write_marker=False,
+    )
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", {"stale": True})
+    _write_json(project_root / "data" / "blueprints" / "optimal_blueprint.json", {"stale": True})
+    _write_json(
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json",
+        {"stale": True},
+    )
+
+    resumed = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=True)
+
+    assert resumed.resumed is True
+    assert resumed.state["final_status"] is None
+    assert resumed.state["final_result"] is None
+    assert resumed.state["last_stop_reason"] is None
+    assert resumed.state["terminal_frontier_evidence"] is None
+    assert SUPERVISOR_PROPOSAL_STATE_KEY not in resumed.state
+    assert not campaign.proposal_ready_marker_path.exists()
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+    assert not (project_root / "data" / "blueprints" / "optimal_blueprint.json").exists()
+    assert not (
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    ).exists()
+    persisted = json.loads(resumed.path.read_text(encoding="utf-8"))
+    assert persisted["final_status"] is None
+    assert persisted["final_result"] is None
+    assert any(
+        event.get("event") == "RESUME_CANDIDATE_PROPOSED_AUTHORITY_REJECTED"
+        and event.get("reason") == "proposal_ready_marker_unreadable"
+        for event in persisted.get("audit_log", [])
+        if isinstance(event, Mapping)
+    )
+
+
+def test_nonpublishable_manifest_export_clears_stale_certified_surface(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "nonpublishable_manifest_clears_stale")
+    campaign = ExactCampaign.load_or_create(project_root, campaign_hours=1.0, resume=False)
+    _write_json(project_root / "data" / "solutions" / "final_solution.json", {"stale": True})
+    _write_json(project_root / "data" / "blueprints" / "optimal_blueprint.json", {"stale": True})
+    _write_json(
+        project_root / "data" / "solutions" / "certified_delivery_manifest.json",
+        {"stale": True},
+    )
+
+    manifest = export_and_verify_certified_delivery_manifest(
+        project_root=project_root,
+        exact_campaign=campaign,
+    )
+
+    assert manifest is not None
+    assert manifest.get("best_certified_result") is None
+    assert not (project_root / "data" / "solutions" / "final_solution.json").exists()
+    assert not (project_root / "data" / "blueprints" / "optimal_blueprint.json").exists()
+    manifest_path = project_root / "data" / "solutions" / "certified_delivery_manifest.json"
+    assert manifest_path.exists()
+    persisted = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert persisted.get("best_certified_result") is None
 
 
 def test_resume_reset_cleanup_failure_fails_closed(

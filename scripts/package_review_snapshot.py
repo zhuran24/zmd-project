@@ -287,25 +287,49 @@ def _git_status_entries(repo_root: Path) -> list[dict[str, str]]:
         ["status", "--porcelain=v1", "-z", "--untracked-files=all"],
         cwd=repo_root,
     )
+    parts = raw.decode("utf-8", errors="replace").split("\0")
     entries: list[dict[str, str]] = []
-    for entry in raw.decode("utf-8", errors="replace").split("\0"):
+    index = 0
+    while index < len(parts):
+        entry = parts[index]
+        index += 1
         if not entry:
             continue
-        entries.append(
-            {
-                "status": entry[:2],
-                "path": _normalize_rel_path(entry[3:]),
-            }
-        )
-    return sorted(entries, key=lambda item: item["path"])
+        if len(entry) < 4 or entry[2] != " ":
+            raise RuntimeError(f"unexpected git status porcelain entry: {entry!r}")
+        status = entry[:2]
+        payload = {
+            "status": status,
+            "path": _normalize_rel_path(entry[3:]),
+        }
+        if status[0] in {"R", "C"} or status[1] in {"R", "C"}:
+            if index >= len(parts) or not parts[index]:
+                raise RuntimeError(
+                    f"git status porcelain {status.strip() or status!r} entry is missing original path"
+                )
+            payload["orig_path"] = _normalize_rel_path(parts[index])
+            index += 1
+        entries.append(payload)
+    return sorted(entries, key=lambda item: (item["path"], item.get("orig_path", "")))
+
+
+def _dirty_status_paths(entry: Mapping[str, str]) -> list[str]:
+    paths = [entry["path"]]
+    original = entry.get("orig_path")
+    if original:
+        paths.append(original)
+    return paths
 
 
 def _guarded_dirty_paths(repo_root: Path) -> list[str]:
     guarded: list[str] = []
     for entry in _git_status_entries(repo_root):
-        rel_path = entry["path"]
-        if any(rel_path == prefix.rstrip("/") or rel_path.startswith(prefix) for prefix in DIRTY_GUARD_PREFIXES):
-            guarded.append(rel_path)
+        for rel_path in _dirty_status_paths(entry):
+            if any(
+                rel_path == prefix.rstrip("/") or rel_path.startswith(prefix)
+                for prefix in DIRTY_GUARD_PREFIXES
+            ):
+                guarded.append(rel_path)
     return sorted(set(guarded))
 
 
@@ -491,7 +515,7 @@ def _git_commit_metadata(repo_root: Path, treeish: str) -> dict[str, object]:
         ["git", "rev-parse", "--verify", f"{treeish}^{{tree}}"],
     ).strip()
     status_entries = _git_status_entries(repo_root)
-    dirty_paths = [entry["path"] for entry in status_entries]
+    dirty_paths = sorted({path for entry in status_entries for path in _dirty_status_paths(entry)})
     dirty_guarded_paths = [
         path
         for path in dirty_paths

@@ -8293,9 +8293,11 @@ def test_certified_result_writes_canonical_optimal_blueprint(
             facility_pools=facility_pools,
         )
 
-    assert not final_solution_path.exists()
-    assert not blueprint_path.exists()
-    assert not manifest_path.exists()
+    assert json.loads(final_solution_path.read_text(encoding="utf-8")) == final_solution_payload
+    assert normalize_blueprint_payload(
+        json.loads(blueprint_path.read_text(encoding="utf-8"))
+    ) == blueprint_payload
+    assert json.loads(manifest_path.read_text(encoding="utf-8")) == manifest_payload
 
 
 def test_clear_certified_delivery_surface_artifacts_attempts_all_after_unlink_failure(

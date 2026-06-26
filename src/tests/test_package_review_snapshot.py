@@ -142,6 +142,31 @@ def test_package_review_snapshot_binds_commit_tree_and_dirty_state(tmp_path: Pat
     assert manifest["inventory_sha256"] == package_review_snapshot._inventory_digest(inventory)
 
 
+def test_package_review_snapshot_records_renamed_dirty_paths(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _init_repo(repo)
+    (repo / "scripts").mkdir()
+    (repo / "scripts" / "package_review_snapshot.py").write_text("print('package')\n", encoding="utf-8")
+    (repo / "docs").mkdir()
+    (repo / "docs" / "original.txt").write_text("committed docs\n", encoding="utf-8")
+    (repo / "src").mkdir()
+    _commit_all(repo)
+
+    _git(repo, "mv", "docs/original.txt", "src/renamed.py")
+
+    status_entries = package_review_snapshot._git_status_entries(repo)
+    provenance = package_review_snapshot._git_commit_metadata(repo, "HEAD")
+
+    assert status_entries == [
+        {"status": "R ", "path": "src/renamed.py", "orig_path": "docs/original.txt"}
+    ]
+    assert provenance["working_tree_dirty"] is True
+    assert provenance["dirty_paths"] == ["docs/original.txt", "src/renamed.py"]
+    assert provenance["dirty_guarded_paths"] == ["src/renamed.py"]
+    assert provenance["dirty_changes_included"] is False
+
+
 def test_package_review_snapshot_embedded_manifest_records_verification_receipt(tmp_path: Path) -> None:
     inventory = [
         {
