@@ -74,7 +74,10 @@ from src.search.exact_campaign import (
     load_proposal_ready_marker,
 )
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
-from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
+from src.tests.certified_frontier_helpers import (
+    install_accepting_l0_supervisor_seal,
+    write_closed_phase_review_gate,
+)
 
 
 
@@ -923,22 +926,11 @@ def _install_accepting_supervisor_seal_replay(
     *,
     project_root: Path,
 ) -> None:
-    def accept_sink_replay_bundle(**kwargs):
-        campaign_state = kwargs["campaign_state"]
-        assert kwargs["project_root"] == project_root
-        assert campaign_state["final_status"] == CANDIDATE_PROPOSED_STATUS
-        assert kwargs["campaign_path"] is not None
-        assert kwargs["serialized_state_bytes"] == Path(kwargs["campaign_path"]).read_bytes()
-        return {
-            "evidence": dict(campaign_state["terminal_frontier_evidence"]),
-            "candidate_records": {
-                str(key): dict(value)
-                for key, value in campaign_state.get("candidates", {}).items()
-            },
-            "sink_replay_violations": {},
-            "fixed_witness_publishable": True,
-            "fixed_witness_violations": {},
-        }
+    # Test-only publication/plumbing fixture: supervisor_seal() still runs, but
+    # its L0 entrypoint writes a faithful CERTIFIED checkpoint without launching
+    # the true child verifier.  The true child path is covered separately by
+    # test_pr2_l0_micro_verifier_core.py.
+    install_accepting_l0_supervisor_seal(monkeypatch, project_root=project_root)
 
     def accept_terminal_evidence_for_certified_state(
         state,
@@ -960,11 +952,6 @@ def _install_accepting_supervisor_seal_replay(
             and state.get("terminal_frontier_evidence") is not None
         )
 
-    monkeypatch.setattr(
-        exact_campaign_module,
-        "build_sink_verified_terminal_frontier_evidence",
-        accept_sink_replay_bundle,
-    )
     for module in (
         exact_campaign_module,
         delivery_manifest_module,

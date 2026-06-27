@@ -7,10 +7,14 @@ from typing import Any, Mapping
 
 import pytest
 
+import src.search.pr2_l0_micro_verifier_core as l0_module
 import src.search.terminal_fixed_witness_capsule as capsule_module
 import src.search.terminal_fixed_witness_verifier as fixed_witness_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
-from src.search.candidate_proof_replay import CANDIDATE_PROOF_FIELD
+from src.search.candidate_proof_replay import (
+    CANDIDATE_PROOF_FIELD,
+    build_candidate_replay_proof,
+)
 from src.search.certified_frontier import (
     build_sink_verified_terminal_frontier_evidence,
     candidate_generation_kwargs,
@@ -19,11 +23,11 @@ from src.search.certified_frontier import (
 from src.search.exact_campaign import (
     CANDIDATE_PROPOSED_STATUS,
     ExactCampaign,
+    SUPERVISOR_SEAL_STATE_KEY,
     TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     compute_exact_artifact_hashes,
     terminal_certified_final_result_violation_for_project,
 )
-from src.tests.test_exact_contract import _install_accepting_supervisor_seal_replay
 from src.search.terminal_fixed_witness_capsule import (
     TERMINAL_FIXED_WITNESS_CAPSULE_AUTHORITY,
     TERMINAL_FIXED_WITNESS_CAPSULE_RESPONSE_SCHEMA_VERSION,
@@ -160,85 +164,48 @@ def _install_capsule_response(
     monkeypatch.setattr(capsule_module, "_invoke_isolated_capsule", fake_invoke)
 
 
-def _prepare_sealed_campaign(
-    monkeypatch: pytest.MonkeyPatch,
-    *,
-    root: Path,
-    state: dict[str, Any],
-) -> ExactCampaign:
-    """Build a CANDIDATE_PROPOSED campaign matching *state* content, then seal it.
+def _prepare_proposed_campaign(*, root: Path, state: dict[str, Any]) -> ExactCampaign:
+    """Build a CANDIDATE_PROPOSED campaign matching *state* content."""
 
-    Returns the campaign object after supervisor_seal() — its .path points to the
-    sealed CERTIFIED checkpoint on disk. The caller should install test-specific
-    patches (forged symbols, failure capsule) AFTER this call so they don't
-    interfere with the accepting monkeypatches used during sealing.
-    """
     # Build a fresh CANDIDATE_PROPOSED campaign with the same content as state.
     proposal = ExactCampaign.load_or_create(root, campaign_hours=1.0, resume=False)
     proposal_final_result = dict(state["final_result"])
     proposal_final_result["search_status"] = CANDIDATE_PROPOSED_STATUS
     proposal.state["final_result"] = proposal_final_result
     proposal.state["candidates"] = _json_copy(state["candidates"])
+    proposal.state["artifact_hashes"] = _json_copy(state["artifact_hashes"])
     run_id = proposal.set_supervisor_proposal_run_id()
     proposal.mark_campaign_stopped(
         TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
         status=CANDIDATE_PROPOSED_STATUS,
     )
     proposal.state["terminal_frontier_evidence"] = _json_copy(state["terminal_frontier_evidence"])
+    candidate_record = proposal.state["candidates"]["1x1"]
+    candidate_record[CANDIDATE_PROOF_FIELD] = build_candidate_replay_proof(
+        proposal,
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=candidate_record["solution"],
+    )
     proposal.save()
     proposal.write_proposal_ready_marker(run_id=run_id, exit_code=0)
 
-    # Accepting sink-replay monkeypatches required by supervisor_seal internals.
-    _install_accepting_supervisor_seal_replay(monkeypatch, project_root=root)
-
-    # Accepting capsule for the pre-commit validator called inside supervisor_seal.
-    # This is replaced by the test-specific capsule (failure/forgery) after sealing.
-    def _accepting_capsule(
-        *,
-        project_root: Path,
-        authority_state: Mapping[str, Any],
-        expected_artifact_hashes: Mapping[str, str],
-        expected_source_digest: str,
-        nonce: str,
-    ) -> Mapping[str, Any]:
-        identity = fixed_witness_module._identity_from_current_records(
-            fixed_witness_module._copy_candidate_records(authority_state["candidates"]),
-            authority_state["final_result"],
-        )
-        verdict = TerminalFixedWitnessVerdict(
-            schema_version=TERMINAL_FIXED_WITNESS_VERIFIER_SCHEMA_VERSION,
-            authority=TERMINAL_FIXED_WITNESS_VERIFIER_AUTHORITY,
-            fresh_run_token="seal-accepting-token",
-            publishable=True,
-            projected_status=RUN_STATUS_CERTIFIED,
-            candidate_key=identity.candidate_key,
-            solution_digest=identity.solution_digest,
-            ghost_rect_digest=identity.ghost_rect_digest,
-            ghost_cells_digest=identity.ghost_cells_digest,
-            witness_input_digest=identity.witness_input_digest,
-            binding_assignment_digest="0" * 64,
-            port_specs_digest="0" * 64,
-            routing_occupancy_digest="0" * 64,
-            binding_status="FEASIBLE",
-            routing_status="FEASIBLE",
-            reason=None,
-            details={"accepting": True},
-        )
-        return {
-            "schema_version": TERMINAL_FIXED_WITNESS_CAPSULE_RESPONSE_SCHEMA_VERSION,
-            "authority": TERMINAL_FIXED_WITNESS_CAPSULE_AUTHORITY,
-            "nonce": nonce,
-            "project_root": str(Path(project_root).resolve()),
-            "artifact_hashes": dict(expected_artifact_hashes),
-            "source_digest": expected_source_digest,
-            "verdict": verdict.to_dict(),
-        }
-
-    monkeypatch.setattr(capsule_module, "_invoke_isolated_capsule", _accepting_capsule)
-
-    # Seal — writes the CERTIFIED checkpoint to proposal.path.
-    proposal.supervisor_seal()
     return proposal
+
+
+def _assert_campaign_remained_proposal(
+    root: Path,
+    proposal: ExactCampaign,
+) -> dict[str, Any]:
+    disk_state = json.loads(proposal.path.read_text(encoding="utf-8"))
+    assert disk_state["final_status"] == CANDIDATE_PROPOSED_STATUS
+    assert disk_state["final_result"]["search_status"] == CANDIDATE_PROPOSED_STATUS
+    assert SUPERVISOR_SEAL_STATE_KEY not in disk_state
+    assert not (root / "data" / "solutions" / "final_solution.json").exists()
+    assert not (root / "data" / "solutions" / "certified_delivery_manifest.json").exists()
+    assert not (root / "data" / "blueprints" / "optimal_blueprint.json").exists()
+    return disk_state
 
 
 def test_same_process_constructed_publishable_verdict_cannot_publish(tmp_path: Path) -> None:
@@ -263,31 +230,50 @@ def test_verify_symbol_monkeypatch_cannot_publish(
 ) -> None:
     root = _build_tiny_project(tmp_path / "project")
     state = _prepare_state(root)
-    # Patch candidate replay first so it is active during sealing as well.
-    _patch_sink_replay(monkeypatch)
-    # Create a properly sealed checkpoint (needs accepting capsule during seal).
-    sealed = _prepare_sealed_campaign(monkeypatch, root=root, state=state)
-    # Install test-specific patches AFTER sealing so they don't interfere.
+    proposal = _prepare_proposed_campaign(root=root, state=state)
+    parent_patch_called = False
+    child_round_trips = 0
+    original_round_trip = l0_module.run_l0_micro_verifier_round_trip
+
+    def forged_verify(**_kwargs: Any) -> TerminalFixedWitnessVerdict:
+        nonlocal parent_patch_called
+        parent_patch_called = True
+        return _forged_publishable_verdict(state)
+
+    def counted_round_trip(*args: Any, **kwargs: Any) -> l0_module.L0MicroVerdict:
+        nonlocal child_round_trips
+        child_round_trips += 1
+        return original_round_trip(*args, **kwargs)
+
     monkeypatch.setattr(
         fixed_witness_module,
         "verify_terminal_fixed_witness",
-        lambda **_kwargs: _forged_publishable_verdict(state),
+        forged_verify,
     )
-    # Replace accepting capsule with the failure one for the validator call.
-    _install_capsule_response(
-        monkeypatch,
-        root=root,
-        state=state,
-        verdict=_failure_verdict(state, "child_rejected"),
+    monkeypatch.setattr(
+        l0_module,
+        "run_l0_micro_verifier_round_trip",
+        counted_round_trip,
     )
+
+    with pytest.raises(RuntimeError) as exc_info:
+        proposal.supervisor_seal()
+
+    assert parent_patch_called is False
+    assert child_round_trips == 1
+    error_text = str(exc_info.value)
+    assert "supervisor_seal true_verifier_exception:ValueError" in error_text
+    assert "proposal candidate_records mismatch after domain verification" in error_text
+    assert "candidate_sink_replay_project_binding_invalid:1x1" not in error_text
+    disk_state = _assert_campaign_remained_proposal(root, proposal)
 
     reason = terminal_certified_final_result_violation_for_project(
-        state,
+        disk_state,
         project_root=root,
-        campaign_path=sealed.path,
+        campaign_path=proposal.path,
     )
 
-    assert reason == "terminal_certified_candidate_record_not_certified"
+    assert reason == "terminal_certified_disk_authority_not_certified"
 
 
 def test_projection_symbol_monkeypatch_cannot_publish(
@@ -296,13 +282,14 @@ def test_projection_symbol_monkeypatch_cannot_publish(
 ) -> None:
     root = _build_tiny_project(tmp_path / "project")
     state = _prepare_state(root)
-    # Patch candidate replay first so it is active during sealing as well.
-    _patch_sink_replay(monkeypatch)
-    # Create a properly sealed checkpoint (needs accepting capsule during seal).
-    sealed = _prepare_sealed_campaign(monkeypatch, root=root, state=state)
-    # Install test-specific patches AFTER sealing so they don't interfere.
+    proposal = _prepare_proposed_campaign(root=root, state=state)
+    parent_patch_called = False
+    child_round_trips = 0
+    original_round_trip = l0_module.run_l0_micro_verifier_round_trip
 
     def forged_projection(**_kwargs: Any):
+        nonlocal parent_patch_called
+        parent_patch_called = True
         return fixed_witness_module.TerminalFixedWitnessProjection(
             candidate_records=_json_copy(state["candidates"]),
             candidate_key="1x1",
@@ -311,26 +298,40 @@ def test_projection_symbol_monkeypatch_cannot_publish(
             rejected_reason=None,
         )
 
+    def counted_round_trip(*args: Any, **kwargs: Any) -> l0_module.L0MicroVerdict:
+        nonlocal child_round_trips
+        child_round_trips += 1
+        return original_round_trip(*args, **kwargs)
+
     monkeypatch.setattr(
         fixed_witness_module,
         "project_terminal_fixed_witness_records_for_sink",
         forged_projection,
     )
-    # Replace accepting capsule with the failure one for the validator call.
-    _install_capsule_response(
-        monkeypatch,
-        root=root,
-        state=state,
-        verdict=_failure_verdict(state, "child_rejected"),
+    monkeypatch.setattr(
+        l0_module,
+        "run_l0_micro_verifier_round_trip",
+        counted_round_trip,
     )
+
+    with pytest.raises(RuntimeError) as exc_info:
+        proposal.supervisor_seal()
+
+    assert parent_patch_called is False
+    assert child_round_trips == 1
+    error_text = str(exc_info.value)
+    assert "supervisor_seal true_verifier_exception:ValueError" in error_text
+    assert "proposal candidate_records mismatch after domain verification" in error_text
+    assert "candidate_sink_replay_project_binding_invalid:1x1" not in error_text
+    disk_state = _assert_campaign_remained_proposal(root, proposal)
 
     reason = terminal_certified_final_result_violation_for_project(
-        state,
+        disk_state,
         project_root=root,
-        campaign_path=sealed.path,
+        campaign_path=proposal.path,
     )
 
-    assert reason == "terminal_certified_candidate_record_not_certified"
+    assert reason == "terminal_certified_disk_authority_not_certified"
 
 
 def test_child_nonce_mismatch_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -40,9 +40,6 @@ from src.search.certified_artifact_contract import (
 )
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_OBJECTIVE,
-    build_sink_verified_terminal_frontier_evidence,
-    candidate_generation_kwargs,
-    generate_candidate_sizes,
     terminal_frontier_evidence_violation,
 )
 from src.search.candidate_proof_replay import (
@@ -3571,205 +3568,34 @@ class ExactCampaign:
         *,
         reason: str = TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
     ) -> None:
-        """Mint terminal CERTIFIED from the committed proposal checkpoint bytes."""
+        """Mint terminal CERTIFIED from committed proposal bytes through PR2 L0."""
 
         if str(reason) != TERMINAL_FULL_FRONTIER_CERTIFIED_REASON:
             raise ValueError("supervisor_seal only supports terminal full-frontier certification")
 
-        authority_state, authority_bytes, marker = self._load_supervisor_proposal_authority()
-        raw_final_result = authority_state.get("final_result")
-        if not isinstance(raw_final_result, Mapping):
-            raise RuntimeError("supervisor_seal proposal final_result invalid")
-        proposal_final_result = dict(raw_final_result)
-        final_result_copy = dict(proposal_final_result)
-        final_result_copy["search_status"] = "CERTIFIED"
-        raw_terminal_frontier_evidence = authority_state.get("terminal_frontier_evidence")
-        if not isinstance(raw_terminal_frontier_evidence, Mapping):
-            raise RuntimeError("supervisor_seal proposal terminal_frontier_evidence invalid")
-        terminal_frontier_evidence_copy = dict(raw_terminal_frontier_evidence)
-        raw_candidate_records = authority_state.get("candidates")
-        if not isinstance(raw_candidate_records, Mapping):
-            raise RuntimeError("supervisor_seal proposal candidate_records invalid")
-        candidate_records_copy: Dict[str, Any] = {}
-        for raw_key, raw_record in raw_candidate_records.items():
-            if not isinstance(raw_record, Mapping):
-                raise RuntimeError("supervisor_seal proposal candidate_records invalid")
-            candidate_records_copy[str(raw_key)] = dict(raw_record)
-        candidate_records_comparison = (
-            _stable_fixed_witness_candidate_records_for_supervisor_compare(
-                candidate_records_copy
-            )
+        from src.search.pr2_l0_micro_verifier_core import (
+            L0SupervisorSealRequest,
+            SEALED as PR2_L0_SEALED,
+            run_l0_supervisor_seal,
         )
-        raw_candidate_generation = terminal_frontier_evidence_copy.get("candidate_generation")
-        if not isinstance(raw_candidate_generation, Mapping):
-            raise RuntimeError(
-                "supervisor_seal proposal terminal_frontier_evidence missing candidate_generation"
-            )
-        candidate_generation = dict(raw_candidate_generation)
-        try:
-            candidates = generate_candidate_sizes(
-                **candidate_generation_kwargs(candidate_generation)
-            )
-        except Exception as exc:  # noqa: BLE001
-            raise RuntimeError(
-                "supervisor_seal proposal terminal candidate generation invalid"
-            ) from exc
 
-        timestamp = now_iso()
-        scratch_state = dict(authority_state)
-        scratch_state["final_result"] = final_result_copy
-        scratch_state["final_status"] = "CERTIFIED"
-        scratch_state["last_stop_reason"] = {
-            "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
-            "status": "CERTIFIED",
-            "updated_at": timestamp,
-        }
-        scratch_state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
-        scratch_state["terminal_frontier_evidence"] = terminal_frontier_evidence_copy
-        scratch_state["candidates"] = candidate_records_copy
-
-        sink_bundle = build_sink_verified_terminal_frontier_evidence(
-            candidates=candidates,
-            campaign_state=authority_state,
-            project_root=self.project_root,
-            campaign_path=self.path,
-            serialized_state_bytes=authority_bytes,
-            final_result=proposal_final_result,
-            candidate_generation=candidate_generation,
-        )
-        if not isinstance(sink_bundle, Mapping):
-            raise RuntimeError("supervisor_seal sink replay bundle invalid")
-        raw_sink_replay_violations = sink_bundle.get("sink_replay_violations", {})
-        sink_replay_violations = (
-            dict(raw_sink_replay_violations)
-            if isinstance(raw_sink_replay_violations, Mapping)
-            else {"*": "sink_replay_violations_invalid"}
-        )
-        if sink_replay_violations:
-            first_key = sorted(sink_replay_violations)[0]
-            raise RuntimeError(
-                "terminal candidate sink replay failed: "
-                f"{sink_replay_violations[first_key]}"
-            )
-        raw_fixed_witness_violations = sink_bundle.get("fixed_witness_violations", {})
-        fixed_witness_violations = (
-            dict(raw_fixed_witness_violations)
-            if isinstance(raw_fixed_witness_violations, Mapping)
-            else {"*": "terminal_fixed_witness_rejected"}
-        )
-        if fixed_witness_violations or not bool(
-            sink_bundle.get("fixed_witness_publishable", False)
-        ):
-            first_key = sorted(
-                fixed_witness_violations or {"*": "terminal_fixed_witness_rejected"}
-            )[0]
-            raise RuntimeError(
-                "terminal fixed witness verifier failed: "
-                f"{fixed_witness_violations.get(first_key, 'terminal_fixed_witness_rejected')}"
-            )
-        verified_terminal_frontier_evidence = sink_bundle.get("evidence")
-        if not isinstance(verified_terminal_frontier_evidence, Mapping):
-            raise RuntimeError("supervisor_seal sink replay evidence invalid")
-        if dict(verified_terminal_frontier_evidence) != terminal_frontier_evidence_copy:
-            raise RuntimeError(
-                "supervisor_seal terminal_frontier_evidence mismatch after sink replay"
-            )
-        verified_candidate_records = sink_bundle.get("candidate_records")
-        if not isinstance(verified_candidate_records, Mapping):
-            raise RuntimeError("supervisor_seal sink replay candidate_records invalid")
-        verified_candidate_records_copy: Dict[str, Any] = {}
-        for raw_key, raw_record in verified_candidate_records.items():
-            if not isinstance(raw_record, Mapping):
-                raise RuntimeError(
-                    "supervisor_seal sink replay candidate_records invalid"
-                )
-            verified_candidate_records_copy[str(raw_key)] = dict(raw_record)
-        verified_candidate_records_comparison = (
-            _stable_fixed_witness_candidate_records_for_supervisor_compare(
-                verified_candidate_records_copy
+        current_campaign_instance_id = self.state.get(CAMPAIGN_INSTANCE_ID_KEY)
+        if not _valid_campaign_instance_id(current_campaign_instance_id):
+            raise RuntimeError("supervisor_seal campaign_instance_id_invalid")
+        verdict = run_l0_supervisor_seal(
+            L0SupervisorSealRequest(
+                project_root=self.project_root,
+                campaign_path=self.path,
+                marker_path=self.proposal_ready_marker_path,
+                expected_campaign_instance_id=str(current_campaign_instance_id),
             )
         )
-        if verified_candidate_records_comparison != candidate_records_comparison:
-            raise RuntimeError(
-                "supervisor_seal candidate_records mismatch after sink replay"
-            )
-        scratch_state["terminal_frontier_evidence"] = dict(
-            verified_terminal_frontier_evidence
-        )
-        scratch_state["candidates"] = verified_candidate_records_comparison
-
-        precheck_reason = terminal_certified_final_result_project_precheck_violation(
-            scratch_state,
-            project_root=self.project_root,
-        )
-        if precheck_reason is not None:
-            raise RuntimeError(f"supervisor_seal rejected terminal CERTIFIED evidence: {precheck_reason}")
-
-        commit_timestamp = now_iso()
-        scratch_state["updated_at"] = commit_timestamp
-        proposal_checkpoint_sha256 = str(marker["checkpoint_sha256"])
-        seal_record = {
-            "schema_version": SUPERVISOR_SEAL_SCHEMA_VERSION,
-            "authority": SUPERVISOR_SEAL_AUTHORITY,
-            "transition": "proposal_to_certified_v1",
-            "proposal_run_id": str(marker["run_id"]),
-            "proposal_checkpoint_sha256": proposal_checkpoint_sha256,
-            "proposal_authority_b64": base64.b64encode(authority_bytes).decode("ascii"),
-            CAMPAIGN_INSTANCE_ID_KEY: str(marker[CAMPAIGN_INSTANCE_ID_KEY]),
-            "certified_state_sha256": _certified_state_payload_sha256(scratch_state),
-            "sealed_at": commit_timestamp,
-        }
-        scratch_state[SUPERVISOR_SEAL_STATE_KEY] = seal_record
-        seal_violation = _supervisor_seal_state_violation(
-            scratch_state.get(SUPERVISOR_SEAL_STATE_KEY),
-            state=scratch_state,
-        )
-        if seal_violation is not None:
-            raise RuntimeError(f"supervisor_seal {seal_violation}")
-
-        pending_state_bytes = _atomic_json_bytes(scratch_state)
-        self._validate_supervisor_certified_state_before_commit(
-            scratch_state,
-            authority_bytes=pending_state_bytes,
-        )
-        with _checkpoint_write_lock(self.path):
-            self._assert_proposal_marker_still_current(marker)
-            try:
-                current_checkpoint_sha256 = _sha256_file(self.path)
-            except Exception as exc:  # noqa: BLE001
-                raise RuntimeError("supervisor_seal proposal checkpoint missing before mint") from exc
-            if current_checkpoint_sha256 != proposal_checkpoint_sha256:
-                raise RuntimeError("supervisor_seal proposal checkpoint changed before mint")
-            atomic_write_json(self.path, scratch_state)
-            try:
-                disk_bytes = self.path.read_bytes()
-                if disk_bytes != pending_state_bytes:
-                    raise RuntimeError("supervisor_seal certified checkpoint bytes mismatch")
-                disk_state = loads_strict_json(disk_bytes.decode("utf-8"))
-                if not isinstance(disk_state, Mapping):
-                    raise RuntimeError("supervisor_seal certified checkpoint invalid")
-                if not has_valid_terminal_full_frontier_certified_evidence_for_project(
-                    disk_state,
-                    project_root=self.project_root,
-                    campaign_path=self.path,
-                ):
-                    raise RuntimeError(
-                        "supervisor_seal rejected terminal CERTIFIED evidence: "
-                        "disk certified validation failed"
-                    )
-            except Exception:
-                atomic_write_json(self.path, authority_state)
-                raise
-            marker_path = self.proposal_ready_marker_path
-            try:
-                current_payload = loads_strict_json(marker_path.read_text(encoding="utf-8"))
-            except Exception:
-                current_payload = None
-            if isinstance(current_payload, Mapping) and dict(current_payload) == dict(marker):
-                try:
-                    marker_path.unlink()
-                except FileNotFoundError:
-                    pass
+        if verdict.status != PR2_L0_SEALED:
+            raise RuntimeError(f"supervisor_seal {verdict.reason}")
+        disk_bytes = self.path.read_bytes()
+        disk_state = loads_strict_json(disk_bytes.decode("utf-8"))
+        if not isinstance(disk_state, Mapping):
+            raise RuntimeError("supervisor_seal certified checkpoint invalid")
         self.state = dict(disk_state)
 
     def mark_campaign_stopped(

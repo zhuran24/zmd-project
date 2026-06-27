@@ -22,6 +22,7 @@ from src.search.exact_campaign import (
     ExactCampaign,
     terminal_certified_final_result_violation_for_project,
 )
+from src.tests.certified_frontier_helpers import install_accepting_l0_supervisor_seal
 from src.tests.verified_producer_test_support import seal_test_candidate_status
 
 
@@ -193,26 +194,10 @@ def test_terminal_project_validator_accepts_selected_power_coverer(
     # replay-consistent.
     state = _write_power_project(tmp_path, include_selected_covering_pole=True)
 
-    # Install accepting monkeypatch for build_sink_verified_terminal_frontier_evidence
-    # and has_valid_terminal_full_frontier_certified_evidence_for_project, mirroring
-    # _install_accepting_supervisor_seal_replay from test_exact_contract.py.  This
-    # bypasses the external sink-replay subprocess during supervisor_seal while still
-    # exercising the power-coverage precheck and the public terminal validator.
-    def accept_sink_replay_bundle(**kwargs: Any) -> dict[str, Any]:
-        campaign_state = kwargs["campaign_state"]
-        assert campaign_state["final_status"] == CANDIDATE_PROPOSED_STATUS
-        assert kwargs["campaign_path"] is not None
-        assert kwargs["serialized_state_bytes"] == Path(kwargs["campaign_path"]).read_bytes()
-        return {
-            "evidence": dict(campaign_state["terminal_frontier_evidence"]),
-            "candidate_records": {
-                str(key): dict(value)
-                for key, value in campaign_state.get("candidates", {}).items()
-            },
-            "sink_replay_violations": {},
-            "fixed_witness_publishable": True,
-            "fixed_witness_violations": {},
-        }
+    # Install the test-only L0 supervisor seal and accepting terminal evidence checks.
+    # This keeps supervisor_seal() on the seal path while still exercising the
+    # power-coverage precheck and the public terminal validator.
+    install_accepting_l0_supervisor_seal(monkeypatch, project_root=tmp_path)
 
     def accept_terminal_evidence(
         s: dict[str, Any],
@@ -233,11 +218,6 @@ def test_terminal_project_validator_accepts_selected_power_coverer(
             and s.get("terminal_frontier_evidence") is not None
         )
 
-    monkeypatch.setattr(
-        exact_campaign_module,
-        "build_sink_verified_terminal_frontier_evidence",
-        accept_sink_replay_bundle,
-    )
     for mod in (exact_campaign_module, certified_surface_module, delivery_manifest_module):
         monkeypatch.setattr(
             mod,

@@ -29,7 +29,10 @@ from src.search.exact_parallel_scheduler import (
 )
 from src.search.campaign_telemetry import campaign_telemetry_output_path
 from src.search.outer_search import generate_candidate_sizes, run_outer_search
-from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
+from src.tests.certified_frontier_helpers import (
+    install_accepting_l0_supervisor_seal,
+    write_closed_phase_review_gate,
+)
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -214,23 +217,6 @@ def _seal_campaign_proposal_with_accepting_replay(
     project_root: Path,
     state: dict,
 ) -> ExactCampaign:
-    def accept_sink_replay_bundle(**kwargs):
-        campaign_state = kwargs["campaign_state"]
-        assert kwargs["project_root"] == project_root
-        assert campaign_state["final_status"] == CANDIDATE_PROPOSED_STATUS
-        assert kwargs["campaign_path"] is not None
-        assert kwargs["serialized_state_bytes"] == Path(kwargs["campaign_path"]).read_bytes()
-        return {
-            "evidence": dict(campaign_state["terminal_frontier_evidence"]),
-            "candidate_records": {
-                str(key): dict(value)
-                for key, value in campaign_state.get("candidates", {}).items()
-            },
-            "sink_replay_violations": {},
-            "fixed_witness_publishable": True,
-            "fixed_witness_violations": {},
-        }
-
     def accept_terminal_evidence_for_certified_state(
         state,
         *,
@@ -248,11 +234,7 @@ def _seal_campaign_proposal_with_accepting_replay(
             and state.get("terminal_frontier_evidence") is not None
         )
 
-    monkeypatch.setattr(
-        exact_campaign_module,
-        "build_sink_verified_terminal_frontier_evidence",
-        accept_sink_replay_bundle,
-    )
+    install_accepting_l0_supervisor_seal(monkeypatch, project_root=project_root)
     monkeypatch.setattr(
         exact_campaign_module,
         "has_valid_terminal_full_frontier_certified_evidence_for_project",
