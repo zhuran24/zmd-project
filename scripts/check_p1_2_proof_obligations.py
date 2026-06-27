@@ -28,6 +28,10 @@ EXACT_CAMPAIGN_INSPECTOR_PATH = PROJECT_ROOT / "src" / "search" / "exact_campaig
 CERTIFIED_FRONTIER_PATH = PROJECT_ROOT / "src" / "search" / "certified_frontier.py"
 CERTIFIED_SURFACE_PATH = PROJECT_ROOT / "src" / "search" / "certified_surface.py"
 CANDIDATE_PROOF_REPLAY_PATH = PROJECT_ROOT / "src" / "search" / "candidate_proof_replay.py"
+PR2_L0_MICRO_VERIFIER_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_micro_verifier_core.py"
+PR2_L0_TRUE_VERIFIER_CHILD_PATH = (
+    PROJECT_ROOT / "src" / "search" / "pr2_l0_true_verifier_child.py"
+)
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 )
@@ -2471,41 +2475,115 @@ def _check_candidate_sink_replay_contract(
     }
     for forbidden_arg in sorted(forbidden_seal_authority_args & seal_arg_names):
         errors.append(f"supervisor_seal must not accept caller authority argument: {forbidden_arg}")
-    if not _calls_function(seal_fn, "build_sink_verified_terminal_frontier_evidence"):
-        errors.append(
-            "supervisor_seal must call build_sink_verified_terminal_frontier_evidence before minting CERTIFIED"
-        )
-    if not _calls_function_with_keyword_expr(
-        seal_fn,
-        "build_sink_verified_terminal_frontier_evidence",
-        "campaign_path",
-        "self.path",
+    if not _calls_function(seal_fn, "run_l0_supervisor_seal"):
+        errors.append("supervisor_seal must delegate terminal mint authority to PR2 L0")
+    for token in (
+        "L0SupervisorSealRequest",
+        "self.proposal_ready_marker_path",
+        "expected_campaign_instance_id",
+        "PR2_L0_SEALED",
     ):
-        errors.append("supervisor_seal sink replay must bind the proposal checkpoint path")
-    if not _calls_function_with_keyword_expr(
-        seal_fn,
-        "build_sink_verified_terminal_frontier_evidence",
-        "serialized_state_bytes",
-        "authority_bytes",
-    ):
-        errors.append("supervisor_seal sink replay must consume proposal authority bytes")
+        if token not in seal_source:
+            errors.append(f"supervisor_seal must bind the PR2 L0 request: {token}")
     if "campaign_path=None" in seal_source:
         errors.append("supervisor_seal must not validate terminal evidence with campaign_path=None")
     if "_save_supervisor_certified_state" in exact_source:
         errors.append("supervisor certified checkpoint writer must not be exposed as a method/helper")
-    for token in (
-        '"proposal_authority_b64"',
-        "base64.b64encode(authority_bytes)",
-        '"transition": "proposal_to_certified_v1"',
-        "_assert_proposal_marker_still_current(marker)",
-        "_sha256_file(self.path)",
-        "pending_state_bytes",
-        "authority_bytes=pending_state_bytes",
-        "has_valid_terminal_full_frontier_certified_evidence_for_project",
-        "atomic_write_json(self.path, authority_state)",
+
+    l0_tree = _parse_python(PR2_L0_MICRO_VERIFIER_PATH)
+    l0_seal_fn = _function_def(
+        l0_tree,
+        "run_l0_supervisor_seal",
+        path=PR2_L0_MICRO_VERIFIER_PATH,
+    )
+    l0_seal_source = _source_text(PR2_L0_MICRO_VERIFIER_PATH, l0_seal_fn)
+    for required_call in (
+        "_load_canonical_dependency_floor_manifest",
+        "_read_regular_file_bytes",
+        "_proposal_ready_marker_violation",
+        "_proposal_authority_violation",
+        "_strong_status_keys",
+        "_strong_proof_binding_violation",
+        "run_l0_micro_verifier_round_trip",
+        "_domain_response_violation",
+        "_checkpoint_write_lock_l0",
+        "_atomic_replace_bytes",
+        "_postwrite_state_violation",
     ):
-        if token not in seal_source:
-            errors.append(f"supervisor_seal must bind and atomically validate P->Q authority: {token}")
+        if not _calls_function(l0_seal_fn, required_call):
+            errors.append(f"PR2 L0 supervisor seal must call {required_call}")
+    for token in (
+        "marker_bytes = _read_regular_file_bytes(marker_path)",
+        "checkpoint_bytes = _read_regular_file_bytes(campaign_path)",
+        "checkpoint_sha256",
+        '"authority_state_b64": base64.b64encode(checkpoint_bytes)',
+        '"proposal_final_result_digest": _canonical_digest(certified_final_result)',
+        '"proposal_candidate_records_digest": _canonical_digest',
+        "verifier_module=TRUE_VERIFIER_MODULE",
+        "extra_snapshot_modules=_discover_project_snapshot_modules(source_root)",
+        '"transition": "proposal_to_certified_v1"',
+        '"proposal_authority_b64"',
+        "certified_state_sha256",
+        "pending_state_bytes",
+        "current_marker_bytes = _read_regular_file_bytes(marker_path)",
+        "current_checkpoint_bytes = _read_regular_file_bytes(campaign_path)",
+        "_atomic_replace_bytes(campaign_path, checkpoint_bytes)",
+        "write_isolation",
+        '"third_party_native": "NAMED-TCB"',
+    ):
+        if token not in l0_seal_source:
+            errors.append(f"PR2 L0 supervisor seal must bind and atomically validate P->Q authority: {token}")
+
+    child_tree = _parse_python(PR2_L0_TRUE_VERIFIER_CHILD_PATH)
+    child_domain_fn = _function_def(
+        child_tree,
+        "_verify_supervisor_domain",
+        path=PR2_L0_TRUE_VERIFIER_CHILD_PATH,
+    )
+    child_domain_source = _source_text(PR2_L0_TRUE_VERIFIER_CHILD_PATH, child_domain_fn)
+    for required_call in (
+        "_project_candidate_records_direct",
+        "_run_fixed_witness_direct",
+        "build_terminal_frontier_evidence",
+        "terminal_certified_final_result_project_precheck_violation",
+    ):
+        if not _calls_function(child_domain_fn, required_call):
+            errors.append(f"PR2 true verifier child domain path must call {required_call}")
+    for token in (
+        "authority_state_b64",
+        "terminal candidate sink replay failed",
+        "terminal fixed witness verifier failed",
+        "proposal_final_result_digest",
+        "proposal_terminal_frontier_evidence_digest",
+        "proposal_candidate_records_digest",
+        '"sink_replay_violations": {}',
+        '"fixed_witness_violations": {}',
+        '"third_party_native": "NAMED-TCB"',
+        "windows_write_isolation_residual",
+    ):
+        if token not in child_domain_source:
+            errors.append(f"PR2 true verifier child must fail closed and report bounded domain evidence: {token}")
+    child_project_fn = _function_def(
+        child_tree,
+        "_project_candidate_records_direct",
+        path=PR2_L0_TRUE_VERIFIER_CHILD_PATH,
+    )
+    child_project_source = _source_text(PR2_L0_TRUE_VERIFIER_CHILD_PATH, child_project_fn)
+    for required_call in (
+        "candidate_proof_shape_violation",
+        "_execute_isolated_replay_request",
+        "_replay_response_violation",
+    ):
+        if not _calls_function(child_project_fn, required_call):
+            errors.append(f"PR2 child candidate projection must call {required_call}")
+    for token in (
+        "set(expected_proofs) | set(violations) != set(strong_keys)",
+        "candidate_sink_replay_strong_key_coverage_mismatch",
+        "replay_status != claimed_status",
+        "candidate_sink_replay_status_mismatch",
+    ):
+        if token not in child_project_source:
+            errors.append(f"PR2 child candidate projection must enforce exact strong-key coverage: {token}")
     seal_state_fn = _function_def(
         exact_tree,
         "_supervisor_seal_state_violation",
@@ -2631,8 +2709,8 @@ def _check_candidate_sink_replay_contract(
         if token not in commit_source:
             errors.append(f"terminal proposal commit must preserve supervisor handoff: {token}")
     for token in ("sink_replay_violations", "terminal candidate sink replay failed"):
-        if token not in seal_source:
-            errors.append(f"supervisor_seal must fail closed on replay rejection: {token}")
+        if token not in child_domain_source:
+            errors.append(f"PR2 true verifier child must fail closed on replay rejection: {token}")
 
     delivery_tree = _parse_python(delivery_manifest_path)
     delivery_build_fn = _function_def(
@@ -2951,6 +3029,8 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
     if "_validate_master_domain_contract" not in resume_source:
         errors.append("ExactCampaign resume validation must reject restricted or missing master domain contracts")
     exact_campaign_source = EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
+    pr2_l0_source = PR2_L0_MICRO_VERIFIER_PATH.read_text(encoding="utf-8")
+    pr2_child_source = PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(encoding="utf-8")
     if "master_domain_contract" not in exact_campaign_source:
         errors.append("ExactCampaign state must persist an explicit full master-domain contract")
     for needle in (
@@ -3346,16 +3426,18 @@ def _check_certified_cut_replay_contract(manifest: dict[str, Any]) -> list[str]:
                 "outer search must commit replayable full-domain terminal frontier evidence before CERTIFIED export: "
                 f"{needle}"
             )
+    pr2_supervisor_source = pr2_l0_source + "\n" + pr2_child_source
     for needle in (
-        "build_sink_verified_terminal_frontier_evidence",
+        "run_l0_supervisor_seal",
+        "_project_candidate_records_direct",
         "candidate_generation_kwargs",
         "generate_candidate_sizes",
         "sink_replay_violations",
         "terminal candidate sink replay failed",
     ):
-        if needle not in exact_campaign_source:
+        if needle not in pr2_supervisor_source:
             errors.append(
-                "supervisor_seal must replay terminal frontier evidence before CERTIFIED mint: "
+                "PR2 supervisor seal must replay terminal frontier evidence before CERTIFIED mint: "
                 f"{needle}"
             )
 
@@ -3750,6 +3832,8 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/independent_infeasibility_reverifier.py': 'p1_2_certified_path',
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_micro_verifier_core.py': 'p1_2_certified_path',
+    'src/search/pr2_l0_true_verifier_child.py': 'p1_2_certified_path',
     'src/search/smt_mt_outer_pruning.py': 'p1_2_certified_path',
     'src/search/terminal_fixed_witness_capsule.py': 'p1_2_public_surface',
     'src/search/terminal_fixed_witness_verifier.py': 'p1_2_certified_path',
@@ -3766,6 +3850,8 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "src/search/candidate_proof_replay.py",
         "src/search/certified_frontier.py",
         "src/search/exact_campaign.py",
+        "src/search/pr2_l0_micro_verifier_core.py",
+        "src/search/pr2_l0_true_verifier_child.py",
         "src/search/outer_search.py",
         "src/search/exact_parallel_scheduler.py",
         "src/search/benders_loop.py",
@@ -3785,6 +3871,8 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
         "src/search/certified_frontier.py",
         "src/search/certified_surface.py",
         "src/search/exact_campaign.py",
+        "src/search/pr2_l0_micro_verifier_core.py",
+        "src/search/pr2_l0_true_verifier_child.py",
         "src/io/delivery_manifest.py",
         "src/io/serializer.py",
         "src/render/blueprint_exporter.py",
@@ -3840,13 +3928,15 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '1aa393fb964661e8d6ccd82bbd5815a600bb04a201d53fcdeb698efa9e479bff',
+    'src/search/exact_campaign.py': '2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
+    'src/search/pr2_l0_micro_verifier_core.py': '9c39c53096777f6fff7c6e1c78a7dc5a8cc5b858a60350723178a037c32dc74c',
+    'src/search/pr2_l0_true_verifier_child.py': 'fa5a9fbd40ae505cc91373449d7b7cfd7847c3bdbf247eeedf28fe1c85a84e1c',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
     'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531',
