@@ -2,7 +2,7 @@
 id: codex-team-sonnet-mediator
 kind: reference
 title: Codex 进 Agents Team 用 Sonnet 中介转 SendMessage
-summary: "codex agentType 本身=model:sonnet 瘦转发器(sonnet 当手/codex 当脑,调 mcp__codex__codex)。codex.md 有模式A单发+模式B团队(同一 sonnet 在 team 用 SendMessage 转发 codex 进会)。团队里那个'sonnet 中介'很可能就是 codex agentType 模式B本身;是否要另手包一个带 SendMessage 的 sonnet=待实测。别再误判'codex 没有 sonnet/没有模型'。"
+summary: "codex agentType 本身=model:sonnet 瘦转发器(sonnet 当手/codex 当脑,调 mcp__codex__codex)。2026-06-27 最小 team 实测确认:直接把 agentType:'codex' 带 team_name spawn 进 team,它在 team 上下文里自带 SendMessage、能直接当讨论席转发 codex 进会——【不需要、也不该再另手包 sonnet 中介】。别再误判'codex 没有模型',也别再多此一举手搭中介。"
 scope:
   domains: [agents-team, codex-integration]
   paths: []
@@ -26,20 +26,20 @@ activation:
   reason: 误判 Codex 不能进 team 会丢掉跨模型讨论能力，误给 schema 又可能触发空结构化输出问题。
 provenance:
   op: record
-  reason: owner 纠正 Codex 可通过 sonnet 中介加入 Agents Team，并要求沉淀 route-time 记忆。
+  reason: 2026-06-27 用最小 team 探针实测确认 agentType:'codex' 直接进 team 自带 SendMessage、不需手包中介;订正早先"必须另包 sonnet 中介"的旧结论。
   evidence:
-    - "python cc_memory/mem.py read codex-agents-team-sendmessage-sonnet --body"
+    - "2026-06-27 最小 team 探针 codex-team-probe:codex-probe(agentType codex/model sonnet)直接 SendMessage 给 lead 成功"
+    - "~/.claude/agents/codex.md (model: sonnet;模式A单发/模式B团队 SendMessage)"
     - "python cc_memory/mem.py read codex-agenttype-schema-structuredoutput-empty-loop --body"
     - "C:/Users/22957/.claude/projects/C--claude-pj-zmd-pj/memory/meeting-equals-team.md"
-    - "~/.claude/agents/codex.md (model: sonnet;模式A单发/模式B团队)"
 updated_at: "2026-06-27"
 ---
 **先厘清(2026-06-27 校准):codex 这个 agentType 本身就是 `model: sonnet` 的瘦转发器**(见 `~/.claude/agents/codex.md`:frontmatter `model: sonnet`,职责=把任务原文塞进 `mcp__codex__codex`、把 codex(gpt-5.x)输出一字不改带回)。所以"派 codex"= **一个 sonnet 身体在调 codex MCP**:codex 是脑、sonnet 是手——**不存在"没有模型"**(工具不会自己调自己)。早先把"瘦转发层"误读成"没有 sonnet"是错的。
 
 `codex.md` 自带两种模式:**模式 A 单发**(`subagent_type:'codex'` / Workflow `agentType:'codex'`,无 team,一次 codex 调用、文字原样返回);**模式 B 团队**(同一 sonnet 在 team 里用 `SendMessage` 把 codex 结果转发进会)。**所以团队里那个"sonnet 中介",很可能就是 codex agentType 本身在模式 B,未必要另起一个手搭 agent。**
 
-⚠️ **待实测**(本卡早先断言"必须另包中介",但 codex.md 模式 B 暗示未必,没测前两说并存):把 `agentType:'codex'` 直接 spawn 进 team——team 上下文是否自动把 `SendMessage`/`TaskUpdate` 注入给它(frontmatter 只列了两个 codex 工具)、从而它直接就能当讨论席;还是仍需手包一个带 `SendMessage` 的 sonnet 当壳。要用 codex 席位前先拿一个最小 team 实测确认。
+✅ **实测确认(2026-06-27,最小 team 探针 `codex-team-probe`)**:把 `agentType:'codex'`(带 `team_name` + `name`)直接 spawn 进 team,它**在 team 上下文里就有 `SendMessage`**(frontmatter 虽只列两个 codex 工具,team 上下文会注入团队消息工具),成功给 lead 发了消息、把 codex 的推理(2^10=1024)转发进会。member config 实测 `agentType: codex / model: sonnet`。
 
-使用时把 sonnet 中介明确写成某个 Codex panelist 的身体或嘴：推理来源是 Codex，团队发言和收发消息由中介负责。owner 说"开会/开个会"时，如果需要 Codex 席位，应按这个模式纳入 Agents Team，不要再推断"Codex 用不了 SendMessage 所以进不了 team"。
+**所以正解 = 直接 `Agent(subagent_type:'codex', team_name, name, prompt)`**(Workflow 里同理给 `agentType:'codex'`)——它自己会用 SendMessage 把 codex 观点发进会(codex 是脑、它的 sonnet 身体是嘴)。**不需要、也不该再另手搭一个独立 sonnet 中介壳**(那是绕远路,我早些会话手包过=多余)。owner 说"开会/开个会"需要 Codex 席位时按此纳入,别再推断"Codex 用不了 SendMessage 所以进不了 team"。
 
 给 Codex 派活时默认不要给 Codex agentType 直接挂 `StructuredOutput` schema，尤其是在 team 讨论这种只需要自然语言观点的场景。旧问题是 Codex shim 纯管道契约和强制结构化输出冲突，可能提交空 `{}` 并被 schema 校验反复打回；即使某台机器补过 codex.md 结构化分支，也不要让这个补丁成为 team 中介模式的依赖。
