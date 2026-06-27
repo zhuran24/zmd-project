@@ -51,8 +51,13 @@ def main() -> None:
     if not rows:
         nothing()
 
+    # cc-memory-meta-index is ALSO injected as a vnext L0 card (full text) at SessionStart;
+    # skip it here to kill the only true session-start double-injection (2026-06-28 整合清理).
+    VNEXT_L0_DUP = {"cc-memory-meta-index"}
     lines = ["## Read first"]
     for r in rows:
+        if r["id"] in VNEXT_L0_DUP:
+            continue
         try:
             summ = mem.node_summary(con, "entry", r["id"])
         except Exception:
@@ -85,15 +90,19 @@ def main() -> None:
             for name, prefixes in DOMAINS.items():
                 if nid.startswith(prefixes):
                     return name
-            return "其他:" + nid.split("-")[0]
+            return "长尾"  # 未命中命名域的散尾, 折叠成一桶 (2026-06-28: 原 "其他:<prefix>" 单条噪声, 稀释顶部)
 
         counts: dict[str, int] = {}
         for nid in ids:
             d = _dom(nid)
             counts[d] = counts.get(d, 0) + 1
         if counts:
+            tail = counts.pop("长尾", 0)  # 散尾排末尾、压成一行, 不混进按计数排序
             ordered = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
-            domain_line = " · ".join(f"{k}({n})" for k, n in ordered)
+            parts = [f"{k}({n})" for k, n in ordered]
+            if tail:
+                parts.append(f"长尾({tail})")
+            domain_line = " · ".join(parts)
             toc = (
                 "\n\n## cc_memory 还覆盖这些方面(碰到相关话题,先 "
                 "`python cc_memory/mem.py search <词>` 再动手,别只信上下文里现有的):\n" + domain_line
@@ -124,9 +133,7 @@ def main() -> None:
         maint = ""
 
     header = (
-        "以下为 cc_memory 常驻「元记忆」层(pinned,优先级高于项目内容记忆,每会话开始自动注入)。"
-        "这是讲「如何正确使用记忆系统本身」的操作手册,改系统级行为前先看;"
-        "完整规则用 python cc_memory/mem.py read <id> --body 取全文。"
+        "cc_memory 元记忆层(改记忆系统自身行为前先读;全文 `python cc_memory/mem.py read <id> --body`):"
     )
     ctx = header + "\n\n" + block + toc + maint
     print(json.dumps({
