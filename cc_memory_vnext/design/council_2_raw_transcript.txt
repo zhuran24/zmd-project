@@ -1,0 +1,809 @@
+我：
+当前这个项目的记忆系统，现在我发现还是有些问题，或者说当时设计的时候有很多地方还是没有注意到。跟当前这个会话附带的 MD 文件，算是我当时设计这个系统时的讨论过程，当然，实际情况你还是要看文件库里的那个项目包
+
+首先，最严重的问题就是：这是一个数据库。如果你不自己主动去查，你就不会知道这里面有什么内容；但如果你不知道这里面有什么内容，你就不会主动去查。
+
+这个悖论是目前遇到的最重要的问题，它的召回率可以说是 0，后面我尝试了一些其他方法来进行绕过，或者说补强吧。
+
+但是怎么说呢？这个召回率的提升，由于它底子上就有问题，那就算再做再多的补强也很难起到大用。
+
+其次，则是这个 GPU 加速用的查询模型，它是一个二分模型（要么输出 1 相关，要么输出 0 不相关），不能输出连续的评分。关于这一点，我已经试过很多方法了，但是甚至哪怕换模型也没有用。
+
+这样的话，这个问题也是需要解决的；不然系统在节点多了之后，维护起来会非常吃力，因为这导致现在的候选只能通过机械式的程序来提供，但这样产出的候选质量很差，甚至比不上使用该系统的模型自己去造。那这样的话，相当于这个系统没有达成一开始预期的目的，也就是将系统的维护交由系统自身来进行
+
+而且我发现，或者说我感觉到，当前的这个落地的记忆系统似乎还在某些其他方面（具体哪些方面我也说不上来），没有达成我最开始构思这个系统时想要的目标。关于这个，你也帮我仔细找找
+
+我想让你做的是，重新再给出一版全新的记忆系统设计。不要基于现有的系统补补改改，而是完全推翻，重新再来一版
+gpt：
+我先说结论：当前这套记忆系统的问题不是“召回模块不够强”，而是**它把记忆做成了一个需要主动查询的资料库**。这会天然失败。真正要重做的方向应该是：不要再让模型“想起来要查库”，而是让记忆系统在每个任务开始前，主动编译出一份当前任务必须携带的上下文包。
+
+我已经把完整设计稿整理成了单独文件：
+[完整设计稿：zmd_memory_v2_design.md](sandbox:/mnt/data/zmd_memory_v2_design.md)
+
+本轮没有修改项目代码，所以没有代码补丁；也只有一个产物文件，不需要打 7z 包。
+
+另外需要先说明一点：我这边实际可见的是项目快照包和依赖包，没有看到单独散落出来的那个 MD 附件。因此下面判断主要基于项目包里的 `cc_memory` 代码、数据库、README、hooks、AGENTS/CLAUDE 说明，以及当前库内已经落地的记忆条目。
+
+---
+
+我认为新系统应该彻底抛弃现在的核心形态：**不要再以 SQLite 数据库作为记忆真相源**。
+
+SQLite 可以继续存在，但只能作为生成索引和缓存。真正的记忆真相源应该是可读、可审查、可 diff、可测试的文本卡片，也就是一套 `Card Deck`。每张卡片都是一个明确类型的记忆单元，例如规则、偏好、决策、坑点、当前状态、流程、代码事实、未关闭义务、历史墓碑等。它们不是一堆随意塞进数据库的 facts/entries，而是带有触发条件、作用域、生命周期、证据、冲突关系和激活测试的“上下文零件”。
+
+新系统的核心不是 `search`，而是：
+
+**Card Deck + Domain Atlas + Context Compiler**
+
+其中 `Domain Atlas` 是解决你说的“数据库悖论”的关键。它必须始终常驻，非常短，只告诉模型：这个项目有哪些记忆领域、每个领域大概管什么、遇到什么任务时应该激活什么域。也就是说，系统一上来就知道“库里有什么种类的东西”，而不是等模型凭空想起某个关键词再去查。
+
+然后 `Context Compiler` 在每条用户消息、每次重要工具动作、每次子代理启动前自动运行。它根据当前任务生成 `Task Frame`，识别意图、实体、文件、阶段、风险、工具动作，然后主动编译出一份 `Memory Packet`。模型拿到的不是数据库结果，而是已经整理好的“本任务该带进脑子的东西”。
+
+这样，召回就从“人或模型主动搜索”变成“系统默认呼吸”。
+
+---
+
+你提到的第一个严重问题，我会这样重构：
+
+现在的问题是：
+
+“如果不知道库里有什么，就不会查；如果不查，就永远不知道库里有什么。”
+
+新系统里不能存在这个悖论。每次会话启动时都强制加载 `BOOT_CONTEXT.md`，里面包含当前项目核规则、最近状态、未关闭义务、领域地图、危险边界。每次任务开始时，系统不是等模型 search，而是自动调用：
+
+```text
+zmem context --task <用户消息> --files <相关文件> --phase <当前阶段>
+```
+
+这个命令输出一份分层上下文包：
+
+```text
+L0 Kernel：永远加载，500 到 800 token
+L1 Task Must-use：当前任务必须使用的卡片，1500 到 4000 token
+L2 Pointers：可能相关但不展开的卡片 ID
+L3 Archive：只在深挖时才读取
+```
+
+这就像给模型发一张出门前的任务地图，而不是把模型扔进仓库里让它自己找扳手。
+
+更重要的是，每张高优先级卡片都必须有 `activation examples`。例如“重新设计记忆系统”“为什么召回率很差”“reranker 为什么不好用”这些句子都应该成为测试样例。CI 可以直接跑：
+
+```text
+zmem eval activation
+```
+
+如果这些样例没有召回对应卡片，测试失败。这样召回率不是靠感觉维护，而是变成可以回归测试的工程指标。
+
+---
+
+你提到的第二个问题，也就是 GPU 查询模型只有 0/1 判断，我认为不应该继续硬拧它输出连续分数。
+
+这个东西既然天性是二分器，就把它当二分器用。不要再让它负责排序的主逻辑。
+
+新设计里，连续评分来自可解释特征，而不是来自 reranker：
+
+```text
+base_score =
+  触发条件匹配
++ 词法匹配
++ dense embedding 相似度
++ 作用域匹配
++ 图关系
++ 优先级
++ 新鲜度
+```
+
+GPU 二分模型只做多视角投票。不是问一次“相关吗”，而是问一组更窄的问题：
+
+```text
+这张卡是否直接约束当前任务？
+这张卡是否涉及当前文件/阶段？
+忽略它是否可能导致错误？
+它是否应该进入 L1？
+它是否只是背景材料？
+它是否是当前任务的禁止事项、开放义务或项目状态？
+```
+
+每个问题仍然只需要 0/1，但多个问题、多个 query 变体、多个字段组合起来，就能形成一个稳定的 `binary_vote_score`。它不是原生连续分数，而是投票比例。
+
+并且要加一条硬规则：**二分模型不能 veto 高优先级规则、当前状态、未关闭义务、显式作用域命中的卡片**。也就是说，如果用户问“记忆系统”，那么 `memory_system` 域里的核心卡片不能因为 reranker 打 0 就被扔掉。reranker 只能帮忙排顺序和降噪，不能当闸刀。
+
+---
+
+我在现有落地系统里看到的其他偏离点，大概有这些。
+
+第一，现有系统过度依赖“写进去”这件事，但没有足够定义“何时应该被激活”。一条记忆如果没有触发条件、作用域、反例、生命周期和测试，它其实只是沉在水底的铁片。写入不是记忆的完成，能在正确时刻浮上来才是。
+
+第二，当前 `search` 本质上还是 SQL `LIKE` 字符串匹配。多词抽象查询、同义表达、中文语义漂移、自指型任务都天然吃亏。后面加 semantic、rerank、suggest，都是在一个不该由手动 search 驱动的底座上加螺旋桨。
+
+第三，当前系统把“关系发现”做成了候选建议，但这些候选质量不稳定，且 hard edge 判断仍然依赖人工或模型自觉。系统想把维护交给自己，却没有给自己足够的维护闭环。真正需要的是 changeset、verify、activation eval、冲突队列、过期队列、重复队列、孤儿队列，而不是只给一堆 related 候选。
+
+第四，当前的状态生命周期太弱。数据库里存在 `active`、`confirmed`、`archived`、`superseded` 等状态，但代码很多地方实际只认 `active`。这类自由状态会导致某些事实在视图或索引里隐形。新系统必须把状态枚举收紧，并让 `current_until`、`review_after`、`supersedes`、`contradicts` 这些生命周期字段成为一等公民。
+
+第五，当前系统的 SessionStart / readfirst 思路方向是对的，但落地上仍然像“开场提醒”，不是完整的任务时上下文编译器。它解决了开局知道一点，但没有保证每条任务、每次工具调用、每个子代理都能拿到正确记忆包。
+
+第六，当前系统里 SQLite 是真相源，这会让审查、diff、迁移、人工维护和语义合并都变得别扭。对这种长期项目记忆来说，文本卡片才应该是真相源，数据库只是索引产物。数据库可以删了重建，记忆不能因为 SQLite 索引坏了就变成黑箱。
+
+第七，当前系统没有把“召回失败”变成一等错误。你的这次问题本身就应该产生一个 activation test：当用户说“记忆系统重新设计”“召回率为 0”“二分 reranker”时，系统必须自动召回这些历史诊断卡。如果做不到，就不是调参问题，而是系统质量门失败。
+
+---
+
+新系统的目录我建议这样设计：
+
+```text
+zmd_memory/
+  cards/
+    rules/
+    decisions/
+    pitfalls/
+    status/
+    procedures/
+    artifacts/
+    preferences/
+  domains/
+    memory_system.yaml
+    agent_orchestration.yaml
+    project_status.yaml
+    artifact_boundaries.yaml
+  episodes/
+    2026/
+      06/
+  eval/
+    activation_cases.yaml
+    regression_cases.yaml
+  views/
+    BOOT_CONTEXT.md
+    DOMAIN_ATLAS.md
+    CURRENT_STATE.md
+  index/
+    memory.sqlite
+    embeddings/
+    fts/
+```
+
+其中 `cards/`、`domains/`、`episodes/`、`eval/`、`views/` 可以进版本管理。`index/` 是生成物，可以删，可以重建，不是真相源。
+
+一张卡片大概长这样：
+
+```yaml
+---
+id: mem-reranker-binary-limit
+kind: pitfall
+status: active
+priority: high
+confidence: high
+summary: GPU reranker behaves as a binary relevance gate and should not be used as the primary continuous ranker.
+
+scope:
+  domains: [memory_system]
+  phases: [design, retrieval, maintenance]
+
+triggers:
+  intents: [memory_retrieval_design, recall_debugging, reranker_debugging]
+  keywords: [rerank, reranker, 二分, 评分, 召回, 候选质量]
+  examples:
+    - 查询模型只能输出 1 或 0 怎么办？
+    - 记忆候选质量为什么很差？
+    - 重新设计记忆系统的召回机制
+
+activation:
+  must_load_when:
+    - task.domain == "memory_system"
+    - task.intent in ["retrieval_design", "reranker_debugging"]
+  target_layer: L1
+
+relations:
+  related_to: [mem-db-paradox, mem-context-compiler]
+  contradicts: []
+  supersedes: []
+
+review:
+  review_after: 2026-09-01
+---
+```
+
+卡片正文只写人类可读的判断、原因、处理策略和证据。索引器再从 frontmatter 和正文生成 FTS、embedding、别名表、触发器表、图关系表。
+
+---
+
+这个新设计的重点是：**记忆不是存储系统，而是上下文供应链**。
+
+写入路径应该是：
+
+```text
+raw event -> episode -> distill changeset -> verify -> cards/views/index
+```
+
+所有新信息先进入 `episodes/`，作为流水账和证据。然后 distiller 从 episode 中提出 changeset，例如新增卡片、更新卡片、关闭 open obligation、标记旧卡 superseded。changeset 不能直接静默落库，必须过 `verify`。
+
+`verify` 至少检查这些东西：
+
+```text
+每张 active 卡是否有 domain、trigger、activation example
+每张 status 卡是否有 current_until 或 review_after
+每张高优先级卡是否有 eval case
+新增卡是否处理了相似旧卡
+冲突卡是否有明确关系
+superseded 卡是否不再进入 L1
+BOOT_CONTEXT / DOMAIN_ATLAS 是否能重建
+index 是否与文本真相源同步
+```
+
+这才是真正的“系统自己维护自己”。不是让模型看一堆候选边，然后凭感觉点 accepted/rejected，而是让系统维护自己的激活能力、生命周期和一致性。
+
+---
+
+迁移上，我不建议把旧 `cc_memory` 全量机械转换。那样只是把旧问题换个盒子装起来。
+
+应该按价值迁移：
+
+第一批迁移：用户明确规则、长期偏好、项目当前状态、未关闭义务、已知坑点、禁止事项、工作流规则、子代理分工、artifact 边界、测试/发布门槛。
+
+第二批迁移：最近仍活跃的设计决策、代码结构事实、反复踩过的错误、会影响未来任务判断的历史背景。
+
+第三批迁移：纯历史讨论、已 superseded 的方案、低价值 related 边、过期临时状态，只进 archive 或 tombstone，不进入默认上下文。
+
+也就是说，旧库不是新系统的种子数据库，而是一座矿山。要提炼，不要倾倒。
+
+---
+
+我建议最小可落地版本只做四件事。
+
+第一，新增 `zmd_memory/cards` 和卡片 schema。先把最关键的 20 到 40 条记忆迁成卡片，不追求全量。
+
+第二，新增 `DOMAIN_ATLAS.md` 和 `BOOT_CONTEXT.md`。这两个文件必须短，必须始终加载，专门解决“不知道库里有什么”的悖论。
+
+第三，做一个 `zmem context` 命令。哪怕第一版只用 frontmatter trigger + FTS + 简单 embedding，也比现在依赖模型主动 search 强很多。
+
+第四，做 `zmem eval activation`。把这次暴露的问题写成回归样例。以后只要“重新设计记忆系统”没有召回记忆系统诊断卡，就直接红灯。
+
+完整系统可以后面再加 binary vote、gardener 队列、changeset 审核、自动 distill。但最小版本必须先把“自动激活”立起来。
+
+---
+
+如果把它压成一句话：
+
+旧系统是“我有一个数据库，你记得来查”。
+
+新系统应该是“我会根据你正在做的事，把必须知道的记忆主动放到桌上”。
+
+这才符合你最开始想要的目标：不是让模型努力想起记忆系统，而是让记忆系统成为模型行动前自动展开的神经外骨骼。
+我：
+那要如何判断当前必须知道的记忆是什么，或者说有哪些呢？
+
+这才是这个新系统的重点吧，单靠脚本真的能做到吗？如果不单靠脚本的话，那加上本地语义模型能做到吗？
+gpt：
+对，这才是新系统的心脏。
+
+我的答案是：**单靠脚本做不到完整判断；单靠本地语义模型也做不到。必须做成“规则保底 + 语义召回 + 反事实必要性判断 + 回归测试”的混合系统。**
+
+而且“必须知道”不能定义成“语义相关”。这两个概念差很远。
+
+真正应该问的是：
+
+**如果这条记忆没有被加载，当前任务会不会更容易做错、违反约束、重复踩坑、推翻已有决策、误解当前状态，或者漏掉用户已经交代过的义务？**
+
+这叫“遗漏风险”，不是“相关度”。
+
+---
+
+比如用户说：
+
+> 重新设计记忆系统
+
+语义检索可能召回：
+
+```text
+记忆系统架构讨论
+召回率问题
+reranker 二分问题
+SQLite 存储结构
+旧 cc_memory search 命令
+历史候选边质量差
+SessionStart hook
+```
+
+这些都“相关”。
+
+但“必须知道”的应该是其中这些：
+
+```text
+用户认为当前系统最大问题是数据库悖论
+用户不想在现有系统上修补，而是要推翻重做
+GPU 查询模型只能二分，不适合作连续评分
+旧系统预期目标是让系统能维护自身
+当前 search 主动触发模式召回率接近 0
+现有候选生成质量差，甚至不如模型临场生成
+```
+
+而像：
+
+```text
+旧 SQLite 表字段
+某次 search 命令输出格式
+一条已经废弃的关系候选
+旧 hooks 的某个参数名
+```
+
+它们可能有用，但不是当前架构设计阶段的 L1 必带记忆。
+
+所以判断标准不是“相似”，而是“会不会改变当前回答或行动”。
+
+---
+
+我建议把“必须知道”定义成 7 类。
+
+第一类，**约束型记忆**。它会改变允许做什么、禁止做什么、必须怎么做。例如用户要求“多个附件打 7z”“改代码必须给补丁”“不要基于旧系统修修补补”。这种只要作用域命中，就必须加载。它不需要语义模型判断，脚本就应该硬加载。
+
+第二类，**目标型记忆**。它说明用户真正想达成什么，而不是表面任务是什么。比如这次不是“优化 cc_memory search”，而是“重新设计一套能主动供应上下文、能自维护的记忆系统”。目标型记忆一旦漏掉，回答方向就会歪。
+
+第三类，**当前状态型记忆**。它描述项目现在处于什么阶段、哪些方案已经试过、哪些失败已经确认、哪些问题仍未关闭。比如“二分 reranker 已经试过很多方法，甚至换模型也无效”。这类记忆决定我们不该继续建议同一条路。
+
+第四类，**决策型记忆**。它记录以前已经定下的方向。比如“旧系统不要小修小补”。如果当前任务属于同一领域，相关决策必须加载，否则系统会不断自我失忆，像在迷宫里每次都重新发明门把手。
+
+第五类，**坑点型记忆**。它记录“做这个事情时特别容易错在哪里”。比如“把数据库当记忆源会导致主动查询悖论”“binary reranker 不能作为排序真相”。这类记忆不一定和用户原文高度相似，但如果当前任务的动作会踩到它，就必须加载。
+
+第六类，**文件/模块局部记忆**。如果当前任务涉及 `cc_memory`、hooks、某个 prompt、某个索引器，那么这些文件对应的设计事实、危险边界、测试要求应该自动加载。这可以靠路径规则和代码图谱完成，不该靠模型猜。
+
+第七类，**开放义务型记忆**。也就是之前承诺了但还没完成的事、用户明确要求后续保持的约束、当前工作流里的未关闭事项。这类记忆只要没关闭，就应该优先级极高。
+
+这 7 类里面，很多不是靠“语义相似度”判断的。它们更像工程编译器里的依赖项。
+
+---
+
+所以新系统应该这样判断。
+
+第一步，不是检索记忆，而是先生成一个 **Task Frame**。
+
+也就是把当前任务结构化：
+
+```yaml
+task:
+  raw_user_message: "重新设计记忆系统"
+  intent:
+    - architecture_design
+    - memory_system_redesign
+  operation:
+    - propose_new_design
+  domains:
+    - memory_system
+    - retrieval
+    - self_maintenance
+  phase:
+    - design
+  explicit_entities:
+    - 数据库悖论
+    - 召回率
+    - GPU 查询模型
+    - 二分模型
+    - 候选质量
+  implied_risks:
+    - suggesting old failed approaches
+    - relying on active manual search
+    - treating binary reranker as continuous scorer
+  output_contract:
+    - new system design
+    - not patching old system
+```
+
+这个 Task Frame 可以由脚本做一部分，比如关键词、文件、当前目录、最近修改、会话阶段。
+
+但“用户真正是在要架构重构，而不是调参”这种判断，最好让本地模型参与。
+
+这里本地模型不是直接查记忆，而是先回答：
+
+```text
+当前任务是什么类型？
+涉及哪些领域？
+哪些失败模式可能相关？
+用户显式排除了什么方向？
+当前输出会受到哪些历史决策影响？
+```
+
+这一步非常关键。因为记忆系统真正要匹配的不是用户原句，而是结构化后的任务意图。
+
+---
+
+第二步，做 **候选召回**，而且要故意高召回。
+
+这里可以多路召回：
+
+```text
+1. Domain Atlas 命中：
+   当前 domain = memory_system，于是加载 memory_system 领域下的核心卡片。
+
+2. 规则触发：
+   用户说“记忆系统”“召回”“二分模型”“数据库”，命中对应 trigger。
+
+3. FTS/BM25：
+   查关键词、别名、中文同义表达。
+
+4. embedding：
+   查语义相似卡片，比如“主动查询悖论”可能召回“如果不知道库里有什么就不会查”。
+
+5. 图扩展：
+   已经命中 mem-db-paradox，就扩展 related_to 里的 reranker、context compiler、self maintenance。
+
+6. 状态过滤：
+   active/current/open obligation 优先；archived/superseded 默认降级。
+
+7. 文件/模块路径：
+   如果任务涉及代码文件，按 path glob 加载对应模块记忆。
+```
+
+候选召回阶段不要太聪明。它的目标是“宁可多捞一点”，像撒网捕鱼，不像挑刺绣针。
+
+---
+
+第三步，才是核心：做 **必要性判断**。
+
+这里不要问：
+
+```text
+这条记忆和任务相关吗？
+```
+
+而要问：
+
+```text
+如果不加载这条记忆，会发生什么错误？
+```
+
+我建议每条候选卡都过一个 necessity judge，输出类似这样：
+
+```yaml
+card_id: mem-reranker-binary-limit
+decision: L1_must_load
+reason:
+  omission_risk: high
+  action_impact: changes_design
+  because: 当前用户明确提到 GPU 查询模型只能二分，新设计必须避免把它当连续评分器。
+layer: L1
+```
+
+或者：
+
+```yaml
+card_id: mem-old-sqlite-table-schema
+decision: L2_pointer
+reason:
+  omission_risk: low
+  action_impact: maybe_useful_if_implementing_migration
+  because: 当前是新系统设计，不是直接改旧数据库 schema。
+layer: L2
+```
+
+这一步可以用本地模型，但不能完全信它。因为模型擅长语义判断，却不擅长稳定执行项目纪律。
+
+所以 necessity judge 应该是双层的。
+
+外层是硬规则：
+
+```python
+if card.kind in ["rule", "user_preference", "open_obligation"] and scope_matches:
+    return L1
+
+if card.kind == "status" and card.domain in task.domains and card.is_current:
+    return L1
+
+if card.kind == "decision" and card.domain in task.domains and not card.superseded:
+    return L1
+
+if card.kind == "pitfall" and card.trigger_matches(task.risks):
+    return L1
+
+if card.files intersects task.files:
+    return L1_or_L2
+```
+
+内层才是模型判断：
+
+```text
+这张卡是否会改变当前输出？
+是否会阻止一个已知错误？
+是否说明用户不想要某条路线？
+是否说明当前状态已经不同于默认假设？
+是否只是背景材料？
+```
+
+也就是说，**脚本负责不可漏的结构性责任，模型负责隐含语义和边界判断**。
+
+---
+
+本地语义模型能不能做到？
+
+要分清楚是哪种“语义模型”。
+
+如果只是 embedding 模型，比如把用户请求和记忆卡向量化，然后 top-k 相似度排序，那不够。它只能解决“这东西和那东西意思像不像”，不能可靠判断“这东西是不是必须知道”。
+
+embedding 会有三个典型问题：
+
+```text
+高相似但低必要：
+比如旧数据库字段和“记忆系统重构”很像，但当前不一定必须知道。
+
+低相似但高必要：
+比如“多个附件要打 7z”跟“修改代码”语义不近，但如果产出多个文件，它就是硬约束。
+
+状态无法表达：
+比如某条旧方案已经 superseded，embedding 仍然可能把它排很高。
+```
+
+如果是 cross-encoder/reranker，也只能好一点。你现在遇到的二分输出问题本质上说明：它能做“像不像相关”，但不能承担最终排序和必要性分层。它可以作为投票器，但不能当主裁判。
+
+如果是本地小 LLM，比如能够读 Task Frame 和候选卡，然后做反事实判断，那就有价值。但它仍然不能单独负责，因为它会受上下文、prompt、候选顺序、token 截断影响。它必须被包在确定性系统里。
+
+所以我会这样定位：
+
+```text
+脚本：
+负责硬规则、状态、作用域、路径、生命周期、预算、去重、冲突、回归测试。
+
+embedding：
+负责高召回，把“没明说但意思相关”的卡捞出来。
+
+二分 reranker：
+负责多视角投票，帮助降噪，但不能 veto 高优先级卡。
+
+本地 LLM：
+负责 Task Frame 抽取、query expansion、必要性解释、L1/L2/L3 分层。
+
+eval：
+负责最终闭环，发现漏召回就新增 activation case。
+```
+
+这不是“脚本 vs 模型”，而是“编译器 + 猎犬 + 审稿人 + 单元测试”。
+
+---
+
+我觉得最关键的设计是：**每张记忆卡必须自己声明它什么时候应该被激活。**
+
+不是只写：
+
+```yaml
+summary: GPU reranker 是二分模型
+```
+
+而是要写：
+
+```yaml
+activation:
+  domains:
+    - memory_system
+    - retrieval
+    - ranking
+  intents:
+    - redesign_memory_system
+    - debug_recall
+    - improve_candidate_quality
+  keywords:
+    - reranker
+    - 二分
+    - 连续评分
+    - 候选质量
+    - 召回
+  must_load_when:
+    - task.domain == "memory_system" and task.intent contains "redesign"
+    - task.explicit_entities contains "GPU 查询模型"
+    - task.risks contains "ranking_quality"
+  omission_risk: high
+  target_layer: L1
+```
+
+也就是说，“什么时候必须知道”这件事，不应该全部留到检索时临场判断。它应该在写入记忆时就被编码进去。
+
+这其实是新系统和旧数据库的最大区别。
+
+旧系统是：
+
+```text
+我存了一条东西，以后你搜到了就用。
+```
+
+新系统是：
+
+```text
+我存了一条东西，并且我同时声明：
+在哪些任务中它必须出现，
+在哪些任务中它只是背景，
+在哪些任务中它不该再出现。
+```
+
+这样系统才能维护自己。
+
+---
+
+然后还需要一个“反事实压缩”机制。
+
+假设候选召回出来 80 条，不可能全塞进上下文。那就让模型或规则对每张卡回答一个问题：
+
+```text
+如果当前回答完全不知道这张卡，最可能犯什么错？
+```
+
+如果回答是：
+
+```text
+会继续建议优化旧 search，而不是推翻重做。
+```
+
+那就是 L1。
+
+如果回答是：
+
+```text
+可能不知道旧数据库有 entries 表。
+```
+
+但当前只是设计，不改代码，那就是 L2 或 L3。
+
+如果回答是：
+
+```text
+没明显影响。
+```
+
+那就不加载，只保留 pointer。
+
+这个反事实判断比“相关度评分”好很多，因为它直接对准任务质量。
+
+---
+
+最终 Memory Packet 可以长这样：
+
+```text
+L0 Kernel
+- 用户项目级规则
+- 当前会话输出约束
+- 领域地图摘要
+
+L1 Must Know
+- 当前任务目标
+- 用户明确失败诊断
+- 已确认不可走路线
+- 当前活跃设计决策
+- 高风险坑点
+- 未关闭义务
+
+L2 Useful Pointers
+- 旧系统实现细节
+- 相关模块路径
+- 可能需要查阅的旧讨论
+
+L3 Archive
+- 历史 episode
+- superseded 方案
+- 低优先级背景
+```
+
+模型真正看到完整内容的是 L0 和 L1。L2 只给标题和 card id，除非后续任务需要才展开。L3 默认不出现。
+
+这样既解决召回，也解决上下文污染。
+
+---
+
+判断“当前必须知道哪些记忆”，我建议用一个具体公式，但不要迷信公式。
+
+可以先有一个可解释分数：
+
+```text
+necessity_score =
+  100 * hard_rule_match
++  80  * open_obligation_match
++  70  * current_status_match
++  60  * active_decision_match
++  50  * pitfall_risk_match
++  40  * domain_scope_match
++  30  * file_path_match
++  25  * graph_neighbor_match
++  20  * lexical_match
++  20  * embedding_match
++  15  * reranker_vote
+-  80  * superseded
+-  50  * expired
+-  30  * low_confidence
+```
+
+然后分层：
+
+```text
+L1 Must Know:
+  necessity_score >= 80
+  或者命中 hard include
+
+L2 Useful:
+  40 <= necessity_score < 80
+
+L3 Archive:
+  score < 40
+  或者仅弱相关
+```
+
+但这只是初筛。最终还要经过 “omission risk check”。
+
+也就是：
+
+```text
+L1 不是分数最高的 top-k。
+L1 是遗漏后会造成明确错误的集合。
+```
+
+这句话非常重要。很多系统失败就是因为把 L1 做成了 top-k，结果高频背景材料挤掉了低频硬约束。
+
+---
+
+为了让它真的可靠，需要加一个回归测试系统。
+
+每张重要卡都要有 activation examples：
+
+```yaml
+- 用户说“记忆系统召回率为 0，重新设计”
+  must_load:
+    - mem-db-paradox
+    - mem-context-compiler
+    - mem-reranker-binary-limit
+
+- 用户说“修改代码并给我多个产物”
+  must_load:
+    - user-requires-patch
+    - user-requires-7z-for-multiple-attachments
+
+- 用户说“修一下 cc_memory 的 search”
+  must_load:
+    - cc-memory-current-architecture
+    - mem-db-paradox
+    - mem-do-not-only-patch-old-system
+```
+
+然后 CI 跑：
+
+```bash
+zmem eval activation
+```
+
+如果某个样例没有召回该召回的卡，直接失败。
+
+这就是从“感觉好像能召回”变成“记忆系统有单元测试”。
+
+而且每次真实任务里发现“刚才漏了一条本该知道的记忆”，不要只是人工记一下。要自动生成一条：
+
+```yaml
+failure:
+  task: "用户要求重新设计记忆系统"
+  missing_card: mem-reranker-binary-limit
+  consequence: "回答可能继续建议使用二分 reranker 做排序"
+  new_activation_example: ...
+```
+
+这叫 **recall failure as training data**。
+
+召回失败本身应该成为记忆系统进化的燃料。
+
+---
+
+所以回答你的两个问题：
+
+**单靠脚本真的能做到吗？**
+
+不能完整做到。
+
+但脚本必须负责最重要的一部分：硬约束、当前状态、作用域、文件路径、生命周期、open obligation、superseded、冲突关系、预算控制、回归测试。这些东西如果交给模型判断，系统会变得不稳定。
+
+**加上本地语义模型能做到吗？**
+
+可以接近你想要的效果，但前提是不要把本地语义模型当成万能检索器。embedding 只能做候选召回；二分模型只能做投票；本地 LLM 才能做一部分“必要性判断”。即使这样，也必须由规则和 eval 兜底。
+
+最稳的架构是：
+
+```text
+脚本负责“哪些绝对不能漏”
+语义模型负责“哪些可能被措辞隐藏”
+本地 LLM负责“漏掉它会不会影响当前任务”
+测试系统负责“以后不许再漏同一种东西”
+```
+
+如果压成一句话：
+
+**必须知道的记忆，不是搜索出来的，而是由当前任务的责任链编译出来的。**
+
+搜索只能告诉你“这可能有关”。
+上下文编译器要判断“这次不带它会出事”。
