@@ -41,3 +41,5 @@ MiMo 不是不能用——它仍是"廉价二意见 / 可丢弃小活"的备选;
 **何时跑(cadence,owner 2026-06-27 定)**:① **主跑 = precompact 流程里、记忆更新回合【结束之后】单独跑**(不塞进记忆回合里抢注意力)。判官是我手动记完后的"第二遍",专抓我漏的;压缩=原始对话即将被丢的最后机会、窗口有界(配遥测预筛更省)。② **辅 = on-demand**(有理由怀疑漏了就手动跑)。
 
 **B 已接线(2026-06-27,更新原"待接")**:判官已自动接进 precompact 链——SeqWorker 现串行排 **2 条 `[记忆更新回合, 判官回合]`**(不再是 A 的 `[记忆回合, /compact]`)。**关键:判官天然跨【两个回合】因为 `Agent subagent_type=codex` 是异步的**——回合A(判官回合提示词驱动)定位 transcript + spawn 异步 codex + 留面包屑 + 结束;回合B(codex 完成通知驱动)triage + 应用补卡(eval 绿+push)+ **自己注 `-Send "/compact"`**。`/compact` **绝不预排进序列**:codex 跨模型审抓到——预排成第三条会在"判官 spawn 回合结束→等 codex 通知"那段 **idle 空窗**被 SeqWorker 提前注入 → 判官没应用就压缩。所以 /compact 由回合B 应用完那刻自注。fail-open 两处(回合A 起不来 codex / 回合B 收到 codex 失败通知)都照样 `-Send /compact` 收尾,判官 ≠ 压缩前置门。详 SKILL `precompact` 的"判官回合怎么做" + cc_memory `precompact-seqworker-auto-flow-a`。系统化遥测预筛/小模型评估器仍属 V2。
+
+**边界(2026-06-28):本卡只管"判官用 Codex、precompact/测量怎么跑"。** ③ 召回触发的近期落地【地基】已转到「可观测提交点记忆闸(ZMEM_PROOF)」(详 `design/observable-commitment-gate-20260628.md`)——**别再把"判官/看守"误当 ③ 的主解**;判官/看守在 gate 体系里是【第四档】(只管"外露了计划但还没变成动作/结论"那块的 cross-check),不是 ③ 的近期键石。

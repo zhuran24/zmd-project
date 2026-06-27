@@ -1,7 +1,7 @@
 # cc_memory_vnext — 主动卡片记忆系统 (MVP-0)
 
-> 状态:**MVP-0 已落地**(15 张种子卡 / 25 条金标准回归 / 三硬类 StrictHitRate=100% 纯脚本基线)。
-> 旧 `cc_memory/`(SQLite)**冻结只读、不动**;本目录是并存的新激活层,指标达标前不迁存储真相源。
+> 状态:**MVP-0 已落地 + 多轮深化**(卡数 / 金标准数**以 `zmem verify`/`eval` 为准、不硬编码防漂移**;三硬类 StrictHitRate=100% 纯脚本基线)。
+> 旧 `cc_memory/`(SQLite)是**过渡态:按条 legacy**(某条做成卡后别再更新它旧库副本防漂移),但**整库冻结只读未决**——MASTER_PLAN 写"上线即冻"、现实仍在写(本会话+分支线程都写过),待 owner/文档口径统一(详 `cards/memory-layer-authority-transition.md`)。本目录是并存的新激活层。
 
 ## 1. 为什么重做(根病)
 
@@ -51,16 +51,14 @@ python cc_memory_vnext/zmem.py eval            # 跑金标准回归(StrictHitRat
 - **无 LLM、无行为日志、无 PreToolUse/PostToolUse**(MVP-0 只读编译 + 2 hook)。
 - **dense 默认关**:三硬类纯集合匹配,不依赖 dense(`--enable-dense` 是 V2 预留)。
 - **金标准防自证(red-line A)**:回归 frame 取自真实事故 / owner 纠正的**原始信号**,由**非触发规则作者**(codex 写卡 → claude 盲写 frame)构造,**禁照 scope.paths/symbols 反填** → 三硬类纯脚本 100% 不是"规则匹配自己"。
-- 旧 `cc_memory/` 冻结只读,不双活。
+- 旧 `cc_memory/`:**按条 legacy / 整库冻结只读未决**(非"已冻";现实仍在写,待文档口径统一——详 `cards/memory-layer-authority-transition.md`)。
 
-## 6. 现状指标
+## 6. 现状指标(实时为准,不硬编码防漂移)
 
-| 项 | 值 |
-|---|---|
-| 卡片 | 15(5 地基 + 10 高杀伤迁移) |
-| 金标准回归 | 25(含 precision 用 `forbidden_cards` 锁) |
-| eval | **25/25 PASS** |
-| 三硬类 StrictHitRate | **100%(纯脚本基线 dense-off 也 100%)** |
+- **卡数**:`python cc_memory_vnext/zmem.py verify`(本会话已远超初始 15)。
+- **金标准 / eval**:`python cc_memory_vnext/zmem.py eval`(StrictHitRate,含 `forbidden_cards` precision 锁)。
+- **三硬类 StrictHitRate = 100%(纯脚本基线 dense-off 也 100%)** = 解锁 V2 的硬门槛已达成。
+- ③ 召回触发的真地基已转到「可观测提交点记忆闸(ZMEM_PROOF)」,详 `design/observable-commitment-gate-20260628.md`。
 
 ## 7. 已知边界(诚实标注,非 bug)
 

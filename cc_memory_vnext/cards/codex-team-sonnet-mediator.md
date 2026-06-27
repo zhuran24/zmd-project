@@ -11,7 +11,7 @@ status: active
 priority: P1
 triggers:
   intents: [agents-team, codex-panelist, multi-agent-discussion, team-messaging]
-  keywords: [codex, Agents Team, team, 开会, SendMessage, sonnet 中介, mcp__codex__codex, codex 席位]
+  keywords: [codex, Agents Team, team, 开会, SendMessage, sonnet 中介, mcp__codex__codex, codex 席位, 几席, 席位比例, 团队人数, 团队规模, codex 占多少, 至少4个]
   negative_keywords: []
   paths: []
   symbols: [SendMessage, TeamCreate, mcp__codex__codex, StructuredOutput]
@@ -41,5 +41,7 @@ updated_at: "2026-06-27"
 ✅ **实测确认(2026-06-27,最小 team 探针 `codex-team-probe`)**:把 `agentType:'codex'`(带 `team_name` + `name`)直接 spawn 进 team,它**在 team 上下文里就有 `SendMessage`**(frontmatter 虽只列两个 codex 工具,team 上下文会注入团队消息工具),成功给 lead 发了消息、把 codex 的推理(2^10=1024)转发进会。member config 实测 `agentType: codex / model: sonnet`。
 
 **所以正解 = 直接 `Agent(subagent_type:'codex', team_name, name, prompt)`**(Workflow 里同理给 `agentType:'codex'`)——它自己会用 SendMessage 把 codex 观点发进会(codex 是脑、它的 sonnet 身体是嘴)。**不需要、也不该再另手搭一个独立 sonnet 中介壳**(那是绕远路,我早些会话手包过=多余)。owner 说"开会/开个会"需要 Codex 席位时按此纳入,别再推断"Codex 用不了 SendMessage 所以进不了 team"。
+
+**团队规模 + codex 席位比例(owner 2026-06-28 两次纠正,务必记住)**:非小型的设计/审计【会】默认 **≥4 席**(owner 原话"人数太少了,至少 4 个人以上");需要跨模型判断时,**codex 席位约占一半**(owner 原话"codex 的席位太少了,它要在一半附近,略微超过或者低于一半")。典型 = 6 席 3 codex + 3 claude,且最对抗的一对**跨模型**(codex 主一方 vs claude 主另一方,逼不同盲区互掐)。**别再把 codex 配成少数点缀**(本会话起初配 2-3 席、codex 只 1 个,被 owner 连纠两次)。除非任务明确不需要跨模型才放宽。
 
 给 Codex 派活时默认不要给 Codex agentType 直接挂 `StructuredOutput` schema，尤其是在 team 讨论这种只需要自然语言观点的场景。旧问题是 Codex shim 纯管道契约和强制结构化输出冲突，可能提交空 `{}` 并被 schema 校验反复打回；即使某台机器补过 codex.md 结构化分支，也不要让这个补丁成为 team 中介模式的依赖。
