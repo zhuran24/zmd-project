@@ -34,10 +34,10 @@
 | 层 | 是什么 | 状态 |
 |---|---|---|
 | **旧 cc_memory**(SQLite,~106 条) | 协作库,`mem.py` 驱动;**设计意图=只读 legacy/history 源** | **过渡态:意图只读、实际仍被写**(v-next 仅覆盖一小切片;未迁移项/项目状态仍落旧库——见 §4) |
-| **新 v-next**(`cc_memory_vnext/`,17 卡) | 主动注入层,叠在旧库之上 | **MVP-0 上线**(见下) |
+| **新 v-next**(`cc_memory_vnext/`,卡数以 `zmem verify` 为准) | 主动注入层,叠在旧库之上 | **MVP-0 上线**(见下) |
 | **harness 记忆**(`~/.claude/.../memory/*.md`) | 跨项目、本地、不进仓库 | 活(MiMo/precompact 等 route-time 反射规则) |
 
-**MVP-0 已落地实况**(均 push main;卡/金标准数实时以 `zmem verify`/`eval` 为准——本文更新时 **18+卡 / 30+金标准 / eval 全绿**)/ **三硬类 StrictHitRate=100%(纯脚本基线)** / 编译器 flood 收口(L1 准入要 trigger 或 scope>0,codex 跨模型审 CLEAN)/ 2 hook 实时注入(已接 `.claude/settings.local.json`)/ **最小遥测**(`zmem context --log` → `logs/activation_decisions.jsonl`;**本地、gitignored、非真相源、≠被 MASTER 砍掉的 append-only 行为 ledger**——只记每回合注入了哪些卡,可删重建)/ **自喂养纪律 institutionalize**(CLAUDE.md + `vnext-maintenance-discipline` 卡:被纠正/踩坑→补金标准+卡)。判官机制已实证可行(blind 模型四条全中)。
+**MVP-0 已落地实况**(均 push main;卡/金标准/eval 数实时以 `zmem verify`/`eval` 为准,本文不钉具体数字防漂移)/ **三硬类 StrictHitRate=100%(纯脚本基线)** / 编译器 flood 收口(L1 准入要 trigger 或 scope>0,codex 跨模型审 CLEAN)/ 2 hook 实时注入(已接 `.claude/settings.local.json`)/ **最小遥测**(`zmem context --log` → `logs/activation_decisions.jsonl`;**本地、gitignored、非真相源、≠被 MASTER 砍掉的 append-only 行为 ledger**——只记每回合注入了哪些卡,可删重建)/ **自喂养纪律 institutionalize**(CLAUDE.md + `vnext-maintenance-discipline` 卡:被纠正/踩坑→补金标准+卡)。判官机制已实证可行(blind 模型四条全中)。
 
 ## 4. 未解 / 待澄清(诚实标注)
 
