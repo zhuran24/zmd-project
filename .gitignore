@@ -107,6 +107,10 @@ _codex_archive/
 # ----------------------------------------------------------------------------
 /data/preprocessed/candidate_placements.json
 
+# PR2 L0 dependency floor manifests are host-specific generated artifacts.
+# Generate/audit on the deployment host; do not commit a shared default.
+/data/proof_obligations/pr2_dependency_floor_manifest.json
+
 # ----------------------------------------------------------------------------
 # Generated runtime / proof / delivery output dirs (purely generated — whole-dir
 # ignores are safe here). data/checkpoints/ exists (0 KB benders_cuts.jsonl);
@@ -148,3 +152,4 @@ _codex_archive/
 /docs/research/d_step2_hint_trials_20260516/baseline_pre_hint_state.json
 /docs/research/d_step2_hint_trials_20260516/baseline_pre_hint_telemetry.json
 /docs/research/d_step2_hint_trials_20260516/trial3_state.json
+.pytest_tmp*

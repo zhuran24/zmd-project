@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import ExitStack
 import json
 from pathlib import Path
 from typing import Any, Optional
@@ -26,6 +27,7 @@ from src.search.exact_campaign import (
 from src.search.exact_campaign_inspector import build_exact_campaign_inspection
 from src.tests.certified_frontier_helpers import (
     attach_terminal_frontier_evidence,
+    install_accepting_l0_supervisor_seal,
     write_closed_phase_review_gate,
 )
 from src.tests.test_delivery_manifest import (
@@ -170,34 +172,35 @@ def _build_publishable_surface(
         # Bypass the pre-commit isolated subprocess replay during fixture sealing.
         return None
 
-    # 3. Seal with mocked replay, then publish all delivery artifacts.
-    with (
-        patch.object(
-            exact_campaign_module,
-            "build_sink_verified_terminal_frontier_evidence",
-            _accept_sink_replay,
-        ),
-        patch.object(
-            exact_campaign_module,
-            "_terminal_certified_final_result_violation_for_project_authority",
-            _accept_authority_violation,
-        ),
-        patch.object(
-            exact_campaign_module,
-            "has_valid_terminal_full_frontier_certified_evidence_for_project",
-            _accept_terminal_evidence,
-        ),
-        patch.object(
-            delivery_manifest_module,
-            "has_valid_terminal_full_frontier_certified_evidence_for_project",
-            _accept_terminal_evidence,
-        ),
-        patch.object(
-            certified_surface_module,
-            "has_valid_terminal_full_frontier_certified_evidence_for_project",
-            _accept_terminal_evidence,
-        ),
-    ):
+    # 3. Seal with a test-only L0 supervisor seal, then publish all artifacts.
+    with pytest.MonkeyPatch.context() as seal_monkeypatch, ExitStack() as stack:
+        install_accepting_l0_supervisor_seal(
+            seal_monkeypatch,
+            project_root=project_root,
+        )
+        for seal_patch in (
+            patch.object(
+                exact_campaign_module,
+                "_terminal_certified_final_result_violation_for_project_authority",
+                _accept_authority_violation,
+            ),
+            patch.object(
+                exact_campaign_module,
+                "has_valid_terminal_full_frontier_certified_evidence_for_project",
+                _accept_terminal_evidence,
+            ),
+            patch.object(
+                delivery_manifest_module,
+                "has_valid_terminal_full_frontier_certified_evidence_for_project",
+                _accept_terminal_evidence,
+            ),
+            patch.object(
+                certified_surface_module,
+                "has_valid_terminal_full_frontier_certified_evidence_for_project",
+                _accept_terminal_evidence,
+            ),
+        ):
+            stack.enter_context(seal_patch)
         campaign = ExactCampaign.load_or_create(project_root, campaign_hours=2.0, resume=True)
         campaign.supervisor_seal()
         assert campaign.state["final_status"] == RUN_STATUS_CERTIFIED

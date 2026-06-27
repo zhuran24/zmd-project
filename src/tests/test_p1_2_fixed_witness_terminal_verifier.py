@@ -13,7 +13,11 @@ import src.search.exact_campaign as exact_campaign_module
 import src.search.terminal_fixed_witness_capsule as fixed_witness_capsule_module
 import src.search.terminal_fixed_witness_verifier as fixed_witness_module
 from src.models.cut_manager import RUN_STATUS_CERTIFIED
-from src.search.candidate_proof_replay import CANDIDATE_PROOF_FIELD, canonical_digest
+from src.search.candidate_proof_replay import (
+    CANDIDATE_PROOF_FIELD,
+    build_candidate_replay_proof,
+    canonical_digest,
+)
 from src.search.certified_frontier import (
     TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
     build_sink_verified_terminal_frontier_evidence,
@@ -39,6 +43,7 @@ from src.search.terminal_fixed_witness_verifier import (
     project_terminal_fixed_witness_records_for_sink,
     verify_terminal_fixed_witness,
 )
+from src.tests.certified_frontier_helpers import install_accepting_l0_supervisor_seal
 
 
 def _write_json(path: Path, payload: object) -> None:
@@ -311,8 +316,8 @@ def _setup_sealed_campaign(
     The state must have final_result, candidates, terminal_frontier_evidence, and
     artifact_hashes already populated (as produced by _state() + compute_exact_artifact_hashes).
     This function promotes the state to CANDIDATE_PROPOSED, writes it to disk as a proposal,
-    monkeypatches build_sink_verified_terminal_frontier_evidence to accept, then calls
-    supervisor_seal() to produce a real, checksum-validated seal record on disk.
+    installs the test-only L0 supervisor seal, then calls supervisor_seal() to produce
+    a real, checksum-validated seal record on disk.
 
     The returned campaign has .state (the sealed CERTIFIED state) and .path (the checkpoint
     path). Callers should pass both to terminal_certified_final_result_violation_for_project.
@@ -333,27 +338,37 @@ def _setup_sealed_campaign(
     campaign.state["terminal_frontier_evidence"] = _json_copy(
         state.get("terminal_frontier_evidence")
     )
+    candidate_record = campaign.state["candidates"]["1x1"]
+    candidate_record[CANDIDATE_PROOF_FIELD] = build_candidate_replay_proof(
+        campaign,
+        1,
+        1,
+        RUN_STATUS_CERTIFIED,
+        solution=candidate_record["solution"],
+    )
+    certified_projection_state = _json_copy(campaign.state)
+    certified_projection_state["final_result"]["search_status"] = RUN_STATUS_CERTIFIED
+    verdict = verify_terminal_fixed_witness(
+        state=certified_projection_state,
+        project_root=root,
+        serialized_state_bytes=canonical_state_bytes_for_fixed_witness(
+            certified_projection_state
+        ),
+    )
+    assert verdict.publishable is True
+    durable_candidate_records = _json_copy(campaign.state["candidates"])
+    fixed_witness_module._apply_terminal_fixed_witness_audit_fields(
+        durable_candidate_records["1x1"],
+        verdict=verdict,
+        publishable=True,
+        projected_status=RUN_STATUS_CERTIFIED,
+        rejected_reason=verdict.reason,
+    )
+    campaign.state["candidates"] = durable_candidate_records
     campaign.save()
     campaign.write_proposal_ready_marker(run_id=run_id, exit_code=0)
 
-    # Monkeypatch supervisor sink bundle to accept the proposal state as-is
-    def _accept_sink_bundle(**kwargs: Any) -> dict[str, Any]:
-        cs = kwargs["campaign_state"]
-        return {
-            "evidence": dict(cs["terminal_frontier_evidence"]),
-            "candidate_records": {
-                str(k): dict(v) for k, v in cs.get("candidates", {}).items()
-            },
-            "sink_replay_violations": {},
-            "fixed_witness_publishable": True,
-            "fixed_witness_violations": {},
-        }
-
-    monkeypatch.setattr(
-        exact_campaign_module,
-        "build_sink_verified_terminal_frontier_evidence",
-        _accept_sink_bundle,
-    )
+    install_accepting_l0_supervisor_seal(monkeypatch, project_root=root)
     # Seal: mints the supervisor_seal block, writes to disk, runs post-commit disk validation
     campaign.supervisor_seal()
     return campaign
