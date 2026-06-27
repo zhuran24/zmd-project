@@ -52,6 +52,7 @@
 - **MVP-1a**:PreToolUse 高危只读阻断(不引日志/LLM)。
 - **判官层(V2 测量)**:小模型/廉价 API 读 transcript,经**遥测预筛**只看可疑切片 → 抓漏召回/纠正 → **起草** frame/卡(过 verify/eval 闸 + 抽检才落,绝不自动改卡)。遥测=它的省钱阀门。
 - **V2(凭指标)**:dense 语义召回;necessity-LLM(只产建议);行为日志 + 在线权重校准(明文 git 可回退);生命周期温度;**存储真相源整库迁移**(council_B:第二档达标后再评估、不设时间表)。
+- **⭐ ③ 召回触发的【真地基】= 可观测提交点记忆闸(Observable-Commitment Gate,2026-06-28)**:owner 拿本会话 ③ 讨论喂 ChatGPT 后的 reframe,**取代/修正 ③ 的 framing**——真问题不是"自动推卡"(③ 的看守=push),是"**逼模型在提交点真去查**"(带门的 pull):`zmem search` 吐 `ZMEM_PROOF` token,PreToolUse/Stop 闸**查 transcript 有没有 proof**、没 proof 不准把想法变成动作/结论;`skip` 须显式留痕。地基层 = 每张卡声明 `observable_from`、`verify --coverage` 强制(没可观测触发面的卡不准算自动召回保证)。三目标别混:(a)念头那刻=无解,(b)没查不准提交=提交点闸=近期键石,(c)中途多查=改 agent loop=未来。**详 `design/observable-commitment-gate-20260628.md`(+ 源 `design/chatgpt-...source-20260628.md`)。** 它治"读了没连上"(逼判断那刻重查、记忆落当下)。③ 的看守降为第四档。
 - **解锁关口**:MVP-0 三硬类 StrictHitRate 100%(含纯脚本基线)**已达成**;各 V2 件仍按各自指标门槛逐项推进。
 
 ## 6. 东西都在哪
