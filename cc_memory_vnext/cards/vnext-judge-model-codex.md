@@ -38,4 +38,6 @@ v-next 判官层(V2 的测量件:读 transcript、经遥测预筛只看可疑切
 
 MiMo 不是不能用——它仍是"廉价二意见 / 可丢弃小活"的备选;但**判官默认模型 = codex**,直到 MiMo 稳定性与限额恢复并经验证后再议。判官产出永远只是**草稿**,过 verify/eval 闸 + 抽检才落,绝不自动改卡(无论哪个模型)。
 
-**何时跑(cadence,owner 2026-06-27 定)**:① **主跑 = precompact 流程里、记忆更新回合【结束之后】单独跑**(不塞进记忆回合里抢注意力)。顺序:`/precompact → 注「记忆更新回合」→ 我手动回放找漏记完、回合结束 → 判官(codex)跑一遍扫我【没注意到】的漏/stale → 应用判官补卡/frame → 才注 /compact → 压缩`。判官是我手动记完后的"第二遍",专抓我漏的;压缩=原始对话即将被丢的最后机会、窗口有界(配遥测预筛更省)。② **辅 = on-demand**(有理由怀疑漏了就手动跑,如本会话)。**关键澄清(2026-06-27)**:precompact 的 A 已接的自动链 = SeqWorker 串行排 `[记忆更新回合, /compact]`,**【不含判官】**——所以当前显式 precompact 不会自动跑判官,记忆回合一结束直接排 /compact。把判官插进 `记忆回合→判官→应用→/compact` 才是 **B、待接**。判官现在只能①手动 on-demand,或②在手动跑 B 全流程时跑(如本会话);A 的自动链里没有它。系统化接线 B 属 V2。
+**何时跑(cadence,owner 2026-06-27 定)**:① **主跑 = precompact 流程里、记忆更新回合【结束之后】单独跑**(不塞进记忆回合里抢注意力)。判官是我手动记完后的"第二遍",专抓我漏的;压缩=原始对话即将被丢的最后机会、窗口有界(配遥测预筛更省)。② **辅 = on-demand**(有理由怀疑漏了就手动跑)。
+
+**B 已接线(2026-06-27,更新原"待接")**:判官已自动接进 precompact 链——SeqWorker 现串行排 **2 条 `[记忆更新回合, 判官回合]`**(不再是 A 的 `[记忆回合, /compact]`)。**关键:判官天然跨【两个回合】因为 `Agent subagent_type=codex` 是异步的**——回合A(判官回合提示词驱动)定位 transcript + spawn 异步 codex + 留面包屑 + 结束;回合B(codex 完成通知驱动)triage + 应用补卡(eval 绿+push)+ **自己注 `-Send "/compact"`**。`/compact` **绝不预排进序列**:codex 跨模型审抓到——预排成第三条会在"判官 spawn 回合结束→等 codex 通知"那段 **idle 空窗**被 SeqWorker 提前注入 → 判官没应用就压缩。所以 /compact 由回合B 应用完那刻自注。fail-open 两处(回合A 起不来 codex / 回合B 收到 codex 失败通知)都照样 `-Send /compact` 收尾,判官 ≠ 压缩前置门。详 SKILL `precompact` 的"判官回合怎么做" + cc_memory `precompact-seqworker-auto-flow-a`。系统化遥测预筛/小模型评估器仍属 V2。
