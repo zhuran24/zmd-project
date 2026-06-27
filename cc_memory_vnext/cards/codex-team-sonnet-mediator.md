@@ -1,7 +1,7 @@
 ---
 id: codex-team-sonnet-mediator
 kind: reference
-title: Codex 进 Agents Team 用 Sonnet 中介转 SendMessage
+title: Codex 直接进 Agents Team(agentType:'codex' 本身=sonnet 身体、自带 SendMessage,不用手包中介)
 summary: "codex agentType 本身=model:sonnet 瘦转发器(sonnet 当手/codex 当脑,调 mcp__codex__codex)。2026-06-27 最小 team 实测确认:直接把 agentType:'codex' 带 team_name spawn 进 team,它在 team 上下文里自带 SendMessage、能直接当讨论席转发 codex 进会——【不需要、也不该再另手包 sonnet 中介】。别再误判'codex 没有模型',也别再多此一举手搭中介。"
 scope:
   domains: [agents-team, codex-integration]
