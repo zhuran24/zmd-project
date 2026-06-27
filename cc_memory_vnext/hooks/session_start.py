@@ -34,6 +34,8 @@ def main() -> int:
         "L0",
         "--format",
         "text",
+        "--log",
+        str(ROOT / "logs" / "activation_decisions.jsonl"),
         "--frame-json",
         json.dumps(frame, ensure_ascii=False),
     ]

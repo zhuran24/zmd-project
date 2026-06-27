@@ -1,3 +1,4 @@
 .index/
 .quarantine/
 __pycache__/
+logs/

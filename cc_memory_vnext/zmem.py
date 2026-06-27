@@ -793,6 +793,46 @@ def load_context_index(args: argparse.Namespace) -> dict[str, Any]:
     return build_index_data(cards)
 
 
+def append_activation_log(path: str, frame: dict[str, Any], packet: dict[str, Any]) -> None:
+    """Minimal telemetry: append one JSON line recording what got injected.
+
+    Records only structure (which cards, layer, score, reason) + the frame's
+    intents/domains + a prompt hash — NOT the raw prompt (privacy + size). This
+    is the cheap, deterministic substrate; the 'was it right / what was missed'
+    judgement is a separate periodic layer that reads transcripts, not this log.
+    Failsafe: telemetry must never break context injection, so it swallows all
+    errors. Append-only.
+    """
+    try:
+        import datetime
+
+        prompt = str(frame.get("prompt") or "")
+        record = {
+            "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+            "frame_digest": packet.get("frame_digest"),
+            "prompt_sha16": sha256_text(prompt)[:16],
+            "prompt_len": len(prompt),
+            "intents": normalize_list(frame.get("intents")),
+            "domains": normalize_list(frame.get("domains")),
+            "injected": [
+                {
+                    "id": item.get("id"),
+                    "layer": item.get("layer"),
+                    "score": item.get("score"),
+                    "reason": item.get("reason"),
+                }
+                for layer in ("L0", "L1")
+                for item in packet["layers"].get(layer, [])
+            ],
+        }
+        out = Path(path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with out.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
+        return
+
+
 def cmd_context(args: argparse.Namespace) -> int:
     try:
         frame = frame_from_args(args)
@@ -802,6 +842,9 @@ def cmd_context(args: argparse.Namespace) -> int:
     except (ZmemError, json.JSONDecodeError) as exc:
         print(f"CONTEXT FAIL: {exc}", file=sys.stderr)
         return 1
+
+    if getattr(args, "log", None):
+        append_activation_log(args.log, frame, packet)
 
     if args.format == "text":
         print(format_packet_text(packet))
@@ -890,6 +933,7 @@ def build_parser() -> argparse.ArgumentParser:
     context.add_argument("--format", choices=("json", "text"), default="json")
     context.add_argument("--enable-dense", action="store_true", help="reserved; disabled by default in MVP-0")
     context.add_argument("--require-index", action="store_true")
+    context.add_argument("--log", help="append activation telemetry (one JSON line) to this path")
     context.set_defaults(func=cmd_context)
 
     eval_cmd = sub.add_parser("eval", help="run activation regression frames")
