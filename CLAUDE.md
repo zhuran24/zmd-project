@@ -99,6 +99,25 @@ context. Memory usually holds a prior decision, gotcha, or hard-won root cause o
 lookup silently re-litigates settled work. The covered-domain map is the entry point — seeing a
 relevant domain there is the trigger to go look.
 
+## Active card memory (cc_memory_vnext) — MVP-0, live
+
+A second, **active** memory layer is live alongside `cc_memory`: `cc_memory_vnext/` is a
+deterministic card compiler that **auto-injects** relevant cards every turn via SessionStart /
+UserPromptSubmit hooks (no manual `search` needed). Truth source is `cc_memory_vnext/cards/*.md`;
+`.index/` is a rebuildable cache. CLI: `python cc_memory_vnext/zmem.py {verify,build-index,context,eval}`.
+The old `cc_memory` SQLite store stays read-only and authoritative for collaboration history; this
+is the route-time-injection layer. See `cc_memory_vnext/README.md`.
+
+- **Self-feeding maintenance discipline (every session must do this):** when the owner corrects me,
+  or I hit a **repeatable** new pitfall, do not just fix it in the current session — feed it back so
+  every future session avoids it: (1) add a gold-standard frame to
+  `cc_memory_vnext/eval/regression.jsonl` built from the **real** signal (owner's actual words / the
+  pitfall scenario), **never back-filled from a card's scope.paths/symbols**; (2) add or update a
+  card under `cc_memory_vnext/cards/`; (3) run `zmem build-index && zmem eval` and keep it green.
+  This is the only loop by which recall coverage grows. The owner will **not** hand-review millions
+  of words of transcripts, so coverage growth rides on this in-session discipline (and, later, a
+  small-model evaluator) — break it and the system freezes and decays back into a passive store.
+
 ## CodeGraph code index
 
 CodeGraph is installed as the local code-structure index for this checkout. Use it for
