@@ -1,0 +1,2184 @@
+{
+  "artifact_type": "material_connection_skeleton",
+  "certification_policy": {
+    "may_be_used_as_proof_input": false,
+    "may_feed_candidate_terminal_public_evidence": false,
+    "may_feed_certified_gate": false,
+    "may_feed_receipt_digest_reference": false,
+    "may_generate_cut": false,
+    "throughput_capacity_metrics_in_scope": false
+  },
+  "classification": "exploratory_diagnostic_sidecar",
+  "consistency_checks": [
+    {
+      "mismatches": [],
+      "name": "machine_counts_match_mandatory_manufacturing_instances",
+      "passed": true
+    },
+    {
+      "name": "current_default_contract_counts",
+      "observed": {
+        "boundary_port_instance_count": 46,
+        "cycle_material_group_count": 2,
+        "mandatory_exact_instance_count": 266,
+        "manufacturing_instance_count": 219,
+        "material_edge_count": 19,
+        "protocol_core_instance_count": 1,
+        "recipe_group_count": 17
+      },
+      "passed": true
+    }
+  ],
+  "cycle_material_groups": [
+    {
+      "cycle_group": "buckwheat_cycle",
+      "internal_commodities": [
+        "buckwheat",
+        "buckwheat_seed"
+      ],
+      "net_export_commodities": [
+        "buckwheat"
+      ],
+      "operation_group_ids": [
+        "operation:planter_buckwheat",
+        "operation:seed_collector_buckwheat"
+      ],
+      "recipes": [
+        "planter_buckwheat",
+        "seed_collector_buckwheat"
+      ]
+    },
+    {
+      "cycle_group": "sandleaf_cycle",
+      "internal_commodities": [
+        "sandleaf",
+        "sandleaf_seed"
+      ],
+      "net_export_commodities": [
+        "sandleaf"
+      ],
+      "operation_group_ids": [
+        "operation:planter_sandleaf",
+        "operation:seed_collector_sandleaf"
+      ],
+      "recipes": [
+        "planter_sandleaf",
+        "seed_collector_sandleaf"
+      ]
+    }
+  ],
+  "equivalence_classes": {
+    "same_commodity_multi_source_or_sink_pools": [
+      {
+        "class_id": "commodity_pool_exchangeability:buckwheat",
+        "commodity_id": "buckwheat",
+        "consumer_group_ids": [
+          "operation:crusher_buckwheat",
+          "operation:seed_collector_buckwheat"
+        ],
+        "producer_group_ids": [
+          "operation:planter_buckwheat"
+        ]
+      },
+      {
+        "class_id": "commodity_pool_exchangeability:sandleaf",
+        "commodity_id": "sandleaf",
+        "consumer_group_ids": [
+          "operation:crusher_sandleaf",
+          "operation:seed_collector_sandleaf"
+        ],
+        "producer_group_ids": [
+          "operation:planter_sandleaf"
+        ]
+      },
+      {
+        "class_id": "commodity_pool_exchangeability:sandleaf_powder",
+        "commodity_id": "sandleaf_powder",
+        "consumer_group_ids": [
+          "operation:grinder_dense_blue_iron",
+          "operation:grinder_dense_source",
+          "operation:grinder_fine_buckwheat"
+        ],
+        "producer_group_ids": [
+          "operation:crusher_sandleaf"
+        ]
+      },
+      {
+        "class_id": "commodity_pool_exchangeability:steel_block",
+        "commodity_id": "steel_block",
+        "consumer_group_ids": [
+          "operation:molding_bottle",
+          "operation:parts_maker"
+        ],
+        "producer_group_ids": [
+          "operation:refinery_steel"
+        ]
+      }
+    ],
+    "same_cycle_subchains": [
+      {
+        "class_id": "cycle_subchain:buckwheat_cycle",
+        "cycle_group": "buckwheat_cycle",
+        "internal_commodities": [
+          "buckwheat",
+          "buckwheat_seed"
+        ],
+        "operation_group_ids": [
+          "operation:planter_buckwheat",
+          "operation:seed_collector_buckwheat"
+        ]
+      },
+      {
+        "class_id": "cycle_subchain:sandleaf_cycle",
+        "cycle_group": "sandleaf_cycle",
+        "internal_commodities": [
+          "sandleaf",
+          "sandleaf_seed"
+        ],
+        "operation_group_ids": [
+          "operation:planter_sandleaf",
+          "operation:seed_collector_sandleaf"
+        ]
+      }
+    ],
+    "same_machine_same_material_ports": [
+      {
+        "class_id": "same_machine_material_ports:crusher_blue_iron:input:blue_iron_block",
+        "commodity_id": "blue_iron_block",
+        "direction": "input",
+        "machine_count": 34,
+        "operation_type": "crusher_blue_iron",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_blue_iron:output:blue_iron_powder",
+        "commodity_id": "blue_iron_powder",
+        "direction": "output",
+        "machine_count": 34,
+        "operation_type": "crusher_blue_iron",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_buckwheat:input:buckwheat",
+        "commodity_id": "buckwheat",
+        "direction": "input",
+        "machine_count": 6,
+        "operation_type": "crusher_buckwheat",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_buckwheat:output:buckwheat_powder",
+        "commodity_id": "buckwheat_powder",
+        "direction": "output",
+        "machine_count": 6,
+        "operation_type": "crusher_buckwheat",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_sandleaf:input:sandleaf",
+        "commodity_id": "sandleaf",
+        "direction": "input",
+        "machine_count": 11,
+        "operation_type": "crusher_sandleaf",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_sandleaf:output:sandleaf_powder",
+        "commodity_id": "sandleaf_powder",
+        "direction": "output",
+        "machine_count": 11,
+        "operation_type": "crusher_sandleaf",
+        "slots_per_machine": 3
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_source:input:source_ore",
+        "commodity_id": "source_ore",
+        "direction": "input",
+        "machine_count": 18,
+        "operation_type": "crusher_source",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:crusher_source:output:source_powder",
+        "commodity_id": "source_powder",
+        "direction": "output",
+        "machine_count": 18,
+        "operation_type": "crusher_source",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:filling_capsule:input:fine_buckwheat_powder",
+        "commodity_id": "fine_buckwheat_powder",
+        "direction": "input",
+        "machine_count": 3,
+        "operation_type": "filling_capsule",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:filling_capsule:input:steel_bottle",
+        "commodity_id": "steel_bottle",
+        "direction": "input",
+        "machine_count": 3,
+        "operation_type": "filling_capsule",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:filling_capsule:output:qiaoyu_capsule",
+        "commodity_id": "qiaoyu_capsule",
+        "direction": "output",
+        "machine_count": 3,
+        "operation_type": "filling_capsule",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_dense_blue_iron:input:blue_iron_powder",
+        "commodity_id": "blue_iron_powder",
+        "direction": "input",
+        "machine_count": 17,
+        "operation_type": "grinder_dense_blue_iron",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_dense_blue_iron:input:sandleaf_powder",
+        "commodity_id": "sandleaf_powder",
+        "direction": "input",
+        "machine_count": 17,
+        "operation_type": "grinder_dense_blue_iron",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_dense_blue_iron:output:dense_blue_iron_powder",
+        "commodity_id": "dense_blue_iron_powder",
+        "direction": "output",
+        "machine_count": 17,
+        "operation_type": "grinder_dense_blue_iron",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_dense_source:input:sandleaf_powder",
+        "commodity_id": "sandleaf_powder",
+        "direction": "input",
+        "machine_count": 9,
+        "operation_type": "grinder_dense_source",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_dense_source:input:source_powder",
+        "commodity_id": "source_powder",
+        "direction": "input",
+        "machine_count": 9,
+        "operation_type": "grinder_dense_source",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_dense_source:output:dense_source_powder",
+        "commodity_id": "dense_source_powder",
+        "direction": "output",
+        "machine_count": 9,
+        "operation_type": "grinder_dense_source",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_fine_buckwheat:input:buckwheat_powder",
+        "commodity_id": "buckwheat_powder",
+        "direction": "input",
+        "machine_count": 6,
+        "operation_type": "grinder_fine_buckwheat",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_fine_buckwheat:input:sandleaf_powder",
+        "commodity_id": "sandleaf_powder",
+        "direction": "input",
+        "machine_count": 6,
+        "operation_type": "grinder_fine_buckwheat",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:grinder_fine_buckwheat:output:fine_buckwheat_powder",
+        "commodity_id": "fine_buckwheat_powder",
+        "direction": "output",
+        "machine_count": 6,
+        "operation_type": "grinder_fine_buckwheat",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:molding_bottle:input:steel_block",
+        "commodity_id": "steel_block",
+        "direction": "input",
+        "machine_count": 6,
+        "operation_type": "molding_bottle",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:molding_bottle:output:steel_bottle",
+        "commodity_id": "steel_bottle",
+        "direction": "output",
+        "machine_count": 6,
+        "operation_type": "molding_bottle",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:packaging_battery:input:dense_source_powder",
+        "commodity_id": "dense_source_powder",
+        "direction": "input",
+        "machine_count": 3,
+        "operation_type": "packaging_battery",
+        "slots_per_machine": 3
+      },
+      {
+        "class_id": "same_machine_material_ports:packaging_battery:input:steel_part",
+        "commodity_id": "steel_part",
+        "direction": "input",
+        "machine_count": 3,
+        "operation_type": "packaging_battery",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:packaging_battery:output:valley_battery",
+        "commodity_id": "valley_battery",
+        "direction": "output",
+        "machine_count": 3,
+        "operation_type": "packaging_battery",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:parts_maker:input:steel_block",
+        "commodity_id": "steel_block",
+        "direction": "input",
+        "machine_count": 6,
+        "operation_type": "parts_maker",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:parts_maker:output:steel_part",
+        "commodity_id": "steel_part",
+        "direction": "output",
+        "machine_count": 6,
+        "operation_type": "parts_maker",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:planter_buckwheat:input:buckwheat_seed",
+        "commodity_id": "buckwheat_seed",
+        "direction": "input",
+        "machine_count": 11,
+        "operation_type": "planter_buckwheat",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:planter_buckwheat:output:buckwheat",
+        "commodity_id": "buckwheat",
+        "direction": "output",
+        "machine_count": 11,
+        "operation_type": "planter_buckwheat",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:planter_sandleaf:input:sandleaf_seed",
+        "commodity_id": "sandleaf_seed",
+        "direction": "input",
+        "machine_count": 21,
+        "operation_type": "planter_sandleaf",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:planter_sandleaf:output:sandleaf",
+        "commodity_id": "sandleaf",
+        "direction": "output",
+        "machine_count": 21,
+        "operation_type": "planter_sandleaf",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:refinery_blue_iron:input:blue_iron_ore",
+        "commodity_id": "blue_iron_ore",
+        "direction": "input",
+        "machine_count": 34,
+        "operation_type": "refinery_blue_iron",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:refinery_blue_iron:output:blue_iron_block",
+        "commodity_id": "blue_iron_block",
+        "direction": "output",
+        "machine_count": 34,
+        "operation_type": "refinery_blue_iron",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:refinery_steel:input:dense_blue_iron_powder",
+        "commodity_id": "dense_blue_iron_powder",
+        "direction": "input",
+        "machine_count": 17,
+        "operation_type": "refinery_steel",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:refinery_steel:output:steel_block",
+        "commodity_id": "steel_block",
+        "direction": "output",
+        "machine_count": 17,
+        "operation_type": "refinery_steel",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:seed_collector_buckwheat:input:buckwheat",
+        "commodity_id": "buckwheat",
+        "direction": "input",
+        "machine_count": 6,
+        "operation_type": "seed_collector_buckwheat",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:seed_collector_buckwheat:output:buckwheat_seed",
+        "commodity_id": "buckwheat_seed",
+        "direction": "output",
+        "machine_count": 6,
+        "operation_type": "seed_collector_buckwheat",
+        "slots_per_machine": 2
+      },
+      {
+        "class_id": "same_machine_material_ports:seed_collector_sandleaf:input:sandleaf",
+        "commodity_id": "sandleaf",
+        "direction": "input",
+        "machine_count": 11,
+        "operation_type": "seed_collector_sandleaf",
+        "slots_per_machine": 1
+      },
+      {
+        "class_id": "same_machine_material_ports:seed_collector_sandleaf:output:sandleaf_seed",
+        "commodity_id": "sandleaf_seed",
+        "direction": "output",
+        "machine_count": 11,
+        "operation_type": "seed_collector_sandleaf",
+        "slots_per_machine": 2
+      }
+    ],
+    "same_operation_same_facility_machines": [
+      {
+        "class_id": "same_operation_instances:crusher_blue_iron",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 34,
+        "member_instance_ids": [
+          "crusher_blue_iron_001",
+          "crusher_blue_iron_002",
+          "crusher_blue_iron_003",
+          "crusher_blue_iron_004",
+          "crusher_blue_iron_005",
+          "crusher_blue_iron_006",
+          "crusher_blue_iron_007",
+          "crusher_blue_iron_008",
+          "crusher_blue_iron_009",
+          "crusher_blue_iron_010",
+          "crusher_blue_iron_011",
+          "crusher_blue_iron_012",
+          "crusher_blue_iron_013",
+          "crusher_blue_iron_014",
+          "crusher_blue_iron_015",
+          "crusher_blue_iron_016",
+          "crusher_blue_iron_017",
+          "crusher_blue_iron_018",
+          "crusher_blue_iron_019",
+          "crusher_blue_iron_020",
+          "crusher_blue_iron_021",
+          "crusher_blue_iron_022",
+          "crusher_blue_iron_023",
+          "crusher_blue_iron_024",
+          "crusher_blue_iron_025",
+          "crusher_blue_iron_026",
+          "crusher_blue_iron_027",
+          "crusher_blue_iron_028",
+          "crusher_blue_iron_029",
+          "crusher_blue_iron_030",
+          "crusher_blue_iron_031",
+          "crusher_blue_iron_032",
+          "crusher_blue_iron_033",
+          "crusher_blue_iron_034"
+        ],
+        "operation_type": "crusher_blue_iron"
+      },
+      {
+        "class_id": "same_operation_instances:crusher_buckwheat",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 6,
+        "member_instance_ids": [
+          "crusher_buckwheat_001",
+          "crusher_buckwheat_002",
+          "crusher_buckwheat_003",
+          "crusher_buckwheat_004",
+          "crusher_buckwheat_005",
+          "crusher_buckwheat_006"
+        ],
+        "operation_type": "crusher_buckwheat"
+      },
+      {
+        "class_id": "same_operation_instances:crusher_sandleaf",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 11,
+        "member_instance_ids": [
+          "crusher_sandleaf_001",
+          "crusher_sandleaf_002",
+          "crusher_sandleaf_003",
+          "crusher_sandleaf_004",
+          "crusher_sandleaf_005",
+          "crusher_sandleaf_006",
+          "crusher_sandleaf_007",
+          "crusher_sandleaf_008",
+          "crusher_sandleaf_009",
+          "crusher_sandleaf_010",
+          "crusher_sandleaf_011"
+        ],
+        "operation_type": "crusher_sandleaf"
+      },
+      {
+        "class_id": "same_operation_instances:crusher_source",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 18,
+        "member_instance_ids": [
+          "crusher_source_001",
+          "crusher_source_002",
+          "crusher_source_003",
+          "crusher_source_004",
+          "crusher_source_005",
+          "crusher_source_006",
+          "crusher_source_007",
+          "crusher_source_008",
+          "crusher_source_009",
+          "crusher_source_010",
+          "crusher_source_011",
+          "crusher_source_012",
+          "crusher_source_013",
+          "crusher_source_014",
+          "crusher_source_015",
+          "crusher_source_016",
+          "crusher_source_017",
+          "crusher_source_018"
+        ],
+        "operation_type": "crusher_source"
+      },
+      {
+        "class_id": "same_operation_instances:filling_capsule",
+        "facility_type": "manufacturing_6x4",
+        "member_count": 3,
+        "member_instance_ids": [
+          "filling_capsule_001",
+          "filling_capsule_002",
+          "filling_capsule_003"
+        ],
+        "operation_type": "filling_capsule"
+      },
+      {
+        "class_id": "same_operation_instances:grinder_dense_blue_iron",
+        "facility_type": "manufacturing_6x4",
+        "member_count": 17,
+        "member_instance_ids": [
+          "grinder_dense_blue_iron_001",
+          "grinder_dense_blue_iron_002",
+          "grinder_dense_blue_iron_003",
+          "grinder_dense_blue_iron_004",
+          "grinder_dense_blue_iron_005",
+          "grinder_dense_blue_iron_006",
+          "grinder_dense_blue_iron_007",
+          "grinder_dense_blue_iron_008",
+          "grinder_dense_blue_iron_009",
+          "grinder_dense_blue_iron_010",
+          "grinder_dense_blue_iron_011",
+          "grinder_dense_blue_iron_012",
+          "grinder_dense_blue_iron_013",
+          "grinder_dense_blue_iron_014",
+          "grinder_dense_blue_iron_015",
+          "grinder_dense_blue_iron_016",
+          "grinder_dense_blue_iron_017"
+        ],
+        "operation_type": "grinder_dense_blue_iron"
+      },
+      {
+        "class_id": "same_operation_instances:grinder_dense_source",
+        "facility_type": "manufacturing_6x4",
+        "member_count": 9,
+        "member_instance_ids": [
+          "grinder_dense_source_001",
+          "grinder_dense_source_002",
+          "grinder_dense_source_003",
+          "grinder_dense_source_004",
+          "grinder_dense_source_005",
+          "grinder_dense_source_006",
+          "grinder_dense_source_007",
+          "grinder_dense_source_008",
+          "grinder_dense_source_009"
+        ],
+        "operation_type": "grinder_dense_source"
+      },
+      {
+        "class_id": "same_operation_instances:grinder_fine_buckwheat",
+        "facility_type": "manufacturing_6x4",
+        "member_count": 6,
+        "member_instance_ids": [
+          "grinder_fine_buckwheat_001",
+          "grinder_fine_buckwheat_002",
+          "grinder_fine_buckwheat_003",
+          "grinder_fine_buckwheat_004",
+          "grinder_fine_buckwheat_005",
+          "grinder_fine_buckwheat_006"
+        ],
+        "operation_type": "grinder_fine_buckwheat"
+      },
+      {
+        "class_id": "same_operation_instances:molding_bottle",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 6,
+        "member_instance_ids": [
+          "molding_bottle_001",
+          "molding_bottle_002",
+          "molding_bottle_003",
+          "molding_bottle_004",
+          "molding_bottle_005",
+          "molding_bottle_006"
+        ],
+        "operation_type": "molding_bottle"
+      },
+      {
+        "class_id": "same_operation_instances:packaging_battery",
+        "facility_type": "manufacturing_6x4",
+        "member_count": 3,
+        "member_instance_ids": [
+          "packaging_battery_001",
+          "packaging_battery_002",
+          "packaging_battery_003"
+        ],
+        "operation_type": "packaging_battery"
+      },
+      {
+        "class_id": "same_operation_instances:parts_maker",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 6,
+        "member_instance_ids": [
+          "parts_maker_001",
+          "parts_maker_002",
+          "parts_maker_003",
+          "parts_maker_004",
+          "parts_maker_005",
+          "parts_maker_006"
+        ],
+        "operation_type": "parts_maker"
+      },
+      {
+        "class_id": "same_operation_instances:planter_buckwheat",
+        "facility_type": "manufacturing_5x5",
+        "member_count": 11,
+        "member_instance_ids": [
+          "planter_buckwheat_001",
+          "planter_buckwheat_002",
+          "planter_buckwheat_003",
+          "planter_buckwheat_004",
+          "planter_buckwheat_005",
+          "planter_buckwheat_006",
+          "planter_buckwheat_007",
+          "planter_buckwheat_008",
+          "planter_buckwheat_009",
+          "planter_buckwheat_010",
+          "planter_buckwheat_011"
+        ],
+        "operation_type": "planter_buckwheat"
+      },
+      {
+        "class_id": "same_operation_instances:planter_sandleaf",
+        "facility_type": "manufacturing_5x5",
+        "member_count": 21,
+        "member_instance_ids": [
+          "planter_sandleaf_001",
+          "planter_sandleaf_002",
+          "planter_sandleaf_003",
+          "planter_sandleaf_004",
+          "planter_sandleaf_005",
+          "planter_sandleaf_006",
+          "planter_sandleaf_007",
+          "planter_sandleaf_008",
+          "planter_sandleaf_009",
+          "planter_sandleaf_010",
+          "planter_sandleaf_011",
+          "planter_sandleaf_012",
+          "planter_sandleaf_013",
+          "planter_sandleaf_014",
+          "planter_sandleaf_015",
+          "planter_sandleaf_016",
+          "planter_sandleaf_017",
+          "planter_sandleaf_018",
+          "planter_sandleaf_019",
+          "planter_sandleaf_020",
+          "planter_sandleaf_021"
+        ],
+        "operation_type": "planter_sandleaf"
+      },
+      {
+        "class_id": "same_operation_instances:refinery_blue_iron",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 34,
+        "member_instance_ids": [
+          "refinery_blue_iron_001",
+          "refinery_blue_iron_002",
+          "refinery_blue_iron_003",
+          "refinery_blue_iron_004",
+          "refinery_blue_iron_005",
+          "refinery_blue_iron_006",
+          "refinery_blue_iron_007",
+          "refinery_blue_iron_008",
+          "refinery_blue_iron_009",
+          "refinery_blue_iron_010",
+          "refinery_blue_iron_011",
+          "refinery_blue_iron_012",
+          "refinery_blue_iron_013",
+          "refinery_blue_iron_014",
+          "refinery_blue_iron_015",
+          "refinery_blue_iron_016",
+          "refinery_blue_iron_017",
+          "refinery_blue_iron_018",
+          "refinery_blue_iron_019",
+          "refinery_blue_iron_020",
+          "refinery_blue_iron_021",
+          "refinery_blue_iron_022",
+          "refinery_blue_iron_023",
+          "refinery_blue_iron_024",
+          "refinery_blue_iron_025",
+          "refinery_blue_iron_026",
+          "refinery_blue_iron_027",
+          "refinery_blue_iron_028",
+          "refinery_blue_iron_029",
+          "refinery_blue_iron_030",
+          "refinery_blue_iron_031",
+          "refinery_blue_iron_032",
+          "refinery_blue_iron_033",
+          "refinery_blue_iron_034"
+        ],
+        "operation_type": "refinery_blue_iron"
+      },
+      {
+        "class_id": "same_operation_instances:refinery_steel",
+        "facility_type": "manufacturing_3x3",
+        "member_count": 17,
+        "member_instance_ids": [
+          "refinery_steel_001",
+          "refinery_steel_002",
+          "refinery_steel_003",
+          "refinery_steel_004",
+          "refinery_steel_005",
+          "refinery_steel_006",
+          "refinery_steel_007",
+          "refinery_steel_008",
+          "refinery_steel_009",
+          "refinery_steel_010",
+          "refinery_steel_011",
+          "refinery_steel_012",
+          "refinery_steel_013",
+          "refinery_steel_014",
+          "refinery_steel_015",
+          "refinery_steel_016",
+          "refinery_steel_017"
+        ],
+        "operation_type": "refinery_steel"
+      },
+      {
+        "class_id": "same_operation_instances:seed_collector_buckwheat",
+        "facility_type": "manufacturing_5x5",
+        "member_count": 6,
+        "member_instance_ids": [
+          "seed_collector_buckwheat_001",
+          "seed_collector_buckwheat_002",
+          "seed_collector_buckwheat_003",
+          "seed_collector_buckwheat_004",
+          "seed_collector_buckwheat_005",
+          "seed_collector_buckwheat_006"
+        ],
+        "operation_type": "seed_collector_buckwheat"
+      },
+      {
+        "class_id": "same_operation_instances:seed_collector_sandleaf",
+        "facility_type": "manufacturing_5x5",
+        "member_count": 11,
+        "member_instance_ids": [
+          "seed_collector_sandleaf_001",
+          "seed_collector_sandleaf_002",
+          "seed_collector_sandleaf_003",
+          "seed_collector_sandleaf_004",
+          "seed_collector_sandleaf_005",
+          "seed_collector_sandleaf_006",
+          "seed_collector_sandleaf_007",
+          "seed_collector_sandleaf_008",
+          "seed_collector_sandleaf_009",
+          "seed_collector_sandleaf_010",
+          "seed_collector_sandleaf_011"
+        ],
+        "operation_type": "seed_collector_sandleaf"
+      }
+    ]
+  },
+  "generated_by": "src/preprocess/material_skeleton.py",
+  "material_edges": [
+    {
+      "commodity_id": "blue_iron_block",
+      "consumers": [
+        {
+          "group_id": "operation:crusher_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 34,
+          "operation_type": "crusher_blue_iron"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:refinery_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 34,
+          "operation_type": "refinery_blue_iron"
+        }
+      ],
+      "realized_demand_per_tick": 34,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "blue_iron_ore",
+      "consumers": [
+        {
+          "group_id": "operation:refinery_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 34,
+          "operation_type": "refinery_blue_iron"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "warehouse:generic_output_pool",
+          "kind": "warehouse_source",
+          "slot_count": 34
+        }
+      ],
+      "realized_demand_per_tick": 34,
+      "sink_kind": "none",
+      "source_kind": "external_boundary"
+    },
+    {
+      "commodity_id": "blue_iron_powder",
+      "consumers": [
+        {
+          "group_id": "operation:grinder_dense_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 17,
+          "operation_type": "grinder_dense_blue_iron"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:crusher_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 34,
+          "operation_type": "crusher_blue_iron"
+        }
+      ],
+      "realized_demand_per_tick": 34,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "buckwheat",
+      "consumers": [
+        {
+          "group_id": "operation:crusher_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "crusher_buckwheat"
+        },
+        {
+          "group_id": "operation:seed_collector_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "seed_collector_buckwheat"
+        }
+      ],
+      "cycle_group": "buckwheat_cycle",
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": true,
+      "producers": [
+        {
+          "group_id": "operation:planter_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 11,
+          "operation_type": "planter_buckwheat"
+        }
+      ],
+      "realized_demand_per_tick": 5.5,
+      "sink_kind": "none",
+      "source_kind": "cycle_internal"
+    },
+    {
+      "commodity_id": "buckwheat_powder",
+      "consumers": [
+        {
+          "group_id": "operation:grinder_fine_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "grinder_fine_buckwheat"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:crusher_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "crusher_buckwheat"
+        }
+      ],
+      "realized_demand_per_tick": 11,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "buckwheat_seed",
+      "consumers": [
+        {
+          "group_id": "operation:planter_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 11,
+          "operation_type": "planter_buckwheat"
+        }
+      ],
+      "cycle_group": "buckwheat_cycle",
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:seed_collector_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "seed_collector_buckwheat"
+        }
+      ],
+      "realized_demand_per_tick": 0,
+      "sink_kind": "none",
+      "source_kind": "cycle_internal"
+    },
+    {
+      "commodity_id": "dense_blue_iron_powder",
+      "consumers": [
+        {
+          "group_id": "operation:refinery_steel",
+          "kind": "operation_group",
+          "machine_count": 17,
+          "operation_type": "refinery_steel"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:grinder_dense_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 17,
+          "operation_type": "grinder_dense_blue_iron"
+        }
+      ],
+      "realized_demand_per_tick": 17,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "dense_source_powder",
+      "consumers": [
+        {
+          "group_id": "operation:packaging_battery",
+          "kind": "operation_group",
+          "machine_count": 3,
+          "operation_type": "packaging_battery"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:grinder_dense_source",
+          "kind": "operation_group",
+          "machine_count": 9,
+          "operation_type": "grinder_dense_source"
+        }
+      ],
+      "realized_demand_per_tick": 9,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "fine_buckwheat_powder",
+      "consumers": [
+        {
+          "group_id": "operation:filling_capsule",
+          "kind": "operation_group",
+          "machine_count": 3,
+          "operation_type": "filling_capsule"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:grinder_fine_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "grinder_fine_buckwheat"
+        }
+      ],
+      "realized_demand_per_tick": 5.5,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "qiaoyu_capsule",
+      "consumers": [
+        {
+          "group_id": "warehouse:generic_input_pool",
+          "kind": "warehouse_sink",
+          "slot_count": 1
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:filling_capsule",
+          "kind": "operation_group",
+          "machine_count": 3,
+          "operation_type": "filling_capsule"
+        }
+      ],
+      "realized_demand_per_tick": 0.55,
+      "sink_kind": "generic_input",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "sandleaf",
+      "consumers": [
+        {
+          "group_id": "operation:crusher_sandleaf",
+          "kind": "operation_group",
+          "machine_count": 11,
+          "operation_type": "crusher_sandleaf"
+        },
+        {
+          "group_id": "operation:seed_collector_sandleaf",
+          "kind": "operation_group",
+          "machine_count": 11,
+          "operation_type": "seed_collector_sandleaf"
+        }
+      ],
+      "cycle_group": "sandleaf_cycle",
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": true,
+      "producers": [
+        {
+          "group_id": "operation:planter_sandleaf",
+          "kind": "operation_group",
+          "machine_count": 21,
+          "operation_type": "planter_sandleaf"
+        }
+      ],
+      "realized_demand_per_tick": 10.5,
+      "sink_kind": "none",
+      "source_kind": "cycle_internal"
+    },
+    {
+      "commodity_id": "sandleaf_powder",
+      "consumers": [
+        {
+          "group_id": "operation:grinder_dense_blue_iron",
+          "kind": "operation_group",
+          "machine_count": 17,
+          "operation_type": "grinder_dense_blue_iron"
+        },
+        {
+          "group_id": "operation:grinder_dense_source",
+          "kind": "operation_group",
+          "machine_count": 9,
+          "operation_type": "grinder_dense_source"
+        },
+        {
+          "group_id": "operation:grinder_fine_buckwheat",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "grinder_fine_buckwheat"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": true,
+      "producers": [
+        {
+          "group_id": "operation:crusher_sandleaf",
+          "kind": "operation_group",
+          "machine_count": 11,
+          "operation_type": "crusher_sandleaf"
+        }
+      ],
+      "realized_demand_per_tick": 31.5,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "sandleaf_seed",
+      "consumers": [
+        {
+          "group_id": "operation:planter_sandleaf",
+          "kind": "operation_group",
+          "machine_count": 21,
+          "operation_type": "planter_sandleaf"
+        }
+      ],
+      "cycle_group": "sandleaf_cycle",
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:seed_collector_sandleaf",
+          "kind": "operation_group",
+          "machine_count": 11,
+          "operation_type": "seed_collector_sandleaf"
+        }
+      ],
+      "realized_demand_per_tick": 0,
+      "sink_kind": "none",
+      "source_kind": "cycle_internal"
+    },
+    {
+      "commodity_id": "source_ore",
+      "consumers": [
+        {
+          "group_id": "operation:crusher_source",
+          "kind": "operation_group",
+          "machine_count": 18,
+          "operation_type": "crusher_source"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "warehouse:generic_output_pool",
+          "kind": "warehouse_source",
+          "slot_count": 18
+        }
+      ],
+      "realized_demand_per_tick": 18,
+      "sink_kind": "none",
+      "source_kind": "external_boundary"
+    },
+    {
+      "commodity_id": "source_powder",
+      "consumers": [
+        {
+          "group_id": "operation:grinder_dense_source",
+          "kind": "operation_group",
+          "machine_count": 9,
+          "operation_type": "grinder_dense_source"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:crusher_source",
+          "kind": "operation_group",
+          "machine_count": 18,
+          "operation_type": "crusher_source"
+        }
+      ],
+      "realized_demand_per_tick": 18,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "steel_block",
+      "consumers": [
+        {
+          "group_id": "operation:molding_bottle",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "molding_bottle"
+        },
+        {
+          "group_id": "operation:parts_maker",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "parts_maker"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": true,
+      "producers": [
+        {
+          "group_id": "operation:refinery_steel",
+          "kind": "operation_group",
+          "machine_count": 17,
+          "operation_type": "refinery_steel"
+        }
+      ],
+      "realized_demand_per_tick": 17,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "steel_bottle",
+      "consumers": [
+        {
+          "group_id": "operation:filling_capsule",
+          "kind": "operation_group",
+          "machine_count": 3,
+          "operation_type": "filling_capsule"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:molding_bottle",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "molding_bottle"
+        }
+      ],
+      "realized_demand_per_tick": 5.5,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "steel_part",
+      "consumers": [
+        {
+          "group_id": "operation:packaging_battery",
+          "kind": "operation_group",
+          "machine_count": 3,
+          "operation_type": "packaging_battery"
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:parts_maker",
+          "kind": "operation_group",
+          "machine_count": 6,
+          "operation_type": "parts_maker"
+        }
+      ],
+      "realized_demand_per_tick": 6,
+      "sink_kind": "none",
+      "source_kind": "internal_only"
+    },
+    {
+      "commodity_id": "valley_battery",
+      "consumers": [
+        {
+          "group_id": "warehouse:generic_input_pool",
+          "kind": "warehouse_sink",
+          "slot_count": 1
+        }
+      ],
+      "cycle_group": null,
+      "network_model": "pooled_multi_source_multi_sink",
+      "pool_exchangeable": false,
+      "producers": [
+        {
+          "group_id": "operation:packaging_battery",
+          "kind": "operation_group",
+          "machine_count": 3,
+          "operation_type": "packaging_battery"
+        }
+      ],
+      "realized_demand_per_tick": 0.6,
+      "sink_kind": "generic_input",
+      "source_kind": "internal_only"
+    }
+  ],
+  "node_groups": [
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:crusher_blue_iron",
+      "input_commodities": [
+        "blue_iron_block"
+      ],
+      "instance_ids": [
+        "crusher_blue_iron_001",
+        "crusher_blue_iron_002",
+        "crusher_blue_iron_003",
+        "crusher_blue_iron_004",
+        "crusher_blue_iron_005",
+        "crusher_blue_iron_006",
+        "crusher_blue_iron_007",
+        "crusher_blue_iron_008",
+        "crusher_blue_iron_009",
+        "crusher_blue_iron_010",
+        "crusher_blue_iron_011",
+        "crusher_blue_iron_012",
+        "crusher_blue_iron_013",
+        "crusher_blue_iron_014",
+        "crusher_blue_iron_015",
+        "crusher_blue_iron_016",
+        "crusher_blue_iron_017",
+        "crusher_blue_iron_018",
+        "crusher_blue_iron_019",
+        "crusher_blue_iron_020",
+        "crusher_blue_iron_021",
+        "crusher_blue_iron_022",
+        "crusher_blue_iron_023",
+        "crusher_blue_iron_024",
+        "crusher_blue_iron_025",
+        "crusher_blue_iron_026",
+        "crusher_blue_iron_027",
+        "crusher_blue_iron_028",
+        "crusher_blue_iron_029",
+        "crusher_blue_iron_030",
+        "crusher_blue_iron_031",
+        "crusher_blue_iron_032",
+        "crusher_blue_iron_033",
+        "crusher_blue_iron_034"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 34,
+      "operation_type": "crusher_blue_iron",
+      "output_commodities": [
+        "blue_iron_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "blue_iron_block": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "blue_iron_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:crusher_buckwheat",
+      "input_commodities": [
+        "buckwheat"
+      ],
+      "instance_ids": [
+        "crusher_buckwheat_001",
+        "crusher_buckwheat_002",
+        "crusher_buckwheat_003",
+        "crusher_buckwheat_004",
+        "crusher_buckwheat_005",
+        "crusher_buckwheat_006"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 6,
+      "operation_type": "crusher_buckwheat",
+      "output_commodities": [
+        "buckwheat_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "buckwheat": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "buckwheat_powder": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:crusher_sandleaf",
+      "input_commodities": [
+        "sandleaf"
+      ],
+      "instance_ids": [
+        "crusher_sandleaf_001",
+        "crusher_sandleaf_002",
+        "crusher_sandleaf_003",
+        "crusher_sandleaf_004",
+        "crusher_sandleaf_005",
+        "crusher_sandleaf_006",
+        "crusher_sandleaf_007",
+        "crusher_sandleaf_008",
+        "crusher_sandleaf_009",
+        "crusher_sandleaf_010",
+        "crusher_sandleaf_011"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 11,
+      "operation_type": "crusher_sandleaf",
+      "output_commodities": [
+        "sandleaf_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "sandleaf": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "sandleaf_powder": {
+            "amount_per_cycle": 3,
+            "rate_per_tick": 3,
+            "slots_per_machine": 3,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:crusher_source",
+      "input_commodities": [
+        "source_ore"
+      ],
+      "instance_ids": [
+        "crusher_source_001",
+        "crusher_source_002",
+        "crusher_source_003",
+        "crusher_source_004",
+        "crusher_source_005",
+        "crusher_source_006",
+        "crusher_source_007",
+        "crusher_source_008",
+        "crusher_source_009",
+        "crusher_source_010",
+        "crusher_source_011",
+        "crusher_source_012",
+        "crusher_source_013",
+        "crusher_source_014",
+        "crusher_source_015",
+        "crusher_source_016",
+        "crusher_source_017",
+        "crusher_source_018"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 18,
+      "operation_type": "crusher_source",
+      "output_commodities": [
+        "source_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "source_ore": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "source_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_6x4",
+      "group_id": "operation:filling_capsule",
+      "input_commodities": [
+        "fine_buckwheat_powder",
+        "steel_bottle"
+      ],
+      "instance_ids": [
+        "filling_capsule_001",
+        "filling_capsule_002",
+        "filling_capsule_003"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 3,
+      "operation_type": "filling_capsule",
+      "output_commodities": [
+        "qiaoyu_capsule"
+      ],
+      "port_profile": {
+        "inputs": {
+          "fine_buckwheat_powder": {
+            "amount_per_cycle": 10,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 5
+          },
+          "steel_bottle": {
+            "amount_per_cycle": 10,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 5
+          }
+        },
+        "outputs": {
+          "qiaoyu_capsule": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 0.2,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 5
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_6x4",
+      "group_id": "operation:grinder_dense_blue_iron",
+      "input_commodities": [
+        "blue_iron_powder",
+        "sandleaf_powder"
+      ],
+      "instance_ids": [
+        "grinder_dense_blue_iron_001",
+        "grinder_dense_blue_iron_002",
+        "grinder_dense_blue_iron_003",
+        "grinder_dense_blue_iron_004",
+        "grinder_dense_blue_iron_005",
+        "grinder_dense_blue_iron_006",
+        "grinder_dense_blue_iron_007",
+        "grinder_dense_blue_iron_008",
+        "grinder_dense_blue_iron_009",
+        "grinder_dense_blue_iron_010",
+        "grinder_dense_blue_iron_011",
+        "grinder_dense_blue_iron_012",
+        "grinder_dense_blue_iron_013",
+        "grinder_dense_blue_iron_014",
+        "grinder_dense_blue_iron_015",
+        "grinder_dense_blue_iron_016",
+        "grinder_dense_blue_iron_017"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 17,
+      "operation_type": "grinder_dense_blue_iron",
+      "output_commodities": [
+        "dense_blue_iron_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "blue_iron_powder": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          },
+          "sandleaf_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "dense_blue_iron_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_6x4",
+      "group_id": "operation:grinder_dense_source",
+      "input_commodities": [
+        "sandleaf_powder",
+        "source_powder"
+      ],
+      "instance_ids": [
+        "grinder_dense_source_001",
+        "grinder_dense_source_002",
+        "grinder_dense_source_003",
+        "grinder_dense_source_004",
+        "grinder_dense_source_005",
+        "grinder_dense_source_006",
+        "grinder_dense_source_007",
+        "grinder_dense_source_008",
+        "grinder_dense_source_009"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 9,
+      "operation_type": "grinder_dense_source",
+      "output_commodities": [
+        "dense_source_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "sandleaf_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          },
+          "source_powder": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "dense_source_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_6x4",
+      "group_id": "operation:grinder_fine_buckwheat",
+      "input_commodities": [
+        "buckwheat_powder",
+        "sandleaf_powder"
+      ],
+      "instance_ids": [
+        "grinder_fine_buckwheat_001",
+        "grinder_fine_buckwheat_002",
+        "grinder_fine_buckwheat_003",
+        "grinder_fine_buckwheat_004",
+        "grinder_fine_buckwheat_005",
+        "grinder_fine_buckwheat_006"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 6,
+      "operation_type": "grinder_fine_buckwheat",
+      "output_commodities": [
+        "fine_buckwheat_powder"
+      ],
+      "port_profile": {
+        "inputs": {
+          "buckwheat_powder": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          },
+          "sandleaf_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "fine_buckwheat_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:molding_bottle",
+      "input_commodities": [
+        "steel_block"
+      ],
+      "instance_ids": [
+        "molding_bottle_001",
+        "molding_bottle_002",
+        "molding_bottle_003",
+        "molding_bottle_004",
+        "molding_bottle_005",
+        "molding_bottle_006"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 6,
+      "operation_type": "molding_bottle",
+      "output_commodities": [
+        "steel_bottle"
+      ],
+      "port_profile": {
+        "inputs": {
+          "steel_block": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "steel_bottle": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_6x4",
+      "group_id": "operation:packaging_battery",
+      "input_commodities": [
+        "dense_source_powder",
+        "steel_part"
+      ],
+      "instance_ids": [
+        "packaging_battery_001",
+        "packaging_battery_002",
+        "packaging_battery_003"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 3,
+      "operation_type": "packaging_battery",
+      "output_commodities": [
+        "valley_battery"
+      ],
+      "port_profile": {
+        "inputs": {
+          "dense_source_powder": {
+            "amount_per_cycle": 15,
+            "rate_per_tick": 3,
+            "slots_per_machine": 3,
+            "ticks_per_cycle": 5
+          },
+          "steel_part": {
+            "amount_per_cycle": 10,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 5
+          }
+        },
+        "outputs": {
+          "valley_battery": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 0.2,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 5
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:parts_maker",
+      "input_commodities": [
+        "steel_block"
+      ],
+      "instance_ids": [
+        "parts_maker_001",
+        "parts_maker_002",
+        "parts_maker_003",
+        "parts_maker_004",
+        "parts_maker_005",
+        "parts_maker_006"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 6,
+      "operation_type": "parts_maker",
+      "output_commodities": [
+        "steel_part"
+      ],
+      "port_profile": {
+        "inputs": {
+          "steel_block": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "steel_part": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_5x5",
+      "group_id": "operation:planter_buckwheat",
+      "input_commodities": [
+        "buckwheat_seed"
+      ],
+      "instance_ids": [
+        "planter_buckwheat_001",
+        "planter_buckwheat_002",
+        "planter_buckwheat_003",
+        "planter_buckwheat_004",
+        "planter_buckwheat_005",
+        "planter_buckwheat_006",
+        "planter_buckwheat_007",
+        "planter_buckwheat_008",
+        "planter_buckwheat_009",
+        "planter_buckwheat_010",
+        "planter_buckwheat_011"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 11,
+      "operation_type": "planter_buckwheat",
+      "output_commodities": [
+        "buckwheat"
+      ],
+      "port_profile": {
+        "inputs": {
+          "buckwheat_seed": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "buckwheat": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_5x5",
+      "group_id": "operation:planter_sandleaf",
+      "input_commodities": [
+        "sandleaf_seed"
+      ],
+      "instance_ids": [
+        "planter_sandleaf_001",
+        "planter_sandleaf_002",
+        "planter_sandleaf_003",
+        "planter_sandleaf_004",
+        "planter_sandleaf_005",
+        "planter_sandleaf_006",
+        "planter_sandleaf_007",
+        "planter_sandleaf_008",
+        "planter_sandleaf_009",
+        "planter_sandleaf_010",
+        "planter_sandleaf_011",
+        "planter_sandleaf_012",
+        "planter_sandleaf_013",
+        "planter_sandleaf_014",
+        "planter_sandleaf_015",
+        "planter_sandleaf_016",
+        "planter_sandleaf_017",
+        "planter_sandleaf_018",
+        "planter_sandleaf_019",
+        "planter_sandleaf_020",
+        "planter_sandleaf_021"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 21,
+      "operation_type": "planter_sandleaf",
+      "output_commodities": [
+        "sandleaf"
+      ],
+      "port_profile": {
+        "inputs": {
+          "sandleaf_seed": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "sandleaf": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:refinery_blue_iron",
+      "input_commodities": [
+        "blue_iron_ore"
+      ],
+      "instance_ids": [
+        "refinery_blue_iron_001",
+        "refinery_blue_iron_002",
+        "refinery_blue_iron_003",
+        "refinery_blue_iron_004",
+        "refinery_blue_iron_005",
+        "refinery_blue_iron_006",
+        "refinery_blue_iron_007",
+        "refinery_blue_iron_008",
+        "refinery_blue_iron_009",
+        "refinery_blue_iron_010",
+        "refinery_blue_iron_011",
+        "refinery_blue_iron_012",
+        "refinery_blue_iron_013",
+        "refinery_blue_iron_014",
+        "refinery_blue_iron_015",
+        "refinery_blue_iron_016",
+        "refinery_blue_iron_017",
+        "refinery_blue_iron_018",
+        "refinery_blue_iron_019",
+        "refinery_blue_iron_020",
+        "refinery_blue_iron_021",
+        "refinery_blue_iron_022",
+        "refinery_blue_iron_023",
+        "refinery_blue_iron_024",
+        "refinery_blue_iron_025",
+        "refinery_blue_iron_026",
+        "refinery_blue_iron_027",
+        "refinery_blue_iron_028",
+        "refinery_blue_iron_029",
+        "refinery_blue_iron_030",
+        "refinery_blue_iron_031",
+        "refinery_blue_iron_032",
+        "refinery_blue_iron_033",
+        "refinery_blue_iron_034"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 34,
+      "operation_type": "refinery_blue_iron",
+      "output_commodities": [
+        "blue_iron_block"
+      ],
+      "port_profile": {
+        "inputs": {
+          "blue_iron_ore": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "blue_iron_block": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_3x3",
+      "group_id": "operation:refinery_steel",
+      "input_commodities": [
+        "dense_blue_iron_powder"
+      ],
+      "instance_ids": [
+        "refinery_steel_001",
+        "refinery_steel_002",
+        "refinery_steel_003",
+        "refinery_steel_004",
+        "refinery_steel_005",
+        "refinery_steel_006",
+        "refinery_steel_007",
+        "refinery_steel_008",
+        "refinery_steel_009",
+        "refinery_steel_010",
+        "refinery_steel_011",
+        "refinery_steel_012",
+        "refinery_steel_013",
+        "refinery_steel_014",
+        "refinery_steel_015",
+        "refinery_steel_016",
+        "refinery_steel_017"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 17,
+      "operation_type": "refinery_steel",
+      "output_commodities": [
+        "steel_block"
+      ],
+      "port_profile": {
+        "inputs": {
+          "dense_blue_iron_powder": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "steel_block": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_5x5",
+      "group_id": "operation:seed_collector_buckwheat",
+      "input_commodities": [
+        "buckwheat"
+      ],
+      "instance_ids": [
+        "seed_collector_buckwheat_001",
+        "seed_collector_buckwheat_002",
+        "seed_collector_buckwheat_003",
+        "seed_collector_buckwheat_004",
+        "seed_collector_buckwheat_005",
+        "seed_collector_buckwheat_006"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 6,
+      "operation_type": "seed_collector_buckwheat",
+      "output_commodities": [
+        "buckwheat_seed"
+      ],
+      "port_profile": {
+        "inputs": {
+          "buckwheat": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "buckwheat_seed": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    },
+    {
+      "facility_type": "manufacturing_5x5",
+      "group_id": "operation:seed_collector_sandleaf",
+      "input_commodities": [
+        "sandleaf"
+      ],
+      "instance_ids": [
+        "seed_collector_sandleaf_001",
+        "seed_collector_sandleaf_002",
+        "seed_collector_sandleaf_003",
+        "seed_collector_sandleaf_004",
+        "seed_collector_sandleaf_005",
+        "seed_collector_sandleaf_006",
+        "seed_collector_sandleaf_007",
+        "seed_collector_sandleaf_008",
+        "seed_collector_sandleaf_009",
+        "seed_collector_sandleaf_010",
+        "seed_collector_sandleaf_011"
+      ],
+      "kind": "production_operation_group",
+      "machine_count": 11,
+      "operation_type": "seed_collector_sandleaf",
+      "output_commodities": [
+        "sandleaf_seed"
+      ],
+      "port_profile": {
+        "inputs": {
+          "sandleaf": {
+            "amount_per_cycle": 1,
+            "rate_per_tick": 1,
+            "slots_per_machine": 1,
+            "ticks_per_cycle": 1
+          }
+        },
+        "outputs": {
+          "sandleaf_seed": {
+            "amount_per_cycle": 2,
+            "rate_per_tick": 2,
+            "slots_per_machine": 2,
+            "ticks_per_cycle": 1
+          }
+        }
+      }
+    }
+  ],
+  "schema_version": 1,
+  "source_derivation": {
+    "canonical_rules": "rules/canonical_rules.json",
+    "commodity_demands": "data/preprocessed/commodity_demands.json",
+    "generic_io_requirements": "data/preprocessed/generic_io_requirements.json",
+    "machine_counts": "data/preprocessed/machine_counts.json",
+    "mandatory_exact_instances": "data/preprocessed/mandatory_exact_instances.json",
+    "preprocess_plan_read_only_cycle_and_utility_overlay": "rules/preprocess_plan.json",
+    "source_hashes_recorded": false
+  },
+  "totals": {
+    "boundary_port_instance_count": 46,
+    "cycle_material_group_count": 2,
+    "mandatory_exact_instance_count": 266,
+    "manufacturing_instance_count": 219,
+    "material_edge_count": 19,
+    "protocol_core_instance_count": 1,
+    "recipe_group_count": 17
+  },
+  "warehouses": {
+    "generic_input_requirements": {
+      "qiaoyu_capsule": 1,
+      "valley_battery": 1
+    },
+    "generic_output_requirements": {
+      "blue_iron_ore": 34,
+      "source_ore": 18
+    },
+    "layering_note": {
+      "generic_io_demands": "Commodity slot requirements come from demand_solver expansion.",
+      "physical_ports": "46 boundary-port instances come from mandatory_exact_instances."
+    },
+    "physical_boundary_ports": {
+      "facility_type": "boundary_storage_port",
+      "group_id": "warehouse:physical_boundary_ports",
+      "instance_builder_contract": "build_boundary_ports(46)",
+      "instance_count": 46,
+      "operation_type": "boundary_io"
+    },
+    "protocol_core_output_pool": {
+      "facility_type": "protocol_core",
+      "generic_output_slots_per_instance": 6,
+      "group_id": "warehouse:protocol_core",
+      "instance_count": 1,
+      "operation_type": "protocol_core"
+    }
+  }
+}
