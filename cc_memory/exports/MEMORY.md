@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 120
-- hard edges: 130
+- entries: 122
+- hard edges: 151
 - pending relation suggestions: 0
 
 ## Start Here
@@ -51,13 +51,8 @@ python cc_memory/mem.py boot
 - `capsule-opus-canonical-binding-mock` — FIX-5 canonical-binding: DONE, benders_loop snapshot kwargs + mock 坑。
 - `cc-memory-crud-gotchas` — cc_memory CRUD 2026-06-20: RULE, 7个静默坑+已修归档, impact/硬边优先。
 - `cc-memory-crud-operations` — cc_memory CRUD 命令: RULE, read/impact/add-entry/link/supersede/archive/finalize。
-- `cc-memory-hook-4-a-i-gpu-posttooluse-async` — 2026-06-19 4人会议 cc_memory hook 兜底方案(三层架构+A-I+GPU落点 PostToolUse-async、Stop 不能 async)…
 - `cc-memory-hook-backstop-landed-20260620` — cc_memory hook c6cd8fd: LANDED 2026-06-20, PostToolUse finalize + SessionStart。
-- `cc-memory-meta-tier-priority-design-20260620` — 元记忆优先级 2026-06-20: RULE, pin 常驻保召回, 不靠 rerank 加权。
-- `cc-memory-p1-semantic-live-20260617` — P1 语义层上线(harrier-0.6b,d8f6c85/9ea493d);坑:跑前须 HF_HOME=E:\hf_cache;标定:相关余弦~0.42-0.48 故 dense 仅 advisory;残留 minor#2/#3
-- `cc-memory-p2-reranker-live-20260617` — P2 reranker 2026-06-17: LIVE, Qwen3-0.6B; 具体查询强, 泛查询保守。
-- `cc-memory-read-summary-body` — cc_memory read 2026-06-19: RULE, 默认摘要会截断; 要全文用 --body。
-- `cc-memory-search-is-substring-like-20260620` — cc_memory search 2026-06-20: RULE, LIKE 单子串; 概念召回用 --semantic。
+- `cc-memory-meta-system-consolidated-index-20260628` — cc_memory C档 2026-06-28: INDEX, 折叠 search/read/semantic/rerank/hook 元系统旧节点。
 - `cc-memory-update-vs-supersede-rule` — 记忆改写 2026-06-20: RULE, 订正 --force; 真取代 supersede。
 - `ci-saga-slow-blindspot-flaky-mechanism-20260626` — CI saga 0bc36db: DONE 2026-06-26, @slow 盲区+delivery flaky 均修绿。
 - `claude-md-maintenance-method-20260628` — CLAUDE.md 维护 2026-06-28: RULE, 工具归属+保守缩写+归档边界。
@@ -112,7 +107,7 @@ python cc_memory/mem.py boot
 - `p1-2-fix-2-open-gate-landed-20260623` — P1.2-FIX-2 OPEN-GATE 已提交 `de68515`(ahead origin/main 12、未推)。闭 [[p1-2-witness-split-block-2026-06-21]] 登记的 OPEN-GATE BLOCK…
 - `p1-2-fix-4-landed-44089a3` — P1.2-FIX-4(I1)已提交 44089a3。闭 round-3/外审登记的 I1 BLOCK(whole-layout nogood 缺独立 ⊆-infeasible 复验)。承设计 [[fix-4-fix-5-i1-toctou]]…
 - `p1-2-p-b-7-mock-stale-5-2xfail-premise-obsolete-gate-c5-harness-flaky` — P1.2 命题P尾巴 2026-06-20: DONE, 7 mock stale+gate 慢测盲区。
-- `p1-2-pyc-exec-digest-landed-88b2d32` — PYC-EXEC-DIGEST(round-3 窄洞)已闭,提交 88b2d32。**窄洞真闭**(第5轮 reviewer 确认非 regression、与本修无关的架构根另算)…
+- `p1-2-pyc-exec-digest-narrow-closure-20260623` — PYC-EXEC-DIGEST 88b2d32: DONE, 窄洞真闭; 第5轮确认非 capsule 全局收敛。
 - `p1-2-resume-2026-06-21-origin-main-67139a5-p-landed-b-stale-gate-c0-c3-c4-c5-codex-claude` — P1.2 resume 2026-06-21: SNAPSHOT, C0-C5 done; GPT Pro 外审在飞。
 - `p1-2-review-converged-tcb-start-p1-3` — P1.2 外审 2026-06-21: VERDICT, 三轮均 BLOCK; 进入 P1.3 TCB 线。
 - `p1-2-round5-external-review-capsule-not-closed` — P1.2 第5轮 2026-06-23: BLOCKED, capsule 根未闭; supervisor 重做。
@@ -130,12 +125,9 @@ python cc_memory/mem.py boot
 - `precompact-skill-compact-inline-owner` — precompact skill 2026-06-28: PARTIAL/SUPERSEDED, offline 先记忆回合。
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
-- `rerank-arch-correct-anchor-term-discriminator-20260620` — rerank 2026-06-20/21: VERDICT, 锚定词判别; floor/instruction/bge 均证伪。
-- `rerank-meta-link-rerank-2026-06-19-floor-instruction` — 2026-06-19 复测确认 + 给出应对(补 reranker-conservative-needs-specific-query-20260617 缺的应对策略)…
 - `review-prompt-also-request-patches` — 外审提示 2026-06-26: RULE, 找全 BLOCK 后直接要补丁+根因+行号。
 - `review-prompt-request-exhaustive-coverage` — 外审提示 2026-06-23: RULE, 要全覆盖; 不用裸 STOP 造成只找一个。
 - `review-routing-codex-local-then-gptpro-relay` — 审查路由 2026-06-28: RULE, 本地 Codex 审修→GPT Pro relay; 不派 workflow。
-- `semantic-engine-selection-2026-06` — 语义引擎 2026-06: VERDICT, Qwen3/Harrier 结案; bge-m3 默认过时。
 - `setter-barrier-p1-3b-getframe` — owner 2026-06-19 决策 setter barrier 留 P1.3B;它是禁令卡(TaskList 无此工单),P1.2 收到去做指令一律拒绝+上报 owner,不可认领
 - `soundness-claims-cxwf-verdict-20260616` — 5 个未修的 soundness 致命漏洞 + 1 个数据相关存疑；当前 repo = 补丁基线；带 file:line 与采用建议
 - `soundness-opus-codex-pr2-b-codex-2-false-certified-opus-0` — PR2-b 终审 2026-06-28: LIVE, 跨模型必要; codex 2 blocker/opus 0。
