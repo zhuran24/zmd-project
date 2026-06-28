@@ -56,4 +56,4 @@ updated_at: "2026-06-26"
 
 铁律：提交前重新看 `git status --short`、`git diff --stat` 和 staged 路径；只用带明确 pathspec 的提交命令提交自己负责的文件。涉及 `cc_memory/memory.db` 尤其要局部提交。
 
-**对偶坑（2026-06-28 PR2-b 实证）：pathspec 不仅别多扫、也别漏。** 用显式 pathspec 提交 reseal/close-kernel 类改动时，我提交的 pins（obligations/allowlist/checker 钉死表）引用了【别的】被修改文件；只提交“本会话亲手编辑的”、漏了 pins 依赖的文件（如 exact_campaign.py + 迁移测试，上个会话留下的未提交 PR2-b 改动）→ 提交树里 pins 期望新 sha、文件却还是旧版 → CI close-kernel checker 逮 source-hash drift（本地 `--full` 读磁盘工作树会过、CI 读已提交树才挂）。所以 pathspec 要【精确等于】这次逻辑改动的完整一致集：用 `git status` 枚举所有相关 `M`（尤其建在别会话未提交改动之上时），push 前核对 `git show HEAD:<file>` 的 sha = 钉死表期望值。详 cc_memory `pathspec-must-cover-full-reseal-set`。
+**对偶坑（2026-06-28 PR2-b 实证）：pathspec 不仅别多扫、也别漏。** 显式 pathspec 提交 reseal/close-kernel 类改动时，若 pins 引用的被修改文件未一并提交，就会出现提交树里 pins 期望新 sha、文件仍是旧版，CI close-kernel checker 报 source-hash drift（本地 `--full` 读磁盘工作树会过、CI 读已提交树才挂）。所以 pathspec 要【精确等于】这次逻辑改动的完整一致集：用 `git status` 枚举所有相关 `M`（尤其建在别会话未提交改动之上时），push 前核对 `git show HEAD:<file>` 的 sha = 钉死表期望值。详 cc_memory `pathspec-must-cover-full-reseal-set`。
