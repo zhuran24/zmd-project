@@ -1031,12 +1031,11 @@ def _load_canonical_dependency_floor_manifest(source_root: Path) -> dict[str, An
     a fixed host location derived from the __file__-based source_root, never from a
     caller. That is what closes the B2 caller-selected-floor channel.
 
-    Trust boundary (NOT strengthened by this wrapper): the canonical floor manifest and
-    its generator (scripts/generate_pr2_dependency_floor_manifest.py, run only when the
-    manifest is absent) are host-generated and are a declared NAMED-TCB -- they are NOT
-    source-pinned into the seal record / close-kernel here. Binding the host floor
-    (manifest + generator) is deferred to PR2-c; do not read this wrapper as proving the
-    floor's host provenance.
+    Trust boundary: the canonical floor manifest and its generator
+    (scripts/generate_pr2_dependency_floor_manifest.py, run only when the manifest is
+    absent) are host-generated NAMED-TCB. Their provenance is sealed by the P1.2
+    close-kernel dependency-floor contract, while the runtime loader still rehashes
+    every dependency file before accepting the floor.
     """
     manifest_path = source_root / DEPENDENCY_FLOOR_MANIFEST_REL
     if not manifest_path.exists():
