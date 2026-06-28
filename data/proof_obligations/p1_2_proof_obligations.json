@@ -758,7 +758,7 @@
       "on-disk production source tree bound by certified_exact_source_tree",
       "canonical project artifacts bound by compute_exact_artifact_hashes",
       "certified_exact solver and project-bound terminal witness validators",
-      "canonical PR2 L0 dependency floor manifest bytes pinned by close_kernel_contract.dependency_floor_provenance",
+      "deploy-pending PR2 L0 dependency floor placeholder bytes pinned by close_kernel_contract.dependency_floor_provenance",
       "scripts/generate_pr2_dependency_floor_manifest.py source pinned by the close-kernel V99 source-hash floor",
       "Python standard library and native extension modules such as OR-Tools .pyd/.so files",
       "OS subprocess, pipe, nonce, timeout, and exit-status semantics",
@@ -854,7 +854,8 @@
       "generator_sha256": "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c",
       "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
       "mutation_policy": "dependency_floor_drift_reopens_p1_2_close_claim",
-      "manifest_floor_root": "PYTHON_SYSCONFIG_PURELIB"
+      "manifest_floor_root": "PYTHON_SYSCONFIG_PURELIB",
+      "manifest_provenance_status": "deploy_pending_placeholder_regenerate_on_production_cachyos_py313"
     },
     "sink_files": [
       {
@@ -902,7 +903,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "1e51b5134c9b6978c44c6b5692ca1a4c016b331e83a08caeccb999fa47760ff8",
+        "source_sha256": "ffd1e1f2da1d4fdb985822325f057dc6218ededba93c2bc9d1da06b05957149e",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1710,7 +1711,7 @@
       {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
+        "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

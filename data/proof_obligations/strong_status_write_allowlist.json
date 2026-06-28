@@ -785,87 +785,87 @@
       "callee": "mark_campaign_stopped"
     },
     {
-      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_289_final_result",
+      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_295_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 289,
+      "line": 295,
       "qualname": "run_l0_supervisor_seal",
       "keys": [
         "final_result"
       ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
-      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_290_final_status",
+      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_296_final_status",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 290,
+      "line": 296,
       "qualname": "run_l0_supervisor_seal",
       "keys": [
         "final_status"
       ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
-      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_291_last_stop_reason",
-      "pattern": "state_key_write",
-      "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 291,
-      "qualname": "run_l0_supervisor_seal",
-      "keys": [
-        "last_stop_reason"
-      ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
-      "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
-    },
-    {
-      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_297_terminal_frontier_evidence",
+      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_297_last_stop_reason",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
       "line": 297,
       "qualname": "run_l0_supervisor_seal",
       "keys": [
-        "terminal_frontier_evidence"
+        "last_stop_reason"
       ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
       "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
-      "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_832_final_status",
+      "id": "src_search_pr2_l0_micro_verifier_core_py_run_l0_supervisor_seal_state_key_write_303_terminal_frontier_evidence",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 832,
-      "qualname": "_supervisor_certified_transition_violation_l0",
+      "line": 303,
+      "qualname": "run_l0_supervisor_seal",
       "keys": [
-        "final_status"
+        "terminal_frontier_evidence"
       ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
-      "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "justification": "PR2 L0 builds the sealed checkpoint payload only after marker/checkpoint read-once binding, exact strong-key child domain verification, fixed-witness checks, seal transition validation, exclusive lock, atomic replace, and postwrite reread; child never owns this write."
     },
     {
-      "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_838_final_result",
+      "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_838_final_status",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
       "line": 838,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
-        "final_result"
+        "final_status"
       ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
-      "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_849_last_stop_reason",
+      "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_844_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_micro_verifier_core.py",
-      "line": 849,
+      "line": 844,
+      "qualname": "_supervisor_certified_transition_violation_l0",
+      "keys": [
+        "final_result"
+      ],
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+      "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
+    },
+    {
+      "id": "src_search_pr2_l0_micro_verifier_core_py__supervisor_certified_transition_violation_l0_state_key_write_855_last_stop_reason",
+      "pattern": "state_key_write",
+      "module": "src/search/pr2_l0_micro_verifier_core.py",
+      "line": 855,
       "qualname": "_supervisor_certified_transition_violation_l0",
       "keys": [
         "last_stop_reason"
       ],
-          "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
+          "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
