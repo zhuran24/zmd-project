@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 125
-- hard edges: 152
+- entries: 127
+- hard edges: 156
 - pending relation suggestions: 0
 
 ## Start Here
@@ -66,13 +66,13 @@ python cc_memory/mem.py boot
 - `codex-agenttype-schema-structuredoutput-empty-loop` — codex schema 2026-06-21: FIXED, 空提交根因=shim纯管道 vs 结构化。
 - `codex-claude-clean-workflow` — 大活流程 2026-06-21/28: RULE, Codex 实现→Claude 审→回环到 clean。
 - `codex-claude-codex-claude-4-1-high` — owner 2026-06-21 当场纠正 + 实证。规矩(承 [[feedback-default-codex-desktop-mcp]]):**实现工作交 Codex(`mcp__codex_desktop__codex`)…
+- `codex-desktop-bridge-auto-cwd` — 机制非手动规则:codex_desktop 桥(C:\Users\22957\codex_desktop_mcp.py)run_turn 没收到 cwd 就默认 CLAUDE_PROJECT_DIR or os.getcwd()=本项目目录→no-isolation codex 自动在我活工作树跑(含未提交)、不再落…
 - `codex-direct-mcp-emits-strict-schema-json` — codex direct MCP 2026-06-21: VERIFIED, schema JSON 稳; codex.md fix#3 已可用。
 - `codex-executes-claude-orchestrates` — 分工 2026-06-26/28: RULE, 先按工作量; 大活 Codex, Claude 编排终审。
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
 - `codex-owner-2026-06-27-30min` — 2026-06-27 实证 + owner 定调。PR2-b 实现 workflow 的 codex agent 挂死 78 分钟没返回。根因…
 - `codex-read-only-mcp-sandbox-approval-policy` — Codex MCP 2026-06-21: RULE, 默认桌面桥; strip 代理是回退路。
 - `codex-skills-and-download-route` — Codex skills/HF 2026-06: RULE, skills 在 ~/.codex; HF 下载走隔离 JP 路由。
-- `codex-subagent-sees-committed-head-not-uncommitted` — codex 子代理(含 isolation:worktree)看 HEAD/干净checkout、看不到编排方未提交改动。实犯:让 codex 审未提交 #8、内联diff但它读盘对不上报'不在盘上'。避:先commit到分支再派(配 baseRef=head)、或prompt明说'审diff文本别读盘'
 - `commit-session-id-hook` — commit hook: LIVE, prepare-commit-msg 自动加 CC-Session-Id trailer。
 - `defensive-verbosity-when-criticized` — 文字反馈 2026-06-21: RULE, 被批评默认删减, 不加防御 caveat。
 - `deleted-memory-found-not-restore` — 旧记忆迁移 2026-06: RULE, 被主动删除=信号; 不整批恢复垃圾镜像。
