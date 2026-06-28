@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 123
+- entries: 125
 - hard edges: 152
 - pending relation suggestions: 0
 
@@ -72,6 +72,7 @@ python cc_memory/mem.py boot
 - `codex-owner-2026-06-27-30min` — 2026-06-27 实证 + owner 定调。PR2-b 实现 workflow 的 codex agent 挂死 78 分钟没返回。根因…
 - `codex-read-only-mcp-sandbox-approval-policy` — Codex MCP 2026-06-21: RULE, 默认桌面桥; strip 代理是回退路。
 - `codex-skills-and-download-route` — Codex skills/HF 2026-06: RULE, skills 在 ~/.codex; HF 下载走隔离 JP 路由。
+- `codex-subagent-sees-committed-head-not-uncommitted` — codex 子代理(含 isolation:worktree)看 HEAD/干净checkout、看不到编排方未提交改动。实犯:让 codex 审未提交 #8、内联diff但它读盘对不上报'不在盘上'。避:先commit到分支再派(配 baseRef=head)、或prompt明说'审diff文本别读盘'
 - `commit-session-id-hook` — commit hook: LIVE, prepare-commit-msg 自动加 CC-Session-Id trailer。
 - `defensive-verbosity-when-criticized` — 文字反馈 2026-06-21: RULE, 被批评默认删减, 不加防御 caveat。
 - `deleted-memory-found-not-restore` — 旧记忆迁移 2026-06: RULE, 被主动删除=信号; 不整批恢复垃圾镜像。
@@ -141,4 +142,5 @@ python cc_memory/mem.py boot
 - `v-next` — cc_memory_vnext 2026-06-27: LIVE, MVP-0 上线; zmem 卡/金标准为准。
 - `wf-verify-also-codex-no-parallel-bolt` — WF 验证 2026-06-21: RULE, 审计也走 Codex→Claude; 别旁路加并行。
 - `workflow-default-multimodel-opus-codex` — workflow 2026-06-28: RULE, 诊断用 opus+codex; 审查改 GPT Pro relay。
+- `worktree-baseref-head-vs-fresh` — owner 2026-06-29 拍 + 官方文档/Issue#60588 核实。head=本地当前HEAD(含未push commit+当前分支),fresh=origin/HEAD永远盯main不跟当前分支。我们高频派subagent接feature分支干→要head。两者都不带未commit工作区改
 - `xmodel-review-is-standing-rule-symmetric` — 跨模型审 2026-06-23: RULE, 站立规则自动触发, 非 owner 逐次指派。
