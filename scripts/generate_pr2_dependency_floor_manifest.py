@@ -1,8 +1,8 @@
 """Generate the PR2 L0 third-party dependency floor manifest for this host.
 
-This manifest is a host-specific generated artifact, not a shared frozen source
-file. The certified floor is generated and audited on the production CachyOS
-deployment host during PR2-c governance.
+This manifest is generated from a reviewed dependency environment.  File entries
+are relative to the active sysconfig purelib root so identical wheel bytes can be
+reviewed without pinning one machine's absolute install prefix.
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ from typing import Iterable
 
 AUTHORITY = "pr2_l0_dependency_floor_manifest_v1"
 DEFAULT_OUTPUT = Path("data/proof_obligations/pr2_dependency_floor_manifest.json")
+FLOOR_ROOT_SENTINEL = "PYTHON_SYSCONFIG_PURELIB"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PROBE_IMPORTS = (
     "absl",
@@ -243,7 +244,7 @@ def build_manifest() -> dict[str, object]:
     return {
         "schema_version": 1,
         "authority": AUTHORITY,
-        "floor_root": str(floor_root),
+        "floor_root": FLOOR_ROOT_SENTINEL,
         "allowed_top_level": allowed_top_level,
         "files": files,
         "named_tcb": {

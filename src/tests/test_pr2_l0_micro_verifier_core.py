@@ -6,6 +6,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import sysconfig
 from pathlib import Path
 
 import pytest
@@ -304,18 +305,47 @@ def host_dependency_floor_manifest_path(tmp_path_factory: pytest.TempPathFactory
     return manifest_path
 
 
-def test_l0_default_dependency_floor_manifest_auto_generates_to_configured_path(
+def test_l0_canonical_dependency_floor_manifest_missing_fails_closed(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    manifest_path = tmp_path / "generated_manifest.json"
-    monkeypatch.setattr(l0, "DEPENDENCY_FLOOR_MANIFEST_REL", str(manifest_path))
+    monkeypatch.setattr(l0, "DEPENDENCY_FLOOR_MANIFEST_REL", "missing_floor.json")
+
+    with pytest.raises(ValueError, match="expected regular file"):
+        l0._load_canonical_dependency_floor_manifest(tmp_path)
+
+
+def test_l0_canonical_dependency_floor_manifest_drift_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest_path = tmp_path / "floor.json"
+    manifest_path.write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr(l0, "DEPENDENCY_FLOOR_MANIFEST_REL", manifest_path.name)
+
+    with pytest.raises(ValueError, match="canonical dependency floor manifest .* drift"):
+        l0._load_canonical_dependency_floor_manifest(tmp_path)
+
+
+def test_l0_canonical_dependency_floor_manifest_current_bytes_are_pinned() -> None:
     source_root = Path(l0.__file__).resolve().parents[2]
+    manifest_path = source_root / l0.DEPENDENCY_FLOOR_MANIFEST_REL
+    raw = manifest_path.read_bytes()
 
-    dependency_floor = l0._load_canonical_dependency_floor_manifest(source_root)
+    assert len(raw) == l0.DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES
+    assert hashlib.sha256(raw).hexdigest() == l0.DEPENDENCY_FLOOR_MANIFEST_SHA256
 
-    assert manifest_path.is_file()
-    assert Path(str(dependency_floor["floor_root"])).is_dir()
+
+def test_l0_canonical_dependency_floor_manifest_loads_on_matching_host() -> None:
+    source_root = Path(l0.__file__).resolve().parents[2]
+    try:
+        dependency_floor = l0._load_canonical_dependency_floor_manifest(source_root)
+    except ValueError as exc:
+        pytest.skip(f"canonical dependency floor does not match this host: {exc}")
+
+    assert l0._dependency_floor_root(dependency_floor["floor_root"]) == Path(
+        sysconfig.get_paths()["purelib"]
+    ).resolve()
     assert dependency_floor["files"]
 
 
@@ -325,7 +355,7 @@ def test_l0_dependency_floor_blocks_floor_out_site_package_import(
     host_dependency_floor_manifest_path: Path,
 ) -> None:
     dependency_floor = l0._load_dependency_floor_manifest(host_dependency_floor_manifest_path)
-    floor_root = Path(str(dependency_floor["floor_root"])).resolve()
+    floor_root = l0._dependency_floor_root(dependency_floor["floor_root"])
     pytest_path = Path(pytest.__file__).resolve()
     pytest_path.relative_to(floor_root)
     assert "pytest" not in set(dependency_floor["allowed_top_level"])

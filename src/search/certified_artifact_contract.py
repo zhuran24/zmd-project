@@ -12,8 +12,10 @@ contract applies to the source checkout itself and to project roots that carry
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Mapping, Optional
 
@@ -111,16 +113,29 @@ def locked_p1_2_close_kernel_violation(
 
     checker_relative_path = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS[1]
     checker_path = root / checker_relative_path
-    try:
-        invoked_path = Path(sys.argv[0]).resolve()
-    except OSError:
-        invoked_path = Path()
-    if invoked_path == checker_path.resolve():
-        return None
-
+    # No "am I the checker?" self-skip: always re-verify by running the pinned
+    # checker in a fresh isolated subprocess.  An identity-based skip (whether
+    # keyed on ``sys.argv[0]`` -- forgeable via ``os.execv`` -- or
+    # ``__main__.__file__``) is a trust exception that a launcher or in-process
+    # state could abuse to bypass verification.  The child uses -I/-S/-B and a
+    # fresh pycache prefix so parent PYTHONPATH/sitecustomize state and repository
+    # bytecode caches cannot turn the checker process into a forged pass.  The
+    # pinned checker (``check_p1_2_proof_obligations.py``) does not call this
+    # function, so running it cannot recurse.  A future checker mode that needs
+    # artifact hashing must pass an explicit non-recursive flag, not rely on a
+    # bypassable identity skip.
+    pycache_prefix = tempfile.mkdtemp(prefix="zmd_p1_2_close_kernel_pycache_")
     try:
         result = subprocess.run(
-            [sys.executable, str(checker_path)],
+            [
+                sys.executable,
+                "-I",
+                "-S",
+                "-B",
+                "-X",
+                f"pycache_prefix={pycache_prefix}",
+                str(checker_path),
+            ],
             cwd=str(root),
             capture_output=True,
             text=True,
@@ -131,6 +146,8 @@ def locked_p1_2_close_kernel_violation(
         return "locked_p1_2_close_kernel_checker_timeout"
     except OSError as exc:
         return f"locked_p1_2_close_kernel_checker_error:{type(exc).__name__}"
+    finally:
+        shutil.rmtree(pycache_prefix, ignore_errors=True)
     if result.returncode != 0:
         return f"locked_p1_2_close_kernel_checker_rejected:{result.returncode}"
     return None

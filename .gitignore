@@ -107,9 +107,8 @@ _codex_archive/
 # ----------------------------------------------------------------------------
 /data/preprocessed/candidate_placements.json
 
-# PR2 L0 dependency floor manifests are host-specific generated artifacts.
-# Generate/audit on the deployment host; do not commit a shared default.
-/data/proof_obligations/pr2_dependency_floor_manifest.json
+# PR2 L0 dependency floor manifests are host-specific, but P1.2 close-kernel
+# provenance pins the reviewed canonical manifest bytes.
 
 # ----------------------------------------------------------------------------
 # Generated runtime / proof / delivery output dirs (purely generated — whole-dir

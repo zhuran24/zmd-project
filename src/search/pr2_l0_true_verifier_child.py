@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import sysconfig
 import tempfile
 import traceback
 from typing import Any, Mapping
@@ -25,6 +26,7 @@ REJECTED = "REJECTED"
 DOMAIN_AUTHORITY = "pr2_l0_true_supervisor_domain_v1"
 DOMAIN_SCHEMA_VERSION = 1
 FLOOR_AUTHORITY = "pr2_l0_dependency_floor_manifest_v1"
+FLOOR_ROOT_SENTINEL = "PYTHON_SYSCONFIG_PURELIB"
 IMPORT_FILE_SUFFIXES = tuple(
     importlib.machinery.SOURCE_SUFFIXES + importlib.machinery.EXTENSION_SUFFIXES
 )
@@ -152,6 +154,15 @@ class _RestrictedThirdPartyFinder:
         return spec
 
 
+def _dependency_floor_root(raw_root: object) -> Path:
+    if raw_root == FLOOR_ROOT_SENTINEL:
+        configured = sysconfig.get_paths().get("purelib")
+        if not configured:
+            raise ValueError("dependency floor sysconfig purelib unavailable")
+        return Path(configured).resolve()
+    return Path(str(raw_root)).resolve()
+
+
 def _install_third_party_floor(raw_floor: object) -> None:
     if not isinstance(raw_floor, Mapping):
         raise ValueError("dependency floor missing")
@@ -193,7 +204,7 @@ def _install_third_party_floor(raw_floor: object) -> None:
     }
     if not _is_lower_sha256(manifest_digest) or _canonical_digest(manifest_without_digest) != str(manifest_digest):
         raise ValueError("dependency floor manifest digest mismatch")
-    root = Path(str(raw_floor.get("floor_root"))).resolve()
+    root = _dependency_floor_root(raw_floor.get("floor_root"))
     if not root.is_dir():
         raise ValueError("dependency floor root invalid")
     files = raw_floor.get("files")

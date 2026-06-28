@@ -34,6 +34,7 @@ from src.search.terminal_fixed_witness_verifier import (
 )
 from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
 from src.tests.test_exact_contract import _build_toy_exact_project
+from scripts.generate_pr2_dependency_floor_manifest import build_manifest
 
 
 def _proposal_final_result() -> dict[str, Any]:
@@ -61,6 +62,29 @@ def _proposal_terminal_frontier_evidence() -> dict[str, Any]:
 def _write_json(path: Path, payload: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+@pytest.fixture(scope="session")
+def _host_dependency_floor_manifest(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, int, str]:
+    manifest_path = tmp_path_factory.mktemp("pr2_supervisor_floor") / "manifest.json"
+    raw = (
+        json.dumps(build_manifest(), indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    manifest_path.write_bytes(raw)
+    return manifest_path, len(raw), hashlib.sha256(raw).hexdigest()
+
+
+@pytest.fixture(autouse=True)
+def _patch_l0_dependency_floor_for_host_tests(
+    monkeypatch: pytest.MonkeyPatch,
+    _host_dependency_floor_manifest: tuple[Path, int, str],
+) -> None:
+    """Supervisor PR1 tests exercise seal semantics, not the production Linux floor."""
+
+    manifest_path, size_bytes, sha256 = _host_dependency_floor_manifest
+    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_REL", str(manifest_path))
+    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES", size_bytes)
+    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_SHA256", sha256)
 
 
 def _run_toy_candidate_proposal(project_root: Path) -> dict[str, Any]:

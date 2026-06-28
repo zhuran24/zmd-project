@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -40,6 +41,7 @@ from src.search.terminal_fixed_witness_verifier import (
     project_terminal_fixed_witness_records_for_sink,
     verify_terminal_fixed_witness,
 )
+from scripts.generate_pr2_dependency_floor_manifest import build_manifest
 from src.tests.test_p1_2_fixed_witness_terminal_verifier import (
     _build_tiny_project,
     _candidate_generation,
@@ -47,6 +49,29 @@ from src.tests.test_p1_2_fixed_witness_terminal_verifier import (
     _patch_sink_replay,
     _state,
 )
+
+
+@pytest.fixture(scope="session")
+def _host_dependency_floor_manifest(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, int, str]:
+    manifest_path = tmp_path_factory.mktemp("pr2_capsule_floor") / "manifest.json"
+    raw = (
+        json.dumps(build_manifest(), indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    manifest_path.write_bytes(raw)
+    return manifest_path, len(raw), hashlib.sha256(raw).hexdigest()
+
+
+@pytest.fixture(autouse=True)
+def _patch_l0_dependency_floor_for_host_tests(
+    monkeypatch: pytest.MonkeyPatch,
+    _host_dependency_floor_manifest: tuple[Path, int, str],
+) -> None:
+    """Capsule tests exercise isolation semantics, not the production Linux floor."""
+
+    manifest_path, size_bytes, sha256 = _host_dependency_floor_manifest
+    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_REL", str(manifest_path))
+    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES", size_bytes)
+    monkeypatch.setattr(l0_module, "DEPENDENCY_FLOOR_MANIFEST_SHA256", sha256)
 
 
 def _prepare_state(root: Path) -> dict[str, Any]:

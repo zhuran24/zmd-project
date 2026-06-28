@@ -165,6 +165,8 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
 
     close_kernel_tests = obligations["PO-P1-2-CLOSE-KERNEL-SEALING"]
     assert "test_p1_2_checker_detects_multiline_public_certified_return" in close_kernel_tests
+    assert "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift" in close_kernel_tests
+    assert "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift" in close_kernel_tests
 
 
 def _publisher_scan_paths() -> list[Path]:
@@ -366,6 +368,19 @@ def _minimal_close_kernel_manifest(tmp_path: Path, *, sink_entries: list[dict[st
     }
 
 
+def _copy_dependency_floor_provenance_inputs(tmp_path: Path) -> dict[str, object]:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    for rel_path in (
+        check_p1_2_proof_obligations.PR2_DEPENDENCY_FLOOR_MANIFEST_REL,
+        check_p1_2_proof_obligations.PR2_DEPENDENCY_FLOOR_GENERATOR_REL,
+    ):
+        source_path = PROJECT_ROOT / rel_path
+        target_path = tmp_path / rel_path
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        target_path.write_bytes(source_path.read_bytes())
+    return manifest
+
+
 def test_p1_2_close_kernel_rejects_unregistered_certified_sink(tmp_path: Path) -> None:
     rogue = tmp_path / "src" / "search" / "rogue_certified_sink.py"
     rogue.parent.mkdir(parents=True)
@@ -438,6 +453,70 @@ def test_p1_2_close_kernel_manifest_is_strict_json(tmp_path: Path) -> None:
         check_p1_2_proof_obligations._load_json(duplicate_key_manifest)
 
 
+def test_p1_2_close_kernel_rejects_dependency_floor_generator_drift(tmp_path: Path) -> None:
+    manifest = _copy_dependency_floor_provenance_inputs(tmp_path)
+    generator_path = tmp_path / check_p1_2_proof_obligations.PR2_DEPENDENCY_FLOOR_GENERATOR_REL
+    generator_path.write_text(
+        generator_path.read_text(encoding="utf-8") + "\n# mutation: unreviewed generator drift\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    errors = check_p1_2_proof_obligations._check_dependency_floor_provenance_contract(
+        manifest,
+        project_root=tmp_path,
+    )
+
+    assert any("dependency floor generator hash drift reopens P1.2 close claim" in error for error in errors)
+
+
+def test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift(tmp_path: Path) -> None:
+    manifest = _copy_dependency_floor_provenance_inputs(tmp_path)
+    floor_path = tmp_path / check_p1_2_proof_obligations.PR2_DEPENDENCY_FLOOR_MANIFEST_REL
+    floor_path.write_bytes(floor_path.read_bytes() + b"\n")
+
+    errors = check_p1_2_proof_obligations._check_dependency_floor_provenance_contract(
+        manifest,
+        project_root=tmp_path,
+    )
+
+    assert any("dependency floor manifest hash drift reopens P1.2 close claim" in error for error in errors)
+
+
+def test_p1_2_close_kernel_strong_status_gate_ignores_parent_sitecustomize(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    (scripts_dir / "check_strong_status_write_allowlist.py").write_text(
+        "raise SystemExit(7)\n",
+        encoding="utf-8",
+    )
+    poison_dir = tmp_path / "poison"
+    poison_dir.mkdir()
+    (poison_dir / "sitecustomize.py").write_text(
+        "import os\nos._exit(0)\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("PYTHONPATH", str(poison_dir))
+    monkeypatch.setattr(check_p1_2_proof_obligations, "PROJECT_ROOT", tmp_path)
+
+    errors = check_p1_2_proof_obligations._check_strong_status_write_allowlist_gate()
+
+    assert any("strong-status write allowlist checker failed" in error for error in errors)
+
+
+def test_p1_2_close_kernel_source_floor_pins_runtime_guard_and_l0_floor_loader() -> None:
+    floor = check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH
+    for rel_path in (
+        "src/search/certified_artifact_contract.py",
+        "src/search/pr2_l0_micro_verifier_core.py",
+    ):
+        assert rel_path in floor
+        assert floor[rel_path] == check_p1_2_proof_obligations._sha256_file(
+            PROJECT_ROOT / rel_path
+        )
 
 
 def test_p1_2_close_kernel_rejects_v99_manifest_scan_root_shrink() -> None:
