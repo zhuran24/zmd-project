@@ -32,7 +32,7 @@ provenance:
     - "blind codex 判官 smoke-test 对 opencode 坑节选 4/4 命中"
 updated_at: "2026-06-27"
 ---
-v-next 判官层(V2 的测量件:读 transcript、经遥测预筛只看可疑切片、找漏召回/纠正/stale 卡、**起草**补丁)真实跑时,**当前默认用 Codex**,不用 MiMo。
+v-next 判官层(V2 的测量件:读 transcript、经遥测预筛只看可疑切片、找漏召回/纠正/stale 卡、**起草**补丁)真实跑时,**默认用 Codex**,不用 MiMo。
 
 理由:① MiMo(Token Plan)限流不稳——`429 limitation` 风暴后冷却期明显长于分钟级 RPM、会持续不可用;② blind codex 判官 smoke-test 对真实材料 4/4 全中,干这活够格;③ codex 直接派(`subagent_type:'codex'`)就行,不依赖 MiMo 那条易抖的链路。
 
