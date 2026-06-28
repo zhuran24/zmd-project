@@ -24,6 +24,7 @@ from src.search.certified_frontier import (
     build_terminal_frontier_evidence,
     candidate_generation_kwargs,
     generate_candidate_sizes,
+    terminal_frontier_evidence_violation,
 )
 from src.search.exact_campaign import (
     CANDIDATE_PROPOSED_STATUS,
@@ -924,3 +925,56 @@ def test_pr2_5_child_elevation_runs_frontier_validation_on_sliced_domain(
         raw_proposal, project_root=root
     )
     assert raw_reason is None or not raw_reason.startswith("terminal_frontier"), raw_reason
+
+
+def test_pr2_5_terminal_frontier_evidence_violation_rejects_non_exhausted_domain() -> None:
+    """PR2 #5 companion (exhaustion dimension): terminal_frontier_evidence_violation
+    -- the validator the child now invokes unconditionally after elevation -- must
+    fail closed when the canonical candidate domain is NOT exhausted: a strictly
+    more-optimal candidate has no resolved status, even though the candidate_generation
+    params match canonical grid/min-side/safe-area exactly.  The integration test above
+    covers the anti-slice dimension of the same gate; this pins the exhaustion dimension
+    on a function that previously had no direct coverage.
+    """
+    generation = {
+        "max_w": 2,
+        "max_h": 2,
+        "min_side": 1,
+        "max_aspect_ratio": None,
+        "area_upper_bound": 3,
+        "start_area": None,
+        "domain_authority": TERMINAL_FRONTIER_DOMAIN_AUTHORITY,
+        "safe_area_upper_bound": 3,
+        "min_side_admissibility": 1,
+    }
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(generation))
+    # Only the 1x1 winner is resolved; the strictly larger 1x2 / 2x1 candidates carry
+    # no status -> they stay in the potential domain -> the frontier is not exhausted.
+    candidate_records = {
+        "1x1": {
+            "ghost_rect": {"w": 1, "h": 1, "area": 1},
+            "status": RUN_STATUS_CERTIFIED,
+            "solution": {"ghost_pick": {"facility_type": "ghost_rect"}},
+        }
+    }
+    final_result = {
+        "ghost_rect": {"w": 1, "h": 1, "area": 1, "anchor_x": 0, "anchor_y": 0},
+        "placement_solution": {},
+        "search_status": RUN_STATUS_CERTIFIED,
+    }
+    evidence = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=candidate_records,
+        final_result=final_result,
+        candidate_generation=generation,
+    )
+    reason = terminal_frontier_evidence_violation(
+        evidence=evidence,
+        candidate_records=candidate_records,
+        final_result=final_result,
+        grid_dimensions=(2, 2),
+        safe_area_upper_bound=3,
+        min_side_admissibility=1,
+    )
+    assert reason is not None
+    assert "not_exhausted" in reason, reason

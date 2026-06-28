@@ -2610,6 +2610,61 @@ def _check_candidate_sink_replay_contract(
     ):
         if token not in child_domain_source:
             errors.append(f"PR2 true verifier child must fail closed and report bounded domain evidence: {token}")
+    # PR2 #5: structural (AST) check on top of the token-presence check above. The
+    # strict-terminal-label elevation must DOMINATE the project precheck: both
+    # scratch_state["declare_mode"]="strict" and scratch_state["last_stop_reason"]
+    # must be assigned before the terminal precheck call, and that call must run on
+    # the elevated scratch_state. This blocks a future edit that keeps the source
+    # tokens but moves the elevation after the precheck, neutralizes it, or runs the
+    # precheck on a different (un-elevated) state.
+    def _scratch_state_str_key(target: ast.AST, key: str) -> bool:
+        return (
+            isinstance(target, ast.Subscript)
+            and isinstance(target.value, ast.Name)
+            and target.value.id == "scratch_state"
+            and isinstance(target.slice, ast.Constant)
+            and target.slice.value == key
+        )
+
+    declare_strict_lines: list[int] = []
+    last_stop_lines: list[int] = []
+    precheck_calls: list[ast.Call] = []
+    for sub in ast.walk(child_domain_fn):
+        if isinstance(sub, ast.Assign):
+            for target in sub.targets:
+                if _scratch_state_str_key(target, "declare_mode") and (
+                    isinstance(sub.value, ast.Constant) and sub.value.value == "strict"
+                ):
+                    declare_strict_lines.append(int(sub.lineno))
+                if _scratch_state_str_key(target, "last_stop_reason"):
+                    last_stop_lines.append(int(sub.lineno))
+        if (
+            isinstance(sub, ast.Call)
+            and isinstance(sub.func, ast.Name)
+            and sub.func.id == "terminal_certified_final_result_project_precheck_violation"
+        ):
+            precheck_calls.append(sub)
+    if not declare_strict_lines:
+        errors.append('PR2 true verifier child must elevate scratch_state["declare_mode"]="strict" before sealing')
+    if not last_stop_lines:
+        errors.append('PR2 true verifier child must elevate scratch_state["last_stop_reason"] before sealing')
+    if len(precheck_calls) != 1:
+        errors.append(
+            "PR2 true verifier child must call terminal_certified_final_result_project_precheck_violation exactly once"
+        )
+    else:
+        precheck_call = precheck_calls[0]
+        precheck_line = int(precheck_call.lineno)
+        if not (
+            precheck_call.args
+            and isinstance(precheck_call.args[0], ast.Name)
+            and precheck_call.args[0].id == "scratch_state"
+        ):
+            errors.append("PR2 true verifier child terminal precheck must run on the elevated scratch_state")
+        if declare_strict_lines and max(declare_strict_lines) >= precheck_line:
+            errors.append('scratch_state["declare_mode"]="strict" elevation must precede the terminal precheck call')
+        if last_stop_lines and max(last_stop_lines) >= precheck_line:
+            errors.append('scratch_state["last_stop_reason"] elevation must precede the terminal precheck call')
     child_project_fn = _function_def(
         child_tree,
         "_project_candidate_records_direct",
