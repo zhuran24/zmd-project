@@ -48,6 +48,8 @@ provenance:
     - python cc_memory/mem.py read codex-executes-claude-orchestrates --body
 updated_at: "2026-06-26"
 ---
-默认分工不是按任务标签死分，而是先看工作量。大工作量的实现、推进、找问题、验证交 Codex 作为执行体；Claude 负责周边编排、审阅、对抗和最终验收。小工作量的审查或对抗可以留给 Claude。
+默认分工判据【先看工作量】，不按“实现/审查”标签死分：工作量大的活（实现、推进、找问题、验证）交 Codex 作为执行体（省 Claude/opus 额度）；工作量小的活 Claude 自己直接做即可——**小实现也算，别因为它性质叫“实现”就硬派 Codex**。
 
-跨模型审是方向性不变量：谁做了主要工作，就由另一个模型审；默认是 Codex 实现、Claude 审。
+【只有在两边工作量相近、分不出高下时】，才用次级偏好：相近时优先 Codex 实现、Claude 审。次序是先工作量、相近时再偏 Codex，不是“实现永远归 Codex”。
+
+跨模型审是方向性硬不变量（独立于上面的分工）：谁做了主要工作就由另一个模型审——Codex 做主活则 Claude 审，Claude 做主活则 Codex 审。所以上面“相近时偏 Codex 实现”只是次级偏好，跨模型这条不受它影响、永远成立。

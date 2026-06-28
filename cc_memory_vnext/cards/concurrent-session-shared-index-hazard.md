@@ -2,7 +2,7 @@
 id: concurrent-session-shared-index-hazard
 kind: pitfall
 title: 并发会话共享 git index 的提交风险
-summary: 本 repo 常有并发会话共享同一工作区和 .git/index；提交前必须看 status，提交只带自己的 pathspec，避免扫进别人的 staged 改动。
+summary: 本 repo 常有并发会话共享同一工作区和 .git/index；提交前必须看 status，提交只带自己的 pathspec——既别多扫进别人 staged 的，也别漏提 pins/钉死表依赖的文件（reseal 提交要覆盖完整一致集，否则 CI close-kernel 逮 source-hash drift）。
 scope:
   domains:
     - git-concurrency
@@ -55,3 +55,5 @@ updated_at: "2026-06-26"
 这个仓库经常有多个会话共用同一工作区和同一个 `.git/index`。另一个会话 `git add/rm` 的文件可能已经在共享 index 里；如果当前会话直接 `git commit -m ...`，会把别人 staged 的核心文件一起提交。
 
 铁律：提交前重新看 `git status --short`、`git diff --stat` 和 staged 路径；只用带明确 pathspec 的提交命令提交自己负责的文件。涉及 `cc_memory/memory.db` 尤其要局部提交。
+
+**对偶坑（2026-06-28 PR2-b 实证）：pathspec 不仅别多扫、也别漏。** 用显式 pathspec 提交 reseal/close-kernel 类改动时，我提交的 pins（obligations/allowlist/checker 钉死表）引用了【别的】被修改文件；只提交“本会话亲手编辑的”、漏了 pins 依赖的文件（如 exact_campaign.py + 迁移测试，上个会话留下的未提交 PR2-b 改动）→ 提交树里 pins 期望新 sha、文件却还是旧版 → CI close-kernel checker 逮 source-hash drift（本地 `--full` 读磁盘工作树会过、CI 读已提交树才挂）。所以 pathspec 要【精确等于】这次逻辑改动的完整一致集：用 `git status` 枚举所有相关 `M`（尤其建在别会话未提交改动之上时），push 前核对 `git show HEAD:<file>` 的 sha = 钉死表期望值。详 cc_memory `pathspec-must-cover-full-reseal-set`。
