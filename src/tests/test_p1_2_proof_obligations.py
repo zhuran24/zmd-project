@@ -483,6 +483,40 @@ def test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift(tmp_path: Pat
     assert any("dependency floor manifest hash drift reopens P1.2 close claim" in error for error in errors)
 
 
+def test_p1_2_close_kernel_strong_status_gate_ignores_parent_sitecustomize(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    scripts_dir = tmp_path / "scripts"
+    scripts_dir.mkdir()
+    (scripts_dir / "check_strong_status_write_allowlist.py").write_text(
+        "raise SystemExit(7)\n",
+        encoding="utf-8",
+    )
+    poison_dir = tmp_path / "poison"
+    poison_dir.mkdir()
+    (poison_dir / "sitecustomize.py").write_text(
+        "import os\nos._exit(0)\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("PYTHONPATH", str(poison_dir))
+    monkeypatch.setattr(check_p1_2_proof_obligations, "PROJECT_ROOT", tmp_path)
+
+    errors = check_p1_2_proof_obligations._check_strong_status_write_allowlist_gate()
+
+    assert any("strong-status write allowlist checker failed" in error for error in errors)
+
+
+def test_p1_2_close_kernel_source_floor_pins_runtime_guard_and_l0_floor_loader() -> None:
+    floor = check_p1_2_proof_obligations.CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH
+    for rel_path in (
+        "src/search/certified_artifact_contract.py",
+        "src/search/pr2_l0_micro_verifier_core.py",
+    ):
+        assert rel_path in floor
+        assert floor[rel_path] == check_p1_2_proof_obligations._sha256_file(
+            PROJECT_ROOT / rel_path
+        )
 
 
 def test_p1_2_close_kernel_rejects_v99_manifest_scan_root_shrink() -> None:
