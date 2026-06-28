@@ -861,3 +861,66 @@ def test_fixed_witness_unproven_durable_record_keeps_solution_bytes(
     assert public_record["status"] == "UNPROVEN"
     assert "solution" not in public_record
     assert CANDIDATE_PROOF_FIELD not in public_record
+
+
+def _sliced_domain_state() -> dict[str, Any]:
+    """A terminal-shaped state whose candidate_generation claims a narrower grid
+    (max_w=1) than the canonical 2-wide tiny project, i.e. a sliced candidate
+    domain that must be rejected by the canonical anti-slice grid check."""
+    state = _state()
+    generation = _candidate_generation()
+    generation["max_w"] = 1
+    candidates = generate_candidate_sizes(**candidate_generation_kwargs(generation))
+    state["terminal_frontier_evidence"] = build_terminal_frontier_evidence(
+        candidates=candidates,
+        candidate_records=state["candidates"],
+        final_result=state["final_result"],
+        candidate_generation=generation,
+    )
+    return state
+
+
+def test_pr2_5_child_elevation_runs_frontier_validation_on_sliced_domain(
+    tmp_path: Path,
+) -> None:
+    """PR2 #5: the L0 true-verifier child elevates a CANDIDATE_PROPOSED proposal to
+    the strict terminal labels (declare_mode="strict" +
+    last_stop_reason.status=CERTIFIED) before calling
+    terminal_certified_final_result_project_precheck_violation, so the
+    frontier-exhaustion / canonical candidate-domain check runs UNCONDITIONALLY.
+
+    Without that elevation the gate has_terminal_full_frontier_certified_evidence()
+    is False (an honest proposal arrives final_status=CANDIDATE_PROPOSED and -- because
+    mark_campaign_stopped forbids a producer-minted CERTIFIED stop --
+    last_stop_reason.status=CANDIDATE_PROPOSED), so the precheck SILENTLY skips the
+    frontier check and a producer could seal a sliced candidate_generation.  This pins
+    both halves: the strict-labelled state rejects the slice; the raw proposal does not.
+    """
+    root = _build_tiny_project(tmp_path / "project")
+
+    # Honest canonical state already carries the strict terminal labels the child
+    # asserts onto its scratch_state -> the full-domain proof passes.
+    assert (
+        terminal_certified_final_result_project_precheck_violation(_state(), project_root=root)
+        is None
+    )
+
+    # FIX under test: with the strict terminal labels (what the child elevates to),
+    # the sliced candidate_generation fails the canonical anti-slice grid check.
+    sliced = _sliced_domain_state()
+    reason = terminal_certified_final_result_project_precheck_violation(sliced, project_root=root)
+    assert reason is not None
+    assert reason.startswith("terminal_frontier"), reason
+
+    # GAP it closes: strip the strict labels back to the raw proposal shape a producer
+    # actually ships (final_status=CANDIDATE_PROPOSED, no declare_mode,
+    # last_stop_reason.status=CANDIDATE_PROPOSED).  The SAME sliced domain now slips past
+    # the frontier check -- which is exactly why the child must elevate before validating.
+    raw_proposal = _json_copy(sliced)
+    raw_proposal["final_status"] = CANDIDATE_PROPOSED_STATUS
+    raw_proposal.pop("declare_mode", None)
+    raw_proposal["last_stop_reason"]["status"] = CANDIDATE_PROPOSED_STATUS
+    raw_reason = terminal_certified_final_result_project_precheck_violation(
+        raw_proposal, project_root=root
+    )
+    assert raw_reason is None or not raw_reason.startswith("terminal_frontier"), raw_reason

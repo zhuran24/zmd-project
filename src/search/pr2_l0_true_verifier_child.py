@@ -409,7 +409,10 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
         candidate_generation_kwargs,
         generate_candidate_sizes,
     )
-    from src.search.exact_campaign import terminal_certified_final_result_project_precheck_violation
+    from src.search.exact_campaign import (
+        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        terminal_certified_final_result_project_precheck_violation,
+    )
 
     proposal_evidence = _require_mapping(
         authority_state.get("terminal_frontier_evidence"),
@@ -429,6 +432,25 @@ def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict
     scratch_state = dict(authority_state)
     scratch_state["final_result"] = certified_final_result
     scratch_state["final_status"] = "CERTIFIED"
+    # PR2 #5: complete the proposal->certified elevation so the terminal
+    # full-frontier exhaustion + best-candidate + canonical candidate-domain
+    # checks inside terminal_certified_final_result_project_precheck_violation
+    # run UNCONDITIONALLY here, instead of being silently gated off by
+    # producer-controlled declare_mode / last_stop_reason.  mark_campaign_stopped
+    # forbids a producer from minting last_stop_reason.status="CERTIFIED" (only
+    # the supervisor seal may), so an honest CANDIDATE_PROPOSED proposal always
+    # arrives with last_stop_reason.status="CANDIDATE_PROPOSED" and no
+    # declare_mode -- which makes has_terminal_full_frontier_certified_evidence()
+    # return False and skips the frontier-exhaustion / canonical-domain gate
+    # (a producer could otherwise seal a sliced domain or a non-exhausted
+    # frontier).  The child is the authority that THIS is a terminal full-frontier
+    # seal, so it asserts the strict terminal labels and lets the canonical
+    # substance checks (which no producer field can weaken) be the real gate.
+    scratch_state["declare_mode"] = "strict"
+    scratch_state["last_stop_reason"] = {
+        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": "CERTIFIED",
+    }
     scratch_state["terminal_frontier_evidence"] = evidence
     scratch_state["candidates"] = durable_records
     scratch_state.pop("supervisor_proposal", None)

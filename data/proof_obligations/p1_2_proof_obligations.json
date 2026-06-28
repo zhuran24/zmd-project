@@ -903,7 +903,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "ffd1e1f2da1d4fdb985822325f057dc6218ededba93c2bc9d1da06b05957149e",
+        "source_sha256": "5a6f9fd4178c2eb5f6dcd3b3dacf1f09406069281d4dfaa145bef57445149ab4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1741,7 +1741,7 @@
       {
         "path": "src/search/pr2_l0_true_verifier_child.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+        "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

@@ -2600,6 +2600,13 @@ def _check_candidate_sink_replay_contract(
         '"fixed_witness_violations": {}',
         '"third_party_native": "NAMED-TCB"',
         "windows_write_isolation_residual",
+        # PR2 #5: the child must elevate the proposal to the strict terminal
+        # full-frontier labels so the exhaustion / best-candidate / canonical
+        # candidate-domain validation runs unconditionally (not gated off by a
+        # producer-controlled declare_mode / last_stop_reason).
+        'scratch_state["declare_mode"] = "strict"',
+        'scratch_state["last_stop_reason"] = {',
+        "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
     ):
         if token not in child_domain_source:
             errors.append(f"PR2 true verifier child must fail closed and report bounded domain evidence: {token}")
@@ -3980,7 +3987,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
     'src/search/pr2_l0_micro_verifier_core.py': '5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8',
-    'src/search/pr2_l0_true_verifier_child.py': '3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335',
+    'src/search/pr2_l0_true_verifier_child.py': 'e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
     'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531',

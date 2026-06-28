@@ -869,51 +869,63 @@
       "justification": "PR2 L0 builds an expected certified-state clone solely to compare the allowed proposal-to-certified transition against the sealed payload; it does not publish independently."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_430_final_result",
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_433_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 430,
+      "line": 433,
       "qualname": "_verify_supervisor_domain",
       "keys": [
         "final_result"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_431_final_status",
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_434_final_status",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 431,
+      "line": 434,
       "qualname": "_verify_supervisor_domain",
       "keys": [
         "final_status"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_432_terminal_frontier_evidence",
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_450_last_stop_reason",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 432,
+      "line": 450,
+      "qualname": "_verify_supervisor_domain",
+      "keys": [
+        "last_stop_reason"
+      ],
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
+      "justification": "PR2 #5: child completes the proposal-to-certified scratch-state elevation by asserting the strict terminal last_stop_reason (status=CERTIFIED, reason=search_exhausted_all_candidates), so the terminal full-frontier exhaustion / best-candidate / canonical candidate-domain validation runs unconditionally instead of being gated off by a producer-controlled last_stop_reason. The write is child-local scratch state only; durable seal and publication authority remain with L0/certified surface gates."
+    },
+    {
+      "id": "src_search_pr2_l0_true_verifier_child_py__verify_supervisor_domain_state_key_write_454_terminal_frontier_evidence",
+      "pattern": "state_key_write",
+      "module": "src/search/pr2_l0_true_verifier_child.py",
+      "line": 454,
       "qualname": "_verify_supervisor_domain",
       "keys": [
         "terminal_frontier_evidence"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child builds domain-only scratch state after sink replay and fixed-witness verification; it returns data to L0 and has no checkpoint write authority or seal envelope authority."
     },
     {
-      "id": "src_search_pr2_l0_true_verifier_child_py__run_fixed_witness_direct_state_key_write_612_final_result",
+      "id": "src_search_pr2_l0_true_verifier_child_py__run_fixed_witness_direct_state_key_write_634_final_result",
       "pattern": "state_key_write",
       "module": "src/search/pr2_l0_true_verifier_child.py",
-      "line": 612,
+      "line": 634,
       "qualname": "_run_fixed_witness_direct",
       "keys": [
         "final_result"
       ],
-      "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
+      "source_sha256": "e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46",
       "justification": "PR2 true verifier child constructs fixed-witness verifier input inside the domain check; this is child-local data, with publication and durable seal authority retained by L0/certified surface gates."
     }
   ]
