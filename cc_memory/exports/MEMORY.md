@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 122
-- hard edges: 151
+- entries: 123
+- hard edges: 152
 - pending relation suggestions: 0
 
 ## Start Here
@@ -118,6 +118,7 @@ python cc_memory/mem.py boot
 - `pr1-publication-blocks-abc-fixed` — PR1 A/B/C/D 2026-06-26: DONE, 7类发布面 BLOCK 全修+终审绿。
 - `pr1-soundness-b085a75-ci` — GPT Pro 对 0bc36db 做了【三轮独立外审 + 三份补丁】(互冲不能叠加),并集 = B/D/A/C/B2/E。走 codex-claude-clean-workflow…
 - `pr1-supervisor-mint-preflight` — PR1 supervisor 地基两块 2026-06-23 落地、**已提交 `ddb3b5a`**(feat(p1.2): PR1 supervisor 地基…
+- `pr2-8-9a-hardened-landed-099f5a3` — PR2 #8(删自跳过)+#9a(floor钉死)+GPT Pro外审硬化(#8-A子进程-I-S-B/#8-B源码sha楼面/#9a-A L0 runtime byte-pin堵时序旁路)合 main 099f5a3,CI两gate绿。多会话panel验证有效(2会话收敛挖3 BLOCK本地审都漏)…
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
 - `pr2b-landed-pr2-remaining-status-20260628` — PR2-b 69980b3+592ea13: LANDED 2026-06-28, SOUND; PR2余项表。
 - `precompact-a-b-compact-codex-race` — precompact A+B 2026-06-28: PARTIAL/SUPERSEDED, offline SeqWorker 适用。
