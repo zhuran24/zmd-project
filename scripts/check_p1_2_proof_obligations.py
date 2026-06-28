@@ -32,6 +32,18 @@ PR2_L0_MICRO_VERIFIER_PATH = PROJECT_ROOT / "src" / "search" / "pr2_l0_micro_ver
 PR2_L0_TRUE_VERIFIER_CHILD_PATH = (
     PROJECT_ROOT / "src" / "search" / "pr2_l0_true_verifier_child.py"
 )
+PR2_DEPENDENCY_FLOOR_MANIFEST_REL = "data/proof_obligations/pr2_dependency_floor_manifest.json"
+PR2_DEPENDENCY_FLOOR_GENERATOR_REL = "scripts/generate_pr2_dependency_floor_manifest.py"
+PR2_DEPENDENCY_FLOOR_MANIFEST_PATH = PROJECT_ROOT / PR2_DEPENDENCY_FLOOR_MANIFEST_REL
+PR2_DEPENDENCY_FLOOR_GENERATOR_PATH = PROJECT_ROOT / PR2_DEPENDENCY_FLOOR_GENERATOR_REL
+PR2_DEPENDENCY_FLOOR_AUTHORITY = "pr2_l0_dependency_floor_manifest_v1"
+PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256 = (
+    "826a909259262175b263e419d45a406790d91bb9d3852ecb5c0b02042b98e1bb"
+)
+PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE = 598032
+PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
+    "f653acb858ff2ca55f10841b9976f7f2247def56ed090fb1c55d0ec2dd308b41"
+)
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 )
@@ -355,6 +367,8 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
             "test_p1_2_close_kernel_manifest_is_strict_json",
             "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+            "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
+            "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
             "test_fix_3_unknown_review_anchor_fails_closed",
             "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
             "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
@@ -3843,7 +3857,9 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
     {
         "scripts/check_p1_2_proof_obligations.py",
         "scripts/check_strong_status_write_allowlist.py",
+        PR2_DEPENDENCY_FLOOR_GENERATOR_REL,
         "data/proof_obligations/p1_2_proof_obligations.json",
+        PR2_DEPENDENCY_FLOOR_MANIFEST_REL,
         "src/search/certified_surface.py",
         "src/search/certified_artifact_contract.py",
         "src/io/delivery_manifest.py",
@@ -3884,6 +3900,7 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
 CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
     'scripts/check_strong_status_write_allowlist.py': '4964fcdea6f987d424013e25cc34355c1bc3371d2e2c8d9e68f96fa84cd1a9ff',
+    'scripts/generate_pr2_dependency_floor_manifest.py': 'f653acb858ff2ca55f10841b9976f7f2247def56ed090fb1c55d0ec2dd308b41',
     'src/adapters/industrial_planner/export_blueprint.py': '01afafc85b4e7f27c0bf8c0293845785b45bc71ad332da483936b753a7d9eb5e',
     'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
     'src/cuts/cert_schema.py': 'e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e',
@@ -3935,7 +3952,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
-    'src/search/pr2_l0_micro_verifier_core.py': '9c39c53096777f6fff7c6e1c78a7dc5a8cc5b858a60350723178a037c32dc74c',
+    'src/search/pr2_l0_micro_verifier_core.py': '4a991f47c556319007f8f5a37437f112d309c51e4c47008ad07fd1882f41abae',
     'src/search/pr2_l0_true_verifier_child.py': 'fa5a9fbd40ae505cc91373449d7b7cfd7847c3bdbf247eeedf28fe1c85a84e1c',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
@@ -4075,6 +4092,104 @@ def _check_close_kernel_v99_static_floor(
         if path.exists() and _sha256_file(path) != expected_sha256:
             errors.append(f"{rel_path} current source hash drifted from the v99 sealed floor")
     return errors
+
+
+def _check_dependency_floor_provenance_contract(
+    manifest: dict[str, Any],
+    *,
+    project_root: Path = PROJECT_ROOT,
+) -> list[str]:
+    """Bind the PR2 L0 dependency-floor manifest and its generator.
+
+    The floor manifest is host-generated data rather than a proof-bearing Python
+    sink, so this check pins its exact bytes separately from the Python source
+    sink inventory. The generator is source and is additionally sealed by the
+    V99 source-hash floor above.
+    """
+
+    errors: list[str] = []
+    contract = manifest.get("close_kernel_contract")
+    if not isinstance(contract, dict):
+        return ["close_kernel_contract must be an object"]
+    provenance = contract.get("dependency_floor_provenance")
+    if not isinstance(provenance, dict):
+        return ["close_kernel_contract.dependency_floor_provenance must be an object"]
+
+    expected_fields: dict[str, object] = {
+        "schema_version": 1,
+        "manifest_path": PR2_DEPENDENCY_FLOOR_MANIFEST_REL,
+        "manifest_sha256": PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256,
+        "manifest_size": PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE,
+        "manifest_authority": PR2_DEPENDENCY_FLOOR_AUTHORITY,
+        "generator_path": PR2_DEPENDENCY_FLOOR_GENERATOR_REL,
+        "generator_sha256": PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256,
+        "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
+        "mutation_policy": "dependency_floor_drift_reopens_p1_2_close_claim",
+    }
+    for field, expected in expected_fields.items():
+        actual = provenance.get(field)
+        if actual != expected:
+            errors.append(
+                "close_kernel_contract.dependency_floor_provenance."
+                f"{field} must be {expected!r}; got {actual!r}"
+            )
+
+    source_floor_sha = CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH.get(
+        PR2_DEPENDENCY_FLOOR_GENERATOR_REL
+    )
+    if source_floor_sha != PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256:
+        errors.append("dependency floor generator missing from the v99 source-hash floor")
+
+    manifest_path = project_root / PR2_DEPENDENCY_FLOOR_MANIFEST_REL
+    if not manifest_path.exists():
+        errors.append(f"dependency floor manifest missing: {PR2_DEPENDENCY_FLOOR_MANIFEST_REL}")
+    else:
+        manifest_bytes = manifest_path.read_bytes()
+        current_size = len(manifest_bytes)
+        current_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
+        if current_size != PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE:
+            errors.append(
+                "dependency floor manifest size drift reopens P1.2 close claim: "
+                f"{current_size} != {PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE}"
+            )
+        if current_sha256 != PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256:
+            errors.append(
+                "dependency floor manifest hash drift reopens P1.2 close claim: "
+                f"{current_sha256} != {PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256}"
+            )
+        try:
+            floor_manifest = _load_json(manifest_path)
+        except CheckError as exc:
+            errors.append(f"dependency floor manifest is not strict JSON: {exc}")
+        else:
+            if floor_manifest.get("schema_version") != 1:
+                errors.append("dependency floor manifest schema_version must be 1")
+            if floor_manifest.get("authority") != PR2_DEPENDENCY_FLOOR_AUTHORITY:
+                errors.append(
+                    "dependency floor manifest authority must be "
+                    f"{PR2_DEPENDENCY_FLOOR_AUTHORITY}"
+                )
+            files = floor_manifest.get("files")
+            if not isinstance(files, dict) or not files:
+                errors.append("dependency floor manifest files must be a non-empty object")
+            named_tcb = floor_manifest.get("named_tcb")
+            if not isinstance(named_tcb, dict):
+                errors.append("dependency floor manifest named_tcb must be an object")
+            elif named_tcb.get("third_party_native_semantics") != "NAMED-TCB":
+                errors.append(
+                    "dependency floor manifest third_party_native_semantics must be NAMED-TCB"
+                )
+
+    generator_path = project_root / PR2_DEPENDENCY_FLOOR_GENERATOR_REL
+    if not generator_path.exists():
+        errors.append(f"dependency floor generator missing: {PR2_DEPENDENCY_FLOOR_GENERATOR_REL}")
+    elif _sha256_file(generator_path) != PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256:
+        errors.append(
+            "dependency floor generator hash drift reopens P1.2 close claim: "
+            f"{PR2_DEPENDENCY_FLOOR_GENERATOR_REL}"
+        )
+    return errors
+
 
 def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path = PROJECT_ROOT) -> list[str]:
     """Check the P1.2 close-kernel contract.
@@ -4223,6 +4338,7 @@ def _check_close_kernel_contract(manifest: dict[str, Any], *, project_root: Path
     for rel_path in sorted(CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES):
         if rel_path not in critical_files:
             errors.append(f"close-kernel critical gate file not declared: {rel_path}")
+    errors.extend(_check_dependency_floor_provenance_contract(manifest, project_root=project_root))
     return errors
 
 
