@@ -516,6 +516,13 @@
         "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
+        "test_l0_canonical_dependency_floor_manifest_missing_fails_closed",
+        "test_l0_canonical_dependency_floor_manifest_drift_fails_closed",
+        "test_l0_canonical_dependency_floor_manifest_current_bytes_are_pinned",
+        "test_locked_close_kernel_ignores_parent_sitecustomize_bypass",
+        "test_locked_close_kernel_identityless_process_modes_do_not_bypass_subprocess",
+        "test_p1_2_close_kernel_strong_status_gate_ignores_parent_sitecustomize",
+        "test_p1_2_close_kernel_source_floor_pins_runtime_guard_and_l0_floor_loader",
         "test_fix_3_unknown_review_anchor_fails_closed",
         "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
         "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
@@ -542,7 +549,9 @@
         "data/proof_obligations/pr2_dependency_floor_manifest.json",
         "scripts/check_p1_2_proof_obligations.py",
         "scripts/generate_pr2_dependency_floor_manifest.py",
-        "src/tests/test_p1_2_proof_obligations.py"
+        "src/tests/test_p1_2_proof_obligations.py",
+        "src/tests/test_p1_2_close_kernel_runtime_guard.py",
+        "src/tests/test_pr2_l0_micro_verifier_core.py"
       ],
       "policy": "All current proof-bearing strong-status source surfaces in the close-kernel scan roots are sealed by path, source_sha256, proof obligation, and guard tokens; the PR2 L0 dependency floor manifest and its generator are separately provenance-pinned by dependency_floor_provenance and the V99 source-hash floor; new, unregistered, or drifted CERTIFIED / proof-bearing INFEASIBLE sinks fail closed until reviewed."
     },
@@ -838,13 +847,14 @@
     "dependency_floor_provenance": {
       "schema_version": 1,
       "manifest_path": "data/proof_obligations/pr2_dependency_floor_manifest.json",
-      "manifest_sha256": "826a909259262175b263e419d45a406790d91bb9d3852ecb5c0b02042b98e1bb",
-      "manifest_size": 598032,
+      "manifest_sha256": "41008dbb0bf03e1b413c493a96f5a5f47719721cc33112b353ed7c6bea240b90",
+      "manifest_size": 574082,
       "manifest_authority": "pr2_l0_dependency_floor_manifest_v1",
       "generator_path": "scripts/generate_pr2_dependency_floor_manifest.py",
-      "generator_sha256": "f653acb858ff2ca55f10841b9976f7f2247def56ed090fb1c55d0ec2dd308b41",
+      "generator_sha256": "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c",
       "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
-      "mutation_policy": "dependency_floor_drift_reopens_p1_2_close_claim"
+      "mutation_policy": "dependency_floor_drift_reopens_p1_2_close_claim",
+      "manifest_floor_root": "PYTHON_SYSCONFIG_PURELIB"
     },
     "sink_files": [
       {
@@ -892,7 +902,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "72efe4162db8fafef19f2c56390a221efe964e8268bd853fa45fa931a5dc2d9c",
+        "source_sha256": "1e51b5134c9b6978c44c6b5692ca1a4c016b331e83a08caeccb999fa47760ff8",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1700,7 +1710,7 @@
       {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "4a991f47c556319007f8f5a37437f112d309c51e4c47008ad07fd1882f41abae",
+        "source_sha256": "ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
@@ -1712,6 +1722,9 @@
         "required_guard_tokens": [
           "_load_canonical_dependency_floor_manifest",
           "_load_dependency_floor_manifest",
+          "DEPENDENCY_FLOOR_ROOT_SENTINEL",
+          "DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES",
+          "DEPENDENCY_FLOOR_MANIFEST_SHA256",
           "_strong_status_keys",
           "_strong_proof_binding_violation",
           "TRUE_VERIFIER_MODULE",
@@ -1727,7 +1740,7 @@
       {
         "path": "src/search/pr2_l0_true_verifier_child.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "fa5a9fbd40ae505cc91373449d7b7cfd7847c3bdbf247eeedf28fe1c85a84e1c",
+        "source_sha256": "3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

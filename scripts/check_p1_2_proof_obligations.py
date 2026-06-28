@@ -11,8 +11,10 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Callable, Mapping, NoReturn, Sequence
 
@@ -38,11 +40,12 @@ PR2_DEPENDENCY_FLOOR_MANIFEST_PATH = PROJECT_ROOT / PR2_DEPENDENCY_FLOOR_MANIFES
 PR2_DEPENDENCY_FLOOR_GENERATOR_PATH = PROJECT_ROOT / PR2_DEPENDENCY_FLOOR_GENERATOR_REL
 PR2_DEPENDENCY_FLOOR_AUTHORITY = "pr2_l0_dependency_floor_manifest_v1"
 PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256 = (
-    "826a909259262175b263e419d45a406790d91bb9d3852ecb5c0b02042b98e1bb"
+    "41008dbb0bf03e1b413c493a96f5a5f47719721cc33112b353ed7c6bea240b90"
 )
-PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE = 598032
+PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE = 574082
+PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL = "PYTHON_SYSCONFIG_PURELIB"
 PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
-    "f653acb858ff2ca55f10841b9976f7f2247def56ed090fb1c55d0ec2dd308b41"
+    "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
@@ -369,6 +372,13 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
             "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
             "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
+            "test_l0_canonical_dependency_floor_manifest_missing_fails_closed",
+            "test_l0_canonical_dependency_floor_manifest_drift_fails_closed",
+            "test_l0_canonical_dependency_floor_manifest_current_bytes_are_pinned",
+            "test_locked_close_kernel_ignores_parent_sitecustomize_bypass",
+            "test_locked_close_kernel_identityless_process_modes_do_not_bypass_subprocess",
+            "test_p1_2_close_kernel_strong_status_gate_ignores_parent_sitecustomize",
+            "test_p1_2_close_kernel_source_floor_pins_runtime_guard_and_l0_floor_loader",
             "test_fix_3_unknown_review_anchor_fails_closed",
             "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
             "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
@@ -2144,9 +2154,20 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
 
 def _check_strong_status_write_allowlist_gate() -> list[str]:
     script_path = PROJECT_ROOT / "scripts" / "check_strong_status_write_allowlist.py"
+    pycache_prefix = tempfile.mkdtemp(prefix="zmd_strong_status_allowlist_pycache_")
     try:
         result = subprocess.run(
-            [sys.executable, str(script_path), "--root", str(PROJECT_ROOT)],
+            [
+                sys.executable,
+                "-I",
+                "-S",
+                "-B",
+                "-X",
+                f"pycache_prefix={pycache_prefix}",
+                str(script_path),
+                "--root",
+                str(PROJECT_ROOT),
+            ],
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
@@ -2154,6 +2175,8 @@ def _check_strong_status_write_allowlist_gate() -> list[str]:
         )
     except Exception as exc:  # noqa: BLE001
         return [f"strong-status write allowlist checker failed to run: {type(exc).__name__}: {exc}"]
+    finally:
+        shutil.rmtree(pycache_prefix, ignore_errors=True)
     if result.returncode != 0:
         detail = (result.stdout + result.stderr).strip()
         if len(detail) > 1000:
@@ -3900,7 +3923,8 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
 CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
     'scripts/check_strong_status_write_allowlist.py': '4964fcdea6f987d424013e25cc34355c1bc3371d2e2c8d9e68f96fa84cd1a9ff',
-    'scripts/generate_pr2_dependency_floor_manifest.py': 'f653acb858ff2ca55f10841b9976f7f2247def56ed090fb1c55d0ec2dd308b41',
+    'src/search/certified_artifact_contract.py': 'e45f4ded38b209601ec5306bc9ab6152ab3dca34a86bb5b0827212d59563cd07',
+    'scripts/generate_pr2_dependency_floor_manifest.py': '0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c',
     'src/adapters/industrial_planner/export_blueprint.py': '01afafc85b4e7f27c0bf8c0293845785b45bc71ad332da483936b753a7d9eb5e',
     'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
     'src/cuts/cert_schema.py': 'e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e',
@@ -3952,8 +3976,8 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
-    'src/search/pr2_l0_micro_verifier_core.py': '4a991f47c556319007f8f5a37437f112d309c51e4c47008ad07fd1882f41abae',
-    'src/search/pr2_l0_true_verifier_child.py': 'fa5a9fbd40ae505cc91373449d7b7cfd7847c3bdbf247eeedf28fe1c85a84e1c',
+    'src/search/pr2_l0_micro_verifier_core.py': 'ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc',
+    'src/search/pr2_l0_true_verifier_child.py': '3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
     'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531',
@@ -4121,6 +4145,7 @@ def _check_dependency_floor_provenance_contract(
         "manifest_sha256": PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256,
         "manifest_size": PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE,
         "manifest_authority": PR2_DEPENDENCY_FLOOR_AUTHORITY,
+        "manifest_floor_root": PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL,
         "generator_path": PR2_DEPENDENCY_FLOOR_GENERATOR_REL,
         "generator_sha256": PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256,
         "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
@@ -4139,6 +4164,23 @@ def _check_dependency_floor_provenance_contract(
     )
     if source_floor_sha != PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256:
         errors.append("dependency floor generator missing from the v99 source-hash floor")
+
+    loader_source = PR2_L0_MICRO_VERIFIER_PATH.read_text(encoding="utf-8")
+    for token in (
+        "DEPENDENCY_FLOOR_MANIFEST_REL",
+        "DEPENDENCY_FLOOR_MANIFEST_SHA256",
+        "DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES",
+        "DEPENDENCY_FLOOR_ROOT_SENTINEL",
+        PR2_DEPENDENCY_FLOOR_MANIFEST_REL,
+        PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256,
+        str(PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE),
+        PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL,
+        "canonical dependency floor manifest hash drift",
+    ):
+        if token not in loader_source:
+            errors.append(f"PR2 L0 canonical floor loader missing pinned token: {token}")
+    if "_generate_default_dependency_floor_manifest" in loader_source:
+        errors.append("PR2 L0 canonical floor loader must not auto-generate reviewed floor bytes")
 
     manifest_path = project_root / PR2_DEPENDENCY_FLOOR_MANIFEST_REL
     if not manifest_path.exists():
@@ -4168,6 +4210,11 @@ def _check_dependency_floor_provenance_contract(
                 errors.append(
                     "dependency floor manifest authority must be "
                     f"{PR2_DEPENDENCY_FLOOR_AUTHORITY}"
+                )
+            if floor_manifest.get("floor_root") != PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL:
+                errors.append(
+                    "dependency floor manifest floor_root must be "
+                    f"{PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL}"
                 )
             files = floor_manifest.get("files")
             if not isinstance(files, dict) or not files:
