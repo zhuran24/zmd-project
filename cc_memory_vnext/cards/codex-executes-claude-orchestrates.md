@@ -48,7 +48,7 @@ provenance:
     - python cc_memory/mem.py read codex-executes-claude-orchestrates --body
 updated_at: "2026-06-26"
 ---
-默认分工判据【先看工作量】，不按“实现/审查”标签死分：工作量大的活（实现、推进、找问题、验证）交 Codex 作为执行体（省 Claude/opus 额度）；工作量小的活 Claude 自己直接做即可——**小实现也算，别因为它性质叫“实现”就硬派 Codex**。
+默认分工判据【先看工作量】，不按“实现/审查”标签死分：工作量大的活（实现、推进、找问题、验证）交 Codex 作为执行体（省 Claude/opus 额度）；工作量小的活 Claude 自己直接做即可——**小实现也算，别因为它性质叫“实现”就硬派 Codex**。反过来，**大工作量的 read/调查/核查也是大活、同样该走 Codex**——别因为“跨多文件读”这个【工具模式】就反射派 Explore/opus 子代理（2026-06-28 实犯：核 PR2 9 项状态派了 3 个 Explore 子代理读一堆文件、~267K tokens，没套“工作量→Codex”路由＝按工具模式/任务性质路由而非工作量的同一个病）。
 
 【只有在两边工作量相近、分不出高下时】，才用次级偏好：相近时优先 Codex 实现、Claude 审。次序是先工作量、相近时再偏 Codex，不是“实现永远归 Codex”。
 
