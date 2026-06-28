@@ -111,13 +111,15 @@ def locked_p1_2_close_kernel_violation(
 
     checker_relative_path = LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS[1]
     checker_path = root / checker_relative_path
-    try:
-        invoked_path = Path(sys.argv[0]).resolve()
-    except OSError:
-        invoked_path = Path()
-    if invoked_path == checker_path.resolve():
-        return None
-
+    # No "am I the checker?" self-skip: always re-verify by running the pinned
+    # checker in a subprocess.  An identity-based skip (whether keyed on
+    # ``sys.argv[0]`` -- forgeable via ``os.execv`` -- or ``__main__.__file__``)
+    # is a trust exception that a launcher or in-process state could abuse to
+    # bypass verification, and it is unnecessary here: the pinned checker
+    # (``check_p1_2_proof_obligations.py``) does not call this function, so
+    # running it cannot recurse.  A future checker mode that needs artifact
+    # hashing must pass an explicit non-recursive flag, not rely on a bypassable
+    # identity skip.
     try:
         result = subprocess.run(
             [sys.executable, str(checker_path)],
