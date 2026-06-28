@@ -44,6 +44,9 @@ PR2_DEPENDENCY_FLOOR_MANIFEST_SHA256 = (
 )
 PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE = 574082
 PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL = "PYTHON_SYSCONFIG_PURELIB"
+PR2_DEPENDENCY_FLOOR_PROVENANCE_STATUS = (
+    "deploy_pending_placeholder_regenerate_on_production_cachyos_py313"
+)
 PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c"
 )
@@ -3976,7 +3979,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
-    'src/search/pr2_l0_micro_verifier_core.py': 'ae74acb1403106400ff31efe30873fe4f2062ab6899264eed6e2edefdf7e13dc',
+    'src/search/pr2_l0_micro_verifier_core.py': '5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8',
     'src/search/pr2_l0_true_verifier_child.py': '3a5aa031feaa3e64c4a91ce1474d99a7e0cc29b130e3ecbc4745dacd3e2da335',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
@@ -4146,6 +4149,7 @@ def _check_dependency_floor_provenance_contract(
         "manifest_size": PR2_DEPENDENCY_FLOOR_MANIFEST_SIZE,
         "manifest_authority": PR2_DEPENDENCY_FLOOR_AUTHORITY,
         "manifest_floor_root": PR2_DEPENDENCY_FLOOR_ROOT_SENTINEL,
+        "manifest_provenance_status": PR2_DEPENDENCY_FLOOR_PROVENANCE_STATUS,
         "generator_path": PR2_DEPENDENCY_FLOOR_GENERATOR_REL,
         "generator_sha256": PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256,
         "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
