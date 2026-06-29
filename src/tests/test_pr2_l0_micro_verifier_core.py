@@ -663,3 +663,68 @@ def test_l0_dependency_floor_manifest_rejects_digest_mismatch(tmp_path: Path) ->
 
     with pytest.raises(ValueError, match="dependency floor digest mismatch"):
         l0._load_dependency_floor_manifest(manifest_path)
+
+
+def test_l0_supervisor_certified_transition_promotes_declare_mode_to_strict() -> None:
+    """PR2 #5 review hardening (BLOCK 1): the durable CERTIFIED transition must
+    canonicalize declare_mode to the supervisor-owned strict terminal label, so a
+    producer that ships declare_mode="best_effort" cannot end up with a durable
+    final_status="CERTIFIED" state that fails its own terminal-evidence gate. The
+    transition validator builds `expected` from the proposal and now forces
+    declare_mode="strict"; a sealed state that kept best_effort must be a mismatch."""
+    campaign_instance_id = "0" * 32
+    proposal_state = {
+        l0.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        "declare_mode": "best_effort",
+        "final_status": l0.CANDIDATE_PROPOSED_STATUS,
+        "final_result": {"search_status": l0.CANDIDATE_PROPOSED_STATUS},
+        "last_stop_reason": {
+            "reason": l0.TERMINAL_CERTIFIED_REASON,
+            "status": l0.CANDIDATE_PROPOSED_STATUS,
+            "updated_at": "2026-01-01T00:00:00Z",
+        },
+        l0.SUPERVISOR_PROPOSAL_STATE_KEY: {
+            "schema_version": l0.SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+            "authority": l0.PROPOSAL_READY_MARKER_AUTHORITY,
+            "run_id": "run-1",
+            l0.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        },
+    }
+    seal_record = {
+        "proposal_run_id": "run-1",
+        l0.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+    }
+    certified_state = dict(proposal_state)
+    certified_state["final_status"] = "CERTIFIED"
+    certified_state["declare_mode"] = "strict"
+    certified_state["final_result"] = {"search_status": "CERTIFIED"}
+    certified_state["last_stop_reason"] = {
+        "reason": l0.TERMINAL_CERTIFIED_REASON,
+        "status": "CERTIFIED",
+        "updated_at": "2026-01-01T00:00:01Z",
+    }
+    certified_state["updated_at"] = "2026-01-01T00:00:01Z"
+    certified_state.pop(l0.SUPERVISOR_PROPOSAL_STATE_KEY)
+    certified_state[l0.SUPERVISOR_SEAL_STATE_KEY] = dict(seal_record)
+
+    # producer declare_mode="best_effort" -> durable "strict" is the accepted transition
+    assert (
+        l0._supervisor_certified_transition_violation_l0(
+            proposal_state=proposal_state,
+            certified_state=certified_state,
+            seal_record=seal_record,
+        )
+        is None
+    )
+
+    # a sealed state that persisted the producer's non-strict declare_mode is rejected
+    regressed_state = dict(certified_state)
+    regressed_state["declare_mode"] = "best_effort"
+    assert (
+        l0._supervisor_certified_transition_violation_l0(
+            proposal_state=proposal_state,
+            certified_state=regressed_state,
+            seal_record=seal_record,
+        )
+        == "supervisor_seal_transition_mismatch"
+    )
