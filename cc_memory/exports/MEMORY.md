@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 132
-- hard edges: 159
+- entries: 135
+- hard edges: 162
 - pending relation suggestions: 0
 
 ## Start Here
@@ -62,6 +62,7 @@ python cc_memory/mem.py boot
 - `codegraph-codegraph-codegraph-init-proof-cc-memory` — CodeGraph: RULE, 项目代码结构索引/MCP/CLI; 非 proof、非 cc_memory。
 - `codegraph-freshness-lazy-sync-on-use` — CodeGraph 2026-06-28: RULE, lazy sync-on-use; watcher 非常驻, sync hook 已删。
 - `codegraph-precompact` — precompact/codegraph 2026-06-26: WARN, 已记规则未先查导致三犯。
+- `codex-agent-worktree-implement-integrate` — Agent isolation:worktree+codex:框架建worktree(baseRef=head)设codex cwd在那;codex提交worktree-agent-<id>分支;因共享.git+线性,git merge --ff-only集成;终裁审diff+preflight;走git故无CRLF
 - `codex-agents-team-sendmessage-sonnet` — Codex Team 2026-06: RULE, 进 Agents Team 互通需 sonnet 中介 SendMessage。
 - `codex-agenttype-schema-structuredoutput-empty-loop` — codex schema 2026-06-21: FIXED, 空提交根因=shim纯管道 vs 结构化。
 - `codex-claude-clean-workflow` — 大活流程 2026-06-21/28: RULE, Codex 实现→Claude 审→回环到 clean。
@@ -82,6 +83,7 @@ python cc_memory/mem.py boot
 - `feedback-no-manufactured-owner-decisions` — owner 决策 2026-06-20: RULE, 不从已定可行性里造假拍板项。
 - `fix-4-fix-5-i1-toctou` — FIX-4/FIX-5 2026-06-23: SPEC, I1 独立复验 + TOCTOU 原子快照。
 - `flaky-worktree-fail-closed-bug-workflow` — flaky 2026-06: VERDICT, worktree 漂移触发正确 fail-closed, 非核心 bug。
+- `git-archive-overlay-snapshot-no-branch-switch` — memory.db churn 让 git checkout abort;不切分支组合多分支内容打快照=git archive<X>到tar+tar解+overlay Y的文件+拷untracked大文件+7z…
 - `git-worktree-codex-crlf-worktree-preflight` — 在隔离 git worktree 里跑 preflight/pytest 会撞两个与代码 soundness 无关的机械 BLOCK,实测于 topology-opt worktree(2026-06-27)…
 - `github-ruleset-slow-soundness-gate-ci` — 2026-06-21 给 slow-soundness-gate 设 required(GitHub branch protection / ruleset)失败…
 - `gpt-pro-sandbox-can-edit-files` — GPT Pro relay 2026-06: LIVE, 可解包读改文件并回传 diff/包。
@@ -120,6 +122,7 @@ python cc_memory/mem.py boot
 - `pr1-publication-blocks-abc-fixed` — PR1 A/B/C/D 2026-06-26: DONE, 7类发布面 BLOCK 全修+终审绿。
 - `pr1-soundness-b085a75-ci` — GPT Pro 对 0bc36db 做了【三轮独立外审 + 三份补丁】(互冲不能叠加),并集 = B/D/A/C/B2/E。走 codex-claude-clean-workflow…
 - `pr1-supervisor-mint-preflight` — PR1 supervisor 地基两块 2026-06-23 落地、**已提交 `ddb3b5a`**(feat(p1.2): PR1 supervisor 地基…
+- `pr2-5-ast-pin-canonical-window-hardening` — round-1 STRAIGHT-LINE blacklist 漏 8 类绕过(尤其 final_status 挪 precheck 后→静默跳穷尽);round-2 改 whitelist canonical-window(init↔precheck 只许6槽+pop,按构造完备)…
 - `pr2-5-seal-frontier-gate-landed` — PR2 #5: child升格漏declare_mode/last_stop_reason致seal路径穷尽校验死代码;已修+GPT Pro panel挖2 BLOCK(parent mint不归一+AST pin松)+CRLF reseal坑;待复审merge
 - `pr2-8-9a-hardened-landed-099f5a3` — PR2 #8(删自跳过)+#9a(floor钉死)+GPT Pro外审硬化(#8-A子进程-I-S-B/#8-B源码sha楼面/#9a-A L0 runtime byte-pin堵时序旁路)合 main 099f5a3,CI两gate绿。多会话panel验证有效(2会话收敛挖3 BLOCK本地审都漏)…
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
