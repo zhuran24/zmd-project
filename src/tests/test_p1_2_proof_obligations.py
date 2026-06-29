@@ -664,10 +664,276 @@ def _child_dunder_dict_rebind_surface(source: str) -> str:
     )
 
 
+def _disable_pr2_5_closed_world_guards(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _legacy_accepts(*_args: object, **_kwargs: object) -> list[str]:
+        return []
+
+    for helper_name in (
+        "_check_child_module_toplevel_closed_world",
+        "_check_true_verifier_child_module_closed_world",
+        "_check_true_verifier_child_closed_world",
+        "_check_true_verifier_child_return_dict_closed_world",
+        "_check_child_unique_final_return",
+        "_check_child_precheck_call_exact",
+        "_check_no_direct_top_level_exit_before_node",
+        "_check_live_top_level_postwrite_guard",
+        "_check_l0_child_verdict_dataflow",
+    ):
+        monkeypatch.setattr(check_p1_2_proof_obligations, helper_name, _legacy_accepts)
+    monkeypatch.setattr(
+        check_p1_2_proof_obligations,
+        "_return_domain_uses_canonical_names",
+        lambda _stmt: True,
+    )
+
+
+def _child_early_return_before_precheck(source: str) -> str:
+    return _replace_once(
+        source,
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n"
+        "    required = {\n",
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n"
+        '    return {"schema_version": DOMAIN_SCHEMA_VERSION}\n'
+        "    required = {\n",
+    )
+
+
+def _child_code_object_monkeypatches_precheck(source: str) -> str:
+    import_block = (
+        "    from src.search.exact_campaign import (\n"
+        "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        terminal_certified_final_result_project_precheck_violation,\n"
+        "    )\n"
+    )
+    return _replace_once(
+        source,
+        import_block,
+        import_block
+        + "    def _noop_precheck(*_args: object, **_kwargs: object) -> None:\n"
+        + "        return None\n"
+        + "    terminal_certified_final_result_project_precheck_violation.__code__ = _noop_precheck.__code__\n",
+    )
+
+
+def _child_globals_monkeypatches_precheck(source: str) -> str:
+    import_block = (
+        "    from src.search.exact_campaign import (\n"
+        "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        terminal_certified_final_result_project_precheck_violation,\n"
+        "    )\n"
+    )
+    return _replace_once(
+        source,
+        import_block,
+        import_block
+        + "    def _noop_precheck(*_args: object, **_kwargs: object) -> None:\n"
+        + "        return None\n"
+        + '    terminal_certified_final_result_project_precheck_violation.__globals__["terminal_certified_final_result_project_precheck_violation"] = _noop_precheck\n',
+    )
+
+
+def _child_importfrom_builtins_setattr_alias(source: str) -> str:
+    import_block = (
+        "    from src.search.exact_campaign import (\n"
+        "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        terminal_certified_final_result_project_precheck_violation,\n"
+        "    )\n"
+    )
+    return _replace_once(
+        source,
+        import_block,
+        import_block
+        + "    from builtins import setattr as _b\n"
+        + '    _b(terminal_certified_final_result_project_precheck_violation, "__doc__", "patched")\n',
+    )
+
+
+def _child_builtins_dict_facade(source: str) -> str:
+    return _insert_child_before_proposal_evidence(
+        source,
+        '    __builtins__["dict"] = _evil_dict\n',
+    )
+
+
+def _child_module_top_level_monkeypatch(source: str) -> str:
+    return _replace_once(
+        source,
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
+        "from src.search import exact_campaign as _m\n"
+        "_m.terminal_certified_final_result_project_precheck_violation = lambda *_args, **_kwargs: None\n"
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
+    )
+
+
+def _child_return_unpack_overrides_domain(source: str) -> str:
+    return _replace_once(
+        source,
+        '        "fixed_witness_violations": {},\n'
+        '        "tcb": {\n',
+        '        "fixed_witness_violations": {},\n'
+        "        **evil_domain,\n"
+        '        "tcb": {\n',
+    )
+
+
+def _child_return_tcb_side_effect_call(source: str) -> str:
+    tcb_block = (
+        '        "tcb": {\n'
+        '            "python_interpreter": "NAMED-TCB",\n'
+        '            "stdlib": "NAMED-TCB",\n'
+        '            "third_party_native": "NAMED-TCB",\n'
+        '            "os_process_file_isolation": "NAMED-TCB",\n'
+        '            "windows_write_isolation_residual": "protocol_only_child_snapshot_no_write_fd_pr2c_linux_uid_namespace_pending",\n'
+        "        },\n"
+    )
+    return _replace_once(
+        source,
+        tcb_block,
+        '        "tcb": _evil_mutate_mapping(evidence),\n'
+        '        # "third_party_native": "NAMED-TCB"\n'
+        '        # "windows_write_isolation_residual"\n',
+    )
+
+
+def _child_precheck_extra_kwarg(source: str) -> str:
+    return _replace_once(
+        source,
+        "        project_root=project_root,\n"
+        "    )\n",
+        "        project_root=project_root,\n"
+        "        weaken_terminal=True,\n"
+        "    )\n",
+    )
+
+
+def _l0_child_verdict_forged_rebind(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if child_verdict.status != SEALED:\n",
+        "        child_verdict = L0MicroVerdict(\n"
+        "            status=SEALED,\n"
+        "            nonce=nonce,\n"
+        '            reason="forged_child_verdict",\n'
+        "            floor_digest=child_verdict.floor_digest,\n"
+        "            response=child_verdict.response,\n"
+        "        )\n"
+        "        if child_verdict.status != SEALED:\n",
+    )
+
+
+def _l0_transition_starts_with_return(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+        "    return None\n"
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+    )
+
+
+def _exact_transition_starts_with_return(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+        "    return None\n"
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+    )
+
+
+def _l0_postwrite_starts_with_return(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n",
+        "    return None\n"
+        "    if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n",
+    )
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
     assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "mutator", "expected_error"),
+    [
+        ("child", _child_early_return_before_precheck, "exactly one Return"),
+        ("child", _child_code_object_monkeypatches_precheck, "dunder attribute __code__"),
+        ("child", _child_globals_monkeypatches_precheck, "dunder attribute __globals__"),
+        ("child", _child_importfrom_builtins_setattr_alias, "ImportFrom outside pinned allowlist"),
+        ("child", _child_builtins_dict_facade, "must not reference __builtins__"),
+        ("child", _child_module_top_level_monkeypatch, "module top level must not assign non-Name targets"),
+        ("child", _child_return_unpack_overrides_domain, "must exactly match the pinned key set"),
+        ("child", _child_return_tcb_side_effect_call, "final return domain key tcb must match pinned expression"),
+        ("child", _child_precheck_extra_kwarg, "terminal precheck call must be exactly"),
+        ("l0", _l0_child_verdict_forged_rebind, "must not rebind child/domain/proposal data"),
+        ("l0", _l0_transition_starts_with_return, "unconditional top-level Return"),
+        ("exact", _exact_transition_starts_with_return, "unconditional top-level Return"),
+        ("l0", _l0_postwrite_starts_with_return, "unconditional top-level Return"),
+    ],
+    ids=[
+        "g1-child-early-return-before-precheck",
+        "g2-child-code-object-monkeypatch",
+        "g2-child-globals-monkeypatch",
+        "g2-child-importfrom-builtins-setattr-alias",
+        "g2-child-builtins-dict-facade",
+        "g3-child-module-top-level-monkeypatch",
+        "g4-child-return-unpack-override",
+        "g4-child-return-unpinned-side-effect",
+        "g5-child-precheck-extra-kwarg",
+        "g7-l0-child-verdict-forged-rebind",
+        "g6-l0-transition-dead-strict-assignment",
+        "g6-exact-transition-dead-strict-assignment",
+        "g6-l0-postwrite-dead-strict-guard",
+    ],
+)
+def test_p1_2_checker_rejects_pr2_5_closed_world_reachability_bypasses(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    source_kind: str,
+    mutator: object,
+    expected_error: str,
+) -> None:
+    assert callable(mutator)
+    base_child = check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+        encoding="utf-8"
+    )
+    base_l0 = check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    base_exact = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    child_source = base_child
+    l0_source = base_l0
+    exact_source = base_exact
+    if source_kind == "child":
+        child_source = mutator(base_child)  # type: ignore[operator]
+    elif source_kind == "l0":
+        l0_source = mutator(base_l0)  # type: ignore[operator]
+    elif source_kind == "exact":
+        exact_source = mutator(base_exact)  # type: ignore[operator]
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert any(expected_error in error for error in errors), errors
+
+    _disable_pr2_5_closed_world_guards(monkeypatch)
+    legacy_errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert legacy_errors == []
 
 
 @pytest.mark.parametrize(
@@ -779,7 +1045,7 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
         (
             "l0",
             _l0_postwrite_dead_guard_token,
-            "postwrite validator must have a live top-level declare_mode strict guard",
+            "postwrite validator must have exactly one live top-level declare_mode strict guard",
         ),
     ],
     ids=[

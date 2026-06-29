@@ -2245,6 +2245,93 @@ _PR2_CHILD_DYNAMIC_MODULE_CALLS = frozenset(
 )
 _PR2_CHILD_FRAME_CALLS = frozenset({"sys._getframe", "inspect.currentframe"})
 _PR2_CHILD_FRAME_ATTRS = frozenset({"f_locals", "f_globals", "f_back"})
+_PR2_CHILD_DOMAIN_IMPORTFROM_ALLOWLIST = {
+    "src.search.certified_frontier": frozenset(
+        {
+            "build_terminal_frontier_evidence",
+            "candidate_generation_kwargs",
+            "generate_candidate_sizes",
+        }
+    ),
+    "src.search.exact_campaign": frozenset(
+        {
+            "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
+            "terminal_certified_final_result_project_precheck_violation",
+        }
+    ),
+}
+_PR2_CHILD_MODULE_IMPORT_ALLOWLIST = frozenset(
+    {
+        ("import", "base64", None),
+        ("import", "hashlib", None),
+        ("import", "importlib.machinery", None),
+        ("import", "json", None),
+        ("import", "os", None),
+        ("import", "sys", None),
+        ("import", "sysconfig", None),
+        ("import", "tempfile", None),
+        ("import", "traceback", None),
+        ("from", "__future__", "annotations"),
+        ("from", "collections.abc", "Iterable"),
+        ("from", "pathlib", "Path"),
+        ("from", "typing", "Any"),
+        ("from", "typing", "Mapping"),
+    }
+)
+_PR2_CHILD_RETURN_KEYS = frozenset(
+    {
+        "schema_version",
+        "authority",
+        "nonce",
+        "verdict",
+        "reason",
+        "strong_keys",
+        "final_result",
+        "terminal_frontier_evidence",
+        "candidate_records",
+        "final_result_digest",
+        "terminal_frontier_evidence_digest",
+        "candidate_records_digest",
+        "fixed_witness_publishable",
+        "sink_replay_violations",
+        "fixed_witness_violations",
+        "tcb",
+    }
+)
+_PR2_CHILD_RETURN_PINNED_EXPRESSIONS = {
+    "schema_version": "DOMAIN_SCHEMA_VERSION",
+    "authority": "DOMAIN_AUTHORITY",
+    "nonce": "nonce",
+    "verdict": "SEALED",
+    "reason": '"domain_verified"',
+    "strong_keys": "list(strong_keys)",
+    "final_result": "certified_final_result",
+    "terminal_frontier_evidence": "evidence",
+    "candidate_records": "durable_records",
+    "final_result_digest": "final_digest",
+    "terminal_frontier_evidence_digest": "evidence_digest",
+    "candidate_records_digest": "records_digest",
+    "fixed_witness_publishable": 'bool(getattr(fixed_verdict, "publishable", False))',
+    "sink_replay_violations": "{}",
+    "fixed_witness_violations": "{}",
+    "tcb": (
+        "{"
+        '"python_interpreter": "NAMED-TCB", '
+        '"stdlib": "NAMED-TCB", '
+        '"third_party_native": "NAMED-TCB", '
+        '"os_process_file_isolation": "NAMED-TCB", '
+        '"windows_write_isolation_residual": '
+        '"protocol_only_child_snapshot_no_write_fd_pr2c_linux_uid_namespace_pending"'
+        "}"
+    ),
+}
+_PR2_CHILD_GETATTR_ALLOWLIST = frozenset(
+    {
+        ("fixed_verdict", "publishable", False),
+        ("fixed_verdict", "candidate_key", None),
+        ("fixed_verdict", "reason", None),
+    }
+)
 
 
 def _is_name(node: ast.AST, name: str) -> bool:
@@ -2253,6 +2340,14 @@ def _is_name(node: ast.AST, name: str) -> bool:
 
 def _is_constant(node: ast.AST, value: object) -> bool:
     return isinstance(node, ast.Constant) and node.value == value
+
+
+def _ast_shape_equal(left: ast.AST, right: ast.AST) -> bool:
+    return ast.dump(left, include_attributes=False) == ast.dump(right, include_attributes=False)
+
+
+def _expr_matches_source(node: ast.AST, source: str) -> bool:
+    return _ast_shape_equal(node, ast.parse(source, mode="eval").body)
 
 
 def _call_func_name(call: ast.Call) -> str | None:
@@ -2628,17 +2723,85 @@ def _digest_mismatch_if(stmt: ast.AST, digest_name: str, payload_key: str) -> bo
 
 
 def _return_domain_uses_canonical_names(stmt: ast.AST) -> bool:
-    if not isinstance(stmt, ast.Return) or not isinstance(stmt.value, ast.Dict):
+    if not isinstance(stmt, ast.Return):
         return False
+    items = _return_dict_items(stmt)
+    return items is not None and set(items) == _PR2_CHILD_RETURN_KEYS and all(
+        _expr_matches_source(items[key], expected)
+        for key, expected in _PR2_CHILD_RETURN_PINNED_EXPRESSIONS.items()
+    )
+
+
+def _return_dict_items(stmt: ast.Return) -> dict[str, ast.AST] | None:
+    if not isinstance(stmt.value, ast.Dict):
+        return None
     items: dict[str, ast.AST] = {}
     for key, value in zip(stmt.value.keys, stmt.value.values):
-        if isinstance(key, ast.Constant) and isinstance(key.value, str):
-            items[key.value] = value
-    return (
-        _is_name(items.get("final_result", ast.Constant(None)), "certified_final_result")
-        and _is_name(items.get("terminal_frontier_evidence", ast.Constant(None)), "evidence")
-        and _is_name(items.get("candidate_records", ast.Constant(None)), "durable_records")
-    )
+        if key is None:
+            return None
+        if not isinstance(key, ast.Constant) or not isinstance(key.value, str):
+            return None
+        if key.value in items:
+            return None
+        items[key.value] = value
+    return items
+
+
+def _check_true_verifier_child_return_dict_closed_world(
+    child_domain_fn: ast.FunctionDef,
+) -> list[str]:
+    errors: list[str] = []
+    returns = [node for node in ast.walk(child_domain_fn) if isinstance(node, ast.Return)]
+    if len(returns) != 1:
+        errors.append(
+            "PR2 true verifier child must have exactly one Return: the pinned final domain return"
+        )
+        return errors
+    final_return = returns[0]
+    if not child_domain_fn.body or child_domain_fn.body[-1] is not final_return:
+        errors.append("PR2 true verifier child sole Return must be the final top-level statement")
+        return errors
+    items = _return_dict_items(final_return)
+    if items is None or set(items) != _PR2_CHILD_RETURN_KEYS:
+        errors.append(
+            "PR2 true verifier child final return domain dict must exactly match "
+            "the pinned key set and must not use ** unpacking"
+        )
+        return errors
+    for key in sorted(_PR2_CHILD_RETURN_KEYS):
+        expected = _PR2_CHILD_RETURN_PINNED_EXPRESSIONS[key]
+        if not _expr_matches_source(items[key], expected):
+            errors.append(
+                "PR2 true verifier child final return domain key "
+                f"{key} must match pinned expression {expected}"
+            )
+    return errors
+
+
+def _check_child_unique_final_return(child_domain_fn: ast.FunctionDef) -> list[str]:
+    returns = [node for node in ast.walk(child_domain_fn) if isinstance(node, ast.Return)]
+    if len(returns) != 1:
+        return [
+            "PR2 true verifier child must have exactly one Return: the pinned final domain return"
+        ]
+    if not child_domain_fn.body or child_domain_fn.body[-1] is not returns[0]:
+        return ["PR2 true verifier child sole Return must be the final top-level statement"]
+    return []
+
+
+def _check_child_precheck_call_exact(call: ast.Call) -> list[str]:
+    if (
+        len(call.args) == 1
+        and _is_name(call.args[0], "scratch_state")
+        and len(call.keywords) == 1
+        and call.keywords[0].arg == "project_root"
+        and _is_name(call.keywords[0].value, "project_root")
+    ):
+        return []
+    return [
+        "PR2 true verifier child terminal precheck call must be exactly "
+        "terminal_certified_final_result_project_precheck_violation(scratch_state, project_root=project_root)"
+    ]
 
 
 def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) -> list[str]:
@@ -2721,7 +2884,7 @@ def _nested_scratch_slot(node: ast.AST) -> str | None:
 def _check_true_verifier_child_domain_elevation_window(
     child_domain_fn: ast.FunctionDef,
 ) -> list[str]:
-    errors: list[str] = []
+    errors: list[str] = _check_child_unique_final_return(child_domain_fn)
     body = child_domain_fn.body
     init_positions: list[tuple[int, ast.Assign]] = []
     precheck_positions: list[tuple[int, str, ast.Assign, ast.Call]] = []
@@ -2794,11 +2957,7 @@ def _check_true_verifier_child_domain_elevation_window(
         for slot, stmt in sorted(slot_assigns.items()):
             if not _child_elevation_slot_rhs_ok(slot, stmt.value):
                 errors.append(_child_elevation_slot_rhs_error(slot))
-        if not (precheck_call.args and _is_name(precheck_call.args[0], "scratch_state")):
-            errors.append("PR2 true verifier child terminal precheck must take scratch_state as its first positional arg")
-        project_root_keywords = [kw for kw in precheck_call.keywords if kw.arg == "project_root"]
-        if len(project_root_keywords) != 1 or not _is_name(project_root_keywords[0].value, "project_root"):
-            errors.append("PR2 true verifier child terminal precheck must bind project_root=project_root")
+        errors.extend(_check_child_precheck_call_exact(precheck_call))
         consume_idx = precheck_idx + 1
         if consume_idx >= len(body) or not _if_consumes_precheck_result(body[consume_idx], precheck_result_name):
             errors.append(
@@ -3035,6 +3194,171 @@ def _check_true_verifier_child_domain_elevation_window(
     return errors
 
 
+def _getattr_call_allowed(call: ast.Call) -> bool:
+    if _call_func_name(call) != "getattr" or call.keywords:
+        return False
+    if len(call.args) not in {2, 3}:
+        return False
+    if not isinstance(call.args[0], ast.Name):
+        return False
+    if not isinstance(call.args[1], ast.Constant) or not isinstance(call.args[1].value, str):
+        return False
+    default: object = None
+    if len(call.args) == 3:
+        if not isinstance(call.args[2], ast.Constant):
+            return False
+        default = call.args[2].value
+    return (call.args[0].id, call.args[1].value, default) in _PR2_CHILD_GETATTR_ALLOWLIST
+
+
+def _importfrom_allowed(node: ast.ImportFrom) -> bool:
+    if node.level != 0 or node.module not in _PR2_CHILD_DOMAIN_IMPORTFROM_ALLOWLIST:
+        return False
+    if any(alias.asname is not None for alias in node.names):
+        return False
+    allowed = _PR2_CHILD_DOMAIN_IMPORTFROM_ALLOWLIST[node.module]
+    imported = {alias.name for alias in node.names}
+    return imported <= allowed
+
+
+def _check_true_verifier_child_closed_world(
+    child_domain_fn: ast.FunctionDef,
+) -> list[str]:
+    errors: list[str] = []
+    authority_import_counts: dict[tuple[str, str], int] = {
+        (module, name): 0
+        for module, names in _PR2_CHILD_DOMAIN_IMPORTFROM_ALLOWLIST.items()
+        for name in names
+    }
+    for node in ast.walk(child_domain_fn):
+        if node is not child_domain_fn and isinstance(
+            node,
+            (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda),
+        ):
+            errors.append("PR2 true verifier child closed-world body must not define nested code objects")
+        if isinstance(node, ast.Name) and node.id == "__builtins__":
+            errors.append("PR2 true verifier child closed-world body must not reference __builtins__")
+        if isinstance(node, ast.Attribute):
+            if node.attr.startswith("__") and node.attr.endswith("__"):
+                errors.append(
+                    "PR2 true verifier child closed-world body must not access dunder attribute "
+                    f"{node.attr}"
+                )
+        if isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            for target in targets:
+                if any(isinstance(child, ast.Attribute) for child in ast.walk(target)):
+                    errors.append(
+                        "PR2 true verifier child closed-world body must not assign to attributes"
+                    )
+        if isinstance(node, ast.Delete):
+            for target in node.targets:
+                if any(isinstance(child, ast.Attribute) for child in ast.walk(target)):
+                    errors.append(
+                        "PR2 true verifier child closed-world body must not delete attributes"
+                    )
+        if isinstance(node, ast.ImportFrom):
+            if not _importfrom_allowed(node):
+                errors.append(
+                    "PR2 true verifier child closed-world ImportFrom outside pinned allowlist"
+                )
+            else:
+                assert node.module is not None
+                for alias in node.names:
+                    authority_import_counts[(node.module, alias.name)] += 1
+        if isinstance(node, ast.Call) and _call_func_name(node) == "getattr":
+            if not _getattr_call_allowed(node):
+                errors.append(
+                    "PR2 true verifier child closed-world getattr call outside pinned allowlist"
+                )
+    for (module, name), count in sorted(authority_import_counts.items()):
+        if count != 1:
+            errors.append(
+                "PR2 true verifier child closed-world import pin must import "
+                f"{name} exactly once from {module}"
+            )
+    return errors
+
+
+def _child_module_import_allowed(stmt: ast.stmt) -> bool:
+    if isinstance(stmt, ast.Import):
+        return all(
+            ("import", alias.name, alias.asname) in _PR2_CHILD_MODULE_IMPORT_ALLOWLIST
+            for alias in stmt.names
+        )
+    if isinstance(stmt, ast.ImportFrom):
+        return all(
+            ("from", stmt.module, alias.name) in _PR2_CHILD_MODULE_IMPORT_ALLOWLIST
+            and alias.asname is None
+            and stmt.level == 0
+            for alias in stmt.names
+        )
+    return False
+
+
+def _child_module_constant_value_allowed(node: ast.AST) -> bool:
+    if isinstance(node, ast.Constant):
+        return True
+    if isinstance(node, ast.Name):
+        return True
+    if isinstance(node, ast.Attribute):
+        return True
+    if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+        return all(_child_module_constant_value_allowed(item) for item in node.elts)
+    if isinstance(node, ast.Dict):
+        return all(
+            key is not None
+            and _child_module_constant_value_allowed(key)
+            and _child_module_constant_value_allowed(value)
+            for key, value in zip(node.keys, node.values)
+        )
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        return _child_module_constant_value_allowed(node.left) and _child_module_constant_value_allowed(
+            node.right
+        )
+    if isinstance(node, ast.Call):
+        return (
+            _call_func_name(node) in {"tuple", "frozenset"}
+            and len(node.args) == 1
+            and not node.keywords
+            and _child_module_constant_value_allowed(node.args[0])
+        )
+    return False
+
+
+def _check_child_module_toplevel_closed_world(child_tree: ast.Module) -> list[str]:
+    errors: list[str] = []
+    for stmt in child_tree.body:
+        if (
+            isinstance(stmt, ast.Expr)
+            and isinstance(stmt.value, ast.Constant)
+            and isinstance(stmt.value.value, str)
+        ):
+            continue
+        if _child_module_import_allowed(stmt):
+            continue
+        if isinstance(stmt, (ast.FunctionDef, ast.ClassDef)):
+            continue
+        if isinstance(stmt, ast.Assign):
+            if not all(isinstance(target, ast.Name) for target in stmt.targets):
+                errors.append("PR2 true verifier child module top level must not assign non-Name targets")
+                continue
+            if not _child_module_constant_value_allowed(stmt.value):
+                errors.append(
+                    "PR2 true verifier child module top-level assignment outside pinned constant/call allowlist"
+                )
+            continue
+        errors.append(
+            "PR2 true verifier child module top level contains disallowed statement "
+            f"{type(stmt).__name__} at line {getattr(stmt, 'lineno', '?')}"
+        )
+    return errors
+
+
+def _check_true_verifier_child_module_closed_world(child_tree: ast.Module) -> list[str]:
+    return _check_child_module_toplevel_closed_world(child_tree)
+
+
 def _slot_assignment_lineno(stmt: ast.Assign) -> int:
     return int(getattr(stmt, "end_lineno", getattr(stmt, "lineno", 0)) or 0)
 
@@ -3049,6 +3373,26 @@ def _node_starts_after(node: ast.AST, anchor: ast.AST) -> bool:
         int(getattr(anchor, "col_offset", 0) or 0),
     )
     return node_pos > anchor_pos
+
+
+def _check_no_direct_top_level_exit_before_node(
+    function: ast.FunctionDef,
+    anchor: ast.AST,
+    *,
+    label: str,
+) -> list[str]:
+    errors: list[str] = []
+    for stmt in function.body:
+        if stmt is anchor:
+            break
+        if not hasattr(stmt, "lineno") or _node_starts_after(stmt, anchor):
+            break
+        if isinstance(stmt, (ast.Return, ast.Raise)):
+            errors.append(
+                f"{label} must not have an unconditional top-level "
+                f"{type(stmt).__name__} before its pinned live statement"
+            )
+    return errors
 
 
 def _call_first_arg_is_name(call: ast.Call, name: str) -> bool:
@@ -3157,6 +3501,7 @@ def _check_literal_strict_slot_assignment(
     mapping_name: str,
     slot: str,
     label: str,
+    require_live_top_level: bool = False,
 ) -> list[str]:
     errors: list[str] = []
     assignments: list[ast.Assign] = []
@@ -3180,6 +3525,14 @@ def _check_literal_strict_slot_assignment(
     assignment = assignments[0]
     if not _is_constant(assignment.value, "strict"):
         errors.append(f'{label} must assign literal "strict" to {mapping_name}["{slot}"]')
+    if require_live_top_level:
+        errors.extend(
+            _check_no_direct_top_level_exit_before_node(
+                function,
+                assignment,
+                label=label,
+            )
+        )
     ordered_nodes = sorted(
         (node for node in ast.walk(function) if hasattr(node, "lineno")),
         key=lambda node: (
@@ -3278,6 +3631,176 @@ def _postwrite_strict_declare_mode_guard(stmt: ast.stmt) -> bool:
         and _is_constant(declare_mode_get.args[0], "declare_mode")
         and not declare_mode_get.keywords
     )
+
+
+def _check_live_top_level_postwrite_guard(function: ast.FunctionDef) -> list[str]:
+    guards = [stmt for stmt in function.body if _postwrite_strict_declare_mode_guard(stmt)]
+    if len(guards) != 1:
+        return [
+            "PR2 L0 postwrite validator must have exactly one live top-level "
+            "declare_mode strict guard returning postwrite_declare_mode_not_strict"
+        ]
+    return _check_no_direct_top_level_exit_before_node(
+        function,
+        guards[0],
+        label="PR2 L0 postwrite validator",
+    )
+
+
+def _assigns_child_verdict_from_round_trip(stmt: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"child_verdict"}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "run_l0_micro_verifier_round_trip"
+    )
+
+
+def _assigns_domain_from_child_verdict(stmt: ast.AST) -> bool:
+    if not (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"domain"}
+        and isinstance(stmt.value, ast.Call)
+        and isinstance(stmt.value.func, ast.Attribute)
+        and stmt.value.func.attr == "get"
+        and len(stmt.value.args) == 1
+        and _is_constant(stmt.value.args[0], "domain")
+        and not stmt.value.keywords
+    ):
+        return False
+    receiver = stmt.value.func.value
+    return (
+        isinstance(receiver, ast.Attribute)
+        and receiver.attr == "response"
+        and _is_name(receiver.value, "child_verdict")
+    )
+
+
+def _sealed_l0_micro_verdict_call(node: ast.AST) -> bool:
+    if not isinstance(node, ast.Call) or _call_func_name(node) != "L0MicroVerdict":
+        return False
+    return any(keyword.arg == "status" and _is_name(keyword.value, "SEALED") for keyword in node.keywords)
+
+
+def _is_pinned_final_l0_sealed_return(function: ast.FunctionDef, node: ast.Call) -> bool:
+    parent = getattr(node, "_p1_2_parent", None)
+    if not isinstance(parent, ast.Return):
+        return False
+    required_keywords = {
+        "status": "SEALED",
+        "nonce": "nonce",
+        "reason": '"supervisor_sealed"',
+        "floor_digest": "child_verdict.floor_digest",
+        "response": "response",
+    }
+    if node.args or {keyword.arg for keyword in node.keywords} != set(required_keywords):
+        return False
+    return all(
+        keyword.arg is not None
+        and _expr_matches_source(keyword.value, required_keywords[keyword.arg])
+        for keyword in node.keywords
+    )
+
+
+def _target_has_attribute_write_to_name(target: ast.AST, names: frozenset[str]) -> bool:
+    for node in ast.walk(target):
+        if isinstance(node, ast.Attribute):
+            current = node.value
+            while isinstance(current, ast.Attribute):
+                current = current.value
+            if isinstance(current, ast.Name) and current.id in names:
+                return True
+    return False
+
+
+def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
+    errors: list[str] = []
+    assignments = [
+        node
+        for node in ast.walk(l0_seal_fn)
+        if _assigns_child_verdict_from_round_trip(node)
+    ]
+    if len(assignments) != 1:
+        errors.append(
+            "PR2 L0 supervisor seal must assign child_verdict exactly once "
+            "from run_l0_micro_verifier_round_trip(...)"
+        )
+        return errors
+    assign_stmt = assignments[0]
+    watched_names = frozenset({"child_verdict", "domain", "child_payload"})
+    domain_assignment_seen = False
+    ordered_nodes = sorted(
+        (node for node in ast.walk(l0_seal_fn) if hasattr(node, "lineno")),
+        key=lambda node: (
+            int(getattr(node, "lineno", 0) or 0),
+            int(getattr(node, "col_offset", 0) or 0),
+        ),
+    )
+    sealed_calls = [node for node in ordered_nodes if _sealed_l0_micro_verdict_call(node)]
+    if len(sealed_calls) != 1:
+        errors.append("PR2 L0 supervisor seal must have exactly one sealed L0MicroVerdict construction")
+    for node in sealed_calls:
+        if not _is_pinned_final_l0_sealed_return(l0_seal_fn, node):
+            errors.append(
+                "PR2 L0 supervisor seal must not construct a forged sealed L0MicroVerdict "
+                "outside the pinned final return"
+            )
+    for stmt in ordered_nodes:
+        if stmt is assign_stmt or not _node_starts_after(stmt, assign_stmt):
+            continue
+        if _assigns_domain_from_child_verdict(stmt):
+            if domain_assignment_seen:
+                errors.append("PR2 L0 supervisor seal must not rebind domain after child verdict validation")
+            domain_assignment_seen = True
+            continue
+        if isinstance(stmt, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+            targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
+            for target in targets:
+                bound_names = _target_bound_names(target)
+                for name in sorted(bound_names):
+                    if (
+                        name in watched_names
+                        or name.startswith("proposal_")
+                    ):
+                        errors.append(
+                            "PR2 L0 supervisor seal must not rebind child/domain/proposal data "
+                            f"after child_verdict: {name}"
+                        )
+                if _target_has_attribute_write_to_name(target, watched_names):
+                    errors.append(
+                        "PR2 L0 supervisor seal must not write attributes on child/domain data "
+                        "after child_verdict"
+                    )
+        elif isinstance(stmt, ast.Delete):
+            for target in stmt.targets:
+                bound_names = _target_bound_names(target)
+                for name in sorted(bound_names):
+                    if (
+                        name in watched_names
+                        or name.startswith("proposal_")
+                    ):
+                        errors.append(
+                            "PR2 L0 supervisor seal must not delete child/domain/proposal data "
+                            f"after child_verdict: {name}"
+                        )
+                if _target_has_attribute_write_to_name(target, watched_names):
+                    errors.append(
+                        "PR2 L0 supervisor seal must not delete attributes on child/domain data "
+                        "after child_verdict"
+                    )
+        elif isinstance(stmt, (ast.Return, ast.Raise, ast.If, ast.For, ast.AsyncFor, ast.With, ast.Try)):
+            continue
+        elif isinstance(stmt, ast.Call):
+            continue
+        else:
+            continue
+    if not domain_assignment_seen:
+        errors.append(
+            'PR2 L0 supervisor seal must bind domain exactly once from child_verdict.response.get("domain")'
+        )
+    return errors
 
 
 
@@ -3690,6 +4213,7 @@ def _check_candidate_sink_replay_contract(
             mapping_name="expected",
             slot="declare_mode",
             label="PR2 L0 supervisor transition gate",
+            require_live_top_level=True,
         )
     )
     l0_postwrite_fn = _function_def(
@@ -3697,13 +4221,11 @@ def _check_candidate_sink_replay_contract(
         "_postwrite_state_violation",
         path=pr2_l0_path,
     )
-    if not any(_postwrite_strict_declare_mode_guard(stmt) for stmt in l0_postwrite_fn.body):
-        errors.append(
-            "PR2 L0 postwrite validator must have a live top-level "
-            "declare_mode strict guard returning postwrite_declare_mode_not_strict"
-        )
+    errors.extend(_check_live_top_level_postwrite_guard(l0_postwrite_fn))
+    errors.extend(_check_l0_child_verdict_dataflow(l0_seal_fn))
 
     child_tree = _parse_python(pr2_true_child_path)
+    errors.extend(_check_child_module_toplevel_closed_world(child_tree))
     child_domain_fn = _function_def(
         child_tree,
         "_verify_supervisor_domain",
@@ -3740,6 +4262,8 @@ def _check_candidate_sink_replay_contract(
         if token not in child_domain_source:
             errors.append(f"PR2 true verifier child must fail closed and report bounded domain evidence: {token}")
     errors.extend(_check_true_verifier_child_domain_elevation_window(child_domain_fn))
+    errors.extend(_check_true_verifier_child_closed_world(child_domain_fn))
+    errors.extend(_check_true_verifier_child_return_dict_closed_world(child_domain_fn))
     child_project_fn = _function_def(
         child_tree,
         "_project_candidate_records_direct",
@@ -3812,6 +4336,7 @@ def _check_candidate_sink_replay_contract(
             mapping_name="expected",
             slot="declare_mode",
             label="ExactCampaign supervisor transition gate",
+            require_live_top_level=True,
         )
     )
     precommit_fn = _method_def(
