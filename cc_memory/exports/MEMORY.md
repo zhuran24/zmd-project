@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 136
-- hard edges: 163
+- entries: 140
+- hard edges: 167
 - pending relation suggestions: 0
 
 ## Start Here
@@ -58,6 +58,7 @@ python cc_memory/mem.py boot
 - `claude-code-custom-hooks-this-machine` — 本机自定义 hooks:block_ps_in_bash(Bash里发PS拦)/es_reminder(按名递归找文件→es,2026-06-29只带名字过滤才拦,120s重发口)/codegraph_reminder(符号定位→codegraph,两档:硬档无重发/软档有,2026-06-29数据键降软档)…
 - `claude-md-maintenance-method-20260628` — CLAUDE.md 维护 2026-06-28: RULE, 工具归属+保守缩写+归档边界。
 - `clipboard-relay-deliverables-to-owner` — relay 交付 2026-06-20/23: RULE, 剪贴板给提示词正文+包完整路径。
+- `close-kernel-ast-pin-closed-world-progression` — 对图灵完备语言,AST pin 留任何自由表达式/语句空间就总能绕;收敛终态=闭世界(只许有限白名单:禁嵌套def/dunder/__builtins__,import/getattr…
 - `close-kernel-necessity-verdict-20260619` — V99 close-kernel 2026-06-19: VERDICT, sink hash-pin lint; 防虚假安全感。
 - `close-kernel-sealed-lint-v99-reseal-re-export-patch-ruff-f401` — close-kernel lint 2026-06-28: WARN, sealed 改动会触发 reseal/F401 patch 坑。
 - `codegraph-codegraph-codegraph-init-proof-cc-memory` — CodeGraph: RULE, 项目代码结构索引/MCP/CLI; 非 proof、非 cc_memory。
@@ -124,6 +125,7 @@ python cc_memory/mem.py boot
 - `pr1-soundness-b085a75-ci` — GPT Pro 对 0bc36db 做了【三轮独立外审 + 三份补丁】(互冲不能叠加),并集 = B/D/A/C/B2/E。走 codex-claude-clean-workflow…
 - `pr1-supervisor-mint-preflight` — PR1 supervisor 地基两块 2026-06-23 落地、**已提交 `ddb3b5a`**(feat(p1.2): PR1 supervisor 地基…
 - `pr2-5-ast-pin-canonical-window-hardening` — round-1 STRAIGHT-LINE blacklist 漏 8 类绕过(尤其 final_status 挪 precheck 后→静默跳穷尽);round-2 改 whitelist canonical-window(init↔precheck 只许6槽+pop,按构造完备)…
+- `pr2-5-closed-world-ast-pin-rounds-3-4` — round-2 lean复审3会话BLOCK(3槽RHS任意表达式藏副作用)→round-3正向RHS白名单+运行时重绑封口→round-3复审3会话BLOCK更深(早退支配/CPython元对象/模块级monkeypatch/parent伪造child_verdict)→round-4闭世界G1-G7+G6恒真早退前…
 - `pr2-5-seal-frontier-gate-landed` — PR2 #5: child升格漏declare_mode/last_stop_reason致seal路径穷尽校验死代码;已修+GPT Pro panel挖2 BLOCK(parent mint不归一+AST pin松)+CRLF reseal坑;待复审merge
 - `pr2-8-9a-hardened-landed-099f5a3` — PR2 #8(删自跳过)+#9a(floor钉死)+GPT Pro外审硬化(#8-A子进程-I-S-B/#8-B源码sha楼面/#9a-A L0 runtime byte-pin堵时序旁路)合 main 099f5a3,CI两gate绿。多会话panel验证有效(2会话收敛挖3 BLOCK本地审都漏)…
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
@@ -134,7 +136,9 @@ python cc_memory/mem.py boot
 - `precompact-skill-compact-inline-owner` — precompact skill 2026-06-28: PARTIAL/SUPERSEDED, offline 先记忆回合。
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
+- `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
+- `review-cadence-narrow-iterates-defect-per-item-not-batched` — owner 问审查面越来越小=其它面不查吗;答:窄复审磨同一缺陷某角度,运行时面已证CLEAN(blob OID字节不变)+全量preflight是广回归网;每轮深对抗剥一层非缩小(round-3更深);PR2其它item各自实现完各自走codex+GPT Pro对抗审+preflight,改一块审一块合一块不堆到最后
 - `review-prompt-also-request-patches` — 外审提示 2026-06-26: RULE, 找全 BLOCK 后直接要补丁+根因+行号。
 - `review-prompt-request-exhaustive-coverage` — 外审提示 2026-06-23: RULE, 要全覆盖; 不用裸 STOP 造成只找一个。
 - `review-routing-codex-local-then-gptpro-relay` — 审查路由 2026-06-28: RULE, 本地 Codex 审修→GPT Pro relay; 不派 workflow。
