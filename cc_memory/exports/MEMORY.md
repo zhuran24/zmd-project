@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 135
-- hard edges: 162
+- entries: 136
+- hard edges: 163
 - pending relation suggestions: 0
 
 ## Start Here
@@ -55,6 +55,7 @@ python cc_memory/mem.py boot
 - `cc-memory-meta-system-consolidated-index-20260628` — cc_memory C档 2026-06-28: INDEX, 折叠 search/read/semantic/rerank/hook 元系统旧节点。
 - `cc-memory-update-vs-supersede-rule` — 记忆改写 2026-06-20: RULE, 订正 --force; 真取代 supersede。
 - `ci-saga-slow-blindspot-flaky-mechanism-20260626` — CI saga 0bc36db: DONE 2026-06-26, @slow 盲区+delivery flaky 均修绿。
+- `claude-code-custom-hooks-this-machine` — 本机自定义 hooks:block_ps_in_bash(Bash里发PS拦)/es_reminder(按名递归找文件→es,2026-06-29只带名字过滤才拦,120s重发口)/codegraph_reminder(符号定位→codegraph,两档:硬档无重发/软档有,2026-06-29数据键降软档)…
 - `claude-md-maintenance-method-20260628` — CLAUDE.md 维护 2026-06-28: RULE, 工具归属+保守缩写+归档边界。
 - `clipboard-relay-deliverables-to-owner` — relay 交付 2026-06-20/23: RULE, 剪贴板给提示词正文+包完整路径。
 - `close-kernel-necessity-verdict-20260619` — V99 close-kernel 2026-06-19: VERDICT, sink hash-pin lint; 防虚假安全感。
