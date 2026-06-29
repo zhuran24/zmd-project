@@ -141,7 +141,7 @@ python cc_memory/mem.py boot
 - `terminology-meeting-equals-team` — 术语 2026-06-23: RULE, 开会=Agents Team, 不是独立 Workflow。
 - `topology-opt-chunk2-landed` — topology-opt a20ee31: LANDED, Chunk2 S2/S3 诊断 hint planner 未接线。
 - `topology-opt-gpt-chunk1-codex` — topology-opt 2026-06-27: DONE, GPT 两优化书评估+Chunk1 落地。
-- `transcript-decompact-extract-tool` — transcript_full_extract.py:把会话jsonl全量对话抽成按压缩点分层的md(时间戳分层非parentUuid链);PreCompact hook自动更新;找压缩丢的没记知识用它
+- `transcript-decompact-extract-tool` — transcript抽3视图:live(全线程+工具输出,看守进程实时)/history(纯对话分卷~1MB)/latest(最新段=刚被压那段,PreCompact写);Stop hook弃用改看守
 - `v-next` — cc_memory_vnext 2026-06-27: LIVE, MVP-0 上线; zmem 卡/金标准为准。
 - `wf-verify-also-codex-no-parallel-bolt` — WF 验证 2026-06-21: RULE, 审计也走 Codex→Claude; 别旁路加并行。
 - `workflow-default-multimodel-opus-codex` — workflow 2026-06-28: RULE, 诊断用 opus+codex; 审查改 GPT Pro relay。
