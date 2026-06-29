@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 143
-- hard edges: 173
+- entries: 142
+- hard edges: 172
 - pending relation suggestions: 0
 
 ## Start Here
@@ -65,7 +65,6 @@ python cc_memory/mem.py boot
 - `codegraph-freshness-lazy-sync-on-use` — CodeGraph 2026-06-28: RULE, lazy sync-on-use; watcher 非常驻, sync hook 已删。
 - `codegraph-precompact` — precompact/codegraph 2026-06-26: WARN, 已记规则未先查导致三犯。
 - `codex-agent-worktree-implement-integrate` — Agent isolation:worktree+codex:框架建worktree(baseRef=head)设codex cwd在那;codex提交worktree-agent-<id>分支;因共享.git+线性,git merge --ff-only集成;终裁审diff+preflight;走git故无CRLF
-- `codex-agents-team-sendmessage-sonnet` — Codex Team 2026-06: RULE, 进 Agents Team 互通需 sonnet 中介 SendMessage。
 - `codex-agenttype-schema-structuredoutput-empty-loop` — codex schema 2026-06-21: FIXED, 空提交根因=shim纯管道 vs 结构化。
 - `codex-claude-clean-workflow` — 大活流程 2026-06-21/28: RULE, Codex 实现→Claude 审→回环到 clean。
 - `codex-claude-codex-claude-4-1-high` — owner 2026-06-21 当场纠正 + 实证。规矩(承 [[feedback-default-codex-desktop-mcp]]):**实现工作交 Codex(`mcp__codex_desktop__codex`)…
@@ -133,7 +132,7 @@ python cc_memory/mem.py boot
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
 - `pr2-resume-envelope-deferred-finding` — PR2跟进:parent mint dict(authority_state)只覆盖证明字段,信封字段(created_at等)原样从producer带入未校验→过终态门但resume拒=自相矛盾CERTIFIED;非假证明;押后归#2/#3
 - `pr2b-landed-pr2-remaining-status-20260628` — PR2-b 69980b3+592ea13: LANDED 2026-06-28, SOUND; PR2余项表。
-- `precompact-flow-current-20260630` — Pre-compact(2026-06-30 重写,权威=本地未版本化文件 .claude/skills/Pre-compact/SKILL.md[gitignored]+~/.claude/hooks/precompact_trigger.py[全局]):三阶段 记忆更新->查漏(原判官)->/compact…
+- `precompact-flow-current-20260630` — Pre-compact(2026-06-30 重写+查漏自动化重版):三阶段 记忆更新->查漏->/compact;级联只由调本skill驱动(单独注入记忆更新回合不级联)…
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
 - `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 Claude PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
