@@ -475,10 +475,31 @@ def _parse_lifecycle() -> ast.Module:
     return _parse_python(LIFECYCLE_PATH)
 
 
-def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -> ast.FunctionDef:
+def _top_level_binding_points(tree: ast.Module, name: str) -> list[ast.stmt]:
+    points: list[ast.stmt] = []
     for node in tree.body:
-        if isinstance(node, ast.FunctionDef) and node.name == name:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if node.name == name:
+                points.append(node)
+        elif isinstance(node, ast.Assign):
+            if any(isinstance(target, ast.Name) and target.id == name for target in node.targets):
+                points.append(node)
+        elif isinstance(node, ast.AnnAssign):
+            if isinstance(node.target, ast.Name) and node.target.id == name:
+                points.append(node)
+    return points
+
+
+def _function_def(tree: ast.Module, name: str, *, path: Path = LIFECYCLE_PATH) -> ast.FunctionDef:
+    binding_points = _top_level_binding_points(tree, name)
+    if len(binding_points) > 1:
+        lines = ", ".join(str(getattr(node, "lineno", "?")) for node in binding_points)
+        raise CheckError(f"top-level binding for {_rel(path)}::{name} must be unique; found lines {lines}")
+    if len(binding_points) == 1:
+        node = binding_points[0]
+        if isinstance(node, ast.FunctionDef):
             return node
+        raise CheckError(f"top-level binding for {_rel(path)}::{name} is not a FunctionDef")
     raise CheckError(f"function not found in {_rel(path)}: {name}")
 
 
@@ -2225,7 +2246,14 @@ _PR2_CHILD_AUTHORITY_NAMES = frozenset(
 )
 _PR2_CHILD_RESERVED_RUNTIME_NAMES = frozenset(
     {
+        "bool",
         "dict",
+        "frozenset",
+        "getattr",
+        "list",
+        "Path",
+        "str",
+        "tuple",
         "_canonical_digest",
         "_stable_fixed_witness_candidate_records",
         "payload",
@@ -2330,6 +2358,82 @@ _PR2_CHILD_GETATTR_ALLOWLIST = frozenset(
         ("fixed_verdict", "publishable", False),
         ("fixed_verdict", "candidate_key", None),
         ("fixed_verdict", "reason", None),
+    }
+)
+_PR2_CHILD_TOP_LEVEL_CONSTANT_SOURCES = {
+    "SEALED": '"SEALED"',
+    "REJECTED": '"REJECTED"',
+    "DOMAIN_AUTHORITY": '"pr2_l0_true_supervisor_domain_v1"',
+    "DOMAIN_SCHEMA_VERSION": "1",
+    "FLOOR_AUTHORITY": '"pr2_l0_dependency_floor_manifest_v1"',
+    "FLOOR_ROOT_SENTINEL": '"PYTHON_SYSCONFIG_PURELIB"',
+    "IMPORT_FILE_SUFFIXES": (
+        "tuple(importlib.machinery.SOURCE_SUFFIXES + "
+        "importlib.machinery.EXTENSION_SUFFIXES)"
+    ),
+    "_FIXED_WITNESS_AUDIT_FIELD": '"terminal_fixed_witness_verifier"',
+    "_FIXED_WITNESS_STABLE_FIELD_ORDER": (
+        "("
+        '"schema_version", "authority", "publishable", "projected_status", '
+        '"candidate_key", "solution_digest", "ghost_rect_digest", '
+        '"ghost_cells_digest", "witness_input_digest", '
+        '"binding_assignment_digest", "port_specs_digest", '
+        '"routing_occupancy_digest", "binding_status", "routing_status", '
+        '"reason", "details"'
+        ")"
+    ),
+    "_FIXED_WITNESS_STABLE_FIELDS": "frozenset(_FIXED_WITNESS_STABLE_FIELD_ORDER)",
+    "_FIXED_WITNESS_VOLATILE_FIELDS": 'frozenset({"fresh_run_token"})',
+}
+_PR2_CHILD_TOP_LEVEL_FUNCTIONS = frozenset(
+    {
+        "verify",
+        "_dependency_floor_root",
+        "_install_third_party_floor",
+        "_is_within",
+        "_is_within_any",
+        "_stdlib_paths",
+        "_valid_top_level_name",
+        "_dependency_file_top_level",
+        "_dependency_named_tcb_violation",
+        "_index_dependency_package_dirs",
+        "_verify_supervisor_domain",
+        "_project_candidate_records_direct",
+        "_materialize_import_default_artifacts",
+        "_run_fixed_witness_direct",
+        "_strict_int",
+        "_strict_string",
+        "_require_mapping",
+        "_string_list",
+        "_json_copy",
+        "_canonical_bytes",
+        "_canonical_digest",
+        "_stable_fixed_witness_payload",
+        "_stable_fixed_witness_candidate_records",
+        "_is_lower_sha256",
+        "_safe_rel",
+    }
+)
+_PR2_CHILD_TOP_LEVEL_CLASSES = frozenset(
+    {
+        "_StdlibOnlyPathFinder",
+        "_RestrictedThirdPartyFinder",
+        "_RehashingSourceFileLoader",
+        "_RehashingExtensionFileLoader",
+    }
+)
+_PR2_CHILD_CLASS_BASE_SOURCES = {
+    "_StdlibOnlyPathFinder": (),
+    "_RestrictedThirdPartyFinder": (),
+    "_RehashingSourceFileLoader": ("importlib.machinery.SourceFileLoader",),
+    "_RehashingExtensionFileLoader": ("importlib.machinery.ExtensionFileLoader",),
+}
+_PR2_CHILD_HELPER_IMPORTFROM_ALLOWLIST = frozenset(
+    {
+        "src.search.candidate_proof_replay",
+        "src.search.certified_frontier",
+        "src.search.exact_campaign",
+        "src.search.terminal_fixed_witness_verifier",
     }
 )
 
@@ -3301,38 +3405,183 @@ def _child_module_import_allowed(stmt: ast.stmt) -> bool:
     return False
 
 
-def _child_module_constant_value_allowed(node: ast.AST) -> bool:
+def _inert_default_value(node: ast.AST) -> bool:
     if isinstance(node, ast.Constant):
         return True
-    if isinstance(node, ast.Name):
-        return True
-    if isinstance(node, ast.Attribute):
-        return True
     if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
-        return all(_child_module_constant_value_allowed(item) for item in node.elts)
+        return all(_inert_default_value(item) for item in node.elts)
     if isinstance(node, ast.Dict):
         return all(
-            key is not None
-            and _child_module_constant_value_allowed(key)
-            and _child_module_constant_value_allowed(value)
+            key is not None and _inert_default_value(key) and _inert_default_value(value)
             for key, value in zip(node.keys, node.values)
-        )
-    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
-        return _child_module_constant_value_allowed(node.left) and _child_module_constant_value_allowed(
-            node.right
-        )
-    if isinstance(node, ast.Call):
-        return (
-            _call_func_name(node) in {"tuple", "frozenset"}
-            and len(node.args) == 1
-            and not node.keywords
-            and _child_module_constant_value_allowed(node.args[0])
         )
     return False
 
 
+def _check_function_import_time_shape(function: ast.FunctionDef, *, label: str) -> list[str]:
+    errors: list[str] = []
+    if function.decorator_list:
+        errors.append(f"{label} must not use decorators")
+    defaults = list(function.args.defaults) + [
+        default for default in function.args.kw_defaults if default is not None
+    ]
+    for default in defaults:
+        if not _inert_default_value(default):
+            errors.append(f"{label} defaults must be inert literals or None")
+    return errors
+
+
+_PR2_DANGEROUS_DUNDER_ATTRS = frozenset(
+    {
+        "__bases__",
+        "__class__",
+        "__code__",
+        "__delattr__",
+        "__delitem__",
+        "__dict__",
+        "__getattribute__",
+        "__globals__",
+        "__ior__",
+        "__mro__",
+        "__setattr__",
+        "__setitem__",
+        "__subclasses__",
+    }
+)
+
+
+def _check_child_runtime_function_closed_world(function: ast.FunctionDef, *, label: str) -> list[str]:
+    errors: list[str] = []
+    for node in ast.walk(function):
+        if node is not function and isinstance(
+            node,
+            (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda),
+        ):
+            errors.append(f"{label} body must not define nested code objects")
+        if isinstance(node, ast.Name) and node.id == "__builtins__":
+            errors.append(f"{label} body must not reference __builtins__")
+        if isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            for target in targets:
+                for namespace in sorted(_target_dynamic_namespace_writes(target)):
+                    errors.append(f"{label} body must not write dynamic namespace mapping {namespace}(...)")
+                for child in ast.walk(target):
+                    if (
+                        isinstance(child, ast.Attribute)
+                        and child.attr in _PR2_DANGEROUS_DUNDER_ATTRS
+                    ):
+                        errors.append(f"{label} body must not assign to dunder attribute {child.attr}")
+        if isinstance(node, ast.Delete):
+            for target in node.targets:
+                for namespace in sorted(_target_dynamic_namespace_writes(target)):
+                    errors.append(f"{label} body must not delete dynamic namespace mapping {namespace}(...)")
+                for child in ast.walk(target):
+                    if (
+                        isinstance(child, ast.Attribute)
+                        and child.attr in _PR2_DANGEROUS_DUNDER_ATTRS
+                    ):
+                        errors.append(f"{label} body must not delete dunder attribute {child.attr}")
+        if isinstance(node, ast.Import):
+            errors.append(f"{label} body must not use bare import statements")
+        if isinstance(node, ast.ImportFrom):
+            if (
+                node.level != 0
+                or node.module not in _PR2_CHILD_HELPER_IMPORTFROM_ALLOWLIST
+                or any(alias.asname is not None for alias in node.names)
+            ):
+                errors.append(f"{label} ImportFrom outside pinned helper allowlist")
+        if isinstance(node, ast.Call):
+            call_name = _call_func_name(node)
+            if call_name in _PR2_CHILD_DYNAMIC_MODULE_CALLS or (
+                call_name is not None and call_name.startswith("importlib.")
+            ):
+                errors.append(f"{label} body must not use dynamic module capability {call_name}")
+            if isinstance(node.func, ast.Attribute) and node.func.attr in _PR2_DANGEROUS_DUNDER_ATTRS:
+                errors.append(f"{label} body must not call dunder attribute {node.func.attr}")
+        if isinstance(node, ast.Attribute):
+            if node.attr in _PR2_DANGEROUS_DUNDER_ATTRS:
+                errors.append(f"{label} body must not access dunder attribute {node.attr}")
+            if node.attr == "modules" and _is_name(node.value, "sys"):
+                errors.append(f"{label} body must not access sys.modules")
+            if node.attr == "_getframe" and _is_name(node.value, "sys"):
+                errors.append(f"{label} body must not access sys._getframe")
+            if node.attr in _PR2_CHILD_FRAME_ATTRS:
+                errors.append(f"{label} body must not access frame attribute {node.attr}")
+    return errors
+
+
+def _check_child_class_closed_world(class_node: ast.ClassDef) -> list[str]:
+    label = f"PR2 true verifier child class {class_node.name}"
+    errors: list[str] = []
+    if class_node.decorator_list:
+        errors.append(f"{label} must not use decorators")
+    if class_node.keywords:
+        errors.append(f"{label} must not use metaclass/keywords")
+    expected_bases = _PR2_CHILD_CLASS_BASE_SOURCES.get(class_node.name)
+    actual_bases = tuple(ast.unparse(base) for base in class_node.bases)
+    if actual_bases != expected_bases:
+        errors.append(f"{label} bases must match the pinned loader base list")
+    for stmt in class_node.body:
+        if (
+            isinstance(stmt, ast.Expr)
+            and isinstance(stmt.value, ast.Constant)
+            and isinstance(stmt.value.value, str)
+        ):
+            continue
+        if isinstance(stmt, ast.FunctionDef):
+            errors.extend(_check_function_import_time_shape(stmt, label=f"{label}.{stmt.name}"))
+            continue
+        errors.append(
+            f"{label} body contains import-time executable statement "
+            f"{type(stmt).__name__} at line {getattr(stmt, 'lineno', '?')}"
+        )
+    return errors
+
+
+def _check_unique_top_level_bindings(
+    tree: ast.Module,
+    names: frozenset[str],
+    *,
+    path: Path,
+    label: str,
+) -> list[str]:
+    errors: list[str] = []
+    for name in sorted(names):
+        points = _top_level_binding_points(tree, name)
+        if len(points) > 1:
+            lines = ", ".join(str(getattr(node, "lineno", "?")) for node in points)
+            errors.append(f"{label} top-level binding for {name} must be unique; found lines {lines}")
+    return errors
+
+
+def _check_child_module_assignment(stmt: ast.Assign) -> list[str]:
+    if len(stmt.targets) != 1 or not isinstance(stmt.targets[0], ast.Name):
+        return ["PR2 true verifier child module top level must not assign non-Name targets"]
+    name = stmt.targets[0].id
+    expected_source = _PR2_CHILD_TOP_LEVEL_CONSTANT_SOURCES.get(name)
+    if expected_source is None:
+        return [f"PR2 true verifier child module top level must not bind {name}"]
+    if not _expr_matches_source(stmt.value, expected_source):
+        return [f"PR2 true verifier child module constant {name} must match pinned source"]
+    return []
+
+
 def _check_child_module_toplevel_closed_world(child_tree: ast.Module) -> list[str]:
     errors: list[str] = []
+    watched_bindings = (
+        frozenset(_PR2_CHILD_TOP_LEVEL_CONSTANT_SOURCES)
+        | _PR2_CHILD_TOP_LEVEL_FUNCTIONS
+        | _PR2_CHILD_TOP_LEVEL_CLASSES
+        | _PR2_CHILD_RESERVED_RUNTIME_NAMES
+    )
+    errors.extend(
+        _check_unique_top_level_bindings(
+            child_tree,
+            watched_bindings,
+            path=PR2_L0_TRUE_VERIFIER_CHILD_PATH,
+            label="PR2 true verifier child module",
+        )
+    )
     for stmt in child_tree.body:
         if (
             isinstance(stmt, ast.Expr)
@@ -3342,16 +3591,37 @@ def _check_child_module_toplevel_closed_world(child_tree: ast.Module) -> list[st
             continue
         if _child_module_import_allowed(stmt):
             continue
-        if isinstance(stmt, (ast.FunctionDef, ast.ClassDef)):
-            continue
         if isinstance(stmt, ast.Assign):
-            if not all(isinstance(target, ast.Name) for target in stmt.targets):
-                errors.append("PR2 true verifier child module top level must not assign non-Name targets")
+            errors.extend(_check_child_module_assignment(stmt))
+            continue
+        if isinstance(stmt, ast.AnnAssign):
+            errors.append("PR2 true verifier child module top level must not use AnnAssign")
+            continue
+        if isinstance(stmt, ast.AsyncFunctionDef):
+            errors.append("PR2 true verifier child module top level must not define async functions")
+            continue
+        if isinstance(stmt, ast.FunctionDef):
+            if stmt.name not in _PR2_CHILD_TOP_LEVEL_FUNCTIONS:
+                errors.append(f"PR2 true verifier child module top level has unpinned function {stmt.name}")
                 continue
-            if not _child_module_constant_value_allowed(stmt.value):
-                errors.append(
-                    "PR2 true verifier child module top-level assignment outside pinned constant/call allowlist"
+            errors.extend(
+                _check_function_import_time_shape(
+                    stmt,
+                    label=f"PR2 true verifier child function {stmt.name}",
                 )
+            )
+            errors.extend(
+                _check_child_runtime_function_closed_world(
+                    stmt,
+                    label=f"PR2 true verifier child function {stmt.name}",
+                )
+            )
+            continue
+        if isinstance(stmt, ast.ClassDef):
+            if stmt.name not in _PR2_CHILD_TOP_LEVEL_CLASSES:
+                errors.append(f"PR2 true verifier child module top level has unpinned class {stmt.name}")
+                continue
+            errors.extend(_check_child_class_closed_world(stmt))
             continue
         errors.append(
             "PR2 true verifier child module top level contains disallowed statement "
@@ -3426,6 +3696,133 @@ _PR2_L0_POSTWRITE_STRICT_GUARD_PREFIX = (
     "if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n"
     '    return "supervisor_seal_certified_state_sha256_mismatch"',
 )
+_PR2_L0_SUPERVISOR_TRANSITION_BODY = (
+    "if str(proposal_state.get('final_status')) != CANDIDATE_PROPOSED_STATUS:\n"
+    "    return 'supervisor_seal_proposal_status_invalid'",
+    "if SUPERVISOR_SEAL_STATE_KEY in proposal_state:\n"
+    "    return 'supervisor_seal_proposal_already_sealed'",
+    "proposal_record = proposal_state.get(SUPERVISOR_PROPOSAL_STATE_KEY)",
+    "proposal_violation = _proposal_state_violation("
+    "proposal_record, "
+    "expected_campaign_instance_id=str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY))"
+    ")",
+    "if proposal_violation is not None:\n"
+    "    return f'supervisor_seal_{proposal_violation}'",
+    "if not isinstance(proposal_record, Mapping):\n"
+    "    return 'supervisor_seal_supervisor_proposal_invalid'",
+    "if str(proposal_record.get('run_id')) != str(seal_record.get('proposal_run_id')):\n"
+    "    return 'supervisor_seal_proposal_run_id_mismatch'",
+    "if str(proposal_state.get(CAMPAIGN_INSTANCE_ID_KEY)) != "
+    "str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY)):\n"
+    "    return 'supervisor_seal_proposal_campaign_instance_id_mismatch'",
+    "expected = dict(proposal_state)",
+    "expected['final_status'] = 'CERTIFIED'",
+    "expected['declare_mode'] = 'strict'",
+    "final_result = proposal_state.get('final_result')",
+    "if not isinstance(final_result, Mapping):\n"
+    "    return 'supervisor_seal_proposal_final_result_invalid'",
+    "expected_final_result = dict(final_result)",
+    "expected_final_result['search_status'] = 'CERTIFIED'",
+    "expected['final_result'] = expected_final_result",
+    "expected.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)",
+    "expected[SUPERVISOR_SEAL_STATE_KEY] = dict(seal_record)",
+    "certified_stop = certified_state.get('last_stop_reason')",
+    "if not isinstance(certified_stop, Mapping):\n"
+    "    return 'supervisor_seal_certified_stop_invalid'",
+    "try:\n"
+    "    stop_timestamp = _strict_timestamp(certified_stop.get('updated_at'))\n"
+    "    updated_at = _strict_timestamp(certified_state.get('updated_at'))\n"
+    "except Exception:\n"
+    "    return 'supervisor_seal_certified_updated_at_invalid'",
+    "expected['last_stop_reason'] = {"
+    "'reason': TERMINAL_CERTIFIED_REASON, "
+    "'status': 'CERTIFIED', "
+    "'updated_at': stop_timestamp"
+    "}",
+    "expected['updated_at'] = updated_at",
+    "try:\n"
+    "    if _canonical_bytes(expected) != _canonical_bytes(certified_state):\n"
+    "        return 'supervisor_seal_transition_mismatch'\n"
+    "except Exception:\n"
+    "    return 'supervisor_seal_transition_invalid'",
+    "return None",
+)
+_PR2_EXACT_SUPERVISOR_TRANSITION_BODY = (
+    "if str(proposal_state.get('final_status')) != CANDIDATE_PROPOSED_STATUS:\n"
+    "    return 'supervisor_seal_proposal_status_invalid'",
+    "if SUPERVISOR_SEAL_STATE_KEY in proposal_state:\n"
+    "    return 'supervisor_seal_proposal_already_sealed'",
+    "proposal_record = proposal_state.get(SUPERVISOR_PROPOSAL_STATE_KEY)",
+    "proposal_violation = _proposal_state_violation("
+    "proposal_record, "
+    "expected_campaign_instance_id=str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY))"
+    ")",
+    "if proposal_violation is not None:\n"
+    "    return f'supervisor_seal_{proposal_violation}'",
+    "if not isinstance(proposal_record, Mapping):\n"
+    "    return 'supervisor_seal_supervisor_proposal_invalid'",
+    "if str(proposal_record.get('run_id')) != str(seal_record.get('proposal_run_id')):\n"
+    "    return 'supervisor_seal_proposal_run_id_mismatch'",
+    "if str(proposal_state.get(CAMPAIGN_INSTANCE_ID_KEY)) != "
+    "str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY)):\n"
+    "    return 'supervisor_seal_proposal_campaign_instance_id_mismatch'",
+    "expected = dict(proposal_state)",
+    "expected['final_status'] = 'CERTIFIED'",
+    "expected['declare_mode'] = 'strict'",
+    "expected_final_result = _final_result_certified_transition(proposal_state.get('final_result'))",
+    "if expected_final_result is None:\n"
+    "    return 'supervisor_seal_proposal_final_result_invalid'",
+    "expected['final_result'] = expected_final_result",
+    "expected.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)",
+    "expected[SUPERVISOR_SEAL_STATE_KEY] = dict(seal_record)",
+    "certified_stop = certified_state.get('last_stop_reason')",
+    "if not isinstance(certified_stop, Mapping):\n"
+    "    return 'supervisor_seal_certified_stop_invalid'",
+    "certified_stop_timestamp = certified_stop.get('updated_at')",
+    "try:\n"
+    "    _strict_resume_timestamp(certified_stop_timestamp, 'last_stop_reason.updated_at')\n"
+    "except Exception:\n"
+    "    return 'supervisor_seal_certified_stop_timestamp_invalid'",
+    "expected['last_stop_reason'] = {"
+    "'reason': TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, "
+    "'status': 'CERTIFIED', "
+    "'updated_at': str(certified_stop_timestamp)"
+    "}",
+    "certified_updated_at = certified_state.get('updated_at')",
+    "try:\n"
+    "    _strict_resume_timestamp(certified_updated_at, 'updated_at')\n"
+    "except Exception:\n"
+    "    return 'supervisor_seal_certified_updated_at_invalid'",
+    "expected['updated_at'] = str(certified_updated_at)",
+    "try:\n"
+    "    if canonical_state_bytes_for_fixed_witness(expected) != "
+    "canonical_state_bytes_for_fixed_witness(certified_state):\n"
+    "        return 'supervisor_seal_transition_mismatch'\n"
+    "except Exception:\n"
+    "    return 'supervisor_seal_transition_invalid'",
+    "return None",
+)
+_PR2_L0_POSTWRITE_BODY = (
+    "if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n"
+    "    return 'supervisor_seal_certified_state_sha256_mismatch'",
+    "if str(disk_state.get('declare_mode')) != 'strict':\n"
+    "    return 'postwrite_declare_mode_not_strict'",
+    "if _canonical_digest(disk_state.get('final_result')) != "
+    "expected_domain.get('final_result_digest'):\n"
+    "    return 'postwrite_final_result_digest_mismatch'",
+    "if _canonical_digest(disk_state.get('terminal_frontier_evidence')) != "
+    "expected_domain.get('terminal_frontier_evidence_digest'):\n"
+    "    return 'postwrite_terminal_frontier_evidence_digest_mismatch'",
+    "candidates = disk_state.get('candidates')",
+    "if not isinstance(candidates, Mapping):\n"
+    "    return 'postwrite_candidate_records_invalid'",
+    "if _canonical_digest(_stable_fixed_witness_candidate_records_l0(candidates)) != "
+    "expected_domain.get('candidate_records_digest'):\n"
+    "    return 'postwrite_candidate_records_digest_mismatch'",
+    "return _supervisor_seal_state_violation_l0("
+    "disk_state.get(SUPERVISOR_SEAL_STATE_KEY), state=disk_state"
+    ")",
+)
 
 
 def _check_top_level_prefix_closed_world(
@@ -3434,7 +3831,7 @@ def _check_top_level_prefix_closed_world(
     *,
     expected_prefix: Sequence[str],
     label: str,
-) -> list[str]:
+    ) -> list[str]:
     prefix: list[ast.stmt] = []
     for stmt in function.body:
         if stmt is anchor:
@@ -3456,16 +3853,42 @@ def _check_top_level_prefix_closed_world(
     return errors
 
 
+def _check_top_level_body_closed_world(
+    function: ast.FunctionDef,
+    *,
+    expected_body: Sequence[str],
+    label: str,
+) -> list[str]:
+    if len(function.body) != len(expected_body):
+        return [
+            f"{label} must match the canonical top-level prefix/body "
+            "through its final return"
+        ]
+    errors: list[str] = []
+    for idx, (stmt, expected_source) in enumerate(zip(function.body, expected_body), start=1):
+        if not _stmt_matches_source(stmt, expected_source):
+            errors.append(
+                f"{label} canonical top-level prefix/body statement {idx} drifted"
+            )
+    return errors
+
+
 def _check_supervisor_transition_strict_prefix_closed_world(
     function: ast.FunctionDef,
     *,
     strict_assignment: ast.Assign,
     label: str,
 ) -> list[str]:
-    return _check_top_level_prefix_closed_world(
+    del strict_assignment
+    if function.name == "_supervisor_certified_transition_violation_l0":
+        expected_body = _PR2_L0_SUPERVISOR_TRANSITION_BODY
+    elif function.name == "_supervisor_certified_transition_violation":
+        expected_body = _PR2_EXACT_SUPERVISOR_TRANSITION_BODY
+    else:
+        return [f"{label} has no pinned full-body supervisor transition contract"]
+    return _check_top_level_body_closed_world(
         function,
-        strict_assignment,
-        expected_prefix=_PR2_SUPERVISOR_TRANSITION_STRICT_PREFIX,
+        expected_body=expected_body,
         label=label,
     )
 
@@ -3476,10 +3899,10 @@ def _check_postwrite_strict_guard_prefix_closed_world(
     guard: ast.If,
     label: str,
 ) -> list[str]:
-    return _check_top_level_prefix_closed_world(
+    del guard
+    return _check_top_level_body_closed_world(
         function,
-        guard,
-        expected_prefix=_PR2_L0_POSTWRITE_STRICT_GUARD_PREFIX,
+        expected_body=_PR2_L0_POSTWRITE_BODY,
         label=label,
     )
 
@@ -3518,9 +3941,17 @@ def _dynamic_namespace_mapping_name(node: ast.AST) -> str | None:
 
 def _expr_may_reference_mapping(node: ast.AST, mapping_names: frozenset[str]) -> bool:
     if isinstance(node, ast.Name):
-        return node.id in mapping_names
+        return node.id in mapping_names or node.id.startswith("proposal_")
     dynamic_name = _dynamic_namespace_mapping_name(node)
-    return dynamic_name in mapping_names
+    if dynamic_name in mapping_names:
+        return True
+    if isinstance(node, ast.Attribute):
+        return _expr_may_reference_mapping(node.value, mapping_names)
+    if isinstance(node, ast.Subscript):
+        return _expr_may_reference_mapping(node.value, mapping_names)
+    if isinstance(node, ast.Call) and _call_func_name(node) == "type":
+        return any(_expr_may_reference_mapping(arg, mapping_names) for arg in node.args)
+    return False
 
 
 def _subscript_constant_slot_for_names(node: ast.AST, base_names: frozenset[str]) -> tuple[str, str] | None:
@@ -3569,6 +4000,9 @@ def _call_may_clobber_mapping_slot(
             "dict.__setitem__",
             "dict.__delitem__",
             "dict.__ior__",
+            "type.__setitem__",
+            "type.__delitem__",
+            "type.__ior__",
             "operator.setitem",
             "operator.ior",
         }:
@@ -3816,6 +4250,80 @@ def _target_has_attribute_write_to_name(target: ast.AST, names: frozenset[str]) 
     return False
 
 
+def _target_clobbers_watched_mapping(target: ast.AST, names: frozenset[str]) -> bool:
+    if isinstance(target, ast.Subscript) and _expr_may_reference_mapping(target.value, names):
+        return True
+    return _target_has_attribute_write_to_name(target, names)
+
+
+def _assigns_response_copy_from_child_verdict(stmt: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"response"}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "dict"
+        and len(stmt.value.args) == 1
+        and not stmt.value.keywords
+        and _expr_matches_source(stmt.value.args[0], "child_verdict.response")
+    )
+
+
+def _target_is_response_l0_seal_assignment(target: ast.AST) -> bool:
+    return (
+        isinstance(target, ast.Subscript)
+        and _is_name(target.value, "response")
+        and _is_constant(target.slice, "l0_seal")
+    )
+
+
+def _call_references_watched_l0_data(call: ast.Call, names: frozenset[str]) -> bool:
+    if _expr_may_reference_mapping(call.func, names):
+        return True
+    return any(_expr_may_reference_mapping(arg, names) for arg in call.args) or any(
+        _expr_may_reference_mapping(keyword.value, names) for keyword in call.keywords
+    )
+
+
+def _call_mutates_watched_l0_data(call: ast.Call, names: frozenset[str]) -> bool:
+    call_name = _call_func_name(call)
+    if (
+        call_name in {"setattr", "delattr", "vars"}
+        and _call_references_watched_l0_data(call, names)
+    ):
+        return True
+    if (
+        call_name in {"dict.update", "dict.__setitem__", "dict.__delitem__", "operator.setitem"}
+        and call.args
+        and _expr_may_reference_mapping(call.args[0], names)
+    ):
+        return True
+    if not isinstance(call.func, ast.Attribute):
+        return False
+    if call.func.attr in _PR2_MUTATING_MAPPING_METHODS and _expr_may_reference_mapping(
+        call.func.value,
+        names,
+    ):
+        return True
+    if (
+        call.func.attr in _PR2_MUTATING_MAPPING_METHODS
+        and call.args
+        and _expr_may_reference_mapping(call.args[0], names)
+    ):
+        return True
+    if (
+        call.func.attr.startswith("__")
+        and call.func.attr.endswith("__")
+        and _call_references_watched_l0_data(call, names)
+    ):
+        return True
+    if isinstance(call.func.value, ast.Call) and _call_func_name(call.func.value) == "getattr":
+        getattr_call = call.func.value
+        if getattr_call.args and _expr_may_reference_mapping(getattr_call.args[0], names):
+            return True
+    return False
+
+
 def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
     errors: list[str] = []
     assignments = [
@@ -3830,8 +4338,9 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
         )
         return errors
     assign_stmt = assignments[0]
-    watched_names = frozenset({"child_verdict", "domain", "child_payload"})
+    watched_names: set[str] = {"child_verdict", "child_payload"}
     domain_assignment_seen = False
+    response_copy_seen = False
     ordered_nodes = sorted(
         (node for node in ast.walk(l0_seal_fn) if hasattr(node, "lineno")),
         key=lambda node: (
@@ -3855,9 +4364,17 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
             if domain_assignment_seen:
                 errors.append("PR2 L0 supervisor seal must not rebind domain after child verdict validation")
             domain_assignment_seen = True
+            watched_names.add("domain")
+            continue
+        if _assigns_response_copy_from_child_verdict(stmt):
+            if response_copy_seen:
+                errors.append("PR2 L0 supervisor seal must not rebind response after child verdict validation")
+            response_copy_seen = True
+            watched_names.add("response")
             continue
         if isinstance(stmt, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
             targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
+            frozen_watched_names = frozenset(watched_names)
             for target in targets:
                 bound_names = _target_bound_names(target)
                 for name in sorted(bound_names):
@@ -3869,12 +4386,21 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
                             "PR2 L0 supervisor seal must not rebind child/domain/proposal data "
                             f"after child_verdict: {name}"
                         )
-                if _target_has_attribute_write_to_name(target, watched_names):
+                    elif isinstance(stmt, ast.Assign) and _expr_may_reference_mapping(
+                        stmt.value,
+                        frozen_watched_names,
+                    ):
+                        watched_names.add(name)
+                if (
+                    _target_clobbers_watched_mapping(target, frozen_watched_names)
+                    and not _target_is_response_l0_seal_assignment(target)
+                ):
                     errors.append(
-                        "PR2 L0 supervisor seal must not write attributes on child/domain data "
+                        "PR2 L0 supervisor seal must not write child/domain/proposal mapping data "
                         "after child_verdict"
                     )
         elif isinstance(stmt, ast.Delete):
+            frozen_watched_names = frozenset(watched_names)
             for target in stmt.targets:
                 bound_names = _target_bound_names(target)
                 for name in sorted(bound_names):
@@ -3886,14 +4412,19 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
                             "PR2 L0 supervisor seal must not delete child/domain/proposal data "
                             f"after child_verdict: {name}"
                         )
-                if _target_has_attribute_write_to_name(target, watched_names):
+                if _target_clobbers_watched_mapping(target, frozen_watched_names):
                     errors.append(
-                        "PR2 L0 supervisor seal must not delete attributes on child/domain data "
+                        "PR2 L0 supervisor seal must not delete child/domain/proposal mapping data "
                         "after child_verdict"
                     )
         elif isinstance(stmt, (ast.Return, ast.Raise, ast.If, ast.For, ast.AsyncFor, ast.With, ast.Try)):
             continue
         elif isinstance(stmt, ast.Call):
+            if _call_mutates_watched_l0_data(stmt, frozenset(watched_names)):
+                errors.append(
+                    "PR2 L0 supervisor seal must not call a mutator/reflection hook "
+                    "on child/domain/proposal data after child_verdict"
+                )
             continue
         else:
             continue
@@ -4089,6 +4620,14 @@ def _check_candidate_sink_replay_contract(
             errors.append(f"isolated child proof validator is missing binding: {token}")
 
     exact_tree = _parse_python(exact_campaign_path)
+    errors.extend(
+        _check_unique_top_level_bindings(
+            exact_tree,
+            frozenset({"_supervisor_certified_transition_violation"}),
+            path=exact_campaign_path,
+            label="ExactCampaign supervisor runtime",
+        )
+    )
     exact_source = exact_campaign_path.read_text(encoding="utf-8")
     terminal_wrapper_fn = _function_def(
         exact_tree,
@@ -4249,6 +4788,20 @@ def _check_candidate_sink_replay_contract(
         errors.append("supervisor certified checkpoint writer must not be exposed as a method/helper")
 
     l0_tree = _parse_python(pr2_l0_path)
+    errors.extend(
+        _check_unique_top_level_bindings(
+            l0_tree,
+            frozenset(
+                {
+                    "run_l0_supervisor_seal",
+                    "_postwrite_state_violation",
+                    "_supervisor_certified_transition_violation_l0",
+                }
+            ),
+            path=pr2_l0_path,
+            label="PR2 L0 supervisor runtime",
+        )
+    )
     l0_seal_fn = _function_def(
         l0_tree,
         "run_l0_supervisor_seal",

@@ -218,11 +218,14 @@ def _candidate_sink_replay_errors_for_sources(
         encoding="utf-8",
         newline="\n",
     )
-    return check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
-        exact_campaign_path=exact_path,
-        pr2_l0_path=l0_path,
-        pr2_true_child_path=child_path,
-    )
+    try:
+        return check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+            exact_campaign_path=exact_path,
+            pr2_l0_path=l0_path,
+            pr2_true_child_path=child_path,
+        )
+    except check_p1_2_proof_obligations.CheckError as exc:
+        return [str(exc)]
 
 
 def _move_child_final_status_after_precheck(source: str) -> str:
@@ -668,11 +671,29 @@ def _disable_pr2_5_closed_world_guards(monkeypatch: pytest.MonkeyPatch) -> None:
     def _legacy_accepts(*_args: object, **_kwargs: object) -> list[str]:
         return []
 
+    def _legacy_function_def(
+        tree: ast.Module,
+        name: str,
+        *,
+        path: Path = check_p1_2_proof_obligations.LIFECYCLE_PATH,
+    ) -> ast.FunctionDef:
+        del path
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef) and node.name == name:
+                return node
+        raise check_p1_2_proof_obligations.CheckError(f"missing function {name}")
+
     for helper_name in (
         "_check_child_module_toplevel_closed_world",
         "_check_true_verifier_child_module_closed_world",
         "_check_true_verifier_child_closed_world",
+        "_check_true_verifier_child_domain_elevation_window",
         "_check_true_verifier_child_return_dict_closed_world",
+        "_check_function_import_time_shape",
+        "_check_child_runtime_function_closed_world",
+        "_check_child_class_closed_world",
+        "_check_unique_top_level_bindings",
+        "_check_top_level_body_closed_world",
         "_check_child_unique_final_return",
         "_check_child_precheck_call_exact",
         "_check_supervisor_transition_strict_prefix_closed_world",
@@ -687,6 +708,7 @@ def _disable_pr2_5_closed_world_guards(monkeypatch: pytest.MonkeyPatch) -> None:
         "_return_domain_uses_canonical_names",
         lambda _stmt: True,
     )
+    monkeypatch.setattr(check_p1_2_proof_obligations, "_function_def", _legacy_function_def)
 
 
 def _disable_pr2_5_g6_prefix_pins(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -891,6 +913,160 @@ def _l0_postwrite_starts_with_true_return_branch(source: str) -> str:
     )
 
 
+def _child_duplicate_verify_supervisor_domain(source: str) -> str:
+    return (
+        source
+        + "\n\ndef _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n"
+        + "    del payload, nonce\n"
+        + '    return {"schema_version": DOMAIN_SCHEMA_VERSION}\n'
+    )
+
+
+def _l0_duplicate_run_l0_supervisor_seal(source: str) -> str:
+    return (
+        source
+        + "\n\ndef run_l0_supervisor_seal(request: SupervisorSealRequest) -> L0MicroVerdict:\n"
+        + "    del request\n"
+        + "    return _reject(\"\", \"forged_duplicate\")\n"
+    )
+
+
+def _exact_duplicate_transition_helper(source: str) -> str:
+    return (
+        source
+        + "\n\ndef _supervisor_certified_transition_violation(\n"
+        + "    proposal_state: Mapping[str, Any],\n"
+        + "    certified_state: Mapping[str, Any],\n"
+        + "    *,\n"
+        + "    seal_record: Mapping[str, Any],\n"
+        + ") -> str | None:\n"
+        + "    del proposal_state, certified_state, seal_record\n"
+        + "    return None\n"
+    )
+
+
+def _child_decorated_verify_supervisor_domain(source: str) -> str:
+    return _replace_once(
+        source,
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
+        "@verify\n"
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
+    )
+
+
+def _child_top_level_rebinds_verify(source: str) -> str:
+    return source + "\n\nverify = _verify_supervisor_domain\n"
+
+
+def _child_helper_code_swap(source: str) -> str:
+    return _replace_once(
+        source,
+        "def _materialize_import_default_artifacts(project_root: Path) -> None:\n"
+        "    del project_root\n",
+        "def _materialize_import_default_artifacts(project_root: Path) -> None:\n"
+        "    del project_root\n"
+        "    _canonical_digest.__code__ = _json_copy.__code__\n",
+    )
+
+
+def _child_shadows_getattr(source: str) -> str:
+    return _insert_child_before_proposal_evidence(source, "    getattr = _fake_getattr\n")
+
+
+def _child_class_body_side_effect(source: str) -> str:
+    return _replace_once(
+        source,
+        "class _StdlibOnlyPathFinder:\n"
+        "    def __init__(self, stdlib_paths: list[Path]) -> None:\n",
+        "class _StdlibOnlyPathFinder:\n"
+        "    injected = _evil_import_time_call()\n"
+        "    def __init__(self, stdlib_paths: list[Path]) -> None:\n",
+    )
+
+
+def _l0_transition_returns_after_strict(source: str) -> str:
+    return _replace_once(
+        source,
+        '    expected["declare_mode"] = "strict"\n',
+        '    expected["declare_mode"] = "strict"\n'
+        "    return None\n",
+    )
+
+
+def _exact_transition_returns_after_strict(source: str) -> str:
+    return _replace_once(
+        source,
+        '    expected["declare_mode"] = "strict"\n',
+        '    expected["declare_mode"] = "strict"\n'
+        "    return None\n",
+    )
+
+
+def _l0_postwrite_returns_after_strict_guard(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if str(disk_state.get("declare_mode")) != "strict":\n'
+        '        return "postwrite_declare_mode_not_strict"\n',
+        '    if str(disk_state.get("declare_mode")) != "strict":\n'
+        '        return "postwrite_declare_mode_not_strict"\n'
+        "    return None\n",
+    )
+
+
+def _l0_object_setattr_forges_child_verdict(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if child_verdict.status != SEALED:\n",
+        '        object.__setattr__(child_verdict, "response", {"domain": {}})\n'
+        "        if child_verdict.status != SEALED:\n",
+    )
+
+
+def _l0_domain_update_after_assignment(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        '        domain.update({"final_result_digest": "0" * 64})\n',
+    )
+
+
+def _l0_child_verdict_response_update(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        '        child_verdict.response.update({"domain": {}})\n',
+    )
+
+
+def _l0_child_payload_update_after_verdict(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if child_verdict.status != SEALED:\n",
+        '        child_payload.update({"proposal_final_result_digest": "0" * 64})\n'
+        "        if child_verdict.status != SEALED:\n",
+    )
+
+
+def _l0_type_setitem_domain(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        '        type(domain).__setitem__(domain, "candidate_records_digest", "0" * 64)\n',
+    )
+
+
+def _l0_class_setitem_domain(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        '        domain.__class__.__setitem__(domain, "candidate_records_digest", "0" * 64)\n',
+    )
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
@@ -910,6 +1086,20 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
         ("child", _child_return_tcb_side_effect_call, "final return domain key tcb must match pinned expression"),
         ("child", _child_precheck_extra_kwarg, "terminal precheck call must be exactly"),
         ("l0", _l0_child_verdict_forged_rebind, "must not rebind child/domain/proposal data"),
+        ("child", _child_duplicate_verify_supervisor_domain, "must be unique"),
+        ("l0", _l0_duplicate_run_l0_supervisor_seal, "must be unique"),
+        ("exact", _exact_duplicate_transition_helper, "must be unique"),
+        ("child", _child_decorated_verify_supervisor_domain, "must not use decorators"),
+        ("child", _child_top_level_rebinds_verify, "must be unique"),
+        ("child", _child_helper_code_swap, "dunder attribute __code__"),
+        ("child", _child_shadows_getattr, "must not shadow/rebind getattr"),
+        ("child", _child_class_body_side_effect, "body contains import-time executable statement"),
+        ("l0", _l0_object_setattr_forges_child_verdict, "mutator/reflection hook"),
+        ("l0", _l0_domain_update_after_assignment, "mutator/reflection hook"),
+        ("l0", _l0_child_verdict_response_update, "mutator/reflection hook"),
+        ("l0", _l0_child_payload_update_after_verdict, "mutator/reflection hook"),
+        ("l0", _l0_type_setitem_domain, "mutator/reflection hook"),
+        ("l0", _l0_class_setitem_domain, "mutator/reflection hook"),
         ("l0", _l0_transition_starts_with_return, "unconditional top-level Return"),
         ("exact", _exact_transition_starts_with_return, "unconditional top-level Return"),
         ("l0", _l0_postwrite_starts_with_return, "unconditional top-level Return"),
@@ -925,6 +1115,20 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
         "g4-child-return-unpinned-side-effect",
         "g5-child-precheck-extra-kwarg",
         "g7-l0-child-verdict-forged-rebind",
+        "round5-child-duplicate-domain-helper",
+        "round5-l0-duplicate-supervisor-seal",
+        "round5-exact-duplicate-transition-helper",
+        "round5-child-decorator-wrapper",
+        "round5-child-rebind-verify",
+        "round5-child-helper-code-swap",
+        "round5-child-shadow-getattr",
+        "round5-child-class-body-side-effect",
+        "round5-g7-object-setattr-child-verdict",
+        "round5-g7-domain-update",
+        "round5-g7-child-verdict-response-update",
+        "round5-g7-child-payload-update",
+        "round5-g7-type-setitem-domain",
+        "round5-g7-class-setitem-domain",
         "g6-l0-transition-dead-strict-assignment",
         "g6-exact-transition-dead-strict-assignment",
         "g6-l0-postwrite-dead-strict-guard",
@@ -997,11 +1201,29 @@ def test_p1_2_checker_rejects_pr2_5_closed_world_reachability_bypasses(
             _l0_postwrite_starts_with_true_return_branch,
             "canonical top-level prefix",
         ),
+        (
+            "l0",
+            _l0_transition_returns_after_strict,
+            "canonical top-level prefix/body",
+        ),
+        (
+            "exact",
+            _exact_transition_returns_after_strict,
+            "canonical top-level prefix/body",
+        ),
+        (
+            "l0",
+            _l0_postwrite_returns_after_strict_guard,
+            "canonical top-level prefix/body",
+        ),
     ],
     ids=[
         "g6-l0-transition-constant-true-early-return",
         "g6-exact-transition-constant-true-early-return",
         "g6-l0-postwrite-constant-true-early-return",
+        "round5-g6-l0-transition-post-anchor-return",
+        "round5-g6-exact-transition-post-anchor-return",
+        "round5-g6-l0-postwrite-post-anchor-return",
     ],
 )
 def test_p1_2_checker_rejects_pr2_5_g6_constant_true_prefix_bypasses(
