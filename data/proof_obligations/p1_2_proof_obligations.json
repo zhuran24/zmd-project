@@ -909,7 +909,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "03eb339593d5bb9439ba9aba7556543a8bc96119799539825ee0be0c9b3eea9c",
+        "source_sha256": "1758773b2232219b42230da1da06c61d9140f94c745997e0e1ff63c3926c6d2a",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

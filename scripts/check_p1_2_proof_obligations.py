@@ -2350,6 +2350,11 @@ def _expr_matches_source(node: ast.AST, source: str) -> bool:
     return _ast_shape_equal(node, ast.parse(source, mode="eval").body)
 
 
+def _stmt_matches_source(node: ast.AST, source: str) -> bool:
+    parsed = ast.parse(source).body
+    return len(parsed) == 1 and _ast_shape_equal(node, parsed[0])
+
+
 def _call_func_name(call: ast.Call) -> str | None:
     func = call.func
     if isinstance(func, ast.Name):
@@ -3395,6 +3400,90 @@ def _check_no_direct_top_level_exit_before_node(
     return errors
 
 
+_PR2_SUPERVISOR_TRANSITION_STRICT_PREFIX = (
+    'if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n'
+    '    return "supervisor_seal_proposal_status_invalid"',
+    "if SUPERVISOR_SEAL_STATE_KEY in proposal_state:\n"
+    '    return "supervisor_seal_proposal_already_sealed"',
+    "proposal_record = proposal_state.get(SUPERVISOR_PROPOSAL_STATE_KEY)",
+    "proposal_violation = _proposal_state_violation("
+    "proposal_record, "
+    "expected_campaign_instance_id=str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY))"
+    ")",
+    "if proposal_violation is not None:\n"
+    '    return f"supervisor_seal_{proposal_violation}"',
+    "if not isinstance(proposal_record, Mapping):\n"
+    '    return "supervisor_seal_supervisor_proposal_invalid"',
+    'if str(proposal_record.get("run_id")) != str(seal_record.get("proposal_run_id")):\n'
+    '    return "supervisor_seal_proposal_run_id_mismatch"',
+    "if str(proposal_state.get(CAMPAIGN_INSTANCE_ID_KEY)) != "
+    "str(seal_record.get(CAMPAIGN_INSTANCE_ID_KEY)):\n"
+    '    return "supervisor_seal_proposal_campaign_instance_id_mismatch"',
+    "expected = dict(proposal_state)",
+    'expected["final_status"] = "CERTIFIED"',
+)
+_PR2_L0_POSTWRITE_STRICT_GUARD_PREFIX = (
+    "if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n"
+    '    return "supervisor_seal_certified_state_sha256_mismatch"',
+)
+
+
+def _check_top_level_prefix_closed_world(
+    function: ast.FunctionDef,
+    anchor: ast.AST,
+    *,
+    expected_prefix: Sequence[str],
+    label: str,
+) -> list[str]:
+    prefix: list[ast.stmt] = []
+    for stmt in function.body:
+        if stmt is anchor:
+            break
+        prefix.append(stmt)
+    else:
+        return [f"{label} pinned live statement must be a top-level statement"]
+    if len(prefix) != len(expected_prefix):
+        return [
+            f"{label} must have the canonical top-level prefix before its pinned live statement"
+        ]
+    errors: list[str] = []
+    for idx, (stmt, expected_source) in enumerate(zip(prefix, expected_prefix), start=1):
+        if not _stmt_matches_source(stmt, expected_source):
+            errors.append(
+                f"{label} canonical top-level prefix statement {idx} drifted before "
+                "its pinned live statement"
+            )
+    return errors
+
+
+def _check_supervisor_transition_strict_prefix_closed_world(
+    function: ast.FunctionDef,
+    *,
+    strict_assignment: ast.Assign,
+    label: str,
+) -> list[str]:
+    return _check_top_level_prefix_closed_world(
+        function,
+        strict_assignment,
+        expected_prefix=_PR2_SUPERVISOR_TRANSITION_STRICT_PREFIX,
+        label=label,
+    )
+
+
+def _check_postwrite_strict_guard_prefix_closed_world(
+    function: ast.FunctionDef,
+    *,
+    guard: ast.If,
+    label: str,
+) -> list[str]:
+    return _check_top_level_prefix_closed_world(
+        function,
+        guard,
+        expected_prefix=_PR2_L0_POSTWRITE_STRICT_GUARD_PREFIX,
+        label=label,
+    )
+
+
 def _call_first_arg_is_name(call: ast.Call, name: str) -> bool:
     return bool(call.args and _is_name(call.args[0], name))
 
@@ -3526,6 +3615,14 @@ def _check_literal_strict_slot_assignment(
     if not _is_constant(assignment.value, "strict"):
         errors.append(f'{label} must assign literal "strict" to {mapping_name}["{slot}"]')
     if require_live_top_level:
+        if mapping_name == "expected" and slot == "declare_mode":
+            errors.extend(
+                _check_supervisor_transition_strict_prefix_closed_world(
+                    function,
+                    strict_assignment=assignment,
+                    label=label,
+                )
+            )
         errors.extend(
             _check_no_direct_top_level_exit_before_node(
                 function,
@@ -3643,6 +3740,10 @@ def _check_live_top_level_postwrite_guard(function: ast.FunctionDef) -> list[str
     return _check_no_direct_top_level_exit_before_node(
         function,
         guards[0],
+        label="PR2 L0 postwrite validator",
+    ) + _check_postwrite_strict_guard_prefix_closed_world(
+        function,
+        guard=guards[0],
         label="PR2 L0 postwrite validator",
     )
 

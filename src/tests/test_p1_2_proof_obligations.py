@@ -675,6 +675,8 @@ def _disable_pr2_5_closed_world_guards(monkeypatch: pytest.MonkeyPatch) -> None:
         "_check_true_verifier_child_return_dict_closed_world",
         "_check_child_unique_final_return",
         "_check_child_precheck_call_exact",
+        "_check_supervisor_transition_strict_prefix_closed_world",
+        "_check_postwrite_strict_guard_prefix_closed_world",
         "_check_no_direct_top_level_exit_before_node",
         "_check_live_top_level_postwrite_guard",
         "_check_l0_child_verdict_dataflow",
@@ -685,6 +687,17 @@ def _disable_pr2_5_closed_world_guards(monkeypatch: pytest.MonkeyPatch) -> None:
         "_return_domain_uses_canonical_names",
         lambda _stmt: True,
     )
+
+
+def _disable_pr2_5_g6_prefix_pins(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _legacy_accepts(*_args: object, **_kwargs: object) -> list[str]:
+        return []
+
+    for helper_name in (
+        "_check_supervisor_transition_strict_prefix_closed_world",
+        "_check_postwrite_strict_guard_prefix_closed_world",
+    ):
+        monkeypatch.setattr(check_p1_2_proof_obligations, helper_name, _legacy_accepts)
 
 
 def _child_early_return_before_precheck(source: str) -> str:
@@ -830,6 +843,16 @@ def _l0_transition_starts_with_return(source: str) -> str:
     )
 
 
+def _l0_transition_starts_with_true_return_branch(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+        "    if True:\n"
+        "        return None\n"
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+    )
+
+
 def _exact_transition_starts_with_return(source: str) -> str:
     return _replace_once(
         source,
@@ -839,11 +862,31 @@ def _exact_transition_starts_with_return(source: str) -> str:
     )
 
 
+def _exact_transition_starts_with_true_return_branch(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+        "    if True:\n"
+        "        return None\n"
+        '    if str(proposal_state.get("final_status")) != CANDIDATE_PROPOSED_STATUS:\n',
+    )
+
+
 def _l0_postwrite_starts_with_return(source: str) -> str:
     return _replace_once(
         source,
         "    if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n",
         "    return None\n"
+        "    if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n",
+    )
+
+
+def _l0_postwrite_starts_with_true_return_branch(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n",
+        "    if True:\n"
+        "        return None\n"
         "    if _certified_state_payload_sha256_l0(disk_state) != expected_payload_sha:\n",
     )
 
@@ -929,6 +972,72 @@ def test_p1_2_checker_rejects_pr2_5_closed_world_reachability_bypasses(
     legacy_errors = _candidate_sink_replay_errors_for_sources(
         tmp_path,
         child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert legacy_errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "mutator", "expected_error"),
+    [
+        (
+            "l0",
+            _l0_transition_starts_with_true_return_branch,
+            "canonical top-level prefix",
+        ),
+        (
+            "exact",
+            _exact_transition_starts_with_true_return_branch,
+            "canonical top-level prefix",
+        ),
+        (
+            "l0",
+            _l0_postwrite_starts_with_true_return_branch,
+            "canonical top-level prefix",
+        ),
+    ],
+    ids=[
+        "g6-l0-transition-constant-true-early-return",
+        "g6-exact-transition-constant-true-early-return",
+        "g6-l0-postwrite-constant-true-early-return",
+    ],
+)
+def test_p1_2_checker_rejects_pr2_5_g6_constant_true_prefix_bypasses(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    source_kind: str,
+    mutator: object,
+    expected_error: str,
+) -> None:
+    assert callable(mutator)
+    base_l0 = check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    base_exact = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    l0_source = base_l0
+    exact_source = base_exact
+    if source_kind == "l0":
+        l0_source = mutator(base_l0)  # type: ignore[operator]
+    elif source_kind == "exact":
+        exact_source = mutator(base_exact)  # type: ignore[operator]
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert any(expected_error in error for error in errors), errors
+
+    _disable_pr2_5_g6_prefix_pins(monkeypatch)
+    legacy_errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
         l0_source=l0_source,
         exact_source=exact_source,
     )
