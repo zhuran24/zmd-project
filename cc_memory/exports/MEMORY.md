@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 131
+- entries: 132
 - hard edges: 159
 - pending relation suggestions: 0
 
@@ -129,6 +129,7 @@ python cc_memory/mem.py boot
 - `precompact-scope-precompact-hook-codex-hooks-json-taskstop` — 2026-06-28 precompact 判官(codex 第二遍)逮到我自审漏的 4 条 + 后续 owner 对 precompact 机制的最终拍板…
 - `precompact-skill-compact-inline-owner` — precompact skill 2026-06-28: PARTIAL/SUPERSEDED, offline 先记忆回合。
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
+- `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
 - `review-prompt-also-request-patches` — 外审提示 2026-06-26: RULE, 找全 BLOCK 后直接要补丁+根因+行号。
 - `review-prompt-request-exhaustive-coverage` — 外审提示 2026-06-23: RULE, 要全覆盖; 不用裸 STOP 造成只找一个。
