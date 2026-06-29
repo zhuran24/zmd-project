@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 141
-- hard edges: 167
+- entries: 142
+- hard edges: 170
 - pending relation suggestions: 0
 
 ## Start Here
@@ -133,11 +133,11 @@ python cc_memory/mem.py boot
 - `pr2-resume-envelope-deferred-finding` — PR2跟进:parent mint dict(authority_state)只覆盖证明字段,信封字段(created_at等)原样从producer带入未校验→过终态门但resume拒=自相矛盾CERTIFIED;非假证明;押后归#2/#3
 - `pr2b-landed-pr2-remaining-status-20260628` — PR2-b 69980b3+592ea13: LANDED 2026-06-28, SOUND; PR2余项表。
 - `precompact-a-b-compact-codex-race` — precompact A+B 2026-06-28: PARTIAL/SUPERSEDED, offline SeqWorker 适用。
-- `precompact-scope-precompact-hook-codex-hooks-json-taskstop` — 2026-06-28 precompact 判官(codex 第二遍)逮到我自审漏的 4 条 + 后续 owner 对 precompact 机制的最终拍板…
+- `precompact-flow-current-20260630` — Pre-compact(2026-06-30 重写,权威=.claude/skills/Pre-compact/SKILL.md):三阶段 记忆更新->查漏(原判官)->/compact;级联只由调用本skill驱动,单独注入记忆更新回合=只记一遍不级联(修的bug);inbox-first…
 - `precompact-skill-compact-inline-owner` — precompact skill 2026-06-28: PARTIAL/SUPERSEDED, offline 先记忆回合。
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
-- `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
+- `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 Claude PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
 - `review-cadence-narrow-iterates-defect-per-item-not-batched` — owner 问审查面越来越小=其它面不查吗;答:窄复审磨同一缺陷某角度,运行时面已证CLEAN(blob OID字节不变)+全量preflight是广回归网;每轮深对抗剥一层非缩小(round-3更深);PR2其它item各自实现完各自走codex+GPT Pro对抗审+preflight,改一块审一块合一块不堆到最后
 - `review-prompt-also-request-patches` — 外审提示 2026-06-26: RULE, 找全 BLOCK 后直接要补丁+根因+行号。

@@ -80,8 +80,10 @@ python cc_memory/mem.py boot
 - The old multi-tree Markdown/live/graph memory system is retired — do not recreate `cc_context/memory`,
   `_cc_live_memory`, or a `memory_graph` layer as live memory.
 
-This project-local `cc_memory` store is the authoritative collaboration memory for this repo; prefer it
-over any generic file-based memory prompt.
+This project-local `cc_memory` store is the **full, searchable collaboration-history store and low-friction
+write inbox** for this repo, and the live truth source for everything it holds; the complementary **active
+push** layer is `cc_memory_vnext` (below), and the two coexist by role. Prefer this `cc_memory` store over any
+generic file-based memory prompt.
 
 **Consult cc_memory before acting, not just at boot.** Before any non-trivial decision or action, if the
 topic falls in a domain cc_memory already covers (the SessionStart hook and `boot` print a live
@@ -95,8 +97,13 @@ re-litigates settled work. The covered-domain map is the entry point.
 A second, **active** memory layer alongside `cc_memory`: `cc_memory_vnext/` is a deterministic card
 compiler that **auto-injects** relevant cards every turn via SessionStart / UserPromptSubmit hooks (no
 manual `search` needed). Truth source is `cc_memory_vnext/cards/*.md`; `.index/` is a rebuildable cache.
-CLI: `python cc_memory_vnext/zmem.py {verify,build-index,context,eval}`. The old `cc_memory` SQLite store
-stays read-only and authoritative for collaboration history; this is the route-time-injection layer. See
+CLI: `python cc_memory_vnext/zmem.py {verify,build-index,context,eval}`. `cc_memory` and this layer **coexist as complementary layers — not a new-vs-old replacement**:
+`cc_memory` is the full, searchable, **still-live** history store + low-friction write inbox (pull); this is the
+curated **route-time push** layer for the few must-inject-every-turn stable facts. Whole-DB freeze/migration is
+**not** the plan. "Freezing" is **per-card**: when a memory graduates into a card here, `archive` its `cc_memory`
+source entry (status→archived; still `read`/`search`-able) so each memory has one live source and can't drift.
+New memory lands in `cc_memory` first; only must-be-pushed knowledge graduates to a card (no low-friction general
+write into vnext — authoring triggers is the quality gate). See
 `cc_memory_vnext/README.md`.
 
 - **Self-feeding maintenance discipline (every session must do this):** when the owner corrects me, or I

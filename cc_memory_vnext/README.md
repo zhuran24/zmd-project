@@ -1,7 +1,7 @@
 # cc_memory_vnext — 主动卡片记忆系统 (MVP-0)
 
 > 状态:**MVP-0 已落地 + 多轮深化**(卡数 / 金标准数**以 `zmem verify`/`eval` 为准、不硬编码防漂移**;三硬类 StrictHitRate=100% 纯脚本基线)。
-> 旧 `cc_memory/`(SQLite)是**过渡态:按条 legacy**(某条做成卡后别再更新它旧库副本防漂移),但**整库冻结只读未决**——MASTER_PLAN 写"上线即冻"、现实仍在写(本会话+分支线程都写过),待 owner/文档口径统一(详 `cards/memory-layer-authority-transition.md`)。本目录是并存的新激活层。
+> 旧 `cc_memory/`(SQLite)与本层**互补共存**(非新旧替代、整库迁移非目标):cc_memory = 全量可查历史库 + 写入收件箱(仍现役、可写),本目录 = 主动推送精选层。**"冻结"=按条 archive-on-promotion**(某条做成卡 → archive cc_memory 源条目防漂移;图枢纽条目留薄"图锚/指针节点"保边)。2026-06-30 三处文档(MASTER_PLAN/COUNCIL_FINAL_PLAN/CLAUDE.md)已对齐定调(详 `cards/memory-three-layer-coexistence-decided.md`)。本目录是并存的主动推送层。
 
 ## 1. 为什么重做(根病)
 
@@ -51,7 +51,7 @@ python cc_memory_vnext/zmem.py eval            # 跑金标准回归(StrictHitRat
 - **无 LLM、无行为日志、无 PreToolUse/PostToolUse**(MVP-0 只读编译 + 2 hook)。
 - **dense 默认关**:三硬类纯集合匹配,不依赖 dense(`--enable-dense` 是 V2 预留)。
 - **金标准防自证(red-line A)**:回归 frame 取自真实事故 / owner 纠正的**原始信号**,由**非触发规则作者**(codex 写卡 → claude 盲写 frame)构造,**禁照 scope.paths/symbols 反填** → 三硬类纯脚本 100% 不是"规则匹配自己"。
-- 旧 `cc_memory/`:**按条 legacy / 整库冻结只读未决**(非"已冻";现实仍在写,待文档口径统一——详 `cards/memory-layer-authority-transition.md`)。
+- 旧 `cc_memory/`:**与 vnext 互补共存**(全量可查库,仍现役可写);"冻结"=按条 archive-on-promotion、整库迁移非目标(2026-06-30 定调,详 `cards/memory-three-layer-coexistence-decided.md`)。
 
 ## 6. 现状指标(实时为准,不硬编码防漂移)
 

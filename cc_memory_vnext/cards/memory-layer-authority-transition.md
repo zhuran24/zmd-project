@@ -7,7 +7,7 @@ scope:
   domains: [memory-layer-authority, cc-memory-freeze]
   paths: []
   symbols: []
-status: active
+status: superseded
 priority: P1
 validity:
   until: "三处文档(MASTER_PLAN/council_B/CLAUDE.md)口径对齐 + 整库迁移真相源的决策做出之前,本义务持续 open"
@@ -36,6 +36,8 @@ provenance:
     - "本会话 owner 提问:旧 cc_memory 不是只读吗,为何还更新"
 updated_at: "2026-06-27"
 ---
+> **⚠️ 已 supersede(2026-06-30)→ `memory-three-layer-coexistence-decided`**:三处文档(MASTER_PLAN/COUNCIL_FINAL_PLAN/CLAUDE.md)已对齐、定调"互补共存 + 按条 archive-on-promotion、整库迁移非目标",本 open_obligation 的 until 条件已满足。本卡保留作历史。
+
 当前记忆是**三层并存**:① 旧 `cc_memory`(SQLite,~108 条,**仍是现役主力、还在被写**,截至 2026-06-27 主会话和分支线程仍在写入);② v-next `cards/`(主动注入层,卡数以 `zmem verify` 为准);③ harness `*.md`(跨项目 route-time 规则)。
 
 **"冻只读 / 绝不双活"的准确含义是【按条】**:某条知识一旦做成 v-next 卡,就别再去更新它在旧 cc_memory 里的那份副本(防两份漂移)——**不是整个旧库都冻了**。旧库对所有还没迁成卡的知识、项目状态记忆,仍是活的写入处。
