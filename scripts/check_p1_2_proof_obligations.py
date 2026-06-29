@@ -375,6 +375,12 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
             "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
             "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
+            "test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources",
+            "test_p1_2_checker_rejects_pr2_5_ast_pin_bypass_variants",
+            "test_l0_supervisor_seal_mints_strict_declare_mode_from_best_effort_proposal",
+            "test_l0_postwrite_state_violation_rejects_non_strict_declare_mode",
+            "test_exact_campaign_supervisor_transition_promotes_declare_mode_to_strict",
+            "test_true_verifier_child_precheck_receives_strict_certified_scratch_state",
             "test_l0_canonical_dependency_floor_manifest_missing_fails_closed",
             "test_l0_canonical_dependency_floor_manifest_drift_fails_closed",
             "test_l0_canonical_dependency_floor_manifest_current_bytes_are_pinned",
@@ -2188,6 +2194,467 @@ def _check_strong_status_write_allowlist_gate() -> list[str]:
     return []
 
 
+_PR2_CHILD_ELEVATION_SLOTS = frozenset(
+    {
+        "final_result",
+        "final_status",
+        "declare_mode",
+        "last_stop_reason",
+        "terminal_frontier_evidence",
+        "candidates",
+    }
+)
+_PR2_MUTATING_MAPPING_METHODS = frozenset(
+    {
+        "update",
+        "clear",
+        "setdefault",
+        "__setitem__",
+        "__delitem__",
+        "pop",
+        "popitem",
+    }
+)
+
+
+def _is_name(node: ast.AST, name: str) -> bool:
+    return isinstance(node, ast.Name) and node.id == name
+
+
+def _is_constant(node: ast.AST, value: object) -> bool:
+    return isinstance(node, ast.Constant) and node.value == value
+
+
+def _call_func_name(call: ast.Call) -> str | None:
+    func = call.func
+    if isinstance(func, ast.Name):
+        return func.id
+    if isinstance(func, ast.Attribute):
+        parts = [func.attr]
+        value = func.value
+        while isinstance(value, ast.Attribute):
+            parts.append(value.attr)
+            value = value.value
+        if isinstance(value, ast.Name):
+            parts.append(value.id)
+            return ".".join(reversed(parts))
+    return None
+
+
+def _subscript_constant_slot(node: ast.AST, base_name: str) -> str | None:
+    if (
+        isinstance(node, ast.Subscript)
+        and isinstance(node.value, ast.Name)
+        and node.value.id == base_name
+        and isinstance(node.slice, ast.Constant)
+        and isinstance(node.slice.value, str)
+    ):
+        return node.slice.value
+    return None
+
+
+def _target_contains_name(target: ast.AST, name: str) -> bool:
+    return any(isinstance(node, ast.Name) and node.id == name for node in ast.walk(target))
+
+
+def _assigns_name(stmt: ast.AST, name: str) -> bool:
+    if isinstance(stmt, ast.Assign):
+        return any(isinstance(target, ast.Name) and target.id == name for target in stmt.targets)
+    if isinstance(stmt, (ast.AnnAssign, ast.AugAssign)):
+        return isinstance(stmt.target, ast.Name) and stmt.target.id == name
+    if isinstance(stmt, ast.NamedExpr):
+        return isinstance(stmt.target, ast.Name) and stmt.target.id == name
+    return False
+
+
+def _is_dict_copy_from_authority_state(stmt: ast.Assign) -> bool:
+    return (
+        len(stmt.targets) == 1
+        and isinstance(stmt.targets[0], ast.Name)
+        and stmt.targets[0].id == "scratch_state"
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "dict"
+        and len(stmt.value.args) == 1
+        and _is_name(stmt.value.args[0], "authority_state")
+        and not stmt.value.keywords
+    )
+
+
+def _is_supervisor_proposal_pop(stmt: ast.AST) -> bool:
+    if not isinstance(stmt, ast.Expr) or not isinstance(stmt.value, ast.Call):
+        return False
+    call = stmt.value
+    return (
+        isinstance(call.func, ast.Attribute)
+        and call.func.attr == "pop"
+        and _is_name(call.func.value, "scratch_state")
+        and len(call.args) == 2
+        and _is_constant(call.args[0], "supervisor_proposal")
+        and _is_constant(call.args[1], None)
+        and not call.keywords
+    )
+
+
+def _last_stop_reason_terminal_dict_ok(value: ast.AST) -> bool:
+    if not isinstance(value, ast.Dict) or len(value.keys) != 2:
+        return False
+    items: dict[str, ast.AST] = {}
+    for key, item_value in zip(value.keys, value.values):
+        if not isinstance(key, ast.Constant) or not isinstance(key.value, str):
+            return False
+        items[key.value] = item_value
+    reason_value = items.get("reason")
+    status_value = items.get("status")
+    return (
+        set(items) == {"reason", "status"}
+        and isinstance(reason_value, ast.Name)
+        and reason_value.id == "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON"
+        and _is_constant(status_value, "CERTIFIED")
+    )
+
+
+def _is_precheck_assign(stmt: ast.AST) -> tuple[str, ast.Call] | None:
+    if (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and isinstance(stmt.targets[0], ast.Name)
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value)
+        == "terminal_certified_final_result_project_precheck_violation"
+    ):
+        return stmt.targets[0].id, stmt.value
+    return None
+
+
+def _if_consumes_precheck_result(stmt: ast.AST, result_name: str) -> bool:
+    if not isinstance(stmt, ast.If):
+        return False
+    test = stmt.test
+    if not (
+        isinstance(test, ast.Compare)
+        and _is_name(test.left, result_name)
+        and len(test.ops) == 1
+        and isinstance(test.ops[0], ast.IsNot)
+        and len(test.comparators) == 1
+        and _is_constant(test.comparators[0], None)
+    ):
+        return False
+    return any(isinstance(node, ast.Raise) for body_stmt in stmt.body for node in ast.walk(body_stmt))
+
+
+def _call_has_direct_name_arg(call: ast.Call, name: str) -> bool:
+    if any(_is_name(arg, name) for arg in call.args):
+        return True
+    return any(keyword.value is not None and _is_name(keyword.value, name) for keyword in call.keywords)
+
+
+def _nested_scratch_slot(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Subscript) and isinstance(node.value, ast.Subscript):
+        return _subscript_constant_slot(node.value, "scratch_state")
+    return None
+
+
+def _check_true_verifier_child_domain_elevation_window(
+    child_domain_fn: ast.FunctionDef,
+) -> list[str]:
+    errors: list[str] = []
+    body = child_domain_fn.body
+    init_positions: list[tuple[int, ast.Assign]] = []
+    precheck_positions: list[tuple[int, str, ast.Assign, ast.Call]] = []
+    for idx, stmt in enumerate(body):
+        if isinstance(stmt, ast.Assign) and _is_dict_copy_from_authority_state(stmt):
+            init_positions.append((idx, stmt))
+        precheck = _is_precheck_assign(stmt)
+        if precheck is not None:
+            result_name, call = precheck
+            assert isinstance(stmt, ast.Assign)
+            precheck_positions.append((idx, result_name, stmt, call))
+
+    init_stmt: ast.Assign | None = None
+    precheck_call: ast.Call | None = None
+    allowed_slot_assign_ids: set[int] = set()
+
+    if len(init_positions) != 1:
+        errors.append(
+            "PR2 true verifier child must have exactly one top-level "
+            "scratch_state = dict(authority_state) init"
+        )
+    else:
+        _init_idx, init_stmt = init_positions[0]
+
+    if len(precheck_positions) != 1:
+        errors.append(
+            "PR2 true verifier child must have exactly one top-level assignment from "
+            "terminal_certified_final_result_project_precheck_violation(...)"
+        )
+
+    if init_positions and precheck_positions:
+        init_idx, init_stmt = init_positions[0]
+        precheck_idx, precheck_result_name, _precheck_stmt, precheck_call = precheck_positions[0]
+        if init_idx >= precheck_idx:
+            errors.append("PR2 true verifier child scratch_state init must precede terminal precheck")
+        slot_assigns: dict[str, ast.Assign] = {}
+        pop_count = 0
+        for stmt in body[init_idx + 1 : precheck_idx]:
+            if (
+                isinstance(stmt, ast.Assign)
+                and len(stmt.targets) == 1
+                and (slot := _subscript_constant_slot(stmt.targets[0], "scratch_state"))
+                in _PR2_CHILD_ELEVATION_SLOTS
+            ):
+                if slot in slot_assigns:
+                    errors.append(
+                        f'PR2 true verifier child canonical window assigns scratch_state["{slot}"] more than once'
+                    )
+                slot_assigns[slot] = stmt
+                allowed_slot_assign_ids.add(id(stmt))
+                continue
+            if _is_supervisor_proposal_pop(stmt):
+                pop_count += 1
+                continue
+            errors.append(
+                "PR2 true verifier child canonical elevation window contains disallowed "
+                f"top-level statement at line {getattr(stmt, 'lineno', '?')}"
+            )
+        missing_slots = sorted(_PR2_CHILD_ELEVATION_SLOTS - set(slot_assigns))
+        if missing_slots:
+            errors.append(
+                "PR2 true verifier child canonical window missing scratch_state slots: "
+                + ", ".join(missing_slots)
+            )
+        if pop_count != 1:
+            errors.append(
+                'PR2 true verifier child canonical window must have exactly one '
+                'scratch_state.pop("supervisor_proposal", None)'
+            )
+        final_status = slot_assigns.get("final_status")
+        if final_status is not None and not _is_constant(final_status.value, "CERTIFIED"):
+            errors.append('PR2 true verifier child scratch_state["final_status"] must be constant "CERTIFIED"')
+        declare_mode = slot_assigns.get("declare_mode")
+        if declare_mode is not None and not _is_constant(declare_mode.value, "strict"):
+            errors.append('PR2 true verifier child scratch_state["declare_mode"] must be constant "strict"')
+        last_stop_reason = slot_assigns.get("last_stop_reason")
+        if last_stop_reason is not None and not _last_stop_reason_terminal_dict_ok(last_stop_reason.value):
+            errors.append(
+                'PR2 true verifier child scratch_state["last_stop_reason"] must be exactly '
+                '{"reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, "status": "CERTIFIED"}'
+            )
+        if not (precheck_call.args and _is_name(precheck_call.args[0], "scratch_state")):
+            errors.append("PR2 true verifier child terminal precheck must take scratch_state as its first positional arg")
+        project_root_keywords = [kw for kw in precheck_call.keywords if kw.arg == "project_root"]
+        if len(project_root_keywords) != 1 or not _is_name(project_root_keywords[0].value, "project_root"):
+            errors.append("PR2 true verifier child terminal precheck must bind project_root=project_root")
+        if not any(
+            _if_consumes_precheck_result(stmt, precheck_result_name)
+            for stmt in body[precheck_idx + 1 :]
+        ):
+            errors.append(
+                "PR2 true verifier child terminal precheck result must be consumed by "
+                f"if {precheck_result_name} is not None: raise ..."
+            )
+        for stmt in body[precheck_idx + 1 :]:
+            for node in ast.walk(stmt):
+                if _assigns_name(node, precheck_result_name):
+                    errors.append("PR2 true verifier child must not clobber the terminal precheck result")
+
+    init_id = id(init_stmt) if init_stmt is not None else None
+    precheck_call_id = id(precheck_call) if precheck_call is not None else None
+    supervisor_pop_calls = [
+        node
+        for node in ast.walk(child_domain_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "pop"
+        and _is_name(node.func.value, "scratch_state")
+        and len(node.args) == 2
+        and _is_constant(node.args[0], "supervisor_proposal")
+        and _is_constant(node.args[1], None)
+    ]
+    if len(supervisor_pop_calls) != 1:
+        errors.append(
+            'PR2 true verifier child must have exactly one full-function '
+            'scratch_state.pop("supervisor_proposal", None)'
+        )
+    shadowed_authority_names = {
+        "terminal_certified_final_result_project_precheck_violation",
+        "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
+    }
+    for node in ast.walk(child_domain_fn):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    if target.id == "scratch_state" and id(node) != init_id:
+                        errors.append("PR2 true verifier child must not rebind scratch_state")
+                    if target.id in shadowed_authority_names:
+                        errors.append(f"PR2 true verifier child must not shadow {target.id}")
+                direct_slot = _subscript_constant_slot(target, "scratch_state")
+                if direct_slot is not None and id(node) not in allowed_slot_assign_ids:
+                    errors.append(
+                        f'PR2 true verifier child has non-canonical scratch_state["{direct_slot}"] assignment'
+                    )
+                nested_slot = _nested_scratch_slot(target)
+                if nested_slot in _PR2_CHILD_ELEVATION_SLOTS:
+                    errors.append(
+                        f'PR2 true verifier child must not mutate nested scratch_state["{nested_slot}"][...]'
+                    )
+            if isinstance(node.value, ast.Name) and node.value.id == "scratch_state":
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id != "scratch_state":
+                        errors.append("PR2 true verifier child must not alias scratch_state")
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            target = node.target
+            if isinstance(target, ast.Name) and target.id in shadowed_authority_names:
+                errors.append(f"PR2 true verifier child must not shadow {target.id}")
+            if _target_contains_name(target, "scratch_state"):
+                errors.append("PR2 true verifier child must not AugAssign/AnnAssign scratch_state or its slots")
+        elif isinstance(node, ast.Delete):
+            if any(_target_contains_name(target, "scratch_state") for target in node.targets):
+                errors.append("PR2 true verifier child must not delete scratch_state or its slots")
+        elif isinstance(node, ast.NamedExpr):
+            if isinstance(node.target, ast.Name):
+                if node.target.id == "scratch_state":
+                    errors.append("PR2 true verifier child must not rebind scratch_state")
+                if node.target.id in shadowed_authority_names:
+                    errors.append(f"PR2 true verifier child must not shadow {node.target.id}")
+            if _target_contains_name(node.target, "scratch_state"):
+                errors.append("PR2 true verifier child must not mutate scratch_state with assignment expressions")
+        elif isinstance(node, (ast.For, ast.AsyncFor)):
+            if _target_contains_name(node.target, "scratch_state"):
+                errors.append("PR2 true verifier child must not bind scratch_state in a loop target")
+        elif isinstance(node, ast.With):
+            for item in node.items:
+                if item.optional_vars is not None and _target_contains_name(item.optional_vars, "scratch_state"):
+                    errors.append("PR2 true verifier child must not bind scratch_state in a with target")
+        elif isinstance(node, ast.Call):
+            if (
+                isinstance(node.func, ast.Attribute)
+                and _is_name(node.func.value, "scratch_state")
+                and node.func.attr in _PR2_MUTATING_MAPPING_METHODS
+            ):
+                if not (
+                    node.func.attr == "pop"
+                    and len(node.args) == 2
+                    and _is_constant(node.args[0], "supervisor_proposal")
+                    and _is_constant(node.args[1], None)
+                ):
+                    errors.append(
+                        f"PR2 true verifier child must not call scratch_state.{node.func.attr}(...)"
+                    )
+            if isinstance(node.func, ast.Attribute) and node.func.attr in _PR2_MUTATING_MAPPING_METHODS:
+                nested_slot = _subscript_constant_slot(node.func.value, "scratch_state")
+                if nested_slot in _PR2_CHILD_ELEVATION_SLOTS:
+                    errors.append(
+                        f'PR2 true verifier child must not call scratch_state["{nested_slot}"].{node.func.attr}(...)'
+                    )
+            if _call_has_direct_name_arg(node, "scratch_state"):
+                call_name = _call_func_name(node)
+                if not (
+                    call_name == "dict"
+                    or (
+                        call_name == "terminal_certified_final_result_project_precheck_violation"
+                        and id(node) == precheck_call_id
+                    )
+                ):
+                    errors.append(
+                        "PR2 true verifier child must not pass scratch_state to helper calls "
+                        "other than dict(...) or the terminal precheck"
+                    )
+    return errors
+
+
+def _slot_assignment_lineno(stmt: ast.Assign) -> int:
+    return int(getattr(stmt, "end_lineno", getattr(stmt, "lineno", 0)) or 0)
+
+
+def _node_starts_after(node: ast.AST, anchor: ast.AST) -> bool:
+    node_pos = (
+        int(getattr(node, "lineno", 0) or 0),
+        int(getattr(node, "col_offset", 0) or 0),
+    )
+    anchor_pos = (
+        int(getattr(anchor, "lineno", 0) or 0),
+        int(getattr(anchor, "col_offset", 0) or 0),
+    )
+    return node_pos > anchor_pos
+
+
+def _call_first_arg_is_name(call: ast.Call, name: str) -> bool:
+    return bool(call.args and _is_name(call.args[0], name))
+
+
+def _call_may_clobber_mapping_slot(call: ast.Call, mapping_name: str, slot: str) -> bool:
+    if isinstance(call.func, ast.Attribute):
+        if _is_name(call.func.value, mapping_name):
+            if call.func.attr in {"update", "clear", "setdefault", "__setitem__", "__delitem__", "popitem"}:
+                return True
+            if call.func.attr == "pop":
+                if not call.args:
+                    return True
+                if _is_constant(call.args[0], slot):
+                    return True
+                if isinstance(call.args[0], ast.Name) and call.args[0].id == "SUPERVISOR_PROPOSAL_STATE_KEY":
+                    return False
+                return not isinstance(call.args[0], ast.Constant)
+        dotted = _call_func_name(call)
+        if dotted in {"dict.update", "dict.__setitem__", "dict.__delitem__", "operator.setitem"}:
+            return _call_first_arg_is_name(call, mapping_name)
+    if _call_func_name(call) == "getattr" and _call_first_arg_is_name(call, mapping_name):
+        if len(call.args) >= 2 and isinstance(call.args[1], ast.Constant):
+            return call.args[1].value in _PR2_MUTATING_MAPPING_METHODS
+        return True
+    return False
+
+
+def _check_literal_strict_slot_assignment(
+    function: ast.FunctionDef,
+    *,
+    mapping_name: str,
+    slot: str,
+    label: str,
+) -> list[str]:
+    errors: list[str] = []
+    assignments: list[ast.Assign] = []
+    for node in ast.walk(function):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if _subscript_constant_slot(target, mapping_name) == slot:
+                    assignments.append(node)
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            if _subscript_constant_slot(node.target, mapping_name) == slot:
+                errors.append(f'{label} must not use AnnAssign/AugAssign for {mapping_name}["{slot}"]')
+        elif isinstance(node, ast.Delete):
+            for target in node.targets:
+                if _subscript_constant_slot(target, mapping_name) == slot:
+                    errors.append(f'{label} must not delete {mapping_name}["{slot}"]')
+    if len(assignments) != 1:
+        errors.append(
+            f'{label} must have exactly one AST assignment {mapping_name}["{slot}"] = "strict"'
+        )
+        return errors
+    assignment = assignments[0]
+    if not _is_constant(assignment.value, "strict"):
+        errors.append(f'{label} must assign literal "strict" to {mapping_name}["{slot}"]')
+    for node in ast.walk(function):
+        if node is assignment or not hasattr(node, "lineno"):
+            continue
+        if not _node_starts_after(node, assignment):
+            continue
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if _subscript_constant_slot(target, mapping_name) == slot:
+                    errors.append(f'{label} must not clobber {mapping_name}["{slot}"] after strict assignment')
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            if _subscript_constant_slot(node.target, mapping_name) == slot:
+                errors.append(f'{label} must not clobber {mapping_name}["{slot}"] after strict assignment')
+        elif isinstance(node, ast.Delete):
+            for target in node.targets:
+                if _subscript_constant_slot(target, mapping_name) == slot:
+                    errors.append(f'{label} must not delete {mapping_name}["{slot}"] after strict assignment')
+        elif isinstance(node, ast.Call) and _call_may_clobber_mapping_slot(node, mapping_name, slot):
+            errors.append(f'{label} must not call a mutator that can clobber {mapping_name}["{slot}"]')
+    return errors
+
+
 
 def _check_candidate_sink_replay_contract(
     *,
@@ -2198,6 +2665,8 @@ def _check_candidate_sink_replay_contract(
     delivery_manifest_path: Path = DELIVERY_MANIFEST_PATH,
     certified_surface_path: Path = CERTIFIED_SURFACE_PATH,
     test_support_path: Path = VERIFIED_PRODUCER_TEST_SUPPORT_PATH,
+    pr2_l0_path: Path = PR2_L0_MICRO_VERIFIER_PATH,
+    pr2_true_child_path: Path = PR2_L0_TRUE_VERIFIER_CHILD_PATH,
 ) -> list[str]:
     """Seal the P1.2 strong-status authority at sink-side isolated replay.
 
@@ -2530,13 +2999,13 @@ def _check_candidate_sink_replay_contract(
     if "_save_supervisor_certified_state" in exact_source:
         errors.append("supervisor certified checkpoint writer must not be exposed as a method/helper")
 
-    l0_tree = _parse_python(PR2_L0_MICRO_VERIFIER_PATH)
+    l0_tree = _parse_python(pr2_l0_path)
     l0_seal_fn = _function_def(
         l0_tree,
         "run_l0_supervisor_seal",
-        path=PR2_L0_MICRO_VERIFIER_PATH,
+        path=pr2_l0_path,
     )
-    l0_seal_source = _source_text(PR2_L0_MICRO_VERIFIER_PATH, l0_seal_fn)
+    l0_seal_source = _source_text(pr2_l0_path, l0_seal_fn)
     for required_call in (
         "_load_canonical_dependency_floor_manifest",
         "_read_regular_file_bytes",
@@ -2577,14 +3046,43 @@ def _check_candidate_sink_replay_contract(
     ):
         if token not in l0_seal_source:
             errors.append(f"PR2 L0 supervisor seal must bind and atomically validate P->Q authority: {token}")
+    errors.extend(
+        _check_literal_strict_slot_assignment(
+            l0_seal_fn,
+            mapping_name="scratch_state",
+            slot="declare_mode",
+            label="PR2 L0 supervisor durable mint",
+        )
+    )
+    l0_transition_fn = _function_def(
+        l0_tree,
+        "_supervisor_certified_transition_violation_l0",
+        path=pr2_l0_path,
+    )
+    errors.extend(
+        _check_literal_strict_slot_assignment(
+            l0_transition_fn,
+            mapping_name="expected",
+            slot="declare_mode",
+            label="PR2 L0 supervisor transition gate",
+        )
+    )
+    l0_postwrite_fn = _function_def(
+        l0_tree,
+        "_postwrite_state_violation",
+        path=pr2_l0_path,
+    )
+    l0_postwrite_source = _source_text(pr2_l0_path, l0_postwrite_fn)
+    if "postwrite_declare_mode_not_strict" not in l0_postwrite_source:
+        errors.append("PR2 L0 postwrite validator must fail closed with postwrite_declare_mode_not_strict")
 
-    child_tree = _parse_python(PR2_L0_TRUE_VERIFIER_CHILD_PATH)
+    child_tree = _parse_python(pr2_true_child_path)
     child_domain_fn = _function_def(
         child_tree,
         "_verify_supervisor_domain",
-        path=PR2_L0_TRUE_VERIFIER_CHILD_PATH,
+        path=pr2_true_child_path,
     )
-    child_domain_source = _source_text(PR2_L0_TRUE_VERIFIER_CHILD_PATH, child_domain_fn)
+    child_domain_source = _source_text(pr2_true_child_path, child_domain_fn)
     for required_call in (
         "_project_candidate_records_direct",
         "_run_fixed_witness_direct",
@@ -2614,122 +3112,13 @@ def _check_candidate_sink_replay_contract(
     ):
         if token not in child_domain_source:
             errors.append(f"PR2 true verifier child must fail closed and report bounded domain evidence: {token}")
-    # PR2 #5: structural (AST) check on top of the token-presence check above. The
-    # strict-terminal-label elevation must DOMINATE the project precheck: both
-    # scratch_state["declare_mode"]="strict" and scratch_state["last_stop_reason"]
-    # must be assigned before the terminal precheck call, and that call must run on
-    # the elevated scratch_state. This blocks a future edit that keeps the source
-    # tokens but moves the elevation after the precheck, neutralizes it, or runs the
-    # precheck on a different (un-elevated) state.
-    # PR2 #5 review hardening: the previous check was ast.walk existence + line-order,
-    # which a future reseal could keep the tokens but bypass via dead `if False:` code,
-    # a `scratch_state.update({...})` clobber, a second non-strict assignment, an
-    # arbitrary last_stop_reason dict, nested-key pollution, or running precheck on an
-    # alias. Require the canonical STRAIGHT-LINE shape instead.
-    def _scratch_terminal_slot(node: ast.AST) -> str | None:
-        if (
-            isinstance(node, ast.Subscript)
-            and isinstance(node.value, ast.Name)
-            and node.value.id == "scratch_state"
-            and isinstance(node.slice, ast.Constant)
-            and node.slice.value in ("declare_mode", "last_stop_reason")
-        ):
-            return str(node.slice.value)
-        return None
-
-    _body = child_domain_fn.body
-    declare_top: list[tuple[int, ast.Assign]] = []
-    laststop_top: list[tuple[int, ast.Assign]] = []
-    precheck_top: list[tuple[int, ast.Call]] = []
-    for _idx, _stmt in enumerate(_body):
-        if isinstance(_stmt, ast.Assign) and len(_stmt.targets) == 1:
-            _slot = _scratch_terminal_slot(_stmt.targets[0])
-            if _slot == "declare_mode":
-                declare_top.append((_idx, _stmt))
-            elif _slot == "last_stop_reason":
-                laststop_top.append((_idx, _stmt))
-            if (
-                isinstance(_stmt.value, ast.Call)
-                and isinstance(_stmt.value.func, ast.Name)
-                and _stmt.value.func.id == "terminal_certified_final_result_project_precheck_violation"
-            ):
-                precheck_top.append((_idx, _stmt.value))
-    if len(declare_top) != 1:
-        errors.append('PR2 true verifier child must have exactly one top-level scratch_state["declare_mode"]="strict" elevation')
-    else:
-        _dv = declare_top[0][1].value
-        if not (isinstance(_dv, ast.Constant) and _dv.value == "strict"):
-            errors.append('PR2 true verifier child scratch_state["declare_mode"] must be exactly the constant "strict"')
-    if len(laststop_top) != 1:
-        errors.append('PR2 true verifier child must have exactly one top-level scratch_state["last_stop_reason"] elevation')
-    else:
-        _lv = laststop_top[0][1].value
-        _ok = False
-        if isinstance(_lv, ast.Dict) and len(_lv.keys) == 2:
-            _kv: dict[str, ast.AST] = {}
-            for _k, _v in zip(_lv.keys, _lv.values):
-                if isinstance(_k, ast.Constant) and isinstance(_k.value, str):
-                    _kv[_k.value] = _v
-            _reason_v = _kv.get("reason")
-            _status_v = _kv.get("status")
-            _ok = (
-                set(_kv.keys()) == {"reason", "status"}
-                and isinstance(_reason_v, ast.Name)
-                and _reason_v.id == "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON"
-                and isinstance(_status_v, ast.Constant)
-                and _status_v.value == "CERTIFIED"
-            )
-        if not _ok:
-            errors.append(
-                'PR2 true verifier child scratch_state["last_stop_reason"] must be exactly '
-                '{"reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, "status": "CERTIFIED"}'
-            )
-    if len(precheck_top) != 1:
-        errors.append("PR2 true verifier child must call terminal_certified_final_result_project_precheck_violation exactly once at top level")
-    else:
-        _p_idx, _p_call = precheck_top[0]
-        if declare_top and declare_top[0][0] >= _p_idx:
-            errors.append('scratch_state["declare_mode"]="strict" elevation must precede the terminal precheck (top-level order)')
-        if laststop_top and laststop_top[0][0] >= _p_idx:
-            errors.append('scratch_state["last_stop_reason"] elevation must precede the terminal precheck (top-level order)')
-        if not (_p_call.args and isinstance(_p_call.args[0], ast.Name) and _p_call.args[0].id == "scratch_state"):
-            errors.append("PR2 true verifier child terminal precheck must run on the elevated scratch_state (first positional arg)")
-        if not any(kw.arg == "project_root" for kw in _p_call.keywords):
-            errors.append("PR2 true verifier child terminal precheck must bind project_root=project_root")
-    _top_decl_ids = {id(s) for _, s in declare_top}
-    _top_last_ids = {id(s) for _, s in laststop_top}
-    for _node in ast.walk(child_domain_fn):
-        if (
-            isinstance(_node, ast.Call)
-            and isinstance(_node.func, ast.Attribute)
-            and isinstance(_node.func.value, ast.Name)
-            and _node.func.value.id == "scratch_state"
-        ):
-            if _node.func.attr in ("update", "clear", "setdefault"):
-                errors.append(f"PR2 true verifier child must not call scratch_state.{_node.func.attr}(...) (terminal-label clobber risk)")
-            if (
-                _node.func.attr == "pop"
-                and _node.args
-                and isinstance(_node.args[0], ast.Constant)
-                and _node.args[0].value in ("declare_mode", "last_stop_reason")
-            ):
-                errors.append("PR2 true verifier child must not pop the terminal-label slots from scratch_state")
-        if isinstance(_node, ast.Assign):
-            for _t in _node.targets:
-                if isinstance(_t, ast.Subscript) and _scratch_terminal_slot(_t.value) is not None:
-                    errors.append('PR2 true verifier child must not mutate a nested key of scratch_state["declare_mode"/"last_stop_reason"]')
-            if len(_node.targets) == 1:
-                _slot2 = _scratch_terminal_slot(_node.targets[0])
-                if _slot2 == "declare_mode" and id(_node) not in _top_decl_ids:
-                    errors.append('PR2 true verifier child has a non-top-level scratch_state["declare_mode"] assignment (dead-code/conditional bypass risk)')
-                if _slot2 == "last_stop_reason" and id(_node) not in _top_last_ids:
-                    errors.append('PR2 true verifier child has a non-top-level scratch_state["last_stop_reason"] assignment (dead-code/conditional bypass risk)')
+    errors.extend(_check_true_verifier_child_domain_elevation_window(child_domain_fn))
     child_project_fn = _function_def(
         child_tree,
         "_project_candidate_records_direct",
-        path=PR2_L0_TRUE_VERIFIER_CHILD_PATH,
+        path=pr2_true_child_path,
     )
-    child_project_source = _source_text(PR2_L0_TRUE_VERIFIER_CHILD_PATH, child_project_fn)
+    child_project_source = _source_text(pr2_true_child_path, child_project_fn)
     for required_call in (
         "candidate_proof_shape_violation",
         "_execute_isolated_replay_request",
@@ -2790,6 +3179,14 @@ def _check_candidate_sink_replay_contract(
     ):
         if token not in transition_source:
             errors.append(f"supervisor P->Q transition gate missing token: {token}")
+    errors.extend(
+        _check_literal_strict_slot_assignment(
+            transition_fn,
+            mapping_name="expected",
+            slot="declare_mode",
+            label="ExactCampaign supervisor transition gate",
+        )
+    )
     precommit_fn = _method_def(
         exact_class,
         "_validate_supervisor_certified_state_before_commit",

@@ -176,6 +176,363 @@ def _publisher_scan_paths() -> list[Path]:
     ]
 
 
+def _replace_once(source: str, old: str, new: str) -> str:
+    assert old in source
+    return source.replace(old, new, 1)
+
+
+def _candidate_sink_replay_errors_for_sources(
+    tmp_path: Path,
+    *,
+    child_source: str | None = None,
+    l0_source: str | None = None,
+    exact_source: str | None = None,
+) -> list[str]:
+    child_path = tmp_path / "pr2_l0_true_verifier_child.py"
+    l0_path = tmp_path / "pr2_l0_micro_verifier_core.py"
+    exact_path = tmp_path / "exact_campaign.py"
+    child_path.write_text(
+        child_source
+        if child_source is not None
+        else check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+            encoding="utf-8"
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    l0_path.write_text(
+        l0_source
+        if l0_source is not None
+        else check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+            encoding="utf-8"
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    exact_path.write_text(
+        exact_source
+        if exact_source is not None
+        else check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+            encoding="utf-8"
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    return check_p1_2_proof_obligations._check_candidate_sink_replay_contract(
+        exact_campaign_path=exact_path,
+        pr2_l0_path=l0_path,
+        pr2_true_child_path=child_path,
+    )
+
+
+def _move_child_final_status_after_precheck(source: str) -> str:
+    source = _replace_once(source, '    scratch_state["final_status"] = "CERTIFIED"\n', "")
+    precheck_call = (
+        "    precheck_reason = terminal_certified_final_result_project_precheck_violation(\n"
+        "        scratch_state,\n"
+        "        project_root=project_root,\n"
+        "    )\n"
+    )
+    return _replace_once(
+        source,
+        precheck_call,
+        precheck_call + '    scratch_state["final_status"] = "CERTIFIED"\n',
+    )
+
+
+def _child_rebinds_scratch_state(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["final_status"] = "CERTIFIED"\n',
+        '    scratch_state["final_status"] = "CERTIFIED"\n'
+        "    scratch_state = dict(authority_state)\n",
+    )
+
+
+def _child_aliases_scratch_state(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        "    s = scratch_state\n"
+        '    s["declare_mode"] = "best_effort"\n',
+    )
+
+
+def _child_dunder_setitem_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    scratch_state.__setitem__("declare_mode", "best_effort")\n',
+    )
+
+
+def _child_dict_setitem_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    dict.__setitem__(scratch_state, "declare_mode", "best_effort")\n',
+    )
+
+
+def _child_operator_setitem_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    operator.setitem(scratch_state, "declare_mode", "best_effort")\n',
+    )
+
+
+def _child_getattr_setitem_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    getattr(scratch_state, "__setitem__")("declare_mode", "best_effort")\n',
+    )
+
+
+def _child_helper_call_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        "    _mutate(scratch_state)\n",
+    )
+
+
+def _child_augassign_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    scratch_state |= {"declare_mode": "best_effort"}\n',
+    )
+
+
+def _child_deletes_terminal_slot(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    del scratch_state["declare_mode"]\n',
+    )
+
+
+def _child_pop_terminal_slot(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["declare_mode"] = "strict"\n',
+        '    scratch_state["declare_mode"] = "strict"\n'
+        '    scratch_state.pop("declare_mode", None)\n',
+    )
+
+
+def _child_nested_update_clobber(source: str) -> str:
+    last_stop_assignment = (
+        '    scratch_state["last_stop_reason"] = {\n'
+        "        \"reason\": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        \"status\": \"CERTIFIED\",\n"
+        "    }\n"
+    )
+    return _replace_once(
+        source,
+        last_stop_assignment,
+        last_stop_assignment
+        + '    scratch_state["last_stop_reason"].update({"status": "CANDIDATE_PROPOSED"})\n',
+    )
+
+
+def _child_nested_slot_assignment_clobber(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["last_stop_reason"] = {\n'
+        "        \"reason\": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        \"status\": \"CERTIFIED\",\n"
+        "    }\n",
+        '    scratch_state["last_stop_reason"] = {\n'
+        "        \"reason\": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        \"status\": \"CERTIFIED\",\n"
+        "    }\n"
+        '    scratch_state["last_stop_reason"]["status"] = "CANDIDATE_PROPOSED"\n',
+    )
+
+
+def _child_shadows_precheck(source: str) -> str:
+    return _replace_once(
+        source,
+        "    scratch_state = dict(authority_state)\n",
+        "    terminal_certified_final_result_project_precheck_violation = lambda *_args, **_kwargs: None\n"
+        "    scratch_state = dict(authority_state)\n",
+    )
+
+
+def _child_shadows_terminal_reason(source: str) -> str:
+    return _replace_once(
+        source,
+        "    scratch_state = dict(authority_state)\n",
+        '    TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "not_terminal"\n'
+        "    scratch_state = dict(authority_state)\n",
+    )
+
+
+def _child_wrong_project_root_precheck(source: str) -> str:
+    precheck_call = (
+        "    precheck_reason = terminal_certified_final_result_project_precheck_violation(\n"
+        "        scratch_state,\n"
+        "        project_root=project_root,\n"
+        "    )\n"
+    )
+    wrong_precheck_call = precheck_call.replace("        project_root=project_root,\n", "        project_root=None,\n")
+    return _replace_once(source, precheck_call, wrong_precheck_call)
+
+
+def _child_ignores_precheck_result(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if precheck_reason is not None:\n'
+        '        raise ValueError(f"terminal project precheck failed:{precheck_reason}")\n',
+        "    if precheck_reason is not None:\n"
+        "        pass\n",
+    )
+
+
+def _l0_parent_washes_declare_mode(source: str) -> str:
+    return _replace_once(
+        source,
+        '        scratch_state["declare_mode"] = "strict"\n',
+        '        scratch_state["declare_mode"] = str(authority_state.get("declare_mode", "best_effort"))\n',
+    )
+
+
+def _l0_transition_washes_declare_mode(source: str) -> str:
+    return _replace_once(
+        source,
+        '    expected["declare_mode"] = "strict"\n',
+        '    expected["declare_mode"] = str(proposal_state.get("declare_mode", "best_effort"))\n',
+    )
+
+
+def _exact_transition_update_clobbers_declare_mode(source: str) -> str:
+    return _replace_once(
+        source,
+        '    expected["declare_mode"] = "strict"\n',
+        '    expected["declare_mode"] = "strict"\n'
+        '    dict.update(expected, {"declare_mode": "best_effort"})\n',
+    )
+
+
+def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
+    errors = _candidate_sink_replay_errors_for_sources(tmp_path)
+
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "mutator", "expected_error"),
+    [
+        (
+            "child",
+            _move_child_final_status_after_precheck,
+            "canonical window missing scratch_state slots: final_status",
+        ),
+        ("child", _child_rebinds_scratch_state, "must not rebind scratch_state"),
+        ("child", _child_aliases_scratch_state, "must not alias scratch_state"),
+        ("child", _child_dunder_setitem_clobber, "must not call scratch_state.__setitem__"),
+        ("child", _child_dict_setitem_clobber, "must not pass scratch_state to helper calls"),
+        ("child", _child_operator_setitem_clobber, "must not pass scratch_state to helper calls"),
+        ("child", _child_getattr_setitem_clobber, "must not pass scratch_state to helper calls"),
+        ("child", _child_helper_call_clobber, "must not pass scratch_state to helper calls"),
+        ("child", _child_augassign_clobber, "must not AugAssign/AnnAssign scratch_state"),
+        ("child", _child_deletes_terminal_slot, "must not delete scratch_state"),
+        ("child", _child_pop_terminal_slot, "must not call scratch_state.pop"),
+        (
+            "child",
+            _child_nested_update_clobber,
+            'must not call scratch_state["last_stop_reason"].update',
+        ),
+        (
+            "child",
+            _child_nested_slot_assignment_clobber,
+            'must not mutate nested scratch_state["last_stop_reason"][...]',
+        ),
+        ("child", _child_shadows_precheck, "must not shadow terminal_certified_final_result_project_precheck_violation"),
+        ("child", _child_shadows_terminal_reason, "must not shadow TERMINAL_FULL_FRONTIER_CERTIFIED_REASON"),
+        ("child", _child_wrong_project_root_precheck, "project_root=project_root"),
+        ("child", _child_ignores_precheck_result, "precheck result must be consumed"),
+        ("l0", _l0_parent_washes_declare_mode, "durable mint must assign literal \"strict\""),
+        ("l0", _l0_transition_washes_declare_mode, "transition gate must assign literal \"strict\""),
+        (
+            "exact",
+            _exact_transition_update_clobbers_declare_mode,
+            'ExactCampaign supervisor transition gate must not call a mutator',
+        ),
+    ],
+    ids=[
+        "child-final-status-after-precheck",
+        "child-rebind-scratch-state",
+        "child-alias-scratch-state",
+        "child-dunder-setitem",
+        "child-dict-setitem",
+        "child-operator-setitem",
+        "child-getattr-setitem",
+        "child-helper-call",
+        "child-ior",
+        "child-delete",
+        "child-pop-terminal-slot",
+        "child-nested-update",
+        "child-nested-slot-assignment",
+        "child-shadow-precheck",
+        "child-shadow-terminal-reason",
+        "child-wrong-project-root",
+        "child-ignore-precheck",
+        "l0-parent-wash-declare-mode",
+        "l0-transition-wash-declare-mode",
+        "exact-transition-update-clobber",
+    ],
+)
+def test_p1_2_checker_rejects_pr2_5_ast_pin_bypass_variants(
+    tmp_path: Path,
+    source_kind: str,
+    mutator: object,
+    expected_error: str,
+) -> None:
+    assert callable(mutator)
+    child_source = l0_source = exact_source = None
+    if source_kind == "child":
+        child_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    elif source_kind == "l0":
+        l0_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    elif source_kind == "exact":
+        exact_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert any(expected_error in error for error in errors), errors
+
+
 def test_p1_2_checker_rejects_raw_canonical_writer_bypass(tmp_path: Path) -> None:
     surface_path = tmp_path / "certified_surface.py"
     surface_path.write_text(

@@ -516,6 +516,12 @@
         "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
+        "test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources",
+        "test_p1_2_checker_rejects_pr2_5_ast_pin_bypass_variants",
+        "test_l0_supervisor_seal_mints_strict_declare_mode_from_best_effort_proposal",
+        "test_l0_postwrite_state_violation_rejects_non_strict_declare_mode",
+        "test_exact_campaign_supervisor_transition_promotes_declare_mode_to_strict",
+        "test_true_verifier_child_precheck_receives_strict_certified_scratch_state",
         "test_l0_canonical_dependency_floor_manifest_missing_fails_closed",
         "test_l0_canonical_dependency_floor_manifest_drift_fails_closed",
         "test_l0_canonical_dependency_floor_manifest_current_bytes_are_pinned",
@@ -903,7 +909,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "6294c58aa988eb79c250d5afe7254319cab53e55497d1033ca06fba1f0ab70e7",
+        "source_sha256": "096b385cb552a922197b3e785539c0f52b6616e2f324414cecaa09ed61ebb297",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

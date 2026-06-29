@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import base64
 import dataclasses
 import hashlib
 import json
@@ -8,9 +9,11 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
+from src.search import exact_campaign as exact_campaign_module
 from src.search import pr2_l0_micro_verifier_core as l0
 from src.search import pr2_l0_true_verifier_child as true_child
 from scripts.generate_pr2_dependency_floor_manifest import build_manifest
@@ -728,3 +731,261 @@ def test_l0_supervisor_certified_transition_promotes_declare_mode_to_strict() ->
         )
         == "supervisor_seal_transition_mismatch"
     )
+
+
+def test_l0_supervisor_seal_mints_strict_declare_mode_from_best_effort_proposal(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    project_root = tmp_path / "project"
+    campaign_path = project_root / "data" / "checkpoints" / "exact_campaign_state.json"
+    marker_path = campaign_path.with_name(f"{campaign_path.stem}.proposal_ready.json")
+    campaign_path.parent.mkdir(parents=True)
+    campaign_instance_id = "1" * 32
+    run_id = "pr2-5-strict-mint"
+    authority_state = {
+        l0.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        "declare_mode": "best_effort",
+        "final_status": l0.CANDIDATE_PROPOSED_STATUS,
+        "final_result": {"search_status": l0.CANDIDATE_PROPOSED_STATUS},
+        "terminal_frontier_evidence": {"candidate_generation": {"domain_authority": "test"}},
+        "candidates": {},
+        l0.SUPERVISOR_PROPOSAL_STATE_KEY: {
+            "schema_version": l0.SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+            "authority": l0.PROPOSAL_READY_MARKER_AUTHORITY,
+            "run_id": run_id,
+            l0.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        },
+    }
+    checkpoint_bytes = l0._atomic_json_bytes(authority_state)  # type: ignore[attr-defined]
+    campaign_path.write_bytes(checkpoint_bytes)
+    marker = {
+        "schema_version": l0.PROPOSAL_READY_MARKER_SCHEMA_VERSION,
+        "authority": l0.PROPOSAL_READY_MARKER_AUTHORITY,
+        "run_id": run_id,
+        "exit_code": 0,
+        "checkpoint_sha256": hashlib.sha256(checkpoint_bytes).hexdigest(),
+        l0.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+    }
+    marker_path.write_bytes(l0._atomic_json_bytes(marker))  # type: ignore[attr-defined]
+
+    monkeypatch.setattr(
+        l0,
+        "_load_canonical_dependency_floor_manifest",
+        lambda _source_root: {"test_dependency_floor": True},
+    )
+
+    def sealed_child(payload: dict[str, object], **_kwargs: object) -> l0.L0MicroVerdict:
+        child_authority = payload["authority_state"]
+        assert isinstance(child_authority, dict)
+        assert child_authority["declare_mode"] == "best_effort"
+        certified_final_result = dict(child_authority["final_result"])  # type: ignore[arg-type]
+        certified_final_result["search_status"] = "CERTIFIED"
+        domain = {
+            "schema_version": l0.SUPERVISOR_DOMAIN_SCHEMA_VERSION,
+            "authority": l0.SUPERVISOR_DOMAIN_AUTHORITY,
+            "nonce": "child-nonce",
+            "verdict": l0.SEALED,
+            "reason": "test-domain-sealed",
+            "strong_keys": [],
+            "final_result": certified_final_result,
+            "terminal_frontier_evidence": dict(child_authority["terminal_frontier_evidence"]),  # type: ignore[arg-type]
+            "candidate_records": {},
+            "final_result_digest": payload["proposal_final_result_digest"],
+            "terminal_frontier_evidence_digest": payload[
+                "proposal_terminal_frontier_evidence_digest"
+            ],
+            "candidate_records_digest": payload["proposal_candidate_records_digest"],
+            "fixed_witness_publishable": True,
+            "sink_replay_violations": {},
+            "fixed_witness_violations": {},
+            "tcb": {"test": "stubbed_child"},
+        }
+        return l0.L0MicroVerdict(
+            status=l0.SEALED,
+            nonce="child-nonce",
+            reason="domain_verified",
+            floor_digest="f" * 64,
+            response={"domain": domain},
+        )
+
+    monkeypatch.setattr(l0, "run_l0_micro_verifier_round_trip", sealed_child)
+
+    verdict = l0.run_l0_supervisor_seal(
+        l0.L0SupervisorSealRequest(
+            project_root=project_root,
+            campaign_path=campaign_path,
+            marker_path=marker_path,
+            expected_campaign_instance_id=campaign_instance_id,
+        )
+    )
+
+    assert verdict.status == l0.SEALED, verdict.reason
+    durable_state = json.loads(campaign_path.read_text(encoding="utf-8"))
+    assert durable_state["declare_mode"] == "strict"
+    assert durable_state["final_status"] == "CERTIFIED"
+    assert durable_state["final_result"]["search_status"] == "CERTIFIED"
+    assert l0.SUPERVISOR_PROPOSAL_STATE_KEY not in durable_state
+    assert not marker_path.exists()
+
+
+def test_l0_postwrite_state_violation_rejects_non_strict_declare_mode() -> None:
+    disk_state = {"declare_mode": "best_effort"}
+    expected_payload_sha = l0._certified_state_payload_sha256_l0(disk_state)  # type: ignore[attr-defined]
+
+    assert (
+        l0._postwrite_state_violation(  # type: ignore[attr-defined]
+            disk_state,
+            expected_domain={},
+            expected_payload_sha=expected_payload_sha,
+        )
+        == "postwrite_declare_mode_not_strict"
+    )
+
+
+def test_exact_campaign_supervisor_transition_promotes_declare_mode_to_strict() -> None:
+    campaign_instance_id = "2" * 32
+    proposal_state = {
+        exact_campaign_module.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        "declare_mode": "best_effort",
+        "final_status": exact_campaign_module.CANDIDATE_PROPOSED_STATUS,
+        "final_result": {"search_status": exact_campaign_module.CANDIDATE_PROPOSED_STATUS},
+        "last_stop_reason": {
+            "reason": exact_campaign_module.TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+            "status": exact_campaign_module.CANDIDATE_PROPOSED_STATUS,
+            "updated_at": "2026-01-01T00:00:00Z",
+        },
+        exact_campaign_module.SUPERVISOR_PROPOSAL_STATE_KEY: {
+            "schema_version": exact_campaign_module.SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION,
+            "authority": exact_campaign_module.PROPOSAL_READY_MARKER_AUTHORITY,
+            "run_id": "run-1",
+            exact_campaign_module.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+        },
+    }
+    seal_record = {
+        "proposal_run_id": "run-1",
+        exact_campaign_module.CAMPAIGN_INSTANCE_ID_KEY: campaign_instance_id,
+    }
+    certified_state = dict(proposal_state)
+    certified_state["final_status"] = "CERTIFIED"
+    certified_state["declare_mode"] = "strict"
+    certified_state["final_result"] = {"search_status": "CERTIFIED"}
+    certified_state["last_stop_reason"] = {
+        "reason": exact_campaign_module.TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": "CERTIFIED",
+        "updated_at": "2026-01-01T00:00:01Z",
+    }
+    certified_state["updated_at"] = "2026-01-01T00:00:02Z"
+    certified_state.pop(exact_campaign_module.SUPERVISOR_PROPOSAL_STATE_KEY)
+    certified_state[exact_campaign_module.SUPERVISOR_SEAL_STATE_KEY] = dict(seal_record)
+
+    assert (
+        exact_campaign_module._supervisor_certified_transition_violation(  # type: ignore[attr-defined]
+            proposal_state=proposal_state,
+            certified_state=certified_state,
+            seal_record=seal_record,
+        )
+        is None
+    )
+
+    regressed_state = dict(certified_state)
+    regressed_state["declare_mode"] = "best_effort"
+    assert (
+        exact_campaign_module._supervisor_certified_transition_violation(  # type: ignore[attr-defined]
+            proposal_state=proposal_state,
+            certified_state=regressed_state,
+            seal_record=seal_record,
+        )
+        == "supervisor_seal_transition_mismatch"
+    )
+
+
+def test_true_verifier_child_precheck_receives_strict_certified_scratch_state(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from src.search import certified_frontier as certified_frontier_module
+
+    candidate_generation = {"domain_authority": "test_child_precheck"}
+    proposal_evidence = {"candidate_generation": candidate_generation}
+    certified_evidence = {
+        "candidate_generation": candidate_generation,
+        "candidate_records": {},
+        "final_result": {"search_status": "CERTIFIED"},
+    }
+    authority_state = {
+        "final_result": {"search_status": l0.CANDIDATE_PROPOSED_STATUS},
+        "final_status": l0.CANDIDATE_PROPOSED_STATUS,
+        "terminal_frontier_evidence": proposal_evidence,
+        "candidates": {},
+        "supervisor_proposal": {"run_id": "producer-owned"},
+    }
+    certified_final_result = {"search_status": "CERTIFIED"}
+    authority_bytes = json.dumps(
+        authority_state,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(true_child, "_materialize_import_default_artifacts", lambda _root: None)
+    monkeypatch.setattr(
+        true_child,
+        "_project_candidate_records_direct",
+        lambda **_kwargs: ({}, {}),
+    )
+    monkeypatch.setattr(
+        true_child,
+        "_run_fixed_witness_direct",
+        lambda **_kwargs: ({}, {}, SimpleNamespace(publishable=True)),
+    )
+    monkeypatch.setattr(
+        certified_frontier_module,
+        "candidate_generation_kwargs",
+        lambda _candidate_generation: {},
+    )
+    monkeypatch.setattr(certified_frontier_module, "generate_candidate_sizes", lambda **_kwargs: [])
+    monkeypatch.setattr(
+        certified_frontier_module,
+        "build_terminal_frontier_evidence",
+        lambda **_kwargs: certified_evidence,
+    )
+
+    def capture_precheck(state: object, *, project_root: Path) -> None:
+        captured["state"] = state
+        captured["project_root"] = project_root
+        return None
+
+    monkeypatch.setattr(
+        exact_campaign_module,
+        "terminal_certified_final_result_project_precheck_violation",
+        capture_precheck,
+    )
+    payload = {
+        "action": "supervisor_domain",
+        "schema_version": true_child.DOMAIN_SCHEMA_VERSION,
+        "authority": true_child.DOMAIN_AUTHORITY,
+        "project_root": str(tmp_path),
+        "authority_state": authority_state,
+        "authority_state_b64": base64.b64encode(authority_bytes).decode("ascii"),
+        "strong_keys": [],
+        "proposal_final_result_digest": true_child._canonical_digest(certified_final_result),  # type: ignore[attr-defined]
+        "proposal_terminal_frontier_evidence_digest": true_child._canonical_digest(certified_evidence),  # type: ignore[attr-defined]
+        "proposal_candidate_records_digest": true_child._canonical_digest({}),  # type: ignore[attr-defined]
+        "dependency_floor": {"test": "unused-by-direct-call"},
+    }
+
+    domain = true_child._verify_supervisor_domain(payload, nonce="nonce")  # type: ignore[attr-defined]
+
+    scratch_state = captured["state"]
+    assert isinstance(scratch_state, dict)
+    assert captured["project_root"] == tmp_path.resolve()
+    assert scratch_state["final_status"] == "CERTIFIED"
+    assert scratch_state["declare_mode"] == "strict"
+    assert scratch_state["last_stop_reason"] == {
+        "reason": exact_campaign_module.TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,
+        "status": "CERTIFIED",
+    }
+    assert "supervisor_proposal" not in scratch_state
+    assert domain["verdict"] == true_child.SEALED
