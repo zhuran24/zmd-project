@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 130
-- hard edges: 158
+- entries: 131
+- hard edges: 159
 - pending relation suggestions: 0
 
 ## Start Here
@@ -123,6 +123,7 @@ python cc_memory/mem.py boot
 - `pr2-5-seal-frontier-gate-landed` — PR2 #5: child升格漏declare_mode/last_stop_reason致seal路径穷尽校验死代码;已修+GPT Pro panel挖2 BLOCK(parent mint不归一+AST pin松)+CRLF reseal坑;待复审merge
 - `pr2-8-9a-hardened-landed-099f5a3` — PR2 #8(删自跳过)+#9a(floor钉死)+GPT Pro外审硬化(#8-A子进程-I-S-B/#8-B源码sha楼面/#9a-A L0 runtime byte-pin堵时序旁路)合 main 099f5a3,CI两gate绿。多会话panel验证有效(2会话收敛挖3 BLOCK本地审都漏)…
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
+- `pr2-resume-envelope-deferred-finding` — PR2跟进:parent mint dict(authority_state)只覆盖证明字段,信封字段(created_at等)原样从producer带入未校验→过终态门但resume拒=自相矛盾CERTIFIED;非假证明;押后归#2/#3
 - `pr2b-landed-pr2-remaining-status-20260628` — PR2-b 69980b3+592ea13: LANDED 2026-06-28, SOUND; PR2余项表。
 - `precompact-a-b-compact-codex-race` — precompact A+B 2026-06-28: PARTIAL/SUPERSEDED, offline SeqWorker 适用。
 - `precompact-scope-precompact-hook-codex-hooks-json-taskstop` — 2026-06-28 precompact 判官(codex 第二遍)逮到我自审漏的 4 条 + 后续 owner 对 precompact 机制的最终拍板…
