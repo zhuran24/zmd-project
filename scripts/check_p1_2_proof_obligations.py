@@ -2570,6 +2570,10 @@ def _check_candidate_sink_replay_contract(
         "_atomic_replace_bytes(campaign_path, checkpoint_bytes)",
         "write_isolation",
         '"third_party_native": "NAMED-TCB"',
+        # PR2 #5 review hardening: the durable CERTIFIED mint must canonicalize
+        # declare_mode to the supervisor-owned strict terminal label, so a producer
+        # declare_mode!="strict" cannot be persisted into the sealed state.
+        'scratch_state["declare_mode"] = "strict"',
     ):
         if token not in l0_seal_source:
             errors.append(f"PR2 L0 supervisor seal must bind and atomically validate P->Q authority: {token}")
@@ -2617,54 +2621,109 @@ def _check_candidate_sink_replay_contract(
     # the elevated scratch_state. This blocks a future edit that keeps the source
     # tokens but moves the elevation after the precheck, neutralizes it, or runs the
     # precheck on a different (un-elevated) state.
-    def _scratch_state_str_key(target: ast.AST, key: str) -> bool:
-        return (
-            isinstance(target, ast.Subscript)
-            and isinstance(target.value, ast.Name)
-            and target.value.id == "scratch_state"
-            and isinstance(target.slice, ast.Constant)
-            and target.slice.value == key
-        )
-
-    declare_strict_lines: list[int] = []
-    last_stop_lines: list[int] = []
-    precheck_calls: list[ast.Call] = []
-    for sub in ast.walk(child_domain_fn):
-        if isinstance(sub, ast.Assign):
-            for target in sub.targets:
-                if _scratch_state_str_key(target, "declare_mode") and (
-                    isinstance(sub.value, ast.Constant) and sub.value.value == "strict"
-                ):
-                    declare_strict_lines.append(int(sub.lineno))
-                if _scratch_state_str_key(target, "last_stop_reason"):
-                    last_stop_lines.append(int(sub.lineno))
+    # PR2 #5 review hardening: the previous check was ast.walk existence + line-order,
+    # which a future reseal could keep the tokens but bypass via dead `if False:` code,
+    # a `scratch_state.update({...})` clobber, a second non-strict assignment, an
+    # arbitrary last_stop_reason dict, nested-key pollution, or running precheck on an
+    # alias. Require the canonical STRAIGHT-LINE shape instead.
+    def _scratch_terminal_slot(node: ast.AST) -> str | None:
         if (
-            isinstance(sub, ast.Call)
-            and isinstance(sub.func, ast.Name)
-            and sub.func.id == "terminal_certified_final_result_project_precheck_violation"
+            isinstance(node, ast.Subscript)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "scratch_state"
+            and isinstance(node.slice, ast.Constant)
+            and node.slice.value in ("declare_mode", "last_stop_reason")
         ):
-            precheck_calls.append(sub)
-    if not declare_strict_lines:
-        errors.append('PR2 true verifier child must elevate scratch_state["declare_mode"]="strict" before sealing')
-    if not last_stop_lines:
-        errors.append('PR2 true verifier child must elevate scratch_state["last_stop_reason"] before sealing')
-    if len(precheck_calls) != 1:
-        errors.append(
-            "PR2 true verifier child must call terminal_certified_final_result_project_precheck_violation exactly once"
-        )
+            return str(node.slice.value)
+        return None
+
+    _body = child_domain_fn.body
+    declare_top: list[tuple[int, ast.Assign]] = []
+    laststop_top: list[tuple[int, ast.Assign]] = []
+    precheck_top: list[tuple[int, ast.Call]] = []
+    for _idx, _stmt in enumerate(_body):
+        if isinstance(_stmt, ast.Assign) and len(_stmt.targets) == 1:
+            _slot = _scratch_terminal_slot(_stmt.targets[0])
+            if _slot == "declare_mode":
+                declare_top.append((_idx, _stmt))
+            elif _slot == "last_stop_reason":
+                laststop_top.append((_idx, _stmt))
+            if (
+                isinstance(_stmt.value, ast.Call)
+                and isinstance(_stmt.value.func, ast.Name)
+                and _stmt.value.func.id == "terminal_certified_final_result_project_precheck_violation"
+            ):
+                precheck_top.append((_idx, _stmt.value))
+    if len(declare_top) != 1:
+        errors.append('PR2 true verifier child must have exactly one top-level scratch_state["declare_mode"]="strict" elevation')
     else:
-        precheck_call = precheck_calls[0]
-        precheck_line = int(precheck_call.lineno)
-        if not (
-            precheck_call.args
-            and isinstance(precheck_call.args[0], ast.Name)
-            and precheck_call.args[0].id == "scratch_state"
+        _dv = declare_top[0][1].value
+        if not (isinstance(_dv, ast.Constant) and _dv.value == "strict"):
+            errors.append('PR2 true verifier child scratch_state["declare_mode"] must be exactly the constant "strict"')
+    if len(laststop_top) != 1:
+        errors.append('PR2 true verifier child must have exactly one top-level scratch_state["last_stop_reason"] elevation')
+    else:
+        _lv = laststop_top[0][1].value
+        _ok = False
+        if isinstance(_lv, ast.Dict) and len(_lv.keys) == 2:
+            _kv: dict[str, ast.AST] = {}
+            for _k, _v in zip(_lv.keys, _lv.values):
+                if isinstance(_k, ast.Constant) and isinstance(_k.value, str):
+                    _kv[_k.value] = _v
+            _reason_v = _kv.get("reason")
+            _status_v = _kv.get("status")
+            _ok = (
+                set(_kv.keys()) == {"reason", "status"}
+                and isinstance(_reason_v, ast.Name)
+                and _reason_v.id == "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON"
+                and isinstance(_status_v, ast.Constant)
+                and _status_v.value == "CERTIFIED"
+            )
+        if not _ok:
+            errors.append(
+                'PR2 true verifier child scratch_state["last_stop_reason"] must be exactly '
+                '{"reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, "status": "CERTIFIED"}'
+            )
+    if len(precheck_top) != 1:
+        errors.append("PR2 true verifier child must call terminal_certified_final_result_project_precheck_violation exactly once at top level")
+    else:
+        _p_idx, _p_call = precheck_top[0]
+        if declare_top and declare_top[0][0] >= _p_idx:
+            errors.append('scratch_state["declare_mode"]="strict" elevation must precede the terminal precheck (top-level order)')
+        if laststop_top and laststop_top[0][0] >= _p_idx:
+            errors.append('scratch_state["last_stop_reason"] elevation must precede the terminal precheck (top-level order)')
+        if not (_p_call.args and isinstance(_p_call.args[0], ast.Name) and _p_call.args[0].id == "scratch_state"):
+            errors.append("PR2 true verifier child terminal precheck must run on the elevated scratch_state (first positional arg)")
+        if not any(kw.arg == "project_root" for kw in _p_call.keywords):
+            errors.append("PR2 true verifier child terminal precheck must bind project_root=project_root")
+    _top_decl_ids = {id(s) for _, s in declare_top}
+    _top_last_ids = {id(s) for _, s in laststop_top}
+    for _node in ast.walk(child_domain_fn):
+        if (
+            isinstance(_node, ast.Call)
+            and isinstance(_node.func, ast.Attribute)
+            and isinstance(_node.func.value, ast.Name)
+            and _node.func.value.id == "scratch_state"
         ):
-            errors.append("PR2 true verifier child terminal precheck must run on the elevated scratch_state")
-        if declare_strict_lines and max(declare_strict_lines) >= precheck_line:
-            errors.append('scratch_state["declare_mode"]="strict" elevation must precede the terminal precheck call')
-        if last_stop_lines and max(last_stop_lines) >= precheck_line:
-            errors.append('scratch_state["last_stop_reason"] elevation must precede the terminal precheck call')
+            if _node.func.attr in ("update", "clear", "setdefault"):
+                errors.append(f"PR2 true verifier child must not call scratch_state.{_node.func.attr}(...) (terminal-label clobber risk)")
+            if (
+                _node.func.attr == "pop"
+                and _node.args
+                and isinstance(_node.args[0], ast.Constant)
+                and _node.args[0].value in ("declare_mode", "last_stop_reason")
+            ):
+                errors.append("PR2 true verifier child must not pop the terminal-label slots from scratch_state")
+        if isinstance(_node, ast.Assign):
+            for _t in _node.targets:
+                if isinstance(_t, ast.Subscript) and _scratch_terminal_slot(_t.value) is not None:
+                    errors.append('PR2 true verifier child must not mutate a nested key of scratch_state["declare_mode"/"last_stop_reason"]')
+            if len(_node.targets) == 1:
+                _slot2 = _scratch_terminal_slot(_node.targets[0])
+                if _slot2 == "declare_mode" and id(_node) not in _top_decl_ids:
+                    errors.append('PR2 true verifier child has a non-top-level scratch_state["declare_mode"] assignment (dead-code/conditional bypass risk)')
+                if _slot2 == "last_stop_reason" and id(_node) not in _top_last_ids:
+                    errors.append('PR2 true verifier child has a non-top-level scratch_state["last_stop_reason"] assignment (dead-code/conditional bypass risk)')
     child_project_fn = _function_def(
         child_tree,
         "_project_candidate_records_direct",
@@ -2724,6 +2783,10 @@ def _check_candidate_sink_replay_contract(
         "_final_result_certified_transition",
         "canonical_state_bytes_for_fixed_witness(expected)",
         "SUPERVISOR_PROPOSAL_STATE_KEY",
+        # PR2 #5 review hardening: the transition gate canonicalizes declare_mode to
+        # strict, matching the durable mint -- so a producer non-strict declare_mode
+        # is neither persisted nor falsely accepted by the byte-equality check.
+        'expected["declare_mode"] = "strict"',
     ):
         if token not in transition_source:
             errors.append(f"supervisor P->Q transition gate missing token: {token}")
@@ -4034,14 +4097,14 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/d2_separator.py': '0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e',
-    'src/search/exact_campaign.py': '2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c',
+    'src/search/exact_campaign.py': '3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
-    'src/search/pr2_l0_micro_verifier_core.py': '5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8',
+    'src/search/pr2_l0_micro_verifier_core.py': '20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a',
     'src/search/pr2_l0_true_verifier_child.py': 'e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',

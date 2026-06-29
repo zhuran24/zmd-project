@@ -1878,6 +1878,11 @@ def _supervisor_certified_transition_violation(
 
     expected = dict(proposal_state)
     expected["final_status"] = "CERTIFIED"
+    # PR2 #5 review hardening: canonicalize declare_mode to the supervisor-owned
+    # strict terminal label on the resume/public-side transition gate too, matching
+    # the L0 parent mint -- otherwise a producer declare_mode!="strict" would make
+    # this byte-equality check falsely reject the sealed strict durable state.
+    expected["declare_mode"] = "strict"
     expected_final_result = _final_result_certified_transition(
         proposal_state.get("final_result")
     )

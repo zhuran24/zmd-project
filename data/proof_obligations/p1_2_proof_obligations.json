@@ -903,7 +903,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "27c05daae6365f055775f3d594ad10b614b56dde08761c8ac486fb64fc1d0767",
+        "source_sha256": "a9bfaac77131d6feb80f2df82a0373183cfaa9c3b93ccc5941c9e87b7be0b257",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1600,7 +1600,7 @@
           "self.mark_candidate_result",
           "validate_exact_campaign_resume_state"
         ],
-        "source_sha256": "2b44f7cbfd61d1b7914659fb7a5d10688bd011412919b83aac9c74ca39dd1f1c",
+        "source_sha256": "3587fb2827b33a973d57bed23ad464c7ab13f284b553f98e22f9d9561b3907b4",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1711,7 +1711,7 @@
       {
         "path": "src/search/pr2_l0_micro_verifier_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "5ddba4180768cc5cb49d1b8e7b1c1cd41c4a610fab5ecb6bf7e6f2be3a52ebf8",
+        "source_sha256": "20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",
