@@ -2240,6 +2240,11 @@ _PR2_CHILD_RESERVED_RUNTIME_NAMES = frozenset(
 _PR2_CHILD_POST_PRECHECK_PROTECTED_NAMES = frozenset(
     {"certified_final_result", "evidence", "durable_records"}
 )
+_PR2_CHILD_DYNAMIC_MODULE_CALLS = frozenset(
+    {"__import__", "compile", "eval", "exec", "globals", "locals", "setattr", "delattr", "vars"}
+)
+_PR2_CHILD_FRAME_CALLS = frozenset({"sys._getframe", "inspect.currentframe"})
+_PR2_CHILD_FRAME_ATTRS = frozenset({"f_locals", "f_globals", "f_back"})
 
 
 def _is_name(node: ast.AST, name: str) -> bool:
@@ -2293,6 +2298,29 @@ def _target_bound_names(target: ast.AST) -> set[str]:
     if isinstance(target, ast.Starred):
         return _target_bound_names(target.value)
     return set()
+
+
+def _target_dynamic_namespace_writes(target: ast.AST) -> set[str]:
+    namespaces: set[str] = set()
+    for node in ast.walk(target):
+        if not isinstance(node, ast.Subscript):
+            continue
+        if (
+            isinstance(node.value, ast.Call)
+            and _call_func_name(node.value) in {"globals", "locals", "vars"}
+            and not node.value.args
+            and not node.value.keywords
+        ):
+            namespaces.add(_call_func_name(node.value) or "<dynamic>")
+    return namespaces
+
+
+def _target_reserved_attribute_writes(target: ast.AST) -> set[str]:
+    attrs: set[str] = set()
+    for node in ast.walk(target):
+        if isinstance(node, ast.Attribute) and node.attr in _PR2_CHILD_RESERVED_RUNTIME_NAMES:
+            attrs.add(node.attr)
+    return attrs
 
 
 def _stmt_bound_names(stmt: ast.AST) -> set[str]:
@@ -2836,6 +2864,14 @@ def _check_true_verifier_child_domain_elevation_window(
             errors.append("PR2 true verifier child must not use lambda expressions")
         if isinstance(node, ast.Assign):
             for target in node.targets:
+                for namespace in sorted(_target_dynamic_namespace_writes(target)):
+                    errors.append(
+                        f"PR2 true verifier child must not write dynamic namespace mapping {namespace}(...)"
+                    )
+                for attr_name in sorted(_target_reserved_attribute_writes(target)):
+                    errors.append(
+                        f"PR2 true verifier child must not assign authority/reserved attribute {attr_name}"
+                    )
                 for bound_name in sorted(_target_bound_names(target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
                     if not _is_allowed_child_reserved_binding(
                         node,
@@ -2859,6 +2895,14 @@ def _check_true_verifier_child_domain_elevation_window(
                         errors.append("PR2 true verifier child must not alias scratch_state")
         elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
             target = node.target
+            for namespace in sorted(_target_dynamic_namespace_writes(target)):
+                errors.append(
+                    f"PR2 true verifier child must not write dynamic namespace mapping {namespace}(...)"
+                )
+            for attr_name in sorted(_target_reserved_attribute_writes(target)):
+                errors.append(
+                    f"PR2 true verifier child must not assign authority/reserved attribute {attr_name}"
+                )
             for bound_name in sorted(_target_bound_names(target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
                 errors.append(_child_reserved_binding_error(bound_name))
             if _target_contains_name(target, "scratch_state"):
@@ -2867,6 +2911,14 @@ def _check_true_verifier_child_domain_elevation_window(
             if any(_target_contains_name(target, "scratch_state") for target in node.targets):
                 errors.append("PR2 true verifier child must not delete scratch_state or its slots")
             for target in node.targets:
+                for namespace in sorted(_target_dynamic_namespace_writes(target)):
+                    errors.append(
+                        f"PR2 true verifier child must not delete dynamic namespace mapping {namespace}(...)"
+                    )
+                for attr_name in sorted(_target_reserved_attribute_writes(target)):
+                    errors.append(
+                        f"PR2 true verifier child must not delete authority/reserved attribute {attr_name}"
+                    )
                 for bound_name in sorted(_target_bound_names(target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
                     errors.append(f"PR2 true verifier child must not delete {bound_name}")
         elif isinstance(node, ast.NamedExpr):
@@ -2894,6 +2946,7 @@ def _check_true_verifier_child_domain_elevation_window(
             if node.name in _PR2_CHILD_RESERVED_RUNTIME_NAMES:
                 errors.append(f"PR2 true verifier child must not define reserved name {node.name}")
         elif isinstance(node, ast.Import):
+            errors.append("PR2 true verifier child must not use bare import statements")
             for alias in node.names:
                 bound_name = alias.asname or alias.name.split(".", 1)[0]
                 if bound_name in _PR2_CHILD_RESERVED_RUNTIME_NAMES:
@@ -2922,10 +2975,12 @@ def _check_true_verifier_child_domain_elevation_window(
                     errors.append(f"PR2 true verifier child must not import-as reserved name {bound_name}")
         elif isinstance(node, ast.Call):
             call_name = _call_func_name(node)
-            if call_name in {"__import__", "setattr", "delattr"} or (
+            if call_name in _PR2_CHILD_DYNAMIC_MODULE_CALLS or (
                 call_name is not None and call_name.startswith("importlib.")
             ):
                 errors.append(f"PR2 true verifier child must not use dynamic module capability {call_name}")
+            if call_name in _PR2_CHILD_FRAME_CALLS:
+                errors.append(f"PR2 true verifier child must not use frame access {call_name}")
             if (
                 isinstance(node.func, ast.Attribute)
                 and _is_name(node.func.value, "scratch_state")
@@ -2964,6 +3019,13 @@ def _check_true_verifier_child_domain_elevation_window(
             and _is_name(node.value, "sys")
         ):
             errors.append("PR2 true verifier child must not access sys.modules")
+        elif isinstance(node, ast.Attribute):
+            if node.attr == "_getframe" and _is_name(node.value, "sys"):
+                errors.append("PR2 true verifier child must not access sys._getframe")
+            if node.attr in _PR2_CHILD_FRAME_ATTRS:
+                errors.append(f"PR2 true verifier child must not access frame attribute {node.attr}")
+            if node.attr == "__dict__":
+                errors.append("PR2 true verifier child must not access __dict__")
     for name, count in sorted(authority_import_counts.items()):
         if count != 1:
             errors.append(

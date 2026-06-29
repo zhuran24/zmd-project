@@ -619,6 +619,51 @@ def _l0_postwrite_dead_guard_token(source: str) -> str:
     )
 
 
+def _insert_child_before_proposal_evidence(source: str, injected: str) -> str:
+    anchor = "    proposal_evidence = _require_mapping(\n"
+    return _replace_once(source, anchor, injected + anchor)
+
+
+def _child_exec_rebinds_precheck(source: str) -> str:
+    return _insert_child_before_proposal_evidence(
+        source,
+        '    exec("global terminal_certified_final_result_project_precheck_violation\\n'
+        'terminal_certified_final_result_project_precheck_violation = lambda *a, **k: None")\n',
+    )
+
+
+def _child_globals_subscript_rebinds_precheck(source: str) -> str:
+    return _insert_child_before_proposal_evidence(
+        source,
+        '    globals()["terminal_certified_final_result_project_precheck_violation"] = '
+        "terminal_certified_final_result_project_precheck_violation\n",
+    )
+
+
+def _child_import_alias_rebinds_precheck(source: str) -> str:
+    return _insert_child_before_proposal_evidence(
+        source,
+        "    import src.search.exact_campaign as _authority_module\n"
+        "    _authority_module.terminal_certified_final_result_project_precheck_violation = "
+        "terminal_certified_final_result_project_precheck_violation\n",
+    )
+
+
+def _child_frame_globals_rebinds_precheck(source: str) -> str:
+    return _insert_child_before_proposal_evidence(
+        source,
+        '    sys._getframe(0).f_globals["terminal_certified_final_result_project_precheck_violation"] = '
+        "terminal_certified_final_result_project_precheck_violation\n",
+    )
+
+
+def _child_dunder_dict_rebind_surface(source: str) -> str:
+    return _insert_child_before_proposal_evidence(
+        source,
+        "    terminal_certified_final_result_project_precheck_violation.__dict__\n",
+    )
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
@@ -699,6 +744,19 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
             "must not rebind durable_records after terminal precheck",
         ),
         ("child", _child_shadows_dict, "must not shadow/rebind dict"),
+        ("child", _child_exec_rebinds_precheck, "dynamic module capability exec"),
+        (
+            "child",
+            _child_globals_subscript_rebinds_precheck,
+            "must not write dynamic namespace mapping globals",
+        ),
+        (
+            "child",
+            _child_import_alias_rebinds_precheck,
+            "must not use bare import statements",
+        ),
+        ("child", _child_frame_globals_rebinds_precheck, "frame access sys._getframe"),
+        ("child", _child_dunder_dict_rebind_surface, "must not access __dict__"),
         ("l0", _l0_parent_washes_declare_mode, "durable mint must assign literal \"strict\""),
         ("l0", _l0_transition_washes_declare_mode, "transition gate must assign literal \"strict\""),
         ("l0", _l0_parent_augassign_ior_after_strict, "durable mint must not rebind scratch_state"),
@@ -756,6 +814,11 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
         "child-mutates-evidence-after-precheck",
         "child-rebinds-durable-records-after-precheck",
         "child-shadows-dict",
+        "child-exec-rebinds-precheck",
+        "child-globals-subscript-rebinds-precheck",
+        "child-import-alias-rebinds-precheck",
+        "child-frame-globals-rebinds-precheck",
+        "child-dunder-dict-rebind-surface",
         "l0-parent-wash-declare-mode",
         "l0-transition-wash-declare-mode",
         "l0-parent-augassign-ior-after-strict",
