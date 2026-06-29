@@ -400,6 +400,153 @@ def _child_ignores_precheck_result(source: str) -> str:
     )
 
 
+def _child_rhs_locals_setitem(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["candidates"] = durable_records\n',
+        '    scratch_state["candidates"] = (locals()["scratch_state"].__setitem__("declare_mode", "best_effort") or durable_records)\n',
+    )
+
+
+def _child_rhs_ior_tuple(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["terminal_frontier_evidence"] = evidence\n',
+        '    scratch_state["terminal_frontier_evidence"] = (scratch_state.__ior__({"declare_mode": "best_effort"}), evidence)[1]\n',
+    )
+
+
+def _child_rhs_walrus_alias(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["final_result"] = certified_final_result\n',
+        '    scratch_state["final_result"] = ((alias := scratch_state).__setitem__("declare_mode", "best_effort") or certified_final_result)\n',
+    )
+
+
+def _child_rhs_exec(source: str) -> str:
+    return _replace_once(
+        source,
+        '    scratch_state["candidates"] = durable_records\n',
+        '    scratch_state["candidates"] = (exec("scratch_state[\\"declare_mode\\"] = \\"best_effort\\"") or durable_records)\n',
+    )
+
+
+def _child_global_globals_setitem(source: str) -> str:
+    source = _replace_once(
+        source,
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n",
+        "def _verify_supervisor_domain(payload: Mapping[str, Any], *, nonce: str) -> dict[str, Any]:\n"
+        "    global scratch_state\n",
+    )
+    return _replace_once(
+        source,
+        '    scratch_state["candidates"] = durable_records\n',
+        '    scratch_state["candidates"] = (globals().__setitem__("scratch_state", {"declare_mode": "best_effort"}) or durable_records)\n',
+    )
+
+
+def _child_local_def_shadow_precheck(source: str) -> str:
+    import_block = (
+        "    from src.search.exact_campaign import (\n"
+        "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        terminal_certified_final_result_project_precheck_violation,\n"
+        "    )\n"
+    )
+    return _replace_once(
+        source,
+        import_block,
+        import_block
+        + "    def terminal_certified_final_result_project_precheck_violation(*_args: object, **_kwargs: object) -> None:\n"
+        + "        return None\n",
+    )
+
+
+def _child_imports_fake_precheck_module(source: str) -> str:
+    return _replace_once(
+        source,
+        "    from src.search.exact_campaign import (\n",
+        "    from fake.search.exact_campaign import (\n",
+    )
+
+
+def _child_setattr_monkeypatches_precheck(source: str) -> str:
+    import_block = (
+        "    from src.search.exact_campaign import (\n"
+        "        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n"
+        "        terminal_certified_final_result_project_precheck_violation,\n"
+        "    )\n"
+    )
+    return _replace_once(
+        source,
+        import_block,
+        "    import src.search.exact_campaign as exact_campaign_module\n"
+        '    setattr(exact_campaign_module, "terminal_certified_final_result_project_precheck_violation", lambda *_args, **_kwargs: None)\n'
+        + import_block,
+    )
+
+
+def _child_rebinds_project_root(source: str) -> str:
+    return _replace_once(
+        source,
+        "    proposal_evidence = _require_mapping(\n",
+        '    project_root = Path("/tmp/evil").resolve()\n'
+        "    proposal_evidence = _require_mapping(\n",
+    )
+
+
+def _child_dead_nested_precheck_raise(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if precheck_reason is not None:\n'
+        '        raise ValueError(f"terminal project precheck failed:{precheck_reason}")\n',
+        "    if precheck_reason is not None:\n"
+        "        if False:\n"
+        '            raise ValueError(f"terminal project precheck failed:{precheck_reason}")\n',
+    )
+
+
+def _child_delays_precheck_consumption_after_return(source: str) -> str:
+    consume = (
+        '    if precheck_reason is not None:\n'
+        '        raise ValueError(f"terminal project precheck failed:{precheck_reason}")\n'
+    )
+    return _replace_once(
+        source,
+        consume,
+        '    return {"schema_version": DOMAIN_SCHEMA_VERSION}\n' + consume,
+    )
+
+
+def _child_mutates_evidence_after_precheck(source: str) -> str:
+    consume = (
+        '    if precheck_reason is not None:\n'
+        '        raise ValueError(f"terminal project precheck failed:{precheck_reason}")\n'
+    )
+    return _replace_once(
+        source,
+        consume,
+        consume + "    evidence.clear()\n    evidence.update(proposal_evidence)\n",
+    )
+
+
+def _child_rebinds_durable_records_after_precheck(source: str) -> str:
+    consume = (
+        '    if precheck_reason is not None:\n'
+        '        raise ValueError(f"terminal project precheck failed:{precheck_reason}")\n'
+    )
+    return _replace_once(source, consume, consume + "    durable_records = replayed_records\n")
+
+
+def _child_shadows_dict(source: str) -> str:
+    return _replace_once(
+        source,
+        "    proposal_evidence = _require_mapping(\n",
+        "    dict = _evil_dict\n"
+        "    proposal_evidence = _require_mapping(\n",
+    )
+
+
 def _l0_parent_washes_declare_mode(source: str) -> str:
     return _replace_once(
         source,
@@ -422,6 +569,53 @@ def _exact_transition_update_clobbers_declare_mode(source: str) -> str:
         '    expected["declare_mode"] = "strict"\n',
         '    expected["declare_mode"] = "strict"\n'
         '    dict.update(expected, {"declare_mode": "best_effort"})\n',
+    )
+
+
+def _l0_parent_augassign_ior_after_strict(source: str) -> str:
+    return _replace_once(
+        source,
+        '        scratch_state["declare_mode"] = "strict"\n',
+        '        scratch_state["declare_mode"] = "strict"\n'
+        '        scratch_state |= {"declare_mode": "best_effort"}\n',
+    )
+
+
+def _l0_parent_alias_clobbers_declare_mode(source: str) -> str:
+    return _replace_once(
+        source,
+        '        scratch_state["declare_mode"] = "strict"\n',
+        '        scratch_state["declare_mode"] = "strict"\n'
+        "        s = scratch_state\n"
+        '        s["declare_mode"] = "best_effort"\n',
+    )
+
+
+def _l0_parent_dunder_ior_after_strict(source: str) -> str:
+    return _replace_once(
+        source,
+        '        scratch_state["declare_mode"] = "strict"\n',
+        '        scratch_state["declare_mode"] = "strict"\n'
+        '        scratch_state.__ior__({"declare_mode": "best_effort"})\n',
+    )
+
+
+def _exact_transition_locals_mutator(source: str) -> str:
+    return _replace_once(
+        source,
+        '    expected["declare_mode"] = "strict"\n',
+        '    expected["declare_mode"] = "strict"\n'
+        '    locals()["expected"].__setitem__("declare_mode", "best_effort")\n',
+    )
+
+
+def _l0_postwrite_dead_guard_token(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if str(disk_state.get("declare_mode")) != "strict":\n'
+        '        return "postwrite_declare_mode_not_strict"\n',
+        '    if False and str(disk_state.get("declare_mode")) != "strict":\n'
+        '        return "postwrite_declare_mode_not_strict"\n',
     )
 
 
@@ -463,12 +657,71 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
         ("child", _child_shadows_terminal_reason, "must not shadow TERMINAL_FULL_FRONTIER_CERTIFIED_REASON"),
         ("child", _child_wrong_project_root_precheck, "project_root=project_root"),
         ("child", _child_ignores_precheck_result, "precheck result must be consumed"),
+        ("child", _child_rhs_locals_setitem, 'scratch_state["candidates"] RHS must be Name("durable_records")'),
+        (
+            "child",
+            _child_rhs_ior_tuple,
+            'scratch_state["terminal_frontier_evidence"] RHS must be Name("evidence")',
+        ),
+        (
+            "child",
+            _child_rhs_walrus_alias,
+            'scratch_state["final_result"] RHS must be Name("certified_final_result")',
+        ),
+        ("child", _child_rhs_exec, 'scratch_state["candidates"] RHS must be Name("durable_records")'),
+        ("child", _child_global_globals_setitem, "must not use global/nonlocal declarations"),
+        (
+            "child",
+            _child_local_def_shadow_precheck,
+            "must not define reserved name terminal_certified_final_result_project_precheck_violation",
+        ),
+        (
+            "child",
+            _child_imports_fake_precheck_module,
+            "authority imports must come directly from src.search.exact_campaign",
+        ),
+        ("child", _child_setattr_monkeypatches_precheck, "dynamic module capability setattr"),
+        ("child", _child_rebinds_project_root, "must not shadow/rebind project_root"),
+        (
+            "child",
+            _child_dead_nested_precheck_raise,
+            "terminal precheck result must be consumed by the immediately following",
+        ),
+        (
+            "child",
+            _child_delays_precheck_consumption_after_return,
+            "terminal precheck result must be consumed by the immediately following",
+        ),
+        ("child", _child_mutates_evidence_after_precheck, "must not mutate evidence.clear"),
+        (
+            "child",
+            _child_rebinds_durable_records_after_precheck,
+            "must not rebind durable_records after terminal precheck",
+        ),
+        ("child", _child_shadows_dict, "must not shadow/rebind dict"),
         ("l0", _l0_parent_washes_declare_mode, "durable mint must assign literal \"strict\""),
         ("l0", _l0_transition_washes_declare_mode, "transition gate must assign literal \"strict\""),
+        ("l0", _l0_parent_augassign_ior_after_strict, "durable mint must not rebind scratch_state"),
+        (
+            "l0",
+            _l0_parent_alias_clobbers_declare_mode,
+            'durable mint must not clobber scratch_state["declare_mode"]',
+        ),
+        ("l0", _l0_parent_dunder_ior_after_strict, "durable mint must not call a mutator"),
         (
             "exact",
             _exact_transition_update_clobbers_declare_mode,
             'ExactCampaign supervisor transition gate must not call a mutator',
+        ),
+        (
+            "exact",
+            _exact_transition_locals_mutator,
+            'ExactCampaign supervisor transition gate must not call a mutator',
+        ),
+        (
+            "l0",
+            _l0_postwrite_dead_guard_token,
+            "postwrite validator must have a live top-level declare_mode strict guard",
         ),
     ],
     ids=[
@@ -489,9 +742,28 @@ def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: 
         "child-shadow-terminal-reason",
         "child-wrong-project-root",
         "child-ignore-precheck",
+        "child-rhs-locals-setitem",
+        "child-rhs-ior-tuple",
+        "child-rhs-walrus-alias",
+        "child-rhs-exec",
+        "child-global-globals-setitem",
+        "child-local-def-shadow-precheck",
+        "child-imports-fake-precheck-module",
+        "child-setattr-monkeypatches-precheck",
+        "child-rebinds-project-root",
+        "child-dead-nested-precheck-raise",
+        "child-delays-precheck-consumption-after-return",
+        "child-mutates-evidence-after-precheck",
+        "child-rebinds-durable-records-after-precheck",
+        "child-shadows-dict",
         "l0-parent-wash-declare-mode",
         "l0-transition-wash-declare-mode",
+        "l0-parent-augassign-ior-after-strict",
+        "l0-parent-alias-clobbers-declare-mode",
+        "l0-parent-dunder-ior-after-strict",
         "exact-transition-update-clobber",
+        "exact-transition-locals-mutator",
+        "l0-postwrite-dead-guard-token",
     ],
 )
 def test_p1_2_checker_rejects_pr2_5_ast_pin_bypass_variants(

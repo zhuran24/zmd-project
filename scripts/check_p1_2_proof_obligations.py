@@ -2211,9 +2211,34 @@ _PR2_MUTATING_MAPPING_METHODS = frozenset(
         "setdefault",
         "__setitem__",
         "__delitem__",
+        "__ior__",
         "pop",
         "popitem",
     }
+)
+_PR2_CHILD_AUTHORITY_IMPORT_MODULE = "src.search.exact_campaign"
+_PR2_CHILD_AUTHORITY_NAMES = frozenset(
+    {
+        "terminal_certified_final_result_project_precheck_violation",
+        "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
+    }
+)
+_PR2_CHILD_RESERVED_RUNTIME_NAMES = frozenset(
+    {
+        "dict",
+        "_canonical_digest",
+        "_stable_fixed_witness_candidate_records",
+        "payload",
+        "authority_state",
+        "certified_final_result",
+        "evidence",
+        "durable_records",
+        "project_root",
+        "scratch_state",
+    }
+) | _PR2_CHILD_AUTHORITY_NAMES
+_PR2_CHILD_POST_PRECHECK_PROTECTED_NAMES = frozenset(
+    {"certified_final_result", "evidence", "durable_records"}
 )
 
 
@@ -2257,6 +2282,47 @@ def _target_contains_name(target: ast.AST, name: str) -> bool:
     return any(isinstance(node, ast.Name) and node.id == name for node in ast.walk(target))
 
 
+def _target_bound_names(target: ast.AST) -> set[str]:
+    if isinstance(target, ast.Name):
+        return {target.id}
+    if isinstance(target, (ast.Tuple, ast.List)):
+        names: set[str] = set()
+        for element in target.elts:
+            names.update(_target_bound_names(element))
+        return names
+    if isinstance(target, ast.Starred):
+        return _target_bound_names(target.value)
+    return set()
+
+
+def _stmt_bound_names(stmt: ast.AST) -> set[str]:
+    if isinstance(stmt, ast.Assign):
+        names: set[str] = set()
+        for target in stmt.targets:
+            names.update(_target_bound_names(target))
+        return names
+    if isinstance(stmt, (ast.AnnAssign, ast.AugAssign, ast.NamedExpr)):
+        return _target_bound_names(stmt.target)
+    if isinstance(stmt, (ast.For, ast.AsyncFor)):
+        return _target_bound_names(stmt.target)
+    if isinstance(stmt, ast.With):
+        names: set[str] = set()
+        for item in stmt.items:
+            if item.optional_vars is not None:
+                names.update(_target_bound_names(item.optional_vars))
+        return names
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return {stmt.name}
+    if isinstance(stmt, ast.Import):
+        return {
+            alias.asname or alias.name.split(".", 1)[0]
+            for alias in stmt.names
+        }
+    if isinstance(stmt, ast.ImportFrom):
+        return {alias.asname or alias.name for alias in stmt.names}
+    return set()
+
+
 def _assigns_name(stmt: ast.AST, name: str) -> bool:
     if isinstance(stmt, ast.Assign):
         return any(isinstance(target, ast.Name) and target.id == name for target in stmt.targets)
@@ -2278,6 +2344,130 @@ def _is_dict_copy_from_authority_state(stmt: ast.Assign) -> bool:
         and _is_name(stmt.value.args[0], "authority_state")
         and not stmt.value.keywords
     )
+
+
+def _payload_get_call(node: ast.AST, key: str) -> bool:
+    return (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "get"
+        and _is_name(node.func.value, "payload")
+        and len(node.args) == 1
+        and _is_constant(node.args[0], key)
+        and not node.keywords
+    )
+
+
+def _strict_string_payload_get_call(node: ast.AST, key: str) -> bool:
+    return (
+        isinstance(node, ast.Call)
+        and _call_func_name(node) == "_strict_string"
+        and len(node.args) == 2
+        and _payload_get_call(node.args[0], key)
+        and _is_constant(node.args[1], key)
+        and not node.keywords
+    )
+
+
+def _is_project_root_init(stmt: ast.AST) -> bool:
+    if not (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"project_root"}
+        and isinstance(stmt.value, ast.Call)
+        and isinstance(stmt.value.func, ast.Attribute)
+        and stmt.value.func.attr == "resolve"
+        and not stmt.value.args
+        and not stmt.value.keywords
+    ):
+        return False
+    path_call = stmt.value.func.value
+    return (
+        isinstance(path_call, ast.Call)
+        and _call_func_name(path_call) == "Path"
+        and len(path_call.args) == 1
+        and _strict_string_payload_get_call(path_call.args[0], "project_root")
+        and not path_call.keywords
+    )
+
+
+def _is_authority_state_init(stmt: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"authority_state"}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "_json_copy"
+        and len(stmt.value.args) == 1
+        and isinstance(stmt.value.args[0], ast.Call)
+        and _call_func_name(stmt.value.args[0]) == "_require_mapping"
+        and len(stmt.value.args[0].args) == 2
+        and _payload_get_call(stmt.value.args[0].args[0], "authority_state")
+        and _is_constant(stmt.value.args[0].args[1], "authority_state")
+        and not stmt.value.keywords
+        and not stmt.value.args[0].keywords
+    )
+
+
+def _is_certified_final_result_init(stmt: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"certified_final_result"}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "dict"
+        and len(stmt.value.args) == 1
+        and _is_name(stmt.value.args[0], "final_result")
+        and not stmt.value.keywords
+    )
+
+
+def _is_durable_records_init(stmt: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and "durable_records" in _stmt_bound_names(stmt)
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "_run_fixed_witness_direct"
+    )
+
+
+def _is_evidence_init(stmt: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {"evidence"}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "build_terminal_frontier_evidence"
+    )
+
+
+def _is_allowed_child_reserved_binding(
+    node: ast.AST,
+    name: str,
+    *,
+    scratch_state_init_id: int | None,
+) -> bool:
+    if name == "scratch_state":
+        return isinstance(node, ast.Assign) and id(node) == scratch_state_init_id
+    if name == "project_root":
+        return _is_project_root_init(node)
+    if name == "authority_state":
+        return _is_authority_state_init(node)
+    if name == "certified_final_result":
+        return _is_certified_final_result_init(node)
+    if name == "durable_records":
+        return _is_durable_records_init(node)
+    if name == "evidence":
+        return _is_evidence_init(node)
+    return False
+
+
+def _child_reserved_binding_error(name: str) -> str:
+    if name == "scratch_state":
+        return "PR2 true verifier child must not rebind scratch_state"
+    if name in _PR2_CHILD_AUTHORITY_NAMES:
+        return f"PR2 true verifier child must not shadow {name}"
+    return f"PR2 true verifier child must not shadow/rebind {name}"
 
 
 def _is_supervisor_proposal_pop(stmt: ast.AST) -> bool:
@@ -2313,6 +2503,38 @@ def _last_stop_reason_terminal_dict_ok(value: ast.AST) -> bool:
     )
 
 
+def _child_elevation_slot_rhs_ok(slot: str, value: ast.AST) -> bool:
+    canonical_names = {
+        "final_result": "certified_final_result",
+        "terminal_frontier_evidence": "evidence",
+        "candidates": "durable_records",
+    }
+    if slot in canonical_names:
+        return _is_name(value, canonical_names[slot])
+    if slot == "final_status":
+        return _is_constant(value, "CERTIFIED")
+    if slot == "declare_mode":
+        return _is_constant(value, "strict")
+    if slot == "last_stop_reason":
+        return _last_stop_reason_terminal_dict_ok(value)
+    return False
+
+
+def _child_elevation_slot_rhs_error(slot: str) -> str:
+    canonical_names = {
+        "final_result": 'Name("certified_final_result")',
+        "terminal_frontier_evidence": 'Name("evidence")',
+        "candidates": 'Name("durable_records")',
+        "final_status": 'constant "CERTIFIED"',
+        "declare_mode": 'constant "strict"',
+        "last_stop_reason": 'exactly {"reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, "status": "CERTIFIED"}',
+    }
+    return (
+        f'PR2 true verifier child scratch_state["{slot}"] RHS must be '
+        f"{canonical_names[slot]}"
+    )
+
+
 def _is_precheck_assign(stmt: ast.AST) -> tuple[str, ast.Call] | None:
     if (
         isinstance(stmt, ast.Assign)
@@ -2339,7 +2561,121 @@ def _if_consumes_precheck_result(stmt: ast.AST, result_name: str) -> bool:
         and _is_constant(test.comparators[0], None)
     ):
         return False
-    return any(isinstance(node, ast.Raise) for body_stmt in stmt.body for node in ast.walk(body_stmt))
+    return len(stmt.body) == 1 and isinstance(stmt.body[0], ast.Raise) and not stmt.orelse
+
+
+def _canonical_digest_assign(stmt: ast.AST, target_name: str, arg: ast.AST) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {target_name}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == "_canonical_digest"
+        and len(stmt.value.args) == 1
+        and ast.dump(stmt.value.args[0], include_attributes=False)
+        == ast.dump(arg, include_attributes=False)
+        and not stmt.value.keywords
+    )
+
+
+def _payload_get_digest_compare(node: ast.AST, digest_name: str, payload_key: str) -> bool:
+    return (
+        isinstance(node, ast.Compare)
+        and _is_name(node.left, digest_name)
+        and len(node.ops) == 1
+        and isinstance(node.ops[0], ast.NotEq)
+        and len(node.comparators) == 1
+        and _payload_get_call(node.comparators[0], payload_key)
+    )
+
+
+def _digest_mismatch_if(stmt: ast.AST, digest_name: str, payload_key: str) -> bool:
+    return (
+        isinstance(stmt, ast.If)
+        and _payload_get_digest_compare(stmt.test, digest_name, payload_key)
+        and len(stmt.body) == 1
+        and isinstance(stmt.body[0], ast.Raise)
+        and not stmt.orelse
+    )
+
+
+def _return_domain_uses_canonical_names(stmt: ast.AST) -> bool:
+    if not isinstance(stmt, ast.Return) or not isinstance(stmt.value, ast.Dict):
+        return False
+    items: dict[str, ast.AST] = {}
+    for key, value in zip(stmt.value.keys, stmt.value.values):
+        if isinstance(key, ast.Constant) and isinstance(key.value, str):
+            items[key.value] = value
+    return (
+        _is_name(items.get("final_result", ast.Constant(None)), "certified_final_result")
+        and _is_name(items.get("terminal_frontier_evidence", ast.Constant(None)), "evidence")
+        and _is_name(items.get("candidate_records", ast.Constant(None)), "durable_records")
+    )
+
+
+def _check_child_post_precheck_tail(body: Sequence[ast.stmt], consume_idx: int) -> list[str]:
+    errors: list[str] = []
+    expected_arg_records = ast.Call(
+        func=ast.Name(id="_stable_fixed_witness_candidate_records", ctx=ast.Load()),
+        args=[ast.Name(id="durable_records", ctx=ast.Load())],
+        keywords=[],
+    )
+    expected_tail: list[tuple[str, Callable[[ast.stmt], bool]]] = [
+        (
+            "final_digest = _canonical_digest(certified_final_result)",
+            lambda stmt: _canonical_digest_assign(
+                stmt, "final_digest", ast.Name(id="certified_final_result", ctx=ast.Load())
+            ),
+        ),
+        (
+            "evidence_digest = _canonical_digest(evidence)",
+            lambda stmt: _canonical_digest_assign(
+                stmt, "evidence_digest", ast.Name(id="evidence", ctx=ast.Load())
+            ),
+        ),
+        (
+            "records_digest = _canonical_digest(_stable_fixed_witness_candidate_records(durable_records))",
+            lambda stmt: _canonical_digest_assign(stmt, "records_digest", expected_arg_records),
+        ),
+        (
+            "if final_digest != payload.get(\"proposal_final_result_digest\"): raise ...",
+            lambda stmt: _digest_mismatch_if(stmt, "final_digest", "proposal_final_result_digest"),
+        ),
+        (
+            "if evidence_digest != payload.get(\"proposal_terminal_frontier_evidence_digest\"): raise ...",
+            lambda stmt: _digest_mismatch_if(
+                stmt,
+                "evidence_digest",
+                "proposal_terminal_frontier_evidence_digest",
+            ),
+        ),
+        (
+            "if records_digest != payload.get(\"proposal_candidate_records_digest\"): raise ...",
+            lambda stmt: _digest_mismatch_if(
+                stmt,
+                "records_digest",
+                "proposal_candidate_records_digest",
+            ),
+        ),
+        (
+            "return domain with canonical final_result/evidence/durable_records names",
+            _return_domain_uses_canonical_names,
+        ),
+    ]
+    tail = list(body[consume_idx + 1 :])
+    if len(tail) != len(expected_tail):
+        errors.append(
+            "PR2 true verifier child post-precheck tail must be exactly "
+            "3 digest assignments, 3 digest mismatch raises, and the final return"
+        )
+        return errors
+    for offset, (description, predicate) in enumerate(expected_tail):
+        if not predicate(tail[offset]):
+            errors.append(
+                "PR2 true verifier child post-precheck tail statement "
+                f"{offset + 1} must be {description}"
+            )
+    return errors
 
 
 def _call_has_direct_name_arg(call: ast.Call, name: str) -> bool:
@@ -2427,31 +2763,48 @@ def _check_true_verifier_child_domain_elevation_window(
                 'PR2 true verifier child canonical window must have exactly one '
                 'scratch_state.pop("supervisor_proposal", None)'
             )
-        final_status = slot_assigns.get("final_status")
-        if final_status is not None and not _is_constant(final_status.value, "CERTIFIED"):
-            errors.append('PR2 true verifier child scratch_state["final_status"] must be constant "CERTIFIED"')
-        declare_mode = slot_assigns.get("declare_mode")
-        if declare_mode is not None and not _is_constant(declare_mode.value, "strict"):
-            errors.append('PR2 true verifier child scratch_state["declare_mode"] must be constant "strict"')
-        last_stop_reason = slot_assigns.get("last_stop_reason")
-        if last_stop_reason is not None and not _last_stop_reason_terminal_dict_ok(last_stop_reason.value):
-            errors.append(
-                'PR2 true verifier child scratch_state["last_stop_reason"] must be exactly '
-                '{"reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON, "status": "CERTIFIED"}'
-            )
+        for slot, stmt in sorted(slot_assigns.items()):
+            if not _child_elevation_slot_rhs_ok(slot, stmt.value):
+                errors.append(_child_elevation_slot_rhs_error(slot))
         if not (precheck_call.args and _is_name(precheck_call.args[0], "scratch_state")):
             errors.append("PR2 true verifier child terminal precheck must take scratch_state as its first positional arg")
         project_root_keywords = [kw for kw in precheck_call.keywords if kw.arg == "project_root"]
         if len(project_root_keywords) != 1 or not _is_name(project_root_keywords[0].value, "project_root"):
             errors.append("PR2 true verifier child terminal precheck must bind project_root=project_root")
-        if not any(
-            _if_consumes_precheck_result(stmt, precheck_result_name)
-            for stmt in body[precheck_idx + 1 :]
-        ):
+        consume_idx = precheck_idx + 1
+        if consume_idx >= len(body) or not _if_consumes_precheck_result(body[consume_idx], precheck_result_name):
             errors.append(
                 "PR2 true verifier child terminal precheck result must be consumed by "
-                f"if {precheck_result_name} is not None: raise ..."
+                f"the immediately following if {precheck_result_name} is not None: raise ..."
             )
+        else:
+            errors.extend(_check_child_post_precheck_tail(body, consume_idx))
+            for stmt in body[consume_idx + 1 :]:
+                for node in ast.walk(stmt):
+                    bound = _stmt_bound_names(node)
+                    for name in sorted(bound & _PR2_CHILD_POST_PRECHECK_PROTECTED_NAMES):
+                        errors.append(
+                            f"PR2 true verifier child must not rebind {name} after terminal precheck"
+                        )
+                    if (
+                        isinstance(node, ast.Delete)
+                        and any(
+                            _target_bound_names(target) & _PR2_CHILD_POST_PRECHECK_PROTECTED_NAMES
+                            for target in node.targets
+                        )
+                    ):
+                        errors.append("PR2 true verifier child must not delete post-precheck domain locals")
+                    if (
+                        isinstance(node, ast.Call)
+                        and isinstance(node.func, ast.Attribute)
+                        and isinstance(node.func.value, ast.Name)
+                        and node.func.value.id in _PR2_CHILD_POST_PRECHECK_PROTECTED_NAMES
+                        and node.func.attr in _PR2_MUTATING_MAPPING_METHODS
+                    ):
+                        errors.append(
+                            "PR2 true verifier child must not mutate "
+                            f"{node.func.value.id}.{node.func.attr}(...) after terminal precheck"
+                        )
         for stmt in body[precheck_idx + 1 :]:
             for node in ast.walk(stmt):
                 if _assigns_name(node, precheck_result_name):
@@ -2475,18 +2828,21 @@ def _check_true_verifier_child_domain_elevation_window(
             'PR2 true verifier child must have exactly one full-function '
             'scratch_state.pop("supervisor_proposal", None)'
         )
-    shadowed_authority_names = {
-        "terminal_certified_final_result_project_precheck_violation",
-        "TERMINAL_FULL_FRONTIER_CERTIFIED_REASON",
-    }
+    authority_import_counts = {name: 0 for name in _PR2_CHILD_AUTHORITY_NAMES}
     for node in ast.walk(child_domain_fn):
+        if isinstance(node, (ast.Global, ast.Nonlocal)):
+            errors.append("PR2 true verifier child must not use global/nonlocal declarations")
+        if isinstance(node, ast.Lambda):
+            errors.append("PR2 true verifier child must not use lambda expressions")
         if isinstance(node, ast.Assign):
             for target in node.targets:
-                if isinstance(target, ast.Name):
-                    if target.id == "scratch_state" and id(node) != init_id:
-                        errors.append("PR2 true verifier child must not rebind scratch_state")
-                    if target.id in shadowed_authority_names:
-                        errors.append(f"PR2 true verifier child must not shadow {target.id}")
+                for bound_name in sorted(_target_bound_names(target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
+                    if not _is_allowed_child_reserved_binding(
+                        node,
+                        bound_name,
+                        scratch_state_init_id=init_id,
+                    ):
+                        errors.append(_child_reserved_binding_error(bound_name))
                 direct_slot = _subscript_constant_slot(target, "scratch_state")
                 if direct_slot is not None and id(node) not in allowed_slot_assign_ids:
                     errors.append(
@@ -2503,29 +2859,73 @@ def _check_true_verifier_child_domain_elevation_window(
                         errors.append("PR2 true verifier child must not alias scratch_state")
         elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
             target = node.target
-            if isinstance(target, ast.Name) and target.id in shadowed_authority_names:
-                errors.append(f"PR2 true verifier child must not shadow {target.id}")
+            for bound_name in sorted(_target_bound_names(target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
+                errors.append(_child_reserved_binding_error(bound_name))
             if _target_contains_name(target, "scratch_state"):
                 errors.append("PR2 true verifier child must not AugAssign/AnnAssign scratch_state or its slots")
         elif isinstance(node, ast.Delete):
             if any(_target_contains_name(target, "scratch_state") for target in node.targets):
                 errors.append("PR2 true verifier child must not delete scratch_state or its slots")
+            for target in node.targets:
+                for bound_name in sorted(_target_bound_names(target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
+                    errors.append(f"PR2 true verifier child must not delete {bound_name}")
         elif isinstance(node, ast.NamedExpr):
-            if isinstance(node.target, ast.Name):
-                if node.target.id == "scratch_state":
-                    errors.append("PR2 true verifier child must not rebind scratch_state")
-                if node.target.id in shadowed_authority_names:
-                    errors.append(f"PR2 true verifier child must not shadow {node.target.id}")
+            for bound_name in sorted(_target_bound_names(node.target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
+                errors.append(_child_reserved_binding_error(bound_name))
             if _target_contains_name(node.target, "scratch_state"):
                 errors.append("PR2 true verifier child must not mutate scratch_state with assignment expressions")
         elif isinstance(node, (ast.For, ast.AsyncFor)):
+            for bound_name in sorted(_target_bound_names(node.target) & _PR2_CHILD_RESERVED_RUNTIME_NAMES):
+                errors.append(f"PR2 true verifier child must not bind reserved name {bound_name} in a loop target")
             if _target_contains_name(node.target, "scratch_state"):
                 errors.append("PR2 true verifier child must not bind scratch_state in a loop target")
         elif isinstance(node, ast.With):
             for item in node.items:
+                if item.optional_vars is not None:
+                    for bound_name in sorted(
+                        _target_bound_names(item.optional_vars) & _PR2_CHILD_RESERVED_RUNTIME_NAMES
+                    ):
+                        errors.append(
+                            f"PR2 true verifier child must not bind reserved name {bound_name} in a with target"
+                        )
                 if item.optional_vars is not None and _target_contains_name(item.optional_vars, "scratch_state"):
                     errors.append("PR2 true verifier child must not bind scratch_state in a with target")
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node is not child_domain_fn:
+            if node.name in _PR2_CHILD_RESERVED_RUNTIME_NAMES:
+                errors.append(f"PR2 true verifier child must not define reserved name {node.name}")
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                bound_name = alias.asname or alias.name.split(".", 1)[0]
+                if bound_name in _PR2_CHILD_RESERVED_RUNTIME_NAMES:
+                    errors.append(f"PR2 true verifier child must not import-as reserved name {bound_name}")
+                if alias.name == "importlib" or alias.name.startswith("importlib."):
+                    errors.append("PR2 true verifier child must not import importlib dynamically")
+        elif isinstance(node, ast.ImportFrom):
+            for alias in node.names:
+                bound_name = alias.asname or alias.name
+                if alias.name in _PR2_CHILD_AUTHORITY_NAMES or bound_name in _PR2_CHILD_AUTHORITY_NAMES:
+                    if (
+                        node.module != _PR2_CHILD_AUTHORITY_IMPORT_MODULE
+                        or alias.asname is not None
+                        or alias.name != bound_name
+                    ):
+                        errors.append(
+                            "PR2 true verifier child authority imports must come directly from "
+                            f"{_PR2_CHILD_AUTHORITY_IMPORT_MODULE}"
+                        )
+                    else:
+                        authority_import_counts[alias.name] += 1
+                if (
+                    bound_name in _PR2_CHILD_RESERVED_RUNTIME_NAMES
+                    and alias.name not in _PR2_CHILD_AUTHORITY_NAMES
+                ):
+                    errors.append(f"PR2 true verifier child must not import-as reserved name {bound_name}")
         elif isinstance(node, ast.Call):
+            call_name = _call_func_name(node)
+            if call_name in {"__import__", "setattr", "delattr"} or (
+                call_name is not None and call_name.startswith("importlib.")
+            ):
+                errors.append(f"PR2 true verifier child must not use dynamic module capability {call_name}")
             if (
                 isinstance(node.func, ast.Attribute)
                 and _is_name(node.func.value, "scratch_state")
@@ -2547,7 +2947,6 @@ def _check_true_verifier_child_domain_elevation_window(
                         f'PR2 true verifier child must not call scratch_state["{nested_slot}"].{node.func.attr}(...)'
                     )
             if _call_has_direct_name_arg(node, "scratch_state"):
-                call_name = _call_func_name(node)
                 if not (
                     call_name == "dict"
                     or (
@@ -2559,6 +2958,18 @@ def _check_true_verifier_child_domain_elevation_window(
                         "PR2 true verifier child must not pass scratch_state to helper calls "
                         "other than dict(...) or the terminal precheck"
                     )
+        elif (
+            isinstance(node, ast.Attribute)
+            and node.attr == "modules"
+            and _is_name(node.value, "sys")
+        ):
+            errors.append("PR2 true verifier child must not access sys.modules")
+    for name, count in sorted(authority_import_counts.items()):
+        if count != 1:
+            errors.append(
+                "PR2 true verifier child must import authority name exactly once from "
+                f"{_PR2_CHILD_AUTHORITY_IMPORT_MODULE}: {name}"
+            )
     return errors
 
 
@@ -2582,10 +2993,72 @@ def _call_first_arg_is_name(call: ast.Call, name: str) -> bool:
     return bool(call.args and _is_name(call.args[0], name))
 
 
-def _call_may_clobber_mapping_slot(call: ast.Call, mapping_name: str, slot: str) -> bool:
+def _dynamic_namespace_mapping_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Subscript):
+        namespace = node.value
+        if (
+            isinstance(namespace, ast.Call)
+            and _call_func_name(namespace) in {"locals", "globals", "vars"}
+            and not namespace.args
+            and not namespace.keywords
+            and isinstance(node.slice, ast.Constant)
+            and isinstance(node.slice.value, str)
+        ):
+            return node.slice.value
+    if (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "get"
+        and isinstance(node.func.value, ast.Call)
+        and _call_func_name(node.func.value) in {"locals", "globals", "vars"}
+        and not node.func.value.args
+        and not node.func.value.keywords
+        and len(node.args) >= 1
+        and isinstance(node.args[0], ast.Constant)
+        and isinstance(node.args[0].value, str)
+    ):
+        return node.args[0].value
+    return None
+
+
+def _expr_may_reference_mapping(node: ast.AST, mapping_names: frozenset[str]) -> bool:
+    if isinstance(node, ast.Name):
+        return node.id in mapping_names
+    dynamic_name = _dynamic_namespace_mapping_name(node)
+    return dynamic_name in mapping_names
+
+
+def _subscript_constant_slot_for_names(node: ast.AST, base_names: frozenset[str]) -> tuple[str, str] | None:
+    if (
+        isinstance(node, ast.Subscript)
+        and isinstance(node.value, ast.Name)
+        and node.value.id in base_names
+        and isinstance(node.slice, ast.Constant)
+        and isinstance(node.slice.value, str)
+    ):
+        return node.value.id, node.slice.value
+    return None
+
+
+def _call_may_clobber_mapping_slot(
+    call: ast.Call,
+    mapping_name: str,
+    slot: str,
+    *,
+    aliases: frozenset[str] = frozenset(),
+) -> bool:
+    mapping_names = frozenset({mapping_name}) | aliases
     if isinstance(call.func, ast.Attribute):
-        if _is_name(call.func.value, mapping_name):
-            if call.func.attr in {"update", "clear", "setdefault", "__setitem__", "__delitem__", "popitem"}:
+        if _expr_may_reference_mapping(call.func.value, mapping_names):
+            if call.func.attr in {
+                "update",
+                "clear",
+                "setdefault",
+                "__setitem__",
+                "__delitem__",
+                "__ior__",
+                "popitem",
+            }:
                 return True
             if call.func.attr == "pop":
                 if not call.args:
@@ -2596,9 +3069,20 @@ def _call_may_clobber_mapping_slot(call: ast.Call, mapping_name: str, slot: str)
                     return False
                 return not isinstance(call.args[0], ast.Constant)
         dotted = _call_func_name(call)
-        if dotted in {"dict.update", "dict.__setitem__", "dict.__delitem__", "operator.setitem"}:
-            return _call_first_arg_is_name(call, mapping_name)
-    if _call_func_name(call) == "getattr" and _call_first_arg_is_name(call, mapping_name):
+        if dotted in {
+            "dict.update",
+            "dict.__setitem__",
+            "dict.__delitem__",
+            "dict.__ior__",
+            "operator.setitem",
+            "operator.ior",
+        }:
+            return bool(call.args and _expr_may_reference_mapping(call.args[0], mapping_names))
+    if (
+        _call_func_name(call) == "getattr"
+        and call.args
+        and _expr_may_reference_mapping(call.args[0], mapping_names)
+    ):
         if len(call.args) >= 2 and isinstance(call.args[1], ast.Constant):
             return call.args[1].value in _PR2_MUTATING_MAPPING_METHODS
         return True
@@ -2634,25 +3118,104 @@ def _check_literal_strict_slot_assignment(
     assignment = assignments[0]
     if not _is_constant(assignment.value, "strict"):
         errors.append(f'{label} must assign literal "strict" to {mapping_name}["{slot}"]')
-    for node in ast.walk(function):
+    ordered_nodes = sorted(
+        (node for node in ast.walk(function) if hasattr(node, "lineno")),
+        key=lambda node: (
+            int(getattr(node, "lineno", 0) or 0),
+            int(getattr(node, "col_offset", 0) or 0),
+        ),
+    )
+    aliases: set[str] = set()
+    for node in ordered_nodes:
+        if isinstance(node, ast.Assign) and isinstance(node.value, ast.Name) and node.value.id in {mapping_name} | aliases:
+            for target in node.targets:
+                for bound_name in _target_bound_names(target):
+                    if bound_name != mapping_name:
+                        aliases.add(bound_name)
+        if _node_starts_after(node, assignment):
+            break
+    for node in ordered_nodes:
         if node is assignment or not hasattr(node, "lineno"):
             continue
         if not _node_starts_after(node, assignment):
             continue
         if isinstance(node, ast.Assign):
             for target in node.targets:
-                if _subscript_constant_slot(target, mapping_name) == slot:
+                if isinstance(target, ast.Name) and target.id == mapping_name:
+                    errors.append(f"{label} must not rebind {mapping_name} after strict assignment")
+                if (
+                    isinstance(node.value, ast.Name)
+                    and node.value.id in {mapping_name} | aliases
+                    and target.id != mapping_name
+                    if isinstance(target, ast.Name)
+                    else False
+                ):
+                    aliases.add(target.id)  # type: ignore[union-attr]
+                matched_slot = _subscript_constant_slot_for_names(target, frozenset({mapping_name}) | frozenset(aliases))
+                if matched_slot is not None and matched_slot[1] == slot:
                     errors.append(f'{label} must not clobber {mapping_name}["{slot}"] after strict assignment')
         elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
-            if _subscript_constant_slot(node.target, mapping_name) == slot:
+            if isinstance(node.target, ast.Name) and node.target.id == mapping_name:
+                errors.append(f"{label} must not rebind {mapping_name} after strict assignment")
+            if isinstance(node, ast.AugAssign) and isinstance(node.target, ast.Name) and node.target.id in aliases:
+                errors.append(f'{label} must not clobber {mapping_name}["{slot}"] through alias {node.target.id}')
+            matched_slot = _subscript_constant_slot_for_names(
+                node.target,
+                frozenset({mapping_name}) | frozenset(aliases),
+            )
+            if matched_slot is not None and matched_slot[1] == slot:
                 errors.append(f'{label} must not clobber {mapping_name}["{slot}"] after strict assignment')
         elif isinstance(node, ast.Delete):
             for target in node.targets:
-                if _subscript_constant_slot(target, mapping_name) == slot:
+                if isinstance(target, ast.Name) and target.id == mapping_name:
+                    errors.append(f"{label} must not delete {mapping_name} after strict assignment")
+                matched_slot = _subscript_constant_slot_for_names(
+                    target,
+                    frozenset({mapping_name}) | frozenset(aliases),
+                )
+                if matched_slot is not None and matched_slot[1] == slot:
                     errors.append(f'{label} must not delete {mapping_name}["{slot}"] after strict assignment')
-        elif isinstance(node, ast.Call) and _call_may_clobber_mapping_slot(node, mapping_name, slot):
+        elif (
+            isinstance(node, ast.Call)
+            and _call_may_clobber_mapping_slot(
+                node,
+                mapping_name,
+                slot,
+                aliases=frozenset(aliases),
+            )
+        ):
             errors.append(f'{label} must not call a mutator that can clobber {mapping_name}["{slot}"]')
     return errors
+
+
+def _postwrite_strict_declare_mode_guard(stmt: ast.stmt) -> bool:
+    if not (
+        isinstance(stmt, ast.If)
+        and len(stmt.body) == 1
+        and isinstance(stmt.body[0], ast.Return)
+        and _is_constant(stmt.body[0].value, "postwrite_declare_mode_not_strict")
+        and not stmt.orelse
+        and isinstance(stmt.test, ast.Compare)
+        and len(stmt.test.ops) == 1
+        and isinstance(stmt.test.ops[0], ast.NotEq)
+        and len(stmt.test.comparators) == 1
+        and _is_constant(stmt.test.comparators[0], "strict")
+        and isinstance(stmt.test.left, ast.Call)
+        and _call_func_name(stmt.test.left) == "str"
+        and len(stmt.test.left.args) == 1
+        and not stmt.test.left.keywords
+    ):
+        return False
+    declare_mode_get = stmt.test.left.args[0]
+    return (
+        isinstance(declare_mode_get, ast.Call)
+        and isinstance(declare_mode_get.func, ast.Attribute)
+        and declare_mode_get.func.attr == "get"
+        and _is_name(declare_mode_get.func.value, "disk_state")
+        and len(declare_mode_get.args) == 1
+        and _is_constant(declare_mode_get.args[0], "declare_mode")
+        and not declare_mode_get.keywords
+    )
 
 
 
@@ -3072,9 +3635,11 @@ def _check_candidate_sink_replay_contract(
         "_postwrite_state_violation",
         path=pr2_l0_path,
     )
-    l0_postwrite_source = _source_text(pr2_l0_path, l0_postwrite_fn)
-    if "postwrite_declare_mode_not_strict" not in l0_postwrite_source:
-        errors.append("PR2 L0 postwrite validator must fail closed with postwrite_declare_mode_not_strict")
+    if not any(_postwrite_strict_declare_mode_guard(stmt) for stmt in l0_postwrite_fn.body):
+        errors.append(
+            "PR2 L0 postwrite validator must have a live top-level "
+            "declare_mode strict guard returning postwrite_declare_mode_not_strict"
+        )
 
     child_tree = _parse_python(pr2_true_child_path)
     child_domain_fn = _function_def(
