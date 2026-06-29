@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 127
-- hard edges: 156
+- entries: 130
+- hard edges: 158
 - pending relation suggestions: 0
 
 ## Start Here
@@ -72,6 +72,7 @@ python cc_memory/mem.py boot
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
 - `codex-owner-2026-06-27-30min` — 2026-06-27 实证 + owner 定调。PR2-b 实现 workflow 的 codex agent 挂死 78 分钟没返回。根因…
 - `codex-read-only-mcp-sandbox-approval-policy` — Codex MCP 2026-06-21: RULE, 默认桌面桥; strip 代理是回退路。
+- `codex-schema-framework-parity-pure-pipe` — codex+schema定论:框架对codex/原生扶持一样(非grammar,是校验+5次重试);瓶颈=codex.md纯管道不让身体整形;codex.md再修区分整形/实质
 - `codex-skills-and-download-route` — Codex skills/HF 2026-06: RULE, skills 在 ~/.codex; HF 下载走隔离 JP 路由。
 - `commit-session-id-hook` — commit hook: LIVE, prepare-commit-msg 自动加 CC-Session-Id trailer。
 - `defensive-verbosity-when-criticized` — 文字反馈 2026-06-21: RULE, 被批评默认删减, 不加防御 caveat。
@@ -119,6 +120,7 @@ python cc_memory/mem.py boot
 - `pr1-publication-blocks-abc-fixed` — PR1 A/B/C/D 2026-06-26: DONE, 7类发布面 BLOCK 全修+终审绿。
 - `pr1-soundness-b085a75-ci` — GPT Pro 对 0bc36db 做了【三轮独立外审 + 三份补丁】(互冲不能叠加),并集 = B/D/A/C/B2/E。走 codex-claude-clean-workflow…
 - `pr1-supervisor-mint-preflight` — PR1 supervisor 地基两块 2026-06-23 落地、**已提交 `ddb3b5a`**(feat(p1.2): PR1 supervisor 地基…
+- `pr2-5-seal-frontier-gate-landed` — PR2 #5: child升格漏declare_mode/last_stop_reason致seal路径穷尽校验死代码;已修+GPT Pro panel挖2 BLOCK(parent mint不归一+AST pin松)+CRLF reseal坑;待复审merge
 - `pr2-8-9a-hardened-landed-099f5a3` — PR2 #8(删自跳过)+#9a(floor钉死)+GPT Pro外审硬化(#8-A子进程-I-S-B/#8-B源码sha楼面/#9a-A L0 runtime byte-pin堵时序旁路)合 main 099f5a3,CI两gate绿。多会话panel验证有效(2会话收敛挖3 BLOCK本地审都漏)…
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
 - `pr2b-landed-pr2-remaining-status-20260628` — PR2-b 69980b3+592ea13: LANDED 2026-06-28, SOUND; PR2余项表。
@@ -139,6 +141,7 @@ python cc_memory/mem.py boot
 - `terminology-meeting-equals-team` — 术语 2026-06-23: RULE, 开会=Agents Team, 不是独立 Workflow。
 - `topology-opt-chunk2-landed` — topology-opt a20ee31: LANDED, Chunk2 S2/S3 诊断 hint planner 未接线。
 - `topology-opt-gpt-chunk1-codex` — topology-opt 2026-06-27: DONE, GPT 两优化书评估+Chunk1 落地。
+- `transcript-decompact-extract-tool` — transcript_full_extract.py:把会话jsonl全量对话抽成按压缩点分层的md(时间戳分层非parentUuid链);PreCompact hook自动更新;找压缩丢的没记知识用它
 - `v-next` — cc_memory_vnext 2026-06-27: LIVE, MVP-0 上线; zmem 卡/金标准为准。
 - `wf-verify-also-codex-no-parallel-bolt` — WF 验证 2026-06-21: RULE, 审计也走 Codex→Claude; 别旁路加并行。
 - `workflow-default-multimodel-opus-codex` — workflow 2026-06-28: RULE, 诊断用 opus+codex; 审查改 GPT Pro relay。
