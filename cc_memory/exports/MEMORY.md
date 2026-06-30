@@ -91,7 +91,7 @@ python cc_memory/mem.py boot
 - `gpt-pro-sandbox-can-edit-files` — GPT Pro relay 2026-06: LIVE, 可解包读改文件并回传 diff/包。
 - `insight-digest-whitelist-protects-pregate-tcb` — digest 白名单: INSIGHT, 保护 pre-gate 可执行 TCB, 非普通数据流。
 - `memory-prune-2026-06-21-manual-baseline-system-deferred` — 记忆剪枝 2026-06-21: DONE, 归档5+修漂移9; 自动系统 deferred。
-- `memory-pruning-system-design-20260629` — 剪枝系统四人会议(2c2c)定稿:剪枝=vnext refactoring engine非删除器;MVP=只读 zmem prune scan(5诊断flag+safety_lock分区+schema_tripwire),删prune_pressure加权公式,不写卡不改verify…
+- `memory-pruning-system-design-20260629` — 剪枝三层扩展(2026-06-30二次会议,承接06-29首次):泛化非重做;四独立scanner+共享输出契约(宪法卡+报告schema含safety_lock字段)不共享计算;MVP只做cc_memory(prune scan只读6 flag,复用现成引擎,1-1.5d),vnext绿defer/harness轻…
 - `memory-vnext-gate-reframe-20260628` — vnext gate 2026-06-28: REFRAME, ZMEM_PROOF 提交点强制查证。
 - `mock-based-patch-mock-unproven-preflight` — mock patch 2026-06: RULE, 重构下游入口后同步迁 patch 点。
 - `naming-p1-3-vs-p1-2-fix` — 命名 2026-06-22: RULE, master 集成=P1.3; soundness 必修=P1.2-FIX。
