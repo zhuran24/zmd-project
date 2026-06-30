@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 151
+- entries: 152
 - hard edges: 178
 - pending relation suggestions: 0
 
@@ -142,6 +142,7 @@ python cc_memory/mem.py boot
 - `prune-scan-first-report-review-20260630` — 剪枝scan首份报告人审(2026-06-30 owner让自主+逐个决定):131候选6类flag,按铁律绝大多数留不动——promotion 3条非每回合反射不升/stale…
 - `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 Claude PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
+- `resume-from-lossy-summary-verify-real-state-20260630` — resume 自压缩摘要:摘要有损会把进度记少/记错(这次说seq函数待办、其实已做完)→盲信会重复定义;做法=先grep/看真实文件状态再动手。自动压缩=上下文撞上限被迫触发、回合中途强制、与我手动/脚本排的/compact无关也拦不住(2026-06-30 12:02 就是撞顶auto压、非我11…
 - `review-cadence-narrow-iterates-defect-per-item-not-batched` — owner 问审查面越来越小=其它面不查吗;答:窄复审磨同一缺陷某角度,运行时面已证CLEAN(blob OID字节不变)+全量preflight是广回归网;每轮深对抗剥一层非缩小(round-3更深);PR2其它item各自实现完各自走codex+GPT Pro对抗审+preflight,改一块审一块合一块不堆到最后
 - `review-prompt-also-request-patches` — 外审提示 2026-06-26: RULE, 找全 BLOCK 后直接要补丁+根因+行号。
 - `review-prompt-request-exhaustive-coverage` — 外审提示 2026-06-23: RULE, 要全覆盖; 不用裸 STOP 造成只找一个。
