@@ -57,36 +57,47 @@ SEMANTIC_DENSE_LIMIT = 80
 SEMANTIC_SCORE_SCALE = 40.0
 SEMANTIC_COSINE_FLOOR = 0.30
 PRUNE_DEFAULT_REPORT = ROOT / ".prune" / "prune_scan_report.json"
-PRUNE_FLAGS = [
-    "duplicate_or_overlap",
-    "stale_or_low_value",
-    "orphan",
-    "oversized_mixed",
-    "promotion_candidate",
-    "archive_candidate",
+PRUNE_SCAN_SCHEMA = "prune-scan-v2-two-tier"
+# Tier 1 — deterministic: a native strong signal (graph edge / resolved path) makes the
+# flag ≈ a real problem, so these enter the cleanable-candidate pool (split by safety_lock).
+PRUNE_DETERMINISTIC_FLAGS = [
+    "relink_candidate",   # was orphan: disposition is ADD edges (widen, recoverable) — never delete
+    "active_superseded",  # active node that is the target of a SUPERSEDES edge
+    "dead_ref",           # body references a missing repo path AND clears all 3 benign exclusions
+]
+# Tier 2 — advisory (FYI only): the signal is a weak proxy (cosine / size / name match), so
+# these NEVER enter the candidate pool and imply ZERO disposition. Pure attention pointers.
+PRUNE_ADVISORY_FLAGS = [
+    "duplicate",                    # cosine proves similar, not redundant
+    "oversized",                    # large != mixed/disposable
+    "cross_layer_overlap_concern",  # was archive_candidate: same-name vnext card (half-migration drift)
+    "dead_ref_uncertain",           # missing path but inside a history-record / externalized artifact / prose example
 ]
 PRUNE_DUPLICATE_COSINE = 0.92
 PRUNE_OVERSIZED_BYTES = 4096
+PRUNE_RELINK_MIN_AGE_DAYS = 7  # a just-created orphan may simply not have been linked yet
+PRUNE_MAIN_BRANCH = "main"
 PRUNE_LOCK_KINDS = {"rule", "verdict", "fact"}
+# memory-store data files: dirty here is usually read-watermark noise (boot/read touch the DB) and
+# does NOT manufacture false positives, so it is SOFT (warn) not a hard block — see prune_parse_dirty.
+PRUNE_DIRTY_SOFT = ("cc_memory/memory.db", "cc_memory/exports/MEMORY.md")
+# artifacts some lightweight distributions externalize; absence is expected, not a dead ref
+PRUNE_EXTERNALIZED_ARTIFACTS = ("data/preprocessed/candidate_placements.json",)
 PRUNE_SELF_ID_RE = re.compile(r"prun(?:e|ing)", re.IGNORECASE)
 PRUNE_TITLE_REDLINE_RE = re.compile(
     r"\b(?:not|never|deprecated|obsolete|contradict(?:s|ion)?|conflict|opposite|deny|negative)\b|"
     r"(?:反例|冲突|矛盾|禁止|不要|不得|不是|相反|否定|废弃)",
     re.IGNORECASE,
 )
-PRUNE_STALE_LOW_VALUE_RE = re.compile(
-    r"\b(?:obsolete|outdated|deprecated|stale|superseded|old path|old version)\b|"
-    r"(?:过期|已废弃|废弃|失效|旧方案|旧版|旧路径)",
+# done/completed/history markers: a dead path inside such a record is expected provenance
+PRUNE_HISTORY_RECORD_RE = re.compile(
+    r"\b(?:fixed|resolved|done|closed|landed|merged|shipped|completed|reverted|superseded)\b|"
+    r"(?:已修复|已解决|已完成|已合并|已落地|已归档|已关闭|已废弃|历史留痕|留痕|provenance)",
     re.IGNORECASE,
 )
-PRUNE_DURABLE_MARKER_RE = re.compile(
-    r"\b(?:must|never|always|authority|invariant|protocol|runbook|gate|owner|policy)\b|"
-    r"(?:必须|绝不|不要|不得|铁律|权威|协议|门禁|规则|不变量)",
-    re.IGNORECASE,
-)
-PRUNE_ROUTE_TIME_MARKER_RE = re.compile(
-    r"\b(?:vnext|route-time|must-inject|always-read|read-first|every turn|every session|session start|startup hook)\b|"
-    r"(?:每轮|每次|每会话|启动|开工|自动注入|必读)",
+# example markers right before a path: illustrative, not a load-bearing reference
+PRUNE_PROSE_EXAMPLE_RE = re.compile(
+    r"(?:e\.g\.|i\.e\.|such as|for example|例如|比如|形如|举例|诸如|譬如|like)[^\n]*$",
     re.IGNORECASE,
 )
 PRUNE_PATH_RE = re.compile(
@@ -1137,6 +1148,7 @@ def prune_node_from_row(typ: str, row: sqlite3.Row) -> dict[str, Any]:
         "confidence": confidence,
         "pinned": pinned,
         "subject": subject,
+        "created_at": row["created_at"],
         "body_bytes": len(body.encode("utf-8")),
     }
 
@@ -1154,7 +1166,14 @@ def prune_active_nodes(con: sqlite3.Connection) -> list[dict[str, Any]]:
     return sorted(nodes, key=lambda n: n["ref"])
 
 
-def prune_edge_count(con: sqlite3.Connection, node: dict[str, Any], direction: str, *, hard_only: bool = False) -> int:
+def prune_edge_count(
+    con: sqlite3.Connection,
+    node: dict[str, Any],
+    direction: str,
+    *,
+    hard_only: bool = False,
+    exclude_edge_types: set[str] | None = None,
+) -> int:
     if direction == "in":
         sql = "SELECT count(*) AS n FROM edges WHERE target_type=? AND target_id=?"
     else:
@@ -1162,12 +1181,23 @@ def prune_edge_count(con: sqlite3.Connection, node: dict[str, Any], direction: s
     params: tuple[Any, ...] = (node["type"], node["id"])
     if hard_only:
         sql += " AND hard=1"
+    if exclude_edge_types:
+        ordered = sorted(exclude_edge_types)
+        sql += f" AND edge_type NOT IN ({','.join('?' for _ in ordered)})"
+        params = params + tuple(ordered)
     return int(con.execute(sql, params).fetchone()["n"])
 
 
-def prune_safety_lock(con: sqlite3.Connection, node: dict[str, Any]) -> dict[str, Any]:
+def prune_safety_lock(
+    con: sqlite3.Connection,
+    node: dict[str, Any],
+    *,
+    ignore_incoming_edge_types: set[str] | None = None,
+) -> dict[str, Any]:
     reasons: list[str] = []
-    incoming = prune_edge_count(con, node, "in")
+    # active_superseded relies on the incoming SUPERSEDES edge as its SIGNAL, so that edge
+    # must not also count as a lock reason — other incoming edges still lock for review.
+    incoming = prune_edge_count(con, node, "in", exclude_edge_types=ignore_incoming_edge_types)
     if node["pinned"]:
         reasons.append("pinned")
     if incoming > 0:
@@ -1209,13 +1239,50 @@ def prune_record(
     }
 
 
-def prune_empty_groups() -> dict[str, dict[str, list[dict[str, Any]]]]:
-    return {flag: {"locked_review_only": [], "unlocked_candidates": []} for flag in PRUNE_FLAGS}
+def prune_empty_report_sections() -> dict[str, Any]:
+    return {
+        "deterministic": {flag: {"locked_review_only": [], "candidates": []} for flag in PRUNE_DETERMINISTIC_FLAGS},
+        "advisory": {flag: [] for flag in PRUNE_ADVISORY_FLAGS},
+    }
 
 
-def prune_add_record(groups: dict[str, dict[str, list[dict[str, Any]]]], record: dict[str, Any]) -> None:
-    section = "locked_review_only" if record["safety_lock"]["locked"] else "unlocked_candidates"
-    groups[record["flag"]][section].append(record)
+def prune_add_deterministic(sections: dict[str, Any], record: dict[str, Any]) -> None:
+    # safety_lock still gates: a high-value node (pinned / kind-lock / high-conf / extra incoming
+    # edges) lands in locked_review_only instead of the actionable candidate pool.
+    section = "locked_review_only" if record["safety_lock"]["locked"] else "candidates"
+    sections["deterministic"][record["flag"]][section].append(record)
+
+
+def prune_add_advisory(sections: dict[str, Any], record: dict[str, Any]) -> None:
+    # advisory flags are FYI-only and never become candidates, so they carry no locked/unlocked split.
+    sections["advisory"][record["flag"]].append(record)
+
+
+def prune_parse_ts(value: str | None) -> _dt.datetime | None:
+    try:
+        parsed = _dt.datetime.fromisoformat((value or "").replace("Z", "+00:00"))
+    except (ValueError, AttributeError):
+        return None
+    # normalize to aware-UTC so age subtraction never mixes naive/aware (legacy rows may lack a tz)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=_dt.timezone.utc)
+    return parsed
+
+
+def prune_node_age_days(node: dict[str, Any], ref_now: _dt.datetime | None) -> int | None:
+    created = prune_parse_ts(node.get("created_at"))
+    if created is None or ref_now is None:
+        return None
+    return max(0, (ref_now - created).days)
+
+
+def prune_path_is_externalized(path: str) -> bool:
+    norm = (path or "").replace("\\", "/").lstrip("./").lower()
+    for art in PRUNE_EXTERNALIZED_ARTIFACTS:
+        a = art.lower()
+        if norm == a or norm.endswith("/" + a):
+            return True
+    return False
 
 
 def prune_has_edge_between(con: sqlite3.Connection, left: dict[str, Any], right: dict[str, Any], edge_type: str) -> bool:
@@ -1333,7 +1400,7 @@ def prune_duplicate_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]
         records.append(
             prune_record(
                 item_id=f"{left['ref']} <-> {right['ref']}",
-                flag="duplicate_or_overlap",
+                flag="duplicate",
                 signals=[
                     f"semantic cosine {cosine:.4f} >= {threshold:.2f}",
                     f"same kind: {left['kind']}",
@@ -1358,28 +1425,21 @@ def prune_path_candidate(raw: str) -> str:
     return raw.strip().strip("`'\"()[]{}<>").rstrip(".,;:，。；：")
 
 
-def prune_missing_repo_paths(text: str) -> list[str]:
-    missing: list[str] = []
-    seen: set[str] = set()
-    root_text = str(ROOT.resolve()).lower()
+def prune_missing_repo_paths(text: str) -> list[dict[str, Any]]:
+    root_resolved = ROOT.resolve()
+    info: dict[str, dict[str, Any]] = {}
+    order: list[str] = []
     for match in PRUNE_PATH_RE.finditer(text or ""):
         raw = prune_path_candidate(match.group(1))
         if not raw or "://" in raw or "*" in raw:
             continue
         path = Path(raw)
         if path.is_absolute():
-            try:
-                resolved = str(path.resolve()).lower()
-            except OSError:
-                continue
-            if not resolved.startswith(root_text):
-                continue
             candidate = path
         else:
             first = raw.replace("\\", "/").split("/", 1)[0]
             if first not in {
                 ".",
-                "..",
                 "cc_memory",
                 "cc_memory_vnext",
                 "data",
@@ -1392,16 +1452,32 @@ def prune_missing_repo_paths(text: str) -> list[str]:
             }:
                 continue
             candidate = ROOT / raw
-        key = raw.replace("\\", "/")
-        if key in seen:
+        try:
+            resolved = candidate.resolve()
+        except OSError:
             continue
-        seen.add(key)
-        if not candidate.exists():
-            missing.append(key)
-    return missing
+        # boundary: only paths genuinely INSIDE the repo can be dead repo refs — a sibling dir with a
+        # shared name prefix or a `..` escape must NOT be treated as a missing in-repo path.
+        if not resolved.is_relative_to(root_resolved):
+            continue
+        key = raw.replace("\\", "/")
+        preceding = text[max(0, match.start() - 40):match.start()]
+        is_prose = PRUNE_PROSE_EXAMPLE_RE.search(preceding) is not None
+        rec = info.get(key)
+        if rec is None:
+            info[key] = {"exists": candidate.exists(), "all_prose": is_prose}
+            order.append(key)
+        else:
+            # a path counts as a prose example only if EVERY occurrence is illustrative
+            rec["all_prose"] = rec["all_prose"] and is_prose
+    return [
+        {"path": key, "prose_example": info[key]["all_prose"]}
+        for key in order
+        if not info[key]["exists"]
+    ]
 
 
-def prune_stale_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def prune_active_superseded_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     for node in nodes:
         superseders = list(
@@ -1410,49 +1486,113 @@ def prune_stale_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) ->
                 (node["type"], node["id"]),
             )
         )
-        missing_paths = prune_missing_repo_paths(node["body"])
-        low_confidence_stale = node["confidence"] == "low" and PRUNE_STALE_LOW_VALUE_RE.search(f"{node['title']}\n{node['body']}") is not None
-        if not superseders and not missing_paths and not low_confidence_stale:
+        if not superseders:
             continue
-        signals: list[str] = []
-        if superseders:
-            signals.append("active node is target of SUPERSEDES from " + ", ".join(f"{r['source_type']}:{r['source_id']}" for r in superseders[:5]))
-        if missing_paths:
-            signals.append("body references missing repo path(s): " + ", ".join(missing_paths[:5]))
-        if low_confidence_stale:
-            signals.append("low-confidence body contains explicit stale/obsolete wording")
+        superseder_refs = [f"{r['source_type']}:{r['source_id']}" for r in superseders]
         records.append(
             prune_record(
                 item_id=node["ref"],
-                flag="stale_or_low_value",
-                signals=signals,
+                flag="active_superseded",
+                signals=["status=active but target of SUPERSEDES from " + ", ".join(superseder_refs[:5])],
                 raw_metrics={
                     "incoming_supersedes": len(superseders),
-                    "missing_paths": missing_paths[:10],
-                    "confidence": node["confidence"],
-                    "body_bytes": node["body_bytes"],
+                    "superseders": superseder_refs[:10],
+                    "disposition": "review_for_status_archived",
                 },
-                safety_lock=prune_safety_lock(con, node),
-                confidence="high" if superseders else ("med" if missing_paths else "low"),
+                safety_lock=prune_safety_lock(con, node, ignore_incoming_edge_types={"SUPERSEDES"}),
+                confidence="high",
                 evidence_snippet=short(node["body"], 240),
             )
         )
     return records
 
 
-def prune_orphan_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def prune_dead_ref_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split missing-path references into a deterministic dead_ref tier and an advisory tier.
+
+    A missing path is a deterministic dead_ref ONLY when all three benign explanations are
+    ruled out: (1) the node is a history/done record (dead path = expected provenance),
+    (2) the path is a known externalized artifact (absence expected), (3) the path occurs
+    only as a prose example. If any holds, the path is downgraded to advisory (zero action).
+    """
+    deterministic: list[dict[str, Any]] = []
+    advisory: list[dict[str, Any]] = []
+    for node in nodes:
+        missing = prune_missing_repo_paths(node["body"])
+        if not missing:
+            continue
+        is_history = PRUNE_HISTORY_RECORD_RE.search(f"{node['title']}\n{node['body']}") is not None
+        live: list[str] = []
+        benign: list[tuple[str, str]] = []
+        for item in missing:
+            path = item["path"]
+            if is_history:
+                benign.append((path, "history/done record — dead path is expected provenance"))
+            elif prune_path_is_externalized(path):
+                benign.append((path, "externalized artifact — absence is expected"))
+            elif item["prose_example"]:
+                benign.append((path, "prose example — illustrative, not load-bearing"))
+            else:
+                live.append(path)
+        if live:
+            deterministic.append(
+                prune_record(
+                    item_id=node["ref"],
+                    flag="dead_ref",
+                    signals=[
+                        "body references missing repo path(s): " + ", ".join(live[:5]),
+                        "cleared all 3 benign exclusions (history-record / externalized-artifact / prose-example)",
+                    ],
+                    raw_metrics={"missing_paths": live[:10], "disposition": "fix_or_remove_reference"},
+                    safety_lock=prune_safety_lock(con, node),
+                    confidence="high",
+                    evidence_snippet=short(node["body"], 240),
+                )
+            )
+        if benign:
+            advisory.append(
+                prune_record(
+                    item_id=node["ref"],
+                    flag="dead_ref_uncertain",
+                    signals=[f"missing path '{p}' downgraded to advisory: {why}" for p, why in benign[:5]],
+                    raw_metrics={"downgraded_paths": [{"path": p, "reason": why} for p, why in benign[:10]]},
+                    safety_lock=prune_safety_lock(con, node),
+                    confidence="low",
+                    evidence_snippet=short(node["body"], 240),
+                )
+            )
+    return deterministic, advisory
+
+
+def prune_relink_records(
+    con: sqlite3.Connection,
+    nodes: list[dict[str, Any]],
+    *,
+    min_age_days: int,
+    ref_now: _dt.datetime | None,
+) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     for node in nodes:
-        incoming = prune_edge_count(con, node, "in")
-        outgoing = prune_edge_count(con, node, "out")
-        if incoming != 0 or outgoing != 0:
+        if prune_edge_count(con, node, "in") != 0 or prune_edge_count(con, node, "out") != 0:
             continue
+        age_days = prune_node_age_days(node, ref_now)
+        if age_days is None or age_days < min_age_days:
+            # fail-closed: an unparseable age cannot prove the orphan is old enough, and a too-fresh
+            # orphan may simply not have been linked yet — neither belongs in the actionable pool
+            continue
+        age_signal = f"age {age_days}d >= {min_age_days}d"
         records.append(
             prune_record(
                 item_id=node["ref"],
-                flag="orphan",
-                signals=["zero incoming edges", "zero outgoing edges"],
-                raw_metrics={"incoming_edges": incoming, "outgoing_edges": outgoing},
+                flag="relink_candidate",
+                signals=["zero incoming edges", "zero outgoing edges", age_signal],
+                raw_metrics={
+                    "incoming_edges": 0,
+                    "outgoing_edges": 0,
+                    "age_days": age_days,
+                    "min_age_days": min_age_days,
+                    "disposition": "add_edges_not_delete",
+                },
                 safety_lock=prune_safety_lock(con, node),
                 confidence="med",
                 evidence_snippet=short(node["body"], 240),
@@ -1476,7 +1616,7 @@ def prune_oversized_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]
         records.append(
             prune_record(
                 item_id=node["ref"],
-                flag="oversized_mixed",
+                flag="oversized",
                 signals=[
                     f"body_bytes {node['body_bytes']} >= {threshold}",
                     f"mixed-topic markers: headings={heading_count}, bullets={bullet_count}, paragraphs={paragraph_count}",
@@ -1496,52 +1636,137 @@ def prune_oversized_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]
     return records
 
 
-def prune_promotion_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
-    for node in nodes:
-        if node["type"] != "entry" or not (160 <= node["body_bytes"] <= 6000):
-            continue
-        text = f"{node['title']}\n{node['body']}"
-        marker_hits = PRUNE_DURABLE_MARKER_RE.findall(text)
-        route_hits = PRUNE_ROUTE_TIME_MARKER_RE.findall(text)
-        hard_edges = prune_edge_count(con, node, "in", hard_only=True) + prune_edge_count(con, node, "out", hard_only=True)
-        title_key = prune_name_key(node["title"])
-        title_marker = any(token in title_key for token in ("vnext", "protocol", "rule", "runbook", "gate", "authority", "card"))
-        if not (title_marker and route_hits and len(marker_hits) >= 2):
-            continue
-        records.append(
-            prune_record(
-                item_id=node["ref"],
-                flag="promotion_candidate",
-                signals=[
-                    "durable-rule marker(s) in title/body",
-                    "route-time/vnext injection marker(s) in title/body",
-                ],
-                raw_metrics={
-                    "body_bytes": node["body_bytes"],
-                    "marker_count": len(marker_hits),
-                    "route_marker_count": len(route_hits),
-                    "hard_edges": hard_edges,
-                },
-                safety_lock=prune_safety_lock(con, node),
-                confidence="low",
-                evidence_snippet=short(node["body"], 240),
-            )
+def prune_embedding_staleness(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> dict[str, int]:
+    # A node is "fresh" only if it has a current-content-hash embedding (prune_embedding_rows_by_model
+    # already drops hash-mismatched rows). Stale/missing embeddings can only cause false-NEGATIVES in
+    # the advisory duplicate flag, never false-positives — so this is a soft warning, not a hard gate.
+    by_model = prune_embedding_rows_by_model(con, nodes)
+    fresh = {(node["type"], node["id"]) for rows in by_model.values() for node, _vec, _norm in rows}
+    total = len(nodes)
+    stale = sum(1 for node in nodes if (node["type"], node["id"]) not in fresh)
+    return {"total": total, "fresh": total - stale, "stale": stale}
+
+
+def prune_is_real_repo_db(db: Path) -> bool:
+    try:
+        return db.resolve() == (ROOT / "cc_memory" / "memory.db").resolve()
+    except OSError:
+        return False
+
+
+def prune_git(*args: str) -> tuple[int, str]:
+    try:
+        proc = subprocess.run(
+            ["git", "-C", str(ROOT), *args],
+            text=True,
+            capture_output=True,
+            timeout=20,
         )
-    return records
+    except (OSError, subprocess.SubprocessError) as exc:
+        return 1, str(exc)
+    return proc.returncode, proc.stdout or ""
+
+
+def prune_preflight_decision(
+    *,
+    branch: str | None,
+    status_ok: bool,
+    dirty: list[str],
+    soft_dirty: list[str],
+    require_branch: str,
+    allow_dirty: bool,
+) -> dict[str, Any]:
+    # Asymmetric fail-closed: conditions that MANUFACTURE false positives (wrong branch, unreadable
+    # git status, or uncommitted truth-source / repo-path changes) hard-block; conditions that only
+    # risk false-negatives or are benign noise (a dirty memory.db) are surfaced as soft warnings.
+    on_main = branch == require_branch
+    clean = bool(branch) and on_main and status_ok and not dirty
+    reasons: list[str] = []
+    if not branch:
+        reasons.append("could not determine git branch; the scanner resolves paths against the physical checkout")
+    elif not on_main:
+        reasons.append(
+            f"on branch '{branch}', not '{require_branch}'; physical checkout diverges from main → systematic false positives"
+        )
+    if not status_ok:
+        reasons.append("could not read `git status`; cannot verify a clean checkout (fail-closed)")
+    if dirty:
+        reasons.append("uncommitted tracked changes to truth-source / repo paths: " + ", ".join(dirty[:10]))
+    warnings: list[str] = []
+    if soft_dirty:
+        warnings.append(
+            "uncommitted changes to memory-store data files (likely read-watermark; scan reflects uncommitted memory state): "
+            + ", ".join(soft_dirty[:10])
+        )
+    return {
+        "branch": branch,
+        "require_branch": require_branch,
+        "on_main": on_main,
+        "status_ok": status_ok,
+        "dirty": dirty[:20],
+        "soft_dirty": soft_dirty[:20],
+        "clean": clean,
+        "allow_dirty": allow_dirty,
+        "blocked": (not clean) and (not allow_dirty),
+        "reasons": reasons,
+        "warnings": warnings,
+    }
+
+
+def prune_parse_dirty(status_ok: bool, status_text: str) -> tuple[list[str], list[str]]:
+    """Split `git status --porcelain` into (hard_dirty, soft_dirty).
+
+    Untracked (??) entries are ignored — they can only cause dead_ref false-negatives. Changes to the
+    memory-store data files (PRUNE_DIRTY_SOFT) are soft (read-watermark noise). Everything else tracked
+    is hard: a truth-source / repo-path divergence that manufactures false positives.
+    """
+    hard: list[str] = []
+    soft: list[str] = []
+    if not status_ok:
+        return hard, soft
+    for line in status_text.splitlines():
+        if not line.strip() or line.startswith("??"):
+            continue
+        code = line[:2].strip()
+        path = line[3:].strip().strip('"')
+        if " -> " in path:  # rename: "old -> new"
+            path = path.split(" -> ", 1)[1].strip().strip('"')
+        norm = path.replace("\\", "/")
+        entry = f"{code} {norm}"
+        if norm in PRUNE_DIRTY_SOFT:
+            soft.append(entry)
+        else:
+            hard.append(entry)
+    return hard, soft
+
+
+def prune_branch_preflight(*, require_branch: str, allow_dirty: bool) -> dict[str, Any]:
+    rc, out = prune_git("rev-parse", "--abbrev-ref", "HEAD")
+    branch = out.strip() if rc == 0 and out.strip() else None
+    rc2, status = prune_git("status", "--porcelain")
+    status_ok = rc2 == 0
+    hard_dirty, soft_dirty = prune_parse_dirty(status_ok, status)
+    return prune_preflight_decision(
+        branch=branch,
+        status_ok=status_ok,
+        dirty=hard_dirty,
+        soft_dirty=soft_dirty,
+        require_branch=require_branch,
+        allow_dirty=allow_dirty,
+    )
 
 
 def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], list[str]]:
     notes: list[str] = []
     names: dict[str, str] = {}
     if not cards_dir.exists():
-        return names, [f"archive_candidate skipped: cards dir not found: {cards_dir}"]
+        return names, [f"cross_layer_overlap skipped: cards dir not found: {cards_dir}"]
     for path in sorted(cards_dir.glob("*.md")):
         candidates = [path.stem]
         try:
             text = path.read_text(encoding="utf-8")
         except OSError as exc:
-            notes.append(f"archive_candidate skipped unreadable card {path.name}: {exc}")
+            notes.append(f"cross_layer_overlap skipped unreadable card {path.name}: {exc}")
             continue
         for line in text.splitlines()[:120]:
             stripped = line.strip()
@@ -1557,7 +1782,9 @@ def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], list[str]]:
     return names, notes
 
 
-def prune_archive_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], *, cards_dir: Path) -> tuple[list[dict[str, Any]], list[str]]:
+def prune_cross_layer_overlap_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], *, cards_dir: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    # Renamed from archive_candidate: a same-name vnext card does not authorize archiving — it only
+    # flags a possible half-finished migration. Neutral name + advisory tier = no implied disposition.
     card_names, notes = prune_vnext_card_names(cards_dir)
     if not card_names:
         return [], notes
@@ -1577,8 +1804,8 @@ def prune_archive_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], 
         records.append(
             prune_record(
                 item_id=node["ref"],
-                flag="archive_candidate",
-                signals=[f"active cc_memory node has same-name vnext card: {card_name}"],
+                flag="cross_layer_overlap_concern",
+                signals=[f"active cc_memory node shares a name with vnext card: {card_name}"],
                 raw_metrics={"matched_key": key, "matched_by": source, "matched_card": card_name},
                 safety_lock=prune_safety_lock(con, node),
                 confidence="high" if source == "id" else "med",
@@ -1595,40 +1822,65 @@ def build_prune_scan_report(
     cards_dir: Path,
     duplicate_threshold: float,
     oversized_bytes: int,
+    relink_min_age_days: int,
+    preflight: dict[str, Any],
 ) -> dict[str, Any]:
     nodes = prune_active_nodes(con)
-    groups = prune_empty_groups()
+    ref_now = prune_parse_ts(now())
+    sections = prune_empty_report_sections()
     notes = [
         "read-only diagnostic scan; no memory mutations, schema changes, LLM calls, or automatic disposition",
+        "two-tier: deterministic flags enter the cleanable-candidate pool; advisory flags are FYI-only and imply no action",
         "candidate pool hard-excludes ids containing prune/pruning",
     ]
+    for warning in preflight.get("warnings", []):
+        notes.append("preflight (soft): " + warning)
+    # --- deterministic tier: native strong signal (graph edge / resolved path) → cleanable candidates ---
+    for record in prune_relink_records(con, nodes, min_age_days=relink_min_age_days, ref_now=ref_now):
+        prune_add_deterministic(sections, record)
+    for record in prune_active_superseded_records(con, nodes):
+        prune_add_deterministic(sections, record)
+    dead_ref_records, dead_ref_advisory = prune_dead_ref_records(con, nodes)
+    for record in dead_ref_records:
+        prune_add_deterministic(sections, record)
+    # --- advisory tier: weak proxy (cosine / size / name) → FYI only, zero implied action ---
     for record in prune_duplicate_records(con, nodes, threshold=duplicate_threshold):
-        prune_add_record(groups, record)
-    for record in prune_stale_records(con, nodes):
-        prune_add_record(groups, record)
-    for record in prune_orphan_records(con, nodes):
-        prune_add_record(groups, record)
+        prune_add_advisory(sections, record)
     for record in prune_oversized_records(con, nodes, threshold=oversized_bytes):
-        prune_add_record(groups, record)
-    for record in prune_promotion_records(con, nodes):
-        prune_add_record(groups, record)
-    archive_records, archive_notes = prune_archive_records(con, nodes, cards_dir=cards_dir)
-    notes.extend(archive_notes)
-    for record in archive_records:
-        prune_add_record(groups, record)
-    for grouped in groups.values():
-        for records in grouped.values():
+        prune_add_advisory(sections, record)
+    overlap_records, overlap_notes = prune_cross_layer_overlap_records(con, nodes, cards_dir=cards_dir)
+    notes.extend(overlap_notes)
+    for record in overlap_records:
+        prune_add_advisory(sections, record)
+    for record in dead_ref_advisory:
+        prune_add_advisory(sections, record)
+    # soft warning only: stale embeddings cause false-NEGATIVES in the advisory duplicate flag, never false-positives
+    embedding_staleness = prune_embedding_staleness(con, nodes)
+    if embedding_staleness["stale"]:
+        notes.append(
+            f"embedding staleness (soft): {embedding_staleness['stale']}/{embedding_staleness['total']} "
+            "active nodes lack a current-hash embedding; advisory duplicate detection may under-report — run rebuild-embeddings"
+        )
+    for flag_sections in sections["deterministic"].values():
+        for records in flag_sections.values():
             records.sort(key=lambda r: r["item_id"])
+    for records in sections["advisory"].values():
+        records.sort(key=lambda r: r["item_id"])
     return {
         "generated_at": now(),
+        "schema_version": PRUNE_SCAN_SCHEMA,
         "db": str(db),
         "layer": "cc_memory",
-        "groups": groups,
+        "preflight": preflight,
+        "deterministic": sections["deterministic"],
+        "advisory": sections["advisory"],
         "raw_metrics": {
             "active_candidate_nodes": len(nodes),
             "duplicate_cosine_threshold": duplicate_threshold,
             "oversized_bytes_threshold": oversized_bytes,
+            "relink_min_age_days": relink_min_age_days,
             "cards_dir": str(cards_dir),
+            "embedding_staleness": embedding_staleness,
         },
         "notes": notes,
     }
@@ -2240,6 +2492,20 @@ def cmd_suggest(args: argparse.Namespace) -> int:
 
 
 def cmd_prune_scan(args: argparse.Namespace) -> int:
+    real_db = prune_is_real_repo_db(args.db)
+    if real_db:
+        preflight = prune_branch_preflight(require_branch=args.require_branch, allow_dirty=args.allow_dirty)
+        if preflight["blocked"]:
+            sys.stderr.write("prune scan refused (dirty-branch self-check, fail-closed):\n")
+            for reason in preflight["reasons"]:
+                sys.stderr.write(f"  - {reason}\n")
+            sys.stderr.write("  fix: run on a clean `main`, or pass --allow-dirty to override (report may be polluted).\n")
+            return 2
+    else:
+        preflight = {
+            "enforced": False,
+            "reason": "non-default --db; dirty-branch gate applies only to the canonical repo memory.db",
+        }
     con = connect_readonly(args.db)
     try:
         report = build_prune_scan_report(
@@ -2248,17 +2514,23 @@ def cmd_prune_scan(args: argparse.Namespace) -> int:
             cards_dir=args.cards_dir,
             duplicate_threshold=args.duplicate_cosine_threshold,
             oversized_bytes=args.oversized_bytes,
+            relink_min_age_days=args.relink_min_age_days,
+            preflight=preflight,
         )
     finally:
         con.close()
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"prune scan report: {args.out}")
-    for flag in PRUNE_FLAGS:
-        grouped = report["groups"][flag]
-        locked = len(grouped["locked_review_only"])
-        unlocked = len(grouped["unlocked_candidates"])
-        print(f"- {flag}: locked_review_only={locked} unlocked_candidates={unlocked}")
+    if real_db:
+        print(f"preflight: branch={preflight['branch']} clean={preflight['clean']} allow_dirty={preflight['allow_dirty']}")
+    print("deterministic (cleanable candidates, safety_lock-gated):")
+    for flag in PRUNE_DETERMINISTIC_FLAGS:
+        grouped = report["deterministic"][flag]
+        print(f"- {flag}: locked_review_only={len(grouped['locked_review_only'])} candidates={len(grouped['candidates'])}")
+    print("advisory (FYI only, no action implied):")
+    for flag in PRUNE_ADVISORY_FLAGS:
+        print(f"- {flag}: {len(report['advisory'][flag])}")
     return 0
 
 
@@ -2781,6 +3053,9 @@ def make_parser() -> argparse.ArgumentParser:
     scan.add_argument("--cards-dir", type=Path, default=ROOT / "cc_memory_vnext" / "cards")
     scan.add_argument("--duplicate-cosine-threshold", type=float, default=PRUNE_DUPLICATE_COSINE)
     scan.add_argument("--oversized-bytes", type=int, default=PRUNE_OVERSIZED_BYTES)
+    scan.add_argument("--relink-min-age-days", type=int, default=PRUNE_RELINK_MIN_AGE_DAYS)
+    scan.add_argument("--require-branch", default=PRUNE_MAIN_BRANCH)
+    scan.add_argument("--allow-dirty", action="store_true", help="override the dirty-branch fail-closed gate (report may be polluted)")
     scan.set_defaults(func=cmd_prune_scan)
 
     sp = sub.add_parser("relations")
