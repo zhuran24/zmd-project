@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 150
+- entries: 151
 - hard edges: 178
 - pending relation suggestions: 0
 
@@ -71,6 +71,7 @@ python cc_memory/mem.py boot
 - `codex-claude-codex-claude-4-1-high` — owner 2026-06-21 当场纠正 + 实证。规矩(承 [[feedback-default-codex-desktop-mcp]]):**实现工作交 Codex(`mcp__codex_desktop__codex`)…
 - `codex-context-window-size` — codex 当前 context≈258K(owner 2026-06-30 给,纠正 precompact skill 早先顺手写的400k/500k);关键:codex 自动压上下文→窗口略超258K是优雅降级非硬失败,只有真巨大(多MB/数倍)才是问题…
 - `codex-desktop-bridge-auto-cwd` — 机制:codex_desktop 桥(C:\Users\22957\codex_desktop_mcp.py)run_turn 没收到 cwd 就默认 CLAUDE_PROJECT_DIR or os.getcwd()=本项目目录→no-isolation codex 自动在我活工作树跑(含未提交)、不落 codex…
+- `codex-desktop-call-count-is-start-plus-wait` — codex_desktop 桥(`codex_desktop_mcp.py` 的 app-server 客户端)跑**一个** codex 任务 = **两次 MCP 桥调用**…
 - `codex-direct-mcp-emits-strict-schema-json` — codex direct MCP 2026-06-21: VERIFIED, schema JSON 稳; codex.md fix#3 已可用。
 - `codex-executes-claude-orchestrates` — 分工 2026-06-26/28: RULE, 先按工作量; 大活 Codex, Claude 编排终审。
 - `codex-needs-explicit-read-memory` — Codex 记忆 2026-06: RULE, 子代理不会自动读 CLAUDE/cc_memory, 提示词要写明。
