@@ -168,6 +168,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift" in close_kernel_tests
     assert "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift" in close_kernel_tests
     assert "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses" in close_kernel_tests
+    assert "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows" in close_kernel_tests
     assert "test_p1_2_empty_rect_leaf_math_oracle" in close_kernel_tests
 
 
@@ -703,6 +704,9 @@ def _disable_pr2_5_closed_world_guards(monkeypatch: pytest.MonkeyPatch) -> None:
         "_check_no_direct_top_level_exit_before_node",
         "_check_live_top_level_postwrite_guard",
         "_check_l0_child_verdict_dataflow",
+        "_check_l0_runtime_tcb_bindings",
+        "_check_true_child_runtime_tcb_source_pins",
+        "_check_exact_runtime_tcb_source_pins",
     ):
         monkeypatch.setattr(check_p1_2_proof_obligations, helper_name, _legacy_accepts)
     monkeypatch.setattr(
@@ -720,6 +724,8 @@ def _disable_pr2_5_g6_prefix_pins(monkeypatch: pytest.MonkeyPatch) -> None:
     for helper_name in (
         "_check_supervisor_transition_strict_prefix_closed_world",
         "_check_postwrite_strict_guard_prefix_closed_world",
+        "_check_l0_runtime_tcb_bindings",
+        "_check_exact_runtime_tcb_source_pins",
     ):
         monkeypatch.setattr(check_p1_2_proof_obligations, helper_name, _legacy_accepts)
 
@@ -1600,10 +1606,198 @@ def _child_replay_status_compare_pass(source: str) -> str:
     return _replace_once(source, gate, "        if replay_status != claimed_status:\n            pass\n")
 
 
+_PR2_ROUND9_GATE_HELPERS = (
+    ("child", "_canonical_bytes"),
+    ("child", "_canonical_digest"),
+    ("child", "_dependency_file_top_level"),
+    ("child", "_dependency_floor_root"),
+    ("child", "_dependency_named_tcb_violation"),
+    ("child", "_index_dependency_package_dirs"),
+    ("child", "_install_third_party_floor"),
+    ("child", "_is_lower_sha256"),
+    ("child", "_json_copy"),
+    ("child", "_materialize_import_default_artifacts"),
+    ("child", "_require_mapping"),
+    ("child", "_safe_rel"),
+    ("child", "_stable_fixed_witness_candidate_records"),
+    ("child", "_stable_fixed_witness_payload"),
+    ("child", "_stdlib_paths"),
+    ("child", "_strict_int"),
+    ("child", "_strict_string"),
+    ("child", "_string_list"),
+    ("child", "_valid_top_level_name"),
+    ("exact", "_atomic_json_bytes"),
+    ("exact", "_atomic_write_json_bytes"),
+    ("exact", "_best_empty_rect_objective"),
+    ("exact", "_build_occupancy_prefix"),
+    ("exact", "_candidate_objective_from_rect"),
+    ("exact", "_certified_state_payload_sha256"),
+    ("exact", "_checkpoint_write_lock"),
+    ("exact", "_empty_rect_exists"),
+    ("exact", "_expected_unfiltered_ghost_anchor_index"),
+    ("exact", "_final_result_certified_transition"),
+    ("exact", "_fsync_directory"),
+    ("exact", "_is_authorized_exact_pose_optional_solution_entry"),
+    ("exact", "_is_lower_sha256"),
+    ("exact", "_load_exact_facility_pools"),
+    ("exact", "_load_exact_facility_templates"),
+    ("exact", "_load_exact_grid_dimensions"),
+    ("exact", "_load_exact_min_side_admissibility"),
+    ("exact", "_load_exact_required_optional_lower_bounds"),
+    ("exact", "_load_exact_safe_area_upper_bound"),
+    ("exact", "_load_sealed_proposal_authority"),
+    ("exact", "_load_validated_mandatory_exact_instances"),
+    ("exact", "_loads_strict_json_object"),
+    ("exact", "_mandatory_solution_entry_metadata_violation"),
+    ("exact", "_nonnegative_number"),
+    ("exact", "_occupied_count_in_rect"),
+    ("exact", "_path_has_symlink_component"),
+    ("exact", "_pose_occupied_cells"),
+    ("exact", "_pose_optional_solution_entry_metadata_violation"),
+    ("exact", "_pose_pool_min_occupied_cell_count"),
+    ("exact", "_pose_power_coverage_cells"),
+    ("exact", "_proposal_state_violation"),
+    ("exact", "_snapshot_campaign_state_for_nonterminal_save"),
+    ("exact", "_solution_without_ghost_marker"),
+    ("exact", "_strict_candidate_ghost_rect"),
+    ("exact", "_strict_nonempty_string"),
+    ("exact", "_strict_resume_int"),
+    ("exact", "_strict_resume_timestamp"),
+    ("exact", "_supervisor_certified_transition_violation"),
+    ("exact", "_supervisor_seal_state_violation"),
+    ("exact", "_terminal_candidate_ghost_pick_binding_violation"),
+    ("exact", "_terminal_certified_ghost_rect_unknown_field"),
+    ("exact", "_terminal_certified_last_stop_reason_violation"),
+    ("exact", "_terminal_certified_search_stats_violation"),
+    ("exact", "_terminal_certified_solution_entry_unknown_field"),
+    ("exact", "_terminal_solution_entry_pose_metadata_violation"),
+    ("exact", "_valid_campaign_instance_id"),
+    ("exact", "_valid_supervisor_proposal_run_id"),
+    ("exact", "_validate_terminal_solution_against_project"),
+    ("exact", "_validated_mandatory_exact_instances_payload"),
+    ("exact", "candidate_key"),
+    ("exact", "compute_certified_exact_source_digest"),
+    ("exact", "compute_exact_artifact_hashes"),
+    ("exact", "has_terminal_full_frontier_certified_evidence"),
+    ("exact", "now_iso"),
+    ("exact", "now_ts"),
+    ("exact", "sha256_file"),
+    ("exact", "terminal_certified_final_result_project_precheck_violation"),
+    ("exact", "terminal_certified_final_result_violation"),
+    ("l0", "_atomic_json_bytes"),
+    ("l0", "_canonical_bytes"),
+    ("l0", "_certified_state_payload_sha256_l0"),
+    ("l0", "_checkpoint_write_lock_l0"),
+    ("l0", "_dependency_file_top_level"),
+    ("l0", "_dependency_floor_root"),
+    ("l0", "_dependency_named_tcb_violation"),
+    ("l0", "_is_lower_sha256"),
+    ("l0", "_json_bytes"),
+    ("l0", "_load_dependency_floor_manifest_bytes"),
+    ("l0", "_load_sealed_proposal_authority_l0"),
+    ("l0", "_materialize_snapshot_import_defaults"),
+    ("l0", "_now_iso"),
+    ("l0", "_parse_mapping"),
+    ("l0", "_path_has_symlink_component"),
+    ("l0", "_postwrite_state_violation"),
+    ("l0", "_proposal_authority_violation"),
+    ("l0", "_proposal_ready_marker_violation"),
+    ("l0", "_proposal_state_violation"),
+    ("l0", "_require_mapping"),
+    ("l0", "_safe_manifest_relpath"),
+    ("l0", "_stable_fixed_witness_payload_l0"),
+    ("l0", "_strict_int"),
+    ("l0", "_strict_timestamp"),
+    ("l0", "_strong_proof_binding_violation"),
+    ("l0", "_strong_status_keys"),
+    ("l0", "_supervisor_certified_transition_violation_l0"),
+    ("l0", "_valid_campaign_instance_id"),
+    ("l0", "_valid_dependency_top_level"),
+    ("l0", "_valid_supervisor_proposal_run_id"),
+    ("l0", "loads_l0_strict_json"),
+)
+
+
+def _round9_hollow_return_source(helper_name: str) -> str:
+    if helper_name == "_strong_status_keys" or helper_name.endswith("_paths"):
+        return "[]"
+    if (
+        "mapping" in helper_name
+        or "payload" in helper_name
+        or "records" in helper_name
+        or helper_name.endswith("_bytes")
+    ):
+        return "{}"
+    return "None"
+
+
+def _find_round9_helper_node(tree: ast.Module, helper_name: str) -> ast.FunctionDef:
+    for stmt in tree.body:
+        if isinstance(stmt, ast.FunctionDef) and stmt.name == helper_name:
+            return stmt
+    raise AssertionError(f"round-9 helper not found: {helper_name}")
+
+
+def _hollow_round9_helper(source: str, helper_name: str) -> str:
+    tree = ast.parse(source)
+    function = _find_round9_helper_node(tree, helper_name)
+    assert function.body
+    insertion_line = function.body[0].lineno - 1
+    lines = source.splitlines(keepends=True)
+    first_body_line = lines[insertion_line]
+    indent = first_body_line[: len(first_body_line) - len(first_body_line.lstrip())]
+    inserted = f"{indent}return {_round9_hollow_return_source(helper_name)}\n"
+    return "".join(lines[:insertion_line] + [inserted] + lines[insertion_line:])
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
     assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "helper_name"),
+    _PR2_ROUND9_GATE_HELPERS,
+    ids=[f"round9-{source_kind}-{helper_name}" for source_kind, helper_name in _PR2_ROUND9_GATE_HELPERS],
+)
+def test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows(
+    tmp_path: Path,
+    source_kind: str,
+    helper_name: str,
+) -> None:
+    child_source = l0_source = exact_source = None
+    if source_kind == "child":
+        child_source = _hollow_round9_helper(
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            ),
+            helper_name,
+        )
+    elif source_kind == "l0":
+        l0_source = _hollow_round9_helper(
+            check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            ),
+            helper_name,
+        )
+    elif source_kind == "exact":
+        exact_source = _hollow_round9_helper(
+            check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8"),
+            helper_name,
+        )
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    expected_error = f"source sha256 drifted for {helper_name}"
+    assert any(expected_error in error for error in errors), errors
 
 
 @pytest.mark.parametrize(

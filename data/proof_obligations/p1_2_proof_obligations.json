@@ -519,6 +519,7 @@
         "test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources",
         "test_p1_2_checker_rejects_pr2_5_ast_pin_bypass_variants",
         "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses",
+        "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows",
         "test_p1_2_empty_rect_leaf_math_oracle",
         "test_l0_supervisor_seal_mints_strict_declare_mode_from_best_effort_proposal",
         "test_l0_postwrite_state_violation_rejects_non_strict_declare_mode",
@@ -911,7 +912,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-          "source_sha256": "4b6f597c272740c3b694ed1102e1df8e3f1bbd59b73076c568ba81f6b92e54b0",
+          "source_sha256": "937819b54c73b6e39ed56844a0b3d73190fd394ce6bc932949e9740c631604f0",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

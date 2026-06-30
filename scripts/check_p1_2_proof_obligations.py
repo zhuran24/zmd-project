@@ -4406,6 +4406,58 @@ _PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
     "_load_canonical_dependency_floor_manifest": "b1644ba2f13dfbcdbdb93f96882352f9d7351ae952525cec0b2afa6a402559e9",
     "_reject": "18af5ccc78c6e86b76065ea7217c9043317ee91537b30babac1539b334cbe819",
     "_response_violation": "b4c4f6be6aa42b9321c62b4d0b7b55969059136db5ae58f44eb00326f446db6f",
+    "_atomic_json_bytes": "54dcce4647f5a113e3eaf0b8403bcac4901f22629ed7e7b48dc57ba61c3a15da",
+    "_canonical_bytes": "b4db84319aa7517fc03f6ee151f703ab0ea45d3ed309c5780659728478d5672a",
+    "_certified_state_payload_sha256_l0": "252327a9f21bcec55299fca6c83c9dce4ffa43118054b4348aa96781faa6bd13",
+    "_checkpoint_write_lock_l0": "6a095d1c13de27852c08947b850c10527bdd741f0b77c3d46d996b08c9b4d071",
+    "_dependency_file_top_level": "bbd81b3a8476689a5f8835820952e3131f51a584e54954dd751fb3544ed33c4c",
+    "_dependency_floor_root": "0768d2a1aea729323527c198a067431e011fc9bf3f7074e139c5dbaa189a82af",
+    "_dependency_named_tcb_violation": "24bf66ab8b3f2fcc7d000e7149dd15958cc8baab25b21f53300a7b6ea30bff94",
+    "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
+    "_json_bytes": "96dd857ef05e7b95c1ec5d347e52354f10cfe6d1b280e4136ce23d24253a90dc",
+    "_load_dependency_floor_manifest_bytes": "879027a5f0c60d085e27d9e187db55172691d775b50f86bc2808e8c619fc3f51",
+    "_load_sealed_proposal_authority_l0": "1ee82b52cb023ecc2cb59362586bf9fefb034a157d33774fb053c68d28127c8d",
+    "_materialize_snapshot_import_defaults": "315bafa58d6f1219f0dc3b788a40c1d940e1e54df0995f2d79c4f703baf21d93",
+    "_now_iso": "1111d4064b0970758ae53c6402d741da67c3968a43a83d1d7ec022574778cd3f",
+    "_parse_mapping": "00326c1b9e1ae90d2736d3fcdf14d84d4a31a78c58a4bfd5a950c820805e648d",
+    "_path_has_symlink_component": "904c9a3c93f5399c88a146b5a4933f846c5479b293fd1a1463d5b9de11558395",
+    "_postwrite_state_violation": "706e8157cff76d6915996fd1c58e9224b2fff48e675ee3049dc27ef5d257cba5",
+    "_proposal_authority_violation": "153a95947beeab0713a4703754747249b9f0088fd02503550bd394aa54fbcf18",
+    "_proposal_ready_marker_violation": "9b3349e6e7393df874409c18e0e1497ad9b84d4f9e5215eb6d30184009ef08e9",
+    "_proposal_state_violation": "182fadf09080c98f75a2fce98cb96ac0ef91dbc7414c5a29d9340151c6b026a8",
+    "_require_mapping": "0afb06873b1d9d8050a1aadc83cbee73929b76a7cb4fb8230cb278243817ee25",
+    "_safe_manifest_relpath": "3e27b6df0c2d8603f155cf42404e40a864fcf6f48cdcb31d47fe9675656a554f",
+    "_stable_fixed_witness_payload_l0": "03fc2efe2dfa60449761b82eab9d26114e0bb6be7bef180cc2522eba2854524f",
+    "_strict_int": "5b876ae9cebb315f00b2cd92e2f2b8126b381caf271da26405a65301ac83ff69",
+    "_strict_timestamp": "be3b3c947b04b3ec3834af77be85af32df891cbeba177db6c7de5ffe36c94884",
+    "_strong_proof_binding_violation": "8ad77b3035b07a73abb82b9d5554de89fd5c2415608be0b6db0e4b9aa29021df",
+    "_strong_status_keys": "6efd4d21cd333c8a1c023b3d87bb31a422b0276195b67e11e2b7c265a14281d4",
+    "_supervisor_certified_transition_violation_l0": "d2d605b01c6b1d01984a76dda4f256beb74294d11c5d6acf26b91fab9925f707",
+    "_valid_campaign_instance_id": "b939b1b49efc6f90fbe8eb984c193c1061d9a494ec530d8b7a128c28d28afb45",
+    "_valid_dependency_top_level": "3d9ad01addc9677349af2ff66f389d63d691ce231cb692f6eb38bcfcf40846b3",
+    "_valid_supervisor_proposal_run_id": "ce24774a70a38c89d40d511b76f759d6ddc48a291cf01c4f5c9740c5261216e5",
+    "loads_l0_strict_json": "ee77ffbacc5b38c4f26780e22689574d289bf249ded9cde3f66fe0173a95ccaf",
+}
+_PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
+    "_canonical_bytes": "6fd507d684d9171dad64369d2b4b0584edf256520be3e1113d37db0de3c44471",
+    "_canonical_digest": "8c05dd916c7f2615e0bb2fbb4ed5a6cac62cce500f7fee05ccc89e91869659aa",
+    "_dependency_file_top_level": "dd225ab13ec9917236f9cebeafa5d47b7e732d52ef8bb96c5b1891facd6dc2e1",
+    "_dependency_floor_root": "052fba15f27936a0a16a8979bff7db04ec1f6b0312ae218087b57c20e3d2d5a1",
+    "_dependency_named_tcb_violation": "a83946abe627f35c319f70e7ea27917808930a2b243da7ecb794d8fa01fdd773",
+    "_index_dependency_package_dirs": "90350bc225dd904c07b72ba646737d762d6ff83e2fb39b9586192837c3881b14",
+    "_install_third_party_floor": "3ae425a7f3357ac1be6d3dbaf1a7bb073c37361c720b037a203ca71ee57155f8",
+    "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
+    "_json_copy": "71d6048581ec811d9d28f4c60b69287aaa2fee791246e8e50850e9db54380f8e",
+    "_materialize_import_default_artifacts": "ec2a13d3338721ffd5819e6d0098685f51a81f5b1c00da39cde1c368f19f09e5",
+    "_require_mapping": "104f33d630f36f0f78076bf3c859fc86367f92237002231fd653d943699bdd44",
+    "_safe_rel": "510d425350d3e866ea0523fbfce04af46793936ff22503f4e2390d0782e7c957",
+    "_stable_fixed_witness_candidate_records": "1e1a8147e512e9d3c200be076bd6fb3178090d3be21e7a98a627cade94b5ac11",
+    "_stable_fixed_witness_payload": "698f25a09ab52aed1857169733588790c3db9eb1f73bddadf571e3b657729af3",
+    "_stdlib_paths": "0624a2443f48c0ae315746bd6e5ef6d9af30f8fece3cc5da141c0d8f7d201ce9",
+    "_strict_int": "5b876ae9cebb315f00b2cd92e2f2b8126b381caf271da26405a65301ac83ff69",
+    "_strict_string": "0eb6e1751b768a278a8056f2327d16fae030eb5c2fb5bfdec3bb6b8eaafaa103",
+    "_string_list": "3e11de384e5809b24713779aae4ce234ba8278b3831ef2ea567333bfc0a5c00a",
+    "_valid_top_level_name": "1d0d7e89abcb04884eb05becb12fbf4f75f48d14eb296ebd1feec8f7f73e2ba7",
 }
 _PR2_L0_TCB_CONSTANT_SOURCES = {
     "TRUE_VERIFIER_MODULE": 'TRUE_VERIFIER_MODULE = "src.search.pr2_l0_true_verifier_child"',
@@ -4464,6 +4516,64 @@ _PR2_L0_ALLOWED_IMPORT_BINDINGS = {
 _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_has_unsupervised_certified_checkpoint_claim": "9c99d69c30dc7642b8631f758e99b9f960b1d7cba2296c8870cac6fd552f74b8",
     "ExactCampaign.save": "d069c600b6040fbccc86b1a479d8c3439ffdd9e9be2fe0c99e863d247b0d5d64",
+    "_atomic_json_bytes": "7c4cc9d1e8b3fd7dead4c4a4d9fcbf85416da657e5cbb674d6df042673dae373",
+    "_atomic_write_json_bytes": "e1a6360777b8336cd6905e9fbe4f9be475353843e27cec43cd5384773a56954c",
+    "_best_empty_rect_objective": "98dac9bae0a315fca2025ac8b6ce5c4b4c8e03b149369dc234498c87e4b29710",
+    "_build_occupancy_prefix": "73f55efe3e23d8b6b3cdfab5d48af68c43cff66af393a46634ff4502ab66486f",
+    "_candidate_objective_from_rect": "09268e0e9ac5cb0e8e56601b0e9a82f3fe78fbe665a8641acfeb11f720f579a0",
+    "_certified_state_payload_sha256": "e25fe7fea36684825230a67189bf82bf573f1828610877b6ce1bc365df91aada",
+    "_checkpoint_write_lock": "c447cf4d908f1887e07ba67a56386430f585baf679ab527bf738c46dc5930499",
+    "_empty_rect_exists": "1b32cef7e198f26e597525a8d33148834b045140e267d2f1fdf055cf63ec7414",
+    "_expected_unfiltered_ghost_anchor_index": "b2407c6047a7231264c7502a15f877626f0c75a52a1a6843cc77ac81b974f267",
+    "_final_result_certified_transition": "ff40cc5bbd0f0fecd3e430a9311e23f67e709aa63f5c5bdcbe044f026c68d822",
+    "_fsync_directory": "bfb18d668c53c59dc521f4564192e0ae9cb9c5077fe423856c5f8b7ba8e3d53b",
+    "_is_authorized_exact_pose_optional_solution_entry": "8ad2a938faebe2e55a33ef1d30fa9c08eb3540845a93e263e54470c7bd5c2294",
+    "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
+    "_load_exact_facility_pools": "7eb8132e1fbd338aa79c7cd004232b9bc6241053314013500733822bae84e787",
+    "_load_exact_facility_templates": "f29a5f71fa0d356a3cb7c23225f95b4a1758ebb4b32271d99664cb7c134fa324",
+    "_load_exact_grid_dimensions": "f77537e75b23073d519685c4c9b99dd1c97ef132fb53ad369e74ac93b7091040",
+    "_load_exact_min_side_admissibility": "38dee46b35c6df48b719e2dec75b80a22045e4be569027c498eb292a86cf691a",
+    "_load_exact_required_optional_lower_bounds": "2a8c944e4ef787f4ab8c0891f8647b594021473ce6545106b3f33a0f7c86259e",
+    "_load_exact_safe_area_upper_bound": "e76c35a55ec2fdc2b780363d41334d0c68ae1c6910f1e29674612681b2596e17",
+    "_load_sealed_proposal_authority": "08a3e24dd6bcec9550a9399bed7514bb1056352cdf8b424d6bce23485aaefa3e",
+    "_load_validated_mandatory_exact_instances": "0f58fdfde46f04ee235f3c42ece7658cb891339828bd86db3f4c7271932d994f",
+    "_loads_strict_json_object": "c986086daa844b67ccac811515930976a5b52848bde6252b37adb7ff8304f621",
+    "_mandatory_solution_entry_metadata_violation": "d9d5d8ee29d9b5bc6afd63a7881564c3405a3b6a5ed4d344d6f961e6986da460",
+    "_nonnegative_number": "f89fde36e653b09ea5a935ab408cd8d94a20af1e896a1661cf9a8c35d7aa5d6c",
+    "_occupied_count_in_rect": "0326d0e818f9ddc0369ef10e2ee4ddcc922a02b69e98620bacf2c55a082e85c5",
+    "_path_has_symlink_component": "e64dd1865d28060ea064597d28385a7081d7a1446cb899fc46ddd5ada8209ba5",
+    "_pose_occupied_cells": "dae7a4b135cc7dcaaf886613de9186aaf8aa76c965cbcf10c1c4d9dd3ab1e9d2",
+    "_pose_optional_solution_entry_metadata_violation": "6093cf2390189718f9f7e460fd29c58f105f77ec2da0580f17e17072f8211d31",
+    "_pose_pool_min_occupied_cell_count": "17ebcc6a49bd34b5a8d625dcdd375106564e51346fd37e3b845e72df2f93e23d",
+    "_pose_power_coverage_cells": "d4461a00badd7f04046d52abd3b5a2ce9ff216bf17b9af9b131b3664e2b6f4e3",
+    "_proposal_state_violation": "c1e384770d1d6a70a22e731fd34b2aaf719628a52a592e3efeb409c1f0870444",
+    "_snapshot_campaign_state_for_nonterminal_save": "538b0095d5cac74d1d0651920d0ff7e2451ad43ba0286279df191897fa45ebd1",
+    "_solution_without_ghost_marker": "87e3799b244288813e8fa9da4424eb09b8182590ea48983aafb72ea59ac0a6dc",
+    "_strict_candidate_ghost_rect": "0c8256117ff19bed0aa4427e56ec9118cc6e7f7756be51eebf9c3b90d5cf83d3",
+    "_strict_nonempty_string": "a24b61737df419582bfd4a5a4fcdf445ee6944658241c71eef26e6c7214f287f",
+    "_strict_resume_int": "e6cb161b475997b1411c4897b2dbddb816454d53be8ed695d20e21c9c6464de4",
+    "_strict_resume_timestamp": "3dd5743ae9088d952697f73a92b624df4e85a089266f4ac1e764d7a73bf92a89",
+    "_supervisor_certified_transition_violation": "81684bb69595c118d69434ca150b122d3eb435d7a1e081cd9527e9757f19a119",
+    "_supervisor_seal_state_violation": "e2ee931494ed8db0c74ab0e417977127342a70c400906fde91d8615efc4f4963",
+    "_terminal_candidate_ghost_pick_binding_violation": "c1ed1b701f052e76a8189bc40a0256d280a7553a21868f94261fae1bb322eb4d",
+    "_terminal_certified_ghost_rect_unknown_field": "6ee40c61dcfea24aa601a8e8dead3497f2b7ee4c10ce5e7636d24747c5e3443e",
+    "_terminal_certified_last_stop_reason_violation": "63ff8409d8d7c3155d5a75023bab72e035b0e634906781f31edeed74e5e05297",
+    "_terminal_certified_search_stats_violation": "d056a83ca959d6cd3c0a9a9b0691bde628ca7159833d85e41187fd8f30052d07",
+    "_terminal_certified_solution_entry_unknown_field": "bbc3e49b39b1d01228caaca871a4b04297dd2261ba0204ae50714a1ec27d073a",
+    "_terminal_solution_entry_pose_metadata_violation": "fdaa0d82562ac9b2f1c8d72521e9e8704f941c51993b278b40e8e7e5e72fae85",
+    "_valid_campaign_instance_id": "b939b1b49efc6f90fbe8eb984c193c1061d9a494ec530d8b7a128c28d28afb45",
+    "_valid_supervisor_proposal_run_id": "bf9a4f80248d5d305803d5e7a7a9fd3c3b46a4db267d85c32cd5bfd4e1a8932c",
+    "_validate_terminal_solution_against_project": "c1a38e6f454c2176d545aaaa970a1453953ffa7cfddc9fa55be7c2ac2833d4f4",
+    "_validated_mandatory_exact_instances_payload": "b307dd5161420576911d556b064c97d7957e36f0d5c7f760d4d8fbe71c3fe276",
+    "candidate_key": "0a3b51c9d97a58f62dc099850c417c5927b3cf397458836997abd0ebfbd4b1be",
+    "compute_certified_exact_source_digest": "b255a4ed3c05bbde4fe4a1db1968c06aba7dacaf46af361b67e89c86b949c2c9",
+    "compute_exact_artifact_hashes": "db24b961f4836f373d9078117936ed34760dfecc7b9fb888dd64a62f6e8be130",
+    "has_terminal_full_frontier_certified_evidence": "67902c4f61e15b168b57f5de9b5cd95773d6342cb922c5f16ce53859777066a9",
+    "now_iso": "f719c310ad532c6a7759c6d6c8289ab87a488cc6e822a24082922470c4fac06f",
+    "now_ts": "e64abec07a9c497e814226bd83c696ec2da6b6fd27935d494bfea28d4238b3ed",
+    "sha256_file": "85a7a51ff9fe1c3ab43bf2d96c17441558e8b8badd42da90dd4bbffaa429c6ef",
+    "terminal_certified_final_result_project_precheck_violation": "77c23099c757be50960e7b434ba7ccaded34721976a3752868edb66fe7fd5461",
+    "terminal_certified_final_result_violation": "541538711a5376519cc8c18b6b60b7dece66630628ad0d4ae47044457685b0ae",
 }
 
 
@@ -5462,6 +5572,21 @@ def _check_l0_runtime_tcb_bindings(l0_tree: ast.Module, *, path: Path) -> list[s
     return errors
 
 
+def _check_true_child_runtime_tcb_source_pins(
+    child_tree: ast.Module,
+    *,
+    path: Path,
+) -> list[str]:
+    errors: list[str] = []
+    for name, expected_sha256 in sorted(_PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256.items()):
+        function = _function_def(child_tree, name, path=path)
+        if _normalized_source_sha256(path, function) != expected_sha256:
+            errors.append(
+                f"PR2 true verifier child TCB source sha256 drifted for {name}"
+            )
+    return errors
+
+
 def _check_exact_runtime_tcb_source_pins(
     exact_tree: ast.Module,
     exact_class: ast.ClassDef,
@@ -5469,23 +5594,13 @@ def _check_exact_runtime_tcb_source_pins(
     path: Path,
 ) -> list[str]:
     errors: list[str] = []
-    guard_fn = _function_def(
-        exact_tree,
-        "_has_unsupervised_certified_checkpoint_claim",
-        path=path,
-    )
-    if _normalized_source_sha256(path, guard_fn) != _PR2_EXACT_TCB_SOURCE_SHA256[
-        "_has_unsupervised_certified_checkpoint_claim"
-    ]:
-        errors.append(
-            "ExactCampaign save TCB source sha256 drifted for "
-            "_has_unsupervised_certified_checkpoint_claim"
-        )
-    save_fn = _method_def(exact_class, "save", path=path)
-    if _normalized_source_sha256(path, save_fn) != _PR2_EXACT_TCB_SOURCE_SHA256[
-        "ExactCampaign.save"
-    ]:
-        errors.append("ExactCampaign save TCB source sha256 drifted for ExactCampaign.save")
+    for name, expected_sha256 in sorted(_PR2_EXACT_TCB_SOURCE_SHA256.items()):
+        if name.startswith("ExactCampaign."):
+            function = _method_def(exact_class, name.split(".", 1)[1], path=path)
+        else:
+            function = _function_def(exact_tree, name, path=path)
+        if _normalized_source_sha256(path, function) != expected_sha256:
+            errors.append(f"ExactCampaign save TCB source sha256 drifted for {name}")
     return errors
 
 
@@ -6752,6 +6867,12 @@ def _check_candidate_sink_replay_contract(
 
     child_tree = _parse_python(pr2_true_child_path)
     errors.extend(_check_child_module_toplevel_closed_world(child_tree))
+    errors.extend(
+        _check_true_child_runtime_tcb_source_pins(
+            child_tree,
+            path=pr2_true_child_path,
+        )
+    )
     errors.extend(
         _check_true_verifier_entrypoint_body(
             _function_def(child_tree, "verify", path=pr2_true_child_path)
