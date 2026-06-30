@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 146
+- entries: 147
 - hard edges: 177
 - pending relation suggestions: 0
 
@@ -154,6 +154,7 @@ python cc_memory/mem.py boot
 - `topology-opt-gpt-chunk1-codex` — topology-opt 2026-06-27: DONE, GPT 两优化书评估+Chunk1 落地。
 - `transcript-decompact-extract-tool` — transcript抽3视图:live(全线程+工具输出,看守进程实时)/history(纯对话分卷~1MB)/latest(最新段=刚被压那段,PreCompact写);Stop hook弃用改看守
 - `v-next` — cc_memory_vnext 2026-06-27: LIVE, MVP-0 上线; zmem 卡/金标准为准。
+- `vnext-l1-quota-buckets-by-kind-no-constraint` — vnext 卡的 L1 自动注入按 kind 分配额桶——`zmem context` 诊断里的 `l1_quota` 只有 **decision:3 / pitfall:3 / reference:3 / file_local:2** 四个桶…
 - `wf-codex-agenttype-gate-hook` — 项目级 PreToolUse(matcher=`Workflow`)钩子 `~/.claude/hooks/wf_codex_agenttype_gate.py`…
 - `wf-verify-also-codex-no-parallel-bolt` — WF 验证 2026-06-21: RULE, 审计也走 Codex→Claude; 别旁路加并行。
 - `workflow-default-multimodel-opus-codex` — workflow 2026-06-28: RULE, 诊断用 opus+codex; 审查改 GPT Pro relay。
