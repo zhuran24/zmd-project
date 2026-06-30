@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 143
-- hard edges: 173
+- entries: 146
+- hard edges: 177
 - pending relation suggestions: 0
 
 ## Start Here
@@ -59,6 +59,7 @@ python cc_memory/mem.py boot
 - `claude-md-maintenance-method-20260628` — CLAUDE.md 维护 2026-06-28: RULE, 工具归属+保守缩写+归档边界。
 - `clipboard-relay-deliverables-to-owner` — relay 交付 2026-06-20/23: RULE, 剪贴板给提示词正文+包完整路径。
 - `close-kernel-ast-pin-closed-world-progression` — 对图灵完备语言,AST pin 留任何自由表达式/语句空间就总能绕;收敛终态=闭世界(只许有限白名单:禁嵌套def/dunder/__builtins__,import/getattr…
+- `close-kernel-ast-pin-structural-vs-semantic-boundary` — close-kernel AST pin「第二道门」(防未来维护者保 checker 全绿 + 重算 sha 重钉 floor,却把 child/parent 升格语义掏空)的**根本能力边界 = 只能保护「结构」,保护不了「证明数学」**…
 - `close-kernel-necessity-verdict-20260619` — V99 close-kernel 2026-06-19: VERDICT, sink hash-pin lint; 防虚假安全感。
 - `close-kernel-sealed-lint-v99-reseal-re-export-patch-ruff-f401` — close-kernel lint 2026-06-28: WARN, sealed 改动会触发 reseal/F401 patch 坑。
 - `codegraph-codegraph-codegraph-init-proof-cc-memory` — CodeGraph: RULE, 项目代码结构索引/MCP/CLI; 非 proof、非 cc_memory。
@@ -153,7 +154,9 @@ python cc_memory/mem.py boot
 - `topology-opt-gpt-chunk1-codex` — topology-opt 2026-06-27: DONE, GPT 两优化书评估+Chunk1 落地。
 - `transcript-decompact-extract-tool` — transcript抽3视图:live(全线程+工具输出,看守进程实时)/history(纯对话分卷~1MB)/latest(最新段=刚被压那段,PreCompact写);Stop hook弃用改看守
 - `v-next` — cc_memory_vnext 2026-06-27: LIVE, MVP-0 上线; zmem 卡/金标准为准。
+- `wf-codex-agenttype-gate-hook` — 项目级 PreToolUse(matcher=`Workflow`)钩子 `~/.claude/hooks/wf_codex_agenttype_gate.py`…
 - `wf-verify-also-codex-no-parallel-bolt` — WF 验证 2026-06-21: RULE, 审计也走 Codex→Claude; 别旁路加并行。
 - `workflow-default-multimodel-opus-codex` — workflow 2026-06-28: RULE, 诊断用 opus+codex; 审查改 GPT Pro relay。
+- `workstyle-codex-routing-cache-probe-junk-20260630` — 本会话(2026-06-30 PR2 #5 close-kernel 硬化)owner 多次纠正,沉淀 3 条工作方式(都是「按工具模式/性质反射、没按工作量+路由判」的同一上游病的具体马甲)…
 - `worktree-baseref-head-vs-fresh` — owner 2026-06-29 拍 + 官方文档/Issue#60588 核实。head=本地当前HEAD(含未push commit+当前分支),fresh=origin/HEAD永远盯main不跟当前分支。我们高频派subagent接feature分支干→要head。两者都不带未commit工作区改
 - `xmodel-review-is-standing-rule-symmetric` — 跨模型审 2026-06-23: RULE, 站立规则自动触发, 非 owner 逐次指派。
