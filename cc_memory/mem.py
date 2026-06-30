@@ -56,6 +56,45 @@ SEMANTIC_DENSE_LIMIT = 80
 # Conservative initial values — recalibrate on a real corpus cosine distribution (P3).
 SEMANTIC_SCORE_SCALE = 40.0
 SEMANTIC_COSINE_FLOOR = 0.30
+PRUNE_DEFAULT_REPORT = ROOT / ".prune" / "prune_scan_report.json"
+PRUNE_FLAGS = [
+    "duplicate_or_overlap",
+    "stale_or_low_value",
+    "orphan",
+    "oversized_mixed",
+    "promotion_candidate",
+    "archive_candidate",
+]
+PRUNE_DUPLICATE_COSINE = 0.92
+PRUNE_OVERSIZED_BYTES = 4096
+PRUNE_LOCK_KINDS = {"rule", "verdict", "fact"}
+PRUNE_SELF_ID_RE = re.compile(r"prun(?:e|ing)", re.IGNORECASE)
+PRUNE_TITLE_REDLINE_RE = re.compile(
+    r"\b(?:not|never|deprecated|obsolete|contradict(?:s|ion)?|conflict|opposite|deny|negative)\b|"
+    r"(?:反例|冲突|矛盾|禁止|不要|不得|不是|相反|否定|废弃)",
+    re.IGNORECASE,
+)
+PRUNE_STALE_LOW_VALUE_RE = re.compile(
+    r"\b(?:obsolete|outdated|deprecated|stale|superseded|old path|old version)\b|"
+    r"(?:过期|已废弃|废弃|失效|旧方案|旧版|旧路径)",
+    re.IGNORECASE,
+)
+PRUNE_DURABLE_MARKER_RE = re.compile(
+    r"\b(?:must|never|always|authority|invariant|protocol|runbook|gate|owner|policy)\b|"
+    r"(?:必须|绝不|不要|不得|铁律|权威|协议|门禁|规则|不变量)",
+    re.IGNORECASE,
+)
+PRUNE_ROUTE_TIME_MARKER_RE = re.compile(
+    r"\b(?:vnext|route-time|must-inject|always-read|read-first|every turn|every session|session start|startup hook)\b|"
+    r"(?:每轮|每次|每会话|启动|开工|自动注入|必读)",
+    re.IGNORECASE,
+)
+PRUNE_PATH_RE = re.compile(
+    r"(?<![\w:/])("
+    r"[A-Za-z]:[\\/][^\s`'\"<>|]+|"
+    r"(?:\.{1,2}[\\/])?[A-Za-z0-9_.\-]+(?:[\\/][A-Za-z0-9_.\-]+)+"
+    r")"
+)
 
 # finalize (single收口本体): one drain at a time via a file lease; concurrent hook
 # triggers no-op and let the holder pick up the latest mutations.
@@ -179,6 +218,17 @@ def connect(db: Path = DEFAULT_DB) -> sqlite3.Connection:
     # contention window during a drain. memory.db lives on C: (local) — WAL-safe.
     con.execute("PRAGMA journal_mode = WAL")
     con.execute("PRAGMA busy_timeout = 30000")
+    return con
+
+
+def connect_readonly(db: Path = DEFAULT_DB) -> sqlite3.Connection:
+    """Open the memory DB for diagnostics that must not mutate SQLite state."""
+    db = Path(db)
+    if not db.exists():
+        raise SystemExit(f"memory db not found: {db}")
+    con = sqlite3.connect(db.resolve().as_uri() + "?mode=ro", uri=True)
+    con.row_factory = sqlite3.Row
+    con.execute("PRAGMA foreign_keys = ON")
     return con
 
 
@@ -1043,6 +1093,547 @@ def pending_relation_suggestions(con: sqlite3.Connection, *, min_score: float = 
     )
 
 
+def prune_name_key(value: str) -> str:
+    value = (value or "").strip().lower().replace("\\", "/")
+    value = re.sub(r"\.md$", "", value)
+    value = re.sub(r"[^\w\u3400-\u9fff]+", "-", value)
+    return re.sub(r"-+", "-", value).strip("-")
+
+
+def prune_node_ref(typ: str, node_id: str) -> str:
+    return f"{typ}:{node_id}"
+
+
+def prune_is_self_id(node_id: str) -> bool:
+    return PRUNE_SELF_ID_RE.search(node_id or "") is not None
+
+
+def prune_node_from_row(typ: str, row: sqlite3.Row) -> dict[str, Any]:
+    meta = jload(row["metadata_json"], {})
+    if typ == "fact":
+        title = f"{row['subject']} {row['predicate']}".strip()
+        body = row["value"] or ""
+        kind = "fact"
+        confidence = (row["confidence"] or "medium").lower()
+        pinned = False
+        subject = row["subject"]
+    else:
+        title = row["title"] or ""
+        body = row["body"] or ""
+        kind = str(meta.get("kind") or meta.get("type") or "entry").lower()
+        confidence = str(meta.get("confidence") or "medium").lower()
+        pinned = bool(row["pinned"])
+        subject = ""
+    return {
+        "type": typ,
+        "id": row["id"],
+        "ref": prune_node_ref(typ, row["id"]),
+        "row": row,
+        "title": title,
+        "body": body,
+        "text": node_text_for_relation(row, typ),
+        "status": row["status"],
+        "kind": kind,
+        "confidence": confidence,
+        "pinned": pinned,
+        "subject": subject,
+        "body_bytes": len(body.encode("utf-8")),
+    }
+
+
+def prune_active_nodes(con: sqlite3.Connection) -> list[dict[str, Any]]:
+    nodes: list[dict[str, Any]] = []
+    for typ, query in (
+        ("fact", "SELECT * FROM facts WHERE status='active' ORDER BY id"),
+        ("entry", "SELECT * FROM entries WHERE status='active' ORDER BY id"),
+    ):
+        for row in con.execute(query):
+            if prune_is_self_id(row["id"]):
+                continue
+            nodes.append(prune_node_from_row(typ, row))
+    return sorted(nodes, key=lambda n: n["ref"])
+
+
+def prune_edge_count(con: sqlite3.Connection, node: dict[str, Any], direction: str, *, hard_only: bool = False) -> int:
+    if direction == "in":
+        sql = "SELECT count(*) AS n FROM edges WHERE target_type=? AND target_id=?"
+    else:
+        sql = "SELECT count(*) AS n FROM edges WHERE source_type=? AND source_id=?"
+    params: tuple[Any, ...] = (node["type"], node["id"])
+    if hard_only:
+        sql += " AND hard=1"
+    return int(con.execute(sql, params).fetchone()["n"])
+
+
+def prune_safety_lock(con: sqlite3.Connection, node: dict[str, Any]) -> dict[str, Any]:
+    reasons: list[str] = []
+    incoming = prune_edge_count(con, node, "in")
+    if node["pinned"]:
+        reasons.append("pinned")
+    if incoming > 0:
+        reasons.append(f"incoming_edges={incoming}")
+    if node["kind"] in PRUNE_LOCK_KINDS:
+        reasons.append(f"kind={node['kind']}")
+    if node["confidence"] == "high":
+        reasons.append("confidence=high")
+    if node["status"] != "active":
+        reasons.append(f"status={node['status']}")
+    return {"locked": bool(reasons), "reasons": reasons}
+
+
+def prune_pair_safety_lock(left: dict[str, Any], right: dict[str, Any], left_lock: dict[str, Any], right_lock: dict[str, Any]) -> dict[str, Any]:
+    reasons = [f"{left['ref']}: {reason}" for reason in left_lock["reasons"]]
+    reasons.extend(f"{right['ref']}: {reason}" for reason in right_lock["reasons"])
+    return {"locked": bool(reasons), "reasons": reasons}
+
+
+def prune_record(
+    *,
+    item_id: str,
+    flag: str,
+    signals: list[str],
+    raw_metrics: dict[str, Any],
+    safety_lock: dict[str, Any],
+    confidence: str,
+    evidence_snippet: str,
+) -> dict[str, Any]:
+    return {
+        "item_id": item_id,
+        "layer": "cc_memory",
+        "flag": flag,
+        "signals": signals,
+        "raw_metrics": raw_metrics,
+        "safety_lock": safety_lock,
+        "confidence": confidence,
+        "evidence_snippet": evidence_snippet,
+    }
+
+
+def prune_empty_groups() -> dict[str, dict[str, list[dict[str, Any]]]]:
+    return {flag: {"locked_review_only": [], "unlocked_candidates": []} for flag in PRUNE_FLAGS}
+
+
+def prune_add_record(groups: dict[str, dict[str, list[dict[str, Any]]]], record: dict[str, Any]) -> None:
+    section = "locked_review_only" if record["safety_lock"]["locked"] else "unlocked_candidates"
+    groups[record["flag"]][section].append(record)
+
+
+def prune_has_edge_between(con: sqlite3.Connection, left: dict[str, Any], right: dict[str, Any], edge_type: str) -> bool:
+    row = con.execute(
+        """
+        SELECT 1 FROM edges
+        WHERE edge_type=?
+          AND (
+            (source_type=? AND source_id=? AND target_type=? AND target_id=?)
+            OR
+            (source_type=? AND source_id=? AND target_type=? AND target_id=?)
+          )
+        LIMIT 1
+        """,
+        (
+            edge_type,
+            left["type"], left["id"], right["type"], right["id"],
+            right["type"], right["id"], left["type"], left["id"],
+        ),
+    ).fetchone()
+    return row is not None
+
+
+def prune_vector_from_blob(blob: bytes, dim: int) -> list[float] | None:
+    try:
+        arr = array.array("f")
+        arr.frombytes(blob)
+    except (TypeError, ValueError):
+        return None
+    if len(arr) != dim:
+        return None
+    return [float(x) for x in arr]
+
+
+def prune_vector_norm(vector: list[float]) -> float:
+    return math.sqrt(sum(x * x for x in vector))
+
+
+def prune_embedding_rows_by_model(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> dict[str, list[tuple[dict[str, Any], list[float], float]]]:
+    nodes_by_key = {(node["type"], node["id"]): node for node in nodes}
+    by_model: dict[str, list[tuple[dict[str, Any], list[float], float]]] = defaultdict(list)
+    for row in con.execute(
+        """
+        SELECT node_type,node_id,model_id,content_hash,dim,dtype,vector_blob
+        FROM node_embeddings
+        ORDER BY model_id,node_type,node_id
+        """
+    ):
+        node = nodes_by_key.get((row["node_type"], row["node_id"]))
+        if node is None or row["dtype"] != "float32":
+            continue
+        expected_hash = node_content_hash(node["type"], node["id"], node["text"])
+        if row["content_hash"] != expected_hash:
+            continue
+        vector = prune_vector_from_blob(row["vector_blob"], int(row["dim"]))
+        if vector is None:
+            continue
+        norm_v = prune_vector_norm(vector)
+        if norm_v == 0.0:
+            continue
+        by_model[row["model_id"]].append((node, vector, norm_v))
+    return by_model
+
+
+def prune_pair_cosines(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> dict[tuple[str, str], dict[str, Any]]:
+    best: dict[tuple[str, str], dict[str, Any]] = {}
+    for model_id, rows in prune_embedding_rows_by_model(con, nodes).items():
+        for i, (left, left_vector, left_norm) in enumerate(rows):
+            for right, right_vector, right_norm in rows[i + 1 :]:
+                if len(left_vector) != len(right_vector):
+                    continue
+                dot = sum(a * b for a, b in zip(left_vector, right_vector, strict=True))
+                cosine = dot / (left_norm * right_norm)
+                left_ref, right_ref = sorted([left["ref"], right["ref"]])
+                key = (left_ref, right_ref)
+                old = best.get(key)
+                if old is None or cosine > old["cosine"]:
+                    first, second = (left, right) if left["ref"] == left_ref else (right, left)
+                    best[key] = {
+                        "left": first,
+                        "right": second,
+                        "cosine": cosine,
+                        "model_id": model_id,
+                    }
+    return best
+
+
+def prune_duplicate_denial_reasons(con: sqlite3.Connection, left: dict[str, Any], right: dict[str, Any]) -> list[str]:
+    reasons: list[str] = []
+    if left["kind"] != right["kind"]:
+        reasons.append(f"kind_mismatch:{left['kind']}!={right['kind']}")
+    if left["type"] == "fact" and right["type"] == "fact" and left["subject"] != right["subject"]:
+        reasons.append(f"fact_subject_mismatch:{left['subject']}!={right['subject']}")
+    if prune_has_edge_between(con, left, right, "CONTRADICTS"):
+        reasons.append("contradicts_edge")
+    if PRUNE_TITLE_REDLINE_RE.search(left["title"]) or PRUNE_TITLE_REDLINE_RE.search(right["title"]):
+        reasons.append("title_redline_word")
+    return reasons
+
+
+def prune_duplicate_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], *, threshold: float) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for pair in prune_pair_cosines(con, nodes).values():
+        cosine = float(pair["cosine"])
+        if cosine < threshold:
+            continue
+        left = pair["left"]
+        right = pair["right"]
+        if prune_has_edge_between(con, left, right, "SUPERSEDES"):
+            continue
+        if prune_duplicate_denial_reasons(con, left, right):
+            continue
+        left_lock = prune_safety_lock(con, left)
+        right_lock = prune_safety_lock(con, right)
+        records.append(
+            prune_record(
+                item_id=f"{left['ref']} <-> {right['ref']}",
+                flag="duplicate_or_overlap",
+                signals=[
+                    f"semantic cosine {cosine:.4f} >= {threshold:.2f}",
+                    f"same kind: {left['kind']}",
+                    "no SUPERSEDES edge between pair",
+                ],
+                raw_metrics={
+                    "left": left["ref"],
+                    "right": right["ref"],
+                    "cosine": round(cosine, 6),
+                    "threshold": threshold,
+                    "model_id": pair["model_id"],
+                },
+                safety_lock=prune_pair_safety_lock(left, right, left_lock, right_lock),
+                confidence="high" if cosine >= 0.97 else "med",
+                evidence_snippet=f"{left['ref']}: {short(left['body'], 140)} || {right['ref']}: {short(right['body'], 140)}",
+            )
+        )
+    return records
+
+
+def prune_path_candidate(raw: str) -> str:
+    return raw.strip().strip("`'\"()[]{}<>").rstrip(".,;:，。；：")
+
+
+def prune_missing_repo_paths(text: str) -> list[str]:
+    missing: list[str] = []
+    seen: set[str] = set()
+    root_text = str(ROOT.resolve()).lower()
+    for match in PRUNE_PATH_RE.finditer(text or ""):
+        raw = prune_path_candidate(match.group(1))
+        if not raw or "://" in raw or "*" in raw:
+            continue
+        path = Path(raw)
+        if path.is_absolute():
+            try:
+                resolved = str(path.resolve()).lower()
+            except OSError:
+                continue
+            if not resolved.startswith(root_text):
+                continue
+            candidate = path
+        else:
+            first = raw.replace("\\", "/").split("/", 1)[0]
+            if first not in {
+                ".",
+                "..",
+                "cc_memory",
+                "cc_memory_vnext",
+                "data",
+                "docs",
+                "rules",
+                "scripts",
+                "specs",
+                "src",
+                "tests",
+            }:
+                continue
+            candidate = ROOT / raw
+        key = raw.replace("\\", "/")
+        if key in seen:
+            continue
+        seen.add(key)
+        if not candidate.exists():
+            missing.append(key)
+    return missing
+
+
+def prune_stale_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for node in nodes:
+        superseders = list(
+            con.execute(
+                "SELECT source_type,source_id FROM edges WHERE edge_type='SUPERSEDES' AND target_type=? AND target_id=? ORDER BY source_type,source_id",
+                (node["type"], node["id"]),
+            )
+        )
+        missing_paths = prune_missing_repo_paths(node["body"])
+        low_confidence_stale = node["confidence"] == "low" and PRUNE_STALE_LOW_VALUE_RE.search(f"{node['title']}\n{node['body']}") is not None
+        if not superseders and not missing_paths and not low_confidence_stale:
+            continue
+        signals: list[str] = []
+        if superseders:
+            signals.append("active node is target of SUPERSEDES from " + ", ".join(f"{r['source_type']}:{r['source_id']}" for r in superseders[:5]))
+        if missing_paths:
+            signals.append("body references missing repo path(s): " + ", ".join(missing_paths[:5]))
+        if low_confidence_stale:
+            signals.append("low-confidence body contains explicit stale/obsolete wording")
+        records.append(
+            prune_record(
+                item_id=node["ref"],
+                flag="stale_or_low_value",
+                signals=signals,
+                raw_metrics={
+                    "incoming_supersedes": len(superseders),
+                    "missing_paths": missing_paths[:10],
+                    "confidence": node["confidence"],
+                    "body_bytes": node["body_bytes"],
+                },
+                safety_lock=prune_safety_lock(con, node),
+                confidence="high" if superseders else ("med" if missing_paths else "low"),
+                evidence_snippet=short(node["body"], 240),
+            )
+        )
+    return records
+
+
+def prune_orphan_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for node in nodes:
+        incoming = prune_edge_count(con, node, "in")
+        outgoing = prune_edge_count(con, node, "out")
+        if incoming != 0 or outgoing != 0:
+            continue
+        records.append(
+            prune_record(
+                item_id=node["ref"],
+                flag="orphan",
+                signals=["zero incoming edges", "zero outgoing edges"],
+                raw_metrics={"incoming_edges": incoming, "outgoing_edges": outgoing},
+                safety_lock=prune_safety_lock(con, node),
+                confidence="med",
+                evidence_snippet=short(node["body"], 240),
+            )
+        )
+    return records
+
+
+def prune_oversized_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], *, threshold: int) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for node in nodes:
+        if node["type"] != "entry" or node["body_bytes"] < threshold:
+            continue
+        body = node["body"]
+        heading_count = len(re.findall(r"(?m)^#{1,4}\s+", body))
+        bullet_count = len(re.findall(r"(?m)^\s*(?:[-*+]|\d+\.)\s+", body))
+        paragraph_count = len([part for part in re.split(r"\n\s*\n", body.strip()) if part.strip()])
+        mixed_markers = int(heading_count >= 2) + int(bullet_count >= 6) + int(paragraph_count >= 5)
+        if mixed_markers == 0:
+            continue
+        records.append(
+            prune_record(
+                item_id=node["ref"],
+                flag="oversized_mixed",
+                signals=[
+                    f"body_bytes {node['body_bytes']} >= {threshold}",
+                    f"mixed-topic markers: headings={heading_count}, bullets={bullet_count}, paragraphs={paragraph_count}",
+                ],
+                raw_metrics={
+                    "body_bytes": node["body_bytes"],
+                    "threshold": threshold,
+                    "heading_count": heading_count,
+                    "bullet_count": bullet_count,
+                    "paragraph_count": paragraph_count,
+                },
+                safety_lock=prune_safety_lock(con, node),
+                confidence="med",
+                evidence_snippet=short(node["body"], 240),
+            )
+        )
+    return records
+
+
+def prune_promotion_records(con: sqlite3.Connection, nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for node in nodes:
+        if node["type"] != "entry" or not (160 <= node["body_bytes"] <= 6000):
+            continue
+        text = f"{node['title']}\n{node['body']}"
+        marker_hits = PRUNE_DURABLE_MARKER_RE.findall(text)
+        route_hits = PRUNE_ROUTE_TIME_MARKER_RE.findall(text)
+        hard_edges = prune_edge_count(con, node, "in", hard_only=True) + prune_edge_count(con, node, "out", hard_only=True)
+        title_key = prune_name_key(node["title"])
+        title_marker = any(token in title_key for token in ("vnext", "protocol", "rule", "runbook", "gate", "authority", "card"))
+        if not (title_marker and route_hits and len(marker_hits) >= 2):
+            continue
+        records.append(
+            prune_record(
+                item_id=node["ref"],
+                flag="promotion_candidate",
+                signals=[
+                    "durable-rule marker(s) in title/body",
+                    "route-time/vnext injection marker(s) in title/body",
+                ],
+                raw_metrics={
+                    "body_bytes": node["body_bytes"],
+                    "marker_count": len(marker_hits),
+                    "route_marker_count": len(route_hits),
+                    "hard_edges": hard_edges,
+                },
+                safety_lock=prune_safety_lock(con, node),
+                confidence="low",
+                evidence_snippet=short(node["body"], 240),
+            )
+        )
+    return records
+
+
+def prune_vnext_card_names(cards_dir: Path) -> tuple[dict[str, str], list[str]]:
+    notes: list[str] = []
+    names: dict[str, str] = {}
+    if not cards_dir.exists():
+        return names, [f"archive_candidate skipped: cards dir not found: {cards_dir}"]
+    for path in sorted(cards_dir.glob("*.md")):
+        candidates = [path.stem]
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            notes.append(f"archive_candidate skipped unreadable card {path.name}: {exc}")
+            continue
+        for line in text.splitlines()[:120]:
+            stripped = line.strip()
+            lower = stripped.lower()
+            if lower.startswith(("id:", "title:")):
+                candidates.append(stripped.split(":", 1)[1].strip().strip("'\""))
+            elif stripped.startswith("# "):
+                candidates.append(stripped[2:].strip())
+        for candidate in candidates:
+            key = prune_name_key(candidate)
+            if key:
+                names.setdefault(key, path.name)
+    return names, notes
+
+
+def prune_archive_records(con: sqlite3.Connection, nodes: list[dict[str, Any]], *, cards_dir: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    card_names, notes = prune_vnext_card_names(cards_dir)
+    if not card_names:
+        return [], notes
+    records: list[dict[str, Any]] = []
+    for node in nodes:
+        keys = [(prune_name_key(node["id"]), "id")]
+        if node["title"]:
+            keys.append((prune_name_key(node["title"]), "title"))
+        matched: tuple[str, str, str] | None = None
+        for key, source in keys:
+            if key and key in card_names:
+                matched = (key, source, card_names[key])
+                break
+        if matched is None:
+            continue
+        key, source, card_name = matched
+        records.append(
+            prune_record(
+                item_id=node["ref"],
+                flag="archive_candidate",
+                signals=[f"active cc_memory node has same-name vnext card: {card_name}"],
+                raw_metrics={"matched_key": key, "matched_by": source, "matched_card": card_name},
+                safety_lock=prune_safety_lock(con, node),
+                confidence="high" if source == "id" else "med",
+                evidence_snippet=short(node["body"], 240),
+            )
+        )
+    return records, notes
+
+
+def build_prune_scan_report(
+    con: sqlite3.Connection,
+    *,
+    db: Path,
+    cards_dir: Path,
+    duplicate_threshold: float,
+    oversized_bytes: int,
+) -> dict[str, Any]:
+    nodes = prune_active_nodes(con)
+    groups = prune_empty_groups()
+    notes = [
+        "read-only diagnostic scan; no memory mutations, schema changes, LLM calls, or automatic disposition",
+        "candidate pool hard-excludes ids containing prune/pruning",
+    ]
+    for record in prune_duplicate_records(con, nodes, threshold=duplicate_threshold):
+        prune_add_record(groups, record)
+    for record in prune_stale_records(con, nodes):
+        prune_add_record(groups, record)
+    for record in prune_orphan_records(con, nodes):
+        prune_add_record(groups, record)
+    for record in prune_oversized_records(con, nodes, threshold=oversized_bytes):
+        prune_add_record(groups, record)
+    for record in prune_promotion_records(con, nodes):
+        prune_add_record(groups, record)
+    archive_records, archive_notes = prune_archive_records(con, nodes, cards_dir=cards_dir)
+    notes.extend(archive_notes)
+    for record in archive_records:
+        prune_add_record(groups, record)
+    for grouped in groups.values():
+        for records in grouped.values():
+            records.sort(key=lambda r: r["item_id"])
+    return {
+        "generated_at": now(),
+        "db": str(db),
+        "layer": "cc_memory",
+        "groups": groups,
+        "raw_metrics": {
+            "active_candidate_nodes": len(nodes),
+            "duplicate_cosine_threshold": duplicate_threshold,
+            "oversized_bytes_threshold": oversized_bytes,
+            "cards_dir": str(cards_dir),
+        },
+        "notes": notes,
+    }
+
+
 def export_markdown(con: sqlite3.Connection, path: Path = DEFAULT_EXPORT) -> str:
     counts = list_counts(con)
     pending_suggestions = con.execute("SELECT count(*) AS n FROM relation_suggestions WHERE status='pending'").fetchone()["n"]
@@ -1648,6 +2239,29 @@ def cmd_suggest(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_prune_scan(args: argparse.Namespace) -> int:
+    con = connect_readonly(args.db)
+    try:
+        report = build_prune_scan_report(
+            con,
+            db=args.db,
+            cards_dir=args.cards_dir,
+            duplicate_threshold=args.duplicate_cosine_threshold,
+            oversized_bytes=args.oversized_bytes,
+        )
+    finally:
+        con.close()
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(f"prune scan report: {args.out}")
+    for flag in PRUNE_FLAGS:
+        grouped = report["groups"][flag]
+        locked = len(grouped["locked_review_only"])
+        unlocked = len(grouped["unlocked_candidates"])
+        print(f"- {flag}: locked_review_only={locked} unlocked_candidates={unlocked}")
+    return 0
+
+
 def cmd_relations(args: argparse.Namespace) -> int:
     con = connect(args.db)
     init_schema(con)
@@ -2159,6 +2773,15 @@ def make_parser() -> argparse.ArgumentParser:
     sp.add_argument("--rerank-model", default=None, help=f"rerank model (default: {DEFAULT_RERANK_MODEL})")
     sp.add_argument("--json", action="store_true")
     sp.set_defaults(func=cmd_suggest)
+
+    sp = sub.add_parser("prune", help="read-only cc_memory maintenance diagnostics")
+    prune_sub = sp.add_subparsers(dest="prune_cmd", required=True)
+    scan = prune_sub.add_parser("scan", help="scan cc_memory and write a grouped read-only pruning report")
+    scan.add_argument("--out", type=Path, default=PRUNE_DEFAULT_REPORT)
+    scan.add_argument("--cards-dir", type=Path, default=ROOT / "cc_memory_vnext" / "cards")
+    scan.add_argument("--duplicate-cosine-threshold", type=float, default=PRUNE_DUPLICATE_COSINE)
+    scan.add_argument("--oversized-bytes", type=int, default=PRUNE_OVERSIZED_BYTES)
+    scan.set_defaults(func=cmd_prune_scan)
 
     sp = sub.add_parser("relations")
     sp.add_argument("--all", action="store_true")
