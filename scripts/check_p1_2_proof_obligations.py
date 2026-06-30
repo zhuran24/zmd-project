@@ -16,7 +16,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Callable, Mapping, NoReturn, Sequence
+from typing import Any, Callable, Iterator, Mapping, NoReturn, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "data" / "proof_obligations" / "p1_2_proof_obligations.json"
@@ -2428,6 +2428,134 @@ _PR2_CHILD_CLASS_BASE_SOURCES = {
     "_RehashingSourceFileLoader": ("importlib.machinery.SourceFileLoader",),
     "_RehashingExtensionFileLoader": ("importlib.machinery.ExtensionFileLoader",),
 }
+_PR2_CHILD_CLASS_METHODS = {
+    "_StdlibOnlyPathFinder": frozenset({"__init__", "find_spec"}),
+    "_RestrictedThirdPartyFinder": frozenset({"__init__", "find_spec"}),
+    "_RehashingSourceFileLoader": frozenset({"__init__", "get_data", "get_code"}),
+    "_RehashingExtensionFileLoader": frozenset({"__init__", "create_module"}),
+}
+_PR2_CHILD_CLASS_ALLOWED_DYNAMIC_CALLS = frozenset(
+    {"compile", "importlib.machinery.PathFinder.find_spec"}
+)
+_PR2_CHILD_CLASS_METHOD_BODIES = {
+    ("_StdlibOnlyPathFinder", "__init__"): (
+        "self.stdlib_paths = [path.resolve() for path in stdlib_paths]",
+    ),
+    ("_StdlibOnlyPathFinder", "find_spec"): (
+        "if path is None:\n"
+        "    search_path = [str(path) for path in self.stdlib_paths]\n"
+        "elif isinstance(path, (list, tuple)):\n"
+        "    search_path = []\n"
+        "    for raw_path in path:\n"
+        "        candidate = Path(str(raw_path)).resolve()\n"
+        "        if _is_within_any(candidate, self.stdlib_paths):\n"
+        "            search_path.append(str(candidate))\n"
+        "else:\n"
+        "    return None",
+        "if not search_path:\n    return None",
+        "return importlib.machinery.PathFinder.find_spec(fullname, search_path, target)",
+    ),
+    ("_RestrictedThirdPartyFinder", "__init__"): (
+        "self.floor_root = floor_root.resolve()",
+        "self.allowed_top_level = allowed_top_level",
+        "self.allowed_files = {\n"
+        "    path.resolve(): str(sha256) for path, sha256 in allowed_files.items()\n"
+        "}",
+        "self.allowed_package_dirs = frozenset(path.resolve() for path in allowed_package_dirs)",
+        "self.allowed_namespace_dirs = {\n"
+        "    str(name): frozenset(path.resolve() for path in paths)\n"
+        "    for name, paths in allowed_namespace_dirs.items()\n"
+        "}",
+    ),
+    ("_RestrictedThirdPartyFinder", "find_spec"): (
+        'top_level = fullname.split(".", 1)[0]',
+        "if top_level not in self.allowed_top_level:\n    return None",
+        "if path is None:\n"
+        "    search_path = [str(self.floor_root)]\n"
+        "elif isinstance(path, Iterable) and not isinstance(path, (str, bytes)):\n"
+        "    search_path = [str(item) for item in path]\n"
+        "else:\n"
+        "    return None",
+        "for raw_path in search_path:\n"
+        "    candidate = Path(raw_path).resolve()\n"
+        "    try:\n"
+        "        if os.path.commonpath([str(self.floor_root), str(candidate)]) != str(self.floor_root):\n"
+        "            return None\n"
+        "    except ValueError:\n"
+        "        return None",
+        "spec = importlib.machinery.PathFinder.find_spec(fullname, search_path, target)",
+        "if spec is None:\n    return None",
+        'locations = getattr(spec, "submodule_search_locations", None)',
+        "if locations is not None:\n"
+        "    package_dirs: list[Path] = []\n"
+        "    for raw_location in list(locations):\n"
+        "        location = Path(str(raw_location)).resolve()\n"
+        "        if location not in self.allowed_package_dirs:\n"
+        "            return None\n"
+        "        package_dirs.append(location)",
+        'origin = getattr(spec, "origin", None)',
+        "if origin in {None, \"namespace\"}:\n"
+        "    namespace_dirs = self.allowed_namespace_dirs.get(fullname)\n"
+        "    if namespace_dirs is None or not locations:\n"
+        "        return None\n"
+        "    if any(path not in namespace_dirs for path in package_dirs):\n"
+        "        return None\n"
+        "elif origin in {\"built-in\", \"frozen\"}:\n"
+        "    return None\n"
+        "else:\n"
+        "    origin_path = Path(str(origin)).resolve()\n"
+        "    expected_sha256 = self.allowed_files.get(origin_path)\n"
+        "    if expected_sha256 is None:\n"
+        "        return None\n"
+        "    origin_suffix = origin_path.suffix\n"
+        "    if origin_suffix in importlib.machinery.SOURCE_SUFFIXES:\n"
+        "        spec.loader = _RehashingSourceFileLoader(\n"
+        "            fullname, str(origin_path), expected_sha256=expected_sha256\n"
+        "        )\n"
+        "    elif origin_suffix in importlib.machinery.EXTENSION_SUFFIXES:\n"
+        "        spec.loader = _RehashingExtensionFileLoader(\n"
+        "            fullname, str(origin_path), expected_sha256=expected_sha256\n"
+        "        )\n"
+        "    else:\n"
+        "        return None",
+        "return spec",
+    ),
+    ("_RehashingSourceFileLoader", "__init__"): (
+        "super().__init__(fullname, path)",
+        "self._expected_sha256 = expected_sha256",
+    ),
+    ("_RehashingSourceFileLoader", "get_data"): (
+        "data = super().get_data(path)",
+        "if hashlib.sha256(data).hexdigest() != self._expected_sha256:\n"
+        "    raise ImportError(f\"dependency floor load-time digest mismatch:{path}\")",
+        "return data",
+    ),
+    ("_RehashingSourceFileLoader", "get_code"): (
+        "source_bytes = self.get_data(self.path)",
+        'return compile(source_bytes, self.path, "exec", dont_inherit=True)',
+    ),
+    ("_RehashingExtensionFileLoader", "__init__"): (
+        "super().__init__(fullname, path)",
+        "self._expected_sha256 = expected_sha256",
+    ),
+    ("_RehashingExtensionFileLoader", "create_module"): (
+        "data = Path(self.path).read_bytes()",
+        "if hashlib.sha256(data).hexdigest() != self._expected_sha256:\n"
+        "    raise ImportError(f\"dependency floor load-time digest mismatch:{self.path}\")",
+        "return super().create_module(spec)",
+    ),
+}
+_PR2_CHILD_RESERVED_SHADOW_NAMES = _PR2_CHILD_RESERVED_RUNTIME_NAMES - frozenset(
+    {
+        "payload",
+        "authority_state",
+        "certified_final_result",
+        "evidence",
+        "durable_records",
+        "project_root",
+        "scratch_state",
+    }
+)
 _PR2_CHILD_HELPER_IMPORTFROM_ALLOWLIST = frozenset(
     {
         "src.search.candidate_proof_replay",
@@ -3450,8 +3578,15 @@ _PR2_DANGEROUS_DUNDER_ATTRS = frozenset(
 )
 
 
-def _check_child_runtime_function_closed_world(function: ast.FunctionDef, *, label: str) -> list[str]:
+def _check_child_runtime_function_closed_world(
+    function: ast.FunctionDef,
+    *,
+    label: str,
+    allowed_dynamic_module_calls: frozenset[str] = frozenset(),
+    check_reserved_shadow: bool = True,
+) -> list[str]:
     errors: list[str] = []
+    reserved_shadow_names = _PR2_CHILD_RESERVED_SHADOW_NAMES if check_reserved_shadow else frozenset()
     for node in ast.walk(function):
         if node is not function and isinstance(
             node,
@@ -3465,6 +3600,8 @@ def _check_child_runtime_function_closed_world(function: ast.FunctionDef, *, lab
             for target in targets:
                 for namespace in sorted(_target_dynamic_namespace_writes(target)):
                     errors.append(f"{label} body must not write dynamic namespace mapping {namespace}(...)")
+                for bound_name in sorted(_target_bound_names(target) & reserved_shadow_names):
+                    errors.append(f"{label} body must not shadow/rebind {bound_name}")
                 for child in ast.walk(target):
                     if (
                         isinstance(child, ast.Attribute)
@@ -3475,6 +3612,8 @@ def _check_child_runtime_function_closed_world(function: ast.FunctionDef, *, lab
             for target in node.targets:
                 for namespace in sorted(_target_dynamic_namespace_writes(target)):
                     errors.append(f"{label} body must not delete dynamic namespace mapping {namespace}(...)")
+                for bound_name in sorted(_target_bound_names(target) & reserved_shadow_names):
+                    errors.append(f"{label} body must not delete {bound_name}")
                 for child in ast.walk(target):
                     if (
                         isinstance(child, ast.Attribute)
@@ -3483,6 +3622,10 @@ def _check_child_runtime_function_closed_world(function: ast.FunctionDef, *, lab
                         errors.append(f"{label} body must not delete dunder attribute {child.attr}")
         if isinstance(node, ast.Import):
             errors.append(f"{label} body must not use bare import statements")
+            for alias in node.names:
+                bound_name = alias.asname or alias.name.split(".", 1)[0]
+                if bound_name in reserved_shadow_names:
+                    errors.append(f"{label} body must not import-as reserved name {bound_name}")
         if isinstance(node, ast.ImportFrom):
             if (
                 node.level != 0
@@ -3490,10 +3633,33 @@ def _check_child_runtime_function_closed_world(function: ast.FunctionDef, *, lab
                 or any(alias.asname is not None for alias in node.names)
             ):
                 errors.append(f"{label} ImportFrom outside pinned helper allowlist")
+            for alias in node.names:
+                bound_name = alias.asname or alias.name
+                if bound_name in reserved_shadow_names:
+                    errors.append(f"{label} body must not import-as reserved name {bound_name}")
+        if isinstance(node, ast.NamedExpr):
+            for bound_name in sorted(_target_bound_names(node.target) & reserved_shadow_names):
+                errors.append(f"{label} body must not shadow/rebind {bound_name}")
+        if isinstance(node, (ast.For, ast.AsyncFor)):
+            for bound_name in sorted(_target_bound_names(node.target) & reserved_shadow_names):
+                errors.append(f"{label} body must not bind reserved name {bound_name} in a loop target")
+        if isinstance(node, (ast.With, ast.AsyncWith)):
+            for item in node.items:
+                if item.optional_vars is None:
+                    continue
+                for bound_name in sorted(
+                    _target_bound_names(item.optional_vars) & reserved_shadow_names
+                ):
+                    errors.append(f"{label} body must not bind reserved name {bound_name} in a with target")
         if isinstance(node, ast.Call):
             call_name = _call_func_name(node)
-            if call_name in _PR2_CHILD_DYNAMIC_MODULE_CALLS or (
-                call_name is not None and call_name.startswith("importlib.")
+            if (
+                call_name is not None
+                and call_name not in allowed_dynamic_module_calls
+                and (
+                    call_name in _PR2_CHILD_DYNAMIC_MODULE_CALLS
+                    or call_name.startswith("importlib.")
+                )
             ):
                 errors.append(f"{label} body must not use dynamic module capability {call_name}")
             if isinstance(node.func, ast.Attribute) and node.func.attr in _PR2_DANGEROUS_DUNDER_ATTRS:
@@ -3521,6 +3687,12 @@ def _check_child_class_closed_world(class_node: ast.ClassDef) -> list[str]:
     actual_bases = tuple(ast.unparse(base) for base in class_node.bases)
     if actual_bases != expected_bases:
         errors.append(f"{label} bases must match the pinned loader base list")
+    expected_methods = _PR2_CHILD_CLASS_METHODS.get(class_node.name, frozenset())
+    actual_methods = {stmt.name for stmt in class_node.body if isinstance(stmt, ast.FunctionDef)}
+    if actual_methods != expected_methods:
+        errors.append(
+            f"{label} method set must be exactly {sorted(expected_methods)}"
+        )
     for stmt in class_node.body:
         if (
             isinstance(stmt, ast.Expr)
@@ -3530,6 +3702,24 @@ def _check_child_class_closed_world(class_node: ast.ClassDef) -> list[str]:
             continue
         if isinstance(stmt, ast.FunctionDef):
             errors.extend(_check_function_import_time_shape(stmt, label=f"{label}.{stmt.name}"))
+            errors.extend(
+                _check_child_runtime_function_closed_world(
+                    stmt,
+                    label=f"{label}.{stmt.name}",
+                    allowed_dynamic_module_calls=_PR2_CHILD_CLASS_ALLOWED_DYNAMIC_CALLS,
+                )
+            )
+            expected_body = _PR2_CHILD_CLASS_METHOD_BODIES.get((class_node.name, stmt.name))
+            if expected_body is None:
+                errors.append(f"{label}.{stmt.name} has no pinned loader method body")
+            else:
+                errors.extend(
+                    _check_top_level_body_closed_world(
+                        stmt,
+                        expected_body=expected_body,
+                        label=f"{label}.{stmt.name}",
+                    )
+                )
             continue
         errors.append(
             f"{label} body contains import-time executable statement "
@@ -3614,6 +3804,7 @@ def _check_child_module_toplevel_closed_world(child_tree: ast.Module) -> list[st
                 _check_child_runtime_function_closed_world(
                     stmt,
                     label=f"PR2 true verifier child function {stmt.name}",
+                    check_reserved_shadow=stmt.name != "_verify_supervisor_domain",
                 )
             )
             continue
@@ -3823,6 +4014,80 @@ _PR2_L0_POSTWRITE_BODY = (
     "disk_state.get(SUPERVISOR_SEAL_STATE_KEY), state=disk_state"
     ")",
 )
+_PR2_CHILD_VERIFY_BODY = (
+    'nonce = str(request.get("nonce", ""))',
+    'payload = request.get("payload")',
+    'if not isinstance(payload, Mapping):\n'
+    '    raise ValueError("payload must be a mapping")',
+    'if payload.get("action") != "supervisor_domain":\n'
+    '    return {"verdict": REJECTED, "nonce": nonce, "reason": "unsupported_action"}',
+    'try:\n'
+    '    _install_third_party_floor(payload.get("dependency_floor"))\n'
+    '    domain = _verify_supervisor_domain(payload, nonce=nonce)\n'
+    'except Exception as exc:\n'
+    '    detail = "|".join(traceback.format_exc(limit=8).splitlines()[-8:])\n'
+    '    return {\n'
+    '        "verdict": REJECTED,\n'
+    '        "nonce": nonce,\n'
+    '        "reason": f"true_verifier_exception:{type(exc).__name__}:{exc}:{detail}",\n'
+    '    }',
+    'return {\n'
+    '    "verdict": SEALED,\n'
+    '    "nonce": nonce,\n'
+    '    "reason": "domain_verified",\n'
+    '    "domain": domain,\n'
+    '}',
+)
+_PR2_L0_SUPERVISOR_SEAL_STATE_BODY = (
+    "keys = {\n"
+    '    "schema_version",\n'
+    '    "authority",\n'
+    '    "transition",\n'
+    '    "proposal_run_id",\n'
+    '    "proposal_checkpoint_sha256",\n'
+    '    "proposal_authority_b64",\n'
+    "    CAMPAIGN_INSTANCE_ID_KEY,\n"
+    '    "certified_state_sha256",\n'
+    '    "sealed_at",\n'
+    "}",
+    'if not isinstance(value, Mapping):\n    return "supervisor_seal_invalid"',
+    'if set(value.keys()) != keys:\n    return "supervisor_seal_fields_invalid"',
+    "try:\n"
+    "    if _strict_int(value.get(\"schema_version\"), \"supervisor_seal.schema_version\") != SUPERVISOR_SEAL_SCHEMA_VERSION:\n"
+    "        return \"supervisor_seal_schema_invalid\"\n"
+    "except Exception:\n"
+    "    return \"supervisor_seal_schema_invalid\"",
+    'if value.get("authority") != SUPERVISOR_SEAL_AUTHORITY:\n'
+    '    return "supervisor_seal_authority_invalid"',
+    'if value.get("transition") != "proposal_to_certified_v1":\n'
+    '    return "supervisor_seal_transition_invalid"',
+    'if not _valid_supervisor_proposal_run_id(value.get("proposal_run_id")):\n'
+    '    return "supervisor_seal_proposal_run_id_invalid"',
+    'if not _is_lower_sha256(value.get("proposal_checkpoint_sha256")):\n'
+    '    return "supervisor_seal_proposal_checkpoint_sha256_invalid"',
+    "campaign_instance_id = value.get(CAMPAIGN_INSTANCE_ID_KEY)",
+    'if not _valid_campaign_instance_id(campaign_instance_id):\n'
+    '    return "supervisor_seal_campaign_instance_id_invalid"',
+    'if str(campaign_instance_id) != str(state.get(CAMPAIGN_INSTANCE_ID_KEY)):\n'
+    '    return "supervisor_seal_campaign_instance_id_mismatch"',
+    "proposal_state, _proposal_bytes, proposal_reason = _load_sealed_proposal_authority_l0(value)",
+    "if proposal_reason is not None:\n    return proposal_reason",
+    "transition_reason = _supervisor_certified_transition_violation_l0(\n"
+    "    proposal_state=proposal_state,\n"
+    "    certified_state=state,\n"
+    "    seal_record=value,\n"
+    ")",
+    "if transition_reason is not None:\n    return transition_reason",
+    'if not _is_lower_sha256(value.get("certified_state_sha256")):\n'
+    '    return "supervisor_seal_certified_state_sha256_invalid"',
+    'if str(value.get("certified_state_sha256")) != _certified_state_payload_sha256_l0(state):\n'
+    '    return "supervisor_seal_certified_state_sha256_mismatch"',
+    "try:\n"
+    '    _strict_timestamp(value.get("sealed_at"))\n'
+    "except Exception:\n"
+    '    return "supervisor_seal_sealed_at_invalid"',
+    "return None",
+)
 
 
 def _check_top_level_prefix_closed_world(
@@ -3945,12 +4210,27 @@ def _expr_may_reference_mapping(node: ast.AST, mapping_names: frozenset[str]) ->
     dynamic_name = _dynamic_namespace_mapping_name(node)
     if dynamic_name in mapping_names:
         return True
+    if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
+        return any(_expr_may_reference_mapping(item, mapping_names) for item in node.elts)
+    if isinstance(node, ast.Dict):
+        return any(
+            (key is not None and _expr_may_reference_mapping(key, mapping_names))
+            or _expr_may_reference_mapping(value, mapping_names)
+            for key, value in zip(node.keys, node.values)
+        )
     if isinstance(node, ast.Attribute):
         return _expr_may_reference_mapping(node.value, mapping_names)
     if isinstance(node, ast.Subscript):
         return _expr_may_reference_mapping(node.value, mapping_names)
-    if isinstance(node, ast.Call) and _call_func_name(node) == "type":
-        return any(_expr_may_reference_mapping(arg, mapping_names) for arg in node.args)
+    if isinstance(node, ast.Call):
+        return (
+            _expr_may_reference_mapping(node.func, mapping_names)
+            or any(_expr_may_reference_mapping(arg, mapping_names) for arg in node.args)
+            or any(
+                _expr_may_reference_mapping(keyword.value, mapping_names)
+                for keyword in node.keywords
+            )
+        )
     return False
 
 
@@ -4180,6 +4460,464 @@ def _check_live_top_level_postwrite_guard(function: ast.FunctionDef) -> list[str
         guard=guards[0],
         label="PR2 L0 postwrite validator",
     )
+
+
+def _returns_none(node: ast.AST) -> bool:
+    return isinstance(node, ast.Return) and (
+        node.value is None
+        or (
+            isinstance(node.value, ast.Constant)
+            and node.value.value is None
+        )
+    )
+
+
+def _semantic_body(function: ast.FunctionDef) -> list[ast.stmt]:
+    body = list(function.body)
+    if (
+        body
+        and isinstance(body[0], ast.Expr)
+        and isinstance(body[0].value, ast.Constant)
+        and isinstance(body[0].value.value, str)
+    ):
+        return body[1:]
+    return body
+
+
+def _iter_statement_sequences(statements: Sequence[ast.stmt]) -> Iterator[Sequence[ast.stmt]]:
+    yield statements
+    for stmt in statements:
+        if isinstance(stmt, (ast.If, ast.For, ast.AsyncFor, ast.While)):
+            yield from _iter_statement_sequences(stmt.body)
+            yield from _iter_statement_sequences(stmt.orelse)
+        elif isinstance(stmt, (ast.With, ast.AsyncWith)):
+            yield from _iter_statement_sequences(stmt.body)
+        elif isinstance(stmt, ast.Try):
+            yield from _iter_statement_sequences(stmt.body)
+            yield from _iter_statement_sequences(stmt.orelse)
+            yield from _iter_statement_sequences(stmt.finalbody)
+            for handler in stmt.handlers:
+                yield from _iter_statement_sequences(handler.body)
+
+
+def _if_test_name_is_not_none(test: ast.AST, name: str) -> bool:
+    return (
+        isinstance(test, ast.Compare)
+        and _is_name(test.left, name)
+        and len(test.ops) == 1
+        and isinstance(test.ops[0], ast.IsNot)
+        and len(test.comparators) == 1
+        and isinstance(test.comparators[0], ast.Constant)
+        and test.comparators[0].value is None
+    )
+
+
+def _if_consumes_guard_result(stmt: ast.stmt, result_name: str, *, effect: str) -> bool:
+    if not (
+        isinstance(stmt, ast.If)
+        and _if_test_name_is_not_none(stmt.test, result_name)
+        and len(stmt.body) == 1
+        and not stmt.orelse
+    ):
+        return False
+    if effect == "return":
+        return isinstance(stmt.body[0], ast.Return)
+    if effect == "raise":
+        return isinstance(stmt.body[0], ast.Raise)
+    return False
+
+
+def _assigns_name_from_call(stmt: ast.AST, target_name: str, call_name: str) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and _target_bound_names(stmt.targets[0]) == {target_name}
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == call_name
+    )
+
+
+def _check_guard_result_flow(
+    function: ast.FunctionDef,
+    *,
+    call_name: str,
+    result_name: str,
+    effect: str,
+    label: str,
+) -> list[str]:
+    assignments = []
+    for sequence in _iter_statement_sequences(_semantic_body(function)):
+        assignments.extend(
+            (sequence, index)
+            for index, stmt in enumerate(sequence)
+            if _assigns_name_from_call(stmt, result_name, call_name)
+        )
+    if len(assignments) != 1:
+        return [f"{label} must assign {result_name} exactly once from {call_name}(...)"]
+    sequence, assignment_index = assignments[0]
+    guard_index = assignment_index + 1
+    if guard_index >= len(sequence) or not _if_consumes_guard_result(
+        sequence[guard_index],
+        result_name,
+        effect=effect,
+    ):
+        return [
+            f"{label} must immediately consume {result_name} with "
+            f"if {result_name} is not None: {effect}"
+        ]
+    return []
+
+
+def _check_l0_supervisor_gate_result_flow(l0_seal_fn: ast.FunctionDef) -> list[str]:
+    errors: list[str] = []
+    for call_name, result_name, effect in (
+        ("_domain_response_violation", "domain_violation", "return"),
+        ("_supervisor_seal_state_violation_l0", "seal_violation", "return"),
+        ("_postwrite_state_violation", "postwrite_violation", "raise"),
+    ):
+        errors.extend(
+            _check_guard_result_flow(
+                l0_seal_fn,
+                call_name=call_name,
+                result_name=result_name,
+                effect=effect,
+                label="PR2 L0 supervisor seal",
+            )
+        )
+    return errors
+
+
+def _check_true_verifier_entrypoint_body(verify_fn: ast.FunctionDef) -> list[str]:
+    return _check_top_level_body_closed_world(
+        verify_fn,
+        expected_body=_PR2_CHILD_VERIFY_BODY,
+        label="PR2 true verifier child verify entrypoint",
+    )
+
+
+def _check_l0_supervisor_seal_state_body(seal_state_fn: ast.FunctionDef) -> list[str]:
+    return _check_top_level_body_closed_world(
+        seal_state_fn,
+        expected_body=_PR2_L0_SUPERVISOR_SEAL_STATE_BODY,
+        label="PR2 L0 supervisor seal state validator",
+    )
+
+
+def _check_single_final_return_none(function: ast.FunctionDef, *, label: str) -> list[str]:
+    none_returns = [node for node in ast.walk(function) if _returns_none(node)]
+    body = _semantic_body(function)
+    if len(none_returns) != 1 or not body or body[-1] is not none_returns[0]:
+        return [f"{label} must have return None only as its final top-level statement"]
+    return []
+
+
+def _stmt_contains_return_none(stmt: ast.stmt) -> bool:
+    return any(_returns_none(node) for node in ast.walk(stmt))
+
+
+def _top_level_assignment_index(function: ast.FunctionDef, target_name: str, call_name: str) -> int | None:
+    body = _semantic_body(function)
+    matches = [
+        index
+        for index, stmt in enumerate(body)
+        if _assigns_name_from_call(stmt, target_name, call_name)
+    ]
+    if len(matches) != 1:
+        return None
+    return matches[0]
+
+
+def _direct_function_calls(function: ast.FunctionDef) -> set[str]:
+    return {
+        call_name
+        for node in ast.walk(function)
+        if isinstance(node, ast.Call)
+        for call_name in [_call_func_name(node)]
+        if call_name is not None
+    }
+
+
+def _check_required_direct_calls(
+    function: ast.FunctionDef,
+    required: frozenset[str],
+    *,
+    label: str,
+) -> list[str]:
+    calls = _direct_function_calls(function)
+    return [
+        f"{label} must call {call_name}"
+        for call_name in sorted(required)
+        if call_name not in calls
+    ]
+
+
+def _check_terminal_final_result_violation_structure(function: ast.FunctionDef) -> list[str]:
+    label = "terminal certified final result validator"
+    errors: list[str] = []
+    body = _semantic_body(function)
+    errors.extend(
+        _check_required_direct_calls(
+            function,
+            frozenset(
+                {
+                    "_candidate_objective_from_rect",
+                    "_strict_candidate_ghost_rect",
+                    "_terminal_certified_ghost_rect_unknown_field",
+                    "_terminal_certified_last_stop_reason_violation",
+                    "_terminal_certified_search_stats_violation",
+                    "candidate_key",
+                    "terminal_frontier_evidence_violation",
+                }
+            ),
+            label=label,
+        )
+    )
+    if not body or not _stmt_matches_source(
+        body[0],
+        "if not has_terminal_full_frontier_certified_evidence(state):\n    return None",
+    ):
+        errors.append(
+            "terminal certified final result validator must start with only the "
+            "frontier-evidence absence return None"
+        )
+    frontier_index = _top_level_assignment_index(
+        function,
+        "frontier_reason",
+        "terminal_frontier_evidence_violation",
+    )
+    if frontier_index is None:
+        errors.append(
+            "terminal certified final result validator must assign frontier_reason "
+            "from terminal_frontier_evidence_violation(...)"
+        )
+    elif frontier_index + 1 >= len(body) or not _if_consumes_guard_result(
+        body[frontier_index + 1],
+        "frontier_reason",
+        effect="return",
+    ):
+        errors.append(
+            "terminal certified final result validator must immediately return "
+            "frontier_reason when it is not None"
+        )
+    allowed_none_returns = []
+    if body and _stmt_matches_source(
+        body[0],
+        "if not has_terminal_full_frontier_certified_evidence(state):\n    return None",
+    ):
+        allowed_none_returns.append(body[0].body[0])
+    if body and _returns_none(body[-1]):
+        allowed_none_returns.append(body[-1])
+    none_returns = [node for node in ast.walk(function) if _returns_none(node)]
+    if sorted(map(id, none_returns)) != sorted(map(id, allowed_none_returns)):
+        errors.append(
+            "terminal certified final result validator must not return None except "
+            "for the frontier-evidence absence gate and final success"
+        )
+    return errors
+
+
+def _check_terminal_project_precheck_structure(function: ast.FunctionDef) -> list[str]:
+    label = "terminal certified final result project precheck"
+    errors: list[str] = []
+    body = _semantic_body(function)
+    errors.extend(
+        _check_required_direct_calls(
+            function,
+            frozenset(
+                {
+                    "_terminal_candidate_ghost_pick_binding_violation",
+                    "_validate_terminal_solution_against_project",
+                    "terminal_certified_final_result_violation",
+                }
+            ),
+            label=label,
+        )
+    )
+    reason_index = _top_level_assignment_index(
+        function,
+        "reason",
+        "terminal_certified_final_result_violation",
+    )
+    if reason_index is None:
+        errors.append(
+            "terminal certified final result project precheck must assign reason "
+            "from terminal_certified_final_result_violation(...)"
+        )
+    else:
+        for stmt in body[:reason_index]:
+            if _stmt_contains_return_none(stmt):
+                errors.append(
+                    "terminal certified final result project precheck must not return None "
+                    "before terminal_certified_final_result_violation(...)"
+                )
+        if reason_index + 1 >= len(body) or not _if_consumes_guard_result(
+            body[reason_index + 1],
+            "reason",
+            effect="return",
+        ):
+            errors.append(
+                "terminal certified final result project precheck must immediately return "
+                "reason when it is not None"
+            )
+    final_result_guards = [
+        stmt
+        for stmt in body
+        if isinstance(stmt, ast.If)
+        and _expr_matches_source(stmt.test, "isinstance(final_result, Mapping)")
+    ]
+    if len(final_result_guards) != 1:
+        errors.append(
+            "terminal certified final result project precheck must have exactly one "
+            "live final_result Mapping guard"
+        )
+    else:
+        guard = final_result_guards[0]
+        expected_body = (
+            "solution_reason = _validate_terminal_solution_against_project(\n"
+            "    final_result=final_result,\n"
+            "    project_root=resolved_project_root,\n"
+            "    grid_dimensions=grid_dimensions,\n"
+            "    min_side_admissibility=min_side_admissibility,\n"
+            ")",
+            "if solution_reason is not None:\n    return solution_reason",
+            "return _terminal_candidate_ghost_pick_binding_violation(\n"
+            "    state,\n"
+            "    final_result=final_result,\n"
+            "    grid_dimensions=grid_dimensions,\n"
+            ")",
+        )
+        if len(guard.body) != len(expected_body) or any(
+            not _stmt_matches_source(stmt, expected)
+            for stmt, expected in zip(guard.body, expected_body)
+        ):
+            errors.append(
+                "terminal certified final result project precheck must run solution "
+                "validation and ghost-pick validation inside the Mapping guard"
+            )
+    return errors
+
+
+def _check_validate_terminal_solution_structure(function: ast.FunctionDef) -> list[str]:
+    label = "terminal solution project validator"
+    errors = _check_single_final_return_none(function, label=label)
+    errors.extend(
+        _check_required_direct_calls(
+            function,
+            frozenset(
+                {
+                    "_best_empty_rect_objective",
+                    "_build_occupancy_prefix",
+                    "_empty_rect_exists",
+                    "_load_exact_facility_pools",
+                    "_load_exact_facility_templates",
+                    "_load_exact_required_optional_lower_bounds",
+                    "_load_validated_mandatory_exact_instances",
+                    "_occupied_count_in_rect",
+                }
+            ),
+            label=label,
+        )
+    )
+    return errors
+
+
+def _check_terminal_ghost_pick_structure(function: ast.FunctionDef) -> list[str]:
+    label = "terminal candidate ghost-pick binding validator"
+    errors = _check_single_final_return_none(function, label=label)
+    errors.extend(
+        _check_required_direct_calls(
+            function,
+            frozenset({"_expected_unfiltered_ghost_anchor_index", "candidate_key"}),
+            label=label,
+        )
+    )
+    return errors
+
+
+def _allowed_child_project_pre_replay_return(stmt: ast.stmt) -> bool:
+    return (
+        isinstance(stmt, ast.If)
+        and any(isinstance(child, ast.Return) for child in stmt.body)
+        and (
+            _expr_matches_source(stmt.test, "not isinstance(raw_records, Mapping)")
+            or _is_name(stmt.test, "violations")
+            or _expr_matches_source(stmt.test, "not expected_proofs")
+        )
+    )
+
+
+def _check_child_project_candidate_records_direct_structure(function: ast.FunctionDef) -> list[str]:
+    label = "PR2 child candidate projection"
+    errors: list[str] = []
+    body = _semantic_body(function)
+    errors.extend(
+        _check_required_direct_calls(
+            function,
+            frozenset(
+                {
+                    "_execute_isolated_replay_request",
+                    "_replay_response_violation",
+                    "candidate_proof_shape_violation",
+                    "canonical_digest",
+                }
+            ),
+            label=label,
+        )
+    )
+    replay_index = _top_level_assignment_index(function, "response", "_execute_isolated_replay_request")
+    if replay_index is None:
+        errors.append(
+            "PR2 child candidate projection must assign response exactly once from "
+            "_execute_isolated_replay_request(...)"
+        )
+    else:
+        for stmt in body[:replay_index]:
+            if isinstance(stmt, ast.Return) or (
+                isinstance(stmt, ast.If)
+                and any(isinstance(child, ast.Return) for child in ast.walk(stmt))
+                and not _allowed_child_project_pre_replay_return(stmt)
+            ):
+                errors.append(
+                    "PR2 child candidate projection must not return before isolated "
+                    "replay except for shape/coverage rejection gates"
+                )
+                break
+    if not body or not _stmt_matches_source(body[-1], "return projected, {}"):
+        errors.append("PR2 child candidate projection must finish by returning projected, {}")
+    return errors
+
+
+def _check_child_fixed_witness_direct_structure(function: ast.FunctionDef) -> list[str]:
+    label = "PR2 child fixed witness direct verifier"
+    errors: list[str] = []
+    returns = [node for node in ast.walk(function) if isinstance(node, ast.Return)]
+    body = _semantic_body(function)
+    if len(returns) != 1 or not body or body[-1] is not returns[0] or not _stmt_matches_source(
+        body[-1],
+        "return durable_records, public_projection.candidate_records, verdict",
+    ):
+        errors.append(
+            "PR2 child fixed witness direct verifier must have exactly one final "
+            "return of durable_records, projected candidate records, and verdict"
+        )
+    errors.extend(
+        _check_required_direct_calls(
+            function,
+            frozenset(
+                {
+                    "_apply_terminal_fixed_witness_audit_fields",
+                    "_copy_candidate_records",
+                    "_identity_from_current_records",
+                    "_materialize_replay_snapshot",
+                    "_project_terminal_fixed_witness_records_from_capsule",
+                    "canonical_state_bytes_for_fixed_witness",
+                    "verify_terminal_fixed_witness",
+                }
+            ),
+            label=label,
+        )
+    )
+    return errors
 
 
 def _assigns_child_verdict_from_round_trip(stmt: ast.AST) -> bool:
@@ -4628,6 +5366,42 @@ def _check_candidate_sink_replay_contract(
             label="ExactCampaign supervisor runtime",
         )
     )
+    errors.extend(
+        _check_terminal_final_result_violation_structure(
+            _function_def(
+                exact_tree,
+                "terminal_certified_final_result_violation",
+                path=exact_campaign_path,
+            )
+        )
+    )
+    errors.extend(
+        _check_terminal_project_precheck_structure(
+            _function_def(
+                exact_tree,
+                "terminal_certified_final_result_project_precheck_violation",
+                path=exact_campaign_path,
+            )
+        )
+    )
+    errors.extend(
+        _check_validate_terminal_solution_structure(
+            _function_def(
+                exact_tree,
+                "_validate_terminal_solution_against_project",
+                path=exact_campaign_path,
+            )
+        )
+    )
+    errors.extend(
+        _check_terminal_ghost_pick_structure(
+            _function_def(
+                exact_tree,
+                "_terminal_candidate_ghost_pick_binding_violation",
+                path=exact_campaign_path,
+            )
+        )
+    )
     exact_source = exact_campaign_path.read_text(encoding="utf-8")
     terminal_wrapper_fn = _function_def(
         exact_tree,
@@ -4796,6 +5570,7 @@ def _check_candidate_sink_replay_contract(
                     "run_l0_supervisor_seal",
                     "_postwrite_state_violation",
                     "_supervisor_certified_transition_violation_l0",
+                    "_supervisor_seal_state_violation_l0",
                 }
             ),
             path=pr2_l0_path,
@@ -4817,6 +5592,7 @@ def _check_candidate_sink_replay_contract(
         "_strong_proof_binding_violation",
         "run_l0_micro_verifier_round_trip",
         "_domain_response_violation",
+        "_supervisor_seal_state_violation_l0",
         "_checkpoint_write_lock_l0",
         "_atomic_replace_bytes",
         "_postwrite_state_violation",
@@ -4877,9 +5653,24 @@ def _check_candidate_sink_replay_contract(
     )
     errors.extend(_check_live_top_level_postwrite_guard(l0_postwrite_fn))
     errors.extend(_check_l0_child_verdict_dataflow(l0_seal_fn))
+    errors.extend(_check_l0_supervisor_gate_result_flow(l0_seal_fn))
+    errors.extend(
+        _check_l0_supervisor_seal_state_body(
+            _function_def(
+                l0_tree,
+                "_supervisor_seal_state_violation_l0",
+                path=pr2_l0_path,
+            )
+        )
+    )
 
     child_tree = _parse_python(pr2_true_child_path)
     errors.extend(_check_child_module_toplevel_closed_world(child_tree))
+    errors.extend(
+        _check_true_verifier_entrypoint_body(
+            _function_def(child_tree, "verify", path=pr2_true_child_path)
+        )
+    )
     child_domain_fn = _function_def(
         child_tree,
         "_verify_supervisor_domain",
@@ -4939,6 +5730,18 @@ def _check_candidate_sink_replay_contract(
     ):
         if token not in child_project_source:
             errors.append(f"PR2 child candidate projection must enforce exact strong-key coverage: {token}")
+    errors.extend(_check_child_project_candidate_records_direct_structure(child_project_fn))
+    # The AST gate is intentionally structural: these sha-sealed verifier modules
+    # are left to source-hash review rather than re-proving their math here.
+    errors.extend(
+        _check_child_fixed_witness_direct_structure(
+            _function_def(
+                child_tree,
+                "_run_fixed_witness_direct",
+                path=pr2_true_child_path,
+            )
+        )
+    )
     seal_state_fn = _function_def(
         exact_tree,
         "_supervisor_seal_state_violation",

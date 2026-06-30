@@ -1067,10 +1067,316 @@ def _l0_class_setitem_domain(source: str) -> str:
     )
 
 
+def _child_verify_echoes_payload_domain(source: str) -> str:
+    old = (
+        "    try:\n"
+        '        _install_third_party_floor(payload.get("dependency_floor"))\n'
+        "        domain = _verify_supervisor_domain(payload, nonce=nonce)\n"
+        "    except Exception as exc:  # noqa: BLE001\n"
+        '        detail = "|".join(traceback.format_exc(limit=8).splitlines()[-8:])\n'
+        "        return {\n"
+        '            "verdict": REJECTED,\n'
+        '            "nonce": nonce,\n'
+        '            "reason": f"true_verifier_exception:{type(exc).__name__}:{exc}:{detail}",\n'
+        "        }\n"
+        "    return {\n"
+        '        "verdict": SEALED,\n'
+        '        "nonce": nonce,\n'
+        '        "reason": "domain_verified",\n'
+        '        "domain": domain,\n'
+        "    }\n"
+    )
+    new = (
+        "    return {\n"
+        '        "verdict": SEALED,\n'
+        '        "nonce": nonce,\n'
+        '        "reason": "domain_verified",\n'
+        '        "domain": dict(payload.get("authority_state", {})),\n'
+        "    }\n"
+    )
+    return _replace_once(source, old, new)
+
+
+def _exact_terminal_final_result_returns_none_before_frontier(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if not has_terminal_full_frontier_certified_evidence(state):\n",
+        "    return None\n"
+        "    if not has_terminal_full_frontier_certified_evidence(state):\n",
+    )
+
+
+def _exact_terminal_precheck_returns_none_before_reason(source: str) -> str:
+    return _replace_once(
+        source,
+        "    reason = terminal_certified_final_result_violation(\n",
+        "    if True:\n"
+        "        return None\n"
+        "    reason = terminal_certified_final_result_violation(\n",
+    )
+
+
+def _exact_validate_terminal_solution_returns_none_early(source: str) -> str:
+    return _replace_once(
+        source,
+        '    placement_solution = final_result.get("placement_solution")\n',
+        "    return None\n"
+        '    placement_solution = final_result.get("placement_solution")\n',
+    )
+
+
+def _exact_ghost_pick_returns_none_early(source: str) -> str:
+    return _replace_once(
+        source,
+        '    ghost_rect = final_result.get("ghost_rect")\n',
+        "    return None\n"
+        '    ghost_rect = final_result.get("ghost_rect")\n',
+    )
+
+
+def _child_project_records_return_before_replay(source: str) -> str:
+    return _replace_once(
+        source,
+        "    response = _execute_isolated_replay_request(request)\n",
+        "    return {\n"
+        "        str(key): _json_copy(value)\n"
+        "        for key, value in raw_records.items()\n"
+        "        if isinstance(value, Mapping)\n"
+        "    }, {}\n"
+        "    response = _execute_isolated_replay_request(request)\n",
+    )
+
+
+def _child_fixed_witness_returns_early(source: str) -> str:
+    return _replace_once(
+        source,
+        "    from src.search.candidate_proof_replay import _materialize_replay_snapshot\n",
+        "    return {}, {}, None\n"
+        "    from src.search.candidate_proof_replay import _materialize_replay_snapshot\n",
+    )
+
+
+def _l0_domain_violation_guard_and_false(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if domain_violation is not None:\n",
+        "        if domain_violation is not None and False:\n",
+    )
+
+
+def _l0_seal_violation_guard_and_false(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if seal_violation is not None:\n",
+        "        if seal_violation is not None and False:\n",
+    )
+
+
+def _l0_postwrite_violation_guard_and_false(source: str) -> str:
+    return _replace_once(
+        source,
+        "                if postwrite_violation is not None:\n",
+        "                if postwrite_violation is not None and False:\n",
+    )
+
+
+def _l0_seal_state_returns_none_early(source: str) -> str:
+    return _replace_once(
+        source,
+        "def _supervisor_seal_state_violation_l0(value: Any, *, state: Mapping[str, Any]) -> str | None:\n"
+        "    keys = {\n",
+        "def _supervisor_seal_state_violation_l0(value: Any, *, state: Mapping[str, Any]) -> str | None:\n"
+        "    return None\n"
+        "    keys = {\n",
+    )
+
+
+def _child_loader_injects_extra_method(source: str) -> str:
+    return _replace_once(
+        source,
+        "class _StdlibOnlyPathFinder:\n"
+        "    def __init__(self, stdlib_paths: list[Path]) -> None:\n",
+        "class _StdlibOnlyPathFinder:\n"
+        "    def __init_subclass__(cls) -> None:\n"
+        "        return None\n"
+        "\n"
+        "    def __init__(self, stdlib_paths: list[Path]) -> None:\n",
+    )
+
+
+def _child_source_loader_skips_digest_rehash(source: str) -> str:
+    return _replace_once(
+        source,
+        "    def get_data(self, path: str) -> bytes:\n"
+        "        data = super().get_data(path)\n"
+        "        if hashlib.sha256(data).hexdigest() != self._expected_sha256:\n"
+        '            raise ImportError(f"dependency floor load-time digest mismatch:{path}")\n'
+        "        return data\n",
+        "    def get_data(self, path: str) -> bytes:\n"
+        "        return super().get_data(path)\n",
+    )
+
+
+def _child_non_domain_helper_shadows_getattr(source: str) -> str:
+    return _replace_once(
+        source,
+        "def _materialize_import_default_artifacts(project_root: Path) -> None:\n"
+        "    del project_root\n",
+        "def _materialize_import_default_artifacts(project_root: Path) -> None:\n"
+        "    getattr = _json_copy\n"
+        "    del project_root\n",
+    )
+
+
+def _l0_domain_container_alias_mutation(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        "        boxed_domain = [domain]\n"
+        '        boxed_domain[0]["final_result_digest"] = "0" * 64\n',
+    )
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
     assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "mutator", "expected_error"),
+    [
+        (
+            "child",
+            _child_verify_echoes_payload_domain,
+            "PR2 true verifier child verify entrypoint must match the canonical top-level prefix/body",
+        ),
+        (
+            "exact",
+            _exact_terminal_final_result_returns_none_before_frontier,
+            "terminal certified final result validator must start",
+        ),
+        (
+            "exact",
+            _exact_terminal_precheck_returns_none_before_reason,
+            "terminal certified final result project precheck must not return None",
+        ),
+        (
+            "exact",
+            _exact_validate_terminal_solution_returns_none_early,
+            "terminal solution project validator must have return None only as its final",
+        ),
+        (
+            "exact",
+            _exact_ghost_pick_returns_none_early,
+            "terminal candidate ghost-pick binding validator must have return None only",
+        ),
+        (
+            "child",
+            _child_project_records_return_before_replay,
+            "must not return before isolated replay",
+        ),
+        (
+            "child",
+            _child_fixed_witness_returns_early,
+            "fixed witness direct verifier must have exactly one final return",
+        ),
+        (
+            "l0",
+            _l0_domain_violation_guard_and_false,
+            "must immediately consume domain_violation",
+        ),
+        (
+            "l0",
+            _l0_seal_violation_guard_and_false,
+            "must immediately consume seal_violation",
+        ),
+        (
+            "l0",
+            _l0_postwrite_violation_guard_and_false,
+            "must immediately consume postwrite_violation",
+        ),
+        (
+            "l0",
+            _l0_seal_state_returns_none_early,
+            "PR2 L0 supervisor seal state validator must match the canonical top-level prefix/body",
+        ),
+        (
+            "child",
+            _child_loader_injects_extra_method,
+            "method set must be exactly",
+        ),
+        (
+            "child",
+            _child_source_loader_skips_digest_rehash,
+            "_RehashingSourceFileLoader.get_data must match the canonical top-level prefix/body",
+        ),
+        (
+            "child",
+            _child_non_domain_helper_shadows_getattr,
+            "must not shadow/rebind getattr",
+        ),
+        (
+            "l0",
+            _l0_domain_container_alias_mutation,
+            "must not write child/domain/proposal mapping data",
+        ),
+    ],
+    ids=[
+        "round6-verify-entrypoint-echoes-domain",
+        "round6-terminal-final-result-top-return-none",
+        "round6-terminal-project-precheck-top-return-none",
+        "round6-terminal-solution-validator-top-return-none",
+        "round6-terminal-ghost-pick-top-return-none",
+        "round6-child-project-records-pre-replay-return",
+        "round6-child-fixed-witness-direct-early-return",
+        "round6-l0-domain-gate-and-false",
+        "round6-l0-seal-state-gate-and-false",
+        "round6-l0-postwrite-gate-and-false",
+        "round6-l0-seal-state-body-early-return",
+        "round6-loader-extra-method",
+        "round6-source-loader-skips-rehash",
+        "round6-non-domain-helper-shadows-getattr",
+        "round6-g7-container-alias-domain-mutation",
+    ],
+)
+def test_p1_2_checker_rejects_pr2_5_round6_structural_bypasses(
+    tmp_path: Path,
+    source_kind: str,
+    mutator: object,
+    expected_error: str,
+) -> None:
+    assert callable(mutator)
+    base_child = check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+        encoding="utf-8"
+    )
+    base_l0 = check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    base_exact = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    child_source = base_child
+    l0_source = base_l0
+    exact_source = base_exact
+    if source_kind == "child":
+        child_source = mutator(base_child)  # type: ignore[operator]
+    elif source_kind == "l0":
+        l0_source = mutator(base_l0)  # type: ignore[operator]
+    elif source_kind == "exact":
+        exact_source = mutator(base_exact)  # type: ignore[operator]
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert any(expected_error in error for error in errors), errors
 
 
 @pytest.mark.parametrize(
