@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 149
+- entries: 150
 - hard edges: 178
 - pending relation suggestions: 0
 
@@ -134,6 +134,7 @@ python cc_memory/mem.py boot
 - `pr2-resume-envelope-deferred-finding` — PR2跟进:parent mint dict(authority_state)只覆盖证明字段,信封字段(created_at等)原样从producer带入未校验→过终态门但resume拒=自相矛盾CERTIFIED;非假证明;押后归#2/#3
 - `pr2b-landed-pr2-remaining-status-20260628` — PR2-b 69980b3+592ea13: LANDED 2026-06-28, SOUND; PR2余项表。
 - `precompact-flow-current-20260630` — Pre-compact(2026-06-30):三阶段 记忆更新->查漏->/compact;级联只由调本skill驱动;查漏已脚本自动化=precompact_judge_run.py(app-server,不碰CLI),我只triage;先审后用…
+- `precompact-judge-runafterturn-no-extra-turn` — Pre-compact 查漏的【触发机制】2026-06-30 修正(owner 纠正,承 [[precompact-flow-current-20260630]]):**砍掉「查漏回合」那个单独回合**…
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
 - `prune-meetings-3-4-status-20260630` — 剪枝三次=识别机制重构两档(确定性flag:relink/active_superseded/dead_ref三前提;advisory:duplicate/oversized/cross_layer_overlap_concern;砍promotion+stale词频支;脏分支前置自检fail-closed)…
