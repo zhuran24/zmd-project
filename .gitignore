@@ -38,6 +38,8 @@ env/
 .pytest_cache/
 # pytest.ini sets addopts = --basetemp=.pytest_tmp -> root basetemp on first run
 .pytest_tmp/
+# cc_memory prune scan reports (generated diagnostics)
+/.prune/
 # CodeGraph local code index (regenerable SQLite/cache; never proof/source truth)
 .codegraph/
 
