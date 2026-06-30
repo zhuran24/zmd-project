@@ -167,6 +167,8 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_checker_detects_multiline_public_certified_return" in close_kernel_tests
     assert "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift" in close_kernel_tests
     assert "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift" in close_kernel_tests
+    assert "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses" in close_kernel_tests
+    assert "test_p1_2_empty_rect_leaf_math_oracle" in close_kernel_tests
 
 
 def _publisher_scan_paths() -> list[Path]:
@@ -1424,10 +1426,388 @@ def _exact_ghost_pick_raises_early(source: str) -> str:
     )
 
 
+def _child_clears_replay_violations(source: str) -> str:
+    anchor = (
+        "    replayed_records, replay_violations = _project_candidate_records_direct(\n"
+        "        state=authority_state,\n"
+        "        project_root=project_root,\n"
+        "        strong_keys=strong_keys,\n"
+        "    )\n"
+    )
+    return _replace_once(source, anchor, anchor + "    replay_violations.clear()\n")
+
+
+def _child_dead_branches_project_records_after_prebind(source: str) -> str:
+    anchor = (
+        "    replayed_records, replay_violations = _project_candidate_records_direct(\n"
+        "        state=authority_state,\n"
+        "        project_root=project_root,\n"
+        "        strong_keys=strong_keys,\n"
+        "    )\n"
+    )
+    replacement = (
+        "    replay_violations = {}\n"
+        "    if False:\n"
+        "        replayed_records, replay_violations = _project_candidate_records_direct(\n"
+        "            state=authority_state,\n"
+        "            project_root=project_root,\n"
+        "            strong_keys=strong_keys,\n"
+        "        )\n"
+    )
+    return _replace_once(source, anchor, replacement)
+
+
+def _child_swallows_replay_gate(source: str) -> str:
+    gate = (
+        "    if replay_violations:\n"
+        "        first_key = sorted(replay_violations)[0]\n"
+        "        raise ValueError(f\"terminal candidate sink replay failed:{replay_violations[first_key]}\")\n"
+    )
+    replacement = (
+        "    try:\n"
+        "        if replay_violations:\n"
+        "            first_key = sorted(replay_violations)[0]\n"
+        "            raise ValueError(f\"terminal candidate sink replay failed:{replay_violations[first_key]}\")\n"
+        "    except Exception:\n"
+        "        pass\n"
+    )
+    return _replace_once(source, gate, replacement)
+
+
+def _child_switches_replayed_records_sibling(source: str) -> str:
+    gate = (
+        "    if replay_violations:\n"
+        "        first_key = sorted(replay_violations)[0]\n"
+        "        raise ValueError(f\"terminal candidate sink replay failed:{replay_violations[first_key]}\")\n"
+    )
+    return _replace_once(
+        source,
+        gate,
+        gate + '    replayed_records = dict(authority_state.get("candidates", {}))\n',
+    )
+
+
+def _child_mutates_fixed_verdict_publishable(source: str) -> str:
+    anchor = (
+        "    durable_records, public_records, fixed_verdict = _run_fixed_witness_direct(\n"
+        "        state=authority_state,\n"
+        "        project_root=project_root,\n"
+        "        candidate_records=replayed_records,\n"
+        "        final_result=certified_final_result,\n"
+        "    )\n"
+    )
+    return _replace_once(source, anchor, anchor + "    fixed_verdict.publishable = True\n")
+
+
+def _child_clears_durable_records_after_fixed_witness(source: str) -> str:
+    gate = (
+        "    if fixed_violations:\n"
+        "        first_key = sorted(fixed_violations)[0]\n"
+        "        raise ValueError(f\"terminal fixed witness verifier failed:{fixed_violations[first_key]}\")\n"
+    )
+    return _replace_once(source, gate, gate + "    durable_records.clear()\n")
+
+
+def _child_project_records_empties_strong_keys(source: str) -> str:
+    anchor = (
+        "    if not isinstance(raw_records, Mapping):\n"
+        "        return {}, {\"*\": \"candidate_sink_replay_records_missing\"}\n"
+    )
+    return _replace_once(source, anchor, anchor + "    strong_keys = []\n")
+
+
+def _l0_appends_round_trip_stub(source: str) -> str:
+    return (
+        source
+        + "\n\ndef run_l0_micro_verifier_round_trip(*args, **kwargs):\n"
+        + "    return L0MicroVerdict(status=SEALED, nonce=\"forged\", reason=\"forged\", response={\"domain\": {}})\n"
+    )
+
+
+def _l0_rebinds_true_verifier_module(source: str) -> str:
+    return _replace_once(
+        source,
+        'TRUE_VERIFIER_MODULE = "src.search.pr2_l0_true_verifier_child"',
+        'TRUE_VERIFIER_MODULE = "src.search.pr2_l0_forged_child"',
+    )
+
+
+def _l0_noops_domain_response_violation(source: str) -> str:
+    anchor = (
+        "def _domain_response_violation(\n"
+        "    domain: Any,\n"
+        "    *,\n"
+        "    nonce: str,\n"
+        "    strong_keys: Sequence[str],\n"
+        "    proposal_final_result_digest: str,\n"
+        "    proposal_evidence_digest: str,\n"
+        "    proposal_candidate_records_digest: str,\n"
+        ") -> str | None:\n"
+    )
+    return _replace_once(source, anchor, anchor + "    return None\n")
+
+
+def _l0_shadows_dict_top_level(source: str) -> str:
+    return _replace_once(
+        source,
+        "from typing import Any, Mapping, Sequence\n\n",
+        "from typing import Any, Mapping, Sequence\n\ndict = lambda *args, **kwargs: {}\n\n",
+    )
+
+
+def _exact_noops_unsupervised_certified_guard(source: str) -> str:
+    return _replace_once(
+        source,
+        '    """Return True when a checkpoint tries to mint terminal CERTIFIED state."""\n\n',
+        '    """Return True when a checkpoint tries to mint terminal CERTIFIED state."""\n\n'
+        "    return False\n",
+    )
+
+
+def _exact_save_dead_branches_unsupervised_guard(source: str) -> str:
+    return _replace_once(
+        source,
+        "            if _has_unsupervised_certified_checkpoint_claim(checked_state):\n",
+        "            if False and _has_unsupervised_certified_checkpoint_claim(checked_state):\n",
+    )
+
+
+def _exact_final_objective_compare_pass(source: str) -> str:
+    return _replace_once(
+        source,
+        '            return "terminal_certified_final_result_not_best_candidate"\n',
+        "            pass\n",
+    )
+
+
+def _exact_best_empty_compare_pass(source: str) -> str:
+    return _replace_once(
+        source,
+        '        return "terminal_certified_final_result_layout_has_better_empty_rect"\n',
+        "        pass\n",
+    )
+
+
+def _child_replay_status_compare_pass(source: str) -> str:
+    gate = (
+        "        if replay_status != claimed_status:\n"
+        "            violations[key] = (\n"
+        "                f\"candidate_sink_replay_status_mismatch:{key}:\"\n"
+        "                f\"claimed={claimed_status}:replayed={replay_status}\"\n"
+        "            )\n"
+        "            continue\n"
+    )
+    return _replace_once(source, gate, "        if replay_status != claimed_status:\n            pass\n")
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
     assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "mutator", "expected_error"),
+    [
+        ("child", _child_clears_replay_violations, "supervisor domain chokepoint"),
+        ("child", _child_dead_branches_project_records_after_prebind, "supervisor domain chokepoint"),
+        ("child", _child_swallows_replay_gate, "supervisor domain chokepoint"),
+        ("child", _child_switches_replayed_records_sibling, "supervisor domain chokepoint"),
+        ("child", _child_mutates_fixed_verdict_publishable, "supervisor domain chokepoint"),
+        ("child", _child_clears_durable_records_after_fixed_witness, "supervisor domain chokepoint"),
+        ("child", _child_project_records_empties_strong_keys, "candidate projection chokepoint"),
+        (
+            "l0",
+            _l0_appends_round_trip_stub,
+            "run_l0_micro_verifier_round_trip must be unique",
+        ),
+        (
+            "l0",
+            _l0_rebinds_true_verifier_module,
+            "constant TRUE_VERIFIER_MODULE must match pinned source",
+        ),
+        (
+            "l0",
+            _l0_noops_domain_response_violation,
+            "source sha256 drifted for _domain_response_violation",
+        ),
+        ("l0", _l0_shadows_dict_top_level, "must not shadow/rebind dict"),
+        (
+            "exact",
+            _exact_noops_unsupervised_certified_guard,
+            "source sha256 drifted for _has_unsupervised_certified_checkpoint_claim",
+        ),
+        (
+            "exact",
+            _exact_save_dead_branches_unsupervised_guard,
+            "source sha256 drifted for ExactCampaign.save",
+        ),
+        (
+            "exact",
+            _exact_final_objective_compare_pass,
+            "compare gate for final_objective must have live fail-closed effect",
+        ),
+        (
+            "exact",
+            _exact_best_empty_compare_pass,
+            "compare gate for best_empty_objective must have live fail-closed effect",
+        ),
+        (
+            "child",
+            _child_replay_status_compare_pass,
+            "compare gate for replay_status must have live fail-closed effect",
+        ),
+    ],
+    ids=[
+        "round8-child-replay-violations-clear",
+        "round8-child-dead-branch-prebind",
+        "round8-child-try-except-swallow",
+        "round8-child-replayed-records-sibling-switch",
+        "round8-child-fixed-verdict-attr-mutate",
+        "round8-child-durable-records-clear",
+        "round8-child-project-records-strong-keys-empty",
+        "round8-l0-round-trip-stub-after-binding",
+        "round8-l0-true-verifier-module-rebind",
+        "round8-l0-domain-response-violation-noop",
+        "round8-l0-dict-shadow",
+        "round8-exact-unsupervised-guard-noop",
+        "round8-exact-save-guard-dead-branch",
+        "round8-exact-final-objective-pass",
+        "round8-exact-best-empty-pass",
+        "round8-child-replay-status-pass",
+    ],
+)
+def test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses(
+    tmp_path: Path,
+    source_kind: str,
+    mutator: object,
+    expected_error: str,
+) -> None:
+    assert callable(mutator)
+    child_source = l0_source = exact_source = None
+    if source_kind == "child":
+        child_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    elif source_kind == "l0":
+        l0_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    elif source_kind == "exact":
+        exact_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
+        )
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert any(expected_error in error for error in errors), errors
+
+
+def test_p1_2_empty_rect_leaf_math_oracle() -> None:
+    from src.search.exact_campaign import (
+        _best_empty_rect_objective,
+        _build_occupancy_prefix,
+        _empty_rect_exists,
+        _occupied_count_in_rect,
+    )
+
+    right_prefix = _build_occupancy_prefix(
+        occupied_cells={(0, 0), (1, 0), (2, 0)},
+        grid_w=5,
+        grid_h=2,
+    )
+    assert _empty_rect_exists(
+        occupancy_prefix=right_prefix,
+        grid_w=5,
+        grid_h=2,
+        rect_w=2,
+        rect_h=2,
+    )
+
+    bottom_prefix = _build_occupancy_prefix(
+        occupied_cells={(0, 0), (0, 1), (0, 2)},
+        grid_w=2,
+        grid_h=5,
+    )
+    assert _empty_rect_exists(
+        occupancy_prefix=bottom_prefix,
+        grid_w=2,
+        grid_h=5,
+        rect_w=2,
+        rect_h=2,
+    )
+
+    empty_prefix = _build_occupancy_prefix(occupied_cells=set(), grid_w=4, grid_h=3)
+    assert _best_empty_rect_objective(
+        occupancy_prefix=empty_prefix,
+        grid_w=4,
+        grid_h=3,
+        min_side_admissibility=1,
+    ) == (12, 3)
+    assert _empty_rect_exists(
+        occupancy_prefix=empty_prefix,
+        grid_w=3,
+        grid_h=3,
+        rect_w=3,
+        rect_h=3,
+    )
+
+    prefix = _build_occupancy_prefix(
+        occupied_cells={(0, 0), (1, 2), (2, 2)},
+        grid_w=3,
+        grid_h=3,
+    )
+    assert _occupied_count_in_rect(
+        occupancy_prefix=prefix,
+        anchor_x=0,
+        anchor_y=0,
+        rect_w=1,
+        rect_h=1,
+    ) == 1
+    assert _occupied_count_in_rect(
+        occupancy_prefix=prefix,
+        anchor_x=0,
+        anchor_y=0,
+        rect_w=3,
+        rect_h=3,
+    ) == 3
+    assert _occupied_count_in_rect(
+        occupancy_prefix=prefix,
+        anchor_x=0,
+        anchor_y=2,
+        rect_w=3,
+        rect_h=1,
+    ) == 2
+    assert _occupied_count_in_rect(
+        occupancy_prefix=prefix,
+        anchor_x=1,
+        anchor_y=1,
+        rect_w=1,
+        rect_h=1,
+    ) == 0
+
+    boundary_best_prefix = _build_occupancy_prefix(
+        occupied_cells={(x, 0) for x in range(4)} | {(0, y) for y in range(4)},
+        grid_w=4,
+        grid_h=4,
+    )
+    assert _best_empty_rect_objective(
+        occupancy_prefix=boundary_best_prefix,
+        grid_w=4,
+        grid_h=4,
+        min_side_admissibility=2,
+    ) == (9, 3)
 
 
 @pytest.mark.parametrize(

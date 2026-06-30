@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 from pathlib import Path
 from typing import Any, Callable, Iterator, Mapping, NoReturn, Sequence
 
@@ -1140,6 +1141,14 @@ def _raises_value_error(node: ast.AST) -> bool:
 def _source_text(path: Path, node: ast.AST) -> str:
     source = path.read_text(encoding="utf-8")
     return ast.get_source_segment(source, node) or ""
+
+
+def _normalized_source_text(path: Path, node: ast.AST) -> str:
+    return textwrap.dedent(_source_text(path, node)).rstrip("\n")
+
+
+def _normalized_source_sha256(path: Path, node: ast.AST) -> str:
+    return hashlib.sha256(_normalized_source_text(path, node).encode("utf-8")).hexdigest()
 
 
 def _call_symbol(call: ast.Call) -> str | None:
@@ -4047,6 +4056,91 @@ _PR2_CHILD_VERIFY_BODY = (
     '    "domain": domain,\n'
     '}',
 )
+_PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY = (
+    'required = {\n        "action",\n        "schema_version",\n        "authority",\n        "project_root",\n        "authority_state",\n        "authority_state_b64",\n        "strong_keys",\n        "proposal_final_result_digest",\n        "proposal_terminal_frontier_evidence_digest",\n        "proposal_candidate_records_digest",\n        "dependency_floor",\n    }',
+    'if set(payload.keys()) != required:\n        raise ValueError("supervisor domain request fields invalid")',
+    'if _strict_int(payload.get("schema_version"), "domain.schema_version") != DOMAIN_SCHEMA_VERSION:\n        raise ValueError("supervisor domain request schema invalid")',
+    'if payload.get("authority") != DOMAIN_AUTHORITY:\n        raise ValueError("supervisor domain request authority invalid")',
+    'project_root = Path(_strict_string(payload.get("project_root"), "project_root")).resolve()',
+    '_materialize_import_default_artifacts(project_root)',
+    'authority_state = _json_copy(_require_mapping(payload.get("authority_state"), "authority_state"))',
+    'authority_bytes = base64.b64decode(\n        _strict_string(payload.get("authority_state_b64"), "authority_state_b64").encode("ascii"),\n        validate=True,\n    )',
+    'if _json_copy(json.loads(authority_bytes.decode("utf-8"))) != authority_state:\n        raise ValueError("authority_state_bytes_mismatch")',
+    'strong_keys = _string_list(payload.get("strong_keys"))',
+    'if strong_keys != sorted(str(key) for key in strong_keys):\n        raise ValueError("strong_keys_not_sorted")',
+    'final_result = _require_mapping(authority_state.get("final_result"), "final_result")',
+    'certified_final_result = dict(final_result)',
+    'certified_final_result["search_status"] = "CERTIFIED"',
+    'replayed_records, replay_violations = _project_candidate_records_direct(\n        state=authority_state,\n        project_root=project_root,\n        strong_keys=strong_keys,\n    )',
+    'if replay_violations:\n        first_key = sorted(replay_violations)[0]\n        raise ValueError(f"terminal candidate sink replay failed:{replay_violations[first_key]}")',
+    'durable_records, public_records, fixed_verdict = _run_fixed_witness_direct(\n        state=authority_state,\n        project_root=project_root,\n        candidate_records=replayed_records,\n        final_result=certified_final_result,\n    )',
+    'fixed_violations: dict[str, str] = {}',
+    'if getattr(fixed_verdict, "publishable", False) is not True:\n        fixed_violations[str(getattr(fixed_verdict, "candidate_key", None) or "*")] = str(\n            getattr(fixed_verdict, "reason", None) or "terminal_fixed_witness_rejected"\n        )',
+    'if fixed_violations:\n        first_key = sorted(fixed_violations)[0]\n        raise ValueError(f"terminal fixed witness verifier failed:{fixed_violations[first_key]}")',
+    'from src.search.certified_frontier import (\n        build_terminal_frontier_evidence,\n        candidate_generation_kwargs,\n        generate_candidate_sizes,\n    )',
+    'from src.search.exact_campaign import (\n        TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n        terminal_certified_final_result_project_precheck_violation,\n    )',
+    'proposal_evidence = _require_mapping(\n        authority_state.get("terminal_frontier_evidence"),\n        "terminal_frontier_evidence",\n    )',
+    'candidate_generation = _require_mapping(\n        proposal_evidence.get("candidate_generation"),\n        "candidate_generation",\n    )',
+    'candidates = generate_candidate_sizes(**candidate_generation_kwargs(candidate_generation))',
+    'evidence = build_terminal_frontier_evidence(\n        candidates=candidates,\n        candidate_records=public_records,\n        final_result=certified_final_result,\n        candidate_generation=candidate_generation,\n    )',
+    'scratch_state = dict(authority_state)',
+    'scratch_state["final_result"] = certified_final_result',
+    'scratch_state["final_status"] = "CERTIFIED"',
+    'scratch_state["declare_mode"] = "strict"',
+    'scratch_state["last_stop_reason"] = {\n        "reason": TERMINAL_FULL_FRONTIER_CERTIFIED_REASON,\n        "status": "CERTIFIED",\n    }',
+    'scratch_state["terminal_frontier_evidence"] = evidence',
+    'scratch_state["candidates"] = durable_records',
+    'scratch_state.pop("supervisor_proposal", None)',
+    'precheck_reason = terminal_certified_final_result_project_precheck_violation(\n        scratch_state,\n        project_root=project_root,\n    )',
+    'if precheck_reason is not None:\n        raise ValueError(f"terminal project precheck failed:{precheck_reason}")',
+    'final_digest = _canonical_digest(certified_final_result)',
+    'evidence_digest = _canonical_digest(evidence)',
+    'records_digest = _canonical_digest(_stable_fixed_witness_candidate_records(durable_records))',
+    'if final_digest != payload.get("proposal_final_result_digest"):\n        raise ValueError("proposal final_result mismatch after domain verification")',
+    'if evidence_digest != payload.get("proposal_terminal_frontier_evidence_digest"):\n        raise ValueError("proposal terminal_frontier_evidence mismatch after domain verification")',
+    'if records_digest != payload.get("proposal_candidate_records_digest"):\n        raise ValueError("proposal candidate_records mismatch after domain verification")',
+    'return {\n        "schema_version": DOMAIN_SCHEMA_VERSION,\n        "authority": DOMAIN_AUTHORITY,\n        "nonce": nonce,\n        "verdict": SEALED,\n        "reason": "domain_verified",\n        "strong_keys": list(strong_keys),\n        "final_result": certified_final_result,\n        "terminal_frontier_evidence": evidence,\n        "candidate_records": durable_records,\n        "final_result_digest": final_digest,\n        "terminal_frontier_evidence_digest": evidence_digest,\n        "candidate_records_digest": records_digest,\n        "fixed_witness_publishable": bool(getattr(fixed_verdict, "publishable", False)),\n        "sink_replay_violations": {},\n        "fixed_witness_violations": {},\n        "tcb": {\n            "python_interpreter": "NAMED-TCB",\n            "stdlib": "NAMED-TCB",\n            "third_party_native": "NAMED-TCB",\n            "os_process_file_isolation": "NAMED-TCB",\n            "windows_write_isolation_residual": "protocol_only_child_snapshot_no_write_fd_pr2c_linux_uid_namespace_pending",\n        },\n    }',
+)
+_PR2_CHILD_PROJECT_RECORDS_BODY = (
+    'from src.search.candidate_proof_replay import (\n        CANDIDATE_PROOF_AUTHORITY,\n        CANDIDATE_PROOF_FIELD,\n        CANDIDATE_PROOF_SCHEMA_VERSION,\n        _execute_isolated_replay_request,\n        _json_copy,\n        _replay_response_violation,\n        candidate_proof_shape_violation,\n        canonical_digest,\n    )',
+    'raw_records = state.get("candidates")',
+    'if not isinstance(raw_records, Mapping):\n        return {}, {"*": "candidate_sink_replay_records_missing"}',
+    'expected_proofs: dict[str, dict[str, Any]] = {}',
+    'violations: dict[str, str] = {}',
+    'for key in strong_keys:\n        record = raw_records.get(key)\n        if not isinstance(record, Mapping):\n            violations[key] = f"candidate_sink_replay_record_invalid:{key}"\n            continue\n        proof = record.get(CANDIDATE_PROOF_FIELD)\n        violation = candidate_proof_shape_violation(\n            proof=proof,\n            record_key=key,\n            record=record,\n            state=state,\n            project_root=project_root,\n            campaign_path=None,\n        )\n        if violation is not None:\n            violations[key] = violation\n            continue\n        expected_proofs[key] = _json_copy(proof)',
+    'if set(expected_proofs) | set(violations) != set(strong_keys):\n        violations["*"] = "candidate_sink_replay_strong_key_coverage_mismatch"',
+    'if violations:\n        return {}, violations',
+    'if not expected_proofs:\n        return {\n            str(key): _json_copy(value)\n            for key, value in raw_records.items()\n            if isinstance(value, Mapping)\n        }, {}',
+    'request = {\n        "schema_version": CANDIDATE_PROOF_SCHEMA_VERSION,\n        "authority": CANDIDATE_PROOF_AUTHORITY,\n        "nonce": hashlib.sha256(_canonical_bytes(expected_proofs)).hexdigest(),\n        "project_root": str(project_root),\n        "expected_proofs": [_json_copy(expected_proofs[key]) for key in sorted(expected_proofs)],\n    }',
+    'response = _execute_isolated_replay_request(request)',
+    'envelope_violation = _replay_response_violation(\n        response=response,\n        project_root=project_root,\n        expected_proofs=expected_proofs,\n    )',
+    'if envelope_violation is not None:\n        return {}, {key: envelope_violation for key in expected_proofs}',
+    'results = response.get("results")',
+    'if not isinstance(results, list):\n        return {}, {"*": "candidate_sink_replay_response_result_invalid"}',
+    'results_by_key = {\n        str(item.get("candidate_key")): item for item in results if isinstance(item, Mapping)\n    }',
+    'verified: dict[str, dict[str, Any]] = {}',
+    'for key, proof in expected_proofs.items():\n        record = raw_records.get(key)\n        result = results_by_key.get(key)\n        if not isinstance(record, Mapping) or not isinstance(result, Mapping):\n            violations[key] = f"candidate_sink_replay_result_missing:{key}"\n            continue\n        claimed_status = str(proof.get("claimed_status", ""))\n        replay_status = str(result.get("replay_status", ""))\n        if replay_status != claimed_status:\n            violations[key] = (\n                f"candidate_sink_replay_status_mismatch:{key}:"\n                f"claimed={claimed_status}:replayed={replay_status}"\n            )\n            continue\n        replayed_record = _json_copy(record)\n        if claimed_status == "CERTIFIED":\n            stored_solution = record.get("solution")\n            if not isinstance(stored_solution, Mapping):\n                violations[key] = f"candidate_sink_replay_solution_missing:{key}"\n                continue\n            if proof.get("solution_digest") != canonical_digest(stored_solution):\n                violations[key] = f"candidate_sink_replay_solution_binding_mismatch:{key}"\n                continue\n            replayed_record["solution"] = _json_copy(stored_solution)\n        else:\n            replayed_record.pop("solution", None)\n        verified[key] = replayed_record',
+    'if violations:\n        return {}, violations',
+    'projected: dict[str, dict[str, Any]] = {}',
+    'for raw_key, raw_record in raw_records.items():\n        key = str(raw_key)\n        if not isinstance(raw_record, Mapping):\n            continue\n        projected[key] = verified.get(key, _json_copy(raw_record))',
+    'return projected, {}',
+)
+_PR2_CHILD_FIXED_WITNESS_BODY = (
+    'from src.search.candidate_proof_replay import _materialize_replay_snapshot',
+    'from src.search.exact_campaign import compute_exact_artifact_hashes',
+    'from src.search.terminal_fixed_witness_verifier import (\n        _apply_terminal_fixed_witness_audit_fields,\n        _copy_candidate_records,\n        _identity_from_current_records,\n        _project_terminal_fixed_witness_records_from_capsule,\n        canonical_state_bytes_for_fixed_witness,\n        verify_terminal_fixed_witness,\n    )',
+    'authority_state = _json_copy(state)',
+    'authority_state["candidates"] = _json_copy(candidate_records)',
+    'authority_state["final_result"] = _json_copy(final_result)',
+    'current_hashes = compute_exact_artifact_hashes(project_root)',
+    'with tempfile.TemporaryDirectory(prefix="zmd_pr2_true_fixed_witness_") as temp_dir:\n        replay_project_root = Path(temp_dir) / "project"\n        _materialize_replay_snapshot(\n            project_root=project_root,\n            replay_project_root=replay_project_root,\n            current_artifact_hashes=current_hashes,\n        )\n        state_copy = _json_copy(authority_state)\n        verdict = verify_terminal_fixed_witness(\n            state=state_copy,\n            project_root=replay_project_root,\n            serialized_state_bytes=canonical_state_bytes_for_fixed_witness(state_copy),\n        )',
+    'durable_records = _copy_candidate_records(candidate_records)',
+    'identity = _identity_from_current_records(durable_records, final_result)',
+    'record = durable_records.get(identity.candidate_key)',
+    'if isinstance(record, dict):\n        _apply_terminal_fixed_witness_audit_fields(\n            record,\n            verdict=verdict,\n            publishable=bool(verdict.publishable),\n            projected_status="CERTIFIED" if verdict.publishable else "UNPROVEN",\n            rejected_reason=verdict.reason,\n        )',
+    'public_projection = _project_terminal_fixed_witness_records_from_capsule(\n        candidate_records=_copy_candidate_records(candidate_records),\n        final_result=final_result,\n        verdict=verdict,\n    )',
+    'return durable_records, public_projection.candidate_records, verdict',
+)
 _PR2_L0_SUPERVISOR_SEAL_STATE_BODY = (
     "keys = {\n"
     '    "schema_version",\n'
@@ -4294,6 +4388,83 @@ _PR2_L0_RUN_SUPERVISOR_SEAL_BODY = (
     except Exception as exc:
         return _reject(nonce, f"parent_exception:{type(exc).__name__}:{exc}")''',
 )
+_PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
+    "run_l0_micro_verifier_round_trip": "6b8678f0ace83b10f99516ed8c921b82799175b5bcf112495780bb6be95f9e8b",
+    "_discover_project_snapshot_modules": "d4ef471a0dbbdf6703ad2d7de86dfd4440787667e1b2d2537b3a31af618de82a",
+    "_materialize_snapshot": "dd3ba44abe31e066568334347a1bc7f8d91d8f9915db35343917c14b23425b90",
+    "_domain_response_violation": "a58fcb21065c7aab4b4a0b0a4779cb2c93e397aaef6e031cd98b37b594d4eedb",
+    "_verdict_from_completed_process": "9b1659bb1f09b4d6d06a7f8513505eed531ba966c068410af749e041fe70471b",
+    "_child_env": "950e48d22bee9d0f0048eb2bb0f4e12b22fd157b7a69d4eeb2b32e3ec7628300",
+    "_atomic_replace_bytes": "56db2e99dd91259add629655664eda9dee64ab97dacd322a1f5f7a1b43edf8e7",
+    "_canonical_digest": "8c05dd916c7f2615e0bb2fbb4ed5a6cac62cce500f7fee05ccc89e91869659aa",
+    "_floor_digest": "f99a8a573213baec45deba01692d5f12d07ff150f85a886c484dce260187b4fb",
+    "_read_regular_file_bytes": "41f6be53a4ed2c7e38da0f1a17fb87e4d6f9f2bf3a38beb36506e981e97fd8c0",
+    "_source_digest_relpaths": "52fc1d20e3f3d7654dac024e47d9e1b32a1b486dc9fca9eee48ae773bc7c0ab4",
+    "_snapshot_module_paths": "a85df1ab9b53818f544faea01f2dd2c5039d4be4503ba976d020036e731854e7",
+    "_module_relpath": "cf023dc99a8b7f998fe0c5f0949bbda89a113277c560b48588ecfd9266341d71",
+    "_stable_fixed_witness_candidate_records_l0": "c8b9445d129191dfb1d91378798f6204586766abfffc7359dc76abb81b038904",
+    "_load_canonical_dependency_floor_manifest": "b1644ba2f13dfbcdbdb93f96882352f9d7351ae952525cec0b2afa6a402559e9",
+    "_reject": "18af5ccc78c6e86b76065ea7217c9043317ee91537b30babac1539b334cbe819",
+    "_response_violation": "b4c4f6be6aa42b9321c62b4d0b7b55969059136db5ae58f44eb00326f446db6f",
+}
+_PR2_L0_TCB_CONSTANT_SOURCES = {
+    "TRUE_VERIFIER_MODULE": 'TRUE_VERIFIER_MODULE = "src.search.pr2_l0_true_verifier_child"',
+    "DEFAULT_VERIFIER_FUNCTION": 'DEFAULT_VERIFIER_FUNCTION = "verify"',
+    "SEALED": 'SEALED = "SEALED"',
+    "REJECTED": 'REJECTED = "REJECTED"',
+    "SUPERVISOR_DOMAIN_AUTHORITY": 'SUPERVISOR_DOMAIN_AUTHORITY = "pr2_l0_true_supervisor_domain_v1"',
+    "SUPERVISOR_DOMAIN_SCHEMA_VERSION": "SUPERVISOR_DOMAIN_SCHEMA_VERSION = 1",
+    "SUPERVISOR_SEAL_AUTHORITY": 'SUPERVISOR_SEAL_AUTHORITY = "certified_exact_supervisor_seal_v1"',
+    "SUPERVISOR_SEAL_SCHEMA_VERSION": "SUPERVISOR_SEAL_SCHEMA_VERSION = 2",
+    "TERMINAL_CERTIFIED_REASON": 'TERMINAL_CERTIFIED_REASON = "search_exhausted_all_candidates"',
+}
+_PR2_L0_CHILD_BOOTSTRAP_SOURCE_VALUE_SHA256 = (
+    "1141436f87f6573c4fb19f58d60dd063e1f33b34b2f768e42c76908550004d8d"
+)
+_PR2_L0_FORBIDDEN_TOP_LEVEL_SHADOW_NAMES = frozenset(
+    {
+        "dict",
+        "tuple",
+        "json",
+        "hashlib",
+        "base64",
+        "os",
+        "secrets",
+        "shutil",
+        "subprocess",
+        "sys",
+        "sysconfig",
+        "tempfile",
+        "time",
+        "uuid",
+        "Any",
+        "Mapping",
+        "Path",
+        "Sequence",
+    }
+)
+_PR2_L0_ALLOWED_IMPORT_BINDINGS = {
+    "base64": ("import", "base64", None),
+    "hashlib": ("import", "hashlib", None),
+    "json": ("import", "json", None),
+    "os": ("import", "os", None),
+    "secrets": ("import", "secrets", None),
+    "shutil": ("import", "shutil", None),
+    "subprocess": ("import", "subprocess", None),
+    "sys": ("import", "sys", None),
+    "sysconfig": ("import", "sysconfig", None),
+    "tempfile": ("import", "tempfile", None),
+    "time": ("import", "time", None),
+    "uuid": ("import", "uuid", None),
+    "Path": ("from", "pathlib", "Path"),
+    "Any": ("from", "typing", "Any"),
+    "Mapping": ("from", "typing", "Mapping"),
+    "Sequence": ("from", "typing", "Sequence"),
+}
+_PR2_EXACT_TCB_SOURCE_SHA256 = {
+    "_has_unsupervised_certified_checkpoint_claim": "9c99d69c30dc7642b8631f758e99b9f960b1d7cba2296c8870cac6fd552f74b8",
+    "ExactCampaign.save": "d069c600b6040fbccc86b1a479d8c3439ffdd9e9be2fe0c99e863d247b0d5d64",
+}
 
 
 def _check_top_level_prefix_closed_world(
@@ -4780,6 +4951,69 @@ def _delete_targets_name(stmt: ast.Delete, name: str) -> bool:
     return any(name in _target_bound_names(target) for target in stmt.targets)
 
 
+def _expr_is_direct_alias_for_names(node: ast.AST, names: frozenset[str]) -> bool:
+    return isinstance(node, ast.Name) and node.id in names
+
+
+def _target_writes_attribute_of_names(target: ast.AST, names: frozenset[str]) -> bool:
+    for node in ast.walk(target):
+        if isinstance(node, ast.Attribute) and _expr_may_reference_mapping(node.value, names):
+            return True
+    return False
+
+
+def _expr_is_no_clobber_mutator_callable(node: ast.AST, names: frozenset[str]) -> bool:
+    if isinstance(node, ast.Attribute) and _expr_may_reference_mapping(node.value, names):
+        return node.attr in _PR2_MUTATING_MAPPING_METHODS
+    if not isinstance(node, ast.Call) or _call_func_name(node) != "getattr":
+        return False
+    if not node.args or not _expr_may_reference_mapping(node.args[0], names):
+        return False
+    if len(node.args) < 2 or not isinstance(node.args[1], ast.Constant):
+        return True
+    return node.args[1].value in _PR2_MUTATING_MAPPING_METHODS
+
+
+def _call_mutates_no_clobber_name(call: ast.Call, names: frozenset[str]) -> bool:
+    call_name = _call_func_name(call)
+    if call_name in {"setattr", "delattr", "vars"} and any(
+        _expr_may_reference_mapping(arg, names) for arg in call.args
+    ):
+        return True
+    if call_name in {
+        "dict.clear",
+        "dict.pop",
+        "dict.popitem",
+        "dict.__setitem__",
+        "dict.__delitem__",
+        "dict.__ior__",
+        "operator.setitem",
+        "operator.delitem",
+        "operator.ior",
+    }:
+        return bool(call.args and _expr_may_reference_mapping(call.args[0], names))
+    if isinstance(call.func, ast.Attribute):
+        if (
+            call.func.attr in _PR2_MUTATING_MAPPING_METHODS
+            and _expr_may_reference_mapping(call.func.value, names)
+        ):
+            return True
+        if (
+            call.func.attr in _PR2_MUTATING_MAPPING_METHODS
+            and call.args
+            and _expr_may_reference_mapping(call.args[0], names)
+        ):
+            return True
+    if isinstance(call.func, ast.Call) and _call_func_name(call.func) == "getattr":
+        getattr_call = call.func
+        if not getattr_call.args or not _expr_may_reference_mapping(getattr_call.args[0], names):
+            return False
+        if len(getattr_call.args) < 2 or not isinstance(getattr_call.args[1], ast.Constant):
+            return True
+        return getattr_call.args[1].value in _PR2_MUTATING_MAPPING_METHODS
+    return False
+
+
 def _ordered_nodes(root: ast.AST) -> list[ast.AST]:
     return sorted(
         (node for node in ast.walk(root) if hasattr(node, "lineno")),
@@ -4811,15 +5045,63 @@ def _check_name_not_rebound_after(
     until: ast.AST | None = None,
 ) -> list[str]:
     errors: list[str] = []
+    protected_names: set[str] = {name}
+    protected_mutator_callables: set[str] = set()
+    for node in _ordered_nodes(function):
+        if _node_starts_after(node, anchor):
+            break
+        if node is not anchor and _stmt_binds_name(node, name):
+            errors.append(f"{label} must not pre-bind {name} before its pinned assignment")
     for node in _ordered_nodes(function):
         if node is anchor or not _node_starts_after(node, anchor):
             continue
         if until is not None and (node is until or _node_starts_after(node, until)):
             break
+        frozen_names = frozenset(protected_names)
         if _stmt_binds_name(node, name):
             errors.append(f"{label} must not clobber {name} after its pinned assignment")
         if isinstance(node, ast.Delete) and _delete_targets_name(node, name):
             errors.append(f"{label} must not delete {name} after its pinned assignment")
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                bound_names = _target_bound_names(target)
+                for bound_name in sorted(bound_names & protected_names):
+                    errors.append(
+                        f"{label} must not clobber {name} after its pinned assignment"
+                    )
+                if _target_writes_attribute_of_names(target, frozen_names):
+                    errors.append(f"{label} must not mutate {name} after its pinned assignment")
+                if _expr_is_direct_alias_for_names(node.value, frozen_names):
+                    protected_names.update(bound_names)
+                elif _expr_is_no_clobber_mutator_callable(node.value, frozen_names):
+                    protected_mutator_callables.update(bound_names)
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            bound_names = _target_bound_names(node.target)
+            for bound_name in sorted(bound_names & protected_names):
+                errors.append(f"{label} must not clobber {name} after its pinned assignment")
+            if _target_writes_attribute_of_names(node.target, frozen_names):
+                errors.append(f"{label} must not mutate {name} after its pinned assignment")
+            if (
+                isinstance(node, ast.AnnAssign)
+                and node.value is not None
+                and _expr_is_direct_alias_for_names(node.value, frozen_names)
+            ):
+                protected_names.update(bound_names)
+        elif isinstance(node, ast.NamedExpr):
+            bound_names = _target_bound_names(node.target)
+            for bound_name in sorted(bound_names & protected_names):
+                errors.append(f"{label} must not clobber {name} after its pinned assignment")
+            if _expr_is_direct_alias_for_names(node.value, frozen_names):
+                protected_names.update(bound_names)
+        elif isinstance(node, ast.Delete):
+            for target in node.targets:
+                if _target_writes_attribute_of_names(target, frozen_names):
+                    errors.append(f"{label} must not mutate {name} after its pinned assignment")
+        elif isinstance(node, ast.Call):
+            if _call_mutates_no_clobber_name(node, frozen_names):
+                errors.append(f"{label} must not mutate {name} after its pinned assignment")
+            if isinstance(node.func, ast.Name) and node.func.id in protected_mutator_callables:
+                errors.append(f"{label} must not mutate {name} after its pinned assignment")
     return errors
 
 
@@ -4922,6 +5204,24 @@ def _check_call_assignment_no_rebind(
     )
 
 
+def _compare_gate_has_effect(stmt: ast.If, effect: str) -> bool:
+    if stmt.orelse:
+        return False
+    if effect == "return":
+        return len(stmt.body) == 1 and isinstance(stmt.body[0], ast.Return)
+    if effect == "raise":
+        return len(stmt.body) == 1 and isinstance(stmt.body[0], ast.Raise)
+    if effect == "violation_continue":
+        if len(stmt.body) != 2 or not isinstance(stmt.body[1], ast.Continue):
+            return False
+        first = stmt.body[0]
+        if not isinstance(first, ast.Assign) or len(first.targets) != 1:
+            return False
+        target = first.targets[0]
+        return isinstance(target, ast.Subscript) and _is_name(target.value, "violations")
+    return False
+
+
 def _check_result_flow_to_compare_gate(
     function: ast.FunctionDef,
     *,
@@ -4929,6 +5229,7 @@ def _check_result_flow_to_compare_gate(
     call_name: str | None = None,
     source: str | None = None,
     compare_test: str,
+    effect: str,
     label: str,
 ) -> list[str]:
     if (call_name is None) == (source is None):
@@ -4956,11 +5257,14 @@ def _check_result_flow_to_compare_gate(
     )
     if len(consumers) != 1:
         return [f"{label} must consume {result_name} in the pinned compare gate"]
+    consumer = consumers[0]
+    if not _compare_gate_has_effect(consumer, effect):
+        return [f"{label} compare gate for {result_name} must have live fail-closed effect: {effect}"]
     return _check_name_not_rebound_after(
         function,
         name=result_name,
         anchor=assignment,
-        until=consumers[0],
+        until=consumer,
         label=label,
     )
 
@@ -5037,6 +5341,152 @@ def _check_l0_supervisor_seal_body(l0_seal_fn: ast.FunctionDef) -> list[str]:
         expected_body=_PR2_L0_RUN_SUPERVISOR_SEAL_BODY,
         label="PR2 L0 supervisor seal durable writer",
     )
+
+
+def _check_child_verify_supervisor_domain_body(child_domain_fn: ast.FunctionDef) -> list[str]:
+    return _check_top_level_body_closed_world(
+        child_domain_fn,
+        expected_body=_PR2_CHILD_VERIFY_SUPERVISOR_DOMAIN_BODY,
+        label="PR2 true verifier child supervisor domain chokepoint",
+    )
+
+
+def _check_child_project_records_body(child_project_fn: ast.FunctionDef) -> list[str]:
+    return _check_top_level_body_closed_world(
+        child_project_fn,
+        expected_body=_PR2_CHILD_PROJECT_RECORDS_BODY,
+        label="PR2 child candidate projection chokepoint",
+    )
+
+
+def _check_child_fixed_witness_body(child_fixed_fn: ast.FunctionDef) -> list[str]:
+    return _check_top_level_body_closed_world(
+        child_fixed_fn,
+        expected_body=_PR2_CHILD_FIXED_WITNESS_BODY,
+        label="PR2 child fixed witness chokepoint",
+    )
+
+
+def _check_l0_import_binding_pins(l0_tree: ast.Module) -> list[str]:
+    errors: list[str] = []
+    seen: dict[str, int] = {name: 0 for name in _PR2_L0_ALLOWED_IMPORT_BINDINGS}
+    for stmt in l0_tree.body:
+        if isinstance(stmt, ast.Import):
+            for alias in stmt.names:
+                bound_name = alias.asname or alias.name.split(".", 1)[0]
+                expected = _PR2_L0_ALLOWED_IMPORT_BINDINGS.get(bound_name)
+                if expected is None:
+                    if bound_name in _PR2_L0_FORBIDDEN_TOP_LEVEL_SHADOW_NAMES:
+                        errors.append(f"PR2 L0 runtime TCB must not shadow/rebind {bound_name}")
+                    continue
+                if expected[0] != "import" or alias.name != expected[1] or alias.asname != expected[2]:
+                    errors.append(
+                        f"PR2 L0 runtime TCB import binding for {bound_name} must match pinned source"
+                    )
+                seen[bound_name] += 1
+        elif isinstance(stmt, ast.ImportFrom):
+            for alias in stmt.names:
+                bound_name = alias.asname or alias.name
+                expected = _PR2_L0_ALLOWED_IMPORT_BINDINGS.get(bound_name)
+                if expected is None:
+                    if bound_name in _PR2_L0_FORBIDDEN_TOP_LEVEL_SHADOW_NAMES:
+                        errors.append(f"PR2 L0 runtime TCB must not shadow/rebind {bound_name}")
+                    continue
+                if (
+                    expected[0] != "from"
+                    or stmt.level != 0
+                    or stmt.module != expected[1]
+                    or alias.name != expected[2]
+                    or alias.asname is not None
+                ):
+                    errors.append(
+                        f"PR2 L0 runtime TCB import binding for {bound_name} must match pinned source"
+                    )
+                seen[bound_name] += 1
+    for name, count in sorted(seen.items()):
+        if count != 1:
+            errors.append(f"PR2 L0 runtime TCB import binding for {name} must be unique")
+    return errors
+
+
+def _check_l0_runtime_tcb_bindings(l0_tree: ast.Module, *, path: Path) -> list[str]:
+    errors: list[str] = []
+    tcb_names = (
+        frozenset(_PR2_L0_TCB_FUNCTION_SOURCE_SHA256)
+        | frozenset(_PR2_L0_TCB_CONSTANT_SOURCES)
+        | frozenset({"CHILD_BOOTSTRAP_SOURCE"})
+    )
+    errors.extend(
+        _check_unique_top_level_bindings(
+            l0_tree,
+            tcb_names,
+            path=path,
+            label="PR2 L0 runtime TCB",
+        )
+    )
+    for name in sorted(_PR2_L0_FORBIDDEN_TOP_LEVEL_SHADOW_NAMES):
+        points = [
+            node
+            for node in _top_level_binding_points(l0_tree, name)
+            if not isinstance(node, (ast.Import, ast.ImportFrom))
+        ]
+        if points:
+            lines = ", ".join(str(getattr(node, "lineno", "?")) for node in points)
+            errors.append(f"PR2 L0 runtime TCB must not shadow/rebind {name}; found lines {lines}")
+    errors.extend(_check_l0_import_binding_pins(l0_tree))
+    for name, expected_sha256 in sorted(_PR2_L0_TCB_FUNCTION_SOURCE_SHA256.items()):
+        function = _function_def(l0_tree, name, path=path)
+        if _normalized_source_sha256(path, function) != expected_sha256:
+            errors.append(f"PR2 L0 runtime TCB source sha256 drifted for {name}")
+    for name, expected_source in sorted(_PR2_L0_TCB_CONSTANT_SOURCES.items()):
+        bindings = _top_level_binding_points(l0_tree, name)
+        if len(bindings) != 1 or not isinstance(bindings[0], ast.Assign):
+            errors.append(f"PR2 L0 runtime TCB constant {name} must have one top-level assignment")
+            continue
+        if _normalized_source_text(path, bindings[0]) != expected_source:
+            errors.append(f"PR2 L0 runtime TCB constant {name} must match pinned source")
+    bootstrap_bindings = _top_level_binding_points(l0_tree, "CHILD_BOOTSTRAP_SOURCE")
+    if len(bootstrap_bindings) != 1 or not isinstance(bootstrap_bindings[0], ast.Assign):
+        errors.append("PR2 L0 runtime TCB CHILD_BOOTSTRAP_SOURCE must have one top-level assignment")
+    else:
+        try:
+            bootstrap_value = ast.literal_eval(bootstrap_bindings[0].value)
+        except Exception:
+            bootstrap_value = None
+        if not isinstance(bootstrap_value, str):
+            errors.append("PR2 L0 runtime TCB CHILD_BOOTSTRAP_SOURCE must be a string literal")
+        elif hashlib.sha256(bootstrap_value.encode("utf-8")).hexdigest() != (
+            _PR2_L0_CHILD_BOOTSTRAP_SOURCE_VALUE_SHA256
+        ):
+            errors.append("PR2 L0 runtime TCB CHILD_BOOTSTRAP_SOURCE value sha256 drifted")
+    return errors
+
+
+def _check_exact_runtime_tcb_source_pins(
+    exact_tree: ast.Module,
+    exact_class: ast.ClassDef,
+    *,
+    path: Path,
+) -> list[str]:
+    errors: list[str] = []
+    guard_fn = _function_def(
+        exact_tree,
+        "_has_unsupervised_certified_checkpoint_claim",
+        path=path,
+    )
+    if _normalized_source_sha256(path, guard_fn) != _PR2_EXACT_TCB_SOURCE_SHA256[
+        "_has_unsupervised_certified_checkpoint_claim"
+    ]:
+        errors.append(
+            "ExactCampaign save TCB source sha256 drifted for "
+            "_has_unsupervised_certified_checkpoint_claim"
+        )
+    save_fn = _method_def(exact_class, "save", path=path)
+    if _normalized_source_sha256(path, save_fn) != _PR2_EXACT_TCB_SOURCE_SHA256[
+        "ExactCampaign.save"
+    ]:
+        errors.append("ExactCampaign save TCB source sha256 drifted for ExactCampaign.save")
+    return errors
 
 
 def _check_single_final_return_none(function: ast.FunctionDef, *, label: str) -> list[str]:
@@ -5205,6 +5655,7 @@ def _check_terminal_final_result_violation_structure(function: ast.FunctionDef) 
             call_name="_candidate_objective_from_rect",
             result_name="final_objective",
             compare_test="_candidate_objective_from_rect(other_w, other_h) > final_objective",
+            effect="return",
             label=label,
         )
     )
@@ -5373,6 +5824,7 @@ def _check_validate_terminal_solution_structure(function: ast.FunctionDef) -> li
             call_name="_best_empty_rect_objective",
             result_name="best_empty_objective",
             compare_test="best_empty_objective > claimed_objective",
+            effect="return",
             label=label,
         )
     )
@@ -5402,6 +5854,7 @@ def _check_terminal_ghost_pick_structure(function: ast.FunctionDef) -> list[str]
             call_name="_expected_unfiltered_ghost_anchor_index",
             result_name="expected_pose_idx",
             compare_test="expected_pose_idx is None or int(pose_idx) != int(expected_pose_idx)",
+            effect="return",
             label=label,
         )
     )
@@ -5453,6 +5906,7 @@ def _check_child_project_candidate_records_direct_structure(function: ast.Functi
             source='str(result.get("replay_status", ""))',
             result_name="replay_status",
             compare_test="replay_status != claimed_status",
+            effect="violation_continue",
             label=label,
         )
     )
@@ -6067,6 +6521,13 @@ def _check_candidate_sink_replay_contract(
         if token not in terminal_source:
             errors.append(f"terminal project validator is missing replay guard: {token}")
     exact_class = _class_def(exact_tree, "ExactCampaign", path=exact_campaign_path)
+    errors.extend(
+        _check_exact_runtime_tcb_source_pins(
+            exact_tree,
+            exact_class,
+            path=exact_campaign_path,
+        )
+    )
     writer_fn = _method_def(
         exact_class,
         "_mark_candidate_result_from_verified_producer",
@@ -6185,6 +6646,7 @@ def _check_candidate_sink_replay_contract(
         errors.append("supervisor certified checkpoint writer must not be exposed as a method/helper")
 
     l0_tree = _parse_python(pr2_l0_path)
+    errors.extend(_check_l0_runtime_tcb_bindings(l0_tree, path=pr2_l0_path))
     errors.extend(
         _check_unique_top_level_bindings(
             l0_tree,
@@ -6300,6 +6762,7 @@ def _check_candidate_sink_replay_contract(
         "_verify_supervisor_domain",
         path=pr2_true_child_path,
     )
+    errors.extend(_check_child_verify_supervisor_domain_body(child_domain_fn))
     child_domain_source = _source_text(pr2_true_child_path, child_domain_fn)
     for required_call in (
         "_project_candidate_records_direct",
@@ -6364,6 +6827,7 @@ def _check_candidate_sink_replay_contract(
         "_project_candidate_records_direct",
         path=pr2_true_child_path,
     )
+    errors.extend(_check_child_project_records_body(child_project_fn))
     child_project_source = _source_text(pr2_true_child_path, child_project_fn)
     for required_call in (
         "candidate_proof_shape_violation",
@@ -6383,6 +6847,15 @@ def _check_candidate_sink_replay_contract(
     errors.extend(_check_child_project_candidate_records_direct_structure(child_project_fn))
     # The AST gate is intentionally structural: these sha-sealed verifier modules
     # are left to source-hash review rather than re-proving their math here.
+    errors.extend(
+        _check_child_fixed_witness_body(
+            _function_def(
+                child_tree,
+                "_run_fixed_witness_direct",
+                path=pr2_true_child_path,
+            )
+        )
+    )
     errors.extend(
         _check_child_fixed_witness_direct_structure(
             _function_def(
