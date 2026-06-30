@@ -38,15 +38,17 @@ triggers:
     - 三轮外审属实性验证这种大工作量应该交给谁
     - 这个实现任务由 Codex 做还是 Claude 做
 activation:
-  layer_hint: L1
-  must_know: false
-  reason: 分工判断错误会烧错模型额度并削弱跨模型审查。
+  layer_hint: L0
+  must_know: true
+  session_start_l0: true
+  reason: 分工判断错误会烧错模型额度并削弱跨模型审查;owner 2026-06-30 要求无条件每会话注入,避免又把大活自己做掉烧 opus 额度。
 provenance:
   op: record
-  reason: 从旧 cc_memory 节点 codex-executes-claude-orchestrates 提炼；owner 2026-06-26 纠正底层判据是工作量大小。
+  reason: 从旧 cc_memory 节点 codex-executes-claude-orchestrates 提炼；owner 2026-06-26 纠正底层判据是工作量大小；owner 2026-06-30 要求把本卡提到 L0 无条件每会话注入(我又把 round-10 大块机械实现自己做掉、烧 opus 额度后)。
   evidence:
     - python cc_memory/mem.py read codex-executes-claude-orchestrates --body
-updated_at: "2026-06-26"
+    - "owner 2026-06-30: 就把这张卡放在会话开始吧，就无条件默认注入"
+updated_at: "2026-06-30"
 ---
 默认分工判据【先看工作量】，不按“实现/审查”标签死分：工作量大的活（实现、推进、找问题、验证）交 Codex 作为执行体（省 Claude/opus 额度）；工作量小的活 Claude 自己直接做即可——**小实现也算，别因为它性质叫“实现”就硬派 Codex**。反过来，**大工作量的 read/调查/核查也是大活、同样该走 Codex**——别因为“跨多文件读”这个【工具模式】就反射派 Explore/opus 子代理（2026-06-28 实犯：核 PR2 9 项状态派了 3 个 Explore 子代理读一堆文件、~267K tokens，没套“工作量→Codex”路由＝按工具模式/任务性质路由而非工作量的同一个病）。
 
