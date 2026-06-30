@@ -1238,10 +1238,316 @@ def _l0_domain_container_alias_mutation(source: str) -> str:
     )
 
 
+def _child_clobbers_replay_violations(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if replay_violations:\n",
+        "    replay_violations = {}\n"
+        "    if replay_violations:\n",
+    )
+
+
+def _child_clobbers_fixed_verdict(source: str) -> str:
+    return _replace_once(
+        source,
+        '    if getattr(fixed_verdict, "publishable", False) is not True:\n',
+        "    fixed_verdict = object()\n"
+        '    if getattr(fixed_verdict, "publishable", False) is not True:\n',
+    )
+
+
+def _child_clobbers_fixed_violations(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if fixed_violations:\n",
+        "    fixed_violations = {}\n"
+        "    if fixed_violations:\n",
+    )
+
+
+def _child_clobbers_envelope_violation(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if envelope_violation is not None:\n",
+        "    envelope_violation = None\n"
+        "    if envelope_violation is not None:\n",
+    )
+
+
+def _child_clobbers_replay_status(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if replay_status != claimed_status:\n",
+        "        replay_status = claimed_status\n"
+        "        if replay_status != claimed_status:\n",
+    )
+
+
+def _child_clobbers_terminal_fixed_witness_verdict(source: str) -> str:
+    return _replace_once(
+        source,
+        "        )\n    durable_records = _copy_candidate_records(candidate_records)\n",
+        "        )\n"
+        "        verdict = object()\n"
+        "    durable_records = _copy_candidate_records(candidate_records)\n",
+    )
+
+
+def _exact_clobbers_stop_reason(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if stop_reason is not None:\n",
+        "    stop_reason = None\n"
+        "    if stop_reason is not None:\n",
+    )
+
+
+def _exact_clobbers_search_stats_reason(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if search_stats_reason is not None:\n",
+        "    search_stats_reason = None\n"
+        "    if search_stats_reason is not None:\n",
+    )
+
+
+def _exact_clobbers_final_objective(source: str) -> str:
+    return _replace_once(
+        source,
+        "    final_objective = _candidate_objective_from_rect(ghost_w, ghost_h)\n",
+        "    final_objective = _candidate_objective_from_rect(ghost_w, ghost_h)\n"
+        "    final_objective = (99999, 99999)\n",
+    )
+
+
+def _exact_clobbers_best_empty_objective(source: str) -> str:
+    return _replace_once(
+        source,
+        "    claimed_objective = (int(ghost_w) * int(ghost_h), min(int(ghost_w), int(ghost_h)))\n",
+        "    best_empty_objective = (0, 0)\n"
+        "    claimed_objective = (int(ghost_w) * int(ghost_h), min(int(ghost_w), int(ghost_h)))\n",
+    )
+
+
+def _exact_clobbers_expected_pose_idx(source: str) -> str:
+    return _replace_once(
+        source,
+        "        if expected_pose_idx is None or int(pose_idx) != int(expected_pose_idx):\n",
+        "        expected_pose_idx = int(pose_idx)\n"
+        "        if expected_pose_idx is None or int(pose_idx) != int(expected_pose_idx):\n",
+    )
+
+
+def _l0_tampers_scratch_state_after_seal_gate(source: str) -> str:
+    return _replace_once(
+        source,
+        "        pending_state_bytes = _atomic_json_bytes(scratch_state)\n",
+        '        scratch_state["candidates"] = {}\n'
+        "        pending_state_bytes = _atomic_json_bytes(scratch_state)\n",
+    )
+
+
+def _l0_forges_helper_after_seal_gate(source: str) -> str:
+    return _replace_once(
+        source,
+        "        pending_state_bytes = _atomic_json_bytes(scratch_state)\n",
+        "        def _forge_self_consistent_certificate() -> None:\n"
+        '            scratch_state["candidates"] = {}\n'
+        "        _forge_self_consistent_certificate()\n"
+        "        pending_state_bytes = _atomic_json_bytes(scratch_state)\n",
+    )
+
+
+def _l0_bound_update_alias(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        "        mutator = domain.update\n"
+        '        mutator({"final_result_digest": "0" * 64})\n',
+    )
+
+
+def _l0_getattr_update_alias(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        '        mutator = getattr(domain, "update")\n'
+        '        mutator({"final_result_digest": "0" * 64})\n',
+    )
+
+
+def _l0_dict_unpack_alias_mutation(source: str) -> str:
+    return _replace_once(
+        source,
+        '        domain = child_verdict.response.get("domain")\n',
+        '        domain = child_verdict.response.get("domain")\n'
+        "        domain_copy = {**domain}\n"
+        '        domain_copy.update({"final_result_digest": "0" * 64})\n',
+    )
+
+
+def _exact_terminal_final_result_returns_true_before_frontier(source: str) -> str:
+    return _replace_once(
+        source,
+        "    if not has_terminal_full_frontier_certified_evidence(state):\n",
+        "    return True\n"
+        "    if not has_terminal_full_frontier_certified_evidence(state):\n",
+    )
+
+
+def _exact_terminal_precheck_raises_before_reason(source: str) -> str:
+    return _replace_once(
+        source,
+        "    reason = terminal_certified_final_result_violation(\n",
+        '    raise RuntimeError("skip terminal precheck")\n'
+        "    reason = terminal_certified_final_result_violation(\n",
+    )
+
+
+def _exact_validate_terminal_solution_returns_true_early(source: str) -> str:
+    return _replace_once(
+        source,
+        '    placement_solution = final_result.get("placement_solution")\n',
+        "    return True\n"
+        '    placement_solution = final_result.get("placement_solution")\n',
+    )
+
+
+def _exact_ghost_pick_raises_early(source: str) -> str:
+    return _replace_once(
+        source,
+        '    ghost_rect = final_result.get("ghost_rect")\n',
+        '    raise RuntimeError("skip ghost pick binding")\n'
+        '    ghost_rect = final_result.get("ghost_rect")\n',
+    )
+
+
 def test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources(tmp_path: Path) -> None:
     errors = _candidate_sink_replay_errors_for_sources(tmp_path)
 
     assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("source_kind", "mutator", "expected_error"),
+    [
+        ("child", _child_clobbers_replay_violations, "must not clobber replay_violations"),
+        ("child", _child_clobbers_fixed_verdict, "must not clobber fixed_verdict"),
+        (
+            "child",
+            _child_clobbers_fixed_violations,
+            "must assign fixed_violations exactly once",
+        ),
+        ("child", _child_clobbers_envelope_violation, "must immediately consume envelope_violation"),
+        ("child", _child_clobbers_replay_status, "must not clobber replay_status"),
+        (
+            "child",
+            _child_clobbers_terminal_fixed_witness_verdict,
+            "must not clobber verdict",
+        ),
+        ("exact", _exact_clobbers_stop_reason, "must immediately consume stop_reason"),
+        (
+            "exact",
+            _exact_clobbers_search_stats_reason,
+            "must immediately consume search_stats_reason",
+        ),
+        ("exact", _exact_clobbers_final_objective, "must not clobber final_objective"),
+        (
+            "exact",
+            _exact_clobbers_best_empty_objective,
+            "must not clobber best_empty_objective",
+        ),
+        ("exact", _exact_clobbers_expected_pose_idx, "must not clobber expected_pose_idx"),
+        (
+            "l0",
+            _l0_tampers_scratch_state_after_seal_gate,
+            "PR2 L0 supervisor seal durable writer canonical top-level prefix/body",
+        ),
+        (
+            "l0",
+            _l0_forges_helper_after_seal_gate,
+            "PR2 L0 supervisor seal durable writer canonical top-level prefix/body",
+        ),
+        ("l0", _l0_bound_update_alias, "mutator/reflection hook"),
+        ("l0", _l0_getattr_update_alias, "mutator/reflection hook"),
+        ("l0", _l0_dict_unpack_alias_mutation, "mutator/reflection hook"),
+        (
+            "exact",
+            _exact_terminal_final_result_returns_true_before_frontier,
+            "must only return canonical fail-closed reasons",
+        ),
+        (
+            "exact",
+            _exact_terminal_precheck_raises_before_reason,
+            "must not raise",
+        ),
+        (
+            "exact",
+            _exact_validate_terminal_solution_returns_true_early,
+            "must only return canonical fail-closed reasons",
+        ),
+        ("exact", _exact_ghost_pick_raises_early, "must not raise"),
+    ],
+    ids=[
+        "round7-child-replay-violations-clobber",
+        "round7-child-fixed-verdict-clobber",
+        "round7-child-fixed-violations-clobber",
+        "round7-child-envelope-violation-clobber",
+        "round7-child-replay-status-clobber",
+        "round7-child-terminal-fixed-witness-verdict-clobber",
+        "round7-exact-stop-reason-clobber",
+        "round7-exact-search-stats-reason-clobber",
+        "round7-exact-final-objective-clobber",
+        "round7-exact-best-empty-objective-clobber",
+        "round7-exact-expected-pose-clobber",
+        "round7-l0-post-seal-scratch-state-tamper",
+        "round7-l0-post-seal-helper-forge",
+        "round7-l0-bound-update-alias",
+        "round7-l0-getattr-update-alias",
+        "round7-l0-dict-unpack-alias",
+        "round7-exact-terminal-final-result-return-true",
+        "round7-exact-terminal-precheck-raise",
+        "round7-exact-terminal-solution-return-true",
+        "round7-exact-ghost-pick-raise",
+    ],
+)
+def test_p1_2_checker_rejects_pr2_5_round7_result_flow_bypasses(
+    tmp_path: Path,
+    source_kind: str,
+    mutator: object,
+    expected_error: str,
+) -> None:
+    assert callable(mutator)
+    child_source = l0_source = exact_source = None
+    if source_kind == "child":
+        child_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    elif source_kind == "l0":
+        l0_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+    elif source_kind == "exact":
+        exact_source = mutator(  # type: ignore[operator]
+            check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(encoding="utf-8")
+        )
+    else:  # pragma: no cover - parametrization guard
+        raise AssertionError(source_kind)
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        child_source=child_source,
+        l0_source=l0_source,
+        exact_source=exact_source,
+    )
+
+    assert any(expected_error in error for error in errors), errors
 
 
 @pytest.mark.parametrize(

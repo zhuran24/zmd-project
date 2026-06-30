@@ -2583,7 +2583,16 @@ def _expr_matches_source(node: ast.AST, source: str) -> bool:
 
 
 def _stmt_matches_source(node: ast.AST, source: str) -> bool:
-    parsed = ast.parse(source).body
+    try:
+        parsed = ast.parse(source).body
+    except SyntaxError:
+        lines = source.splitlines()
+        if not lines:
+            return False
+        normalized = "\n".join(
+            [lines[0], *[line[4:] if line.startswith("    ") else line for line in lines[1:]]]
+        )
+        parsed = ast.parse(normalized).body
     return len(parsed) == 1 and _ast_shape_equal(node, parsed[0])
 
 
@@ -4088,6 +4097,203 @@ _PR2_L0_SUPERVISOR_SEAL_STATE_BODY = (
     '    return "supervisor_seal_sealed_at_invalid"',
     "return None",
 )
+_PR2_L0_RUN_SUPERVISOR_SEAL_BODY = (
+    '"""Validate and atomically mint a supervisor seal through the PR2 L0 path."""',
+    "nonce = secrets.token_hex(32)",
+    "source_root = Path(__file__).resolve().parents[2]",
+    "project_root = Path(request.project_root).resolve()",
+    "campaign_path = Path(request.campaign_path).resolve()",
+    "marker_path = Path(request.marker_path).resolve()",
+    '''try:
+        # B2: the durable mint loads ONLY the canonical host-pinned floor. The wrapper
+        # takes no path argument by construction, so there is no caller-selected-floor
+        # entry into this mint (the loader's explicit-path form is reachable only by tests).
+        dependency_floor = _load_canonical_dependency_floor_manifest(source_root)
+        try:
+            marker_bytes = _read_regular_file_bytes(marker_path)
+        except Exception:
+            return _reject(nonce, "proposal_ready_marker_unreadable")
+        try:
+            checkpoint_bytes = _read_regular_file_bytes(campaign_path)
+        except Exception:
+            return _reject(nonce, "proposal_ready_marker_checkpoint_missing")
+        checkpoint_sha256 = hashlib.sha256(checkpoint_bytes).hexdigest()
+        marker = _parse_mapping(marker_bytes, "proposal_ready_marker")
+        marker_violation = _proposal_ready_marker_violation(
+            marker,
+            checkpoint_sha256=checkpoint_sha256,
+            expected_campaign_instance_id=str(request.expected_campaign_instance_id),
+        )
+        if marker_violation is not None:
+            return _reject(nonce, marker_violation)
+        authority_state = _parse_mapping(checkpoint_bytes, "proposal_checkpoint")
+        authority_violation = _proposal_authority_violation(
+            authority_state=authority_state,
+            marker=marker,
+            expected_campaign_instance_id=str(request.expected_campaign_instance_id),
+        )
+        if authority_violation is not None:
+            return _reject(nonce, authority_violation)
+        strong_keys = _strong_status_keys(authority_state)
+        proof_binding_violation = _strong_proof_binding_violation(
+            authority_state=authority_state,
+            strong_keys=strong_keys,
+            project_root=project_root,
+            campaign_path=campaign_path,
+        )
+        if proof_binding_violation is not None:
+            return _reject(nonce, proof_binding_violation)
+
+        proposal_final_result = _require_mapping(
+            authority_state.get("final_result"),
+            "proposal final_result invalid",
+        )
+        certified_final_result = dict(proposal_final_result)
+        certified_final_result["search_status"] = "CERTIFIED"
+        proposal_evidence = _require_mapping(
+            authority_state.get("terminal_frontier_evidence"),
+            "proposal terminal_frontier_evidence invalid",
+        )
+        proposal_candidates = _require_mapping(
+            authority_state.get("candidates"),
+            "proposal candidate_records invalid",
+        )
+        child_payload = {
+            "action": "supervisor_domain",
+            "schema_version": SUPERVISOR_DOMAIN_SCHEMA_VERSION,
+            "authority": SUPERVISOR_DOMAIN_AUTHORITY,
+            "project_root": str(project_root),
+            "authority_state": authority_state,
+            "authority_state_b64": base64.b64encode(checkpoint_bytes).decode("ascii"),
+            "strong_keys": strong_keys,
+            "proposal_final_result_digest": _canonical_digest(certified_final_result),
+            "proposal_terminal_frontier_evidence_digest": _canonical_digest(proposal_evidence),
+            "proposal_candidate_records_digest": _canonical_digest(
+                _stable_fixed_witness_candidate_records_l0(proposal_candidates)
+            ),
+            "dependency_floor": dependency_floor,
+        }
+        child_verdict = run_l0_micro_verifier_round_trip(
+            child_payload,
+            timeout_seconds=float(request.timeout_seconds),
+            verifier_module=TRUE_VERIFIER_MODULE,
+            extra_snapshot_modules=_discover_project_snapshot_modules(source_root),
+        )
+        if child_verdict.status != SEALED:
+            return child_verdict
+        domain = child_verdict.response.get("domain")
+        domain_violation = _domain_response_violation(
+            domain,
+            nonce=child_verdict.nonce,
+            strong_keys=strong_keys,
+            proposal_final_result_digest=str(child_payload["proposal_final_result_digest"]),
+            proposal_evidence_digest=str(child_payload["proposal_terminal_frontier_evidence_digest"]),
+            proposal_candidate_records_digest=str(child_payload["proposal_candidate_records_digest"]),
+        )
+        if domain_violation is not None:
+            return _reject(nonce, domain_violation, floor_digest=child_verdict.floor_digest)
+        assert isinstance(domain, Mapping)
+
+        commit_timestamp = _now_iso()
+        scratch_state = dict(authority_state)
+        scratch_state["final_result"] = dict(domain["final_result"])
+        scratch_state["final_status"] = "CERTIFIED"
+        scratch_state["declare_mode"] = "strict"
+        scratch_state["last_stop_reason"] = {
+            "reason": TERMINAL_CERTIFIED_REASON,
+            "status": "CERTIFIED",
+            "updated_at": commit_timestamp,
+        }
+        scratch_state.pop(SUPERVISOR_PROPOSAL_STATE_KEY, None)
+        scratch_state["terminal_frontier_evidence"] = dict(
+            domain["terminal_frontier_evidence"]
+        )
+        scratch_state["candidates"] = dict(domain["candidate_records"])
+        scratch_state["updated_at"] = commit_timestamp
+        seal_record = {
+            "schema_version": SUPERVISOR_SEAL_SCHEMA_VERSION,
+            "authority": SUPERVISOR_SEAL_AUTHORITY,
+            "transition": "proposal_to_certified_v1",
+            "proposal_run_id": str(marker["run_id"]),
+            "proposal_checkpoint_sha256": checkpoint_sha256,
+            "proposal_authority_b64": base64.b64encode(checkpoint_bytes).decode("ascii"),
+            CAMPAIGN_INSTANCE_ID_KEY: str(marker[CAMPAIGN_INSTANCE_ID_KEY]),
+            "certified_state_sha256": _certified_state_payload_sha256_l0(scratch_state),
+            "sealed_at": commit_timestamp,
+        }
+        scratch_state[SUPERVISOR_SEAL_STATE_KEY] = seal_record
+        seal_violation = _supervisor_seal_state_violation_l0(seal_record, state=scratch_state)
+        if seal_violation is not None:
+            return _reject(nonce, seal_violation, floor_digest=child_verdict.floor_digest)
+        pending_state_bytes = _atomic_json_bytes(scratch_state)
+
+        with _checkpoint_write_lock_l0(campaign_path):
+            current_marker_bytes = _read_regular_file_bytes(marker_path)
+            current_checkpoint_bytes = _read_regular_file_bytes(campaign_path)
+            current_marker = _parse_mapping(current_marker_bytes, "proposal_ready_marker")
+            if dict(current_marker) != dict(marker):
+                return _reject(
+                    nonce,
+                    "proposal authority changed before mint: proposal_ready_marker_changed_before_mint",
+                    floor_digest=child_verdict.floor_digest,
+                )
+            if hashlib.sha256(current_checkpoint_bytes).hexdigest() != checkpoint_sha256:
+                return _reject(
+                    nonce,
+                    "proposal checkpoint changed before mint",
+                    floor_digest=child_verdict.floor_digest,
+                )
+            try:
+                _atomic_replace_bytes(campaign_path, pending_state_bytes)
+                disk_bytes = _read_regular_file_bytes(campaign_path)
+                if disk_bytes != pending_state_bytes:
+                    raise RuntimeError("certified checkpoint bytes mismatch")
+                disk_state = _parse_mapping(disk_bytes, "certified_checkpoint")
+                postwrite_violation = _postwrite_state_violation(
+                    disk_state,
+                    expected_domain=domain,
+                    expected_payload_sha=str(seal_record["certified_state_sha256"]),
+                )
+                if postwrite_violation is not None:
+                    raise RuntimeError(postwrite_violation)
+            except Exception as exc:
+                _atomic_replace_bytes(campaign_path, checkpoint_bytes)
+                return _reject(
+                    nonce,
+                    f"postwrite_validation_failed:{type(exc).__name__}:{exc}",
+                    floor_digest=child_verdict.floor_digest,
+                )
+            try:
+                latest_marker = _parse_mapping(
+                    _read_regular_file_bytes(marker_path),
+                    "proposal_ready_marker",
+                )
+            except Exception:
+                latest_marker = None
+            if isinstance(latest_marker, Mapping) and dict(latest_marker) == dict(marker):
+                try:
+                    marker_path.unlink()
+                except FileNotFoundError:
+                    pass
+        response = dict(child_verdict.response)
+        response["l0_seal"] = {
+            "schema_version": SUPERVISOR_SEAL_SCHEMA_VERSION,
+            "authority": SUPERVISOR_SEAL_AUTHORITY,
+            "checkpoint_sha256": hashlib.sha256(pending_state_bytes).hexdigest(),
+            "strong_key_count": len(strong_keys),
+            "write_isolation": "protocol_l0_parent_writer_child_snapshot_only_named_tcb",
+            "third_party_native": "NAMED-TCB",
+        }
+        return L0MicroVerdict(
+            status=SEALED,
+            nonce=nonce,
+            reason="supervisor_sealed",
+            floor_digest=child_verdict.floor_digest,
+            response=response,
+        )
+    except Exception as exc:
+        return _reject(nonce, f"parent_exception:{type(exc).__name__}:{exc}")''',
+)
 
 
 def _check_top_level_prefix_closed_world(
@@ -4213,11 +4419,14 @@ def _expr_may_reference_mapping(node: ast.AST, mapping_names: frozenset[str]) ->
     if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
         return any(_expr_may_reference_mapping(item, mapping_names) for item in node.elts)
     if isinstance(node, ast.Dict):
-        return any(
-            (key is not None and _expr_may_reference_mapping(key, mapping_names))
-            or _expr_may_reference_mapping(value, mapping_names)
-            for key, value in zip(node.keys, node.values)
-        )
+        for key, value in zip(node.keys, node.values):
+            if key is None and _expr_may_reference_mapping(value, mapping_names):
+                return True
+            if key is not None and _expr_may_reference_mapping(key, mapping_names):
+                return True
+            if _expr_may_reference_mapping(value, mapping_names):
+                return True
+        return False
     if isinstance(node, ast.Attribute):
         return _expr_may_reference_mapping(node.value, mapping_names)
     if isinstance(node, ast.Subscript):
@@ -4537,6 +4746,223 @@ def _assigns_name_from_call(stmt: ast.AST, target_name: str, call_name: str) -> 
     )
 
 
+def _binds_name_from_call(stmt: ast.AST, target_name: str, call_name: str) -> bool:
+    return (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and target_name in _target_bound_names(stmt.targets[0])
+        and isinstance(stmt.value, ast.Call)
+        and _call_func_name(stmt.value) == call_name
+    )
+
+
+def _binds_name_from_expr_source(stmt: ast.AST, target_name: str, source: str) -> bool:
+    if isinstance(stmt, ast.Assign):
+        return (
+            len(stmt.targets) == 1
+            and _target_bound_names(stmt.targets[0]) == {target_name}
+            and _expr_matches_source(stmt.value, source)
+        )
+    if isinstance(stmt, ast.AnnAssign):
+        return (
+            _target_bound_names(stmt.target) == {target_name}
+            and stmt.value is not None
+            and _expr_matches_source(stmt.value, source)
+        )
+    return False
+
+
+def _stmt_binds_name(stmt: ast.AST, name: str) -> bool:
+    return name in _stmt_bound_names(stmt)
+
+
+def _delete_targets_name(stmt: ast.Delete, name: str) -> bool:
+    return any(name in _target_bound_names(target) for target in stmt.targets)
+
+
+def _ordered_nodes(root: ast.AST) -> list[ast.AST]:
+    return sorted(
+        (node for node in ast.walk(root) if hasattr(node, "lineno")),
+        key=lambda node: (
+            int(getattr(node, "lineno", 0) or 0),
+            int(getattr(node, "col_offset", 0) or 0),
+        ),
+    )
+
+
+def _matching_nodes_after(
+    function: ast.FunctionDef,
+    anchor: ast.AST,
+    predicate: Callable[[ast.AST], bool],
+) -> list[ast.AST]:
+    return [
+        node
+        for node in _ordered_nodes(function)
+        if _node_starts_after(node, anchor) and predicate(node)
+    ]
+
+
+def _check_name_not_rebound_after(
+    function: ast.FunctionDef,
+    *,
+    name: str,
+    anchor: ast.AST,
+    label: str,
+    until: ast.AST | None = None,
+) -> list[str]:
+    errors: list[str] = []
+    for node in _ordered_nodes(function):
+        if node is anchor or not _node_starts_after(node, anchor):
+            continue
+        if until is not None and (node is until or _node_starts_after(node, until)):
+            break
+        if _stmt_binds_name(node, name):
+            errors.append(f"{label} must not clobber {name} after its pinned assignment")
+        if isinstance(node, ast.Delete) and _delete_targets_name(node, name):
+            errors.append(f"{label} must not delete {name} after its pinned assignment")
+    return errors
+
+
+def _if_truthy_consumes_result(stmt: ast.stmt, result_name: str, *, effect: str) -> bool:
+    if not (isinstance(stmt, ast.If) and _is_name(stmt.test, result_name) and not stmt.orelse):
+        return False
+    if effect == "raise":
+        return any(isinstance(child, ast.Raise) for child in stmt.body)
+    if effect == "return":
+        return any(isinstance(child, ast.Return) for child in stmt.body)
+    return False
+
+
+def _check_result_flow_to_truthy_consumer(
+    function: ast.FunctionDef,
+    *,
+    result_name: str,
+    assignment_predicate: Callable[[ast.AST], bool],
+    effect: str,
+    label: str,
+) -> list[str]:
+    assignments = [
+        node
+        for node in _ordered_nodes(function)
+        if assignment_predicate(node)
+    ]
+    if len(assignments) != 1:
+        return [f"{label} must assign {result_name} exactly once from its pinned source"]
+    assignment = assignments[0]
+    consumers = _matching_nodes_after(
+        function,
+        assignment,
+        lambda node: isinstance(node, ast.If)
+        and _if_truthy_consumes_result(node, result_name, effect=effect),
+    )
+    if len(consumers) != 1:
+        return [f"{label} must consume {result_name} in exactly one fail-closed truthy gate"]
+    return _check_name_not_rebound_after(
+        function,
+        name=result_name,
+        anchor=assignment,
+        until=consumers[0],
+        label=label,
+    )
+
+
+def _check_call_result_flow_to_truthy_consumer(
+    function: ast.FunctionDef,
+    *,
+    call_name: str,
+    result_name: str,
+    effect: str,
+    label: str,
+) -> list[str]:
+    return _check_result_flow_to_truthy_consumer(
+        function,
+        result_name=result_name,
+        assignment_predicate=lambda node: _binds_name_from_call(node, result_name, call_name),
+        effect=effect,
+        label=label,
+    )
+
+
+def _check_expr_result_flow_to_truthy_consumer(
+    function: ast.FunctionDef,
+    *,
+    source: str,
+    result_name: str,
+    effect: str,
+    label: str,
+) -> list[str]:
+    return _check_result_flow_to_truthy_consumer(
+        function,
+        result_name=result_name,
+        assignment_predicate=lambda node: _binds_name_from_expr_source(node, result_name, source),
+        effect=effect,
+        label=label,
+    )
+
+
+def _check_call_assignment_no_rebind(
+    function: ast.FunctionDef,
+    *,
+    call_name: str,
+    result_name: str,
+    label: str,
+) -> list[str]:
+    assignments = [
+        node
+        for node in _ordered_nodes(function)
+        if _binds_name_from_call(node, result_name, call_name)
+    ]
+    if len(assignments) != 1:
+        return [f"{label} must assign {result_name} exactly once from {call_name}(...)"]
+    return _check_name_not_rebound_after(
+        function,
+        name=result_name,
+        anchor=assignments[0],
+        label=label,
+    )
+
+
+def _check_result_flow_to_compare_gate(
+    function: ast.FunctionDef,
+    *,
+    result_name: str,
+    call_name: str | None = None,
+    source: str | None = None,
+    compare_test: str,
+    label: str,
+) -> list[str]:
+    if (call_name is None) == (source is None):
+        return [f"{label} result-flow checker must pin exactly one assignment source"]
+    if call_name is not None:
+        assignment_predicate = lambda node: _binds_name_from_call(node, result_name, call_name)
+        assignment_description = f"{call_name}(...)"
+    else:
+        assignment_predicate = lambda node: _binds_name_from_expr_source(node, result_name, source or "")
+        assignment_description = source or "<source>"
+    assignments = [
+        node
+        for node in _ordered_nodes(function)
+        if assignment_predicate(node)
+    ]
+    if len(assignments) != 1:
+        return [f"{label} must assign {result_name} exactly once from {assignment_description}"]
+    assignment = assignments[0]
+    consumers = _matching_nodes_after(
+        function,
+        assignment,
+        lambda node: isinstance(node, ast.If) and _expr_matches_source(node.test, compare_test),
+    )
+    if len(consumers) != 1:
+        return [f"{label} must consume {result_name} in the pinned compare gate"]
+    return _check_name_not_rebound_after(
+        function,
+        name=result_name,
+        anchor=assignment,
+        until=consumers[0],
+        label=label,
+    )
+
+
 def _check_guard_result_flow(
     function: ast.FunctionDef,
     *,
@@ -4603,12 +5029,69 @@ def _check_l0_supervisor_seal_state_body(seal_state_fn: ast.FunctionDef) -> list
     )
 
 
+def _check_l0_supervisor_seal_body(l0_seal_fn: ast.FunctionDef) -> list[str]:
+    return _check_top_level_body_closed_world(
+        l0_seal_fn,
+        expected_body=_PR2_L0_RUN_SUPERVISOR_SEAL_BODY,
+        label="PR2 L0 supervisor seal durable writer",
+    )
+
+
 def _check_single_final_return_none(function: ast.FunctionDef, *, label: str) -> list[str]:
     none_returns = [node for node in ast.walk(function) if _returns_none(node)]
     body = _semantic_body(function)
     if len(none_returns) != 1 or not body or body[-1] is not none_returns[0]:
         return [f"{label} must have return None only as its final top-level statement"]
     return []
+
+
+def _return_value_is_fail_closed_reason(
+    value: ast.AST | None,
+    *,
+    allowed_names: frozenset[str],
+    allowed_calls: frozenset[str] = frozenset(),
+) -> bool:
+    if isinstance(value, ast.Constant) and isinstance(value.value, str):
+        return True
+    if isinstance(value, ast.JoinedStr):
+        return True
+    if isinstance(value, ast.Name) and value.id in allowed_names:
+        return True
+    if isinstance(value, ast.Call) and (_call_func_name(value) in allowed_calls):
+        return True
+    return False
+
+
+def _check_fail_closed_terminal_return_shape(
+    function: ast.FunctionDef,
+    *,
+    label: str,
+    allowed_none_returns: Sequence[ast.Return] = (),
+    allowed_reason_names: frozenset[str] = frozenset(),
+    allowed_reason_calls: frozenset[str] = frozenset(),
+) -> list[str]:
+    errors: list[str] = []
+    body = _semantic_body(function)
+    final_none_return = body[-1] if body and _returns_none(body[-1]) else None
+    allowed_none_ids = {id(node) for node in allowed_none_returns}
+    if final_none_return is not None:
+        allowed_none_ids.add(id(final_none_return))
+    for node in ast.walk(function):
+        if isinstance(node, ast.Raise):
+            errors.append(f"{label} must not raise; return a fail-closed reason instead")
+        if not isinstance(node, ast.Return):
+            continue
+        if _returns_none(node):
+            if id(node) not in allowed_none_ids:
+                errors.append(f"{label} must not return None before its pinned success gate")
+            continue
+        if not _return_value_is_fail_closed_reason(
+            node.value,
+            allowed_names=allowed_reason_names,
+            allowed_calls=allowed_reason_calls,
+        ):
+            errors.append(f"{label} must only return canonical fail-closed reasons")
+    return errors
 
 
 def _stmt_contains_return_none(stmt: ast.stmt) -> bool:
@@ -4680,6 +5163,49 @@ def _check_terminal_final_result_violation_structure(function: ast.FunctionDef) 
             "terminal certified final result validator must start with only the "
             "frontier-evidence absence return None"
         )
+    allowed_none_returns = []
+    if body and _stmt_matches_source(
+        body[0],
+        "if not has_terminal_full_frontier_certified_evidence(state):\n    return None",
+    ):
+        allowed_none_returns.append(body[0].body[0])
+    errors.extend(
+        _check_fail_closed_terminal_return_shape(
+            function,
+            label=label,
+            allowed_none_returns=allowed_none_returns,
+            allowed_reason_names=frozenset(
+                {
+                    "frontier_reason",
+                    "ghost_rect_unknown_field",
+                    "search_stats_reason",
+                    "stop_reason",
+                }
+            ),
+        )
+    )
+    for call_name, result_name in (
+        ("_terminal_certified_last_stop_reason_violation", "stop_reason"),
+        ("_terminal_certified_search_stats_violation", "search_stats_reason"),
+    ):
+        errors.extend(
+            _check_guard_result_flow(
+                function,
+                call_name=call_name,
+                result_name=result_name,
+                effect="return",
+                label=label,
+            )
+        )
+    errors.extend(
+        _check_result_flow_to_compare_gate(
+            function,
+            call_name="_candidate_objective_from_rect",
+            result_name="final_objective",
+            compare_test="_candidate_objective_from_rect(other_w, other_h) > final_objective",
+            label=label,
+        )
+    )
     frontier_index = _top_level_assignment_index(
         function,
         "frontier_reason",
@@ -4720,6 +5246,14 @@ def _check_terminal_project_precheck_structure(function: ast.FunctionDef) -> lis
     label = "terminal certified final result project precheck"
     errors: list[str] = []
     body = _semantic_body(function)
+    errors.extend(
+        _check_fail_closed_terminal_return_shape(
+            function,
+            label=label,
+            allowed_reason_names=frozenset({"reason", "solution_reason"}),
+            allowed_reason_calls=frozenset({"_terminal_candidate_ghost_pick_binding_violation"}),
+        )
+    )
     errors.extend(
         _check_required_direct_calls(
             function,
@@ -4801,6 +5335,19 @@ def _check_validate_terminal_solution_structure(function: ast.FunctionDef) -> li
     label = "terminal solution project validator"
     errors = _check_single_final_return_none(function, label=label)
     errors.extend(
+        _check_fail_closed_terminal_return_shape(
+            function,
+            label=label,
+            allowed_reason_names=frozenset(
+                {
+                    "mandatory_metadata_reason",
+                    "optional_metadata_reason",
+                    "pose_metadata_reason",
+                }
+            ),
+        )
+    )
+    errors.extend(
         _check_required_direct_calls(
             function,
             frozenset(
@@ -4818,6 +5365,15 @@ def _check_validate_terminal_solution_structure(function: ast.FunctionDef) -> li
             label=label,
         )
     )
+    errors.extend(
+        _check_result_flow_to_compare_gate(
+            function,
+            call_name="_best_empty_rect_objective",
+            result_name="best_empty_objective",
+            compare_test="best_empty_objective > claimed_objective",
+            label=label,
+        )
+    )
     return errors
 
 
@@ -4825,9 +5381,25 @@ def _check_terminal_ghost_pick_structure(function: ast.FunctionDef) -> list[str]
     label = "terminal candidate ghost-pick binding validator"
     errors = _check_single_final_return_none(function, label=label)
     errors.extend(
+        _check_fail_closed_terminal_return_shape(
+            function,
+            label=label,
+            allowed_reason_names=frozenset({"ghost_rect_unknown_field"}),
+        )
+    )
+    errors.extend(
         _check_required_direct_calls(
             function,
             frozenset({"_expected_unfiltered_ghost_anchor_index", "candidate_key"}),
+            label=label,
+        )
+    )
+    errors.extend(
+        _check_result_flow_to_compare_gate(
+            function,
+            call_name="_expected_unfiltered_ghost_anchor_index",
+            result_name="expected_pose_idx",
+            compare_test="expected_pose_idx is None or int(pose_idx) != int(expected_pose_idx)",
             label=label,
         )
     )
@@ -4861,6 +5433,24 @@ def _check_child_project_candidate_records_direct_structure(function: ast.Functi
                     "canonical_digest",
                 }
             ),
+            label=label,
+        )
+    )
+    errors.extend(
+        _check_guard_result_flow(
+            function,
+            call_name="_replay_response_violation",
+            result_name="envelope_violation",
+            effect="return",
+            label=label,
+        )
+    )
+    errors.extend(
+        _check_result_flow_to_compare_gate(
+            function,
+            source='str(result.get("replay_status", ""))',
+            result_name="replay_status",
+            compare_test="replay_status != claimed_status",
             label=label,
         )
     )
@@ -4914,6 +5504,14 @@ def _check_child_fixed_witness_direct_structure(function: ast.FunctionDef) -> li
                     "verify_terminal_fixed_witness",
                 }
             ),
+            label=label,
+        )
+    )
+    errors.extend(
+        _check_call_assignment_no_rebind(
+            function,
+            call_name="verify_terminal_fixed_witness",
+            result_name="verdict",
             label=label,
         )
     )
@@ -5023,6 +5621,18 @@ def _call_references_watched_l0_data(call: ast.Call, names: frozenset[str]) -> b
     )
 
 
+def _expr_is_watched_l0_mutator_callable(node: ast.AST, names: frozenset[str]) -> bool:
+    if isinstance(node, ast.Attribute) and _expr_may_reference_mapping(node.value, names):
+        return node.attr in _PR2_MUTATING_MAPPING_METHODS
+    if not isinstance(node, ast.Call) or _call_func_name(node) != "getattr":
+        return False
+    if not node.args or not _expr_may_reference_mapping(node.args[0], names):
+        return False
+    if len(node.args) < 2 or not isinstance(node.args[1], ast.Constant):
+        return True
+    return node.args[1].value in _PR2_MUTATING_MAPPING_METHODS
+
+
 def _call_mutates_watched_l0_data(call: ast.Call, names: frozenset[str]) -> bool:
     call_name = _call_func_name(call)
     if (
@@ -5077,6 +5687,7 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
         return errors
     assign_stmt = assignments[0]
     watched_names: set[str] = {"child_verdict", "child_payload"}
+    watched_callables: set[str] = set()
     domain_assignment_seen = False
     response_copy_seen = False
     ordered_nodes = sorted(
@@ -5124,6 +5735,11 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
                             "PR2 L0 supervisor seal must not rebind child/domain/proposal data "
                             f"after child_verdict: {name}"
                         )
+                    elif isinstance(stmt, ast.Assign) and _expr_is_watched_l0_mutator_callable(
+                        stmt.value,
+                        frozen_watched_names,
+                    ):
+                        watched_callables.add(name)
                     elif isinstance(stmt, ast.Assign) and _expr_may_reference_mapping(
                         stmt.value,
                         frozen_watched_names,
@@ -5159,6 +5775,11 @@ def _check_l0_child_verdict_dataflow(l0_seal_fn: ast.FunctionDef) -> list[str]:
             continue
         elif isinstance(stmt, ast.Call):
             if _call_mutates_watched_l0_data(stmt, frozenset(watched_names)):
+                errors.append(
+                    "PR2 L0 supervisor seal must not call a mutator/reflection hook "
+                    "on child/domain/proposal data after child_verdict"
+                )
+            if isinstance(stmt.func, ast.Name) and stmt.func.id in watched_callables:
                 errors.append(
                     "PR2 L0 supervisor seal must not call a mutator/reflection hook "
                     "on child/domain/proposal data after child_verdict"
@@ -5583,6 +6204,7 @@ def _check_candidate_sink_replay_contract(
         path=pr2_l0_path,
     )
     l0_seal_source = _source_text(pr2_l0_path, l0_seal_fn)
+    errors.extend(_check_l0_supervisor_seal_body(l0_seal_fn))
     for required_call in (
         "_load_canonical_dependency_floor_manifest",
         "_read_regular_file_bytes",
@@ -5685,6 +6307,32 @@ def _check_candidate_sink_replay_contract(
     ):
         if not _calls_function(child_domain_fn, required_call):
             errors.append(f"PR2 true verifier child domain path must call {required_call}")
+    errors.extend(
+        _check_call_result_flow_to_truthy_consumer(
+            child_domain_fn,
+            call_name="_project_candidate_records_direct",
+            result_name="replay_violations",
+            effect="raise",
+            label="PR2 true verifier child domain replay gate",
+        )
+    )
+    errors.extend(
+        _check_call_assignment_no_rebind(
+            child_domain_fn,
+            call_name="_run_fixed_witness_direct",
+            result_name="fixed_verdict",
+            label="PR2 true verifier child fixed-witness verdict",
+        )
+    )
+    errors.extend(
+        _check_expr_result_flow_to_truthy_consumer(
+            child_domain_fn,
+            source="{}",
+            result_name="fixed_violations",
+            effect="raise",
+            label="PR2 true verifier child fixed-witness violation gate",
+        )
+    )
     for token in (
         "authority_state_b64",
         "terminal candidate sink replay failed",
