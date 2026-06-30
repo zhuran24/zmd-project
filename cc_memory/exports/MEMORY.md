@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 158
+- entries: 160
 - hard edges: 180
 - pending relation suggestions: 0
 
@@ -54,6 +54,7 @@ python cc_memory/mem.py boot
 - `cc-memory-hook-backstop-landed-20260620` — cc_memory hook c6cd8fd: LANDED 2026-06-20, PostToolUse finalize + SessionStart。
 - `cc-memory-meta-system-consolidated-index-20260628` — cc_memory C档 2026-06-28: INDEX, 折叠 search/read/semantic/rerank/hook 元系统旧节点。
 - `cc-memory-update-vs-supersede-rule` — 记忆改写 2026-06-20: RULE, 订正 --force; 真取代 supersede。
+- `cc-memory-wal-lease-concurrent-commit-gotcha` — 多会话并发cc_memory提交memory.db坑:①add-entry后WAL非空pre-commit拒→先finalize折WAL再commit;②finalize报another run holds the lease skipping时别硬commit(committed…
 - `ci-saga-slow-blindspot-flaky-mechanism-20260626` — CI saga 0bc36db: DONE 2026-06-26, @slow 盲区+delivery flaky 均修绿。
 - `claude-code-custom-hooks-this-machine` — 本机自定义 hooks:block_ps_in_bash(Bash里发PS拦)/es_reminder(按名递归找文件→es,2026-06-29只带名字过滤才拦,120s重发口)/codegraph_reminder(符号定位→codegraph,两档:硬档无重发/软档有,2026-06-29数据键降软档)…
 - `claude-md-maintenance-method-20260628` — CLAUDE.md 维护 2026-06-28: RULE, 工具归属+保守缩写+归档边界。
@@ -65,6 +66,7 @@ python cc_memory/mem.py boot
 - `close-kernel-sealed-lint-v99-reseal-re-export-patch-ruff-f401` — close-kernel lint 2026-06-28: WARN, sealed 改动会触发 reseal/F401 patch 坑。
 - `codegraph-codegraph-codegraph-init-proof-cc-memory` — CodeGraph: RULE, 项目代码结构索引/MCP/CLI; 非 proof、非 cc_memory。
 - `codegraph-freshness-lazy-sync-on-use` — CodeGraph 2026-06-28: RULE, lazy sync-on-use; watcher 非常驻, sync hook 已删。
+- `codegraph-index-branch-boundary-stale` — codegraph是导航缓存、索引反映建索引/上次sync时状态(通常main);切feature分支后该分支改过的文件codegraph给的可能是旧/main版≠当前checkout。未变文件+调用关系照用;证明敏感/分支新增改动代码必须读真实源码/diff/patch别信索引…
 - `codegraph-precompact` — precompact/codegraph 2026-06-26: WARN, 已记规则未先查导致三犯。
 - `codex-agent-worktree-implement-integrate` — Agent isolation:worktree+codex:框架建worktree(baseRef=head)设codex cwd在那;codex提交worktree-agent-<id>分支;因共享.git+线性,git merge --ff-only集成;终裁审diff+preflight;走git故无CRLF
 - `codex-agenttype-schema-structuredoutput-empty-loop` — codex schema 2026-06-21: FIXED, 空提交根因=shim纯管道 vs 结构化。
