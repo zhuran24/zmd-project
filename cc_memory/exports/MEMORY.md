@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 157
-- hard edges: 179
+- entries: 158
+- hard edges: 180
 - pending relation suggestions: 0
 
 ## Start Here
@@ -60,6 +60,7 @@ python cc_memory/mem.py boot
 - `clipboard-relay-deliverables-to-owner` — relay 交付 2026-06-20/23: RULE, 剪贴板给提示词正文+包完整路径。
 - `close-kernel-ast-pin-closed-world-progression` — 对图灵完备语言,AST pin 留任何自由表达式/语句空间就总能绕;收敛终态=闭世界(只许有限白名单:禁嵌套def/dunder/__builtins__,import/getattr…
 - `close-kernel-ast-pin-structural-vs-semantic-boundary` — close-kernel AST pin「第二道门」(防未来维护者保 checker 全绿 + 重算 sha 重钉 floor,却把 child/parent 升格语义掏空)的**根本能力边界 = 只能保护「结构」,保护不了「证明数学」**…
+- `close-kernel-block-convergence-trend-20260630` — PR2 #5 close-kernel 六轮外审 BLOCK 的元模式:主轴=每次 block 比上次深一层 indirection(钉了X、X依赖的Y没钉:状态字段→字面精确→函数体表达式→被审AST≠运行时对象→写入器引用的全局/helper→调用的gate…
 - `close-kernel-necessity-verdict-20260619` — V99 close-kernel 2026-06-19: VERDICT, sink hash-pin lint; 防虚假安全感。
 - `close-kernel-sealed-lint-v99-reseal-re-export-patch-ruff-f401` — close-kernel lint 2026-06-28: WARN, sealed 改动会触发 reseal/F401 patch 坑。
 - `codegraph-codegraph-codegraph-init-proof-cc-memory` — CodeGraph: RULE, 项目代码结构索引/MCP/CLI; 非 proof、非 cc_memory。
