@@ -4934,10 +4934,12 @@ def _check_result_flow_to_compare_gate(
     if (call_name is None) == (source is None):
         return [f"{label} result-flow checker must pin exactly one assignment source"]
     if call_name is not None:
-        assignment_predicate = lambda node: _binds_name_from_call(node, result_name, call_name)
+        def assignment_predicate(node: ast.AST) -> bool:
+            return _binds_name_from_call(node, result_name, call_name)
         assignment_description = f"{call_name}(...)"
     else:
-        assignment_predicate = lambda node: _binds_name_from_expr_source(node, result_name, source or "")
+        def assignment_predicate(node: ast.AST) -> bool:
+            return _binds_name_from_expr_source(node, result_name, source or "")
         assignment_description = source or "<source>"
     assignments = [
         node
