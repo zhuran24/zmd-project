@@ -11,7 +11,7 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 155
+- entries: 156
 - hard edges: 178
 - pending relation suggestions: 0
 
@@ -142,6 +142,7 @@ python cc_memory/mem.py boot
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
 - `prune-meetings-3-4-status-20260630` — 剪枝三次=识别机制重构两档(确定性flag:relink/active_superseded/dead_ref三前提;advisory:duplicate/oversized/cross_layer_overlap_concern;砍promotion+stale词频支;脏分支前置自检fail-closed)…
+- `prune-phase-a-two-tier-landed-20260630` — 承 memory-pruning-system-design-20260629 / prune-meetings-3-4-status-20260630（A/B/C 分期）…
 - `prune-scan-first-report-review-20260630` — 剪枝scan首份报告人审(2026-06-30 owner让自主+逐个决定):131候选6类flag,按铁律绝大多数留不动——promotion 3条非每回合反射不升/stale…
 - `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 Claude PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
