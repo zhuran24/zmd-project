@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 156
-- hard edges: 178
+- entries: 157
+- hard edges: 179
 - pending relation suggestions: 0
 
 ## Start Here
@@ -131,6 +131,7 @@ python cc_memory/mem.py boot
 - `pr1-supervisor-mint-preflight` — PR1 supervisor 地基两块 2026-06-23 落地、**已提交 `ddb3b5a`**(feat(p1.2): PR1 supervisor 地基…
 - `pr2-5-ast-pin-canonical-window-hardening` — round-1 STRAIGHT-LINE blacklist 漏 8 类绕过(尤其 final_status 挪 precheck 后→静默跳穷尽);round-2 改 whitelist canonical-window(init↔precheck 只许6槽+pop,按构造完备)…
 - `pr2-5-closed-world-ast-pin-rounds-3-4` — round-2 lean复审3会话BLOCK(3槽RHS任意表达式藏副作用)→round-3正向RHS白名单+运行时重绑封口→round-3复审3会话BLOCK更深(早退支配/CPython元对象/模块级monkeypatch/parent伪造child_verdict)→round-4闭世界G1-G7+G6恒真早退前…
+- `pr2-5-round8-9-converged-relayed-20260630` — PR2 #5:第五轮panel(dbe27c0)判BLOCK→round-8(c115f31)修5类(child编排整body pin/L0装配链TCB/save+guard源码sha/compare-gate live-effect/空矩形off-by-one用执行型canary不改runtime)+Lens…
 - `pr2-5-seal-frontier-gate-landed` — PR2 #5: child升格漏declare_mode/last_stop_reason致seal路径穷尽校验死代码;已修+GPT Pro panel挖2 BLOCK(parent mint不归一+AST pin松)+CRLF reseal坑;待复审merge
 - `pr2-8-9a-hardened-landed-099f5a3` — PR2 #8(删自跳过)+#9a(floor钉死)+GPT Pro外审硬化(#8-A子进程-I-S-B/#8-B源码sha楼面/#9a-A L0 runtime byte-pin堵时序旁路)合 main 099f5a3,CI两gate绿。多会话panel验证有效(2会话收敛挖3 BLOCK本地审都漏)…
 - `pr2-b-codex-2-false-certified-opus-0-pr2-b-sound-tcb-b1-owner` — PR2-b 2026-06-28: BLOCKED, codex 找2条 false-CERTIFIED; 待B1/B2硬化。
