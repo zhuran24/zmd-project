@@ -11,8 +11,8 @@ python cc_memory/mem.py boot
 ## Stats
 
 - facts: 21
-- entries: 147
-- hard edges: 177
+- entries: 149
+- hard edges: 178
 - pending relation suggestions: 0
 
 ## Start Here
@@ -136,6 +136,7 @@ python cc_memory/mem.py boot
 - `precompact-flow-current-20260630` — Pre-compact(2026-06-30):三阶段 记忆更新->查漏->/compact;级联只由调本skill驱动;查漏已脚本自动化=precompact_judge_run.py(app-server,不碰CLI),我只triage;先审后用…
 - `pref-creative-tasks-use-discussion-not-workflow` — 任务路由 2026-06-20: RULE, 创造/判断用 Agents Team, 不用 Workflow。
 - `project-snapshot-vs-package-terminology` — 项目包=项目本体,去.git+cc文件(cc_memory/cc_memory_vnext)+codex文件+缓存(外审/交付);项目快照=只去.git+缓存其他全留(含cc+codex+数据,备份/转移)。缓存≈git-ignored,内容≈git-tracked+candidate_placements
+- `prune-meetings-3-4-status-20260630` — 剪枝三次=识别机制重构两档(确定性flag:relink/active_superseded/dead_ref三前提;advisory:duplicate/oversized/cross_layer_overlap_concern;砍promotion+stale词频支;脏分支前置自检fail-closed)…
 - `prune-scan-first-report-review-20260630` — 剪枝scan首份报告人审(2026-06-30 owner让自主+逐个决定):131候选6类flag,按铁律绝大多数留不动——promotion 3条非每回合反射不升/stale…
 - `pytest-concurrent-guard-hook` — owner 2026-06-27 指令落地、当前启用的 Claude PreToolUse(Bash/PS)hook:跑 pytest/preflight 那一刻查全机 python.exe 有无在跑,有就 deny(防并发挤超时 CP-SAT/L0 子进程造 fail-closed 假红),被拦命令可入串行队列…
 - `relay` — relay 2026-06-23: RULE, 发出外审动作要当场记; 打包≠已发送。
@@ -160,4 +161,5 @@ python cc_memory/mem.py boot
 - `workflow-default-multimodel-opus-codex` — workflow 2026-06-28: RULE, 诊断用 opus+codex; 审查改 GPT Pro relay。
 - `workstyle-codex-routing-cache-probe-junk-20260630` — 本会话(2026-06-30 PR2 #5 close-kernel 硬化)owner 多次纠正,沉淀 3 条工作方式(都是「按工具模式/性质反射、没按工作量+路由判」的同一上游病的具体马甲)…
 - `worktree-baseref-head-vs-fresh` — owner 2026-06-29 拍 + 官方文档/Issue#60588 核实。head=本地当前HEAD(含未push commit+当前分支),fresh=origin/HEAD永远盯main不跟当前分支。我们高频派subagent接feature分支干→要head。两者都不带未commit工作区改
+- `worktree-isolated-memory-ops-main-occupied` — 本仓库多会话共享物理工作树,并发会话(PR2线等)会切分支/推进HEAD;而memory操作铁律要在main做。撞主树被占用/在错分支时的隔离模式…
 - `xmodel-review-is-standing-rule-symmetric` — 跨模型审 2026-06-23: RULE, 站立规则自动触发, 非 owner 逐次指派。
