@@ -250,6 +250,7 @@
         "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
         "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
         "test_full_frontier_candidate_domain_keeps_oriented_dimensions",
+        "test_v82_terminal_frontier_dominance_keeps_smaller_pending_candidate_canary",
         "test_save_rejects_dict_subclass_that_mutates_after_guard"
       ],
       "evidence_paths": [
@@ -521,6 +522,9 @@
         "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses",
         "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows",
         "test_p1_2_empty_rect_leaf_math_oracle",
+        "test_p1_2_child_path_confinement_leaf_canary",
+        "test_p1_2_close_kernel_strict_json_leaf_canaries",
+        "test_p1_2_round10_close_kernel_full_pin_enforcement",
         "test_l0_supervisor_seal_mints_strict_declare_mode_from_best_effort_proposal",
         "test_l0_postwrite_state_violation_rejects_non_strict_declare_mode",
         "test_exact_campaign_supervisor_transition_promotes_declare_mode_to_strict",
@@ -912,7 +916,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-          "source_sha256": "937819b54c73b6e39ed56844a0b3d73190fd394ce6bc932949e9740c631604f0",
+          "source_sha256": "0fe58e1aceb74729ccd9924c642191f59425695262c9f748c070e72c4a110f88",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

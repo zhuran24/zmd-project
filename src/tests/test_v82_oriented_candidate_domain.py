@@ -5,7 +5,11 @@ from pathlib import Path
 
 from src.models.cut_manager import RUN_STATUS_CERTIFIED, RUN_STATUS_INFEASIBLE
 from src.search.benders_loop import run_benders_for_ghost_rect
-from src.search.certified_frontier import candidate_key, generate_candidate_sizes
+from src.search.certified_frontier import (
+    candidate_key,
+    compute_terminal_frontier_projection,
+    generate_candidate_sizes,
+)
 from src.search.exact_campaign import CANDIDATE_PROPOSED_STATUS
 from src.search.outer_search import run_outer_search
 from src.tests.certified_frontier_helpers import write_closed_phase_review_gate
@@ -129,3 +133,18 @@ def test_full_frontier_candidate_domain_keeps_oriented_dimensions(tmp_path: Path
     assert result is not None
     assert result["search_status"] == CANDIDATE_PROPOSED_STATUS
     assert result["ghost_rect"] == {"w": 1, "h": 3, "area": 3, "anchor_x": 0, "anchor_y": 0}
+
+
+def test_v82_terminal_frontier_dominance_keeps_smaller_pending_candidate_canary() -> None:
+    pending_candidate = (54, 9, 6)
+    infeasible_candidate = (60, 10, 6)
+
+    projection = compute_terminal_frontier_projection(
+        candidates=[pending_candidate, infeasible_candidate],
+        candidate_records={
+            candidate_key(infeasible_candidate): {"status": RUN_STATUS_INFEASIBLE}
+        },
+    )
+
+    assert pending_candidate in projection["potential_domain"]
+    assert pending_candidate in projection["frontier"]

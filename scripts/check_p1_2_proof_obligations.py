@@ -518,6 +518,23 @@ def _method_def(class_node: ast.ClassDef, name: str, *, path: Path) -> ast.Funct
     raise CheckError(f"method not found in {_rel(path)}: {class_node.name}.{name}")
 
 
+def _resolve_source_pin_node(tree: ast.Module, name: str, *, path: Path) -> ast.AST:
+    """Resolve a source-pin key to its AST node.
+
+    Supports three key forms used by the close-kernel TCB source maps:
+      * ``"Class.method"`` -> that method's FunctionDef,
+      * ``"Class"`` (a top-level class) -> the whole ClassDef (covers fields/decorators/bases),
+      * ``"func"`` -> a top-level FunctionDef.
+    """
+    if "." in name:
+        class_name, method_name = name.split(".", 1)
+        return _method_def(_class_def(tree, class_name, path=path), method_name, path=path)
+    points = _top_level_binding_points(tree, name)
+    if len(points) == 1 and isinstance(points[0], (ast.FunctionDef, ast.ClassDef)):
+        return points[0]
+    raise CheckError(f"source pin target not uniquely resolvable in {_rel(path)}: {name}")
+
+
 def _calls_function(node: ast.AST, name: str) -> bool:
     for child in ast.walk(node):
         if isinstance(child, ast.Call) and isinstance(child.func, ast.Name) and child.func.id == name:
@@ -2188,6 +2205,13 @@ def _check_close_kernel_checker_self_binding(*, checker_path: Path = Path(__file
     ):
         if not _calls_function(main_fn, required_call):
             errors.append(f"proof-obligation checker main must call {required_call}")
+    sink_replay_fn = _function_def(
+        tree, "_check_candidate_sink_replay_contract", path=checker_path
+    )
+    if not _calls_function(sink_replay_fn, "_check_close_kernel_files_fully_pinned"):
+        errors.append(
+            "candidate sink replay contract must call _check_close_kernel_files_fully_pinned"
+        )
     return errors
 
 
@@ -4389,56 +4413,77 @@ _PR2_L0_RUN_SUPERVISOR_SEAL_BODY = (
         return _reject(nonce, f"parent_exception:{type(exc).__name__}:{exc}")''',
 )
 _PR2_L0_TCB_FUNCTION_SOURCE_SHA256 = {
-    "run_l0_micro_verifier_round_trip": "6b8678f0ace83b10f99516ed8c921b82799175b5bcf112495780bb6be95f9e8b",
-    "_discover_project_snapshot_modules": "d4ef471a0dbbdf6703ad2d7de86dfd4440787667e1b2d2537b3a31af618de82a",
-    "_materialize_snapshot": "dd3ba44abe31e066568334347a1bc7f8d91d8f9915db35343917c14b23425b90",
-    "_domain_response_violation": "a58fcb21065c7aab4b4a0b0a4779cb2c93e397aaef6e031cd98b37b594d4eedb",
-    "_verdict_from_completed_process": "9b1659bb1f09b4d6d06a7f8513505eed531ba966c068410af749e041fe70471b",
-    "_child_env": "950e48d22bee9d0f0048eb2bb0f4e12b22fd157b7a69d4eeb2b32e3ec7628300",
-    "_atomic_replace_bytes": "56db2e99dd91259add629655664eda9dee64ab97dacd322a1f5f7a1b43edf8e7",
-    "_canonical_digest": "8c05dd916c7f2615e0bb2fbb4ed5a6cac62cce500f7fee05ccc89e91869659aa",
-    "_floor_digest": "f99a8a573213baec45deba01692d5f12d07ff150f85a886c484dce260187b4fb",
-    "_read_regular_file_bytes": "41f6be53a4ed2c7e38da0f1a17fb87e4d6f9f2bf3a38beb36506e981e97fd8c0",
-    "_source_digest_relpaths": "52fc1d20e3f3d7654dac024e47d9e1b32a1b486dc9fca9eee48ae773bc7c0ab4",
-    "_snapshot_module_paths": "a85df1ab9b53818f544faea01f2dd2c5039d4be4503ba976d020036e731854e7",
-    "_module_relpath": "cf023dc99a8b7f998fe0c5f0949bbda89a113277c560b48588ecfd9266341d71",
-    "_stable_fixed_witness_candidate_records_l0": "c8b9445d129191dfb1d91378798f6204586766abfffc7359dc76abb81b038904",
-    "_load_canonical_dependency_floor_manifest": "b1644ba2f13dfbcdbdb93f96882352f9d7351ae952525cec0b2afa6a402559e9",
-    "_reject": "18af5ccc78c6e86b76065ea7217c9043317ee91537b30babac1539b334cbe819",
-    "_response_violation": "b4c4f6be6aa42b9321c62b4d0b7b55969059136db5ae58f44eb00326f446db6f",
+    "L0MicroVerdict": "7d19560d7d91b68458a8719f10056258af4a4c3434aa06667875e1b5dc399aa1",
+    "L0SupervisorSealRequest": "b04714144abbca01f131818d5a31885610a8ca2658a6c9f48e63658e446a29ae",
     "_atomic_json_bytes": "54dcce4647f5a113e3eaf0b8403bcac4901f22629ed7e7b48dc57ba61c3a15da",
+    "_atomic_replace_bytes": "56db2e99dd91259add629655664eda9dee64ab97dacd322a1f5f7a1b43edf8e7",
     "_canonical_bytes": "b4db84319aa7517fc03f6ee151f703ab0ea45d3ed309c5780659728478d5672a",
+    "_canonical_digest": "8c05dd916c7f2615e0bb2fbb4ed5a6cac62cce500f7fee05ccc89e91869659aa",
     "_certified_state_payload_sha256_l0": "252327a9f21bcec55299fca6c83c9dce4ffa43118054b4348aa96781faa6bd13",
     "_checkpoint_write_lock_l0": "6a095d1c13de27852c08947b850c10527bdd741f0b77c3d46d996b08c9b4d071",
+    "_child_env": "950e48d22bee9d0f0048eb2bb0f4e12b22fd157b7a69d4eeb2b32e3ec7628300",
     "_dependency_file_top_level": "bbd81b3a8476689a5f8835820952e3131f51a584e54954dd751fb3544ed33c4c",
     "_dependency_floor_root": "0768d2a1aea729323527c198a067431e011fc9bf3f7074e139c5dbaa189a82af",
     "_dependency_named_tcb_violation": "24bf66ab8b3f2fcc7d000e7149dd15958cc8baab25b21f53300a7b6ea30bff94",
+    "_discover_project_snapshot_modules": "d4ef471a0dbbdf6703ad2d7de86dfd4440787667e1b2d2537b3a31af618de82a",
+    "_domain_response_violation": "a58fcb21065c7aab4b4a0b0a4779cb2c93e397aaef6e031cd98b37b594d4eedb",
+    "_floor_digest": "f99a8a573213baec45deba01692d5f12d07ff150f85a886c484dce260187b4fb",
     "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
     "_json_bytes": "96dd857ef05e7b95c1ec5d347e52354f10cfe6d1b280e4136ce23d24253a90dc",
+    "_load_canonical_dependency_floor_manifest": "b1644ba2f13dfbcdbdb93f96882352f9d7351ae952525cec0b2afa6a402559e9",
+    "_load_dependency_floor_manifest": "4546cb698a974577201947e4381667e6daed7b5fae8c82281ca420f79d327989",
     "_load_dependency_floor_manifest_bytes": "879027a5f0c60d085e27d9e187db55172691d775b50f86bc2808e8c619fc3f51",
     "_load_sealed_proposal_authority_l0": "1ee82b52cb023ecc2cb59362586bf9fefb034a157d33774fb053c68d28127c8d",
+    "_materialize_snapshot": "dd3ba44abe31e066568334347a1bc7f8d91d8f9915db35343917c14b23425b90",
     "_materialize_snapshot_import_defaults": "315bafa58d6f1219f0dc3b788a40c1d940e1e54df0995f2d79c4f703baf21d93",
+    "_module_relpath": "cf023dc99a8b7f998fe0c5f0949bbda89a113277c560b48588ecfd9266341d71",
     "_now_iso": "1111d4064b0970758ae53c6402d741da67c3968a43a83d1d7ec022574778cd3f",
+    "_parse_json_float": "48e5eef600d6fbcc4a290e129dd2338edbf0ef2fc0b4849633efb03177520577",
     "_parse_mapping": "00326c1b9e1ae90d2736d3fcdf14d84d4a31a78c58a4bfd5a950c820805e648d",
     "_path_has_symlink_component": "904c9a3c93f5399c88a146b5a4933f846c5479b293fd1a1463d5b9de11558395",
     "_postwrite_state_violation": "706e8157cff76d6915996fd1c58e9224b2fff48e675ee3049dc27ef5d257cba5",
     "_proposal_authority_violation": "153a95947beeab0713a4703754747249b9f0088fd02503550bd394aa54fbcf18",
     "_proposal_ready_marker_violation": "9b3349e6e7393df874409c18e0e1497ad9b84d4f9e5215eb6d30184009ef08e9",
     "_proposal_state_violation": "182fadf09080c98f75a2fce98cb96ac0ef91dbc7414c5a29d9340151c6b026a8",
+    "_read_regular_file_bytes": "41f6be53a4ed2c7e38da0f1a17fb87e4d6f9f2bf3a38beb36506e981e97fd8c0",
+    "_reject": "18af5ccc78c6e86b76065ea7217c9043317ee91537b30babac1539b334cbe819",
+    "_reject_duplicate_json_keys": "ea9b0f61afffe3586249499d690cc671b9b2ec47e1178850b35e16c7a6fe00df",
+    "_reject_json_constant": "0bcffd83f5daf49c5cb1fbfaa2340ed3a881a3b5600abcf00a78e4cd579ad6bc",
     "_require_mapping": "0afb06873b1d9d8050a1aadc83cbee73929b76a7cb4fb8230cb278243817ee25",
+    "_response_violation": "b4c4f6be6aa42b9321c62b4d0b7b55969059136db5ae58f44eb00326f446db6f",
     "_safe_manifest_relpath": "3e27b6df0c2d8603f155cf42404e40a864fcf6f48cdcb31d47fe9675656a554f",
+    "_snapshot_module_paths": "a85df1ab9b53818f544faea01f2dd2c5039d4be4503ba976d020036e731854e7",
+    "_source_digest_relpaths": "52fc1d20e3f3d7654dac024e47d9e1b32a1b486dc9fca9eee48ae773bc7c0ab4",
+    "_stable_fixed_witness_candidate_records_l0": "c8b9445d129191dfb1d91378798f6204586766abfffc7359dc76abb81b038904",
     "_stable_fixed_witness_payload_l0": "03fc2efe2dfa60449761b82eab9d26114e0bb6be7bef180cc2522eba2854524f",
     "_strict_int": "5b876ae9cebb315f00b2cd92e2f2b8126b381caf271da26405a65301ac83ff69",
     "_strict_timestamp": "be3b3c947b04b3ec3834af77be85af32df891cbeba177db6c7de5ffe36c94884",
     "_strong_proof_binding_violation": "8ad77b3035b07a73abb82b9d5554de89fd5c2415608be0b6db0e4b9aa29021df",
     "_strong_status_keys": "6efd4d21cd333c8a1c023b3d87bb31a422b0276195b67e11e2b7c265a14281d4",
     "_supervisor_certified_transition_violation_l0": "d2d605b01c6b1d01984a76dda4f256beb74294d11c5d6acf26b91fab9925f707",
+    "_supervisor_seal_state_violation_l0": "7dd6b76be7f589058f756182d91c887579a05b82ff9bd69bc761474a44d6f3a0",
     "_valid_campaign_instance_id": "b939b1b49efc6f90fbe8eb984c193c1061d9a494ec530d8b7a128c28d28afb45",
     "_valid_dependency_top_level": "3d9ad01addc9677349af2ff66f389d63d691ce231cb692f6eb38bcfcf40846b3",
     "_valid_supervisor_proposal_run_id": "ce24774a70a38c89d40d511b76f759d6ddc48a291cf01c4f5c9740c5261216e5",
+    "_verdict_from_completed_process": "9b1659bb1f09b4d6d06a7f8513505eed531ba966c068410af749e041fe70471b",
     "loads_l0_strict_json": "ee77ffbacc5b38c4f26780e22689574d289bf249ded9cde3f66fe0173a95ccaf",
+    "run_l0_micro_verifier_round_trip": "6b8678f0ace83b10f99516ed8c921b82799175b5bcf112495780bb6be95f9e8b",
+    "run_l0_supervisor_seal": "b2925b27116dcdd705bdeaf23a238a155b9a0a88b4b949b3d0a8ce2ad643b5b7",
 }
 _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
+    "_RehashingExtensionFileLoader": "57416b8287ed64774f1676a6040b8d164a556d0599c0c0994eb639e4e54c53b9",
+    "_RehashingExtensionFileLoader.__init__": "464b196bcf03717f7f5d1cc00c59bb21fbe8d7bf2ceaeab7f53fa17389c4be09",
+    "_RehashingExtensionFileLoader.create_module": "156de74675fcfa072e24c5df8dcda4b3b2a3958e7509e530100ac84391a821fa",
+    "_RehashingSourceFileLoader": "37990b1f8ef407c517ecbb4e57514649559f503869840d82cfe5c4deb3d00963",
+    "_RehashingSourceFileLoader.__init__": "464b196bcf03717f7f5d1cc00c59bb21fbe8d7bf2ceaeab7f53fa17389c4be09",
+    "_RehashingSourceFileLoader.get_code": "6c43c00a120c26577894700ddafdb1df367e64f1e1583b3f6c4cf76f37a49d3f",
+    "_RehashingSourceFileLoader.get_data": "cacaea6382dec4e4100ddc64e90732ea49bec07c3a275917c5c502d5dc2b33df",
+    "_RestrictedThirdPartyFinder": "605f0eeace8b8857d676d861f6189d95c8002930965ffff13ab0a0d7718eb8f1",
+    "_RestrictedThirdPartyFinder.__init__": "58a5a98c38718362c22291b3b2e624d06ff3476fe4460c456f9cbd80a7c60bbc",
+    "_RestrictedThirdPartyFinder.find_spec": "22488735a19c094196c7ca529b72b9d94f5b2aa7cd2d654acc7b7372a2914941",
+    "_StdlibOnlyPathFinder": "7a672d9c93e0066dcef626423c130d6823648792a4145ee77e03928e42e31aab",
+    "_StdlibOnlyPathFinder.__init__": "1e1b9bb79d7ee0583b9c1be0fddf9839eb8d011fbf0f61c97a159262ef8a1c7c",
+    "_StdlibOnlyPathFinder.find_spec": "fa8e1f1460ef2f644901aa44282b13ea73dfd6bc92d10d7bd5d228bb0a78dde3",
     "_canonical_bytes": "6fd507d684d9171dad64369d2b4b0584edf256520be3e1113d37db0de3c44471",
     "_canonical_digest": "8c05dd916c7f2615e0bb2fbb4ed5a6cac62cce500f7fee05ccc89e91869659aa",
     "_dependency_file_top_level": "dd225ab13ec9917236f9cebeafa5d47b7e732d52ef8bb96c5b1891facd6dc2e1",
@@ -4447,9 +4492,13 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_index_dependency_package_dirs": "90350bc225dd904c07b72ba646737d762d6ff83e2fb39b9586192837c3881b14",
     "_install_third_party_floor": "3ae425a7f3357ac1be6d3dbaf1a7bb073c37361c720b037a203ca71ee57155f8",
     "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
+    "_is_within": "232ae2feae6f6bf8dfc2909bbc5fb6acae40ca3fd02c153fad3706d1886bed4a",
+    "_is_within_any": "79abd86e1e8a39d021a225212b009b307adb74928e192652e20e6b1545dc63de",
     "_json_copy": "71d6048581ec811d9d28f4c60b69287aaa2fee791246e8e50850e9db54380f8e",
     "_materialize_import_default_artifacts": "ec2a13d3338721ffd5819e6d0098685f51a81f5b1c00da39cde1c368f19f09e5",
+    "_project_candidate_records_direct": "7748a533fbe9cde5454ed540400e457b6626efc46d259e8b0129b1f5b902fa22",
     "_require_mapping": "104f33d630f36f0f78076bf3c859fc86367f92237002231fd653d943699bdd44",
+    "_run_fixed_witness_direct": "356d0cbab74e8c02ce76f6867b11eb3df9b217c3171f85622cc774c198a3b972",
     "_safe_rel": "510d425350d3e866ea0523fbfce04af46793936ff22503f4e2390d0782e7c957",
     "_stable_fixed_witness_candidate_records": "1e1a8147e512e9d3c200be076bd6fb3178090d3be21e7a98a627cade94b5ac11",
     "_stable_fixed_witness_payload": "698f25a09ab52aed1857169733588790c3db9eb1f73bddadf571e3b657729af3",
@@ -4458,17 +4507,40 @@ _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256 = {
     "_strict_string": "0eb6e1751b768a278a8056f2327d16fae030eb5c2fb5bfdec3bb6b8eaafaa103",
     "_string_list": "3e11de384e5809b24713779aae4ce234ba8278b3831ef2ea567333bfc0a5c00a",
     "_valid_top_level_name": "1d0d7e89abcb04884eb05becb12fbf4f75f48d14eb296ebd1feec8f7f73e2ba7",
+    "_verify_supervisor_domain": "db527d918e1956b34d1e45a886bd1907e5c5c6d5be4098b1c6591fab9fef5c03",
+    "verify": "1bcf13acf3e89d51a1cb4707ad8927e9218ba09b7875857d3ca60c75c6738b76",
 }
 _PR2_L0_TCB_CONSTANT_SOURCES = {
-    "TRUE_VERIFIER_MODULE": 'TRUE_VERIFIER_MODULE = "src.search.pr2_l0_true_verifier_child"',
-    "DEFAULT_VERIFIER_FUNCTION": 'DEFAULT_VERIFIER_FUNCTION = "verify"',
-    "SEALED": 'SEALED = "SEALED"',
-    "REJECTED": 'REJECTED = "REJECTED"',
-    "SUPERVISOR_DOMAIN_AUTHORITY": 'SUPERVISOR_DOMAIN_AUTHORITY = "pr2_l0_true_supervisor_domain_v1"',
-    "SUPERVISOR_DOMAIN_SCHEMA_VERSION": "SUPERVISOR_DOMAIN_SCHEMA_VERSION = 1",
-    "SUPERVISOR_SEAL_AUTHORITY": 'SUPERVISOR_SEAL_AUTHORITY = "certified_exact_supervisor_seal_v1"',
-    "SUPERVISOR_SEAL_SCHEMA_VERSION": "SUPERVISOR_SEAL_SCHEMA_VERSION = 2",
-    "TERMINAL_CERTIFIED_REASON": 'TERMINAL_CERTIFIED_REASON = "search_exhausted_all_candidates"',
+    'AUTHORITY': 'AUTHORITY = "pr2_l0_micro_verifier_v1"',
+    'CAMPAIGN_INSTANCE_ID_KEY': 'CAMPAIGN_INSTANCE_ID_KEY = "campaign_instance_id"',
+    'CANDIDATE_PROPOSED_STATUS': 'CANDIDATE_PROPOSED_STATUS = "CANDIDATE_PROPOSED"',
+    'CHILD_STAGE_TRACE': 'CHILD_STAGE_TRACE = (\n    "floor_verified",\n    "loader_installed",\n    "verifier_imported",\n    "verifier_ran",\n)',
+    'DEFAULT_VERIFIER_FUNCTION': 'DEFAULT_VERIFIER_FUNCTION = "verify"',
+    'DEFAULT_VERIFIER_MODULE': 'DEFAULT_VERIFIER_MODULE = "src.search.pr2_l0_trivial_child"',
+    'DEPENDENCY_FLOOR_MANIFEST_REL': 'DEPENDENCY_FLOOR_MANIFEST_REL = "data/proof_obligations/pr2_dependency_floor_manifest.json"',
+    'DEPENDENCY_FLOOR_MANIFEST_SHA256': 'DEPENDENCY_FLOOR_MANIFEST_SHA256 = "41008dbb0bf03e1b413c493a96f5a5f47719721cc33112b353ed7c6bea240b90"',
+    'DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES': 'DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES = 574082',
+    'DEPENDENCY_FLOOR_ROOT_SENTINEL': 'DEPENDENCY_FLOOR_ROOT_SENTINEL = "PYTHON_SYSCONFIG_PURELIB"',
+    'PROPOSAL_READY_MARKER_AUTHORITY': 'PROPOSAL_READY_MARKER_AUTHORITY = "certified_exact_producer_proposal_ready_v1"',
+    'PROPOSAL_READY_MARKER_SCHEMA_VERSION': 'PROPOSAL_READY_MARKER_SCHEMA_VERSION = 2',
+    'PROPOSAL_RUN_ID_ALLOWED_CHARS': 'PROPOSAL_RUN_ID_ALLOWED_CHARS = frozenset(\n    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._:-"\n)',
+    'REJECTED': 'REJECTED = "REJECTED"',
+    'SCHEMA_VERSION': 'SCHEMA_VERSION = 1',
+    'SEALED': 'SEALED = "SEALED"',
+    'STRONG_STATUSES': 'STRONG_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})',
+    'SUPERVISOR_DOMAIN_AUTHORITY': 'SUPERVISOR_DOMAIN_AUTHORITY = "pr2_l0_true_supervisor_domain_v1"',
+    'SUPERVISOR_DOMAIN_SCHEMA_VERSION': 'SUPERVISOR_DOMAIN_SCHEMA_VERSION = 1',
+    'SUPERVISOR_PROPOSAL_STATE_KEY': 'SUPERVISOR_PROPOSAL_STATE_KEY = "supervisor_proposal"',
+    'SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION': 'SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION = 2',
+    'SUPERVISOR_SEAL_AUTHORITY': 'SUPERVISOR_SEAL_AUTHORITY = "certified_exact_supervisor_seal_v1"',
+    'SUPERVISOR_SEAL_SCHEMA_VERSION': 'SUPERVISOR_SEAL_SCHEMA_VERSION = 2',
+    'SUPERVISOR_SEAL_STATE_KEY': 'SUPERVISOR_SEAL_STATE_KEY = "supervisor_seal"',
+    'TERMINAL_CERTIFIED_REASON': 'TERMINAL_CERTIFIED_REASON = "search_exhausted_all_candidates"',
+    'TRUE_VERIFIER_MODULE': 'TRUE_VERIFIER_MODULE = "src.search.pr2_l0_true_verifier_child"',
+    '_FIXED_WITNESS_AUDIT_FIELD': '_FIXED_WITNESS_AUDIT_FIELD = "terminal_fixed_witness_verifier"',
+    '_FIXED_WITNESS_STABLE_FIELDS': '_FIXED_WITNESS_STABLE_FIELDS = frozenset(_FIXED_WITNESS_STABLE_FIELD_ORDER)',
+    '_FIXED_WITNESS_STABLE_FIELD_ORDER': '_FIXED_WITNESS_STABLE_FIELD_ORDER = (\n    "schema_version",\n    "authority",\n    "publishable",\n    "projected_status",\n    "candidate_key",\n    "solution_digest",\n    "ghost_rect_digest",\n    "ghost_cells_digest",\n    "witness_input_digest",\n    "binding_assignment_digest",\n    "port_specs_digest",\n    "routing_occupancy_digest",\n    "binding_status",\n    "routing_status",\n    "reason",\n    "details",\n)',
+    '_FIXED_WITNESS_VOLATILE_FIELDS': '_FIXED_WITNESS_VOLATILE_FIELDS = frozenset({"fresh_run_token"})',
 }
 _PR2_L0_CHILD_BOOTSTRAP_SOURCE_VALUE_SHA256 = (
     "1141436f87f6573c4fb19f58d60dd063e1f33b34b2f768e42c76908550004d8d"
@@ -4514,19 +4586,58 @@ _PR2_L0_ALLOWED_IMPORT_BINDINGS = {
     "Sequence": ("from", "typing", "Sequence"),
 }
 _PR2_EXACT_TCB_SOURCE_SHA256 = {
-    "_has_unsupervised_certified_checkpoint_claim": "9c99d69c30dc7642b8631f758e99b9f960b1d7cba2296c8870cac6fd552f74b8",
+    "ExactCampaign": "35eb5eb02d57cd24c17d6589d686e8c84292f1f78fd5cc6ae813b74c41508e6d",
+    "ExactCampaign._assert_proposal_marker_still_current": "3d10cf234a0735c502b15e33ec9689ff00c3a1fb2bf78d3174ef5d6bc83d64b5",
+    "ExactCampaign._clear_proposal_ready_marker_if_unchanged": "daf25bf754ab1c9d19103437f42dd2af40851eba46fe626c20d1a313a15199ec",
+    "ExactCampaign._load_supervisor_proposal_authority": "a7cdd131ef01765990b206d71f8cbdb9d4b55ac7f906cc17c402af048cfabc5f",
+    "ExactCampaign._mark_candidate_result_from_verified_producer": "a33d7803375d438f99e04b5cfb640f671dd7219afdd7af8c185f40b1cdfb5911",
+    "ExactCampaign._validate_supervisor_certified_state_before_commit": "4e413c5a849ffacbd97342f918142dd042fe5d63dc592e4356a2bc7bab278d92",
+    "ExactCampaign.artifact_hashes": "cd4e7304ff583b762a7fcf7a125bf97437815905ce7bd12b9c0ddf7bbe5b2099",
+    "ExactCampaign.best_certified_result": "b1a29ea660eb727fae3dfadf3d6931e6181675c3fd829c0b00c77584b6fe7553",
+    "ExactCampaign.campaign_hours": "1b5c72fd5c89d953daab8b363ecd664ff292260c61e617e83db5761986e88bef",
+    "ExactCampaign.clear_proposal_ready_marker": "93df4638ea2abb25c24c7ee87f015aa9e27d9b80adcff9d5dc1c3c9f941219a0",
+    "ExactCampaign.elapsed_seconds": "0a10b3c4cb40687ff1ec2a6e3e12e725c80d7f4c18add315c59d5b41e9240910",
+    "ExactCampaign.get_audit_log": "bdd4f0634775ba836bc1417422c21be2a9a7d31ca2892eef446c0ff5443b1a3e",
+    "ExactCampaign.get_candidate_bound_state": "f69b67167ab0811f6da96361adbdfbece051bd20021721390a2486700c873522",
+    "ExactCampaign.get_candidate_cuts": "20930219a5451ebcf1d240aedeb91bc85b05f1a4b6238ae54da3bbe29f41320a",
+    "ExactCampaign.get_candidate_record": "4bb677bd720f5d694f4800dcad3c633d0327a974ce8eda88491d0a870bfa78a7",
+    "ExactCampaign.is_compatible_with_current_hashes": "b77688d529b9247cbc4b8489bc7d88907fdaaa810bcac7316c8378c57e82a558",
+    "ExactCampaign.load_or_create": "a2ef0e779b25ae9afd1cc10ce09b887b54ac104be0312473b7c9fa47e8d68df7",
+    "ExactCampaign.mark_campaign_stopped": "cac850cbadee274259ba9c22fbf004f0a97403d809e98501ad21bf833adbe35a",
+    "ExactCampaign.mark_candidate_result": "5a3349e5e0fc118d776f7314cc79ce1b79dfcd9461c1c3977ed02e5af11bcb2d",
+    "ExactCampaign.mark_candidate_started": "00a7cb22fd3cd235908867ddad425eaffec0a5b7036f13f38891d394be6b52e2",
+    "ExactCampaign.proposal_ready_marker_path": "af703b527d10b25b9f5f553d438c1cc853be6d1d22ed86d186005d4685e98a67",
+    "ExactCampaign.remaining_seconds": "ed261f09594be2adc28ad89b850e457746943d3a0da7dd0c933cca131f242e23",
+    "ExactCampaign.reset_reason": "bae9c47545c572cff450dc03d3135a579809a85e60120bbf243bc41017977233",
     "ExactCampaign.save": "d069c600b6040fbccc86b1a479d8c3439ffdd9e9be2fe0c99e863d247b0d5d64",
+    "ExactCampaign.set_supervisor_proposal_run_id": "231dbd964485c78a2b0a74816b2feefbbc288872b1079fd13b48edf7fe58103e",
+    "ExactCampaign.supervisor_seal": "70ccaa80366b5873bd14b65e75c10e7b6b33fe2170d82a8a2eea9d0058115c43",
+    "ExactCampaign.update_candidate_bound_state": "3c680cd8d1b0d4756323452b9e51d2e4c5bc29b22ab3914caef8b178ba9c0c87",
+    "ExactCampaign.update_candidate_running_proof_summary": "29826a12e6437ea39118fe49e879a65e38a3ad2e7248f48e4426158265412088",
+    "ExactCampaign.write_proposal_ready_marker": "69777257042617c56acd6732dbcd036ac3b9292a15ff845fbe6d3a1785f40baf",
     "_atomic_json_bytes": "7c4cc9d1e8b3fd7dead4c4a4d9fcbf85416da657e5cbb674d6df042673dae373",
     "_atomic_write_json_bytes": "e1a6360777b8336cd6905e9fbe4f9be475353843e27cec43cd5384773a56954c",
     "_best_empty_rect_objective": "98dac9bae0a315fca2025ac8b6ce5c4b4c8e03b149369dc234498c87e4b29710",
+    "_bound_state_defaults": "bd3ec491b202c1f744ac18d786b3ee9a24b84c10d70ca2d6847bf2a5b0b0a7ec",
+    "_build_initial_state": "78e5c072217c66e27d585a85112f1c9bc40e534a181a96c5bc7c87d2ee9135fb",
     "_build_occupancy_prefix": "73f55efe3e23d8b6b3cdfab5d48af68c43cff66af393a46634ff4502ab66486f",
+    "_candidate_defaults": "47a4506ceb4ceec718f33ef185b196da3cb6df2ab2b429b1bbe95dcf3898f1d4",
     "_candidate_objective_from_rect": "09268e0e9ac5cb0e8e56601b0e9a82f3fe78fbe665a8641acfeb11f720f579a0",
+    "_candidate_proposed_resume_authority_violation": "75d4f8934e2d37cfcc6a46207f272befc0f0fe860499ac79d56b9ea19f898e4a",
+    "_canonical_digest": "0aab947c8f0c14f1dfa2a14984c1d2a99ce862bb70908aaa8381d982bb31ff99",
     "_certified_state_payload_sha256": "e25fe7fea36684825230a67189bf82bf573f1828610877b6ce1bc365df91aada",
     "_checkpoint_write_lock": "c447cf4d908f1887e07ba67a56386430f585baf679ab527bf738c46dc5930499",
+    "_clear_certified_delivery_surface_artifacts_for_campaign_resume": "268378d78c281929b8075c7bbd65c91e35fd8d277dddc77c285815d333cd5e43",
+    "_default_master_domain_contract": "f30cf366d102149c0ace83d39b035364bb17e2afc850bfc42f4fb50b97f83f8c",
+    "_demote_candidate_proposed_resume_state": "693000e2e616227633fed718951c2123f2d12ca9b7d4482331c4a75caa050a1f",
+    "_discover_certified_exact_source_hash_files": "d8031fd906a3631d6ce61c7b7deb68deb96114d55262805ee5969966e64600d5",
     "_empty_rect_exists": "1b32cef7e198f26e597525a8d33148834b045140e267d2f1fdf055cf63ec7414",
     "_expected_unfiltered_ghost_anchor_index": "b2407c6047a7231264c7502a15f877626f0c75a52a1a6843cc77ac81b974f267",
     "_final_result_certified_transition": "ff40cc5bbd0f0fecd3e430a9311e23f67e709aa63f5c5bdcbe044f026c68d822",
+    "_final_result_objective": "2845a0f3d07c15873847c13855cc5eada34be108344e504342da92de9dfe23b5",
     "_fsync_directory": "bfb18d668c53c59dc521f4564192e0ae9cb9c5077fe423856c5f8b7ba8e3d53b",
+    "_has_certified_final_result": "b7d65d0868c2cd5ed14f9780766a643dda2b65f891270bd5fb69813b41c65c76",
+    "_has_unsupervised_certified_checkpoint_claim": "9c99d69c30dc7642b8631f758e99b9f960b1d7cba2296c8870cac6fd552f74b8",
     "_is_authorized_exact_pose_optional_solution_entry": "8ad2a938faebe2e55a33ef1d30fa9c08eb3540845a93e263e54470c7bd5c2294",
     "_is_lower_sha256": "ded6acd02fdcc155cfcb652ccc14fb3dc525c114ab607bc2d60093277628f427",
     "_load_exact_facility_pools": "7eb8132e1fbd338aa79c7cd004232b9bc6241053314013500733822bae84e787",
@@ -4547,33 +4658,106 @@ _PR2_EXACT_TCB_SOURCE_SHA256 = {
     "_pose_pool_min_occupied_cell_count": "17ebcc6a49bd34b5a8d625dcdd375106564e51346fd37e3b845e72df2f93e23d",
     "_pose_power_coverage_cells": "d4461a00badd7f04046d52abd3b5a2ce9ff216bf17b9af9b131b3664e2b6f4e3",
     "_proposal_state_violation": "c1e384770d1d6a70a22e731fd34b2aaf719628a52a592e3efeb409c1f0870444",
+    "_read_once_regular_file_bytes": "2ae95096da7aa78ef91c192faf54273b16fbce11eb1448752c251d8ba3438a93",
+    "_reject_duplicate_json_keys": "7c89f3fa862a6bd7d108b3551d66005f35b3edec787420bc0bf88ffb0878ffae",
+    "_reject_json_constant": "0bcffd83f5daf49c5cb1fbfaa2340ed3a881a3b5600abcf00a78e4cd579ad6bc",
+    "_resume_strong_status_replay_reason": "e2a3d82029493c9353f2c350de156771d47d019c039912f7b848d10f50890ec4",
+    "_resume_verified_sealed_terminal_state_violation": "0330dff3c3163277e4b58bdd20f709d9e6fb422fe7e9ebce1e349e858445d29b",
+    "_sanitize_resume_state_for_untrusted_candidate_evidence": "da1b61124fc0027858314db1e0a195ac92b9d21d752c168fe1fa1c8d884df175",
+    "_sha256_file": "e538cec01ddc50ee5df522ded653bddc214414e3f0a76fb1dcf11d5c45e0c0ad",
     "_snapshot_campaign_state_for_nonterminal_save": "538b0095d5cac74d1d0651920d0ff7e2451ad43ba0286279df191897fa45ebd1",
     "_solution_without_ghost_marker": "87e3799b244288813e8fa9da4424eb09b8182590ea48983aafb72ea59ac0a6dc",
+    "_stable_fixed_witness_candidate_records_for_supervisor_compare": "5df4e1e9b6e4911fcb0d5118892fe3c41e5fb19af6d71e0e3ff02bbeb00fdbd1",
     "_strict_candidate_ghost_rect": "0c8256117ff19bed0aa4427e56ec9118cc6e7f7756be51eebf9c3b90d5cf83d3",
     "_strict_nonempty_string": "a24b61737df419582bfd4a5a4fcdf445ee6944658241c71eef26e6c7214f287f",
+    "_strict_proposal_exit_code": "e7aa604764c32db5a013a39c08610c4efa10721ad96064f8301bfe34311a75e7",
     "_strict_resume_int": "e6cb161b475997b1411c4897b2dbddb816454d53be8ed695d20e21c9c6464de4",
+    "_strict_resume_nonnegative_float": "19531f29f12322c372c0ea452a206575dd9d65b0bd0d321b90b05568b4619393",
     "_strict_resume_timestamp": "3dd5743ae9088d952697f73a92b624df4e85a089266f4ac1e764d7a73bf92a89",
     "_supervisor_certified_transition_violation": "81684bb69595c118d69434ca150b122d3eb435d7a1e081cd9527e9757f19a119",
     "_supervisor_seal_state_violation": "e2ee931494ed8db0c74ab0e417977127342a70c400906fde91d8615efc4f4963",
     "_terminal_candidate_ghost_pick_binding_violation": "c1ed1b701f052e76a8189bc40a0256d280a7553a21868f94261fae1bb322eb4d",
+    "_terminal_certified_final_result_violation_for_project_authority": "69f9ccf931a47242b460814420ef82a04aacbc4a96feb517cfd06cbe658fe7a5",
     "_terminal_certified_ghost_rect_unknown_field": "6ee40c61dcfea24aa601a8e8dead3497f2b7ee4c10ce5e7636d24747c5e3443e",
     "_terminal_certified_last_stop_reason_violation": "63ff8409d8d7c3155d5a75023bab72e035b0e634906781f31edeed74e5e05297",
+    "_terminal_certified_proof_surface_digest": "da2b4eaf711a4a98b94c5f1fcc0fd471cce549b06bcfa119ea4d55a5435d63b0",
     "_terminal_certified_search_stats_violation": "d056a83ca959d6cd3c0a9a9b0691bde628ca7159833d85e41187fd8f30052d07",
     "_terminal_certified_solution_entry_unknown_field": "bbc3e49b39b1d01228caaca871a4b04297dd2261ba0204ae50714a1ec27d073a",
     "_terminal_solution_entry_pose_metadata_violation": "fdaa0d82562ac9b2f1c8d72521e9e8704f941c51993b278b40e8e7e5e72fae85",
     "_valid_campaign_instance_id": "b939b1b49efc6f90fbe8eb984c193c1061d9a494ec530d8b7a128c28d28afb45",
     "_valid_supervisor_proposal_run_id": "bf9a4f80248d5d305803d5e7a7a9fd3c3b46a4db267d85c32cd5bfd4e1a8932c",
+    "_validate_candidate_record": "76856438a45a59056397a40aec57747082a4f7df0bebdd91a4bc69feacfdd695",
+    "_validate_cut_condition_domain": "f466a64322426b03193d7a7570e3dbaa87be0d6610578990628b2b7c1c31bce0",
+    "_validate_master_domain_contract": "468d176a99e86bb85e418c3efc9db7313e406cb77e424be45ac52ed8f0e7baff",
+    "_validate_resume_state": "28f61c420fe62c38f5f3a78f2f25eb6ab32117b2eb40f337c161261f66ace8b9",
     "_validate_terminal_solution_against_project": "c1a38e6f454c2176d545aaaa970a1453953ffa7cfddc9fa55be7c2ac2833d4f4",
     "_validated_mandatory_exact_instances_payload": "b307dd5161420576911d556b064c97d7957e36f0d5c7f760d4d8fbe71c3fe276",
+    "atomic_write_json": "557fc8ea38e175d35898f7028cc97849e8deafe8e27287486580c59126582bd0",
     "candidate_key": "0a3b51c9d97a58f62dc099850c417c5927b3cf397458836997abd0ebfbd4b1be",
+    "certified_terminal_evidence_violation": "04acdf7b4a65cc32014e8a5ef8c916a88204f52b5e477dd487bf573701cc81bf",
     "compute_certified_exact_source_digest": "b255a4ed3c05bbde4fe4a1db1968c06aba7dacaf46af361b67e89c86b949c2c9",
     "compute_exact_artifact_hashes": "db24b961f4836f373d9078117936ed34760dfecc7b9fb888dd64a62f6e8be130",
+    "has_certified_export_surface": "ba6b6a213989dae97084033ab96ea9cf4bee3dfe26b69ca340237a06a06f46ef",
     "has_terminal_full_frontier_certified_evidence": "67902c4f61e15b168b57f5de9b5cd95773d6342cb922c5f16ce53859777066a9",
+    "has_valid_terminal_full_frontier_certified_evidence": "ddf26ea3d76344e37d23e351db1660c3d871e3e277a93d69ef23bcbd52d76610",
+    "has_valid_terminal_full_frontier_certified_evidence_for_project": "1f41f3ae51a01eb71c769626841ea0d9328f60d55a4505effddb4de342678c09",
+    "iso_to_ts": "c1ccebe9c5359007f522272bdde840db603325ae93390fbe4dbcd0e2dae555a7",
+    "load_proposal_ready_marker": "4f83a0d773b64f3f231123cb195d16e20777ba08c063fec50ff8e42617f18e07",
+    "new_campaign_instance_id": "c306f8a70bc709506635c125523ab58da2dee42df58f3fe69cb1163481cef506",
+    "new_supervisor_proposal_run_id": "487bb1e82ac0a1655a0c5067bb5d267e82d9ab56b3dcf71cd7e64f8db9841523",
     "now_iso": "f719c310ad532c6a7759c6d6c8289ab87a488cc6e822a24082922470c4fac06f",
     "now_ts": "e64abec07a9c497e814226bd83c696ec2da6b6fd27935d494bfea28d4238b3ed",
+    "proposal_ready_marker_path_for_campaign": "504243efdfb35b3348a334dcd47c3d0fdbd8250ede3e92e2e813c0202fad6ce8",
+    "proposal_ready_marker_violation": "454f97a4438b94386215edf20055bbcc9eec8e6ba3f40ef054e095325010dee4",
+    "read_once_exact_artifact_snapshot": "3bba071e4728f2909651f4aedd0472c7ee3837dda07f4235b606a294d0a81f1b",
     "sha256_file": "85a7a51ff9fe1c3ab43bf2d96c17441558e8b8badd42da90dd4bbffaa429c6ef",
     "terminal_certified_final_result_project_precheck_violation": "77c23099c757be50960e7b434ba7ccaded34721976a3752868edb66fe7fd5461",
     "terminal_certified_final_result_violation": "541538711a5376519cc8c18b6b60b7dece66630628ad0d4ae47044457685b0ae",
+    "terminal_certified_final_result_violation_for_project": "b8a7cdc965e54ef8dcd2a7204de0539c566118e9bce63bbe9ead75b3824f9d38",
+    "validate_exact_campaign_resume_state": "425fe007ae9120094c6994e368bddf7e5f93053e1e8c020e6ea6056e73c6dfe3",
+}
+
+_PR2_EXACT_TCB_CONSTANT_SOURCES = {
+    'CAMPAIGN_INSTANCE_ID_KEY': 'CAMPAIGN_INSTANCE_ID_KEY = "campaign_instance_id"',
+    'CAMPAIGN_SCHEMA_VERSION': 'CAMPAIGN_SCHEMA_VERSION = 6',
+    'CANDIDATE_PROPOSED_STATUS': 'CANDIDATE_PROPOSED_STATUS = "CANDIDATE_PROPOSED"',
+    'CERTIFIED_EXACT_SOURCE_DIGEST_KEY': 'CERTIFIED_EXACT_SOURCE_DIGEST_KEY = "certified_exact_source_tree"',
+    'CERTIFIED_EXACT_SOURCE_HASH_FILES': 'CERTIFIED_EXACT_SOURCE_HASH_FILES = _discover_certified_exact_source_hash_files()',
+    'CHECKPOINT_WRITE_LOCK_TIMEOUT_SECONDS': 'CHECKPOINT_WRITE_LOCK_TIMEOUT_SECONDS = 30.0',
+    'DEFAULT_CAMPAIGN_FILENAME': 'DEFAULT_CAMPAIGN_FILENAME = "exact_campaign_state.json"',
+    'EXACT_HASH_FILES': 'EXACT_HASH_FILES = {\n    key: LOCKED_EXACT_ARTIFACT_PATHS[key]\n    for key in (\n        "mandatory_exact_instances",\n        "candidate_placements",\n        "canonical_rules",\n        "generic_io_requirements",\n    )\n}',
+    'MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION': 'MASTER_DOMAIN_CONTRACT_SCHEMA_VERSION = 1',
+    'MISSING_OPTIONAL_EXACT_ARTIFACT_HASH': 'MISSING_OPTIONAL_EXACT_ARTIFACT_HASH = "__MISSING_OPTIONAL_EXACT_ARTIFACT__"',
+    'OPTIONAL_EXACT_HASH_FILES': 'OPTIONAL_EXACT_HASH_FILES = {\n    # Runtime preprocess profiles still consume utility/cycle-group declarations\n    # from preprocess_plan.json.  Bind it to checkpoints when present so a plan\n    # edit cannot ride on stale exact artifacts.\n    "preprocess_plan": LOCKED_EXACT_ARTIFACT_PATHS["preprocess_plan"],\n    # The exact flow verifier reads this file directly when present.  Treat its\n    # absence as an explicit artifact state and bind its bytes whenever present.\n    "commodity_demands": "data/preprocessed/commodity_demands.json",\n}',
+    'PROOF_BEARING_TERMINAL_STATUSES': 'PROOF_BEARING_TERMINAL_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})',
+    'PROOF_SUMMARY_SCHEMA_VERSION': 'PROOF_SUMMARY_SCHEMA_VERSION = 1',
+    'PROPOSAL_READY_MARKER_AUTHORITY': 'PROPOSAL_READY_MARKER_AUTHORITY = "certified_exact_producer_proposal_ready_v1"',
+    'PROPOSAL_READY_MARKER_SCHEMA_VERSION': 'PROPOSAL_READY_MARKER_SCHEMA_VERSION = 2',
+    'PROPOSAL_READY_MARKER_SUFFIX': 'PROPOSAL_READY_MARKER_SUFFIX = ".proposal_ready.json"',
+    'REQUIRED_CANDIDATE_FIELDS': 'REQUIRED_CANDIDATE_FIELDS = {\n    "ghost_rect",\n    "attempts",\n    "started_at",\n    "updated_at",\n    "finished_at",\n    "status",\n    "proof_summary",\n    "exact_safe_cuts",\n    "loaded_exact_safe_cut_count",\n    "generated_exact_safe_cut_count",\n}',
+    'REQUIRED_STATE_FIELDS': 'REQUIRED_STATE_FIELDS = {\n    "schema_version",\n    "solve_mode",\n    CAMPAIGN_INSTANCE_ID_KEY,\n    "campaign_hours",\n    "created_at",\n    "updated_at",\n    "artifact_hashes",\n    "master_domain_contract",\n    "proof_summary_schema_version",\n    "reset_reason",\n    "final_result",\n    "final_status",\n    "last_stop_reason",\n    "terminal_frontier_evidence",\n    "declare_mode",\n    "candidates",\n}',
+    'STRONG_CANDIDATE_STATUSES': 'STRONG_CANDIDATE_STATUSES = frozenset({"CERTIFIED", "INFEASIBLE"})',
+    'SUPERVISOR_PROPOSAL_STATE_KEY': 'SUPERVISOR_PROPOSAL_STATE_KEY = "supervisor_proposal"',
+    'SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION': 'SUPERVISOR_PROPOSAL_STATE_SCHEMA_VERSION = 2',
+    'SUPERVISOR_SEAL_AUTHORITY': 'SUPERVISOR_SEAL_AUTHORITY = "certified_exact_supervisor_seal_v1"',
+    'SUPERVISOR_SEAL_SCHEMA_VERSION': 'SUPERVISOR_SEAL_SCHEMA_VERSION = 2',
+    'SUPERVISOR_SEAL_STATE_KEY': 'SUPERVISOR_SEAL_STATE_KEY = "supervisor_seal"',
+    'TERMINAL_CERTIFIED_FINAL_RESULT_ALLOWED_FIELDS': 'TERMINAL_CERTIFIED_FINAL_RESULT_ALLOWED_FIELDS = frozenset(\n    {\n        "ghost_rect",\n        "placement_solution",\n        "search_status",\n        "search_stats",\n    }\n)',
+    'TERMINAL_CERTIFIED_FRONTIER_METRIC_ALLOWED_FIELDS': 'TERMINAL_CERTIFIED_FRONTIER_METRIC_ALLOWED_FIELDS = frozenset(\n    {\n        "selection_score_num",\n        "selection_score_den",\n        "certification_prune_gain",\n        "infeasible_prune_gain",\n        "anchor_count",\n        "frontier_size",\n        "potential_domain_size",\n        "probe_candidate",\n        "probe_prune_gain",\n        "probe_resume_pending",\n    }\n)',
+    'TERMINAL_CERTIFIED_GHOST_RECT_ALLOWED_FIELDS': 'TERMINAL_CERTIFIED_GHOST_RECT_ALLOWED_FIELDS = frozenset(\n    {\n        "w",\n        "h",\n        "area",\n        "anchor_x",\n        "anchor_y",\n    }\n)',
+    'TERMINAL_CERTIFIED_LAST_STOP_REASON_ALLOWED_FIELDS': 'TERMINAL_CERTIFIED_LAST_STOP_REASON_ALLOWED_FIELDS = frozenset(\n    {\n        "reason",\n        "status",\n        "updated_at",\n    }\n)',
+    'TERMINAL_CERTIFIED_PLACEMENT_SOLUTION_ENTRY_ALLOWED_FIELDS': 'TERMINAL_CERTIFIED_PLACEMENT_SOLUTION_ENTRY_ALLOWED_FIELDS = frozenset(\n    {\n        "facility_type",\n        "pose_idx",\n        "pose_id",\n        "anchor",\n        "orientation",\n        "port_mode",\n        "instance_id",\n        "operation_type",\n        "is_mandatory",\n        "bound_type",\n        "solve_mode",\n    }\n)',
+    'TERMINAL_CERTIFIED_SEARCH_STATS_ALLOWED_FIELDS': 'TERMINAL_CERTIFIED_SEARCH_STATS_ALLOWED_FIELDS = frozenset(\n    {\n        "attempts",\n        "explicit_candidate_solves",\n        "solve_mode",\n        "campaign_resumed",\n        "frontier_peak_size",\n        "derived_pruned_candidates",\n        "frontier_selection_policy",\n        "frontier_candidate_metrics",\n        "solve_time_seconds",\n        "benders_iterations",\n    }\n)',
+    'TERMINAL_FULL_FRONTIER_CERTIFIED_REASON': 'TERMINAL_FULL_FRONTIER_CERTIFIED_REASON = "search_exhausted_all_candidates"',
+    'VALID_CANDIDATE_STATUSES': 'VALID_CANDIDATE_STATUSES = {\n    "RUNNING",\n    "CERTIFIED",\n    "INFEASIBLE",\n    "UNKNOWN",\n    "UNPROVEN",\n    # P1 #7a prep: ε-Certified status. status="EPSILON_CERTIFIED" 表示 candidate\n    # 求到 ε-bound 内但未 ε=0 完整 certified。bound_state.epsilon_target 记录\n    # 是哪个 ε 阶段（0.05/0.01/0.0）。final_status 同样可以是 EPSILON_CERTIFIED。\n    "EPSILON_CERTIFIED",\n}',
+    'VALID_FINAL_STATUSES': 'VALID_FINAL_STATUSES = frozenset(\n    {\n        "CERTIFIED",\n        "INFEASIBLE",\n        "UNKNOWN",\n        "UNPROVEN",\n        "EPSILON_CERTIFIED",\n        CANDIDATE_PROPOSED_STATUS,\n    }\n)',
+    '_PROPOSAL_READY_MARKER_KEYS': '_PROPOSAL_READY_MARKER_KEYS = frozenset(\n    {\n        "schema_version",\n        "authority",\n        "run_id",\n        "exit_code",\n        "checkpoint_sha256",\n        CAMPAIGN_INSTANCE_ID_KEY,\n    }\n)',
+    '_PROPOSAL_RUN_ID_ALLOWED_CHARS': '_PROPOSAL_RUN_ID_ALLOWED_CHARS = frozenset(\n    string.ascii_letters + string.digits + "._:-"\n)',
+    '_RESUME_CERTIFIED_REPLAY_REASON': '_RESUME_CERTIFIED_REPLAY_REASON = (\n    "certified_candidate_requires_fresh_replay_after_checkpoint_resume"\n)',
+    '_RESUME_INFEASIBLE_REPLAY_REASON': '_RESUME_INFEASIBLE_REPLAY_REASON = (\n    "infeasible_candidate_requires_fresh_replay_after_checkpoint_resume"\n)',
+    '_SUPERVISOR_PROPOSAL_STATE_KEYS': '_SUPERVISOR_PROPOSAL_STATE_KEYS = frozenset(\n    {"schema_version", "authority", "run_id", CAMPAIGN_INSTANCE_ID_KEY}\n)',
+    '_SUPERVISOR_SEAL_STATE_KEYS': '_SUPERVISOR_SEAL_STATE_KEYS = frozenset(\n    {\n        "schema_version",\n        "authority",\n        "transition",\n        "proposal_run_id",\n        "proposal_checkpoint_sha256",\n        "proposal_authority_b64",\n        CAMPAIGN_INSTANCE_ID_KEY,\n        "certified_state_sha256",\n        "sealed_at",\n    }\n)',
+    '_SUPERVISOR_SEAL_TOKEN': '_SUPERVISOR_SEAL_TOKEN = object()',
 }
 
 
@@ -5545,7 +5729,7 @@ def _check_l0_runtime_tcb_bindings(l0_tree: ast.Module, *, path: Path) -> list[s
             errors.append(f"PR2 L0 runtime TCB must not shadow/rebind {name}; found lines {lines}")
     errors.extend(_check_l0_import_binding_pins(l0_tree))
     for name, expected_sha256 in sorted(_PR2_L0_TCB_FUNCTION_SOURCE_SHA256.items()):
-        function = _function_def(l0_tree, name, path=path)
+        function = _resolve_source_pin_node(l0_tree, name, path=path)
         if _normalized_source_sha256(path, function) != expected_sha256:
             errors.append(f"PR2 L0 runtime TCB source sha256 drifted for {name}")
     for name, expected_source in sorted(_PR2_L0_TCB_CONSTANT_SOURCES.items()):
@@ -5579,7 +5763,7 @@ def _check_true_child_runtime_tcb_source_pins(
 ) -> list[str]:
     errors: list[str] = []
     for name, expected_sha256 in sorted(_PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256.items()):
-        function = _function_def(child_tree, name, path=path)
+        function = _resolve_source_pin_node(child_tree, name, path=path)
         if _normalized_source_sha256(path, function) != expected_sha256:
             errors.append(
                 f"PR2 true verifier child TCB source sha256 drifted for {name}"
@@ -5598,9 +5782,265 @@ def _check_exact_runtime_tcb_source_pins(
         if name.startswith("ExactCampaign."):
             function = _method_def(exact_class, name.split(".", 1)[1], path=path)
         else:
-            function = _function_def(exact_tree, name, path=path)
+            function = _resolve_source_pin_node(exact_tree, name, path=path)
         if _normalized_source_sha256(path, function) != expected_sha256:
             errors.append(f"ExactCampaign save TCB source sha256 drifted for {name}")
+    for name, expected_source in sorted(_PR2_EXACT_TCB_CONSTANT_SOURCES.items()):
+        bindings = _top_level_binding_points(exact_tree, name)
+        if len(bindings) != 1 or not isinstance(bindings[0], (ast.Assign, ast.AnnAssign)):
+            errors.append(
+                f"PR2 exact runtime TCB constant {name} must have one top-level assignment"
+            )
+            continue
+        if _normalized_source_text(path, bindings[0]) != expected_source:
+            errors.append(f"PR2 exact runtime TCB constant {name} must match pinned source")
+    return errors
+
+
+_PR2_CLOSE_KERNEL_SPECIAL_CONSTANTS: dict[str, frozenset[str]] = {
+    "PR2 L0 micro-verifier": frozenset({"CHILD_BOOTSTRAP_SOURCE"}),
+    "PR2 true verifier child": frozenset(),
+    "PR2 exact campaign": frozenset(),
+}
+
+
+def _check_close_kernel_files_fully_pinned(
+    l0_tree: ast.Module,
+    child_tree: ast.Module,
+    exact_tree: ast.Module,
+) -> list[str]:
+    """Round-10 closure: every def + class + module constant in the 3 close-kernel files
+    must be source-pinned, and no other top-level statement form is allowed.
+
+    This makes "did we cover every reachable cert-path helper" structurally impossible to get
+    wrong: reachability is moot when *every* function/class/method/constant in the file is
+    pinned, and the closed-world top-level check forbids smuggling proof-gutting logic into a
+    fresh module-level ``if``/``try``/expression that runs at import. A future symbol added to
+    any of these files fails this check until it is pinned. (V99 whole-file floor already
+    freezes these files; per-symbol pinning adds no edit friction — it only converts a silent
+    re-floor into a visible per-symbol diff in this checker.)
+    """
+    errors: list[str] = []
+
+    def _imp(*names: tuple[str, str | None]) -> tuple[str, tuple[tuple[str, str | None], ...]]:
+        return ("import", names)
+
+    def _from(
+        module: str,
+        *names: tuple[str, str | None],
+    ) -> tuple[str, int, str, tuple[tuple[str, str | None], ...]]:
+        return ("from", 0, module, names)
+
+    def _import_signature(
+        stmt: ast.Import | ast.ImportFrom,
+    ) -> tuple[str, tuple[tuple[str, str | None], ...]] | tuple[
+        str, int, str, tuple[tuple[str, str | None], ...]
+    ]:
+        if isinstance(stmt, ast.Import):
+            return _imp(*((alias.name, alias.asname) for alias in stmt.names))
+        return _from(
+            stmt.module or "",
+            *((alias.name, alias.asname) for alias in stmt.names),
+        )
+
+    specs = (
+        (
+            "PR2 L0 micro-verifier",
+            PR2_L0_MICRO_VERIFIER_PATH.name,
+            l0_tree,
+            _PR2_L0_TCB_FUNCTION_SOURCE_SHA256,
+            _PR2_L0_TCB_CONSTANT_SOURCES,
+            (
+                _from("__future__", ("annotations", None)),
+                _imp(("base64", None)),
+                _from("contextlib", ("contextmanager", None)),
+                _from("dataclasses", ("dataclass", None), ("field", None)),
+                _imp(("hashlib", None)),
+                _imp(("json", None)),
+                _imp(("math", None)),
+                _imp(("os", None)),
+                _from("pathlib", ("Path", None)),
+                _imp(("secrets", None)),
+                _imp(("shutil", None)),
+                _imp(("subprocess", None)),
+                _imp(("sys", None)),
+                _imp(("sysconfig", None)),
+                _imp(("tempfile", None)),
+                _imp(("time", None)),
+                _imp(("uuid", None)),
+                _from("typing", ("Any", None), ("Mapping", None), ("Sequence", None)),
+            ),
+        ),
+        (
+            "PR2 true verifier child",
+            PR2_L0_TRUE_VERIFIER_CHILD_PATH.name,
+            child_tree,
+            _PR2_TRUE_CHILD_TCB_FUNCTION_SOURCE_SHA256,
+            _PR2_CHILD_TOP_LEVEL_CONSTANT_SOURCES,
+            (
+                _from("__future__", ("annotations", None)),
+                _imp(("base64", None)),
+                _from("collections.abc", ("Iterable", None)),
+                _imp(("hashlib", None)),
+                _imp(("importlib.machinery", None)),
+                _imp(("json", None)),
+                _imp(("os", None)),
+                _from("pathlib", ("Path", None)),
+                _imp(("sys", None)),
+                _imp(("sysconfig", None)),
+                _imp(("tempfile", None)),
+                _imp(("traceback", None)),
+                _from("typing", ("Any", None), ("Mapping", None)),
+            ),
+        ),
+        (
+            "PR2 exact campaign",
+            EXACT_CAMPAIGN_PATH.name,
+            exact_tree,
+            _PR2_EXACT_TCB_SOURCE_SHA256,
+            _PR2_EXACT_TCB_CONSTANT_SOURCES,
+            (
+                _from("__future__", ("annotations", None)),
+                _imp(("calendar", None)),
+                _imp(("base64", None)),
+                _imp(("hashlib", None)),
+                _imp(("json", None)),
+                _imp(("math", None)),
+                _imp(("os", None)),
+                _imp(("string", None)),
+                _imp(("tempfile", None)),
+                _imp(("time", None)),
+                _imp(("uuid", None)),
+                _from("contextlib", ("contextmanager", None)),
+                _from("dataclasses", ("dataclass", None)),
+                _from("pathlib", ("Path", None)),
+                _from(
+                    "typing",
+                    ("Any", None),
+                    ("Dict", None),
+                    ("Iterator", None),
+                    ("Mapping", None),
+                    ("Optional", None),
+                    ("Sequence", None),
+                    ("Tuple", None),
+                ),
+                _from(
+                    "src.models.cut_manager",
+                    ("BendersCut", None),
+                    ("_parse_ghost_anchor_condition_key", None),
+                ),
+                _from("src.io.strict_json", ("loads_strict_json", None)),
+                _from(
+                    "src.models.master_model",
+                    ("POSE_LEVEL_OPTIONAL_OPERATIONS", None),
+                    ("POSE_LEVEL_OPTIONAL_TEMPLATES", None),
+                    ("infer_certified_optional_lower_bounds_for_instances", None),
+                    ("load_generic_io_requirements_artifact", None),
+                ),
+                _from(
+                    "src.search.certified_artifact_contract",
+                    ("LOCKED_EXACT_ARTIFACT_PATHS", None),
+                    ("validate_locked_exact_artifact_contract", None),
+                    ("validate_locked_p1_2_close_kernel", None),
+                ),
+                _from(
+                    "src.search.certified_frontier",
+                    ("TERMINAL_FRONTIER_OBJECTIVE", None),
+                    ("terminal_frontier_evidence_violation", None),
+                ),
+                _from(
+                    "src.search.candidate_proof_replay",
+                    ("CANDIDATE_PROOF_FIELD", None),
+                    ("project_candidate_records_for_sink", None),
+                ),
+                _from(
+                    "src.search.terminal_fixed_witness_verifier",
+                    ("TERMINAL_FIXED_WITNESS_AUDIT_FIELD", None),
+                    ("canonical_state_bytes_for_fixed_witness", None),
+                    ("stable_terminal_fixed_witness_verdict_payload", None),
+                ),
+                _from(
+                    "src.search.terminal_fixed_witness_capsule",
+                    ("build_terminal_fixed_witness_projection_at_sink", None),
+                ),
+            ),
+        ),
+    )
+    for label, filename, tree, fmap, cmap, expected_imports in specs:
+        special = _PR2_CLOSE_KERNEL_SPECIAL_CONSTANTS[label]
+        past_import_block = False
+        import_index = 0
+        for index, stmt in enumerate(tree.body):
+            if isinstance(stmt, ast.FunctionDef):
+                past_import_block = True
+                if stmt.name not in fmap:
+                    errors.append(
+                        f"{label} close-kernel function not source-pinned: {stmt.name}"
+                    )
+            elif isinstance(stmt, ast.ClassDef):
+                past_import_block = True
+                if stmt.name not in fmap:
+                    errors.append(
+                        f"{label} close-kernel class not source-pinned: {stmt.name}"
+                    )
+                for item in stmt.body:
+                    if isinstance(item, ast.FunctionDef):
+                        key = f"{stmt.name}.{item.name}"
+                        if key not in fmap:
+                            errors.append(
+                                f"{label} close-kernel method not source-pinned: {key}"
+                            )
+            elif isinstance(stmt, (ast.Assign, ast.AnnAssign)):
+                past_import_block = True
+                targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
+                for target in targets:
+                    if not isinstance(target, ast.Name):
+                        errors.append(
+                            f"{label} close-kernel module binding must be a plain name at line "
+                            f"{getattr(stmt, 'lineno', '?')}"
+                        )
+                    elif target.id in special or target.id in cmap:
+                        continue
+                    else:
+                        errors.append(
+                            f"{label} close-kernel module constant not pinned: {target.id}"
+                        )
+            elif isinstance(stmt, (ast.Import, ast.ImportFrom)):
+                if past_import_block:
+                    errors.append(
+                        f"tail import after definitions in {filename}: {ast.dump(stmt)}"
+                    )
+                else:
+                    actual_import = _import_signature(stmt)
+                    if import_index >= len(expected_imports):
+                        errors.append(
+                            f"{label} close-kernel import not allowlisted in "
+                            f"{filename}: {ast.dump(stmt)}"
+                        )
+                    elif actual_import != expected_imports[import_index]:
+                        errors.append(
+                            f"{label} close-kernel import drift in {filename} "
+                            f"at import slot {import_index + 1}: {ast.dump(stmt)}"
+                        )
+                    import_index += 1
+                continue
+            elif (
+                index == 0
+                and isinstance(stmt, ast.Expr)
+                and isinstance(stmt.value, ast.Constant)
+                and isinstance(stmt.value.value, str)
+            ):
+                continue  # module docstring
+            else:
+                errors.append(
+                    f"{label} close-kernel file has an unexpected top-level "
+                    f"{type(stmt).__name__} at line {getattr(stmt, 'lineno', '?')}"
+                )
+        if import_index != len(expected_imports):
+            errors.append(
+                f"{label} close-kernel import block incomplete in {filename}: "
+                f"expected {len(expected_imports)} import(s), found {import_index}"
+            )
     return errors
 
 
@@ -6872,6 +7312,9 @@ def _check_candidate_sink_replay_contract(
             child_tree,
             path=pr2_true_child_path,
         )
+    )
+    errors.extend(
+        _check_close_kernel_files_fully_pinned(l0_tree, child_tree, exact_tree)
     )
     errors.extend(
         _check_true_verifier_entrypoint_body(

@@ -106,6 +106,7 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema" in frontier_tests
     assert "test_v80_resume_rejects_terminal_final_result_below_project_admissibility" in frontier_tests
     assert "test_full_frontier_candidate_domain_keeps_oriented_dimensions" in frontier_tests
+    assert "test_v82_terminal_frontier_dominance_keeps_smaller_pending_candidate_canary" in frontier_tests
 
     export_tests = obligations["PO-CERTIFIED-EXPORT-SURFACE"]
     assert "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence" in export_tests
@@ -170,6 +171,9 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses" in close_kernel_tests
     assert "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows" in close_kernel_tests
     assert "test_p1_2_empty_rect_leaf_math_oracle" in close_kernel_tests
+    assert "test_p1_2_child_path_confinement_leaf_canary" in close_kernel_tests
+    assert "test_p1_2_close_kernel_strict_json_leaf_canaries" in close_kernel_tests
+    assert "test_p1_2_round10_close_kernel_full_pin_enforcement" in close_kernel_tests
 
 
 def _publisher_scan_paths() -> list[Path]:
@@ -1813,7 +1817,7 @@ def test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows(
         (
             "l0",
             _l0_appends_round_trip_stub,
-            "run_l0_micro_verifier_round_trip must be unique",
+            "source pin target not uniquely resolvable",
         ),
         (
             "l0",
@@ -1949,6 +1953,13 @@ def test_p1_2_empty_rect_leaf_math_oracle() -> None:
         grid_h=3,
         min_side_admissibility=1,
     ) == (12, 3)
+    threshold_prefix = _build_occupancy_prefix(occupied_cells=set(), grid_w=5, grid_h=2)
+    assert _best_empty_rect_objective(
+        occupancy_prefix=threshold_prefix,
+        grid_w=5,
+        grid_h=2,
+        min_side_admissibility=2,
+    ) == (10, 2)
     assert _empty_rect_exists(
         occupancy_prefix=empty_prefix,
         grid_w=3,
@@ -2002,6 +2013,136 @@ def test_p1_2_empty_rect_leaf_math_oracle() -> None:
         grid_h=4,
         min_side_admissibility=2,
     ) == (9, 3)
+
+
+def test_p1_2_child_path_confinement_leaf_canary(tmp_path: Path) -> None:
+    from src.search.pr2_l0_true_verifier_child import _is_within, _is_within_any
+
+    root = tmp_path / "root"
+    inside = root / "nested" / "module.py"
+    outside = tmp_path / "outside" / "module.py"
+    inside.parent.mkdir(parents=True)
+    outside.parent.mkdir(parents=True)
+    inside.write_text("# inside\n", encoding="utf-8")
+    outside.write_text("# outside\n", encoding="utf-8")
+    root = root.resolve()
+
+    assert _is_within(root, inside)
+    assert not _is_within(root, outside)
+    assert _is_within_any(inside, [root])
+    assert not _is_within_any(outside, [root])
+
+
+def test_p1_2_close_kernel_strict_json_leaf_canaries() -> None:
+    from src.search.exact_campaign import _loads_strict_json_object
+    from src.search.pr2_l0_micro_verifier_core import loads_l0_strict_json
+
+    with pytest.raises(ValueError, match="duplicate JSON key: a"):
+        loads_l0_strict_json('{"a": 1, "a": 2}')
+    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+        loads_l0_strict_json('{"a": NaN}')
+    with pytest.raises(ValueError, match="non-finite JSON number: 1e999"):
+        loads_l0_strict_json('{"a": 1e999}')
+
+    with pytest.raises(ValueError, match="duplicate JSON key: a"):
+        _loads_strict_json_object('{"a": 1, "a": 2}')
+    with pytest.raises(ValueError, match="invalid JSON constant: NaN"):
+        _loads_strict_json_object('{"a": NaN}')
+
+
+def test_p1_2_round10_close_kernel_full_pin_enforcement() -> None:
+    l0_source = check_p1_2_proof_obligations.PR2_L0_MICRO_VERIFIER_PATH.read_text(
+        encoding="utf-8"
+    )
+    l0_tree = ast.parse(l0_source)
+    child_tree = ast.parse(
+        check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
+            encoding="utf-8"
+        )
+    )
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_tree = ast.parse(exact_source)
+
+    assert (
+        check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+            l0_tree,
+            child_tree,
+            exact_tree,
+        )
+        == []
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(l0_source + "\n\ndef __round10_unpinned():\n    return None\n"),
+        child_tree,
+        exact_tree,
+    )
+    assert any("function not source-pinned: __round10_unpinned" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(l0_source + "\nif True:\n    pass\n"),
+        child_tree,
+        exact_tree,
+    )
+    assert any("unexpected top-level If" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(l0_source + "\nROUND10_UNPINNED_CONST = 1\n"),
+        child_tree,
+        exact_tree,
+    )
+    assert any("module constant not pinned: ROUND10_UNPINNED_CONST" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_source + "\nimport os\n"),
+    )
+    assert any(
+        "tail import after definitions in exact_campaign.py" in error
+        for error in errors
+    )
+
+    exact_lines = exact_source.splitlines()
+    exact_import_insert_line = 0
+    for node in exact_tree.body:
+        if (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
+        ):
+            exact_import_insert_line = getattr(node, "end_lineno", node.lineno)
+            continue
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            exact_import_insert_line = getattr(node, "end_lineno", node.lineno)
+            continue
+        break
+    exact_with_extra_import = (
+        "\n".join(
+            exact_lines[:exact_import_insert_line]
+            + ["import src.search.pr2_false_certify_patch"]
+            + exact_lines[exact_import_insert_line:]
+        )
+        + "\n"
+    )
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        l0_tree,
+        child_tree,
+        ast.parse(exact_with_extra_import),
+    )
+    assert any("close-kernel import not allowlisted" in error for error in errors)
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_files_fully_pinned(
+        ast.parse(l0_source + "\nfrom pathlib import Path as XPath\n"),
+        child_tree,
+        exact_tree,
+    )
+    assert any(
+        "tail import after definitions in pr2_l0_micro_verifier_core.py" in error
+        for error in errors
+    )
 
 
 @pytest.mark.parametrize(
@@ -2260,35 +2401,115 @@ def test_p1_2_checker_rejects_pr2_5_round6_structural_bypasses(
 
 
 @pytest.mark.parametrize(
-    ("source_kind", "mutator", "expected_error"),
+    (
+        "source_kind",
+        "mutator",
+        "expected_error",
+        "round10_full_pin_independently_rejects",
+    ),
     [
-        ("child", _child_early_return_before_precheck, "exactly one Return"),
-        ("child", _child_code_object_monkeypatches_precheck, "dunder attribute __code__"),
-        ("child", _child_globals_monkeypatches_precheck, "dunder attribute __globals__"),
-        ("child", _child_importfrom_builtins_setattr_alias, "ImportFrom outside pinned allowlist"),
-        ("child", _child_builtins_dict_facade, "must not reference __builtins__"),
-        ("child", _child_module_top_level_monkeypatch, "module top level must not assign non-Name targets"),
-        ("child", _child_return_unpack_overrides_domain, "must exactly match the pinned key set"),
-        ("child", _child_return_tcb_side_effect_call, "final return domain key tcb must match pinned expression"),
-        ("child", _child_precheck_extra_kwarg, "terminal precheck call must be exactly"),
-        ("l0", _l0_child_verdict_forged_rebind, "must not rebind child/domain/proposal data"),
-        ("child", _child_duplicate_verify_supervisor_domain, "must be unique"),
-        ("l0", _l0_duplicate_run_l0_supervisor_seal, "must be unique"),
-        ("exact", _exact_duplicate_transition_helper, "must be unique"),
-        ("child", _child_decorated_verify_supervisor_domain, "must not use decorators"),
-        ("child", _child_top_level_rebinds_verify, "must be unique"),
-        ("child", _child_helper_code_swap, "dunder attribute __code__"),
-        ("child", _child_shadows_getattr, "must not shadow/rebind getattr"),
-        ("child", _child_class_body_side_effect, "body contains import-time executable statement"),
-        ("l0", _l0_object_setattr_forges_child_verdict, "mutator/reflection hook"),
-        ("l0", _l0_domain_update_after_assignment, "mutator/reflection hook"),
-        ("l0", _l0_child_verdict_response_update, "mutator/reflection hook"),
-        ("l0", _l0_child_payload_update_after_verdict, "mutator/reflection hook"),
-        ("l0", _l0_type_setitem_domain, "mutator/reflection hook"),
-        ("l0", _l0_class_setitem_domain, "mutator/reflection hook"),
-        ("l0", _l0_transition_starts_with_return, "unconditional top-level Return"),
-        ("exact", _exact_transition_starts_with_return, "unconditional top-level Return"),
-        ("l0", _l0_postwrite_starts_with_return, "unconditional top-level Return"),
+        ("child", _child_early_return_before_precheck, "exactly one Return", False),
+        (
+            "child",
+            _child_code_object_monkeypatches_precheck,
+            "dunder attribute __code__",
+            False,
+        ),
+        (
+            "child",
+            _child_globals_monkeypatches_precheck,
+            "dunder attribute __globals__",
+            False,
+        ),
+        (
+            "child",
+            _child_importfrom_builtins_setattr_alias,
+            "ImportFrom outside pinned allowlist",
+            False,
+        ),
+        ("child", _child_builtins_dict_facade, "must not reference __builtins__", False),
+        (
+            "child",
+            _child_module_top_level_monkeypatch,
+            "PR2 true verifier child module top level must not assign non-Name targets",
+            True,
+        ),
+        (
+            "child",
+            _child_return_unpack_overrides_domain,
+            "must exactly match the pinned key set",
+            False,
+        ),
+        (
+            "child",
+            _child_return_tcb_side_effect_call,
+            "final return domain key tcb must match pinned expression",
+            False,
+        ),
+        (
+            "child",
+            _child_precheck_extra_kwarg,
+            "terminal precheck call must be exactly",
+            False,
+        ),
+        (
+            "l0",
+            _l0_child_verdict_forged_rebind,
+            "must not rebind child/domain/proposal data",
+            False,
+        ),
+        (
+            "child",
+            _child_duplicate_verify_supervisor_domain,
+            "source pin target not uniquely resolvable",
+            False,
+        ),
+        (
+            "l0",
+            _l0_duplicate_run_l0_supervisor_seal,
+            "source pin target not uniquely resolvable",
+            False,
+        ),
+        (
+            "exact",
+            _exact_duplicate_transition_helper,
+            "source pin target not uniquely resolvable",
+            False,
+        ),
+        ("child", _child_decorated_verify_supervisor_domain, "must not use decorators", False),
+        (
+            "child",
+            _child_top_level_rebinds_verify,
+            "source pin target not uniquely resolvable",
+            True,
+        ),
+        ("child", _child_helper_code_swap, "dunder attribute __code__", False),
+        ("child", _child_shadows_getattr, "must not shadow/rebind getattr", False),
+        (
+            "child",
+            _child_class_body_side_effect,
+            "body contains import-time executable statement",
+            False,
+        ),
+        ("l0", _l0_object_setattr_forges_child_verdict, "mutator/reflection hook", False),
+        ("l0", _l0_domain_update_after_assignment, "mutator/reflection hook", False),
+        ("l0", _l0_child_verdict_response_update, "mutator/reflection hook", False),
+        (
+            "l0",
+            _l0_child_payload_update_after_verdict,
+            "mutator/reflection hook",
+            False,
+        ),
+        ("l0", _l0_type_setitem_domain, "mutator/reflection hook", False),
+        ("l0", _l0_class_setitem_domain, "mutator/reflection hook", False),
+        ("l0", _l0_transition_starts_with_return, "unconditional top-level Return", False),
+        (
+            "exact",
+            _exact_transition_starts_with_return,
+            "unconditional top-level Return",
+            False,
+        ),
+        ("l0", _l0_postwrite_starts_with_return, "unconditional top-level Return", False),
     ],
     ids=[
         "g1-child-early-return-before-precheck",
@@ -2326,6 +2547,7 @@ def test_p1_2_checker_rejects_pr2_5_closed_world_reachability_bypasses(
     source_kind: str,
     mutator: object,
     expected_error: str,
+    round10_full_pin_independently_rejects: bool,
 ) -> None:
     assert callable(mutator)
     base_child = check_p1_2_proof_obligations.PR2_L0_TRUE_VERIFIER_CHILD_PATH.read_text(
@@ -2366,7 +2588,12 @@ def test_p1_2_checker_rejects_pr2_5_closed_world_reachability_bypasses(
         exact_source=exact_source,
     )
 
-    assert legacy_errors == []
+    if round10_full_pin_independently_rejects:
+        # round-10 full-pin is an independent defense-in-depth line: it still
+        # rejects this bypass after the old closed-world guard is disabled.
+        assert legacy_errors != []
+    else:
+        assert legacy_errors == []
 
 
 @pytest.mark.parametrize(
