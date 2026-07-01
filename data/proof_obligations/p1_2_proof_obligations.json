@@ -4,7 +4,7 @@
   "status": "active_fail_closed_contract",
   "updated_at": "2026-06-26",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "35a351e26b6524ba1363bf14e767f907cf9a9ceef2215cd819126cafa1975c47",
+  "semantic_projection_sha256": "6d82c0ca5f94e1f985b8f909a8f0c23bd04a90655188e3598e32dbf2fe17c3b7",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -543,6 +543,19 @@
         "test_p1_2_round14_runtime_anchor_rejects_manifest_semantic_projection_mismatch",
         "test_p1_2_round14_close_kernel_accepts_class_builtin_member_without_def_time_use",
         "test_p1_2_round14_checker_accepts_errors_iadd_required_call",
+        "test_p1_2_round15_manifest_projection_rejects_top_level_key_drift",
+        "test_p1_2_round15_close_kernel_rejects_runtime_reflection_primitive_writes",
+        "test_p1_2_round15_close_kernel_rejects_ctypes_native_member_write",
+        "test_p1_2_round15_close_kernel_allows_known_safe_runtime_member_forms",
+        "test_p1_2_round15_witness_shadow_rejects_comprehension_and_namespace_writes",
+        "test_p1_2_round15_witness_shadow_rejects_statement_and_type_binding_forms",
+        "test_p1_2_round15_checker_required_callees_are_runtime_bound_before_subprocess",
+        "test_p1_2_round15_checker_top_level_closed_world_rejects_dynamic_namespace_rebind",
+        "test_p1_2_round15_checker_rejects_errors_match_capture_and_other_rebinds",
+        "test_p1_2_round15_checker_rejects_unapproved_accumulator_callee_and_frame_escape",
+        "test_p1_2_round15_checker_rejects_side_effectful_errors_append_args",
+        "test_p1_2_round15_checker_rejects_floor_tuple_walrus_rebind",
+        "test_p1_2_round15_try_star_and_literal_accumulator_concern_canaries",
         "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
         "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
@@ -953,7 +966,24 @@
         "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "e5c408fff4dbb0fb6477df6c6cb69e403f4b5b86793cba6472ad2286f13e7a8f",
+        "source_sha256": "c1eeea2fec1b4b130f7a4436c5758cc6b92b384a57d678f272cadcdcaa1758db",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/certified_artifact_contract.py",
+        "classification": "p1_2_close_kernel",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "locked_p1_2_close_kernel_violation",
+          "LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256"
+        ],
+        "required_guard_tokens": [
+          "validate_locked_p1_2_close_kernel",
+          "locked_p1_2_close_kernel_violation",
+          "_locked_close_kernel_checker_ast_anchor_violation",
+          "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
+        ],
+        "source_sha256": "308bf8232b28db839476fbc1a7a59c98264f2acf774d8d30c991ed4b62334313",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

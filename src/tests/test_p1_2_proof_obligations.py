@@ -192,6 +192,22 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_child_path_confinement_leaf_canary" in close_kernel_tests
     assert "test_p1_2_close_kernel_strict_json_leaf_canaries" in close_kernel_tests
     assert "test_p1_2_round10_close_kernel_full_pin_enforcement" in close_kernel_tests
+    assert "test_p1_2_round15_manifest_projection_rejects_top_level_key_drift" in close_kernel_tests
+    assert "test_p1_2_round15_close_kernel_rejects_runtime_reflection_primitive_writes" in close_kernel_tests
+    assert "test_p1_2_round15_close_kernel_rejects_ctypes_native_member_write" in close_kernel_tests
+    assert "test_p1_2_round15_close_kernel_allows_known_safe_runtime_member_forms" in close_kernel_tests
+    assert "test_p1_2_round15_witness_shadow_rejects_comprehension_and_namespace_writes" in close_kernel_tests
+    assert "test_p1_2_round15_witness_shadow_rejects_statement_and_type_binding_forms" in close_kernel_tests
+    assert "test_p1_2_round15_checker_required_callees_are_runtime_bound_before_subprocess" in close_kernel_tests
+    assert (
+        "test_p1_2_round15_checker_top_level_closed_world_rejects_dynamic_namespace_rebind"
+        in close_kernel_tests
+    )
+    assert "test_p1_2_round15_checker_rejects_errors_match_capture_and_other_rebinds" in close_kernel_tests
+    assert "test_p1_2_round15_checker_rejects_unapproved_accumulator_callee_and_frame_escape" in close_kernel_tests
+    assert "test_p1_2_round15_checker_rejects_side_effectful_errors_append_args" in close_kernel_tests
+    assert "test_p1_2_round15_checker_rejects_floor_tuple_walrus_rebind" in close_kernel_tests
+    assert "test_p1_2_round15_try_star_and_literal_accumulator_concern_canaries" in close_kernel_tests
 
 
 def _publisher_scan_paths() -> list[Path]:
@@ -251,6 +267,81 @@ def _candidate_sink_replay_errors_for_sources(
         )
     except check_p1_2_proof_obligations.CheckError as exc:
         return [str(exc)]
+
+
+def _checker_source() -> str:
+    return (PROJECT_ROOT / "scripts" / "check_p1_2_proof_obligations.py").read_text(
+        encoding="utf-8"
+    )
+
+
+def _write_checker_source(tmp_path: Path, name: str, source: str) -> Path:
+    checker_path = tmp_path / name
+    checker_path.write_text(source, encoding="utf-8", newline="\n")
+    return checker_path
+
+
+def _checker_source_before_entrypoint(source: str, addition: str) -> str:
+    marker = '\n\nif __name__ == "__main__":\n'
+    assert marker in source
+    return source.replace(marker, f"\n{addition}\n{marker}", 1)
+
+
+def _checker_self_binding_errors_for_source(
+    tmp_path: Path,
+    source: str,
+    *,
+    name: str = "checker_round15.py",
+) -> list[str]:
+    checker_path = _write_checker_source(tmp_path, name, source)
+    return check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path,
+    )
+
+
+def _checker_error_integrity_errors_for_source(
+    tmp_path: Path,
+    source: str,
+    *,
+    name: str = "checker_round15_errors.py",
+) -> list[str]:
+    checker_path = _write_checker_source(tmp_path, name, source)
+    return check_p1_2_proof_obligations._check_error_collector_integrity(
+        checker_path=checker_path,
+    )
+
+
+def _locked_close_kernel_violation_for_checker_source(
+    tmp_path: Path,
+    source: str,
+) -> str | None:
+    from src.search.certified_artifact_contract import locked_p1_2_close_kernel_violation
+
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    (tmp_path / "PROJECT_LOCK.md").write_text("locked\n", encoding="utf-8", newline="\n")
+    manifest_path = tmp_path / "data/proof_obligations/p1_2_proof_obligations.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(MANIFEST_PATH.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+    allowlist_path = tmp_path / "data/proof_obligations/strong_status_write_allowlist.json"
+    allowlist_path.write_text(
+        check_p1_2_proof_obligations.STRONG_STATUS_WRITE_ALLOWLIST_PATH.read_text(
+            encoding="utf-8"
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    checker_path = tmp_path / "scripts/check_p1_2_proof_obligations.py"
+    checker_path.parent.mkdir(exist_ok=True)
+    checker_path.write_text(source, encoding="utf-8", newline="\n")
+    return locked_p1_2_close_kernel_violation(tmp_path, checker_timeout_seconds=0.01)
+
+
+def _fixed_witness_errors_for_exact_source(tmp_path: Path, exact_source: str) -> list[str]:
+    exact_path = tmp_path / "exact_campaign.py"
+    exact_path.write_text(exact_source, encoding="utf-8", newline="\n")
+    return check_p1_2_proof_obligations._fixed_witness_publish_binding_errors(
+        exact_campaign_path=exact_path,
+    )
 
 
 def _move_child_final_status_after_precheck(source: str) -> str:
@@ -3230,6 +3321,453 @@ def test_p1_2_round14_checker_accepts_errors_iadd_required_call(tmp_path: Path) 
     )
 
     assert check_p1_2_proof_obligations._check_close_kernel_checker_self_binding(
+        checker_path=checker_path,
+    ) == []
+
+
+def test_p1_2_round15_manifest_projection_rejects_top_level_key_drift() -> None:
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    manifest["round15_unreviewed_claim"] = {"status": "CERTIFIED"}
+
+    errors = check_p1_2_proof_obligations._check_proof_obligation_manifest_semantic_projection(
+        manifest
+    )
+
+    assert any("unreviewed top-level fields" in error for error in errors)
+    assert any("round15_unreviewed_claim" in error for error in errors)
+
+    manifest = copy.deepcopy(check_p1_2_proof_obligations._load_json(MANIFEST_PATH))
+    del manifest["updated_at"]
+
+    errors = check_p1_2_proof_obligations._check_proof_obligation_manifest_semantic_projection(
+        manifest
+    )
+
+    assert any("missing reviewed top-level fields" in error for error in errors)
+    assert any("updated_at" in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected"),
+    [
+        (
+            '        self.__dict__["supervisor_seal"] = None\n',
+            "runtime reflection primitive __dict__",
+        ),
+        (
+            '        vars(self)["supervisor_seal"] = None\n',
+            "runtime reflection primitive vars",
+        ),
+        (
+            '        w = setattr\n        w(self, "supervisor_seal", None)\n',
+            "runtime reflection primitive setattr",
+        ),
+        (
+            '        w = object.__setattr__\n        w(self, "supervisor_seal", None)\n',
+            "runtime reflection primitive __setattr__",
+        ),
+        (
+            '        getattr(type, "__setattr__")(ExactCampaign, "supervisor_seal", None)\n',
+            "getattr dunder member __setattr__",
+        ),
+        (
+            '        type.__dict__["__setattr__"](ExactCampaign, "supervisor_seal", None)\n',
+            "runtime reflection primitive __dict__",
+        ),
+        (
+            "        sys._getframe()\n",
+            "runtime reflection primitive sys._getframe",
+        ),
+        (
+            "        inspect.stack()\n",
+            "runtime reflection primitive inspect.stack",
+        ),
+        (
+            "        gc.get_objects()\n",
+            "runtime reflection primitive gc.get_objects",
+        ),
+    ],
+)
+def test_p1_2_round15_close_kernel_rejects_runtime_reflection_primitive_writes(
+    tmp_path: Path,
+    payload: str,
+    expected: str,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_source = _replace_once(
+        exact_source,
+        "    def save(self) -> None:\n"
+        "        with _checkpoint_write_lock(self.path):\n",
+        "    def save(self) -> None:\n"
+        f"{payload}"
+        "        with _checkpoint_write_lock(self.path):\n",
+    )
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_source,
+    )
+
+    assert any(expected in error for error in errors)
+
+
+def test_p1_2_round15_close_kernel_allows_known_safe_runtime_member_forms() -> None:
+    tree = ast.parse(
+        "def probe(self, spec):\n"
+        "    self.state = {}\n"
+        '    origin = getattr(spec, "origin", None)\n'
+    )
+    function = tree.body[0]
+    assert isinstance(function, ast.FunctionDef)
+
+    assert (
+        check_p1_2_proof_obligations._check_close_kernel_runtime_member_writes(
+            "round15", "ExactCampaign", function
+        )
+        == []
+    )
+
+    tree = ast.parse(
+        "def probe(value=(lambda _=build_terminal_fixed_witness_projection_at_sink: _)):\n"
+        "    return build_terminal_fixed_witness_projection_at_sink()\n"
+    )
+    function = tree.body[0]
+    assert isinstance(function, ast.FunctionDef)
+    assert not check_p1_2_proof_obligations._function_shadows_name(
+        function,
+        "build_terminal_fixed_witness_projection_at_sink",
+    )
+
+
+@pytest.mark.parametrize(
+    "injection",
+    [
+        "    [None for build_terminal_fixed_witness_projection_at_sink in (0,)]\n",
+        '    globals()["build_terminal_fixed_witness_projection_at_sink"] = lambda **kwargs: None\n',
+        '    locals().update({"build_terminal_fixed_witness_projection_at_sink": None})\n',
+        '    vars()["build_terminal_fixed_witness_projection_at_sink"] = None\n',
+    ],
+)
+def test_p1_2_round15_witness_shadow_rejects_comprehension_and_namespace_writes(
+    tmp_path: Path,
+    injection: str,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_source = _replace_once(
+        exact_source,
+        "    fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(\n",
+        f"{injection}"
+        "    fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(\n",
+    )
+
+    errors = _fixed_witness_errors_for_exact_source(
+        tmp_path,
+        exact_source,
+    )
+
+    assert any(
+        "shadows imported fixed-witness capsule symbol "
+        "build_terminal_fixed_witness_projection_at_sink" in error
+        for error in errors
+    )
+
+
+@pytest.mark.parametrize(
+    "injection",
+    [
+        "    global build_terminal_fixed_witness_projection_at_sink\n",
+        "    del build_terminal_fixed_witness_projection_at_sink\n",
+        "    type build_terminal_fixed_witness_projection_at_sink = int\n",
+        "    def _round15_type_param[build_terminal_fixed_witness_projection_at_sink]():\n"
+        "        pass\n",
+        "    build_terminal_fixed_witness_projection_at_sink = None\n"
+        "    def _round15_nonlocal():\n"
+        "        nonlocal build_terminal_fixed_witness_projection_at_sink\n",
+    ],
+)
+def test_p1_2_round15_witness_shadow_rejects_statement_and_type_binding_forms(
+    tmp_path: Path,
+    injection: str,
+) -> None:
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_source = _replace_once(
+        exact_source,
+        "    fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(\n",
+        f"{injection}"
+        "    fixed_witness_projection = build_terminal_fixed_witness_projection_at_sink(\n",
+    )
+
+    errors = _fixed_witness_errors_for_exact_source(
+        tmp_path,
+        exact_source,
+    )
+
+    assert any(
+        "shadows imported fixed-witness capsule symbol "
+        "build_terminal_fixed_witness_projection_at_sink" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round15_checker_required_callees_are_runtime_bound_before_subprocess(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source()
+    checker_source = _checker_source_before_entrypoint(
+        source,
+        "_check_close_kernel_contract = lambda manifest: []\n",
+    )
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        checker_source,
+        name="checker_late_callee_rebind.py",
+    )
+    assert any(
+        "required callee _check_close_kernel_contract must resolve to exactly one "
+        "top-level FunctionDef" in error
+        for error in errors
+    )
+
+    checker_source = source.replace(
+        'if __name__ == "__main__":\n    raise SystemExit(main())\n',
+        "if True:\n    raise SystemExit(main())\n",
+        1,
+    )
+    assert (
+        _locked_close_kernel_violation_for_checker_source(tmp_path / "entry", checker_source)
+        == "locked_p1_2_close_kernel_checker_entrypoint_invalid"
+    )
+
+    checker_source = _checker_source_before_entrypoint(source, "main = lambda: 0\n")
+    assert (
+        _locked_close_kernel_violation_for_checker_source(tmp_path / "main_rebind", checker_source)
+        == "locked_p1_2_close_kernel_checker_protected_binding:main"
+    )
+
+
+def test_p1_2_round15_checker_top_level_closed_world_rejects_dynamic_namespace_rebind(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source()
+
+    # round-15 Finding A: ``globals()["main"] = lambda: 0`` is an ``Assign`` with a
+    # ``Subscript`` target, so the binding-point count misses it while it still
+    # rebinds ``main`` at module-exec time (the real ``main`` never runs, the
+    # subprocess exits 0).  Only the parent-process runtime anchor can catch this,
+    # via the module top-level closed-world check.
+    main_rebind_source = _checker_source_before_entrypoint(
+        source,
+        'globals()["main"] = lambda: 0\n',
+    )
+    violation = _locked_close_kernel_violation_for_checker_source(
+        tmp_path / "globals_main_rebind", main_rebind_source
+    )
+    assert violation is not None
+    assert violation.startswith(
+        "locked_p1_2_close_kernel_checker_top_level_disallowed:Assign"
+    )
+
+    # Defense in depth: the checker-side self-binding guard rejects the same
+    # module-level dynamic write when it rebinds a required callee (``main`` still
+    # runs in that case).
+    callee_rebind_source = _checker_source_before_entrypoint(
+        source,
+        'globals()["_check_close_kernel_contract"] = lambda manifest: []\n',
+    )
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        callee_rebind_source,
+        name="checker_globals_callee_rebind.py",
+    )
+    assert any(
+        "module top level contains disallowed statement Assign" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round15_close_kernel_rejects_ctypes_native_member_write(
+    tmp_path: Path,
+) -> None:
+    # round-15 Finding B: native ``ctypes`` C-API attribute writes are a member
+    # override vector not covered by the Python-level primitive set.
+    exact_source = check_p1_2_proof_obligations.EXACT_CAMPAIGN_PATH.read_text(
+        encoding="utf-8"
+    )
+    exact_source = _replace_once(
+        exact_source,
+        "    def save(self) -> None:\n"
+        "        with _checkpoint_write_lock(self.path):\n",
+        "    def save(self) -> None:\n"
+        '        ctypes.pythonapi.PyObject_SetAttr(self, b"supervisor_seal", None)\n'
+        "        with _checkpoint_write_lock(self.path):\n",
+    )
+
+    errors = _candidate_sink_replay_errors_for_sources(
+        tmp_path,
+        exact_source=exact_source,
+    )
+
+    assert any(
+        "runtime reflection primitive ctypes.pythonapi.PyObject_SetAttr" in error
+        for error in errors
+    )
+
+
+@pytest.mark.parametrize(
+    "injection",
+    [
+        "        match []:\n"
+        "            case errors:\n"
+        "                pass\n",
+        "        try:\n"
+        "            raise RuntimeError()\n"
+        "        except RuntimeError as errors:\n"
+        "            pass\n",
+        "        with open(__file__, encoding=\"utf-8\") as errors:\n"
+        "            pass\n",
+    ],
+)
+def test_p1_2_round15_checker_rejects_errors_match_capture_and_other_rebinds(
+    tmp_path: Path,
+    injection: str,
+) -> None:
+    source = _replace_once(
+        _checker_source(),
+        "        errors: list[str] = []\n",
+        "        errors: list[str] = []\n"
+        f"{injection}",
+    )
+
+    errors = _checker_error_integrity_errors_for_source(tmp_path, source)
+
+    assert any("must not bind errors except errors: list[str] = []" in error for error in errors)
+
+
+def test_p1_2_round15_checker_rejects_unapproved_accumulator_callee_and_frame_escape(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source()
+    source_with_unapproved_callee = _checker_source_before_entrypoint(
+        _replace_once(
+            source,
+            "        errors.extend(_check_close_kernel_contract(manifest))\n",
+            "        errors.extend(_check_close_kernel_contract(manifest))\n"
+            "        errors.extend(_round15_unapproved_errors())\n",
+        ),
+        "def _round15_unapproved_errors() -> list[str]:\n"
+        "    return []\n",
+    )
+    errors = _checker_error_integrity_errors_for_source(
+        tmp_path,
+        source_with_unapproved_callee,
+        name="checker_unapproved_accumulator.py",
+    )
+    assert any(
+        "accumulator callee _round15_unapproved_errors is not in the required-callee floor"
+        in error
+        for error in errors
+    )
+
+    source_with_frame_escape = _replace_once(
+        source,
+        "def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:\n"
+        "    errors: list[str] = []\n",
+        "def _check_phase_anchor(manifest: dict[str, Any]) -> list[str]:\n"
+        "    sys._getframe()\n"
+        "    errors: list[str] = []\n",
+    )
+    errors = _checker_error_integrity_errors_for_source(
+        tmp_path,
+        source_with_frame_escape,
+        name="checker_frame_escape.py",
+    )
+    assert any("caller-frame/dynamic primitive sys._getframe" in error for error in errors)
+
+
+def test_p1_2_round15_checker_rejects_side_effectful_errors_append_args(
+    tmp_path: Path,
+) -> None:
+    source = _replace_once(
+        _checker_source(),
+        "        errors: list[str] = []\n",
+        "        errors: list[str] = []\n"
+        "        errors.append(_round15_side_effect())\n",
+    )
+
+    errors = _checker_error_integrity_errors_for_source(tmp_path, source)
+
+    assert any("errors.append argument must be side-effect-free" in error for error in errors)
+
+
+def test_p1_2_round15_checker_rejects_floor_tuple_walrus_rebind(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source_before_entrypoint(
+        _checker_source(),
+        "(_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR := ())\n",
+    )
+
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_floor_walrus.py",
+    )
+
+    assert any(
+        "must define _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR exactly once" in error
+        for error in errors
+    )
+
+
+def test_p1_2_round15_try_star_and_literal_accumulator_concern_canaries(
+    tmp_path: Path,
+) -> None:
+    source = _checker_source_before_entrypoint(
+        _checker_source(),
+        "try:\n"
+        "    pass\n"
+        "except* Exception as _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR:\n"
+        "    pass\n",
+    )
+    errors = _checker_self_binding_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_trystar_floor.py",
+    )
+    assert any(
+        "must define _PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR exactly once" in error
+        for error in errors
+    )
+
+    source = _replace_once(
+        _checker_source(),
+        "        errors.extend(_check_close_kernel_contract(manifest))\n",
+        "        errors.extend(_check_close_kernel_contract(manifest))\n"
+        '        errors.extend(["round15 literal list extension"])\n'
+        '        errors += ["round15 literal iadd"]\n',
+    )
+    errors = _checker_error_integrity_errors_for_source(
+        tmp_path,
+        source,
+        name="checker_literal_accumulators.py",
+    )
+    assert not any("round15 literal" in error for error in errors)
+    assert not any("non-whitelisted errors reference" in error for error in errors)
+    assert not any("is not in the required-callee floor" in error for error in errors)
+
+    source = _replace_once(
+        _checker_source(),
+        "    if errors:\n        return 1\n",
+        "    if errors:\n        _print_p1_2_errors(errors)\n        return 1\n",
+    )
+    checker_path = _write_checker_source(tmp_path, "checker_print_then_return.py", source)
+    assert check_p1_2_proof_obligations._check_main_error_reporting_shape(
         checker_path=checker_path,
     ) == []
 

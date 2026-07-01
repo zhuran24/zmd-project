@@ -12,13 +12,14 @@ contract applies to the source checkout itself and to project roots that carry
 
 from __future__ import annotations
 
+import ast
 import json
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Sequence
 
 LOCKED_EXACT_PROJECT_MARKER = "PROJECT_LOCK.md"
 
@@ -28,7 +29,60 @@ LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS = (
     "scripts/check_p1_2_proof_obligations.py",
 )
 LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256 = (
-    "35a351e26b6524ba1363bf14e767f907cf9a9ceef2215cd819126cafa1975c47"
+    "6d82c0ca5f94e1f985b8f909a8f0c23bd04a90655188e3598e32dbf2fe17c3b7"
+)
+LOCKED_P1_2_CHECKER_PROTECTED_CALLEES = (
+    "_check_step7_contract",
+    "_check_source_digest_contract",
+    "_check_source_digest_uses_contract",
+    "_check_runtime_cache_policy",
+    "_check_certified_cut_replay_contract",
+    "_check_candidate_sink_replay_contract",
+    "_check_certified_publication_boundary_contract",
+    "_check_strong_status_write_allowlist_gate",
+    "_check_isolated_exec_bytecode_binding_contract",
+    "_check_evidence_and_tests",
+    "_check_close_kernel_checker_self_binding",
+    "_check_error_collector_integrity",
+    "_check_main_self_integrity_preflight_shape",
+    "_check_main_error_reporting_shape",
+    "_check_error_collector_return_shape",
+    "_check_proof_obligation_manifest_semantic_projection",
+    "_check_close_kernel_contract",
+    "_check_phase_gate_provenance_contract",
+    "_check_phase_anchor",
+    "_check_exact_session_atomic_snapshot_contract",
+    "_check_independent_infeasibility_reverifier_contract",
+    "_check_unique_top_level_bindings",
+    "_check_terminal_final_result_violation_structure",
+    "_check_terminal_project_precheck_structure",
+    "_check_validate_terminal_solution_structure",
+    "_check_terminal_ghost_pick_structure",
+    "_check_exact_runtime_tcb_source_pins",
+    "_check_l0_runtime_tcb_bindings",
+    "_check_l0_supervisor_seal_body",
+    "_check_literal_strict_slot_assignment",
+    "_check_live_top_level_postwrite_guard",
+    "_check_l0_child_verdict_dataflow",
+    "_check_l0_supervisor_gate_result_flow",
+    "_check_l0_supervisor_seal_state_body",
+    "_check_child_module_toplevel_closed_world",
+    "_check_true_child_runtime_tcb_source_pins",
+    "_check_close_kernel_import_dependency_import_time_shape",
+    "_check_true_verifier_entrypoint_body",
+    "_check_child_verify_supervisor_domain_body",
+    "_check_call_result_flow_to_truthy_consumer",
+    "_check_call_assignment_no_rebind",
+    "_check_expr_result_flow_to_truthy_consumer",
+    "_check_true_verifier_child_domain_elevation_window",
+    "_check_true_verifier_child_closed_world",
+    "_check_true_verifier_child_return_dict_closed_world",
+    "_check_child_project_records_body",
+    "_check_child_project_candidate_records_direct_structure",
+    "_check_child_fixed_witness_body",
+    "_check_child_fixed_witness_direct_structure",
+    "_check_publisher_transaction_shape",
+    "_check_close_kernel_files_fully_pinned",
 )
 
 LOCKED_EXACT_ARTIFACT_PATHS = {
@@ -128,6 +182,287 @@ def _locked_close_kernel_manifest_projection_violation(path: Path) -> str | None
     return None
 
 
+def _locked_target_name_bindings(target: ast.AST) -> set[str]:
+    if isinstance(target, ast.Name):
+        return {target.id}
+    if isinstance(target, (ast.Tuple, ast.List)):
+        names: set[str] = set()
+        for element in target.elts:
+            names.update(_locked_target_name_bindings(element))
+        return names
+    if isinstance(target, ast.Starred):
+        return _locked_target_name_bindings(target.value)
+    return set()
+
+
+def _locked_import_bound_names(stmt: ast.Import | ast.ImportFrom) -> set[str]:
+    if isinstance(stmt, ast.Import):
+        return {alias.asname or alias.name.split(".", 1)[0] for alias in stmt.names}
+    return {alias.asname or alias.name for alias in stmt.names}
+
+
+def _locked_pattern_bound_names(pattern: ast.AST) -> set[str]:
+    names: set[str] = set()
+
+    class Visitor(ast.NodeVisitor):
+        def visit_MatchAs(self, node: ast.MatchAs) -> None:
+            if node.name is not None:
+                names.add(node.name)
+            if node.pattern is not None:
+                self.visit(node.pattern)
+
+        def visit_MatchStar(self, node: ast.MatchStar) -> None:
+            if node.name is not None:
+                names.add(node.name)
+
+        def visit_MatchMapping(self, node: ast.MatchMapping) -> None:
+            if node.rest is not None:
+                names.add(node.rest)
+            for pattern_node in node.patterns:
+                self.visit(pattern_node)
+
+    Visitor().visit(pattern)
+    return names
+
+
+def _locked_type_param_bound_names(node: ast.AST) -> set[str]:
+    names: set[str] = set()
+    for type_param in getattr(node, "type_params", ()):
+        name = getattr(type_param, "name", None)
+        if isinstance(name, str):
+            names.add(name)
+        elif isinstance(name, ast.Name):
+            names.add(name.id)
+    return names
+
+
+def _locked_type_alias_bound_names(stmt: ast.stmt) -> set[str]:
+    type_alias_cls = getattr(ast, "TypeAlias", None)
+    if type_alias_cls is None or not isinstance(stmt, type_alias_cls):
+        return set()
+    name_node = getattr(stmt, "name", None)
+    if isinstance(name_node, ast.Name):
+        return {name_node.id}
+    return set()
+
+
+def _locked_namedexpr_targets(node: ast.AST) -> set[str]:
+    names: set[str] = set()
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, child: ast.FunctionDef) -> None:
+            return
+
+        def visit_AsyncFunctionDef(self, child: ast.AsyncFunctionDef) -> None:
+            return
+
+        def visit_ClassDef(self, child: ast.ClassDef) -> None:
+            return
+
+        def visit_Lambda(self, child: ast.Lambda) -> None:
+            for default in child.args.defaults:
+                self.visit(default)
+            for default in child.args.kw_defaults:
+                if default is not None:
+                    self.visit(default)
+
+        def visit_NamedExpr(self, child: ast.NamedExpr) -> None:
+            names.update(_locked_target_name_bindings(child.target))
+            self.visit(child.value)
+
+    Visitor().visit(node)
+    return names
+
+
+def _locked_child_statement_bound_names(statements: Sequence[ast.stmt]) -> set[str]:
+    names: set[str] = set()
+    for stmt in statements:
+        names.update(_locked_current_scope_bound_names(stmt))
+    return names
+
+
+def _locked_current_scope_bound_names(stmt: ast.stmt) -> set[str]:
+    names: set[str] = set()
+    if isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        names.add(stmt.name)
+        names.update(_locked_type_param_bound_names(stmt))
+        for value in (
+            *stmt.decorator_list,
+            *stmt.args.defaults,
+            *(default for default in stmt.args.kw_defaults if default is not None),
+        ):
+            names.update(_locked_namedexpr_targets(value))
+        if stmt.returns is not None:
+            names.update(_locked_namedexpr_targets(stmt.returns))
+        return names
+    if isinstance(stmt, ast.ClassDef):
+        names.add(stmt.name)
+        names.update(_locked_type_param_bound_names(stmt))
+        for value in (*stmt.decorator_list, *stmt.bases, *(keyword.value for keyword in stmt.keywords)):
+            names.update(_locked_namedexpr_targets(value))
+        return names
+    if isinstance(stmt, ast.Assign):
+        for target in stmt.targets:
+            names.update(_locked_target_name_bindings(target))
+        names.update(_locked_namedexpr_targets(stmt.value))
+    elif isinstance(stmt, ast.AnnAssign):
+        names.update(_locked_target_name_bindings(stmt.target))
+        names.update(_locked_namedexpr_targets(stmt.annotation))
+        if stmt.value is not None:
+            names.update(_locked_namedexpr_targets(stmt.value))
+    elif isinstance(stmt, ast.AugAssign):
+        names.update(_locked_target_name_bindings(stmt.target))
+        names.update(_locked_namedexpr_targets(stmt.value))
+    elif isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        names.update(_locked_import_bound_names(stmt))
+    elif isinstance(stmt, ast.Delete):
+        for target in stmt.targets:
+            names.update(_locked_target_name_bindings(target))
+    elif isinstance(stmt, (ast.Global, ast.Nonlocal)):
+        names.update(stmt.names)
+    elif isinstance(stmt, (ast.For, ast.AsyncFor)):
+        names.update(_locked_target_name_bindings(stmt.target))
+        names.update(_locked_namedexpr_targets(stmt.iter))
+        names.update(_locked_child_statement_bound_names(stmt.body))
+        names.update(_locked_child_statement_bound_names(stmt.orelse))
+    elif isinstance(stmt, (ast.With, ast.AsyncWith)):
+        for item in stmt.items:
+            if item.optional_vars is not None:
+                names.update(_locked_target_name_bindings(item.optional_vars))
+            names.update(_locked_namedexpr_targets(item.context_expr))
+        names.update(_locked_child_statement_bound_names(stmt.body))
+    elif isinstance(stmt, (ast.Try, getattr(ast, "TryStar", ast.Try))):
+        names.update(_locked_child_statement_bound_names(stmt.body))
+        names.update(_locked_child_statement_bound_names(stmt.orelse))
+        names.update(_locked_child_statement_bound_names(stmt.finalbody))
+        for handler in stmt.handlers:
+            if handler.name is not None:
+                names.add(handler.name)
+            names.update(_locked_child_statement_bound_names(handler.body))
+    elif isinstance(stmt, ast.If):
+        names.update(_locked_namedexpr_targets(stmt.test))
+        names.update(_locked_child_statement_bound_names(stmt.body))
+        names.update(_locked_child_statement_bound_names(stmt.orelse))
+    elif isinstance(stmt, ast.Match):
+        names.update(_locked_namedexpr_targets(stmt.subject))
+        for case in stmt.cases:
+            names.update(_locked_pattern_bound_names(case.pattern))
+            if case.guard is not None:
+                names.update(_locked_namedexpr_targets(case.guard))
+            names.update(_locked_child_statement_bound_names(case.body))
+    else:
+        names.update(_locked_type_alias_bound_names(stmt))
+        names.update(_locked_namedexpr_targets(stmt))
+    names.update(_locked_type_alias_bound_names(stmt))
+    return names
+
+
+def _locked_top_level_binding_points(tree: ast.Module, name: str) -> list[ast.stmt]:
+    return [stmt for stmt in tree.body if name in _locked_current_scope_bound_names(stmt)]
+
+
+def _locked_checker_has_canonical_entrypoint(tree: ast.Module) -> bool:
+    if not tree.body or not isinstance(tree.body[-1], ast.If):
+        return False
+    stmt = tree.body[-1]
+    test = stmt.test
+    if not (
+        isinstance(test, ast.Compare)
+        and isinstance(test.left, ast.Name)
+        and test.left.id == "__name__"
+        and len(test.ops) == 1
+        and isinstance(test.ops[0], ast.Eq)
+        and len(test.comparators) == 1
+        and isinstance(test.comparators[0], ast.Constant)
+        and test.comparators[0].value == "__main__"
+        and not stmt.orelse
+        and len(stmt.body) == 1
+    ):
+        return False
+    raise_stmt = stmt.body[0]
+    if not isinstance(raise_stmt, ast.Raise) or not isinstance(raise_stmt.exc, ast.Call):
+        return False
+    exc = raise_stmt.exc
+    return (
+        isinstance(exc.func, ast.Name)
+        and exc.func.id == "SystemExit"
+        and len(exc.args) == 1
+        and not exc.keywords
+        and isinstance(exc.args[0], ast.Call)
+        and isinstance(exc.args[0].func, ast.Name)
+        and exc.args[0].func.id == "main"
+        and not exc.args[0].args
+        and not exc.args[0].keywords
+    )
+
+
+def _locked_checker_top_level_statement_allowed(
+    stmt: ast.stmt, *, is_first: bool, is_last: bool
+) -> bool:
+    if isinstance(stmt, (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef)):
+        return True
+    if isinstance(stmt, ast.Assign):
+        return bool(stmt.targets) and all(isinstance(target, ast.Name) for target in stmt.targets)
+    if isinstance(stmt, ast.AnnAssign):
+        return isinstance(stmt.target, ast.Name)
+    if isinstance(stmt, ast.AugAssign):
+        return isinstance(stmt.target, ast.Name)
+    if (
+        is_first
+        and isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Constant)
+        and isinstance(stmt.value.value, str)
+    ):
+        return True
+    if is_last and isinstance(stmt, ast.If):
+        # The canonical ``if __name__ == "__main__"`` entrypoint is validated
+        # independently by ``_locked_checker_has_canonical_entrypoint``.
+        return True
+    return False
+
+
+def _locked_checker_top_level_closed_world_violation(tree: ast.Module) -> str | None:
+    # Reject any module-level statement that could rebind a protected global at
+    # import/exec time via a dynamic namespace write -- ``globals()["main"] = ...``
+    # (an ``Assign`` with a ``Subscript`` target), ``sys.modules[__name__].x = ...``
+    # (an ``Attribute`` target), a bare top-level ``setattr(...)``/``exec(...)``
+    # call, or any top-level compound statement.  The binding-point count check
+    # only sees ``Name`` targets, so a dynamic write would otherwise silently
+    # rebind ``main`` after ``main`` is byte-pinned, bypassing every self-check.
+    last_index = len(tree.body) - 1
+    for index, stmt in enumerate(tree.body):
+        if not _locked_checker_top_level_statement_allowed(
+            stmt, is_first=(index == 0), is_last=(index == last_index)
+        ):
+            return (
+                "locked_p1_2_close_kernel_checker_top_level_disallowed:"
+                f"{type(stmt).__name__}:{getattr(stmt, 'lineno', '?')}"
+            )
+    return None
+
+
+def _locked_close_kernel_checker_ast_anchor_violation(checker_path: Path) -> str | None:
+    try:
+        tree = ast.parse(checker_path.read_text(encoding="utf-8-sig"))
+    except (OSError, SyntaxError, ValueError):
+        return "locked_p1_2_close_kernel_checker_ast_invalid"
+    if not _locked_checker_has_canonical_entrypoint(tree):
+        return "locked_p1_2_close_kernel_checker_entrypoint_invalid"
+    top_level_violation = _locked_checker_top_level_closed_world_violation(tree)
+    if top_level_violation is not None:
+        return top_level_violation
+    for name in ("main", *LOCKED_P1_2_CHECKER_PROTECTED_CALLEES):
+        bindings = _locked_top_level_binding_points(tree, name)
+        if len(bindings) != 1:
+            return f"locked_p1_2_close_kernel_checker_protected_binding:{name}"
+        binding = bindings[0]
+        if not isinstance(binding, ast.FunctionDef) or binding.name != name:
+            return f"locked_p1_2_close_kernel_checker_protected_binding:{name}"
+        if binding.decorator_list:
+            return f"locked_p1_2_close_kernel_checker_protected_binding:{name}"
+    return None
+
+
 def locked_p1_2_close_kernel_violation(
     project_root: Path,
     *,
@@ -160,6 +495,9 @@ def locked_p1_2_close_kernel_violation(
 
     checker_relative_path = "scripts/check_p1_2_proof_obligations.py"
     checker_path = root / checker_relative_path
+    checker_anchor_violation = _locked_close_kernel_checker_ast_anchor_violation(checker_path)
+    if checker_anchor_violation is not None:
+        return checker_anchor_violation
     # No "am I the checker?" self-skip: always re-verify by running the pinned
     # checker in a fresh isolated subprocess.  An identity-based skip (whether
     # keyed on ``sys.argv[0]`` -- forgeable via ``os.execv`` -- or

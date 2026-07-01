@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from src.search.certified_artifact_contract import (
+    LOCKED_P1_2_CHECKER_PROTECTED_CALLEES,
     LOCKED_P1_2_CLOSE_KERNEL_REQUIRED_PATHS,
     LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256,
     LockedExactArtifactContractError,
@@ -52,6 +53,28 @@ def _seed_locked_close_kernel_data(root: Path) -> str:
     return checker_rel
 
 
+def _valid_stub_checker_source(main_body: str) -> str:
+    """Build a minimal checker source that satisfies the runtime guard's
+    Finding-A parent-process AST anchor.
+
+    round-15 (Finding A) added ``_locked_close_kernel_checker_ast_anchor_violation``
+    which, before running the pinned checker subprocess, requires the checker to
+    keep a canonical ``if __name__ == "__main__": raise SystemExit(main())``
+    entrypoint, a closed-world module top level, and exactly one undecorated
+    top-level ``FunctionDef`` for ``main`` and every protected callee (so a
+    ``main``/callee rebind cannot silently gut the checker).  A bare
+    ``raise SystemExit(n)`` stub no longer reaches the subprocess.  This helper
+    emits a stub that passes the anchor; ``main``'s return value (from
+    ``main_body``, a 4-space-indented function body) becomes the subprocess exit
+    code, so the downstream subprocess/exit-code behaviours can still be exercised.
+    """
+    blocks = [f"def main() -> int:\n{main_body}"]
+    for callee in sorted(LOCKED_P1_2_CHECKER_PROTECTED_CALLEES):
+        blocks.append(f"def {callee}() -> list[str]:\n    return []")
+    blocks.append('if __name__ == "__main__":\n    raise SystemExit(main())')
+    return "\n\n\n".join(blocks) + "\n"
+
+
 def test_locked_fresh_campaign_fails_before_self_sealing_without_close_kernel(
     tmp_path: Path,
 ) -> None:
@@ -88,7 +111,7 @@ def test_locked_close_kernel_checker_rejection_blocks_fresh_authority(
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
     checker_rel = _seed_locked_close_kernel_data(root)
-    _write(root / checker_rel, "raise SystemExit(7)\n")
+    _write(root / checker_rel, _valid_stub_checker_source("    return 7\n"))
 
     assert locked_p1_2_close_kernel_violation(root) == (
         "locked_p1_2_close_kernel_checker_rejected:7"
@@ -101,9 +124,27 @@ def test_locked_close_kernel_checker_acceptance_allows_hashing_to_continue(
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
     checker_rel = _seed_locked_close_kernel_data(root)
-    _write(root / checker_rel, "raise SystemExit(0)\n")
+    _write(root / checker_rel, _valid_stub_checker_source("    return 0\n"))
 
     assert locked_p1_2_close_kernel_violation(root) is None
+
+
+def test_locked_close_kernel_rejects_checker_gutted_below_canonical_entrypoint(
+    tmp_path: Path,
+) -> None:
+    """round-15 Finding A: a checker gutted to a bare ``raise SystemExit(0)`` stub
+    (no canonical ``if __name__ == "__main__": raise SystemExit(main())`` entrypoint,
+    no ``main``) is rejected by the parent-process AST anchor *before* the subprocess
+    runs, so a stub that would exit 0 can no longer spoof acceptance.
+    """
+    root = tmp_path / "locked_project"
+    _write(root / "PROJECT_LOCK.md", "locked\n")
+    checker_rel = _seed_locked_close_kernel_data(root)
+    _write(root / checker_rel, "raise SystemExit(0)\n")
+
+    assert locked_p1_2_close_kernel_violation(root) == (
+        "locked_p1_2_close_kernel_checker_entrypoint_invalid"
+    )
 
 
 def test_unlocked_toy_project_does_not_require_close_kernel_files(
@@ -130,7 +171,7 @@ def test_locked_close_kernel_argv0_spoof_does_not_bypass_subprocess(
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
     checker_rel = _seed_locked_close_kernel_data(root)
-    _write(root / checker_rel, "raise SystemExit(7)\n")
+    _write(root / checker_rel, _valid_stub_checker_source("    return 7\n"))
     checker_path = (root / checker_rel).resolve()
 
     monkeypatch.setattr(sys, "argv", [str(checker_path), *sys.argv[1:]])
@@ -154,7 +195,7 @@ def test_locked_close_kernel_runs_subprocess_even_when_main_is_checker(
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
     checker_rel = _seed_locked_close_kernel_data(root)
-    _write(root / checker_rel, "raise SystemExit(7)\n")
+    _write(root / checker_rel, _valid_stub_checker_source("    return 7\n"))
     checker_path = (root / checker_rel).resolve()
 
     monkeypatch.setattr(sys.modules["__main__"], "__file__", str(checker_path), raising=False)
@@ -175,10 +216,10 @@ def test_locked_close_kernel_ignores_parent_sitecustomize_bypass(
     checker_rel = _seed_locked_close_kernel_data(root)
     _write(
         root / checker_rel,
-        (
-            "import hashlib\n"
-            "expected = 'sitecustomize-forged-pass'\n"
-            "raise SystemExit(0 if hashlib.sha256(b'close-kernel').hexdigest() == expected else 7)\n"
+        _valid_stub_checker_source(
+            "    import hashlib\n"
+            "    expected = 'sitecustomize-forged-pass'\n"
+            "    return 0 if hashlib.sha256(b'close-kernel').hexdigest() == expected else 7\n"
         ),
     )
     poison = tmp_path / "poison"
@@ -212,7 +253,7 @@ def test_locked_close_kernel_identityless_process_modes_do_not_bypass_subprocess
     root = tmp_path / "locked_project"
     _write(root / "PROJECT_LOCK.md", "locked\n")
     checker_rel = _seed_locked_close_kernel_data(root)
-    _write(root / checker_rel, "raise SystemExit(7)\n")
+    _write(root / checker_rel, _valid_stub_checker_source("    return 7\n"))
 
     monkeypatch.setattr(sys, "argv", ["-c"])
     monkeypatch.delattr(sys.modules["__main__"], "__file__", raising=False)
