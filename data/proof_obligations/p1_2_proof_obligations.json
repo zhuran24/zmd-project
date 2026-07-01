@@ -520,6 +520,10 @@
         "test_p1_2_close_kernel_self_binding_rejects_dead_branch_calls",
         "test_p1_2_round11_close_kernel_def_time_and_class_body_hardening",
         "test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_mutation",
+        "test_p1_2_round12_close_kernel_import_closure_follows_match_case_import",
+        "test_p1_2_round12_close_kernel_import_closure_follows_helper_body_import",
+        "test_p1_2_round12_close_kernel_rejects_dynamic_import_alias",
+        "test_p1_2_round12_close_kernel_rejects_namespace_mutator_target",
         "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
         "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
         "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
@@ -925,7 +929,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-          "source_sha256": "c100f8f48c45d7da0e68831931c11af25f3851cee8a157257b4d1fc34220aa9d",
+          "source_sha256": "e84067b8874d84b1979ff0f96c6eb49e7567fb4608e067a9ec28a560b0c53550",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {

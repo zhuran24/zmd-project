@@ -168,6 +168,10 @@ def test_p1_2_proof_obligation_manifest_lists_lifecycle_regressions_by_compartme
     assert "test_p1_2_checker_detects_multiline_public_certified_return" in close_kernel_tests
     assert "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift" in close_kernel_tests
     assert "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift" in close_kernel_tests
+    assert "test_p1_2_round12_close_kernel_import_closure_follows_match_case_import" in close_kernel_tests
+    assert "test_p1_2_round12_close_kernel_import_closure_follows_helper_body_import" in close_kernel_tests
+    assert "test_p1_2_round12_close_kernel_rejects_dynamic_import_alias" in close_kernel_tests
+    assert "test_p1_2_round12_close_kernel_rejects_namespace_mutator_target" in close_kernel_tests
     assert "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses" in close_kernel_tests
     assert "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows" in close_kernel_tests
     assert "test_p1_2_empty_rect_leaf_math_oracle" in close_kernel_tests
@@ -2343,6 +2347,176 @@ def test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_m
     )
 
     assert any("dynamic import-time call globals" in error for error in errors)
+
+
+def test_p1_2_round12_close_kernel_import_closure_follows_match_case_import(
+    tmp_path: Path,
+) -> None:
+    root_rel_path = "src/search/exact_campaign.py"
+    root_path = tmp_path / root_rel_path
+    root_path.parent.mkdir(parents=True)
+    root_path.write_text(
+        "from src.io.strict_json import loads_strict_json\n",
+        encoding="utf-8",
+    )
+
+    strict_json_path = tmp_path / "src/io/strict_json.py"
+    strict_json_path.parent.mkdir(parents=True)
+    strict_json_path.write_text(
+        "\n".join(
+            [
+                "from __future__ import annotations",
+                "match 0:",
+                "    case 0:",
+                "        from src.io import round12_match_probe",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    probe_path = tmp_path / "src/io/round12_match_probe.py"
+    probe_path.write_text(
+        "from __future__ import annotations\n"
+        "globals().__setitem__('round12_match_probe', 1)\n",
+        encoding="utf-8",
+    )
+
+    match_stmt = ast.parse(strict_json_path.read_text(encoding="utf-8")).body[1]
+    assert any(
+        isinstance(child, ast.ImportFrom)
+        for child in check_p1_2_proof_obligations._iter_import_time_child_statements(match_stmt)
+    )
+    closure = check_p1_2_proof_obligations._close_kernel_import_time_closure_source_paths(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+    assert "src/io/round12_match_probe.py" in closure
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_import_dependency_import_time_shape(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+
+    assert any("src/io/round12_match_probe.py" in error for error in errors)
+    assert any("dynamic import-time call globals" in error for error in errors)
+
+
+def test_p1_2_round12_close_kernel_import_closure_follows_helper_body_import(
+    tmp_path: Path,
+) -> None:
+    root_rel_path = "src/search/exact_campaign.py"
+    root_path = tmp_path / root_rel_path
+    root_path.parent.mkdir(parents=True)
+    root_path.write_text(
+        "from src.io.strict_json import loads_strict_json\n",
+        encoding="utf-8",
+    )
+
+    strict_json_path = tmp_path / "src/io/strict_json.py"
+    strict_json_path.parent.mkdir(parents=True)
+    strict_json_path.write_text(
+        "\n".join(
+            [
+                "from __future__ import annotations",
+                "def _round12_import_time_helper():",
+                "    from src.io import round12_helper_probe",
+                "_round12_import_time_helper()",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    probe_path = tmp_path / "src/io/round12_helper_probe.py"
+    probe_path.write_text(
+        "from __future__ import annotations\n"
+        "globals().__setitem__('round12_helper_probe', 1)\n",
+        encoding="utf-8",
+    )
+
+    closure = check_p1_2_proof_obligations._close_kernel_import_time_closure_source_paths(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+    assert "src/io/round12_helper_probe.py" in closure
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_import_dependency_import_time_shape(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+
+    assert any("src/io/round12_helper_probe.py" in error for error in errors)
+    assert any("dynamic import-time call globals" in error for error in errors)
+
+
+def test_p1_2_round12_close_kernel_rejects_dynamic_import_alias(
+    tmp_path: Path,
+) -> None:
+    root_rel_path = "src/search/exact_campaign.py"
+    root_path = tmp_path / root_rel_path
+    root_path.parent.mkdir(parents=True)
+    root_path.write_text(
+        "from src.io.strict_json import loads_strict_json\n",
+        encoding="utf-8",
+    )
+
+    strict_json_path = tmp_path / "src/io/strict_json.py"
+    strict_json_path.parent.mkdir(parents=True)
+    strict_json_path.write_text(
+        "\n".join(
+            [
+                "from __future__ import annotations",
+                "import importlib",
+                "from importlib import import_module as round12_import_module",
+                "round12_getattr = getattr(importlib, 'import_module')",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_import_dependency_import_time_shape(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+
+    assert any("dynamic import primitive importlib.import_module" in error for error in errors)
+    assert any("getattr(importlib, 'import_module')" in error for error in errors)
+
+
+def test_p1_2_round12_close_kernel_rejects_namespace_mutator_target(
+    tmp_path: Path,
+) -> None:
+    root_rel_path = "src/search/exact_campaign.py"
+    root_path = tmp_path / root_rel_path
+    root_path.parent.mkdir(parents=True)
+    root_path.write_text(
+        "from src.io.strict_json import loads_strict_json\n",
+        encoding="utf-8",
+    )
+
+    strict_json_path = tmp_path / "src/io/strict_json.py"
+    strict_json_path.parent.mkdir(parents=True)
+    strict_json_path.write_text(
+        "\n".join(
+            [
+                "from __future__ import annotations",
+                "import operator",
+                "import sys",
+                "dict.__setitem__(sys.modules[__name__].__dict__, 'round12_probe', 1)",
+                "operator.setitem(globals(), 'round12_probe_2', 2)",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_p1_2_proof_obligations._check_close_kernel_import_dependency_import_time_shape(
+        project_root=tmp_path,
+        roots=(root_rel_path,),
+    )
+
+    assert any("must not write through __dict__ at import/def time" in error for error in errors)
+    assert any("must not write through globals() at import/def time" in error for error in errors)
 
 
 def test_p1_2_close_kernel_source_floor_covers_import_time_closure() -> None:

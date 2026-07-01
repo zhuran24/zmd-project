@@ -6016,8 +6016,43 @@ _PR2_IMPORT_TIME_DYNAMIC_CALL_NAMES = frozenset(
     }
 )
 
+_PR2_IMPORT_TIME_DYNAMIC_IMPORT_ATTRS = frozenset({"__import__", "import_module"})
+
 _PR2_DYNAMIC_NAMESPACE_MUTATOR_METHODS = frozenset(
-    {"__setitem__", "update", "setdefault", "pop", "popitem", "clear"}
+    {
+        "__delitem__",
+        "__ior__",
+        "__setitem__",
+        "append",
+        "clear",
+        "extend",
+        "insert",
+        "pop",
+        "popitem",
+        "remove",
+        "setdefault",
+        "update",
+    }
+)
+
+_PR2_IMPORT_TIME_NAMESPACE_MUTATOR_CALL_NAMES = frozenset(
+    {
+        "delattr",
+        "dict.__delitem__",
+        "dict.__ior__",
+        "dict.__setitem__",
+        "dict.clear",
+        "dict.pop",
+        "dict.popitem",
+        "dict.setdefault",
+        "dict.update",
+        "object.__setattr__",
+        "operator.delitem",
+        "operator.ior",
+        "operator.setitem",
+        "setattr",
+        "type.__setattr__",
+    }
 )
 
 
@@ -6037,43 +6072,176 @@ def _function_default_nodes(function: ast.FunctionDef | ast.AsyncFunctionDef) ->
     ]
 
 
-def _expr_is_sys_modules_ref(node: ast.AST) -> bool:
+def _expr_is_sys_modules_ref(node: ast.AST, *, sys_aliases: set[str] | None = None) -> bool:
+    aliases = sys_aliases or {"sys"}
     return (
         isinstance(node, ast.Attribute)
         and node.attr == "modules"
         and isinstance(node.value, ast.Name)
-        and node.value.id == "sys"
+        and node.value.id in aliases
     )
 
 
-def _expr_is_module_namespace_object(node: ast.AST) -> bool:
-    if _expr_is_sys_modules_ref(node):
+def _expr_is_sys_meta_path_ref(node: ast.AST, *, sys_aliases: set[str] | None = None) -> bool:
+    aliases = sys_aliases or {"sys"}
+    return (
+        isinstance(node, ast.Attribute)
+        and node.attr == "meta_path"
+        and isinstance(node.value, ast.Name)
+        and node.value.id in aliases
+    )
+
+
+def _expr_is_importlib_module_ref(
+    node: ast.AST,
+    *,
+    importlib_aliases: set[str] | None = None,
+) -> bool:
+    aliases = importlib_aliases or {"importlib"}
+    return isinstance(node, ast.Name) and node.id in aliases
+
+
+def _expr_dynamic_namespace_call_name(node: ast.AST) -> str | None:
+    if not isinstance(node, ast.Call):
+        return None
+    call_name = _call_func_name(node)
+    if call_name in {"globals", "locals"} and not node.args and not node.keywords:
+        return call_name
+    if call_name == "vars" and not node.keywords:
+        return call_name
+    return None
+
+
+def _expr_import_time_namespace_reason(
+    node: ast.AST,
+    *,
+    sys_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
+) -> str | None:
+    aliases = namespace_aliases or set()
+    if isinstance(node, ast.Name):
+        if node.id == "__builtins__":
+            return "__builtins__"
+        if node.id in aliases:
+            return node.id
+    dynamic_namespace = _expr_dynamic_namespace_call_name(node)
+    if dynamic_namespace is not None:
+        return f"{dynamic_namespace}()"
+    if _expr_is_sys_modules_ref(node, sys_aliases=sys_aliases):
+        return "sys.modules"
+    if _expr_is_sys_meta_path_ref(node, sys_aliases=sys_aliases):
+        return "sys.meta_path"
+    if isinstance(node, ast.Attribute):
+        if node.attr == "__dict__":
+            return "__dict__"
+        return _expr_import_time_namespace_reason(
+            node.value,
+            sys_aliases=sys_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+    if isinstance(node, ast.Subscript):
+        return _expr_import_time_namespace_reason(
+            node.value,
+            sys_aliases=sys_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+    return None
+
+
+def _expr_is_module_namespace_object(
+    node: ast.AST,
+    *,
+    sys_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
+    importlib_aliases: set[str] | None = None,
+) -> bool:
+    if _expr_import_time_namespace_reason(
+        node,
+        sys_aliases=sys_aliases,
+        namespace_aliases=namespace_aliases,
+    ):
         return True
-    if isinstance(node, ast.Subscript) and _expr_is_sys_modules_ref(node.value):
+    if isinstance(node, ast.Subscript) and _expr_is_sys_modules_ref(
+        node.value,
+        sys_aliases=sys_aliases,
+    ):
         return True
     if isinstance(node, ast.Attribute) and node.attr == "__dict__":
         value = node.value
-        if isinstance(value, ast.Subscript) and _expr_is_sys_modules_ref(value.value):
+        if isinstance(value, ast.Subscript) and _expr_is_sys_modules_ref(
+            value.value,
+            sys_aliases=sys_aliases,
+        ):
             return True
-        if isinstance(value, ast.Call) and _call_func_name(value) == "importlib.import_module":
+        if (
+            isinstance(value, ast.Call)
+            and _call_func_name(value) in {"importlib.import_module", "__import__"}
+        ):
+            return True
+        if (
+            isinstance(value, ast.Call)
+            and isinstance(value.func, ast.Attribute)
+            and value.func.attr in _PR2_IMPORT_TIME_DYNAMIC_IMPORT_ATTRS
+            and _expr_is_importlib_module_ref(
+                value.func.value,
+                importlib_aliases=importlib_aliases,
+            )
+        ):
             return True
     return False
 
 
+def _call_import_time_namespace_write_reasons(
+    call: ast.Call,
+    *,
+    sys_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
+) -> set[str]:
+    reasons: set[str] = set()
+    call_name = _call_func_name(call)
+    if call_name in _PR2_IMPORT_TIME_NAMESPACE_MUTATOR_CALL_NAMES and call.args:
+        reason = _expr_import_time_namespace_reason(
+            call.args[0],
+            sys_aliases=sys_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+        if reason is not None:
+            reasons.add(reason)
+    if isinstance(call.func, ast.Attribute):
+        if call.func.attr in _PR2_DYNAMIC_NAMESPACE_MUTATOR_METHODS:
+            receiver_reason = _expr_import_time_namespace_reason(
+                call.func.value,
+                sys_aliases=sys_aliases,
+                namespace_aliases=namespace_aliases,
+            )
+            if receiver_reason is not None:
+                reasons.add(receiver_reason)
+            elif call.args:
+                arg_reason = _expr_import_time_namespace_reason(
+                    call.args[0],
+                    sys_aliases=sys_aliases,
+                    namespace_aliases=namespace_aliases,
+                )
+                if arg_reason is not None:
+                    reasons.add(arg_reason)
+    if isinstance(call.func, ast.Call) and _call_func_name(call.func) == "getattr":
+        getattr_call = call.func
+        if getattr_call.args:
+            receiver_reason = _expr_import_time_namespace_reason(
+                getattr_call.args[0],
+                sys_aliases=sys_aliases,
+                namespace_aliases=namespace_aliases,
+            )
+            if receiver_reason is not None:
+                if len(getattr_call.args) < 2 or not isinstance(getattr_call.args[1], ast.Constant):
+                    reasons.add(receiver_reason)
+                elif getattr_call.args[1].value in _PR2_DYNAMIC_NAMESPACE_MUTATOR_METHODS:
+                    reasons.add(receiver_reason)
+    return reasons
+
+
 def _call_is_dynamic_namespace_mutator(call: ast.Call) -> bool:
-    if not isinstance(call.func, ast.Attribute):
-        return False
-    if call.func.attr not in _PR2_DYNAMIC_NAMESPACE_MUTATOR_METHODS:
-        return False
-    value = call.func.value
-    if (
-        isinstance(value, ast.Call)
-        and _call_func_name(value) in {"globals", "locals", "vars"}
-        and not value.args
-        and not value.keywords
-    ):
-        return True
-    if _expr_is_module_namespace_object(value):
+    if _call_import_time_namespace_write_reasons(call):
         return True
     return False
 
@@ -6093,25 +6261,30 @@ def _expr_dynamic_execution_reasons(node: ast.AST) -> list[str]:
     return reasons
 
 
-def _target_module_namespace_writes(target: ast.AST) -> set[str]:
+def _target_module_namespace_writes(
+    target: ast.AST,
+    *,
+    sys_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
+) -> set[str]:
     namespaces: set[str] = set()
     for node in ast.walk(target):
-        if _expr_is_module_namespace_object(node):
-            namespaces.add("module namespace")
-        if isinstance(node, ast.Attribute):
-            value = node.value
-            if isinstance(value, ast.Subscript) and ast.unparse(value.value) == "sys.modules":
-                namespaces.add("sys.modules")
-            if isinstance(value, ast.Attribute) and value.attr == "__dict__":
-                namespaces.add("module.__dict__")
-        if isinstance(node, ast.Subscript):
-            value = node.value
-            if isinstance(value, ast.Attribute) and value.attr == "__dict__":
-                namespaces.add("module.__dict__")
+        reason = _expr_import_time_namespace_reason(
+            node,
+            sys_aliases=sys_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+        if reason is not None:
+            namespaces.add(reason)
     return namespaces
 
 
-def _stmt_dynamic_namespace_writes(stmt: ast.stmt) -> list[str]:
+def _stmt_dynamic_namespace_writes(
+    stmt: ast.stmt,
+    *,
+    sys_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
+) -> list[str]:
     targets: list[ast.AST] = []
     if isinstance(stmt, ast.Assign):
         targets.extend(stmt.targets)
@@ -6124,7 +6297,15 @@ def _stmt_dynamic_namespace_writes(stmt: ast.stmt) -> list[str]:
     namespaces: list[str] = []
     for target in targets:
         namespaces.extend(sorted(_target_dynamic_namespace_writes(target)))
-        namespaces.extend(sorted(_target_module_namespace_writes(target)))
+        namespaces.extend(
+            sorted(
+                _target_module_namespace_writes(
+                    target,
+                    sys_aliases=sys_aliases,
+                    namespace_aliases=namespace_aliases,
+                )
+            )
+        )
     return namespaces
 
 
@@ -6207,6 +6388,9 @@ def _iter_import_time_child_statements(stmt: ast.stmt) -> Iterator[ast.stmt]:
         yield from stmt.finalbody
         for handler in stmt.handlers:
             yield from handler.body
+    elif isinstance(stmt, ast.Match):
+        for case in stmt.cases:
+            yield from case.body
     elif isinstance(stmt, ast.ClassDef):
         yield from stmt.body
 
@@ -6218,9 +6402,9 @@ def _first_party_import_time_modules(
     project_root: Path,
 ) -> set[str]:
     modules: set[str] = set()
-    stack = list(tree.body)
-    while stack:
-        stmt = stack.pop()
+    for stmt in ast.walk(tree):
+        if not isinstance(stmt, (ast.Import, ast.ImportFrom)):
+            continue
         modules.update(
             _first_party_import_modules_from_stmt(
                 stmt,
@@ -6228,7 +6412,6 @@ def _first_party_import_time_modules(
                 project_root=project_root,
             )
         )
-        stack.extend(reversed(list(_iter_import_time_child_statements(stmt))))
     return modules
 
 
@@ -6272,16 +6455,177 @@ def _direct_simple_call_names(node: ast.AST) -> set[str]:
     return names
 
 
+def _dynamic_import_reference_reasons(
+    node: ast.AST,
+    *,
+    importlib_aliases: set[str],
+    dynamic_import_aliases: set[str],
+) -> set[str]:
+    reasons: set[str] = set()
+    for child in ast.walk(node):
+        if (
+            isinstance(child, ast.Name)
+            and isinstance(child.ctx, ast.Load)
+            and child.id in dynamic_import_aliases
+        ):
+            reasons.add(child.id)
+        elif (
+            isinstance(child, ast.Attribute)
+            and child.attr in _PR2_IMPORT_TIME_DYNAMIC_IMPORT_ATTRS
+            and _expr_is_importlib_module_ref(
+                child.value,
+                importlib_aliases=importlib_aliases,
+            )
+        ):
+            reasons.add(f"{ast.unparse(child.value)}.{child.attr}")
+        elif isinstance(child, ast.Call) and _call_func_name(child) == "getattr":
+            if not child.args or not _expr_is_importlib_module_ref(
+                child.args[0],
+                importlib_aliases=importlib_aliases,
+            ):
+                continue
+            if len(child.args) < 2 or not isinstance(child.args[1], ast.Constant):
+                reasons.add(f"getattr({ast.unparse(child.args[0])}, <dynamic>)")
+            elif child.args[1].value in _PR2_IMPORT_TIME_DYNAMIC_IMPORT_ATTRS:
+                reasons.add(f"getattr({ast.unparse(child.args[0])}, {child.args[1].value!r})")
+    return reasons
+
+
+def _bind_import_time_aliases_from_import(
+    stmt: ast.Import | ast.ImportFrom,
+    *,
+    importlib_aliases: set[str],
+    sys_aliases: set[str],
+    dynamic_import_aliases: set[str],
+    namespace_aliases: set[str],
+) -> list[str]:
+    errors: list[str] = []
+    if isinstance(stmt, ast.Import):
+        for alias in stmt.names:
+            bound_name = alias.asname or alias.name.split(".", 1)[0]
+            if alias.name == "sys":
+                sys_aliases.add(bound_name)
+            if alias.name == "importlib":
+                importlib_aliases.add(bound_name)
+            if alias.name in {"importlib.import_module", "importlib.__import__"}:
+                dynamic_import_aliases.add(bound_name)
+                errors.append(
+                    "import-time code must not bind dynamic import primitive "
+                    f"{alias.name} as {bound_name}"
+                )
+        return errors
+    module = stmt.module or ""
+    if module == "sys":
+        for alias in stmt.names:
+            bound_name = alias.asname or alias.name
+            if alias.name == "modules":
+                namespace_aliases.add(bound_name)
+            elif alias.name == "meta_path":
+                namespace_aliases.add(bound_name)
+    if module in {"builtins", "__builtin__"}:
+        for alias in stmt.names:
+            if alias.name == "__import__":
+                bound_name = alias.asname or alias.name
+                dynamic_import_aliases.add(bound_name)
+                errors.append(
+                    "import-time code must not bind dynamic import primitive "
+                    f"{module}.{alias.name} as {bound_name}"
+                )
+    if module == "importlib":
+        for alias in stmt.names:
+            if alias.name == "*":
+                errors.append("import-time code must not star-import importlib")
+                continue
+            bound_name = alias.asname or alias.name
+            if alias.name in _PR2_IMPORT_TIME_DYNAMIC_IMPORT_ATTRS:
+                dynamic_import_aliases.add(bound_name)
+                errors.append(
+                    "import-time code must not bind dynamic import primitive "
+                    f"importlib.{alias.name} as {bound_name}"
+                )
+            elif alias.name == "importlib":
+                importlib_aliases.add(bound_name)
+    return errors
+
+
+def _bind_import_time_aliases_from_assignment(
+    stmt: ast.Assign | ast.AnnAssign | ast.NamedExpr,
+    *,
+    importlib_aliases: set[str],
+    sys_aliases: set[str],
+    dynamic_import_aliases: set[str],
+    namespace_aliases: set[str],
+) -> None:
+    if isinstance(stmt, ast.Assign):
+        value = stmt.value
+        targets = stmt.targets
+    else:
+        value = stmt.value
+        targets = [stmt.target]
+    bound_names: set[str] = set()
+    for target in targets:
+        bound_names.update(_target_bound_names(target))
+    if not bound_names:
+        return
+    if _expr_is_importlib_module_ref(value, importlib_aliases=importlib_aliases):
+        importlib_aliases.update(bound_names)
+    if isinstance(value, ast.Name) and value.id in sys_aliases:
+        sys_aliases.update(bound_names)
+    if _dynamic_import_reference_reasons(
+        value,
+        importlib_aliases=importlib_aliases,
+        dynamic_import_aliases=dynamic_import_aliases,
+    ):
+        dynamic_import_aliases.update(bound_names)
+    if _expr_import_time_namespace_reason(
+        value,
+        sys_aliases=sys_aliases,
+        namespace_aliases=namespace_aliases,
+    ):
+        namespace_aliases.update(bound_names)
+
+
 def _check_import_time_expression(
     node: ast.AST,
     *,
     label: str,
     local_functions: Mapping[str, ast.FunctionDef] | None = None,
     seen: set[str] | None = None,
+    importlib_aliases: set[str] | None = None,
+    sys_aliases: set[str] | None = None,
+    dynamic_import_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
 ) -> list[str]:
     errors: list[str] = []
+    if importlib_aliases is None:
+        importlib_aliases = {"importlib"}
+    if sys_aliases is None:
+        sys_aliases = {"sys"}
+    if dynamic_import_aliases is None:
+        dynamic_import_aliases = {"__import__"}
+    if namespace_aliases is None:
+        namespace_aliases = set()
+    for reason in sorted(
+        _dynamic_import_reference_reasons(
+            node,
+            importlib_aliases=importlib_aliases,
+            dynamic_import_aliases=dynamic_import_aliases,
+        )
+    ):
+        errors.append(f"{label} must not reference dynamic import primitive {reason}")
     for call_name in sorted(set(_expr_dynamic_execution_reasons(node))):
         errors.append(f"{label} must not execute dynamic import-time call {call_name}")
+    for child in ast.walk(node):
+        if not isinstance(child, ast.Call):
+            continue
+        for reason in sorted(
+            _call_import_time_namespace_write_reasons(
+                child,
+                sys_aliases=sys_aliases,
+                namespace_aliases=namespace_aliases,
+            )
+        ):
+            errors.append(f"{label} must not write through {reason} at import/def time")
     if local_functions is None:
         return errors
     if seen is None:
@@ -6291,6 +6635,10 @@ def _check_import_time_expression(
         if function is None or call_name in seen:
             continue
         seen.add(call_name)
+        helper_importlib_aliases = set(importlib_aliases)
+        helper_sys_aliases = set(sys_aliases)
+        helper_dynamic_import_aliases = set(dynamic_import_aliases)
+        helper_namespace_aliases = set(namespace_aliases)
         for stmt in function.body:
             errors.extend(
                 _check_import_time_statement(
@@ -6298,6 +6646,10 @@ def _check_import_time_expression(
                     label=f"{label}->{call_name}",
                     local_functions=local_functions,
                     seen=seen,
+                    importlib_aliases=helper_importlib_aliases,
+                    sys_aliases=helper_sys_aliases,
+                    dynamic_import_aliases=helper_dynamic_import_aliases,
+                    namespace_aliases=helper_namespace_aliases,
                 )
             )
     return errors
@@ -6309,63 +6661,134 @@ def _check_import_time_statement(
     label: str,
     local_functions: Mapping[str, ast.FunctionDef] | None = None,
     seen: set[str] | None = None,
+    importlib_aliases: set[str] | None = None,
+    sys_aliases: set[str] | None = None,
+    dynamic_import_aliases: set[str] | None = None,
+    namespace_aliases: set[str] | None = None,
 ) -> list[str]:
     errors: list[str] = []
-    for namespace in _stmt_dynamic_namespace_writes(stmt):
+    if importlib_aliases is None:
+        importlib_aliases = {"importlib"}
+    if sys_aliases is None:
+        sys_aliases = {"sys"}
+    if dynamic_import_aliases is None:
+        dynamic_import_aliases = {"__import__"}
+    if namespace_aliases is None:
+        namespace_aliases = set()
+
+    def check_expr(node: ast.AST) -> list[str]:
+        return _check_import_time_expression(
+            node,
+            label=label,
+            local_functions=local_functions,
+            seen=seen,
+            importlib_aliases=importlib_aliases,
+            sys_aliases=sys_aliases,
+            dynamic_import_aliases=dynamic_import_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+
+    def check_stmt(node: ast.stmt) -> list[str]:
+        return _check_import_time_statement(
+            node,
+            label=label,
+            local_functions=local_functions,
+            seen=seen,
+            importlib_aliases=importlib_aliases,
+            sys_aliases=sys_aliases,
+            dynamic_import_aliases=dynamic_import_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+
+    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        return _bind_import_time_aliases_from_import(
+            stmt,
+            importlib_aliases=importlib_aliases,
+            sys_aliases=sys_aliases,
+            dynamic_import_aliases=dynamic_import_aliases,
+            namespace_aliases=namespace_aliases,
+        )
+
+    for namespace in _stmt_dynamic_namespace_writes(
+        stmt,
+        sys_aliases=sys_aliases,
+        namespace_aliases=namespace_aliases,
+    ):
         suffix = "()" if namespace in {"globals", "locals", "vars"} else ""
         errors.append(f"{label} must not write through {namespace}{suffix} at import/def time")
     if isinstance(stmt, ast.Expr):
-        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.value))
     elif isinstance(stmt, ast.Assign):
-        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.value))
+        _bind_import_time_aliases_from_assignment(
+            stmt,
+            importlib_aliases=importlib_aliases,
+            sys_aliases=sys_aliases,
+            dynamic_import_aliases=dynamic_import_aliases,
+            namespace_aliases=namespace_aliases,
+        )
     elif isinstance(stmt, ast.AnnAssign) and stmt.value is not None:
-        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.value))
+        _bind_import_time_aliases_from_assignment(
+            stmt,
+            importlib_aliases=importlib_aliases,
+            sys_aliases=sys_aliases,
+            dynamic_import_aliases=dynamic_import_aliases,
+            namespace_aliases=namespace_aliases,
+        )
     elif isinstance(stmt, ast.AugAssign):
-        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.value))
     elif isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
         for node in _function_default_nodes(stmt):
-            errors.extend(_check_import_time_expression(node, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_expr(node))
     elif isinstance(stmt, ast.ClassDef):
         for node in [*stmt.decorator_list, *stmt.bases, *[kw.value for kw in stmt.keywords]]:
-            errors.extend(_check_import_time_expression(node, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_expr(node))
         for item in stmt.body:
             if _is_docstring_stmt(item):
                 continue
             if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 for node in _function_default_nodes(item):
-                    errors.extend(_check_import_time_expression(node, label=label, local_functions=local_functions, seen=seen))
+                    errors.extend(check_expr(node))
             else:
-                errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+                errors.extend(check_stmt(item))
     elif isinstance(stmt, ast.Return) and stmt.value is not None:
-        errors.extend(_check_import_time_expression(stmt.value, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.value))
     elif isinstance(stmt, ast.If):
-        errors.extend(_check_import_time_expression(stmt.test, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.test))
         for item in [*stmt.body, *stmt.orelse]:
-            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_stmt(item))
     elif isinstance(stmt, ast.While):
-        errors.extend(_check_import_time_expression(stmt.test, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.test))
         for item in [*stmt.body, *stmt.orelse]:
-            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_stmt(item))
     elif isinstance(stmt, (ast.For, ast.AsyncFor)):
-        errors.extend(_check_import_time_expression(stmt.iter, label=label, local_functions=local_functions, seen=seen))
+        errors.extend(check_expr(stmt.iter))
         for item in [*stmt.body, *stmt.orelse]:
-            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_stmt(item))
     elif isinstance(stmt, (ast.With, ast.AsyncWith)):
         for item in stmt.items:
-            errors.extend(_check_import_time_expression(item.context_expr, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_expr(item.context_expr))
             if item.optional_vars is not None:
                 for namespace in _target_dynamic_namespace_writes(item.optional_vars):
                     errors.append(f"{label} must not write through {namespace}() at import/def time")
         for item in stmt.body:
-            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_stmt(item))
     elif isinstance(stmt, ast.Try):
         for item in [*stmt.body, *stmt.orelse, *stmt.finalbody]:
-            errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+            errors.extend(check_stmt(item))
         for handler in stmt.handlers:
             if handler.type is not None:
-                errors.extend(_check_import_time_expression(handler.type, label=label, local_functions=local_functions, seen=seen))
+                errors.extend(check_expr(handler.type))
             for item in handler.body:
-                errors.extend(_check_import_time_statement(item, label=label, local_functions=local_functions, seen=seen))
+                errors.extend(check_stmt(item))
+    elif isinstance(stmt, ast.Match):
+        errors.extend(check_expr(stmt.subject))
+        for case in stmt.cases:
+            if case.guard is not None:
+                errors.extend(check_expr(case.guard))
+            for item in case.body:
+                errors.extend(check_stmt(item))
     return errors
 
 
@@ -6554,16 +6977,22 @@ def _check_close_kernel_import_dependency_import_time_shape(
             for stmt in tree.body
             if isinstance(stmt, ast.FunctionDef)
         }
+        importlib_aliases = {"importlib"}
+        sys_aliases = {"sys"}
+        dynamic_import_aliases = {"__import__"}
+        namespace_aliases: set[str] = set()
         for index, stmt in enumerate(tree.body):
             if index == 0 and _is_docstring_stmt(stmt):
-                continue
-            if isinstance(stmt, (ast.Import, ast.ImportFrom)):
                 continue
             errors.extend(
                 _check_import_time_statement(
                     stmt,
                     label=f"{rel_path}:{getattr(stmt, 'lineno', '?')}",
                     local_functions=local_functions,
+                    importlib_aliases=importlib_aliases,
+                    sys_aliases=sys_aliases,
+                    dynamic_import_aliases=dynamic_import_aliases,
+                    namespace_aliases=namespace_aliases,
                 )
             )
     return errors
@@ -9536,10 +9965,18 @@ CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
 CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'scripts/build_industrial_planner_single_base_delivery_release.py': '6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92',
     'scripts/check_strong_status_write_allowlist.py': '4964fcdea6f987d424013e25cc34355c1bc3371d2e2c8d9e68f96fa84cd1a9ff',
-    'src/search/certified_artifact_contract.py': 'e45f4ded38b209601ec5306bc9ab6152ab3dca34a86bb5b0827212d59563cd07',
     'scripts/generate_pr2_dependency_floor_manifest.py': '0555322552375a2036ccac71afac85a29fc3773a7ac37ad09ad03b167bb6503c',
+    'src/adapters/base_planner/outer_deployment_plan.py': '99bff4c012eb3959165cffbf4b441493637197abc01674aaa276368622604b4d',
+    'src/adapters/endfield_calc/semantic_mapping.py': 'a8ec810110116507abcfa0d708251ce740c6be3129ab375801c2539307a0c1a8',
+    'src/adapters/industrial_planner/__init__.py': '190e47cf085073253e14e2c038a9c29ebb5d25953271b3b2870f4d789d91ed4a',
+    'src/adapters/industrial_planner/blueprint_validator.py': 'a578225317685229d0b7469685e82d848cf125c0e70a8218de96995406474fd3',
+    'src/adapters/industrial_planner/commodity_resolver.py': '69ce68d7e69b3834a28d7089a77c70c1d14eae032d979d83b1cd1041eff6017d',
+    'src/adapters/industrial_planner/compatibility_report.py': '51d0103d41622940045a7b2cd060db2d2801e1891fb2cd3b856ddf8ee5cd375f',
+    'src/adapters/industrial_planner/deployment_transform.py': 'dc1edc539ccd0f25a6ea9f4684990e30757bed9a9690533d90d448c3af705221',
     'src/adapters/industrial_planner/export_blueprint.py': '01afafc85b4e7f27c0bf8c0293845785b45bc71ad332da483936b753a7d9eb5e',
     'src/adapters/industrial_planner/mapping_registry.py': '7e20051ff2a4eddc551ea1f1f109e61127b597b65fa070dddb8528d180106ce3',
+    'src/adapters/industrial_planner/recipe_matcher.py': '83d1aba6e61256819287f9f60eed53311bd1cd5c3946776c02465862821676e1',
+    'src/adapters/industrial_planner/throughput_audit.py': 'ecd30296a411ddf55b166f52f02ececa032e9ea1acb4302004064b9eb39c87f4',
     'src/cuts/cert_schema.py': 'e7535dac7597f6829b3149ec09d90faf3d15af43f43d1154feba941cd4a4f05e',
     'src/cuts/families/pattern_nogood.py': '3083df0a2eaa71d0f2823a60ad9156bcc6bc744e4ff4bc26f9544d7dabe6230b',
     'src/cuts/helpers/bounded_core_minimizer.py': 'da3184e860ea49fa88a45da2db09c7b09fd742fc7eb10b6f7018eb1e5b98985b',
@@ -9548,11 +9985,15 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/cuts/oracles/power_cover_oracle.py': '161e513cde4fbfa0fd5dc30039f067e705728b2ff0a9d0125a39dd3d284457b9',
     'src/cuts/oracles/region_capacity_oracle.py': '52b18886e7d613997553a785bb258875cf1df642fe47a6cbb19d8be857c12e83',
     'src/cuts/oracles/shape_packing_hall_oracle.py': '44111273420eaf00052e13785ed8039a722e752b4af0f0a1121f2b31d26f9934',
+    'src/interchange/compatibility_manifest.py': '2ceba41d6be16fa15b252f50538a378f054b85270d06a08ad38f9adcbb5efaea',
+    'src/interchange/export_registry.py': 'f1b8a08b5a728e800c8fe8af5510115e67e08c46b084550551af91636a036f21',
+    'src/interchange/normalized_catalog.py': '63ffb299752349369a572e80996086ee79cf86c810450299a3d5fff9fc82c879',
+    'src/interchange/preprocess_context.py': '5fa213035b9ac3e3ae78f0f12f8293e16c08d3cd913824f45bb34197fcb9f5d0',
+    'src/interchange/target_capabilities.py': '9572b1a6b4fa53ba8f2a18407884815a51268bc9ba0eb76307131d6508c521f5',
     'src/io/delivery_manifest.py': '19d2bb353f4bfbc1a4473ec6a4aa2e214dd47083b94d516d4f70962e05e79a09',
     'src/io/output_schema.py': '78900b3f252534e3674043b985441a27cadf3c507c5891f4e3752a8a11b3da4c',
     'src/io/serializer.py': 'f40ede9bacee8fbfd1526973eb5f9985184930b70f84d946bb8b8c80d9e4fa9d',
     'src/io/strict_json.py': '65293ed7c0a108e906b16bee206acb1ca7f598040aa85b372023dc954574c45a',
-    'src/interchange/preprocess_context.py': '5fa213035b9ac3e3ae78f0f12f8293e16c08d3cd913824f45bb34197fcb9f5d0',
     'src/models/_cpsat_compat.py': 'c8e4ae4b9df87bb7b3bb3f823974b940a6c10e4d651ab811be13ca1d10810d89',
     'src/models/abstract_routing_layer.py': '1f1f71258a840d872d85afe5e18760c100eda671848bef94c6cf972ccee0df16',
     'src/models/binding_subproblem.py': '9af9a256c03ebfd937642248fd329ca9b307f28a0fec8280dc76634b8910cac1',
@@ -9569,10 +10010,14 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/models/port_binding.py': '18e9c586e615ce3172d1ee32a89f7f3961b14e6fe386467ff5ea714930c01163',
     'src/models/pose_bool_exact_master.py': '00c82b8758c7d859f9dfc9d3936516738ed48bf3bb5c1ad73477a183e848d0ed',
     'src/models/power_placement_subproblem.py': '88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597',
+    'src/models/routing_binding_context.py': 'f255935ca4f4397f7d015cf6af7fa0cd95bf273865e4da01380d8dbfb5251652',
     'src/models/routing_subproblem.py': '25c56e1f5f383f8696f93d876282f1cd5c26a37e610e6bc7d6ca8ffcd737ba49',
     'src/models/scip_master_model.py': 'd3590b07088e4e67c5b714aca78e39acddd0da8b59a7b96a68ae7b4b270f2bea',
+    'src/models/separator_capacity_hull.py': '1d405d3be0af246c3d2d9d25a79a2907c3101befb661aed449f922425ffc946a',
     'src/models/solution_hint_parser.py': '3767cbdae4ae7f560f4bb3ddfc3197f8958484e42b575fa357ec16d4efa34a32',
+    'src/preprocess/demand_solver.py': 'e737df49effd148962768816e66c86f415f9026acd7ff562fbebcf528ba2ee92',
     'src/preprocess/operation_profiles.py': 'e9a89a4a6483bebeeb42096867390eb31f80bc5819c206b35a9d87387a925c6c',
+    'src/render/blueprint_exporter.py': '8ee3b21bc137493fc930b08bd5ea368e23bcd1090ddf51a56bb7264d4d31a61f',
     'src/render/industrial_planner_exact_status.py': '22875159909302a5d5dde77bd832539be1b01a10e40606d8d459996714c56183',
     'src/render/industrial_planner_single_base_delivery_entrypoints.py': 'e80cc8d6c4badadad9c23a2c6c8c645e653425b2b0002879baadb29c3dd6759c',
     'src/render/industrial_planner_single_base_delivery_frontdoor.py': '5e530baaa4e49e149755c96452521daa93ece7a3c29b6e05545fcd5819530fdb',
@@ -9580,13 +10025,14 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/industrial_planner_single_base_delivery_surface_alignment.py': 'f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c',
     'src/render/industrial_planner_single_base_delivery_surface_health.py': '788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf',
     'src/render/industrial_planner_single_base_delivery_viewer.py': '79993549328337748060db557392268791812ab39a00b471cc4439e16d1b6bf9',
-    'src/render/blueprint_exporter.py': '8ee3b21bc137493fc930b08bd5ea368e23bcd1090ddf51a56bb7264d4d31a61f',
     'src/render/report_builder.py': '860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6',
     'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
+    'src/runtime/subproblem_invocation_counter.py': '6f5ac40b2674a1a2b99d9932dc262e4c57c2f622e27e4b83dc39d9bcc270c759',
     'src/search/benders_loop.py': '67e42c75bd6bcdb0a6374b4cae548e7ad60e383a83eacbbf7e3ceddccbed338a',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '841e73765464f755fc1021bd3ec1649612a61d57cb4fe220329fec719bd658d5',
+    'src/search/certified_artifact_contract.py': 'e45f4ded38b209601ec5306bc9ab6152ab3dca34a86bb5b0827212d59563cd07',
     'src/search/certified_frontier.py': '80c72be1110bfa83fb1c5ca02513e41f9107f1e5aedd304642fbf2fa2bda2b74',
     'src/search/certified_surface.py': 'd4430f5ea523afbd2771cdf0c3e0e9d28c5aca10635e3f2751a2533a9b595cf4',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -9596,13 +10042,19 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
     'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
     'src/search/independent_infeasibility_reverifier.py': '18355474ef6f2a13ed1117aeb99f3863adf5e65f6ba8f73a9e081519380b8188',
+    'src/search/master_hint_persistence.py': '2c1c51977a6eff577e08ac62ef97eee7605e05fdbd51ea9328f13e99c405ff4e',
     'src/search/outer_search.py': '0ca6b4c45e6e8890a28962b68e05685a53fe748745e827f953e84d00d8d1ed3b',
     'src/search/patch_conflict_separator.py': '4c468f34bb620dbf136641281ad337dabe255f5e7465585781887e8f6bc0a775',
+    'src/search/phase3b/anchor119/guard_controls.py': '505490c75a1ee029cc378b8ff784b213d01b3f8c0da425fea21d504e3f434c9a',
+    'src/search/phase3b/anchor119/guarded_precheck_runtime.py': '4c8ebb13c4c9e0fd9e3c6e614a185183e975fd365421ef95cbf2eb5ae5098aa2',
+    'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
     'src/search/pr2_l0_micro_verifier_core.py': '20cb34d85380d90c026c8cd8b47645fa26aea2bc3a6cb3cf36c1b6f7089aeb9a',
     'src/search/pr2_l0_true_verifier_child.py': 'e8e352c6dce77a8a0537e8e61dba28988460e1ada87f704e56cd3171a322db46',
+    'src/search/routing_deletion_core_minimizer.py': '9bfa5588d5b56dc098800d9b88a7f65df6a1552d21ad752b6a3a828af576af26',
+    'src/search/separator_capacity_separator.py': '1fd8a3c694f0c4a406c7eb7a46f7ddc290dcc8fc41e2f518977975fa98f58229',
     'src/search/smt_mt_outer_pruning.py': '004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91',
     'src/search/terminal_fixed_witness_capsule.py': 'eba3fa8c396e45d6f86f74b73a21a1599201379b76ffa26c05afbe0f499084d9',
-    'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531',
+    'src/search/terminal_fixed_witness_verifier.py': '2feab8d5f08c9d070e6343805f667a41f27573888c24c55327c50d0a9e924531'
 }
 CLOSE_KERNEL_V99_MIN_SINK_COUNT = len(CLOSE_KERNEL_V99_REQUIRED_SINK_PATHS)
 
